@@ -9,6 +9,7 @@
 #include "ms2/ms2layout.h"
 #include "ms2/placeholder/ascript.h"
 #include "ms2/client/ms2/ms2dragslot.h"
+#include "ms2/commonfiles/itemgem.h"
 
 class CItem;
 class PCInfo;
@@ -68,7 +69,7 @@ public:
 public:
     MS2_LAYOUT_FRIEND;
     MS2Ptr<PCInfo> m_spPC;                              // +0x88
-    ATL::CAtlMap<int, int> m_mapSlot;                   // +0x98 slot index -> gem type
+    ATL::CAtlMap<int, GemType> m_mapSlot;               // +0x98 slot index -> gem type
 };
 MS2_CHECK_SIZE(GemSlotBag, 0xe0);
 MS2_CHECK_OFFSET(GemSlotBag, m_spPC, 0x88);

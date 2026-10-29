@@ -344,34 +344,30 @@ unsigned CFilePreload::vfunc_1(void* user,Unk_140659080& startup) {
 }
 MS2_REPLACE_METHOD(0x14120fb80, CFilePreload, vfunc_1, 312, 0x55CFED34);
 // Scheduling entry points remain unhooked: they create local ClassFunHandler RTTI.
-// MS2-FUNCTIONAL: Early-out branch shape differs; the same initialization and job are scheduled.
 // @0x14120fcc0
 void CFilePreload::FUN_14120fcc0() {
-    if(!initialized && !state) {
-        FUN_141210da0();
-        Start(this,0,0,0,0);
-        FUN_141210ce0(Job(this,&CFilePreload::FUN_141211240));
-    }
+    if(initialized) return;
+    if(state) return;
+    FUN_141210da0();
+    Start(this,0,0,0,0);
+    FUN_141210ce0(Job(this,&CFilePreload::FUN_141211240));
 }
-// MS2-FUNCTIONAL: Early-out branch shape differs; startup parameters and scheduled job are unchanged.
 // @0x14120fdb0
 void CFilePreload::FUN_14120fdb0() {
-    if(!initialized) {
-        Start(this,0,0,0,0);
-        FUN_141210ce0(Job(this,&CFilePreload::FUN_141211240));
-    }
+    if(initialized) return;
+    Start(this,0,0,0,0);
+    FUN_141210ce0(Job(this,&CFilePreload::FUN_141211240));
 }
-// MS2-FUNCTIONAL: Early-out branches differ; all six queues retain the original priority order.
 // @0x14120fe80
 void CFilePreload::FUN_14120fe80() {
-    if(initialized && !state) {
-        if(preloadIds!=0 && !ids.empty()) FUN_141210ce0(Job(this,&CFilePreload::FUN_141211380));
-        else if(!itemRequests.empty()) FUN_141210ce0(Job(this,&CFilePreload::FUN_141211480));
-        else if(!effectRequests.empty()) FUN_141210ce0(Job(this,&CFilePreload::FUN_1412115e0));
-        else if(!nifRequests.empty()) FUN_141210ce0(Job(this,&CFilePreload::FUN_141211700));
-        else if(!paths.empty()) FUN_141210ce0(Job(this,&CFilePreload::FUN_141211880));
-        else if(!itemIds.empty()) FUN_141210ce0(Job(this,&CFilePreload::FUN_1412119e0));
-    }
+    if(!initialized) return;
+    if(state) return;
+    if(preloadIds!=0 && !ids.empty()) FUN_141210ce0(Job(this,&CFilePreload::FUN_141211380));
+    else if(!itemRequests.empty()) FUN_141210ce0(Job(this,&CFilePreload::FUN_141211480));
+    else if(!effectRequests.empty()) FUN_141210ce0(Job(this,&CFilePreload::FUN_1412115e0));
+    else if(!nifRequests.empty()) FUN_141210ce0(Job(this,&CFilePreload::FUN_141211700));
+    else if(!paths.empty()) FUN_141210ce0(Job(this,&CFilePreload::FUN_141211880));
+    else if(!itemIds.empty()) FUN_141210ce0(Job(this,&CFilePreload::FUN_1412119e0));
 }
 // @0x1412102e0
 void CFilePreload::FUN_1412102e0() {
@@ -530,9 +526,10 @@ SkillDataTableCli* FUN_1401958b0();
 void FUN_140aae720(SkillDataTableCli*,unsigned,unsigned short,int);
 void FUN_1411a4800(const CString&,int);
 // Explicit result-storage forms preserve the member hidden-result ABI.
-efd::SmartPointer<NiTexture>* FUN_141552f90(CNifLoadingService*,efd::SmartPointer<NiTexture>*,CString,int);
+// The NIF service's texture load and the skill table lookup return by value (views over the exe types).
+struct Unk_PreloadNifService { efd::SmartPointer<NiTexture> FUN_141552f90(CString,int); };
 void FUN_1415525d0(CNifLoadingService*,CString,int,int);
-Unk_PayloadPtr<SkillData>* FUN_140aafd60(SkillDataTableCli*,Unk_PayloadPtr<SkillData>*,unsigned);
+struct Unk_PreloadSkillTable { Unk_PayloadPtr<SkillData> FUN_140aafd60(unsigned); };
 Unk_PreloadServiceD* FUN_1411b1dd0(); void FUN_14119fa60(Unk_PreloadServiceD*);
 void* FUN_140281980(); void FUN_140556f50(void*); void FUN_140c909a0(Unk_PreloadServiceB*);
 // @0x141210e10
@@ -633,9 +630,10 @@ void CFilePreload::FUN_141211700(void*) {
     std::set<Unk_PreloadPath> pending;
     { if(Unk_LockGuard guard=nifLock) { __assume(0); } else { pending=nifRequests; nifRequests.clear(); } }
     for(auto it=pending.begin();it!=pending.end();++it) {
-        if(stopped!=0 || FUN_140a0afd0()==0) return;
-        efd::SmartPointer<NiTexture> texture;
-        FUN_141552f90(FUN_140a0afd0(),&texture,CString(it->path),it->priority);
+        if(stopped==0 && FUN_140a0afd0()!=0) {
+            ((Unk_PreloadNifService*)FUN_140a0afd0())->FUN_141552f90(CString(it->path),it->priority);
+        }
+        else return;
     }
 }
 MS2_REPLACE_METHOD(0x141211700, CFilePreload, FUN_141211700, 375, 0x74A47ED7);
@@ -645,8 +643,8 @@ void CFilePreload::FUN_141211880(void*) {
     std::set<CString> pending;
     { if(Unk_LockGuard guard=pathLock) { __assume(0); } else { pending=paths; paths.clear(); } }
     for(auto it=pending.begin();it!=pending.end();++it) {
-        if(stopped!=0 || FUN_140a0afd0()==0) return;
-        FUN_1415525d0(FUN_140a0afd0(),CString(*it),0,5);
+        if(stopped==0 && FUN_140a0afd0()!=0) FUN_1415525d0(FUN_140a0afd0(),CString(*it),0,5);
+        else return;
     }
 }
 MS2_REPLACE_METHOD(0x141211880, CFilePreload, FUN_141211880, 335, 0x0F68167A);
@@ -656,11 +654,12 @@ void CFilePreload::FUN_1412119e0(void*) {
     std::set<unsigned> pending;
     { if(Unk_LockGuard guard=itemIdsLock) { __assume(0); } else { pending=itemIds; itemIds.clear(); } }
     for(auto it=pending.begin();it!=pending.end();++it) {
-        if(stopped!=0 || FUN_140a0afd0()==0) return;
-        if(FUN_1401958b0()!=0) {
-            Unk_PayloadPtr<SkillData> data;
-            FUN_140aafd60(FUN_1401958b0(),&data,*it);
+        if(stopped==0 && FUN_140a0afd0()!=0) {
+            if(FUN_1401958b0()!=0) {
+                ((Unk_PreloadSkillTable*)FUN_1401958b0())->FUN_140aafd60(*it);
+            }
         }
+        else return;
     }
 }
 MS2_REPLACE_METHOD(0x1412119e0, CFilePreload, FUN_1412119e0, 319, 0xF38A508F);

@@ -50,7 +50,7 @@ class Unk_MentorSchedule { public: __int64 FUN_140424e60(); __int64 FUN_140424e2
 class Unk_MentorScheduleHolder { public: Unk_MentorSchedule* FUN_14041d160(); };
 Unk_MentorScheduleHolder* FUN_140302b00();
 
-CStringW FUN_14028dfa0(CStringW strKey, const fmt::ArgList& args);   // string table text, formatted
+CStringW FUN_14028dfa0(const CStringW& strKey, const fmt::ArgList& args);   // string table text, formatted
 // The wide argument-type chain of this unit's FUN_14028dfa0<int x6, CStringW> instance (as in item.cpp's own two-argument one).
 namespace fmt { namespace internal {
 struct Unk_WcFormatter { typedef wchar_t Char; };
@@ -78,7 +78,6 @@ inline ULongLong wc_make_type(Unk_WcArgType t0 = Unk_WcArgType(), Unk_WcArgType 
         return FUN_14028dfa0(arg1, fmt::ArgList(fmt::internal::wc_make_type(FMT_GEN(n, FMT_MAKE_REF2)), array)); \
     }
 // @0x140c70b70
-// MS2-FUNCTIONAL: fmt argument temporaries (2 extra frame slots, ArgType chain order) differ from the exe
 WC_WRAP(7)
 template CStringW FUN_14028dfa0<int, int, int, int, int, int, CStringW>(CStringW, const int&, const int&, const int&, const int&, const int&, const int&, const CStringW&);
 CStringW GetStringCommonByKey(const CStringW& strKey);                     // string table text

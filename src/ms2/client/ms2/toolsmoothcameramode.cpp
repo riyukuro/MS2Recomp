@@ -209,7 +209,6 @@ void CToolSmoothCameraMode::vfunc_9()
 }
 MS2_REPLACE_METHOD(0x141856F60, CToolSmoothCameraMode, vfunc_9, 1292, 0xF2E237FE);
 
-// MS2-FUNCTIONAL: the exe passes the format result to FUN_1412751f0 through the pointer the callee returns in rax (frame 0x10 larger)
 // @0x141857480
 void CToolSmoothCameraMode::vfunc_8(double fTime)
 {
@@ -232,10 +231,7 @@ void CToolSmoothCameraMode::vfunc_8(double fTime)
             float fMin = 0.05f;
             m_160 = FUN_140805fc0(m_160, fMin);
             if (fOld != m_160)
-            {
-                CStringW strMsg = FUN_1406329c0(L"move accelerate rate:{0}", &m_160);
-                FUN_1412751f0(strMsg, 1, 1);
-            }
+                FUN_1412751f0(FUN_1406329c0(L"move accelerate rate:{0}", &m_160), 1, 1);
         }
     }
     Vector3 ptMove = Unk_CameraManager::FUN_1409478c0()->FUN_140a38d00();
@@ -277,9 +273,7 @@ void CToolSmoothCameraMode::vfunc_8(double fTime)
         FUN_140a01190(&kRot, 2, &ptForward);
         ptForward.FUN_140968990();
         Vector3 ptPos = m_d8.m_pos;
-        float fDelta = (float)fTime;
-        const Vector3& ptSide = ptForward.FUN_14097fc90(m_130.y);
-        ptPos = ptPos.FUN_14097fd50(ptRight.FUN_14097fc90(m_130.x).FUN_14097fd50(ptSide).FUN_14097fc90(1000.0f).FUN_14097fc90(fDelta));
+        ptPos = ptPos.FUN_14097fd50(ptRight.FUN_14097fc90(m_130.x).FUN_14097fd50(ptForward.FUN_14097fc90(m_130.y)).FUN_14097fc90(1000.0f).FUN_14097fc90((float)fTime));
         m_d8.m_pos = ptPos;
     }
     vfunc_39(fTime);

@@ -25,11 +25,8 @@
 void FUN_141769440(int n);                                 // 0x141769440 (arg 7: the dash was cancelled)
 class Unk_PCBaseBody;
 void FUN_141240700(Unk_PCBaseBody* pBody, efd::Point3 kVel);               // 0x141240700
-void FUN_1408a8700(void* pStr);                            // 0x1408a8700 efd::utf8string()
-void FUN_1408a8900(void* pStr);                            // 0x1408a8900 ~efd::utf8string
-void FUN_140ae18f0(void* pStr, const char* psz);           // 0x140ae18f0 efd::utf8string::operator=(const char*)
 bool FUN_14096ad40(const efd::utf8string& str);            // 0x14096ad40 the string is empty
-void FUN_14165e2a0(PCBase* p, void* pStr, int nKey);       // 0x14165e2a0 the player's animation name of a key
+void FUN_14165e2a0(PCBase* p, efd::utf8string* pStr, int nKey);       // 0x14165e2a0 the player's animation name of a key
 void FUN_14165f170(PCBase* p);                             // 0x14165f170
 int FUN_140b7f6a0(void* pSvc, const egf::EntityID& kId);   // 0x140b7f6a0 sequence id of the model
 void* FUN_141b6f910();                                     // 0x141b6f910 the animation service
@@ -38,16 +35,6 @@ void* FUN_1403ed2d0();                                     // player manager
 int FUN_141bd1a10(void* pPlayer, GameObject* pObject);
 int FUN_1411a49c0(void* pEffectMgr, Unk_EffectQuery* pQuery);
 void FUN_1411a6060(void* pEffectMgr, int nId);
-
-// The efd::utf8string the exe builds out of line (ctor 0x1408a8700, dtor 0x1408a8900; 0x20 bytes).
-struct Unk_SwimString
-{
-    Unk_SwimString() { FUN_1408a8700(m_buf); }
-    ~Unk_SwimString() { FUN_1408a8900(m_buf); }
-    Unk_SwimString& operator=(const char* psz) { FUN_140ae18f0(m_buf, psz); return *this; }
-    operator const efd::utf8string&() const { return *(const efd::utf8string*)m_buf; }
-    char m_buf[0x20];
-};
 
 // The config constants singleton: the dash speed at +0x56a8.
 class Unk_SwimScale { public: float* FUN_140298f40(); };
@@ -74,6 +61,24 @@ Unk_SwimInput* FUN_14025e7c0();
 class Unk_SwimSkillTbl { public: int FUN_14142c0c0(int nSkill); };
 Unk_SwimSkillTbl* FUN_1409331f0();
 
+// The owner's vtable up to slot 68: slots 22 and 68 take their point by value (the exe passes a pointer to a copy).
+class Unk_SdOwnerSlots
+{
+public:
+#define MS2_SD_SLOTS(a, b, c, d, e) virtual void vfunc_##a(); virtual void vfunc_##b(); virtual void vfunc_##c(); \
+    virtual void vfunc_##d(); virtual void vfunc_##e();
+    MS2_SD_SLOTS(0, 1, 2, 3, 4) MS2_SD_SLOTS(5, 6, 7, 8, 9) MS2_SD_SLOTS(10, 11, 12, 13, 14) MS2_SD_SLOTS(15, 16, 17, 18, 19)
+    virtual void vfunc_20(); virtual void vfunc_21();
+    virtual void vfunc_22(efd::Point3 kDir);                                        // 22 takes the direction by value
+    virtual void vfunc_23(); virtual void vfunc_24();
+    MS2_SD_SLOTS(25, 26, 27, 28, 29) MS2_SD_SLOTS(30, 31, 32, 33, 34)
+    MS2_SD_SLOTS(35, 36, 37, 38, 39) MS2_SD_SLOTS(40, 41, 42, 43, 44) MS2_SD_SLOTS(45, 46, 47, 48, 49)
+    MS2_SD_SLOTS(50, 51, 52, 53, 54) MS2_SD_SLOTS(55, 56, 57, 58, 59) MS2_SD_SLOTS(60, 61, 62, 63, 64)
+    virtual void vfunc_65(); virtual void vfunc_66(); virtual void vfunc_67();
+#undef MS2_SD_SLOTS
+    virtual bool vfunc_68(efd::Point3 kMove, double fTime, int b, unsigned c, int d);   // 68 0x14166e100
+};
+
 // @0x1417fb5c0
 StateSwimDash::StateSwimDash(PCBase* pOwner) : StateMoveSkill(pOwner)
 {
@@ -99,77 +104,76 @@ void StateSwimDash::vfunc_4(StateData* pData)
 }
 
 // @0x1417fb6d0
-// MS2-FUNCTIONAL: inlined point/array temporaries differ from the exe
 void StateSwimDash::vfunc_5(int n)
 {
     StateMoveSkill::vfunc_5(n);
-    m_pOwner->FUN_141671960(m_pOwner->FUN_141671920()[2]);
+    Unk_Vec4* pSpeed = (Unk_Vec4*)m_pOwner->FUN_141671920();
+    m_pOwner->FUN_141671960(pSpeed->m_z);
     FUN_1417fbe80();
 }
 
 // @0x1417fb730
-// MS2-FUNCTIONAL: temporaries of the point math are laid out differently from the exe
 void StateSwimDash::vfunc_3(double fTime)
 {
     State::vfunc_3(fTime);
     if (FUN_1417df6a0() == 0)
     {
         FUN_141769440(7);
+        return;
     }
-    else if (m_pOwner->vfunc_63() != 0)
-    {
-        efd::Point3 kDir = m_pOwner->FUN_141674b60(m_pOwner->FUN_14123c360());
-        efd::Point3 kVel = kDir * m_pOwner->vfunc_95();
-        efd::Point3 kMove = kVel * (float)fTime;
-        m_pOwner->FUN_141671960(*FUN_1401d3200()->m_scale.FUN_140298f40());
-        FUN_141240700(m_pOwner->FUN_14166d220(), kVel);
-        m_pOwner->vfunc_68(&kMove, fTime, 0, 0, 0);
-    }
+    if (m_pOwner->vfunc_63() == 0)
+        return;
+    efd::Point3 kDir = m_pOwner->FUN_141674b60(static_cast<const efd::Point3&>(m_pOwner->FUN_14123c360()));
+    efd::Point3 kVel = kDir * m_pOwner->vfunc_95();
+    efd::Point3 kMove = kVel * (float)fTime;
+    m_pOwner->FUN_141671960(*FUN_1401d3200()->m_scale.FUN_140298f40());
+    FUN_141240700(m_pOwner->FUN_14166d220(), kVel);
+    reinterpret_cast<Unk_SdOwnerSlots*>(m_pOwner)->vfunc_68(kMove, fTime, 0, 0, 0);
 }
 
 // @0x1417fb910
-// MS2-FUNCTIONAL: call-site temporaries and branch layout differ from the exe
 void StateSwimDash::vfunc_8(double fTime)
 {
     StateMoveSkill::vfunc_8(fTime);
     MyPC* pPC = FUN_1417b84b0();
-    if (pPC == 0 || m_pOwner->vfunc_63() == 0)
+    if (pPC == 0)
         return;
-    if (m_pOwner->FUN_141675ed0() == 0)
-    {
-        m_pOwner->vfunc_59(1, 0, 0, 0);
+    if (m_pOwner->vfunc_63() == 0)
         return;
-    }
-    Unk_SwimBuff* pBuff = (Unk_SwimBuff*)m_pOwner->FUN_14166d240();
-    efd::Point3 kDir = pBuff->FUN_141683900();
-    m_pOwner->vfunc_22(kDir);
-    if (pBuff->FUN_141683100(0x30d41))
+    if (m_pOwner->FUN_141675ed0() != 0)
     {
-        pPC->FUN_1415248d0(1, 0);
-    }
-    else if (pBuff->FUN_141683100(0x30d42))
-    {
-        pPC->FUN_1415248d0(2, 0);
-    }
-    else if (m_pOwner->FUN_141671a30() == 0 || !pBuff->FUN_141682fe0(0x493e1))
-    {
-        if (!m_pOwner->FUN_1416749c0())
+        Unk_SwimBuff* pBuff = (Unk_SwimBuff*)m_pOwner->FUN_14166d240();
+        efd::Point3 kDir = pBuff->FUN_141683900();
+        reinterpret_cast<Unk_SdOwnerSlots*>(m_pOwner)->vfunc_22(kDir);
+        if (pBuff->FUN_141683100(0x30d41))
+        {
+            pPC->FUN_1415248d0(1, 0);
+        }
+        else if (pBuff->FUN_141683100(0x30d42))
+        {
+            pPC->FUN_1415248d0(2, 0);
+        }
+        else if (m_pOwner->FUN_141671a30() != 0 && pBuff->FUN_141682fe0(0x493e1))
+        {
+            m_pOwner->vfunc_59(6, 0, 0x25, 0);
+        }
+        else if (!m_pOwner->FUN_1416749c0())
+        {
             m_pOwner->vfunc_59(1, 0, 0, 0);
+        }
     }
     else
     {
-        m_pOwner->vfunc_59(6, 0, 0x25, 0);
+        m_pOwner->vfunc_59(1, 0, 0, 0);
     }
 }
 
 // @0x1417fbb50
-// MS2-FUNCTIONAL: string wrapper and EH frame differ from the exe (unwind slot 0x70 vs 0x50)
 void StateSwimDash::vfunc_9(double fTime)
 {
     State::vfunc_9(fTime);
-    egf::EntityID kId;
-    int nSeq = FUN_140b7f6a0(FUN_141b6f910(), m_pOwner->FUN_14123c460(kId));
-    Unk_SwimString strAnim;
+    int nSeq = FUN_140b7f6a0(FUN_141b6f910(), m_pOwner->FUN_14123c460());
+    efd::utf8string strAnim;
     PCBase* pPC = FUN_1417b8370();
     if (pPC != 0)
         FUN_14165e2a0(pPC, &strAnim, 0x32);
@@ -181,8 +185,8 @@ void StateSwimDash::vfunc_9(double fTime)
     bool bPlayed = false;
     if (!FUN_14096ad40(strAnim))
     {
-        float* pSpeed = m_pOwner->FUN_141671920();
-        vfunc_10(m_pOwner->vfunc_95(), pSpeed[3], pSpeed[1], 1.0f, 0);
+        Unk_Vec4* pSpeed = (Unk_Vec4*)m_pOwner->FUN_141671920();
+        vfunc_10(m_pOwner->vfunc_95(), pSpeed->m_w, pSpeed->m_y, 1.0f, 0);
         bPlayed = m_pOwner->FUN_14166dd20(strAnim, m_pOwner->FUN_1416713c0(), false, false);
     }
     if (bPlayed)
@@ -190,12 +194,10 @@ void StateSwimDash::vfunc_9(double fTime)
 }
 
 // @0x1417fbd70
-// MS2-FUNCTIONAL: frame/local layout differs from the exe
 void StateSwimDash::vfunc_10(float a, float b, float c, float d, int e)
 {
     int nOut = 0;
-    float fSpeed = m_pOwner->vfunc_115(a, b, c, d, e, &nOut);
-    m_pOwner->FUN_141670d80(fSpeed);
+    m_pOwner->FUN_141670d80(m_pOwner->vfunc_115(a, b, c, d, e, &nOut));
 }
 
 // @0x1417fbe00
@@ -221,7 +223,6 @@ void StateSwimDash::FUN_1417fbe80()
 }
 
 // @0x1417fbec0
-// MS2-FUNCTIONAL: CString temporaries differ from the exe
 void StateSwimDash::FUN_1417fbec0()
 {
     FUN_1417fbe80();

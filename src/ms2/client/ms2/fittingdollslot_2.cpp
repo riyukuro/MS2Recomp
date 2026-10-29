@@ -62,7 +62,7 @@ MS2_CHECK_OFFSET(Unk_FdCube, m_n54, 0x54);
 class Unk_FdCubeSvc
 {
 public:
-    Unk_FdCube* FUN_1410b8c90(const egf::EntityID& kId);
+    Unk_FdCube* FUN_1410b8c90(egf::EntityID kId);
     __int64 FUN_1410c8030(int x, int y);                    // the owner of the cube column
 };
 struct Unk_FdFramework { void* m_pad; };
@@ -142,15 +142,14 @@ MS2_REPLACE_METHOD(0x14121d1f0, FittingDollSlot, vfunc_15, 131, 0x2FF59A43);
 // @0x14121d280
 int FittingDollSlot::vfunc_18(void* p)
 {
-    DragSlot* pDrag = static_cast<DragSlot*>(p);
-    void* pItemSlot = FUN_140a50b50(pDrag);
+    void* pItemSlot = FUN_140a50b50(static_cast<DragSlot*>(p));
     if (pItemSlot != 0)
     {
         MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(FUN_141405a10(pItemSlot));
         if (spItem.get() != 0)
             FUN_141405a60(pItemSlot, spItem.get(), m_nSlot);
     }
-    return pDrag->vfunc_10();
+    return static_cast<DragSlot*>(p)->vfunc_10();
 }
 
 // @0x14121d330
@@ -190,13 +189,15 @@ int FittingDollSlot::vfunc_0(void* p)
     if (FUN_1403ed2d0()->FUN_141bd0cc0() == pPlayer)
         nFlags = 0x200;
     ASTooltip tip(pPlayer, nFlags, 2);
-    if (tip.FUN_1409e0d40(pItem) == 0)
-        return 0;
-    tip.FUN_1409c69b0(GetStringCommon(0x75c));
-    if (IsEnabled() == true)
-        tip.FUN_1409db7b0(MS2Ptr<CItem>(pItem));
-    *static_cast<Scaleform::GFx::Value*>(p) = tip.FUN_1422bb870();
-    return 1;
+    if (tip.FUN_1409e0d40(pItem) != 0)
+    {
+        tip.FUN_1409c69b0(GetStringCommon(0x75c));
+        if (IsEnabled() == true)
+            tip.FUN_1409db7b0(MS2Ptr<CItem>(pItem));
+        *static_cast<Scaleform::GFx::Value*>(p) = tip.FUN_1422bb870();
+        return 1;
+    }
+    return 0;
 }
 
 // @0x14121d810
@@ -258,7 +259,10 @@ MS2Ptr<CItem> FittingDollSlot::vfunc_25()
     FittingDollPC* pDoll = FUN_14121dd50();
     if (pDoll == 0)
         return MS2Ptr<CItem>(0);
-    MS2Ptr<CEquipItem> spEquip = pDoll->FUN_141655e80(m_nSlot, pDoll->FUN_14121c710() != 0);
+    int nKind = 0;
+    if (pDoll->FUN_14121c710() != 0)
+        nKind = 1;
+    MS2Ptr<CEquipItem> spEquip = pDoll->FUN_141655e80(m_nSlot, nKind);
     if (spEquip == 0)
         return MS2Ptr<CItem>(0);
     return ((CEquipItem*)spEquip)->GetItem();
@@ -304,8 +308,7 @@ int FittingDollSlot::FUN_14121ddc0()
     Unk_FdCube* pCube = pSvc->FUN_1410b8c90(pDoll->FUN_14123c460());
     if (pCube == 0)
         return 0;
-    __int64 nOwner = pSvc->FUN_1410c8030(pCube->m_n50, pCube->m_n54);
-    if (nOwner != FUN_141656ad0(pLocal))
+    if (pSvc->FUN_1410c8030(pCube->m_n50, pCube->m_n54) != FUN_141656ad0(pLocal))
         return 0;
     MS2Ptr<CItem> spItem = vfunc_25();
     if (!spItem)
@@ -317,16 +320,24 @@ int FittingDollSlot::FUN_14121ddc0()
         if (DAT_143ab2a90.FUN_140a66200(spItem.get(), &nReason, strName) == 0)
         {
             CStringW strText;
-            if (nReason == 2)
-                FUN_140d73bc0(0xdc, 0, 0, CStringW(L""));
-            else if (nReason == 3)
+            switch (nReason)
+            {
+            case 3:
                 FUN_140d73bc0(0xfc, 0, 0, CStringW(L""));
-            else if (nReason == 4)
+                break;
+            case 2:
+                FUN_140d73bc0(0xdc, 0, 0, CStringW(L""));
+                break;
+            case 4:
                 strText = FUN_14052bd00(0xdb, strName);
-            else if (nReason == 5)
+                break;
+            case 5:
                 strText = FUN_14052bd00(0xde, strName);
-            else
+                break;
+            default:
                 MS2_ASSERT_AT(0xfe, 0);
+                break;
+            }
             if (!strText.IsEmpty())
             {
                 MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x1a, strText, 0, s_strDestroyDollItem);

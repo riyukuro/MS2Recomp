@@ -52,6 +52,11 @@ void Entity::CachePropertyValue(PropertyID propID, const efd::utf8string& key, c
     CachePropertyValue(propID, key, data);  // MS2
 #endif
 .
+146a
+#if defined(MS2_ENTITY_PROPERTY_CACHE)
+    CachePropertyValue(propID, data);   // MS2: 0x1428d03a0 (SetPropertyValue<unsigned> by name)
+#endif
+.
 132a
 #if defined(MS2_ENTITY_PROPERTY_CACHE)
     CachePropertyValue(propID, data);   // MS2

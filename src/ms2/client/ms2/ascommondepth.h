@@ -9,7 +9,7 @@ class ASCommonDepth : public AScript
 {
 public:
     ASCommonDepth(Scaleform::GFx::Value v, int nMovieId);               // 0x1409b0fd0 creates the AS object
-    virtual ~ASCommonDepth();                                           // 0x1409b1f50
+    // ~ASCommonDepth 0x1409b1f50 is implicit (the exe dtor stores no vftable).
 
     // The AS helper object of the given movie (null smart pointer when the movie is not loaded).
     static MS2Ptr<ASCommonDepth> Create(int nMovieId);                  // 0x1409b1090

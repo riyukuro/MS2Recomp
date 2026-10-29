@@ -69,7 +69,7 @@ public:
     Unk_BrmEntry* FUN_140dc6dc0(POSITION pos);          // the entry at pos
     void FUN_140dc7030(POSITION* pPos);                 // next
 private:
-    char m_pad[0x20];
+    void* m_pad[6];                                     // a CAtlList: the ctor zeroes +0..+0x20, block size at +0x28
 };
 // A reward row of the boss reward table.
 class Unk_BrmReward : public CPtred
@@ -88,7 +88,7 @@ extern Unk_SingletonObj* DAT_143ac48f8;
 MS2Ptr<CNpcData> FUN_1406cd330(int nNpcId);
 CStringW FUN_1401aa6a0(int nId);                        // npc name
 CStringW FUN_1409e9ed0(CStringW strKey, const CStringW& a1, const unsigned short& a2);
-CStringW FUN_14028dfa0(CStringW strKey, const fmt::ArgList& args);   // string table text, formatted
+CStringW FUN_14028dfa0(const CStringW& strKey, const fmt::ArgList& args);   // string table text, formatted
 int FUN_1409e13a0(ASTooltip* pTip, CItem* pCompare, CItem* pItem);   // item tooltip (the member in astooltip.h is declared void)
 
 // The slot registry (see unit_1400d2c20.cpp / itemlockslot.cpp).
@@ -114,7 +114,7 @@ CStringW FUN_140f26120(CStringW strKey, const CStringW& strName, const wchar_t (
     return FUN_14028dfa0(strKey, fmt::ArgList(fmt::internal::make_type(strName, sz),
         fmt::internal::ArgArray<2>::Type{fmt::internal::MakeValue<fmt::BasicFormatter<wchar_t> >(strName),
                                          fmt::internal::MakeValue<fmt::BasicFormatter<wchar_t> >(sz)}));
-}   // MS2-FUNCTIONAL: fmt argument array layout
+}
 
 // ---- Slot ----
 
@@ -124,22 +124,17 @@ UIBossRewardPreviewDialog::Slot::Slot(const CString& strName, int nIndex, MS2Ptr
 {
 }
 
-// @0x140f26450
-UIBossRewardPreviewDialog::Slot::~Slot()
-{
-}
-
 // @0x140f24ed0 (ITooltip::vfunc_0)
 int UIBossRewardPreviewDialog::Slot::vfunc_0(void* p)
 {
     if (m_spItem == 0)
+        return 0;
+    void* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    if (pPlayer == 0)
+        return 0;
+    ASTooltip tip(pPlayer, 0x800, 2);
+    if (FUN_1409e13a0(&tip, 0, m_spItem.get()) != 0)
     {
-        void* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
-        if (pPlayer == 0)
-            return 0;
-        ASTooltip tip(pPlayer, 0x800, 2);
-        if (FUN_1409e13a0(&tip, 0, m_spItem.get()) == 0)
-            return 0;
         *static_cast<Scaleform::GFx::Value*>(p) = tip.FUN_1422bb870();
         return 1;
     }
@@ -153,10 +148,12 @@ int UIBossRewardPreviewDialog::Slot::vfunc_8(void* p)
     if (pPlayer == 0)
         return 0;
     ASSlot slot(2);
-    if (slot.FUN_1409c3860(m_spItem.get(), pPlayer, 0x401) == 0)
-        return 0;
-    *static_cast<Scaleform::GFx::Value*>(p) = slot.FUN_1422bb870();
-    return 1;
+    if (slot.FUN_1409c3860(m_spItem.get(), pPlayer, 0x401) != 0)
+    {
+        *static_cast<Scaleform::GFx::Value*>(p) = slot.FUN_1422bb870();
+        return 1;
+    }
+    return 0;
 }
 
 // ---- SlotBag ----
@@ -191,11 +188,6 @@ UIBossRewardPreviewDialog::SlotBag::SlotBag(const CString& strName, int nNpcId)
     FUN_140f25400();
 }
 
-// @0x140f26480
-UIBossRewardPreviewDialog::SlotBag::~SlotBag()
-{
-}
-
 // @0x140f25240
 DragSlot* UIBossRewardPreviewDialog::SlotBag::vfunc_16(int nIndex)
 {
@@ -212,19 +204,16 @@ void UIBossRewardPreviewDialog::SlotBag::FUN_140f25400()
     if (pPlayer == 0)
         return;
     MS2Ptr<Unk_BrmReward> spReward = FUN_140f26650()->FUN_140dc3c70(m_nNpcId);
-    if (!(spReward == 0))
+    if (spReward == 0)
+        return;
+    Unk_BrmList list(10);
+    spReward->FUN_140dc3950(pPlayer, list);
+    for (POSITION pos = list.FUN_140dc6f30(); pos != 0; list.FUN_140dc7030(&pos))
     {
-        Unk_BrmList list(10);
-        spReward->FUN_140dc3950(pPlayer, list);
-        POSITION pos = list.FUN_140dc6f30();
-        while (pos != 0)
-        {
-            Unk_BrmEntry* pEntry = list.FUN_140dc6dc0(pos);
-            MS2Ptr<CItem> spItem(new CItem());
-            if (spItem->FUN_14052b130(pEntry->m_nCount, (&pEntry->m_id)->vfunc_1(), 0) != 0)
-                m_items.Add(spItem);
-            list.FUN_140dc7030(&pos);
-        }
+        Unk_BrmEntry* pEntry = list.FUN_140dc6dc0(pos);
+        MS2Ptr<CItem> spItem(new CItem());
+        if (spItem->FUN_14052b130(pEntry->m_nCount, (&pEntry->m_id)->vfunc_1(), 0) != 0)
+            m_items.Add(spItem);
     }
 }
 
@@ -233,11 +222,6 @@ void UIBossRewardPreviewDialog::SlotBag::FUN_140f25400()
 // @0x140f255e0
 UIBossRewardPreviewDialog::UIBossRewardPreviewDialog()
     : m_spExp(0), m_spMeso(0), m_spTitle(0), m_spMesoIcon(0), m_nNpcId(0), m_strBag(GetTypeName())
-{
-}
-
-// @0x140f264b0
-UIBossRewardPreviewDialog::~UIBossRewardPreviewDialog()
 {
 }
 
@@ -271,8 +255,7 @@ void UIBossRewardPreviewDialog::OnLoadComplete()
         if (spNpc.get() != 0)
             static_cast<Unk_BrmAS*>(static_cast<AScript*>(pDialog))->FUN_1407cba60(s_strIconPath, CString(spNpc->m_strPortrait));
     }
-    MS2Ptr<ASUIComponent> spPreview = GetChild<ASUIComponent>("m_rewardPreview");
-    if (spPreview.get() != 0)
+    if (MS2Ptr<ASUIComponent> spPreview = GetChild<ASUIComponent>("m_rewardPreview"))
     {
         spPreview->FUN_140beaf20<ASTextField>("m_exp", m_spExp);
         spPreview->FUN_140beaf20<ASTextField>("m_meso", m_spMeso);
@@ -285,19 +268,15 @@ void UIBossRewardPreviewDialog::OnLoadComplete()
 int UIBossRewardPreviewDialog::FUN_140f25ad0(int nNpcId)
 {
     MS2Ptr<CNpcData> spNpc = FUN_1406cd330(nNpcId);
-    if (!(spNpc == 0))
-    {
-        if (spNpc->m_nClass != 4 && spNpc->m_nClass != 6)
-            return 0;
-        MS2Ptr<Unk_BrmReward> spReward = FUN_140f26650()->FUN_140dc3c70(nNpcId);
-        if (!(spReward == 0))
-        {
-            m_nNpcId = nNpcId;
-            return 1;
-        }
+    if (spNpc == 0)
         return 0;
-    }
-    return 0;
+    if (spNpc->m_nClass != 4 && spNpc->m_nClass != 6)
+        return 0;
+    MS2Ptr<Unk_BrmReward> spReward = FUN_140f26650()->FUN_140dc3c70(nNpcId);
+    if (spReward == 0)
+        return 0;
+    m_nNpcId = nNpcId;
+    return 1;
 }
 
 // @0x140f25bf0
@@ -310,34 +289,33 @@ void UIBossRewardPreviewDialog::FUN_140f25bf0()
         return;
     if (m_spTitle.get() != 0)
     {
-        if (!spNpc->HasPropertyTag(3))
+        if (spNpc->HasPropertyTag(3))
+        {
+            m_spTitle->FUN_1422c4cd0(FUN_140f26120(CStringW(L"s_worldmap_search_map_title"), FUN_1401aa6a0(m_nNpcId), L"??"));
+        }
+        else
         {
             unsigned short nLevel = spNpc->GetLevel();
             m_spTitle->FUN_1422c4cd0(FUN_1409e9ed0(CStringW(L"s_worldmap_search_map_title"), FUN_1401aa6a0(m_nNpcId), nLevel));
         }
-        else
-        {
-            m_spTitle->FUN_1422c4cd0(FUN_140f26120(CStringW(L"s_worldmap_search_map_title"), FUN_1401aa6a0(m_nNpcId), L"??"));
-        }
     }
     MS2Ptr<Unk_BrmReward> spReward = FUN_140f26650()->FUN_140dc3c70(m_nNpcId);
-    if (!(spReward == 0))
+    if (spReward == 0)
+        return;
+    if (m_spExp.get() != 0)
+        m_spExp->vfunc_3(0);
+    if (m_spMeso.get() != 0)
     {
-        if (m_spExp.get() != 0)
-            m_spExp->vfunc_3(0);
-        if (m_spMeso.get() != 0)
-        {
-            m_spMeso->vfunc_3(0);
-            if (m_spMesoIcon.get() != 0)
-                m_spMesoIcon->vfunc_3(0);
-        }
-        ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30);
-        if (pDialog != 0)
-        {
-            FUN_140f25170(m_strBag);
-            FUN_140f250b0(m_strBag, 0x12, m_nNpcId);
-            static_cast<Unk_BrmAS*>(m_30.operator->())->FUN_1407cba60("rewardId", GetTypeName());
-        }
+        m_spMeso->vfunc_3(0);
+        if (m_spMesoIcon.get() != 0)
+            m_spMesoIcon->vfunc_3(0);
+    }
+    ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30);
+    if (pDialog != 0)
+    {
+        FUN_140f25170(m_strBag);
+        FUN_140f250b0(m_strBag, 0x12, m_nNpcId);
+        static_cast<Unk_BrmAS*>(m_30.operator->())->FUN_1407cba60("rewardId", GetTypeName());
     }
 }
 
@@ -347,7 +325,8 @@ UIBossRewardPreviewDialog::SlotBag* FUN_140f260d0(NotifyContext::BindData* p)
     UIBossRewardPreviewDialog::SlotBag* pBag = 0;
     if (p != 0 && p->TypeCast(0x620006e, (void**)&pBag))
         return pBag;
-    return 0;
+    else
+        return 0;
 }
 
 // @0x140f26650

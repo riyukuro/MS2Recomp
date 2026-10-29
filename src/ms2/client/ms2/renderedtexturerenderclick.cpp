@@ -2,10 +2,35 @@
 // MS2-UNIT: ?\renderedtexturerenderclick.cpp
 // MS2-RANGE: 0x1416f8f50-0x1416fa4b0 .text$mn
 // MS2-PIN: ??_GRenderedTextureRenderClick@@UEAAPEAXI@Z 0x1416fa1a0
+// MS2-PIN: ??0Unk_RtFormatPrefs@@QEAA@XZ 0x140984420
+// MS2-PIN: ??0Unk_RtObjPtr@@QEAA@PEAX@Z 0x14097eb60
+// MS2-PIN: ??1Unk_RtObjPtr@@QEAA@XZ 0x1405a85c0
+// MS2-PIN: ??0Unk_RtDepthPtr@@QEAA@PEAX@Z 0x1416ae2e0
+// MS2-PIN: ??1Unk_RtDepthPtr@@QEAA@XZ 0x1416aed20
+// MS2-PIN: ??0Unk_RtColor@@QEAA@MMMM@Z 0x14097f1d0
+// MS2-PIN: ??0Unk_RtFixedStr@@QEAA@PEBD@Z 0x140984450
+// MS2-PIN: ??1Unk_RtFixedStr@@QEAA@XZ 0x1409845a0
+// MS2-PIN: ??0Unk_RtViewPtr@@QEAA@PEAX@Z 0x1409a73e0
+// MS2-PIN: ??0Unk_RtTexturePtr@@QEAA@PEAX@Z 0x14127c2a0
+// MS2-PIN: ??1Unk_RtTexturePtr@@QEAA@XZ 0x14127c650
+// MS2-PIN: ??0Unk_RtTargetPtr@@QEAA@PEAX@Z 0x1414748a0
+// MS2-PIN: ??1Unk_RtTargetPtr@@QEAA@XZ 0x141474d60
+// MS2-PIN: ??2Unk_RtNiNew@@SAPEAX_KI@Z 0x14208a860
+// MS2-PIN: ??3Unk_RtNiNew@@SAXPEAXI@Z 0x14097f700
+// MS2-PIN: ??0Unk_Rt3DRenderView@@QEAA@PEAX0_N@Z 0x140d9de30
+// MS2-PIN: ??0Unk_RtMeshCullingProcess@@QEAA@PEAX0@Z 0x141e2eaf0
+// MS2-PIN: ??0Unk_RtClickPtr@@QEAA@PEAX@Z 0x1414747a0
+// MS2-PIN: ??1Unk_RtClickPtr@@QEAA@XZ 0x141474ca0
+// MS2-PIN: ??0Unk_RtViewPtr@@QEAA@AEBU0@@Z 0x1416fa0e0
+// MS2-PIN: ??1Unk_RtViewPtr@@QEAA@XZ 0x1409a7ad0
+// MS2-PIN: ?GetValue_1416f9ae0@RenderedTextureRenderClick@@QEAA?AUUnk_RtViewPtr@@XZ 0x1416f9ae0
 #include "ms2/placeholder/ms2stdafx.h"
 #include "renderedtexturerenderclick.h"
 #include <Ni3DRenderView.h>
 #include <NiMeshCullingProcess.h>
+#include <NiRenderTargetGroup.h>
+#include <NiRenderedTexture.h>
+#include <NiRenderObject.h>
 #include <new>
 
 typedef RenderedTextureRenderClick RTRC;
@@ -13,15 +38,25 @@ struct Unk_FixedStr { void* p; };   // NiFixedString
 struct Unk_Color { float r, g, b, a; };
 
 // ---- out-of-unit callees (bound to the exe by name) ----
-void FUN_1409a73e0(void* sp, void* p);   void FUN_14127c2a0(void* sp, void* p);   void FUN_1414748a0(void* sp, void* p);
-void FUN_141476010(void* click, int b);  void FUN_141476070(void* click, int b);
-void* FUN_14097f1d0(void* out, float r, float g, float b, float a);   void FUN_1414a6200(void* click, void* color);
-void FUN_140984450(void* out, const char* s);   void FUN_140985020(void* click, void* name);   void FUN_1409845a0(void* s);
+void FUN_141476010(void* click, bool b);  void FUN_141476070(void* click, int b);
+struct Unk_RtColor { float r, g, b, a; Unk_RtColor(float r, float g, float b, float a); };   // NiColorA, ctor 0x14097f1d0
+void FUN_1414a6200(void* click, const Unk_RtColor& color);
+struct Unk_RtFixedStr {                          // NiFixedString
+    void* m_p;
+    Unk_RtFixedStr(const char* s);              // 0x140984450
+    ~Unk_RtFixedStr();                          // 0x1409845a0
+};
+void FUN_140985020(void* click, const Unk_RtFixedStr& name);
 void FUN_141546340(void* sp, void* p);   void FUN_14127c7f0(void* sp, void* p);   void FUN_1414803f0(void* sp, void* p);
-void FUN_141474d60(void* sp);   void FUN_14127c650(void* sp);   void FUN_1409a7ad0(void* sp);
-void* FUN_140876480(void* out, int cat);   void* FUN_14208a860(unsigned __int64 size, unsigned cat);
+void* FUN_140876480(void* out, int cat);
+struct Unk_RtNiNew {                            // NiNew: the engine's tracked allocator and its matching free
+    static void* operator new(unsigned __int64 size, unsigned cat);   // 0x14208a860
+    static void operator delete(void* p, unsigned cat);               // 0x14097f700
+};
+struct Unk_Rt3DRenderView : Unk_RtNiNew { char m_pad[0x70]; Unk_Rt3DRenderView(void* a, void* b, bool c); };   // ctor 0x140d9de30
+struct Unk_RtMeshCullingProcess : Unk_RtNiNew { char m_pad[200]; Unk_RtMeshCullingProcess(void* a, void* b); }; // ctor 0x141e2eaf0   void* FUN_14208a860(unsigned __int64 size, unsigned cat);
 void* FUN_1414dbb10(void* sp);   void* FUN_1414dbb20(void* sp);
-void FUN_141548150(void* view, void* name);   void FUN_1416b06b0(void* click, void* rtg);
+void FUN_141548150(void* view, const struct Unk_RtFixedStr& name);   void FUN_1416b06b0(void* click, void* rtg);
 void* FUN_1413f98d0();   void* FUN_141ff5ca0(void* a);   void* FUN_1409a8880(void* tbl, void* key);
 void FUN_14169fbf0(void* o, void* click);   void FUN_1414756e0(void* o, void* click);
 void* FUN_140994450();   void* FUN_14098d8d0(void* tbl, void* key);
@@ -32,13 +67,14 @@ void FUN_14150a840(void* view, void* a);   void FUN_141547e90(void* view, void* 
 void* FUN_14150ab60(void* view);   void* FUN_140d9e410(void* list);   void* FUN_140d9e420(void* list, void* pos);
 void FUN_14097eb60(void* out, void* p);   void* FUN_1409849b0(void* sp);   void FUN_1405a85c0(void* sp);
 void FUN_141d1a4f0(void* obj);   void FUN_141d16210(void* obj);   void FUN_1416b20e0(void* view);
-void* FUN_14097fbe0(void* sp);   void* FUN_141480470(void* sp);   void* FUN_140980420(void* p);   void FUN_1427e7520(void* p);
-void* FUN_14127c9b0(void* sp);   void* FUN_1416ae2e0(void* out, void* p);   void* FUN_1416af8d0(void* sp);   void FUN_1416aed20(void* sp);
+void* FUN_14097fbe0(void* sp);   NiRenderTargetGroup* FUN_141480470(void* sp);   void* FUN_140980420(void* p);   void FUN_1427e7520(void* p);
+NiRenderedTexture* FUN_14127c9b0(void* sp);   void* FUN_1416af8d0(void* sp);
 void* FUN_141d64910(void* buf, void* renderer);   void* FUN_141d64ee0(void* buf, void* renderer, void* ds);
-void* FUN_141d61a80(unsigned w, unsigned h, void* renderer, void* fmt, int flags);   void FUN_140984420(void* out);
+void* FUN_141d61a80(unsigned w, unsigned h, void* renderer, void* fmt, unsigned short flags);
+struct Unk_RtFormatPrefs { int a; int b; int c; Unk_RtFormatPrefs(); };   // NiTexture::FormatPrefs, ctor 0x140984420
 void* FUN_1409a8ba0(void* click);   void* FUN_142087e50(void* p);
 void* FUN_1409a8150(void* sp);   void* FUN_14127cbb0(void* list);   void* FUN_14127cc00(void* list, void* pos);   void* FUN_140c8f670(void* node);
-void FUN_141d54f70(void* view, unsigned frame);
+void* FUN_141d54f70(void* view, unsigned frame);
 int FUN_140d89680(void* arr);   void* FUN_140d89530(void* arr, unsigned i);   void FUN_141d54bb0(void* arr, unsigned n);   void FUN_140d9d8d0(void* arr);
 void FUN_140c8f680(void* sp);
 void FUN_140980460(void* p);   void FUN_141474f50(void* o, void* p);   void FUN_1414747a0(void* out, void* p);   void FUN_141474ca0(void* sp);
@@ -48,8 +84,34 @@ extern char DAT_143afa7a8, DAT_143afa4d8, DAT_143d6eb58, DAT_143afa7c8;
 void FUN_1416f9340(RTRC* p, unsigned w, unsigned h);
 void FUN_1416f9b80(RTRC* p, unsigned w, unsigned h);   void FUN_1416f9bf0(RTRC* p, unsigned w = 0, unsigned h = 0);
 unsigned FUN_1416fa2d0(void* arr);   int FUN_1416fa2e0(void* list);   float FUN_1416fa2f0();
-bool FUN_1416fa120(void* sp, void* p);   bool FUN_1416fa160(void* sp, void* p);   void FUN_1416fa250(void* list, void* node);
-int FUN_1416f9b30(char c, void* obj);
+bool FUN_1416fa120(void* sp, void* p);   bool FUN_1416fa160(void* sp, void* p);   void FUN_1416fa250(struct Unk_RtClickList* l, struct Unk_RtClickNode* n);
+bool FUN_1416f9b30(char c, void* obj);
+struct Unk_RtEventTarget {                      // the event-callback user object (the click's owner); slot 15 is the notify
+    virtual void vfunc_0(); virtual void vfunc_1(); virtual void vfunc_2(); virtual void vfunc_3();
+    virtual void vfunc_4(); virtual void vfunc_5(); virtual void vfunc_6(); virtual void vfunc_7();
+    virtual void vfunc_8(); virtual void vfunc_9(); virtual void vfunc_10(); virtual void vfunc_11();
+    virtual void vfunc_12(); virtual void vfunc_13(); virtual void vfunc_14(); virtual void vfunc_15(char c);
+};
+struct Unk_RtClickNode { Unk_RtClickNode* next; Unk_RtClickNode* prev; };
+struct Unk_RtClickList {                        // NiTPointerList<NiRenderClickPtr>: slot 1 allocates a node
+    virtual void vfunc_0(); virtual Unk_RtClickNode* vfunc_1();
+    Unk_RtClickNode* head; Unk_RtClickNode* tail; int count;
+};
+struct Unk_RtObjPtr {                           // NiPointer<NiAVObject> temp
+    void* m_p;
+    Unk_RtObjPtr(void* p);                      // 0x14097eb60
+    ~Unk_RtObjPtr();                            // 0x1405a85c0
+};
+struct Unk_RtDepthPtr {                         // NiPointer<NiDepthStencilBuffer> temp
+    void* m_p;
+    Unk_RtDepthPtr(void* p);                    // 0x1416ae2e0
+    ~Unk_RtDepthPtr();                          // 0x1416aed20
+};
+struct Unk_RtClickPtr {                         // NiPointer<NiRenderClick> temp
+    void* m_p;
+    Unk_RtClickPtr(void* p);                    // 0x1414747a0
+    ~Unk_RtClickPtr();                          // 0x141474ca0
+};
 
 #define VSLOT(o, off) ((*(void***)(o))[(off) / 8])
 
@@ -58,22 +120,13 @@ int FUN_1416f9b30(char c, void* obj);
 //   NiColorA / NiFixedString locals as real objects (no GS buffer) -> needs the member types recovered across the unit
 // @0x1416f8f50
 RenderedTextureRenderClick::RenderedTextureRenderClick()
+    : m_uiWidth(0x80), m_uiHeight(0xa8), m_spView(0), m_spTexture(0), m_spTarget(0), m_iEventId(-1)
 {
-    m_uiWidth = 0x80;
-    m_uiHeight = 0xa8;
-    FUN_1409a73e0(&m_spView, 0);
-    FUN_14127c2a0(&m_spTexture, 0);
-    FUN_1414748a0(&m_spTarget, 0);
-    m_iEventId = -1;
-    FUN_141476010(this, 1);
+    FUN_141476010(this, true);
     FUN_141476070(this, 0);
-    char col[24];
-    void* c = FUN_14097f1d0(col, 0, 0, 0, 0);
-    FUN_1414a6200(this, c);
-    Unk_FixedStr name;
-    FUN_140984450(&name, "RenderedTextureRenderClick");
-    FUN_140985020(this, &name);
-    FUN_1409845a0(&name);
+    FUN_1414a6200(this, Unk_RtColor(0.0f, 0.0f, 0.0f, 0.0f));
+    Unk_RtFixedStr name("RenderedTextureRenderClick");
+    FUN_140985020(this, name);
 }
 
 // @0x1416f9070
@@ -82,9 +135,6 @@ RenderedTextureRenderClick::~RenderedTextureRenderClick()
     FUN_141546340(&m_spView, 0);
     FUN_14127c7f0(&m_spTexture, 0);
     FUN_1414803f0(&m_spTarget, 0);
-    FUN_141474d60(&m_spTarget);
-    FUN_14127c650(&m_spTexture);
-    FUN_1409a7ad0(&m_spView);
 }
 
 // @0x1416f9130
@@ -93,23 +143,18 @@ void RenderedTextureRenderClick::vfunc_8(unsigned w, unsigned h)
     m_uiWidth = w;
     m_uiHeight = h;
     FUN_1416f9b80(this, m_uiWidth, m_uiHeight);
-    FUN_1416f9bf0(this, m_uiWidth);
-    char t0[8];
-    unsigned* cat = (unsigned*)FUN_140876480(t0, 0);
-    void* mem = FUN_14208a860(0x70, *cat);
-    void* view;
-    if (mem == 0) view = 0; else view = ::new (mem) Ni3DRenderView(0, 0, true);
-    FUN_141546340(&m_spView, view);
-    Unk_FixedStr name;
-    FUN_140984450(&name, "RenderTextureRenderView");
-    FUN_141548150(FUN_1414dbb20(&m_spView), &name);
-    FUN_1409845a0(&name);
-    char t1[8];
-    FUN_140876480(t1, 0);
-    void* cmem = FUN_14208a860(200, 0);
-    void* cull;
-    if (cmem == 0) cull = 0; else cull = ::new (cmem) NiMeshCullingProcess((NiVisibleArray*)0, (NiSPWorkflowManager*)0);
-    FUN_1416fa360(FUN_1414dbb20(&m_spView), cull);
+    FUN_1416f9bf0(this, m_uiWidth, m_uiHeight);
+    unsigned t0;
+    unsigned* cat = (unsigned*)FUN_140876480(&t0, 0);
+    FUN_141546340(&m_spView, new (*cat) Unk_Rt3DRenderView(0, 0, true));
+    {
+        Unk_RtFixedStr name("RenderTextureRenderView");
+        FUN_141548150(FUN_1414dbb20(&m_spView), name);
+    }
+    unsigned t1;
+    unsigned* cat1 = (unsigned*)FUN_140876480(&t1, 0);
+    Unk_RtMeshCullingProcess* pCull = new (*cat1) Unk_RtMeshCullingProcess(0, 0);
+    FUN_1416fa360(FUN_1414dbb20(&m_spView), pCull);
     FUN_1416b06b0(this, FUN_1414dbb10(&m_spView));
 }
 
@@ -193,33 +238,25 @@ void RenderedTextureRenderClick::vfunc_14()
         void* list = FUN_14150ab60(FUN_1414dbb20(&m_spView));
         void* pos = FUN_140d9e410(list);
         while (pos) {
-            void* e = FUN_140d9e420(list, &pos);
-            void* sp[1];
-            FUN_14097eb60(sp, e);
-            if (FUN_1409849b0(sp)) {
-                void* obj = FUN_14098d8d0(&DAT_143afa4d8, FUN_1409849b0(sp));
+            Unk_RtObjPtr sp(FUN_140d9e420(list, &pos));
+            if (FUN_1409849b0(&sp)) {
+                void* obj = FUN_14098d8d0(&DAT_143afa4d8, FUN_1409849b0(&sp));
                 if (obj) {
                     FUN_141d1a4f0(obj);
                     FUN_141d16210(obj);
                 }
             }
-            FUN_1405a85c0(sp);
         }
         FUN_1416b20e0(FUN_1414dbb20(&m_spView));
     }
 }
 
 // @0x1416f9890
-void RenderedTextureRenderClick::vfunc_15(char bFree)
+void RenderedTextureRenderClick::vfunc_15(bool bFree)
 {
-    if (bFree == 0) {
-        FUN_1416f9b80(this, m_uiWidth, m_uiHeight);
-        FUN_1416f9bf0(this, m_uiWidth, m_uiHeight);
-    } else {
+    if (bFree) {
         if (FUN_14097fbe0(&m_spTarget)) {
-            void* g = FUN_141480470(&m_spTarget);
-            typedef void* (*Fn)(void*, int);
-            void* b = ((Fn)VSLOT(g, 0xd8))(g, 0);
+            void* b = FUN_141480470(&m_spTarget)->GetBuffer(0);
             if (b) {
                 void* d = FUN_140980420(b);
                 if (d) FUN_1427e7520(d);
@@ -228,11 +265,14 @@ void RenderedTextureRenderClick::vfunc_15(char bFree)
         FUN_14127c7f0(&m_spTexture, 0);
         FUN_1414803f0(&m_spTarget, 0);
         FUN_1416b2590(this, 0);
+    } else {
+        FUN_1416f9b80(this, m_uiWidth, m_uiHeight);
+        FUN_1416f9bf0(this, m_uiWidth, m_uiHeight);
     }
 }
 
 // @0x1416f99b0
-void RenderedTextureRenderClick::vfunc_16() {}
+void RenderedTextureRenderClick::vfunc_16(float, float) {}
 
 // @0x1416f99d0
 void FUN_1416f99d0(RTRC* p, void* a)
@@ -243,13 +283,9 @@ void FUN_1416f99d0(RTRC* p, void* a)
 // @0x1416f9a30
 void* FUN_1416f9a30(RTRC* p)
 {
-    void* r;
-    if (FUN_1414dbb10(&p->m_spView) == 0) r = 0;
-    else {
-        extern void* FUN_1409a8a60(void*);
-        r = FUN_1409a8a60(FUN_1414dbb20(&p->m_spView));
-    }
-    return r;
+    extern void* FUN_1409a8a60(void*);
+    if (FUN_1414dbb10(&p->m_spView)) return FUN_1409a8a60(FUN_1414dbb20(&p->m_spView));
+    return 0;
 }
 
 // @0x1416f9a80
@@ -259,114 +295,86 @@ float FUN_1416f9a80(RTRC* p) { return (float)p->m_uiWidth / (float)p->m_uiHeight
 void FUN_1416f9ab0(RTRC* p) { FUN_140c8f680(&p->m_spTexture); }
 
 // @0x1416f9ae0
-void* GetValue_1416f9ae0(RTRC* p, void* out)
+Unk_RtViewPtr RenderedTextureRenderClick::GetValue_1416f9ae0()
 {
-    extern void FUN_1416fa0e0(void*, void*);
-    FUN_1416fa0e0(out, &p->m_spView);
-    return out;
+    return m_spView;
 }
 
 // @0x1416f9b30
-int FUN_1416f9b30(char c, void* obj)
+bool FUN_1416f9b30(char c, void* obj)
 {
-    if (obj) {
-        typedef void (*Fn)(void*, char);
-        ((Fn)VSLOT(obj, 0x78))(obj, c);
-    }
-    return 1;
+    Unk_RtEventTarget* p = (Unk_RtEventTarget*)obj;
+    if (p) p->vfunc_15(c);
+    return true;
 }
 
 // @0x1416f9b80
 void FUN_1416f9b80(RTRC* p, unsigned w, unsigned h)
 {
-    struct { int a; int b; int c; } fmt;                            // FUN_140984420 fills three ints (12 bytes)
-    FUN_140984420(&fmt);
+    Unk_RtFormatPrefs fmt;
     fmt.b = 2;
-    void* tex = FUN_141d61a80(w, h, FUN_140994450(), &fmt, 0x100);
-    FUN_14127c7f0(&p->m_spTexture, tex);
+    FUN_14127c7f0(&p->m_spTexture, FUN_141d61a80(w, h, FUN_140994450(), &fmt, 0x100));
 }
 
 // @0x1416f9bf0
 void FUN_1416f9bf0(RTRC* p, unsigned, unsigned)
 {
-    if (!FUN_1416fa160(&p->m_spTexture, 0)) {
-        void* tex = FUN_14127c9b0(&p->m_spTexture);
-        typedef void* (*Fn)(void*);
-        void* buf = ((Fn)VSLOT(tex, 0xa0))(tex);
-        if (buf) {
-            void* ds = FUN_141d64910(buf, FUN_140994450());
-            void* sp[1];
-            FUN_1416ae2e0(sp, ds);
-            if (!FUN_1416fa120(sp, 0)) {
-                void* d = FUN_1416af8d0(sp);
-                void* rtg = FUN_141d64ee0(buf, FUN_140994450(), d);
-                FUN_1414803f0(&p->m_spTarget, rtg);
-                if (FUN_14097fbe0(&p->m_spTarget)) FUN_1416b2590(p, FUN_14097fbe0(&p->m_spTarget));
-                FUN_1416aed20(sp);
-            } else {
-                FUN_1416aed20(sp);
-            }
-        }
-    }
+    if (FUN_1416fa160(&p->m_spTexture, 0)) return;
+    Ni2DBuffer* buf = FUN_14127c9b0(&p->m_spTexture)->GetBuffer();
+    if (!buf) return;
+    Unk_RtDepthPtr sp(FUN_141d64910(buf, FUN_140994450()));
+    if (FUN_1416fa120(&sp, 0)) return;
+    FUN_1414803f0(&p->m_spTarget, FUN_141d64ee0(buf, FUN_140994450(), FUN_1416af8d0(&sp)));
+    if (FUN_14097fbe0(&p->m_spTarget)) FUN_1416b2590(p, FUN_14097fbe0(&p->m_spTarget));
 }
 
 // @0x1416f9d40
 void RenderedTextureRenderClick::PerformRendering(unsigned int uiFrameID)
 {
-    if (FUN_140994450()) {
-        void* name = FUN_142087e50(FUN_1409a8ba0(this));
-        extern void FUN_141d27bf0(void*, const char*, ...);
-        FUN_141d27bf0(FUN_140994450(), "ViewRC(%s)", name);
+    extern void FUN_141d27bf0(void*, const char*, ...);
+    for (;;) {
+        if (FUN_140994450()) FUN_141d27bf0(FUN_140994450(), "ViewRC(%s)", FUN_142087e50(FUN_1409a8ba0(this)));
+        break;
     }
-    if (FUN_1416fa2e0(&m_kRenderViews)) {
-        void* renderer = FUN_140994450();
-        void* proc = FUN_1409a8150(&m_spProcessor);
-        if (proc == 0) proc = FUN_1409a8150(&DAT_143afa7c8);
-        m_uiNumObjectsDrawn = 0;
-        m_fRenderTime = 0.0f;
-        m_fCullTime = 0.0f;
-        void* pos = FUN_14127cbb0(&m_kRenderViews);
-        while (pos) {
-            void* node = FUN_14127cc00(&m_kRenderViews, &pos);
-            void* view = FUN_140c8f670(node);
-            typedef void (*SetCam)(void*, void*);
-            ((SetCam)VSLOT(view, 0x18))(view, &m_kViewport);
-            float t0 = FUN_1416fa2f0();
-            void* pv = (void*)&((NiRenderView*)view)->GetPVGeometry(uiFrameID);
-            float t1 = FUN_1416fa2f0();
-            m_fCullTime = m_fCullTime + (t1 - t0);
-            m_uiNumObjectsDrawn = FUN_140d89680(pv) + m_uiNumObjectsDrawn;
-            if (FUN_1416fa2d0(&m_kProcessedGeometry) < (unsigned)FUN_140d89680(pv))
-                FUN_141d54bb0(&m_kProcessedGeometry, FUN_140d89680(pv));
-            t0 = FUN_1416fa2f0();
-            typedef void (*Pre)(void*, void*, void*, void*);
-            ((Pre)VSLOT(proc, 0x18))(proc, pv, &m_kProcessedGeometry, m_pvProcessorData);
-            unsigned n = FUN_140d89680(&m_kProcessedGeometry);
-            for (unsigned i = 0; i < n; i = i + 1) {
-                void* g = FUN_140d89530(&m_kProcessedGeometry, i);
-                typedef void (*Fn)(void*, void*);
-                ((Fn)VSLOT(g, 0x120))(g, renderer);
-            }
-            typedef void (*Post)(void*, void*, void*);
-            ((Post)VSLOT(proc, 0x20))(proc, &m_kProcessedGeometry, m_pvProcessorData);
-            t1 = FUN_1416fa2f0();
-            m_fRenderTime = m_fRenderTime + (t1 - t0);
-            FUN_140d9d8d0(&m_kProcessedGeometry);
+    if (!FUN_1416fa2e0(&m_kRenderViews)) return;
+    NiRenderer* renderer = (NiRenderer*)FUN_140994450();
+    NiRenderListProcessor* proc = (NiRenderListProcessor*)FUN_1409a8150(&m_spProcessor);
+    if (proc == 0) proc = (NiRenderListProcessor*)FUN_1409a8150(&DAT_143afa7c8);
+    m_uiNumObjectsDrawn = 0;
+    m_fRenderTime = 0.0f;
+    m_fCullTime = 0.0f;
+    void* pos = FUN_14127cbb0(&m_kRenderViews);
+    while (pos) {
+        NiRenderView* view = (NiRenderView*)FUN_140c8f670(FUN_14127cc00(&m_kRenderViews, &pos));
+        view->SetCameraData(m_kViewport);
+        float t0 = FUN_1416fa2f0();
+        NiVisibleArray* pv = (NiVisibleArray*)FUN_141d54f70(view, uiFrameID);
+        m_fCullTime = m_fCullTime + (FUN_1416fa2f0() - t0);
+        m_uiNumObjectsDrawn = FUN_140d89680(pv) + m_uiNumObjectsDrawn;
+        if (FUN_1416fa2d0(&m_kProcessedGeometry) < (unsigned)FUN_140d89680(pv))
+            FUN_141d54bb0(&m_kProcessedGeometry, FUN_140d89680(pv));
+        t0 = FUN_1416fa2f0();
+        proc->PreRenderProcessList(pv, m_kProcessedGeometry, m_pvProcessorData);
+        unsigned n = FUN_140d89680(&m_kProcessedGeometry);
+        for (unsigned i = 0; i < n; i++) {
+            NiRenderObject* g = (NiRenderObject*)FUN_140d89530(&m_kProcessedGeometry, i);
+            g->RenderImmediate(renderer);
         }
-        if (FUN_140994450()) {
-            void* r = FUN_140994450();
-            typedef void (*Fn)(void*);
-            ((Fn)VSLOT(r, 0x200))(r);
-        }
+        proc->PostRenderProcessList(m_kProcessedGeometry, m_pvProcessorData);
+        m_fRenderTime = m_fRenderTime + (FUN_1416fa2f0() - t0);
+        FUN_140d9d8d0(&m_kProcessedGeometry);
+    }
+    for (;;) {
+        if (FUN_140994450()) ((NiRenderer*)FUN_140994450())->PopProfileMarker();
+        break;
     }
 }
 
 // @0x1416fa0e0
-void FUN_1416fa0e0(void* dst, void* src)
+Unk_RtViewPtr::Unk_RtViewPtr(const Unk_RtViewPtr& o)
 {
-    void** d = (void**)dst;
-    *d = *(void**)src;
-    if (*d) FUN_140980460(*d);
+    m_p = o.m_p;
+    if (m_p) FUN_140980460(m_p);
 }
 
 // @0x1416fa120
@@ -376,24 +384,19 @@ bool FUN_1416fa120(void* sp, void* p) { return *(void**)sp == p; }
 bool FUN_1416fa160(void* sp, void* p) { return *(void**)sp == p; }
 
 // @0x1416fa200
-void FUN_1416fa200(void* list, void* p)
+void FUN_1416fa200(Unk_RtClickList* l, void* p)
 {
-    typedef void* (*Fn)(void*);
-    void* node = ((Fn)VSLOT(list, 8))(list);
+    Unk_RtClickNode* node = l->vfunc_1();
     FUN_141474f50((char*)node + 0x10, p);
-    FUN_1416fa250(list, node);
+    FUN_1416fa250(l, node);
 }
 
 // @0x1416fa250
-void FUN_1416fa250(void* list, void* node)
+void FUN_1416fa250(Unk_RtClickList* l, Unk_RtClickNode* n)
 {
-    struct N { N* next; N* prev; };
-    struct L { char pad[8]; N* head; N* tail; int count; };
-    L* l = (L*)list;
-    N* n = (N*)node;
     n->prev = 0;
     n->next = l->head;
-    if (l->head == 0) l->tail = n; else l->head->prev = n;
+    if (l->head) l->head->prev = n; else l->tail = n;
     l->head = n;
     l->count = l->count + 1;
 }
@@ -410,10 +413,8 @@ float FUN_1416fa2f0() { return (float)efd::GetCurrentTimeInSec(); }
 // @0x1416fa310
 void FUN_1416fa310(void* o, void* click)
 {
-    char tmp[8];
-    FUN_1414747a0(tmp, click);
-    FUN_1416fa200((char*)o + 0x50, tmp);
-    FUN_141474ca0(tmp);
+    Unk_RtClickPtr tmp(click);
+    FUN_1416fa200((Unk_RtClickList*)((char*)o + 0x50), &tmp);
 }
 
 // @0x1416fa360
@@ -457,11 +458,16 @@ MS2_REPLACE(0x1416f99d0, FUN_1416f99d0, 75, 0xC7F7E72D);
 MS2_REPLACE(0x1416f9a30, FUN_1416f9a30, 69, 0xD991FF44);
 MS2_REPLACE(0x1416f9a80, FUN_1416f9a80, 42, 0xE184552A);
 MS2_REPLACE(0x1416f9ab0, FUN_1416f9ab0, 33, 0xFE4E70E9);
-MS2_REPLACE(0x1416f9ae0, GetValue_1416f9ae0, 67, 0x6AB96D37);
+MS2_REPLACE_METHOD(0x1416f9ae0, RenderedTextureRenderClick, GetValue_1416f9ae0, 67, 0x6AB96D37);
 MS2_REPLACE(0x1416f9b30, FUN_1416f9b30, 59, 0xBD7A40FD);
 MS2_REPLACE(0x1416f9b80, FUN_1416f9b80, 94, 0xA3074616);
 MS2_REPLACE(0x1416f9bf0, FUN_1416f9bf0, 320, 0x1B964556);
-MS2_REPLACE(0x1416fa0e0, FUN_1416fa0e0, 64, 0xEABE6B59);
+#ifndef MS2_STANDALONE
+MS2_REPLACE_IMPL(0x1416fa0e0,
+    static_cast<Unk_RtViewPtr* (*)(Unk_RtViewPtr*, const Unk_RtViewPtr*)>(
+        [](Unk_RtViewPtr* self, const Unk_RtViewPtr* o) -> Unk_RtViewPtr* { return ::new (static_cast<void*>(self)) Unk_RtViewPtr(*o); }),
+    "Unk_RtViewPtr::Unk_RtViewPtr", 64, 0xEABE6B59);
+#endif
 MS2_REPLACE(0x1416fa120, FUN_1416fa120, 54, 0xCED6F715);
 MS2_REPLACE(0x1416fa160, FUN_1416fa160, 54, 0xCED6F715);
 MS2_REPLACE(0x1416fa200, FUN_1416fa200, 77, 0x0CBCD6FF);

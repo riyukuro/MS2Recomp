@@ -733,23 +733,24 @@ void UIItemPetBoxDialog::FUN_140e51e40()
     if (m_30 == 0)
         return;
     int r = FUN_140e51ca0();
-    if (r != -1 && r == 1) {
-        MS2Ptr<CMsgBoxData> box = FUN_140d73f20(GetStringCommonByKey(L"s_lullu_key_not_enough_key"), 1);
-        if (box.get()) {
+    if (r == -1) {
+        return;
+    } else if (r == 1) {
+        if (MS2Ptr<CMsgBoxData> box = FUN_140d73f20(GetStringCommonByKey(L"s_lullu_key_not_enough_key"), 1)) {
             box->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIItemPetBoxDialog::FUN_140e4fc50));
             FUN_140d73c60(box);
         }
-    } else if (r != -1) {
-        m_30->Invoke("enableComponent", false);
-        if (!m_skipEffect->FUN_1422ce0e0()) {
-            m_resultItem->vfunc_4(false);
-            m_itemBox->vfunc_13("open");
-        } else
-            FUN_140e52110();
+        return;
     }
+    m_30->Invoke("enableComponent", false);
+    if (m_skipEffect->FUN_1422ce0e0()) {
+        FUN_140e52110();
+        return;
+    }
+    m_resultItem->vfunc_4(false);
+    m_itemBox->vfunc_13("open");
 }
 
-// MS2-FUNCTIONAL: behaviour-equivalent; codegen (temporaries / branch layout) not byte-identical to the exe
 // @0x140e52110
 void UIItemPetBoxDialog::FUN_140e52110()
 {
@@ -770,12 +771,12 @@ void UIItemPetBoxDialog::FUN_140e52110()
     CString tag = PETBOX_ATTR(data)->FUN_1409e8560(L"itemTag", "");
     int tagId = (int)FUN_140557640(FUN_140281980(), &tag);
     MS2Ptr<CItem> inv = DAT_143ab2a90.FUN_140a5e040(tagId);
-    if (!(inv == 0)) {
-        if (DAT_143ab2a90.FUN_140a63880(inv.operator->(), mode) == 0)
-            vfunc_67();
-        else
-            m_sent = true;
-    }
+    if (inv == 0)
+        return;
+    if (DAT_143ab2a90.FUN_140a63880(inv.operator->(), mode) == 0)
+        vfunc_67();
+    else
+        m_sent = true;
 }
 
 // @0x140e52670

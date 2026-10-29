@@ -22,3 +22,7 @@
     if (!m_pucLocalBufferCopy)
         return;
 .
+480c
+                    __FUNCTION__, NiDX9ErrorString((unsigned int)hr));   // MS2: game 0x1427f9e60 adds the error string
+.
+479@60s "" "t\\t%s\\"

@@ -7,7 +7,7 @@
 341a
     // MS2: accessor of the MS2 engine build (inline COMDAT 0x1414fcea0, logged as "SceneGraphCached count").
     inline efd::UInt32 GetIdentifierCount() const { return (efd::UInt32)m_cache.size(); }  // MS2: +0x60 = m_cache after m_ms2Set (map::size copies are byte-identical)
-
+    inline void MS2_ReleaseLoadingFile(const efd::utf8string& identifier) { efd::map<efd::utf8string, SceneGraphCacheDataPtr>::iterator it = m_cache.find(identifier); if (it != m_cache.end()) m_cache.erase(it); else m_ms2Set.insert(efd::utf8string(identifier)); }  // MS2: inlined in SceneGraphService::RemoveUnusedAssetData (0x142003f47); on the SDK's blank line
     // MS2: public in the MS2 engine build (MS2SceneGraphService::RemoveUnusedCacheAssetData calls it).
     void RemoveFilePaths(const efd::utf8string& identifier);
 

@@ -18,7 +18,7 @@ struct Unk_LadderStep
 {
     Unk_LadderStep();                                       // 0x1417d9b50
     ~Unk_LadderStep();                                      // 0x1417d9bd0 (Timer::~Timer)
-    void FUN_1417d79e0(const efd::Point3& kA, const efd::Point3& kB, const efd::Point3& kC);   // reset and set the points
+    void FUN_1417d79e0(efd::Point3 kA, efd::Point3 kB, efd::Point3 kC);   // reset and set the points
     void FUN_1417d7a60();                                   // reset and clear the points
     void FUN_1417d7ad0(unsigned int ms);                    // arm
     float FUN_1417d7b00();                                  // elapsed ratio

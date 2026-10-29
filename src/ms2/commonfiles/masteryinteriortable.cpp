@@ -196,7 +196,7 @@ bool CMasteryInteriorTable::LoadArea()
         FUN_1408732e0(pRow, "price", spInfo->m_nPrice);
         CStringA strValue = FUN_14015f710(pRow, "value", CStringA(""));
         ATL::CAtlArray<unsigned> sizes;
-        FUN_140177e10(strValue, sizes, "x");
+        FUN_140177e10(strValue, sizes, ",");
         if (sizes.GetCount() != 2)
         {
             spInfo->m_nWidth = 0;
@@ -269,7 +269,6 @@ void CMasteryInteriorTable::AddMastery(__int64& nCurrent, unsigned short& nGrade
 }
 
 // @0x140663010
-// MS2-FUNCTIONAL: cleanup/branch layout of the item loop differs (exe duplicates the release paths)
 void CMasteryInteriorTable::GetInteriorItems(int nLevel, int nJob, ATL::CAtlArray<MS2Ptr<ItemEntity> >& rItems)
 {
     if (nLevel > m_nMaxGrade)
@@ -283,11 +282,11 @@ void CMasteryInteriorTable::GetInteriorItems(int nLevel, int nJob, ATL::CAtlArra
             if (spItem->m_itemId != 0)
             {
                 MS2Ptr<CItemData> spData = FUN_14053f870(spItem->m_itemId);
-                if (!spData.IsNull())
-                {
-                    if (spData->limit.FUN_140545da0(nJob))
-                        rItems.Add(spItem);
-                }
+                if (spData.IsNull())
+                    continue;
+                if (!spData->limit.FUN_140545da0(nJob))
+                    continue;
+                rItems.Add(spItem);
             }
         }
     }

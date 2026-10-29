@@ -208,62 +208,75 @@ EntityWorldManager::~EntityWorldManager() {}
 Unk_WorldEntityMap::iterator EntityWorldManager::FUN_1411ce4c0() { return worlds[currentMap].allEntities.begin(); }
 // @0x1411ce510
 bool EntityWorldManager::FUN_1411ce510(Unk_WorldEntityMap::iterator& it, egf::Entity*& entity) {
-    bool found = worlds[currentMap].allEntities.end() != it;
-    if (!found) entity = nullptr;
-    else { entity = it->second; ++it; }
-    return found;
+    if (worlds[currentMap].allEntities.end() != it) {
+        entity = it->second;
+        ++it;
+        return true;
+    }
+    entity = nullptr;
+    return false;
 }
 // @0x1411ce5a0
 Unk_WorldEntityMap::iterator EntityWorldManager::FUN_1411ce5a0() { return worlds[currentMap].loadedEntities.begin(); }
 // @0x1411ce5f0
 bool EntityWorldManager::FUN_1411ce5f0(Unk_WorldEntityMap::iterator& it, egf::Entity*& entity) {
-    bool found = worlds[currentMap].loadedEntities.end() != it;
-    if (!found) entity = nullptr;
-    else { entity = it->second; ++it; }
-    return found;
+    if (worlds[currentMap].loadedEntities.end() != it) {
+        entity = it->second;
+        ++it;
+        return true;
+    }
+    entity = nullptr;
+    return false;
 }
 // @0x1411ce680
 Unk_WorldEntityMap::iterator EntityWorldManager::FUN_1411ce680() { return worlds[currentMap].createdEntities.begin(); }
 // @0x1411ce6d0
 bool EntityWorldManager::FUN_1411ce6d0(Unk_WorldEntityMap::iterator& it, egf::Entity*& entity) {
-    bool found = worlds[currentMap].createdEntities.end() != it;
-    if (!found) entity = nullptr;
-    else { entity = it->second; ++it; }
-    return found;
+    if (worlds[currentMap].createdEntities.end() != it) {
+        entity = it->second;
+        ++it;
+        return true;
+    }
+    entity = nullptr;
+    return false;
 }
 // @0x1411ce760
 egf::EntityID EntityWorldManager::FUN_1411ce760(const efd::utf8string& name, efd::AssetID& asset, bool addToWorld) {
     return static_cast<MS2EntityManagerService*>(entities.data())->FUN_1414b4b00(name, asset, addToWorld);
 }
-// MS2-FUNCTIONAL: typed engine entity construction preserves property order and ownership.
 // Not hooked: constructs an AssetID and may create a world record with DLL-local RTTI.
 // @0x1411ce7c0
 egf::EntityPtr EntityWorldManager::FUN_1411ce7c0(efd::utf8string modelName, efd::utf8string assetName,
     efd::Point3 position, efd::Point3 rotation, float scale, int enabled, int visible) {
     egf::EntityID id = egf::EntityIDFactory::GetNextID();
     egf::EntityPtr entity = FactoryEntity(modelName, id, true);
-    if (entity.data() == nullptr) return egf::EntityPtr(0);
-    if (!FUN_140a33ff0(&position)) position = efd::Point3::ZERO;
-    if (!FUN_140a33ff0(&rotation)) rotation = efd::Point3::ZERO;
-    FUN_140a38a50(entity, 0xfd95ca52, position);
-    FUN_140a38a50(entity, 0x68c7c29d, rotation);
-    FUN_1409457c0(entity, 0x2d7cad2d, scale);
-    bool enable = enabled == 0;
-    FUN_14098c6e0(entity, 0x2a7fd9f4, enable);
-    bool show = visible != 0;
-    FUN_14098c6e0(entity, 0x7e5f4195, show);
-    if (assetName.length() != 0) {
-        efd::AssetID asset;
-        asset = efd::utf8string(assetName.c_str());
-        if (entity->GetModel()->ContainsModel(efd::utf8string("Mesh")))
-            FUN_140de8bd0(entity, 0x770e5fc6, asset);
-        else if (entity->GetModel()->ContainsModel(efd::utf8string("Actor")))
-            FUN_140de8bd0(entity, 0x12383cea, asset);
+    if (entity.data() != nullptr) {
+        if (!FUN_140a33ff0(&position)) position = efd::Point3::ZERO;
+        if (!FUN_140a33ff0(&rotation)) rotation = efd::Point3::ZERO;
+        FUN_140a38a50(entity, 0xfd95ca52, position);
+        FUN_140a38a50(entity, 0x68c7c29d, rotation);
+        FUN_1409457c0(entity, 0x2d7cad2d, scale);
+        bool enable = enabled == 0 ? true : false;
+        FUN_14098c6e0(entity, 0x2a7fd9f4, enable);
+        bool show = visible != 0 ? true : false;
+        FUN_14098c6e0(entity, 0x7e5f4195, show);
+        if (assetName.length() != 0) {
+            efd::AssetID asset;
+            {
+                efd::utf8string urn(assetName.c_str());
+                asset = urn;
+            }
+            if (entity->GetModel()->ContainsModel("Mesh"))
+                FUN_140de8bd0(entity, 0x770e5fc6, asset);
+            else if (entity->GetModel()->ContainsModel("Actor"))
+                FUN_140de8bd0(entity, 0x12383cea, asset);
+        }
+        entities->AddEntity(entity.data(), nullptr);
+        worlds[currentMap].createdEntities[id] = entity.data();
+        worlds[currentMap].allEntities[id] = entity.data();
+        return entity;
     }
-    entities->AddEntity(entity, nullptr);
-    worlds[currentMap].createdEntities[id] = entity.data();
-    worlds[currentMap].allEntities[id] = entity.data();
-    return entity;
+    return egf::EntityPtr(0);
 }
 // @0x1411cec80
 egf::EntityPtr EntityWorldManager::FactoryEntity(const efd::utf8string& modelName, egf::EntityID id, bool master) {
@@ -296,22 +309,24 @@ egf::EntityID EntityWorldManager::FUN_1411cef50(const efd::utf8string& name, con
     worlds[currentMap].allEntities[id] = entity;
     return id;
 }
-// MS2-FUNCTIONAL: retains Mesh priority, Actor fallback, and initialization of the output flag.
 // @0x1411cf0b0
 bool EntityWorldManager::FUN_1411cf0b0(efd::utf8string modelName, efd::AssetID& asset, bool& actor) {
     actor = false;
     egf::EntityID id = egf::EntityIDFactory::GetNextID();
     egf::EntityPtr entity = FactoryEntity(modelName, id, true);
-    if (entity.data() == nullptr) return false;
-    if (entity->GetModel()->ContainsModel(efd::utf8string("Mesh"))) {
-        actor = false;
-        FUN_140998250(entity, 0x770e5fc6, asset);
-    } else {
-        if (!entity->GetModel()->ContainsModel(efd::utf8string("Actor"))) return false;
-        actor = true;
-        FUN_140998250(entity, 0x12383cea, asset);
+    if (entity.data() != nullptr) {
+        if (entity->GetModel()->ContainsModel("Mesh")) {
+            actor = false;
+            FUN_140998250(entity, 0x770e5fc6, asset);
+        } else if (entity->GetModel()->ContainsModel("Actor")) {
+            actor = true;
+            FUN_140998250(entity, 0x12383cea, asset);
+        } else {
+            return false;
+        }
+        return true;
     }
-    return true;
+    return false;
 }
 // @0x1411cf2d0
 void EntityWorldManager::FUN_1411cf2d0(egf::Entity* entity, efd::ParameterList* args) {
@@ -325,7 +340,8 @@ void EntityWorldManager::FUN_1411cf2d0(egf::Entity* entity, efd::ParameterList* 
 }
 // @0x1411cf440
  egf::Entity* EntityWorldManager::FUN_1411cf440(const egf::EntityID& id) {
-    if (id != egf::EntityID(0ull)) {
+    egf::EntityID kInvalid(0ull);
+    if (id != kInvalid) {
         auto it = worlds[currentMap].allEntities.find(id);
         if (it != worlds[currentMap].allEntities.end()) return it->second;
         egf::Entity* entity = entities->LookupEntity(id);
@@ -334,7 +350,7 @@ void EntityWorldManager::FUN_1411cf2d0(egf::Entity* entity, efd::ParameterList* 
     return nullptr;
 }
 // @0x1411cf540
-void EntityWorldManager::FUN_1411cf540(const egf::EntityID& id) { FUN_141473870(id); }
+void EntityWorldManager::FUN_1411cf540(egf::EntityID id) { FUN_141473870(id); }
 // @0x1411cf570
 void EntityWorldManager::FUN_1411cf570(egf::Entity* entity) { FUN_1414737d0(entity); }
 // @0x1411cf5a0
@@ -342,7 +358,6 @@ void EntityWorldManager::FUN_1411cf5a0(const egf::EntityID& id, egf::Entity* ent
     worlds[currentMap].loadedEntities[id] = entity;
     worlds[currentMap].allEntities[id] = entity;
 }
-// MS2-FUNCTIONAL: explicit typed map updates retain repeated lookup order and load-request ownership.
 // Not hooked: creates world records and an engine message with DLL-local RTTI.
 // @0x1411cf630
 bool EntityWorldManager::FUN_1411cf630(int map, const egf::BlockIdentification& block) {
@@ -352,13 +367,14 @@ bool EntityWorldManager::FUN_1411cf630(int map, const egf::BlockIdentification& 
     worlds[currentMap].allEntities.clear();
     worlds[currentMap].createdEntities.clear();
     currentMap = map;
-    currentBlock = worlds[map].block = block;
-    worlds[map].time = FUN_141473280(FUN_14086d260());
-    worlds[map].unloaded = false;
-    worlds[map].loadedEntities.clear();
-    worlds[map].allEntities.clear();
-    worlds[map].createdEntities.clear();
-    FUN_141503ef0(m_pServiceManager->GetSystemServiceAs<egfPhysX::SceneService>());
+    currentBlock = worlds[reinterpret_cast<const unsigned&>(map)].block = block;
+    worlds[reinterpret_cast<const unsigned&>(map)].time = FUN_141473280(FUN_14086d260());
+    worlds[reinterpret_cast<const unsigned&>(map)].unloaded = false;
+    worlds[reinterpret_cast<const unsigned&>(map)].loadedEntities.clear();
+    worlds[reinterpret_cast<const unsigned&>(map)].allEntities.clear();
+    worlds[reinterpret_cast<const unsigned&>(map)].createdEntities.clear();
+    egfPhysX::SceneService* pScene = m_pServiceManager->GetSystemServiceAs<egfPhysX::SceneService>();
+    FUN_141503ef0(pScene);
     loader->FUN_1411d8980(true);
     efd::SmartPointer<egf::EntityLoadRequest> request(EE_NEW egf::EntityLoadRequest(
         egf::EntityLoadRequest::elo_Load, block, s_entityWorldChannel, 0,
@@ -366,12 +382,11 @@ bool EntityWorldManager::FUN_1411cf630(int map, const egf::BlockIdentification& 
     loader->RequestEntitySetLoad(request);
     return true;
 }
-// MS2-FUNCTIONAL: typed unload request retains instancing cleanup and the load-flag transition.
 // Not hooked: creates world records and an engine message with DLL-local RTTI.
 // @0x1411cf980
 void EntityWorldManager::FUN_1411cf980(int map, const egf::BlockIdentification& block) {
-    worlds[map].time = FUN_141473280(FUN_14086d260());
-    worlds[map].unloaded = true;
+    worlds[reinterpret_cast<const unsigned&>(map)].time = FUN_141473280(FUN_14086d260());
+    worlds[reinterpret_cast<const unsigned&>(map)].unloaded = true;
     efd::SmartPointer<HardwareInstancingService> instancing(FUN_14098c5b0(&DAT_143b059e8));
     if ((HardwareInstancingService*)instancing != nullptr) FUN_1413d73a0(instancing.operator->(), map);
     loader->FUN_1411d8980(false);
@@ -388,8 +403,7 @@ bool EntityWorldManager::FUN_1411cfb80(unsigned* a, int* b) {
 int EntityWorldManager::FUN_1411cfbe0() {
     int count = 0;
     for (auto it = worlds.begin(); it != worlds.end(); ++it) {
-        unsigned active = it->second.unloaded == false;
-        count += active;
+        count += it->second.unloaded ? 0 : 1;
     }
     return count;
 }
@@ -407,13 +421,12 @@ void EntityWorldManager::FUN_1411cfce0() {
     FUN_1401ce2b0(FUN_140a44830(), "\n--- EntityWorldManager Log---");
     FUN_1401ce2f0(FUN_140a44830(), "LoadedMapCount %d", FUN_1411cfbe0());
 }
-// MS2-FUNCTIONAL: real message and pointer types preserve the instancing veto and map classification.
 // @0x1411cfd40
 void EntityWorldManager::FUN_1411cfd40(const egf::EntityChangeMessage* message, efd::Category) {
     egf::EntityPtr entity(message->GetEntity());
     egf::EntityID id(entity->GetEntityID());
     efd::SmartPointer<HardwareInstancingService> instancing(FUN_14098c5b0(&DAT_143b059e8));
-    if ((HardwareInstancingService*)instancing != nullptr && FUN_1413d6890(instancing.operator->(), entity) != 0) return;
+    if (((HardwareInstancingService*)instancing != nullptr ? true : false) && FUN_1413d6890(instancing.operator->(), entity) != 0) return;
     if (worlds[currentMap].createdEntities.find(id) == worlds[currentMap].createdEntities.end()) {
         worlds[currentMap].loadedEntities[id] = entity.data();
         worlds[currentMap].allEntities[id] = entity.data();
@@ -445,7 +458,7 @@ void EntityWorldManager::vfunc_1(int) {
 }
 // @0x1411d0300
 void EntityWorldManager::vfunc_3(int map) {
-    Unk_EntityWorldRecord& world = worlds[map];
+    Unk_EntityWorldRecord& world = worlds[reinterpret_cast<const unsigned&>(map)];
     for (auto it = world.createdEntities.begin(); it != world.createdEntities.end(); ++it) {
         FUN_1414f1240(sceneGraphs, it->second);
         sceneGraphs->RemoveSceneGraph(it->second, true);
@@ -503,20 +516,22 @@ efd::AsyncResult EntityWorldManager::OnInit() {
 // @0x1411d0a40
 const char* EntityWorldManager::GetDisplayName() const { return "EntityWorldManager"; }
 // @0x1411d0a60
-void EntityWorldManager::FUN_1411d0a60(unsigned map, int group) { if (map != 0) mapGroups[map].insert(group); }
+void EntityWorldManager::FUN_1411d0a60(unsigned map, int group) { if (map != 0) mapGroups[map].insert(reinterpret_cast<const unsigned&>(group)); }
 // @0x1411d0ab0
 size_t EntityWorldManager::FUN_1411d0ab0() { return worlds[currentMap].loadedEntities.size(); }
 // @0x1411d0af0
 size_t EntityWorldManager::FUN_1411d0af0() { return worlds[currentMap].createdEntities.size(); }
 // @0x1411d0b30
 efd::UInt32 EntityWorldManager::FUN_1411d0b30() { return entities->GetCount(); }
-// MS2-FUNCTIONAL: preserves repeated singleton lookup and erase-versus-increment behavior.
-// @0x1411d0b60
-void FUN_1411d0b60() {
+// @0x1411d0b60 (the exe spills an unused first argument)
+void FUN_1411d0b60(void* /*pUnused*/) {
     auto it = FUN_1409670f0()->unusedAssets.begin();
     while (it != FUN_1409670f0()->unusedAssets.end()) {
-        if (!FUN_1414a9a80(FUN_141b6f910(), it->GetURN())) ++it;
-        else it = FUN_1409670f0()->unusedAssets.erase(it);
+        if (FUN_1414a9a80(FUN_141b6f910(), it->GetURN())) {
+            it = FUN_1409670f0()->unusedAssets.erase(it);
+            continue;
+        }
+        ++it;
     }
 }
 // @0x1411d6230

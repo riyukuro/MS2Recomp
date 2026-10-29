@@ -19,7 +19,7 @@ class CInPacket;
 class Unk_CtsContentList
 {
 public:
-    int FUN_14078fae0();                                    // GetCount
+    unsigned __int64 FUN_14078fae0();                       // GetCount
     MS2Ptr<CScriptContent>& FUN_14078f350(__int64 nIndex);  // GetAt
 private:
     void* m_0; void* m_8; void* m_10; void* m_18;

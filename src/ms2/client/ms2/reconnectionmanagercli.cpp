@@ -380,5 +380,5 @@ int ReconnectionOptions::FUN_140aadf90(int index) {
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\reconnectionmanagercli.cpp"
         return 0;
     }
-    return (&m_v0)[index];
+    return m_values[index];
 }

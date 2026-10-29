@@ -34,7 +34,7 @@ public:
 
 private:
     MS2_LAYOUT_FRIEND;
-    char m_70;                                                  // +0x70 the tooltip is shown
+    unsigned char m_70;                                                // +0x70 the tooltip is shown
     CString m_78;                                               // +0x78 name of the interact object
 };
 MS2_CHECK_SIZE(UIGuildFlagTooltip, 0x80);

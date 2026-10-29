@@ -143,7 +143,7 @@ public:
     void* m_pad_00;
     Unk_AmColorEntry* m_p;
 };
-class Unk_AmColorList { public: unsigned FUN_140570e10(); Unk_AmColorEntry* FUN_140570dd0(unsigned n); };
+class Unk_AmColorList { public: size_t FUN_140570e10(); Unk_AmColorEntry* FUN_140570dd0(size_t n); };
 class Unk_AmColorSet
 {
 public:
@@ -188,8 +188,8 @@ int FUN_140873420(Unk_140165cf0* pNode, const char* pszName, CStringW& strValue)
 class Unk_ElemArray
 {
 public:
-    void FUN_140163e20();                                       // ctor
-    void FUN_1401644e0();                                       // dtor
+    Unk_ElemArray();                                            // 0x140163e20
+    ~Unk_ElemArray();                                           // 0x1401644e0
     unsigned __int64 FUN_14016d900();                           // size
     Unk_140165cf0*& FUN_140164a30(unsigned __int64 n);          // operator[]
     void *m_a, *m_b, *m_c;
@@ -236,9 +236,9 @@ int FUN_14093dc90(int nId, int nGrade, CStringW& strIcon, CStringW& strMsg);
 CStringW FUN_14093c8d0(int nId, int nGrade, int bRaw);
 CStringW FUN_14093bad0(int nId, int nGrade, CStringW strFormat);
 CStringW FUN_14093dd50(int nId, __int64 nA, __int64 nB);
-CStringW FUN_14093dee0(int nId, CStringW strA, CStringW strB);
+CStringW FUN_14093dee0(int nId, const CStringW& strA, const CStringW& strB);
 CStringW FUN_14093e000(int nId, __int64 nA, __int64 nB);
-CStringW FUN_14093e190(int nId, CStringW strA, CStringW strB);
+CStringW FUN_14093e190(int nId, const CStringW& strA, const CStringW& strB);
 int FUN_14093e2b0(int nCondType);
 CStringW FUN_14093f4d0(int nSeconds);
 CStringW FUN_14093f670(int nValue);
@@ -437,32 +437,31 @@ int CAchieveManager::IsCompleted(unsigned nId)
 MS2_REPLACE_METHOD(0x1409365A0, CAchieveManager, IsCompleted, 152, 0x6CC133B6);
 
 // @0x140936640
-bool CAchieveManager::IsGradeCleared(unsigned nId, int nGrade)
+BOOL CAchieveManager::IsGradeCleared(unsigned nId, int nGrade)
 {
     MS2Ptr<CAchieve> pAchieve = Find(nId);
     if (pAchieve.IsNull())
-        return false;
+        return FALSE;
     if (pAchieve->GetState() == 3)
-        return nGrade <= pAchieve->GetCurGrade();
-    return nGrade < pAchieve->GetCurGrade();
+        return pAchieve->GetCurGrade() >= nGrade;
+    return pAchieve->GetCurGrade() > nGrade;
 }
 MS2_REPLACE_METHOD(0x140936640, CAchieveManager, IsGradeCleared, 250, 0x426BE738);
 
 // @0x140936740
-bool CAchieveManager::HasCompletedOfType(Unk_NullableInt nType)
+BOOL CAchieveManager::HasCompletedOfType(Unk_NullableInt nType)
 {
     for (POSITION pos = m_map.GetHeadPosition(); pos != 0; m_map.GetNext(pos))
     {
         MS2Ptr<CAchieve> pAchieve = m_map.GetValueAt(pos);
-        if (pAchieve->GetData30() == 0)
-        {
-            if (nType.HasValue() && pAchieve->GetDataRef()->m_nType != *nType.GetValue())
-                continue;
-            if (pAchieve->IsCompleted() != 0)
-                return true;
-        }
+        if (pAchieve->GetData30() != 0)
+            continue;
+        if (nType.HasValue() && pAchieve->GetDataRef()->m_nType != *nType.GetValue())
+            continue;
+        if (pAchieve->IsCompleted() != 0)
+            return TRUE;
     }
-    return false;
+    return FALSE;
 }
 MS2_REPLACE_METHOD(0x140936740, CAchieveManager, HasCompletedOfType, 428, 0x7D5EC3BD);
 
@@ -521,94 +520,94 @@ UIRewardNotify* FUN_140938cd0(int nId)
 // @0x140936a50
 void CAchieveManager::OnPacket(CByteBuffer& rBuf)
 {
-    unsigned char nMode = rBuf.ReadUInt8();
+    int nMode = rBuf.ReadUInt8();
     if (nMode == 0)
         Reload();
     if (nMode == 1)
     {
-        unsigned nCount = rBuf.ReadInt32();
+        size_t nCount = (unsigned)rBuf.ReadInt32();
         for (size_t i = 0; i < nCount; i++)
         {
             int nId = rBuf.ReadInt32();
             int nGrade = rBuf.ReadInt32();
             MS2Ptr<CAchieve> pAchieve(new CAchieve);
-            if (FUN_140158350(pAchieve.operator->(), nId, nGrade, 0) == 0)
-            {
-                pAchieve->Decode(rBuf);
-            }
-            else
+            if (FUN_140158350(pAchieve.operator->(), nId, nGrade, 0) != 0)
             {
                 pAchieve->Decode(rBuf);
                 m_map.SetAt(nId, pAchieve);
                 Tally(pAchieve.get());
             }
+            else
+            {
+                pAchieve->Decode(rBuf);
+            }
         }
         return;
     }
-    if (nMode != 2)
-        return;
-    unsigned nId = rBuf.ReadInt32();
-    MS2Ptr<CAchieve> pAchieve = Find(nId);
-    if (pAchieve.get() != 0)
+    if (nMode == 2)
     {
-        int nOldStart = pAchieve->GetStartGrade();
-        int nOldGrade = pAchieve->GetCurGrade();
-        int nOldState = pAchieve->GetState();
-        pAchieve->Decode(rBuf);
-        int bNotified = 0;
-        if (nOldGrade != pAchieve->GetCurGrade() || (nOldState != 3 && pAchieve->GetState() == 3))
+        unsigned nId = rBuf.ReadInt32();
+        MS2Ptr<CAchieve> pAchieve = Find(nId);
+        if (pAchieve.get() != 0)
         {
-            NotifyClear(pAchieve.get());
-            RebuildTally();
-            bNotified = 1;
+            int nOldStart = pAchieve->GetStartGrade();
+            int nOldGrade = pAchieve->GetCurGrade();
+            int nOldState = pAchieve->GetState();
+            pAchieve->Decode(rBuf);
+            int bNotified = 0;
+            if (nOldGrade != pAchieve->GetCurGrade() || (nOldState != 3 && pAchieve->GetState() == 3))
+            {
+                NotifyClear(pAchieve.get());
+                RebuildTally();
+                bNotified = 1;
+            }
+            if (pAchieve->GetType() != 8)
+            {
+                if (nOldStart != pAchieve->GetStartGrade())
+                    NotifyReward(nId, nOldStart);
+                UIGameMenuDialog* pMenu = FUN_140938b90(0x4e28);
+                if (pMenu != 0)
+                    FUN_141937ea0(pMenu, pAchieve.get(), bNotified);
+                Unk_AmMainInfo* pInfo = FUN_140931900(0x4e5f);
+                if (pInfo != 0)
+                    FUN_1419f0bb0(pInfo, pAchieve.get());
+                UIMyInfoDialog* pMyInfo = FUN_140938c30(0x2711);
+                if (pMyInfo != 0)
+                    FUN_141a5a560(pMyInfo);
+            }
         }
-        if (pAchieve->GetType() != 8)
-        {
-            if (nOldStart != pAchieve->GetStartGrade())
-                NotifyReward(nId, nOldStart);
-            UIGameMenuDialog* pMenu = FUN_140938b90(0x4e28);
-            if (pMenu != 0)
-                FUN_141937ea0(pMenu, pAchieve.get(), bNotified);
-            Unk_AmMainInfo* pInfo = FUN_140931900(0x4e5f);
-            if (pInfo != 0)
-                FUN_1419f0bb0(pInfo, pAchieve.get());
-            UIMyInfoDialog* pMyInfo = FUN_140938c30(0x2711);
-            if (pMyInfo != 0)
-                FUN_141a5a560(pMyInfo);
-        }
+        DAT_143af0f30.SetAt(nId, 1);
     }
-    DAT_143af0f30.SetAt(nId, 1);
 }
 
 // @0x140936ec0
 void CAchieveManager::NotifyClear(CAchieve* pAchieve)
 {
-    if (pAchieve != 0)
+    if (pAchieve == 0)
+        return;
+    int nState = pAchieve->GetState();
+    int nGrade = ((nState != 3 ? pAchieve->GetCurGrade() - 1 : pAchieve->GetCurGrade()) < 1)
+        ? 1 : (nState != 3 ? pAchieve->GetCurGrade() - 1 : pAchieve->GetCurGrade());
+    FUN_140d5b880(FUN_140939a00(), pAchieve->GetId(), nGrade);
+    if (pAchieve->GetType() == 8)
+        return;
+    UIRewardNotify* pNotify = FUN_140938cd0(0x4e5d);
+    if (pNotify != 0)
+        pNotify->FUN_141abfdc0((Unk_RNAchieve*)pAchieve);
     {
-        int nState = pAchieve->GetState();
-        int nGrade = ((nState == 3 ? pAchieve->GetCurGrade() : pAchieve->GetCurGrade() - 1) < 1)
-            ? 1 : (nState == 3 ? pAchieve->GetCurGrade() : pAchieve->GetCurGrade() - 1);
-        FUN_140d5b880(FUN_140939a00(), pAchieve->GetId(), nGrade);
-        if (pAchieve->GetType() != 8)
+        MS2Ptr<CAchieveData> pData = pAchieve->GetDataRef();
+        if (pData)
         {
-            UIRewardNotify* pNotify = FUN_140938cd0(0x4e5d);
-            if (pNotify != 0)
-                pNotify->FUN_141abfdc0((Unk_RNAchieve*)pAchieve);
-            MS2Ptr<CAchieveData> pData = pAchieve->GetDataRef();
-            if (pData)
-            {
-                int nRewardType = pData->GetGrade(nGrade)->m_reward.m_nType;
-                if (0 < nRewardType)
-                    FUN_1409331e0()->FUN_14138bf00(0x17, 0, 0);
-            }
-            CStringW strTitle = FUN_140d2d440(pAchieve->GetId(), nGrade);
-            if (nState == 3)
-                FUN_1412751b0(StringFormat(GetStringCommon(0x77d), strTitle), 0x14);
-            else
-                FUN_1412751b0(StringFormat(GetStringCommon(0x77c), strTitle), 0x14);
-            ((Unk_AmReportMgr*)FUN_140939a10())->FUN_140da4fe0(MS2Ptr<NotifyObject>(new NotifyClearAchieve(pAchieve->GetId())));
+            if (pData->GetGrade(nGrade)->m_reward.m_nType > 0)
+                FUN_1409331e0()->FUN_14138bf00(0x17, 0, 0);
         }
     }
+    CStringW strTitle = FUN_140d2d440(pAchieve->GetId(), nGrade);
+    if (nState == 3)
+        FUN_1412751b0(StringFormat(GetStringCommon(0x77d), strTitle), 0x14);
+    else
+        FUN_1412751b0(StringFormat(GetStringCommon(0x77c), strTitle), 0x14);
+    ((Unk_AmReportMgr*)FUN_140939a10())->FUN_140da4fe0(MS2Ptr<NotifyObject>(new NotifyClearAchieve(pAchieve->GetId())));
 }
 
 // Shows the "you unlocked <...>" toast and the system line for the beauty (hair / makeup) reward of the current player.
@@ -670,7 +669,7 @@ void CAchieveManager::NotifyReward(int nId, int nGrade)
                 Unk_AmColorSet set = FUN_140281980()->FUN_140558ad0(pGrade->m_reward.m_nCode);
                 if (set.FUN_14056d460() != 0)
                 {
-                    for (unsigned i = 0; i < set.FUN_14056d540()->FUN_140570e10(); i++)
+                    for (size_t i = 0; i < set.FUN_14056d540()->FUN_140570e10(); i++)
                     {
                         Unk_AmColorElem elem(set.FUN_14056d540()->FUN_140570dd0(i));
                         if (elem.FUN_14056d570()->m_nAchieveId == nId)
@@ -740,26 +739,29 @@ void CAchieveManager::NotifyReward(int nId, int nGrade)
 // @0x1409388a0
 void CAchieveManager::Tally(CAchieve* pAchieve)
 {
-    if (pAchieve != 0)
+    if (pAchieve == 0)
+        return;
+    MS2Ptr<CAchieveData> pData = pAchieve->GetDataRef();
+    if (pData.IsNull())
+        return;
+    if (pData->m_nType == 2)
     {
-        MS2Ptr<CAchieveData> pData = pAchieve->GetDataRef();
-        if (!pData.IsNull())
+        for (int nGrade = pData->m_nFirstGrade; nGrade <= pAchieve->GetCurGrade(); nGrade++)
         {
-            if (pData->m_nType == 2)
+            __int64 nValue = pAchieve->GetValue(nGrade);
+            if (nValue == 0)
+                continue;
+            switch (pData->m_nCategory)
             {
-                for (int nGrade = pData->m_nFirstGrade; nGrade <= pAchieve->GetCurGrade(); nGrade++)
-                {
-                    if (pAchieve->GetValue(nGrade) != 0)
-                    {
-                        int nCategory = pData->m_nCategory;
-                        if (nCategory == 1)
-                            m_tally.FUN_140267c70(0, 1);
-                        else if (nCategory == 2)
-                            m_tally.FUN_140267c70(1, 1);
-                        else if (nCategory == 3)
-                            m_tally.FUN_140267c70(2, 1);
-                    }
-                }
+            case 1:
+                m_tally.FUN_140267c70(0, 1);
+                break;
+            case 2:
+                m_tally.FUN_140267c70(1, 1);
+                break;
+            case 3:
+                m_tally.FUN_140267c70(2, 1);
+                break;
             }
         }
     }
@@ -802,10 +804,7 @@ NotifyClearAchieve::NotifyClearAchieve(int nId)
     m_nId = nId;
 }
 
-// @0x140939240
-NotifyClearAchieve::~NotifyClearAchieve()
-{
-}
+// ~NotifyClearAchieve (0x140939240) is implicit: an explicit empty body keeps a dead vptr store the exe does not have.
 
 // ---- CAchieveUIData ------------------------------------------------------------------------------------------------------------
 
@@ -834,44 +833,38 @@ void CAchieveUIData::LoadAll()
 void CAchieveUIData::LoadDesc()
 {
     TiXmlDocument doc;
-    CStringA strPath = FUN_14071ae20(CStringA("achieveDescription.xml"));
-    const char* pszPath = strPath;
-    if (FUN_140166420()->FUN_1403974b0(&doc, pszPath, 0, true, false) != 0)
+    CStringA strPath = FUN_14071ae20("achieveDescription.xml");
+    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+        return;
+    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+    if (pRoot == 0)
     {
-        Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
-        if (pRoot == 0)
+        FUN_14015eb90(FUN_140166440(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
+        return;
+    }
+    Unk_ElemArray aElem;
+    FUN_14028faa0(pRoot, "achieve", "id", &aElem);
+    for (unsigned __int64 i = 0; i < aElem.FUN_14016d900(); i++)
+    {
+        Unk_140165cf0* pElem = aElem.FUN_140164a30(i);
+        MS2Ptr<CAchieveUIData> pUI(new CAchieveUIData);
+        int nId = FUN_140197350(pElem, "id", 0);
+        pUI->m_nId = nId;
+        CStringW strDesc = FUN_1401bf530(pElem, "desc", CStringW(L""));
+        CStringW strComplete = FUN_1401bf530(pElem, "complete", CStringW(L""));
+        CStringW strManualDesc = FUN_1401bf530(pElem, "manualDesc", CStringW(L""));
+        CStringW strManualComplete = FUN_1401bf530(pElem, "manualComplete", CStringW(L""));
+        FUN_1403b4750()->FUN_1416fb380(strComplete);
+        FUN_1403b4750()->FUN_1416fb380(strManualComplete);
+        FUN_1403b4750()->FUN_1416fbf20(strDesc);
+        FUN_1403b4750()->FUN_1416fbf20(strManualDesc);
+        pUI->m_strDesc = strDesc;
+        pUI->m_strComplete = strComplete;
+        pUI->m_strManualDesc = strManualDesc;
+        pUI->m_strManualComplete = strManualComplete;
+        if (Unk_LockGuard guard = s_lockTables) {} else
         {
-            FUN_14015eb90(FUN_140166440(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
-        }
-        else
-        {
-            Unk_ElemArray aElem;
-            aElem.FUN_140163e20();
-            FUN_14028faa0(pRoot, "achieve", "id", &aElem);
-            for (unsigned __int64 i = 0; i < aElem.FUN_14016d900(); i++)
-            {
-                Unk_140165cf0* pElem = aElem.FUN_140164a30(i);
-                MS2Ptr<CAchieveUIData> pUI(new CAchieveUIData);
-                int nId = FUN_140197350(pElem, "id", 0);
-                pUI->m_nId = nId;
-                CStringW strDesc = FUN_1401bf530(pElem, "desc", CStringW(L""));
-                CStringW strComplete = FUN_1401bf530(pElem, "complete", CStringW(L""));
-                CStringW strManualDesc = FUN_1401bf530(pElem, "manualDesc", CStringW(L""));
-                CStringW strManualComplete = FUN_1401bf530(pElem, "manualComplete", CStringW(L""));
-                FUN_1403b4750()->FUN_1416fb380(strComplete);
-                FUN_1403b4750()->FUN_1416fb380(strManualComplete);
-                FUN_1403b4750()->FUN_1416fbf20(strDesc);
-                FUN_1403b4750()->FUN_1416fbf20(strManualDesc);
-                pUI->m_strDesc = strDesc;
-                pUI->m_strComplete = strComplete;
-                pUI->m_strManualDesc = strManualDesc;
-                pUI->m_strManualComplete = strManualComplete;
-                if (Unk_LockGuard guard = s_lockTables) {} else
-                {
-                    s_mapUIData.SetAt(pUI->m_nId, pUI);
-                }
-            }
-            aElem.FUN_1401644e0();
+            s_mapUIData.SetAt(pUI->m_nId, pUI);
         }
     }
 }
@@ -879,36 +872,31 @@ void CAchieveUIData::LoadDesc()
 
 #ifndef MS2_HOOK_DLL
 // @0x14093b440
-// MS2-FUNCTIONAL: the exe builds the file name / path CStringA temps with early destruction; no source form found
 void CAchieveUIData::LoadSpecialReward()
 {
     TiXmlDocument doc;
-    CStringA strPath = FUN_14071ae20(CStringA("achieveSpecialRewardDescription.xml"));
-    const char* pszPath = strPath;
-    if (FUN_140166420()->FUN_1403974b0(&doc, pszPath, 0, true, false) != 0)
+    CStringA strPath = FUN_14071ae20("achieveSpecialRewardDescription.xml");
+    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+        return;
+    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+    if (pRoot == 0)
     {
-        Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
-        if (pRoot == 0)
+        FUN_14015eb90(FUN_140166440(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
+        return;
+    }
+    for (Unk_140165cf0* pElem = pRoot->FUN_140165cf0("achieve"); pElem != 0; pElem = reinterpret_cast<Unk_140165cf0*>(reinterpret_cast<Unk_140168650*>(pElem)->FUN_140168650("achieve")))
+    {
+        MS2Ptr<SpecialRewardDesc> pDesc(new SpecialRewardDesc);
+        unsigned nId = FUN_140197390(pElem, "id", 0);
+        int nGrade = FUN_140197350(pElem, "grade", 0);
+        pDesc->m_strSpecialDesc = FUN_1401bf530(pElem, "specialDesc", CStringW(L""));
+        pDesc->m_strNotifyIcon = FUN_1401bf530(pElem, "specialNotifyIcon", CStringW(L""));
+        pDesc->m_strNotifyString = FUN_1401bf530(pElem, "specialNotifyString", CStringW(L""));
+        FUN_1403b4750()->FUN_1416fb380(pDesc->m_strSpecialDesc);
+        FUN_1403b4750()->FUN_1416fb380(pDesc->m_strNotifyString);
+        if (Unk_LockGuard guard = s_lockTables) {} else
         {
-            FUN_14015eb90(FUN_140166440(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
-        }
-        else
-        {
-            for (Unk_140165cf0* pElem = pRoot->FUN_140165cf0("achieve"); pElem != 0; pElem = reinterpret_cast<Unk_140165cf0*>(reinterpret_cast<Unk_140168650*>(pElem)->FUN_140168650("achieve")))
-            {
-                MS2Ptr<SpecialRewardDesc> pDesc(new SpecialRewardDesc);
-                unsigned nId = FUN_140197390(pElem, "id", 0);
-                int nGrade = FUN_140197350(pElem, "grade", 0);
-                pDesc->m_strSpecialDesc = FUN_1401bf530(pElem, "specialDesc", CStringW(L""));
-                pDesc->m_strNotifyIcon = FUN_1401bf530(pElem, "specialNotifyIcon", CStringW(L""));
-                pDesc->m_strNotifyString = FUN_1401bf530(pElem, "specialNotifyString", CStringW(L""));
-                FUN_1403b4750()->FUN_1416fb380(pDesc->m_strSpecialDesc);
-                FUN_1403b4750()->FUN_1416fb380(pDesc->m_strNotifyString);
-                if (Unk_LockGuard guard = s_lockTables) {} else
-                {
-                    s_mapSpecial.SetAt((ULONGLONG)nId << 32 | (__int64)nGrade, pDesc);
-                }
-            }
+            s_mapSpecial.SetAt((ULONGLONG)nId << 32 | (__int64)nGrade, pDesc);
         }
     }
 }
@@ -948,7 +936,6 @@ CStringW FUN_14093b9c0(int nId, int nGrade)
 }
 
 // @0x14093bad0
-// MS2-FUNCTIONAL: the temporaries of the string table lookups are not byte-matched
 CStringW FUN_14093bad0(int nId, int nGrade, CStringW strFormat)
 {
     MS2Ptr<CAchieveData> pData = GetAchieveData(nId);
@@ -957,18 +944,22 @@ CStringW FUN_14093bad0(int nId, int nGrade, CStringW strFormat)
     if (strFormat.GetLength() == 0)
         strFormat = L"[{0}]{1}";
     CStringW strTag;
-    int nCategory = pData->m_nCategory;
-    if (nCategory == 1)
+    switch (pData->m_nCategory)
+    {
+    case 1:
         strTag = GetStringCommon(0x76e);
-    else if (nCategory == 2)
+        break;
+    case 2:
         strTag = GetStringCommon(0x76d);
-    else if (nCategory == 3)
+        break;
+    case 3:
         strTag = GetStringCommon(0x76f);
+        break;
+    }
     return StringFormat((LPCWSTR)strFormat, strTag, FUN_14093b9c0(nId, nGrade));
 }
 
 // @0x14093bd40
-// MS2-FUNCTIONAL: the temporaries of the string table lookups are not byte-matched
 CStringW FUN_14093bd40(int nId, int nGrade, CStringW strFormat)
 {
     CStringW strTitle = FUN_14093bad0(nId, nGrade, CStringW(L""));
@@ -976,36 +967,40 @@ CStringW FUN_14093bd40(int nId, int nGrade, CStringW strFormat)
         return CStringW(L"");
     CStringW strCond = FUN_14093c8d0(nId, nGrade, 0);
     if (strFormat.IsEmpty())
-        strFormat = GetStringCommonByKey(CStringW(L"s_skill_require_achieve"));
+        strFormat = GetStringCommonByKey(L"s_skill_require_achieve");
     return StringFormat((LPCWSTR)strFormat, strTitle, strCond);
 }
 
 // @0x14093bf10
-// MS2-FUNCTIONAL: the progress text of one condition kind; the four fmt shapes share the temporaries of the strings
 CStringW FUN_14093bf10(CAchieve* pAchieve, int nGrade)
 {
     if (pAchieve == 0)
         return CStringW(L"");
     __int64 nProgress = pAchieve->GetProgress();
     __int64 nValue = pAchieve->GetGradeGoal(nGrade);
-    if (nValue < nProgress)
+    if (nProgress > nValue)
         nProgress = nValue;
     CStringW strText;
-    int nKind = FUN_14093e2b0(pAchieve->GetCondType());
-    if (nKind == 0)
-        strText = FUN_140632a60(0x800, FUN_14093f4d0((int)(nProgress / 60)), FUN_14093f4d0((int)(nValue / 60)));
-    else if (nKind == 1)
+    switch (FUN_14093e2b0(pAchieve->GetCondType()))
+    {
+    case 1:
         strText = FUN_140632a60(0x800, FUN_14093f4d0((int)nProgress), FUN_14093f4d0((int)nValue));
-    else if (nKind == 2)
+        break;
+    case 2:
         strText = FUN_1408f71a0(CStringW(L"s_achieve_renderer_count_distance"), FUN_14093f670((int)nProgress), FUN_14093f670((int)nValue));
-    else
+        break;
+    case 0:
+        strText = FUN_140632a60(0x800, FUN_14093f4d0((int)(nProgress / 60)), FUN_14093f4d0((int)(nValue / 60)));
+        break;
+    default:
         strText = FormatStringId(0x7ff, nProgress, nValue);
+        break;
+    }
     return strText;
 }
 
 // The progress text of the current grade of an achievement ("3/10").
 // @0x14093c320
-// MS2-FUNCTIONAL: the temporaries of the nested string builders are not byte-matched
 CStringW FUN_14093c320(CAchieve* pAchieve)
 {
     if (pAchieve == 0)
@@ -1017,29 +1012,33 @@ CStringW FUN_14093c320(CAchieve* pAchieve)
     if (pGrade.IsNull())
         return CStringW(L"");
     __int64 nProgress = pAchieve->GetProgress();
-    unsigned __int64 nTarget = pGrade->m_pCondition->m_target.GetFirstValue();
+    __int64 nTarget = pGrade->m_pCondition->m_target.GetFirstValue();
     CStringW strText;
-    int nKind = FUN_14093e2b0(pAchieve->GetCondType());
-    if (nKind == 0)
-        strText = FUN_14093e190(pAchieve->GetId(), FUN_14093f4d0((int)(nProgress / 60)), FUN_14093f4d0((int)(nTarget / 60)));
-    else if (nKind == 1)
-        strText = FUN_14093e190(pAchieve->GetId(), FUN_14093f4d0((int)nProgress), FUN_14093f4d0((int)nTarget));
-    else if (nKind == 2)
-        strText = FUN_14093e190(pAchieve->GetId(), FUN_14093f670((int)nProgress), FUN_14093f670((int)nTarget));
-    else if (nKind == 3)
+    switch (FUN_14093e2b0(pAchieve->GetCondType()))
     {
+    case 1:
+        strText = FUN_14093e190(pAchieve->GetId(), FUN_14093f4d0((int)nProgress), FUN_14093f4d0((int)nTarget));
+        break;
+    case 2:
+        strText = FUN_14093e190(pAchieve->GetId(), FUN_14093f670((int)nProgress), FUN_14093f670((int)nTarget));
+        break;
+    case 0:
+        strText = FUN_14093e190(pAchieve->GetId(), FUN_14093f4d0((int)(nProgress / 60)), FUN_14093f4d0((int)(nTarget / 60)));
+        break;
+    case 3:
         if (nTarget != 0)
             nProgress = nProgress - (nTarget - 1);
         strText = FUN_14093e000(pAchieve->GetId(), nProgress, nTarget);
-    }
-    else if (nKind == 4)
+        break;
+    case 4:
         strText = FUN_14093e000(pAchieve->GetId(), nProgress, nTarget);
+        break;
+    }
     return strText;
 }
 
 // The requirement text of one grade ("collect 10"); bRaw keeps the colour tags.
 // @0x14093c8d0
-// MS2-FUNCTIONAL: the temporaries of the nested string builders are not byte-matched
 CStringW FUN_14093c8d0(int nId, int nGrade, int bRaw)
 {
     MS2Ptr<CAchieveData> pData = GetAchieveData(nId);
@@ -1048,18 +1047,24 @@ CStringW FUN_14093c8d0(int nId, int nGrade, int bRaw)
     MS2Ptr<CAchieveGradeData> pGrade = pData->GetGrade(nGrade);
     if (pGrade.IsNull())
         return CStringW(L"");
-    unsigned __int64 nGoal = pGrade->m_pCondition->m_nGoal;
-    unsigned __int64 nTarget = pGrade->m_pCondition->m_target.GetFirstValue();
+    __int64 nGoal = pGrade->m_pCondition->m_nGoal;
+    __int64 nTarget = pGrade->m_pCondition->m_target.GetFirstValue();
     CStringW strText;
-    int nKind = FUN_14093e2b0(pGrade->m_pCondition->m_nType);
-    if (nKind == 0)
-        strText = FUN_14093dee0(nId, FUN_14093f4d0((int)(nGoal / 60)), FUN_14093f4d0((int)(nTarget / 60)));
-    else if (nKind == 1)
+    switch (FUN_14093e2b0(pGrade->m_pCondition->m_nType))
+    {
+    case 1:
         strText = FUN_14093dee0(nId, FUN_14093f4d0((int)nGoal), FUN_14093f4d0((int)nTarget));
-    else if (nKind == 2)
+        break;
+    case 2:
         strText = FUN_14093dee0(nId, FUN_14093f670((int)nGoal), FUN_14093f670((int)nTarget));
-    else
+        break;
+    case 0:
+        strText = FUN_14093dee0(nId, FUN_14093f4d0((int)(nGoal / 60)), FUN_14093f4d0((int)(nTarget / 60)));
+        break;
+    default:
         strText = FUN_14093dd50(nId, nGoal, nTarget);
+        break;
+    }
     if (bRaw == 0)
         FUN_141842290(strText);
     return strText;
@@ -1123,7 +1128,7 @@ CStringW FUN_14093ce70(int nId, int nGrade)
                 Unk_AmColorSet set = FUN_140281980()->FUN_140558ad0(nCode);
                 if (set.FUN_14056d460() != 0)
                 {
-                    for (unsigned i = 0; i < set.FUN_14056d540()->FUN_140570e10(); i++)
+                    for (size_t i = 0; i < set.FUN_14056d540()->FUN_140570e10(); i++)
                     {
                         Unk_AmColorElem elem(set.FUN_14056d540()->FUN_140570dd0(i));
                         if (elem.FUN_14056d570()->m_nAchieveId == nId)
@@ -1188,44 +1193,52 @@ int FUN_14093dc90(int nId, int nGrade, CStringW& strIcon, CStringW& strMsg)
 CStringW FUN_14093dd50(int nId, __int64 nA, __int64 nB)
 {
     MS2Ptr<CAchieveUIData> pUI = CAchieveUIData::Find(nId);
-    if (pUI.get() == 0)
-        return CStringW(L"");
-    if (pUI->m_strManualDesc.GetLength() == 0)
+    if (pUI.get() != 0)
+    {
+        if (pUI->m_strManualDesc.GetLength() != 0)
+            return CStringW(pUI->m_strManualDesc);
         return StringFormat((LPCWSTR)pUI->m_strDesc, FUN_1409404f0(nA), FUN_1409404f0(nB));
-    return CStringW(pUI->m_strManualDesc);
+    }
+    return CStringW(L"");
 }
 
 // @0x14093dee0
-CStringW FUN_14093dee0(int nId, CStringW strA, CStringW strB)
+CStringW FUN_14093dee0(int nId, const CStringW& strA, const CStringW& strB)
 {
     MS2Ptr<CAchieveUIData> pUI = CAchieveUIData::Find(nId);
-    if (pUI.get() == 0)
-        return CStringW(L"");
-    if (pUI->m_strManualDesc.GetLength() == 0)
+    if (pUI.get() != 0)
+    {
+        if (pUI->m_strManualDesc.GetLength() != 0)
+            return CStringW(pUI->m_strManualDesc);
         return StringFormat((LPCWSTR)pUI->m_strDesc, strA, strB);
-    return CStringW(pUI->m_strManualDesc);
+    }
+    return CStringW(L"");
 }
 
 // @0x14093e000
 CStringW FUN_14093e000(int nId, __int64 nA, __int64 nB)
 {
     MS2Ptr<CAchieveUIData> pUI = CAchieveUIData::Find(nId);
-    if (pUI.get() == 0)
-        return CStringW(L"");
-    if (pUI->m_strManualComplete.GetLength() == 0)
+    if (pUI.get() != 0)
+    {
+        if (pUI->m_strManualComplete.GetLength() != 0)
+            return CStringW(pUI->m_strManualComplete);
         return StringFormat((LPCWSTR)pUI->m_strComplete, FUN_1409404f0(nA), FUN_1409404f0(nB));
-    return CStringW(pUI->m_strManualComplete);
+    }
+    return CStringW(L"");
 }
 
 // @0x14093e190
-CStringW FUN_14093e190(int nId, CStringW strA, CStringW strB)
+CStringW FUN_14093e190(int nId, const CStringW& strA, const CStringW& strB)
 {
     MS2Ptr<CAchieveUIData> pUI = CAchieveUIData::Find(nId);
-    if (pUI.get() == 0)
-        return CStringW(L"");
-    if (pUI->m_strManualComplete.GetLength() == 0)
+    if (pUI.get() != 0)
+    {
+        if (pUI->m_strManualComplete.GetLength() != 0)
+            return CStringW(pUI->m_strManualComplete);
         return StringFormat((LPCWSTR)pUI->m_strComplete, strA, strB);
-    return CStringW(pUI->m_strManualComplete);
+    }
+    return CStringW(L"");
 }
 
 // How the progress of a condition type is shown: 0 minutes, 1 seconds, 2 distance, 3 stack, 4 plain count.
@@ -1295,22 +1308,19 @@ CAchieveCategory::~CAchieveCategory()
 
 #ifndef MS2_HOOK_DLL
 // @0x14093e610
-// MS2-FUNCTIONAL: the exe builds the file / directory CStringA temps with early destruction; no source form found
-bool CAchieveCategory::Load()
+int CAchieveCategory::Load()
 {
     TiXmlDocument doc;
-    CStringA strPath = FUN_14071a5b0(CStringA("Table"), CStringA("achieveCategory.xml"));
-    const char* pszPath = strPath;
-    if (FUN_140166420()->FUN_1403974b0(&doc, pszPath, 0, true, false) == 0)
-        return false;
+    CStringA strPath = FUN_14071a5b0("Table", "achieveCategory.xml");
+    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+        return 0;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
     {
         FUN_14015eb90(FUN_140166440(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
-        return false;
+        return 0;
     }
     Unk_ElemArray aElem;
-    aElem.FUN_140163e20();
     FUN_14028faa0(pRoot, "category", "id", &aElem);
     for (unsigned __int64 i = 0; i < aElem.FUN_14016d900(); i++)
     {
@@ -1334,8 +1344,7 @@ bool CAchieveCategory::Load()
         s_aCategory.Add(pCat);
     }
     SetInit(true);
-    aElem.FUN_1401644e0();
-    return true;
+    return 1;
 }
 #endif
 
@@ -1459,17 +1468,18 @@ int CAchieveCategory::Matches(unsigned nAchieveId)
     MS2Ptr<CAchieveData> pData = GetAchieveData(nAchieveId);
     if (pData.IsNull())
         return 0;
-    if (m_nTab == 0)
+    switch (m_nTab)
     {
+    case 1:
+        return 0;
+    case 2:
+        if (pData->m_nType != 9)
+            return 0;
+        break;
+    case 0:
         if (pData->m_nType == 9)
             return 0;
-    }
-    else
-    {
-        if (m_nTab == 1)
-            return 0;
-        if (m_nTab == 2 && pData->m_nType != 9)
-            return 0;
+        break;
     }
     if (m_strCategoryTag.GetLength() != 0)
     {
@@ -1516,15 +1526,15 @@ CStringW FUN_14093f670(int nValue)
     {
         strText = FUN_1408116a0(0x778, nValue);
     }
-    else if (nValue % 1000 == 0)
-    {
-        int nKilo = nValue / 1000;
-        strText = FUN_1408116a0(0x779, nKilo);
-    }
-    else
+    else if (nValue % 1000 != 0)
     {
         float fKilo = (float)nValue / 1000.0f;
         strText = FormatStringId(0x77a, fKilo);
+    }
+    else
+    {
+        int nKilo = nValue / 1000;
+        strText = FUN_1408116a0(0x779, nKilo);
     }
     return strText;
 }
@@ -1608,10 +1618,7 @@ CAchieveUIData::SpecialRewardDesc::SpecialRewardDesc()
 {
 }
 
-// @0x140940d20
-CAchieveUIData::SpecialRewardDesc::~SpecialRewardDesc()
-{
-}
+// ~SpecialRewardDesc (0x140940d20) is implicit: an explicit empty body keeps a dead vptr store the exe does not have.
 
 // @0x1409411e0
 void CAchieveCategory::CheckInit()

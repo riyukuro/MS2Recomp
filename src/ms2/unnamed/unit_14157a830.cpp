@@ -4,6 +4,8 @@
 #define MS2_THIS_FILE ""
 #include "ms2/placeholder/ms2stdafx.h"
 #include "ms2/placeholder/nmfunc.h"
+#include "ms2/placeholder/nmstream.h"
+#include "ms2/placeholder/nmencoder.h"
 #include "ms2/ms2recover.h"
 
 extern void FUN_14156bcb0(void*, void*, void*);
@@ -13,7 +15,7 @@ extern void FUN_14156bf10(void*);
 extern void FUN_14156ac20(void*, unsigned int);
 extern void FUN_1415f9990(void*);
 extern int FUN_1415fb750(void*);
-extern int FUN_1415fb6d0(void*);
+extern int FUN_1415fb6d0(CNMSerializableDecoder*);
 
 // MS2-FUNCTIONAL 0x14157a830: initializes the serializable game-code record.
 // @0x14157a830
@@ -26,26 +28,17 @@ CNMGameCode::CNMGameCode(int code) : CNMSerializable(0x6763,1,1),m_nGameCode(cod
 // @0x14157a8c0
 unsigned int CNMGameCode::EncodeFramed(CNMStream* pStream)
 {
-    unsigned char storage[0x18];
-    FUN_14156bcb0(storage, pStream, this);
-    void** vtable = *reinterpret_cast<void***>(this);
-    using Method = unsigned int(__fastcall*)(CNMGameCode*, CNMEncoder*, CNMStream*);
-    const unsigned int result = reinterpret_cast<Method>(vtable[2])(this, reinterpret_cast<CNMEncoder*>(storage), pStream);
-    FUN_14156bd50(storage);
-    return result;
+    CNMSerializableEncoder encoder(pStream, this);
+    return CNMGameCode::Encode(reinterpret_cast<CNMEncoder*>(&encoder), pStream);
 }
 
 // MS2-FUNCTIONAL 0x14157a920: dispatches through the recovered virtual slots.
 // @0x14157a920
 unsigned int CNMGameCode::EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream)
 {
-    void** vtable = *reinterpret_cast<void***>(this);
-    if (m_bFormat == 1) {
-        using Method = unsigned int(__fastcall*)(CNMGameCode*, CNMEncoder*, CNMStream*);
-        return reinterpret_cast<Method>(vtable[2])(this, pEncoder, pStream);
-    }
-    using Framed = unsigned int(__fastcall*)(CNMGameCode*, CNMStream*);
-    return reinterpret_cast<Framed>(vtable[3])(this, pStream);
+    if (m_bFormat == 1)
+        return CNMGameCode::Encode(pEncoder, pStream);
+    return CNMGameCode::EncodeFramed(pStream);
 }
 
 // @0x14157a980
@@ -60,29 +53,19 @@ unsigned int CNMGameCode::Encode(CNMEncoder* pEncoder, CNMStream*)
 // @0x14157a9c0
 unsigned int CNMGameCode::DecodeFramed(CNMStream* pStream)
 {
-    unsigned char storage[0x38];
-    FUN_14156be10(storage, pStream, this);
-    unsigned int result = 0;
-    if (FUN_1415fb750(storage) != 0) {
-        void** vtable = *reinterpret_cast<void***>(this);
-        using Method = unsigned int(__fastcall*)(CNMGameCode*, CNMSerializableDecoder*, CNMStream*);
-        result = reinterpret_cast<Method>(vtable[5])(this, reinterpret_cast<CNMSerializableDecoder*>(storage), pStream);
-    }
-    FUN_14156bf10(storage);
-    return result;
+    CNMSerializableDecoder decoder(pStream, this);
+    if (FUN_1415fb750(&decoder) == 0)
+        return 0;
+    return CNMGameCode::Decode(&decoder, pStream);
 }
 
 // MS2-FUNCTIONAL 0x14157aa50: dispatches through the recovered virtual slots.
 // @0x14157aa50
 unsigned int CNMGameCode::DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream)
 {
-    void** vtable = *reinterpret_cast<void***>(this);
-    if (FUN_1415fb6d0(pDecoder) == 2) {
-        using Framed = unsigned int(__fastcall*)(CNMGameCode*, CNMStream*);
-        return reinterpret_cast<Framed>(vtable[6])(this, pStream);
-    }
-    using Method = unsigned int(__fastcall*)(CNMGameCode*, CNMSerializableDecoder*, CNMStream*);
-    return reinterpret_cast<Method>(vtable[5])(this, pDecoder, pStream);
+    if (FUN_1415fb6d0(pDecoder) == 2)
+        return CNMGameCode::DecodeFramed(pStream);
+    return CNMGameCode::Decode(pDecoder, pStream);
 }
 
 // @0x14157aab0

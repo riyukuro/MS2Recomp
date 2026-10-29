@@ -207,7 +207,6 @@ bool FUN_1416bafb0(void* a, void* step)
 #endif
 
 // @0x1416bb0a0
-// MS2-FUNCTIONAL: stack-slot layout of temps differs (frame 0x98 matches, slot order does not)
 void WorldFadeOutRenderStep::vfunc_19()
 {
     if (FUN_1412642d0(this) == 1) {
@@ -222,8 +221,7 @@ void WorldFadeOutRenderStep::vfunc_19()
             NiRenderedTexture* pp = FUN_1416a23f0(m_70, 5);
             NiRenderer* rn = FUN_1414fd170(h);
             Ni2DBuffer* r = rn->GetDefaultRenderTargetGroup()->GetBuffer(0);
-            Ni2DBuffer* arg = pp->GetBuffer();
-            r->Copy(arg, reinterpret_cast<const NiRect<unsigned int>*>(&rect), reinterpret_cast<const NiRect<unsigned int>*>(&rect), (Ni2DBuffer::CopyFilterPreference)0);
+            r->Copy(pp->GetBuffer(), reinterpret_cast<const NiRect<unsigned int>*>(&rect), reinterpret_cast<const NiRect<unsigned int>*>(&rect), (Ni2DBuffer::CopyFilterPreference)0);
             s_fadeStartTick = GetTickCount();
         }
     }

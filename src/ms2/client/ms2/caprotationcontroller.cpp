@@ -60,7 +60,7 @@ struct Unk_CapItemData
 {
     unsigned char FUN_140547130();                              // customizing allowed
     unsigned char FUN_140547150();                              // right button allowed
-    char FUN_1405471b0();                                       // the item is a rotatable cap
+    bool FUN_1405471b0();                                       // the item is a rotatable cap
 };
 struct Unk_CapItem
 {
@@ -74,8 +74,8 @@ struct Unk_CapModelData
     char m_pad_00[0x58];
     float m_fScale;                                             // +0x58 world scale of the cap node
     char m_pad_5c[0x18];
-    Vector3 m_kOffset;                                  // +0x74 world offset of the cap node
-    Vector3 m_kEuler;                                   // +0x80 euler angles (degrees) of the cap
+    Vector3 m_aOffset[1];                               // +0x74 world offset of the cap node
+    Vector3 m_aEuler[1];                                // +0x80 euler angles (degrees) of the cap
 };
 MS2_CHECK_SIZE(Unk_CapModelData, 0x8c);
 
@@ -129,18 +129,17 @@ Unk_CapCursor* FUN_140aadf80();
 struct Unk_CapCamera
 {
     int FUN_140a18070();                                        // camera ready
-    char FUN_140af0520(const Unk_PickXY& kCursor, Vector3* pOrigin, Vector3* pDir);   // cursor ray
+    bool FUN_140af0520(const Unk_PickXY& kCursor, Vector3* pOrigin, Vector3* pDir);   // cursor ray
 };
 Unk_CapCamera* FUN_1409478c0();
 
-struct Unk_CapInput { char FUN_14116d950(int nKey, int nA, int nB); };   // key state
+struct Unk_CapInput { bool FUN_14116d950(int nKey, int nA, int nB); };   // key state
 Unk_CapInput* FUN_14025e7c0();
 
 float FUN_140a17940(float fValue, float fMin, float fMax);      // clamp
 float FUN_140a34650(float fCos);                                // acos
 void FUN_140968990(Unk_NiPoint3* p);                            // efd::Point3::Unitize
 void FUN_142084020(Unk_EfdMatrix3* p, float fY, float fX, float fZ);   // efd::Matrix3::FromEulerAnglesYXZ
-void FUN_140a33310(void* pQuat);                                // efd::Quaternion::Quaternion()
 void FUN_14209bc90(void* pQuat, float fAngle, const Vector3* pAxis);   // efd::Quaternion::FromAngleAxis
 void FUN_140a34450(const void* pQuat, Unk_EfdMatrix3* pMat);   // efd::Quaternion::ToRotation
 char FUN_14147aa60(const Vector3& kOrigin, const Vector3& kDir, const Vector3& kCenter,
@@ -249,165 +248,152 @@ int CCapRotationController::vfunc_29()
 }
 
 // @0x140b00960
-// MS2-FUNCTIONAL: local/temp layout differs from exe (frame size, CString temps); behavior equivalent
 void CCapRotationController::vfunc_28()
 {
     Unk_CapItem* pItem = m_spEquipItem->FUN_1411dc7f0();
     if (pItem != 0)
     {
-        Unk_CapItemData* pData = pItem->FUN_14053ec70();
-        if (pData->FUN_1405471b0() != 0)
+        if (pItem->FUN_14053ec70()->FUN_1405471b0() != 0)
         {
             m_aPartNames.RemoveAll();
-            m_aPartNames.Add(CString("CP"));
-            m_aPartNames.Add(CString("CP:0"));
-            m_aPartNames.Add(CString("CP:1"));
-            m_aPartNames.Add(CString("CP:2"));
-            m_aPartNames.Add(CString("CPA:0"));
-            m_aPartNames.Add(CString("Editable Mesh"));
+            m_aPartNames.Add("CP");
+            m_aPartNames.Add("CP:0");
+            m_aPartNames.Add("CP:1");
+            m_aPartNames.Add("CP:2");
+            m_aPartNames.Add("CPA:0");
+            m_aPartNames.Add("Editable Mesh");
             m_aMeshNames.RemoveAll();
-            m_aMeshNames.Add(CString("HR"));
-            m_aMeshNames.Add(CString("HR1"));
-            m_aMeshNames.Add(CString("HR2"));
-            m_aMeshNames.Add(CString("HR:0"));
-            m_aMeshNames.Add(CString("HR:1"));
-            m_aMeshNames.Add(CString("HR:2"));
-            m_aMeshNames.Add(CString("HR0:0"));
-            m_aMeshNames.Add(CString("HR1:1"));
+            m_aMeshNames.Add("HR");
+            m_aMeshNames.Add("HR1");
+            m_aMeshNames.Add("HR2");
+            m_aMeshNames.Add("HR:0");
+            m_aMeshNames.Add("HR:1");
+            m_aMeshNames.Add("HR:2");
+            m_aMeshNames.Add("HR0:0");
+            m_aMeshNames.Add("HR1:1");
         }
     }
 }
 
 // @0x140b00d30
-// MS2-FUNCTIONAL: local/temp layout differs from exe (frame size, CString temps); behavior equivalent
 void CCapRotationController::vfunc_30(const NiPoint3& kPos)
 {
-    if (m_spMesh)
-    {
-        Unk_CapPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
-        if (pPlayer != 0)
-        {
-            Unk_EfdMatrix3 kRotZ;
-            kRotZ.FUN_142084c10((pPlayer->vfunc_20().z * 3.1415927f) / 180.0f);
-            Vector3 kPoint = reinterpret_cast<const Vector3&>(kPos);
-            m_kDragDir = kPoint.FUN_140965c40(FUN_140947900(m_spMesh.operator->()));
-            m_fRadius = m_kDragDir.FUN_140968990();
-            m_kDragDir = kRotZ.FUN_140a00720(m_kDragDir);
-            m_kCurEuler = GetPartEuler();
-            if (m_pListener != 0)
-                static_cast<Unk_CapListener*>(m_pListener)->vfunc_1(this);
-        }
-    }
+    if (!m_spMesh)
+        return;
+    Unk_CapPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    if (pPlayer == 0)
+        return;
+    Unk_EfdMatrix3 kRotZ;
+    kRotZ.FUN_142084c10((pPlayer->vfunc_20().z * 3.1415927f) / 180.0f);
+    Vector3 kPoint = reinterpret_cast<const Vector3&>(kPos);
+    m_kDragDir = kPoint.FUN_140965c40(FUN_140947900(m_spMesh.operator->()));
+    m_fRadius = m_kDragDir.FUN_140968990();
+    m_kDragDir = kRotZ.FUN_140a00720(m_kDragDir);
+    m_kCurEuler = GetPartEuler();
+    if (m_pListener != 0)
+        static_cast<Unk_CapListener*>(m_pListener)->vfunc_1(this);
 }
 
 // @0x140b00f20
-// MS2-FUNCTIONAL: local/temp layout differs from exe (frame size, CString temps); behavior equivalent
 void CCapRotationController::vfunc_31()
 {
-    if (m_spMesh)
+    if (!m_spMesh)
+        return;
+    Unk_CapPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    if (pPlayer == 0)
+        return;
+    Unk_PickXY kCursor = DAT_143b02320;
+    if (FUN_140aadf80()->FUN_141b90e30(&kCursor.x, &kCursor.y) != 0)
     {
-        Unk_CapPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
-        if (pPlayer != 0)
+        if (FUN_1409478c0()->FUN_140a18070() != 0)
         {
-            Unk_PickXY kCursor = DAT_143b02320;
-            if (FUN_140aadf80()->FUN_141b90e30(&kCursor.x, &kCursor.y) != 0)
+            Unk_GVec3 kOrigin;
+            Unk_GVec3 kDir;
+            if (FUN_1409478c0()->FUN_140af0520(kCursor, &kOrigin, &kDir) != 0)
             {
-                if (FUN_1409478c0()->FUN_140a18070() != 0)
-                {
-                    Unk_GVec3 kOrigin;
-                    Unk_GVec3 kDir;
-                    if (FUN_1409478c0()->FUN_140af0520(kCursor, &kOrigin, &kDir) != 0)
-                    {
-                        Unk_GVec3 kHit;
-                        const Vector3& kCenter = FUN_140947900(m_spMesh.operator->());
-                        FUN_14147aa60(kOrigin, kDir, kCenter, m_fRadius, &kHit);
-                        Vector3 kDelta = kHit.FUN_140965c40(FUN_140947900(m_spMesh.operator->()));
-                        kDelta.FUN_140968990();
-                        Unk_EfdMatrix3 kRotZ;
-                        kRotZ.FUN_142084c10((pPlayer->vfunc_20().z * 3.1415927f) / 180.0f);
-                        kDelta = kRotZ.FUN_140a00720(kDelta);
-                        Vector3 kAxis = m_kDragDir.FUN_140a00e10(kDelta);
-                        kAxis.FUN_140968990();
-                        float fAngle = SafeAcos(m_kDragDir.FUN_140a00f20(kDelta));
-                        char kQuat[16];
-                        FUN_140a33310(kQuat);
-                        FUN_14209bc90(kQuat, fAngle, &kAxis);
-                        Unk_EfdMatrix3 kRot;
-                        FUN_140a34450(kQuat, &kRot);
-                        kRot = kRot.FUN_140a33480(m_kInitRot);
-                        Vector3 kEuler;
-                        kRot.FUN_142085840(kEuler.x, kEuler.y, kEuler.z);
-                        kEuler.x = WrapAngle((kEuler.x * 180.0f) / 3.1415927f, m_kMinEuler.x, m_kMaxEuler.x);
-                        kEuler.y = WrapAngle((kEuler.y * 180.0f) / 3.1415927f, m_kMinEuler.y, m_kMaxEuler.y);
-                        kEuler.z = m_kCurEuler.z;
-                        SetPartEuler(kEuler);
-                    }
-                }
+                Unk_GVec3 kHit;
+                FUN_14147aa60(kOrigin, kDir, FUN_140947900(m_spMesh.operator->()), m_fRadius, &kHit);
+                Vector3 kDelta = kHit.FUN_140965c40(FUN_140947900(m_spMesh.operator->()));
+                kDelta.FUN_140968990();
+                Unk_EfdMatrix3 kRotZ;
+                kRotZ.FUN_142084c10((pPlayer->vfunc_20().z * 3.1415927f) / 180.0f);
+                kDelta = kRotZ.FUN_140a00720(kDelta);
+                Vector3 kAxis = m_kDragDir.FUN_140a00e10(kDelta);
+                kAxis.FUN_140968990();
+                float fAngle = SafeAcos(m_kDragDir.FUN_140a00f20(kDelta));
+                efd::Quaternion kQuat;
+                FUN_14209bc90(&kQuat, fAngle, &kAxis);
+                Unk_EfdMatrix3 kRot;
+                FUN_140a34450(&kQuat, &kRot);
+                kRot = kRot.FUN_140a33480(m_kInitRot);
+                Vector3 kEuler;
+                kRot.FUN_142085840(kEuler.x, kEuler.y, kEuler.z);
+                kEuler.x = WrapAngle((kEuler.x * 180.0f) / 3.1415927f, m_kMinEuler.x, m_kMaxEuler.x);
+                kEuler.y = WrapAngle((kEuler.y * 180.0f) / 3.1415927f, m_kMinEuler.y, m_kMaxEuler.y);
+                kEuler.z = m_kCurEuler.z;
+                SetPartEuler(kEuler);
             }
         }
     }
 }
 
 // @0x140b01310
-// MS2-FUNCTIONAL: local/temp layout differs from exe (frame size, CString temps); behavior equivalent
 void CCapRotationController::vfunc_32(const NiPoint3& kHit, const NiPoint3& kNormal, const NiPoint2& kUV, float fValue)
 {
     Unk_CapPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
-    Unk_CapEntityLoader* pLoader;
-    if (pPlayer != 0 && !(m_spPart == (Unk_PickTarget*)0) && (pLoader = FUN_141b6f910()) != 0)
+    if (pPlayer == 0)
+        return;
+    if (m_spPart == (Unk_PickTarget*)0)
+        return;
+    Unk_CapEntityLoader* pLoader = FUN_141b6f910();
+    if (pLoader == 0)
+        return;
+    Unk_CapEntityKey kKey;
+    void* pScene = pLoader->FUN_140999440(pPlayer->FUN_14123c460(kKey));
+    if (pScene == 0)
+        return;
+    Unk_CapModelData* pData = reinterpret_cast<Unk_CapModelData*>(
+        m_spEquipItem->GetItem()->FUN_140527870());
+    if (pData == 0)
+        return;
+    Unk_CapItem* pItem = m_spEquipItem->FUN_1411dc7f0();
+    if (pItem == 0)
+        return;
+    if (pItem->FUN_14053ec70()->FUN_1405471b0() != 0)
     {
-        Unk_CapEntityKey kKey;
-        void* pScene = pLoader->FUN_140999440(pPlayer->FUN_14123c460(kKey));
-        if (pScene != 0)
+        if (FUN_14025e7c0()->FUN_14116d950(0x1d, 0, 0) != 0)
         {
-            Unk_CapModelData* pData = reinterpret_cast<Unk_CapModelData*>(
-                m_spEquipItem->GetItem()->FUN_140527870());
-            if (pData != 0)
+            vfunc_31();
+        }
+        else
+        {
+            Vector3 kN = reinterpret_cast<const Vector3&>(kNormal);
+            kN.FUN_140968990();
+            Vector3 kSide = kN.FUN_140a00e10(DAT_143a08cf8).FUN_1409f7960();
+            kSide.FUN_140968990();
+            Unk_NiPoint3 kUp(kN.FUN_140a00e10(kSide));
+            FUN_140968990(&kUp);
+            Unk_NiMatrix3 kFix;
+            FUN_142084020(&kFix, 1.5707964f, 3.1415927f, 0.0f);
+            NiTransform kXf;
+            kXf.m_fScale = pPlayer->FUN_14123c260();
+            Unk_NiMatrix3 kRot(Unk_NiMatrix3(kN, kSide, kUp).FUN_140a33480(kFix));
+            reinterpret_cast<Unk_NiMatrix3&>(kXf.m_Rotate) = kRot;
+            FUN_14097fad0(&kXf.m_Translate, &kHit);
+            Unk_MeshSet* pSet = FUN_141201c90(m_spPart.operator->());
+            Unk_MeshSet& kSet = *pSet;
+            Unk_MeshSet::const_iterator itEnd = kSet.end();
+            for (Unk_MeshSet::const_iterator it = kSet.begin(); it != itEnd; ++it)
             {
-                Unk_CapItem* pItem = m_spEquipItem->FUN_1411dc7f0();
-                if (pItem != 0)
-                {
-                    if (pItem->FUN_14053ec70()->FUN_1405471b0() != 0)
-                    {
-                        if (FUN_14025e7c0()->FUN_14116d950(0x1d, 0, 0) == 0)
-                        {
-                            Vector3 kN = reinterpret_cast<const Vector3&>(kNormal);
-                            kN.FUN_140968990();
-                            Vector3 kSide = kN.FUN_140a00e10(DAT_143a08cf8).FUN_1409f7960();
-                            kSide.FUN_140968990();
-                            Unk_NiPoint3 kUp(kN.FUN_140a00e10(kSide));
-                            FUN_140968990(&kUp);
-                            Unk_NiMatrix3 kFix;
-                            FUN_142084020(&kFix, 1.5707964f, 3.1415927f, 0.0f);
-                            NiTransform kXf;
-                            kXf.m_fScale = pPlayer->FUN_14123c260();
-                            Unk_NiMatrix3 kBasis(Unk_NiPoint3(kN), Unk_NiPoint3(kSide), kUp);
-                            Unk_NiMatrix3 kRot(kBasis.FUN_140a33480(kFix));
-                            reinterpret_cast<Unk_NiMatrix3&>(kXf.m_Rotate) = kRot;
-                            FUN_14097fad0(&kXf.m_Translate, &kHit);
-                            Unk_MeshSet* pSet = FUN_141201c90(m_spPart.operator->());
-                            Unk_MeshSet::const_iterator itEnd = pSet->end();
-                            Unk_MeshSet::const_iterator it = pSet->begin();
-                            while (it != itEnd)
-                            {
-                                NiAVObjectPtr spNode(*it);
-                                FUN_140aacaa0(spNode.operator->(), kXf);
-                                spNode.operator->()->UpdateWorldData();
-                                NiTransform kWorld = *FUN_140a33f90(spNode.operator->());
-                                pData->m_fScale = kWorld.m_fScale;
-                                pData->m_kOffset = reinterpret_cast<const Vector3&>(kWorld.m_Translate);
-                                FUN_141422950(kWorld, &pData->m_kEuler);
-                                m_spPart->FUN_141200160(pData->m_kOffset);
-                                m_spPart->FUN_141200100(pData->m_kEuler);
-                                ++it;
-                            }
-                        }
-                        else
-                        {
-                            vfunc_31();
-                        }
-                    }
-                }
+                NiAVObjectPtr spNode(*it);
+                FUN_140aacaa0(spNode.operator->(), kXf);
+                spNode.operator->()->UpdateWorldData();
+                NiTransform kWorld = *FUN_140a33f90(spNode.operator->());
+                pData->m_fScale = kWorld.m_fScale;
+                pData->m_aOffset[0] = reinterpret_cast<const Vector3&>(kWorld.m_Translate);
+                FUN_141422950(kWorld, &pData->m_aEuler[0]);
+                m_spPart->FUN_141200160(pData->m_aOffset[0]);
+                m_spPart->FUN_141200100(pData->m_aEuler[0]);
             }
         }
     }
@@ -432,29 +418,26 @@ void CCapRotationController::vfunc_34(const NiPoint3& kPos)
 }
 
 // @0x140b019a0
-// MS2-FUNCTIONAL: local/temp layout differs from exe (frame size, CString temps); behavior equivalent
 void CCapRotationController::vfunc_35()
 {
     Unk_CapPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
-    if (pPlayer != 0)
+    if (pPlayer == 0)
+        return;
+    Unk_PickXY kCursor = DAT_143b02320;
+    if (FUN_140aadf80()->FUN_141b90e30(&kCursor.x, &kCursor.y) != 0)
     {
-        Unk_PickXY kCursor = DAT_143b02320;
-        if (FUN_140aadf80()->FUN_141b90e30(&kCursor.x, &kCursor.y) != 0)
+        if (FUN_1409478c0()->FUN_140a18070() != 0)
         {
-            if (FUN_1409478c0()->FUN_140a18070() != 0)
+            Unk_GVec3 kOrigin;
+            Unk_GVec3 kDir;
+            if (FUN_1409478c0()->FUN_140af0520(kCursor, &kOrigin, &kDir) != 0)
             {
-                Unk_GVec3 kOrigin;
-                Unk_GVec3 kDir;
-                if (FUN_1409478c0()->FUN_140af0520(kCursor, &kOrigin, &kDir) != 0)
-                {
-                    float fDelta = (m_kDragStart.x - kCursor.x) * m_fSpeed;
-                    float fYaw = m_kCurEuler.z + fDelta;
-                    float fWrapped = WrapAngle(fYaw, m_kMinEuler.z, m_kMaxEuler.z);
-                    Vector3 kEuler(m_kCurEuler.x, m_kCurEuler.y, fWrapped);
-                    SetPartEuler(kEuler);
-                    if (m_pListener != 0)
-                        static_cast<Unk_CapListener*>(m_pListener)->vfunc_3(this, fYaw);
-                }
+                float fDelta = (m_kDragStart.x - kCursor.x) * m_fSpeed;
+                float fYaw = m_kCurEuler.z + fDelta;
+                float fWrapped = WrapAngle(fYaw, m_kMinEuler.z, m_kMaxEuler.z);
+                SetPartEuler(Vector3(m_kCurEuler.x, m_kCurEuler.y, fWrapped));
+                if (m_pListener != 0)
+                    static_cast<Unk_CapListener*>(m_pListener)->vfunc_3(this, fYaw);
             }
         }
     }
@@ -467,7 +450,7 @@ void CCapRotationController::vfunc_36()
 }
 
 // @0x140b01bb0
-// MS2-FUNCTIONAL: local/temp layout differs from exe (frame size, CString temps); behavior equivalent
+// MS2-FUNCTIONAL: code and slots identical, but the frame is 0x118 vs the exe's 0x108 (16 unreferenced bytes); behavior equivalent
 int CCapRotationController::InitPart()
 {
     if (!m_spEquipItem)
@@ -479,13 +462,12 @@ int CCapRotationController::InitPart()
     m_spPart = m_spEquipItem->FUN_1411dc950(aParts.GetAt(0));
     if (m_spPart == (Unk_PickTarget*)0)
         return 0;
-    const Unk_CapPartInfo* pInfo = reinterpret_cast<const Unk_CapPartInfo*>(m_spPart->FUN_141200ab0());
-    m_kMinEuler = pInfo->m_kMin;
+    m_kMinEuler = reinterpret_cast<const Unk_CapPartInfo*>(m_spPart->FUN_141200ab0())->m_kMin;
     m_kMaxEuler = reinterpret_cast<const Unk_CapPartInfo*>(m_spPart->FUN_141200ab0())->m_kMax;
     Unk_MeshSet* pSet = FUN_141201c90(m_spPart.operator->());
-    Unk_MeshSet::const_iterator itEnd = pSet->end();
-    Unk_MeshSet::const_iterator it = pSet->begin();
-    while (it != itEnd)
+    Unk_MeshSet& kSet = *pSet;
+    Unk_MeshSet::const_iterator itEnd = kSet.end();
+    for (Unk_MeshSet::const_iterator it = kSet.begin(); it != itEnd; ++it)
     {
         NiAVObjectPtr spNode(*it);
         Unk_SceneWalker walker(spNode.operator NiAVObject*());
@@ -496,13 +478,12 @@ int CCapRotationController::InitPart()
             if (pMesh != 0)
                 m_spMesh = pMesh;
         }
-        ++it;
     }
     if (m_spMesh == 0)
         return 0;
     m_kInitEuler = UpdateRotationMatrix();
     m_aPartNames.RemoveAll();
-    m_aPartNames.Add(CString((const char*)FUN_1409a8b90(m_spMesh.operator->())));
+    m_aPartNames.Add((const char*)FUN_1409a8b90(m_spMesh.operator->()));
     return 1;
 }
 
@@ -530,7 +511,6 @@ Vector3 CCapRotationController::UpdateRotationMatrix()
 }
 
 // @0x140b02180
-// MS2-FUNCTIONAL: struct-return copy / temp layout differs (imul copy)
 Vector3 CCapRotationController::GetPartEuler()
 {
     MS2Ptr<CEquipItem> spItem = m_spPart->FUN_141200a40();
@@ -541,48 +521,40 @@ Vector3 CCapRotationController::GetPartEuler()
     Unk_CapModelData* pData = reinterpret_cast<Unk_CapModelData*>(spItem->GetItem()->FUN_140527870());
     if (pData == 0)
         return DAT_143b01a60;
-    return pData->m_kEuler;
+    return pData->m_aEuler[0];
 }
 
 // @0x140b02310
-// MS2-FUNCTIONAL: struct-return copy / temp layout differs (imul copy)
 void CCapRotationController::SetPartEuler(Vector3 kEuler)
 {
     MS2Ptr<CEquipItem> spItem = m_spPart->FUN_141200a40();
-    if (!(spItem == (CEquipItem*)0))
+    if (spItem == (CEquipItem*)0)
+        return;
+    if (spItem->FUN_1411dc7f0()->FUN_14053c620() != 0xd)
+        return;
+    Unk_CapModelData* pData = reinterpret_cast<Unk_CapModelData*>(spItem->GetItem()->FUN_140527870());
+    if (pData == 0)
+        return;
+    Vector3 kCur = pData->m_aEuler[0];
+    Unk_NiMatrix3 kNew;
+    Unk_NiMatrix3 kOld;
+    kNew.FUN_142083d40((kEuler.x * 3.1415927f) / 180.0f, (kEuler.y * 3.1415927f) / 180.0f, (kEuler.z * 3.1415927f) / 180.0f);
+    kOld.FUN_142083d40((kCur.x * 3.1415927f) / 180.0f, (kCur.y * 3.1415927f) / 180.0f, (kCur.z * 3.1415927f) / 180.0f);
+    NiTransform kDelta;
+    kDelta.MakeIdentity();
+    Unk_NiMatrix3 kRot(reinterpret_cast<const Unk_CapMatrix&>(kOld).FUN_1420845e0().FUN_140a33480(kNew));
+    reinterpret_cast<Unk_NiMatrix3&>(kDelta.m_Rotate) = kRot;
+    Unk_MeshSet* pSet = FUN_141201c90(m_spPart.operator->());
+    Unk_MeshSet& kSet = *pSet;
+    Unk_MeshSet::const_iterator itEnd = kSet.end();
+    for (Unk_MeshSet::const_iterator it = kSet.begin(); it != itEnd; ++it)
     {
-        if (spItem->FUN_1411dc7f0()->FUN_14053c620() == 0xd)
-        {
-            Unk_CapModelData* pData = reinterpret_cast<Unk_CapModelData*>(spItem->GetItem()->FUN_140527870());
-            if (pData != 0)
-            {
-                Vector3 kCur = pData->m_kEuler;
-                Unk_NiMatrix3 kNew;
-                Unk_NiMatrix3 kOld;
-                float fNewX = (kEuler.x * 3.1415927f) / 180.0f;
-                kNew.FUN_142083d40(fNewX, (kEuler.y * 3.1415927f) / 180.0f, (kEuler.z * 3.1415927f) / 180.0f);
-                float fOldX = (kCur.x * 3.1415927f) / 180.0f;
-                kOld.FUN_142083d40(fOldX, (kCur.y * 3.1415927f) / 180.0f, (kCur.z * 3.1415927f) / 180.0f);
-                NiTransform kDelta;
-                kDelta.MakeIdentity();
-                reinterpret_cast<Unk_NiMatrix3&>(kDelta.m_Rotate) =
-                    Unk_NiMatrix3(reinterpret_cast<const Unk_CapMatrix&>(kOld).FUN_1420845e0().FUN_140a33480(kNew));
-                Unk_MeshSet* pSet = FUN_141201c90(m_spPart.operator->());
-                Unk_MeshSet::const_iterator itEnd = pSet->end();
-                Unk_MeshSet::const_iterator it = pSet->begin();
-                while (it != itEnd)
-                {
-                    NiAVObjectPtr spNode(*it);
-                    alignas(8) char kTmp[sizeof(NiTransform)];
-                    NiTransform* pCombined = FUN_140a33de0(FUN_140a33f90(spNode.operator->()), kTmp, &kDelta);
-                    FUN_140aacb60(spNode.operator->(), pCombined);
-                    ++it;
-                }
-                m_spPart->FUN_141200100(kEuler);
-                pData->m_kEuler = kEuler;
-            }
-        }
+        NiAVObjectPtr spNode(*it);
+        alignas(8) char kTmp[sizeof(NiTransform)];
+        FUN_140aacb60(spNode.operator->(), FUN_140a33de0(FUN_140a33f90(spNode.operator->()), kTmp, &kDelta));
     }
+    m_spPart->FUN_141200100(kEuler);
+    pData->m_aEuler[0] = kEuler;
 }
 
 // @0x140b02730

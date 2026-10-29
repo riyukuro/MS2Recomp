@@ -65,7 +65,6 @@
 // MS2-PIN: ?_Tidy@?$vector@U?$pair@HV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@std@@V?$allocator@U?$pair@HV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@std@@@2@@std@@AEAAXXZ 0x140f6bbb0 ; unique
 // MS2-PIN: ?_Ufill@?$vector@PEAVItemSocketSystemPageBase@@V?$allocator@PEAVItemSocketSystemPageBase@@@std@@@std@@AEAAPEAPEAVItemSocketSystemPageBase@@PEAPEAV3@_KAEBQEAV3@@Z 0x140f6bc80 ; prop
 // MS2-PIN: ?_Umove_if_noexcept1@?$vector@PEAVItemSocketSystemPageBase@@V?$allocator@PEAVItemSocketSystemPageBase@@@std@@@std@@AEAAXPEAPEAVItemSocketSystemPageBase@@00U?$integral_constant@_N$00@2@@Z 0x140f6bd00 ; unique
-// MS2-PIN: ??__EInitializeCAtlStringMgr@ATLImplementationDetails@ATL@@YAXXZ 0x140f6bda0 ; probe
 // MS2-PIN: ?_Xlength@?$vector@U?$pair@HV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@std@@V?$allocator@U?$pair@HV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@std@@@2@@std@@CAXXZ 0x140f6bdc0 ; prop
 // MS2-PIN: ?allocate@?$allocator@U?$pair@HV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@std@@@std@@QEAAPEAU?$pair@HV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@2@_K@Z 0x140f6be30 ; unique
 // MS2-PIN: ?capacity@?$vector@U?$pair@HV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@std@@V?$allocator@U?$pair@HV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@std@@@2@@std@@QEBA_KXZ 0x140f6c180 ; prop
@@ -80,9 +79,10 @@
 // MS2-PIN: ?reserve@?$vector@U?$pair@HV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@std@@V?$allocator@U?$pair@HV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@std@@@2@@std@@QEAAX_K@Z 0x140f6c490 ; unique
 // MS2-PIN: ?size@?$vector@U?$pair@HV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@std@@V?$allocator@U?$pair@HV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@std@@@2@@std@@QEBA_KXZ 0x140f6c520 ; prop
 // MS2-PINS-END tplpin
-// MS2-PIN: ??A?$vector@PEAVItemSocketSystemPageBase@@V?$allocator@PEAVItemSocketSystemPageBase@@@std@@@std@@QEBAAEBQEAVItemSocketSystemPageBase@@_K@Z 0x140f6c100 ; w332 hand
+// MS2-PIN: ?at@?$vector@PEAVItemSocketSystemPageBase@@V?$allocator@PEAVItemSocketSystemPageBase@@@std@@@std@@QEBAAEBQEAVItemSocketSystemPageBase@@_K@Z 0x140f6c100 ; w332 hand (size check + _Xrange: at(), not operator[])
 // MS2-PIN: ?resize@?$vector@PEAVItemSocketSystemPageBase@@V?$allocator@PEAVItemSocketSystemPageBase@@@std@@@std@@QEAAX_KAEBQEAVItemSocketSystemPageBase@@@Z 0x140f6be60 ; w332 hand
-// MS2-PIN: ?_Xlength@?$vector@PEAVItemSocketSystemPageBase@@V?$allocator@PEAVItemSocketSystemPageBase@@@std@@@std@@CAXXZ 0x140f6bde0 ; w332 hand
+// MS2-PIN: ?_Xlength@?$vector@PEAVItemSocketSystemPageBase@@V?$allocator@PEAVItemSocketSystemPageBase@@@std@@@std@@CAXXZ 0x140f6bda0 ; vector<T> too long
+// MS2-PIN: ?_Xrange@?$vector@PEAVItemSocketSystemPageBase@@V?$allocator@PEAVItemSocketSystemPageBase@@@std@@@std@@CAXXZ 0x140f6bde0 ; invalid vector<T> subscript
 // MS2-GUESS-LOOKALIKES
 //
 // File name assumed (the class name; the exe has no assert path for it).
@@ -93,6 +93,9 @@
 #include "itemsocketsystempagebase.h"
 #include "itemsocketsystempagegemstoneupgrade.h"
 #include "itemsocketsystempagegemstonemanage.h"
+#include "itemsocketsystempagesocketunlock.h"
+#include "itemsocketsystempagesockettransfer.h"
+#include "itemsocketsystempagegemstoneswap.h"
 #include "ms2/commonfiles/featuremanager.h"
 #include "ms2/placeholder/asdata.h"
 #include "ms2/placeholder/asobj.h"
@@ -127,9 +130,6 @@ bool FUN_140ba28d0(const MS2Ptr<AScript>* pAS, int n);          // has the AS ob
 void FUN_1412761e0(MS2Ptr<AScript> spRoot, int n);
 void FUN_1418fff20(ASArray* pArray, int nTabIndex, const CStringW& strLabel, const CStringW& strText);
 CStringW FUN_1401d0080(const CStringW& strLeft, const CStringW& strRight);
-ItemSocketSystemPageBase* FUN_140f7d060(void* pMem);            // ItemSocketSystemPageSocketUnlock::ItemSocketSystemPageSocketUnlock
-ItemSocketSystemPageBase* FUN_140c4ffa0(void* pMem);            // ItemSocketSystemPageSocketTransfer::ItemSocketSystemPageSocketTransfer
-ItemSocketSystemPageBase* FUN_140c47c80(void* pMem);            // ItemSocketSystemPageGemstoneSwap::ItemSocketSystemPageGemstoneSwap
 
 void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);
 
@@ -164,7 +164,6 @@ CString UIItemSocketSystemDialog::GetTypeName()
 }
 
 // @0x140f69010
-// MS2-FUNCTIONAL: not byte-exact yet (temp slot order of the pair temporaries / frame 0x10 smaller)
 void UIItemSocketSystemDialog::OnLoadComplete()
 {
     UIModalDialog::OnLoadComplete();
@@ -181,15 +180,19 @@ void UIItemSocketSystemDialog::OnLoadComplete()
             tabs.push_back(std::pair<int, CStringW>(4, L"gemstone_swap"));
         int nSelected = 0;
         Unk_IssTabArray array(2);
-        CStringW strLabel(L"$s_itemsocketsystem_tab_");
-        CStringW strTip(L"$s_itemsocketsystem_tab_tooltip_");
-        int nCount = (int)tabs.size();
-        for (int i = 0; i < nCount; i++)
         {
-            std::pair<int, CStringW>& tab = tabs[i];
-            FUN_1418fff20(&array, tab.first, FUN_1401d0080(strLabel, tab.second), FUN_1401d0080(strTip, tab.second));
-            if (tab.first == m_nTab)
-                nSelected = i;
+            CStringW strLabel(L"$s_itemsocketsystem_tab_");
+            CStringW strTip(L"$s_itemsocketsystem_tab_tooltip_");
+            int nCount = (int)tabs.size();
+            for (int i = 0; i < nCount; i++)
+            {
+                std::pair<int, CStringW>& tab = tabs[i];
+                const int& nTabId = tab.first;
+                const CStringW& strName = tab.second;
+                FUN_1418fff20(&array, nTabId, FUN_1401d0080(strLabel, strName), FUN_1401d0080(strTip, strName));
+                if (nTabId == m_nTab)
+                    nSelected = i;
+            }
         }
         m_30->Invoke("initData", Scaleform::GFx::Value(array.FUN_1422bb870()), nSelected);
     }
@@ -232,7 +235,6 @@ void UIItemSocketSystemDialog::vfunc_67()
 }
 
 // @0x140f69670
-// MS2-FUNCTIONAL: EH states: the socket unlock / transfer / swap pages are new-expressions in the exe, their classes are not recovered yet
 int UIItemSocketSystemDialog::vfunc_65()
 {
     if (UIDialog::vfunc_65() == 0)
@@ -243,21 +245,11 @@ int UIItemSocketSystemDialog::vfunc_65()
         m_pages.resize(5, pNull);
         m_pages[0] = new ItemSocketSystemPageGemStoneUpgrade();
         m_pages[1] = new ItemSocketSystemPageGemStoneManage();
-        void* pMem = ::operator new(0x138);
-        ItemSocketSystemPageBase* pUnlock = pMem != 0 ? FUN_140f7d060(pMem) : 0;
-        m_pages[2] = pUnlock;
+        m_pages[2] = new ItemSocketSystemPageSocketUnlock();
         if (FUN_140166410()->FUN_14036d570(0xa7))
-        {
-            void* pMemT = ::operator new(0x130);
-            ItemSocketSystemPageBase* pTransfer = pMemT != 0 ? FUN_140c4ffa0(pMemT) : 0;
-            m_pages[3] = pTransfer;
-        }
+            m_pages[3] = new ItemSocketSystemPageSocketTransfer();
         if (FUN_140166410()->FUN_14036d570(0x10f))
-        {
-            void* pMemS = ::operator new(0xf8);
-            ItemSocketSystemPageBase* pSwap = pMemS != 0 ? FUN_140c47c80(pMemS) : 0;
-            m_pages[4] = pSwap;
-        }
+            m_pages[4] = new ItemSocketSystemPageGemstoneSwap();
     }
     return 1;
 }
@@ -272,7 +264,7 @@ void UIItemSocketSystemDialog::vfunc_26()
         size_t nCount = m_pages.size();
         for (size_t i = 0; i < nCount; i++)
         {
-            ItemSocketSystemPageBase* pPage = const_cast<const PageList&>(m_pages)[i];
+            ItemSocketSystemPageBase* pPage = const_cast<const PageList&>(m_pages).at(i);
             if (pPage != 0)
                 pPage->vfunc_2();
         }
@@ -283,8 +275,9 @@ void UIItemSocketSystemDialog::vfunc_26()
 // @0x140f699f0
 void UIItemSocketSystemDialog::FUN_140f699f0(const int& nTab)
 {
-    if (FUN_140ba28d0(&m_30, 0) == 0)
-        m_30->Invoke("changeTab", nTab);
+    if (FUN_140ba28d0(&m_30, 0) != 0)
+        return;
+    m_30->Invoke("changeTab", nTab);
 }
 
 // @0x140f69a60
@@ -292,26 +285,26 @@ void UIItemSocketSystemDialog::FUN_140f69a60(int nTab)
 {
     if (m_pPage != 0)
         m_pPage->vfunc_1();
-    if (nTab >= 0 && nTab < (int)m_pages.size())
+    if (nTab < 0 || nTab >= (int)m_pages.size())
+        return;
+    ItemSocketSystemPageBase* pPage = const_cast<const PageList&>(m_pages).at(nTab);
+    if (pPage != 0)
     {
-        ItemSocketSystemPageBase* pPage = const_cast<const PageList&>(m_pages)[nTab];
-        if (pPage != 0)
-        {
-            m_pPage = pPage;
-            m_pPage->vfunc_4(MS2Ptr<AScript>(m_30));
-        }
+        m_pPage = pPage;
+        m_pPage->vfunc_4(MS2Ptr<AScript>(m_30));
     }
 }
 
 // @0x140f69b50
 void UIItemSocketSystemDialog::FUN_140f69b50(CInPacket& packet)
 {
-    if (vfunc_55() != 1 && FUN_140ba28d0(&m_30, 0) == 0)
-    {
-        FUN_1412761e0(MS2Ptr<AScript>(m_30), 1);
-        if (m_pPage != 0)
-            m_pPage->vfunc_5(&packet);
-    }
+    if (vfunc_55() == 1)
+        return;
+    if (FUN_140ba28d0(&m_30, 0) != 0)
+        return;
+    FUN_1412761e0(MS2Ptr<AScript>(m_30), 1);
+    if (m_pPage != 0)
+        m_pPage->vfunc_5(&packet);
 }
 
 // @0x140f69c10
@@ -341,28 +334,29 @@ struct Unk_IssPageVec
     ItemSocketSystemPageBase** end;
 };
 
+struct Unk_FillTag {};
+
 // @0x140f6a6b0
 // MS2-FUNCTIONAL: hand-written stand-in for the exe STL/CRT helper (not byte-checked)
-char FUN_140f6a6b0()
+Unk_FillTag FUN_140f6a6b0(ItemSocketSystemPageBase** const&, ItemSocketSystemPageBase* const&)
 {
-    char tag[16] = { 0 };
-    return tag[0];
+    Unk_FillTag tag = {};
+    return tag;
 }
 
 // @0x140f6a560
 // MS2-FUNCTIONAL: hand-written stand-in for the exe STL/CRT helper (not byte-checked)
-void FUN_140f6a560(ItemSocketSystemPageBase** pFirst, ItemSocketSystemPageBase** pLast, ItemSocketSystemPageBase* const* pVal, char)
+void FUN_140f6a560(ItemSocketSystemPageBase** pFirst, ItemSocketSystemPageBase** pLast, ItemSocketSystemPageBase* const* pVal, Unk_FillTag)
 {
-    for (ItemSocketSystemPageBase** p = pFirst; p != pLast; ++p)
-        *p = *pVal;
+    for (; pFirst != pLast; ++pFirst)
+        *pFirst = *pVal;
 }
 
 // @0x140f6a5b0
 // MS2-FUNCTIONAL: hand-written stand-in for the exe STL/CRT helper (not byte-checked)
 void FUN_140f6a5b0(ItemSocketSystemPageBase** pFirst, ItemSocketSystemPageBase** pLast, ItemSocketSystemPageBase* const& pVal)
 {
-    char tag = FUN_140f6a6b0();
-    FUN_140f6a560(pFirst, pLast, &pVal, tag);
+    FUN_140f6a560(pFirst, pLast, &pVal, FUN_140f6a6b0(pFirst, pVal));
 }
 
 // @0x140f6b2c0
@@ -381,22 +375,37 @@ bool FUN_140f6b2c0(Unk_IssPageVec* pVec, size_t nCount)
 }
 
 // @0x140f6c560
-// MS2-FUNCTIONAL: hand-written stand-in for the exe STL/CRT helper (not byte-checked)
+// memmove_s (the CRT header inline, _VALIDATE_RETURN_ERRCODE form).
 int FUN_140f6c560(void* pDst, size_t nDst, const void* pSrc, size_t nCount)
 {
     if (nCount == 0)
         return 0;
-    if (pDst == 0 || pSrc == 0)
     {
-        *_errno() = EINVAL;
-        _invalid_parameter_noinfo();
-        return EINVAL;
+        int _Expr_val = !!(pDst != 0);
+        if (!_Expr_val)
+        {
+            *_errno() = EINVAL;
+            _invalid_parameter_noinfo();
+            return EINVAL;
+        }
     }
-    if (nDst < nCount)
     {
-        *_errno() = ERANGE;
-        _invalid_parameter_noinfo();
-        return ERANGE;
+        int _Expr_val = !!(pSrc != 0);
+        if (!_Expr_val)
+        {
+            *_errno() = EINVAL;
+            _invalid_parameter_noinfo();
+            return EINVAL;
+        }
+    }
+    {
+        int _Expr_val = !!(nDst >= nCount);
+        if (!_Expr_val)
+        {
+            *_errno() = ERANGE;
+            _invalid_parameter_noinfo();
+            return ERANGE;
+        }
     }
     memmove(pDst, pSrc, nCount);
     return 0;

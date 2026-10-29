@@ -84,6 +84,7 @@ void FUN_141a3ada0(UIMinimapDialog* pDialog);                       // refresh t
 Vector3 FUN_140a0b080(const Vector3& a, const Vector3& b, const Vector3& c);
 void FUN_140b86230(const Vector3* pTarget, NiTransform* pXf);
 float FUN_140966f00(Vector3 a, Vector3 b);
+float FUN_140966f00(NiPoint3 a, Vector3 b);
 extern Vector3 DAT_143b01a60;                               // the zero point
 extern Vector3 DAT_143a08cf8;                               // the up axis
 extern const NiRTTI DAT_143afa4d8;                                  // NiNode::ms_RTTI
@@ -161,8 +162,9 @@ CQuestNavigator::~CQuestNavigator()
 // @0x140c99be0
 void CQuestNavigator::vfunc_o178_6(void* pQuest)
 {
-    CQuest* quest = (CQuest*)pQuest;
-    if (IsSelected(quest->FUN_140bfc580()) && quest->GetTrackingState() == 0)
+    if (!IsSelected(((CQuest*)pQuest)->FUN_140bfc580()))
+        return;
+    if (((CQuest*)pQuest)->GetTrackingState() == 0)
         SelectQuest(0);
 }
 
@@ -187,9 +189,8 @@ void CQuestNavigator::vfunc_o178_1(void* pQuest)
 // @0x140c99d20
 void CQuestNavigator::vfunc_o178_2(void* pQuest)
 {
-    CQuest* quest = (CQuest*)pQuest;
     m_68 = 1;
-    if (IsSelected(quest->FUN_140bfc580()))
+    if (IsSelected(((CQuest*)pQuest)->FUN_140bfc580()))
         SelectQuest(0);
 }
 
@@ -202,9 +203,8 @@ void CQuestNavigator::vfunc_o178_3(void* pQuest)
 // @0x140c99da0
 void CQuestNavigator::vfunc_o178_5(void* pQuest)
 {
-    CQuest* quest = (CQuest*)pQuest;
     m_68 = 1;
-    if (IsSelected(quest->FUN_140bfc580()))
+    if (IsSelected(((CQuest*)pQuest)->FUN_140bfc580()))
         SelectQuest(0);
 }
 
@@ -234,35 +234,30 @@ void CQuestNavigator::FUN_140c99e30()
 void CQuestNavigator::FUN_140c99ee0()
 {
     PCBase* pPC = (PCBase*)FUN_1403ed2d0()->FUN_141bd0cc0();
-    if (pPC != 0)
+    if (pPC == 0)
+        return;
+    if (m_10 != 0)
     {
-        if (m_10 != 0)
+        m_18.Clear();
+        int nFailed = FUN_140c9a4c0(&m_18);
+        unsigned char bShow = FUN_140c9af60();
+        if (nFailed != 0)
+            bShow = 0;
+        if (bShow != (m_10->GetAppCulled() == 0))
+            m_10->SetAppCulled(bShow == 0 ? true : false);
+        if (bShow != 0)
         {
-            m_18.Clear();
-            int nFailed = FUN_140c9a4c0(&m_18);
-            unsigned char bShow = FUN_140c9af60();
-            if (nFailed != 0)
-                bShow = 0;
-            unsigned bVisible = (m_10->GetAppCulled() == 0);
-            if (bShow != bVisible)
-            {
-                bool bCull = bShow == 0;
-                m_10->SetAppCulled(bCull);
-            }
-            if (bShow != 0)
-            {
-                NiTransform xf;
-                xf.MakeIdentity();
-                xf.m_Translate = NiPoint3(pPC->vfunc_18());
-                FUN_140b86230(reinterpret_cast<Vector3*>(&m_18.m_2c), &xf);
-                m_10->SetLocalTransform(xf);
-            }
+            NiTransform xf;
+            xf.MakeIdentity();
+            xf.m_Translate = static_cast<const efd::Point3&>(pPC->vfunc_18());
+            FUN_140b86230(reinterpret_cast<Vector3*>(&m_18.m_2c), &xf);
+            m_10->SetLocalTransform(xf);
         }
-        if (m_68 != 0)
-        {
-            m_68 = 0;
-            FUN_140c9ac80();
-        }
+    }
+    if (m_68 != 0)
+    {
+        m_68 = 0;
+        FUN_140c9ac80();
     }
 }
 
@@ -273,8 +268,8 @@ void CQuestNavigator::OnCreateMyPC(NotifyObject* pNotify)
     m_18.Clear();
     m_18.m_18 = 0;
     int nQuestId = FUN_1409a8b10()->FUN_140c9b8b0()->m_30;
-    Unk_PayloadPtr<CQuest> spQuest = static_cast<CQuestManagerCommon*>(FUN_140764020())->vfunc_o10_3(nQuestId);
-    if (!spQuest.IsNull())
+    Unk_PayloadPtr<CQuest> spQuest = static_cast<CQuestManagerCommon&>(*FUN_140764020()).vfunc_o10_3(nQuestId);
+    if (spQuest.get() != 0 ? true : false)
     {
         if (spQuest->GetTrackingState() != 0)
             m_18.m_18 = nQuestId;
@@ -285,30 +280,29 @@ void CQuestNavigator::OnCreateMyPC(NotifyObject* pNotify)
 // @0x140c9a1c0
 void CQuestNavigator::OnCompleteMyPC(NotifyObject* pNotify)
 {
-    if (FUN_140166410()->FUN_14036d570(0x77))
+    if (!FUN_140166410()->FUN_14036d570(0x77))
+        return;
+    if (m_10 == 0)
     {
-        if (m_10 == 0)
+        CString strPath("./Data/Resource/Model/Effect/ETC/Eff_Quest_Navigation.nif");
+        m_10 = (NiNode*)FUN_14098d8d0(&DAT_143afa4d8, FUN_1409849b0(FUN_140a0afd0()->FUN_141551ea0(strPath, 0, 5, 0, 0)));
+        if ((NiNode*)m_10 != 0)
         {
-            Unk_QnModelRef ref = FUN_140a0afd0()->FUN_141551ea0(CString("./Data/Resource/Model/Effect/ETC/Eff_Quest_Navigation.nif"), 0, 5, 0, 0);
-            m_10 = (NiNode*)FUN_14098d8d0(&DAT_143afa4d8, FUN_1409849b0(ref));
-            if ((NiNode*)m_10 != 0)
+            NiNode* pScene = FUN_1411a6b10(FUN_1403ed280());
+            if (pScene != 0)
             {
-                NiNode* pScene = FUN_1411a6b10(FUN_1403ed280());
-                if (pScene != 0)
-                {
-                    pScene->AttachChild(m_10, true);
-                    m_10->SetAppCulled(true);
-                    m_10->UpdateEffects();
-                    m_10->UpdateProperties();
-                    m_10->Update(0.0f, true);
-                }
+                pScene->AttachChild(m_10, true);
+                m_10->SetAppCulled(true);
+                m_10->UpdateEffects();
+                m_10->UpdateProperties();
+                m_10->Update(0.0f, true);
             }
         }
-        FUN_140c9ac80();
-        UIMinimapDialog* pMinimap = FUN_140c9b540(0x4e29);
-        if (pMinimap != 0)
-            FUN_141a3ada0(pMinimap);
     }
+    FUN_140c9ac80();
+    UIMinimapDialog* pMinimap = FUN_140c9b540(0x4e29);
+    if (pMinimap != 0)
+        FUN_141a3ada0(pMinimap);
 }
 
 // @0x140c9a420
@@ -338,10 +332,9 @@ int CQuestNavigator::FUN_140c9a4c0(QuestNavigation::TraceResult* pResult)
 {
     if (!FUN_140166410()->FUN_14036d570(0x77))
         return 1;
-    CQuestNavigationMap* pMap = FUN_140c9b8e0();
-    if (pMap->FUN_140c9b8d0() == 0)
+    if (FUN_140c9b8e0()->FUN_140c9b8d0() == 0)
     {
-        pResult->m_38 = GetStringCommonByKey(CStringW(L"s_quest_navigation_initializing"));
+        pResult->m_38 = GetStringCommonByKey(L"s_quest_navigation_initializing");
         return 2;
     }
     MS2Ptr<CQuestData> spData = FUN_14074bc40(pResult->m_18);
@@ -349,7 +342,7 @@ int CQuestNavigator::FUN_140c9a4c0(QuestNavigation::TraceResult* pResult)
         return 1;
     if (spData->m_flag == 0)
         return 1;
-    MS2Ptr<QuestNavigation::TraceContext> spContext = pMap->TraceQuest(pResult->m_18);
+    MS2Ptr<QuestNavigation::TraceContext> spContext = FUN_140c9b8e0()->TraceQuest(pResult->m_18);
     if (spContext == 0)
         return 1;
     int nFailed = 1;
@@ -363,10 +356,10 @@ int CQuestNavigator::FUN_140c9a4c0(QuestNavigation::TraceResult* pResult)
         if (FUN_1403ed2d0()->FUN_141bd49d0(spContext->m_20, &pos, &fDist) != 0 && (nFailed = 0, fDist < fBest))
         {
             fBest = fDist;
-            if (static_cast<CQuestManagerCommon*>(FUN_140764020())->FUN_1407456d0(pResult->m_18) == 0)
-                pResult->m_1c = 1;
-            else
+            if (static_cast<CQuestManagerCommon&>(*FUN_140764020()).FUN_1407456d0(pResult->m_18) != 0)
                 pResult->m_1c = 2;
+            else
+                pResult->m_1c = 1;
             reinterpret_cast<Vector3&>(pResult->m_20) = pos;
         }
         if (FUN_1403ed2d0()->FUN_141bd4ed0(spContext->m_30, &pos, &fDist) != 0 && (nFailed = 0, fDist < fBest))
@@ -385,34 +378,33 @@ int CQuestNavigator::FUN_140c9a4c0(QuestNavigation::TraceResult* pResult)
     else
     {
         ATL::CAtlArray<unsigned> aPath;
-        if (pMap->FindMapPath(nCurrentMap, nTargetMap, aPath) != 0)
+        if (FUN_140c9b8e0()->FindMapPath(nCurrentMap, nTargetMap, aPath) != 0)
         {
-            bool bFound = false;
+            int bFound = 0;
             ATL::CAtlArray<MS2Ptr<CPortal> > aPortals;
             FUN_1403ed2d0()->FUN_141bc2a70(6, &aPortals);
             for (size_t i = 0; i < aPortals.GetCount(); i++)
             {
                 MS2Ptr<CPortal> spPortal = aPortals[i];
-                if (spPortal->FUN_14169d160())
+                if (!spPortal->FUN_14169d160())
+                    continue;
+                unsigned nPortalMap = spPortal->FUN_14169d280();
+                if (FUN_140408410(aPath, nPortalMap) != -1)
                 {
-                    unsigned nPortalMap = spPortal->FUN_14169d280();
-                    if (FUN_140408410(aPath, nPortalMap) != -1)
-                    {
-                        pResult->m_1c = 4;
-                        reinterpret_cast<Vector3&>(pResult->m_20) = spPortal->FUN_14169d2f0();
-                        nFailed = 0;
-                        bFound = true;
-                        break;
-                    }
+                    pResult->m_1c = 4;
+                    reinterpret_cast<Vector3&>(pResult->m_20) = spPortal->FUN_14169d2f0();
+                    nFailed = 0;
+                    bFound = 1;
+                    break;
                 }
             }
-            if (!bFound)
+            if (bFound == 0)
             {
-                int nNextMap = pMap->FUN_140c912d0(nCurrentMap, nTargetMap);
+                int nNextMap = FUN_140c9b8e0()->FUN_140c912d0(nCurrentMap, nTargetMap);
                 if (nNextMap != 0)
                 {
                     MS2Ptr<CPortal> spNext = FUN_1403ed2d0()->FUN_141bc2880(nNextMap);
-                    if (spNext.get() != 0)
+                    if (spNext.get() ? true : false)
                     {
                         if (spNext->FUN_14169d160() == 1)
                         {
@@ -466,7 +458,7 @@ QuestNavigation::TraceContext* CQuestNavigator::Context()
 }
 
 // @0x140c9ae10
-int CQuestNavigator::HasMap(int nMapId)
+int CQuestNavigator::HasMap(unsigned nMapId)
 {
     if (m_70.m_20.find(nMapId) != m_70.m_20.end())
         return 1;
@@ -482,7 +474,7 @@ int CQuestNavigator::HasNpc(int nNpcId)
 }
 
 // @0x140c9aef0
-int CQuestNavigator::HasInteractObject(int nObjectId)
+int CQuestNavigator::HasInteractObject(unsigned nObjectId)
 {
     if (m_70.m_40.find(nObjectId) != m_70.m_40.end())
         return 1;
@@ -493,21 +485,19 @@ int CQuestNavigator::HasInteractObject(int nObjectId)
 // @0x140c9af60
 bool CQuestNavigator::FUN_140c9af60()
 {
-    if (FUN_1422b9e00(FUN_1408e57f0()) == 0x620001d)
+    if (FUN_1422b9e00(FUN_1408e57f0()) != 0x620001d)
+        return false;
+    PCBase* pPC = (PCBase*)FUN_1403ed2d0()->FUN_141bd0cc0();
+    if (pPC == 0)
+        return false;
+    if (pPC->FUN_1416764d0() != 0)
     {
-        PCBase* pPC = (PCBase*)FUN_1403ed2d0()->FUN_141bd0cc0();
-        if (pPC == 0)
-            return false;
-        if (pPC->FUN_1416764d0() == 0)
-            return pPC->FUN_14123c660() == 0;
         Unk_QnRideRef ride(pPC->FUN_141676410());
         if (ride.FUN_140c9b760())
             return false;
-        Unk_QnRideEntry entry = ((Unk_QnRideTable*)ride.FUN_1407895d0())->FUN_140784970();
-        int nValue = entry.FUN_1407895c0()->m_6c;
-        return nValue != 0;
+        return ((Unk_QnRideTable*)ride.FUN_1407895d0())->FUN_140784970().FUN_1407895c0()->m_6c != 0;
     }
-    return false;
+    return pPC->FUN_14123c660() == 0;
 }
 
 // The end point of the beam: from the player towards pos.
@@ -530,26 +520,21 @@ CStringW CQuestNavigator::FUN_140c9b150(const Vector3& pos)
     if (pPC == 0)
         return CStringW(L"");
     CStringW strText;
-    Vector3 posTo = pos;
-    const auto& ptPC = pPC->vfunc_18();
-    Vector3 posPC = reinterpret_cast<const Vector3&>(ptPC);
-    int nDist = (int)FUN_140966f00(posPC, posTo);
-    if (nDist <= 100000)
+    int nDist = (int)FUN_140966f00(pPC->vfunc_18(), pos);
+    if (nDist > 100000)
     {
-        if (nDist < 100000 && 99 < nDist)
-        {
-            int nMeters = nDist / 100;
-            strText = FUN_14062b4f0(CStringW(L"s_quest_navigation_distance_m"), nMeters);
-        }
-        else
-        {
-            strText = GetStringCommonByKey(CStringW(L"s_quest_navigation_dest"));
-        }
+        int nKm = nDist / 100000;
+        strText = FUN_14062b4f0(L"s_quest_navigation_distance_km", nKm);
+    }
+    else if (nDist < 100000 && nDist >= 100)
+    {
+        int nMeters = nDist / 100;
+        strText = FUN_14062b4f0(L"s_quest_navigation_distance_m", nMeters);
     }
     else
     {
-        int nKm = nDist / 100000;
-        strText = FUN_14062b4f0(CStringW(L"s_quest_navigation_distance_km"), nKm);
+        CStringW strKey(L"s_quest_navigation_dest");
+        strText = GetStringCommonByKey(strKey);
     }
     return strText;
 }
@@ -570,7 +555,7 @@ UIMinimapDialog* FUN_140c9b540(int nId)
 // @0x140c9b8e0
 CQuestNavigationMap* FUN_140c9b8e0()
 {
-    return TSingleton<CQuestNavigationMap>::GetInstance();
+    return TSingleton<CQuestNavigationMap>::s_instance;
 }
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142ca39e0-0x142ca3a70 .text$yd

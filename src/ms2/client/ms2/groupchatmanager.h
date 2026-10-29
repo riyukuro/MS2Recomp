@@ -30,6 +30,7 @@ public:
     }
     bool operator==(T* p) const { return m_p == p; }
     T* get() const { return m_p; }
+    operator T*() const { return m_p; }                 // 0x14194e5f0 (CGroupChatMember; folded [this+8] accessor)
     T* operator->() const { return m_p; }
 
 private:

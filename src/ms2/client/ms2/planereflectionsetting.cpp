@@ -69,8 +69,8 @@ CPlaneReflectionSetting::~CPlaneReflectionSetting()
 }
 
 // The UCRT's `static __inline memcpy_s` / `memmove_s` of this TU (unreferenced copies).
+#pragma function(memset, memcpy)
 // @0x141691440
-// MS2-FUNCTIONAL: unreferenced CRT memcpy_s copy: frame saves rsi/rdi, source spelling differs
 static __inline errno_t ms2_memcpy_s_copy(void* const d, size_t const dsz, void const* const s, size_t const ssz)
 {
     if (ssz == 0) { return 0; }
@@ -86,6 +86,7 @@ static __inline errno_t ms2_memcpy_s_copy(void* const d, size_t const dsz, void 
     return 0;
 }
 __declspec(selectany) extern errno_t(__cdecl* const ms2_pfnMemcpySCopy)(void*, size_t, const void*, size_t) = &ms2_memcpy_s_copy;
+#pragma intrinsic(memset, memcpy)
 
 // @0x141691590
 MS2_EMIT_CRT_MEMMOVE_S_COPY(1);

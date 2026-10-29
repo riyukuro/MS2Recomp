@@ -90,7 +90,7 @@ public:
     CStringW m_frame;
     CStringW m_title;
     unsigned int m_days;
-    int m_meratCost;
+    unsigned int m_meratCost;
 };
 MS2_CHECK_OFFSET(Unk_LtaEvent, m_id, 0x18);
 MS2_CHECK_OFFSET(Unk_LtaEvent, m_rewards, 0x20);
@@ -212,7 +212,7 @@ public:
     virtual void vfunc_37();
     virtual void vfunc_38();
     virtual void vfunc_39();
-    virtual int vfunc_40(int nCost);
+    virtual bool vfunc_40(unsigned __int64 nCost);
     virtual void vfunc_41(); virtual void vfunc_42(); virtual void vfunc_43(); virtual void vfunc_44();
     virtual void vfunc_45();
 };
@@ -234,6 +234,7 @@ void FUN_140d73aa0(CStringW text, int nType, void* p, CStringW tag);
 void FUN_140d73cd0();
 CStringW GetStringCommonByKey(const CStringW& key);
 CStringW FUN_140938ae0(CStringW strKey, const int& n);
+CStringW FUN_140938ae0(CStringW strKey, const unsigned int& n);
 CStringW FUN_1408f71a0(CStringW strKey, const CStringW& a, const CStringW& b);
 CStringW FUN_14083bab0(const CMsTime& time, CStringW strSep);
 int FUN_14086bd40(CMsTime a, CMsTime b);
@@ -355,7 +356,6 @@ int UILongTermAttendGiftDialog::vfunc_13()
 }
 
 // @0x140c6b5d0
-// MS2-FUNCTIONAL: behaviour-equivalent; codegen (temporaries / branch layout) not byte-identical to the exe
 void UILongTermAttendGiftDialog::vfunc_45(Scaleform::GFx::Value* result, const CString& method, ASData* args)
 {
     UIObject::vfunc_45(result, method, args);
@@ -367,12 +367,12 @@ void UILongTermAttendGiftDialog::vfunc_45(Scaleform::GFx::Value* result, const C
             MS2Ptr<CItem> item(new CItem);
             if (item == 0)
                 return;
-            if (item->FUN_14052b130(id, rank, 0)) {
-                FUN_14052b420(item.operator->(), 0);
-                ASTooltip tooltip(owner, 0x20, 2);
-                if (tooltip.FUN_1409e0d40(item))
-                    *result = tooltip.FUN_1422bb870();
-            }
+            if (!item->FUN_14052b130(id, rank, 0))
+                return;
+            FUN_14052b420(item.operator->(), 0);
+            ASTooltip tooltip(owner, 0x20, 2);
+            if (tooltip.FUN_1409e0d40(item))
+                *result = tooltip.FUN_1422bb870();
         }
     } else if (FUN_140184310(method, "getTooltip")) {
         CString name = args->FUN_1422b8d30();
@@ -387,7 +387,6 @@ void UILongTermAttendGiftDialog::vfunc_45(Scaleform::GFx::Value* result, const C
 }
 
 // @0x140c6b8b0
-// MS2-FUNCTIONAL: behaviour-equivalent; codegen (temporaries / branch layout) not byte-identical to the exe
 int UILongTermAttendGiftDialog::vfunc_28(const char* method, const Scaleform::GFx::Value* args, unsigned int count)
 {
     if (UIDialog::vfunc_28(method, args, count))
@@ -396,10 +395,11 @@ int UILongTermAttendGiftDialog::vfunc_28(const char* method, const Scaleform::GF
         FUN_140c6cd00();
         return 1;
     }
-    if (!_stricmp(method, "onClickReward")) {
+    else if (!_stricmp(method, "onClickReward")) {
         ASData data;
         if (data.FUN_1422b9620(args, count)) {
-            SendEventRewardMode25(data.FUN_1422b8a10());
+            int nDay = data.FUN_1422b8a10();
+            SendEventRewardMode25(nDay);
             return 1;
         }
     }
@@ -407,11 +407,13 @@ int UILongTermAttendGiftDialog::vfunc_28(const char* method, const Scaleform::GF
 }
 
 // @0x140c6b9d0
-// MS2-FUNCTIONAL: behaviour-equivalent; codegen (temporaries / branch layout) not byte-identical to the exe
 void UILongTermAttendGiftDialog::FUN_140c6b9d0()
 {
-    if (!m_30.IsNull() && FUN_140c6cbf0())
-        FUN_140c6c4a0();
+    if (m_30.IsNull())
+        return;
+    if (!FUN_140c6cbf0())
+        return;
+    FUN_140c6c4a0();
 }
 
 // @0x140c6ba20
@@ -429,7 +431,6 @@ void UILongTermAttendGiftDialog::SendEventRewardMode27(NotifyObject*)
 }
 
 // @0x140c6bac0
-// MS2-FUNCTIONAL: behaviour-equivalent; codegen (temporaries / branch layout) not byte-identical to the exe
 void UILongTermAttendGiftDialog::FUN_140c6bac0(int nType, CInPacket&)
 {
     if (vfunc_55()) {
@@ -438,31 +439,37 @@ void UILongTermAttendGiftDialog::FUN_140c6bac0(int nType, CInPacket&)
     }
     if (!FUN_140c6cbf0()) {
         vfunc_67();
-    } else if (nType == 0x19) {
-        FUN_140c6c4a0();
-    } else if (nType == 0x1a) {
-        FUN_140c6c920();
-        FUN_140c6c4a0();
-        FUN_140c6bdb0();
-    } else if (nType == 0x1b) {
-        FUN_140c6bdb0();
+    } else {
+        switch (nType) {
+        case 0x1a:
+            FUN_140c6c920();
+            FUN_140c6c4a0();
+            FUN_140c6bdb0();
+            break;
+        case 0x1b:
+            FUN_140c6bdb0();
+            break;
+        case 0x19:
+            FUN_140c6c4a0();
+            break;
+        }
     }
 }
 
 // @0x140c6bb80
-// MS2-FUNCTIONAL: behaviour-equivalent; codegen (temporaries / branch layout) not byte-identical to the exe
 bool UILongTermAttendGiftDialog::SendEventRewardMode26(int nResult, const CMsgBoxData&)
 {
     if (nResult == 0) {
         Unk_LtaWallet* wallet = FUN_140d86260();
-        if (!wallet->vfunc_40(m_178->m_meratCost)) {
-            FUN_140d74390(GetStringCommonByKey(CStringW(L"s_err_lack_merat_ask")), 1, Delegate<bool(int, const CMsgBoxData&)>(this, &UILongTermAttendGiftDialog::FUN_140c6bd40));
-        } else {
+        if (wallet->vfunc_40(m_178->m_meratCost)) {
             COutPacket packet(static_cast<int>(SendOp::EventReward), 0);
             packet.Encode1(0x1a);
             packet.Encode1(1);
             FUN_140710590(packet);
+        } else {
+            FUN_140d74390(GetStringCommonByKey(L"s_err_lack_merat_ask"), 1, Delegate<bool(int, const CMsgBoxData&)>(this, &UILongTermAttendGiftDialog::FUN_140c6bd40));
         }
+        return true;
     }
     return true;
 }
@@ -501,7 +508,6 @@ void UILongTermAttendGiftDialog::FUN_140c6bdb0()
 }
 
 // @0x140c6c250
-// MS2-FUNCTIONAL: behaviour-equivalent; codegen (temporaries / branch layout) not byte-identical to the exe
 void UILongTermAttendGiftDialog::FUN_140c6c250()
 {
     if (m_30.IsNull())
@@ -509,7 +515,7 @@ void UILongTermAttendGiftDialog::FUN_140c6c250()
     unsigned int nCur = FUN_140c6d570();
     int nCatchUp = FUN_140c6d130();
     ASDataProvider days(2);
-    unsigned int nDays = m_178->m_days;
+    unsigned __int64 nDays = m_178->m_days;
     for (unsigned __int64 i = 1; i <= nDays; ++i) {
         ASObj row(2);
         row.FUN_1407cba60("frame", FUN_140c6d470());
@@ -520,13 +526,11 @@ void UILongTermAttendGiftDialog::FUN_140c6c250()
 }
 
 // @0x140c6c4a0
-// MS2-FUNCTIONAL: behaviour-equivalent; codegen (temporaries / branch layout) not byte-identical to the exe
 void UILongTermAttendGiftDialog::FUN_140c6c4a0()
 {
     if (m_30.IsNull())
         return;
-    MS2Ptr<Unk_LtaList> list = FUN_140c02900(CString("m_reward"));
-    if (list.get() != 0) {
+    if (MS2Ptr<Unk_LtaList> list = FUN_140c02900("m_reward")) {
         list->FUN_1422dd1d0();
         CString strFrame = FUN_140c6d470();
         for (size_t i = 0; i < m_178->m_rewards.FUN_140412e80(); ++i) {
@@ -537,10 +541,8 @@ void UILongTermAttendGiftDialog::FUN_140c6c4a0()
             row.FUN_1407cb9c0("state", FUN_140c6d040(rec->m_day));
             row.FUN_1409c0d20("slotID01", rec->m_20.m_itemId);
             row.FUN_1409c0d20("slotID02", rec->m_50.m_itemId);
-            ItemAble* reward1 = &rec->m_20;
-            row.FUN_1409adc90("slotRank01", reward1->vfunc_o18_1());
-            ItemAble* reward2 = &rec->m_50;
-            row.FUN_1409adc90("slotRank02", reward2->vfunc_o18_1());
+            row.FUN_1409adc90("slotRank01", rec->m_20.vfunc_o18_1());
+            row.FUN_1409adc90("slotRank02", rec->m_50.vfunc_o18_1());
             row.FUN_1409c0d20("slotID02", rec->m_50.m_itemId);
             row.FUN_1407cba60("slotIcon01", FUN_140c6d390(rec->m_20.m_itemId));
             row.FUN_1407cba60("slotIcon02", FUN_140c6d390(rec->m_50.m_itemId));
@@ -582,32 +584,33 @@ bool UILongTermAttendGiftDialog::FUN_140c6cbf0()
 }
 
 // @0x140c6cc80
-// MS2-FUNCTIONAL: behaviour-equivalent; codegen (temporaries / branch layout) not byte-identical to the exe
 void UILongTermAttendGiftDialog::SendEventRewardMode25(int nDay)
 {
-    if (FUN_140c6d040(nDay) == 1) {
-        COutPacket packet(static_cast<int>(SendOp::EventReward), 0);
-        packet.Encode1(0x19);
-        packet.Encode4(nDay);
-        FUN_140710590(packet);
-    }
+    if (FUN_140c6d040(nDay) != 1)
+        return;
+    COutPacket packet(static_cast<int>(SendOp::EventReward), 0);
+    packet.Encode1(0x19);
+    packet.Encode4(nDay);
+    FUN_140710590(packet);
 }
 
 // @0x140c6cd00
-// MS2-FUNCTIONAL: behaviour-equivalent; codegen (temporaries / branch layout) not byte-identical to the exe
 void UILongTermAttendGiftDialog::FUN_140c6cd00()
 {
     int nAttendPoint = FUN_140c6d520();
-    int nCatchUp = FUN_140c6d130();
+    unsigned int nCatchUp = FUN_140c6d130();
     if (nAttendPoint == 0) {
-        if (nCatchUp == 0) {
-            FUN_140d73aa0(GetStringCommonByKey(CStringW(L"s_longtermattendgift_dialog_err_msg_empty_point")), 0, 0, CStringW(L""));
-        } else {
+        if (nCatchUp > 0) {
             CStringW strMsg = FUN_140938ae0(CStringW(L"s_longtermattendgift_dialog_use_merat"), m_178->m_meratCost);
             FUN_140d74390(strMsg, 1, Delegate<bool(int, const CMsgBoxData&)>(this, &UILongTermAttendGiftDialog::SendEventRewardMode26));
+            return;
+        } else {
+            FUN_140d73aa0(GetStringCommonByKey(L"s_longtermattendgift_dialog_err_msg_empty_point"), 0, 0, CStringW(L""));
+            return;
         }
-    } else if (nCatchUp == 0) {
-        FUN_140d73aa0(GetStringCommonByKey(CStringW(L"s_longtermattendgift_dialog_err_msg_attendance_full")), 0, 0, CStringW(L""));
+    }
+    if (nCatchUp == 0) {
+        FUN_140d73aa0(GetStringCommonByKey(L"s_longtermattendgift_dialog_err_msg_attendance_full"), 0, 0, CStringW(L""));
     } else {
         COutPacket packet(static_cast<int>(SendOp::EventReward), 0);
         packet.Encode1(0x1a);
@@ -633,16 +636,17 @@ int UILongTermAttendGiftDialog::FUN_140c6d040(unsigned int nDay)
 }
 
 // @0x140c6d130
-// MS2-FUNCTIONAL: behaviour-equivalent; codegen (temporaries / branch layout) not byte-identical to the exe
 int UILongTermAttendGiftDialog::FUN_140c6d130()
 {
     unsigned int nCur = FUN_140c6d570();
     int nDays = FUN_14086bd40(CMsTime(m_178->m_start), CMsTime(FUN_140869440())) + 1;
     int nMax = 0x50;
-    const unsigned int* p = (const unsigned int*)FUN_1402fbd20(&nMax, &nDays);
-    if (nCur < *p)
-        return *p - nCur;
-    return 0;
+    unsigned int nLimit = *(const unsigned int*)FUN_1402fbd20(&nMax, &nDays);
+    if (nCur < nLimit)
+        nLimit = nLimit - nCur;
+    else
+        nLimit = 0;
+    return nLimit;
 }
 
 // @0x140c6d200
@@ -704,10 +708,9 @@ int UILongTermAttendGiftDialog::FUN_140c6d570()
 }
 
 // @0x140c6d5c0
-// MS2-FUNCTIONAL: behaviour-equivalent; codegen (temporaries / branch layout) not byte-identical to the exe
 CStringW UILongTermAttendGiftDialog::FUN_140c6d5c0()
 {
-    return g_ltaTable.FUN_140c6d980(0xa8c, m_178->m_id, CStringW((const wchar_t*)0));
+    return g_ltaTable.FUN_140c6d980(0xa8c, m_178->m_id, (const wchar_t*)0);
 }
 
 MS2_REPLACE_METHOD(0x140C6B4A0, UILongTermAttendGiftDialog, GetTypeName, 61, 0xE157B792);

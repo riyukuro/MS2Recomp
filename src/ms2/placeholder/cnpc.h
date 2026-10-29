@@ -30,7 +30,7 @@ public:
     virtual ~CNpcVibrate();                                 // 0x14108e250
     int IsActive();                                    // armed flag (+0x24)
     void FUN_14108e2a0(float fStart, float fEnd, float fAmp); // +0x18/+0x1c/+0x20, armed
-    void FUN_14108e300(float fTime, efd::Point3& kPos);     // shakes kPos while armed (disarms at m_fEnd)
+    void FUN_14108e300(float fTime, efd::Point3& kPos, class CNpc* pOwner); // shakes kPos while armed (disarms at m_fEnd; owner unused)
     float m_fStart;                                         // +0x18
     float m_fEnd;                                           // +0x1c
     float m_fAmp;                                           // +0x20
@@ -43,8 +43,8 @@ MS2_CHECK_SIZE(CNpcVibrate, 0x28);
 struct Unk_NpcBeam
 {
     Unk_NpcBeam();                                                                  // 0x14160bd70
-    void Set(const efd::Point3& a, const efd::Point3& b, const char* pszLabel);     // 0x14160bde0
-    void Set(const efd::Point3& a, const efd::Point3& b, float fWidth, float fScale, const char* pszLabel);     // 0x14160beb0
+    void Set(const efd::Point3& a, const efd::Point3& b, const CStringA& strLabel);     // 0x14160bde0
+    void Set(const efd::Point3& a, const efd::Point3& b, float fWidth, float fScale, const CStringA& strLabel);     // 0x14160beb0
 
     bool m_bActive;             // +0x00
     efd::Point3 m_a;            // +0x04
@@ -90,7 +90,7 @@ public:
     virtual int vfunc_69() override;                        // 0x141094640
     virtual Unk_PCBaseFxLib* vfunc_70() override;           // 0x14108fd60
     virtual CStringW vfunc_77() override;                   // 0x141090bd0
-    virtual int vfunc_78() override;                        // 0x14108fdc0
+    virtual unsigned short vfunc_78() override;             // 0x14108fdc0
     virtual void vfunc_79() override;                       // 0x14108fe10
     virtual MS2Ptr<Unk_PCBaseComp_a58> vfunc_80() override; // 0x14108fe90
     virtual MS2Ptr<Unk_PCBaseComp_a78> vfunc_82() override; // 0x141090030

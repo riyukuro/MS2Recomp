@@ -8,6 +8,7 @@
 #include "ms2/placeholder/nmstream.h"
 #include "ms2/placeholder/nmobjects.h"
 #include "ms2/placeholder/nmfunc.h"
+#include "ms2/placeholder/nmencoder.h"
 #include "ms2/ms2recover.h"
 
 extern void FUN_14156bcb0(void*, void*, void*);
@@ -18,7 +19,7 @@ extern void FUN_1415f9990(void*);
 extern void FUN_1415f05b0(void*, const void*);
 extern int FUN_1415fb700(void*);
 extern int FUN_1415fb750(void*);
-extern int FUN_1415fb6d0(void*);
+extern int FUN_1415fb6d0(CNMSerializableDecoder*);
 
 // MS2-FUNCTIONAL 0x14159de00: initializes the change-my-info request and its embedded member record.
 // @0x14159de00
@@ -39,27 +40,17 @@ CNMCRChangeMyInfoFunc::CNMCRChangeMyInfoFunc(int nFlags, const char* pszInfo)
 // @0x14159df00
 unsigned int CNMCRChangeMyInfoFunc::EncodeFramed(CNMStream* pStream)
 {
-    unsigned char storage[0x18];
-    FUN_14156bcb0(storage, pStream, this);
-    void** vtable = *reinterpret_cast<void***>(this);
-    using Method = unsigned int(__fastcall*)(CNMCRChangeMyInfoFunc*, CNMEncoder*, CNMStream*);
-    const unsigned int result = reinterpret_cast<Method>(vtable[2])(
-        this, reinterpret_cast<CNMEncoder*>(storage), pStream);
-    FUN_14156bd50(storage);
-    return result;
+    CNMSerializableEncoder encoder(pStream, this);
+    return CNMCRChangeMyInfoFunc::Encode(reinterpret_cast<CNMEncoder*>(&encoder), pStream);
 }
 
 // MS2-FUNCTIONAL 0x14159df60: selects direct or framed encoding from the message format.
 // @0x14159df60
 unsigned int CNMCRChangeMyInfoFunc::EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream)
 {
-    void** vtable = *reinterpret_cast<void***>(this);
-    if (m_bFormat == 1) {
-        using Method = unsigned int(__fastcall*)(CNMCRChangeMyInfoFunc*, CNMEncoder*, CNMStream*);
-        return reinterpret_cast<Method>(vtable[2])(this, pEncoder, pStream);
-    }
-    using Framed = unsigned int(__fastcall*)(CNMCRChangeMyInfoFunc*, CNMStream*);
-    return reinterpret_cast<Framed>(vtable[3])(this, pStream);
+    if (m_bFormat == 1)
+        return CNMCRChangeMyInfoFunc::Encode(pEncoder, pStream);
+    return CNMCRChangeMyInfoFunc::EncodeFramed(pStream);
 }
 
 // MS2-FUNCTIONAL 0x14159dfc0: sends the embedded member info only for request direction.
@@ -77,30 +68,19 @@ unsigned int CNMCRChangeMyInfoFunc::Encode(CNMEncoder* pEncoder, CNMStream* pStr
 // @0x14159e040
 unsigned int CNMCRChangeMyInfoFunc::DecodeFramed(CNMStream* pStream)
 {
-    unsigned char storage[0x38];
-    FUN_14156be10(storage, pStream, this);
-    unsigned int result = 0;
-    if (FUN_1415fb750(storage)) {
-        void** vtable = *reinterpret_cast<void***>(this);
-        using Method = unsigned int(__fastcall*)(CNMCRChangeMyInfoFunc*, CNMSerializableDecoder*, CNMStream*);
-        result = reinterpret_cast<Method>(vtable[5])(
-            this, reinterpret_cast<CNMSerializableDecoder*>(storage), pStream);
-    }
-    FUN_14156bf10(storage);
-    return result;
+    CNMSerializableDecoder decoder(pStream, this);
+    if (FUN_1415fb750(&decoder) == 0)
+        return 0;
+    return CNMCRChangeMyInfoFunc::Decode(&decoder, pStream);
 }
 
 // MS2-FUNCTIONAL 0x14159e0d0: selects direct or framed reply decoding by wire format.
 // @0x14159e0d0
 unsigned int CNMCRChangeMyInfoFunc::DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream)
 {
-    void** vtable = *reinterpret_cast<void***>(this);
-    if (FUN_1415fb6d0(pDecoder) == 2) {
-        using Framed = unsigned int(__fastcall*)(CNMCRChangeMyInfoFunc*, CNMStream*);
-        return reinterpret_cast<Framed>(vtable[6])(this, pStream);
-    }
-    using Method = unsigned int(__fastcall*)(CNMCRChangeMyInfoFunc*, CNMSerializableDecoder*, CNMStream*);
-    return reinterpret_cast<Method>(vtable[5])(this, pDecoder, pStream);
+    if (FUN_1415fb6d0(pDecoder) == 2)
+        return CNMCRChangeMyInfoFunc::DecodeFramed(pStream);
+    return CNMCRChangeMyInfoFunc::Decode(pDecoder, pStream);
 }
 
 // MS2-FUNCTIONAL 0x14159e130: restores embedded member info for request direction and decoder status.

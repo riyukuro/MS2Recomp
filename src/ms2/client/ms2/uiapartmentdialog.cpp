@@ -191,7 +191,6 @@ void UIApartmentDialog::vfunc_ugc_6()
 }
 
 // @0x1418b6580
-// MS2-FUNCTIONAL: frame / call-result temporaries differ from the exe (exe 0x10 smaller); source form unknown
 void UIApartmentDialog::FUN_1418b6580()
 {
     if (FUN_140a467d0(&m_30))
@@ -200,13 +199,10 @@ void UIApartmentDialog::FUN_1418b6580()
     if (pPlayer == 0)
         return;
     FUN_140cfee80(FUN_1422dbc00(), CString("m_title"), FUN_1418b6de0());
-    int nNoRoom = m_nRoom;
-    FUN_140cff840(FUN_1422dbc00(), CString("m_contractButton"), nNoRoom == 0);
+    FUN_140cff840(FUN_1422dbc00(), CString("m_contractButton"), m_nRoom == 0);
     FUN_140cff840(FUN_1422dbc00(), CString("m_contractEffect"), 0);
-    int nNormal = m_group.FUN_1408ad2f0();
-    FUN_140cff840(FUN_1422dbc00(), CString("m_emblem_normal"), nNormal == 0);
-    int nMerat = m_group.FUN_1408ad2f0();
-    FUN_140cff840(FUN_1422dbc00(), CString("m_emblem_merat"), nMerat);
+    FUN_140cff840(FUN_1422dbc00(), CString("m_emblem_normal"), m_group.FUN_1408ad2f0() == 0);
+    FUN_140cff840(FUN_1422dbc00(), CString("m_emblem_merat"), m_group.FUN_1408ad2f0());
 }
 
 // @0x1418b6840
@@ -240,28 +236,21 @@ void UIApartmentDialog::FUN_1418b6990(int nRoom)
 }
 
 // @0x1418b6ab0
-// MS2-FUNCTIONAL: the exe nests the checks with its own temporaries (frame 0x10 larger); source form unknown
 bool UIApartmentDialog::FUN_1418b6ab0(int nMode)
 {
     if (FUN_1422dc2d0() == 0)
         return false;
     UIMessageBox* pBox = FUN_14151f890();
-    if (pBox == 0)
-        return false;
-    if (pBox->FUN_1419f8270() != 0)
+    if (pBox == 0 || pBox->FUN_1419f8270() != 0)
         return false;
     MS2Ptr<CMsgBoxData> spBox = pBox->FUN_1419f8470();
-    if (!(spBox == 0))
+    if (spBox == 0 || FUN_140e45240(spBox->GetExtra(), "roomNumber"))
+        return false;
+    switch (nMode)
     {
-        if (!FUN_140e45240(spBox->GetExtra(), "roomNumber"))
-        {
-            if (nMode == 1)
-            {
-                pBox->FUN_1419f82b0(GetStringCommon(0x9cc));
-                return true;
-            }
-            return false;
-        }
+    case 1:
+        pBox->FUN_1419f82b0(GetStringCommon(0x9cc));
+        return true;
     }
     return false;
 }

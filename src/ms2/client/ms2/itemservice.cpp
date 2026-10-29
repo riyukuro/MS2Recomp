@@ -179,98 +179,97 @@ int CItemService::FUN_14141a000(CKfmModel* pModel)
     return 1;
 }
 
-// MS2-FUNCTIONAL: the flow of the 0xbec-byte original (equip item, KFM / NIF parts, root cache, three failure logs) is
-// kept; the temporaries and the cleanup order on the early returns are not byte-checked
 // @0x14141a060
 MS2Ptr<CEquipItem> CItemService::FUN_14141a060(CItem* pItem, PC* pPC, __int64 nCache)
 {
-    Unk_NifRootCache* pCache = reinterpret_cast<Unk_NifRootCache*>(nCache);
-    int nType;
-    if (pPC == 0 || pPC->GetClassID() != 0x6200016 || pItem == 0 || (nType = pItem->FUN_140526c30(), nType < 4)
-        || (nType > 5 && nType != 0x13))
+    if (pPC != 0 && pPC->GetClassID() == 0x6200016 && pItem != 0)
     {
-        MS2Ptr<CEquipItem> spEquip(new CEquipItem(pPC, pItem));
-        CEquipment* pEquipment = reinterpret_cast<CEquipment*>(pPC->FUN_1416561a0());
-        if (!FUN_14141b000(pItem, pPC))
+        switch (pItem->FUN_140526c30())
         {
-            FUN_14141b250(pItem, pPC, &spEquip->m_linkedItems);
-            reinterpret_cast<CEquipment*>(pPC->FUN_1416561a0())->FUN_1411e3d20(spEquip->m_linkedItems, 0);
-            spEquip->m_linkedItems.RemoveAll();
+        case 4:
+        case 5:
+        case 0x13:
+            return MS2Ptr<CEquipItem>(0);
         }
-        else
+    }
+    MS2Ptr<CEquipItem> spEquip(new CEquipItem(pPC, pItem));
+    if (FUN_14141b000(pItem, pPC))
+    {
+        FUN_14141b250(pItem, pPC, &spEquip->m_linkedItems);
+        reinterpret_cast<CEquipment*>(pPC->FUN_1416561a0())->FUN_1411e3d20(spEquip->m_linkedItems, 1);
+    }
+    else
+    {
+        FUN_14141b250(pItem, pPC, &spEquip->m_linkedItems);
+        reinterpret_cast<CEquipment*>(pPC->FUN_1416561a0())->FUN_1411e3d20(spEquip->m_linkedItems, 0);
+        spEquip->m_linkedItems.RemoveAll();
+    }
+    bool bSecond = pItem->FUN_14052a170() == 2;
+    int nWeapon = pPC->vfunc_133(pItem, bSecond);
+    bool bHair = FUN_140527840(pItem)->FUN_14053eba0()->FUN_14054b400() == 0xe ? true : false;
+    int nGender = pPC->FUN_141658e60();
+    if (!FUN_140527840(pItem)->FUN_14053cae0(nGender, nWeapon))
+        return spEquip;
+    MS2Ptr<CItemData> spData(FUN_140527840(pItem));
+    for (size_t i = 0; i < spData->FUN_14053eba0()->FUN_14054b3d0(); i++)
+    {
+        const ModelGroup* pGroup = spData->FUN_14053eba0()->FUN_14054b2f0(i);
+        for (size_t j = 0; j < pGroup->FUN_1405450c0(); j++)
         {
-            FUN_14141b250(pItem, pPC, &spEquip->m_linkedItems);
-            reinterpret_cast<CEquipment*>(pPC->FUN_1416561a0())->FUN_1411e3d20(spEquip->m_linkedItems, 1);
-        }
-        (void)pEquipment;
-        bool bSecond = pItem->FUN_14052a170() == 2;
-        int nWeapon = pPC->vfunc_133(pItem, bSecond);
-        bool bHair = FUN_140527840(pItem)->FUN_14053eba0()->FUN_14054b400() == 0xe;
-        int nGender = pPC->FUN_141658e60();
-        if (!FUN_140527840(pItem)->FUN_14053cae0(nGender, nWeapon))
-            return spEquip;
-        MS2Ptr<CItemData> spData(FUN_140527840(pItem));
-        for (size_t i = 0; i < spData->FUN_14053eba0()->FUN_14054b3d0(); i++)
-        {
-            const ModelGroup* pGroup = spData->FUN_14053eba0()->FUN_14054b2f0(i);
-            for (size_t j = 0; j < pGroup->FUN_1405450c0(); j++)
+            const ModelPart* pPart = pGroup->FUN_140544fe0(j);
+            if (!pPart->FUN_140544aa0(nGender, nWeapon))
+                continue;
+            CString strPath(pPart->name0);
+            if (bHair)
+                strPath = reinterpret_cast<CEquipment*>(pPC->FUN_1416561a0())->FUN_1411ea5d0(strPath);
+            if (pPart->isNif == 0)
             {
-                const ModelPart* pPart = pGroup->FUN_140544fe0(j);
-                if (!pPart->FUN_140544aa0(nGender, nWeapon))
-                    continue;
-                CString strPath(pPart->name0);
-                if (bHair)
-                    strPath = reinterpret_cast<CEquipment*>(pPC->FUN_1416561a0())->FUN_1411ea5d0(strPath);
-                if (pPart->isNif == 0)
+                MS2Ptr<CKfmModel> spModel(new CKfmModel(reinterpret_cast<const MS2Ptr<Unk_EquipModelOwner>&>(spEquip),
+                                                        const_cast<ModelGroup*>(pGroup), const_cast<ModelPart*>(pPart)));
+                if (!spModel->vfunc_4(strPath))
                 {
-                    MS2Ptr<CKfmModel> spModel(new CKfmModel(reinterpret_cast<const MS2Ptr<Unk_EquipModelOwner>&>(spEquip),
-                                                            const_cast<ModelGroup*>(pGroup), const_cast<ModelPart*>(pPart)));
-                    if (!spModel->vfunc_4(strPath))
+                    Unk_FileLog(GetLogString(), 1, 0x13, L"nif \xd30c\xc77c\xc744 \xc77d\xc744 \xc218 \xc5c6\xc2b5\xb2c8\xb2e4" L"EquipItem1 [{0}]",
+                        IsModel(spModel.get())->FUN_141201780().c_str());
+                    return MS2Ptr<CEquipItem>(0);
+                }
+            }
+            else
+            {
+                MS2Ptr<CNifModel> spModel(new CNifModel(reinterpret_cast<const MS2Ptr<Unk_EquipModelOwner>&>(spEquip),
+                                                        const_cast<ModelGroup*>(pGroup), const_cast<ModelPart*>(pPart)));
+                NiAVObjectPtr spRoot(0);
+                if (nCache != 0)
+                {
+                    Unk_NifRootCache::iterator it = reinterpret_cast<Unk_NifRootCache*>(nCache)->find((const char*)strPath);
+                    if (it != reinterpret_cast<Unk_NifRootCache*>(nCache)->end())
                     {
-                        efd::utf8string strName = IsModel(spModel.get())->FUN_141201780();
-                        Unk_FileLog(GetLogString(), 1, 0x13, L"nif \xd30c\xc77c\xc744 \xc77d\xc744 \xc218 \xc5c6\xc2b5\xb2c8\xb2e4" L"EquipItem1 [{0}]", strName.c_str());
+                        std::list<NiAVObjectPtr>& rList = it->second;
+                        if (!rList.empty())
+                        {
+                            spRoot = *rList.begin();
+                            rList.erase(rList.begin());
+                        }
+                    }
+                }
+                if (spRoot)
+                {
+                    if (!FUN_141565a20(spModel.get(), strPath, spRoot))
+                    {
+                        Unk_FileLog(GetLogString(), 1, 0x13, L"nif \xd30c\xc77c\xc744 \xc77d\xc744 \xc218 \xc5c6\xc2b5\xb2c8\xb2e4" L"EquipItem2 [{0}]",
+                            IsModel(spModel.get())->FUN_141201780().c_str());
                         return MS2Ptr<CEquipItem>(0);
                     }
                 }
-                else
+                else if (!spModel->vfunc_4(strPath))
                 {
-                    MS2Ptr<CNifModel> spModel(new CNifModel(reinterpret_cast<const MS2Ptr<Unk_EquipModelOwner>&>(spEquip),
-                                                            const_cast<ModelGroup*>(pGroup), const_cast<ModelPart*>(pPart)));
-                    NiAVObjectPtr spRoot(0);
-                    if (pCache != 0)
-                    {
-                        Unk_NifRootCache::iterator it = pCache->find(std::string((const char*)strPath));
-                        if (it != pCache->end())
-                        {
-                            std::list<NiAVObjectPtr>& rList = it->second;
-                            if (!rList.empty())
-                            {
-                                spRoot = *rList.begin();
-                                rList.erase(rList.begin());
-                            }
-                        }
-                    }
-                    if (spRoot == 0)
-                    {
-                        if (!spModel->vfunc_4(strPath))
-                        {
-                            efd::utf8string strName = IsModel(spModel.get())->FUN_141201780();
-                            Unk_FileLog(GetLogString(), 1, 0x13, L"nif \xd30c\xc77c\xc744 \xc77d\xc744 \xc218 \xc5c6\xc2b5\xb2c8\xb2e4" L"EquipItem3 [{0}]", strName.c_str());
-                            return MS2Ptr<CEquipItem>(0);
-                        }
-                    }
-                    else if (!FUN_141565a20(spModel.get(), strPath, spRoot))
-                    {
-                        efd::utf8string strName = IsModel(spModel.get())->FUN_141201780();
-                        Unk_FileLog(GetLogString(), 1, 0x13, L"nif \xd30c\xc77c\xc744 \xc77d\xc744 \xc218 \xc5c6\xc2b5\xb2c8\xb2e4" L"EquipItem2 [{0}]", strName.c_str());
-                        return MS2Ptr<CEquipItem>(0);
-                    }
+                    Unk_FileLog(GetLogString(), 1, 0x13, L"nif \xd30c\xc77c\xc744 \xc77d\xc744 \xc218 \xc5c6\xc2b5\xb2c8\xb2e4" L"EquipItem3 [{0}]",
+                        IsModel(spModel.get())->FUN_141201780().c_str());
+                    return MS2Ptr<CEquipItem>(0);
                 }
             }
         }
-        return spEquip;
     }
-    return MS2Ptr<CEquipItem>(0);
+    return spEquip;
 }
 
 // @0x14141ac60
@@ -284,7 +283,6 @@ void CItemService::FUN_14141ac60(const efd::AssetLoadResponse* pMsg, efd::Catego
 }
 
 // The PhysX prop of a loading KFM model was created.
-// MS2-FUNCTIONAL: the argument register shuffle of the two Unk_IsEquipItem calls (mov rcx,[x]; mov rdx,rcx) is not reproduced
 // @0x14141acc0
 void CItemService::FUN_14141acc0(const ecrPhysX::PhysXPropMessage* pMsg, efd::Category)
 {
@@ -293,8 +291,7 @@ void CItemService::FUN_14141acc0(const ecrPhysX::PhysXPropMessage* pMsg, efd::Ca
     if (m_mapModels.Lookup(id.GetValue(), spModel))
     {
         spModel->vfunc_33();
-        CKfmModel* pModel = spModel;
-        reinterpret_cast<Unk_IsEquipItem*>(IsModel(spModel.get())->FUN_141200a40().operator->())->FUN_1411dc500(pModel);
+        reinterpret_cast<Unk_IsEquipItem*>(IsModel(spModel.get())->FUN_141200a40().operator->())->FUN_1411dc500(spModel);
         PC* pPC = IsModel(spModel.get())->FUN_141200820();
         if (pPC != 0)
             reinterpret_cast<CEquipment*>(pPC->FUN_1416561a0())->FUN_1411e0c00();
@@ -302,7 +299,6 @@ void CItemService::FUN_14141acc0(const ecrPhysX::PhysXPropMessage* pMsg, efd::Ca
 }
 
 // The actor of a loading KFM model was added.
-// MS2-FUNCTIONAL: the argument register shuffle of the two Unk_IsEquipItem calls (mov rcx,[x]; mov rdx,rcx) is not reproduced
 // @0x14141ae10
 void CItemService::FUN_14141ae10(const egmAnimation::ActorAddedMessage* pMsg, efd::Category)
 {
@@ -312,8 +308,7 @@ void CItemService::FUN_14141ae10(const egmAnimation::ActorAddedMessage* pMsg, ef
     {
         IsModel(spModel.get())->FUN_141200a40()->FUN_1411dbfd0();
         spModel->vfunc_34();
-        CKfmModel* pModel = spModel;
-        reinterpret_cast<Unk_IsEquipItem*>(IsModel(spModel.get())->FUN_141200a40().operator->())->FUN_1411dc530(pModel);
+        reinterpret_cast<Unk_IsEquipItem*>(IsModel(spModel.get())->FUN_141200a40().operator->())->FUN_1411dc530(spModel);
         PC* pPC = IsModel(spModel.get())->FUN_141200820();
         if (pPC != 0)
             reinterpret_cast<CEquipment*>(pPC->FUN_1416561a0())->FUN_1411e0c10();
@@ -322,15 +317,14 @@ void CItemService::FUN_14141ae10(const egmAnimation::ActorAddedMessage* pMsg, ef
     }
 }
 
-// MS2-FUNCTIONAL: the original's frame is 0x10 bigger (an int-typed temporary for the ternary argument, an int-returning
-// FUN_14053cae0, a spData temporary); same flow
 // @0x14141b000
 int CItemService::FUN_14141b000(CItem* pItem, PC* pPC)
 {
     if (pItem == 0 || pPC == 0)
         return 0;
     int nCount = 0;
-    int nWeapon = pPC->vfunc_133(pItem, pItem->FUN_14052a170() == 2 ? true : false);
+    bool bLayer2 = pItem->FUN_14052a170() == 2 ? 1 : 0;
+    int nWeapon = pPC->vfunc_133(pItem, bLayer2);
     int nGender = pPC->FUN_141658e60();
     if (!FUN_140527840(pItem)->FUN_14053cae0(nGender, nWeapon))
         return 0;
@@ -341,13 +335,13 @@ int CItemService::FUN_14141b000(CItem* pItem, PC* pPC)
         for (int j = 0; j < (int)pGroup->FUN_1405450c0(); j++)
         {
             const ModelPart* pPart = pGroup->FUN_140544fe0(j);
-            if (pPart->FUN_140544aa0(nGender, nWeapon))
-            {
-                MS2Ptr<CEquipModel> spModel(0);
-                if (pPart->isNif != 0)
-                    return 0;
+            if (pPart->FUN_140544aa0(nGender, nWeapon) == 0)
+                continue;
+            MS2Ptr<CEquipModel> spModel(0);
+            if (pPart->isNif == 0)
                 nCount++;
-            }
+            else
+                return 0;
         }
     }
     return nCount > 0;
@@ -515,7 +509,6 @@ void ItemSlotBag::vfunc_14(int nIndex)
         pSlot->vfunc_10();
 }
 
-// MS2-FUNCTIONAL: the original's frame is 0x10 bigger (one more int local and a copied GetItemFn result temporary)
 // @0x14141fc60
 DragSlot* ItemSlotBag::vfunc_16(int nIndex)
 {
@@ -530,7 +523,7 @@ DragSlot* ItemSlotBag::vfunc_16(int nIndex)
         spItem = m_spParam->m_pfnGetItem(m_pItems, nIndex);
     }
     ItemInfoSlot* pSlot = new (efd::MemHint(efd::MemHint::NONE)) ItemInfoSlot(strName, spItem, nIndex, nIconType, nFlags);
-    if (pSlot != 0 && m_spParam.get() != 0)
+    if (pSlot != 0 && (m_spParam.get() != 0 ? true : false))
     {
         pSlot->SetSlotFn(m_spParam->m_pfnSlot);
         pSlot->SetTipFn(m_spParam->m_pfnTip);
@@ -540,7 +533,6 @@ DragSlot* ItemSlotBag::vfunc_16(int nIndex)
 }
 
 // Resize the bag to nCount slots and refill the items.
-// MS2-FUNCTIONAL: the original keeps the old slot count in two more int locals; the grow / shrink loops are the same
 // @0x14141ff80
 void FUN_14141ff80(ItemSlotBag* pBag, int nCount)
 {
@@ -550,31 +542,31 @@ void FUN_14141ff80(ItemSlotBag* pBag, int nCount)
         return;
     }
     int nOld = (int)pBag->m_slots.size();
-    if (nOld < nCount)
+    if (nCount > nOld)
     {
-        for (; nOld < nCount; nOld++)
-            pBag->FUN_1422ccb50(nOld);
+        int nStart = nOld;
+        for (int i = nStart; i < nCount; i++)
+            pBag->FUN_1422ccb50(i);
     }
     else if (nCount < nOld)
     {
-        int i = nOld - 1;
-        if (i < 0)
+        int nLast = nOld - 1;
+        if (nLast < 0)
             return;
-        for (; nCount <= i; i--)
+        for (int i = nLast; i >= nCount; i--)
             pBag->FUN_1422ccc60(i);
     }
-    if (!pBag->m_slots.empty())
+    if (pBag->m_slots.empty())
+        return;
+    for (auto kv : pBag->m_slots)
     {
-        for (auto kv : pBag->m_slots)
-        {
-            ItemInfoSlot* pSlot = FUN_140cfe6c0(pBag->FUN_1422cd0f0(kv.second));
-            if (pSlot == 0)
-                continue;
-            int nIndex = pSlot->GetIndex();
-            MS2Ptr<CItem> spItem = pBag->m_spParam.get() == 0 ? MS2Ptr<CItem>(0)
-                                                               : pBag->m_spParam->m_pfnGetItem(pBag->m_pItems, nIndex);
-            pSlot->SetItem(spItem);
-        }
+        ItemInfoSlot* pSlot = FUN_140cfe6c0(pBag->FUN_1422cd0f0(kv.second));
+        if (pSlot == 0)
+            continue;
+        int nIndex = pSlot->GetIndex();
+        MS2Ptr<CItem> spItem = pBag->m_spParam.get() != 0 ? pBag->m_spParam->m_pfnGetItem(pBag->m_pItems, nIndex)
+                                                           : MS2Ptr<CItem>(0);
+        pSlot->SetItem(spItem);
     }
 }
 

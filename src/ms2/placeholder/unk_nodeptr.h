@@ -8,7 +8,7 @@ void FUN_140980460(void* p);            // NiRefObject::IncRefCount
 
 struct Unk_NodePtr
 {
-    Unk_NodePtr(void* p);               // 0x1409f7170  m_p = p, adds a reference
+    Unk_NodePtr(void* p = 0);           // 0x1409f7170  m_p = p, adds a reference (the default: an implicit owner ctor passes 0)
     ~Unk_NodePtr();                     // 0x1409f74b0  drops the reference
     bool FUN_1409f77a0(int nNull);      // 0x1409f77a0  m_p == (void*)nNull
     // Inline members (COMDATs emitted by the first unit that uses them: 0x140aac240 / 0x140aac3e0 in randomtargeteffect).

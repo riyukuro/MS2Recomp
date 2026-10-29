@@ -26,6 +26,7 @@ public:
     void FUN_141b38c70(UIUGCEventListener* pListener);                    // remove a listener
 private:
     MS2_LAYOUT_FRIEND;
-    ATL::CAtlArray<void*> m_8;                              // +0x8 the registered UIUGCEventListener*
+    // A typed element (not void*): ATL passes non-primitive elements to Add by const& (lea rdx), as the exe does.
+    ATL::CAtlArray<UIUGCEventListener*> m_8;                // +0x8 the registered listeners
 };
 MS2_CHECK_SIZE(UIUGCEventDispatcher, 0x28);

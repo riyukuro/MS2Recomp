@@ -24,10 +24,10 @@ void* FUN_141347090(void* pMap, void** pPos);
 void* FUN_1413470e0(void* pMap, void* pos);
 
 // Debug flags (the check boxes' state).
-extern char DAT_143ae95e0;              // skill range, pc
-extern char DAT_143ae95e1;              // skill range, npc
-extern char DAT_143ae95e2;              // collision, pc
-extern char DAT_143ae95e3;              // collision, npc
+extern bool DAT_143ae95e0;              // skill range, pc
+extern bool DAT_143ae95e1;              // skill range, npc
+extern bool DAT_143ae95e2;              // collision, pc
+extern bool DAT_143ae95e3;              // collision, npc
 
 // An npc's data record handle (2 pointers); record fields at +0x2d8 / +0x2dc. The npc hands out a Tmp that is copied into
 // the Data handle.
@@ -78,6 +78,11 @@ UIRangePreviewDialog::UIRangePreviewDialog()
     m_40 = 1;
 }
 
+// @0x141346a90
+UIRangePreviewDialog::~UIRangePreviewDialog()
+{
+}
+
 // @0x141346ad0
 CString UIRangePreviewDialog::GetTypeName()
 {
@@ -109,13 +114,13 @@ int UIRangePreviewDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
             FUN_141346dc0(this, &data);
         return 1;
     }
-    if (_stricmp("onCheckSkillRange", szMethod) == 0) {
+    else if (_stricmp("onCheckSkillRange", szMethod) == 0) {
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs) != 0)
             FUN_141346e00(this, &data);
         return 1;
     }
-    if (_stricmp("onClickNpcExtentReload", szMethod) == 0) {
+    else if (_stricmp("onClickNpcExtentReload", szMethod) == 0) {
         OnClickNpcExtentReload();
         return 1;
     }
@@ -179,10 +184,14 @@ int UIRangePreviewDialog::vfunc_48()
 // @0x1413470e0
 void* FUN_1413470e0(void* pMap, void* pos)
 {
-    if (pos != 0)
-        return (char*)pos + 8;
-    FUN_140159b70(0x80004005);
-    return 0;
+    do {
+        int bOk = pos != 0 ? 1 : 0;
+        do {
+        } while (0);
+        if (bOk == 0)
+            FUN_140159b70(0x80004005);
+    } while (0);                                        // ATLENSURE(pos != NULL)
+    return (char*)pos + 8;
 }
 
 MS2_EMIT_CRT_MEMMOVE_S();

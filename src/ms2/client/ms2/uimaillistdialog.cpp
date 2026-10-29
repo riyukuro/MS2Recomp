@@ -5,6 +5,7 @@
 // MS2-PIN: ??_7?$DelegateImpl@U?$pair@PEAVUIMailListDialog@@P81@EAA_NV?$MS2Ptr@VTMarketBillDataParam@@@@AEBV?$CAtlMap@W4ePayType@@_JV?$CElementTraits@W4ePayType@@@ATL@@V?$CElementTraits@_J@3@@ATL@@@Z@std@@@?$Delegate@$$A6A_NV?$MS2Ptr@VTMarketBillDataParam@@@@AEBV?$CAtlMap@W4ePayType@@_JV?$CElementTraits@W4ePayType@@@ATL@@V?$CElementTraits@_J@3@@ATL@@@Z@@6B@ 0x142fbefc0
 // MS2-PIN: ??_7?$DelegateImpl@U?$pair@PEAVUIMailListDialog@@P81@EAA_NPEAVValue@GFx@Scaleform@@AEAVASData@@V?$MS2Ptr@VTMarketBillDataParam@@@@@Z@std@@@?$Delegate@$$A6A_NPEAVValue@GFx@Scaleform@@AEAVASData@@V?$MS2Ptr@VTMarketBillDataParam@@@@@Z@@6B@ 0x142fbefe8
 // MS2-PIN: ??1TMailAdBillDataParam@@UEAA@XZ 0x1419ea450
+// MS2-PIN: ?IsNull@?$Unk_MailPtr@VCMailInfo@@@@QEBA_NXZ 0x1419ea470
 // MS2-PIN: ?Maximum@?$CRBTree@_JV?$Unk_MailPtr@VCMailInfo@@@@V?$CElementTraits@_J@ATL@@V?$CElementTraits@V?$Unk_MailPtr@VCMailInfo@@@@@3@@ATL@@IEBAPEAVCNode@12@PEAV312@@Z 0x1419eaf40
 // MS2-PIN: ?Predecessor@?$CRBTree@_JV?$Unk_MailPtr@VCMailInfo@@@@V?$CElementTraits@_J@ATL@@V?$CElementTraits@V?$Unk_MailPtr@VCMailInfo@@@@@3@@ATL@@IEBAPEAVCNode@12@PEAV312@@Z 0x1419eb2d0
 // MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUIMailListDialog@@P81@EAA_NV?$MS2Ptr@VTMarketBillDataParam@@@@AEBV?$CAtlMap@W4ePayType@@_JV?$CElementTraits@W4ePayType@@@ATL@@V?$CElementTraits@_J@3@@ATL@@@Z@std@@@?$Delegate@$$A6A_NV?$MS2Ptr@VTMarketBillDataParam@@@@AEBV?$CAtlMap@W4ePayType@@_JV?$CElementTraits@W4ePayType@@@ATL@@V?$CElementTraits@_J@3@@ATL@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x1419ebc60
@@ -220,13 +221,7 @@ int FUN_1419eadd0(CMailInfo* pMail)
 CReservedWordTable* FUN_1403b4750();
 CStringW FUN_1419e95d0(CMailInfo* pMail, int bTooltip);             // the "days left" text of a row
 
-// The mail pointer is empty.
-// MS2-FUNCTIONAL: not byte-exact yet (branch/temp layout differs; left for the permuter lane)
-// @0x1419ea470
-int FUN_1419ea470(const CUserMail::MailPtr& spMail)
-{
-    return spMail.get() == 0;
-}
+// @0x1419ea470: Unk_MailPtr<CMailInfo>::IsNull (usermail.h)
 
 // The meso of the mail (the plain sum while unclaimed plus the meso benefit).
 // @0x1419e9160
@@ -277,16 +272,15 @@ __int64 FUN_1419e9360(CMailInfo* pMail)
 MS2_REPLACE(0x1419E9360, FUN_1419e9360, 151, 0xE2DAA05F); // FUN_1419e9360
 
 // A benefit amount as price text.
-// MS2-FUNCTIONAL: not byte-exact yet (branch/temp layout differs; left for the permuter lane)
 // @0x1419e9400
 CStringW FUN_1419e9400(int nPriceType, __int64 nAmount)
 {
-    return FUN_1418fec00(FUN_1403bae00(nPriceType), nAmount, 0);
+    int nPayType = FUN_1403bae00(nPriceType);
+    return FUN_1418fec00(nPayType, nAmount, 0);
 }
 MS2_REPLACE(0x1419E9400, FUN_1419e9400, 82, 0xFF1E0FE6); // FUN_1419e9400
 
 // The other benefits (not meso / merat kinds 2 and 8) as "token1".."tokenN" members.
-// MS2-FUNCTIONAL: not byte-exact yet (branch/temp layout differs; left for the permuter lane)
 // @0x1419e9460
 void FUN_1419e9460(CMailInfo* pMail, ASObj& info)
 {
@@ -299,17 +293,19 @@ void FUN_1419e9460(CMailInfo* pMail, ASObj& info)
         for (int i = 0; i < nCount; i++)
         {
             Unk_MailBenefit& benefit = benefits.GetAt(i);
-            if (benefit.m_nType != 2 && benefit.m_nType != 8 && benefit.m_nSub == 0)
-            {
-                __int64 nAmount = benefit.FUN_14026a1f0();
-                if (nAmount != 0)
-                {
-                    CStringW strPrice = FUN_1419e9400(benefit.m_nType, nAmount);
-                    CStringA strKey = StringFormat("token{0}", nToken);
-                    nToken++;
-                    info.FUN_1407cbb20(strKey, CStringW(strPrice));
-                }
-            }
+            if (benefit.m_nType == 2)
+                continue;
+            if (benefit.m_nType == 8)
+                continue;
+            if (benefit.m_nSub != 0)
+                continue;
+            __int64 nAmount = benefit.FUN_14026a1f0();
+            if (nAmount == 0)
+                continue;
+            CStringW strPrice = FUN_1419e9400(benefit.m_nType, nAmount);
+            CStringA strKey = StringFormat("token{0}", nToken);
+            nToken++;
+            info.FUN_1407cbb20(strKey, CStringW(strPrice));
         }
     }
 }
@@ -349,12 +345,10 @@ MS2_REPLACE(0x1419E95D0, FUN_1419e95d0, 624, 0x1F41E57F); // FUN_1419e95d0
 
 // ---- UIMailListDialog ----
 
-// MS2-FUNCTIONAL: not byte-exact yet (branch/temp layout differs; left for the permuter lane)
 // @0x1419e3510
 UIMailListDialog::UIMailListDialog()
-    : m_mapChecked(17, 0.75f, 0.25f, 2.25f, 10)
+    : m_mapChecked(17, 0.75f, 0.25f, 2.25f, 10), m_bRefresh(false)
 {
-    m_bRefresh = false;
     FUN_141924170(1);
     m_nPage = 0;
 }
@@ -371,11 +365,12 @@ CString UIMailListDialog::GetTypeName()
 }
 MS2_REPLACE_METHOD(0x1419E3630, UIMailListDialog, GetTypeName, 61, 0xDC6C2DCB); // UIMailListDialog::vfunc_1
 
-// MS2-FUNCTIONAL: not byte-exact yet (branch/temp layout differs; left for the permuter lane)
 // @0x1419e3680
 int UIMailListDialog::vfunc_65()
 {
-    return UIDialog::vfunc_65() != 0;
+    if (!UIDialog::vfunc_65())
+        return 0;
+    return 1;
 }
 MS2_REPLACE_METHOD(0x1419E3680, UIMailListDialog, vfunc_65, 37, 0xFEA3F0C1); // UIMailListDialog::vfunc_65
 
@@ -406,11 +401,12 @@ void UIMailListDialog::vfunc_79(void* p)
 }
 MS2_REPLACE_METHOD(0x1419E3750, UIMailListDialog, vfunc_79, 34, 0xABDD3A3E); // UIMailListDialog::vfunc_79
 
-// MS2-FUNCTIONAL: not byte-exact yet (branch/temp layout differs; left for the permuter lane)
 // @0x1419e3780
 int UIMailListDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
 {
-    return UIDialog::OnMessage(pSender, pMsg) != 0;
+    if (UIDialog::OnMessage(pSender, pMsg))
+        return 1;
+    return 0;
 }
 
 // @0x1419e4de0
@@ -509,7 +505,6 @@ void UIMailListDialog::FUN_1419e5900()
 }
 MS2_REPLACE_METHOD(0x1419E5900, UIMailListDialog, FUN_1419e5900, 258, 0x4973165E); // FUN_1419e5900
 
-// MS2-FUNCTIONAL: not byte-exact yet (branch/temp layout differs; left for the permuter lane)
 // @0x1419e5a10
 void UIMailListDialog::FUN_1419e5a10(__int64 nMailId)
 {
@@ -526,7 +521,7 @@ void UIMailListDialog::FUN_1419e5a10(__int64 nMailId)
                 CStringW strTitle = spMail->FUN_1406905b0();
                 CStringW strContent = spMail->FUN_140690600();
                 int nKind = spMail->FUN_140690370();
-                if (99 < nKind && nKind < 0x71)
+                if (nKind >= 100 && nKind < 0x71)
                 {
                     FUN_1403b4750()->FUN_1416fb300(strSender);
                     FUN_1403b4750()->FUN_1416fb300(strTitle);
@@ -555,23 +550,21 @@ void UIMailListDialog::FUN_1419e5a10(__int64 nMailId)
                 if (0 < nMeratRed)
                     info.FUN_1407cbb20("meratRed", FUN_1409404f0(nMeratRed));
                 FUN_1419e9460(spMail.get(), info);
-                int nKind2 = spMail->FUN_140690370();
-                if (nKind2 == 3)
+                switch (spMail->FUN_140690370())
                 {
+                case 3:
                     info.FUN_1407cbbe0("disableReply", true);
-                }
-                else if (nKind2 == 200)
-                {
+                    break;
+                case 200:
                     info.FUN_1407cbb20("productName", spMail->FUN_1419eab80());
-                    __int64 nPrice = spMail->FUN_140692510();
-                    info.FUN_1407cba60("price", StringFormat("{0}", nPrice));
-                    __int64 nSalePrice = spMail->FUN_1406925a0();
-                    info.FUN_1407cba60("salePrice", StringFormat("{0}", nSalePrice));
+                    info.FUN_1407cba60("price", Unk_SocketFormat("{0}", spMail->FUN_140692510()));
+                    info.FUN_1407cba60("salePrice", Unk_SocketFormat("{0}", spMail->FUN_1406925a0()));
                     info.FUN_1407cb9c0("expired", spMail->FUN_140692630());
-                }
-                else if (0 < spMail->FUN_140690370() && spMail->FUN_140690370() < 4)
-                {
-                    info.FUN_1407cbbe0("visibleUserMailIcon", true);
+                    break;
+                default:
+                    if (spMail->FUN_140690370() >= 1 && spMail->FUN_140690370() < 4)
+                        info.FUN_1407cbbe0("visibleUserMailIcon", true);
+                    break;
                 }
             }
         }
@@ -624,7 +617,6 @@ void UIMailListDialog::FUN_1419e6360(__int64 nMailId)
 }
 MS2_REPLACE_METHOD(0x1419E6360, UIMailListDialog, FUN_1419e6360, 156, 0x946298AD); // FUN_1419e6360
 
-// MS2-FUNCTIONAL: not byte-exact yet (branch/temp layout differs; left for the permuter lane)
 // @0x1419e67a0
 unsigned UIMailListDialog::FUN_1419e67a0(CMailInfo* pMail)
 {
@@ -655,7 +647,7 @@ unsigned UIMailListDialog::FUN_1419e67a0(CMailInfo* pMail)
         for (int i = 0; i < 5; i++)
         {
             Unk_MailAttachPtr spAttach = pMail->FUN_140690790(i);
-            if (spAttach.get() != 0 && spAttach->m_nTime == 0)
+            if ((spAttach.get() != 0 ? true : false) && spAttach->m_nTime == 0)
             {
                 CStringA strKey;
                 strKey.Format("%s.%d", (const char*)GetTypeName(), nCount);
@@ -737,7 +729,6 @@ int UIMailListDialog::FUN_1419e6fe0(int nPage)
 }
 MS2_REPLACE_METHOD(0x1419E6FE0, UIMailListDialog, FUN_1419e6fe0, 210, 0xE322023D); // FUN_1419e6fe0
 
-// MS2-FUNCTIONAL: not byte-exact yet (branch/temp layout differs; left for the permuter lane)
 // @0x1419e70c0
 int UIMailListDialog::FUN_1419e70c0(CStringW strIds)
 {
@@ -745,7 +736,7 @@ int UIMailListDialog::FUN_1419e70c0(CStringW strIds)
     FUN_14025a680(strIds, aIds, L",");
     if (aIds.GetCount() == 0)
         return 0;
-    ATL::CAtlArray<CStringW> aUnused;
+    ATL::CAtlArray<unsigned __int64> aUnused;
     for (size_t i = 0; i < aIds.GetCount(); i++)
     {
         unsigned __int64 nId = FUN_140718370(aIds[i]);
@@ -757,21 +748,23 @@ int UIMailListDialog::FUN_1419e70c0(CStringW strIds)
 }
 MS2_REPLACE_METHOD(0x1419E70C0, UIMailListDialog, FUN_1419e70c0, 395, 0xB40CDF74); // FUN_1419e70c0
 
-// MS2-FUNCTIONAL: not byte-exact yet (branch/temp layout differs; left for the permuter lane)
 // @0x1419e7260
 CStringA UIMailListDialog::FUN_1419e7260(Unk_MailPtr<CMailInfo> spMail)
 {
-    if (FUN_1419ead90(spMail.operator->()) == 0)
+    if (FUN_1419ead90(spMail.operator->()) != 0)
+    {
+        if (FUN_1419eadd0(spMail.operator->()) != 0)
+            return "ad";
+        return "ad_attached";
+    }
+    else
     {
         if (spMail->FUN_140690370() == 0x70)
             return "wedding_invitation";
-        if (spMail->FUN_140691220() == 0)
-            return "non_attached";
-        return "attached";
+        if (spMail->FUN_140691220() != 0)
+            return "attached";
+        return "non_attached";
     }
-    if (FUN_1419eadd0(spMail.operator->()) == 0)
-        return "ad_attached";
-    return "ad";
 }
 
 // @0x1419e73f0
@@ -785,18 +778,15 @@ void UIMailListDialog::FUN_1419e73f0()
 }
 MS2_REPLACE_METHOD(0x1419E73F0, UIMailListDialog, FUN_1419e73f0, 225, 0x8A7532B9); // FUN_1419e73f0
 
-// MS2-FUNCTIONAL: not byte-exact yet (branch/temp layout differs; left for the permuter lane)
 // @0x1419e7fd0
 int UIMailListDialog::FUN_1419e7fd0()
 {
-    MS2Ptr<Unk_MlTab> spTab = FUN_140c02870("m_tab");
-    if (spTab.get() == 0)
-        return -1;
-    return spTab->FUN_1422e3210();
+    if (MS2Ptr<Unk_MlTab> spTab = FUN_140c02870("m_tab"))
+        return spTab->FUN_1422e3210();
+    return -1;
 }
 MS2_REPLACE_METHOD(0x1419E7FD0, UIMailListDialog, FUN_1419e7fd0, 166, 0x6BAF5A08); // FUN_1419e7fd0
 
-// MS2-FUNCTIONAL: not byte-exact yet (branch/temp layout differs; left for the permuter lane)
 // @0x1419e8b70
 bool UIMailListDialog::FUN_1419e8b70(Scaleform::GFx::Value* pRetVal, ASData& data, MS2Ptr<TMarketBillDataParam> spParam)
 {
@@ -804,16 +794,19 @@ bool UIMailListDialog::FUN_1419e8b70(Scaleform::GFx::Value* pRetVal, ASData& dat
         return false;
     if (spParam == 0)
         return false;
-    ASObj obj(data.FUN_1422b9260(), 2);
+    Scaleform::GFx::Value vArg = data.FUN_1422b9260();
+    ASObj obj(vArg, 2);
     if (obj.FUN_1422ba9a0())
         return false;
     MS2Ptr<TMailAdBillDataParam> spMailParam(dynamic_cast<TMailAdBillDataParam*>(spParam.get()));
     if (spMailParam == 0)
         return true;
-    CMailInfo* pMail = g_143ab2ee0.FUN_1408e3720(spMailParam->m_nMailId).get();
+    __int64 nMailId = spMailParam->m_nMailId;
+    CMailInfo* pMail = g_143ab2ee0.FUN_1408e3720(nMailId).get();
     if (pMail == 0)
         return true;
-    MS2Ptr<ASBillData> spBill = spParam->FUN_140eaba00(data.FUN_1422b8b10());
+    int nBillIndex = data.FUN_1422b8b10();
+    MS2Ptr<ASBillData> spBill = spParam->FUN_140eaba00(nBillIndex);
     if (spBill == 0)
         return false;
     MS2Ptr<ASMailAdBillData> spAdBill(dynamic_cast<ASMailAdBillData*>(spBill.get()));
@@ -822,35 +815,31 @@ bool UIMailListDialog::FUN_1419e8b70(Scaleform::GFx::Value* pRetVal, ASData& dat
     MS2Ptr<CMailAdItem> spAd = pMail->FUN_140692480(spAdBill->vfunc_5());
     if (spAd == 0)
         return false;
-    ASTooltip tip(FUN_141bd0cc0(FUN_1403ed2d0()), 0x20, 2);
+    PCBase* pPlayer = FUN_141bd0cc0(FUN_1403ed2d0());
+    ASTooltip tip(pPlayer, 0x20, 2);
     if (tip.FUN_1409e1770(spAd->m_n18, spAd->m_n20) != 0)
         FUN_1409b4bc0(pRetVal, tip.FUN_1422bb870());
     return true;
 }
 
-// MS2-FUNCTIONAL: not byte-exact yet (branch/temp layout differs; left for the permuter lane)
 // @0x1419e90d0
 void UIMailListDialog::SendMailMode0()
 {
-    if (m_30 == 0)
+    if (m_30 == 0 || FUN_1422dc430() == 0)
         return;
-    if (FUN_1422dc430() != 0)
-    {
-        COutPacket packet(static_cast<int>(SendOp::Mail), 0);
-        packet.Encode1(0);
-        FUN_140710590(packet);
-        m_bRefresh = false;
-    }
+    COutPacket packet(static_cast<int>(SendOp::Mail), 0);
+    packet.Encode1(0);
+    FUN_140710590(packet);
+    m_bRefresh = false;
 }
 MS2_REPLACE_METHOD(0x1419E90D0, UIMailListDialog, SendMailMode0, 128, 0xBD218E6E); // SendMailMode0
 
-// MS2-FUNCTIONAL: not byte-exact yet (branch/temp layout differs; left for the permuter lane)
 // @0x1419e37d0
 int UIMailListDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs)
 {
     if (UIDialog::vfunc_28(szMethod, pArgs, nArgs) != 0)
         return 1;
-    if (_stricmp("onSelectMail", szMethod) == 0)
+    else if (_stricmp("onSelectMail", szMethod) == 0)
     {
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs) != 0)
@@ -863,13 +852,15 @@ int UIMailListDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
     }
     else if (_stricmp("onSendMail", szMethod) == 0)
     {
-        BlockPtr spBlock = FUN_140a6a830()->FindBlockedAction(0xb);
-        if (spBlock.get() == 0)
         {
-            CUIService::GetInstance()->OpenDialog((eUIClassID)0x4e4a);
-            return 1;
+            BlockPtr spBlock = FUN_140a6a830()->FindBlockedAction(0xb);
+            if (spBlock.get() != 0)
+            {
+                FUN_140a30ad0(spBlock, 0xb, 0);
+                return 1;
+            }
         }
-        FUN_140a30ad0(spBlock, 0xb, 0);
+        CUIService::GetInstance()->OpenDialog((eUIClassID)0x4e4a);
         return 1;
     }
     else if (_stricmp("onSelectTab", szMethod) == 0)
@@ -952,11 +943,13 @@ int UIMailListDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
         if (data.FUN_1422b9620(pArgs, nArgs) != 0)
         {
             CStringW strIds = FUN_14016a730(data.FUN_1422b8d30(), 0);
-            if (FUN_1419e70c0(CStringW(strIds)) == 0)
+            if (FUN_1419e70c0(CStringW(strIds)) != 0)
             {
-                MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, GetStringCommon(0x22e), 0, CStringW(L""));
+                MS2Ptr<CMsgBoxData> spBox = FUN_140d73e40(0x19, 0x231, 0, CStringW(L""));
                 if (spBox.get() != 0)
                 {
+                    spBox->FUN_141a01800(1);
+                    spBox->FUN_141a024e0(GetStringCommon(0x232), 0);
                     spBox->FUN_140b76940(CStringW(strIds));
                     spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIMailListDialog::FUN_1419e7940));
                     FUN_140d73c60(spBox);
@@ -964,11 +957,9 @@ int UIMailListDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
             }
             else
             {
-                MS2Ptr<CMsgBoxData> spBox = FUN_140d73e40(0x19, 0x231, 0, CStringW(L""));
+                MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, GetStringCommon(0x22e), 0, CStringW(L""));
                 if (spBox.get() != 0)
                 {
-                    spBox->FUN_141a01800(1);
-                    spBox->FUN_141a024e0(GetStringCommon(0x232), 0);
                     spBox->FUN_140b76940(CStringW(strIds));
                     spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIMailListDialog::FUN_1419e7940));
                     FUN_140d73c60(spBox);
@@ -1003,24 +994,26 @@ int UIMailListDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
     }
     else if (_stricmp("onRClickMailSender", szMethod) == 0)
     {
-        ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) == 0)
-            return 0;
-        unsigned __int64 nMailId = FUN_140718370(data.FUN_1422b8f40());
-        CStringW strSender = data.FUN_1422b8f40();
-        float fX = data.FUN_1422b8c10();
-        float fY = data.FUN_1422b8c10();
-        CUserMail::MailPtr spMail = g_143ab2ee0.FUN_1408e3720(nMailId);
-        if (FUN_1419ea470(spMail))
-            return 0;
-        if (spMail->FUN_140690370() != 1)
-            return 0;
-        Unk_PopupMenu* pMenu = FUN_140c30140(0x4e39);
-        if (pMenu == 0)
-            return 0;
-        Unk_PopupMenuInfo info(fX, fY, 3, 0x50, 0, "", 0);
-        pMenu->FUN_141a7f090(info, strSender, 0, 0, 0, 1);
-        return 0;
+        do
+        {
+            ASData data;
+            if (data.FUN_1422b9620(pArgs, nArgs) == 0)
+                break;
+            unsigned __int64 nMailId = FUN_140718370(data.FUN_1422b8f40());
+            CStringW strSender = data.FUN_1422b8f40();
+            float fX = data.FUN_1422b8c10();
+            float fY = data.FUN_1422b8c10();
+            CUserMail::MailPtr spMail = g_143ab2ee0.FUN_1408e3720(nMailId);
+            if (spMail.IsNull())
+                break;
+            if (spMail->FUN_140690370() != 1)
+                break;
+            Unk_PopupMenu* pMenu = FUN_140c30140(0x4e39);
+            if (pMenu == 0)
+                break;
+            Unk_PopupMenuInfo info(fX, fY, 3, 0x50, 0, "", 0);
+            pMenu->FUN_141a7f090(info, strSender, 0, 0, 0, 1);
+        } while (0);
     }
     else if (_stricmp("onBuyAd", szMethod) == 0)
     {
@@ -1035,7 +1028,6 @@ int UIMailListDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
 }
 MS2_REPLACE_METHOD(0x1419E37D0, UIMailListDialog, vfunc_28, 5626, 0x102D767A); // UIMailListDialog::vfunc_28
 
-// MS2-FUNCTIONAL: not byte-exact yet (branch/temp layout differs; left for the permuter lane)
 // @0x1419e6410
 void UIMailListDialog::FUN_1419e6410(__int64 nMailId)
 {
@@ -1048,12 +1040,7 @@ void UIMailListDialog::FUN_1419e6410(__int64 nMailId)
     if (spMail == 0)
         return;
     int nStrId = 0x235;
-    if (FUN_1419ead90(spMail.operator->()) == 0)
-    {
-        if (spMail->FUN_140691220() != 0)
-            nStrId = 0x237;
-    }
-    else
+    if (FUN_1419ead90(spMail.operator->()) != 0)
     {
         if (spMail->FUN_140692630() != 0)
         {
@@ -1066,6 +1053,11 @@ void UIMailListDialog::FUN_1419e6410(__int64 nMailId)
         }
         if (FUN_1419eadd0(spMail.operator->()) == 0)
             nStrId = 0x236;
+    }
+    else
+    {
+        if (spMail->FUN_140691220() != 0)
+            nStrId = 0x237;
     }
     MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, GetStringCommon(nStrId), 0, CStringW(L""));
     if (spBox.get() != 0)
@@ -1101,7 +1093,6 @@ void UIMailListDialog::FUN_1419e6d20(ATL::CAtlList<CUserMail::MailPtr>& out)
 }
 MS2_REPLACE_METHOD(0x1419E6D20, UIMailListDialog, FUN_1419e6d20, 400, 0x6E86303A); // FUN_1419e6d20
 
-// MS2-FUNCTIONAL: not byte-exact yet (branch/temp layout differs; left for the permuter lane)
 // @0x1419e74e0
 int UIMailListDialog::FUN_1419e74e0(__int64 nMailId)
 {
@@ -1111,110 +1102,101 @@ int UIMailListDialog::FUN_1419e74e0(__int64 nMailId)
         for (int i = 0; i < 5; i++)
         {
             Unk_MailAttachPtr spAttach = spMail->FUN_140690790(i);
-            if (spAttach.get() != 0 && spAttach->m_nTime < 1 && spAttach->m_item.get() != 0 &&
-                spAttach->m_item->FUN_140528e20())
-                return 1;
+            if (spAttach.get() != 0)
+            {
+                if (spAttach->m_nTime > 0)
+                    continue;
+                if ((spAttach->m_item.get() ? true : false) && spAttach->m_item->FUN_140528e20())
+                    return 1;
+            }
         }
     }
     return 0;
 }
 MS2_REPLACE_METHOD(0x1419E74E0, UIMailListDialog, FUN_1419e74e0, 335, 0xE1BB44D8); // FUN_1419e74e0
 
-// MS2-FUNCTIONAL: not byte-exact yet (branch/temp layout differs; left for the permuter lane)
 // @0x1419e7640
 bool UIMailListDialog::SendMailMode18(int nButton, const CMsgBoxData& data)
 {
-    if (nButton == 0)
-    {
-        CStringW strIds = data.FUN_141a02fd0(0, CStringW());
-        ATL::CAtlArray<__int64> aIds;
-        FUN_1419e7ea0(CStringW(strIds), aIds, 0);
-        COutPacket packet(static_cast<int>(SendOp::Mail), 0);
-        packet.Encode1(0x12);
-        packet.Encode4((int)aIds.GetCount());
-        for (size_t i = 0; i < aIds.GetCount(); i++)
-            packet.Encode8(aIds[i]);
-        FUN_140710590(packet);
-    }
+    if (nButton != 0)
+        return true;
+    CStringW strIds = data.FUN_141a02fd0(0, CStringW());
+    ATL::CAtlArray<__int64> aIds;
+    FUN_1419e7ea0(CStringW(strIds), aIds, 0);
+    COutPacket packet(static_cast<int>(SendOp::Mail), 0);
+    packet.Encode1(0x12);
+    packet.Encode4((int)aIds.GetCount());
+    for (size_t i = 0; i < aIds.GetCount(); i++)
+        packet.Encode8(aIds[i]);
+    FUN_140710590(packet);
     return true;
 }
 MS2_REPLACE_METHOD(0x1419E7640, UIMailListDialog, SendMailMode18, 377, 0x270B2582); // SendMailMode18
 
-// MS2-FUNCTIONAL: not byte-exact yet (branch/temp layout differs; left for the permuter lane)
 // @0x1419e77c0
 bool UIMailListDialog::SendMailMode19(int nButton, const CMsgBoxData& data)
 {
-    if (nButton == 0)
-    {
-        CStringW strIds = data.FUN_141a02fd0(0, CStringW());
-        ATL::CAtlArray<__int64> aIds;
-        FUN_1419e7ea0(CStringW(strIds), aIds, 0);
-        COutPacket packet(static_cast<int>(SendOp::Mail), 0);
-        packet.Encode1(0x13);
-        packet.Encode4((int)aIds.GetCount());
-        for (size_t i = 0; i < aIds.GetCount(); i++)
-            packet.Encode8(aIds[i]);
-        FUN_140710590(packet);
-    }
+    if (nButton != 0)
+        return true;
+    CStringW strIds = data.FUN_141a02fd0(0, CStringW());
+    ATL::CAtlArray<__int64> aIds;
+    FUN_1419e7ea0(CStringW(strIds), aIds, 0);
+    COutPacket packet(static_cast<int>(SendOp::Mail), 0);
+    packet.Encode1(0x13);
+    packet.Encode4((int)aIds.GetCount());
+    for (size_t i = 0; i < aIds.GetCount(); i++)
+        packet.Encode8(aIds[i]);
+    FUN_140710590(packet);
     return true;
 }
 MS2_REPLACE_METHOD(0x1419E77C0, UIMailListDialog, SendMailMode19, 377, 0x97E3EE98); // SendMailMode19
 
-// MS2-FUNCTIONAL: not byte-exact yet (branch/temp layout differs; left for the permuter lane)
 // @0x1419e7940
 bool UIMailListDialog::FUN_1419e7940(int nButton, const CMsgBoxData& data)
 {
-    if (nButton == 0)
+    if (nButton != 0)
+        return true;
+    CStringW strIds = data.FUN_141a02fd0(0, CStringW());
+    CStringW strInput = data.FUN_141a02d50();
+    int bFound = strInput.Find(L"true", 0) != -1 ? 1 : 0;
+    ATL::CAtlArray<__int64> aIds;
+    FUN_1419e7ea0(CStringW(strIds), aIds, bFound == 0 ? 1 : 0);
+    for (size_t i = 0; i < aIds.GetCount(); i++)
     {
-        CStringW strIds = data.FUN_141a02fd0(0, CStringW());
-        CStringW strInput = data.FUN_141a02d50();
-        int nTrue = strInput.Find(L"true", 0);
-        ATL::CAtlArray<__int64> aIds;
-        FUN_1419e7ea0(CStringW(strIds), aIds, nTrue == -1);
-        for (size_t i = 0; i < aIds.GetCount(); i++)
+        if (FUN_1419e74e0(aIds[i]) != 0)
         {
-            if (FUN_1419e74e0(aIds[i]) != 0)
-            {
-                CStringW strKey(L"s_itemlock_mail_remove");
-                FUN_140d73aa0(GetStringCommonByKey(strKey), 0, 0, CStringW(L""));
-                return true;
-            }
+            FUN_140d73aa0(GetStringCommonByKey(L"s_itemlock_mail_remove"), 0, 0, CStringW(L""));
+            return true;
         }
-        COutPacket packet(static_cast<int>(SendOp::Mail), 0);
-        packet.Encode1(0xd);
-        packet.Encode4((int)aIds.GetCount());
-        for (size_t i = 0; i < aIds.GetCount(); i++)
-            packet.Encode8(aIds[i]);
-        FUN_140710590(packet);
     }
+    COutPacket packet(static_cast<int>(SendOp::Mail), 0);
+    packet.Encode1(0xd);
+    packet.Encode4((int)aIds.GetCount());
+    for (size_t i = 0; i < aIds.GetCount(); i++)
+        packet.Encode8(aIds[i]);
+    FUN_140710590(packet);
     return true;
 }
 MS2_REPLACE_METHOD(0x1419E7940, UIMailListDialog, FUN_1419e7940, 812, 0x6BFE17E1); // FUN_1419e7940
 
-// MS2-FUNCTIONAL: not byte-exact yet (branch/temp layout differs; left for the permuter lane)
 // @0x1419e7c80
 bool UIMailListDialog::SendMailMode13(int nButton, const CMsgBoxData& data)
 {
-    if (nButton == 0)
+    if (nButton != 0)
+        return true;
+    __int64 nMailId = FUN_140718370(data.FUN_141a02fd0(0, CStringW()));
+    if (FUN_1419e74e0(nMailId) != 0)
     {
-        __int64 nMailId = FUN_140718370(data.FUN_141a02fd0(0, CStringW()));
-        if (FUN_1419e74e0(nMailId) == 0)
-        {
-            CMailInfo* pMail = g_143ab2ee0.FUN_1408e3720(nMailId).get();
-            if (pMail != 0)
-            {
-                COutPacket packet(static_cast<int>(SendOp::Mail), 0);
-                packet.Encode1(0xd);
-                packet.Encode4(1);
-                packet.Encode8(pMail->FUN_140690350());
-                FUN_140710590(packet);
-            }
-        }
-        else
-        {
-            CStringW strKey(L"s_itemlock_mail_remove");
-            FUN_140d73aa0(GetStringCommonByKey(strKey), 0, 0, CStringW(L""));
-        }
+        FUN_140d73aa0(GetStringCommonByKey(L"s_itemlock_mail_remove"), 0, 0, L"");
+        return true;
+    }
+    if (CMailInfo* pMail = g_143ab2ee0.FUN_1408e3720(nMailId).get())
+    {
+        COutPacket packet(static_cast<int>(SendOp::Mail), 0);
+        packet.Encode1(0xd);
+        packet.Encode4(1);
+        packet.Encode8(pMail->FUN_140690350());
+        FUN_140710590(packet);
     }
     return true;
 }
@@ -1239,7 +1221,6 @@ void UIMailListDialog::FUN_1419e7ea0(CStringW strIds, ATL::CAtlArray<__int64>& a
 }
 MS2_REPLACE_METHOD(0x1419E7EA0, UIMailListDialog, FUN_1419e7ea0, 291, 0x201EBD4F); // FUN_1419e7ea0
 
-// MS2-FUNCTIONAL: not byte-exact yet (branch/temp layout differs; left for the permuter lane)
 // @0x1419e5190
 void UIMailListDialog::FUN_1419e5190()
 {
@@ -1255,41 +1236,39 @@ void UIMailListDialog::FUN_1419e5190()
         for (POSITION pos = mails.GetHeadPosition(); pos != 0; mails.GetNext(pos))
         {
             nIndex++;
-            if (m_nPage * 14 <= nIndex)
+            if (nIndex < m_nPage * 14)
+                continue;
+            if (nIndex >= m_nPage * 14 + 14)
+                break;
+            CMailInfo* pMail = mails.GetAt(pos).get();
+            if (pMail->FUN_140691180() != 0)
+                continue;
+            int bSelect = 0;
+            m_mapChecked.Lookup(pMail->FUN_140690350(), bSelect);
+            CStringW strSender = pMail->FUN_140690410();
+            CStringW strTitle = pMail->FUN_1406905b0();
+            int nKind = pMail->FUN_140690370();
+            if (nKind >= 100 && nKind < 0x71)
             {
-                if (m_nPage * 14 + 14 <= nIndex)
-                    break;
-                CMailInfo* pMail = mails.GetAt(pos).get();
-                if (pMail->FUN_140691180() == 0)
-                {
-                    int bSelect = 0;
-                    m_mapChecked.Lookup(pMail->FUN_140690350(), bSelect);
-                    CStringW strSender = pMail->FUN_140690410();
-                    CStringW strTitle = pMail->FUN_1406905b0();
-                    int nKind = pMail->FUN_140690370();
-                    if (99 < nKind && nKind < 0x71)
-                    {
-                        FUN_1403b4750()->FUN_1416fb300(strSender);
-                        FUN_1403b4750()->FUN_1416fb300(strTitle);
-                    }
-                    ASObj row(2);
-                    row.FUN_1407cbb20("mailSN", FUN_141b71910(pMail->FUN_140690350()));
-                    row.FUN_1407cbb20("sender", CStringW(strSender));
-                    row.FUN_1407cbb20("content", CStringW(strTitle));
-                    row.FUN_1407cbb20("date", FUN_1419e95d0(pMail, 0));
-                    row.FUN_1407cbb20("dateTooltip", FUN_1419e95d0(pMail, 1));
-                    row.FUN_1407cb9c0("read", pMail->FUN_140691130());
-                    row.FUN_1407cb9c0("attachment", pMail->FUN_140691220());
-                    row.FUN_1407cb9c0("select", bSelect);
-                    row.FUN_1407cb9c0("adMail", FUN_1419ead90(pMail));
-                    row.FUN_1407cb9c0("adSoldout", FUN_1419eadd0(pMail));
-                    row.FUN_1407cb9c0("adExpired", pMail->FUN_140692630());
-                    spList->FUN_1422dd230(row);
-                    if (pMail->FUN_140690350() == nOpen)
-                        nSelect = nRow;
-                    nRow++;
-                }
+                FUN_1403b4750()->FUN_1416fb300(strSender);
+                FUN_1403b4750()->FUN_1416fb300(strTitle);
             }
+            ASObj row(2);
+            row.FUN_1407cbb20("mailSN", FUN_141b71910(pMail->FUN_140690350()));
+            row.FUN_1407cbb20("sender", CStringW(strSender));
+            row.FUN_1407cbb20("content", CStringW(strTitle));
+            row.FUN_1407cbb20("date", FUN_1419e95d0(pMail, 0));
+            row.FUN_1407cbb20("dateTooltip", FUN_1419e95d0(pMail, 1));
+            row.FUN_1407cb9c0("read", pMail->FUN_140691130());
+            row.FUN_1407cb9c0("attachment", pMail->FUN_140691220());
+            row.FUN_1407cb9c0("select", bSelect);
+            row.FUN_1407cb9c0("adMail", FUN_1419ead90(pMail));
+            row.FUN_1407cb9c0("adSoldout", FUN_1419eadd0(pMail));
+            row.FUN_1407cb9c0("adExpired", pMail->FUN_140692630());
+            spList->FUN_1422dd230(row);
+            if (pMail->FUN_140690350() == nOpen)
+                nSelect = nRow;
+            nRow++;
         }
         spList->vfunc_24(true);
         spList->FUN_1422dcca0(nSelect);
@@ -1304,7 +1283,6 @@ void UIMailListDialog::FUN_1419e5190()
 }
 MS2_REPLACE_METHOD(0x1419E5190, UIMailListDialog, FUN_1419e5190, 1889, 0x75FE8B86); // FUN_1419e5190
 
-// MS2-FUNCTIONAL: not byte-exact yet (branch/temp layout differs; left for the permuter lane)
 // @0x1419e8080
 bool UIMailListDialog::FUN_1419e8080(unsigned __int64 nMailId)
 {
@@ -1323,6 +1301,7 @@ bool UIMailListDialog::FUN_1419e8080(unsigned __int64 nMailId)
         CUIService::GetInstance()->FUN_141add1f0();
         return false;
     }
+    int nCurrency = 3;
     ATL::CAtlArray<MS2Ptr<ASBillData> >& bills = spParam->m_bills;
     for (size_t i = 0; i < 5; i++)
     {
@@ -1335,8 +1314,8 @@ bool UIMailListDialog::FUN_1419e8080(unsigned __int64 nMailId)
         MS2Ptr<ASMailAdBillData> spBill(new ASMailAdBillData());
         spBill->FUN_1409ab990(spItemData, spAd->m_n20);
         spBill->FUN_1409aba80(GetStringTable()->FUN_141811980(1, spAd->m_n18));
-        spBill->FUN_1409abad0(FUN_1418fec00(3, spAd->m_n38, 0), spAd->m_n38);
-        spBill->FUN_1409abcd0(3);
+        spBill->FUN_1409abad0(FUN_1418fec00(nCurrency, spAd->m_n38, 0), spAd->m_n38);
+        spBill->FUN_1409abcd0(nCurrency);
         spBill->FUN_1419eb8f0((int)i);
         bills.Add(spBill);
     }
@@ -1364,7 +1343,6 @@ MS2Ptr<TMailAdBillDataParam> UIMailListDialog::FUN_1419e8620(const CStringA& str
 }
 MS2_REPLACE_METHOD(0x1419E8620, UIMailListDialog, FUN_1419e8620, 648, 0x2D1FC9B0); // FUN_1419e8620
 
-// MS2-FUNCTIONAL: not byte-exact yet (branch/temp layout differs; left for the permuter lane)
 // @0x1419e88b0
 bool UIMailListDialog::FUN_1419e88b0(MS2Ptr<TMarketBillDataParam> spParam, const TMarketBillDataParam::PaymentMap& mapPay)
 {
@@ -1375,7 +1353,8 @@ bool UIMailListDialog::FUN_1419e88b0(MS2Ptr<TMarketBillDataParam> spParam, const
     MS2Ptr<TMailAdBillDataParam> spMailParam(dynamic_cast<TMailAdBillDataParam*>(spParam.operator->()));
     if (spMailParam == 0)
         return true;
-    CMailInfo* pMail = g_143ab2ee0.FUN_1408e3720(spMailParam->m_nMailId).get();
+    __int64 nMailId = spMailParam->m_nMailId;
+    CMailInfo* pMail = g_143ab2ee0.FUN_1408e3720(nMailId).get();
     if (pMail == 0)
         return true;
     if (pMail->FUN_140690b80() == 0)
@@ -1474,22 +1453,30 @@ void UIMailSendDialog::OnLoadComplete()
 }
 MS2_REPLACE_METHOD(0x1419ec570, UIMailSendDialog, OnLoadComplete, 60, 0x1D20BAF1); // UIMailSendDialog::OnLoadComplete
 
-// MS2-FUNCTIONAL: not byte-exact yet (branch/temp layout differs; left for the permuter lane)
 // @0x1419ec5c0
 void UIMailSendDialog::vfunc_79(void* p)
 {
-    CInPacket* pPacket = static_cast<CInPacket*>(p);
     UIDialog::vfunc_79(p);
-    if (!(pPacket->FUN_14070fe80() == 0x54 && pPacket->ReadUInt8() == 0x14))
-        return;
-    pPacket->ReadUInt8();
-    unsigned char nResult = pPacket->ReadUInt8();
-    if ((nResult == 1 || nResult == 0x19) && m_30.get() != 0)
-        m_30->Invoke("selectRecvName");
+    switch (static_cast<CInPacket*>(p)->FUN_14070fe80()) {
+    case 0x54: {
+        int nMode = static_cast<CInPacket*>(p)->ReadUInt8();
+        if (nMode == 0x14) {
+            static_cast<CInPacket*>(p)->ReadUInt8();
+            int nResult = static_cast<CInPacket*>(p)->ReadUInt8();
+            switch (nResult) {
+            case 1:
+            case 0x19:
+                if (m_30.get() != 0)
+                    m_30->Invoke("selectRecvName");
+                break;
+            }
+        }
+        break;
+    }
+    }
 }
 MS2_REPLACE_METHOD(0x1419ec5c0, UIMailSendDialog, vfunc_79, 313, 0x0F2F7896); // UIMailSendDialog::vfunc_79
 
-// MS2-FUNCTIONAL: not byte-exact yet (branch/temp layout differs; left for the permuter lane)
 // @0x1419ec700
 int UIMailSendDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs)
 {
@@ -1499,8 +1486,7 @@ int UIMailSendDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
     {
         OnSend();
         return 1;
-    }
-    if (_stricmp("onLimitInput", szMethod) == 0)
+    } else if (_stricmp("onLimitInput", szMethod) == 0)
         FUN_141275260(0x256, 1, 1);
     return 0;
 }
@@ -1565,12 +1551,12 @@ void UIMailSendDialog::FUN_1419ecb80()
 }
 MS2_REPLACE_METHOD(0x1419ecb80, UIMailSendDialog, FUN_1419ecb80, 33, 0xC3D85B89); // FUN_1419ecb80
 
-// MS2-FUNCTIONAL: not byte-exact yet (branch/temp layout differs; left for the permuter lane)
 // @0x1419ecbb0
 void UIMailSendDialog::FUN_1419ecbb0(CMailInfo* pReplyTo)
 {
-    if (pReplyTo != 0)
-        m_spReply.AssignRaw(pReplyTo);
+    if (pReplyTo == 0)
+        return;
+    m_spReply.AssignRaw(pReplyTo);
 }
 MS2_REPLACE_METHOD(0x1419ecbb0, UIMailSendDialog, FUN_1419ecbb0, 53, 0x661A5E70); // FUN_1419ecbb0
 
@@ -1615,7 +1601,6 @@ void UIMailSendDialog::FUN_1419ed010()
 }
 MS2_REPLACE_METHOD(0x1419ed010, UIMailSendDialog, FUN_1419ed010, 411, 0x080B07AD); // FUN_1419ed010
 
-// MS2-FUNCTIONAL: not byte-exact yet (branch/temp layout differs; left for the permuter lane)
 // @0x1419ed1c0
 void UIMailSendDialog::OnSend()
 {
@@ -1633,31 +1618,30 @@ void UIMailSendDialog::OnSend()
         FUN_141275260(0x248, 1, 1);
         return;
     }
-    if (100 < info.m_strTitle.GetLength())
+    if (info.m_strTitle.GetLength() > 100)
     {
         FUN_141275260(0x244, 1, 1);
         return;
     }
-    if (info.m_strContent.GetLength() < 0x7d1)
+    if (info.m_strContent.GetLength() > 2000)
     {
-        CBanTextChecker* pChecker = FUN_14025e7d0()->GetChecker();
-        if (pChecker != 0)
-        {
-            CStringW strMessage;
-            if (pChecker->FUN_140225c90(info.m_strTitle, strMessage) != 0 ||
-                pChecker->FUN_140225de0(info.m_strContent, strMessage) != 0)
-            {
-                FUN_1412751f0(strMessage, 1, 1);
-                return;
-            }
-        }
-        COutPacket packet(static_cast<int>(SendOp::Mail), 0);
-        packet.Encode1(1);
-        info.FUN_1401fc2a0(packet);
-        FUN_140710590(packet);
+        FUN_141275260(0x244, 1, 1);
         return;
     }
-    FUN_141275260(0x244, 1, 1);
+    if (CBanTextChecker* pChecker = FUN_14025e7d0()->GetChecker())
+    {
+        CStringW strMessage;
+        if (pChecker->FUN_140225c90(info.m_strTitle, strMessage) != 0 ||
+            pChecker->FUN_140225de0(info.m_strContent, strMessage) != 0)
+        {
+            FUN_1412751f0(strMessage, 1, 1);
+            return;
+        }
+    }
+    COutPacket packet(static_cast<int>(SendOp::Mail), 0);
+    packet.Encode1(1);
+    info.FUN_1401fc2a0(packet);
+    FUN_140710590(packet);
 }
 MS2_REPLACE_METHOD(0x1419ed1c0, UIMailSendDialog, OnSend, 577, 0x7046C796); // OnSend
 
@@ -1669,7 +1653,6 @@ void UIMailSendDialog::FUN_1419ed410(CStringW& strReceiver)
 }
 MS2_REPLACE_METHOD(0x1419ed410, UIMailSendDialog, FUN_1419ed410, 201, 0xDBD71167); // FUN_1419ed410
 
-// MS2-FUNCTIONAL: not byte-exact yet (branch/temp layout differs; left for the permuter lane)
 // @0x1419ed4e0
 void UIMailSendDialog::FUN_1419ed4e0(CStringW& strTitle)
 {
@@ -1680,20 +1663,19 @@ void UIMailSendDialog::FUN_1419ed4e0(CStringW& strTitle)
                 strTitle = spField->FUN_1422c4da0();
         }
     }
-    CBanTextChecker* pChecker = FUN_14025e7d0()->GetChecker();
-    if (pChecker != 0)
+    if (CBanTextChecker* pChecker = FUN_14025e7d0()->GetChecker())
         pChecker->FilterReservedWords(strTitle);
 }
 MS2_REPLACE_METHOD(0x1419ed4e0, UIMailSendDialog, FUN_1419ed4e0, 456, 0x8C5487D1); // FUN_1419ed4e0
 
-// MS2-FUNCTIONAL: not byte-exact yet (branch/temp layout differs; left for the permuter lane)
 // @0x1419ed6b0
 void UIMailSendDialog::FUN_1419ed6b0(CStringW& strContent)
 {
     if (m_30.IsNull())
         return;
     strContent = XmlWide(FUN_140b63540(m_30->Invoke("getContent")));
-    CBanTextChecker* pChecker = FUN_14025e7d0()->GetChecker();
+    CBanTextChecker* pChecker;
+    CBanTextChecker* pDead = pChecker = FUN_14025e7d0()->GetChecker();
     if (pChecker != 0)
         pChecker->FilterReservedWords(strContent);
 }

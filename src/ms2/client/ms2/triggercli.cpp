@@ -29,14 +29,9 @@
 // ---- unit-local views of exe objects ----
 
 // tinyxml writer / reader helpers (the same ones the other trigger units use)
-struct Unk_TrgXmlElement { void* m_00; void* m_08; void* m_10; void* m_18; void* m_20; void* m_28; void* m_30; void* m_38; void* m_40; void* m_48; void* m_50; void* m_58; void* m_60; void* m_68; void* m_70; void* m_78; void* m_80; void* m_88; };
-MS2_CHECK_SIZE(Unk_TrgXmlElement, 0x90);
-struct Unk_TrgXmlDecl { void* m_00; void* m_08; void* m_10; void* m_18; void* m_20; void* m_28; void* m_30; void* m_38; void* m_40; void* m_48; void* m_50; void* m_58; void* m_60; void* m_68; };
-MS2_CHECK_SIZE(Unk_TrgXmlDecl, 0x70);
-void* FUN_14086f2f0(void*, const char*);                    // TiXmlElement::TiXmlElement(const char*)
-void FUN_14086f450(void*);                                  // TiXmlElement::~TiXmlElement
-void* FUN_1408704d0(void*, const char*, const char*, const char*);   // TiXmlDeclaration::TiXmlDeclaration
-void FUN_14081ad20(void*);                                  // TiXmlDeclaration::~TiXmlDeclaration
+// TiXmlElement / TiXmlDeclaration (the class names reuse the existing symbol rows of these tinyxml ctors and dtors).
+struct Unk_MdXmlElement { Unk_MdXmlElement(const char* szName); ~Unk_MdXmlElement(); void* m_pad[0x90 / 8]; };   // 0x14086f2f0 / 0x14086f450
+struct Unk_MdXmlDeclaration { Unk_MdXmlDeclaration(const char* szVersion, const char* szEncoding, const char* szStandalone); ~Unk_MdXmlDeclaration(); void* m_pad[0x70 / 8]; };   // 0x1408704d0 / 0x14081ad20
 void* FUN_14086e000(void*, void*);                          // InsertEndChild
 bool FUN_1408710c0(void*, const char*);                     // SaveFile
 Unk_140165cf0* FUN_140165cf0(TiXmlDocument* pDoc, const char* pszName);   // FirstChildElement of the document
@@ -104,10 +99,9 @@ MS2Ptr<TriggerCli> TriggerCli::Create(CFileSystem::BufferPtr spBuffer)
 }
 
 // @0x1411996f0
-// MS2-FUNCTIONAL: source shape differs (set/trim control flow)
 int TriggerCli::Validate(int* pnError)
 {
-    if (m_states.GetCount() == 0)
+    if (m_states.GetCount() < 1)
     {
         *pnError = 10;
         return 0;
@@ -290,49 +284,43 @@ void TriggerCli::SaveFile(const CString& strPath)
 }
 
 // @0x14119a8c0
-// MS2-FUNCTIONAL: game TiXml objects modelled as POD (no EH unwind state)
+// MS2-FUNCTIONAL: code identical; the three XML locals sit in the reverse stack-slot order (declaration lowest in the exe)
 void TriggerCli::SaveDocument(TiXmlDocument* pDoc)
 {
-    Unk_TrgXmlElement elRoot;
-    Unk_TrgXmlElement elState;
-    Unk_TrgXmlDecl decl;
-    FUN_1408704d0(&decl, "1.0", "utf-8", "");
+    Unk_MdXmlDeclaration decl("1.0", "utf-8", "");
     FUN_14086e000(pDoc, &decl);
-    FUN_14086f2f0(&elRoot, "ms2");
+    Unk_MdXmlElement elRoot("ms2");
     for (size_t i = 0; i < m_states.GetCount(); ++i)
     {
-        FUN_14086f2f0(&elState, "state");
+        Unk_MdXmlElement elState("state");
         m_states[i]->Save(&elState);
         FUN_14086e000(&elRoot, &elState);
-        FUN_14086f450(&elState);
     }
     FUN_14086e000(pDoc, &elRoot);
-    FUN_14086f450(&elRoot);
-    FUN_14081ad20(&decl);
 }
 
 // @0x14119aa10
-// MS2-FUNCTIONAL: frame/temp layout differs
-bool TriggerCli::GetFirstError(CStringW& rText)
+int TriggerCli::GetFirstError(CStringW& rText)
 {
     if (m_states.GetCount() == 0)
     {
-        StatePtr spState = GetState(CStringW(L"newState1"));
+        StatePtr spState = GetState(L"newState1");
         if (spState.IsNull())
         {
             rText = GetErrorText(7);
-            return false;
+            return 0;
         }
     }
     int nError;
-    int nOk = Validate(&nError);
-    if (nOk == 0)
+    if (Validate(&nError) == 0)
+    {
         rText = GetErrorText(nError);
-    return nOk != 0;
+        return 0;
+    }
+    return 1;
 }
 
 // @0x14119ab70
-// MS2-FUNCTIONAL: loop exit jumps differ
 int TriggerCli::CheckObjects(std::vector<CStringW>& rErrors)
 {
     efd::SmartPointer<Unk_TrgService> spService(FUN_1401cd040(&DAT_143b059e8));
@@ -347,28 +335,35 @@ int TriggerCli::CheckObjects(std::vector<CStringW>& rErrors)
         {
             strMsg = FormatStringId(0xafb, rId.first, GetErrorText(0xd), rId.second);
             rErrors.push_back(strMsg);
+            continue;
         }
-        else if (FUN_1407071e0(pObject->m_nItemId) == 0 || FUN_140707710(pObject->m_nItemId) == 0 ||
-                 FUN_140707660(pObject->m_nItemId) != 0)
+        if (FUN_1407071e0(pObject->m_nItemId) == 0 || FUN_140707710(pObject->m_nItemId) == 0 ||
+            FUN_140707660(pObject->m_nItemId) != 0)
         {
             strMsg = FormatStringId(0xafb, rId.first, GetErrorText(0xd), rId.second);
             rErrors.push_back(strMsg);
+            continue;
         }
     }
     return rErrors.size() == 0;
 }
 
 // @0x14119ae90
-// MS2-FUNCTIONAL: switch lowering differs
 CStringW TriggerCli::GetErrorText(int nError)
 {
     CStringW strText(L"");
-    if (nError >= 0)
+    switch (nError)
     {
-        if (nError < 0xd)
-            strText = FUN_1408116a0(0xafc, nError);
-        else if (nError == 0xd)
-            strText = GetStringCommon(0xafd);
+    case 0: case 1: case 2: case 3: case 4: case 5: case 6:
+    case 7: case 8: case 9: case 10: case 11: case 12:
+    {
+        int nIndex = nError;
+        strText = FUN_1408116a0(0xafc, nIndex);
+    }
+        break;
+    case 0xd:
+        strText = GetStringCommon(0xafd);
+        break;
     }
     return strText;
 }
@@ -388,17 +383,15 @@ TriggerCli::StatePtr TriggerCli::GetState(const CStringW& strName)
 }
 
 // @0x14119b140
-// MS2-FUNCTIONAL: EH/branch shape differs
 void TriggerCli::LoadState(Unk_140165cf0* pNode)
 {
     CStringW strName;
     FUN_140873420(pNode, "name", strName);
     StatePtr spState;
-    if (!m_mapStates.Lookup(strName, spState))
-    {
-        spState.AssignRaw(new TriggerStateCli(this));
-        spState->Load(pNode);
-        m_mapStates.SetAt(strName, spState);
-        m_states.Add(spState);
-    }
+    if (m_mapStates.Lookup(strName, spState))
+        return;
+    spState.AssignRaw(new TriggerStateCli(this));
+    spState->Load(pNode);
+    m_mapStates.SetAt(strName, spState);
+    m_states.Add(spState);
 }

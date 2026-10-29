@@ -14,6 +14,11 @@
 #include <NiActorManager.h>
 #include <NiControllerSequence.h>
 
+#ifdef __clang__
+// vfunc_4 assigns the position from the address of vfunc_18's returned temporary (an MSVC extension).
+#pragma clang diagnostic ignored "-Waddress-of-temporary"
+#endif
+
 #include "stateusefurnituredata.h"
 
 #include "ms2/client/ms2/pcbase.h"
@@ -50,17 +55,23 @@ public:
 };
 class CSkillRecord : public Unk_PCBaseComp_b18 {};
 
+// The direction as the buff set returns it; vfunc_22 gets a sliced copy of the
+// return temporary.
+struct Unk_UfDirRet : public efd::Point3
+{
+};
+
 // The buff set of the actor.
 class Unk_UfBuff
 {
 public:
     bool FUN_141682fe0(int nId);                             // has a buff
     bool FUN_141683100(int nId);                             // has a buff (kind)
-    efd::Point3 FUN_141683290();                             // the knock-back direction
+    Unk_UfDirRet FUN_141683290();                            // the knock-back direction
 };
 
 CFunctionCubeService* FUN_1409670b0();
-char FUN_1402a5b40(const CString& a, const char* b);       // CString != C string
+bool FUN_1402a5b40(const CString& a, const char* b);       // CString != C string
 
 // The effect manager: plays an effect for a request (returns its id), stops it by id.
 class Unk_UfEffectMgr
@@ -107,10 +118,13 @@ NiObject* FUN_14098d8d0(const NiRTTI* pRTTI, NiObject* pObject);   // dynamic ca
 const NiTransform& FUN_140a33f90(NiAVObject* pObject);       // GetLocalTransform
 const NiTransform& FUN_1409478e0(NiAVObject* pObject);       // GetWorldTransform
 NiNode* FUN_140a0b000(NiAVObject* pObject);                  // GetParent
-void FUN_140a332d0(NiTransform* pXform);                     // NiTransform default constructor
 NiTransform* FUN_140a35c30(NiTransform* pDst, const NiTransform& kSrc);   // NiTransform::operator=
 void FUN_140a35bd0(NiTransform* pDst, const NiTransform* pSrc);           // NiTransform assignment
-NiTransform* FUN_140a33de0(const NiTransform* pThis, void* pOut, const NiTransform* pOther);   // NiTransform::operator*
+// NiTransform::operator* (a view of the transform; the result is returned by value).
+struct Unk_UfXform
+{
+    NiTransform FUN_140a33de0(const NiTransform& kOther) const;
+};
 void FUN_140b86230(const Vector3& kEuler, Unk_NiMatrix3& kOut);   // matrix of euler angles (degrees)
 void FUN_140a0b1f0(const Unk_NiMatrix3& kRot, Vector3* pOut);
 
@@ -126,8 +140,13 @@ template <> MS2Ptr<FunctionCubeData>::MS2Ptr(const MS2Ptr& o);                  
 template <> MS2Ptr<FunctionCubeData>::~MS2Ptr();                                // 0x140ca62a0
 template <> FunctionCubeData* MS2Ptr<FunctionCubeData>::operator->() const;     // 0x1409658d0
 
-static inline Vector3 UfPoint(const NiPoint3& k) { return *reinterpret_cast<const Vector3*>(&k); }
-static inline efd::Point3 UfEfd(const Vector3& k) { return efd::Point3(k.x, k.y, k.z); }
+// NiPoint3 with the exe's out-of-line conversion ctor and move assignment.
+struct Unk_CamNiPoint3
+{
+    Unk_CamNiPoint3(const Vector3& pt);                                 // 0x14027dcf0
+    Unk_CamNiPoint3& operator=(Unk_CamNiPoint3&& pt);                   // 0x14097faa0
+    float x, y, z;
+};
 
 int FUN_140de9280(const efd::utf8string& s, const char* psz);   // compare
 
@@ -177,47 +196,47 @@ StateUseFurniture::~StateUseFurniture()
 }
 
 // @0x141282ca0
-// MS2-FUNCTIONAL: temporaries and the EH frame differ from the exe
 void StateUseFurniture::vfunc_4(StateData* pData)
 {
     State::vfunc_4(pData);
     m_n64 = 0;
     m_spFurniture.AssignRaw(dynamic_cast<StateUseFurnitureData*>(pData));
-    if (m_spFurniture.get() == 0)
-    {
-        m_spFurniture.AssignRaw(new StateUseFurnitureData());
-        if (FUN_1417b8370() != 0)
-            m_spCube = FUN_1409670b0()->FUN_141230c00(m_spFurniture->m_strKey);
-    }
-    else
+    if (m_spFurniture.get())
     {
         m_spCube = FUN_1409670b0()->FUN_141230c00(m_spFurniture->m_strKey);
     }
-    if (m_spCube.get() != 0)
+    else
     {
-        if (!static_cast<Unk_HmCube*>(m_spCube.get())->FUN_140ca6580()->m_strB8.IsEmpty())
-            m_pOwner->FUN_14166ef10(static_cast<Unk_HmCube*>(m_spCube.get())->FUN_140ca6580()->m_strB8, 1, 0, false);
-        if (FUN_1402a5b40(static_cast<Unk_HmCube*>(m_spCube.get())->FUN_140ca6580()->m_strModel, "") != 0)
-        {
-            efd::utf8string kAnim((const char*)static_cast<Unk_HmCube*>(m_spCube.get())->FUN_140ca6580()->m_strModel);
-            m_pOwner->FUN_14166dd20(kAnim, 1.0f, false, false);
-        }
-        if (FUN_1402a5b40(static_cast<Unk_HmCube*>(m_spCube.get())->FUN_140ca6580()->m_strC0, "") != 0)
+        m_spFurniture.AssignRaw(new StateUseFurnitureData());
+        PCBase* pMe = FUN_1417b8370();
+        if (pMe != 0)
+            m_spCube = FUN_1409670b0()->FUN_141230c00(m_spFurniture->m_strKey);
+    }
+    if (m_spCube.get())
+    {
+        bool bAction = !static_cast<Unk_HmCube*>(m_spCube.operator->())->FUN_140ca6580()->m_strB8.IsEmpty();
+        if (bAction)
+            m_pOwner->FUN_14166ef10(static_cast<Unk_HmCube*>(m_spCube.operator->())->FUN_140ca6580()->m_strB8, 1, 0, false);
+        bool bModel = FUN_1402a5b40(static_cast<Unk_HmCube*>(m_spCube.operator->())->FUN_140ca6580()->m_strModel, "");
+        if (bModel)
+            m_pOwner->FUN_14166dd20((const char*)static_cast<Unk_HmCube*>(m_spCube.operator->())->FUN_140ca6580()->m_strModel, 1.0f, false, false);
+        bool bEffect = FUN_1402a5b40(static_cast<Unk_HmCube*>(m_spCube.operator->())->FUN_140ca6580()->m_strC0, "");
+        if (bEffect)
         {
             Unk_EffectQuery kQuery;
-            kQuery.m_strName = static_cast<Unk_HmCube*>(m_spCube.get())->FUN_140ca6580()->m_strC0;
-            kQuery.m_nObject = (FUN_1417b8560() == 0) ? 3 : 1;
+            kQuery.m_strName = static_cast<Unk_HmCube*>(m_spCube.operator->())->FUN_140ca6580()->m_strC0;
+            kQuery.m_nObject = (FUN_1417b8560() != 0) ? 1 : 3;
             kQuery.SetActor(m_pOwner->FUN_14123c580());
             m_nEffect = FUN_1403ed280()->FUN_1411a49c0(&kQuery);
         }
     }
     PCBase* pPC = FUN_1417b8370();
     if (pPC != 0)
-        m_vPos = UfPoint(pPC->vfunc_18());
+        m_vPos = *reinterpret_cast<const Vector3*>(&pPC->vfunc_18());
 }
 
 // @0x141283340
-// MS2-FUNCTIONAL: temporaries and the EH frame differ from the exe
+// MS2-FUNCTIONAL: same calls as the exe; stack slots, the vfunc_19 arg copies (exe copies kPos twice) and the scale arg loads differ
 void StateUseFurniture::vfunc_3(double fTime)
 {
     State::vfunc_3(fTime);
@@ -225,7 +244,8 @@ void StateUseFurniture::vfunc_3(double fTime)
         return;
     if (m_n64 != 0)
     {
-        if (FUN_1402a5b40(static_cast<Unk_HmCube*>(m_spCube.get())->FUN_140ca6580()->m_strModel, "") != 0)
+        bool bModel = FUN_1402a5b40(static_cast<Unk_HmCube*>(m_spCube.operator->())->FUN_140ca6580()->m_strModel, "");
+        if (bModel)
         {
             NiActorManager* pMgr = FUN_140999440(FUN_141b6f910(), m_spCube->FUN_141226eb0());
             if (pMgr != 0)
@@ -233,60 +253,72 @@ void StateUseFurniture::vfunc_3(double fTime)
                 NiControllerSequence* pSeq = pMgr->GetActiveSequence(FUN_1409a1890(pMgr), true, true);
                 if (pSeq != 0)
                 {
-                    m_pOwner->FUN_14166de50(FUN_140a53fa0(pSeq));
+                    float fLen = FUN_140a53fa0(pSeq);
+                    m_pOwner->FUN_14166de50(fLen);
                     m_n64 = 0;
                 }
             }
         }
     }
-    if (static_cast<Unk_HmCube*>(m_spCube.get())->FUN_140ca6580()->m_n90 == 0)
-        return;
-    Unk_EntRef kEnt = m_spCube->GetEnt();
-    NiNode* pNode = static_cast<NiNode*>(FUN_14098d8d0(&DAT_143afa4d8, FUN_141b6efc0(kEnt.FUN_1408a9090())));
-    if (pNode == 0)
+    int nType = static_cast<Unk_HmCube*>(m_spCube.operator->())->FUN_140ca6580()->m_n90;
+    if (nType != 0)
     {
-        NiPoint3 kPos = m_pOwner->vfunc_18();
-        kPos.z = kPos.z - static_cast<Unk_HmCube*>(m_spCube.get())->FUN_140ca6580()->m_vA0.z;
-        m_pOwner->vfunc_59(1, 0, 0, 0);
-        return;
+        Unk_EntRef kEnt = m_spCube->GetEnt();
+        NiNode* pNode = static_cast<NiNode*>(FUN_14098d8d0(&DAT_143afa4d8, FUN_141b6efc0(kEnt.FUN_1408a9090())));
+        if (pNode)
+        {
+            NiNode* pChild = static_cast<NiNode*>(FUN_14098d8d0(&DAT_143afa4d8,
+                pNode->GetObjectByName((const char*)static_cast<Unk_HmCube*>(m_spCube.get())->FUN_140ca6580()->m_strStr98)));
+            if (pChild)
+            {
+                NiTransform kXf = FUN_140a33f90(pChild);
+                NiTransform kParent;
+                kParent.MakeIdentity();
+                if (FUN_140a0b000(pChild) != 0)
+                    FUN_140a35c30(&kParent, FUN_1409478e0(FUN_140a0b000(pChild)));
+                FUN_140a35bd0(&kXf, &reinterpret_cast<const Unk_UfXform*>(&kParent)->FUN_140a33de0(kXf));
+                Vector3 kPos = *reinterpret_cast<const Vector3*>(&kXf.m_Translate);
+                Unk_NiMatrix3 kRot = *reinterpret_cast<const Unk_NiMatrix3*>(&kXf.m_Rotate);
+                Vector3 kDir;
+                Vector3 kEuler = DAT_143b01a60;
+                kEuler = Vector3(static_cast<Unk_HmCube*>(m_spCube.operator->())->FUN_140ca6580()->m_vAC.x,
+                    static_cast<Unk_HmCube*>(m_spCube.operator->())->FUN_140ca6580()->m_vAC.y,
+                    static_cast<Unk_HmCube*>(m_spCube.operator->())->FUN_140ca6580()->m_vAC.z);
+                Unk_NiMatrix3 kAdd;
+                FUN_140b86230(kEuler, kAdd);
+                Unk_NiMatrix3 kProd(kRot.FUN_140a33480(kAdd));
+                kRot = kProd;
+                FUN_140a0b1f0(kRot, &kDir);
+                Vector3 kCol0;
+                kRot.FUN_140a01190(0, kCol0);
+                kCol0.FUN_140968990();
+                Vector3 kCol1;
+                kRot.FUN_140a01190(1, kCol1);
+                kCol1.FUN_140968990();
+                Vector3 kCol2;
+                kRot.FUN_140a01190(2, kCol2);
+                kCol2.FUN_140968990();
+                reinterpret_cast<Unk_CamNiPoint3&>(kPos) = Unk_CamNiPoint3(kPos.FUN_14097fd50(
+                    kCol1.FUN_14097fc90(-static_cast<Unk_HmCube*>(m_spCube.operator->())->FUN_140ca6580()->m_vA0.y)));
+                reinterpret_cast<Unk_CamNiPoint3&>(kPos) = Unk_CamNiPoint3(kPos.FUN_14097fd50(
+                    kCol0.FUN_14097fc90(static_cast<Unk_HmCube*>(m_spCube.operator->())->FUN_140ca6580()->m_vA0.x)));
+                reinterpret_cast<Unk_CamNiPoint3&>(kPos) = Unk_CamNiPoint3(kPos.FUN_14097fd50(
+                    kCol2.FUN_14097fc90(static_cast<Unk_HmCube*>(m_spCube.operator->())->FUN_140ca6580()->m_vA0.z)));
+                m_pOwner->vfunc_19(reinterpret_cast<const efd::Point3&>(kPos));
+                m_pOwner->vfunc_21(reinterpret_cast<const efd::Point3&>(kDir));
+            }
+        }
+        else
+        {
+            NiPoint3 kPos = m_pOwner->vfunc_18();
+            kPos.z = kPos.z - static_cast<Unk_HmCube*>(m_spCube.get())->FUN_140ca6580()->m_vA0.z;
+            m_pOwner->vfunc_59(1, 0, 0, 0);
+        }
     }
-    NiFixedString kName((const char*)static_cast<Unk_HmCube*>(m_spCube.get())->FUN_140ca6580()->m_strStr98);
-    NiNode* pChild = static_cast<NiNode*>(FUN_14098d8d0(&DAT_143afa4d8, pNode->GetObjectByName(kName)));
-    if (pChild == 0)
-        return;
-    NiTransform kXf = FUN_140a33f90(pChild);
-    NiTransform kParent;
-    FUN_140a332d0(&kParent);
-    kParent.MakeIdentity();
-    if (FUN_140a0b000(pChild) != 0)
-        FUN_140a35c30(&kParent, FUN_1409478e0(FUN_140a0b000(pChild)));
-    NiTransform kTemp;
-    FUN_140a35bd0(&kXf, FUN_140a33de0(&kParent, &kTemp, &kXf));
-    Vector3 kPos = UfPoint(kXf.m_Translate);
-    Unk_NiMatrix3 kRot = *reinterpret_cast<const Unk_NiMatrix3*>(&kXf.m_Rotate);
-    Vector3 kDir;
-    Vector3 kEuler = DAT_143b01a60;
-    MS2Ptr<FunctionCubeData> spData = static_cast<Unk_HmCube*>(m_spCube.get())->FUN_140ca6580();
-    kEuler = Vector3(spData->m_vAC.x, spData->m_vAC.y, spData->m_vAC.z);
-    Unk_NiMatrix3 kAdd;
-    FUN_140b86230(kEuler, kAdd);
-    kRot = Unk_NiMatrix3(kRot.FUN_140a33480(kAdd));
-    FUN_140a0b1f0(kRot, &kDir);
-    Vector3 kCol0;
-    kRot.FUN_140a01190(0, kCol0);
-    Vector3 kCol1;
-    kRot.FUN_140a01190(1, kCol1);
-    Vector3 kCol2;
-    kRot.FUN_140a01190(2, kCol2);
-    kPos = kPos.FUN_14097fd50(kCol1.FUN_14097fc90(-spData->m_vA0.y));
-    kPos = kPos.FUN_14097fd50(kCol0.FUN_14097fc90(spData->m_vA0.x));
-    kPos = kPos.FUN_14097fd50(kCol2.FUN_14097fc90(spData->m_vA0.z));
-    m_pOwner->vfunc_19(UfEfd(kPos));
-    m_pOwner->vfunc_21(UfEfd(kDir));
 }
 
 // @0x141283d80
-// MS2-FUNCTIONAL: temporaries differ from the exe
+// MS2-FUNCTIONAL: vfunc_22 takes efd::Point3 by value in the exe (16-aligned arg copy at 0x70, ours 0x68)
 void StateUseFurniture::vfunc_8(double fTime)
 {
     State::vfunc_8(fTime);
@@ -294,8 +326,7 @@ void StateUseFurniture::vfunc_8(double fTime)
     if (pPC == 0)
         return;
     Unk_UfBuff* pBuff = (Unk_UfBuff*)pPC->FUN_14166d240();
-    efd::Point3 kDir = pBuff->FUN_141683290();
-    pPC->vfunc_22(kDir);
+    pPC->vfunc_22(efd::Point3(pBuff->FUN_141683290()));
     if (pBuff->FUN_141683100(0x30d41))
         pPC->FUN_1415248d0(1, 0);
     else if (pBuff->FUN_141683100(0x30d42))
@@ -312,25 +343,25 @@ void StateUseFurniture::vfunc_8(double fTime)
         if (spRec.get() != 0)
         {
             spRec->m_vPos50 = m_vPos;
-            pPC->vfunc_19(UfEfd(m_vPos));
-            pPC->vfunc_102(MS2Ptr<CSkillRecord>(static_cast<CSkillRecord*>(spRec.get())));
+            pPC->vfunc_19(reinterpret_cast<const efd::Point3&>(m_vPos));
+            pPC->vfunc_102(reinterpret_cast<MS2Ptr<CSkillRecord>&>(spRec));
         }
     }
 }
 
 // @0x141284050
-// MS2-FUNCTIONAL: temporaries and the EH frame differ from the exe
 void StateUseFurniture::vfunc_5(int n)
 {
     State::vfunc_5(n);
     if (m_nEffect != 0)
         FUN_1411a6060(FUN_1403ed280(), m_nEffect);
-    if (m_spCube.get() != 0 &&
-        FUN_1402a5b40(static_cast<Unk_HmCube*>(m_spCube.get())->FUN_140ca6580()->m_strC8, "") != 0)
+    bool bEffect = (m_spCube.get() != 0 ? true : false) &&
+        FUN_1402a5b40(static_cast<Unk_HmCube*>(m_spCube.operator->())->FUN_140ca6580()->m_strC8, "");
+    if (bEffect)
     {
         Unk_EffectQuery kQuery;
-        kQuery.m_strName = static_cast<Unk_HmCube*>(m_spCube.get())->FUN_140ca6580()->m_strC8;
-        kQuery.m_nObject = (FUN_1417b8560() == 0) ? 3 : 1;
+        kQuery.m_strName = static_cast<Unk_HmCube*>(m_spCube.operator->())->FUN_140ca6580()->m_strC8;
+        kQuery.m_nObject = (FUN_1417b8560() != 0) ? 1 : 3;
         kQuery.SetActor(m_pOwner->FUN_14123c580());
         FUN_1403ed280()->FUN_1411a4a00(&kQuery);
     }
@@ -339,7 +370,8 @@ void StateUseFurniture::vfunc_5(int n)
     {
         if (m_spCube.get() != 0)
         {
-            if (FUN_1417b84b0() != 0)
+            MyPC* pMe = FUN_1417b84b0();
+            if (pMe != 0)
             {
                 Unk_UfUseInfo kUse;
                 kUse.m_strId = m_spCube->FUN_141226bd0();
@@ -350,39 +382,39 @@ void StateUseFurniture::vfunc_5(int n)
                 FUN_1401fc610(&kUse, &packet);
                 FUN_140710590(packet);
             }
-            pPC->vfunc_19(UfEfd(m_vPos));
+            pPC->vfunc_19(reinterpret_cast<const efd::Point3&>(m_vPos));
         }
-        Vector3 kRot = DAT_143b01a60;
-        kRot.z = UfPoint(pPC->vfunc_20()).z;
-        pPC->FUN_14166d970(UfEfd(kRot));
+        efd::Point3 kRot = reinterpret_cast<const efd::Point3&>(DAT_143b01a60);
+        kRot.z = pPC->vfunc_20().z;
+        pPC->FUN_14166d970(kRot);
     }
     m_spCube = 0;
     m_spFurniture = 0;
 }
 
 // @0x141284470
-// MS2-FUNCTIONAL: temporaries and the EH frame differ from the exe
 void StateUseFurniture::AnimActivated(NiActorManager* pkManager, unsigned int eSequenceID,
     NiControllerSequence* pkSeq, float fEventTime)
 {
     if (m_spCube == 0)
+        return;
+    bool bNone = (static_cast<Unk_HmCube*>(m_spCube.get())->FUN_140ca6580() == 0);
+    if (bNone)
+        return;
+    if (m_n64 == 0)
     {
-        bool bNone = (static_cast<Unk_HmCube*>(m_spCube.get())->FUN_140ca6580() == 0);
-        if (!bNone && m_n64 == 0)
-        {
-            efd::utf8string kName = FUN_141b6f910()->FUN_1409a1790(m_pOwner->FUN_14123c460(), eSequenceID);
-            if (UfEqual((const char*)static_cast<Unk_HmCube*>(m_spCube.get())->FUN_140ca6580()->m_strModel, kName))
-                m_n64 = 1;
-        }
+        efd::utf8string kName = FUN_141b6f910()->FUN_1409a1790(m_pOwner->FUN_14123c460(), eSequenceID);
+        if (UfEqual((const char*)static_cast<Unk_HmCube*>(m_spCube.get())->FUN_140ca6580()->m_strModel, kName))
+            m_n64 = 1;
     }
 }
 
 // @0x141284620
 CString StateUseFurniture::FUN_141284620()
 {
-    if (m_spFurniture.get() == 0)
-        return CString();
-    return m_spFurniture->m_strKey;
+    if (m_spFurniture.get() != 0)
+        return m_spFurniture->m_strKey;
+    return CString();
 }
 
 // @0x141284920

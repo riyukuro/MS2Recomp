@@ -39,6 +39,21 @@ public:
     CString FUN_1409716a0();                               // 0x1409716a0 the custom stun animation name
 };
 
+// PCBase vtable view: slot 68 takes the move by value (the exe copies it to a 16-aligned temp)
+class Unk_StunSlots
+{
+public:
+#define MS2_SS_SLOTS(a, b, c, d, e) virtual void vfunc_##a(); virtual void vfunc_##b(); virtual void vfunc_##c(); \
+    virtual void vfunc_##d(); virtual void vfunc_##e();
+    MS2_SS_SLOTS(0, 1, 2, 3, 4) MS2_SS_SLOTS(5, 6, 7, 8, 9) MS2_SS_SLOTS(10, 11, 12, 13, 14) MS2_SS_SLOTS(15, 16, 17, 18, 19)
+    MS2_SS_SLOTS(20, 21, 22, 23, 24) MS2_SS_SLOTS(25, 26, 27, 28, 29) MS2_SS_SLOTS(30, 31, 32, 33, 34)
+    MS2_SS_SLOTS(35, 36, 37, 38, 39) MS2_SS_SLOTS(40, 41, 42, 43, 44) MS2_SS_SLOTS(45, 46, 47, 48, 49)
+    MS2_SS_SLOTS(50, 51, 52, 53, 54) MS2_SS_SLOTS(55, 56, 57, 58, 59) MS2_SS_SLOTS(60, 61, 62, 63, 64)
+#undef MS2_SS_SLOTS
+    virtual void vfunc_65(); virtual void vfunc_66(); virtual void vfunc_67();
+    virtual bool vfunc_68(efd::Point3 kMove, double fTime, int b, unsigned c, int d);   // 68 0x14166e100
+};
+
 // The animation names per phase index (FUN_1417f7140), the lie sets "A" and "B" and the plain set.
 static const char* s_szStunAnimsA[10] = { "Down_A", "Down_Idle_A", "Stnd_Up_A", "Snare_A", "Vomit_A", "Down_C", "Down_Idle_C", "Stnd_Up_C", "StunFrozen_A", "Stuck_A" };
 static const char* s_szStunAnimsB[10] = { "Down_B", "Down_Idle_B", "Stnd_Up_B", "Snare_A", "Vomit_A", "Down_C", "Down_Idle_C", "Stnd_Up_C", "StunFrozen_A", "Stuck_A" };
@@ -61,8 +76,8 @@ StateStun::~StateStun()
 }
 
 // @0x1417f6870
-// MS2-FUNCTIONAL: the exe builds the animation name as a named local next to a temporary CString (no ctor-result copy);
-// every spelling tried (temp, named, const-ref) differs by a few stack moves and 13 bytes of frame
+// MS2-FUNCTIONAL: case 0x46 binds the returned name CString through an extra rax copy (mov [t],rax; mov rax,[t]) where
+// our const-ref gives lea; named, static_cast, && and CSimpleStringT spellings don't reproduce it (same in EndOfSequence)
 void StateStun::vfunc_4(StateData* pData)
 {
     State::vfunc_4(pData);
@@ -100,7 +115,7 @@ void StateStun::vfunc_4(StateData* pData)
         efd::utf8string kName(m_pAnims[FUN_1417f7140()]);
         m_pOwner->FUN_14166dd20(kName, 1.0f, false, false);
     }
-    m_pOwner->FUN_14166ef10(CString("Stun"), 1, 0, false);
+    m_pOwner->FUN_14166ef10("Stun", 1, 0, false);
 }
 
 // @0x1417f6b70
@@ -111,12 +126,10 @@ void StateStun::vfunc_5(int n)
 }
 
 // @0x1417f6bd0
-// MS2-FUNCTIONAL: the exe's frame has one more unused 8-byte slot before the zero direction (all else identical)
 void StateStun::vfunc_3(double fTime)
 {
     State::vfunc_3(fTime);
-    efd::Point3 kDir = efd::Point3::ZERO;
-    m_pOwner->vfunc_68(&kDir, fTime, 0, 0, 0);
+    reinterpret_cast<Unk_StunSlots*>(m_pOwner)->vfunc_68(efd::Point3::ZERO, fTime, 0, 0, 0);
     if (m_pOwner->FUN_1416749a0()->FUN_1409709b0() != 0)
         return;
     switch (m_n10)

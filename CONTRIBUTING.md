@@ -6,7 +6,7 @@ issues labelled `unit-batch`.
 
 Clone with `git clone --recurse-submodules`, or run `git submodule update --init` after cloning:
 `src/ms2/scaleform/` is the [GFx418-Recomp](https://github.com/riyukuro/GFx418-Recomp) submodule, and the build stops
-without it.
+without it. It is the game's Scaleform GFx 4.1.18, recovered from the exe; no Scaleform SDK is needed.
 
 ## What you need to supply
 
@@ -18,9 +18,8 @@ None of this is in the repository.
 | MSVC 14.16 (VS2017 15.9, cl 19.16.27054), MFC/ATL MBCS, Windows 10 SDK 10.0.19041 | `third_party/msvc/`, installed with [msvc-wine](https://github.com/mstorsjo/msvc-wine) (`vsdownload.py --manifest` for 15.9, then `install.sh`). `tools/msvc/*` wrap it under Wine. On Windows the real VS2017 v141 install is used instead, see [Windows](#windows-native-no-wsl-no-wine). `tools/check-toolchain.sh` (Windows: `python tools\check_toolchain.py`) compares your install with ours before you start |
 | Stock Gamebryo 3.2.0.661 (LightSpeed) source, patched with `engine-patches/` (see below) | `engine/gamebryo/` |
 | DirectX SDK June 2010, PhysX 2.8.4 | `third_party/dxsdk/`, `third_party/physx284/` |
-| Scaleform GFx 4.1.x SDK headers (the game uses 4.1.18; 4.1.19 headers also work) | `work/scaleform/4.1.19/Scaleform`, or set `MS2_SCALEFORM_SDK`. Optional: without it the placeholder types are used |
-| Exe-derived maps: `rtti_classes.tsv`, `rtti_vftables.tsv` | `work/classes/`, regenerated from the exe by `tools/regen-map.sh rtti` (byte-identical; Windows: `python tools\rtti_scan.py "<exe>" work\classes`) |
-| `functions.tsv`, `units.tsv` (curated Ghidra map) | shipped in this repository as `data/map/`; the tools use `work/map/` if present, else `data/map/` (or set `MS2_MAP_DIR`). `tools/regen-map.sh ghidra` gives an approximation only |
+| Exe-derived maps: `rtti_classes.tsv`, `rtti_vftables.tsv` | any directory, named by `MS2_CLASSES_DIR`: `tools/regen-map.sh rtti <dir>` regenerates them from the exe (byte-identical; Windows: `python tools\rtti_scan.py "<exe>" <dir>`) |
+| `functions.tsv`, `units.tsv` (curated Ghidra map) | shipped in this repository as `data/map/` (or set `MS2_MAP_DIR`). `tools/regen-map.sh ghidra` gives an approximation only |
 
 ### Engine patches
 
@@ -38,12 +37,12 @@ stay valid even with `core.autocrlf=true`.
 
 Copy or move the patched tree to `engine/gamebryo/` (or set `MS2_ENGINE_DIR`). The script refuses and writes nothing if
 a stock file hash, an added file or a result hash does not match. 199 files are patched and 41 added (CMake files and
-the Nexon-specific `NiFOV*` / `NiStudioShaderContext` classes). Likewise provide Scaleform 4.1.x as in the table.
+the Nexon-specific `NiFOV*` / `NiStudioShaderContext` classes).
 `tools/engine-patches.py` regenerates the patches (maintainer only; needs the private stock-import history).
 
 Everything is looked up relative to the checkout. To keep a file elsewhere, set the matching variable instead:
-`MS2_EXE`, `MS2_MAP_DIR`, `MS2_CLASSES_DIR`, `MS2_THIRD_PARTY`, `MS2_ENGINE_DIR`, `MS2_WINEPREFIX`,
-`MS2_SCALEFORM_SDK` (see `tools/ms2paths.py`).
+`MS2_EXE`, `MS2_MAP_DIR`, `MS2_CLASSES_DIR`, `MS2_THIRD_PARTY`, `MS2_ENGINE_DIR`, `MS2_WINEPREFIX`
+(see `tools/ms2paths.py`).
 
 Host: Linux with Wine, CMake 3.20+, Ninja, clang-cl and LLVM tools (`llvm-undname`, `llvm-nm`) on PATH, Python 3 with
 `pip install -r requirements.txt`. Put a virtualenv at `.venv/` (the scripts use `.venv/bin/python`). Or native Windows,

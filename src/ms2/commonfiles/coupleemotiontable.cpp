@@ -117,7 +117,7 @@ int CCoupleEmotionTable::Load()
          pElem = pElem->FUN_140168650("coupleEmotion"))
     {
         MS2Ptr<CCoupleEmotionData> spData(new CCoupleEmotionData);
-        spData->m_nId = FUN_140197390(pElem, "id", 0);
+        spData->m_nId = FUN_140197390(pElem, "code", 0);
         {
             MS2Ptr<CCoupleEmotionData::AnimationData> spAni(new CCoupleEmotionData::AnimationData());
             CString str("");

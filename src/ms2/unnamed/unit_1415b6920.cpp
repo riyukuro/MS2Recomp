@@ -7,6 +7,7 @@
 #include "ms2/placeholder/nmstream.h"
 #include "ms2/placeholder/nmobjects.h"
 #include "ms2/placeholder/nmfunc.h"
+#include "ms2/placeholder/nmencoder.h"
 #include "ms2/ms2recover.h"
 
 extern long long FUN_1415f1e90(long long, long long);
@@ -17,7 +18,7 @@ extern void FUN_14156bf10(void*);
 extern void FUN_14156ac20(void*, unsigned int);
 extern void FUN_14156ab00(void*, unsigned char);
 extern unsigned int FUN_1415f9990(void*);
-extern int FUN_1415fb6d0(void*);
+extern int FUN_1415fb6d0(CNMSerializableDecoder*);
 extern int FUN_1415fb750(void*);
 
 // MS2-FUNCTIONAL 0x1415b6920: initializes the friend-info event and optional avatar state.
@@ -42,18 +43,17 @@ CNMRealFriendInfoChangedEvent::CNMRealFriendInfoChangedEvent(int reason, const C
 // @0x1415b6a60
 unsigned int CNMRealFriendInfoChangedEvent::EncodeFramed(CNMStream* pStream)
 {
-    unsigned char storage[0x18];
-    FUN_14156bcb0(storage, pStream, this);
-    const unsigned int result = Encode(reinterpret_cast<CNMEncoder*>(storage), pStream);
-    FUN_14156bd50(storage);
-    return result;
+    CNMSerializableEncoder encoder(pStream, this);
+    return CNMRealFriendInfoChangedEvent::Encode(reinterpret_cast<CNMEncoder*>(&encoder), pStream);
 }
 
 // MS2-FUNCTIONAL 0x1415b6ac0: chooses direct or framed encoding.
 // @0x1415b6ac0
 unsigned int CNMRealFriendInfoChangedEvent::EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream)
 {
-    return m_bFormat == 1 ? Encode(pEncoder, pStream) : EncodeFramed(pStream);
+    if (m_bFormat == 1)
+        return CNMRealFriendInfoChangedEvent::Encode(pEncoder, pStream);
+    return CNMRealFriendInfoChangedEvent::EncodeFramed(pStream);
 }
 
 // MS2-FUNCTIONAL 0x1415b6b20: serializes friend data and an optional avatar record.
@@ -74,20 +74,19 @@ unsigned int CNMRealFriendInfoChangedEvent::Encode(CNMEncoder* pEncoder, CNMStre
 // @0x1415b6bf0
 unsigned int CNMRealFriendInfoChangedEvent::DecodeFramed(CNMStream* pStream)
 {
-    unsigned char storage[0x38];
-    FUN_14156be10(storage, pStream, this);
-    unsigned int result = 0;
-    if (FUN_1415fb750(storage))
-        result = Decode(reinterpret_cast<CNMSerializableDecoder*>(storage), pStream);
-    FUN_14156bf10(storage);
-    return result;
+    CNMSerializableDecoder decoder(pStream, this);
+    if (FUN_1415fb750(&decoder) == 0)
+        return 0;
+    return CNMRealFriendInfoChangedEvent::Decode(&decoder, pStream);
 }
 
 // MS2-FUNCTIONAL 0x1415b6c80: dispatches framed decoding when the format is 2.
 // @0x1415b6c80
 unsigned int CNMRealFriendInfoChangedEvent::DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream)
 {
-    return FUN_1415fb6d0(pDecoder) == 2 ? DecodeFramed(pStream) : Decode(pDecoder, pStream);
+    if (FUN_1415fb6d0(pDecoder) == 2)
+        return CNMRealFriendInfoChangedEvent::DecodeFramed(pStream);
+    return CNMRealFriendInfoChangedEvent::Decode(pDecoder, pStream);
 }
 
 // MS2-FUNCTIONAL 0x1415b6ce0: restores friend data and conditionally restores the avatar.

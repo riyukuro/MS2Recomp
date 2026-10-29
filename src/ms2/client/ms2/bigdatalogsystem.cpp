@@ -60,7 +60,6 @@ void CBigDataLogSystem::CSampleList::Add(float fValue)
 MS2_REPLACE_METHOD(0x140A1F2B0, CBigDataLogSystem::CSampleList, Add, 97, 0x1DA89906);
 
 // @0x140a1f320
-// MS2-FUNCTIONAL: the exe's for-each temporaries and iterator copies differ (35 bytes)
 bool CBigDataLogSystem::CSampleList::Calculate(float* pAverage, float* pMin, float* pMax, int* pCount, float* pDeviation)
 {
     if (Unk_LockGuard guard = m_lock)
@@ -81,7 +80,7 @@ bool CBigDataLogSystem::CSampleList::Calculate(float* pAverage, float* pMin, flo
         *pCount = (int)m_values.size();
         *pMin = m_values[0];
         *pMax = m_values[0];
-        BD_FOR_EACH(__int64 nValue, m_values)
+        BD_FOR_EACH(const __int64& nValue, m_values)
         {
             nTotal += nValue;
             if ((float)nValue < *pMin)
@@ -171,7 +170,6 @@ void CBigDataLogSystem::SendLog(const CString& strKey, const CString& strValue)
 MS2_REPLACE_METHOD(0x140A1F970, CBigDataLogSystem, SendLog, 130, 0x1648C8A5);
 
 // @0x140a1fa00
-// MS2-FUNCTIONAL: the name string scope / temporaries differ (7 bytes)
 void CBigDataLogSystem::SendStatistics()
 {
     COutPacket packet(static_cast<int>(SendOp::LogSend), 0);
@@ -188,8 +186,7 @@ void CBigDataLogSystem::SendStatistics()
         CSampleList* pList = &m_samples[i];
         pList->Calculate(&fAverage, &fMin, &fMax, &nCount, &fDeviation);
         {
-            const char* pszName = GetSampleName(i);
-            CString strName(pszName);
+            CString strName(GetSampleName(i));
             packet.WriteString(strName);
         }
         packet.WriteFloat(fAverage);

@@ -9,17 +9,17 @@
 // MS2-PIN: ??_GUIUGCCameraDialog@@UEAAPEAXI@Z 0x141b38990 ; unique
 // MS2-PIN: ?vfunc_48@UIUGCCameraDialog@@UEAAHXZ 0x141b389d0 ; unique
 // MS2-PIN: memmove_s 0x141b389e0 ; unique
-// MS2-PIN: ??0?$CAtlArray@PEAXV?$CElementTraits@PEAX@ATL@@@ATL@@QEAA@XZ 0x141b39140 ; unique
-// MS2-PIN: ??1?$CAtlArray@PEAXV?$CElementTraits@PEAX@ATL@@@ATL@@QEAA@XZ 0x141b391b0 ; unique
-// MS2-PIN: ?CallConstructors@?$CAtlArray@PEAXV?$CElementTraits@PEAX@ATL@@@ATL@@CAXPEAPEAX_K@Z 0x141b39380 ; unique
-// MS2-PIN: ?CallDestructors@?$CAtlArray@PEAXV?$CElementTraits@PEAX@ATL@@@ATL@@CAXPEAPEAX_K@Z 0x141b393f0 ; unique
-// MS2-PIN: ??A?$CAtlArray@PEAXV?$CElementTraits@PEAX@ATL@@@ATL@@QEAAAEAPEAX_K@Z 0x141b39430 ; unique
-// MS2-PIN: ?GrowBuffer@?$CAtlArray@PEAXV?$CElementTraits@PEAX@ATL@@@ATL@@AEAA_N_K@Z 0x141b39480 ; unique
-// MS2-PIN: ?RelocateElements@?$CElementTraitsBase@PEAX@ATL@@SAXPEAPEAX0_K@Z 0x141b39620 ; unique
-// MS2-PIN: ?Add@?$CAtlArray@PEAXV?$CElementTraits@PEAX@ATL@@@ATL@@QEAA_KPEAX@Z 0x141b392d0
-// MS2-PIN: ?RemoveAll@?$CAtlArray@PEAXV?$CElementTraits@PEAX@ATL@@@ATL@@QEAAXXZ 0x141b39660 ; unique
-// MS2-PIN: ?RemoveAt@?$CAtlArray@PEAXV?$CElementTraits@PEAX@ATL@@@ATL@@QEAAX_K0@Z 0x141b39680 ; unique
-// MS2-PIN: ?SetCount@?$CAtlArray@PEAXV?$CElementTraits@PEAX@ATL@@@ATL@@QEAA_N_KH@Z 0x141b39770 ; unique
+// MS2-PIN: ??0?$CAtlArray@PEAVUIUGCEventListener@@V?$CElementTraits@PEAVUIUGCEventListener@@@ATL@@@ATL@@QEAA@XZ 0x141b39140 ; unique
+// MS2-PIN: ??1?$CAtlArray@PEAVUIUGCEventListener@@V?$CElementTraits@PEAVUIUGCEventListener@@@ATL@@@ATL@@QEAA@XZ 0x141b391b0 ; unique
+// MS2-PIN: ?CallConstructors@?$CAtlArray@PEAVUIUGCEventListener@@V?$CElementTraits@PEAVUIUGCEventListener@@@ATL@@@ATL@@CAXPEAPEAVUIUGCEventListener@@_K@Z 0x141b39380 ; unique
+// MS2-PIN: ?CallDestructors@?$CAtlArray@PEAVUIUGCEventListener@@V?$CElementTraits@PEAVUIUGCEventListener@@@ATL@@@ATL@@CAXPEAPEAVUIUGCEventListener@@_K@Z 0x141b393f0 ; unique
+// MS2-PIN: ??A?$CAtlArray@PEAVUIUGCEventListener@@V?$CElementTraits@PEAVUIUGCEventListener@@@ATL@@@ATL@@QEAAAEAPEAVUIUGCEventListener@@_K@Z 0x141b39430 ; unique
+// MS2-PIN: ?GrowBuffer@?$CAtlArray@PEAVUIUGCEventListener@@V?$CElementTraits@PEAVUIUGCEventListener@@@ATL@@@ATL@@AEAA_N_K@Z 0x141b39480 ; unique
+// MS2-PIN: ?RelocateElements@?$CElementTraitsBase@PEAVUIUGCEventListener@@@ATL@@SAXPEAPEAVUIUGCEventListener@@0_K@Z 0x141b39620 ; unique
+// MS2-PIN: ?Add@?$CAtlArray@PEAVUIUGCEventListener@@V?$CElementTraits@PEAVUIUGCEventListener@@@ATL@@@ATL@@QEAA_KAEBQEAVUIUGCEventListener@@@Z 0x141b392d0
+// MS2-PIN: ?RemoveAll@?$CAtlArray@PEAVUIUGCEventListener@@V?$CElementTraits@PEAVUIUGCEventListener@@@ATL@@@ATL@@QEAAXXZ 0x141b39660 ; unique
+// MS2-PIN: ?RemoveAt@?$CAtlArray@PEAVUIUGCEventListener@@V?$CElementTraits@PEAVUIUGCEventListener@@@ATL@@@ATL@@QEAAX_K0@Z 0x141b39680 ; unique
+// MS2-PIN: ?SetCount@?$CAtlArray@PEAVUIUGCEventListener@@V?$CElementTraits@PEAVUIUGCEventListener@@@ATL@@@ATL@@QEAA_N_KH@Z 0x141b39770 ; unique
 // MS2-PINS-END tplpin
 //
 // File name assumed (the class name; the exe has no assert path for it). The unit also holds the bodies of
@@ -361,65 +361,77 @@ int UIUGCBannerDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
         OnOpenFolder();
         return 1;
     }
-    if (_stricmp("OnPreview", szMethod) == 0)
-    {
-        ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
-            FUN_141b35d00(data.FUN_1422b8a10());
-        return 1;
-    }
-    if (_stricmp("OnUpload", szMethod) == 0)
-    {
-        ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
-            FUN_141b35e10(data.FUN_1422b8a10());
-        return 1;
-    }
-    if (_stricmp("OnNewDraw", szMethod) == 0)
-    {
-        OnNewDraw();
-        return 1;
-    }
-    if (_stricmp("OnAddImage", szMethod) == 0)
-    {
-        OnAddImage();
-        return 1;
-    }
-    if (_stricmp("onScrollPosition", szMethod) == 0)
+    else if (_stricmp("OnPreview", szMethod) == 0)
     {
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs) != 0)
         {
             int nIndex = data.FUN_1422b8a10();
-            if (nIndex > -1)
+            FUN_141b35d00(nIndex);
+        }
+        return 1;
+    }
+    else if (_stricmp("OnUpload", szMethod) == 0)
+    {
+        ASData data;
+        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        {
+            int nIndex = data.FUN_1422b8a10();
+            FUN_141b35e10(nIndex);
+        }
+        return 1;
+    }
+    else if (_stricmp("OnNewDraw", szMethod) == 0)
+    {
+        OnNewDraw();
+        return 1;
+    }
+    else if (_stricmp("OnAddImage", szMethod) == 0)
+    {
+        OnAddImage();
+        return 1;
+    }
+    else if (_stricmp("onScrollPosition", szMethod) == 0)
+    {
+        ASData data;
+        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        {
+            int nIndex = data.FUN_1422b8a10();
+            if (nIndex >= 0)
                 FUN_141b36140(nIndex);
         }
         return 1;
     }
-    if (_stricmp("onScrollPositionReserve", szMethod) == 0)
+    else if (_stricmp("onScrollPositionReserve", szMethod) == 0)
     {
         FUN_141b359b0();
         return 1;
     }
-    if (_stricmp("OnTimeReserve", szMethod) == 0)
+    else if (_stricmp("OnTimeReserve", szMethod) == 0)
     {
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs) != 0)
         {
             int nHour = data.FUN_1422b8a10();
-            if (nHour > -1)
-                FUN_141b36230(nHour, data.FUN_1422b8a90() != 0);
+            if (nHour >= 0)
+            {
+                bool bPicked = data.FUN_1422b8a90();
+                FUN_141b36230(nHour, bPicked);
+            }
         }
         return 1;
     }
-    if (_stricmp("OnDateOffset", szMethod) == 0)
+    else if (_stricmp("OnDateOffset", szMethod) == 0)
     {
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs) != 0)
-            FUN_141b362b0(data.FUN_1422b8a10());
+        {
+            int nOffset = data.FUN_1422b8a10();
+            FUN_141b362b0(nOffset);
+        }
         return 1;
     }
-    if (_stricmp("OnItemDoubleClick", szMethod) == 0)
+    else if (_stricmp("OnItemDoubleClick", szMethod) == 0)
     {
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs) != 0)
@@ -441,31 +453,18 @@ int UIUGCBannerDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
 void UIUGCBannerDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
 {
     CString strType = pArgs->FUN_1422b8d30();
-    if (!FUN_140184310(strType, "image"))
-    {
-        if (strType.Find("m_timeSlot", 0) != -1)
-        {
-            int nHour = atoi(strType.Mid(10));
-            Unk_BannerPtr banner = CFieldBannerData::GetBanner(m_188);
-            if (banner == 0)
-                return;
-            if (nHour < 0 || nHour > 0x17)
-                return;
-            __int64 nPrice = banner->GetHourly(nHour);
-            CStringW strPrice = FUN_1418fec00(FUN_141b36a60(), nPrice, 0);
-            CStringW strText = FUN_14052bd00(0x9b6, strPrice);
-            ASTooltip tip(1, 2);
-            if (tip.FUN_1409e26b0(strText) != 0)
-                *pRetVal = tip.FUN_1422bb870();
-        }
-    }
-    else
+    if (FUN_140184310(strType, "image"))
     {
         Scaleform::GFx::Value arg = pArgs->FUN_1422b9260();
         AScript root((const Scaleform::GFx::Value&)arg, 2);
         if (root.FUN_1422ba9a0() == 0)
         {
+#ifdef __clang__
             AScript data(root.FUN_1422baa20("data"), 2);
+#else
+            // the exe binds the returned temp to the non-const Value& ctor (an MSVC extension)
+            AScript data((Scaleform::GFx::Value&)root.FUN_1422baa20("data"), 2);
+#endif
             if (data.FUN_1422ba9a0() == 0)
             {
                 ASTooltip tip(1, 2);
@@ -478,6 +477,23 @@ void UIUGCBannerDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
                     *pRetVal = tip.FUN_1422bb870();
                 }
             }
+        }
+    }
+    else
+    {
+        if (strType.Find("m_timeSlot", 0) != -1)
+        {
+            int nHour = atoi(strType.Mid(10, 2));
+            Unk_BannerPtr banner = CFieldBannerData::GetBanner(m_188);
+            if (banner == 0)
+                return;
+            if (nHour < 0 || nHour >= 0x18)
+                return;
+            CStringW strPrice = FUN_1418fec00(FUN_141b36a60(), banner->GetHourly(nHour), 0);
+            CStringW strText = FUN_14052bd00(0x9b6, strPrice);
+            ASTooltip tip(1, 2);
+            if (tip.FUN_1409e26b0(strText) != 0)
+                *pRetVal = tip.FUN_1422bb870();
         }
     }
 }
@@ -659,8 +675,7 @@ int UIUGCBannerDialog::OnNewDraw()
 // @0x141b360c0
 int UIUGCBannerDialog::OnAddImage()
 {
-    CStringW strDir(L"./");
-    int nResult = FUN_14052d220()->FUN_1418810c0(strDir, L"Image Files (*.dds, *.png, *.jpg)");
+    int nResult = FUN_14052d220()->FUN_1418810c0(L"./", L"Image Files (*.dds, *.png, *.jpg)");
     if (nResult == 0)
         return 0;
     FUN_141b358d0();
@@ -758,13 +773,13 @@ void UIUGCBannerDialog::FUN_141b365e0()
 // @0x141b366b0
 void UIUGCBannerDialog::FUN_141b366b0()
 {
-    if (vfunc_55() == 0)
-    {
-        Unk_BannerPtr banner = CFieldBannerData::GetBanner(m_188);
-        if (banner == 0)
-            return;
-        FUN_141b36750(FUN_141b368b0());
-    }
+    if (vfunc_55() != 0)
+        return;
+    Unk_BannerPtr banner = CFieldBannerData::GetBanner(m_188);
+    if (banner == 0)
+        return;
+    __int64 nPrice = FUN_141b368b0();
+    FUN_141b36750(nPrice);
 }
 
 // @0x141b36750
@@ -797,12 +812,11 @@ __int64 UIUGCBannerDialog::FUN_141b368b0()
 // @0x141b369d0
 void UIUGCBannerDialog::FUN_141b369d0()
 {
-    if (vfunc_55() == 0)
-    {
-        ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30);
-        if (pDialog != 0)
-            pDialog->Invoke("dirtyReserveList");
-    }
+    if (vfunc_55() != 0)
+        return;
+    ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30);
+    if (pDialog != 0)
+        pDialog->Invoke("dirtyReserveList");
 }
 
 // @0x141b36a60
@@ -980,7 +994,6 @@ UIUGCEventDispatcher::~UIUGCEventDispatcher()
     m_8.RemoveAll();
 }
 
-// MS2-FUNCTIONAL: the exe's CAtlArray<void*>::Add takes the element by reference (older ATL); ours takes it by value
 // @0x141b38be0
 void UIUGCEventDispatcher::FUN_141b38be0(UIUGCEventListener* pListener)
 {
@@ -1010,7 +1023,7 @@ void UIUGCEventDispatcher::vfunc_1(void* p, CString str)
 {
     for (size_t i = 0; i < m_8.GetCount(); i++)
     {
-        UIUGCEventListener* pListener = static_cast<UIUGCEventListener*>(m_8[i]);
+        UIUGCEventListener* pListener = m_8[i];
         if (pListener)
             pListener->vfunc_ugc_1(p, str);
     }
@@ -1021,7 +1034,7 @@ void UIUGCEventDispatcher::vfunc_2(void* p, CString str)
 {
     for (size_t i = 0; i < m_8.GetCount(); i++)
     {
-        UIUGCEventListener* pListener = static_cast<UIUGCEventListener*>(m_8[i]);
+        UIUGCEventListener* pListener = m_8[i];
         if (pListener)
             pListener->vfunc_ugc_2(p, str);
     }
@@ -1032,7 +1045,7 @@ void UIUGCEventDispatcher::vfunc_3(void* p, void* q)
 {
     for (size_t i = 0; i < m_8.GetCount(); i++)
     {
-        UIUGCEventListener* pListener = static_cast<UIUGCEventListener*>(m_8[i]);
+        UIUGCEventListener* pListener = m_8[i];
         if (pListener)
             pListener->vfunc_ugc_3(p, q);
     }
@@ -1043,7 +1056,7 @@ void UIUGCEventDispatcher::vfunc_4(int n)
 {
     for (size_t i = 0; i < m_8.GetCount(); i++)
     {
-        UIUGCEventListener* pListener = static_cast<UIUGCEventListener*>(m_8[i]);
+        UIUGCEventListener* pListener = m_8[i];
         if (pListener)
             pListener->vfunc_ugc_4(n);
     }
@@ -1054,7 +1067,7 @@ void UIUGCEventDispatcher::vfunc_5()
 {
     for (size_t i = 0; i < m_8.GetCount(); i++)
     {
-        UIUGCEventListener* pListener = static_cast<UIUGCEventListener*>(m_8[i]);
+        UIUGCEventListener* pListener = m_8[i];
         if (pListener)
             pListener->vfunc_ugc_5();
     }
@@ -1065,7 +1078,7 @@ void UIUGCEventDispatcher::vfunc_6()
 {
     for (size_t i = 0; i < m_8.GetCount(); i++)
     {
-        UIUGCEventListener* pListener = static_cast<UIUGCEventListener*>(m_8[i]);
+        UIUGCEventListener* pListener = m_8[i];
         if (pListener)
             pListener->vfunc_ugc_6();
     }
@@ -1076,7 +1089,7 @@ void UIUGCEventDispatcher::vfunc_7(int n)
 {
     for (size_t i = 0; i < m_8.GetCount(); i++)
     {
-        UIUGCEventListener* pListener = static_cast<UIUGCEventListener*>(m_8[i]);
+        UIUGCEventListener* pListener = m_8[i];
         if (pListener)
             pListener->vfunc_ugc_7(n);
     }

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Engine stage of tools/progress.py: compile the Gamebryo TUs of engine/units-gb.json, pair every function of their
+"""Engine stage of tools/progress.py: compile the Gamebryo TUs of data/engine/units-gb.json, pair every function of their
 objs with an exe VA and byte-match it (tools/bytematch.py), credit engine functions in status.tsv.
 
     .venv/bin/python tools/gbprogress.py [-j 8] [--cache DIR] [filter...]    # standalone: compile + match, print summary
@@ -15,7 +15,7 @@ Credit (per exe VA, outside the game unit ranges of work/map/units.tsv and not c
   stub        an uncredited function between two credited functions of the same unit (the TU's own range; runs of
               more than STUB_GAP functions are not counted).
 Unit names: gb:<Lib>/<TU> (one name for both recipes of a TU; an exact v2525 obj wins the attribution over stock).
-VA windows (engine/unit-windows.tsv, 2026-10-20 lb2): a unit-name prefix pairs only inside (include) or outside
+VA windows (data/engine/unit-windows.tsv, 2026-10-20 lb2): a unit-name prefix pairs only inside (include) or outside
 (exclude) VA ranges (pairing, not just credit: name, search and callee pairs), for a library the exe links twice
 (Gamebryo's LNUM Lua gb:Lua/ and the stock Lua 5.1.4 gb:Lua2/, mostly byte-identical); part of the match cache key.
 Cache: <cache>/gb/obj/<recipe>/... (incremental: obj mtime vs source + /showIncludes deps), <cache>/gb/results.json
@@ -154,11 +154,11 @@ def compile_unit(args):
 G = {}
 
 
-WINDOWS_TSV = os.path.join(ROOT, "engine", "unit-windows.tsv")
+WINDOWS_TSV = os.path.join(ROOT, "data", "engine", "unit-windows.tsv")
 
 
 def load_windows():
-    """[(unit prefix, include|exclude, lo, hi)] from engine/unit-windows.tsv"""
+    """[(unit prefix, include|exclude, lo, hi)] from data/engine/unit-windows.tsv"""
     out = []
     if os.path.exists(WINDOWS_TSV):
         for ln in open(WINDOWS_TSV):
@@ -233,7 +233,7 @@ def owned_game_units():
 
 def game_ranges():
     """sorted [(lo, hi)] of the game units (work/map/units.tsv), minus the rows a library doc owns: "owned_game_units"
-    in engine/units-lib-*.json lists unit-map rows (start VA, hex) whose range is a vendored library compiled by the
+    in data/engine/units-lib-*.json lists unit-map rows (start VA, hex) whose range is a vendored library compiled by the
     engine stage (fmt 0.12.0, 2026-10-20 tc1: the game map's source-less ?\\fmt.cpp row)."""
     owned = owned_game_units()
     game = []
@@ -397,7 +397,7 @@ def match_obj(path):
         if len(nxt) == len(pending) and not grew:
             break
         pending = nxt
-    # library objs (engine/units-lib-*.json, compiled from the vendor's own sources inside an include window): a hint
+    # library objs (data/engine/units-lib-*.json, compiled from the vendor's own sources inside an include window): a hint
     # that stays non-exact (the vendor built them with another MSVC: EH states, inlining) still names the function at
     # that VA, so it pairs as functional rather than leaving the function a stub
     if LIB_RECIPE in path and not NO_CALLEE:
@@ -1447,7 +1447,9 @@ def header_statics(res, paths, log=print):
 # initial bytes (relocations masked), and no other unit qualifies (a unit already owning the dtor wins a tie). Before
 # that, a block/sub-block/copy placement of ??__E<X> is dropped when the dtor its copy registers is another unit's
 # exact pair while U's own ??__F<X> is exact elsewhere by name search (QOSCompare's map initializer sat in
-# NiTerrainConditionVariable's slot). Adds [name, va, True, "dipair"] to bpairs.
+# NiTerrainConditionVariable's slot). Adds [name, va, True, "dipair"] to bpairs. A ??__E<X> another pass placed credits
+# the dtor its copy registers to U's ??__F<X> the same way when no unit pairs that dtor (merge 38: VisualTrackerService's
+# kCAT_INVALID sub-block at 0x140135100 left its `ret 0` dtor 0x142cc72c0 open).
 DIPAIR_MOVED = ("block", "subblock", "copy")
 
 
@@ -1472,7 +1474,7 @@ def _dipair_data_ok(obj, s, va):
 
 
 def _dipair_job(job):
-    paths, tmpl, todo, taken, known, placed, moved = job
+    paths, tmpl, todo, taken, known, placed, moved, regs = job
     objs = {}
 
     def obj(k):
@@ -1487,6 +1489,13 @@ def _dipair_job(job):
             if d is not None and d != fva and taken.get(d, set()) - {u}:
                 drop.append((k, e, va))
     dropped = {(k, e) for k, e, _ in drop}
+    dtors = collections.defaultdict(set)
+    for k, u, e, f, va in regs:
+        if (k, e) in dropped or not _match(obj(k), e, va):
+            continue
+        d = bm.LAST_TARGETS.get(f)
+        if d is not None and d not in taken and _match(obj(k), f, d):
+            dtors[d].add((k, f))
     dva = {va for _, _, va in drop}
     out = []
     for va, n in todo + [(va, None) for va in sorted(dva)]:
@@ -1517,7 +1526,7 @@ def _dipair_job(job):
             hits = own
         if len(hits) == 1:
             out.append((va,) + next(iter(hits.values())))
-    return drop, out
+    return drop, out, [(k, f, d) for d, s in dtors.items() if len(s) == 1 for k, f in s]
 
 
 def assign_dipairs(res, paths, log=print):
@@ -1531,7 +1540,7 @@ def assign_dipairs(res, paths, log=print):
                 known.setdefault(n, set()).add(va)
                 if how == "search" and n.startswith("??__F"):
                     fsearch[(k, n)] = va
-    tmpl, moved = [], []
+    tmpl, moved, regs = [], [], []
     for k, c in sorted(res.items()):
         if k not in paths:
             continue
@@ -1540,6 +1549,9 @@ def assign_dipairs(res, paths, log=print):
         for n, _, sz in secs.get(".text$di", {}).get("lay", ()):
             if n.startswith("??__E") and "??__F" + n[5:] in yd:
                 tmpl.append((k, c["unit"].lower(), n, "??__F" + n[5:], sz))
+                if (k, "??__F" + n[5:]) not in placed:
+                    regs += [(k, c["unit"].lower(), n, "??__F" + n[5:], va) for e, va, ok, how in c.get("xpairs", []) +
+                             c.get("bpairs", []) if ok and e == n and how in DIPAIR_MOVED]
         for n, va, ok, how in c.get("xpairs", []) + c.get("bpairs", []):
             if ok and how in DIPAIR_MOVED and n.startswith("??__E") and (k, "??__F" + n[5:]) in fsearch:
                 moved.append((k, c["unit"].lower(), n, va, fsearch[(k, "??__F" + n[5:])]))
@@ -1566,12 +1578,16 @@ def assign_dipairs(res, paths, log=print):
             if di_lo <= va <= di_hi and n in sizes and va not in taken and not in_game(va):
                 todo.append((va, n))
     with Pool(1, initializer=_init) as p:
-        drop, out = p.apply(_dipair_job, ((paths, tmpl, todo, taken, known, placed, moved),))
+        drop, out, fout = p.apply(_dipair_job, ((paths, tmpl, todo, taken, known, placed, moved, regs),))
     dk = {(k, e, va) for k, e, va in drop}
     new = collections.defaultdict(list)
     for va, k, e, f, d in out:
         new[k].append([e, va, True, "dipair"])
         if d not in taken:
+            new[k].append([f, d, True, "dipair"])
+    out_d = {x[4] for x in out}
+    for k, f, d in fout:
+        if d not in out_d:
             new[k].append([f, d, True, "dipair"])
     nva = {p[1] for prs in new.values() for p in prs}
     for k, c in res.items():

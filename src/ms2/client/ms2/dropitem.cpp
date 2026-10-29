@@ -43,6 +43,8 @@
 
 // ---- unit-local views of exe objects and unrecovered callees ----
 
+extern "C" float (__cdecl* __imp_sinf)(float);                      // the exe calls the CRT import
+
 class Unk_WsC_GameObj : public GameObject
 {
 public:
@@ -61,6 +63,8 @@ public:
     void FUN_14160feb0(int nActive, const efd::Point3& kPos, const efd::Point3& kDir, float fTime, bool bForce);
     void FUN_1416105c0();                                           // 0x1416105c0
     bool FUN_14109a720();                                           // 0x14109a720
+    bool FUN_141192820();                                           // 0x141192820 the dirty flag
+    bool FUN_141192830();                                           // 0x141192830 the enabled flag
 private:
     char m_pad_10[0x30 - sizeof(NiRefObject)];
 public:
@@ -101,7 +105,7 @@ void FUN_1412751b0(const CStringW& strText, int nSeconds);          // center no
 class Unk_DropPickDlg
 {
 public:
-    void FUN_141913060(GameObject* pActor, int nCount, CString strName);   // pickup notice of an item
+    void FUN_141913060(GameObject* pActor, int nCount, const CString& strName);   // pickup notice of an item
     void FUN_141912a80(GameObject* pActor, int nAmount, int bMeso);        // pickup notice of meso
 };
 Unk_DropPickDlg* FUN_140b624b0(int nUiId);
@@ -113,7 +117,7 @@ void FUN_141851f90(void* pRoot, float fWeight);
 void FUN_141852050(void* pRoot, unsigned int uValue);
 void* FUN_14086d260();
 double FUN_141473280(void* p);                                      // the frame time
-void FUN_141545250(egf::EntityID& kId, bool b);
+void FUN_141545250(egf::EntityID kId, int b);
 bool FUN_14087ddc0(const efd::ClassInfo* pInfo, unsigned int nId);  // is of the class id
 unsigned int FUN_140869420();                                       // the tick count (ms)
 CString FUN_140540050(const char* szFormat, const CString& strArg); // StringFormat<CString>
@@ -126,7 +130,7 @@ extern char DAT_143afbbb0;                                          // NiMesh::m
 extern char DAT_143afa4f0;                                          // NiTexturingProperty::ms_RTTI
 NiTexturingProperty::Map* FUN_14109a6b0(NiTexturingProperty* pProp);   // the base map
 void FUN_140981040(NiTexturingProperty::Map* pMap, NiTexture* pTex);   // Map::SetTexture
-class Unk_DropTextures { public: NiTexturePtr FUN_141552f90(CString strPath, char nFlags); };
+class Unk_DropTextures { public: NiTexturePtr FUN_141552f90(CString strPath, int nFlags); };
 Unk_DropTextures* FUN_140a0afd0();
 class Unk_DropPickTick                                              // 8-byte throttle (static of FUN_141190900)
 {
@@ -139,7 +143,7 @@ private:
 
 // More unit-local views of exe objects (the drop source, the model attachment, the item data, the prop of a tree).
 class Unk_WsB_Prop : public CInteractObject { };
-class Unk_GoAttachment { public: char m_pad[0xb4]; Vector3 m_pos; };   // +0xb4 the placement point
+class Unk_GoAttachment { public: char m_pad[0xb4]; NxBox m_box; };     // +0xb4 the placement box
 class Unk_ItemEquipData { public: int FUN_14053c5c0(); };                      // the item kind
 class Unk_DropAnimSvc { public: NiActorManager* FUN_140999440(const egf::EntityID& kId); };
 Unk_DropAnimSvc* FUN_141b6f910();
@@ -152,19 +156,15 @@ class CBlockManager* FUN_140a6a830();
 extern Unk_Inventory DAT_143ab2a90;
 int FUN_140768010(unsigned nRange, unsigned nBase);                  // random in base..base+range-1
 float FUN_140966f00(Vector3 kA, Vector3 kB);        // the horizontal distance
+float FUN_140966f00(Vector3 kA, efd::Point3 kB);    // the same, the second point sliced from an NiPoint3
+float FUN_140966f00(Vector3 kA, NiPoint3 kB);       // the same, the second point an NiPoint3 call result
 CPhysXHelper* FUN_1409f7ca0();
-int FUN_14147a500(Vector3* pOut, const Vector3* pStart, const Vector3* pEnd, char bProbe, float fProbeLen, const NxGroupsMask* pMask);
+bool FUN_14147a500(Vector3* pOut, Vector3 kStart, Vector3 kEnd, bool bProbe, float fProbeLen, const NxGroupsMask* pMask);
 extern Vector3 DAT_143a08ce8;                               // NiPoint3::UNIT_Y
 extern Vector3 DAT_143a08cf8;                               // NiPoint3::UNIT_Z
 extern Vector3 DAT_143a08d08;                               // NiPoint3::ALL_ONES
 
-// Fills an identity transform at kPos (the sound and effect placement of a drop).
-static void MakeXform(NiTransform& kXform, const NiPoint3& kPos)
-{
-    kXform.m_fScale = 1.0f;
-    kXform.m_Translate = kPos;
-    kXform.m_Rotate = NiMatrix3::IDENTITY;
-}
+extern const efd::Matrix3 DAT_143a09600;                // efd::Matrix3::IDENTITY
 
 // ---- the unit's timer, class info and header statics (the .text$di order) ----
 static Timer s_kPickTimer;                                          // @0x1400e7300
@@ -192,10 +192,10 @@ Vector3 FUN_141192780(Vector3 kFrom, Vector3 kTo, bool bUnitize)
 }
 
 // @0x141192820
-bool FUN_141192820(CObjectShadow* pShadow) { return pShadow->m_bDirty; }
+bool CObjectShadow::FUN_141192820() { return m_bDirty; }
 
 // @0x141192830
-bool FUN_141192830(CObjectShadow* pShadow) { return pShadow->m_bEnabled; }
+bool CObjectShadow::FUN_141192830() { return m_bEnabled; }
 
 // ---- CDropItem ----
 
@@ -245,63 +245,58 @@ CDropItem::~CDropItem()
 
 // Builds the item and the model of the drop; false when the item or its effect row does not exist.
 // @0x14118cb90
-// MS2-FUNCTIONAL: the exe passes a fifth (ignored) id to GetItemDropEffect that the typed declaration has no slot for
 int CDropItem::FUN_14118cb90(int nObjectId, int nItemId, int nAmount, int nRarity, int nOwnerObjId)
 {
     m_nOwnerObjId = nOwnerObjId;
     m_nAmount = nAmount;
     if (!FUN_1411905a0())
         return 0;
-    m_spItem = MS2Ptr<CItem>(new CItem());
+    m_spItem.AssignRaw(new CItem());
     if (!m_spItem->FUN_140523c40(nItemId, nRarity, 0))
         return 0;
     Unk_WsC_GameObj* pOwner = WorldService::GetInstance()->FUN_141bd1320(m_nOwnerObjId);
     if (pOwner)
-    {
-        MS2Ptr<CNpcData> spNpc = static_cast<CNpc*>(static_cast<GameObject*>(pOwner))->GetNpcData();
-        m_nNpcType = spNpc->GetId();
-    }
+        m_nNpcType = static_cast<CNpc*>(static_cast<GameObject*>(pOwner))->GetNpcData()->GetId();
     m_str88 = "DropItemNIF";
     FUN_14123c5a0(nObjectId);
-    if (!FUN_14053f8c0(nItemId))
-    {
-        if (!FUN_14053f900(nItemId))
-        {
-            if (!FUN_14118ffb0())
-            {
-                m_spEffect = CItemDataTable::GetInstance()->GetDropEffect(1);
-                if (m_spEffect == 0)
-                    return 0;
-                FUN_14123bb80(FUN_140540050("urn:gamebryo-scenegraph:{0}", CItemDataTable::GetInstance()->GetGradeNif((ItemGradeKey)nRarity)));
-            }
-            else
-            {
-                m_spEffect = CItemDataTable::GetInstance()->GetDropEffect(2);
-                if (m_spEffect == 0)
-                    return 0;
-                FUN_14123bb80(FUN_140540050("urn:gamebryo-scenegraph:{0}", CItemDataTable::GetInstance()->GetGradePetNif((ItemGradeKey)nRarity)));
-            }
-        }
-        else
-        {
-            m_spEffect = CItemDataTable::GetInstance()->GetItemDropEffect(nItemId, nAmount);
-            if (m_spEffect == 0)
-            {
-                _wassert(L"0", L"e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\dropitem.cpp", 0xb1);
-                return 0;
-            }
-            FUN_14123bb80(FUN_140540050("urn:gamebryo-scenegraph:{0}", m_spEffect->assetName));
-            if (nItemId == 0x55d4a89 || nItemId == 0x55d4a8a)
-                FUN_141191240();
-        }
-    }
-    else
+    if (FUN_14053f8c0(nItemId))
     {
         m_n64Meso = nAmount;
         m_spEffect = CItemDataTable::GetInstance()->GetItemDropEffect(0x55d4a81, nAmount);
         if (m_spEffect == 0)
             return 0;
         FUN_14123bb80(FUN_140540050("urn:gamebryo-scenegraph:{0}", m_spEffect->assetName));
+    }
+    else if (FUN_14053f900(nItemId))
+    {
+        int nEffectId = nItemId;     // computed but never used by the exe
+        if (nItemId == 0x55d4a93)
+            nEffectId = 0x55d4a89;
+        m_spEffect = CItemDataTable::GetInstance()->GetItemDropEffect(nItemId, nAmount);
+        if (m_spEffect == 0)
+        {
+            MS2_ASSERT_AT(0xb1, 0);
+            return 0;
+        }
+        FUN_14123bb80(FUN_140540050("urn:gamebryo-scenegraph:{0}", m_spEffect->assetName));
+        if (nItemId == 0x55d4a89 || nItemId == 0x55d4a8a)
+            FUN_141191240();
+    }
+    else if (FUN_14118ffb0())
+    {
+        m_spEffect = CItemDataTable::GetInstance()->GetDropEffect(2);
+        if (m_spEffect == 0)
+            return 0;
+        CString strNif = CItemDataTable::GetInstance()->GetGradePetNif((ItemGradeKey)nRarity);
+        FUN_14123bb80(FUN_140540050("urn:gamebryo-scenegraph:{0}", strNif));
+    }
+    else
+    {
+        m_spEffect = CItemDataTable::GetInstance()->GetDropEffect(1);
+        if (m_spEffect == 0)
+            return 0;
+        CString strNif = CItemDataTable::GetInstance()->GetGradeNif((ItemGradeKey)nRarity);
+        FUN_14123bb80(FUN_140540050("urn:gamebryo-scenegraph:{0}", strNif));
     }
     return 1;
 }
@@ -337,11 +332,9 @@ int CDropItem::vfunc_10()
         bool bValue = false;
         FUN_14098c6e0(FUN_14123c410(), 0x2a7fd9f4, bValue);
         FUN_141851f90(FUN_141b6efc0(FUN_14123c410()), 0.0f);
-        float fFrame = (float)FUN_141473280(FUN_14086d260());
-        FUN_141b6efc0(FUN_14123c410())->Update(fFrame, true);
+        FUN_141b6efc0(FUN_14123c410())->Update((float)FUN_141473280(FUN_14086d260()), true);
         FUN_141852050(FUN_141b6efc0(FUN_14123c410()), 0);
-        egf::EntityID kId;
-        FUN_141545250(FUN_14123c460(kId), true);
+        FUN_141545250(FUN_14123c460(), 1);
     }
     return 1;
 }
@@ -373,11 +366,10 @@ void CDropItem::vfunc_32(bool bForce)
 {
     if (m_spShadow)
     {
-        float fDistance = FUN_140f4a450();
-        m_spShadow->FUN_14160fe50(fDistance < 200000.0f);
+        m_spShadow->FUN_14160fe50(FUN_140f4a450() < 200000.0f);
         m_spShadow->FUN_1416105c0();
         bool bMoved = m_spShadow->FUN_14109a720();
-        bool bDirty = FUN_141192820(m_spShadow);
+        bool bDirty = m_spShadow->FUN_141192820();
         if (bMoved || bForce || bDirty)
         {
             Unk_RayCastInfo kInfo;
@@ -386,10 +378,9 @@ void CDropItem::vfunc_32(bool bForce)
             int nHit = 0;
             if (bMoved)
             {
-                if (FUN_141192830(m_spShadow))
+                if (m_spShadow->FUN_141192830())
                 {
-                    NiPoint3 kPos = vfunc_18();
-                    nHit = FUN_1409f7ca0()->FUN_14168a310(reinterpret_cast<Vector3&>(kPos), kHit, &kInfo, 0.0f, &kNormal, 0);
+                    nHit = FUN_1409f7ca0()->FUN_14168a310(reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(vfunc_18())), kHit, &kInfo, 0.0f, &kNormal, 0);
                 }
             }
             m_spShadow->FUN_14160feb0(nHit, reinterpret_cast<efd::Point3&>(kHit), reinterpret_cast<efd::Point3&>(kNormal), kInfo.m_hitDist, bForce);
@@ -407,13 +398,11 @@ void CDropItem::EndOfSequence(NiActorManager* pkManager, NiActorManager::Sequenc
 // @0x14118d720
 void CDropItem::FUN_14118d720(NiAVObject* pRoot)
 {
-    NiAVObject* pIcon = pRoot->GetObjectByName("Item_Icon:0");
-    if (pIcon)
+    if (NiAVObject* pIcon = pRoot->GetObjectByName("Item_Icon:0"))
     {
         if (FUN_14109a9a0(reinterpret_cast<const NiRTTI*>(&DAT_143afbbb0), pIcon))
         {
-            NiProperty* pProp = pIcon->GetProperty(8);
-            NiTexturingProperty* pTexturing = static_cast<NiTexturingProperty*>(FUN_14098d8d0(reinterpret_cast<const NiRTTI*>(&DAT_143afa4f0), pProp));
+            NiTexturingProperty* pTexturing = static_cast<NiTexturingProperty*>(FUN_14098d8d0(reinterpret_cast<const NiRTTI*>(&DAT_143afa4f0), pIcon->GetProperty(8)));
             if (pTexturing)
             {
                 NiTexturingProperty::Map* pMap = FUN_14109a6b0(pTexturing);
@@ -431,8 +420,7 @@ void CDropItem::FUN_14118d720(NiAVObject* pRoot)
                     FUN_1401d3700(strPath);
                     if (!strPath.IsEmpty())
                     {
-                        NiTexturePtr spTexture = FUN_140a0afd0()->FUN_141552f90(CString(strPath), 5);
-                        FUN_140981040(pMap, spTexture);
+                        FUN_140981040(pMap, FUN_140a0afd0()->FUN_141552f90(CString(strPath), 5));
                     }
                 }
             }
@@ -442,7 +430,7 @@ void CDropItem::FUN_14118d720(NiAVObject* pRoot)
 
 // Enters a state of the drop: 1 flies out of the source, 0 waits, 2 / 3 / 4 fly to the owner and vanish, 5 grows back.
 // @0x14118d9a0
-// MS2-FUNCTIONAL: the Point3 temporaries and the Matrix3 chain are laid out differently from the exe
+// MS2-FUNCTIONAL: instruction and call stream identical to the exe; the stack slots differ (frame 0xb88 vs 0xb48)
 void CDropItem::FUN_14118d9a0(int nState)
 {
     if (m_nState == nState)
@@ -452,137 +440,19 @@ void CDropItem::FUN_14118d9a0(int nState)
     m_fElapsed = 0.0f;
     m_fSpawnTime = 0.0f;
     m_nState = nState;
-    if (nState != 1)
-    {
-        if (nState == 2)
-        {
-            if (m_nEffectIdA != 0)
-                FUN_1403ed280()->FUN_1411a6060(m_nEffectIdA);
-            if (m_nEffectIdB != 0)
-                FUN_1403ed280()->FUN_1411a6060(m_nEffectIdB);
-            Unk_WsC_GameObj* pOwner = WorldService::GetInstance()->FUN_141bd1180(m_n278);
-            if (!pOwner)
-                pOwner = WorldService::GetInstance()->FUN_141bd1180(m_n188);
-            if (pOwner)
-            {
-                NiPoint3 kOwnerPos = pOwner->vfunc_18();
-                m_posGround = kOwnerPos;
-                NiPoint3 kGoalPos = pOwner->vfunc_18();
-                Vector3 kGoal(reinterpret_cast<Vector3&>(kGoalPos));
-                kGoal.z += m_f218;
-                unsigned nHalf = (unsigned)(__int64)m_f224 >> 1;
-                int nRandom = FUN_140768010(nHalf, 0);
-                m_f224 = (float)(nRandom + nHalf);
-                Vector3 kGoalCopy(kGoal);
-                NiPoint3 kStartPos = pOwner == 0 ? NiPoint3() : vfunc_18();
-                Vector3 kStart(reinterpret_cast<Vector3&>(kStartPos));
-                m_arc.FUN_141479ed0(kStart, kGoalCopy, m_f224, m_f228);
-            }
-            m_pfnState = &CDropItem::FUN_141191d10;
-        }
-        else if (nState == 3)
-        {
-            NiPoint3 kPos = vfunc_18();
-            m_arc.m_origin = reinterpret_cast<Vector3&>(kPos);
-            egf::EntityID kKey;
-            if (FUN_141b6f910()->FUN_140999440(FUN_14123c460(kKey)))
-            {
-                egf::EntityID kKey2;
-                FUN_1409fae00(FUN_141b6f910()->FUN_140999440(FUN_14123c460(kKey2)), true);
-            }
-            if (!FUN_14118fea0())
-            {
-                if (reinterpret_cast<Unk_ItemEquipData*>(m_spItem->FUN_140527840())->FUN_14053c5c0() == 3)
-                {
-                    Unk_WsC_GameObj* pOwner = WorldService::GetInstance()->FUN_141bd1180(m_n188);
-                    const efd::ClassInfo* pInfo = pOwner ? pOwner->GetClassDesc() : 0;
-                    if (FUN_14087ddc0(pInfo, 0x6200004))
-                    {
-                        Unk_DropPickDlg* pDlg = FUN_140b624b0(0x4e32);
-                        if (pDlg)
-                            pDlg->FUN_141913060(pOwner, m_spItem->FUN_140526c50(), m_spItem->FUN_140528590());
-                    }
-                }
-            }
-            else
-            {
-                Unk_WsC_GameObj* pOwner = WorldService::GetInstance()->FUN_141bd1180(m_n188);
-                const efd::ClassInfo* pInfo = pOwner ? pOwner->GetClassDesc() : 0;
-                if (FUN_14087ddc0(pInfo, 0x6200004))
-                {
-                    Unk_DropPickDlg* pDlg = FUN_140b624b0(0x4e32);
-                    if (pDlg)
-                        pDlg->FUN_141912a80(pOwner, (int)m_n64Meso, 1);
-                }
-            }
-            m_pfnState = &CDropItem::FUN_1411920b0;
-        }
-        else if (nState == 4)
-        {
-            m_pfnState = &CDropItem::FUN_141192200;
-        }
-        else if (nState == 0)
-        {
-            m_n188 = 0;
-            m_pfnState = &CDropItem::FUN_141191a10;
-            NiTransform kXform;
-            NiPoint3 kPos = vfunc_18();
-            MakeXform(kXform, kPos);
-            Unk_EffectTarget kTarget;
-            kTarget.m_strName = CItemDataTable::GetInstance()->GetGradeEffect((ItemGradeKey)m_spItem->FUN_140526bd0());
-            kTarget.m_nKind = 0;
-            kTarget.m_pXform = &kXform;
-            m_nEffectIdA = FUN_1403ed280()->FUN_1411a49c0(kTarget);
-            if (m_spEffect->beEffect.GetLength() != 0)
-            {
-                Unk_EffectTarget kTargetB;
-                kTargetB.m_strName = m_spEffect->beEffect;
-                kTargetB.m_nKind = 0;
-                kTargetB.m_pXform = &kXform;
-                m_nEffectIdB = FUN_1403ed280()->FUN_1411a49c0(kTargetB);
-            }
-        }
-        else if (nState == 5)
-        {
-            m_fGrow = 0.0f;
-            NiPoint3 kPos = vfunc_18();
-            m_posGrow = reinterpret_cast<Vector3&>(kPos);
-            m_pfnState = &CDropItem::FUN_1411923a0;
-        }
-    }
-    else
+    if (nState == 1)
     {
         float fDropHeight = 0.0f;
         float fDropSpeed = 100.0f;
         float fDropBase = 50.0f;
         unsigned nDropRange = 100;
-        int nMapId = WorldService::GetInstance()->FUN_141bd3060();
-        if (nMapId == 0x4c4b404 || WorldService::GetInstance()->FUN_141bd3060() == 0x4c4b407)
+        if (WorldService::GetInstance()->FUN_141bd3060() == 0x4c4b404 || WorldService::GetInstance()->FUN_141bd3060() == 0x4c4b407)
         {
             fDropHeight = Client::Constants::GetInstance()->moneyTreeDropHeight.Read();
             fDropBase = Client::Constants::GetInstance()->moneyTreeDropBase.Read();
-            nDropRange = *Client::Constants::GetInstance()->moneyTreeDropRandom.Get();
+            nDropRange = Client::Constants::GetInstance()->moneyTreeDropRandom.Read();
         }
-        if (m_nNpcType == 0)
-        {
-            if (m_nDropKind == 0x21)
-            {
-                NiPoint3 kSelfPos = vfunc_18();
-                MS2Ptr<Unk_WsB_Prop> spProp = WorldService::GetInstance()->FUN_141bc6090(reinterpret_cast<Vector3&>(kSelfPos), 0);
-                Unk_WsB_Prop* pProp = spProp.get();
-                bool bProp = false;
-                if (pProp)
-                    bProp = pProp->GetRow().get() != 0;
-                if (bProp)
-                {
-                    if (pProp->GetRow()->m_drop.m_nDropHeight != 0)
-                        fDropHeight = (float)pProp->GetRow()->m_drop.m_nDropHeight;
-                    if (pProp->GetRow()->m_drop.m_nDropDistance != 0)
-                        fDropBase = (float)pProp->GetRow()->m_drop.m_nDropDistance;
-                }
-            }
-        }
-        else
+        if (m_nNpcType != 0)
         {
             MS2Ptr<CNpcData> spNpc = FUN_1406cd330(m_nNpcType);
             fDropHeight = spNpc->m_drop.m_fDropHeight;
@@ -592,13 +462,25 @@ void CDropItem::FUN_14118d9a0(int nState)
                 nDropRange = spNpc->m_drop.m_nDropDistanceRandom;
             fDropSpeed = spNpc->m_drop.m_fFireVelocity;
         }
-        NiPoint3 kSelfPos = vfunc_18();
-        Vector3 kSelf(reinterpret_cast<Vector3&>(kSelfPos));
-        m_posOrigin = kSelf.FUN_140965c40(Vector3(0.0f, 0.0f, 70.0f));
+        else if (m_nDropKind == 0x21)
+        {
+            efd::Point3 kSelfPos = vfunc_18();
+            Unk_WsB_Prop* pProp = WorldService::GetInstance()->FUN_141bc6090(reinterpret_cast<Vector3&>(kSelfPos), 0);
+            bool bProp = pProp && (pProp->GetRow().get() ? true : false);
+            if (bProp)
+            {
+                if (pProp->GetRow()->m_drop.m_nDropHeight != 0)
+                    fDropHeight = (float)pProp->GetRow()->m_drop.m_nDropHeight;
+                if (pProp->GetRow()->m_drop.m_nDropDistance != 0)
+                    fDropBase = (float)pProp->GetRow()->m_drop.m_nDropDistance;
+            }
+        }
+        NiPoint3 kSelf = vfunc_18();
+        m_posOrigin = reinterpret_cast<Vector3&>(kSelf).FUN_140965c40(Vector3(0.0f, 0.0f, 70.0f));
         kSelf.z += fDropHeight;
         if (FUN_14118ffb0())
         {
-            kSelf = m_posOrigin;
+            reinterpret_cast<Vector3&>(kSelf) = m_posOrigin;
             if (m_n298 != 0)
             {
                 Unk_EffectTarget kTarget;
@@ -606,106 +488,117 @@ void CDropItem::FUN_14118d9a0(int nState)
                 kTarget.m_nKind = 0;
                 kTarget.FUN_140a53190(FUN_14123c580());
                 FUN_1403ed280()->FUN_1411a4a00(kTarget);
-                int nNow = FUN_140869420();
-                m_nFadeTime = nNow + *Client::Constants::GetInstance()->PetTrapDropVisibleDelay.Get();
+                m_nFadeTime = FUN_140869420() + *Client::Constants::GetInstance()->PetTrapDropVisibleDelay.Get();
                 vfunc_23(1);
             }
         }
-        if (m_nFadeTime == 0 && m_spShadow)
+        if (m_nFadeTime == 0 && (CObjectShadow*)m_spShadow != 0)
         {
             m_spShadow->FUN_14160fe10(true);
             vfunc_32(true);
         }
         vfunc_19(reinterpret_cast<efd::Point3&>(kSelf));
-        NiPoint3 kBasePos = vfunc_18();
-        Vector3 kBase(reinterpret_cast<Vector3&>(kBasePos));
+        NiPoint3 kBase = static_cast<const efd::Point3&>(vfunc_18());
         kBase.z += 85.0f;
-        int nObjectId = FUN_14123c580();
-        Unk_Random kRand(nObjectId, nObjectId + 0x7fff, nObjectId * 0x7fff);
+        Unk_Random kRand(FUN_14123c580(), FUN_14123c580() + 0x7fff, FUN_14123c580() * 0x7fff);
         NiPoint3 kTargetPos;
         Unk_WsC_GameObj* pSource = WorldService::GetInstance()->FUN_141bd1290(m_nOwnerObjId);
         Unk_WsC_GameObj* pNpcObj = WorldService::GetInstance()->FUN_141bd1320(m_nOwnerObjId);
-        if (m_n28c == 0)
+        if (m_n28c != 0)
         {
-            if (!pSource || !FUN_14118fea0())
+            NiPoint3 kSelfNow = vfunc_18();
+            Vector3 kTarget = reinterpret_cast<Vector3&>(kSelfNow).FUN_14097fd50(DAT_143a08d08);
+            kTargetPos = reinterpret_cast<const efd::Point3&>(kTarget);
+        }
+        else if (pSource && FUN_14118fea0())
+        {
+            Vector3 kForward, kSide;
+            pSource->vfunc_67(&kForward, &kSide);
+            kForward.z = 0.0f;
+            Vector3 kTarget = reinterpret_cast<Vector3&>(kBase).FUN_140965c40(kForward.FUN_14097fc90(50.0f));
+            kTargetPos = reinterpret_cast<const efd::Point3&>(kTarget);
+        }
+        else if (pNpcObj && FUN_14118ff60())
+        {
+            Unk_WsC_GameObj* pOwnerPc = WorldService::GetInstance()->FUN_141bd1530(FUN_1411910e0());
+            Unk_GoAttachment* pAttach = pNpcObj->vfunc_26();
+            if (pAttach && FUN_140184310(static_cast<CNpc*>(static_cast<GameObject*>(pNpcObj))->GetNpcData()->m_collision.m_strShape, "box") && pOwnerPc)
             {
-                if (!pNpcObj || !FUN_14118ff60())
+                NxVec3 kCenter = pAttach->m_box.GetCenter();
+                kBase = NiPoint3(kCenter.x, kCenter.y, kCenter.z);
+                vfunc_19(kBase);
+                float fDistance = fDropBase + (float)(kRand.FUN_1407684c0() % nDropRange);
+                m_f27c = FUN_140966f00(m_posOrigin, kTargetPos);
+#ifdef __clang__
+                NiPoint3 kOwnerPos = pOwnerPc->vfunc_18();
+                const Vector3& kDirRaw = FUN_141192780(reinterpret_cast<Vector3&>(kBase), reinterpret_cast<Vector3&>(kOwnerPos), true);
+                NiPoint3 kDir = reinterpret_cast<const efd::Point3&>(kDirRaw);
+#else
+                NiPoint3 kDir = reinterpret_cast<const efd::Point3&>(FUN_141192780(Vector3(reinterpret_cast<Vector3&>(kBase)), reinterpret_cast<Vector3&>(pOwnerPc->vfunc_18()), true));
+#endif
+                if (reinterpret_cast<Vector3&>(kDir).FUN_140552690(DAT_143b01a60))
                 {
-                    efd::Matrix3 kRot;
-                    kRot.MakeZRotation(((float)(kRand.FUN_1407684c0() % 0x168) * 3.1415927f) / 180.0f);
-                    efd::Point3 kDirection = efd::Point3::UNIT_Y * kRot;
-                    Vector3 kDir(reinterpret_cast<Vector3&>(kDirection));
-                    float fDistance = fDropBase + (float)(kRand.FUN_1407684c0() % nDropRange);
-                    Vector3 kTarget = kBase.FUN_14097fd50(kDir.FUN_14097fc90(fDistance));
-                    kTargetPos = reinterpret_cast<NiPoint3&>(kTarget);
-                    m_f27c = FUN_140966f00(m_posOrigin, reinterpret_cast<Vector3&>(kTargetPos));
+                    kDir.y = ((float)(kRand.FUN_1407684c0() % 0x168) * 3.1415927f) / 180.0f + 1.0f;
+                    reinterpret_cast<Vector3&>(kDir).FUN_140968990();
                 }
-                else
-                {
-                    unsigned __int64 nOwnerUid = FUN_1411910e0();
-                    Unk_WsC_GameObj* pOwnerPc = WorldService::GetInstance()->FUN_141bd1530(nOwnerUid);
-                    Unk_GoAttachment* pAttach = pNpcObj->vfunc_26();
-                    bool bBox = false;
-                    if (pAttach)
-                    {
-                        MS2Ptr<CNpcData> spNpc = static_cast<CNpc*>(static_cast<GameObject*>(pNpcObj))->GetNpcData();
-                        if (FUN_140184310(spNpc->m_collision.m_strShape, "box") && pOwnerPc)
-                            bBox = true;
-                    }
-                    if (bBox)
-                    {
-                        kBase = pAttach->m_pos;
-                        vfunc_19(reinterpret_cast<efd::Point3&>(kBase));
-                        float fDistance = fDropBase + (float)(kRand.FUN_1407684c0() % nDropRange);
-                        m_f27c = FUN_140966f00(m_posOrigin, reinterpret_cast<Vector3&>(kTargetPos));
-                        NiPoint3 kOwnerPos = pOwnerPc->vfunc_18();
-                        Vector3 kDir = FUN_141192780(kBase, reinterpret_cast<Vector3&>(kOwnerPos), true);
-                        if (kDir.FUN_140552690(DAT_143b01a60))
-                        {
-                            kDir.y = ((float)(kRand.FUN_1407684c0() % 0x168) * 3.1415927f) / 180.0f + 1.0f;
-                            kDir.FUN_140968990();
-                        }
-                        Vector3 kTarget = kBase.FUN_14097fd50(kDir.FUN_14097fc90(fDistance));
-                        kTargetPos = reinterpret_cast<NiPoint3&>(kTarget);
-                    }
-                }
-            }
-            else
-            {
-                Vector3 kForward, kSide;
-                pSource->vfunc_67(&kForward, &kSide);
-                kForward.z = 0.0f;
-                Vector3 kTarget = kBase.FUN_140965c40(kForward.FUN_14097fc90(50.0f));
-                kTargetPos = reinterpret_cast<NiPoint3&>(kTarget);
+                Vector3 kTarget = reinterpret_cast<Vector3&>(kBase).FUN_14097fd50(reinterpret_cast<Vector3&>(kDir).FUN_14097fc90(fDistance));
+                kTargetPos = reinterpret_cast<const efd::Point3&>(kTarget);
             }
         }
         else
         {
-            NiPoint3 kSelfNow = vfunc_18();
-            Vector3 kTarget = reinterpret_cast<Vector3&>(kSelfNow).FUN_14097fd50(DAT_143a08d08);
-            kTargetPos = reinterpret_cast<NiPoint3&>(kTarget);
+            NiMatrix3 kRot;
+            kRot.MakeZRotation(((float)(kRand.FUN_1407684c0() % 0x168) * 3.1415927f) / 180.0f);
+            NiPoint3 kDir = efd::Point3::UNIT_Y * kRot;
+            float fDistance = fDropBase + (float)(kRand.FUN_1407684c0() % nDropRange);
+            Vector3 kTarget = reinterpret_cast<Vector3&>(kBase).FUN_14097fd50(reinterpret_cast<Vector3&>(kDir).FUN_14097fc90(fDistance));
+            kTargetPos = reinterpret_cast<const efd::Point3&>(kTarget);
+            m_f27c = FUN_140966f00(m_posOrigin, kTargetPos);
         }
         NxGroupsMask kMask;
         kMask.bits0 = 0xffffffff;
-        kMask.bits1 = 0;
-        kMask.bits2 = 0;
-        kMask.bits3 = 0;
+        kMask.bits1 = kMask.bits2 = kMask.bits3 = 0;
         NiPoint3 kHit;
-        float fGravity = -15.0f - (float)(kRand.FUN_1407684c0() % 0x19);
+        int nGravityJitter = kRand.FUN_1407684c0() % 0x19;
+        float fGravity = -15.0f - (float)nGravityJitter;
         float fProbe = fDropHeight + 85.0f + 100.0f;
-        if (!FUN_14147a500(&reinterpret_cast<Vector3&>(kHit), &kBase, &reinterpret_cast<Vector3&>(kTargetPos), 1, fProbe, &kMask))
+        if (FUN_14147a500(&reinterpret_cast<Vector3&>(kHit), reinterpret_cast<Vector3&>(kBase), reinterpret_cast<Vector3&>(kTargetPos), true, fProbe, &kMask))
+        {
+            kHit.z += m_spEffect->unknown1c;
+#ifdef __clang__
+            NiPoint3 kStartPos = vfunc_18();
+            m_arc.FUN_141479ed0(reinterpret_cast<Vector3&>(kStartPos), reinterpret_cast<Vector3&>(kHit), fDropSpeed, fGravity);
+#else
+            m_arc.FUN_141479ed0(reinterpret_cast<Vector3&>(vfunc_18()), Vector3(reinterpret_cast<Vector3&>(kHit)), fDropSpeed, fGravity);
+#endif
+        }
+        else
         {
             Unk_RayCastInfo kInfo;
-            kInfo.m_origin = kBase;
+            kInfo.m_origin = reinterpret_cast<Vector3&>(kBase);
             kInfo.m_dir = DAT_143a08cf8.FUN_1409f7960();
             kInfo.m_maxDist = 0.0f;
             kInfo.m_groups = 0x389;
-            if (!FUN_1409f7ca0()->CastRay(&kInfo, &kMask))
+            if (FUN_1409f7ca0()->CastRay(&kInfo, &kMask))
+            {
+                kHit = reinterpret_cast<const efd::Point3&>(kInfo.m_hitPoint);
+                kHit.z += m_spEffect->unknown1c;
+                NiPoint3 kHere = vfunc_18();
+                m_arc.m_origin = reinterpret_cast<Vector3&>(kHere);
+                m_arc.m_direction = DAT_143b01a60;
+                m_arc.m_target = reinterpret_cast<Vector3&>(kHit);
+                m_arc.m_gravity = -9.8f;
+                m_arc.m_flightScale = 5.0f;
+                m_arc.m_angle.m_cos = 0.0f;
+                m_arc.m_angle.m_sin = 0.0f;
+                m_arc.m_speed = fDropSpeed;
+            }
+            else
             {
                 int nFound = 0;
                 float aSideX[4] = { 1.0f, -1.0f, -1.0f, 1.0f };
                 float aSideY[4] = { 1.0f, 1.0f, -1.0f, -1.0f };
-                for (int i = 0; i < 4; ++i)
+                for (size_t i = 0; i < 4; ++i)
                 {
                     Vector3 kSide;
                     kSide.x = aSideX[i];
@@ -713,9 +606,7 @@ void CDropItem::FUN_14118d9a0(int nState)
                     kSide.FUN_140968990();
                     NxGroupsMask kMaskSide;
                     kMaskSide.bits0 = 0xffffffff;
-                    kMaskSide.bits1 = 0;
-                    kMaskSide.bits2 = 0;
-                    kMaskSide.bits3 = 0;
+                    kMaskSide.bits1 = kMaskSide.bits2 = kMaskSide.bits3 = 0;
                     Unk_RayCastInfo kInfoSide;
                     Vector3 kOffset = kSide.FUN_14097fc90(150.0f).FUN_14097fc90(0.5f);
                     NiPoint3 kHere = vfunc_18();
@@ -723,14 +614,19 @@ void CDropItem::FUN_14118d9a0(int nState)
                     kInfoSide.m_dir = DAT_143a08cf8.FUN_1409f7960();
                     kInfoSide.m_maxDist = 0.0f;
                     kInfoSide.m_groups = 0x389;
-                    if (!FUN_1409f7ca0()->CastRay(&kInfoSide, &kMaskSide))
-                        continue;
-                    reinterpret_cast<Vector3&>(kHit) = kInfoSide.m_hitPoint;
-                    kHit.z += m_spEffect->unknown1c;
-                    NiPoint3 kStartPos = vfunc_18();
-                    m_arc.FUN_141479ed0(reinterpret_cast<Vector3&>(kStartPos), reinterpret_cast<Vector3&>(kHit), fDropSpeed, fGravity);
-                    nFound = 1;
-                    break;
+                    if (FUN_1409f7ca0()->CastRay(&kInfoSide, &kMaskSide))
+                    {
+                        kHit = reinterpret_cast<const efd::Point3&>(kInfoSide.m_hitPoint);
+                        kHit.z += m_spEffect->unknown1c;
+#ifdef __clang__
+                        NiPoint3 kStartPos = vfunc_18();
+                        m_arc.FUN_141479ed0(reinterpret_cast<Vector3&>(kStartPos), reinterpret_cast<Vector3&>(kHit), fDropSpeed, fGravity);
+#else
+                        m_arc.FUN_141479ed0(reinterpret_cast<Vector3&>(vfunc_18()), Vector3(reinterpret_cast<Vector3&>(kHit)), fDropSpeed, fGravity);
+#endif
+                        nFound = 1;
+                        break;
+                    }
                 }
                 if (nFound == 0)
                 {
@@ -749,26 +645,6 @@ void CDropItem::FUN_14118d9a0(int nState)
                     return;
                 }
             }
-            else
-            {
-                reinterpret_cast<Vector3&>(kHit) = kInfo.m_hitPoint;
-                kHit.z += m_spEffect->unknown1c;
-                NiPoint3 kHere = vfunc_18();
-                m_arc.m_origin = reinterpret_cast<Vector3&>(kHere);
-                m_arc.m_direction = DAT_143b01a60;
-                m_arc.m_target = reinterpret_cast<Vector3&>(kHit);
-                m_arc.m_gravity = -9.8f;
-                m_arc.m_flightScale = 5.0f;
-                m_arc.m_angle.m_cos = 0.0f;
-                m_arc.m_angle.m_sin = 0.0f;
-                m_arc.m_speed = fDropSpeed;
-            }
-        }
-        else
-        {
-            kHit.z += m_spEffect->unknown1c;
-            NiPoint3 kStartPos = vfunc_18();
-            m_arc.FUN_141479ed0(reinterpret_cast<Vector3&>(kStartPos), reinterpret_cast<Vector3&>(kHit), fDropSpeed, fGravity);
         }
         if (250.0f < m_arc.m_target.z - m_posOrigin.z)
         {
@@ -778,14 +654,105 @@ void CDropItem::FUN_14118d9a0(int nState)
         if (m_spItem.get())
         {
             NiTransform kXform;
-            NiPoint3 kPos = vfunc_18();
-            MakeXform(kXform, kPos);
+            kXform.m_fScale = 1.0f;
+            kXform.m_Translate = static_cast<const efd::Point3&>(vfunc_18());
+            kXform.m_Rotate = DAT_143a09600;
             int nKind = WorldService::GetInstance()->FUN_141bd19d0(m_nOwnerObjId);
             CString strSound = m_spEffect->dropSoundID;
             if (!strSound.IsEmpty())
                 FUN_1403ed280()->FUN_1411a5110(CString("ms2sound/sound/item"), CString(strSound), CString(""), nKind, &kXform, 1.0f, 0);
         }
         m_pfnState = &CDropItem::FUN_141191780;
+    }
+    else if (nState == 2)
+    {
+        if (m_nEffectIdA != 0)
+            FUN_1403ed280()->FUN_1411a6060(m_nEffectIdA);
+        if (m_nEffectIdB != 0)
+            FUN_1403ed280()->FUN_1411a6060(m_nEffectIdB);
+        Unk_WsC_GameObj* pOwner = WorldService::GetInstance()->FUN_141bd1180(m_n278);
+        if (!pOwner)
+            pOwner = WorldService::GetInstance()->FUN_141bd1180(m_n188);
+        if (pOwner)
+        {
+            m_posGround = static_cast<const efd::Point3&>(pOwner->vfunc_18());
+            NiPoint3 kGoal = static_cast<const efd::Point3&>(pOwner->vfunc_18());
+            kGoal.z += m_f218;
+            unsigned nHalf = (unsigned)(__int64)m_f224 >> 1;
+            int nRandom = FUN_140768010(nHalf, 0);
+            m_f224 = (float)(nRandom + nHalf);
+            Vector3 kGoalCopy(reinterpret_cast<Vector3&>(kGoal));
+#ifdef __clang__
+            NiPoint3 kStart = vfunc_18();
+            m_arc.FUN_141479ed0(reinterpret_cast<Vector3&>(kStart), kGoalCopy, m_f224, m_f228);
+#else
+            m_arc.FUN_141479ed0(reinterpret_cast<Vector3&>(vfunc_18()), kGoalCopy, m_f224, m_f228);
+#endif
+        }
+        m_pfnState = &CDropItem::FUN_141191d10;
+    }
+    else if (nState == 3)
+    {
+        NiPoint3 kPos = vfunc_18();
+        m_arc.m_origin = reinterpret_cast<Vector3&>(kPos);
+        if (FUN_141b6f910()->FUN_140999440(FUN_14123c460()))
+            FUN_1409fae00(FUN_141b6f910()->FUN_140999440(FUN_14123c460()), true);
+        if (FUN_14118fea0())
+        {
+            Unk_WsC_GameObj* pOwner = WorldService::GetInstance()->FUN_141bd1180(m_n188);
+            const efd::ClassInfo* pInfo = pOwner ? pOwner->GetClassDesc() : 0;
+            if (FUN_14087ddc0(pInfo, 0x6200004))
+            {
+                Unk_DropPickDlg* pDlg = FUN_140b624b0(0x4e32);
+                if (pDlg)
+                    pDlg->FUN_141912a80(pOwner, (int)m_n64Meso, 1);
+            }
+        }
+        else if (reinterpret_cast<Unk_ItemEquipData*>(m_spItem->FUN_140527840())->FUN_14053c5c0() == 3)
+        {
+            Unk_WsC_GameObj* pOwner = WorldService::GetInstance()->FUN_141bd1180(m_n188);
+            const efd::ClassInfo* pInfo = pOwner ? pOwner->GetClassDesc() : 0;
+            if (FUN_14087ddc0(pInfo, 0x6200004))
+            {
+                Unk_DropPickDlg* pDlg = FUN_140b624b0(0x4e32);
+                if (pDlg)
+                    pDlg->FUN_141913060(pOwner, m_spItem->FUN_140526c50(), m_spItem->FUN_140528590());
+            }
+        }
+        m_pfnState = &CDropItem::FUN_1411920b0;
+    }
+    else if (nState == 4)
+    {
+        m_pfnState = &CDropItem::FUN_141192200;
+    }
+    else if (nState == 0)
+    {
+        m_n188 = 0;
+        m_pfnState = &CDropItem::FUN_141191a10;
+        NiTransform kXform;
+        kXform.m_fScale = 1.0f;
+        kXform.m_Translate = static_cast<const efd::Point3&>(vfunc_18());
+        kXform.m_Rotate = DAT_143a09600;
+        Unk_EffectTarget kTarget;
+        kTarget.m_strName = CItemDataTable::GetInstance()->GetGradeEffect((ItemGradeKey)m_spItem->FUN_140526bd0());
+        kTarget.m_nKind = 0;
+        kTarget.m_pXform = &kXform;
+        m_nEffectIdA = FUN_1403ed280()->FUN_1411a49c0(kTarget);
+        if (m_spEffect->beEffect.GetLength() != 0)
+        {
+            Unk_EffectTarget kTargetB;
+            kTargetB.m_strName = m_spEffect->beEffect;
+            kTargetB.m_nKind = 0;
+            kTargetB.m_pXform = &kXform;
+            m_nEffectIdB = FUN_1403ed280()->FUN_1411a49c0(kTargetB);
+        }
+    }
+    else if (nState == 5)
+    {
+        m_fGrow = 0.0f;
+        NiPoint3 kPos = vfunc_18();
+        m_posGrow = reinterpret_cast<Vector3&>(kPos);
+        m_pfnState = &CDropItem::FUN_1411923a0;
     }
     if (!FUN_1411905a0())
     {
@@ -856,7 +823,7 @@ int CDropItem::FUN_141190120(const efd::Point3& kPos, int nA, int nB)
         {
             if (!FUN_141191060())
                 return 0;
-            if (FUN_140869420() < m_n294)
+            if (FUN_140869420() < m_nFadeTime)
                 return 0;
             if (FUN_1409331e0()->FUN_14138c900(7))
                 return 0;
@@ -1018,62 +985,64 @@ void CDropItem::SendRequestItemPickup(int nPickerId)
 
 // Asks the server to pick the drop up, with the inventory and block checks first.
 // @0x141190900
+// MS2-FUNCTIONAL: instruction and call stream identical to the exe; the stack slots differ (frame 0x88 vs 0x78)
 void CDropItem::FUN_141190900(int nPickerId)
 {
-    if (!FUN_1411900d0())
+    if (FUN_1411900d0())
+        return;
+    if (m_spItem->FUN_140525980() || FUN_14053f900(m_spItem->FUN_1405276c0()))
     {
-        if (!m_spItem->FUN_140525980())
-        {
-            if (!FUN_14053f900(m_spItem->FUN_1405276c0()))
-            {
-                BlockPtr spBlock = FUN_140a6a830()->FindBlockedAction(0x13);
-                if (spBlock.get())
-                {
-                    static Unk_DropPickTick s_kNoticeTick;
-                    if (s_kNoticeTick.FUN_140268870(5000) == 1)
-                        FUN_1412751b0(FUN_1401ca400(spBlock, 0x20), 0x14);
-                    FUN_1411911a0();
-                    return;
-                }
-                if (DAT_143ab2a90.FUN_140a61430(DAT_143ab2a90.FUN_140a617f0(m_spItem)))
-                {
-                    SendRequestItemPickup(nPickerId);
-                    return;
-                }
-                if (!FUN_1411906a0())
-                {
-                    FUN_141275260(0x43, 1, 1);
-                    FUN_141276180(s_strWarningBag, CString(""));
-                    FUN_1411911a0();
-                }
-                SendRequestItemPickup(nPickerId);
-                return;
-            }
-        }
         SendRequestItemPickup(nPickerId);
+        return;
     }
+    {
+        BlockPtr spBlock = FUN_140a6a830()->FindBlockedAction(0x13);
+        if (spBlock.get())
+        {
+            static Unk_DropPickTick s_kNoticeTick;
+            if (s_kNoticeTick.FUN_140268870(5000) == 1)
+            {
+                CStringW strNotice = FUN_1401ca400(spBlock, 0x20);
+                FUN_1412751b0(strNotice, 0x14);
+            }
+            FUN_1411911a0();
+            return;
+        }
+    }
+    if (DAT_143ab2a90.FUN_140a61430(DAT_143ab2a90.FUN_140a617f0(m_spItem)))
+    {
+        SendRequestItemPickup(nPickerId);
+        return;
+    }
+    if (!FUN_1411906a0())
+    {
+        FUN_141275260(0x43, 1, 1);
+        FUN_141276180(s_strWarningBag, CString(""));
+        FUN_1411911a0();
+    }
+    SendRequestItemPickup(nPickerId);
 }
 
 // The drop was picked up by the actor nPickerId: sound, pickup notices, then the fly-to-owner state.
+
 // @0x141190b70
 void CDropItem::FUN_141190b70(int nPickerId)
 {
     GameObject* pPicker = FUN_14096e160(WorldService::GetInstance()->FUN_141bd1200(nPickerId));
     if (pPicker)
     {
-        bool bHasItem = m_spItem.get() != 0;
-        if (bHasItem)
+        if (m_spItem.get() ? true : false)
         {
-            bool bHasEffect = m_spEffect.get() != 0;
-            if (bHasEffect)
+            if (m_spEffect.get() ? true : false)
             {
                 NiTransform kXform;
-                NiPoint3 kPos = pPicker->vfunc_18();
-                MakeXform(kXform, kPos);
+                kXform.m_fScale = 1.0f;
+                kXform.m_Translate = static_cast<const efd::Point3&>(pPicker->vfunc_18());
+                kXform.m_Rotate = DAT_143a09600;
                 CString strSound = m_spEffect->getSoundID;
                 if (!strSound.IsEmpty())
                     FUN_1403ed280()->FUN_1411a5110(CString("ms2sound/sound/item"), CString(strSound), CString(""), 1, &kXform, 1.0f, 0);
-                if (0 < m_spItem->FUN_140526bd0())
+                if (m_spItem->FUN_140526bd0() >= 1)
                 {
                     if (m_spItem->FUN_1405258f0() == 0)
                     {
@@ -1208,8 +1177,7 @@ void CDropItem::vfunc_53(float fTime)
     {
         if (m_nFadeTime == 0)
         {
-            unsigned int nNow = FUN_140869420();
-            m_nFadeTime = nNow + *Client::Constants::GetInstance()->PetTrapDropVisibleDelay.Get();
+            m_nFadeTime = FUN_140869420() + *Client::Constants::GetInstance()->PetTrapDropVisibleDelay.Get();
             vfunc_23(1);
             return;
         }
@@ -1222,40 +1190,37 @@ void CDropItem::vfunc_53(float fTime)
         FUN_14118d9a0(1);
     }
     Unk_WsC_GameObj* pOwner = WorldService::GetInstance()->FUN_141bd1180(m_n188);
-    if (!FUN_1411900d0() || pOwner)
-    {
-        if (m_pfnState)
-        {
-            GameObject* pTarget = WorldService::GetInstance()->FUN_141bd1180(m_n278);
-            if (!pTarget)
-                pTarget = pOwner;
-            m_fSpawnTime += fTime;
-            (this->*m_pfnState)(fTime, pTarget);
-        }
-    }
-    else
+    if (FUN_1411900d0() && !pOwner)
         WorldService::GetInstance()->FUN_141bbb7f0(this, 0);
+    else if (m_pfnState)
+    {
+        GameObject* pTarget = WorldService::GetInstance()->FUN_141bd1180(m_n278);
+        if (!pTarget)
+            pTarget = pOwner;
+        m_fSpawnTime += fTime;
+        (this->*m_pfnState)(fTime, pTarget);
+    }
 }
 
 // State 1: flies out of the source along the arc.
 // @0x141191780
 void CDropItem::FUN_141191780(double fTime, GameObject* pTarget)
 {
-    if (m_fElapsed <= m_arc.m_flightScale)
+    bool bArrived = m_fElapsed > m_arc.m_flightScale;
+    if (bArrived)
+    {
+        FUN_14118d9a0(0);
+        vfunc_19(reinterpret_cast<efd::Point3&>(m_arc.m_target));
+    }
+    else
     {
         m_fElapsed += (float)fTime * 10.0f;
         Vector3 kOffset = FUN_1409ab5c0(m_arc.m_speed * m_arc.m_angle.m_cos * m_fElapsed, m_arc.m_direction);
-        kOffset.z = m_arc.m_gravity * 0.5f * m_fElapsed * m_fElapsed + m_arc.m_speed * m_arc.m_angle.m_sin * m_fElapsed;
+        kOffset.z = 0.5f * m_arc.m_gravity * m_fElapsed * m_fElapsed + m_arc.m_speed * m_arc.m_angle.m_sin * m_fElapsed;
         Vector3 kPos = m_arc.m_origin.FUN_14097fd50(kOffset);
         vfunc_19(reinterpret_cast<efd::Point3&>(kPos));
         if (m_spItem.get())
             FUN_1411925e0(m_spEffect->dropAni, m_spEffect->dropAniSpeed);
-    }
-    else
-    {
-        FUN_14118d9a0(0);
-        Vector3 kTarget = m_arc.m_target;
-        vfunc_19(reinterpret_cast<efd::Point3&>(kTarget));
     }
 }
 
@@ -1263,24 +1228,26 @@ void CDropItem::FUN_141191780(double fTime, GameObject* pTarget)
 // @0x141191a10
 void CDropItem::FUN_141191a10(double fTime, GameObject* pTarget)
 {
-    if (m_spItem.get())
+    if (m_spItem.get() ? true : false)
     {
         if (m_spItem->FUN_140527840())
         {
             m_fElapsed += (float)fTime;
             if (0.0f < m_spEffect->bouncePeriod)
             {
-                if (m_spEffect->bouncePeriod < m_fElapsed)
+                if (m_fElapsed > m_spEffect->bouncePeriod)
                     m_fElapsed = 0.0f;
-                float fSin = sinf((m_fElapsed * 3.1415927f * 2.0f) / m_spEffect->bouncePeriod);
-                Vector3 kOffset(0.0f, 0.0f, m_spEffect->bounceHeight * fSin * -1.0f * 0.5f);
-                Vector3 kPos = m_arc.m_target.FUN_14097fd50(kOffset);
+                float fPhase = m_fElapsed * 3.1415927f * 2.0f;
+                float fSin = -1.0f * __imp_sinf(fPhase / m_spEffect->bouncePeriod) * 0.5f;
+                float fZ = m_spEffect->bounceHeight * fSin;
+#ifdef __clang__
+                Vector3 kPos = m_arc.m_target.FUN_14097fd50(Vector3(0.0f, 0.0f, fZ));
                 vfunc_19(reinterpret_cast<efd::Point3&>(kPos));
+#else
+                vfunc_19(reinterpret_cast<efd::Point3&>(m_arc.m_target.FUN_14097fd50(Vector3(0.0f, 0.0f, fZ))));
+#endif
             }
-            NiPoint3 kSelf = vfunc_18();
-            Vector3 kHere(reinterpret_cast<Vector3&>(kSelf));
-            Vector3 kOrigin(m_posOrigin);
-            m_f27c = FUN_140966f00(kOrigin, kHere) + 10.0f;
+            m_f27c = FUN_140966f00(m_posOrigin, vfunc_18()) + 10.0f;
         }
     }
     if (m_spItem.get())
@@ -1291,29 +1258,35 @@ void CDropItem::FUN_141191a10(double fTime, GameObject* pTarget)
 // @0x141191d10
 void CDropItem::FUN_141191d10(double fTime, GameObject* pTarget)
 {
-    NiPoint3 kTargetPos = pTarget->vfunc_18();
-    Vector3 kGoal(reinterpret_cast<Vector3&>(kTargetPos));
+    Vector3 kGoal(pTarget->vfunc_18());
     kGoal.z += m_f218;
-    if (m_fElapsed <= m_arc.m_flightScale)
+    bool bArrived = m_fElapsed > m_arc.m_flightScale;
+    if (bArrived)
+        FUN_14118d9a0(3);
+    else
     {
         m_fElapsed += (float)fTime * 10.0f;
+#ifdef __clang__
         NiPoint3 kNow = pTarget->vfunc_18();
-        Vector3 kTo(reinterpret_cast<Vector3&>(kNow));
-        Vector3 kFrom(m_arc.m_origin);
-        Vector3 kDir = FUN_141192780(kFrom, kTo, true);
-        Vector3 kDirCopy(kDir);
+        Vector3 kDir = FUN_141192780(Vector3(m_arc.m_origin), reinterpret_cast<Vector3&>(kNow), true);
+#else
+        Vector3 kDir(reinterpret_cast<const efd::Point3&>(FUN_141192780(m_arc.m_origin, reinterpret_cast<Vector3&>(pTarget->vfunc_18()), true)));
+#endif
         Vector3 kOffset = FUN_1409ab5c0(m_arc.m_speed * m_arc.m_angle.m_cos * m_fElapsed, m_arc.m_direction);
-        kOffset.z = m_arc.m_gravity * 0.5f * m_fElapsed * m_fElapsed + m_arc.m_speed * m_arc.m_angle.m_sin * m_fElapsed;
+        kOffset.z = 0.5f * m_arc.m_gravity * m_fElapsed * m_fElapsed + m_arc.m_speed * m_arc.m_angle.m_sin * m_fElapsed;
+#ifdef __clang__
         NiPoint3 kPull = pTarget->vfunc_18();
-        Vector3 kDrift(reinterpret_cast<Vector3&>(kPull).FUN_140965c40(reinterpret_cast<Vector3&>(m_posGround)));
-        kOffset.FUN_140a4e560(kDrift);
+        kOffset.FUN_140a4e560(reinterpret_cast<Vector3&>(kPull).FUN_140965c40(reinterpret_cast<Vector3&>(m_posGround)));
         Vector3 kPos = m_arc.m_origin.FUN_14097fd50(kOffset);
         vfunc_19(reinterpret_cast<efd::Point3&>(kPos));
+#else
+        Vector3 kDrift(reinterpret_cast<const efd::Point3&>(reinterpret_cast<Vector3&>(pTarget->vfunc_18()).FUN_140965c40(reinterpret_cast<Vector3&>(m_posGround))));
+        kOffset.FUN_140a4e560(kDrift);
+        vfunc_19(reinterpret_cast<efd::Point3&>(m_arc.m_origin.FUN_14097fd50(kOffset)));
+#endif
         if (m_spItem.get())
             FUN_1411925e0(m_spEffect->getAni, m_spEffect->getAniSpeed);
     }
-    else
-        FUN_14118d9a0(3);
 }
 
 // State 3: hovers over the owner for the rotate time.
@@ -1359,18 +1332,22 @@ void CDropItem::FUN_1411923a0(double fTime, GameObject* pTarget)
     static float s_fFailTime = Client::Constants::GetInstance()->DropItemPickFailTime.Read();
     static float s_fFailHeight = Client::Constants::GetInstance()->DropItemPickFailHeight.Read();
     float fRatio = m_fGrow / s_fFailTime;
-    if (fRatio < 1.0f)
-    {
-        float fSin = sinf(fRatio * 3.1415927f);
-        Vector3 kOffset(0.0f, 0.0f, fSin * s_fFailHeight);
-        Vector3 kPos = m_posGrow.FUN_14097fd50(kOffset);
-        vfunc_19(reinterpret_cast<efd::Point3&>(kPos));
-    }
-    else
+    if (fRatio >= 1.0f)
     {
         m_fGrow = 0.0f;
         m_nState = 0;
         m_pfnState = &CDropItem::FUN_141191a10;
+    }
+    else
+    {
+        float fPhase = 3.1415927f * fRatio;
+        float fZ = __imp_sinf(fPhase) * s_fFailHeight;
+#ifdef __clang__
+        Vector3 kPos = m_posGrow.FUN_14097fd50(Vector3(0.0f, 0.0f, fZ));
+        vfunc_19(reinterpret_cast<efd::Point3&>(kPos));
+#else
+        vfunc_19(reinterpret_cast<efd::Point3&>(m_posGrow.FUN_14097fd50(Vector3(0.0f, 0.0f, fZ))));
+#endif
     }
 }
 

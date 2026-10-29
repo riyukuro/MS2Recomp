@@ -30,6 +30,7 @@ public:
     void FUN_14135fdb0(UIWorldShareInfoEventListener* pListener);   // remove
 private:
     MS2_LAYOUT_FRIEND;
-    ATL::CAtlArray<void*> m_listeners;                      // +0x08 the registered UIWorldShareInfoEventListener*
+    // A typed element (not void*): ATL passes non-primitive elements to Add by const& (lea rdx), as the exe does.
+    ATL::CAtlArray<UIWorldShareInfoEventListener*> m_listeners; // +0x08 the registered listeners
 };
 MS2_CHECK_SIZE(UIWorldShareInfoEventDispatcher, 0x28);

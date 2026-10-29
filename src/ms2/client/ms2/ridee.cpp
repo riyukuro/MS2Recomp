@@ -223,7 +223,7 @@ public:
     NxScene* FUN_14168a1c0();
     void FUN_14168a540(int n);                                      // lock
     void FUN_14168a570();                                           // unlock
-    int FUN_14168a9b0(Unk_RideeEntity* pEntity, efd::Point3 kPos);
+    int FUN_14168a9b0(Unk_RideeEntity* pEntity, NiPoint3 kPos);
 };
 Unk_RideePhysX* FUN_1409f7ca0();
 
@@ -269,8 +269,8 @@ Unk_RideeSpawnMgr* FUN_140a50010();
 class Unk_RideeShadowMgr
 {
 public:
-    int FUN_141376880(bool b);
-    int FUN_1413769d0(bool b);
+    int FUN_141376880(int nKind);
+    int FUN_1413769d0(int nKind);
 };
 Unk_RideeShadowMgr* FUN_140ae1c00();
 
@@ -320,7 +320,7 @@ class Unk_RideeEntity
 public:
     void FUN_1409618c0(unsigned int uiPropId, NiPoint3& out);       // point property
     void FUN_1408a20a0(unsigned int uiPropId, bool* pOut);          // bool property
-    void FUN_140ae1160(unsigned int uiPropId, int* pOut);           // int property
+    void FUN_140ae1160(unsigned int uiPropId, unsigned short* pOut); // short property
     Unk_RideeEntityModel* FUN_140ae1be0();
     egf::FlatModel* FUN_1408a9bd0();
 };
@@ -336,7 +336,7 @@ class Unk_Service6100017 : public efd::ISystemService
 {
 public:
     static const efd::ClassID CLASS_ID = 0x06100017;
-    void* FUN_1410b8ab0(efd::Point3 kPos);                          // the cube at a position
+    void* FUN_1410b8ab0(NiPoint3 kPos);                             // the cube at a position
 };
 struct Unk_EntityAppFramework { efd::ServiceManagerPtr manager; };
 extern Unk_EntityAppFramework DAT_143b059e8;
@@ -344,10 +344,11 @@ Unk_Service6100017* FUN_1401cd040(Unk_EntityAppFramework* pFramework);
 ecr::SceneGraphService* FUN_1410a68f0(Unk_EntityAppFramework* pFramework);
 
 extern int DAT_143ae2b30;                                           // no rendering (server/tool build)
+extern const NiPoint3 g_kCubeGuideZero;                             // 0x143b01a60, the zero point as a NiPoint3 (trivial 12-byte copy)
 
-int FUN_1408a13d0(efd::Point3 kPos);
+int FUN_1408a13d0(NiPoint3 kPos);
 void FUN_140b86230(const efd::Point3& kDegrees, NiMatrix3& out);  // euler angles (degrees) to a rotation
-void FUN_140a0b1f0(const NiMatrix3& kRotate, NiPoint3& out);      // rotation to euler angles (degrees)
+void FUN_140a0b1f0(const NiMatrix3& kRotate, efd::Point3& out); // rotation to euler angles (degrees)
 void FUN_1401d3700(CString& str);
 CString FUN_140188f50(const char* psz, int n);
 CString FUN_140298360(const char* pszPrefix, const CString& str);
@@ -438,7 +439,6 @@ Ridee::~Ridee()
 }
 
 // @0x1417043a0
-// MS2-FUNCTIONAL: temporaries/stack layout differ (CString/MS2Ptr temporaries of the row lookups)
 int Ridee::FUN_1417043a0(int nRideeId, int nObjectId, PCBase* pRider)
 {
     MS2Ptr<Unk_RideeData> spData = FUN_1407844b0(nRideeId);
@@ -448,8 +448,8 @@ int Ridee::FUN_1417043a0(int nRideeId, int nObjectId, PCBase* pRider)
     int nLevel = 1;
     if (Unk_RideePC* pc = FUN_140974230(pRider))
         nLevel = FUN_141658e60(pc);
-    CString strAnim = spData->FUN_140784880(nLevel);
-    CString strModel = spData->FUN_140784920(nLevel);
+    const CString& strAnim = spData->FUN_140784880(nLevel);
+    const CString& strModel = spData->FUN_140784920(nLevel);
     if (strAnim.IsEmpty() && strModel.IsEmpty())
         return 0;
 
@@ -477,7 +477,7 @@ int Ridee::FUN_1417043a0(int nRideeId, int nObjectId, PCBase* pRider)
 MS2_REPLACE_METHOD(0x1417043a0, Ridee, FUN_1417043a0, 925, 0xFC8D7B99);
 
 // @0x141704750
-// MS2-FUNCTIONAL: stack layout and temporary order of the hit-report entity handling differ
+// MS2-FUNCTIONAL: vfunc_19(kPos) copies twice; in the exe vfunc_18 returns the same type vfunc_19 takes (see vfunc_53)
 int Ridee::vfunc_10()
 {
     PCBase::vfunc_10();
@@ -496,24 +496,24 @@ int Ridee::vfunc_10()
             if (spEntity != 0)
             {
                 MS2Ptr<Unk_RideeFieldObj> spObj = FUN_1403ed2d0()->FUN_141bc4f10(spEntity.FUN_1408a9090());
-                if (spObj.get() == 0)
-                {
-                    FUN_141240f20(::FUN_14166d220(this))->SetEntity(spEntity.FUN_1408a9090());
-                }
-                else
+                if (spObj.get())
                 {
                     kPos.z = spObj->FUN_140adf8e0().z + spObj->FUN_140ae0660().z + 10.0f;
                     FUN_141240f20(::FUN_14166d220(this))->SetEntity(spEntity.FUN_1408a9090());
                     egf::EntityID kId(s_kNoEntity);
-                    NiPoint3 kAt = NiPoint3::ZERO;
+                    NiPoint3 kAt = g_kCubeGuideZero;
                     m_pRider->FUN_141678240(kId, kAt);
                     FUN_141678290(kId, kAt);
+                }
+                else
+                {
+                    FUN_141240f20(::FUN_14166d220(this))->SetEntity(spEntity.FUN_1408a9090());
                 }
             }
             kPos.z += 25.0f;
             vfunc_19(kPos);
             FUN_141240f20(::FUN_14166d220(m_pRider))->FUN_140cfaf30();
-            m_pRider->FUN_141678290(s_kNoEntity, NiPoint3::ZERO);
+            m_pRider->FUN_141678290(s_kNoEntity, g_kCubeGuideZero);
             vfunc_24(0);
         }
         MakeNxBoxController();
@@ -522,7 +522,7 @@ int Ridee::vfunc_10()
 }
 
 // @0x141704c80
-// MS2-FUNCTIONAL: stack layout differs (NiFixedString/SmartPointer temporaries, effect query)
+// MS2-FUNCTIONAL: vfunc_19(kPos) adds a 12-byte copy (NiPoint3 -> efd::Point3 parameter, see vfunc_53), which is the 0x10 frame difference
 void Ridee::vfunc_12()
 {
     PCBase::vfunc_12();
@@ -531,16 +531,19 @@ void Ridee::vfunc_12()
 
     if (NiAVObject* pRoot = FUN_141b6efc0(FUN_14123c410()))
     {
-        m_spSeat = pRoot->GetObjectByName(NiFixedString(m_spData->FUN_140784970()->m_strNode));
-        if (DAT_143ae2b30 == 0 && m_spSeat)
+        m_spSeat = pRoot->GetObjectByName((const char*)m_spData->FUN_140784970()->m_strNode);
+        if (DAT_143ae2b30 == 0)
         {
-            NiTransformData* pData = NiNew NiTransformData;
-            m_pDC0 = NiNew RideeInterpolator(pData);
-            m_pDC0->SetObjectId(m_pRider->FUN_14123c580());
-            NiTransformController* pController = NiNew NiTransformController;
-            pController->SetInterpolator(m_pDC0, 0);
-            pController->SetTarget(m_spSeat);
-            pController->ResetTimeExtrema();
+            if (m_spSeat)
+            {
+                NiTransformData* pData = NiNew NiTransformData;
+                m_pDC0 = NiNew RideeInterpolator(pData);
+                m_pDC0->SetObjectId(m_pRider->FUN_14123c580());
+                NiTransformController* pController = NiNew NiTransformController;
+                pController->SetInterpolator(m_pDC0, 0);
+                pController->SetTarget(m_spSeat);
+                pController->ResetTimeExtrema();
+            }
         }
     }
     FUN_1417072b0();
@@ -665,26 +668,31 @@ void Ridee::vfunc_110()
 MS2_REPLACE_METHOD(0x141705620, Ridee, vfunc_110, 18, 0xA7C52B60);
 
 // @0x141705640
-// MS2-FUNCTIONAL: stack layout of the CString/SmartPointer temporaries differs
 void Ridee::vfunc_119()
 {
     MS2Ptr<Unk_RideeData> spData = GetData();
-    if (!spData.get())
-        return;
-    for (int i = 0; i < spData->m_seats.FUN_140784180(); i++)
+    if (spData.get())
     {
-        MS2Ptr<Unk_RideeModel> spModel = spData->FUN_1407849c0(i);
-        if (spModel.get())
+        for (int i = 0; i < spData->m_seats.FUN_140784180(); i++)
         {
-            CString strNode(spModel->m_strNode);
-            if (strNode.IsEmpty())
-                return;
-            if (NiNode* pRoot = NiDynamicCast(NiNode, FUN_141b6efc0(FUN_14123c410())))
+            MS2Ptr<Unk_RideeModel> spModel = spData->FUN_1407849c0(i);
+            if (spModel.get())
             {
-                if (NiAVObject* pNode = pRoot->GetObjectByName(NiFixedString(strNode)))
+                CString strNode(spModel->m_strNode);
+                if (strNode.IsEmpty())
+                    return;
+                if (NiNode* pRoot = NiDynamicCast(NiNode, FUN_141b6efc0(FUN_14123c410())))
                 {
-                    efd::SmartPointer<NiAVObject> spNode(pNode);
-                    GetRider()->FUN_141708b10().SetAt(FUN_140188f50(pNode->GetName(), 0), spNode);
+                    NiAVObject* pNode;
+                    {
+                        NiFixedString kName(strNode);
+                        pNode = pRoot->GetObjectByName(kName);
+                    }
+                    if (pNode)
+                    {
+                        efd::SmartPointer<NiAVObject> spNode(pNode);
+                        GetRider()->FUN_141708b10().SetAt(FUN_140188f50(pNode->GetName(), 0), spNode);
+                    }
                 }
             }
         }
@@ -699,24 +707,29 @@ Unk_PCBaseFxLib* Ridee::vfunc_70()
 MS2_REPLACE_METHOD(0x141705880, Ridee, vfunc_70, 27, 0x48167045);
 
 // @0x1417058b0
-// MS2-FUNCTIONAL: stack layout of the CString temporaries differs
 void Ridee::FUN_1417058b0()
 {
     MS2Ptr<Unk_RideeData> spData = GetData();
-    if (!spData.get())
-        return;
-    for (int i = 0; i < spData->m_seats.FUN_140784180(); i++)
+    if (spData.get())
     {
-        MS2Ptr<Unk_RideeModel> spModel = spData->FUN_1407849c0(i);
-        if (spModel.get())
+        for (int i = 0; i < spData->m_seats.FUN_140784180(); i++)
         {
-            CString strNode(spModel->m_strNode);
-            if (strNode.IsEmpty())
-                return;
-            if (NiNode* pRoot = NiDynamicCast(NiNode, FUN_141b6efc0(FUN_14123c410())))
+            MS2Ptr<Unk_RideeModel> spModel = spData->FUN_1407849c0(i);
+            if (spModel.get())
             {
-                if (NiAVObject* pNode = pRoot->GetObjectByName(NiFixedString(strNode)))
-                    GetRider()->FUN_141708b10().RemoveKey(FUN_140188f50(pNode->GetName(), 0));
+                CString strNode(spModel->m_strNode);
+                if (strNode.IsEmpty())
+                    return;
+                if (NiNode* pRoot = NiDynamicCast(NiNode, FUN_141b6efc0(FUN_14123c410())))
+                {
+                    NiAVObject* pNode;
+                    {
+                        NiFixedString kName(strNode);
+                        pNode = pRoot->GetObjectByName(kName);
+                    }
+                    if (pNode)
+                        GetRider()->FUN_141708b10().RemoveKey(FUN_140188f50(pNode->GetName(), 0));
+                }
             }
         }
     }
@@ -734,7 +747,6 @@ void Ridee::FUN_141705ac0(double fTime)
 MS2_REPLACE_METHOD(0x141705ac0, Ridee, FUN_141705ac0, 140, 0xCEC6EC71);
 
 // @0x141705b60
-// MS2-FUNCTIONAL: effect query / CAtlArray temporaries are scoped differently (exe frame 0x278)
 void Ridee::FUN_141705b60(double fTime)
 {
     if (!FUN_141682fe0(&m_unk_6d8, 0x49401))
@@ -753,14 +765,15 @@ void Ridee::FUN_141705b60(double fTime)
             FUN_1403ed280()->FUN_1411a4a00(&kQuery);
         }
         FUN_141676b50(1);
-        bool bSpawn = true;
+        int bSpawn = 1;
         if (m_nRunFx)
         {
             ATL::CAtlArray<efd::SmartPointer<CEffect> > kLive;
             FUN_1403ed280()->FUN_1411a7760(m_nRunFx, kLive);
-            bSpawn = kLive.GetCount() == 0;
-            if (bSpawn)
+            if (kLive.GetCount() == 0)
                 m_nRunFx = 0;
+            else
+                bSpawn = 0;
         }
         if (bSpawn)
         {
@@ -774,48 +787,46 @@ void Ridee::FUN_141705b60(double fTime)
     }
 
     int bNeedStamina = FUN_1403ed2d0()->FUN_141bd30a0()->m_nA4;
-    __int64 nStamina = m_spData->m_nA0;
-    if (bNeedStamina == 0 || FUN_1417060d0())
-    {
-        if (bNeedStamina != 0 || nStamina == 0)
-        {
-            if (FUN_141676b70() == 0)
-            {
-                Unk_EffectQuery kQuery;
-                kQuery.m_strName = m_spData->m_strC0;
-                kQuery.m_nObject = 1;
-                kQuery.SetActor(FUN_14123c580());
-                FUN_1403ed280()->FUN_1411a4a00(&kQuery);
-            }
-            FUN_141676b50(1);
-            bool bSpawn = true;
-            if (m_nRunFx2)
-            {
-                ATL::CAtlArray<efd::SmartPointer<CEffect> > kLive;
-                FUN_1403ed280()->FUN_1411a7760(m_nRunFx2, kLive);
-                bSpawn = kLive.GetCount() == 0;
-                if (bSpawn)
-                    m_nRunFx2 = 0;
-            }
-            if (bSpawn)
-            {
-                Unk_EffectQuery kQuery;
-                kQuery.m_strName = m_spData->m_strD8;
-                kQuery.m_nObject = FUN_1403ed2d0()->FUN_141bd1a10(this);
-                kQuery.SetActor(FUN_14123c580());
-                m_nRunFx2 = FUN_1403ed280()->FUN_1411a49c0(&kQuery);
-            }
-        }
-    }
-    else
+    int bFree = m_spData->m_nA0 == 0;
+    if (bNeedStamina != 0 && !FUN_1417060d0())
     {
         FUN_141676b50(0);
-        unsigned int nInterval = 5000;
+        const unsigned int nInterval = 5000;
         if (FUN_140869420() - m_nD44 > nInterval)
         {
             m_nD44 = FUN_140869420();
             FUN_141275260(0x48, 1, 0);
-            FUN_141276180(s_strNoticeEp, CString(""));
+            FUN_141276180(s_strNoticeEp, "");
+        }
+    }
+    else if (bNeedStamina != 0 || bFree != 0)
+    {
+        if (FUN_141676b70() == 0)
+        {
+            Unk_EffectQuery kQuery;
+            kQuery.m_strName = m_spData->m_strC0;
+            kQuery.m_nObject = 1;
+            kQuery.SetActor(FUN_14123c580());
+            FUN_1403ed280()->FUN_1411a4a00(&kQuery);
+        }
+        FUN_141676b50(1);
+        int bSpawn = 1;
+        if (m_nRunFx2)
+        {
+            ATL::CAtlArray<efd::SmartPointer<CEffect> > kLive;
+            FUN_1403ed280()->FUN_1411a7760(m_nRunFx2, kLive);
+            if (kLive.GetCount() == 0)
+                m_nRunFx2 = 0;
+            else
+                bSpawn = 0;
+        }
+        if (bSpawn)
+        {
+            Unk_EffectQuery kQuery;
+            kQuery.m_strName = m_spData->m_strD8;
+            kQuery.m_nObject = FUN_1403ed2d0()->FUN_141bd1a10(this);
+            kQuery.SetActor(FUN_14123c580());
+            m_nRunFx2 = FUN_1403ed280()->FUN_1411a49c0(&kQuery);
         }
     }
 }
@@ -867,14 +878,16 @@ int Ridee::vfunc_116()
 MS2_REPLACE_METHOD(0x1417062e0, Ridee, vfunc_116, 47, 0x0E80BE59);
 
 // @0x141706320
-// MS2-FUNCTIONAL: the exe evaluates the rider class test inline per call
 void Ridee::vfunc_49()
 {
     Unk_RideeShadowMgr* pMgr = FUN_140ae1c00();
-    unsigned int nClassId = m_pRider->GetClassID();
-    int a = pMgr->FUN_141376880(nClassId != 0x6200004);
-    int b = pMgr->FUN_1413769d0(nClassId != 0x6200004);
-    m_spShadow = NiNew CObjectShadow(this, a, b, m_spData->m_f120, 1.0f);
+    int nKind = 1;
+    if (m_pRider->GetClassID() == 0x6200004)
+        nKind = 0;
+    int a = pMgr->FUN_141376880(nKind);
+    int b = pMgr->FUN_1413769d0(nKind);
+    const float fScale = 1.0f;
+    m_spShadow = NiNew CObjectShadow(this, a, b, m_spData->m_f120, fScale);
     FUN_14123cb20(m_bUnkB8);
 }
 
@@ -923,7 +936,6 @@ void Ridee::vfunc_114(void* p)
 MS2_REPLACE_METHOD(0x1417065f0, Ridee, vfunc_114, 75, 0x2A3EE1C8);
 
 // @0x141706650
-// MS2-FUNCTIONAL: stack layout of the record/entity temporaries differs
 void Ridee::FUN_141706650(bool bForce)
 {
     if (!FUN_14166c930())
@@ -933,8 +945,7 @@ void Ridee::FUN_141706650(bool bForce)
         m_controller.vfunc_0();
     if (m_nDE0 == 0)
     {
-        NiPoint3 kPos = vfunc_18();
-        if (kPos.z < FUN_1403ed2d0()->FUN_141bd37e0().z)
+        if (vfunc_18().z < FUN_1403ed2d0()->FUN_141bd37e0().z)
         {
             m_nDE0 = 1;
             bForce = true;
@@ -979,8 +990,7 @@ void Ridee::FUN_141706650(bool bForce)
             pEntity->FUN_140ae1be0()->FUN_140ae1f60(strModel);
             CString strName(strModel.c_str());
             FUN_1401d3700(strName);
-            bool bFound = FUN_1403ed2d0()->FUN_141bc4e70(strName).get() != 0;
-            if (bFound)
+            if (FUN_1403ed2d0()->FUN_141bc4e70(strName).get())
             {
                 NiPoint3 kObjPos;
                 pEntity->FUN_1409618c0(0xfd95ca52, kObjPos);
@@ -990,7 +1000,7 @@ void Ridee::FUN_141706650(bool bForce)
             if (pEntity->FUN_1408a9bd0()->ContainsModel(0xd8dea70d))
             {
                 bool bRideable = false;
-                int nKind = 0;
+                unsigned short nKind = 0;
                 pEntity->FUN_1408a20a0(0xecfdd742, &bRideable);
                 pEntity->FUN_140ae1160(0xada5c5d2, &nKind);
                 if (bRideable && (nKind == 9 || nKind == 8))
@@ -1070,7 +1080,6 @@ void Ridee::FUN_141707270()
 MS2_REPLACE_METHOD(0x141707270, Ridee, FUN_141707270, 48, 0x05F57870);
 
 // @0x1417072b0
-// MS2-FUNCTIONAL: branch layout of the texture-exists test differs
 void Ridee::FUN_1417072b0()
 {
     MS2Ptr<Unk_PCBaseComp_b18> spItem = FUN_141707440();
@@ -1079,10 +1088,12 @@ void Ridee::FUN_1417072b0()
     if (FUN_140897300(spItem.operator->()) == 0)
         return;
     CString strPath = FUN_1410280d0(7, spItem->m_strUrl);
-    if (_access(strPath, 4) == 0)
-        FUN_14052d220()->FUN_141887810(this);
-    else
+    if (_access(strPath, 4) != 0)
+    {
         FUN_14052d220()->FUN_141884830(spItem, FUN_14123c460());
+        return;
+    }
+    FUN_14052d220()->FUN_141887810(this);
 }
 MS2_REPLACE_METHOD(0x1417072b0, Ridee, FUN_1417072b0, 393, 0x60E382B1);
 
@@ -1164,26 +1175,29 @@ float Ridee::FUN_141707960()
 MS2_REPLACE_METHOD(0x141707960, Ridee, FUN_141707960, 136, 0x6FC70E00);
 
 // @0x1417079f0
-// MS2-FUNCTIONAL: stack layout of the PhysX pose temporaries differs
+// MS2-FUNCTIONAL: the exe passes the vfunc_18/vfunc_20 result straight to vfunc_19/vfunc_21 (same type); our NiPoint3 -> efd::Point3 parameter adds a copy
 void Ridee::vfunc_53(float f)
 {
     PCBase::vfunc_53(f);
     FUN_141678360();
-    bool bVisible = !(m_timer970.FUN_140868c00() == 0 && m_timer970.FUN_140868ba0() != 0);
+    bool bVisible = m_timer970.FUN_140868c00() == 0 && m_timer970.FUN_140868ba0() != 0 ? false : true;
     if (bVisible)
         m_timer970.FUN_140868750(200);
     vfunc_93(bVisible);
-    if (m_spShadow && m_spShadow->FUN_141534300())
+    if (m_spShadow)
     {
-        if (NiAVObject* pRoot = FUN_141b6efc0(FUN_14123c410()))
-            pRoot->UpdateEffects();
+        if (m_spShadow->FUN_141534300())
+        {
+            if (NiAVObject* pRoot = FUN_141b6efc0(FUN_14123c410()))
+                pRoot->UpdateEffects();
+        }
     }
     if (DAT_143ae2b30 == 0 && m_pRider)
     {
         m_pRider->vfunc_19(vfunc_18());
         m_pRider->vfunc_21(vfunc_20());
     }
-    if (m_pBox && m_spData.get())
+    if (m_pBox && (bool)m_spData.get())
     {
         NiPoint3 kPos = vfunc_18();
         NiPoint3 kRot = vfunc_20();
@@ -1192,7 +1206,7 @@ void Ridee::vfunc_53(float f)
         NxMat34 kPose(true);
         kPose.t = NxVec3(kPos.x, kPos.y, kPos.z);
         kPose.t = kPose.t * 0.01f;
-        kPose.t.z += kHalf.z + 0.2f;
+        kPose.t.z = kPose.t.z + kHalf.z + 0.2f;
         kPose.M.rotZ(kRot.z * 3.1415927f / 180.0f);
         FUN_1409f7ca0()->FUN_14168a540(0);
         m_pBox->setGlobalPose(kPose);
@@ -1202,10 +1216,13 @@ void Ridee::vfunc_53(float f)
 MS2_REPLACE_METHOD(0x1417079f0, Ridee, vfunc_53, 1128, 0x01E9F3D0);
 
 // @0x141707e60
-// MS2-FUNCTIONAL: stack layout of the PhysX descriptors differs
 void Ridee::MakeNxBoxController()
 {
-    if (m_spData == 0 || !m_spData->m_b114 || m_pBox)
+    if (m_spData == 0)
+        return;
+    if (!m_spData->m_b114)
+        return;
+    if (m_pBox)
         return;
     NxScene* pScene = FUN_1409f7ca0()->FUN_14168a1c0();
     if (!pScene)
@@ -1228,7 +1245,7 @@ void Ridee::MakeNxBoxController()
     kActorDesc.shapes.pushBack(&kBoxDesc);
     kActorDesc.globalPose.t = NxVec3(kPos.x, kPos.y, kPos.z);
     kActorDesc.globalPose.t = kActorDesc.globalPose.t * 0.01f;
-    kActorDesc.globalPose.t.z += kBoxDesc.dimensions.z + 0.2f;
+    kActorDesc.globalPose.t.z = kActorDesc.globalPose.t.z + kBoxDesc.dimensions.z + 0.2f;
     kActorDesc.globalPose.M.rotZ(kRot.z * 3.1415927f / 180.0f);
     FUN_1409f7ca0()->FUN_14168a540(0);
     m_pBox = pScene->createActor(kActorDesc);
@@ -1238,7 +1255,10 @@ void Ridee::MakeNxBoxController()
         NxU32 nShapes = m_pBox->getNbShapes();
         NxShape* const* ppShapes = m_pBox->getShapes();
         for (NxU32 i = 0; i < nShapes; i++)
-            ppShapes[i]->setGroup(0);
+        {
+            NxShape* pShape = ppShapes[i];
+            pShape->setGroup(0);
+        }
     }
     FUN_1409f7ca0()->FUN_14168a570();
 }
@@ -1265,44 +1285,46 @@ void Ridee::FUN_1417082c0()
 MS2_REPLACE_METHOD(0x1417082c0, Ridee, FUN_1417082c0, 210, 0xF313323A);
 
 // @0x1417083a0
-// MS2-FUNCTIONAL: NiTransform/NiMatrix3/Point3 math written with the Gamebryo operators (the exe calls its COMDATs)
+// MS2-FUNCTIONAL: same calls and frame; left: the exe loads m_fX/m_fZ into xmm0 and moves them to xmm2 before the scale call
 void Ridee::FUN_1417083a0(PCBase* pRider, efd::SmartPointer<NiAVObject> spSeat, MS2Ptr<Unk_RideeModel> spModel)
 {
     if (!pRider || spSeat == 0 || spModel == 0)
         return;
     efd::SmartPointer<NiNode> spSeatNode(NiDynamicCast(NiNode, (NiAVObject*)spSeat));
     NiAVObject* pRiderRoot = FUN_141b6ef70(pRider->FUN_14123c460());
-    if (!spSeatNode || !pRiderRoot)
-        return;
+    if (spSeatNode && pRiderRoot)
+    {
+        NiTransform kWorld = spSeatNode->GetWorldTransform();
+        NiTransform kParent;
+        kParent.MakeIdentity();
+        if (spSeatNode->GetParent())
+            kParent = spSeatNode->GetParent()->GetWorldTransform();
+        kWorld = kParent * kWorld;
+        NiPoint3 kPos = kWorld.m_Translate;
+        NiMatrix3 kRotate = kWorld.m_Rotate;
 
-    NiTransform kWorld = spSeatNode->GetWorldTransform();
-    NiTransform kParent;
-    kParent.MakeIdentity();
-    if (spSeatNode->GetParent())
-        kParent = spSeatNode->GetParent()->GetWorldTransform();
-    kWorld = kParent * kWorld;
-    NiPoint3 kPos = kWorld.m_Translate;
-    NiMatrix3 kRotate = kWorld.m_Rotate;
+        efd::Point3 kAngles;
+        efd::Point3 kSeatRot(spModel->m_fRotX, spModel->m_fRotY, spModel->m_fRotZ);
+        NiMatrix3 kSeatMatrix;
+        FUN_140b86230(kSeatRot, kSeatMatrix);
+        kRotate = kRotate * kSeatMatrix;
+        FUN_140a0b1f0(kRotate, kAngles);
 
-    NiPoint3 kAngles;
-    efd::Point3 kSeatRot(spModel->m_fRotX, spModel->m_fRotY, spModel->m_fRotZ);
-    NiMatrix3 kSeatMatrix;
-    FUN_140b86230(kSeatRot, kSeatMatrix);
-    kRotate = kRotate * kSeatMatrix;
-    FUN_140a0b1f0(kRotate, kAngles);
-
-    NiPoint3 kX, kY, kZ;
-    kRotate.GetCol(0, kX);
-    kX.Unitize();
-    kRotate.GetCol(1, kY);
-    kY.Unitize();
-    kRotate.GetCol(2, kZ);
-    kZ.Unitize();
-    kPos += kY * -spModel->m_fY;
-    kPos += kX * spModel->m_fX;
-    kPos += kZ * spModel->m_fZ;
-    pRider->vfunc_19(kPos);
-    pRider->vfunc_21(kAngles);
+        NiPoint3 kX;
+        kRotate.GetCol(0, kX);
+        kX.Unitize();
+        NiPoint3 kY;
+        kRotate.GetCol(1, kY);
+        kY.Unitize();
+        NiPoint3 kZ;
+        kRotate.GetCol(2, kZ);
+        kZ.Unitize();
+        kPos = kPos + kY * -spModel->m_fY;
+        kPos = kPos + kX * spModel->m_fX;
+        kPos = kPos + kZ * spModel->m_fZ;
+        pRider->vfunc_19(kPos);
+        pRider->vfunc_21(kAngles);
+    }
 }
 
 // @0x141708950

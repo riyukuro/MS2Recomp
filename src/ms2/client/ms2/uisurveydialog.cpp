@@ -1,6 +1,5 @@
 // Recovered from MapleStory2.exe KMS2_DEV x64 (2022-04-13). UISurveyDialog: the player survey box.
 // MS2-UNIT: ?\uisurveydialog.cpp
-// MS2-FUNCTIONAL: OnLoadComplete, vfunc_28, the packet handlers (FUN_140eda1b0..FUN_140edad50): temp / frame layout differs; behaviour-equivalent.
 // MS2-RANGE: 0x1400dc9e0-0x1400dcaa0 .text$di
 // MS2-RANGE: 0x140ed9b80-0x140edb370 .text$mn
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uisurveydialog.cpp"    // assumed
@@ -60,7 +59,7 @@ void UISurveyDialog::OnLoadComplete()
     UIDialog::OnLoadComplete();
     FUN_141925fa0("m_dragBar");
     FUN_141925ec0("m_closeButton");
-    CStringW strKind = GetStringCommon(m_188 == 0 ? 0xc8e : 0xc8d);
+    CStringW strKind = GetStringCommon(m_188 != 0 ? 0xc8d : 0xc8e);
     FUN_140cff1b0(FUN_1422dbb40(), "m_textSurvey", FUN_1401d0080(FUN_14061ad70(FUN_1401d0160(L"[", strKind), L"] "), m_190));
     for (size_t i = 0; i < m_198.GetCount(); i++)
         m_30->Invoke("addItem", m_198[i]);
@@ -90,7 +89,7 @@ int UISurveyDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* 
         }
         return 1;
     }
-    if (_stricmp("OnClose", szMethod) == 0)
+    else if (_stricmp("OnClose", szMethod) == 0)
         FUN_140d73bc0(0xc9b, 1, static_cast<IMessageListener*>(this), CStringW(L"Close"));
     return 0;
 }
@@ -98,7 +97,8 @@ int UISurveyDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* 
 // @0x140eda1b0
 void UISurveyDialog::FUN_140eda1b0(CInPacket& packet)
 {
-    switch (packet.ReadUInt8())
+    unsigned char nType = packet.ReadUInt8();
+    switch (nType)
     {
     case 0:
         FUN_140eda360(packet);
@@ -145,9 +145,9 @@ void UISurveyDialog::FUN_140eda360(CInPacket& packet)
 // @0x140eda3c0
 void UISurveyDialog::FUN_140eda3c0(CInPacket& packet)
 {
-    CInputStream& in = packet;
-    CStringW strName = in.ReadUnicodeString();
-    CStringW strKind = GetStringCommon(in.ReadUInt8() == 1 ? 0xc8d : 0xc8e);
+    CStringW strName = packet.ReadUnicodeString();
+    bool bKind = packet.ReadUInt8() == 1;
+    CStringW strKind = GetStringCommon(bKind ? 0xc8d : 0xc8e);
     FUN_1412751b0(FUN_140632a60(0xc93, strKind, strName), 0x14);
     FUN_1412751b0(GetStringCommon(0xc92), 0x14);
 }
@@ -155,14 +155,14 @@ void UISurveyDialog::FUN_140eda3c0(CInPacket& packet)
 // @0x140eda530
 void UISurveyDialog::FUN_140eda530(CInPacket& packet)
 {
-    CInputStream& in = packet;
-    CStringW strName = in.ReadUnicodeString();
-    CStringW strKind = GetStringCommon(in.ReadUInt8() == 1 ? 0xc8d : 0xc8e);
+    CStringW strName = packet.ReadUnicodeString();
+    bool bKind = packet.ReadUInt8() == 1;
+    CStringW strKind = GetStringCommon(bKind ? 0xc8d : 0xc8e);
     FUN_1412751b0(FUN_140632a60(0xc91, strKind, strName), 0x14);
-    unsigned char nCount = in.ReadUInt8();
-    for (int i = 0; i < (int)nCount; i++)
+    int nCount = packet.ReadUInt8();
+    for (int i = 0; i < nCount; i++)
     {
-        CStringW strAnswer = in.ReadUnicodeString();
+        CStringW strAnswer = packet.ReadUnicodeString();
         FUN_1412751b0(FUN_1401d0160(L"- ", strAnswer), 0x14);
     }
     FUN_1412751b0(GetStringCommon(0xc92), 0x14);
@@ -171,33 +171,31 @@ void UISurveyDialog::FUN_140eda530(CInPacket& packet)
 // @0x140eda790
 void UISurveyDialog::FUN_140eda790(CInPacket& packet)
 {
-    CInputStream& in = packet;
-    CStringW strA = in.ReadUnicodeString();
-    char cKindA = in.ReadUInt8();
-    CStringW strB = in.ReadUnicodeString();
-    char cKindB = in.ReadUInt8();
-    CStringW strKind = GetStringCommon(cKindA == 1 ? 0xc8d : 0xc8e);
-    FUN_1412751b0(FUN_1409eadb0(cKindB == 1 ? 0xc95 : 0xc96, strKind, strA, strB), 0x14);
+    CStringW strA = packet.ReadUnicodeString();
+    bool bKindA = packet.ReadUInt8() == 1;
+    CStringW strB = packet.ReadUnicodeString();
+    bool bKindB = packet.ReadUInt8() == 1;
+    CStringW strKind = GetStringCommon(bKindA ? 0xc8d : 0xc8e);
+    FUN_1412751b0(FUN_1409eadb0(bKindB ? 0xc95 : 0xc96, strKind, strA, strB), 0x14);
 }
 
 // @0x140eda980
 void UISurveyDialog::FUN_140eda980(CInPacket& packet)
 {
-    CInputStream& in = packet;
-    m_178 = in.ReadInt64();
-    m_180 = in.ReadInt64();
-    m_188 = in.ReadUInt8() == 1;
-    m_190 = in.ReadUnicodeString();
+    m_178 = packet.ReadInt64();
+    m_180 = packet.ReadInt64();
+    m_188 = packet.ReadUInt8() == 1;
+    m_190 = packet.ReadUnicodeString();
     m_198.RemoveAll();
-    unsigned char nCount = in.ReadUInt8();
-    for (int i = 0; i < (int)nCount; i++)
-        m_198.Add(in.ReadUnicodeString());
+    int nCount = packet.ReadUInt8();
+    for (int i = 0; i < nCount; i++)
+        m_198.Add(packet.ReadUnicodeString());
     if (FUN_141924740() != 0)
         vfunc_67();
     FUN_141924680();
     if (m_178 == DAT_143ab2828)
     {
-        CStringW strKind = GetStringCommon(m_188 == 0 ? 0xc8e : 0xc8d);
+        CStringW strKind = GetStringCommon(m_188 != 0 ? 0xc8d : 0xc8e);
         FUN_1412751b0(FUN_140632a60(0xc97, strKind, m_190), 0x14);
     }
 }
@@ -212,26 +210,25 @@ void UISurveyDialog::FUN_140edacb0(CInPacket& packet)
 // @0x140edad50
 void UISurveyDialog::FUN_140edad50(CInPacket& packet)
 {
-    CInputStream& in = packet;
-    __int64 nId = in.ReadInt64();
-    bool bKind = in.ReadUInt8() == 1;
-    CStringW strName = in.ReadUnicodeString();
+    __int64 nId = packet.ReadInt64();
+    bool bKind = packet.ReadUInt8() == 1;
+    CStringW strName = packet.ReadUnicodeString();
     CStringW strKind = GetStringCommon(bKind ? 0xc8d : 0xc8e);
     FUN_1412751b0(FUN_140632a60(0xc99, strKind, strName), 0x14);
-    unsigned nCount = in.ReadUInt8();
+    unsigned nCount = packet.ReadUInt8();
     for (int i = 0; i <= (int)nCount; i++)
     {
         CStringW strAnswer = GetStringCommon(0xc8f);
         if ((unsigned)i != nCount)
-            strAnswer = in.ReadUnicodeString();
-        unsigned nVotes = in.ReadUInt8();
+            strAnswer = packet.ReadUnicodeString();
+        unsigned nVotes = packet.ReadUInt8();
         if ((unsigned)i == nCount && nVotes == 0)
             continue;
         CStringW strLine = FUN_14093fa20(0xc9a, strAnswer, nVotes);
         if (bKind)
         {
             for (int j = 0; j < (int)nVotes; j++)
-                strLine += FUN_1401d0160(L" ", in.ReadUnicodeString());
+                strLine += FUN_1401d0160(L" ", packet.ReadUnicodeString());
         }
         FUN_1412751b0(strLine, 0x14);
     }

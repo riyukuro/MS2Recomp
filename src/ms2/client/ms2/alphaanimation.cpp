@@ -36,7 +36,7 @@
 // MS2-PIN: ??_ENiLinFloatKey@@QEAAPEAXI@Z 0x14098d180
 // MS2-PIN: ?IsEmpty@?$CAtlList@PEAVNiAVObject@@V?$CElementTraits@PEAVNiAVObject@@@ATL@@@ATL@@QEBA_NXZ 0x14098df00
 // MS2-FUNCTIONAL: ATL CAtlList node layout of the SDK header differs from the exe
-// MS2-PIN: ?RemoveHead@?$CAtlList@PEAVNiAVObject@@V?$CElementTraits@PEAVNiAVObject@@@ATL@@@ATL@@QEAAPEAVNiAVObject@@XZ 0x14098e5c0
+// MS2-PIN: ?RemoveTail@?$CAtlList@PEAVNiAVObject@@V?$CElementTraits@PEAVNiAVObject@@@ATL@@@ATL@@QEAAPEAVNiAVObject@@XZ 0x14098e5c0
 #define NOMINMAX
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\alphaanimation.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
@@ -186,7 +186,7 @@ extern NiFixedString DAT_143ae50a8;             // extra data keys of the origin
 extern NiFixedString DAT_143ae50b8;
 extern NiFixedString DAT_143ae50c0;
 
-void FUN_14098b3e0(NiAVObject* pkObject, float fAlpha, char bForce);
+void FUN_14098b3e0(NiAVObject* pkObject, float fAlpha, bool bForce);
 void FUN_14098c120(NiAVObject* pkObject);
 bool FUN_14098c620(NiAVObject* pkObject);
 bool FUN_14098c680(NiProperty* pkProperty);
@@ -226,11 +226,12 @@ void AlphaTourController::Update(float fTime)
     }
 }
 
-// MS2-FUNCTIONAL: extra temporary for the target property pointer is not reproduced
 // @0x14098ab10
 void AlphaTourController::GetTargetFloatValue(float& fValue)
 {
-    fValue = ((NiMaterialProperty*)((NiAVObject*)m_pkTarget)->GetProperty(NiProperty::MATERIAL))->GetAlpha();
+    NiAVObject* pkObject = (NiAVObject*)m_pkTarget;
+    NiMaterialProperty* pkMaterial = (NiMaterialProperty*)pkObject->GetProperty(NiProperty::MATERIAL);
+    fValue = pkMaterial->GetAlpha();
 }
 
 struct Unk_AlphaKey
@@ -242,7 +243,6 @@ MS2_CHECK_SIZE(Unk_AlphaKey, 8);
 void FUN_14098ea00(NiFloatKey* pKey, float fTime);
 
 // Starts an alpha animation of pkObject through the (time delta, alpha) keys; idOwner is notified when it ends.
-// MS2-FUNCTIONAL: array-new / operator[] shape of the key copy differs
 // @0x14098ab60
 void FUN_14098ab60(NiAVObject* pkObject, ATL::CAtlArray<Unk_AlphaKey>& keys, const egf::EntityID& idOwner)
 {
@@ -254,7 +254,10 @@ void FUN_14098ab60(NiAVObject* pkObject, ATL::CAtlArray<Unk_AlphaKey>& keys, con
     unsigned nKeys = (unsigned)keys.GetCount();
     float fTotal = 0.0f;
     for (unsigned i = 0; i < nKeys; i++)
-        fTotal = fTotal + keys[i].fDelta;
+    {
+        Unk_AlphaKey& kKey = keys[i];
+        fTotal = fTotal + kKey.fDelta;
+    }
 
     float fNow = (float)FUN_141473280(FUN_14086d260());
     CAlphaAnimation* pAnim = EE_NEW CAlphaAnimation(pkObject, fNow + fTotal);
@@ -372,7 +375,7 @@ NiAVObject* Unk_NodeQueue::Next(bool bAddChildren)
     if (m_list.IsEmpty())
         return NULL;
 
-    NiAVObject* pkNode = m_list.RemoveHead();
+    NiAVObject* pkNode = m_list.RemoveTail();
     if (bAddChildren)
     {
         NiNode* pkParent = NiDynamicCast(NiNode, pkNode);
@@ -417,23 +420,20 @@ bool FUN_14098c680(NiProperty* pkProperty)
 }
 
 // Makes sure that the node has a material and an alpha property, each remembering the original state.
-// MS2-FUNCTIONAL: temporaries differ; same calls and control flow
 // @0x14098c120
 void FUN_14098c120(NiAVObject* pkObject)
 {
     if (pkObject->GetProperty(NiProperty::MATERIAL) == NULL)
     {
         NiMaterialProperty* pkMaterial = NiNew NiMaterialProperty;
-        NiFloatExtraData* pkOriginal = NiNew NiFloatExtraData(-1.0f);
-        pkMaterial->AddExtraData(DAT_143ae50b8, pkOriginal);
+        pkMaterial->AddExtraData(DAT_143ae50b8, NiNew NiFloatExtraData(-1.0f));
         pkObject->AttachProperty(pkMaterial);
     }
 
     if (pkObject->GetProperty(NiProperty::ALPHA) == NULL)
     {
         NiAlphaProperty* pkAlpha = NiNew NiAlphaProperty;
-        NiIntegerExtraData* pkOriginal = NiNew NiIntegerExtraData(-1);
-        pkAlpha->AddExtraData(DAT_143ae50c0, pkOriginal);
+        pkAlpha->AddExtraData(DAT_143ae50c0, NiNew NiIntegerExtraData(-1));
         pkObject->AttachProperty(pkAlpha);
     }
 }
@@ -472,21 +472,18 @@ Unk_HwService* FUN_14098c5b0(Unk_EntityAppFramework* pFramework)
 }
 
 // Applies fAlpha to the material/alpha properties of the object and its descendants (bForce also touches culled nodes).
-// MS2-FUNCTIONAL: property walk temporaries differ; same calls and control flow
 // @0x14098b3e0
-void FUN_14098b3e0(NiAVObject* pkObject, float fAlpha, char bForce)
+void FUN_14098b3e0(NiAVObject* pkObject, float fAlpha, bool bForce)
 {
     if (pkObject == NULL)
         return;
 
     FUN_14098c120(pkObject);
     Unk_NodeQueue kQueue(pkObject);
-    for (;;)
+    bool bRestore = fAlpha >= 1.0f;
+    NiAVObject* pkNode;
+    while ((pkNode = kQueue.Next(true)) != NULL)
     {
-        NiAVObject* pkNode = kQueue.Next(true);
-        if (pkNode == NULL)
-            break;
-
         if (FUN_14098dfc0(pkNode))
             continue;
         if (!bForce && pkNode->GetAppCulled())
@@ -505,10 +502,10 @@ void FUN_14098b3e0(NiAVObject* pkObject, float fAlpha, char bForce)
                 pkMaterial->AddExtraData(DAT_143ae50b8, pkOriginal);
             }
             float fOriginal = pkOriginal->GetValue();
-            if (fAlpha < 1.0f || 0.0f <= fOriginal)
-                pkMaterial->SetAlpha(fOriginal * fAlpha);
-            else
+            if (bRestore && fOriginal < 0.0f)
                 pkNode->DetachProperty(pkMaterial);
+            else
+                pkMaterial->SetAlpha(fOriginal * fAlpha);
         }
 
         NiAlphaProperty* pkAlphaProp = (NiAlphaProperty*)pkNode->GetProperty(NiProperty::ALPHA);
@@ -517,14 +514,10 @@ void FUN_14098b3e0(NiAVObject* pkObject, float fAlpha, char bForce)
             NiIntegerExtraData* pkOriginal = NiDynamicCast(NiIntegerExtraData, pkAlphaProp->GetExtraData(DAT_143ae50c0));
             if (pkOriginal == NULL)
             {
-                pkOriginal = NiNew NiIntegerExtraData(pkAlphaProp->GetAlphaBlending());
+                pkOriginal = NiNew NiIntegerExtraData(pkAlphaProp->GetAlphaBlending() ? 1 : 0);
                 pkAlphaProp->AddExtraData(DAT_143ae50c0, pkOriginal);
             }
-            if (fAlpha < 1.0f)
-            {
-                pkAlphaProp->SetAlphaBlending(true);
-            }
-            else
+            if (bRestore)
             {
                 pkNode->RemoveExtraData(DAT_143ae50a8);
                 int iOriginal = pkOriginal->GetValue();
@@ -532,6 +525,10 @@ void FUN_14098b3e0(NiAVObject* pkObject, float fAlpha, char bForce)
                     pkNode->DetachProperty(pkAlphaProp);
                 else
                     pkAlphaProp->SetAlphaBlending(iOriginal == 1);
+            }
+            else
+            {
+                pkAlphaProp->SetAlphaBlending(true);
             }
         }
     }
@@ -577,28 +574,28 @@ CEntityShower::CEntityShower(egf::EntityID idEntity, NiAVObject* pkNode, float f
         if (spService)
         {
             Unk_InstanceTracker* pTracker = spService->FUN_1413d66b0(spEntity);
-            if (pTracker == 0)
-            {
-                FUN_1408a20a0(spEntity.data(), 0x2a7fd9f4, &m_bWasShown);
-            }
-            else
+            if (pTracker != 0)
             {
                 m_bWasShown = pTracker->FUN_14098dfe0();
                 FUN_14098c6e0((Unk_CachedEntity*)spEntity.data(), 0x2a7fd9f4, m_bWasShown);
+            }
+            else
+            {
+                FUN_1408a20a0(spEntity.data(), 0x2a7fd9f4, &m_bWasShown);
             }
         }
     }
 
     if (pkNode != 0)
     {
-        m_fEndTime = (float)FUN_141473280(FUN_14086d260()) + fDuration;
+        float fNow = (float)FUN_141473280(FUN_14086d260());
+        m_fEndTime = fNow + fDuration;
         m_fAlpha = fFrom;
         m_pInterpolator = new TLinearInterpolator<float>(fDuration, fFrom, fTo);
         m_pInterpolator->Reset();
     }
 }
 
-// MS2-FUNCTIONAL: smart-pointer release temporaries differ; same behaviour
 // @0x14098ba80
 CEntityShower::~CEntityShower()
 {
@@ -608,7 +605,8 @@ CEntityShower::~CEntityShower()
         efd::SmartPointer<Unk_HwService> spService(FUN_14098c5b0(&DAT_143b059e8));
         if (spService && spEntity)
         {
-            if (spService->FUN_1413d66b0(spEntity))
+            Unk_InstanceTracker* pTracker = spService->FUN_1413d66b0(spEntity);
+            if (pTracker)
             {
                 bool bFalse = false;
                 FUN_14098c6e0((Unk_CachedEntity*)spEntity.data(), 0x2a7fd9f4, bFalse);
@@ -623,40 +621,37 @@ CEntityShower::~CEntityShower()
     }
 }
 
-// MS2-FUNCTIONAL: temporaries differ; same calls and control flow
 // @0x14098bc60
 bool CEntityShower::vfunc_2()
 {
     float fNow = (float)FUN_141473280(FUN_14086d260());
-    if (fNow <= m_fEndTime)
+    if (fNow > m_fEndTime)
     {
-        if (m_pInterpolator)
+        efd::SmartPointer<egf::Entity> spEntity(FUN_1409670f0()->FUN_1411cf440(m_idEntity));
+        if (spEntity)
         {
-            m_fAlpha = m_pInterpolator->Get((float)FUN_141473260(FUN_14086d260()));
-            FUN_14098b3e0(m_spNode, m_fAlpha, 0);
-        }
-        return true;
-    }
-
-    bool bAlive;
-    efd::SmartPointer<egf::Entity> spEntity(FUN_1409670f0()->FUN_1411cf440(m_idEntity));
-    if (spEntity)
-    {
-        efd::SmartPointer<Unk_HwService> spService(FUN_14098c5b0(&DAT_143b059e8));
-        if (spService)
-        {
-            m_fAlpha = m_pInterpolator->Get((float)FUN_141473260(FUN_14086d260()));
-            FUN_14098b3e0(m_spNode, m_fAlpha, 0);
-            spService->FUN_1413d6e60(spEntity, true);
-            if (spService->FUN_1413d66b0(spEntity))
+            efd::SmartPointer<Unk_HwService> spService(FUN_14098c5b0(&DAT_143b059e8));
+            if (spService)
             {
-                bool bFalse = false;
-                FUN_14098c6e0((Unk_CachedEntity*)spEntity.data(), 0xa0b6b179, bFalse);
+                m_fAlpha = m_pInterpolator->Get((float)FUN_141473260(FUN_14086d260()));
+                FUN_14098b3e0(m_spNode, m_fAlpha, 0);
+                spService->FUN_1413d6e60(spEntity, true);
+                Unk_InstanceTracker* pTracker = spService->FUN_1413d66b0(spEntity);
+                if (pTracker)
+                {
+                    bool bFalse = false;
+                    FUN_14098c6e0((Unk_CachedEntity*)spEntity.operator->(), 0xa0b6b179, bFalse);
+                }
             }
         }
+        return false;
     }
-    bAlive = false;
-    return bAlive;
+    else if (m_pInterpolator)
+    {
+        m_fAlpha = m_pInterpolator->Get((float)FUN_141473260(FUN_14086d260()));
+        FUN_14098b3e0(m_spNode, m_fAlpha, 0);
+    }
+    return true;
 }
 
 // @0x14098beb0
@@ -673,30 +668,28 @@ CEntityHider::CEntityHider(egf::EntityID idEntity, NiAVObject* pkNode, float fFr
 {
 }
 
-// MS2-FUNCTIONAL: temporaries differ; same calls and control flow
 // @0x14098bf90
 bool CEntityHider::vfunc_2()
 {
     float fNow = (float)FUN_141473280(FUN_14086d260());
-    if (fNow <= m_fEndTime)
+    if (fNow > m_fEndTime)
     {
-        if (m_pInterpolator)
+        efd::SmartPointer<egf::Entity> spEntity(FUN_1409670f0()->FUN_1411cf440(m_idEntity));
+        if (spEntity)
         {
             m_fAlpha = m_pInterpolator->Get((float)FUN_141473260(FUN_14086d260()));
             FUN_14098b3e0(m_spNode, m_fAlpha, 0);
+            bool bFalse = false;
+            FUN_14098c6e0((Unk_CachedEntity*)spEntity.operator->(), 0xa0b6b179, bFalse);
         }
-        return true;
+        return false;
     }
-
-    efd::SmartPointer<egf::Entity> spEntity(FUN_1409670f0()->FUN_1411cf440(m_idEntity));
-    if (spEntity)
+    else if (m_pInterpolator)
     {
         m_fAlpha = m_pInterpolator->Get((float)FUN_141473260(FUN_14086d260()));
         FUN_14098b3e0(m_spNode, m_fAlpha, 0);
-        bool bFalse = false;
-        FUN_14098c6e0((Unk_CachedEntity*)spEntity.data(), 0xa0b6b179, bFalse);
     }
-    return false;
+    return true;
 }
 
 // ---- AlphaTourController ----

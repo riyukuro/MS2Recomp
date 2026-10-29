@@ -38,36 +38,31 @@ CQuestTable::~CQuestTable()
 }
 
 // @0x1416e3910
-// MS2-FUNCTIONAL: frame is 0x20 larger; the path/document temporaries and the loop locals are placed differently
 void CQuestTable::LoadQuestToField()
 {
-    CString strPath = FUN_14071a5b0(CString("Table"), CString("questToFieldTable.xml"));
+    CString strPath = FUN_14071a5b0("Table", "questToFieldTable.xml");
     TiXmlDocument doc;
-    const char* pszPath = strPath;
-    if (FUN_140166420()->FUN_1403974b0(&doc, pszPath, 0, true, false) != 0)
+    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+        return;
+    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+    if (pRoot == 0)
     {
-        Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
-        if (pRoot == 0)
-        {
-            FUN_14015eb90(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
-        }
-        else
-        {
-            for (Unk_140165cf0* pQuest = pRoot->FUN_140165cf0("quest"); pQuest != 0; pQuest = pQuest->FUN_140168650("quest"))
-            {
-                unsigned int nId;
-                FUN_140873220(pQuest, "id", nId);
-                CString strFields = FUN_14015f710(pQuest, "fields", CString(""));
-                ATL::CAtlArray<unsigned int> arrFields;
-                XmlSplit(strFields, arrFields, ",");
-                FieldListPtr fields((Unk_CubeNewTag(0)));
-                for (size_t i = 0; i < arrFields.GetCount(); i++)
-                    fields->AddTail(arrFields[i]);
-                m_mapFields.SetAt(nId, fields);
-            }
-            SetInit(true);
-        }
+        FUN_14015eb90(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
+        return;
     }
+    for (Unk_140165cf0* pQuest = pRoot->FUN_140165cf0("quest"); pQuest != 0; pQuest = pQuest->FUN_140168650("quest"))
+    {
+        unsigned int nId;
+        FUN_140873220(pQuest, "id", nId);
+        CString strFields = FUN_14015f710(pQuest, "fields", CString(""));
+        ATL::CAtlArray<unsigned int> arrFields;
+        XmlSplit(strFields, arrFields, ",");
+        FieldListPtr fields((Unk_CubeNewTag(0)));
+        for (size_t i = 0; i < arrFields.GetCount(); i++)
+            fields->AddTail(arrFields[i]);
+        m_mapFields.SetAt(nId, fields);
+    }
+    SetInit(true);
 }
 
 // @0x1416e3c10

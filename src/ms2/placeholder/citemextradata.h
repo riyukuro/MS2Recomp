@@ -109,6 +109,9 @@ public:
     virtual void vfunc_5(COutputStream&);
     virtual void vfunc_6(CInputStream&);
     float m_f58;                                    // +0x58
-    Vector3 m_aPt[4];                       // +0x5c +0x68 +0x74 +0x80
+    Vector3 m_aPt0[1];                      // +0x5c
+    Vector3 m_aPt1[1];                      // +0x68
+    Vector3 m_aPt2[1];                      // +0x74
+    Vector3 m_aPt3[1];                      // +0x80
 };
 MS2_CHECK_SIZE(CCapExtraData,0x90);

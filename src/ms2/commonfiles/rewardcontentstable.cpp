@@ -28,7 +28,7 @@ class Unk_RwLoader { public: int FUN_1403974b0(TiXmlDocument* pDoc, const char* 
 Unk_RwLoader* FUN_140166420();
 void* FUN_140166440();
 void FUN_14015eb90(void* pLog, int nLevel, int nCategory, const wchar_t* szFormat, const CString& strArg);
-void FUN_1406a6d70(void* pLog, int a, int b, int c, const wchar_t* pszFormat, const int& nArg);
+void FUN_1406a6d70(void* pLog, int a, int b, int c, const wchar_t* pszFormat, const unsigned& nArg);
 class Unk_RwLog { public: void FUN_1402804e0(unsigned __int64 a, unsigned __int64 b, int flags, const wchar_t* message); };
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // Table/<file>
 bool FUN_14028f710(Unk_140165cf0* pNode);                               // the row is for this client's region
@@ -111,7 +111,6 @@ RewardContentsItemTable::RewardContentsItemTable()
 }
 
 // @0x140770810
-// MS2-FUNCTIONAL: the loop latch/temporary order differs from the exe (frame 8 bytes larger)
 bool RewardContentsItemTable::Load(void* pNode)
 {
     if (!FUN_14028f710(static_cast<Unk_140165cf0*>(pNode)))
@@ -126,7 +125,9 @@ bool RewardContentsItemTable::Load(void* pNode)
             continue;
         m_groups.push_back(spGroup);
     }
-    return !m_groups.empty();
+    if (m_groups.empty())
+        return false;
+    return true;
 }
 MS2_REPLACE_METHOD(0x140770810, RewardContentsItemTable, Load, 345, 0x70BC9629);
 
@@ -218,7 +219,6 @@ bool RewardContentsTable::GetReward(unsigned nRewardId, unsigned short nLevel, R
 MS2_REPLACE_METHOD(0x140770E40, RewardContentsTable, GetReward, 482, 0x1CFC9067);
 
 // @0x140771030
-// MS2-FUNCTIONAL: one extra 8-byte frame slot before the path string; the rest matches
 bool RewardContentsTable::ReadMesoTable(const CStringA& strFile)
 {
     CString strPath = FUN_14071a5b0("Table", strFile);
@@ -327,7 +327,6 @@ bool RewardContentsTable::ReadContents()
 MS2_REPLACE_METHOD(0x140771730, RewardContentsTable, ReadContents, 632, 0xF3A8F4A9);
 
 // @0x1407719b0
-// MS2-FUNCTIONAL: locals/size compares differ slightly from the exe (the unused epsilon local's slot, size() inlining)
 __int64 RewardContentsTable::GetMeso(unsigned nTableId, double dFactor, unsigned short nLevel)
 {
     std::map<unsigned, std::vector<__int64> >::iterator it = m_mesoTables.find(nTableId);
@@ -337,13 +336,9 @@ __int64 RewardContentsTable::GetMeso(unsigned nTableId, double dFactor, unsigned
     std::vector<__int64>& values = it->second;
     if (values.size() == 1)
         return static_cast<__int64>(static_cast<double>(values[0]) * dFactor + 0.00001);
-    if (nLevel != 0)
-    {
-        size_t nIndex = nLevel;
-        if (nIndex < values.size())
-            return static_cast<__int64>(static_cast<double>(values[nLevel]) * dFactor + 0.00001);
-    }
-    return 0;
+    if (nLevel <= 0 || nLevel >= values.size())
+        return 0;
+    return static_cast<__int64>(static_cast<double>(values[nLevel]) * dFactor + 0.00001);
 }
 MS2_REPLACE_METHOD(0x1407719B0, RewardContentsTable, GetMeso, 277, 0x4A6C85FD);
 

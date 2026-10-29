@@ -105,15 +105,27 @@ int FUN_14109a9d0(void* pSettings);                                 // 0 = key b
 const char* FUN_142087e50(const void* pFixed);                      // NiFixedString -> c string
 NiMaterial* FUN_140a17cd0(NiRenderObject* pObj);                    // active material
 const void* FUN_14106bd50(const NiMaterial* pMat);                  // material name
-char FUN_141068d10(const void* pA, const void* pB);                 // name operator!=
+bool FUN_141068d10(const void* pA, const void* pB);                 // name operator!=
 char FUN_1409a7ff0(const void* pA, const void* pB);                 // NiFixedString equality
 void FUN_1410479a0(NiAVObject* pObj, void* pKey, const Unk_Colc& kValue);   // set a shader constant
 void* FUN_140a17af0(Unk_MaterialTable* pTable, const NiMaterial* pMat);
 int FUN_140ef4dd0(void* pMatInfo);
 NiObject* FUN_141d17b40(NiObjectNET* pObj, const void* pKey);       // extra-data lookup by key
 float FUN_140a0fde0(float fValue, float fMax);                      // min(value, max)
-float FUN_141b72530(NiObject* pColorData);
-NiSequenceData* FUN_141b72540(NiControllerSequence* pSeq);          // sequence data of a controller sequence
+// The exe's out-of-line copies of the inline NiColorExtraData::GetRed/GetGreen/GetBlue and
+// NiControllerSequence::GetSequenceData accessors.
+class Unk_UtilColorData : public NiColorExtraData
+{
+public:
+    float FUN_141b72530() const;                                    // GetRed
+    float FUN_141b72470() const;                                    // GetGreen
+    float FUN_141b72460() const;                                    // GetBlue
+};
+class Unk_UtilSequence : public NiControllerSequence
+{
+public:
+    NiSequenceData* FUN_141b72540() const;                          // GetSequenceData
+};
 float FUN_141b72480(NiControllerSequence* pSeq, const NiFixedString& kKey);   // text key time (-FLT_MAX if unknown)
 bool FUN_14028d470(float fA, float fB);                             // float equality
 float FUN_140a17940(float fValue, float fMin, float fMax);          // clamp
@@ -136,8 +148,6 @@ struct Unk_UtilTransform
 };
 MS2_CHECK_SIZE(Unk_UtilTransform, 0x34);
 void* FUN_140876480(void* pOut, int nCategory);                    // memory hint for new
-float FUN_141b72470(NiObject* pColorData);
-float FUN_141b72460(NiObject* pColorData);
 CStringA& FUN_140164930(CAtlArray<CStringA>& arr, size_t i);        // CAtlArray<CStringA> operator[]
 int FUN_14028c3e0(const CStringA& kText, CAtlArray<CStringA>& arrOut, const char* pszDelim, int nMax);
 egf::EntityManager* FUN_1409670f0();
@@ -165,7 +175,6 @@ unsigned FUN_1408a90b0(const Unk_UtilColor4& color);               // colour -> 
 struct Unk_UtilFloat3
 {
     float x, y, z;
-    Unk_UtilFloat3 FUN_141b723e0(float fDivisor) const;           // 0x141b723e0 *this / fDivisor (this=rcx, hidden return=rdx)
 };
 struct Unk_UtilUInt3 { unsigned x, y, z; };
 struct Unk_UtilNxVec3
@@ -177,7 +186,6 @@ struct Unk_UtilNxVec3
 MS2_CHECK_SIZE(Unk_UtilNxVec3, 12);
 
 // @0x141b6db40
-// MS2-FUNCTIONAL: exe frame is 0x20 smaller (temp slots of the two ref-bound strings are laid out differently)
 int FUN_141b6db40(size_t nSize)
 {
     if (DAT_143af7d44 != 0)
@@ -202,11 +210,13 @@ int FUN_141b6db40(size_t nSize)
         DAT_143af7e00.FUN_140d53570(FUN_14028dc80(0xb22));
         DAT_143af7e00.SetKText(FUN_14028dc80(0xb24));
         if (DAT_143af7e00.DoModal() == -1) {
-            FUN_141b6fcf0(GetStringCommon(0xb24), CStringW(L"Error"), 0x10);
+            FUN_141b6fcf0(GetStringCommon(0xb24), L"Error", 0x10);
         }
     } else {
-        FUN_141b6fcf0(GetStringCommon(0xb24), CStringW(L"Error"), 0x10);
+        FUN_141b6fcf0(GetStringCommon(0xb24), L"Error", 0x10);
     }
+    if (nSize == 2)
+        return 0;
     return 0;
 }
 
@@ -417,12 +427,10 @@ CStringW FUN_141b6e990(const CStringW& kStartPath)
 }
 
 // @0x141b6e8e0
-// MS2-FUNCTIONAL: hidden temp frame layout differs (0x10 larger)
+// MS2-FUNCTIONAL: the converted wide temp is passed through a rax copy chain; exe passes lea of an EH-tracked temp
 CStringA FUN_141b6e8e0(const CStringA& kStartPath)
 {
-    const CStringW& kPicked = FUN_141b6e990(FUN_14016a730((LPCSTR)kStartPath, 0));
-    const CStringW& kPickedRef = kPicked;
-    return FUN_14016a600((LPCWSTR)kPickedRef, 0);
+    return FUN_14016a600(FUN_141b6e990(FUN_14016a730(kStartPath, 0)), 0);
 }
 
 // @0x141b6eb40
@@ -442,12 +450,10 @@ CStringW FUN_141b6ec30(const CStringW& kPath)
 MS2_REPLACE(0x141b6ec30, FUN_141b6ec30, 201, 0x1164ACCB);
 
 // @0x141b6eb80
-// MS2-FUNCTIONAL: hidden temp frame layout differs
+// MS2-FUNCTIONAL: the converted wide temp is passed through a rax copy chain; exe passes lea of an EH-tracked temp
 CStringA FUN_141b6eb80(const CStringA& kPath)
 {
-    const CStringW& kName = FUN_141b6ec30(FUN_14016a730((LPCSTR)kPath, 0));
-    const CStringW& kNameRef = kName;
-    return FUN_14016a600((LPCWSTR)kNameRef, 0);
+    return FUN_14016a600(FUN_141b6ec30(FUN_14016a730(kPath, 0)), 0);
 }
 
 // @0x141b6ed00
@@ -509,7 +515,7 @@ NiAVObject* FUN_141b6efc0(egf::Entity* pEntity)
 MS2_REPLACE(0x141b6efc0, FUN_141b6efc0, 51, 0x52369C41);
 
 // @0x141b6f000
-// MS2-FUNCTIONAL: stack frame / temp scheduling differs from the exe (same slot layout, extra unused temp)
+// MS2-FUNCTIONAL: instructions identical; our frame is 0x10 larger than the exe (0xa8 vs 0x98)
 void FUN_141b6f000(NiAVObject* pRoot, int nSlot, const Unk_Colc& kValue)
 {
     if (pRoot == NULL)
@@ -526,31 +532,31 @@ void FUN_141b6f000(NiAVObject* pRoot, int nSlot, const Unk_Colc& kValue)
     Unk_SceneWalker kWalker(pRoot);
     while (NiAVObject* pNode = kWalker.Next(true)) {
         NiRenderObject* pRender = (NiRenderObject*)FUN_14098d8d0(&NiRenderObject::ms_RTTI, pNode);
-        if (pRender == NULL)
-            continue;
-        NiMaterial* pMaterial = FUN_140a17cd0(pRender);
-        if (pMaterial == NULL)
-            continue;
-        if (!FUN_141068d10(FUN_14106bd50(pMaterial), &DAT_143ae5200))
-            continue;
-        NiObject* pTexturing = FUN_14098d8d0(&NiTexturingProperty::ms_RTTI, pRender->GetProperty(NiProperty::TEXTURING));
-        if (pTexturing == NULL)
-            continue;
-        if (FUN_14109a9d0(FUN_1409f7c90()) == 0) {
-            NiFixedString kName(pszKey);
-            FUN_1410479a0(pRender, &kName, kValue);
-        } else {
-            switch (nSlot) {
-            case 0: FUN_1410479a0(pRender, &DAT_143ae50c8, kValue); break;
-            case 1: FUN_1410479a0(pRender, &DAT_143ae50d0, kValue); break;
-            default: FUN_1410479a0(pRender, &DAT_143ae50d8, kValue); break;
+        if (pRender != NULL) {
+            NiMaterial* pMaterial = FUN_140a17cd0(pRender);
+            if (pMaterial != NULL) {
+                if (FUN_141068d10(FUN_14106bd50(pMaterial), &DAT_143ae5200)) {
+                    NiObject* pTexturing = FUN_14098d8d0(&NiTexturingProperty::ms_RTTI, pRender->GetProperty(NiProperty::TEXTURING));
+                    if (pTexturing == NULL)
+                        continue;
+                    if (FUN_14109a9d0(FUN_1409f7c90()) != 0) {
+                        switch (nSlot) {
+                        case 0: FUN_1410479a0(pRender, &DAT_143ae50c8, kValue); break;
+                        case 1: FUN_1410479a0(pRender, &DAT_143ae50d0, kValue); break;
+                        default: FUN_1410479a0(pRender, &DAT_143ae50d8, kValue); break;
+                        }
+                    } else {
+                        NiFixedString kName(pszKey);
+                        FUN_1410479a0(pRender, &kName, kValue);
+                    }
+                }
             }
         }
     }
 }
 
 // @0x141b6f220
-// MS2-FUNCTIONAL: stack frame / temp scheduling differs from the exe (same slot layout, extra unused temp)
+// MS2-FUNCTIONAL: instructions identical; our frame is 0x10 larger than the exe (0xa8 vs 0x98)
 void FUN_141b6f220(NiAVObject* pRoot, int nSlot, const Unk_Colc& kValue)
 {
     if (pRoot == NULL)
@@ -567,29 +573,29 @@ void FUN_141b6f220(NiAVObject* pRoot, int nSlot, const Unk_Colc& kValue)
     Unk_SceneWalker kWalker(pRoot);
     while (NiAVObject* pNode = kWalker.Next(true)) {
         NiRenderObject* pRender = (NiRenderObject*)FUN_14098d8d0(&NiRenderObject::ms_RTTI, pNode);
-        if (pRender == NULL)
-            continue;
-        void* pInfo = FUN_140a17af0(&DAT_143d69198, FUN_140a17cd0(pRender));
-        if (pInfo == NULL || FUN_140ef4dd0(pInfo) != 2)
-            continue;
-        NiObject* pTexturing = FUN_14098d8d0(&NiTexturingProperty::ms_RTTI, pRender->GetProperty(NiProperty::TEXTURING));
-        if (pTexturing == NULL)
-            continue;
-        if (FUN_14109a9d0(FUN_1409f7c90()) == 0) {
-            NiFixedString kName(pszKey);
-            FUN_1410479a0(pRender, &kName, kValue);
-        } else {
-            switch (nSlot) {
-            case 0: FUN_1410479a0(pRender, &DAT_143ae50c8, kValue); break;
-            case 1: FUN_1410479a0(pRender, &DAT_143ae50d0, kValue); break;
-            default: FUN_1410479a0(pRender, &DAT_143ae50d8, kValue); break;
+        if (pRender != NULL) {
+            void* pInfo = FUN_140a17af0(&DAT_143d69198, FUN_140a17cd0(pRender));
+            if (pInfo != NULL && FUN_140ef4dd0(pInfo) == 2) {
+                NiObject* pTexturing = FUN_14098d8d0(&NiTexturingProperty::ms_RTTI, pRender->GetProperty(NiProperty::TEXTURING));
+                if (pTexturing == NULL)
+                    continue;
+                if (FUN_14109a9d0(FUN_1409f7c90()) != 0) {
+                    switch (nSlot) {
+                    case 0: FUN_1410479a0(pRender, &DAT_143ae50c8, kValue); break;
+                    case 1: FUN_1410479a0(pRender, &DAT_143ae50d0, kValue); break;
+                    default: FUN_1410479a0(pRender, &DAT_143ae50d8, kValue); break;
+                    }
+                } else {
+                    NiFixedString kName(pszKey);
+                    FUN_1410479a0(pRender, &kName, kValue);
+                }
             }
         }
     }
 }
 
 // @0x141b6f440
-// MS2-FUNCTIONAL: stack frame / temp scheduling differs from the exe (same slot layout, extra unused temp)
+// MS2-FUNCTIONAL: exe returns int (BOOL) and leaves the walk loop with break to a shared dtor; callers in other units declare bool
 bool FUN_141b6f440(NiAVObject* pRoot, int nSlot, Unk_UtilFloat3* pOut)
 {
     if (pRoot == NULL)
@@ -613,20 +619,20 @@ bool FUN_141b6f440(NiAVObject* pRoot, int nSlot, Unk_UtilFloat3* pOut)
                 return false;
             pRender = (NiRenderObject*)FUN_14098d8d0(&NiRenderObject::ms_RTTI, pNode);
         } while (pRender == NULL || FUN_1409a7ff0(FUN_14106bd50(FUN_140a17cd0(pRender)), &DAT_143ae5200));
-        if (FUN_14109a9d0(FUN_1409f7c90()) == 0) {
-            NiFixedString kName(pszKey);
-            pColor = FUN_14098d8d0(&NiColorExtraData::ms_RTTI, FUN_141d17b40(pRender, &kName));
-        } else {
+        if (FUN_14109a9d0(FUN_1409f7c90()) != 0) {
             switch (nSlot) {
             case 0: pColor = FUN_14098d8d0(&NiColorExtraData::ms_RTTI, FUN_141d17b40(pRender, &DAT_143ae50c8)); break;
             case 1: pColor = FUN_14098d8d0(&NiColorExtraData::ms_RTTI, FUN_141d17b40(pRender, &DAT_143ae50d0)); break;
             default: pColor = FUN_14098d8d0(&NiColorExtraData::ms_RTTI, FUN_141d17b40(pRender, &DAT_143ae50d8)); break;
             }
+        } else {
+            NiFixedString kName(pszKey);
+            pColor = FUN_14098d8d0(&NiColorExtraData::ms_RTTI, FUN_141d17b40(pRender, &kName));
         }
     } while (pColor == NULL);
-    float fR = FUN_141b72530(pColor);
-    float fG = FUN_141b72470(pColor);
-    float fB = FUN_141b72460(pColor);
+    float fR = ((Unk_UtilColorData*)pColor)->FUN_141b72530();
+    float fG = ((Unk_UtilColorData*)pColor)->FUN_141b72470();
+    float fB = ((Unk_UtilColorData*)pColor)->FUN_141b72460();
     pOut->x = fR;
     pOut->y = fG;
     pOut->z = fB;
@@ -681,13 +687,9 @@ egmAnimation::AnimationService* FUN_141b6f910()
 MS2_REPLACE(0x141b6f910, FUN_141b6f910, 31, 0x80477666);
 
 // @0x141b6f940
-// MS2-FUNCTIONAL: min() temp copies (xmm2 -> xmm0) are scheduled differently
 Unk_Vec3Cli FUN_141b6f940(const Unk_UtilFloat3* pColor)
 {
-    float fB = FUN_140a0fde0(pColor->z * 1.3f, 1.0f);
-    float fG = FUN_140a0fde0(pColor->y * 1.3f, 1.0f);
-    float fR = FUN_140a0fde0(pColor->x * 1.3f, 1.0f);
-    return Unk_Vec3Cli(fR, fG, fB);
+    return Unk_Vec3Cli(FUN_140a0fde0(pColor->x * 1.3f, 1.0f), FUN_140a0fde0(pColor->y * 1.3f, 1.0f), FUN_140a0fde0(pColor->z * 1.3f, 1.0f));
 }
 
 // @0x141b6fa10
@@ -755,19 +757,19 @@ int FUN_141b6fd90(size_t)
 }
 MS2_REPLACE(0x141b6fd90, FUN_141b6fd90, 24, 0xD9535623);
 
+extern "C" float (__cdecl* __imp_logf)(float);
+extern "C" float (__cdecl* __imp_expf)(float);
+
 // @0x141b6fdb0
-// MS2-FUNCTIONAL: switch jump layout differs from exe (temp copy of nCurve)
 float FUN_141b6fdb0(float fValue, int nCurve)
 {
     switch (nCurve) {
+        break;   // the exe has a dead jmp-to-end ahead of the first case body
     case 2:
-        fValue = logf(fValue * 10.0f + 1.0f);
-        fValue = fValue / 2.397895f;
+        fValue = __imp_logf(fValue * 10.0f + 1.0f) / 2.397895f;
         break;
     case 3:
-        fValue = (expf(fValue * 5.0f) - 1.0f) / 147.41316f;
-        break;
-    default:
+        fValue = (__imp_expf(fValue * 5.0f) - 1.0f) / 147.41316f;
         break;
     }
     return fValue;
@@ -788,7 +790,7 @@ float FUN_141b6fe90(NiControllerSequence* pSeq, const NiFixedString& kKey, float
 {
     if (pSeq == NULL)
         return -FLT_MAX;
-    return FUN_141b6fee0(FUN_141b72540(pSeq), kKey, fDivisor);
+    return FUN_141b6fee0(((Unk_UtilSequence*)pSeq)->FUN_141b72540(), kKey, fDivisor);
 }
 MS2_REPLACE(0x141b6fe90, FUN_141b6fe90, 72, 0xF095A001);
 
@@ -921,21 +923,24 @@ void FUN_141b70490(const CStringA& kBase)
             char szDir[272];
             char szName[256];
             _splitpath((LPCSTR)kPath, szDrive, szDir, szName, NULL);
-            if ((kFound.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == 0) {
+            if ((kFound.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) != 0) {
+                if (kFound.cFileName[0] != '.') {
+                    char szSub[272];
+                    sprintf(szSub, "%s%s%s/", szDrive, szDir, kFound.cFileName);
+                    CStringA kSub(szSub);
+                    FUN_141b70490(kSub);
+                    RemoveDirectoryA((LPCSTR)kSub);
+                }
+            } else {
                 CStringA kFile;
                 kFile += szDir;
                 kFile += kFound.cFileName;
                 DeleteFileA((LPCSTR)kFile);
-            } else if (kFound.cFileName[0] != '.') {
-                char szSub[272];
-                sprintf(szSub, "%s%s%s/", szDrive, szDir, kFound.cFileName);
-                CStringA kSub(szSub);
-                FUN_141b70490(kSub);
-                RemoveDirectoryA((LPCSTR)kSub);
             }
             nMore = FindNextFileA(hFind, &kFound);
         }
         FindClose(hFind);
+        nMore = 1;
     }
 }
 
@@ -989,33 +994,29 @@ CStringW FUN_140811740(int nId, const int& nArg1, const int& nArg2);
 CStringW FUN_1412e7520(int nId, const int& nArg1, const int& nArg2, const int& nArg3);
 
 // @0x141b708a0
-// MS2-FUNCTIONAL: frame is 16 bytes larger than the exe (ternary temporaries)
 CStringW FUN_141b708a0(unsigned nSeconds, bool bShowSeconds)
 {
     if (nSeconds < 60) {
         CStringW kShort = FUN_1409e97f0(0x97b, nSeconds);
         return kShort;
-    }
-    if (nSeconds < 3600) {
+    } else if (nSeconds < 3600) {
         int nMinutes = nSeconds / 60;
         int nRest = nSeconds % 60;
-        bool bHasRest = nRest != 0;
-        CStringW kText = bHasRest ? FUN_140811740(0x97e, nMinutes, nRest) : FUN_1408116a0(0x97c, nMinutes);
+        CStringW kText = nRest == 0 ? FUN_1408116a0(0x97c, nMinutes) : FUN_140811740(0x97e, nMinutes, nRest);
         return kText;
-    }
-    int nHours = nSeconds / 3600;
-    int nMinutes = (nSeconds / 60) % 60;
-    int nRest = nSeconds % 60;
-    CStringW kText = L"";
-    if (!bShowSeconds || nRest == 0) {
-        if (nMinutes == 0)
+    } else {
+        int nHours = nSeconds / 3600;
+        int nMinutes = (nSeconds / 60) % 60;
+        int nRest = nSeconds % 60;
+        CStringW kText = L"";
+        if (bShowSeconds && nRest != 0)
+            kText = FUN_1412e7520(0x980, nHours, nMinutes, nRest);
+        else if (nMinutes == 0)
             kText = FUN_1408116a0(0x97d, nHours);
         else
             kText = FUN_140811740(0x97f, nHours, nMinutes);
-    } else {
-        kText = FUN_1412e7520(0x980, nHours, nMinutes, nRest);
+        return kText;
     }
-    return kText;
 }
 
 extern NiFixedString DAT_143ae5120;                                     // shader constant keys
@@ -1038,7 +1039,6 @@ void FUN_141b70c50(NiAVObject* pObj, float fValue, float fEmissive)
 MS2_REPLACE(0x141b70c50, FUN_141b70c50, 87, 0xDAFF5EB1);
 
 // @0x141b70cb0
-// MS2-FUNCTIONAL: exe keeps the last callee result in an extra 8-byte slot (frame layout differs)
 void FUN_141b70cb0(NiAVObject* pObj, float fValue, const Unk_Colc& kColor, float fEmissive)
 {
     if (pObj == NULL) {
@@ -1051,10 +1051,11 @@ void FUN_141b70cb0(NiAVObject* pObj, float fValue, const Unk_Colc& kColor, float
     FUN_141047ac0(pObj, DAT_143ae5120, fValue);
     FUN_1410479a0(pObj, &DAT_143ae5128, kColor);
     if (DAT_143ae2b34 != 0) {
-        if (!FUN_14028d470(fValue, 0.0f))
+        if (FUN_14028d470(fValue, 0.0f)) {
+            unsigned int nFlags = FUN_140d96630(pObj) & 0xfffffff7;
+            FUN_1414d4c70(pObj, nFlags);
+        } else
             FUN_141568ec0(pObj);
-        else
-            FUN_1414d4c70(pObj, FUN_140d96630(pObj) & 0xfffffff7);
     }
 }
 
@@ -1239,7 +1240,6 @@ Vector3 FUN_141b71390(const Vector3& kStart, const Vector3& kControl, const Vect
 }
 
 // @0x141b71550
-// MS2-FUNCTIONAL: float temporaries are scheduled differently in the arc-length term
 float FUN_141b71550(const Vector3& kStart, const Vector3& kControl, const Vector3& kEnd)
 {
     Vector3 kA;
@@ -1249,20 +1249,18 @@ float FUN_141b71550(const Vector3& kStart, const Vector3& kControl, const Vector
     kB = FUN_1409ab5c0(2.0f, kControl).FUN_140965c40(FUN_1409ab5c0(2.0f, kStart));
     kB = FUN_1409ab5c0(2.0f, kControl).FUN_140965c40(FUN_1409ab5c0(2.0f, kStart));
     float fAA = FUN_140993fe0(kA, kA);
-    float fA = (fAA + FUN_140993fe0(kA, kA)) * 4.0f;
+    float fA = 4.0f * (fAA + FUN_140993fe0(kA, kA));
     float fAB = FUN_140993fe0(kA, kB);
-    float fB = (fAB + FUN_140993fe0(kA, kB)) * 4.0f;
+    float fB = 4.0f * (fAB + FUN_140993fe0(kA, kB));
     float fBB = FUN_140993fe0(kB, kB);
     float fC = fBB + FUN_140993fe0(kB, kB);
-    float fSqrtAll = FUN_14096b1c0(fA + fB + fC);
-    fSqrtAll = fSqrtAll * 2.0f;
+    float fSqrtAll = 2.0f * FUN_14096b1c0(fA + fB + fC);
     float fSqrtA = FUN_14096b1c0(fA);
-    float fTermA = fA * 2.0f * fSqrtA;
-    float fSqrtC = FUN_14096b1c0(fC);
-    float fNumer = fTermA * fSqrtAll + fSqrtA * fB * (fSqrtAll - fSqrtC * 2.0f);
-    float fDet = fC * 4.0f * fA - fB * fB;
-    float fLog = FUN_141b725e0((fSqrtA * 2.0f + fB / fSqrtA + fSqrtAll) / (fB / fSqrtA + fSqrtC * 2.0f));
-    return (fNumer + fDet * fLog) / (fTermA * 4.0f);
+    float fTermA = 2.0f * fA * fSqrtA;
+    float fSqrtC = 2.0f * FUN_14096b1c0(fC);
+    float fBA = fB / fSqrtA;
+    return (fTermA * fSqrtAll + fSqrtA * fB * (fSqrtAll - fSqrtC)
+        + (4.0f * fC * fA - fB * fB) * FUN_141b725e0((2.0f * fSqrtA + fBA + fSqrtAll) / (fBA + fSqrtC))) / (4.0f * fTermA);
 }
 
 // ---- number / colour helpers ----
@@ -1310,12 +1308,12 @@ double FUN_141b71a40(int nValue)
 MS2_REPLACE(0x141b71a40, FUN_141b71a40, 11, 0xFC13D90A);
 
 // @0x141b71a60
-// MS2-FUNCTIONAL: exe copies the divided colour through an out-of-line copy ctor (0x140a0a3a0)
-void FUN_141b71a60(Unk_UtilFloat3* pColor)
+// efd::Color::operator/(float) (0x141b723e0), then NiColor(const efd::Color&) (0x140a0a3a0) for the assignment
+void FUN_141b71a60(NiColor* pColor)
 {
-    if (pColor->x > 1.0f || pColor->y > 1.0f || pColor->z > 1.0f)
-        *pColor = pColor->FUN_141b723e0(255.0f);
-    FUN_141b71a40(FUN_141b6df90(pColor));
+    if (pColor->r > 1.0f || pColor->g > 1.0f || pColor->b > 1.0f)
+        *pColor = *pColor / 255.0f;
+    FUN_141b71a40(FUN_141b6df90(reinterpret_cast<const Unk_UtilFloat3*>(pColor)));
 }
 
 // ---- scene / skin helpers ----
@@ -1580,33 +1578,19 @@ Unk_UtilHolder* FUN_141b72360(const Unk_UtilObjRef& kRef)
         return NULL;
 }
 
-// @0x141b723e0
-// MS2-FUNCTIONAL: exe copies the 12-byte value through plain locals without a security cookie
-Unk_UtilFloat3 Unk_UtilFloat3::FUN_141b723e0(float fDivisor) const
-{
-    Unk_UtilFloat3 kResult = *this;
-    kResult.x = kResult.x / fDivisor;
-    kResult.y = kResult.y / fDivisor;
-    kResult.z = kResult.z / fDivisor;
-    return kResult;
-}
-MS2_REPLACE_METHOD(0x141b723e0, Unk_UtilFloat3, FUN_141b723e0, 124, 0x629791A5);
-
 // @0x141b72460
-// MS2-FUNCTIONAL: exe reads the NiColorA member inline; the header only offers the by-value GetValue()
-float FUN_141b72460(NiObject* pColorData)
+float Unk_UtilColorData::FUN_141b72460() const
 {
-    return ((NiColorExtraData*)pColorData)->GetValue().b;
+    return m_kColorA.b;
 }
-MS2_REPLACE(0x141b72460, FUN_141b72460, 16, 0x4C93A5B6);
+MS2_REPLACE_METHOD(0x141b72460, Unk_UtilColorData, FUN_141b72460, 16, 0x4C93A5B6);
 
 // @0x141b72470
-// MS2-FUNCTIONAL: exe reads the NiColorA member inline; the header only offers the by-value GetValue()
-float FUN_141b72470(NiObject* pColorData)
+float Unk_UtilColorData::FUN_141b72470() const
 {
-    return ((NiColorExtraData*)pColorData)->GetValue().g;
+    return m_kColorA.g;
 }
-MS2_REPLACE(0x141b72470, FUN_141b72470, 16, 0x5463A882);
+MS2_REPLACE_METHOD(0x141b72470, Unk_UtilColorData, FUN_141b72470, 16, 0x5463A882);
 
 bool FUN_142087fc0(const NiFixedString& kKey);                      // key is not empty
 
@@ -1622,20 +1606,18 @@ float FUN_141b72480(NiControllerSequence* pSeq, const NiFixedString& kKey)
 }
 
 // @0x141b72530
-// MS2-FUNCTIONAL: exe reads the NiColorA member inline; the header only offers the by-value GetValue()
-float FUN_141b72530(NiObject* pColorData)
+float Unk_UtilColorData::FUN_141b72530() const
 {
-    return ((NiColorExtraData*)pColorData)->GetValue().r;
+    return m_kColorA.r;
 }
-MS2_REPLACE(0x141b72530, FUN_141b72530, 16, 0x3C5A885E);
+MS2_REPLACE_METHOD(0x141b72530, Unk_UtilColorData, FUN_141b72530, 16, 0x3C5A885E);
 
 // @0x141b72540
-// MS2-FUNCTIONAL: exe calls the out-of-line NiPointer accessor 0x140998eb0 on the +0x38 member
-NiSequenceData* FUN_141b72540(NiControllerSequence* pSeq)
+NiSequenceData* Unk_UtilSequence::FUN_141b72540() const
 {
-    return pSeq->GetSequenceData();
+    return m_spSeqData;
 }
-MS2_REPLACE(0x141b72540, FUN_141b72540, 31, 0x4931477F);
+MS2_REPLACE_METHOD(0x141b72540, Unk_UtilSequence, FUN_141b72540, 31, 0x4931477F);
 
 // @0x141b72560
 float FUN_141b72560(float fBase, float fExp)
@@ -1652,17 +1634,16 @@ void Unk_UtilErrorDialog::SetKText(CStringA kText)
 MS2_REPLACE_METHOD(0x141b72590, Unk_UtilErrorDialog, SetKText, 65, 0xD5D7D3A4);
 
 // @0x141b725e0
-// MS2-FUNCTIONAL: exe imports logf from the CRT DLL; this build links it statically
 float FUN_141b725e0(float fValue)
 {
-    return logf(fValue);
+    return __imp_logf(fValue);
 }
 MS2_REPLACE(0x141b725e0, FUN_141b725e0, 27, 0x3F5FEE04);
 
 // @0x141b72600
-// MS2-FUNCTIONAL: exe imports powf from the CRT DLL; this build links it statically
+extern "C" float (__cdecl* __imp_powf)(float, float);
 float FUN_141b72600(float fBase, float fExp)
 {
-    return powf(fBase, fExp);
+    return __imp_powf(fBase, fExp);
 }
 MS2_REPLACE(0x141b72600, FUN_141b72600, 39, 0xECCEDFB2);

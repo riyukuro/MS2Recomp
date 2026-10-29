@@ -7,6 +7,7 @@
 #include "ms2/placeholder/nmstream.h"
 #include "ms2/placeholder/nmobjects.h"
 #include "ms2/placeholder/nmfunc.h"
+#include "ms2/placeholder/nmencoder.h"
 #include "ms2/ms2recover.h"
 
 extern CNMSerializable* FUN_1415f1760(CNMSerializable*, long long);
@@ -15,7 +16,7 @@ extern void FUN_14156bd50(void*);
 extern void FUN_14156be10(void*, void*, void*);
 extern void FUN_14156bf10(void*);
 extern unsigned int FUN_1415f9990(void*);
-extern int FUN_1415fb6d0(void*);
+extern int FUN_1415fb6d0(CNMSerializableDecoder*);
 extern int FUN_1415fb750(void*);
 
 // MS2-FUNCTIONAL 0x1415b5bc0: initializes the note-info event and its embedded note record.
@@ -35,18 +36,17 @@ CNMNoteInfoEvent::CNMNoteInfoEvent(const CNMNoteInfo2& rNoteInfo)
 // @0x1415b5cb0
 unsigned int CNMNoteInfoEvent::EncodeFramed(CNMStream* pStream)
 {
-    unsigned char storage[0x18];
-    FUN_14156bcb0(storage, pStream, this);
-    const unsigned int result = Encode(reinterpret_cast<CNMEncoder*>(storage), pStream);
-    FUN_14156bd50(storage);
-    return result;
+    CNMSerializableEncoder encoder(pStream, this);
+    return CNMNoteInfoEvent::Encode(reinterpret_cast<CNMEncoder*>(&encoder), pStream);
 }
 
 // MS2-FUNCTIONAL 0x1415b5d10: selects direct or framed encoding by format.
 // @0x1415b5d10
 unsigned int CNMNoteInfoEvent::EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream)
 {
-    return m_bFormat == 1 ? Encode(pEncoder, pStream) : EncodeFramed(pStream);
+    if (m_bFormat == 1)
+        return CNMNoteInfoEvent::Encode(pEncoder, pStream);
+    return CNMNoteInfoEvent::EncodeFramed(pStream);
 }
 
 // MS2-FUNCTIONAL 0x1415b5d70: serializes the event and its embedded note-info record.
@@ -63,20 +63,19 @@ unsigned int CNMNoteInfoEvent::Encode(CNMEncoder* pEncoder, CNMStream* pStream)
 // @0x1415b5de0
 unsigned int CNMNoteInfoEvent::DecodeFramed(CNMStream* pStream)
 {
-    unsigned char storage[0x38];
-    FUN_14156be10(storage, pStream, this);
-    unsigned int result = 0;
-    if (FUN_1415fb750(storage))
-        result = Decode(reinterpret_cast<CNMSerializableDecoder*>(storage), pStream);
-    FUN_14156bf10(storage);
-    return result;
+    CNMSerializableDecoder decoder(pStream, this);
+    if (FUN_1415fb750(&decoder) == 0)
+        return 0;
+    return CNMNoteInfoEvent::Decode(&decoder, pStream);
 }
 
 // MS2-FUNCTIONAL 0x1415b5e70: dispatches framed or direct decoding.
 // @0x1415b5e70
 unsigned int CNMNoteInfoEvent::DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream)
 {
-    return FUN_1415fb6d0(pDecoder) == 2 ? DecodeFramed(pStream) : Decode(pDecoder, pStream);
+    if (FUN_1415fb6d0(pDecoder) == 2)
+        return CNMNoteInfoEvent::DecodeFramed(pStream);
+    return CNMNoteInfoEvent::Decode(pDecoder, pStream);
 }
 
 // MS2-FUNCTIONAL 0x1415b5ed0: decodes the base event and its embedded note record.

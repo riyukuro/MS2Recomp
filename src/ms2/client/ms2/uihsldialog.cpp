@@ -9,15 +9,15 @@
 #include "ms2/placeholder/asdata.h"
 #include "ms2/placeholder/asobj.h"
 
-struct Unk_HslColor { float r, g, b, a; Unk_HslColor() {} };
-struct Unk_HslRgb { float r, g, b, a; Unk_HslRgb() {} };   // NiColorA: FUN_14148a050 copies 16 bytes
+struct Unk_HslColor { float r, g, b, a; Unk_HslColor& operator=(const Unk_HslColor&); };
+struct Unk_HslRgb { float r, g, b, a; Unk_HslRgb& operator=(const Unk_HslRgb&); };   // NiColorA: FUN_14148a050 copies 16 bytes
 
 // ---- out-of-unit callees ----
 void* FUN_140aae430();                                                  // the renderer singleton
 
 void FUN_14148a050(void* pRenderer, Unk_HslRgb* pRgb);                      // reads the current colour (a NiColorA, 16 bytes)
-float FUN_140bf4fd0(float f);                                           // ceilf
-void* FUN_14097f1d0(void* out, float r, float g, float b, float a);     // builds a colour
+extern "C" float (__cdecl* __imp_ceilf)(float);                       // the exe calls the IAT slot
+Unk_HslColor FUN_14097f1d0(float r, float g, float b, float a);     // builds a colour
 void FUN_141489ff0(void* pRenderer, Unk_HslColor kColor);               // sets the colour
 
 // @0x1412c9860
@@ -40,27 +40,23 @@ CString UIHSLDialog::GetTypeName()
     return "HSLDialog";
 }
 
-// MS2-FUNCTIONAL: float-to-int conversion and local colour temporaries are laid out differently (39 bytes longer)
 // @0x1412c9970
 void UIHSLDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
     Unk_HslRgb kRgb;
     FUN_14148a050(FUN_140aae430(), &kRgb);
-    float fR = FUN_140bf4fd0(kRgb.r * 255.0f);
-    float fG = FUN_140bf4fd0(kRgb.g * 255.0f);
-    float fB = FUN_140bf4fd0(kRgb.b * 255.0f);
-    m_30->Invoke("initData", (int)fR, (int)fG, (int)fB);
+    int nR = (int)__imp_ceilf(kRgb.r * 255.0f);
+    int nG = (int)__imp_ceilf(kRgb.g * 255.0f);
+    int nB = (int)__imp_ceilf(kRgb.b * 255.0f);
+    m_30->Invoke("initData", nR, nG, nB);
 }
 
-// MS2-FUNCTIONAL: the exe copies the returned colour with a byte loop, we use a struct copy
 // @0x1412c9c50
 void FUN_1412c9c50(UIHSLDialog* pDialog)
 {
-    Unk_HslColor kBuf;
-    Unk_HslColor kColor = *(Unk_HslColor*)FUN_14097f1d0(&kBuf, (float)pDialog->m_nHue / 255.0f, (float)pDialog->m_nSaturation / 255.0f,
-                                                        (float)pDialog->m_nLightness / 255.0f, 1.0f);
-    FUN_141489ff0(FUN_140aae430(), kColor);
+    FUN_141489ff0(FUN_140aae430(), FUN_14097f1d0((float)pDialog->m_nHue / 255.0f, (float)pDialog->m_nSaturation / 255.0f,
+                                                 (float)pDialog->m_nLightness / 255.0f, 1.0f));
 }
 
 // @0x1412c9a40

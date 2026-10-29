@@ -13,6 +13,7 @@
 #include "ms2/placeholder/chomeprivilege.h"
 #include "ms2/placeholder/citemdata.h"
 #include "ms2/commonfiles/vipgoods.h"
+#include "ms2/commonfiles/additionalactionadditional.h"
 #include "ms2/placeholder/asobj.h"
 #include "ms2/placeholder/asdata.h"
 #include "ms2/placeholder/astextfield.h"
@@ -52,16 +53,6 @@ template <> MS2Ptr<Unk_VdList> UISwfEntity::GetChild<Unk_VdList>(const CString&)
 // The message box with its sound slot (the record is a CMsgBoxData).
 class Unk_VdMsgBox : public CMsgBoxData { public: void FUN_141a01c30(const CString&); };
 
-// The VIP effect of the first benefit: a 16-byte skill reference released by 0x1401836a0.
-void FUN_1401836a0(Unk_VipEffectRef*);
-struct Unk_VdEffectHold
-{
-    Unk_VipEffectRef m_ref;
-    Unk_VdEffectHold(const Unk_VipEffectRef& r) : m_ref(r) {}
-    ~Unk_VdEffectHold() { FUN_1401836a0(&m_ref); }
-    bool IsNull() const { return m_ref.m_p == 0; }
-    void* get() const { return m_ref.m_p; }
-};
 
 // The client event sink (FUN_140d86260); only slot 43 is used here.
 class Unk_VdPlatform
@@ -93,7 +84,7 @@ class Unk_VdStrings { public: CStringW FUN_141811980(int nTable, int nId); };
 Unk_VdStrings* FUN_1401a9d70();
 CStringW GetStringCommonByKey(const CStringW& strKey);
 CStringW FUN_1405c2690(CStringW strKey, const CStringW& strArg);
-CStringW FUN_14086aec0(ATL::CTimeSpan span, int nA, int nB, bool bDays, bool bHours);   // format a time span
+CStringW FUN_14086aec0(ATL::CTimeSpan span, bool bA, bool bB, bool bDays, bool bHours);   // format a time span
 bool FUN_140e452e0(const ATL::CTimeSpan& a, ATL::CTimeSpan b);  // a < b
 bool FUN_140841300(const CStringW& str, const char* sz);        // the string equals sz
 MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW strText, IMessageListener* pListener, CStringW strTag);
@@ -158,22 +149,20 @@ void UIVIPDialog::vfunc_72()
 }
 
 // @0x140fb8040
-// MS2-FUNCTIONAL: behaviour-equivalent; temp slots / MS2Ptr glue pairing and EH unwind map differ from the exe
 void UIVIPDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
     PCBase* pPlayer = FUN_141bd0cc0(FUN_1403ed2d0());
-    if (pPlayer != 0) {
-        FUN_140fb8d10();
-        SendPremiumClubMode1();
-        m_nVipEnd = FUN_141662e90(pPlayer);
-        m_nVip = FUN_141662de0(pPlayer);
-        FUN_140d86260()->vfunc_43(0xe, 0, 1000);
-    }
+    if (pPlayer == 0)
+        return;
+    FUN_140fb8d10();
+    SendPremiumClubMode1();
+    m_nVipEnd = FUN_141662e90(pPlayer);
+    m_nVip = FUN_141662de0(pPlayer);
+    FUN_140d86260()->vfunc_43(0xe, 0, 1000);
 }
 
 // @0x140fb80f0
-// MS2-FUNCTIONAL: behaviour-equivalent; temp slots / MS2Ptr glue pairing and EH unwind map differ from the exe
 int UIVIPDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs)
 {
     if (UIDialog::vfunc_28(szMethod, pArgs, nArgs) != 0)
@@ -189,7 +178,7 @@ int UIVIPDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pAr
         }
         return 1;
     }
-    if (_stricmp(szMethod, "onClickBuyGoods") == 0) {
+    else if (_stricmp(szMethod, "onClickBuyGoods") == 0) {
         FUN_1403ed2b0()->FUN_141adc750(0x4f1d);
         return 1;
     }
@@ -197,7 +186,6 @@ int UIVIPDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pAr
 }
 
 // @0x140fb8240
-// MS2-FUNCTIONAL: behaviour-equivalent; temp slots / MS2Ptr glue pairing and EH unwind map differ from the exe
 void UIVIPDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
 {
     UIObject::vfunc_49(pRetVal, pArgs);
@@ -205,15 +193,7 @@ void UIVIPDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
     if (pPlayer == 0)
         return;
     CStringW strType = pArgs->FUN_1422b8f40();
-    if (!FUN_140841300(strType, "benefitItem")) {
-        if (FUN_140841300(strType, "effectIcon")) {
-            Unk_VdEffectHold effect(FUN_140fb9980()->GetFirstEffect());
-            if (effect.IsNull())
-                return;
-            ASTooltip tip(*pRetVal, 2);
-            tip.FUN_1409e2750(effect.get(), 3, 0);
-        }
-    } else {
+    if (FUN_140841300(strType, "benefitItem")) {
         unsigned nBenefitId = pArgs->FUN_1422b8b10();
         CVIPBenefitItemPtr spBenefit = FUN_140fb9980()->GetBenefitItem(nBenefitId);
         if (spBenefit == 0)
@@ -225,10 +205,16 @@ void UIVIPDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
             ASTooltip tip(FUN_141bd0cc0(FUN_1403ed2d0()), 4, 2);
             if (FUN_1409e13a0(&tip, spWorn.get(), spItem.get()) != 0) {
                 if (spBenefit->m_nItemPeriod > 0)
-                    FUN_1409d6a40(&tip, FUN_1405276c0(spItem.get()), spBenefit->m_nItemPeriod);
+                    FUN_1409d6a40(&tip, FUN_1405276c0(spItem), spBenefit->m_nItemPeriod);
                 FUN_1409b4bc0(pRetVal, tip.FUN_1422bb870());
             }
         }
+    } else if (FUN_140841300(strType, "effectIcon")) {
+        MS2Ptr<AdditionalLevelData> effect = FUN_140fb9980()->GetFirstEffect();
+        if (effect == 0)
+            return;
+        ASTooltip tip(*pRetVal, 2);
+        tip.FUN_1409e2750(effect.get(), 3, 0);
     }
 }
 
@@ -241,7 +227,6 @@ void UIVIPDialog::SendPremiumClubMode1()
 }
 
 // @0x140fb8680
-// MS2-FUNCTIONAL: behaviour-equivalent; temp slots / MS2Ptr glue pairing and EH unwind map differ from the exe
 int UIVIPDialog::FUN_140fb8680()
 {
     PCBase* pPlayer = FUN_141bd0cc0(FUN_1403ed2d0());
@@ -256,14 +241,14 @@ int UIVIPDialog::FUN_140fb8680()
         CVIPBenefitItemPtr spBenefit = items[i];
         if (spBenefit == 0)
             continue;
-        if (FUN_140fb9720(spBenefit->m_nId) != 0)
-            nCount++;
+        if (FUN_140fb9720(spBenefit->m_nId) == 0)
+            continue;
+        nCount++;
     }
     return nCount;
 }
 
 // @0x140fb87d0
-// MS2-FUNCTIONAL: behaviour-equivalent; temp slots / MS2Ptr glue pairing and EH unwind map differ from the exe
 void UIVIPDialog::FUN_140fb87d0(CInPacket& packet, int nMode)
 {
     if (nMode == 1) {
@@ -282,22 +267,20 @@ void UIVIPDialog::FUN_140fb87d0(CInPacket& packet, int nMode)
         CVIPBenefitItemPtr spBenefit = FUN_140fb9980()->GetBenefitItem(nBenefitId);
         if (spBenefit == 0)
             return;
-        MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x11, GetStringCommonByKey(CStringW(L"s_vip_dialog_get_benefit_item")), 0, CStringW(L""));
-        if (spBox.get() == 0)
-            return;
-        MS2Ptr<CItem> spItem(new CItem());
-        if (!spItem->FUN_140523c40(spBenefit->m_nItemId, spBenefit->m_nItemRank, 0))
-            return;
-        spItem->FUN_140526c70(spBenefit->m_nItemCount);
-        spBox->FUN_141a01ee0(MS2Ptr<CItem>(spItem), spItem->FUN_140527b10(), 1, 0, -1, -1, 1);
-        spBox->FUN_141a01700(0x475, 0, 0);
-        FUN_140d73c60(MS2Ptr<CMsgBoxData>(spBox));
-        FUN_141276180(s_sndCashBuy, CString(""));
+        if (MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x11, GetStringCommonByKey(L"s_vip_dialog_get_benefit_item"), 0, L"")) {
+            MS2Ptr<CItem> spItem(new CItem());
+            if (!spItem->FUN_140523c40(spBenefit->m_nItemId, spBenefit->m_nItemRank, 0))
+                return;
+            spItem->FUN_140526c70(spBenefit->m_nItemCount);
+            spBox->FUN_141a01ee0(MS2Ptr<CItem>(spItem), spItem->FUN_140527b10(), 1, 0, -1, -1, 1);
+            spBox->FUN_141a01700(0x475, 0, 0);
+            FUN_140d73c60(MS2Ptr<CMsgBoxData>(spBox));
+            FUN_141276180(s_sndCashBuy, "");
+        }
     }
 }
 
 // @0x140fb8d10
-// MS2-FUNCTIONAL: behaviour-equivalent; temp slots / MS2Ptr glue pairing and EH unwind map differ from the exe
 void UIVIPDialog::FUN_140fb8d10()
 {
     if (!m_30)
@@ -305,35 +288,31 @@ void UIVIPDialog::FUN_140fb8d10()
     PCBase* pPlayer = FUN_141bd0cc0(FUN_1403ed2d0());
     if (pPlayer == 0)
         return;
-    MS2Ptr<ASTextField> spTime = FUN_140bb4cf0(CString("m_remainTime"));
+    MS2Ptr<ASTextField> spTime = FUN_140bb4cf0("m_remainTime");
     if (spTime == 0)
         return;
     if (FUN_141662de0(pPlayer) == 0) {
-        spTime->FUN_1422c4cd0(GetStringCommonByKey(CStringW(L"s_vip_dialog_end_time")));
+        spTime->FUN_1422c4cd0(GetStringCommonByKey(L"s_vip_dialog_end_time"));
     } else {
-        CMsTime now(FUN_140869440());
-        CMsTime end(FUN_141662e90(pPlayer));
-        ATL::CTimeSpan span = end - now;
-        if (FUN_140e452e0(span, ATL::CTimeSpan(0)))
+        ATL::CTimeSpan span = CMsTime(FUN_141662e90(pPlayer)) - CMsTime(FUN_140869440());
+        if (FUN_140e452e0(span, 0))
             return;
-        CStringW strRemain = FUN_14086aec0(span, 1, 1, 0, 0);
+        CStringW strRemain = FUN_14086aec0(span, true, true, false, false);
         if (strRemain.IsEmpty())
-            strRemain = GetStringCommonByKey(CStringW(L"s_vip_dialog_remain_time_hour"));
+            strRemain = GetStringCommonByKey(L"s_vip_dialog_remain_time_hour");
         else
-            strRemain = FUN_1405c2690(CStringW(L"s_vip_dialog_remain_time"), strRemain);
+            strRemain = FUN_1405c2690(L"s_vip_dialog_remain_time", strRemain);
         spTime->FUN_1422c4f00(strRemain);
     }
-    int nTextWidth = (int)(__int64)spTime->FUN_1422c5970();
+    unsigned nTextWidth = spTime->FUN_1422c5970();
     float fX, fY;
     spTime->FUN_1422c0f60(&fX, &fY);
     fX = fX + (float)((spTime->FUN_1422c1340() - nTextWidth) - 0x1e);
-    MS2Ptr<ASMovieClip> spIcon = FUN_140ba7930(CString("m_timerIcon"));
-    if (spIcon != 0)
+    if (MS2Ptr<ASMovieClip> spIcon = FUN_140ba7930("m_timerIcon"))
         spIcon->FUN_1422c00f0(fX, fY);
 }
 
 // @0x140fb9150
-// MS2-FUNCTIONAL: behaviour-equivalent; temp slots / MS2Ptr glue pairing and EH unwind map differ from the exe
 void UIVIPDialog::FUN_140fb9150()
 {
     if (!m_30)
@@ -341,7 +320,7 @@ void UIVIPDialog::FUN_140fb9150()
     PCBase* pPlayer = FUN_141bd0cc0(FUN_1403ed2d0());
     if (pPlayer == 0)
         return;
-    MS2Ptr<Unk_VdList> spList = GetChild<Unk_VdList>(CString("m_benefitItemList"));
+    MS2Ptr<Unk_VdList> spList = GetChild<Unk_VdList>("m_benefitItemList");
     if (spList == 0)
         return;
     spList->Invoke("resetRenderer");
@@ -354,7 +333,7 @@ void UIVIPDialog::FUN_140fb9150()
         if (spBenefit == 0)
             continue;
         MS2Ptr<CItemData> spData = FUN_14053f870(spBenefit->m_nItemId);
-        if (spData.get() == 0)
+        if (!spData)
             continue;
         MS2Ptr<CItem> spItem(new CItem());
         if (!spItem->FUN_140523c40(spBenefit->m_nItemId, spBenefit->m_nItemRank, 0))
@@ -374,14 +353,14 @@ void UIVIPDialog::FUN_140fb9150()
             row.FUN_1407cb9c0("itemLock", 1);
         else if (nLock == 3)
             row.FUN_1407cb9c0("itemConditionLock", 1);
-        row.FUN_1407cb9c0("disableButton", FUN_140fb9720(spBenefit->m_nId) == 0);
+        int bDisable = FUN_140fb9720(spBenefit->m_nId) == 0;
+        row.FUN_1407cb9c0("disableButton", bDisable);
         spList->FUN_1422dd230(row);
     }
     spList->vfunc_24(true);
 }
 
 // @0x140fb9720
-// MS2-FUNCTIONAL: behaviour-equivalent; temp slots / MS2Ptr glue pairing and EH unwind map differ from the exe
 int UIVIPDialog::FUN_140fb9720(unsigned nBenefitId)
 {
     PCBase* pPlayer = FUN_141bd0cc0(FUN_1403ed2d0());
@@ -389,7 +368,9 @@ int UIVIPDialog::FUN_140fb9720(unsigned nBenefitId)
         return 0;
     if (FUN_141662de0(pPlayer) == 0)
         return 0;
-    return m_claimedIds.Find(nBenefitId) == 0;
+    if (m_claimedIds.Find(nBenefitId) != 0)
+        return 0;
+    return 1;
 }
 
 // @0x140fb9980

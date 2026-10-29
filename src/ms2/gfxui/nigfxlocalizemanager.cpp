@@ -6,10 +6,9 @@
 // The unit name and directory are assumed (the GFx UI library has no __FILE__ strings). Tail: the inline FontConfigSet /
 // ConfigParser members and the Scaleform Array<Ptr<FontConfig>> / Ptr<FontConfig> glue of `delete m_pConfigSet`.
 #include "ms2/placeholder/ms2stdafx.h"
-
 #include "nigfxlocalizemanager.h"
 
-#include "GFx/GFx_FontLib.h"
+#include "ms2/scaleform/include/gfx/gfx_fontlib.h"
 
 #include "ms2/commonfiles/logstring.h"
 #include "ms2/placeholder/xmlattr.h"

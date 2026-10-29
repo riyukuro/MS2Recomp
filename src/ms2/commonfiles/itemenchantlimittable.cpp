@@ -143,9 +143,7 @@ CItemEnchantLimitTable::~CItemEnchantLimitTable()
 // @0x14058dc50
 int CItemEnchantLimitTable::Load()
 {
-    CString strFile("enchantLimitTable.xml");
-    CString strDir("Table");
-    CString strPath = FUN_14071a5b0(strDir, strFile);
+    CString strPath = FUN_14071a5b0("Table", "enchantLimitTable.xml");
     TiXmlDocument doc;
     if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return 0;
@@ -166,7 +164,8 @@ int CItemEnchantLimitTable::Load()
         FUN_1408731e0(pNode, "maxGrade", spLimit->m_nMaxGrade);
         int nSlot = 0;
         FUN_1408731e0(pNode, "slot", nSlot);
-        m_map.SetAt(nSlot, spLimit);
+        int nKey = nSlot;
+        m_map.SetAt(nKey, spLimit);
     }
     SetInit(true);
     return 1;
@@ -220,13 +219,13 @@ int CItemEnchantLimitTable::FUN_14058e230(CItem* pItem)
     MS2Ptr<EnchantLimit> spLimit(0);
     if (!m_map.Lookup(ITEM_DATA(pItem)->FUN_14053c620(), spLimit))
         return 0;
-    unsigned nLevel = pItem->FUN_140527710();
-    if (nLevel < spLimit->m_nMinLv)
+    if (pItem->FUN_140527710() < spLimit->m_nMinLv)
         return 0;
-    unsigned nLevelMax = pItem->FUN_140527710();
-    if (spLimit->m_nMaxLv < nLevelMax)
+    if (pItem->FUN_140527710() > spLimit->m_nMaxLv)
         return 0;
-    return ITEM_DATA_BYTE(pItem, 0x1a1) == 0;
+    if (ITEM_DATA_BYTE(pItem, 0x1a1) != 0)
+        return 0;
+    return 1;
 }
 
 // @0x14058e3a0
@@ -263,9 +262,11 @@ int CItemEnchantLimitTable::FUN_14058e500(unsigned nItemId, int nGrade)
     if (pLow->limit.levelLimit < spLimit->m_nMinLv)
         return 0;
     CItemData* pHigh = spData.operator->();
-    if (spLimit->m_nMaxLv < pHigh->limit.levelLimit)
+    if (pHigh->limit.levelLimit > spLimit->m_nMaxLv)
         return 0;
-    return nGrade < spLimit->m_nMaxGrade;
+    if (nGrade >= spLimit->m_nMaxGrade)
+        return 0;
+    return 1;
 }
 
 // ---- EnchantLimit ----

@@ -33,7 +33,7 @@
 // MS2-PIN: ?UpdateRehashThresholds@?$CAtlMap@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@HV?$CStringElementTraitsI@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@V?$CDefaultCharTraits@_W@2@@2@V?$CElementTraits@H@2@@ATL@@AEAAXXZ 0x140372410 ; unique
 // MS2-PINS-END tplpin
 // MS2-PIN: ??_7?$TSingleton@VCFeatureTable@@@@6B@ 0x142d2e258
-// MS2-PIN: ??_7CFeatureManager@@6B?$TSingleton@VCFeatureManager@@@@@ 0x142d2e278
+// MS2-PIN: ??_7CFeatureManager@@6B?$TSingleton@VCFeatureManager@@@@@ 0x142d2e2b8
 // MS2-PIN: ??_7CFeatureManager@@6B?$CValidData@VCFeatureManager@@@@@ 0x142d2e2c8
 // MS2-PIN: ?StringCompare@?$ChTraitsCRT@_W@ATL@@SAHPEB_W0@Z 0x14036c840
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\commonfiles\\featuremanager.cpp"
@@ -56,10 +56,10 @@ void FUN_14015eb90(CLogString* log, int level, int category, const wchar_t* form
 void FUN_1401859c0(CLogString* log, int level, int category, const wchar_t* format);
 CString FUN_140651390();                                                    // the locale name of the client
 CStringW FUN_14016a730(const char* psz, int nCodePage);
-bool FUN_14025cd60(const CStringW& strA, const CStringW& strB);             // the strings are equal
+bool FUN_14025cd60(const CStringW& strA, const CStringW& strB) throw();     // the strings are equal (no unwind state for the caller's temp)
 bool FUN_140164830(const CStringW& strA, const CStringW& strB);
 CStringW FUN_140875470(Unk_140165cf0* pElem);                               // the <feature> row as text
-bool FUN_140184310(CString str, const char* psz);
+bool FUN_140184310(const CString& str, const char* psz) throw();   // the strings are equal (strcmp only, so no unwind state for the caller's temp)
 int FUN_140219a50(const CString& strType);                                  // the server type name -> id
 void FUN_14025a680(const CStringW& str, ATL::CAtlArray<CStringW>* pOut, const wchar_t* pszSep);   // split
 void FUN_140291e40(CStringW strName, bool bOn, const char* pszTag);
@@ -701,16 +701,13 @@ bool CFeatureTable::Init()
 // @0x14036b9e0
 void CFeatureTable::FUN_14036b9e0()
 {
-    m_map.~NameMap();
+    m_map.RemoveAll();
 }
 
 // @0x14036f550
-// MS2-FUNCTIONAL: singleton creation keeps an extra EH temp in the exe
 CFeatureTable* CFeatureTable::FUN_14036f550()
 {
-    if (s_instance != 0)
-        return GetInstance();
-    return new CFeatureTable;
+    return s_instance != 0 ? GetInstance() : new CFeatureTable;
 }
 
 // @0x14036f750
@@ -760,10 +757,9 @@ bool CFeatureManager::FUN_14036cd30()
 }
 
 // @0x14036cd50
-// MS2-FUNCTIONAL: XML loader temp layout differs
 bool CFeatureManager::LoadFeatureSetting()
 {
-    CString strPath = FUN_14071a5b0(CString("Table"), CString("feature_setting.xml"));
+    CString strPath = FUN_14071a5b0("Table", "feature_setting.xml");
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return false;
@@ -791,10 +787,9 @@ bool CFeatureManager::LoadFeatureSetting()
 }
 
 // @0x14036d040
-// MS2-FUNCTIONAL: XML loader temp layout differs
 bool CFeatureManager::LoadFeature()
 {
-    CString strPath = FUN_14071a5b0(CString("Table"), CString("feature.xml"));
+    CString strPath = FUN_14071a5b0("Table", "feature.xml");
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return false;
@@ -811,32 +806,27 @@ bool CFeatureManager::LoadFeature()
         int nLevel = 0;
         FUN_140873420(pFeature, "name", strName);
         FUN_1408731e0(pFeature, FUN_14016a5c0(FUN_140651390(), 0), nLevel);
-        if (nLevel != 0)
-        {
-            m_nameLevels.SetAt(strName, nLevel);
-            Unk_FeatureId nId = (Unk_FeatureId)1;
-            if (CFeatureTable::GetInstance()->m_map.Lookup(strName, nId))
-                m_idLevels.SetAt(nId, nLevel);
-            bool bOn = nLevel <= m_nLevel;
-            FUN_140291e40(CStringW(strName), bOn, "feature");
-        }
+        if (nLevel == 0)
+            continue;
+        m_nameLevels.SetAt(strName, nLevel);
+        Unk_FeatureId nId = (Unk_FeatureId)1;
+        if (CFeatureTable::GetInstance()->m_map.Lookup(strName, nId))
+            m_idLevels.SetAt(nId, nLevel);
+        FUN_140291e40(CStringW(strName), nLevel <= m_nLevel ? true : false, "feature");
     }
     return true;
 }
 
 // @0x14036d3d0
-// MS2-FUNCTIONAL: map lookup glue/temp layout differs
 bool CFeatureManager::FUN_14036d3d0()
 {
     if (!CFeatureTable::GetInstance()->Init())
         return false;
-    POSITION pos = CFeatureTable::GetInstance()->m_map.GetStartPosition();
-    while (pos != 0)
+    for (POSITION pos = CFeatureTable::GetInstance()->m_map.GetStartPosition(); pos != 0; CFeatureTable::GetInstance()->m_map.GetNext(pos))
     {
         CStringW strName = CFeatureTable::GetInstance()->m_map.GetKeyAt(pos);
         Unk_FeatureId nId = CFeatureTable::GetInstance()->m_map.GetValueAt(pos);
         m_idNames.SetAt(nId, strName);
-        CFeatureTable::GetInstance()->m_map.GetNext(pos);
     }
     return true;
 }
@@ -996,22 +986,21 @@ int CFeatureManager::FUN_14036dc60()
 }
 
 // @0x14036dc80
-// MS2-FUNCTIONAL: the cap constants are separate 4-byte statics in the exe; here they are unit-local ushort constants
 unsigned short CFeatureManager::FUN_14036dc80()
 {
     if (FUN_14036d570(0x2c))
         return std::min<unsigned short>(s_nBaseLevelCap, s_nLevelCap99);
-    if (FUN_14036d570(0x2b))
+    else if (FUN_14036d570(0x2b))
         return std::min<unsigned short>(s_nBaseLevelCap, s_nLevelCap90);
-    if (FUN_14036d570(0x2a))
+    else if (FUN_14036d570(0x2a))
         return std::min<unsigned short>(s_nBaseLevelCap, s_nLevelCap80);
-    if (FUN_14036d570(0x29))
+    else if (FUN_14036d570(0x29))
         return std::min<unsigned short>(s_nBaseLevelCap, s_nLevelCap70);
-    if (FUN_14036d570(0x28))
+    else if (FUN_14036d570(0x28))
         return std::min<unsigned short>(s_nBaseLevelCap, s_nLevelCap65);
-    if (FUN_14036d570(0x27))
+    else if (FUN_14036d570(0x27))
         return std::min<unsigned short>(s_nBaseLevelCap, s_nLevelCap60);
-    if (FUN_14036d570(0x26))
+    else if (FUN_14036d570(0x26))
         return std::min<unsigned short>(s_nBaseLevelCap, s_nLevelCap55);
     return 0x32;
 }
@@ -1023,7 +1012,6 @@ int CFeatureManager::FUN_14036de00()
 }
 
 // @0x14036de20
-// MS2-FUNCTIONAL: CString return temps differ
 CStringW CFeatureManager::FUN_14036de20(const CStringW& strA, const CStringW& strB)
 {
     CheckInit();
@@ -1033,17 +1021,17 @@ CStringW CFeatureManager::FUN_14036de20(const CStringW& strA, const CStringW& st
     int nLevelB = 0;
     m_nameLevels.Lookup(strA, nLevelA);
     m_nameLevels.Lookup(strB, nLevelB);
-    if (nLevelB < nLevelA)
+    if (nLevelA > nLevelB)
         return strA;
-    if (nLevelA < nLevelB)
+    else if (nLevelB > nLevelA)
         return strB;
-    if (strA.Compare(strB) < 1)
+    else if (strA.Compare(strB) > 0)
+        return strA;
+    else
         return strB;
-    return strA;
 }
 
 // @0x14036dfa0
-// MS2-FUNCTIONAL: CString return temps differ
 CStringW CFeatureManager::FUN_14036dfa0(const CStringW& strA, const CStringW& strB)
 {
     CheckInit();
@@ -1051,83 +1039,71 @@ CStringW CFeatureManager::FUN_14036dfa0(const CStringW& strA, const CStringW& st
         return strA;
     if (FUN_14025cd60(FUN_14036d960(), strA))
         return strA;
-    if (FUN_14025cd60(FUN_14036d960(), strB))
+    else if (FUN_14025cd60(FUN_14036d960(), strB))
         return strB;
     if (strA.IsEmpty())
         return strA;
-    if (strB.IsEmpty())
+    else if (strB.IsEmpty())
         return strB;
     return strA;
 }
 
 // @0x14036e160
-// MS2-FUNCTIONAL: CString temps differ
 Unk_140165cf0* CFeatureManager::FUN_14036e160(Unk_140165cf0* pA, Unk_140165cf0* pB)
 {
     CheckInit();
-    Unk_140165cf0* pResult = pA;
-    if (pB != 0 && (pResult = pB, pA != 0))
+    if (pB == 0)
+        return pA;
+    if (pA == 0)
+        return pB;
+    CStringW strFeatureA;
+    CStringW strFeatureB;
+    FUN_140873420(pA, "feature", strFeatureA);
+    FUN_140873420(pB, "feature", strFeatureB);
+    if (FUN_140164830(strFeatureA, strFeatureB))
     {
-        CStringW strFeatureA;
-        CStringW strFeatureB;
-        FUN_140873420(pA, "feature", strFeatureA);
-        FUN_140873420(pB, "feature", strFeatureB);
-        if (!FUN_140164830(strFeatureA, strFeatureB))
-        {
-            CStringW strLocaleA;
-            CStringW strLocaleB;
-            FUN_140873420(pA, "locale", strLocaleA);
-            FUN_140873420(pB, "locale", strLocaleB);
-            if (!FUN_140164830(strLocaleA, strLocaleB))
-            {
-                CStringW strRow = FUN_140875470(pA);
-                Unk_FeatureLog2(CLogString::GetInstance(), 0, 0, 0x13, L"Feature and Locale is Same : {0}", strRow);
-                pResult = pA;
-            }
-            else
-            {
-                CStringW strBest = FUN_14036dfa0(strLocaleA, strLocaleB);
-                if (!FUN_14025cd60(strBest, strLocaleA))
-                    pResult = pB;
-                else
-                    pResult = pA;
-            }
-        }
+        CStringW strBest = FUN_14036de20(strFeatureA, strFeatureB);
+        if (FUN_14025cd60(strBest, strFeatureA))
+            return pA;
         else
-        {
-            CStringW strBest = FUN_14036de20(strFeatureA, strFeatureB);
-            if (!FUN_14025cd60(strBest, strFeatureA))
-                pResult = pB;
-            else
-                pResult = pA;
-        }
+            return pB;
     }
-    return pResult;
+    CStringW strLocaleA;
+    CStringW strLocaleB;
+    FUN_140873420(pA, "locale", strLocaleA);
+    FUN_140873420(pB, "locale", strLocaleB);
+    if (FUN_140164830(strLocaleA, strLocaleB))
+    {
+        CStringW strBest = FUN_14036dfa0(strLocaleA, strLocaleB);
+        if (FUN_14025cd60(strBest, strLocaleA))
+            return pA;
+        else
+            return pB;
+    }
+    CStringW strRow = FUN_140875470(pA);
+    Unk_FeatureLog2(CLogString::GetInstance(), 0, 0, 0x13, L"Feature and Locale is Same : {0}", strRow);
+    return pA;
 }
 
 // @0x14036e4c0
-// MS2-FUNCTIONAL: temporary CString result is passed by pointer in the exe (smaller frame)
 bool CFeatureManager::FUN_14036e4c0()
 {
     return FUN_140184310(FUN_14036d8e0(), "KR");
 }
 
 // @0x14036e510
-// MS2-FUNCTIONAL: same temporary CString shape as e4c0
 bool CFeatureManager::FUN_14036e510()
 {
     return FUN_140184310(FUN_14036d8e0(), "CN");
 }
 
 // @0x14036e560
-// MS2-FUNCTIONAL: same temporary CString shape as e4c0
 bool CFeatureManager::FUN_14036e560()
 {
     return FUN_140184310(FUN_14036d8e0(), "NA");
 }
 
 // @0x14036e5b0
-// MS2-FUNCTIONAL: same temporary CString shape as e4c0
 bool CFeatureManager::FUN_14036e5b0()
 {
     return FUN_140184310(FUN_14036d8e0(), "JP");
@@ -1155,15 +1131,9 @@ int CFeatureManager::FUN_14036e6b0()
 }
 
 // @0x14036e6c0
-// MS2-FUNCTIONAL: exe keeps a 4-byte result local with a different branch layout
 bool CFeatureManager::FUN_14036e6c0()
 {
-    bool bRet;
-    if (s_nServerType == 1 || s_nServerType == 2 || s_nServerType == 3)
-        bRet = true;
-    else
-        bRet = false;
-    return bRet;
+    return s_nServerType == 1 || s_nServerType == 2 || s_nServerType == 3;
 }
 
 // @0x14036e700

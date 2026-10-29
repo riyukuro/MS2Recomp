@@ -69,10 +69,6 @@ template<> Unk_AsDelegate::~Delegate()
         delete m_pImpl;
 }
 
-// @0x1409b4af0
-// MS2-FUNCTIONAL: exe ~ASTooltip stores no vftable (ASTooltip own-vtable layout unknown)
-ASTooltip::~ASTooltip() {}
-
 // @0x1409b4b20
 template<> Unk_AsDelegate::DelegateImplBase::~DelegateImplBase() {}
 
@@ -97,26 +93,22 @@ ASEffect::~ASEffect()
 }
 
 // @0x1409b2fb0
-// MS2-FUNCTIONAL: temporary/frame layout of the child binders differs (frame 0x168 vs 0x128)
 void ASEffect::BindChildren()
 {
-    if (!IsLoaded())
-    {
-        void* pMovie = FUN_1422bb8b0(m_nMovieId);
-        if (pMovie != 0)
-        {
-            FUN_14256e8e0(pMovie, &m_value, "export_additional_effect", 0, 0);
-            if (FUN_1409b0390(&m_value) == 0)
-            {
-                m_a0 = FUN_1409b4560(CString("m_cooldown"));
-                m_b0 = FUN_1409b4560(CString("m_buffBorder"));
-                m_c0 = FUN_1409b4620(CString("m_textField"));
-                m_d0 = FUN_1409b4620(CString("m_textCountField"));
-                FUN_1422c3180(CString("GetTooltipCallback"), Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &ASEffect::GetTooltip));
-                FUN_1422c6380(m_value, 2);
-            }
-        }
-    }
+    if (IsLoaded())
+        return;
+    void* pMovie = FUN_1422bb8b0(m_nMovieId);
+    if (pMovie == 0)
+        return;
+    FUN_14256e8e0(pMovie, &m_value, "export_additional_effect", 0, 0);
+    if (FUN_1409b0390(&m_value) != 0)
+        return;
+    m_a0 = FUN_1409b4560("m_cooldown");
+    m_b0 = FUN_1409b4560("m_buffBorder");
+    m_c0 = FUN_1409b4620("m_textField");
+    m_d0 = FUN_1409b4620("m_textCountField");
+    FUN_1422c3180("GetTooltipCallback", Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &ASEffect::GetTooltip));
+    FUN_1422c6380(m_value, 2);
 }
 
 // @0x1409b3300
@@ -127,49 +119,41 @@ bool ASEffect::IsLoaded()
 MS2_REPLACE_METHOD(0x1409B3300, ASEffect, IsLoaded, 31, 0x038F4D4C);
 
 // @0x1409b3330
-// MS2-FUNCTIONAL: source shape differs (frame/branch order of the cooldown sweep)
 void ASEffect::Update()
 {
-    if (IsLoaded() && m_e8)
+    if (!IsLoaded() || !m_e8)
+        return;
+    UpdateIcon();
+    unsigned nElapsed = FUN_140869420() - m_90;
+    if (nElapsed < 500)
     {
-        UpdateIcon();
-        unsigned nElapsed = FUN_140869420() - m_90;
-        if (nElapsed < 500)
-        {
-            nElapsed = nElapsed * 60;
-            unsigned nFrame = nElapsed / 1000;
-            if (m_a0->FUN_1422c2300() != nFrame)
-                m_a0->vfunc_14(nFrame);
-        }
-        else
-        {
-            if (m_buff->m_1c != m_buff->m_20)
-            {
-                if (!m_buff->FUN_14096d810()->FUN_140175290())
-                {
-                    float fRemain = FUN_14028d280(m_buff->FUN_14096d2e0());
-                    if (fRemain <= 0.0f)
-                    {
-                        m_e8 = false;
-                        if (m_a0->FUN_1422c2300() != 0x95)
-                            m_a0->vfunc_14(0x95);
-                        m_c0->FUN_1422c4cd0(CStringW(L""));
-                        return;
-                    }
-                    float fTotal = FUN_14028d280(m_buff->FUN_14096d330());
-                    int nFrame = (int)(((fTotal - fRemain) * 120.0f) / fTotal + 30.0f);
-                    if (m_a0->FUN_1422c2300() != nFrame)
-                        m_a0->vfunc_14(nFrame);
-                    if (m_94.FUN_140268870(100) == 0)
-                        return;
-                    m_c0->FUN_1422c4cd0(FormatRemain(fRemain));
-                    return;
-                }
-            }
-            if (m_a0->FUN_1422c2300() != 0x1e)
-                m_a0->vfunc_14(0x1e);
-        }
+        unsigned nFrame = nElapsed * 60 / 1000;
+        if (m_a0->FUN_1422c2300() != nFrame)
+            m_a0->vfunc_14(nFrame);
+        return;
     }
+    if (m_buff->m_1c == m_buff->m_20 || m_buff->FUN_14096d810()->FUN_140175290())
+    {
+        if (m_a0->FUN_1422c2300() != 0x1e)
+            m_a0->vfunc_14(0x1e);
+        return;
+    }
+    float fRemain = FUN_14028d280(m_buff->FUN_14096d2e0());
+    if (fRemain > 0.0f)
+    {
+        float fTotal = FUN_14028d280(m_buff->FUN_14096d330());
+        int nFrame = (int)(30.0f + (120.0f * (fTotal - fRemain)) / fTotal);
+        if (m_a0->FUN_1422c2300() != nFrame)
+            m_a0->vfunc_14(nFrame);
+        if (m_94.FUN_140268870(100) != 0)
+            m_c0->FUN_1422c4cd0(FormatRemain(fRemain));
+        return;
+    }
+    m_e8 = false;
+    int nEndFrame = 0x95;
+    if (m_a0->FUN_1422c2300() != nEndFrame)
+        m_a0->vfunc_14(nEndFrame);
+    m_c0->FUN_1422c4cd0(L"");
 }
 
 // @0x1409b3700
@@ -253,32 +237,26 @@ void ASEffect::GetTooltip(const Scaleform::GFx::FunctionHandler::Params& params)
 }
 
 // @0x1409b3a20
-// MS2-FUNCTIONAL: source shape differs (frame/branch order of the icon refresh)
 void ASEffect::UpdateIcon()
 {
-    if (IsLoaded() && m_e9)
-    {
-        if (!m_buff->FUN_14096d810()->FUN_140171890())
-        {
-            if (!IsOwnerAlive())
-                m_b0->vfunc_15(CString("red"));
-            else
-                m_b0->vfunc_15(CString("yellow"));
-        }
-        else
-            m_b0->vfunc_15(CString("none"));
+    if (!IsLoaded())
+        return;
+    if (!m_e9)
+        return;
+    if (m_buff->FUN_14096d810()->FUN_140171890())
+        m_b0->vfunc_15("none");
+    else if (IsOwnerAlive())
+        m_b0->vfunc_15("yellow");
+    else
+        m_b0->vfunc_15("red");
 
-        if (m_buff->m_24 < 2)
-        {
-            if (m_buff->m_24 < 2)
-                m_d0->FUN_1422c4cd0(CStringW(L""));
-        }
-        else
-            m_d0->FUN_1422c4cd0(FUN_1407196b0(m_buff->m_24));
-        m_c0->FUN_1422c4cd0(CStringW(L""));
-        Invoke("setIcon", m_buff->FUN_14096d810()->FUN_1401756c0());
-        m_e9 = false;
-    }
+    if (m_buff->m_24 > 1)
+        m_d0->FUN_1422c4cd0(FUN_1407196b0(m_buff->m_24));
+    else if (m_buff->m_24 <= 1)
+        m_d0->FUN_1422c4cd0(L"");
+    m_c0->FUN_1422c4cd0(L"");
+    Invoke("setIcon", m_buff->FUN_14096d810()->FUN_1401756c0());
+    m_e9 = false;
 }
 
 // @0x1409b3d50

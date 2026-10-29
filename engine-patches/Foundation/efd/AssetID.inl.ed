@@ -1,3 +1,16 @@
+131a
+    // MS2: a URN ending in ':' (a bare scheme) is not stored and the old URN stays (the game's /Od copy 0x140de0cb0;
+    // inlined in SceneGraphService::Cache 0x141ffb690)
+    const size_t n = val.length();
+    if (n && val[n - 1] == ':')
+        return;
+.
+130c
+__forceinline void AssetID::SetURN(const efd::utf8string &val)   // MS2: the exe inlines it into the /O2 SetByString copies
+.
+84a
+    EE_MS2_ASSETID_STRIP_SCHEME();
+.
 75a
     EE_MS2_ASSETID_STRIP_SCHEME();
 .

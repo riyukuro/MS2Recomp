@@ -7,7 +7,6 @@ the maintainer's checkout; an external checkout points the environment variables
   MS2_THIRD_PARTY  MSVC 14.16 + Windows SDK (msvc-wine layout: bin/x64/cl, VC/, Windows Kits/), dxsdk/, physx*/
   MS2_ENGINE_DIR   Gamebryo 3.2.0.661 + engine patches (the directory that holds gamebryo/; stock source + engine-patches/, see CONTRIBUTING.md)
   MS2_WINEPREFIX   Wine prefix for the MSVC toolchain (MS2_MSVC_WINEPREFIX also accepted)
-  MS2_SCALEFORM_SDK  Scaleform GFx 4.1.x SDK headers (the Scaleform/ directory)
 Native Windows (no Wine; CONTRIBUTING.md "Windows"): the real VS2017 v141 cl.exe is used instead of the Wine wrappers.
   MS2_CL           full path of the 14.16 cl.exe (default: cl on PATH, else found through vswhere / the default install dirs)
   MS2_VCVARS       full path of vcvarsall.bat (default: found through vswhere / the default install dirs)
@@ -38,7 +37,6 @@ CLASSES_DIR = _env("MS2_CLASSES_DIR", os.path.join(ROOT, "work", "classes"))
 THIRD_PARTY = _env("MS2_THIRD_PARTY", os.path.join(ROOT, "third_party"))
 ENGINE_DIR = _env("MS2_ENGINE_DIR", os.path.join(ROOT, "engine"))
 WINEPREFIX = _env("MS2_WINEPREFIX", _env("MS2_MSVC_WINEPREFIX", os.path.join(ROOT, "work", "wineprefix-msvc")))
-SCALEFORM_SDK = os.path.join(ROOT, "work", "scaleform", "4.1.19", "Scaleform")   # MS2_SCALEFORM_SDK read by progress.py
 FUNCTIONS_TSV = os.path.join(MAP_DIR, "functions.tsv")
 UNITS_TSV = os.path.join(MAP_DIR, "units.tsv")
 RTTI_CLASSES = os.path.join(CLASSES_DIR, "rtti_classes.tsv")
@@ -150,7 +148,7 @@ def find_cl(env=None):
     return shutil.which("cl", path=path) or "cl"
 
 
-# Older MSVC toolsets selectable per engine/library unit ("toolset" field of engine/units-*.json, default "1416"):
+# Older MSVC toolsets selectable per engine/library unit ("toolset" field of data/engine/units-*.json, default "1416"):
 # third_party/msvc147 = 14.14.26428 (cl 19.14.26433), third_party/msvc148 = 14.15.26726 (cl 19.15.26731).
 TOOLSETS = {"1416": "msvc", "1414": "msvc147", "1415": "msvc148"}
 DEFAULT_TOOLSET = "1416"

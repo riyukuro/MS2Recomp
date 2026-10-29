@@ -44,12 +44,9 @@ CostumeManager::~CostumeManager()
 }
 
 // @0x140b1d360
-// MS2-FUNCTIONAL: the exe passes the kind / owner id / time locals through an extra register hop (mov ecx,[x]; mov edx,ecx);
-// source shape not found, flow and calls match.
 void CostumeManager::FUN_140b1d360(int nCostumeId)
 {
-    unsigned int nKind = FUN_141658e60(m_pOwner);
-    MS2Ptr<Unk_CostumeRow> spRow = FUN_140b1db00()->FUN_1405360b0(nCostumeId, nKind);
+    MS2Ptr<Unk_CostumeRow> spRow = FUN_140b1db00()->FUN_1405360b0(nCostumeId, FUN_141658e60(m_pOwner));
     if (spRow == 0)
         return;
     if (m_nCostumeId != 0)
@@ -64,10 +61,8 @@ void CostumeManager::FUN_140b1d360(int nCostumeId)
             continue;
         int nCustomize = FUN_141420f90(FUN_14052cd70(&spItem), m_pOwner);
         spItem->FUN_140526c10(nCustomize);
-        __int64 nTime = FUN_14028d0e0();
-        spItem->FUN_140526a70(nTime);
-        int nOwnerId = m_pOwner->FUN_14123c580();
-        spItem->FUN_140526b30(nOwnerId);
+        spItem->FUN_140526a70(FUN_14028d0e0());
+        spItem->FUN_140526b30(m_pOwner->FUN_14123c580());
         spItem->FUN_14052a130(4);
         m_pOwner->vfunc_127(FUN_14052cd70(&spItem), 0);
         m_items.AddTail(spItem);
@@ -82,10 +77,8 @@ void CostumeManager::FUN_140b1d360(int nCostumeId)
             return;
         int nCustomize = FUN_141420f90(FUN_14052cd70(&spItem), m_pOwner);
         spItem->FUN_140526c10(nCustomize);
-        int nOwnerId = m_pOwner->FUN_14123c580();
-        spItem->FUN_140526b30(nOwnerId);
-        __int64 nTime = FUN_14028d0e0();
-        spItem->FUN_140526a70(nTime);
+        spItem->FUN_140526b30(m_pOwner->FUN_14123c580());
+        spItem->FUN_140526a70(FUN_14028d0e0());
         spItem->FUN_14052a130(4);
         m_pOwner->vfunc_127(FUN_14052cd70(&spItem), 0);
         m_items.AddTail(spItem);

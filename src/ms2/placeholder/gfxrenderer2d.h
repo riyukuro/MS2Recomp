@@ -6,15 +6,51 @@
 // Created by GFxRenderSingleThread (gfxui/gfxrendersinglethread.cpp, `*SF_NEW` into Ptr<> members).
 #pragma once
 
-#include "Kernel/SF_RefCount.h"
-#include "Render/Render_Stats.h"
-#include "Render/Render_GlyphCacheConfig.h"
+#include "ms2/scaleform/include/kernel/sf_refcount.h"
+#include "ms2/scaleform/include/render/render_stats.h"
+#include "ms2/scaleform/include/render/render_glyphcacheconfig.h"
+#include "ms2/scaleform/include/render/render_buffer.h"            // TextureManager, RenderBufferManager
+#include <d3d9.h>
+namespace Scaleform {
+using Render::StatRender_Mem;   // the SDK declares it in Scaleform
+}
 
 #include "ms2/ms2layout.h"
 
 namespace Scaleform { namespace Render {
 class ThreadCommandQueue;
-namespace D3D9 { struct HALInitParams; }
+// What InitHAL is given, as the client builds it (its /Od COMDATs in gfxui/gfxrendersinglethread.cpp: the base ctor
+// has an unwind entry, the managers are Ptr<>s). render_hal.h / d3d9_hal.h have the library's view
+// (kernel tree, not includable here).
+struct HALInitParams
+{
+    MemoryManager*           pMemoryManager;         // +0x00
+    unsigned long            ConfigFlags;            // +0x08
+    void*                    RenderThreadId;         // +0x10
+    Ptr<TextureManager>      pTextureManager;        // +0x18
+    Ptr<RenderBufferManager> pRenderBufferManager;   // +0x20
+    unsigned                 RenderQueueSize;        // +0x28
+
+    HALInitParams(MemoryManager* memManager = 0, unsigned long halConfigFlags = 0, void* renderThreadId = 0)
+        : pMemoryManager(memManager), ConfigFlags(halConfigFlags), RenderThreadId(renderThreadId),
+          pTextureManager(0), pRenderBufferManager(0), RenderQueueSize(0x100)
+    {
+    }
+};
+
+namespace D3D9 {
+struct HALInitParams : public Render::HALInitParams
+{
+    IDirect3DDevice9*     pD3DDevice;      // +0x30
+    D3DPRESENT_PARAMETERS PresentParams;   // +0x38
+
+    HALInitParams(IDirect3DDevice9* device, const D3DPRESENT_PARAMETERS& presentParams,
+                  unsigned long halConfigFlags = 0, void* renderThreadId = 0)
+        : Render::HALInitParams(0, halConfigFlags, renderThreadId), pD3DDevice(device), PresentParams(presentParams)
+    {
+    }
+};
+}
 } }
 
 // Render::D3D9::HAL (vftable 0x14319d760; slot 0 the virtual dtor). Only the slots called by the game are typed; their

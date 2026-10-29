@@ -560,15 +560,12 @@ u64 FUN_14112da60(Unk_CMISArr16* a, const void* pElem)
 }
 
 // @0x14112db10 CallConstructors (array B)
-// MS2-FUNCTIONAL: ATL CallConstructors; exe spills the placement-new result and has an EH unwind funclet
 void FUN_14112db10(Unk_CMISHandle16* pElements, u64 nElements)
 {
     u64 iElement = 0;
     try {
-        for (; iElement < nElements; iElement++) {
-            void* p = FUN_140159860(0x10, pElements + iElement);
-            FUN_14111ea80(p);
-        }
+        for (iElement = 0; iElement < nElements; iElement++)
+            FUN_14111ea80(FUN_140159860(0x10, pElements + iElement));
     } catch (...) {
         while (iElement > 0) {
             iElement--;
@@ -579,15 +576,12 @@ void FUN_14112db10(Unk_CMISHandle16* pElements, u64 nElements)
 }
 
 // @0x14112db90 CallConstructors (array C)
-// MS2-FUNCTIONAL: ATL CallConstructors; exe spills the placement-new result and has an EH unwind funclet
 void FUN_14112db90(Unk_CMISHandle16* pElements, u64 nElements)
 {
     u64 iElement = 0;
     try {
-        for (; iElement < nElements; iElement++) {
-            void* p = FUN_140159860(0x10, pElements + iElement);
-            FUN_14111ead0(p);
-        }
+        for (iElement = 0; iElement < nElements; iElement++)
+            FUN_14111ead0(FUN_140159860(0x10, pElements + iElement));
     } catch (...) {
         while (iElement > 0) {
             iElement--;
@@ -1012,20 +1006,23 @@ bool FUN_14112f650(Unk_CMISBits* p, unsigned v)
     return true;
 }
 
-// @0x14112f6b0 CubeMapInformationService::SetupClassInfo
-// MS2-FUNCTIONAL: the exe passes the context through a base-offset adjustment (8 - 8) that has no source form yet
 void FUN_14112f710(void* pInfo, void* pCtx);
+// The EE_INCLUDE_CLASS / EE_INCLUDE_INTERFACE base adjustment, offsetFromClass + EE_OFFSET_OF_CLASS(base, thisClass): each
+// base sits at offset 0, so the exe computes (8 - 8) at run time.
+struct Unk_T14IBase { void* vptr; };
+struct Unk_T14ISystemService : Unk_T14IBase {};
+struct Unk_T14Service : Unk_T14ISystemService {};
+// @0x14112f6b0 CubeMapInformationService::SetupClassInfo
 void FUN_14112f6b0(void* pInfo, void* pCtx)
 {
     FUN_1409f2e10(pInfo, "CubeMapInformationService", 0x6100017, pCtx, &DAT_143acf950);
-    FUN_14112f710(pInfo, pCtx);
+    FUN_14112f710(pInfo, (void*)((size_t)pCtx + EE_OFFSET_OF_CLASS(Unk_T14ISystemService, Unk_T14Service)));
 }
 // @0x14112f710 ISystemService::SetupClassInfo
-// MS2-FUNCTIONAL: same base-offset adjustment as FUN_14112f6b0
 void FUN_14112f710(void* pInfo, void* pCtx)
 {
     FUN_1409f2e10(pInfo, "ISystemService", 0x7000001, pCtx, 0);
-    FUN_1409f30f0(pInfo, pCtx);
+    FUN_1409f30f0(pInfo, (void*)((size_t)pCtx + EE_OFFSET_OF_CLASS(Unk_T14IBase, Unk_T14ISystemService)));
 }
 // @0x14112f770
 u64 Unk_CMISGlue::Zero1(void*) { return 0; }
@@ -1057,12 +1054,9 @@ CMIS_TYPECAST(14112f9f0, DAT_1439ff240)
 CMIS_TYPECAST(14112fa40, DAT_1439ff240)
 
 // @0x14112dd30 CCubeMotionManager::GetInstance (creates the manager on first use)
-// MS2-FUNCTIONAL: exe builds this through the TSingleton<T>::GetInstance template with a result temp and a different EH layout
 CCubeMotionManager* FUN_14112dd30()
 {
-    if (DAT_143acf6c8 == 0)
-        return new CCubeMotionManager;
-    return GetCubeMotionManager();
+    return DAT_143acf6c8 ? GetCubeMotionManager() : new CCubeMotionManager;
 }
 
 // the lazily created async send queue: a 0x18-byte object whose implicit ctor runs a base ctor and a member ctor
@@ -1088,14 +1082,18 @@ void* FUN_14112e1b0()
 // @0x14112df30 MessageWrapper<EntityChangeMessage, 8253>::FactoryMsg
 template efd::IMessagePtr efd::MessageWrapper<egf::EntityChangeMessage, 8253>::FactoryMsg();
 
-// @0x14112f780 formats a message category for the delivery log
-// MS2-FUNCTIONAL: exe keeps the temporary string under an explicit EH state flag (local-variable layout differs)
-u64 FUN_140affe60(void* pCategory);
-void* FUN_1409a0f10(void* pOut, const efd::utf8string& kSrc);
-void* FUN_14112f780(void* pCategory, void* pOut)
+u64 FUN_140affe60(const void* pCategory);
+// efd::Category::ToString (symbols.tsv 0x14112f780): the formatted string is a named local, so the /Od build copies it into
+// the return slot and marks it constructed before destroying the local.
+struct Unk_T14Category
 {
-    FUN_1409a0f10(pOut, efd::utf8string(efd::Formatted, "Category(0x%016llX)", FUN_140affe60(pCategory)));
-    return pOut;
+    efd::utf8string FUN_14112f780() const;
+};
+// @0x14112f780 formats a message category for the delivery log
+efd::utf8string Unk_T14Category::FUN_14112f780() const
+{
+    efd::utf8string s(efd::Formatted, "Category(0x%016llX)", FUN_140affe60(this));
+    return s;
 }
 
 // the service's message handlers (the exe's static objects live in .text$di; constructed here only to instantiate the templates)

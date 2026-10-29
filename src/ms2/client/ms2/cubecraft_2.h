@@ -50,10 +50,10 @@ public:
     void FUN_1410aa550(int nMode);                                      // set the mode
     void FUN_1410aa590();                                               // arm the move timer (200 ms)
     void FUN_1410aa5c0(CubeItemInfo* pInfo);                            // set the item (or clear it)
-    void FUN_1410aa6f0(Vector3 kPos, char bNoUpdate);    // place the guide at a cell
+    void FUN_1410aa6f0(Vector3 kPos, bool bNoUpdate);    // place the guide at a cell
     void FUN_1410aad50();                                               // confirm: build / move / rotate
     void FUN_1410ab5a0();                                               // remove (without the notice)
-    void FUN_1410ab5c0(unsigned char bNotice);                          // remove the cube at the cell
+    void FUN_1410ab5c0(bool bNotice);                            // remove the cube at the cell
     void FUN_1410abb40();                                               // pick the cube at the cell
     void FUN_1410ac1c0();                                               // lift the character up
     void FUN_1410ac380();                                               // lift the character down

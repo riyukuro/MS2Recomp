@@ -31,7 +31,7 @@ public:
 
     void Initialize();                                      // 0x1409a38d0
     void ApplyOuterGlowColor();                             // 0x1409a3ad0
-    void FUN_1409a3b60(bool bEnable);                       // enable/disable every effect
+    bool FUN_1409a3b60(bool bEnable);                       // enable/disable every effect
     void RestoreClickProcessors();                          // 0x1409a3c20
     void SwapClickProcessor(NiRenderListProcessor* pProcessor);  // 0x1409a3d80
     void FUN_1409a3ee0(int nId, int nType);

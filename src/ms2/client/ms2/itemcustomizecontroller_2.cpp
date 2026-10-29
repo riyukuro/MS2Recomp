@@ -85,7 +85,7 @@ ItemInfoSlot* FUN_140c69ab0(NotifyContext::BindData* p);   // BindData -> ItemIn
 class InvalidCallException : public std::exception
 {
 public:
-    InvalidCallException();                             // 0x14056be40
+    // Implicit default ctor (0x14056be40): the exe value-initialises the object before calling it.
 };
 
 // Delegate bodies of the three callbacks (the exe checks for an empty delegate before the call).
@@ -103,11 +103,9 @@ template<> inline void ItemInfoSlotTipFn::operator()(ItemInfoSlot* a1, ASTooltip
 }
 
 // @0x141416840
-// MS2-FUNCTIONAL: throw helper; exception object construction/unwind differs
 void FUN_141416840()
 {
-    InvalidCallException ex;
-    throw ex;
+    throw InvalidCallException();
 }
 template<> inline int ItemInfoSlotCanFn::operator()(ItemInfoSlot* a1) const
 {
@@ -339,21 +337,19 @@ int ItemInfoSlot::vfunc_11()
 // @0x141415c50
 int ItemInfoSlot::vfunc_18(void* pv)
 {
-    DragSlot* p = static_cast<DragSlot*>(pv);
-    if (p == 0)
+    if (pv == 0)
         return 1;
-    return p->vfunc_10();
+    return static_cast<DragSlot*>(pv)->vfunc_10();
 }
 
 // @0x141415c90 (ITooltip::vfunc_0)
-// MS2-FUNCTIONAL: tooltip builder; EH state layout/temp ordering differs from exe
 int ItemInfoSlot::vfunc_0(void* p)
 {
     if (!m_fnCan.IsNull() && m_fnCan(this) == 0)
         return 0;
     if (m_spItem == 0 && m_strTip.GetLength() != 0)
     {
-        ASTooltip tip(FUN_1403ed2d0()->FUN_141bd0cc0(), m_nFlags, 2);
+        ASTooltip tip((Unk_TooltipOwner*)FUN_1403ed2d0()->FUN_141bd0cc0(), m_nFlags, 2);
         if (tip.FUN_1409e26b0(m_strTip))
         {
             if (m_nTipArg != -1)
@@ -362,7 +358,7 @@ int ItemInfoSlot::vfunc_0(void* p)
             return 1;
         }
     }
-    ASTooltip tip(FUN_1403ed2d0()->FUN_141bd0cc0(), m_nFlags, 2);
+    ASTooltip tip((Unk_TooltipOwner*)FUN_1403ed2d0()->FUN_141bd0cc0(), m_nFlags, 2);
     int nResult = 0;
     if (!m_fnTip.IsNull())
     {
@@ -371,9 +367,8 @@ int ItemInfoSlot::vfunc_0(void* p)
     }
     else
     {
-        if (m_spItem.get())
+        if ((m_spItem.get() ? true : false) && FUN_1403b3c40(FUN_140527840(m_spItem.operator->())->m_strClass, L"ItemExchangeScroll"))
         {
-            if (FUN_1403b3c40(FUN_140527840(m_spItem.operator->())->m_strClass, L"ItemExchangeScroll"))
             {
                 void* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
                 if (pPlayer == 0)
@@ -384,7 +379,8 @@ int ItemInfoSlot::vfunc_0(void* p)
                     MS2Ptr<CItem> spCmp(new CItem);
                     if (spCmp.get())
                     {
-                        if (!spCmp->FUN_14052b130(spData->m_nRarity, spData->m_nFlag, 0))
+                        int bSet = spCmp->FUN_14052b130(spData->m_nRarity, spData->m_nFlag, 0);
+                        if (bSet == 0)
                             return 0;
                         ASTooltip tip2(pPlayer, 0x800, 2);
                         if (tip2.FUN_1409e13f0(spCmp.get(), m_spItem.get(), 0x800, 0x80))
@@ -403,17 +399,21 @@ int ItemInfoSlot::vfunc_0(void* p)
                         }
                     }
                 }
-                goto done;
             }
         }
-        nResult = tip.FUN_1409e0d40(m_spItem.get());
-        if (IsEnabled())
-            tip.FUN_1409db7b0(m_spItem);
+        else
+        {
+            nResult = tip.FUN_1409e0d40(m_spItem.get());
+            if (IsEnabled())
+                tip.FUN_1409db7b0(m_spItem);
+        }
     }
-done:
     if (nResult == 1)
+    {
         *static_cast<Scaleform::GFx::Value*>(p) = tip.FUN_1422bb870();
-    return nResult == 1;
+        return 1;
+    }
+    return 0;
 }
 
 // @0x141416380
@@ -463,13 +463,13 @@ void ItemInfoSlot::SetCanFn(ItemInfoSlotCanFn fn)
 }
 
 // @0x141416740
-// MS2-FUNCTIONAL: exe builds two extra CString temps via IAT conversions around FUN_1419021b0; frame/EH states differ
 void ItemInfoSlot::SetCountText(int a, int b)
 {
     AScript root(m_value18, 2);
     if (root.FUN_1422ba9a0())
         return;
-    FUN_140cff1b0(m_value18, "m_count", FUN_1419021b0(a, b));
+    CStringW strCount = FUN_1419021b0(a, b);
+    FUN_140cff1b0(m_value18, "m_count", strCount);
 }
 
 MS2_EMIT_CRT_MEMMOVE_S();

@@ -81,6 +81,14 @@ struct Unk_LapenIngIter : Unk_LapenIngIterBase
     Unk_LapenIngIter(Unk_IngRef* p) { m_p = p; }
     // @0x1405b7110
     Unk_LapenIngIter& operator++() { Unk_LapenIngIterBase::operator++(); return *this; }
+    bool FUN_14027f000(const Unk_LapenIngIter& rhs) const;   // operator!=
+    Unk_IngRef& FUN_14027f490() const;                      // operator*
+};
+// The ingredient vector seen through its begin()/end() (the container's m_items).
+struct Unk_LapenIngVec
+{
+    Unk_LapenIngIter FUN_14028a260();   // begin
+    Unk_LapenIngIter FUN_14028aa90();   // end
 };
 
 // @0x1405b3610
@@ -105,29 +113,22 @@ CItemLapenshardData::~CItemLapenshardData()
 }
 
 // @0x1405b41b0
-// MS2-FUNCTIONAL: the exe walks the ingredient vector through unrecovered iterator helpers
 MS2SvrPtr<CIngredientContainer> CItemLapenshardData::GetIngredients(int nScale)
 {
     if (nScale == 0)
-    {
-        const MS2SvrPtr<CIngredientContainer>& spOwn = m_spIngredients;
-        return spOwn;
-    }
+        return m_spIngredients;
     MS2SvrPtr<CIngredientContainer> spResult(new CIngredientContainer);
-    Unk_IngRef* pBegin = static_cast<Unk_IngRef*>(m_spIngredients->m_items.m_begin);
-    Unk_IngRef* pEnd = static_cast<Unk_IngRef*>(m_spIngredients->m_items.m_end);
-    for (Unk_LapenIngIter it(pBegin); it.m_p != pEnd; ++it)
+    for (Unk_LapenIngIter it = reinterpret_cast<Unk_LapenIngVec&>(m_spIngredients->m_items).FUN_14028a260();
+         it.FUN_14027f000(reinterpret_cast<Unk_LapenIngVec&>(m_spIngredients->m_items).FUN_14028aa90()); ++it)
     {
-        int nItem = (*it.m_p)->m_a;
-        int nAmount = (*it.m_p)->m_c;
-        int nTag = (*it.m_p)->m_b;
+        int nItem = it.FUN_14027f490()->m_a;
+        unsigned nAmount = it.FUN_14027f490()->m_c;
+        int nTag = it.FUN_14027f490()->m_b;
         bool bMoney = nTag == 0x5d || nTag == 0x5e || nTag == 0x5f;
         if (bMoney)
         {
-            int nScaled = FUN_140482050(nAmount, nScale);
-            if (nScaled == 0)
-                nScaled = 1;
-            nAmount = nScaled;
+            nAmount = FUN_140482050(nAmount, nScale);
+            nAmount = 1 > nAmount ? 1 : nAmount;
         }
         Unk_IngRef info(new CIngredientInfo(nItem, nAmount, 0));
         Unk_LapenIngredientTag(info.operator->(), nTag);
@@ -174,14 +175,12 @@ void CItemLapenshardTable::AddEquipPart(Kind part, Slot index)
 }
 
 // @0x1405b4880
-// MS2-FUNCTIONAL: the exe passes the path pointer through rcx -> r8 (+3 bytes, as banktable/pricetable loaders); the rest of the frame matches
 int CItemLapenshardTable::Load()
 {
     CString strPath = FUN_14071a5b0("Table", "itemLapenshardUpgrade.xml");
     FUN_1401d1160(strPath);
     TiXmlDocument doc;
-    const char* pszPath = strPath;
-    if (FUN_140166420()->FUN_1403974b0(&doc, pszPath, 0, true, false) == 0)
+    if (FUN_140166420()->FUN_1403974b0(&doc, (const char*)strPath, 0, true, false) == 0)
         return 1;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
@@ -233,8 +232,7 @@ int CItemLapenshardTable::Load()
                               nItemId, nNextId, strPath);
             }
         }
-        CIngredientContainer* pIngredients = data->m_spIngredients;
-        pIngredients->FUN_14026bfa0(4);
+        data->m_spIngredients->FUN_14026bfa0(4);
         for (unsigned i = 0; i < 4; i++)
         {
             CString strNumber = FUN_140719210(i + 1);
@@ -248,26 +246,24 @@ int CItemLapenshardTable::Load()
                 {
                     int nId = 0;
                     int nTag = 0;
-                    Unk_StrVec tokens;
-                    FUN_140275080(strValue, &tokens, ":");
-                    if (tokens.FUN_14028b4c0() != 0)
-                        nId = FUN_1407181d0(tokens.FUN_14027f1c0(0));
-                    if (tokens.FUN_14028b4c0() > 1)
-                        nTag = FUN_140557640(FUN_140281980(), tokens.FUN_14027f1c0(1));
+                    {
+                        Unk_StrVec tokens;
+                        FUN_140275080(strValue, &tokens, ":");
+                        if (tokens.FUN_14028b4c0() > 0)
+                            nId = FUN_1407181d0(tokens.FUN_14027f1c0(0));
+                        if (tokens.FUN_14028b4c0() > 1)
+                            nTag = FUN_140557640(FUN_140281980(), tokens.FUN_14027f1c0(1));
+                    }
                     Unk_IngRef info(new CIngredientInfo(nId, nAmount, 0));
                     Unk_LapenIngredientTag(info.operator->(), nTag);
-                    pIngredients->FUN_14026bca0(info);
+                    data->m_spIngredients->FUN_14026bca0(info);
                 }
             }
         }
         CStringA strParts;
         FUN_1408733e0(pNode, strPart, strParts);
         strParts.Trim();
-        if (strParts.IsEmpty())
-        {
-            data->m_nMask = 7;
-        }
-        else
+        if (!strParts.IsEmpty())
         {
             ATL::CAtlArray<unsigned> list;
             FUN_140177f30(strParts, list, ",");
@@ -283,11 +279,14 @@ int CItemLapenshardTable::Load()
                         nMask = 7;
                         break;
                     }
-                    int nBit = 1;
-                    nMask |= nBit << nPart;
+                    nMask |= 1 << nPart;
                 }
                 data->m_nMask = nMask;
             }
+        }
+        else
+        {
+            data->m_nMask = 7;
         }
         if (Unk_LockGuard guard = m_lock)
         {

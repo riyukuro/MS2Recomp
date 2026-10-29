@@ -13,8 +13,8 @@ class RootRotateInterpolator : public NiTransformInterpolator
     NiDeclareRTTI;                                              // GetRTTI 0x140dca0a0
 public:
     RootRotateInterpolator();                                   // 0x140dc9b30 (always-update off)
-    RootRotateInterpolator(bool bAlwaysUpdate);                 // 0x140dc9bd0 (always-update on; this form is 'true')
-    virtual ~RootRotateInterpolator();                          // 0x140dca000 (??_G 0x140dca020)
+    RootRotateInterpolator(const void* pUnused);                // 0x140dc9bd0 (always-update on; the 8-byte arg is never read)
+    // virtual ~RootRotateInterpolator();                       // 0x140dca000 (??_G 0x140dca020) implicit: the exe dtor stores no vptr
     virtual bool Update(float fTime, NiObjectNET* pkInterpTarget, NiQuatTransform& kValue);   // 0x140dc9c80
     virtual bool AlwaysUpdate() const;                          // 0x140dca080
 

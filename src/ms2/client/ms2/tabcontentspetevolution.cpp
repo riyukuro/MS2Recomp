@@ -93,7 +93,7 @@ public:
 #define PB_V(n) virtual void vfunc_##n();
     PB_V(16) PB_V(17) PB_V(18) PB_V(19) PB_V(20) PB_V(21) PB_V(22) PB_V(23)
 #undef PB_V
-    virtual void vfunc_24(int nShow);                                   // 24 (+0xc0) refresh
+    virtual void vfunc_24(bool bShow);                                  // 24 (+0xc0) refresh
     void FUN_1407cba60(const char* szName, CString str);                // set the bag id
 private:
     unsigned char m_pad_80[8];
@@ -175,7 +175,7 @@ unsigned* FUN_1401d7c10(Unk_PetUIntSlot* pSlot);
 // Locale/build switches (debug buttons).
 class Unk_PetLocale;
 Unk_PetLocale* FUN_14025e7c0();
-unsigned char FUN_14116d720(Unk_PetLocale*);
+bool FUN_14116d720(Unk_PetLocale*);
 
 // The item picked in the inventory dialog.
 class Unk_PetSelected { public: __int64 FUN_140c8b2e0(); };
@@ -353,23 +353,8 @@ inline PetEvolutionBase::~PetEvolutionBase()
 {
 }
 
-// @0x140acd810
-inline PetEvolutionPetCard::~PetEvolutionPetCard() = default;
-
-// @0x140acd840
-inline PetEvolutionPetEnchant::~PetEvolutionPetEnchant()
-{
-}
-
-// @0x140acd890
-inline PetEvolutionPetIngredient::~PetEvolutionPetIngredient()
-{
-}
-
-// @0x140acd8c0
-inline TabContentsPetEvolution::~TabContentsPetEvolution()
-{
-}
+// The PetEvolutionPet* dtors (0x140acd810 Card, 0x140acd840 Enchant, 0x140acd890 Ingredient) and ~TabContentsPetEvolution
+// (0x140acd8c0) are implicit: an explicit empty body keeps a dead vptr store the exe does not have.
 
 // @0x140ace8a0
 inline void PetEvolutionBase::FUN_140ace8a0(MS2Ptr<ASUIComponent> ui)
@@ -389,11 +374,6 @@ inline Unk_CommandChat::Unk_CommandChat() : state(1), kind(0), value(0)
 
 // @0x140acd770
 inline Unk_CommandChat::~Unk_CommandChat()
-{
-}
-
-// @0x140acd650
-inline PetSystemTabContents::PetSystemTabContents()
 {
 }
 
@@ -423,18 +403,18 @@ void PetEvolutionPetCard::vfunc_4()
 {
     if (m_pOwner == NULL)
         return;
-    MS2Ptr<ASUIComponent> card = m_ui->FUN_140accfb0<ASUIComponent>(CString("m_petCard"));
+    MS2Ptr<ASUIComponent> card = m_ui->FUN_140accfb0<ASUIComponent>("m_petCard");
     if (card == 0)
         return;
-    MS2Ptr<Unk_PetItemBag> bag = card->FUN_140accef0<Unk_PetItemBag>(CString("m_itemBag"));
-    if (bag.get() == 0)
-        return;
-    ATL::CAtlArray<unsigned __int64> ids;
-    m_pOwner->FUN_140acaec0(ids);
-    FUN_140b77500(&m_strBag);
-    FUN_140b773a0(&m_strBag, ids);
-    bag->FUN_1407cba60("bagId", m_strBag);
-    bag->vfunc_24(1);
+    if (MS2Ptr<Unk_PetItemBag> bag = card->FUN_140accef0<Unk_PetItemBag>("m_itemBag"))
+    {
+        ATL::CAtlArray<unsigned __int64> ids;
+        m_pOwner->FUN_140acaec0(ids);
+        FUN_140b77500(&m_strBag);
+        FUN_140b773a0(&m_strBag, ids);
+        bag->FUN_1407cba60("bagId", m_strBag);
+        bag->vfunc_24(true);
+    }
 }
 
 // @0x140ac7a10
@@ -471,18 +451,18 @@ void PetEvolutionPetIngredient::vfunc_4()
 {
     if (m_pOwner == NULL)
         return;
-    MS2Ptr<ASUIComponent> ingredient = m_ui->FUN_140accfb0<ASUIComponent>(CString("m_petIngredient"));
+    MS2Ptr<ASUIComponent> ingredient = m_ui->FUN_140accfb0<ASUIComponent>("m_petIngredient");
     if (ingredient == 0)
         return;
-    MS2Ptr<Unk_PetItemBag> bag = ingredient->FUN_140accef0<Unk_PetItemBag>(CString("m_itemBag"));
-    if (bag.get() == 0)
-        return;
-    ATL::CAtlArray<IdCount> items;
-    m_pOwner->FUN_140acaef0(items);
-    FUN_140b77e50(&m_strBag);
-    FUN_140b77cf0(&m_strBag, items);
-    bag->FUN_1407cba60("bagId", m_strBag);
-    bag->vfunc_24(1);
+    if (MS2Ptr<Unk_PetItemBag> bag = ingredient->FUN_140accef0<Unk_PetItemBag>("m_itemBag"))
+    {
+        ATL::CAtlArray<IdCount> items;
+        m_pOwner->FUN_140acaef0(items);
+        FUN_140b77e50(&m_strBag);
+        FUN_140b77cf0(&m_strBag, items);
+        bag->FUN_1407cba60("bagId", m_strBag);
+        bag->vfunc_24(true);
+    }
 }
 
 // @0x140ac7d00
@@ -522,45 +502,35 @@ void PetEvolutionPetEnchant::vfunc_3()
 {
     if (m_pOwner == NULL)
         return;
-    MS2Ptr<ASUIComponent> ench = m_ui->FUN_140accfb0<ASUIComponent>(CString("m_petEnchant"));
+    MS2Ptr<ASUIComponent> ench = m_ui->FUN_140accfb0<ASUIComponent>("m_petEnchant");
     if (ench == 0)
         return;
     ItemPtr pet = DAT_143ab2a90.FUN_140a5d680(m_pOwner->GetUidPet());
     if (pet == 0)
         return;
     unsigned nPoint = FUN_140528bd0(pet);
-    int nRank = pet->FUN_140526bd0();
-    unsigned short nClass = FUN_1405282d0(pet);
-    unsigned nNeed = FUN_1404a1bb0()->FUN_1403539d0(nClass, nRank);
+    unsigned nNeed = FUN_1404a1bb0()->FUN_1403539d0(FUN_1405282d0(pet), pet->FUN_140526bd0());
     unsigned short nPetClass = FUN_140528c20(pet);
-    unsigned char bDebug = FUN_14116d720(FUN_14025e7c0());
-    MS2Ptr<Unk_PetButton> submit = ench->FUN_140acce30<Unk_PetButton>(CString("m_submit"));
-    if (submit.get() != 0)
+    bool bDebug = FUN_14116d720(FUN_14025e7c0());
+    if (MS2Ptr<Unk_PetButton> submit = ench->FUN_140acce30<Unk_PetButton>("m_submit"))
     {
         ATL::CAtlArray<IdCount> selected;
         m_pOwner->FUN_140acaf20(selected);
-        unsigned nPetClass2 = nPetClass;
-        if (nPetClass2 == *FUN_1401d7c10(&FUN_1401d3200()->m_petClass) && selected.GetCount() != 0)
+        if ((unsigned)nPetClass == *FUN_1401d7c10(&FUN_1401d3200()->m_petClass) && selected.GetCount() > 0)
             submit->FUN_1422c1fe0(1);
-        else if (nNeed == 0 || nPoint < nNeed)
-            submit->FUN_1422c1fe0(0);
+        else if (nNeed > 0 && nPoint >= nNeed)
+            submit->FUN_1422c1fe0(1);
         else
-            submit->FUN_1422c1fe0(1);
+            submit->FUN_1422c1fe0(0);
     }
-    submit = 0;
-    MS2Ptr<Unk_PetButton> debug = ench->FUN_140acce30<Unk_PetButton>(CString("m_debug"));
-    if (debug.get() != 0)
+    if (MS2Ptr<Unk_PetButton> debug = ench->FUN_140acce30<Unk_PetButton>("m_debug"))
         debug->vfunc_4(bDebug);
-    debug = 0;
-    MS2Ptr<Unk_PetButton> debug30 = ench->FUN_140acce30<Unk_PetButton>(CString("m_debug30"));
-    if (debug30.get() != 0)
+    if (MS2Ptr<Unk_PetButton> debug30 = ench->FUN_140acce30<Unk_PetButton>("m_debug30"))
         debug30->vfunc_4(bDebug);
-    debug30 = 0;
-    MS2Ptr<ASUIComponent> bar = ench->FUN_140accfb0<ASUIComponent>(CString("m_pointBar"));
-    if (bar.get() != 0)
+    if (MS2Ptr<ASUIComponent> bar = ench->FUN_140accfb0<ASUIComponent>("m_pointBar"))
     {
         nPoint += m_pOwner->FUN_140acb6f0();
-        if (nNeed < nPoint)
+        if (nPoint > nNeed)
             bar->Invoke("setText", FUN_1409e9890(CStringW(L"s_pet_evolution_point"), nPoint, nNeed));
         else
             bar->Invoke("setText", StringFormat(L"{0}/{1}", nPoint, nNeed));
@@ -573,27 +543,22 @@ void PetEvolutionPetEnchant::vfunc_4()
 {
     if (m_pOwner == NULL)
         return;
-    MS2Ptr<ASUIComponent> ench = m_ui->FUN_140accfb0<ASUIComponent>(CString("m_petEnchant"));
+    MS2Ptr<ASUIComponent> ench = m_ui->FUN_140accfb0<ASUIComponent>("m_petEnchant");
     if (ench == 0)
         return;
-    MS2Ptr<Unk_PetItemBag> bag = ench->FUN_140accef0<Unk_PetItemBag>(CString("m_itemBag"));
-    if (bag.get() != 0)
+    if (MS2Ptr<Unk_PetItemBag> bag = ench->FUN_140accef0<Unk_PetItemBag>("m_itemBag"))
     {
         ATL::CAtlArray<IdCount> items;
         m_pOwner->FUN_140acaf20(items);
         FUN_140b77e50(&m_strBag);
         FUN_140b77cf0(&m_strBag, items);
         bag->FUN_1407cba60("bagId", m_strBag);
-        bag->vfunc_24(1);
+        bag->vfunc_24(true);
     }
-    bag = 0;
-    MS2Ptr<Unk_PetButton> submit = ench->FUN_140acce30<Unk_PetButton>(CString("m_submit"));
-    if (submit.get() != 0)
+    if (MS2Ptr<Unk_PetButton> submit = ench->FUN_140acce30<Unk_PetButton>("m_submit"))
         submit->FUN_1422c1fe0(0);
-    submit = 0;
     ASObj obj(2);
-    int nZero = 0;
-    obj.FUN_1407cbb20(s_meso, FUN_1408116a0(0x986, nZero));
+    obj.FUN_1407cbb20(s_meso, FUN_1408116a0(0x986, 0));
     ench->FUN_140acd1f0("selectPetIngredient", AScript(obj));
 }
 
@@ -609,20 +574,20 @@ void PetEvolutionPetEnchant::vfunc_5(int nTab)
         vfunc_3();
         FUN_140ac8a00();
         break;
-    case 7:
+    case 0xb:
         vfunc_4();
         vfunc_3();
-        FUN_140ac9520();
+        FUN_140ac9140();
         break;
     case 8:
         vfunc_4();
         vfunc_3();
         FUN_140ac9a60();
         break;
-    case 0xb:
+    case 7:
         vfunc_4();
         vfunc_3();
-        FUN_140ac9140();
+        FUN_140ac9520();
     }
 }
 
@@ -631,16 +596,17 @@ void PetEvolutionPetEnchant::vfunc_5(int nTab)
 void PetEvolutionPetEnchant::FUN_140ac8a00()
 {
     Unk_PetPlayer* player = FUN_1403ed2d0()->FUN_141bd0cc0();
-    if (player == 0 || m_pOwner == NULL)
+    if (player == 0)
         return;
-    MS2Ptr<ASUIComponent> ench = m_ui->FUN_140accfb0<ASUIComponent>(CString("m_petEnchant"));
+    if (m_pOwner == NULL)
+        return;
+    MS2Ptr<ASUIComponent> ench = m_ui->FUN_140accfb0<ASUIComponent>("m_petEnchant");
     if (ench == 0)
         return;
     ItemPtr pet = DAT_143ab2a90.FUN_140a5d680(m_pOwner->GetUidPet());
     if (pet == 0)
         return;
-    int nRank = pet->FUN_140526bd0();
-    unsigned nNeed = FUN_1404a1bb0()->FUN_1403539d0(FUN_1405282d0(pet), nRank);
+    unsigned nNeed = FUN_1404a1bb0()->FUN_1403539d0(FUN_1405282d0(pet), pet->FUN_140526bd0());
     unsigned short nPetClass = FUN_140528c20(pet);
     ATL::CAtlArray<unsigned __int64> ids;
     ids.Add(m_pOwner->GetUidPet());
@@ -650,14 +616,14 @@ void PetEvolutionPetEnchant::FUN_140ac8a00()
     if (nNeed == 0)
     {
         obj.FUN_1409c0e60("frame", L"notice");
-        obj.FUN_1407cbb20("evolutionMsg", GetStringCommonByKey(CStringW(L"s_pet_evolution_max")));
+        obj.FUN_1407cbb20("evolutionMsg", GetStringCommonByKey(L"s_pet_evolution_max"));
         obj.FUN_1407cba60("bagId", m_strTarget);
         ench->FUN_140acd1f0("notice", AScript(obj));
     }
     else
     {
         obj.FUN_1409c0dc0("frame", "select");
-        obj.FUN_1407cbb20(s_itemName, reinterpret_cast<Unk_PeItemView*>(pet.get())->FUN_140528160());
+        obj.FUN_1407cbb20(s_itemName, reinterpret_cast<Unk_PeItemView*>(pet.operator->())->FUN_140528160());
         obj.FUN_1409c48f0(s_itemLevel, nPetClass);
         int nZero = 0;
         obj.FUN_1407cbb20(s_meso, FUN_1408116a0(0x986, nZero));
@@ -683,7 +649,7 @@ void PetEvolutionPetEnchant::FUN_140ac9140()
 {
     if (m_pOwner == NULL)
         return;
-    MS2Ptr<ASUIComponent> ench = m_ui->FUN_140accfb0<ASUIComponent>(CString("m_petEnchant"));
+    MS2Ptr<ASUIComponent> ench = m_ui->FUN_140accfb0<ASUIComponent>("m_petEnchant");
     if (ench == 0)
         return;
     ItemPtr pet = DAT_143ab2a90.FUN_140a5d680(m_pOwner->GetUidPet());
@@ -715,19 +681,18 @@ void PetEvolutionPetEnchant::FUN_140ac9520()
     Unk_PetPlayer* player = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (player == 0 || m_pOwner == NULL)
         return;
-    MS2Ptr<ASUIComponent> ench = m_ui->FUN_140accfb0<ASUIComponent>(CString("m_petEnchant"));
+    MS2Ptr<ASUIComponent> ench = m_ui->FUN_140accfb0<ASUIComponent>("m_petEnchant");
     if (ench == 0)
         return;
     ItemPtr pet = DAT_143ab2a90.FUN_140a5d680(m_pOwner->GetUidPet());
     if (pet == 0)
         return;
-    int nRank = pet->FUN_140526bd0();
-    unsigned nNeed = FUN_1404a1bb0()->FUN_1403539d0(FUN_1405282d0(pet), nRank);
+    unsigned nNeed = FUN_1404a1bb0()->FUN_1403539d0(FUN_1405282d0(pet), pet->FUN_140526bd0());
     int nState = m_pOwner->GetState();
     CStringW strResult = FUN_140938ae0(CStringW(L"s_pet_evolution_success"), nState);
     CStringW strMax = FUN_140298ea0(CStringW(L"s_pet_evolution_max"));
     ASObj obj(2);
-    obj.FUN_1407cbb20(s_itemName, reinterpret_cast<Unk_PeItemView*>(pet.get())->FUN_140528160());
+    obj.FUN_1407cbb20(s_itemName, reinterpret_cast<Unk_PeItemView*>(pet.operator->())->FUN_140528160());
     obj.FUN_1407cbb20("resultMsg", strResult);
     if (nNeed == 0)
         obj.FUN_1407cbb20("evolutionMsg", strMax);
@@ -752,14 +717,13 @@ void PetEvolutionPetEnchant::FUN_140ac9a60()
     Unk_PetPlayer* player = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (player == 0 || m_pOwner == NULL)
         return;
-    MS2Ptr<ASUIComponent> ench = m_ui->FUN_140accfb0<ASUIComponent>(CString("m_petEnchant"));
+    MS2Ptr<ASUIComponent> ench = m_ui->FUN_140accfb0<ASUIComponent>("m_petEnchant");
     if (ench == 0)
         return;
     ItemPtr pet = DAT_143ab2a90.FUN_140a5d680(m_pOwner->GetUidPet());
     if (pet == 0)
         return;
-    int nRank = pet->FUN_140526bd0();
-    unsigned nNeed = FUN_1404a1bb0()->FUN_1403539d0(FUN_1405282d0(pet), nRank);
+    unsigned nNeed = FUN_1404a1bb0()->FUN_1403539d0(FUN_1405282d0(pet), pet->FUN_140526bd0());
     int nState = m_pOwner->GetState();
     CStringW strPointUp = FUN_140938ae0(CStringW(L"s_pet_evolution_pointup_success"), nState);
     CStringW strEnable = FUN_140298ea0(CStringW(L"s_pet_evolution_enable_evolution"));
@@ -796,7 +760,7 @@ void PetEvolutionPetEnchant::FUN_140ac9e20(ASObj& obj)
     FUN_140528bf0(preview, nGrade);
     if (FUN_1405278a0(preview) != 0)
         FUN_1405278a0(preview)->m_pet->FUN_1405cc480(info->m_pet);
-    MS2Ptr<ASUIComponent> ench = m_ui->FUN_140accfb0<ASUIComponent>(CString("m_petEnchant"));
+    MS2Ptr<ASUIComponent> ench = m_ui->FUN_140accfb0<ASUIComponent>("m_petEnchant");
     if (ench == 0)
         return;
     MS2Ptr<ASMovieClip> evolutionSlot = ench->FUN_1409b4560(CString("m_evolutionSlot"));
@@ -807,7 +771,7 @@ void PetEvolutionPetEnchant::FUN_140ac9e20(ASObj& obj)
         return;
     FUN_141415600(m_strResult);
     FUN_141415450(m_strResult, ItemPtr(preview), 0, 0, 0x10800);
-    obj.FUN_1407cbb20(FUN_14038f6d0(s_itemName, "2"), reinterpret_cast<Unk_PeItemView*>(preview.get())->FUN_140528160());
+    obj.FUN_1407cbb20(FUN_14038f6d0(s_itemName, "2"), reinterpret_cast<Unk_PeItemView*>(preview.operator->())->FUN_140528160());
     slot->Invoke("setData", CString(m_strResult));
 }
 
@@ -816,23 +780,22 @@ void PetEvolutionPetEnchant::FUN_140ac9e20(ASObj& obj)
 // @0x140aca490
 // MS2-FUNCTIONAL: the exe zeroes the first 0x18 bytes (rep stosb) before the base constructor
 TabContentsPetEvolution::TabContentsPetEvolution()
-    : m_nState(0), m_uidPet(0), m_parts(10), m_ui(0)
+    : PetSystemTabContents(), m_nState(0), m_uidPet(0), m_parts(10), m_ui(0)
 {
-    m_parts.AddTail(MS2Ptr<PetEvolutionBase>(new PetEvolutionPetCard(this)));
-    m_parts.AddTail(MS2Ptr<PetEvolutionBase>(new PetEvolutionPetIngredient(this)));
-    m_parts.AddTail(MS2Ptr<PetEvolutionBase>(new PetEvolutionPetEnchant(this)));
+    m_parts.AddTail(new PetEvolutionPetCard(this));
+    m_parts.AddTail(new PetEvolutionPetIngredient(this));
+    m_parts.AddTail(new PetEvolutionPetEnchant(this));
 }
 
 // @0x140aca700
 void TabContentsPetEvolution::vfunc_1()
 {
-    POSITION pos = m_parts.GetHeadPosition();
-    while (pos != 0)
+    for (POSITION pos = m_parts.GetHeadPosition(); pos != 0; m_parts.GetNext(pos))
     {
         MS2Ptr<PetEvolutionBase> p = m_parts.GetAt(pos);
-        if (!(p == 0))
-            p->vfunc_1();
-        m_parts.GetNext(pos);
+        if (p == 0)
+            continue;
+        p->vfunc_1();
     }
     m_ui = 0;
 }
@@ -844,13 +807,12 @@ void TabContentsPetEvolution::vfunc_4()
     m_petCards.RemoveAll();
     m_pool.RemoveAll();
     m_selected.RemoveAll();
-    POSITION pos = m_parts.GetHeadPosition();
-    while (pos != 0)
+    for (POSITION pos = m_parts.GetHeadPosition(); pos != 0; m_parts.GetNext(pos))
     {
         MS2Ptr<PetEvolutionBase> p = m_parts.GetAt(pos);
-        if (!(p == 0))
-            p->vfunc_2();
-        m_parts.GetNext(pos);
+        if (p == 0)
+            continue;
+        p->vfunc_2();
     }
 }
 
@@ -859,28 +821,27 @@ void TabContentsPetEvolution::vfunc_2(int nTab)
 {
     if (m_ui == 0)
         return;
-    if (0 < nTab)
+    switch (nTab)
     {
-        if (nTab < 3)
-        {
-            FUN_140acb850();
-            FUN_140acba80();
-            FUN_140acbd40();
-        }
-        else if (6 < nTab && nTab < 9)
-        {
-            FUN_140acb850();
-            FUN_140acba80();
-            FUN_140acbd40();
-        }
+    case 1:
+    case 2:
+        FUN_140acb850();
+        FUN_140acba80();
+        FUN_140acbd40();
+        break;
+    case 7:
+    case 8:
+        FUN_140acb850();
+        FUN_140acba80();
+        FUN_140acbd40();
+        break;
     }
-    POSITION pos = m_parts.GetHeadPosition();
-    while (pos != 0)
+    for (POSITION pos = m_parts.GetHeadPosition(); pos != 0; m_parts.GetNext(pos))
     {
         MS2Ptr<PetEvolutionBase> p = m_parts.GetAt(pos);
-        if (!(p == 0))
-            p->vfunc_5(nTab);
-        m_parts.GetNext(pos);
+        if (p == 0)
+            continue;
+        p->vfunc_5(nTab);
     }
 }
 
@@ -891,17 +852,14 @@ void TabContentsPetEvolution::vfunc_3(MS2Ptr<ASUIComponent> ui)
     FUN_140acb850();
     FUN_140acba80();
     FUN_140acbd40();
-    POSITION pos = m_parts.GetHeadPosition();
-    while (pos != 0)
+    for (POSITION pos = m_parts.GetHeadPosition(); pos != 0; m_parts.GetNext(pos))
     {
         MS2Ptr<PetEvolutionBase> p = m_parts.GetAt(pos);
-        if (!(p == 0))
-        {
-            p->FUN_140ace8a0(ui);
-            p->vfunc_4();
-            p->vfunc_3();
-        }
-        m_parts.GetNext(pos);
+        if (p == 0)
+            continue;
+        p->FUN_140ace8a0(ui);
+        p->vfunc_4();
+        p->vfunc_3();
     }
 }
 
@@ -912,33 +870,45 @@ int TabContentsPetEvolution::vfunc_6(const char* szEvent, const Scaleform::GFx::
     {
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs) != 0)
-            FUN_140acbd70(data.FUN_1422b8a10());
+        {
+            int nId = data.FUN_1422b8a10();
+            FUN_140acbd70(nId);
+        }
         return 1;
     }
-    if (_stricmp("OnSelectPetIngredient", szEvent) == 0)
+    else if (_stricmp("OnSelectPetIngredient", szEvent) == 0)
     {
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs) != 0)
-            FUN_140acbe00(data.FUN_1422b8a10());
+        {
+            int nId = data.FUN_1422b8a10();
+            FUN_140acbe00(nId);
+        }
         return 1;
     }
-    if (_stricmp("OnSelectPetEnchant", szEvent) == 0)
+    else if (_stricmp("OnSelectPetEnchant", szEvent) == 0)
     {
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs) != 0)
-            FUN_140acc1d0(data.FUN_1422b8a10());
+        {
+            int nId = data.FUN_1422b8a10();
+            FUN_140acc1d0(nId);
+        }
         return 1;
     }
-    if (_stricmp("OnPetEnchant", szEvent) == 0)
+    else if (_stricmp("OnPetEnchant", szEvent) == 0)
     {
         OnPetEnchant(0);
         return 1;
     }
-    if (_stricmp("OnPetEnchantDebug", szEvent) == 0)
+    else if (_stricmp("OnPetEnchantDebug", szEvent) == 0)
     {
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs) != 0)
-            FUN_140acb560(data.FUN_1422b8a10());
+        {
+            int nId = data.FUN_1422b8a10();
+            FUN_140acb560(nId);
+        }
         return 1;
     }
     return 0;
@@ -987,46 +957,52 @@ void TabContentsPetEvolution::OnPetEnchant(int bUsePoint)
     if (FUN_14025e7b0()->flags.FUN_1402c4c90(0x67) != 0)
     {
         FUN_141275260(0x2f7, 1, 1);
-        return;
     }
-    unsigned nPoint = FUN_140528bd0(pet);
-    int nRank = pet->FUN_140526bd0();
-    unsigned nNeed = FUN_1404a1bb0()->FUN_1403539d0(FUN_1405282d0(pet), nRank);
-    SetState(0);
-    if (nNeed <= nPoint)
+    else
     {
-        COutPacket pkt(static_cast<int>(SendOp::RequestPet), 0);
-        pkt.Encode1(0x11);
-        pkt.Encode8(m_uidPet);
-        FUN_140710590(pkt);
-        return;
-    }
-    if (m_selected.IsEmpty())
-        return;
-    if (bUsePoint == 0)
-    {
-        if (FUN_140527930(pet)->FUN_140635100() != 0 && FUN_140527930(pet)->FUN_140635120() == 0)
+        unsigned nPoint = FUN_140528bd0(pet);
+        unsigned nNeed = FUN_1404a1bb0()->FUN_1403539d0(FUN_1405282d0(pet), pet->FUN_140526bd0());
+        SetState(0);
+        if (nPoint >= nNeed)
         {
-            CStringW strMsg = FUN_1405c2690(L"s_msg_transfer_bind_pet_evolution", player->vfunc_77());
-            MS2Ptr<CMsgBoxData> box = FUN_140d73d20(0x11, strMsg, 0, s_evolutionBindPet);
-            if (box.get() != 0)
-            {
-                FUN_141a01600(box.operator->(), pet->FUN_140526a50());
-                FUN_141a01ee0(box.operator->(), ItemPtr(pet), pet->FUN_140527b10(), 1, 0, -1, -1, 1);
-                FUN_141a01700(box.operator->(), 0x477, 0x478, 0);
-                FUN_140d73c60(box);
+            COutPacket pkt(static_cast<int>(SendOp::RequestPet), 0);
+            pkt.Encode1(0x11);
+            pkt.Encode8(m_uidPet);
+            FUN_140710590(pkt);
+        }
+        else
+        {
+            if (m_selected.IsEmpty())
                 return;
+            if (bUsePoint == 0)
+            {
+                if (FUN_140527930(pet)->FUN_140635100() != 0 && FUN_140527930(pet)->FUN_140635120() == 0)
+                {
+                    CStringW strMsg = FUN_1405c2690(L"s_msg_transfer_bind_pet_evolution", player->vfunc_77());
+                    MS2Ptr<CMsgBoxData> box = FUN_140d73d20(0x11, strMsg, 0, s_evolutionBindPet);
+                    if (box.get() != 0)
+                    {
+                        FUN_141a01600(box.operator->(), pet->FUN_140526a50());
+                        FUN_141a01ee0(box.operator->(), ItemPtr(pet), pet->FUN_140527b10(), 1, 0, -1, -1, 1);
+                        FUN_141a01700(box.operator->(), 0x477, 0x478, 0);
+                        FUN_140d73c60(box);
+                        return;
+                    }
+                }
             }
+            COutPacket pkt(static_cast<int>(SendOp::RequestPet), 0);
+            pkt.Encode1(0x12);
+            pkt.Encode8(m_uidPet);
+            pkt.Encode2((short)m_selected.GetCount());
+            for (size_t i = 0; i < m_selected.GetCount(); i++)
+            {
+                IdCount& sel = m_selected[i];
+                pkt.Encode8(sel.first);
+            }
+            FUN_140710590(pkt);
+            SetState(FUN_140acb6f0());
         }
     }
-    COutPacket pkt(static_cast<int>(SendOp::RequestPet), 0);
-    pkt.Encode1(0x12);
-    pkt.Encode8(m_uidPet);
-    pkt.Encode2((short)m_selected.GetCount());
-    for (size_t i = 0; i < m_selected.GetCount(); i++)
-        pkt.Encode8(m_selected[i].first);
-    FUN_140710590(pkt);
-    SetState(FUN_140acb6f0());
 }
 
 // @0x140acb560
@@ -1036,16 +1012,14 @@ void TabContentsPetEvolution::FUN_140acb560(unsigned nPoint)
     if (pet == 0)
         return;
     unsigned nHave = FUN_140528bd0(pet);
-    int nRank = pet->FUN_140526bd0();
-    unsigned nNeed = FUN_1404a1bb0()->FUN_1403539d0(FUN_1405282d0(pet), nRank);
-    if (nHave < nNeed)
-    {
-        SetState(nPoint);
-        Unk_CommandChat cmd;
-        cmd.kind = 0;
-        cmd.message = StringFormat(L"/petevolutionpoint {0} {1}", m_uidPet, nPoint);
-        FUN_141276f80(&cmd);
-    }
+    unsigned nNeed = FUN_1404a1bb0()->FUN_1403539d0(FUN_1405282d0(pet), pet->FUN_140526bd0());
+    if (nHave >= nNeed)
+        return;
+    SetState(nPoint);
+    Unk_CommandChat cmd;
+    cmd.kind = 0;
+    cmd.message = StringFormat(L"/petevolutionpoint {0} {1}", m_uidPet, nPoint);
+    FUN_141276f80(&cmd);
 }
 
 // @0x140acb6f0
@@ -1054,16 +1028,13 @@ int TabContentsPetEvolution::FUN_140acb6f0()
     int nTotal = 0;
     for (unsigned i = 0; i < m_selected.GetCount(); i++)
     {
-        ItemPtr item = DAT_143ab2a90.FUN_140a5d680(m_selected[i].first);
-        if (!(item == 0))
-        {
-            int nAdd;
-            if (FUN_140528bd0(item) == 0)
-                nAdd = 1;
-            else
-                nAdd = FUN_140528bd0(item);
-            nTotal += nAdd;
-        }
+        IdCount& sel = m_selected[i];
+        unsigned __int64 uid = sel.first;
+        ItemPtr item = DAT_143ab2a90.FUN_140a5d680(uid);
+        if (item == 0)
+            continue;
+        int nAdd = FUN_140528bd0(item) > 0 ? FUN_140528bd0(item) : 1;
+        nTotal += nAdd;
     }
     return nTotal;
 }
@@ -1091,20 +1062,16 @@ void TabContentsPetEvolution::FUN_140acb850()
     for (unsigned i = 0; i < ids.GetCount(); i++)
     {
         ItemPtr item = DAT_143ab2a90.FUN_140a5d680(ids[i]);
-        if (!(item == 0))
-        {
-            int nKey = FUN_14053dc60(item->FUN_140527840());
-            MS2Ptr<Unk_PetRow> row = FUN_14052d210()->FUN_1407290f0(nKey);
-            if (!(row == 0))
-            {
-                if (row->m_nFlag != 0)
-                {
-                    unsigned nPetClass = FUN_140528c20(item);
-                    if (nPetClass == *FUN_1401d7c10(&FUN_1401d3200()->m_petClass))
-                        m_petCards.Add(item->FUN_140526a50());
-                }
-            }
-        }
+        if (item == 0)
+            continue;
+        MS2Ptr<Unk_PetRow> row = FUN_14052d210()->FUN_1407290f0(FUN_14053dc60(item->FUN_140527840()));
+        if (row == 0)
+            continue;
+        if (row->m_nFlag == 0)
+            continue;
+        if (FUN_140528c20(item) != *FUN_1401d7c10(&FUN_1401d3200()->m_petClass))
+            continue;
+        m_petCards.Add(item->FUN_140526a50());
     }
 }
 
@@ -1116,8 +1083,7 @@ void TabContentsPetEvolution::FUN_140acba80()
     ItemPtr pet = DAT_143ab2a90.FUN_140a5d680(m_uidPet);
     if (pet == 0)
         return;
-    int nRank = pet->FUN_140526bd0();
-    unsigned nNeed = FUN_1404a1bb0()->FUN_1403539d0(FUN_1405282d0(pet), nRank);
+    unsigned nNeed = FUN_1404a1bb0()->FUN_1403539d0(FUN_1405282d0(pet), pet->FUN_140526bd0());
     if (nNeed == 0)
         return;
     ATL::CAtlArray<unsigned __int64> ids;
@@ -1126,20 +1092,17 @@ void TabContentsPetEvolution::FUN_140acba80()
     {
         __int64 id = ids[i];
         ItemPtr item = DAT_143ab2a90.FUN_140a5d680(id);
-        if (!(item == 0))
-        {
-            if (FUN_140535320()->FUN_140c8b2e0() == id)
-                continue;
-            if (m_uidPet == id)
-                continue;
-            int nKeyItem = FUN_14053dc60(item->FUN_140527840());
-            if (nKeyItem == FUN_14053dc60(pet->FUN_140527840()))
-            {
-                int nItemRank = item->FUN_140526bd0();
-                if (nItemRank == pet->FUN_140526bd0())
-                    m_pool.Add(FUN_140acc7d0(id));
-            }
-        }
+        if (item == 0)
+            continue;
+        if (FUN_140535320()->FUN_140c8b2e0() == id)
+            continue;
+        if (m_uidPet == id)
+            continue;
+        if (FUN_14053dc60(item->FUN_140527840()) != FUN_14053dc60(pet->FUN_140527840()))
+            continue;
+        if (item->FUN_140526bd0() != pet->FUN_140526bd0())
+            continue;
+        m_pool.Add(FUN_140acc7d0(id));
     }
 }
 
@@ -1163,55 +1126,48 @@ void TabContentsPetEvolution::FUN_140acbd70(int nIndex)
 // @0x140acbe00
 void TabContentsPetEvolution::FUN_140acbe00(int nIndex)
 {
-    if (-1 < nIndex && nIndex < (int)m_pool.GetCount())
+    if (nIndex < 0 || nIndex >= (int)m_pool.GetCount())
+        return;
+    ItemPtr pet = DAT_143ab2a90.FUN_140a5d680(m_uidPet);
+    if (pet == 0)
+        return;
+    IdCount& entry = m_pool[nIndex];
+    unsigned __int64 id = entry.first;
+    ItemPtr item = DAT_143ab2a90.FUN_140a5d680(id);
+    if (item == 0)
+        return;
+    __int64 nPrice = FUN_140528e00(item);
+    unsigned short nPetClass = FUN_140528c20(pet);
+    unsigned nPoint = FUN_140528bd0(pet);
+    unsigned nNeed = FUN_1404a1bb0()->FUN_1403539d0(FUN_1405282d0(pet), pet->FUN_140526bd0());
+    unsigned nTotal = nPoint + FUN_140acb6f0();
+    if (FUN_140528c60(item) != 0)
     {
-        ItemPtr pet = DAT_143ab2a90.FUN_140a5d680(m_uidPet);
-        if (!(pet == 0))
-        {
-            unsigned __int64 id = m_pool[nIndex].first;
-            ItemPtr item = DAT_143ab2a90.FUN_140a5d680(id);
-            if (!(item == 0))
-            {
-                __int64 nPrice = FUN_140528e00(item);
-                unsigned short nPetClass = FUN_140528c20(pet);
-                unsigned nPoint = FUN_140528bd0(pet);
-                int nRank = pet->FUN_140526bd0();
-                unsigned nNeed = FUN_1404a1bb0()->FUN_1403539d0(FUN_1405282d0(pet), nRank);
-                unsigned nTotal = nPoint + FUN_140acb6f0();
-                if (FUN_140528c60(item) != 0)
-                {
-                    FUN_1412752d0(CStringW(L"s_err_cannot_evolution_petitem_hasitem"), 1);
-                }
-                else if (FUN_140528ca0(item) == 0 && FUN_140869440() < nPrice)
-                {
-                    FUN_1412752d0(CStringW(L"s_itemlock_invalid_petevolution"), 1);
-                }
-                else if (FUN_140528ca0(item) == 1)
-                {
-                    FUN_1412752d0(CStringW(L"s_itemlock_invalid_petevolution"), 1);
-                }
-                else if (nTotal < nNeed)
-                {
-                    unsigned nClass = nPetClass;
-                    if (nClass == *FUN_1401d7c10(&FUN_1401d3200()->m_petClass))
-                    {
-                        unsigned nMax = 0xc;
-                        if (11 < m_selected.GetCount())
-                            return;
-                        if (FUN_140acc4e0(id) != 0)
-                            vfunc_2(0xb);
-                    }
-                    else
-                    {
-                        FUN_1412752d0(CStringW(L"s_pet_not_evolution"), 1);
-                    }
-                }
-                else
-                {
-                    FUN_1412752d0(CStringW(L"s_err_cannot_evolution_consume"), 1);
-                }
-            }
-        }
+        FUN_1412752d0(L"s_err_cannot_evolution_petitem_hasitem", 1);
+    }
+    else if (FUN_140528ca0(item) == 0 && nPrice > FUN_140869440())
+    {
+        FUN_1412752d0(L"s_itemlock_invalid_petevolution", 1);
+    }
+    else if (FUN_140528ca0(item) == 1)
+    {
+        FUN_1412752d0(L"s_itemlock_invalid_petevolution", 1);
+    }
+    else if (nTotal >= nNeed)
+    {
+        FUN_1412752d0(L"s_err_cannot_evolution_consume", 1);
+    }
+    else if (nPetClass == *FUN_1401d7c10(&FUN_1401d3200()->m_petClass))
+    {
+        const unsigned nMax = 0xc;
+        if (m_selected.GetCount() >= nMax)
+            return;
+        if (FUN_140acc4e0(id) != 0)
+            vfunc_2(0xb);
+    }
+    else
+    {
+        FUN_1412752d0(L"s_pet_not_evolution", 1);
     }
 }
 
@@ -1260,20 +1216,23 @@ int TabContentsPetEvolution::FUN_140acc380(int nIndex)
 {
     const unsigned __int64 id = FUN_140acc300(m_selected, nIndex);
     ItemPtr item = DAT_143ab2a90.FUN_140a5d680(id);
-    if (item.get() == 0)
-        return 0;
-    m_selected.RemoveAt(nIndex, 1);
-    int nPos = FUN_140acc280(m_pool, id);
-    if (nPos < 0)
+    if (item.get() != 0)
     {
-        int nOne = 1;
-        m_pool.Add(IdCount(id, nOne));
+        m_selected.RemoveAt(nIndex, 1);
+        int nPos = FUN_140acc280(m_pool, id);
+        if (nPos > -1)
+        {
+            IdCount& entry = m_pool[nPos];
+            entry.second++;
+        }
+        else
+        {
+            int nOne = 1;
+            m_pool.Add(IdCount(id, nOne));
+        }
+        return 1;
     }
-    else
-    {
-        m_pool[nPos].second++;
-    }
-    return 1;
+    return 0;
 }
 
 // @0x140acc4e0
@@ -1282,39 +1241,41 @@ int TabContentsPetEvolution::FUN_140acc4e0(unsigned __int64 id)
     int nPos = FUN_140acc280(m_pool, id);
     if (nPos < 0)
         return 0;
-    if (FUN_140acc650(id) == 0)
+    unsigned nAvail = FUN_140acc650(id);
+    if (nAvail < 1)
         return 0;
     IdCount& entry = m_pool[nPos];
-    entry.second--;
-    if (entry.second == 0)
+    int& nCount = entry.second;
+    nCount--;
+    if (nCount == 0)
         m_pool.RemoveAt(nPos, 1);
     ItemPtr item = DAT_143ab2a90.FUN_140a5d680(id);
-    if (item.get() == 0)
-        return 0;
-    m_selected.Add(FUN_140acc7d0(id));
-    return 1;
+    if (item.get() != 0)
+    {
+        m_selected.Add(FUN_140acc7d0(id));
+        return 1;
+    }
+    return 0;
 }
 
 // @0x140acc650
 int TabContentsPetEvolution::FUN_140acc650(unsigned __int64 id)
 {
     ItemPtr item = DAT_143ab2a90.FUN_140a5d680(id);
-    if (!(item == 0))
-    {
-        unsigned nHave = DAT_143ab2a90.FUN_140a5f060(item->FUN_140526a50());
-        if (nHave == 0)
-            return 0;
-        int nUsed = 0;
-        for (unsigned i = 0; i < m_selected.GetCount(); i++)
-        {
-            IdCount& e = m_selected[i];
-            if (e.first == id)
-                nUsed += e.second;
-        }
-        if (nUsed < (int)nHave)
-            return nHave - nUsed;
+    if (item == 0)
         return 0;
+    unsigned nHave = DAT_143ab2a90.FUN_140a5f060(item->FUN_140526a50());
+    if (nHave == 0)
+        return 0;
+    int nUsed = 0;
+    for (unsigned i = 0; i < m_selected.GetCount(); i++)
+    {
+        IdCount& e = m_selected[i];
+        if (e.first == id)
+            nUsed += e.second;
     }
+    if (nHave > (unsigned)nUsed)
+        return nHave - nUsed;
     return 0;
 }
 

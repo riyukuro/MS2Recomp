@@ -8,8 +8,8 @@
 #pragma once
 #include <afx.h>
 #include <NxPhysics.h>
-#include "../../../../third_party/physx284/PFiles/NVIDIA Corporation/NVIDIA PhysX SDK/v2.8.4_win/SDKs/NxCharacter/include/NxCapsuleController.h"
-#include "../../../../third_party/physx284/PFiles/NVIDIA Corporation/NVIDIA PhysX SDK/v2.8.4_win/SDKs/NxCharacter/include/NxControllerManager.h"
+#include "NxCharacter/include/NxCapsuleController.h"
+#include "NxCharacter/include/NxControllerManager.h"
 #include <efd/Point3.h>
 #include <egfPhysX/EntityActorData.h>
 #include "ms2/ms2layout.h"

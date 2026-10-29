@@ -35,7 +35,7 @@ CStringW StringFormat(const wchar_t* format, const fmt::ArgList& args)
         CStringW str = fmt::format(format, args).c_str();
         return str;
     }
-    catch (std::exception& e)
+    catch (std::runtime_error& e)
     {
         // ASSERT(FALSE) of commonfiles\stringutil.h (the function body lives in that header)
         (void)((!!(FALSE)) || (_wassert(L"FALSE", L"e:\\build\\kr\\22_04\\ms2code\\commonfiles\\stringutil.h", 556), 0));
@@ -52,8 +52,8 @@ std::wstring fmt::format(WStringRef format, ArgList args)
 }
 
 // The crash reporter DLL (CrashReporter_64.dll) imports; the exe calls through the IAT slots.
-extern "C" void (__cdecl* __imp_CrashReporter_SetDumpFileName)(const wchar_t*);
-extern "C" void (__cdecl* __imp_CrashReporter_SetFullDumpPath)(const wchar_t*);
+extern "C" __declspec(dllimport) void __cdecl CrashReporter_SetDumpFileName(const wchar_t*);
+extern "C" __declspec(dllimport) void __cdecl CrashReporter_SetFullDumpPath(const wchar_t*);
 extern "C" void (__cdecl* __imp_CrashReporter_SetStrInfoA)(const wchar_t*, const char*);
 extern "C" void (__cdecl* __imp_CrashReporter_SetClientExit)(int);
 
@@ -72,8 +72,8 @@ public:
 
 // @0x1401ce010
 CCrashManager::CCrashManager()
+    : m_nLogId(-1)
 {
-    m_nLogId = -1;
     m_pad_50 = 0;
     m_pad_58 = 0;
     m_bFilterHooked = false;
@@ -91,29 +91,30 @@ CCrashManager::~CCrashManager()
 // @0x1401ce270
 void CCrashManager::FUN_1401ce270(const CString& strLine)
 {
-    if (m_nLogId != -1)
-        TSingleton<CFileLogger>::GetInstance()->FUN_140392750(m_nLogId, strLine);
+    if (m_nLogId == -1)
+        return;
+    TSingleton<CFileLogger>::GetInstance()->FUN_140392750(m_nLogId, strLine);
 }
 
 // @0x1401ce2b0
 void CCrashManager::FUN_1401ce2b0(const char* pszLine)
 {
-    if (m_nLogId != -1)
-        TSingleton<CFileLogger>::GetInstance()->FUN_140392670(m_nLogId, pszLine);
+    if (m_nLogId == -1)
+        return;
+    TSingleton<CFileLogger>::GetInstance()->FUN_140392670(m_nLogId, pszLine);
 }
 
 // @0x1401ce2f0
 void CCrashManager::FUN_1401ce2f0(const char* pszFormat, ...)
 {
-    if (m_nLogId != -1)
-    {
-        CString strLine;
-        va_list args;
-        va_start(args, pszFormat);
-        strLine.FormatV(pszFormat, args);
-        va_end(args);
-        TSingleton<CFileLogger>::GetInstance()->FUN_140392670(m_nLogId, strLine.GetBuffer());
-    }
+    if (m_nLogId == -1)
+        return;
+    CString strLine;
+    va_list args;
+    va_start(args, pszFormat);
+    strLine.FormatV(pszFormat, args);
+    va_end(args);
+    TSingleton<CFileLogger>::GetInstance()->FUN_140392670(m_nLogId, strLine.GetBuffer());
 }
 
 // @0x1401ce3a0
@@ -208,11 +209,7 @@ void CCrashManager::FUN_1401ce9c0()
         {
             BYTE patch[5] = {0x33, 0xC0, 0xC2, 0x04, 0x00};
             DWORD dwOldProtect;
-            if (!VirtualProtect(pOrgEntry, 5, PAGE_EXECUTE_READWRITE, &dwOldProtect))
-            {
-                m_bFilterHooked = false;
-            }
-            else
+            if (VirtualProtect(pOrgEntry, 5, PAGE_EXECUTE_READWRITE, &dwOldProtect))
             {
                 memcpy(pOrgEntry, patch, 5);
                 DWORD dwTemp;
@@ -220,6 +217,10 @@ void CCrashManager::FUN_1401ce9c0()
                     m_bFilterHooked = false;
                 else if (!FlushInstructionCache(GetCurrentProcess(), pOrgEntry, 5))
                     m_bFilterHooked = false;
+            }
+            else
+            {
+                m_bFilterHooked = false;
             }
         }
         else
@@ -244,12 +245,7 @@ void CCrashManager::FUN_1401ceb50()
 // @0x1401ceb60
 void FUN_1401ceb60()
 {
-    if (!FUN_140166410()->FUN_14036e510())
-    {
-        CStringW strPath = Unk_CrashSingleton::GetInstance()->FUN_1401ce460();
-        __imp_CrashReporter_SetFullDumpPath(strPath.GetBuffer());
-    }
-    else
+    if (FUN_140166410()->FUN_14036e510())
     {
         int nStart = 0;
         CStringW strPath = Unk_CrashSingleton::GetInstance()->FUN_1401ce460();
@@ -262,11 +258,16 @@ void FUN_1401ceb60()
         strFull.Append(strName);
         strFull.Append(StringFormat(L"_{0}.", nIndex));
         strFull.Append(strExt);
-        __imp_CrashReporter_SetFullDumpPath(strFull.GetString());
+        CrashReporter_SetFullDumpPath(strFull.GetString());
 #else
-        __imp_CrashReporter_SetFullDumpPath(L"./FullDump/Full" + strName + StringFormat(L"_{0}.", nIndex) + strExt);
+        CrashReporter_SetFullDumpPath(L"./FullDump/Full" + strName + StringFormat(L"_{0}.", nIndex) + strExt);
 #endif
-        __imp_CrashReporter_SetDumpFileName(StringFormat(L"dump{0}", nIndex));
+        CrashReporter_SetDumpFileName(StringFormat(L"dump{0}", nIndex));
+    }
+    else
+    {
+        CStringW strPath = Unk_CrashSingleton::GetInstance()->FUN_1401ce460();
+        CrashReporter_SetFullDumpPath(strPath.GetBuffer());
     }
 }
 

@@ -42,12 +42,12 @@
 // MS2-PIN: ??$?0V?$tuple@AEBU?$pair@HH@std@@@std@@V?$tuple@$$V@1@$0A@$$Z$S@?$pair@$$CBU?$pair@HH@std@@V?$MS2Ptr@VQuestAdditionalRewardContext@@@@@std@@QEAA@AEAV?$tuple@AEBU?$pair@HH@std@@@1@AEAV?$tuple@$$V@1@U?$integer_sequence@_K$0A@@1@U?$integer_sequence@_K$S@1@@Z 0x140481eb0 ; unique
 // MS2-PIN: ??$?MHH@std@@YA_NAEBU?$pair@HH@0@0@Z 0x140481ff0 ; unique
 // MS2-PIN: ??$_Buynode@AEBUpiecewise_construct_t@std@@V?$tuple@AEBU?$pair@HH@std@@@2@V?$tuple@$$V@2@@?$_Tree_comp_alloc@V?$_Tmap_traits@U?$pair@HH@std@@V?$MS2Ptr@VQuestAdditionalRewardContext@@@@U?$less@U?$pair@HH@std@@@2@V?$allocator@U?$pair@$$CBU?$pair@HH@std@@V?$MS2Ptr@VQuestAdditionalRewardContext@@@@@std@@@2@$0A@@std@@@std@@QEAAPEAU?$_Tree_node@U?$pair@$$CBU?$pair@HH@std@@V?$MS2Ptr@VQuestAdditionalRewardContext@@@@@std@@PEAX@1@AEBUpiecewise_construct_t@1@$$QEAV?$tuple@AEBU?$pair@HH@std@@@1@$$QEAV?$tuple@$$V@1@@Z 0x140482950 ; unique
-// MS2-PIN: ??$_Buynode@U?$pair@HV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@@std@@@?$_Tree_comp_alloc@V?$_Tmap_traits@IV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@@std@@@3@$00@std@@@std@@QEAAPEAU?$_Tree_node@U?$pair@$$CBIV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@@std@@PEAX@1@$$QEAU?$pair@HV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@@1@@Z 0x140482ed0 ; prop
+// MS2-PIN: ??$_Buynode@U?$pair@HV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@@std@@@?$_Tree_comp_alloc@V?$_Tmap_traits@IV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@@std@@@3@$0A@@std@@@std@@QEAAPEAU?$_Tree_node@U?$pair@$$CBIV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@@std@@PEAX@1@$$QEAU?$pair@HV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@@1@@Z 0x140482ed0 ; prop
 // MS2-PIN: ??$_Distance1@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@I@std@@@std@@@std@@@std@@YA_JV?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@I@std@@@std@@@0@0Uinput_iterator_tag@0@@Z 0x140483220 ; unique
 // MS2-PIN: ??$_Distance1@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBKK@std@@@std@@@std@@@std@@@std@@YA_JV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBKK@std@@@std@@@std@@@0@0Uinput_iterator_tag@0@@Z 0x1404832e0 ; prop
 // MS2-PIN: ??$_Distance1@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@@std@@@std@@@std@@@std@@@std@@YA_JV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@@std@@@std@@@std@@@0@0Uinput_iterator_tag@0@@Z 0x1404833a0 ; prop
-// MS2-PIN: ??$_Eqrange@I@?$_Tree@V?$_Tmap_traits@IV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@@std@@@3@$00@std@@@std@@IEAA?AU?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@@std@@@std@@@std@@@std@@V12@@1@AEBI@Z 0x140484700 ; prop
-// MS2-PIN: ??$_Eqrange@I@?$_Tree@V?$_Tmap_traits@IV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@@std@@@3@$00@std@@@std@@IEBA?AU?$pair@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@@std@@@std@@@std@@@std@@V12@@1@AEBI@Z 0x140484790 ; prop
+// MS2-PIN: ??$_Eqrange@I@?$_Tree@V?$_Tmap_traits@IV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@@std@@@3@$0A@@std@@@std@@IEAA?AU?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@@std@@@std@@@std@@@std@@V12@@1@AEBI@Z 0x140484700 ; prop
+// MS2-PIN: ??$_Eqrange@I@?$_Tree@V?$_Tmap_traits@IV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@@std@@@3@$0A@@std@@@std@@IEBA?AU?$pair@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@@std@@@std@@@std@@@std@@V12@@1@AEBI@Z 0x140484790 ; prop
 // MS2-PIN: ??$_Eqrange@U?$pair@HH@std@@@?$_Tree@V?$_Tmap_traits@U?$pair@HH@std@@V?$MS2Ptr@VQuestAdditionalRewardContext@@@@U?$less@U?$pair@HH@std@@@2@V?$allocator@U?$pair@$$CBU?$pair@HH@std@@V?$MS2Ptr@VQuestAdditionalRewardContext@@@@@std@@@2@$0A@@std@@@std@@IEBA?AU?$pair@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBU?$pair@HH@std@@V?$MS2Ptr@VQuestAdditionalRewardContext@@@@@std@@@std@@@std@@@std@@V12@@1@AEBU?$pair@HH@1@@Z 0x140485000 ; unique
 // MS2-PIN: ??$_Insert_nohint@AEAU?$pair@$$CBU?$pair@HH@std@@V?$MS2Ptr@VQuestAdditionalRewardContext@@@@@std@@PEAU?$_Tree_node@U?$pair@$$CBU?$pair@HH@std@@V?$MS2Ptr@VQuestAdditionalRewardContext@@@@@std@@PEAX@2@@?$_Tree@V?$_Tmap_traits@U?$pair@HH@std@@V?$MS2Ptr@VQuestAdditionalRewardContext@@@@U?$less@U?$pair@HH@std@@@2@V?$allocator@U?$pair@$$CBU?$pair@HH@std@@V?$MS2Ptr@VQuestAdditionalRewardContext@@@@@std@@@2@$0A@@std@@@std@@IEAA?AU?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBU?$pair@HH@std@@V?$MS2Ptr@VQuestAdditionalRewardContext@@@@@std@@@std@@@std@@@std@@_N@1@_NAEAU?$pair@$$CBU?$pair@HH@std@@V?$MS2Ptr@VQuestAdditionalRewardContext@@@@@1@PEAU?$_Tree_node@U?$pair@$$CBU?$pair@HH@std@@V?$MS2Ptr@VQuestAdditionalRewardContext@@@@@std@@PEAX@1@@Z 0x1404908f0 ; prop
 // MS2-PIN: ??$_Try_emplace@AEBK$$V@?$map@KV?$set@V?$MS2Ptr@VDungeonBonusRewardCtx@@@@U?$less@V?$MS2Ptr@VDungeonBonusRewardCtx@@@@@std@@V?$allocator@V?$MS2Ptr@VDungeonBonusRewardCtx@@@@@3@@std@@U?$less@K@2@V?$allocator@U?$pair@$$CBKV?$set@V?$MS2Ptr@VDungeonBonusRewardCtx@@@@U?$less@V?$MS2Ptr@VDungeonBonusRewardCtx@@@@@std@@V?$allocator@V?$MS2Ptr@VDungeonBonusRewardCtx@@@@@3@@std@@@std@@@2@@std@@QEAA?AU?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBKV?$set@V?$MS2Ptr@VDungeonBonusRewardCtx@@@@U?$less@V?$MS2Ptr@VDungeonBonusRewardCtx@@@@@std@@V?$allocator@V?$MS2Ptr@VDungeonBonusRewardCtx@@@@@3@@std@@@std@@@std@@@std@@@std@@_N@1@AEBK@Z 0x1404936c0 ; unique
@@ -55,7 +55,7 @@
 // MS2-PIN: ??$addressof@$$CBV?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBKK@std@@@std@@@std@@@std@@YAPEBV?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBKK@std@@@std@@@0@AEBV10@@Z 0x140494600 ; prop
 // MS2-PIN: ??$construct@U?$pair@$$CBU?$pair@HH@std@@V?$MS2Ptr@VQuestAdditionalRewardContext@@@@@std@@AEBUpiecewise_construct_t@2@V?$tuple@AEBU?$pair@HH@std@@@2@V?$tuple@$$V@2@@?$_Default_allocator_traits@V?$allocator@U?$_Tree_node@U?$pair@$$CBU?$pair@HH@std@@V?$MS2Ptr@VQuestAdditionalRewardContext@@@@@std@@PEAX@std@@@std@@@std@@SAXAEAV?$allocator@U?$_Tree_node@U?$pair@$$CBU?$pair@HH@std@@V?$MS2Ptr@VQuestAdditionalRewardContext@@@@@std@@PEAX@std@@@1@QEAU?$pair@$$CBU?$pair@HH@std@@V?$MS2Ptr@VQuestAdditionalRewardContext@@@@@1@AEBUpiecewise_construct_t@1@$$QEAV?$tuple@AEBU?$pair@HH@std@@@1@$$QEAV?$tuple@$$V@1@@Z 0x140495060 ; unique
 // MS2-PIN: ??$distance@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@@std@@@std@@@std@@@std@@@std@@YA_JV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@@std@@@std@@@std@@@0@0@Z 0x140495ab0 ; prop
-// MS2-PIN: ??$emplace@U?$pair@HV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@@std@@@?$_Tree@V?$_Tmap_traits@IV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@@std@@@3@$00@std@@@std@@QEAA?AU?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@@std@@@std@@@std@@@std@@_N@1@$$QEAU?$pair@HV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@@1@@Z 0x140495e30 ; unique
+// MS2-PIN: ??$emplace@U?$pair@HV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@@std@@@?$_Tree@V?$_Tmap_traits@IV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@@std@@@3@$0A@@std@@@std@@QEAA?AU?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@@std@@@std@@@std@@@std@@_N@1@$$QEAU?$pair@HV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@@1@@Z 0x140495e30 ; unique
 // MS2-PIN: ??$emplace_hint@AEBUpiecewise_construct_t@std@@V?$tuple@AEBU?$pair@HH@std@@@2@V?$tuple@$$V@2@@?$_Tree@V?$_Tmap_traits@U?$pair@HH@std@@V?$MS2Ptr@VQuestAdditionalRewardContext@@@@U?$less@U?$pair@HH@std@@@2@V?$allocator@U?$pair@$$CBU?$pair@HH@std@@V?$MS2Ptr@VQuestAdditionalRewardContext@@@@@std@@@2@$0A@@std@@@std@@QEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBU?$pair@HH@std@@V?$MS2Ptr@VQuestAdditionalRewardContext@@@@@std@@@std@@@std@@@1@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBU?$pair@HH@std@@V?$MS2Ptr@VQuestAdditionalRewardContext@@@@@std@@@std@@@std@@@1@AEBUpiecewise_construct_t@1@$$QEAV?$tuple@AEBU?$pair@HH@std@@@1@$$QEAV?$tuple@$$V@1@@Z 0x1404961e0 ; prop
 // MS2-PIN: ??$emplace_hint@AEBUpiecewise_construct_t@std@@V?$tuple@AEBW4Unk_DungeonGroupType@@@2@V?$tuple@$$V@2@@?$_Tree@V?$_Tmap_traits@W4Unk_DungeonGroupType@@V?$set@V?$MS2Ptr@VDungeonBonusRewardCtx@@@@U?$less@V?$MS2Ptr@VDungeonBonusRewardCtx@@@@@std@@V?$allocator@V?$MS2Ptr@VDungeonBonusRewardCtx@@@@@3@@std@@U?$less@W4Unk_DungeonGroupType@@@3@V?$allocator@U?$pair@$$CBW4Unk_DungeonGroupType@@V?$set@V?$MS2Ptr@VDungeonBonusRewardCtx@@@@U?$less@V?$MS2Ptr@VDungeonBonusRewardCtx@@@@@std@@V?$allocator@V?$MS2Ptr@VDungeonBonusRewardCtx@@@@@3@@std@@@std@@@3@$0A@@std@@@std@@QEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBW4Unk_DungeonGroupType@@V?$set@V?$MS2Ptr@VDungeonBonusRewardCtx@@@@U?$less@V?$MS2Ptr@VDungeonBonusRewardCtx@@@@@std@@V?$allocator@V?$MS2Ptr@VDungeonBonusRewardCtx@@@@@3@@std@@@std@@@std@@@std@@@1@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBW4Unk_DungeonGroupType@@V?$set@V?$MS2Ptr@VDungeonBonusRewardCtx@@@@U?$less@V?$MS2Ptr@VDungeonBonusRewardCtx@@@@@std@@V?$allocator@V?$MS2Ptr@VDungeonBonusRewardCtx@@@@@3@@std@@@std@@@std@@@std@@@1@AEBUpiecewise_construct_t@1@$$QEAV?$tuple@AEBW4Unk_DungeonGroupType@@@1@$$QEAV?$tuple@$$V@1@@Z 0x140496280 ; unique
 // MS2-PIN: ??$forward@AEAU?$pair@$$CBIV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@@std@@@std@@YAAEAU?$pair@$$CBIV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@@0@AEAU10@@Z 0x140496660 ; prop
@@ -68,7 +68,7 @@
 // MS2-PIN: ??$forward@AEBV?$allocator@I@std@@@std@@YAAEBV?$allocator@I@0@AEBV10@@Z 0x140496930 ; prop
 // MS2-PIN: ??$forward@V?$MS2Ptr@VEnchantRateEventContext@@@@@std@@YA$$QEAV?$MS2Ptr@VEnchantRateEventContext@@@@AEAV1@@Z 0x1404969d0 ; prop
 // MS2-PIN: ??$forward@V?$MS2Ptr@VUnk_ItemTagRewardContext@@@@@std@@YA$$QEAV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@AEAV1@@Z 0x1404969e0 ; prop
-// MS2-PIN: ??$insert@U?$pair@HV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@@std@@X@?$multimap@IV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@@std@@@3@@std@@QEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@@std@@@std@@@std@@@1@$$QEAU?$pair@HV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@@1@@Z 0x140496cf0 ; unique
+// MS2-PIN: ??$insert@U?$pair@HV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@@std@@X@?$map@IV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@@std@@@3@@std@@QEAA?AU?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@@std@@@std@@@std@@@std@@_N@1@$$QEAU?$pair@HV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@@1@@Z 0x140496cf0 ; unique
 // MS2-PIN: ??$make_pair@AEAHAEAV?$MS2Ptr@VEnchantRateEventContext@@@@@std@@YA?AU?$pair@HV?$MS2Ptr@VEnchantRateEventContext@@@@@0@AEAHAEAV?$MS2Ptr@VEnchantRateEventContext@@@@@Z 0x140496d30 ; unique
 // MS2-PIN: ??0?$CAtlMap@HHV?$CElementTraits@H@ATL@@V12@@ATL@@QEAA@IMMMI@Z 0x140497170 ; unique
 // MS2-PIN: ??0?$CAtlMap@HV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@V?$CElementTraits@H@2@V?$CElementTraits@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@2@@ATL@@QEAA@IMMMI@Z 0x140497260 ; unique
@@ -87,14 +87,14 @@
 // MS2-PIN: ??0?$TPtredDummy@V?$CRBMap@HHV?$CElementTraits@H@ATL@@V12@@ATL@@@@QEAA@XZ 0x140498300 ; unique
 // MS2-PIN: ??0?$_Tree@V?$_Tmap_traits@HV?$MS2Ptr@UNpcEventDropEventContext@@@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHV?$MS2Ptr@UNpcEventDropEventContext@@@@@std@@@3@$0A@@std@@@std@@QEAA@AEBU?$less@H@1@@Z 0x1404985e0 ; prop
 // MS2-PIN: ??0?$_Tree@V?$_Tmap_traits@IV?$MS2Ptr@VEventTimeLimitDungeonContext@@@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIV?$MS2Ptr@VEventTimeLimitDungeonContext@@@@@std@@@3@$00@std@@@std@@QEAA@AEBU?$less@I@1@@Z 0x140498640 ; prop
-// MS2-PIN: ??0?$_Tree@V?$_Tmap_traits@IV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@@std@@@3@$00@std@@@std@@QEAA@AEBU?$less@I@1@@Z 0x140498670 ; prop
+// MS2-PIN: ??0?$_Tree@V?$_Tmap_traits@IV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@@std@@@3@$0A@@std@@@std@@QEAA@AEBU?$less@I@1@@Z 0x140498670 ; prop
 // MS2-PIN: ??0?$_Tree@V?$_Tmap_traits@KV?$set@V?$MS2Ptr@VDungeonBonusRewardCtx@@@@U?$less@V?$MS2Ptr@VDungeonBonusRewardCtx@@@@@std@@V?$allocator@V?$MS2Ptr@VDungeonBonusRewardCtx@@@@@3@@std@@U?$less@K@2@V?$allocator@U?$pair@$$CBKV?$set@V?$MS2Ptr@VDungeonBonusRewardCtx@@@@U?$less@V?$MS2Ptr@VDungeonBonusRewardCtx@@@@@std@@V?$allocator@V?$MS2Ptr@VDungeonBonusRewardCtx@@@@@3@@std@@@std@@@2@$0A@@std@@@std@@QEAA@AEBU?$less@K@1@@Z 0x1404986d0 ; prop
 // MS2-PIN: ??0?$_Tree@V?$_Tmap_traits@U?$pair@HH@std@@V?$MS2Ptr@VQuestAdditionalRewardContext@@@@U?$less@U?$pair@HH@std@@@2@V?$allocator@U?$pair@$$CBU?$pair@HH@std@@V?$MS2Ptr@VQuestAdditionalRewardContext@@@@@std@@@2@$0A@@std@@@std@@QEAA@AEBU?$less@U?$pair@HH@std@@@1@@Z 0x140498700 ; prop
 // MS2-PIN: ??0?$_Tree@V?$_Tmap_traits@W4Unk_DungeonGroupType@@V?$set@V?$MS2Ptr@VDungeonBonusRewardCtx@@@@U?$less@V?$MS2Ptr@VDungeonBonusRewardCtx@@@@@std@@V?$allocator@V?$MS2Ptr@VDungeonBonusRewardCtx@@@@@3@@std@@U?$less@W4Unk_DungeonGroupType@@@3@V?$allocator@U?$pair@$$CBW4Unk_DungeonGroupType@@V?$set@V?$MS2Ptr@VDungeonBonusRewardCtx@@@@U?$less@V?$MS2Ptr@VDungeonBonusRewardCtx@@@@@std@@V?$allocator@V?$MS2Ptr@VDungeonBonusRewardCtx@@@@@3@@std@@@std@@@3@$0A@@std@@@std@@QEAA@AEBU?$less@W4Unk_DungeonGroupType@@@1@@Z 0x140498730 ; prop
 // MS2-PIN: ??0?$_Tree@V?$_Tmap_traits@W4Unk_RemakeSaleItemType@@KU?$less@W4Unk_RemakeSaleItemType@@@std@@V?$allocator@U?$pair@$$CBW4Unk_RemakeSaleItemType@@K@std@@@3@$0A@@std@@@std@@QEAA@AEBU?$less@W4Unk_RemakeSaleItemType@@@1@@Z 0x140498760 ; prop
 // MS2-PIN: ??0?$_Tree@V?$_Tmap_traits@W4Unk_RemakeSaleItemType@@V?$map@KKU?$less@K@std@@V?$allocator@U?$pair@$$CBKK@std@@@2@@std@@U?$less@W4Unk_RemakeSaleItemType@@@3@V?$allocator@U?$pair@$$CBW4Unk_RemakeSaleItemType@@V?$map@KKU?$less@K@std@@V?$allocator@U?$pair@$$CBKK@std@@@2@@std@@@std@@@3@$0A@@std@@@std@@QEAA@AEBU?$less@W4Unk_RemakeSaleItemType@@@1@@Z 0x140498790 ; prop
 // MS2-PIN: ??0?$_Tree_comp_alloc@V?$_Tmap_traits@IV?$MS2Ptr@VEnchantRateEventContext@@@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIV?$MS2Ptr@VEnchantRateEventContext@@@@@std@@@3@$00@std@@@std@@QEAA@AEBU?$less@I@1@@Z 0x140498860 ; prop
-// MS2-PIN: ??0?$_Tree_comp_alloc@V?$_Tmap_traits@IV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@@std@@@3@$00@std@@@std@@QEAA@AEBU?$less@I@1@@Z 0x1404988e0 ; prop
+// MS2-PIN: ??0?$_Tree_comp_alloc@V?$_Tmap_traits@IV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@@std@@@3@$0A@@std@@@std@@QEAA@AEBU?$less@I@1@@Z 0x1404988e0 ; prop
 // MS2-PIN: ??0?$_Tree_comp_alloc@V?$_Tmap_traits@KV?$map@KKU?$less@K@std@@V?$allocator@U?$pair@$$CBKK@std@@@2@@std@@U?$less@K@2@V?$allocator@U?$pair@$$CBKV?$map@KKU?$less@K@std@@V?$allocator@U?$pair@$$CBKK@std@@@2@@std@@@std@@@2@$0A@@std@@@std@@QEAA@AEBU?$less@K@1@@Z 0x140498920 ; prop
 // MS2-PIN: ??0?$_Tree_comp_alloc@V?$_Tmap_traits@KV?$set@V?$MS2Ptr@VDungeonBonusRewardCtx@@@@U?$less@V?$MS2Ptr@VDungeonBonusRewardCtx@@@@@std@@V?$allocator@V?$MS2Ptr@VDungeonBonusRewardCtx@@@@@3@@std@@U?$less@K@2@V?$allocator@U?$pair@$$CBKV?$set@V?$MS2Ptr@VDungeonBonusRewardCtx@@@@U?$less@V?$MS2Ptr@VDungeonBonusRewardCtx@@@@@std@@V?$allocator@V?$MS2Ptr@VDungeonBonusRewardCtx@@@@@3@@std@@@std@@@2@$0A@@std@@@std@@QEAA@AEBU?$less@K@1@@Z 0x140498960 ; prop
 // MS2-PIN: ??0?$_Tree_comp_alloc@V?$_Tmap_traits@W4Unk_DungeonGroupType@@V?$set@V?$MS2Ptr@VDungeonBonusRewardCtx@@@@U?$less@V?$MS2Ptr@VDungeonBonusRewardCtx@@@@@std@@V?$allocator@V?$MS2Ptr@VDungeonBonusRewardCtx@@@@@3@@std@@U?$less@W4Unk_DungeonGroupType@@@3@V?$allocator@U?$pair@$$CBW4Unk_DungeonGroupType@@V?$set@V?$MS2Ptr@VDungeonBonusRewardCtx@@@@U?$less@V?$MS2Ptr@VDungeonBonusRewardCtx@@@@@std@@V?$allocator@V?$MS2Ptr@VDungeonBonusRewardCtx@@@@@3@@std@@@std@@@3@$0A@@std@@@std@@QEAA@AEBU?$less@W4Unk_DungeonGroupType@@@1@@Z 0x1404989e0 ; prop
@@ -116,7 +116,7 @@
 // MS2-PIN: ??0?$allocator@U?$_Tree_node@U?$pair@$$CBW4Unk_RemakeSaleItemType@@V?$map@KKU?$less@K@std@@V?$allocator@U?$pair@$$CBKK@std@@@2@@std@@@std@@PEAX@std@@@std@@QEAA@XZ 0x140499a30 ; prop
 // MS2-PIN: ??0?$allocator@U?$_Tree_node@UUnk_ConstructionKey@@PEAX@std@@@std@@QEAA@XZ 0x140499a50 ; prop
 // MS2-PIN: ??0?$map@HV?$MS2Ptr@UNpcEventDropEventContext@@@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHV?$MS2Ptr@UNpcEventDropEventContext@@@@@std@@@3@@std@@QEAA@XZ 0x140499ad0 ; unique
-// MS2-PIN: ??0?$multimap@IV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@@std@@@3@@std@@QEAA@XZ 0x140499b00 ; prop
+// MS2-PIN: ??0?$map@IV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@@std@@@3@@std@@QEAA@XZ 0x140499b00 ; prop
 // MS2-PIN: ??0?$map@KV?$map@KKU?$less@K@std@@V?$allocator@U?$pair@$$CBKK@std@@@2@@std@@U?$less@K@2@V?$allocator@U?$pair@$$CBKV?$map@KKU?$less@K@std@@V?$allocator@U?$pair@$$CBKK@std@@@2@@std@@@std@@@2@@std@@QEAA@XZ 0x140499b30 ; prop
 // MS2-PIN: ??0?$map@KV?$set@V?$MS2Ptr@VDungeonBonusRewardCtx@@@@U?$less@V?$MS2Ptr@VDungeonBonusRewardCtx@@@@@std@@V?$allocator@V?$MS2Ptr@VDungeonBonusRewardCtx@@@@@3@@std@@U?$less@K@2@V?$allocator@U?$pair@$$CBKV?$set@V?$MS2Ptr@VDungeonBonusRewardCtx@@@@U?$less@V?$MS2Ptr@VDungeonBonusRewardCtx@@@@@std@@V?$allocator@V?$MS2Ptr@VDungeonBonusRewardCtx@@@@@3@@std@@@std@@@2@@std@@QEAA@XZ 0x140499b60 ; unique
 // MS2-PIN: ??0?$map@U?$pair@HH@std@@V?$MS2Ptr@VQuestAdditionalRewardContext@@@@U?$less@U?$pair@HH@std@@@2@V?$allocator@U?$pair@$$CBU?$pair@HH@std@@V?$MS2Ptr@VQuestAdditionalRewardContext@@@@@std@@@2@@std@@QEAA@XZ 0x140499b90 ; prop
@@ -201,17 +201,17 @@
 // MS2-PIN: ?_Buyheadnode@?$_Tree_comp_alloc@V?$_Tmap_traits@HV?$MS2Ptr@UNpcEventDropEventContext@@@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHV?$MS2Ptr@UNpcEventDropEventContext@@@@@std@@@3@$0A@@std@@@std@@QEAAPEAU?$_Tree_node@U?$pair@$$CBHV?$MS2Ptr@UNpcEventDropEventContext@@@@@std@@PEAX@2@XZ 0x1404af4d0 ; prop
 // MS2-PIN: ?_Buyheadnode@?$_Tree_comp_alloc@V?$_Tmap_traits@IV?$MS2Ptr@VEnchantRateEventContext@@@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIV?$MS2Ptr@VEnchantRateEventContext@@@@@std@@@3@$00@std@@@std@@QEAAPEAU?$_Tree_node@U?$pair@$$CBIV?$MS2Ptr@VEnchantRateEventContext@@@@@std@@PEAX@2@XZ 0x1404af590 ; prop
 // MS2-PIN: ?_Buyheadnode@?$_Tree_comp_alloc@V?$_Tmap_traits@IV?$MS2Ptr@VEventTimeLimitDungeonContext@@@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIV?$MS2Ptr@VEventTimeLimitDungeonContext@@@@@std@@@3@$00@std@@@std@@QEAAPEAU?$_Tree_node@U?$pair@$$CBIV?$MS2Ptr@VEventTimeLimitDungeonContext@@@@@std@@PEAX@2@XZ 0x1404af650 ; prop
-// MS2-PIN: ?_Buyheadnode@?$_Tree_comp_alloc@V?$_Tmap_traits@IV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@@std@@@3@$00@std@@@std@@QEAAPEAU?$_Tree_node@U?$pair@$$CBIV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@@std@@PEAX@2@XZ 0x1404af710 ; prop
+// MS2-PIN: ?_Buyheadnode@?$_Tree_comp_alloc@V?$_Tmap_traits@IV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@@std@@@3@$0A@@std@@@std@@QEAAPEAU?$_Tree_node@U?$pair@$$CBIV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@@std@@PEAX@2@XZ 0x1404af710 ; prop
 // MS2-PIN: ?_Buyheadnode@?$_Tree_comp_alloc@V?$_Tmap_traits@KV?$map@KKU?$less@K@std@@V?$allocator@U?$pair@$$CBKK@std@@@2@@std@@U?$less@K@2@V?$allocator@U?$pair@$$CBKV?$map@KKU?$less@K@std@@V?$allocator@U?$pair@$$CBKK@std@@@2@@std@@@std@@@2@$0A@@std@@@std@@QEAAPEAU?$_Tree_node@U?$pair@$$CBKV?$map@KKU?$less@K@std@@V?$allocator@U?$pair@$$CBKK@std@@@2@@std@@@std@@PEAX@2@XZ 0x1404af7d0 ; prop
 // MS2-PIN: ?_Buyheadnode@?$_Tree_comp_alloc@V?$_Tmap_traits@KV?$set@V?$MS2Ptr@VDungeonBonusRewardCtx@@@@U?$less@V?$MS2Ptr@VDungeonBonusRewardCtx@@@@@std@@V?$allocator@V?$MS2Ptr@VDungeonBonusRewardCtx@@@@@3@@std@@U?$less@K@2@V?$allocator@U?$pair@$$CBKV?$set@V?$MS2Ptr@VDungeonBonusRewardCtx@@@@U?$less@V?$MS2Ptr@VDungeonBonusRewardCtx@@@@@std@@V?$allocator@V?$MS2Ptr@VDungeonBonusRewardCtx@@@@@3@@std@@@std@@@2@$0A@@std@@@std@@QEAAPEAU?$_Tree_node@U?$pair@$$CBKV?$set@V?$MS2Ptr@VDungeonBonusRewardCtx@@@@U?$less@V?$MS2Ptr@VDungeonBonusRewardCtx@@@@@std@@V?$allocator@V?$MS2Ptr@VDungeonBonusRewardCtx@@@@@3@@std@@@std@@PEAX@2@XZ 0x1404af890 ; prop
 // MS2-PIN: ?_Buyheadnode@?$_Tree_comp_alloc@V?$_Tmap_traits@U?$pair@HH@std@@V?$MS2Ptr@VQuestAdditionalRewardContext@@@@U?$less@U?$pair@HH@std@@@2@V?$allocator@U?$pair@$$CBU?$pair@HH@std@@V?$MS2Ptr@VQuestAdditionalRewardContext@@@@@std@@@2@$0A@@std@@@std@@QEAAPEAU?$_Tree_node@U?$pair@$$CBU?$pair@HH@std@@V?$MS2Ptr@VQuestAdditionalRewardContext@@@@@std@@PEAX@2@XZ 0x1404af950 ; prop
 // MS2-PIN: ?_Buyheadnode@?$_Tree_comp_alloc@V?$_Tmap_traits@W4Unk_DungeonGroupType@@V?$set@V?$MS2Ptr@VDungeonBonusRewardCtx@@@@U?$less@V?$MS2Ptr@VDungeonBonusRewardCtx@@@@@std@@V?$allocator@V?$MS2Ptr@VDungeonBonusRewardCtx@@@@@3@@std@@U?$less@W4Unk_DungeonGroupType@@@3@V?$allocator@U?$pair@$$CBW4Unk_DungeonGroupType@@V?$set@V?$MS2Ptr@VDungeonBonusRewardCtx@@@@U?$less@V?$MS2Ptr@VDungeonBonusRewardCtx@@@@@std@@V?$allocator@V?$MS2Ptr@VDungeonBonusRewardCtx@@@@@3@@std@@@std@@@3@$0A@@std@@@std@@QEAAPEAU?$_Tree_node@U?$pair@$$CBW4Unk_DungeonGroupType@@V?$set@V?$MS2Ptr@VDungeonBonusRewardCtx@@@@U?$less@V?$MS2Ptr@VDungeonBonusRewardCtx@@@@@std@@V?$allocator@V?$MS2Ptr@VDungeonBonusRewardCtx@@@@@3@@std@@@std@@PEAX@2@XZ 0x1404afa10 ; prop
 // MS2-PIN: ?_Buyheadnode@?$_Tree_comp_alloc@V?$_Tmap_traits@W4Unk_RemakeSaleItemType@@KU?$less@W4Unk_RemakeSaleItemType@@@std@@V?$allocator@U?$pair@$$CBW4Unk_RemakeSaleItemType@@K@std@@@3@$0A@@std@@@std@@QEAAPEAU?$_Tree_node@U?$pair@$$CBW4Unk_RemakeSaleItemType@@K@std@@PEAX@2@XZ 0x1404afad0 ; prop
 // MS2-PIN: ?_Buyheadnode@?$_Tree_comp_alloc@V?$_Tset_traits@UUnk_ConstructionKey@@U?$less@UUnk_ConstructionKey@@@std@@V?$allocator@UUnk_ConstructionKey@@@3@$0A@@std@@@std@@QEAAPEAU?$_Tree_node@UUnk_ConstructionKey@@PEAX@2@XZ 0x1404afd10 ; prop
-// MS2-PIN: ?_Buynode0@?$_Tree_comp_alloc@V?$_Tmap_traits@IV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@@std@@@3@$00@std@@@std@@QEAAPEAU?$_Tree_node@U?$pair@$$CBIV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@@std@@PEAX@2@XZ 0x1404b0130 ; prop
+// MS2-PIN: ?_Buynode0@?$_Tree_comp_alloc@V?$_Tmap_traits@IV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@@std@@@3@$0A@@std@@@std@@QEAAPEAU?$_Tree_node@U?$pair@$$CBIV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@@std@@PEAX@2@XZ 0x1404b0130 ; prop
 // MS2-PIN: ?_Construct@?$_Tree_comp_alloc@V?$_Tmap_traits@IV?$MS2Ptr@VEnchantRateEventContext@@@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIV?$MS2Ptr@VEnchantRateEventContext@@@@@std@@@3@$00@std@@@std@@QEAAXXZ 0x1404b1110 ; prop
 // MS2-PIN: ?_Construct@?$_Tree_comp_alloc@V?$_Tmap_traits@IV?$MS2Ptr@VEventTimeLimitDungeonContext@@@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIV?$MS2Ptr@VEventTimeLimitDungeonContext@@@@@std@@@3@$00@std@@@std@@QEAAXXZ 0x1404b1140 ; prop
-// MS2-PIN: ?_Construct@?$_Tree_comp_alloc@V?$_Tmap_traits@IV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@@std@@@3@$00@std@@@std@@QEAAXXZ 0x1404b1170 ; prop
+// MS2-PIN: ?_Construct@?$_Tree_comp_alloc@V?$_Tmap_traits@IV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@@std@@@3@$0A@@std@@@std@@QEAAXXZ 0x1404b1170 ; prop
 // MS2-PIN: ?_Construct@?$_Tree_comp_alloc@V?$_Tmap_traits@KV?$map@KKU?$less@K@std@@V?$allocator@U?$pair@$$CBKK@std@@@2@@std@@U?$less@K@2@V?$allocator@U?$pair@$$CBKV?$map@KKU?$less@K@std@@V?$allocator@U?$pair@$$CBKK@std@@@2@@std@@@std@@@2@$0A@@std@@@std@@QEAAXXZ 0x1404b11a0 ; prop
 // MS2-PIN: ?_Construct@?$_Tree_comp_alloc@V?$_Tmap_traits@KV?$set@V?$MS2Ptr@VDungeonBonusRewardCtx@@@@U?$less@V?$MS2Ptr@VDungeonBonusRewardCtx@@@@@std@@V?$allocator@V?$MS2Ptr@VDungeonBonusRewardCtx@@@@@3@@std@@U?$less@K@2@V?$allocator@U?$pair@$$CBKV?$set@V?$MS2Ptr@VDungeonBonusRewardCtx@@@@U?$less@V?$MS2Ptr@VDungeonBonusRewardCtx@@@@@std@@V?$allocator@V?$MS2Ptr@VDungeonBonusRewardCtx@@@@@3@@std@@@std@@@2@$0A@@std@@@std@@QEAAXXZ 0x1404b11d0 ; prop
 // MS2-PIN: ?_Construct@?$_Tree_comp_alloc@V?$_Tmap_traits@U?$pair@HH@std@@V?$MS2Ptr@VQuestAdditionalRewardContext@@@@U?$less@U?$pair@HH@std@@@2@V?$allocator@U?$pair@$$CBU?$pair@HH@std@@V?$MS2Ptr@VQuestAdditionalRewardContext@@@@@std@@@2@$0A@@std@@@std@@QEAAXXZ 0x1404b1200 ; prop
@@ -222,7 +222,7 @@
 // MS2-PIN: ?_Freenode0@?$_Tree_comp_alloc@V?$_Tmap_traits@HV?$MS2Ptr@UNpcEventDropEventContext@@@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHV?$MS2Ptr@UNpcEventDropEventContext@@@@@std@@@3@$0A@@std@@@std@@QEAAXPEAU?$_Tree_node@U?$pair@$$CBHV?$MS2Ptr@UNpcEventDropEventContext@@@@@std@@PEAX@2@@Z 0x1404b6850 ; prop
 // MS2-PIN: ?_Freenode0@?$_Tree_comp_alloc@V?$_Tmap_traits@IV?$MS2Ptr@VEnchantRateEventContext@@@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIV?$MS2Ptr@VEnchantRateEventContext@@@@@std@@@3@$00@std@@@std@@QEAAXPEAU?$_Tree_node@U?$pair@$$CBIV?$MS2Ptr@VEnchantRateEventContext@@@@@std@@PEAX@2@@Z 0x1404b6880 ; prop
 // MS2-PIN: ?_Freenode0@?$_Tree_comp_alloc@V?$_Tmap_traits@IV?$MS2Ptr@VEventTimeLimitDungeonContext@@@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIV?$MS2Ptr@VEventTimeLimitDungeonContext@@@@@std@@@3@$00@std@@@std@@QEAAXPEAU?$_Tree_node@U?$pair@$$CBIV?$MS2Ptr@VEventTimeLimitDungeonContext@@@@@std@@PEAX@2@@Z 0x1404b68b0 ; prop
-// MS2-PIN: ?_Freenode0@?$_Tree_comp_alloc@V?$_Tmap_traits@IV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@@std@@@3@$00@std@@@std@@QEAAXPEAU?$_Tree_node@U?$pair@$$CBIV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@@std@@PEAX@2@@Z 0x1404b68e0 ; prop
+// MS2-PIN: ?_Freenode0@?$_Tree_comp_alloc@V?$_Tmap_traits@IV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@@std@@@3@$0A@@std@@@std@@QEAAXPEAU?$_Tree_node@U?$pair@$$CBIV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@@std@@PEAX@2@@Z 0x1404b68e0 ; prop
 // MS2-PIN: ?_Freenode0@?$_Tree_comp_alloc@V?$_Tmap_traits@KV?$map@KKU?$less@K@std@@V?$allocator@U?$pair@$$CBKK@std@@@2@@std@@U?$less@K@2@V?$allocator@U?$pair@$$CBKV?$map@KKU?$less@K@std@@V?$allocator@U?$pair@$$CBKK@std@@@2@@std@@@std@@@2@$0A@@std@@@std@@QEAAXPEAU?$_Tree_node@U?$pair@$$CBKV?$map@KKU?$less@K@std@@V?$allocator@U?$pair@$$CBKK@std@@@2@@std@@@std@@PEAX@2@@Z 0x1404b6910 ; prop
 // MS2-PIN: ?_Freenode0@?$_Tree_comp_alloc@V?$_Tmap_traits@KV?$set@V?$MS2Ptr@VDungeonBonusRewardCtx@@@@U?$less@V?$MS2Ptr@VDungeonBonusRewardCtx@@@@@std@@V?$allocator@V?$MS2Ptr@VDungeonBonusRewardCtx@@@@@3@@std@@U?$less@K@2@V?$allocator@U?$pair@$$CBKV?$set@V?$MS2Ptr@VDungeonBonusRewardCtx@@@@U?$less@V?$MS2Ptr@VDungeonBonusRewardCtx@@@@@std@@V?$allocator@V?$MS2Ptr@VDungeonBonusRewardCtx@@@@@3@@std@@@std@@@2@$0A@@std@@@std@@QEAAXPEAU?$_Tree_node@U?$pair@$$CBKV?$set@V?$MS2Ptr@VDungeonBonusRewardCtx@@@@U?$less@V?$MS2Ptr@VDungeonBonusRewardCtx@@@@@std@@V?$allocator@V?$MS2Ptr@VDungeonBonusRewardCtx@@@@@3@@std@@@std@@PEAX@2@@Z 0x1404b6940 ; prop
 // MS2-PIN: ?_Freenode0@?$_Tree_comp_alloc@V?$_Tmap_traits@U?$pair@HH@std@@V?$MS2Ptr@VQuestAdditionalRewardContext@@@@U?$less@U?$pair@HH@std@@@2@V?$allocator@U?$pair@$$CBU?$pair@HH@std@@V?$MS2Ptr@VQuestAdditionalRewardContext@@@@@std@@@2@$0A@@std@@@std@@QEAAXPEAU?$_Tree_node@U?$pair@$$CBU?$pair@HH@std@@V?$MS2Ptr@VQuestAdditionalRewardContext@@@@@std@@PEAX@2@@Z 0x1404b6970 ; prop
@@ -240,21 +240,21 @@
 // MS2-PIN: ?_Unchecked_end@?$_Tree@V?$_Tmap_traits@HHU?$less@H@std@@V?$allocator@U?$pair@$$CBHH@std@@@2@$0A@@std@@@std@@QEAA?AV?$_Tree_unchecked_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHH@std@@@std@@@std@@@2@XZ 0x1404bb960 ; unique
 // MS2-PIN: ?allocate@?$allocator@U?$_Tree_node@U?$pair@$$CBKV?$map@KKU?$less@K@std@@V?$allocator@U?$pair@$$CBKK@std@@@2@@std@@@std@@PEAX@std@@@std@@QEAAPEAU?$_Tree_node@U?$pair@$$CBKV?$map@KKU?$less@K@std@@V?$allocator@U?$pair@$$CBKK@std@@@2@@std@@@std@@PEAX@2@_K@Z 0x1404bbce0 ; unique
 // MS2-PIN: ?allocate@?$allocator@U?$_Tree_node@U?$pair@$$CBKV?$set@V?$MS2Ptr@VDungeonBonusRewardCtx@@@@U?$less@V?$MS2Ptr@VDungeonBonusRewardCtx@@@@@std@@V?$allocator@V?$MS2Ptr@VDungeonBonusRewardCtx@@@@@3@@std@@@std@@PEAX@std@@@std@@QEAAPEAU?$_Tree_node@U?$pair@$$CBKV?$set@V?$MS2Ptr@VDungeonBonusRewardCtx@@@@U?$less@V?$MS2Ptr@VDungeonBonusRewardCtx@@@@@std@@V?$allocator@V?$MS2Ptr@VDungeonBonusRewardCtx@@@@@3@@std@@@std@@PEAX@2@_K@Z 0x1404bbd10 ; unique
-// MS2-PIN: ?equal_range@?$_Tree@V?$_Tmap_traits@IV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@@std@@@3@$00@std@@@std@@QEAA?AU?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@@std@@@std@@@std@@@std@@V12@@2@AEBI@Z 0x1404bdf20 ; prop
+// MS2-PIN: ?equal_range@?$_Tree@V?$_Tmap_traits@IV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@@std@@@3@$0A@@std@@@std@@QEAA?AU?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@@std@@@std@@@std@@@std@@V12@@2@AEBI@Z 0x1404bdf20 ; prop
 // MS2-PIN: ?erase@?$_Tree@V?$_Tset_traits@V?$MS2Ptr@VDungeonBonusRewardCtx@@@@U?$less@V?$MS2Ptr@VDungeonBonusRewardCtx@@@@@std@@V?$allocator@V?$MS2Ptr@VDungeonBonusRewardCtx@@@@@3@$0A@@std@@@std@@QEAA_KAEBV?$MS2Ptr@VDungeonBonusRewardCtx@@@@@Z 0x1404bf8e0 ; unique
 // MS2-PIN: ?find@?$_Tree@V?$_Tset_traits@_KU?$less@_K@std@@V?$allocator@_K@2@$0A@@std@@@std@@QEAA?AV?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@_K@std@@@std@@@2@AEB_K@Z 0x1404c0270 ; unique
 // MS2-PIN: ?max_size@?$_Default_allocator_traits@V?$allocator@U?$_Tree_node@U?$pair@$$CBIV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@@std@@PEAX@std@@@std@@@std@@SA_KAEBV?$allocator@U?$_Tree_node@U?$pair@$$CBIV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@@std@@PEAX@std@@@2@@Z 0x1404c09b0 ; prop
 // MS2-PIN: ?max_size@?$_Default_allocator_traits@V?$allocator@U?$_Tree_node@U?$pair@$$CBKV?$map@KKU?$less@K@std@@V?$allocator@U?$pair@$$CBKK@std@@@2@@std@@@std@@PEAX@std@@@std@@@std@@SA_KAEBV?$allocator@U?$_Tree_node@U?$pair@$$CBKV?$map@KKU?$less@K@std@@V?$allocator@U?$pair@$$CBKK@std@@@2@@std@@@std@@PEAX@std@@@2@@Z 0x1404c09c0 ; prop
 // MS2-PIN: ?max_size@?$_Default_allocator_traits@V?$allocator@U?$_Tree_node@U?$pair@$$CBKV?$set@V?$MS2Ptr@VDungeonBonusRewardCtx@@@@U?$less@V?$MS2Ptr@VDungeonBonusRewardCtx@@@@@std@@V?$allocator@V?$MS2Ptr@VDungeonBonusRewardCtx@@@@@3@@std@@@std@@PEAX@std@@@std@@@std@@SA_KAEBV?$allocator@U?$_Tree_node@U?$pair@$$CBKV?$set@V?$MS2Ptr@VDungeonBonusRewardCtx@@@@U?$less@V?$MS2Ptr@VDungeonBonusRewardCtx@@@@@std@@V?$allocator@V?$MS2Ptr@VDungeonBonusRewardCtx@@@@@3@@std@@@std@@PEAX@std@@@2@@Z 0x1404c09d0 ; prop
 // MS2-PIN: ?max_size@?$_Default_allocator_traits@V?$allocator@U?$_Tree_node@U?$pair@$$CBU?$pair@HH@std@@V?$MS2Ptr@VQuestAdditionalRewardContext@@@@@std@@PEAX@std@@@std@@@std@@SA_KAEBV?$allocator@U?$_Tree_node@U?$pair@$$CBU?$pair@HH@std@@V?$MS2Ptr@VQuestAdditionalRewardContext@@@@@std@@PEAX@std@@@2@@Z 0x1404c09e0 ; unique
-// MS2-PIN: ?max_size@?$_Tree@V?$_Tmap_traits@IV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@@std@@@3@$00@std@@@std@@QEBA_KXZ 0x1404c0ad0 ; prop
+// MS2-PIN: ?max_size@?$_Tree@V?$_Tmap_traits@IV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@@std@@@3@$0A@@std@@@std@@QEBA_KXZ 0x1404c0ad0 ; prop
 // MS2-PIN: ?max_size@?$_Tree@V?$_Tmap_traits@KV?$map@KKU?$less@K@std@@V?$allocator@U?$pair@$$CBKK@std@@@2@@std@@U?$less@K@2@V?$allocator@U?$pair@$$CBKV?$map@KKU?$less@K@std@@V?$allocator@U?$pair@$$CBKK@std@@@2@@std@@@std@@@2@$0A@@std@@@std@@QEBA_KXZ 0x1404c0af0 ; unique
 // MS2-PINS-END tplpin
 // MS2-PIN: ?Recompute@?$Unk_GameRuleRateMap@K@@QEAAXK@Z 0x1404a6e40
 // MS2-PIN: ?erase@?$_Tree@V?$_Tset_traits@_KU?$less@_K@std@@V?$allocator@_K@2@$0A@@std@@@std@@QEAA_KAEB_K@Z 0x1404bfb40
 // the ItemTag multimap's _Insert_at (max_size 0x1404c0ad0; its map<DWORD,DWORD> look-alike is another TU's COMDAT copy) and its _Insert_nohint
-// MS2-PIN: ??$_Insert_at@AEAU?$pair@$$CBIV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@@std@@PEAU?$_Tree_node@U?$pair@$$CBIV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@@std@@PEAX@2@@?$_Tree@V?$_Tmap_traits@IV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@@std@@@3@$00@std@@@std@@IEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@@std@@@std@@@std@@@1@_NPEAU?$_Tree_node@U?$pair@$$CBIV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@@std@@PEAX@1@AEAU?$pair@$$CBIV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@@1@1@Z 0x140487c70
-// MS2-PIN: ??$_Insert_nohint@AEAU?$pair@$$CBIV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@@std@@PEAU?$_Tree_node@U?$pair@$$CBIV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@@std@@PEAX@2@@?$_Tree@V?$_Tmap_traits@IV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@@std@@@3@$00@std@@@std@@IEAA?AU?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@@std@@@std@@@std@@@std@@_N@1@_NAEAU?$pair@$$CBIV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@@1@PEAU?$_Tree_node@U?$pair@$$CBIV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@@std@@PEAX@1@@Z 0x14048fcc0
+// MS2-PIN: ??$_Insert_at@AEAU?$pair@$$CBIV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@@std@@PEAU?$_Tree_node@U?$pair@$$CBIV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@@std@@PEAX@2@@?$_Tree@V?$_Tmap_traits@IV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@@std@@@3@$0A@@std@@@std@@IEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@@std@@@std@@@std@@@1@_NPEAU?$_Tree_node@U?$pair@$$CBIV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@@std@@PEAX@1@AEAU?$pair@$$CBIV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@@1@1@Z 0x140487c70
+// MS2-PIN: ??$_Insert_nohint@AEAU?$pair@$$CBIV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@@std@@PEAU?$_Tree_node@U?$pair@$$CBIV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@@std@@PEAX@2@@?$_Tree@V?$_Tmap_traits@IV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@@std@@@3@$0A@@std@@@std@@IEAA?AU?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@@std@@@std@@@std@@@std@@_N@1@_NAEAU?$pair@$$CBIV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@@1@PEAU?$_Tree_node@U?$pair@$$CBIV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@@std@@PEAX@1@@Z 0x14048fcc0
 // pair<const int, map<DWORD,DWORD>> piecewise ctor (calls the map ctor 0x140445750; 0x140481dc0 is a look-alike)
 // MS2-PIN: ??$make_pair@AEAHAEAV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@@std@@YA?AU?$pair@HV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@@0@AEAHAEAV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@@Z 0x140496df0
 // look-alike callees resolved through their matched callers (bytematch -v)
@@ -405,8 +405,8 @@ template <class T> void Unk_AppendVector(const std::vector<T>& src, std::vector<
 // @0x140474af0
 CGameRule::CGameRule()
     : m_d0(0), m_d4(0), m_368(0), m_36c(0), m_3b0(0), m_690(-1), m_698(0), m_6a0(0), m_6a8(0), m_6f0(0), m_6f4(0),
-      m_700(0), m_8d8(0), m_8e8(0), m_910(false), m_998(false), m_9d0(false), m_transferItemBound(false), m_b30(0), m_b40(0),
-      m_bb0(0), m_bc0(0), m_bd0(0), m_be0(0), m_bf0(0), m_c00(0), m_c10(0), m_c14(0), m_c60(false), m_d10(false),
+      m_700(0), m_8e8(0), m_910(false), m_998(false), m_9d0(false), m_transferItemBound(false), m_b30(0), m_b40(0),
+      m_bc0(0), m_c00(0), m_c10(0), m_c14(0), m_c60(false), m_d10(false),
       m_e98(0), m_ef8(0)
 {
     if (FUN_14036e510(FUN_140166410()))
@@ -1119,12 +1119,11 @@ MS2Ptr<UgcMapCommendationGMEvent> CGameRule::FUN_1404786b0(int a)
 MS2_REPLACE_METHOD(0x1404786B0, CGameRule, FUN_1404786b0, 175, 0x95939468);
 
 // @0x140478770
-// MS2-FUNCTIONAL: the Unk_GEBoxPtr glue around Lookup/SetAt differs in temporaries
 void CGameRule::FUN_140478770(int value, int key, int sub)
 {
     if (Unk_LockGuard guard = m_a38) {} else
     {
-        IntMapBox box;
+        IntMapBox box(0);
         m_a68.Lookup(key, box);
         if (box == 0) {
             box = Unk_BingoNewTag(0);
@@ -1138,8 +1137,7 @@ void CGameRule::FUN_140478770(int value, int key, int sub)
 MS2_REPLACE_METHOD(0x140478770, CGameRule, FUN_140478770, 292, 0x7781CB5E);
 
 // @0x1404788a0
-// MS2-FUNCTIONAL: Unk_GEBoxPtr approximation (see 0x140478770)
-void CGameRule::FUN_1404788a0(int key, int sub)
+void CGameRule::FUN_1404788a0(int value, int key, int sub)
 {
     if (Unk_LockGuard guard = m_a38) {} else
     {
@@ -1151,7 +1149,6 @@ void CGameRule::FUN_1404788a0(int key, int sub)
 }
 
 // @0x140478960
-// MS2-FUNCTIONAL: Unk_GEBoxPtr approximation (see 0x140478770)
 void CGameRule::FUN_140478960(int key, ATL::CRBMap<int, int>& out)
 {
     out.RemoveAll();
@@ -1159,7 +1156,7 @@ void CGameRule::FUN_140478960(int key, ATL::CRBMap<int, int>& out)
     {
         IntMapBox box(0);
         m_a68.Lookup(key, box);
-        if (box.get() == NULL)
+        if (box == 0)
             return;
         FUN_1404820e0(out, *box);
     }
@@ -2003,19 +2000,21 @@ CMsTime CGameRule::FUN_14047bbe0()
 MS2_REPLACE_METHOD(0x14047BBE0, CGameRule, FUN_14047bbe0, 97, 0x992F70C6);
 
 // @0x14047bc50
-// MS2-FUNCTIONAL: Unk_GEBoxPtr approximation (see 0x140478770)
 __int64 CGameRule::FUN_14047bc50(Unk_SaleHousingKey key, int type, __int64 price)
 {
     Unk_CriticalSectionLock lock(m_aa0, 1);
     for (POSITION pos = m_ad0.GetHeadPosition(); pos != NULL; m_ad0.GetNext(pos)) {
         SaleCubeBox box = m_ad0.GetValueAt(pos);
-        if (!(box.get() == NULL)) {
-            POSITION posCube = box->FindFirstWithKey(key);
-            while (posCube) {
-                MS2Ptr<SaleCube> spCube = box->GetNextValueWithKey(posCube, key);
-                if (!(spCube == 0) && spCube->m_1c == type)
-                    return (__int64)((float)price * (1.0f - (float)spCube->m_20 / 10000.0f) + 0.5f);
-            }
+        if (box == 0)
+            continue;
+        POSITION posCube = box->FindFirstWithKey(key);
+        while (posCube) {
+            MS2Ptr<SaleCube> spCube = box->GetNextValueWithKey(posCube, key);
+            if (spCube == 0)
+                continue;
+            if (spCube->m_1c != type)
+                continue;
+            return (__int64)((float)price * (1.0f - (float)(unsigned)spCube->m_20 / 10000.0f) + 0.5f);
         }
     }
     return price;
@@ -2191,7 +2190,6 @@ void CGameRule::FUN_14047c990(MS2Ptr<StampEventContext> spContext)
 }
 
 // @0x14047ca40
-// MS2-FUNCTIONAL: the enum key temporaries of the three Lookups differ
 MS2Ptr<StampEventContext> CGameRule::FUN_14047ca40(Unk_AttendTable& table)
 {
     Unk_CriticalSectionLock lock(m_8, 1);
@@ -2202,12 +2200,11 @@ MS2Ptr<StampEventContext> CGameRule::FUN_14047ca40(Unk_AttendTable& table)
         return spContext;
     if (m_b68.Lookup((Unk_StampKey)0, spContext))
         return spContext;
-    POSITION pos = m_b68.GetStartPosition();
-    while (pos) {
+    for (POSITION pos = m_b68.GetStartPosition(); pos; m_b68.GetNext(pos)) {
         spContext = m_b68.GetValueAt(pos);
-        if (spContext->m_98 == 0 || table.FUN_140482280(spContext->m_98, false))
-            return spContext;
-        m_b68.GetNext(pos);
+        if (spContext->m_98 != 0 && !table.FUN_140482280(spContext->m_98, false))
+            continue;
+        return spContext;
     }
     return MS2Ptr<StampEventContext>(0);
 }
@@ -2571,7 +2568,6 @@ void CGameRule::FUN_14047e300()
 MS2_REPLACE_METHOD(0x14047E300, CGameRule, FUN_14047e300, 94, 0x3522E48A);
 
 // @0x14047e370
-// MS2-FUNCTIONAL: EnchantRateEventContext::m_20 is unsigned in the exe (pushed by address); gameevent.h is shared
 unsigned CGameRule::FUN_14047e370(unsigned key)
 {
     Unk_GameRuleLock lock(m_928, 1);
@@ -2582,7 +2578,7 @@ unsigned CGameRule::FUN_14047e370(unsigned key)
     std::pair<Iter, Iter> range = m_958.equal_range(key);
     for (; range.first != range.second; range.first++) {
         MS2Ptr<EnchantRateEventContext> spContext = range.first->second;
-        rates.push_back(spContext->m_20);
+        rates.push_back(reinterpret_cast<unsigned&>(spContext->m_20));
     }
     if (rates.size() != 0) {
         std::sort(rates.begin(), rates.end(), std::greater<unsigned>());
@@ -2717,7 +2713,7 @@ MS2_REPLACE_METHOD(0x14047ECA0, CGameRule, FUN_14047eca0, 18, 0x16694178);
 void CGameRule::FUN_14047ecc0(CStringW tag, std::vector<ItemEntity>& out)
 {
     Unk_CriticalSectionLock lock(m_d18, 1);
-    for (std::multimap<unsigned, MS2Ptr<Unk_ItemTagRewardContext> >::iterator it = m_d48.begin(); it != m_d48.end();
+    for (std::map<unsigned, MS2Ptr<Unk_ItemTagRewardContext> >::iterator it = m_d48.begin(); it != m_d48.end();
          it++) {
         MS2Ptr<Unk_ItemTagRewardContext> spReward = it->second;
         if (spReward->m_tags.find(tag) == spReward->m_tags.end())
@@ -2728,7 +2724,6 @@ void CGameRule::FUN_14047ecc0(CStringW tag, std::vector<ItemEntity>& out)
 MS2_REPLACE_METHOD(0x14047ECC0, CGameRule, FUN_14047ecc0, 369, 0xAF238A86);
 
 // @0x14047ee40
-// MS2-FUNCTIONAL: exe frame 0x10 larger around make_pair/insert; not found
 void CGameRule::FUN_14047ee40(int key, MS2Ptr<Unk_ItemTagRewardContext> spContext)
 {
     Unk_CriticalSectionLock lock(m_d18, 1);

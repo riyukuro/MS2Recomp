@@ -339,7 +339,6 @@ CStringW DamageCalculatorInfo::ToString() {
 }
 MS2_REPLACE_METHOD(0x1402728F0, DamageCalculatorInfo, ToString, 7835, 0xF9BA3105);
 // @0x1402747a0
-// MS2-FUNCTIONAL: WriteFile byte count is reloaded as mov rcx,[x]; mov r8d,ecx in the exe (3 bytes longer); only that differs.
 void DamageCalculatorInfo::SaveToFile() {
     SYSTEMTIME st;
     GetLocalTime(&st);
@@ -351,8 +350,7 @@ void DamageCalculatorInfo::SaveToFile() {
     DWORD written=0;
     WORD bom=0xfeff;
     WriteFile(file,&bom,2,&written,NULL);
-    __int64 bytes=(__int64)text.GetLength()<<1;
-    WriteFile(file,text,bytes,&written,NULL);
+    WriteFile(file,text,text.GetLength()*sizeof(wchar_t),&written,NULL);
     CloseHandle(file);
 }
 MS2_REPLACE_METHOD(0x1402747A0, DamageCalculatorInfo, SaveToFile, 454, 0x2442073A);

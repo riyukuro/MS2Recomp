@@ -47,7 +47,6 @@ public:
     class Info:public CPtred {
     public:
         Info();
-        ~Info();
         void FUN_1401ffca0(COutputStream&);
         void FUN_1401ffd00(void*);
         Unk_PetIdentity identity;

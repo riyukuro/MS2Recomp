@@ -25,7 +25,7 @@ public:
 class Unk_CaAbilityList
 {
 public:
-    int FUN_1401e2540() const;                          // empty
+    bool FUN_1401e2540() const;                         // empty
     POSITION FUN_1401e2140() const;                     // head position
     const MS2Ptr<Unk_CaAbilityRow>& FUN_1401e2220(POSITION pos) const;   // GetAt (returns pos->m_element by reference)
     void FUN_1401e1ec0(POSITION& pos) const;           // next

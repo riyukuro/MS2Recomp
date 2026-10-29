@@ -47,6 +47,17 @@ extern "C" _ACRTIMP void __cdecl _wassert(wchar_t const* _Message, wchar_t const
 #include <atlfile.h>
 #include <algorithm>
 #include "ms2/placeholder/ms2ptr_impl.h"
+
+// @0x1406ae740
+template <> inline void MS2Ptr<PreminmMarketSaleEventContext>::ReleaseImpl(void*)
+{
+    PreminmMarketSaleEventContext* p = m_p;
+    if (CPtred::ReleasePtred(p) == 0)
+    {
+        Reference(p);
+        CPtred::DeletePtred(p);
+    }
+}
 #include "hook/ms2hook.h"
 
 // Unrecovered helpers.
@@ -342,7 +353,6 @@ void CDBPremiumProduct::Reset()
 }
 
 // @0x14069ce50
-// MS2-FUNCTIONAL: the exe is 83 bytes longer; its field copy order and temporaries are not recovered
 void CDBPremiumProduct::CopyFrom(const CDBPremiumProduct* pOther)
 {
     if (!pOther)
@@ -378,9 +388,11 @@ void CDBPremiumProduct::CopyFrom(const CDBPremiumProduct* pOther)
     m_nCategoryId = pOther->m_nCategoryId;
     m_nLimitCount = pOther->m_nLimitCount;
     m_nc4 = pOther->m_nc4;
+    m_arrc8.RemoveAll();
     m_arrc8.Copy(pOther->m_arrc8);
     m_n9c = pOther->m_n9c;
     m_strCategory = pOther->m_strCategory;
+    m_strIcon = pOther->m_strIcon;
     m_bf0 = pOther->m_bf0;
     m_n120 = pOther->m_n120;
     m_n124 = pOther->m_n124;
@@ -398,6 +410,7 @@ void CDBPremiumProduct::CopyFrom(const CDBPremiumProduct* pOther)
     m_eventEnd = pOther->m_eventEnd;
     m_strEventCategory = pOther->m_strEventCategory;
     m_n158 = pOther->m_n158;
+    m_str160 = pOther->m_str160;
     m_b168 = pOther->m_b168;
     m_n16c = pOther->m_n16c;
     m_n170 = pOther->m_n170;
@@ -540,7 +553,8 @@ void CDBPremiumProduct::Read(CInPacket& packet)
     m_n10c = packet.ReadUInt8();
     m_bPoint = packet.ReadBool();
     m_nPoint = (unsigned)packet.ReadInt32();
-    if (packet.ReadBool())
+    bool bEvent = packet.ReadBool();
+    if (bEvent)
     {
         m_strEventCategory = packet.ReadString();
         m_eventStart = packet.ReadInt64();
@@ -640,13 +654,13 @@ void CDBPremiumProduct::ReadBrief(CInPacket& packet)
     m_nPoint = (unsigned)packet.ReadInt32();
 }
 
+// MS2-FUNCTIONAL: the exe's folded MS2Ptr::operator== (0x1406a8f50) returns int, so it has no movzx after each call
 // @0x14069f980
-// MS2-FUNCTIONAL: the sale-event loop codegen differs (exe 30 bytes shorter)
 __int64 CDBPremiumProduct::GetSalePrice(const CDBPremiumProduct* pParent)
 {
     if (m_nType == 3 || m_nType == 6 || m_nType == 7)
         return m_nSalePrice;
-    else if (m_nType == 8)
+    if (m_nType == 8)
         return FUN_1406a61c0(m_nSalePrice, m_n1b0);
 
     int nCurrency = GetCurrencyItemId();
@@ -670,9 +684,8 @@ __int64 CDBPremiumProduct::GetSalePrice(const CDBPremiumProduct* pParent)
                 MS2Ptr<PreminmMarketSaleEventContext>& spContext = arrAll[i];
                 if (spContext == 0)
                     continue;
-                if (!(spBest == 0) && spContext->m_18 <= spBest->m_18)
-                    continue;
-                spBest = spContext;
+                if (spBest == 0 || spBest->m_18 < spContext->m_18)
+                    spBest = spContext;
             }
         }
     }
@@ -699,38 +712,40 @@ __int64 CDBPremiumProduct::GetSalePrice(const CDBPremiumProduct* pParent)
             for (size_t j = 0; j < ids.size(); j++)
             {
                 unsigned nId = ids[j];
-                if (!FUN_1407cde30(spContext.operator->(), nId, nCurrency))
-                    continue;
-                if (!(spBest == 0) && spContext->m_18 <= spBest->m_18)
-                    continue;
-                spBest = spContext;
+                if (FUN_1407cde30(spContext.operator->(), nId, nCurrency))
+                {
+                    if (spBest == 0 || spBest->m_18 < spContext->m_18)
+                        spBest = spContext;
+                }
             }
         }
     }
-    if (spBest.get() == NULL)
-        return m_nSalePrice;
-    return FUN_1407ce100(spBest.operator->(), (int)m_nSalePrice);
+    if (spBest.get())
+        return FUN_1407ce100(spBest.operator->(), (int)m_nSalePrice);
+    return m_nSalePrice;
 }
 MS2_REPLACE_METHOD(0x14069F980, CDBPremiumProduct, GetSalePrice, 1149, 0xF2A3A3EA);
 
 // @0x14069fe10
-// MS2-FUNCTIONAL: the exe homes r8, an unused parameter that is not recovered
 __int64 CDBPremiumProduct::GetPoint()
 {
-    return m_bPoint ? m_nPoint : 0;
+    if (m_bPoint)
+        return m_nPoint;
+    return 0;
 }
 MS2_REPLACE_METHOD(0x14069FE10, CDBPremiumProduct, GetPoint, 38, 0xDC68781C);
 
 // @0x14069fe40
-// MS2-FUNCTIONAL: branch layout differs (exe 10 bytes shorter)
 int CDBPremiumProduct::FUN_14069fe40()
 {
-    MS2Ptr<CItemData> spItem = FUN_14053f870(m_nItemId);
-    if (spItem.get())
     {
-        if (spItem->property.slotMax > 1 && m_nb4 == 0)
-            return 1;
-        return 2;
+        MS2Ptr<CItemData> spItem = FUN_14053f870(m_nItemId);
+        if (spItem.get())
+        {
+            if (spItem->property.slotMax > 1 && m_nb4 == 0)
+                return 1;
+            return 2;
+        }
     }
     return 0;
 }
@@ -806,16 +821,13 @@ CStringW CDBPremiumProduct::GetName()
 MS2_REPLACE_METHOD(0x1406A00E0, CDBPremiumProduct, GetName, 116, 0x15484927);
 
 // @0x1406a0160
-// MS2-FUNCTIONAL: the order of the path temporaries differs
 CStringA CDBPremiumProduct::GetIconPath()
 {
-    if (m_nType == 3)
-    {
-        if (m_strIcon.IsEmpty())
-            return FUN_1401d31f0()->m_strIcon;
-        return FUN_140540050("./Data/Resource/Image/Item/icon/{0}", m_strIcon);
-    }
-    return CStringA("");
+    if (m_nType != 3)
+        return CStringA("");
+    if (m_strIcon.IsEmpty())
+        return FUN_1401d31f0()->m_strIcon;
+    return FUN_140540050("./Data/Resource/Image/Item/icon/{0}", m_strIcon);
 }
 MS2_REPLACE_METHOD(0x1406A0160, CDBPremiumProduct, GetIconPath, 191, 0x7FE7101A);
 
@@ -840,22 +852,19 @@ __int64 CDBPremiumProduct::FUN_1406a0270()
 MS2_REPLACE_METHOD(0x1406A0270, CDBPremiumProduct, FUN_1406a0270, 64, 0xC6CAFFCB);
 
 // @0x1406a02c0
-// MS2-FUNCTIONAL: the day-text building temporaries differ (exe 55 bytes longer)
 CStringW CDBPremiumProduct::GetSellDayText()
 {
-    if (m_nType == 7 || m_nType == 8)
-    {
-        CMsTime zero(0);
-        if (!(m_randomSaleDay == zero))
-        {
-            const CStringW& strFormat = GetStringCommonByKey(CStringW(L"s_meratmarket_tooltip_sell_day"));
-            int nDay = m_randomSaleDay.GetDay();
-            int nMonth = m_randomSaleDay.GetMonth();
-            int nYear = m_randomSaleDay.GetYear();
-            return StringFormat((const wchar_t*)strFormat, nYear, nMonth, nDay);
-        }
-    }
-    return CStringW(L"");
+    if (m_nType != 7 && m_nType != 8)
+        return CStringW(L"");
+    CMsTime zero(0);
+    if (m_randomSaleDay == zero)
+        return CStringW(L"");
+    const CStringW& strFormat = GetStringCommonByKey(L"s_meratmarket_tooltip_sell_day");
+    int nDay = m_randomSaleDay.GetDay();
+    int nMonth = m_randomSaleDay.GetMonth();
+    int nYear = m_randomSaleDay.GetYear();
+    CStringW strText = StringFormat((const wchar_t*)strFormat, nYear, nMonth, nDay);
+    return strText;
 }
 MS2_REPLACE_METHOD(0x1406A02C0, CDBPremiumProduct, GetSellDayText, 446, 0xFE195BD6);
 
@@ -899,7 +908,6 @@ BOOL CMeratMarketPremiumProduct::Copy(MS2Ptr<CDBPremiumProduct> spProduct)
 }
 
 // @0x1406a06f0
-// MS2-FUNCTIONAL: the copy order differs (exe 22 bytes shorter)
 BOOL CMeratMarketPremiumProduct::Copy(MS2Ptr<CMeratMarketPremiumProduct> spProduct, int nBuyCount, int nLimitCount,
                                       int nHomeCount)
 {
@@ -911,23 +919,11 @@ BOOL CMeratMarketPremiumProduct::Copy(MS2Ptr<CMeratMarketPremiumProduct> spProdu
     CDBPremiumProduct::CopyFrom(spProduct.get());
     SetCounts(nBuyCount, nLimitCount, nHomeCount);
     m_mapSub.RemoveAll();
-    POSITION pos = spProduct->m_mapSub.GetHeadPosition();
-    while (pos)
-    {
-        MS2Ptr<CDBPremiumProduct>& spSub = spProduct->m_mapSub.GetValueAt(pos);
-        const int& nKey = spProduct->m_mapSub.GetKeyAt(pos);
-        m_mapSub.SetAt(nKey, spSub);
-        spProduct->m_mapSub.GetNext(pos);
-    }
+    for (POSITION pos = spProduct->m_mapSub.GetHeadPosition(); pos; spProduct->m_mapSub.GetNext(pos))
+        m_mapSub.SetAt(spProduct->m_mapSub.GetKeyAt(pos), spProduct->m_mapSub.GetValueAt(pos));
     m_mapLimit.RemoveAll();
-    pos = spProduct->m_mapLimit.GetHeadPosition();
-    while (pos)
-    {
-        MS2Ptr<CDBPremiumProduct>& spSub = spProduct->m_mapLimit.GetValueAt(pos);
-        const int& nKey = spProduct->m_mapLimit.GetKeyAt(pos);
-        m_mapLimit.SetAt(nKey, spSub);
-        spProduct->m_mapLimit.GetNext(pos);
-    }
+    for (POSITION pos = spProduct->m_mapLimit.GetHeadPosition(); pos; spProduct->m_mapLimit.GetNext(pos))
+        m_mapLimit.SetAt(spProduct->m_mapLimit.GetKeyAt(pos), spProduct->m_mapLimit.GetValueAt(pos));
     return TRUE;
 }
 
@@ -1145,43 +1141,46 @@ void CMeratMarketPremiumProduct::ReadBrief(CInPacket& packet)
 MS2_REPLACE_METHOD(0x1406A1240, CMeratMarketPremiumProduct, ReadBrief, 88, 0x2F2F442F);
 
 // @0x1406a12a0
-// MS2-FUNCTIONAL: the attribute read temporaries differ (exe 13 bytes shorter)
 BOOL CMeratMarketPremiumProduct::LoadXml(Unk_140165cf0* pElem)
 {
     FUN_1408731e0(pElem, "sn", m_nId);
     FUN_140873220(pElem, "id", m_nItemId);
     FUN_1408731e0(pElem, "grade", m_nGrade);
     FUN_1408731e0(pElem, "saleTag", m_nSaleTag);
-    CStringA strStart;
-    FUN_1408733e0(pElem, "startDate", strStart);
-    if (strStart.Trim().IsEmpty())
     {
-        m_startDate = CMsTime(2010, 1, 1, 0, 0, 0);
+        CStringA strStart;
+        FUN_1408733e0(pElem, "startDate", strStart);
+        if (strStart.Trim().IsEmpty())
+        {
+            m_startDate = CMsTime(2010, 1, 1, 0, 0, 0);
+        }
+        else
+        {
+            CMsTime t;
+            CStringA strFormat("%04d-%02d-%02d-%02d-%02d-%02d");
+            if (FUN_14028e280(t, strFormat, strStart))
+                m_startDate = t;
+        }
     }
-    else
     {
-        CMsTime t;
-        CStringA strFormat("%04d-%02d-%02d-%02d-%02d-%02d");
-        if (FUN_14028e280(t, strFormat, strStart))
-            m_startDate = t;
-    }
-    CStringA strEnd;
-    FUN_1408733e0(pElem, "endDate", strEnd);
-    if (strEnd.Trim().IsEmpty())
-    {
-        m_endDate = CMsTime(2100, 1, 1, 0, 0, 0);
-    }
-    else
-    {
-        CMsTime t;
-        CStringA strFormat("%04d-%02d-%02d-%02d-%02d-%02d");
-        if (FUN_14028e280(t, strFormat, strEnd))
-            m_endDate = t;
+        CStringA strEnd;
+        FUN_1408733e0(pElem, "endDate", strEnd);
+        if (strEnd.Trim().IsEmpty())
+        {
+            m_endDate = CMsTime(2100, 1, 1, 0, 0, 0);
+        }
+        else
+        {
+            CMsTime t;
+            CStringA strFormat("%04d-%02d-%02d-%02d-%02d-%02d");
+            if (FUN_14028e280(t, strFormat, strEnd))
+                m_endDate = t;
+        }
     }
     FUN_1408731e0(pElem, "chartOrder", m_nChartOrder);
     bool bVisible = false;
     FUN_1408730a0(pElem, "visible", bVisible);
-    m_bVisible = bVisible;
+    m_bVisible = bVisible ? 1 : 0;
     int nBuyLimit = 0;
     FUN_1408731e0(pElem, "buyLimit", nBuyLimit);
     if (nBuyLimit < 0 || 2 < nBuyLimit)
@@ -1407,12 +1406,11 @@ __int64 CMeratMarketPremiumProduct::GetPointOf(int nSubId)
 MS2_REPLACE_METHOD(0x1406A1DA0, CMeratMarketPremiumProduct, GetPointOf, 159, 0x7BB0F0B3);
 
 // @0x1406a1e50
-// MS2-FUNCTIONAL: a stack slot differs
 CStringA CMeratMarketPremiumProduct::GetCategory()
 {
-    if (!IsEventPeriod(0))
-        return m_strCategory;
-    return m_strEventCategory;
+    if (IsEventPeriod(0))
+        return m_strEventCategory;
+    return m_strCategory;
 }
 MS2_REPLACE_METHOD(0x1406A1E50, CMeratMarketPremiumProduct, GetCategory, 130, 0x2EE05A1E);
 
@@ -1514,7 +1512,6 @@ void CMeratMarketPremiumProduct::ReadLimitProducts(CInPacket& packet)
 MS2_REPLACE_METHOD(0x1406A2310, CMeratMarketPremiumProduct, ReadLimitProducts, 341, 0x96DD3F11);
 
 // @0x1406a2470
-// MS2-FUNCTIONAL: the StringFormat argument temporaries differ
 CStringA FUN_1406a2470(__int64 nTime)
 {
     CMsTime t(nTime);
@@ -1524,7 +1521,8 @@ CStringA FUN_1406a2470(__int64 nTime)
     int nDay = t.GetDay();
     int nMonth = t.GetMonth();
     int nYear = t.GetYear();
-    return StringFormat("{0:04d}-{1:02d}-{2:02d} {3:02d}:{4:02d}:{5:02d}", nYear, nMonth, nDay, nHour, nMinute, nSecond);
+    CStringA strTime = StringFormat("{0:04d}-{1:02d}-{2:02d} {3:02d}:{4:02d}:{5:02d}", nYear, nMonth, nDay, nHour, nMinute, nSecond);
+    return strTime;
 }
 MS2_REPLACE(0x1406A2470, FUN_1406a2470, 261, 0x9D2D65E2);
 
@@ -2265,18 +2263,20 @@ int FUN_1406a4c20(TiXmlDocument* pDoc, const CStringA& strName, const CStringA& 
 }
 MS2_REPLACE(0x1406A4C20, FUN_1406a4c20, 455, 0x916239EE);
 
-// MS2-FUNCTIONAL: the document pointer temporaries are not recovered
 // @0x1406a4df0
 void Unk_MeratHomeLayout::Load()
 {
+    TiXmlDocument* pMeratDoc = &m_meratDoc;
     CStringA strPath = FUN_1406a4a00();
-    GetFileSystem()->FUN_1403974b0(&m_meratDoc, strPath, 0, true, false);
-    FUN_1406a4b50(&m_meratDoc, &m_meratItems);
+    GetFileSystem()->FUN_1403974b0(pMeratDoc, strPath, 0, true, false);
+    FUN_1406a4b50(pMeratDoc, &m_meratItems);
+    TiXmlDocument* pPremiumDoc = &m_premiumDoc;
     strPath = FUN_1406a4a70();
-    GetFileSystem()->FUN_1403974b0(&m_premiumDoc, strPath, 0, true, false);
-    FUN_1406a4b50(&m_premiumDoc, &m_premiumItems);
+    GetFileSystem()->FUN_1403974b0(pPremiumDoc, strPath, 0, true, false);
+    FUN_1406a4b50(pPremiumDoc, &m_premiumItems);
+    TiXmlDocument* pDesignersDoc = &m_designersDoc;
     strPath = FUN_1406a4ae0();
-    GetFileSystem()->FUN_1403974b0(&m_designersDoc, strPath, 0, true, false);
+    GetFileSystem()->FUN_1403974b0(pDesignersDoc, strPath, 0, true, false);
 }
 MS2_REPLACE_METHOD(0x1406A4DF0, Unk_MeratHomeLayout, Load, 447, 0xAA9F2445);
 
@@ -2361,12 +2361,12 @@ __int64 FUN_1406a5210()
 MS2_REPLACE(0x1406A5210, FUN_1406a5210, 31, 0x68635521);
 
 // The UGC sell fee of an item on this server.
-// MS2-FUNCTIONAL: the CString temporary / result locals are laid out differently
 // @0x1406a5240
 __int64 FUN_1406a5240(int nItemId)
 {
     CString strServer = FUN_140166410()->FUN_14036d8e0();
-    __int64 nFee = FUN_1401c0db0()->FUN_140674bb0(nItemId, strServer);
+    const CString& rServer = strServer;
+    __int64 nFee = FUN_1401c0db0()->FUN_140674bb0(nItemId, rServer);
     return nFee;
 }
 MS2_REPLACE(0x1406A5240, FUN_1406a5240, 104, 0x2A6490A4);
@@ -2382,23 +2382,23 @@ __int64 FUN_1406a52b0(int nItemId, bool bAd)
 MS2_REPLACE(0x1406A52B0, FUN_1406a52b0, 66, 0x92C790EB);
 
 // The UGC sell minimum price of a design.
-// MS2-FUNCTIONAL: the exe frame is 0x10 smaller (the price local is not recovered)
 // @0x1406a5300
 __int64 FUN_1406a5300(unsigned nItemId)
 {
     __int64 nPrice = FUN_1406a6d50(FUN_1401d3200()->UGCShopSellMinPrice);
-    CUGCDesignDataPtr spData = reinterpret_cast<Unk_MeratDesignTable*>(CUGCDesignTable::GetInstance())->FUN_14089e9f0(nItemId);
-    if (spData.get() != 0)
     {
-        if (spData->m_nMarketMinPrice > 0)
-            nPrice = spData->m_nMarketMinPrice;
+        CUGCDesignDataPtr spData = reinterpret_cast<Unk_MeratDesignTable*>(CUGCDesignTable::GetInstance())->FUN_14089e9f0(nItemId);
+        if (spData.get() != 0)
+        {
+            if (spData->m_nMarketMinPrice > 0)
+                nPrice = spData->m_nMarketMinPrice;
+        }
     }
     return nPrice;
 }
 MS2_REPLACE(0x1406A5300, FUN_1406a5300, 136, 0x694D4729);
 
 // The UGC grade of an item.
-// MS2-FUNCTIONAL: the return-path branch layout differs (exe 2 bytes longer)
 // @0x1406a5390
 int FUN_1406a5390(int nItemId)
 {
@@ -2407,16 +2407,18 @@ int FUN_1406a5390(int nItemId)
     {
         if (spItem->FUN_14053cd10())
             return 2;
-        CUGCDesignDataPtr spData = reinterpret_cast<Unk_MeratDesignTable*>(CUGCDesignTable::GetInstance())->FUN_14089e9f0(nItemId);
-        if (spData.get() != 0)
-            return spData->m_nItemGrade;
+        else
+        {
+            CUGCDesignDataPtr spData = reinterpret_cast<Unk_MeratDesignTable*>(CUGCDesignTable::GetInstance())->FUN_14089e9f0(nItemId);
+            if (spData.get() != 0)
+                return spData->m_nItemGrade;
+        }
     }
     return 1;
 }
 MS2_REPLACE(0x1406A5390, FUN_1406a5390, 220, 0x81D4D25E);
 
 // The UGC sell price range of an item.
-// MS2-FUNCTIONAL: the price clamp temporaries and branch layout differ
 // @0x1406a5480
 void FUN_1406a5480(MS2Ptr<CItemData> spItem, __int64* pMin, __int64* pMax)
 {
@@ -2448,7 +2450,7 @@ void FUN_1406a5480(MS2Ptr<CItemData> spItem, __int64* pMin, __int64* pMax)
             nMax = nServerMax;
     }
     *pMin = nMin < 0 ? 0 : nMin;
-    *pMax = nMax < *pMin ? *pMin : nMax;
+    *pMax = *pMin > nMax ? *pMin : nMax;
 }
 MS2_REPLACE(0x1406A5480, FUN_1406a5480, 604, 0x8AF4D4F1);
 
@@ -2565,13 +2567,10 @@ int FUN_1406a59f0(Unk_MeratJobLimit* pLimit, int nJob)
 MS2_REPLACE(0x1406A59F0, FUN_1406a59f0, 78, 0x21B65BE1);
 
 // The inventory item can be listed on the UGC market by this owner.
-// MS2-FUNCTIONAL: the early-return / destructor layout of the 0x5da-byte filter differs
 // @0x1406a5a50
 bool FUN_1406a5a50(MS2Ptr<CItem> spItem, const Unk_MeratItemOwner* pOwner)
 {
-    if (spItem == NULL)
-        return false;
-    if (spItem->FUN_140527840() == NULL)
+    if (spItem == NULL || spItem->FUN_140527840() == NULL)
         return false;
     if (spItem->FUN_140526010())
     {
@@ -2590,42 +2589,43 @@ bool FUN_1406a5a50(MS2Ptr<CItem> spItem, const Unk_MeratItemOwner* pOwner)
             return true;
         return false;
     }
-    if (spItem->FUN_140525f60() == 0)
+    if (spItem->FUN_140525f60())
     {
-        if (FUN_140166410()->FUN_14036d570(0xa9) && spItem->FUN_140525790())
-        {
-            Unk_MeratMusicScore* pScore = reinterpret_cast<Unk_MeratMusicScore*>(spItem->FUN_140527990());
-            if (pScore != NULL)
-            {
-                if (pScore->m_n38 != 0)
-                    return false;
-                if (!FUN_14026d4d0(pOwner, pScore->m_nNoteType, pScore->m_nNoteId))
-                    return false;
-                MS2Ptr<ItemMusicScore> spScore =
-                    FUN_140281980()->FUN_1405565f0(reinterpret_cast<CItemData*>(spItem->FUN_140527840())->FUN_14053c510());
-                if (spScore == NULL)
-                    return false;
-                if (spScore->FUN_14054ad00() != spItem->FUN_140527340())
-                    return false;
-                if (spItem->FUN_140526bd0() != 2)
-                    return false;
-                if (!FUN_140633d50(spItem))
-                    return false;
-                return true;
-            }
-        }
-        return false;
+        Unk_MeratItemUgc* pUgc = reinterpret_cast<Unk_MeratItemUgc*>(spItem->FUN_1405278d0());
+        if (pUgc == NULL)
+            return false;
+        if (pUgc->FUN_1406321a0() || pUgc->FUN_1406321d0())
+            return false;
+        if (!spItem->FUN_140526060(const_cast<Unk_MeratItemOwner*>(pOwner)))
+            return false;
+        if (!FUN_140633d50(spItem))
+            return false;
+        return true;
     }
-    Unk_MeratItemUgc* pUgc = reinterpret_cast<Unk_MeratItemUgc*>(spItem->FUN_1405278d0());
-    if (pUgc == NULL)
-        return false;
-    if (pUgc->FUN_1406321a0() || pUgc->FUN_1406321d0())
-        return false;
-    if (!spItem->FUN_140526060(const_cast<Unk_MeratItemOwner*>(pOwner)))
-        return false;
-    if (!FUN_140633d50(spItem))
-        return false;
-    return true;
+    if (FUN_140166410()->FUN_14036d570(0xa9) && spItem->FUN_140525790())
+    {
+        Unk_MeratMusicScore* pScore = reinterpret_cast<Unk_MeratMusicScore*>(spItem->FUN_140527990());
+        if (pScore != NULL)
+        {
+            if (pScore->m_n38 != 0)
+                return false;
+            if (!FUN_14026d4d0(pOwner, pScore->m_nNoteType, pScore->m_nNoteId))
+                return false;
+            MS2Ptr<ItemMusicScore> spScore =
+                FUN_140281980()->FUN_1405565f0(reinterpret_cast<CItemData*>(spItem->FUN_140527840())->FUN_14053c510());
+            if (spScore == NULL)
+                return false;
+            int nScore = spScore->FUN_14054ad00();
+            if (spItem->FUN_140527340() != nScore)
+                return false;
+            if (spItem->FUN_140526bd0() != 2)
+                return false;
+            if (!FUN_140633d50(spItem))
+                return false;
+            return true;
+        }
+    }
+    return false;
 }
 MS2_REPLACE(0x1406A5A50, FUN_1406a5a50, 1498, 0x440A186E);
 

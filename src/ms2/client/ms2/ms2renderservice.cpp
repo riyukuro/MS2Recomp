@@ -70,9 +70,20 @@ CStringW FUN_14016a730(const char* pszAnsi, int nCodePage);                  // 
 CStringA FUN_14016a600(const wchar_t* pszWide, int nCodePage);               // wide -> ANSI
 CStringW GetStringCommon(int nStringId);                                       // UI string table (wide)
 CStringA FUN_14028dc80(int nStringId);                                       // UI string table (ANSI)
-void* FUN_140876480(void* pkOut, int nCategory);                             // memory category helper, returns unsigned int*
-void* FUN_14208a860(unsigned __int64 ullSize, unsigned int uiCategory);      // tracked allocation
-NiImageReader* FUN_140d9aba0(void* pkMemory);                                // MS2PNGReader constructor
+CStringA FUN_140741200(const char* pszFormat, const CStringA& a0, const CStringA& a1);   // StringFormat<CStringA, CStringA> (folded copy)
+void FUN_1401d3700(CStringA& s);                                              // lower-cases in place
+struct Unk_RsAllocHint
+{
+    Unk_RsAllocHint(const Unk_RsAllocHint&);                // non-trivial: returned through a hidden pointer
+    efd::MemHint m_hint;
+};
+Unk_RsAllocHint FUN_140876480(int nCategory);                                // memory category helper
+// MS2PNGReader (0xe0 bytes), allocated through efd::MemObject's operator new.
+struct Unk_RsPngReader : public efd::MemObject
+{
+    Unk_RsPngReader();                                                       // 0x140d9aba0
+    char m_pad[0xe0];
+};
 NiImageConverter* FUN_141d6f370();                                           // current image converter
 NiDevImageConverter* FUN_140a5af40(char* pRtti, NiImageConverter* pkConverter);   // checked cast to NiDevImageConverter
 extern char DAT_143afa940;                                                   // RTTI descriptor of NiDevImageConverter
@@ -187,11 +198,10 @@ Unk_RsApp* FUN_140aadf80();
 class Unk_RsGpuInfo
 {
 public:
-    CStringW& FUN_141245ab0(const CStringW& kOut);   // MS2: fills and returns the by-value temporary
+    CStringW FUN_141245ab0();                       // adapter description
     void FUN_141375390(CStringW kName);
 };
 Unk_RsGpuInfo* FUN_141245b20();
-bool FUN_1403b3c40(const CStringW& kText, const wchar_t* pszFind);
 class Unk_RsVSync { public: void FUN_14161c3f0(); };
 Unk_RsVSync* FUN_1409f7c90();
 class Unk_RsFbFormats { public: int FUN_141376790(int nIndex); };
@@ -359,7 +369,6 @@ MS2RenderService::~MS2RenderService()
 {
 }
 
-// MS2-FUNCTIONAL: the exe builds the TFunctor temporary with one more unwind state and a different stack layout (frame 0xb8 vs 0xa8); the AddReader call also copies the reader into an extra slot.
 // @0x1414ea710
 efd::SyncResult MS2RenderService::OnPreInit(efd::IDependencyRegistrar* pDependencyRegistrar)
 {
@@ -367,16 +376,7 @@ efd::SyncResult MS2RenderService::OnPreInit(efd::IDependencyRegistrar* pDependen
     if (result == efd::SyncResult_Success) {
         NiDevImageConverter* pConverter = FUN_140a5af40(&DAT_143afa940, FUN_141d6f370());
         if (pConverter != 0) {
-            int categoryTemp;
-            unsigned int* puiCategory = (unsigned int*)FUN_140876480(&categoryTemp, 0);
-            void* pReaderMemory = FUN_14208a860(0xe0, *puiCategory);
-            NiImageReader* pReader;
-            if (pReaderMemory == 0) {
-                pReader = 0;
-            } else {
-                pReader = FUN_140d9aba0(pReaderMemory);
-            }
-            pConverter->AddReader(pReader);
+            pConverter->AddReader(reinterpret_cast<NiImageReader*>(new (FUN_140876480(0).m_hint) Unk_RsPngReader()));
         }
     }
     NiShaderFactory::RegisterErrorCallback(Unk_RsShaderError);
@@ -570,21 +570,19 @@ template<> CStringA StringFormat<const char*, const char*, const char*>(const ch
 }
 
 // Shader factory error callback: logs, asks whether to keep going, and throws on "yes".
-// MS2-FUNCTIONAL: the CStringA temporaries (text, formatted notice) get a different unwind-state numbering than the exe (state order 2/5/4 vs 3/2/4).
 // @0x1414ecc00
 static unsigned int Unk_RsShaderError(const char* pcMsg, NiShaderError eErr, bool bRecoverable)
 {
     CStringA text;
-    NiString kNifPath(0x100);
-    NiString kNodeName(0x100);
-    if (!Unk_RsGetShaderSource(kNifPath, kNodeName)) {
-        text = StringFormat("Shader Error\260\241 \271\337\273\375\307\337\275\300\264\317\264\331.\n\n\270\266\301\366\270\267 \275\307\307\340\265\310 \300\314\306\345\306\256\n{0}\n\n\270\266\301\366\270\267 \275\307\307\340\265\310 \270\312 \300\314\306\345\306\256\n{1}\n\n.\264\375\307\301 \306\304\300\317\300\273 \273\375\274\272\307\317\275\303\260\332\275\300\264\317\261\356?", FUN_1403ed280()->FUN_1411aad50(), FUN_1403ed280()->FUN_1411aaeb0());
-    } else {
+    NiString kNifPath((size_t)0x100);
+    NiString kNodeName((size_t)0x100);
+    if (Unk_RsGetShaderSource(kNifPath, kNodeName)) {
         text = StringFormat("Shader Error\260\241 \271\337\273\375\307\337\275\300\264\317\264\331.\n\nNif path : \n{0}\n\nNode name : {1}\n\n{2}\n\n\264\375\307\301 \306\304\300\317\300\273 \273\375\274\272\307\317\275\303\260\332\275\300\264\317\261\356?", (const char*)kNifPath, (const char*)kNodeName, pcMsg);
+    } else {
+        text = FUN_140741200("Shader Error\260\241 \271\337\273\375\307\337\275\300\264\317\264\331.\n\n\270\266\301\366\270\267 \275\307\307\340\265\310 \300\314\306\345\306\256\n{0}\n\n\270\266\301\366\270\267 \275\307\307\340\265\310 \270\312 \300\314\306\345\306\256\n{1}\n\n.\264\375\307\301 \306\304\300\317\300\273 \273\375\274\272\307\317\275\303\260\332\275\300\264\317\261\356?", FUN_1403ed280()->FUN_1411aad50(), FUN_1403ed280()->FUN_1411aaeb0());
     }
     Unk_RsLog3(GetLogString(), 1, 0x133, L"Code:{0:X} bRecoverable:{1} {2}", eErr, bRecoverable, pcMsg);
-    int answer = MessageBoxA(0, text, "Shader error", 4);
-    if (answer == 6) {
+    if (MessageBoxA(0, text, "Shader error", 4) == 6) {
         FUN_140a44830()->FUN_1401ce2f0("[%x][bRecoverable %d] %s", eErr, (unsigned int)bRecoverable, pcMsg);
         throw 0xd;
     }
@@ -626,13 +624,14 @@ bool MS2RenderService::CreateRendererSized(bool bFullscreen, int width, int heig
         m_parentHandle = pWin32->GetWindowRef();
     }
     NiRendererSettings settings;
-    settings.LoadFromConfigManager(m_pServiceManager->GetSystemServiceAs<efd::IConfigManager>());
+    efd::IConfigManager* pConfig = m_pServiceManager->GetSystemServiceAs<efd::IConfigManager>();
+    settings.LoadFromConfigManager(pConfig);
     settings.m_bVSync = FUN_1409a8b10()->FUN_1409a8ac0()->m_bVSync;
     settings.m_eDX9FBFormat = (NiDX9Renderer::FramebufferMode)FUN_140ae1c00()->FUN_141376790(
         FUN_1409a8b10()->FUN_1409a8ac0()->m_nBufferFormat);
+    settings.m_bFullscreen = bFullscreen;
     settings.m_uiScreenWidth = width;
     settings.m_uiScreenHeight = height;
-    settings.m_bFullscreen = bFullscreen;
     if (settings.m_bVSync) {
         FUN_1409f7c90()->FUN_14161c3f0();
     }
@@ -650,9 +649,7 @@ bool MS2RenderService::CreateRendererSized(bool bFullscreen, int width, int heig
     }
     m_spRenderer = NiBaseRendererSetup::CreateRenderer(&settings, m_parentHandle, m_parentHandle);
     if (settings.m_eRendererID == efd::SystemDesc::RENDERER_DX9) {
-        NiRenderer* pRenderer = m_spRenderer;
-        if (pRenderer != 0) {
-            NiDX9Renderer* pDX9Renderer = static_cast<NiDX9Renderer*>(pRenderer);
+        if (NiDX9Renderer* pDX9Renderer = (NiDX9Renderer*)(NiRenderer*)m_spRenderer) {
             if (pDX9Renderer->GetVertexShaderVersion() < 0xfffe0300) {
                 Unk_RsSetFailure(0x10);
                 return false;
@@ -666,10 +663,12 @@ bool MS2RenderService::CreateRendererSized(bool bFullscreen, int width, int heig
                 Unk_RsSetFailure(0x12);
                 return false;
             }
-            CStringA driver(pDX9Renderer->NiDX9Renderer::GetDriverInfo());
-            driver.MakeLower();
-            if (driver.Find("mctu.dll") >= 0) {
-                FUN_140a44830()->FUN_1401ce2b0("!!! mctu.dll !!!");
+            {
+                CStringA driver(pDX9Renderer->NiDX9Renderer::GetDriverInfo());
+                FUN_1401d3700(driver);
+                if (driver == "mctu.dll") {
+                    FUN_140a44830()->FUN_1401ce2b0("!!! mctu.dll !!!");
+                }
             }
             pDX9Renderer->AddLostDeviceNotificationFunc(&ecr::RenderService::OnDeviceLost, this);
             pDX9Renderer->AddResetNotificationFunc(&ecr::RenderService::OnDeviceReset, this);
@@ -684,7 +683,6 @@ bool MS2RenderService::CreateRendererSized(bool bFullscreen, int width, int heig
     return m_spRenderer != 0;
 }
 
-// MS2-FUNCTIONAL: 3.8 KB; the settings/adapter-list setup creates several NiTObjectArray temporaries whose order and unwind states differ from the exe.
 // @0x1414ed3a0
 efd::AsyncResult MS2RenderService::OnInit()
 {
@@ -693,26 +691,20 @@ efd::AsyncResult MS2RenderService::OnInit()
     }
     if (m_pRendererDesc == 0) {
         NiRendererSettings settings;
-        settings.LoadFromConfigManager(m_pServiceManager->GetSystemServiceAs<efd::IConfigManager>());
+        efd::IConfigManager* pConfig = m_pServiceManager->GetSystemServiceAs<efd::IConfigManager>();
+        settings.LoadFromConfigManager(pConfig);
         settings.m_bVSync = true;
         settings.m_eDX9FBFormat = NiDX9Renderer::FBMODE_DEFAULT;
         settings.m_bFullscreen = false;
         settings.m_uiScreenWidth = GetSystemMetrics(SM_CXSCREEN);
         settings.m_uiScreenHeight = GetSystemMetrics(SM_CYSCREEN);
-        int categoryTemp;
-        unsigned int* puiCategory = (unsigned int*)FUN_140876480(&categoryTemp, 0);
-        void* pDescMemory = FUN_14208a860(0xb0, *puiCategory);
-        NiDX9RendererDesc* pDesc;
-        if (pDescMemory == 0) {
-            pDesc = 0;
-        } else {
-            pDesc = new (pDescMemory) NiDX9RendererDesc(&settings);
-        }
-        m_pRendererDesc = pDesc;
+        m_pRendererDesc = new (FUN_140876480(0).m_hint) NiDX9RendererDesc(&settings);
         if (!m_pRendererDesc->Initialize()) {
             CStringW message;
             message.Format(L"%s", (LPCWSTR)GetStringCommon(0x8d7));
-            NiMessageBox(FUN_14016a600(message, 0), FUN_14028dc80(0x8d4), 0);
+            CStringA caption = FUN_14028dc80(0x8d4);
+            CStringA text = FUN_14016a600(message, 0);
+            NiMessageBox(text, caption, 0);
             return efd::AsyncResult_Failure;
         }
         NiTObjectArray<NiFixedString> adapters(0, 1);
@@ -720,40 +712,22 @@ efd::AsyncResult MS2RenderService::OnInit()
         CStringW adapterName;
         if (adapters.GetSize() != 0) {
             std::string name(adapters.GetAt(0));
-            int n = (int)name.length();
-            while (n = n - 1, 0 < n && name[n] == ' ') {
-                name[n] = 0;
+            for (int n = name.length() - 1; n > 0; n--) {
+                if (name[n] == ' ') {
+                    name[n] = 0;
+                } else {
+                    break;
+                }
             }
             adapterName = FUN_14016a730(name.c_str(), 0);
         }
         FUN_141245b20()->FUN_141375390(adapterName);
     }
     int fullscreenMode = FUN_1409a8b10()->FUN_141243f50(0);
-    bool bFullscreenFlag;
-    if (fullscreenMode == 0) {
-        FUN_1409a8b10()->FUN_1409a8ac0();
-        bFullscreenFlag = (FUN_1409a8b10()->FUN_1409a8ac0()->GetMode() == 0);
-    } else {
-        bFullscreenFlag = false;
-    }
-    bool bBorderless;
-    if (fullscreenMode == 0) {
-        bBorderless = (FUN_1409a8b10()->FUN_1409a8ac0()->GetMode() == 2);
-    } else {
-        bBorderless = true;
-    }
-    int width;
-    if (fullscreenMode == 0) {
-        width = FUN_1409a8b10()->FUN_1409a8ac0()->FUN_1409a8ab0();
-    } else {
-        width = GetSystemMetrics(SM_CXSCREEN);
-    }
-    int height;
-    if (fullscreenMode == 0) {
-        height = FUN_1409a8b10()->FUN_1409a8ac0()->FUN_1409a8aa0();
-    } else {
-        height = GetSystemMetrics(SM_CYSCREEN);
-    }
+    bool bFullscreenFlag = fullscreenMode != 0 ? false : FUN_1409a8b10()->FUN_1409a8ac0()->GetMode() == 0;
+    bool bBorderless = fullscreenMode != 0 ? true : FUN_1409a8b10()->FUN_1409a8ac0()->GetMode() == 2;
+    int width = fullscreenMode != 0 ? GetSystemMetrics(SM_CXSCREEN) : FUN_1409a8b10()->FUN_1409a8ac0()->FUN_1409a8ab0();
+    int height = fullscreenMode != 0 ? GetSystemMetrics(SM_CYSCREEN) : FUN_1409a8b10()->FUN_1409a8ac0()->FUN_1409a8aa0();
     FUN_140aadf80()->FUN_1412642e0(bBorderless);
     if (bBorderless) {
         bFullscreenFlag = true;
@@ -762,25 +736,23 @@ efd::AsyncResult MS2RenderService::OnInit()
         int mode = FUN_1409a8b10()->FUN_1412438f0();
         FUN_1409a8b10()->FUN_1409a8ac0()->FUN_14125e1f0(mode, 1);
     }
-    bool bBasicDriver;
-    {
-        CStringW driverName;
-        bBasicDriver = FUN_1403b3c40(FUN_141245b20()->FUN_141245ab0(driverName), L"Microsoft Basic Display Driver");
-    }
+    bool bBasicDriver = FUN_141245b20()->FUN_141245ab0() == L"Microsoft Basic Display Driver";
     if (bBasicDriver) {
         FUN_140d86260()->ShowCloseNotice(0x397, "");
         CStringW message;
-        message.Format(L"%s\n%s", (LPCWSTR)FUN_141245b20()->FUN_141245ab0(CStringW()), (LPCWSTR)GetStringCommon(0x8d5));
-        NiMessageBox(FUN_14016a600(message, 0), FUN_14028dc80(0x8d4), 0);
+        message.Format(L"%s\n%s", (LPCWSTR)FUN_141245b20()->FUN_141245ab0(), (LPCWSTR)GetStringCommon(0x8d5));
+        CStringA caption = FUN_14028dc80(0x8d4);
+        CStringA text = FUN_14016a600(message, 0);
+        NiMessageBox(text, caption, 0);
         return efd::AsyncResult_Failure;
     }
     if (!CreateRendererSized(bFullscreenFlag, width, height)) {
         width = 0x400;
         height = 0x300;
-        if (!CreateRendererSized(bFullscreenFlag, 0x400, 0x300)) {
+        if (!CreateRendererSized(bFullscreenFlag, width, height)) {
             FUN_140d86260()->ShowCloseNotice(0x397, "");
             CStringW message;
-            message.Format(L"%s\n%s", (LPCWSTR)FUN_141245b20()->FUN_141245ab0(CStringW()),
+            message.Format(L"%s\n%s", (LPCWSTR)FUN_141245b20()->FUN_141245ab0(),
                            (LPCWSTR)GetStringCommon(Unk_RsGetFailure() + 0x8d6));
             NiMessageBox(FUN_14016a600(message, 0), FUN_14028dc80(0x8d4), 0);
             return efd::AsyncResult_Failure;
@@ -792,7 +764,7 @@ efd::AsyncResult MS2RenderService::OnInit()
         if (!FUN_140aadf80()->FUN_141b91010(bFullscreenFlag, 0x400, 0x300)) {
             FUN_140d86260()->ShowCloseNotice(0x397, "");
             CStringW message;
-            message.Format(L"%s\n%s", (LPCWSTR)FUN_141245b20()->FUN_141245ab0(CStringW()),
+            message.Format(L"%s\n%s", (LPCWSTR)FUN_141245b20()->FUN_141245ab0(),
                            (LPCWSTR)GetStringCommon(Unk_RsGetFailure() + 0x8d6));
             NiMessageBox(FUN_14016a600(message, 0), FUN_14028dc80(0x8d4), 0);
             return efd::AsyncResult_Failure;
@@ -807,18 +779,8 @@ efd::AsyncResult MS2RenderService::OnInit()
     if (DAT_143af7d58 == 0) {
         ShowWindow(m_parentHandle, SW_SHOWNORMAL);
     }
-    if (m_pDefaultSurfaceCreator != 0 && m_pDefaultSurfaceCreator->CreateDefaultSurface(this, m_defaultContextBackgroundColor)) {
-        // the default surface creator made the contexts
-    } else {
-        int categoryTemp;
-        unsigned int* puiCategory = (unsigned int*)FUN_140876480(&categoryTemp, 0);
-        void* pContextMemory = FUN_14208a860(0xa0, *puiCategory);
-        ecr::RenderContext* pContext;
-        if (pContextMemory == 0) {
-            pContext = 0;
-        } else {
-            pContext = new (pContextMemory) MS2RenderContext(this, 0);
-        }
+    if (m_pDefaultSurfaceCreator == 0 || !m_pDefaultSurfaceCreator->CreateDefaultSurface(this, m_defaultContextBackgroundColor)) {
+        ecr::RenderContext* pContext = new (FUN_140876480(0).m_hint) MS2RenderContext(this, 0);
         AddRenderContext(pContext);
         pContext->SetBackgroundColor(m_defaultContextBackgroundColor);
         ecr::RenderSurfacePtr spSurface = CreateRenderSurface(0);

@@ -72,6 +72,8 @@
 #include "ms2/placeholder/header_statics_a.h"
 #include "ms2/placeholder/cmypckeyinputcontroller.h"
 #include "ms2/placeholder/asdata.h"
+#include "ms2/placeholder/uipopupmenu.h"
+#include "ms2/commonfiles/gamerule.h"
 #include "ms2/placeholder/asobj.h"
 #include "ms2/placeholder/astooltip.h"
 #include "ms2/placeholder/asdisplayobject.h"
@@ -100,7 +102,7 @@ public:
     virtual void vfunc_13(); virtual void vfunc_14(); virtual void vfunc_15(); virtual void vfunc_16();
     virtual void vfunc_17(); virtual void vfunc_18(); virtual void vfunc_19(); virtual void vfunc_20();
     virtual void vfunc_21(); virtual void vfunc_22(); virtual void vfunc_23();
-    virtual void vfunc_24(int n);
+    virtual void vfunc_24(bool b);
 };
 // "m_items" / "m_mainCategory": the lists.
 class Unk_RankList : public Unk_RankCtl
@@ -164,7 +166,7 @@ class ASDialog : public ASDisplayObject {};
 // The options / input state / flags singletons.
 class Unk_RankFeature { public: bool FUN_14036d570(int); };
 Unk_RankFeature* FUN_140166410();
-class Unk_RankInputState { public: char FUN_14116d9c0(int a, int b, int c); };
+class Unk_RankInputState { public: bool FUN_14116d9c0(int a, int b, int c); };
 Unk_RankInputState* FUN_14025e7c0();
 class Unk_RankFlag { public: int FUN_1402c4c90(int); };
 class Unk_RankFlags { public: void* p0; Unk_RankFlag flags; };
@@ -193,6 +195,7 @@ CString& FUN_140164930(ATL::CAtlArray<CString>&, size_t nIndex);        // opera
 // Texts.
 CStringW FUN_140298ea0(CStringW);                                       // localized string by key
 CStringW FUN_14062b4f0(CStringW, const int*);
+CStringW FUN_14062b4f0(CStringW, const int&);
 CStringW FUN_14062b5a0(CStringW, const int& nJob, const CStringW& strName, const int& nLevel);
 CStringW FUN_1409e8970(CStringW, const int&, const int&);
 CStringW FUN_140bfa7f0(CStringW, const CStringW&, const int*);
@@ -208,7 +211,7 @@ CString FUN_14016a600(const wchar_t*, int);
 CString FUN_141028be0(__int64 nId, const CString& strName, int nFlag, CString strExtra);
 CString FUN_141029590(unsigned __int64 nId, const CString& strKey, const CString& strName, CString strExtra);
 CString FUN_1410280d0(int, CString);
-CStringW FUN_14083bdc0(const CMsTime& t, int n, CStringW strSep, CStringW strSep2);
+CStringW FUN_14083bdc0(const CMsTime& t, bool b, CStringW strSep, CStringW strSep2);
 // FUN_1406c47a0/4760 are CMsTime ctors (16 bytes: Init 0x1406c5270 stores the zone flag at +8); 8-byte ATL::CTime
 // locals had that byte written past them (rt1 stackovf.py).
 CStringW FUN_1409eec40(int);
@@ -245,7 +248,7 @@ public:
     char m_pad_1c[4];
     CStringW m_strImage;                                    // +0x20
     int m_nMap;                                             // +0x28
-    char m_bOpen;                                           // +0x2c
+    bool m_bOpen;                                           // +0x2c
 };
 typedef MS2Ptr<Unk_RankArcade> Unk_RankArcadePtr;
 class Unk_RankArcadeTable { public: void FUN_1401a3a00(std::vector<Unk_RankArcadePtr>& out); };
@@ -269,16 +272,7 @@ public:
 Unk_RankSeasonTable* FUN_1404f4540();
 int FUN_140b3f460(int nType);
 
-// The recommender record (the mentor of the local player).
-class Unk_RankRecInfo : public CPtred
-{
-public:
-    char m_pad_18[8];
-    unsigned __int64 m_nAccount;                            // +0x20
-    CStringW m_strName;                                     // +0x28
-};
-class Unk_RankEventMgr { public: MS2Ptr<Unk_RankRecInfo> FUN_1404786b0(int n); };
-Unk_RankEventMgr* FUN_1401c0d90();
+CGameRule* FUN_1401c0d90();                                // TSingleton<CGameRule>::GetInstance (exe copy)
 class PC;
 class PCBase;
 CStringW* FUN_141656be0(PCBase* pPc);                       // guild name
@@ -287,21 +281,6 @@ Unk_RankPlayerMgr* FUN_1403ed2d0();
 class Unk_RankUiMgr { public: int FUN_1422d4e20(CString strKey); };
 Unk_RankUiMgr* FUN_140b632f0();
 
-// Popup menu parameters (uipartysearchdialog.cpp).
-class Unk_RankMenuInfo
-{
-public:
-    void FUN_140c302f0(float x, float y, int nKind, int nMenuId, int a5, CString strKey, void* p);
-    void FUN_140c304c0();
-    unsigned char m_pad[0x88];
-};
-MS2_CHECK_SIZE(Unk_RankMenuInfo, 0x88);
-class Unk_RankMenu
-{
-public:
-    void FUN_141a7f090(Unk_RankMenuInfo& info, const CStringW& strName, __int64 nChar, unsigned __int64 nAccount, int nType, int a);
-};
-Unk_RankMenu* FUN_140c30140(int nUiId);
 
 Unk_RankArcadeTable* FUN_140e37aa0();
 
@@ -365,7 +344,7 @@ void UIGameRankingDialog::OnLoadComplete()
     FUN_140e2e540();
     FUN_140e2e620();
     FUN_1419260d0(CString("m_webGuideButton"), 0);
-    m_items = FUN_140c02900(CString("m_items"));
+    m_items = FUN_140c02900("m_items");
     FUN_140e31140();
     FUN_140e33e20();
 }
@@ -392,6 +371,7 @@ int UIGameRankingDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
                 FUN_140e31510(spCategory);
             }
         }
+        return 1;
     }
     else if (_stricmp("onChangeTab", szMethod) == 0)
     {
@@ -422,7 +402,10 @@ int UIGameRankingDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
     {
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs) != 0)
-            FUN_140e34d50(CStringW(data.FUN_1422b8f40()));
+        {
+            CStringW strSearch = data.FUN_1422b8f40();
+            FUN_140e34d50(strSearch);
+        }
     }
     else if (_stricmp("onMoveHome", szMethod) == 0)
     {
@@ -449,14 +432,13 @@ int UIGameRankingDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
             unsigned __int64 nAccount = FUN_140718350(data.FUN_1422b8d30());
             unsigned __int64 nChar = FUN_140718350(data.FUN_1422b8d30());
             CStringW strName = data.FUN_1422b8f40();
-            Unk_RankMenu* pMenu = FUN_140c30140(0x4e39);
+            UIPopUpMenu* pMenu = (UIPopUpMenu*)FUN_140c30140(0x4e39);
             if (pMenu != 0)
             {
-                Unk_RankMenuInfo info;
-                info.FUN_140c302f0(x, y, 3, 2, 0, CString(""), 0);
-                pMenu->FUN_141a7f090(info, strName, nChar, nAccount, 0x11, 0);
-                info.FUN_140c304c0();
+                Unk_PopupMenuInfo info(x, y, 3, 2, 0, CString(""), 0);
+                pMenu->FUN_141a7f090(info, strName, nChar, (void*)nAccount, 0x11, 0);
             }
+            return 1;
         }
     }
     return 1;
@@ -465,34 +447,29 @@ int UIGameRankingDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
 // @0x140e2da50
 int UIGameRankingDialog::vfunc_13()
 {
-    if (UIDialog::vfunc_13() == 0)
-    {
-        if (vfunc_55() == 0 && !m_30.IsNull())
-        {
-            ASDialog* pDlg = dynamic_cast<ASDialog*>(static_cast<AScript*>(m_30));
-            if (pDlg != 0)
-            {
-                if (FUN_14025e7c0()->FUN_14116d9c0(0x1c, 0, 0))
-                {
-                    if (FUN_140b632f0() != 0)
-                    {
-                        CString strKey(m_20);
-                        if (FUN_140b632f0()->FUN_1422d4e20(strKey) == 0)
-                            return 0;
-                    }
-                }
-                MS2Ptr<Unk_RankInput> spInput = FUN_140e35bd0(CString("m_searchInput"));
-                if (spInput.get() != 0)
-                {
-                    if (FUN_1422c76c0(spInput.operator->()) != 0)
-                        FUN_140e34d50(spInput->FUN_1422e0b00());
-                }
-                return 1;
-            }
-        }
+    if (UIDialog::vfunc_13() != 0)
+        return 1;
+    if (vfunc_55() != 0 || m_30.IsNull())
         return 0;
+    ASDialog* pDlg = dynamic_cast<ASDialog*>(static_cast<AScript*>(m_30));
+    if (pDlg != 0)
+    {
+        if (FUN_14025e7c0()->FUN_14116d9c0(0x1c, 0, 0))
+        {
+            if (FUN_140b632f0() != 0)
+            {
+                if (FUN_140b632f0()->FUN_1422d4e20(CString(m_20)) == 0)
+                    return 0;
+            }
+            if (MS2Ptr<Unk_RankInput> spInput = FUN_140e35bd0("m_searchInput"))
+            {
+                if (FUN_1422c76c0(spInput.operator->()) != 0)
+                    FUN_140e34d50(spInput->FUN_1422e0b00());
+            }
+            return 1;
+        }
     }
-    return 1;
+    return 0;
 }
 
 // @0x140e2dc70
@@ -567,8 +544,7 @@ void UIGameRankingDialog::FUN_140e2e030(CString strUrl)
     strUrl.MakeLower();
     if (strUrl.Find("/rank/", 0) == -1)
         return;
-    POSITION pos = m_categories.GetHeadPosition();
-    while (pos != 0)
+    for (POSITION pos = m_categories.GetHeadPosition(); pos != 0; m_categories.GetNext(pos))
     {
         Unk_RankCatPtr spCategory(m_categories.GetAt(pos));
         if (spCategory)
@@ -577,22 +553,21 @@ void UIGameRankingDialog::FUN_140e2e030(CString strUrl)
             {
                 if (strUrl.Find(spCategory->m_strUrl, 0) != -1)
                 {
-                    if (FUN_140e32c30(spCategory->m_nId) == 0)
-                        m_nCategory = spCategory->m_nId;
-                    else
+                    if (FUN_140e32c30(spCategory->m_nId) != 0)
                         m_nCategory = spCategory->m_nId + 10;
+                    else
+                        m_nCategory = spCategory->m_nId;
                     return;
                 }
             }
         }
-        m_categories.GetNext(pos);
     }
 }
 
 // @0x140e2e1d0
 void UIGameRankingDialog::LoadGameRankingCategory()
 {
-    CString strPath = FUN_14071a5b0(CString("Table"), CString("gameRankingCategory.xml"));
+    CString strPath = FUN_14071a5b0("Table", "gameRankingCategory.xml");
     m_categories.RemoveAll();
     TiXmlDocument doc;
     if (FUN_140166420()->FUN_1403974b0(doc, strPath, 0, true, false) == 0)
@@ -719,171 +694,165 @@ Unk_RankTabPtr UIGameRankingDialog::FUN_140e304c0(CStringW strLabel, CStringW st
 // @0x140e305a0
 void UIGameRankingDialog::FUN_140e305a0(Unk_RankCatPtr spCategory)
 {
-    if (spCategory != 0)
+    if (spCategory == 0)
+        return;
+    int nSubIdx = 1;
+    int nType = spCategory->m_nType;
+    int nId = spCategory->m_nId;
+    if (nType == 3 || nType == 0xe || nType == 0x10)
     {
-        int nSubIdx = 1;
-        int nType = spCategory->m_nType;
-        int nId = spCategory->m_nId;
-        if (nType == 3 || nType == 0xe || nType == 0x10)
+        ATL::CAtlArray<int> aJobs;
+        FUN_140222be0(aJobs);
+        if (aJobs.GetCount() == 0)
+            return;
+        if (nType == 0x10)
         {
-            ATL::CAtlArray<int> aJobs;
-            FUN_140222be0(aJobs);
-            if (aJobs.GetCount() == 0)
-                return;
-            if (nType == 0x10)
-            {
-                Unk_RankChartList list(10);
-                FUN_14031c2a0()->FUN_140321210(list, 0xd);
-                if (list.GetCount() == 0)
-                    return;
-            }
-            m_categories.AddTail(spCategory);
-            for (size_t i = 0; i < aJobs.GetCount(); i++)
-            {
-                int nJob = aJobs[i];
-                if (nJob != 0 && nJob != 1)
-                {
-                    int nOffset = nSubIdx * 10;
-                    nSubIdx++;
-                    Unk_RankCatPtr spSub((Unk_RankNewTag(0)));
-                    spSub->m_nId = nId + nOffset;
-                    spSub->m_nSub = nJob;
-                    spSub->m_strLabel = FUN_1401a9d70()->FUN_141811980(0x4d, spSub->m_nSub);
-                    spSub->m_strImage = L"";
-                    spSub->m_nParent = nId;
-                    spSub->m_nType = nType;
-                    m_categories.AddTail(spSub);
-                }
-            }
-        }
-        else if (nType == 7 || nType == 8 || nType == 9 || nType == 0xb || nType == 0xc || nType == 0xf || nType == 0x11)
-        {
-            int nKind = 2;
-            switch (nType)
-            {
-            case 7: nKind = 2; break;
-            case 8: nKind = 3; break;
-            case 9: nKind = 4; break;
-            case 0xb: nKind = 8; break;
-            case 0xc: nKind = 0xc; break;
-            case 0xf: nKind = 5; break;
-            case 0x11: nKind = 0xe;
-            }
             Unk_RankChartList list(10);
-            FUN_14031c2a0()->FUN_140321210(list, nKind);
+            FUN_14031c2a0()->FUN_140321210(list, 0xd);
             if (list.GetCount() == 0)
                 return;
-            m_categories.AddTail(spCategory);
-            POSITION pos = list.GetHeadPosition();
-            while (pos != 0)
-            {
-                Unk_RankChartPtr spRec(list.GetAt(pos));
-                if (!spRec)
-                    return;
-                int nOffset = nSubIdx * 10;
-                nSubIdx++;
-                CStringW strLabel;
-                if ((nType == 0xf && spRec->m_nKind == 4) || (nType == 0x11 && spRec->m_nKind == 4))
-                    strLabel = FUN_1401a9d70()->FUN_141811980(0x14, spRec->FUN_14031ddd0());
-                else
-                    strLabel = FUN_1401aa6a0(spRec->m_nId);
-                Unk_RankCatPtr spSub((Unk_RankNewTag(0)));
-                spSub->m_nId = nId + nOffset;
-                spSub->m_nSub = spRec->m_nId;
-                spSub->m_strLabel = strLabel;
-                spSub->m_strImage = (const char*)spRec->m_strImage;
-                spSub->m_nParent = nId;
-                spSub->m_nType = nType;
-                m_categories.AddTail(spSub);
-                list.GetNext(pos);
-            }
         }
-        else if (nType == 10)
+        m_categories.AddTail(spCategory);
+        for (size_t i = 0; i < aJobs.GetCount(); i++)
         {
-            std::vector<Unk_RankArcadePtr> aArcade;
-            FUN_140e37aa0()->FUN_1401a3a00(aArcade);
-            if (aArcade.size() == 0)
+            int nJob = aJobs[i];
+            if (nJob == 0 || nJob == 1)
+                continue;
+            int nOffset = nSubIdx * 10;
+            nSubIdx++;
+            Unk_RankCatPtr spSub((Unk_RankNewTag(0)));
+            spSub->m_nId = nId + nOffset;
+            spSub->m_nSub = nJob;
+            spSub->m_strLabel = FUN_1401a9d70()->FUN_141811980(0x4d, spSub->m_nSub);
+            spSub->m_strImage = L"";
+            spSub->m_nParent = nId;
+            spSub->m_nType = nType;
+            m_categories.AddTail(spSub);
+        }
+    }
+    else if (nType == 7 || nType == 8 || nType == 9 || nType == 0xb || nType == 0xc || nType == 0xf || nType == 0x11)
+    {
+        int nKind = 2;
+        switch (nType)
+        {
+        case 7: nKind = 2; break;
+        case 8: nKind = 3; break;
+        case 9: nKind = 4; break;
+        case 0xb: nKind = 8; break;
+        case 0xc: nKind = 0xc; break;
+        case 0xf: nKind = 5; break;
+        case 0x11: nKind = 0xe;
+        }
+        Unk_RankChartList list(10);
+        FUN_14031c2a0()->FUN_140321210(list, nKind);
+        if (list.GetCount() == 0)
+            return;
+        m_categories.AddTail(spCategory);
+        for (POSITION pos = list.GetHeadPosition(); pos != 0; list.GetNext(pos))
+        {
+            Unk_RankChartPtr spRec(list.GetAt(pos));
+            if (!spRec)
                 return;
-            m_categories.AddTail(spCategory);
-            for (size_t i = 0; i < aArcade.size(); i++)
-            {
-                Unk_RankArcadePtr spRec(aArcade[i]);
-                if (spRec == 0)
-                    continue;
-                if (spRec->m_nMap == 0)
-                    continue;
-                if (spRec->m_bOpen == 1)
-                {
-                    if (FUN_1403ecfe0(FUN_140302b00())->FUN_140429930(spRec->m_nId) == 0)
-                        continue;
-                }
-                int nOffset = nSubIdx * 10;
-                nSubIdx++;
-                Unk_RankCatPtr spSub((Unk_RankNewTag(0)));
-                spSub->m_nId = nId + nOffset;
-                spSub->m_nSub = spRec->m_nId;
-                spSub->m_strLabel = FUN_1401a9d70()->FUN_141811980(0x20, spSub->m_nSub);
-                spSub->m_strImage = FUN_1401d0160(L"./Data/Resource/Image/Map/Arcade/", spRec->m_strImage);
-                spSub->m_nParent = nId;
-                spSub->m_nType = 10;
-                m_categories.AddTail(spSub);
-            }
+            int nOffset = nSubIdx * 10;
+            nSubIdx++;
+            CStringW strLabel;
+            if ((nType == 0xf && spRec->m_nKind == 4) || (nType == 0x11 && spRec->m_nKind == 4))
+                strLabel = FUN_1401a9d70()->FUN_141811980(0x14, spRec->FUN_14031ddd0());
+            else
+                strLabel = FUN_1401aa6a0(spRec->m_nId);
+            Unk_RankCatPtr spSub((Unk_RankNewTag(0)));
+            spSub->m_nId = nId + nOffset;
+            spSub->m_nSub = spRec->m_nId;
+            spSub->m_strLabel = strLabel;
+            spSub->m_strImage = (const char*)spRec->m_strImage;
+            spSub->m_nParent = nId;
+            spSub->m_nType = nType;
+            m_categories.AddTail(spSub);
         }
-        else
+    }
+    else if (nType == 10)
+    {
+        std::vector<Unk_RankArcadePtr> aArcade;
+        FUN_140e37aa0()->FUN_1401a3a00(aArcade);
+        if (aArcade.size() == 0)
+            return;
+        m_categories.AddTail(spCategory);
+        for (size_t i = 0; i < aArcade.size(); i++)
         {
-            m_categories.AddTail(spCategory);
+            Unk_RankArcadePtr spRec(aArcade[i]);
+            if (spRec == 0)
+                continue;
+            if (spRec->m_nMap == 0)
+                continue;
+            if (spRec->m_bOpen == 1)
+            {
+                if (FUN_1403ecfe0(FUN_140302b00())->FUN_140429930(spRec->m_nId) == 0)
+                    continue;
+            }
+            int nOffset = nSubIdx * 10;
+            nSubIdx++;
+            Unk_RankCatPtr spSub((Unk_RankNewTag(0)));
+            spSub->m_nId = nId + nOffset;
+            spSub->m_nSub = spRec->m_nId;
+            spSub->m_strLabel = FUN_1401a9d70()->FUN_141811980(0x20, spSub->m_nSub);
+            spSub->m_strImage = FUN_1401d0160(L"./Data/Resource/Image/Map/Arcade/", spRec->m_strImage);
+            spSub->m_nParent = nId;
+            spSub->m_nType = 10;
+            m_categories.AddTail(spSub);
         }
+    }
+    else
+    {
+        m_categories.AddTail(spCategory);
     }
 }
 
 // @0x140e31140
 void UIGameRankingDialog::FUN_140e31140()
 {
-    MS2Ptr<Unk_RankList> spList = FUN_140c02900(CString("m_mainCategory"));
-    if (!(spList.get()))
-        return;
-    spList->FUN_1422dd1d0();
-    ASObj root(2);
-    ASArray nodes(2);
-    ATL::CAtlList<Unk_RankCatPtr> top(10);
-    FUN_140e32d30(top);
-    POSITION pos = top.GetHeadPosition();
-    while (pos != 0)
+    if (MS2Ptr<Unk_RankList> spList = FUN_140c02900("m_mainCategory"))
     {
-        Unk_RankCatPtr spCat(top.GetAt(pos));
-        if (spCat)
+        spList->FUN_1422dd1d0();
+        ASObj root(2);
+        ASArray nodes(2);
+        ATL::CAtlList<Unk_RankCatPtr> top(10);
+        FUN_140e32d30(top);
+        for (POSITION pos = top.GetHeadPosition(); pos != 0; top.GetNext(pos))
         {
-            ASObj node(2);
-            ASArray sub(2);
-            node.FUN_1407cbb20("label", CStringW(spCat->m_strLabel));
-            node.FUN_140e35da0("rankType", spCat->m_nType);
-            if (FUN_140e32c30(spCat->m_nId) == 0)
+            Unk_RankCatPtr spCat(top.GetAt(pos));
+            if (spCat)
             {
-                node.FUN_140e35d00("type", 0);
+                ASObj node(2);
+                ASArray sub(2);
+                node.FUN_1407cbb20("label", CStringW(spCat->m_strLabel));
+                node.FUN_140e35da0("rankType", spCat->m_nType);
+                if (FUN_140e32c30(spCat->m_nId) != 0)
+                {
+                    FUN_140e32a00(spCat, sub);
+                    node.FUN_140e35d00("type", 1);
+                    node.FUN_1409eb1d0("nodes", sub);
+                }
+                else
+                {
+                    node.FUN_140e35d00("type", 0);
+                }
+                node.FUN_1407cb9c0("id", spCat->m_nId);
+                node.FUN_1409c0dc0("rendererClassName", "export_renderer_category");
+                static_cast<Unk_RankArr&>(nodes).FUN_1422bbf00(node);
             }
-            else
-            {
-                FUN_140e32a00(Unk_RankCatPtr(spCat), sub);
-                node.FUN_140e35d00("type", 1);
-                node.FUN_1409eb1d0("nodes", sub);
-            }
-            node.FUN_1407cb9c0("id", spCat->m_nId);
-            node.FUN_1409c0dc0("rendererClassName", "export_renderer_category");
-            static_cast<Unk_RankArr&>(nodes).FUN_1422bbf00(node);
         }
-        top.GetNext(pos);
+        root.FUN_140e35d00("type", 1);
+        root.FUN_1409eb1d0("nodes", nodes);
+        if (m_30.get())
+            reinterpret_cast<Unk_RankAS*>(m_30.operator->())->Invoke("setList", root);
     }
-    root.FUN_140e35d00("type", 1);
-    root.FUN_1409eb1d0("nodes", nodes);
-    if (m_30.get())
-        reinterpret_cast<Unk_RankAS*>(m_30.operator->())->Invoke("setList", root);
 }
 
 // @0x140e31510
 void UIGameRankingDialog::FUN_140e31510(Unk_RankCatPtr spCategory)
 {
     Unk_RankArray aTabs(2);
-    MS2Ptr<Unk_RankTab> spTab = FUN_140c02870(CString("m_tab"));
+    MS2Ptr<Unk_RankTab> spTab = FUN_140c02870("m_tab");
     if (!spTab)
         return;
     spTab->FUN_1422e31e0(-1);
@@ -966,15 +935,15 @@ void UIGameRankingDialog::FUN_140e31b00()
         {
             CString strUrl;
             CString strSub;
-            if (RANK_ROW->m_nMarkId == 0)
+            if (RANK_ROW->m_nMarkId != 0)
             {
-                strUrl = FUN_141028be0(RANK_ROW->m_nCharSN, FUN_14016a600(RANK_ROW->m_markFile, 0), 1, CString(""));
-                strSub = FUN_1410280d0(5, FUN_14016a600(RANK_ROW->m_markFile, 0));
+                strUrl = FUN_141029590(RANK_ROW->m_nMarkId, FUN_14016a600(RANK_ROW->m_markFile, 0), "", CString(""));
+                strSub = FUN_1410280d0(6, FUN_14016a600(RANK_ROW->m_markFile, 0));
             }
             else
             {
-                strUrl = FUN_141029590(RANK_ROW->m_nMarkId, FUN_14016a600(RANK_ROW->m_markFile, 0), CString(""), CString(""));
-                strSub = FUN_1410280d0(6, FUN_14016a600(RANK_ROW->m_markFile, 0));
+                strUrl = FUN_141028be0(RANK_ROW->m_nCharSN, FUN_14016a600(RANK_ROW->m_markFile, 0), 1, CString(""));
+                strSub = FUN_1410280d0(5, FUN_14016a600(RANK_ROW->m_markFile, 0));
             }
             if (_waccess(FUN_14016a730(strSub, 0), 4) != 0)
                 FUN_140165270(m_missingMarks, strSub);
@@ -998,8 +967,9 @@ void UIGameRankingDialog::FUN_140e32a00(Unk_RankCatPtr spCategory, ASArray& arr)
 {
     ATL::CAtlList<Unk_RankCatPtr> list(10);
     FUN_140e32df0(list);
-    POSITION pos = list.GetHeadPosition();
-    while (pos != 0)
+    int nIndex = 0;
+    int nSel = 0;
+    for (POSITION pos = list.GetHeadPosition(); pos != 0; list.GetNext(pos), nIndex++)
     {
         Unk_RankCatPtr spSub(list.GetAt(pos));
         if (spSub)
@@ -1015,7 +985,8 @@ void UIGameRankingDialog::FUN_140e32a00(Unk_RankCatPtr spCategory, ASArray& arr)
                 static_cast<Unk_RankArr&>(arr).FUN_1422bbf00(node);
             }
         }
-        list.GetNext(pos);
+        if (spSub->m_nId == m_nCategory)
+            nSel = nIndex;
     }
 }
 
@@ -1068,7 +1039,7 @@ void UIGameRankingDialog::FUN_140e32eb0()
     m_items->FUN_1422dcca0(-1);
 }
 
-// @0x140e32f30
+// @0x140e32f30 // MS2-FUNCTIONAL: code identical; the showSearchResult Value temp gets a lower frame slot (exe rsp+0x140, ours 0xa0)
 void UIGameRankingDialog::FUN_140e32f30(int nPush, int nForce, CStringW strSearch)
 {
     FUN_140e32eb0();
@@ -1076,7 +1047,8 @@ void UIGameRankingDialog::FUN_140e32f30(int nPush, int nForce, CStringW strSearc
     FUN_140e351d0(m_nCategory, &key);
     if (m_30.get())
         reinterpret_cast<Unk_RankAS*>(m_30.operator->())->FUN_140e35c60("showSearchResult", 1);
-    if (CGameRankingCli::FUN_140b2e980()->FUN_140b2b440(key, m_nPage, m_rows, CStringW(strSearch), nForce) == 1)
+    int bForce = nForce;
+    if (CGameRankingCli::FUN_140b2e980()->FUN_140b2b440(key, m_nPage, m_rows, CStringW(strSearch), bForce) == 1)
     {
         if (nPush == 1)
             FUN_140e31b00();
@@ -1092,7 +1064,7 @@ void UIGameRankingDialog::FUN_140e32f30(int nPush, int nForce, CStringW strSearc
     {
         Unk_RankKey key2;
         FUN_140e35350(m_nCategory, &key2);
-        Unk_RankInfoPtr info = CGameRankingCli::FUN_140b2e980()->FUN_140b2ac30(key2, nForce);
+        Unk_RankInfoPtr info = CGameRankingCli::FUN_140b2e980()->FUN_140b2ac30(key2, bForce);
         if (info.FUN_140b2e080(0))
         {
             void* pCached = CGameRankingCli::FUN_140b2e980()->FUN_140b2c6f0(key2.FUN_140b357e0());
@@ -1110,42 +1082,41 @@ void UIGameRankingDialog::FUN_140e32f30(int nPush, int nForce, CStringW strSearc
 // @0x140e33240
 Unk_RankTabsPtr UIGameRankingDialog::FUN_140e33240(Unk_RankCatPtr spCategory)
 {
-    if (spCategory != 0)
-    {
-        int nType = spCategory->m_nType;
-        int nKind = FUN_140b3f460(nType);
-        ATL::CAtlArray<Unk_RankSeasonPtr> aSeasons;
-        FUN_1404f4540()->FUN_1407920d0(nKind, aSeasons);
-        Unk_RankTabsPtr spTabs((Unk_RankNewTag(0)));
-        m_tabs.Lookup(nType, spTabs);
-        if (nKind == -1)
-            return spTabs;
-        spTabs->RemoveAll();
-        if (nType == 0xe)
-        {
-            if (aSeasons.GetCount() == 0)
-            {
-                FUN_1404f4540()->FUN_140792250(nKind, aSeasons);
-                spTabs->Add(FUN_140e304c0(FUN_140298ea0(CStringW(L"s_gameranking_tab_off_season")), CStringW(L""), 0));
-            }
-        }
-        for (size_t i = 0; i < aSeasons.GetCount(); i++)
-        {
-            Unk_RankSeasonPtr spSeason(aSeasons[i]);
-            CStringW strLabel = FUN_140e33ae0(Unk_RankCatPtr(spCategory), Unk_RankSeasonPtr(spSeason));
-            CMsTime tStart(*reinterpret_cast<const CMsTime*>(&spSeason.FUN_1404f0bf0()->m_start));
-            CMsTime tEnd(*reinterpret_cast<const CMsTime*>(&spSeason.FUN_1404f0bf0()->m_end));
-            tEnd -= ATL::CTimeSpan(1);
-            CStringW strStart = FUN_14083bdc0(tStart, 1, CStringW(L"/"), CStringW(L":"));
-            CStringW strEnd = FUN_14083bdc0(tEnd, 1, CStringW(L"/"), CStringW(L":"));
-            strStart = strStart.Left(strStart.GetLength() - 3);
-            strEnd = strEnd.Left(strEnd.GetLength() - 3);
-            CStringW strRange = FUN_140656190(L"{0} ~ {1}", strStart, strEnd);
-            spTabs->Add(FUN_140e304c0(CStringW(strLabel), CStringW(strRange), spSeason.FUN_1404f0bf0()->m_nSeason));
-        }
+    if (spCategory == 0)
+        return Unk_RankTabsPtr(0);
+    int nType = spCategory->m_nType;
+    int nKind = FUN_140b3f460(nType);
+    ATL::CAtlArray<Unk_RankSeasonPtr> aSeasons;
+    FUN_1404f4540()->FUN_1407920d0(nKind, aSeasons);
+    Unk_RankTabsPtr spTabs((Unk_RankNewTag(0)));
+    m_tabs.Lookup(nType, spTabs);
+    if (nKind == -1)
         return spTabs;
+    spTabs->RemoveAll();
+    if (nType == 0xe)
+    {
+        if (aSeasons.GetCount() == 0)
+        {
+            FUN_1404f4540()->FUN_140792250(nKind, aSeasons);
+            CStringW strOff = FUN_140298ea0(CStringW(L"s_gameranking_tab_off_season"));
+            spTabs->Add(FUN_140e304c0(strOff, CStringW(L""), 0));
+        }
     }
-    return Unk_RankTabsPtr(0);
+    for (size_t i = 0; i < aSeasons.GetCount(); i++)
+    {
+        Unk_RankSeasonPtr spSeason(aSeasons[i]);
+        CStringW strLabel = FUN_140e33ae0(Unk_RankCatPtr(spCategory), Unk_RankSeasonPtr(spSeason));
+        CMsTime tStart(*reinterpret_cast<const CMsTime*>(&spSeason.FUN_1404f0bf0()->m_start));
+        CMsTime tEnd(*reinterpret_cast<const CMsTime*>(&spSeason.FUN_1404f0bf0()->m_end));
+        tEnd -= 1;
+        CStringW strStart = FUN_14083bdc0(tStart, true, CStringW(L"/"), CStringW(L":"));
+        CStringW strEnd = FUN_14083bdc0(tEnd, true, CStringW(L"/"), CStringW(L":"));
+        strStart = strStart.Left(strStart.GetLength() - 3);
+        strEnd = strEnd.Left(strEnd.GetLength() - 3);
+        CStringW strRange = FUN_140656190(L"{0} ~ {1}", strStart, strEnd);
+        spTabs->Add(FUN_140e304c0(CStringW(strLabel), CStringW(strRange), spSeason.FUN_1404f0bf0()->m_nSeason));
+    }
+    return spTabs;
 }
 
 // @0x140e339e0
@@ -1162,49 +1133,50 @@ Unk_RankTabPtr UIGameRankingDialog::FUN_140e339e0(int nType, int nIndex)
 // @0x140e33ae0
 CStringW UIGameRankingDialog::FUN_140e33ae0(Unk_RankCatPtr spCategory, Unk_RankSeasonPtr spSeason)
 {
-    if (!spSeason.FUN_1404f01a0(0) && !(spCategory == 0))
+    if (spSeason.FUN_1404f01a0(0) || spCategory == 0)
+        return CStringW(L"");
+    int nType = spCategory->m_nType;
+    CStringW strLabel(L"");
+    switch (nType)
     {
-        int nType = spCategory->m_nType;
-        CStringW strLabel(L"");
-        if (nType == 6)
-        {
-            int nYear = spSeason.FUN_1404f0bf0()->m_nSeason / 100;
-            int nSeason = spSeason.FUN_1404f0bf0()->m_nSeason % 100;
-            strLabel = FUN_1409e8970(CStringW(L"s_gameranking_tab_ugc_season"), nYear, nSeason);
-        }
-        else if (nType == 0x10)
-        {
-            int nSeason = spSeason.FUN_1404f0bf0()->m_nSeason % 100;
-            strLabel = FUN_14062b4f0(CStringW(L"s_gameranking_tab_bosscolosseum_season"), &nSeason);
-        }
-        else
-        {
-            strLabel = FUN_1404f4540()->FUN_1407925e0(Unk_RankSeasonPtr(spSeason), spCategory->m_nSub);
-        }
-        return strLabel;
+    case 6:
+    {
+        int nYear = spSeason.FUN_1404f0bf0()->m_nSeason / 100;
+        int nSeason = spSeason.FUN_1404f0bf0()->m_nSeason % 100;
+        strLabel = FUN_1409e8970(CStringW(L"s_gameranking_tab_ugc_season"), nYear, nSeason);
+        break;
     }
-    return CStringW(L"");
+    case 0x10:
+    {
+        int nSeason = spSeason.FUN_1404f0bf0()->m_nSeason % 100;
+        strLabel = FUN_14062b4f0(CStringW(L"s_gameranking_tab_bosscolosseum_season"), &nSeason);
+        break;
+    }
+    default:
+        strLabel = FUN_1404f4540()->FUN_1407925e0(Unk_RankSeasonPtr(spSeason), spCategory->m_nSub);
+        break;
+    }
+    return strLabel;
 }
 
 // @0x140e33e20
 void UIGameRankingDialog::FUN_140e33e20()
 {
-    MS2Ptr<Unk_RankList> spList = FUN_140c02900(CString("m_mainCategory"));
-    if (spList.get())
+    if (MS2Ptr<Unk_RankList> spList = FUN_140c02900("m_mainCategory"))
     {
         int nIndex = 0;
-        POSITION pos = m_categories.GetHeadPosition();
-        while (pos != 0)
+        for (POSITION pos = m_categories.GetHeadPosition(); pos != 0; m_categories.GetNext(pos), nIndex++)
         {
             Unk_RankCatPtr spCat(static_cast<const Unk_RankCatPtr&>(m_categories.GetAt(pos)));
-            if (spCat && spCat->m_nId == m_nCategory)
+            if (spCat)
             {
-                spList->FUN_1422dcca0(nIndex);
-                spList->FUN_1422e17f0(nIndex);
-                return;
+                if (spCat->m_nId == m_nCategory)
+                {
+                    spList->FUN_1422dcca0(nIndex);
+                    spList->FUN_1422e17f0(nIndex);
+                    return;
+                }
             }
-            m_categories.GetNext(pos);
-            nIndex++;
         }
     }
 }
@@ -1215,32 +1187,42 @@ void UIGameRankingDialog::FUN_140e33fb0(ASObj& obj, Unk_RankCatPtr spCategory, i
     Unk_RankKey key;
     FUN_140e35350(spCategory->m_nId, &key);
     Unk_RankInfoPtr info = CGameRankingCli::FUN_140b2e980()->FUN_140b2ac30(key, nFlag);
-    int nRank;
-    if (info.FUN_140b2e180() == 0)
-        nRank = 0;
-    else
-        nRank = info.FUN_140b2e210()->vfunc_3();
+    int nRank = info.FUN_140b2e180() ? info.FUN_140b2e210()->vfunc_3() : 0;
     int nKeyType = key.FUN_140b357e0();
-    MS2Ptr<Unk_RankRecInfo> spRec = FUN_1401c0d90()->FUN_1404786b0(1);
-    if (spRec.get() == 0 || nKeyType != 6)
+    MS2Ptr<UgcMapCommendationGMEvent> spRec = FUN_1401c0d90()->FUN_1404786b0(1);
+    if ((spRec.get() ? true : false) && nKeyType == 6)
+    {
+        obj.FUN_1407cbbe0("recommender", true);
+        obj.FUN_1407cbb20("recommenderName", CStringW(spRec->m_28));
+        obj.FUN_1407cba60("recommenderAccountSN", FUN_140719530(spRec->m_20));
+    }
+    else
     {
         obj.FUN_1407cbbe0("recommender", false);
     }
-    else
+    switch (nKeyType)
     {
-        obj.FUN_1407cbbe0("recommender", true);
-        obj.FUN_1407cbb20("recommenderName", CStringW(spRec->m_strName));
-        obj.FUN_1407cba60("recommenderAccountSN", FUN_140719530(spRec->m_nAccount));
-    }
-    switch (nKeyType - 1)
-    {
-    case 0:
+    case 2:
+    case 3:
     case 4:
-        if (nRank == 0)
-        {
-            obj.FUN_1407cbb20("rankText", FUN_140298ea0(CStringW(L"s_gameranking_tab_no_rank")));
-        }
+    case 6:
+    case 7:
+    case 8:
+    case 9:
+    case 10:
+    case 11:
+    case 0xc:
+    case 0xf:
+    case 0x10:
+    case 0x11:
+        if (nRank != 0)
+            obj.FUN_1407cbb20("rankText", FUN_14062b4f0(CStringW(L"s_gameranking_tab_my_rank"), &nRank));
         else
+            obj.FUN_1407cbb20("rankText", FUN_140298ea0(CStringW(L"s_gameranking_tab_no_rank")));
+        break;
+    case 1:
+    case 5:
+        if (nRank != 0)
         {
             PCBase* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
             if (pPc != 0)
@@ -1252,54 +1234,39 @@ void UIGameRankingDialog::FUN_140e33fb0(ASObj& obj, Unk_RankCatPtr spCategory, i
                     obj.FUN_1407cbb20("rankText", FUN_140bfa7f0(CStringW(L"s_gameranking_tab_guild_rank"), strGuild, &nRank));
             }
         }
-        break;
-    case 1:
-    case 2:
-    case 3:
-    case 5:
-    case 6:
-    case 7:
-    case 8:
-    case 9:
-    case 10:
-    case 0xb:
-    case 0xe:
-    case 0xf:
-    case 0x10:
-        if (nRank == 0)
-            obj.FUN_1407cbb20("rankText", FUN_140298ea0(CStringW(L"s_gameranking_tab_no_rank")));
         else
-            obj.FUN_1407cbb20("rankText", FUN_14062b4f0(CStringW(L"s_gameranking_tab_my_rank"), &nRank));
+        {
+            obj.FUN_1407cbb20("rankText", FUN_140298ea0(CStringW(L"s_gameranking_tab_no_rank")));
+        }
         break;
-    case 0xd:
+    case 0xe:
         if (info.FUN_140b2e180() != 0)
         {
             if (info.FUN_140b2e210()->vfunc_2() != 0)
             {
-                if (nRank < 0)
+                int nValue = nRank;
+                if (nValue >= 0)
                 {
-                    int nPercent = -nRank;
-                    obj.FUN_1407cbb20("rankText", FUN_14062b4f0(CStringW(L"s_gameranking_tab_my_rank_percent_down"), &nPercent));
+                    obj.FUN_1407cbb20("rankText", FUN_140298ea0(CStringW(L"s_gameranking_tab_my_rank_percent_up")));
                 }
                 else
                 {
-                    obj.FUN_1407cbb20("rankText", FUN_140298ea0(CStringW(L"s_gameranking_tab_my_rank_percent_up")));
+                    obj.FUN_1407cbb20("rankText", FUN_14062b4f0(CStringW(L"s_gameranking_tab_my_rank_percent_down"), nRank * -1));
                 }
                 break;
             }
         }
-        if (nRank == 0)
-            obj.FUN_1407cbb20("rankText", FUN_140298ea0(CStringW(L"s_gameranking_tab_no_rank")));
-        else
+        if (nRank != 0)
             obj.FUN_1407cbb20("rankText", FUN_14062b4f0(CStringW(L"s_gameranking_tab_my_rank"), &nRank));
+        else
+            obj.FUN_1407cbb20("rankText", FUN_140298ea0(CStringW(L"s_gameranking_tab_no_rank")));
     }
 }
 
 // @0x140e34830
 void UIGameRankingDialog::FUN_140e34830(ASObj& obj, Unk_RankCatPtr spCategory)
 {
-    bool bTop = spCategory->m_nParent == 0;
-    CStringW strCategory(bTop ? CStringW(spCategory->m_strLabel) : FUN_1401a9d70()->FUN_141811980(0x34, spCategory->m_nType));
+    CStringW strCategory(spCategory->m_nParent != 0 ? FUN_1401a9d70()->FUN_141811980(0x34, spCategory->m_nType) : CStringW(spCategory->m_strLabel));
     CStringW strSub(spCategory->m_strLabel);
     Unk_RankTabPtr spTab;
     spTab = FUN_140e339e0(spCategory->m_nType, m_nTab);
@@ -1374,29 +1341,28 @@ void UIGameRankingDialog::FUN_140e34d50(CStringW strSearch)
     }
 }
 
-// @0x140e34eb0
+// @0x140e34eb0 // MS2-FUNCTIONAL: Unk_RankJson (shared gamerankingcli.h) lacks a declared copy ctor, so the by-value arg is rep-movsb copied instead of passed by address
 void UIGameRankingDialog::FUN_140e34eb0(Unk_RankPageReq spReply)
 {
-    if (!spReply.FUN_140b2e0c0(0))
+    if (spReply.FUN_140b2e0c0(0))
+        return;
+    FUN_140e32eb0();
+    Unk_RankListHandle list = spReply.FUN_140b2e220()->FUN_140b3dcc0();
+    if (list.FUN_140b2e170() != 0)
     {
-        FUN_140e32eb0();
-        Unk_RankListHandle list = spReply.FUN_140b2e220()->FUN_140b3dcc0();
-        if (list.FUN_140b2e170() != 0)
+        Unk_RankDataPtr spData((Unk_RankNewTag(0)));
+        spData.FUN_140b2e1e0()->FUN_140b287b0(spReply.FUN_140b2e220()->GetRankType(), list);
+        if (spData.FUN_140b2e1e0()->m_nRank == 0)
         {
-            Unk_RankDataPtr spData((Unk_RankNewTag(0)));
-            spData.FUN_140b2e1e0()->FUN_140b287b0(spReply.FUN_140b2e220()->GetRankType(), Unk_RankJson(list));
-            if (spData.FUN_140b2e1e0()->m_nRank == 0)
-            {
-                if (m_30.get())
-                    reinterpret_cast<Unk_RankAS*>(m_30.operator->())->FUN_140e35c60("showSearchResult", 0);
-            }
-            else
-            {
-                m_rows.Add(spData);
-                if (m_30.get())
-                    reinterpret_cast<Unk_RankAS*>(m_30.operator->())->FUN_140e35c60("showSearchResult", 1);
-                FUN_140e31b00();
-            }
+            if (m_30.get())
+                reinterpret_cast<Unk_RankAS*>(m_30.operator->())->FUN_140e35c60("showSearchResult", 0);
+        }
+        else
+        {
+            m_rows.Add(spData);
+            if (m_30.get())
+                reinterpret_cast<Unk_RankAS*>(m_30.operator->())->FUN_140e35c60("showSearchResult", 1);
+            FUN_140e31b00();
         }
     }
 }
@@ -1459,31 +1425,34 @@ int UIGameRankingDialog::FUN_140e354d0(int nType, int nSub)
 // @0x140e355d0
 void UIGameRankingDialog::FUN_140e355d0(Scaleform::GFx::Value* pRet, int nRow, int nType)
 {
-    if ((size_t)nRow < m_rows.GetCount())
+    if (m_rows.GetCount() <= (size_t)nRow)
+        return;
+    ASTooltip tooltip(1, 2);
+    tooltip.FUN_1409c6d70("export_common_tooltip_tooltipText");
+    tooltip.FUN_1409c6e00(0);
+    tooltip.FUN_1409c6dc0(3);
+    tooltip.FUN_1409c6e60(5);
+    CStringW strText;
+    switch (nType)
     {
-        ASTooltip tooltip(1, 2);
-        tooltip.FUN_1409c6d70(CString("export_common_tooltip_tooltipText"));
-        tooltip.FUN_1409c6e00(0);
-        tooltip.FUN_1409c6dc0(3);
-        tooltip.FUN_1409c6e60(5);
-        CStringW strText;
-        if (nType == 0xc)
-            strText = FUN_140298ea0(CStringW(L"s_gameranking_characterinfo"));
-        else
-            strText = FUN_140298ea0(CStringW(L"s_gameranking_party_member"));
-        for (int i = 0; i < 10; i++)
-        {
-            if (!m_rows[nRow].FUN_140b2e1e0()->m_party[i].m_name.IsEmpty())
-            {
-                strText += FUN_14062b5a0(CStringW(L"s_gameranking_party_member_job"),
-                                         m_rows[nRow].FUN_140b2e1e0()->m_party[i].m_nJob,
-                                         m_rows[nRow].FUN_140b2e1e0()->m_party[i].m_name,
-                                         m_rows[nRow].FUN_140b2e1e0()->m_party[i].m_nLevel);
-            }
-        }
-        tooltip.FUN_1409c6cb0(strText);
-        FUN_1409b4bc0(pRet, tooltip.FUN_1422bb870());
+    case 0xc:
+        strText = FUN_140298ea0(CStringW(L"s_gameranking_characterinfo"));
+        break;
+    default:
+        strText = FUN_140298ea0(CStringW(L"s_gameranking_party_member"));
+        break;
     }
+    for (int i = 0; i < 10; i++)
+    {
+        if (m_rows[nRow].FUN_140b2e1e0()->m_party[i].m_name.IsEmpty())
+            continue;
+        strText += FUN_14062b5a0(CStringW(L"s_gameranking_party_member_job"),
+                                 m_rows[nRow].FUN_140b2e1e0()->m_party[i].m_nJob,
+                                 m_rows[nRow].FUN_140b2e1e0()->m_party[i].m_name,
+                                 m_rows[nRow].FUN_140b2e1e0()->m_party[i].m_nLevel);
+    }
+    tooltip.FUN_1409c6cb0(strText);
+    FUN_1409b4bc0(pRet, tooltip.FUN_1422bb870());
 }
 
 // @0x140e359e0
@@ -1566,15 +1535,9 @@ GameRankingTabData::GameRankingTabData()
     m_nSeasonID = 0;
 }
 
-// @0x140e36b30
-GameRankingCategory::~GameRankingCategory()
-{
-}
+// ~GameRankingCategory (0x140e36b30) is implicit: an explicit empty body keeps a dead vptr store the exe does not have.
 
-// @0x140e36b80
-GameRankingTabData::~GameRankingTabData()
-{
-}
+// ~GameRankingTabData (0x140e36b80) is implicit: an explicit empty body keeps a dead vptr store the exe does not have.
 
 // ---- hooks ----
 MS2_REPLACE_METHOD(0x140E2CEC0, UIGameRankingDialog, GetTypeName, 61, 0x4BBB450D);

@@ -51,11 +51,13 @@ inline CStringW FUN_1401aa6a0(int nNpcId)
 {
     CStringW strTitle = GetStringTable()->FUN_141811980(0x13, nNpcId);
     CStringW strName = GetStringTable()->FUN_141811980(2, nNpcId);
-    if (strTitle.GetLength() == 0)
-        return strName;
-    CStringW str;
-    str.Format(L"%s %s", (const wchar_t*)strTitle, (const wchar_t*)strName);
-    return str;
+    if (strTitle.GetLength() != 0)
+    {
+        CStringW str;
+        str.Format(L"%s %s", (const wchar_t*)strTitle, (const wchar_t*)strName);
+        return str;
+    }
+    return strName;
 }
 
 // The order of GetMainDataList: by sortingOrder, then by id.
@@ -90,8 +92,7 @@ bool CArcadeDataTable::LoadMain()
 {
     CString strPath = FUN_14071a5b0("Table", "arcadeGame.xml");
     TiXmlDocument doc;
-    const char* pszPath = strPath;
-    if (FUN_140166420()->FUN_1403974b0(&doc, pszPath, 0, true, false) == 0)
+    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return false;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
@@ -119,8 +120,7 @@ bool CArcadeDataTable::LoadReward()
 {
     CString strPath = FUN_14071a5b0("Table/Server", "arcadeReward.xml");
     TiXmlDocument doc;
-    const char* pszPath = strPath;
-    if (FUN_140166420()->FUN_1403974b0(&doc, pszPath, 0, true, false) == 0)
+    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return false;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
@@ -145,8 +145,9 @@ bool CArcadeDataTable::LoadReward()
             FUN_1408731e0(pReward, "round", pData->m_nRound);
             FUN_140873360(pReward, "expRate", pData->m_fExpRate);
             FUN_1408732e0(pReward, "meso", pData->m_nMeso);
-            if (pData->m_nRound < MAX_ROUND)
-                aReward[pData->m_nRound] = pData;
+            if (pData->m_nRound > MAX_ROUND - 1)
+                continue;
+            aReward[pData->m_nRound] = pData;
         }
         m_mapReward.SetAt(nId, aReward);
     }
@@ -158,8 +159,7 @@ bool CArcadeDataTable::LoadRecord()
 {
     CString strPath = FUN_14071a5b0("Table", "arcadeGameRecord.xml");
     TiXmlDocument doc;
-    const char* pszPath = strPath;
-    if (FUN_140166420()->FUN_1403974b0(&doc, pszPath, 0, true, false) == 0)
+    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return false;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
@@ -194,9 +194,9 @@ CArcadeDataTable::MainPtr CArcadeDataTable::GetMainData(int nId)
 {
     CheckInit();
     MainPtr p(0);
-    if (!m_mapMain.Lookup(nId, p))
-        return MainPtr(0);
-    return p;
+    if (m_mapMain.Lookup(nId, p))
+        return p;
+    return MainPtr(0);
 }
 
 // @0x1401a3a00
@@ -205,12 +205,8 @@ void CArcadeDataTable::GetMainDataList(std::vector<MainPtr>& out)
     CheckInit();
     out.clear();
     out.reserve(m_mapMain.GetCount());
-    POSITION pos = m_mapMain.GetStartPosition();
-    while (pos != 0)
-    {
+    for (POSITION pos = m_mapMain.GetStartPosition(); pos != 0; m_mapMain.GetNext(pos))
         out.push_back(m_mapMain.GetValueAt(pos));
-        m_mapMain.GetNext(pos);
-    }
     std::sort(out.begin(), out.end(), Unk_ArcadeMainLess());
 }
 
@@ -219,8 +215,9 @@ void CArcadeDataTable::GetRecords(int nId, std::vector<Unk_ArcadeRecord>& out) c
 {
     CheckInit();
     const RecordMap::CPair* pPair = m_mapRecord.Lookup(nId);
-    if (pPair != 0)
-        out = pPair->m_value;
+    if (pPair == 0)
+        return;
+    out = pPair->m_value;
 }
 
 // @0x1401a3b40
@@ -230,23 +227,18 @@ CArcadeDataTable::RewardPtr CArcadeDataTable::GetReward(int nId, int nRound) con
     const RewardMap::CPair* pPair = m_mapReward.Lookup(nId);
     if (pPair == 0)
         return RewardPtr(0);
-    if ((int)pPair->m_value.size() < nRound)
+    const std::vector<RewardPtr>& rRewards = pPair->m_value;
+    if (nRound > (int)rRewards.size())
         return RewardPtr(0);
-    return pPair->m_value[nRound];
+    return rRewards[nRound];
 }
 
 // @0x1401a8b20
 CArcadeMainData::CArcadeMainData()
+    : m_nId(0), m_nSortingOrder(0)
 {
-    m_nId = 0;
-    m_nSortingOrder = 0;
     m_nTargetField = 0;
     m_bIsEventArcade = false;
-}
-
-// @0x1401a8f10
-CArcadeMainData::~CArcadeMainData()
-{
 }
 
 // @0x1401a8b90
@@ -256,11 +248,6 @@ CArcadeRewardData::CArcadeRewardData()
     m_nRound = 0;
     m_fExpRate = 0;
     m_nMeso = 0;
-}
-
-// @0x1401a8f40
-CArcadeRewardData::~CArcadeRewardData()
-{
 }
 
 // @0x1401a9600

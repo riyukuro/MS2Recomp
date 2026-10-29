@@ -71,10 +71,12 @@ UIGlobalPortalDialog::UIGlobalPortalDialog()
     m_nRetryTime = 0;
 }
 
-// MS2-FUNCTIONAL: implicit dtor body: the exe unwinds the three MS2Ptr members and five CStringW members with a different cleanup order
 // @0x1412c2180
 UIGlobalPortalDialog::~UIGlobalPortalDialog()
 {
+    m_enterButton1 = 0;
+    m_enterButton2 = 0;
+    m_enterButton3 = 0;
 }
 
 // @0x1412c22b0
@@ -83,17 +85,19 @@ CString UIGlobalPortalDialog::GetTypeName()
     return "GlobalPortalDialog";
 }
 
-// MS2-FUNCTIONAL: delegate / MS2Ptr temporaries are laid out differently (frame size)
 // @0x1412c2300
 void UIGlobalPortalDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
     FUN_141925ec0("m_closeButton");
-    if (FUN_140bc6d10("m_enterButton1", m_enterButton1).get() != 0)
+    Unk_GpButton* pButton1 = FUN_140bc6d10("m_enterButton1", m_enterButton1).get();
+    if (pButton1)
         m_enterButton1->FUN_1422ce240(GpClickDelegate(this, &UIGlobalPortalDialog::SendGlobalPortal), 0);
-    if (FUN_140bc6d10("m_enterButton2", m_enterButton2).get() != 0)
+    Unk_GpButton* pButton2 = FUN_140bc6d10("m_enterButton2", m_enterButton2).get();
+    if (pButton2)
         m_enterButton2->FUN_1422ce240(GpClickDelegate(this, &UIGlobalPortalDialog::SendGlobalPortal), 1);
-    if (FUN_140bc6d10("m_enterButton3", m_enterButton3).get() != 0)
+    Unk_GpButton* pButton3 = FUN_140bc6d10("m_enterButton3", m_enterButton3).get();
+    if (pButton3)
         m_enterButton3->FUN_1422ce240(GpClickDelegate(this, &UIGlobalPortalDialog::SendGlobalPortal), 2);
     FUN_1412c2980();
 }
@@ -120,34 +124,31 @@ void UIGlobalPortalDialog::vfunc_67()
     m_strCaption1 = m_strCaption2 = m_strCaption3 = L"";
 }
 
-// MS2-FUNCTIONAL: constants table entry access and the player slot call differ in temporaries
 // @0x1412c2880
 void UIGlobalPortalDialog::vfunc_72()
 {
-    if (m_nRetryTime != 0 && m_nRetryTime <= FUN_140869420())
+    if (m_nRetryTime == 0)
+        return;
+    if (FUN_140869420() < m_nRetryTime)
+        return;
+    PC* pPlayer = static_cast<PC*>(FUN_141bd0cc0(FUN_1403ed2d0()));
+    if (pPlayer == 0)
+        return;
+    unsigned short nLimit = *FUN_1401d7c10(FUN_1401d3200() + 0xe150);
+    if (nLimit != 0 && (unsigned short)pPlayer->vfunc_78() < nLimit)
     {
-        PC* pPlayer = static_cast<PC*>(FUN_141bd0cc0(FUN_1403ed2d0()));
-        if (pPlayer != 0)
-        {
-            unsigned short nLimit = *FUN_1401d7c10(FUN_1401d3200() + 0xe150);
-            if (nLimit == 0 || nLimit <= (unsigned short)pPlayer->vfunc_78())
-            {
-                m_nRetryTime = 0;
-                if (FUN_1417e2610(FUN_140aa6d30()) == 0x620000c)
-                {
-                    if (FUN_141924630() == 0)
-                        FUN_141924680();
-                    else
-                        FUN_1412c2980();
-                }
-            }
-            else
-                m_nRetryTime = 0;
-        }
+        m_nRetryTime = 0;
+        return;
     }
+    m_nRetryTime = 0;
+    if (FUN_1417e2610(FUN_140aa6d30()) != 0x620000c)
+        return;
+    if (FUN_141924630() == 0)
+        FUN_141924680();
+    else
+        FUN_1412c2980();
 }
 
-// MS2-FUNCTIONAL: CStringW temporaries of the three button captions are laid out differently (frame size)
 // @0x1412c2980
 void UIGlobalPortalDialog::FUN_1412c2980()
 {
@@ -162,33 +163,33 @@ void UIGlobalPortalDialog::FUN_1412c2980()
     {
         if (m_enterButton1.get() != 0)
         {
-            if (m_strCaption1.IsEmpty())
-                m_enterButton1->vfunc_3(0);
-            else
+            if (!m_strCaption1.IsEmpty())
             {
                 m_enterButton1->vfunc_3(1);
                 m_enterButton1->FUN_1422cdfb0(FUN_1405c2690(L"s_massive_event_enter_button", GetStringCommonByKey(m_strCaption1)));
             }
+            else
+                m_enterButton1->vfunc_3(0);
         }
         if (m_enterButton2.get() != 0)
         {
-            if (m_strCaption2.IsEmpty())
-                m_enterButton2->vfunc_3(0);
-            else
+            if (!m_strCaption2.IsEmpty())
             {
                 m_enterButton2->vfunc_3(1);
                 m_enterButton2->FUN_1422cdfb0(FUN_1405c2690(L"s_massive_event_enter_button", GetStringCommonByKey(m_strCaption2)));
             }
+            else
+                m_enterButton2->vfunc_3(0);
         }
         if (m_enterButton3.get() != 0)
         {
-            if (m_strCaption3.IsEmpty())
-                m_enterButton3->vfunc_3(0);
-            else
+            if (!m_strCaption3.IsEmpty())
             {
                 m_enterButton3->vfunc_3(1);
                 m_enterButton3->FUN_1422cdfb0(FUN_1405c2690(L"s_massive_event_enter_button", GetStringCommonByKey(m_strCaption3)));
             }
+            else
+                m_enterButton3->vfunc_3(0);
         }
         if (!m_strSound.IsEmpty())
         {
@@ -198,11 +199,11 @@ void UIGlobalPortalDialog::FUN_1412c2980()
     }
 }
 
-// MS2-FUNCTIONAL: CStringW temporaries of the two error notices are laid out differently (frame size)
 // @0x1412c3020
 void UIGlobalPortalDialog::FUN_1412c3020(CInPacket& packet)
 {
-    switch (packet.ReadUInt8())
+    int nType = packet.ReadUInt8();
+    switch (nType)
     {
     case 0:
         FUN_1412c32a0(packet);
@@ -211,10 +212,10 @@ void UIGlobalPortalDialog::FUN_1412c3020(CInPacket& packet)
         FUN_1412c3640(packet);
         break;
     case 3:
-        FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_massive_event_error_cant_enter_dead")), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(L"s_massive_event_error_cant_enter_dead"), 1, 1);
         break;
     case 4:
-        FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_massive_event_error_cant_enter_level_limit")), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(L"s_massive_event_error_cant_enter_level_limit"), 1, 1);
         break;
     }
 }

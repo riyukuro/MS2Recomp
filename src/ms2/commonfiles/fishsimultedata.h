@@ -35,7 +35,7 @@ class CFishSimulteData : public CPtred
 {
 public:
     CFishSimulteData();                                             // 0x1403b0e30
-    virtual ~CFishSimulteData();                                    // 0x1403b39f0
+    // ~CFishSimulteData() is implicit (0x1403b39f0, no vftable store)
     void Write(COutputStream& out);                                 // 0x1403b0ea0
     void Read(CByteBuffer& in);                                     // 0x1403b0f50
 
@@ -51,10 +51,10 @@ class CFishData : public CPtred
 {
 public:
     CFishData();                                                    // 0x1403b1040
-    virtual ~CFishData();                                           // 0x1403b39d0
+    // ~CFishData() is implicit (0x1403b39d0, no vftable store)
     int Load(Unk_140165cf0* pNode);                                 // 0x1403b1100 the row's attributes (0 when the size ranges are bad)
-    bool FUN_1403b14d0(unsigned nSize) const;                       // the size is in the largest class
-    unsigned __int64 FUN_1403b1520(unsigned nSize) const;           // the size class (0..3, 4 = none)
+    int FUN_1403b14d0(unsigned nSize) const;                        // the size is in the largest class
+    int FUN_1403b1520(unsigned nSize) const;                        // the size class (0..3, 4 = none)
     int FUN_1403b1590(unsigned nSize) const;                        // the size class as a 0..3 grade
     CStringW FUN_1403b1600() const;                                 // "./Data/Resource/Image/Fishing/<id>.png"
     CStringW FUN_1403b1650() const;                                 // the name from the string table
@@ -78,7 +78,7 @@ class CFishingRodData : public CPtred
 {
 public:
     CFishingRodData();                                              // 0x1403b1980
-    virtual ~CFishingRodData();                                     // 0x1403b3a10
+    // ~CFishingRodData() is implicit (0x1403b3a10, no vftable store)
     int  Load(Unk_140165cf0* pNode);                                // 0x1403b1a20
 
     unsigned m_nRodCode;                                            // +0x18 "rodCode"
@@ -96,7 +96,7 @@ class CFishingSpotData : public CPtred
 {
 public:
     CFishingSpotData();                                             // 0x1403b1b20
-    virtual ~CFishingSpotData();                                    // 0x1403b3a60
+    // ~CFishingSpotData() is implicit (0x1403b3a60, no vftable store)
     int  Load(Unk_140165cf0* pNode);                                // 0x1403b1b90
 
     unsigned m_nId;                                                 // +0x18 "id"

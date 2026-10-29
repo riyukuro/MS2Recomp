@@ -79,10 +79,7 @@ UIStatControlDialog::UIStatControlDialog()
     FUN_1422dc3b0(1);
 }
 
-// @0x14134fbe0
-UIStatControlDialog::~UIStatControlDialog()
-{
-}
+// MS2-PIN: ??1UIStatControlDialog@@UEAA@XZ 0x14134fbe0 ; implicit virtual dtor (no vptr reset, like the exe)
 
 // @0x14134e510
 CString UIStatControlDialog::GetTypeName()
@@ -137,7 +134,6 @@ int UIStatControlDialog::vfunc_13()
 }
 
 // @0x14134e790
-// MS2-FUNCTIONAL: same calls and branches as the exe; the frame is 0x10 bigger (named locals/temps sit at other slots)
 int UIStatControlDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs)
 {
     UIDialog::vfunc_28(szMethod, pArgs, nArgs);
@@ -174,8 +170,7 @@ int UIStatControlDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
             ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30.get());
             if (pDialog != 0)
             {
-                __int64 nMax = pActor->FUN_141670a30(nStat);
-                pDialog->Invoke("setValue", (float)nMax);
+                pDialog->Invoke("setValue", (float)pActor->FUN_141670a30(nStat));
             }
         }
         return 1;

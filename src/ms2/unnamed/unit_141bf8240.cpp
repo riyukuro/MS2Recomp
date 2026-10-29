@@ -108,9 +108,9 @@ static void Unk_BiAdvance(void* self)
         node = parent;
     }
 }
-// MS2-FUNCTIONAL: increment the property-map iterator using the standard MSVC red-black tree successor walk.
+// Increments the property-map iterator using the standard MSVC red-black tree successor walk; returns the iterator.
 // @0x141bf86a0
-void FUN_141bf86a0(void* it) { Unk_BiAdvance(it); }
-// MS2-FUNCTIONAL: increment the second WorldService tree iterator with the same node layout and successor walk.
+void* FUN_141bf86a0(void* it) { Unk_BiAdvance(it); return it; }
+// Increments the second WorldService tree iterator with the same node layout and successor walk; returns the iterator.
 // @0x141bf8700
-void FUN_141bf8700(void* it) { Unk_BiAdvance(it); }
+void* FUN_141bf8700(void* it) { Unk_BiAdvance(it); return it; }

@@ -27,17 +27,10 @@ class ASMouseCursor;                    // 0x90, base ASGameEntity (vftable 0x14
 // 0x14257dcb0; the two parameters cannot be told apart by their release code, so both use this one name).
 class Unk_GFxHandleObj;
 
-#if defined(MS2_HAVE_SCALEFORM_SDK)
 #define MS2_GFX_PTR(T) Scaleform::Ptr<T>
 #define MS2_GFX_LOADER Scaleform::GFx::Loader
 #define MS2_GFX_MOVIE Scaleform::GFx::Movie
 #define MS2_GFX_MOVIEDEF Scaleform::GFx::MovieDef
-#else
-#define MS2_GFX_PTR(T) T*
-#define MS2_GFX_LOADER void
-#define MS2_GFX_MOVIE void
-#define MS2_GFX_MOVIEDEF void
-#endif
 
 class GFxMovie : public NiRefObject
 {
@@ -111,12 +104,8 @@ public:
     MS2Ptr<ASMouseCursor> m_30;                                     // +0x30 the mouse cursor (type 6 of the movie manager)
     MS2Ptr<ASMovieClipLoader> m_40;                                 // +0x40 vfunc_11 invokes "shutdown" on it (FUN_140b62350)
     unsigned m_50;                                                  // +0x50 ctor 0; MemoryParams::MaxCollectionRoots if set
-#if defined(MS2_HAVE_SCALEFORM_SDK)
     Scaleform::KeyModifiers m_54;                                   // +0x54 the last key modifiers (ctor FUN_14127c3b0)
     Scaleform::UInt8 m_pad_55[3];
-#else
-    int m_54;                                                       // +0x54 (ctor FUN_14127c3b0: a byte at +0x54)
-#endif
     MS2_GFX_LOADER* m_58;                                           // +0x58 ctor 0; vfunc_6 argument
     MS2_GFX_PTR(MS2_GFX_MOVIE) m_60;                                // +0x60 Ptr<GFx::Movie> (accessor FUN_14127c960 / FUN_14127c910 = non-null)
     MS2_GFX_PTR(MS2_GFX_MOVIEDEF) m_68;                             // +0x68 Ptr<GFx::MovieDef> (Loader::CreateMovie result)
@@ -176,12 +165,10 @@ public:
     void FUN_1422d8f90(void* hwnd);                                 // 0x1422d8f90 ChangeClipboardChain (WM_DESTROY)
     void FUN_1422d8fd0(const CStringW& strText);                    // 0x1422d8fd0 FUN_1422d8f00(copy)
     static void FUN_1422d9020(bool bEnable);                        // 0x1422d9020 ms_bImeEnabled = bEnable
-#if defined(MS2_HAVE_SCALEFORM_SDK)
     void ProcessKey(unsigned vkCode, bool bDown, bool bExtendedKey);   // 0x1422dab20 processKey: VK -> Key::Code, OnKey
     void SendKeyEvent(int nKeyboard, int nKeyCode, unsigned nWchar, bool bDown,
                        Scaleform::KeyModifiers kMods);              // 0x1422dac60 sends the KeyEvent
     Scaleform::KeyModifiers UpdateModifiers(bool bExtendedKey);       // 0x1422dad70 updateModifiers (also stored at +0x54)
-#endif
 
     // m_88 = SetClipboardViewer(hwnd) (0 when it returns hwnd itself); true if a next viewer is set. GFxMovieMain::vfunc_17.
     int FUN_1422d8e80(void* hwnd);                                  // 0x1422d8e80

@@ -350,99 +350,105 @@ void UIDamageText::vfunc_26()
 }
 MS2_REPLACE_METHOD(0x141911D10, UIDamageText, vfunc_26, 366, 0x9617A9C3);
 
-// MS2-FUNCTIONAL: obj saves rsi/rdi (extra nonvolatiles) and allocates locals differently; body flow equivalent
 // @0x141911e90
 void UIDamageText::FUN_141911e90(PCBase* pTarget, __int64 nValue, int nGrade, int nCasterId, const efd::Point3& kHitPos)
 {
-    if (pTarget != 0 && !(m_30 == 0) && FUN_141913bd0(pTarget, nGrade, nCasterId) && FUN_141914d40(pTarget) != 1)
+    if (pTarget == 0 || m_30 == 0)
+        return;
+    if (!FUN_141913bd0(pTarget, nGrade, nCasterId))
+        return;
+    if (FUN_141914d40(pTarget) == 1)
+        return;
+    GameObject* pPlayer = static_cast<GameObject*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    if (pPlayer == 0)
+        return;
+    if (m_pInterfaceOption == 0 || m_pBattleOption == 0)
+        return;
+    NiPoint3 kPos(kHitPos);
+    if (kPos == efd::Point3::ZERO)
+        FUN_141914020(pTarget, kPos, m_strDamageNode);
+    bool bMySummon = false;
+    CNpc* pSummon = static_cast<CNpc*>(static_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd13a0(nCasterId)));
+    if (pSummon != 0)
+        bMySummon = pSummon->GetOwnerId() == pPlayer->FUN_14123c580();
+    efd::Point3 kScreen;
+    if (Unk_DtCamera::FUN_1409478c0()->FUN_140af0700(kPos, kScreen))
     {
-        GameObject* pPlayer = static_cast<GameObject*>(WorldService::GetInstance()->FUN_141bd0cc0());
-        if (pPlayer != 0 && m_pInterfaceOption != 0 && m_pBattleOption != 0)
+        bool bCasterMe = nCasterId == pPlayer->FUN_14123c580();
+        bool bTargetMe = pTarget->FUN_14123c580() == pPlayer->FUN_14123c580();
+        bool bMyDamage = bTargetMe || bCasterMe;
+        unsigned int nFlags = m_pBattleOption->m_n10;
+        int nTargetKind = FUN_1419142a0(pTarget);
+        PCBase* pCaster = WorldService::GetInstance()->FUN_141bd1200(nCasterId);
+        int nCasterKind = FUN_1419142a0(pCaster);
+        CString strGrade = FUN_141914570(nGrade);
+        bool bGem = nCasterKind == 0 && FUN_141914530(nGrade) == 0 && !bTargetMe;
+        CString strCaster("");
+        bool bUser = (pCaster != 0 && nCasterKind == 0) ? pTarget->vfunc_122(pCaster) == 0 : true;
+        if (bTargetMe)
+            bUser = true;
+        else
         {
-            NiPoint3 kPos(kHitPos);
-            if (kPos == efd::Point3::ZERO)
-                FUN_141914020(pTarget, kPos, m_strDamageNode);
-            bool bMySummon = false;
-            CNpc* pSummon = static_cast<CNpc*>(static_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd13a0(nCasterId)));
-            if (pSummon != 0)
-                bMySummon = pSummon->GetOwnerId() == pPlayer->FUN_14123c580();
-            efd::Point3 kScreen;
-            if (Unk_DtCamera::FUN_1409478c0()->FUN_140af0700(kPos, kScreen))
+            if (pCaster != 0 && nCasterKind == 0 && bUser)
             {
-                int nPlayerId = pPlayer->FUN_14123c580();
-                bool bTargetMe = pTarget->FUN_14123c580() == pPlayer->FUN_14123c580();
-                bool bMyDamage = bTargetMe || nCasterId == nPlayerId;
-                unsigned int nFlags = m_pBattleOption->m_n10;
-                int nTargetKind = FUN_1419142a0(pTarget);
-                PCBase* pCaster = WorldService::GetInstance()->FUN_141bd1200(nCasterId);
-                int nCasterKind = FUN_1419142a0(pCaster);
-                CString strGrade = FUN_141914570(nGrade);
-                bool bGem = nCasterKind == 0 && FUN_141914530(nGrade) == 0 && !bTargetMe;
-                CString strCaster("");
-                bool bUser;
-                if (pCaster == 0 || nCasterKind != 0)
+                int nState = pCaster->FUN_1416749a0()->FUN_140970b10();
+                if ((nState & 2) != 0)
+                    bUser = false;
+            }
+            if (m_bObserver && nCasterKind == 0)
+            {
+                PC* pPC = dynamic_cast<PC*>(pCaster);
+                if (pPC != 0 && pPC->FUN_141656a80() == m_nObservedId)
                     bUser = true;
-                else
-                    bUser = pTarget->vfunc_122(pCaster) == 0;
-                if (bTargetMe)
-                    bUser = true;
-                else
+            }
+        }
+        unsigned __int64 nOwnerId = pTarget->FUN_14123c500();
+        ASObj obj(m_28);
+        {
+            CString strValue = FUN_141914660(nValue, nGrade);
+            obj.FUN_1407cba60("value", strValue);
+            CString strTarget = FUN_1419143c0(nTargetKind, bUser);
+            obj.FUN_1407cba60("target", strTarget);
+            obj.FUN_1407cba60("grade", strGrade);
+            obj.FUN_1407cba60("caster", strCaster);
+            obj.FUN_1407cbbe0("myDamage", bMyDamage);
+            obj.FUN_1409c4a30("scale", (float)m_pInterfaceOption->m_n10 / 100.0f);
+            obj.FUN_1407cbbe0("pcBang", false);
+            if (!m_bObserver)
+            {
+                if (!bMyDamage && (nFlags & 1) != 0 && !bMySummon)
                 {
-                    if (pCaster != 0 && nCasterKind == 0 && bUser)
-                    {
-                        if ((pCaster->FUN_1416749a0()->FUN_140970b10() & 2) != 0)
-                            bUser = false;
-                    }
-                    if (m_bObserver && nCasterKind == 0)
-                    {
-                        PC* pPC = dynamic_cast<PC*>(pCaster);
-                        if (pPC != 0 && pPC->FUN_141656a80() == m_nObservedId)
-                            bUser = true;
-                    }
+                    float fScale = FUN_1401d3200()->m_c9d0.FUN_1402bac70();
+                    obj.FUN_1409c4a30("diffScale", fScale);
                 }
-                unsigned __int64 nOwnerId = pTarget->FUN_14123c500();
-                ASObj obj(m_28);
+                if (!bMyDamage && (nFlags & 2) != 0 && !bMySummon)
                 {
-                    CString strValue = FUN_141914660(nValue, nGrade);
-                    obj.FUN_1407cba60("value", strValue);
-                    CString strTarget = FUN_1419143c0(nTargetKind, bUser);
-                    obj.FUN_1407cba60("target", strTarget);
-                    obj.FUN_1407cba60("grade", strGrade);
-                    obj.FUN_1407cba60("caster", strCaster);
-                    obj.FUN_1407cbbe0("myDamage", bMyDamage);
-                    obj.FUN_1409c4a30("scale", (float)((float)m_pInterfaceOption->m_n10 / 100.0));
-                    obj.FUN_1407cbbe0("pcBang", false);
-                    if (!m_bObserver)
-                    {
-                        if (!bMyDamage && (nFlags & 1) != 0 && !bMySummon)
-                            obj.FUN_1409c4a30("diffScale", FUN_1401d3200()->m_c9d0.FUN_1402bac70());
-                        if (!bMyDamage && (nFlags & 2) != 0 && !bMySummon)
-                            obj.FUN_1409c4a30("diffAlpha", FUN_1401d3200()->m_ca28.FUN_1402bac70());
-                    }
-                    if (bGem)
-                    {
-                        PC* pPC = dynamic_cast<PC*>(pCaster);
-                        if (pPC != 0)
-                        {
-                            MS2Ptr<CGemBase> spGem = pPC->FUN_14165f460()->FUN_141270740(2);
-                            if (spGem.get() != 0)
-                                obj.FUN_1407cbb20("gem", FUN_140719630(spGem->GetGemId()));
-                        }
-                    }
+                    float fAlpha = FUN_1401d3200()->m_ca28.FUN_1402bac70();
+                    obj.FUN_1409c4a30("diffAlpha", fAlpha);
                 }
-                int nRepeat = 1;
-                if (1 < m_nRepeat)
-                    nRepeat = (int)(nGrade == 1 ? m_nRepeat * 0.5 : (double)m_nRepeat);
-                for (int i = 0; i < nRepeat; i++)
+            }
+            if (bGem)
+            {
+                PC* pPC = dynamic_cast<PC*>(pCaster);
+                if (pPC != 0)
                 {
-                    Scaleform::GFx::Value clip = static_cast<Unk_SsFn*>(m_spDamageText.operator->())->FUN_1417620b0(obj.FUN_1422bb870());
-                    MS2Ptr<DamageInfo> spInfo(new DamageInfo(0, nOwnerId, kPos, 0, MS2Ptr<ASMovieClip>(0), nGrade));
-                    if (spInfo.get() != 0)
-                    {
-                        spInfo->m_bMyDamage = bMyDamage;
-                        FUN_1419175c0(spInfo, NiPoint3(efd::Point3::ZERO), pTarget, clip, kScreen, bMyDamage);
-                    }
+                    MS2Ptr<CGemBase> spGem = pPC->FUN_14165f460()->FUN_141270740(2);
+                    if (spGem.get() != 0)
+                        obj.FUN_1407cbb20("gem", FUN_140719630(spGem->GetGemId()));
                 }
+            }
+        }
+        int nRepeat = 1;
+        if (1 < m_nRepeat)
+            nRepeat = (int)(nGrade == 1 ? m_nRepeat * 0.5 : (double)m_nRepeat);
+        for (int i = 0; i < nRepeat; i++)
+        {
+            Scaleform::GFx::Value clip = static_cast<Unk_SsFn*>(m_spDamageText.operator->())->FUN_1417620b0(obj.FUN_1422bb870());
+            MS2Ptr<DamageInfo> spInfo(new DamageInfo(0, nOwnerId, kPos, 0, MS2Ptr<ASMovieClip>(0), nGrade));
+            if (spInfo.get() != 0)
+            {
+                spInfo->m_bMyDamage = bMyDamage;
+                FUN_1419175c0(spInfo, efd::Point3::ZERO, pTarget, clip, kScreen, bMyDamage);
             }
         }
     }
@@ -466,67 +472,59 @@ void UIDamageText::FUN_141912a80(GameObject* pTarget, int nValue, int nType)
     FUN_141912b20(pTarget, nValue, nType, kPos);
 }
 
-// MS2-FUNCTIONAL: obj saves rsi/rdi (extra nonvolatiles) and allocates locals differently; body flow equivalent
 // @0x141912b20
 void UIDamageText::FUN_141912b20(GameObject* pTarget, int nValue, int nType, const NiPoint3& kPos)
 {
-    if (pTarget != 0 && !(m_30 == 0) && m_pBattleOption != 0)
+    if (pTarget == 0 || m_30 == 0)
+        return;
+    if (m_pBattleOption == 0)
+        return;
+    int bShow = 1;
+    if (nType != 2)
+        bShow = nType == 1 ? m_pBattleOption->m_bDisplayGetMeso : m_pBattleOption->m_bDisplayGetExp;
+    if (!bShow || FUN_141914d40(pTarget) == 1)
+        return;
+    efd::Point3 kScreen;
+    if (Unk_DtCamera::FUN_1409478c0()->FUN_140af0700(kPos, kScreen))
     {
-        bool bShow = true;
-        if (nType != 2)
+        bool bPcBang = FUN_141914490(pTarget) ? true : false;
+        unsigned __int64 nOwnerId = pTarget->FUN_14123c500();
+        ASObj obj(m_28);
         {
-            if (nType == 1)
-                bShow = m_pBattleOption->m_b[3];
-            else
-                bShow = m_pBattleOption->m_b[4];
+            CString strValue = FUN_141914890(nValue, nType);
+            obj.FUN_1407cba60("value", strValue);
+            CString strTarget = FUN_1419143c0(FUN_1419142a0(pTarget), true);
+            obj.FUN_1407cba60("target", strTarget);
+            obj.FUN_1407cba60("grade", FUN_1419149d0(nType));
+            obj.FUN_1407cbbe0("pcBang", bPcBang);
         }
-        if (bShow && FUN_141914d40(pTarget) != 1)
-        {
-            efd::Point3 kScreen;
-            if (Unk_DtCamera::FUN_1409478c0()->FUN_140af0700(kPos, kScreen))
-            {
-                int nPcBang = FUN_141914490(pTarget);
-                unsigned __int64 nOwnerId = pTarget->FUN_14123c500();
-                ASObj obj(m_28);
-                {
-                    CString strValue = FUN_141914890(nValue, nType);
-                    obj.FUN_1407cba60("value", strValue);
-                    CString strTarget = FUN_1419143c0(FUN_1419142a0(pTarget), true);
-                    obj.FUN_1407cba60("target", strTarget);
-                    obj.FUN_1407cba60("grade", FUN_1419149d0(nType));
-                    obj.FUN_1407cbbe0("pcBang", nPcBang != 0);
-                }
-                Scaleform::GFx::Value clip = m_30->Invoke("damageText", obj.FUN_1422bb870());
-                MS2Ptr<DamageInfo> spInfo(new DamageInfo(1, nOwnerId, kPos, 0, MS2Ptr<ASMovieClip>(0), 1));
-                GameObject* pPlayer = static_cast<GameObject*>(WorldService::GetInstance()->FUN_141bd0cc0());
-                bool bMine = pPlayer != 0 && pTarget->FUN_14123c580() == pPlayer->FUN_14123c580();
-                spInfo->m_bMyDamage = bMine;
-                FUN_1419175c0(spInfo, NiPoint3(efd::Point3::ZERO), pTarget, clip, kScreen, 1);
-            }
-        }
+        Scaleform::GFx::Value clip = m_30->Invoke("damageText", obj.FUN_1422bb870());
+        MS2Ptr<DamageInfo> spInfo(new DamageInfo(1, nOwnerId, kPos, 0, MS2Ptr<ASMovieClip>(0), 1));
+        GameObject* pPlayer = static_cast<GameObject*>(WorldService::GetInstance()->FUN_141bd0cc0());
+        spInfo->m_bMyDamage = pPlayer != 0 ? pTarget->FUN_14123c580() == pPlayer->FUN_14123c580() : false;
+        FUN_1419175c0(spInfo, efd::Point3::ZERO, pTarget, clip, kScreen, 1);
     }
 }
 
-// MS2-FUNCTIONAL: obj saves rsi/rdi (extra nonvolatiles) and allocates locals differently; body flow equivalent
 // @0x141913060
 void UIDamageText::FUN_141913060(GameObject* pTarget, int nCount, const CString& strIcon)
 {
-    if (pTarget != 0 && !(m_30 == 0) && FUN_141914d40(pTarget) != 1)
+    if (pTarget == 0 || m_30 == 0)
+        return;
+    if (FUN_141914d40(pTarget) == 1)
+        return;
+    NiPoint3 kPos;
+    FUN_141914020(pTarget, kPos, m_strDamageNode);
+    efd::Point3 kScreen;
+    if (Unk_DtCamera::FUN_1409478c0()->FUN_140af0700(kPos, kScreen))
     {
-        NiPoint3 kPos;
-        FUN_141914020(pTarget, kPos, m_strDamageNode);
-        efd::Point3 kScreen;
-        if (Unk_DtCamera::FUN_1409478c0()->FUN_140af0700(kPos, kScreen))
-        {
-            unsigned __int64 nOwnerId = pTarget->FUN_14123c500();
-            Scaleform::GFx::Value clip = m_30->Invoke("itemIcon", FUN_141914890(nCount, 2),
-                                                      FUN_1419143c0(FUN_1419142a0(pTarget), true), FUN_1419149d0(2), strIcon);
-            MS2Ptr<DamageInfo> spInfo(new DamageInfo(1, nOwnerId, kPos, 0, MS2Ptr<ASMovieClip>(0), 1));
-            GameObject* pPlayer = static_cast<GameObject*>(WorldService::GetInstance()->FUN_141bd0cc0());
-            bool bMine = pPlayer != 0 && pTarget->FUN_14123c580() == pPlayer->FUN_14123c580();
-            spInfo->m_bMyDamage = bMine;
-            FUN_1419175c0(spInfo, NiPoint3(efd::Point3::ZERO), pTarget, clip, kScreen, 1);
-        }
+        unsigned __int64 nOwnerId = pTarget->FUN_14123c500();
+        Scaleform::GFx::Value clip = m_30->Invoke("itemIcon", FUN_141914890(nCount, 2),
+                                                  FUN_1419143c0(FUN_1419142a0(pTarget), true), FUN_1419149d0(2), strIcon);
+        MS2Ptr<DamageInfo> spInfo(new DamageInfo(1, nOwnerId, kPos, 0, MS2Ptr<ASMovieClip>(0), 1));
+        GameObject* pPlayer = static_cast<GameObject*>(WorldService::GetInstance()->FUN_141bd0cc0());
+        spInfo->m_bMyDamage = pPlayer != 0 ? pTarget->FUN_14123c580() == pPlayer->FUN_14123c580() : false;
+        FUN_1419175c0(spInfo, efd::Point3::ZERO, pTarget, clip, kScreen, 1);
     }
 }
 
@@ -638,7 +636,6 @@ float UIDamageText::FUN_141913b80(const NiPoint3& kPos)
 }
 MS2_REPLACE_METHOD(0x141913B80, UIDamageText, FUN_141913b80, 29, 0x5D2D3D01);
 
-// MS2-FUNCTIONAL: shared Unk_BattleState uses bool m_b[6] (imul indexing) where the exe reads separate bool fields
 // @0x141913bd0
 int UIDamageText::FUN_141913bd0(GameObject* pTarget, int nGrade, int nCasterId)
 {
@@ -696,11 +693,11 @@ int UIDamageText::FUN_141913bd0(GameObject* pTarget, int nGrade, int nCasterId)
     if (bRecover)
     {
         if (nTargetMask & 1)
-            return m_pBattleOption->m_b[1];
+            return m_pBattleOption->m_bDisplayMyTakeRecovery;
         else if (nCasterMask & 1)
-            return m_pBattleOption->m_b[0];
+            return m_pBattleOption->m_bDisplayMyGiveRecovery;
         else if ((nCasterMask & 2) || (nTargetMask & 2))
-            return m_pBattleOption->m_b[2];
+            return m_pBattleOption->m_bDisplayPartyRecovery;
         return 0;
     }
     int nCasterFlags = m_pBattleOption->m_n08;
@@ -709,7 +706,7 @@ int UIDamageText::FUN_141913bd0(GameObject* pTarget, int nGrade, int nCasterId)
 }
 MS2_REPLACE_METHOD(0x141913BD0, UIDamageText, FUN_141913bd0, 1094, 0x593B0E73);
 
-// MS2-FUNCTIONAL: NiPoint3 return temp lands 4 bytes higher on the stack (0x40 vs 0x3c)
+// MS2-FUNCTIONAL: the exe move-assigns kPos from a NiPoint3 temporary (0x14097faa0); our NiPoint3 has no move assignment
 // @0x141914020
 int UIDamageText::FUN_141914020(GameObject* pTarget, NiPoint3& kPos, const CString& strNode)
 {
@@ -878,7 +875,6 @@ CString UIDamageText::FUN_141914570(int nGrade)
 }
 MS2_REPLACE_METHOD(0x141914570, UIDamageText, FUN_141914570, 193, 0x55B28405);
 
-// MS2-FUNCTIONAL: exe has an extra dead jmp after case 5 whose source form is unknown
 // @0x141914660
 CString UIDamageText::FUN_141914660(__int64 nValue, int nGrade)
 {
@@ -891,6 +887,7 @@ CString UIDamageText::FUN_141914660(__int64 nValue, int nGrade)
         break;
     case 5:
         str = Unk_SocketFormat((const char*)s_strPlusFormat, nValue);
+        break;
         break;
     case 2:
         str = s_strMiss;
@@ -1020,23 +1017,35 @@ int UIDamageText::FUN_141914d40(GameObject* pTarget)
 }
 MS2_REPLACE_METHOD(0x141914D40, UIDamageText, FUN_141914d40, 89, 0x4CFCD192);
 
-// MS2-FUNCTIONAL: temp/EH state layout differs (dispUnwindHelp 0x80 vs 0x88); same calls and flow
 // @0x141914da0
 void UIDamageText::FUN_141914da0(int bAppend, POSITION* pLast, DamageList& list, CounterMap& map,
                                  MS2Ptr<DamageInfo> spInfo, int nMax)
 {
     if (spInfo == 0)
         return;
-    bool bOver;
-    if (!m_bClearing)
-        bOver = nMax < (int)list.GetCount();
-    else
-        bOver = false;
-    if (bAppend == 0)
+    bool bOver = !m_bClearing ? (int)list.GetCount() > nMax : false;
+    if (bAppend != 0)
     {
-        if (*pLast == 0)
+        if (*pLast != 0)
+        {
             list.AddHead(spInfo);
+            if (bOver)
+            {
+                POSITION pos = *pLast;
+                MS2Ptr<DamageInfo> spOld = list.GetPrev(*pLast);
+                if (spOld.get() != 0)
+                {
+                    list.RemoveAt(pos);
+                    FUN_141915150(spOld->m_nOwnerId, 1, map);
+                }
+            }
+        }
         else
+            *pLast = list.AddHead(spInfo);
+    }
+    else
+    {
+        if (*pLast != 0)
         {
             list.InsertAfter(*pLast, spInfo);
             if (bOver)
@@ -1046,22 +1055,8 @@ void UIDamageText::FUN_141914da0(int bAppend, POSITION* pLast, DamageList& list,
                     FUN_141915150(spInfo->m_nOwnerId, 1, map);
             }
         }
-    }
-    else if (*pLast == 0)
-        *pLast = list.AddHead(spInfo);
-    else
-    {
-        list.AddHead(spInfo);
-        if (bOver)
-        {
-            POSITION pos = *pLast;
-            MS2Ptr<DamageInfo> spOld = list.GetPrev(*pLast);
-            if (spOld.get() != 0)
-            {
-                list.RemoveAt(pos);
-                FUN_141915150(spOld->m_nOwnerId, 1, map);
-            }
-        }
+        else
+            list.AddHead(spInfo);
     }
     MS2Ptr<CounterInfo> spCounter = FUN_141915240(spInfo->m_nOwnerId, map, spInfo->m_nGrade);
     if (spCounter.get() != 0)
@@ -1128,11 +1123,15 @@ MS2Ptr<UIDamageText::CounterInfo> UIDamageText::FUN_141915240(unsigned __int64 n
     return spCounter;
 }
 
-// MS2-FUNCTIONAL: temp/EH state layout differs (ip2state offsets); same calls and flow
 // @0x1419153d0
 void UIDamageText::FUN_1419153d0()
 {
-    if (!m_ownerFollowers.IsEmpty())
+    if (m_ownerFollowers.IsEmpty())
+    {
+        if (!m_ownerFollowerCounter.IsEmpty())
+            m_ownerFollowerCounter.RemoveAll();
+        return;
+    }
     {
         unsigned int nNow = FUN_140869420();
         float fUIScale = FUN_1422afec0(FUN_14025e7a0(), m_28);
@@ -1150,23 +1149,27 @@ void UIDamageText::FUN_1419153d0()
                 MS2Ptr<ASMovieClip> spClip = spInfo->m_spClip;
                 MS2Ptr<ASMovieClip> spAni = spInfo->m_spAni;
                 nOwnerId = spInfo->m_nOwnerId;
-                if (!spInfo->FUN_141910f10(nNow))
+                if (spInfo->FUN_141910f10(nNow))
+                    bRemove = true;
+                else
                 {
                     spInfo->FUN_141910e60(nNow);
                     GameObject* pOwner = WorldService::GetInstance()->FUN_141bd0fe0(nOwnerId);
-                    if (pOwner == 0)
-                        bRemove = true;
-                    else
+                    if (pOwner != 0)
                     {
                         spInfo->FUN_141910ee0(nNow);
-                        if (FUN_141914d40(pOwner) == 0)
+                        if (FUN_141914d40(pOwner) != 0)
+                        {
+                            spAni->vfunc_7();
+                            spClip->vfunc_4(false);
+                            bRemove = true;
+                        }
+                        else
                         {
                             efd::Point3 kScreen;
                             NiPoint3 kPos;
                             FUN_141914020(pOwner, kPos, m_strDamageNode);
-                            if (!Unk_DtCamera::FUN_1409478c0()->FUN_140af0700(kPos, kScreen))
-                                spClip->vfunc_4(false);
-                            else
+                            if (Unk_DtCamera::FUN_1409478c0()->FUN_140af0700(kPos, kScreen))
                             {
                                 kScreen *= fUIScale;
                                 MS2Ptr<CounterInfo> spCounter(0);
@@ -1189,17 +1192,13 @@ void UIDamageText::FUN_1419153d0()
                                 static_cast<Unk_DtClip*>(spClip.operator->())->FUN_1422c0290(fScale, fScale);
                                 spClip->vfunc_4(true);
                             }
-                        }
-                        else
-                        {
-                            spAni->vfunc_7();
-                            spClip->vfunc_4(false);
-                            bRemove = true;
+                            else
+                                spClip->vfunc_4(false);
                         }
                     }
+                    else
+                        bRemove = true;
                 }
-                else
-                    bRemove = true;
             }
             POSITION posCur = pos;
             m_ownerFollowers.GetNext(pos);
@@ -1210,24 +1209,28 @@ void UIDamageText::FUN_1419153d0()
             }
         }
     }
-    else if (!m_ownerFollowerCounter.IsEmpty())
-        m_ownerFollowerCounter.RemoveAll();
 }
 MS2_REPLACE_METHOD(0x1419153D0, UIDamageText, FUN_1419153d0, 1457, 0x8F16367D);
 
-// MS2-FUNCTIONAL: temp/EH state layout differs (dispUnwindHelp 0x130 vs 0x120); same calls and flow
 // @0x141915990
 void UIDamageText::FUN_141915990()
 {
-    if (!m_normals.IsEmpty())
+    if (m_normals.IsEmpty())
     {
-        if (m_pInterfaceOption != 0 && m_pBattleOption != 0)
+        if (!m_counter.IsEmpty())
+            m_counter.RemoveAll();
+        return;
+    }
+    {
+        if (m_pInterfaceOption == 0 || m_pBattleOption == 0)
+            return;
         {
             int nShown = 0;
+            int nFirst = 0;
             int nNext = 0;
             int nIndex = 0;
             int nStacked = 0;
-            int nMyLine = (int)((float)(m_nLineHeight * m_pInterfaceOption->m_n10) / 100.0);
+            int nMyLine = (int)((float)(m_nLineHeight * m_pInterfaceOption->m_n10) / 100.0f);
             int nMyLine2 = nMyLine << 1;
             int nOtherLine = nMyLine;
             int nOtherLine2 = nMyLine2;
@@ -1254,10 +1257,13 @@ void UIDamageText::FUN_141915990()
                     MS2Ptr<ASMovieClip> spAni = spInfo->m_spAni;
                     spInfo->FUN_141910e60(nNow);
                     bool bMine = spInfo->m_bMyDamage;
-                    if (!spInfo->FUN_141910f10(nNow))
+                    if (spInfo->FUN_141910f10(nNow))
+                        bRemove = true;
+                    else
                     {
                         bool bCritical = spInfo->m_nGrade == 1;
                         bool bCanJump = spInfo->m_bCanJump;
+                        bool bOld = false;
                         bool bHide = false;
                         if (bCanJump)
                         {
@@ -1265,75 +1271,68 @@ void UIDamageText::FUN_141915990()
                             {
                                 MS2Ptr<CounterInfo> spCounter(0);
                                 m_counter.Lookup(nOwnerId, spCounter);
-                                bHide = spCounter == 0 || m_nMaxShown < nShown;
+                                bHide = spCounter == 0 || nShown > m_nMaxShown;
                                 if (!bHide)
                                 {
-                                    int nFirst = spCounter->m_nIndex - m_nJumpCount + 1;
+                                    nFirst = spCounter->m_nIndex - m_nJumpCount + 1;
                                     nNext = spCounter->m_nIndex + 1;
                                     nIndex = spInfo->m_nIndex;
-                                    if (nFirst < 0)
+                                    if (nFirst >= 0)
                                     {
-                                        bool bOld = nIndex <= m_nMaxIndex + nFirst - m_nJumpCount;
-                                        bHide = nNext < nIndex && nIndex <= m_nMaxIndex + nFirst;
+                                        bOld = nIndex < nFirst - m_nJumpCount;
+                                        bHide = nIndex < nFirst || nNext <= nIndex;
                                     }
                                     else
                                     {
-                                        bool bOld = nIndex < nFirst - m_nJumpCount;
-                                        bHide = nIndex < nFirst || nNext <= nIndex;
+                                        bOld = nIndex <= m_nMaxIndex + nFirst - m_nJumpCount;
+                                        bHide = nNext < nIndex && nIndex <= m_nMaxIndex + nFirst;
                                     }
                                 }
                             }
-                        }
-                        spInfo->FUN_141910ee0(nNow);
-                        if (!bHide)
-                        {
-                            efd::Point3 kScreen;
-                            if (Unk_DtCamera::FUN_1409478c0()->FUN_140af0700(spInfo->m_kPos, kScreen))
+                            spInfo->FUN_141910ee0(nNow);
+                            if (!bHide)
                             {
-                                nShown = (bCritical || !bCanJump) ? nShown : nShown + 1;
-                                spClip->vfunc_3(1);
-                                kScreen *= fUIScale;
-                                int nBehind = nNext - 1 - nIndex - nStacked;
-                                if (bCritical && spInfo->m_nType == 0)
+                                efd::Point3 kScreen;
+                                if (Unk_DtCamera::FUN_1409478c0()->FUN_140af0700(spInfo->m_kPos, kScreen))
                                 {
-                                    kScreen.y -= (float)(bMine ? nMyLine2 : nOtherLine2);
-                                    nStacked++;
-                                }
-                                else if (spInfo->m_nType == 0)
-                                {
-                                    int nLines = nBehind - 1;
-                                    if (nLines < 0)
-                                        nLines = 0;
-                                    int nLinesUp = nLines;
-                                    if (0 < nLines)
-                                        kScreen.y -= (float)(nLines * (bMine ? nMyLine : nOtherLine));
-                                    nStacked = 0;
-                                }
-                                if (0 < nBehind && !bCritical)
-                                {
-                                    if (spInfo->FUN_141910f60(nNow))
+                                    nShown = (!bCritical && bCanJump) ? nShown + 1 : nShown;
+                                    spClip->vfunc_3(1);
+                                    kScreen *= fUIScale;
+                                    int nBehind = nNext - 1 - nIndex - nStacked;
+                                    if (bCritical && spInfo->m_nType == 0)
+                                    {
+                                        kScreen.y -= (float)(bMine ? nMyLine2 : nOtherLine2);
+                                        nStacked++;
+                                    }
+                                    else if (spInfo->m_nType == 0)
+                                    {
+                                        int nLines = nBehind - 1;
+                                        nLines = nLines < 0 ? 0 : nLines;
+                                        if (nLines > 0)
+                                            kScreen.y -= (float)(nLines * (bMine ? nMyLine : nOtherLine));
+                                        nStacked = 0;
+                                    }
+                                    if (nBehind > 0 && !bCritical && spInfo->FUN_141910f60(nNow))
                                     {
                                         spAni->vfunc_13(s_strNext);
                                         spInfo->m_nState = 1;
                                         spInfo->m_bCanJump = false;
                                     }
+                                    kScreen.y += FUN_141913b80(spInfo->m_kPos);
+                                    spClip->FUN_1422c00f0(kScreen.x, kScreen.y);
+                                    float fDistanceScale = FUN_141914a90(spInfo->m_kPos);
+                                    float fScale = fDistanceScale * spInfo->m_fScale;
+                                    static_cast<Unk_DtClip*>(spClip.operator->())->FUN_1422c0290(fScale, fScale);
                                 }
-                                kScreen.y += FUN_141913b80(spInfo->m_kPos);
-                                spClip->FUN_1422c00f0(kScreen.x, kScreen.y);
-                                float fDistanceScale = FUN_141914a90(spInfo->m_kPos);
-                                float fScale = fDistanceScale * spInfo->m_fScale;
-                                static_cast<Unk_DtClip*>(spClip.operator->())->FUN_1422c0290(fScale, fScale);
+                            }
+                            else if (spInfo->m_nState == 0)
+                            {
+                                spInfo->m_nState = 3;
+                                spClip->vfunc_4(false);
+                                spInfo->m_bCanJump = false;
                             }
                         }
-                        else if (spInfo->m_nState == 0)
-                        {
-                            spInfo->m_nState = 3;
-                            spClip->vfunc_4(false);
-                            spInfo->m_bCanJump = false;
-                        }
                     }
-                    else
-                        bRemove = true;
                 }
                 POSITION posCur = pos;
                 m_normals.GetNext(pos);
@@ -1345,8 +1344,6 @@ void UIDamageText::FUN_141915990()
             }
         }
     }
-    else if (!m_counter.IsEmpty())
-        m_counter.RemoveAll();
 }
 MS2_REPLACE_METHOD(0x141915990, UIDamageText, FUN_141915990, 2469, 0xC5EF7552);
 
@@ -1364,7 +1361,6 @@ void UIDamageText::FUN_141916340()
     m_nLastQueueTime = nNow;
 }
 
-// MS2-FUNCTIONAL: temp/EH state layout differs (ip2state offsets); same calls and flow
 // @0x141916430
 void UIDamageText::FUN_141916430(MS2Ptr<ASGameEntity> spRoot)
 {
@@ -1385,7 +1381,13 @@ void UIDamageText::FUN_141916430(MS2Ptr<ASGameEntity> spRoot)
         unsigned __int64 nOwnerId = spInfo->m_nOwnerId;
         bool bMine = spInfo->m_bMyDamage;
         bool bGarbage = bGarbageSeen || FUN_1409c1720(spClip->FUN_1422baa20(s_strGarbage));
-        if (!bGarbage)
+        if (bGarbage)
+        {
+            if (!bGarbageSeen && !bMine)
+                bGarbageSeen = true;
+            bRemove = true;
+        }
+        else
         {
             if (FUN_1409c1720(spClip->FUN_1422baa20(s_strDecreaseCounter)))
             {
@@ -1394,43 +1396,40 @@ void UIDamageText::FUN_141916430(MS2Ptr<ASGameEntity> spRoot)
                 FUN_141915150(nOwnerId, 1, m_ownerFollowerCounter);
             }
             GameObject* pOwner = WorldService::GetInstance()->FUN_141bd0fe0(nOwnerId);
-            if (pOwner == 0)
-                bRemove = true;
-            else if (FUN_141914d40(pOwner) == 0)
+            if (pOwner != 0)
             {
-                efd::Point3 kScreen;
-                NiPoint3 kPos;
-                FUN_141914020(pOwner, kPos, m_strDamageNode);
-                if (!Unk_DtCamera::FUN_1409478c0()->FUN_140af0700(kPos, kScreen))
+                if (FUN_141914d40(pOwner) != 0)
                     spClip->vfunc_3(0);
                 else
                 {
-                    kScreen *= fUIScale;
-                    MS2Ptr<CounterInfo> spCounter(0);
-                    if (m_ownerFollowerCounter.Lookup(nOwnerId, spCounter))
+                    efd::Point3 kScreen;
+                    NiPoint3 kPos;
+                    FUN_141914020(pOwner, kPos, m_strDamageNode);
+                    if (Unk_DtCamera::FUN_1409478c0()->FUN_140af0700(kPos, kScreen))
                     {
-                        int nNext = spCounter->m_nIndex + 1;
-                        int nIndex = spInfo->m_nIndex;
-                        int nBehind = nNext - 1 - nIndex;
-                        if (0 < nBehind)
-                            m_onNextAni.InvokeSelf(0, &spClip->FUN_1422bb870(), 1);
+                        kScreen *= fUIScale;
+                        MS2Ptr<CounterInfo> spCounter(0);
+                        if (m_ownerFollowerCounter.Lookup(nOwnerId, spCounter))
+                        {
+                            int nNext = spCounter->m_nIndex + 1;
+                            int nIndex = spInfo->m_nIndex;
+                            int nBehind = nNext - 1 - nIndex;
+                            if (0 < nBehind)
+                                m_onNextAni.InvokeSelf(0, &spClip->FUN_1422bb870(), 1);
+                        }
+                        kScreen.y += FUN_141913af0(pOwner);
+                        spClip->FUN_1422c00f0(kScreen.x, kScreen.y);
+                        float fDistanceScale = FUN_141914c40(pOwner);
+                        float fScale = fDistanceScale * spInfo->m_fScale;
+                        static_cast<Unk_DtClip*>(spClip.operator->())->FUN_1422c0290(fScale, fScale);
+                        spClip->vfunc_3(1);
                     }
-                    kScreen.y += FUN_141913af0(pOwner);
-                    spClip->FUN_1422c00f0(kScreen.x, kScreen.y);
-                    float fDistanceScale = FUN_141914c40(pOwner);
-                    float fScale = fDistanceScale * spInfo->m_fScale;
-                    static_cast<Unk_DtClip*>(spClip.operator->())->FUN_1422c0290(fScale, fScale);
-                    spClip->vfunc_3(1);
+                    else
+                        spClip->vfunc_3(0);
                 }
             }
             else
-                spClip->vfunc_3(0);
-        }
-        else
-        {
-            if (!bGarbageSeen && !bMine)
-                bGarbageSeen = true;
-            bRemove = true;
+                bRemove = true;
         }
         POSITION posCur = pos;
         m_ownerFollowers.GetNext(pos);
@@ -1444,7 +1443,6 @@ void UIDamageText::FUN_141916430(MS2Ptr<ASGameEntity> spRoot)
 }
 MS2_REPLACE_METHOD(0x141916430, UIDamageText, FUN_141916430, 1669, 0x29E50C8E);
 
-// MS2-FUNCTIONAL: temp/EH state layout differs (dispUnwindHelp 0x158 vs 0x160); same calls and flow
 // @0x141916ac0
 void UIDamageText::FUN_141916ac0(MS2Ptr<ASGameEntity> spRoot)
 {
@@ -1457,10 +1455,11 @@ void UIDamageText::FUN_141916ac0(MS2Ptr<ASGameEntity> spRoot)
     bool bGarbageSeen = false;
     int nShown = 0;
     POSITION pos = m_normals.GetHeadPosition();
+    int nFirst = 0;
     int nNext = 0;
     int nIndex = 0;
     int nStacked = 0;
-    int nMyLine = (int)((float)(m_nLineHeight * m_pInterfaceOption->m_n10) / 100.0);
+    int nMyLine = (int)((float)(m_nLineHeight * m_pInterfaceOption->m_n10) / 100.0f);
     int nMyLine2 = nMyLine << 1;
     int nOtherLine = nMyLine;
     int nOtherLine2 = nMyLine2;
@@ -1483,7 +1482,13 @@ void UIDamageText::FUN_141916ac0(MS2Ptr<ASGameEntity> spRoot)
             bool bMine = spInfo->m_bMyDamage;
             Scaleform::GFx::Value& clip = spClip->FUN_1422bb870();
             bool bGarbage = bGarbageSeen || FUN_1409c1720(static_cast<Unk_SsFn*>(m_spDamageGarbage.operator->())->FUN_1417620b0(clip)) == true;
-            if (!bGarbage)
+            if (bGarbage)
+            {
+                if (!bGarbageSeen && !bMine)
+                    bGarbageSeen = true;
+                bRemove = true;
+            }
+            else
             {
                 bool bCritical = spInfo->m_nGrade == 1;
                 bool bEnable = FUN_1409c1720(static_cast<Unk_SsFn*>(m_spDamageEnable.operator->())->FUN_1417620b0(clip));
@@ -1495,77 +1500,65 @@ void UIDamageText::FUN_141916ac0(MS2Ptr<ASGameEntity> spRoot)
                     {
                         MS2Ptr<CounterInfo> spCounter(0);
                         m_counter.Lookup(nOwnerId, spCounter);
-                        bHide = spCounter == 0 || m_nMaxShown < nShown;
+                        bHide = spCounter == 0 || nShown > m_nMaxShown;
                         if (!bHide)
                         {
-                            int nFirst = spCounter->m_nIndex - m_nJumpCount + 1;
+                            nFirst = spCounter->m_nIndex - m_nJumpCount + 1;
                             nNext = spCounter->m_nIndex + 1;
                             nIndex = spInfo->m_nIndex;
-                            if (nFirst < 0)
-                            {
-                                bOld = nIndex <= m_nMaxIndex + nFirst - m_nJumpCount;
-                                bHide = nNext < nIndex && nIndex <= m_nMaxIndex + nFirst;
-                            }
-                            else
+                            if (nFirst >= 0)
                             {
                                 bOld = nIndex < nFirst - m_nJumpCount;
                                 bHide = nIndex < nFirst || nNext <= nIndex;
                             }
-                        }
-                    }
-                }
-                if (!bHide)
-                {
-                    efd::Point3 kScreen;
-                    if (!Unk_DtCamera::FUN_1409478c0()->FUN_140af0700(spInfo->m_kPos, kScreen))
-                        spClip->vfunc_4(false);
-                    else
-                    {
-                        nShown = (bCritical || !bEnable) ? nShown : nShown + 1;
-                        spClip->vfunc_4(true);
-                        kScreen *= FUN_1422afec0(FUN_14025e7a0(), m_28);
-                        int nBehind = nNext - 1 - nIndex - nStacked;
-                        if (bCritical && spInfo->m_nType == 0)
-                        {
-                            kScreen.y -= (float)(bMine ? nMyLine2 : nOtherLine2);
-                            nStacked++;
-                        }
-                        else if (spInfo->m_nType == 0)
-                        {
-                            int nLines = nBehind - 1;
-                            if (nLines < 0)
-                                nLines = 0;
-                            if (0 < nLines)
+                            else
                             {
-                                int nLine = nMyLine;
-                                if (!bMine)
-                                    nLine = nOtherLine;
-                                kScreen.y -= (float)(nLines * nLine);
+                                bOld = nIndex <= m_nMaxIndex + nFirst - m_nJumpCount;
+                                bHide = nNext < nIndex && nIndex <= m_nMaxIndex + nFirst;
                             }
-                            nStacked = 0;
                         }
-                        if (0 < nBehind && !bCritical)
-                            m_onNextAni.InvokeSelf(0, &clip, 1);
-                        kScreen.y += FUN_141913b80(spInfo->m_kPos);
-                        spClip->FUN_1422c00f0(kScreen.x, kScreen.y);
-                        float fDistanceScale = FUN_141914a90(spInfo->m_kPos);
-                        float fScale = fDistanceScale * spInfo->m_fScale;
-                        static_cast<Unk_DtClip*>(spClip.operator->())->FUN_1422c0290(fScale, fScale);
                     }
+                    if (!bHide)
+                    {
+                        efd::Point3 kScreen;
+                        if (Unk_DtCamera::FUN_1409478c0()->FUN_140af0700(spInfo->m_kPos, kScreen))
+                        {
+                            nShown = (!bCritical && bEnable) ? nShown + 1 : nShown;
+                            spClip->vfunc_4(true);
+                            kScreen *= FUN_1422afec0(FUN_14025e7a0(), m_28);
+                            int nBehind = nNext - 1 - nIndex - nStacked;
+                            if (bCritical && spInfo->m_nType == 0)
+                            {
+                                kScreen.y -= (float)(bMine ? nMyLine2 : nOtherLine2);
+                                nStacked++;
+                            }
+                            else if (spInfo->m_nType == 0)
+                            {
+                                int nLines = nBehind - 1;
+                                nLines = nLines < 0 ? 0 : nLines;
+                                if (nLines > 0)
+                                    kScreen.y -= (float)(nLines * (bMine ? nMyLine : nOtherLine));
+                                nStacked = 0;
+                            }
+                            if (nBehind > 0 && !bCritical)
+                                m_onNextAni.InvokeSelf(0, &clip, 1);
+                            kScreen.y += FUN_141913b80(spInfo->m_kPos);
+                            spClip->FUN_1422c00f0(kScreen.x, kScreen.y);
+                            float fDistanceScale = FUN_141914a90(spInfo->m_kPos);
+                            float fScale = fDistanceScale * spInfo->m_fScale;
+                            static_cast<Unk_DtClip*>(spClip.operator->())->FUN_1422c0290(fScale, fScale);
+                        }
+                        else
+                            spClip->vfunc_4(false);
+                    }
+                    else if (bOld)
+                    {
+                        m_onForceRemove.InvokeSelf(0, &clip, 1);
+                        bRemove = true;
+                    }
+                    else
+                        m_onJumpAni.InvokeSelf(0, &clip, 1);
                 }
-                else if (bOld)
-                {
-                    m_onForceRemove.InvokeSelf(0, &clip, 1);
-                    bRemove = true;
-                }
-                else
-                    m_onJumpAni.InvokeSelf(0, &clip, 1);
-            }
-            else
-            {
-                if (!bGarbageSeen && !bMine)
-                    bGarbageSeen = true;
-                bRemove = true;
             }
         }
         POSITION posCur = pos;
@@ -1579,32 +1572,34 @@ void UIDamageText::FUN_141916ac0(MS2Ptr<ASGameEntity> spRoot)
 }
 MS2_REPLACE_METHOD(0x141916AC0, UIDamageText, FUN_141916ac0, 2804, 0x61338552);
 
-// MS2-FUNCTIONAL: temp/EH state layout differs (ip2state states); same calls and flow
 // @0x1419175c0
-int UIDamageText::FUN_1419175c0(MS2Ptr<DamageInfo> spInfo, NiPoint3 kPos, GameObject* pTarget,
+int UIDamageText::FUN_1419175c0(MS2Ptr<DamageInfo> spInfo, const NiPoint3& kPos, GameObject* pTarget,
                                 const Scaleform::GFx::Value& clip, const efd::Point3& kScreen, int bAppend)
 {
     if (spInfo == 0)
         return 0;
-    if (!FUN_1409b4d40(clip))
-        return 0;
-    int bRecover = FUN_1419144b0(spInfo->m_nGrade);
-    MS2Ptr<ASMovieClip> spClip(new ASMovieClip(Scaleform::GFx::Value(clip), m_28));
-    if (spClip.get() != 0)
+    if (FUN_1409b4d40(clip))
     {
-        spInfo->m_spClip = spClip;
-        Scaleform::GFx::Value ani = spClip->FUN_1422baa20("m_ani");
-        spInfo->m_spAni.AssignRaw(new ASMovieClip(Scaleform::GFx::Value(ani), m_28));
-        spInfo->m_fScale = static_cast<Unk_DtClip*>(spClip.operator->())->FUN_1422c11f0();
-        NiPoint3 kWorld = kPos;
-        if (bRecover == 0)
-            FUN_141914da0(bAppend, &m_posNormals, m_normals, m_counter, spInfo, m_nMaxList);
-        else
-            FUN_141914da0(bAppend, &m_posOwnerFollowers, m_ownerFollowers, m_ownerFollowerCounter, spInfo, m_nMaxList);
-        spClip->vfunc_3(0);
+        int nGrade = spInfo->m_nGrade;
+        int bRecover = FUN_1419144b0(nGrade);
+        MS2Ptr<ASMovieClip> spClip(new ASMovieClip(Scaleform::GFx::Value(clip), m_28));
+        if (spClip.get() != 0)
+        {
+            spInfo->m_spClip = spClip;
+            Scaleform::GFx::Value ani = spClip->FUN_1422baa20("m_ani");
+            spInfo->m_spAni.AssignRaw(new ASMovieClip(Scaleform::GFx::Value(ani), m_28));
+            spInfo->m_fScale = static_cast<Unk_DtClip*>(spClip.operator->())->FUN_1422c11f0();
+            NiPoint3 kWorld = kPos;
+            if (bRecover != 0)
+                FUN_141914da0(bAppend, &m_posOwnerFollowers, m_ownerFollowers, m_ownerFollowerCounter, spInfo, m_nMaxList);
+            else
+                FUN_141914da0(bAppend, &m_posNormals, m_normals, m_counter, spInfo, m_nMaxList);
+            spClip->vfunc_3(0);
+        }
+        vfunc_8(1);
+        return 1;
     }
-    vfunc_8(1);
-    return 1;
+    return 0;
 }
 
 // @0x141917a20

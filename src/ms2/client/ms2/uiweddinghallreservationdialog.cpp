@@ -252,8 +252,12 @@ int UIWeddingHallReservationDialog::vfunc_28(const char* szMethod, const Scalefo
 }
 MS2_REPLACE_METHOD(0x140fdb990, UIWeddingHallReservationDialog, vfunc_28, 1142, 0xEC17815D);
 
-// MS2-FUNCTIONAL: the exe's UIMsg::FUN_1422b8a90 returns bool (the shared imessagelistener.h declares int, used by done
-// units), so the coupon flag gets a conversion here and the frame is 0x10 larger; calls and logic identical
+// The shared imessagelistener.h declares UIMsg::FUN_1422b8a90 as int; the exe's returns bool.
+struct UIMsgBoolView
+{
+    bool FUN_1422b8a90();
+};
+
 // @0x140fdbe20
 int UIWeddingHallReservationDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
 {
@@ -264,7 +268,7 @@ int UIWeddingHallReservationDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
         if (dynamic_cast<UIBillDialog*>(pSender) != 0)
         {
             int nResult = pMsg->FUN_1422b8a10();
-            bool bCoupon = pMsg->FUN_1422b8a90() != 0;
+            bool bCoupon = reinterpret_cast<UIMsgBoolView*>(pMsg)->FUN_1422b8a90();
             if (nResult == 0)
             {
                 WeddingManager::GetInstance()->SendReservation(m_nPackage, m_nHall, m_nTime, m_bNight, bCoupon);
@@ -326,7 +330,6 @@ void UIWeddingHallReservationDialog::SetNight(unsigned char bNight)
 }
 MS2_REPLACE_METHOD(0x140fdc160, UIWeddingHallReservationDialog, SetNight, 26, 0x1076974C);
 
-// MS2-FUNCTIONAL: frame 0x20 larger (slot order of the bill / string temporaries); calls and logic identical
 // @0x140fdc180
 void UIWeddingHallReservationDialog::FUN_140fdc180()
 {
@@ -345,8 +348,8 @@ void UIWeddingHallReservationDialog::FUN_140fdc180()
     MS2Ptr<AScript> spData(new ASObj(2));
     static_cast<ASObj*>(spData.operator->())->FUN_1407cbb20("category",
         GetStringCommonByKey(StringFormat(L"s_wedding_reservation_hall_bill_category_grade_{0}", spHall->m_nGrade)));
-    unsigned nFieldId = spHall->FUN_140906e40(FUN_140900f30(m_nTime));
-    CStringW strDetail = CStringTable::GetInstance()->FUN_141811980(3, nFieldId);
+    CStringW strDetail =
+        CStringTable::GetInstance()->FUN_141811980(3, spHall->FUN_140906e40(FUN_140900f30(m_nTime)));
     CStringW strPrice = FUN_14052bd00(0x987, FUN_1409404f0(spHall->m_nMerat));
     ASArray rows(2);
     ASObj row(2);
@@ -360,12 +363,13 @@ void UIWeddingHallReservationDialog::FUN_140fdc180()
     if (spCoupon.get() != 0)
     {
         spBill->m_60 = 1;
-        spBill->m_50 = GetStringCommonByKey(CStringW(L"s_wedding_reservation_coupon_checkbox"));
-        spBill->m_58 = GetStringCommonByKey(CStringW(L"s_wedding_reservation_coupon_warn"));
+        spBill->m_50 = GetStringCommonByKey(L"s_wedding_reservation_coupon_checkbox");
+        spBill->m_58 = GetStringCommonByKey(L"s_wedding_reservation_coupon_warn");
     }
     spBill->m_34 = 4;
     spBill->m_48 = (int)spHall->m_nMerat;
-    FUN_140f0a350(0x4e7b)->FUN_1418cda20(spBill);
+    UIBillDialog* pBillDlg = FUN_140f0a350(0x4e7b);
+    pBillDlg->FUN_1418cda20(spBill);
     FUN_1403ed2b0()->FUN_141adc530(0x4e7b);
 }
 // (not hooked: the inline UIBillDialog::TData ctor stores a DLL-local vftable)

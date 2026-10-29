@@ -9,9 +9,10 @@
 // ActionControl/ExternalInterface inlines, NiGFxExternalInterfaceDelegate<GFxMovie> and the
 // Delegate<void(const Params&)> instance bound to FUN_1422be100.
 #include "ms2/placeholder/ms2stdafx.h"
+// The GFx UI library is built with /fp:precise (IEEE-ordered float compares); the per-unit build uses the game's /fp:fast.
+#pragma float_control(precise, on)
 #include <NiRenderTargetGroup.h>
 #include <ecr/RenderSurface.h>
-
 #include "ms2/placeholder/gfxmovie.h"
 #include "ms2/placeholder/nigfxexternalinterfacedelegate.h"
 #include "ms2/placeholder/delegate.h"
@@ -20,7 +21,7 @@
 #include "ms2/placeholder/asmoviecliploader.h"
 #include "ms2/placeholder/asmousecursor.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
-#include "Render/Renderer2D.h"
+#include "ms2/scaleform/include/gfx/gfx_rendertree.h"
 #include "hook/ms2hook.h"
 
 extern char DAT_143b059e8;                                      // the entity app framework
@@ -258,7 +259,6 @@ void GFxMovie::FUN_1422bde50(float fScale)
     m_14 = fScale;
 }
 
-// MS2-FUNCTIONAL: the GFx UI library was built with /fp:precise (m_14 loaded first, ucomiss + jp); the unit build uses /fp:fast.
 // @0x1422bde80
 int GFxMovie::FUN_1422bde80(float fScale)
 {

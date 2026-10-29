@@ -19,7 +19,7 @@ class UIRangePreviewDialog : public UIDialog
 {
 public:
     UIRangePreviewDialog();                                     // 0x141346a40
-    // The destructor is implicit (0x141346a90: just ~UIDialog), ??_G 0x141347050.
+    virtual ~UIRangePreviewDialog();                            // 0x141346a90 (stores both vftables), ??_G 0x141347050
     virtual CString GetTypeName();                                  //  1 0x141346ad0
     virtual void OnLoadComplete();                              // 22 0x141346b20
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);

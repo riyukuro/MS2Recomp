@@ -12,7 +12,7 @@
 // 12-byte RGB colour (the entity "colour" property value type). Arithmetic is the inline operators of this TU.
 struct Unk_LightColor
 {
-    Unk_LightColor(float fR, float fG, float fB);                  // 0x1406c4340
+    Unk_LightColor(float fR = 0.0f, float fG = 0.0f, float fB = 0.0f);   // 0x1406c4340
     Unk_LightColor FUN_1414424f0(float f) const;                    // operator*(float)
     Unk_LightColor operator-(const Unk_LightColor& o) const;        // 0x14144b3f0
     Unk_LightColor operator+(const Unk_LightColor& o) const;        // 0x14144b480
@@ -43,8 +43,7 @@ MS2_CHECK_SIZE(Unk_LightUpdateBits, 1);
 class LightEffectTransitionData : public TransitionData
 {
 public:
-    LightEffectTransitionData();                                // 0x14144b1d0
-public:
+    // implicit ctor 0x14144b1d0 (colours (0,0,0); new T() value-initialises the rest to 0)
     Unk_LightColor m_clrDiffuse;    // +0x20 "diffuse" "r,g,b" 0..255
     Unk_LightColor m_clrSpecular;   // +0x2c "specular"
     float m_fDimmer;                // +0x38 "dimmer"

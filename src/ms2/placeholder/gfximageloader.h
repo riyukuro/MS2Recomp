@@ -22,9 +22,7 @@
 #include "ms2/placeholder/gfxvalue.h"
 #include "ms2/placeholder/tfunctor2.h"
 
-#if defined(MS2_HAVE_SCALEFORM_SDK)
-#include "GFx/GFx_ImageCreator.h"
-#endif
+#include "ms2/scaleform/include/gfx/gfx_imagecreator.h"
 
 class GFxImageLoader : public Scaleform::GFx::ImageCreator
 {

@@ -210,11 +210,15 @@ class Unk_SkillOverlapCondition
 {
 public:
     Unk_SkillOverlapCondition();                                        // 0x1407e5f80
-    void Load(Unk_140165cf0* pElem);
+    int Load(Unk_140165cf0* pElem);                                     // 0x1407e6080
     bool FUN_1407e5fe0(const Unk_SkillOverlapCondition& o);             // is different
 
-    bool m_b0;
-    int m_n4[5];
+    bool m_b0;                       // +0x00 a range check is set
+    unsigned m_nTargetCheckRange;    // +0x04
+    unsigned m_nTargetCheckMinRange; // +0x08
+    unsigned m_nTargetInRangeCount;  // +0x0c
+    unsigned m_nTargetFriendly;      // +0x10
+    int m_nTargetCountSign;          // +0x14 a SkillCompareSign
 };
 MS2_CHECK_SIZE(Unk_SkillOverlapCondition, 0x18);
 
@@ -473,7 +477,7 @@ public:
         // @0x140183030
         InvokeEffectProperty() { Clear(); }
         bool IsDifferent(const InvokeEffectProperty& o);    // 0x140192950
-        bool FUN_140192ac0();                               // 0x140192ac0: an id is set and every list is empty
+        int FUN_140192ac0();                                // 0x140192ac0: an id is set and no list is empty
         // @0x140192a40
         void Clear()
         {
@@ -503,7 +507,7 @@ public:
         bool IsDifferent(const SpecialEffectProperty& o);   // 0x140192b60
         void Clear();                                   // 0x140192c40
         void Parse();                                   // 0x140192ce0: values -> m_xml
-        bool FUN_140192d70();                           // 0x140192d70: has a type
+        int FUN_140192d70();                            // 0x140192d70: has a type
 
         AdditionalSpecialEffectType m_eType;            // +0x00 "type"
         float m_fProbability;                           // +0x04 (1.0)

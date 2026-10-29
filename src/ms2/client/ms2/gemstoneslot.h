@@ -20,7 +20,7 @@ class GemStoneSlot : public ItemInfoSlot
 {
 public:
     GemStoneSlot(const CString& strName, MS2Ptr<CGemStoneItem> spGem, int nIndex, int nIconType, int nFlags);   // 0x140cfd840
-    virtual ~GemStoneSlot();                            // 0x140cfe8b0
+    // implicit virtual dtor 0x140cfe8b0 (stores no vptr)
 
     // slots 2-4: GetClassDesc 0x140cfea70, TypeCast 0x140cfec00 / 0x140cfec50; ms_ClassInfo 0x143ac1010,
     // SetupClassInfo 0x140cfeae0 (parent ItemInfoSlot, id 0x6200030).

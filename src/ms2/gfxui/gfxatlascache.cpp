@@ -6,10 +6,12 @@
 // The unit, file and class names are invented (the GFx UI library has no __FILE__ strings and the class no RTTI). The
 // tail is the CRBMap<CString, efd::SmartPointer<AtlasRecord>> and SmartPointer<AtlasRecord> members, the
 // SingletonClass<GFxAtlasCache> ctor/dtor and Scaleform::SysFile's implicit dtors.
+//
 #include "ms2/placeholder/ms2stdafx.h"
 
 #include "ms2/gfxui/gfxatlascache.h"
-#include "Kernel/SF_SysFile.h"
+#include "ms2/scaleform/include/gfx/gfx_imagefilehandlerregistry.h"
+#include "ms2/scaleform/include/kernel/sf_file.h"   // SysFile
 #include "hook/ms2hook.h"
 
 CString FUN_1401d2b10(const CString& a, const CString& b);              // ATL operator+(CString, CString)

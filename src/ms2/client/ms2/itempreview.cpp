@@ -64,6 +64,18 @@ public:
 };
 class Unk_GpHudMgr { public: MS2Ptr<Unk_GpHud> FUN_1422b0370(int nDialogId); };
 Unk_GpHudMgr* FUN_14025e7a0();
+// UIAvatarBase slot 28 takes a fourth argument here (the exe passes pUnused on the stack); uiavatarbase.h declares
+// three, so the call goes through this slot view.
+class Unk_IpAvatarSlots
+{
+public:
+#define IP_V(n) virtual void vfunc_##n();
+    IP_V(0) IP_V(1) IP_V(2) IP_V(3) IP_V(4) IP_V(5) IP_V(6) IP_V(7) IP_V(8) IP_V(9) IP_V(10) IP_V(11) IP_V(12) IP_V(13)
+    IP_V(14) IP_V(15) IP_V(16) IP_V(17) IP_V(18) IP_V(19) IP_V(20) IP_V(21) IP_V(22) IP_V(23) IP_V(24) IP_V(25) IP_V(26)
+    IP_V(27)
+#undef IP_V
+    virtual void vfunc_28(void* p1, TPtr<Unk_UISwfEntity_25> spTarget, void* pArg, void* pArg2);
+};
 
 CItemData* FUN_140527840(CItem* pItem);                                 // the item's data row
 CItemTransfer* FUN_140527930(CItem* pItem);                             // the item's transfer block
@@ -119,7 +131,6 @@ int ItemPreview::FUN_140d3bc30()
 MS2_REPLACE_METHOD(0x140D3BC30, ItemPreview, FUN_140d3bc30, 81, 0xC9B845CA);
 
 // @0x140d3bc90
-// MS2-FUNCTIONAL: behaviour from the decompile; temporaries / branch layout not byte-matched yet
 int ItemPreview::FUN_140d3bc90(MS2Ptr<CItem> spItem)
 {
     if (spItem == 0)
@@ -150,17 +161,18 @@ int ItemPreview::FUN_140d3bc90(MS2Ptr<CItem> spItem)
     else if (spData->FUN_14053cc40())
         m_spAvatar = FUN_140d3ea20(spData, 0);
     m_spItem = spItem;
-    if ((m_spPreview = FUN_140d3c760(spItem)).get() == 0)
-        return 0;
-    m_spPreview->FUN_140526a70(FUN_14028d0e0());
-    m_spPreview->FUN_140526b30(FUN_140d3bc30());
-    FUN_140d3fea0(m_spPreview);
-    return 1;
+    if ((m_spPreview = FUN_140d3c760(spItem)).get())
+    {
+        m_spPreview->FUN_140526a70(FUN_14028d0e0());
+        m_spPreview->FUN_140526b30(FUN_140d3bc30());
+        FUN_140d3fea0(m_spPreview);
+        return 1;
+    }
+    return 0;
 }
 MS2_REPLACE_METHOD(0x140D3BC90, ItemPreview, FUN_140d3bc90, 1830, 0xAF0C7E00);
 
 // @0x140d3c3c0
-// MS2-FUNCTIONAL: behaviour from the decompile; temporaries / branch layout not byte-matched yet
 int ItemPreview::FUN_140d3c3c0(std::vector<MS2Ptr<CItem> > items)
 {
     if (m_pPC == 0)
@@ -211,7 +223,6 @@ MS2Ptr<CItem> ItemPreview::GetItem()
 MS2_REPLACE_METHOD(0x140D3C710, ItemPreview, GetItem, 65, 0xB93845D0);
 
 // @0x140d3c760
-// MS2-FUNCTIONAL: behaviour from the decompile; temporaries / branch layout not byte-matched yet
 // A beauty coupon (function ItemChangeBeauty) shows the first item of its package; a lapenshard-like item gets a copy
 // with its gem created; anything else shows a copy of itself.
 MS2Ptr<CItem> ItemPreview::FUN_140d3c760(MS2Ptr<CItem> spItem)
@@ -231,45 +242,45 @@ MS2Ptr<CItem> ItemPreview::FUN_140d3c760(MS2Ptr<CItem> spItem)
         if (nPackageId == 0)
             return 0;
         MS2Ptr<Unk_PackageItems> spPackage = FUN_1406e5af0(nPackageId);
-        if (!(spPackage == 0) && !FUN_1405729c0(spPackage.operator->()))
+        if (spPackage == 0 || FUN_1405729c0(spPackage.operator->()))
+            return 0;
+        size_t nSize = spPackage->GetCount();
+        for (size_t i = 0; i < nSize; ++i)
         {
-            size_t nSize = spPackage->GetCount();
-            for (size_t i = 0; i < nSize; ++i)
-            {
-                MS2Ptr<CItemData> spEntry = (*spPackage.operator->())[i];
-                if (spEntry == 0)
-                    continue;
-                int nItemId = spEntry->FUN_14053c510();
-                int nRarity = FUN_14053feb0(nItemId);
-                MS2Ptr<CItem> spNew(new CItem());
-                if (spNew->FUN_14052b130(nItemId, nRarity, 0))
-                    return spNew;
-            }
+            MS2Ptr<CItemData> spEntry = (*spPackage.operator->())[i];
+            if (spEntry == 0)
+                continue;
+            int nItemId = spEntry->FUN_14053c510();
+            int nRarity = FUN_14053feb0(nItemId);
+            MS2Ptr<CItem> spNew(new CItem());
+            if (spNew->FUN_14052b130(nItemId, nRarity, 0))
+                return spNew;
         }
         return 0;
     }
-    if (!spData->FUN_14053cc00())
-        return spItem->FUN_140524250();
-    MS2Ptr<CItem> spCopy = spItem->FUN_140524250();
-    if (!spCopy)
-        return 0;
-    CItemGem* pGem = spCopy->FUN_140527900();
-    if (pGem && pGem->GetGem().IsNull())
-        pGem->FUN_1405a7020(spData->FUN_14053e900(), spData->FUN_14053c650());
-    return spCopy;
+    else if (spData->FUN_14053cc00())
+    {
+        MS2Ptr<CItem> spCopy = spItem->FUN_140524250();
+        if (!spCopy)
+            return 0;
+        CItemGem* pGem = spCopy->FUN_140527900();
+        if (pGem && pGem->GetGem().IsNull())
+            pGem->FUN_1405a7020(spData->FUN_14053e900(), spData->FUN_14053c650());
+        return spCopy;
+    }
+    return spItem->FUN_140524250();
 }
 MS2_REPLACE_METHOD(0x140D3C760, ItemPreview, FUN_140d3c760, 1689, 0xFD61A5FE);
 
 // @0x140d3ce10
-// MS2-FUNCTIONAL: behaviour from the decompile; temporaries / branch layout not byte-matched yet
 MS2Ptr<CItemData> ItemPreview::FUN_140d3ce10()
 {
     if (m_spData.get())
         return m_spData;
     MS2Ptr<CItem> spShown = GetPreview();
-    if (spShown.get() == 0)
-        return 0;
-    return MS2Ptr<CItemData>(FUN_140527840(spShown));
+    if (spShown.get())
+        return MS2Ptr<CItemData>(FUN_140527840(spShown));
+    return 0;
 }
 MS2_REPLACE_METHOD(0x140D3CE10, ItemPreview, FUN_140d3ce10, 229, 0x38F6D89B);
 
@@ -314,13 +325,11 @@ void ItemPreview::FUN_140d3d070()
 MS2_REPLACE_METHOD(0x140D3D070, ItemPreview, FUN_140d3d070, 80, 0xFE7EB861);
 
 // @0x140d3d0d0
-// MS2-FUNCTIONAL: the exe passes pUnused as a 4th (stack) argument of slot 28, which uiavatarbase.h declares with three
-// parameters (no implementation reads it).
 void ItemPreview::FUN_140d3d0d0(void* p1, TPtr<Unk_UISwfEntity_25> spTarget, void* pArg, void* pUnused)
 {
     if (m_spAvatar == 0)
         return;
-    m_spAvatar->vfunc_28(p1, spTarget, pArg);
+    ((Unk_IpAvatarSlots*)m_spAvatar.operator->())->vfunc_28(p1, spTarget, pArg, pUnused);
     if (m_nMode == 0)
     {
         if (m_spPreview == 0)
@@ -370,7 +379,6 @@ int ItemPreview::FUN_140d3d580(const char* szEvent, const Scaleform::GFx::Value*
 MS2_REPLACE_METHOD(0x140D3D580, ItemPreview, FUN_140d3d580, 111, 0xFC58E31F);
 
 // @0x140d3d600
-// MS2-FUNCTIONAL: behaviour from the decompile; temporaries / branch layout not byte-matched yet
 void ItemPreview::FUN_140d3d600(MS2Ptr<CItem> spItem)
 {
     if (spItem == 0)
@@ -396,10 +404,10 @@ void ItemPreview::FUN_140d3d600(MS2Ptr<CItem> spItem)
         m_spAvatar->vfunc_19(FUN_141b48480(1, nModelType), 0);
     else if (spData->FUN_14053cb80())
     {
-        if (FUN_1408b5f70(nItemId) == 0)
-            m_spAvatar->vfunc_19(FUN_141b48480(6, 0), 0);
-        else
+        if (FUN_1408b5f70(nItemId))
             m_spAvatar->vfunc_19(FUN_141b48480(0xb, 0), 0);
+        else
+            m_spAvatar->vfunc_19(FUN_141b48480(6, 0), 0);
     }
     else if (spData->FUN_14053cc40())
         m_spAvatar->vfunc_19(FUN_141b48480(0xb, 0), 0);
@@ -407,7 +415,8 @@ void ItemPreview::FUN_140d3d600(MS2Ptr<CItem> spItem)
         m_spAvatar->vfunc_19(FUN_141b48500(spData->FUN_14053e900()), 0);
 
     Unk_ModelViewCamera kCamera;
-    if (dynamic_cast<UIAvatarPC*>((UIAvatarBase*)m_spAvatar))
+    UIAvatarPC* pAvatarPC = dynamic_cast<UIAvatarPC*>((UIAvatarBase*)m_spAvatar);
+    if (pAvatarPC)
     {
         kCamera.FUN_141b48530();
         kCamera.m_fMinDistance = 1000.0f;
@@ -428,14 +437,14 @@ void ItemPreview::FUN_140d3d600(MS2Ptr<CItem> spItem)
             }
         }
     }
-    else if (dynamic_cast<UIAvatarCube*>((UIAvatarBase*)m_spAvatar))
+    else if (UIAvatarCube* pAvatarCube = dynamic_cast<UIAvatarCube*>((UIAvatarBase*)m_spAvatar))
     {
         kCamera.FUN_141b485d0();
         kCamera.m_fMinDistance = 300.0f;
         kCamera.m_kTarget += pObj->vfunc_18();
         kCamera.m_kPosition += kCamera.m_kTarget;
     }
-    else if (dynamic_cast<UIAvatarRidee*>((UIAvatarBase*)m_spAvatar))
+    else if (UIAvatarRidee* pAvatarRidee = dynamic_cast<UIAvatarRidee*>((UIAvatarBase*)m_spAvatar))
     {
         kCamera.FUN_141b48670();
         float fScale = 1.0f;
@@ -446,7 +455,7 @@ void ItemPreview::FUN_140d3d600(MS2Ptr<CItem> spItem)
         kCamera.m_kTarget += pObj->vfunc_18();
         kCamera.m_kPosition = kCamera.m_kPosition * fScale;
     }
-    else if (dynamic_cast<UIAvatarPet*>((UIAvatarBase*)m_spAvatar))
+    else if (UIAvatarPet* pAvatarPet = dynamic_cast<UIAvatarPet*>((UIAvatarBase*)m_spAvatar))
     {
         kCamera.FUN_141b48670();
         kCamera.m_fMinDistance = 300.0f;
@@ -458,11 +467,17 @@ void ItemPreview::FUN_140d3d600(MS2Ptr<CItem> spItem)
 MS2_REPLACE_METHOD(0x140D3D600, ItemPreview, FUN_140d3d600, 2170, 0x7C5FBDA4);
 
 // @0x140d3de80
-// MS2-FUNCTIONAL: behaviour from the decompile; temporaries / branch layout not byte-matched yet
 bool ItemPreview::FUN_140d3de80(MS2Ptr<CItemData> spData)
 {
-    if (spData->FUN_14053cbc0() || spData->FUN_14053ce40() || spData->FUN_14053cb40() || spData->FUN_14053cd50()
-        || spData->FUN_14053cc80())
+    if (spData->FUN_14053cbc0())
+        return true;
+    if (spData->FUN_14053ce40())
+        return true;
+    if (spData->FUN_14053cb40())
+        return true;
+    if (spData->FUN_14053cd50())
+        return true;
+    if (spData->FUN_14053cc80())
         return true;
     if (spData->FUN_14053cc00())
     {
@@ -470,23 +485,25 @@ bool ItemPreview::FUN_140d3de80(MS2Ptr<CItemData> spData)
         if (nType == 5 || nType == 8 || nType == 6)
             return true;
     }
-    CItemData* pData = spData.operator->();
-    if (!(pData->function.name == L"ItemChangeBeauty"))
-        return false;
-    if (pData->function.parameter.FUN_1408d2380() == 0)
-        return false;
-    int nPackageId = pData->function.parameter.FUN_1408d1fd0(0, 0);
-    if (nPackageId == 0)
-        return false;
-    MS2Ptr<Unk_PackageItems> spPackage = FUN_1406e5af0(nPackageId);
-    if (!(spPackage == 0) && !FUN_1405729c0(spPackage.operator->()))
+    ItemFunction* pFunction = &spData->function;
+    if (pFunction->name == L"ItemChangeBeauty")
+    {
+        int nCount = pFunction->parameter.FUN_1408d2380();
+        if (nCount == 0)
+            return false;
+        int nPackageId = pFunction->parameter.FUN_1408d1fd0(0, 0);
+        if (nPackageId == 0)
+            return false;
+        MS2Ptr<Unk_PackageItems> spPackage = FUN_1406e5af0(nPackageId);
+        if (spPackage == 0 || FUN_1405729c0(spPackage.operator->()))
+            return false;
         return true;
+    }
     return false;
 }
 MS2_REPLACE_METHOD(0x140D3DE80, ItemPreview, FUN_140d3de80, 679, 0xB525CDB5);
 
 // @0x140d3e130
-// MS2-FUNCTIONAL: behaviour from the decompile; temporaries / branch layout not byte-matched yet
 void ItemPreview::FUN_140d3e130()
 {
     UIRenderView* pView = m_spAvatar->GetView();
@@ -497,7 +514,8 @@ void ItemPreview::FUN_140d3e130()
         return;
     m_spAvatar->vfunc_19(FUN_141b48480(1, 0), 0);
     Unk_ModelViewCamera kCamera;
-    if (dynamic_cast<UIAvatarPC*>((UIAvatarBase*)m_spAvatar))
+    UIAvatarPC* pAvatarPC = dynamic_cast<UIAvatarPC*>((UIAvatarBase*)m_spAvatar);
+    if (pAvatarPC)
     {
         kCamera.FUN_141b48530();
         kCamera.m_fMinDistance = 1000.0f;
@@ -526,7 +544,6 @@ MS2Ptr<UIAvatarBase> ItemPreview::FUN_140d3e2f0()
 MS2_REPLACE_METHOD(0x140D3E2F0, ItemPreview, FUN_140d3e2f0, 331, 0xA089AB81);
 
 // @0x140d3e450
-// MS2-FUNCTIONAL: behaviour from the decompile; temporaries / branch layout not byte-matched yet
 MS2Ptr<UIAvatarBase> ItemPreview::FUN_140d3e450(MS2Ptr<CItemData> spData, int nUnused, bool bDefault)
 {
     if (spData == 0)
@@ -536,16 +553,17 @@ MS2Ptr<UIAvatarBase> ItemPreview::FUN_140d3e450(MS2Ptr<CItemData> spData, int nU
     if (spData->FUN_14053cc00() && spData->FUN_14053e900() == 5)
         bShowEquip = false;
     MS2Ptr<WeaponType> spFilter(new WeaponType(m_pPC));
-    UIAvatarPC* pAvatar;
-    if (spFilter.get() && spFilter->FUN_140ebb780(nGender, FUN_141654700(m_pPC), spData) && !bDefault)
+    UIAvatarPC* pAvatar = 0;
+    if (static_cast<bool>(spFilter.get()) && spFilter->FUN_140ebb780(nGender, FUN_141654700(m_pPC), spData) && !bDefault)
     {
         pAvatar = new UIAvatarPC(m_pPC, true);
     }
     else
     {
+        int nAvatarGender = nGender;
         if (!spData->FUN_14053c940(nGender))
-            nGender = nGender != 1;
-        pAvatar = new UIAvatarPC(nGender, true);
+            nAvatarGender = nGender == 1 ? 0 : 1;
+        pAvatar = new UIAvatarPC(nAvatarGender, true);
     }
     if (pAvatar)
     {
@@ -592,7 +610,6 @@ MS2Ptr<UIAvatarBase> ItemPreview::FUN_140d3ea20(MS2Ptr<CItemData> spData, int nU
 MS2_REPLACE_METHOD(0x140D3EA20, ItemPreview, FUN_140d3ea20, 256, 0x806EC0D7);
 
 // @0x140d3eb30
-// MS2-FUNCTIONAL: behaviour from the decompile; temporaries / branch layout not byte-matched yet
 void ItemPreview::FUN_140d3eb30(MS2Ptr<CItem> spItem)
 {
     if (spItem == 0 || m_spAvatar == 0)
@@ -620,7 +637,18 @@ void ItemPreview::FUN_140d3eb30(MS2Ptr<CItem> spItem)
                 pAvatar->FUN_1418bc110(spItem);
             }
         }
-        else if (!FUN_141b49b50(spData))
+        else if (FUN_141b49b50(spData))
+        {
+            int nSlot = 0;
+            if (!FUN_1405729c0(&m_packageItems))
+                pAvatar->FUN_1418bb2a0(spData, nSlot, &m_packageItems);
+            if (m_spPackageData.get())
+            {
+                MS2Ptr<CItem> spPackageItem = FUN_140ebc2b0(m_spPackageData, 1);
+                FUN_140d3f160(m_spPackageData, spPackageItem);
+            }
+        }
+        else
         {
             for (size_t i = 0; i < spData->FUN_14053eba0()->FUN_14054b3d0(); ++i)
             {
@@ -636,16 +664,6 @@ void ItemPreview::FUN_140d3eb30(MS2Ptr<CItem> spItem)
                 }
             }
             pAvatar->FUN_1418baf40(spItem.get());
-        }
-        else
-        {
-            if (!FUN_1405729c0(&m_packageItems))
-                pAvatar->FUN_1418bb2a0(spData, 0, &m_packageItems);
-            if (m_spPackageData.get())
-            {
-                MS2Ptr<CItem> spPackageItem = FUN_140ebc2b0(m_spPackageData, 1);
-                FUN_140d3f160(m_spPackageData, spPackageItem);
-            }
         }
     }
     FUN_140d3d600(spItem);
@@ -748,7 +766,6 @@ void ItemPreview::FUN_140d3fa30()
 MS2_REPLACE_METHOD(0x140D3FA30, ItemPreview, FUN_140d3fa30, 129, 0x948C0DCA);
 
 // @0x140d3fac0
-// MS2-FUNCTIONAL: behaviour from the decompile; temporaries / branch layout not byte-matched yet
 // A character item is taken off the avatar; anything else rebuilds the preview without it.
 void ItemPreview::FUN_140d3fac0(__int64 nItemUid)
 {
@@ -762,15 +779,15 @@ void ItemPreview::FUN_140d3fac0(__int64 nItemUid)
             UIAvatarPC* pAvatar = dynamic_cast<UIAvatarPC*>((UIAvatarBase*)m_spAvatar);
             if (pAvatar)
             {
-                bRebuild = !FUN_140527840(spCur)->FUN_14053cbc0();
-                if (bRebuild)
-                {
-                    spRemoved = spCur;
-                }
-                else
+                if (FUN_140527840(spCur)->FUN_14053cbc0())
                 {
                     pAvatar->FUN_1418bc380(spCur.get());
                     m_items.erase(m_items.begin() + i);
+                }
+                else
+                {
+                    spRemoved = spCur;
+                    bRebuild = true;
                 }
                 break;
             }
@@ -781,8 +798,9 @@ void ItemPreview::FUN_140d3fac0(__int64 nItemUid)
         std::vector<MS2Ptr<CItem> > items;
         for (size_t i = 0; i < m_items.size(); ++i)
         {
-            if (!(m_items[i] == spRemoved.get()))
-                items.push_back(m_items[i]);
+            if (m_items[i] == spRemoved.get())
+                continue;
+            items.push_back(m_items[i]);
         }
         FUN_140d3c3c0(items);
     }
@@ -790,12 +808,13 @@ void ItemPreview::FUN_140d3fac0(__int64 nItemUid)
 MS2_REPLACE_METHOD(0x140D3FAC0, ItemPreview, FUN_140d3fac0, 722, 0x91DD141A);
 
 // @0x140d3fda0
-// MS2-FUNCTIONAL: behaviour from the decompile; temporaries / branch layout not byte-matched yet
 bool ItemPreview::FUN_140d3fda0(MS2Ptr<CItem> spItem)
 {
     for (size_t i = 0; i < m_items.size(); ++i)
     {
-        if (!(m_items[i] == 0) && m_items[i]->FUN_1405276c0() == spItem->FUN_1405276c0())
+        if (m_items[i] == 0)
+            continue;
+        if (m_items[i]->FUN_1405276c0() == spItem->FUN_1405276c0())
             return true;
     }
     return false;
@@ -925,7 +944,6 @@ void ItemPreviewMgr::FUN_140d40690()
 MS2_REPLACE_METHOD(0x140D40690, ItemPreviewMgr, FUN_140d40690, 57, 0x628BB16C);
 
 // @0x140d406d0
-// MS2-FUNCTIONAL: behaviour from the decompile; temporaries / branch layout not byte-matched yet
 void ItemPreviewMgr::FUN_140d406d0(int bOn)
 {
     if (m_bHudOn == bOn)
@@ -934,15 +952,15 @@ void ItemPreviewMgr::FUN_140d406d0(int bOn)
     if (spHud == 0)
         return;
     m_bHudOn = bOn;
-    if (bOn == 0)
-    {
-        spHud->FUN_1422cee00();
-        spHud->FUN_1422cee50(0);
-    }
-    else
+    if (bOn)
     {
         spHud->FUN_1422cee50(4);
         spHud->FUN_1422cedb0();
+    }
+    else
+    {
+        spHud->FUN_1422cee00();
+        spHud->FUN_1422cee50(0);
     }
 }
 MS2_REPLACE_METHOD(0x140D406D0, ItemPreviewMgr, FUN_140d406d0, 213, 0xDBA85ECF);

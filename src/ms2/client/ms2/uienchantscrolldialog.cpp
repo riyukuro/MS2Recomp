@@ -5,11 +5,11 @@
 // MS2-RANGE: 0x1400deeb0-0x1400df250 .text$di
 // MS2-PINS-BEGIN tplpin
 // MS2-PIN: ??0UIEnchantScrollDialog@@QEAA@XZ 0x140f3b490 ; unique
-// MS2-PIN: ?FUN_140f3e920@@YAHAEBV?$CAtlArray@IV?$CElementTraits@I@ATL@@@ATL@@AEBI@Z 0x140f3e920 ; unique
+// MS2-PIN: ?FUN_140f3e920@@YAHAEBV?$CAtlArray@HV?$CDefaultElementTraits@H@ATL@@@ATL@@AEBH@Z 0x140f3e920 ; unique
 // MS2-PIN: ??1UIEnchantScrollDialog@@UEAA@XZ 0x140f3f140 ; unique
-// MS2-PIN: ?CallConstructors@?$CAtlArray@IV?$CElementTraits@I@ATL@@@ATL@@CAXPEAI_K@Z 0x140f3f370 ; unique
-// MS2-PIN: ?RemoveAll@?$CAtlArray@IV?$CElementTraits@I@ATL@@@ATL@@QEAAXXZ 0x140f3f690 ; unique
-// MS2-PIN: ?SetCount@?$CAtlArray@IV?$CElementTraits@I@ATL@@@ATL@@QEAA_N_KH@Z 0x140f3f6d0 ; unique
+// MS2-PIN: ?CallConstructors@?$CAtlArray@IV?$CDefaultElementTraits@I@ATL@@@ATL@@CAXPEAI_K@Z 0x140f3f370 ; unique
+// MS2-PIN: ?RemoveAll@?$CAtlArray@IV?$CDefaultElementTraits@I@ATL@@@ATL@@QEAAXXZ 0x140f3f690 ; unique
+// MS2-PIN: ?SetCount@?$CAtlArray@IV?$CDefaultElementTraits@I@ATL@@@ATL@@QEAA_N_KH@Z 0x140f3f6d0 ; unique
 // MS2-PINS-END tplpin
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uienchantscrolldialog.cpp"    // assumed
 #include "ms2/placeholder/ms2stdafx.h"
@@ -80,7 +80,7 @@ CStringW FUN_14082f090(unsigned nKey);                                          
 __int64 FUN_140632990(__int64 nBase, float fExtra);                                 // the option value
 CStringW FUN_14183e9c0(CStringW strText, int nRank);                                // rank-coloured text
 CStringW FUN_140632a60(int nId, const CStringW& strA, const CStringW& strB);
-CStringW FUN_1409e9bc0(int nId, const int& nA, const int& nB);
+CStringW FUN_1409e9bc0(int nId, const unsigned& nA, const unsigned& nB);
 CStringW FUN_1409eadb0(int nId, const CStringW& strA, const CStringW& strB, const CStringW& strC);
 CStringW FUN_1409e9890(CStringW strKey, const unsigned& nA, const unsigned& nB);
 CStringW GetStringCommonByKey(const CStringW& strKey);
@@ -120,8 +120,9 @@ void FUN_1407cd930(Scaleform::GFx::Value* pObject, const char* szName, const Sca
 CStringW FUN_141b71910(__int64 n);
 
 typedef ATL::CAtlMap<int, Unk_EnchantPtr<BaseOption>, Unk_EnchantKeyTraits> Unk_EsOptionMap;
+typedef ATL::CAtlArray<int, ATL::CDefaultElementTraits<int> > Unk_EsKeyArray;
 
-static int FUN_140f3e920(const ATL::CAtlArray<unsigned>& arr, const unsigned& nValue)
+static int FUN_140f3e920(const Unk_EsKeyArray& arr, const int& nValue)
 {
     for (int i = 0; i < (int)arr.GetCount(); i++) {
         if (arr[i] == nValue)
@@ -131,18 +132,6 @@ static int FUN_140f3e920(const ATL::CAtlArray<unsigned>& arr, const unsigned& nV
 }
 
 // ---- the packet readers: the option rows of the movie ----
-
-// Reads the options of the packet (a short key, an int value) into a map.
-static __forceinline void ReadOptions(CInPacket& packet, Unk_EsOptionMap& rMap)
-{
-    unsigned nCount = packet.ReadInt32();
-    for (unsigned i = 0; i < nCount; i++) {
-        Unk_EnchantPtr<BaseOption> spOpt(new BaseOption());
-        unsigned nKey = (unsigned short)packet.ReadInt16();
-        spOpt->SetValue(packet.ReadInt32());
-        rMap.SetAt(nKey, spOpt);
-    }
-}
 
 // @0x140f3b490
 UIEnchantScrollDialog::UIEnchantScrollDialog()
@@ -229,7 +218,6 @@ int UIEnchantScrollDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
 }
 
 // @0x140f3b920
-// MS2-FUNCTIONAL: not byte-exact yet (temporaries / call order differ)
 void UIEnchantScrollDialog::FUN_140f3b920(CInPacket& packet)
 {
     FUN_140f3d210();
@@ -240,86 +228,85 @@ void UIEnchantScrollDialog::FUN_140f3b920(CInPacket& packet)
     m_nFailRate = packet.ReadInt32();
     m_nLevelMin = packet.ReadInt16();
     m_nLevelMax = packet.ReadInt16();
-    int nTypes = packet.ReadInt32();
-    for (int i = 0; i < nTypes; i++)
+    int nCount = packet.ReadInt32();
+    for (int i = 0; i < nCount; i++)
         m_equipTypes.Add(packet.ReadInt32());
-    int nRanks = packet.ReadInt32();
-    for (int i = 0; i < nRanks; i++)
+    nCount = packet.ReadInt32();
+    for (int j = 0; j < nCount; j++)
         m_ranks.Add((Unk_EsRank)packet.ReadInt32());
     if (m_nType == 3) {
         m_nRandomMin = packet.ReadInt32();
         m_nRandomMax = packet.ReadInt32();
     }
-    unsigned nFail = m_nFailRate;
-    m_nFailRate = nFail / 100;
-    if (FUN_1403ed2b0()->FUN_141adc890(0x4ee0) == 0)
-        FUN_1403ed2b0()->FUN_141adc530(0x4ee0);
-    else
+    m_nFailRate /= 100;
+    if (FUN_1403ed2b0()->FUN_141adc890(0x4ee0))
         FUN_140f3cb10();
+    else
+        FUN_1403ed2b0()->FUN_141adc530(0x4ee0);
 }
 
 // @0x140f3bd10
-// MS2-FUNCTIONAL: not byte-exact yet (temporaries / call order differ)
 void UIEnchantScrollDialog::FUN_140f3bd10(CInPacket& packet)
 {
     m_nItemUid = packet.ReadInt64();
-    unsigned nType = (unsigned short)packet.ReadInt16();
+    int nType = (unsigned short)packet.ReadInt16();
     MS2Ptr<CItem> spScroll = DAT_143ab2a90.FUN_140a5d680(m_nScrollUid);
     MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(m_nItemUid);
-    if (FUN_14052cd70(&spItem) == 0 || FUN_14052cd70(&spScroll) == 0)
-        return;
-    FUN_140cd74a0(GetTypeName());
-    FUN_140cd73b0(GetTypeName(), m_nScrollUid, spItem);
-    ASObj data(2);
-    data.FUN_140f3f020("scrollType", m_nType);
-    data.FUN_1407cbb20("itemGUID", FUN_141b71910(spItem->FUN_140526a50()));
-    data.FUN_1407cba60("bindID", GetTypeName());
-    data.FUN_1407cb9c0("ready", 1);
-    data.FUN_1407cbb20("itemName", FUN_140f3d320(spItem->FUN_140527030(), spItem, 0, 0));
-    data.FUN_1407cbb20("desc", FUN_140f3e550(spItem));
-    if ((int)nType > 0) {
-        if ((int)nType < 3) {
+    if ((FUN_14052cd70(&spItem) ? true : false) && (FUN_14052cd70(&spScroll) ? true : false)) {
+        FUN_140cd74a0(GetTypeName());
+        FUN_140cd73b0(GetTypeName(), m_nScrollUid, spItem);
+        ASObj data(2);
+        data.FUN_140f3f020("scrollType", m_nType);
+        data.FUN_1407cbb20("itemGUID", FUN_141b71910(spItem->FUN_140526a50()));
+        data.FUN_1407cba60("bindID", GetTypeName());
+        data.FUN_1407cb9c0("ready", 1);
+        data.FUN_1407cbb20("itemName", FUN_140f3d320(spItem->FUN_140526fc0(), spItem, spItem->FUN_140527030(), 0));
+        data.FUN_1407cbb20("desc", FUN_140f3e550(spScroll));
+        switch (nType) {
+        case 1:
+        case 2:
             data.FUN_1407cbb20("prop", FUN_1409e9bc0(0xb70, m_nFailRate, 100 - m_nFailRate));
             data.FUN_1407cbb20("resultItemName", FUN_140f3d320(m_nTargetLevel, spItem, 0, 0));
             if (spItem->FUN_140526fc0() != m_nTargetLevel)
                 FUN_140f3d5b0(spItem, data, packet);
-        }
-        else if (nType == 3) {
-            CStringW strRank = FUN_140281980()->FUN_140556a40(spItem->FUN_140526bd0());
-            CStringW strType = FUN_1401a9d70()->FUN_141811980(1, spItem->FUN_1405276c0());
-            data.FUN_1407cbb20("resultItemName", FUN_1409eadb0(0xb6e, strRank, FUN_140f3e390(), strType));
-            FUN_140f3db20(spItem, data, packet);
-        }
-        else if (nType == 5) {
+            break;
+        case 5:
             data.FUN_1407cbb20("prop", FUN_1409e9bc0(0xb70, m_nFailRate, 100 - m_nFailRate));
             data.FUN_1407cbb20("resultItemName", FUN_140f3d320(spItem->FUN_140526fc0(), spItem, 0, 1));
+            break;
+        case 3: {
+            CStringW strRank = FUN_140281980()->FUN_140556a40(spItem->FUN_140526bd0());
+            CStringW strName = FUN_1409eadb0(0xb6e, strRank, FUN_140f3e390(), FUN_1401a9d70()->FUN_141811980(1, spItem->FUN_1405276c0()));
+            data.FUN_1407cbb20("resultItemName", strName);
+            FUN_140f3db20(spItem, data, packet);
+            break;
         }
+        }
+        static_cast<Unk_EsAS*>(FUN_1409ee290(&m_30))->FUN_140ba4cc0("setData", data);
     }
-    static_cast<Unk_EsAS*>(FUN_1409ee290(&m_30))->FUN_140ba4cc0("setData", data);
 }
 
 // @0x140f3c6c0
-// MS2-FUNCTIONAL: not byte-exact yet (temporaries / call order differ)
 void UIEnchantScrollDialog::FUN_140f3c6c0(CInPacket& packet)
 {
-    short nResult = packet.ReadInt16();
+    int nResult = (unsigned short)packet.ReadInt16();
     if (nResult == 0) {
         unsigned __int64 nItemUid = packet.ReadInt64();
         MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(nItemUid);
-        if (FUN_14052cd70(&spItem) == 0) {
-            spItem->FUN_140524eb0(packet);
-            Unk_EsInvDialog* pInventory = FUN_1405344f0(0x4e2d);
-            if (pInventory != 0)
-                pInventory->FUN_141999e00();
-            MS2Ptr<CMsgBoxData> spBox = FUN_140d73e40(0x11, 0xb71, static_cast<IMessageListener*>(this), CStringW(L"enchant_ok"));
-            if (spBox.get() != 0) {
-                Unk_EsMsgBox* pBox = static_cast<Unk_EsMsgBox*>(spBox.get());
-                pBox->FUN_141a01600(nItemUid);
-                pBox->FUN_141a024a0(0);
-                pBox->FUN_141a01ee0(spItem, spItem->FUN_140527b10(), 1, 0, -1, -1, 1);
-                pBox->FUN_141a01700(0x475, 0, 0);
-                FUN_140d73c60(spBox);
-            }
+        if (spItem.IsNull())
+            return;
+        spItem->FUN_140524eb0(packet);
+        Unk_EsInvDialog* pInventory = FUN_1405344f0(0x4e2d);
+        if (pInventory != 0)
+            pInventory->FUN_141999e00();
+        MS2Ptr<CMsgBoxData> spBox = FUN_140d73e40(0x11, 0xb71, static_cast<IMessageListener*>(this), L"enchant_ok");
+        if (spBox.get()) {
+            // The box methods live on the derived box; the downcast is offset 0 (no code).
+            static_cast<Unk_EsMsgBox*>(spBox.operator->())->FUN_141a01600(nItemUid);
+            static_cast<Unk_EsMsgBox*>(spBox.operator->())->FUN_141a024a0(0);
+            static_cast<Unk_EsMsgBox*>(spBox.operator->())->FUN_141a01ee0(spItem, spItem->FUN_140527b10(), 1, 0, -1, -1, 1);
+            static_cast<Unk_EsMsgBox*>(spBox.operator->())->FUN_141a01700(0x475, 0, 0);
+            FUN_140d73c60(spBox);
         }
     }
     else {
@@ -328,8 +315,8 @@ void UIEnchantScrollDialog::FUN_140f3c6c0(CInPacket& packet)
         case 2: FUN_141275260(0xb73, 1, 1); break;
         case 3: FUN_141275260(0xb74, 1, 1); break;
         case 4: FUN_141275260(0xb75, 1, 1); break;
-        case 5: FUN_141275260(0xb76, 1, 1); break;
         case 6: FUN_141275260(0xb77, 1, 1); break;
+        case 5: FUN_141275260(0xb76, 1, 1); break;
         case 7: FUN_141275260(0xb78, 1, 1); break;
         case 8: FUN_141275260(0xb79, 1, 1); break;
         }
@@ -339,13 +326,12 @@ void UIEnchantScrollDialog::FUN_140f3c6c0(CInPacket& packet)
 }
 
 // @0x140f3cb10
-// MS2-FUNCTIONAL: not byte-exact yet (temporaries / call order differ)
 void UIEnchantScrollDialog::FUN_140f3cb10()
 {
     FUN_140cd74a0(GetTypeName());
     FUN_140cd73b0(GetTypeName(), m_nScrollUid, MS2Ptr<CItem>(0));
     MS2Ptr<CItem> spScroll = DAT_143ab2a90.FUN_140a5d680(m_nScrollUid);
-    if (FUN_1409ee240(&m_30) != 0 && FUN_14052cd70(&spScroll) != 0) {
+    if ((FUN_1409ee240(&m_30) ? true : false) && (FUN_14052cd70(&spScroll) ? true : false)) {
         CStringW strLevel;
         CStringW strTypes;
         CStringW strRanks;
@@ -355,7 +341,8 @@ void UIEnchantScrollDialog::FUN_140f3cb10()
             strLevel = StringFormat(L"{0}~{1}", m_nLevelMin, m_nLevelMax);
         for (size_t i = 0; i < m_ranks.GetCount(); i++) {
             unsigned nRank = m_ranks[i];
-            strRanks.AppendFormat(L"%s, ", (LPCWSTR)FUN_14183e9c0(FUN_1401a9d70()->FUN_141813150(nRank), nRank));
+            CStringW strRank = FUN_14183e9c0(FUN_1401a9d70()->FUN_141813150(nRank), nRank);
+            strRanks.AppendFormat(L"%s, ", (LPCWSTR)strRank);
         }
         strRanks.TrimRight(L", ");
         for (size_t i = 0; i < m_equipTypes.GetCount(); i++)
@@ -392,77 +379,73 @@ void UIEnchantScrollDialog::FUN_140f3d210()
 }
 
 // @0x140f3d320
-// MS2-FUNCTIONAL: not byte-exact yet (temporaries / call order differ)
 CStringW UIEnchantScrollDialog::FUN_140f3d320(int nLevel, MS2Ptr<CItem> spItem, int bStable, int bRandom)
 {
     CStringW strRank = FUN_140281980()->FUN_140556a40(spItem->FUN_140526bd0());
-    CStringW strType = FUN_1401a9d70()->FUN_141811980(1, spItem->FUN_1405276c0());
-    CStringW strName = FUN_14028dee0(0xb6e, strRank, nLevel, strType);
-    if (bStable == 0) {
-        if (bRandom != 0)
-            strName += FUN_1401d0160(L" ", GetStringCommonByKey(CStringW(L"s_enchantscroll_stable")));
-    }
-    else {
+    CStringW strName = FUN_14028dee0(0xb6e, strRank, nLevel, FUN_1401a9d70()->FUN_141811980(1, spItem->FUN_1405276c0()));
+    if (bStable)
         strName += FUN_1401d0160(L" ", GetStringCommon(0xb6f));
-    }
+    else if (bRandom)
+        strName += FUN_1401d0160(L" ", GetStringCommonByKey(L"s_enchantscroll_stable"));
     return strName;
 }
 
 // @0x140f3d5b0
-// MS2-FUNCTIONAL: not byte-exact yet (temporaries / call order differ)
 void UIEnchantScrollDialog::FUN_140f3d5b0(MS2Ptr<CItem> spItem, ASObj& rData, CInPacket& packet)
 {
+    size_t nCount = (unsigned)packet.ReadInt32();
     Unk_EsOptionMap map(17, 0.75f, 0.25f, 2.25f, 10);
-    ReadOptions(packet, map);
+    for (size_t i = 0; i < nCount; i++) {
+        Unk_EnchantPtr<BaseOption> spOpt(new BaseOption());
+        int nKey = (unsigned short)packet.ReadInt16();
+        spOpt->SetValue(packet.ReadInt32());
+        map.SetAt(nKey, spOpt);
+    }
     ASArray list(2);
-    POSITION pos = map.GetStartPosition();
-    while (pos != 0) {
+    for (POSITION pos = map.GetStartPosition(); pos != 0; map.GetNext(pos)) {
         unsigned nKey = map.GetKeyAt(pos);
         Unk_EnchantPtr<BaseOption> spOpt = map.GetValueAt(pos);
-        if (!(!spOpt)) {
-            if (spOpt->HasValue()) {
-                ASObj obj(2);
-                Unk_EsEnchantData* pData = reinterpret_cast<Unk_EsEnchantData*>(spItem->FUN_1405278a0());
-                __int64 nBase = pData->FUN_14062ffb0(nKey, 0, 0);
-                float fExtra = reinterpret_cast<Unk_EsEnchantData*>(spItem->FUN_1405278a0())->FUN_1406303e0(nKey);
-                float fRate = spOpt->FUN_140266e10();
-                __int64 nBefore = FUN_140632990(nBase, fExtra);
-                __int64 nAfter = FUN_140632990(nBase, fExtra + fRate);
-                CStringW strBefore = StringFormat(L"{0}", nBefore);
-                CStringW strAfter = StringFormat(L"{0}", nAfter);
-                CStringW strName = FUN_14082f090(nKey);
-                strName.Replace(L"{0}", L"");
-                obj.FUN_1407cbb20("statName", strName);
-                obj.FUN_1407cbb20("prevStat", strBefore);
-                obj.FUN_1407cbb20("afterStat", strAfter);
-                list.FUN_1422bc050(obj.FUN_1422bb870());
-            }
+        if (!spOpt)
+            continue;
+        if (spOpt->HasValue()) {
+            ASObj obj(2);
+            __int64 nBase = reinterpret_cast<Unk_EsEnchantData*>(spItem->FUN_1405278a0())->FUN_14062ffb0(nKey, 0, 0);
+            float fExtra = reinterpret_cast<Unk_EsEnchantData*>(spItem->FUN_1405278a0())->FUN_1406303e0(nKey);
+            float fRate = spOpt->FUN_140266e10();
+            __int64 nBefore = FUN_140632990(nBase, fExtra);
+            __int64 nAfter = FUN_140632990(nBase, fExtra + fRate);
+            CStringW strBefore = StringFormat(L"{0}", nBefore);
+            CStringW strAfter = StringFormat(L"{0}", nAfter);
+            CStringW strName = FUN_14082f090(nKey);
+            strName.Replace(L"{0}", L"");
+            obj.FUN_1407cbb20("statName", strName);
+            obj.FUN_1407cbb20("prevStat", strBefore);
+            obj.FUN_1407cbb20("afterStat", strAfter);
+            list.FUN_1422bc050(obj.FUN_1422bb870());
         }
-        map.GetNext(pos);
     }
     rData.FUN_1409eb1d0("options", list);
 }
 
 // @0x140f3db20
-// MS2-FUNCTIONAL: not byte-exact yet (temporaries / call order differ)
 void UIEnchantScrollDialog::FUN_140f3db20(MS2Ptr<CItem> spItem, ASObj& rData, CInPacket& packet)
 {
-    ATL::CAtlArray<unsigned> keys;
+    Unk_EsKeyArray keys;
+    size_t nLow = (unsigned)packet.ReadInt32();
     Unk_EsOptionMap mapLow(17, 0.75f, 0.25f, 2.25f, 10);
-    unsigned nLow = packet.ReadInt32();
-    for (unsigned i = 0; i < nLow; i++) {
+    for (size_t i = 0; i < nLow; i++) {
         Unk_EnchantPtr<BaseOption> spOpt(new BaseOption());
-        unsigned nKey = (unsigned short)packet.ReadInt16();
+        int nKey = (unsigned short)packet.ReadInt16();
         spOpt->SetValue(packet.ReadInt32());
         mapLow.SetAt(nKey, spOpt);
         if (FUN_140f3e920(keys, nKey) == -1)
             keys.Add(nKey);
     }
+    size_t nHigh = (unsigned)packet.ReadInt32();
     Unk_EsOptionMap mapHigh(17, 0.75f, 0.25f, 2.25f, 10);
-    unsigned nHigh = packet.ReadInt32();
-    for (unsigned i = 0; i < nHigh; i++) {
+    for (size_t i = 0; i < nHigh; i++) {
         Unk_EnchantPtr<BaseOption> spOpt(new BaseOption());
-        unsigned nKey = (unsigned short)packet.ReadInt16();
+        int nKey = (unsigned short)packet.ReadInt16();
         spOpt->SetValue(packet.ReadInt32());
         mapHigh.SetAt(nKey, spOpt);
         if (FUN_140f3e920(keys, nKey) == -1)
@@ -470,7 +453,7 @@ void UIEnchantScrollDialog::FUN_140f3db20(MS2Ptr<CItem> spItem, ASObj& rData, CI
     }
     ASArray list(2);
     for (size_t i = 0; i < keys.GetCount(); i++) {
-        unsigned nKey = keys.GetAt(i);
+        int nKey = keys.GetAt(i);
         Unk_EnchantPtr<BaseOption> spLow(0);
         Unk_EnchantPtr<BaseOption> spHigh(0);
         if (!mapLow.Lookup(nKey, spLow))
@@ -480,8 +463,7 @@ void UIEnchantScrollDialog::FUN_140f3db20(MS2Ptr<CItem> spItem, ASObj& rData, CI
         if (spLow->HasValue()) {
             if (spHigh->HasValue()) {
                 ASObj obj(2);
-                Unk_EsEnchantData* pData = reinterpret_cast<Unk_EsEnchantData*>(spItem->FUN_1405278a0());
-                __int64 nBase = pData->FUN_14062ffb0(nKey, 0, 0);
+                __int64 nBase = reinterpret_cast<Unk_EsEnchantData*>(spItem->FUN_1405278a0())->FUN_14062ffb0(nKey, 0, 0);
                 float fExtra = reinterpret_cast<Unk_EsEnchantData*>(spItem->FUN_1405278a0())->FUN_1406303e0(nKey);
                 float fRateLow = spLow->FUN_140266e10();
                 float fRateHigh = spHigh->FUN_140266e10();
@@ -503,57 +485,66 @@ void UIEnchantScrollDialog::FUN_140f3db20(MS2Ptr<CItem> spItem, ASObj& rData, CI
 }
 
 // @0x140f3e390
-// MS2-FUNCTIONAL: not byte-exact yet (temporaries / call order differ)
 CStringW UIEnchantScrollDialog::FUN_140f3e390()
 {
     CStringW strText;
-    if (m_nType > 0) {
-        if (m_nType < 3)
-            return StringFormat(L"{0}", m_nTargetLevel);
-        if (m_nType == 3)
-            return StringFormat(L"{0}~{1}", m_nRandomMin, m_nRandomMax);
-        if (m_nType == 5) {
-            MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(m_nItemUid);
-            if (FUN_14052cd70(&spItem) != 0)
-                return StringFormat(L"{0}", spItem->FUN_140526fc0());
-        }
+    switch (m_nType) {
+    case 1:
+    case 2:
+        return StringFormat(L"{0}", m_nTargetLevel);
+    case 3:
+        return StringFormat(L"{0}~{1}", m_nRandomMin, m_nRandomMax);
+    case 5: {
+        MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(m_nItemUid);
+        if (FUN_14052cd70(&spItem) != 0)
+            return StringFormat(L"{0}", spItem->FUN_140526fc0());
     }
-    return strText;
+    }
+    return L"";
 }
 
 // @0x140f3e550
-// MS2-FUNCTIONAL: not byte-exact yet (temporaries / call order differ)
 CStringW UIEnchantScrollDialog::FUN_140f3e550(MS2Ptr<CItem> spItem)
 {
     int nId = 0;
-    if (m_nType == 1)
+    switch (m_nType) {
+    case 1:
         nId = 0xb69;
-    else if (m_nType == 2)
+        break;
+    case 2:
         nId = 0xb6a;
-    else if (m_nType == 3)
+        break;
+    case 3:
         nId = 0xb6c;
-    else if (m_nType == 5)
+        break;
+    case 5:
         nId = 0xb6b;
+        break;
+    }
     CStringW strDesc = FUN_140632a60(nId, spItem->FUN_140528160(), FUN_140f3e390());
     if (m_bDisableBreak)
-        strDesc += GetStringCommonByKey(CStringW(L"s_enchantscroll_desc_disable_break"));
+        strDesc += GetStringCommonByKey(L"s_enchantscroll_desc_disable_break");
     FUN_1403b4750()->FUN_1416fb340(strDesc);
     return strDesc;
 }
 
 // @0x140f3e730
-// MS2-FUNCTIONAL: not byte-exact yet (temporaries / call order differ)
 CStringW UIEnchantScrollDialog::FUN_140f3e730()
 {
-    if (m_nType == 1)
-        return GetStringCommonByKey(CStringW(L"s_enchant_fail_desc_enchant"));
-    if (m_nType == 2)
-        return GetStringCommonByKey(CStringW(L"s_enchant_fail_desc_restore"));
-    if (m_nType == 3)
-        return FUN_1409e9890(CStringW(L"s_enchant_fail_desc_random"), m_nRandomMin, m_nRandomMax);
-    if (m_nType == 5)
-        return GetStringCommonByKey(CStringW(L"s_enchant_fail_desc_repair"));
-    return CStringW(L"");
+    switch (m_nType) {
+    case 1:
+        return GetStringCommonByKey(L"s_enchant_fail_desc_enchant");
+        break;
+    case 2:
+        return GetStringCommonByKey(L"s_enchant_fail_desc_restore");
+        break;
+    case 3:
+        return FUN_1409e9890(L"s_enchant_fail_desc_random", m_nRandomMin, m_nRandomMax);
+        break;
+    case 5:
+        return GetStringCommonByKey(L"s_enchant_fail_desc_repair");
+    }
+    return L"";
 }
 
 // @0x140f3f4a0

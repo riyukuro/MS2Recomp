@@ -23,14 +23,14 @@ public:
     DungeonRecordCli(unsigned nRoomID);                     // 0x140b206f0 also resolves the room
     // dtor 0x140b244e0 implicit
 
-    int GetBonusRewardCountNow();                           // 0x140b20750
+    unsigned GetBonusRewardCountNow();                        // 0x140b20750
     int GetMaxCount();                                      // 0x140b20780 the room's reward count (+ the bonus count while not expired)
     unsigned GetExtraCountNow();                            // 0x140b207f0
     long Get5c();                                           // 0x140b20820
-    unsigned char GetBonusCountNow();                       // 0x140b20840 0 once expired
+    int GetBonusCountNow();                                 // 0x140b20840 0 once expired
     __int64 GetExpire();                                    // 0x140b20880
     short Get60();                                          // 0x140b208a0
-    unsigned short Get68(__int64 tNow);                     // 0x140b208c0
+    short Get68(__int64 tNow);                              // 0x140b208c0
     bool HasCountLeft();                                    // 0x140b208f0
     bool IsExtraExhausted();                                // 0x140b20990 the extra count reached the event's reward count
     unsigned short GetRaw68();                              // 0x140b20a40
@@ -77,7 +77,7 @@ public:
     int GetRankRewardCount(unsigned nRank);                 // 0x140b22910
     void GetScoredRecords(std::vector<DungeonRecordCliPtr>& out);   // 0x140b229c0
     unsigned GetExtraTicketCost(DungeonRoomPtr pRoom);      // 0x140b22aa0
-    unsigned char GetRoomBonusCount(unsigned nRoomID);      // 0x140b22b40
+    int GetRoomBonusCount(unsigned nRoomID);                // 0x140b22b40
     void GetSeasonRooms(std::vector<DungeonRoomPtr>& out);  // 0x140b22bc0
     void ShowLackExtraTicket(unsigned nRoomID);             // 0x140b22cb0
 

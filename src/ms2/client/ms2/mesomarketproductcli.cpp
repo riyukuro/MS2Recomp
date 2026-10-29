@@ -25,7 +25,7 @@ CStringW GetStringCommonByKey(const CStringW& strKey);         // string table t
 CStringW GetStringCommon(int nId);                        // string table text by id
 CStringW FUN_140298ea0(CStringW strKey);                // localized string
 CStringW FUN_1405c2690(CStringW strKey, const CStringW& strArg);
-CStringW FUN_14062b4f0(CStringW strKey, const int* pnArg);
+CStringW FUN_14062b4f0(CStringW strKey, const int& nArg);
 CStringW FUN_1408f71a0(CStringW strKey, const CStringW& strA, const CStringW& strB);
 CStringW FUN_1412757d0(__int64 n);                      // number text
 CStringW FUN_1409404f0(__int64 n);                      // number text, grouped
@@ -52,9 +52,12 @@ struct Unk_MesoBlockRef
     ~Unk_MesoBlockRef() { FUN_1401cb250(this); }
 };
 MS2_CHECK_SIZE(Unk_MesoBlockRef, 0x10);
-class Unk_MesoBlockMgr;
+class Unk_MesoBlockMgr
+{
+public:
+    Unk_MesoBlockRef FUN_140a2f620(int nKind);
+};
 Unk_MesoBlockMgr* FUN_140a6a830();
-void FUN_140a2f620(Unk_MesoBlockMgr* pMgr, Unk_MesoBlockRef* pOut, int nKind);
 void* FUN_1401cb3d0(Unk_MesoBlockRef* pRef);
 void FUN_140a2ff20(Unk_MesoBlockRef* pRef, int nKind, __int64 n);
 
@@ -73,15 +76,15 @@ i64* FUN_140163e80(i64* pSlot);
 i64 FUN_14016d660(i64 a0, i64 a1, i64 a2, i64 a3, i64 a4, i64 a5, i64 a6, i64 a7, i64 a8, i64 a9, i64 a10, i64 a11,
                   i64 a12, i64 a13, i64 a14);
 Unk_MesoFmtPack* FUN_140163e50(Unk_MesoFmtPack* pOut, i64 nTypes, Unk_MesoFmtArg* pArgs);
-CStringW FUN_14028dfa0(CStringW strKey, const Unk_MesoFmtPack& args);
+CStringW FUN_14028dfa0(const CStringW& strKey, const Unk_MesoFmtPack& args);
 
 // A notice box with the text of a key.
 #define MESO_NOTICE(key) \
-    do { MS2Ptr<CMsgBoxData> box_ = FUN_140d74390(FUN_140298ea0(CStringW(key)), 0, FUN_140b240b0()); } while (0)
+    { FUN_140d74390(FUN_140298ea0(CStringW(key)), 0, FUN_140b240b0()); }
 
 CStringW FUN_140d6e230(int nCurrency);
 i64 FUN_140d706c0(i64* pValue, i64 nMin, i64 nMax);
-CStringW FUN_140d70320(CStringW strKey, float* pRate, i64* pLow, i64* pHigh);
+CStringW FUN_140d70320(CStringW strKey, const float& fRate, const i64& nLow, const i64& nHigh);
 CInputStream& FUN_14070f4c0(CInputStream& in, unsigned __int64* pValue);
 CInputStream& FUN_140d70110(CInputStream& in, MS2Ptr<CMesoMarketProductCli>& sp);
 CInputStream& FUN_140d701a0(CInputStream& in, CMesoMarketMan::ProductMap& map);
@@ -89,11 +92,6 @@ void FUN_140d70240(CInputStream& in, CMesoMarketMan::ProductArray& arr);
 
 // @0x140d6d8c0
 CMesoMarketProductCli::CMesoMarketProductCli()
-{
-}
-
-// @0x140d70a70
-CMesoMarketProductCli::~CMesoMarketProductCli()
 {
 }
 
@@ -108,18 +106,20 @@ bool CMesoMarketProductCli::FUN_140d6d900()
 void CMesoMarketProductCli::FUN_140d6d940(ASObj& row)
 {
     FUN_140d6db30(row);
-    if (!FUN_140d6d900())
-    {
-        CStringW strTime;
-        CStringW strKey(L"s_mesoMarket_endSellTime");
-        FUN_141b70f90(CMsTime(m_40), GetStringCommonByKey(strKey), strTime);
-        row.FUN_1407cbb20("subText", CStringW(strTime));
-        row.FUN_1409c0e60("buttonText", L"$s_mesoMarket_cancel_sale");
-    }
-    else
+    if (FUN_140d6d900())
     {
         row.FUN_1409c0e60("subText", L"$s_mesoMarket_own_product_expired");
         row.FUN_1409c0e60("buttonText", L"$s_mesoMarket_cancel_sell_expired");
+    }
+    else
+    {
+        CStringW strTime;
+        {
+            CStringW strKey(L"s_mesoMarket_endSellTime");
+            FUN_141b70f90(CMsTime(m_40), GetStringCommonByKey(strKey), strTime);
+        }
+        row.FUN_1407cbb20("subText", CStringW(strTime));
+        row.FUN_1409c0e60("buttonText", L"$s_mesoMarket_cancel_sale");
     }
 }
 
@@ -138,11 +138,8 @@ void CMesoMarketProductCli::FUN_140d6db30(ASObj& row)
 {
     __int64 nBase = *FUN_1402c05b0((char*)FUN_1401d3200() + 0x6018);
     __int64 nUnit = m_n28;
-    if (nBase < m_n20)
-    {
-        __int64 nCount = m_n20 / nBase;
-        nUnit = nUnit / nCount;
-    }
+    if (m_n20 > nBase)
+        nUnit = nUnit / (m_n20 / nBase);
     CStringW strBase = FUN_1412757d0(nBase);
     row.FUN_1407cbb20("marketSN", FUN_140719a80(m_n18));
     row.FUN_1407cbb20("sellMeso", FUN_1409404f0(m_n20));
@@ -275,7 +272,7 @@ void CMesoMarketMan::FUN_140d6e5b0(ASArray& rows)
 // @0x140d6e6d0
 void CMesoMarketMan::FUN_140d6e6d0(ASArray& rows)
 {
-    for (size_t i = 0; i < m_arrMarket.GetCount(); ++i)
+    for (unsigned i = 0; i < m_arrMarket.GetCount(); i++)
     {
         MS2Ptr<CMesoMarketProductCli> sp = m_arrMarket[i];
         ASObj row(2);
@@ -328,7 +325,7 @@ bool CMesoMarketMan::FUN_140d6e960(__int64 nMeso, __int64 nPrice)
     }
     __int64 nLow = FUN_140d6ff60();
     __int64 nHigh = FUN_140d6ffe0();
-    if (nPrice > nHigh || nPrice < nLow)
+    if (nPrice < nLow || nPrice > nHigh)
     {
         FUN_140d6f130(0x10);
         return false;
@@ -433,8 +430,12 @@ void CMesoMarketMan::FUN_140d6efb0(CInPacket& packet)
     __int64 qwId = packet.ReadInt64();
     m_nBuy = packet.ReadInt32();
     Unk_CriticalSectionLock lock(m_lock, 1);
-    if (nCode == 0 || nCode == 0x11)
+    switch (nCode)
+    {
+    case 0:
+    case 0x11:
         FUN_140d70060(qwId);
+    }
     FUN_140d6f130(nCode);
 }
 
@@ -446,7 +447,6 @@ void CMesoMarketMan::FUN_140d6f0b0(MS2Ptr<CMesoMarketProductCli> sp)
 }
 
 // @0x140d6f130
-// MS2-FUNCTIONAL: the exe keeps every message's temporaries in their own stack slots
 void CMesoMarketMan::FUN_140d6f130(int nCode)
 {
     if (nCode == 0)
@@ -497,11 +497,9 @@ void CMesoMarketMan::FUN_140d6f130(int nCode)
         break;
     case 0x10:
     {
-        i64 nHigh = FUN_140d6ffe0();
-        i64 nLow = FUN_140d6ff60();
-        float fRate = m_limits.m_fRateB * 100.0f;
-        MS2Ptr<CMsgBoxData> box = FUN_140d74390(FUN_140d70320(CStringW(L"s_mesoMarket_error_invalidBuyMerat"), &fRate, &nLow, &nHigh),
-                                                0, FUN_140b240b0());
+        FUN_140d74390(FUN_140d70320(CStringW(L"s_mesoMarket_error_invalidBuyMerat"), m_limits.m_fRateB * 100.0f,
+                                    FUN_140d6ff60(), FUN_140d6ffe0()),
+                      0, FUN_140b240b0());
         break;
     }
     case 0x11:
@@ -511,20 +509,20 @@ void CMesoMarketMan::FUN_140d6f130(int nCode)
     case 0x13:
     {
         int nKind = (nCode == 0x13) ? 0x27 : 0x28;
-        Unk_MesoBlockRef block;
-        FUN_140a2f620(FUN_140a6a830(), &block, nKind);
+        Unk_MesoBlockRef block = FUN_140a6a830()->FUN_140a2f620(nKind);
         if (FUN_1401cb3d0(&block) != 0)
             FUN_140a2ff20(&block, nKind, 0);
-        break;
     }
+        break;
+        break;      // the exe has a second jmp to the switch end here
     case 0x14:
     {
-        MS2Ptr<CMsgBoxData> box = FUN_140d74390(GetStringCommon(0xd56), 0, FUN_140b240b0());
+        FUN_140d74390(GetStringCommon(0xd56), 0, FUN_140b240b0());
         break;
     }
     default:
     {
-        MS2Ptr<CMsgBoxData> box = FUN_140d74390(FUN_14062b4f0(CStringW(L"s_mesoMarket_error_unknown"), &nCode), 0, FUN_140b240b0());
+        FUN_140d74390(FUN_14062b4f0(CStringW(L"s_mesoMarket_error_unknown"), +nCode), 0, FUN_140b240b0());
     }
     }
 }
@@ -549,7 +547,7 @@ __int64 CMesoMarketMan::FUN_140d6ffe0()
 void CMesoMarketMan::FUN_140d70060(__int64 qwId)
 {
     m_mapMarket.RemoveKey(qwId);
-    for (size_t i = 0; i < m_arrMarket.GetCount(); ++i)
+    for (unsigned i = 0; i < m_arrMarket.GetCount(); i++)
     {
         if (m_arrMarket[i]->GetValue18() == qwId)
         {
@@ -573,7 +571,7 @@ CInputStream& FUN_140d701a0(CInputStream& in, CMesoMarketMan::ProductMap& map)
     unsigned nCount = in.ReadInt32();
     for (unsigned i = 0; i < nCount; ++i)
     {
-        MS2Ptr<CMesoMarketProductCli> sp(0);
+        MS2Ptr<CMesoMarketProductCli> sp;
         unsigned __int64 qwKey;
         FUN_140d70110(FUN_14070f4c0(in, &qwKey), sp);
         map.SetAt(qwKey, sp);
@@ -595,21 +593,21 @@ void FUN_140d70240(CInputStream& in, CMesoMarketMan::ProductArray& arr)
 
 // @0x140d70320
 // MS2-FUNCTIONAL: argument packing temporaries are laid out differently
-CStringW FUN_140d70320(CStringW strKey, float* pRate, i64* pLow, i64* pHigh)
+CStringW FUN_140d70320(CStringW strKey, const float& fRate, const i64& nLow, const i64& nHigh)
 {
     Unk_MesoFmtArg aArgs[3];
     Unk_MesoFmtArg t0, t1, t2;
-    aArgs[0] = *FUN_14027c920(&t0, *pRate);
-    aArgs[1] = *FUN_14027c940(&t1, *pLow);
-    aArgs[2] = *FUN_14027c940(&t2, *pHigh);
+    aArgs[0] = *FUN_14027c920(&t0, fRate);
+    aArgs[1] = *FUN_14027c940(&t1, nLow);
+    aArgs[2] = *FUN_14027c940(&t2, nHigh);
     i64 s[12];
     i64* p[12];
     for (int i = 0; i < 12; i++)
         p[i] = FUN_140163e80(&s[i]);
     i64 tc, tb, ta;
-    i64* pTypeC = FUN_140274e10(&tc, pHigh);
-    i64* pTypeB = FUN_140274e10(&tb, pLow);
-    i64* pTypeA = FUN_140274c80(&ta, pRate);
+    i64* pTypeC = FUN_140274e10(&tc, (i64*)&nHigh);
+    i64* pTypeB = FUN_140274e10(&tb, (i64*)&nLow);
+    i64* pTypeA = FUN_140274c80(&ta, (float*)&fRate);
     i64 nTypes = FUN_14016d660(*pTypeA, *pTypeB, *pTypeC, *p[11], *p[10], *p[9], *p[8], *p[7], *p[6], *p[5], *p[4], *p[3],
                                *p[2], *p[1], *p[0]);
     Unk_MesoFmtPack pack;

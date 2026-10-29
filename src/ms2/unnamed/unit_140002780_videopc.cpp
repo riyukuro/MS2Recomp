@@ -6,9 +6,6 @@
 // MS2-RANGE: 0x140002780-0x140002930 .text$mn
 #define MS2_THIS_FILE ""
 
-// The Scaleform video declarations need GFX_ENABLE_VIDEO (GFxConfig.h): the exe is built with video support.
-#define GFX_USE_VIDEO_WIN32
-
 #include "ms2/placeholder/ms2stdafx.h"
 #include "ms2/placeholder/sfvideo.h"
 #include "ms2/ms2recover.h"

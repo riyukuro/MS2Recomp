@@ -6,13 +6,13 @@
 // The classes sit in the global namespace (RTTI .?AVFontConfig@@); layouts and semantics are in
 // ms2/placeholder/fontconfigparser.h. The unit name is the queue's (sfr_gfx_11), the file name and directory are assumed.
 #include "ms2/placeholder/ms2stdafx.h"
-
 #include <stdio.h>
 
 #include "ms2/placeholder/fontconfigparser.h"
 
-#include "GFx/GFx_FontLib.h"
-#include "Kernel/SF_SysFile.h"
+#include "ms2/scaleform/include/gfx/gfx_fontlib.h"
+#include "ms2/scaleform/include/kernel/sf_file.h"
+#include "ms2/scaleform/include/kernel/sf_utf8util.h"
 
 using Scaleform::String;
 using Scaleform::Array;
@@ -312,7 +312,7 @@ void FontConfig::Apply(Loader* ploader)
         ploader->SetFontLib(plib);
         for (unsigned i = 0; i < FontLibFiles.GetSize(); i++)
         {
-            Ptr<MovieDef> pdef = *ploader->CreateMovie(FontLibFiles[i], 0x40);
+            Ptr<MovieDef> pdef = *ploader->CreateMovie((const char*)FontLibFiles[i], 0x40);
             if (pdef)
                 plib->AddFontsFrom(pdef, 0);
         }

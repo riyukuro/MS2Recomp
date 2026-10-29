@@ -16,6 +16,7 @@
 #include "ms2/placeholder/tixmldocument.h"
 #include "ms2/placeholder/xmlattr.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
+#include "additionalactionadditional.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 
@@ -39,15 +40,15 @@ void FUN_1402a5010(const CString& str, ATL::CAtlArray<__int64>* pOut, const char
 unsigned char FUN_1401d1320(CCacheData*);
 CString FUN_14016a5c0(const char* psz, int n);
 CStringW GetStringCommonByKey(const CStringW& strKey);                     // string table text
-CStringW FUN_140b8ec90(CMsTime time);                               // date text
+CStringW FUN_140b8ec90(const CMsTime& time);                               // date text
 CStringW FUN_1418fec00(int nType, __int64 nValue, int);        // money text by pay type
 CStringW FUN_1418fef90(int nType, __int64 nValue);
 
 // The skill table (FUN_1401958b0): finds the skill of a VIP effect.
-class Unk_VipSkillTable { public: Unk_VipEffectRef FUN_140aafef0(unsigned nId, unsigned short nLevel); };
+class Unk_VipSkillTable { public: MS2Ptr<AdditionalLevelData> FUN_140aafef0(int nId, unsigned short nLevel); };
 Unk_VipSkillTable* FUN_1401958b0();
 
-void FUN_140177de0(const CString& str, ATL::CAtlArray<Unk_VipItemRank>* pOut, const char* pszSep);
+void FUN_140177de0(const CString& str, ATL::CAtlArray<int>& rOut, const char* pszSep);
 
 #ifndef MS2_HOOK_DLL   // the hook DLL binds the exe's singleton and init flag (symbols-manual.tsv)
 CVIPTable* TSingleton<CVIPTable>::s_instance;
@@ -67,7 +68,6 @@ CVIPGoods::~CVIPGoods()
 }
 
 // @0x1408f5240
-// MS2-FUNCTIONAL: branch layout of the nested returns differs (dead jumps after each return block)
 CStringW CVIPGoods::GetPriceText(int bShort)
 {
     if (m_nSalePrice == 0)
@@ -75,47 +75,35 @@ CStringW CVIPGoods::GetPriceText(int bShort)
         CStringW strKey(L"s_vip_dialog_goods_free");
         return GetStringCommonByKey(strKey);
     }
-    else if (m_nPriceType == 0)
+    if (m_nPriceType == 0)
     {
         if (bShort != 0)
             return FUN_1418fef90(3, m_nSalePrice);
-        else
-            return FUN_1418fec00(3, m_nSalePrice, 0);
+        return FUN_1418fec00(3, m_nSalePrice, 0);
     }
     else if (m_nPriceType == 1)
     {
         if (bShort != 0)
             return FUN_1418fef90(9, m_nSalePrice);
-        else
-            return FUN_1418fec00(9, m_nSalePrice, 0);
+        return FUN_1418fec00(9, m_nSalePrice, 0);
     }
-    else
-    {
-        return CStringW(L"");
-    }
+    return CStringW(L"");
 }
 
 // @0x1408f53c0
-// MS2-FUNCTIONAL: argument temporaries of the by-value date copies are laid out differently
 CStringW CVIPGoods::GetSalesPeriodText()
 {
     if (HasSalesPeriod() == 0)
     {
         return CStringW(L"");
     }
-    else
-    {
-        const CStringW& strEnd = FUN_140b8ec90(m_salesEndDate);
-        const CStringW& strStart = FUN_140b8ec90(m_salesStartDate);
-        return FUN_14028dfa0(CStringW(L"s_vip_dialog_goods_sales_duration"), strStart, strEnd);
-    }
+    return FUN_14028dfa0(CStringW(L"s_vip_dialog_goods_sales_duration"), FUN_140b8ec90(CMsTime(m_salesStartDate)), FUN_140b8ec90(CMsTime(m_salesEndDate)));
 }
 
 // @0x1408f5510
-// MS2-FUNCTIONAL: CMsTime temporaries of the date compare differ
 int CVIPGoods::HasSalesPeriod()
 {
-    return m_salesStartDate != CMsTime(0) && m_salesEndDate != CMsTime(0);
+    return m_salesStartDate != 0 && m_salesEndDate != 0;
 }
 
 // @0x1408f5590
@@ -176,12 +164,11 @@ int CVIPTable::Load()
 }
 
 // @0x1408f5a00
-// MS2-FUNCTIONAL: EH-state/temp-CString layout of the XML loader differs from the exe (precedent banktable.cpp)
 int CVIPTable::LoadGoods()
 {
     m_goods.RemoveAll();
     m_goodsList.RemoveAll();
-    CString strPath = FUN_14071a5b0(CString("Table"), CString("vipGoodsTable.xml"));
+    CString strPath = FUN_14071a5b0("Table", "vipGoodsTable.xml");
     m_cacheGoods.AssignRaw(new CCacheData);
     m_cacheGoods.get()->FUN_1401d1160(CString(strPath));
     TiXmlDocument doc;
@@ -222,11 +209,11 @@ int CVIPTable::LoadGoods()
         FUN_140177e10(strIds, &spGoods->m_bonusItemIds, ",");
         CString strRanks;
         FUN_1408733e0(pNode, "bonusItemRank", strRanks);
-        ATL::CAtlArray<Unk_VipItemRank> ranks;
-        FUN_140177de0(strRanks, &ranks, ",");
+        ATL::CAtlArray<int> ranks;
+        FUN_140177de0(strRanks, ranks, ",");
         for (unsigned n = 0; n < ranks.GetCount(); n++)
         {
-            Unk_VipItemRank rank = ranks[n];
+            Unk_VipItemRank rank = static_cast<Unk_VipItemRank>(ranks[n]);
             spGoods->m_bonusItemRanks.Add(rank);
         }
         if (spGoods->m_bonusItemIds.GetCount() != spGoods->m_bonusItemRanks.GetCount())
@@ -257,11 +244,10 @@ int CVIPTable::LoadGoods()
 }
 
 // @0x1408f6460
-// MS2-FUNCTIONAL: EH-state/temp-CString layout of the XML loader differs from the exe (precedent banktable.cpp)
 int CVIPTable::LoadBenefitItems()
 {
     m_benefitItems.RemoveAll();
-    CString strPath = FUN_14071a5b0(CString("Table"), CString("vipBenefitItemTable.xml"));
+    CString strPath = FUN_14071a5b0("Table", "vipBenefitItemTable.xml");
     m_cacheBenefitItems.AssignRaw(new CCacheData);
     m_cacheBenefitItems.get()->FUN_1401d1160(CString(strPath));
     TiXmlDocument doc;
@@ -292,11 +278,10 @@ int CVIPTable::LoadBenefitItems()
 }
 
 // @0x1408f68b0
-// MS2-FUNCTIONAL: EH-state/temp-CString layout of the XML loader differs from the exe (precedent banktable.cpp)
 int CVIPTable::LoadBenefitEffects()
 {
     m_benefitEffects.RemoveAll();
-    CString strPath = FUN_14071a5b0(CString("Table"), CString("vipBenefitEffectTable.xml"));
+    CString strPath = FUN_14071a5b0("Table", "vipBenefitEffectTable.xml");
     m_cacheBenefitEffects.AssignRaw(new CCacheData);
     m_cacheBenefitEffects.get()->FUN_1401d1160(CString(strPath));
     TiXmlDocument doc;
@@ -376,7 +361,6 @@ void CVIPTable::GetBenefitEffects(ATL::CAtlArray<CVIPBenefitEffectPtr>& rOut)
 }
 
 // @0x1408f6f20
-// MS2-FUNCTIONAL: lock-guard/EH frame layout of the array copy differs
 void CVIPTable::GetBenefitItems(ATL::CAtlArray<CVIPBenefitItemPtr>& rOut)
 {
     CheckInit();
@@ -388,12 +372,8 @@ void CVIPTable::GetBenefitItems(ATL::CAtlArray<CVIPBenefitItemPtr>& rOut)
     {
         if (FUN_1401d1320(m_cacheBenefitItems.get()) != 0)
             LoadBenefitItems();
-        POSITION pos = m_benefitItems.GetStartPosition();
-        while (pos != 0)
-        {
+        for (POSITION pos = m_benefitItems.GetStartPosition(); pos != 0; m_benefitItems.GetNext(pos))
             rOut.Add(m_benefitItems.GetValueAt(pos));
-            m_benefitItems.GetNext(pos);
-        }
     }
 }
 
@@ -414,13 +394,12 @@ void CVIPTable::GetGoodsList(ATL::CAtlArray<CVIPGoodsPtr>& rOut)
 }
 
 // @0x1408f70b0
-// MS2-FUNCTIONAL: lock-guard/EH frame layout differs
-Unk_VipEffectRef CVIPTable::GetFirstEffect()
+MS2Ptr<AdditionalLevelData> CVIPTable::GetFirstEffect()
 {
     ATL::CAtlArray<CVIPBenefitEffectPtr> effects;
     GetBenefitEffects(effects);
     if (effects.IsEmpty())
-        return Unk_VipEffectRef(0);
+        return MS2Ptr<AdditionalLevelData>(0);
     return FUN_1401958b0()->FUN_140aafef0(effects[0]->m_nEffectId, effects[0]->m_nEffectLevel);
 }
 

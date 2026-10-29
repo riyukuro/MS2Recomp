@@ -8,7 +8,7 @@ public:
     COutPacketBuffer(); virtual ~COutPacketBuffer();
     void FUN_140208960(CGameSocket*,COutPacket&);
     void PushPendingPacket(COutPacket&);
-    void FUN_140208d40(); void FUN_140209340(int); void FUN_140209450(bool); void FUN_140209430();
+    void FUN_140208d40(); void FUN_140209340(int); void FUN_140209450(int); void FUN_140209430();
 private:
     void* p18;void* p20;void* p28;void* p30;
     CLockCriticalSection lock;

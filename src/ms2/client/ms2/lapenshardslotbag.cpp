@@ -64,29 +64,24 @@ static Unk_Handle1401cd100 s_handle2(0);
 static Unk_1402a9d70 s_unk1402a9d70_2(17, 0.75f, 0.25f, 2.25f, 10);
 
 // @0x140a702f0
-// MS2-FUNCTIONAL: the exe copies the new bag pointer and loads the vptr into a frame slot before the vfunc_10 call; no source form found
 void FUN_140a702f0(const CString& strName, const ATL::CAtlArray<MS2Ptr<CItem> >& items, int nKind)
 {
     LapenshardSlotBag* pBag = new (efd::MemHint(efd::MemHint::NONE)) LapenshardSlotBag(strName, items, nKind);
     if (pBag)
     {
-        int nCount = pBag->FUN_140a70a30();
-        static_cast<DragSlotBag*>(pBag)->vfunc_10(nCount);
+        static_cast<DragSlotBag*>(pBag)->vfunc_10(pBag->FUN_140a70a30());
         FUN_1422c8f10(strName, pBag);
     }
 }
 
 // @0x140a703d0
-// MS2-FUNCTIONAL: same vptr-in-frame-slot call shape as FUN_140a702f0
 LapenshardSlotBag* FUN_140a703d0(const CString& strName)
 {
     LapenshardSlotBag* pBag = new (efd::MemHint(efd::MemHint::NONE)) LapenshardSlotBag(strName);
-    if (pBag)
-    {
-        int nCount = pBag->FUN_140a70a30();
-        static_cast<DragSlotBag*>(pBag)->vfunc_10(nCount);
-        FUN_1422c8f10(strName, pBag);
-    }
+    if (!pBag)
+        return 0;
+    static_cast<DragSlotBag*>(pBag)->vfunc_10(pBag->FUN_140a70a30());
+    FUN_1422c8f10(strName, pBag);
     return pBag;
 }
 
@@ -133,14 +128,12 @@ CString LapenshardSlotBag::vfunc_15(int nIndex)
 }
 
 // @0x140a707f0
-// MS2-FUNCTIONAL: local/temporary order of the two slot constructions differs from the exe
 DragSlot* LapenshardSlotBag::vfunc_16(int nIndex)
 {
     CString strName = vfunc_15(nIndex);
     if (m_bEquipMode != 0)
     {
-        int nSlot = FUN_140a70b20(nIndex);
-        return new (efd::MemHint(efd::MemHint::NONE)) LapenshardSlot(strName, nIndex, MS2Ptr<CItem>(0), nSlot, m_nKind);
+        return new (efd::MemHint(efd::MemHint::NONE)) LapenshardSlot(strName, nIndex, MS2Ptr<CItem>(0), FUN_140a70b20(nIndex), m_nKind);
     }
     return new (efd::MemHint(efd::MemHint::NONE)) LapenshardSlot(strName, nIndex, MS2Ptr<CItem>(m_items[nIndex]), 0, m_nKind);
 }

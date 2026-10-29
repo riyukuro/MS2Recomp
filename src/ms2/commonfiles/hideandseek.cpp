@@ -129,24 +129,22 @@ bool HideAndSeek::Info::FUN_14050a4d0() { return m_19; }
 // @0x14050a510
 bool HideAndSeek::Info::FUN_14050a510() { return m_1a; }
 
-// MS2-FUNCTIONAL: clamp codegen differs
 // @0x14050a530
 void HideAndSeek::Info::FUN_14050a530(__int64 nAdd, unsigned short nRule)
 {
-    __int64 nLimit = FUN_140475ff0(nRule);
     __int64 n = nAdd;
-    if (nLimit < nAdd)
+    __int64 nLimit = FUN_140475ff0(nRule);
+    if (n > nLimit)
         n = nLimit;
     m_20 += n;
 }
 
-// MS2-FUNCTIONAL: clamp codegen differs
 // @0x14050a5a0
 void HideAndSeek::Info::FUN_14050a5a0(__int64 nValue, unsigned short nRule)
 {
-    __int64 nLimit = FUN_140475ff0(nRule);
     __int64 n = nValue;
-    if (nLimit < nValue)
+    __int64 nLimit = FUN_140475ff0(nRule);
+    if (n > nLimit)
         n = nLimit;
     m_20 = n;
 }
@@ -176,12 +174,10 @@ HideAndSeek::ObjectData::~ObjectData()
 {
 }
 
-// MS2-FUNCTIONAL: lock-guard/find sequence schedules registers differently
 // @0x14050a770
 void HideAndSeek::FUN_14050a770(unsigned nMapCode, std::vector<int>& out)
 {
-    Unk_LockGuard guard(s_lock);
-    if (guard == 0)
+    if (Unk_LockGuard guard = s_lock) {} else
     {
         if (s_ridingTable.empty())
             LoadHideAndSeek();
@@ -191,16 +187,14 @@ void HideAndSeek::FUN_14050a770(unsigned nMapCode, std::vector<int>& out)
     }
 }
 
-// MS2-FUNCTIONAL: XML loader; register/call-order differences in the tokenise/emplace sequence
 #ifndef MS2_HOOK_DLL
 // @0x14050a830
 void HideAndSeek::LoadHideAndSeek()
 {
     CString strPath = FUN_14071a5b0("Table/Server", "hideAndSeek.xml");
+    if (Unk_LockGuard guard = s_lock) {} else
     {
-        Unk_LockGuard guard(s_lock);
-        if (guard == 0)
-            s_ridingTable.clear();
+        s_ridingTable.clear();
     }
     TiXmlDocument doc;
     if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
@@ -210,18 +204,17 @@ void HideAndSeek::LoadHideAndSeek()
         return;
     for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("field"); pNode != 0; pNode = pNode->FUN_140168650("field"))
     {
-        if (FUN_14028f710(pNode))
+        if (FUN_14028f710(pNode) == 0)
+            continue;
+        unsigned nMapCode = 0;
+        FUN_140873220(pNode, "mapCode", nMapCode);
+        std::vector<int> objects;
+        CString strObjects(FUN_14086f4b0(pNode, "ridingObject"));
+        FUN_1401783d0(&strObjects, &objects, ",");
+        if (Unk_LockGuard guard = s_lock) {} else
         {
-            unsigned nMapCode = 0;
-            FUN_140873220(pNode, "mapCode", nMapCode);
-            std::vector<int> objects;
-            CString strObjects(FUN_14086f4b0(pNode, "ridingObject"));
-            FUN_1401783d0(&strObjects, &objects, ",");
-            Unk_LockGuard guard(s_lock);
-            if (guard == 0 && nMapCode != 0)
-            {
+            if (nMapCode > 0)
                 s_ridingTable.insert(std::pair<unsigned, std::vector<int> >(nMapCode, objects));
-            }
         }
     }
 }

@@ -24,4 +24,4 @@ public:
 MS2_CHECK_SIZE(UIQuizOXSelectDialog, 0x178);
 
 // Send the picked answer (0x140e7ed60).
-void FUN_140e7ed60(UIQuizOXSelectDialog* pDialog, char nAnswer);
+void FUN_140e7ed60(UIQuizOXSelectDialog* pDialog, int nAnswer);

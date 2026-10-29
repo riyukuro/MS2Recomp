@@ -34,6 +34,7 @@
 #include "clubcli.h"
 
 #include "ms2/client/ms2/partymanager.h"
+#include "ms2/commonfiles/commonstringtable.h"
 #include "ms2/client/ms2/pcbase.h"
 #include "ms2/client/ms2/uiclubdialog.h"
 #include "ms2/placeholder/cinpacket.h"
@@ -162,19 +163,6 @@ public:
 Unk_ClubConsts* FUN_1401d3200();
 int* FUN_1402056b0(Unk_ClubLimit* pLimit);
 
-// Name filter chain of the create-club request.
-class Unk_ClubNameFilter : public CPtred
-{
-public:
-    int FUN_140226400(CStringW& strName, CStringW& strError);
-};
-class Unk_ClubFilterManager
-{
-public:
-    MS2Ptr<Unk_ClubNameFilter> FUN_140229a50();
-};
-Unk_ClubFilterManager* FUN_14025e7d0();
-
 // Feature flags (FUN_140166410 / FUN_14036d570) and the party manager (FUN_1409670d0).
 class Unk_ClubFeatures
 {
@@ -194,9 +182,8 @@ CStringW FUN_1408116a0(int nId, const int& n);
 void FUN_1412751b0(const CStringW& str, int nChannel);
 void FUN_1412751f0(const CStringW& str, int a, int b);
 void FUN_141275260(int nId, int a, int b);
-bool FUN_14025cd60(const CStringW& a, const CStringW& b);
 bool FUN_141b70f50(const CStringW& a, const CStringW& b);
-int FUN_141276c80(const CStringW& strName, int nKind, CStringW& strError);
+int FUN_141276c80(const CStringW& strName, bool bCheckSelf, CStringW& strError);
 void FUN_140710590(COutPacket& packet);
 
 CStringW FUN_140b18ef0();
@@ -259,7 +246,6 @@ int CClubCli::FUN_140b129c0()
     return nCount;
 }
 
-// MS2-FUNCTIONAL: stack slot order of the locals and temporaries differs
 // @0x140b12ad0
 void CClubCli::FUN_140b12ad0(CInPacket& packet)
 {
@@ -268,26 +254,24 @@ void CClubCli::FUN_140b12ad0(CInPacket& packet)
     if (nResult != 0)
     {
         FUN_140b18470(FUN_14020f1a0(), CStringW(strName), nResult);
+        return;
     }
-    else
+    FUN_14020f4e0(2);
+    ATL::CAtlArray<MS2Ptr<CClubMember> > members;
+    FUN_1402109d0(members);
+    for (unsigned __int64 i = 0; i < members.GetCount(); i = i + 1)
     {
-        FUN_14020f4e0(2);
-        ATL::CAtlArray<MS2Ptr<CClubMember> > members;
-        FUN_1402109d0(members);
-        for (unsigned __int64 i = 0; i < members.GetCount(); i = i + 1)
-        {
-            MS2Ptr<CClubMember> spMember = members[i];
-            if (!(spMember == 0))
-                spMember->m_cc = 0;
-        }
-        UIClubDialog* pDialog = FUN_140b19090(0x4f25);
-        if (pDialog != 0)
-            pDialog->FUN_140e0bc30();
-        FUN_1412751b0(FUN_14052bd00(0x344, FUN_14020f1a0()), 0xf);
+        MS2Ptr<CClubMember> spMember = members[i];
+        if (spMember == 0)
+            continue;
+        spMember->m_cc = 0;
     }
+    UIClubDialog* pDialog = FUN_140b19090(0x4f25);
+    if (pDialog != 0)
+        pDialog->FUN_140e0bc30();
+    FUN_1412751b0(FUN_14052bd00(0x344, FUN_14020f1a0()), 0xf);
 }
 
-// MS2-FUNCTIONAL: stack slot order of the locals and temporaries differs
 // @0x140b12d70
 void CClubCli::FUN_140b12d70(CInPacket& packet)
 {
@@ -295,15 +279,15 @@ void CClubCli::FUN_140b12d70(CInPacket& packet)
     CClubMember member;
     member.FUN_14020ea50(&packet);
     MS2Ptr<CClubMember> spMember = FUN_140210560(member.m_info.FUN_14020e5d0());
-    if (!spMember)
+    if (spMember.get() != 0)
+    {
+        spMember->FUN_14020e950(&member);
+    }
+    else
     {
         spMember.AssignRaw(new CClubMember);
         spMember->FUN_14020e950(&member);
         vfunc_4(MS2Ptr<CClubMember>(spMember));
-    }
-    else
-    {
-        spMember->FUN_14020e950(&member);
     }
     if (spMember->m_c8 == 2)
     {
@@ -371,7 +355,6 @@ void CClubCli::FUN_140b133c0(CInPacket& packet)
     FUN_1412751b0(FUN_140632a60(0x354, FUN_14020f1a0(), strName), 0xf);
 }
 
-// MS2-FUNCTIONAL: stack slot order of the locals and temporaries differs
 // @0x140b135d0
 void CClubCli::FUN_140b135d0(CInPacket& packet)
 {
@@ -382,23 +365,22 @@ void CClubCli::FUN_140b135d0(CInPacket& packet)
     if (spFirst == 0)
         return;
     MS2Ptr<CClubMember> spSecond = FUN_140210560(CStringW(strSecond));
-    if (!(spSecond == 0))
+    if (spSecond == 0)
+        return;
+    FUN_14020f720(spSecond->m_info.m_accountId, spSecond->m_info.m_characterId, spSecond->m_info.FUN_14020e5d0(), 1);
+    m_leader = spSecond;
+    bool bMe = FUN_141b70f50(strFirst, FUN_140b18ef0());
+    if (bMe)
     {
-        FUN_14020f720(spSecond->m_info.m_accountId, spSecond->m_info.m_characterId, spSecond->m_info.FUN_14020e5d0());
-        m_leader = spSecond;
-        bool bMe = FUN_141b70f50(strFirst, FUN_140b18ef0());
-        if (!bMe)
-        {
-            FUN_1412751b0(FUN_140632a60(0x355, FUN_14020f1a0(), strSecond), 0xf);
-        }
-        else
-        {
-            UIClubDialog* pDialog = FUN_140b19090(0x4f25);
-            if (pDialog != 0)
-                pDialog->FUN_140e0bc30();
-            if (nFlag == 0)
-                FUN_1412751b0(FUN_14052bd00(0x356, FUN_14020f1a0()), 0xf);
-        }
+        UIClubDialog* pDialog = FUN_140b19090(0x4f25);
+        if (pDialog != 0)
+            pDialog->FUN_140e0bc30();
+        if (nFlag == 0)
+            FUN_1412751b0(FUN_14052bd00(0x356, FUN_14020f1a0()), 0xf);
+    }
+    else
+    {
+        FUN_1412751b0(FUN_140632a60(0x355, FUN_14020f1a0(), strSecond), 0xf);
     }
 }
 
@@ -502,7 +484,6 @@ bool CClubCli::FUN_140b14220()
     return true;
 }
 
-// MS2-FUNCTIONAL: compare/branch layout of the limit checks differs
 // @0x140b14230
 bool CClubCli::FUN_140b14230(CStringW strName)
 {
@@ -512,28 +493,21 @@ bool CClubCli::FUN_140b14230(CStringW strName)
     if (FUN_140211080(CStringW(strMe)) == 0)
         return false;
     CStringW strError;
-    int nResult = FUN_141276c80(strName, 1, strError);
-    if (nResult == 0)
+    int nResult = FUN_141276c80(strName, true, strError);
+    if (nResult != 0)
     {
-        int nCount = FUN_140210df0();
-        if (nCount < (int)FUN_14020f380())
-        {
-            COutPacket pkt(static_cast<int>(SendOp::Club), 0);
-            pkt.WriteUInt8(6);
-            pkt.WriteInt64(FUN_14020f0c0());
-            pkt.WriteUnicodeString(strName);
-            FUN_140710590(pkt);
-            return true;
-        }
+        int nMessage = (nResult == 10) ? 0x349 : 0x34a;
+        FUN_141275260(nMessage, 1, 1);
         return false;
     }
-    int nMessage;
-    if (nResult == 10)
-        nMessage = 0x349;
-    else
-        nMessage = 0x34a;
-    FUN_141275260(nMessage, 1, 1);
-    return false;
+    if (FUN_140210df0() >= (int)FUN_14020f380())
+        return false;
+    COutPacket pkt(static_cast<int>(SendOp::Club), 0);
+    pkt.WriteUInt8(6);
+    pkt.WriteInt64(FUN_14020f0c0());
+    pkt.WriteUnicodeString(strName);
+    FUN_140710590(pkt);
+    return true;
 }
 
 // @0x140b14480
@@ -568,7 +542,6 @@ void CClubCli::SendClubMode12(CStringW strName)
     FUN_140710590(pkt);
 }
 
-// MS2-FUNCTIONAL: compare/branch layout of the buff checks differs
 // @0x140b146e0
 void CClubCli::FUN_140b146e0(int nBuffId, int nBuffLevel)
 {
@@ -586,15 +559,14 @@ void CClubCli::FUN_140b146e0(int nBuffId, int nBuffLevel)
     if (nBuffId == 0 && nBuffLevel == 0)
         bClear = 1;
     MS2Ptr<Unk_ClubBuffData> spBuff = FUN_140b1a4e0()->FUN_140211760(nBuffId, nBuffLevel);
-    if (!(spBuff == 0) || bClear != 0)
-    {
-        COutPacket pkt(static_cast<int>(SendOp::Club), 0);
-        pkt.WriteUInt8(0xd);
-        pkt.WriteInt64(FUN_14020f0c0());
-        pkt.WriteInt32(nBuffId);
-        pkt.WriteInt32(nBuffLevel);
-        FUN_140710590(pkt);
-    }
+    if (spBuff == 0 && bClear == 0)
+        return;
+    COutPacket pkt(static_cast<int>(SendOp::Club), 0);
+    pkt.WriteUInt8(0xd);
+    pkt.WriteInt64(FUN_14020f0c0());
+    pkt.WriteInt32(nBuffId);
+    pkt.WriteInt32(nBuffLevel);
+    FUN_140710590(pkt);
 }
 
 // @0x140b14900
@@ -703,7 +675,6 @@ Unk_SocketPtr<Unk_ClubCliMap> CClubClientManager::FUN_140b14e40()
     return spResult;
 }
 
-// MS2-FUNCTIONAL: an extra local is allocated; frame is 0x10 bytes larger
 // @0x140b14fc0
 __int64 CClubClientManager::FUN_140b14fc0(CStringW strName)
 {
@@ -716,10 +687,13 @@ __int64 CClubClientManager::FUN_140b14fc0(CStringW strName)
         for (POSITION pos = m_clubs.GetHeadPosition(); pos != 0; m_clubs.GetNext(pos))
         {
             MS2Ptr<CClubCli> spClub = m_clubs.GetValueAt(pos);
-            if (spClub.get() != 0 && spClub->FUN_14020f540() == 2 && FUN_14025cd60(spClub->FUN_14020f1a0(), strName))
+            if (spClub.get() != 0 && spClub->FUN_14020f540() == 2)
             {
-                nClubId = spClub->FUN_14020f0c0();
-                break;
+                if (spClub->FUN_14020f1a0() == strName)
+                {
+                    nClubId = spClub->FUN_14020f0c0();
+                    break;
+                }
             }
         }
     }
@@ -962,7 +936,6 @@ void CClubClientManager::OnClub(CInPacket& packet)
     }
 }
 
-// MS2-FUNCTIONAL: branch layout of the create-club checks differs
 // @0x140b15c10
 bool CClubClientManager::FUN_140b15c10(CStringW strName)
 {
@@ -973,7 +946,7 @@ bool CClubClientManager::FUN_140b15c10(CStringW strName)
     }
     int nMinLength = *FUN_1402056b0(&FUN_1401d3200()->m_nameMin);
     int nMaxLength = *FUN_1402056b0(&FUN_1401d3200()->m_nameMax);
-    if (strName.GetLength() < nMinLength || nMaxLength < strName.GetLength())
+    if (strName.GetLength() < nMinLength || strName.GetLength() > nMaxLength)
         return false;
     if (strName.Find(L" ", 0) != -1)
     {
@@ -990,8 +963,7 @@ bool CClubClientManager::FUN_140b15c10(CStringW strName)
         FUN_141275260(0x36c, 1, 1);
         return false;
     }
-    Unk_ClubNameFilter* pFilter = FUN_14025e7d0()->FUN_140229a50().get();
-    if (pFilter != 0)
+    if (CBanTextChecker* pFilter = CommonString::GetInstance()->GetChecker())
     {
         CStringW strError;
         if (pFilter->FUN_140226400(strName, strError) != 0)
@@ -1112,14 +1084,17 @@ void CClubClientManager::FUN_140b16650(CInPacket& packet)
     CStringW strName = packet.ReadUnicodeString();
 }
 
-// MS2-FUNCTIONAL: temporary layout of the message box setup differs
 // @0x140b166d0
 void CClubClientManager::FUN_140b166d0(CInPacket& packet)
 {
     MS2Ptr<CClubCli> spClub(new CClubCli);
     spClub->FUN_14020fd80(packet);
     FUN_140b15440(MS2Ptr<CClubCli>(spClub));
-    if (!FUN_14025cd60(spClub->FUN_14020f8c0(), FUN_140b18ef0()))
+    if (spClub->FUN_14020f8c0() == FUN_140b18ef0())
+    {
+        SendClubMode3(spClub->FUN_14020f0c0(), 0);
+    }
+    else
     {
         Unk_MsgBoxPtr box = FUN_140b191a0(
             FUN_140632a60(0x345, spClub->FUN_14020f8c0(), spClub->FUN_14020f1a0()), 1,
@@ -1127,10 +1102,6 @@ void CClubClientManager::FUN_140b166d0(CInPacket& packet)
         FUN_141a01ca0(box.operator->(), 0x14, 1, GetStringCommon(0x2b8));
         FUN_141a024a0(box.operator->(), false);
         FUN_140d73c60(box);
-    }
-    else
-    {
-        SendClubMode3(spClub->FUN_14020f0c0(), 0);
     }
 }
 
@@ -1172,7 +1143,6 @@ void CClubClientManager::FUN_140b16bc0(CInPacket& packet)
     FUN_1412751b0(FUN_140632a60(0x347, strName, spClub->FUN_14020f1a0()), 0x14);
 }
 
-// MS2-FUNCTIONAL: temporary layout of the invitation box setup differs
 // @0x140b16d20
 void CClubClientManager::FUN_140b16d20(CInPacket& packet)
 {
@@ -1183,23 +1153,21 @@ void CClubClientManager::FUN_140b16d20(CInPacket& packet)
     }
     MS2Ptr<Club::PacketInvite> spInvite(new Club::PacketInvite);
     spInvite->FUN_14020c720(packet);
-    if (FUN_140b156b0(spInvite->m_inviteId).get() == 0)
-    {
-        FUN_140b155a0(MS2Ptr<Club::PacketInvite>(spInvite));
-        CStringW strText = FUN_140632a60(0x348, spInvite->m_28, spInvite->m_20);
-        Unk_MsgBoxPtr box = FUN_140d73d20(1, CStringW(strText), 0, CStringW(L""));
-        if (box.get() != 0)
-        {
-            FUN_141a01ca0(box.operator->(), 0x14, 1, GetStringCommon(0x2b8));
-            FUN_141a024a0(box.operator->(), false);
-            box->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &CClubClientManager::FUN_140b18400));
-            FUN_1405340b0(box.operator->(), spInvite->m_inviteId);
-            FUN_140d73c60(box);
-        }
-    }
-    else
+    if (FUN_140b156b0(spInvite->m_inviteId).get() != 0)
     {
         MS2_ASSERT_AT(0x392, 0);
+        return;
+    }
+    FUN_140b155a0(MS2Ptr<Club::PacketInvite>(spInvite));
+    CStringW strText = FUN_140632a60(0x348, spInvite->m_28, spInvite->m_20);
+    Unk_MsgBoxPtr box = FUN_140d73d20(1, CStringW(strText), 0, CStringW(L""));
+    if (box.get() != 0)
+    {
+        FUN_141a01ca0(box.operator->(), 0x14, 1, GetStringCommon(0x2b8));
+        FUN_141a024a0(box.operator->(), false);
+        box->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &CClubClientManager::FUN_140b18400));
+        FUN_1405340b0(box.operator->(), spInvite->m_inviteId);
+        FUN_140d73c60(box);
     }
 }
 
@@ -1438,20 +1406,15 @@ void CClubClientManager::FUN_140b181e0(CInPacket& packet)
     FUN_140b18700(nKind, nCode);
 }
 
-// MS2-FUNCTIONAL: unused result slot of the first packet read is not reproduced
 // @0x140b18260
 void CClubClientManager::FUN_140b18260(CInPacket& packet)
 {
-    packet.ReadInt64();
+    __int64 nClubId = packet.ReadInt64();
     CStringW strFirst = packet.ReadUnicodeString();
     CStringW strSecond = packet.ReadUnicodeString();
-    Unk_ClubWorldObj* pObj = FUN_1403ed2d0()->FUN_141bd1420(CStringW(strFirst));
+    Unk_ClubWorldObj* pObj = FUN_1403ed2d0()->FUN_141bd1420(strFirst);
     if (pObj == 0)
-    {
-    }
-    else
-    {
-    }
+        return;
 }
 
 // @0x140b18390
@@ -1513,79 +1476,78 @@ void FUN_140b18580(CStringW strClub, CStringW strName, int nCode)
     FUN_1412751b0(strMessage, 0xf);
 }
 
-// MS2-FUNCTIONAL: switch value copy of the exe is not reproduced
 // @0x140b18700
 void FUN_140b18700(int nKind, int nCode)
 {
     CStringW strMessage;
-    switch (nCode - 1)
+    switch (nCode)
     {
-    case 0:
+    case 1:
         strMessage = GetStringCommon(0x368);
+        break;
+    case 11:
+    case 12:
+        strMessage = GetStringCommon(0x372);
+        break;
+    case 13:
+        strMessage = GetStringCommon(0x375);
+        break;
+    case 14:
+        strMessage = GetStringCommon(0x36b);
+        break;
+    case 15:
+        strMessage = GetStringCommon(0x37d);
+        break;
+    case 51:
+        strMessage = GetStringCommon(0x37b);
+        break;
+    case 52:
+        strMessage = GetStringCommon(0x378);
+        break;
+    case 53:
+        strMessage = GetStringCommon(0x379);
+        break;
+    case 54:
+        strMessage = GetStringCommon(0x36f);
+        break;
+    case 55:
+        strMessage = GetStringCommon(0x37c);
+        break;
+    case 57:
+        strMessage = GetStringCommon(0x377);
+        break;
+    case 58:
+        strMessage = GetStringCommon(0x382);
+        break;
+    case 60:
+        strMessage = GetStringCommon(0x373);
+        break;
+    case 61:
+        strMessage = GetStringCommon(0x374);
+        break;
+    case 62:
+        strMessage = GetStringCommon(0x376);
+        break;
+    case 63:
+        strMessage = GetStringCommon(0x36d);
+        break;
+    case 72:
+        strMessage = GetStringCommon(900);
+        break;
+    case 67:
+        strMessage = GetStringCommon(899);
+        break;
+    case 73:
+        strMessage = GetStringCommon(0x385);
+        break;
+    case 74:
+        strMessage = GetStringCommon(0x386);
+        break;
+    case 59:
+        strMessage = GetStringCommon(0x387);
         break;
     default:
         strMessage = GetStringCommon(0x37e);
-        break;
-    case 10:
-    case 0xb:
-        strMessage = GetStringCommon(0x372);
-        break;
-    case 0xc:
-        strMessage = GetStringCommon(0x375);
-        break;
-    case 0xd:
-        strMessage = GetStringCommon(0x36b);
-        break;
-    case 0xe:
-        strMessage = GetStringCommon(0x37d);
-        break;
-    case 0x32:
-        strMessage = GetStringCommon(0x37b);
-        break;
-    case 0x33:
-        strMessage = GetStringCommon(0x378);
-        break;
-    case 0x34:
-        strMessage = GetStringCommon(0x379);
-        break;
-    case 0x35:
-        strMessage = GetStringCommon(0x36f);
-        break;
-    case 0x36:
-        strMessage = GetStringCommon(0x37c);
-        break;
-    case 0x38:
-        strMessage = GetStringCommon(0x377);
-        break;
-    case 0x39:
-        strMessage = GetStringCommon(0x382);
-        break;
-    case 0x3a:
-        strMessage = GetStringCommon(0x387);
-        break;
-    case 0x3b:
-        strMessage = GetStringCommon(0x373);
-        break;
-    case 0x3c:
-        strMessage = GetStringCommon(0x374);
-        break;
-    case 0x3d:
-        strMessage = GetStringCommon(0x376);
-        break;
-    case 0x3e:
-        strMessage = GetStringCommon(0x36d);
-        break;
-    case 0x42:
-        strMessage = GetStringCommon(899);
-        break;
-    case 0x47:
-        strMessage = GetStringCommon(900);
-        break;
-    case 0x48:
-        strMessage = GetStringCommon(0x385);
-        break;
-    case 0x49:
-        strMessage = GetStringCommon(0x386);
     }
     FUN_1412751f0(strMessage, 1, 1);
 }

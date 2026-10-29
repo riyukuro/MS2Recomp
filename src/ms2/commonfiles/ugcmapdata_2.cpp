@@ -273,7 +273,7 @@ Unk_UGCMapPtr LoadUGCMap(unsigned mapId) {
         bool adminOnly=false; FUN_1408736d0(node,"adminOnly",&adminOnly);
         CString indoorSizeType=FUN_14015f710(node,"indoorSizeType",CString(""));
         int useCouponEvent=0; FUN_140873710(node,"useCouponEvent",&useCouponEvent);
-        if(value->groups.find(no)==value->groups.end()) value->groups[no]=Unk_UGCGroup();
+        if(value->groups.find(no)==value->groups.end()) value->groups[no]=static_cast<const Unk_UGCGroup&>(Unk_UGCGroup());
         Unk_UGCGroup& group=value->groups[no];
         group.contractPrice=contractPrice; group.contractPriceItemCode=contractItemCode;
         group.extensionPrice=extensionPrice; group.extensionPriceItemCode=extensionItemCode;
@@ -296,9 +296,9 @@ Unk_UGCMapPtr LoadUGCMap(unsigned mapId) {
     }
     {
         Unk_140163940 lock(s_lock);
-        if(static_cast<int>(lock)==0) s_cache.SetAt(mapId,value);
+        if(lock) {} else s_cache.SetAt(mapId,value);
     }
-    return std::move(value);
+    return value;
 }
 #endif
 MS2_EMIT_CRT_MEMMOVE_S();

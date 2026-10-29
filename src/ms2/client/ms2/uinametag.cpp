@@ -21,8 +21,11 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/placeholder/cmypckeyinputcontroller.h"
 #include "ms2/ms2format.h"
+
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+
+extern "C" double (__cdecl* __imp_ceil)(double);              // the exe imports ceil from the UCRT
 
 // The unit's statics: the name tag mode, then two copies of the shared header statics (the first one has the game
 // object state name table between "stun" and the condition), then the key controller.
@@ -46,6 +49,13 @@ const char* FUN_141a61590(int nState, const std::pair<const char*, Unk_RequireSt
 double FUN_140f17ed0(const Scaleform::GFx::Value* pValue);                  // Value::GetNumber
 
 // The client configuration row (FUN_1401d3200): +8 forces mode 2, +0x2c8 the default distance, +0x848 a seat offset.
+// The name tag clip as the exe calls it: createEntity takes the flag as a bool.
+class Unk_NtClip : public ASGameEntity
+{
+public:
+    Scaleform::GFx::Value FUN_140ba9470(const char* szMethod, int a1, CString a2, bool a3);      // "createEntity"
+};
+
 struct Unk_NtCfgFloat { float FUN_1402bac70(); char m_pad[0x58]; };
 struct Unk_NtCfg
 {
@@ -67,7 +77,6 @@ Unk_NtUIScale* FUN_14025e7a0();                                             // u
 float FUN_1422afec0(Unk_NtUIScale* pScale, int nLayer);                     // scale of a layer
 NiPoint3* FUN_140ad0c10(NiPoint3* pt, float f);                             // efd::Point3::operator*=
 float FUN_1412762d0(const NiPoint3& pt);
-NiPoint3* FUN_14027dcf0(NiPoint3* pDst, const NiPoint3* pSrc);              // Point3::operator=
 bool FUN_14028d470(float a, float b);                                       // a == b (within epsilon)
 bool FUN_14087ddc0(const efd::ClassInfo* pInfo, unsigned int nId);
 bool FUN_1417ddbf0(const efd::ClassInfo* pInfo, int nId);           // statemanager.cpp: exact-class check (entry 0 only)
@@ -102,15 +111,9 @@ struct Unk_NtNpcData
 {
     char m_pad_00[0x7c];
     int m_7c;                                           // rank
-    char m_pad_80[0xf8 - 0x80];
-    __int64 m_f8;
-    char m_pad_100[0x148 - 0x100];
-    __int64 m_148; __int64 m_150; __int64 m_158;
-    char m_pad_160[0x170 - 0x160];
-    __int64 m_170; __int64 m_178; __int64 m_180;
-    char m_pad_188[0x190 - 0x188];
-    __int64 m_190; __int64 m_198; __int64 m_1a0; __int64 m_1a8;
-    int FUN_1406cd0d0();
+    char m_pad_80[0xd8 - 0x80];
+    __int64 m_d8[0x1b];                                 // stats (index = stat id)
+    unsigned int FUN_1406cd0d0();
 };
 class Unk_NtNpcDataPtr
 {
@@ -156,7 +159,7 @@ public:
     void* m_pad_00;
     Unk_NtTeam* m_p;
 };
-class Unk_NtSeatSub { public: NiPoint3* FUN_140adf8e0(void* pTmp24); };
+class Unk_NtSeatSub { public: efd::Point3 FUN_140adf8e0(); };
 // PC with its virtuals after slot 132 (PC itself declares 124..132).
 class Unk_NtPC : public PC
 {
@@ -178,7 +181,7 @@ class Unk_NtSub { public: float FUN_140970720(); };
 Unk_NtSub* FUN_1416749a0(PCBase* pActor);
 int FUN_141661c50(PC* pPc);                             // title id
 CStringW* FUN_141656be0(PC* pPc);                       // guild name
-__int64 FUN_141661e00(PC* pPc);
+unsigned short FUN_141661e00(PC* pPc);
 int FUN_141661e20(PC* pPc);
 int FUN_141661e40(PC* pPc, int* pnGrade, int* pnRank);
 int FUN_141678320(PC* pPc);
@@ -209,8 +212,8 @@ Unk_NtMountHolder* FUN_1416764a0(PCBase* pActor);
 class Unk_NtItemMgr
 {
 public:
-    int FUN_1406c5b00(__int64 nId, int nKind);
-    CStringW FUN_1406c6360(__int64 nId, PC* pPc, int n);
+    int FUN_1406c5b00(unsigned short nId, int nKind);
+    CStringW FUN_1406c6360(unsigned short nId, PC* pPc, int n);
 };
 Unk_NtItemMgr* FUN_14131e120();
 CStringW FUN_140b8f730(const NiPoint3& pt);
@@ -267,14 +270,13 @@ void UINameTag::Entity::FUN_141a5e540(CString strNode)
     m_20 = FUN_141675150(pActor, m_28);
 }
 
-// MS2-FUNCTIONAL: this/arg evaluation order (arg temps) differs
 // @0x141a5e5d0
-int UINameTag::Entity::FUN_141a5e5d0(float* pPos)
+int UINameTag::Entity::FUN_141a5e5d0(Unk_NtPos* pPos)
 {
     if (m_38.get() != 0 && FUN_140f48d40() != 0)
     {
-        m_38->FUN_1422c0f60(pPos + 0, pPos + 1);
-        *pPos = (float)((double)*pPos - (double)m_68 * 0.5);
+        m_38->FUN_1422c0f60(&pPos->x, &pPos->y);
+        pPos->x -= (double)m_68 * 0.5;
         return 1;
     }
     return 0;
@@ -323,7 +325,6 @@ void UINameTag::Entity::vfunc_4()
     m_70 = "";
 }
 
-// MS2-FUNCTIONAL: ceil is the CRT import call in the exe, an intrinsic here
 // @0x141a5e810
 void UINameTag::Entity::vfunc_5()
 {
@@ -335,34 +336,34 @@ void UINameTag::Entity::vfunc_5()
     if (m_38.get() != 0)
     {
         Scaleform::GFx::Value width = m_38->Invoke("getTextWidth");
-        m_68 = (unsigned int)ceil(FUN_140f17ed0(&width));
+        m_68 = (unsigned int)__imp_ceil(FUN_140f17ed0(&width));
     }
 }
 
-// MS2-FUNCTIONAL: same ceil/double temp codegen differences as vfunc_5
 // @0x141a5e8d0
 void UINameTag::Entity::vfunc_6(NiPoint3* pPos)
 {
     PCBase* pActor = FUN_140f49330();
     if (pActor == 0)
         return;
-    if (m_38.get() == 0)
-        return;
-    if (FUN_141a60d30() == 2)
-        FUN_141a5f080();
-    FUN_140ad0c10(pPos, FUN_1422afec0(FUN_14025e7a0(), m_18));
-    pPos->y = pPos->y + vfunc_9();
-    float fDist = FUN_140f48e20();
-    bool bNear = !(700.0f < fDist) || FUN_1403ed2d0()->FUN_141bd30a0().FUN_140885340()->m_1e0 != 0;
-    if (bNear)
-        m_38->FUN_1422bfe00(100.0f);
-    else
-        m_38->FUN_1422bfe00((float)((m_54 - fDist) * 0.05 + 40.0));
-    if (FUN_14028d470(FUN_1416749a0(pActor)->FUN_140970720(), 0.0f))
-        m_38->FUN_1422bfe00(0.0f);
-    float fY = pPos->y;
-    float fSeat = FUN_1412762d0(vfunc_10());
-    m_38->FUN_1422c00f0(pPos->x, fY + fSeat);
+    if (m_38.get() != 0)
+    {
+        if (FUN_141a60d30() == 2)
+            FUN_141a5f080();
+        FUN_140ad0c10(pPos, FUN_1422afec0(FUN_14025e7a0(), m_18));
+        pPos->y += vfunc_9();
+        float fDist = FUN_140f48e20();
+        bool bNear = !(700.0f < fDist) || FUN_1403ed2d0()->FUN_141bd30a0().FUN_140885340()->m_1e0 != 0;
+        if (bNear)
+            m_38->FUN_1422bfe00(100.0f);
+        else
+            m_38->FUN_1422bfe00((m_54 - fDist) * 0.05f + 40.0f);
+        if (FUN_14028d470(FUN_1416749a0(pActor)->FUN_140970720(), 0.0f))
+            m_38->FUN_1422bfe00(0.0f);
+        float fY = pPos->y;
+        fY += FUN_1412762d0(vfunc_10());
+        m_38->FUN_1422c00f0(pPos->x, fY);
+    }
 }
 
 // @0x141a5eb80
@@ -372,48 +373,53 @@ void UINameTag::Entity::vfunc_7()
         m_38->vfunc_3(0);
 }
 
-// MS2-FUNCTIONAL: smart-pointer temp layout differs from the exe
 // @0x141a5ebe0
 int UINameTag::Entity::vfunc_8(int n)
 {
     if (FUN_141a60d30() == 0)
         return 1;
-    if (FUN_1403ed2d0()->FUN_141bd0cc0() == 0)
-        return 1;
+    {
+        PCBase* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+        if (pPlayer == 0)
+            return 1;
+    }
     PCBase* pActor = FUN_140f49330();
     if (pActor == 0)
         return 1;
-    if (FUN_14166c930(pActor) == 0x3f)
+    switch (FUN_14166c930(pActor))
+    {
+    case 0x3f:
         return 1;
+    }
     if (FUN_141a60920() == 0)
         return 1;
     Unk_NtMountHolder* pHolder = FUN_1416764a0(pActor);
     if (pHolder != 0)
     {
         Unk_NtMountPtr spMount = pHolder->FUN_141707750();
-        if (spMount.FUN_1409f78a0() != 0 && spMount.FUN_1407895d0()->FUN_140784970().FUN_1407895c0()->m_68 != 0)
+        bool bMounted = (spMount.FUN_1409f78a0() ? true : false) && spMount.FUN_1407895d0()->FUN_140784970().FUN_1407895c0()->m_68 != 0;
+        if (bMounted)
             return 1;
     }
     return UIHudEntity::Entity::vfunc_8(FUN_14166ce30(pActor));
 }
 
-// MS2-FUNCTIONAL: NiPoint3 return/GS cookie frame layout differs
 // @0x141a5edb0
 NiPoint3 UINameTag::Entity::vfunc_10()
 {
-    PC* pPc = dynamic_cast<PC*>(FUN_140f49330());
-    Unk_NtSeatSub* pSeat = 0;
-    if (pPc == 0 || (pSeat = FUN_14165ca20(pPc)) == 0)
-        return UIHudEntity::Entity::vfunc_10();
-    NiPoint3 base = UIHudEntity::Entity::vfunc_10();
-    char tmp[24];
-    NiPoint3 pos;
-    FUN_14027dcf0(&pos, pSeat->FUN_140adf8e0(tmp));
-    pos.z = base.z;
-    return pos;
+    if (PC* pPc = dynamic_cast<PC*>(FUN_140f49330()))
+    {
+        if (Unk_NtSeatSub* pSeat = FUN_14165ca20(pPc))
+        {
+            NiPoint3 base = UIHudEntity::Entity::vfunc_10();
+            NiPoint3 pos(pSeat->FUN_140adf8e0());
+            pos.z = base.z;
+            return pos;
+        }
+    }
+    return UIHudEntity::Entity::vfunc_10();
 }
 
-// MS2-FUNCTIONAL: smart-pointer temp slots and state map differ
 // @0x141a5eea0
 float UINameTag::Entity::vfunc_9()
 {
@@ -423,13 +429,14 @@ float UINameTag::Entity::vfunc_9()
     Unk_NtPC* pPc = FUN_140974230(pActor);
     if (pPc != 0)
     {
-        if (FUN_14166ce30(pPc) != 0 && pPc->FUN_141657730().FUN_1416676b0() != 0
-            && pPc->FUN_141657730().FUN_141667740()->FUN_140f48d40() != 0)
+        bool bSeated = FUN_14166ce30(pPc) != 0 && (pPc->FUN_141657730().FUN_1416676b0() ? true : false)
+            && pPc->FUN_141657730().FUN_141667740()->FUN_140f48d40() != 0;
+        if (bSeated)
             return FUN_1401d3200()->m_848.FUN_1402bac70();
     }
-    if (pActor == 0)
-        return 0.0f;
-    return pActor->vfunc_89();
+    if (pActor != 0)
+        return pActor->vfunc_89();
+    return 0.0f;
 }
 
 // @0x141a5f040
@@ -439,37 +446,56 @@ void UINameTag::Entity::FUN_141a5f040(const CString& strSkin)
     FUN_140f48d80();
 }
 
-// MS2-FUNCTIONAL: big format/AS-object function; local and temporary layout differs from the exe
 #ifndef MS2_HOOK_DLL
 // @0x141a5f080
 void UINameTag::Entity::FUN_141a5f080()
 {
     PCBase* pActor = FUN_140f49330();
-    if (pActor == 0 || m_38.get() == 0)
+    if (pActor == 0)
         return;
-    m_38->FUN_1422bfe00(100.0f);
-    ASObj obj(m_18);
-    CStringW strInfo;
-    CStringW strStats;
-    Unk_NtPC* pPc = FUN_140974230(pActor);
-    if (pPc == 0)
+    if (m_38.get() != 0)
     {
-        Unk_NtNpc* pNpc = FUN_14096e110(pActor);
-        if (pNpc != 0)
+        m_38->FUN_1422bfe00(100.0f);
+        ASObj obj(m_18);
+        CStringW strInfo;
+        CStringW strStats;
+        Unk_NtPC* pPc = FUN_140974230(pActor);
+        if (pPc != 0)
+        {
+            __int64 nHp, nMaxHp, nStr, nInt, nDex, nLuk, nPen, nPap, nMap;
+            nHp = FUN_141670a00(pPc, 4);
+            nMaxHp = FUN_141670a30(pPc, 4);
+            nPap = FUN_141670a00(pPc, 0x17);
+            nMap = FUN_141670a00(pPc, 0x18);
+            nStr = FUN_141670a00(pPc, 0);
+            nDex = FUN_141670a00(pPc, 1);
+            nLuk = FUN_141670a00(pPc, 3);
+            nPen = FUN_141670a00(pPc, 0x1f);
+            nInt = FUN_141670a00(pPc, 2);
+            strStats = StringFormat(L"hp:{0}/{1} str:{2} int:{3} dex:{4} luk:{5} pen:{6} pap:{7} map:{8}",
+                                    nHp, nMaxHp, nStr, nInt, nDex, nLuk, nPen, nPap, nMap);
+            strInfo = StringFormat(L"{0} state:[{1}] pos:[{2}] rot:[{3}] {4}",
+                                   pPc->vfunc_77(),
+                                   FUN_14016a730(FUN_141a61590(FUN_14166c930(pPc), s_gosNames), 0),
+                                   FUN_140b8f730(pPc->vfunc_18()),
+                                   FUN_140b8f730(pPc->vfunc_20()),
+                                   pPc->vfunc_134());
+        }
+        else if (Unk_NtNpc* pNpc = FUN_14096e110(pActor))
         {
             __int64 nHp, nMaxHp, nPap, nMap, nNdd, nPar, nMar, nAtp, nEvp, nAbp, nMsp, nCar;
             nHp = FUN_141670a00(pNpc, 4);
-            nPap = pNpc->FUN_141093270().FUN_140965990()->m_190;
-            nMap = pNpc->FUN_141093270().FUN_140965990()->m_198;
-            nNdd = pNpc->FUN_141093270().FUN_140965990()->m_178;
-            nPar = pNpc->FUN_141093270().FUN_140965990()->m_1a0;
-            nMar = pNpc->FUN_141093270().FUN_140965990()->m_1a8;
-            nAtp = pNpc->FUN_141093270().FUN_140965990()->m_150;
-            nEvp = pNpc->FUN_141093270().FUN_140965990()->m_158;
-            nAbp = pNpc->FUN_141093270().FUN_140965990()->m_180;
-            nMsp = pNpc->FUN_141093270().FUN_140965990()->m_148;
-            nCar = pNpc->FUN_141093270().FUN_140965990()->m_170;
-            nMaxHp = pNpc->FUN_141093270().FUN_140965990()->m_f8;
+            nPap = pNpc->FUN_141093270().FUN_140965990()->m_d8[0x17];
+            nMap = pNpc->FUN_141093270().FUN_140965990()->m_d8[0x18];
+            nNdd = pNpc->FUN_141093270().FUN_140965990()->m_d8[0x14];
+            nPar = pNpc->FUN_141093270().FUN_140965990()->m_d8[0x19];
+            nMar = pNpc->FUN_141093270().FUN_140965990()->m_d8[0x1a];
+            nAtp = pNpc->FUN_141093270().FUN_140965990()->m_d8[0xf];
+            nEvp = pNpc->FUN_141093270().FUN_140965990()->m_d8[0x10];
+            nAbp = pNpc->FUN_141093270().FUN_140965990()->m_d8[0x15];
+            nMsp = pNpc->FUN_141093270().FUN_140965990()->m_d8[0xe];
+            nCar = pNpc->FUN_141093270().FUN_140965990()->m_d8[0x13];
+            nMaxHp = pNpc->FUN_141093270().FUN_140965990()->m_d8[0x4];
             strStats = StringFormat(L"hp:{0}/{1} pap:{2} map:{3} ndd:{4} par:{5} mar:{6} atp:{7} evp:{8}, abp:{9}, msp:{10}, car:{11}",
                                     nHp, nMaxHp, nPap, nMap, nNdd, nPar, nMar, nAtp, nEvp, nAbp, nMsp, nCar);
             int aRankStr[9] = {0x573, 0xaf, 0xb0, 0xb1, 0xb3, 0xb5, 0xb4, 0xb2};
@@ -480,192 +506,158 @@ void UINameTag::Entity::FUN_141a5f080()
                            (LPCWSTR)FUN_14016a730(FUN_141a61590(FUN_14166c930(pNpc), s_gosNames), 0),
                            (unsigned int)nLevel,
                            (LPCWSTR)GetStringCommon(aRankStr[nRank]));
-            bool bShop = pNpc->FUN_141093270().FUN_140965990()->FUN_1406cd0d0() != 0;
+            bool bShop = pNpc->FUN_141093270().FUN_140965990()->FUN_1406cd0d0() > 0;
             if (bShop)
-            {
-                unsigned int nShop = pNpc->FUN_141093270().FUN_140965990()->FUN_1406cd0d0();
-                strInfo.AppendFormat(L" shopID:[%d]", nShop);
-            }
+                strInfo.AppendFormat(L" shopID:[%d]", pNpc->FUN_141093270().FUN_140965990()->FUN_1406cd0d0());
             Unk_NtPet* pPet = FUN_1409ffc60(pActor);
             if (pPet != 0)
                 strInfo.AppendFormat(L" tamingLevel:[%d], tamerOID:[%d], tamingPoint:[%d]",
                                      pPet->FUN_140b10fe0(), pPet->FUN_140b109f0(), pPet->FUN_140b10c00());
         }
+        obj.FUN_1407cb9c0("visibleSymbol", m_7c);
+        obj.FUN_1407cb9c0("visibleName", m_78);
+        obj.FUN_1407cbb20("name", strInfo);
+        obj.FUN_1407cbb20("guild", strStats);
+        obj.FUN_1409c0d20("fontSize", m_60);
+        obj.FUN_1409c0d20("fontColor", m_64);
+        m_38->Invoke("setData", obj);
     }
-    else
-    {
-        __int64 nHp, nMaxHp, nStr, nInt, nDex, nLuk, nPen, nPap, nMap;
-        nHp = FUN_141670a00(pPc, 4);
-        nMaxHp = FUN_141670a30(pPc, 4);
-        nPap = FUN_141670a00(pPc, 0x17);
-        nMap = FUN_141670a00(pPc, 0x18);
-        nStr = FUN_141670a00(pPc, 0);
-        nDex = FUN_141670a00(pPc, 1);
-        nLuk = FUN_141670a00(pPc, 3);
-        nPen = FUN_141670a00(pPc, 0x1f);
-        nInt = FUN_141670a00(pPc, 2);
-        strStats = StringFormat(L"hp:{0}/{1} str:{2} int:{3} dex:{4} luk:{5} pen:{6} pap:{7} map:{8}",
-                                nHp, nMaxHp, nStr, nInt, nDex, nLuk, nPen, nPap, nMap);
-        strInfo = StringFormat(L"{0} state:[{1}] pos:[{2}] rot:[{3}] {4}",
-                               pPc->vfunc_77(),
-                               FUN_14016a730(FUN_141a61590(FUN_14166c930(pPc), s_gosNames), 0),
-                               FUN_140b8f730(pPc->vfunc_18()),
-                               FUN_140b8f730(pPc->vfunc_20()),
-                               pPc->vfunc_134());
-    }
-    obj.FUN_1407cb9c0("visibleSymbol", m_7c);
-    obj.FUN_1407cb9c0("visibleName", m_78);
-    obj.FUN_1407cbb20("name", strInfo);
-    obj.FUN_1407cbb20("guild", strStats);
-    obj.FUN_1409c0d20("fontSize", m_60);
-    obj.FUN_1409c0d20("fontColor", m_64);
-    m_38->Invoke("setData", obj);
 }
 #endif
 
-// MS2-FUNCTIONAL: big format/AS-object function; local and temporary layout differs from the exe
 // @0x141a5ff60
 void UINameTag::Entity::FUN_141a5ff60()
 {
     PCBase* pActor = FUN_140f49330();
     if (pActor == 0)
         return;
-    if (m_38.get() == 0)
-        return;
-    m_38->FUN_1422bfe00(100.0f);
-    ASObj obj(m_18);
-    CStringW strName;
-    CStringW strGuild;
-    strName = pActor->vfunc_77();
-    Unk_NtPC* pPc = FUN_140974230(pActor);
-    if (pPc == 0)
+    if (m_38.get() != 0)
     {
-        Unk_NtNpc* pNpc = FUN_14096e110(pActor);
-        if (pNpc != 0)
-            strGuild = pNpc->FUN_141093980();
-    }
-    else
-    {
-        strGuild = L"";
-        if (FUN_141656be0(pPc)->GetLength() > 0)
-            strGuild = StringFormat(L"<{0}>", *FUN_141656be0(pPc));
-        if (FUN_141661c50(pPc) != 0)
-            strName = StringFormat(L"{0} {1}", FUN_141b720b0(FUN_141661c50(pPc), pPc), strName);
-        bool bSymbol = false;
-        Unk_NtSymbolRec* pRec = FUN_1403ed2d0()->FUN_141bcab60(5);
-        if (pRec != 0)
+        m_38->FUN_1422bfe00(100.0f);
+        ASObj obj(m_18);
+        CStringW strName;
+        CStringW strGuild;
+        strName = pActor->vfunc_77();
+        Unk_NtPC* pPc = FUN_140974230(pActor);
+        if (pPc != 0)
         {
-            if (FUN_141678320(pPc) == 1)
+            strGuild = L"";
+            if (FUN_141656be0(pPc)->GetLength() > 0)
+                strGuild = StringFormat(L"<{0}>", *FUN_141656be0(pPc));
+            if (FUN_141661c50(pPc) != 0)
+                strName = StringFormat(L"{0} {1}", FUN_141b720b0(FUN_141661c50(pPc), pPc), strName);
+            bool bSymbol = false;
+            if (Unk_NtSymbolRec* pRec = FUN_1403ed2d0()->FUN_141bcab60(5))
             {
-                obj.FUN_1407cbb20("symbol", pRec->m_18);
-                bSymbol = true;
-            }
-            else if (FUN_141678320(pPc) == 2)
-            {
-                obj.FUN_1407cbb20("symbol", pRec->m_20);
-                bSymbol = true;
-            }
-        }
-        bool bTeam = !bSymbol && pPc->FUN_140967420().FUN_140965810() != 0
-                     && pPc->FUN_140967420().FUN_140965970()->FUN_140743610();
-        if (bTeam)
-        {
-            int nTeam = pPc->FUN_140967420().FUN_140965970()->FUN_140743710();
-            if (nTeam == 0xc9)
-            {
-                obj.FUN_1409c0dc0("symbol", "red_team");
-                bSymbol = true;
-            }
-            else
-            {
-                nTeam = pPc->FUN_140967420().FUN_140965970()->FUN_140743710();
-                if (nTeam == 0xca)
+                Unk_NtSymbolRec& rec = *pRec;
+                if (FUN_141678320(pPc) == 1)
                 {
-                    obj.FUN_1409c0dc0("symbol", "blue_team");
+                    obj.FUN_1407cbb20("symbol", rec.m_18);
+                    bSymbol = true;
+                }
+                else if (FUN_141678320(pPc) == 2)
+                {
+                    obj.FUN_1407cbb20("symbol", rec.m_20);
                     bSymbol = true;
                 }
             }
-        }
-        if (!bSymbol)
-        {
-            __int64 nId = FUN_141661e00(pPc);
-            if (FUN_14131e120()->FUN_1406c5b00(nId, 2) == 0)
+            bool bTeam = !bSymbol && (pPc->FUN_140967420().FUN_140965810() ? true : false)
+                         && pPc->FUN_140967420().FUN_140965970()->FUN_140743610();
+            if (bTeam)
             {
-                if (FUN_141661e20(pPc) != 0)
+                bool bRed = pPc->FUN_140967420().FUN_140965970()->FUN_140743710() == 0xc9;
+                if (bRed)
                 {
-                    CStringW strIcon = FUN_14131e120()->FUN_1406c6360(nId, pPc, 0);
-                    obj.FUN_1407cbb20("symbol", strIcon);
-                    if (FUN_14131e120()->FUN_1406c5b00(nId, 1) == 0)
+                    obj.FUN_1409c0dc0("symbol", "red_team");
+                    bSymbol = true;
+                }
+                else
+                {
+                    bool bBlue = pPc->FUN_140967420().FUN_140965970()->FUN_140743710() == 0xca;
+                    if (bBlue)
                     {
-                        if (FUN_14131e120()->FUN_1406c5b00(nId, 0xb) != 0)
-                            obj.FUN_1409c0d20("level", pPc->vfunc_141());
+                        obj.FUN_1409c0dc0("symbol", "blue_team");
+                        bSymbol = true;
                     }
-                    else
-                        obj.FUN_1409c48f0("level", (short)pPc->vfunc_78());
                 }
             }
-            else
+            if (!bSymbol)
             {
-                int nGrade, nRank;
-                if (FUN_141661e40(pPc, &nGrade, &nRank) != 0)
+                unsigned short nId = FUN_141661e00(pPc);
+                if (FUN_14131e120()->FUN_1406c5b00(nId, 2) != 0)
                 {
-                    obj.FUN_1409c0dc0("symbol", "enchant");
-                    obj.FUN_1407cb9c0("grade", nGrade);
-                    obj.FUN_1409adc90("rank", nRank);
+                    int nGrade, nRank;
+                    if (FUN_141661e40(pPc, &nGrade, &nRank) != 0)
+                    {
+                        obj.FUN_1409c0dc0("symbol", "enchant");
+                        obj.FUN_1407cb9c0("grade", nGrade);
+                        obj.FUN_1409adc90("rank", nRank);
+                    }
+                }
+                else if (FUN_141661e20(pPc) != 0)
+                {
+                    const CStringW& strIcon = FUN_14131e120()->FUN_1406c6360(nId, pPc, 0);
+                    obj.FUN_1407cbb20("symbol", strIcon);
+                    if (FUN_14131e120()->FUN_1406c5b00(nId, 1) != 0)
+                        obj.FUN_1409c48f0("level", (short)pPc->vfunc_78());
+                    else if (FUN_14131e120()->FUN_1406c5b00(nId, 0xb) != 0)
+                        obj.FUN_1409c0d20("level", pPc->vfunc_141());
                 }
             }
         }
+        else if (Unk_NtNpc* pNpc = FUN_14096e110(pActor))
+        {
+            strGuild = pNpc->FUN_141093980();
+        }
+        obj.FUN_1407cb9c0("visibleSymbol", m_7c);
+        obj.FUN_1407cb9c0("visibleName", m_78);
+        obj.FUN_1407cbb20("name", strName);
+        obj.FUN_1407cbb20("guild", strGuild);
+        obj.FUN_1409c0d20("fontSize", m_60);
+        obj.FUN_1409c0d20("fontColor", m_64);
+        obj.FUN_1407cba60("skin", m_70);
+        m_38->Invoke("setData", obj);
     }
-    obj.FUN_1407cb9c0("visibleSymbol", m_7c);
-    obj.FUN_1407cb9c0("visibleName", m_78);
-    obj.FUN_1407cbb20("name", strName);
-    obj.FUN_1407cbb20("guild", strGuild);
-    obj.FUN_1409c0d20("fontSize", m_60);
-    obj.FUN_1409c0d20("fontColor", m_64);
-    obj.FUN_1407cba60("skin", m_70);
-    m_38->Invoke("setData", obj);
 }
 
-// MS2-FUNCTIONAL: config flag chain temp layout differs
 // @0x141a60920
-bool UINameTag::Entity::FUN_141a60920()
+int UINameTag::Entity::FUN_141a60920()
 {
     PCBase* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pPlayer == 0)
-        return false;
+        return 0;
     PCBase* pActor = FUN_140f49330();
     if (pActor == 0)
-        return false;
+        return 0;
     if (FUN_1417ddbf0(pActor ? pActor->GetClassDesc() : 0, 0x6200004))   // the exe uses the exact-class check here
     {
-        bool bName = FUN_1409a8b10()->FUN_140b123b0()->m_0;
-        FUN_141a60b90(FUN_1409a8b10()->FUN_140b123b0()->m_1, bName);
-        return !(m_78 == 0 && m_7c == 0);
+        FUN_141a60b90(FUN_1409a8b10()->FUN_140b123b0()->m_1, FUN_1409a8b10()->FUN_140b123b0()->m_0);
+        return m_78 != 0 || m_7c != 0;
     }
-    Unk_NtPC* pPc = FUN_140974230(pActor);
-    if (pPc != 0)
+    else if (Unk_NtPC* pPc = FUN_140974230(pActor))
     {
-        bool bName;
         if (pPlayer->vfunc_122(pPc) == 0)
         {
-            bName = FUN_1409a8b10()->FUN_140b123b0()->m_2;
-            FUN_141a60b90(FUN_1409a8b10()->FUN_140b123b0()->m_1, bName);
+            FUN_141a60b90(FUN_1409a8b10()->FUN_140b123b0()->m_1, FUN_1409a8b10()->FUN_140b123b0()->m_2);
         }
         else
         {
-            bName = FUN_1409a8b10()->FUN_140b123b0()->m_3;
-            FUN_141a60b90(FUN_1409a8b10()->FUN_140b123b0()->m_1, bName);
+            FUN_141a60b90(FUN_1409a8b10()->FUN_140b123b0()->m_1, FUN_1409a8b10()->FUN_140b123b0()->m_3);
         }
-        return !(m_78 == 0 && m_7c == 0);
+        return m_78 != 0 || m_7c != 0;
     }
-    if (FUN_1409ffc60(pActor) != 0)
-        return true;
-    Unk_NtNpc* pNpc = FUN_14096e110(pActor);
-    if (pNpc == 0)
-        return false;
-    if (pNpc->vfunc_116() == 0)
-        return FUN_1409a8b10()->FUN_140b123b0()->m_5;
-    return FUN_1409a8b10()->FUN_140b123b0()->m_4;
+    else if (Unk_NtPet* pPet = FUN_1409ffc60(pActor))
+    {
+        return 1;
+    }
+    else if (Unk_NtNpc* pNpc = FUN_14096e110(pActor))
+    {
+        if (pNpc->vfunc_116() == 0)
+            return FUN_1409a8b10()->FUN_140b123b0()->m_5;
+        else
+            return FUN_1409a8b10()->FUN_140b123b0()->m_4;
+    }
+    return 0;
 }
 
 // @0x141a60b90
@@ -805,20 +797,21 @@ void UINameTag::FUN_141a60f70(unsigned int nCount)
     }
 }
 
-// MS2-FUNCTIONAL: local/EH-state layout differs (as in UIShieldBar::FUN_140e86610)
 // @0x141a61150
 UINameTag::Entity* UINameTag::FUN_141a61150(int nActorId)
 {
     if (FUN_140f49890(nActorId) != 0)
         return 0;
+    {
     FUN_140f49c00(nActorId);
     MS2Ptr<ASGameEntity> pClip(dynamic_cast<ASGameEntity*>((AScript*)m_30));
     if (pClip.get())
     {
         if (m_78.IsEmpty())
         {
-            FUN_140930110(nActorId);
-            Scaleform::GFx::Value v = pClip->FUN_140ba9470("createEntity", nActorId, m_70, 0);
+            bool bFlag = FUN_140930110(nActorId);
+            bFlag = false;
+            Scaleform::GFx::Value v = ((Unk_NtClip*)pClip.operator->())->FUN_140ba9470("createEntity", nActorId, m_70, bFlag);
             if (FUN_1409b0390(&v) == 0)
             {
                 Entity* p = new Entity(m_28, v, nActorId);
@@ -841,8 +834,7 @@ UINameTag::Entity* UINameTag::FUN_141a61150(int nActorId)
                 if (nActorId != nOld)
                 {
                     bool bNew = FUN_140930110(nActorId);
-                    bool bOld = FUN_140930110(nOld);
-                    if (bOld || bNew)
+                    if (FUN_140930110(nOld) || bNew)
                     {
                         MS2Ptr<ASGameEntity> pOldClip = pEntity->FUN_140f48ed0();
                         if (pOldClip.get())
@@ -854,6 +846,7 @@ UINameTag::Entity* UINameTag::FUN_141a61150(int nActorId)
                 return (Entity*)pEntity.get();
             }
         }
+    }
     }
     return 0;
 }

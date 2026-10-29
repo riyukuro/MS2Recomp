@@ -98,8 +98,8 @@ public:
     int FUN_1418ace00(CAchieve* pAchieve, const CStringW& strSearch, const FilterOptions* pOptions);   // the row is shown
 
     int FUN_1418ad560(int nCondType);                                                   // the condition type lists collected ids
-    CStringW FUN_1418ad5d0(int nCondType, unsigned nId);                                // the text of one collected id
-    int FUN_1418ad960(int nCondType, unsigned nId);                                     // the collected id is done
+    CStringW FUN_1418ad5d0(int nCondType, __int64 nId);                                // the text of one collected id
+    int FUN_1418ad960(int nCondType, __int64 nId);                                     // the collected id is done
 
     // movie children (ICF'd child lookups of the exe)
     MS2Ptr<Unk_AcHero> FUN_140ede180(const CString& strName);

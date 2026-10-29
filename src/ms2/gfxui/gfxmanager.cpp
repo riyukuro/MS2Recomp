@@ -9,26 +9,26 @@
 // (placeholder/gfxclipboard.h; OnTextStore is in ?\gfxvideo.cpp) has its vftable and inline ContainsRichText here. The COMDAT tail (0x1422b2800-) is Scaleform's loader-state glue
 // (Ptr<>, the inline Loader setters / getters, the inline State ctors), NiPointer<>, TFunctor<> and CRBMap<>.
 #define GFX_USE_VIDEO_WIN32               // sfvideo.h (GFxVideo)
+#define SF_GFX_PLAYERIMPL                   // gfx_movieimpl.h: MovieImpl : Movie (the focused text field queries)
 #include "ms2/placeholder/ms2stdafx.h"
 #pragma float_control(precise, on)
 // The exe calls strcmp (SFstrcmp, pinned below) and wcslen (FUN_1422af5f0) out of line; /Oi would expand them inline.
 #pragma function(strcmp)
 #pragma function(wcslen)
-
 #include <afx.h>
 #include <atlcoll.h>
 
-#include "GFx/GFx_FontProviderWin32.h"
-#include "GFx/GFx_ImageResource.h"
-#include "GFx/GFx_PlayerImpl.h"
-#include "GFx/GFx_TextField.h"
-#include "GFx/GFx_AS3Support.h"
-#include "GFx/XML/XML_Support.h"
-#include "XML/XML_Expat.h"
-#include "Render/ImageFiles/JPEG_ImageFile.h"
-#include "Render/ImageFiles/PNG_ImageFile.h"
-#include "Render/ImageFiles/TGA_ImageFile.h"
-#include "Render/ImageFiles/DDS_ImageFile.h"
+#include "ms2/scaleform/include/gfx/gfx_fontprovider.h"
+#include "ms2/scaleform/include/gfx/gfx_movieimpl.h"
+#include "ms2/scaleform/include/gfx/gfx_textfield.h"
+#include "ms2/scaleform/include/gfx/as3/as3_support.h"
+#include "ms2/scaleform/include/gfx/xml/xml_expat.h"
+#include "ms2/scaleform/include/gfx/gfx_imagefilehandlerregistry.h"
+#include "ms2/scaleform/include/gfx/gfx_audio.h"
+#include "ms2/scaleform/include/render/render_jpeg.h"
+#include "ms2/scaleform/include/render/render_png.h"
+#include "ms2/scaleform/include/render/render_tga.h"
+#include "ms2/scaleform/include/render/render_dds.h"
 
 #include "ms2/placeholder/gfxmanager.h"
 #include "ms2/placeholder/gfxmovie.h"
@@ -890,24 +890,20 @@ void GFxManager::FUN_1422b0690(TFunctor<unsigned int, ParamList<const CString&, 
 }
 MS2_REPLACE_METHOD(0x1422B0690, GFxManager, FUN_1422b0690, 63, 0x7B4314CC);
 
-// MS2-FUNCTIONAL: the exe also stores the stage pointer to an unread stack slot before the MS2Ptr temporary dies
 // @0x1422b06e0
 void GFxManager::FUN_1422b06e0(int nMovieId, int* pnWidth, int* pnHeight)
 {
-    ASStage* pStage = FUN_1422b02f0(nMovieId).get();
-    if (pStage) {
+    if (ASStage* pStage = FUN_1422b02f0(nMovieId).get()) {
         *pnWidth = pStage->FUN_1422cfec0();
         *pnHeight = pStage->FUN_1422cff20();
     }
 }
 MS2_REPLACE_METHOD(0x1422B06E0, GFxManager, FUN_1422b06e0, 155, 0xEE517CC4);
 
-// MS2-FUNCTIONAL: the exe also stores the stage pointer to an unread stack slot before the MS2Ptr temporary dies
 // @0x1422b0790
 void GFxManager::FUN_1422b0790(int nMovieId)
 {
-    ASStage* pStage = FUN_1422b02f0(nMovieId).get();
-    if (pStage) {
+    if (ASStage* pStage = FUN_1422b02f0(nMovieId).get()) {
         m_anStageWidth[nMovieId] = pStage->FUN_1422cfec0();
         m_anStageHeight[nMovieId] = pStage->FUN_1422cff20();
     }
@@ -1065,7 +1061,7 @@ int GFxManager::FUN_1422b1030()
     Ptr<GFxClipboard> spClipboard = *new GFxClipboard();
     m_loader.SetTextClipboard(spClipboard);
     Ptr<FontProviderWin32> spFontProvider = *new FontProviderWin32(GetDC(NULL));
-    spFontProvider->SetHintingAllFonts(Font::DontHint, Font::DontHint, 24, 24);
+    spFontProvider->SetHintingAllFonts(Render::Font::DontHint, Render::Font::DontHint, 24, 24);
     m_loader.SetFontProvider(spFontProvider);
     Ptr<ParseControl> spParseControl = *new ParseControl(0);
     m_loader.SetParseControl(spParseControl);

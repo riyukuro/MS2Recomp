@@ -395,11 +395,10 @@ void FUN_140381d40(FieldPropertyPhotoStudio* p) { p->FieldProperty::~FieldProper
 // @0x140381d60
 void FUN_140381d60(FieldPropertySightRange* p) { p->FieldProperty::~FieldProperty(); }
 // @0x140381d80
-// MS2-FUNCTIONAL: CStringW dtor call encoding differs
 void FUN_140381d80(FieldPropertyUserTagSymbol* p)
 {
-    p->m_strB.~CStringW();
-    p->m_strA.~CStringW();
+    p->m_strB.CStringW::~CStringW();
+    p->m_strA.CStringW::~CStringW();
     p->FieldProperty::~FieldProperty();
 }
 // @0x140381dc0

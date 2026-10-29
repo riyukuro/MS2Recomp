@@ -57,7 +57,7 @@ public:
     NiDynamicTexturePtr m_spTexture;                               // +0x28
     NiBillboardNodePtr m_spNode;                                    // +0x30
     NiMeshScreenElementsPtr m_spMesh;                               // +0x38
-    NiPoint3 m_kOffset;                                             // +0x40
+    efd::Point3 m_kOffset;                                          // +0x40
     float m_fSize;                                                  // +0x4c
     Unk_AfterImageColor m_kColor;                                   // +0x50 the param's colour
     unsigned m_nBirth;                                              // +0x60 tick count of the snapshot

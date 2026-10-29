@@ -18,7 +18,7 @@
 // first emitted by ?\tabcontentspetremakeoption.cpp) zeroes both ints. It is the element of the option list of
 // CCItemRemakeOptionPacket::RemakeOption (citemremakeoptionpacket.h: Unk_RemakeOptionList50 is this std::vector, 0x18
 // bytes; push_back(const&) 0x140b9b410 and its emplace_back glue 0x140b99c40..0x140b9a170 are in the same unit).
-// citemremakeoptionpacket.h's 4-byte Unk_LockOpt is the same record seen through its first int only.
+// citemremakeoptionpacket.h's Unk_LockOpt is the same 8-byte record.
 struct Unk_RemakeLockOpt
 {
     Unk_RemakeLockOpt() : m_nIndex(0), m_nValue(0) {}   // 0x140b98d30
@@ -80,7 +80,7 @@ class CItemRemakeOptionIngredient : public CPtred
 {
 public:
     CItemRemakeOptionIngredient();                      // 0x140b9a3c0 m_spContainer = new CIngredientContainer(3)
-    virtual ~CItemRemakeOptionIngredient();             // 0x140b9a580 (??_G 0x140b9a870)
+    // implicit dtor 0x140b9a580 (??_G 0x140b9a870)
     MS2SvrPtr<CIngredientContainer> m_spContainer;      // +0x18
 };
 MS2_CHECK_SIZE(CItemRemakeOptionIngredient, 0x28);

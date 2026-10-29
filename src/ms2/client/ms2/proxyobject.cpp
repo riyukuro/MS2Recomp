@@ -49,7 +49,7 @@ extern int DAT_1439f825c;                                           // the runni
 
 class Unk_PxEntMgr;
 Unk_PxEntMgr* FUN_1409670f0();
-struct Unk_PxEntIter { void* m_a; void* m_b; };
+struct Unk_PxEntIter { void* m_pNode; };   // one node pointer: the exe reserves 8 bytes for it
 void FUN_1411ce5a0(Unk_PxEntMgr* pMgr, Unk_PxEntIter* pIter);
 bool FUN_1411ce5f0(Unk_PxEntMgr* pMgr, Unk_PxEntIter* pIter, egf::Entity** ppOut);
 egf::Entity* FUN_1411cf440(Unk_PxEntMgr* pMgr, const egf::EntityID& id);
@@ -128,12 +128,20 @@ int CProxyObject::vfunc_11()
     return 1;
 }
 
+// CTwoCircleCollision::vfunc_3 (0x141868c60) as the exe calls it here: both points go as NiPoint3 by value.
+class Unk_ProxyCollisionSlots
+{
+public:
+    virtual void vfunc_0(); virtual void vfunc_1(); virtual void vfunc_2();
+    virtual void vfunc_3(NiPoint3 ptPos, NiPoint3 ptDir, float fScale);
+};
+
 // @0x1416c2d80
 void CProxyObject::vfunc_19(efd::Point3 kPos)
 {
     GameObject::vfunc_19(kPos);
     if (m_pCollision != 0)
-        m_pCollision->vfunc_3(Vector3(kPos.x, kPos.y, kPos.z), Vector3(0, 0, 0), 1.0f);
+        reinterpret_cast<Unk_ProxyCollisionSlots*>(m_pCollision)->vfunc_3(kPos, NiPoint3(0, 0, 0), 1.0f);
 }
 
 // @0x1416c3ee0
@@ -143,7 +151,6 @@ Unk_GoAttachment* CProxyObject::vfunc_26()
 }
 
 // @0x1416c2e70
-// MS2-FUNCTIONAL: temporaries/frame layout differ from the exe
 int CProxyObject::FUN_1416c2e70(efd::AssetID asset, efd::Point3 kPos, efd::Point3 kRot, float fRadius)
 {
     m_str88 = "DropItemNIF";
@@ -156,10 +163,11 @@ int CProxyObject::FUN_1416c2e70(efd::AssetID asset, efd::Point3 kPos, efd::Point
     {
         if (m_pCollision != 0)
             delete m_pCollision;
-        m_pCollision = new CTwoCircleCollision();
-        m_pCollision->SetInnerRadius(1.0f);
-        m_pCollision->SetOuterRadius(fRadius);
-        m_pCollision->vfunc_3(Vector3(kPos.x, kPos.y, kPos.z), Vector3(kRot.x, kRot.y, kRot.z), 1.0f);
+        CTwoCircleCollision* pCollision = new CTwoCircleCollision();
+        pCollision->SetInnerRadius(1.0f);
+        pCollision->SetOuterRadius(fRadius);
+        m_pCollision = pCollision;
+        reinterpret_cast<Unk_ProxyCollisionSlots*>(m_pCollision)->vfunc_3(kPos, kRot, 1.0f);
     }
     return 1;
 }
@@ -190,35 +198,36 @@ efd::SmartPointer<CProxyObject> Unk_ProxyMgr::FUN_1416c31c0(efd::AssetID asset, 
 }
 
 // @0x1416c33c0
-// MS2-FUNCTIONAL: temporaries/frame layout differ from the exe
 void Unk_ProxyMgr::FUN_1416c33c0(int bEnable)
 {
     m_nEnabled = bEnable;
     FUN_1416c3670();
-    if (bEnable == 0)
-        return;
-    if (FUN_140998330(FUN_140af8310(&FUN_14086d260()->m_spServiceManager)) == 0)
-        return;
-    Unk_PxEntIter iter;
-    FUN_1411ce5a0(FUN_1409670f0(), &iter);
-    egf::Entity* pEntity = 0;
-    while (FUN_1411ce5f0(FUN_1409670f0(), &iter, &pEntity))
+    if (bEnable != 0)
     {
-        egf::FlatModel* pModel = FUN_1408a9bd0(pEntity);
-        if (!pModel->ContainsModel(0xbd4f8e8e) && !pModel->ContainsModel(0x48ccc02d) && pModel->ContainsModel(0x9eca2f69))
+        void* pService = FUN_140998330(FUN_140af8310(&FUN_14086d260()->m_spServiceManager));
+        if (pService == 0)
+            return;
+        Unk_PxEntIter iter;
+        FUN_1411ce5a0(FUN_1409670f0(), &iter);
+        egf::Entity* pEntity;
+        while (FUN_1411ce5f0(FUN_1409670f0(), &iter, &pEntity))
         {
-            Vector3 kPos;
-            Vector3 kRot;
-            FUN_1409618c0(pEntity, 0xfd95ca52, &kPos);
-            FUN_1409618c0(pEntity, 0x68c7c29d, &kRot);
-            float fRadius = 0.0f;
-            FUN_140961880(pEntity, 0xa12005f8, &fRadius);
-            efd::AssetID asset;
-            if (FUN_140998250(pEntity, 0x74bd51ee, &asset) == 0)
+            egf::FlatModel* pModel = FUN_1408a9bd0(pEntity);
+            if (!pModel->ContainsModel(0xbd4f8e8e) && !pModel->ContainsModel(0x48ccc02d) && pModel->ContainsModel(0x9eca2f69))
             {
-                efd::SmartPointer<CProxyObject> spProxy = FUN_1416c31c0(asset, efd::Point3(kPos.x, kPos.y, kPos.z), efd::Point3(kRot.x, kRot.y, kRot.z), fRadius);
-                if (spProxy != 0)
-                    m_proxies.SetAt(*FUN_1408b76f0(pEntity), spProxy);
+                efd::Point3 kPos;
+                efd::Point3 kRot;
+                FUN_1409618c0(pEntity, 0xfd95ca52, reinterpret_cast<Vector3*>(&kPos));
+                FUN_1409618c0(pEntity, 0x68c7c29d, reinterpret_cast<Vector3*>(&kRot));
+                float fRadius = 0.0f;
+                FUN_140961880(pEntity, 0xa12005f8, &fRadius);
+                efd::AssetID asset;
+                if (FUN_140998250(pEntity, 0x74bd51ee, &asset) == 0)
+                {
+                    efd::SmartPointer<CProxyObject> spProxy = FUN_1416c31c0(asset, kPos, kRot, fRadius);
+                    if (spProxy)
+                        m_proxies.SetAt(*FUN_1408b76f0(pEntity), spProxy);
+                }
             }
         }
     }
@@ -229,7 +238,7 @@ void Unk_ProxyMgr::FUN_1416c3670()
 {
     for (POSITION pos = m_proxies.GetHeadPosition(); pos != 0; m_proxies.GetNext(pos))
     {
-        efd::SmartPointer<CProxyObject> spProxy = m_proxies.GetValueAt(pos);
+        efd::SmartPointer<GameObject> spProxy(m_proxies.GetValueAt(pos));
         FUN_141bbb7f0(FUN_1403ed2d0(), spProxy, 0);
     }
     m_proxies.RemoveAll();
@@ -253,7 +262,10 @@ efd::SmartPointer<egf::Entity> Unk_ProxyMgr::FUN_1416c37e0(efd::SmartPointer<egf
     {
         CProxyObject* pProxy = m_proxies.GetValueAt(pos);
         if (pProxy->FUN_14123c460() == *FUN_1408b76f0(spEntity))
-            return efd::SmartPointer<egf::Entity>(FUN_1411cf440(FUN_1409670f0(), m_proxies.GetKeyAt(pos)));
+        {
+            efd::SmartPointer<egf::Entity> spFound(FUN_1411cf440(FUN_1409670f0(), m_proxies.GetKeyAt(pos)));
+            return spFound;
+        }
     }
     return efd::SmartPointer<egf::Entity>(0);
 }

@@ -67,7 +67,7 @@ public:
     void FUN_1419dbe30(int nJob);                       // send the preview skills
     void FUN_1419dc1e0(int nJob);                       // send the texts and the job
     void FUN_1419dc510(int nJob);                       // choose the job
-    bool FUN_1419dc530();                               // the chosen job is a hard one (difficulty > 4)
+    int FUN_1419dc530();                                // the chosen job is a hard one (difficulty > 4)
     static void FUN_1419dec80(bool bValid);             // the tables were read
     static void FUN_1419dcf80();                        // the tables must be read (message box otherwise)
     MS2Ptr<ASTextField> FUN_140bb4cf0(const CString& strName);  // text field child lookup (a UIDialog member)

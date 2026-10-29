@@ -96,12 +96,12 @@ int UITopLayerNotify::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
 // @0x140fa8970
 void UITopLayerNotify::FUN_140fa8970(const CStringW& strText, int nType)
 {
-    if (m_30.get() == 0) {
+    if (m_30.get() != 0) {
+        static_cast<Unk_TnScript*>(m_30.operator->())->FUN_140fa8a70("showMessage", CStringW(strText), nType);
+    } else {
         m_70 = strText;
         m_78 = nType;
         vfunc_2();
-    } else {
-        static_cast<Unk_TnScript*>(m_30.operator->())->FUN_140fa8a70("showMessage", CStringW(strText), nType);
     }
 }
 

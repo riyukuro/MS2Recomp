@@ -58,8 +58,8 @@ void CTwoCircleCollision::vfunc_1()
 MS2_REPLACE_METHOD(0x141868D10, CTwoCircleCollision, vfunc_1, 143, 0xC5D47FB4);
 
 // @0x141868db0
-// MS2-FUNCTIONAL: identical code/order; pProp and the loop floats take swapped frame slots (exe pProp 0x28,
-// fSin 0x30/0x34; ours 0x30, 0x28/0x2c) and the exe also dead-stores 360 to a local before the array ctor.
+// MS2-FUNCTIONAL: identical calls/order; only registers differ: the exe computes the cosf angle in xmm1
+// (then movaps xmm0) and loads fSin via xmm1 -> xmm2.
 void CTwoCircleCollision::vfunc_5()
 {
     if (!m_spInner)
@@ -73,11 +73,11 @@ void CTwoCircleCollision::vfunc_5()
         m_spOuter->AttachProperty(pProp);
     }
 
-    Vector3 aPts[kRingPoints];
+    const int nPoints = kRingPoints;
+    Vector3 aPts[nPoints];
     for (int i = 0; i < kRingPoints; i++)
     {
-        float fSin = sinf((float)i * 3.1415927f / 180.0f);
-        fSin = fSin * m_fInnerRadius;
+        float fSin = sinf((float)i * 3.1415927f / 180.0f) * m_fInnerRadius;
         aPts[i] = m_ptCenter.FUN_14097fd50(
             Vector3(cosf((float)i * 3.1415927f / 180.0f) * m_fInnerRadius, fSin, 0.0f));
     }
@@ -85,8 +85,7 @@ void CTwoCircleCollision::vfunc_5()
     BuildWire(m_spInner, aPts, kRingPoints);
     for (int i = 0; i < kRingPoints; i++)
     {
-        float fSin = sinf((float)i * 3.1415927f / 180.0f);
-        fSin = fSin * m_fOuterRadius;
+        float fSin = sinf((float)i * 3.1415927f / 180.0f) * m_fOuterRadius;
         aPts[i] = m_ptCenter.FUN_14097fd50(
             Vector3(cosf((float)i * 3.1415927f / 180.0f) * m_fOuterRadius, fSin, 0.0f));
     }

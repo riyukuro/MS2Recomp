@@ -269,20 +269,23 @@ void ItemSocketSystemPageGemstoneSwap::vfunc_5(CInPacket* packet)
 }
 
 // @0x140c48430
-// MS2-FUNCTIONAL: typed ASData event decoding and smart-pointer temporary layout.
 int ItemSocketSystemPageGemstoneSwap::vfunc_3(const char* event, const Scaleform::GFx::Value* args, int count)
 {
     if (ItemSocketSystemPageBase::vfunc_3(event, args, count) != 0)
         return 1;
     if (_stricmp("onIndexChangeSlot0", event) == 0) {
         ASData data;
-        if (data.FUN_1422b9620(args, count) != 0)
-            FUN_140c49250(data.FUN_1422b8a10());
+        if (data.FUN_1422b9620(args, count) != 0) {
+            int nIndex = data.FUN_1422b8a10();
+            FUN_140c49250(nIndex);
+        }
         return 1;
     } else if (_stricmp("onIndexChangeSlot1", event) == 0) {
         ASData data;
-        if (data.FUN_1422b9620(args, count) != 0)
-            FUN_140c49580(data.FUN_1422b8a10());
+        if (data.FUN_1422b9620(args, count) != 0) {
+            int nIndex = data.FUN_1422b8a10();
+            FUN_140c49580(nIndex);
+        }
         return 1;
     } else if (_stricmp("onGemstoneSwap", event) == 0) {
         MS2Ptr<CItem> source = FUN_141425750(m_sourceUid, 0);
@@ -617,7 +620,6 @@ void ItemSocketSystemPageGemstoneSwap::FUN_140c4a9a0(CAtlArray<MS2Ptr<CItem>>& o
 }
 
 // @0x140c4ab30
-// MS2-FUNCTIONAL: the price map and the texts with typed temporaries.
 bool ItemSocketSystemPageGemstoneSwap::FUN_140c4ab30(MS2Ptr<CItem> item, CStringW& text)
 {
     CItemSocket* socket = static_cast<CItem*>(item)->FUN_1405279c0();
@@ -671,7 +673,7 @@ bool ItemSocketSystemPageGemstoneSwap::FUN_140c4ab30(MS2Ptr<CItem> item, CString
 #ifdef __clang__
             text += FUN_1401d0160(L"\n", FUN_1405c2690(CStringW(L"s_itemenchant_fee"), FUN_1409404f0(fee)));
 #else
-            text += L"\n" + FUN_1405c2690(CStringW(L"s_itemenchant_fee"), FUN_1409404f0(fee));
+            text.Append(L"\n" + FUN_1405c2690(CStringW(L"s_itemenchant_fee"), FUN_1409404f0(fee)));
 #endif
     } else {
         CStringW key(L"s_itemsocketsystem_socket_swap_confirm_free");

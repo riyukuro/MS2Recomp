@@ -99,20 +99,23 @@ int CStore::Add(CItem* pItem)
             return 0x11;
         }
         int nSlot = pItem->FUN_140526b50();
-        if ((int)m_slots.GetCount() <= nSlot) {
+        if (nSlot >= (int)m_slots.GetCount()) {
             return 0xd;
         }
-        if (nSlot == -1) {
-            nSlot = EmptySlot();
-            if (nSlot == -1) {
+        if (nSlot != -1) {
+            if (m_slots[nSlot].get() != 0) {
+                return 0x11;
+            }
+        } else {
+            int nEmpty = EmptySlot();
+            if (nEmpty == -1) {
                 return 0xd;
             }
+            nSlot = nEmpty;
             pItem->FUN_140526b70(nSlot);
-        } else if (m_slots[nSlot].get() != 0) {
-            return 0x11;
         }
         pItem->FUN_140526a30(1);
-        m_items.SetAt(pItem->FUN_140526a50(), MS2Ptr<CItem>(pItem));
+        m_items.SetAt(pItem->FUN_140526a50(), pItem);
         m_slots[nSlot].AssignRaw(pItem);
     }
     return 0;
@@ -126,7 +129,8 @@ void CStore::Remove(__int64 nId)
     } else if (m_items.Lookup(nId, pItem)) {
         m_items.RemoveKey(nId);
         if (pItem.get() != 0) {
-            m_slots[((CItem*)pItem)->FUN_140526b50()] = 0;
+            int nSlot = ((CItem*)pItem)->FUN_140526b50();
+            m_slots[nSlot] = 0;
             ((CItem*)pItem)->FUN_140526a30(0);
         }
     }
@@ -171,7 +175,7 @@ MS2Ptr<CItem> CStore::FindTypeCount(int nType, unsigned nCount)
             for (POSITION pos = m_items.GetHeadPosition(); pos; m_items.GetNext(pos)) {
                 MS2Ptr<CItem> pItem(m_items.GetValueAt(pos));
                 if (((CItem*)pItem)->FUN_1405276c0() == nType) {
-                    if (nCount <= (unsigned)((CItem*)pItem)->FUN_140526c50()) {
+                    if ((unsigned)((CItem*)pItem)->FUN_140526c50() >= nCount) {
                         return pItem;
                     }
                 }
@@ -216,13 +220,10 @@ int CStore::FreeTypeCount(int nType)
         int nLength = (int)m_slots.GetCount();
         for (int i = 0; i < nLength; i++) {
             MS2Ptr<CItem> pItem(m_slots[i]);
-            if (pItem.get() != 0) {
+            if (pItem.get() ? true : false) {
                 if (((CItem*)pItem)->FUN_1405276c0() == nType) {
-                    ((CItem*)pItem)->FUN_1405281e0();
-                    ((CItem*)pItem)->FUN_140526c50();
-                    int nLimit = ((CItem*)pItem)->FUN_1405281e0();
-                    int nHeld = ((CItem*)pItem)->FUN_140526c50();
-                    nFree += nLimit - nHeld;
+                    nFree += 0u > ((CItem*)pItem)->FUN_1405281e0() - ((CItem*)pItem)->FUN_140526c50()
+                        ? 0 : ((CItem*)pItem)->FUN_1405281e0() - ((CItem*)pItem)->FUN_140526c50();
                 }
             }
         }
@@ -288,11 +289,15 @@ int CStore::Move(int nSlot, MS2Ptr<CItem> pItem)
 {
     if (pItem == 0) {
         return 0;
-    } else if (nSlot < 0 || (int)m_slots.GetCount() <= nSlot) {
+    }
+    int nCount = (int)m_slots.GetCount();
+    if (nSlot < 0 || nSlot >= nCount) {
         return 0;
-    } else if (((CItem*)pItem)->FUN_140526b50() == nSlot) {
+    }
+    if (((CItem*)pItem)->FUN_140526b50() == nSlot) {
         return 1;
-    } else {
+    }
+    {
         if (Unk_LockGuard guard = m_lock) {
         } else {
             MS2Ptr<CItem> pOld(m_slots[nSlot]);
@@ -303,8 +308,8 @@ int CStore::Move(int nSlot, MS2Ptr<CItem> pItem)
             ((CItem*)pItem)->FUN_140526b70(nSlot);
             ((CItem*)pItem)->FUN_140526a30(1);
         }
-        return 1;
     }
+    return 1;
 }
 
 // @0x140de1fd0
@@ -340,10 +345,10 @@ int CStore::EmptySlot()
 // @0x140de21a0
 int CStore::AvailableSlot(MS2Ptr<CItem> pItem, int nCount)
 {
-    if (pItem.get() != 0) {
+    if (pItem.get() ? true : false) {
         if (((CItem*)pItem)->FUN_1405281e0() > 1) {
             int nFree = FreeTypeCount(((CItem*)pItem)->FUN_1405276c0());
-            if (nCount <= nFree) {
+            if (nFree >= nCount) {
                 return 0;
             }
         }
@@ -356,6 +361,7 @@ int CStore::NeedsSort()
 {
     MS2Ptr<CItem> pFirst(0);
     MS2Ptr<CItem> pSecond(0);
+    int nOrder = 0;
     if (Unk_LockGuard guard = m_lock) {
     } else {
         if (CanMerge() != 0) {
@@ -365,7 +371,8 @@ int CStore::NeedsSort()
         for (int i = 1; i < nCount; i++) {
             pFirst = m_slots[i - 1];
             pSecond = m_slots[i];
-            if (FUN_14052a7e0(pFirst, pSecond) == 1) {
+            nOrder = FUN_14052a7e0(pFirst, pSecond);
+            if (nOrder == 1) {
                 return 1;
             }
         }
@@ -379,11 +386,14 @@ int CStore::Allowed(int nType)
     if (m_type == 0) {
         return 1;
     }
-    MS2Ptr<CItemData> pData = FUN_14053f870(m_type);
-    if (pData.get() != 0) {
-        MS2Ptr<CBankData> pBank = static_cast<CBankTable*>(FUN_1401b59c0())->GetBankData(pData->FUN_14053dce0());
-        if (pBank.get() != 0) {
-            return pBank->IsStorable(nType);
+    {
+        MS2Ptr<CItemData> pData = FUN_14053f870(m_type);
+        if (pData.get() != 0) {
+            unsigned nBankId = pData->FUN_14053dce0();
+            MS2Ptr<CBankData> pBank = static_cast<CBankTable*>(FUN_1401b59c0())->GetBankData(nBankId);
+            if (pBank.get() != 0) {
+                return pBank->IsStorable(nType);
+            }
         }
     }
     return 0;
@@ -394,23 +404,28 @@ int CStore::CanMerge()
 {
     MS2Ptr<CItem> pItem(0);
     MS2Ptr<CItemData> pData(0);
+    unsigned nMax = 0;
     ATL::CAtlMap<unsigned short, int> seen;
     int nCount = (int)m_slots.GetCount();
     for (int i = 0; i < nCount; i++) {
         pItem = m_slots[i];
-        if (!(pItem == 0)) {
-            pData.AssignRaw(FUN_140527840(pItem));
-            if (!(pData == 0)) {
-                if (pData->FUN_14053c7c0()) {
-                    unsigned nMax = pData->property.slotMax;
-                    if ((unsigned)((CItem*)pItem)->FUN_140526c50() < nMax) {
-                        int nOther;
-                        if (FUN_140361ab0(&seen, ((CItem*)pItem)->FUN_1405276c0(), &nOther)) {
-                            return 1;
-                        }
-                        FUN_14016a050(reinterpret_cast<Unk_SsMap*>(&seen), ((CItem*)pItem)->FUN_1405276c0(), i);
-                    }
-                }
+        if (pItem == 0) {
+            continue;
+        }
+        pData.AssignRaw(FUN_140527840(pItem));
+        if (pData == 0) {
+            continue;
+        }
+        if (!pData->FUN_14053c7c0()) {
+            continue;
+        }
+        nMax = pData->property.slotMax;
+        if ((unsigned)((CItem*)pItem)->FUN_140526c50() < nMax) {
+            int nOther;
+            if (FUN_140361ab0(&seen, ((CItem*)pItem)->FUN_1405276c0(), &nOther)) {
+                return 1;
+            } else {
+                FUN_14016a050(reinterpret_cast<Unk_SsMap*>(&seen), ((CItem*)pItem)->FUN_1405276c0(), i);
             }
         }
     }
@@ -428,7 +443,13 @@ void CStore::SetId(__int64 nId, int nType)
 {
     m_id = nId;
     m_type = nType;
-    m_capacity = m_id != 0 ? FUN_1408b6200(nType) : 0x24;
+    int nCapacity = m_capacity;
+    if (m_id != 0) {
+        nCapacity = FUN_1408b6200(nType);
+    } else {
+        nCapacity = 0x24;
+    }
+    m_capacity = nCapacity;
     Clear();
 }
 
@@ -468,7 +489,10 @@ int CStore::WithinCapacity()
 // @0x140de29b0
 int CStore::CurrentCapacity()
 {
-    return m_id != 0 ? Capacity() : *FUN_1402056b0(&FUN_1401d3200()->m_44a8) + 0x24;
+    if (m_id != 0) {
+        return Capacity();
+    }
+    return *FUN_1402056b0(&FUN_1401d3200()->m_44a8) + 0x24;
 }
 
 // @0x140de2a00
@@ -577,13 +601,13 @@ void FUN_140de2dc0(void*, __int64 nId, int nSlot, int nCount, MS2Ptr<CItemData> 
     }
     if (FUN_140527840(pItem)->FUN_14053cd10()) {
         if (FUN_140c8dab0(FUN_140c8dac0()) == ((CItem*)pItem)->FUN_140526a50()) {
-            FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_item_err_binditem_by_playing_score")), 1, 1);
+            FUN_1412751f0(GetStringCommonByKey(L"s_item_err_binditem_by_playing_score"), 1, 1);
             return;
         }
     }
     if (((CItem*)pItem)->FUN_140525640() != 0) {
         if (FUN_140535320()->GetSummonUid() == nId) {
-            FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_item_err_binditem_by_summon_pet")), 1, 1);
+            FUN_1412751f0(GetStringCommonByKey(L"s_item_err_binditem_by_summon_pet"), 1, 1);
             return;
         }
     }
@@ -841,8 +865,7 @@ void CStore::OnList(CInPacket* pPacket)
         if (((CItem*)pItem)->FUN_140523c40(nType, nAmount, 0)) {
             ((CItem*)pItem)->FUN_140526b30(DAT_143ab2864);
             ((CItem*)pItem)->FUN_140526a70(nUid);
-            int nIndex = (int)nSlot;
-            ((CItem*)pItem)->FUN_140526b70(nIndex);
+            ((CItem*)pItem)->FUN_140526b70((int)nSlot);
             ((CItem*)pItem)->FUN_140524eb0(*pPacket);
             Add(pItem.get());
         }
@@ -861,12 +884,10 @@ void CStore::OnReset(CInPacket*)
 void CStore::OnError(CInPacket* pPacket)
 {
     int nError = pPacket->ReadInt32();
-    switch (nError) {
+    int nCode = nError;
+    switch (nCode) {
     case 10:
         FUN_140d73bc0(0xeb, 0, 0, CStringW(L""));
-        break;
-    default:
-        FUN_1412751f0(FUN_1408116a0(0x2af, nError), 1, 1);
         break;
     case 0xc:
         FUN_141275260(0xf1, 1, 0);
@@ -877,9 +898,8 @@ void CStore::OnError(CInPacket* pPacket)
     case 0xe: {
         int nCapacity = Unk_StoreInstance()->CurrentCapacity();
         CStringW strText = FUN_1409e97f0(0x2b0, nCapacity);
-        FUN_140d73aa0(CStringW(strText), 0, 0, CStringW(L""));
-        break;
-    }
+        FUN_140d73aa0(strText, 0, 0, L"");
+    }   break;
     case 0xf:
         FUN_1403ed2b0()->FUN_141add1f0();
         break;
@@ -904,6 +924,9 @@ void CStore::OnError(CInPacket* pPacket)
     case 0x16:
         FUN_141275260(0xff, 1, 1);
         break;
+    default:
+        FUN_1412751f0(FUN_1408116a0(0x2af, nError), 1, 1);
+        break;
     }
 }
 
@@ -918,8 +941,7 @@ void CStore::ReadItem(CInPacket* pPacket)
     if (((CItem*)pItem)->FUN_140523c40(nType, nAmount, 0)) {
         ((CItem*)pItem)->FUN_140526b30(DAT_143ab2864);
         ((CItem*)pItem)->FUN_140526a70(nUid);
-        int nIndex = (int)nSlot;
-        ((CItem*)pItem)->FUN_140526b70(nIndex);
+        ((CItem*)pItem)->FUN_140526b70((int)nSlot);
         ((CItem*)pItem)->FUN_140524eb0(*pPacket);
         Add(pItem.get());
         FUN_140a6a840()->vfunc_8(pItem.get());

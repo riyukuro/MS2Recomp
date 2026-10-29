@@ -16,7 +16,6 @@
 #include "ms2/placeholder/uidialog.h"
 
 class CInPacket;
-struct Unk_NcInputRef;
 
 class UIUGCCubeNoticeDialog : public UIDialog
 {
@@ -29,7 +28,6 @@ public:
     virtual int vfunc_48();                                         // 48 0x140fb0060 UI type id
     void FUN_140faf900(CInPacket& packet);                          // 0x140faf900 open with the cube's data
     void OnApply();                                           // 0x140fafbd0 apply: check the message, send it, close
-    Unk_NcInputRef FUN_140e35bd0(const CString& strName);           // 0x140e35bd0 the child input by name (a shared GetChild instance)
 private:
     MS2_LAYOUT_FRIEND;
     int m_nCubeId;                  // +0x178 the cube the notice belongs to

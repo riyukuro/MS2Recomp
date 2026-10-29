@@ -6,6 +6,7 @@
 #include "ms2/placeholder/ms2stdafx.h"
 #include "uidpsdialog.h"
 #include "toolbasedialog.h"
+#include "dpsmetersystem.h"
 #include "pcbase.h"
 #include "ms2/placeholder/coutpacket.h"
 #include "ms2/placeholder/asdata.h"
@@ -46,14 +47,14 @@ Unk_DpsMeter* FUN_14109a6f0();
 extern CToolBaseDialog* DAT_143ad0d98;                                  // TSingleton<CDPSDialog>::s_instance
 void FUN_141178870(CToolBaseDialog* pDialog);                           // refresh
 void FUN_1411789e0(CToolBaseDialog* pDialog, unsigned nTime);           // end time
-void* FUN_140c7fa70(size_t cb);                                         // MFC allocation
-CToolBaseDialog* FUN_141178390(void* mem, CWnd* pParent);               // CDPSDialog ctor
 
 class Unk_DpsWorld;
 Unk_DpsWorld* FUN_1403ed2d0();
 PCBase* FUN_141bd0cc0(Unk_DpsWorld* pWorld);                            // the local player
-class Unk_DpsActorState { public: void FUN_14063e530(); bool FUN_14063e9f0(int n); void* m_p; };
-class Unk_DpsActorStateHolder { public: Unk_DpsActorState FUN_140639bb0(); };
+// An MS2Ptr (16 bytes, m_p at +8): FUN_140639bb0 returns it through a hidden pointer, the dtor 0x14063e530 writes 16.
+// The same type as uimainplayerinfo.cpp's Unk_MpState (its dtor has a symbols-manual row).
+class Unk_MpState { public: ~Unk_MpState(); bool FUN_14063e9f0(int n); void* m_00; void* m_p; };
+class Unk_DpsActorStateHolder { public: Unk_MpState FUN_140639bb0(); };
 Unk_DpsActorStateHolder* FUN_1416546d0(PCBase* pPC);
 int FUN_141654730(PCBase* pPC);                                         // job code
 class Unk_DpsStrings { public: CStringW FUN_141811980(int nTable, int nIndex); };
@@ -128,42 +129,24 @@ void UIDPSDialog::vfunc_72()
         if (pDialog != 0)
         {
             unsigned nNow = FUN_140869420();
+            unsigned nElapsed = 0;
             if (nNow < m_180)
             {
+                nElapsed = m_180 - nNow;
                 CString strTime;
                 FUN_141b70720(m_180 - nNow, strTime);
                 pDialog->Invoke("setTime", CString(strTime));
             }
             else
             {
-                unsigned nElapsed = nNow - m_180;
+                nElapsed = nNow - m_180;
                 CString strTime;
                 FUN_141b70720(nElapsed, strTime);
                 double dSeconds = (double)nElapsed / 1000.0;
-                if (m_184 == 0 || nNow <= m_184)
+                if (m_184 != 0 && nNow > m_184)
                 {
-                    if (m_178 == 0)
-                    {
-                        m_178 = 1;
-                        FUN_14109a6f0()->FUN_14117c650(m_180);
-                    }
-                    if (dSeconds <= 0.0)
-                    {
-                        pDialog->Invoke("setTime", CString(strTime));
-                    }
-                    else
-                    {
-                        double dDps = (double)m_188 / dSeconds;
-                        CString strDps;
-                        strDps.Format("%.2f", dDps);
-                        pDialog->FUN_14192a060("setAttr", CString(strTime), m_188, CString(strDps));
-                        FUN_14109a6f0()->FUN_14117ea90(nNow, 0);
-                    }
-                }
-                else
-                {
-                    double dDuration = (double)(unsigned)(m_184 - m_180) / 1000.0;
-                    double dDps = (double)m_188 / dDuration;
+                    dSeconds = (double)(unsigned)(m_184 - m_180) / 1000.0;
+                    double dDps = (double)m_188 / dSeconds;
                     CString strDps;
                     strDps.Format("%.2f", dDps);
                     pDialog->FUN_14192a060("setAttr", CString(strTime), m_188, CString(strDps));
@@ -171,6 +154,24 @@ void UIDPSDialog::vfunc_72()
                         FUN_1411789e0(GetToolBaseDialog(), m_184);
                     FUN_14109a6f0()->FUN_14117c7c0(m_184);
                     pDialog->Invoke("onStop");
+                    return;
+                }
+                if (m_178 == 0)
+                {
+                    m_178 = 1;
+                    FUN_14109a6f0()->FUN_14117c650(m_180);
+                }
+                if (dSeconds > 0.0)
+                {
+                    double dDps = (double)m_188 / dSeconds;
+                    CString strDps;
+                    strDps.Format("%.2f", dDps);
+                    pDialog->FUN_14192a060("setAttr", CString(strTime), m_188, CString(strDps));
+                    FUN_14109a6f0()->FUN_14117ea90(nNow, 0);
+                }
+                else
+                {
+                    pDialog->Invoke("setTime", CString(strTime));
                 }
             }
         }
@@ -233,23 +234,20 @@ void UIDPSDialog::FUN_141929700()
 }
 
 // @0x141929760
-// MS2-FUNCTIONAL: the exe frame is 0x108 (extra temps around the nested pPC/dialog tests); not matched in two attempts
 void UIDPSDialog::FUN_141929760()
 {
     if (m_178 == 0)
         return;
     ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30);
-    if (pDialog == 0)
-        return;
-    PCBase* pPC = FUN_141bd0cc0(FUN_1403ed2d0());
-    if (pPC == 0)
-        return;
-    Unk_DpsActorState state = FUN_1416546d0(pPC)->FUN_140639bb0();
-    bool bOn = state.FUN_14063e9f0(0);
-    state.FUN_14063e530();
-    if (bOn == 0)
+    if (pDialog != 0)
     {
-        double dSeconds = (double)(unsigned)(FUN_140869420() - m_180) / 1000.0;
+        PCBase* pPC = FUN_141bd0cc0(FUN_1403ed2d0());
+        if (pPC == 0)
+            return;
+        if (FUN_1416546d0(pPC)->FUN_140639bb0().FUN_14063e9f0(0))
+            return;
+        double dSeconds = (unsigned)(FUN_140869420() - m_180);
+        dSeconds /= 1000.0;
         double dDps = (double)m_188 / dSeconds;
         CStringW strLine = StringFormat(L"Lv.{0} {1}, {2:.2f}Second, total: {3}, {4:.2f} damage/sec\n",
                                         (unsigned short)pPC->vfunc_78(),
@@ -324,16 +322,15 @@ Scaleform::GFx::Value ASDialog::FUN_14192a060(const char* szMethod, CString strT
     return FUN_1422bb8f0(szMethod, args);
 }
 
-// MS2-FUNCTIONAL: the exe's `new CDPSDialog` is a new-expression with an EH frame; the ctor is an opaque FUN_ here
 // @0x14192a1e0
 CToolBaseDialog* FUN_14192a1e0()
 {
-    if (DAT_143ad0d98 == 0)
-    {
-        void* mem = FUN_140c7fa70(0x350);
-        return mem ? FUN_141178390(mem, 0) : 0;
-    }
-    return GetToolBaseDialog();
+    CToolBaseDialog* pDialog;
+    if (DAT_143ad0d98 != 0)
+        pDialog = GetToolBaseDialog();
+    else
+        pDialog = new CDPSDialog();
+    return pDialog;
 }
 
 // @0x14192a260

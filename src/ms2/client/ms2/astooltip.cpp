@@ -320,14 +320,13 @@ int ASTooltip::FUN_1409e13a0(CItem* pCompare, CItem* pItem)
 }
 MS2_REPLACE_METHOD(0x1409E13A0, ASTooltip, FUN_1409e13a0, 71, 0x2CE140FC);
 
-// MS2-FUNCTIONAL: bytes differ from the exe (operand order / temporaries / SEH state layout); behaviour equivalent
 // @0x1409e25e0
-bool ASTooltip::FUN_1409e25e0(CItem* pItem, unsigned n)
+int ASTooltip::FUN_1409e25e0(CItem* pItem, unsigned n)
 {
     if (FUN_1409e0d40(pItem) == 0)
-        return false;
+        return 0;
     FUN_1409cf010(pItem, n);
-    return true;
+    return 1;
 }
 MS2_REPLACE_METHOD(0x1409E25E0, ASTooltip, FUN_1409e25e0, 72, 0x15346D77);
 
@@ -471,21 +470,16 @@ MS2_REPLACE_METHOD(0x1409D5490, ASTooltip, FUN_1409d5490, 139, 0x00739E47);
 
 short FUN_140626f20(int nItemId);
 
-// MS2-FUNCTIONAL: bytes differ from the exe (operand order / temporaries / SEH state layout); behaviour equivalent
 // @0x1409d74a0
 void ASTooltip::FUN_1409d74a0(int nItemId)
 {
     MS2Ptr<CItemData> sp = FUN_14053f870(nItemId);
-    if (!(sp == NULL))
-    {
-        if (sp->FUN_14053d840())
-        {
-            short sLevel = FUN_140626f20(sp->FUN_14053c510());
-            if (sLevel == 0)
-                return;
-            FUN_1409c48f0("gemstoneLevel", sLevel);
-        }
-    }
+    if (sp == NULL || !sp->FUN_14053d840())
+        return;
+    unsigned short sLevel = FUN_140626f20(sp->FUN_14053c510());
+    if (sLevel == 0)
+        return;
+    FUN_1409c48f0("gemstoneLevel", (short)sLevel);
 }
 MS2_REPLACE_METHOD(0x1409D74A0, ASTooltip, FUN_1409d74a0, 183, 0xB7CB9094);
 
@@ -1188,7 +1182,7 @@ void ASTooltip::FUN_1409c9170(CItem* pItem)
                         int nValue = spBase->GetValue();
                         float fRate = (float)floor(FUN_1406198a0(nValue, spPet->m_fConstantOptionFactor));
                         float fBase = (float)nValue;
-                        float fMax = fBase + fRate * (float)(int)(*FUN_1401d3200()->PetMaxLevel.Get() - 1);
+                        float fMax = fBase + fRate * (float)(*FUN_1401d3200()->PetMaxLevel.Get() - 1);
                         nValue = (int)((float)nValue + fRate * (float)(pItem->FUN_140528c20() - 1));
                         strValue = FUN_140631830(eSpecial, nValue, pItem->FUN_140527840());
                         int nRaw = spBase->GetValue();
@@ -1235,7 +1229,7 @@ void ASTooltip::FUN_1409c9170(CItem* pItem)
                         __int64 nValue = spBase->GetValue();
                         float fRate = (float)floor(FUN_140632990(nValue, spPet->m_fConstantOptionFactor));
                         float fBase = (float)nValue;
-                        __int64 nMax = (__int64)(fBase + fRate * (float)(int)(*FUN_1401d3200()->PetMaxLevel.Get() - 1));
+                        __int64 nMax = (__int64)(fBase + fRate * (float)(*FUN_1401d3200()->PetMaxLevel.Get() - 1));
                         nValue = (__int64)((float)nValue + fRate * (float)(pItem->FUN_140528c20() - 1));
                         strValue = FUN_140631720(nStat, (int)nValue, false);
                         strBase = FUN_1409e0900(spBase->GetValue());
@@ -1328,7 +1322,7 @@ void ASTooltip::FUN_1409c9170(CItem* pItem)
             int nPercent = nExp * 100 / 10000;
             int nNeed = 0;
             int nCur = 0;
-            int nStep = pItem->FUN_140528f90(0);   // the exe passes no argument (see item.cpp)
+            int nStep = pItem->FUN_140528f90();
             if (nStep > 0)
             {
                 nNeed = (int)(10000.0f / (float)nStep + 0.5f);
@@ -1581,13 +1575,47 @@ MS2_REPLACE_METHOD(0x1409CC090, ASTooltip, FUN_1409cc090, 1897, 0xE19E2303);
 // MS2-FUNCTIONAL: frame/temporary layout differs from the exe
 void ASTooltip::FUN_1409cc800(CItem* pItem)
 {
-    if (!FUN_140166410()->FUN_14036d570(0x2e) || pItem == 0 || pItem->FUN_140527840() == 0 || pItem->FUN_1405279c0() == 0)
+    if (!FUN_140166410()->FUN_14036d570(0x2e))
+        return;
+    if (pItem == 0 || pItem->FUN_140527840() == 0 || pItem->FUN_1405279c0() == 0)
         return;
     if (pItem->FUN_1405258b0() != 0 && !FUN_140166410()->FUN_14036d570(0x5e))
         return;
     CItemSocket* pSocket = pItem->FUN_1405279c0();
     unsigned nFlags = FUN_1409c6560();
-    if ((nFlags & 0x800) == 0)
+    if (nFlags & 0x800)
+    {
+        bool bHide = !(nFlags & 0x4000);
+        if (bHide)
+            return;
+        if (pItem->FUN_140525640() == 0)
+        {
+            const CStringW& strRowEmpty = s_wsSocketRowEmpty;
+            CStringW strRows;
+            if (pSocket->GetMaxSlot() == 0)
+            {
+                unsigned nMax = FUN_14052d200()->FUN_14062d4b0(pItem->FUN_140527840()->property.socketDataId, pItem->FUN_140526bd0(),
+                                                              MS2Ptr<CItemData>(pItem->FUN_140527840()));
+                for (unsigned i = 0; i < nMax; i++)
+                    strRows.Append(strRowEmpty);
+            }
+            else
+            {
+                unsigned nOpen = pSocket->FUN_140620a20();
+                for (unsigned i = 0; i < nOpen; i++)
+                    strRows.Append(strRowEmpty);
+                unsigned nLocked = pSocket->FUN_140620a70();
+                if (nLocked > 0)
+                {
+                    const CStringW& strRowLock = s_wsSocketRowLock;
+                    for (unsigned i = 0; i < nLocked; i++)
+                        strRows.Append(strRowLock);
+                }
+            }
+            FUN_1407cbb20("itemSocket", StringFormat(s_wsSocket, strRows));
+        }
+    }
+    else
     {
         if (pSocket->GetMaxSlot() == 0)
             return;
@@ -1648,51 +1676,24 @@ void ASTooltip::FUN_1409cc800(CItem* pItem)
             CStringW strText = FUN_1409e6120(pItem, nTradeable, nPersonal, nBindable, nBound, strSeparator, 0, strName, 0);
             if (!strText.IsEmpty())
                 strText = StringFormat(strTransfer, strText);
-            if (pItem->FUN_140525640() == 0)
-                strRows.Append(StringFormat(strRowStat, FUN_140627390(nGemId), strOption, strText, FUN_14062b310(spGem)));
-            else
+            if (pItem->FUN_140525640() != 0)
                 strRows.Append(StringFormat(strRowStatByPet, strOption, strText));
+            else
+                strRows.Append(StringFormat(strRowStat, FUN_140627390(nGemId), strOption, strText, FUN_14062b310(spGem)));
         }
-        if (pItem->FUN_140525640() == 0)
+        if (pItem->FUN_140525640() != 0)
         {
-            int nLocked = pSocket->FUN_140620a70();
-            if (nLocked != 0)
+            if (!strRows.IsEmpty())
+                FUN_1407cbb20("itemSocket", StringFormat(s_wsSocketByPet, strRows));
+        }
+        else
+        {
+            unsigned nLocked = pSocket->FUN_140620a70();
+            if (nLocked > 0)
             {
                 const CStringW& strRowLock = s_wsSocketRowLock;
-                for (int i = 0; i < nLocked; i++)
+                for (unsigned i = 0; i < nLocked; i++)
                     strRows.Append(strRowLock);
-            }
-            FUN_1407cbb20("itemSocket", StringFormat(s_wsSocket, strRows));
-        }
-        else if (!strRows.IsEmpty())
-            FUN_1407cbb20("itemSocket", StringFormat(s_wsSocketByPet, strRows));
-    }
-    else
-    {
-        int bShow = (nFlags & 0x4000) == 0;
-        if (!bShow && pItem->FUN_140525640() == 0)
-        {
-            const CStringW& strRowEmpty = s_wsSocketRowEmpty;
-            CStringW strRows;
-            if (pSocket->GetMaxSlot() == 0)
-            {
-                unsigned nMax = FUN_14052d200()->FUN_14062d4b0(pItem->FUN_140527840()->property.socketDataId, pItem->FUN_140526bd0(),
-                                                              MS2Ptr<CItemData>(pItem->FUN_140527840()));
-                for (unsigned i = 0; i < nMax; i++)
-                    strRows.Append(strRowEmpty);
-            }
-            else
-            {
-                unsigned nOpen = pSocket->FUN_140620a20();
-                for (unsigned i = 0; i < nOpen; i++)
-                    strRows.Append(strRowEmpty);
-                int nLocked = pSocket->FUN_140620a70();
-                if (nLocked != 0)
-                {
-                    const CStringW& strRowLock = s_wsSocketRowLock;
-                    for (int i = 0; i < nLocked; i++)
-                        strRows.Append(strRowLock);
-                }
             }
             FUN_1407cbb20("itemSocket", StringFormat(s_wsSocket, strRows));
         }
@@ -1723,43 +1724,36 @@ MS2_REPLACE_METHOD(0x1409CD6B0, ASTooltip, FUN_1409cd6b0, 143, 0x5DBF3A1B);
 
 // The double-click / equip hints of an item that the player does not wear.
 // @0x1409cd750
-// MS2-FUNCTIONAL: unwind state order / frame size differ from the exe
 void ASTooltip::FUN_1409cd750(CItem* pItem)
 {
     if (FUN_1409c6540() == 0)
         return;
     MS2Ptr<CEquipItem> spEquip = ((MyPC*)FUN_1409c6540())->FUN_141655c30(pItem->FUN_140526a50());
-    if (spEquip.get() == 0)
+    if (spEquip.get() != 0)
+        FUN_1407cbb20(s_strItemEquip, GetStringCommon(0x58a));
+    else if ((m_48 & 0x80) != 0)
     {
-        if ((m_48 & 0x80) != 0)
+        if (FUN_1409e6c80(pItem) != 0)
         {
-            if (FUN_1409e6c80(pItem) != 0)
+            FUN_1409c6880();
+            if (pItem->FUN_140527840()->FUN_14053d510())
+                FUN_1409c68e0();
+        }
+        if (pItem->FUN_140525a80() != 0)
+        {
+            if (pItem->FUN_140525c00() != 0)
+                FUN_1409c65f0(GetStringCommon(0x763));
+            else if (pItem->FUN_140527840()->FUN_14053cd10())
             {
-                FUN_1409c6880();
-                if (pItem->FUN_140527840()->FUN_14053d510())
-                    FUN_1409c68e0();
+                if (pItem->FUN_140525730())
+                    FUN_1409c65a0();
             }
-            if (pItem->FUN_140525a80() != 0)
-            {
-                if (pItem->FUN_140525c00() == 0)
-                {
-                    if (!pItem->FUN_140527840()->FUN_14053cd10())
-                    {
-                        if (pItem->FUN_140527840()->FUN_14053ddb0() == 0)
-                            FUN_1409c65a0();
-                        else
-                            FUN_1409c65f0(GetStringCommonByKey(CStringW(L"s_msg_dclick_open_shop")));
-                    }
-                    else if (pItem->FUN_140525730())
-                        FUN_1409c65a0();
-                }
-                else
-                    FUN_1409c65f0(GetStringCommon(0x763));
-            }
+            else if ((unsigned)pItem->FUN_140527840()->FUN_14053ddb0() > 0)
+                FUN_1409c65f0(GetStringCommonByKey(L"s_msg_dclick_open_shop"));
+            else
+                FUN_1409c65a0();
         }
     }
-    else
-        FUN_1407cbb20(s_strItemEquip, GetStringCommon(0x58a));
 }
 MS2_REPLACE_METHOD(0x1409CD750, ASTooltip, FUN_1409cd750, 606, 0xD4640D82);
 
@@ -2098,7 +2092,7 @@ void ASTooltip::FUN_1409cfbf0(CItem* pItem)
             arr.FUN_1422bc050(obj.FUN_1422bb870());
         }
     }
-    for (int i = 0; i < 0xcf; i++)
+    for (unsigned i = 0; i < 0xcf; i++)
     {
         int nSpecial = i;
         CStringW strName = FUN_140630e10(i);
@@ -2132,46 +2126,37 @@ MS2_REPLACE_METHOD(0x1409CFBF0, ASTooltip, FUN_1409cfbf0, 2840, 0xE852E99E);
 
 // itemDescription: the music score / UGC text, else the string table's tooltipDescription.
 // @0x1409d0710
-// MS2-FUNCTIONAL: frame 8 bytes smaller than the exe (an extra temporary there)
 void ASTooltip::FUN_1409d0710(CItem* pItem)
 {
     if (pItem == 0)
         return;
     int bCustom = 0;
     CStringW strDesc;
-    if (pItem->FUN_140525f10() == 0 && pItem->FUN_140526010() == 0)
-    {
-        if (pItem->FUN_140525790())
-        {
-            int nId = pItem->FUN_140527840()->FUN_14053c510();
-            MS2Ptr<ItemMusicScore> spScore = TSingleton<CItemDataTable>::GetInstance()->GetMusicScore(nId);
-            bCustom = (ItemMusicScore*)spScore != 0;
-            if (bCustom)
-            {
-                int nMax = spScore->FUN_14054ade0();
-                strDesc = FUN_1408116a0(0x9be, nMax);
-            }
-        }
-    }
-    else
+    if (pItem->FUN_140525f10() != 0 || pItem->FUN_140526010() != 0)
     {
         Unk_ItemUgcInfo* pUgc = pItem->FUN_1405278d0();
         if (pUgc != 0)
         {
-            if (pUgc->FUN_1406321a0() == 0)
-            {
-                int nLength = pItem->FUN_1405278d0()->FUN_140632100().GetLength();
-                if (nLength > 0)
-                {
-                    bCustom = 1;
-                    strDesc.Empty();
-                }
-            }
-            else
+            if (pUgc->FUN_1406321a0() != 0)
             {
                 bCustom = 1;
                 strDesc = GetStringCommon(0xf3);
             }
+            else if (pItem->FUN_1405278d0()->FUN_140632100().GetLength() > 0)
+            {
+                bCustom = 1;
+                strDesc.Empty();
+            }
+        }
+    }
+    else if (pItem->FUN_140525790())
+    {
+        MS2Ptr<ItemMusicScore> spScore = TSingleton<CItemDataTable>::GetInstance()->GetMusicScore(pItem->FUN_140527840()->FUN_14053c510());
+        if ((ItemMusicScore*)spScore != 0)
+        {
+            bCustom = 1;
+            int nMax = spScore->FUN_14054ade0();
+            strDesc = FUN_1408116a0(0x9be, nMax);
         }
     }
     if (bCustom != 0)
@@ -2271,9 +2256,9 @@ void ASTooltip::FUN_1409d0a80(CItem* pItem)
         }
         else if (spData->FUN_14053cd90() == true && spData->function.name == L"InstallBillBoard")
         {
-            if (DAT_143ab2964 != 0)
+            if (DAT_143ab2964 > 0)
                 strGuide.Append(FUN_14028dfa0(CStringW(L"s_special_item_billboard_tooltip_limit_defence_spamer_level"), DAT_143ab2964));
-            if (DAT_143ab2970 != 0)
+            if (DAT_143ab2970 > 0)
                 strGuide.Append(FUN_14028dfa0(CStringW(L"s_special_item_billboard_tooltip_limit_defence_spamer_adventure_level"), DAT_143ab2970));
         }
         else
@@ -2304,7 +2289,9 @@ void ASTooltip::FUN_1409d0a80(CItem* pItem)
                 unsigned nTrophyId = spHousing->trophyID;
                 unsigned nTrophyLevel = spHousing->trophyLevel;
                 int nPriceCount = spHousing->priceCount;
-                bool bLocal = !FUN_140930c50();
+                bool bServer = false;
+                if (FUN_140930c50())
+                    bServer = true;
                 if (FUN_140166410()->FUN_14036d570(0xdb) && nLevel != 0 && nPriceCount == 1)
                 {
                     UGCCubeCategoryTable::InteriorPtr spInterior = TSingleton<UGCCubeCategoryTable>::GetInstance()->GetInterior(spHousing->categoryIndex);
@@ -2314,13 +2301,16 @@ void ASTooltip::FUN_1409d0a80(CItem* pItem)
                         nLevel = spInterior->m_nRequireLevel < nCurrent ? nLevel : spInterior->m_nRequireLevel;
                     }
                     bool bShow = false;
-                    if (bLocal)
+                    if (bServer)
                     {
-                        if (DAT_143ab291c < nLevel)
+                        if (nLevel > DAT_143ab2940)
                             bShow = true;
                     }
                     else
-                        bShow = DAT_143ab2940 < nLevel;
+                    {
+                        if (nLevel > DAT_143ab291c)
+                            bShow = true;
+                    }
                     if (bShow)
                     {
                         if (!strGuide.IsEmpty())
@@ -2329,17 +2319,18 @@ void ASTooltip::FUN_1409d0a80(CItem* pItem)
                     }
                 }
                 bool bTrophy = false;
-                if (bLocal)
-                {
-                    if (FUN_140936640(FUN_1406c7600(), nTrophyId, nTrophyLevel) == 0)
-                        bTrophy = true;
-                }
-                else
+                if (bServer)
                 {
                     Unk_SSGHouseKey key;
                     key.m_nA = nTrophyId;
                     key.m_nB = nTrophyLevel;
-                    bTrophy = DAT_143ab32d8.find(key) != DAT_143ab32d8.end();
+                    if (DAT_143ab32d8.find(key) != DAT_143ab32d8.end())
+                        bTrophy = true;
+                }
+                else
+                {
+                    if (FUN_140936640(FUN_1406c7600(), nTrophyId, nTrophyLevel) == 0)
+                        bTrophy = true;
                 }
                 if (bTrophy)
                 {
@@ -2352,7 +2343,7 @@ void ASTooltip::FUN_1409d0a80(CItem* pItem)
                     }
                 }
                 PCBase* pPC = FUN_141bd0cc0_p2(FUN_1403ed2d0_p2());
-                if (bLocal && pPC != 0)
+                if (!bServer && pPC != 0)
                 {
                     unsigned nA = FUN_141901d20(pItem->FUN_1405276c0(), pItem->FUN_140526a50(), pItem->FUN_1405283d0());
                     unsigned nB = FUN_141901f70(pItem->FUN_1405276c0(), pItem->FUN_140526a50(), pItem->FUN_1405283d0());
@@ -2511,7 +2502,6 @@ MS2_REPLACE_METHOD(0x1409D26D0, ASTooltip, FUN_1409d26d0, 1490, 0xE8CE7567);
 
 // customizeColor: the dye hint of a customizable item.
 // @0x1409d2cb0
-// MS2-FUNCTIONAL: temporary/frame layout differs from the exe
 bool ASTooltip::FUN_1409d2cb0(CItem* pItem)
 {
     MyPC* pPC = (MyPC*)FUN_1409c6540();
@@ -2524,11 +2514,9 @@ bool ASTooltip::FUN_1409d2cb0(CItem* pItem)
     if (!bCustomizable)
         return false;
     CStringW strText;
-    unsigned nFlags = m_48;
-    int nColor = spData->FUN_14053e2b0(0);
-    if ((nFlags & 4) == 0 || nColor >= 0)
-        strText = GetStringCommon(0x9b7);
-    else
+    bool bEquipCheck = (m_48 & 4) > 0;
+    bool bHasColor = spData->FUN_14053e2b0(0) >= 0;
+    if (bEquipCheck && !bHasColor)
     {
         MS2Ptr<CEquipItem> spEquip = pPC->FUN_141655c30(pItem->FUN_140526a50());
         if (spEquip == 0)
@@ -2540,6 +2528,8 @@ bool ASTooltip::FUN_1409d2cb0(CItem* pItem)
         else
             strText = GetStringCommon(0x9b7);
     }
+    else
+        strText = GetStringCommon(0x9b7);
     FUN_1407cbb20("customizeColor", strText);
     return true;
 }
@@ -2734,7 +2724,6 @@ void ASTooltip::FUN_1409d3f10(CItem* pItem)
 namespace p3hook { MS2_REPLACE_METHOD(0x1409D3F10, ASTooltip, FUN_1409d3f10, 1072, 0x005C7805); }
 
 // @0x1409d4490
-// MS2-FUNCTIONAL: the exe loads nRank through ecx and compares the max level with the operands swapped (source form not found)
 void ASTooltip::FUN_1409d4490(CItem* pItem)
 {
     if (!FUN_140166410_p3()->FUN_14036d570(0xeb))
@@ -2743,22 +2732,19 @@ void ASTooltip::FUN_1409d4490(CItem* pItem)
         return;
     if (pItem->FUN_140525640() == 0)
         return;
-    int nRank = pItem->FUN_140526bd0();
-    unsigned nNeed = FUN_1404a1bb0_p3()->GetPetEvolution(pItem->FUN_1405282d0(), nRank);
+    unsigned nNeed = FUN_1404a1bb0_p3()->GetPetEvolution(pItem->FUN_1405282d0(), pItem->FUN_140526bd0());
     if (nNeed == 0)
         return;
-    unsigned nLevel = pItem->FUN_140528c20();
-    if (nLevel >= *FUN_1401d3200()->PetMaxLevel.Get())
-    {
-        CStringW strText = StringFormat(s_wsPetEvolutionPoint);
-        unsigned nPoint = pItem->FUN_140528bd0();
-        CStringW strGauge = StringFormat(L"{0} / {1}", nPoint, nNeed);
-        unsigned nPercent = (unsigned)(pItem->FUN_140528bd0() * 100) / nNeed;
-        strText.Append(L"gauge:\n\n");
-        FUN_1407cbb20("petEvolution", strText);
-        FUN_1407cbb20("petEvolutionGauge", strGauge);
-        FUN_1409c0d20("petEvolutionPercent", nPercent);
-    }
+    if (pItem->FUN_140528c20() < *FUN_1401d3200()->PetMaxLevel.Get())
+        return;
+    CStringW strText = StringFormat(s_wsPetEvolutionPoint);
+    unsigned nPoint = pItem->FUN_140528bd0();
+    CStringW strGauge = StringFormat(L"{0} / {1}", nPoint, nNeed);
+    unsigned nPercent = (unsigned)(pItem->FUN_140528bd0() * 100) / nNeed;
+    strText.Append(L"gauge:\n\n");
+    FUN_1407cbb20("petEvolution", strText);
+    FUN_1407cbb20("petEvolutionGauge", strGauge);
+    FUN_1409c0d20("petEvolutionPercent", nPercent);
 }
 // not hooked: reads s_wsPetEvolutionPoint (a DLL-local copy, filled by FUN_1409e5480)
 
@@ -3001,7 +2987,6 @@ void ASTooltip::FUN_1409d5b70(int nItemId)
 namespace p3hook { MS2_REPLACE_METHOD(0x1409D5B70, ASTooltip, FUN_1409d5b70, 1438, 0x2F4EEABA); }
 
 // @0x1409d6120
-// MS2-FUNCTIONAL: the exe destroys the main description before the emoticon branch inside one if/else (frame layout differs)
 void ASTooltip::FUN_1409d6120(int nItemId)
 {
     MS2Ptr<CItemData> spData = FUN_14053f870(nItemId);
@@ -3019,7 +3004,7 @@ void ASTooltip::FUN_1409d6120(int nItemId)
         }
     }
     CStringW strText;
-    if (spData->FUN_14053dfd0(CStringW(L"ChatEmoticonAdd")))
+    if (spData->FUN_14053dfd0(L"ChatEmoticonAdd"))
         strText = FUN_1409daff0(spData);
     if (strText.GetLength() != 0)
     {
@@ -3608,13 +3593,11 @@ void ASTooltip::FUN_1409d99a0(CItem* pItem, CStringW& strText)
 namespace p3hook { MS2_REPLACE_METHOD(0x1409D99A0, ASTooltip, FUN_1409d99a0, 242, 0xE8D921E7); }
 
 // @0x1409d9aa0
-// MS2-FUNCTIONAL: the exe passes the item id to GetData through ecx (an argument conversion; source form not found)
 void ASTooltip::FUN_1409d9aa0(CItem* pItem, CStringW& strText)
 {
     if (pItem == 0)
         return;
-    int nItemId = pItem->FUN_1405276c0();
-    CExtractionItemInfoPtr spRow = FUN_14052d1f0_p3()->GetData(nItemId);
+    CExtractionItemInfoPtr spRow = FUN_14052d1f0_p3()->GetData(pItem->FUN_1405276c0());
     if (spRow.get() != 0)
     {
         unsigned nTry = pItem->FUN_1405292a0();
@@ -3875,13 +3858,12 @@ void ASTooltip::FUN_1409db870(MS2Ptr<CItemData> spData)
 
 // The item tooltip with an optional comparison item: each one goes to its side tooltip when the movie has one.
 // @0x1409db930
-// MS2-FUNCTIONAL: the exe keeps the null test of the side tooltip in a bool temp (no source form found)
 void ASTooltip::FUN_1409db930(MS2Ptr<CItem> spCompare, MS2Ptr<CItem> spItem)
 {
     if (spCompare.get() != 0)
     {
         MS2Ptr<AScript> spLhs = FUN_1409db730();
-        if (spLhs.get() != 0 && !spLhs->FUN_1422ba9a0())
+        if ((spLhs.get() ? true : false) && !spLhs->FUN_1422ba9a0())
         {
             ASTooltip tip(spLhs->FUN_1422bb870(), 2);
             tip.FUN_1409db7b0(spCompare);
@@ -3889,16 +3871,17 @@ void ASTooltip::FUN_1409db930(MS2Ptr<CItem> spCompare, MS2Ptr<CItem> spItem)
         else
             FUN_1409db7b0(spCompare);
     }
-    if (spItem.get() == 0)
-        return;
-    MS2Ptr<AScript> spRhs = FUN_1409db6b0();
-    if (spRhs.get() != 0 && !spRhs->FUN_1422ba9a0())
+    if (spItem.get() != 0)
     {
-        ASTooltip tip(spRhs->FUN_1422bb870(), 2);
-        tip.FUN_1409db7b0(spItem);
+        MS2Ptr<AScript> spRhs = FUN_1409db6b0();
+        if ((spRhs.get() ? true : false) && !spRhs->FUN_1422ba9a0())
+        {
+            ASTooltip tip(spRhs->FUN_1422bb870(), 2);
+            tip.FUN_1409db7b0(spItem);
+        }
+        else
+            FUN_1409db7b0(spItem);
     }
-    else
-        FUN_1409db7b0(spItem);
 }
 namespace p4hook { MS2_REPLACE_METHOD(0x1409DB930, ASTooltip, FUN_1409db930, 640, 0x795DD30D); }
 
@@ -4209,11 +4192,11 @@ void ASTooltip::FUN_1409de020(CMeratMarketPremiumProduct* pProduct)
 namespace p4hook { MS2_REPLACE_METHOD(0x1409DE020, ASTooltip, FUN_1409de020, 64, 0x3806FEEC); }
 
 // @0x1409de070
-// MS2-FUNCTIONAL: the exe frame keeps fewer string temporaries (no source form found)
 void ASTooltip::FUN_1409de070(int nScope, int nReset, int nCount)
 {
-    CStringW strKey = FUN_1409e3050(CStringW(L"s_tooltip_buylimit"), nScope, nReset);
-    FUN_1409c6ef0(FUN_14028dfa0(strKey, nCount));
+    CStringW strKey = FUN_1409e3050(L"s_tooltip_buylimit", nScope, nReset);
+    CStringW strText = FUN_14028dfa0(strKey, nCount);
+    FUN_1409c6ef0(strText);
 }
 namespace p4hook { MS2_REPLACE_METHOD(0x1409DE070, ASTooltip, FUN_1409de070, 190, 0xC37C1BCE); }
 
@@ -4306,7 +4289,6 @@ void ASTooltip::FUN_1409dea00(ASArray* pRows, int nItemId)
 namespace p4hook { MS2_REPLACE_METHOD(0x1409DEA00, ASTooltip, FUN_1409dea00, 368, 0x47F7EBFE); }
 
 // @0x1409deb80
-// MS2-FUNCTIONAL: argument evaluation order of the job limit call differs
 void ASTooltip::FUN_1409deb80(ASArray* pRows, int nItemId)
 {
     if (FUN_1409c6540() == 0)
@@ -4317,20 +4299,18 @@ void ASTooltip::FUN_1409deb80(ASArray* pRows, int nItemId)
     {
         int nAllowed = 0;
         CStringW str(L"");
-        ATL::CAtlArray<unsigned>& jobs = spData->limit.jobLimit;
-        FUN_1409e68a0(FUN_141654700(reinterpret_cast<PCBase*>(FUN_1409c6540())), jobs, nAllowed, str);
+        FUN_1409e68a0(FUN_141654700(reinterpret_cast<PCBase*>(FUN_1409c6540())), spData->limit.jobLimit, nAllowed, str);
         if (!str.IsEmpty())
         {
             ASObj row(2);
             row.FUN_1407cbb20("text", str);
-            row.FUN_1409c0dc0("color", nAllowed == 0 ? "ff4040" : "aaaaaa");
+            row.FUN_1409c0dc0("color", nAllowed ? "aaaaaa" : "ff4040");
             pRows->FUN_1422bc050(row.FUN_1422bb870());
         }
     }
     {
         CStringW str(L"");
-        ATL::CAtlArray<unsigned>& jobs = spData->limit.disableJobLimit;
-        FUN_1409e6aa0(FUN_141654700(reinterpret_cast<PCBase*>(FUN_1409c6540())), jobs, str);
+        FUN_1409e6aa0(FUN_141654700(reinterpret_cast<PCBase*>(FUN_1409c6540())), spData->limit.disableJobLimit, str);
         if (!str.IsEmpty())
         {
             ASObj row(2);
@@ -4374,7 +4354,6 @@ namespace p4hook { MS2_REPLACE_METHOD(0x1409DEEA0, ASTooltip, FUN_1409deea0, 721
 
 // The level limit row of an item (red when the owner is below it).
 // @0x1409df180
-// MS2-FUNCTIONAL: the level getter result is kept in a word temp (no source form found)
 void ASTooltip::FUN_1409df180(ASArray* pRows, int nItemId)
 {
     if (FUN_1409c6540() == 0)
@@ -4387,18 +4366,18 @@ void ASTooltip::FUN_1409df180(ASArray* pRows, int nItemId)
     if (spData->limit.levelLimit == 1)
         return;
     PCBase* pOwner = reinterpret_cast<PCBase*>(FUN_1409c6540());
-    bool bAllowed = spData->FUN_14053c9a0((unsigned short)pOwner->vfunc_78());
+    unsigned short nLevel = (unsigned short)pOwner->vfunc_78();
+    int bAllowed = spData->FUN_14053c9a0(nLevel);
     CStringW str;
     str.Format(L"%s %d", (const wchar_t*)GetStringCommon(0x589), spData->limit.levelLimit);
     ASObj row(2);
     row.FUN_1407cbb20("text", str);
-    row.FUN_1409c0dc0("color", bAllowed == 0 ? "ff4040" : "aaaaaa");
+    row.FUN_1409c0dc0("color", bAllowed ? "aaaaaa" : "ff4040");
     pRows->FUN_1422bc050(row.FUN_1422bb870());
 }
 namespace p4hook { MS2_REPLACE_METHOD(0x1409DF180, ASTooltip, FUN_1409df180, 624, 0x3E3F3BC9); }
 
 // @0x1409df400
-// MS2-FUNCTIONAL: the exe frame is 0x10 smaller (no source form found)
 void ASTooltip::FUN_1409df400(ASArray* pRows, int nItemId)
 {
     MS2Ptr<CItemData> spData = FUN_14053f870(nItemId);
@@ -4408,14 +4387,13 @@ void ASTooltip::FUN_1409df400(ASArray* pRows, int nItemId)
         return;
     CStringW str;
     ASObj row(2);
-    row.FUN_1407cbb20("text", GetStringCommonByKey(CStringW(L"s_word_item_limit_vip")));
-    row.FUN_1409c0dc0("color", FUN_141662de0(reinterpret_cast<PCBase*>(FUN_1409c6540())) == 0 ? "ff4040" : "aaaaaa");
+    row.FUN_1407cbb20("text", GetStringCommonByKey(L"s_word_item_limit_vip"));
+    row.FUN_1409c0dc0("color", FUN_141662de0(reinterpret_cast<PCBase*>(FUN_1409c6540())) ? "aaaaaa" : "ff4040");
     pRows->FUN_1422bc050(row.FUN_1422bb870());
 }
 namespace p4hook { MS2_REPLACE_METHOD(0x1409DF400, ASTooltip, FUN_1409df400, 417, 0x7C8CC9F0); }
 
 // @0x1409df5b0
-// MS2-FUNCTIONAL: the exe frame is 0x10 smaller (no source form found)
 void ASTooltip::FUN_1409df5b0(ASArray* pRows, int nItemId)
 {
     MS2Ptr<CItemData> spData = FUN_14053f870(nItemId);
@@ -4425,23 +4403,24 @@ void ASTooltip::FUN_1409df5b0(ASArray* pRows, int nItemId)
         return;
     CStringW str;
     ASObj row(2);
-    row.FUN_1407cbb20("text", GetStringCommonByKey(CStringW(L"s_word_item_limit_wedding")));
-    row.FUN_1409c0dc0("color", WeddingManager::GetInstance()->IsInProgress() == 0 ? "ff4040" : "aaaaaa");
+    row.FUN_1407cbb20("text", GetStringCommonByKey(L"s_word_item_limit_wedding"));
+    row.FUN_1409c0dc0("color", WeddingManager::GetInstance()->IsInProgress() ? "aaaaaa" : "ff4040");
     pRows->FUN_1422bc050(row.FUN_1422bb870());
 }
 namespace p4hook { MS2_REPLACE_METHOD(0x1409DF5B0, ASTooltip, FUN_1409df5b0, 412, 0xF4AAE57C); }
 
 // The upgrade row of a gemstone item.
 // @0x1409df760
-// MS2-FUNCTIONAL: the null test of the data pointer jumps differently (no source form found)
 void ASTooltip::FUN_1409df760(ASArray* pRows, MS2Ptr<CItemData> spData)
 {
-    if (!(spData == 0) && spData->FUN_14053d840())
+    if (spData == 0 || !spData->FUN_14053d840())
+        return;
     {
         CItemGemStoneUpgradeTable::DataPtr spGem = CItemGemStoneUpgradeTable::GetInstance()->FUN_1405b1a60(spData->FUN_14053c510());
         if (spGem == 0)
             return;
-        CStringW str = FUN_1406285d0(spGem->m_nMask);
+        int nMask = spGem->m_nMask;
+        CStringW str = FUN_1406285d0(nMask);
         ASObj row(2);
         row.FUN_1407cbb20("text", str);
         row.FUN_1409c0dc0("color", "aaaaaa");
@@ -4610,15 +4589,14 @@ int ASTooltip::FUN_1409e0450(int nItemId, __int64 nExpiry)
     unsigned nArgs = spData->function.parameter.FUN_1408d2380();
     if (nArgs > 0)
     {
-        int nIndex = nArgs - 1;
-        nBoxId = spData->function.parameter.FUN_1408d1fd0(nIndex, 0);
+        nBoxId = spData->function.parameter.FUN_1408d1fd0(nArgs - 1, 0);
     }
     else
     {
         int nDefault = 0;
-        nBoxId = spData->function.xml.GetInt(CStringW(L"individualDropBoxId"), nDefault);
+        nBoxId = spData->function.xml.GetInt(L"individualDropBoxId", nDefault);
         bool bDefault = false;
-        bFollowEndDate = spData->function.xml.FUN_1409e8780(CStringW(L"isFollowEndDate"), bDefault);
+        bFollowEndDate = spData->function.xml.FUN_1409e8780(L"isFollowEndDate", bDefault);
     }
     if (nBoxId == 0)
         return 0;
@@ -4631,9 +4609,9 @@ int ASTooltip::FUN_1409e0450(int nItemId, __int64 nExpiry)
     ctx.m_gender = FUN_141658e60_p5(pPc);
     if (!FUN_1405a1fd0_p5()->GetBoxItems(nBoxId, ctx, drops, true))
         return 0;
-    for (std::vector<ItemDropResult>::iterator it = drops.begin(); it != drops.end(); ++it)
+    for (std::vector<ItemDropResult>::const_iterator it = drops.begin(); it != drops.end(); ++it)
     {
-        ItemDropResult* pDrop = &*it;
+        ItemDropResult* pDrop = const_cast<ItemDropResult*>(&*it);
         MS2Ptr<CItemData> spItem = FUN_14053f870(pDrop->m_itemId);
         if (spItem == 0)
             continue;
@@ -5219,7 +5197,7 @@ CStringW FUN_1409e34e0(MS2Ptr<CItem> spItem)
                         int nValue = spBase->GetValue();
                         float fRate = (float)floor(FUN_1406198a0(nValue, spPet->m_fConstantOptionFactor));
                         float fBase = (float)nValue;
-                        float fMax = fBase + fRate * (float)(int)(*FUN_1401d3200()->PetMaxLevel.Get() - 1);
+                        float fMax = fBase + fRate * (float)(*FUN_1401d3200()->PetMaxLevel.Get() - 1);
                         nValue = (int)((float)nValue + fRate * (float)(spItem->FUN_140528c20() - 1));
                         strValue = FUN_140631830(eSpecial, nValue, spItem->FUN_140527840());
                         int nRaw = spBase->GetValue();
@@ -5262,7 +5240,7 @@ CStringW FUN_1409e34e0(MS2Ptr<CItem> spItem)
                         __int64 nValue = spBase->GetValue();
                         float fRate = (float)floor(FUN_140632990(nValue, spPet->m_fConstantOptionFactor));
                         float fBase = (float)nValue;
-                        __int64 nMax = (__int64)(fBase + fRate * (float)(int)(*FUN_1401d3200()->PetMaxLevel.Get() - 1));
+                        __int64 nMax = (__int64)(fBase + fRate * (float)(*FUN_1401d3200()->PetMaxLevel.Get() - 1));
                         nValue = (__int64)((float)nValue + fRate * (float)(spItem->FUN_140528c20() - 1));
                         strValue = FUN_140631720(nStat, (int)nValue, false);
                         strBase = FUN_1409e0900(spBase->GetValue());
@@ -5686,40 +5664,36 @@ namespace p5hook { MS2_REPLACE_METHOD(0x1409E72A0, ASTooltip, FUN_1409e72a0, 431
 
 // Fills the itemBreakIngredientList rows (the ingredients with a count that are not plain materials).
 // @0x1409e7460
-// MS2-FUNCTIONAL: passes a temporary ItemDropResult
 void ASTooltip::FUN_1409e7460(Unk_IngVec* pIngredients)
 {
-    if (!pIngredients->FUN_14028a8c0())
+    if (pIngredients->FUN_14028a8c0())
+        return;
+    ASArray rows(2);
+    // Unk_IngVec is the opaque stand-in of std::vector<MS2Ptr<CIngredientInfo>> (same 24-byte layout)
+    for (std::vector<MS2Ptr<CIngredientInfo> >::const_iterator it = reinterpret_cast<const std::vector<MS2Ptr<CIngredientInfo> >*>(pIngredients)->begin();
+         it != reinterpret_cast<const std::vector<MS2Ptr<CIngredientInfo> >*>(pIngredients)->end(); ++it)
     {
-        ASArray rows(2);
-        // Unk_IngVec is the opaque stand-in of std::vector<MS2Ptr<CIngredientInfo>> (same 24-byte layout)
-        const std::vector<MS2Ptr<CIngredientInfo> >& vIngredients =
-            reinterpret_cast<const std::vector<MS2Ptr<CIngredientInfo> >&>(*pIngredients);
-        for (std::vector<MS2Ptr<CIngredientInfo> >::const_iterator it = vIngredients.begin(); it != vIngredients.end(); ++it)
-        {
-            MS2Ptr<CIngredientInfo> spIng(*it.operator->());
-            if (spIng == 0)
-                continue;
-            if (spIng->m_c == 0)
-                continue;
-            MS2Ptr<CItemData> spData = FUN_14053f870(spIng->m_a);
-            if (spData == 0)
-                continue;
-            if (!spData->FUN_14053d990() && !spData->FUN_14053d880() && spData->FUN_14053c5c0() != 0xf)
-                continue;
-            ASObj row(2);
-            int nRank = FUN_14053feb0(spIng->m_a);
-            bool bFilled;
-            {
-                ItemDropResult drop(spIng->m_a, spIng->m_c, nRank, 0, 0, 0, 0, false, false, 0, false, false, false, false);
-                bFilled = row.FUN_1409c5bd0(&drop);
-            }
-            if (!bFilled)
-                continue;
-            rows.FUN_1422bc050(row.FUN_1422bb870());
-        }
-        FUN_1409adbe0(s_strItemBreakIngredientList, rows.FUN_1422bb870());
+        MS2Ptr<CIngredientInfo> spIng(*it.operator->());
+        if (spIng == 0)
+            continue;
+        if (spIng->m_c == 0)
+            continue;
+        MS2Ptr<CItemData> spData = FUN_14053f870(spIng->m_a);
+        if (spData == 0)
+            continue;
+        if (!spData->FUN_14053d990() && !spData->FUN_14053d880() && spData->FUN_14053c5c0() != 0xf)
+            continue;
+        ASObj row(2);
+#ifdef __clang__
+        ItemDropResult drop(spIng->m_a, spIng->m_c, FUN_14053feb0(spIng->m_a), 0, 0, 0, 0, false, false, 0, false, false, false, false);
+        if (!row.FUN_1409c5bd0(&drop))
+#else
+        if (!row.FUN_1409c5bd0(&ItemDropResult(spIng->m_a, spIng->m_c, FUN_14053feb0(spIng->m_a), 0, 0, 0, 0, false, false, 0, false, false, false, false)))
+#endif
+            continue;
+        rows.FUN_1422bc050(row.FUN_1422bb870());
     }
+    FUN_1409adbe0(s_strItemBreakIngredientList, rows.FUN_1422bb870());
 }
 namespace p5hook { MS2_REPLACE_METHOD(0x1409E7460, ASTooltip, FUN_1409e7460, 1043, 0xA27F316C); }
 

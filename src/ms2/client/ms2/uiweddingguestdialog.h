@@ -51,7 +51,7 @@ class UIWeddingGuestPageFriend : public UIWeddingGuestPage
 {
 public:
     UIWeddingGuestPageFriend(UIWeddingGuestDialog* pDialog);                // 0x140fd6eb0
-    virtual ~UIWeddingGuestPageFriend();                                    //  0 0x140fd8b90 (??_G 0x140fd8cc0)
+    // implicit virtual dtor:                                              //  0 0x140fd8b90 (??_G 0x140fd8cc0)
     virtual bool vfunc_1();                                                 //  1 0x140fd6ef0 fills "m_list" from the friend list
     virtual bool vfunc_4(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);
                                                                             //  4 0x140fd7570 onSelectCheckbox
@@ -64,7 +64,7 @@ class UIWeddingGuestPageGuild : public UIWeddingGuestPage
 {
 public:
     UIWeddingGuestPageGuild(UIWeddingGuestDialog* pDialog);                 // 0x140fd77c0
-    virtual ~UIWeddingGuestPageGuild();                                     //  0 0x140fd8bb0 (??_G 0x140fd8d00)
+    // implicit virtual dtor:                                              //  0 0x140fd8bb0 (??_G 0x140fd8d00)
     virtual bool vfunc_1();                                                 //  1 0x140fd7800 fills "m_list" from the guild members
     virtual bool vfunc_4(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);
                                                                             //  4 0x140fd7e90 onSelectCheckbox
@@ -81,7 +81,7 @@ public:
     typedef MS2Ptr<WeddingGuest> GuestPtr;
 
     UIWeddingGuestPageStranger(UIWeddingGuestDialog* pDialog);              // 0x140fd8230
-    virtual ~UIWeddingGuestPageStranger();                                  //  0 0x140fd8bd0 (??_G 0x140fd8d40)
+    // implicit virtual dtor:                                              //  0 0x140fd8bd0 (??_G 0x140fd8d40)
     virtual bool vfunc_1();                                                 //  1 0x140fd8290 lists the found strangers
     virtual void vfunc_3();                                                 //  3 0x140fd8640 forget the strangers
     virtual bool vfunc_4(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);

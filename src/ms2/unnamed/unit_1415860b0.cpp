@@ -4,15 +4,17 @@
 #define MS2_THIS_FILE ""
 #include "ms2/placeholder/ms2stdafx.h"
 #include "ms2/placeholder/nmobjects.h"
+#include "ms2/placeholder/nmstream.h"
+#include "ms2/placeholder/nmencoder.h"
 #include "ms2/ms2recover.h"
 
 extern void FUN_14156bcb0(void*, void*, void*);
 extern void FUN_14156bd50(void*);
 extern void FUN_14156be10(void*, void*, void*);
 extern void FUN_14156bf10(void*);
-extern bool FUN_1415fb700(void*);
-extern bool FUN_1415fb750(void*);
-extern int FUN_1415fb6d0(void*);
+extern int FUN_1415fb700(void*);
+extern int FUN_1415fb750(void*);
+extern int FUN_1415fb6d0(CNMSerializableDecoder*);
 extern unsigned int FUN_1415f9990(void*);
 extern unsigned int FUN_14156ac20(void*, unsigned int);
 extern unsigned int FUN_14160b6b0(const std::vector<CNMCateFriendInfo>*);
@@ -34,36 +36,35 @@ CNMGetFriendListFunc::CNMGetFriendListFunc(unsigned long long key)
 
 // @0x1415861a0
 // MS2-FUNCTIONAL: builds the framed encoder and forwards to Encode; wrapper frame differs while preserving setup, call and cleanup.
-unsigned int CNMGetFriendListFunc::EncodeFramed(CNMStream* stream)
+unsigned int CNMGetFriendListFunc::EncodeFramed(CNMStream* pStream)
 {
-    unsigned char framed[0x18];
-    FUN_14156bcb0(framed, stream, this);
-    unsigned int result = Encode(reinterpret_cast<CNMEncoder*>(framed), stream);
-    FUN_14156bd50(framed);
-    return result;
+    CNMSerializableEncoder encoder(pStream, this);
+    return CNMGetFriendListFunc::Encode(reinterpret_cast<CNMEncoder*>(&encoder), pStream);
 }
 
 // @0x141586200
 // MS2-FUNCTIONAL: preserves the format selector and target body; direct member calls differ from the binary's indirect slot calls.
-unsigned int CNMGetFriendListFunc::EncodeDispatch(CNMEncoder* encoder, CNMStream* stream)
+unsigned int CNMGetFriendListFunc::EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream)
 {
-    if (m_bFormat == 1) return Encode(encoder, stream);
-    return EncodeFramed(stream);
+    if (m_bFormat == 1)
+        return CNMGetFriendListFunc::Encode(pEncoder, pStream);
+    return CNMGetFriendListFunc::EncodeFramed(pStream);
 }
 
 // @0x141586260
-// MS2-FUNCTIONAL: serializes both vectors and scalar reply keys in order; C++ iteration replaces the binary's STL iterator helpers.
 unsigned int CNMGetFriendListFunc::Encode(CNMEncoder* encoder, CNMStream* stream)
 {
     CNMFunc::EncodeDispatch(encoder, stream);
-    if (!FUN_1415fb700(this)) {
-        FUN_14156ac20(encoder, FUN_14160b6b0(&m_38));
-        for (auto& category : m_38) category.EncodeFramed(stream);
-        FUN_14156ac20(encoder, FUN_14160b8e0(&m_50));
-        for (auto& friendInfo : m_50) friendInfo.EncodeFramed(stream);
-    } else {
+    if (FUN_1415fb700(this) != 0) {
         FUN_14156ac20(encoder, m_30.nLow);
         FUN_14156ac20(encoder, m_30.nHigh);
+    } else {
+        FUN_14156ac20(encoder, FUN_14160b6b0(&m_38));
+        for (std::vector<CNMCateFriendInfo>::iterator it = m_38.begin(), itEnd = m_38.end(); it != itEnd; ++it)
+            (*it).EncodeFramed(stream);
+        FUN_14156ac20(encoder, FUN_14160b8e0(&m_50));
+        for (std::vector<CNMFriendInfo>::iterator it = m_50.begin(), itEnd = m_50.end(); it != itEnd; ++it)
+            (*it).EncodeFramed(stream);
     }
     FUN_1415f9990(encoder);
     return 1;
@@ -71,50 +72,49 @@ unsigned int CNMGetFriendListFunc::Encode(CNMEncoder* encoder, CNMStream* stream
 
 // @0x141586400
 // MS2-FUNCTIONAL: builds the framed decoder and forwards to Decode; wrapper frame differs while preserving setup, call and cleanup.
-unsigned int CNMGetFriendListFunc::DecodeFramed(CNMStream* stream)
+unsigned int CNMGetFriendListFunc::DecodeFramed(CNMStream* pStream)
 {
-    unsigned char framed[0x38];
-    FUN_14156be10(framed, stream, this);
-    unsigned int result = 0;
-    if (FUN_1415fb750(framed)) result = Decode(reinterpret_cast<CNMSerializableDecoder*>(framed), stream);
-    FUN_14156bf10(framed);
-    return result;
+    CNMSerializableDecoder decoder(pStream, this);
+    if (FUN_1415fb750(&decoder) == 0)
+        return 0;
+    return CNMGetFriendListFunc::Decode(&decoder, pStream);
 }
 
 // @0x141586490
 // MS2-FUNCTIONAL: preserves decoder-format dispatch; direct member calls differ from the binary's indirect slot calls.
-unsigned int CNMGetFriendListFunc::DecodeDispatch(CNMSerializableDecoder* decoder, CNMStream* stream)
+unsigned int CNMGetFriendListFunc::DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream)
 {
-    if (FUN_1415fb6d0(decoder) == 2) return DecodeFramed(stream);
-    return Decode(decoder, stream);
+    if (FUN_1415fb6d0(pDecoder) == 2)
+        return CNMGetFriendListFunc::DecodeFramed(pStream);
+    return CNMGetFriendListFunc::Decode(pDecoder, pStream);
 }
 
 // @0x1415864f0
-// MS2-FUNCTIONAL: decodes list elements and key words in wire order; C++ vector operations replace the binary's STL iterator helpers.
 unsigned int CNMGetFriendListFunc::Decode(CNMSerializableDecoder* decoder, CNMStream* stream)
 {
     CNMFunc::DecodeDispatch(decoder, stream);
-    void** decoderVtable = *reinterpret_cast<void***>(decoder);
-    using ReadU32 = unsigned int(__fastcall*)(CNMSerializableDecoder*);
-    auto readU32 = reinterpret_cast<ReadU32>(decoderVtable[3]);
-    if (!FUN_1415fb700(this)) {
-        const unsigned int categoryCount = readU32(decoder);
-        m_38.clear();
-        for (unsigned int i = 0; i < categoryCount; ++i) {
-            CNMCateFriendInfo category;
-            category.DecodeFramed(stream);
-            m_38.push_back(std::move(category));
-        }
-        const unsigned int friendCount = readU32(decoder);
-        m_50.clear();
-        for (unsigned int i = 0; i < friendCount; ++i) {
-            CNMFriendInfo friendInfo;
-            friendInfo.DecodeFramed(stream);
-            m_50.push_back(std::move(friendInfo));
-        }
+    if (FUN_1415fb700(this) != 0) {
+        m_30.nLow = decoder->ReadU32();
+        m_30.nHigh = decoder->ReadU32();
     } else {
-        m_30.nLow = readU32(decoder);
-        m_30.nHigh = readU32(decoder);
+        {
+            CNMCateFriendInfo category;
+            const unsigned int categoryCount = decoder->ReadU32();
+            m_38.clear();
+            for (unsigned int i = 0; i < categoryCount; ++i) {
+                category.DecodeFramed(stream);
+                m_38.push_back(category);
+            }
+        }
+        {
+            CNMFriendInfo friendInfo;
+            const unsigned int friendCount = decoder->ReadU32();
+            m_50.clear();
+            for (unsigned int i = 0; i < friendCount; ++i) {
+                friendInfo.DecodeFramed(stream);
+                m_50.push_back(friendInfo);
+            }
+        }
     }
     return static_cast<unsigned int>(FUN_1415fb750(decoder));
 }

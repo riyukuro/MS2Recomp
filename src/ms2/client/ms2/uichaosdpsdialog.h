@@ -32,7 +32,7 @@ public:
     virtual void vfunc_67();                                                // 67 0x140e06000
     virtual void vfunc_72();                                                // 72 0x140e06630
 
-    bool FUN_140e055b0(ASObj& obj, CPartyMember* pMember, unsigned nRank);  // 0x140e055b0 fill one meter row
+    int FUN_140e055b0(ASObj& obj, CPartyMember* pMember, unsigned nRank);  // 0x140e055b0 fill one meter row
     void OnTextToggle();                                                   // 0x140e057d0 title bar and sort direction
     void FUN_140e05950();                                                   // 0x140e05950 rebuild the ranking
     void FUN_140e05f80();                                                   // 0x140e05f80 RemoveMember

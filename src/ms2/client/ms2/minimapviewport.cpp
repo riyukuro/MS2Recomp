@@ -3,8 +3,6 @@
 // free functions here (a member's thiscall is the same calling convention as a first reference parameter) and the
 // hook DLL binds them to the exe.
 // MS2-UNIT: ?\minimapviewport.cpp
-// MS2-FUNCTIONAL: MinimapViewport::FUN_141486450 (Project) differs only in the /Od argument setup of the FUN_141486550
-// call (the exe materializes &kPt.y into rcx and moves it to r9); every other instruction matches.
 // MS2-RANGE: 0x1414856d0-0x141486df0 .text$mn
 // MS2-PIN: ??_GMinimapViewport@@UEAAPEAXI@Z 0x141486cd0
 #define MS2_THIS_FILE ""
@@ -81,8 +79,8 @@ unsigned MinimapViewport::FUN_141485770(int nScale)
 void MinimapViewport::FUN_141485a50(const Unk_GVec3& kCamPos, const Unk_GVec3& kAxisX, const Unk_GVec3& kAxisY,
                                     const Unk_GVec3& kAxisZ)
 {
-    float fDotX = FUN_140a00f20(kAxisX, kCamPos);
-    float fDotZ = FUN_140a00f20(kAxisZ, kCamPos);
+    float fDotX = -FUN_140a00f20(kAxisX, kCamPos);
+    float fDotZ = -FUN_140a00f20(kAxisZ, kCamPos);
     float fDotY = -FUN_140a00f20(kAxisY, kCamPos);
 
     float fSumLR = m_kFrustum.r + m_kFrustum.l;
@@ -93,20 +91,24 @@ void MinimapViewport::FUN_141485a50(const Unk_GVec3& kCamPos, const Unk_GVec3& k
 
     if (m_kFrustum.ortho)
     {
-        float fX = fInvLR * 2.0f;
-        float fZ = fInvTB * 2.0f;
+        float fX = 2.0f * fInvLR;
+        float fXT = fSumLR * fInvLR;
+        float fZ = 2.0f * fInvTB;
+        float fZT = fSumTB * fInvTB;
+        float fNF = fInvNF;
+        float fNT = -m_kFrustum.n * fNF;
         m_afMatrix[0][0] = fX * kAxisX.x;
         m_afMatrix[0][1] = fX * kAxisX.y;
         m_afMatrix[0][2] = fX * kAxisX.z;
-        m_afMatrix[0][3] = fX * -fDotX + fSumLR * fInvLR;
+        m_afMatrix[0][3] = fX * fDotX + fXT;
         m_afMatrix[1][0] = fZ * kAxisZ.x;
         m_afMatrix[1][1] = fZ * kAxisZ.y;
         m_afMatrix[1][2] = fZ * kAxisZ.z;
-        m_afMatrix[1][3] = fZ * -fDotZ + fSumTB * fInvTB;
-        m_afMatrix[2][0] = fInvNF * kAxisY.x;
-        m_afMatrix[2][1] = fInvNF * kAxisY.y;
-        m_afMatrix[2][2] = fInvNF * kAxisY.z;
-        m_afMatrix[2][3] = fInvNF * fDotY + -m_kFrustum.n * fInvNF;
+        m_afMatrix[1][3] = fZ * fDotZ + fZT;
+        m_afMatrix[2][0] = fNF * kAxisY.x;
+        m_afMatrix[2][1] = fNF * kAxisY.y;
+        m_afMatrix[2][2] = fNF * kAxisY.z;
+        m_afMatrix[2][3] = fNF * fDotY + fNT;
         m_afMatrix[3][0] = 0.0f;
         m_afMatrix[3][1] = 0.0f;
         m_afMatrix[3][2] = 0.0f;
@@ -114,23 +116,24 @@ void MinimapViewport::FUN_141485a50(const Unk_GVec3& kCamPos, const Unk_GVec3& k
     }
     else
     {
-        float fX = fInvLR * 2.0f;
+        float fX = 2.0f * fInvLR;
         float fXV = -fSumLR * fInvLR;
-        float fZ = fInvTB * 2.0f;
+        float fZ = 2.0f * fInvTB;
         float fZV = -fSumTB * fInvTB;
-        float fNF = m_kFrustum.n * fInvNF;
+        float fNF = m_kFrustum.f * fInvNF;
+        float fNT = -m_kFrustum.n * fNF;
         m_afMatrix[0][0] = fX * kAxisX.x + fXV * kAxisY.x;
         m_afMatrix[0][1] = fX * kAxisX.y + fXV * kAxisY.y;
         m_afMatrix[0][2] = fX * kAxisX.z + fXV * kAxisY.z;
-        m_afMatrix[0][3] = fX * -fDotX + fXV * fDotY;
+        m_afMatrix[0][3] = fX * fDotX + fXV * fDotY;
         m_afMatrix[1][0] = fZ * kAxisZ.x + fZV * kAxisY.x;
         m_afMatrix[1][1] = fZ * kAxisZ.y + fZV * kAxisY.y;
         m_afMatrix[1][2] = fZ * kAxisZ.z + fZV * kAxisY.z;
-        m_afMatrix[1][3] = fZ * -fDotZ + fZV * fDotY;
+        m_afMatrix[1][3] = fZ * fDotZ + fZV * fDotY;
         m_afMatrix[2][0] = fNF * kAxisY.x;
         m_afMatrix[2][1] = fNF * kAxisY.y;
         m_afMatrix[2][2] = fNF * kAxisY.z;
-        m_afMatrix[2][3] = fNF * fDotY + -m_kFrustum.n * fNF;
+        m_afMatrix[2][3] = fNF * fDotY + fNT;
         m_afMatrix[3][0] = kAxisY.x;
         m_afMatrix[3][1] = kAxisY.y;
         m_afMatrix[3][2] = kAxisY.z;
@@ -145,16 +148,16 @@ void MinimapViewport::FUN_1414863e0()
 }
 
 // @0x141486410
-void MinimapViewport::FUN_141486410(const Unk_GVec3& kPos, Unk_GVec3& kOut)
+bool MinimapViewport::FUN_141486410(const Unk_GVec3& kPos, Unk_GVec3& kOut)
 {
-    FUN_141486450(kPos, kOut, m_fScale);
+    return FUN_141486450(kPos, kOut, m_fScale);
 }
 
 // @0x141486450
 bool MinimapViewport::FUN_141486450(const Unk_GVec3& kPos, Unk_GVec3& kOut, float fScale)
 {
     Unk_GVec3 kPt;
-    if (FUN_141486550(kPos, kPt.x, kPt.y, kPt.z))
+    if (FUN_141486550(kPos, kPt.x, *(&kPt.x + 1), *(&kPt.x + 2)))
     {
         kOut.z = kPt.z;
         kOut.x = (kPt.x * FUN_141486d90(m_rcScreen) - m_rcImage.l) * fScale;
@@ -171,35 +174,49 @@ bool MinimapViewport::FUN_141486550(const Unk_GVec3& kPos, float& fX, float& fY,
     Unk_Rect4 kRect(0.0f, 1.0f, 1.0f, 0.0f);
 
     float fW = kPos.x * m_afMatrix[3][0] + kPos.y * m_afMatrix[3][1] + kPos.z * m_afMatrix[3][2] + m_afMatrix[3][3];
-    if (fW <= fEps)
+    if (fW > fEps)
+    {
+        float fInvW = 1.0f / fW;
+        fX = kPos.x * m_afMatrix[0][0] + kPos.y * m_afMatrix[0][1] + kPos.z * m_afMatrix[0][2] + m_afMatrix[0][3];
+        fY = kPos.x * m_afMatrix[1][0] + kPos.y * m_afMatrix[1][1] + kPos.z * m_afMatrix[1][2] + m_afMatrix[1][3];
+        fX = fX * fInvW;
+        fY = fY * fInvW;
+        fX *= (kRect.r - kRect.l) * 0.5f;
+        fY *= (kRect.t - kRect.b) * 0.5f;
+        fX = fX + (kRect.r + kRect.l) * 0.5f;
+        fY = fY + (kRect.t + kRect.b) * 0.5f;
+        fZ = kPos.x * m_afMatrix[2][0] + kPos.y * m_afMatrix[2][1] + kPos.z * m_afMatrix[2][2] + m_afMatrix[2][3];
+        fZ = fZ * fInvW;
+        if (fX >= kRect.l && fX <= kRect.r && fY >= kRect.b && fY <= kRect.t)
+            return true;
+    }
+    else
     {
         fX = FLT_MAX;
         fY = FLT_MAX;
         fZ = FLT_MAX;
-        return false;
     }
-
-    float fInvW = 1.0f / fW;
-    fX = kPos.x * m_afMatrix[0][0] + kPos.y * m_afMatrix[0][1] + kPos.z * m_afMatrix[0][2] + m_afMatrix[0][3];
-    fY = kPos.x * m_afMatrix[1][0] + kPos.y * m_afMatrix[1][1] + kPos.z * m_afMatrix[1][2] + m_afMatrix[1][3];
-    fX = fX * fInvW;
-    fY = fY * fInvW;
-    fX = fX * (kRect.r - kRect.l) * 0.5f;
-    fY = fY * (kRect.t - kRect.b) * 0.5f;
-    fX = fX + (kRect.r + kRect.l) * 0.5f;
-    fY = fY + (kRect.t + kRect.b) * 0.5f;
-    fZ = (kPos.x * m_afMatrix[2][0] + kPos.y * m_afMatrix[2][1] + kPos.z * m_afMatrix[2][2] + m_afMatrix[2][3]) * fInvW;
-    if (fX >= kRect.l && fX <= kRect.r && fY >= kRect.b && fY <= kRect.t)
-        return true;
     return false;
 }
 
 // @0x141486a20
 void MinimapViewport::FUN_141486a20(Unk_GVec3 kRot, Unk_GVec3& kAxisX, Unk_GVec3& kAxisY, Unk_GVec3& kAxisZ)
 {
-    Unk_MvMatrix3 kMatrix;
-    if (FUN_140a38cd0(kRot.z) >= 1e-05f)
+    if (FUN_140a38cd0(kRot.z) < 1e-05f)
     {
+        Unk_MvMatrix3 kMatrix;
+        FUN_1409f72e0(kMatrix);
+        kMatrix.FUN_142083d40(-kRot.x * k_fPi / 180.0f, -kRot.y * k_fPi / 180.0f, kRot.z * k_fPi / 180.0f);
+        kMatrix.FUN_140a01190(0, kAxisY);
+        kMatrix.FUN_140a01190(1, kAxisZ);
+        kMatrix.FUN_140a01190(2, kAxisX);
+        FUN_140968990(kAxisY);
+        FUN_140968990(kAxisZ);
+        FUN_140968990(kAxisX);
+    }
+    else
+    {
+        Unk_MvMatrix3 kMatrix;
         FUN_1409f72e0(kMatrix);
         kMatrix.FUN_142083d40(kRot.x * k_fPi / 180.0f, kRot.y * k_fPi / 180.0f, kRot.z * k_fPi / 180.0f);
         kMatrix.FUN_140a01190(0, kAxisY);
@@ -209,17 +226,6 @@ void MinimapViewport::FUN_141486a20(Unk_GVec3 kRot, Unk_GVec3& kAxisX, Unk_GVec3
         // in rdx, so it is a member call; the view adds no data)
         ((Unk_MvPoint3&)kAxisZ).FUN_140194470(((Unk_MvPoint3&)kAxisZ).FUN_1409f7960());
         ((Unk_MvPoint3&)kAxisX).FUN_140194470(((Unk_MvPoint3&)kAxisX).FUN_1409f7960());
-        FUN_140968990(kAxisY);
-        FUN_140968990(kAxisZ);
-        FUN_140968990(kAxisX);
-    }
-    else
-    {
-        FUN_1409f72e0(kMatrix);
-        kMatrix.FUN_142083d40(-kRot.x * k_fPi / 180.0f, -kRot.y * k_fPi / 180.0f, kRot.z * k_fPi / 180.0f);
-        kMatrix.FUN_140a01190(0, kAxisY);
-        kMatrix.FUN_140a01190(1, kAxisZ);
-        kMatrix.FUN_140a01190(2, kAxisX);
         FUN_140968990(kAxisY);
         FUN_140968990(kAxisZ);
         FUN_140968990(kAxisX);

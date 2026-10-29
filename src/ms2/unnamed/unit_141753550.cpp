@@ -21,7 +21,7 @@ class Unk_ShadowMgr { public: virtual void s0(); virtual void s1(); virtual void
 class ShadowCullingProcess : public NiTerrainCullingProcess {
 public:
     ShadowCullingProcess();
-    virtual ~ShadowCullingProcess();
+    // ~ShadowCullingProcess() implicit (0x141753a70: no vftable store)
     virtual const NiRTTI* GetRTTI() const;
     virtual void Process(NiAVObject* obj);
 };
@@ -36,7 +36,8 @@ void* FUN_14098d8d0(void* table, void* key);            // table lookup
 NiProperty* FUN_141d14f90(NiAVObject* o, int type);     // NiAVObject::GetProperty
 bool FUN_14098dab0(NiProperty* p);                      // property active?
 void* FUN_140994490(NiAVObject* o);                     // GetWorldBound
-float FUN_140a00ef0(const NiPlane* p, const NiBound* b);// plane distance to bound centre
+float FUN_140a00ef0(const NiPlane* p, const NiPoint3* c);// plane distance to the bound centre
+struct Unk_BoundView { NiPoint3 m_kCenter; float m_fRadius; };   // NiBound's layout (its members are protected)
 bool FUN_14109a9a0(void* table, NiAVObject* o);         // contained in set
 int FUN_14098daf0(NiAVObject* o);                       // child count
 void* FUN_14098db40(NiAVObject* o, int i);              // child at
@@ -44,7 +45,7 @@ bool FUN_1411c9940(void* child);                        // child visible?
 int FUN_140ad02f0(int a, int b);                        // combine
 int FUN_141568f60(void* o);                             // lookup result id
 void* FUN_141d17b40(NiAVObject* o, void* key);          // NiObject::GetExtraData-style lookup
-void* FUN_140876480(void* out, int cat);                // memory category helper, returns int*
+efd::MemHint FUN_140876480(int cat);                    // memory category hint (returned through a hidden slot)
 float FUN_14098daa0(NiProperty* p);                     // alpha test ref
 bool FUN_14028d470(float a, float b);                   // approx equal                                   // material has alpha test?
 
@@ -62,7 +63,7 @@ struct Unk_141753b80 {
 MS2_CHECK_OFFSET(Unk_141753b80, m_138, 0x138);
 void* FUN_141753b80(char* o);
 
-// MS2-FUNCTIONAL: Process 3-byte frame/arg-order diffs; Deactivate shift-count temp; factory EH state; ~Shadow vptr store (exe omits it)
+// MS2-FUNCTIONAL: Deactivate shift-count temp; factory EH state; ~Shadow vptr store (exe omits it)
 // @0x141753590
 void ShadowCullingProcess::Process(NiAVObject* obj)
 {
@@ -80,14 +81,13 @@ void ShadowCullingProcess::Process(NiAVObject* obj)
         }
     }
     if (!m_kPlanes.IsAnyPlaneActive()) {
-        obj->Cull(*this);
+        obj->OnVisible(*this);
         return;
     }
     saved = m_kPlanes.GetActivePlaneState();
     for (i = 0; i < 6; ++i) {
         if (m_kPlanes.IsPlaneActive(i)) {
-            const NiPlane* pl = &m_kPlanes.GetPlane(i);
-            int r = FUN_141753c20((const NiBound*)FUN_140994490(obj), *pl);
+            int r = FUN_141753c20((const NiBound*)FUN_140994490(obj), m_kPlanes.GetPlane(i));
             if (r == 2) break;
             if (r == 1) m_kPlanes.DisablePlane(i);
         }
@@ -105,18 +105,18 @@ void ShadowCullingProcess::Process(NiAVObject* obj)
                 int v = mgr->vfunc_18(GetLODCamera(), o2);
                 k = FUN_140ad02f0(k, v);
                 FUN_141753c10(k);
-                obj->Cull(*this);
+                obj->OnVisible(*this);
                 FUN_141753c10(-1);
             } else {
-                obj->Cull(*this);
+                obj->OnVisible(*this);
             }
         } else if (DAT_143ae2b34 != 0) {
             void* x = FUN_14098d8d0(&DAT_143afa7d0, obj);
             if (x != 0 && FUN_141568f60(x) != 0)
-                obj->Cull(*this);
+                obj->OnVisible(*this);
         } else {
             if (FUN_141d17b40(obj, &DAT_143ae5190) != 0)
-                obj->Cull(*this);
+                obj->OnVisible(*this);
         }
     }
     m_kPlanes.SetActivePlaneState(saved);
@@ -125,10 +125,7 @@ void ShadowCullingProcess::Process(NiAVObject* obj)
 // @0x141753990   factory: EE_NEW(category) ShadowCullingProcess
 ShadowCullingProcess* FUN_141753990()
 {
-    void* tmp;
-    efd::MemHint* cat = (efd::MemHint*)FUN_140876480(&tmp, 0);
-    ShadowCullingProcess* r = new (*cat) ShadowCullingProcess();
-    return r;
+    return new (FUN_140876480(0)) ShadowCullingProcess();
 }
 
 // @0x141753a00
@@ -144,8 +141,7 @@ bool FUN_141753a00(NiAVObject* o)
 // @0x141753a50   exe's ~NiTerrainCullingProcess body: only forwards to the mesh base dtor
 void FUN_141753a50(NiMeshCullingProcess* p) { p->NiMeshCullingProcess::~NiMeshCullingProcess(); }
 
-// @0x141753a70
-ShadowCullingProcess::~ShadowCullingProcess() {}
+// MS2-PIN: ??1ShadowCullingProcess@@UEAA@XZ 0x141753a70 ; implicit dtor (no vftable store)
 
 // @0x141753a90
 void* FUN_141753a90(void** p) { return *p; }
@@ -162,7 +158,7 @@ void FUN_141753c10(int v) { DAT_1439fc854 = v; }
 // @0x141753c20
 int FUN_141753c20(const NiBound* b, const NiPlane& pl)
 {
-    float d = FUN_140a00ef0(&pl, b);
+    float d = FUN_140a00ef0(&pl, &((const Unk_BoundView*)b)->m_kCenter);
     if (d <= -*(const float*)((const char*)b + 0xc)) { return 2; }
     else if (d >= *(const float*)((const char*)b + 0xc)) { return 1; }
     else { return 0; }

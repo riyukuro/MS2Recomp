@@ -42,10 +42,12 @@
 // MS2-PIN: ??$_Uninitialized_copy@PEAV?$MS2Ptr@VCQuestData@@@@PEAV1@V?$allocator@V?$MS2Ptr@VCQuestData@@@@@std@@@std@@YAPEAV?$MS2Ptr@VCQuestData@@@@QEAV1@0PEAV1@AEAV?$allocator@V?$MS2Ptr@VCQuestData@@@@@0@@Z 0x140756220 ; unique
 // MS2-PIN: ??$construct@U?$pair@$$CBIV?$vector@IV?$allocator@I@std@@@std@@@std@@AEBUpiecewise_construct_t@2@V?$tuple@AEBI@2@V?$tuple@$$V@2@@?$_Default_allocator_traits@V?$allocator@U?$_Tree_node@U?$pair@$$CBIV?$vector@IV?$allocator@I@std@@@std@@@std@@PEAX@std@@@std@@@std@@SAXAEAV?$allocator@U?$_Tree_node@U?$pair@$$CBIV?$vector@IV?$allocator@I@std@@@std@@@std@@PEAX@std@@@1@QEAU?$pair@$$CBIV?$vector@IV?$allocator@I@std@@@std@@@1@AEBUpiecewise_construct_t@1@$$QEAV?$tuple@AEBI@1@$$QEAV?$tuple@$$V@1@@Z 0x140756800 ; unique
 // MS2-PIN: ??$emplace_hint@AEBUpiecewise_construct_t@std@@V?$tuple@AEBI@2@V?$tuple@$$V@2@@?$_Tree@V?$_Tmap_traits@IV?$vector@IV?$allocator@I@std@@@std@@U?$less@I@2@V?$allocator@U?$pair@$$CBIV?$vector@IV?$allocator@I@std@@@std@@@std@@@2@$0A@@std@@@std@@QEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$vector@IV?$allocator@I@std@@@std@@@std@@@std@@@std@@@1@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$vector@IV?$allocator@I@std@@@std@@@std@@@std@@@std@@@1@AEBUpiecewise_construct_t@1@$$QEAV?$tuple@AEBI@1@$$QEAV?$tuple@$$V@1@@Z 0x140756ec0 ; unique
+// MS2-PIN: ??$emplace_back@AEBVQuestRewardItem@CQuestData@@@?$vector@VQuestRewardItem@CQuestData@@V?$allocator@VQuestRewardItem@CQuestData@@@std@@@std@@QEAAXAEBVQuestRewardItem@CQuestData@@@Z 0x140756de0 ; gb19 calls QuestRewardItem _Emplace_back_with_unused_capacity 0x140752fb0; not vector<unsigned>
 // MS2-PIN: ??$find_if@V?$_Vector_iterator@V?$_Vector_val@U?$_Simple_types@V?$MS2Ptr@VCQuestData@@@@@std@@@std@@@std@@UUnk_QuestLevelFree@@@std@@YA?AV?$_Vector_iterator@V?$_Vector_val@U?$_Simple_types@V?$MS2Ptr@VCQuestData@@@@@std@@@std@@@0@V10@V10@UUnk_QuestLevelFree@@@Z 0x140756f60 ; prop
 // MS2-PIN: ??$find_if@V?$_Vector_iterator@V?$_Vector_val@U?$_Simple_types@V?$MS2Ptr@VCQuestData@@@@@std@@@std@@@std@@UUnk_QuestIdIs@@@std@@YA?AV?$_Vector_iterator@V?$_Vector_val@U?$_Simple_types@V?$MS2Ptr@VCQuestData@@@@@std@@@std@@@0@V10@V10@UUnk_QuestIdIs@@@Z 0x140757020 ; prop
 // MS2-PIN: ??$find_if@V?$_Vector_iterator@V?$_Vector_val@U?$_Simple_types@V?$MS2Ptr@VCQuestData@@@@@std@@@std@@@std@@UUnk_QuestPrevIs@@@std@@YA?AV?$_Vector_iterator@V?$_Vector_val@U?$_Simple_types@V?$MS2Ptr@VCQuestData@@@@@std@@@std@@@0@V10@V10@UUnk_QuestPrevIs@@@Z 0x140757260 ; prop
 // MS2-PIN: ??$make_pair@AEAHAEAI@std@@YA?AU?$pair@HI@0@AEAHAEAI@Z 0x140757500 ; unique
+// MS2-PIN: ?push_back@?$vector@VQuestRewardItem@CQuestData@@V?$allocator@VQuestRewardItem@CQuestData@@@std@@@std@@QEAAXAEBVQuestRewardItem@CQuestData@@@Z 0x140761990 ; gb19 forwards to QuestRewardItem emplace_back 0x140756de0; not vector<unsigned>
 // MS2-PIN: ??$make_pair@HAEAV?$MS2Ptr@VCQuestData@@@@@std@@YA?AU?$pair@HV?$MS2Ptr@VCQuestData@@@@@0@$$QEAHAEAV?$MS2Ptr@VCQuestData@@@@@Z 0x140757550 ; unique
 // MS2-PIN: ??0?$Unk_SocketPtr@VNavigationTarget@CQuestData@@@@QEAA@AEBV0@@Z 0x140757cd0 ; prop
 // MS2-PIN: ??0?$MS2Ptr@VCQuestData@@@@QEAA@$$T@Z 0x140757db0 ; unique
@@ -107,6 +109,8 @@
 MS2_QUEST_SOCKETPTR_IMPL(CQuestData::GroupPickData)
 MS2_QUEST_SOCKETPTR_IMPL(CQuestData::NavigationData)
 MS2_QUEST_SOCKETPTR_IMPL(CQuestData::NavigationTarget)
+// The exe's Create ignores its argument and allocates through New(NULL) (the gamesocket CSocketThread form).
+template<> inline CQuestData::NavigationData* Unk_SocketRef<CQuestData::NavigationData>::Create(void*) { return static_cast<CQuestData::NavigationData*>(FUN_1401ba820(New(NULL))); }
 #include "ms2/placeholder/xmlattr.h"
 #include "ms2/placeholder/tixmldocument.h"
 #include "ms2/commonfiles/filesystem.h"
@@ -224,7 +228,6 @@ int CQuestCommon::FUN_1407447c0()
     return FUN_140869440() >= tEnd;
 }
 
-// MS2-FUNCTIONAL: extra result temporary in the exe (early-return slots).
 // @0x1407448a0
 __int64 CQuestCommon::FUN_1407448a0()
 {
@@ -262,9 +265,7 @@ __int64 CQuestCommon::FUN_1407448a0()
     }
     if (tPeriod != 0 && tEvent != 0)
         return FUN_1402e49a0(tPeriod, tEvent);
-    if (tPeriod == 0)
-        return tEvent;
-    return tPeriod;
+    return tPeriod != 0 ? tPeriod : tEvent;
 }
 MS2_REPLACE_METHOD(0x1407448A0, CQuestCommon, FUN_1407448a0, 732, 0x32941A8A);
 
@@ -297,7 +298,6 @@ int CQuestCommon::FUN_140744cd0(int field)
     return 1;
 }
 
-// MS2-FUNCTIONAL: statement order and result temporaries differ from the exe.
 // @0x140744d40
 int CQuestManagerCommon::vfunc_o10_21(int questId, int npcId, int flag)
 {
@@ -318,7 +318,7 @@ int CQuestManagerCommon::vfunc_o10_21(int questId, int npcId, int flag)
         if (FUN_140408410(&picked, &nId) == -1)
             return 0;
     }
-    if (data->m_require.m_dayOfWeek.GetCount() != 0)
+    if (data->m_require.m_dayOfWeek.GetCount() > 0)
     {
         int nDay = now.GetDayOfWeek();
         if (FUN_1402bacf0(data->m_require.m_dayOfWeek, nDay) == -1)
@@ -341,8 +341,7 @@ int CQuestManagerCommon::vfunc_o10_21(int questId, int npcId, int flag)
             return 0;
         if (FUN_140866760(event.operator->()))
         {
-            __int64 tNow = vfunc_o10_8();
-            if (tNow < reinterpret_cast<Unk_QdEventEnd*>(event.operator->())->FUN_1408666e0().Get())
+            if (vfunc_o10_8() < reinterpret_cast<Unk_QdEventEnd*>(event.operator->())->FUN_1408666e0().Get())
                 return 0;
         }
         if (tStart != 0)
@@ -353,26 +352,28 @@ int CQuestManagerCommon::vfunc_o10_21(int questId, int npcId, int flag)
     }
     if (nState == 1)
         return 0;
-    int nRepeat = FUN_14074b070(data.operator->());
-    if (nRepeat == 0)
+    switch (FUN_14074b070(data.operator->()))
     {
+    case 0:
         if (nState == 2)
             return 0;
-    }
-    else if (nRepeat == 2)
-    {
+        break;
+    case 2:
         if (nState == 2)
         {
             CMsTime last(tStart);
             if (last.GetYear() == now.GetYear() && last.GetMonth() == now.GetMonth() && last.GetDay() == now.GetDay())
                 return 0;
         }
-    }
-    else if (nRepeat == 3 && nState == 2)
-    {
-        CMsTime reset(FUN_14086b190(data->m_resetType, tStart));
-        if (now.Get() < reset.Get())
-            return 0;
+        break;
+    case 3:
+        if (nState == 2)
+        {
+            CMsTime reset(FUN_14086b190(data->m_resetType, tStart));
+            if (now.Get() < reset.Get())
+                return 0;
+        }
+        break;
     }
     if (FUN_14074b050(data.operator->()) == 6)
     {
@@ -434,166 +435,170 @@ bool CQuestManagerCommon::FUN_140745770(int questId)
 int CQuestManagerCommon::FUN_140745820(int questId, int flag)
 {
     MS2Ptr<CQuestData> data = FUN_14074bc40(questId);
-    if (data.get() == 0)
-        return 0;
-    CQuestData::Require& req = data->m_require;
-    if (data->m_30)
-        return 0;
-    if (vfunc_o10_4() < req.m_level)
-        return 0;
-    if (req.m_maxLevel != 0 && req.m_maxLevel < vfunc_o10_4())
-        return 0;
-    if (req.m_gearScore != 0 && vfunc_o10_5() < (int)req.m_gearScore)
-        return 0;
-    if (req.m_job.GetCount() != 0)
+    if (data.get() != 0)
     {
-        int nJob = vfunc_o10_6();
-        if (FUN_1407474d0(&req.m_job, &nJob) == -1)
+        if (data->m_30)
             return 0;
-    }
-    if (req.m_subJob.GetCount() != 0)
-    {
-        int nSubJob = vfunc_o10_7();
-        if (FUN_140747460(&req.m_subJob, &nSubJob) == -1)
+        if (vfunc_o10_4() < data->m_require.m_level)
             return 0;
-    }
-    for (size_t i = 0; i < req.m_quest.GetCount(); ++i)
-    {
-        if (req.m_quest[i] != 0 && FUN_140745590(req.m_quest[i]) == 0)
+        if (data->m_require.m_maxLevel != 0 && vfunc_o10_4() > data->m_require.m_maxLevel)
             return 0;
-    }
-    if (req.m_selectableQuest.GetCount() != 0)
-    {
-        int bAny = 0;
-        for (size_t i = 0; i < req.m_selectableQuest.GetCount(); ++i)
+        if (data->m_require.m_gearScore != 0 && (unsigned)vfunc_o10_5() < data->m_require.m_gearScore)
+            return 0;
+        const ATL::CAtlArray<int>& jobs = data->m_require.m_job;
+        if (jobs.GetCount() != 0)
         {
-            if (req.m_selectableQuest[i] != 0 && FUN_140745590(req.m_selectableQuest[i]) != 0)
-                bAny = 1;
-        }
-        if (bAny == 0)
-            return 0;
-    }
-    for (size_t i = 0; i < req.m_progressQuest.GetCount(); ++i)
-    {
-        if (req.m_progressQuest[i] != 0 && FUN_140745630(req.m_progressQuest[i]) == 0)
-            return 0;
-    }
-    for (size_t i = 0; i < req.m_unrequire.GetCount(); ++i)
-    {
-        if (req.m_unrequire[i] != 0)
-        {
-            if (FUN_140745590(req.m_unrequire[i]) != 0)
-                return 0;
-            if (FUN_140745630(req.m_unrequire[i]) != 0)
+            int nJob = vfunc_o10_6();
+            if (FUN_1407474d0(&jobs, &nJob) == -1)
                 return 0;
         }
-    }
-    if (flag == 0)
-    {
-        for (size_t i = 0; i < req.m_unrequireGroup.GetCount(); ++i)
+        const ATL::CAtlArray<int>& subJobs = data->m_require.m_subJob;
+        if (subJobs.GetCount() != 0)
         {
-            int nSeed = FUN_140747000(questId);
-            ATL::CAtlArray<unsigned> picked;
-            QuestDataTable::GetInstance()->FUN_14074e6c0(req.m_unrequireGroup[i], m_selector, nSeed, picked);
-            for (size_t j = 0; j < picked.GetCount(); ++j)
+            int nSubJob = vfunc_o10_7();
+            if (FUN_140747460(&subJobs, &nSubJob) == -1)
+                return 0;
+        }
+        const ATL::CAtlArray<unsigned>& quests = data->m_require.m_quest;
+        for (size_t i = 0; i < quests.GetCount(); ++i)
+        {
+            if (quests[i] != 0 && FUN_140745590(quests[i]) == 0)
+                return 0;
+        }
+        const ATL::CAtlArray<unsigned>& selectable = data->m_require.m_selectableQuest;
+        if (selectable.GetCount() > 0)
+        {
+            int bAny = 0;
+            for (size_t i = 0; i < selectable.GetCount(); ++i)
             {
-                if (FUN_140745630(picked[j]) != 0)
+                if (selectable[i] != 0 && FUN_140745590(selectable[i]) != 0)
+                    bAny = 1;
+            }
+            if (bAny == 0)
+                return 0;
+        }
+        const ATL::CAtlArray<unsigned>& progress = data->m_require.m_progressQuest;
+        for (size_t i = 0; i < progress.GetCount(); ++i)
+        {
+            if (progress[i] != 0 && FUN_140745630(progress[i]) == 0)
+                return 0;
+        }
+        const ATL::CAtlArray<unsigned>& unrequire = data->m_require.m_unrequire;
+        for (size_t i = 0; i < unrequire.GetCount(); ++i)
+        {
+            if (unrequire[i] != 0)
+            {
+                if (FUN_140745590(unrequire[i]) != 0)
                     return 0;
-                if (FUN_140745590(picked[j]) != 0)
+                if (FUN_140745630(unrequire[i]) != 0)
+                    return 0;
+            }
+        }
+        if (flag == 0)
+        {
+            const ATL::CAtlArray<int>& groups = data->m_require.m_unrequireGroup;
+            for (size_t i = 0; i < groups.GetCount(); ++i)
+            {
+                int nSeed = FUN_140747000(questId);
+                ATL::CAtlArray<unsigned> picked;
+                QuestDataTable::GetInstance()->FUN_14074e6c0(groups[i], m_selector, nSeed, picked);
+                for (size_t j = 0; j < picked.GetCount(); ++j)
                 {
-                    if (vfunc_o10_21(picked[j], 0, 1) == 0)
+                    if (FUN_140745630(picked[j]) != 0)
                         return 0;
+                    if (FUN_140745590(picked[j]) != 0)
+                    {
+                        if (vfunc_o10_21(picked[j], 0, 1) == 0)
+                            return 0;
+                    }
                 }
             }
         }
-    }
-    if (req.m_achievement != 0)
-    {
-        if (req.m_achievementGrade == 0)
+        if (data->m_require.m_achievement != 0)
         {
-            if (vfunc_o10_1(req.m_achievement) == 0)
+            if (data->m_require.m_achievementGrade == 0)
+            {
+                if (vfunc_o10_1(data->m_require.m_achievement) == 0)
+                    return 0;
+            }
+            else if (vfunc_o10_0(data->m_require.m_achievement, data->m_require.m_achievementGrade) == 0)
                 return 0;
         }
-        else if (vfunc_o10_0(req.m_achievement, req.m_achievementGrade) == 0)
-            return 0;
-    }
-    if (req.m_unreqAchievement != 0 && req.m_unreqAchievementGrade != 0)
-    {
-        if (vfunc_o10_0(req.m_unreqAchievement, req.m_unreqAchievementGrade) != 0)
-            return 0;
-    }
-    if (req.m_guildLevel != -1)
-    {
-        if (req.m_guildLevel == 0)
+        if (data->m_require.m_unreqAchievement != 0 && data->m_require.m_unreqAchievementGrade != 0)
         {
-            if (vfunc_o10_9() != 0)
+            if (vfunc_o10_0(data->m_require.m_unreqAchievement, data->m_require.m_unreqAchievementGrade) != 0)
                 return 0;
         }
-        else
+        if (data->m_require.m_guildLevel != -1)
+        {
+            if (data->m_require.m_guildLevel == 0)
+            {
+                if (vfunc_o10_9() != 0)
+                    return 0;
+            }
+            else
+            {
+                if (vfunc_o10_9() == 0)
+                    return 0;
+                int nGuildLevel = FUN_1404f4530()->FUN_1404d7130(vfunc_o10_10());
+                if (nGuildLevel < data->m_require.m_guildLevel)
+                    return 0;
+            }
+        }
+        if (data->m_require.m_guildNpcLevel != 0)
         {
             if (vfunc_o10_9() == 0)
                 return 0;
-            int nGuildExp = vfunc_o10_10();
-            if ((int)FUN_1404f4530()->FUN_1404d7130(nGuildExp) < req.m_guildLevel)
+            if ((unsigned short)vfunc_o10_11() != data->m_require.m_guildNpcLevel)
                 return 0;
         }
-    }
-    if (req.m_guildNpcLevel != 0)
-    {
-        if (vfunc_o10_9() == 0)
-            return 0;
-        if ((unsigned short)vfunc_o10_11() != req.m_guildNpcLevel)
-            return 0;
-    }
-    if (req.m_alliance != 0 && req.m_fameGrade != 0)
-    {
-        if (vfunc_o10_13(req.m_alliance) < req.m_fameGrade)
-            return 0;
-    }
-    if (req.m_masteryType != 0 && req.m_masteryGrade != 0)
-    {
-        if (vfunc_o10_14(req.m_masteryType) < req.m_masteryGrade)
-            return 0;
-    }
-    if (req.m_dungeon != 0 && vfunc_o10_15(req.m_dungeon) < 1)
-        return 0;
-    if (req.m_unrequireDungeon != 0 && vfunc_o10_15(req.m_unrequireDungeon) != 0)
-        return 0;
-    if (req.m_enterDungeon != 0 && vfunc_o10_16(req.m_enterDungeon) > 9)
-        return 0;
-    if (req.m_dungeonBeginner.GetCount() != 0)
-    {
-        int bAny = 0;
-        for (size_t i = 0; i < req.m_dungeonBeginner.GetCount(); ++i)
+        if (data->m_require.m_alliance != 0 && data->m_require.m_fameGrade != 0)
         {
-            if (vfunc_o10_17(req.m_dungeonBeginner[i]) == 0)
-            {
-                bAny = 1;
-                break;
-            }
+            int nFameGrade = vfunc_o10_13(data->m_require.m_alliance);
+            if (nFameGrade < data->m_require.m_fameGrade)
+                return 0;
         }
-        if (bAny == 0)
-            return 0;
-    }
-    if (req.m_mentor == 0 || vfunc_o10_18() == 5)
-    {
-        if (req.m_mentee == 0 || vfunc_o10_18() == 2)
+        if (data->m_require.m_masteryType != 0 && data->m_require.m_masteryGrade != 0)
         {
-            if (req.m_vip == 0 || vfunc_o10_19() != 0)
-            {
-                if (req.m_equipment.GetCount() != 0 && vfunc_o10_20(req.m_equipment) == 0)
-                    return 0;
-                return 1;
-            }
-            return 0;
+            int nMasteryGrade = vfunc_o10_14(data->m_require.m_masteryType);
+            if (nMasteryGrade < data->m_require.m_masteryGrade)
+                return 0;
         }
-        return 0;
+        if (data->m_require.m_dungeon != 0 && vfunc_o10_15(data->m_require.m_dungeon) < 1)
+            return 0;
+        if (data->m_require.m_unrequireDungeon != 0 && vfunc_o10_15(data->m_require.m_unrequireDungeon) != 0)
+            return 0;
+        if (data->m_require.m_enterDungeon != 0 && vfunc_o10_16(data->m_require.m_enterDungeon) >= 10)
+            return 0;
+        if (data->m_require.m_dungeonBeginner.GetCount() != 0)
+        {
+            int bAny = 0;
+            const ATL::CAtlArray<unsigned>& beginner = data->m_require.m_dungeonBeginner;
+            for (size_t i = 0; i < beginner.GetCount(); ++i)
+            {
+                if (vfunc_o10_17(beginner[i]) == 0)
+                {
+                    bAny = 1;
+                    break;
+                }
+            }
+            if (bAny == 0)
+                return 0;
+        }
+        if (data->m_require.m_mentor != 0 && vfunc_o10_18() != 5)
+            return 0;
+        if (data->m_require.m_mentee != 0 && vfunc_o10_18() != 2)
+            return 0;
+        if (data->m_require.m_vip != 0 && vfunc_o10_19() == 0)
+            return 0;
+        if (data->m_require.m_equipment.GetCount() != 0 && vfunc_o10_20(data->m_require.m_equipment) == 0)
+            return 0;
+        return 1;
     }
     return 0;
 }
 MS2_REPLACE_METHOD(0x140745820, CQuestManagerCommon, FUN_140745820, 4129, 0xBBD4D435);
 
-// MS2-FUNCTIONAL: statement order and result temporaries differ from the exe.
 // @0x140746850
 int CQuestManagerCommon::FUN_140746850(int questId, int npcId, int bStart)
 {
@@ -606,15 +611,18 @@ int CQuestManagerCommon::FUN_140746850(int questId, int npcId, int bStart)
         return 0;
     if (quest->GetState() != 1)
         return 0;
-    if (bStart == 0)
+    if (bStart != 0)
+    {
+        if (quest->GetData()->m_2e8 != npcId)
+            return 0;
+    }
+    else
     {
         if (quest->IsComplete() != 0)
             return 0;
         if (quest->GetData()->m_2ec != npcId)
             return 0;
     }
-    else if (quest->GetData()->m_2e8 != npcId)
-        return 0;
     return 1;
 }
 MS2_REPLACE_METHOD(0x140746850, CQuestManagerCommon, FUN_140746850, 827, 0xB2C4964A);
@@ -691,25 +699,24 @@ int CQuestManagerCommon::FUN_140747000(int questId)
     return nSeed;
 }
 
-// MS2-FUNCTIONAL: statement order and result temporaries differ from the exe.
 // @0x1407470f0
 unsigned CQuestManagerCommon::vfunc_o10_23(const Unk_QuestCondition& condition)
 {
-    Unk_QuestCondition& cond = const_cast<Unk_QuestCondition&>(condition);
-    if (cond.FUN_140266970() == 0)
+    if (const_cast<Unk_QuestCondition&>(condition).FUN_140266970() == 0)
         return 1;
-    for (unsigned __int64 i = 0; i < FUN_1402815b0(&cond.m_list); ++i)
+    for (unsigned __int64 i = 0; i < FUN_1402815b0(&const_cast<Unk_QuestCondition&>(condition).m_list); ++i)
     {
-        Unk_PayloadPtr<CQuest> questA = vfunc_o10_3(FUN_14027f040(&cond.m_list, i)->m_questA);
-        Unk_PayloadPtr<CQuest> questB = vfunc_o10_3(FUN_14027f040(&cond.m_list, i)->m_questB);
-        int nA = FUN_140764480(questA, FUN_14027f040(&cond.m_list, i)->m_stateA);
-        int nB = FUN_140764480(questB, FUN_14027f040(&cond.m_list, i)->m_stateB);
+        Unk_PayloadPtr<CQuest> questA = vfunc_o10_3(FUN_14027f040(&const_cast<Unk_QuestCondition&>(condition).m_list, i)->m_questA);
+        Unk_PayloadPtr<CQuest> questB = vfunc_o10_3(FUN_14027f040(&const_cast<Unk_QuestCondition&>(condition).m_list, i)->m_questB);
+        int nA = FUN_140764480(questA, FUN_14027f040(&const_cast<Unk_QuestCondition&>(condition).m_list, i)->m_stateA);
+        int nB = FUN_140764480(questB, FUN_14027f040(&const_cast<Unk_QuestCondition&>(condition).m_list, i)->m_stateB);
         if (nA == 2)
             continue;
-        if (nB != 1)
-            return cond.m_result;
+        if (nB == 1)
+            continue;
+        return condition.m_result;
     }
-    return cond.m_result == 0;
+    return condition.m_result == 0;
 }
 MS2_REPLACE_METHOD(0x1407470F0, CQuestManagerCommon, vfunc_o10_23, 584, 0xAEEEA57A);
 
@@ -1172,11 +1179,9 @@ template <class K, class T> bool IsSamePtrMap(const ATL::CAtlMap<K, Unk_SocketPt
     POSITION posB = b.GetStartPosition();
     for (unsigned i = 0; i < a.GetCount(); i++, a.GetNext(posA), b.GetNext(posB))
     {
-        const K& keyA = a.GetKeyAt(posA);
-        if (keyA != b.GetKeyAt(posB))
+        if (a.GetKeyAt(posA) != b.GetKeyAt(posB))
             return false;
-        const T& valueB = *b.GetValueAt(posB).get();
-        if (*a.GetValueAt(posA).get() != valueB)
+        if (*a.GetValueAt(posA).get() != *b.GetValueAt(posB).get())
             return false;
     }
     return true;
@@ -1255,7 +1260,7 @@ unsigned char FUN_14036d570(Unk_FeatureFlags* pFlags, int nFeature);
 
 // MS2-FUNCTIONAL: stack temporaries of the XML loader (default-string and condition-loop slots) differ.
 // @0x1407495d0
-int CQuestData::Load(Unk_140165cf0* pElem)
+bool CQuestData::Load(Unk_140165cf0* pElem)
 {
     FUN_140873220(pElem, "id", (unsigned&)m_id);
     Unk_140165cf0* pBasic = pElem->FUN_140165cf0("basic");
@@ -1360,27 +1365,26 @@ int CQuestData::Load(Unk_140165cf0* pElem)
     {
         MS2Ptr<CConditionCommonData> spCond(new CConditionCommonData());
         unsigned nQuestId = FUN_14074b030(this);
-        if (spCond->Load(reinterpret_cast<Unk_ConditionXml*>(pCond), CStringW(L"QuestData"), nQuestId) != 0)
+        if (spCond->Load(reinterpret_cast<Unk_ConditionXml*>(pCond), CStringW(L"QuestData"), nQuestId) == 0)
+            continue;
+        unsigned nIndex = (unsigned)m_conditions.GetCount();
+        m_conditions.Add(spCond);
+        Unk_SocketPtr<NavigationData> spNavigation(0);
+        for (Unk_140165cf0* pNavi = pCond->FUN_140165cf0("navi"); pNavi != 0; pNavi = pNavi->FUN_140168650("navi"))
         {
-            unsigned nIndex = (unsigned)m_conditions.GetCount();
-            m_conditions.Add(spCond);
-            Unk_SocketPtr<NavigationData> spNavigation(0);
-            for (Unk_140165cf0* pNavi = pCond->FUN_140165cf0("navi"); pNavi != 0; pNavi = pNavi->FUN_140168650("navi"))
+            Unk_SocketPtr<NavigationTarget> spTarget(new NavigationTarget());
+            FUN_140752630(pNavi, "type", &spTarget->m_kind);
+            XmlTokenList(pNavi, "code", spTarget->m_ids);
+            XmlTokenList(pNavi, "map", spTarget->m_maps);
+            if (spNavigation == 0)
             {
-                Unk_SocketPtr<NavigationTarget> spTarget(new NavigationTarget());
-                FUN_140752630(pNavi, "type", &spTarget->m_kind);
-                XmlTokenList(pNavi, "code", spTarget->m_ids);
-                XmlTokenList(pNavi, "map", spTarget->m_maps);
-                if (spNavigation == 0)
-                {
-                    spNavigation = Unk_SocketNew(0);
-                    spNavigation->m_kind = nIndex;
-                }
-                spNavigation->m_targets.Add(spTarget);
+                spNavigation = Unk_SocketNew(0);
+                spNavigation->m_kind = nIndex;
             }
-            if (spNavigation.get() != 0)
-                m_navigation.SetAt(nIndex, spNavigation);
+            spNavigation->m_targets.Add(spTarget);
         }
+        if (spNavigation.get() != 0)
+            m_navigation.SetAt(nIndex, spNavigation);
     }
     Unk_140165cf0* pStart = pElem->FUN_140165cf0("start");
     if (pStart)
@@ -1638,38 +1642,38 @@ int FUN_14074b410(int nQuestId)
 }
 
 // @0x14074b510
-bool FUN_14074b510(int nQuestId)
+int FUN_14074b510(int nQuestId)
 {
     MS2Ptr<CQuestData> data = FUN_14074bc40(nQuestId);
     if (data.IsNull())
-        return false;
+        return 0;
     return FUN_14074b050(data.operator->()) == 3;
 }
 
 // @0x14074b5b0
-bool FUN_14074b5b0(int nQuestId)
+int FUN_14074b5b0(int nQuestId)
 {
     MS2Ptr<CQuestData> data = FUN_14074bc40(nQuestId);
     if (data.IsNull())
-        return false;
+        return 0;
     return FUN_14074b050(data.operator->()) == 4;
 }
 
 // @0x14074b650
-bool FUN_14074b650(int nQuestId)
+int FUN_14074b650(int nQuestId)
 {
     MS2Ptr<CQuestData> data = FUN_14074bc40(nQuestId);
     if (data.IsNull())
-        return false;
+        return 0;
     return FUN_14074b050(data.operator->()) == 8;
 }
 
 // @0x14074b6f0
-bool FUN_14074b6f0(int nQuestId)
+int FUN_14074b6f0(int nQuestId)
 {
     MS2Ptr<CQuestData> data = FUN_14074bc40(nQuestId);
     if (data.IsNull())
-        return false;
+        return 0;
     return FUN_14074b050(data.operator->()) == 9;
 }
 
@@ -1781,10 +1785,9 @@ QuestDataTable::~QuestDataTable()
 void QuestDataTable::LoadQuestData()
 {
     Unk_1401b4ec0 guard(m_lock, 1);
-    CString strPath = FUN_14071a5b0(CString("QuestData"), CString("QuestData.xml"));
+    CString strPath = FUN_14071a5b0("QuestData", "QuestData.xml");
     TiXmlDocument doc;
-    const char* pszPath = strPath;
-    if (GetFileSystem()->FUN_1403974b0(&doc, pszPath, 0, true, false) == 0)
+    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
@@ -1792,18 +1795,14 @@ void QuestDataTable::LoadQuestData()
         FUN_14015eb90(FUN_140166440(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return;
     }
-    Unk_140165cf0* pFirst = pRoot->FUN_140165cf0("quest");
-    Unk_XmlElementIterator itNode = begin(pFirst);
-    Unk_XmlElementIterator itEnd = end(pFirst);
-    for (; itNode != itEnd; ++itNode)
+    for (Unk_140165cf0* pNode : pRoot->FUN_140165cf0("quest"))
     {
-        Unk_140165cf0* pNode = *itNode;
-        if (FUN_14028f650(pNode))
-        {
-            MS2Ptr<CQuestData> spData(new CQuestData);
-            if (spData->Load(pNode))
-                m_quests.insert(std::make_pair(FUN_14074b030(spData.operator->()), spData));
-        }
+        if (!FUN_14028f650(pNode))
+            continue;
+        MS2Ptr<CQuestData> spData(new CQuestData);
+        if (!spData->Load(pNode))
+            continue;
+        m_quests.insert(std::make_pair(FUN_14074b030(spData.operator->()), spData));
     }
     FUN_14074f160();
     SetInit(true);
@@ -1867,8 +1866,7 @@ void QuestDataTable::FUN_14074cad0(ATL::CAtlArray<MS2Ptr<CQuestData> >& out, int
 {
     CheckInit();
     Unk_1401b4ec0 guard(m_lock, 1);
-    std::map<unsigned, MS2Ptr<CQuestData> >& quests = m_quests;
-    for (std::pair<const unsigned, MS2Ptr<CQuestData> >& entry : quests)
+    for (std::pair<const unsigned, MS2Ptr<CQuestData> >& entry : m_quests)
     {
         MS2Ptr<CQuestData> spData = entry.second;
         if (nType != 11 && FUN_14074b050(spData.operator->()) != nType)
@@ -1892,8 +1890,7 @@ void QuestDataTable::FUN_14074cca0(ATL::CAtlArray<MS2Ptr<CQuestData> >& out, int
 {
     CheckInit();
     Unk_1401b4ec0 guard(m_lock, 1);
-    std::map<unsigned, MS2Ptr<CQuestData> >& quests = m_quests;
-    for (std::pair<const unsigned, MS2Ptr<CQuestData> >& entry : quests)
+    for (std::pair<const unsigned, MS2Ptr<CQuestData> >& entry : m_quests)
     {
         MS2Ptr<CQuestData> spData = entry.second;
         if (FUN_14074b050(spData.operator->()) != 3)
@@ -1909,8 +1906,7 @@ void QuestDataTable::FUN_14074cde0(ATL::CAtlArray<MS2Ptr<CQuestData> >& out, int
 {
     CheckInit();
     Unk_1401b4ec0 guard(m_lock, 1);
-    std::map<unsigned, MS2Ptr<CQuestData> >& quests = m_quests;
-    for (std::pair<const unsigned, MS2Ptr<CQuestData> >& entry : quests)
+    for (std::pair<const unsigned, MS2Ptr<CQuestData> >& entry : m_quests)
     {
         MS2Ptr<CQuestData> spData = entry.second;
         if (FUN_14074b050(spData.operator->()) != 5)
@@ -1922,7 +1918,7 @@ void QuestDataTable::FUN_14074cde0(ATL::CAtlArray<MS2Ptr<CQuestData> >& out, int
 }
 
 // @0x14074cf20
-void QuestDataTable::FUN_14074cf20(ATL::CAtlArray<unsigned>& out)
+void QuestDataTable::FUN_14074cf20(ATL::CAtlArray<int>& out)
 {
     CheckInit();
     Unk_1401b4ec0 guard(m_lock, 1);
@@ -2143,7 +2139,7 @@ QuestDataTable::IdsPtr QuestDataTable::FUN_14074df70(unsigned nKey, int nIndex)
 }
 
 // @0x14074e030
-bool QuestDataTable::FUN_14074e030(int nNpcId)
+bool QuestDataTable::FUN_14074e030(unsigned nNpcId)
 {
     CheckInit();
     Unk_1401b4ec0 guard(m_lock, 1);
@@ -2220,7 +2216,9 @@ int QuestDataTable::FUN_14074e450(int nGroupId)
     return 1;
 }
 
-// MS2-FUNCTIONAL: stack-frame slot order of the temporaries differs from the exe.
+// The Copy source goes through 0x14075b430, an identical-code copy of the Unk_BmBoxPtr operator-> at 0x140356870.
+struct Unk_QuestIdsPtrView { ATL::CAtlArray<unsigned>* FUN_14075b430() const; };
+
 // @0x14074e6c0
 void QuestDataTable::FUN_14074e6c0(int nGroupId, int nSelector, int nSeed, ATL::CAtlArray<unsigned>& out)
 {
@@ -2253,20 +2251,20 @@ void QuestDataTable::FUN_14074e6c0(int nGroupId, int nSelector, int nSeed, ATL::
         {
             __int64 tWeek = FUN_14086b190(6, now.Get());
             CMsTime weekStart(tWeek);
-            int nDay = weekStart.GetDay();
-            int nMonth = weekStart.GetMonth();
-            int nDayNo = (int)FUN_14086b590(weekStart.GetYear(), nMonth, nDay);
+            int nDayNo = (int)FUN_14086b590(weekStart.GetYear(), weekStart.GetMonth(), weekStart.GetDay());
             nRandSeed = (weekStart.GetYear() * 10000 + nDayNo) * nGroupId;
             nRandSeed = nRandSeed + nSeed;
         }
     }
     Unk_Random rnd(nRandSeed);
     ATL::CAtlArray<unsigned> candidates;
-    candidates.Copy(*spIds.operator->());
+    candidates.Copy(*reinterpret_cast<const Unk_QuestIdsPtrView*>(&spIds)->FUN_14075b430());
     int nPicks = GetInstance()->FUN_14074e450(nGroupId);
-    for (int i = 0; i < nPicks && candidates.GetCount() != 0; ++i)
+    for (int i = 0; i < nPicks; ++i)
     {
-        unsigned __int64 nIndex = rnd.FUN_1407684c0() % candidates.GetCount();
+        if (candidates.GetCount() == 0)
+            break;
+        unsigned nIndex = rnd.FUN_1407684c0() % candidates.GetCount();
         out.Add(candidates[nIndex]);
         candidates.RemoveAt(nIndex, 1);
     }
@@ -2282,25 +2280,19 @@ int QuestDataTable::FUN_14074e510(int nQuestId)
     return nValue;
 }
 
-// MS2-FUNCTIONAL: stack-frame slot order of the temporaries differs from the exe.
 // @0x14074e560
-bool QuestDataTable::FUN_14074e560(unsigned nFirst, unsigned nLast)
+int QuestDataTable::FUN_14074e560(unsigned nFirst, unsigned nLast)
 {
     Unk_1401b4ec0 guard(m_lock, 1);
-    std::map<unsigned, MS2Ptr<CQuestData> >& quests = m_quests;
-    for (std::pair<const unsigned, MS2Ptr<CQuestData> >& entry : quests)
+    for (std::pair<const unsigned, MS2Ptr<CQuestData> >& entry : m_quests)
     {
         MS2Ptr<CQuestData> spData = entry.second;
-        if ((unsigned)FUN_14074b030(spData.operator->()) >= nFirst)
-        {
-            if ((unsigned)FUN_14074b030(spData.operator->()) <= nLast)
-            {
-                if (spData->m_30 == 0)
-                    return true;
-            }
-        }
+        if ((unsigned)FUN_14074b030(spData.operator->()) < nFirst || (unsigned)FUN_14074b030(spData.operator->()) > nLast)
+            continue;
+        if (spData->m_30 == 0)
+            return 1;
     }
-    return false;
+    return 0;
 }
 MS2_REPLACE_METHOD(0x14074E560, QuestDataTable, FUN_14074e560, 346, 0x400E3FB6);
 
@@ -2317,7 +2309,6 @@ void QuestDataTable::FUN_14074eac0(int nQuestId, ATL::CAtlMap<unsigned, int>& vi
         FUN_14074eac0(spData->m_require.m_requiredBy[i], visited);
 }
 
-// MS2-FUNCTIONAL: by-value smart-pointer argument and stack slot order differ.
 // @0x14074ebc0
 void QuestDataTable::FUN_14074ebc0(int nChain, IdsPtr spIds, MS2Ptr<CQuestData> spData, int nDepth)
 {
@@ -2330,8 +2321,7 @@ void QuestDataTable::FUN_14074ebc0(int nChain, IdsPtr spIds, MS2Ptr<CQuestData> 
     int nQuestId = FUN_14074b030(spData.operator->());
     if (FUN_140408410(spIds.operator->(), (const unsigned*)&nQuestId) != -1)
         return;
-    int nAddId = FUN_14074b030(spData.operator->());
-    spIds.get()->Add((unsigned)nAddId);
+    spIds.get()->Add(FUN_14074b030(spData.operator->()));
     for (size_t i = 0; i < spData->m_require.m_followingQuests.GetCount(); ++i)
     {
         FUN_14074ebc0(nChain, spIds, FUN_14074c9d0(spData->m_require.m_followingQuests[i]), ++nDepth);
@@ -2345,29 +2335,27 @@ void QuestDataTable::FUN_14074ee30()
 {
     CheckInit();
     Unk_1401b4ec0 guard(m_lock, 1);
-    std::map<unsigned, MS2Ptr<CQuestData> >& quests = m_quests;
-    for (std::pair<const unsigned, MS2Ptr<CQuestData> >& entry : quests)
+    for (std::pair<const unsigned, MS2Ptr<CQuestData> >& entry : m_quests)
     {
         MS2Ptr<CQuestData> spData = entry.second;
         if (spData == 0)
-            break;
+            return;
         float fExp = 1.0f;
         float fMeso = 1.0f;
-        int nType = FUN_14074b050(spData.operator->());
-        if (nType == 0)
+        switch (FUN_14074b050(spData.operator->()))
         {
+        case 0:
             fExp = FUN_1404c17a0(FUN_140302b10(), spData->m_level, 5);
             fMeso = FUN_1404c1730(FUN_140302b10(), spData->m_level, 0);
-        }
-        else if (nType == 1)
-        {
+            break;
+        case 1:
             fExp = FUN_1404c17a0(FUN_140302b10(), spData->m_level, 6);
             fMeso = FUN_1404c1730(FUN_140302b10(), spData->m_level, 1);
-        }
-        else if (nType == 3)
-        {
+            break;
+        case 3:
             fExp = FUN_1404c17a0(FUN_140302b10(), spData->m_level, 7);
             fMeso = FUN_1404c1730(FUN_140302b10(), spData->m_level, 2);
+            break;
         }
         int* pExp = &spData->m_complete.m_exp;
         *pExp = (int)((float)*pExp * fExp);
@@ -2496,7 +2484,6 @@ void QuestDataTable::FUN_14074f160()
 }
 MS2_REPLACE_METHOD(0x14074F160, QuestDataTable, FUN_14074f160, 3448, 0xCBA25530);
 
-// MS2-FUNCTIONAL: shared id-list pointer copies of the exe differ.
 // @0x14074fee0
 void QuestDataTable::FUN_14074fee0()
 {
@@ -2505,19 +2492,20 @@ void QuestDataTable::FUN_14074fee0()
     {
         int nChapter = m_chapter.GetKeyAt(pos);
         IdsPtr spIds = m_chapter.GetValueAt(pos);
-        if (spIds->GetCount() == 0)
-            continue;
-        MS2Ptr<CQuestData> spData = FUN_14074bc40(spIds->GetAt(0));
-        if (!spData)
-            continue;
-        unsigned nFieldId;
-        if (FUN_140700390()->FUN_1406fb700(spData->m_2e8, &nFieldId) != 0)
+        if (spIds->GetCount() > 0)
         {
-            MS2Ptr<CFieldData> spField = CFieldData::FUN_140374140(nFieldId);
-            if (!spField)
+            MS2Ptr<CQuestData> spData = FUN_14074bc40(spIds->GetAt(0));
+            if (spData.IsNull())
                 continue;
-            m_98.SetAt(nChapter, spField->GetRegionCode());
-            m_e0.SetAt(nChapter, spField->GetContinentCode());
+            unsigned nFieldId;
+            if (FUN_140700390()->FUN_1406fb700(spData->m_2e8, &nFieldId) != 0)
+            {
+                MS2Ptr<CFieldData> spField = CFieldData::FUN_140374140(nFieldId);
+                if (spField.IsNull())
+                    continue;
+                m_98.SetAt(nChapter, spField->GetRegionCode());
+                m_e0.SetAt(nChapter, spField->GetContinentCode());
+            }
         }
     }
 }
@@ -2531,10 +2519,9 @@ int FUN_140752030(Unk_140165cf0* pElem, const char* pszName, int* pOut);
 // @0x140750120
 void QuestDataTable::LoadQuestGroupTable()
 {
-    CString strPath = FUN_14071a5b0(CString("Table"), CString("QuestGroupTable.xml"));
+    CString strPath = FUN_14071a5b0("Table", "QuestGroupTable.xml");
     TiXmlDocument doc;
-    const char* pszPath = strPath;
-    if (GetFileSystem()->FUN_1403974b0(&doc, pszPath, 0, true, false) == 0)
+    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
@@ -2545,14 +2532,13 @@ void QuestDataTable::LoadQuestGroupTable()
     Unk_1401b4ec0 guard(m_lock, 1);
     for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("group"); pNode != 0; pNode = pNode->FUN_140168650("group"))
     {
-        if (FUN_14028f710(pNode))
-        {
-            Unk_SocketPtr<CQuestData::GroupPickData> spPick(new CQuestData::GroupPickData);
-            FUN_1408731e0(pNode, "id", spPick->m_18);
-            FUN_1408731e0(pNode, "pickCount", spPick->m_count);
-            FUN_140752030(pNode, "dependency", &spPick->m_kind);
-            m_3d8.SetAt(spPick->m_18, spPick);
-        }
+        if (!FUN_14028f710(pNode))
+            continue;
+        Unk_SocketPtr<CQuestData::GroupPickData> spPick(new CQuestData::GroupPickData);
+        FUN_1408731e0(pNode, "id", spPick->m_18);
+        FUN_1408731e0(pNode, "pickCount", spPick->m_count);
+        FUN_140752030(pNode, "dependency", &spPick->m_kind);
+        m_3d8.SetAt(spPick->m_18, spPick);
     }
 }
 MS2_REPLACE_METHOD(0x140750120, QuestDataTable, LoadQuestGroupTable, 713, 0x932C35CB);
@@ -2683,7 +2669,7 @@ struct Unk_QuestIdOrder : public Unk_BinaryFunction
 void QuestDataTable::FUN_140750d90()
 {
     Unk_1401b4ec0 guard(m_lock, 1);
-    Unk_QuestIdOrder pred = Unk_QuestIdOrder();
+    Unk_QuestIdOrder pred;
     for (std::pair<const unsigned, std::vector<unsigned> >& entry : m_430)
     {
         std::sort(entry.second.begin(), entry.second.end(), pred);
@@ -2701,30 +2687,29 @@ void QuestDataTable::FUN_140750ea0()
 }
 MS2_REPLACE_METHOD(0x140750EA0, QuestDataTable, FUN_140750ea0, 123, 0x5118FC0F);
 
-// MS2-FUNCTIONAL: marks the quests that must be finished before others unlock (m_2d0 cache)
+// Marks the quests that must be finished before others unlock (m_2d0 cache).
 // @0x140750f30
 void QuestDataTable::FUN_140750f30()
 {
     Unk_1401b4ec0 guard(m_lock, 1);
-    std::map<unsigned, MS2Ptr<CQuestData> >& quests = m_quests;
-    for (std::pair<const unsigned, MS2Ptr<CQuestData> >& entry : quests)
+    for (std::pair<const unsigned, MS2Ptr<CQuestData> >& entry : m_quests)
     {
         MS2Ptr<CQuestData> spData = entry.second;
         if (spData->m_30 != 0)
             FUN_14074eac0(FUN_14074b030(spData.operator->()), m_2d0);
     }
-    for (std::pair<const unsigned, MS2Ptr<CQuestData> >& entry : quests)
+    for (std::pair<const unsigned, MS2Ptr<CQuestData> >& entry : m_quests)
     {
         MS2Ptr<CQuestData> spData = entry.second;
-        if (spData->m_require.m_selectableQuest.GetCount() != 0)
+        if (spData->m_require.m_selectableQuest.GetCount() > 0)
         {
-            bool bAll = true;
+            int bAll = 1;
             for (size_t i = 0; i < spData->m_require.m_selectableQuest.GetCount(); i++)
             {
                 if (FUN_14074e510(spData->m_require.m_selectableQuest[i]) == 0)
-                    bAll = false;
+                    bAll = 0;
             }
-            if (bAll)
+            if (bAll != 0)
                 FUN_14074eac0(FUN_14074b030(spData.operator->()), m_2d0);
         }
     }

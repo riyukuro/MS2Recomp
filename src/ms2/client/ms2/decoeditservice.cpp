@@ -50,6 +50,9 @@
 
 // ---- services reached through globals ----
 WorldService* FUN_1403ed2d0();
+// FUN_141bbbc60 (destroy the object of an entity id) as these callers see it: the id is a by-value argument temp.
+// worldservice.h declares it const egf::EntityID& for its other callers.
+struct Unk_DecoWorld : WorldService { void FUN_141bbbc60(egf::EntityID kId, int bImmediate); };
 efd::MessageService* FUN_1413f9830();
 // The scene service (slot 19 hands a scene graph to the world for a game object's key).
 class Unk_DecoSceneSvc
@@ -60,7 +63,7 @@ public:
     virtual void vfunc_8();   virtual void vfunc_9();   virtual void vfunc_10();  virtual void vfunc_11();
     virtual void vfunc_12();  virtual void vfunc_13();  virtual void vfunc_14();  virtual void vfunc_15();
     virtual void vfunc_16();  virtual void vfunc_17();  virtual void vfunc_18();
-    virtual void vfunc_19(Unk_NodePtr spNode, const egf::EntityID& kId);
+    virtual void vfunc_19(Unk_NodePtr spNode, egf::EntityID kId);
 };
 Unk_DecoSceneSvc* FUN_1413f9870();
 unsigned FUN_141bd3060(WorldService* pWorld);                       // the id of the current map
@@ -106,7 +109,7 @@ const NiPoint3& FUN_140e69200(NiAVObject* pObject);                 // GetTransl
 void FUN_140aacb60(NiAVObject* pObject, const NiTransform& xf);     // SetLocalTransform
 void FUN_140a0b300(NiAVObject* pObject, bool bCulled);              // SetAppCulled
 void FUN_141d591d0(NiAVObject* pObject);                            // refresh the dynamic effects of an object
-char FUN_14106bee0(NiMeshModifier* pModifier);
+bool FUN_14106bee0(NiMeshModifier* pModifier);
 NiMaterial* FUN_141d284a0(void* pTable);                            // material from a library table
 extern char DAT_143ae51e8;                                          // material tables
 extern char DAT_143ae5278;
@@ -117,7 +120,6 @@ const NiFixedString& FUN_140a0b280();                               // the POSIT
 class Unk_TiXmlElement;
 void* FUN_14086e090(void* pParent, Unk_TiXmlElement* pChild);       // LinkEndChild
 void* FUN_14086e090(void* pParent, void* pChild);
-void* FUN_14086f2f0(void* pMemory, const char* pszValue);           // Unk_TiXmlElement(value) on raw memory
 class Unk_TiXmlElement                                              // the game's TiXmlElement (0x90 bytes)
 {
 public:
@@ -135,13 +137,7 @@ void FUN_140874b10(void* pElement, const NiTransform& xf);          // write the
 bool FUN_1408710c0(void* pDocument, const char* pszFile);           // SaveFile
 
 // ---- cursor ray ----
-// an efd::Point3 with the default constructor 0x1405522f0 (zero)
-struct Unk_DecoPoint3
-{
-    Unk_DecoPoint3();                                               // 0x1405522f0
-    float x, y, z;
-};
-MS2_CHECK_SIZE(Unk_DecoPoint3, 12);
+// (Unk_DecoPoint3, the efd::Point3 of the ray, is in decoeditservice.h)
 struct Unk_PickXY { float x, y; };                                  // cursor position
 extern Unk_PickXY DAT_143b02320;                                    // initial value of the cursor position
 struct Unk_DecoCursor { int FUN_141b90e30(float* pX, float* pY); };
@@ -289,13 +285,10 @@ bool DecoEditService::SelectLayer(CString strName)
 MS2_REPLACE_METHOD(0x14116FCD0, DecoEditService, SelectLayer, 110, 0x87070A29);
 
 // @0x14116fd50
-// MS2-FUNCTIONAL: the exe's `new` of the xml element adds one more EH unwind state than the spelled-out allocation here
 void DecoEditService::SaveXml()
 {
     TiXmlDocument doc;
-    void* pMemRoot = ::operator new(0x90);
-    void* pRoot = pMemRoot ? FUN_14086f2f0(pMemRoot, "ms2") : 0;
-    FUN_14086e090(&doc, pRoot);
+    FUN_14086e090(&doc, new Unk_TiXmlElement("ms2"));
     void* pElement = FUN_140165cf0(&doc, "ms2");
     if (pElement != 0)
     {
@@ -408,7 +401,7 @@ bool DecoEditService::AddTransform(const NiTransform& xf)
 MS2_REPLACE_METHOD(0x1411704D0, DecoEditService, AddTransform, 61, 0x47FC5A4B);
 
 // @0x141170520
-void DecoEditService::CollectNear(Vector3 pt, float fRadius, ATL::CAtlArray<NiMeshHWInstance*>& aOut)
+void DecoEditService::CollectNear(Unk_DecoPoint3 pt, float fRadius, ATL::CAtlArray<NiMeshHWInstance*>& aOut)
 {
     DecoLayer* pLayer = GetLayer();
     if (pLayer == 0)
@@ -419,18 +412,10 @@ void DecoEditService::CollectNear(Vector3 pt, float fRadius, ATL::CAtlArray<NiMe
 // @0x141170590
 efd::AsyncResult DecoEditService::OnInit()
 {
-    {
-        MS2Ptr<EditBrush> spPaint(new PaintBrush);
-        int nKey = 0;
-        m_mapBrushes.SetAt(nKey, spPaint);
-    }
-    {
-        MS2Ptr<EditBrush> spNoise(new NoiseBrush);
-        int nKey = 1;
-        m_mapBrushes.SetAt(nKey, spNoise);
-    }
+    m_mapBrushes.SetAt(0, new PaintBrush);
+    m_mapBrushes.SetAt(1, new NoiseBrush);
     FUN_1413f9830()->Subscribe(this, s_cat, 0, false);
-    FUN_1403ed2d0()->FUN_141bbae40(this ? static_cast<IWorldServiceCallback*>(this) : 0);
+    FUN_1403ed2d0()->FUN_141bbae40(static_cast<IWorldServiceCallback*>(this));
     return efd::AsyncResult_Complete;
 }
 
@@ -545,7 +530,6 @@ bool DecoItem::SaveXml(Unk_TiXmlElement* pParent)
 MS2_REPLACE_METHOD(0x1411740B0, DecoItem, SaveXml, 458, 0x173BAD7A);
 
 // @0x141174280
-// MS2-FUNCTIONAL: the exe's scene call takes a node reference and an entity id that need no caller-side cleanup (no unwind info)
 void DecoItem::Refresh()
 {
     NiNode* pRoot = NiDynamicCast(NiNode, FUN_141b6efc0(FUN_14123c410()));
@@ -555,8 +539,7 @@ void DecoItem::Refresh()
         pRoot->UpdateNodeBound();
         pRoot->UpdateProperties();
         pRoot->UpdateEffects();
-        egf::EntityID kId;
-        FUN_1413f9870()->vfunc_19(Unk_NodePtr(pRoot), FUN_14123c460(kId));
+        FUN_1413f9870()->vfunc_19(Unk_NodePtr(pRoot), FUN_14123c460());
     }
 }
 
@@ -579,7 +562,7 @@ void DecoItem::SetCulled(int bVisible)
 MS2_REPLACE_METHOD(0x141174380, DecoItem, SetCulled, 202, 0xE69FA90E);
 
 // @0x141174450
-void DecoItem::SetModel(CString strModel)
+void DecoItem::SetModel(const CString& strModel)
 {
     FUN_14123bb80(strModel);
 }
@@ -610,30 +593,34 @@ void DecoItem::vfunc_53(float f)
     if (m_aXf.IsEmpty())
         return;
     NiNode* pRoot = NiDynamicCast(NiNode, FUN_141b6efc0(FUN_14123c410()));
-    if (pRoot == 0)
-        return;
-    for (unsigned i = 0; i < m_aXf.GetCount(); i++)
+    if (pRoot != 0)
     {
-        Unk_NodeQueue kQueue(pRoot);
-        NiAVObject* pObject;
-        while ((pObject = kQueue.Next(true)) != 0)
+        for (unsigned i = 0; i < m_aXf.GetCount(); i++)
         {
-            NiMesh* pMesh = NiDynamicCast(NiMesh, pObject);
-            if (pMesh != 0 && pMesh->GetParent() != 0)
+            Unk_NodeQueue kQueue(pRoot);
+            NiAVObject* pObject;
+            while ((pObject = kQueue.Next(true)) != 0)
             {
-                NiNode* pParent = pMesh->GetParent();
-                NiPointer<NiMeshHWInstance> spInstance = new (efd::MemHint(efd::MemHint::NONE)) NiMeshHWInstance;
-                if (NiInstancingUtilities::AddMeshInstance(pMesh, spInstance))
+                NiMesh* pMesh = NiDynamicCast(NiMesh, pObject);
+                if (pMesh != 0)
                 {
-                    FUN_140aacb60(spInstance, m_aXf[i]);
-                    pParent->AttachChild(spInstance, true);
-                    pParent->AttachChild(pMesh, true);
+                    NiNode* pParent = pMesh->GetParent();
+                    if (pParent != 0)
+                    {
+                        NiPointer<NiMeshHWInstance> spInstance = new (efd::MemHint(efd::MemHint::NONE)) NiMeshHWInstance;
+                        if (NiInstancingUtilities::AddMeshInstance(pMesh, spInstance))
+                        {
+                            spInstance->SetLocalTransform(m_aXf[i]);
+                            pParent->AttachChild(spInstance, true);
+                            pParent->AttachChild(pMesh, true);
+                        }
+                    }
                 }
             }
         }
+        Refresh();
+        m_aXf.RemoveAll();
     }
-    Refresh();
-    m_aXf.RemoveAll();
 }
 
 // @0x1411747f0
@@ -646,24 +633,26 @@ MS2_REPLACE_METHOD(0x1411747F0, DecoItem, IsEditable, 8, 0x71679366);
 // @0x141174800
 bool DecoItem::LoadNif(CString strAsset)
 {
-    if (FUN_14123c410() != 0)
+    if (m_unk_80 != 0)
         return true;
     m_bKfm = false;
     m_str88 = "DecoItemNIF";
     SetModel(FUN_140298360("urn:gamebryo-scenegraph:", FUN_141b6ed00(strAsset)));
-    FUN_1403ed2d0()->FUN_141bbb1e0(this, 0, 1);
+    if (!FUN_1403ed2d0()->FUN_141bbb1e0(this, 0, 1))
+        return false;
     return false;
 }
 
 // @0x141174930
 bool DecoItem::LoadKfm(CString strAsset)
 {
-    if (FUN_14123c410() != 0)
+    if (m_unk_80 != 0)
         return true;
     m_bKfm = true;
     m_str88 = "DecoItemKFM";
-    SetModel(FUN_140298360("urn:gamebryo-animation:", FUN_141b6ed00(strAsset)));
-    FUN_1403ed2d0()->FUN_141bbb1e0(this, 0, 1);
+    FUN_14123bb80(FUN_140298360("urn:gamebryo-animation:", FUN_141b6ed00(strAsset)));
+    if (!FUN_1403ed2d0()->FUN_141bbb1e0(this, 0, 1))
+        return false;
     return false;
 }
 
@@ -679,7 +668,7 @@ bool DecoItem::AddTransform(const NiTransform& xf)
 }
 
 // @0x141174ab0
-void DecoItem::CollectNear(Vector3 pt, float fRadius, ATL::CAtlArray<NiMeshHWInstance*>& aOut)
+void DecoItem::CollectNear(Unk_DecoPoint3 pt, float fRadius, ATL::CAtlArray<NiMeshHWInstance*>& aOut)
 {
     NiNode* pRoot = NiDynamicCast(NiNode, FUN_141b6efc0(FUN_14123c410()));
     if (pRoot != 0)
@@ -691,9 +680,7 @@ void DecoItem::CollectNear(Vector3 pt, float fRadius, ATL::CAtlArray<NiMeshHWIns
             NiMeshHWInstance* pInstance = NiDynamicCast(NiMeshHWInstance, pObject);
             if (pInstance != 0)
             {
-                Vector3 kDelta = *(const Vector3*)&FUN_140e69200(pInstance);
-                kDelta = kDelta.FUN_140965c40(pt);
-                if (kDelta.FUN_140967ac0() < fRadius)
+                if (((const Vector3&)FUN_140e69200(pInstance)).FUN_140965c40((const Vector3&)pt).FUN_140967ac0() < fRadius)
                     aOut.Add(pInstance);
             }
         }
@@ -738,8 +725,8 @@ void DecoItem::PlayAnim(int nSeq, float fSpeed, bool bLoop)
 void DecoItem::vfunc_9(void* p)
 {
     GameObject::vfunc_9(p);
-    vfunc_19(efd::Point3(0.0f, 0.0f, 0.0f));
-    vfunc_21(efd::Point3(0.0f, 0.0f, 0.0f));
+    vfunc_19(NiPoint3(0.0f, 0.0f, 0.0f));
+    vfunc_21(NiPoint3(0.0f, 0.0f, 0.0f));
 }
 
 // @0x141174e40
@@ -822,18 +809,18 @@ bool DecoItem::PrepareMesh(NiMesh* pMesh, bool bOverdraw)
 {
     if (pMesh == 0)
         return false;
-    if (pMesh->FindStreamRef(FUN_140a0b280(), 0, NiDataStreamElement::F_UNKNOWN) == 0)
+    if (pMesh->FindStreamRef(FUN_140a0b280(), 0, NiDataStreamElement::F_UNKNOWN) != 0)
+    {
+        pMesh->ApplyAndSetActiveMaterial(FUN_141d284a0(&DAT_143ae51e8), 0xffffffff);
+    }
+    else
     {
         NiMeshModifier* pModifier = pMesh->GetModifierByType(&DAT_143afbef0);
         if (pModifier != 0)
         {
-            if (FUN_14106bee0(pModifier) == 0 && bOverdraw)
+            if (!FUN_14106bee0(pModifier) && bOverdraw)
                 pMesh->ApplyAndSetActiveMaterial(FUN_141d284a0(&DAT_143ae5278), 0xffffffff);
         }
-    }
-    else
-    {
-        pMesh->ApplyAndSetActiveMaterial(FUN_141d284a0(&DAT_143ae51e8), 0xffffffff);
     }
     return true;
 }
@@ -885,9 +872,7 @@ DecoLayer::~DecoLayer()
 {
     for (unsigned i = 0; i < m_aItems.GetCount(); i++)
     {
-        egf::EntityID kId;
-        m_aItems[i]->FUN_14123c460(kId);
-        FUN_1403ed2d0()->FUN_141bbbc60(kId, 0);
+        static_cast<Unk_DecoWorld*>(FUN_1403ed2d0())->FUN_141bbbc60(m_aItems[i]->FUN_14123c460(), 0);
     }
     m_aItems.RemoveAll();
 }
@@ -983,7 +968,6 @@ bool DecoLayer::SetAsset(CString strAsset)
     return false;
 }
 
-// MS2-FUNCTIONAL: the exe takes the EntityID result slot address before indexing aOld (FUN_141bbbc60's id is a by-value argument temp there), while worldservice.h declares it const egf::EntityID& for its other callers; otherwise identical
 // @0x1411770b0
 bool DecoLayer::ChangeAsset(CString strAsset)
 {
@@ -998,7 +982,7 @@ bool DecoLayer::ChangeAsset(CString strAsset)
         {
             ATL::CAtlArray<NiTransform> aXf;
             aOld[i]->CollectTransforms(aXf);
-            FUN_1403ed2d0()->FUN_141bbbc60(aOld[i]->FUN_14123c460(), 0);
+            static_cast<Unk_DecoWorld*>(FUN_1403ed2d0())->FUN_141bbbc60(aOld[i]->FUN_14123c460(), 0);
             DecoItem* pItem = AddItem(aXf);
             if (pItem != 0)
                 IsKfm(GetAsset()) ? pItem->LoadKfm(GetAsset()) : pItem->LoadNif(GetAsset());
@@ -1042,7 +1026,7 @@ bool DecoLayer::AddTransform(const NiTransform& xf)
 }
 
 // @0x141177580
-void DecoLayer::CollectNear(Vector3 pt, float fRadius, ATL::CAtlArray<NiMeshHWInstance*>& aOut)
+void DecoLayer::CollectNear(Unk_DecoPoint3 pt, float fRadius, ATL::CAtlArray<NiMeshHWInstance*>& aOut)
 {
     for (unsigned i = 0; i < m_aItems.GetCount(); i++)
     {

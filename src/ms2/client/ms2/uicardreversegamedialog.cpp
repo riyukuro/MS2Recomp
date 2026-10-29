@@ -50,7 +50,7 @@ Scaleform::GFx::Value FUN_1406146a0(const Scaleform::GFx::Value& v);   // copy a
 // The name table (global strings).
 CStringW FUN_140811740(int nId, const int& nArg1, const int& nArg2);
 CStringW FUN_140b99450(CStringW strKey, const CStringW& strA, const unsigned& nB);
-CStringW FUN_1409e97f0(int nId, const unsigned& nArg);
+CStringW FUN_1409e97f0(int nId, const int& nArg);
 CStringW GetStringCommon(int nId);
 void FUN_140d73aa0(CStringW strText, int nType, IMessageListener* pListener, CStringW strTag);
 
@@ -62,7 +62,7 @@ void FUN_141415450(const CString& strKey, MS2Ptr<CItem> spItem, int a, int b, in
 void FUN_140165270(ATL::CAtlArray<CString>& arr, const CString& str);    // CAtlArray<CString>::Add
 void FUN_1402c2890(ATL::CAtlArray<CString>& arr);                        // CAtlArray<CString>::RemoveAll
 
-char FUN_140ba28d0(const MS2Ptr<AScript>* pAS, int n);             // has the AS object been released
+bool FUN_140ba28d0(const MS2Ptr<AScript>* pAS, int n);             // has the AS object been released
 class Unk_CRSceneMgr;
 Unk_CRSceneMgr* FUN_1408e57f0();
 void FUN_1422b9fd0(Unk_CRSceneMgr* pMgr, int nScene);
@@ -92,17 +92,14 @@ static void FUN_140f28be0(MS2Ptr<CardReward>& a, MS2Ptr<CardReward>& b)
 
 // Fisher-Yates over the cards.
 // @0x140f28b30
-// MS2-FUNCTIONAL: code generation differs (branch layout / temporaries)
 static void FUN_140f28b30(ATL::CAtlArray<MS2Ptr<CardReward> >& cards)
 {
     int nCount = (int)cards.GetCount();
-    int nLast;
-    while (nLast = nCount - 1, 0 < nLast)
+    for (int i = nCount - 1; i >= 1; --i)
     {
-        int nPick = rand() % nCount;
-        nCount = nLast;
-        if (nLast != nPick)
-            FUN_140f28be0(cards[nLast], cards[nPick]);
+        int j = rand() % (i + 1);
+        if (i != j)
+            FUN_140f28be0(cards[i], cards[j]);
     }
 }
 
@@ -125,24 +122,21 @@ CString UICardReverseGameDialog::GetTypeName()
 
 // Refresh the "N cards left" info text.
 // @0x140f26af0
-// MS2-FUNCTIONAL: code generation differs (branch layout / temporaries)
 void UICardReverseGameDialog::OnCardTweenComplete()
 {
-    if (FUN_140ba28d0(&m_30, 0) == 0)
-    {
-        int nType = 3;
-        CStringW strText = FUN_140811740(0xc40, m_1f4, nType);
-        static_cast<Unk_CRAS*>(m_30.operator->())->FUN_140acd130("setSelectInfoText", CStringW(strText));
-    }
+    if (FUN_140ba28d0(&m_30, 0))
+        return;
+    int nType = 3;
+    CStringW strText = FUN_140811740(0xc40, m_1f4, nType);
+    static_cast<Unk_CRAS*>(m_30.operator->())->FUN_140acd130("setSelectInfoText", CStringW(strText));
 }
 
 // @0x140f26bd0
-// MS2-FUNCTIONAL: code generation differs (branch layout / temporaries)
 int UICardReverseGameDialog::vfunc_65()
 {
-    if (UIDialog::vfunc_65())
-        return 1;
-    return 0;
+    if (UIDialog::vfunc_65() == 0)
+        return 0;
+    return 1;
 }
 
 // @0x140f26c00
@@ -185,30 +179,28 @@ void UICardReverseGameDialog::vfunc_43()
 
 // The server data of the game (opcode 0xda): 0 the deck, 1 shuffle, 2 a card was picked, 3 the result.
 // @0x140f26e00
-// MS2-FUNCTIONAL: code generation differs (temporaries / frame layout)
 void UICardReverseGameDialog::vfunc_79(void* p)
 {
     UIDialog::vfunc_79(p);
-    CInPacket* pPacket = static_cast<CInPacket*>(p);
-    if (pPacket->FUN_14070fe80() == 0xda)
+    if (static_cast<CInPacket*>(p)->FUN_14070fe80() == 0xda)
     {
-        char cMode = pPacket->ReadUInt8();
-        if (cMode == 0)
+        int nMode = static_cast<CInPacket*>(p)->ReadUInt8();
+        if (nMode == 0)
         {
-            m_1c8.RemoveAll();  // (the exe clears the pick list through the shared helper)
+            m_1a8.RemoveAll();
             for (unsigned i = 0; i < m_180.GetCount(); ++i)
                 FUN_141415600(m_180[i]);
             FUN_1402c2890(m_180);
-            m_1e8 = pPacket->ReadInt32();
-            m_1ec = pPacket->ReadInt32();
-            unsigned nCards = pPacket->ReadInt32();
+            m_1e8 = static_cast<CInPacket*>(p)->ReadInt32();
+            m_1ec = static_cast<CInPacket*>(p)->ReadInt32();
+            unsigned nCards = static_cast<CInPacket*>(p)->ReadInt32();
             for (unsigned nCard = 0; nCard < nCards; ++nCard)
             {
                 MS2Ptr<CardReward> spCard(new CardReward);
                 spCard->m_nIndex = nCard;
-                spCard->m_nItemId = pPacket->ReadInt32();
-                spCard->m_nRank = pPacket->ReadUInt8();
-                spCard->m_nCount = pPacket->ReadInt32();
+                spCard->m_nItemId = static_cast<CInPacket*>(p)->ReadInt32();
+                spCard->m_nRank = static_cast<CInPacket*>(p)->ReadUInt8();
+                spCard->m_nCount = static_cast<CInPacket*>(p)->ReadInt32();
                 if (m_30.get() != 0)
                 {
                     ASObj obj(2);
@@ -233,48 +225,49 @@ void UICardReverseGameDialog::vfunc_79(void* p)
                     m_1a8.Add(spCard);
                 }
             }
-            CStringW strItem = TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, m_1e8);
-            CStringW strNotice = FUN_140b99450(CStringW(L"s_card_reverse_game_dialog_play_notice"), strItem, m_1ec);
+            CStringW strNotice = FUN_140b99450(CStringW(L"s_card_reverse_game_dialog_play_notice"), TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, m_1e8), m_1ec);
             static_cast<Unk_CRAS*>(m_30.operator->())->FUN_140acd130("setPlayInfoText", CStringW(strNotice));
         }
-        else if (cMode == 1)
+        else if (nMode == 1)
         {
             m_1f4 = 3;
-            FUN_140614800(static_cast<Unk_CRAS*>(m_30.operator->())->FUN_1422bb330("onShuffle"));
+            static_cast<Unk_CRAS*>(m_30.operator->())->FUN_1422bb330("onShuffle");
             m_1c8.Copy(m_1a8);
             for (unsigned i = 0; i < m_180.GetCount(); ++i)
                 FUN_141415600(m_180[i]);
             FUN_1402c2890(m_180);
             FUN_140f28b30(m_1c8);
         }
-        else if (cMode == 2)
+        else if (nMode == 2)
         {
-            if (!m_1a8.IsEmpty())
+            if (m_1a8.IsEmpty())
+                return;
+            int nPick = static_cast<CInPacket*>(p)->ReadInt32();
+            m_1f8 = m_1a8[nPick];
+            --m_1f4;
+            for (unsigned i = 0; i < m_1c8.GetCount(); ++i)
             {
-                int nPick = pPacket->ReadInt32();
-                m_1f8 = m_1a8[nPick];
-                --m_1f4;
-                for (unsigned i = 0; i < m_1c8.GetCount(); ++i)
+                MS2Ptr<CardReward> spCard(m_1c8[i]);
+                if (spCard->m_nIndex == m_1a8[nPick]->m_nIndex)
                 {
-                    MS2Ptr<CardReward> spCard(m_1c8[i]);
-                    if (spCard->m_nIndex == m_1a8[nPick]->m_nIndex)
-                    {
-                        m_1c8.RemoveAt(i, 1);
-                        break;
-                    }
+                    m_1c8.RemoveAt(i, 1);
+                    break;
                 }
-                static_cast<Unk_CRAS*>(m_30.operator->())->FUN_1409ba030("openCard", m_1f0);
             }
+            static_cast<Unk_CRAS*>(m_30.operator->())->FUN_1409ba030("openCard", m_1f0);
         }
-        else if (cMode == 3)
+        else if (nMode == 3)
         {
-            unsigned nResult = pPacket->ReadUInt8();
-            if (nResult == 0)
+            int nResult = static_cast<CInPacket*>(p)->ReadUInt8();
+            switch (nResult)
             {
-                CStringW strMsg = FUN_1409e97f0(0xc3f, (const unsigned&)m_1e8);
+            case 0:
+            {
+                CStringW strMsg = FUN_1409e97f0(0xc3f, m_1e8);
                 FUN_1403b4750()->FUN_1416fb300(strMsg);
                 FUN_140d73aa0(CStringW(strMsg), 0, 0, CStringW(L""));
                 static_cast<Unk_CRAS*>(m_30.operator->())->FUN_1409ba030("setShuffleButton", 1);
+            }
             }
         }
     }
@@ -288,7 +281,6 @@ int UICardReverseGameDialog::vfunc_13()
 
 // The AS callbacks: shuffle button, card click, card open, tween complete, close.
 // @0x140f27b50
-// MS2-FUNCTIONAL: code generation differs (temporaries / frame layout)
 int UICardReverseGameDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs)
 {
     if (_stricmp(szMethod, "onShuffleButton") == 0)
@@ -298,7 +290,7 @@ int UICardReverseGameDialog::vfunc_28(const char* szMethod, const Scaleform::GFx
         FUN_140710590(packet);
         return 1;
     }
-    if (_stricmp(szMethod, "onCardClick") == 0)
+    else if (_stricmp(szMethod, "onCardClick") == 0)
     {
         if (m_1f8 == 0 && 0 < m_1f4 && m_30.get() != 0 && m_1f0 == -1)
         {
@@ -313,7 +305,7 @@ int UICardReverseGameDialog::vfunc_28(const char* szMethod, const Scaleform::GFx
         }
         return 1;
     }
-    if (_stricmp(szMethod, "onCardOpen") == 0)
+    else if (_stricmp(szMethod, "onCardOpen") == 0)
     {
         if (m_30.get() != 0)
         {
@@ -321,9 +313,33 @@ int UICardReverseGameDialog::vfunc_28(const char* szMethod, const Scaleform::GFx
             if (data.FUN_1422b9620(pArgs, nArgs) != 0)
             {
                 int nIndex = data.FUN_1422b8b10();
-                bool bOpened = data.FUN_1422b8a90();
+                int bOpened = data.FUN_1422b8a90();
                 ASObj obj(2);
-                if (!bOpened || m_1f8.get() == 0)
+                if (bOpened && m_1f8.get() != 0)
+                {
+                    obj.FUN_1409c0d20("index", nIndex);
+                    CString strBind;
+                    MS2Ptr<CItem> spItem(new CItem);
+                    if (spItem->FUN_140523c40(m_1f8->m_nItemId, m_1f8->m_nRank, 0))
+                    {
+                        spItem->FUN_140526c70(m_1f8->m_nCount);
+                        int nSeq = m_1a0++;
+                        strBind.Format("%s_%d", (const char*)GetTypeName(), nSeq);
+                        FUN_141415450(strBind, MS2Ptr<CItem>(spItem), 0, 0x415, 0);
+                        FUN_140165270(m_180, strBind);
+                        m_1f8->m_strBindId = strBind;
+                    }
+                    obj.FUN_1407cba60("bindID", CString(m_1f8->m_strBindId));
+                    obj.FUN_1409c0d20("itemID", m_1f8->m_nItemId);
+                    obj.FUN_1409c0d20("itemRank", m_1f8->m_nRank);
+                    obj.FUN_1407cb9c0("itemCount", m_1f8->m_nCount);
+                    obj.FUN_1407cbb20("itemName", TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, m_1f8->m_nItemId));
+                    static_cast<Unk_CRAS*>(m_30.operator->())->FUN_1409b13b0("updateItem", FUN_1406146a0(obj.FUN_1422bb870()));
+                    OnCardTweenComplete();
+                    m_1f0 = -1;
+                    m_1f8 = 0;
+                }
+                else
                 {
                     if (!m_1c8.IsEmpty())
                     {
@@ -349,45 +365,21 @@ int UICardReverseGameDialog::vfunc_28(const char* szMethod, const Scaleform::GFx
                         static_cast<Unk_CRAS*>(m_30.operator->())->FUN_1409b13b0("updateItem", FUN_1406146a0(obj.FUN_1422bb870()));
                     }
                 }
-                else
-                {
-                    obj.FUN_1409c0d20("index", nIndex);
-                    CString strBind;
-                    MS2Ptr<CItem> spItem(new CItem);
-                    if (spItem->FUN_140523c40(m_1f8->m_nItemId, m_1f8->m_nRank, 0))
-                    {
-                        spItem->FUN_140526c70(m_1f8->m_nCount);
-                        int nSeq = m_1a0++;
-                        strBind.Format("%s_%d", (const char*)GetTypeName(), nSeq);
-                        FUN_141415450(strBind, MS2Ptr<CItem>(spItem), 0, 0x415, 0);
-                        FUN_140165270(m_180, strBind);
-                        m_1f8->m_strBindId = strBind;
-                    }
-                    obj.FUN_1407cba60("bindID", CString(m_1f8->m_strBindId));
-                    obj.FUN_1409c0d20("itemID", m_1f8->m_nItemId);
-                    obj.FUN_1409c0d20("itemRank", m_1f8->m_nRank);
-                    obj.FUN_1407cb9c0("itemCount", m_1f8->m_nCount);
-                    obj.FUN_1407cbb20("itemName", TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, m_1f8->m_nItemId));
-                    static_cast<Unk_CRAS*>(m_30.operator->())->FUN_1409b13b0("updateItem", FUN_1406146a0(obj.FUN_1422bb870()));
-                    OnCardTweenComplete();
-                    m_1f0 = -1;
-                    m_1f8 = 0;
-                }
             }
         }
         return 1;
     }
-    if (_stricmp(szMethod, "onCardTweenComplete") == 0)
+    else if (_stricmp(szMethod, "onCardTweenComplete") == 0)
     {
         OnCardTweenComplete();
         return 1;
     }
-    if (_stricmp(szMethod, "OnCloseDialog") == 0)
+    else if (_stricmp(szMethod, "OnCloseDialog") == 0)
     {
-        if (m_1f4 < 1)
-            vfunc_67();
-        else
+        if (m_1f4 > 0)
             FUN_140d73aa0(GetStringCommon(0xc41), 1, static_cast<IMessageListener*>(this), CStringW(L""));
+        else
+            vfunc_67();
         return 1;
     }
     if (UIDialog::vfunc_28(szMethod, pArgs, nArgs) != 0)
@@ -397,26 +389,24 @@ int UICardReverseGameDialog::vfunc_28(const char* szMethod, const Scaleform::GFx
 
 // The card tooltip.
 // @0x140f288c0
-// MS2-FUNCTIONAL: code generation differs (temporaries / frame layout)
 void UICardReverseGameDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
 {
     UIObject::vfunc_49(pRetVal, pArgs);
     void* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
-    if (pPlayer != 0)
+    if (pPlayer == 0)
+        return;
+    int nItemId = pArgs->FUN_1422b8b10();
+    int nRank = pArgs->FUN_1422b8b10();
+    int nCount = pArgs->FUN_1422b8b10();
+    MS2Ptr<CItem> spItem(new CItem);
+    if (spItem->FUN_14052b130(nItemId, nRank, 0) != 0)
     {
-        int nItemId = pArgs->FUN_1422b8b10();
-        int nRank = pArgs->FUN_1422b8b10();
-        int nCount = pArgs->FUN_1422b8b10();
-        MS2Ptr<CItem> spItem(new CItem);
-        if (spItem->FUN_14052b130(nItemId, nRank, 0) != 0)
+        spItem->FUN_140526c70(nCount);
+        ASTooltip tip(pPlayer, 0x20, 2);
+        if (tip.FUN_1409e0d40(spItem.get()) != 0)
         {
-            spItem->FUN_140526c70(nCount);
-            ASTooltip tip(pPlayer, 0x20, 2);
-            if (tip.FUN_1409e0d40(spItem.get()) != 0)
-            {
-                *pRetVal = tip.FUN_1422bb870();
-                return;
-            }
+            *pRetVal = tip.FUN_1422bb870();
+            return;
         }
     }
 }

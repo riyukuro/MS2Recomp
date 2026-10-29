@@ -167,7 +167,6 @@ MS2Ptr<DungeonRecordManagerCli> CMyCharacter::GetRecord()
 }
 
 // @0x140d9f310
-// MS2-FUNCTIONAL: stack temp slot order differs (exe keeps the int temps below pInfo)
 void CMyCharacter::FUN_140d9f310(__int64 nExpire)
 {
     m_nExpire = nExpire;
@@ -178,7 +177,9 @@ void CMyCharacter::FUN_140d9f310(__int64 nExpire)
         if (nNow < m_nExpire)
         {
             ATL::CTimeSpan span = CMsTime(m_nExpire) - CMsTime(nNow);
-            pInfo->FUN_1419f1200(0x5f5e117, (int)(span.GetTotalSeconds() * 1000) + FUN_141472bc0());
+            int nMs = (int)(span.GetTotalSeconds() * 1000);
+            int nEnd = FUN_141472bc0() + nMs;
+            pInfo->FUN_1419f1200(0x5f5e117, nEnd);
         }
         else
             pInfo->FUN_1419f1370(0x5f5e117);
@@ -226,19 +227,21 @@ bool CMyCharacter::FUN_140d9f5d0(int nIndex)
 }
 
 // @0x140d9f600
-// MS2-FUNCTIONAL: CStringW literal temps/branch layout not matched
 CStringW CMyCharacter::FUN_140d9f600(int nIndex)
 {
-    if (nIndex == 0)
-        return CStringW(L"InNpc");
-    else if (nIndex == 1)
-        return CStringW(L"InAll");
-    else if (nIndex == 2)
-        return CStringW(L"Dp");
-    else if (nIndex == 3)
-        return CStringW(L"IgDun");
-    else
-        return CStringW(L"");
+    switch (nIndex)
+    {
+    case 0:
+        return L"InNpc";
+    case 1:
+        return L"InAll";
+    case 2:
+        return L"Dp";
+    case 3:
+        return L"IgDun";
+    default:
+        return L"";
+    }
 }
 
 // @0x140d9f710
@@ -247,7 +250,7 @@ void CMyCharacter::FUN_140d9f710(CInPacket& packet)
     int nCount = packet.ReadInt32();
     for (int i = 0; i < nCount; i++)
     {
-        int nKey = packet.ReadInt32();
+        unsigned long nKey = packet.ReadInt32();
         unsigned nState = packet.ReadUInt8();
         m_states[nKey] = nState;
     }
@@ -255,7 +258,7 @@ void CMyCharacter::FUN_140d9f710(CInPacket& packet)
 }
 
 // @0x140d9f880
-unsigned CMyCharacter::FUN_140d9f880(int nId)
+unsigned CMyCharacter::FUN_140d9f880(unsigned long nId)
 {
     std::map<unsigned long, unsigned>::iterator it = m_states.find(nId);
     if (it == m_states.end())

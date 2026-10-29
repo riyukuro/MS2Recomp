@@ -48,7 +48,7 @@ class CAvatarPackageEquip : public CPtred
 {
 public:
     CAvatarPackageEquip();                                          // 0x1418bf910
-    virtual ~CAvatarPackageEquip();                                 // 0x1418c1410 (scalar deleting 0x1418c18c0)
+    // ~CAvatarPackageEquip() 0x1418c1410 is implicit (no vptr reset; scalar deleting 0x1418c18c0)
 
     void FUN_1418bf980();                                           // 0x1418bf980 clears the slots
     void FUN_1418bf9b0(Unk_InventoryEquipSlot nSlot, MS2Ptr<CItem> spItem);   // 0x1418bf9b0 sets a slot
@@ -202,7 +202,7 @@ public:
     int FUN_1418bc740();                                    // 0x1418bc740
     void FUN_1418bc790(int nState, int nParam);             // 0x1418bc790
     void FUN_1418bc860(int nParam);                         // 0x1418bc860
-    void FUN_1418bc8c0(int nSkin);                          // 0x1418bc8c0
+    void FUN_1418bc8c0(int nSkin, int nUnused);             // 0x1418bc8c0 (the second arg is unused)
     void FUN_1418bca10(Unk_CharEquip kColor0, Unk_CharEquip kColor1);   // 0x1418bca10
     void FUN_1418bca60(int nState, int nParam);             // 0x1418bca60
     bool FUN_1418bcd20(int nPose);                          // 0x1418bcd20

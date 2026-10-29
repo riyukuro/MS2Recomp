@@ -87,18 +87,17 @@ CUserConditionEventData::~CUserConditionEventData()
 // Reads the table; every <event> becomes a row of the map.
 #ifndef MS2_HOOK_DLL
 // @0x1408d2640
-// MS2-FUNCTIONAL: written from the decompile; temporaries / frame slots not tuned
-bool CUserConditionEventData::Load()
+void CUserConditionEventData::Load()
 {
     TiXmlDocument doc;
-    CString strPath = FUN_14071a5b0(CString("Table"), CString("userConditionEvent.xml"));
+    CString strPath = FUN_14071a5b0("Table", "userConditionEvent.xml");
     if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
-        return false;
+        return;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
     {
         Unk_UceLog(CLogString::GetInstance(), 1, 0x13, MS2_UCE_XML_ERR, "userConditionEvent.xml");
-        return false;
+        return;
     }
     for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("event"); pNode != 0; pNode = pNode->FUN_140168650("event"))
     {
@@ -111,7 +110,7 @@ bool CUserConditionEventData::Load()
         Unk_140165cf0* pCondition = pNode->FUN_140165cf0("condition");
         if (pCondition != 0)
         {
-            if (FUN_14029ea20(spData->m_spCondition.get(), pCondition, CStringW(L"UserConditionEvent"), spData->m_nId) == 0)
+            if (FUN_14029ea20(spData->m_spCondition.get(), pCondition, L"UserConditionEvent", spData->m_nId) == 0)
                 continue;
         }
         Unk_140165cf0* pNotify = pNode->FUN_140165cf0("notify");
@@ -119,8 +118,8 @@ bool CUserConditionEventData::Load()
         {
             FUN_1408731e0(pNotify, "preview", spData->m_notify.m_nPreview);
             FUN_1408731e0(pNotify, "useNotify", spData->m_notify.m_nUseNotify);
-            spData->m_notify.m_strDescKey = FUN_14015f710(pNotify, "descKey", CString(""));
-            spData->m_notify.m_strDescArg = FUN_14015f710(pNotify, "descArg", CString(""));
+            spData->m_notify.m_strDescKey = FUN_14015f710(pNotify, "descKey", "");
+            spData->m_notify.m_strDescArg = FUN_14015f710(pNotify, "descArg", "");
             for (Unk_140165cf0* pAttach = pNotify->FUN_140165cf0("attachment"); pAttach != 0; pAttach = pAttach->FUN_140168650("attachment"))
             {
                 Unk_UceAttachment attach;
@@ -128,7 +127,7 @@ bool CUserConditionEventData::Load()
                 FUN_140873220(pAttach, "itemID", attach.m_nItemId);
                 FUN_14015f500(pAttach, "itemRank", &attach.m_nItemRank);
                 FUN_140873220(pAttach, "itemCount", attach.m_nItemCount);
-                if (FUN_140166430()->FUN_1405f5e90(attach.m_nItemId, attach.m_nItemRank, CString("systemMail.xml"), CString(strInfo)) != 0)
+                if (FUN_140166430()->FUN_1405f5e90(attach.m_nItemId, attach.m_nItemRank, "systemMail.xml", CString(strInfo)) != 0)
                     spData->m_notify.m_attachments.Add(attach);
             }
         }
@@ -146,7 +145,7 @@ bool CUserConditionEventData::Load()
                 FUN_140873220(pAttach, "itemID", attach.m_nItemId);
                 FUN_14015f500(pAttach, "itemRank", &attach.m_nItemRank);
                 FUN_140873220(pAttach, "itemCount", attach.m_nItemCount);
-                if (FUN_140166430()->FUN_1405f5e90(attach.m_nItemId, attach.m_nItemRank, CString("systemMail.xml"), CString(strInfo)) != 0)
+                if (FUN_140166430()->FUN_1405f5e90(attach.m_nItemId, attach.m_nItemRank, "systemMail.xml", CString(strInfo)) != 0)
                     spData->m_mail.m_attachments.Add(attach);
             }
         }
@@ -159,7 +158,6 @@ bool CUserConditionEventData::Load()
         }
     }
     SetInit(true);
-    return true;
 }
 #endif
 
@@ -172,19 +170,16 @@ void CUserConditionEventData::GetAllEvents(ATL::CAtlArray<Ptr>& out)
     }
     else
     {
-        POSITION pos = s_events.GetHeadPosition();
-        while (pos != 0)
+        for (POSITION pos = s_events.GetHeadPosition(); pos != 0; s_events.GetNext(pos))
         {
-            Ptr spData = GetEvent(s_events.GetKeyAt(pos));
-            out.Add(spData);
-            s_events.GetNext(pos);
+            int nKey = s_events.GetKeyAt(pos);
+            out.Add(GetEvent(nKey));
         }
     }
 }
 
 #ifndef MS2_HOOK_DLL
 // @0x1408d3090
-// MS2-FUNCTIONAL: the exe returns the local smart pointer by a steal (no AddRef/Release pair); MS2Ptr has no move ctor
 CUserConditionEventData::Ptr CUserConditionEventData::GetEvent(int nId)
 {
     CheckInit();

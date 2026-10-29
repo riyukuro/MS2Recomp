@@ -5,9 +5,9 @@
 // MS2-PIN: ??$?0HV?$MS2Ptr@VStanceData@@@@$0A@@?$pair@$$CBIV?$MS2Ptr@VStanceData@@@@@std@@QEAA@$$QEAU?$pair@HV?$MS2Ptr@VStanceData@@@@@1@@Z 0x14082a1a0 ; unique
 // MS2-PINS-END tplpin
 // MS2-PIN: ??$?0AEAHAEAV?$MS2Ptr@VStanceData@@@@$0A@@?$pair@HV?$MS2Ptr@VStanceData@@@@@std@@QEAA@AEAHAEAV?$MS2Ptr@VStanceData@@@@@Z 0x14082a150
-// MS2-PIN: ??$?0AEBHAEAV?$MS2Ptr@VStanceData@@@@$0A@@?$pair@HV?$MS2Ptr@VStanceData@@@@@std@@QEAA@AEBHAEAV?$MS2Ptr@VStanceData@@@@@Z 0x14082a060
+// MS2-PIN: ??$?0AEBIAEAV?$MS2Ptr@VStanceData@@@@$0A@@?$pair@IV?$MS2Ptr@VStanceData@@@@@std@@QEAA@AEBIAEAV?$MS2Ptr@VStanceData@@@@@Z 0x14082a060
 // MS2-PIN: ??$make_pair@AEAHAEAV?$MS2Ptr@VStanceData@@@@@std@@YA?AU?$pair@HV?$MS2Ptr@VStanceData@@@@@0@AEAHAEAV?$MS2Ptr@VStanceData@@@@@Z 0x14082b820
-// MS2-PIN: ??$make_pair@AEBHAEAV?$MS2Ptr@VStanceData@@@@@std@@YA?AU?$pair@HV?$MS2Ptr@VStanceData@@@@@0@AEBHAEAV?$MS2Ptr@VStanceData@@@@@Z 0x14082b7c0
+// MS2-PIN: ??$make_pair@AEBIAEAV?$MS2Ptr@VStanceData@@@@@std@@YA?AU?$pair@IV?$MS2Ptr@VStanceData@@@@@0@AEBIAEAV?$MS2Ptr@VStanceData@@@@@Z 0x14082b7c0
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\commonfiles\\stanceleveldata.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
 #include "stanceleveldata.h"
@@ -136,7 +136,6 @@ StanceTable::~StanceTable()
 }
 
 // @0x140829730
-// MS2-FUNCTIONAL: exe builds the two literal CString temps and the path before the TiXmlDocument with a different EH state layout (precedent continentregiontable); not reproduced
 bool StanceTable::Load()
 {
     CString strPath = FUN_14071a5b0("Table", "stance.xml");
@@ -162,7 +161,7 @@ bool StanceTable::Load()
     for (std::pair<const unsigned, DataPtr> entry : m_stances)
     {
         DataPtr spData = entry.second;
-        for (const int nSkill : spData->m_finishStanceSkillIDs)
+        for (const unsigned nSkill : spData->m_finishStanceSkillIDs)
         {
             if (m_finishSkills.find(nSkill) != m_finishSkills.end())
                 continue;

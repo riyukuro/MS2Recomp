@@ -73,9 +73,13 @@ struct Unk_NdNpcRow : public CPtred { char m_pad[0x78]; CString m_90; };
 MS2_CHECK_OFFSET(Unk_NdNpcRow, m_90, 0x90);
 int FUN_1406cd310(Unk_NdNpcRow* pRow);                          // string id of the npc name
 // a fixed-size list of buffs (0x30 bytes, hash map bins = 10)
-struct Unk_NdBuffList { void* m_0; void* m_8; void* m_10; void* m_18; void* m_20; void* m_28; };
-Unk_NdBuffList* FUN_1409750c0(Unk_NdBuffList* pList, int nBins);
-void FUN_140975690(Unk_NdBuffList* pList);
+// ATL::CAtlList<MS2Ptr<AdditionalCli> > (ctor 0x1409750c0, dtor 0x140975690).
+struct Unk_NdBuffList
+{
+    Unk_NdBuffList(unsigned nBlockSize);
+    ~Unk_NdBuffList();
+    void* m_0; void* m_8; void* m_10; void* m_18; void* m_20; void* m_28;
+};
 POSITION FUN_140976550(Unk_NdBuffList* pList);
 MS2Ptr<Unk_NdBuff>& FUN_140976370(Unk_NdBuffList* pList, POSITION pos);
 void FUN_140976590(Unk_NdBuffList* pList, POSITION* pos);
@@ -197,7 +201,6 @@ void UINpcDuelHPBarDialog::FUN_140e6bb70(int nObjectId, int nDurationMs, int nBa
 }
 
 // @0x140e6bc10
-// MS2-FUNCTIONAL: small CString locals sit 0x10 lower than the exe's stack layout
 void UINpcDuelHPBarDialog::FUN_140e6bc10()
 {
     if (m_nObjectId == 0)
@@ -222,18 +225,17 @@ void UINpcDuelHPBarDialog::FUN_140e6bc10()
         m_30->Invoke("setRightProfile", strProfile);
         FUN_140e6c9c0();
         m_effects->Clear();
-        Unk_NdBuffList list;
-        FUN_1409750c0(&list, 10);
+        Unk_NdBuffList list(10);
         FUN_1416749a0(pNpc)->FUN_1409725f0(&list);
         for (POSITION pos = FUN_140976550(&list); pos != 0; FUN_140976590(&list, &pos)) {
             MS2Ptr<Unk_NdBuff> buff = FUN_140976370(&list, pos);
-            if (!(buff == 0)) {
-                bool bFlag = FUN_140930110(buff->m_18);
-                if (buff->FUN_14096d810()->m_flags.FUN_1401927c0(bFlag))
-                    FUN_140e6c440(buff);
-            }
+            if (buff == 0)
+                continue;
+            bool bFlag = FUN_140930110(buff->m_18);
+            if (!buff->FUN_14096d810()->m_flags.FUN_1401927c0(bFlag))
+                continue;
+            FUN_140e6c440(buff);
         }
-        FUN_140975690(&list);
     }
 }
 
@@ -283,16 +285,16 @@ void UINpcDuelHPBarDialog::vfunc_43()
 }
 
 // @0x140e6c7a0
-// MS2-FUNCTIONAL: stack slot order of the minute/second locals
 void UINpcDuelHPBarDialog::FUN_140e6c7a0()
 {
     unsigned int nMinutes = 0;
     unsigned int nSeconds = 0;
     unsigned int nNow = FUN_140869420();
     if (nNow < m_nEndTick) {
-        nSeconds = (m_nEndTick - nNow) / 1000;
-        nMinutes = nSeconds / 60;
-        nSeconds = nSeconds % 60;
+        unsigned int nLeft = m_nEndTick - nNow;
+        nLeft /= 1000;
+        nMinutes = nLeft / 60;
+        nSeconds = nLeft % 60;
     }
     ASDisplayObject* pRoot = dynamic_cast<ASDisplayObject*>((AScript*)m_30);
     if (pRoot != 0) {

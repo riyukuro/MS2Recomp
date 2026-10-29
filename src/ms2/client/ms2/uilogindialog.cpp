@@ -124,7 +124,7 @@ CStringW GetStringCommonByKey(const CStringW& strKey);                 // string
 void FUN_140d73aa0(CStringW strText, int a, void* b, CStringW strTag);
 void FUN_140710590(COutPacket& packet);                         // send the packet
 
-class Unk_LoginKeys { public: char FUN_14116d9c0(int nKey, int a, int b); };
+class Unk_LoginKeys { public: bool FUN_14116d9c0(int nKey, int a, int b); };
 Unk_LoginKeys* FUN_14025e7c0();
 
 // The scene manager and the web page opener.
@@ -161,7 +161,7 @@ extern CString DAT_143ae0928;                                   // the web page 
 extern int DAT_143ae08f4;
 extern CString DAT_143ab29d8;                                   // the last typed account id
 extern CString DAT_143ab2a28;                                   // the last typed password
-extern char DAT_143ab284b;
+extern unsigned char DAT_143ab284b;
 extern int DAT_143ab2858;
 extern int DAT_143ab285c;
 extern int DAT_143ab2860;
@@ -192,7 +192,7 @@ CString UILoginDialog::GetTypeName()
 }
 
 // @0x1419e1040
-void UILoginDialog::OnEndPopdown(char bFromPopdown)
+void UILoginDialog::OnEndPopdown(bool bFromPopdown)
 {
     if (FUN_1422b9dc0(FUN_1408e57f0()) == 0x6200009)
     {
@@ -208,55 +208,54 @@ void UILoginDialog::OnEndPopdown(char bFromPopdown)
 // @0x1419e1160
 void UILoginDialog::FUN_1419e1160(CInPacket&)
 {
-    if (FUN_1417e2610(FUN_140aa6d30()) == 0x6200009)
+    int nState = FUN_1417e2610(FUN_140aa6d30());
+    if (nState != 0x6200009)
+        return;
+    if (m_30.get() != 0)
     {
-        if (m_30.get() != 0)
+        MS2Ptr<Unk_LoginCheck> spLocale = static_cast<Unk_LoginRoot*>(m_30.operator->())->FUN_140c11f50<Unk_LoginCheck>("m_chkLocaledName");
+        if (spLocale)
         {
-            MS2Ptr<Unk_LoginCheck> spLocale = static_cast<Unk_LoginRoot*>(m_30.operator->())->FUN_140c11f50<Unk_LoginCheck>("m_chkLocaledName");
-            if (spLocale)
-            {
-                bool bChecked = spLocale->FUN_1422ce0e0() == 1;
-                FUN_1409a8b10()->FUN_140cfd260()->FUN_141260e00(bChecked);
-            }
+            FUN_1409a8b10()->FUN_140cfd260()->FUN_141260e00(spLocale->FUN_1422ce0e0() == 1 ? true : false);
         }
-        int nLoginType = 0;
-        if (FUN_1406c34c0() == 0)
-        {
-            if (DAT_143ab29d8.IsEmpty() || DAT_143ab284b == 0)
-            {
-                DAT_143ab29d8 = FUN_1419e2370();
-                DAT_143ab2a28 = FUN_1419e2450();
-            }
-            Unk_LoginRequest request;
-            request.m_nType = 1;
-            request.m_strId = DAT_143ab29d8;
-            request.m_strPassword = DAT_143ab2a28;
-            request.m_nLoginType = nLoginType;
-            FUN_14067c080(&request.m_machineId, FUN_140aadf70()->FUN_140d4fdf0());
-            request.m_n2c = FUN_140aadf70()->FUN_140d4fe10();
-            request.m_n30 = DAT_143ab2858;
-            request.m_strRegion = FUN_140652030(FUN_1406516a0());
-            if (FUN_1409a8b10()->FUN_140cfd260()->m_bLocaledName == 1)
-                request.m_strId = FUN_1401d2b10(DAT_143ab29d8, FUN_1406521f0(FUN_1406516b0()));
-            COutPacket packet(static_cast<int>(SendOp::ResponseLogin), 0);
-            FUN_1401f9020(&request, &packet);
-            FUN_140710590(packet);
-        }
-        else
-        {
-            FUN_140d86260()->vfunc_20(nLoginType, 1);
-        }
-        FUN_140d86260()->vfunc_33(DAT_143ab2820);
     }
+    int nLoginType = 0;
+    if (FUN_1406c34c0() != 0)
+    {
+        FUN_140d86260()->vfunc_20(nLoginType, 1);
+    }
+    else
+    {
+        if (DAT_143ab29d8.IsEmpty() == true || DAT_143ab284b == 0)
+        {
+            DAT_143ab29d8 = FUN_1419e2370();
+            DAT_143ab2a28 = FUN_1419e2450();
+        }
+        Unk_LoginRequest request;
+        request.m_nType = 1;
+        request.m_strId = DAT_143ab29d8;
+        request.m_strPassword = DAT_143ab2a28;
+        request.m_nLoginType = nLoginType;
+        FUN_14067c080(&request.m_machineId, FUN_140aadf70()->FUN_140d4fdf0());
+        request.m_n2c = FUN_140aadf70()->FUN_140d4fe10();
+        request.m_n30 = DAT_143ab2858;
+        request.m_strRegion = FUN_140652030(FUN_1406516a0());
+        if (FUN_1409a8b10()->FUN_140cfd260()->m_bLocaledName == 1)
+            request.m_strId = FUN_1401d2b10(DAT_143ab29d8, FUN_1406521f0(FUN_1406516b0()));
+        COutPacket packet(static_cast<int>(SendOp::ResponseLogin), 0);
+        FUN_1401f9020(&request, &packet);
+        FUN_140710590(packet);
+    }
+    FUN_140d86260()->vfunc_33(DAT_143ab2820);
 }
 
 // @0x1419e1570
 void UILoginDialog::FUN_1419e1570(CInPacket& iPacket)
 {
     int nResult = iPacket.ReadInt32();
-    DAT_143ab2946 = nResult == 0;
+    DAT_143ab2946 = nResult == 0 ? 1 : 0;
     if (nResult != 0)
-        FUN_140d73aa0(CStringW(L"s_delete_account_cancel_login_fail"), 0, 0, CStringW(L""));
+        FUN_140d73aa0(GetStringCommonByKey(L"s_delete_account_cancel_login_fail"), 0, 0, L"");
 }
 
 // @0x1419e1670
@@ -272,10 +271,11 @@ void UILoginDialog::OnLoadComplete()
     CString strId = DAT_143af37a0;
     if (strId.IsEmpty())
         strId = FUN_1409a8b10()->FUN_140cfd260()->m_strSavedId;
-    bool bEmpty = strId.IsEmpty();
-    FUN_1409a8b10()->FUN_140cfd260();
-    FUN_1409a8b10()->FUN_140cfd260()->m_bSaveId = !bEmpty;
-    static_cast<Unk_LoginRoot*>(m_30.operator->())->FUN_1419e2c30("initData", strId, !bEmpty, true, FUN_1406521f0(FUN_1406516b0()));
+    bool bSaveId = !strId.IsEmpty();
+    bool bLocaledName = FUN_1409a8b10()->FUN_140cfd260()->m_bLocaledName;
+    bLocaledName = true;
+    FUN_1409a8b10()->FUN_140cfd260()->m_bSaveId = bSaveId;
+    static_cast<Unk_LoginRoot*>(m_30.operator->())->FUN_1419e2c30("initData", strId, bSaveId, bLocaledName, FUN_1406521f0(FUN_1406516b0()));
     if (!DAT_143af37a0.IsEmpty())
     {
         OnConnect();
@@ -292,7 +292,8 @@ int UILoginDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
     {
         if (dynamic_cast<UIMessageBox*>(pSender) != 0)
         {
-            if (pMsg->FUN_1422b8a10() == 0)
+            int nResult = pMsg->FUN_1422b8a10();
+            if (nResult == 0)
             {
                 if (FUN_1406c34c0() == 1)
                 {
@@ -302,10 +303,7 @@ int UILoginDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
                 {
                     MS2Ptr<Unk_LoginInput> spInput = FUN_1419e2530();
                     if (spInput.get() != 0)
-                    {
-                        CStringW strText = spInput->FUN_1422e0b00();
-                        spInput->FUN_1422e1500(0, strText.GetLength());
-                    }
+                        spInput->FUN_1422e1500(0, spInput->FUN_1422e0b00().GetLength());
                 }
             }
         }
@@ -325,7 +323,7 @@ int UILoginDialog::vfunc_13()
         static_cast<Unk_LoginRoot*>(m_30.operator->())->Invoke("onEnterKey");
         return 1;
     }
-    if (FUN_14025e7c0()->FUN_14116d9c0(0xf, 0, 0))
+    else if (FUN_14025e7c0()->FUN_14116d9c0(0xf, 0, 0))
     {
         static_cast<Unk_LoginRoot*>(m_30.operator->())->Invoke("onTabKey");
         return 1;
@@ -344,12 +342,12 @@ int UILoginDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
         OnConnect();
         return 1;
     }
-    if (_stricmp("OnSaveID", szMethod) == 0)
+    else if (_stricmp("OnSaveID", szMethod) == 0)
     {
         ASData arg;
         if (arg.FUN_1422b9620(pArgs, nArgs) != 0)
         {
-            unsigned char bSave = arg.FUN_1422b8a90();
+            bool bSave = arg.FUN_1422b8a90();
             FUN_1409a8b10()->FUN_140cfd260()->m_bSaveId = bSave;
             return 1;
         }
@@ -361,31 +359,35 @@ int UILoginDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
             OnEndPopdown(1);
             return 1;
         }
-        if (_stricmp("OnChkLocaleName", szMethod) == 0)
+        else if (_stricmp("OnChkLocaleName", szMethod) == 0)
         {
             ASData arg;
-            if (arg.FUN_1422b9620(pArgs, nArgs) != 0 && arg.FUN_1422b8a90() == 0)
+            if (arg.FUN_1422b9620(pArgs, nArgs) != 0)
             {
-                CMsTime deadline(2019, 2, 6, 15, 0, 0);
-                CMsTime now(FUN_140869440());
-                if (!(now < deadline))
+                bool bChecked = arg.FUN_1422b8a90();
+                if (bChecked == 0)
                 {
-                    CStringW strText(L"로케일 계정을 사용해야 합니다.");
-                    MS2Ptr<Unk_LoginMsgBox> spBox = FUN_140d73d20(0, strText, 0, L"");
-                    if (spBox.get() != 0)
+                    CMsTime deadline(2019, 2, 6, 15, 0, 0);
+                    CMsTime now(FUN_140869440());
+                    if (now < deadline)
                     {
-                        spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UILoginDialog::FUN_1419e2690));
-                        FUN_140d73c60(spBox);
+                        CStringW strText(L"로케일 계정을 사용하지 않겠습니까? \n\n 2019년 2월7일부터는 로케일 계정만 사용 가능합니다.");
+                        MS2Ptr<Unk_LoginMsgBox> spBox = FUN_140d73d20(1, strText, 0, L"");
+                        if (spBox.get() != 0)
+                        {
+                            spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UILoginDialog::FUN_1419e2730));
+                            FUN_140d73c60(spBox);
+                        }
                     }
-                }
-                else
-                {
-                    CStringW strText(L"로케일 계정을 사용하지 않겠습니까? \n\n 2019년 2월7일부터는 로케일 계정만 사용 가능합니다.");
-                    MS2Ptr<Unk_LoginMsgBox> spBox = FUN_140d73d20(1, strText, 0, L"");
-                    if (spBox.get() != 0)
+                    else
                     {
-                        spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UILoginDialog::FUN_1419e2730));
-                        FUN_140d73c60(spBox);
+                        CStringW strText(L"로케일 계정을 사용해야 합니다.");
+                        MS2Ptr<Unk_LoginMsgBox> spBox = FUN_140d73d20(0, strText, 0, L"");
+                        if (spBox.get() != 0)
+                        {
+                            spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UILoginDialog::FUN_1419e2690));
+                            FUN_140d73c60(spBox);
+                        }
                     }
                 }
             }
@@ -399,19 +401,19 @@ int UILoginDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
 void UILoginDialog::vfunc_43()
 {
     UIDialog::vfunc_43();
-    if (FUN_1403ed2b0()->FUN_141adc890(0x4eef) == 0 && FUN_1406516b0() != 1)
-        return;
-    MS2Ptr<ASDisplayObject> spObj(dynamic_cast<ASDisplayObject*>((AScript*)m_30));
-    if (spObj.get() != 0)
-        spObj->vfunc_2(8, -50, -39);
+    if (FUN_1403ed2b0()->FUN_141adc890(0x4eef) != 0 || FUN_1406516b0() == 1)
+    {
+        MS2Ptr<ASDisplayObject> spObj(dynamic_cast<ASDisplayObject*>((AScript*)m_30));
+        if (spObj.get() != 0)
+            spObj->vfunc_2(8, -50, -39);
+    }
 }
 
 // @0x1419e21e0
-bool UILoginDialog::FUN_1419e21e0(CStringW strMessage)
+void UILoginDialog::FUN_1419e21e0(CStringW strMessage)
 {
     DAT_143ab284b = 1;
-    MS2Ptr<Unk_LoginMsgBox> spBox = FUN_140d74390(strMessage, 1, Delegate<bool(int, const CMsgBoxData&)>(this, &UILoginDialog::FUN_1419e22e0));
-    return true;
+    FUN_140d74390(strMessage, 1, Delegate<bool(int, const CMsgBoxData&)>(this, &UILoginDialog::FUN_1419e22e0));
 }
 
 // @0x1419e22e0
@@ -440,35 +442,39 @@ bool UILoginDialog::FUN_1419e2310(int nResult)
 // @0x1419e2370
 CString UILoginDialog::FUN_1419e2370()
 {
-    MS2Ptr<Unk_LoginInput> spInput = FUN_1419e2530();
-    if (spInput.get() == 0)
-        return "";
-    return FUN_14016a600(spInput->FUN_1422e0b00(), 0);
+    {
+        MS2Ptr<Unk_LoginInput> spInput = FUN_1419e2530();
+        if (spInput.get() != 0)
+            return FUN_14016a600(spInput->FUN_1422e0b00(), 0);
+    }
+    return "";
 }
 
 // @0x1419e2450
 CString UILoginDialog::FUN_1419e2450()
 {
-    MS2Ptr<Unk_LoginInput> spInput = FUN_1419e25e0();
-    if (spInput.get() == 0)
-        return "";
-    return FUN_14016a600(spInput->FUN_1422e0b00(), 0);
+    {
+        MS2Ptr<Unk_LoginInput> spInput = FUN_1419e25e0();
+        if (spInput.get() != 0)
+            return FUN_14016a600(spInput->FUN_1422e0b00(), 0);
+    }
+    return "";
 }
 
 // @0x1419e2530
 MS2Ptr<Unk_LoginInput> UILoginDialog::FUN_1419e2530()
 {
-    if (m_30.get() == 0)
-        return MS2Ptr<Unk_LoginInput>(0);
-    return static_cast<Unk_LoginRoot*>(m_30.operator->())->FUN_140bbe880<Unk_LoginInput>("m_inputID");
+    if (m_30.get() != 0)
+        return static_cast<Unk_LoginRoot*>(m_30.operator->())->FUN_140bbe880<Unk_LoginInput>("m_inputID");
+    return MS2Ptr<Unk_LoginInput>(0);
 }
 
 // @0x1419e25e0
 MS2Ptr<Unk_LoginInput> UILoginDialog::FUN_1419e25e0()
 {
-    if (m_30.get() == 0)
-        return MS2Ptr<Unk_LoginInput>(0);
-    return static_cast<Unk_LoginRoot*>(m_30.operator->())->FUN_140bbe880<Unk_LoginInput>("m_inputPW");
+    if (m_30.get() != 0)
+        return static_cast<Unk_LoginRoot*>(m_30.operator->())->FUN_140bbe880<Unk_LoginInput>("m_inputPW");
+    return MS2Ptr<Unk_LoginInput>(0);
 }
 
 // @0x1419e2690
@@ -483,7 +489,10 @@ bool UILoginDialog::FUN_1419e2690(int, const CMsgBoxData&)
 // @0x1419e2730
 bool UILoginDialog::FUN_1419e2730(int nResult, const CMsgBoxData&)
 {
-    if (nResult != 0)
+    if (nResult == 0)
+    {
+    }
+    else
     {
         MS2Ptr<Unk_LoginCheck> spLocale;
         FUN_140bc6d10("m_chkLocaledName", spLocale);
@@ -495,7 +504,7 @@ bool UILoginDialog::FUN_1419e2730(int nResult, const CMsgBoxData&)
 // @0x1419e27d0
 void UILoginDialog::FUN_1419e27d0()
 {
-    if (vfunc_55() == 0 && m_30.get() != 0)
+    if (vfunc_55() == 0 && (m_30.get() != 0 ? true : false))
     {
         static_cast<Unk_LoginRoot*>(m_30.operator->())->Invoke("failConnect");
         static_cast<Unk_LoginRoot*>(m_30.operator->())->Invoke("popup");

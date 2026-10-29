@@ -12,9 +12,9 @@
 #include <imm.h>
 #include <NiRenderTargetGroup.h>
 #include <ecr/RenderSurface.h>
-
 #include "ms2/placeholder/gfxmovie.h"
 #include "ms2/placeholder/gfxmanager.h"
+#include "ms2/scaleform/include/gfx/gfx_textclipboard.h"   // TextClipboard::SetText (FUN_1422d8f00)
 #include "hook/ms2hook.h"
 
 #pragma comment(lib, "imm32.lib")

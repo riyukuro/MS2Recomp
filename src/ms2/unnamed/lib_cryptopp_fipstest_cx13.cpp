@@ -16,24 +16,31 @@ extern void FUN_142373ef0(void* temporary, void* group, void* name,
                            void* valueType, void* output, std::uint64_t flags);
 extern void* FUN_142375d80(void* temporary);
 
-// MS2-FUNCTIONAL: delegates the requested property and returns the adapter's bool field; stack temporary initialization is equivalent but may differ in EH metadata.
+namespace {
+// GetValueHelperClass-shaped temporary: object, name, type, value pointers, then the found flag at 0x20.
+struct Cx13GetValueTemp
+{
+    Cx13GetValueTemp() {}
+    std::uint64_t w0, w1, w2, w3, w4, w5;
+};
+}
+
 // @0x1423781c0
 bool GetVoidValueCx13Ec2n(void* self, void* name, void* valueType, void* output)
 {
-    std::uint8_t temporary[56]{};
-    FUN_1423739b0(temporary, static_cast<std::uint8_t*>(self) - 0x178,
+    Cx13GetValueTemp temporary;
+    FUN_1423739b0(&temporary, static_cast<std::uint8_t*>(self) - 0x178,
                   name, valueType, output, 0);
-    auto* result = static_cast<std::uint8_t*>(FUN_1423759b0(temporary));
-    return result[0x20] != 0;
+    auto* result = static_cast<std::uint8_t*>(FUN_1423759b0(&temporary));
+    return *reinterpret_cast<bool*>(result + 0x20);
 }
 
-// MS2-FUNCTIONAL: delegates the requested property and returns the adapter's bool field; stack temporary initialization is equivalent but may differ in EH metadata.
 // @0x142378240
 bool GetVoidValueCx13Ecp(void* self, void* name, void* valueType, void* output)
 {
-    std::uint8_t temporary[56]{};
-    FUN_142373ef0(temporary, static_cast<std::uint8_t*>(self) - 0x170,
+    Cx13GetValueTemp temporary;
+    FUN_142373ef0(&temporary, static_cast<std::uint8_t*>(self) - 0x170,
                   name, valueType, output, 0);
-    auto* result = static_cast<std::uint8_t*>(FUN_142375d80(temporary));
-    return result[0x20] != 0;
+    auto* result = static_cast<std::uint8_t*>(FUN_142375d80(&temporary));
+    return *reinterpret_cast<bool*>(result + 0x20);
 }

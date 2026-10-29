@@ -40,7 +40,7 @@ public:
     bool FUN_140d9f5d0(int nIndex);                                 // title bit
     CStringW FUN_140d9f600(int nIndex);                             // title bit name suffix
     void FUN_140d9f710(CInPacket& packet);                          // read the id -> state map, then a NotifyDungeonEnterState
-    unsigned FUN_140d9f880(int nId);                                // the state of the id, or 0
+    unsigned FUN_140d9f880(unsigned long nId);                      // the state of the id, or 0
     MS2Ptr<CChatEmoticonCli> GetChatEmoticon();                       // the chat emoticon state
 
     MS2Ptr<DungeonRecordManagerCli> m_spRecord;                     // +0x00

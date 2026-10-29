@@ -57,6 +57,15 @@ Unk_GameClock* FUN_14086d260();
 void* FUN_1409849b0(void* pHandle);                                 // handle -> node pointer
 void* FUN_14098d8d0(const void* pRtti, void* pObj);                 // dynamic cast through an NiRTTI
 const Vector3& FUN_140947900(void* pNode);                  // world translate
+// The camera direction 0x140af0250 returns NiPoint3; BuildPath keeps only its efd::Point3 part (a slicing copy).
+struct Unk_LightningNiPoint3 : public Vector3 {};
+// NiPoint3(const efd::Point3&) (0x14027dcf0) into a temporary, then NiPoint3::operator=(NiPoint3&&) (0x14097faa0).
+struct Unk_LightningPt3 { float x, y, z; Unk_LightningPt3& operator=(const Unk_LightningPt3&); };
+// The two conversion temporaries of the vertex loop sit back to back (0x190 / 0x19c).
+struct Unk_LightningPtPair { Unk_LightningPt3 m_left, m_right; };
+void FUN_14027dcf0(Unk_LightningPt3* p, const Vector3* pPoint);
+void FUN_14097faa0(NiPoint3* p, Unk_LightningPt3* pSrc);
+class Unk_LightningCamera { public: Unk_LightningNiPoint3 FUN_140af0250(); };
 void FUN_141d16040(void* pNode, float fTime, bool bUpdateControllers);    // NiAVObject::Update
 void FUN_140a0b2a0(void* pNode);                                    // detach the node from its parent
 void FUN_140a0b300(void* pNode, bool bCulled);                      // NiAVObject::SetAppCulled
@@ -190,7 +199,6 @@ LightningEffect::~LightningEffect()
 }
 
 // @0x14144bdf0
-// MS2-FUNCTIONAL: frame 0x10 smaller than the exe (temporaries of the eight new-expressions are laid out differently).
 bool LightningEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTarget)
 {
     if (!CEffect::vfunc_3(pParam, pTarget))
@@ -216,9 +224,9 @@ bool LightningEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTar
     m_spMesh->GetMesh()->SetName("LightningEffect");
 
     m_spTexProp = new (efd::MemHint(efd::MemHint::NONE)) NiTexturingProperty;
-    FUN_1409807b0(m_spTexProp, 0);
-    FUN_1409805c0(m_spTexProp, 1);
-    FUN_1409806e0(m_spTexProp, 0);
+    FUN_1409807b0(m_spTexProp.operator->(), 0);
+    FUN_1409805c0(m_spTexProp.operator->(), 1);
+    FUN_1409806e0(m_spTexProp.operator->(), 0);
     FUN_140980200(m_spMesh->GetMesh(), m_spTexProp);
 
     NiVertexColorProperty* pVertexColor = new (efd::MemHint(efd::MemHint::NONE)) NiVertexColorProperty;
@@ -228,20 +236,20 @@ bool LightningEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTar
 
     NiAlphaProperty* pAlpha = new (efd::MemHint(efd::MemHint::NONE)) NiAlphaProperty;
     FUN_140980560(pAlpha, true);
-    if (pLightning->m_nAlphaMode == 0)
+    switch (pLightning->m_nAlphaMode)
     {
+    case 0:
         FUN_140980f60(pAlpha, 6);
         FUN_140980af0(pAlpha, 0);
-    }
-    else if (pLightning->m_nAlphaMode == 1)
-    {
+        break;
+    case 1:
         FUN_140980f60(pAlpha, 6);
         FUN_140980af0(pAlpha, 7);
-    }
-    else if (pLightning->m_nAlphaMode == 2)
-    {
+        break;
+    case 2:
         FUN_140980f60(pAlpha, 0);
         FUN_140980af0(pAlpha, 0);
+        break;
     }
     FUN_140980200(m_spMesh->GetMesh(), pAlpha);
 
@@ -328,119 +336,108 @@ int LightningEffect::vfunc_8(void* p)
 }
 
 // @0x14144cc30
-// MS2-FUNCTIONAL: 200 bytes longer than the exe (the texture / string temporaries are not recovered exactly).
 // Picks a texture for the distance class (<=256 near, <=512 mid, far) and every m_nTick ms rebuilds the jagged path
 // from the first to the last point of the target's list and the strip mesh (two vertex rows, left / right edge).
 void LightningEffect::Rebuild()
 {
     int nPoints = FUN_140a0afb0(m_pPoints);
-    if (1 < nPoints)
+    if (nPoints < 2)
+        return;
+    Vector3 kFirst = *FUN_140a0af70(m_pPoints, 0);
+    Vector3 kLast = *FUN_140a0af70(m_pPoints, nPoints - 1);
+    float fDist = kLast.FUN_140965c40(kFirst).FUN_140967ac0();
+    int nClass = 2;
+    if (!(fDist > 256.0f))
+        nClass = 0;
+    else if (!(fDist > 512.0f))
+        nClass = 1;
+    bool bUpdate = true;
+    if (m_nTick != 0)
     {
-        Vector3 kFirst = *FUN_140a0af70(m_pPoints, 0);
-        Vector3 kLast = *FUN_140a0af70(m_pPoints, nPoints - 1);
-        float fDist = kLast.FUN_140965c40(kFirst).FUN_140967ac0();
-        int nClass = 2;
-        if (256.0f < fDist)
+        unsigned int nNow = FUN_140869420();
+        if (nNow < m_nLastTick + m_nTick)
+            bUpdate = false;
+        else
+            m_nLastTick = nNow;
+    }
+    if (!bUpdate)
+        return;
+    unsigned __int64 nIndex = 0;
+    unsigned __int64 nTextures = m_spParam->m_arrTexture[nClass].GetCount();
+    if (nTextures > 0)
+    {
+        if (m_bSequence)
         {
-            if (fDist <= 512.0f)
-                nClass = 1;
+            nIndex = (m_nSequence + 1) % nTextures;
+            m_nSequence = nIndex;
         }
         else
         {
-            nClass = 0;
-        }
-        bool bUpdate = true;
-        if (m_nTick != 0)
-        {
-            unsigned int nNow = FUN_140869420();
-            if (nNow < m_nLastTick + m_nTick)
-                bUpdate = false;
-            else
-                m_nLastTick = nNow;
-        }
-        if (bUpdate)
-        {
-            unsigned __int64 nIndex = 0;
-            ATL::CAtlArray<CString>& arrTex = m_spParam->m_arrTexture[nClass];
-            unsigned __int64 nTextures = arrTex.GetCount();
-            if (nTextures != 0)
-            {
-                if (!m_bSequence)
-                {
-                    nIndex = (unsigned __int64)(__int64)rand() % nTextures;
-                }
-                else
-                {
-                    nIndex = (m_nSequence + 1) % nTextures;
-                    m_nSequence = nIndex;
-                }
-            }
-            CString strName = arrTex[(size_t)nIndex];
-            {
-                CString strDir("Effect/Textures");
-                Unk_PPSmartC spTexture = FUN_140a0afd0()->FUN_141552f90(FUN_140cc2ba0(strDir, strName), 5);
-                FUN_140980880(m_spTexProp, spTexture.Get());
-            }
-            m_spMesh->GetMesh()->UpdateProperties();
-            BuildPath(kFirst, kLast);
-
-            unsigned short nCount = (unsigned short)m_arrLeft.GetCount();
-            NiPoint3* pPos = (NiPoint3*)m_spMesh->Lock(NiCommonSemantics::POSITION(), 0, 2);
-            if (pPos == 0)
-                return;
-            NiColorA* pCol = (NiColorA*)m_spMesh->Lock(NiCommonSemantics::COLOR(), 0, 2);
-            if (pCol == 0)
-            {
-                m_spMesh->Unlock(NiCommonSemantics::POSITION(), 0, 2);
-                return;
-            }
-            for (int i = 0; i < (int)nCount; ++i)
-            {
-                NiColorA kWhite(1.0f, 1.0f, 1.0f, 1.0f);
-                pPos[i] = NiPoint3(m_arrLeft[i].x, m_arrLeft[i].y, m_arrLeft[i].z);
-                pCol[i] = kWhite;
-                pPos[i + nCount] = NiPoint3(m_arrRight[i].x, m_arrRight[i].y, m_arrRight[i].z);
-                pCol[i + nCount] = kWhite;
-            }
-            m_spMesh->Unlock(NiCommonSemantics::POSITION(), 0, 2);
-            m_spMesh->Unlock(NiCommonSemantics::COLOR(), 0, 2);
-            for (int nSet = 0; nSet < m_nUVSets; ++nSet)
-            {
-                NiPoint2* pUV = (NiPoint2*)m_spMesh->Lock(NiCommonSemantics::TEXCOORD(), nSet, 2);
-                if (pUV == 0)
-                    return;
-                for (int j = 0; j < (int)nCount; ++j)
-                {
-                    NiPoint2 kTop((float)j / (float)(int)(nCount - 1), 0.0f);
-                    NiPoint2 kBottom((float)j / (float)(int)(nCount - 1), 1.0f);
-                    pUV[j] = kTop;
-                    pUV[j + nCount] = kBottom;
-                }
-                m_spMesh->Unlock(NiCommonSemantics::TEXCOORD(), nSet, 2);
-            }
-            m_spMesh->SetVertexCount((unsigned int)nCount << 1);
-            unsigned short nQuads = nCount - 1;
-            unsigned short* pIdx = (unsigned short*)m_spMesh->Lock(NiCommonSemantics::INDEX(), 0, 2);
-            if (pIdx == 0)
-                return;
-            for (unsigned short i = 0; i < nQuads; ++i)
-            {
-                pIdx[i * 3] = i;
-                pIdx[i * 3 + 1] = i + nCount;
-                pIdx[i * 3 + 2] = i + 1;
-                pIdx[(i + nQuads) * 3] = i + 1;
-                pIdx[(i + nQuads) * 3 + 1] = i + nCount;
-                pIdx[(i + nQuads) * 3 + 2] = i + 1 + nCount;
-            }
-            m_spMesh->Unlock(NiCommonSemantics::INDEX(), 0, 2);
-            m_spMesh->SetTriangleCount((unsigned int)nQuads * 6);
-            m_spMesh->UpdateBound();
+            nIndex = (unsigned __int64)(__int64)rand() % nTextures;
         }
     }
+    CString strName = m_spParam->m_arrTexture[nClass][(size_t)nIndex];
+    FUN_140980880(m_spTexProp, FUN_140a0afd0()->FUN_141552f90(FUN_140cc2ba0("Effect/Textures", strName), 5).Get());
+    m_spMesh->GetMesh()->UpdateProperties();
+    BuildPath(kFirst, kLast);
+
+    unsigned short nCount = (unsigned short)m_arrLeft.GetCount();
+    NiPoint3* pPos = (NiPoint3*)m_spMesh->Lock(NiCommonSemantics::POSITION(), 0, 2);
+    if (pPos == 0)
+        return;
+    NiColorA* pCol = (NiColorA*)m_spMesh->Lock(NiCommonSemantics::COLOR(), 0, 2);
+    if (pCol == 0)
+    {
+        m_spMesh->Unlock(NiCommonSemantics::POSITION(), 0, 2);
+        return;
+    }
+    for (int i = 0; i < (int)nCount; ++i)
+    {
+        NiColorA kWhite(1.0f, 1.0f, 1.0f, 1.0f);
+        Unk_LightningPtPair kPt;
+        FUN_14027dcf0(&kPt.m_left, &m_arrLeft[i]);
+        FUN_14097faa0(&pPos[i], &kPt.m_left);
+        pCol[i] = kWhite;
+        FUN_14027dcf0(&kPt.m_right, &m_arrRight[i]);
+        FUN_14097faa0(&pPos[i + nCount], &kPt.m_right);
+        pCol[i + nCount] = kWhite;
+    }
+    m_spMesh->Unlock(NiCommonSemantics::POSITION(), 0, 2);
+    m_spMesh->Unlock(NiCommonSemantics::COLOR(), 0, 2);
+    for (int nSet = 0; nSet < m_nUVSets; ++nSet)
+    {
+        NiPoint2* pUV = (NiPoint2*)m_spMesh->Lock(NiCommonSemantics::TEXCOORD(), nSet, 2);
+        if (pUV == 0)
+            return;
+        for (int j = 0; j < (int)nCount; ++j)
+        {
+            NiPoint2 kTop((float)j / (float)(int)(nCount - 1), 0.0f);
+            NiPoint2 kBottom((float)j / (float)(int)(nCount - 1), 1.0f);
+            pUV[j] = kTop;
+            pUV[j + nCount] = kBottom;
+        }
+        m_spMesh->Unlock(NiCommonSemantics::TEXCOORD(), nSet, 2);
+    }
+    m_spMesh->SetVertexCount((unsigned int)nCount << 1);
+    unsigned short nQuads = nCount - 1;
+    unsigned short* pIdx = (unsigned short*)m_spMesh->Lock(NiCommonSemantics::INDEX(), 0, 2);
+    if (pIdx == 0)
+        return;
+    for (unsigned short i = 0; i < nQuads; ++i)
+    {
+        pIdx[i * 3] = i;
+        pIdx[i * 3 + 1] = i + nCount;
+        pIdx[i * 3 + 2] = i + 1;
+        pIdx[(i + nQuads) * 3] = i + 1;
+        pIdx[(i + nQuads) * 3 + 1] = i + nCount;
+        pIdx[(i + nQuads) * 3 + 2] = i + 1 + nCount;
+    }
+    m_spMesh->Unlock(NiCommonSemantics::INDEX(), 0, 2);
+    m_spMesh->SetTriangleCount((unsigned int)nQuads * 6);
+    m_spMesh->UpdateBound();
 }
 
 // @0x14144d670
-// MS2-FUNCTIONAL: frame 0x10 smaller (the exe copies the camera direction out of a separate temporary).
 // Random walk from kStart toward kEnd in steps of m_fJointLen (at most 100 points); then the two edge lines are the
 // path offset by +-width/2 along the horizontal direction crossed with the camera direction.
 void LightningEffect::BuildPath(Vector3 kStart, Vector3 kEnd)
@@ -481,7 +478,7 @@ void LightningEffect::BuildPath(Vector3 kStart, Vector3 kEnd)
     Vector3 kFlat = kDelta;
     kFlat.z = 0.0f;
     kFlat.FUN_140968990();
-    Vector3 kCamera = Unk_CameraManager::FUN_1409478c0()->FUN_140af0250();
+    Vector3 kCamera = reinterpret_cast<Unk_LightningCamera*>(Unk_CameraManager::FUN_1409478c0())->FUN_140af0250();
     Vector3 kSide = kFlat.FUN_140a00e10(kCamera);
     for (int i = 0; i < (int)m_arrPath.GetCount(); ++i)
     {

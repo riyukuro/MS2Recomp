@@ -154,7 +154,7 @@ void FUN_140694050(CManufacture& v, CInPacket& in);             // reads a recor
 void FUN_1412e6110(UIManufactureDialog* pDlg, int a);
 void FUN_1412e6850(UIManufactureDialog* pDlg, int a);
 void FUN_1412e6af0(UIManufactureDialog* pDlg, int a);
-void FUN_1412e6c30(UIManufactureDialog* pDlg, int a, unsigned char b, int c, int d, int e, unsigned char f, unsigned char g);
+void FUN_1412e6c30(UIManufactureDialog* pDlg, int a, int b, int c, int d, int e, int f, int g);
 void FUN_1412dc3c0(UIManufactureStatus* pDlg);
 
 class UIManufactureDialog : public UIObject {};
@@ -179,7 +179,7 @@ void CManufactureManager::OnPacket(CInPacket* pPacket)
     if (cMode == 0)
     {
         m_mapManufacture.RemoveAll();
-        unsigned __int64 nCount = pPacket->ReadInt32();
+        unsigned __int64 nCount = (unsigned)pPacket->ReadInt32();
         for (unsigned __int64 i = 0; i < nCount; i++)
         {
             MS2Ptr<CManufacture> spItem(new CManufacture);
@@ -268,11 +268,11 @@ void CManufactureManager::OnPacket(CInPacket* pPacket)
     {
         int nA = pPacket->ReadInt32();
         int nB = pPacket->ReadInt32();
-        unsigned char cC = pPacket->ReadUInt8();
+        int cC = pPacket->ReadUInt8();
         int nD = pPacket->ReadInt32();
         int nE = pPacket->ReadInt32();
-        unsigned char cF = pPacket->ReadUInt8();
-        unsigned char cG = pPacket->ReadUInt8();
+        int cF = pPacket->ReadUInt8();
+        int cG = pPacket->ReadUInt8();
         if (FUN_141adc890(FUN_1403ed2b0(), 0x4ec0) != 0)
         {
             UIManufactureDialog* pDlg = GetManufactureDialog(0x4ec0);
@@ -361,14 +361,12 @@ int CManufactureManager::SendRequest5(unsigned __int64 nId, int nRecipeId, int* 
 int CManufactureManager::SendRequest6(unsigned __int64 nId, int* pnResult)
 {
     MS2Ptr<CManufacture> spItem(0);
-    int nFound = Lookup(nId, spItem);
-    if (nFound == 0)
+    if (Lookup(nId, spItem) == 0)
     {
         *pnResult = 7;
         return 0;
     }
-    __int64 nCost = spItem->FUN_140694170();
-    if (FUN_140869440() < nCost)
+    if (spItem->FUN_140694170() > FUN_140869440())
     {
         *pnResult = 0xd;
         return 0;
@@ -458,13 +456,12 @@ int CManufactureManager::Lookup(unsigned __int64 nId, MS2Ptr<CManufacture>& spOu
 }
 
 // @0x140d513c0
-bool CManufactureManager::HasManufacture()
+int CManufactureManager::HasManufacture()
 {
-    return m_mapManufacture.GetCount() != 0;
+    return m_mapManufacture.GetCount() != 0 ? 1 : 0;
 }
 
 // @0x140d51400
-// MS2-FUNCTIONAL: first draft
 CStringW CManufactureManager::GetMaidText(int nType, Unk_MfNpc* pNpc)
 {
     CStringW strText(L"");
@@ -482,21 +479,27 @@ CStringW CManufactureManager::GetMaidText(int nType, Unk_MfNpc* pNpc)
         strText = spMsg.get()->m_strSelectItem;
         break;
     case 1:
-        FUN_141276180(s_strMaidRequest, CString(""));
+        FUN_141276180(s_strMaidRequest, "");
         strText = spMsg.get()->m_strCraftRequest;
         break;
     case 2:
-        FUN_141276180(s_strMaidReceive, CString(""));
+        FUN_141276180(s_strMaidReceive, "");
         strText = spMsg.get()->m_strReceiveItem;
         break;
     case 3:
-        FUN_141276180(s_strMaidReceiveJackpot, CString(""));
-        FUN_141276180(s_strMaidFirework, CString(""));
+        FUN_141276180(s_strMaidReceiveJackpot, "");
+        FUN_141276180(s_strMaidFirework, "");
         strText = spMsg.get()->m_strReceiveJackpot;
         break;
     case 4:
-        FUN_141276180(s_strMaidCancel, CString(""));
+        FUN_141276180(s_strMaidCancel, "");
         strText = spMsg.get()->m_strCraftCancel;
+        break;
+    case 8:
+        strText = spMsg.get()->m_strNotEnoughIgd;
+        break;
+    case 0x12:
+        strText = spMsg.get()->m_strExpired;
         break;
     case 5:
     case 6:
@@ -517,12 +520,6 @@ CStringW CManufactureManager::GetMaidText(int nType, Unk_MfNpc* pNpc)
         strText = FUN_1408116a0(0x7c6, nArg);
         break;
     }
-    case 8:
-        strText = spMsg.get()->m_strNotEnoughIgd;
-        break;
-    case 0x12:
-        strText = spMsg.get()->m_strExpired;
-        break;
     case 0x15:
         strText = GetStringCommon(0xc07);
         break;

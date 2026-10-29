@@ -59,7 +59,6 @@ StateTransform::~StateTransform()
 }
 
 // @0x1417fe4d0
-// MS2-FUNCTIONAL: string / CString temporaries and the EH frame differ from the exe
 void StateTransform::vfunc_4(StateData* pData)
 {
     State::vfunc_4(pData);
@@ -69,8 +68,7 @@ void StateTransform::vfunc_4(StateData* pData)
     query.m_nObject = FUN_141bd1a10(FUN_1403ed2d0(), m_pOwner);
     query.SetActor(m_pOwner->FUN_14123c580());
     m_nEffect = FUN_1411a49c0(FUN_1403ed280(), &query);
-    Unk_TfString strAnim("Equip_Change_Mantle_A");
-    m_pOwner->FUN_14166dd20(strAnim, 1.0f, false, false);
+    m_pOwner->FUN_14166dd20("Equip_Change_Mantle_A", 1.0f, false, false);
 }
 
 // @0x1417fe610
@@ -121,20 +119,17 @@ StateTransformDoll::~StateTransformDoll()
 }
 
 // @0x1417fe7e0
-// MS2-FUNCTIONAL: string / CString temporaries and the EH frame differ from the exe
 void StateTransformDoll::vfunc_4(StateData* pData)
 {
     const char* pszEffect = "CH/Common/Eff_FittingDoll.xml";
     int nNow = FUN_140869420();
-    int nDelay = FUN_14028d260(1.0f);
-    m_nEndTime = nNow + nDelay;
+    m_nEndTime = nNow + FUN_14028d260(1.0f);
     Unk_EffectQuery query;
     query.m_strName = pszEffect;
     query.m_nObject = FUN_141bd1a10(FUN_1403ed2d0(), m_pOwner);
     query.SetActor(m_pOwner->FUN_14123c580());
     m_nEffect = FUN_1411a49c0(FUN_1403ed280(), &query);
-    Unk_TfString strAnim("Equip_Change_Mantle_A");
-    m_pOwner->FUN_14166dd20(strAnim, 1.0f, false, false);
+    m_pOwner->FUN_14166dd20("Equip_Change_Mantle_A", 1.0f, false, false);
 }
 
 // @0x1417fe930

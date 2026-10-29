@@ -288,7 +288,6 @@ void UISceneLogin::OnLoadComplete()
 }
 
 // @0x141acf2f0
-// MS2-FUNCTIONAL: else-if chain layout: the exe has a different jump-over structure
 int UISceneLogin::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs)
 {
     if (UISceneEntity::vfunc_28(szMethod, pArgs, nArgs))
@@ -307,10 +306,7 @@ int UISceneLogin::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pA
         OnEndPopdown();
         return 1;
     }
-    else
-    {
-        return 0;
-    }
+    return 0;
 }
 
 // @0x141acf400
@@ -379,7 +375,6 @@ void UISceneLogin::FUN_141acf700(unsigned int nBits)
 }
 
 // @0x141acf7c0
-// MS2-FUNCTIONAL: the exe passes the label string through a text-conversion temp with a different EH layout
 void UISceneLogin::FUN_141acf7c0()
 {
     ShowTitle();
@@ -399,7 +394,6 @@ void UISceneLogin::FUN_141acf860(int nBits)
 }
 
 // @0x141acf890
-// MS2-FUNCTIONAL: the exe zero-initialises the bit counter twice and compares the loop test signed; not reproduced
 void UISceneLogin::FUN_141acf890()
 {
     if (Unk_LockGuard kGuard = m_lock)
@@ -411,8 +405,9 @@ void UISceneLogin::FUN_141acf890()
             return;
         if (m_30.get() != 0)
         {
+            int nBits = m_nProgress & 0xffff;
             int nCount = 0;
-            for (unsigned int nBits = m_nProgress & 0xffff; nBits != 0; nBits = (int)nBits >> 1)
+            for (nCount = 0; nBits > 0; nBits >>= 1)
                 nCount += nBits & 1;
             ((Unk_LgAS*)m_30.operator->())->FUN_141acffa0("showPrograssBar", nCount, 0x10);
         }
@@ -468,14 +463,16 @@ bool UISceneLogin::FUN_141acfb40()
 }
 
 // @0x141acfba0
-// MS2-FUNCTIONAL: the exe evaluates the three bool arguments into byte temporaries first; not reproduced
 void UISceneLogin::FUN_141acfba0(ASObj* pObj)
 {
-    int nExit = m_nExitFlag;
-    bool bPrev = FUN_14036d570(FUN_140166410(), 0xd8);
-    pObj->FUN_1407cbbe0("showExit", nExit == 1);
-    pObj->FUN_1407cbbe0("showOption", true);
-    pObj->FUN_1407cbbe0("showPrev", bPrev == 1);
+    bool bOption = false;
+    bOption = true;
+    bool bShowExit = (m_nExitFlag == 1);
+    bool bShowOption = bOption;
+    bool bShowPrev = (FUN_14036d570(FUN_140166410(), 0xd8) == 1);
+    pObj->FUN_1407cbbe0("showExit", bShowExit);
+    pObj->FUN_1407cbbe0("showOption", bShowOption);
+    pObj->FUN_1407cbbe0("showPrev", bShowPrev);
 }
 
 // @0x141acfc70
@@ -505,29 +502,27 @@ static int FUN_141acfd00()
 }
 
 // @0x141acfe40
-// MS2-FUNCTIONAL: the exe tests the UI service pointer through a stack temp and releases the MS2Ptr with a different EH state layout
 static UILoginDialog* FUN_141acfe40()
 {
     Unk_LgUIMgr* pMgr = FUN_1403ed2b0();
     if (pMgr == 0)
         return 0;
     MS2Ptr<UIObject> spUI = pMgr->FUN_141adcea0(FUN_141ad0390());
-    if (!spUI.IsNull())
-        return dynamic_cast<UILoginDialog*>((UIObject*)spUI);
-    return 0;
+    if (spUI.IsNull())
+        return 0;
+    return dynamic_cast<UILoginDialog*>((UIObject*)spUI);
 }
 
 // @0x141acfef0
-// MS2-FUNCTIONAL: same as 0x141acfe40 (RegionList)
 static UIRegionListDialog* FUN_141acfef0()
 {
     Unk_LgUIMgr* pMgr = FUN_1403ed2b0();
     if (pMgr == 0)
         return 0;
     MS2Ptr<UIObject> spUI = pMgr->FUN_141adcea0(FUN_141ad03a0());
-    if (!spUI.IsNull())
-        return dynamic_cast<UIRegionListDialog*>((UIObject*)spUI);
-    return 0;
+    if (spUI.IsNull())
+        return 0;
+    return dynamic_cast<UIRegionListDialog*>((UIObject*)spUI);
 }
 
 // @0x141ad0320

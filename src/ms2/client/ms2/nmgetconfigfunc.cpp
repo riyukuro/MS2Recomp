@@ -1,6 +1,8 @@
 // Recovered Nexon Messenger configuration request and reply.
 // MS2-UNIT: ?\nmgetconfigfunc.cpp
 // MS2-RANGE: 0x141581690-0x141581c00 .text$mn
+// MS2-PIN: ??0CNMSerializableEncoder@@QEAA@PEAVCNMStream@@PEAVCNMSerializable@@@Z 0x14156bcb0
+// MS2-PIN: ??1CNMSerializableEncoder@@QEAA@XZ 0x14156bd50
 // MS2-PINS-BEGIN tplpin
 // MS2-PINS-END tplpin
 #define MS2_THIS_FILE ""
@@ -8,58 +10,53 @@
 #include "ms2/placeholder/nmfunc.h"
 #include "ms2/placeholder/nmobjects.h"
 #include "ms2/placeholder/nmstream.h"
+#include "ms2/placeholder/nmencoder.h"
 #include "ms2/ms2recover.h"
 
 extern int FUN_1415fb720(void*);
 extern int FUN_1415fb750(void*);
-extern int FUN_1415fb6d0(void*);
+extern int FUN_1415fb6d0(CNMSerializableDecoder*);
 extern void FUN_1415f9990(void*);
 extern void FUN_14156ac20(void*, unsigned int);
 extern void FUN_14156ab00(void*, unsigned char);
-extern void FUN_14156bcb0(void*, void*, void*);
-extern void FUN_14156be10(void*, void*, void*);
-extern void FUN_14156bd50(void*);
 
-// MS2-FUNCTIONAL: initializes a configuration request with every mask and value cleared.
 // @0x141581690
 CNMGetConfigFunc::CNMGetConfigFunc()
     : CNMFunc(0x2004, 1, 0, 0), m_48()
 {
-    m_30 = m_34 = m_38 = m_3c = m_40 = 0;
+    m_30 = 0;
+    m_34 = 0;
+    m_38 = 0;
+    m_3c = 0;
+    m_40 = 0;
 }
 
-// MS2-FUNCTIONAL: initializes a configuration request with its requested setting mask.
 // @0x141581730
 CNMGetConfigFunc::CNMGetConfigFunc(int configMask)
     : CNMFunc(0x2004, 1, 0, 0), m_48()
 {
     m_30 = configMask;
-    m_34 = m_38 = m_3c = m_40 = 0;
+    m_34 = 0;
+    m_38 = 0;
+    m_3c = 0;
+    m_40 = 0;
 }
 
-// MS2-FUNCTIONAL: frames the request using the common temporary encoder.
 // @0x1415817d0
 unsigned int CNMGetConfigFunc::EncodeFramed(CNMStream* pStream)
 {
-    alignas(8) unsigned char encoder[0x18];
-    FUN_14156bcb0(encoder, pStream, this);
-    const unsigned int result = Encode(reinterpret_cast<CNMEncoder*>(encoder), pStream);
-    FUN_14156bd50(encoder);
-    return result;
+    CNMSerializableEncoder encoder(pStream, this);
+    return CNMGetConfigFunc::Encode(reinterpret_cast<CNMEncoder*>(&encoder), pStream);
 }
 
-// MS2-FUNCTIONAL: selects direct or framed request encoding.
 // @0x141581830
 unsigned int CNMGetConfigFunc::EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream)
 {
     if (m_bFormat == 1)
-        Encode(pEncoder, pStream);
-    else
-        EncodeFramed(pStream);
-    return 0;
+        return CNMGetConfigFunc::Encode(pEncoder, pStream);
+    return CNMGetConfigFunc::EncodeFramed(pStream);
 }
 
-// MS2-FUNCTIONAL: writes requested configuration values selected by the mask.
 // @0x141581890
 unsigned int CNMGetConfigFunc::Encode(CNMEncoder* pEncoder, CNMStream* pStream)
 {
@@ -76,31 +73,23 @@ unsigned int CNMGetConfigFunc::Encode(CNMEncoder* pEncoder, CNMStream* pStream)
     return 1;
 }
 
-// MS2-FUNCTIONAL: validates a framed reply before decoding it.
 // @0x1415819c0
 unsigned int CNMGetConfigFunc::DecodeFramed(CNMStream* pStream)
 {
-    alignas(8) unsigned char decoder[0x38];
-    FUN_14156be10(decoder, pStream, this);
-    unsigned int result = 0;
-    if (FUN_1415fb750(decoder) != 0)
-        result = Decode(reinterpret_cast<CNMSerializableDecoder*>(decoder), pStream);
-    FUN_14156bd50(decoder);
-    return result;
+    CNMSerializableDecoder decoder(pStream, this);
+    if (FUN_1415fb750(&decoder) == 0)
+        return 0;
+    return CNMGetConfigFunc::Decode(&decoder, pStream);
 }
 
-// MS2-FUNCTIONAL: selects framed decoding for version two replies.
 // @0x141581a50
 unsigned int CNMGetConfigFunc::DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream)
 {
     if (FUN_1415fb6d0(pDecoder) == 2)
-        DecodeFramed(pStream);
-    else
-        Decode(pDecoder, pStream);
-    return 0;
+        return CNMGetConfigFunc::DecodeFramed(pStream);
+    return CNMGetConfigFunc::Decode(pDecoder, pStream);
 }
 
-// MS2-FUNCTIONAL: restores values selected by the reply's configuration mask.
 // @0x141581ab0
 unsigned int CNMGetConfigFunc::Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream)
 {
@@ -113,8 +102,7 @@ unsigned int CNMGetConfigFunc::Decode(CNMSerializableDecoder* pDecoder, CNMStrea
         if (m_30 & 8) m_40 = pDecoder->ReadU8();
         if (m_30 & 0x10) m_48.DecodeFramed(pStream);
     }
-    FUN_1415fb750(pDecoder);
-    return 1;
+    return FUN_1415fb750(pDecoder);
 }
 
 // MS2-PIN: ??0CNMGetConfigFunc@@QEAA@XZ 0x141581690

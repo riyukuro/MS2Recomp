@@ -51,7 +51,6 @@ CColorListCtrl::~CColorListCtrl()
 {
 }
 
-// MS2-FUNCTIONAL: vector index/erase codegen differs (non-inlined operator[]/size calls and local slots); behaviour-equivalent
 // @0x14109c7e0
 void CColorListCtrl::OnLvnDeleteitem(NMHDR* pNMHDR, LRESULT* pResult)
 {
@@ -63,10 +62,11 @@ void CColorListCtrl::OnLvnDeleteitem(NMHDR* pNMHDR, LRESULT* pResult)
         {
             m_rows.erase(m_rows.begin() + n);
             --n;
+            continue;
         }
-        else if (nItem < m_rows[n].m_nId)
+        if (m_rows[n].m_nId > nItem)
         {
-            m_rows[n].m_nId = m_rows[n].m_nId - 1;
+            m_rows[n].m_nId--;
         }
     }
     for (size_t n = 0; n < m_cells.size(); ++n)
@@ -75,10 +75,11 @@ void CColorListCtrl::OnLvnDeleteitem(NMHDR* pNMHDR, LRESULT* pResult)
         {
             m_cells.erase(m_cells.begin() + n);
             --n;
+            continue;
         }
-        else if (nItem < m_cells[n].m_nId)
+        if (m_cells[n].m_nId > nItem)
         {
-            m_cells[n].m_nId = m_cells[n].m_nId - 1;
+            m_cells[n].m_nId--;
         }
     }
     *pResult = 0;
@@ -93,7 +94,6 @@ void CColorListCtrl::OnLvnDeleteallitems(NMHDR* pNMHDR, LRESULT* pResult)
     *pResult = 0;
 }
 
-// MS2-FUNCTIONAL: loop local slot order and operator[] call count differ; behaviour-equivalent
 // @0x14109caf0
 void CColorListCtrl::OnLvnInsertitem(NMHDR* pNMHDR, LRESULT* pResult)
 {
@@ -103,13 +103,13 @@ void CColorListCtrl::OnLvnInsertitem(NMHDR* pNMHDR, LRESULT* pResult)
     size_t nC;
     for (nR = 0; nR < m_rows.size(); ++nR)
     {
-        if (nItem < m_rows[nR].m_nId)
-            m_rows[nR].m_nId = m_rows[nR].m_nId + 1;
+        if (m_rows[nR].m_nId > nItem)
+            m_rows[nR].m_nId++;
     }
     for (nC = 0; nC < m_cells.size(); ++nC)
     {
-        if (nItem < m_cells[nC].m_nId)
-            m_cells[nC].m_nId = m_cells[nC].m_nId + 1;
+        if (m_cells[nC].m_nId > nItem)
+            m_cells[nC].m_nId++;
     }
     *pResult = 0;
 }
@@ -121,23 +121,26 @@ BEGIN_MESSAGE_MAP(CColorListCtrl, CListCtrl)
     ON_NOTIFY_REFLECT(LVN_INSERTITEM, &CColorListCtrl::OnLvnInsertitem)
 END_MESSAGE_MAP()
 
-// MS2-FUNCTIONAL: custom-draw color selection codegen differs; behaviour-equivalent
 // @0x14109cc70
 void CColorListCtrl::OnNMCustomdraw(NMHDR* pNMHDR, LRESULT* pResult)
 {
     LPNMLVCUSTOMDRAW pDraw = reinterpret_cast<LPNMLVCUSTOMDRAW>(pNMHDR);
-    if (pDraw->nmcd.dwDrawStage == CDDS_PREPAINT)
+    int nRow = 0;
+    int nColumn = 0;
+    int nColIdx = 0;
+    int nCellIdx = 0;
+    int nRowIdx = 0;
+    switch (pDraw->nmcd.dwDrawStage)
     {
+    case CDDS_PREPAINT:
         *pResult = CDRF_NOTIFYITEMDRAW;
-    }
-    else if (pDraw->nmcd.dwDrawStage == CDDS_ITEMPREPAINT)
-    {
+        break;
+    case CDDS_ITEMPREPAINT:
         *pResult = CDRF_NOTIFYSUBITEMDRAW;
-    }
-    else if (pDraw->nmcd.dwDrawStage == (CDDS_ITEMPREPAINT | CDDS_SUBITEM))
-    {
-        int nRow = (int)pDraw->nmcd.dwItemSpec;
-        int nColumn = pDraw->iSubItem;
+        break;
+    case CDDS_ITEMPREPAINT | CDDS_SUBITEM:
+        nRow = (int)pDraw->nmcd.dwItemSpec;
+        nColumn = pDraw->iSubItem;
         if (m_bStripes)
         {
             if (nRow % 2 == 1)
@@ -163,32 +166,33 @@ void CColorListCtrl::OnNMCustomdraw(NMHDR* pNMHDR, LRESULT* pResult)
             else
                 pDraw->clrTextBk = m_clrEven;
         }
-        int nRowIdx = FUN_14109cf70(nRow, 0, -1);
-        int nColIdx = FUN_14109cf70(nColumn, 1, -1);
-        int nCellIdx = FUN_14109cf70(nRow, 2, nColumn);
+        nRowIdx = FUN_14109cf70(nRow, 0, -1);
+        nColIdx = FUN_14109cf70(nColumn, 1, -1);
+        nCellIdx = FUN_14109cf70(nRow, 2, nColumn);
         if (nRowIdx == -1 && nColIdx == -1 && nCellIdx == -1)
         {
             if (m_bStripes == 0 && m_bRowShade == 0)
                 pDraw->clrTextBk = GetBkColor();
         }
-        else if (nCellIdx == -1)
+        else if (nCellIdx != -1)
         {
-            if (nRowIdx == -1)
-                pDraw->clrTextBk = m_columns[nColIdx].m_clr;
-            else
-                pDraw->clrTextBk = m_rows[nRowIdx].m_clr;
+            pDraw->clrTextBk = m_cells[nCellIdx].m_clr;
+        }
+        else if (nRowIdx != -1)
+        {
+            pDraw->clrTextBk = m_rows[nRowIdx].m_clr;
         }
         else
         {
-            pDraw->clrTextBk = m_cells[nCellIdx].m_clr;
+            pDraw->clrTextBk = m_columns[nColIdx].m_clr;
         }
         if (m_bContrastText)
             pDraw->clrText = FUN_14109d0f0(pDraw->clrTextBk);
         *pResult = CDRF_NEWFONT;
-    }
-    else
-    {
+        break;
+    default:
         *pResult = 0;
+        break;
     }
 }
 

@@ -35,7 +35,7 @@ static UICommon::CMyPCKeyInputController s_keyInput;                // 0x143abf5
 static CStringA s_strReportSiren2("PremiumShop_ReportSiren");       // 0x143abf588
 
 // ---- out-of-unit types and functions ----
-void FUN_14092e580(void* p);
+void FUN_14092e580(void* p) noexcept;
 void FUN_14092ea10(void* p, int n);
 void* FUN_140159860(int nSize, void* pStorage);
 class CFeatureManager { public: bool FUN_14036d650(); };
@@ -54,7 +54,7 @@ public:
     void FUN_141ab9ce0(CStringW strA, CStringW strB);
     void FUN_141924680();                                           // show
 };
-void FUN_141276180(CStringA* pTarget, const CStringA& strValue);
+void FUN_141276180(const CStringA& strTarget, const CStringA& strValue);
 void* FUN_140166440();                                              // the common log
 void FUN_140ab1290(void* pLog, int nLevel, int nCategory, const wchar_t* pszFormat, const int& nArg0, const CStringA& strArg1);
 void FUN_1403a1280(void* pLog, int nLevel, int nCategory, const wchar_t* pszFormat, const char* const& pszArg0);
@@ -398,7 +398,7 @@ void CClientPlatformBase::vfunc_48(MS2Ptr<CUserReportData> spReport)
         return;
     }
     pDialog->FUN_141924680();
-    FUN_141276180(&s_strReportSiren, CStringA(""));
+    FUN_141276180(s_strReportSiren, "");
 }
 
 // @0x140c76440
@@ -491,10 +491,10 @@ void CClientPlatformBase::vfunc_68()
                   strSession, strSerial);
     Unk_NxNumber kService(DAT_1439f4840);
     Unk_NexonAnalytics* pAnalytics = FUN_140c77900();
-    Unk_NxString kHost("livelog.nexon.com", 3);
+    Unk_NxString kHost("livelog.nexon.com");
     bool bResult;
     if (nId != 0) {
-        Unk_NxString kVersion("1.0.0", 3);
+        Unk_NxString kVersion("1.0.0");
         if (pAnalytics->FUN_14092ce80(&kVersion, &kHost) && pAnalytics->FUN_14092cf80(&kEvent, &kHost, &kService))
             bResult = true;
         else
@@ -587,12 +587,12 @@ UIReportDialog* FUN_140c76fd0(int nId)
 
 // @0x140c77140
 Unk_NxNumber::Unk_NxNumber(int n)
+    : Unk_NxNumber((unsigned)n)
 {
-    Init(n);
 }
 
 // @0x140c77190
-void Unk_NxNumber::Init(unsigned n)
+Unk_NxNumber::Unk_NxNumber(unsigned n)
 {
     m_nKind = 0;
     m_nFlags = 0;
@@ -614,7 +614,7 @@ Unk_NxNumber::~Unk_NxNumber()
 }
 
 // @0x140c77310
-Unk_NxString::Unk_NxString(const char* psz, int)
+Unk_NxString::Unk_NxString(const char* psz)
 {
     FUN_140c777f0(psz, 3);
 }

@@ -81,7 +81,6 @@ StateWaitingSelect::~StateWaitingSelect()
 }
 
 // @0x1417feae0
-// MS2-FUNCTIONAL: string temporaries and the EH frame differ from the exe
 void StateWaitingSelect::vfunc_2(int n)
 {
     PCBase* pPC = FUN_1417b8370();
@@ -89,6 +88,12 @@ void StateWaitingSelect::vfunc_2(int n)
         return;
     switch (n)
     {
+    case 0x4d:
+        m_n10 = n;
+        m_pOwner->FUN_14166ce70(0);
+        m_pOwner->FUN_14166dd20("Equip_Change_Idle_A", 1.0f, false, false);
+        m_pOwner->FUN_14166f8f0(0, 1);
+        break;
     case 0x4c:
         if (m_n10 != n)
         {
@@ -96,18 +101,8 @@ void StateWaitingSelect::vfunc_2(int n)
             m_n10 = n;
             pPC->FUN_14166ce70(0);
             bool bSame = FUN_140184310(strModel, "Equip_Change_Cap_A");
-            Unk_WsString strAnim("Equip_Change_Cap_A");
-            pPC->FUN_14166dd20(strAnim, 1.0f, bSame, false);
+            pPC->FUN_14166dd20("Equip_Change_Cap_A", 1.0f, bSame, false);
         }
-        break;
-    case 0x4d:
-        m_n10 = n;
-        m_pOwner->FUN_14166ce70(0);
-        {
-            Unk_WsString strAnim("Equip_Change_Idle_A");
-            m_pOwner->FUN_14166dd20(strAnim, 1.0f, false, false);
-        }
-        m_pOwner->FUN_14166f8f0(0, 1);
         break;
     case 0x4e:
         if (m_n10 != n)
@@ -116,8 +111,7 @@ void StateWaitingSelect::vfunc_2(int n)
             m_n10 = n;
             pPC->FUN_14166ce70(0);
             bool bSame = FUN_140184310(strModel, "Equip_Change_Body_A");
-            Unk_WsString strAnim("Equip_Change_Body_A");
-            pPC->FUN_14166dd20(strAnim, 1.0f, bSame, false);
+            pPC->FUN_14166dd20("Equip_Change_Body_A", 1.0f, bSame, false);
         }
         break;
     case 0x4f:
@@ -127,45 +121,11 @@ void StateWaitingSelect::vfunc_2(int n)
             m_n10 = n;
             pPC->FUN_14166ce70(0);
             bool bSame = FUN_140184310(strModel, "Equip_Change_Head_A");
-            Unk_WsString strAnim("Equip_Change_Head_A");
-            pPC->FUN_14166dd20(strAnim, 1.0f, bSame, false);
+            pPC->FUN_14166dd20("Equip_Change_Head_A", 1.0f, bSame, false);
         }
         break;
     case 0x50:
-        FUN_1417ff590(&n, CString("Equip_Change_Hair_A"));
-        break;
-    case 0x51:
-        if (m_n10 != n)
-        {
-            CString strModel = m_pOwner->FUN_14166dc50();
-            m_n10 = n;
-            pPC->FUN_14166ce70(0);
-            bool bSame = FUN_140184310(strModel, "Equip_Change_Glove_A");
-            Unk_WsString strAnim("Equip_Change_Glove_A");
-            pPC->FUN_14166dd20(strAnim, 1.0f, bSame, false);
-        }
-        break;
-    case 0x52:
-        if (m_n10 != n)
-        {
-            CString strModel = m_pOwner->FUN_14166dc50();
-            m_n10 = n;
-            pPC->FUN_14166ce70(0);
-            bool bSame = FUN_140184310(strModel, "Equip_Change_Mantle_A");
-            Unk_WsString strAnim("Equip_Change_Mantle_A");
-            pPC->FUN_14166dd20(strAnim, 1.0f, bSame, false);
-        }
-        break;
-    case 0x53:
-        if (m_n10 != n)
-        {
-            CString strModel = m_pOwner->FUN_14166dc50();
-            m_n10 = n;
-            pPC->FUN_14166ce70(0);
-            bool bSame = FUN_140184310(strModel, "Equip_Change_Shoes_A");
-            Unk_WsString strAnim("Equip_Change_Shoes_A");
-            pPC->FUN_14166dd20(strAnim, 1.0f, bSame, false);
-        }
+        FUN_1417ff590(&n, "Equip_Change_Hair_A");
         break;
     case 0x54:
         m_n10 = n;
@@ -186,9 +146,39 @@ void StateWaitingSelect::vfunc_2(int n)
         break;
     case 0x55:
         m_n10 = n;
-        m_pOwner->FUN_14166ce70(1);
+        pPC->FUN_14166ce70(1);
         FUN_141653f00(pPC);
         pPC->FUN_14166dda0(1);
+        break;
+    case 0x51:
+        if (m_n10 != n)
+        {
+            CString strModel = m_pOwner->FUN_14166dc50();
+            m_n10 = n;
+            pPC->FUN_14166ce70(0);
+            bool bSame = FUN_140184310(strModel, "Equip_Change_Glove_A");
+            pPC->FUN_14166dd20("Equip_Change_Glove_A", 1.0f, bSame, false);
+        }
+        break;
+    case 0x52:
+        if (m_n10 != n)
+        {
+            CString strModel = m_pOwner->FUN_14166dc50();
+            m_n10 = n;
+            pPC->FUN_14166ce70(0);
+            bool bSame = FUN_140184310(strModel, "Equip_Change_Mantle_A");
+            pPC->FUN_14166dd20("Equip_Change_Mantle_A", 1.0f, bSame, false);
+        }
+        break;
+    case 0x53:
+        if (m_n10 != n)
+        {
+            CString strModel = m_pOwner->FUN_14166dc50();
+            m_n10 = n;
+            pPC->FUN_14166ce70(0);
+            bool bSame = FUN_140184310(strModel, "Equip_Change_Shoes_A");
+            pPC->FUN_14166dd20("Equip_Change_Shoes_A", 1.0f, bSame, false);
+        }
         break;
     }
 }
@@ -198,8 +188,7 @@ void StateWaitingSelect::vfunc_4(StateData* pData)
 {
     State::vfunc_4(pData);
     m_pOwner->FUN_14166cce0(0x10);
-    efd::Point3 kZero = efd::Point3::ZERO;
-    m_pOwner->vfunc_22(kZero);
+    m_pOwner->vfunc_22(efd::Point3::ZERO);
     vfunc_2(0x4d);
 }
 
@@ -208,8 +197,7 @@ void StateWaitingSelect::vfunc_5(int n)
 {
     State::vfunc_5(n);
     m_pOwner->FUN_14166cd70(0x10);
-    efd::Point3 kZero = efd::Point3::ZERO;
-    m_pOwner->vfunc_22(kZero);
+    m_pOwner->vfunc_22(efd::Point3::ZERO);
 }
 
 // @0x1417ff3f0
@@ -241,28 +229,27 @@ void StateWaitingSelect::EndOfSequence(NiActorManager* pkManager, unsigned int e
 }
 
 // @0x1417ff590
-// MS2-FUNCTIONAL: string temporaries and the EH frame differ from the exe
 void StateWaitingSelect::FUN_1417ff590(int* pnSub, const CString& strAnim)
 {
     if (m_n10 != *pnSub)
     {
         PCBase* pPC = FUN_1417b8370();
-        if (pPC != 0)
-        {
-            CString strModel = m_pOwner->FUN_14166dc50();
-            m_n10 = *pnSub;
-            pPC->FUN_14166ce70(0);
-            bool bSame = FUN_1401c0090(strModel, strAnim);
-            Unk_WsString strPlay(strAnim.GetString());
-            pPC->FUN_14166dd20(strPlay, 1.0f, bSame, false);
-        }
+        if (pPC == 0)
+            return;
+        CString strModel = m_pOwner->FUN_14166dc50();
+        m_n10 = *pnSub;
+        pPC->FUN_14166ce70(0);
+        bool bSame = FUN_1401c0090(strModel, strAnim);
+        pPC->FUN_14166dd20(strAnim.GetString(), 1.0f, bSame, false);
     }
 }
 
 // @0x1417ff6c0
 int StateWaitingSelect::vfunc_15()
 {
-    return m_n10 == 0x55;
+    if (m_n10 != 0x55)
+        return 0;
+    return 1;
 }
 
 // @0x1417ff720

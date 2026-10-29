@@ -49,10 +49,11 @@ MS2Ptr<CDropItemData> CDropItemData::Get(int nId)
     MS2Ptr<CDropItemData> spData(0);
     {
         Unk_LockGuard guard(s_lockDropItem);
-        if (guard == 0 && DAT_1439ed00c != 0 && s_mapDropItem.Lookup(nId, spData))
+        if (guard) {}
+        else if (DAT_1439ed00c != 0 && s_mapDropItem.Lookup(nId, spData))
             return spData;
     }
-    CString strPath = FUN_14071a5b0(CString("Table"), CString("DropIcon.xml"));
+    CString strPath = FUN_14071a5b0("Table", "DropIcon.xml");
     TiXmlDocument doc;
     if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return MS2Ptr<CDropItemData>(0);
@@ -64,16 +65,17 @@ MS2Ptr<CDropItemData> CDropItemData::Get(int nId)
     }
     for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("dropitem"); pNode != 0; pNode = pNode->FUN_140168650("dropitem"))
     {
-        MS2Ptr<CDropItemData> spNew(0);
-        spNew.AssignRaw(new CDropItemData);
+        // The exe parses into spData itself, so a miss in the final Lookup returns the last parsed entry.
+        spData.AssignRaw(new CDropItemData);
         int nRowId;
         FUN_1408731e0(pNode, "id", nRowId);
-        spNew->m_nId = nRowId;
-        FUN_140873360(pNode, "shadowscale", spNew->m_shadow.m_fScale);
-        FUN_140873360(pNode, "shadowbias", spNew->m_shadow.m_fBias);
+        spData->m_nId = nRowId;
+        FUN_140873360(pNode, "shadowscale", spData->m_shadow.m_fScale);
+        FUN_140873360(pNode, "shadowbias", spData->m_shadow.m_fBias);
         Unk_LockGuard guard(s_lockDropItem);
-        if (guard == 0)
-            s_mapDropItem.SetAt(spNew->m_nId, spNew);
+        if (guard) {}
+        else
+            s_mapDropItem.SetAt(spData->m_nId, spData);
     }
     s_mapDropItem.Lookup(nId, spData);
     return spData;

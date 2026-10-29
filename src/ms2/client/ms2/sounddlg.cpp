@@ -177,7 +177,7 @@ BOOL CSoundDlg::PreTranslateMessage(MSG* pMsg)
     return CToolBaseDialog::PreTranslateMessage(pMsg);
 }
 
-BEGIN_MESSAGE_MAP(CSoundDlg, CToolBaseDialog)
+BEGIN_MESSAGE_MAP(CSoundDlg, CDialog)   // the exe chains to CDialog, not CToolBaseDialog
     ON_WM_CLOSE()
     ON_COMMAND(IDOK, &CSoundDlg::OnBnClickedOk)
     ON_COMMAND(IDCANCEL, &CSoundDlg::OnBnClickedCancel)

@@ -20,7 +20,7 @@ class MaterialSwapper : public NiRefObject
 {
 public:
     MaterialSwapper(MaterialSwapPredicate pfnPredicate, NiMaterial* pMaterial);     // 0x1414cf9b0
-    virtual ~MaterialSwapper();                             // 0x1414d14e0, ??_G 0x1414d1780
+    // virtual ~MaterialSwapper();                          // 0x1414d14e0, ??_G 0x1414d1780 implicit: the exe dtor stores no vptr
 
     bool FUN_1414cf940() const { return m_bEnabled; }       // enabled
     MaterialSwapPredicate FUN_1414cf960() const { return m_pfnPredicate; }
@@ -46,7 +46,7 @@ public:
 public:
     MS2MaterialSwapProcessor(NiMaterial* pMaterial, MaterialSwapPredicate pfnPredicate);   // 0x1414cfa40
     explicit MS2MaterialSwapProcessor(const std::vector<NiPointer<MaterialSwapper> >& swappers);   // 0x1414cfb40
-    virtual ~MS2MaterialSwapProcessor();                    // 0x1414d14b0, ??_G 0x1414d1720
+    // virtual ~MS2MaterialSwapProcessor();                 // 0x1414d14b0, ??_G 0x1414d1720 implicit: the exe dtor stores no vptr
     virtual void PreRenderProcessList(const NiVisibleArray* pkInput, NiVisibleArray& kOutput, void* pvExtraData);   // 0x1414cfc00
 
     void SetUseMS2List(int bUseMS2List);                    // set the use-MS2-list flag

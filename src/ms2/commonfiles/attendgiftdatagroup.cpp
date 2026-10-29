@@ -96,7 +96,6 @@ AttendGiftDataTable::AttendGiftDataTable()
 }
 
 // @0x1401ae2f0
-// MS2-FUNCTIONAL: frame has two more pointer temporaries around the make_pair/insert call than the compiled source
 bool AttendGiftDataTable::Load()
 {
     CString strPath = FUN_14071a5b0("Table", "AttendGiftData.xml");
@@ -115,12 +114,10 @@ bool AttendGiftDataTable::Load()
         {
             unsigned nId = spData->GetId();
             FUN_140177a80(FUN_140166440(), 1, 0x13, L"AttendGiftDataTable::ReadData FromXel SeasonID={0}", nId);
+            continue;
         }
-        else
-        {
-            unsigned nKey = spData->GetId();
-            m_data.insert(std::make_pair(nKey, spData));
-        }
+        unsigned nKey = spData->GetId();
+        m_data.insert(std::make_pair(nKey, spData));
     }
     return true;
 }

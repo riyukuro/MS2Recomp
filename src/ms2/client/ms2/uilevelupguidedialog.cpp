@@ -104,7 +104,7 @@ Unk_LgStrings* FUN_1401a9d70();
 CStringW GetStringCommonByKey(const CStringW& strKey);
 CStringW FUN_1409e8820(CStringW strKey, const short& a1);
 CStringW FUN_1409e8820(CStringW strKey, const unsigned short& n);
-CStringW FUN_140ec2f00(CStringW strKey, const short& a1, const short& a2);
+CStringW FUN_140ec2f00(CStringW strKey, const unsigned short& a1, const unsigned short& a2);
 CStringW FUN_1409e9ed0(CStringW strKey, const CStringW& a1, const unsigned short& a2);
 CStringW FUN_1401aa6a0(int nId);                                // npc name
 int FUN_14074b030(CQuestData* pData);                           // the quest id
@@ -184,16 +184,11 @@ static bool LgRowOrder(MS2Ptr<UILevelUpGuideDialog::RecommendContnets> spA, MS2P
 
 // @0x140f8a590
 UILevelUpGuideDialog::RecommendContnets::RecommendContnets()
+    : m_id(0), m_code(0), m_sorting(0x7fffffff), m_minLevel(0), m_maxLevel(0)
 {
-    m_id = 0;
-    m_code = 0;
-    m_sorting = 0x7fffffff;
-    m_minLevel = 0;
-    m_maxLevel = 0;
 }
 
-// @0x140f8a790
-UILevelUpGuideDialog::RecommendContnets::~RecommendContnets() {}
+// The dtor at 0x140f8a790 is implicit.
 
 // ---- UILevelUpGuideDialog ----
 
@@ -356,13 +351,13 @@ void UILevelUpGuideDialog::vfunc_oa0_9(unsigned short nLevel)
 // @0x140f85290
 bool UILevelUpGuideDialog::SendQuestMode24(int nResult, const CMsgBoxData& rBox)
 {
-    if (nResult == 0) {
-        unsigned nQuest = rBox.FUN_141a02e90(0, 0);
-        COutPacket packet(static_cast<int>(SendOp::Quest), 0);
-        packet.WriteUInt8(0x18);
-        packet.WriteInt32(nQuest);
-        FUN_140710590(packet);
-    }
+    if (nResult != 0)
+        return true;
+    unsigned nQuest = rBox.FUN_141a02e90(0, 0);
+    COutPacket packet(static_cast<int>(SendOp::Quest), 0);
+    packet.WriteUInt8(0x18);
+    packet.WriteInt32(nQuest);
+    FUN_140710590(packet);
     return true;
 }
 
@@ -458,7 +453,7 @@ void UILevelUpGuideDialog::FUN_140f857e0(int nQuest)
 // @0x140f85ba0 Table\recommendContents.xml
 void UILevelUpGuideDialog::FUN_140f85ba0()
 {
-    CString path = FUN_14071a5b0(CString("Table"), CString("recommendContents.xml"));
+    CString path = FUN_14071a5b0("Table", "recommendContents.xml");
     TiXmlDocument doc;
     if (FUN_140166420()->FUN_1403974b0(doc, path, 0, true, false) == 0)
         return;
@@ -471,8 +466,6 @@ void UILevelUpGuideDialog::FUN_140f85ba0()
         if (!FUN_14028f710(node))
             continue;
         MS2Ptr<RecommendContnets> spRow(new RecommendContnets);
-        if (spRow.get() == 0)
-            continue;
         FUN_1408731e0(node, "id", spRow->m_id);
         FUN_1408731a0(node, "minLevel", spRow->m_minLevel);
         FUN_1408731a0(node, "maxLevel", spRow->m_maxLevel);
@@ -516,56 +509,59 @@ void UILevelUpGuideDialog::FUN_140f85f90()
 // @0x140f861c0
 void UILevelUpGuideDialog::FUN_140f861c0()
 {
-    MS2Ptr<ASTextField> spLevel = FUN_140bb4cf0("m_contentsLevel");
-    if (spLevel.get() != 0) {
-        short nLo = m_1c8.m_nLow;
-        short nHi = m_1c8.m_nHigh;
-        if (m_1c8.m_nLow == m_1c8.m_nHigh)
-            spLevel->FUN_1422c4cd0(FUN_1409e8820(CStringW(L"s_recommend_contents_title_equal"), nLo));
-        else
-            spLevel->FUN_1422c4cd0(FUN_140ec2f00(CStringW(L"s_recommend_contents_title"), nLo, nHi));
-    }
-    MS2Ptr<Unk_LgList> spList = FUN_140ba4b70("m_contentsList");
-    if (spList.get() == 0)
+    if (FUN_140a467d0(&m_30))
         return;
-    spList->Invoke("resetRenderer");
-    spList->FUN_1422dd1d0();
-    spList->FUN_1422cf4f0(0);
-    std::vector<MS2Ptr<RecommendContnets> > rows;
-    POSITION pos = m_1e0.GetHeadPosition();
-    while (pos != 0) {
-        MS2Ptr<RecommendContnets> spRow = m_1e0.GetValueAt(pos);
-        m_1e0.GetNext(pos);
-        if (FUN_140f87a30(spRow) != 0)
+    if (MS2Ptr<ASTextField> spLevel = FUN_140bb4cf0("m_contentsLevel")) {
+        CStringW strTitle;
+        if (m_1c8.m_nLow != m_1c8.m_nHigh)
+            strTitle = FUN_140ec2f00(CStringW(L"s_recommend_contents_title"), m_1c8.m_nLow, m_1c8.m_nHigh);
+        else
+            strTitle = FUN_1409e8820(CStringW(L"s_recommend_contents_title_equal"), m_1c8.m_nLow);
+        spLevel->FUN_1422c4cd0(strTitle);
+    }
+    if (MS2Ptr<Unk_LgList> spList = FUN_140ba4b70("m_contentsList")) {
+        spList->Invoke("resetRenderer");
+        spList->FUN_1422dd1d0();
+        spList->FUN_1422cf4f0(0);
+        std::vector<MS2Ptr<RecommendContnets> > rows;
+        for (POSITION pos = m_1e0.GetHeadPosition(); pos != 0; m_1e0.GetNext(pos)) {
+            MS2Ptr<RecommendContnets> spRow = m_1e0.GetValueAt(pos);
+            if (FUN_140f87a30(spRow) == 0)
+                continue;
             rows.push_back(spRow);
+        }
+        std::sort(rows.begin(), rows.end(), LgRowOrder);
+        for (size_t i = 0; i < rows.size(); i++) {
+            MS2Ptr<RecommendContnets> spRow = rows[i];
+            if (FUN_140f87a30(spRow) == 0)
+                continue;
+            CString strCheck;
+            switch (spRow->m_kind) {
+            case 0:
+                strCheck = "m_contentsEtc";
+                break;
+            case 1:
+                strCheck = "m_contentsBoss";
+                break;
+            case 2:
+                strCheck = "m_contentsDungeon";
+                break;
+            }
+            {
+                MS2Ptr<Unk_LgCheck> spCheck = FUN_140e52670(strCheck);
+                if (spCheck.get() != 0 && !spCheck->FUN_1422ce0e0())
+                    continue;
+            }
+            ASObj row(2);
+            row.FUN_1407cb9c0("id", spRow->m_id);
+            row.FUN_1407cba60("type", spRow->m_type);
+            row.FUN_1407cbb20("label", FUN_1401a9d70()->FUN_141811980(0x23, spRow->m_id));
+            row.FUN_1407cba60("imgPath", spRow->m_img);
+            row.FUN_1407cbbe0("clickable", spRow->m_link.GetLength() ? true : false);
+            spList->FUN_1422dd230(row);
+        }
+        spList->vfunc_24(true);
     }
-    std::sort(rows.begin(), rows.end(), LgRowOrder);
-    for (size_t i = 0; i < rows.size(); i++) {
-        MS2Ptr<RecommendContnets> spRow = rows[i];
-        if (spRow->m_kind == 0) {
-            MS2Ptr<Unk_LgCheck> spCheck = FUN_140e52670("m_contentsEtc");
-            if (!spCheck->FUN_1422ce0e0())
-                continue;
-        }
-        else if (spRow->m_kind == 1) {
-            MS2Ptr<Unk_LgCheck> spCheck = FUN_140e52670("m_contentsBoss");
-            if (!spCheck->FUN_1422ce0e0())
-                continue;
-        }
-        else if (spRow->m_kind == 2) {
-            MS2Ptr<Unk_LgCheck> spCheck = FUN_140e52670("m_contentsDungeon");
-            if (!spCheck->FUN_1422ce0e0())
-                continue;
-        }
-        ASObj row(2);
-        row.FUN_1409c0d20("id", spRow->m_id);
-        row.FUN_1407cba60("type", spRow->m_type);
-        row.FUN_1407cbb20("label", FUN_1401a9d70()->FUN_141811980(0x23, spRow->m_id));
-        row.FUN_1407cba60("imgPath", spRow->m_img);
-        row.FUN_1407cbbe0("clickable", !spRow->m_link.IsEmpty());
-        spList->FUN_1422dd230(row);
-    }
-    spList->vfunc_24(true);
 }
 
 // @0x140f869f0
@@ -760,9 +756,9 @@ static bool LgRowOrder(MS2Ptr<UILevelUpGuideDialog::RecommendContnets> spA, MS2P
 // @0x140f880c0
 MS2Ptr<Unk_LgEvent> UILevelUpGuideDialog::FUN_140f880c0(const CString& strName)
 {
-    if (!FUN_140ba28d0(&m_30, 0))
-        return static_cast<Unk_LgRoot*>(FUN_1409ee290(&m_30))->FUN_140e44410<Unk_LgEvent>(strName);
-    return MS2Ptr<Unk_LgEvent>(0);
+    if (FUN_140ba28d0(&m_30, 0))
+        return MS2Ptr<Unk_LgEvent>(0);
+    return static_cast<Unk_LgRoot*>(FUN_1409ee290(&m_30))->FUN_140e44410<Unk_LgEvent>(strName);
 }
 
 MS2_EMIT_CRT_MEMMOVE_S();

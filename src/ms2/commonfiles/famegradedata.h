@@ -173,7 +173,7 @@ public:
     ATL::CAtlArray<PickPtr>& GetPickMethods();              // 0x14035afc0
     ATL::CAtlArray<Unk_FameAlliance>& GetAllianceIds();                  // 0x14035aff0
     int IsExped(Unk_FameAlliance nAlliance);                             // 0x14035b010
-    int IsNotOfficerNpc(int nKind);                        // 0x14035b0a0
+    int IsOfficerNpc(int nKind);                           // 0x14035b0a0 1 when nKind is a fame officer NPC kind
     int GetReloadFlag(unsigned nId);                             // 0x14035b110
     int IsReloadOnComplete(unsigned nId);                       // 0x14035b160
     CStringA GetSymbol(Unk_FameAlliance nAlliance);                      // 0x14035b1d0

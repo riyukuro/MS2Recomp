@@ -79,7 +79,7 @@ extern const efd::Matrix3 DAT_143a09600;                // efd::Matrix3::IDENTIT
 class Unk_BrAnimSvc { public: NiActorManager* FUN_140999440(const egf::EntityID& kId); };   // the animation service
 Unk_BrAnimSvc* FUN_141b6f910();
 NiAVObject* FUN_141b6ef70(egf::EntityID kId);           // the scene node of an entity
-GameObject* FUN_141bd0fa0(WorldService* p, const egf::EntityID& kId);
+GameObject* FUN_141bd0fa0(WorldService* p, egf::EntityID kId);
 int FUN_1409a8f90(float* pValue);                       // the float is a finite number
 void FUN_140a01250(efd::Point3 kEuler, efd::Point3* pForward, efd::Point3* pRight);   // the axes of the euler rotation
 
@@ -171,7 +171,6 @@ BoneRotateInterpolator::BoneRotateInterpolator(NiTransformData* pkData)
 }
 
 // @0x140a31f80
-// MS2-FUNCTIONAL: stack temporaries of the inlined engine math differ
 bool BoneRotateInterpolator::Update(float fTime, NiObjectNET* pkInterpTarget, NiQuatTransform& kValue)
 {
     if (m_nObjectId == 0)
@@ -223,8 +222,7 @@ bool BoneRotateInterpolator::Update(float fTime, NiObjectNET* pkInterpTarget, Ni
             NiActorManager* pActor = FUN_141b6f910()->FUN_140999440(pObject->FUN_14123c460());
             if (pActor != 0)
             {
-                NiActorManager::SequenceID eSeq = pActor->GetCurAnimation();
-                NiControllerSequence* pSeq = pActor->GetActiveSequence(eSeq, true, true);
+                NiControllerSequence* pSeq = pActor->GetActiveSequence(pActor->GetCurAnimation(), true, true);
                 if (pSeq == 0)
                     m_kTransformValue.SetRotate(kLocal.m_Rotate);
             }
@@ -248,15 +246,18 @@ bool BoneRotateInterpolator::Update(float fTime, NiObjectNET* pkInterpTarget, Ni
     }
     else
     {
-        if (m_bActive == false && m_pTarget != 0)
+        if (m_bActive != false || m_pTarget == 0)
+        {
+            FUN_140a33100();
+        }
+        else
         {
             m_bHasValue = true;
-            efd::Point3 kDir = m_kEye - m_kBone;
+            NiPoint3 kDir = m_kEye - m_kBone;
             kDir.Unitize();
             efd::Point3 kForward;
             efd::Point3 kRight;
-            efd::Point3 kEuler = m_kEuler;
-            FUN_140a01250(kEuler, &kForward, &kRight);
+            FUN_140a01250(m_kEuler, &kForward, &kRight);
             kForward.Unitize();
             float fDot = kForward.Dot(kDir);
             fDot = efd::Clamp(fDot, -1.0f, 1.0f);
@@ -266,8 +267,7 @@ bool BoneRotateInterpolator::Update(float fTime, NiObjectNET* pkInterpTarget, Ni
                 fYaw = fYaw * -1.0f;
             float fDotZ = kDir.Dot(efd::Point3::UNIT_Z);
             fDotZ = efd::Clamp(fDotZ, -1.0f, 1.0f);
-            float fPitch = Unk_Acos(fDotZ);
-            fPitch = 1.5707964f - fPitch;
+            float fPitch = 1.5707964f - Unk_Acos(fDotZ);
             NiTransform kLocal = m_pTarget->GetLocalTransform();
             if (fYaw > 0.0f && fYaw > 0.7853982f)
                 fYaw = 0.7853982f;
@@ -292,25 +292,22 @@ bool BoneRotateInterpolator::Update(float fTime, NiObjectNET* pkInterpTarget, Ni
                 kTarget.FromRotation(kMul);
                 efd::Quaternion kCurrent;
                 kCurrent.FromRotation(kLocal.m_Rotate);
-                if (m_tmLookIn.FUN_140868ba0() == 0)
-                {
-                    if (m_tmAim.FUN_140868ba0() == 0)
-                    {
-                        efd::Quaternion::Slerp(1.0f, kCurrent, kTarget, &kBlend);
-                    }
-                    else
-                    {
-                        float fT = m_tmAim.FUN_140868940();
-                        fT = fT * fT;
-                        kCurrent.FromRotation(m_kLastRotate);
-                        efd::Quaternion::Slerp(fT, kCurrent, kTarget, &kBlend);
-                    }
-                }
-                else
+                if (m_tmLookIn.FUN_140868ba0() != 0)
                 {
                     float fT = m_tmLookIn.FUN_140868940();
                     fT = fT * fT;
                     efd::Quaternion::Slerp(fT, kCurrent, kTarget, &kBlend);
+                }
+                else if (m_tmAim.FUN_140868ba0() != 0)
+                {
+                    float fT = m_tmAim.FUN_140868940();
+                    fT = fT * fT;
+                    kCurrent.FromRotation(m_kLastRotate);
+                    efd::Quaternion::Slerp(fT, kCurrent, kTarget, &kBlend);
+                }
+                else
+                {
+                    efd::Quaternion::Slerp(1.0f, kCurrent, kTarget, &kBlend);
                 }
                 NiQuaternion kOut(kBlend);
                 m_kTransformValue.SetRotate(kOut);
@@ -318,8 +315,7 @@ bool BoneRotateInterpolator::Update(float fTime, NiObjectNET* pkInterpTarget, Ni
                 NiActorManager* pActor = FUN_141b6f910()->FUN_140999440(pObject->FUN_14123c460());
                 if (pActor != 0)
                 {
-                    NiActorManager::SequenceID eSeq = pActor->GetCurAnimation();
-                    NiControllerSequence* pSeq = pActor->GetActiveSequence(eSeq, true, true);
+                    NiControllerSequence* pSeq = pActor->GetActiveSequence(pActor->GetCurAnimation(), true, true);
                     if (pSeq == 0)
                         m_kTransformValue.SetRotate(kLocal.m_Rotate);
                 }
@@ -340,10 +336,6 @@ bool BoneRotateInterpolator::Update(float fTime, NiObjectNET* pkInterpTarget, Ni
                 }
                 kValue = m_kTransformValue;
             }
-        }
-        else
-        {
-            FUN_140a33100();
         }
     }
     if (!m_kTransformValue.IsScaleValid() || !m_kTransformValue.IsTranslateValid() || !m_kTransformValue.IsRotateValid())
@@ -551,67 +543,62 @@ void CBoneRotateManager::FUN_140a34f00()
 }
 
 // @0x140a35060
-// MS2-FUNCTIONAL: stack temporaries of the inlined engine math differ
 void CBoneRotateManager::FUN_140a35060()
 {
     if (m_bEnabled == false)
         return;
-    if (m_tmLook.FUN_140868ba0() == 0)
+    if (m_tmLook.FUN_140868ba0() != 0)
     {
-        if (m_tmLook.FUN_140868c00() != 0)
-            FUN_140a34f00();
-    }
-    else if (m_tmApply.FUN_140868c00() != 0)
-    {
-        m_pInterp->FUN_140a32e90(false, m_nStart);
-        efd::Point3 kBase = m_kLookPos;
-        if (m_kTargetId != s_kNullId)
+        if (m_tmApply.FUN_140868c00() != 0)
         {
-            egf::EntityID kId(m_kTargetId);
-            GameObject* pTarget = FUN_141bd0fa0(WorldService::GetInstance(), kId);
-            if (pTarget != 0)
+            m_pInterp->FUN_140a32e90(false, m_nStart);
+            efd::Point3 kBase = m_kLookPos;
+            if (m_kTargetId != s_kNullId)
             {
-                kBase = pTarget->vfunc_18();
-                NiTransform kXform;
-                egf::EntityID kId2(m_kTargetId);
-                NiAVObject* pModel = FUN_141b6ef70(kId2);
-                if (pModel != 0)
+                GameObject* pTarget = FUN_141bd0fa0(WorldService::GetInstance(), m_kTargetId);
+                if (pTarget != 0)
                 {
-                    NiFixedString kName((const char*)m_strBone);
-                    NiAVObject* pBone = (NiAVObject*)pModel->GetObjectByName(kName);
-                    if (pBone != 0)
+                    kBase = pTarget->vfunc_18();
+                    NiTransform kXform;
+                    NiAVObject* pModel = FUN_141b6ef70(m_kTargetId);
+                    if (pModel != 0)
                     {
-                        kXform = pBone->GetLocalTransform();
-                        if (pBone->GetParent() != 0)
+                        NiAVObject* pBone = (NiAVObject*)pModel->GetObjectByName((const char*)m_strBone);
+                        if (pBone != 0)
                         {
-                            NiTransform kParentWorld = pBone->GetParent()->GetWorldTransform();
-                            kXform = kParentWorld * kXform;
+                            kXform = pBone->GetLocalTransform();
+                            if (pBone->GetParent() != 0)
+                            {
+                                NiTransform kParentWorld = pBone->GetParent()->GetWorldTransform();
+                                kXform = kParentWorld * kXform;
+                            }
+                            kBase.z = kXform.m_Translate.z;
                         }
-                        float fBoneZ = kXform.m_Translate.z;
                     }
                 }
             }
-        }
-        m_pInterp->SetKEye(kBase);
-        NiTransform kRoot;
-        if (m_pRootNode != 0)
-        {
-            kRoot = m_pRootNode->GetLocalTransform();
-            if (m_pRootNode->GetParent() != 0)
+            m_pInterp->SetKEye(kBase);
+            NiTransform kRoot;
+            if (m_pRootNode != 0)
             {
-                NiTransform kParentWorld = m_pRootNode->GetParent()->GetWorldTransform();
-                kRoot = kParentWorld * kRoot;
+                kRoot = m_pRootNode->GetLocalTransform();
+                if (m_pRootNode->GetParent() != 0)
+                {
+                    NiTransform kParentWorld = m_pRootNode->GetParent()->GetWorldTransform();
+                    kRoot = kParentWorld * kRoot;
+                }
             }
+            efd::Point3 kRootPos = kRoot.m_Translate;
+            m_pInterp->SetKBone(kRootPos);
+            m_pInterp->SetKEuler(static_cast<const efd::Point3&>(m_pOwner->vfunc_20()));
+            m_tmApply.FUN_140868750(500);
         }
-        efd::Point3 kRootPos = kRoot.m_Translate;
-        m_pInterp->SetKBone(kRootPos);
-        m_pInterp->SetKEuler(m_pOwner->vfunc_20());
-        m_tmApply.FUN_140868750(500);
     }
+    else if (m_tmLook.FUN_140868c00() != 0)
+        FUN_140a34f00();
 }
 
 // @0x140a35500
-// MS2-FUNCTIONAL: stack temporaries differ
 void CBoneRotateManager::FUN_140a35500(double dTime)
 {
     if (m_bEnabled == false)
@@ -629,27 +616,26 @@ void CBoneRotateManager::FUN_140a35500(double dTime)
     }
     if (m_tmIdle.FUN_140868c00() != 0 && m_nCurrent == 0)
     {
-        POSITION pos = m_actions.GetHeadPosition();
-        while (pos != 0)
+        for (POSITION pos = m_actions.GetHeadPosition(); pos != 0; m_actions.GetNext(pos))
         {
             Unk_BrMode nMode = m_actions.GetKeyAt(pos);
             Unk_BrActionPtr spAction = m_actions.GetValueAt(pos);
-            if (spAction.get() != 0)
+            if (spAction.get() ? true : false)
             {
                 Unk_BrAction* pAction = spAction.operator->();
                 if (pAction->vfunc_3() != false)
                 {
-                    pAction = spAction.operator->();
-                    int nOwnerId = m_pOwner->FUN_14123c580();
-                    if (pAction->vfunc_1(nOwnerId, 0, 5000) != false)
+                    if (spAction->vfunc_1(m_pOwner->FUN_14123c580(), 0, 5000) == false)
+                    {
+                        FUN_140a34f00();
+                    }
+                    else
                     {
                         m_nCurrent = nMode;
                         return;
                     }
-                    FUN_140a34f00();
                 }
             }
-            m_actions.GetNext(pos);
         }
     }
 }

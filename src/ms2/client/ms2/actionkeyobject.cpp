@@ -359,6 +359,15 @@ class Unk_WsB_Prop : public CInteractObject
 class Unk_WsB_Spawn : public CReactor                       // WorldService's reactor lookups
 {
 };
+// The WorldService point lookups take the point by value in the exe (worldservice.h declares const&)
+class Unk_AkoWsPointView
+{
+public:
+    MS2Ptr<Unk_WsB_Prop> FUN_141bc6090(Vector3 pos, int skipDisabled);
+    efd::SmartPointer<Unk_WsB_Spawn> FUN_141bc6c60(Vector3 pos, int skipUnusable);
+    egf::Entity* FUN_141bd0220(Vector3 pos, float maxDist);
+    egf::Entity* FUN_141bcfd30(unsigned key, Vector3 pos, float maxDist, int nearest, int flat);
+};
 // The npc table row; only the talk script name is read here.
 class Unk_AkoNpcData : public CPtred
 {
@@ -472,7 +481,7 @@ public:
     int FUN_14152e060();                                    // the id of the held pc (MyPC member)
     void FUN_14152df80();                                   // release the held pc (MyPC member)
 };
-bool FUN_140a55d20(CFieldDataCli* pField, CStringW* pstrError);   // the field can be entered (else the reason)
+int FUN_140a55d20(CFieldDataCli* pField, CStringW* pstrError);   // the field can be entered (else the reason)
 CStringW FUN_1416e4df0(int nQuestId);                       // the quest name
 CStringW FUN_1405c2690(CStringW strKey, const CStringW& strArg);   // a formatted string by key
 CStringW GetStringCommonByKey(const CStringW& strKey);             // a string by key
@@ -886,7 +895,6 @@ TaxiStationAction::TaxiStationAction() {}
 // @0x14095bf90
 int TaxiStationAction::vfunc_5() { return 8; }
 MS2_REPLACE_METHOD(0x14095BF90, TaxiStationAction, vfunc_5, 11, 0x2093C54B);
-// MS2-FUNCTIONAL: exe passes the point to WorldService::FUN_141bcfd30 by value (rep movsb copy); shared header declares const&
 // @0x14095bca0
 int TaxiStationAction::vfunc_1()
 {
@@ -899,7 +907,7 @@ int TaxiStationAction::vfunc_1()
         return 0;
     if (pPlayer->FUN_14166c930() == 0x25)
         return 0;
-    egf::Entity* pStation = FUN_1403ed2d0()->FUN_141bcfd30(0x85359406, pPlayer->FUN_1416767d0(),
+    egf::Entity* pStation = reinterpret_cast<Unk_AkoWsPointView*>(FUN_1403ed2d0())->FUN_141bcfd30(0x85359406, pPlayer->FUN_1416767d0(),
         *FUN_1401d3200()->TaxiStationFindDistance.Get(), 1, 0);
     if (!pStation)
         return 0;
@@ -916,11 +924,14 @@ int TaxiStationAction::vfunc_1()
         {
             if (DAT_143ab3098.FUN_140408410(&DAT_143ab2870) >= 0)
                 return 0;
-            DAT_143ab3098.FUN_1401855a0(DAT_143ab2870);
-            COutPacket packet(static_cast<int>(SendOp::RequestTaxi));
-            packet.Encode1(0);
-            FUN_140710590(packet);
-            return 0;
+            else
+            {
+                DAT_143ab3098.FUN_1401855a0(DAT_143ab2870);
+                COutPacket packet(static_cast<int>(SendOp::RequestTaxi));
+                packet.Encode1(0);
+                FUN_140710590(packet);
+                return 0;
+            }
         }
     }
     return 1;
@@ -1086,7 +1097,6 @@ MS2_REPLACE_METHOD(0x1409559D0, PortalAction, vfunc_4, 161, 0xD640D23E);
 // @0x140955a80
 int PortalAction::vfunc_5() { return 0x13; }
 MS2_REPLACE_METHOD(0x140955A80, PortalAction, vfunc_5, 11, 0x112851C6);
-// MS2-FUNCTIONAL: stack slot layout differs (temps); calls and control flow identical
 // @0x140955aa0
 CStringW PortalAction::vfunc_6()
 {
@@ -1128,9 +1138,9 @@ CStringW PortalAction::vfunc_6()
         if (spField == 0)
             return GetStringCommon(0x632);
         CStringW strError;
-        if (spField.get())
+        if (spField.get() ? true : false)
         {
-            if (!FUN_140a55d20(spField, &strError))
+            if (!FUN_140a55d20(spField.operator->(), &strError))
             {
                 strError = FUN_14061ad70(FUN_1401d0160(L" <", strError), L">");
                 strName += strError;
@@ -1215,7 +1225,6 @@ void PortalAction::SendRoomDungeon()
     FUN_140710590(packet);
 }
 MS2_REPLACE_METHOD(0x140956310, PortalAction, SendRoomDungeon, 75, 0xAAB9ED2B);
-// MS2-FUNCTIONAL: stack slot layout differs (temps); calls and control flow identical
 // @0x140956370
 void PortalAction::FUN_140956370(unsigned nTarget, unsigned nPortalId)
 {
@@ -1224,7 +1233,7 @@ void PortalAction::FUN_140956370(unsigned nTarget, unsigned nPortalId)
         return;
     MS2Ptr<CFieldDataCli> spCurrent = reinterpret_cast<Unk_AkoWorldView*>(FUN_1403ed2d0())->FUN_141bd30a0();
     MS2Ptr<CFieldDataCli> spField = CFieldDataCli::Find(nTarget);
-    if (spCurrent.get() && spField.get() && spField->FUN_1403754f0() && !spCurrent->GetPkMode()
+    if ((spCurrent.get() ? true : false) && (spField.get() ? true : false) && spField->FUN_1403754f0() && !spCurrent->GetPkMode()
         && spField->GetPkMode())
     {
         FUN_140d73bc0(0x971, 1, pPlayer, StringFormat(L"moveportal,{0},{1}", nTarget, nPortalId));
@@ -1235,17 +1244,13 @@ void PortalAction::FUN_140956370(unsigned nTarget, unsigned nPortalId)
         FUN_140d73bc0(0x99d, 0, 0, L"");
         return;
     }
-    if (spField.get() && spField->m_nRequireQuest != 0
+    if ((spField.get() ? true : false) && spField->m_nRequireQuest != 0
         && FUN_140764020()->m_state.FUN_140745590(spField->m_nRequireQuest) == 0)
     {
         FUN_1412751f0(FUN_1405c2690(L"s_quest_error_field_enter_limit", FUN_1416e4df0(spField->m_nRequireQuest)), 1, 1);
         return;
     }
-    if (!m_spPortal->m_bConfirm)
-    {
-        pPlayer->SendRequestMoveFieldMode0(nTarget, nPortalId, 0, 0, L"", L"");
-    }
-    else
+    if (m_spPortal->m_bConfirm)
     {
         CStringW strTitle = GetStringCommon(0xb07);
         MS2Ptr<CMsgBoxData> spBox = FUN_140d73f20(strTitle, 10);
@@ -1256,14 +1261,19 @@ void PortalAction::FUN_140956370(unsigned nTarget, unsigned nPortalId)
         spBox->FUN_140534050(nPortalId);
         FUN_140d73c60(spBox);
     }
+    else
+    {
+        pPlayer->SendRequestMoveFieldMode0(nTarget, nPortalId, 0, 0, L"", L"");
+    }
 }
 MS2_REPLACE_METHOD(0x140956370, PortalAction, FUN_140956370, 1570, 0x80A0D7E5);
-// MS2-FUNCTIONAL: stack slot layout differs (temps); calls and control flow identical
 // @0x140956be0
 bool PortalAction::FUN_140956be0(int nButton, const CMsgBoxData& data)
 {
     MyPC* pPlayer = static_cast<MyPC*>(FUN_1403ed2d0()->FUN_141bd0cc0());
-    if (pPlayer && nButton == 0)
+    if (!pPlayer)
+        return true;
+    if (nButton == 0)
     {
         CStringW strPassword = data.FUN_141a02d50();
         strPassword.Trim(L",");
@@ -1273,9 +1283,11 @@ bool PortalAction::FUN_140956be0(int nButton, const CMsgBoxData& data)
         data.FUN_140961900(1, nPortalId);
         MS2Ptr<Unk_AkoPortal> spPortal = reinterpret_cast<Unk_AkoWorldView*>(FUN_1403ed2d0())->FUN_141bc2800(nPortalId);
         if (spPortal == 0)
+        {
             FUN_1412751f0(GetStringCommonByKey(L"s_action_portal_invalid_portal"), 1, 1);
-        else
-            pPlayer->SendRequestMoveFieldMode0(nTarget, nPortalId, 0, 0, strPassword, L"");
+            return true;
+        }
+        pPlayer->SendRequestMoveFieldMode0(nTarget, nPortalId, 0, 0, strPassword, L"");
     }
     return true;
 }
@@ -1432,7 +1444,6 @@ void LiftCubeAction::vfunc_2()
     FUN_140710590(packet);
 }
 MS2_REPLACE_METHOD(0x140957550, LiftCubeAction, vfunc_2, 452, 0x3B43636C);
-// MS2-FUNCTIONAL: frame 0x10 smaller (one temp fewer); calls and control flow identical
 // @0x140957890 the liftable object in reach of the player
 Unk_WsB_Lift* LiftCubeAction::FUN_140957890()
 {
@@ -1451,7 +1462,8 @@ Unk_WsB_Lift* LiftCubeAction::FUN_140957890()
             continue;
         Vector3 ptLift = spLift->FUN_141447c80();
         Unk_Int3 cell = FUN_1408a1430(ptLift);
-        float fDist = ptLift.FUN_140965c40(pos).FUN_140968990();
+        Vector3 diff = ptLift.FUN_140965c40(pos);
+        float fDist = diff.FUN_140968990();
         if (fDist > spLift->FUN_141447ac0())
             continue;
         return spLift.get();
@@ -1595,8 +1607,6 @@ int InteractAction::vfunc_1()
 }
 MS2_REPLACE_METHOD(0x140958120, InteractAction, vfunc_1, 390, 0x2AE0A946);
 // @0x140958e70
-// MS2-FUNCTIONAL: the exe's WorldService::FUN_141bc6090 takes the point by value (a rep movsb copy into a temp);
-// the shared header declares it const&.
 CInteractObject* InteractAction::FUN_140958e70()
 {
     if (FUN_1409331e0()->FUN_14138c900(3) != 0)
@@ -1605,7 +1615,7 @@ CInteractObject* InteractAction::FUN_140958e70()
     if (!pPlayer)
         return 0;
     Vector3 pos = pPlayer->FUN_1416767d0();
-    CInteractObject* pObject = FUN_1403ed2d0()->FUN_141bc6090(pos, 1);
+    CInteractObject* pObject = reinterpret_cast<Unk_AkoWsPointView*>(FUN_1403ed2d0())->FUN_141bc6090(pos, 1);
     if (!pObject)
         return 0;
     if (pObject->FUN_1413fe040() == 0)
@@ -1775,7 +1785,6 @@ void InteractNpcAction::vfunc_2()
     }
 }
 // @0x140959330
-// MS2-FUNCTIONAL: the exe keeps one more pointer slot for the interact-mode temporary (all frame offsets +8).
 Unk_WsC_GameObj* InteractNpcAction::FUN_140959330()
 {
     MyPC* pPlayer = static_cast<MyPC*>(FUN_1403ed2d0()->FUN_141bd0cc0());
@@ -1785,7 +1794,8 @@ Unk_WsC_GameObj* InteractNpcAction::FUN_140959330()
     if (!pNpc)
     {
         int nKind = 1;
-        if (pPlayer->FUN_140967420() != 0 && pPlayer->FUN_140967420()->FUN_140743550())
+        bool bRide = (pPlayer->FUN_140967420() ? true : false) && pPlayer->FUN_140967420()->FUN_140743550();
+        if (bRide)
             nKind = pPlayer->FUN_140967420()->FUN_140743710();
         pNpc = FUN_1403ed2d0()->FUN_141bd2170(nKind, FUN_1401d3200()->InteractionDistance.Read(), 1, 0);
     }
@@ -1879,16 +1889,13 @@ void RegistUgcAction::vfunc_3()
     m_spEntity = 0;
 }
 MS2_REPLACE_METHOD(0x140959A70, RegistUgcAction, vfunc_3, 66, 0x541E758C);
-// MS2-FUNCTIONAL: the exe's WorldService::FUN_141bd0220 takes the point by value (a rep movsb copy into a temp); the shared header declares it const&.
 // @0x1409598c0
 int RegistUgcAction::vfunc_1()
 {
     Unk_WsC_GameObj* pPlayer = static_cast<Unk_WsC_GameObj*>(FUN_1403ed2d0()->FUN_141bd0cc0());
     if (!pPlayer)
         return 0;
-    float fDist = FUN_1401d3200()->RegistUgcDistance.Read();
-    Vector3 pos = pPlayer->vfunc_18();
-    egf::Entity* pEntity = FUN_1403ed2d0()->FUN_141bd0220(pos, fDist);
+    egf::Entity* pEntity = reinterpret_cast<Unk_AkoWsPointView*>(FUN_1403ed2d0())->FUN_141bd0220(pPlayer->vfunc_18(), FUN_1401d3200()->RegistUgcDistance.Read());
     if (m_spEntity != pEntity)
     {
         FUN_140959d70(m_spEntity, 0);
@@ -1929,7 +1936,6 @@ void RegistUgcAction::FUN_140959d70(egf::Entity* pEntity, int bSelect)
 }
 MS2_REPLACE_METHOD(0x140959D70, RegistUgcAction, FUN_140959d70, 108, 0x9EED06A3);
 
-// MS2-FUNCTIONAL: the exe ends the state test with je/jmp (2 bytes longer); the condition form is not found
 // @0x140959eb0 the object weapon cube in front of the player (the two cells ahead and the one below), kept in m_spCube
 int PullObjectWeaponAction::FUN_140959eb0()
 {
@@ -1938,9 +1944,15 @@ int PullObjectWeaponAction::FUN_140959eb0()
         return 0;
     if (pPlayer->FUN_14165f100())
         return 0;
-    int nState = pPlayer->FUN_14166c930();
-    if (nState == 0x10 || (nState > 0x1c && (nState <= 0x1e || nState == 0x20 || nState == 0x2f)))
+    switch (pPlayer->FUN_14166c930())
+    {
+    case 0x10:
+    case 0x1d:
+    case 0x1e:
+    case 0x20:
+    case 0x2f:
         return 0;
+    }
     efd::SmartPointer<Unk_Service6100017> spCubeMap = FUN_1401cd040(&DAT_143b059e8);
     std::vector<efd::Point3> aCells;
     aCells.reserve(3);
@@ -2033,7 +2045,6 @@ int PullObjectWeaponAction::vfunc_1()
     return 1;
 }
 MS2_REPLACE_METHOD(0x14095A4B0, PullObjectWeaponAction, vfunc_1, 627, 0x4930EE27);
-// MS2-FUNCTIONAL: the exe ends the state test with je/jmp (2 bytes longer); the condition form is not found
 // @0x14095a730
 void PullObjectWeaponAction::vfunc_2()
 {
@@ -2042,9 +2053,15 @@ void PullObjectWeaponAction::vfunc_2()
         return;
     if (pPlayer->FUN_14165f100())
         return;
-    int nState = pPlayer->FUN_14166c930();
-    if (nState == 0x10 || (nState > 0x1c && (nState <= 0x1e || nState == 0x20 || nState == 0x2f)))
+    switch (pPlayer->FUN_14166c930())
+    {
+    case 0x10:
+    case 0x1d:
+    case 0x1e:
+    case 0x20:
+    case 0x2f:
         return;
+    }
     if (m_spCube)
     {
         efd::utf8string strOwner;
@@ -2140,7 +2157,6 @@ MS2_REPLACE_METHOD(0x14095B470, FunctionCubeAction, vfunc_5, 11, 0x30025ED0);
 int FunctionCubeAction::vfunc_10() { return m_n20; }
 MS2_REPLACE_METHOD(0x14095B690, FunctionCubeAction, vfunc_10, 14, 0xA25B27BF);
 
-// MS2-FUNCTIONAL: exe passes fRange via movss xmm0+movaps xmm3 and stores vfunc_9's result without movzx (int return); shared header declares bool
 // @0x14095ae90 the function cube in reach of the player
 int FunctionCubeAction::vfunc_1()
 {
@@ -2150,9 +2166,8 @@ int FunctionCubeAction::vfunc_1()
     if (pPlayer->FUN_14166c930() == 0x29)
         return 0;
     __int64 nAccount = reinterpret_cast<Unk_AkoPlayerView*>(pPlayer)->FUN_141656ad0();
-    float fRange = FUN_1401d3200()->FunctionCubeDistance.Read();
     MS2Ptr<CFunctionCubeObject> spObject =
-        FUN_1409670b0()->FUN_141230f60(pPlayer->FUN_1416767d0(), fRange, nAccount);
+        FUN_1409670b0()->FUN_141230f60(pPlayer->FUN_1416767d0(), FUN_1401d3200()->FunctionCubeDistance.Read(), nAccount);
     if (spObject == 0)
         return 0;
     m_n20 = spObject->vfunc_9(m_str18);
@@ -3088,14 +3103,14 @@ Unk_AkoTarget ReactorAction::vfunc_12()
     return Unk_AkoTarget(reinterpret_cast<Unk_WsC_GameObj*>(spReactor.operator->())->vfunc_18());
 }
 MS2_REPLACE_METHOD(0x14095FB80, ReactorAction, vfunc_12, 183, 0x59BCCBEC);
-// MS2-FUNCTIONAL: exe passes the point to WorldService::FUN_141bc6c60 by value (rep movsb copy); shared header declares const&
 // @0x14095fcb0
 CReactor* ReactorAction::FUN_14095fcb0()
 {
     MyPC* pPlayer = static_cast<MyPC*>(FUN_1403ed2d0()->FUN_141bd0cc0());
     if (!pPlayer)
         return 0;
-    efd::SmartPointer<Unk_WsB_Spawn> spReactor = FUN_1403ed2d0()->FUN_141bc6c60(pPlayer->FUN_1416767d0(), 1);
+    Vector3 pos = pPlayer->FUN_1416767d0();
+    efd::SmartPointer<Unk_WsB_Spawn> spReactor = reinterpret_cast<Unk_AkoWsPointView*>(FUN_1403ed2d0())->FUN_141bc6c60(pos, 1);
     if (spReactor == 0)
         return 0;
     return spReactor;

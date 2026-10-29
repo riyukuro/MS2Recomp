@@ -46,6 +46,7 @@ void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);
 // ---- ASCommonDepth ----
 
 // @0x1409b0fd0
+// MS2-FUNCTIONAL: the exe keeps a discarded movzx eax,al after the FUN_1409b0390 call (source form of the unused result unknown).
 ASCommonDepth::ASCommonDepth(Scaleform::GFx::Value v, int nMovieId)
     : AScript(v, nMovieId)
 {
@@ -56,18 +57,13 @@ ASCommonDepth::ASCommonDepth(Scaleform::GFx::Value v, int nMovieId)
     (int)FUN_1409b0390(&m_value);
 }
 
-// @0x1409b1f50
-ASCommonDepth::~ASCommonDepth()
-{
-}
-
 // @0x1409b1090
 MS2Ptr<ASCommonDepth> ASCommonDepth::Create(int nMovieId)
 {
     Unk_AsMovie* pMovie = FUN_14025e7a0()->FUN_1422b01a0(nMovieId);
-    if (pMovie == 0)
-        return MS2Ptr<ASCommonDepth>(0);
-    return MS2Ptr<ASCommonDepth>(new ASCommonDepth(pMovie->FUN_1422bd120(CString("scaleform.ms2.common.CommonDepth")), nMovieId));
+    if (pMovie != 0)
+        return MS2Ptr<ASCommonDepth>(new ASCommonDepth(pMovie->FUN_1422bd120(CString("scaleform.ms2.common.CommonDepth")), nMovieId));
+    return MS2Ptr<ASCommonDepth>(0);
 }
 
 // @0x1409b11d0
@@ -81,10 +77,12 @@ void ASCommonDepth::AddLayer(const Scaleform::GFx::Value& layer, int nDepth, int
 // @0x1409b1290
 Scaleform::GFx::Value ASCommonDepth::GetLayer(const Scaleform::GFx::Value& layer, int nMovieId)
 {
-    MS2Ptr<ASCommonDepth> p = Create(nMovieId);
-    if (p.get() == 0)
-        return Scaleform::GFx::Value();
-    return p->Invoke("getLayer", layer);
+    {
+        MS2Ptr<ASCommonDepth> p = Create(nMovieId);
+        if (p.get())
+            return p->Invoke("getLayer", layer);
+    }
+    return Scaleform::GFx::Value();
 }
 
 // ---- ASArgList: std::vector<Value> ----

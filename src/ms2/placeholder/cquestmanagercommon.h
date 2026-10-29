@@ -15,7 +15,7 @@ public:
     virtual int vfunc_o10_1(int) = 0;
     virtual int vfunc_o10_2(int) = 0;
     virtual Unk_PayloadPtr<CQuest> vfunc_o10_3(int) = 0;
-    virtual int vfunc_o10_4() = 0;
+    virtual unsigned short vfunc_o10_4() = 0;
     virtual int vfunc_o10_5() = 0;
     virtual int vfunc_o10_6() = 0;
     virtual int vfunc_o10_7() = 0;

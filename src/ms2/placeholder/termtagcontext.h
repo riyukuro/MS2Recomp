@@ -23,8 +23,8 @@ public:
     bool FUN_140866760();                                   // the flag (m_48)
     void FUN_140866780();                                   // register in CGameRule
     void FUN_1408667e0();                                   // unregister from CGameRule
-    int FUN_140866820(const CMsTime& kTime);                // start <= time < end
-    int FUN_140866880(const __time64_t* pTime);             // the same for a raw time
+    bool FUN_140866820(const CMsTime& kTime);               // start <= time < end
+    bool FUN_140866880(const __time64_t* pTime);            // the same for a raw time
     void FUN_140866900(CInPacket& packet);                  // read from the packet
 
     int m_18;

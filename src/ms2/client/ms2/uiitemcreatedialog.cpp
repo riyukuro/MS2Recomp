@@ -153,7 +153,7 @@ CStringW FUN_14082f000(int nStat);                          // text of a stat
 CStringW FUN_140630e10(int nSpecial);                       // text of a special ability
 CString FUN_14016a600(const wchar_t* sz, int nCodePage);    // narrow a string
 CString FUN_14016a5c0(const char* sz, int nCodePage);       // copy a string
-CString FUN_140cc2a00(CString strDir, const CString& strFile);   // the path of a file in a directory
+CString FUN_140cc2a00(const CString& strDir, const CString& strFile);   // the path of a file in a directory
 void FUN_140710590(COutPacket& packet);                     // send
 void FUN_1418fc840(MS2Ptr<Unk_IcCombo> spCombo, int nItemId, int nRank);   // fill the rank combo of an item
 CFileSystem* GetFileSystem();
@@ -476,29 +476,30 @@ void UIItemCreateDialog::SendRequestItemCreate(CCCreateItemPacket& packet)
 }
 MS2_REPLACE_METHOD(0x1419b5370, UIItemCreateDialog, SendRequestItemCreate, 88, 0xE0A3735C);
 
-// MS2-FUNCTIONAL: packet field reads ordered differently
 // @0x1419b53d0
 void UIItemCreateDialog::FUN_1419b53d0(CCCompareItemPacket& packet)
 {
-    if ((CItemData*)FUN_14053f870(packet.a)) {
-        packet.b = 1;
-        COutPacket out(0x8f, 0);
-        packet.vfunc_0(out);
-        FUN_140710590(out);
-    }
+    unsigned nItemId = packet.a;
+    CItemData* pItem = FUN_14053f870(nItemId);
+    if (pItem == 0)
+        return;
+    packet.b = 1;
+    COutPacket out(0x8f, 0);
+    packet.vfunc_0(out);
+    FUN_140710590(out);
 }
 MS2_REPLACE_METHOD(0x1419b53d0, UIItemCreateDialog, FUN_1419b53d0, 194, 0xA5E307F0);
 
-// MS2-FUNCTIONAL: packet field reads ordered differently
 // @0x1419b54a0
 void UIItemCreateDialog::FUN_1419b54a0(CCCompareItemPacket& packet)
 {
-    if ((CItemData*)FUN_14053f870(packet.a)) {
-        packet.b = 1;
-        COutPacket out(static_cast<int>(SendOp::ItemRepeat), 0);
-        packet.vfunc_0(out);
-        FUN_140710590(out);
-    }
+    CItemData* pItem = FUN_14053f870(packet.a);
+    if (pItem == 0)
+        return;
+    packet.b = 1;
+    COutPacket out(static_cast<int>(SendOp::ItemRepeat), 0);
+    packet.vfunc_0(out);
+    FUN_140710590(out);
 }
 MS2_REPLACE_METHOD(0x1419b54a0, UIItemCreateDialog, FUN_1419b54a0, 186, 0x285F60FD);
 
@@ -520,7 +521,6 @@ MS2_REPLACE_METHOD(0x1419b5560, UIItemCreateDialog, FUN_1419b5560, 447, 0x9D2541
 
 // Fill the item list: the items of a group (no search text) or the items matching the search text (words joined by
 // '&' must all match, words joined by '|' any of them; the label, the id and the function name are searched).
-// MS2-FUNCTIONAL: big filter loop: register allocation / temporaries differ
 // @0x1419b5730
 void UIItemCreateDialog::FUN_1419b5730(const CString& strGroup, const CStringW& strSearch)
 {
@@ -543,15 +543,16 @@ void UIItemCreateDialog::FUN_1419b5730(const CString& strGroup, const CStringW& 
     CStringW strFind(strSearch);
     for (size_t i = 0; i < m_items.GetCount(); ++i) {
         MS2Ptr<CItemData> item = m_items[i];
-        if (item == 0)
+        if (!item)
             continue;
         if (bJob && !item->limit.FUN_140545da0(pPC->FUN_141654700()))
             continue;
         if (bGender && !item->FUN_14053c940(pPC->FUN_141658e60()))
             continue;
-        int nId = item->FUN_14053c510();
+        unsigned nId = item->FUN_14053c510();
         CStringW strId = FUN_1407196b0(nId);
-        int nLevel = item->limit.levelLimit;
+        CStringW strLabel;
+        unsigned nLevel = item->limit.levelLimit;
         CStringW strType;
         if (item->FUN_14053ce80())
             strType = L"BEAUTY";
@@ -565,7 +566,7 @@ void UIItemCreateDialog::FUN_1419b5730(const CString& strGroup, const CStringW& 
             strType = L"EQUIP";
         else
             strType = L"GAME";
-        CStringW strLabel = StringFormat(L"[{0:08d}] [{1}] [Lv.{2}] {3}", (unsigned)nId, strType, (unsigned)nLevel,
+        strLabel = StringFormat(L"[{0:08d}] [{1}] [Lv.{2}] {3}", nId, strType, nLevel,
                                          CStringTable::GetInstance()->FUN_141811980(1, nId));
         ASObj row(2);
         row.FUN_1407cbb20("label", strLabel);
@@ -598,8 +599,7 @@ void UIItemCreateDialog::FUN_1419b5730(const CString& strGroup, const CStringW& 
                     list->FUN_1422dd230(row);
             } else {
                 if (item->FUN_14053eba0()->FUN_14054b3d0() < 2) {
-                    int nGroup = FUN_1405451c0(strGroup);
-                    if (item->FUN_14053eba0()->FUN_14054b450(nGroup))
+                    if (item->FUN_14053eba0()->FUN_14054b450(FUN_1405451c0(strGroup)))
                         list->FUN_1422dd230(row);
                 }
             }
@@ -608,22 +608,34 @@ void UIItemCreateDialog::FUN_1419b5730(const CString& strGroup, const CStringW& 
             if (!strFunc.IsEmpty())
                 FUN_140841420(strFunc);
             ATL::CAtlArray<CStringW> tokens;
+            bool bAnd = false;
             FUN_14025a680(strFind, tokens, L"&");
-            bool bAnd = tokens.GetCount() >= 2;
-            if (!bAnd)
+            if (tokens.GetCount() > 1) {
+                bAnd = true;
+            } else {
+                bAnd = false;
                 FUN_14025a680(strFind, tokens, L"|");
-            bool bMatch = bAnd;
-            for (size_t t = 0; t < tokens.GetCount(); ++t) {
-                if (tokens[t].IsEmpty())
-                    continue;
-                bool bFound = strLabel.Find(tokens[t]) != -1 || strId.Find(tokens[t]) != -1 || strFunc.Find(tokens[t]) != -1;
-                if (!bFound && bAnd)
-                    bMatch = false;
-                if (bFound && !bAnd)
-                    bMatch = true;
             }
-            if (bMatch)
-                list->FUN_1422dd230(row);
+            bool bMatch = bAnd ? true : false;
+            for (unsigned t = 0; t < tokens.GetCount(); t++) {
+                CStringW& strToken = tokens[t];
+                if (strToken.IsEmpty())
+                    continue;
+                if (strLabel.Find(strToken) == -1 && strId.Find(strToken) == -1 && strFunc.Find(strToken) == -1) {
+                    if (bAnd)
+                        bMatch &= false;
+                    else
+                        bMatch = bMatch;
+                } else {
+                    if (bAnd)
+                        bMatch &= true;
+                    else
+                        bMatch |= true;
+                }
+            }
+            if (!bMatch)
+                continue;
+            list->FUN_1422dd230(row);
         }
     }
     list->FUN_1422dcca0(0);
@@ -632,32 +644,35 @@ void UIItemCreateDialog::FUN_1419b5730(const CString& strGroup, const CStringW& 
 MS2_REPLACE_METHOD(0x1419b5730, UIItemCreateDialog, FUN_1419b5730, 3090, 0xA1CFB757);
 
 // The context menu of the item list (only without the packed file system: "openDropInfo").
-// MS2-FUNCTIONAL: menu building temporaries differ
 // @0x1419b6350
 void UIItemCreateDialog::FUN_1419b6350()
 {
     m_spContextMenu = FUN_140c02900("m_contextMenu");
-    if (!(Unk_IcList*)m_spContextMenu)
-        return;
-    bool bPacked = GetFileSystem()->FUN_140398190();
-    m_spContextMenu->vfunc_3(!bPacked);
-    if (!bPacked) {
-        ATL::CAtlArray<std::pair<CStringW, CStringW> > menu;
-        menu.Add(std::pair<CStringW, CStringW>(L"openDropInfo", L"openDropInfo"));
-        for (size_t i = 0; i < menu.GetCount(); ++i) {
-            if (menu[i].first.IsEmpty())
-                continue;
-            ASObj row(2);
-            row.FUN_1407cbb20("label", menu[i].first);
-            row.FUN_1407cbb20("func", menu[i].second);
-            m_spContextMenu->FUN_1422dd230(row);
+    if ((Unk_IcList*)m_spContextMenu) {
+        int bShow = !GetFileSystem()->FUN_140398190();
+        m_spContextMenu->vfunc_3(bShow);
+        if (bShow != 0) {
+            ATL::CAtlArray<std::pair<CStringW, CStringW> > menu;
+            menu.Add(std::pair<CStringW, CStringW>(L"openDropInfo", L"openDropInfo"));
+            int nWidth = 0x78;
+            int nRowHeight = 0x1a;
+            int nCount = 0;
+            for (size_t i = 0; i < menu.GetCount(); ++i) {
+                std::pair<CStringW, CStringW>& item = menu[i];
+                if (item.first.IsEmpty())
+                    continue;
+                ASObj row(2);
+                row.FUN_1407cbb20("label", item.first);
+                row.FUN_1407cbb20("func", item.second);
+                m_spContextMenu->FUN_1422dd230(row);
+                nCount++;
+            }
+            m_spContextMenu->FUN_1422c79e0(nWidth, m_spContextMenu->FUN_1422dd150() * nRowHeight);
+            m_spContextMenu->vfunc_24(true);
+            m_spContextMenu->FUN_1422de0e0(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemCreateDialog::FUN_1419b4e30), 0);
+        } else {
+            m_spContextMenu = 0;
         }
-        int nRows = m_spContextMenu->FUN_1422dd150();
-        m_spContextMenu->FUN_1422c79e0(0x78, nRows * 0x1a);
-        m_spContextMenu->vfunc_24(true);
-        m_spContextMenu->FUN_1422de0e0(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemCreateDialog::FUN_1419b4e30), 0);
-    } else {
-        m_spContextMenu = 0;
     }
 }
 MS2_REPLACE_METHOD(0x1419b6350, UIItemCreateDialog, FUN_1419b6350, 1078, 0x57B2A9BC);
@@ -1086,7 +1101,7 @@ Unk_ItemOptionSimulator::Unk_ItemOptionSimulator()
     m_strFile = "itemOptionRepeat.xml";
 }
 
-// MS2-FUNCTIONAL: document setup temporaries differ
+// MS2-FUNCTIONAL: one frame slot differs (the unused root pointer sits above the EH state)
 // @0x1419b8730
 void Unk_ItemOptionSimulator::FUN_1419b8730()
 {
@@ -1099,7 +1114,7 @@ void Unk_ItemOptionSimulator::FUN_1419b8730()
 MS2_REPLACE_METHOD(0x1419b8730, Unk_ItemOptionSimulator, FUN_1419b8730, 218, 0x43485A38);
 
 // Write the collected rolls: <ms2><item id name rank><constant|static|random><stat>..</stat><special>..</special>..
-// MS2-FUNCTIONAL: big XML dump: local layout differs
+// MS2-FUNCTIONAL: exe statically links _mkdir (call 0x1420b1a80), build imports it
 // @0x1419b8810
 void Unk_ItemOptionSimulator::FUN_1419b8810()
 {
@@ -1108,31 +1123,34 @@ void Unk_ItemOptionSimulator::FUN_1419b8810()
     if (pRoot == 0)
         return;
     CString strGroups[4] = {"constant", "static", "random", "title"};
-    POSITION pos = m_mapItems.GetHeadPosition();
-    while (pos) {
-        MS2Ptr<ItemOptionDebug> debug = m_mapItems.GetValueAt(pos);
-        m_mapItems.GetNext(pos);
+    for (POSITION pos = m_mapItems.GetHeadPosition(); pos != 0; m_mapItems.GetNext(pos)) {
+        MS2Ptr<ItemOptionDebug> debug(m_mapItems.GetValueAt(pos));
         if (debug == 0)
             continue;
+        int nItemId = debug->m_nItemId;
+        int nRank = debug->m_nRank;
         TiXmlElement* pItem = new TiXmlElement("item");
-        FUN_140873ce0(pItem, "id", debug->m_nItemId);
-        FUN_140874050(pItem, "name", FUN_14016a600(CStringTable::GetInstance()->FUN_141811980(1, debug->m_nItemId), 0));
-        FUN_140874050(pItem, "rank", FUN_14016a600(CStringTable::GetInstance()->FUN_141813150(debug->m_nRank), 0));
-        for (int nGroup = 0; nGroup < 3; ++nGroup) {
+        FUN_140873ce0(pItem, "id", nItemId);
+        FUN_140874050(pItem, "name", FUN_14016a600(CStringTable::GetInstance()->FUN_141811980(1, nItemId), 0));
+        FUN_140874050(pItem, "rank", FUN_14016a600(CStringTable::GetInstance()->FUN_141813150(nRank), 0));
+        for (unsigned nGroup = 0; nGroup < 3; ++nGroup) {
+            int nG = nGroup;
             TiXmlElement* pGroup = new TiXmlElement(strGroups[nGroup]);
             TiXmlElement* pStat = new TiXmlElement("stat");
             TiXmlElement* pSpecial = new TiXmlElement("special");
-            for (int nStat = 0; nStat < 0x23; ++nStat) {
-                if (debug->FUN_1419b7920(nGroup, nStat))
-                    FUN_14086e090(pStat, debug->FUN_1419b7b10(nGroup, nStat));
-                if (debug->FUN_1419b79a0(nGroup, nStat))
-                    FUN_14086e090(pStat, debug->FUN_1419b7e00(nGroup, nStat));
+            for (unsigned nStat = 0; nStat < 0x23; ++nStat) {
+                int nS = nStat;
+                if (debug->FUN_1419b7920(nG, nS))
+                    FUN_14086e090(pStat, debug->FUN_1419b7b10(nG, nS));
+                if (debug->FUN_1419b79a0(nG, nS))
+                    FUN_14086e090(pStat, debug->FUN_1419b7e00(nG, nS));
             }
             for (unsigned nSpecial = 1; nSpecial < 0xcf; ++nSpecial) {
-                if (debug->FUN_1419b7a10(nGroup, nSpecial))
-                    FUN_14086e090(pSpecial, debug->FUN_1419b80e0(nGroup, nSpecial));
-                if (debug->FUN_1419b7a90(nGroup, nSpecial))
-                    FUN_14086e090(pSpecial, debug->FUN_1419b83d0(nGroup, nSpecial));
+                unsigned nSp = nSpecial;
+                if (debug->FUN_1419b7a10(nG, nSp))
+                    FUN_14086e090(pSpecial, debug->FUN_1419b80e0(nG, nSp));
+                if (debug->FUN_1419b7a90(nG, nSp))
+                    FUN_14086e090(pSpecial, debug->FUN_1419b83d0(nG, nSp));
             }
             FUN_14086e090(pGroup, pStat);
             FUN_14086e090(pGroup, pSpecial);
@@ -1144,7 +1162,7 @@ void Unk_ItemOptionSimulator::FUN_1419b8810()
     strDir.Format("%s%s", (const char*)FUN_14016a5c0(CommonResource::GetInstance()->m_strResourcePath, 0), "../Debug/");
     if (!efd::File::DirectoryExists(strDir))
         _mkdir(strDir);
-    FUN_1408710c0(&m_doc, FUN_140cc2a00(CString("../Debug/"), m_strFile));
+    FUN_1408710c0(&m_doc, FUN_140cc2a00("../Debug/", m_strFile));
 }
 MS2_REPLACE_METHOD(0x1419b8810, Unk_ItemOptionSimulator, FUN_1419b8810, 2061, 0x9B8A55DF);
 
@@ -1182,16 +1200,15 @@ MS2_REPLACE_METHOD(0x1419b91f0, Unk_ItemOptionSimulator, FUN_1419b91f0, 258, 0x4
 
 // ---- inline COMDATs ----
 
-// MS2-FUNCTIONAL: branch order of the AS value read differs
 // @0x1419b9900
 void Unk_IcDataProvider::FUN_1419b9900(int nIndex, const CString& strName, int& nOut)
 {
     ASObj row = FUN_1422df140(nIndex);
-    if (!row.FUN_1422ba9a0())
-        row.FUN_1422bae10(strName, nOut);
+    if (row.FUN_1422ba9a0())
+        return;
+    row.FUN_1422bae10(strName, nOut);
 }
 
-// MS2-FUNCTIONAL: branch order of the AS value read differs
 // @0x1419b9990
 void Unk_IcCombo::FUN_1419b9990(const CString& strName, int& nOut)
 {
@@ -1201,8 +1218,9 @@ void Unk_IcCombo::FUN_1419b9990(const CString& strName, int& nOut)
     MS2Ptr<Unk_IcDataProvider> provider = FUN_1422df770();
     if (provider == 0)
         return;
-    if ((unsigned)nSelected < provider->FUN_1422bc5d0())
-        provider->FUN_1419b9900(nSelected, strName, nOut);
+    if ((unsigned)nSelected >= provider->FUN_1422bc5d0())
+        return;
+    provider->FUN_1419b9900(nSelected, strName, nOut);
 }
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142cbed80-0x142cbeec0 .text$yd

@@ -133,20 +133,19 @@ extern Unk_StlElem<0x20>* FUN_1415da260(void*, Unk_StlElem<0x20>*, Unk_StlElem<0
 extern void FUN_1415d6ab0(void*, Unk_StlElem<0x20>*);
 extern Unk_StlElem<0x20>* FUN_1403a4b80(Unk_StlElem<0x20>*);
 
-static const char nm_empty[] = "";
-extern const char DAT_143ae2848;
-extern const char DAT_143ae2849;
-
-static void nm_copy_cnm_string(void* dst, const char* src, size_t capacity)
-{
-    if (!src) return;
-    size_t length = 0;
-    while (length + 1 < capacity && src[length]) ++length;
-    char* buffer = static_cast<char*>(::operator new(capacity));
-    std::memcpy(buffer, src, length);
-    buffer[length] = '\0';
-    *reinterpret_cast<char**>(dst) = buffer;
-}
+extern char DAT_143ae2848;  // CNMStr<0x20>
+extern char DAT_143ae2849;  // CNMStr<0x800>
+extern char DAT_143ae28e8;  // CNMStr<0x400>
+extern char DAT_143ae28e9;  // CNMStr<0x40>
+extern char DAT_143ae28ea;  // CNMStr<0x1000>
+extern char DAT_143ae28eb;  // CNMStr<0x100>
+extern char DAT_143ae28ec;  // CNMStr<9>
+extern char DAT_143ae28ed;  // CNMStr<0x15e>
+extern void FUN_1415f99a0(void** slot, const char* value);
+extern void FUN_1415f99f0(void** slot, const char* value);
+extern void FUN_1415f9a40(void** slot, const char* value);
+extern void FUN_1415f9ae0(void** slot, const char* value);
+extern void FUN_1415f9b30(void** slot, const char* value);
 
 class CNMCOClientObject;
 template <class T>
@@ -167,102 +166,123 @@ CNMSingleton<CNMCOClientObject>::CNMSingleton() { }
 template <>
 CNMSingleton<CNMManager>::CNMSingleton() { }
 
-// MS2-FUNCTIONAL: initializes the fixed-capacity CNM string storage and copies at most capacity minus one bytes.
+// MS2-FUNCTIONAL: stores the per-capacity empty sentinel and delegates the copy to the CNMStr set helper.
 // @0x1415e5820
 void FUN_1415e5820(void* p, const void* value)
 {
-    *reinterpret_cast<const char**>(p) = nm_empty; nm_copy_cnm_string(p, static_cast<const char*>(value), 9);
+    *reinterpret_cast<char**>(p) = &DAT_143ae28ec;
+    FUN_1415f99a0(reinterpret_cast<void**>(p), static_cast<const char*>(value));
 }
 
-// MS2-FUNCTIONAL: initializes the fixed-capacity CNM string storage and copies at most capacity minus one bytes.
+// MS2-FUNCTIONAL: stores the per-capacity empty sentinel and delegates the copy to the CNMStr set helper.
 // @0x1415e5860
 void* FUN_1415e5860(void* p)
 {
-    *reinterpret_cast<const char**>(p) = nm_empty; return p;
+    *reinterpret_cast<char**>(p) = &DAT_143ae28ec;
+    return p;
 }
 
-// MS2-FUNCTIONAL: initializes the fixed-capacity CNM string storage and copies at most capacity minus one bytes.
+// MS2-FUNCTIONAL: stores the per-capacity empty sentinel and delegates the copy to the CNMStr set helper.
 // @0x1415e5880
 void* FUN_1415e5880(void* p)
 {
-    *reinterpret_cast<const char**>(p) = nm_empty; return p;
+    *reinterpret_cast<char**>(p) = &DAT_143ae28eb;
+    return p;
 }
 
-// MS2-FUNCTIONAL: initializes the fixed-capacity CNM string storage and copies at most capacity minus one bytes.
+// MS2-FUNCTIONAL: stores the per-capacity empty sentinel and delegates the copy to the CNMStr set helper.
 // @0x1415e58a0
 void* FUN_1415e58a0(void* p, const void* const* value)
 {
-    *reinterpret_cast<const char**>(p) = nm_empty; nm_copy_cnm_string(p, static_cast<const char*>(*value), 0x1000); return p;
+    *reinterpret_cast<char**>(p) = &DAT_143ae28ea;
+    FUN_1415f99f0(reinterpret_cast<void**>(p), static_cast<const char*>(*value));
+    return p;
 }
 
-// MS2-FUNCTIONAL: initializes the fixed-capacity CNM string storage and copies at most capacity minus one bytes.
+// MS2-FUNCTIONAL: stores the per-capacity empty sentinel and delegates the copy to the CNMStr set helper.
 // @0x1415e58e0
 void* FUN_1415e58e0(void* p, const void* value)
 {
-    *reinterpret_cast<const char**>(p) = nm_empty; nm_copy_cnm_string(p, static_cast<const char*>(value), 0x1000); return p;
+    *reinterpret_cast<char**>(p) = &DAT_143ae28ea;
+    FUN_1415f99f0(reinterpret_cast<void**>(p), static_cast<const char*>(value));
+    return p;
 }
 
-// MS2-FUNCTIONAL: initializes the fixed-capacity CNM string storage and copies at most capacity minus one bytes.
+// MS2-FUNCTIONAL: stores the per-capacity empty sentinel and delegates the copy to the CNMStr set helper.
 // @0x1415e5920
 void* FUN_1415e5920(void* p)
 {
-    *reinterpret_cast<const char**>(p) = nm_empty; return p;
+    *reinterpret_cast<char**>(p) = &DAT_143ae28ea;
+    return p;
 }
 
-// MS2-FUNCTIONAL: initializes the fixed-capacity CNM string storage and copies at most capacity minus one bytes.
+// MS2-FUNCTIONAL: stores the per-capacity empty sentinel and delegates the copy to the CNMStr set helper.
 // @0x1415e5940
 void* FUN_1415e5940(void* p, const void* value)
 {
-    *reinterpret_cast<const char**>(p) = nm_empty; nm_copy_cnm_string(p, static_cast<const char*>(value), 0x15e); return p;
+    *reinterpret_cast<char**>(p) = &DAT_143ae28ed;
+    FUN_1415f9a40(reinterpret_cast<void**>(p), static_cast<const char*>(value));
+    return p;
 }
 
-// MS2-FUNCTIONAL: initializes the fixed-capacity CNM string storage and copies at most capacity minus one bytes.
+// MS2-FUNCTIONAL: stores the per-capacity empty sentinel and delegates the copy to the CNMStr set helper.
 // @0x1415e5980
 void* FUN_1415e5980(void* p)
 {
-    *reinterpret_cast<const char**>(p) = nm_empty; return p;
+    *reinterpret_cast<char**>(p) = &DAT_143ae28ed;
+    return p;
 }
 
-// MS2-FUNCTIONAL: initializes the fixed-capacity CNM string storage and copies at most capacity minus one bytes.
+// MS2-FUNCTIONAL: stores the per-capacity empty sentinel and delegates the copy to the CNMStr set helper.
 // @0x1415e5a40
 void* FUN_1415e5a40(void* p, const void* const* value)
 {
-    *reinterpret_cast<const char**>(p) = nm_empty; nm_copy_cnm_string(p, static_cast<const char*>(*value), 0x40); return p;
+    *reinterpret_cast<char**>(p) = &DAT_143ae28e9;
+    FUN_1415f9ae0(reinterpret_cast<void**>(p), static_cast<const char*>(*value));
+    return p;
 }
 
-// MS2-FUNCTIONAL: initializes the fixed-capacity CNM string storage and copies at most capacity minus one bytes.
+// MS2-FUNCTIONAL: stores the per-capacity empty sentinel and delegates the copy to the CNMStr set helper.
 // @0x1415e5a80
 void* FUN_1415e5a80(void* p, const void* value)
 {
-    *reinterpret_cast<const char**>(p) = nm_empty; nm_copy_cnm_string(p, static_cast<const char*>(value), 0x40); return p;
+    *reinterpret_cast<char**>(p) = &DAT_143ae28e9;
+    FUN_1415f9ae0(reinterpret_cast<void**>(p), static_cast<const char*>(value));
+    return p;
 }
 
-// MS2-FUNCTIONAL: initializes the fixed-capacity CNM string storage and copies at most capacity minus one bytes.
+// MS2-FUNCTIONAL: stores the per-capacity empty sentinel and delegates the copy to the CNMStr set helper.
 // @0x1415e5ac0
 void* FUN_1415e5ac0(void* p)
 {
-    *reinterpret_cast<const char**>(p) = nm_empty; return p;
+    *reinterpret_cast<char**>(p) = &DAT_143ae28e9;
+    return p;
 }
 
-// MS2-FUNCTIONAL: initializes the fixed-capacity CNM string storage and copies at most capacity minus one bytes.
+// MS2-FUNCTIONAL: stores the per-capacity empty sentinel and delegates the copy to the CNMStr set helper.
 // @0x1415e5ae0
 void* FUN_1415e5ae0(void* p, const void* const* value)
 {
-    *reinterpret_cast<const char**>(p) = nm_empty; nm_copy_cnm_string(p, static_cast<const char*>(*value), 0x400); return p;
+    *reinterpret_cast<char**>(p) = &DAT_143ae28e8;
+    FUN_1415f9b30(reinterpret_cast<void**>(p), static_cast<const char*>(*value));
+    return p;
 }
 
-// MS2-FUNCTIONAL: initializes the fixed-capacity CNM string storage and copies at most capacity minus one bytes.
+// MS2-FUNCTIONAL: stores the per-capacity empty sentinel and delegates the copy to the CNMStr set helper.
 // @0x1415e5b20
 void* FUN_1415e5b20(void* p, const void* value)
 {
-    *reinterpret_cast<const char**>(p) = nm_empty; nm_copy_cnm_string(p, static_cast<const char*>(value), 0x400); return p;
+    *reinterpret_cast<char**>(p) = &DAT_143ae28e8;
+    FUN_1415f9b30(reinterpret_cast<void**>(p), static_cast<const char*>(value));
+    return p;
 }
 
-// MS2-FUNCTIONAL: initializes the fixed-capacity CNM string storage and copies at most capacity minus one bytes.
+// MS2-FUNCTIONAL: stores the per-capacity empty sentinel and delegates the copy to the CNMStr set helper.
 // @0x1415e5b60
 void* FUN_1415e5b60(void* p)
 {
-    *reinterpret_cast<const char**>(p) = nm_empty; return p;
+    *reinterpret_cast<char**>(p) = &DAT_143ae28e8;
+    return p;
 }
 
 // MS2-FUNCTIONAL: copies the 12-byte record exactly as recovered from the loop in the decompilation.
@@ -1696,30 +1716,30 @@ Unk_StlElem<0x20>* FUN_1415e50a0(Unk_StlElem<0x20>* p)
 // MS2-FUNCTIONAL: initializes the recovered fixed-capacity string copy and delegates content ownership.
 // @0x1415e59a0
 template<> CNMStr<0x20>::CNMStr(const CNMStr<0x20>& r)
-    : m_p(nullptr)
+    : m_p(&DAT_143ae2848)
 {
     FUN_1415f9a90(this, r.m_p);
 }
 
-// MS2-FUNCTIONAL: initializes the recovered fixed-capacity string to its shared empty value.
+// MS2-FUNCTIONAL: initializes the fixed-capacity string to its per-capacity empty sentinel.
 // @0x1415e5a20
 template<> CNMStr<0x20>::CNMStr()
-    : m_p(nullptr)
+    : m_p(&DAT_143ae2848)
 {
 }
 
 // MS2-FUNCTIONAL: initializes the recovered fixed-capacity string copy and delegates content ownership.
 // @0x1415e5b80
 template<> CNMStr<0x800>::CNMStr(const CNMStr<0x800>& r)
-    : m_p(nullptr)
+    : m_p(&DAT_143ae2849)
 {
     FUN_1415f9b80(this, r.m_p);
 }
 
-// MS2-FUNCTIONAL: initializes the recovered fixed-capacity string to its shared empty value.
+// MS2-FUNCTIONAL: initializes the fixed-capacity string to its per-capacity empty sentinel.
 // @0x1415e5c00
 template<> CNMStr<0x800>::CNMStr()
-    : m_p(nullptr)
+    : m_p(&DAT_143ae2849)
 {
 }
 

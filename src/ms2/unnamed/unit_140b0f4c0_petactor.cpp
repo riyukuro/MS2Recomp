@@ -17,6 +17,7 @@
 // MS2-PIN: ??_7CPet@@6BCallbackObject@NiActorManager@@@ 0x142dd9cf8
 #define MS2_THIS_FILE ""
 #include "ms2/placeholder/ms2stdafx.h"
+#include "ms2/commonfiles/skillactionadditional.h"
 
 #include <new>
 #include <ctype.h>
@@ -80,13 +81,15 @@ class Unk_OwnerPC : public PCBase { public: MS2Ptr<CGemPetSkin> FUN_14165df00();
 
 // The pet-skill service (skill table, skill service, pet food table).
 class Unk_SkillObj : public CPtred { public: bool FUN_140804450(); };
-class Unk_PetSkillElem : public CPtred { public: int m_nSkillId; unsigned short m_nLevel; };
-class Unk_PetSkillLevel : public CPtred { public: char m_pad_18[0x98 - sizeof(CPtred)]; std::vector<MS2Ptr<Unk_PetSkillElem> > m_vElems; };
+class Unk_PetSkillLevel : public CPtred { public: char m_pad_18[0x98 - sizeof(CPtred)]; std::vector<MS2Ptr<SkillActionAdditional> > m_vElems; };
+SkillActionAdditional* FUN_140b122e0(MS2Ptr<SkillActionAdditional>* p);   // .get() (in-unit copy, defined below)
 class Unk_PetSkillTable { public: MS2Ptr<Unk_PetSkillLevel> FUN_1407ee2f0(int nSkillId, unsigned short nLevel); };
 Unk_PetSkillTable* FUN_1401958b0();
 class Unk_ItemEquipData : public CItemData { public: int FUN_140526810(unsigned short nLevel); };
 struct Unk_PetFoodRule { int m_nKey; float m_fRate; int m_nItemId; };       // key +0, rate +4, item +8
-class Unk_PetSkillSvcInner { public: char m_pad_00[0x68]; CAtlMap<int, Unk_PetFoodRule> m_map; MS2Ptr<Unk_ItemEquipData> FUN_140c892c0(int nItemId); int FUN_140c89220(int nItemId); };
+// The pet food book: its rule map sits at +0 (stateidle.cpp's Unk_SiPetBook).
+struct Unk_PetFoodBook { CAtlMap<int, Unk_PetFoodRule> m_map; };
+class Unk_PetSkillSvcInner { public: char m_pad_00[0x68]; Unk_PetFoodBook m_book; MS2Ptr<Unk_ItemEquipData> FUN_140c892c0(int nItemId); int FUN_140c89220(int nItemId); };
 class Unk_PetSkillSvc { };
 Unk_PetSkillSvc* FUN_140535320();
 Unk_PetSkillSvcInner* FUN_140c8b450(Unk_PetSkillSvc* p);
@@ -101,6 +104,7 @@ struct Unk_PetAnimLines
     MS2Ptr<Unk_PetAnimLine>* m_pData;                                       // +8
     bool FUN_140b123c0() const { return m_pData == 0; }                     // @0x140b123c0
     const MS2Ptr<Unk_PetAnimLine>& FUN_140a4ffc0(unsigned __int64 nIdx) const;
+    MS2Ptr<Unk_PetAnimLine>& FUN_14078f350(__int64 nIdx);                  // the non-const element
 };
 class Unk_PetAnimRow : public CPtred { public: char m_pad_18[0x68 - sizeof(CPtred)]; Unk_PetAnimLines m_lines; };
 MS2Ptr<Unk_PetAnimRow> FUN_140856fa0(int nNpcId, int nAnimId);
@@ -121,7 +125,7 @@ bool FUN_14028d470(float a, float b);
 
 // Pet-related helpers of other units.
 COptimizer* FUN_1409f7c90();                                                // the optimizer
-int FUN_140b11c20(CAtlMap<int, Unk_PetFoodRule>* pMap, PCBase* pPC);
+int FUN_140b11c20(Unk_PetFoodBook* pBook, PCBase* pPC);
 int FUN_140b118f0(int nItemId, PCBase* pPC);
 unsigned FUN_140b119c0(int nItemId, PCBase* pPC);
 
@@ -153,8 +157,20 @@ inline PCBase* FUN_140b120b0(GameObject* p)
 }
 MS2Ptr<UITamingBar::Entity> FUN_140e97f80(int nActorId);
 void FUN_140e98000(int nActorId);
-void FUN_140939a10();
-bool FUN_140da4fe0(void* a, void* b);
+// The npc-removed notice (?\notifychangebuff.cpp) posted when the pet leaves the world; the npc stand-in matches
+// scenestategame.cpp's, whose SmartPointer(T*) / notice ctor instances the exe shares.
+class Unk_SSGNpc;
+class NotifyRemoveNpc : public NotifyObject
+{
+public:
+    NotifyRemoveNpc(efd::SmartPointer<Unk_SSGNpc> spNpc);   // 0x140db4930
+    efd::SmartPointer<Unk_SSGNpc> m_spNpc;                  // +0x18
+};
+MS2_CHECK_SIZE(NotifyRemoveNpc, 0x20);
+template <> efd::SmartPointer<Unk_SSGNpc>::SmartPointer(Unk_SSGNpc* pObject);   // 0x140aabff0
+template <> efd::SmartPointer<Unk_SSGNpc>::~SmartPointer();                          // 0x140a7b530
+class Unk_PetNotifyCenter { public: void FUN_140da4fe0(MS2Ptr<NotifyObject> spNotify); };   // NotifySystem::Post
+Unk_PetNotifyCenter* FUN_140939a10();
 
 // The chat balloon component the actor owns (+0xaa8 of PCBase).
 class Unk_PCBaseComp_aa8 : public UIChatBalloon::Entity { };
@@ -305,12 +321,12 @@ void CPet::vfunc_16()
 }
 
 // @0x140b0fe30
-// MS2-FUNCTIONAL: the deferred world callback wrapper (CDllIsolationWrapperBase) is not recovered
 void CPet::vfunc_125(int n)
 {
     m_unk_15c = 1;
     FUN_1410932c0(0);
     FUN_1403ed2d0()->FUN_141bbbcf0(FUN_14123c580(), 1);
+    FUN_140939a10()->FUN_140da4fe0(MS2Ptr<NotifyObject>(new NotifyRemoveNpc(efd::SmartPointer<Unk_SSGNpc>((Unk_SSGNpc*)this))));
 }
 
 // @0x140b0ff40
@@ -449,51 +465,51 @@ void CPet::FUN_140b10400()
 // MS2-FUNCTIONAL: the Unk_EffectTarget locals are destroyed through the shared COMDAT 0x1405a89e0
 void CPet::FUN_140b10510()
 {
-    if (FUN_140b10c20() == 0)
+    if (FUN_140b10c20() != 0)
     {
-        if (m_nFxMax != 0)
-        {
-            FUN_1403ed280()->FUN_1411a6060(m_nFxMax);
-            m_nFxMax = 0;
-        }
-    }
-    else if (m_nFxMax == 0)
-    {
-        void* pLocal = FUN_1403ed2d0()->FUN_141bd0cc0();
-        if (pLocal != 0)
-        {
-            if (static_cast<PCBase*>(pLocal)->FUN_14123c580() == GetKind())
-            {
-                Unk_EffectTarget kTarget;
-                kTarget.m_strName = *FUN_140298f80(&Client::Constants::GetInstance()->PetTamingMaxPointEffect);
-                kTarget.m_nKind = 0;
-                kTarget.FUN_140a53190(FUN_14123c580());
-                m_nFxMax = FUN_1403ed280()->FUN_1411a49c0(kTarget);
-            }
-        }
-    }
-    if (GetOwnerId() == 0 && GetKind() != 0)
-    {
-        if (m_nFxOther == 0)
+        if (m_nFxMax == 0)
         {
             void* pLocal = FUN_1403ed2d0()->FUN_141bd0cc0();
             if (pLocal != 0)
             {
-                Unk_EffectTarget kTarget;
-                if (GetKind() == static_cast<PCBase*>(pLocal)->FUN_14123c580())
-                    kTarget.m_strName = FUN_140291c10(m_nGradeFx);
-                else
-                    kTarget.m_strName = *FUN_140298f80(&Client::Constants::GetInstance()->PetTrapAreaEffectOtherUser);
-                kTarget.m_nKind = 0;
-                kTarget.FUN_140a53190(FUN_14123c580());
-                m_nFxOther = FUN_1403ed280()->FUN_1411a49c0(kTarget);
+                if (static_cast<PCBase*>(pLocal)->FUN_14123c580() == GetKind())
+                {
+                    Unk_EffectTarget kTarget;
+                    kTarget.m_strName = *FUN_140298f80(&Client::Constants::GetInstance()->PetTamingMaxPointEffect);
+                    kTarget.m_nKind = 0;
+                    kTarget.FUN_140a53190(FUN_14123c580());
+                    m_nFxMax = FUN_1403ed280()->FUN_1411a49c0(kTarget);
+                }
             }
         }
     }
-    else if (m_nFxOther != 0)
+    else if (m_nFxMax != 0)
     {
-        FUN_1403ed280()->FUN_1411a6060(m_nFxOther);
-        m_nFxOther = 0;
+        FUN_1403ed280()->FUN_1411a6060(m_nFxMax);
+        m_nFxMax = 0;
+    }
+    if (GetOwnerId() != 0 || GetKind() == 0)
+    {
+        if (m_nFxOther != 0)
+        {
+            FUN_1403ed280()->FUN_1411a6060(m_nFxOther);
+            m_nFxOther = 0;
+        }
+    }
+    else if (m_nFxOther == 0)
+    {
+        void* pLocal = FUN_1403ed2d0()->FUN_141bd0cc0();
+        if (pLocal != 0)
+        {
+            Unk_EffectTarget kTarget;
+            if (GetKind() == static_cast<PCBase*>(pLocal)->FUN_14123c580())
+                kTarget.m_strName = FUN_140291c10(m_nGradeFx);
+            else
+                kTarget.m_strName = *FUN_140298f80(&Client::Constants::GetInstance()->PetTrapAreaEffectOtherUser);
+            kTarget.m_nKind = 0;
+            kTarget.FUN_140a53190(FUN_14123c580());
+            m_nFxOther = FUN_1403ed280()->FUN_1411a49c0(kTarget);
+        }
     }
 }
 
@@ -525,22 +541,22 @@ int CPet::GetKind()
 // @0x140b10a10
 void CPet::FUN_140b10a10(unsigned __int64 nPoint)
 {
-    bool bRename = false;
+    int bRename = 0;
     if (m_nTamingPoint != nPoint)
     {
         if (nPoint == *Client::Constants::GetInstance()->TamingPetMaxPoint.Get())
         {
             void* pLocal = FUN_1403ed2d0()->FUN_141bd0cc0();
             if (pLocal != 0 && static_cast<PCBase*>(pLocal)->FUN_14123c580() == GetKind())
-                FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_pet_msg_taming_max_point")), 1, 1);
-            bRename = true;
+                FUN_1412751f0(GetStringCommonByKey(L"s_pet_msg_taming_max_point"), 1, 1);
+            bRename = 1;
             goto Store;
         }
     }
     if (FUN_140b10c20() != 0)
     {
         if (nPoint != *Client::Constants::GetInstance()->TamingPetMaxPoint.Get())
-            bRename = true;
+            bRename = 1;
     }
 Store:
     m_nTamingPoint = nPoint;
@@ -563,7 +579,6 @@ int CPet::FUN_140b10c20()
 }
 
 // @0x140b10c80
-// MS2-FUNCTIONAL: the temporaries of the prefix / format lookups are sequenced differently
 void CPet::FUN_140b10c80(CStringW str)
 {
     CStringW strName(str);
@@ -576,11 +591,11 @@ void CPet::FUN_140b10c80(CStringW str)
             if (GetOwnerId() == 0)
             {
                 CStringW strPrefix;
-                if (FUN_140b10c20() == 0)
-                    strPrefix = GetStringCommonByKey(CStringW(L"s_pet_tamingnpc_default_perfix_name"));
+                if (FUN_140b10c20() != 0)
+                    strPrefix = GetStringCommonByKey(L"s_pet_tamingnpc_max_perfix_name");
                 else
-                    strPrefix = GetStringCommonByKey(CStringW(L"s_pet_tamingnpc_max_perfix_name"));
-                strName = FUN_140656190(GetStringCommonByKey(CStringW(L"s_pet_tamingnpc_name")), strPrefix, strName);
+                    strPrefix = GetStringCommonByKey(L"s_pet_tamingnpc_default_perfix_name");
+                strName = FUN_140656190(GetStringCommonByKey(L"s_pet_tamingnpc_name"), strPrefix, strName);
             }
             vfunc_76(strName);
         }
@@ -619,14 +634,13 @@ MS2Ptr<UITamingBar::Entity> CPet::vfunc_129()
         return MS2Ptr<UITamingBar::Entity>(0);
     if (m_spBar == 0)
     {
-        if (!(m_spBar = FUN_140e97f80(m_unk_70)).IsNull())
+        if ((m_spBar = FUN_140e97f80(m_unk_70)).get())
             m_spBar->FUN_140e97ca0(0);
     }
     return m_spBar;
 }
 
 // @0x140b11180
-// MS2-FUNCTIONAL: the temporaries of the item-data lookups
 int CPet::FUN_140b11180()
 {
     PCBase* pOwner = FUN_140b10360();
@@ -638,15 +652,13 @@ int CPet::FUN_140b11180()
         return 0;
     if (m_tm10a8.FUN_140268870(1000) != 0)
     {
-        int nItemId = FUN_140b11c20(&FUN_140c8b450(FUN_140535320())->m_map, pOwner);
+        int nItemId = FUN_140b11c20(&FUN_140c8b450(FUN_140535320())->m_book, pOwner);
         if (nItemId == 0)
             return 0;
         MS2Ptr<CItemData> spData = FUN_14053f870(nItemId);
         if (spData == 0)
             return 0;
-        short nLevel = spData->FUN_14053dc40();
-        int nSkillId = spData->FUN_14053dc20();
-        if (FUN_140b11810(pOwner->FUN_14166c930(), nSkillId, nLevel) != 0)
+        if (FUN_140b11810(pOwner->FUN_14166c930(), spData->FUN_14053dc20(), spData->FUN_14053dc40()) != 0)
         {
             if (FUN_140c8b430(FUN_140535320())->FUN_140c89220(nItemId) != 0)
                 return 1;
@@ -691,35 +703,29 @@ int CPet::vfunc_127()
 }
 
 // @0x140b114e0
-// MS2-FUNCTIONAL: the nested null checks of the animation row lookup
 void CPet::FUN_140b114e0(int nAnimId)
 {
-    if (m_nTargetId != nAnimId && vfunc_127() != 0)
+    if (m_nTargetId == nAnimId)
+        return;
+    if (vfunc_127() == 0)
+        return;
+    MS2Ptr<Unk_PetAnimRow> spRow = FUN_140856fa0(FUN_141092fa0(), nAnimId);
+    if (spRow == 0)
+        return;
+    if (spRow->m_lines.FUN_140b123c0())
+        return;
+    MS2Ptr<Unk_PetAnimLine> spLine = spRow->m_lines.FUN_140a4ffc0(0);
+    if (spLine == 0)
+        return;
+    CStringW strText(spLine->m_strText);
+    if (strText.GetLength() > 0)
     {
-        MS2Ptr<Unk_PetAnimRow> spRow = FUN_140856fa0(FUN_141092fa0(), nAnimId);
-        if (!spRow.IsNull())
-        {
-            if (!spRow->m_lines.FUN_140b123c0())
-            {
-                MS2Ptr<Unk_PetAnimLine> spLine = spRow->m_lines.FUN_140a4ffc0(0);
-                if (!(spLine == 0))
-                {
-                    CStringW strText(spLine->m_strText);
-                    if (strText.GetLength() > 0)
-                    {
-                        FUN_14166fff0(CStringW(strText));
-                        m_nTargetId = nAnimId;
-                        m_nIdleMs = 0;
-                    }
-                    if (spRow->m_lines.FUN_140a4ffc0(0)->m_strEffect.GetLength() > 0)
-                    {
-                        NiPoint3 kPos = vfunc_18();
-                        FUN_1403ed280()->FUN_1411a4f40(CString(spRow->m_lines.FUN_140a4ffc0(0)->m_strEffect), kPos);
-                    }
-                }
-            }
-        }
+        FUN_14166fff0(CStringW(strText));
+        m_nTargetId = nAnimId;
+        m_nIdleMs = 0;
     }
+    if (spLine->m_strEffect.GetLength() > 0)
+        FUN_1403ed280()->FUN_1411a4f40(CString(spRow->m_lines.FUN_14078f350(0)->m_strEffect), vfunc_18());
 }
 
 // @0x140b11760
@@ -752,14 +758,12 @@ int CPet::FUN_140b11810(int nSkillType, unsigned nSkillId, unsigned short nLevel
 }
 
 // @0x140b118f0
-// MS2-FUNCTIONAL: the cooldown test reaches the skill system through the MyPC view
 int FUN_140b118f0(int nItemId, PCBase* pPC)
 {
     MS2Ptr<CItemData> spData = FUN_14053f870(nItemId);
     if (spData == 0)
         return 0;
-    int nSkillId = spData->FUN_14053dc20();
-    if (static_cast<MyPC*>(pPC)->FUN_141523bc0()->FUN_141765fe0(nSkillId, 0) > 0.0f)
+    if (static_cast<MyPC*>(pPC)->FUN_141523bc0()->FUN_141765fe0(spData->FUN_14053dc20(), 0) > 0.0f)
         return 1;
     return 0;
 }
@@ -768,30 +772,30 @@ int FUN_140b118f0(int nItemId, PCBase* pPC)
 unsigned FUN_140b119c0(int nItemId, PCBase* pPC)
 {
     MS2Ptr<CItemData> spData = FUN_14053f870(nItemId);
-    if (spData.IsNull())
+    if (spData == 0)
         return 0;
-    unsigned short nLevel = spData->FUN_14053dc40();
-    int nSkillId = spData->FUN_14053dc20();
-    MS2Ptr<Unk_PetSkillLevel> spLevel = FUN_1401958b0()->FUN_1407ee2f0(nSkillId, nLevel);
-    if (spLevel.IsNull())
+    MS2Ptr<Unk_PetSkillLevel> spLevel = FUN_1401958b0()->FUN_1407ee2f0(spData->FUN_14053dc20(), spData->FUN_14053dc40());
+    if (spLevel == 0)
         return 0;
-    std::vector<MS2Ptr<Unk_PetSkillElem> >& vElems = spLevel->m_vElems;
-    for (std::vector<MS2Ptr<Unk_PetSkillElem> >::iterator it = vElems.begin(); it != vElems.end(); ++it)
+    std::vector<MS2Ptr<SkillActionAdditional> >& vElems = spLevel->m_vElems;
+    for (MS2Ptr<SkillActionAdditional>* it = vElems._Unchecked_begin(), *itEnd = vElems._Unchecked_end(); it != itEnd; ++it)
     {
-        if (it->get() != 0)
+        MS2Ptr<SkillActionAdditional>& e = *it;
+        if (FUN_140b122e0(&e) != 0)
         {
-            if ((*it)->m_nSkillId == 0)
+            if (!pPC->FUN_1416749a0()->FUN_140970020(e->m_nAdditionalID, e->m_nLevel, 0, 1))
                 return 0;
-            return pPC->FUN_1416749a0()->FUN_140970020((*it)->m_nSkillId, (*it)->m_nLevel, 0, 1) ? 1 : 0;
+            return e->m_nAdditionalID != 0 ? 1 : 0;
         }
     }
     return 0;
 }
 
 // @0x140b11c20
-int FUN_140b11c20(CAtlMap<int, Unk_PetFoodRule>* pMap, PCBase* pPC)
+int FUN_140b11c20(Unk_PetFoodBook* pBook, PCBase* pPC)
 {
-    if (pPC->FUN_141676a10() == 0)
+    void* pObj = pPC->FUN_141676a10();
+    if (pObj == 0)
         return 0;
     __int64 nMax = pPC->FUN_141670a30(4);
     __int64 nCur = pPC->FUN_141670a00(4);
@@ -800,35 +804,36 @@ int FUN_140b11c20(CAtlMap<int, Unk_PetFoodRule>* pMap, PCBase* pPC)
     float fPercent = (float)(((double)nCur / (double)nMax) * 100.0);
     int nBest = 0;
     float fBest = 100.0f;
-    for (POSITION pos = pMap->GetStartPosition(); pos != 0; pMap->GetNext(pos))
+    for (POSITION pos = pBook->m_map.GetStartPosition(); pos != 0; pBook->m_map.GetNext(pos))
     {
-        const Unk_PetFoodRule& kRule = pMap->GetAt(pos)->m_value;
-        if (kRule.m_nItemId != 0 && kRule.m_fRate >= 1.0f)
+        const Unk_PetFoodRule& kRule = pBook->m_map.GetValueAt(pos);
+        if (kRule.m_nItemId == 0)
+            continue;
+        if (kRule.m_fRate < 1.0f)
+            continue;
+        MS2Ptr<Unk_ItemEquipData> spData = FUN_140c8b430(FUN_140535320())->FUN_140c892c0(kRule.m_nItemId);
+        if (spData == 0)
+            continue;
+        if (spData->FUN_140526810(pPC->vfunc_78()) == 0)
+            continue;
+        if (FUN_140b118f0(kRule.m_nItemId, pPC) != 0)
+            continue;
+        if (FUN_140b119c0(kRule.m_nItemId, pPC) != 0)
+            continue;
+        if (fPercent <= kRule.m_fRate && kRule.m_fRate < fBest)
         {
-            MS2Ptr<Unk_ItemEquipData> spData = FUN_140c8b430(FUN_140535320())->FUN_140c892c0(kRule.m_nItemId);
-            if (!spData.IsNull())
-            {
-                if (spData->FUN_140526810(pPC->vfunc_78()) != 0)
-                {
-                    if (FUN_140b118f0(kRule.m_nItemId, pPC) == 0 && FUN_140b119c0(kRule.m_nItemId, pPC) == 0)
-                    {
-                        if (fPercent <= kRule.m_fRate && kRule.m_fRate < fBest)
-                        {
-                            nBest = kRule.m_nItemId;
-                            fBest = kRule.m_fRate;
-                        }
-                    }
-                }
-            }
+            nBest = kRule.m_nItemId;
+            fBest = kRule.m_fRate;
         }
     }
     return nBest;
 }
 
 // @0x140b11e90
-int FUN_140b11e90(CAtlMap<int, Unk_PetFoodRule>* pMap, PCBase* pPC)
+int FUN_140b11e90(Unk_PetFoodBook* pBook, PCBase* pPC)
 {
-    if (pPC->FUN_141676a10() == 0)
+    void* pObj = pPC->FUN_141676a10();
+    if (pObj == 0)
         return 0;
     __int64 nMax = pPC->FUN_141670a30(4);
     __int64 nCur = pPC->FUN_141670a00(4);
@@ -837,25 +842,33 @@ int FUN_140b11e90(CAtlMap<int, Unk_PetFoodRule>* pMap, PCBase* pPC)
     float fPercent = ((float)nCur / (float)nMax) * 100.0f;
     int nBest = 0;
     float fBest = 100.0f;
-    for (POSITION pos = pMap->GetStartPosition(); pos != 0; pMap->GetNext(pos))
+    for (POSITION pos = pBook->m_map.GetStartPosition(); pos != 0; pBook->m_map.GetNext(pos))
     {
-        const Unk_PetFoodRule& kRule = pMap->GetAt(pos)->m_value;
-        if (kRule.m_nItemId != 0 && kRule.m_fRate >= 1.0f)
+        const Unk_PetFoodRule& kRule = pBook->m_map.GetValueAt(pos);
+        if (kRule.m_nItemId == 0)
+            continue;
+        if (kRule.m_fRate < 1.0f)
+            continue;
+        MS2Ptr<Unk_ItemEquipData> spData = FUN_140c8b430(FUN_140535320())->FUN_140c892c0(kRule.m_nItemId);
+        if (spData.get() != 0 ? true : false)
         {
-            MS2Ptr<Unk_ItemEquipData> spData = FUN_140c8b430(FUN_140535320())->FUN_140c892c0(kRule.m_nItemId);
-            if (spData.get() != 0)
-            {
-                if (spData->FUN_140526810(pPC->vfunc_78()) == 0)
-                    continue;
-            }
-            if (fPercent <= kRule.m_fRate && kRule.m_fRate < fBest)
-            {
-                nBest = kRule.m_nItemId;
-                fBest = kRule.m_fRate;
-            }
+            if (spData->FUN_140526810(pPC->vfunc_78()) == 0)
+                continue;
+        }
+        if (fPercent <= kRule.m_fRate && kRule.m_fRate < fBest)
+        {
+            nBest = kRule.m_nItemId;
+            fBest = kRule.m_fRate;
         }
     }
     return nBest;
 }
 
 MS2_EMIT_CRT_MEMMOVE_S();
+
+// @0x140b122e0
+// The element's .get(), as the exe's in-unit MS2Ptr look-alike copy (the smart pointer's object at +8).
+SkillActionAdditional* FUN_140b122e0(MS2Ptr<SkillActionAdditional>* p)
+{
+    return *(SkillActionAdditional**)((char*)p + 8);
+}

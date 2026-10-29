@@ -22,6 +22,10 @@
 #include "ms2/ms2format.h"
 #include <efd/MemHint.h>
 #include <efd/MemObject.h>
+#ifdef __clang__
+// vfunc_25 passes the address of the temporary CStringW from vfunc_77 (an MSVC extension).
+#pragma clang diagnostic ignored "-Waddress-of-temporary"
+#endif
 
 // ---- out-of-unit callees ----
 class Unk_ItemEquipData : public CItemData { };         // CItem::FUN_140527840's record
@@ -147,46 +151,41 @@ int LapenshardSlot::vfunc_17()
 // @0x140a6ea50
 int LapenshardSlot::vfunc_18(void* p)
 {
-    DragSlot* pFrom = static_cast<DragSlot*>(p);
     MyPC* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pPc == 0)
-        return pFrom->vfunc_10();
-    LapenshardSlot* pFromSlot = FUN_140a6fef0(pFrom);
+        return static_cast<DragSlot*>(p)->vfunc_10();
+    LapenshardSlot* pFromSlot = FUN_140a6fef0(static_cast<DragSlot*>(p));
     if (pFromSlot == 0)
-        return pFrom->vfunc_10();
+        return static_cast<DragSlot*>(p)->vfunc_10();
     if (pFromSlot->GetSlot() != 0)
         return pFromSlot->vfunc_10();
     if (GetSlot() == 0)
-        return pFrom->vfunc_10();
-    int nKind = FUN_140a6f880();
-    if (nKind != pFromSlot->FUN_140a6f880())
+        return static_cast<DragSlot*>(p)->vfunc_10();
+    if (FUN_140a6f880() != pFromSlot->FUN_140a6f880())
     {
         FUN_140d73bc0(0xd3, 0, 0, CStringW(L""));
-        return pFrom->vfunc_10();
+        return static_cast<DragSlot*>(p)->vfunc_10();
     }
     MS2Ptr<CItem> spItem = pFromSlot->vfunc_25();
-    if (!(spItem == 0))
+    if (spItem == 0)
+        return static_cast<DragSlot*>(p)->vfunc_10();
+    if (spItem->FUN_140527710() > (unsigned short)pPc->vfunc_78())
+        return static_cast<DragSlot*>(p)->vfunc_10();
+    int nItemId = spItem->FUN_1405276c0();
+    int nCurrent = pPc->FUN_14152f770((Unk_MyPCLapenSlot)GetSlot());
+    if (pPc->FUN_14152f8b0(nItemId) != 0)
     {
-        unsigned nLevel = spItem->FUN_140527710();
-        if ((unsigned short)pPc->vfunc_78() < nLevel)
-            return pFrom->vfunc_10();
-        int nItemId = spItem->FUN_1405276c0();
-        int nCurrent = pPc->FUN_14152f770((Unk_MyPCLapenSlot)GetSlot());
-        if (pPc->FUN_14152f8b0(nItemId) != 0)
+        int nCurrentGroup = FUN_1409c4b30()->FUN_1405b59d0(nCurrent);
+        int nGroup = FUN_1409c4b30()->FUN_1405b59d0(nItemId);
+        if (nCurrentGroup == 0 || nCurrentGroup != nGroup || nItemId == nCurrent)
         {
-            int nCurrentGroup = FUN_1409c4b30()->FUN_1405b59d0(nCurrent);
-            int nGroup = FUN_1409c4b30()->FUN_1405b59d0(nItemId);
-            if (nCurrentGroup == 0 || nCurrentGroup != nGroup || nItemId == nCurrent)
-            {
-                FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_msg_shortcutkey_invalid_already_same_lapenshard")), 1, 1);
-                return pFrom->vfunc_10();
-            }
+            FUN_1412751f0(GetStringCommonByKey(L"s_msg_shortcutkey_invalid_already_same_lapenshard"), 1, 1);
+            return static_cast<DragSlot*>(p)->vfunc_10();
         }
-        SendLapenshard(GetSlot(), spItem->FUN_140526a50());
-        FUN_141404930(spItem->FUN_140526a50());
-        return pFrom->vfunc_10();
     }
-    return pFrom->vfunc_10();
+    SendLapenshard(GetSlot(), spItem->FUN_140526a50());
+    FUN_141404930(spItem->FUN_140526a50());
+    return static_cast<DragSlot*>(p)->vfunc_10();
 }
 
 // @0x140a6ee30
@@ -196,43 +195,42 @@ int LapenshardSlot::vfunc_14()
     if (pPc == 0)
         return 0;
     MS2Ptr<CItem> spItem = vfunc_25();
-    if (!(spItem == 0))
+    if (spItem == 0)
+        return 0;
+    if (GetSlot() == 0)
     {
-        if (GetSlot() == 0)
+        int nKind = FUN_140a6f880();
+        int nSlot = pPc->FUN_14152fd50(nKind);
+        if (nSlot == 0)
+            return 0;
+        int nItemId = spItem->FUN_1405276c0();
+        int nCurrent = pPc->FUN_14152f770((Unk_MyPCLapenSlot)nSlot);
+        if (pPc->FUN_14152f8b0(nItemId) != 0)
         {
-            int nSlot = pPc->FUN_14152fd50(FUN_140a6f880());
-            if (nSlot == 0)
-                return 0;
-            int nItemId = spItem->FUN_1405276c0();
-            int nCurrent = pPc->FUN_14152f770((Unk_MyPCLapenSlot)nSlot);
-            if (pPc->FUN_14152f8b0(nItemId) != 0)
+            int nGroup = FUN_1409c4b30()->FUN_1405b59d0(nItemId);
+            int nCurrentGroup = FUN_1409c4b30()->FUN_1405b59d0(nCurrent);
+            if (nCurrentGroup == 0 || nCurrentGroup != nGroup || nItemId == nCurrent)
             {
-                int nGroup = FUN_1409c4b30()->FUN_1405b59d0(nItemId);
-                int nCurrentGroup = FUN_1409c4b30()->FUN_1405b59d0(nCurrent);
-                if (nCurrentGroup == 0 || nCurrentGroup != nGroup || nItemId == nCurrent)
-                {
-                    FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_msg_shortcutkey_invalid_already_same_lapenshard")), 1, 1);
-                    return 0;
-                }
-            }
-            SendLapenshard(nSlot, spItem->FUN_140526a50());
-        }
-        else
-        {
-            if (FUN_140a6f880() != 1)
-            {
-                FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_msg_shortcutkey_invalid_lapenshard")), 1, 1);
+                FUN_1412751f0(GetStringCommonByKey(L"s_msg_shortcutkey_invalid_already_same_lapenshard"), 1, 1);
                 return 0;
             }
-            if (pPc->FUN_14152f860(spItem->FUN_1405276c0()) == 0)
-                return 0;
-            int nPage = FUN_1409331f0()->GetPage();
-            FUN_14092fac0(spItem->FUN_140527840()->FUN_14053dc20(), 0, 0, nPage);
         }
-        FUN_141404930(spItem->FUN_140526a50());
-        return 1;
+        SendLapenshard(nSlot, spItem->FUN_140526a50());
     }
-    return 0;
+    else
+    {
+        if (FUN_140a6f880() != 1)
+        {
+            FUN_1412751f0(GetStringCommonByKey(L"s_msg_shortcutkey_invalid_lapenshard"), 1, 1);
+            return 0;
+        }
+        if (pPc->FUN_14152f860(spItem->FUN_1405276c0()) == 0)
+            return 0;
+        int nPage = FUN_1409331f0()->GetPage();
+        FUN_14092fac0(spItem->FUN_140527840()->FUN_14053dc20(), 0, 0, nPage);
+    }
+    FUN_141404930(spItem->FUN_140526a50());
+    return 1;
 }
 
 // @0x140a6f1b0
@@ -304,8 +302,7 @@ MS2Ptr<CItem> LapenshardSlot::vfunc_25()
         if (spItem->FUN_140527930()->GetType() == 2)
         {
             __int64 nKey = pPc->FUN_141656a80();
-            CStringW strName = pPc->vfunc_77();
-            spItem->FUN_14052b5e0(&nKey, &strName);
+            spItem->FUN_14052b5e0(&nKey, &pPc->vfunc_77());
         }
         return spItem;
     }
@@ -348,23 +345,22 @@ int LapenshardSlot::vfunc_0(void* p)
     if (pPc == 0)
         return 0;
     MS2Ptr<CItem> spItem = vfunc_25();
-    if (!(spItem == 0))
+    if (spItem == 0)
+        return 0;
+    int nFlags = 0x20;
+    int nGrade = spItem->FUN_140526bd0();
+    if (m_nSlot != 0)
+        spItem->FUN_140526bf0(spItem->FUN_140527840()->FUN_14053c5a0());
+    int nResult = 0;
+    ASTooltip tip(pPc, nFlags, 2);
+    if (tip.FUN_1409e0d40(spItem))
     {
-        int nGrade = spItem->FUN_140526bd0();
-        if (GetSlot() != 0)
-            spItem->FUN_140526bf0(spItem->FUN_140527840()->FUN_14053c5a0());
-        ASTooltip tip(pPc, 0x20, 2);
-        int nOk = tip.FUN_1409e0d40(spItem.get());
-        if (nOk != 0)
-        {
-            tip.FUN_1409c69b0(vfunc_22());
-            FUN_1409b4bc0(p, tip.FUN_1422bb870());
-        }
-        unsigned nResult = nOk != 0;
-        spItem->FUN_140526bf0(nGrade);
-        return nResult;
+        tip.FUN_1409c69b0(vfunc_22());
+        FUN_1409b4bc0(p, tip.FUN_1422bb870());
+        nResult = 1;
     }
-    return 0;
+    spItem->FUN_140526bf0(nGrade);
+    return nResult;
 }
 
 // @0x140a6fc00
@@ -377,38 +373,35 @@ int LapenshardSlot::vfunc_8(void* p)
     unsigned nFlags = 0x49;
     if (GetSlot() == 0)
     {
-        nFlags = 0x6d;
+        nFlags |= 0x24;
         if (m_nKind == 0)
-            nFlags = 0x46d;
+            nFlags |= 0x400;
     }
     else
     {
         if (FUN_140a6f880() != 1)
-            nFlags = 0x449;
-        nFlags = nFlags | 0x2000;
+            nFlags |= 0x400;
+        nFlags |= 0x2000;
     }
     ASSlot slot(2);
-    if (spItem.get() != 0)
+    if ((spItem.get() != 0 ? true : false) && spItem->FUN_140526100() != 0)
     {
-        if (spItem->FUN_140526100() != 0)
+        int nOk = slot.FUN_1409c3860(vfunc_25().get(), pPc, nFlags);
+        if (nOk != 0)
         {
-            int nOk = slot.FUN_1409c3860(vfunc_25().get(), pPc, nFlags);
-            if (nOk != 0)
+            if (GetSlot() == 0)
             {
-                if (GetSlot() == 0)
-                {
-                    slot.FUN_1409c0d20(s_strItemCount, spItem->FUN_140526c50());
-                    if (spItem->FUN_140526c50() == 0)
-                        slot.FUN_1409c2710(1);
-                    if (spItem->FUN_14052a290(2))
-                        slot.FUN_1409c1f00(1);
-                    if (spItem->FUN_1405291f0() != 0)
-                        slot.FUN_1409c20d0(1);
-                }
-                else
-                {
-                    slot.FUN_1409c23e0(0);
-                }
+                slot.FUN_1409c0d20(s_strItemCount, spItem->FUN_140526c50());
+                if (spItem->FUN_140526c50() == 0)
+                    slot.FUN_1409c2710(1);
+                if (spItem->FUN_14052a290(2))
+                    slot.FUN_1409c1f00(1);
+                if (spItem->FUN_1405291f0() != 0)
+                    slot.FUN_1409c20d0(1);
+            }
+            else
+            {
+                slot.FUN_1409c23e0(0);
             }
         }
     }

@@ -65,7 +65,7 @@ public:
     void* m_18; void* m_20;
     __int64 m_nCharId;                                          // +0x28 the chosen character (compared in FUN_141ad2c50)
     char m_30;
-    char m_bLocaledName;                                        // +0x31
+    unsigned char m_bLocaledName;                               // +0x31
 };
 class Unk_SlOptionsHolder { public: Unk_SlOptions* FUN_140cfd260(); void FUN_141242570(); };
 Unk_SlOptionsHolder* FUN_1409a8b10();
@@ -108,7 +108,7 @@ Unk_SlLogin* FUN_140d86260();
 class Unk_SlNetwork
 {
 public:
-    void FUN_1415383a0(CString strHost, unsigned short nPort, int a, int b, int c);   // connect
+    int FUN_1415383a0(CString strHost, int nPort, int a, int b, int c);   // connect
     void FUN_1415388a0();                                       // disconnect
 };
 Unk_SlNetwork* FUN_140714f90();
@@ -141,7 +141,7 @@ extern int DAT_1439f4a7c;
 int FUN_1418fc760(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned nArgs, UIDialog* pDialog);
 void FUN_1422bce40(Scaleform::GFx::Value* pValue, const AScript& a);    // set a Value from an AS object
 void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);                // set an Int value
-class Unk_SlKeys { public: char FUN_14116d890(int nKey); };
+class Unk_SlKeys { public: bool FUN_14116d890(int nKey); };
 Unk_SlKeys* FUN_14025e7c0();
 
 UIBannerAdvertisingDialog* FUN_141876420(int nId);
@@ -187,6 +187,7 @@ int FUN_1406516b0();                                            // the language 
 CString FUN_1406521f0(int nRegion);
 CString FUN_1401d2b10(const CString& a, const CString& b);      // a + b
 CString FUN_140652030(int n);
+bool FUN_140164830(const CStringW& a, const CStringW& b);       // a == b (a folded copy of ATL operator==)
 void FUN_140710590(COutPacket& packet);                         // send the packet
 
 // The reply of the enter-game packet (opcode 10); defined in networkservice.cpp (ctor 0x141540de0, dtor 0x141541170).
@@ -283,10 +284,9 @@ CString UIServerListDialog::GetTypeName()
 // @0x141ad0f80
 size_t UIServerListDialog::FUN_141ad0f80()
 {
-    ATL::CRBMap<CStringW, MS2Ptr<CMultiServer> >::CPair* pPair = m_servers.Lookup(GetServer());
-    if (pPair == 0)
-        return 0;
-    return pPair->m_value->m_channels.GetCount();
+    if (ATL::CRBMap<CStringW, MS2Ptr<CMultiServer> >::CPair* pPair = m_servers.Lookup(GetServer()))
+        return pPair->m_value->m_channels.GetCount();
+    return 0;
 }
 
 // @0x141ad1010
@@ -305,16 +305,22 @@ CStringW UIServerListDialog::GetServer()
 void UIServerListDialog::vfunc_79(void* pPacket)
 {
     UIDialog::vfunc_79(pPacket);
-    CInPacket* pIn = static_cast<CInPacket*>(pPacket);
-    int nOpcode = pIn->FUN_14070fe80();
-    if (nOpcode == 9) {
+    switch (static_cast<CInPacket*>(pPacket)->FUN_14070fe80())
+    {
+    case 9:
         FUN_141ad28f0(pPacket);
-    } else if (nOpcode == 10) {
-        FUN_141ad2b50(pIn);
-    } else if (nOpcode == 12 && pIn->ReadUInt8() == 3) {
-        m_nSceneId = 0x620001b;
-        m_nConnecting = 0;
-        OnSceneLogin();
+        break;
+    case 10:
+        FUN_141ad2b50(static_cast<CInPacket*>(pPacket));
+        break;
+    case 12:
+        if (static_cast<CInPacket*>(pPacket)->ReadUInt8() == 3)
+        {
+            m_nSceneId = 0x620001b;
+            m_nConnecting = 0;
+            OnSceneLogin();
+        }
+        break;
     }
 }
 
@@ -324,9 +330,10 @@ void UIServerListDialog::ReceiveServerList(CInPacket& packet)
     m_servers.RemoveAll();
     FUN_140166410();
     FUN_14036e640(packet.ReadString());
-    unsigned char nCount = packet.ReadUInt8();
-    if (nCount != 0) {
-        for (int i = 0; i < (int)nCount; i++) {
+    int nCount = packet.ReadUInt8();
+    if (nCount == 0) {
+    } else {
+        for (int i = 0; i < nCount; i++) {
             MS2Ptr<CMultiServer> server(new CMultiServer);
             int nId = packet.ReadInt32();
             server->m_nId = nId;
@@ -358,22 +365,21 @@ void UIServerListDialog::OnLoadComplete()
 {
     m_nConnecting = 0;
     UIDialog::OnLoadComplete();
-    int nChannel[2];
-    nChannel[0] = atoi(FUN_1409a8b10()->FUN_140cfd260()->m_strChannel);
-    nChannel[1] = 1;
-    m_nChannel = *FUN_1404eb7e0(&nChannel[1], &nChannel[0]);
+    int nChannel = atoi(FUN_1409a8b10()->FUN_140cfd260()->m_strChannel);
+    int nMin = 1;
+    m_nChannel = *FUN_1404eb7e0(&nMin, &nChannel);
     FUN_141ad1d20();
     if (FUN_140d86260()->vfunc_1() == 1) {
         UIBannerAdvertisingDialog* pBanner = FUN_141876420(0x4eca);
         if (pBanner != 0)
             pBanner->FUN_141031260();
     } else {
-        if (DAT_143ab285c == 0) {
-            FUN_141ad2560(m_nChannel);
-        } else {
+        if (DAT_143ab285c != 0) {
             CSceneStateMulti* pLobby = FUN_140f30370();
             if (pLobby != 0)
                 pLobby->FUN_14174f470();
+        } else {
+            FUN_141ad2560(m_nChannel);
         }
         vfunc_8(0);
     }
@@ -389,18 +395,17 @@ int UIServerListDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
         return 1;
     if (pMsg->FUN_1422e4520() == 0 && dynamic_cast<UISceneLobbyServer*>(pSender) != 0) {
         CString strMethod = pMsg->FUN_1422b8d30();
-        strMethod = "OnReset";
-        if ((const char*)strMethod != 0) {
+        if ((const char*)(strMethod = "OnReset") != 0) {
             m_strServer = FUN_1409a8b10()->FUN_140cfd260()->m_strServer;
             m_nServerId = -1;
-            int nChannel[2];
-            nChannel[0] = atoi(FUN_1409a8b10()->FUN_140cfd260()->m_strChannel);
-            nChannel[1] = 1;
-            m_nChannel = *FUN_1404eb7e0(&nChannel[1], &nChannel[0]);
+            int nChannel = atoi(FUN_1409a8b10()->FUN_140cfd260()->m_strChannel);
+            int nMin = 1;
+            m_nChannel = *FUN_1404eb7e0(&nMin, &nChannel);
             return 1;
+        } else {
+            if (FUN_1406c34c0() == 1)
+                FUN_140d86260()->vfunc_72();
         }
-        if (FUN_1406c34c0() == 1)
-            FUN_140d86260()->vfunc_72();
     }
     return 0;
 }
@@ -410,10 +415,12 @@ int UIServerListDialog::vfunc_13()
 {
     if (UIDialog::vfunc_13() != 0)
         return 1;
-    if (FUN_14025e7c0()->FUN_14116d890(0) == 0)
-        return 0;
-    m_30->Invoke("onEnterKey");
-    return 1;
+    if (FUN_14025e7c0()->FUN_14116d890(0))
+    {
+        m_30->Invoke("onEnterKey");
+        return 1;
+    }
+    return 0;
 }
 
 // @0x141ad1a30
@@ -427,8 +434,7 @@ int UIServerListDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
         m_nSceneId = 0x6200009;
         OnSceneLogin();
         return 1;
-    }
-    if (_stricmp("OnSelectServer", szMethod) == 0) {
+    } else if (_stricmp("OnSelectServer", szMethod) == 0) {
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs) != 0) {
             FUN_141ad25a0(data.FUN_1422b8f40());
@@ -438,7 +444,8 @@ int UIServerListDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs) != 0) {
             m_strServer = data.FUN_1422b8f40();
-            FUN_141ad2560(data.FUN_1422b8a10());
+            int nChannel = data.FUN_1422b8a10();
+            FUN_141ad2560(nChannel);
             return 1;
         }
     } else if (_stricmp("OnEndPopdown", szMethod) == 0) {
@@ -469,11 +476,8 @@ void UIServerListDialog::FUN_141ad1d20()
         ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30);
         if (pDialog != 0) {
             std::vector<MS2Ptr<CMultiServer> > servers;
-            POSITION pos = m_servers.GetHeadPosition();
-            while (pos != 0) {
+            for (POSITION pos = m_servers.GetHeadPosition(); pos != 0; m_servers.GetNext(pos))
                 servers.push_back(m_servers.GetValueAt(pos));
-                m_servers.GetNext(pos);
-            }
             std::sort(servers.begin(), servers.end(), Unk_SlServerOrder());
             int nCount = (int)servers.size();
             for (int i = 0; i < nCount; i++) {
@@ -489,10 +493,7 @@ void UIServerListDialog::FUN_141ad1d20()
                     CServerListTable::InfoPtr info = FUN_1414a5790()->GetServer(server->m_nId);
                     if (info == 0)
                         info = FUN_1414a5790()->GetFirstServer();
-                    if (info.get() == 0) {
-                        int nNoticeArg = 99999;
-                        FUN_140d73aa0(FUN_1408116a0(0x20e, nNoticeArg), 0, 0, DAT_143af62c0);
-                    } else {
+                    if (info.get() != 0) {
                         ASObj row(2);
                         row.FUN_1407cbb20("label", info->m_strName);
                         row.FUN_1407cba60("icon", info->m_strIcon);
@@ -500,13 +501,19 @@ void UIServerListDialog::FUN_141ad1d20()
                         row.FUN_1407cb9c0("charCnt", server->m_nCharacterCount);
                         row.FUN_1407cb9c0("trafficPercent", server->m_nTrafficPercent);
                         array.FUN_1422bc050(Scaleform::GFx::Value(row.FUN_1422bb870()));
+                    } else {
+                        FUN_140d73aa0(FUN_1408116a0(0x20e, 99999), 0, 0, DAT_143af62c0);
                     }
                 }
             }
         }
     }
+    int bShow = 0;
+    int bEnable = 0;
+    bShow = 1;
+    bEnable = 1;
     m_nServerId = nSelectedId;
-    static_cast<Unk_SlScript*>(m_30.operator->())->FUN_141ad3800("buildServerList", array, nSelectedIndex, m_nChannel, 1, 1);
+    static_cast<Unk_SlScript*>(m_30.operator->())->FUN_141ad3800("buildServerList", array, nSelectedIndex, m_nChannel, bShow, bEnable);
 }
 
 // @0x141ad2380
@@ -514,79 +521,74 @@ void UIServerListDialog::FUN_141ad2380()
 {
     if (m_strServer.IsEmpty())
         return;
-    ATL::CRBMap<CStringW, MS2Ptr<CMultiServer> >::CPair* pPair = m_servers.Lookup(m_strServer);
-    if (pPair == 0)
-        return;
-    CMultiServer* pServer = pPair->m_value.get();
-    if (pServer->m_addresses.IsEmpty())
-        return;
-    int nIndex = rand();
-    nIndex = nIndex % (int)pServer->m_addresses.GetCount();
-    CString strHost = pServer->m_addresses[nIndex];
-    unsigned short nPort = pServer->m_ports[nIndex];
-    FUN_140714f90()->FUN_1415383a0(strHost, nPort, 1, 1, 0);
-    m_nConnecting = 1;
-    m_30->Invoke("requestConnect");
+    if (ATL::CRBMap<CStringW, MS2Ptr<CMultiServer> >::CPair* pPair = m_servers.Lookup(m_strServer)) {
+        CMultiServer* pServer = pPair->m_value.get();
+        if (!pServer->m_addresses.IsEmpty()) {
+            int nIndex = rand() % (int)pServer->m_addresses.GetCount();
+            CString strHost = pServer->m_addresses[nIndex];
+            int nPort = pServer->m_ports[nIndex];
+            FUN_140714f90()->FUN_1415383a0(strHost, nPort, 1, 1, 0);
+            m_nConnecting = 1;
+            m_30->Invoke("requestConnect");
+        }
+    }
 }
 
 // @0x141ad2560
 void UIServerListDialog::FUN_141ad2560(int nChannel)
 {
-    if (m_nConnecting == 0) {
-        FUN_141ad2ea0(nChannel);
-        FUN_141ad2380();
-    }
+    if (m_nConnecting != 0)
+        return;
+    FUN_141ad2ea0(nChannel);
+    FUN_141ad2380();
 }
 
 // @0x141ad25a0
 void UIServerListDialog::FUN_141ad25a0(CStringW strServer)
 {
-    ATL::CRBMap<CStringW, MS2Ptr<CMultiServer> >::CPair* pPair = m_servers.Lookup(strServer);
-    if (pPair == 0)
-        return;
-    CMultiServer* pServer = pPair->m_value.get();
-    if (pServer == 0)
-        return;
-    if (m_strServer == strServer)
-        m_nChannel = 1;
-    m_strServer = strServer;
-    int nOne = 1;
-    m_nServerId = *FUN_1404eb7e0(&pServer->m_nId, &nOne);
-    int bSelected = 0;
-    int nSelectedIndex = -1;
-    ASArray array(2);
-    MS2Ptr<CMultiServer> server(pServer);
-    FUN_141ad3370(array, &nSelectedIndex, m_nChannel, server);
-    static_cast<Unk_SlScript*>(m_30.operator->())->FUN_140e813f0("buildChannelList", array, nSelectedIndex);
-    if (bSelected != 0) {
-        float fLimit = 1.0f;
-        bool bFound = false;
-        ATL::CRBMap<int, MS2Ptr<CMultiServerChannel> >::CPair* pChannel = pServer->m_channels.Lookup(m_nChannel);
-        if (pChannel != 0) {
-            CMultiServerChannel* pCh = pChannel->m_value.get();
-            if (pCh != 0) {
-                if (pCh->HasLowerLoad(fLimit) != 0) {
-                    m_nChannel = pCh->m_nId;
-                    bFound = true;
-                }
-            }
-        }
-        if (!bFound) {
-            POSITION pos = pServer->m_channels.GetHeadPosition();
-            while (pos != 0) {
-                CMultiServerChannel* pCh = pServer->m_channels.GetValueAt(pos).get();
-                if (pCh != 0) {
-                    if (pCh->HasLowerLoad(fLimit) != 0) {
-                        m_nChannel = pCh->m_nId;
-                        bFound = true;
-                        break;
+    if (ATL::CRBMap<CStringW, MS2Ptr<CMultiServer> >::CPair* pPair = m_servers.Lookup(strServer)) {
+        CMultiServer* pServer = pPair->m_value.get();
+        if (pServer != 0) {
+            if (FUN_140164830(m_strServer, strServer))
+                m_nChannel = 1;
+            m_strServer = strServer;
+            int nOne = 1;
+            m_nServerId = *FUN_1404eb7e0(&pServer->m_nId, &nOne);
+            int bSelected = 1;
+            bSelected = 0;
+            int nSelectedIndex = -1;
+            ASArray array(2);
+            FUN_141ad3370(array, &nSelectedIndex, m_nChannel, MS2Ptr<CMultiServer>(pServer));
+            static_cast<Unk_SlScript*>(m_30.operator->())->FUN_140e813f0("buildChannelList", array, nSelectedIndex);
+            if (bSelected != 0) {
+                float fLimit = 1.0f;
+                int bFound = 0;
+                ATL::CRBMap<int, MS2Ptr<CMultiServerChannel> >::CPair* pChannel = pServer->m_channels.Lookup(m_nChannel);
+                if (pChannel != 0) {
+                    CMultiServerChannel* pCh = pChannel->m_value.get();
+                    if (pCh != 0) {
+                        if (pCh->HasLowerLoad(fLimit) != 0) {
+                            m_nChannel = pCh->m_nId;
+                            bFound = 1;
+                        }
                     }
                 }
-                pServer->m_channels.GetNext(pos);
+                if (bFound == 0) {
+                    for (POSITION pos = pServer->m_channels.GetHeadPosition(); pos != 0; pServer->m_channels.GetNext(pos)) {
+                        CMultiServerChannel* pCh = pServer->m_channels.GetValueAt(pos).get();
+                        if (pCh != 0) {
+                            if (pCh->HasLowerLoad(fLimit) != 0) {
+                                m_nChannel = pCh->m_nId;
+                                bFound = 1;
+                                break;
+                            }
+                        }
+                    }
+                }
+                if (bFound == 0)
+                    m_nChannel = 1;
             }
         }
-        if (!bFound)
-            m_nChannel = 1;
     }
 }
 
@@ -596,7 +598,9 @@ void UIServerListDialog::FUN_141ad28f0(void* pPacket)
     int nScene = FUN_1417e2610(FUN_140aa6d30());
     if (nScene != 0x620000d)
         return;
-    if (FUN_1406c34c0() == 0) {
+    if (FUN_1406c34c0() != 0) {
+        FUN_140d86260()->vfunc_20(m_nChannel, 2);
+    } else {
         Unk_LoginRequest request;
         request.m_nType = 2;
         request.m_strId = DAT_143ab29d8;
@@ -611,8 +615,6 @@ void UIServerListDialog::FUN_141ad28f0(void* pPacket)
         COutPacket packet(static_cast<int>(SendOp::ResponseLogin), 0);
         FUN_1401f9020(&request, &packet);
         FUN_140710590(packet);
-    } else {
-        FUN_140d86260()->vfunc_20(m_nChannel, 2);
     }
 }
 
@@ -621,7 +623,13 @@ void UIServerListDialog::FUN_141ad2b50(CInPacket* pPacket)
 {
     Unk_NetworkLoginResult reply;
     reply.FUN_1407a4740(*pPacket);
-    if (reply.result == 0) {
+    int nResult = reply.result;
+    if (nResult != 0)
+    {
+        FUN_141ad2ef0();
+        return;
+    }
+    {
         FUN_14086d260()->FUN_141473690(reply.a18);
         CMsTime::SetTimeZone(reply.zone, reply.zoneFlag);
         DAT_143ab2820 = reply.id;
@@ -631,8 +639,6 @@ void UIServerListDialog::FUN_141ad2b50(CInPacket* pPacket)
         FUN_141b70390();
         FUN_1409a8b10()->FUN_141242570();
         FUN_1409c1730()->FUN_140a250a0();
-    } else {
-        FUN_141ad2ef0();
     }
 }
 
@@ -685,16 +691,14 @@ void UIServerListDialog::FUN_141ad2ef0()
 // @0x141ad2f60
 void UIServerListDialog::FUN_141ad2f60(ASArray& array, int* pnSelected, int nSelectedChannel)
 {
-    ATL::CRBMap<CStringW, MS2Ptr<CMultiServer> >::CPair* pPair = m_servers.Lookup(GetServer());
-    if (pPair != 0)
+    if (ATL::CRBMap<CStringW, MS2Ptr<CMultiServer> >::CPair* pPair = m_servers.Lookup(GetServer()))
         FUN_141ad3370(array, pnSelected, nSelectedChannel, MS2Ptr<CMultiServer>(pPair->m_value));
 }
 
 // @0x141ad3030
 void UIServerListDialog::FUN_141ad3030(const ATL::CAtlArray<int>& channels)
 {
-    ATL::CRBMap<CStringW, MS2Ptr<CMultiServer> >::CPair* pPair = m_servers.Lookup(GetServer());
-    if (pPair != 0) {
+    if (ATL::CRBMap<CStringW, MS2Ptr<CMultiServer> >::CPair* pPair = m_servers.Lookup(GetServer())) {
         pPair->m_value->m_channels.RemoveAll();
         for (unsigned i = 0; i < channels.GetCount(); i++) {
             int nId = channels[i];
@@ -714,12 +718,19 @@ int UIServerListDialog::GetChannel()
 // @0x141ad31d0
 void UIServerListDialog::OnEndPopdown()
 {
-    if (m_nSceneId == 0x6200009) {
+    switch (m_nSceneId)
+    {
+    case 0x620001b:
+    {
+        CSceneStateMulti* pMulti = FUN_140f30370();
+        if (pMulti != 0)
+            PostMessageA(FUN_140aadf80()->FUN_14209c720(), 0x4c8, 0, 0);
+        break;
+    }
+    case 0x6200009:
         FUN_140714f90()->FUN_1415388a0();
         FUN_1417e25a0(FUN_140aa6d30(), 0x6200009);
-    } else if (m_nSceneId == 0x620001b && FUN_140f30370() != 0) {
-        HWND hWnd = FUN_140aadf80()->FUN_14209c720();
-        PostMessageA(hWnd, 0x4c8, 0, 0);
+        break;
     }
 }
 
@@ -756,25 +767,23 @@ void UIServerListDialog::FUN_141ad3370(ASArray& array, int* pnSelected, int nSel
         if (!pChannels->IsEmpty()) {
             CStringW strPattern(L"{0} {1}");
             CStringW strChannel = GetStringCommon(0x579);
-            POSITION pos = pChannels->GetHeadPosition();
-            while (pos != 0) {
+            for (POSITION pos = pChannels->GetHeadPosition(); pos != 0; pChannels->GetNext(pos)) {
                 MS2Ptr<CMultiServerChannel> channel(pChannels->GetValueAt(pos));
                 if (channel.get() != 0) {
                     int nId = channel->m_nId;
                     int nLimit = static_cast<WorldService*>(FUN_1403ed2d0())->FUN_141bd9870();
-                    if (DAT_143ab2914 > 49 || nId == nSelectedChannel || nId <= nLimit) {
-                        ASObj row(2);
-                        row.FUN_1407cb9c0("id", nId);
-                        CStringW strLabel = StringFormat((const wchar_t*)strPattern, strChannel, nId);
-                        row.FUN_1407cbb20("label", strLabel);
-                        row.FUN_1407cbb20("labelDropdown", strLabel);
-                        if (nId == nSelectedChannel)
-                            *pnSelected = nIndex;
-                        array.FUN_1422bc050(Scaleform::GFx::Value(row.FUN_1422bb870()));
-                        nIndex++;
-                    }
+                    if (DAT_143ab2914 < 50 && nId != nSelectedChannel && nId > nLimit)
+                        continue;
+                    ASObj row(2);
+                    row.FUN_1407cb9c0("id", nId);
+                    CStringW strLabel = StringFormat((const wchar_t*)strPattern, strChannel, nId);
+                    row.FUN_1407cbb20("label", strLabel);
+                    row.FUN_1407cbb20("labelDropdown", strLabel);
+                    if (nId == nSelectedChannel)
+                        *pnSelected = nIndex;
+                    array.FUN_1422bc050(Scaleform::GFx::Value(row.FUN_1422bb870()));
+                    nIndex++;
                 }
-                pChannels->GetNext(pos);
             }
         }
     }
@@ -797,24 +806,23 @@ NotifyChangeMyPC::NotifyChangeMyPC()
 {
 }
 
-// @0x141ad5ba0
-CMultiServer::~CMultiServer()
-{
-}
-
-// @0x141ad5c00
-CMultiServerChannel::~CMultiServerChannel()
-{
-}
+// @0x141ad5ba0 ~CMultiServer and @0x141ad5c00 ~CMultiServerChannel are implicit: the exe dtors never reset the vptr.
 
 // @0x141ad6460 is UIServerListDialog::vfunc_48 (inline in the header).
 
 // @0x141ad6790
 int CMultiServerChannel::HasLowerLoad(float fLimit) const
 {
-    if (m_n20 == 0 || fLimit <= (float)m_n1c / (float)m_n20)
-        return 0;
-    return 1;
+    if (m_n20 != 0)
+    {
+        float fLoad = (float)m_n1c / (float)m_n20;
+        if (fLoad < fLimit)
+        {
+            fLimit = fLoad;
+            return 1;
+        }
+    }
+    return 0;
 }
 
 MS2_EMIT_CRT_MEMMOVE_S();

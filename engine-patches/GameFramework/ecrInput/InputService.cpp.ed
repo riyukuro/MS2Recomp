@@ -27,6 +27,84 @@
         }
     }
 .
+314c
+    // MS2: the exe (0x14203c940) only unsubscribes when the message service is set
+    if (m_pMessageService)
+        m_pMessageService->Unsubscribe(this, MessageCategory());
+.
+294c
+    return result;
+.
+281,284c
+        // Gamepad may not exist, but attempt to open any
+        for (efd::UInt32 padIdx = 0; padIdx < NiInputSystem::MAX_GAMEPADS; padIdx++)
+        {
+            m_spInput->OpenGamePad(padIdx, 0);
+        }
+.
+272,278c
+        // On Win32, assume there is a mouse and keyboard
+        if (!m_spInput->OpenMouse())
+        {
+            EE_LOG(efd::kGamebryoGeneral0, efd::ILogger::kERR1,
+                ("NiInputErr : [%x] Mouse failed to open.", m_spInput->GetLastError()));
+            result = AsyncResult_Failure;
+        }
+        if (!m_spInput->OpenKeyboard())
+        {
+            EE_LOG(efd::kGamebryoGeneral0, efd::ILogger::kERR1,
+                ("NiInputErr : [%x] keyboard failed to open.", m_spInput->GetLastError()));
+            result = AsyncResult_Failure;
+        }
+.
+267,269c
+        default:
+            break;
+        }
+.
+266@0s "" "    "
+265@0s "" "    "
+259,263c
+        case NIIERR_ENUM_FAILED:
+            EE_FAIL("NiInputSystem::CheckEnumerationStatus failed.");
+            EE_LOG(efd::kGamebryoGeneral0, efd::ILogger::kERR1,
+                ("NiInputSystem::CheckEnumerationStatus failed."));
+            result = AsyncResult_Failure;
+            break;
+.
+253,257c
+        // The creation of the input system automatically starts an enumeration of the devices
+        NiInputErr err = m_spInput->CheckEnumerationStatus();
+        switch (err)
+        {
+        case NIIERR_ENUM_NOTRUNNING:
+            EE_FAIL("NiInputSystem::EnumerateDevices failed.");
+            EE_LOG(efd::kGamebryoGeneral0, efd::ILogger::kERR1,
+                ("NiInputSystem::EnumerateDevices failed."));
+            result = AsyncResult_Failure;
+            break;
+.
+248,251c
+    else
+.
+246@11s "urn" " ="
+246@10s "" "sul"
+215@11s "urn" " ="
+215@10s "" "sul"
+198c
+    {
+        EE_LOG(efd::kGamebryoGeneral0, efd::ILogger::kERR1,
+            ("MessageService refs not set in InputService!"));
+        result = AsyncResult_Failure;
+    }
+.
+195a
+    // MS2: no early returns; each failure is logged, the result becomes AsyncResult_Failure and the
+    // remaining steps still run (exe 0x14203bff0). Without an input system the device steps are
+    // skipped, but the default action map is still requested.
+    AsyncResult result = AsyncResult_Complete;
+
+.
 50a
 // MS2: every log in this TU goes to the client's error-log hook instead of the efd logger
 // (see efd/ServiceManager.cpp, NiDI8InputSystem.cpp)

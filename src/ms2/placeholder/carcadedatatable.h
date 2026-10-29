@@ -18,7 +18,7 @@ class CArcadeMainData : public CPtred
 {
 public:
     CArcadeMainData();                  // 0x1401a8b20
-    virtual ~CArcadeMainData();         // 0x1401a8f10
+    // ~CArcadeMainData is implicit (0x1401a8f10): the exe dtor stores no vptr.
 
     int m_nId;                          // +0x18 "id"
     int m_nSortingOrder;                // +0x1c "sortingOrder"
@@ -34,7 +34,7 @@ class CArcadeRewardData : public CPtred
 {
 public:
     CArcadeRewardData();                // 0x1401a8b90
-    virtual ~CArcadeRewardData();       // 0x1401a8f40
+    // ~CArcadeRewardData is implicit (0x1401a8f40): the exe dtor stores no vptr.
 
     int m_nArcadeId;                    // +0x18 the <arcadeGame> "arcadeId"
     int m_nRound;                       // +0x1c "round"

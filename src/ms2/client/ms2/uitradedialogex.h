@@ -44,9 +44,9 @@ public:
     void FUN_141b28290(int nSlotIndex, int bLock);                      // latch / unlatch a side (sound + AS call)
     int FUN_141b283f0(int* pnSlot);                                     // the first free slot of the trade table (false: none)
     void FUN_141b284b0();                                               // bind the inputs and texts of the movie
-    void FUN_141b28d10(char bMine, __int64 nMeso);                      // show the meso number text
-    void FUN_141b28e30(char bMine, __int64 nFee);                       // show the fee text
-    void FUN_141b28f40(__int64 nMeso, char bMine);                      // compute and show the fee
+    void FUN_141b28d10(bool bMine, __int64 nMeso);                      // show the meso number text
+    void FUN_141b28e30(bool bMine, __int64 nFee);                       // show the fee text
+    void FUN_141b28f40(__int64 nMeso, bool bMine);                      // compute and show the fee
     void FUN_141b291a0(const Scaleform::GFx::FunctionHandler::Params& params);   // my meso input changed
     void FUN_141b29330(const Scaleform::GFx::FunctionHandler::Params& params);   // focus left the meso input
     void FUN_141b294f0(__int64 nMeso);                                  // set the meso input text

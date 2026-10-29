@@ -36,6 +36,7 @@
 #include "ms2/placeholder/ascript.h"
 #include "ms2/placeholder/asdisplayobject.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
+#include "ms2/placeholder/webguide.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 
@@ -64,19 +65,12 @@ class Unk_WbBrowser { public:                                               // o
 };
 class Unk_WbBrowserMgr { public:                                            // the browser manager
     Unk_WbBrowser* FUN_141b796e0(int nId);
-    void FUN_141b78b40(int a, int nId);
+    void FUN_141b78b40(bool b, int nId);
     void FUN_141b78760(int nId, int nKind);
     void FUN_141b78af0(int nId, int nKind);
 };
 Unk_WbBrowserMgr* FUN_140cc18a0();
-class Unk_WbEntry { public: char m_pad_00[0x20]; CString m_strUrl; };       // one stored page
-class Unk_WbRecord { public:                                                // a lookup result (32 bytes, entry at +8)
-    Unk_WbEntry* FUN_141b51270() const { return m_p; }                      // 0x141b51270
-    Unk_WbEntry* FUN_141b51280() const { return m_p; }                      // 0x141b51280
-    void FUN_1419271c0();                                                   // release
-    void* m_0; Unk_WbEntry* m_p; void* m_10; void* m_18;
-};
-class Unk_WbPages { public: Unk_WbRecord FUN_141927640(CString strKey); };
+class Unk_WbPages { public: MS2Ptr<WebGuide> FUN_141927640(CString strKey); };   // the web guide of a dialog
 Unk_WbPages* FUN_1414a5880();
 class Unk_WbFeatures { public: bool FUN_14036d570(int nFeature); };
 Unk_WbFeatures* FUN_140166410();
@@ -107,7 +101,7 @@ bool FUN_140ba28d0(const MS2Ptr<AScript>* pAS, int n);                      // h
 AScript* FUN_1409ee290(MS2Ptr<AScript>* p);
 int FUN_1409c17e0(const Scaleform::GFx::Value& v);
 AScript* FUN_140ba7c60(void* pRef);                                         // the movie root
-double FUN_1422b93f0(const Scaleform::GFx::Value* p);                       // the number of a value
+float FUN_1422b93f0(const Scaleform::GFx::Value& v);                        // the number of a value (asdata.cpp)
 
 // @0x14011f460
 // (initializer of s_strMaviewClose)
@@ -145,28 +139,25 @@ int UIWebBrowser::vfunc_65()
     return UIDialog::vfunc_65();
 }
 
-// MS2-FUNCTIONAL: behaviour-equivalent; locals/spills and the unit-local callee types differ
 // @0x141b4f690
 void UIWebBrowser::OnLoadInit()
 {
     UIObject::OnLoadInit();
-    if (FUN_140ba28d0(&m_30, 0) == 0)
+    if (FUN_140ba28d0(&m_30, 0))
+        return;
+    m_nSmallSize = FUN_1409c17e0(FUN_1409ee290(&m_30)->FUN_1422baa20("m_textureSize"));
+    m_nMinWidth = *FUN_1402056b0(&FUN_1401d3200()->m_8620);
+    m_nMinHeight = *FUN_1402056b0(&FUN_1401d3200()->m_86d0);
+    m_nMaxWidth = *FUN_1402056b0(&FUN_1401d3200()->m_8678);
+    m_nMaxHeight = *FUN_1402056b0(&FUN_1401d3200()->m_8728);
+    m_bResizable = *FUN_140336990(&FUN_1401d3200()->m_8780);
+    if (m_nWidth == 0 && m_nHeight == 0)
     {
-        m_nSmallSize = FUN_1409c17e0(FUN_1409ee290(&m_30)->FUN_1422baa20("m_textureSize"));
-        m_nMinWidth = *FUN_1402056b0(&FUN_1401d3200()->m_8620);
-        m_nMinHeight = *FUN_1402056b0(&FUN_1401d3200()->m_86d0);
-        m_nMaxWidth = *FUN_1402056b0(&FUN_1401d3200()->m_8678);
-        m_nMaxHeight = *FUN_1402056b0(&FUN_1401d3200()->m_8728);
-        m_bResizable = *FUN_140336990(&FUN_1401d3200()->m_8780);
-        if (m_nWidth == 0 && m_nHeight == 0)
-        {
-            m_nWidth = m_nMaxWidth;
-            m_nHeight = m_nMaxHeight;
-        }
+        m_nWidth = m_nMaxWidth;
+        m_nHeight = m_nMaxHeight;
     }
 }
 
-// MS2-FUNCTIONAL: behaviour-equivalent; big body: local slot order and the delegate temporaries differ
 // @0x141b4f820
 void UIWebBrowser::OnLoadComplete()
 {
@@ -186,8 +177,9 @@ void UIWebBrowser::OnLoadComplete()
         m_btnMaxSize->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIWebBrowser::FUN_141b50910), 0);
     FUN_141b509b0();
     float fScale = FUN_1403ed2b0()->FUN_141adbe70();
-    int nSize = (int)((float)m_nSmallSize / fScale);
-    FUN_14135eda0(nSize, nSize);
+    unsigned nWidth = (unsigned)(m_nSmallSize / fScale);
+    unsigned nHeight = (unsigned)(m_nSmallSize / fScale);
+    FUN_14135eda0(nWidth, nHeight);
     if (m_b18d != 0)
         FUN_140cc18a0()->FUN_141b78b40(1, m_nBrowserId);
     ASDialog* pDlg = dynamic_cast<ASDialog*>(FUN_140ba7c60(&m_30));
@@ -207,10 +199,9 @@ void UIWebBrowser::OnLoadComplete()
     }
     vfunc_84(1);
     if (m_b18d == 0)
-        vfunc_89(CString(""));
+        vfunc_89("");
 }
 
-// MS2-FUNCTIONAL: behaviour-equivalent; locals and temporary order differ
 // @0x141b50250
 void UIWebBrowser::vfunc_26()
 {
@@ -221,7 +212,7 @@ void UIWebBrowser::vfunc_26()
     m_btnRefresh = 0;
     m_btnMinSize = 0;
     m_btnMaxSize = 0;
-    FUN_140d8ee90()->FUN_140a1f970(CString("dialog_close"), CString("webbrowser"));
+    FUN_140d8ee90()->FUN_140a1f970("dialog_close", "webbrowser");
     Unk_WbBrowser* pBrowser = FUN_140cc18a0()->FUN_141b796e0(m_nBrowserId);
     if (pBrowser != 0)
         pBrowser->FUN_141612ba0();
@@ -234,11 +225,13 @@ void UIWebBrowser::vfunc_43()
     UIDialog::vfunc_43();
 }
 
-// MS2-FUNCTIONAL: behaviour-equivalent; the exe keeps the result in a local slot
 // @0x141b503c0
 int UIWebBrowser::vfunc_88()
 {
-    return m_nWidth == m_nMinWidth ? 2 : 1;
+    bool bMin = m_nWidth == m_nMinWidth;
+    if (bMin)
+        return 2;
+    return 1;
 }
 
 // @0x141b50420
@@ -253,17 +246,14 @@ void UIWebBrowser::SetStored(const CString& strUrl)
     m_strStored = strUrl;
 }
 
-// MS2-FUNCTIONAL: behaviour-equivalent; record temp layout differs
 // @0x141b50490
 void UIWebBrowser::FUN_141b50490(const CString& strKey)
 {
-    Unk_WbRecord record = FUN_1414a5880()->FUN_141927640(CString(strKey));
-    if (record.FUN_141b51270() != 0)
-        FUN_14135ec00(record.FUN_141b51280()->m_strUrl, 1);
-    record.FUN_1419271c0();
+    MS2Ptr<WebGuide> spGuide = FUN_1414a5880()->FUN_141927640(strKey);
+    if (spGuide)
+        FUN_14135ec00(spGuide->m_strWebUrl, 1);
 }
 
-// MS2-FUNCTIONAL: behaviour-equivalent; locals and the Value stride differ
 // @0x141b50530
 int UIWebBrowser::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs)
 {
@@ -273,15 +263,14 @@ int UIWebBrowser::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pA
     {
         if (nArgs != 2)
             return 0;
-        float fWidth = (float)FUN_1422b93f0(pArgs);
-        float fHeight = (float)FUN_1422b93f0(pArgs + 1);
-        m_nWidth = (int)fWidth;
-        m_nHeight = (int)fHeight;
+        float fWidth = FUN_1422b93f0(pArgs[0]);
+        float fHeight = FUN_1422b93f0(pArgs[1]);
+        m_nWidth = (unsigned)fWidth;
+        m_nHeight = (unsigned)fHeight;
     }
     return 0;
 }
 
-// MS2-FUNCTIONAL: behaviour-equivalent; locals differ
 // @0x141b50610
 void UIWebBrowser::vfunc_84(bool bVisible)
 {
@@ -289,14 +278,13 @@ void UIWebBrowser::vfunc_84(bool bVisible)
     Unk_WbActor* pActor = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pActor != 0)
     {
-        if (bVisible == 0)
-            pActor->FUN_14166cd70(8);
-        else
+        if (bVisible)
             pActor->FUN_14166cce0(8);
+        else
+            pActor->FUN_14166cd70(8);
     }
 }
 
-// MS2-FUNCTIONAL: behaviour-equivalent; delegate temp order differs
 // @0x141b50680
 void UIWebBrowser::vfunc_89(const CString& strUrl)
 {
@@ -304,22 +292,22 @@ void UIWebBrowser::vfunc_89(const CString& strUrl)
     Unk_WbBrowser* pBrowser = FUN_140cc18a0()->FUN_141b796e0(m_nBrowserId);
     if (pBrowser != 0)
         pBrowser->FUN_141612b50(Delegate<void(const CString&)>(this, &UIWebBrowser::SetStored));
-    FUN_140d8ee90()->FUN_140a1f970(CString("dialog_open"), CString("webbrowser"));
+    FUN_140d8ee90()->FUN_140a1f970("dialog_open", "webbrowser");
 }
 
-// MS2-FUNCTIONAL: behaviour-equivalent; Value temp handling differs
 // @0x141b507b0
 void UIWebBrowser::FUN_141b507b0(int nWidth, int nHeight)
 {
-    if (FUN_140ba28d0(&m_30, 0) == 0)
-        FUN_1409ee290(&m_30)->Invoke("setBrowserSize", nWidth, nHeight);
+    if (FUN_140ba28d0(&m_30, 0))
+        return;
+    FUN_1409ee290(&m_30)->Invoke("setBrowserSize", nWidth, nHeight);
 }
 
-// MS2-FUNCTIONAL: behaviour-equivalent; the exe keeps the user data in a local slot
 // @0x141b50830
 void UIWebBrowser::FUN_141b50830(const Scaleform::GFx::FunctionHandler::Params& params)
 {
-    int nKind = FUN_140bb9640(params.pUserData);
+    void* pUserData = params.pUserData;
+    int nKind = FUN_140bb9640(pUserData);
     FUN_140cc18a0()->FUN_141b78760(m_nBrowserId, nKind);
 }
 
@@ -347,24 +335,26 @@ bool UIWebBrowser::vfunc_91()
     return m_bResizable;
 }
 
-// MS2-FUNCTIONAL: behaviour-equivalent; locals and the virtual call temporaries differ
 // @0x141b509b0
 void UIWebBrowser::FUN_141b509b0()
 {
-    if (FUN_140ba28d0(&m_30, 0) == 0)
+    if (FUN_140ba28d0(&m_30, 0))
+        return;
+    if (vfunc_91() == 0)
     {
-        if (vfunc_91() == 0)
-        {
-            m_btnMinSize->vfunc_4(0);
-            m_btnMaxSize->vfunc_4(0);
-        }
+        m_btnMinSize->vfunc_4(0);
+        m_btnMaxSize->vfunc_4(0);
+    }
+    else
+    {
+        bool bMax = m_nWidth == m_nMinWidth;
+        bool bMin;
+        if (!bMax)
+            bMin = true;
         else
-        {
-            bool bMax = m_nWidth == m_nMinWidth;
-            bool bMin = !bMax;
-            m_btnMinSize->vfunc_4(bMin);
-            m_btnMaxSize->vfunc_4(bMax);
-        }
+            bMin = false;
+        m_btnMinSize->vfunc_4(bMin);
+        m_btnMaxSize->vfunc_4(bMax);
     }
 }
 

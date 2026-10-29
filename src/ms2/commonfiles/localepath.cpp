@@ -30,7 +30,7 @@ void* FUN_140164930(ATL::CAtlArray<CString>&, unsigned __int64);     // GetAt
 void FUN_1402be480(CString&, const char*);
 CString FUN_140298360(const char*, const CString&);
 CString FUN_140188f50(const char*, int);
-char FUN_1401c0090(const CString&, const CString&);
+bool FUN_1401c0090(const CString&, const CString&) noexcept;
 class Unk_14025e7c0 { };
 Unk_14025e7c0* FUN_14025e7c0();
 unsigned char FUN_14116d720(Unk_14025e7c0*);
@@ -46,7 +46,7 @@ int FUN_140651920(CString strCode);                   // language code -> enum
 CString FUN_1406504c0(CString& s);
 CString FUN_140650500(CString& s);
 void FUN_140650090(CString& s);
-int FUN_1406500b0(CString& s);
+bool FUN_1406500b0(CString& s);
 CString FUN_140651350();
 CString FUN_140651390();
 CString FUN_1406522f0(int);
@@ -154,22 +154,23 @@ CLocaleLanguage::~CLocaleLanguage()
 }
 
 // @0x14064f070
-// MS2-FUNCTIONAL: smart-pointer return temps / branch layout differ
 LocaleLanguageDataPtr CLocaleLanguage::FUN_14064f070(unsigned int nLocale)
 {
-    unsigned int nSel = FUN_14116d720(FUN_14025e7c0());
+    unsigned int nSel = 0;
+    nSel = FUN_14116d720(FUN_14025e7c0());
     if (nLocale != 0)
         nSel = nLocale;
-    int nCount = (int)m_rows.GetCount();
-    int nIdx = nCount - 1;
-    if (nSel == 0)
+    int nIdx = -1;
+    int nLast = (int)m_rows.GetCount() - 1;
+    if (nSel != 0)
+        nIdx = nLast;
+    else
         nIdx = DAT_143ab0248;
     if (nIdx == -1)
         return LocaleLanguageDataPtr(0);
-    else if (nCount - 1 < nIdx)
+    if (nIdx > nLast)
         return LocaleLanguageDataPtr(0);
-    else
-        return static_cast<const LocaleLanguageDataPtr&>(m_rows[nIdx]);
+    return static_cast<const LocaleLanguageDataPtr&>(m_rows[nIdx]);
 }
 
 // @0x14064f180
@@ -209,13 +210,11 @@ void CLocaleLanguage::FUN_14064f310(ATL::CAtlArray<CString>& out)
 }
 
 // @0x14064f390
-// MS2-FUNCTIONAL: xml load loop: EH state numbering and temp slots differ
 int CLocaleLanguage::LoadGameOptionLocale()
 {
     CString strPath = FUN_14071a5b0("Table", "gameOptionLocale.xml");
     TiXmlDocument doc;
-    const char* pszPath = strPath;
-    if (FUN_140166420()->FUN_1403974b0(&doc, pszPath, 0, true, false) == 0)
+    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return 0;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
@@ -263,12 +262,11 @@ void FUN_140650b30(int n)
 }
 
 // @0x140650b50
-// MS2-FUNCTIONAL: CString temp-slot idiom (return-by-value assigned to global) differs
 void FUN_140650b50(CString strCode)
 {
     strCode.MakeUpper();
-    if (FUN_1401c0090(FUN_1406522f0(FUN_1406516c0()), strCode)) {}
-    else if (FUN_1401c0090(strCode, FUN_1406522f0(0))) FUN_140650b30(0);
+    if (FUN_1401c0090(FUN_1406522f0(FUN_1406516c0()), strCode)) return;
+    if (FUN_1401c0090(strCode, FUN_1406522f0(0))) FUN_140650b30(0);
     else if (FUN_1401c0090(strCode, FUN_1406522f0(1))) FUN_140650b30(1);
     else if (FUN_1401c0090(strCode, FUN_1406522f0(2))) FUN_140650b30(2);
     else if (FUN_1401c0090(strCode, FUN_1406522f0(3))) FUN_140650b30(3);
@@ -279,12 +277,11 @@ void FUN_140650b50(CString strCode)
 }
 
 // @0x140650e70
-// MS2-FUNCTIONAL: CString temp-slot idiom (return-by-value assigned to global) differs
 void FUN_140650e70(CString strCode)
 {
     strCode.MakeUpper();
-    if (FUN_1401c0090(FUN_140651350(), strCode)) {}
-    else if (FUN_1401c0090(strCode, FUN_1406522f0(0))) FUN_1406507a0(0);
+    if (FUN_1401c0090(FUN_140651350(), strCode)) return;
+    if (FUN_1401c0090(strCode, FUN_1406522f0(0))) FUN_1406507a0(0);
     else if (FUN_1401c0090(strCode, FUN_1406522f0(1))) FUN_1406507a0(1);
     else if (FUN_1401c0090(strCode, FUN_1406522f0(2))) FUN_1406507a0(2);
     else if (FUN_1401c0090(strCode, FUN_1406522f0(3))) FUN_1406507a0(3);
@@ -295,12 +292,11 @@ void FUN_140650e70(CString strCode)
 }
 
 // @0x140651190
-// MS2-FUNCTIONAL: CString temp-slot idiom (return-by-value assigned to global) differs
 void FUN_140651190(CString strCode)
 {
     strCode.MakeUpper();
-    if (FUN_1401c0090(FUN_140651390(), strCode)) {}
-    else if (FUN_1401c0090(strCode, FUN_140652330(0))) FUN_1406509e0(0);
+    if (FUN_1401c0090(FUN_140651390(), strCode)) return;
+    if (FUN_1401c0090(strCode, FUN_140652330(0))) FUN_1406509e0(0);
     else if (FUN_1401c0090(strCode, FUN_140652330(1))) FUN_1406509e0(1);
     else if (FUN_1401c0090(strCode, FUN_140652330(2))) FUN_1406509e0(2);
     else if (FUN_1401c0090(strCode, FUN_140652330(3))) FUN_1406509e0(3);
@@ -319,15 +315,11 @@ CString FUN_140651390()
 }
 
 // @0x1406513d0
-// MS2-FUNCTIONAL: return-by-value CString temp passed as const ref: exe saves call rax
 CString FUN_1406513d0(CString strFile)
 {
     CString strPath = FUN_140298360("./ServerConfig/", strFile);
-    const CString& rTmp = FUN_140188f50((const char*)DAT_143ab0258, 0);
-    const CString& rTmp2 = rTmp;
-    CString strSuffix = FUN_140298360("_", rTmp2);
-    const char* pszSuffix = strSuffix;
-    strPath.Insert(strPath.Find(".xml", 0), pszSuffix);
+    CString strSuffix = FUN_140298360("_", FUN_140188f50(DAT_143ab0258, 0));
+    strPath.Insert(strPath.Find(".xml", 0), strSuffix);
     return strPath;
 }
 
@@ -512,14 +504,16 @@ CStringW FUN_140651d70(int n)
 }
 
 // @0x140651f30
-// MS2-FUNCTIONAL: CStringW formatting temp slots differ
 CStringW FUN_140651f30(int n)
 {
-    if (n == 0) return CStringW(L"KR");
-    else if (n == 1) return CStringW(L"JP");
-    else if (n == 2) return CStringW(L"NA");
-    else if (n == 3) return CStringW(L"CN");
-    else return CStringW(L"");
+    switch (n)
+    {
+    case 0: return CStringW(L"KR");
+    case 1: return CStringW(L"JP");
+    case 2: return CStringW(L"NA");
+    case 3: return CStringW(L"CN");
+    default: return CStringW(L"");
+    }
 }
 
 // @0x140652030
@@ -540,14 +534,16 @@ CString FUN_140652030(int n)
 }
 
 // @0x1406521f0
-// MS2-FUNCTIONAL: CString formatting temp slots differ
 CString FUN_1406521f0(int n)
 {
-    if (n == 0) return CString("KR");
-    else if (n == 1) return CString("JP");
-    else if (n == 2) return CString("NA");
-    else if (n == 3) return CString("CN");
-    else return CString("");
+    switch (n)
+    {
+    case 0: return CString("KR");
+    case 1: return CString("JP");
+    case 2: return CString("NA");
+    case 3: return CString("CN");
+    default: return CString("");
+    }
 }
 
 // @0x1406522f0
@@ -569,22 +565,22 @@ void FUN_140650090(CString& s)
 }
 
 // @0x1406500b0
-// MS2-FUNCTIONAL: exe has EH-state wrapper (inlined helper) around MakeUpper
-int FUN_1406500b0(CString& s)
+bool FUN_1406500b0(CString& s)
 {
-    s.MakeUpper();
-    return 1;
+    try {
+        s.MakeUpper();
+    } catch (CException* e) {
+        (void)((!!(0)) || (_wassert(L"FALSE", L"e:\\build\\kr\\22_04\\ms2code\\commonfiles\\stringutil.h", 445), 0));
+        return false;
+    }
+    return true;
 }
 
 // @0x1406507a0
-// MS2-FUNCTIONAL: CString temp-slot idiom of return-by-value assigned to global differs; switch layout
 void FUN_1406507a0(int n)
 {
     DAT_143ab0240 = n;
-    {
-        CString code = FUN_1406522f0(n);
-        DAT_143ab0250 = code;
-    }
+    DAT_143ab0250 = FUN_1406522f0(n);
     FUN_140650ac0(n);
     switch (n)
     {
@@ -600,24 +596,21 @@ void FUN_1406507a0(int n)
 }
 
 // @0x1406509e0
-// MS2-FUNCTIONAL: return-by-value CString temp: exe saves call rax twice, cl emits lea
 void FUN_1406509e0(int n)
 {
     DAT_143ab0248 = n;
-    {
-        const CString& code = FUN_140652330(n);
-        const CString& code2 = code;
-        DAT_143ab0258 = code2;
-    }
+    DAT_143ab0258 = FUN_140652330(n);
     DAT_143ab0560 = n;
-    if (n == 1) FUN_1402be480(DAT_143ab0588, "jp/");
-    else if (n == 2) FUN_1402be480(DAT_143ab0588, "na/");
-    else if (n == 3) FUN_1402be480(DAT_143ab0588, "cn/");
-    else FUN_1402be480(DAT_143ab0588, "kr/");
+    switch (n)
+    {
+    case 1: FUN_1402be480(DAT_143ab0588, "jp/"); break;
+    case 2: FUN_1402be480(DAT_143ab0588, "na/"); break;
+    case 3: FUN_1402be480(DAT_143ab0588, "cn/"); break;
+    default: FUN_1402be480(DAT_143ab0588, "kr/");
+    }
 }
 
 // @0x140650ac0
-// MS2-FUNCTIONAL: switch with 4..7 range check; case ordering not reproduced
 void FUN_140650ac0(int n)
 {
     switch (n)
@@ -625,17 +618,18 @@ void FUN_140650ac0(int n)
     case 1:
         DAT_1439f4840 = 0x3a4;
         break;
-    case 2:
-        DAT_1439f4840 = 0x4e4;
-        break;
     case 3:
         DAT_1439f4840 = 0x3a8;
         break;
+    case 2:
+    case 4:
+    case 5:
+    case 6:
+    case 7:
+        DAT_1439f4840 = 0x4e4;
+        break;
     default:
-        if (n > 3 && n <= 7)
-            DAT_1439f4840 = 0x4e4;
-        else
-            DAT_1439f4840 = 0x3b5;
+        DAT_1439f4840 = 0x3b5;
         break;
     }
 }
@@ -643,8 +637,9 @@ void FUN_140650ac0(int n)
 MS2_EMIT_CRT_MEMMOVE_S();
 
 // The UCRT's `static __inline memcpy_s` of this TU (unreferenced copy, like memmove_s).
+// memcpy/memset are calls in the exe, not intrinsics.
+#pragma function(memcpy, memset)
 // @0x140652370
-// MS2-FUNCTIONAL: unreferenced CRT memcpy_s copy: frame saves rsi/rdi, source spelling differs
 static __inline errno_t ms2_memcpy_s_copy(void* const d, size_t const dsz, void const* const s, size_t const ssz)
 {
     if (ssz == 0) { return 0; }

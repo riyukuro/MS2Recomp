@@ -142,7 +142,7 @@ CShutdownEventGroup::CShutdownEventGroup()
     m_values.reserve(12);
     for (size_t i = 0; i < 12; i++)
     {
-        m_values.push_back(MS2Ptr<CShutdownEventValue>(new CShutdownEventValue));
+        m_values.push_back(new CShutdownEventValue);
     }
 }
 
@@ -292,9 +292,9 @@ bool FUN_1407d1b90(CShutdownEventSet1300* pSet, int nLevel)
 {
     if (pSet->m_ids.empty())
         return false;
-    if (nLevel < 50)
-        return true;
-    return false;
+    if (nLevel >= 50)
+        return false;
+    return true;
 }
 
 // @0x1407d1be0
@@ -371,9 +371,11 @@ void FUN_1407d1f70(CShutdownEventUGCUpload* pUpload, unsigned nEventId)
 {
     Unk_CriticalSectionLock lock(pUpload->m_lock, 1);
     if (pUpload->m_events.find(nEventId) == pUpload->m_events.end())
+    {
         MS2_ASSERT_AT(0x219, FALSE);
-    else
-        pUpload->m_events.erase(nEventId);
+        return;
+    }
+    pUpload->m_events.erase(nEventId);
 }
 
 // @0x1407d2050 an event shuts the upload kind down (mode 2: only the flagged events)
@@ -382,16 +384,13 @@ bool FUN_1407d2050(CShutdownEventUGCUpload* pUpload, Unk_UGCUploadType eKind, in
     if (pUpload->m_events.empty())
         return false;
     Unk_CriticalSectionLock lock(pUpload->m_lock, 1);
-    std::map<unsigned, Unk_ShutdownUGCUploadInfo>::iterator it = pUpload->m_events.begin();
-    while (it != pUpload->m_events.end())
+    for (std::map<unsigned, Unk_ShutdownUGCUploadInfo>::iterator it = pUpload->m_events.begin(); it != pUpload->m_events.end(); ++it)
     {
         Unk_ShutdownUGCUploadInfo* pInfo = &it->second;
-        if (nMode != 2 || pInfo->m_bFlag != 0)
-        {
-            if (pInfo->m_ids.find(eKind) != pInfo->m_ids.end())
-                return true;
-        }
-        ++it;
+        if (nMode == 2 && pInfo->m_bFlag == 0)
+            continue;
+        if (pInfo->m_ids.find(eKind) != pInfo->m_ids.end())
+            return true;
     }
     return false;
 }

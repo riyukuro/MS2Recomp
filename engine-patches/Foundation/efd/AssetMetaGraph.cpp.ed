@@ -1,6 +1,12 @@
 597a
 #line 608 // MS2 __LINE__ (linefix)
 .
+65a
+        // MS2 (0x142113e70): a graph file that fails to parse is deleted.
+        if (!m_isLoaded)
+            ::DeleteFile(m_filename.c_str());
+#line 70 // MS2 __LINE__ (linefix)
+.
 21a
 #endif
 .

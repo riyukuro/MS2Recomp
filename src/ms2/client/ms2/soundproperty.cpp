@@ -118,6 +118,11 @@
 // MS2-PIN: ??1?$_Tree@V?$_Tmap_traits@HV?$map@HV?$map@HV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@@std@@@2@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$map@HV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@@std@@@2@@std@@@std@@@2@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$map@HV?$map@HV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@@std@@@2@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$map@HV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@@std@@@2@@std@@@std@@@2@@std@@@std@@@2@$0A@@std@@@std@@QEAA@XZ 0x1417a0350
 // MS2-PIN: ??@ddbb5e308314526835bffc1071cdb455@ 0x1417a1490
 // MS2-PIN: ??E?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHUUnk_SoundPitch@@@std@@@std@@@std@@@std@@QEAA?AV01@H@Z 0x1417a2750
+// The three tree helpers below are Unk_EventMap's (node 0x38). The byte-identical set<CStringA> copies belong to
+// uihideandseekresultdialog/filepreload_1 (0x140c20660 / 0x140c21510 / 0x140c1fa10).
+// MS2-PIN: ??1?$_Tree_comp_alloc@V?$_Tmap_traits@HV?$map@HV?$map@HV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@@std@@@2@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$map@HV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@@std@@@2@@std@@@std@@@2@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$map@HV?$map@HV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@@std@@@2@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$map@HV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@@std@@@2@@std@@@std@@@2@@std@@@std@@@2@$0A@@std@@@std@@QEAA@XZ 0x1417a0470
+// MS2-PIN: ?_Freeheadnode@?$_Tree_comp_alloc@V?$_Tmap_traits@HV?$map@HV?$map@HV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@@std@@@2@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$map@HV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@@std@@@2@@std@@@std@@@2@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$map@HV?$map@HV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@@std@@@2@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$map@HV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@@std@@@2@@std@@@std@@@2@@std@@@std@@@2@$0A@@std@@@std@@QEAAXPEAU?$_Tree_node@U?$pair@$$CBHV?$map@HV?$map@HV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@@std@@@2@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$map@HV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@@std@@@2@@std@@@std@@@2@@std@@@std@@PEAX@2@@Z 0x1417aa3f0
+// MS2-PIN: ??$_Freenode0@V?$allocator@U?$_Tree_node@U?$pair@$$CBHV?$map@HV?$map@HV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@@std@@@2@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$map@HV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@@std@@@2@@std@@@std@@@2@@std@@@std@@PEAX@std@@@std@@@?$_Tree_node@U?$pair@$$CBHV?$map@HV?$map@HV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@@std@@@2@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$map@HV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@@std@@@2@@std@@@std@@@2@@std@@@std@@PEAX@std@@SAXAEAV?$allocator@U?$_Tree_node@U?$pair@$$CBHV?$map@HV?$map@HV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@@std@@@2@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$map@HV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$map@HUUnk_EventVoice@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_EventVoice@@@std@@@3@@std@@@std@@@2@@std@@@std@@@2@@std@@@std@@PEAX@std@@@1@PEAU01@@Z 0x1417951c0
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\soundproperty.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
 #include "ms2/placeholder/header_statics_a.h"
@@ -145,6 +150,7 @@ CString FUN_14016a5c0(const char* psz, int n);                          // narro
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);  // Table/<file>
 CString FUN_140298360(const char* a, const CString& b);                 // a + b
 void FUN_1401d3700(CString& str);                                       // lower-cases in place
+CString& FUN_1401c0cc0(ATL::CAtlArray<CString>* pArray, unsigned __int64 nIndex);   // folded CAtlArray<CString>::operator[] copy
 bool FUN_140184310(const CString& str, const char* psz);                // equals
 unsigned FUN_140767ff0();                                               // random number
 unsigned char FUN_1401d1320(CCacheData* pCache);                        // the file changed since it was loaded
@@ -240,19 +246,17 @@ void SystemSoundProperty::Load(Unk_140165cf0* pElem)
             CString strJob(jobs[i]);
             ATL::CAtlArray<CString> parts;
             FUN_14015f050(strJob, parts, ":");
-            if (parts.GetCount() == 2)
-            {
-                int nJob = atoi(parts[0]);
-                ATL::CAtlArray<CString> names;
-                FUN_14015f050(parts[1], names, ",");
-                if (names.GetCount() == 2)
-                {
-                    Unk_SoundNameArrayPtr spNames;
-                    spNames = Unk_FieldNewTag(0);
-                    spNames->Copy(names);
-                    m_jobSounds.SetAt(nJob, spNames);
-                }
-            }
+            if (parts.GetCount() != 2)
+                continue;
+            int nJob = atoi(FUN_1401c0cc0(&parts, 0));
+            ATL::CAtlArray<CString> names;
+            FUN_14015f050(FUN_1401c0cc0(&parts, 1), names, ",");
+            if (names.GetCount() != 2)
+                continue;
+            Unk_SoundNameArrayPtr spNames;
+            spNames = Unk_FieldNewTag(0);
+            spNames->Copy(names);
+            m_jobSounds.SetAt(nJob, spNames);
         }
     }
 }
@@ -318,23 +322,24 @@ void TriggerVoiceProperty::Load(Unk_140165cf0* pElem)
     {
         FUN_1408731e0(pElem, "byGender", m_bByGender);
         FUN_1408731e0(pElem, "byJob", m_bByJob);
-        CString strDefault = FUN_14028d1f0(FUN_14086f4b0(pElem, "defaultSound"));
-        FUN_14015f050(strDefault, m_sounds, ",");
+        {
+            CString strDefault(FUN_14086f4b0(pElem, "defaultSound"));
+            FUN_14015f050(strDefault, m_sounds, ",");
+        }
         for (unsigned __int64 i = 1; i < 12; i++)
         {
-            unsigned nJob = (&DAT_142f67fe8)[i];
+            int nJob = (&DAT_142f67fe8)[i];
             CString strKey;
             strKey.Format("Job%d", nJob);
             CString strNames;
-            if (FUN_140873ad0(pElem, strKey, strNames) == 0)
-            {
-                ATL::CAtlArray<CString> names;
-                FUN_14015f050(strNames, names, ",");
-                Unk_SoundNameArrayPtr spNames;
-                spNames = Unk_FieldNewTag(0);
-                spNames->Copy(names);
-                m_jobSounds.SetAt(nJob, spNames);
-            }
+            if (FUN_140873ad0(pElem, strKey, strNames) != 0)
+                continue;
+            ATL::CAtlArray<CString> names;
+            FUN_14015f050(strNames, names, ",");
+            Unk_SoundNameArrayPtr spNames;
+            spNames = Unk_FieldNewTag(0);
+            spNames->Copy(names);
+            m_jobSounds.SetAt(nJob, spNames);
         }
     }
 }
@@ -388,24 +393,20 @@ void TriggerVoiceProperty::CollectNames(std::set<CString>& rOut)
         CString strName(m_sounds[i]);
         rOut.insert(strName);
     }
-    POSITION pos = m_jobSounds.GetStartPosition();
-    while (pos != 0)
+    for (POSITION pos = m_jobSounds.GetStartPosition(); pos != 0; m_jobSounds.GetNext(pos))
     {
         Unk_SoundNameArrayPtr spNames = m_jobSounds.GetValueAt(pos);
         if (!spNames)
         {
             MS2_ASSERT_AT(0x109, 0);
+            continue;
         }
-        else
+        int nNames = (int)spNames->GetCount();
+        for (int j = 0; j < nNames; j++)
         {
-            int nNames = (int)spNames->GetCount();
-            for (int j = 0; j < nNames; j++)
-            {
-                CString strName((*spNames.get())[j]);
-                rOut.insert(strName);
-            }
+            CString strName(FUN_1401c0cc0(spNames.operator->(), j));
+            rOut.insert(strName);
         }
-        m_jobSounds.GetNext(pos);
     }
 }
 
@@ -422,39 +423,45 @@ unsigned SoundPropertyMgr::Load()
     m_cacheFiles.clear();
     unsigned bOk = 1;
     CString strPath;
+    CCacheData* pCache;
     strPath = FUN_14071a5b0("Table", "hitSound.xml");
     bOk = LoadHitSound(strPath) & bOk;
+    pCache = new CCacheData;
+    pCache->FUN_1401d1160(strPath);
     {
-        CachePtr spCache(new CCacheData);
-        spCache->FUN_1401d1160(CString(strPath));
+        CachePtr spCache(pCache);
         m_cacheFiles.push_front(static_cast<CachePtr&&>(spCache));
     }
     strPath = FUN_14071a5b0("Table", "systemSound.xml");
     bOk = LoadSystemSound(strPath) & bOk;
+    pCache = new CCacheData;
+    pCache->FUN_1401d1160(strPath);
     {
-        CachePtr spCache(new CCacheData);
-        spCache->FUN_1401d1160(CString(strPath));
+        CachePtr spCache(pCache);
         m_cacheFiles.push_front(static_cast<CachePtr&&>(spCache));
     }
     strPath = FUN_14071a5b0("Table", "pitchSound.xml");
     bOk = LoadPitchSound(strPath) & bOk;
+    pCache = new CCacheData;
+    pCache->FUN_1401d1160(strPath);
     {
-        CachePtr spCache(new CCacheData);
-        spCache->FUN_1401d1160(CString(strPath));
+        CachePtr spCache(pCache);
         m_cacheFiles.push_front(static_cast<CachePtr&&>(spCache));
     }
     strPath = FUN_14071a5b0("Table", "EventSound.xml");
     bOk = LoadEventSound(strPath) & bOk;
+    pCache = new CCacheData;
+    pCache->FUN_1401d1160(strPath);
     {
-        CachePtr spCache(new CCacheData);
-        spCache->FUN_1401d1160(CString(strPath));
+        CachePtr spCache(pCache);
         m_cacheFiles.push_front(static_cast<CachePtr&&>(spCache));
     }
     strPath = FUN_14071a5b0("Table", "TriggerVoice.xml");
     bOk = LoadTriggerVoice(strPath) & bOk;
+    pCache = new CCacheData;
+    pCache->FUN_1401d1160(strPath);
     {
-        CachePtr spCache(new CCacheData);
-        spCache->FUN_1401d1160(CString(strPath));
+        CachePtr spCache(pCache);
         m_cacheFiles.push_front(static_cast<CachePtr&&>(spCache));
     }
     SetInit(true);
@@ -629,7 +636,6 @@ int SoundPropertyMgr::FUN_141792e00(int nEventId, GameObject* pActor, Unk_EventV
     return 0;
 }
 
-// MS2-FUNCTIONAL: bytes differ from the exe (local/temporary slot layout, SEH state numbering); behaviour equivalent
 // @0x141792ee0
 SoundPropertyMgr::SystemPtr SoundPropertyMgr::FUN_141792ee0(const CString& strName, const CString& strArg)
 {
@@ -646,9 +652,9 @@ SoundPropertyMgr::SystemPtr SoundPropertyMgr::FUN_141792ee0(const CString& strNa
     SystemPtr spProp;
     if (m_systemSounds.Lookup(strKey, spProp))
         return spProp;
-    const Unk_SystemSoundMap::CPair* pPair = m_systemSounds.Lookup(strName);
-    if (pPair != 0)
-        return pPair->m_value;
+    // The exe only tests that the plain name exists and then returns spProp, which is still empty.
+    if (m_systemSounds.Lookup(strName) != 0)
+        return spProp;
     return SystemPtr(0);
 }
 
@@ -740,24 +746,6 @@ int FUN_141793500(CString strEvent)
     if (FUN_140184310(strEvent, "skill_action"))
         return 6;
     return 0;
-}
-
-// MS2-FUNCTIONAL: bytes differ from the exe (vftable store / unwind info of the destructor body); behaviour equivalent
-// @0x1417a0710
-SoundPropertyMgr::~SoundPropertyMgr()
-{
-}
-
-// MS2-FUNCTIONAL: bytes differ from the exe (vftable store / unwind info of the destructor body); behaviour equivalent
-// @0x1417a07b0
-SystemSoundProperty::~SystemSoundProperty()
-{
-}
-
-// MS2-FUNCTIONAL: bytes differ from the exe (vftable store / unwind info of the destructor body); behaviour equivalent
-// @0x1417a0800
-TriggerVoiceProperty::~TriggerVoiceProperty()
-{
 }
 
 // @0x1417a0900

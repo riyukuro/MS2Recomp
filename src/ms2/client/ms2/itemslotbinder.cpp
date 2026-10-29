@@ -18,7 +18,7 @@ public:
     virtual int vfunc_0();                  // item id
     virtual int vfunc_1();                  // rarity
     virtual int vfunc_2();                  // amount
-    virtual char vfunc_3();                 // not tradable
+    virtual bool vfunc_3();                 // not tradable
 };
 
 // Binds the item under the slot name in the flash binding table (items are looked up by name from the swf).
@@ -64,17 +64,13 @@ CString ItemSlotBinder::FUN_140d43310(int nItemId, int nRarity, int nAmount)
     return "";
 }
 
-// MS2-FUNCTIONAL: the interface pointer is spilled and re-read differently from the exe; otherwise equivalent
 // @0x140d43510
 CString ItemSlotBinder::FUN_140d43510(const void* pItem)
 {
     MS2Ptr<CItem> item(new CItem);
-    int nRarity = ((Unk_SlotBindInfo*)pItem)->vfunc_1();
-    int nItemId = ((Unk_SlotBindInfo*)pItem)->vfunc_0();
-    if (item->FUN_14052b130(nItemId, nRarity, 0) != 0)
+    if (item->FUN_14052b130(((Unk_SlotBindInfo*)pItem)->vfunc_0(), ((Unk_SlotBindInfo*)pItem)->vfunc_1(), 0) != 0)
     {
-        int nAmount = ((Unk_SlotBindInfo*)pItem)->vfunc_2();
-        item->FUN_140526c70(nAmount);
+        item->FUN_140526c70(((Unk_SlotBindInfo*)pItem)->vfunc_2());
         if (((Unk_SlotBindInfo*)pItem)->vfunc_3() != 0)
             item->FUN_1405273f0(0);
         m_20++;

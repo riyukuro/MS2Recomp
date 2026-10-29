@@ -48,6 +48,7 @@
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/nipoint3.h"
 #include "cameramode.h"
+#include "ms2/placeholder/coptimizer.h"
 #include <NiShadowGenerator.h>
 #include <NiShadowManager.h>
 #include <NiShadowMap.h>
@@ -92,7 +93,16 @@ extern char DAT_143ae51a8;      // NiFixedString: extra-data name that marks a s
 extern int DAT_143ae2b34;       // 0: casters are found by that extra data, otherwise by the DISPLAY_OBJECT flag
 extern char DAT_143ad1588;      // NiRTTI of the model node class (mode at +0x17c, flag byte at +0x131)
 extern int DAT_143ae2b44;       // model-node culling enabled
-int FUN_1414c98a0();            // DAT_143ae2b44
+COptimizer* FUN_1409f7c90();    // the optimizer (singleton); IsModelCullingOn 0x1414c98a0 reads DAT_143ae2b44
+unsigned int FUN_141569010(NiAVObject* pkObject);   // the flag-based caster test (out of unit; also used by unit_141567000)
+
+// "is this one of the shadow casters", written out inline at each use (a macro in the source: the exe has no call)
+#define MS2_IS_SHADOW_CASTER(pkObject, bResult)                                                           \
+    bResult = 0;                                                                                           \
+    if (DAT_143ae2b34)                                                                                     \
+        bResult = FUN_141569010(pkObject);                                                                 \
+    else                                                                                                   \
+        bResult = pkObject->GetExtraData(*(const NiFixedString*)&DAT_143ae51a8) != 0
 
 // The model node (derives NiNode, 0x180+ bytes); only the two fields the shadow visitor reads.
 class Unk_ShadowModelNode : public NiNode
@@ -107,12 +117,23 @@ private:
     int m_nMode;                    // +0x17c
 };
 
-// The cheap per-object test the visitor and click generator use for "is this one of the shadow casters".
-static const unsigned int MS2_FLAG_SHADOW_CASTER = 0x20;     // NiAVObject::GetMS2Flags() bit
 static const unsigned short MS2_FLAG_APP_CULLED = 0x1; // NiAVObject::APP_CULLED_MASK (protected)
 static const unsigned short MS2_FLAG_DISPLAY_OBJECT = 0x20; // NiAVObject::DISPLAY_OBJECT_MASK (protected)
 static const unsigned int MS2_FLAG_SHADOW_EXCLUDED = 0x100;
 static const unsigned short NODE_FLAG_LEAF_GROUP = 0x200;    // NiAVObject::m_uFlags bit: the node is a single caster
+
+// NiAVObject DISPLAY_OBJECT flag (0x20) set? (out-of-line COMDAT of another obj)
+// A point temporary viewed as the other point type the callee takes (NiPoint3 <-> Vector3 <-> efd::Point3): cl binds
+// the temporary straight to the parameter, as in the exe. clang-cl refuses an rvalue reinterpret_cast, so it goes
+// through a helper there.
+#ifdef __clang__
+template <class U, class T> static const U& Unk_ScPoint(const T& k) { return reinterpret_cast<const U&>(k); }
+#define MS2_SC_POINT(U, expr) Unk_ScPoint<U>(expr)
+#else
+#define MS2_SC_POINT(U, expr) reinterpret_cast<const U&>(expr)
+#endif
+extern "C" float (__cdecl* __imp_tanf)(float);      // the statically linked CRT tanf goes through the exe's IAT
+bool FUN_1409943d0(NiAVObject* pkObject);
 
 // @0x14150c290
 static bool IsLeafGroup(NiNode* pkNode)
@@ -124,14 +145,10 @@ static bool IsLeafGroup(NiNode* pkNode)
 void MS2ExcludeFromShadows(NiAVObject* pkObject)
 {
     if (pkObject)
-        pkObject->SetMS2Flags(pkObject->GetMS2Flags() | MS2_FLAG_SHADOW_EXCLUDED);
-}
-
-static bool IsShadowCaster(NiAVObject* pkObject)
-{
-    if (DAT_143ae2b34 == 0)
-        return pkObject->GetExtraData(*(const NiFixedString*)&DAT_143ae51a8) != 0;
-    return pkObject != 0 && (pkObject->GetMS2Flags() & MS2_FLAG_SHADOW_CASTER) != 0;
+    {
+        unsigned int uiFlags = pkObject->GetMS2Flags() | MS2_FLAG_SHADOW_EXCLUDED;
+        pkObject->SetMS2Flags(uiFlags);
+    }
 }
 
 // The scene root (0x143ab...): holder of the scene camera; both getters are inline COMDATs of other objs.
@@ -164,15 +181,12 @@ MS2ShadowClickGenerator::MS2ShadowClickGenerator()
 }
 
 // @0x141508430
-MS2ShadowClickGenerator::MS2ShadowClickGenerator(NiFixedString kName)
+MS2ShadowClickGenerator::MS2ShadowClickGenerator(const NiFixedString& kName)
     : NiDefaultShadowClickGenerator(kName), m_kCasterList(10)
 {
 }
 
-// @0x14150a5b0
-MS2ShadowClickGenerator::~MS2ShadowClickGenerator()
-{
-}
+// 0x14150a5b0: the implicit ~MS2ShadowClickGenerator() (no vftable store at /Od)
 
 // @0x1415084c0
 bool MS2ShadowClickGenerator::HandleSpotLight(NiShadowGenerator* pkGenerator, NiSpotLight* pkSpotLight,
@@ -194,7 +208,8 @@ bool MS2ShadowClickGenerator::HandleSpotLight(NiShadowGenerator* pkGenerator, Ni
     {
         pkShadowView->GetScenes().RemoveAll();
 
-        MS2ShadowVisitor* pkVisitor = dynamic_cast<MS2ShadowVisitor*>(NiShadowManager::GetShadowVisitor());
+        NiShadowVisitor* pkShadowVisitor = NiShadowManager::GetShadowVisitor();
+        MS2ShadowVisitor* pkVisitor = dynamic_cast<MS2ShadowVisitor*>(pkShadowVisitor);
         if (pkVisitor)
             pkVisitor->PopulateCasterListAtl(pkGenerator, m_kCasterList, false);
 
@@ -257,7 +272,7 @@ bool MS2ShadowClickGenerator::HandleSpotLight(NiShadowGenerator* pkGenerator, Ni
 
         float fAngle = pkSpotLight->GetSpotAngle();
         fAngle = fAngle * NI_PI / 180.0f;
-        float fOffset = tanf(fAngle);
+        float fOffset = __imp_tanf(fAngle);     // the exe calls tanf through its import
 
         NiFrustum kFrustum(-fOffset, fOffset, fOffset, -fOffset, fNearClippingDist, fFarClippingDist, false);
         pkShadowCamera->SetViewFrustum(kFrustum);
@@ -309,7 +324,8 @@ bool MS2ShadowClickGenerator::HandlePointLight(NiShadowGenerator* pkGenerator, N
             pkShadowClick->SetBackgroundColor(NiColorA(0, 0, 0, 0));
             pkShadowView->GetScenes().RemoveAll();
 
-            MS2ShadowVisitor* pkVisitor = dynamic_cast<MS2ShadowVisitor*>(NiShadowManager::GetShadowVisitor());
+            NiShadowVisitor* pkShadowVisitor = NiShadowManager::GetShadowVisitor();
+        MS2ShadowVisitor* pkVisitor = dynamic_cast<MS2ShadowVisitor*>(pkShadowVisitor);
             if (pkVisitor)
                 pkVisitor->PopulateCasterListAtl(pkGenerator, m_kCasterList, false);
 
@@ -443,8 +459,8 @@ bool MS2ShadowClickGenerator::HandleDirectionalLight(NiShadowGenerator* pkGenera
         return false;
 
     // With a camera target and a following camera mode the shadow camera tracks the player.
-    Unk_CameraManager* pCameraMgr = Unk_CameraManager::FUN_1409478c0();
-    if (pCameraMgr->FUN_140a38d60() != 0 && !FUN_140af0d80(pCameraMgr))
+    if (Unk_CameraManager::FUN_1409478c0()->FUN_140a38d60() != 0 &&
+        !FUN_140af0d80(Unk_CameraManager::FUN_1409478c0()))
         return HandleCameraFollowDirectionalLight(pkGenerator, pkDirLight, bRegenerateViews, bUpdateShadowMaps);
 
     NiShadowRenderClick* pkShadowClick = pkShadowMap->GetRenderClick();
@@ -453,7 +469,63 @@ bool MS2ShadowClickGenerator::HandleDirectionalLight(NiShadowGenerator* pkGenera
 
     UpdateCullPlanes();
 
-    if (!bRegenerateViews)
+    if (bRegenerateViews)
+    {
+        pkShadowView->GetScenes().RemoveAll();
+
+        NiShadowVisitor* pkShadowVisitor = NiShadowManager::GetShadowVisitor();
+        MS2ShadowVisitor* pkVisitor = dynamic_cast<MS2ShadowVisitor*>(pkShadowVisitor);
+        if (pkVisitor)
+            pkVisitor->PopulateCasterListAtl(pkGenerator, m_kCasterList, false);
+
+        POSITION kPos = m_kCasterList.GetHeadPosition();
+        NiPoint3 kCameraPos;
+        float fNearClippingDist = pkGenerator->GetNearClippingDist();
+        float fFarClippingDist = pkGenerator->GetFarClippingDist();
+        float fDirLightFrustumWidth = pkGenerator->GetDirLightFrusturmWidth();
+
+        if (pkGenerator->GetFlags() & NiShadowGenerator::AUTO_CALC_FULL_MASK)
+        {
+            NiBound kBound;
+            bool bFirst = true;
+            while (kPos)
+            {
+                NiAVObject* pkGeometry = m_kCasterList.GetNext(kPos);
+                if (IsInCullPlanes(pkGeometry))
+                {
+                    if (bFirst)
+                    {
+                        kBound = pkGeometry->GetWorldBound();
+                        bFirst = false;
+                    }
+                    else
+                    {
+                        kBound.Merge(&pkGeometry->GetWorldBound());
+                    }
+                    pkShadowView->AppendScene(pkGeometry);
+                }
+            }
+
+            UpdateDirLightFrustum(&kBound, pkGenerator, pkDirLight, &fNearClippingDist, &fFarClippingDist,
+                &fDirLightFrustumWidth, &kCameraPos);
+        }
+        else
+        {
+            while (kPos)
+            {
+                NiAVObject* pkGeometry = m_kCasterList.GetNext(kPos);
+                pkShadowView->AppendScene(pkGeometry);
+            }
+            kCameraPos = pkDirLight->GetWorldTranslate();
+        }
+
+        NiFrustum kFrustum(-fDirLightFrustumWidth, fDirLightFrustumWidth, fDirLightFrustumWidth,
+            -fDirLightFrustumWidth, fNearClippingDist, fFarClippingDist, true);
+        pkShadowCamera->SetViewFrustum(kFrustum);
+        pkShadowCamera->SetTranslate(kCameraPos);
+    }
+
+    else
     {
         if (pkGenerator->GetFlags() & NiShadowGenerator::AUTO_CALC_FULL_MASK)
         {
@@ -509,61 +581,6 @@ bool MS2ShadowClickGenerator::HandleDirectionalLight(NiShadowGenerator* pkGenera
             pkShadowCamera->SetTranslate(pkDirLight->GetWorldTranslate());
         }
     }
-    else
-    {
-        pkShadowView->GetScenes().RemoveAll();
-
-        MS2ShadowVisitor* pkVisitor = dynamic_cast<MS2ShadowVisitor*>(NiShadowManager::GetShadowVisitor());
-        if (pkVisitor)
-            pkVisitor->PopulateCasterListAtl(pkGenerator, m_kCasterList, false);
-
-        POSITION kPos = m_kCasterList.GetHeadPosition();
-        NiPoint3 kCameraPos;
-        float fNearClippingDist = pkGenerator->GetNearClippingDist();
-        float fFarClippingDist = pkGenerator->GetFarClippingDist();
-        float fDirLightFrustumWidth = pkGenerator->GetDirLightFrusturmWidth();
-
-        if (pkGenerator->GetFlags() & NiShadowGenerator::AUTO_CALC_FULL_MASK)
-        {
-            NiBound kBound;
-            bool bFirst = true;
-            while (kPos)
-            {
-                NiAVObject* pkGeometry = m_kCasterList.GetNext(kPos);
-                if (IsInCullPlanes(pkGeometry))
-                {
-                    if (bFirst)
-                    {
-                        kBound = pkGeometry->GetWorldBound();
-                        bFirst = false;
-                    }
-                    else
-                    {
-                        kBound.Merge(&pkGeometry->GetWorldBound());
-                    }
-                    pkShadowView->AppendScene(pkGeometry);
-                }
-            }
-
-            UpdateDirLightFrustum(&kBound, pkGenerator, pkDirLight, &fNearClippingDist, &fFarClippingDist,
-                &fDirLightFrustumWidth, &kCameraPos);
-        }
-        else
-        {
-            while (kPos)
-            {
-                NiAVObject* pkGeometry = m_kCasterList.GetNext(kPos);
-                pkShadowView->AppendScene(pkGeometry);
-            }
-            kCameraPos = pkDirLight->GetWorldTranslate();
-        }
-
-        NiFrustum kFrustum(-fDirLightFrustumWidth, fDirLightFrustumWidth, fDirLightFrustumWidth,
-            -fDirLightFrustumWidth, fNearClippingDist, fFarClippingDist, true);
-        pkShadowCamera->SetViewFrustum(kFrustum);
-        pkShadowCamera->SetTranslate(kCameraPos);
-    }
-
     pkShadowCamera->SetRotate(pkDirLight->GetWorldRotate());
     pkShadowCamera->SetScale(pkDirLight->GetWorldScale());
     pkShadowCamera->Update(0.0f);
@@ -595,17 +612,28 @@ bool MS2ShadowClickGenerator::HandleCameraFollowDirectionalLight(NiShadowGenerat
     Ni3DRenderView* pkShadowView = NiDynamicCast(Ni3DRenderView, pkShadowClick->GetRenderViews().GetHead());
     NiCamera* pkShadowCamera = pkShadowView->GetCamera();
 
-    // The shadow camera hovers 10000 units against the light direction over the camera target, pushed 1500 units
-    // along the scene camera's direction.
-    Unk_CameraTargetEntity* pTarget = Unk_CameraManager::FUN_1409478c0()->FUN_140a38d60();
-    NiPoint3 kLightOffset = pkDirLight->GetWorldDirection() * 10000.0f;
-    Vector3 ptTarget = pTarget->vfunc_18();
-    NiPoint3 kCameraPos = NiPoint3(ptTarget.x, ptTarget.y, ptTarget.z) - kLightOffset;
-    NiCamera* pkSceneCamera = Unk_SceneRoot::FUN_1413f9890()->GetSceneCamera();
-    if (pkSceneCamera)
-        kCameraPos += pkSceneCamera->GetWorldDirection() * 1500.0f;
+    float fNear = 1.0f;
+    float fFar = 25000.0f;
+    float fHalfSize = 2000.0f;
 
-    NiFrustum kFrustum(-2000.0f, 2000.0f, 2000.0f, -2000.0f, 1.0f, 25000.0f, true);
+    // The shadow camera hovers 10000 units against the light direction over the camera target, pushed 1500 units
+    // along the scene camera's direction flattened onto the ground plane (z dropped, not renormalized).
+    Unk_CameraTargetEntity* pTarget = Unk_CameraManager::FUN_1409478c0()->FUN_140a38d60();
+    NiPoint3 kCameraPos(MS2_SC_POINT(efd::Point3,
+        pTarget->vfunc_18().FUN_140965c40(MS2_SC_POINT(Vector3, pkDirLight->GetWorldDirection() * 10000.0f))));
+    Unk_SceneCameraHolder* pHolder = Unk_SceneRoot::FUN_1413f9890()->FUN_140af7da0();
+    if (pHolder)
+    {
+        NiCamera* pkSceneCamera = pHolder->FUN_140af7df0();
+        if (pkSceneCamera)
+        {
+            NiPoint3 kViewDir = pkSceneCamera->GetWorldDirection();
+            kViewDir.z = 0.0f;
+            kCameraPos += kViewDir * 1500.0f;
+        }
+    }
+
+    NiFrustum kFrustum(-fHalfSize, fHalfSize, fHalfSize, -fHalfSize, fNear, fFar, true);
     pkShadowCamera->SetViewFrustum(kFrustum);
     pkShadowCamera->SetTranslate(kCameraPos);
 
@@ -623,19 +651,18 @@ bool MS2ShadowClickGenerator::HandleCameraFollowDirectionalLight(NiShadowGenerat
 
     if (bRegenerateViews)
     {
-        MS2ShadowVisitor* pkVisitor = dynamic_cast<MS2ShadowVisitor*>(NiShadowManager::GetShadowVisitor());
+        NiShadowVisitor* pkShadowVisitor = NiShadowManager::GetShadowVisitor();
+        MS2ShadowVisitor* pkVisitor = dynamic_cast<MS2ShadowVisitor*>(pkShadowVisitor);
         if (pkVisitor)
             pkVisitor->PopulateCasterListAtl(pkGenerator, m_kCasterList, false);
     }
 
     pkShadowView->GetScenes().RemoveAll();
-    POSITION kPos = m_kCasterList.GetHeadPosition();
-    while (kPos)
+    for (POSITION kPos = m_kCasterList.GetHeadPosition(); kPos; m_kCasterList.GetNext(kPos))
     {
         NiAVObject* pkObject = m_kCasterList.GetAt(kPos);
         if (IsInCullPlanes(pkObject))
             pkShadowView->AppendScene(pkObject);
-        m_kCasterList.GetNext(kPos);
     }
 
     pkShadowClick->SetProcessor(NiShadowManager::GetMaterialSwapProcessor(NiStandardMaterial::LIGHT_DIR));
@@ -656,42 +683,42 @@ bool MS2ShadowClickGenerator::HandleCameraFollowDirectionalLight(NiShadowGenerat
 // @0x14150a420
 void MS2ShadowClickGenerator::UpdateCullPlanes()
 {
-    Unk_SceneRoot* pSceneRoot = Unk_SceneRoot::FUN_1413f9890();
-    NiCamera* pkCamera = pSceneRoot->GetSceneCamera();
-    if (pkCamera)
-    {
-        m_kCullPlanes.Set(pkCamera->GetViewFrustum(), pkCamera->GetWorldTransform());
-        m_kCullPlanes.EnableAllPlanes();
-    }
+    Unk_SceneCameraHolder* pHolder = Unk_SceneRoot::FUN_1413f9890()->FUN_140af7da0();
+    if (pHolder == 0)
+        return;
+    NiCamera* pkCamera = pHolder->FUN_140af7df0();
+    if (pkCamera == 0)
+        return;
+    m_kCullPlanes.Set(pkCamera->GetViewFrustum(), pkCamera->GetWorldTransform());
+    m_kCullPlanes.EnableAllPlanes();
 }
 
 // @0x14150a4c0
 bool MS2ShadowClickGenerator::IsInCullPlanes(NiAVObject* pkObject)
 {
-    const NiBound& kBound = pkObject->GetWorldBound();
-    NiPoint3 kCenter = kBound.GetCenter();
-    float fRadius = kBound.GetRadius();
+    NiPoint3 kCenter = pkObject->GetWorldBound().GetCenter();
+    float fRadius = pkObject->GetWorldBound().GetRadius();
 
     unsigned int uiPlane;
     for (uiPlane = 0; uiPlane < NiFrustumPlanes::MAX_PLANES; uiPlane++)
     {
         if (m_kCullPlanes.IsPlaneActive(uiPlane))
         {
-            if (m_kCullPlanes.GetPlane(uiPlane).Distance(kCenter) <= -fRadius - 2000.0f)
+            float fDistance = m_kCullPlanes.GetPlane(uiPlane).Distance(kCenter);
+            if (fDistance <= -fRadius - 2000.0f)
                 break;
         }
     }
-    return uiPlane == NiFrustumPlanes::MAX_PLANES;
+    if (uiPlane == NiFrustumPlanes::MAX_PLANES)
+        return true;
+    return false;
 }
 
 // ---- MS2ShadowClickValidator ----
 
 // 0x14150b160: the implicit MS2ShadowClickValidator() ctor (COMDAT emitted by CreateMS2ShadowClickValidator)
 
-// @0x14150b1c0
-MS2ShadowClickValidator::~MS2ShadowClickValidator()
-{
-}
+// 0x14150b1c0: the implicit ~MS2ShadowClickValidator() (no vftable store at /Od)
 
 // @0x14150b0e0
 NiShadowClickValidator* MS2ShadowClickValidator::CreateMS2ShadowClickValidator()
@@ -739,14 +766,12 @@ bool MS2ShadowClickValidator::ValidateClick(NiRenderClick* pkRenderClick, unsign
     bool bRetVal = false;
 
     const NiTPointerMap<NiNode*, NiNode*>& kReceivers = pkDynEffect->GetAffectedNodeList();
-    NiTListIterator kIter = 0;
     NiTMapIterator kMapIter = kReceivers.GetFirstPos();
     while (kMapIter)
     {
-        NiNode* pkKey = NULL;
         NiNode* pkReceiver = NULL;
-        kReceivers.GetNext(kMapIter, pkKey, pkReceiver);
-        pkReceiver->Cull(*m_spCullingProcess);
+        kReceivers.GetNext(kMapIter, pkReceiver, pkReceiver);
+        m_spCullingProcess->Cull(m_spCamera, pkReceiver, &m_kVisibleSet);
         if (m_kVisibleSet.GetCount() > 0)
         {
             pkShadowClick->MarkAsDirty();
@@ -783,7 +808,9 @@ NiShadowVisitor* MS2ShadowVisitor::CreateMS2ShadowVisitor()
 // @0x14150bfb0
 bool MS2ShadowVisitor::ShouldProcessNodeChildren(NiNode* pkNode)
 {
-    return !IsLeafGroup(pkNode);
+    if (IsLeafGroup(pkNode))
+        return false;
+    return true;
 }
 
 // @0x14150b600
@@ -793,36 +820,37 @@ void MS2ShadowVisitor::PopulateCasterList(NiShadowGenerator* pkGenerator, NiAVOb
     kCasterList.RemoveAll();
 
     NiDynamicEffect* pkDynEffect = pkGenerator->GetAssignedDynamicEffect();
-    if (pkDynEffect)
+    if (pkDynEffect == 0)
+        return;
+
+    const NiTPointerMap<NiNode*, NiNode*>& kAffectedNodeList = pkDynEffect->GetAffectedNodeList();
+    NiTListIterator kIter;
+    NiTMapIterator kMapIter = kAffectedNodeList.GetFirstPos();
+    while (kMapIter)
     {
-        const NiTPointerMap<NiNode*, NiNode*>& kAffectedNodeList = pkDynEffect->GetAffectedNodeList();
-        NiTListIterator kIter = 0;
-        NiTMapIterator kMapIter = kAffectedNodeList.GetFirstPos();
-        while (kMapIter)
-        {
-            NiNode* pkKey = NULL;
-            NiNode* pkNode = NULL;
-            kAffectedNodeList.GetNext(kMapIter, pkKey, pkNode);
-            AdditiveListHelper(pkNode, &kCasterList, bIncludeAppCulled);
-        }
+        NiNode* pkNode = NULL;
+        kAffectedNodeList.GetNext(kMapIter, pkNode, pkNode);
+        AdditiveListHelper(pkNode, &kCasterList, bIncludeAppCulled);
+    }
 
-        const NiNodeList& kUnaffectedNodeList = pkDynEffect->GetUnaffectedNodeList();
-        kIter = kUnaffectedNodeList.GetHeadPos();
-        while (kIter)
-        {
-            NiNode* pkNode = kUnaffectedNodeList.GetNext(kIter);
-            SubtractiveListHelper(pkNode, &kCasterList);
-        }
+    const NiNodeList& kUnaffectedNodeList = pkDynEffect->GetUnaffectedNodeList();
+    kIter = kUnaffectedNodeList.GetHeadPos();
+    while (kIter)
+    {
+        NiNode* pkNode = kUnaffectedNodeList.GetNext(kIter);
+        SubtractiveListHelper(pkNode, &kCasterList);
+    }
 
-        // Drop everything that is not a shadow caster.
-        kIter = kCasterList.GetHeadPos();
-        while (kIter)
-        {
-            NiTListIterator kCurrent = kIter;
-            NiAVObject* pkObject = kCasterList.GetNext(kIter);
-            if (!IsShadowCaster(pkObject))
-                kCasterList.RemovePos(kCurrent);
-        }
+    // Drop everything that is not a shadow caster.
+    kIter = kCasterList.GetHeadPos();
+    while (kIter)
+    {
+        NiTListIterator kCurrent = kIter;
+        NiAVObject* pkObject = kCasterList.GetNext(kIter);
+        unsigned int bCaster;
+        MS2_IS_SHADOW_CASTER(pkObject, bCaster);
+        if (!bCaster)
+            kCasterList.RemovePos(kCurrent);
     }
 }
 
@@ -833,26 +861,25 @@ void MS2ShadowVisitor::PopulateCasterListAtl(NiShadowGenerator* pkGenerator, MS2
     kCasterList.RemoveAll();
 
     NiDynamicEffect* pkDynEffect = pkGenerator->GetAssignedDynamicEffect();
-    if (pkDynEffect)
-    {
-        const NiTPointerMap<NiNode*, NiNode*>& kAffectedNodeList = pkDynEffect->GetAffectedNodeList();
-        NiTListIterator kIter = 0;
-        NiTMapIterator kMapIter = kAffectedNodeList.GetFirstPos();
-        while (kMapIter)
-        {
-            NiNode* pkKey = NULL;
-            NiNode* pkNode = NULL;
-            kAffectedNodeList.GetNext(kMapIter, pkKey, pkNode);
-            AdditiveListHelperAtl(pkNode, &kCasterList, bIncludeAppCulled, true);
-        }
+    if (pkDynEffect == 0)
+        return;
 
-        const NiNodeList& kUnaffectedNodeList = pkDynEffect->GetUnaffectedNodeList();
-        kIter = kUnaffectedNodeList.GetHeadPos();
-        while (kIter)
-        {
-            NiNode* pkNode = kUnaffectedNodeList.GetNext(kIter);
-            SubtractiveListHelperAtl(pkNode, &kCasterList);
-        }
+    const NiTPointerMap<NiNode*, NiNode*>& kAffectedNodeList = pkDynEffect->GetAffectedNodeList();
+    NiTListIterator kIter;
+    NiTMapIterator kMapIter = kAffectedNodeList.GetFirstPos();
+    while (kMapIter)
+    {
+        NiNode* pkNode = NULL;
+        kAffectedNodeList.GetNext(kMapIter, pkNode, pkNode);
+        AdditiveListHelperAtl(pkNode, &kCasterList, bIncludeAppCulled, true);
+    }
+
+    const NiNodeList& kUnaffectedNodeList = pkDynEffect->GetUnaffectedNodeList();
+    kIter = kUnaffectedNodeList.GetHeadPos();
+    while (kIter)
+    {
+        NiNode* pkNode = kUnaffectedNodeList.GetNext(kIter);
+        SubtractiveListHelperAtl(pkNode, &kCasterList);
     }
 }
 
@@ -863,33 +890,32 @@ void MS2ShadowVisitor::PopulateReceiverListAtl(NiShadowGenerator* pkGenerator, M
     kReceiverList.RemoveAll();
 
     NiDynamicEffect* pkDynEffect = pkGenerator->GetAssignedDynamicEffect();
-    if (pkDynEffect)
+    if (pkDynEffect == 0)
+        return;
+
+    const NiTPointerMap<NiNode*, NiNode*>& kAffectedNodeList = pkDynEffect->GetAffectedNodeList();
+    NiTListIterator kIter;
+    NiTMapIterator kMapIter = kAffectedNodeList.GetFirstPos();
+    while (kMapIter)
     {
-        const NiTPointerMap<NiNode*, NiNode*>& kAffectedNodeList = pkDynEffect->GetAffectedNodeList();
-        NiTListIterator kIter = 0;
-        NiTMapIterator kMapIter = kAffectedNodeList.GetFirstPos();
-        while (kMapIter)
-        {
-            NiNode* pkKey = NULL;
-            NiNode* pkNode = NULL;
-            kAffectedNodeList.GetNext(kMapIter, pkKey, pkNode);
-            AdditiveListHelperAtl(pkNode, &kReceiverList, bIncludeAppCulled, false);
-        }
+        NiNode* pkNode = NULL;
+        kAffectedNodeList.GetNext(kMapIter, pkNode, pkNode);
+        AdditiveListHelperAtl(pkNode, &kReceiverList, bIncludeAppCulled, false);
+    }
 
-        const NiNodeList& kUnaffectedNodeList = pkDynEffect->GetUnaffectedNodeList();
-        kIter = kUnaffectedNodeList.GetHeadPos();
-        while (kIter)
-        {
-            NiNode* pkNode = kUnaffectedNodeList.GetNext(kIter);
-            SubtractiveListHelperAtl(pkNode, &kReceiverList);
-        }
+    const NiNodeList& kUnaffectedNodeList = pkDynEffect->GetUnaffectedNodeList();
+    kIter = kUnaffectedNodeList.GetHeadPos();
+    while (kIter)
+    {
+        NiNode* pkNode = kUnaffectedNodeList.GetNext(kIter);
+        SubtractiveListHelperAtl(pkNode, &kReceiverList);
+    }
 
-        const NiTPrimitiveSet<NiNode*>& kUnaffectedReceivers = pkGenerator->GetUnaffectedReceiverNodeList();
-        for (unsigned int ui = 0; ui < kUnaffectedReceivers.GetSize(); ui++)
-        {
-            NiNode* pkNode = kUnaffectedReceivers.GetAt(ui);
-            SubtractiveListHelperAtl(pkNode, &kReceiverList);
-        }
+    const NiTPrimitiveSet<NiNode*>& kUnaffectedReceivers = pkGenerator->GetUnaffectedReceiverNodeList();
+    for (unsigned int ui = 0; ui < kUnaffectedReceivers.GetSize(); ui++)
+    {
+        NiNode* pkNode = kUnaffectedReceivers.GetAt(ui);
+        SubtractiveListHelperAtl(pkNode, &kReceiverList);
     }
 }
 
@@ -897,63 +923,35 @@ void MS2ShadowVisitor::PopulateReceiverListAtl(NiShadowGenerator* pkGenerator, M
 void MS2ShadowVisitor::AdditiveListHelperAtl(NiNode* pkNode, MS2CasterList* pkObjList, bool bIncludeAppCulled,
     bool bCastersOnly)
 {
-    if (pkNode == 0 || (pkNode->GetMS2Flags() & MS2_FLAG_SHADOW_EXCLUDED) != 0)
-        return;
-
-    Unk_ShadowModelNode* pkModel;
-    if ((FUN_1414c98a0() == 0 ||
-            ((pkModel = (Unk_ShadowModelNode*)NiObject::DynamicCast((const NiRTTI*)&DAT_143ad1588, pkNode)) == 0 ||
-                pkModel->FUN_1410444a0() != 1) ||
-            pkModel->FUN_14144e250()) &&
-        (bIncludeAppCulled || !pkNode->MS2HasAnyFlag(MS2_FLAG_APP_CULLED)))
+    if (pkNode && (pkNode->GetMS2Flags() & MS2_FLAG_SHADOW_EXCLUDED) == 0)
     {
-        if (!IsLeafGroup(pkNode))
+        Unk_ShadowModelNode* pkModel;
+        if (FUN_1409f7c90()->IsModelCullingOn() &&
+            (pkModel = (Unk_ShadowModelNode*)NiObject::DynamicCast((const NiRTTI*)&DAT_143ad1588, pkNode)) != 0 &&
+            pkModel->FUN_1410444a0() == 1 && !pkModel->FUN_14144e250())
+            return;
+
+        if (bIncludeAppCulled || !pkNode->GetAppCulled())
         {
-            unsigned int uiChildCount = pkNode->GetArrayCount();
-            for (unsigned int i = 0; i < uiChildCount; i++)
+            if (IsLeafGroup(pkNode))
             {
-                NiAVObject* pkChild = pkNode->GetAt(i);
-                if (pkChild)
+                if (bCastersOnly)
                 {
-                    if (!pkChild->MS2HasAnyFlag(MS2_FLAG_DISPLAY_OBJECT) ||
-                        (!bIncludeAppCulled && pkChild->MS2HasAnyFlag(MS2_FLAG_APP_CULLED)))
-                    {
-                        if (pkChild->IsNode())
-                            AdditiveListHelperAtl((NiNode*)pkChild, pkObjList, bIncludeAppCulled, bCastersOnly);
-                    }
-                    else if (!bCastersOnly)
-                    {
-                        pkObjList->AddTail(pkChild);
-                    }
-                    else if (IsShadowCaster(pkChild))
-                    {
-                        pkObjList->AddTail(pkChild);
-                    }
+                    unsigned int bCaster;
+                    MS2_IS_SHADOW_CASTER(pkNode, bCaster);
+                    if (bCaster)
+                        pkObjList->AddTail(pkNode);
                 }
+                else
+                {
+                    pkObjList->AddTail(pkNode);
+                }
+                return;
             }
         }
-        else if (!bCastersOnly)
+        else
         {
-            pkObjList->AddTail(pkNode);
-        }
-        else if (IsShadowCaster(pkNode))
-        {
-            pkObjList->AddTail(pkNode);
-        }
-    }
-}
-
-// @0x14150be80
-void MS2ShadowVisitor::SubtractiveListHelperAtl(NiNode* pkNode, MS2CasterList* pkObjList)
-{
-    if (pkNode)
-    {
-        if (IsLeafGroup(pkNode))
-        {
-            NiAVObject* pkKey = pkNode;
-            POSITION kPos = pkObjList->Find(pkKey);
-            if (kPos)
-                pkObjList->RemoveAt(kPos);
+            return;
         }
 
         unsigned int uiChildCount = pkNode->GetArrayCount();
@@ -962,17 +960,62 @@ void MS2ShadowVisitor::SubtractiveListHelperAtl(NiNode* pkNode, MS2CasterList* p
             NiAVObject* pkChild = pkNode->GetAt(i);
             if (pkChild)
             {
-                if (!pkChild->MS2HasAnyFlag(MS2_FLAG_DISPLAY_OBJECT))
+                if (FUN_1409943d0(pkChild) && (bIncludeAppCulled || !pkChild->GetAppCulled()))
                 {
-                    if (pkChild->IsNode())
-                        SubtractiveListHelperAtl((NiNode*)pkChild, pkObjList);
+                    if (bCastersOnly)
+                    {
+                        unsigned int bCaster;
+                        MS2_IS_SHADOW_CASTER(pkChild, bCaster);
+                        if (bCaster)
+                        {
+                            NiAVObject* pkCaster = pkChild;
+                            pkObjList->AddTail(pkCaster);
+                        }
+                    }
+                    else
+                    {
+                        NiAVObject* pkReceiver = pkChild;
+                        pkObjList->AddTail(pkReceiver);
+                    }
                 }
-                else
+                else if (pkChild->IsNode())
                 {
-                    POSITION kPos = pkObjList->Find(pkChild);
-                    if (kPos)
-                        pkObjList->RemoveAt(kPos);
+                    AdditiveListHelperAtl((NiNode*)pkChild, pkObjList, bIncludeAppCulled, bCastersOnly);
                 }
+            }
+        }
+    }
+}
+
+// @0x14150be80
+void MS2ShadowVisitor::SubtractiveListHelperAtl(NiNode* pkNode, MS2CasterList* pkObjList)
+{
+    if (pkNode == 0)
+        return;
+
+    if (IsLeafGroup(pkNode))
+    {
+        NiAVObject* pkKey = pkNode;
+        POSITION kPos = pkObjList->Find(pkKey);
+        if (kPos)
+            pkObjList->RemoveAt(kPos);
+    }
+
+    unsigned int uiChildCount = pkNode->GetArrayCount();
+    for (unsigned int i = 0; i < uiChildCount; i++)
+    {
+        NiAVObject* pkChild = pkNode->GetAt(i);
+        if (pkChild)
+        {
+            if (FUN_1409943d0(pkChild))
+            {
+                POSITION kPos = pkObjList->Find(pkChild);
+                if (kPos)
+                    pkObjList->RemoveAt(kPos);
+            }
+            else if (pkChild->IsNode())
+            {
+                SubtractiveListHelperAtl((NiNode*)pkChild, pkObjList);
             }
         }
     }

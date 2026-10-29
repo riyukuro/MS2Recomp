@@ -42,7 +42,7 @@ void MMLParser::SetFixedTempo(bool b)
     m_bFixedTempo = b;
 }
 
-// MS2-FUNCTIONAL: 4985-byte parser: jump/label layout of the command branches differs, left for the permuter
+// MS2-FUNCTIONAL: Parse is op-identical, but several locals sit in different frame slots (EH state at rsp+0x238 vs ours 0x230), left for the permuter
 // @0x140d7e780
 void MMLParser::Parse()
 {
@@ -120,10 +120,8 @@ void MMLParser::Parse()
                 }
             }
             m_tokens.push_back(spToken);
-            bTie = false;
-            continue;
         }
-        if (nClass == 2)
+        else if (nClass == 2)
         {
             nPos = nPos + 1;
             int nValue = 0;
@@ -156,25 +154,19 @@ void MMLParser::Parse()
                 }
             }
             m_tokens.push_back(spToken);
-            bTie = false;
-            continue;
         }
-        if (nClass == 5)
+        else if (nClass == 5)
         {
             nPos = nPos + 1;
             int nValue = m_nOctave;
             int nUsed = ParseNumber(pText + nPos, &nValue);
-            if (nUsed != 0)
-            {
-                nPos = nPos + nUsed;
-                if (-1 < nValue && nValue < 9)
-                    m_nOctave = nValue;
-                bTie = false;
+            if (nUsed == 0)
                 continue;
-            }
-            continue;
+            nPos = nPos + nUsed;
+            if (nValue >= 0 && nValue <= 8)
+                m_nOctave = nValue;
         }
-        if (nClass == 6)
+        else if (nClass == 6)
         {
             nPos = nPos + 1;
             int nValue = m_nLength;
@@ -182,16 +174,16 @@ void MMLParser::Parse()
             if (nUsed == 0)
                 continue;
             nPos = nPos + nUsed;
-            if (pText + nPos == 0 || pText[nPos] != '.')
-            {
-                m_bDotted = false;
-            }
-            else
+            if (pText + nPos != 0 && pText[nPos] == '.')
             {
                 nPos = nPos + 1;
                 m_bDotted = true;
             }
-            if (0 < nValue && nValue < 0x41)
+            else
+            {
+                m_bDotted = false;
+            }
+            if (nValue >= 1 && nValue <= 0x40)
                 m_nLength = nValue;
         }
         else if (nClass == 7)
@@ -202,7 +194,7 @@ void MMLParser::Parse()
             if (nUsed == 0)
                 continue;
             nPos = nPos + nUsed;
-            if (-1 < nValue && nValue < 0x10)
+            if (nValue >= 0 && nValue <= 0xf)
                 m_nVolume = nValue;
         }
         else if (nClass == 8)
@@ -213,7 +205,7 @@ void MMLParser::Parse()
             if (nUsed == 0)
                 continue;
             nPos = nPos + nUsed;
-            if (m_bFixedTempo == false && 0x1f < nValue && nValue < 0x100)
+            if (m_bFixedTempo == false && nValue >= 0x20 && nValue <= 0xff)
                 m_nTempo = nValue;
         }
         else if (nClass == 9)
@@ -242,7 +234,7 @@ void MMLParser::Parse()
                 bTie = true;
                 continue;
             }
-            if (nClass == 0xe)
+            else if (nClass == 0xe)
             {
                 nPos = nPos + 1;
                 int nValue = 0;
@@ -254,10 +246,10 @@ void MMLParser::Parse()
                 spToken->m_nType = 2;
                 spToken->m_dTime = 0;
                 spToken->m_nPitch = 0x40;
-                if (nValue < 1)
-                    spToken->m_nValue = 0;
-                else
+                if (nValue > 0)
                     spToken->m_nValue = 0x7f;
+                else
+                    spToken->m_nValue = 0;
                 m_tokens.push_back(spToken);
             }
             else if (nClass == 0x10)
@@ -283,7 +275,7 @@ void MMLParser::Parse()
                 if (nUsed == 0)
                     continue;
                 nPos = nPos + nUsed;
-                if (0x1f < nValue && nValue < 0x100)
+                if (nValue >= 0x20 && nValue <= 0xff)
                 {
                     MS2Ptr<MMLToken> spToken(new MMLToken());
                     spToken->m_nType = 5;
@@ -348,86 +340,60 @@ void MMLParser::Parse()
     }
 }
 
-// MS2-FUNCTIONAL: the exe's switch index/jump tables are smaller (332 vs 372 bytes); case layout not found
 // @0x140d7faf0
 int MMLParser::Classify(char c)
 {
-    int nClass = 0;
     switch (c)
     {
-    case '&':
-        nClass = 0xb;
-        break;
-    case '<':
-        nClass = 10;
-        break;
-    case '>':
-        nClass = 9;
-        break;
     case 'A': case 'B': case 'C': case 'D': case 'E': case 'F': case 'G':
     case 'a': case 'b': case 'c': case 'd': case 'e': case 'f': case 'g':
-        nClass = 1;
-        break;
-    case 'I':
-    case 'i':
-        nClass = 0xf;
-        break;
-    case 'L':
-    case 'l':
-        nClass = 6;
-        break;
-    case 'M':
-    case 'm':
-        nClass = 0x10;
-        break;
-    case 'N':
-    case 'n':
-        nClass = 2;
-        break;
-    case 'O':
-    case 'o':
-        nClass = 5;
-        break;
-    case 'P':
-    case 'p':
-        nClass = 0x11;
-        break;
-    case 'R':
-    case 'r':
-        nClass = 4;
-        break;
-    case 'S':
-    case 's':
-        nClass = 0xe;
-        break;
-    case 'T':
-    case 't':
-        nClass = 8;
-        break;
-    case 'V':
-    case 'v':
-        nClass = 7;
-        break;
-    case 'Y':
-    case 'y':
-        nClass = 0xd;
+        return 1;
+    case 'N': case 'n':
+        return 2;
+    case 'R': case 'r':
+        return 4;
+    case 'O': case 'o':
+        return 5;
+    case 'L': case 'l':
+        return 6;
+    case 'V': case 'v':
+        return 7;
+    case 'T': case 't':
+        return 8;
+    case '>':
+        return 9;
+    case '<':
+        return 10;
+    case '&':
+        return 0xb;
+    case 'Y': case 'y':
+        return 0xd;
+    case 'I': case 'i':
+        return 0xf;
+    case 'S': case 's':
+        return 0xe;
+    case 'M': case 'm':
+        return 0x10;
+    case 'P': case 'p':
+        return 0x11;
     }
-    return nClass;
+    return 0;
 }
 
-// MS2-FUNCTIONAL: digit test chain: the exe's last compare is a je + jmp pair (grouping of the || chain)
 // @0x140d7fc50
 int MMLParser::ParseNumber(const char* p, int* pnValue)
 {
     int nCount;
-    for (nCount = 0; p[nCount] != '\0' && (p[nCount] == '0' || p[nCount] == '1' || p[nCount] == '2' || p[nCount] == '3' || p[nCount] == '4' || p[nCount] == '5' || p[nCount] == '6' || p[nCount] == '7' || p[nCount] == '8' || p[nCount] == '9'); nCount = nCount + 1)
+    for (nCount = 0; p[nCount] != '\0'; nCount++)
     {
+        if (!(p[nCount] == '0' || p[nCount] == '1' || p[nCount] == '2' || p[nCount] == '3' || p[nCount] == '4' ||
+              p[nCount] == '5' || p[nCount] == '6' || p[nCount] == '7' || p[nCount] == '8' || p[nCount] == '9'))
+            break;
     }
     *pnValue = atoi(p);
     return nCount;
 }
 
-// MS2-FUNCTIONAL: return 1 tail: the exe shares one epilogue for the +/- exits
 // @0x140d7fd80
 int MMLParser::ParseNote(const char* p, int* pnNote)
 {
@@ -471,9 +437,9 @@ int MMLParser::ParseNote(const char* p, int* pnNote)
             *pnNote = *pnNote + 1;
             return 2;
         }
-        if (p[1] == '-')
+        else if (p[1] == '-')
         {
-            *pnNote = *pnNote + -1;
+            *pnNote = *pnNote - 1;
             return 2;
         }
     }
@@ -492,18 +458,17 @@ int MMLParser::FUN_140d7ff60(int nNote)
     return m_nOctave * 0xc + nNote;
 }
 
-// MS2-FUNCTIONAL: the exe initialises the result with 0.0 before the length test and spills each division
 // @0x140d7ff80
 double MMLParser::FUN_140d7ff80(int nLength, bool bDotted)
 {
-    double dTime = 0.0;
-    if (nLength != 0)
-    {
-        double dBeat = 60000.0 / (double)m_nTempo;
-        dTime = (dBeat / (double)nLength) * 4.0;
-        if (bDotted)
-            dTime = dTime * 1.5;
-    }
+    if (nLength == 0)
+        return 0.0;
+    double dTime = 60000.0;
+    dTime = dTime / (double)m_nTempo;
+    dTime = dTime / (double)nLength;
+    dTime = dTime * 4.0;
+    if (bDotted)
+        dTime = dTime * 1.5;
     return dTime;
 }
 

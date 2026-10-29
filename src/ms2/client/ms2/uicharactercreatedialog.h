@@ -86,7 +86,7 @@ public:
     void FUN_1418e7040(int nPos);                               // OnChangePosition
     void FUN_1418e7110(int nIndex, float fSize);                // OnChangeSize
     void FUN_1418e7260(float fDegree);                          // OnChangeDegree
-    void FUN_1418e7340();                                       // vfunc_55 through the vftable (result dropped)
+    void FUN_1418e7340(int, int, int);                                       // vfunc_55 through the vftable (result dropped)
     void FUN_1418e7380(int nItemId);                            // remember the worn item
     void FUN_1418e74c0(MS2Ptr<CItemData> spData);               // updateCurrentItem
     bool FUN_1418e7790(int nResult, const CMsgBoxData& data);   // the name input answer
@@ -96,7 +96,7 @@ public:
     ATL::CAtlArray<MS2Ptr<DefaultItemData> > m_aRows;           // +0x1b8 the rows of the shown list
     Unk_CcItemMap m_items;                                      // +0x1d8 item id -> the lobby actor's item
     MS2Ptr<Customize> m_spCustomize;                            // +0x220
-    int m_nCurItemId;                                           // +0x230
+    unsigned int m_nCurItemId;                                  // +0x230
     int m_nTab;                                                 // +0x234 -1
     int m_nCategory;                                            // +0x238 -1
     int m_bCurrentBuilt;                                        // +0x23c

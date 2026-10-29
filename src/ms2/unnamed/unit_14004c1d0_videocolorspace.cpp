@@ -219,12 +219,12 @@ void FUN_14004ca60(Unk_YuvEntry* pTab1, Unk_YuvEntry* pTab2)
     {
         pTab1[i].v[2] = 0;
         pTab1[i].v[3] = 0;
-        pTab1[i].v[0] = (short)(int)(((float)nStepA * 1.772 * 255.0) / 224.0 + 0.5);
-        pTab1[i].v[1] = (short)(int)(((float)nStepB * 0.344 * 255.0) / 224.0 + 0.5);
+        pTab1[i].v[0] = (short)(int)(((float)nStepA * 1.772f * 255.0f) / 224.0f + 0.5f);
+        pTab1[i].v[1] = (short)(int)(((float)nStepB * 0.344f * 255.0f) / 224.0f + 0.5f);
         pTab2[i].v[0] = 0;
         pTab2[i].v[3] = 0;
-        pTab2[i].v[1] = (short)(int)(((float)nStepB * 0.714 * 255.0) / 224.0 + 0.5);
-        pTab2[i].v[2] = (short)(int)(((float)nStepA * 1.402 * 255.0) / 224.0 + 0.5);
+        pTab2[i].v[1] = (short)(int)(((float)nStepB * 0.714f * 255.0f) / 224.0f + 0.5f);
+        pTab2[i].v[2] = (short)(int)(((float)nStepA * 1.402f * 255.0f) / 224.0f + 0.5f);
         nStepA += 0x40;
         nStepB -= 0x40;
     }

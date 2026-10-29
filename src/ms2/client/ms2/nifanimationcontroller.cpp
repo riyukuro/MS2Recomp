@@ -7,50 +7,19 @@
 #include "nifanimationcontroller.h"
 #include "hook/ms2hook.h"
 #include <NiAVObject.h>
-#include <NiMultiTargetTransformController.h>
+#include <NiTransformController.h>
+#include <NiPathInterpolator.h>
 #include <NiTimeController.h>
+#include <egf/EntityID.h>
 #include <string.h>
 #include <errno.h>
 #pragma function(memset, memcpy)
 
 // Unrecovered callees (real types unknown).
-void FUN_14097eba0(void* h, int a);
-void FUN_1409f7170(void* h, int a);
-void FUN_140b85910(void* h, int a);
-void FUN_140d9ddf0(void* h, int a);
-void FUN_1409fabf0(void* h, int a);
-void FUN_1409f76f0(void* h, void* v);
-void FUN_140b85cd0(void* h, void* v);
-void FUN_140af6d60(void* h, void* v);
-void FUN_14097f710(void* h, void* v);
-void FUN_140d9e050(void* h);
-void FUN_1409f74b0(void* h);
-void FUN_140b85b20(void* h);
-void FUN_1405a85c0(void* h);
-void* FUN_140a0afd0();
-void* FUN_141551ea0(void* svc, void* out, CStringA s, int a, int b, int c, int d);
-bool FUN_140af72f0(void* h, int a);
-bool FUN_140b85fc0(void* h, int a);
-void* FUN_14098d0f0(void* h);
-void* FUN_140a33f90(void* obj);
-void* FUN_14098d8d0(const void* rtti, void* obj);
-void* FUN_1409475d0(void* h);
-void* FUN_1409475f0(void* h);
-void* FUN_140e68fd0(void* h);
-void* FUN_1409478e0(void* o);
 void* FUN_14098dc80(void* o);
 void* FUN_14098de40(void* o);
 void FUN_14098e870(void* o, int v);
-float FUN_140af7f50(void* o);
-int FUN_140af7db0(void* o);
-void FUN_14098cb80(void* it, void* o);
-void* FUN_14098e0d0(void* it, int a);
-void FUN_14098cf00(void* it);
-void FUN_140aacb60(void* node, void* xf);
-void FUN_142083d40(void* m, float x, float y, float z);
-void FUN_142085840(void* m, float* x, float* y, float* z);
-void FUN_141d16040(void* o, float t, bool b);
-char FUN_14098df90(const void* rtti, void* o);
+bool FUN_14098df90(const void* rtti, void* o);
 void* FUN_14127cc40(void* o);
 void* FUN_14098ddb0(void* o);
 void* FUN_14098de00(void* o, void** it);
@@ -62,115 +31,96 @@ void* FUN_1409670f0();
 void* FUN_1411cf440(void* a, void* id);
 void* FUN_141fff400(void* svc, void* ent);   // ecr::SceneGraphService::GetSceneGraphFromEntity
 void FUN_141d24a50(void* o);
-extern char DAT_143af8a00;
-extern char DAT_143af89f0;
-extern char DAT_143afa950;
 extern char DAT_143afa458;
-extern char DAT_143b01a60;
 
 // @0x1400fa290
 const NiRTTI CNifAnimationController::ms_RTTI("CNifAnimationController", 0);
 
-// @0x1400fa2b0 (static initialised by FUN_1401cd100(&DAT_143ae1a28, 0); zero-initialised handle)
-void FUN_1401cd100(void* h, int a);
-static void* s_dat_143ae1a28;
-static int s_dat_143ae1a28_init = (FUN_1401cd100(&s_dat_143ae1a28, 0), 0);
+// @0x1400fa2b0 (0x143ae1a28: a file-static invalid entity id; unreferenced in this unit)
+static egf::EntityID s_kNoEntity(0ull);
 
 // @0x141544660
 CNifAnimationController::CNifAnimationController()
+    : m_10(0), m_18(0), m_20(0), m_28(0), m_30(0), m_38(efd::Point3::ZERO), m_44(efd::Point3::ZERO)
 {
-    FUN_14097eba0(&m_10, 0);
-    FUN_1409f7170(&m_18, 0);
-    FUN_140b85910(&m_20, 0);
-    FUN_1409f7170(&m_28, 0);
-    FUN_140d9ddf0(&m_30, 0);
-    memcpy(&m_38, &DAT_143b01a60, 12);
-    memcpy(&m_44, &DAT_143b01a60, 12);
     m_58 = 0;
 }
 
 // @0x141544750
 CNifAnimationController::~CNifAnimationController()
 {
-    FUN_1409fabf0(&m_10, 0);
-    FUN_1409f76f0(&m_18, 0);
-    FUN_140b85cd0(&m_20, 0);
-    FUN_140af6d60(&m_30, 0);
-    FUN_1409f76f0(&m_28, 0);
-    FUN_140d9e050(&m_30);
-    FUN_1409f74b0(&m_28);
-    FUN_140b85b20(&m_20);
-    FUN_1409f74b0(&m_18);
-    FUN_1405a85c0(&m_10);
+    m_10 = 0;
+    m_18 = 0;
+    m_20 = 0;
+    m_30 = 0;
+    m_28 = 0;
 }
 
 // @0x141545340
 const NiRTTI* CNifAnimationController::GetRTTI() const { return &ms_RTTI; }
 
+// The .nif loading service (CNifLoadingService; nifmodel.cpp declares the same view). Only the loader this unit calls.
+class Unk_NifLoader
+{
+public:
+    NiAVObjectPtr FUN_141551ea0(CStringA strPath, bool bShared, int a, int b, int c);   // Load
+};
+Unk_NifLoader* FUN_140a0afd0();                           // the service singleton
+
+// The scene-graph walk (applyeffect.cpp / kfmmodel.cpp declare the same view).
+class Unk_AeSceneIter
+{
+public:
+    Unk_AeSceneIter(NiAVObject* pRoot);                     // 0x14098cb80
+    ~Unk_AeSceneIter();                                     // 0x14098cf00
+    NiAVObject* FUN_14098e0d0(bool bEnterChildren);
+    void* m_p0; void* m_p1; void* m_p2; void* m_p3; void* m_p4; void* m_p5;
+};
+
 // @0x141544850
-// MS2-FUNCTIONAL: opaque handle helpers and local transform temp layout not matched exactly
-bool CNifAnimationController::FUN_141544850(int mode, CStringA name, float* euler)
+bool CNifAnimationController::FUN_141544850(int mode, CStringA name, const efd::Point3& kEuler)
 {
     m_58 = mode;
     if (m_58 == 0) {
-        void* svc = FUN_140a0afd0();
-        char tmp[8];
-        void* h = FUN_141551ea0(svc, tmp, name, 0, 5, 0, 0);
-        FUN_14097f710(&m_10, h);
-        FUN_1405a85c0(tmp);
-        if (FUN_140af72f0(&m_10, 0)) {
-            char xf[0x34];
-            memcpy(xf, FUN_140a33f90(FUN_14098d0f0(&m_10)), 0x34);
-            FUN_142083d40(xf, (-euler[0] * 3.1415927f) / 180.0f, (-euler[1] * 3.1415927f) / 180.0f, (-euler[2] * 3.1415927f) / 180.0f);
-            FUN_140aacb60(FUN_14098d0f0(&m_10), xf);
-            NiFixedString dummy("Dummy01");
-            void* root = FUN_14098d0f0(&m_10);
-            void* d = static_cast<NiAVObject*>(root)->GetObjectByName(dummy);
-            FUN_1409f76f0(&m_18, FUN_14098d8d0(&NiNode::ms_RTTI, d));
-        }
-        // dummy dtor via scope end
-        if (FUN_1409475d0(&m_18) != 0) {
-            for (void* c = FUN_14098dc80(FUN_1409475f0(&m_18)); c != 0; c = FUN_14098de40(c)) {
-                float t = FUN_140af7f50(c);
-                if (m_54 < t)
-                    m_54 = FUN_140af7f50(c);
-                NiMultiTargetTransformController* mt = (NiMultiTargetTransformController*)FUN_14098d8d0(&DAT_143af8a00, c);
-                if (mt != 0 && FUN_140b85fc0(&m_20, 0)) {
-                    for (unsigned short i = 0;; ++i) {
-                        unsigned short n = mt->GetInterpolatorCount();
-                        if ((int)i >= (int)n)
-                            break;
-                        void* tg = mt->GetInterpolator(i);
-                        FUN_140b85cd0(&m_20, FUN_14098d8d0(&DAT_143af89f0, tg));
-                        if (FUN_140b85fc0(&m_20, 0))
-                            break;
+        m_10 = FUN_140a0afd0()->FUN_141551ea0(name, false, 5, 0, 0);
+        if (m_10 != 0) {
+            NiTransform kXf = m_10->GetLocalTransform();
+            kXf.m_Rotate.FromEulerAnglesXYZ((-kEuler.x * 3.1415927f) / 180.0f, (-kEuler.y * 3.1415927f) / 180.0f,
+                                            (-kEuler.z * 3.1415927f) / 180.0f);
+            m_10->SetLocalTransform(kXf);
+            m_18 = NiDynamicCast(NiNode, m_10->GetObjectByName("Dummy01"));
+            if (m_18) {
+                NiTimeController* pCtrl = m_18->GetControllers();
+                while (pCtrl != 0) {
+                    if (m_54 < pCtrl->GetEndKeyTime())
+                        m_54 = pCtrl->GetEndKeyTime();
+                    NiTransformController* pXf = NiDynamicCast(NiTransformController, pCtrl);
+                    // Kept exe quirk: the search only runs while m_20 is already set; it starts null and nothing
+                    // else sets it, so it never runs.
+                    if (pXf != 0 && m_20 != 0) {
+                        for (unsigned short i = 0; i < pXf->GetInterpolatorCount(); ++i) {
+                            m_20 = (NiObjectNET*)NiDynamicCast(NiPathInterpolator, pXf->GetInterpolator(i));
+                            if (m_20 != 0)
+                                break;
+                        }
                     }
+                    pCtrl = pCtrl->GetNext();
                 }
             }
         }
     } else if (m_58 == 1) {
-        void* svc = FUN_140a0afd0();
-        char tmp[8];
-        void* h = FUN_141551ea0(svc, tmp, name, 0, 5, 0, 0);
-        FUN_14097f710(&m_10, h);
-        FUN_1405a85c0(tmp);
-        if (FUN_140af72f0(&m_10, 0)) {
-            NiFixedString cam("Camera01");
-            void* root = FUN_14098d0f0(&m_10);
-            void* d = static_cast<NiAVObject*>(root)->GetObjectByName(cam);
-            FUN_1409f76f0(&m_28, FUN_14098d8d0(&NiNode::ms_RTTI, d));
-            char it[0x30];
-            FUN_14098cb80(it, FUN_1409475d0(&m_28));
-            void* n;
-            while ((n = FUN_14098e0d0(it, 1)) != 0) {
-                void* c = FUN_14098dc80(n);
-                while (c != 0 && FUN_140af7db0(c) == 1) {
-                    FUN_14098e870(c, 0);
-                    c = FUN_14098de40(c);
+        m_10 = FUN_140a0afd0()->FUN_141551ea0(name, false, 5, 0, 0);
+        if (m_10 != 0) {
+            m_28 = NiDynamicCast(NiNode, m_10->GetObjectByName("Camera01"));
+            Unk_AeSceneIter walk(m_28);
+            while (NiAVObject* pObject = walk.FUN_14098e0d0(true)) {
+                NiTimeController* pCtrl = pObject->GetControllers();
+                while (pCtrl != 0 && pCtrl->GetAnimType() == 1) {
+                    pCtrl->SetAnimType((NiTimeController::AnimType)0);
+                    pCtrl = pCtrl->GetNext();
                 }
-                FUN_140af6d60(&m_30, FUN_14098d8d0(&DAT_143afa950, n));
+                m_30 = NiDynamicCast(NiCamera, pObject);
             }
-            FUN_14098cf00(it);
         }
     }
     return true;
@@ -180,22 +130,20 @@ bool CNifAnimationController::FUN_141544850(int mode, CStringA name, float* eule
 void CNifAnimationController::FUN_141544ec0(float time)
 {
     if (m_58 == 1) {
-        FUN_141d16040(FUN_1409475f0(&m_28), time, true);
-        void* xf = FUN_140a33f90(FUN_1409475f0(&m_28));
-        ((Vector3*)&m_38)->operator=(*(Vector3*)((char*)xf + 0x24));
-        float* e = (float*)&m_44;
-        FUN_142085840(FUN_1409478e0(FUN_140e68fd0(&m_30)), &e[0], &e[1], &e[2]);
-        e[0] = -((e[0] * 180.0f) / 3.1415927f);
-        e[1] = -((e[1] * 180.0f) / 3.1415927f);
-        e[2] = -((e[2] * 180.0f) / 3.1415927f);
+        m_28->Update(time, true);
+        m_38 = m_28->GetLocalTransform().m_Translate;
+        m_30->GetWorldTransform().m_Rotate.ToEulerAnglesXYZ(m_44.x, m_44.y, m_44.z);
+        m_44.x = -((m_44.x * 180.0f) / 3.1415927f);
+        m_44.y = -((m_44.y * 180.0f) / 3.1415927f);
+        m_44.z = -((m_44.z * 180.0f) / 3.1415927f);
     }
 }
 
 // @0x141545020
-Unk_NACRaw12* CNifAnimationController::FUN_141545020(Unk_NACRaw12* out) { *out = m_38; return out; }
+efd::Point3 CNifAnimationController::FUN_141545020() { return m_38; }
 
 // @0x141545050
-Unk_NACRaw12* CNifAnimationController::FUN_141545050(Unk_NACRaw12* out) { *out = m_44; return out; }
+efd::Point3 CNifAnimationController::FUN_141545050() { return m_44; }
 
 // @0x141545080
 void FUN_141545080(int value, void* node)
@@ -203,16 +151,18 @@ void FUN_141545080(int value, void* node)
     for (void* c = FUN_14098dc80(node); c != 0; c = FUN_14098de40(c))
         FUN_14098e870(c, value);
     if (FUN_14098df90(&DAT_143afa458, node)) {
-        void* it = FUN_14098ddb0(FUN_14127cc40(node));
+        void* pSwitch = node;   // the exe's static cast to the switch-node type
+        void* it = FUN_14098ddb0(FUN_14127cc40(pSwitch));
         while (it != 0) {
-            void* ch = FUN_140993f00(FUN_14098de00(FUN_14127cc40(node), &it));
+            void* ch = FUN_140993f00(FUN_14098de00(FUN_14127cc40(pSwitch), &it));
             if (ch != 0 && FUN_14098dc80(ch) != 0)
                 FUN_141545080(value, ch);
         }
     }
     if (FUN_14098df90(&NiNode::ms_RTTI, node)) {
-        for (unsigned int i = 0; i < FUN_14098daf0(node); ++i) {
-            void* ch = FUN_14098db40(node, i);
+        void* pNode = node;     // static cast to NiNode
+        for (unsigned int i = 0; i < FUN_14098daf0(pNode); ++i) {
+            void* ch = FUN_14098db40(pNode, i);
             if (ch != 0)
                 FUN_141545080(value, ch);
         }
@@ -223,32 +173,33 @@ void FUN_141545080(int value, void* node)
 void FUN_1415451d0(int value, void* entityId)
 {
     void* sg = FUN_1413f98b0();
-    if (sg != 0) {
-        void* ent = FUN_1411cf440(FUN_1409670f0(), entityId);
-        if (ent != 0) {
-            void* n = FUN_141fff400(sg, ent);
-            if (n != 0)
-                FUN_141545080(value, n);
-        }
-    }
+    if (sg == 0)
+        return;
+    void* ent = FUN_1411cf440(FUN_1409670f0(), entityId);
+    if (ent == 0)
+        return;
+    void* n = FUN_141fff400(sg, ent);
+    if (n == 0)
+        return;
+    FUN_141545080(value, n);
 }
 
 // @0x141545250
 void FUN_141545250(void* entityId, int mode)
 {
     void* sg = FUN_1413f98b0();
-    if (sg != 0) {
-        void* ent = FUN_1411cf440(FUN_1409670f0(), entityId);
-        if (ent != 0) {
-            void* n = FUN_141fff400(sg, ent);
-            if (n != 0) {
-                if (mode == 0)
-                    NiTimeController::StopAnimations(static_cast<NiObjectNET*>(n));
-                else
-                    FUN_141d24a50(n);
-            }
-        }
-    }
+    if (sg == 0)
+        return;
+    void* ent = FUN_1411cf440(FUN_1409670f0(), entityId);
+    if (ent == 0)
+        return;
+    void* n = FUN_141fff400(sg, ent);
+    if (n == 0)
+        return;
+    if (mode != 0)
+        FUN_141d24a50(n);
+    else
+        NiTimeController::StopAnimations(static_cast<NiObjectNET*>(n));
 }
 
 // @0x141545350 (memmove_s)
@@ -256,9 +207,19 @@ unsigned __int64 FUN_141545350(void* dst, unsigned __int64 dstSize, void* src, u
 {
     if (n == 0)
         return 0;
-    if (dst == 0) { *_errno() = 22; _invalid_parameter_noinfo(); return 22; }
-    if (src == 0) { *_errno() = 22; _invalid_parameter_noinfo(); return 22; }
-    if (dstSize < n) { *_errno() = 34; _invalid_parameter_noinfo(); return 34; }
+    // The checks are the CRT's _CRT_MEMCPY_S_VALIDATE_RETURN_ERRCODE (memmove_s in vcruntime_string.h).
+    {
+        int bValid = !!(dst != 0);
+        if (!bValid) { *_errno() = EINVAL; _invalid_parameter_noinfo(); return EINVAL; }
+    }
+    {
+        int bValid = !!(src != 0);
+        if (!bValid) { *_errno() = EINVAL; _invalid_parameter_noinfo(); return EINVAL; }
+    }
+    {
+        int bValid = !!(dstSize >= n);
+        if (!bValid) { *_errno() = ERANGE; _invalid_parameter_noinfo(); return ERANGE; }
+    }
     memmove(dst, src, n);
     return 0;
 }

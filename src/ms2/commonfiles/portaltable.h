@@ -26,7 +26,7 @@ class PortalRandomTargetData : public CPtred
 {
 public:
     PortalRandomTargetData();           // 0x140735030
-    virtual ~PortalRandomTargetData();  // 0x1407352d0
+    // implicit: virtual ~PortalRandomTargetData();  // 0x1407352d0
 
     int m_nFieldId;                     // +0x18 "fieldID"
     int m_nPortalId;                    // +0x1c "portalID"

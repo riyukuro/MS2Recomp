@@ -17,6 +17,8 @@
 // MS2-PIN: ?vfunc_3@?$DelegateImpl@U?$pair@PEAVUIItemEditDialog@@P81@EAAXPEAVNotifyObject@@@Z@std@@@?$Delegate@$$A6AXPEAVNotifyObject@@@Z@@UEBA_NPEBVDelegateImplBase@2@@Z 0x1419be520 ; unique
 // MS2-PIN: ?vfunc_3@?$DelegateImpl@U?$pair@PEAVUIItemEditDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEBA_NPEBVDelegateImplBase@2@@Z 0x1419be580 ; unique
 // MS2-PINS-END tplpin
+// MS2-PIN: ??0Unk_IEEffectRequest@@QEAA@XZ 0x140a52ef0
+// MS2-PIN: ??1Unk_IEEffectRequest@@QEAA@XZ 0x1405a89e0
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uiitemeditdialog.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
 #include "ms2/client/ms2/uiitemeditdialog.h"
@@ -66,16 +68,17 @@ public:
 // The hair apply effect request.
 struct Unk_IEEffectRequest
 {
+    Unk_IEEffectRequest();                      // 0x140a52ef0
+    ~Unk_IEEffectRequest();                     // 0x1405a89e0
     CString m_strName;                          // +0x00 effect xml
     int m_n08;                                  // +0x08
-    char m_pad_0c[0x78 - 0x0c];
+    int m_n0c;                                  // +0x0c
+    void* m_pad_10[(0x70 - 0x10) / 8];
 };
-MS2_CHECK_SIZE(Unk_IEEffectRequest, 0x78);
+MS2_CHECK_SIZE(Unk_IEEffectRequest, 0x70);
 class Unk_IEEffectMgr { public: void FUN_1411a4a00(Unk_IEEffectRequest* pRequest); };
 Unk_IEEffectMgr* FUN_1403ed280();
-void FUN_140a52ef0(Unk_IEEffectRequest* p);         // construct
 void FUN_140a53190(Unk_IEEffectRequest* p, int nObjectId);
-void FUN_1405a89e0(Unk_IEEffectRequest* p);         // destroy
 struct Unk_IEEffectPaths { char m_pad_0[0x2e0]; CString m_hairApply; };   // +0x2e0
 Unk_IEEffectPaths* FUN_1401d31f0();
 
@@ -165,7 +168,6 @@ void FUN_14151f200();                           // no arguments
 bool FUN_1403b3c40(const CStringW& str, const wchar_t* sz);
 void* FUN_1405a8e70(void* pHandle);
 void FUN_1405a85f0(void* pHandle);
-int FUN_14053e210(CItemData* pData);
 int FUN_1414124a0(void* pPart);                 // the item id of a part
 void FUN_140d73aa0(CStringW strText, int nType, IMessageListener* pListener, CStringW strTag);
 CStringW FUN_140f09f90(int nId, const int& nArg);
@@ -198,7 +200,6 @@ CString UIItemEditDialog::GetTypeName()
 }
 
 // @0x1419bc8a0
-// MS2-FUNCTIONAL: code generation differs (register allocation / block layout)
 void UIItemEditDialog::vfunc_67()
 {
     UIDialog::vfunc_67();
@@ -229,41 +230,38 @@ void UIItemEditDialog::OnLoadComplete()
     if (m_30.get())
     {
         CString strGuide = FUN_1401d3200()->m_cc50.FUN_1409f6f30();
-        m_30->Invoke("initData", CString(strGuide));
+        m_30->Invoke("initData", strGuide);
     }
-    FUN_140939a10()->RegisterNotify(CStringW(L"NotifyChangeActiveMyCodiTab"),
+    FUN_140939a10()->RegisterNotify(L"NotifyChangeActiveMyCodiTab",
                                    Delegate<void(NotifyObject*)>(this, &UIItemEditDialog::FUN_1419bd530));
 }
 
 // @0x1419bcd40
 int UIItemEditDialog::vfunc_13()
 {
-    if (UIDialog::vfunc_13() == 0)
+    if (UIDialog::vfunc_13() != 0)
+        return 1;
+    if (FUN_14025e7c0()->FUN_14116d840())
     {
-        if (FUN_14025e7c0()->FUN_14116d840() == false)
-            return 0;
         FUN_1419bd9f0();
         return 1;
     }
-    return 1;
+    return 0;
 }
 
 // @0x1419bcd90
-// MS2-FUNCTIONAL: code generation differs (register allocation / block layout)
 void UIItemEditDialog::vfunc_15()
 {
-    if (vfunc_55() == 0)
-    {
-        if (m_198.get())
-            m_198->FUN_140cd1bf0();
-        if (m_1a8)
-            m_1a8->FUN_1418dda30(m_198->FUN_140cd27f0() == 0);
-    }
+    if (vfunc_55() != 0)
+        return;
+    if (m_198.get())
+        m_198->FUN_140cd1bf0();
+    if (m_1a8)
+        m_1a8->FUN_1418dda30(m_198->FUN_140cd27f0() == 0);
 }
 
 // The answers of the scene (OnExit) and of the message box (errorEdit).
 // @0x1419bce50
-// MS2-FUNCTIONAL: code generation differs (register allocation / block layout)
 int UIItemEditDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
 {
     UIDialog::OnMessage(pSender, pMsg);
@@ -276,7 +274,7 @@ int UIItemEditDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
                 FUN_1419bd9f0();
             return 1;
         }
-        if (dynamic_cast<UIMessageBox*>(pSender))
+        else if (dynamic_cast<UIMessageBox*>(pSender))
         {
             int nResult = pMsg->FUN_1422b8a10();
             CStringW strTag = pMsg->FUN_1422b8f40();
@@ -291,24 +289,21 @@ int UIItemEditDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
 
 // The server result of the save (opcode 0x31).
 // @0x1419bcfd0
-// MS2-FUNCTIONAL: code generation differs (register allocation / block layout)
 void UIItemEditDialog::vfunc_79(void* p)
 {
     UIDialog::vfunc_79(p);
-    CInPacket* pPacket = static_cast<CInPacket*>(p);
-    if (pPacket->FUN_14070fe80() == 0x31)
+    int nType = static_cast<CInPacket*>(p)->FUN_14070fe80();
+    if (nType != 0x31)
+        return;
+    m_1b0 = 0;
+    int nMode = static_cast<CInPacket*>(p)->ReadUInt8();
+    if (nMode == 8)
     {
-        m_1b0 = 0;
-        unsigned nMode = pPacket->ReadUInt8();
-        if (nMode == 8)
+        int nResult = static_cast<CInPacket*>(p)->ReadInt32();
+        if (nResult != 0)
         {
-            int nResult = pPacket->ReadInt32();
-            if (nResult != 0)
-            {
-                FUN_140d73aa0(FUN_140f09f90(0x272, nResult), 0, static_cast<IMessageListener*>(this),
-                              CStringW(L"errorEdit"));
-                OnReset();
-            }
+            FUN_140d73aa0(FUN_140f09f90(0x272, nResult), 0, this, L"errorEdit");
+            OnReset();
         }
     }
 }
@@ -316,58 +311,49 @@ void UIItemEditDialog::vfunc_79(void* p)
 // @0x1419bd150
 int UIItemEditDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs)
 {
-    if (UIDialog::vfunc_28(szMethod, pArgs, nArgs) == 0)
+    if (UIDialog::vfunc_28(szMethod, pArgs, nArgs) != 0)
+        return 1;
+    if (_stricmp("OnSave", szMethod) == 0)
     {
-        if (_stricmp("OnSave", szMethod) == 0)
-        {
-            OnSave();
-            return 1;
-        }
-        if (_stricmp("OnReset", szMethod) == 0)
-        {
-            OnReset();
-            return 1;
-        }
-        if (_stricmp("OnClickClose", szMethod) == 0)
-        {
-            FUN_1419bd9f0();
-            return 1;
-        }
-        return 0;
+        OnSave();
+        return 1;
     }
-    return 1;
+    else if (_stricmp("OnReset", szMethod) == 0)
+    {
+        OnReset();
+        return 1;
+    }
+    else if (_stricmp("OnClickClose", szMethod) == 0)
+    {
+        FUN_1419bd9f0();
+        return 1;
+    }
+    return 0;
 }
 
 // A worn item changed: play the apply effect and reset the page.
 // @0x1419bd210
-// MS2-FUNCTIONAL: code generation differs (register allocation / block layout)
 void UIItemEditDialog::vfunc_24(void* p)
 {
-    if (p)
-    {
-        Unk_IEPlayer* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
-        if (pPc)
-        {
-            if (pPc->FUN_14166c930() != 0xe)
-                pPc->vfunc_59(0xe, 0, 0, 0);
-            pPc->FUN_14166cc40(0x4c);
-            alignas(8) char effectBuf[sizeof(Unk_IEEffectRequest)];   // FUN_140a52ef0 / FUN_1405a89e0 construct and destroy it: no implicit dtor
-            Unk_IEEffectRequest& effect = *reinterpret_cast<Unk_IEEffectRequest*>(effectBuf);
-            FUN_140a52ef0(&effect);
-            effect.m_strName = FUN_1401d31f0()->m_hairApply;
-            effect.m_n08 = 1;
-            FUN_140a53190(&effect, FUN_14123c580(pPc));
-            FUN_1403ed280()->FUN_1411a4a00(&effect);
-            FUN_1419bdb50(0);
-            m_1b0 = 0;
-            FUN_1405a89e0(&effect);
-        }
-    }
+    if (p == 0)
+        return;
+    Unk_IEPlayer* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
+    if (pPc == 0)
+        return;
+    if (pPc->FUN_14166c930() != 0xe)
+        pPc->vfunc_59(0xe, 0, 0, 0);
+    pPc->FUN_14166cc40(0x4c);
+    Unk_IEEffectRequest effect;
+    effect.m_strName = FUN_1401d31f0()->m_hairApply;
+    effect.m_n08 = 1;
+    FUN_140a53190(&effect, FUN_14123c580(pPc));
+    FUN_1403ed280()->FUN_1411a4a00(&effect);
+    FUN_1419bdb50(0);
+    m_1b0 = 0;
 }
 
 // IItemCustomizeEventListener: a part changed; enable the buttons when it is the edited one.
 // @0x1419bd330
-// MS2-FUNCTIONAL: code generation differs (register allocation / block layout)
 int UIItemEditDialog::vfunc_1(void* p)
 {
     if (p == 0)
@@ -380,7 +366,6 @@ int UIItemEditDialog::vfunc_1(void* p)
 }
 
 // @0x1419bd3c0
-// MS2-FUNCTIONAL: code generation differs (register allocation / block layout)
 int UIItemEditDialog::vfunc_3(void* p, float)
 {
     if (p == 0)
@@ -393,7 +378,6 @@ int UIItemEditDialog::vfunc_3(void* p, float)
 }
 
 // @0x1419bd460
-// MS2-FUNCTIONAL: code generation differs (register allocation / block layout)
 int UIItemEditDialog::vfunc_2(void* p, float, int)
 {
     if (p == 0)
@@ -416,18 +400,16 @@ bool UIItemEditDialog::FUN_1419bd500(int nResult, const CMsgBoxData&)
 
 // The active my-codi tab changed.
 // @0x1419bd530
-// MS2-FUNCTIONAL: code generation differs (register allocation / block layout)
 void UIItemEditDialog::FUN_1419bd530(NotifyObject* pNotify)
 {
-    if (!(m_30 == 0) && !(m_198 == 0))
-    {
-        NotifyChangeActiveMyCodiTab* pTab = dynamic_cast<NotifyChangeActiveMyCodiTab*>(pNotify);
-        if (pTab == 0 || pTab->m_bActive)
-            FUN_1419bd860();
-        else
-            FUN_140d74390(GetStringCommonByKey(CStringW(L"s_beauty_msg_exit_by_expired_codi")), 0,
-                          Delegate<bool(int, const CMsgBoxData&)>(this, &UIItemEditDialog::FUN_1419bd500));
-    }
+    if (m_30 == 0 || m_198 == 0)
+        return;
+    NotifyChangeActiveMyCodiTab* pTab = dynamic_cast<NotifyChangeActiveMyCodiTab*>(pNotify);
+    if (pTab != 0 && !pTab->m_bActive)
+        FUN_140d74390(GetStringCommonByKey(L"s_beauty_msg_exit_by_expired_codi"), 0,
+                      Delegate<bool(int, const CMsgBoxData&)>(this, &UIItemEditDialog::FUN_1419bd500));
+    else
+        FUN_1419bd860();
 }
 
 // @0x1419bd6d0
@@ -439,32 +421,27 @@ bool UIItemEditDialog::FUN_1419bd6d0(int nResult, const CMsgBoxData&)
 }
 
 // @0x1419bd710
-// MS2-FUNCTIONAL: code generation differs (register allocation / block layout)
 bool UIItemEditDialog::FUN_1419bd710()
 {
-    if (!(m_30 == 0) && !(m_198 == 0))
-    {
-        if (FUN_1419bd7a0() == false)
-            FUN_1419bd860();
-        else
-            m_198->FUN_140cd25c0(6);
-    }
+    if (m_30 == 0 || m_198 == 0)
+        return true;
+    if (FUN_1419bd7a0() == false)
+        FUN_1419bd860();
+    else
+        m_198->FUN_140cd25c0(6);
     return true;
 }
 
 // The worn costume can be edited.
 // @0x1419bd7a0
-// MS2-FUNCTIONAL: code generation differs (register allocation / block layout)
 bool UIItemEditDialog::FUN_1419bd7a0()
 {
     Unk_IEPlayer* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pPc == 0)
         return false;
-    Unk_IEEquipPtr spEquip = pPc->FUN_141655e10(6);
-    if (spEquip.get() != 0)
     {
-        CItemData* pData = spEquip->FUN_1411dc7f0();
-        if (pData != 0 && FUN_14053e210(pData) != 0)
+        Unk_IEEquipPtr spEquip = pPc->FUN_141655e10(6);
+        if (spEquip.get() && spEquip->FUN_1411dc7f0() && spEquip->FUN_1411dc7f0()->FUN_14053e210())
             return true;
     }
     return false;
@@ -472,20 +449,17 @@ bool UIItemEditDialog::FUN_1419bd7a0()
 
 // Leave the page: restore the worn item.
 // @0x1419bd860
-// MS2-FUNCTIONAL: code generation differs (register allocation / block layout)
-bool UIItemEditDialog::FUN_1419bd860()
+BOOL UIItemEditDialog::FUN_1419bd860()
 {
-    if (!(m_198 == 0))
-    {
-        if (m_198->FUN_140cd2a00() != 0)
-            m_198->FUN_140cd22f0(6);
-        Unk_IEField* pField = FUN_1403ed2d0()->FUN_141bd3620();
-        if (pField)
-            pField->vfunc_149();
-        FUN_1422b9fd0(FUN_1408e57f0(), 0x620001d);
-        return true;
-    }
-    return false;
+    if (m_198 == 0)
+        return false;
+    if (m_198->FUN_140cd2a00() != 0)
+        m_198->FUN_140cd22f0(6);
+    Unk_IEField* pField = FUN_1403ed2d0()->FUN_141bd3620();
+    if (pField)
+        pField->vfunc_149();
+    FUN_1422b9fd0(FUN_1408e57f0(), 0x620001d);
+    return true;
 }
 
 // @0x1419bd920
@@ -507,19 +481,18 @@ void UIItemEditDialog::OnReset()
 
 // Close: ask first when something was changed.
 // @0x1419bd9f0
-// MS2-FUNCTIONAL: code generation differs (register allocation / block layout)
 void UIItemEditDialog::FUN_1419bd9f0()
 {
-    if (FUN_1419bdb90() == 0)
-    {
-        FUN_1419bd860();
-    }
-    else
+    if (FUN_1419bdb90() != 0)
     {
         MS2Ptr<CMsgBoxData> spBox = FUN_140d73f20(GetStringCommon(0x271), 1);
         spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIItemEditDialog::FUN_1419bd500));
         spBox->FUN_141a01800(2);
-        FUN_140d73c60(MS2Ptr<CMsgBoxData>(spBox));
+        FUN_140d73c60(spBox);
+    }
+    else
+    {
+        FUN_1419bd860();
     }
 }
 
@@ -531,29 +504,23 @@ void UIItemEditDialog::FUN_1419bdb50(int bEnable)
 }
 
 // @0x1419bdb90
-// MS2-FUNCTIONAL: code generation differs (register allocation / block layout)
 int UIItemEditDialog::FUN_1419bdb90()
 {
-    MS2Ptr<Unk_140acd6e0> spSave = FUN_140bb4b10(CString("m_save"));
-    if (spSave.get() == 0)
-        return 0;
-    return spSave->FUN_1422c2030();
+    if (MS2Ptr<Unk_140acd6e0> spSave = FUN_140bb4b10("m_save"))
+        return spSave->FUN_1422c2030();
+    return 0;
 }
 
 // @0x1419bdc40
-// MS2-FUNCTIONAL: code generation differs (register allocation / block layout)
 void UIItemEditDialog::FUN_1419bdc40(int bEnable)
 {
-    MS2Ptr<Unk_140acd6e0> spSave = FUN_140bb4b10(CString("m_save"));
-    if (spSave.get())
+    if (MS2Ptr<Unk_140acd6e0> spSave = FUN_140bb4b10("m_save"))
         spSave->FUN_1422c1fe0(bEnable);
 }
 
 // @0x1419bdce0
-// MS2-FUNCTIONAL: code generation differs (register allocation / block layout)
 void UIItemEditDialog::FUN_1419bdce0(int bEnable)
 {
-    MS2Ptr<Unk_140acd6e0> spReset = FUN_140bb4b10(CString("m_reset"));
-    if (spReset.get())
+    if (MS2Ptr<Unk_140acd6e0> spReset = FUN_140bb4b10("m_reset"))
         spReset->FUN_1422c1fe0(bEnable);
 }

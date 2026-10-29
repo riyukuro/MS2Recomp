@@ -26,7 +26,7 @@
 class ASDialog : public ASDisplayObject
 {
 public:
-    int FUN_1422c10a0();                                    // x
+    float FUN_1422c10a0();                                  // x, returned in xmm0
     float FUN_1422c1110();                                  // y
     void FUN_1422c00f0(float x, float y);                   // set the position
 };
@@ -158,15 +158,13 @@ void UIItemLockDialog::FUN_140f56e00()
 }
 
 // @0x140f56f50
-// MS2-FUNCTIONAL: the exe keeps three copies of the child-lookup result pointer (larger frame)
 int UIItemLockDialog::FUN_140f56f50()
 {
     if (m_30 == 0)
         return 0;
-    MS2Ptr<ASMovieClip> spBag = m_30->FUN_1409b4560("m_itemBag");
-    if (spBag.get() == 0)
-        return 0;
-    return spBag->FUN_1422bfca0();
+    if (MS2Ptr<ASMovieClip> spBag = m_30->FUN_1409b4560("m_itemBag"))
+        return spBag->FUN_1422bfca0();
+    return 0;
 }
 
 // @0x140f57030
@@ -225,7 +223,6 @@ void UIItemLockDialog::vfunc_45(Scaleform::GFx::Value* pRetVal, const CString& s
 }
 
 // @0x140f572e0
-// MS2-FUNCTIONAL: message box text/tag temporaries are built with extra pointer copies in the exe (frame 0x1d8 vs 0x1e8)
 int UIItemLockDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs)
 {
     if (UIDialog::vfunc_28(szMethod, pArgs, nArgs) != 0)
@@ -236,13 +233,13 @@ int UIItemLockDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
         {
             if (FUN_140535310()->FUN_140614b50() == 0)
             {
-                FUN_140d73aa0(s_strItemLockConfirm, 0x21, 0, L"");
+                FUN_140d73aa0(L"", 0x21, 0, s_strItemLockConfirm);
             }
             else if (FUN_140535310()->FUN_140614b50() == 1)
             {
                 CStringW strMsg = FUN_14025e7a0()->FUN_1422b0570("$s_itemlock_msgbox_unlock_confirm");
-                int nSeconds = (int)*FUN_1401d3200()->ItemUnLockTime.Get();
-                int nHours = nSeconds / 0xe10;
+                int nHours = (int)*FUN_1401d3200()->ItemUnLockTime.Get();
+                nHours = nHours / 0xe10;
                 strMsg = FUN_1401ceea0(strMsg, nHours);
                 FUN_140d73aa0(strMsg, 1, static_cast<IMessageListener*>(this), L"");
             }
@@ -255,13 +252,13 @@ int UIItemLockDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
         {
             if (FUN_140535310()->FUN_140614b50() == 0)
             {
-                FUN_140d73aa0(s_strItemLockConfirm, 0x21, 0, L"");
+                FUN_140d73aa0(L"", 0x21, 0, s_strItemLockConfirm);
             }
             else if (FUN_140535310()->FUN_140614b50() == 1)
             {
                 CStringW strMsg = FUN_14025e7a0()->FUN_1422b0570("$s_itemlock_msgbox_unlock_confirm");
-                int nSeconds = (int)*FUN_1401d3200()->ItemUnLockTime.Get();
-                int nHours = nSeconds / 0xe10;
+                int nHours = (int)*FUN_1401d3200()->ItemUnLockTime.Get();
+                nHours = nHours / 0xe10;
                 strMsg = FUN_1401ceea0(strMsg, nHours);
                 FUN_140d73aa0(strMsg, 1, static_cast<IMessageListener*>(this), L"");
             }
@@ -327,7 +324,6 @@ int UIItemLockDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
 }
 
 // @0x140f57ab0
-// MS2-FUNCTIONAL: the exe keeps the first dynamic_cast result in a second slot (copied after the cast)
 void UIItemLockDialog::vfunc_43()
 {
     UIInventoryDialog* pInv = FUN_1405344f0(0x4e2d);
@@ -336,10 +332,9 @@ void UIItemLockDialog::vfunc_43()
         float fX = 0.0f;
         float fY = 0.0f;
         {
-            ASDialog* pInvDlg = dynamic_cast<ASDialog*>((AScript*)pInv->FUN_1422dba00());
-            if (pInvDlg != 0)
+            if (ASDialog* pInvDlg = dynamic_cast<ASDialog*>((AScript*)pInv->FUN_1422dba00()))
             {
-                fX = (float)pInvDlg->FUN_1422c10a0();
+                fX = pInvDlg->FUN_1422c10a0();
                 fY = pInvDlg->FUN_1422c1110();
             }
         }

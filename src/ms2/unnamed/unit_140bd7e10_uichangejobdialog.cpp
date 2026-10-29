@@ -95,14 +95,13 @@ Unk_CjJobRef FUN_14074bc40(int nJobCode);
 void FUN_14078f140(void* p);
 struct Unk_CjNotice
 {
+    Unk_CjNotice(const Unk_CjNotice& o);                        // 0x140859bc0 (the MS2Ptr<CTalkScript> copy)
     ~Unk_CjNotice() { FUN_14078f140(this); }
     bool FUN_14085a420() const;                                 // IsNull
     void* m_0; void* m_8;
 };
 Unk_CjNotice FUN_1408564b0(int nId, int nRate);
-struct Unk_CjIcon { unsigned char m[0x20]; };
-Unk_CjIcon FUN_140859bc0(const Unk_CjNotice& kNotice);
-class Unk_CjMsgSvc { public: void FUN_141b213f0(Unk_CjIcon kIcon, int nValue, int nA, int nB); };
+class Unk_CjMsgSvc { public: void FUN_141b213f0(Unk_CjNotice kScript, int nValue, int nA, int nB); };
 Unk_CjMsgSvc* FUN_140967100();
 
 // The local player: the world service hands out the actor; a few members used here.
@@ -166,7 +165,6 @@ int UIChangeJobDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
 }
 
 // @0x140bd8040
-// MS2-FUNCTIONAL: not byte-exact yet (temporaries / call order differ)
 void UIChangeJobDialog::FUN_140bd8040(int nJobCode)
 {
     if (m_30.IsNull())
@@ -189,30 +187,28 @@ void UIChangeJobDialog::FUN_140bd8040(int nJobCode)
     for (size_t i = 0; i < spData.FUN_1401d75d0()->m_skills1.GetCount(); i++)
     {
         Unk_CjSkillRef spSkill = FUN_1401958b0()->FUN_1407ee1d0(spData.FUN_1401d75d0()->m_skills1[i]);
-        if (!spSkill.FUN_14063eab0(0))
-        {
-            ASObj skill(2);
-            skill.FUN_1409c0d20("id", spData.FUN_1401d75d0()->m_skills1[i]);
-            skill.FUN_1407cba60("icon", CString(spSkill.FUN_14063ed50()->m_strIcon));
-            ASTooltip tooltip(FUN_1403ed2d0()->FUN_141bd0cc0(), 0x10, 2);
-            if (tooltip.FUN_1409e1c50(spData.FUN_1401d75d0()->m_skills1[i], 1, 1) != 0)
-                skill.FUN_1409adbe0("tooltip", tooltip.FUN_1422bb870());
-            skills1.FUN_1422bc050(skill.FUN_1422bb870());
-        }
+        if (spSkill.FUN_14063eab0(0))
+            continue;
+        ASObj skill(2);
+        skill.FUN_1409c0d20("id", spData.FUN_1401d75d0()->m_skills1[i]);
+        skill.FUN_1407cba60("icon", CString(spSkill.FUN_14063ed50()->m_strIcon));
+        ASTooltip tooltip(FUN_1403ed2d0()->FUN_141bd0cc0(), 0x10, 2);
+        if (tooltip.FUN_1409e1c50(spData.FUN_1401d75d0()->m_skills1[i], 1, 1) != 0)
+            skill.FUN_1409adbe0("tooltip", tooltip.FUN_1422bb870());
+        skills1.FUN_1422bc050(skill.FUN_1422bb870());
     }
     for (size_t i = 0; i < spData.FUN_1401d75d0()->m_skills2.GetCount(); i++)
     {
         Unk_CjSkillRef spSkill = FUN_1401958b0()->FUN_1407ee1d0(spData.FUN_1401d75d0()->m_skills2[i]);
-        if (!spSkill.FUN_14063eab0(0))
-        {
-            ASObj skill(2);
-            skill.FUN_1409c0d20("id", spData.FUN_1401d75d0()->m_skills2[i]);
-            skill.FUN_1407cba60("icon", CString(spSkill.FUN_14063ed50()->m_strIcon));
-            ASTooltip tooltip(FUN_1403ed2d0()->FUN_141bd0cc0(), 0x10, 2);
-            if (tooltip.FUN_1409e1c50(spData.FUN_1401d75d0()->m_skills2[i], 1, 1) != 0)
-                skill.FUN_1409adbe0("tooltip", tooltip.FUN_1422bb870());
-            skills2.FUN_1422bc050(skill.FUN_1422bb870());
-        }
+        if (spSkill.FUN_14063eab0(0))
+            continue;
+        ASObj skill(2);
+        skill.FUN_1409c0d20("id", spData.FUN_1401d75d0()->m_skills2[i]);
+        skill.FUN_1407cba60("icon", CString(spSkill.FUN_14063ed50()->m_strIcon));
+        ASTooltip tooltip(FUN_1403ed2d0()->FUN_141bd0cc0(), 0x10, 2);
+        if (tooltip.FUN_1409e1c50(spData.FUN_1401d75d0()->m_skills2[i], 1, 1) != 0)
+            skill.FUN_1409adbe0("tooltip", tooltip.FUN_1422bb870());
+        skills2.FUN_1422bc050(skill.FUN_1422bb870());
     }
     obj.FUN_1409adbe0("skills1", skills1.FUN_1422bb870());
     obj.FUN_1409adbe0("skills2", skills2.FUN_1422bb870());
@@ -220,16 +216,12 @@ void UIChangeJobDialog::FUN_140bd8040(int nJobCode)
 }
 
 // @0x140bd88e0
-// MS2-FUNCTIONAL: not byte-exact yet (call-result temporaries / argument copies differ)
 int UIChangeJobDialog::FUN_140bd88e0()
 {
     PCBase* pPC = static_cast<PCBase*>(FUN_1403ed2d0()->FUN_141bd0cc0());
     if (pPC == 0)
         return 0;
-    unsigned short nLevel = (unsigned short)pPC->vfunc_78();
-    int nJobCode = FUN_141654730(pPC);
-    int nJob = FUN_141654700(pPC);
-    if (CjTable()->FUN_1401d6ce0(nJob, nJobCode, nLevel) == 0)
+    if (CjTable()->FUN_1401d6ce0(FUN_141654700(pPC), FUN_141654730(pPC), (unsigned short)pPC->vfunc_78()) == 0)
         return 0;
     int nNext = CjTable()->FUN_1401d6d70(FUN_141654730(pPC));
     int nState = FUN_141523ba0(pPC)->FUN_1416cae20(nNext);
@@ -239,7 +231,6 @@ int UIChangeJobDialog::FUN_140bd88e0()
 }
 
 // @0x140bd89d0
-// MS2-FUNCTIONAL: not byte-exact yet (call-result temporaries / argument copies differ)
 void UIChangeJobDialog::FUN_140bd89d0(int nJobCode)
 {
     Unk_CjJobRef spJob = FUN_14074bc40(nJobCode);
@@ -248,8 +239,7 @@ void UIChangeJobDialog::FUN_140bd89d0(int nJobCode)
     Unk_CjNotice kNotice = FUN_1408564b0(spJob.FUN_14064d520()->FUN_14074b030(), 100);
     if (kNotice.FUN_14085a420())
         return;
-    Unk_CjJobRow* pRow = spJob.FUN_14064d520();
-    FUN_140967100()->FUN_141b213f0(FUN_140859bc0(kNotice), pRow->m_n2e8, 4, 0);
+    FUN_140967100()->FUN_141b213f0(kNotice, spJob.FUN_14064d520()->m_n2e8, 4, 0);
 }
 
 // @0x140bd8af0

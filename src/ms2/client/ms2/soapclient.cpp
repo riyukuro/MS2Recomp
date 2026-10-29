@@ -11,6 +11,7 @@
 #include "ms2/placeholder/ms2stdafx.h"
 
 #include <atlcomtime.h>
+#include <comdef.h>
 #include <comutil.h>
 #pragma comment(lib, "comsuppw.lib")   // _com_util::ConvertBSTRToString (FUN_14274bfd0)
 #include <stdio.h>
@@ -95,56 +96,82 @@ void CSoapClient::FUN_14176fe30(CString strError)
 }
 
 // Sends the upload and its image (the blueprint case) of the current UGC manager upload, file by file.
-// MS2-FUNCTIONAL: same flow, throws and calls; MS2Ptr/CAtlArray copy temps and the second cleanup buffer are laid out differently.
+// Every failure is caught here and reported to the UGC manager as the error code (3 for a COM error).
 // @0x14176feb0
 int CSoapClient::FUN_14176feb0()
 {
     MS2Ptr<CUgcUploadCtrl> spCtrl(0);
     ATL::CAtlArray<MS2Ptr<CUgcUploadCtrl> > arrUploads;
+    int nError = 1;
     CString strResult("");
     CFileException exFile(0, -1, 0);
     unsigned char* pBuffer = 0;
+    unsigned char* pBuffer2 = 0;
 
-    spCtrl = FUN_14052d220()->FUN_141882610();
-    if (spCtrl == 0)
-        throw Exception(CString("pUgcUploadCtrl"), 0xd);
-    if (spCtrl->GetImage().get() != 0)
-        arrUploads.Add(spCtrl->GetImage());
-    arrUploads.Add(spCtrl);
-    for (size_t i = 0; i < arrUploads.GetCount(); ++i)
+    try
     {
-        MS2Ptr<CUgcUploadCtrl> spUpload = arrUploads[i];
-        CStringW strPath = spUpload->GetResult();
-        if (strPath.GetLength() == 0)
-            throw Exception(CString("UploadFilePath"), 0xf);
-        CStringW strMode(L"rb");
-        FILE* pFile = _wfopen(strPath, strMode);
-        if (pFile == 0)
-            throw Exception(CString("file.Open"));
-        fseek(pFile, 0, SEEK_END);
-        long nSize = ftell(pFile);
-        if (nSize == 0 || nSize > 0xfffff)
-            throw Exception(CString("UploadFilePath"), 0xd2);
-        fseek(pFile, 0, SEEK_SET);
-        pBuffer = new unsigned char[nSize];
-        fread(pBuffer, 1, nSize, pFile);
-        MS2Ptr<CSoapResult> spResult(0);
-        if (m_nMode != 2)
-            throw Exception(CString("NoUploadWithSoap"), 1);
-        spResult = FUN_141771040(spUpload, nSize, pBuffer);
-        strResult = spResult->m_strText;
-        fclose(pFile);
-        DeleteFileW(strPath);
-        if (pBuffer != 0)
+        spCtrl = FUN_14052d220()->FUN_141882610();
+        if (spCtrl == 0)
+            throw Exception(CString("pUgcUploadCtrl"), 0xd);
+        if (spCtrl->GetImage().get())
+            arrUploads.Add(spCtrl->GetImage());
+        arrUploads.Add(spCtrl);
+        for (size_t i = 0; i < arrUploads.GetCount(); ++i)
         {
-            delete[] pBuffer;
-            pBuffer = 0;
+            MS2Ptr<CUgcUploadCtrl> spUpload = arrUploads[i];
+            CStringW strPath = spUpload->GetResult();
+            if (strPath.GetLength() == 0)
+                throw Exception(CString("UploadFilePath"), 0xf);
+            CStringW strMode(L"rb");
+            FILE* pFile = _wfopen(strPath, strMode);
+            if (pFile == 0)
+                throw Exception(CString("file.Open"));
+            fseek(pFile, 0, SEEK_END);
+            long nSize = ftell(pFile);
+            if (nSize == 0 || nSize >= 0x100000)
+                throw Exception(CString("UploadFilePath"), 0xd2);
+            fseek(pFile, 0, SEEK_SET);
+            pBuffer = new unsigned char[nSize];
+            fread(pBuffer, 1, nSize, pFile);
+            MS2Ptr<CSoapResult> spResult(0);
+            if (m_nMode == 2)
+                spResult = FUN_141771040(spUpload, nSize, pBuffer);
+            else
+                throw Exception(CString("NoUploadWithSoap"), 1);
+            strResult = spResult->m_strText;
+            fclose(pFile);
+            DeleteFileW(strPath);
+            if (pBuffer != 0)
+            {
+                delete[] pBuffer;
+                pBuffer = 0;
+            }
         }
+        nError = 0;
+    }
+    catch (_com_error& e)
+    {
+        CString strError(e.ErrorMessage());
+        FUN_14176fe30(strError);
+        nError = 3;
+    }
+    catch (Exception& e)
+    {
+        nError = e.GetCode();
+        CString strError;
+        strError.Format("[E] UgcUpload : msg = %s, err = %d", (const char*)e.GetText(), nError);
+        FUN_14176fe30(strError);
+    }
+    catch (CFileException* e)
+    {
+        e->Delete();
     }
     if (pBuffer != 0)
         delete[] pBuffer;
-    FUN_14052d220()->FUN_141882d80(spCtrl, 0, strResult);
-    return 0;
+    if (pBuffer2 != 0)
+        delete[] pBuffer2;
+    FUN_14052d220()->FUN_141882d80(spCtrl, nError, strResult);
+    return nError;
 }
 
 // @0x141770670
@@ -408,40 +435,39 @@ void FUN_141771a60(char* pData, int nSize)
 }
 
 // zlib's zpipe inf() over a memory block: returns the new[]'d result (doubling from 1 MB) or 0.
-// MS2-FUNCTIONAL: same zlib calls, buffer growth and results; locals are laid out differently.
 // @0x141771b40
 unsigned char* FUN_141771b40(const char* pSource, int nSourceSize, int* pnOut)
 {
     *pnOut = 0;
+    int ret;
     z_stream strm;
     unsigned char in[0x20000];
     unsigned char out[0x30000];
-    memset(&strm, 0, sizeof(strm));
     strm.zalloc = Z_NULL;
     strm.zfree = Z_NULL;
     strm.opaque = Z_NULL;
     strm.avail_in = 0;
     strm.next_in = Z_NULL;
-    if (inflateInit(&strm) != Z_OK)
+    ret = inflateInit(&strm);
+    if (ret != Z_OK)
         return 0;
     int nRead = 0;
     int nCapacity = 0x100000;
     unsigned char* pResult = new unsigned char[nCapacity];
     int nTotal = 0;
-    int status = 0;
     do
     {
-        if (nSourceSize - nRead < 0x20000)
-        {
-            memcpy(in, pSource, nSourceSize - nRead);
-            strm.avail_in = nSourceSize - nRead;
-            nRead = nSourceSize;
-        }
-        else
+        if (nSourceSize - nRead >= 0x20000)
         {
             memcpy(in, pSource, 0x20000);
             strm.avail_in = 0x20000;
             nRead += 0x20000;
+        }
+        else
+        {
+            memcpy(in, pSource, nSourceSize - nRead);
+            strm.avail_in = nSourceSize - nRead;
+            nRead = nSourceSize;
         }
         if (strm.avail_in == 0)
             break;
@@ -450,11 +476,15 @@ unsigned char* FUN_141771b40(const char* pSource, int nSourceSize, int* pnOut)
         {
             strm.avail_out = 0x30000;
             strm.next_out = out;
-            status = FUN_1427221f0(&strm, Z_NO_FLUSH);
-            if (status == Z_STREAM_ERROR)
+            ret = FUN_1427221f0(&strm, Z_NO_FLUSH);
+            if (ret == Z_STREAM_ERROR)
                 return 0;
-            if (status > Z_BUF_ERROR && (status < Z_STREAM_ERROR || status == Z_NEED_DICT))
+            switch (ret)
             {
+            case Z_NEED_DICT:
+                ret = Z_DATA_ERROR;
+            case Z_DATA_ERROR:
+            case Z_MEM_ERROR:
                 inflateEnd(&strm);
                 return 0;
             }
@@ -465,19 +495,23 @@ unsigned char* FUN_141771b40(const char* pSource, int nSourceSize, int* pnOut)
                 unsigned char* pNew = new unsigned char[nCapacity];
                 memcpy(pNew, pResult, nTotal);
                 if (pResult != 0)
+                {
                     delete[] pResult;
+                    pResult = 0;
+                }
                 pResult = pNew;
             }
             memcpy(pResult + nTotal, out, have);
             nTotal += have;
         } while (strm.avail_out == 0);
-    } while (status != Z_STREAM_END);
+    } while (ret != Z_STREAM_END);
     inflateEnd(&strm);
-    if (status == Z_STREAM_END)
+    if (ret == Z_STREAM_END)
+    {
         *pnOut = nTotal;
-    else
-        pResult = 0;
-    return pResult;
+        return pResult;
+    }
+    return 0;
 }
 
 // Swaps the two halves of the bytes.

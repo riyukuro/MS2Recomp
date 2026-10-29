@@ -18,29 +18,24 @@ void FUN_140274fc0(CStringW& str, ATL::CAtlArray<unsigned>& out, const wchar_t* 
 // @0x14026a1b0
 unsigned char Unk_CommonPriceRecord::IsAvailable()
 {
-    unsigned char bResult;
-    if (m_price.m_amount < 1 || m_usedTime != 0)
-        bResult = 0;
-    else
-        bResult = 1;
-    return bResult;
+    return (m_price.m_amount > 0 && m_usedTime == 0) ? 1 : 0;
 }
 
 // @0x14026a1f0
 __int64 Unk_CommonPriceRecord::GetAvailableAmount()
 {
-    if (m_usedTime == 0)
-        return m_price.m_amount;
-    return 0;
+    if (m_usedTime != 0)
+        return 0;
+    return m_price.m_amount;
 }
 
 // @0x14026a220
 bool Unk_CommonPriceRecord::MarkUsed()
 {
-    bool bUnused = m_usedTime == 0;
-    if (bUnused)
-        m_usedTime = FUN_140869440();
-    return bUnused;
+    if (m_usedTime != 0)
+        return false;
+    m_usedTime = FUN_140869440();
+    return true;
 }
 
 // @0x14026a260
@@ -80,8 +75,8 @@ void Unk_CommonPriceRecordList::Write(COutputStream* pOut)
 // @0x14026a3d0
 void Unk_CommonPriceRecordList::Read(CInputStream* pIn)
 {
-    unsigned char nCount = pIn->ReadUInt8();
-    for (int i = 0; i < (int)nCount; i++)
+    int nCount = pIn->ReadUInt8();
+    for (int i = 0; i < nCount; i++)
     {
         Unk_CommonPriceRecord record;
         record.Read(pIn);
@@ -122,9 +117,9 @@ unsigned char Unk_CommonPriceRecordList::HasAvailable()
 // @0x14026a580
 __int64 Unk_CommonPriceRecordList::GetUsedTime(int nIndex)
 {
-    if (nIndex < (int)m_records.GetCount())
-        return m_records.GetAt(nIndex).m_usedTime;
-    return 0;
+    if ((int)m_records.GetCount() <= nIndex)
+        return 0;
+    return m_records.GetAt(nIndex).m_usedTime;
 }
 
 // @0x14026a5d0
@@ -139,15 +134,14 @@ void CSkillBookTreeTabConfig::Write(COutputStream* pOut)
     pOut->WriteInt64(m_nId);
     m_strName = m_strName.Left(10);
     pOut->WriteUnicodeString(m_strName);
-    pOut->WriteInt32((int)m_slots.GetCount());
-    POSITION pos = m_slots.GetStartPosition();
-    while (pos != NULL)
+    int nCount = (int)m_slots.GetCount();
+    pOut->WriteInt32(nCount);
+    for (POSITION pos = m_slots.GetStartPosition(); pos != NULL; m_slots.GetNext(pos))
     {
         unsigned nKey = m_slots.GetKeyAt(pos);
         unsigned nValue = m_slots.GetValueAt(pos);
         pOut->WriteInt32(nKey);
         pOut->WriteInt32(nValue);
-        m_slots.GetNext(pos);
     }
 }
 
@@ -174,8 +168,8 @@ void Unk_CommonIntPair::Parse(CStringW strText)
 {
     ATL::CAtlArray<unsigned> values;
     FUN_140274fc0(strText, values, L",");
-    if (values.GetCount() != 0)
+    if (values.GetCount() >= 1)
         m_first = values[0];
-    if (values.GetCount() > 1)
+    if (values.GetCount() >= 2)
         m_second = values[1];
 }

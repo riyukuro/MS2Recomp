@@ -25,7 +25,7 @@ public:
     void StopEffect();                                      // 0x141272c20 release the effect handle
     void Update(float fElapsed);                            // 0x141272c60
     void UpdateMove(float fElapsed);                        // 0x141272cb0
-    bool Create(int nObjectId, void* pOwner);               // 0x141272f20
+    int Create(int nObjectId, void* pOwner);                // 0x141272f20
     int GetState() const;                                   // 0x141273570 0 flying, 1 arrived
     void SetPosition(const Vector3& pt);            // 0x141273590
     void SetVisible(int nHide);                             // 0x141273630

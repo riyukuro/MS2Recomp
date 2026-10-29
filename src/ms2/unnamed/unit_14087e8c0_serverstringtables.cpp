@@ -44,13 +44,11 @@ CServerStringGroup::~CServerStringGroup()
 }
 
 // @0x14087ea50
-// MS2-FUNCTIONAL: first-pass source; frame layout and temp order not byte-compared
 bool CServerStringGroup::Load()
 {
     CStringA strPath = FUN_14071ae20(m_strFile);
     TiXmlDocument doc;
-    const char* pszPath = strPath;
-    if (FUN_140166420()->FUN_1403974b0(&doc, pszPath, 0, true, false) == 0)
+    if (FUN_140166420()->FUN_1403974b0(&doc, (const char*)strPath, 0, true, false) == 0)
         return false;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
@@ -77,7 +75,6 @@ bool CServerStringGroup::Load()
 }
 
 // @0x14087ede0
-// MS2-FUNCTIONAL: first-pass source; frame layout and temp order not byte-compared
 CStringW CServerStringGroup::GetString(const CStringW& strKey)
 {
     CheckInit();
@@ -86,25 +83,26 @@ CStringW CServerStringGroup::GetString(const CStringW& strKey)
         m_mapFile.RemoveAll();
         Load();
     }
-    bool bMarked = false;
-    if (FUN_140841300(strKey.Left(1), "$"))
-        bMarked = FUN_140841300(strKey.Right(1), "$");
-    if (!bMarked)
+    bool bMarked = FUN_140841300(strKey.Left(1), "$") && FUN_140841300(strKey.Right(1), "$");
+    if (bMarked)
+    {
+        CStringW strName(strKey);
+        strName.Remove(L'$');
+        CStringW strText;
+        if (m_mapRuntime.Lookup(strName, strText))
+        {
+            FUN_1403b4750()->FUN_1416fb340(strText);
+            return strText;
+        }
+        if (m_mapFile.Lookup(strName, strText))
+        {
+            FUN_1403b4750()->FUN_1416fb340(strText);
+            return strText;
+        }
+        return FUN_1401e8510(L"NO KEY : {0}", strKey);
+    }
+    else
         return strKey;
-    CStringW strName(strKey);
-    strName.Remove(L'$');
-    CStringW strText;
-    if (m_mapRuntime.Lookup(strName, strText))
-    {
-        FUN_1403b4750()->FUN_1416fb340(strText);
-        return strText;
-    }
-    if (m_mapFile.Lookup(strName, strText))
-    {
-        FUN_1403b4750()->FUN_1416fb340(strText);
-        return strText;
-    }
-    return FUN_1401e8510(L"NO KEY : {0}", strKey);
 }
 
 // @0x14087f0f0

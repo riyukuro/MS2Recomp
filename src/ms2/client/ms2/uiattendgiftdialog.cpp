@@ -130,7 +130,7 @@ class Unk_140bfc2e0 : public ASDisplayObject { public:
     virtual void pad_6();virtual void pad_7();virtual void pad_8();virtual void pad_9();virtual void pad_10();virtual void pad_11();
     virtual void pad_12();virtual void pad_13();virtual void pad_14();virtual void pad_15();virtual void pad_16();virtual void pad_17();
     virtual void pad_18();virtual void pad_19();virtual void pad_20();virtual void pad_21();virtual void pad_22();virtual void pad_23();
-    virtual void vfunc_24(int);
+    virtual void vfunc_24(bool);
     virtual void vfunc_25(const Scaleform::GFx::Value&);
 };
 // The slot object (asitemslot.cpp, not recovered): an ASObj with the slot setters.
@@ -166,8 +166,8 @@ Unk_AttendUIMgr* FUN_140d86260();
 class CMsgBoxData { public: bool FUN_141a04aa0() const; __int64 FUN_141a02f10(int,__int64) const; };
 class Unk_AttendMsgBox { public:
     void FUN_141a01800(int);
-    void FUN_141a024e0(CStringW,int);
-    void FUN_141a02670(int);
+    void FUN_141a024e0(CStringW,bool);
+    void FUN_141a02670(bool);
     void FUN_141a027c0(Delegate<bool(int,const CMsgBoxData&)>);
     void FUN_1405340b0(__int64);
 };
@@ -212,10 +212,9 @@ CString FUN_141029ca0(const CString&);
 // @0x14102f840
 void FUN_14102f840(ATL::CAtlArray<Unk_14102fe10<Unk_140ce3510> >& dst,const ATL::CAtlArray<Unk_14102fe10<Unk_140ce3510> >& src) { dst.Copy(src); }
 // @0x14102f870
-// MS2-FUNCTIONAL: exe frame is 0x58 with the return-flag sharing the stack-arg slot; ours allocates a separate flag and a 0x68 frame. Logic identical.
 template<class T> Unk_14102fe10<T> UIAttendGiftDialog::FUN_14102f870(const CString& name,Unk_14102fe10<T>& out)
 {
-    out=FUN_140bfa760(name,out,0);
+    out=FUN_140bfa760<T>(name);
     return out;
 }
 // @0x14102b4d0
@@ -459,31 +458,26 @@ void UIAttendGiftDialog::FUN_14102cdc0(const Scaleform::GFx::FunctionHandler::Pa
 }
 MS2_REPLACE_METHOD(0x14102CDC0, UIAttendGiftDialog, FUN_14102cdc0, 217, 0x06DFF250);
 // @0x14102cf30
-// MS2-FUNCTIONAL: byte diff: exe loads the `used` local into ecx before cmp (mov ecx,[used]; cmp ecx,eax) where cl emits cmp [used],eax; locals also sit 8 bytes apart (frame 0x140 vs 0x138). Logic identical.
 void UIAttendGiftDialog::FUN_14102cf30(const Scaleform::GFx::FunctionHandler::Params&)
 {
     if(m_selected==NULL || m_selected->FUN_140ce38a0()==0) return;
     {
-    unsigned int used=m_selected->FUN_140ce3690();
-    if(used>=m_selected->FUN_140ce3660()) { FUN_140d73ff0(L"s_attendGift_payAttend_attend_all"); return; }
+    if(m_selected->FUN_140ce3690()>=m_selected->FUN_140ce3660()) { FUN_140d73ff0(L"s_attendGift_payAttend_attend_all"); return; }
     {
-        unsigned int cost=m_selected->FUN_140ce3920();
-        if(cost>=m_selected->FUN_140ce38c0()) { FUN_140d73ff0(L"s_attendGift_payAttend_uesd_all"); return; }
+        if(m_selected->FUN_140ce3920()>=m_selected->FUN_140ce38c0()) { FUN_140d73ff0(L"s_attendGift_payAttend_uesd_all"); return; }
         {
             CStringW strKey;
             switch(m_selected->FUN_140ce38a0()) {
             case 1: strKey=L"s_attendGift_payAttend_meso"; break;
             case 2: strKey=L"s_attendGift_payAttend_merat"; FUN_14102f080(); break;
             }
-            int total=m_selected->FUN_140ce38c0();
-            int remain=total-(int)m_selected->FUN_140ce3920();
+            int remain=m_selected->FUN_140ce38c0()-m_selected->FUN_140ce3920();
             __int64 couponUid=0;
             if(m_selected->FUN_140ce3900()!=0) {
                 MS2Ptr<CItem> found=g_attendItems.FUN_140a5e2e0(m_selected->FUN_140ce3900());
                 if(found.get()!=0) couponUid=found->FUN_140526a50();
             }
-            __int64 price=m_selected->FUN_140ce38e0();
-            CStringW text=FUN_140f09c60(strKey,remain,price);
+            CStringW text=FUN_140f09c60(strKey,remain,m_selected->FUN_140ce38e0());
             MS2Ptr<Unk_AttendMsgBox> box=FUN_140d73f20(text,0x19);
             if(box.get()!=0) {
                 box->FUN_141a01800(1);
@@ -535,7 +529,6 @@ void UIAttendGiftDialog::FUN_14102d6e0()
 }
 MS2_REPLACE_METHOD(0x14102D6E0, UIAttendGiftDialog, FUN_14102d6e0, 845, 0x941B0147);
 // @0x14102da40
-// MS2-FUNCTIONAL: same size, 408 masked reloc bytes aside: the empty-slot else branch (ASObj(2).FUN_1422bb890() temp chain) uses temp slots 8 bytes higher than the exe and the loop-body branch offsets shift by 5 bytes; logic identical.
 void UIAttendGiftDialog::FUN_14102da40()
 {
     if(!FUN_1422dc2d0()) return;
@@ -559,9 +552,7 @@ void UIAttendGiftDialog::FUN_14102da40()
                 ASSlot slot(2);
                 Unk_AttendItem* it1=&reward->m_item;
                 Unk_AttendItem* it2=&reward->m_item;
-                int count=it1->vfunc_2();
-                int rarity=it2->vfunc_1();
-                slot.FUN_1409c4510(id,rarity,count);
+                slot.FUN_1409c4510(id,it2->vfunc_1(),it1->vfunc_2());
                 slot.FUN_1409c0d20("index",index);
                 bool darken=false; bool check=false; bool border=false;
                 if(index<attended) { darken=true; check=true; }
@@ -569,14 +560,15 @@ void UIAttendGiftDialog::FUN_14102da40()
                 slot.FUN_1407cbbe0("isDarken",darken);
                 slot.FUN_1407cbbe0("isCheck",check);
                 slot.FUN_1407cbbe0("isBorder",border);
-                MS2Ptr<CItem> item(new CItem);
-                Unk_AttendItem* it3=&reward->m_item;
-                int itemRarity=it3->vfunc_1();
-                if(item->FUN_14052b130(id,itemRarity,0)) {
-                    ASTooltip tip(FUN_1403ed2d0()->FUN_141bd0cc0(),8,2);
-                    if(tip.FUN_1409e0d40(item.get())) {
-                        tip.FUN_1409c6dc0(1);
-                        slot.FUN_1409adbe0("tooltip",tip.FUN_1422bb870());
+                {
+                    MS2Ptr<CItem> item(new CItem);
+                    Unk_AttendItem* it3=&reward->m_item;
+                    if(item->FUN_14052b130(id,it3->vfunc_1(),0)) {
+                        ASTooltip tip(FUN_1403ed2d0()->FUN_141bd0cc0(),8,2);
+                        if(tip.FUN_1409e0d40(item.get())) {
+                            tip.FUN_1409c6dc0(1);
+                            slot.FUN_1409adbe0("tooltip",tip.FUN_1422bb870());
+                        }
                     }
                 }
                 slots.FUN_1422bc050(slot.FUN_1422bb870());
@@ -584,10 +576,11 @@ void UIAttendGiftDialog::FUN_14102da40()
         }
     }
     m_giftList->vfunc_25(slots.FUN_1422bb870());
-    m_giftList->vfunc_24(1);
+    m_giftList->vfunc_24(true);
     CStringW strPeriod;
     if(m_selected->FUN_140ce3960()==2 && !FUN_140931510()->FUN_140d9f530(m_selected->FUN_1402e1d00())) {
-        strPeriod=FUN_1405c2690(L"s_attend_gift_item_require",FUN_1401a9d70()->FUN_141811980(1,m_selected->FUN_140ce3980()));
+        int nItemId=m_selected->FUN_140ce3980();
+        strPeriod=FUN_1405c2690(L"s_attend_gift_item_require",FUN_1401a9d70()->FUN_141811980(1,nItemId));
     } else {
         strPeriod=FUN_1408f71a0(L"s_attendGift_event_period",FUN_14083bab0(m_selected->FUN_140ce3aa0(),L"/"),FUN_14083bab0(m_selected->FUN_140ce3ae0(),L"/"));
     }

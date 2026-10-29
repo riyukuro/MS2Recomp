@@ -8,6 +8,7 @@
 #include "ms2/placeholder/nmstream.h"
 #include "ms2/placeholder/nmobjects.h"
 #include "ms2/placeholder/nmfunc.h"
+#include "ms2/placeholder/nmencoder.h"
 #include "ms2/ms2recover.h"
 
 extern void FUN_14156bcb0(void*, void*, void*);
@@ -22,7 +23,7 @@ extern void FUN_1415f9990(void*);
 extern int FUN_1415fb700(void*);
 extern int FUN_1415fb720(void*);
 extern int FUN_1415fb750(void*);
-extern int FUN_1415fb6d0(void*);
+extern int FUN_1415fb6d0(CNMSerializableDecoder*);
 extern void* FUN_1415f39e0(void*);
 extern void* FUN_1415f3990(void*);
 extern unsigned int FUN_1415fa080(void*);
@@ -42,27 +43,17 @@ CNMJoinChannelFunc::CNMJoinChannelFunc()
 // @0x14159c450
 unsigned int CNMJoinChannelFunc::EncodeFramed(CNMStream* pStream)
 {
-    unsigned char storage[0x18];
-    FUN_14156bcb0(storage, pStream, this);
-    void** vtable = *reinterpret_cast<void***>(this);
-    using Method = unsigned int(__fastcall*)(CNMJoinChannelFunc*, CNMEncoder*, CNMStream*);
-    const unsigned int result = reinterpret_cast<Method>(vtable[2])(
-        this, reinterpret_cast<CNMEncoder*>(storage), pStream);
-    FUN_14156bd50(storage);
-    return result;
+    CNMSerializableEncoder encoder(pStream, this);
+    return CNMJoinChannelFunc::Encode(reinterpret_cast<CNMEncoder*>(&encoder), pStream);
 }
 
 // MS2-FUNCTIONAL 0x14159c4b0: selects direct or framed request encoding by format.
 // @0x14159c4b0
 unsigned int CNMJoinChannelFunc::EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream)
 {
-    void** vtable = *reinterpret_cast<void***>(this);
-    if (m_bFormat == 1) {
-        using Method = unsigned int(__fastcall*)(CNMJoinChannelFunc*, CNMEncoder*, CNMStream*);
-        return reinterpret_cast<Method>(vtable[2])(this, pEncoder, pStream);
-    }
-    using Framed = unsigned int(__fastcall*)(CNMJoinChannelFunc*, CNMStream*);
-    return reinterpret_cast<Framed>(vtable[3])(this, pStream);
+    if (m_bFormat == 1)
+        return CNMJoinChannelFunc::Encode(pEncoder, pStream);
+    return CNMJoinChannelFunc::EncodeFramed(pStream);
 }
 
 // MS2-FUNCTIONAL 0x14159c510: serializes join parameters, nested records, or reply IDs.
@@ -91,30 +82,19 @@ unsigned int CNMJoinChannelFunc::Encode(CNMEncoder* pEncoder, CNMStream* pStream
 // @0x14159c680
 unsigned int CNMJoinChannelFunc::DecodeFramed(CNMStream* pStream)
 {
-    unsigned char storage[0x38];
-    FUN_14156be10(storage, pStream, this);
-    unsigned int result = 0;
-    if (FUN_1415fb750(storage)) {
-        void** vtable = *reinterpret_cast<void***>(this);
-        using Method = unsigned int(__fastcall*)(CNMJoinChannelFunc*, CNMSerializableDecoder*, CNMStream*);
-        result = reinterpret_cast<Method>(vtable[5])(
-            this, reinterpret_cast<CNMSerializableDecoder*>(storage), pStream);
-    }
-    FUN_14156bf10(storage);
-    return result;
+    CNMSerializableDecoder decoder(pStream, this);
+    if (FUN_1415fb750(&decoder) == 0)
+        return 0;
+    return CNMJoinChannelFunc::Decode(&decoder, pStream);
 }
 
 // MS2-FUNCTIONAL 0x14159c710: selects raw or framed reply decoding by wire format.
 // @0x14159c710
 unsigned int CNMJoinChannelFunc::DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream)
 {
-    void** vtable = *reinterpret_cast<void***>(this);
-    if (FUN_1415fb6d0(pDecoder) == 2) {
-        using Framed = unsigned int(__fastcall*)(CNMJoinChannelFunc*, CNMStream*);
-        return reinterpret_cast<Framed>(vtable[6])(this, pStream);
-    }
-    using Method = unsigned int(__fastcall*)(CNMJoinChannelFunc*, CNMSerializableDecoder*, CNMStream*);
-    return reinterpret_cast<Method>(vtable[5])(this, pDecoder, pStream);
+    if (FUN_1415fb6d0(pDecoder) == 2)
+        return CNMJoinChannelFunc::DecodeFramed(pStream);
+    return CNMJoinChannelFunc::Decode(pDecoder, pStream);
 }
 
 // MS2-FUNCTIONAL 0x14159c770: restores the request fields, nested records, or reply IDs.

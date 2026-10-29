@@ -2263,7 +2263,7 @@ bool ChromaManagerImpl::LoadSDK()
         if (m_Init == NULL)
             throw "UnInit";
     }
-    catch (...)
+    catch (const char*)
     {
         return false;
     }

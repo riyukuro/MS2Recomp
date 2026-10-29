@@ -327,42 +327,40 @@ CStringW Name_1402184b0(int value)
     if (value == 0x50) {
         return CStringW(L"Assassin");
     }
-    else if (value == 0x14) {
+    if (value == 0x14) {
         return CStringW(L"Berserker");
     }
-    else if (value == 0x3c) {
+    if (value == 0x3c) {
         return CStringW(L"HeavyGunner");
     }
-    else if (value == 10) {
+    if (value == 10) {
         return CStringW(L"Knight");
     }
-    else if (value == 1) {
+    if (value == 1) {
         return CStringW(L"Newbie");
     }
-    else if (value == 0x28) {
+    if (value == 0x28) {
         return CStringW(L"Priest");
     }
-    else if (value == 0x32) {
+    if (value == 0x32) {
         return CStringW(L"Ranger");
     }
-    else if (value == 0x5a) {
+    if (value == 0x5a) {
         return CStringW(L"RuneBlader");
     }
-    else if (value == 0x6e) {
+    if (value == 0x6e) {
         return CStringW(L"SoulBinder");
     }
-    else if (value == 100) {
+    if (value == 100) {
         return CStringW(L"Striker");
     }
-    else if (value == 0x46) {
+    if (value == 0x46) {
         return CStringW(L"Thief");
     }
-    else if (value == 0x1e) {
+    if (value == 0x1e) {
         return CStringW(L"Wizard");
     }
-    else {
-        return CStringW(L"None");
-    }
+    return CStringW(L"None");
 }
 
 // @0x140218720
@@ -371,82 +369,80 @@ CStringW Name_140218720(int value)
     if (value == 0x385) {
         return CStringW(L"ArcaneRuneBlader");
     }
-    else if (value == 800) {
+    if (value == 800) {
         return CStringW(L"Assassin");
     }
-    else if (value == 200) {
+    if (value == 200) {
         return CStringW(L"Berserker");
     }
-    else if (value == 0xc9) {
+    if (value == 0xc9) {
         return CStringW(L"BloodyBerserker");
     }
-    else if (value == 600) {
+    if (value == 600) {
         return CStringW(L"HeavyGunner");
     }
-    else if (value == 0x191) {
+    if (value == 0x191) {
         return CStringW(L"HighPriest");
     }
-    else if (value == 0x259) {
+    if (value == 0x259) {
         return CStringW(L"HyperHeavyGunner");
     }
-    else if (value == 100) {
+    if (value == 100) {
         return CStringW(L"Knight");
     }
-    else if (value == 0x12d) {
+    if (value == 0x12d) {
         return CStringW(L"MagicalWizard")
         ;
     }
-    else if (value == 0x44e) {
+    if (value == 0x44e) {
         return CStringW(L"Max");
     }
-    else if (value == 0x44d) {
+    if (value == 0x44d) {
         return CStringW(L"MysticSoulBinder");
     }
-    else if (value == 10) {
+    if (value == 10) {
         return CStringW(L"Newbie");
     }
-    else if (value == 0) {
+    if (value == 0) {
         return CStringW(L"None");
     }
-    else if (value == 0x2bd) {
+    if (value == 0x2bd) {
         return CStringW(L"PhantomThief");
     }
-    else if (value == 400) {
+    if (value == 400) {
         return CStringW(L"Priest");
     }
-    else if (value == 500) {
+    if (value == 500) {
         return CStringW(L"Ranger");
     }
-    else if (value == 900) {
+    if (value == 900) {
         return CStringW(L"RuneBlader");
     }
-    else if (value == 0x65) {
+    if (value == 0x65) {
         return CStringW(L"SaintKnight");
     }
-    else if (value == 0x321) {
+    if (value == 0x321) {
         return CStringW(L"ShadowAssassin");
     }
-    else if (value == 0x1f5) {
+    if (value == 0x1f5) {
         return CStringW(L"SharpRanger");
     }
-    else if (value == 0x44c) {
+    if (value == 0x44c) {
         return CStringW(L"SoulBinder");
     }
-    else if (value == 1000) {
+    if (value == 1000) {
         return CStringW(L"Striker");
     }
-    else if (value == 700) {
+    if (value == 700) {
         return CStringW(L"Thief");
     }
-    else if (value == 0x3e9) {
+    if (value == 0x3e9) {
         return CStringW(L"UltimateStriker");
     }
-    else if (value == 300) {
+    if (value == 300) {
         return CStringW(L"Wizard");
     }
-    else {
-        return CStringW(L"None");
-    }
+    return CStringW(L"None");
 }
 
 // @0x140218c20
@@ -477,7 +473,7 @@ int Parse_140218c20(const CStringA& value)
 CStringW Name_140218ed0(int value)
 {
     if (value == 0) return CStringW(L"");
-    else if (value == 1) return CStringW(L"normal");
+    if (value == 1) return CStringW(L"normal");
     else if (value == 2) return CStringW(L"raid");
     else if (value == 3) return CStringW(L"chaosRaid");
     else if (value == 4) return CStringW(L"reverseRaid");
@@ -489,10 +485,8 @@ CStringW Name_140218ed0(int value)
     else if (value == 10) return CStringW(L"vip");
     else if (value == 0xb) return CStringW(L"event");
     else if (value == 0xc) return CStringW(L"fameChallenge");
-    else {
-        (void)((!!0)||(_wassert(L"0",L"e:\\build\\kr\\22_04\\ms2code\\commonfiles\\commonenum.cpp",0x16a),0));
-        return CStringW(L"");
-    }
+    (void)((!!0)||(_wassert(L"0",L"e:\\build\\kr\\22_04\\ms2code\\commonfiles\\commonenum.cpp",0x16a),0));
+    return CStringW(L"");
 }
 
 // @0x1402191c0
@@ -726,7 +720,8 @@ int Parse_14021a270(const CStringA& value)
 // @0x14021a2f0
 int Parse_14021a2f0(const CStringW& value)
 {
-    return value.CompareNoCase(L"vipgm") == 0 ? 1 : 0;
+    if (value.CompareNoCase(L"vipgm") == 0) return 1;
+    return 0;
 }
 
 // @0x14021a330
@@ -808,16 +803,16 @@ CStringA Name_14021a8b0(int value)
     switch(value) {
         case 0:
         return CStringA("levelup");
+        case 4:
+        return CStringA("farmmeso");
+        case 3:
+        return CStringA("specup");
+        case 5:
+        return CStringA("farmingredient");
         case 1:
         return CStringA("community");
         case 2:
         return CStringA("special");
-        case 3:
-        return CStringA("specup");
-        case 4:
-        return CStringA("farmmeso");
-        case 5:
-        return CStringA("farmingredient");
         default:
         return CStringA("");
     }
@@ -826,22 +821,18 @@ CStringA Name_14021a8b0(int value)
 // @0x14021aa20
 CStringA Name_14021aa20(int value)
 {
-    if (value == 0) {
+    switch (value) {
+    case 0:
         return CStringA("S");
-    }
-    else if (value == 1) {
+    case 1:
         return CStringA("A");
-    }
-    else if (value == 2) {
+    case 2:
         return CStringA("B");
-    }
-    else if (value == 3) {
+    case 3:
         return CStringA("C");
-    }
-    else if (value == 4) {
+    case 4:
         return CStringA("D");
-    }
-    else {
+    default:
         return CStringA("");
     }
 }
@@ -869,19 +860,16 @@ int Parse_14021abf0(const CStringA& value)
 // @0x14021ac80
 CStringA Name_14021ac80(int value)
 {
-    if (value == 0) {
+    switch (value) {
+    case 0:
         return CStringA("talk");
-    }
-    else if (value == 1) {
+    case 1:
         return CStringA("movie");
-    }
-    else if (value == 2) {
+    case 2:
         return CStringA("cutin");
-    }
-    else if (value == 3) {
+    case 3:
         return CStringA("talkbottom");
-    }
-    else {
+    default:
         return CStringA("");
     }
 }
@@ -1059,16 +1047,16 @@ CStringA Name_14021c050(int value)
 int Parse_14021c400(const CStringA& value)
 {
     if (value.CompareNoCase("Fishing") == 0) return 1;
-    else if (value.CompareNoCase("Music") == 0) return 2;
-    else if (value.CompareNoCase("Mining") == 0) return 3;
-    else if (value.CompareNoCase("Gathering") == 0) return 4;
-    else if (value.CompareNoCase("Breeding") == 0) return 5;
-    else if (value.CompareNoCase("Farming") == 0) return 6;
-    else if (value.CompareNoCase("Blacksmithing") == 0) return 7;
-    else if (value.CompareNoCase("Evgraving") == 0) return 8;
-    else if (value.CompareNoCase("Alchemist") == 0) return 9;
-    else if (value.CompareNoCase("Cooking") == 0) return 10;
-    else if (value.CompareNoCase("PetTaming") == 0) return 0xb;
+    if (value.CompareNoCase("Music") == 0) return 2;
+    if (value.CompareNoCase("Mining") == 0) return 3;
+    if (value.CompareNoCase("Gathering") == 0) return 4;
+    if (value.CompareNoCase("Breeding") == 0) return 5;
+    if (value.CompareNoCase("Farming") == 0) return 6;
+    if (value.CompareNoCase("Blacksmithing") == 0) return 7;
+    if (value.CompareNoCase("Evgraving") == 0) return 8;
+    if (value.CompareNoCase("Alchemist") == 0) return 9;
+    if (value.CompareNoCase("Cooking") == 0) return 10;
+    if (value.CompareNoCase("PetTaming") == 0) return 0xb;
     return 0;
 }
 
@@ -1107,29 +1095,29 @@ CStringA Name_14021c570(int value)
 int Parse_14021c7c0(const CStringA& value)
 {
     if (value.CompareNoCase("unknown") == 0) return 1;
-    else if (value.CompareNoCase("plant") == 0) return 2;
-    else if (value.CompareNoCase("animal") == 0) return 3;
-    else if (value.CompareNoCase("bug") == 0) return 4;
-    else if (value.CompareNoCase("mystic") == 0) return 5;
-    else if (value.CompareNoCase("spirit") == 0) return 6;
-    else if (value.CompareNoCase("fairy") == 0) return 7;
-    else if (value.CompareNoCase("combine") == 0) return 8;
-    else if (value.CompareNoCase("undead") == 0) return 9;
-    else if (value.CompareNoCase("devil") == 0) return 10;
-    else if (value.CompareNoCase("machine") == 0) return 0xb;
-    else if (value.CompareNoCase("creature") == 0) return 0xc;
+    if (value.CompareNoCase("plant") == 0) return 2;
+    if (value.CompareNoCase("animal") == 0) return 3;
+    if (value.CompareNoCase("bug") == 0) return 4;
+    if (value.CompareNoCase("mystic") == 0) return 5;
+    if (value.CompareNoCase("spirit") == 0) return 6;
+    if (value.CompareNoCase("fairy") == 0) return 7;
+    if (value.CompareNoCase("combine") == 0) return 8;
+    if (value.CompareNoCase("undead") == 0) return 9;
+    if (value.CompareNoCase("devil") == 0) return 10;
+    if (value.CompareNoCase("machine") == 0) return 0xb;
+    if (value.CompareNoCase("creature") == 0) return 0xc;
     return 0;
 }
 
 // @0x140219400
 int Parse_140219400(const CStringA& value) {
 if(value.IsEmpty()) return 0;
-else if(value.CompareNoCase("Greater")==0 || value.Compare(">")==0) return 1;
+if(value.CompareNoCase("Greater")==0 || value.Compare(">")==0) return 1;
 else if(value.CompareNoCase("GreaterEqual")==0 || value.Compare(">=")==0) return 2;
 else if(value.CompareNoCase("LessEqual")==0 || value.Compare("<=")==0) return 3;
 else if(value.CompareNoCase("Less")==0 || value.Compare("<")==0) return 4;
 else if(value.CompareNoCase("Equal")==0 || value.Compare("==")==0 || value.Compare("=")==0) return 0;
-else { (void)((!!0)||(_wassert(L"0",L"e:\\build\\kr\\22_04\\ms2code\\commonfiles\\commonenum.cpp",472),0)); return 0; }
+(void)((!!0)||(_wassert(L"0",L"e:\\build\\kr\\22_04\\ms2code\\commonfiles\\commonenum.cpp",472),0)); return 0;
  }
 std::map<CStringA,unsigned,CommonEnumNoCaseLess> cache; // 0x143aac740, inferred
 
@@ -1199,247 +1187,107 @@ void* InitializeExperienceNames(void* context) {
     return context;
 }
 // @0x14021af40
-int Parse_14021af40(const CStringA& value) {
-  if (value.IsEmpty()) {
-    return -1;
-  }
-  else {
- auto it=cache.find(value);
- if (it==cache.end()) {
-      if (!((value == "mapCommon"))) {
-        if (!((value == "mapHidden"))) {
-          if (!((value == "taxi"))) {
-            if (!((value == "telescope"))) {
-              if (!((value == "rareChestFirst"))) {
-                if (!((value == "rareChest"))) {
-                  if (!((value == "normalChest"))) {
-                    if (!((value == "expDrop"))) {
-                      if (!((value == "musicMastery1"))) {
-                        if (!((value == "musicMastery2"))) {
-                          if (!((value == "musicMastery3"))) {
-                            if (!((value == "musicMastery4"))) {
-                              if (!((value == "arcade"))) {
-                                if (!((value == "fishing"))) {
-                                  if (!((value == "rest"))) {
-                                    if (!((value == "bloodMineRank1"))) {
-                                      if (!((value == "bloodMineRank2"))) {
-                                        if (!((value == "bloodMineRank3"))) {
-                                          if (!((value == "bloodMineRankOther"))) {
-                                            if (!((value == "redDuelWin"))) {
-                                              if (!((value == "redDuelLose"))) {
-                                                if (!((value == "btiTeamWin"))) {
-                                                  if (!((value == "btiTeamLose"))) {
-                                                    if (!((value == "rankDuelWin"))) {
-                                                      if (!((value == "rankDuelLose"))) {
-                                                        if (!((value == "gathering"))) {
-                                                          if (!((value == "manufacturing"))) {
-                                                    if (!((value == "randomDungeonBonus"))) {
-                                                    if (!((value == "miniGame"))) {
-                                                      if (!((value == "userMiniGame"))) {
-                                                        if (!((value == "userMiniGameExtra"))) {
-                                                    if (!((value == "dungeonRelative")
-                                                    )) {
-                                                      if (!((value == "guildUserExp"))) {
-                                                        if (!((value == "petTaming"))) {
-                                                          if (!((value == "construct")
-                                                          )) {
-                                                            if (!((value == "mapleSurvival"))) {
-                                                    if (!((value == "quest"))) {
-                                                      if (!((value == "questSkyFortress"))) {
-                                                    if (!((value == "epicQuest"))) {
-                                                      if (!((value == "mission"))) {
-                                                        if (!((value == "dailyGuildQuest"))) {
-                                                    if (!((value == "weeklyGuildQuest"))) {
-                                                      if (!((value == "dailymission"))) {
-                                                        if (!((value == "dailymissionLevelUp"))) {
-                                                    (void)((!!0)||(_wassert(L"0",
-                                                  L"e:\\build\\kr\\22_04\\ms2code\\commonfiles\\commonenum.cpp"
-                                                  ,0x463),0));
-                                                  return -1;
-                                                  }
-                                                  else {
-                                                    return 0x29;
-                                                  }
-                                                  }
-                                                  else {
-                                                    return 0x28;
-                                                  }
-                                                  }
-                                                  else {
-                                                    return 0x26;
-                                                  }
-                                                  }
-                                                  else {
-                                                    return 0x25;
-                                                  }
-                                                  }
-                                                  else {
-                                                    return 0x22;
-                                                  }
-                                                  }
-                                                  else {
-                                                    return 0x2c;
-                                                  }
-                                                  }
-                                                  else {
-                                                    return 0x11;
-                                                  }
-                                                  }
-                                                  else {
-                                                    return 0x10;
-                                                  }
-                                                  }
-                                                  else {
-                                                    return 0x2b;
-                                                  }
-                                                  }
-                                                  else {
-                                                    return 0x2a;
-                                                  }
-                                                  }
-                                                  else {
-                                                    return 0x27;
-                                                  }
-                                                  }
-                                                  else {
-                                                    return 0x24;
-                                                  }
-                                                  }
-                                                  else {
-                                                    return 0x23;
-                                                  }
-                                                  }
-                                                  else {
-                                                    return 0x21;
-                                                  }
-                                                  }
-                                                  else {
-                                                    return 0x20;
-                                                  }
-                                                  }
-                                                  else {
-                                                    return 0x1f;
-                                                  }
-                                                  }
-                                                  else {
-                                                    return 0x1e;
-                                                  }
-                                                  }
-                                                  else {
-                                                    return 0x1d;
-                                                  }
-                                                  }
-                                                  else {
-                                                    return 0x1c;
-                                                  }
-                                                  }
-                                                  else {
-                                                    return 0x1b;
-                                                  }
-                                                  }
-                                                  else {
-                                                    return 0x1a;
-                                                  }
-                                                  }
-                                                  else {
-                                                    return 0x19;
-                                                  }
-                                                }
-                                                else {
-                                                  return 0x18;
-                                                }
-                                              }
-                                              else {
-                                                return 0x17;
-                                              }
-                                            }
-                                            else {
-                                              return 0x16;
-                                            }
-                                          }
-                                          else {
-                                            return 0x15;
-                                          }
-                                        }
-                                        else {
-                                          return 0x14;
-                                        }
-                                      }
-                                      else {
-                                        return 0x13;
-                                      }
-                                    }
-                                    else {
-                                      return 0x12;
-                                    }
-                                  }
-                                  else {
-                                    return 0xf;
-                                  }
-                                }
-                                else {
-                                  return 0xe;
-                                }
-                              }
-                              else {
-                                return 0xd;
-                              }
-                            }
-                            else {
-                              return 0xc;
-                            }
-                          }
-                          else {
-                            return 0xb;
-                          }
-                        }
-                        else {
-                          return 10;
-                        }
-                      }
-                      else {
-                        return 9;
-                      }
-                    }
-                    else {
-                      return 7;
-                    }
-                  }
-                  else {
-                    return 6;
-                  }
-                }
-                else {
-                  return 4;
-                }
-              }
-              else {
-                return 5;
-              }
-            }
-            else {
-              return 3;
-            }
-          }
-          else {
-            return 2;
-          }
-        }
-        else {
-          return 1;
-        }
-      }
-      else {
+int Parse_14021af40(const CStringA& value)
+{
+    if (value.IsEmpty())
+        return -1;
+    if (cache.find(value) != cache.end()) {
+        (void)((!!0)||(_wassert(L"0",L"e:\\build\\kr\\22_04\\ms2code\\commonfiles\\commonenum.cpp",0x431),0));
+        return cache[value];
+    }
+    if (value == "mapCommon")
         return 0;
-      }
-    }
+    else if (value == "mapHidden")
+        return 1;
+    else if (value == "taxi")
+        return 2;
+    else if (value == "telescope")
+        return 3;
+    else if (value == "rareChestFirst")
+        return 5;
+    else if (value == "rareChest")
+        return 4;
+    else if (value == "normalChest")
+        return 6;
+    else if (value == "expDrop")
+        return 7;
+    else if (value == "musicMastery1")
+        return 9;
+    else if (value == "musicMastery2")
+        return 10;
+    else if (value == "musicMastery3")
+        return 0xb;
+    else if (value == "musicMastery4")
+        return 0xc;
+    else if (value == "arcade")
+        return 0xd;
+    else if (value == "fishing")
+        return 0xe;
+    else if (value == "rest")
+        return 0xf;
+    else if (value == "bloodMineRank1")
+        return 0x12;
+    else if (value == "bloodMineRank2")
+        return 0x13;
+    else if (value == "bloodMineRank3")
+        return 0x14;
+    else if (value == "bloodMineRankOther")
+        return 0x15;
+    else if (value == "redDuelWin")
+        return 0x16;
+    else if (value == "redDuelLose")
+        return 0x17;
+    else if (value == "btiTeamWin")
+        return 0x18;
+    else if (value == "btiTeamLose")
+        return 0x19;
+    else if (value == "rankDuelWin")
+        return 0x1a;
+    else if (value == "rankDuelLose")
+        return 0x1b;
+    else if (value == "gathering")
+        return 0x1c;
+    else if (value == "manufacturing")
+        return 0x1d;
+    else if (value == "randomDungeonBonus")
+        return 0x1e;
+    else if (value == "miniGame")
+        return 0x1f;
+    else if (value == "userMiniGame")
+        return 0x20;
+    else if (value == "userMiniGameExtra")
+        return 0x21;
+    else if (value == "dungeonRelative")
+        return 0x23;
+    else if (value == "guildUserExp")
+        return 0x24;
+    else if (value == "petTaming")
+        return 0x27;
+    else if (value == "construct")
+        return 0x2a;
+    else if (value == "mapleSurvival")
+        return 0x2b;
+    else if (value == "quest")
+        return 0x10;
+    else if (value == "questSkyFortress")
+        return 0x11;
+    else if (value == "epicQuest")
+        return 0x2c;
+    else if (value == "mission")
+        return 0x22;
+    else if (value == "dailyGuildQuest")
+        return 0x25;
+    else if (value == "weeklyGuildQuest")
+        return 0x26;
+    else if (value == "dailymission")
+        return 0x28;
+    else if (value == "dailymissionLevelUp")
+        return 0x29;
     else {
-      (void)((!!0)||(_wassert(L"0",L"e:\\build\\kr\\22_04\\ms2code\\commonfiles\\commonenum.cpp",0x431),0));
-      return cache[value];
+        (void)((!!0)||(_wassert(L"0",L"e:\\build\\kr\\22_04\\ms2code\\commonfiles\\commonenum.cpp",0x463),0));
     }
-  }
-
- }
+    return -1;
+}
 // @0x140218e60
 int Parse_140218e60(const CStringW& value) { return Parse_140218c20(FUN_14016a600(static_cast<const wchar_t*>(value),false)); }
 // @0x140219580
@@ -1573,14 +1421,16 @@ bool FUN_14036d570(void*, int);
 // @0x140222590
 bool FUN_140222590(int value)
 {
-    switch (value - 1) {
-    case 9: case 0x13: case 0x1d: case 0x27: case 0x31: case 0x3b: case 0x45: case 0x4f:
+    switch (value) {
+    case 1:
+        return false;
+    case 10: case 20: case 30: case 40: case 50: case 60: case 70: case 80:
         return true;
-    case 0x59:
+    case 90:
         return FUN_14036d570(FUN_140166410(), 8);
-    case 99:
+    case 100:
         return FUN_14036d570(FUN_140166410(), 0x12);
-    case 0x6d:
+    case 110:
         return FUN_14036d570(FUN_140166410(), 0x25);
     default:
         return false;

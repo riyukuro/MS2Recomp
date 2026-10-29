@@ -23,7 +23,7 @@ class Unk_DaSlot
 public:
     Unk_DaSlot() { Clear(); }                               // 0x14192e4a0
     void Clear() { m_4 = 0; m_8 = 0; m_0 = 0; }             // 0x14192e620
-    bool IsSet() const;                                     // 0x14192e660
+    int IsSet() const;                                      // 0x14192e660
 
     int m_0;
     int m_4;

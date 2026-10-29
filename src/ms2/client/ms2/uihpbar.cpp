@@ -70,7 +70,8 @@ public:
     MS2Ptr<Unk_NpcData> FUN_141093270();
 };
 class Unk_HpPet { public: int FUN_140b109f0(); };
-class Unk_HpSeat { public: Unk_GVec3 FUN_140adf8e0(); };
+struct Unk_HpSeatPos : Unk_GVec3 {};                                    // the returned seat position (copied out through Unk_GVec3)
+class Unk_HpSeat { public: Unk_HpSeatPos FUN_140adf8e0(); };
 struct Unk_HpMountInfo3 { char m_pad[0x68]; int m_68; };
 class Unk_HpMountInfoPtr
 {
@@ -544,7 +545,6 @@ int UITombStoneBar::Entity::vfunc_8(int n)
 }
 
 // @0x141992d50
-// MS2-FUNCTIONAL: the exe copies the seat position through an out-of-line NiPoint3 copy ctor (0x14027dcf0) from a returned temp; the compiler elides that copy here
 NiPoint3 UITombStoneBar::Entity::vfunc_10()
 {
     PC* pPc = dynamic_cast<PC*>(FUN_140f49330());

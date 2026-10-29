@@ -37,7 +37,7 @@ int FUN_140873360(Unk_140165cf0* pElem, const char* pszName, float* pOut);
 int FUN_140873420(Unk_140165cf0* pElem, const char* pszName, CStringW& rOut);
 CString FUN_14015f710(Unk_140165cf0* pElem, const char* pszName, CString strDefault);
 void FUN_14015f050(const CStringA& str, ATL::CAtlArray<CStringA>* pOut, const char* pszSep);   // split
-void FUN_1402929a0(const CStringW& str, std::vector<int>& rOut, const wchar_t* pszSep);          // split into ints
+void FUN_1402929a0(const CStringW& str, std::vector<unsigned int>& rOut, const wchar_t* pszSep);          // split into ints
 void FUN_14028faa0(Unk_140165cf0* pParent, const char* pszName, const char* pszAttr, std::vector<Unk_140165cf0*>* pOut);
 MS2Ptr<CNpcData> FUN_1406cd330(int nNpcId);
 unsigned char FUN_1401d1320(CCacheData* pCache);    // file changed since load
@@ -92,7 +92,6 @@ CPetData::CPetData()
 CPetData::~CPetData() {}
 
 // @0x140728320
-// MS2-FUNCTIONAL: stack temporaries (tamingAiPresets default-string chain) laid out 8 bytes differently
 bool CPetData::Load(Unk_140165cf0* pNode)
 {
     if (!FUN_14028f710(pNode))
@@ -122,13 +121,16 @@ bool CPetData::Load(Unk_140165cf0* pNode)
         CStringW strLevels;
         FUN_140873420(pNode, "additionalEffectID", strIds);
         FUN_140873420(pNode, "additionalEffectLevel", strLevels);
-        std::vector<int> ids;
+        std::vector<unsigned int> ids;
         std::vector<unsigned short> levels;
         FUN_1402929a0(strIds, ids, L",");
         FUN_140729390(strLevels, levels, L",");
         int nCount = (int)(std::min)(ids.size(), levels.size());
         for (int i = 0; i < nCount; ++i)
-            m_additionalEffects.push_back(std::make_pair((unsigned int)ids[i], levels[i]));
+        {
+            std::pair<unsigned int, unsigned short> kEffect(ids[i], levels[i]);
+            m_additionalEffects.push_back(kEffect);
+        }
     }
     return true;
 }

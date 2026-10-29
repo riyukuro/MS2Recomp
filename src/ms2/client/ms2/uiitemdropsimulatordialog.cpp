@@ -50,7 +50,6 @@ void UIItemDropSimulatorDialog::OnLoadInit()
 }
 
 // @0x14192a3b0
-// MS2-FUNCTIONAL: behaviour-equivalent; the exe keeps each ASData string / int read in its own temp slot, EH unwind map differs
 int UIItemDropSimulatorDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs)
 {
     if (UIDialog::vfunc_28(szMethod, pArgs, nArgs) != 0)
@@ -75,7 +74,7 @@ int UIItemDropSimulatorDialog::vfunc_28(const char* szMethod, const Scaleform::G
         }
         return 1;
     }
-    if (_stricmp("onClickCustomDrop", szMethod) == 0) {
+    else if (_stricmp("onClickCustomDrop", szMethod) == 0) {
         ASData args;
         if (args.FUN_1422b9620(pArgs, nArgs) != 0) {
             CString strA = args.FUN_1422b8d30();

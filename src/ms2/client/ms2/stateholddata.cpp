@@ -37,14 +37,14 @@ class Unk_StateDataArg
 {
 public:
     char m_pad_00[0x28];
-    int m_n28;                              // +0x28 (the held mount's height)
+    float m_f28;                            // +0x28 (the held mount's height)
     char m_pad_2c[0x90 - 0x2c];
     int m_n90;                              // +0x90
     char m_pad_94[4];
     CString m_str98;                        // +0x98
     char m_pad_a0[0xb8 - 0xa0];
 };
-MS2_CHECK_OFFSET(Unk_StateDataArg, m_n28, 0x28);
+MS2_CHECK_OFFSET(Unk_StateDataArg, m_f28, 0x28);
 MS2_CHECK_OFFSET(Unk_StateDataArg, m_n90, 0x90);
 MS2_CHECK_OFFSET(Unk_StateDataArg, m_str98, 0x98);
 
@@ -67,7 +67,7 @@ Unk_HoldWorld* FUN_1403ed2d0();
 class Unk_HoldBuffs                                                      // the actor's buff list
 {
 public:
-    efd::Point3 FUN_141683290();                                         // knock-back velocity
+    NiPoint3 FUN_141683290();                                            // knock-back velocity
     bool FUN_141683100(int nBuff);
 };
 Unk_HoldBuffs* FUN_14166d240(PCBase* pOwner);
@@ -103,7 +103,6 @@ struct Unk_HoldString
 {
     Unk_HoldString(const char* psz) { FUN_1409989e0(m_buf, psz); }
     ~Unk_HoldString() { FUN_1408a8900(m_buf); }
-    operator const efd::utf8string&() const { return *(const efd::utf8string*)m_buf; }
     __int64 m_buf[4];
 };
 
@@ -160,7 +159,7 @@ void StateHoldData::vfunc_1(Unk_StateDataArg* p)
         if (pTarget->FUN_1416764a0() != 0)
         {
             Ridee* pRidee = pTarget->FUN_1416764a0();
-            p->m_n28 = (int)pRidee->vfunc_18().z;
+            p->m_f28 = pRidee->vfunc_18().z;
         }
     }
 }
@@ -233,8 +232,7 @@ void StateHold::vfunc_5(int n)
     MyPC* pPC = FUN_1417b84b0();
     if (pPC != 0)
     {
-        efd::Point3 kPos = pPC->vfunc_18();
-        pPC->FUN_141676060(kPos);
+        pPC->FUN_141676060(pPC->vfunc_18());
         if (FUN_140a38d60(FUN_1409478c0()) != pPC)
             pPC->SendRequestRideMode4();
     }
@@ -249,37 +247,40 @@ void StateHold::vfunc_3(double fTime)
     PCBase* pTarget = FUN_1403ed2d0()->FUN_141bd1200(pData->m_nTargetId);
     if (pTarget != 0)
         spNode = pTarget->FUN_1416757c0(m_spHold.get()->m_strTargetName);
-    if ((NiAVObject*)spNode == 0 || pTarget == 0 || pTarget->FUN_14166ce30() != 0)
+    if (((NiAVObject*)spNode ? true : false) && pTarget != 0 && pTarget->FUN_14166ce30() == 0)
+    {
+        if (pTarget->GetClassID() == 0x6200003 || pTarget->GetClassID() == 0x6200004)
+        {
+            Ridee* pRidee = FUN_1417cd1c0(pTarget->FUN_1416764a0());
+            if (pRidee == 0)
+                return;
+            MS2Ptr<Unk_RideeData> spData = pRidee->GetData();
+            if (spData == 0)
+                return;
+            int nSeat = pTarget->FUN_141676790(m_pOwner->FUN_14123c580());
+            MS2Ptr<Unk_RideeModel> spModel = spData->FUN_1407849c0(nSeat);
+            if (spModel == 0)
+                return;
+            nAttached = 1;
+            Ridee::FUN_1417083a0(m_pOwner, spNode, spModel);
+            if (FUN_1417b8560() != 0)
+                m_pOwner->FUN_14166ebf0(pRidee);
+        }
+        else if (pTarget->GetClassID() != 0x6200045)
+        {
+            efd::Point3 kAngles;
+            if (spNode->GetWorldRotate().ToEulerAnglesXYZ(kAngles.x, kAngles.y, kAngles.z))
+            {
+                FUN_140ad0c10(&kAngles, -57.2957764f);
+                m_pOwner->vfunc_21(kAngles);
+            }
+            efd::Point3 kPos = spNode->GetWorldTranslate();
+            m_pOwner->vfunc_19(kPos);
+        }
+    }
+    else
     {
         FUN_1417ccca0(m_nFallbackState, m_nFallbackSub);
-    }
-    else if (pTarget->GetClassID() == 0x6200003 || pTarget->GetClassID() == 0x6200004)
-    {
-        Ridee* pRidee = FUN_1417cd1c0(pTarget->FUN_1416764a0());
-        if (pRidee == 0)
-            return;
-        MS2Ptr<Unk_RideeData> spData = pRidee->GetData();
-        if (spData == 0)
-            return;
-        int nSeat = pTarget->FUN_141676790(m_pOwner->FUN_14123c580());
-        MS2Ptr<Unk_RideeModel> spModel = spData->FUN_1407849c0(nSeat);
-        if (spModel == 0)
-            return;
-        nAttached = 1;
-        Ridee::FUN_1417083a0(m_pOwner, spNode, spModel);
-        if (FUN_1417b8560() != 0)
-            m_pOwner->FUN_14166ebf0(pRidee);
-    }
-    else if (pTarget->GetClassID() != 0x6200045)
-    {
-        efd::Point3 kAngles;
-        if (spNode->GetWorldRotate().ToEulerAnglesXYZ(kAngles.x, kAngles.y, kAngles.z))
-        {
-            FUN_140ad0c10(&kAngles, -57.2957764f);
-            m_pOwner->vfunc_21(kAngles);
-        }
-        efd::Point3 kPos = spNode->GetWorldTranslate();
-        m_pOwner->vfunc_19(kPos);
     }
     State::vfunc_3(fTime);
 }
@@ -290,19 +291,24 @@ void StateHold::vfunc_8(double fTime)
     StateMoveSkill::vfunc_8(fTime);
     Unk_HoldBuffs* pBuff = FUN_14166d240(m_pOwner);
     efd::Point3 kZero = efd::Point3::ZERO;
-    m_pOwner->vfunc_22(kZero);
-    if (!pBuff->FUN_141683100(0x493e1))
+    m_pOwner->vfunc_22(efd::Point3(kZero));
+    if (pBuff->FUN_141683100(0x493e1))
     {
-        FUN_1417cce10();
+        MyPC* pPC = FUN_1417b84b0();
+        if (pPC == 0)
+            return;
+        if (pPC->FUN_141527960() != 0)
+            return;
+        else
+        {
+            efd::Point3 kVel = pBuff->FUN_141683290();
+            m_pOwner->vfunc_22(kVel);
+            FUN_1417ccca0(m_nFallbackState, 0);
+        }
     }
     else
     {
-        MyPC* pPC = FUN_1417b84b0();
-        if (pPC != 0 && pPC->FUN_141527960() == 0)
-        {
-            m_pOwner->vfunc_22(pBuff->FUN_141683290());
-            FUN_1417ccca0(m_nFallbackState, 0);
-        }
+        FUN_1417cce10();
     }
 }
 
@@ -312,24 +318,24 @@ void StateHold::vfunc_9(double fTime)
     State::vfunc_9(fTime);
     StateHoldData* pData = m_spHold.get();
     PCBase* pTarget = FUN_1403ed2d0()->FUN_141bd1200(pData->m_nTargetId);
-    if (pTarget == 0)
-        return;
+    if (pTarget != 0)
+    {
     if (pTarget->GetClassID() == 0x6200028)
     {
         void* pNpc = FUN_14096e110(pTarget);
         if (pNpc != 0)
         {
-            int nNpcId = FUN_141092fa0(pNpc);
+            const int& nNpcId = FUN_141092fa0(pNpc);
             if (nNpcId == 0xa7e02a)
             {
                 Unk_HoldString kAnim("Ride_Idle_U");
-                m_pOwner->FUN_14166dd20(kAnim, m_pOwner->FUN_1416713c0(), false, false);
+                m_pOwner->FUN_14166dd20(reinterpret_cast<const efd::utf8string&>(kAnim), m_pOwner->FUN_1416713c0(), false, false);
                 return;
             }
-            if (nNpcId == 0xadf341 || nNpcId == 0xadf342)
+            else if (nNpcId == 0xadf341 || nNpcId == 0xadf342)
             {
                 Unk_HoldString kAnim("Idle_A");
-                m_pOwner->FUN_14166dd20(kAnim, m_pOwner->FUN_1416713c0(), false, false);
+                m_pOwner->FUN_14166dd20(reinterpret_cast<const efd::utf8string&>(kAnim), m_pOwner->FUN_1416713c0(), false, false);
                 return;
             }
         }
@@ -342,22 +348,24 @@ void StateHold::vfunc_9(double fTime)
             return;
         MS2Ptr<Unk_RideeData> spData = pRidee->GetData();
         if (spData == 0)
+            return;
         {
             int nSeat = pPlayer->FUN_141676790(m_pOwner->FUN_14123c580());
             MS2Ptr<Unk_RideeModel> spModel = spData->FUN_1407849c0(nSeat);
             if (spModel == 0)
+                return;
             {
                 if (pRidee->FUN_14166c930() == 2 || pRidee->FUN_14166c930() == 0x1b)
                 {
                     if (pRidee->FUN_14166cc80() == 0x17 || pRidee->FUN_14166cc80() == 0x85)
                     {
                         Unk_HoldString kAnim(spModel->m_str50);
-                        m_pOwner->FUN_14166dd20(kAnim, pRidee->FUN_1416713c0(), false, false);
+                        m_pOwner->FUN_14166dd20(reinterpret_cast<const efd::utf8string&>(kAnim), pRidee->FUN_1416713c0(), false, false);
                     }
                     else
                     {
                         Unk_HoldString kAnim(spModel->m_str38);
-                        m_pOwner->FUN_14166dd20(kAnim, pRidee->FUN_1416713c0(), false, false);
+                        m_pOwner->FUN_14166dd20(reinterpret_cast<const efd::utf8string&>(kAnim), pRidee->FUN_1416713c0(), false, false);
                     }
                 }
                 else if (pRidee->FUN_14166c930() == 6)
@@ -365,12 +373,12 @@ void StateHold::vfunc_9(double fTime)
                     if (pRidee->FUN_14166cc80() == 0x27)
                     {
                         Unk_HoldString kAnim(spModel->m_str58);
-                        m_pOwner->FUN_14166dd20(kAnim, pRidee->FUN_1416713c0(), false, false);
+                        m_pOwner->FUN_14166dd20(reinterpret_cast<const efd::utf8string&>(kAnim), pRidee->FUN_1416713c0(), false, false);
                     }
                     else
                     {
                         Unk_HoldString kAnim(spModel->m_str40);
-                        m_pOwner->FUN_14166dd20(kAnim, pRidee->FUN_1416713c0(), false, false);
+                        m_pOwner->FUN_14166dd20(reinterpret_cast<const efd::utf8string&>(kAnim), pRidee->FUN_1416713c0(), false, false);
                     }
                 }
                 else if (pRidee->FUN_14166c930() == 1 || pRidee->FUN_14166c930() == 4)
@@ -378,29 +386,30 @@ void StateHold::vfunc_9(double fTime)
                     if (pRidee->FUN_14166cc80() == 0xc || pRidee->FUN_14166cc80() == 0x87)
                     {
                         Unk_HoldString kAnim(spModel->m_str48);
-                        m_pOwner->FUN_14166dd20(kAnim, pRidee->FUN_1416713c0(), false, false);
+                        m_pOwner->FUN_14166dd20(reinterpret_cast<const efd::utf8string&>(kAnim), pRidee->FUN_1416713c0(), false, false);
                     }
                     else
                     {
                         Unk_HoldString kAnim(spModel->m_str30);
-                        m_pOwner->FUN_14166dd20(kAnim, pRidee->FUN_1416713c0(), false, false);
+                        m_pOwner->FUN_14166dd20(reinterpret_cast<const efd::utf8string&>(kAnim), pRidee->FUN_1416713c0(), false, false);
                     }
                 }
-                else if (pRidee->FUN_141676b70() == 0)
+                else if (pRidee->FUN_141676b70() != 0)
                 {
-                    Unk_HoldString kAnim(spModel->m_str28);
-                    m_pOwner->FUN_14166dd20(kAnim, pRidee->FUN_1416713c0(), false, false);
+                    Unk_HoldString kAnim(spModel->m_str48);
+                    m_pOwner->FUN_14166dd20(reinterpret_cast<const efd::utf8string&>(kAnim), pRidee->FUN_1416713c0(), false, false);
                 }
                 else
                 {
-                    Unk_HoldString kAnim(spModel->m_str48);
-                    m_pOwner->FUN_14166dd20(kAnim, pRidee->FUN_1416713c0(), false, false);
+                    Unk_HoldString kAnim(spModel->m_str28);
+                    m_pOwner->FUN_14166dd20(reinterpret_cast<const efd::utf8string&>(kAnim), pRidee->FUN_1416713c0(), false, false);
                 }
             }
         }
         return;
     }
     m_pOwner->FUN_14166dda0(0x3e);
+    }
 }
 
 // @0x1417ccca0
@@ -412,13 +421,17 @@ void StateHold::FUN_1417ccca0(int nState, int nSub)
 // @0x1417cccf0
 int StateHold::vfunc_15()
 {
-    return m_bRiding == false;
+    if (m_bRiding)
+        return 0;
+    return 1;
 }
 
 // @0x1417ccd20
 int StateHold::vfunc_16()
 {
-    return m_bRiding == false;
+    if (m_bRiding)
+        return 0;
+    return 1;
 }
 
 // @0x1417ccd50
@@ -432,7 +445,8 @@ void StateHold::FUN_1417ccd50()
         if (pTarget->FUN_1416764a0() != 0)
         {
             m_bRiding = true;
-            if (FUN_1417b84b0() != 0)
+            MyPC* pPC = FUN_1417b84b0();
+            if (pPC != 0)
                 FUN_140aeaf40(FUN_1409478c0(), pTarget->FUN_1416764a0(), 1);
         }
     }
@@ -444,41 +458,47 @@ void StateHold::FUN_1417cce10()
     if (!FUN_140166410()->FUN_14036d570(0xae))
         return;
     Unk_HoldBuffs* pBuff = FUN_14166d240(m_pOwner);
-    MyPC* pPC;
-    if (pBuff->FUN_141683100(0x49401) && (pPC = FUN_1417b84b0(), pPC != 0) && FUN_141654700(pPC) == 0x46)
-    {
-        StateHoldData* pData = m_spHold.get();
-        PCBase* pTarget = FUN_1403ed2d0()->FUN_141bd1200(pData->m_nTargetId);
-        if (pTarget != 0 && pPC->vfunc_122(pTarget) != 0 && pTarget->vfunc_116() != 2
-            && pTarget->GetClassID() == 0x6200028)
-        {
-            Unk_InventorySkillRequest kReq(FUN_1401d3200()->m_nHoldSkill, 1);
-            MS2Ptr<CSkillRecord> spRecord = pPC->FUN_141523bc0()->FUN_141765570(kReq);
-            if (spRecord.get() != 0)
-            {
-                spRecord->m_nTargetId = m_spHold.get()->m_nTargetId;
-                spRecord->m_strNode = m_spHold.get()->m_strTargetName;
-                pPC->vfunc_102(spRecord);
-            }
-        }
-    }
+    if (!pBuff->FUN_141683100(0x49401))
+        return;
+    MyPC* pPC = FUN_1417b84b0();
+    if (pPC == 0)
+        return;
+    if (FUN_141654700(pPC) != 0x46)
+        return;
+    StateHoldData* pData = m_spHold.get();
+    PCBase* pTarget = FUN_1403ed2d0()->FUN_141bd1200(pData->m_nTargetId);
+    if (pTarget == 0)
+        return;
+    if (pPC->vfunc_122(pTarget) == 0)
+        return;
+    if (pTarget->vfunc_116() == 2)
+        return;
+    if (pTarget->GetClassID() != 0x6200028)
+        return;
+    Unk_InventorySkillRequest kReq(FUN_1401d3200()->m_nHoldSkill, 1);
+    MS2Ptr<CSkillRecord> spRecord = pPC->FUN_141523bc0()->FUN_141765570(kReq);
+    if (spRecord == 0)
+        return;
+    spRecord->m_nTargetId = m_spHold.get()->m_nTargetId;
+    spRecord->m_strNode = m_spHold.get()->m_strTargetName;
+    pPC->vfunc_102(spRecord);
 }
 
 // @0x1417cd060
-int StateHold::FUN_1417cd060()
+bool StateHold::FUN_1417cd060()
 {
     PCBase* pTarget = FUN_1403ed2d0()->FUN_141bd1290(m_spHold.get()->m_nTargetId);
     if (pTarget != 0 && pTarget->FUN_1416764a0() != 0)
-        return 1;
-    return 0;
+        return true;
+    return false;
 }
 
 // @0x1417cd0d0
 int StateHold::FUN_1417cd0d0()
 {
-    if ((StateHoldData*)m_spHold == 0)
-        return 0;
-    return m_spHold.get()->m_nTargetId;
+    if ((StateHoldData*)m_spHold != 0)
+        return m_spHold.get()->m_nTargetId;
+    return 0;
 }
 
 // @0x1417cd120
@@ -487,7 +507,8 @@ int StateHold::vfunc_36()
     PCBase* pTarget = FUN_1403ed2d0()->FUN_141bd1200(m_spHold.get()->m_nTargetId);
     if (pTarget != 0 && pTarget->GetClassID() != 0x6200045)
         return FUN_14116dcb0(FUN_14025e7c0(), 0x493e2, 0, 0);
-    return 1;
+    else
+        return 1;
 }
 
 // @0x1417cd1b0
@@ -500,9 +521,10 @@ int StateHold::vfunc_37()
 Ridee* FUN_1417cd1c0(GameObject* pObject)
 {
     Ridee* pRidee = 0;
-    if (pObject == 0 || !pObject->TypeCast(0x6200045, (void**)&pRidee))
-        pRidee = 0;
-    return pRidee;
+    if (pObject != 0 && pObject->TypeCast(0x6200045, (void**)&pRidee))
+        return pRidee;
+    else
+        return 0;
 }
 
 // @0x1417cd390

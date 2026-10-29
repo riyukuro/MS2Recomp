@@ -7,7 +7,7 @@
 // MS2-PINS-BEGIN tplpin
 // MS2-PIN: ??$_Kfn@$$CBIVUnk_ALMissionState@@@?$_Tmap_traits@IVUnk_ALMissionState@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIVUnk_ALMissionState@@@std@@@3@$0A@@std@@SAAEBIAEBU?$pair@$$CBIVUnk_ALMissionState@@@1@@Z 0x140ba4d60 ; prop
 // MS2-PIN: ??$_Lbound@I@?$_Tree@V?$_Tmap_traits@IVUnk_ALMissionState@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIVUnk_ALMissionState@@@std@@@3@$0A@@std@@@std@@IEBAPEAU?$_Tree_node@U?$pair@$$CBIVUnk_ALMissionState@@@std@@PEAX@1@AEBI@Z 0x140ba4d70 ; unique
-// MS2-PIN: ??$addressof@U?$pair@$$CBIVUnk_ALMissionState@@@std@@@std@@YAPEAU?$pair@$$CBIVUnk_ALMissionState@@@0@AEAU10@@Z 0x140ba4e10 ; unique
+// MS2-PIN: ??$addressof@$$CBU?$pair@$$CBIVUnk_ALMissionState@@@std@@@std@@YAPEBU?$pair@$$CBIVUnk_ALMissionState@@@0@AEBU10@@Z 0x140ba4e10 ; unique
 // MS2-PIN: ?vfunc_oa0_3@UIAdventureLevelDialog@@UEAAXHH@Z 0x140ba4fc0 ; unique
 // MS2-PIN: ?vfunc_oa0_4@UIAdventureLevelDialog@@UEAAXHH@Z 0x140ba4fe0 ; unique
 // MS2-PIN: ?_Compare@?$_Tree@V?$_Tmap_traits@IVUnk_ALMissionState@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIVUnk_ALMissionState@@@std@@@3@$0A@@std@@@std@@IEBA_NAEBI0@Z 0x140ba4ff0 ; unique
@@ -400,11 +400,10 @@ void UIAdventureLevelDialog::FUN_140ba3200()
 
 // The number of missions that are done but whose reward is not claimed yet.
 // @0x140ba3240
-// MS2-FUNCTIONAL: the exe copies begin() through a hidden-return temp into the loop iterator (no default-constructed iterator); cl builds it in place
 int UIAdventureLevelDialog::FUN_140ba3240()
 {
     int nCount = 0;
-    for (std::map<unsigned int, Unk_ALMissionState>::iterator it = g_unkMissionStates.begin(); it != g_unkMissionStates.end(); ++it) {
+    for (std::map<unsigned int, Unk_ALMissionState>::const_iterator it = g_unkMissionStates.begin(); it != g_unkMissionStates.end(); ++it) {
         if (it->second.m_1c != 0)
             continue;
         const unsigned int* pId = &it->first;
@@ -436,7 +435,6 @@ void UIAdventureLevelDialog::FUN_140ba3330()
 }
 
 // @0x140ba34b0
-// MS2-FUNCTIONAL: the exe reaches m_30 into rcx directly for the operator-> call (cl goes through rax); same call sequence otherwise
 void UIAdventureLevelDialog::FUN_140ba34b0()
 {
     if (m_30.IsNull())
@@ -446,8 +444,7 @@ void UIAdventureLevelDialog::FUN_140ba34b0()
         return;
     float fExp = (float)DAT_143ab2958;
     float fRatio = fExp / FUN_140ba4b50(&FUN_1401d3200()->m_expMax);
-    unsigned int nLevel = pPlayer->vfunc_141();
-    m_30->Invoke("setLevelAndExp", nLevel, fRatio);
+    m_30->Invoke("setLevelAndExp", pPlayer->vfunc_141(), fRatio);
 }
 
 // @0x140ba35a0
@@ -494,7 +491,6 @@ void UIAdventureLevelDialog::FUN_140ba35a0()
 }
 
 // @0x140ba3a30
-// MS2-FUNCTIONAL: the exe copies begin() through a hidden-return temp into the loop iterator; cl builds it in place (all later temp offsets +8)
 void UIAdventureLevelDialog::FUN_140ba3a30()
 {
     if (m_30.IsNull())
@@ -507,7 +503,7 @@ void UIAdventureLevelDialog::FUN_140ba3a30()
         return;
     spList->Invoke("resetRenderer");
     spList->FUN_1422dd1d0();
-    for (std::map<unsigned int, Unk_ALMissionState>::iterator it = g_unkMissionStates.begin(); it != g_unkMissionStates.end(); ++it) {
+    for (std::map<unsigned int, Unk_ALMissionState>::const_iterator it = g_unkMissionStates.begin(); it != g_unkMissionStates.end(); ++it) {
         const unsigned int* pId = &it->first;
         Unk_ALMission* pMission = FUN_1401958a0()->FUN_140196090(*pId);
         if (pMission->FUN_140195ae0())
@@ -569,7 +565,6 @@ int UIAdventureLevelDialog::FUN_140ba3f80(ASObj& obj, unsigned int nLevel)
 }
 
 // @0x140ba4250
-// MS2-FUNCTIONAL: the exe loads the class id into ecx before the signed compare with the min-class getter; cl compares against the memory operand
 int UIAdventureLevelDialog::FUN_140ba4250(ASObj& obj, unsigned int nLevel)
 {
     Unk_ALReward* pReward = FUN_1401958a0()->FUN_140195e30(nLevel);
@@ -582,8 +577,7 @@ int UIAdventureLevelDialog::FUN_140ba4250(ASObj& obj, unsigned int nLevel)
         return 0;
     if (nLevel <= pPlayer->vfunc_141())
         obj.FUN_1409c0dc0("state", "inactive");
-    unsigned int nClass = pPlayer->vfunc_78();
-    if ((int)nClass < (int)FUN_140ba4b30(&FUN_1401d3200()->m_stat))
+    if (pPlayer->vfunc_78() < FUN_140ba4b30(&FUN_1401d3200()->m_stat))
         obj.FUN_1409c0dc0("state", "lock");
     ItemInfoSlot::CreateParam param;
     param.m_strSlotText = FUN_1401d31f0()->m_1d0;
@@ -600,7 +594,6 @@ int UIAdventureLevelDialog::FUN_140ba4250(ASObj& obj, unsigned int nLevel)
 }
 
 // @0x140ba45c0
-// MS2-FUNCTIONAL: the exe hoists the CStringW temp addresses ahead of the rarity/count getter calls; cl sets them up afterwards
 int UIAdventureLevelDialog::FUN_140ba45c0(ASObj& obj, unsigned int nMissionId)
 {
     Unk_ALMission* pMission = FUN_1401958a0()->FUN_140196090(nMissionId);
@@ -620,9 +613,7 @@ int UIAdventureLevelDialog::FUN_140ba45c0(ASObj& obj, unsigned int nMissionId)
     strBindID.Format("%s.%d", (LPCSTR)GetTypeName(), m_binds.GetCount() + 1);
     FUN_141415450(strBindID, spItem, 0, nIconType, 0x800);
     obj.FUN_1407cba60("binding", strBindID);
-    int nRarity = spItem->FUN_140526bd0();
-    int nCount = spItem->FUN_1405276c0();
-    obj.FUN_1407cbb20("slotName", FUN_14183e9c0(FUN_1401a9d70()->FUN_141811980(1, nCount), nRarity));
+    obj.FUN_1407cbb20("slotName", FUN_14183e9c0(FUN_1401a9d70()->FUN_141811980(1, spItem->FUN_1405276c0()), spItem->FUN_140526bd0()));
     m_binds.Add(strBindID);
     return 1;
 }
@@ -644,13 +635,12 @@ void UIAdventureLevelDialog::FUN_140ba4960(unsigned int nLevel)
 }
 
 // @0x140ba4a10
-// MS2-FUNCTIONAL: the exe copies find() through a hidden-return temp into the iterator; cl builds it in place (frame 0x98 vs 0x88)
 void UIAdventureLevelDialog::FUN_140ba4a10(unsigned int nMissionId)
 {
     Unk_ALMission* pMission = FUN_1401958a0()->FUN_140196090(nMissionId);
     if (pMission->FUN_140195ae0())
         return;
-    std::map<unsigned int, Unk_ALMissionState>::iterator it = g_unkMissionStates.find(nMissionId);
+    std::map<unsigned int, Unk_ALMissionState>::const_iterator it = g_unkMissionStates.find(nMissionId);
     if (it == g_unkMissionStates.end())
         return;
     if (it->second.m_1c != 0)

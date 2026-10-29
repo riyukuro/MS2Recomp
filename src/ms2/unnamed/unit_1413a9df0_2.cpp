@@ -143,6 +143,7 @@ public:
     virtual void Unk_Slot53();
     virtual void Unk_Slot54();
     virtual int vfunc_55();
+    Unk_G9Val FUN_1422dba50();                          // the root value of the dialog's tree
 };
 // The page smart pointer of the mentoring pane (dtor 0x140e60460 releases it).
 struct Unk_G9Iter { ~Unk_G9Iter(); void* m_p0; void* m_p1; };
@@ -155,21 +156,11 @@ bool FUN_140e605c0(Unk_G9Iter* pIt);                    // IsNull
 Unk_G9Named* FUN_140e60630(Unk_G9Iter* pIt);            // operator->
 
 void* FUN_141386950(const CStringA& strDialog);         // the dialog of a name
-void FUN_1422dba50(void* pDialog, Unk_G9Val* pOut);
-void* FUN_140d031f0(Unk_G9Val* pVal);
-void* FUN_140d03230(Unk_G9Val* pVal);
-void FUN_140acce30(void* pInner, Unk_G9Val* pOut, const CString* pName);
-char FUN_140bb6090(Unk_G9Val* pVal, int nFlag);
-void FUN_140acd6e0(Unk_G9Val* pVal);
-void FUN_140d03070(Unk_G9Val* pVal);
-void* FUN_140acd9e0(Unk_G9Val* pVal);
-char FUN_1422bfca0(void* pInner);
-char FUN_1422ce0e0(void* pInner);
-void FUN_1413b40b0(Unk_G9Val* pDst, Unk_G9Val* pSrc);
-char FUN_140d03130(Unk_G9Val* pVal, int nFlag);
+bool FUN_1422bfca0(void* pInner);
+bool FUN_1422ce0e0(void* pInner);
 void* FUN_140c300a0(unsigned nDialogId);
 struct Unk_G9Span { int m_n[7]; int m_nDays; };
-Unk_G9Span* FUN_1413a52a0(__int64* pSpan);
+Unk_G9Span* FUN_1413a52a0(const __int64* pTime);         // _localtime64 into the guide's tm
 int FUN_1410c3650(Unk_G9Home* pHome);
 void* FUN_140931510();                                  // the dungeon room manager
 int FUN_140d9f880(void* pMgr, int nDungeonId);
@@ -747,45 +738,34 @@ CGuideConditionButtonSelected::CGuideConditionButtonSelected()
 // MS2-FUNCTIONAL: branch layout / instruction order differs from the exe (same calls and conditions)
 int CGuideConditionButtonSelected::vfunc_3()
 {
-    Unk_G9Dlg* pDlg = (Unk_G9Dlg*)FUN_141386950(m_strDialog);
-    if (pDlg && pDlg->vfunc_55() == 0 && m_children.GetCount() != 0) {
-        Unk_G9Val root;
-        FUN_1422dba50(pDlg, &root);
-        if (FUN_140d031f0(&root) != 0) {
+    Unk_G9Dlg* pDlg = 0;
+    if (!pDlg)
+        pDlg = (Unk_G9Dlg*)FUN_141386950(m_strDialog);
+    if (!pDlg)
+        return 0;
+    if (pDlg->vfunc_55() != 0)
+        return 0;
+    if (m_children.GetCount() != 0) {
+        Unk_G9Val root = pDlg->FUN_1422dba50();
+        if (root.FUN_140d031f0()) {
             for (size_t i = 0; i < m_children.GetCount(); ++i) {
-                if (i == m_children.GetCount() - 1) {
-                    Unk_G9Val leaf;
-                    FUN_140acce30(FUN_140d03230(&root), &leaf, &m_children[i]);
-                    if (FUN_140bb6090(&leaf, 0)) {
-                        FUN_140acd6e0(&leaf);
-                        FUN_140d03070(&root);
+                BOOL bLast = i == m_children.GetCount() - 1;
+                if (bLast) {
+                    Unk_G9Leaf leaf = root.FUN_140d03230()->FUN_140acce30(m_children[i]);
+                    if (leaf.FUN_140bb6090(0))
                         return 0;
-                    }
-                    if (FUN_1422bfca0(FUN_140acd9e0(&leaf))) {
-                        unsigned nResult = (unsigned char)FUN_1422ce0e0(FUN_140acd9e0(&leaf));
-                        FUN_140acd6e0(&leaf);
-                        FUN_140d03070(&root);
-                        return nResult;
-                    }
-                    FUN_140acd6e0(&leaf);
-                    FUN_140d03070(&root);
-                    return 0;
-                }
-                Unk_G9Val tmp;
-                Unk_G9Val* pNext = FUN_1413b19d0(FUN_140d03230(&root), &tmp, &m_children[i]);
-                FUN_1413b40b0(&root, pNext);
-                FUN_140d03070(&tmp);
-                if (FUN_140d03130(&root, 0)) {
-                    FUN_140d03070(&root);
-                    return 0;
-                }
-                if (!FUN_1422bfca0(FUN_140d03230(&root))) {
-                    FUN_140d03070(&root);
-                    return 0;
+                    if (!FUN_1422bfca0(leaf.FUN_140acd9e0()))
+                        return 0;
+                    return FUN_1422ce0e0(leaf.FUN_140acd9e0());
+                } else {
+                    root.FUN_1413b40b0(root.FUN_140d03230()->FUN_1413b19d0(m_children[i]));
+                    if (root.FUN_140d03130(0))
+                        return 0;
+                    if (!FUN_1422bfca0(root.FUN_140d03230()))
+                        return 0;
                 }
             }
         }
-        FUN_140d03070(&root);
     }
     return 0;
 }
@@ -845,24 +825,16 @@ int CGuideConditionContract::vfunc_3()
         pDlg = FUN_141386950(m_strDialog);
     if (!pDlg)
         return 0;
-    Unk_G9Val val;
-    FUN_1413b1a90(pDlg, &val, &m_strChild);
-    if (FUN_140d03130(&val, 0)) {
-        FUN_140d03070(&val);
+    Unk_G9Val val = static_cast<Unk_G9TreeDlg*>(pDlg)->FUN_1413b1a90(m_strChild);
+    if (val.FUN_140d03130(0))
         return 0;
-    }
-    if (!FUN_1422bfca0(FUN_140d03230(&val))) {
-        FUN_140d03070(&val);
+    if (!FUN_1422bfca0(val.FUN_140d03230()))
         return 0;
-    }
-    __int64 nLeft = pRec->m_nExpire - FUN_140869440();
+    const __int64& nLeft = pRec->m_nExpire - FUN_140869440();
     Unk_G9Span* pInfo = FUN_1413a52a0(&nLeft);
-    if (!pInfo || 7 < pInfo->m_nDays) {
-        FUN_140d03070(&val);
-        return 0;
-    }
-    FUN_140d03070(&val);
-    return 1;
+    if (pInfo && pInfo->m_nDays <= 7)
+        return 1;
+    return 0;
 }
 
 // @0x1413af560

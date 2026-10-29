@@ -423,7 +423,6 @@ bool MS2StandardMaterial::GeneratePixelShadeTree(Context& kContext, NiGPUProgram
 MS2_REPLACE_METHOD(0x14274E390, MS2StandardMaterial, GeneratePixelShadeTree, 2225, 0xFAB40BEF);
 
 //--------------------------------------------------------------------------------------------------
-// MS2-FUNCTIONAL: exe keeps the base result in edi with a different frame; same behaviour
 // @0x14274ec50
 NiFragmentMaterial::ReturnCode MS2StandardMaterial::GenerateShaderDescArray(
     NiMaterialDescriptor* pkMaterialDescriptor, RenderPassDescriptor* pkRenderPasses, unsigned int uiMaxCount,
@@ -431,33 +430,32 @@ NiFragmentMaterial::ReturnCode MS2StandardMaterial::GenerateShaderDescArray(
 {
     ReturnCode eResult = NiStandardMaterial::GenerateShaderDescArray(pkMaterialDescriptor, pkRenderPasses,
         uiMaxCount, uiCountAdded);
-    if (eResult != RC_SUCCESS)
-        return eResult;
-
-    NiStandardVertexProgramDescriptor* pkVertexDesc =
-        (NiStandardVertexProgramDescriptor*)pkRenderPasses[0].m_pkVertexDesc;
-    NiStandardPixelProgramDescriptor* pkPixelDesc =
-        (NiStandardPixelProgramDescriptor*)pkRenderPasses[0].m_pkPixelDesc;
-    pkVertexDesc->m_kIdentifier = "NiStandardVertexProgramDescriptor";
-    pkPixelDesc->m_kIdentifier = "NiStandardPixelProgramDescriptor";
-
-    unsigned int* puiMaterialBits = pkMaterialDescriptor->m_pkBitArray;
-
-    // characters with APPLYMODE set get a world view vector in both stages
-    if ((unsigned int)(m_eMaterialType - 1) <= 2 && ((puiMaterialBits[0] >> 9) & 1))
+    if (eResult == RC_SUCCESS)
     {
-        pkVertexDesc->m_pkBitArray[0] |= 0x10;  // OUTPUTWORLDVIEW
-        pkPixelDesc->m_pkBitArray[0] |= 0x10;   // WORLDVIEW
+        NiStandardMaterialDescriptor* pkRealMaterialDesc = (NiStandardMaterialDescriptor*)pkMaterialDescriptor;
+        NiStandardVertexProgramDescriptor* pkVertexDesc =
+            (NiStandardVertexProgramDescriptor*)pkRenderPasses[0].m_pkVertexDesc;
+        pkVertexDesc->m_kIdentifier = "NiStandardVertexProgramDescriptor";
+        NiStandardPixelProgramDescriptor* pkPixelDesc =
+            (NiStandardPixelProgramDescriptor*)pkRenderPasses[0].m_pkPixelDesc;
+        pkPixelDesc->m_kIdentifier = "NiStandardPixelProgramDescriptor";
+
+        // characters with APPLYMODE set get a world view vector in both stages
+        unsigned int uiApplyMode = pkRealMaterialDesc->GetAPPLYMODE();
+        if (uiApplyMode && (unsigned int)(m_eMaterialType - 1) <= 2)
+        {
+            pkVertexDesc->SetOUTPUTWORLDVIEW(1);
+            pkPixelDesc->SetWORLDVIEW(1);
+        }
+
+        // USERDEFINED02 -> index-2 bit 7 (UVSET10TEXOUTPUT in the stock layout): pass the second colour stream through
+        if (pkRealMaterialDesc->GetUSERDEFINED02())
+            pkVertexDesc->m_pkBitArray[2] |= 0x80;
+
+        // USERDEFINED00 -> GBNB_RESERVED5 bit 1: glow modifier
+        if (pkRealMaterialDesc->GetUSERDEFINED00())
+            pkPixelDesc->m_pkBitArray[4] |= 0x40;
     }
-
-    // USERDEFINED02 -> index-2 bit 7 (UVSET10TEXOUTPUT in the stock layout): pass the second colour stream through
-    if (puiMaterialBits[3] & 0x4000000)
-        pkVertexDesc->m_pkBitArray[2] |= 0x80;
-
-    // USERDEFINED00 -> GBNB_RESERVED5 bit 1: glow modifier
-    if (puiMaterialBits[3] & 0x1000000)
-        pkPixelDesc->m_pkBitArray[4] |= 0x40;
-
     return eResult;
 }
 MS2_REPLACE_METHOD(0x14274EC50, MS2StandardMaterial, GenerateShaderDescArray, 370, 0x956EA7EC);
@@ -586,7 +584,6 @@ bool MS2StandardMaterial::HandleCalculateFog(Context& kContext, NiMaterialResour
 MS2_REPLACE_METHOD(0x14274EF80, MS2StandardMaterial, HandleCalculateFog, 1085, 0x9B144A5A);
 
 //--------------------------------------------------------------------------------------------------
-// MS2-FUNCTIONAL: block layout differs (exe 1010 bytes); same nodes and bindings
 // @0x14274f3c0
 bool MS2StandardMaterial::HandleChaosRim(Context& kContext, NiMaterialResource*& pkColor,
     NiMaterialResource* pkWorldNormal, NiMaterialResource* pkViewVector)
@@ -596,7 +593,7 @@ bool MS2StandardMaterial::HandleChaosRim(Context& kContext, NiMaterialResource*&
     if (!pkDimmer)
         return false;
 
-    NiMaterialResource* pkDimmed = NULL;
+    NiMaterialResource* pkDimmed;
     if (!ScaleVector(kContext, pkColor, pkDimmer, pkDimmed))
         return false;
 
@@ -605,7 +602,8 @@ bool MS2StandardMaterial::HandleChaosRim(Context& kContext, NiMaterialResource*&
         return false;
     kContext.m_spConfigurator->AddNode(pkNode);
 
-    if (!kContext.m_spConfigurator->AddBinding(pkWorldNormal, pkNode->GetInputResourceByVariableName("WorldNrm")))
+    NiMaterialResource* pkIn = pkNode->GetInputResourceByVariableName("WorldNrm");
+    if (!kContext.m_spConfigurator->AddBinding(pkWorldNormal, pkIn))
         return false;
     if (!kContext.m_spConfigurator->AddBinding(pkViewVector,
         pkNode->GetInputResourceByVariableName("WorldViewVector")))
@@ -615,38 +613,37 @@ bool MS2StandardMaterial::HandleChaosRim(Context& kContext, NiMaterialResource*&
 
     NiMaterialResource* pkRes = AddOutputAttribute(kContext.m_spUniforms, "ChaosFresnelExponent",
         NiShaderAttributeDesc::ATTRIB_TYPE_FLOAT);
-    if (!pkRes || !kContext.m_spConfigurator->AddBinding(pkRes,
-        pkNode->GetInputResourceByVariableName("FresnelExponentIn")))
-    {
+    if (!pkRes)
         return false;
-    }
+    if (!kContext.m_spConfigurator->AddBinding(pkRes, pkNode->GetInputResourceByVariableName("FresnelExponentIn")))
+        return false;
 
     pkRes = AddOutputAttribute(kContext.m_spUniforms, "ChaosFresnelBoost", NiShaderAttributeDesc::ATTRIB_TYPE_FLOAT);
-    if (!pkRes || !kContext.m_spConfigurator->AddBinding(pkRes,
-        pkNode->GetInputResourceByVariableName("FresnelBoostIn")))
-    {
+    if (!pkRes)
         return false;
-    }
+    if (!kContext.m_spConfigurator->AddBinding(pkRes, pkNode->GetInputResourceByVariableName("FresnelBoostIn")))
+        return false;
 
     pkRes = AddOutputGlobal(kContext.m_spUniforms, "gakRimLightDirection", NiShaderAttributeDesc::ATTRIB_TYPE_POINT3);
-    if (!pkRes || !kContext.m_spConfigurator->AddBinding(pkRes,
-        pkNode->GetInputResourceByVariableName("RimLightDirIn")))
-    {
+    if (!pkRes)
         return false;
-    }
+    if (!kContext.m_spConfigurator->AddBinding(pkRes, pkNode->GetInputResourceByVariableName("RimLightDirIn")))
+        return false;
 
     NiMaterialResource* pkLightColor = AddOutputAttribute(kContext.m_spUniforms, "ChaosLightColor",
         NiShaderAttributeDesc::ATTRIB_TYPE_COLOR);
-    NiMaterialResource* pkLightRGB = NULL;
-    NiMaterialResource* pkLightAlpha = NULL;
-    if (!pkLightColor || !SplitColorAndOpacity(kContext, pkLightColor, pkLightRGB, pkLightAlpha))
+    if (!pkLightColor)
+        return false;
+    NiMaterialResource* pkLightRGB;
+    NiMaterialResource* pkLightAlpha;
+    if (!SplitColorAndOpacity(kContext, pkLightColor, pkLightRGB, pkLightAlpha))
         return false;
 
-    NiMaterialResource* pkRim = NULL;
+    NiMaterialResource* pkRim;
     if (!ScaleVector(kContext, pkLightRGB, pkNode->GetOutputResourceByVariableName("RimIntensity"), pkRim))
         return false;
 
-    return AddVector(kContext, pkDimmed, pkRim, pkColor);
+    return AddVector(kContext, pkDimmed, pkRim, pkColor) != 0;
 }
 MS2_REPLACE_METHOD(0x14274F3C0, MS2StandardMaterial, HandleChaosRim, 1010, 0x36EC674C);
 
@@ -796,7 +793,6 @@ bool MS2StandardMaterial::HandleMS2FinalPixelOutputs(Context& kContext, NiStanda
 MS2_REPLACE_METHOD(0x14274FD00, MS2StandardMaterial, HandleMS2FinalPixelOutputs, 774, 0x398B4BC0);
 
 //--------------------------------------------------------------------------------------------------
-// MS2-FUNCTIONAL: temporary NiFixedString/binding order differs; same outputs bound
 // @0x142750010
 bool MS2StandardMaterial::HandleFinalVertexOutputs(Context& kContext, NiStandardVertexProgramDescriptor* pkVertDesc,
     NiMaterialResource* pkWorldPos, NiMaterialResource* pkWorldNormal, NiMaterialResource* pkWorldReflect,
@@ -808,41 +804,45 @@ bool MS2StandardMaterial::HandleFinalVertexOutputs(Context& kContext, NiStandard
     if (pkVertDesc->GetHEIGHTFOG() && !HandleCalculateHeightFog(kContext, pkWorldPos))
         return false;
 
-    if (!HandleCalculateFog(kContext, pkViewPos, (Fog)pkVertDesc->GetFOGTYPE()))
+    Fog eFogType = (Fog)pkVertDesc->GetFOGTYPE();
+    if (!HandleCalculateFog(kContext, pkViewPos, eFogType))
         return false;
 
     // index-2 bit 7 (set from USERDEFINED02 in GenerateShaderDescArray): multiply the vertex colours by the second
     // colour stream
-    if (!(pkVertDesc->m_pkBitArray[2] & 0x80))
-        return true;
-
-    NiMaterialResource* pkBrightness = kContext.m_spInputs->AddOutputResource("float4", "Color", "",
-        "VertexBrightness");
-    NiMaterialResource* pkVertIn = kContext.m_spInputs->GetOutputResourceByVariableName("VertexColors");
-    NiMaterialResource* pkVertOut = kContext.m_spOutputs->GetInputResourceByVariableName("VertexColors");
-
-    if (!pkVertIn || !pkVertOut)
+    if (pkVertDesc->m_pkBitArray[2] & 0x80)
     {
-        if (!pkVertOut)
-            pkVertOut = kContext.m_spOutputs->AddInputResource("float4", "Color", "", "VertexColors");
-        return kContext.m_spConfigurator->AddBinding(pkBrightness, pkVertOut);
-    }
+        NiMaterialResource* pkBrightness = kContext.m_spInputs->AddOutputResource("float4", "Color", "",
+            "VertexBrightness");
+        NiMaterialResource* pkVertIn = kContext.m_spInputs->GetOutputResourceByVariableName("VertexColors");
+        NiMaterialResource* pkVertOut = kContext.m_spOutputs->GetInputResourceByVariableName("VertexColors");
 
-    for (unsigned int ui = 0; ui < kContext.m_spConfigurator->GetBindingCount(); ui++)
-    {
-        NiMaterialResourceBinding* pkBinding = kContext.m_spConfigurator->GetBinding(ui);
-        if (pkBinding->GetDestinationResource() == pkVertOut)
+        if (pkVertIn && pkVertOut)
         {
-            kContext.m_spConfigurator->RemoveBinding(pkBinding);
-            break;
+            for (unsigned int ui = 0; ui < kContext.m_spConfigurator->GetBindingCount(); ui++)
+            {
+                NiMaterialResourceBinding* pkBinding = kContext.m_spConfigurator->GetBinding(ui);
+                if (pkBinding->GetDestinationResource() == pkVertOut)
+                {
+                    kContext.m_spConfigurator->RemoveBinding(pkBinding);
+                    break;
+                }
+            }
+
+            NiMaterialNode* pkNode = GetAttachableNodeFromLibrary("MultiplyFloat4");
+            kContext.m_spConfigurator->AddNode(pkNode);
+            kContext.m_spConfigurator->AddBinding(pkBrightness, pkNode->GetInputResourceByVariableName("V1"));
+            kContext.m_spConfigurator->AddBinding(pkVertIn, pkNode->GetInputResourceByVariableName("V2"));
+            kContext.m_spConfigurator->AddBinding(pkNode->GetOutputResourceByVariableName("Output"), pkVertOut);
+        }
+        else
+        {
+            if (!pkVertOut)
+                pkVertOut = kContext.m_spOutputs->AddInputResource("float4", "Color", "", "VertexColors");
+            kContext.m_spConfigurator->AddBinding(pkBrightness, pkVertOut);
         }
     }
 
-    NiMaterialNode* pkNode = GetAttachableNodeFromLibrary("MultiplyFloat4");
-    kContext.m_spConfigurator->AddNode(pkNode);
-    kContext.m_spConfigurator->AddBinding(pkBrightness, pkNode->GetInputResourceByVariableName("V1"));
-    kContext.m_spConfigurator->AddBinding(pkVertIn, pkNode->GetInputResourceByVariableName("V2"));
-    kContext.m_spConfigurator->AddBinding(pkNode->GetOutputResourceByVariableName("Output"), pkVertOut);
     return true;
 }
 MS2_REPLACE_METHOD(0x142750010, MS2StandardMaterial, HandleFinalVertexOutputs, 961, 0xC45FCA5E);
@@ -1093,7 +1093,6 @@ bool MS2StandardMaterial::HandleMS2Light(Context& kContext, unsigned int, LightT
 MS2_REPLACE_METHOD(0x1427503E0, MS2StandardMaterial, HandleMS2Light, 3972, 0x67C3914D);
 
 //--------------------------------------------------------------------------------------------------
-// MS2-FUNCTIONAL: register allocation and stack slots differ; same lighting flow
 // @0x142751370
 bool MS2StandardMaterial::HandleMS2Lighting(Context& kContext, NiUInt32 uiShadowAtlasCells, NiUInt32 uiPSSMWhichLight,
     bool bSliceTransitions, bool bSpecular, unsigned int uiNumPoint, unsigned int uiNumDirectional,
@@ -1102,13 +1101,14 @@ bool MS2StandardMaterial::HandleMS2Lighting(Context& kContext, NiUInt32 uiShadow
     NiMaterialResource* pkSpecularPower, NiMaterialResource*& pkAmbientAccum, NiMaterialResource*& pkDiffuseAccum,
     NiMaterialResource*& pkSpecularAccum, NiMaterialResource*& pkLightSpecular, NiMaterialResource* pkHairTangent) {
     unsigned int uiLight = 0;
+    NiMaterialResource* pkShadow = NULL;
     NiMaterialResource* pkThisLightSpecular = NULL;
 
     unsigned int uiLightTypeCount = 0;
     unsigned int uiShadowLightTypeCount = 0;
     for (unsigned int ui = 0; ui < uiNumPoint; ui++)
     {
-        NiMaterialResource* pkShadow = NULL;
+        pkShadow = NULL;
         unsigned int uiMask = NiTGetBitMask<unsigned int>(uiLight, 1);
         bool bShadow = NiTGetBit<unsigned int>(uiShadowBitfield, uiMask);
         if (bShadow && NiShadowManager::GetShadowManager())
@@ -1144,7 +1144,7 @@ bool MS2StandardMaterial::HandleMS2Lighting(Context& kContext, NiUInt32 uiShadow
     for (unsigned int ui = 0; ui < uiNumDirectional; ui++)
     {
         pkThisLightSpecular = NULL;
-        NiMaterialResource* pkShadow = NULL;
+        pkShadow = NULL;
         unsigned int uiMask = NiTGetBitMask<unsigned int>(uiLight, 1);
         bool bShadow = NiTGetBit<unsigned int>(uiShadowBitfield, uiMask);
         if (bShadow && NiShadowManager::GetShadowManager())
@@ -1176,15 +1176,15 @@ bool MS2StandardMaterial::HandleMS2Lighting(Context& kContext, NiUInt32 uiShadow
             }
             uiLightTypeCount++;
         }
+        uiLight++;
         if (ui == 0)
             pkLightSpecular = pkThisLightSpecular;
-        uiLight++;
     }
 
     uiLightTypeCount = uiShadowLightTypeCount = 0;
     for (unsigned int ui = 0; ui < uiNumSpot; ui++)
     {
-        NiMaterialResource* pkShadow = NULL;
+        pkShadow = NULL;
         unsigned int uiMask = NiTGetBitMask<unsigned int>(uiLight, 1);
         bool bShadow = NiTGetBit<unsigned int>(uiShadowBitfield, uiMask);
         if (bShadow && NiShadowManager::GetShadowManager())
@@ -1220,7 +1220,6 @@ bool MS2StandardMaterial::HandleMS2Lighting(Context& kContext, NiUInt32 uiShadow
 MS2_REPLACE_METHOD(0x142751370, MS2StandardMaterial, HandleMS2Lighting, 1830, 0x637A91C6);
 
 //--------------------------------------------------------------------------------------------------
-// MS2-FUNCTIONAL: stack slot assignment differs (16 bytes); same lighting flow
 // @0x142751aa0
 bool MS2StandardMaterial::HandleLighting(Context& kContext, NiUInt32 uiShadowAtlasCells, NiUInt32 uiPSSMWhichLight,
     bool bSliceTransitions, bool bSpecular, unsigned int uiNumPoint, unsigned int uiNumDirectional,
@@ -1229,13 +1228,14 @@ bool MS2StandardMaterial::HandleLighting(Context& kContext, NiUInt32 uiShadowAtl
     NiMaterialResource* pkSpecularPower, NiMaterialResource*& pkAmbientAccum, NiMaterialResource*& pkDiffuseAccum,
     NiMaterialResource*& pkSpecularAccum) {
     unsigned int uiLight = 0;
+    NiMaterialResource* pkShadow = NULL;
     NiMaterialResource* pkLightSpecular = NULL;
 
     unsigned int uiLightTypeCount = 0;
     unsigned int uiShadowLightTypeCount = 0;
     for (unsigned int ui = 0; ui < uiNumPoint; ui++)
     {
-        NiMaterialResource* pkShadow = NULL;
+        pkShadow = NULL;
         unsigned int uiMask = NiTGetBitMask<unsigned int>(uiLight, 1);
         bool bShadow = NiTGetBit<unsigned int>(uiShadowBitfield, uiMask);
         if (bShadow && NiShadowManager::GetShadowManager())
@@ -1269,7 +1269,7 @@ bool MS2StandardMaterial::HandleLighting(Context& kContext, NiUInt32 uiShadowAtl
     uiLightTypeCount = uiShadowLightTypeCount = 0;
     for (unsigned int ui = 0; ui < uiNumDirectional; ui++)
     {
-        NiMaterialResource* pkShadow = NULL;
+        pkShadow = NULL;
         unsigned int uiMask = NiTGetBitMask<unsigned int>(uiLight, 1);
         bool bShadow = NiTGetBit<unsigned int>(uiShadowBitfield, uiMask);
         if (bShadow && NiShadowManager::GetShadowManager())
@@ -1307,7 +1307,7 @@ bool MS2StandardMaterial::HandleLighting(Context& kContext, NiUInt32 uiShadowAtl
     uiLightTypeCount = uiShadowLightTypeCount = 0;
     for (unsigned int ui = 0; ui < uiNumSpot; ui++)
     {
-        NiMaterialResource* pkShadow = NULL;
+        pkShadow = NULL;
         unsigned int uiMask = NiTGetBitMask<unsigned int>(uiLight, 1);
         bool bShadow = NiTGetBit<unsigned int>(uiShadowBitfield, uiMask);
         if (bShadow && NiShadowManager::GetShadowManager())
@@ -1475,7 +1475,7 @@ bool MS2StandardMaterial::HandlePositionFragment(Context& kContext, TransformTyp
 MS2_REPLACE_METHOD(0x1427524D0, MS2StandardMaterial, HandlePositionFragment, 2735, 0x5D9A57BC);
 
 //--------------------------------------------------------------------------------------------------
-// MS2-FUNCTIONAL: register allocation and stack slots differ; same texture application
+// MS2-FUNCTIONAL: two stack slots and the zero register differ; same texture application
 // @0x142752f80
 bool MS2StandardMaterial::HandleMS2PostLightTextureApplication(Context& kContext,
     NiStandardPixelProgramDescriptor* pkPixDesc, NiMaterialResource*& pkWorldNormal, NiMaterialResource* pkViewVector,
@@ -1536,13 +1536,16 @@ bool MS2StandardMaterial::HandleMS2PostLightTextureApplication(Context& kContext
     if (pkPixDesc->GetGLOWMAPCOUNT() && !m_bChaos)
     {
         NiMaterialResource* pkUV = FindUVSetIndexForTextureEnum(MAP_GLOW, pkPixDesc, apkUVSets);
-        bool bResult;
         if (pkPixDesc->GetGBNB_RESERVED5() & 2)  // glow modifier (USERDEFINED00)
-            bResult = HandleGlowModifier(kContext, pkUV, pkDiffuseAccum, pkSpecularAccum);
+        {
+            if (!HandleGlowModifier(kContext, pkUV, pkDiffuseAccum, pkSpecularAccum))
+                return false;
+        }
         else
-            bResult = HandleGlowMap(kContext, pkUV, pkDiffuseAccum, pkSpecularAccum);
-        if (!bResult)
-            return false;
+        {
+            if (!HandleGlowMap(kContext, pkUV, pkDiffuseAccum, pkSpecularAccum))
+                return false;
+        }
         uiApplied++;
     }
 
@@ -1627,7 +1630,6 @@ bool MS2StandardMaterial::HandleMS2TextureEffectUVSets(Context& kContext, NiMate
 MS2_REPLACE_METHOD(0x1427533C0, MS2StandardMaterial, HandleMS2TextureEffectUVSets, 550, 0x47E009FF);
 
 //--------------------------------------------------------------------------------------------------
-// MS2-FUNCTIONAL: register allocation and EH unwind states differ; same material/lighting nodes
 // @0x1427535f0
 bool MS2StandardMaterial::HandleVertexLightingAndMaterials(Context& kContext,
     NiStandardVertexProgramDescriptor* pkVertexDesc, NiMaterialResource* pkWorldPos,
@@ -1643,109 +1645,120 @@ bool MS2StandardMaterial::HandleVertexLightingAndMaterials(Context& kContext,
     LightingModeEnum eLightingMode = (LightingModeEnum)pkVertexDesc->GetLIGHTINGMODE();
     ApplyMode eApplyMode = (ApplyMode)pkVertexDesc->GetAPPLYMODE();
 
-    if (eApplyMode == APPLY_REPLACE)
-        return true;
-
-    if (uiNumPerVertexLights == 0 && !bVertexOnlyLights)
+    if (eApplyMode != APPLY_REPLACE)
     {
-        // only pixel lights
-        bool bVertexColors = pkVertexDesc->GetVERTEXCOLORS() == VC_EXISTS;
-        if (bVertexColors && (eAmbDiffEmissive == ADE_EMISSIVE ||
-            ((eAmbDiffEmissive == ADE_AMB_DIFF || eAmbDiffEmissive == (AmbDiffEmissiveEnum)3) &&
-            eLightingMode == LIGHTING_E_A_D)))
+        if (uiNumPerVertexLights != 0 || bVertexOnlyLights)
         {
-            NiMaterialResource* pkVertIn = kContext.m_spInputs->AddOutputResource("float4", "Color", "",
-                "VertexColors");
-            NiMaterialResource* pkVertOut = kContext.m_spOutputs->AddInputResource(pkVertIn->GetType(),
-                pkVertIn->GetSemantic(), pkVertIn->GetLabel(), "VertexColors");
-            kContext.m_spConfigurator->AddBinding(pkVertIn, pkVertOut);
+            NiMaterialResource* pkMatDiffuse = NULL;
+            NiMaterialResource* pkMatSpecular = NULL;
+            NiMaterialResource* pkSpecularPower = NULL;
+            NiMaterialResource* pkMatAmbient = NULL;
+            NiMaterialResource* pkMatEmissive = NULL;
+            NiMaterialResource* pkOpacityAccum = NULL;
+
+            if (bVertexOnlyLights)
+            {
+                if (!HandleInitialSpecAmbDiffEmissiveColor(kContext, bSpecularOn, eAmbDiffEmissive, eLightingMode,
+                    pkMatDiffuse, pkMatSpecular, pkSpecularPower, pkMatAmbient, pkMatEmissive, pkOpacityAccum))
+                {
+                    return false;
+                }
+            }
+
+            NiMaterialResource* pkDiffuseAccum = NULL;
+            NiMaterialResource* pkSpecularAccum = NULL;
+            NiMaterialResource* pkAmbientAccum = NULL;
+
+            if (eLightingMode == LIGHTING_E_A_D)
+            {
+                pkAmbientAccum = AddOutputPredefined(kContext.m_spUniforms,
+                    NiShaderConstantMap::SCM_DEF_AMBIENTLIGHT);
+
+                if (pkWorldNormal && !NormalizeVector(kContext, pkWorldNormal))
+                    return false;
+                if (pkWorldView && !NormalizeVector(kContext, pkWorldView))
+                    return false;
+
+                // vertex lighting has no shadow maps, so no shadow atlas
+                NiUInt32 uiShadowAtlasCells = 1;
+                bool bSliceTransitions = false;
+
+                if (!HandleLighting(kContext, uiShadowAtlasCells, bSliceTransitions, 0, bSpecularOn, uiPointLights,
+                    uiDirLights, uiSpotLights, 0, 0, pkWorldPos, pkWorldNormal, pkWorldView, pkSpecularPower,
+                    pkAmbientAccum, pkDiffuseAccum, pkSpecularAccum))
+                {
+                    return false;
+                }
+            }
+
+            if (bVertexOnlyLights)
+            {
+                NiMaterialResource* pkDiffuseCoeff = NULL;
+                NiMaterialResource* pkSpecularCoeff = NULL;
+
+                if (!HandleShadingCoefficients(kContext, pkMatEmissive, pkMatDiffuse, pkMatAmbient, pkMatSpecular,
+                    pkSpecularAccum, pkDiffuseAccum, pkAmbientAccum, pkDiffuseCoeff, pkSpecularCoeff))
+                {
+                    return false;
+                }
+
+                NiMaterialNode* pkDiffuseCombineNode = GetAttachableNodeFromLibrary("CompositeFinalRGBAColor");
+                kContext.m_spConfigurator->AddNode(pkDiffuseCombineNode);
+
+                kContext.m_spConfigurator->AddBinding(pkDiffuseCoeff, "FinalColor", pkDiffuseCombineNode);
+                if (pkOpacityAccum)
+                    kContext.m_spConfigurator->AddBinding(pkOpacityAccum, "FinalOpacity", pkDiffuseCombineNode);
+
+                NiMaterialResource* pkDiffuseColorAlpha =
+                    pkDiffuseCombineNode->GetOutputResourceByVariableName("OutputColor");
+                NiMaterialResource* pkVertOut = kContext.m_spOutputs->AddInputResource(
+                    pkDiffuseColorAlpha->GetType(), "TexCoord", pkDiffuseColorAlpha->GetLabel(), "DiffuseAccum");
+                kContext.m_spConfigurator->AddBinding(pkDiffuseColorAlpha, pkVertOut);
+
+                if (bSpecularOn)
+                {
+                    NiMaterialResource* pkVertOutRes = kContext.m_spOutputs->AddInputResource(
+                        pkSpecularCoeff->GetType(), "TexCoord", pkSpecularCoeff->GetLabel(), "SpecularAccum");
+                    kContext.m_spConfigurator->AddBinding(pkSpecularCoeff, pkVertOutRes);
+                }
+            }
+            else
+            {
+                // Gouraud terms for the pixel stage; the ambient output keeps the diffuse resource's type and label
+                if (pkDiffuseAccum)
+                {
+                    NiMaterialResource* pkVertOut = kContext.m_spOutputs->AddInputResource(
+                        pkDiffuseAccum->GetType(), "TexCoord", pkDiffuseAccum->GetLabel(), "DiffuseAccum");
+                    kContext.m_spConfigurator->AddBinding(pkDiffuseAccum, pkVertOut);
+                }
+                if (pkAmbientAccum)
+                {
+                    NiMaterialResource* pkVertOut = kContext.m_spOutputs->AddInputResource(
+                        pkDiffuseAccum->GetType(), "TexCoord", pkDiffuseAccum->GetLabel(), "AmbientAccum");
+                    kContext.m_spConfigurator->AddBinding(pkAmbientAccum, pkVertOut);
+                }
+                if (pkSpecularAccum)
+                {
+                    NiMaterialResource* pkVertOut = kContext.m_spOutputs->AddInputResource(
+                        pkSpecularAccum->GetType(), "TexCoord", pkSpecularAccum->GetLabel(), "SpecularAccum");
+                    kContext.m_spConfigurator->AddBinding(pkSpecularAccum, pkVertOut);
+                }
+            }
         }
-        return true;
-    }
-
-    NiMaterialResource* pkMatDiffuse = NULL;
-    NiMaterialResource* pkMatSpecular = NULL;
-    NiMaterialResource* pkSpecularPower = NULL;
-    NiMaterialResource* pkMatAmbient = NULL;
-    NiMaterialResource* pkMatEmissive = NULL;
-    NiMaterialResource* pkOpacityAccum = NULL;
-
-    if (bVertexOnlyLights && !HandleInitialSpecAmbDiffEmissiveColor(kContext, bSpecularOn, eAmbDiffEmissive,
-        eLightingMode, pkMatDiffuse, pkMatSpecular, pkSpecularPower, pkMatAmbient, pkMatEmissive, pkOpacityAccum))
-    {
-        return false;
-    }
-
-    NiMaterialResource* pkDiffuseAccum = NULL;
-    NiMaterialResource* pkSpecularAccum = NULL;
-    NiMaterialResource* pkAmbientAccum = NULL;
-
-    if (eLightingMode == LIGHTING_E_A_D)
-    {
-        pkAmbientAccum = AddOutputPredefined(kContext.m_spUniforms, NiShaderConstantMap::SCM_DEF_AMBIENTLIGHT);
-
-        if (pkWorldNormal && !NormalizeVector(kContext, pkWorldNormal))
-            return false;
-        if (pkWorldView && !NormalizeVector(kContext, pkWorldView))
-            return false;
-
-        if (!HandleLighting(kContext, 1, 0, false, bSpecularOn, uiPointLights, uiDirLights, uiSpotLights, 0, 0,
-            pkWorldPos, pkWorldNormal, pkWorldView, pkSpecularPower, pkAmbientAccum, pkDiffuseAccum,
-            pkSpecularAccum))
+        else
         {
-            return false;
-        }
-    }
-
-    if (bVertexOnlyLights)
-    {
-        NiMaterialResource* pkDiffuseCoeff = NULL;
-        NiMaterialResource* pkSpecularCoeff = NULL;
-        if (!HandleShadingCoefficients(kContext, pkMatEmissive, pkMatDiffuse, pkMatAmbient, pkMatSpecular,
-            pkSpecularAccum, pkDiffuseAccum, pkAmbientAccum, pkDiffuseCoeff, pkSpecularCoeff))
-        {
-            return false;
-        }
-
-        NiMaterialNode* pkDiffuseCombineNode = GetAttachableNodeFromLibrary("CompositeFinalRGBAColor");
-        kContext.m_spConfigurator->AddNode(pkDiffuseCombineNode);
-        kContext.m_spConfigurator->AddBinding(pkDiffuseCoeff, "FinalColor", pkDiffuseCombineNode);
-        if (pkOpacityAccum)
-            kContext.m_spConfigurator->AddBinding(pkOpacityAccum, "FinalOpacity", pkDiffuseCombineNode);
-
-        NiMaterialResource* pkDiffuseColorAlpha =
-            pkDiffuseCombineNode->GetOutputResourceByVariableName("OutputColor");
-        NiMaterialResource* pkVertOut = kContext.m_spOutputs->AddInputResource(pkDiffuseColorAlpha->GetType(),
-            "TexCoord", pkDiffuseColorAlpha->GetLabel(), "DiffuseAccum");
-        kContext.m_spConfigurator->AddBinding(pkDiffuseColorAlpha, pkVertOut);
-
-        if (bSpecularOn)
-        {
-            NiMaterialResource* pkVertOutRes = kContext.m_spOutputs->AddInputResource(pkSpecularCoeff->GetType(),
-                "TexCoord", pkSpecularCoeff->GetLabel(), "SpecularAccum");
-            kContext.m_spConfigurator->AddBinding(pkSpecularCoeff, pkVertOutRes);
-        }
-    }
-    else
-    {
-        // Gouraud terms for the pixel stage; the ambient output keeps the diffuse resource's type and label
-        if (pkDiffuseAccum)
-        {
-            NiMaterialResource* pkVertOut = kContext.m_spOutputs->AddInputResource(pkDiffuseAccum->GetType(),
-                "TexCoord", pkDiffuseAccum->GetLabel(), "DiffuseAccum");
-            kContext.m_spConfigurator->AddBinding(pkDiffuseAccum, pkVertOut);
-        }
-        if (pkAmbientAccum)
-        {
-            NiMaterialResource* pkVertOut = kContext.m_spOutputs->AddInputResource(pkDiffuseAccum->GetType(),
-                "TexCoord", pkDiffuseAccum->GetLabel(), "AmbientAccum");
-            kContext.m_spConfigurator->AddBinding(pkAmbientAccum, pkVertOut);
-        }
-        if (pkSpecularAccum)
-        {
-            NiMaterialResource* pkVertOut = kContext.m_spOutputs->AddInputResource(pkSpecularAccum->GetType(),
-                "TexCoord", pkSpecularAccum->GetLabel(), "SpecularAccum");
-            kContext.m_spConfigurator->AddBinding(pkSpecularAccum, pkVertOut);
+            // only pixel lights
+            bool bVertexColors = pkVertexDesc->GetVERTEXCOLORS() == VC_EXISTS;
+            if (bVertexColors && (eAmbDiffEmissive == ADE_EMISSIVE ||
+                ((eAmbDiffEmissive == ADE_AMB_DIFF || eAmbDiffEmissive == (AmbDiffEmissiveEnum)3) &&
+                eLightingMode == LIGHTING_E_A_D)))
+            {
+                NiMaterialResource* pkVertIn = kContext.m_spInputs->AddOutputResource("float4", "Color", "",
+                    "VertexColors");
+                NiMaterialResource* pkVertOut = kContext.m_spOutputs->AddInputResource(pkVertIn->GetType(),
+                    pkVertIn->GetSemantic(), pkVertIn->GetLabel(), "VertexColors");
+                kContext.m_spConfigurator->AddBinding(pkVertIn, pkVertOut);
+            }
         }
     }
 
@@ -1754,7 +1767,6 @@ bool MS2StandardMaterial::HandleVertexLightingAndMaterials(Context& kContext,
 MS2_REPLACE_METHOD(0x1427535F0, MS2StandardMaterial, HandleVertexLightingAndMaterials, 1995, 0xD8B4C67C);
 
 //--------------------------------------------------------------------------------------------------
-// MS2-FUNCTIONAL: register allocation differs; same UV set outputs
 // @0x142753dc0
 bool MS2StandardMaterial::HandleMS2VertexUVSets(Context& kContext, NiStandardVertexProgramDescriptor* pkVertDesc,
     NiMaterialResource* pkWorldPos, NiMaterialResource* pkWorldNormal, NiMaterialResource* pkWorldReflect,
@@ -1767,10 +1779,16 @@ bool MS2StandardMaterial::HandleMS2VertexUVSets(Context& kContext, NiStandardVer
     if (!HandleTextureUVSets(kContext, pkVertDesc, apkOutputUVs, STANDARD_PIPE_MAX_UVS_FOR_TEXTURES, uiNextUVSet))
         return false;
 
+    unsigned int uiProjLightMapCount = pkVertDesc->GetPROJLIGHTMAPCOUNT();
+    unsigned int uiProjLightMapTypes = pkVertDesc->GetPROJLIGHTMAPTYPES();
+    unsigned int uiProjShadowMapCount = pkVertDesc->GetPROJSHADOWMAPCOUNT();
+    unsigned int uiProjShadowMapTypes = pkVertDesc->GetPROJSHADOWMAPTYPES();
+
+    TexEffectType eEnvMapType = (TexEffectType)pkVertDesc->GetENVMAPTYPE();
+
     if (!HandleMS2TextureEffectUVSets(kContext, apkOutputUVs, STANDARD_PIPE_MAX_UVS_FOR_TEXTURES, pkWorldPos,
-        pkWorldNormal, pkWorldReflect, (TexEffectType)pkVertDesc->GetENVMAPTYPE(),
-        pkVertDesc->GetPROJLIGHTMAPCOUNT(), pkVertDesc->GetPROJLIGHTMAPTYPES(),
-        pkVertDesc->GetPROJSHADOWMAPCOUNT(), pkVertDesc->GetPROJSHADOWMAPTYPES(), uiNextUVSet, pkProjectedPos))
+        pkWorldNormal, pkWorldReflect, eEnvMapType, uiProjLightMapCount, uiProjLightMapTypes,
+        uiProjShadowMapCount, uiProjShadowMapTypes, uiNextUVSet, pkProjectedPos))
     {
         return false;
     }

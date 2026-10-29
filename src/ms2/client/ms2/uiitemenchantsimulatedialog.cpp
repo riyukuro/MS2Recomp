@@ -47,7 +47,6 @@ CString UIItemEnchantSimulateDialog::GetTypeName()
 MS2_REPLACE_METHOD(0x1412D1450, UIItemEnchantSimulateDialog, GetTypeName, 61, 0x33EFD67E);
 
 // @0x1412d14a0
-// MS2-FUNCTIONAL: behaviour-equivalent; the exe keeps each ASData string / packet read in its own temp slot, branch layout and EH unwind map differ
 int UIItemEnchantSimulateDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs)
 {
     if (UIDialog::vfunc_28(szMethod, pArgs, nArgs) != 0)
@@ -63,21 +62,20 @@ int UIItemEnchantSimulateDialog::vfunc_28(const char* szMethod, const Scaleform:
                 packet.WriteUInt8(0xd);
                 packet.WriteInt32(n1);
                 packet.WriteInt32(n2);
-                short s3 = (short)n3;
-                packet.WriteInt16(s3);
+                packet.WriteInt16((short)n3);
                 FUN_140710590(packet);
             }
         }
         return 1;
     }
-    if (_stricmp("OnEnchant", szMethod) == 0) {
+    else if (_stricmp("OnEnchant", szMethod) == 0) {
         ASData args;
         if (args.FUN_1422b9620(pArgs, nArgs) != 0) {
             int n1 = atoi(args.FUN_1422b8d30());
             int n2 = atoi(args.FUN_1422b8d30());
             int n3 = atoi(args.FUN_1422b8d30());
-            atoi(args.FUN_1422b8d30());
-            atoi(args.FUN_1422b8d30());
+            int n4 = atoi(args.FUN_1422b8d30());
+            int n5 = atoi(args.FUN_1422b8d30());
             int n6 = atoi(args.FUN_1422b8d30());
             if (n1 != 0 && n2 != 0 && n3 != 0) {
                 {
@@ -89,8 +87,7 @@ int UIItemEnchantSimulateDialog::vfunc_28(const char* szMethod, const Scaleform:
                 packet.WriteUInt8(0xe);
                 packet.WriteInt32(n1);
                 packet.WriteInt32(n2);
-                short s3 = (short)n3;
-                packet.WriteInt16(s3);
+                packet.WriteInt16((short)n3);
                 packet.WriteInt32(n6);
                 FUN_140710590(packet);
             }
@@ -101,39 +98,38 @@ int UIItemEnchantSimulateDialog::vfunc_28(const char* szMethod, const Scaleform:
 MS2_REPLACE_METHOD(0x1412D14A0, UIItemEnchantSimulateDialog, vfunc_28, 1261, 0x323FC846);
 
 // @0x1412d19a0
-// MS2-FUNCTIONAL: behaviour-equivalent; the exe keeps temps for the if-with-declaration handles and string temporaries; frame layout and EH unwind map differ
 void UIItemEnchantSimulateDialog::vfunc_79(void* p)
 {
-    CInPacket* pPacket = static_cast<CInPacket*>(p);
     UIDialog::vfunc_79(p);
-    if (pPacket->FUN_14070fe80() != 0x97)
-        return;
-    unsigned char nKind = pPacket->ReadUInt8();
-    if (nKind == 0xd) {
-        float fSuccess = pPacket->ReadFloat();
-        float fSkipped = pPacket->ReadFloat();
-        float fReset = pPacket->ReadFloat();
-        CStringW strIngredient = pPacket->ReadUnicodeString();
-        CStringW strReturn = pPacket->ReadUnicodeString();
-        if (MS2Ptr<ASTextField> spText = FUN_140bb4cf0("m_tfSuccess"))
-            spText->FUN_1422c4cd0(FUN_1406329c0(L"{0}", &fSuccess));
-        if (MS2Ptr<ASTextField> spText = FUN_140bb4cf0("m_tfReset"))
-            spText->FUN_1422c4cd0(FUN_1406329c0(L"{0}", &fReset));
-        if (MS2Ptr<ASTextField> spText = FUN_140bb4cf0("m_tfReturn"))
-            spText->FUN_1422c4cd0(strReturn);
-        if (MS2Ptr<ASTextField> spText = FUN_140bb4cf0("m_tfIngredient"))
-            spText->FUN_1422c4cd0(strIngredient);
-    } else if (nKind == 0xe) {
-        unsigned int nSuccess = pPacket->ReadInt32();
-        unsigned int nBroken = pPacket->ReadInt32();
-        unsigned int nDown = pPacket->ReadInt32();
-        CStringW strIngredient = pPacket->ReadUnicodeString();
-        CStringW strReturn = pPacket->ReadUnicodeString();
-        CStringW strResult = StringFormat(L"{0}번 성공\n{1}번 손상\n{2}번 하락\n", nSuccess, nBroken, nDown);
-        strResult += FUN_1401e8510(L"총 재료 갯수 : {0}\n", strIngredient);
-        strResult += FUN_1401e8510(L"총 위로금 갯수 : {0}\n", strReturn);
-        if (MS2Ptr<ASTextField> spText = FUN_140bb4cf0("m_result"))
-            spText->FUN_1422c4cd0(strResult);
+    if (static_cast<CInPacket*>(p)->FUN_14070fe80() == 0x97)
+    {
+        unsigned char nKind = static_cast<CInPacket*>(p)->ReadUInt8();
+        if (nKind == 0xd) {
+            float fSuccess = static_cast<CInPacket*>(p)->ReadFloat();
+            float fSkipped = static_cast<CInPacket*>(p)->ReadFloat();
+            float fReset = static_cast<CInPacket*>(p)->ReadFloat();
+            CStringW strIngredient = static_cast<CInPacket*>(p)->ReadUnicodeString();
+            CStringW strReturn = static_cast<CInPacket*>(p)->ReadUnicodeString();
+            if (MS2Ptr<ASTextField> spText = FUN_140bb4cf0("m_tfSuccess"))
+                spText->FUN_1422c4cd0(FUN_1406329c0(L"{0}", &fSuccess));
+            if (MS2Ptr<ASTextField> spText = FUN_140bb4cf0("m_tfReset"))
+                spText->FUN_1422c4cd0(FUN_1406329c0(L"{0}", &fReset));
+            if (MS2Ptr<ASTextField> spText = FUN_140bb4cf0("m_tfReturn"))
+                spText->FUN_1422c4cd0(strReturn);
+            if (MS2Ptr<ASTextField> spText = FUN_140bb4cf0("m_tfIngredient"))
+                spText->FUN_1422c4cd0(strIngredient);
+        } else if (nKind == 0xe) {
+            unsigned int nSuccess = static_cast<CInPacket*>(p)->ReadInt32();
+            unsigned int nBroken = static_cast<CInPacket*>(p)->ReadInt32();
+            unsigned int nDown = static_cast<CInPacket*>(p)->ReadInt32();
+            CStringW strIngredient = static_cast<CInPacket*>(p)->ReadUnicodeString();
+            CStringW strReturn = static_cast<CInPacket*>(p)->ReadUnicodeString();
+            CStringW strResult = StringFormat(L"{0}번 성공\n{1}번 손상\n{2}번 하락\n", nSuccess, nBroken, nDown);
+            strResult += FUN_1401e8510(L"총 재료 갯수 : {0}\n", strIngredient);
+            strResult += FUN_1401e8510(L"총 위로금 갯수 : {0}\n", strReturn);
+            if (MS2Ptr<ASTextField> spText = FUN_140bb4cf0("m_result"))
+                spText->FUN_1422c4cd0(strResult);
+        }
     }
 }
 MS2_REPLACE_METHOD(0x1412D19A0, UIItemEnchantSimulateDialog, vfunc_79, 1886, 0xC0212CE7);

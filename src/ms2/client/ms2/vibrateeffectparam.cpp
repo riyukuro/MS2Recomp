@@ -161,14 +161,9 @@ CVibrateEffect::~CVibrateEffect()
 // @0x141b72910
 CVibrateEffect* Unk_VibrateEffectFactory::FUN_141b72910(const CVibrateEffectParam* pParam)
 {
-    CVibrateEffect* pEffect;
-    if (pParam == NULL)
+    if (pParam != NULL)
     {
-        pEffect = NULL;
-    }
-    else
-    {
-        pEffect = new (efd::MemHint(efd::MemHint::NONE)) CVibrateEffect;
+        CVibrateEffect* pEffect = new (efd::MemHint(efd::MemHint::NONE)) CVibrateEffect;
         pEffect->m_dStartTime = FUN_14086d260()->FUN_141473280() + pParam->m_fStartDelay;
         pEffect->m_fDuration = pParam->m_fDuration;
         pEffect->m_b2c = pParam->m_b30;
@@ -184,8 +179,9 @@ CVibrateEffect* Unk_VibrateEffectFactory::FUN_141b72910(const CVibrateEffectPara
             if (FUN_1409a8b10()->FUN_140a58500()->m_bVibration && 0.0f < pEffect->m_fDuration)
                 FUN_140a58540()->FUN_140d8b3e0(pEffect->m_fDuration * FUN_1401d3200()->m_90a0.FUN_140298f40());
         }
+        return pEffect;
     }
-    return pEffect;
+    return NULL;
 }
 
 // @0x141b72bd0

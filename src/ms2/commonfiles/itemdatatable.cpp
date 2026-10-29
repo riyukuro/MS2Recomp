@@ -267,12 +267,19 @@ CColorPaletteInfo::CColorPaletteInfo()
     Init();
 }
 
-// MS2-FUNCTIONAL: box ptr NewTag temporaries / SEH state layout differ; behaviour equivalent
+// The exe assigns a box built by implicit conversion from the tag (operator=(const Unk_BmBoxPtr&)); a scoped
+// copy-initialised local gives the same code while the header keeps operator=(const Unk_BmNewTag&).
 // @0x140555ae0
 void CColorPaletteInfo::Init()
 {
-    m_spColors = Unk_BmBoxPtr<ColorArray>(Unk_BmNewTag(0));
-    m_spColorMap = Unk_BmBoxPtr<ColorMap>(Unk_BmNewTag(0));
+    {
+        Unk_BmBoxPtr<ColorArray> spColors = Unk_BmNewTag(0);
+        m_spColors = spColors;
+    }
+    {
+        Unk_BmBoxPtr<ColorMap> spColorMap = Unk_BmNewTag(0);
+        m_spColorMap = spColorMap;
+    }
 }
 
 // @0x140555b80
@@ -510,7 +517,6 @@ std::set<Unk_TrophyKey>* CItemDataTable::GetTrophySet()
     return &m_setTrophy;
 }
 
-// MS2-FUNCTIONAL: string temporaries and SEH state layout differ; behaviour equivalent
 // @0x140557270
 CString CItemDataTable::GetEnchantNif(int nWeapon, int nEnchant, int nUnlimited, unsigned nType)
 {
@@ -525,11 +531,11 @@ CString CItemDataTable::GetEnchantNif(int nWeapon, int nEnchant, int nUnlimited,
             return str;
         }
     }
+    int nLevel = 0;
     Unk_GameEventIntRange range0(5, 9);
     Unk_GameEventIntRange range1(10, 12);
     Unk_GameEventIntRange range2(13, 14);
     Unk_GameEventIntRange range3(15, 15);
-    int nLevel;
     if (range0.IsInRange(nEnchant))
         nLevel = 0;
     else if (range1.IsInRange(nEnchant))
@@ -541,12 +547,14 @@ CString CItemDataTable::GetEnchantNif(int nWeapon, int nEnchant, int nUnlimited,
     else
         return CString("");
     CString strNif;
-    if (!m_mapEnchant.Lookup(GetEnchantKey(nWeapon, nLevel), strNif))
-        return CString("");
-    strNif.Replace(".xml", "");
-    CString str;
-    str.Format("%s_Type%d.xml", (const char*)strNif, nType);
-    return str;
+    if (m_mapEnchant.Lookup(GetEnchantKey(nWeapon, nLevel), strNif))
+    {
+        strNif.Replace(".xml", "");
+        CString str;
+        str.Format("%s_Type%d.xml", (const char*)strNif, nType);
+        return str;
+    }
+    return CString("");
 }
 
 // @0x1405575b0
@@ -610,7 +618,6 @@ void CItemDataTable::GetHousingByCategory(int nCategory, ATL::CAtlArray<MS2Ptr<I
     }
 }
 
-// MS2-FUNCTIONAL: job switch lowering and SEH state layout differ; behaviour equivalent
 // @0x140557a30
 bool CItemDataTable::FindItems(unsigned short nLevel, int nGender, int nJob, int nType, ATL::CAtlArray<ItemDataPtr>& out)
 {
@@ -619,10 +626,17 @@ bool CItemDataTable::FindItems(unsigned short nLevel, int nGender, int nJob, int
     for (auto& kv : m_mapItem)
     {
         CItemData* pItem = kv.second.get();
-        if (!pItem->FUN_14053cbc0() || !pItem->FUN_14053c8e0(nJob) || !pItem->FUN_14053c940(nGender)
-            || !pItem->FUN_14053c9a0(nLevel))
+        if (!pItem->FUN_14053cbc0())
             continue;
-        if (!pItem->FUN_14053eba0()->FUN_14054b450(nType) || pItem->FUN_14053e130())
+        if (!pItem->FUN_14053c8e0(nJob))
+            continue;
+        if (!pItem->FUN_14053c940(nGender))
+            continue;
+        if (!pItem->FUN_14053c9a0(nLevel))
+            continue;
+        if (!pItem->FUN_14053eba0()->FUN_14054b450(nType))
+            continue;
+        if (pItem->FUN_14053e130())
             continue;
         if (nType == 5)
         {
@@ -663,7 +677,9 @@ bool CItemDataTable::FindItems(unsigned short nLevel, int nGender, int nJob, int
             case 100: nGroup = 55; break;
             case 110: nGroup = 56; break;
             }
-            if (nGroup == 0 || pItem->FUN_14053c620() != nGroup)
+            if (nGroup == 0)
+                continue;
+            if (pItem->FUN_14053c620() != nGroup)
                 continue;
         }
         if (nMaxLevel < pItem->limit.levelLimit)
@@ -672,7 +688,7 @@ bool CItemDataTable::FindItems(unsigned short nLevel, int nGender, int nJob, int
             out.RemoveAll();
         }
         if (nMaxLevel == pItem->limit.levelLimit)
-            out.Add(ItemDataPtr(pItem));
+            out.Add(pItem);
     }
     return !out.IsEmpty();
 }
@@ -760,7 +776,6 @@ CString CItemDataTable::GetUiMaterialSound(unsigned nMaterial)
     return s_strDefault;
 }
 
-// MS2-FUNCTIONAL: exe materialises the box null test into a bool temporary; behaviour equivalent
 // @0x1405587f0
 MS2Ptr<ItemColorEx> CItemDataTable::GetPaletteColor(int nPalette, unsigned nIndex)
 {
@@ -769,13 +784,12 @@ MS2Ptr<ItemColorEx> CItemDataTable::GetPaletteColor(int nPalette, unsigned nInde
     if (m_mapPalette.Lookup(nPalette, spInfo))
     {
         Unk_BmBoxPtr<CColorPaletteInfo::ColorArray> spColors = spInfo->GetColors();
-        if (spColors.get() != 0 && nIndex < spColors->GetCount())
+        if ((spColors.get() ? true : false) && nIndex < spColors->GetCount())
             return spColors->GetAt(nIndex);
     }
     return MS2Ptr<ItemColorEx>(0);
 }
 
-// MS2-FUNCTIONAL: exe materialises the box null test into a bool temporary; behaviour equivalent
 // @0x140558960
 MS2Ptr<ItemColorEx> CItemDataTable::GetPaletteColorBySN(int nPalette, int nColorSN)
 {
@@ -784,7 +798,7 @@ MS2Ptr<ItemColorEx> CItemDataTable::GetPaletteColorBySN(int nPalette, int nColor
     if (m_mapPalette.Lookup(nPalette, spInfo))
     {
         Unk_BmBoxPtr<CColorPaletteInfo::ColorMap> spMap = spInfo->GetColorMap();
-        if (spMap.get() != 0 && !spMap->IsEmpty())
+        if ((spMap.get() ? true : false) && !spMap->IsEmpty())
         {
             MS2Ptr<ItemColorEx> spColor(0);
             spMap->Lookup(nColorSN, spColor);
@@ -804,7 +818,6 @@ Unk_BmBoxPtr<CColorPaletteInfo::ColorArray> CItemDataTable::GetPaletteColors(int
     return Unk_BmBoxPtr<CColorPaletteInfo::ColorArray>(0);
 }
 
-// MS2-FUNCTIONAL: random index temporaries / frame layout differ; behaviour equivalent
 // @0x140558b90
 MS2Ptr<ItemColorEx> CItemDataTable::GetPaletteColorOrRandom(int nPalette, int nIndex)
 {
@@ -813,71 +826,67 @@ MS2Ptr<ItemColorEx> CItemDataTable::GetPaletteColorOrRandom(int nPalette, int nI
     if (spColors == 0)
         return MS2Ptr<ItemColorEx>(0);
     size_t nCount = spColors->GetCount();
-    int nSel = nIndex;
-    if (nIndex == -1 || (int)nCount <= nIndex)
+    int nSel = 0;
+    if (nIndex != -1 && nIndex < (int)nCount)
+        nSel = nIndex;
+    else
         nSel = (int)(rand() % nCount);
     return spColors->GetAt(nSel);
 }
 
-// MS2-FUNCTIONAL: iteration temporaries and SEH state layout differ; behaviour equivalent
 // @0x140558cc0
 MS2Ptr<ItemColorEx> CItemDataTable::FindPaletteColor(int nPalette, const int& nCh0)
 {
     CheckInit();
     Unk_BmBoxPtr<CColorPaletteInfo::ColorArray> spColors = GetPaletteColors(nPalette);
-    if (!(spColors == 0) && !spColors->IsEmpty())
+    if (spColors == 0 || spColors->IsEmpty())
+        return MS2Ptr<ItemColorEx>(0);
+    size_t nCount = spColors->GetCount();
+    for (size_t i = 0; i < nCount; i++)
     {
-        size_t nCount = spColors->GetCount();
-        for (size_t i = 0; i < nCount; i++)
-        {
-            MS2Ptr<ItemColorEx> spColor = spColors->GetAt(i);
-            if (spColor == 0)
-                continue;
-            if (spColor->m_aValues[0] == nCh0)
-                return spColor;
-        }
+        MS2Ptr<ItemColorEx> spColor = spColors->GetAt(i);
+        if (spColor == 0)
+            continue;
+        if (spColor->m_aValues[0] == nCh0)
+            return spColor;
     }
     return MS2Ptr<ItemColorEx>(0);
 }
 
-// MS2-FUNCTIONAL: delegate call temporaries and SEH state layout differ; behaviour equivalent
 // @0x140558e80
 MS2Ptr<ItemColorEx> CItemDataTable::FindPaletteColor(int nPalette, ItemDataPtr spItem, ColorFilter fnFilter)
 {
     CheckInit();
     Unk_BmBoxPtr<CColorPaletteInfo::ColorArray> spColors = GetPaletteColors(nPalette);
-    if (!(spColors == 0) && !spColors->IsEmpty())
+    if (spColors == 0 || spColors->IsEmpty())
+        return MS2Ptr<ItemColorEx>(0);
+    size_t nCount = spColors->GetCount();
+    for (size_t i = 0; i < nCount; i++)
     {
-        size_t nCount = spColors->GetCount();
-        for (size_t i = 0; i < nCount; i++)
-        {
-            MS2Ptr<ItemColorEx> spColor = spColors->GetAt(i);
-            if (spColor == 0)
-                continue;
-            if (fnFilter(*spColor, spItem) == true)
-                return spColor;
-        }
+        MS2Ptr<ItemColorEx> spColor = spColors->GetAt(i);
+        if (spColor == 0)
+            continue;
+        if (fnFilter(*spColor, spItem) == true)
+            return spColor;
     }
     return MS2Ptr<ItemColorEx>(0);
 }
 
-// MS2-FUNCTIONAL: iteration temporaries and SEH state layout differ; behaviour equivalent
 // @0x1405590e0
 MS2Ptr<ItemColorEx> CItemDataTable::FindPaletteColor(int nPalette, const int& nCh0, const int& nCh1)
 {
     CheckInit();
     Unk_BmBoxPtr<CColorPaletteInfo::ColorArray> spColors = GetPaletteColors(nPalette);
-    if (!(spColors == 0) && !spColors->IsEmpty())
+    if (spColors == 0 || spColors->IsEmpty())
+        return MS2Ptr<ItemColorEx>(0);
+    size_t nCount = spColors->GetCount();
+    for (size_t i = 0; i < nCount; i++)
     {
-        size_t nCount = spColors->GetCount();
-        for (size_t i = 0; i < nCount; i++)
-        {
-            MS2Ptr<ItemColorEx> spColor = spColors->GetAt(i);
-            if (spColor == 0)
-                continue;
-            if (spColor->m_aValues[0] == nCh0 && spColor->m_aValues[1] == nCh1)
-                return spColor;
-        }
+        MS2Ptr<ItemColorEx> spColor = spColors->GetAt(i);
+        if (spColor == 0)
+            continue;
+        if (spColor->m_aValues[0] == nCh0 && spColor->m_aValues[1] == nCh1)
+            return spColor;
     }
     return MS2Ptr<ItemColorEx>(0);
 }
@@ -906,7 +915,6 @@ void CItemDataTable::GetAllModels(std::vector<ModelPtr>& out)
         out.push_back(it->second);
 }
 
-// MS2-FUNCTIONAL: XML attribute temporaries and SEH state layout differ; behaviour equivalent
 // @0x1405594b0
 void CItemDataTable::LoadItemNameIds(std::vector<unsigned>& out)
 {
@@ -920,7 +928,7 @@ void CItemDataTable::LoadItemNameIds(std::vector<unsigned>& out)
         return;
     std::vector<Unk_140165cf0*> nodes;
     FUN_14028faa0(pRoot, "key", "id", nodes);
-    for (Unk_140165cf0* pNode : nodes)
+    MS2_FOR_EACH(Unk_140165cf0* pNode, nodes)
     {
         unsigned nId;
         FUN_140873220(pNode, "id", nId);
@@ -956,7 +964,6 @@ void CItemDataTable::LoadDropStyle(Unk_140165cf0* pRoot)
     }
 }
 
-// MS2-FUNCTIONAL: XML node temporaries and SEH state layout differ; behaviour equivalent
 // @0x1405598c0
 void CItemDataTable::LoadDropItemAsset(Unk_140165cf0* pRoot)
 {
@@ -965,8 +972,8 @@ void CItemDataTable::LoadDropItemAsset(Unk_140165cf0* pRoot)
         return;
     for (Unk_140165cf0* pItem = pAsset->FUN_140165cf0("Item"); pItem != 0; pItem = pItem->FUN_140168650("Item"))
     {
-        int nItemId = 0;
-        FUN_140873220(pItem, "itemID", reinterpret_cast<unsigned&>(nItemId));
+        unsigned nItemId = 0;
+        FUN_140873220(pItem, "itemID", nItemId);
         if (nItemId == 0)
             continue;
         std::vector<MS2Ptr<DropNifData> >& nifs = m_mapDropNif[nItemId];
@@ -1115,7 +1122,6 @@ void CItemDataTable::LoadUiMaterialSound()
     }
 }
 
-// MS2-FUNCTIONAL: CString temporaries order and SEH state layout differ; behaviour equivalent
 // @0x14055a4a0
 void CItemDataTable::LoadColorPalette(const CString& strPath)
 {
@@ -1135,7 +1141,10 @@ void CItemDataTable::LoadColorPalette(const CString& strPath)
         FUN_140873220(pPalette, "id", reinterpret_cast<unsigned&>(nId));
         Unk_BmPtr<CColorPaletteInfo> spInfo(0);
         if (!m_mapPalette.Lookup(nId, spInfo))
-            spInfo = Unk_BmPtr<CColorPaletteInfo>(Unk_BmNewTag(0));
+        {
+            Unk_BmPtr<CColorPaletteInfo> spNew = Unk_BmNewTag(0);
+            spInfo = spNew;
+        }
         else
             spInfo->Clear();
         for (Unk_140165cf0* pColor = pPalette->FUN_140165cf0("color"); pColor != 0; pColor = pColor->FUN_140168650("color"))
@@ -1149,7 +1158,7 @@ void CItemDataTable::LoadColorPalette(const CString& strPath)
             str = FUN_14015f710(pColor, "ch2", CString(""));
             spColor->m_aValues[2] = Unk_ColorValue(FUN_140718770(str));
             str = FUN_14015f710(pColor, "palette", CString(""));
-            spColor->m_n38 = Unk_ColorValue(str.GetLength() < 1 ? Unk_ConstColor(spColor->m_aValues[0]) : FUN_140718770(str));
+            spColor->m_n38 = Unk_ColorValue(str.GetLength() > 0 ? FUN_140718770(str) : Unk_ConstColor(spColor->m_aValues[0]));
             FUN_1408736d0(pColor, "show2color", spColor->m_bFlag);
             FUN_140873220(pColor, "achieveID", reinterpret_cast<unsigned&>(spColor->m_n24));
             FUN_1408731e0(pColor, "achieveGrade", spColor->m_n28);
@@ -1479,7 +1488,6 @@ void CItemDataTable::OnItemLoaded(ItemDataPtr spItem)
     spItem->FUN_14053ecf0();
 }
 
-// MS2-FUNCTIONAL: iterator temporaries and SEH state layout differ; behaviour equivalent
 // @0x14055f300
 CItemDataTable::ItemDataPtr CItemDataTable::FindItemData(int nItemId)
 {

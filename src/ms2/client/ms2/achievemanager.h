@@ -55,8 +55,8 @@ public:
     void GetListFromTable(CAchieveList& rOut, int nType, unsigned char nCategory, int bStarted, int bGradeReached);   // 0x1409361f0
     int GetRewardTotal(int nType);                                  // 0x1409364d0
     int IsCompleted(unsigned nId);                                 // 0x1409365a0
-    bool IsGradeCleared(unsigned nId, int nGrade);                  // 0x140936640
-    bool HasCompletedOfType(Unk_NullableInt nType);                 // 0x140936740
+    BOOL IsGradeCleared(unsigned nId, int nGrade);                  // 0x140936640
+    BOOL HasCompletedOfType(Unk_NullableInt nType);                 // 0x140936740
     int IsBeforeStartGrade(unsigned nId, int nGrade);              // 0x140936900
     int IsBeforeStartGradeOf(MS2Ptr<CAchieve> pAchieve, int nGrade);   // 0x1409369b0
     void OnPacket(CByteBuffer& rBuf);                               // 0x140936a50
@@ -78,7 +78,7 @@ class NotifyClearAchieve : public NotifyObject
 {
 public:
     NotifyClearAchieve(int nId);                                    // 0x140939030
-    virtual ~NotifyClearAchieve();                                  // 0x140939240
+    // implicit ~NotifyClearAchieve();                              // 0x140939240
     virtual CStringW GetTypeName();                                     // 0x140db50b0 (notifychangebuff.cpp)
 
     int m_nId;                                                      // +0x18
@@ -94,7 +94,7 @@ public:
     {
     public:
         SpecialRewardDesc();                                        // 0x140940ac0
-        virtual ~SpecialRewardDesc();                               // 0x140940d20
+        // implicit ~SpecialRewardDesc();                           // 0x140940d20
 
         CStringW m_strSpecialDesc;                                  // +0x18 "specialDesc"
         CStringW m_strNotifyIcon;                                   // +0x20 "specialNotifyIcon"
@@ -135,7 +135,7 @@ public:
     static bool s_bInit;                                            // 0x143ab3678
     static void SetInit(bool bInit);                                // 0x1409431a0
     static void CheckInit();                                        // 0x1409411e0
-    static bool Load();                                             // 0x14093e610 (achieveCategory.xml)
+    static int Load();                                              // 0x14093e610 (achieveCategory.xml)
     static void GetTabs(List& rOut);                                // 0x14093eae0 (the open top-level nodes)
     static void GetRows(List& rOut);                                // 0x14093eb90 (the open nodes with their open children)
     static MS2Ptr<CAchieveCategory> GetRow(int nIndex);             // 0x14093ece0

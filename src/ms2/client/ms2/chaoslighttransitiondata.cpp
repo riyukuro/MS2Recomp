@@ -58,8 +58,7 @@ int FUN_1408731e0(Unk_140165cf0* pNode, const char* pszName, int* pnOut);
 int FUN_1408733e0(Unk_140165cf0* pNode, const char* pszName, CString& strOut);
 CString FUN_140188f50(const char* psz, int n);                          // null-safe CString
 void FUN_14185f0b0(TransitionData* pData, Unk_140165cf0* pNode, float* pfTime);    // type / duration / start time
-void FUN_1402bd040(float* pVec3);                                       // zero a 3-vector
-void FUN_141b6ed40(const CString& str, float* pVec3);                   // parse "x,y,z"
+void FUN_141b6ed40(const CString& str, Vector3* pVec3);                 // parse "x,y,z"
 
 const NiMaterial* FUN_140a17cd0(NiMesh* pMesh);                         // the mesh's active material
 // Out-of-line colour constructor (0x140a56db0), shared with other units' views.
@@ -102,7 +101,6 @@ ChaosLightTransitionData::ChaosLightTransitionData()
 }
 
 // @0x141045a60
-// MS2-FUNCTIONAL: xml parse locals/GS cookie and symbol resolution differ from exe (frame/unwind); behavior equivalent
 void ChaosLightEffectParam::vfunc_1(Unk_140165cf0* pNode)
 {
     CEffectParam::vfunc_1(pNode);
@@ -116,12 +114,11 @@ void ChaosLightEffectParam::vfunc_1(Unk_140165cf0* pNode)
     const char* pszRgb = FUN_14086f4b0(pNode, "rgb");
     if (pszRgb != 0)
     {
-        float afRgb[3];
-        FUN_1402bd040(afRgb);
-        FUN_141b6ed40(CString(pszRgb), afRgb);
-        m_fRed = afRgb[0];
-        m_fGreen = afRgb[1];
-        m_fBlue = afRgb[2];
+        Vector3 kRgb;
+        FUN_141b6ed40(pszRgb, &kRgb);
+        m_fRed = kRgb.x;
+        m_fGreen = kRgb.y;
+        m_fBlue = kRgb.z;
     }
 
     // The first key carries the param's own values; every <transition> starts from the previous key.
@@ -153,12 +150,11 @@ void ChaosLightEffectParam::vfunc_1(Unk_140165cf0* pNode)
         const char* pszKeyRgb = FUN_14086f4b0(pKey, "rgb");
         if (pszKeyRgb != 0)
         {
-            float afRgb[3];
-            FUN_1402bd040(afRgb);
-            FUN_141b6ed40(CString(pszKeyRgb), afRgb);
-            spData.operator->()->m_fRed = afRgb[0];
-            spData.operator->()->m_fGreen = afRgb[1];
-            spData.operator->()->m_fBlue = afRgb[2];
+            Vector3 kRgb;
+            FUN_141b6ed40(pszKeyRgb, &kRgb);
+            spData.operator->()->m_fRed = kRgb.x;
+            spData.operator->()->m_fGreen = kRgb.y;
+            spData.operator->()->m_fBlue = kRgb.z;
         }
         m_arrData.Add(NiPointer<TransitionData>(spData));
         pPrev = spData;
@@ -306,13 +302,11 @@ void ChaosLightEffectLayer::vfunc_20()
 }
 
 // @0x141046850
-// MS2-FUNCTIONAL: temp/local slot order differs from exe (frame 0x88 vs 0x78); behavior equivalent
 ChaosLightEffectLayerManager::ChaosLightEffectLayerManager()
     : m_spTexture(0)
 {
     NiPointer<NiPixelData> spPixels(NiNew NiPixelData(1, 1, DAT_1439fb040, 1, 1));
-    efd::ColorA_UInt8 kWhite = efd::ColorA_UInt8(255, 255, 255, 255);
-    *(efd::ColorA_UInt8*)reinterpret_cast<ChaosPixelRef&>(spPixels)->operator()(0, 0, 0, 0) = kWhite;
+    *(efd::ColorA_UInt8*)reinterpret_cast<ChaosPixelRef&>(spPixels)->operator()(0, 0, 0, 0) = efd::ColorA_UInt8(255, 255, 255, 255);
     m_spTexture.Assign(NiSourceTexture::Create((NiPixelData*)spPixels, *(NiTexture::FormatPrefs*)&DAT_1439fc800, true));
 }
 

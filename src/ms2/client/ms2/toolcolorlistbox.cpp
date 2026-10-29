@@ -224,7 +224,6 @@ int CToolColorListBox::FUN_141854680(int n, int nIndex)
 }
 
 // @0x1418546f0
-// MS2-FUNCTIONAL: the exe stages the 4th AlphaBlendRect argument through ecx (mov ecx,[nW]; mov r9d,ecx); no source form found
 void CToolColorListBox::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 {
     if ((int)lpDrawItemStruct->itemID < 0)
@@ -261,8 +260,7 @@ void CToolColorListBox::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
             int nSrcW = FUN_140519850(&rcBlend);
             HDC hMem = dcMem;
             int nH = FUN_140518af0(&rcBlend);
-            int nW = FUN_140519850(&rcBlend);
-            AlphaBlendRect(*pDC, rcBlend.left, rcBlend.top, nW, nH, hMem, rcBlend.left, rcBlend.top, nSrcW, nSrcH, 0x32);
+            AlphaBlendRect(*pDC, rcBlend.left, rcBlend.top, FUN_140519850(&rcBlend), nH, hMem, rcBlend.left, rcBlend.top, nSrcW, nSrcH, 0x32);
             dcMem.DeleteDC();
         }
         if ((lpDrawItemStruct->itemAction & ODA_FOCUS) != 0 && (lpDrawItemStruct->itemState & ODS_FOCUS) != 0)

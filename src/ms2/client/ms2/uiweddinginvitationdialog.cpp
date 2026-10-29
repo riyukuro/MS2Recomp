@@ -88,7 +88,7 @@ __int64 GetServerTime();                                        // the current t
 void AddMinutes(CMsTime& kTime, int nMinutes);
 __int64 FUN_140282020(const CMsTime& kTime);
 
-CStringW FUN_14028dfa0(CStringW strKey, const fmt::ArgList& args);        // the string table formatter
+CStringW FUN_14028dfa0(const CStringW& strKey, const fmt::ArgList& args);        // the string table formatter
 FMT_VARIADIC_W(CStringW, FUN_14028dfa0, CStringW)
 
 UIWeddingGuestDialog* FUN_140fe6700(int nId);                   // the guest dialog, if open
@@ -132,35 +132,35 @@ void UIWeddingInvitationDialog::vfunc_67()
 }
 
 // @0x140fe5940
-// MS2-FUNCTIONAL: exe call-result temporaries / frame-slot order differ (source form not found)
 void UIWeddingInvitationDialog::vfunc_43()
 {
     ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30);
-    UITalkCinematic* pRef;
-    if (pDialog != 0 && (pRef = FUN_140a7b2b0(0x4e40)) != 0)
+    if (pDialog != 0)
     {
-        int nX = pRef->FUN_141b1d3d0();
-        int nY = pRef->FUN_141b1d460() - 0x50;
-        if (nX != -1 && nY != -1)
+        UITalkCinematic* pRef = FUN_140a7b2b0(0x4e40);
+        if (pRef != 0)
         {
-            int nWidth = pDialog->FUN_1422c13b0();
-            pDialog->vfunc_2(5, nY, nX - nWidth);
-            return;
+            int nX = pRef->FUN_141b1d3d0();
+            int nY = pRef->FUN_141b1d460() - 0x50;
+            if (nX != -1 && nY != -1)
+            {
+                pDialog->vfunc_2(5, nY, nX - pDialog->FUN_1422c13b0());
+                return;
+            }
         }
     }
-    pDialog = dynamic_cast<ASDialog*>((AScript*)m_30);
-    if (pDialog != 0)
-        pDialog->vfunc_2(1, 0, 0);
+    ASDialog* pDefault = dynamic_cast<ASDialog*>((AScript*)m_30);
+    if (pDefault != 0)
+        pDefault->vfunc_2(1, 0, 0);
 }
 
 // @0x140fe5a70
-// MS2-FUNCTIONAL: exe call-result temporaries / frame-slot order differ (source form not found)
 void UIWeddingInvitationDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
     Unk_WiTicket* pTicket = FUN_141b87160(FUN_1409eed90());
     ASObj obj(2);
-    obj.FUN_1407cbb20("invitation", GetStringCommonByKey(CStringW(L"s_wedding_invitation_message")));
+    obj.FUN_1407cbb20("invitation", GetStringCommonByKey(L"s_wedding_invitation_message"));
     obj.FUN_1407cbb20("groom", CStringW(pTicket->m_strGroom));
     obj.FUN_1407cbb20("bride", CStringW(pTicket->m_strBride));
     obj.FUN_1407cbb20("hall", GetStringTable()->FUN_141811980(3,
@@ -170,7 +170,6 @@ void UIWeddingInvitationDialog::OnLoadComplete()
 }
 
 // @0x140fe5ce0
-// MS2-FUNCTIONAL: exe call-result temporaries / frame-slot order differ (source form not found)
 int UIWeddingInvitationDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs)
 {
     if (UIDialog::vfunc_28(szMethod, pArgs, nArgs) != 0)
@@ -184,8 +183,7 @@ int UIWeddingInvitationDialog::vfunc_28(const char* szMethod, const Scaleform::G
         if (m_guests.size() != 0)
         {
             unsigned __int64 nCount = m_guests.size();
-            __int64 nTotal = FUN_140900da0();
-            nTotal = nCount * nTotal;
+            __int64 nTotal = nCount * FUN_140900da0();
             unsigned __int64 nCountArg = m_guests.size();
             CStringW strMessage = FUN_14028dfa0(CStringW(L"s_wedding_invitation_send"), nCountArg, nTotal);
             MS2Ptr<CMsgBoxData> box = FUN_140d74230(Delegate<bool(int, const CMsgBoxData&)>(this, &UIWeddingInvitationDialog::FUN_140fe60d0), CStringW(strMessage));
@@ -219,29 +217,24 @@ size_t UIWeddingInvitationDialog::FUN_140fe60a0()
 }
 
 // @0x140fe60d0
-// MS2-FUNCTIONAL: exe call-result temporaries / frame-slot order differ (source form not found)
 bool UIWeddingInvitationDialog::FUN_140fe60d0(int nResult, const CMsgBoxData& box)
 {
-    if (nResult == 0)
+    if (nResult != 0)
+        return true;
+    Unk_WiTicket* pTicket = FUN_141b87160(FUN_1409eed90());
+    CMsTime kLimit(pTicket->m_nTime);
+    AddMinutes(kLimit, -10);
+    if (GetServerTime() >= FUN_140282020(kLimit))
     {
-        Unk_WiTicket* pTicket = FUN_141b87160(FUN_1409eed90());
-        CMsTime kLimit(pTicket->m_nTime);
-        AddMinutes(kLimit, -10);
-        __int64 nNow = GetServerTime();
-        if (nNow < FUN_140282020(kLimit))
-        {
-            COutPacket packet(static_cast<int>(SendOp::Wedding), 0);
-            packet.WriteUInt8(0x1c);
-            packet.WriteInt32((int)m_guests.size());
-            for (size_t i = 0; i < m_guests.size(); i++)
-                m_guests[i]->FUN_1409003c0(packet);
-            FUN_140710590(packet);
-        }
-        else
-        {
-            FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_wedding_result_invitation_send_late")), 1, 1);
-        }
+        FUN_1412751f0(GetStringCommonByKey(L"s_wedding_result_invitation_send_late"), 1, 1);
+        return true;
     }
+    COutPacket packet(static_cast<int>(SendOp::Wedding), 0);
+    packet.WriteUInt8(0x1c);
+    packet.WriteInt32((int)m_guests.size());
+    for (size_t i = 0; i < m_guests.size(); i++)
+        m_guests[i]->FUN_1409003c0(packet);
+    FUN_140710590(packet);
     return true;
 }
 

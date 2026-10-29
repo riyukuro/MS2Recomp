@@ -43,7 +43,7 @@ class PetInfoStat : public PetInfoBase
 {
 public:
     PetInfoStat(int nPet);                              // 0x140cbb7d0
-    virtual ~PetInfoStat();                           //  0 0x140cbe830 (inline, ??_G 0x140cbeba0)
+    // implicit ~PetInfoStat(); 0 0x140cbe830 (inline, ??_G 0x140cbeba0)
     virtual void vfunc_3();                             //  3 0x140cbb810 option description of the pet item
     virtual void vfunc_5(int nTab);                     //  5 0x140cbba70
 };
@@ -53,7 +53,7 @@ class PetInfoSkill : public PetInfoBase
 {
 public:
     PetInfoSkill(int nPet);                             // 0x140cbada0
-    virtual ~PetInfoSkill();                          //  0 0x140cbe810 (inline, ??_G 0x140cbeb60)
+    // implicit ~PetInfoSkill(); 0 0x140cbe810 (inline, ??_G 0x140cbeb60)
     virtual void vfunc_3();                             //  3 0x140cbade0
     virtual void vfunc_5(int nTab);                     //  5 0x140cbafa0
     virtual int vfunc_6(const char* szEvent, const Scaleform::GFx::Value* pArgs, unsigned nArgs);   // 6 0x140cbafe0
@@ -68,7 +68,7 @@ class PetInfoBasic : public PetInfoBase
 {
 public:
     PetInfoBasic(int nPet);                             // 0x140cb87d0
-    virtual ~PetInfoBasic();                          //  0 0x140cbe780 (inline, ??_G 0x140cbeaa0)
+    // implicit ~PetInfoBasic(); 0 0x140cbe780 (inline, ??_G 0x140cbeaa0)
     virtual void vfunc_2();                             //  2 0x140cb8850 release the item bag
     virtual void vfunc_3();                             //  3 0x140cb8880 name, exp bar, slot, grade
     virtual void vfunc_4();                             //  4 0x140cb9240 clear and register the equip bag
@@ -89,7 +89,7 @@ class PetInfoInventory : public PetInfoBase
 {
 public:
     PetInfoInventory(int nPet);                         // 0x140cba250
-    virtual ~PetInfoInventory();                      //  0 0x140cbe7b0 (inline, ??_G 0x140cbeae0)
+    // implicit ~PetInfoInventory(); 0 0x140cbe7b0 (inline, ??_G 0x140cbeae0)
     virtual void vfunc_2();                             //  2 0x140cba2b0
     virtual void vfunc_3();                             //  3 0x140cba2e0
     virtual void vfunc_4();                             //  4 0x140cbaa00
@@ -103,7 +103,7 @@ class PetInfoPreview : public PetInfoBase, public IUIAvatarEventListener
 {
 public:
     PetInfoPreview(int nPet);                           // 0x140cbbab0
-    virtual ~PetInfoPreview();                        //  0 0x140cbe7e0 (inline, ??_G 0x140cbeb20)
+    // implicit ~PetInfoPreview(); 0 0x140cbe7e0 (inline, ??_G 0x140cbeb20)
     virtual void vfunc_2();                             //  2 0x140cbbb30
     virtual void vfunc_3();                             //  3 0x140cbbb70 show the pet in the preview
     virtual void vfunc_4();                             //  4 0x140cbbe20
@@ -167,7 +167,7 @@ public:
     };
 
     TabContentsPetInfo(int nPet);                       // 0x140cbcea0
-    virtual ~TabContentsPetInfo();                      //  0 0x140cbe850 (inline, ??_G 0x140cbebe0)
+    // implicit ~TabContentsPetInfo(); 0 0x140cbe850 (inline, ??_G 0x140cbebe0)
     virtual void vfunc_1();                             //  1 0x140cbd1e0 close the parts, drop the UI
     virtual void vfunc_2(int nTab);                     //  2 0x140cbd390
     virtual void vfunc_3(MS2Ptr<ASUIComponent> ui);     //  3 0x140cbd490 attach the page's UI

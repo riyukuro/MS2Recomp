@@ -67,7 +67,7 @@ class Unk_HlDb
 public:
     Unk_HlH FUN_140a5e2e0(int nId);                         // item by id
     MS2Ptr<CItem> FUN_140a5d680(__int64 nId);               // item by instance id
-    void FUN_140a60880(int nBag, ATL::CAtlArray<void*>& out);   // the items of a bag
+    void FUN_140a60880(int nBag, ATL::CAtlArray<MS2Ptr<CItem> >& out);   // the items of a bag
     int FUN_140a65770(P pId);
 };
 extern Unk_HlDb DAT_143ab2a90;
@@ -101,10 +101,23 @@ class Unk_HlItemSys { public: void FUN_1419cae20(void* pListener); void FUN_1419
 Unk_HlItemSys* FUN_140a6a840();
 
 P FUN_1403ed2d0();
+// reference-counted stat-point record at player+0x1120 (copy, release)
+class Unk_HlRef
+{
+public:
+    Unk_HlRef(const Unk_HlRef& o);
+    ~Unk_HlRef();
+    P FUN_140c24af0();
+
+    void* m_unk_00;
+    P m_p;
+};
+
 // The local player: slot 78 returns the level.
 class Unk_HlPc
 {
 public:
+    Unk_HlRef FUN_140c25130();                             // copy of the stat-point record
     virtual void vfunc_0();
     virtual void vfunc_1();
     virtual void vfunc_2();
@@ -184,6 +197,9 @@ public:
     virtual void vfunc_76();
     virtual void vfunc_77();
     virtual unsigned short vfunc_78();
+
+    char m_pad_08[0x1120 - 8];
+    Unk_HlRef m_statRef;                                   // +0x1120
 };
 P FUN_141bd0cc0(P pWorld);
 int FUN_1418dd0d0();
@@ -240,12 +256,12 @@ bool FUN_14053d840(P p);
 bool FUN_140621340(P p);
 
 // the player
-P FUN_141654730(P);
+int FUN_141654730(P);                                      // job code
 int FUN_140644b80(P, int);
 P FUN_1401d7a50();
-int FUN_14152e970(P, int);
+unsigned FUN_14152e970(P, int);
 P FUN_1401c0db0();
-unsigned FUN_14067a8d0(P, unsigned);
+unsigned FUN_14067a8d0(P, unsigned short);
 P FUN_1416546d0(P);
 unsigned FUN_140639b40(P, int);
 P FUN_1401d3200();
@@ -253,7 +269,7 @@ unsigned* FUN_1401d7c10(void* p);
 P FUN_1409a8b10();
 P FUN_140b123b0(P);
 void FUN_140bc1730(P);
-int FUN_140caa1a0(P);
+unsigned FUN_140caa1a0(P);
 
 // lists, arrays, item records
 void FUN_1408850d0(void*);
@@ -279,14 +295,21 @@ int FUN_140529070(P);
 __int64 FUN_140526a50(P);
 P FUN_14034ef20(void*);
 int FUN_141654700(P);
-void FUN_14152e2f0(P, Unk_HlH*, Unk_HlH);
+void FUN_14152e2f0(P, Unk_HlH*, P);                     // spItem by value: rcx-built copy (0x1402034d0), the callee releases it
 P FUN_1409eece0();
 char FUN_1409edd90(void*, int);
 unsigned __int64 FUN_1408e57c0(P);
 void FUN_1408e4be0(void*, P);
+// A 16-byte list entry copied out of the array (ctor 0x1408e4be0, dtor 0x1408e4ea0).
+struct Unk_HlEntry
+{
+    Unk_HlEntry(P pSrc);                                // 0x1408e4be0
+    ~Unk_HlEntry();                                     // 0x1408e4ea0
+    void* m_p[2];
+};
 int FUN_1408e48b0(void*);
 P FUN_1408e3700(void*);
-int FUN_1408e3520(void*);
+unsigned int FUN_1408e3520(void*);
 int FUN_1408d1f60(void*, int, int);
 void FUN_14086a880(void*, int);
 P FUN_140869440();
@@ -317,8 +340,6 @@ __int64 FUN_140282020(void*);
 unsigned __int64 FUN_140186270(void*);
 int* FUN_140184510(void*, unsigned __int64);
 
-// reference-counted record at player+0x1120 (copy, release)
-struct Unk_HlRef { void* m_unk_00; P m_p; };
 P FUN_14015b020(P p);
 int FUN_140159bc0(P p);
 void FUN_140159ba0(P p);
@@ -378,30 +399,28 @@ void FUN_140c25e80(Unk_HlRef* p)
 }
 
 // @0x140c24a50
-void FUN_140c24a50(Unk_HlRef* p)
+Unk_HlRef::~Unk_HlRef()
 {
-    FUN_140c25e80(p);
+    FUN_140c25e80(this);
 }
 
 // @0x140c24af0
-P FUN_140c24af0(Unk_HlRef* p)
+P Unk_HlRef::FUN_140c24af0()
 {
-    return p->m_p;
+    return m_p;
 }
 
 // @0x140c24920
-Unk_HlRef* FUN_140c24920(Unk_HlRef* pDst, Unk_HlRef* pSrc)
+Unk_HlRef::Unk_HlRef(const Unk_HlRef& o)
 {
-    pDst->m_p = pSrc->m_p;
-    FUN_140c25e00(pDst);
-    return pDst;
+    m_p = o.m_p;
+    FUN_140c25e00(this);
 }
 
 // @0x140c25130
-Unk_HlRef* FUN_140c25130(P pPlayer, Unk_HlRef* pOut)
+Unk_HlRef Unk_HlPc::FUN_140c25130()
 {
-    FUN_140c24920(pOut, (Unk_HlRef*)((char*)pPlayer + 0x1120));
-    return pOut;
+    return m_statRef;
 }
 
 // @0x140c25330
@@ -447,12 +466,12 @@ Unk_HlBitRef Unk_HlBits::FUN_140c25f10(int nPos)
 // @0x140c260a0
 Unk_HlBits& Unk_HlBits::FUN_140c260a0(int nPos, bool bSet)
 {
-    if (nPos != 0)
-        HL_BITSET_ASSERT(0xf3);
-    if (!bSet)
-        m_a[nPos / 8] &= ~(unsigned char)(1 << (nPos % 8));
+    if ((unsigned)nPos >= 1)
+        (void)((!!0) || (HL_BITSET_ASSERT(0xf3), 0));
+    if (bSet)
+        m_a[nPos / 8] |= 1 << nPos % 8;
     else
-        m_a[nPos / 8] |= (unsigned char)(1 << (nPos % 8));
+        m_a[nPos / 8] &= ~(1 << nPos % 8);
     return *this;
 }
 
@@ -523,7 +542,7 @@ UIHighlightGameMenu::UIHighlightGameMenu()
     m_actions.SetAt("characterinfo", &UIHighlightGameMenu::FUN_140c236f0);
     m_actions.SetAt("skillbook", &UIHighlightGameMenu::FUN_140c234d0);
     m_actions.SetAt("inven", &UIHighlightGameMenu::FUN_140c231b0);
-    m_actions.SetAt("class", &UIHighlightGameMenu::FUN_140c235d0);
+    m_actions.SetAt("mail", &UIHighlightGameMenu::FUN_140c235d0);
     if (FUN_140166410()->FUN_14036e560())
         m_actions.SetAt("enchantscroll", &UIHighlightGameMenu::FUN_140c237a0);
     m_actions.SetAt("gemstone", &UIHighlightGameMenu::FUN_140c23f10);
@@ -637,7 +656,8 @@ void UIHighlightGameMenu::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs
 {
     CStringW strKey = FUN_1402a5170(L"s_highlightgamemenu_{0}", pArgs->FUN_1422b8d30());
     ASTooltip tip(1, 2);
-    if (tip.FUN_1409e26b0(GetStringCommonByKey(strKey)) != 0)
+    int nOk = tip.FUN_1409e26b0(GetStringCommonByKey(strKey));
+    if (nOk != 0)
     {
         tip.FUN_1409c6dc0(1);
         tip.FUN_1409c6e00(0);
@@ -713,19 +733,16 @@ void UIHighlightGameMenu::FUN_140c22f50()
     Unk_HlPc* pPc = (Unk_HlPc*)FUN_141bd0cc0(FUN_1403ed2d0());
     if (pPc == 0)
         return;
-    unsigned nLevel = pPc->vfunc_78();
-    if (nLevel < *FUN_1401d7c10((char*)FUN_1401d3200() + 0xe558))
+    if (pPc->vfunc_78() < *FUN_1401d7c10((char*)FUN_1401d3200() + 0xe558))
         return;
     ASArray names(2);
-    if (*((char*)FUN_140b123b0(FUN_1409a8b10()) + 0x15) == 0)
+    if (*((unsigned char*)FUN_140b123b0(FUN_1409a8b10()) + 0x15) == 0)
     {
-        POSITION pos = m_actions.GetStartPosition();
-        while (pos != 0)
+        for (POSITION pos = m_actions.GetStartPosition(); pos != 0; m_actions.GetNext(pos))
         {
             Action pAction = m_actions.GetValueAt(pos);
             if ((this->*pAction)() != 0)
                 names.FUN_1422bbf70(m_actions.GetKeyAt(pos));
-            m_actions.GetNext(pos);
         }
     }
     int nCount = names.FUN_1422bc5d0();
@@ -740,12 +757,12 @@ void UIHighlightGameMenu::FUN_140c22f50()
 }
 
 // @0x140c231b0
-bool UIHighlightGameMenu::FUN_140c231b0()
+int UIHighlightGameMenu::FUN_140c231b0()
 {
     Unk_HlPc* pPc = (Unk_HlPc*)FUN_141bd0cc0(FUN_1403ed2d0());
     if (pPc == 0)
         return false;
-    ATL::CAtlArray<void*> bag;
+    ATL::CAtlArray<MS2Ptr<CItem> > bag;
     DAT_143ab2a90.FUN_140a60880(0, bag);
     char limit[16];
     FUN_1406c47a0(limit, FUN_140869440());
@@ -780,7 +797,8 @@ bool UIHighlightGameMenu::FUN_140c231b0()
             continue;
         }
         Unk_HlH worn;
-        FUN_14152e2f0(pPc, &worn, item);
+        Unk_HlH arg;                                       // the by-value argument copy; the callee destroys it
+        FUN_14152e2f0(pPc, &worn, FUN_1402034d0(&arg, &item));
         if (FUN_140534e50(&worn) != 0)
         {
             FUN_1401bfde0(&worn);
@@ -805,75 +823,70 @@ bool UIHighlightGameMenu::FUN_140c231b0()
 }
 
 // @0x140c234d0
-bool UIHighlightGameMenu::FUN_140c234d0()
+int UIHighlightGameMenu::FUN_140c234d0()
 {
     Unk_HlPc* pPc = (Unk_HlPc*)FUN_141bd0cc0(FUN_1403ed2d0());
-    if (pPc != 0)
+    if (pPc == 0)
+        return false;
+    int nMax = FUN_140644b80(FUN_1401d7a50(), FUN_141654730(pPc));
+    for (int i = 1; i <= nMax; i++)
     {
-        int nMax = FUN_140644b80(FUN_1401d7a50(), FUN_141654730(pPc) != 0);
-        for (int i = 1; i <= nMax; ++i)
+        if (FUN_14152e970(pPc, i) <= 0)
+            continue;
+        if (i == 1)
         {
-            if (FUN_14152e970(pPc, i) != 0)
-            {
-                if (i != 1)
-                    return true;
-                unsigned short nLevel = pPc->vfunc_78();
-                unsigned nNeed = FUN_14067a8d0(FUN_1401c0db0(), nLevel);
-                if (FUN_140639b40(FUN_1416546d0(pPc), 1) < nNeed)
-                    return true;
-            }
+            unsigned nNeed = FUN_14067a8d0(FUN_1401c0db0(), pPc->vfunc_78());
+            unsigned nUsed = FUN_140639b40(FUN_1416546d0(pPc), i);
+            if (nUsed >= nNeed)
+                continue;
         }
+        return true;
     }
     return false;
 }
 
 // @0x140c235d0
-bool UIHighlightGameMenu::FUN_140c235d0()
+int UIHighlightGameMenu::FUN_140c235d0()
 {
-    if (FUN_1408e3520(DAT_143ab2ee0) != 0)
+    if (FUN_1408e3520(DAT_143ab2ee0) > 0)
         return true;
     if (FUN_1408e48b0(DAT_143ab2ee0) != 0)
     {
         P pArr = FUN_1408e3700(DAT_143ab2ee0);
         for (unsigned __int64 i = 0; i < FUN_1408e57c0(pArr); ++i)
         {
-            char h[16];
-            FUN_1408e4be0(h, FUN_140c24ea0((__int64*)pArr, i));
-            if (FUN_140690370(FUN_1408e5180(h)) >= 100 && FUN_140690370(FUN_1408e5180(h)) < 0x71
-                && FUN_140691130(FUN_1408e5180(h)) == 0)
-            {
-                FUN_1408e4ea0(h);
+            Unk_HlEntry kEntry(FUN_140c24ea0((__int64*)pArr, i));
+            if (FUN_140690370(FUN_1408e5180(&kEntry)) >= 100 && FUN_140690370(FUN_1408e5180(&kEntry)) < 0x71
+                && FUN_140691130(FUN_1408e5180(&kEntry)) == 0)
                 return true;
-            }
-            FUN_1408e4ea0(h);
         }
     }
     return false;
 }
 
 // @0x140c236f0
-bool UIHighlightGameMenu::FUN_140c236f0()
+int UIHighlightGameMenu::FUN_140c236f0()
 {
     Unk_HlPc* pPc = (Unk_HlPc*)FUN_141bd0cc0(FUN_1403ed2d0());
     if (pPc == 0)
         return false;
-    Unk_HlRef ref;
-    int nPoint = FUN_140caa1a0(FUN_140c24af0(FUN_140c25130(pPc, &ref)));
-    FUN_140c24a50(&ref);
-    return nPoint != 0;
+    bool bPoint = FUN_140caa1a0(pPc->FUN_140c25130().FUN_140c24af0()) > 0;
+    if (bPoint)
+        return true;
+    return false;
 }
 
 #define HL_END_IT() do { FUN_1401b50d0(h148); FUN_1401bfde0(&it); } while (0)
 
 // @0x140c237a0
-bool UIHighlightGameMenu::FUN_140c237a0()
+int UIHighlightGameMenu::FUN_140c237a0()
 {
     Unk_HlPc* pPc = (Unk_HlPc*)FUN_141bd0cc0(FUN_1403ed2d0());
     if (pPc == 0)
         return false;
     m_nScrollItem = 0;
     m_nTargetItem = 0;
-    ATL::CAtlArray<void*> ids;
+    ATL::CAtlArray<unsigned int> ids;
     FUN_1401855a0(&ids, 0x1d90b9a);
     FUN_1401855a0(&ids, 0x1d90b9b);
     FUN_1401855a0(&ids, 0x1d90b9c);
@@ -913,7 +926,7 @@ bool UIHighlightGameMenu::FUN_140c237a0()
         FUN_1401bfde0(&scroll);
         return false;
     }
-    ATL::CAtlArray<void*> items;
+    ATL::CAtlArray<MS2Ptr<CItem> > items;
     DAT_143ab2a90.FUN_140a60880(0, items);
     char list[0x40];
     FUN_140884ed0(list, 10);
@@ -979,7 +992,7 @@ bool UIHighlightGameMenu::FUN_140c237a0()
 }
 
 // @0x140c23f10
-bool UIHighlightGameMenu::FUN_140c23f10()
+int UIHighlightGameMenu::FUN_140c23f10()
 {
     if (!m_bitsGem.FUN_140c25f10(0).FUN_140c24ac0() && !m_bitsSocket.FUN_140c25f10(0).FUN_140c24ac0())
         return false;
@@ -1029,7 +1042,7 @@ bool UIHighlightGameMenu::FUN_140c23f10()
         }
         if (nMask != 0)
         {
-            ATL::CAtlArray<void*> gems;
+            ATL::CAtlArray<MS2Ptr<CItem> > gems;
             DAT_143ab2a90.FUN_140a60880(6, gems);
             for (unsigned __int64 k = 0; k < FUN_140720ca0(&gems); ++k)
             {
@@ -1078,17 +1091,18 @@ int FUN_140c26320(void* pDst, size_t nDstSize, const void* pSrc, size_t nCount)
 {
     if (nCount == 0)
         return 0;
-    if (pDst == 0 || pSrc == 0)
+    // the CRT memmove_s validation (_CRT_MEMCPY_S_VALIDATE_RETURN_ERRCODE)
     {
-        *_errno() = EINVAL;
-        _invalid_parameter_noinfo();
-        return EINVAL;
+        int _Expr_val = !!(pDst != 0);
+        if (!(_Expr_val)) { *_errno() = EINVAL; _invalid_parameter_noinfo(); return EINVAL; }
     }
-    if (nDstSize < nCount)
     {
-        *_errno() = ERANGE;
-        _invalid_parameter_noinfo();
-        return ERANGE;
+        int _Expr_val = !!(pSrc != 0);
+        if (!(_Expr_val)) { *_errno() = EINVAL; _invalid_parameter_noinfo(); return EINVAL; }
+    }
+    {
+        int _Expr_val = !!(nDstSize >= nCount);
+        if (!(_Expr_val)) { *_errno() = ERANGE; _invalid_parameter_noinfo(); return ERANGE; }
     }
     memmove(pDst, pSrc, nCount);
     return 0;
@@ -1101,22 +1115,18 @@ void UIHighlightGameMenu::FUN_140c24470(NotifyObject* pObj)
     m_bitsSocket.FUN_140c26080();
 }
 
+class Unk_UiManager { public: MS2Ptr<UIObject> FUN_141adcea0(int nUiId); };
+
 // @0x140c24650
 P FUN_140c24650()
 {
     P pUi = FUN_1403ed2b0();
     if (pUi == 0)
         return 0;
-    Unk_HlH h;
-    FUN_141adcea0(pUi, &h, FUN_140c25190());
-    if (FUN_140534e80(&h) == 0)
-    {
-        P p = (P)dynamic_cast<UIDialog*>((UIObject*)FUN_1403ed9e0(&h));
-        FUN_1403e5630(&h);
-        return p;
-    }
-    FUN_1403e5630(&h);
-    return 0;
+    MS2Ptr<UIObject> spUi = ((Unk_UiManager*)pUi)->FUN_141adcea0(FUN_140c25190());
+    if (spUi.IsNull())
+        return 0;
+    return dynamic_cast<UIDialog*>(spUi.operator->());
 }
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142ca2700-0x142ca27e0 .text$yd
@@ -1127,8 +1137,8 @@ MS2_REPLACE(0x140c25e50, FUN_140c25e50, 33, 0x1EA40ECB);
 MS2_REPLACE(0x140c25e00, FUN_140c25e00, 38, 0x1C445F68);
 MS2_REPLACE(0x140c25ec0, FUN_140c25ec0, 65, 0xB416172D);
 MS2_REPLACE(0x140c25e80, FUN_140c25e80, 51, 0x0B73E489);
-MS2_REPLACE(0x140c24a50, FUN_140c24a50, 34, 0x1248047C);
-MS2_REPLACE(0x140c24920, FUN_140c24920, 52, 0x30756183);
+MS2_REPLACE_DTOR(0x140c24a50, Unk_HlRef, 34, 0x1248047C);
+MS2_REPLACE_IMPL(0x140c24920, static_cast<Unk_HlRef* (*)(Unk_HlRef*, const Unk_HlRef&)>([](Unk_HlRef* self, const Unk_HlRef& o) -> Unk_HlRef* { return ::new (static_cast<void*>(self)) Unk_HlRef(o); }), "Unk_HlRef::Unk_HlRef", 52, 0x30756183);
 MS2_REPLACE(0x140c25330, FUN_140c25330, 46, 0xDB14FB29);
 MS2_REPLACE_IMPL(0x140c249d0, static_cast<Unk_HlBitRef* (*)(Unk_HlBitRef*, Unk_HlBits*, int)>([](Unk_HlBitRef* self, Unk_HlBits* pBits, int nPos) -> Unk_HlBitRef* { return ::new (static_cast<void*>(self)) Unk_HlBitRef(pBits, nPos); }), "Unk_HlBitRef::Unk_HlBitRef", 46, 0xDE5FA628);
 MS2_REPLACE_METHOD(0x140c24ac0, Unk_HlBitRef, FUN_140c24ac0, 35, 0x60FDC12E);

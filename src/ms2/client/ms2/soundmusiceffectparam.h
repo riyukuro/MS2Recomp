@@ -15,7 +15,7 @@ class CSoundMusicEffectParam : public CEffectParam
 {
 public:
     CSoundMusicEffectParam();                                   // 0x14178fd20
-    virtual ~CSoundMusicEffectParam();                          // 0x141790680, ??_G 0x141790710
+    // implicit: virtual ~CSoundMusicEffectParam();             // 0x141790680, ??_G 0x141790710
     virtual void vfunc_1(Unk_140165cf0* pNode);                 // 1 0x14178fdb0
     virtual bool vfunc_2();                                     // 2 0x14178fe90 validate the music cue
     virtual CEffectPtr vfunc_6();                               // 6 0x14178ff60 new CSoundMusicEffect

@@ -83,7 +83,9 @@ void UIGuildFlagTooltip::vfunc_3()
 void UIGuildFlagTooltip::vfunc_15()
 {
     UISwfEntity::vfunc_15();
-    if (m_70 != 0 && FUN_1412c46d0() == 0)
+    if (m_70 == 0)
+        return;
+    if (FUN_1412c46d0() == 0)
         vfunc_3();
 }
 
@@ -102,7 +104,6 @@ int UIGuildFlagTooltip::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
 MS2_REPLACE_METHOD(0x1412C3FC0, UIGuildFlagTooltip, vfunc_28, 129, 0x5F648DED);
 
 // @0x1412c4050
-// MS2-FUNCTIONAL: behaviour-equivalent; the exe's temporaries / handle slots and EH state layout differ
 void UIGuildFlagTooltip::FUN_1412c4050(const CString& strName)
 {
     if (m_70 == 1)
@@ -121,31 +122,29 @@ void UIGuildFlagTooltip::FUN_1412c4050(const CString& strName)
         int nTrophy = pImage->FUN_1414022a0();
         int nRank = pImage->FUN_1414021c0();
         int nImageType = 0;
-        if (pImage->GetRow().get() != 0)
+        if (pImage->GetRow())
             nImageType = pImage->GetRow()->m_displayUrl.m_nType;
         if (strCaption.GetLength() > 0)
         {
             m_70 = 1;
             pEntity->vfunc_3(1);
-            Unk_FtEntity* pMovie = static_cast<Unk_FtEntity*>(pEntity.operator->());
             if (nImageType == 3)
             {
-                CGuildInfo* pGuild = reinterpret_cast<CGuildInfo*>((char*)FUN_1403ed290() + 8);
-                int nScore = pGuild->FUN_1404d3180()->FUN_1404c6110(nTrophy);
-                pMovie->FUN_1412c4a20("showPvp", CStringW(strCaption), nTrophy, nRank, nScore);
+                int nScore = reinterpret_cast<CGuildInfo*>((char*)FUN_1403ed290() + 8)->FUN_1404d3180()->FUN_1404c6110(nTrophy);
+                static_cast<Unk_FtEntity*>(pEntity.operator->())->FUN_1412c4a20("showPvp", CStringW(strCaption), nTrophy, nRank, nScore);
             }
             else if (nImageType == 4)
             {
-                pMovie->FUN_1412c4930("showBuilder", CStringW(strCaption), nTrophy, nRank);
+                static_cast<Unk_FtEntity*>(pEntity.operator->())->FUN_1412c4930("showBuilder", CStringW(strCaption), nTrophy, nRank);
             }
             else if (nImageType == 5)
             {
                 Unk_FtSeasonEntry* pEntry = FUN_140769000(FUN_140dc19b0(), nTrophy);
-                pMovie->FUN_1412c4a20("showPvp", CStringW(strCaption), nTrophy, nRank, pEntry->m_nValue);
+                static_cast<Unk_FtEntity*>(pEntity.operator->())->FUN_1412c4a20("showPvp", CStringW(strCaption), nTrophy, nRank, pEntry->m_nValue);
             }
             else
             {
-                pMovie->FUN_1412c4930("show", CStringW(strCaption), nTrophy, nRank);
+                static_cast<Unk_FtEntity*>(pEntity.operator->())->FUN_1412c4930("show", CStringW(strCaption), nTrophy, nRank);
             }
             FUN_1412c46d0();
         }
@@ -155,12 +154,11 @@ void UIGuildFlagTooltip::FUN_1412c4050(const CString& strName)
 // @0x1412c45a0
 void UIGuildFlagTooltip::FUN_1412c45a0()
 {
-    if (m_70 != 0)
-    {
-        MS2Ptr<ASGameEntity> pEntity(dynamic_cast<ASGameEntity*>((AScript*)m_30));
-        if (pEntity.get())
-            m_30->Invoke("hideTooltip");
-    }
+    if (m_70 == 0)
+        return;
+    MS2Ptr<ASGameEntity> pEntity(dynamic_cast<ASGameEntity*>((AScript*)m_30));
+    if (pEntity.get())
+        m_30->Invoke("hideTooltip");
 }
 
 // @0x1412c4660
@@ -170,7 +168,6 @@ void UIGuildFlagTooltip::vfunc_41(const Scaleform::GFx::Value& root)
 }
 
 // @0x1412c46d0
-// MS2-FUNCTIONAL: behaviour-equivalent; the exe's temporaries / handle slots and EH state layout differ
 bool UIGuildFlagTooltip::FUN_1412c46d0()
 {
     if (m_78.GetLength() < 1)
@@ -178,7 +175,8 @@ bool UIGuildFlagTooltip::FUN_1412c46d0()
     CInteractObject* pObject = FUN_1403ed2d0()->FUN_141bc66b0(m_78).get();
     if (pObject == 0)
         return false;
-    if (dynamic_cast<CInteractDisplayImage*>(pObject) == 0)
+    CInteractDisplayImage* pImage = dynamic_cast<CInteractDisplayImage*>(pObject);
+    if (pImage == 0)
         return false;
     Vector3 kWorld = pObject->GetPos();
     kWorld.z += 150.0f;
@@ -189,8 +187,8 @@ bool UIGuildFlagTooltip::FUN_1412c46d0()
         if (pEntity.get())
         {
             FUN_140ad0c10(&kScreen, FUN_1422afec0(FUN_14025e7a0(), m_28));
-            kScreen.x = (float)(kScreen.x - pEntity->FUN_1422c1340() * 0.5);
-            kScreen.y = (float)(kScreen.y - pEntity->FUN_1422c13b0() * 0.5);
+            kScreen.x -= pEntity->FUN_1422c1340() * 0.5;
+            kScreen.y -= pEntity->FUN_1422c13b0() * 0.5;
             pEntity->FUN_1422c00f0(kScreen.x, kScreen.y);
             return true;
         }

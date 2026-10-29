@@ -1,16 +1,11 @@
 // Recovered from MapleStory2.exe KMS2_DEV x64 (2022-04-13). CQuest mission kinds: CDailyMission, CFieldMission, CEventMission,
 // CMentoringMission, CWeddingMission, plus the trivial CQuest base virtuals.
 // MS2-UNIT: unit_140d72a60
-// MS2-FUNCTIONAL: CDailyMission::ShowProgress / CFieldMission::Complete / CWeddingMission::ShowRewards are behaviour-equivalent; the exe range-check branch layout and temp slot order are not reproduced
+// MS2-FUNCTIONAL: the five mission dtors are implicit here; the exe declares them (vftable stores), which needs a questkinds.h change
 // MS2-RANGE: 0x1400d3940-0x1400d39c0 .text$di
 // MS2-RANGE: 0x140d72a60-0x140d73aa0 .text$mn
 // MS2-PINS-BEGIN tplpin
 // MS2-PINS-END tplpin
-// MS2-PIN: ??1CDailyMission@@UEAA@XZ 0x140d72ab0
-// MS2-PIN: ??1CFieldMission@@UEAA@XZ 0x140d72db0
-// MS2-PIN: ??1CEventMission@@UEAA@XZ 0x140d730d0
-// MS2-PIN: ??1CMentoringMission@@UEAA@XZ 0x140d73490
-// MS2-PIN: ??1CWeddingMission@@UEAA@XZ 0x140d735c0
 // MS2-PIN: ??__Es_strStun@@YAXXZ 0x1400d3940
 #define MS2_THIS_FILE ""
 #include "ms2/placeholder/ms2stdafx.h"
@@ -109,15 +104,26 @@ MS2_EMIT_CRT_MEMMOVE_S();
 // @0x140d72a60
 CDailyMission::CDailyMission() {}
 
+// @0x140d72ab0
+CDailyMission::~CDailyMission() {}
+
 // @0x140d72af0
 void CDailyMission::ShowProgress(int index)
 {
     CQuest::ShowProgress(index);
     if (IsComplete()) {
         CStringW key;
-        int grade = m_data->m_338.m_value;
-        if (grade > 0 && grade <= 2) key = L"s_recommend_contents_reward_notify_levelup";
-        else if (grade > 2 && grade <= 5) key = L"s_recommend_contents_reward_notify_dailymission";
+        switch (m_data->m_338.m_value) {
+        case 1:
+        case 2:
+            key = L"s_recommend_contents_reward_notify_levelup";
+            break;
+        case 3:
+        case 4:
+        case 5:
+            key = L"s_recommend_contents_reward_notify_dailymission";
+            break;
+        }
         FUN_1412751b0(GetStringCommonByKey(key), 0x14);
     }
 }
@@ -149,6 +155,9 @@ void CDailyMission::Complete(CInPacket& packet)
 // @0x140d72d60
 CFieldMission::CFieldMission() {}
 
+// @0x140d72db0
+CFieldMission::~CFieldMission() {}
+
 // @0x140d72df0
 void CFieldMission::Complete(CInPacket& packet)
 {
@@ -177,6 +186,9 @@ void CFieldMission::Complete(CInPacket& packet)
 
 // @0x140d73080
 CEventMission::CEventMission() : m_78(0) {}
+
+// @0x140d730d0
+CEventMission::~CEventMission() {}
 
 // @0x140d73110
 int CEventMission::Init(int id, int state)
@@ -223,6 +235,9 @@ void CEventMission::ShowExpired() {}
 // @0x140d73440
 CMentoringMission::CMentoringMission() {}
 
+// @0x140d73490
+CMentoringMission::~CMentoringMission() {}
+
 // @0x140d734d0
 void CMentoringMission::ShowExpired() {}
 
@@ -240,6 +255,9 @@ int CMentoringMission::FUN_1407447c0()
 // @0x140d73570
 CWeddingMission::CWeddingMission() {}
 
+// @0x140d735c0
+CWeddingMission::~CWeddingMission() {}
+
 // @0x140d73600
 void CWeddingMission::ShowRewards(int reward)
 {
@@ -251,7 +269,8 @@ void CWeddingMission::ShowRewards(int reward)
     UIRewardNotify* notify = FUN_140938cd0(0x4e5d);
     if (notify != 0) {
         CStringW msg = FUN_140c160b0(CStringW(L"s_system_quest_reward_wedding_exp"), &data->m_complete.m_weddingExp);
-        notify->FUN_141ac1580(CStringW(L"./Data/Resource/Image/ETC/wedding.png"), msg, 0);
+        CStringW image = L"./Data/Resource/Image/ETC/wedding.png";
+        notify->FUN_141ac1580(image, msg, 0);
     }
 }
 

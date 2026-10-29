@@ -81,11 +81,11 @@ public:
     virtual ~CPetCollectTable();                        // 0x140721130
     bool Load();                                        // 0x140721190
     void Add(unsigned nPetId, int nGroupId);                 // 0x140721410
-    std::map<unsigned, unsigned>& PetGroups();                    // 0x140721480 (pet id -> group id)
+    std::map<DWORD, int>& PetGroups();                            // 0x140721480 (pet id -> group id)
     std::map<int, std::vector<unsigned> >& GroupPets();      // 0x1407214a0 (group id -> pet ids)
     PetGroupInfoPtr Find(int nGroupId);                 // 0x1407214c0
 
-    std::map<unsigned, unsigned> m_petGroups;                     // +0x08
+    std::map<DWORD, int> m_petGroups;                             // +0x08
     std::map<int, std::vector<unsigned> > m_groupPets;       // +0x18
     std::map<int, PetGroupInfoPtr> m_groups;            // +0x28
 };

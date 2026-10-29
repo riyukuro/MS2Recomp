@@ -13,6 +13,11 @@
 // MS2-RANGE: 0x142d568c0-0x142d57808 .rdata
 // MS2-RANGE: 0x142dbac18-0x142dbf440 .rdata
 // MS2-RANGE: 0x142dfc138-0x142dfc139 .rdata
+// MS2-RANGE: 0x142e0346c-0x142e03470 .rdata
+// MS2-RANGE: 0x142e035dc-0x142e035e0 .rdata
+// MS2-RANGE: 0x142e03614-0x142e03618 .rdata
+// MS2-RANGE: 0x142e03694-0x142e03698 .rdata
+// MS2-RANGE: 0x142e0372c-0x142e03730 .rdata
 // MS2-RANGE: 0x142e12280-0x142e14338 .rdata
 // MS2-RANGE: 0x142e36cd4-0x142e370d8 .rdata
 // MS2-RANGE: 0x142e6b1bc-0x142e6bb78 .rdata
@@ -36,6 +41,7 @@
 
 extern unsigned char DAT_140c7ee70[];
 extern unsigned char DAT_143224848[];
+extern unsigned char DAT_14326a2c8[];
 
 #pragma pack(push, 1)
 struct Sd_142ceaec8 {
@@ -169,6 +175,11 @@ alignas(8) Sd_142dbac18 DAT_142dbac18 = {
     },
 };
 char DAT_142dfc138;                                             // 0x142dfc138
+extern const unsigned int DAT_142e0346c = 0x012cd8b5u;           // 0x142e0346c (uiitembillboarddialog actor ids)
+extern const unsigned int DAT_142e035dc = 0x032767ddu;           // 0x142e035dc
+extern const unsigned int DAT_142e03614 = 0x85359406u;           // 0x142e03614
+extern const unsigned int DAT_142e03694 = 0xc7f9dd65u;           // 0x142e03694
+extern const unsigned int DAT_142e0372c = 0xd3b04f05u;           // 0x142e0372c
 // 0x142e12280
 alignas(16) Sd_142e12280 DAT_142e12280 = {
     "CNodeViewerDlg",
@@ -177,7 +188,7 @@ alignas(16) Sd_142e12280 DAT_142e12280 = {
     },
     DAT_140c7ee70,
     {0},
-    &DAT_143224848[0x45a80],
+    DAT_14326a2c8,
 };
 // 0x142e12690
 alignas(16) unsigned char DAT_142e12690[0x400] = {
@@ -756,5 +767,6 @@ unsigned char DAT_1430e3b20 = 0x0u;                             // 0x1430e3b20
 #pragma comment(linker, "/alternatename:?DAT_142ffa83c@@3QBDB=?DAT_142ffa83c@@3USd_142ffa83c@@A")
 #pragma comment(linker, "/alternatename:?DAT_140c7ee70@@3PAEA=?FUN_140c7ee70@@YAPEAUCRuntimeClass@@XZ")
 #pragma comment(linker, "/alternatename:?DAT_143224848@@3PAEA=??_7DOMBuilder@XML@GFx@Scaleform@@6B@")
+#pragma comment(linker, "/alternatename:?DAT_14326a2c8@@3PAEA=??_R4CNodeViewerDlg@@6B@")
 
 #endif // MS2_HOOK_DLL

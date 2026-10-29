@@ -24,11 +24,12 @@ class Unk_GsHandle
 {
 public:
     Unk_GsHandle() {}
-    int FUN_140a58460();
-    Unk_GsCheck* FUN_140a58490();
-    void FUN_140a583d0();
+    ~Unk_GsHandle();                                            // 0x140a583d0
+    Unk_GsCheck* FUN_140a58460();                               // get
+    Unk_GsCheck* FUN_140a58490();                               // operator->
 private:
-    char m_pad[0x18];
+    Unk_GsCheck* m_p;
+    void* m_pad[2];                                             // the exe reserves 24 bytes for the handle
 };
 class Unk_GsEntity : public UIDialog { public: Unk_GsHandle FUN_140e52670(const CString& strName); };
 
@@ -82,7 +83,6 @@ void UIGemSettingDialog::vfunc_67()
     UIModalDialog::vfunc_67();
 }
 
-// MS2-FUNCTIONAL: frame 16 bytes smaller than the exe (temp handle layout / EH states)
 // @0x1419469b0
 CGemTransparency* UIGemSettingDialog::FUN_1419469b0()
 {
@@ -91,9 +91,12 @@ CGemTransparency* UIGemSettingDialog::FUN_1419469b0()
     void* pActor = FUN_141bd0cc0(FUN_1403ed2d0());
     if (pActor == 0)
         return 0;
-    MS2Ptr<CGemBase> spGem = FUN_14165f460(pActor)->FUN_141270740(1);
-    CGemTransparency* pGem = dynamic_cast<CGemTransparency*>(FUN_140ddcc50(spGem));
-    return pGem;   // spGem's scope exit is the exe's FUN_1405a8650: an explicit call on top released it twice
+#ifdef __clang__
+    MS2Ptr<CGemBase> spGem = FUN_14165f460(pActor)->FUN_141270740(1);   // clang-cl won't bind the temporary to MS2Ptr&
+    return dynamic_cast<CGemTransparency*>(FUN_140ddcc50(spGem));
+#else
+    return dynamic_cast<CGemTransparency*>(FUN_140ddcc50(FUN_14165f460(pActor)->FUN_141270740(1)));
+#endif
 }
 
 // @0x141946140
@@ -121,62 +124,61 @@ void UIGemSettingDialog::OnLoadComplete()
 // @0x141946510
 int UIGemSettingDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
 {
-    if (UIDialog::OnMessage(pSender, pMsg) == 0)
-        return 0;
-    return 1;
+    if (UIDialog::OnMessage(pSender, pMsg) != 0)
+        return 1;
+    return 0;
 }
 
-// MS2-FUNCTIONAL: the 10 name temps / hidden-slot stores are scheduled differently from the exe
 // @0x141946560
 int UIGemSettingDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs)
 {
     if (UIDialog::vfunc_28(szMethod, pArgs, nArgs) != 0)
         return 1;
-    if (_stricmp("OnOk", szMethod) != 0)
-        return 0;
-    if (DAT_1439f9284 == -1)
+    if (_stricmp("OnOk", szMethod) == 0)
+    {
+        if (DAT_1439f9284 == -1)
+            return 1;
+        if (FUN_1419469b0() == 0)
+            return 1;
+        Unk_GsSetting setting;
+        setting.m_nType = (unsigned char)DAT_1439f9284;
+        setting.m_aHidden[0] = FUN_141946a70("m_cp");
+        setting.m_aHidden[1] = FUN_141946a70("m_ey");
+        setting.m_aHidden[2] = FUN_141946a70("m_cl");
+        setting.m_aHidden[3] = FUN_141946a70("m_pa");
+        setting.m_aHidden[4] = FUN_141946a70("m_mt");
+        setting.m_aHidden[5] = FUN_141946a70("m_ea");
+        setting.m_aHidden[6] = FUN_141946a70("m_fh");
+        setting.m_aHidden[7] = FUN_141946a70("m_gl");
+        setting.m_aHidden[8] = FUN_141946a70("m_ri");
+        setting.m_aHidden[9] = FUN_141946a70("m_sh");
+        COutPacket packet(static_cast<int>(SendOp::BadgeEquip), 0);
+        packet.WriteUInt8(3);
+        FUN_1401fd2e0(setting, packet);
+        FUN_140710590(packet);
         return 1;
-    if (FUN_1419469b0() == 0)
-        return 1;
-    Unk_GsSetting setting;
-    setting.m_nType = (unsigned char)DAT_1439f9284;
-    setting.m_aHidden[0] = FUN_141946a70("m_cp");
-    setting.m_aHidden[1] = FUN_141946a70("m_ey");
-    setting.m_aHidden[2] = FUN_141946a70("m_cl");
-    setting.m_aHidden[3] = FUN_141946a70("m_pa");
-    setting.m_aHidden[4] = FUN_141946a70("m_mt");
-    setting.m_aHidden[5] = FUN_141946a70("m_ea");
-    setting.m_aHidden[6] = FUN_141946a70("m_fh");
-    setting.m_aHidden[7] = FUN_141946a70("m_gl");
-    setting.m_aHidden[8] = FUN_141946a70("m_ri");
-    setting.m_aHidden[9] = FUN_141946a70("m_sh");
-    COutPacket packet(static_cast<int>(SendOp::BadgeEquip), 0);
-    packet.WriteUInt8(3);
-    FUN_1401fd2e0(setting, packet);
-    FUN_140710590(packet);
-    return 1;
+    }
+    return 0;
 }
 
-// MS2-FUNCTIONAL: the handle temp has different EH states (exe copies the by-value name twice)
+// MS2-FUNCTIONAL: op-identical; the frame is 16 bytes larger than the exe (the 24-byte handle FUN_141946b10 needs leaves a dead slot here)
 // @0x141946a70
-bool UIGemSettingDialog::FUN_141946a70(CString strName)
+int UIGemSettingDialog::FUN_141946a70(CString strName)
 {
-    Unk_GsHandle hCheck = ((Unk_GsEntity*)this)->FUN_140e52670(strName);
-    bool bValue = false;
-    if (hCheck.FUN_140a58460() != 0)
-        bValue = hCheck.FUN_140a58490()->FUN_1422ce0e0();
-    hCheck.FUN_140a583d0();
-    return bValue;
+    {
+        Unk_GsHandle hCheck = ((Unk_GsEntity*)this)->FUN_140e52670(strName);
+        if (hCheck.FUN_140a58460() != 0)
+            return hCheck.FUN_140a58490()->FUN_1422ce0e0();
+    }
+    return 0;
 }
 
-// MS2-FUNCTIONAL: same handle temp difference as FUN_141946a70
 // @0x141946b10
 void UIGemSettingDialog::FUN_141946b10(CString strName, int nValue)
 {
     Unk_GsHandle hCheck = ((Unk_GsEntity*)this)->FUN_140e52670(strName);
     if (hCheck.FUN_140a58460() != 0)
         hCheck.FUN_140a58490()->FUN_1422ce090(nValue);
-    hCheck.FUN_140a583d0();
 }
 
 // ---- hooks ----

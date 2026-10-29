@@ -328,34 +328,33 @@ void UIGamePadMenuDialog::vfunc_72()
 // @0x140c1b550
 void UIGamePadMenuDialog::FUN_140c1b550()
 {
-    if (FUN_140a467d0(&m_30) == false)
+    if (FUN_140a467d0(&m_30))
+        return;
+    FUN_140c1c010(m_menus);
+    if (m_menus.GetCount() > 0)
     {
-        FUN_140c1c010(m_menus);
-        if (m_menus.GetCount() != 0)
-        {
-            size_t nMenus = m_menus.GetCount();
-            static_cast<Unk_GpAS*>(FUN_1409ee290(&m_30))->FUN_140c1c8c0("updateAlignment", nMenus);
-            m_timer.FUN_140868750(m_nMoveMs);
-        }
+        static_cast<Unk_GpAS*>(FUN_1409ee290(&m_30))->FUN_140c1c8c0("updateAlignment", m_menus.GetCount());
+        m_timer.FUN_140868750(m_nMoveMs);
     }
 }
 
 // @0x140c1b620
 void UIGamePadMenuDialog::FUN_140c1b620()
 {
-    if (m_menus.GetCount() != 0)
+    if (m_menus.GetCount() > 0)
     {
         MS2Ptr<Unk_GpNode> spNode(m_menus[0]);
         ASObj obj(2);
         obj.FUN_1407cb9c0("row", spNode->m_nRow);
         obj.FUN_1407cb9c0("col", spNode->m_nCol);
-        if (FUN_140cf0bf0(spNode.get()) && FUN_140c1c160(spNode->m_nId, &obj) && FUN_140c1bf90(spNode->m_nId))
+        if (!FUN_140cf0bf0(spNode.get()))
+            return;
+        if (FUN_140c1c160(spNode->m_nId, &obj) == 0)
+            return;
+        if (FUN_140c1bf90(spNode->m_nId) == 0)
+            return;
         {
-            if (spNode->m_children.GetCount() == 0)
-            {
-                m_pages.SetAt((int)m_pages.GetCount(), 0);
-            }
-            else
+            if (spNode->m_children.GetCount() > 0)
             {
                 ASDataProvider children(2);
                 for (size_t i = 0; i < spNode->m_children.GetCount(); i++)
@@ -371,8 +370,11 @@ void UIGamePadMenuDialog::FUN_140c1b620()
                     children.FUN_1422bc050(childObj.FUN_1422bb870());
                 }
                 obj.FUN_1409adbe0("child", children.FUN_1422bb870());
-                unsigned int nChildren = children.FUN_1422bc5d0();
-                m_pages.SetAt((int)m_pages.GetCount(), (int)nChildren);
+                m_pages.SetAt((int)m_pages.GetCount(), children.FUN_1422bc5d0());
+            }
+            else
+            {
+                m_pages.SetAt((int)m_pages.GetCount(), 0);
             }
             FUN_1409ee290(&m_30)->Invoke("addMenuEntity", obj.FUN_1422bb870());
         }
@@ -390,24 +392,30 @@ void UIGamePadMenuDialog::FUN_140c1ba90(int nMenu, int nEnable)
 }
 
 // @0x140c1bc10
+// MS2-FUNCTIONAL: the exe takes no nUnused parameter (the header declaration is shared with guideaction.cpp)
 CString UIGamePadMenuDialog::FUN_140c1bc10(int nMenu, __int64 nUnused)
 {
-    MS2Ptr<Unk_GpMenu> spMenu = FUN_140c1d2f0()->FUN_140cf7590(nMenu);
-    if (spMenu.get() == 0)
-        return CString("");
-    return CString(spMenu->m_strLayer);
+    {
+        MS2Ptr<Unk_GpMenu> spMenu = FUN_140c1d2f0()->FUN_140cf7590(nMenu);
+        if (spMenu.get() != 0)
+            return CString(spMenu->m_strLayer);
+    }
+    return CString("");
 }
 
 // @0x140c1bcd0
 CString UIGamePadMenuDialog::FUN_140c1bcd0(int nMenu)
 {
-    MS2Ptr<Unk_GpMenu> spMenu = FUN_140c1d2f0()->FUN_140cf7690(nMenu);
-    if (spMenu.get() == 0)
-        return CString("");
-    return CString(spMenu->m_strLayer);
+    {
+        MS2Ptr<Unk_GpMenu> spMenu = FUN_140c1d2f0()->FUN_140cf7690(nMenu);
+        if (spMenu.get() != 0)
+            return CString(spMenu->m_strLayer);
+    }
+    return CString("");
 }
 
 // @0x140c1bd90
+// MS2-FUNCTIONAL: the exe takes no nUnused parameter (the header declaration is shared with guideaction.cpp)
 MS2Ptr<Unk_GpButton> UIGamePadMenuDialog::FUN_140c1bd90(int nMenu, __int64 nUnused)
 {
     return FUN_140c1be20(FUN_140c1bc10(nMenu, nUnused));
@@ -429,9 +437,10 @@ MS2Ptr<Unk_GpButton> UIGamePadMenuDialog::FUN_140c1be20(const CString& strMenu)
 int UIGamePadMenuDialog::FUN_140c1bf90(int nMenu)
 {
     int nEnable;
-    if (m_enable.Lookup(reinterpret_cast<const EMenuKey&>(nMenu), nEnable) == false)
-        nEnable = 1;
-    return nEnable;
+    if (m_enable.Lookup(reinterpret_cast<const EMenuKey&>(nMenu), nEnable))
+        return nEnable;
+    else
+        return 1;
 }
 
 // @0x140c1bfe0

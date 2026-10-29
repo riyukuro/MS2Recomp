@@ -128,7 +128,7 @@ class Unk_InventoryCharacters
 {
 public:
     Unk_SsCharIter FUN_140341f40();                       // end
-    Unk_SsCharIter FUN_1404c0270(const __int64& id);      // find
+    Unk_SsCharIter FUN_1404c0270(const unsigned __int64& id);      // find
 };
 extern Unk_InventoryCharacters DAT_143ab2a30;
 bool FUN_1403344a0(const Unk_SsCharIter&, const Unk_SsCharIter&);
@@ -147,7 +147,6 @@ void FUN_140d73bc0(int nTable, int nId, void* pListener, CStringW strExtra);
 void FUN_140d73aa0(CStringW strText, int nType, void* p, CStringW strTag);
 MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW strText, void* p, CStringW strTag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> spData);
-void FUN_141a026f0(CMsgBoxData* pBox, int n);
 void FUN_141276180(const CString& strA, const CString& strB);
 void FUN_140d2cfc0(MS2Ptr<CItem> spItem);                 // item link / popup for the item
 void* FUN_140a50b50(DragSlot* pSlot);                     // the item slot behind a drag source
@@ -226,9 +225,9 @@ unsigned __int64 StoreSlot::GetStoreItemId()
 int StoreSlot::FUN_141808910()
 {
     MS2Ptr<CItem> spItem = MS2_STORE_TABLE.Find(GetStoreItemId());
-    if (spItem.get() == 0)
-        return 0;
-    return spItem->FUN_140527840()->FUN_14053dc20();
+    if (spItem.get())
+        return spItem->FUN_140527840()->FUN_14053dc20();
+    return 0;
 }
 
 // @0x1418089a0
@@ -236,7 +235,7 @@ void StoreSlot::vfunc_6(void* p)
 {
     FUN_140165270(p, FUN_140719530(m_nStoreItemId));
     MS2Ptr<CItem> spItem = MS2_STORE_TABLE.Find(m_nStoreItemId);
-    if (spItem.IsNull())
+    if (spItem == NULL)
         return;
     int nType = spItem->FUN_1405276c0();
     if (spItem->FUN_140527840()->FUN_14053c5c0() == 2 || spItem->FUN_140527840()->FUN_14053c5c0() == 0x18)
@@ -248,7 +247,7 @@ void StoreSlot::vfunc_6(void* p)
 int StoreSlot::FUN_141808b10(CStringW strSearch)
 {
     MS2Ptr<CItem> spItem = MS2_STORE_TABLE.Find(m_nStoreItemId);
-    if (spItem.IsNull())
+    if (spItem == NULL)
         return -1;
     if (FUN_1409b4d40(m_value18))
     {
@@ -301,23 +300,18 @@ int StoreSlot::vfunc_14()
     if (pDlg != 0 && pDlg->vfunc_55() == 0)
     {
         int nTab = DAT_143ab2a90.FUN_140a617f0(spItem);
-        bool bAll;
-        if (FUN_14025e7c0()->FUN_14116d950(0x2a, false, 0) || FUN_14025e7c0()->FUN_14116d950(0x36, false, 0))
-            bAll = true;
-        else
-            bAll = false;
+        BOOL bAll = FUN_14025e7c0()->FUN_14116d950(0x2a, false, 0) || FUN_14025e7c0()->FUN_14116d950(0x36, false, 0);
         int nCount = bAll ? spItem->FUN_140526c50() : 1;
         int nSlot = DAT_143ab2a90.FUN_140a612b0(nTab, spItem, nCount);
         if (nSlot == -1)
         {
             FUN_140961010(0x44, 1, 1, FUN_1401a9d70()->FUN_141813300(nTab));
-            FUN_141276180(s_strSystemNoticeErrorWarningBag, CString(""));
+            FUN_141276180(s_strSystemNoticeErrorWarningBag, "");
             return 0;
         }
         if (spItem->FUN_140526850() == false || bAll)
         {
-            MS2Ptr<CItemData> spData((CItemData*)spItem->FUN_140527840());
-            FUN_140de31f0(&MS2_STORE_TABLE, spItem->FUN_140526a50(), nSlot, spItem->FUN_140526c50(), spData);
+            FUN_140de31f0(&MS2_STORE_TABLE, spItem->FUN_140526a50(), nSlot, spItem->FUN_140526c50(), (CItemData*)spItem->FUN_140527840());
         }
         else
         {
@@ -360,59 +354,35 @@ int StoreSlot::vfunc_17()
 // @0x141809460
 int StoreSlot::vfunc_18(void* p)
 {
-    DragSlot* pDrag = static_cast<DragSlot*>(p);
-    void* pItemSlot = FUN_140a50b50(pDrag);
-    if (pItemSlot == 0)
-    {
-        StoreSlot* pFrom = FUN_14140e6d0(pDrag);
-        if (pFrom != 0)
-        {
-            if (pFrom->GetIndex() == m_nIndex)
-                return pDrag->vfunc_10();
-            COutPacket packet(static_cast<int>(SendOp::RequestItemStorage), 0);
-            packet.WriteUInt8(2);
-            packet.WriteInt64(MS2_STORE_TABLE.Id());
-            packet.WriteInt64(pFrom->GetStoreItemId());
-            packet.WriteInt16((short)m_nIndex);
-            FUN_140710590(packet);
-            MS2Ptr<CItem> spItem = MS2_STORE_TABLE.Find(pFrom->GetStoreItemId());
-            if (spItem.get() != 0 && spItem.get() != 0)
-            {
-                if (spItem->FUN_140527840() != 0)
-                    FUN_1403ed280()->FUN_1411a5110(CString("ms2sound/sound/item"),
-                        spItem->FUN_140527840()->FUN_14053eca0(), CString(""), 0, 0, 1.0f, 0);
-            }
-            return pFrom->vfunc_11();
-        }
-    }
-    else
+    void* pItemSlot = FUN_140a50b50(static_cast<DragSlot*>(p));
+    if (pItemSlot != 0)
     {
         MS2Ptr<CItem> spStoreItem = MS2_STORE_TABLE.Slot(m_nIndex);
         MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(FUN_141405a10(pItemSlot));
-        if (spItem == 0)
-            return pDrag->vfunc_10();
+        if (spItem == NULL)
+            return static_cast<DragSlot*>(p)->vfunc_10();
         int nSlot = m_nIndex;
         if (spStoreItem.get() != 0)
         {
             int nAvail = 0;
-            nSlot = 0;
+            nSlot = nAvail;
             if (spItem->FUN_1405281e0() == 1)
             {
                 nAvail = SS_STORE_VIEW.FUN_140de21a0(spItem, spItem->FUN_140526c50());
                 if (nAvail == -1)
                 {
                     FUN_141275260(0xf2, 1, 1);
-                    return pDrag->vfunc_10();
+                    return static_cast<DragSlot*>(p)->vfunc_10();
                 }
             }
         }
         if (SS_STORE_VIEW.FUN_140de2490(spItem->FUN_1405276c0()) == 0)
         {
             FUN_141275260(0xf1, 1, 0);
-            return pDrag->vfunc_10();
+            return static_cast<DragSlot*>(p)->vfunc_10();
         }
         if (DAT_143ab2a90.FUN_140a661e0(spItem.get()) == 0)
-            return pDrag->vfunc_10();
+            return static_cast<DragSlot*>(p)->vfunc_10();
         if (spItem->FUN_140526850() == false)
         {
             FUN_140de2dc0(&MS2_STORE_TABLE, spItem->FUN_140526a50(), nSlot, spItem->FUN_140526c50(),
@@ -423,7 +393,32 @@ int StoreSlot::vfunc_18(void* p)
             FUN_1414045d0(spItem->FUN_140526a50(), spItem->FUN_140526c50(), spItem->FUN_1405281e0(), 0, m_nIndex);
         }
     }
-    return pDrag->vfunc_10();
+    else
+    {
+        StoreSlot* pFrom = FUN_14140e6d0(static_cast<DragSlot*>(p));
+        if (pFrom != 0)
+        {
+            if (pFrom->GetIndex() == m_nIndex)
+                return static_cast<DragSlot*>(p)->vfunc_10();
+            COutPacket packet(static_cast<int>(SendOp::RequestItemStorage), 0);
+            packet.WriteUInt8(2);
+            packet.WriteInt64(MS2_STORE_TABLE.Id());
+            packet.WriteInt64(pFrom->GetStoreItemId());
+            packet.WriteInt16((short)m_nIndex);
+            FUN_140710590(packet);
+            {
+                MS2Ptr<CItem> spItem = MS2_STORE_TABLE.Find(pFrom->GetStoreItemId());
+                if (spItem.get() != 0 && (spItem.get() ? true : false))
+                {
+                    if (spItem->FUN_140527840() != 0)
+                        FUN_1403ed280()->FUN_1411a5110(CString("ms2sound/sound/item"),
+                            spItem->FUN_140527840()->FUN_14053eca0(), CString(""), 0, 0, 1.0f, 0);
+                }
+            }
+            return pFrom->vfunc_11();
+        }
+    }
+    return static_cast<DragSlot*>(p)->vfunc_10();
 }
 
 // @0x141809b20
@@ -474,7 +469,8 @@ int StoreSlot::vfunc_26(MS2Ptr<CItem> spItem)
         FUN_140d73bc0(0x42, 0, 0, CStringW(L""));
         return 0;
     }
-    if (spItem->FUN_140527930() == 0)
+    Unk_ItemOwnerRef* pOwnerRef = spItem->FUN_140527930();
+    if (pOwnerRef == 0)
         return 0;
 
     CStringW strMsg;
@@ -483,11 +479,7 @@ int StoreSlot::vfunc_26(MS2Ptr<CItem> spItem)
     if (!FUN_1406344b0(spItem, &nCharacter, &param))
     {
         CStringW strName(param.name);
-        bool bAllow;
-        if (FUN_1401c0d90()->FUN_140a6a0d0() && spItem->FUN_1405258b0() != 0)
-            bAllow = true;
-        else
-            bAllow = false;
+        bool bAllow = FUN_1401c0d90()->FUN_140a6a0d0() && spItem->FUN_1405258b0() != 0;
         bool bGem = spItem->FUN_1405279c0()->FUN_1406210e0();
         if (bAllow && bGem)
         {
@@ -496,35 +488,37 @@ int StoreSlot::vfunc_26(MS2Ptr<CItem> spItem)
         }
         if (!bAllow)
         {
-            __int64 nOwner = param.characterId;
-            if (nOwner == 0)
+            unsigned __int64 nOwner = param.characterId;
+            if (nOwner > 0)
+            {
+                int nKind = param.kind;
+                if (FUN_1403344a0(DAT_143ab2a30.FUN_1404c0270(nOwner), DAT_143ab2a30.FUN_140341f40()))
+                {
+                    if (nKind == 1)
+                        FUN_140d73bc0(0xfc, 0, 0, CStringW(L""));
+                    else if (nKind == 2)
+                        FUN_140d73aa0(GetStringCommon(0xdc), 0, 0, CStringW(L""));
+                    return 1;
+                }
+                else
+                {
+                    if (nKind == 1)
+                        strMsg = FUN_14052bd00(0xda, strName);
+                    else if (nKind == 2)
+                        strMsg = FUN_14052bd00(0xdd, strName);
+                }
+            }
+            else
             {
                 MS2_ASSERT_AT(0xf8, FALSE);
                 return 1;
             }
-            int nKind = param.kind;
-            Unk_SsCharIter end = DAT_143ab2a30.FUN_140341f40();
-            Unk_SsCharIter found = DAT_143ab2a30.FUN_1404c0270(nOwner);
-            if (FUN_1403344a0(found, end))
-            {
-                if (nKind == 1)
-                    FUN_140d73bc0(0xfc, 0, 0, CStringW(L""));
-                else if (nKind == 2)
-                    FUN_140d73aa0(GetStringCommon(0xdc), 0, 0, CStringW(L""));
-                return 1;
-            }
-            if (nKind == 1)
-                strMsg = FUN_14052bd00(0xda, strName);
-            else if (nKind == 2)
-                strMsg = FUN_14052bd00(0xdd, strName);
         }
     }
-    __int64 nPrice = spItem->FUN_14052a480();
-    if (strMsg.IsEmpty() && nPrice != 0 && nPrice != DAT_143ab2828)
+    unsigned __int64 nPrice = spItem->FUN_14052a480();
+    if (strMsg.IsEmpty() == true && nPrice != 0 && nPrice != DAT_143ab2828)
     {
-        Unk_SsCharIter end = DAT_143ab2a30.FUN_140341f40();
-        Unk_SsCharIter found = DAT_143ab2a30.FUN_1404c0270(nPrice);
-        if (FUN_140334210(found, end))
+        if (FUN_140334210(DAT_143ab2a30.FUN_1404c0270(nPrice), DAT_143ab2a30.FUN_140341f40()))
             strMsg = FUN_1405c2690(CStringW(L"s_item_err_cannot_drop_if_moveDisable"), spItem->FUN_14052a4f0());
     }
     if (!strMsg.IsEmpty())
@@ -532,10 +526,10 @@ int StoreSlot::vfunc_26(MS2Ptr<CItem> spItem)
         MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x1a, CStringW(strMsg), 0, CStringW(s_strDestroyStoreItem));
         if (spBox.get() != 0)
         {
-            spBox->FUN_141a01600(m_nStoreItemId);
+            spBox->FUN_141a01600(GetStoreItemId());
             spBox->FUN_141a01ee0(spItem, spItem->FUN_140527b10(), 1, spItem->FUN_140526c50(), -1, -1, 1);
             spBox->FUN_141a01800(1);
-            FUN_141a026f0(spBox.get(), 1);
+            spBox->FUN_141a026f0(1);
             spBox->FUN_141a024e0(GetStringCommon(0x9d1), 0);
             FUN_140d73c60(spBox);
             return 1;
@@ -551,13 +545,15 @@ int StoreSlot::vfunc_0(void* p)
     if (spItem.IsNull())
         return 0;
     ASTooltip tip(FUN_1403ed2d0()->FUN_141bd0cc0(), 0x80, 2);
-    if (tip.FUN_1409e0d40(spItem.get()) == 0)
-        return 0;
-    tip.FUN_1409c69b0(GetStringCommon(0x754));
-    if (IsEnabled() == true)
-        tip.FUN_1409db7b0(spItem);
-    *static_cast<Scaleform::GFx::Value*>(p) = tip.FUN_1422bb870();
-    return 1;
+    if (tip.FUN_1409e0d40(spItem.get()))
+    {
+        tip.FUN_1409c69b0(GetStringCommon(0x754));
+        if (IsEnabled() == true)
+            tip.FUN_1409db7b0(spItem);
+        *static_cast<Scaleform::GFx::Value*>(p) = tip.FUN_1422bb870();
+        return 1;
+    }
+    return 0;
 }
 
 // @0x14180ab10
@@ -567,12 +563,13 @@ int StoreSlot::vfunc_8(void* p)
     if (spItem.IsNull())
         return 0;
     ASSlot slot(2);
-    Unk_SsPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
-    if (slot.FUN_1409c3860(spItem.get(), pPlayer, 0x1c01f) == 0)
-        return 0;
-    slot.FUN_1407cbbe0(s_strUpdateIconSearchOn, FUN_14180aea0());
-    *static_cast<Scaleform::GFx::Value*>(p) = slot.FUN_1422bb870();
-    return 1;
+    if (slot.FUN_1409c3860(spItem.get(), FUN_1403ed2d0()->FUN_141bd0cc0(), 0x1c01f))
+    {
+        slot.FUN_1407cbbe0(s_strUpdateIconSearchOn, FUN_14180aea0());
+        *static_cast<Scaleform::GFx::Value*>(p) = slot.FUN_1422bb870();
+        return 1;
+    }
+    return 0;
 }
 
 // @0x14180ac70
@@ -591,8 +588,9 @@ void StoreSlot::vfunc_23(void* p)
 void StoreSlot::vfunc_24(void* p)
 {
     int nType = FUN_141808910();
-    if (nType != 0)
-        FUN_1414050c0(nType, p, &m_value18);
+    if (!nType)
+        return;
+    FUN_1414050c0(nType, p, &m_value18);
 }
 
 // @0x14180ad50
@@ -708,11 +706,11 @@ int StoreSlotBag::FUN_14180b3e0(CStringW strSearch)
 // @0x14180b560
 void StoreSlotBag::vfunc_9(void* p)
 {
-    CItem* pItem = static_cast<CItem*>(p);
-    StoreSlot* pSlot = FUN_14140e6d0(FUN_1422cd070(pItem->FUN_140526b50()));
+    int nIndex = static_cast<CItem*>(p)->FUN_140526b50();
+    StoreSlot* pSlot = FUN_14140e6d0(FUN_1422cd070(nIndex));
     if (pSlot != 0)
     {
-        pSlot->SetStoreItemId(pItem->FUN_140526a50());
+        pSlot->SetStoreItemId(static_cast<CItem*>(p)->FUN_140526a50());
         pSlot->vfunc_10();
     }
 }
@@ -720,8 +718,8 @@ void StoreSlotBag::vfunc_9(void* p)
 // @0x14180b5e0
 void StoreSlotBag::vfunc_10(void* p)
 {
-    CItem* pItem = static_cast<CItem*>(p);
-    DragSlot* pSlot = FUN_1422cd070(pItem->FUN_140526b50());
+    int nIndex = static_cast<CItem*>(p)->FUN_140526b50();
+    DragSlot* pSlot = FUN_1422cd070(nIndex);
     if (pSlot != 0)
         pSlot->vfunc_11();
 }
@@ -729,11 +727,11 @@ void StoreSlotBag::vfunc_10(void* p)
 // @0x14180b640
 void StoreSlotBag::vfunc_il11(void* p)
 {
-    CItem* pItem = static_cast<CItem*>(p);
-    StoreSlot* pSlot = FUN_14140e6d0(FUN_1422cd070(pItem->FUN_140526b50()));
+    int nIndex = static_cast<CItem*>(p)->FUN_140526b50();
+    StoreSlot* pSlot = FUN_14140e6d0(FUN_1422cd070(nIndex));
     if (pSlot != 0)
     {
-        pSlot->SetStoreItemId(pItem->FUN_140526a50());
+        pSlot->SetStoreItemId(static_cast<CItem*>(p)->FUN_140526a50());
         pSlot->vfunc_10();
     }
 }
@@ -752,14 +750,14 @@ void StoreSlotBag::vfunc_12()
 // @0x14180b710
 DragSlot* StoreSlotBag::vfunc_16(int nIndex)
 {
-    CString strName = DragSlotBag::vfunc_15(nIndex);
-    unsigned __int64 nId = FUN_14180b810(nIndex);
-    StoreSlot* pSlot = new (efd::MemHint(efd::MemHint::NONE)) StoreSlot(strName, nIndex, nId);
-    return pSlot;
+    CString strName = static_cast<DragSlotBag*>(this)->vfunc_15(nIndex);
+    int nSlot = nIndex;
+    unsigned __int64 nId = FUN_14180b810(nSlot);
+    return new (efd::MemHint(efd::MemHint::NONE)) StoreSlot(strName, nSlot, nId);
 }
 
 // @0x14180b7f0
-int FUN_14180b7f0()
+int FUN_14180b7f0(void*, void*)
 {
     return 1;
 }
@@ -772,7 +770,7 @@ unsigned __int64 FUN_14180b810(int nIndex)
     for (unsigned i = 0; i < items.GetCount(); i++)
     {
         MS2Ptr<CItem> spItem = items[i];
-        if (spItem.get() != 0)
+        if (spItem.get() ? true : false)
         {
             if (spItem->FUN_140526b50() == nIndex)
                 return spItem->FUN_140526a50();

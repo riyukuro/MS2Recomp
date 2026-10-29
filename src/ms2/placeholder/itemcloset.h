@@ -14,15 +14,17 @@ class CInPacket;
 namespace ItemCloset {
 struct SlotInfo : public CPtred {
     SlotInfo();                                   // 0x1407aaf00
-    ~SlotInfo();                                  // 0x1407ab010
+    // ~SlotInfo() is implicit (0x1407ab010: no vptr reset)
     void FUN_1407a8390(COutputStream& out) const; // item id, three ints
     void FUN_1407a8410(CInPacket& in);
     __int64 m_itemId;                             // +0x18
-    int m_20, m_24, m_28;                         // +0x20..
+    int m_20;                                     // +0x20 item id
+    unsigned int m_24;                            // +0x24 equip slot (zero-extended into FUN_140be4750)
+    int m_28;                                     // +0x28 rarity
 };
 struct TabInfo : public CPtred {
     TabInfo();                                    // 0x140be3220
-    ~TabInfo();                                   // 0x140be36e0
+    // ~TabInfo() is implicit (0x140be36e0: no vptr reset)
     void FUN_1407a84e0(COutputStream& out) const;
     void FUN_1407a8600(CInPacket& in);
     int m_18, m_1c, m_20;                         // +0x18

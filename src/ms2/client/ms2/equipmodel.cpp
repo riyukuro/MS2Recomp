@@ -67,6 +67,7 @@
 #include <efd/Matrix3.h>
 #include <NiTransform.h>
 #include <NiAVObject.h>
+#include <NiActorManager.h>
 #include <string.h>
 #include <vector>
 #include <efd/Category.h>
@@ -75,6 +76,7 @@
 #include "hook/ms2hook.h"
 #include "ms2/client/ms2/equipitem.h"
 #include "ms2/placeholder/citem.h"
+#include "ms2/placeholder/effectquery.h"
 
 // ---- exe data ----
 extern char DAT_143afa4d8;      // NiNode::ms_RTTI
@@ -89,59 +91,67 @@ extern char DAT_142ec05ba;      // ""
 // ---- out-of-unit callees ----
 // smart pointers (MS2Ptr<Owner> at +0x28, NiPointer at +0xf0 / +0x108 / the temporaries)
 void* FUN_1405a8ed0(void* sp);   void FUN_1405a85c0(void* sp);   void FUN_1405a85f0(void* sp);   void* FUN_1409849b0(void* sp);
-void* FUN_140884f30(void* dst, void* src);   void FUN_140d37c50(void* sp, int n);   char FUN_140b02900(void* sp);
+void* FUN_140884f30(void* dst, void* src);   void FUN_140d37c50(void* sp, int n);   bool FUN_140b02900(void* sp);
 void* FUN_14097eb60(void* out, void* p);   void* FUN_14097eba0(void* out, void* p);   void FUN_1409fabf0(void* sp, void* p);
 void* FUN_1409f7170(void* sp, void* p);   void FUN_1409f74b0(void* sp);   void FUN_1409f76f0(void* sp, void* p);
-void* FUN_1409475d0(void* sp);   void* FUN_1409475f0(void* sp);   char FUN_1409f77a0(void* sp, int n);   void* FUN_1409f7cb0(void* p);
-char FUN_1409edd90(void* sp, int n);   char FUN_1409a7f70(void* sp, void* p);   void* FUN_14098d0f0(void* sp);
+void* FUN_1409475d0(void* sp);   void* FUN_1409475f0(void* sp);   bool FUN_1409f77a0(void* sp, int n);   void* FUN_1409f7cb0(void* p);
+bool FUN_1409edd90(void* sp, int n);   bool FUN_1409a7f70(void* sp, void* p);   void* FUN_14098d0f0(void* sp);
 void* FUN_1405a8e70(void* sp);   void* FUN_14098d8d0(void* rtti, void* obj);
 // the owner wrapper (character / mannequin entity)
 void* FUN_1411dc7a0(void* owner, void* out);   void* FUN_1411dc7f0(void* owner);   void* FUN_1411dc8c0(void* owner);
 void FUN_1411dce60(void* owner, void* rec);   void FUN_1411dd280(void* owner);   void FUN_1411ddf10(void* owner, void* model);
 void* FUN_1411de2e0(void* guard, void* model);   void FUN_140b02860(void* guard);
 void* FUN_1403ed2d0();   void* FUN_141bd1180(void* mgr, unsigned id);   void* FUN_141bd0cc0(void* mgr);
-void* FUN_1403ed280();   int FUN_1411a49c0(void* mgr, void* rec);   void FUN_1411a6060(void* mgr, int h);
+void* FUN_1403ed280();   unsigned FUN_1411a49c0(void* mgr, void* rec);   void FUN_1411a6060(void* mgr, int h);
 void* FUN_141b6f910();   void* FUN_140999440(void* svc, void* id);   void* FUN_14123c460(void* ent, void* out);
+void* FUN_140999440(void* svc, const egf::EntityID& kId);
+struct Unk_EmModelLoader { efd::utf8string FUN_141206030(const egf::EntityID& kId); };
 unsigned FUN_14123c580(void* ent);
 void* FUN_1416561a0(void* p);   void FUN_1411e9fa0(void* p, unsigned a, const CString& s, unsigned b, unsigned c);
-void FUN_1411ea430(void* p, void* sp);   void FUN_1411ea500(void* p, void* sp);   void* FUN_141655c90(void* p, void* out, unsigned id);
-void* FUN_141206030(void* svc, void* out, void* id);   char* FUN_1408ac310(void* s);   void FUN_1408a8900(void* s);
+void FUN_1411ea430(void* p, MS2Ptr<Unk_EquipModelOwner> sp);   void FUN_1411ea500(void* p, MS2Ptr<Unk_EquipModelOwner> sp);   void* FUN_141655c90(void* p, void* out, unsigned id);
 unsigned FUN_141658e60(void* ent);
 // the id holder returned by FUN_1411dc7a0 and its accessors
 void FUN_1401bfde0(void* p);   void FUN_1401bf970(void* out, void* p);   char FUN_1401b5240(void* p, int n);
 char FUN_1401b50d0(void* p);   void* FUN_1401b52a0(void* p);   void* FUN_140203c60(void* p);   void* FUN_140203510(void* out, int n);
-void* FUN_1401c0180(void* p);   char FUN_1401c0050(void* p, int n);
+void* FUN_1401c0180(void* p);   bool FUN_1401c0050(void* p, int n);
 void* FUN_14052cd70(void* p);   void* FUN_140527840(void* p);   void* FUN_140527870(void* p);
-unsigned FUN_140526b10(void* p);   unsigned FUN_140526ad0(void* p);   int FUN_140526c30(void* p);   int FUN_140527a20(void* p);
+unsigned FUN_140526b10(void* p);   unsigned __int64 FUN_140526ad0(void* p);   int FUN_140526c30(void* p);   int FUN_140527a20(void* p);
 unsigned FUN_1405258b0(void* p);   unsigned FUN_140527270(void* p);   unsigned FUN_140526fc0(void* p);
-char FUN_14053d2b0(void* p);   char FUN_14053d510(void* p);   char FUN_14053cfd0(void* p);   char FUN_14053cf90(void* p);
-char FUN_14053ce80(void* p);   unsigned FUN_14053c620(void* p);   char FUN_14053e370(void* p);   void* FUN_14053ec70(void* p);
-char FUN_1405471b0(void* p);   char FUN_14059a350(void* p);
+bool FUN_14053d2b0(void* p);   bool FUN_14053d510(void* p);   bool FUN_14053cfd0(void* p);   char FUN_14053cf90(void* p);
+bool FUN_14053ce80(void* p);   unsigned FUN_14053c620(void* p);   bool FUN_14053e370(void* p);   void* FUN_14053ec70(void* p);
+bool FUN_1405471b0(void* p);   bool FUN_14059a350(void* p);
 void FUN_140529f60(void* o, CString* out, unsigned a, unsigned b, unsigned c, int d);   void FUN_140529eb0(void* o, CString* out);
 bool FUN_14053d2f0(void* p);
 void* FUN_14099eef0(void* p);   void* FUN_140a53610(void* p);   void* FUN_140a535c0(void* p);
 void* FUN_1412041d0(void* p);   void* FUN_141204220(void* p);   void* FUN_1409a8b10();   void* FUN_140c77560(void* p);
-void FUN_1405451a0(void* p);   int FUN_1405451c0(CString* p);
+int FUN_1405451a0(void* p);    int FUN_1405451c0(const CString& s);
 // strings / names
 void* FUN_1409989e0(void* out, const char* psz);   void FUN_140984450(void* out, const char* psz);   void FUN_1409845a0(void* fs);
-void* FUN_1409a8b90(void* obj);   const char* FUN_142087e50(void* name);   char FUN_140998dc0(void* name, const char* psz);
-char FUN_1401c0090(CString* a, CString* b);   void FUN_1401d3700(CString* s);   char FUN_1401647e0(CString* a, CString* b);
-char FUN_140184310(CString* a, void* psz);   char FUN_141068d50(void* a, const char* psz);
+void* FUN_1409a8b90(void* obj);   const char* FUN_142087e50(void* name);   bool FUN_140998dc0(void* name, const char* psz);
+bool FUN_1401c0090(CString* a, CString* b);   void FUN_1401d3700(CString* s);
+char FUN_140184310(CString* a, void* psz);
 void* FUN_1405eb3a0(void* list);   void* FUN_1405eb3b0(void* list, void* pos);
 void* FUN_14016a5c0(void* out, const char* psz, int n);   void* FUN_140298360(void* out, const char* psz, void* s);
 // scene objects
-void* FUN_14098cb80(void* it, void* obj);   void* FUN_14098e0d0(void* it, int n);   void FUN_14098cf00(void* it);
-void FUN_140a0b300(void* obj, int b);   void* FUN_140a0b000(void* obj);
+// Breadth-first walk over an object's subtree (0x30 bytes, like Unk_NodeWalker in uichaoslightdialog.h).
+class Unk_MeshWalker
+{
+public:
+    Unk_MeshWalker(void* pRoot);                                    // 0x14098cb80
+    ~Unk_MeshWalker();                                              // 0x14098cf00
+    void* FUN_14098e0d0(bool bChildren);                            // 0x14098e0d0 next object, NULL at the end
+private:
+    void* m_a[6];
+};
+void FUN_140a0b300(void* obj, bool b);   void* FUN_140a0b000(void* obj);
 void FUN_140aacb60(void* obj, void* xf);   void FUN_140aacaa0(void* obj, const void* xf);
 void* FUN_1411a3f30(void* p);   void FUN_1411a3e30(void* p);   void FUN_1411a4080(void* p);
-char FUN_1409991a0(void* svc, void* key, void** pOut, int n);   void* FUN_140998e80(void* p);   void* FUN_140998e90(void* p);
-void* FUN_1409f7900(void* p);   int FUN_1409a1a00(void* p);   void* FUN_1409a1a90();   void* FUN_1409a1940(void* p, void* out, int n);
-void* FUN_1409a0f10(void* out, void* src);
-void FUN_140a332d0(void* xf);   void* FUN_1409478e0(void* node);   void FUN_140a35c30(void* dst, void* src);
+bool FUN_1409991a0(void* svc, const egf::EntityID& kId, void** pOut);   void* FUN_140998e80(void* p);   void* FUN_140998e90(void* p);
+void* FUN_1409f7900(void* p);   unsigned FUN_1409a1a00(void* p);   const efd::utf8string& FUN_1409a1a90();   struct Unk_EmAssetData { efd::utf8string FUN_1409a1940(unsigned n) const; };
+
+void* FUN_1409478e0(void* node);   void FUN_140a35c30(void* dst, void* src);
 void FUN_140a35bd0(void* dst, void* src);   void* FUN_140a33de0(void* a, void* out, void* b);   void* FUN_140a33f90(void* obj);
-void FUN_140a52ef0(void* rec);   void FUN_140a53190(void* rec, unsigned v);   void FUN_1405a89e0(void* rec);
-void FUN_1409f7320(void* mat);   void* FUN_14097fc90(void* pt, void* out, float f);   void FUN_140ae9180(void* pt, float* out, float f);
-void FUN_14027dcf0(void* out, void* pt);   void* FUN_140965c40(void* a, void* out, void* b);   void FUN_140968990(void* pt);
+void* FUN_140965c40(void* a, void* out, void* b);   void FUN_140968990(void* pt);
 void* FUN_140194470(void* dst, const void* src);
 void* FUN_141d18b90(void* node, void* fs);   void* FUN_14208a860(unsigned cb, unsigned n);   void* FUN_140876480(void* out, int n);
 void* FUN_141068d50p(void* a, const char* psz);
@@ -150,12 +160,40 @@ double FUN_141473280(void* clock);   void* FUN_14086d260();
 void FUN_1411cf000(void* a);
 void* FUN_141658e60p(void* ent);
 
-#define VSLOT(o, off) ((*(void***)(o))[(off) / 8])
-#define V0(R, o, off) (((R(*)(void*))VSLOT(o, off))(o))
-#define V1(R, o, off, T, a) (((R(*)(void*, T))VSLOT(o, off))(o, a))
-#define V2(R, o, off, T1, a, T2, b) (((R(*)(void*, T1, T2))VSLOT(o, off))(o, a, b))
+// cl's `for each` (the exe's iteration shape); clang-cl (the hook DLL build) has no such statement: a range-for there.
+#ifdef __clang__
+#define EM_FOR_EACH(decl, container) for (decl : container)
+#else
+#define EM_FOR_EACH(decl, container) for each (decl in container)
+#endif
+
+// Vtable views of exe objects reached through opaque pointers (only the slots this unit calls).
+struct Unk_EmSlots8 { virtual void vfunc_0(); virtual void vfunc_1(); virtual void vfunc_2(); virtual void vfunc_3(); virtual void vfunc_4(); virtual void vfunc_5(); virtual void vfunc_6(); virtual void vfunc_7(); };
+struct Unk_EmSlots16 : Unk_EmSlots8 { virtual void vfunc_8(); virtual void vfunc_9(); virtual void vfunc_10(); virtual void vfunc_11(); virtual void vfunc_12(); virtual void vfunc_13(); virtual void vfunc_14(); virtual void vfunc_15(); };
+struct Unk_EmSlots24 : Unk_EmSlots16 { virtual void vfunc_16(); virtual void vfunc_17(); virtual void vfunc_18(); virtual void vfunc_19(); virtual void vfunc_20(); virtual void vfunc_21(); virtual void vfunc_22(); virtual void vfunc_23(); };
+struct Unk_EmSlots32 : Unk_EmSlots24 { virtual void vfunc_24(); virtual void vfunc_25(); virtual void vfunc_26(); virtual void vfunc_27(); virtual void vfunc_28(); virtual void vfunc_29(); virtual void vfunc_30(); virtual void vfunc_31(); };
+struct Unk_EmSlots40 : Unk_EmSlots32 { virtual void vfunc_32(); virtual void vfunc_33(); virtual void vfunc_34(); virtual void vfunc_35(); virtual void vfunc_36(); virtual void vfunc_37(); virtual void vfunc_38(); virtual void vfunc_39(); };
+struct Unk_EmSlots48 : Unk_EmSlots40 { virtual void vfunc_40(); virtual void vfunc_41(); virtual void vfunc_42(); virtual void vfunc_43(); virtual void vfunc_44(); virtual void vfunc_45(); virtual void vfunc_46(); virtual void vfunc_47(); };
+struct Unk_EmSlots56 : Unk_EmSlots48 { virtual void vfunc_48(); virtual void vfunc_49(); virtual void vfunc_50(); virtual void vfunc_51(); virtual void vfunc_52(); virtual void vfunc_53(); virtual void vfunc_54(); virtual void vfunc_55(); };
+// The owner's entity (FUN_141200820's result).
+struct Unk_EmEntity : Unk_EmSlots56
+{
+    egf::EntityID FUN_14123c460();
+    virtual void vfunc_56(); virtual void vfunc_57();
+    virtual int vfunc_58();         // 58 the effect object id
+    virtual void vfunc_59(); virtual void vfunc_60(); virtual void vfunc_61(); virtual void vfunc_62(); virtual void vfunc_63(); virtual void vfunc_64();
+    virtual int vfunc_65();         // 65 nonzero selects the alternate (A1/A3) part names
+};
+// The interface query at slot 5 (FUN_1412041d0 / FUN_141204220).
+struct Unk_EmQuery
+{
+    virtual void vfunc_0(); virtual void vfunc_1(); virtual void vfunc_2(); virtual void vfunc_3(); virtual void vfunc_4();
+    virtual bool vfunc_5(unsigned nId, void** ppOut);
+};
 
 #define OWNER(self) FUN_1405a8ed0(&(self)->m_spOwner)
+// The owner is the CEquipItem (m_spOwner is typed as an opaque holder; operator-> is 0x1405a8ed0).
+#define EQUIP(sp) reinterpret_cast<CEquipItem*>((sp).operator->())
 #define NODE(self) ((void*)&(self)->m_spNode)
 
 // ---- unit-local views of exe objects ----
@@ -178,7 +216,18 @@ MS2_CHECK_OFFSET(Unk_PartInfo, m_n24, 0x24);
 MS2_CHECK_OFFSET(Unk_PartInfo, m_nSlot, 0x48);
 MS2_CHECK_OFFSET(Unk_PartInfo, m_aLists, 0x128);
 
+// The owner entity's per-slot attach points (FUN_140527870's result).
+struct Unk_EntityPoints
+{
+    char m_pad_00[0x60];
+    NiPoint3 m_aPos[2];             // +0x60 m_vPos
+    NiPoint3 m_aPos78[1];           // +0x78 the second point array
+};
+MS2_CHECK_OFFSET(Unk_EntityPoints, m_aPos78, 0x78);
+
 // One element (0x38 bytes) of the part's attach list.
+struct Unk_NiPt3 { float x, y, z; Unk_NiPt3(const void* efdPoint); };   // NiPoint3(const efd::Point3&) 0x14027dcf0
+
 struct Unk_PartAttach
 {
     char m_pad_00[8];
@@ -187,8 +236,8 @@ struct Unk_PartAttach
     float m_afRot[3];               // +0x18 degrees
     float m_afPos[3];               // +0x24
     float m_fScale;                 // +0x30
-    char m_bFollow;                 // +0x34
-    char m_bFlag;                   // +0x35
+    bool m_bFollow;                 // +0x34
+    bool m_bFlag;                   // +0x35
     char m_pad_36[2];
 };
 MS2_CHECK_SIZE(Unk_PartAttach, 0x38);
@@ -196,6 +245,9 @@ MS2_CHECK_SIZE(Unk_PartAttach, 0x38);
 // The counted handle held at +0x140 of the attach dummy (the pointer at +8 is reference counted by 0x1411a4080).
 struct Unk_HoldHandle
 {
+    Unk_HoldHandle(const Unk_HoldHandle& o);    // 0x1412051d0
+    ~Unk_HoldHandle();                          // 0x1411a3e30
+    void* FUN_1411a3f30();                      // 0x1411a3f30 operator->
     void* m_p0;
     void* m_p8;
 };
@@ -210,6 +262,7 @@ struct Unk_AttachDummy
     char m_pad_80[0xb8];
     void* m_pFollow;                // +0x138 the node it follows
     Unk_HoldHandle m_hold;          // +0x140
+    Unk_HoldHandle FUN_141205e30(); // 0x141205e30 return m_hold
     int m_nMode;                    // +0x150
     int m_nFlag;                    // +0x154
     NiPoint3 m_kBasePos;            // +0x158
@@ -226,7 +279,10 @@ struct Unk_EquipTpl
     char m_pad_000[0x210];
     int m_nLevel;                   // +0x210
     char m_pad_214[4];
-    CString m_astrA[4];             // +0x218 .. +0x230 (two per hand)
+    CString m_strA0;                // +0x218 (two per hand)
+    CString m_strA1;                // +0x220
+    CString m_strA2;                // +0x228
+    CString m_strA3;                // +0x230
     char m_bFlagA;                  // +0x238
     char m_bFlagB;                  // +0x239
 };
@@ -241,7 +297,7 @@ struct Unk_HoldTarget
 };
 
 char FUN_140b029f0(void* a, void* b);   void* FUN_140b02a60(void* it);   void FUN_140b02a80(void* it);
-unsigned FUN_140aa6d30();   int FUN_1417e2610(unsigned p);
+void* FUN_140aa6d30();   int FUN_1417e2610(void* p);   // CStateService singleton (64-bit pointer)
 void* FUN_141b76c30(void* p);   void* FUN_141d19760(void* p, unsigned n);
 
 // ---- static data (.text$di) ----
@@ -261,19 +317,16 @@ static Unk_1402a9d70 s_map2(17, 0.75f, 0.25f, 2.25f, 10);
 // ---- forward declarations of this unit's helpers ----
 void FUN_141205a40(Unk_AttachDummy* p, int n);
 void FUN_141205a60(Unk_AttachDummy* p, int n);
-Unk_HoldHandle* FUN_141205e30(Unk_AttachDummy* p, Unk_HoldHandle* pOut);
 void FUN_141207f40(Unk_AttachDummy* p, void* pFollow);
 void FUN_141207f70(Unk_AttachDummy* p, const void* pRotate);
 void FUN_141207fb0(Unk_HoldTarget* p, float f);
 void FUN_141207fd0(Unk_AttachDummy* p, const NiPoint3& pt);
-void FUN_1411ffee0(CEquipModel* self);
+void FUN_1411ffee0(CEquipModel* self, double fTime);
 void FUN_1412024f0(CEquipModel* self, NiPoint3* pPos, float* pEuler, float* pScale, void* pLocal, void* pTrans, void* pRot);
 void* FUN_141200820(CEquipModel* self);
 void* FUN_141200850(CEquipModel* self);
 void* FUN_1412008e0(CEquipModel* self);
-void* FUN_141200940(CEquipModel* self, void* out);
 void* FUN_1412009d0(CEquipModel* self);
-void* FUN_141200a40(CEquipModel* self, void* out);
 void* FUN_141200a90(CEquipModel* self);
 void* FUN_141200ab0(CEquipModel* self);
 bool FUN_141200ad0(CEquipModel* self);
@@ -281,10 +334,7 @@ void FUN_141200b30(CEquipModel* self);
 void FUN_141200ca0(CEquipModel* self);
 void FUN_141200e30(CEquipModel* self, int n);
 void FUN_141200390(CEquipModel* self, const CString& kName);
-void* FUN_141201920(CEquipModel* self, void* out, CString kName);
-void* FUN_141201bd0(CEquipModel* self, void* out, CString kName);
 void* FUN_1412018c0(CEquipModel* self);
-void FUN_1412029d0(CEquipModel* self, CString* out);
 void FUN_141202bd0(CEquipModel* self);
 void FUN_141202d20(CEquipModel* self, int nSlot, CString* pName, unsigned char bKeep, unsigned char bWorld);
 void FUN_141202dc0(CEquipModel* self, int nSlot);
@@ -292,7 +342,6 @@ bool FUN_141202e30(CEquipModel* self, int nSlot);
 void FUN_1412034e0(CEquipModel* self);
 void FUN_141203570(CEquipModel* self, int nSlot, CString kName, unsigned char bWorld);
 void FUN_141203660(CEquipModel* self, int nSlot, CString kName, void* pNode);
-CString FUN_141203830(CEquipModel* self);
 bool FUN_141203cf0(CEquipModel* self, void* pEnt);
 void FUN_141203db0(CEquipModel* self);
 
@@ -309,7 +358,7 @@ CEquipModel::CEquipModel(MS2Ptr<Unk_EquipModelOwner> spOwner, void* p18, void* p
     m_pos60 = *(NiPoint3*)&DAT_143b01a60;
     m_pos6c = *(NiPoint3*)&DAT_143b01a60;
     FUN_1409fabf0(&m_unk_f0, 0);
-    if (FUN_1405a8e70(&m_spOwner) != 0) {
+    if (FUN_1405a8e70(&m_spOwner) ? true : false) {
         if (FUN_1411dc7f0(OWNER(this)) != 0)
             m_b110 = FUN_14053e370(FUN_1411dc7f0(OWNER(this)));
     }
@@ -347,13 +396,13 @@ void CEquipModel::vfunc_17()
 }
 
 // @0x1411ffee0
-void FUN_1411ffee0(CEquipModel* self)
+void FUN_1411ffee0(CEquipModel* self, double fTime)
 {
     if (self->m_b110 != 0) {
-        alignas(8) char kId[24];
-        void* p = FUN_140527870(FUN_1401c0180(FUN_1411dc7a0(OWNER(self), kId)));
-        FUN_1401bfde0(kId);
-        if (p != 0 && FUN_14059a350(p) != 0)
+        void* p = FUN_140527870(EQUIP(self->m_spOwner)->GetItem().operator->());
+        if (p == 0)
+            return;
+        if (FUN_14059a350(p))
             self->vfunc_11();
     }
 }
@@ -451,91 +500,61 @@ void CEquipModel::vfunc_30(void* a, void* b, float f)
 // @0x141200230
 void FUN_141200230(CEquipModel* self)
 {
-    alignas(8) char kId[16];
-    FUN_1401bf970(kId, FUN_1412009d0(self));
-    if (FUN_1401b5240(kId, 0) == 0) {
-        void* pEnt = FUN_141200820(self);
-        if (pEnt != 0) {
-            CString kPoint("Point01");
-            alignas(8) char spPoint[8];
-            FUN_141201bd0(self, spPoint, kPoint);
-            if (FUN_1409f77a0(spPoint, 0) == 0) {
-                void* pNode = FUN_1409475d0(spPoint);
-                FUN_141203660(self, 2, FUN_141203830(self), pNode);
-            }
-            FUN_1409f74b0(spPoint);
-        }
-    }
-    FUN_1401b50d0(kId);
+    MS2Ptr<CItemData> spData((CItemData*)FUN_1412009d0(self));
+    if (spData == NULL)
+        return;
+    void* pEnt = FUN_141200820(self);
+    if (pEnt == 0)
+        return;
+    CString kPoint("Point01");
+    NiNodePtr spPoint = self->FUN_141201bd0(kPoint);
+    if (FUN_1409f77a0(&spPoint, 0))
+        return;
+    FUN_141203660(self, 2, self->FUN_141203830(), FUN_1409475d0(&spPoint));
 }
 
 // Hangs the "dummy" attach nodes described by the part's attach list on the parent of the attach node.
-// MS2-FUNCTIONAL: attach-list loop codegen differs (iterator COMDAT order and the Left/mask temps; 53 vs 51 callees); same calls and effects
 // @0x141200390
 void FUN_141200390(CEquipModel* self, const CString& kName)
 {
     void* pEnt = FUN_141200820(self);
-    if (pEnt == 0 || FUN_1409f77a0(NODE(self), 0) != 0)
+    if (pEnt == 0)
         return;
-    if (FUN_140a0b000(FUN_1409475f0(NODE(self))) == 0)
+    if (FUN_1409f77a0(NODE(self), 0) || FUN_140a0b000(FUN_1409475f0(NODE(self))) == 0)
         return;
     NiAVObject* pDummy = (NiAVObject*)FUN_14098d8d0(&DAT_143af77a8, FUN_1409475d0(NODE(self)));
-    Unk_AttachDummy* pD = (Unk_AttachDummy*)pDummy;
     if (pDummy == 0)
         return;
     NiTransform kXf;
-    FUN_140a332d0(&kXf);
     kXf.MakeIdentity();
     FUN_140aacb60(pDummy, &kXf);
-    FUN_141205a40(pD, 0);
-    FUN_141205a60(pD, 0);
+    FUN_141205a40((Unk_AttachDummy*)pDummy, 0);
+    FUN_141205a60((Unk_AttachDummy*)pDummy, 0);
     Unk_PartInfo* pInfo = (Unk_PartInfo*)FUN_141200ab0(self);
-    unsigned nSlot = FUN_141658e60(pEnt);
-    std::vector<Unk_PartAttach>& kList = ((std::vector<Unk_PartAttach>*)pInfo->m_aLists)[nSlot];
+    std::vector<Unk_PartAttach>& kList = ((std::vector<Unk_PartAttach>*)pInfo->m_aLists)[FUN_141658e60(pEnt)];
     std::vector<Unk_PartAttach>::iterator itCur;
-    itCur = kList.begin();
-    while (itCur != kList.end()) {
-        Unk_PartAttach* e = &*itCur;
-        bool bMatch;
-        if (e->m_strName.GetLength() < 1)
-            bMatch = false;
-        else
-        {
-            CString kLeft = kName.Left(e->m_strName.GetLength());
-            bMatch = FUN_1401647e0(&e->m_strName, &kLeft) != 0;
+    for (itCur = kList.begin(); itCur != kList.end(); ++itCur) {
+        Unk_PartAttach* e = itCur.operator->();
+        bool bOther = e->m_strName.GetLength() > 0 && e->m_strName != kName.Left(e->m_strName.GetLength());
+        if (bOther)
+            continue;
+        if (e->m_strMask.GetLength() > 0
+            && *(NiFixedString*)FUN_1409a8b90(FUN_140a0b000(FUN_1409475f0(NODE(self)))) != (const char*)e->m_strMask)
+            continue;
+        efd::Matrix3 kMat;
+        efd::Point3 kRot = *(const efd::Point3*)e->m_afRot * 3.1415927f / 180.0f;
+        kMat.FromEulerAnglesXYZ(kRot.x, kRot.y, kRot.z);
+        FUN_141207f70((Unk_AttachDummy*)pDummy, &kMat);
+        Unk_NiPt3 kPos(e->m_afPos);
+        FUN_141207fd0((Unk_AttachDummy*)pDummy, *(NiPoint3*)&kPos);
+        if (e->m_bFollow) {
+            void* pRoot = FUN_14098d8d0(&DAT_143afa4d8, FUN_1409f7cb0(FUN_1412008e0(self)));
+            FUN_141207f40((Unk_AttachDummy*)pDummy, pRoot);
+            FUN_141205a60((Unk_AttachDummy*)pDummy, e->m_bFollow);
+            FUN_141205a40((Unk_AttachDummy*)pDummy, e->m_bFlag);
+            FUN_141207fb0((Unk_HoldTarget*)((Unk_AttachDummy*)pDummy)->FUN_141205e30().FUN_1411a3f30(), e->m_fScale);
         }
-        if (!bMatch) {
-            if (e->m_strMask.GetLength() > 0) {
-                const char* pszMask = e->m_strMask;
-                void* pMesh = FUN_1409a8b90(FUN_140a0b000(FUN_1409475f0(NODE(self))));
-                if (FUN_141068d50(pMesh, pszMask) != 0)
-                    goto L_next;
-            }
-            {
-                efd::Matrix3 kMat;
-                alignas(8) char kTmp[16];
-                float afRot[3];
-                FUN_1409f7320(&kMat);
-                FUN_140ae9180(FUN_14097fc90(e->m_afRot, kTmp, 3.1415927f), afRot, 180.0f);
-                kMat.FromEulerAnglesXYZ(afRot[0], afRot[1], afRot[2]);
-                FUN_141207f70(pD, &kMat);
-                NiPoint3 kPos(e->m_afPos[0], e->m_afPos[1], e->m_afPos[2]);
-                FUN_141207fd0(pD, kPos);
-                if (e->m_bFollow != 0) {
-                    void* pRoot = FUN_14098d8d0(&DAT_143afa4d8, FUN_1409f7cb0(FUN_1412008e0(self)));
-                    FUN_141207f40(pD, pRoot);
-                    FUN_141205a60(pD, e->m_bFollow);
-                    FUN_141205a40(pD, e->m_bFlag);
-                    Unk_HoldHandle kHold;
-                    Unk_HoldHandle* pObj = FUN_141205e30(pD, &kHold);
-                    FUN_141207fb0((Unk_HoldTarget*)FUN_1411a3f30(pObj), e->m_fScale);
-                    FUN_1411a3e30(&kHold);
-                }
-                pDummy->Update((float)FUN_141473280(FUN_14086d260()), true);
-            }
-        }
-    L_next:
-        ++itCur;
+        pDummy->Update((float)FUN_141473280(FUN_14086d260()), true);
     }
 }
 
@@ -554,39 +573,33 @@ void* FUN_141200850(CEquipModel* self)
 // @0x1412008e0
 void* FUN_1412008e0(CEquipModel* self)
 {
-    alignas(8) char kId[24];
     void* pEnt = FUN_141200850(self);
     if (pEnt == 0)
         return 0;
-    return FUN_140999440(FUN_141b6f910(), FUN_14123c460(pEnt, kId));
+    return FUN_140999440(FUN_141b6f910(), ((Unk_EmEntity*)pEnt)->FUN_14123c460());
 }
 
 // @0x141200940
-void* FUN_141200940(CEquipModel* self, void* out)
+MS2Ptr<CItem> CEquipModel::FUN_141200940()
 {
-    if (FUN_140b02900(&self->m_spOwner) == 0)
-        FUN_1411dc7a0(OWNER(self), out);
-    else
-        FUN_140203510(out, 0);
-    return out;
+    if (FUN_140b02900(&m_spOwner))
+        return MS2Ptr<CItem>(0);
+    return EQUIP(m_spOwner)->GetItem();
 }
 
 // @0x1412009d0
 void* FUN_1412009d0(CEquipModel* self)
 {
-    alignas(8) char kId[24];
-    void* p = FUN_14052cd70(FUN_141200940(self, kId));
-    FUN_1401bfde0(kId);
+    CItem* p = self->FUN_141200940().get();
     if (p == 0)
         return 0;
     return FUN_140527840(p);
 }
 
 // @0x141200a40
-void* FUN_141200a40(CEquipModel* self, void* out)
+MS2Ptr<Unk_EquipModelOwner> CEquipModel::FUN_141200a40()
 {
-    FUN_140884f30(out, &self->m_spOwner);
-    return out;
+    return m_spOwner;
 }
 
 // @0x141200a90
@@ -623,7 +636,7 @@ void FUN_141200b30(CEquipModel* self)
         if (pRoot != 0) {
             pRoot->UpdateProperties();
             pRoot->UpdateEffects();
-            pRoot->Update((float)(DAT_143ac3d08 + 0.001), true);
+            pRoot->Update(DAT_143ac3d08 + 0.001f, true);
         }
     }
 }
@@ -656,20 +669,19 @@ int FUN_141200c50(CEquipModel* self, CString* pName)
 // @0x141200ca0
 void FUN_141200ca0(CEquipModel* self)
 {
-    if (FUN_141200ad0(self) == 0)
-        self->vfunc_12();
-    else
+    if (FUN_141200ad0(self))
         self->vfunc_13();
-    if (FUN_1405a8e70(&self->m_spOwner) != 0) {
+    else
+        self->vfunc_12();
+    if (FUN_1405a8e70(&self->m_spOwner) ? true : false) {
         if (FUN_1411dc7f0(OWNER(self)) != 0) {
-            if (FUN_1405471b0(FUN_14053ec70(FUN_1411dc7f0(OWNER(self)))) != 0) {
+            if (FUN_1405471b0(FUN_14053ec70(FUN_1411dc7f0(OWNER(self))))) {
                 FUN_1411dce60(OWNER(self), &s_strWillUpdatePos);
                 FUN_1411dd280(OWNER(self));
             }
             void* pEnt = FUN_141200820(self);
             if (pEnt != 0) {
-                alignas(8) char spOwn[16];
-                FUN_1411ea430(FUN_1416561a0(pEnt), FUN_140884f30(spOwn, &self->m_spOwner));
+                FUN_1411ea430(FUN_1416561a0(pEnt), self->m_spOwner);
                 FUN_141202bd0(self);
             }
         }
@@ -685,34 +697,22 @@ void FUN_141200e30(CEquipModel* self, int bClear)
     NiNode* pRoot = (NiNode*)FUN_14098d8d0(&DAT_143afa4d8, self->vfunc_14());
     if (pRoot == 0)
         return;
-    for (NiAVObjectPtr sp : self->m_unk_f8) {
-        alignas(8) char spOld[8];
-        if (FUN_1409a7f70(&sp, pRoot) == 0) {
-            V2(void, pRoot, 0x120, void*, FUN_1409849b0(&sp), int, 1);
-        } else {
+    EM_FOR_EACH(NiAVObjectPtr sp, self->m_unk_f8) {
+        if (FUN_1409a7f70(&sp, pRoot)) {
             NiNode* pParent = (NiNode*)FUN_14098d8d0(&DAT_143afa4d8, FUN_140a0b000(FUN_14098d0f0(&sp)));
-            if (pParent != 0) {
-                V2(void*, pParent, 0x128, void*, spOld, void*, FUN_1409849b0(&sp));
-                FUN_1405a85c0(spOld);
-            }
+            if (pParent != 0)
+                pParent->DetachChild((NiAVObject*)FUN_1409849b0(&sp));
+        } else {
+            pRoot->AttachChild((NiAVObject*)FUN_1409849b0(&sp), true);
         }
     }
     void* pEnt = FUN_141200820(self);
     if (pEnt != 0) {
-        alignas(8) char kId[16];
-        FUN_1411dc7a0(OWNER(self), kId);
-        if (FUN_14052cd70(kId) != 0) {
-            void* pTpl = FUN_1401c0180(kId);
-            unsigned nFlag = (unsigned char)FUN_14053d2b0(FUN_140527840(pTpl));
-            unsigned nType = FUN_1405258b0(FUN_1401c0180(kId));
-            CString kPart;
-            FUN_1412029d0(self, &kPart);
-            unsigned nId = FUN_140527a20(FUN_1401c0180(kId));
-            FUN_1411e9fa0(FUN_1416561a0(pEnt), nId, kPart, nType, nFlag);
-        }
-        alignas(8) char spOwn[16];
-        FUN_1411ea500(FUN_1416561a0(pEnt), FUN_140884f30(spOwn, &self->m_spOwner));
-        FUN_1401bfde0(kId);
+        MS2Ptr<CItem> spItem = EQUIP(self->m_spOwner)->GetItem();
+        if (FUN_14052cd70(&spItem) != 0)
+            FUN_1411e9fa0(FUN_1416561a0(pEnt), FUN_140527a20(spItem.operator->()), self->FUN_1412029d0(),
+                          FUN_1405258b0(spItem.operator->()), FUN_14053d2b0(FUN_140527840(spItem.operator->())));
+        FUN_1411ea500(FUN_1416561a0(pEnt), self->m_spOwner);
     }
     if (bClear != 0)
         self->m_unk_f8.clear();
@@ -721,95 +721,79 @@ void FUN_141200e30(CEquipModel* self, int bClear)
 
 // Marks the meshes whose names (or, failing that, whose names without the prefix) match kName as visible/hidden.
 // @0x141201180
-void FUN_141201180(CEquipModel* self, CString kName)
+void FUN_141201180(CEquipModel* self, const CString& kName)
 {
     CString kMesh;
     CString kKey(kName);
     FUN_1401d3700(&kKey);
-    for (NiAVObjectPtr sp : self->m_unk_f8) {
-        alignas(8) char walk[0x30];
-        FUN_14098cb80(walk, FUN_1409849b0(&sp));
+    EM_FOR_EACH(NiAVObjectPtr sp, self->m_unk_f8) {
+        Unk_MeshWalker kWalk(FUN_1409849b0(&sp));
         void* pObj;
-        while ((pObj = FUN_14098e0d0(walk, 1)) != 0) {
+        while ((pObj = kWalk.FUN_14098e0d0(true)) != 0) {
             void* pMesh = FUN_14098d8d0(&DAT_143afbbb0, pObj);
-            if (pMesh != 0) {
-                kMesh = FUN_142087e50(FUN_1409a8b90(pMesh));
-                FUN_1401d3700(&kMesh);
-                if (FUN_1401c0090(&kMesh, &kKey) == 0) {
-                    kMesh = kMesh.Mid(kKey.GetLength());
-                    if (FUN_1401c0090(&kMesh, &kKey) != 0)
-                        FUN_140a0b300(pMesh, 1);
-                } else {
-                    FUN_140a0b300(pMesh, 1);
-                }
-            }
-        }
-        FUN_14098cf00(walk);
-    }
-    alignas(8) char walk2[0x30];
-    FUN_14098cb80(walk2, self->vfunc_14());
-    void* pObj2;
-    while ((pObj2 = FUN_14098e0d0(walk2, 1)) != 0) {
-        void* pMesh = FUN_14098d8d0(&DAT_143afbbb0, pObj2);
-        if (pMesh != 0) {
+            if (pMesh == 0)
+                continue;
             kMesh = FUN_142087e50(FUN_1409a8b90(pMesh));
             FUN_1401d3700(&kMesh);
-            if (FUN_1401c0090(&kMesh, &kKey) == 0) {
-                kMesh = kMesh.Mid(kKey.GetLength());
-                if (FUN_1401c0090(&kMesh, &kKey) != 0)
-                    FUN_140a0b300(pMesh, 1);
+            if (FUN_1401c0090(&kMesh, &kKey)) {
+                FUN_140a0b300(pMesh, true);
             } else {
-                FUN_140a0b300(pMesh, 1);
+                kMesh = kMesh.Mid(0, kKey.GetLength());
+                if (FUN_1401c0090(&kMesh, &kKey))
+                    FUN_140a0b300(pMesh, true);
             }
         }
     }
-    FUN_14098cf00(walk2);
+    Unk_MeshWalker kWalk2(self->vfunc_14());
+    void* pObj2;
+    while ((pObj2 = kWalk2.FUN_14098e0d0(true)) != 0) {
+        void* pMesh = FUN_14098d8d0(&DAT_143afbbb0, pObj2);
+        if (pMesh == 0)
+            continue;
+        kMesh = FUN_142087e50(FUN_1409a8b90(pMesh));
+        FUN_1401d3700(&kMesh);
+        if (FUN_1401c0090(&kMesh, &kKey)) {
+            FUN_140a0b300(pMesh, true);
+        } else {
+            kMesh = kMesh.Mid(0, kKey.GetLength());
+            if (FUN_1401c0090(&kMesh, &kKey))
+                FUN_140a0b300(pMesh, true);
+        }
+    }
 }
 
 // Writes pPt into the owner entity's per-slot point array at +0x60 (m_vPos).
 // @0x1412014f0
 void FUN_1412014f0(CEquipModel* self, void* pPt)
 {
-    alignas(8) char spOwn[16];
-    FUN_141200a40(self, spOwn);
-    if (FUN_1409edd90(spOwn, 0) == 0) {
-        Unk_PartInfo* pInfo = (Unk_PartInfo*)self->m_unk_20;
-        if (pInfo != 0) {
-            if (pInfo->m_n24 != 0) {
-                if (FUN_14053cfd0(FUN_1411dc7f0(FUN_1405a8ed0(spOwn))) != 0) {
-                    alignas(8) char kId[32];
-                    char* p = (char*)FUN_140527870(FUN_1401c0180(FUN_1411dc7a0(FUN_1405a8ed0(spOwn), kId)));
-                    FUN_1401bfde0(kId);
-                    if (p != 0)
-                        FUN_140194470(p + 0x60 + pInfo->m_nSlot * 0xc, pPt);
-                }
-            }
-        }
+    MS2Ptr<Unk_EquipModelOwner> spOwn = self->FUN_141200a40();
+    if (spOwn == NULL)
+        return;
+    Unk_PartInfo* pInfo = (Unk_PartInfo*)self->m_unk_20;
+    if (pInfo == 0)
+        return;
+    if (pInfo->m_n24 != 0 && FUN_14053cfd0(FUN_1411dc7f0(spOwn.operator->())) != 0) {
+        Unk_EntityPoints* p = (Unk_EntityPoints*)FUN_140527870(EQUIP(spOwn)->GetItem().operator->());
+        if (p != 0)
+            FUN_140194470(p->m_aPos + pInfo->m_nSlot, pPt);
     }
-    FUN_1405a85f0(spOwn);
 }
 
 // Same for the point array at +0x78.
 // @0x141201620
 void FUN_141201620(CEquipModel* self, void* pPt)
 {
-    alignas(8) char spOwn[16];
-    FUN_141200a40(self, spOwn);
-    if (FUN_1409edd90(spOwn, 0) == 0) {
-        Unk_PartInfo* pInfo = (Unk_PartInfo*)self->m_unk_20;
-        if (pInfo != 0) {
-            if (pInfo->m_n24 != 0) {
-                if (FUN_14053cfd0(FUN_1411dc7f0(FUN_1405a8ed0(spOwn))) != 0) {
-                    alignas(8) char kId[32];
-                    char* p = (char*)FUN_140527870(FUN_1401c0180(FUN_1411dc7a0(FUN_1405a8ed0(spOwn), kId)));
-                    FUN_1401bfde0(kId);
-                    if (p != 0)
-                        FUN_140194470(p + 0x78 + pInfo->m_nSlot * 0xc, pPt);
-                }
-            }
-        }
+    MS2Ptr<Unk_EquipModelOwner> spOwn = self->FUN_141200a40();
+    if (spOwn == NULL)
+        return;
+    Unk_PartInfo* pInfo = (Unk_PartInfo*)self->m_unk_20;
+    if (pInfo == 0)
+        return;
+    if (pInfo->m_n24 != 0 && FUN_14053cfd0(FUN_1411dc7f0(spOwn.operator->())) != 0) {
+        Unk_EntityPoints* p = (Unk_EntityPoints*)FUN_140527870(EQUIP(spOwn)->GetItem().operator->());
+        if (p != 0)
+            FUN_140194470(p->m_aPos78 + pInfo->m_nSlot, pPt);
     }
-    FUN_1405a85f0(spOwn);
 }
 
 // @0x141201750
@@ -820,31 +804,26 @@ void CEquipModel::vfunc_32(int n)
 
 // Name of the entity class the model's entity is created from.
 // @0x141201780
-void* FUN_141201780(CEquipModel* self, void* out)
+efd::utf8string CEquipModel::FUN_141201780()
 {
-    void* pEnt = FUN_141200850(self);
+    void* pEnt = FUN_141200850(this);
     if (pEnt != 0) {
         if (FUN_140a53610(pEnt) != 0) {
-            FUN_1409989e0(out, "MS2EquipItem");
-            return out;
+            return efd::utf8string("MS2EquipItem");
         }
         if (FUN_1412041d0(pEnt) != 0) {
-            FUN_1409989e0(out, "MS2MannequinEquipItem");
-            return out;
+            return efd::utf8string("MS2MannequinEquipItem");
         }
         if (FUN_140a535c0(pEnt) != 0) {
-            FUN_1409989e0(out, "MS2MannequinEquipItem");
-            return out;
+            return efd::utf8string("MS2MannequinEquipItem");
         }
         if (FUN_14099eef0(pEnt) != 0) {
-            if (*((char*)FUN_140c77560(FUN_1409a8b10()) + 0x11) != 0) {
-                FUN_1409989e0(out, "MS2EquipItem");
-                return out;
+            if (*((bool*)FUN_140c77560(FUN_1409a8b10()) + 0x11)) {
+                return efd::utf8string("MS2EquipItem");
             }
         }
     }
-    FUN_1409989e0(out, "MS2EquipItemNoPhysX");
-    return out;
+    return efd::utf8string("MS2EquipItemNoPhysX");
 }
 
 // First attached scene object (the model's root), or NULL.
@@ -858,39 +837,24 @@ void* FUN_1412018c0(CEquipModel* self)
 
 // Finds the attached scene object whose name is kName (or which contains an object of that name).
 // @0x141201920
-void* FUN_141201920(CEquipModel* self, void* out, CString kName)
+NiAVObjectPtr CEquipModel::FUN_141201920(CString kName)
 {
-    for (NiAVObjectPtr sp : self->m_unk_f8) {
-        if (FUN_140998dc0(FUN_1409a8b90(FUN_14098d0f0(&sp)), kName) != 0) {
-            FUN_14097eb60(out, &sp);
-            return out;
-        }
+    EM_FOR_EACH(NiAVObjectPtr sp, m_unk_f8) {
+        if (FUN_140998dc0(FUN_1409a8b90(FUN_14098d0f0(&sp)), kName))
+            return sp;
     }
-    for (NiAVObjectPtr sp : self->m_unk_f8) {
-        alignas(8) char fs[8], spFound[8];
-        FUN_140984450(fs, kName);
-        void* pObj = FUN_14098d0f0(&sp);
-        FUN_14097eba0(spFound, V1(void*, pObj, 0xa0, void*, fs));
-        FUN_1409845a0(fs);
-        if (FUN_1409849b0(spFound) != 0) {
-            FUN_14097eb60(out, spFound);
-            FUN_1405a85c0(spFound);
-            return out;
-        }
-        FUN_1405a85c0(spFound);
+    EM_FOR_EACH(NiAVObjectPtr sp, m_unk_f8) {
+        NiAVObjectPtr spFound(((NiAVObject*)FUN_14098d0f0(&sp))->GetObjectByName((const char*)kName));
+        if (FUN_1409849b0(&spFound) != 0)
+            return spFound;
     }
-    FUN_14097eba0(out, 0);
-    return out;
+    return NiAVObjectPtr(0);
 }
 
 // @0x141201bd0
-void* FUN_141201bd0(CEquipModel* self, void* out, CString kName)
+NiNodePtr CEquipModel::FUN_141201bd0(const CString& kName)
 {
-    alignas(8) char sp[8];
-    void* p = FUN_14098d8d0(&DAT_143afa4d8, FUN_1409849b0(FUN_141201920(self, sp, kName)));
-    FUN_1409f7170(out, p);
-    FUN_1405a85c0(sp);
-    return out;
+    return NiNodePtr((NiNode*)FUN_14098d8d0(&DAT_143afa4d8, FUN_141201920(kName).operator NiAVObject*()));
 }
 
 // @0x141201c90
@@ -906,17 +870,16 @@ void FUN_141201cb0(CEquipModel* self, std::set<NiAVObjectPtr>& kSet)
     kSet = self->m_unk_f8;
     if (((Unk_PartInfo*)self->m_unk_20)->m_n20 == 0) {
         NiAVObject* pRoot = (NiAVObject*)self->vfunc_14();
-        if (pRoot != 0)
-            kSet.insert(NiAVObjectPtr(pRoot));   // rvalue: the exe calls insert(value_type&&) 0x141205000
+        if (pRoot != 0) {
+            NiAVObjectPtr spRoot(pRoot);
+            kSet.insert(static_cast<NiAVObjectPtr&&>(spRoot));   // rvalue: the exe calls insert(value_type&&) 0x141205000
+        }
     }
 }
 
-// Views of callees this function uses with value semantics: the part-name getter (returns the CString) and the entity
+// Views of callees this function uses with value semantics: the entity
 // loader's model path lookup (returns an efd::utf8string).
 class CItemData;
-struct Unk_EmPartSelf { CString FUN_1412029d0(); };
-struct Unk_EmModelLoader { efd::utf8string FUN_141206030(const egf::EntityID& kId); };
-struct Unk_EmEntity { egf::EntityID FUN_14123c460(); };
 
 // Re-parents the attach node onto the mesh named kName (mirrors the "_L_" / "_R_" naming of the part).
 // @0x141201d50
@@ -931,7 +894,7 @@ void FUN_141201d50(CEquipModel* self, CString kName)
     if (self->m_spNode == (NiNode*)0)
         return;
     if (kName == &DAT_142ec05ba)
-        kName = ((Unk_EmPartSelf*)self)->FUN_1412029d0();
+        kName = self->FUN_1412029d0();
     CString kCur;
     if (FUN_140a0b000(FUN_1409475f0(NODE(self))) != 0)
         kCur = FUN_142087e50(FUN_1409a8b90(FUN_140a0b000(FUN_1409475f0(NODE(self)))));
@@ -990,25 +953,18 @@ void FUN_141202280(CEquipModel* self, NiTransform* pOut)
     NiNode* pNode = (NiNode*)FUN_1409f7cb0(pRoot);
     if (pNode == 0)
         return;
-    CString kPart;
-    FUN_1412029d0(self, &kPart);
+    const CString& kPart = self->FUN_1412029d0();
     void* pos = FUN_1405eb3a0(&s_meshSuffixes);
     while (pos != 0) {
         CString kFull;
-        CString* pSuffix = (CString*)FUN_1405eb3b0(&s_meshSuffixes, &pos);
-        kFull.Format("%s%s", (const char*)kPart, (const char*)*pSuffix);
-        alignas(8) char fs[8], sp[8];
-        FUN_140984450(fs, kFull);
-        FUN_14097eba0(sp, V1(void*, pNode, 0xa0, void*, fs));
-        FUN_1409845a0(fs);
-        if (FUN_1409f77a0(sp, 0) == 0) {
-            if (FUN_14098d8d0(&DAT_143afbbb0, FUN_1409849b0(sp)) != 0) {
-                FUN_140a35c30(pOut, FUN_140a33f90(FUN_14098d0f0(sp)));
-                FUN_1405a85c0(sp);
-                return;
-            }
-        }
-        FUN_1405a85c0(sp);
+        kFull.Format("%s%s", (const char*)kPart, (const char*)*(CString*)FUN_1405eb3b0(&s_meshSuffixes, &pos));
+        NiAVObjectPtr sp(pNode->GetObjectByName((const char*)kFull));
+        if (FUN_1409a7f70(&sp, 0))
+            continue;
+        if (FUN_14098d8d0(&DAT_143afbbb0, FUN_1409849b0(&sp)) == 0)
+            continue;
+        FUN_140a35c30(pOut, FUN_140a33f90(FUN_14098d0f0(&sp)));
+        return;
     }
 }
 
@@ -1036,10 +992,9 @@ void FUN_1412024f0(CEquipModel* self, NiPoint3* pPos, float* pEuler, float* pSca
     alignas(8) char fs[8];
     void* pObj;
     {
-        CString kPart;
-        FUN_1412029d0(self, &kPart);
+        CString kPart = self->FUN_1412029d0();
         FUN_140984450(fs, kPart);
-        pObj = V1(void*, FUN_1409f7cb0(pActor), 0xa0, void*, fs);
+        pObj = ((NiAVObject*)FUN_1409f7cb0(pActor))->GetObjectByName(*(const NiFixedString*)fs);
         FUN_1409845a0(fs);
     }
     if (pObj == 0)
@@ -1051,7 +1006,6 @@ void FUN_1412024f0(CEquipModel* self, NiPoint3* pPos, float* pEuler, float* pSca
     if (pRoot == 0)
         return;
     NiTransform kXf;
-    FUN_140a332d0(&kXf);
     if (pRot == 0)
         FUN_140a35c30(&kXf, FUN_140a33f90(pRoot));
     else
@@ -1081,30 +1035,25 @@ CString CEquipModel::FUN_1412028f0()
 }
 
 // @0x141202940
-void FUN_141202940(CEquipModel* self)
+int FUN_141202940(CEquipModel* self)
 {
-    alignas(8) char kId[24];
-    void* p = FUN_14052cd70(FUN_141200940(self, kId));
-    FUN_1401bfde0(kId);
+    CItem* p = self->FUN_141200940().get();
     if (p != 0) {
         if (FUN_14053d510(FUN_140527840(p)) != 0) {
-            FUN_140526c30(p);
-            return;
+            return FUN_140526c30(p);
         }
     }
-    FUN_1405451a0(self->m_unk_18);
+    return FUN_1405451a0(self->m_unk_18);
 }
 
 // The part's name; the left/right counterpart is swapped in for the second hand's weapon.
 // @0x1412029d0
-void FUN_1412029d0(CEquipModel* self, CString* pOut)
+CString CEquipModel::FUN_1412029d0()
 {
-    alignas(8) char kId[32];
-    void* p = FUN_14052cd70(FUN_141200940(self, kId));
-    FUN_1401bfde0(kId);
+    CItem* p = FUN_141200940().get();
     if (p != 0) {
         if (FUN_14053d510(FUN_140527840(p)) != 0) {
-            CString kName(((Unk_PartInfo*)self->m_unk_20)->m_strName);
+            CString kName(((Unk_PartInfo*)m_unk_20)->m_strName);
             if (FUN_140526c30(p) == 4) {
                 int nL = kName.Replace("_L_", "_R_");
                 int nS = kName.Replace(" L ", " R ");
@@ -1113,19 +1062,17 @@ void FUN_1412029d0(CEquipModel* self, CString* pOut)
                     kName.Replace(" R ", " L ");
                 }
             }
-            new (pOut) CString(kName);
-            return;
+            return kName;
         }
     }
-    new (pOut) CString(((Unk_PartInfo*)self->m_unk_20)->m_strName);
+    return ((Unk_PartInfo*)m_unk_20)->m_strName;
 }
 
 // @0x141202b70
 unsigned FUN_141202b70(CEquipModel* self)
 {
-    CString kName;
-    FUN_1412029d0(self, &kName);
-    return FUN_1405451c0(&kName);
+    const CString& kName = self->FUN_1412029d0();
+    return FUN_1405451c0(kName);
 }
 
 // (Re)applies the primary and secondary effect slots from the owner's template record.
@@ -1140,12 +1087,12 @@ void FUN_141202bd0(CEquipModel* self)
     Unk_EquipTpl* pTpl = (Unk_EquipTpl*)FUN_1411dc7f0(OWNER(self));
     if (pTpl == 0)
         return;
-    if (V0(int, pEnt, 0x208) == 0) {
-        FUN_141202d20(self, 0, &pTpl->m_astrA[0], pTpl->m_bFlagA, 0);
-        FUN_141202d20(self, 1, &pTpl->m_astrA[2], pTpl->m_bFlagB, 1);
+    if (((Unk_EmEntity*)pEnt)->vfunc_65() != 0) {
+        FUN_141202d20(self, 0, &pTpl->m_strA1, pTpl->m_bFlagA, 0);
+        FUN_141202d20(self, 1, &pTpl->m_strA3, pTpl->m_bFlagB, 1);
     } else {
-        FUN_141202d20(self, 0, &pTpl->m_astrA[1], pTpl->m_bFlagA, 0);
-        FUN_141202d20(self, 1, &pTpl->m_astrA[3], pTpl->m_bFlagB, 1);
+        FUN_141202d20(self, 0, &pTpl->m_strA0, pTpl->m_bFlagA, 0);
+        FUN_141202d20(self, 1, &pTpl->m_strA2, pTpl->m_bFlagB, 1);
     }
 }
 
@@ -1192,53 +1139,59 @@ void FUN_141202ea0(CEquipModel* self, CString* pName)
         return;
     alignas(8) char kId[16];
     FUN_1411dc7a0(OWNER(self), kId);
-    if (FUN_1401c0050(kId, 0) == 0) {
-        void* pRoot = FUN_1412008e0(self);
-        if (pRoot != 0) {
-            NiNode* pModel = (NiNode*)FUN_1409f7cb0(pRoot);
-            if (pModel != 0) {
-                alignas(8) char fs[8];
-                FUN_140984450(fs, *pName);
-                NiNode* pHost = (NiNode*)FUN_14098d8d0(&DAT_143afa4d8, V1(void*, pModel, 0xa0, void*, fs));
-                FUN_1409845a0(fs);
-                if (pHost != 0) {
-                    int nType = FUN_140526c30(FUN_1401c0180(kId));
-                    if (nType == 4 || nType == 5) {
-                        const char* pszNode = (nType == 4) ? "Weapon_Attach_TransformLH" : "Weapon_Attach_TransformRH";
-                        CString kNode(pszNode);
-                        alignas(8) char kPool[8];
-                        void* pMem = FUN_14208a860(0x188, *(unsigned*)FUN_140876480(kPool, 0));
-                        void* pNew = pMem ? FUN_141b76c30(pMem) : 0;
-                        alignas(8) char fs2[8];
-                        FUN_140984450(fs2, kNode);
-                        FUN_141d18b90(pNew, fs2);
-                        FUN_1409845a0(fs2);
-                        V2(void, pHost, 0x120, void*, pNew, int, 0);
-                        FUN_1409f76f0(NODE(self), pNew);
-                        void* pEnt = FUN_141200820(self);
-                        if (pEnt != 0) {
-                            alignas(8) char kEntId[8], kTmp[32];
-                            CString kModel(FUN_1408ac310(FUN_141206030(FUN_141b6f910(), kTmp, FUN_14123c460(pEnt, kEntId))));
-                            FUN_1408a8900(kTmp);
-                            FUN_141200390(self, kModel);
-                        }
-                    } else {
-                        CString kPre;
-                        FUN_14016a5c0(&kPre, *pName, 0);
-                        CString kTag;
-                        FUN_140298360(&kTag, "Equip_Attach_Transform", &kPre);
-                        alignas(8) char kPool[8];
-                        void* pMem = FUN_14208a860(0x130, *(unsigned*)FUN_140876480(kPool, 0));
-                        void* pNew = pMem ? FUN_141d19760(pMem, 0) : 0;
-                        alignas(8) char fs2[8];
-                        FUN_140984450(fs2, kTag);
-                        FUN_141d18b90(pNew, fs2);
-                        FUN_1409845a0(fs2);
-                        V2(void, pHost, 0x120, void*, pNew, int, 0);
-                        FUN_1409f76f0(NODE(self), pNew);
-                    }
-                }
-            }
+    if (FUN_1401c0050(kId, 0) != 0) {
+        FUN_1401bfde0(kId);
+        return;
+    }
+    void* pRoot = FUN_1412008e0(self);
+    if (pRoot == 0) {
+        FUN_1401bfde0(kId);
+        return;
+    }
+    NiNode* pModel = (NiNode*)FUN_1409f7cb0(pRoot);
+    if (pModel == 0) {
+        FUN_1401bfde0(kId);
+        return;
+    }
+    alignas(8) char fs[8];
+    FUN_140984450(fs, *pName);
+    NiNode* pHost = (NiNode*)FUN_14098d8d0(&DAT_143afa4d8, pModel->GetObjectByName(*(const NiFixedString*)fs));
+    FUN_1409845a0(fs);
+    if (pHost == 0) {
+        FUN_1401bfde0(kId);
+        return;
+    }
+    int nType = FUN_140526c30(FUN_1401c0180(kId));
+    if (nType != 4 && nType != 5) {
+        CString kPre;
+        FUN_14016a5c0(&kPre, *pName, 0);
+        CString kTag;
+        FUN_140298360(&kTag, "Equip_Attach_Transform", &kPre);
+        alignas(8) char kPool[8];
+        void* pMem = FUN_14208a860(0x130, *(unsigned*)FUN_140876480(kPool, 0));
+        void* pNew = pMem ? FUN_141d19760(pMem, 0) : 0;
+        alignas(8) char fs2[8];
+        FUN_140984450(fs2, kTag);
+        FUN_141d18b90(pNew, fs2);
+        FUN_1409845a0(fs2);
+        pHost->AttachChild((NiAVObject*)pNew, false);
+        FUN_1409f76f0(NODE(self), pNew);
+    } else {
+        const char* pszNode = (nType == 4) ? "Weapon_Attach_TransformLH" : "Weapon_Attach_TransformRH";
+        CString kNode(pszNode);
+        alignas(8) char kPool[8];
+        void* pMem = FUN_14208a860(0x188, *(unsigned*)FUN_140876480(kPool, 0));
+        void* pNew = pMem ? FUN_141b76c30(pMem) : 0;
+        alignas(8) char fs2[8];
+        FUN_140984450(fs2, kNode);
+        FUN_141d18b90(pNew, fs2);
+        FUN_1409845a0(fs2);
+        pHost->AttachChild((NiAVObject*)pNew, false);
+        FUN_1409f76f0(NODE(self), pNew);
+        void* pEnt = FUN_141200820(self);
+        if (pEnt != 0) {
+            CString kModel(((Unk_EmModelLoader*)FUN_141b6f910())->FUN_141206030(((Unk_EmEntity*)pEnt)->FUN_14123c460()).c_str());
+            FUN_141200390(self, kModel);
         }
     }
     FUN_1401bfde0(kId);
@@ -1246,20 +1199,16 @@ void FUN_141202ea0(CEquipModel* self, CString* pName)
 
 // True when the model should be created for the local view: preview/cinematic scene types or the owner's own entity.
 // @0x1412033e0
-bool FUN_1412033e0(CEquipModel* self)
+int FUN_1412033e0(CEquipModel* self)
 {
     if (FUN_1417e2610(FUN_140aa6d30()) == 0x620000d)
-        return true;
+        return 1;
     if (FUN_1417e2610(FUN_140aa6d30()) == 0x6200018)
-        return true;
+        return 1;
     void* pLocal = FUN_141bd0cc0(FUN_1403ed2d0());
     if (pLocal == 0)
-        return false;
-    alignas(8) char kId[24];
-    unsigned nOwner = FUN_140526ad0(FUN_1401c0180(FUN_1411dc7a0(OWNER(self), kId)));
-    bool b = nOwner == FUN_14123c580(pLocal);
-    FUN_1401bfde0(kId);
-    return b;
+        return 0;
+    return FUN_140526ad0(EQUIP(self->m_spOwner)->GetItem().operator->()) == FUN_14123c580(pLocal);
 }
 
 // Releases every effect bound to a slot and empties the map.
@@ -1303,23 +1252,22 @@ void FUN_141203660(CEquipModel* self, int nSlot, CString kName, void* pNode)
         self->m_b111 = 1;
         return;
     }
-    alignas(8) char rec[0x78];
-    FUN_140a52ef0(rec);
-    *(CString*)rec = kName;
-    FUN_1409fabf0(rec + 0x10, pNode);
-    *(int*)(rec + 8) = V0(int, pEnt, 0x1d0);
-    FUN_140a53190(rec, FUN_14123c580(pEnt));
-    int nHandle = FUN_1411a49c0(FUN_1403ed280(), rec);
-    if (nHandle != 0)
-        self->m_map78.SetAt((Unk_EquipEffectSlot)nSlot, nHandle);
+    NoticeMessage kReq;
+    kReq.m_strName = kName;
+    FUN_1409fabf0(&kReq.m_spNode, pNode);
+    kReq.m_nObject = ((Unk_EmEntity*)pEnt)->vfunc_58();
+    kReq.SetActor(FUN_14123c580(pEnt));
+    unsigned nHandle = FUN_1411a49c0(FUN_1403ed280(), &kReq);
+    if (nHandle > 0)
+        self->m_map78.SetAt((Unk_EquipEffectSlot&)nSlot, nHandle);
     self->m_b111 = 0;
-    FUN_1405a89e0(rec);
 }
 
 // The status text shown for the model's effect: the owner's template summary string.
 // @0x141203830
-CString FUN_141203830(CEquipModel* self)
+CString CEquipModel::FUN_141203830()
 {
+    CEquipModel* self = this;
     if (FUN_1409edd90(&self->m_spOwner, 0) != 0)
         return CString("");
     alignas(8) char kId[16];
@@ -1335,10 +1283,12 @@ CString FUN_141203830(CEquipModel* self)
         FUN_1401bfde0(kId);
         return kEmpty;
     }
-    CString kResult;
     if (!FUN_14053d2f0(pTpl)) {
-        kResult = "";
-    } else if (FUN_14053cf90(pTpl) != 0) {
+        CString kEmpty("");
+        FUN_1401bfde0(kId);
+        return kEmpty;
+    }
+    if (FUN_14053cf90(pTpl) != 0) {
         void* pParent = FUN_1411dc8c0(OWNER(self));
         if (pParent != 0) {
             alignas(8) char spPart[16];
@@ -1373,15 +1323,11 @@ CString FUN_141203830(CEquipModel* self)
             }
             FUN_1405a85f0(spPart);
         }
-        CString kOut;
-        FUN_140529eb0(FUN_1401c0180(kId), &kOut);
-        FUN_1401bfde0(kId);
-        return kOut;
-    } else {
-        kResult = "";
     }
+    CString kOut;
+    FUN_140529eb0(FUN_1401c0180(kId), &kOut);
     FUN_1401bfde0(kId);
-    return kResult;
+    return kOut;
 }
 
 // Whether effects may be created for pEnt: not for the owner's entity classes flagged off.
@@ -1390,17 +1336,16 @@ bool FUN_141203cf0(CEquipModel* self, void* pEnt)
 {
     if (pEnt == 0)
         return false;
-    if (FUN_141204220(pEnt) == 0)
-        return true;
-    alignas(8) char kId[32];
-    FUN_1401bf970(kId, FUN_1412009d0(self));
-    if (FUN_140203c60(kId) == 0) {
-        FUN_1401b50d0(kId);
+    void* p = FUN_141204220(pEnt);
+    if (p != 0) {
+        {
+            MS2Ptr<CItemData> spData((CItemData*)FUN_1412009d0(self));
+            if (spData.get() != 0)
+                return FUN_14053ce80(spData.operator->()) ? true : false;
+        }
         return false;
     }
-    char c = FUN_14053ce80(FUN_1401b52a0(kId));
-    FUN_1401b50d0(kId);
-    return c != 0;
+    return true;
 }
 
 // Detaches the attach node from its parent and drops it.
@@ -1410,9 +1355,7 @@ void FUN_141203db0(CEquipModel* self)
     if (FUN_1409475d0(NODE(self)) != 0) {
         NiNode* pParent = (NiNode*)FUN_140a0b000(FUN_1409475f0(NODE(self)));
         if (pParent != 0) {
-            alignas(8) char spOld[24];
-            V2(void*, pParent, 0x128, void*, spOld, void*, FUN_1409475d0(NODE(self)));
-            FUN_1405a85c0(spOld);
+            pParent->DetachChild((NiAVObject*)FUN_1409475d0(NODE(self)));
         }
         FUN_1409f76f0(NODE(self), 0);
     }
@@ -1422,30 +1365,20 @@ void FUN_141203db0(CEquipModel* self)
 // @0x141203e60
 void FUN_141203e60(CEquipModel* self)
 {
-    for (NiAVObjectPtr sp : self->m_unk_f8) {
-        alignas(8) char spOld[24];
-        if (FUN_1409a7f70(&sp, 0) == 0) {
-            NiNode* pParent = (NiNode*)FUN_140a0b000(FUN_14098d0f0(&sp));
-            if (pParent != 0) {
-                V2(void*, pParent, 0x128, void*, spOld, void*, FUN_1409849b0(&sp));
-                FUN_1405a85c0(spOld);
-            }
-        }
+    EM_FOR_EACH(NiAVObjectPtr sp, self->m_unk_f8) {
+        if (FUN_1409a7f70(&sp, 0))
+            continue;
+        NiNode* pParent = (NiNode*)FUN_140a0b000(FUN_14098d0f0(&sp));
+        if (pParent != 0)
+            pParent->DetachChild((NiAVObject*)FUN_1409849b0(&sp));
     }
     self->m_unk_f8.clear();
     void* pEnt = FUN_141200820(self);
     if (pEnt != 0) {
-        alignas(8) char kId[16];
-        FUN_1411dc7a0(OWNER(self), kId);
-        if (FUN_14052cd70(kId) != 0) {
-            unsigned nFlag = (unsigned char)FUN_14053d2b0(FUN_140527840(FUN_1401c0180(kId)));
-            unsigned nType = FUN_1405258b0(FUN_1401c0180(kId));
-            CString kPart;
-            FUN_1412029d0(self, &kPart);
-            unsigned nId = FUN_140527a20(FUN_1401c0180(kId));
-            FUN_1411e9fa0(FUN_1416561a0(pEnt), nId, kPart, nType, nFlag);
-        }
-        FUN_1401bfde0(kId);
+        MS2Ptr<CItem> spItem = EQUIP(self->m_spOwner)->GetItem();
+        if (FUN_14052cd70(&spItem) != 0)
+            FUN_1411e9fa0(FUN_1416561a0(pEnt), FUN_140527a20(spItem.operator->()), self->FUN_1412029d0(),
+                          FUN_1405258b0(spItem.operator->()), FUN_14053d2b0(FUN_140527840(spItem.operator->())));
     }
 }
 
@@ -1453,26 +1386,27 @@ void FUN_141203e60(CEquipModel* self)
 void* FUN_1412041d0(void* p)
 {
     void* pOut = 0;
-    if (p == 0 || ((char(*)(void*, unsigned, void**))VSLOT(p, 0x28))(p, 0x6200016, &pOut) == 0)
-        pOut = 0;
-    return pOut;
+    if (p != 0 && ((Unk_EmQuery*)p)->vfunc_5(0x6200016, &pOut))
+        return pOut;
+    else
+        return 0;
 }
 
 // @0x141204220
 void* FUN_141204220(void* p)
 {
     void* pOut = 0;
-    if (p == 0 || ((char(*)(void*, unsigned, void**))VSLOT(p, 0x28))(p, 0x6200016, &pOut) == 0)
-        pOut = 0;
-    return pOut;
+    if (p != 0 && ((Unk_EmQuery*)p)->vfunc_5(0x6200016, &pOut))
+        return pOut;
+    else
+        return 0;
 }
 
 // @0x1412051d0
-Unk_HoldHandle* FUN_1412051d0(Unk_HoldHandle* pDst, const Unk_HoldHandle* pSrc)
+Unk_HoldHandle::Unk_HoldHandle(const Unk_HoldHandle& o)
 {
-    pDst->m_p8 = pSrc->m_p8;
-    FUN_1411a4080(pDst);
-    return pDst;
+    m_p8 = o.m_p8;
+    FUN_1411a4080(this);
 }
 
 // @0x141205a40
@@ -1488,34 +1422,28 @@ void FUN_141205a60(Unk_AttachDummy* p, int n)
 }
 
 // @0x141205e30
-Unk_HoldHandle* FUN_141205e30(Unk_AttachDummy* p, Unk_HoldHandle* pOut)
+Unk_HoldHandle Unk_AttachDummy::FUN_141205e30()
 {
-    FUN_1412051d0(pOut, &p->m_hold);
-    return pOut;
+    return m_hold;
 }
 
 // Animation service: the display name of the sequence the entity model key maps to (the default name when none).
 // @0x141206030
-void* FUN_141206030(void* pSvc, void* pOut, void* pKey)
+efd::utf8string Unk_EmModelLoader::FUN_141206030(const egf::EntityID& kId)
 {
     void* pEntry;
-    if (FUN_1409991a0(pSvc, pKey, &pEntry, 0) == 0) {
-        FUN_1409a0f10(pOut, FUN_1409a1a90());
-    } else {
-        void* pModel = FUN_140998e80((char*)pEntry + 0x10);
-        if (pModel == 0) {
-            FUN_1409a0f10(pOut, FUN_1409a1a90());
-        } else if (FUN_140998e90((char*)pEntry + 8) == 0) {
-            FUN_1409a0f10(pOut, FUN_1409a1a90());
-        } else {
-            int nSeq = FUN_1409a1a00(FUN_1409f7900((char*)pEntry + 8));
-            if (nSeq == -2)
-                FUN_1409a0f10(pOut, FUN_1409a1a90());
-            else
-                FUN_1409a1940(pModel, pOut, nSeq);
-        }
-    }
-    return pOut;
+    if (!FUN_1409991a0(this, kId, &pEntry))
+        return FUN_1409a1a90();
+    void* pAssetData = FUN_140998e80((char*)pEntry + 0x10);
+    if (!pAssetData)
+        return FUN_1409a1a90();
+    if (!FUN_140998e90((char*)pEntry + 8))
+        return FUN_1409a1a90();
+    unsigned nSeq = FUN_1409a1a00(FUN_1409f7900((char*)pEntry + 8));
+    if (nSeq == NiActorManager::INVALID_SEQUENCE_ID)
+        return FUN_1409a1a90();
+    else
+        return ((Unk_EmAssetData*)pAssetData)->FUN_1409a1940(nSeq);
 }
 
 // @0x141207f40

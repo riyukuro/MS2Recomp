@@ -36,7 +36,7 @@ class PetEvolutionPetCard : public PetEvolutionBase
 {
 public:
     PetEvolutionPetCard(TabContentsPetEvolution* pOwner);   // 0x140ac7770
-    virtual ~PetEvolutionPetCard();                     //  0 0x140acd810 (inline, ??_G 0x140acda90)
+    // implicit ~PetEvolutionPetCard(); 0 0x140acd810 (inline, ??_G 0x140acda90)
     virtual void vfunc_2();                             //  2 0x140ac77e0
     virtual void vfunc_4();                             //  4 0x140ac7810
     virtual void vfunc_5(int nTab);                     //  5 0x140ac7a10
@@ -50,7 +50,7 @@ class PetEvolutionPetIngredient : public PetEvolutionBase
 {
 public:
     PetEvolutionPetIngredient(TabContentsPetEvolution* pOwner);   // 0x140ac7a60
-    virtual ~PetEvolutionPetIngredient();               //  0 0x140acd890 (inline, ??_G 0x140acdb10)
+    // implicit ~PetEvolutionPetIngredient(); 0 0x140acd890 (inline, ??_G 0x140acdb10)
     virtual void vfunc_2();                             //  2 0x140ac7ad0
     virtual void vfunc_4();                             //  4 0x140ac7b00
     virtual void vfunc_5(int nTab);                     //  5 0x140ac7d00
@@ -64,7 +64,7 @@ class PetEvolutionPetEnchant : public PetEvolutionBase
 {
 public:
     PetEvolutionPetEnchant(TabContentsPetEvolution* pOwner);      // 0x140ac7d90
-    virtual ~PetEvolutionPetEnchant();                  //  0 0x140acd840 (inline, ??_G 0x140acdad0)
+    // implicit ~PetEvolutionPetEnchant(); 0 0x140acd840 (inline, ??_G 0x140acdad0)
     virtual void vfunc_2();                             //  2 0x140ac7e30
     virtual void vfunc_3();                             //  3 0x140ac7e80 submit button, debug buttons, point bar
     virtual void vfunc_4();                             //  4 0x140ac8530
@@ -89,7 +89,7 @@ public:
     typedef std::pair<unsigned __int64, int> IdCount;   // item uid and how many of it are selected
 
     TabContentsPetEvolution();                          // 0x140aca490
-    virtual ~TabContentsPetEvolution();                 //  0 0x140acd8c0 (inline, ??_G 0x140acdb90)
+    // implicit ~TabContentsPetEvolution(); 0 0x140acd8c0 (inline, ??_G 0x140acdb90)
     virtual void vfunc_1();                             //  1 0x140aca700 close the sections, drop the UI
     virtual void vfunc_2(int nTab);                     //  2 0x140aca8f0
     virtual void vfunc_3(MS2Ptr<ASUIComponent> ui);     //  3 0x140acaa50 attach the page's UI

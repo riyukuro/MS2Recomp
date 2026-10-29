@@ -50,13 +50,18 @@ StateWeddingEmotionData::~StateWeddingEmotionData()
 {
 }
 
+// The dynamic_cast views: the exe casts StateSyncObject -> StateSyncObjectWeddingEmotion (RTTI names are compared, so
+// casting to the Unk_ stand-ins always gave NULL).
+class StateSyncObject { public: virtual ~StateSyncObject(); };
+class StateSyncObjectWeddingEmotion : public StateSyncObject {};
+
 // Mirrors the payload into the wedding-emotion part of the sync record: +0xb8/+0xb9 are the two flags, +0xbc the
 // duration in seconds, then either the animation name or the emotion id + repeat flag.
 // @0x140ac64d0
 void StateWeddingEmotionData::vfunc_1(Unk_StateDataArg* p)
 {
     StateData::vfunc_1(p);
-    Unk_SyncWeddingEmotion* pSync = dynamic_cast<Unk_SyncWeddingEmotion*>(p);
+    Unk_SyncWeddingEmotion* pSync = reinterpret_cast<Unk_SyncWeddingEmotion*>(dynamic_cast<StateSyncObjectWeddingEmotion*>(reinterpret_cast<StateSyncObject*>(p)));
     pSync->m_bB8 = m_b18;
     pSync->m_bB9 = m_b2c;
     if (pSync->m_bB9 != 0)
@@ -77,7 +82,7 @@ void StateWeddingEmotionData::vfunc_1(Unk_StateDataArg* p)
 void StateWeddingEmotionData::vfunc_2(Unk_StateDataArg* p)
 {
     StateData::vfunc_2(p);
-    Unk_SyncWeddingEmotion* pSync = dynamic_cast<Unk_SyncWeddingEmotion*>(p);
+    Unk_SyncWeddingEmotion* pSync = reinterpret_cast<Unk_SyncWeddingEmotion*>(dynamic_cast<StateSyncObjectWeddingEmotion*>(reinterpret_cast<StateSyncObject*>(p)));
     m_b18 = pSync->m_bB8;
     m_b2c = pSync->m_bB9;
     if (m_b2c != 0)
@@ -228,7 +233,7 @@ void StateWeddingEmotion::EndOfSequence(NiActorManager* pkManager, unsigned int 
 // @0x140ac7090
 int StateWeddingEmotion::vfunc_22(MS2Ptr<Unk_StateArg22> p)
 {
-    Unk_SyncWeddingEmotion* pSync = dynamic_cast<Unk_SyncWeddingEmotion*>((Unk_StateArg22*)p);
+    Unk_SyncWeddingEmotion* pSync = reinterpret_cast<Unk_SyncWeddingEmotion*>(dynamic_cast<StateSyncObjectWeddingEmotion*>(reinterpret_cast<StateSyncObject*>((Unk_StateArg22*)p)));
     if (pSync == 0)
         return 0;
     if (m_spData == 0)

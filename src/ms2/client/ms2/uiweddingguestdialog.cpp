@@ -32,6 +32,7 @@
 #include "ms2/placeholder/asdata.h"
 #include "ms2/placeholder/asdisplayobject.h"
 #include "ms2/placeholder/asobj.h"
+#include "ms2/placeholder/asuicomponent.h"
 #include "ms2/placeholder/astextfield.h"
 #include "ms2/placeholder/coutpacket.h"
 #include "ms2/placeholder/cstringtable.h"
@@ -128,15 +129,18 @@ CString FUN_14016a5c0(const char* psz, int n);
 CString FUN_141028be0(__int64 nCharSN, const CString& strProfile, int nA, CString strB);   // the profile picture url
 int FUN_140900f00();                                            // max invitations
 CStringW FUN_1409e94c0(CStringW strKey, const int& nLevel, const CStringW& strJob);
+// The buddy's level getter as this unit sees it: an int result (the body returns the 16-bit field; the call site
+// takes eax as is).
+struct Unk_WgBuddyLevel { int FUN_1401cc210(); };
 CStringW FUN_14052b9d0(CStringW strKey, const unsigned short& nLevel, const CStringW& strJob);
 void FUN_142575b00(void* pMovie, const Scaleform::GFx::Value& v);   // hand a value to the movie
 void* FUN_1422bb8b0(int nMovieId);                              // the movie of a UI layer
 bool FUN_140a467d0(const MS2Ptr<AScript>& kScript);             // has the AS object been released
 unsigned char FUN_1409b0350(Scaleform::GFx::Value* pValue);     // Value::IsNull
-MS2Ptr<AScript> FUN_140acca70(int nMovieId, const Scaleform::GFx::Value& v);
+MS2Ptr<ASUIComponent> FUN_140acca70(int nMovieId, const Scaleform::GFx::Value& v);
 Unk_UiDock* FUN_140a7b2b0(int nId);                             // a dialog's position record
 
-CStringW FUN_14028dfa0(CStringW strKey, const fmt::ArgList& args);        // the string table formatter
+CStringW FUN_14028dfa0(const CStringW& strKey, const fmt::ArgList& args);        // the string table formatter
 FMT_VARIADIC_W(CStringW, FUN_14028dfa0, CStringW)
 
 typedef ATL::CAtlArray<CBuddyManager::Ptr> BuddyArray;
@@ -167,9 +171,16 @@ CString UIWeddingGuestDialog::GetTypeName()
 // @0x140fccb80
 int UIWeddingGuestDialog::vfunc_65()
 {
-    if (WeddingManager::GetInstance()->FUN_140d295d0()->m_nState == 1)
-        return UIDialog::vfunc_65();
-    return 0;
+    bool bOpen = false;
+    switch (WeddingManager::GetInstance()->FUN_140d295d0()->m_nState)
+    {
+    case 1:
+        bOpen = true;
+        break;
+    }
+    if (!bOpen)
+        return 0;
+    return UIDialog::vfunc_65();
 }
 
 // @0x140fccbe0
@@ -215,7 +226,6 @@ void UIWeddingGuestDialog::vfunc_43()
 }
 
 // @0x140fcce80
-// MS2-FUNCTIONAL: exe call-result temporaries / frame-slot order differ (source form not found)
 int UIWeddingGuestDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs)
 {
     if (UIDialog::vfunc_28(szMethod, pArgs, nArgs) != 0)
@@ -225,7 +235,8 @@ int UIWeddingGuestDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs) != 0)
         {
-            std::map<CString, PagePtr>::iterator it = m_pages.find(data.FUN_1422b8d30());
+            CString strPage = data.FUN_1422b8d30();
+            std::map<CString, PagePtr>::iterator it = m_pages.find(strPage);
             if (it != m_pages.end())
             {
                 m_spPage = it->second;
@@ -234,12 +245,13 @@ int UIWeddingGuestDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
         }
         return 1;
     }
-    if (_stricmp(szMethod, "onRemovePage") == 0)
+    else if (_stricmp(szMethod, "onRemovePage") == 0)
     {
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs) != 0)
         {
-            std::map<CString, PagePtr>::iterator it = m_pages.find(data.FUN_1422b8d30());
+            CString strPage = data.FUN_1422b8d30();
+            std::map<CString, PagePtr>::iterator it = m_pages.find(strPage);
             if (it != m_pages.end())
             {
                 m_spPage->vfunc_2();
@@ -247,45 +259,42 @@ int UIWeddingGuestDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
             }
         }
     }
-    else
+    else if (_stricmp(szMethod, "onAdd") == 0)
     {
-        if (_stricmp(szMethod, "onAdd") == 0)
+        UIWeddingInvitationDialog* pInvitation = FUN_140fce870(0x4f8e);
+        if (pInvitation != 0)
         {
-            UIWeddingInvitationDialog* pInvitation = FUN_140fce870(0x4f8e);
-            if (pInvitation != 0)
-            {
-                std::vector<GuestPtr> guests;
-                for (std::map<CStringW, GuestPtr>::iterator it = m_guests.begin(); it != m_guests.end(); ++it)
-                    guests.push_back(it->second);
-                pInvitation->FUN_140fe5f20(reinterpret_cast<const std::vector<UIWeddingInvitationDialog::GuestPtr>&>(guests));
-            }
-            vfunc_67();
-            return 1;
+            std::vector<GuestPtr> guests;
+            for (std::map<CStringW, GuestPtr>::iterator it = m_guests.begin(); it != m_guests.end(); ++it)
+                guests.push_back(it->second);
+            pInvitation->FUN_140fe5f20(reinterpret_cast<const std::vector<UIWeddingInvitationDialog::GuestPtr>&>(guests));
         }
-        if (_stricmp(szMethod, "CanAdd") == 0)
+        vfunc_67();
+        return 1;
+    }
+    else if (_stricmp(szMethod, "CanAdd") == 0)
+    {
+        ASData data;
+        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
         {
-            ASData data;
-            if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+            CStringW strName = data.FUN_1422b8f40();
+            unsigned __int64 nFirst = FUN_140718370(data.FUN_1422b8f40());
+            unsigned __int64 nSecond = FUN_140718370(data.FUN_1422b8f40());
+            int nError = WeddingManager::GetInstance()->CanInvite(nFirst, nSecond, (int)(m_guests.size() + 1));
+            if (nError != 0)
             {
-                CStringW strName = data.FUN_1422b8f40();
-                unsigned __int64 nFirst = FUN_140718370(data.FUN_1422b8f40());
-                unsigned __int64 nSecond = FUN_140718370(data.FUN_1422b8f40());
-                int nError = WeddingManager::GetInstance()->CanInvite(nFirst, nSecond, (int)(m_guests.size() + 1));
-                if (nError != 0)
-                {
-                    WeddingManager::GetInstance()->ShowError(nError);
-                    FUN_142575b00(FUN_1422bb8b0(m_28), Scaleform::GFx::Value(false));
-                    return 1;
-                }
-                if (!FUN_140fcdf30(strName))
-                {
-                    FUN_142575b00(FUN_1422bb8b0(m_28), Scaleform::GFx::Value(false));
-                    return 1;
-                }
-                FUN_142575b00(FUN_1422bb8b0(m_28), Scaleform::GFx::Value(true));
+                WeddingManager::GetInstance()->ShowError(nError);
+                FUN_142575b00(FUN_1422bb8b0(m_28), Scaleform::GFx::Value(false));
+                return 1;
             }
-            return 1;
+            if (!FUN_140fcdf30(strName))
+            {
+                FUN_142575b00(FUN_1422bb8b0(m_28), Scaleform::GFx::Value(false));
+                return 1;
+            }
+            FUN_142575b00(FUN_1422bb8b0(m_28), Scaleform::GFx::Value(true));
         }
+        return 1;
     }
     if (m_spPage.get() != 0)
     {
@@ -343,7 +352,10 @@ void UIWeddingGuestDialog::FUN_140fcd9d0(const CStringW& strName)
 // @0x140fcdb30
 bool UIWeddingGuestDialog::FUN_140fcdb30(const CStringW& strName)
 {
-    return m_guests.find(strName) != m_guests.end();
+    std::map<CStringW, GuestPtr>::iterator it = m_guests.find(strName);
+    if (it != m_guests.end())
+        return true;
+    return false;
 }
 
 // @0x140fcdba0
@@ -429,7 +441,6 @@ UIWeddingGuestPage::~UIWeddingGuestPage()
 }
 
 // @0x140fd6c70
-// MS2-FUNCTIONAL: EH state layout and bool branch codegen differ
 bool UIWeddingGuestPage::vfunc_1()
 {
     if (FUN_140a467d0(m_pDialog->FUN_1422dba00()))
@@ -483,7 +494,6 @@ UIWeddingGuestPageFriend::UIWeddingGuestPageFriend(UIWeddingGuestDialog* pDialog
 }
 
 // @0x140fd6ef0
-// MS2-FUNCTIONAL: exe call-result temporaries / frame-slot order differ (source form not found)
 bool UIWeddingGuestPageFriend::vfunc_1()
 {
     if (!UIWeddingGuestPage::vfunc_1())
@@ -505,10 +515,9 @@ bool UIWeddingGuestPageFriend::vfunc_1()
             row.FUN_1407cbb20("accSN", FUN_141b71910(spBuddy->FUN_1401cc250()));
             row.FUN_1407cbb20("charSN", FUN_141b71910(spBuddy->FUN_1401cc230()));
             row.FUN_1407cbbe0("selected", m_pDialog->FUN_140fcdb30(spBuddy->FUN_1401cc1c0()));
-            int nLevel = spBuddy->FUN_1401cc210();
-            int nJob = spBuddy->FUN_1401cc2b0();
-            row.FUN_1407cbb20("extra", FUN_1409e94c0(CStringW(L"s_wedding_guest_user"), nLevel,
-                                                      GetStringTable()->FUN_141811980(6, nJob)));
+            row.FUN_1407cbb20("extra", FUN_1409e94c0(CStringW(L"s_wedding_guest_user"),
+                                                      reinterpret_cast<Unk_WgBuddyLevel*>(spBuddy.operator->())->FUN_1401cc210(),
+                                                      GetStringTable()->FUN_141811980(6, spBuddy->FUN_1401cc2b0())));
             row.FUN_1407cba60("profile", FUN_141028be0(spBuddy->FUN_1401cc230(),
                                                        FUN_14016a5c0((const char*)*spBuddy->FUN_1401cc530(), 0), 1, CString("")));
             spList->FUN_1422dd230(row);
@@ -572,7 +581,6 @@ UIWeddingGuestPageGuild::UIWeddingGuestPageGuild(UIWeddingGuestDialog* pDialog) 
 }
 
 // @0x140fd7800
-// MS2-FUNCTIONAL: exe call-result temporaries / frame-slot order differ (source form not found)
 bool UIWeddingGuestPageGuild::vfunc_1()
 {
     if (!UIWeddingGuestPage::vfunc_1())
@@ -660,21 +668,6 @@ MS2Ptr<CGuildMember> UIWeddingGuestPageGuild::FUN_140fd80e0(const CStringW& strN
             return MS2Ptr<CGuildMember>(members[i]);
     }
     return MS2Ptr<CGuildMember>(0);
-}
-
-// @0x140fd8b90
-UIWeddingGuestPageFriend::~UIWeddingGuestPageFriend()
-{
-}
-
-// @0x140fd8bb0
-UIWeddingGuestPageGuild::~UIWeddingGuestPageGuild()
-{
-}
-
-// @0x140fd8bd0
-UIWeddingGuestPageStranger::~UIWeddingGuestPageStranger()
-{
 }
 
 // ---- strangers ----

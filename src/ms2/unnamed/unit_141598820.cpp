@@ -7,12 +7,14 @@
 #include "ms2/placeholder/ms2stdafx.h"
 #include <vector>
 #include "ms2/placeholder/nmobjects.h"
+#include "ms2/placeholder/nmstream.h"
+#include "ms2/placeholder/nmencoder.h"
 #include "ms2/ms2recover.h"
 
 extern int FUN_1415fb700(const void*);
 extern int FUN_1415fb720(const void*);
 extern int FUN_1415fb750(void*);
-extern int FUN_1415fb6d0(void*);
+extern int FUN_1415fb6d0(CNMSerializableDecoder*);
 extern void FUN_1415f9990(void*);
 extern void FUN_14156ac20(void*, unsigned int);
 extern void FUN_14156acb0(void*, unsigned __int64);
@@ -36,11 +38,8 @@ CNMRequestMultiChatSessionExFunc::CNMRequestMultiChatSessionExFunc(
 // @0x141598960
 unsigned int CNMRequestMultiChatSessionExFunc::EncodeFramed(CNMStream* pStream)
 {
-    alignas(8) unsigned char encoder[0x18];
-    FUN_14156bcb0(encoder, pStream, this);
-    const unsigned int result = Encode(reinterpret_cast<CNMEncoder*>(encoder), pStream);
-    FUN_14156bd50(encoder);
-    return result;
+    CNMSerializableEncoder encoder(pStream, this);
+    return CNMRequestMultiChatSessionExFunc::Encode(reinterpret_cast<CNMEncoder*>(&encoder), pStream);
 }
 
 // MS2-FUNCTIONAL: recovered format branch; direct calls replace indirect virtual dispatch.
@@ -48,10 +47,8 @@ unsigned int CNMRequestMultiChatSessionExFunc::EncodeFramed(CNMStream* pStream)
 unsigned int CNMRequestMultiChatSessionExFunc::EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream)
 {
     if (m_bFormat == 1)
-        Encode(pEncoder, pStream);
-    else
-        EncodeFramed(pStream);
-    return 0;
+        return CNMRequestMultiChatSessionExFunc::Encode(pEncoder, pStream);
+    return CNMRequestMultiChatSessionExFunc::EncodeFramed(pStream);
 }
 
 // MS2-FUNCTIONAL: field order and vector contents match; STL traversal codegen differs from the library.
@@ -87,13 +84,10 @@ unsigned int CNMRequestMultiChatSessionExFunc::Encode(CNMEncoder* pEncoder, CNMS
 // @0x141598bc0
 unsigned int CNMRequestMultiChatSessionExFunc::DecodeFramed(CNMStream* pStream)
 {
-    alignas(8) unsigned char decoder[0x38];
-    FUN_14156bcb0(decoder, pStream, this);
-    unsigned int result = 0;
-    if (FUN_1415fb750(decoder) != 0)
-        result = Decode(reinterpret_cast<CNMSerializableDecoder*>(decoder), pStream);
-    FUN_14156bd50(decoder);
-    return result;
+    CNMSerializableDecoder decoder(pStream, this);
+    if (FUN_1415fb750(&decoder) == 0)
+        return 0;
+    return CNMRequestMultiChatSessionExFunc::Decode(&decoder, pStream);
 }
 
 // MS2-FUNCTIONAL: framed decoder selection matches; direct dispatch replaces the indirect virtual call.
@@ -101,10 +95,8 @@ unsigned int CNMRequestMultiChatSessionExFunc::DecodeFramed(CNMStream* pStream)
 unsigned int CNMRequestMultiChatSessionExFunc::DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream)
 {
     if (FUN_1415fb6d0(pDecoder) == 2)
-        DecodeFramed(pStream);
-    else
-        Decode(pDecoder, pStream);
-    return 0;
+        return CNMRequestMultiChatSessionExFunc::DecodeFramed(pStream);
+    return CNMRequestMultiChatSessionExFunc::Decode(pDecoder, pStream);
 }
 
 // MS2-FUNCTIONAL: field order and target reconstruction match; STL growth codegen differs from the library.

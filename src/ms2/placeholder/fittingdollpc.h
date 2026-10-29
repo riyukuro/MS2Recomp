@@ -35,9 +35,9 @@ struct Unk_PCEquipSet
     MS2Ptr<CEquipItem> FUN_1411e1860(int nSlot, int nKind, int n);    // a worn item of the slot (customize.cpp)
     void FUN_1411e22c0(ATL::CAtlList<MS2Ptr<CEquipItem> >& out, int nKind);   // the worn items of a kind (customize.cpp)
     void FUN_1411e5c10(); void FUN_1411e6ab0(); void FUN_1411e75f0();   // refresh the look (customize.cpp)
-    MS2Ptr<CEquipItem> FUN_1411e1780(int nSlot, int nKind); MS2Ptr<CEquipItem> FUN_1411e1580(__int64 nItemUid); MS2Ptr<CEquipItem> FUN_1411e1a50(int nSlot, int nKind); void FUN_1411e4150(__int64 nItemUid, unsigned char nSlot, int nKind); void FUN_1411ea620(const CMsTime& kStart, const CMsTime& kEnd); void FUN_1411ea7c0(); void FUN_1411e7660();
+    MS2Ptr<CEquipItem> FUN_1411e1780(int nSlot, int nKind); MS2Ptr<CEquipItem> FUN_1411e1580(__int64 nItemUid); MS2Ptr<CEquipItem> FUN_1411e1a50(int nSlot, int nKind); void FUN_1411e4150(__int64 nItemUid, int nSlot, int nKind); void FUN_1411ea620(const CMsTime& kStart, const CMsTime& kEnd); void FUN_1411ea7c0(); void FUN_1411e7660();
     void FUN_1411e7640();                                   // the look changed (flag 50; additionalcli.cpp)
-    void* FUN_1411e2440(int nKind);                         // the worn items of an equip layer, NULL when none (uiclosetdialog.cpp)
+    int FUN_1411e2440(int nKind);                           // CEquipment::FUN_1411e2440: the worn items of an equip layer, 0 when none (uiclosetdialog.cpp)
     int FUN_1411e0ba0();                                    // RefreshModel (returns 1; equipitem.cpp)
     float FUN_1411e0f90(float fDistance);                   // the knock-back distance after the equipment's resistances
     void FUN_1411e3d20(ATL::CAtlList<MS2Ptr<CEquipItem> >& aItems, int n);   // unequip a list of items (equipitem.cpp)
@@ -156,7 +156,7 @@ public:
     virtual void vfunc_72();                                // 72 0x14165ff80
     virtual void vfunc_74(__int64 nCur, __int64 nMax);      // 74 0x141656af0
     virtual CStringW vfunc_77();                            // 77 0x141656c70
-    virtual int vfunc_78();                                 // 78 0x1416578f0
+    virtual unsigned short vfunc_78();                      // 78 0x1416578f0
     virtual MS2Ptr<Unk_PCBaseComp_a58> vfunc_80();          // 80 0x141656db0
     virtual MS2Ptr<Unk_PCBaseComp_a68> vfunc_81();          // 81 0x141656f80
     virtual MS2Ptr<Unk_PCBaseComp_a98> vfunc_84();          // 84 0x1416572b0

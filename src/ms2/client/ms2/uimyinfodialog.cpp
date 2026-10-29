@@ -36,8 +36,10 @@
 #include "ms2/placeholder/notifysystem.h"
 #include "ms2/client/ms2/mypc.h"
 #include "ms2/client/ms2/fielddatacli.h"
+#include "ms2/client/ms2/additionalcli.h"
 #include "ms2/client/ms2/notifychangebuff.h"
 #include "ms2/placeholder/gfxexception.h"
+#include "ms2/ms2format.h"
 #include "ms2/placeholder/fittingdollpc.h"
 #include "ms2/placeholder/pcgemequip.h"
 #include "ms2/placeholder/citem.h"
@@ -119,16 +121,18 @@ public:
     unsigned char FUN_141658f10();                              // the PcBang flag
     CStringW* FUN_141656d90();                                  // the memo of the player
 };
-class Unk_MiHandle { public: char m_pad[0x10]; };              // an item handle (unit_1414210f0.cpp Unk_AvatarItemHandle)
 void* FUN_1405a8e70(void* pHandle);
 void* FUN_1405a8ed0(void* pHandle);
 void FUN_1405a85f0(void* pHandle);
-void* FUN_1411dc7a0(void* pEquip, void* pOut);
 void* FUN_1401c0180(void* pSp);
 void FUN_1401bfde0(void* pHandle);
 void* FUN_14052cd70(void* pHandle);
 void FUN_140526c10(void* pItem, int n);
-void FUN_141655e10(PC* pPc, void* pOut, int nSlot);
+// The equipped-item handle of a slot and the item handle it holds (unit_1414210f0.cpp Unk_AvatarItemHandle).
+struct Unk_MiSlotHandle { void* m_p[2]; ~Unk_MiSlotHandle() { FUN_1405a85f0(this); } };
+struct Unk_MiItemHandle { void* m_p[2]; ~Unk_MiItemHandle() { FUN_1401bfde0(this); } };
+struct Unk_MiSlotPc { Unk_MiSlotHandle FUN_141655e10(int nSlot); };   // PC: the handle of an equip slot
+struct Unk_MiSlotEquip { Unk_MiItemHandle FUN_1411dc7a0(); };         // the item handle of the equip
 PC* FUN_14099eef0(GameObject* pObj);
 // The equip holder of the player and its title record.
 class Unk_MiTitleData
@@ -144,17 +148,19 @@ struct Unk_MiTitleRef
     void* m_00;
     Unk_MiTitleData* m_p;
 };
-class Unk_MiEquipSet { public: void FUN_14052b8c0(Unk_MiTitleRef* pOut); };   // the worn title
 bool FUN_140d28fe0(Unk_MiTitleRef* p, int n);                   // == null
 Unk_MiTitleData* FUN_140d290c0(Unk_MiTitleRef* p);              // operator->
 void FUN_140d28f70(Unk_MiTitleRef* p);                          // dtor
+struct Unk_MiTitlePtr : Unk_MiTitleRef { ~Unk_MiTitlePtr() { FUN_140d28f70(this); } };
+// the worn title (Unk_PCEquipSet::GetTitle, 0x140d29440)
+class Unk_MiEquipSet { public: void FUN_140d29440(Unk_MiTitleRef* pOut); Unk_MiTitlePtr FUN_140d29440(); };
 Unk_MiTitleData* FUN_1411f7e30(Unk_MiTitleRef* p);              // get()
 
 // The movie children bound through the ASObj helpers.
 class Unk_MiScript : public AScript
 {
 public:
-    Scaleform::GFx::Value FUN_140ed1090(const char* szMethod, CStringW strA, CStringW strB, bool b);
+    Scaleform::GFx::Value FUN_140ed1090(const char* szMethod, CStringW strA, CStringW strB, int b);
 };
 
 void* FUN_140a50b50(void* pDragSource);
@@ -189,7 +195,10 @@ void FUN_141a5d0a0(int n)
 
 class Unk_MiIdList { public: int FUN_140408410(const int& nId); };   // index of an id (-1: none)
 void FUN_1408377d0(ATL::CAtlArray<void*>* pOut);                // the stat keys shown
-int FUN_1409eecc0(ATL::CAtlArray<void*>* pArr);                 // count
+void FUN_1408377d0(ATL::CAtlArray<int>& ids);
+void FUN_140cfee80(const Scaleform::GFx::Value& root, CString strName, CStringW strText);
+void FUN_140cff740(const Scaleform::GFx::Value& root, CString strName, unsigned nColor);
+unsigned __int64 FUN_1409eecc0(ATL::CAtlArray<void*>* pArr);                 // count
 int* FUN_1409eec00(ATL::CAtlArray<void*>* pArr, __int64 nIndex);   // element
 struct Unk_MiConsts { char m_pad_00[0x9100]; unsigned m_aStatCap[1]; };   // the data table: the cap of each stat
 Unk_MiConsts* FUN_1401d3200();
@@ -205,7 +214,7 @@ public:
     int FUN_1406c5d60(short nId);                                // owned
 };
 Unk_MiNtMgr* FUN_14131e120();
-class Unk_MiNtStrings { public: CStringW FUN_141811980(int nId, short nArg); };   // string of (id, symbol)
+class Unk_MiNtStrings { public: CStringW FUN_141811980(int nId, int nArg); };   // string of (id, symbol)
 Unk_MiNtStrings* FUN_1401a9d70();
 class Unk_MiScore { public: int FUN_140267c10(); };              // the trophy points
 class Unk_MiTrophy { public: Unk_MiScore* FUN_140938ad0(); };
@@ -215,7 +224,6 @@ void FUN_1418bee30(ASObj* pObj, int n);
 void FUN_1407cbbe0(ASObj* pObj, const char* szName, bool b);
 AvatarPC* FUN_140a535c0(GameObject* pObj);
 class Unk_MiItemEvent { public: CItem* FUN_140526a50(); };       // the item event (the item pointer at +0x40)
-class Unk_MiBuff { public: bool FUN_14096d6b0(); };         // the buff record (AdditionalCli)
 class Unk_MiProxyObj { public: int FUN_1416c1ff0(); };
 class Unk_MiEntityRef
 {
@@ -276,7 +284,6 @@ int UIMyInfoDialog::vfunc_65()
 }
 
 // @0x141a58630
-// MS2-FUNCTIONAL: delegate temporaries
 void UIMyInfoDialog::vfunc_67()
 {
     FUN_140a6a840()->FUN_1419caeb0(static_cast<UIItemEventListener*>(this));
@@ -332,7 +339,6 @@ void UIMyInfoDialog::OnLoadInit()
 }
 
 // @0x141a58ca0
-// MS2-FUNCTIONAL: delegate temporaries
 void UIMyInfoDialog::OnLoadComplete()
 {
     UIPCInfoDialog::OnLoadComplete();
@@ -341,28 +347,27 @@ void UIMyInfoDialog::OnLoadComplete()
     FUN_14140ea40()->FUN_141928050(static_cast<UIDialogEventListener*>(this));
     FUN_140c607b0()->FUN_1419308c0(static_cast<UIEntityEventListener*>(this));
     FUN_140939a10()->RegisterNotify(CStringW(L"NotifyChangeBuff"), Delegate<void(NotifyObject*)>(this, &UIMyInfoDialog::FUN_141a5a640));
-    FUN_140939a10()->RegisterNotify(CStringW(L"NotifyActiveMyCodiTab"), Delegate<void(NotifyObject*)>(this, &UIMyInfoDialog::FUN_141a5c220));
     FUN_140939a10()->RegisterNotify(CStringW(L"NotifyChangeActiveMyCodiTab"), Delegate<void(NotifyObject*)>(this, &UIMyInfoDialog::FUN_141a5c220));
     FUN_140939a10()->RegisterNotify(CStringW(L"NotifyPcBang"), Delegate<void(NotifyObject*)>(this, &UIMyInfoDialog::FUN_141a5c2a0));
-    FUN_1419260d0(CString("m_webGuideButton"), 0);
-    m_30->FUN_140bbe640<ASButton>(CString("m_closet"), m_280);
-    if (!(m_280 == 0))
+    FUN_1419260d0("m_webGuideButton", 0);
+    do
     {
-        if (m_280.get() != 0)
+        m_30->FUN_140bbe640<ASButton>("m_closet", m_280);
+        if (m_280 == 0)
+            throw new GfxExceptionSwfLoad(FUN_140be2000("GfxError:{0} {1}({2}) function:{3}", "SwfLoadError", MS2_THIS_FILE, MS2_LINE(171), "UIMyInfoDialog::OnLoadComplete"));
+    } while (0);
+    if (m_280.get() != 0)
+    {
+        if (FUN_140166410()->FUN_14036d570(0xe3))
         {
-            if (FUN_140166410()->FUN_14036d570(0xe3) == 0)
-            {
-                m_280->vfunc_4(false);   // exe: call [rax+0x20] (slot 4, bool), not slot 3
-            }
-            else
-            {
-                m_280->vfunc_4(true);
-                m_280->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIMyInfoDialog::FUN_141a5d690), 0);
-            }
+            m_280->vfunc_4(true);   // exe: call [rax+0x20] (slot 4, bool), not slot 3
+            m_280->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIMyInfoDialog::FUN_141a5d690), 0);
         }
-        return;
+        else
+        {
+            m_280->vfunc_4(false);
+        }
     }
-    throw new GfxExceptionSwfLoad(FUN_140be2000("GfxError:{0} {1}({2}) function:{3}", "SwfLoadError", MS2_THIS_FILE, MS2_LINE(171), "UIMyInfoDialog::OnLoadComplete"));
 }
 
 // @0x141a593c0
@@ -413,20 +418,26 @@ int UIMyInfoDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* 
         OnChangeProfile();
         return 1;
     }
-    if (_stricmp("OnChangeTodayMemo", szMethod) == 0)
+    else if (_stricmp("OnChangeTodayMemo", szMethod) == 0)
     {
         OnChangeTodayMemo();
         return 1;
     }
-    if (_stricmp("OnConfig", szMethod) == 0)
+    else if (_stricmp("OnConfig", szMethod) == 0)
     {
         if (kData.FUN_1422b9620(pArgs, nArgs) != 0)
-            FUN_141a5a9f0(kData.FUN_1422b8a10());
+        {
+            int nConfig = kData.FUN_1422b8a10();
+            FUN_141a5a9f0(nConfig);
+        }
     }
     else if (_stricmp("OnTitleChange", szMethod) == 0)
     {
         if (kData.FUN_1422b9620(pArgs, nArgs) != 0)
-            FUN_141a5a8d0(kData.FUN_1422b8b10());
+        {
+            int nTitle = kData.FUN_1422b8b10();
+            FUN_141a5a8d0(nTitle);
+        }
     }
     else if (_stricmp("onSymbolClick", szMethod) == 0)
     {
@@ -450,14 +461,20 @@ int UIMyInfoDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* 
     else if (_stricmp("OnAddStatPointRepeat", szMethod) == 0)
     {
         if (kData.FUN_1422b9620(pArgs, nArgs) != 0)
-            FUN_141a5b080(kData.FUN_1422b8a10() - 1);
+        {
+            int nStat = kData.FUN_1422b8a10() - 1;
+            FUN_141a5b080(nStat);
+        }
     }
     else if (_stricmp(szMethod, "OnAddStatPointStop") == 0)
     {
         if (kData.FUN_1422b9620(pArgs, nArgs) != 0)
-            FUN_141a5cf30(kData.FUN_1422b8a10() - 1);
+        {
+            int nStat = kData.FUN_1422b8a10() - 1;
+            FUN_141a5cf30(nStat);
+        }
     }
-    if (m_spAvatar.get() != 0 && m_spAvatar->vfunc_27(szMethod, pArgs, nArgs) != 0)
+    if ((m_spAvatar.get() != 0 ? true : false) && m_spAvatar->vfunc_27(szMethod, pArgs, nArgs) != 0)
         return 1;
     return 0;
 }
@@ -548,45 +565,38 @@ void UIMyInfoDialog::vfunc_22(void* p)
 }
 
 // @0x141a59d80
-// MS2-FUNCTIONAL: item slot temporaries
 void UIMyInfoDialog::vfunc_il23(void* p)
 {
     FUN_141a5a560();
     m_20c = 1;
     UIAvatarPC* pAvatar = dynamic_cast<UIAvatarPC*>(m_spAvatar.get());
-    if (pAvatar == 0)
-        return;
-    PC* pPc = FUN_14099eef0(pAvatar->vfunc_24());
-    if (pPc == 0)
-        return;
-    Unk_MiHandle hOne;
-    Unk_MiHandle hTwo;
-    FUN_141655e10(pPc, &hOne, 4);
-    FUN_141655e10(pPc, &hTwo, 5);
-    if (FUN_1405a8e70(&hOne) != 0)
+    if (pAvatar != 0)
     {
-        Unk_MiHandle hCopy;
-        FUN_1411dc7a0(FUN_1405a8ed0(&hOne), &hCopy);
-        if (FUN_14052cd70(&hCopy) != 0)
+        PC* pPc = FUN_14099eef0(pAvatar->vfunc_24());
+        if (pPc != 0)
         {
-            FUN_140526c10(FUN_1401c0180(&hCopy), 5);
-            pPc->vfunc_127(static_cast<CItem*>(FUN_14052cd70(&hCopy)), 0);
+            Unk_MiSlotHandle hOne = reinterpret_cast<Unk_MiSlotPc*>(pPc)->FUN_141655e10(4);
+            Unk_MiSlotHandle hTwo = reinterpret_cast<Unk_MiSlotPc*>(pPc)->FUN_141655e10(5);
+            if (FUN_1405a8e70(&hOne) != 0)
+            {
+                Unk_MiItemHandle hItem = static_cast<Unk_MiSlotEquip*>(FUN_1405a8ed0(&hOne))->FUN_1411dc7a0();
+                if (FUN_14052cd70(&hItem) != 0)
+                {
+                    FUN_140526c10(FUN_1401c0180(&hItem), 5);
+                    pPc->vfunc_127(static_cast<CItem*>(FUN_14052cd70(&hItem)), 0);
+                }
+            }
+            if (FUN_1405a8e70(&hTwo) != 0)
+            {
+                Unk_MiItemHandle hItem = static_cast<Unk_MiSlotEquip*>(FUN_1405a8ed0(&hTwo))->FUN_1411dc7a0();
+                if (FUN_14052cd70(&hItem) != 0)
+                {
+                    FUN_140526c10(FUN_1401c0180(&hItem), 4);
+                    pPc->vfunc_127(static_cast<CItem*>(FUN_14052cd70(&hItem)), 0);
+                }
+            }
         }
-        FUN_1401bfde0(&hCopy);
     }
-    if (FUN_1405a8e70(&hTwo) != 0)
-    {
-        Unk_MiHandle hCopy;
-        FUN_1411dc7a0(FUN_1405a8ed0(&hTwo), &hCopy);
-        if (FUN_14052cd70(&hCopy) != 0)
-        {
-            FUN_140526c10(FUN_1401c0180(&hCopy), 4);
-            pPc->vfunc_127(static_cast<CItem*>(FUN_14052cd70(&hCopy)), 0);
-        }
-        FUN_1401bfde0(&hCopy);
-    }
-    FUN_1405a85f0(&hTwo);
-    FUN_1405a85f0(&hOne);
 }
 
 // @0x141a59fa0
@@ -617,12 +627,11 @@ void UIMyInfoDialog::vfunc_32(void* p, int a, int b)
 }
 
 // @0x141a5a1e0
-void UIMyInfoDialog::vfunc_el5(void* p, int n)
+void UIMyInfoDialog::vfunc_el5(MS2Ptr<CProxyGameObject> spActor, int n)
 {
-    Unk_MiEntityRef* pArg = static_cast<Unk_MiEntityRef*>(p);
-    if (pArg->FUN_1406c71b0() != 0 && pArg->FUN_1406c71d0()->FUN_1416c1ff0() != 0)
+    if ((reinterpret_cast<Unk_MiEntityRef*>(&spActor)->FUN_1406c71b0() ? true : false)
+        && reinterpret_cast<Unk_MiEntityRef*>(&spActor)->FUN_1406c71d0()->FUN_1416c1ff0() != 0)
         FUN_141a5a560();
-    pArg->FUN_1406c70a0();
 }
 
 // @0x141a5a260
@@ -645,20 +654,23 @@ void UIMyInfoDialog::vfunc_33(int nClass, int n)
 void UIMyInfoDialog::vfunc_dl_3(void* p)
 {
     void* pSlot = FUN_140a50b50(p);
-    if (pSlot == 0)
-        return;
-    MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(static_cast<InvenSlot*>(pSlot)->GetItemUid());
-    if (spItem.get() == 0)
-        return;
-    ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30);
-    if (pDialog == 0)
-        return;
-    CString strKind;
-    if (reinterpret_cast<CItemData*>(spItem->FUN_140527840())->FUN_14053c5c0() == 7)
-        strKind = "gem";
-    else
-        strKind = FUN_14021c050(reinterpret_cast<CItemData*>(spItem->FUN_140527840())->FUN_14053eba0()->FUN_14054b400());
-    pDialog->Invoke("onDragStart", CString(strKind));
+    if (pSlot != 0)
+    {
+        MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(static_cast<InvenSlot*>(pSlot)->GetItemUid());
+        if (spItem.get() != 0)
+        {
+            ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30);
+            if (pDialog != 0)
+            {
+                CString strKind;
+                if (reinterpret_cast<CItemData*>(spItem->FUN_140527840())->FUN_14053c5c0() == 7)
+                    strKind = "gem";
+                else
+                    strKind = FUN_14021c050(reinterpret_cast<CItemData*>(spItem->FUN_140527840())->FUN_14053eba0()->FUN_14054b400());
+                pDialog->Invoke("onDragStart", CString(strKind));
+            }
+        }
+    }
 }
 
 // @0x141a5a4e0
@@ -701,11 +713,12 @@ void UIMyInfoDialog::FUN_141a5a640(NotifyObject* pNotify)
     if (FUN_140ba28d0(&m_30, 0) != 0)
         return;
     NotifyChangeBuff* pBuff = dynamic_cast<NotifyChangeBuff*>(pNotify);
-    if (pBuff == 0)
-        return;
-    Unk_MiBuff* pRecord = reinterpret_cast<Unk_MiBuff*>(pBuff->m_spCli.get());
-    if (pRecord != 0 && pRecord->FUN_14096d6b0())
-        m_210 = true;
+    if (pBuff != 0)
+    {
+        MS2Ptr<AdditionalCli> spCli = pBuff->m_spCli;
+        if ((spCli.get() ? true : false) && spCli->FUN_14096d6b0())
+            m_210 = true;
+    }
 }
 
 // @0x141a5a720
@@ -720,8 +733,7 @@ void UIMyInfoDialog::OnChangeTodayMemo()
     MyPC* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pPc == 0)
         return;
-    CStringW strTag(L"changeTodayMemo");
-    MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(5, FUN_1409eec40(0x301), static_cast<IMessageListener*>(this), strTag);
+    MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(5, FUN_1409eec40(0x301), static_cast<IMessageListener*>(this), L"changeTodayMemo");
     if (spBox.get() != 0)
     {
         spBox->FUN_141a01d30(0, *static_cast<Unk_MiPc*>(pPc)->FUN_141656d90(), 0x14, 0, 0);
@@ -744,13 +756,12 @@ void UIMyInfoDialog::FUN_141a5a8d0(int nTitle)
     else
     {
         Unk_MiIdList* pTitles = reinterpret_cast<Unk_MiIdList*>(&m_spInfo->m_aIds);
-        if (pTitles->FUN_140408410(nTitle) != -1)
-        {
-            COutPacket pkt(static_cast<int>(SendOp::RequestUserEnv), 0);
-            pkt.Encode1(1);
-            pkt.Encode4(nTitle);
-            FUN_140710590(pkt);
-        }
+        if (pTitles->FUN_140408410(nTitle) == -1)
+            return;
+        COutPacket pkt(static_cast<int>(SendOp::RequestUserEnv), 0);
+        pkt.Encode1(1);
+        pkt.Encode4(nTitle);
+        FUN_140710590(pkt);
     }
 }
 
@@ -760,11 +771,10 @@ void UIMyInfoDialog::FUN_141a5a9f0(int nConfig)
     if ((m_spInfo == 0))
         return;
     MS2Ptr<CItem> spItem = m_spInfo->FUN_140dba560(nConfig);
-    if (spItem.get() != 0)
-    {
-        DAT_1439f9284 = spItem->FUN_140526b50();
-        FUN_1403ed2b0()->FUN_141adc530(0x4e75);
-    }
+    if (spItem == 0)
+        return;
+    DAT_1439f9284 = spItem->FUN_140526b50();
+    FUN_1403ed2b0()->FUN_141adc530(0x4e75);
 }
 
 // @0x141a5aab0
@@ -802,9 +812,9 @@ void UIMyInfoDialog::FUN_141a5ac90(unsigned short nLevel)
         return;
     CStringW strName = FUN_1401a9d70()->FUN_141811980(0x27, nLevel);      // string table 0x27: the symbol's name text
     CStringW strIcon = FUN_14131e120()->FUN_1406c61a0(nLevel, pPc);       // ranked icon path
-    int nState = FUN_14131e120()->FUN_1406c5d60(nLevel);
+    int bOwned = FUN_14131e120()->FUN_1406c5d60(nLevel) == 0;
     // AS3 setSymbol(name, icon, enabled): the exe passes the name text first (r9) and the icon second
-    static_cast<Unk_MiScript*>((AScript*)m_30)->FUN_140ed1090("setSymbol", CStringW(strName), CStringW(strIcon), nState == 0);
+    static_cast<Unk_MiScript*>((AScript*)m_30)->FUN_140ed1090("setSymbol", CStringW(strName), CStringW(strIcon), bOwned);
 }
 
 // @0x141a5ae40
@@ -821,19 +831,24 @@ void UIMyInfoDialog::vfunc_104(int nTrophy)
 {
     if (FUN_140a467d0(&m_30) != 0)
         return;
-    int nCount = FUN_1406c7600()->FUN_140938ad0()->FUN_140267c10();
-    m_30->Invoke("setTrophy", nCount);
+    m_30->Invoke("setTrophy", FUN_1406c7600()->FUN_140938ad0()->FUN_140267c10());
 }
 
 // @0x141a5af10
 void UIMyInfoDialog::vfunc_91(int nStat)
 {
     MyPC* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
-    if (pPc == 0 || (m_spInfo == 0) || FUN_140ba28d0(&m_30, 0) != 0 || vfunc_93() == 0)
+    if (pPc == 0)
+        return;
+    if (m_spInfo == 0)
+        return;
+    if (FUN_140ba28d0(&m_30, 0) != 0)
+        return;
+    if (vfunc_93() == 0)
         return;
     ATL::CAtlArray<void*> aStats;
     FUN_1408377d0(&aStats);
-    if (nStat < 0 || nStat >= FUN_1409eecc0(&aStats))
+    if (nStat < 0 || (int)FUN_1409eecc0(&aStats) <= nStat)
         return;
     int* pStat = FUN_1409eec00(&aStats, nStat);
     static_cast<Unk_MiPc*>(pPc)->FUN_140c25130()->RequestAdd(*pStat, 1);
@@ -844,44 +859,48 @@ void UIMyInfoDialog::vfunc_91(int nStat)
 void UIMyInfoDialog::FUN_141a5b080(int nStat)
 {
     MyPC* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
-    if (pPc == 0 || (m_spInfo == 0) || FUN_140ba28d0(&m_30, 0) != 0 || vfunc_93() == 0)
+    if (pPc == 0)
+        return;
+    if (m_spInfo == 0)
+        return;
+    if (FUN_140ba28d0(&m_30, 0) != 0)
+        return;
+    if (vfunc_93() == 0)
         return;
     ATL::CAtlArray<void*> aStats;
     FUN_1408377d0(&aStats);
-    if (nStat < 0 || nStat >= FUN_1409eecc0(&aStats))
+    if (nStat < 0 || (int)FUN_1409eecc0(&aStats) <= nStat)
         return;
     int nKey = *FUN_1409eec00(&aStats, nStat);
-    MS2Ptr<CStatPointManager> spMgr = static_cast<Unk_MiPc*>(pPc)->FUN_140c25130();
-    int nSpent = spMgr->GetStatPoints(static_cast<CStatPointManager::Unk_StatKey>(nKey));
-    unsigned nPending = m_250;
-    unsigned nRemaining = spMgr->GetRemaining();
-    if (m_250 < nRemaining && (unsigned)(nSpent + nPending) < FUN_1401d3200()->m_aStatCap[nKey])
-    {
-        if (!m_254)
-        {
-            m_250 = m_250 + 1;
-            FUN_141a5c7c0(nStat);
-        }
-    }
-    else
+    unsigned nTotal = static_cast<Unk_MiPc*>(pPc)->FUN_140c25130()->GetStatPoints(static_cast<CStatPointManager::Unk_StatKey>(nKey)) + m_250;
+    unsigned nRemaining = static_cast<Unk_MiPc*>(pPc)->FUN_140c25130()->GetRemaining();
+    if (nRemaining <= m_250 || FUN_1401d3200()->m_aStatCap[nKey] <= nTotal)
     {
         FUN_141a5cf30(nStat);
+        return;
+    }
+    if (!m_254)
+    {
+        m_250++;
+        FUN_141a5c7c0(nStat);
     }
 }
 
 // @0x141a5b2c0
 void UIMyInfoDialog::vfunc_92()
 {
-    if (!(m_spInfo == 0) && FUN_140ba28d0(&m_30, 0) == 0 && vfunc_93() != 0)
-    {
-        MyPC* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
-        if (pPc != 0)
-        {
-            m_250 = 0;
-            m_254 = false;
-            static_cast<Unk_MiPc*>(pPc)->FUN_140c25130()->RequestReset();
-        }
-    }
+    if (m_spInfo == 0)
+        return;
+    if (FUN_140ba28d0(&m_30, 0) != 0)
+        return;
+    if (vfunc_93() == 0)
+        return;
+    MyPC* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
+    if (pPc == 0)
+        return;
+    m_250 = 0;
+    m_254 = false;
+    static_cast<Unk_MiPc*>(pPc)->FUN_140c25130()->RequestReset();
 }
 
 // @0x141a5b3b0
@@ -891,12 +910,12 @@ void UIMyInfoDialog::vfunc_90(int nTab)
     UIPCInfoDialog::vfunc_90(nTab);
     if (nTab == 3)
     {
-        FUN_141a5c410(nOld, 3);
+        FUN_141a5c410(nOld, nTab);
         FUN_141a5b6c0();
     }
     else if (m_258.get() != 0)
     {
-        m_258->FUN_1422c4cd0(CStringW(L""));
+        m_258->FUN_1422c4cd0(L"");
     }
 }
 
@@ -908,16 +927,18 @@ int UIMyInfoDialog::vfunc_93()
         return 0;
     if (pPc->vfunc_65() != 0)
     {
-        FUN_140d73aa0(GetStringCommonByKey(CStringW(L"s_msg_skillbook_set_disable_battle")), 0, 0, CStringW(L""));
+        FUN_140d73aa0(GetStringCommonByKey(L"s_msg_skillbook_set_disable_battle"), 0, 0, CStringW(L""));
         return 0;
     }
     MS2Ptr<CFieldDataCli> spField = FUN_1403ed2d0()->FUN_141bd30a0();
     if (spField == 0)
         return 0;
-    if (spField->FUN_140375660(0x10) == 0)
-        return 1;
-    FUN_140d73aa0(GetStringCommonByKey(CStringW(L"s_msg_skillbook_set_disable_field")), 0, 0, CStringW(L""));
-    return 0;
+    if (spField->FUN_140375660(0x10) != 0)
+    {
+        FUN_140d73aa0(GetStringCommonByKey(L"s_msg_skillbook_set_disable_field"), 0, 0, CStringW(L""));
+        return 0;
+    }
+    return 1;
 }
 
 // @0x141a5b690
@@ -927,7 +948,6 @@ void UIMyInfoDialog::vfunc_99(const CStringW& strMemo)
 }
 
 // @0x141a5b6c0
-// MS2-FUNCTIONAL: string temporaries
 void UIMyInfoDialog::FUN_141a5b6c0()
 {
     if (FUN_140ba28d0(&m_30, 0) != 0 || m_nTab != 3)
@@ -935,19 +955,18 @@ void UIMyInfoDialog::FUN_141a5b6c0()
     MyPC* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pPc == 0)
         return;
-    Unk_MiTitleRef kTitle;
-    reinterpret_cast<Unk_MiEquipSet*>(pPc->FUN_1416561a0())->FUN_14052b8c0(&kTitle);
+    Unk_MiEquipSet* pEquip = reinterpret_cast<Unk_MiEquipSet*>(pPc->FUN_1416561a0());
+    Unk_MiTitlePtr kTitle = pEquip->FUN_140d29440();
     if (FUN_140d28fe0(&kTitle, 0) != 0)
-    {
-        FUN_140d28f70(&kTitle);
         return;
-    }
     int nState = FUN_140d290c0(&kTitle)->FUN_1411df830();
     CStringW strPeriod;
     m_268.Init();
     m_274 = 0;
     m_270 = false;
-    if (nState == 1)
+    switch (nState)
+    {
+    case 1:
     {
         CMsTime tNow(FUN_140869440());
         CMsTime tEnd(FUN_140d290c0(&kTitle)->m_28);
@@ -959,62 +978,50 @@ void UIMyInfoDialog::FUN_141a5b6c0()
             int nHours = kSpan.GetHours();
             int nMinutes = FUN_14086d270(&kSpan);
             int nSeconds = kSpan.GetSeconds();
-            if (nDays < 1)
-            {
-                if (nHours < 1)
-                {
-                    if (nMinutes < 1)
-                    {
-                        strRemain = GetStringCommonByKey(CStringW(L"s_item_word_s_shortly"));
-                        m_274 = FUN_14028d260((float)nSeconds);
-                    }
-                    else
-                    {
-                        strRemain = FUN_14062b4f0(CStringW(L"s_item_word_m"), &nMinutes);
-                        m_274 = FUN_14028d260((float)nSeconds);
-                    }
-                }
-                else
-                {
-                    strRemain = FUN_14062b4f0(CStringW(L"s_item_word_h"), &nHours);
-                    if (nMinutes < 1)
-                        m_274 = FUN_14028d260((float)nSeconds);
-                    else
-                        m_274 = FUN_14028d260((float)FUN_1408694b0(nMinutes));
-                }
-            }
-            else
+            if (nDays > 0)
             {
                 strRemain = FUN_14062b4f0(CStringW(L"s_item_word_d"), &nDays);
                 if (nHours == 0 && nMinutes == 0)
                     m_274 = FUN_14028d260((float)nSeconds);
-                else if (nHours < 1)
-                    m_274 = FUN_14028d260((float)FUN_1408694b0(nMinutes));
                 else
-                    m_274 = FUN_14028d260((float)FUN_140869490(nHours));
+                    m_274 = nHours > 0 ? FUN_14028d260((float)FUN_140869490(nHours)) : FUN_14028d260((float)FUN_1408694b0(nMinutes));
+            }
+            else if (nHours > 0)
+            {
+                strRemain = FUN_14062b4f0(CStringW(L"s_item_word_h"), &nHours);
+                m_274 = nMinutes > 0 ? FUN_14028d260((float)FUN_1408694b0(nMinutes)) : FUN_14028d260((float)nSeconds);
+            }
+            else if (nMinutes > 0)
+            {
+                strRemain = FUN_14062b4f0(CStringW(L"s_item_word_m"), &nMinutes);
+                m_274 = FUN_14028d260((float)nSeconds);
+            }
+            else
+            {
+                strRemain = GetStringCommonByKey(L"s_item_word_s_shortly");
+                m_274 = FUN_14028d260((float)nSeconds);
             }
             strPeriod = FUN_1405c2690(CStringW(L"s_char_info_codi_tab_period_fmt"), strRemain);
             if (m_274 == 0)
                 m_274 = 1000;
         }
+        break;
     }
-    else if (nState == 3)
-    {
-        strPeriod = GetStringCommonByKey(CStringW(L"s_char_info_codi_tab_expired"));
+    case 3:
+        strPeriod = GetStringCommonByKey(L"s_char_info_codi_tab_expired");
+        break;
     }
     if (m_30.get() != 0)
     {
-        if ((m_258 == 0))
+        if (m_258 == 0)
         {
-            MS2Ptr<ASMovieClip> spEquip = m_30->FUN_1409b4560(CString("m_equip"));
-            if (spEquip.get() != 0)
-                spEquip->FUN_1409b4620(CString("m_period"));
+            if (MS2Ptr<ASMovieClip> spEquip = m_30->FUN_1409b4560("m_equip"))
+                m_258 = spEquip->FUN_1409b4620("m_period");
         }
         if (m_258.get() != 0)
             m_258->FUN_1422c4f00(strPeriod);
     }
-    m_270 = m_274 != 0;
-    FUN_140d28f70(&kTitle);
+    m_270 = (unsigned int)m_274 > 0;
 }
 
 // @0x141a5bed0
@@ -1023,27 +1030,23 @@ void UIMyInfoDialog::FUN_141a5bed0()
     MyPC* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pPc == 0)
         return;
-    Unk_MiTitleRef kTitle;
-    reinterpret_cast<Unk_MiEquipSet*>(pPc->FUN_1416561a0())->FUN_14052b8c0(&kTitle);
+    Unk_MiEquipSet* pEquip = reinterpret_cast<Unk_MiEquipSet*>(pPc->FUN_1416561a0());
+    Unk_MiTitlePtr kTitle = pEquip->FUN_140d29440();
     if (FUN_140d28fe0(&kTitle, 0) != 0)
-    {
-        FUN_140d28f70(&kTitle);
         return;
-    }
     if (FUN_140d290c0(&kTitle)->FUN_1411df810() != m_278)
     {
         UIAvatarPC* pAvatar = dynamic_cast<UIAvatarPC*>(m_spAvatar.get());
         if (pAvatar != 0 && pAvatar->FUN_1418bd1d0() != 0)
             pAvatar->FUN_1418bd1d0()->FUN_1410873b0();
         m_278 = FUN_140d290c0(&kTitle)->FUN_1411df810();
-        if (m_30.get() != 0 && m_nTab == 3)
+        if ((m_30.get() ? true : false) && m_nTab == 3)
         {
             void* pBag = FUN_140c544d0(FUN_1422c8e90(m_strEquipBag));
             if (pBag != 0)
                 FUN_1422cca90(pBag);
         }
     }
-    FUN_140d28f70(&kTitle);
 }
 
 // @0x141a5c080
@@ -1057,11 +1060,9 @@ void UIMyInfoDialog::FUN_141a5c080()
     UIAvatarPC* pAvatar = dynamic_cast<UIAvatarPC*>(m_spAvatar.get());
     if (pAvatar != 0 && pAvatar->FUN_1418bd1d0() != 0)
     {
-        Unk_MiTitleRef kTitle;
-        reinterpret_cast<Unk_MiEquipSet*>(pPc->FUN_1416561a0())->FUN_14052b8c0(&kTitle);
+        Unk_MiTitlePtr kTitle = reinterpret_cast<Unk_MiEquipSet*>(pPc->FUN_1416561a0())->FUN_140d29440();
         if (FUN_1411f7e30(&kTitle) != 0)
             m_278 = FUN_140d290c0(&kTitle)->FUN_1411df810();
-        FUN_140d28f70(&kTitle);
     }
 }
 
@@ -1103,7 +1104,6 @@ bool UIMyInfoDialog::FUN_141a5c3a0()
 }
 
 // @0x141a5c410
-// MS2-FUNCTIONAL: message box temporaries
 void UIMyInfoDialog::FUN_141a5c410(int nTab, int nNewTab)
 {
     if (nNewTab != 3)
@@ -1111,23 +1111,21 @@ void UIMyInfoDialog::FUN_141a5c410(int nTab, int nNewTab)
     MyPC* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pPc == 0)
         return;
-    Unk_MiTitleRef kTitle;
-    reinterpret_cast<Unk_MiEquipSet*>(pPc->FUN_1416561a0())->FUN_14052b8c0(&kTitle);
-    if (FUN_140d28fe0(&kTitle, 0) == 0)
+    Unk_MiEquipSet* pEquip = reinterpret_cast<Unk_MiEquipSet*>(pPc->FUN_1416561a0());
+    Unk_MiTitlePtr kTitle = pEquip->FUN_140d29440();
+    if (FUN_140d28fe0(&kTitle, 0) != 0)
+        return;
+    int nState = FUN_140d290c0(&kTitle)->FUN_1411df830();
+    if (nState == 0 || nState == 4)
     {
-        int nState = FUN_140d290c0(&kTitle)->FUN_1411df830();
-        if (nState == 0 || nState == 4)
+        MS2Ptr<CMsgBoxData> spBox = FUN_140d73f20(GetStringCommonByKey(L"s_char_info_changetab_not_active_codi_tab"), 0);
+        if (spBox.get() != 0)
         {
-            MS2Ptr<CMsgBoxData> spBox = FUN_140d73f20(GetStringCommonByKey(CStringW(L"s_char_info_changetab_not_active_codi_tab")), 0);
-            if (spBox.get() != 0)
-            {
-                spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIMyInfoDialog::FUN_141a5c640));
-                spBox->FUN_140533ff0(nTab);
-                FUN_140d73c60(spBox);
-            }
+            spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIMyInfoDialog::FUN_141a5c640));
+            spBox->FUN_140533ff0(nTab);
+            FUN_140d73c60(spBox);
         }
     }
-    FUN_140d28f70(&kTitle);
 }
 
 // @0x141a5c640
@@ -1136,11 +1134,11 @@ bool UIMyInfoDialog::FUN_141a5c640(int nButton, const CMsgBoxData& kData)
     if (nButton == 0)
     {
         int nTab = kData.FUN_141a02e50(0, m_nTab);
-        if (m_30.get() != 0 && nTab != m_nTab && m_spInfo.get() != 0 && m_spInfo->m_mapEquip2.IsEmpty() == true)
+        if ((m_30.get() ? true : false) && nTab != m_nTab && (m_spInfo.get() ? true : false) && m_spInfo->m_mapEquip2.IsEmpty() == true)
         {
-            MS2Ptr<ASMovieClip> spTab = m_30->FUN_140be23c0<ASMovieClip>(CString("m_tab"));
+            MS2Ptr<ASMovieClip> spTab = m_30->FUN_140be23c0<ASMovieClip>("m_tab");
             if (spTab.get() != 0)
-                reinterpret_cast<Unk_MiTabClip*>(spTab.get())->FUN_1422e31e0(nTab);
+                reinterpret_cast<Unk_MiTabClip*>(spTab.operator->())->FUN_1422e31e0(nTab);
         }
     }
     return true;
@@ -1153,52 +1151,61 @@ int UIMyInfoDialog::GetTab()
 }
 
 // @0x141a5c7c0
-// MS2-FUNCTIONAL: string temporaries
 void UIMyInfoDialog::FUN_141a5c7c0(int nStat)
 {
     MyPC* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
-    if (pPc == 0 || (m_spInfo == 0))
+    if (pPc == 0)
+        return;
+    if (m_spInfo == 0)
         return;
     if (m_spInfo->FUN_140dba1c0() == 0)
         return;
-    ATL::CAtlArray<void*> aStats;
-    FUN_1408377d0(&aStats);
-    MS2Ptr<CStatPointManager> spMgr = static_cast<Unk_MiPc*>(pPc)->FUN_140c25130();
-    int nRemain = spMgr->GetRemaining() - m_250;
-    int nUsed = spMgr->GetUsed() + m_250;
-    CString strRow;
-    strRow.Format("m_statPoint%d", nStat + 1);
-    MS2Ptr<ASMovieClip> spRow = FUN_140ba7930(strRow);
-    if (spRow.get() != 0)
+    ATL::CAtlArray<int> aStats;
+    FUN_1408377d0(aStats);
+    unsigned nRemain = 0;
+    unsigned nUsed = 0;
+    nRemain = static_cast<Unk_MiPc*>(pPc)->FUN_140c25130()->GetRemaining();
+    nUsed = static_cast<Unk_MiPc*>(pPc)->FUN_140c25130()->GetUsed();
+    nRemain -= m_250;
+    nUsed += m_250;
+    CString strRow = StringFormat("m_statPoint{0}", nStat + 1);
     {
-        int nKey = *FUN_1409eec00(&aStats, nStat);
-        __int64 nValue = (nKey == 4) ? m_spInfo->m_aStats0[4] : m_spInfo->m_aStats2[nKey];
-        nValue += FUN_140837770(nKey, m_250);
-        CStringW strValue;
-        strValue.Format(L"%I64d", nValue);
-        spRow->FUN_1409b4620(CString("m_point"))->FUN_1422c4cd0(strValue);
-        unsigned nColor = 0xffffff;
-        int nSpent = spMgr->GetStatPoints(static_cast<CStatPointManager::Unk_StatKey>(nKey));
-        if (nSpent != 0 || m_250 != 0)
-            nColor = 0xffa200;
-        spRow->FUN_1409b4620(CString("m_point"))->FUN_1422c50e0(nColor);
-        MS2Ptr<ASButton> spPlus = spRow->FUN_140acce30<ASButton>(CString("m_plus"));
-        if (spPlus.get() != 0 && (nRemain == 0 || FUN_1401d3200()->m_aStatCap[nKey] <= (unsigned)(nSpent + m_250)))
-            spPlus->FUN_1422c1fe0(0);
-    }
-    MS2Ptr<ASButton> spReset = FUN_140bb4b10(CString("m_resetStatPoint"));
-    if (spReset.get() != 0)
-        spReset->FUN_1422c1fe0(nUsed != 0);
-    MS2Ptr<ASMovieClip> spRemain = FUN_140ba7930(CString("m_remainPoint"));
-    if (spRemain.get() != 0)
-    {
-        MS2Ptr<ASTextField> spText = spRemain->FUN_1409b4620(CString("m_remainStatPoint"));
-        if (spText.get() != 0)
+        MS2Ptr<ASMovieClip> spRow = FUN_140ba7930(strRow);
+        if (spRow)
         {
-            CStringW strRemain;
-            strRemain.Format(L"%d", nRemain);
+            int nKey = aStats[nStat];
+            __int64 nValue = 0;
+            if (nKey == 4)
+                nValue = m_spInfo->m_aStats0[nKey];
+            else
+                nValue = m_spInfo->m_aStats2[nKey];
+            nValue += FUN_140837770(nKey, m_250);
+            CStringW strValue = StringFormat(L"{0}", nValue);
+            FUN_140cfee80((*spRow).FUN_1422bb890(), "m_point", strValue);
+            unsigned nColor = 0xffffff;
+            unsigned nSpent = static_cast<Unk_MiPc*>(pPc)->FUN_140c25130()->GetStatPoints(static_cast<CStatPointManager::Unk_StatKey>(nKey));
+            if (nSpent > 0 || (unsigned)m_250 > 0)
+                nColor = 0xffa200;
+            FUN_140cff740((*spRow).FUN_1422bb890(), "m_point", nColor);
+            if (MS2Ptr<ASButton> spPlus = spRow->FUN_140acce30<ASButton>("m_plus"))
+            {
+                if (nRemain == 0 || FUN_1401d3200()->m_aStatCap[nKey] <= nSpent + m_250)
+                    spPlus->FUN_1422c1fe0(0);
+            }
+        }
+    }
+    if (MS2Ptr<ASButton> spReset = FUN_140bb4b10("m_resetStatPoint"))
+        spReset->FUN_1422c1fe0(nUsed > 0 ? 1 : 0);
+    if (MS2Ptr<ASMovieClip> spRemain = FUN_140ba7930("m_remainPoint"))
+    {
+        if (MS2Ptr<ASTextField> spText = spRemain->FUN_1409b4620("m_remainStatPoint"))
+        {
+            CStringW strRemain = StringFormat(L"{0}", nRemain);
             spText->FUN_1422c4cd0(strRemain);
-            spText->FUN_1422c50e0(nRemain != 0 ? 0xffa200 : 0xffffff);
+            unsigned nColor2 = 0xffffff;
+            if (nRemain > 0)
+                nColor2 = 0xffa200;
+            spText->FUN_1422c50e0(nColor2);
         }
     }
 }
@@ -1207,11 +1214,13 @@ void UIMyInfoDialog::FUN_141a5c7c0(int nStat)
 void UIMyInfoDialog::FUN_141a5cf30(int nStat)
 {
     MyPC* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
-    if (pPc == 0 || m_250 == 0)
+    if (pPc == 0)
+        return;
+    if ((unsigned)m_250 <= 0)
         return;
     ATL::CAtlArray<void*> aStats;
     FUN_1408377d0(&aStats);
-    if ((unsigned __int64)nStat > FUN_1409eecc0(&aStats))
+    if (FUN_1409eecc0(&aStats) < (unsigned __int64)nStat)
         return;
     int* pStat = FUN_1409eec00(&aStats, nStat);
     static_cast<Unk_MiPc*>(pPc)->FUN_140c25130()->RequestAdd(*pStat, m_250);
@@ -1273,16 +1282,15 @@ int UIMyInfoDialog::vfunc_o178_1(void* pAvatar)
         return 0;
     FUN_141a5d5d0();
     ASObj kObj(2);
-    GameObject* pObj = static_cast<UIAvatarBase*>(pAvatar)->vfunc_24();
-    if (pObj != 0)
+    AvatarPC* pAv = FUN_140a535c0(static_cast<UIAvatarBase*>(pAvatar)->vfunc_24());
+    if (pAv != 0)
     {
-        AvatarPC* pAv = FUN_140a535c0(pObj);
-        if (pAv != 0 && pAv->GetType() == 1)
+        if (pAv->GetType() == 1)
             FUN_1418bee30(&kObj, 10000);
         FUN_1407cbbe0(&kObj, "showActionList", true);
     }
-    if (m_spMyNews.get() != 0)
-        m_spMyNews->Invoke("initData", kObj.FUN_1422bb870());
+    if (m_30.get() != 0)
+        m_30->Invoke("initData", kObj.FUN_1422bb870());
     FUN_141a5c080();
     return 1;
 }

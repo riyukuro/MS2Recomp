@@ -139,7 +139,6 @@ CEnchantScrollRecipe::~CEnchantScrollRecipe()
 }
 
 // @0x14034d660
-// MS2-FUNCTIONAL: frame/temporary layout differs from the exe (extra CString/MS2Ptr temp slots); no source form found
 int CEnchantScrollRecipe::Read(Unk_140165cf0* pElem)
 {
     FUN_1408731e0(pElem, "id", m_nId);
@@ -166,23 +165,23 @@ int CEnchantScrollRecipe::Read(Unk_140165cf0* pElem)
     FUN_1408732e0(pElem, "requireMeso", m_nMeso);
     if (FUN_1404c1810(FUN_140302b10(), 1, 0) != 1.0f)
     {
-        m_nMeso = (__int64)((float)m_nMeso * FUN_1404c1810(FUN_140302b10(), 1, 0));
+        m_nMeso *= FUN_1404c1810(FUN_140302b10(), 1, 0);
         m_nMeso = ((m_nMeso + 50) / 100) * 100;
     }
-    for (unsigned __int64 i = 1; i < 6; i++)
+    for (unsigned __int64 i = 1; i <= 5; i++)
     {
         CString strName = StringFormat("requireItem{0}", i);
         CStringW strItem;
         FUN_140873420(pElem, strName, strItem);
         m_ingredients.FUN_14026b9d0(strItem);
     }
-    for (unsigned __int64 j = 1; j < 6; j++)
+    for (unsigned __int64 j = 1; j <= 5; j++)
     {
         CString strName = StringFormat("rewardItem{0}", j);
         CStringW strItem;
         FUN_140873420(pElem, strName, strItem);
         ItemEntity item;
-        (&item)->vfunc_1(CStringW(strItem));
+        item.vfunc_1(CStringW(strItem));
         if (item.m_itemId != 0)
             m_rewards.Add(item);
     }
@@ -190,11 +189,9 @@ int CEnchantScrollRecipe::Read(Unk_140165cf0* pElem)
 }
 
 // @0x14034dbe0
-// MS2-FUNCTIONAL: frame/temporary layout differs from the exe (extra CString/MS2Ptr temp slots); no source form found
 CString CEnchantScrollRecipe::GetRewardName()
 {
-    ItemAble* pScroll = &m_scroll;
-    Unk_EnchantItemPtr item = FUN_14053f870(pScroll->vfunc_o18_0());
+    Unk_EnchantItemPtr item = FUN_14053f870(m_scroll.vfunc_o18_0());
     if (item.FUN_1402ffd90())
         return CString("");
     return item.FUN_1401b52a0()->FUN_14053fdd0();
@@ -206,9 +203,10 @@ CEnchantScrollTable::CEnchantScrollTable() : m_scrolls(17, 0.75f, 0.25f, 2.25f, 
 }
 
 // @0x14034dd60
-// MS2-FUNCTIONAL: frame/temporary layout differs from the exe (extra CString/MS2Ptr temp slots); no source form found
 CEnchantScrollTable::~CEnchantScrollTable()
 {
+    m_scrolls.RemoveAll();
+    m_recipes.RemoveAll();
 }
 
 // @0x14034dde0
@@ -222,13 +220,11 @@ int CEnchantScrollTable::Load()
 }
 
 // @0x14034de20
-// MS2-FUNCTIONAL: frame/temporary layout differs from the exe (extra CString/MS2Ptr temp slots); no source form found
 int CEnchantScrollTable::LoadScrolls()
 {
-    CString strPath = FUN_14071a5b0(CString("Table"), CString("enchantScroll.xml"));
+    CString strPath = FUN_14071a5b0("Table", "enchantScroll.xml");
     TiXmlDocument doc;
-    const char* pszPath = strPath;
-    if (FUN_140166420()->FUN_1403974b0(&doc, pszPath, 0, true, false) == 0)
+    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return 1;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
@@ -238,26 +234,24 @@ int CEnchantScrollTable::LoadScrolls()
     }
     for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("scroll"); pNode != 0; pNode = pNode->FUN_140168650("scroll"))
     {
-        if (FUN_14028f710(pNode))
-        {
-            ScrollPtr data(new CEnchantScrollData);
-            int nId = 0;
-            FUN_1408731e0(pNode, "id", nId);
-            if (data.get()->Read(pNode) != 0)
-                m_scrolls.SetAt(nId, data);
-        }
+        if (!FUN_14028f710(pNode))
+            continue;
+        ScrollPtr data(new CEnchantScrollData);
+        int nId = 0;
+        FUN_1408731e0(pNode, "id", nId);
+        if (data->Read(pNode) == 0)
+            continue;
+        m_scrolls.SetAt(nId, data);
     }
     return 1;
 }
 
 // @0x14034e0d0
-// MS2-FUNCTIONAL: frame/temporary layout differs from the exe (extra CString/MS2Ptr temp slots); no source form found
 int CEnchantScrollTable::LoadRecipes()
 {
-    CString strPath = FUN_14071a5b0(CString("Table"), CString("enchantScrollRecipe.xml"));
+    CString strPath = FUN_14071a5b0("Table", "enchantScrollRecipe.xml");
     TiXmlDocument doc;
-    const char* pszPath = strPath;
-    if (FUN_140166420()->FUN_1403974b0(&doc, pszPath, 0, true, false) == 0)
+    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return 1;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
@@ -267,12 +261,12 @@ int CEnchantScrollTable::LoadRecipes()
     }
     for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("recipe"); pNode != 0; pNode = pNode->FUN_140168650("recipe"))
     {
-        if (FUN_14028f710(pNode))
-        {
-            RecipePtr data(new CEnchantScrollRecipe);
-            if (data.get()->Read(pNode) != 0)
-                m_recipes.SetAt(data->m_nId, data);
-        }
+        if (!FUN_14028f710(pNode))
+            continue;
+        RecipePtr data(new CEnchantScrollRecipe);
+        if (data->Read(pNode) == 0)
+            continue;
+        m_recipes.SetAt(data->m_nId, data);
     }
     return 1;
 }
@@ -294,43 +288,38 @@ CEnchantScrollTable::RecipePtr CEnchantScrollTable::FindRecipe(unsigned nId)
 }
 
 // @0x14034e460
-// MS2-FUNCTIONAL: frame/temporary layout differs from the exe (extra CString/MS2Ptr temp slots); no source form found
 void CEnchantScrollTable::FindRecipes(int nType, int nSlot, int nRank, ATL::CAtlArray<RecipePtr>& rOut)
 {
     for (POSITION pos = m_recipes.GetStartPosition(); pos != 0; m_recipes.GetNext(pos))
     {
         RecipePtr recipe = m_recipes.GetValueAt(pos);
-        if (recipe->m_nSlot == nSlot)
-        {
-            if (recipe->m_nRecipeType == nType)
-            {
-                ScrollPtr scroll = FindScroll(recipe->m_nScrollId);
-                if (!scroll.IsNull())
-                {
-                    if (scroll->GetMaxRank() == nRank)
-                        rOut.Add(recipe);
-                }
-            }
-        }
+        if (recipe->m_nSlot != nSlot)
+            continue;
+        if (recipe->m_nRecipeType != nType)
+            continue;
+        ScrollPtr scroll = FindScroll(recipe->m_nScrollId);
+        if (scroll.IsNull())
+            continue;
+        if (scroll->GetMaxRank() != nRank)
+            continue;
+        rOut.Add(recipe);
     }
 }
 
 // @0x14034e5e0
-// MS2-FUNCTIONAL: frame/temporary layout differs from the exe (extra CString/MS2Ptr temp slots); no source form found
 int CEnchantScrollTable::HasRecipe(int nType, int nRank)
 {
     for (POSITION pos = m_recipes.GetStartPosition(); pos != 0; m_recipes.GetNext(pos))
     {
         RecipePtr recipe = m_recipes.GetValueAt(pos);
-        if (recipe->m_nRecipeType == nType)
-        {
-            ScrollPtr scroll = FindScroll(recipe->m_nScrollId);
-            if (!scroll.IsNull())
-            {
-                if (scroll->GetMaxRank() == nRank)
-                    return 1;
-            }
-        }
+        if (recipe->m_nRecipeType != nType)
+            continue;
+        ScrollPtr scroll = FindScroll(recipe->m_nScrollId);
+        if (scroll.IsNull())
+            continue;
+        if (scroll->GetMaxRank() != nRank)
+            continue;
+        return 1;
     }
     return 0;
 }

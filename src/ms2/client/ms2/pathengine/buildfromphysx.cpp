@@ -246,7 +246,7 @@ bool BuildAndSaveGround(const NiString& fileName, NxScene* scene, std::set<NxAct
 
     const tSigned32 extrudeHeight = 128;
     const tSigned32 maxStepHeight = 145;
-    tSigned32 maxSlope = static_cast<tSigned32>(FUN_14147af60(1.5533f) * 100.f);
+    tSigned32 maxSlope = static_cast<tSigned32>(FUN_14147af60(1.553343f) * 100.f);
     const char* options[] = {"method", "bsp", "excludeDownwardFacingFromGroundResult", "true", 0};
     iMesh* mesh = contentProcessing->buildGround(meshes.empty() ? 0 : &meshes[0],
                                                  static_cast<tSigned32>(meshes.size()), solids,
@@ -286,7 +286,7 @@ bool BuildAndSaveGround(std::vector<unsigned char>& buffer, NxScene* scene, std:
 
     const tSigned32 extrudeHeight = 128;
     const tSigned32 maxStepHeight = 145;
-    tSigned32 maxSlope = static_cast<tSigned32>(FUN_14147af60(1.5533f) * 100.f);
+    tSigned32 maxSlope = static_cast<tSigned32>(FUN_14147af60(1.553343f) * 100.f);
     const char* options[] = {"method", "bsp", "excludeDownwardFacingFromGroundResult", "true", 0};
     iMesh* mesh = contentProcessing->buildGround(meshes.empty() ? 0 : &meshes[0],
                                                  static_cast<tSigned32>(meshes.size()), solids,

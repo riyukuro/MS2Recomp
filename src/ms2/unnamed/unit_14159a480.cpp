@@ -6,11 +6,13 @@
 #define MS2_THIS_FILE ""
 #include "ms2/placeholder/ms2stdafx.h"
 #include "ms2/placeholder/nmobjects.h"
+#include "ms2/placeholder/nmstream.h"
+#include "ms2/placeholder/nmencoder.h"
 #include "ms2/ms2recover.h"
 
 extern int FUN_1415fb700(const void*);
 extern int FUN_1415fb750(void*);
-extern int FUN_1415fb6d0(void*);
+extern int FUN_1415fb6d0(CNMSerializableDecoder*);
 extern void FUN_1415f9990(void*);
 extern void FUN_14156ae30(void*, const void*);
 extern void FUN_14156ab90(void*, unsigned short);
@@ -64,11 +66,8 @@ CNMCreateChatRoomExFunc::CNMCreateChatRoomExFunc(int n10, unsigned __int64 n18, 
 // @0x14159a730
 unsigned int CNMCreateChatRoomExFunc::EncodeFramed(CNMStream* pStream)
 {
-    alignas(8) unsigned char encoder[0x18];
-    FUN_14156bcb0(encoder, pStream, this);
-    const unsigned int result = Encode(reinterpret_cast<CNMEncoder*>(encoder), pStream);
-    FUN_14156bd50(encoder);
-    return result;
+    CNMSerializableEncoder encoder(pStream, this);
+    return CNMCreateChatRoomExFunc::Encode(reinterpret_cast<CNMEncoder*>(&encoder), pStream);
 }
 
 // MS2-FUNCTIONAL: recovered format branch; direct calls stand in for virtual dispatch.
@@ -76,10 +75,8 @@ unsigned int CNMCreateChatRoomExFunc::EncodeFramed(CNMStream* pStream)
 unsigned int CNMCreateChatRoomExFunc::EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream)
 {
     if (m_bFormat == 1)
-        Encode(pEncoder, pStream);
-    else
-        EncodeFramed(pStream);
-    return 0;
+        return CNMCreateChatRoomExFunc::Encode(pEncoder, pStream);
+    return CNMCreateChatRoomExFunc::EncodeFramed(pStream);
 }
 
 // MS2-FUNCTIONAL: nested records and trailing fields match; direct calls replace indirect dispatch.
@@ -103,13 +100,10 @@ unsigned int CNMCreateChatRoomExFunc::Encode(CNMEncoder* pEncoder, CNMStream* pS
 // @0x14159a8e0
 unsigned int CNMCreateChatRoomExFunc::DecodeFramed(CNMStream* pStream)
 {
-    alignas(8) unsigned char decoder[0x38];
-    FUN_14156bcb0(decoder, pStream, this);
-    unsigned int result = 0;
-    if (FUN_1415fb750(decoder) != 0)
-        result = Decode(reinterpret_cast<CNMSerializableDecoder*>(decoder), pStream);
-    FUN_14156bd50(decoder);
-    return result;
+    CNMSerializableDecoder decoder(pStream, this);
+    if (FUN_1415fb750(&decoder) == 0)
+        return 0;
+    return CNMCreateChatRoomExFunc::Decode(&decoder, pStream);
 }
 
 // MS2-FUNCTIONAL: recovered decoder format branch; direct calls replace virtual dispatch.
@@ -117,10 +111,8 @@ unsigned int CNMCreateChatRoomExFunc::DecodeFramed(CNMStream* pStream)
 unsigned int CNMCreateChatRoomExFunc::DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream)
 {
     if (FUN_1415fb6d0(pDecoder) == 2)
-        DecodeFramed(pStream);
-    else
-        Decode(pDecoder, pStream);
-    return 0;
+        return CNMCreateChatRoomExFunc::DecodeFramed(pStream);
+    return CNMCreateChatRoomExFunc::Decode(pDecoder, pStream);
 }
 
 // MS2-FUNCTIONAL: nested records and trailing fields match; direct calls replace indirect dispatch.
@@ -140,7 +132,7 @@ unsigned int CNMCreateChatRoomExFunc::Decode(CNMSerializableDecoder* pDecoder, C
         m_750 = reinterpret_cast<ReadU16>(vftable[2])(pDecoder);
         m_754 = static_cast<int>(reinterpret_cast<ReadU32>(vftable[3])(pDecoder));
     }
-    return 1;
+    return FUN_1415fb750(pDecoder);
 }
 
 // MS2-PIN: ??0CNMCreateChatRoomExFunc@@QEAA@XZ 0x14159a480

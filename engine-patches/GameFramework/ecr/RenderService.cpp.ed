@@ -1,3 +1,9 @@
 169a
 #line 174 // MS2 __LINE__ (linefix)
 .
+56a
+    // MS2: purge the DX9 renderer's pre-pack lists (exe 0x1420197f8-0x14201983e)
+    if (NiDX9Renderer* pkDX9Renderer = NiDynamicCast(NiDX9Renderer, m_spRenderer))
+        pkDX9Renderer->PurgePrePackData();
+#line 57 // MS2 __LINE__ (linefix)
+.

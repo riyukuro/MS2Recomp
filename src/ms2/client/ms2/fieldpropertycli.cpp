@@ -42,9 +42,9 @@ struct Unk_EntRef {                 // entity reference built from the handle's 
     ~Unk_EntRef();
     void* m_p;
 };
-struct Unk_Raw12 { int a, b, c; };               // uninitialised colour scratch (filled by FUN_1406c3780)
-struct Unk_Raw16 { __int64 a, b; };
 struct Unk_Rec24 { char b[24]; };
+struct Unk_MapIt { void* p; };                   // map iterator scratch
+struct Unk_MapPair { void* a[5]; };              // 40 byte (key, value) pair scratch
 namespace egf {
 enum PropertyResult { PropertyResult_Unknown };
 class Entity {
@@ -76,7 +76,9 @@ void FUN_1411a7e80(void* o, int n);
 void FUN_140aeb900(void* o, unsigned char b);
 void FUN_141adc530(void* o, int n);
 void FUN_141adc5d0(void* o, int n);
-void FUN_141bd0420(void* o, Unk_Handle* out, unsigned hash);
+struct Unk_FpWorld {                // the world service (FUN_1403ed2d0)
+    Unk_Handle FUN_141bd0420(unsigned hash);    // the entities of a model
+};
 bool FUN_1409f2130(Unk_Handle* h, int n);
 void* FUN_1409f2190(Unk_Handle* h);
 void* FUN_140b285a0(void* p);
@@ -85,6 +87,12 @@ void* FUN_1408a9280(Unk_EntRef* r);
 Unk_Vec3f* FUN_1406c3780(Unk_Rgb3b* c, Unk_Vec3f* out);      // rgb bytes -> 0..1 floats
 void FUN_140b27ec0(void* ent, unsigned id, void* p);
 void FUN_140b27f00(void* ent, unsigned id, void* p);
+struct Unk_FpRgb : Unk_Rgb3b {
+    Unk_Vec3f FUN_1406c3780() const;                         // rgb bytes -> 0..1 floats, by value
+};
+struct Unk_FpEntity {
+    void FUN_140b27f00(unsigned id, const Unk_Vec3f& v);     // FUN_140b27f00 called on the entity
+};
 unsigned FUN_140b27eb0();
 
 // ---- the factory ----
@@ -173,12 +181,11 @@ void FieldPropertyWeatherCli::vfunc_4() { FUN_1411a7e80(FUN_1403ed280(), m_nWeat
 // @0x140b27900
 void FieldPropertyWeatherCli::vfunc_5() { FUN_1411a7e80(FUN_1403ed280(), 0); }
 
-// MS2-FUNCTIONAL: stack layout / GS differs (safebuffers approximates the exe's missing cookie)
+// MS2-FUNCTIONAL: op-identical; our frame is 16 bytes larger (no source form found)
 // @0x140b27930
-__declspec(safebuffers) void FieldPropertyAmbientLightCli::vfunc_4()
+void FieldPropertyAmbientLightCli::vfunc_4()
 {
-    Unk_Handle h;
-    FUN_141bd0420(FUN_1403ed2d0(), &h, 0x169ea355);
+    Unk_Handle h = static_cast<Unk_FpWorld*>(FUN_1403ed2d0())->FUN_141bd0420(0x169ea355);
     if (FUN_1409f2130(&h, 0) || !FUN_140b285a0(FUN_1409f2190(&h)))
         return;
     Unk_EntRef ent(FUN_140b285b0(FUN_1409f2190(&h)));
@@ -186,24 +193,20 @@ __declspec(safebuffers) void FieldPropertyAmbientLightCli::vfunc_4()
     {
         m_bCached = true;
         m_fCached = 0;
-        Unk_Vec3f* pOld = &m_vecOld;
-        FUN_140b27ec0(FUN_1408a9280(&ent), 0xb086f4a8, pOld);
+        FUN_140b27ec0(FUN_1408a9280(&ent), 0xb086f4a8, &m_vecOld);
         return;
     }
-    Unk_Raw16 tmp;
-    Unk_Vec3f* pv = FUN_1406c3780(&m_color, (Unk_Vec3f*)&tmp);
-    FUN_140b27f00(FUN_1408a9280(&ent), 0xb086f4a8, pv);
+    static_cast<Unk_FpEntity*>(FUN_1408a9280(&ent))->FUN_140b27f00(0xb086f4a8, static_cast<const Unk_FpRgb&>(m_color).FUN_1406c3780());
 }
 
 // @0x140b27a80
 Unk_Vec3f* FUN_140b27a80(FieldPropertyAmbientLightCli* p, Unk_Vec3f* out) { FUN_1406c3780(&p->m_color, out); return out; }
 
-// MS2-FUNCTIONAL: stack layout / GS differs
+// MS2-FUNCTIONAL: op-identical; our frame is 16 bytes larger and the handle sits below the temps (no source form found)
 // @0x140b27ac0
-__declspec(safebuffers) void FieldPropertyDirectionalLightCli::vfunc_4()
+void FieldPropertyDirectionalLightCli::vfunc_4()
 {
-    Unk_Handle h;
-    FUN_141bd0420(FUN_1403ed2d0(), &h, 0x628f2cf9);
+    Unk_Handle h = static_cast<Unk_FpWorld*>(FUN_1403ed2d0())->FUN_141bd0420(0x628f2cf9);
     if (FUN_1409f2130(&h, 0) || !FUN_140b285a0(FUN_1409f2190(&h)))
         return;
     Unk_EntRef ent(FUN_140b285b0(FUN_1409f2190(&h)));
@@ -211,15 +214,11 @@ __declspec(safebuffers) void FieldPropertyDirectionalLightCli::vfunc_4()
     {
         m_bCached = true;
         m_fCached = 0;
-        Unk_Vec3f* pOld = &m_vecOld;
-        FUN_140b27ec0(FUN_1408a9280(&ent), 0x2d8cf386, pOld);
+        FUN_140b27ec0(FUN_1408a9280(&ent), 0x2d8cf386, &m_vecOld);
         return;
     }
-    Unk_Raw12 t1, t2;
-    Unk_Vec3f* p1 = FUN_1406c3780(&m_color1, (Unk_Vec3f*)&t1);
-    FUN_140b27f00(FUN_1408a9280(&ent), 0x2d8cf386, p1);
-    Unk_Vec3f* p2 = FUN_1406c3780(&m_color1, (Unk_Vec3f*)&t2);
-    FUN_140b27f00(FUN_1408a9280(&ent), 0xc3f0329e, p2);
+    static_cast<Unk_FpEntity*>(FUN_1408a9280(&ent))->FUN_140b27f00(0x2d8cf386, static_cast<const Unk_FpRgb&>(m_color1).FUN_1406c3780());
+    static_cast<Unk_FpEntity*>(FUN_1408a9280(&ent))->FUN_140b27f00(0xc3f0329e, static_cast<const Unk_FpRgb&>(m_color1).FUN_1406c3780());
 }
 
 // @0x140b27c60
@@ -242,23 +241,20 @@ bool FUN_140947540(void* a, void* b);
 void* FUN_140947490(void* it, unsigned id, void* pVal, unsigned type);
 void* FUN_140947580(void* map, unsigned* key);
 
-// MS2-FUNCTIONAL: remembers the entity's original value for a property before it is overwritten (map find/insert)
+// MS2-FUNCTIONAL: op-identical; our frame is 16 bytes larger (no source form found).
+// Remembers the entity's original value for a property before it is overwritten (map find/insert).
 // @0x140b27d50
 void FUN_140b27d50(egf::Entity* pEntity, unsigned id, void* pNew)
 {
-    char* e = (char*)pEntity;
-    if (*(unsigned char*)(e + 0xc8))
+    if (*((unsigned char*)pEntity + 0xc8))
     {
-        char it1[8], it2[8];
-        void* endIt = FUN_1409481f0(e + 0xd0, it1);
-        if (FUN_140947540(FUN_140948250(e + 0xd0, it2, &id), endIt))
+        Unk_MapIt it1, it2;
+        if (FUN_140947540(FUN_140948250((char*)pEntity + 0xd0, &it2, &id), FUN_1409481f0((char*)pEntity + 0xd0, &it1)))
         {
             Unk_Vec3f old(0, 0, 0);
             ((Unk_EntityAccess*)pEntity)->Get(id, &old, FUN_140b27eb0());
-            Unk_Vec3f* copy = new Unk_Vec3f(old);
-            char it3[40];
-            Unk_Rec24* rec = (Unk_Rec24*)FUN_140947490(it3, id, copy, FUN_140b27eb0());
-            *(Unk_Rec24*)FUN_140947580(e + 0xd0, &id) = *rec;
+            Unk_MapPair it3;
+            *(Unk_Rec24*)FUN_140947580((char*)pEntity + 0xd0, &id) = *(Unk_Rec24*)FUN_140947490(&it3, id, new Unk_Vec3f(old), FUN_140b27eb0());
         }
     }
 }

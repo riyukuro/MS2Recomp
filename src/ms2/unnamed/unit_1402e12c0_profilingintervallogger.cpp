@@ -24,12 +24,13 @@ void* FUN_140166440();      // the CLogString singleton
 // fmt slot helpers (16-byte argument record + 8-byte bound slot)
 struct Unk_LogArg { i64 m_w0, m_w1; };
 MS2_CHECK_SIZE(Unk_LogArg, 0x10);
-Unk_LogArg FUN_140163740(const CString& str);      // boxes a string argument
-Unk_LogArg FUN_140163790(int nValue);              // boxes an int argument
+struct Unk_LogArgMade : Unk_LogArg {};             // fmt::internal::MakeValue<...> (sliced to its Value base)
+Unk_LogArgMade FUN_140163740(const CString& str);  // boxes a string argument
+Unk_LogArgMade FUN_140163790(int nValue);          // boxes an int argument
 u64* FUN_140163e80(u64* pSlot);                    // empty argument slot
 u64* FUN_1401cee00(u64* pSlot, const void* pValue); // slot bound to a string
 u64* FUN_14015e5d0(u64* pSlot, const void* pValue); // slot bound to an int
-u64 FUN_14016d660(u64 a, u64 b, u64 c, u64 d);      // joins four slots
+u64 FUN_14016d660(u64 a, u64 b, u64 c, u64 d, u64 e, u64 f, u64 g, u64 h, u64 i, u64 j, u64 k, u64 l, u64 m, u64 n, u64 o); // joins all fifteen argument-type slots
 u64 FUN_140163e50(void* pOut, u64 kJoined, Unk_LogArg* pFirst);
 void FUN_140653690(i64 pLog, i64 a, i64 c, int nCategory, const wchar_t* pszFormat, u64 kArgs);
 
@@ -95,17 +96,13 @@ u64* FUN_1402e15d0(u64* pSlot, const int* pValue)
 }
 
 // @0x1402e1600
-// MS2-FUNCTIONAL: fmt argument-packing template glue; the exe's argument slot temporaries are laid out differently.
+// MS2-FUNCTIONAL: fmt argument-packing template glue; the Value[5] array matches, but the exe keeps the bound/empty ArgType slots as separate temporaries (no array indexing).
 void FUN_1402e1600(i64 pLog, i64 a, i64 c, int nCategory, const wchar_t* pszFormat,
                    const CString* pStr0, const int* pInt1, const CString* pStr2,
                    const int* pInt3, const int* pInt4)
 {
-    Unk_LogArg kArg0 = FUN_140163740(*pStr0);
-    Unk_LogArg kArg1 = FUN_140163790(*pInt1);
-    Unk_LogArg kArg2 = FUN_140163740(*pStr2);
-    Unk_LogArgValue kArg3(*pInt3);
-    Unk_LogArgValue kArg4(*pInt4);
-    (void)kArg1; (void)kArg2; (void)kArg3; (void)kArg4;
+    Unk_LogArg aArgs[5] = { FUN_140163740(*pStr0), FUN_140163790(*pInt1), FUN_140163740(*pStr2),
+                            Unk_LogArgValue(*pInt3), Unk_LogArgValue(*pInt4) };
 
     u64 aSlot[5];
     u64 aInit[10];
@@ -124,16 +121,10 @@ void FUN_1402e1600(i64 pLog, i64 a, i64 c, int nCategory, const wchar_t* pszForm
     u64* pBound2 = FUN_1401cee00(&aSlot[2], pStr2);
     u64* pBound1 = FUN_14015e5d0(&aSlot[1], pInt1);
     u64* pBound0 = FUN_1401cee00(&aSlot[0], pStr0);
-    (void)pBound4; (void)pBound0;
-
-    u64 q0 = *pInit0, q1 = *pInit1, q2 = *pInit2, q3 = *pInit3, q4 = *pInit4;
-    u64 q5 = *pInit5, q6 = *pInit6, q7 = *pInit7, q8 = *pInit8, q9 = *pInit9;
-    (void)q0; (void)q1; (void)q2; (void)q3; (void)q4;
-    (void)q5; (void)q6; (void)q7; (void)q8; (void)q9;
-
-    u64 kJoined = FUN_14016d660(*pBound0, *pBound1, *pBound2, *pBound3);
+    u64 kJoined = FUN_14016d660(*pBound0, *pBound1, *pBound2, *pBound3, *pBound4,
+                                *pInit9, *pInit8, *pInit7, *pInit6, *pInit5, *pInit4, *pInit3, *pInit2, *pInit1, *pInit0);
     char aOut[24];
-    u64 kArgs = FUN_140163e50(aOut, kJoined, &kArg0);
+    u64 kArgs = FUN_140163e50(aOut, kJoined, aArgs);
     FUN_140653690(pLog, a, c, nCategory, pszFormat, kArgs);
 }
 

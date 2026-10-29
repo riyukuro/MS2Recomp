@@ -128,14 +128,12 @@ CSoundDataTable::~CSoundDataTable()
 {
 }
 
-// MS2-FUNCTIONAL: register allocation of the path pointer (r8 via rcx) differs
 // @0x140817b50
 int CSoundDataTable::Load()
 {
     TiXmlDocument doc;
     const CString& strPath = GetPath();
-    const char* pszPath = strPath;
-    if (FUN_140166420()->FUN_1403974b0(&doc, pszPath, 0, true, false) == 0)
+    if (FUN_140166420()->FUN_1403974b0(&doc, (const char*)strPath, 0, true, false) == 0)
     {
         FUN_14015eb90(FUN_140166440(), 1, 0x13, L"failed to read {0}", strPath);
         return 0;
@@ -232,11 +230,10 @@ CSoundDataEntry* CSoundDataTable::FindEventSound(const CString& strDir, const CS
     return &m_eventSounds[strKey];
 }
 
-// MS2-FUNCTIONAL: extra pointer-save around Right(1) temporary not reproduced
 // @0x140818570
 CSoundDataEntry* CSoundDataTable::FindProgrammerSound(CString strName)
 {
-    bool bTagged = FUN_140184310(strName.Left(1), "$") && FUN_140184310(strName.Right(1), "$");
+    bool bTagged = FUN_140184310(strName.Left(1), "$") && strName.Right(1) == "$";
     if (bTagged)
         strName.Remove('$');
     if (m_programmerSounds.find(strName) == m_programmerSounds.end())
@@ -244,11 +241,10 @@ CSoundDataEntry* CSoundDataTable::FindProgrammerSound(CString strName)
     return &m_programmerSounds[strName];
 }
 
-// MS2-FUNCTIONAL: extra pointer-save around Right(1) temporary not reproduced
 // @0x140818740
 CSoundDataEntry* CSoundDataTable::FindTriggerVoiceSound(CString strName)
 {
-    bool bTagged = FUN_140184310(strName.Left(1), "$") && FUN_140184310(strName.Right(1), "$");
+    bool bTagged = FUN_140184310(strName.Left(1), "$") && strName.Right(1) == "$";
     if (bTagged)
         strName.Remove('$');
     if (m_triggerVoiceSounds.find(strName) == m_triggerVoiceSounds.end())

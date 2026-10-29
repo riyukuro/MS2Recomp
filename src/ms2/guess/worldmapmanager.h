@@ -44,7 +44,7 @@ public:
     TileVector& GetWorldTiles(int world);                                       // 0x141b977e0
     TileGroups& GetTileGroups();                                                // 0x141b978c0
     MS2Ptr<UIWorldMap::MapTile> FindMapTileByKey(unsigned key);                 // 0x141b978e0
-    std::set<int>& GetPortalFields();                                           // 0x141b979b0
+    std::set<unsigned>& GetPortalFields();                                      // 0x141b979b0
     std::map<unsigned, MS2Ptr<UIWorldMap::FieldSearchInfo> >& FieldSearchInfos();   // 0x141b979d0
     MS2Ptr<UIWorldMap::FieldSearchInfo> FindFieldSearchInfo(CStringW name);     // 0x141b979f0
     void ClearIconInfos();                                                      // 0x141b97b50
@@ -60,7 +60,7 @@ public:
     void ClearDungeonInfos();                                                   // 0x141b98180
     void ClearAddtionalInfoTooltips();                                          // 0x141b98250
     int WorldOfField(int field);                                                // 0x141b98300
-    bool HasFieldSearchInfo(unsigned id);                                       // 0x141b98380
+    BOOL HasFieldSearchInfo(unsigned id);                                       // 0x141b98380
     void AddSpecialNpc(Unk_BmBoxPtr<SpecialNPCInfo> info);                      // 0x141b983f0
     int BuildFieldSearch(unsigned field, ASObj* script, bool mission);         // 0x141b98440
     int BuildNameSearch(CStringW search, ASObj* script);                        // 0x141b984a0
@@ -75,7 +75,7 @@ public:
 
 private:
     MS2_LAYOUT_FRIEND;
-    std::set<int> m_8;                                                          // +0x08 the portal fields
+    std::set<unsigned> m_8;                                                     // +0x08 the portal fields
     TileGroups m_18;                                                            // +0x18 the tiles of each world
     std::map<int, MS2Ptr<UIWorldMap::IconInfo> > m_28;                          // +0x28 field -> icons
     std::map<int, MS2Ptr<UIWorldMap::AddtionalInfo> > m_38;                     // +0x38 field -> additional info

@@ -17,6 +17,16 @@
 class Unk_140165cf0;
 class Unk_GcCondList;
 
+// The [min, max] pair of a trigger range: valid when max >= min and not both 0. The ctor zeroes it (0x1405c38a0, the
+// same body as Unk_MergeRange's).
+struct Unk_GeRange
+{
+    Unk_GeRange();                                          // 0x1405c38a0
+    int m_nMin;
+    int m_nMax;
+};
+MS2_CHECK_SIZE(Unk_GeRange, 8);
+
 // 0x28. m_n18 is the condition kind (the subclass ctor/loader sets it), m_b1c negates the check, m_n20 is the XML "value".
 class CGuideCondition : public ClassObject
 {
@@ -261,7 +271,7 @@ class CGuideConditionDialog : public CGuideCondition
 public:
     static ClassObject* CreateObject();                     // 0x1413a6010
     CGuideConditionDialog();                                // 0x1413a60c0
-    virtual ~CGuideConditionDialog();                       // 0 0x1413b4700
+    // implicit ~CGuideConditionDialog();                   // 0 0x1413b38a0 (??_G 0x1413b4700)
     virtual CStringW GetTypeName();                             // 1 0x1413a6070
     virtual void vfunc_2(Unk_140165cf0* pElem);             // 2 0x1413a6480: dialogName / dialogID / isOpen / subIndex / control
     virtual int vfunc_3();                                  // 3 0x1413a6140
@@ -502,7 +512,8 @@ class Unk_GcTime
 {
 public:
     Unk_GcTime();                                                   // 0x1406c4730 (calls 0x1406c5270(this, 0, 0))
-    explicit Unk_GcTime(unsigned __int64 nTime);                    // 0x1406c47a0 from the epoch seconds
+    Unk_GcTime(unsigned __int64 nTime);                             // 0x1406c47a0 from the epoch seconds
+    Unk_GcTime(int nYear, int nMonth, int nDay, int nHour, int nMin, int nSec); // 0x1406c47d0
     ATL::CTimeSpan operator-(const Unk_GcTime& rhs) const;          // 0x1406c4a20
     Unk_GcTime& FUN_1406c47a0(unsigned __int64 nTime);              // from the epoch seconds
     Unk_GcTime& FUN_1406c47d0(int nYear, int nMonth, int nDay, int nHour, int nMin, int nSec);
@@ -1129,8 +1140,7 @@ public:
     int m_n28;                                              // +0x28
     Unk_GcOptInt m_a;                                       // +0x2c
     Unk_GcOptInt m_b;                                       // +0x34
-    int m_n3c;                                              // +0x3c
-    int m_n40;                                              // +0x40
+    Unk_GeRange m_range;                                    // +0x3c
     int m_pad_44;
 };
 MS2_CHECK_SIZE(CGuideConditionTrigger, 0x48);

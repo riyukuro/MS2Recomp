@@ -113,10 +113,13 @@ endif()
 target_include_directories(dinput8 PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}/hook")
 target_link_libraries(dinput8 PRIVATE detours)
 set_target_properties(dinput8 PROPERTIES OUTPUT_NAME dinput8 PREFIX "")
-# Fixed base 0x100000000, below the (non-relocatable) exe at 0x140000000: keeps every exe address within REL32 range
-# of the DLL's code, which the absolute data symbols of ms2sym.obj rely on. A fixed DLL cannot be relocated: if the
-# range is taken the DLL (and with it the process) fails to load instead of misbehaving.
-target_link_options(dinput8 PRIVATE /DEBUG /OPT:REF /OPT:ICF /BASE:0x100000000 /DYNAMICBASE:NO /FIXED)
+# Fixed base 0x120000000, below the (non-relocatable) exe image 0x140000000-0x144456000 (SizeOfImage 0x4456000): keeps
+# every exe address within REL32 range of the DLL's code, which the absolute data symbols of ms2sym.obj rely on (their
+# value is VA - base, so the base must stay below the exe: tools/ms2symobj.py DLL_BASE; the DLL must end below
+# 0x140000000). A fixed DLL cannot be relocated: if the range is taken the DLL (and with it the process) fails to load
+# instead of misbehaving. Not 0x100000000: Wine 11 places relocatable images bottom-up from there before the exe's
+# imports load (DINPUT8.dll then failed with c0000018, 2026-10-28).
+target_link_options(dinput8 PRIVATE /DEBUG /OPT:REF /OPT:ICF /BASE:0x120000000 /DYNAMICBASE:NO /FIXED)
 # NiRendererSettings.h pulls NiD3D10Headers.h, whose #pragma comment(lib) asks for the June 2010 DX SDK import libs.
 # Mixed-case symlinks, since lld-link on Linux is case-sensitive and the pragma asks for D3DX9.lib / D3DX10.lib.
 set(MS2_DXLIB_DIR "${CMAKE_BINARY_DIR}/dxsdk-lib")

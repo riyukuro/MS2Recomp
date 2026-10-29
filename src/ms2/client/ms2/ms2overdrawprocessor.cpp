@@ -99,11 +99,5 @@ void MS2OverdrawProcessor::PreRenderProcessList(const NiVisibleArray* pkInput, N
 
 MS2_REPLACE_METHOD(0x1414d5070, MS2OverdrawProcessor, PreRenderProcessList, 525, 0xAE0D4DE1);
 
-// @0x1414d61d0
-// MS2-FUNCTIONAL: the exe dtor does not store the class vftable before destroying members; cl always does here
-MS2OverdrawProcessor::~MS2OverdrawProcessor()
-{
-}
-
 // @0x1414d6400
 const NiRTTI* MS2OverdrawProcessor::GetRTTI() const { return &ms_RTTI; }

@@ -44,7 +44,7 @@ public:
 };
 Unk_KsInputState* FUN_1409a8b10();
 void* FUN_140c58ac0(Unk_KsInputState* p);
-void FUN_14125bd20(void* p, int bMouse);
+void FUN_14125bd20(void* p, bool bMouse);
 void FUN_141243540(Unk_KsInputState* p);
 void* FUN_140a02e60(int nUiId);                                         // dialog by its ui id
 void FUN_1419438b0(void* p);
@@ -81,37 +81,36 @@ void UIKeySettingSelectDialog::vfunc_67()
     m_button2 = 0;
 }
 
-// MS2-FUNCTIONAL: OnLoadComplete: the exe keeps the MS2Ptr temps and delegate copies of each button hook (frame 0x118 vs 0xd8)
 // @0x140c58380
 void UIKeySettingSelectDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    bool bOn = FUN_14142e7a0(FUN_1409331f0()) == 0;
-    if (FUN_140bc6d10("m_button1", m_button1).get() != 0)
+    int bOn = FUN_14142e7a0(FUN_1409331f0()) == 0;
+    if (FUN_140bc6d10("m_button1", m_button1))
     {
         m_button1->FUN_1422ce240(KsClickDelegate(this, &UIKeySettingSelectDialog::FUN_140c58690), 1);
         m_button1->FUN_1422c1fe0(bOn);
     }
-    if (FUN_140bc6d10("m_button2", m_button2).get() != 0)
+    if (FUN_140bc6d10("m_button2", m_button2))
     {
         m_button2->FUN_1422ce240(KsClickDelegate(this, &UIKeySettingSelectDialog::FUN_140c58690), 2);
         m_button2->FUN_1422c1fe0(bOn);
     }
 }
 
-// MS2-FUNCTIONAL: FUN_140c58690: string temp / call shape differs (3 bytes longer in the exe)
 // @0x140c58690
 void UIKeySettingSelectDialog::FUN_140c58690(const Scaleform::GFx::FunctionHandler::Params& params)
 {
-    if (FUN_140bd09c0(((Unk_KsParams*)&params)->m_pButton) == 2)
+    int nButton = FUN_140bd09c0(((Unk_KsParams*)&params)->m_pButton);
+    if (nButton == 2)
     {
         FUN_1414297e0(FUN_1409331f0(), "./Data/Xml/Table/default/DefaultMouseControlKey.xml", 0);
-        FUN_14125bd20(FUN_140c58ac0(FUN_1409a8b10()), 1);
+        FUN_14125bd20(FUN_140c58ac0(FUN_1409a8b10()), true);
     }
     else
     {
         FUN_1414297e0(FUN_1409331f0(), "./Data/Xml/Table/default/DefaultKey.xml", 0);
-        FUN_14125bd20(FUN_140c58ac0(FUN_1409a8b10()), 0);
+        FUN_14125bd20(FUN_140c58ac0(FUN_1409a8b10()), false);
     }
     FUN_141243540(FUN_1409a8b10());
     void* pDlg = FUN_140a02e60(0x4ef3);

@@ -96,7 +96,6 @@ template <class T>
 class ServiceUpdate : public NiVisualTracker::GraphCallbackObject
 {
 public:
-    ServiceUpdate() {}
     virtual float TakeSample(float)
     {
         double dTime = FUN_1413f9850()->GetServiceLastTickTime(Unk_ServiceTickId<T>::ID);
@@ -142,6 +141,8 @@ struct Unk_SmallObjectAllocator
 };
 
 
+struct Unk_SmallObjectAllocatorRef { Unk_SmallObjectAllocator* m_p; };    // passed by value (8-byte copy)
+
 // ---- the nif/texture cache statistics object (FUN_140a0afd0) ----
 struct Unk_VtmNifCount { char m_pad[8]; unsigned __int64 m_nCount; unsigned __int64 FUN_14151e7c0() { return m_nCount; } };
 struct Unk_VtmTexCount { char m_pad[8]; unsigned __int64 m_nCount; unsigned __int64 FUN_14151e7d0() { return m_nCount; } };
@@ -155,9 +156,21 @@ struct Unk_VtmCaches
     char m_pad1[0x20];
     Unk_VtmTexCount m_textures;                 // +0x58
     char m_pad2[0x70];
-    int m_anDebug[12];                          // +0xd8 .. +0x104: not cached / force keep / my skill / other skill / npc / depend time, nif then texture
+    int m_nNifNotCache;                         // +0xd8 the debug counters: nif then texture
+    int m_nNifForceKeep;
+    int m_nNifMySkill;
+    int m_nNifOtherSkill;
+    int m_nNifNpc;
+    int m_nNifDependTime;
+    int m_nTexNotCache;                         // +0xf0
+    int m_nTexForceKeep;
+    int m_nTexMySkill;
+    int m_nTexOtherSkill;
+    int m_nTexNpc;
+    int m_nTexDependTime;                       // +0x104
 };
-MS2_CHECK_OFFSET(Unk_VtmCaches, m_anDebug, 0xd8);
+MS2_CHECK_OFFSET(Unk_VtmCaches, m_nNifNotCache, 0xd8);
+MS2_CHECK_OFFSET(Unk_VtmCaches, m_nTexDependTime, 0x104);
 
 
 // ---- unit-local views of the managers the overlay reads (all bound to the exe by their FUN_ names) ----
@@ -173,6 +186,7 @@ public:
 Unk_VtmSession* FUN_1403ed2d0();
 class Unk_VtmEffectMgr { public: unsigned FUN_1411a85a0(); unsigned FUN_1411a85c0(); unsigned FUN_1411b1bd0(); };
 Unk_VtmEffectMgr* FUN_1403ed280();
+class Unk_VtmWorldCounts { public: unsigned FUN_1411d0ab0(); unsigned FUN_1411d0af0(); };   // EntityWorldManager block/game-object entity counts, read 32-bit
 EntityWorldManager* FUN_1409670f0();
 class Unk_VtmSystem                                                          // memory/system statistics
 {
@@ -190,7 +204,7 @@ Unk_VtmCaches* FUN_140a0afd0();
 class Unk_VtmCameraMgr { public: int FUN_140a18070(); GameObject* FUN_140a38d60(); };
 Unk_VtmCameraMgr* FUN_1409478c0();
 Unk_VtmMover* FUN_1409ffd30(GameObject* pTarget);
-class Unk_VtmAnimSvc { public: efd::utf8string FUN_141206030(const Unk_GoModelKey& kKey); };
+class Unk_VtmAnimSvc { public: efd::utf8string FUN_141206030(const egf::EntityID& kKey); };
 Unk_VtmAnimSvc* FUN_141b6f910();
 Unk_VtmMovie* FUN_1422bb8b0(int nLayer);
 CString FUN_141277f60(unsigned nLayer);                                      // name of UI layer nLayer
@@ -216,119 +230,6 @@ extern IDirect3D9* DAT_143d6ea00;                                           // t
 extern int DAT_143b0d788;                                                   // GFx system allocation (bytes)
 
 
-// ---- label tables for the pages built by CreateVisualTrackers ----
-struct Unk_LabelRow
-{
-    size_t nOffset;                 // offsetof(MS2VisualTrackerManager, <line member>)
-    const char* pszLabel;
-    int x;
-    int y;
-    float r, g, b;
-};
-
-static const Unk_LabelRow s_debugStringRows[] = {
-    { offsetof(MS2VisualTrackerManager, m_spFps), "FPS:", 10, 20, 0.9f, 0.9f, 0.9f },
-    { offsetof(MS2VisualTrackerManager, m_spFrameTime), "Time(ms):", 150, 20, 0.9f, 0.9f, 0.9f },
-    { offsetof(MS2VisualTrackerManager, m_spEffectCount), "Effect Count:", 350, 20, 0.9f, 0.9f, 0.9f },
-    { offsetof(MS2VisualTrackerManager, m_spInfiniteEffectCount), "Infinite effect Count: ", 690, 20, 0.9f, 0.9f, 0.9f },
-    { offsetof(MS2VisualTrackerManager, m_spEntityCount), "Entity Count:", 10, 40, 0.0f, 0.0f, 8.0f },
-    { offsetof(MS2VisualTrackerManager, m_spBlockEntityCount), "BlockEntity Count:", 350, 40, 0.0f, 0.0f, 8.0f },
-    { offsetof(MS2VisualTrackerManager, m_spGameObjectEntityCount), "GameObjectEntity Count:", 690, 40, 0.0f, 0.0f, 8.0f },
-    { offsetof(MS2VisualTrackerManager, m_spUseInstancing), "Use Instancing:", 350, 60, 0.9f, 0.9f, 0.9f },
-    { offsetof(MS2VisualTrackerManager, m_spInstancingGroup), "Instancing Group:", 690, 60, 0.9f, 0.9f, 0.9f },
-    { offsetof(MS2VisualTrackerManager, m_spInstancingGrid), "Instancing Gride:", 1030, 60, 0.9f, 0.9f, 0.9f },
-    { offsetof(MS2VisualTrackerManager, m_spVisObjects), "VisObjects:", 10, 80, 0.8f, 0.0f, 0.0f },
-    { offsetof(MS2VisualTrackerManager, m_spVertices), "Vertices:", 350, 80, 0.8f, 0.0f, 0.0f },
-    { offsetof(MS2VisualTrackerManager, m_spTriangles), "Triangles:", 690, 80, 0.8f, 0.0f, 0.0f },
-    { offsetof(MS2VisualTrackerManager, m_spNpcCount), "Npc Count:", 10, 100, 0.9f, 0.9f, 0.9f },
-    { offsetof(MS2VisualTrackerManager, m_spLoadedMap), "Loaded Map:", 350, 100, 0.9f, 0.9f, 0.9f },
-    { offsetof(MS2VisualTrackerManager, m_spPos), "Pos:", 690, 100, 0.8f, 0.0f, 0.0f },
-    { offsetof(MS2VisualTrackerManager, m_spSpeed), "Speed:", 1030, 100, 0.9f, 0.9f, 0.9f },
-    { offsetof(MS2VisualTrackerManager, m_spAnim), "Anim:", 690, 120, 0.8f, 0.0f, 0.0f },
-};
-
-static const Unk_LabelRow s_debugStringTailRows[] = {
-    { offsetof(MS2VisualTrackerManager, m_spFlatModelCount), "FlatModelCount:", 350, 120, 1.0f, 0.0f, 0.0f },
-    { offsetof(MS2VisualTrackerManager, m_spEffectOid), "EffectOID:", 1030, 120, 0.9f, 0.9f, 0.9f },
-};
-
-static const Unk_LabelRow s_systemRows[] = {
-    { offsetof(MS2VisualTrackerManager, m_spPageFile), "PageFile(MB):", 10, 40, 0.0f, 0.0f, 8.0f },
-    { offsetof(MS2VisualTrackerManager, m_spSmallObject), "SmallObject(KB):", 350, 40, 0.7f, 0.7f, 0.7f },
-    { offsetof(MS2VisualTrackerManager, m_spGfxSysAlloc), "GFX SysAlloc(MB):", 690, 40, 0.7f, 0.7f, 0.7f },
-    { offsetof(MS2VisualTrackerManager, m_spNifCount), "Nif Count:", 10, 60, 0.8f, 0.0f, 0.0f },
-    { offsetof(MS2VisualTrackerManager, m_spTextureCount), "Texture Count:", 350, 60, 0.8f, 0.0f, 0.0f },
-    { offsetof(MS2VisualTrackerManager, m_spSceneGraphCacheCount), "SceneGraph Cache Count:", 690, 60, 0.8f, 0.0f, 0.0f },
-    { offsetof(MS2VisualTrackerManager, m_spActorCount), "Actor Count:", 10, 80, 0.7f, 0.7f, 0.7f },
-    { offsetof(MS2VisualTrackerManager, m_spAssetCount), "Asset Count:", 350, 80, 0.7f, 0.7f, 0.7f },
-    { offsetof(MS2VisualTrackerManager, m_spKfmCacheCount), "KFMCache Count:", 690, 80, 0.7f, 0.7f, 0.7f },
-    { offsetof(MS2VisualTrackerManager, m_spGpuCore), "GPU Core:", 10, 100, 0.9f, 0.9f, 0.9f },
-    { offsetof(MS2VisualTrackerManager, m_spGpuMemory), "GPU Memory:", 350, 100, 0.9f, 0.9f, 0.9f },
-    { offsetof(MS2VisualTrackerManager, m_spGpuAllocMemory), "GPU Alloc Memory:", 690, 100, 0.9f, 0.9f, 0.9f },
-    { offsetof(MS2VisualTrackerManager, m_spPhysXMem), "PhysX Mem(KB):", 10, 120, 0.9f, 0.9f, 0.9f },
-    { offsetof(MS2VisualTrackerManager, m_spPrivateUsage), "PrivateUsage(MB):", 350, 120, 0.9f, 0.9f, 0.9f },
-};
-
-static const Unk_LabelRow s_physXRows[] = {
-    { offsetof(MS2VisualTrackerManager, m_spPx0AwakeGroups), "NumAwakeGroups:", 10, 20, 1.0f, 1.0f, 1.0f },
-    { offsetof(MS2VisualTrackerManager, m_spPx0Actors), "NumActors:", 10, 40, 1.0f, 1.0f, 1.0f },
-    { offsetof(MS2VisualTrackerManager, m_spPx0DynamicActors), "NumDynamicActors:", 10, 60, 1.0f, 1.0f, 1.0f },
-    { offsetof(MS2VisualTrackerManager, m_spPx0DynamicShapes), "NumDynamicShapes:", 10, 80, 1.0f, 1.0f, 1.0f },
-    { offsetof(MS2VisualTrackerManager, m_spPx0Joints), "NumJoints:", 10, 100, 1.0f, 1.0f, 1.0f },
-    { offsetof(MS2VisualTrackerManager, m_spPx0Contacts), "NumContacts:", 10, 120, 1.0f, 1.0f, 1.0f },
-    { offsetof(MS2VisualTrackerManager, m_spPx0Pairs), "NumPairs:", 10, 140, 1.0f, 1.0f, 1.0f },
-    { offsetof(MS2VisualTrackerManager, m_spPx0AxisConstraints), "NumAxisConstraints:", 10, 160, 1.0f, 1.0f, 1.0f },
-    { offsetof(MS2VisualTrackerManager, m_spPx0SolverBodies), "NumSolverBodies:", 10, 180, 1.0f, 1.0f, 1.0f },
-    { offsetof(MS2VisualTrackerManager, m_spPx0StaticShapes), "NumStaticShapes:", 10, 200, 1.0f, 1.0f, 1.0f },
-    { offsetof(MS2VisualTrackerManager, m_spPx1AwakeGroups), "NumAwakeGroups:", 350, 20, 1.0f, 1.0f, 1.0f },
-    { offsetof(MS2VisualTrackerManager, m_spPx1Actors), "NumActors:", 350, 40, 1.0f, 1.0f, 1.0f },
-    { offsetof(MS2VisualTrackerManager, m_spPx1DynamicActors), "NumDynamicActors:", 350, 60, 1.0f, 1.0f, 1.0f },
-    { offsetof(MS2VisualTrackerManager, m_spPx1DynamicShapes), "NumDynamicShapes:", 350, 80, 1.0f, 1.0f, 1.0f },
-    { offsetof(MS2VisualTrackerManager, m_spPx1Joints), "NumJoints:", 350, 100, 1.0f, 1.0f, 1.0f },
-    { offsetof(MS2VisualTrackerManager, m_spPx1Contacts), "NumContacts:", 350, 120, 1.0f, 1.0f, 1.0f },
-    { offsetof(MS2VisualTrackerManager, m_spPx1Pairs), "NumPairs:", 350, 140, 1.0f, 1.0f, 1.0f },
-    { offsetof(MS2VisualTrackerManager, m_spPx1AxisConstraints), "NumAxisConstraints:", 350, 160, 1.0f, 1.0f, 1.0f },
-    { offsetof(MS2VisualTrackerManager, m_spPx1SolverBodies), "NumSolverBodies:", 350, 180, 1.0f, 1.0f, 1.0f },
-    { offsetof(MS2VisualTrackerManager, m_spPx1StaticShapes), "NumStaticShapes:", 350, 200, 1.0f, 1.0f, 1.0f },
-};
-
-static const Unk_LabelRow s_debuggingRows[] = {
-    { offsetof(MS2VisualTrackerManager, m_spNifNotCache), "Nif NotCacheCount:", 10, 20, 0.7f, 0.7f, 0.7f },
-    { offsetof(MS2VisualTrackerManager, m_spNifForceKeep), "Nif ForceKeepCount:", 10, 40, 0.0f, 0.0f, 8.0f },
-    { offsetof(MS2VisualTrackerManager, m_spNifMySkill), "Nif NifMySkillCount:", 10, 60, 0.0f, 0.0f, 8.0f },
-    { offsetof(MS2VisualTrackerManager, m_spNifOtherSkill), "Nif OtherSkillCount:", 10, 80, 0.9f, 0.9f, 0.9f },
-    { offsetof(MS2VisualTrackerManager, m_spNifNpc), "Nif NPCCount:", 10, 100, 0.9f, 0.9f, 0.9f },
-    { offsetof(MS2VisualTrackerManager, m_spNifDependTime), "Nif DependTimeCount:", 10, 120, 0.8f, 0.0f, 0.0f },
-    { offsetof(MS2VisualTrackerManager, m_spTexNotCache), "Texture NotCacheCount:", 350, 20, 0.7f, 0.7f, 0.7f },
-    { offsetof(MS2VisualTrackerManager, m_spTexForceKeep), "Texture ForceKeepCount:", 350, 40, 0.0f, 0.0f, 8.0f },
-    { offsetof(MS2VisualTrackerManager, m_spTexMySkill), "Texture MySkillCount:", 350, 60, 0.0f, 0.0f, 8.0f },
-    { offsetof(MS2VisualTrackerManager, m_spTexOtherSkill), "Texture OtherSkillCount:", 350, 80, 0.9f, 0.9f, 0.9f },
-    { offsetof(MS2VisualTrackerManager, m_spTexNpc), "Texture NPCCount:", 350, 100, 0.9f, 0.9f, 0.9f },
-    { offsetof(MS2VisualTrackerManager, m_spTexDependTime), "Texture DependTimeCount:", 350, 120, 0.8f, 0.0f, 0.0f },
-};
-
-
-typedef size_t LinePtr;     // offsetof(MS2VisualTrackerManager, <line member>)
-static CDrawDebugStringPtr& FieldAt(MS2VisualTrackerManager* pManager, size_t nOffset)
-{
-    return *reinterpret_cast<CDrawDebugStringPtr*>(reinterpret_cast<char*>(pManager) + nOffset);
-}
-// PhysX statistics columns: one entry per NxSceneStats value; scene 0's NumActors line is the one at +0x2a0, an
-// original bug (the +0x250 line is never updated).
-static const LinePtr s_physX0Lines[10] = {
-    offsetof(MS2VisualTrackerManager, m_spPx0AwakeGroups), offsetof(MS2VisualTrackerManager, m_spPx1Actors),
-    offsetof(MS2VisualTrackerManager, m_spPx0DynamicActors), offsetof(MS2VisualTrackerManager, m_spPx0DynamicShapes),
-    offsetof(MS2VisualTrackerManager, m_spPx0Joints), offsetof(MS2VisualTrackerManager, m_spPx0Contacts),
-    offsetof(MS2VisualTrackerManager, m_spPx0Pairs), offsetof(MS2VisualTrackerManager, m_spPx0AxisConstraints),
-    offsetof(MS2VisualTrackerManager, m_spPx0SolverBodies), offsetof(MS2VisualTrackerManager, m_spPx0StaticShapes) };
-static const LinePtr s_physX1Lines[10] = {
-    offsetof(MS2VisualTrackerManager, m_spPx1AwakeGroups), offsetof(MS2VisualTrackerManager, m_spPx1Actors),
-    offsetof(MS2VisualTrackerManager, m_spPx1DynamicActors), offsetof(MS2VisualTrackerManager, m_spPx1DynamicShapes),
-    offsetof(MS2VisualTrackerManager, m_spPx1Joints), offsetof(MS2VisualTrackerManager, m_spPx1Contacts),
-    offsetof(MS2VisualTrackerManager, m_spPx1Pairs), offsetof(MS2VisualTrackerManager, m_spPx1AxisConstraints),
-    offsetof(MS2VisualTrackerManager, m_spPx1SolverBodies), offsetof(MS2VisualTrackerManager, m_spPx1StaticShapes) };
-
-
 // ---- small helpers that the exe keeps as separate functions ----
 // @0x14151e7e0
 IDirect3D9* GetIDirect3D9() { return DAT_143d6ea00; }
@@ -346,22 +247,23 @@ int FUN_14151e8f0(GPUManager* pGpu) { return pGpu->m_30; }
 NxScene* FUN_14151e890(Unk_PhysXSceneHandle* pHandle) { return pHandle->m_pScene; }
 
 // @0x14151e7f0: bytes held by the 256 small-object size classes
-unsigned __int64 FUN_14151e7f0(Unk_SmallObjectAllocator* pAlloc)
+unsigned __int64 FUN_14151e7f0(Unk_SmallObjectAllocatorRef kAlloc)
 {
     unsigned __int64 nTotal = 0;
     for (unsigned i = 0; i < 256; ++i)
-        nTotal += pAlloc->m_entries[i].FUN_14151e640() * pAlloc->m_entries[i].FUN_14151e880();
+        nTotal += kAlloc.m_p->m_entries[i].FUN_14151e640() * kAlloc.m_p->m_entries[i].FUN_14151e880();
     return nTotal;
 }
 
 // ---- the page of the entity chart (a dead copy of the engine's Entities page) ----
 // @0x14151d0d0
-// MS2-FUNCTIONAL: the exe calls the NiRect/efd::Color constructors out of line; this keeps the engine inline forms
 void FUN_14151d0d0(egmVisualTracker::VisualTrackerService* pService)
 {
+    const float fBorderX = 0.05f;
+    const float fBorderY = 0.025f;
     NiRect<float> kEntityRect(-4000.0f, 4000.0f, 4000.0f, -4000.0f);
     pService->AddPage("Entities");
-    pService->AddChart("Entities", kEntityRect, NiRect<float>(0.05f, 0.95f, 0.025f, 0.975f), 0.1f, 0, true);
+    pService->AddChart("Entities", kEntityRect, NiRect<float>(fBorderX, 1.0f - fBorderX, fBorderY, 1.0f - fBorderY), 0.1f, 0, true);
     pService->AddLegend("Actors", efd::Color(0.0f, 0.0f, 1.0f), egmVisualTracker::VisualTrackerService::SGS_stick_man);
     pService->AddLegend("Triggers", efd::Color(0.0f, 1.0f, 0.0f), egmVisualTracker::VisualTrackerService::SGS_circle_large_hollow);
     pService->AddLegend("Camera", efd::Color(1.0f, 1.0f, 1.0f), egmVisualTracker::VisualTrackerService::SGS_camera);
@@ -448,7 +350,6 @@ efd::AsyncResult MS2VisualTrackerManager::OnShutdown()
 
 // ---- the per-tick refresh of the lines of the selected page ----
 // @0x141516580
-// MS2-FUNCTIONAL: the exe expands every counter through out-of-line SmartPointer/getter calls (6.4 KB); behaviour-equivalent source, not byte-matched
 efd::AsyncResult MS2VisualTrackerManager::OnTick()
 {
     if (!m_showTrackers)
@@ -460,8 +361,7 @@ efd::AsyncResult MS2VisualTrackerManager::OnTick()
         m_spFps->FUN_14118bb40(FUN_14086d260()->FUN_141473210(), bForce, 0);
         if (FUN_14086d260()->FUN_141473210() != 0.0f)
         {
-            float fFrameTime = 1000.0f / FUN_14086d260()->FUN_141473210();
-            m_spFrameTime->FUN_14118bb40(fFrameTime, bForce, 0);
+            m_spFrameTime->FUN_14118bb40(1000.0f / FUN_14086d260()->FUN_141473210(), bForce, 0);
         }
         m_spVisObjects->FUN_14118b820(m_numObjectsDrawn, bForce, 0);
 
@@ -477,8 +377,8 @@ efd::AsyncResult MS2VisualTrackerManager::OnTick()
         m_spNpcCount->FUN_14118b9b0(FUN_1403ed2d0()->FUN_141bc1640(), bForce, 0);
         m_spVertices->FUN_14118b9b0(FUN_1403ed2d0()->FUN_141bd86a0(), bForce, 0);
         m_spTriangles->FUN_14118b9b0(FUN_1403ed2d0()->FUN_141bd86c0(), bForce, 0);
-        m_spBlockEntityCount->FUN_14118b9b0((unsigned)FUN_1409670f0()->FUN_1411d0ab0(), bForce, 0);
-        m_spGameObjectEntityCount->FUN_14118b9b0((unsigned)FUN_1409670f0()->FUN_1411d0af0(), bForce, 0);
+        m_spBlockEntityCount->FUN_14118b9b0(reinterpret_cast<Unk_VtmWorldCounts*>(FUN_1409670f0())->FUN_1411d0ab0(), bForce, 0);
+        m_spGameObjectEntityCount->FUN_14118b9b0(reinterpret_cast<Unk_VtmWorldCounts*>(FUN_1409670f0())->FUN_1411d0af0(), bForce, 0);
         m_spEntityCount->FUN_14118b9b0(FUN_1409670f0()->FUN_1411d0b30(), bForce, 0);
         m_spLoadedMap->FUN_14118b9b0(FUN_1409670f0()->FUN_1411cfbe0(), bForce, 0);
 
@@ -488,14 +388,12 @@ efd::AsyncResult MS2VisualTrackerManager::OnTick()
             Unk_VtmMovie* pMovie = FUN_1422bb8b0(nLayer);
             if (pMovie != 0)
             {
-                bool bHasView = (Unk_VtmMovieView*)pMovie->m_spView != 0;
-                if (bHasView)
+                if ((Unk_VtmMovieView*)pMovie->m_spView != 0 ? true : false)
                 {
                     Unk_VtmMovieStats* pStats = pMovie->m_spView->vfunc_49();       // MS2: slot 49
                     if (pStats != 0)
                     {
-                        unsigned __int64 nObjects = pStats->m_spObjects->FUN_14151e8c0();
-                        m_spSortLabel[nLayer]->FUN_14118b9b0((unsigned)(nObjects & 0xffffffff), bForce, 0);
+                        m_spSortLabel[nLayer]->FUN_14118b9b0((unsigned)pStats->m_spObjects->FUN_14151e8c0(), bForce, 0);
                     }
                 }
             }
@@ -508,9 +406,10 @@ efd::AsyncResult MS2VisualTrackerManager::OnTick()
             Unk_VtmMover* pMover = FUN_1409ffd30(pTarget);
             if (pTarget != 0)
             {
-                m_spPos->FUN_14118bdc0(pTarget->vfunc_18(), bForce);
-                Unk_GoModelKey kKey;
-                efd::utf8string strAnim = FUN_141b6f910()->FUN_141206030(pTarget->FUN_14123c460(kKey));
+                NiPoint3 kPos = pTarget->vfunc_18();
+                m_spPos->FUN_14118bdc0(kPos, bForce);
+                unsigned __int64 nKey;      // the egf::EntityID 0x14123c460 fills (no constructor runs on it)
+                efd::utf8string strAnim = FUN_141b6f910()->FUN_141206030(pTarget->FUN_14123c460(reinterpret_cast<egf::EntityID&>(nKey)));
                 m_spAnim->FUN_14118bee0(strAnim, bForce);
             }
             if (pMover != 0)
@@ -527,14 +426,15 @@ efd::AsyncResult MS2VisualTrackerManager::OnTick()
 
     if (m_nPage == 2)
     {
-        m_spPageFile->FUN_14118b9b0(FUN_1409f7c90()->FUN_14161bdc0(), bForce, 0);
-        m_spPrivateUsage->FUN_14118b9b0(FUN_1409f7c90()->FUN_14161be50(), bForce, 0);
+        unsigned nMb = FUN_1409f7c90()->FUN_14161bdc0();
+        m_spPageFile->FUN_14118b9b0(nMb, bForce, 0);
+        nMb = FUN_1409f7c90()->FUN_14161be50();
+        m_spPrivateUsage->FUN_14118b9b0(nMb, bForce, 0);
         efd::MemManager::Get();
         Unk_SmallObjectAllocator* pAlloc = FUN_14151e750();
         if (pAlloc != 0)
         {
-            unsigned __int64 nBytes = FUN_14151e7f0(pAlloc);
-            unsigned nKb = (unsigned)(nBytes / 0x400);
+            unsigned nKb = (unsigned)(FUN_14151e7f0(Unk_SmallObjectAllocatorRef{ pAlloc }) / 0x400);
             int nSysAllocMb = FUN_14151e740() / 0x100000;
             m_spSmallObject->FUN_14118b9b0(nKb, bForce, 0);
             m_spGfxSysAlloc->FUN_14118b820(nSysAllocMb, bForce, 0);
@@ -557,13 +457,15 @@ efd::AsyncResult MS2VisualTrackerManager::OnTick()
         int nGpuCore = FUN_14151e8f0(FUN_141245b20());
         int nGpuPercent = FUN_141245b20()->FUN_141375ca0();
         m_spGpuCore->FUN_14118b820(nGpuCore, true, "%");
-        m_fGpuMemoryMB = (float)nGpuPercent * 0.01f * (float)nGpuTotalMb;
+        float fRatio = (float)nGpuPercent * 0.01f;
+        m_fGpuMemoryMB = fRatio * (float)nGpuTotalMb;
         char acText[64];
         FUN_140392040(acText, 0x40, "%% %0.f(MB)", (double)m_fGpuMemoryMB);
         m_spGpuMemory->FUN_14118b820(nGpuPercent, bForce, acText);
         FUN_140392040(acText, 0x40, "/%u(MB)", nGpuTotalMb);
         m_spGpuAllocMemory->FUN_14118b9b0(nGpuUsedMb, bForce, acText);
-        m_spPhysXMem->FUN_14118b9b0((unsigned)(DAT_143ae0bd0 / 0x400), bForce, 0);
+        unsigned nPhysXKb = (unsigned)(DAT_143ae0bd0 / 0x400);
+        m_spPhysXMem->FUN_14118b9b0(nPhysXKb, bForce, 0);
         FUN_140714f90()->FUN_1415392e0();
     }
 
@@ -571,46 +473,90 @@ efd::AsyncResult MS2VisualTrackerManager::OnTick()
     {
         if (FUN_1403ed2d0()->FUN_141bcfbd0() != 0)
         {
-            for (int nScene = 0; nScene < 2; ++nScene)
+            Unk_PhysXSceneHandle* pHandle = FUN_1409f7ca0()->FUN_1416892a0(0);
+            if (pHandle != 0)
             {
-                Unk_PhysXSceneHandle* pHandle = FUN_1409f7ca0()->FUN_1416892a0(nScene);
-                if (pHandle != 0)
+                FUN_1409f7ca0()->FUN_14168a540(0);
+                NxScene* pScene = FUN_14151e890(pHandle);
+                if (pScene != 0)
                 {
-                    FUN_1409f7ca0()->FUN_14168a540(0);
-                    NxScene* pScene = FUN_14151e890(pHandle);
-                    if (pScene != 0)
-                    {
-                        CString strMax;
-                        NxSceneStats kStats;
-                        pScene->getStats(kStats);
-                        const LinePtr* pLines = (nScene == 0) ? s_physX0Lines : s_physX1Lines;
-                        // value / maximum pairs in the order of the lines: awake groups, actors, dynamic actors,
-                        // dynamic shapes, joints, contacts, pairs, axis constraints, solver bodies, static shapes
-                        const NxU32 aValues[10] = { kStats.numDynamicActorsInAwakeGroups, kStats.numActors,
-                            kStats.numDynamicActors, kStats.numDynamicShapes, kStats.numJoints, kStats.numContacts,
-                            kStats.numPairs, kStats.numAxisConstraints, kStats.numSolverBodies, kStats.numStaticShapes };
-                        const NxU32 aMaxima[10] = { kStats.maxDynamicActorsInAwakeGroups, kStats.maxActors,
-                            kStats.maxDynamicActors, kStats.maxDynamicShapes, kStats.maxJoints, kStats.maxContacts,
-                            kStats.maxPairs, kStats.maxAxisConstraints, kStats.maxSolverBodies, kStats.maxStaticShapes };
-                        for (unsigned i = 0; i < 10; ++i)
-                        {
-                            strMax.Format("/%d", aMaxima[i]);
-                            FieldAt(this, pLines[i])->FUN_14118b9b0(aValues[i], bForce, (const char*)strMax);
-                        }
-                    }
-                    FUN_1409f7ca0()->FUN_14168a570();
+                    CString strMax;
+                    NxSceneStats kStats;
+                    pScene->getStats(kStats);
+                    strMax.Format("/%d", kStats.maxDynamicActorsInAwakeGroups);
+                    m_spPx0AwakeGroups->FUN_14118b9b0(kStats.numDynamicActorsInAwakeGroups, bForce, (const char*)strMax);
+                    // the scene-0 actor count goes to scene 1's line (original bug; m_spPx0Actors is never updated)
+                    strMax.Format("/%d", kStats.maxActors);
+                    m_spPx1Actors->FUN_14118b9b0(kStats.numActors, bForce, (const char*)strMax);
+                    strMax.Format("/%d", kStats.maxDynamicActors);
+                    m_spPx0DynamicActors->FUN_14118b9b0(kStats.numDynamicActors, bForce, (const char*)strMax);
+                    strMax.Format("/%d", kStats.maxDynamicShapes);
+                    m_spPx0DynamicShapes->FUN_14118b9b0(kStats.numDynamicShapes, bForce, (const char*)strMax);
+                    strMax.Format("/%d", kStats.maxJoints);
+                    m_spPx0Joints->FUN_14118b9b0(kStats.numJoints, bForce, (const char*)strMax);
+                    strMax.Format("/%d", kStats.maxContacts);
+                    m_spPx0Contacts->FUN_14118b9b0(kStats.numContacts, bForce, (const char*)strMax);
+                    strMax.Format("/%d", kStats.maxPairs);
+                    m_spPx0Pairs->FUN_14118b9b0(kStats.numPairs, bForce, (const char*)strMax);
+                    strMax.Format("/%d", kStats.maxAxisConstraints);
+                    m_spPx0AxisConstraints->FUN_14118b9b0(kStats.numAxisConstraints, bForce, (const char*)strMax);
+                    strMax.Format("/%d", kStats.maxSolverBodies);
+                    m_spPx0SolverBodies->FUN_14118b9b0(kStats.numSolverBodies, bForce, (const char*)strMax);
+                    strMax.Format("/%d", kStats.maxStaticShapes);
+                    m_spPx0StaticShapes->FUN_14118b9b0(kStats.numStaticShapes, bForce, (const char*)strMax);
                 }
+                FUN_1409f7ca0()->FUN_14168a570();
+            }
+            pHandle = FUN_1409f7ca0()->FUN_1416892a0(1);
+            if (pHandle != 0)
+            {
+                FUN_1409f7ca0()->FUN_14168a540(0);
+                NxScene* pScene = FUN_14151e890(pHandle);
+                if (pScene != 0)
+                {
+                    CString strMax;
+                    NxSceneStats kStats;
+                    pScene->getStats(kStats);
+                    strMax.Format("/%d", kStats.maxDynamicActorsInAwakeGroups);
+                    m_spPx1AwakeGroups->FUN_14118b9b0(kStats.numDynamicActorsInAwakeGroups, bForce, (const char*)strMax);
+                    strMax.Format("/%d", kStats.maxActors);
+                    m_spPx1Actors->FUN_14118b9b0(kStats.numActors, bForce, (const char*)strMax);
+                    strMax.Format("/%d", kStats.maxDynamicActors);
+                    m_spPx1DynamicActors->FUN_14118b9b0(kStats.numDynamicActors, bForce, (const char*)strMax);
+                    strMax.Format("/%d", kStats.maxDynamicShapes);
+                    m_spPx1DynamicShapes->FUN_14118b9b0(kStats.numDynamicShapes, bForce, (const char*)strMax);
+                    strMax.Format("/%d", kStats.maxJoints);
+                    m_spPx1Joints->FUN_14118b9b0(kStats.numJoints, bForce, (const char*)strMax);
+                    strMax.Format("/%d", kStats.maxContacts);
+                    m_spPx1Contacts->FUN_14118b9b0(kStats.numContacts, bForce, (const char*)strMax);
+                    strMax.Format("/%d", kStats.maxPairs);
+                    m_spPx1Pairs->FUN_14118b9b0(kStats.numPairs, bForce, (const char*)strMax);
+                    strMax.Format("/%d", kStats.maxAxisConstraints);
+                    m_spPx1AxisConstraints->FUN_14118b9b0(kStats.numAxisConstraints, bForce, (const char*)strMax);
+                    strMax.Format("/%d", kStats.maxSolverBodies);
+                    m_spPx1SolverBodies->FUN_14118b9b0(kStats.numSolverBodies, bForce, (const char*)strMax);
+                    strMax.Format("/%d", kStats.maxStaticShapes);
+                    m_spPx1StaticShapes->FUN_14118b9b0(kStats.numStaticShapes, bForce, (const char*)strMax);
+                }
+                FUN_1409f7ca0()->FUN_14168a570();
             }
         }
     }
 
     if (m_nPage == 4)
     {
-        CDrawDebugStringPtr* const aLines[12] = { &m_spNifNotCache, &m_spNifForceKeep, &m_spNifMySkill,
-            &m_spNifOtherSkill, &m_spNifNpc, &m_spNifDependTime, &m_spTexNotCache, &m_spTexForceKeep,
-            &m_spTexMySkill, &m_spTexOtherSkill, &m_spTexNpc, &m_spTexDependTime };
-        for (unsigned i = 0; i < 12; ++i)
-            (*aLines[i])->FUN_14118b9b0(FUN_140a0afd0()->m_anDebug[i], bForce, 0);
+        m_spNifNotCache->FUN_14118b9b0(FUN_140a0afd0()->m_nNifNotCache, bForce, 0);
+        m_spNifForceKeep->FUN_14118b9b0(FUN_140a0afd0()->m_nNifForceKeep, bForce, 0);
+        m_spNifMySkill->FUN_14118b9b0(FUN_140a0afd0()->m_nNifMySkill, bForce, 0);
+        m_spNifOtherSkill->FUN_14118b9b0(FUN_140a0afd0()->m_nNifOtherSkill, bForce, 0);
+        m_spNifNpc->FUN_14118b9b0(FUN_140a0afd0()->m_nNifNpc, bForce, 0);
+        m_spNifDependTime->FUN_14118b9b0(FUN_140a0afd0()->m_nNifDependTime, bForce, 0);
+        m_spTexNotCache->FUN_14118b9b0(FUN_140a0afd0()->m_nTexNotCache, bForce, 0);
+        m_spTexForceKeep->FUN_14118b9b0(FUN_140a0afd0()->m_nTexForceKeep, bForce, 0);
+        m_spTexMySkill->FUN_14118b9b0(FUN_140a0afd0()->m_nTexMySkill, bForce, 0);
+        m_spTexOtherSkill->FUN_14118b9b0(FUN_140a0afd0()->m_nTexOtherSkill, bForce, 0);
+        m_spTexNpc->FUN_14118b9b0(FUN_140a0afd0()->m_nTexNpc, bForce, 0);
+        m_spTexDependTime->FUN_14118b9b0(FUN_140a0afd0()->m_nTexDependTime, bForce, 0);
     }
 
     return VisualTrackerService::OnTick();
@@ -667,21 +613,7 @@ egmVisualTracker::VisualTrackerService::VisualTracker* MS2VisualTrackerManager::
     return pTracker;
 }
 
-// Adds the lines of a label table to a page.
-static void AddRows(MS2VisualTrackerManager* pManager, unsigned nPage, const Unk_LabelRow* pRows, unsigned nRows);
-
-static void AddRows(MS2VisualTrackerManager* pManager, unsigned nPage, const Unk_LabelRow* pRows, unsigned nRows)
-{
-    for (unsigned i = 0; i < nRows; ++i)
-    {
-        const Unk_LabelRow& kRow = pRows[i];
-        FieldAt(pManager, kRow.nOffset) = pManager->AddDebugString(nPage, kRow.pszLabel, kRow.x, kRow.y,
-            NiColorA(kRow.r, kRow.g, kRow.b, 1.0f));
-    }
-}
-
 // @0x141518590 (vfunc_17): builds the four pages and three charts of the overlay.
-// MS2-FUNCTIONAL: the table-driven rows replace ~70 unrolled AddDebugString calls and the GraphCallback allocation order is not reproduced byte for byte
 bool MS2VisualTrackerManager::CreateVisualTrackers()
 {
     LoadConfig();
@@ -695,50 +627,72 @@ bool MS2VisualTrackerManager::CreateVisualTrackers()
 
     // --- page 0: DebugString ---
     m_idDebugStringPage = AddPage("DebugString");
-    AddRows(this, m_idDebugStringPage, s_debugStringRows, sizeof(s_debugStringRows) / sizeof(s_debugStringRows[0]));
+    m_spFps = AddDebugString(m_idDebugStringPage, "FPS:", 10, 20, NiColorA(0.9f, 0.9f, 0.9f, 1.0f));
+    m_spFrameTime = AddDebugString(m_idDebugStringPage, "Time(ms):", 150, 20, NiColorA(0.9f, 0.9f, 0.9f, 1.0f));
+    m_spEffectCount = AddDebugString(m_idDebugStringPage, "Effect Count:", 350, 20, NiColorA(0.9f, 0.9f, 0.9f, 1.0f));
+    m_spInfiniteEffectCount = AddDebugString(m_idDebugStringPage, "Infinite effect Count: ", 690, 20, NiColorA(0.9f, 0.9f, 0.9f, 1.0f));
+    m_spEntityCount = AddDebugString(m_idDebugStringPage, "Entity Count:", 10, 40, NiColorA(0.0f, 0.0f, 8.0f, 1.0f));
+    m_spBlockEntityCount = AddDebugString(m_idDebugStringPage, "BlockEntity Count:", 350, 40, NiColorA(0.0f, 0.0f, 8.0f, 1.0f));
+    m_spGameObjectEntityCount = AddDebugString(m_idDebugStringPage, "GameObjectEntity Count:", 690, 40, NiColorA(0.0f, 0.0f, 8.0f, 1.0f));
+    m_spUseInstancing = AddDebugString(m_idDebugStringPage, "Use Instancing:", 350, 60, NiColorA(0.9f, 0.9f, 0.9f, 1.0f));
+    m_spInstancingGroup = AddDebugString(m_idDebugStringPage, "Instancing Group:", 690, 60, NiColorA(0.9f, 0.9f, 0.9f, 1.0f));
+    m_spInstancingGrid = AddDebugString(m_idDebugStringPage, "Instancing Gride:", 1030, 60, NiColorA(0.9f, 0.9f, 0.9f, 1.0f));
+    m_spVisObjects = AddDebugString(m_idDebugStringPage, "VisObjects:", 10, 80, NiColorA(0.8f, 0.0f, 0.0f, 1.0f));
+    m_spVertices = AddDebugString(m_idDebugStringPage, "Vertices:", 350, 80, NiColorA(0.8f, 0.0f, 0.0f, 1.0f));
+    m_spTriangles = AddDebugString(m_idDebugStringPage, "Triangles:", 690, 80, NiColorA(0.8f, 0.0f, 0.0f, 1.0f));
+    m_spNpcCount = AddDebugString(m_idDebugStringPage, "Npc Count:", 10, 100, NiColorA(0.9f, 0.9f, 0.9f, 1.0f));
+    m_spLoadedMap = AddDebugString(m_idDebugStringPage, "Loaded Map:", 350, 100, NiColorA(0.9f, 0.9f, 0.9f, 1.0f));
+    m_spPos = AddDebugString(m_idDebugStringPage, "Pos:", 690, 100, NiColorA(0.8f, 0.0f, 0.0f, 1.0f));
+    m_spSpeed = AddDebugString(m_idDebugStringPage, "Speed:", 1030, 100, NiColorA(0.9f, 0.9f, 0.9f, 1.0f));
+    m_spAnim = AddDebugString(m_idDebugStringPage, "Anim:", 690, 120, NiColorA(0.8f, 0.0f, 0.0f, 1.0f));
+    int y = 120;
     for (unsigned i = 0; i < 7; ++i)
     {
         CString strLabel;
         strLabel.Format("%s:", (const char*)FUN_141277f60(i));
-        m_spSortLabel[i] = AddDebugString(m_idDebugStringPage, strLabel, 10, 120 + 20 * i, NiColorA(1.0f, 0.0f, 0.0f, 1.0f));
+        m_spSortLabel[i] = AddDebugString(m_idDebugStringPage, strLabel, 10, y, NiColorA(1.0f, 0.0f, 0.0f, 1.0f));
+        y += 20;
     }
-    AddRows(this, m_idDebugStringPage, s_debugStringTailRows, sizeof(s_debugStringTailRows) / sizeof(s_debugStringTailRows[0]));
+    m_spFlatModelCount = AddDebugString(m_idDebugStringPage, "FlatModelCount:", 350, 120, NiColorA(1.0f, 0.0f, 0.0f, 1.0f));
+    m_spEffectOid = AddDebugString(m_idDebugStringPage, "EffectOID:", 1030, 120, NiColorA(0.9f, 0.9f, 0.9f, 1.0f));
 
     // --- charts (on the DebugString page) ---
-    NiRect<float> windowRect1;
-    windowRect1.m_left = 0.05f;
-    windowRect1.m_right = windowRect1.m_left + 0.9f;   // the exe adds the width/height at run time
+    const float fBorderX = 0.05f;
+    const float fGap = 0.025f;
+    const float fHeight = 0.25f;
+    const float fWidth = 0.9f;
+    NiRect<float> windowRect1(0.0f, 0.0f, 0.0f, 0.0f);
+    windowRect1.m_left = fBorderX;
+    windowRect1.m_right = windowRect1.m_left + fWidth;
     windowRect1.m_top = 0.15f;
-    windowRect1.m_bottom = windowRect1.m_top + 0.25f;
-    NiRect<float> windowRect2;
-    windowRect2.m_left = 0.05f;
-    windowRect2.m_right = windowRect2.m_left + 0.9f;
-    windowRect2.m_top = windowRect1.m_bottom + 0.025f;
-    windowRect2.m_bottom = windowRect2.m_top + 0.25f;
+    windowRect1.m_bottom = windowRect1.m_top + fHeight;
+    NiRect<float> windowRect2(0.0f, 0.0f, 0.0f, 0.0f);
+    windowRect2.m_left = fBorderX;
+    windowRect2.m_right = windowRect2.m_left + fWidth;
+    windowRect2.m_top = windowRect1.m_bottom + fGap;
+    windowRect2.m_bottom = windowRect2.m_top + fHeight;
 
-    m_pPerformanceChart = AddChartPage("Performance", NiRect<float>(0.0f, 100.0f, m_performanceMax, 0.0f), windowRect1, 0.1f, 0, false);
+    m_pPerformanceChart = AddChartPage("Performance", NiRect<float>(0.0f, 100.0f, m_performanceMax, 0.0f), windowRect1, 0.1f, 0, true);
     m_pPerformanceChart->AddGraph("Frame-Rate", NiNew FrameRateUpdate(&m_frameRate), red, true);
     m_pPerformanceChart->AddGraph("Vis Objects", NiNew GenericUnsignedIntUpdate(1.0f, &m_numObjectsDrawn), yellow, true);
     m_pPerformanceChart->AddGraph("GPU Memory(MB)", NiNew GenericFloatUpdate(1.0f, &m_fGpuMemoryMB), NiColor(0.5f, 1.0f, 0.5f), true);
 
-    m_pTimeChart = AddChartPage("Time (ms)", NiRect<float>(0.0f, 100.0f, m_timeMax, 0.0f), windowRect2, 0.1f, 0, false);
+    m_pTimeChart = AddChartPage("Time (ms)", NiRect<float>(0.0f, 100.0f, m_timeMax, 0.0f), windowRect2, 0.1f, 0, true);
     m_pTimeChart->AddGraph("Frame Time", NiNew GenericFloatUpdate(0.001f, &m_frameTime), red, true);
     m_pTimeChart->AddGraph("Simulate", NiNew FrameEventUpdate(), NiColor(1.0f, 1.0f, 0.0f), true);
-    m_pTimeChart->AddGraph("world", NiNew ServiceUpdate<WorldService>(), NiColor(0.0f, 1.0f, 1.0f), true);
-    m_pTimeChart->AddGraph("effect", NiNew ServiceUpdate<CEffectService>(), NiColor(1.0f, 0.5f, 0.5f), true);
-    m_pTimeChart->AddGraph("gfx", NiNew ServiceUpdate<GFxService>(), NiColor(0.5f, 0.5f, 1.0f), true);
-    m_pTimeChart->AddGraph("Prop", NiNew ServiceUpdate<ecrPhysX::PropService>(), NiColor(0.7f, 0.7f, 0.7f), true);
-    m_pTimeChart->AddGraph("Scene", NiNew ServiceUpdate<egfPhysX::SceneService>(), NiColor(0.5f, 0.0f, 1.0f), true);
+    m_pTimeChart->AddGraph("world", NiNew ServiceUpdate<WorldService>, NiColor(0.0f, 1.0f, 1.0f), true);
+    m_pTimeChart->AddGraph("effect", NiNew ServiceUpdate<CEffectService>, NiColor(1.0f, 0.5f, 0.5f), true);
+    m_pTimeChart->AddGraph("gfx", NiNew ServiceUpdate<GFxService>, NiColor(0.5f, 0.5f, 1.0f), true);
+    m_pTimeChart->AddGraph("Prop", NiNew ServiceUpdate<ecrPhysX::PropService>, NiColor(0.7f, 0.7f, 0.7f), true);
+    m_pTimeChart->AddGraph("Scene", NiNew ServiceUpdate<egfPhysX::SceneService>, NiColor(0.5f, 0.0f, 1.0f), true);
 
     // --- page 1: System ---
     m_idSystemPage = AddPage("System");
-    {
-        CString strOs = FUN_1411b1db0()->FUN_14070ee50();
-        m_spOsName = AddDebugString(m_idSystemPage, strOs, 10, 20, NiColorA(1.0f, 1.0f, 1.0f, 1.0f));
-    }
+    m_spOsName = AddDebugString(m_idSystemPage, FUN_1411b1db0()->FUN_14070ee50(), 10, 20, NiColorA(1.0f, 1.0f, 1.0f, 1.0f));
     {
         char szText[128];
-        float fGB = (float)FUN_1409f7c90()->FUN_141245b10() / 1024.0f;
+        unsigned __int64 nVideoMem = FUN_1409f7c90()->FUN_141245b10();
+        float fGB = (float)nVideoMem / 1024.0f;
         FUN_140392040(szText, 128, "%.1fGB", (double)fGB);
         m_spMemory = AddDebugString(m_idSystemPage, szText, 670, 20, NiColorA(1.0f, 1.0f, 1.0f, 1.0f));
 
@@ -757,19 +711,65 @@ bool MS2VisualTrackerManager::CreateVisualTrackers()
             strGpu.Format("%s [bw:%d]", kIdent.Description, FUN_141245aa0(FUN_141245b20()));
         m_spGpuName = AddDebugString(m_idSystemPage, strGpu, 780, 20, NiColorA(1.0f, 1.0f, 1.0f, 1.0f));
     }
-    AddRows(this, m_idSystemPage, s_systemRows, sizeof(s_systemRows) / sizeof(s_systemRows[0]));
+    m_spPageFile = AddDebugString(m_idSystemPage, "PageFile(MB):", 10, 40, NiColorA(0.0f, 0.0f, 8.0f, 1.0f));
+    m_spSmallObject = AddDebugString(m_idSystemPage, "SmallObject(KB):", 350, 40, NiColorA(0.7f, 0.7f, 0.7f, 1.0f));
+    m_spGfxSysAlloc = AddDebugString(m_idSystemPage, "GFX SysAlloc(MB):", 690, 40, NiColorA(0.7f, 0.7f, 0.7f, 1.0f));
+    m_spNifCount = AddDebugString(m_idSystemPage, "Nif Count:", 10, 60, NiColorA(0.8f, 0.0f, 0.0f, 1.0f));
+    m_spTextureCount = AddDebugString(m_idSystemPage, "Texture Count:", 350, 60, NiColorA(0.8f, 0.0f, 0.0f, 1.0f));
+    m_spSceneGraphCacheCount = AddDebugString(m_idSystemPage, "SceneGraph Cache Count:", 690, 60, NiColorA(0.8f, 0.0f, 0.0f, 1.0f));
+    m_spActorCount = AddDebugString(m_idSystemPage, "Actor Count:", 10, 80, NiColorA(0.7f, 0.7f, 0.7f, 1.0f));
+    m_spAssetCount = AddDebugString(m_idSystemPage, "Asset Count:", 350, 80, NiColorA(0.7f, 0.7f, 0.7f, 1.0f));
+    m_spKfmCacheCount = AddDebugString(m_idSystemPage, "KFMCache Count:", 690, 80, NiColorA(0.7f, 0.7f, 0.7f, 1.0f));
+    m_spGpuCore = AddDebugString(m_idSystemPage, "GPU Core:", 10, 100, NiColorA(0.9f, 0.9f, 0.9f, 1.0f));
+    m_spGpuMemory = AddDebugString(m_idSystemPage, "GPU Memory:", 350, 100, NiColorA(0.9f, 0.9f, 0.9f, 1.0f));
+    m_spGpuAllocMemory = AddDebugString(m_idSystemPage, "GPU Alloc Memory:", 690, 100, NiColorA(0.9f, 0.9f, 0.9f, 1.0f));
+    m_spPhysXMem = AddDebugString(m_idSystemPage, "PhysX Mem(KB):", 10, 120, NiColorA(0.9f, 0.9f, 0.9f, 1.0f));
+    m_spPrivateUsage = AddDebugString(m_idSystemPage, "PrivateUsage(MB):", 350, 120, NiColorA(0.9f, 0.9f, 0.9f, 1.0f));
 
-    m_pPacketChart = AddChartPage("Packet Traffic", NiRect<float>(0.0f, 100.0f, 10000.0f, 0.0f),
-        NiRect<float>(0.05f, 0.95f, 0.25f, 0.6f), 0.1f, 0, false);
-    m_pPacketChart->AddGraph("RecvSize", NiNew GenericFloatUpdate(1.0f, (float*)FUN_140714f90()->FUN_141539330()), yellow, true);
-    m_pPacketChart->AddGraph("SendSize", NiNew GenericFloatUpdate(1.0f, (float*)FUN_140714f90()->FUN_141539380()), red, true);
+    const float fMaxTraffic = 10000.0f;
+    m_pPacketChart = AddChartPage("Packet Traffic", NiRect<float>(0.0f, 100.0f, fMaxTraffic, 0.0f),
+        NiRect<float>(0.05f, 0.95f, 0.25f, 0.6f), 0.1f, 0, true);
+    float* pfRecvSize = (float*)FUN_140714f90()->FUN_141539330();
+    float* pfSendSize = (float*)FUN_140714f90()->FUN_141539380();
+    m_pPacketChart->AddGraph("RecvSize", NiNew GenericFloatUpdate(1.0f, pfRecvSize), yellow, true);
+    m_pPacketChart->AddGraph("SendSize", NiNew GenericFloatUpdate(1.0f, pfSendSize), red, true);
 
     // --- page 2: PhysX ---
     m_idPhysXPage = AddPage("PhysX");
-    AddRows(this, m_idPhysXPage, s_physXRows, sizeof(s_physXRows) / sizeof(s_physXRows[0]));
+    m_spPx0AwakeGroups = AddDebugString(m_idPhysXPage, "NumAwakeGroups:", 10, 20, NiColorA(1.0f, 1.0f, 1.0f, 1.0f));
+    m_spPx0Actors = AddDebugString(m_idPhysXPage, "NumActors:", 10, 40, NiColorA(1.0f, 1.0f, 1.0f, 1.0f));
+    m_spPx0DynamicActors = AddDebugString(m_idPhysXPage, "NumDynamicActors:", 10, 60, NiColorA(1.0f, 1.0f, 1.0f, 1.0f));
+    m_spPx0DynamicShapes = AddDebugString(m_idPhysXPage, "NumDynamicShapes:", 10, 80, NiColorA(1.0f, 1.0f, 1.0f, 1.0f));
+    m_spPx0Joints = AddDebugString(m_idPhysXPage, "NumJoints:", 10, 100, NiColorA(1.0f, 1.0f, 1.0f, 1.0f));
+    m_spPx0Contacts = AddDebugString(m_idPhysXPage, "NumContacts:", 10, 120, NiColorA(1.0f, 1.0f, 1.0f, 1.0f));
+    m_spPx0Pairs = AddDebugString(m_idPhysXPage, "NumPairs:", 10, 140, NiColorA(1.0f, 1.0f, 1.0f, 1.0f));
+    m_spPx0AxisConstraints = AddDebugString(m_idPhysXPage, "NumAxisConstraints:", 10, 160, NiColorA(1.0f, 1.0f, 1.0f, 1.0f));
+    m_spPx0SolverBodies = AddDebugString(m_idPhysXPage, "NumSolverBodies:", 10, 180, NiColorA(1.0f, 1.0f, 1.0f, 1.0f));
+    m_spPx0StaticShapes = AddDebugString(m_idPhysXPage, "NumStaticShapes:", 10, 200, NiColorA(1.0f, 1.0f, 1.0f, 1.0f));
+    m_spPx1AwakeGroups = AddDebugString(m_idPhysXPage, "NumAwakeGroups:", 350, 20, NiColorA(1.0f, 1.0f, 1.0f, 1.0f));
+    m_spPx1Actors = AddDebugString(m_idPhysXPage, "NumActors:", 350, 40, NiColorA(1.0f, 1.0f, 1.0f, 1.0f));
+    m_spPx1DynamicActors = AddDebugString(m_idPhysXPage, "NumDynamicActors:", 350, 60, NiColorA(1.0f, 1.0f, 1.0f, 1.0f));
+    m_spPx1DynamicShapes = AddDebugString(m_idPhysXPage, "NumDynamicShapes:", 350, 80, NiColorA(1.0f, 1.0f, 1.0f, 1.0f));
+    m_spPx1Joints = AddDebugString(m_idPhysXPage, "NumJoints:", 350, 100, NiColorA(1.0f, 1.0f, 1.0f, 1.0f));
+    m_spPx1Contacts = AddDebugString(m_idPhysXPage, "NumContacts:", 350, 120, NiColorA(1.0f, 1.0f, 1.0f, 1.0f));
+    m_spPx1Pairs = AddDebugString(m_idPhysXPage, "NumPairs:", 350, 140, NiColorA(1.0f, 1.0f, 1.0f, 1.0f));
+    m_spPx1AxisConstraints = AddDebugString(m_idPhysXPage, "NumAxisConstraints:", 350, 160, NiColorA(1.0f, 1.0f, 1.0f, 1.0f));
+    m_spPx1SolverBodies = AddDebugString(m_idPhysXPage, "NumSolverBodies:", 350, 180, NiColorA(1.0f, 1.0f, 1.0f, 1.0f));
+    m_spPx1StaticShapes = AddDebugString(m_idPhysXPage, "NumStaticShapes:", 350, 200, NiColorA(1.0f, 1.0f, 1.0f, 1.0f));
 
     // --- page 3: Debugging ---
     m_idDebuggingPage = AddPage("Debugging");
-    AddRows(this, m_idDebuggingPage, s_debuggingRows, sizeof(s_debuggingRows) / sizeof(s_debuggingRows[0]));
+    m_spNifNotCache = AddDebugString(m_idDebuggingPage, "Nif NotCacheCount:", 10, 20, NiColorA(0.7f, 0.7f, 0.7f, 1.0f));
+    m_spNifForceKeep = AddDebugString(m_idDebuggingPage, "Nif ForceKeepCount:", 10, 40, NiColorA(0.0f, 0.0f, 8.0f, 1.0f));
+    m_spNifMySkill = AddDebugString(m_idDebuggingPage, "Nif NifMySkillCount:", 10, 60, NiColorA(0.0f, 0.0f, 8.0f, 1.0f));
+    m_spNifOtherSkill = AddDebugString(m_idDebuggingPage, "Nif OtherSkillCount:", 10, 80, NiColorA(0.9f, 0.9f, 0.9f, 1.0f));
+    m_spNifNpc = AddDebugString(m_idDebuggingPage, "Nif NPCCount:", 10, 100, NiColorA(0.9f, 0.9f, 0.9f, 1.0f));
+    m_spNifDependTime = AddDebugString(m_idDebuggingPage, "Nif DependTimeCount:", 10, 120, NiColorA(0.8f, 0.0f, 0.0f, 1.0f));
+    m_spTexNotCache = AddDebugString(m_idDebuggingPage, "Texture NotCacheCount:", 350, 20, NiColorA(0.7f, 0.7f, 0.7f, 1.0f));
+    m_spTexForceKeep = AddDebugString(m_idDebuggingPage, "Texture ForceKeepCount:", 350, 40, NiColorA(0.0f, 0.0f, 8.0f, 1.0f));
+    m_spTexMySkill = AddDebugString(m_idDebuggingPage, "Texture MySkillCount:", 350, 60, NiColorA(0.0f, 0.0f, 8.0f, 1.0f));
+    m_spTexOtherSkill = AddDebugString(m_idDebuggingPage, "Texture OtherSkillCount:", 350, 80, NiColorA(0.9f, 0.9f, 0.9f, 1.0f));
+    m_spTexNpc = AddDebugString(m_idDebuggingPage, "Texture NPCCount:", 350, 100, NiColorA(0.9f, 0.9f, 0.9f, 1.0f));
+    m_spTexDependTime = AddDebugString(m_idDebuggingPage, "Texture DependTimeCount:", 350, 120, NiColorA(0.8f, 0.0f, 0.0f, 1.0f));
     return true;
 }

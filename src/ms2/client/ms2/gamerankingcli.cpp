@@ -23,6 +23,7 @@
 #include "ms2/client/ms2/uiobject.h"
 #include "ms2/client/ms2/uidialog.h"
 #include "ms2/ms2recover.h"
+#include "ms2/placeholder/exception.h"
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/guilddef_1.h"
 #include "ms2/commonfiles/featuremanager.h"
@@ -84,7 +85,6 @@ __int64 FUN_140b3f610(CByteBuffer& s);
 
 // ---- CGameRankingData ----
 
-// MS2-FUNCTIONAL: the exe builds the by-value CString("") argument address before strUrl; frame/temp order differs
 // @0x140b287b0
 void CGameRankingData::Convert(int nType, MS2Ptr<GameRankingItem::IRankItem> spItem)
 {
@@ -100,8 +100,7 @@ void CGameRankingData::Convert(int nType, MS2Ptr<GameRankingItem::IRankItem> spI
             m_48 = p->m_name;
             m_50 = p->m_38;
             m_image = p->m_30;
-            CString strUrl("");
-            FUN_141029590(p->m_id, FUN_14016a600(p->m_30, 0), strUrl, CString(""));
+            FUN_141029590(p->m_id, FUN_14016a600(p->m_30, 0), "", "");
         }
     }
     else if (nType >= 0x15 && nType <= 0x18) {
@@ -144,8 +143,7 @@ void CGameRankingData::Convert(int nType, MS2Ptr<GameRankingItem::IRankItem> spI
             m_50 = p->m_38;
             m_70 = TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x2d, p->m_44);
             m_image = p->m_30;
-            CString strUrl("");
-            FUN_141029590(p->m_id, FUN_14016a600(p->m_30, 0), strUrl, CString(""));
+            FUN_141029590(p->m_id, FUN_14016a600(p->m_30, 0), "", "");
         }
     }
     else if (nType >= 0x3d && nType <= 0x40) {
@@ -1674,7 +1672,7 @@ int GameRanking::MyRank::Read(CByteBuffer& s)
             return 0;
         m_rank = s.ReadInt32();
     }
-    catch (...) {
+    catch (Exception& e) {
         return 0;
     }
     return 1;
@@ -1697,7 +1695,7 @@ int GameRanking::MyRankPercent::Read(CByteBuffer& s)
         m_kind = s.ReadInt32();
         m_rank = s.ReadInt32();
     }
-    catch (...) {
+    catch (Exception&) {
         return 0;
     }
     return 1;
@@ -1725,7 +1723,7 @@ int GameRanking::GuildTrophy::Read(CByteBuffer& s)
             m_names.SetAt(spItem->m_name, spItem);
         }
     }
-    catch (...) {
+    catch (Exception&) {
         return 0;
     }
     return 1;
@@ -1796,7 +1794,7 @@ int GameRanking::UserTrophy::Read(CByteBuffer& s)
             m_names.SetAt(spItem->m_name, spItem);
         }
     }
-    catch (...) {
+    catch (Exception&) {
         return 0;
     }
     return 1;
@@ -1867,7 +1865,7 @@ int GameRanking::DarkStream::Read(CByteBuffer& s)
             m_names.SetAt(spItem->m_name, spItem);
         }
     }
-    catch (...) {
+    catch (Exception&) {
         return 0;
     }
     return 1;
@@ -1938,7 +1936,7 @@ int GameRanking::UserPvp::Read(CByteBuffer& s)
             m_names.SetAt(spItem->m_name, spItem);
         }
     }
-    catch (...) {
+    catch (Exception&) {
         return 0;
     }
     return 1;
@@ -2009,7 +2007,7 @@ int GameRanking::GuildPvp::Read(CByteBuffer& s)
             m_names.SetAt(spItem->m_name, spItem);
         }
     }
-    catch (...) {
+    catch (Exception&) {
         return 0;
     }
     return 1;
@@ -2080,7 +2078,7 @@ int GameRanking::UgcMapCommendation::Read(CByteBuffer& s)
             m_names.SetAt(spItem->m_name, spItem);
         }
     }
-    catch (...) {
+    catch (Exception&) {
         return 0;
     }
     return 1;
@@ -2151,7 +2149,7 @@ int GameRanking::BossKillCount::Read(CByteBuffer& s)
             m_names.SetAt(spItem->m_name, spItem);
         }
     }
-    catch (...) {
+    catch (Exception&) {
         return 0;
     }
     return 1;
@@ -2222,7 +2220,7 @@ int GameRanking::BossKillRecord::Read(CByteBuffer& s)
             m_ranks.SetAt(spItem->m_rank, spItem);
         }
     }
-    catch (...) {
+    catch (Exception& e) {
         return 0;
     }
     return 1;
@@ -2262,7 +2260,7 @@ int GameRanking::Arcade::Read(CByteBuffer& s)
             m_names.SetAt(spItem->m_name, spItem);
         }
     }
-    catch (...) {
+    catch (Exception&) {
         return 0;
     }
     return 1;
@@ -2333,7 +2331,7 @@ int GameRanking::BossDamageCount::Read(CByteBuffer& s)
             m_names.SetAt(spItem->m_name, spItem);
         }
     }
-    catch (...) {
+    catch (Exception&) {
         return 0;
     }
     return 1;
@@ -2404,7 +2402,7 @@ int GameRanking::BossDamageDate::Read(CByteBuffer& s)
             m_ranks.SetAt(spItem->m_rank, spItem);
         }
     }
-    catch (...) {
+    catch (Exception& e) {
         return 0;
     }
     return 1;
@@ -2444,7 +2442,7 @@ int GameRanking::BossDamageAmount::Read(CByteBuffer& s)
             m_ranks.SetAt(spItem->m_rank, spItem);
         }
     }
-    catch (...) {
+    catch (Exception& e) {
         return 0;
     }
     return 1;
@@ -2484,7 +2482,7 @@ int GameRanking::BossRumbleCount::Read(CByteBuffer& s)
             m_names.SetAt(spItem->m_name, spItem);
         }
     }
-    catch (...) {
+    catch (Exception&) {
         return 0;
     }
     return 1;
@@ -2555,7 +2553,7 @@ int GameRanking::BossRumbleRecord::Read(CByteBuffer& s)
             m_ranks.SetAt(spItem->m_rank, spItem);
         }
     }
-    catch (...) {
+    catch (Exception& e) {
         return 0;
     }
     return 1;
@@ -2595,7 +2593,7 @@ int GameRanking::WorldChampion::Read(CByteBuffer& s)
             m_names.SetAt(spItem->m_name, spItem);
         }
     }
-    catch (...) {
+    catch (Exception&) {
         return 0;
     }
     return 1;
@@ -2666,7 +2664,7 @@ int GameRanking::BossColosseum::Read(CByteBuffer& s)
             m_names.SetAt(spItem->m_name, spItem);
         }
     }
-    catch (...) {
+    catch (Exception&) {
         return 0;
     }
     return 1;

@@ -79,8 +79,20 @@ MS2_CHECK_SIZE(ASDialog, 0x88);
 // the local player: slot 78 is the level
 void* FUN_1403ed2d0();                                                  // the world service
 void* FUN_141bd0cc0(void* pWorld);                                      // its local player
-typedef unsigned short (*Unk_EwLevelFn)(void*);
-#define Unk_EwActorLevel(pActor) reinterpret_cast<Unk_EwLevelFn>((*reinterpret_cast<void***>(pActor))[78])(pActor)
+class Unk_EwActorSlots
+{
+public:
+#define MS2_EW_SLOTS(a, b, c, d, e) virtual void vfunc_##a(); virtual void vfunc_##b(); virtual void vfunc_##c(); \
+    virtual void vfunc_##d(); virtual void vfunc_##e();
+    MS2_EW_SLOTS(0, 1, 2, 3, 4) MS2_EW_SLOTS(5, 6, 7, 8, 9) MS2_EW_SLOTS(10, 11, 12, 13, 14) MS2_EW_SLOTS(15, 16, 17, 18, 19)
+    MS2_EW_SLOTS(20, 21, 22, 23, 24) MS2_EW_SLOTS(25, 26, 27, 28, 29) MS2_EW_SLOTS(30, 31, 32, 33, 34) MS2_EW_SLOTS(35, 36, 37, 38, 39)
+    MS2_EW_SLOTS(40, 41, 42, 43, 44) MS2_EW_SLOTS(45, 46, 47, 48, 49) MS2_EW_SLOTS(50, 51, 52, 53, 54) MS2_EW_SLOTS(55, 56, 57, 58, 59)
+    MS2_EW_SLOTS(60, 61, 62, 63, 64) MS2_EW_SLOTS(65, 66, 67, 68, 69) MS2_EW_SLOTS(70, 71, 72, 73, 74)
+#undef MS2_EW_SLOTS
+    virtual void vfunc_75(); virtual void vfunc_76(); virtual void vfunc_77();
+    virtual unsigned short vfunc_78();                                  // the level
+};
+#define Unk_EwActorLevel(pActor) reinterpret_cast<Unk_EwActorSlots*>(pActor)->vfunc_78()
 class Unk_EwSelf { public: int FUN_141654700(); __int64 FUN_141656a80(); };      // the job; the burning key of the player
 #define Unk_EwBurningKey(pSelf) ((__int64)static_cast<Unk_EwSelf*>(pSelf)->FUN_141656a80())
 
@@ -189,11 +201,12 @@ CString UIEventWidgetDialog::vfunc_7()
 }
 MS2_REPLACE_METHOD(0x140C58EB0, UIEventWidgetDialog, vfunc_7, 61, 0x1DC2B55E);
 
-// MS2-FUNCTIONAL: the exe returns a bool (x != 0 without a stack temp) from a slot the base declares int
 // @0x140c58f00
 int UIEventWidgetDialog::vfunc_65()
 {
-    return UIDialog::vfunc_65() != 0;
+    if (UIDialog::vfunc_65() == 0)
+        return 0;
+    return 1;
 }
 MS2_REPLACE_METHOD(0x140C58F00, UIEventWidgetDialog, vfunc_65, 37, 0x170ACFCB);
 
@@ -214,7 +227,6 @@ void UIEventWidgetDialog::OnLoadComplete()
 }
 MS2_REPLACE_METHOD(0x140C58F90, UIEventWidgetDialog, OnLoadComplete, 34, 0xF2D99F3E);
 
-// MS2-FUNCTIONAL: branch layout differs from the exe (same calls and conditions)
 // @0x140c58fc0
 int UIEventWidgetDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs)
 {
@@ -224,7 +236,7 @@ int UIEventWidgetDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
         vfunc_86();
         return 1;
     }
-    if (_stricmp(szMethod, "onOpenUI") == 0) {
+    else if (_stricmp(szMethod, "onOpenUI") == 0) {
         vfunc_87();
         return 1;
     }
@@ -232,25 +244,26 @@ int UIEventWidgetDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
 }
 MS2_REPLACE_METHOD(0x140C58FC0, UIEventWidgetDialog, vfunc_28, 161, 0x1923AD3C);
 
-// MS2-FUNCTIONAL: float compare / branch layout differs from the exe (same conditions)
 // @0x140c59070
 void UIEventWidgetDialog::vfunc_43()
 {
     ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30);
-    if (!pDialog)
-        return;
-    bool bReset = false;
-    bool bFixed = m_60 == 0 && m_78 != 0 && vfunc_52() != 0;
-    if (!bFixed)
-        bReset = true;
-    else if (!((float)pDialog->FUN_1422c10a0() <= (float)pDialog->FUN_1422c1500()
-               && (float)pDialog->FUN_1422c1110() <= (float)pDialog->FUN_1422c1530()
-               && 0.0f <= pDialog->FUN_1422c10a0() && 0.0f <= pDialog->FUN_1422c1110()))
-        bReset = true;
-    if (bReset) {
-        ASDialog* pRoot = dynamic_cast<ASDialog*>((AScript*)m_30);
-        if (pRoot)
-            pRoot->vfunc_2(5, 0, 0x3c);
+    if (pDialog) {
+        bool bReset = false;
+        int bFixed = m_60 == 0 && m_78 != 0 && vfunc_52() != 0;
+        if (bFixed) {
+            if (pDialog->FUN_1422c1500() < pDialog->FUN_1422c10a0()
+                || pDialog->FUN_1422c1530() < pDialog->FUN_1422c1110()
+                || pDialog->FUN_1422c10a0() < 0.0f || pDialog->FUN_1422c1110() < 0.0f)
+                bReset = true;
+        }
+        else
+            bReset = true;
+        if (bReset) {
+            ASDialog* pRoot = dynamic_cast<ASDialog*>((AScript*)m_30);
+            if (pRoot)
+                pRoot->vfunc_2(5, 0, 0x3c);
+        }
     }
 }
 MS2_REPLACE_METHOD(0x140C59070, UIEventWidgetDialog, vfunc_43, 396, 0x1C3E6B57);
@@ -333,29 +346,29 @@ void UILevelUpPackageWidgetDialog::vfunc_oa0_9(unsigned short nLevel)
     FUN_140c59210();
 }
 
-// MS2-FUNCTIONAL: the exe tests the quest pointer through the MS2Ptr helpers; the frame and EH states differ
 // @0x140c59740
 void UILevelUpPackageWidgetDialog::vfunc_o178_8(void* pQuest)
 {
     if (!pQuest)
         return;
     MS2Ptr<CQuestData> spData = static_cast<CQuest*>(pQuest)->GetData();
-    if (spData.get() == 0)
+    if (!spData)
         return;
-    if (spData->m_338.m_value == 1)
-        FUN_140c59210();
+    if (spData->m_338.m_value != 1)
+        return;
+    FUN_140c59210();
 }
 
-// MS2-FUNCTIONAL: the exe returns a bool (x != 0 without a stack temp) from a slot the base declares int
 // @0x140c597f0
 int UILevelUpPackageWidgetDialog::vfunc_84()
 {
     Unk_DcLevelRange range;
-    return FUN_140c59bd0(range) != 0;
+    if (FUN_140c59bd0(range) == 0)
+        return 0;
+    return 1;
 }
 MS2_REPLACE_METHOD(0x140C597F0, UILevelUpPackageWidgetDialog, vfunc_84, 52, 0x9BB9FC0B);
 
-// MS2-FUNCTIONAL: stack layout and temporaries differ from the exe (same calls and conditions)
 // @0x140c59830
 int UILevelUpPackageWidgetDialog::vfunc_85(ASObj& rObj)
 {
@@ -368,7 +381,7 @@ int UILevelUpPackageWidgetDialog::vfunc_85(ASObj& rObj)
     if (m_198 == 0)
         return 0;
     MS2Ptr<CQuestData> spData = FUN_14074bc40(m_198);
-    if (spData.get() == 0)
+    if (!spData)
         return 0;
     CQuestData::QuestRewardItem* pReward = 0;
     for (size_t i = 0; i < spData->m_complete.m_choiceRewards.GetCount(); i++) {
@@ -379,10 +392,8 @@ int UILevelUpPackageWidgetDialog::vfunc_85(ASObj& rObj)
     rObj.FUN_1409c0dc0("title", "$s_levelup_package_widget");
     rObj.FUN_1407cba60("binding", m_178->FUN_140d43310(pReward->m_itemId, pReward->m_count, pReward->m_job));
     rObj.FUN_1407cb9c0("max", (unsigned)range.m_nHigh - (unsigned)range.m_nLow);
-    unsigned short nLevel = Unk_EwActorLevel(pSelf);
-    rObj.FUN_1407cb9c0("current", (unsigned)nLevel - (unsigned)range.m_nLow);
-    unsigned short nCurrent = Unk_EwActorLevel(pSelf);
-    rObj.FUN_1407cbb20("text", StringFormat(L"{0}/{1}", nCurrent, range.m_nHigh));
+    rObj.FUN_1407cb9c0("current", (unsigned)Unk_EwActorLevel(pSelf) - (unsigned)range.m_nLow);
+    rObj.FUN_1407cbb20("text", StringFormat(L"{0}/{1}", Unk_EwActorLevel(pSelf), range.m_nHigh));
     return 1;
 }
 MS2_REPLACE_METHOD(0x140C59830, UILevelUpPackageWidgetDialog, vfunc_85, 750, 0x2AB8BFF8);
@@ -404,7 +415,6 @@ void UILevelUpPackageWidgetDialog::vfunc_87()
 }
 MS2_REPLACE_METHOD(0x140C59BA0, UILevelUpPackageWidgetDialog, vfunc_87, 32, 0x2A2706CB);
 
-// MS2-FUNCTIONAL: stack layout and temporaries differ from the exe (same calls and conditions)
 // @0x140c59bd0
 int UILevelUpPackageWidgetDialog::FUN_140c59bd0(Unk_DcLevelRange& rRange)
 {
@@ -417,31 +427,32 @@ int UILevelUpPackageWidgetDialog::FUN_140c59bd0(Unk_DcLevelRange& rRange)
     ATL::CRBMap<unsigned short, MS2Ptr<CQuestData> > byLevel(10);
     for (size_t i = 0; i < quests.GetCount(); i++) {
         MS2Ptr<CQuestData> spData = quests[i];
-        byLevel.SetAt(EwQuestLevel(spData.get()), spData);
+        unsigned short nQuestLevel = EwQuestLevel(spData.get());
+        byLevel.SetAt(nQuestLevel, spData);
     }
     POSITION posFound = 0;
-    POSITION pos = byLevel.GetHeadPosition();
-    while (pos) {
+    for (POSITION pos = byLevel.GetHeadPosition(); pos; byLevel.GetNext(pos)) {
         unsigned short nKey = byLevel.GetKeyAt(pos);
         MS2Ptr<CQuestData> spData = byLevel.GetValueAt(pos);
-        if (nLevel < nKey) {
+        if (nLevel >= nKey) {
+            if (FUN_140764020()->FUN_140745590(FUN_14074b030(spData.get())) == 0) {
+                posFound = pos;
+                break;
+            }
+        } else {
             posFound = pos;
             break;
         }
-        if (FUN_140764020()->FUN_140745590(FUN_14074b030(spData.get())) == 0) {
-            posFound = pos;
-            break;
-        }
-        byLevel.GetNext(pos);
     }
-    if (posFound == 0)
-        return 0;
-    MS2Ptr<CQuestData> spFound = byLevel.GetValueAt(posFound);
-    rRange.m_nHigh = byLevel.GetKeyAt(posFound);
-    byLevel.GetPrev(posFound);
-    if (posFound)
-        rRange.m_nLow = byLevel.GetKeyAt(posFound);
-    return FUN_14074b030(spFound.get());
+    if (posFound) {
+        MS2Ptr<CQuestData> spFound = byLevel.GetValueAt(posFound);
+        rRange.m_nHigh = byLevel.GetKeyAt(posFound);
+        byLevel.GetPrev(posFound);
+        if (posFound)
+            rRange.m_nLow = byLevel.GetKeyAt(posFound);
+        return FUN_14074b030(spFound.get());
+    }
+    return 0;
 }
 MS2_REPLACE_METHOD(0x140C59BD0, UILevelUpPackageWidgetDialog, FUN_140c59bd0, 812, 0xE629CD1A);
 
@@ -493,7 +504,6 @@ void UIBurningEventWidgetDialog::vfunc_oa0_9(unsigned short nLevel)
     FUN_140c59210();
 }
 
-// MS2-FUNCTIONAL: stack layout and temporaries differ from the exe (same calls and conditions)
 // @0x140c5a220
 int UIBurningEventWidgetDialog::vfunc_84()
 {
@@ -502,24 +512,27 @@ int UIBurningEventWidgetDialog::vfunc_84()
         return 0;
     std::list<MS2Ptr<BurningLevelupContext> > contexts;
     FUN_1403ed080(FUN_140302b00())->GetAll(contexts);
-    for (std::list<MS2Ptr<BurningLevelupContext> >::iterator it = contexts.begin(); it != contexts.end(); ++it) {
+    for (std::list<MS2Ptr<BurningLevelupContext> >::const_iterator it = contexts.begin(); it != contexts.end(); ++it) {
         MS2Ptr<BurningLevelupContext> spContext = *it;
-        if (spContext.get() == 0)
+        if (spContext == 0)
             continue;
         if (FUN_140c0e9f0(&spContext->m_rewardItems))
             continue;
-        __int64 nDefault = 0;
-        if (g_attendTableDT.FUN_140be8f80(0x7d2, spContext->m_eventId, nDefault) != 0)
+        __int64 nDefaultDT = 0;
+        __int64 nDT = g_attendTableDT.FUN_140be8f80(0x7d2, spContext->m_eventId, nDefaultDT);
+        if (nDT != 0)
             continue;
-        nDefault = 0;
-        if (g_attendTable.FUN_140c5af20(2000, spContext->m_eventId, nDefault) == Unk_EwBurningKey(pSelf))
-            return 1;
+        __int64 nDefault = 0;
+        __int64 nValue = g_attendTable.FUN_140c5af20(2000, spContext->m_eventId, nDefault);
+        if (nValue != Unk_EwBurningKey(pSelf))
+            continue;
+        return 1;
     }
     return 0;
 }
 MS2_REPLACE_METHOD(0x140C5A220, UIBurningEventWidgetDialog, vfunc_84, 490, 0x6EACB528);
 
-// MS2-FUNCTIONAL: stack layout and temporaries differ from the exe (same calls and conditions)
+// MS2-FUNCTIONAL: spResult and spContext sit in each other's stack slots (0x40/0x50); the code is otherwise identical
 // @0x140c5a420
 int UIBurningEventWidgetDialog::vfunc_85(ASObj& rObj)
 {
@@ -530,38 +543,37 @@ int UIBurningEventWidgetDialog::vfunc_85(ASObj& rObj)
     std::list<MS2Ptr<BurningLevelupContext> > contexts;
     FUN_1403ed080(FUN_140302b00())->GetAll(contexts);
     MS2Ptr<BurningLevelupContext> spResult(0);
-    for (std::list<MS2Ptr<BurningLevelupContext> >::iterator it = contexts.begin(); it != contexts.end(); ++it) {
+    for (std::list<MS2Ptr<BurningLevelupContext> >::const_iterator it = contexts.begin(); it != contexts.end(); ++it) {
         MS2Ptr<BurningLevelupContext> spContext = *it;
-        if (spContext.get() == 0)
+        if (spContext == 0)
             continue;
         if (FUN_140c0e9f0(&spContext->m_rewardItems)) {
             spResult = *it;
             continue;
         }
         __int64 nDefault = 0;
-        if (g_attendTable.FUN_140c5af20(2000, spContext->m_eventId, nDefault) != Unk_EwBurningKey(pSelf))
+        __int64 nValue = g_attendTable.FUN_140c5af20(2000, spContext->m_eventId, nDefault);
+        if (nValue != Unk_EwBurningKey(pSelf))
             continue;
-        nDefault = 0;
-        if (g_attendTableDT.FUN_140be8f80(0x7d2, spContext->m_eventId, nDefault) == 0) {
-            spResult = spContext;
-            break;
-        }
+        __int64 nDefaultDT = 0;
+        __int64 nDT = g_attendTableDT.FUN_140be8f80(0x7d2, spContext->m_eventId, nDefaultDT);
+        if (nDT != 0)
+            continue;
+        spResult = spContext;
+        break;
     }
-    if (spResult.get() == 0)
+    if (spResult == 0)
         return 0;
     m_190 = spResult->m_eventId;
     rObj.FUN_1407cbb20("title", GetStringCommonByKey(spResult->m_rewardUiTitleStringKey));
-    ItemEntity& item = spResult->m_rewardItems.front();
-    rObj.FUN_1407cba60("binding", m_178->FUN_140d43310(item.m_itemId, item.vfunc_o18_1(), item.m_count));
+    rObj.FUN_1407cba60("binding", m_178->FUN_140d43310(spResult->m_rewardItems.begin()->m_itemId, spResult->m_rewardItems.begin()->vfunc_o18_1(), spResult->m_rewardItems.begin()->m_count));
     rObj.FUN_1409c48f0("max", spResult->m_endLevel);
     rObj.FUN_1409c48f0("current", Unk_EwActorLevel(pSelf));
-    unsigned short nCurrent = Unk_EwActorLevel(pSelf);
-    rObj.FUN_1407cbb20("text", StringFormat(L"{0}/{1}", nCurrent, spResult->m_endLevel));
+    rObj.FUN_1407cbb20("text", StringFormat(L"{0}/{1}", Unk_EwActorLevel(pSelf), spResult->m_endLevel));
     return 1;
 }
 MS2_REPLACE_METHOD(0x140C5A420, UIBurningEventWidgetDialog, vfunc_85, 1261, 0x598DDAF2);
 
-// MS2-FUNCTIONAL: stack layout and temporaries differ from the exe (same calls and conditions)
 // @0x140c5a930
 void UIBurningEventWidgetDialog::vfunc_86()
 {
@@ -569,18 +581,21 @@ void UIBurningEventWidgetDialog::vfunc_86()
     if (!pSelf)
         return;
     MS2Ptr<BurningLevelupContext> spContext = FUN_1403ed080(FUN_140302b00())->Get(m_190);
-    if (spContext.get() == 0)
+    if (spContext == 0)
         return;
     if (FUN_140c0e9f0(&spContext->m_rewardItems))
         return;
     __int64 nDefault = 0;
-    if (g_attendTable.FUN_140c5af20(2000, spContext->m_eventId, nDefault) != Unk_EwBurningKey(pSelf))
+    __int64 nValue = g_attendTable.FUN_140c5af20(2000, spContext->m_eventId, nDefault);
+    if (nValue != Unk_EwBurningKey(pSelf))
         return;
-    nDefault = 0;
-    if (g_attendTableDT.FUN_140be8f80(0x7d1, spContext->m_eventId, nDefault) == 0)
+    __int64 nDefaultLevel = 0;
+    __int64 nLevel = g_attendTableDT.FUN_140be8f80(0x7d1, spContext->m_eventId, nDefaultLevel);
+    if (nLevel == 0)
         return;
-    nDefault = 0;
-    if (g_attendTableDT.FUN_140be8f80(0x7d2, spContext->m_eventId, nDefault) != 0)
+    __int64 nDefaultDT = 0;
+    __int64 nDT = g_attendTableDT.FUN_140be8f80(0x7d2, spContext->m_eventId, nDefaultDT);
+    if (nDT != 0)
         return;
     COutPacket packet(static_cast<int>(SendOp::EventReward), 0);
     packet.Encode1(0xf);

@@ -136,16 +136,7 @@ unsigned FUN_140869420();                                   // millisecond clock
 void FUN_14152e0c0(void* pPC);
 void FUN_140710590(COutPacket& packet);                     // send
 bool FUN_14025cd60(const CStringW& a, const CStringW& b);   // equal names
-
-// Both the NiPoint3 the owner hands out and the efd::Point3 it takes are the same three floats as Vector3.
-static const Vector3& AsPoint(const NiPoint3& pt)
-{
-    return reinterpret_cast<const Vector3&>(pt);
-}
-static efd::Point3 AsEfd(const Vector3& pt)
-{
-    return efd::Point3(pt.x, pt.y, pt.z);
-}
+// The NiPoint3 the owner hands out and the efd::Point3 it takes are the same three floats as Vector3 (read through reinterpret_cast).
 
 // @0x140ac4f90
 // Wraps nIdx into [0, nCount).
@@ -165,29 +156,22 @@ static void FUN_140ac4fe0(std::vector<__int64>& ids)
 {
     ids.clear();
     Unk_ObsWorld* pWorld = FUN_1403ed2d0();
-    if (pWorld != 0)
+    if (pWorld == 0)
+        return;
+    Unk_ObsProxyMap* pMap = pWorld->FUN_141bc9fb0();
+    for (POSITION pos = pMap->GetStartPosition(); pos != 0; pMap->GetNext(pos))
     {
-        Unk_ObsProxyMap* pMap = pWorld->FUN_141bc9fb0();
-        POSITION pos = pMap->GetStartPosition();
-        while (pos != 0)
-        {
-            MS2Ptr<CProxyGameObject> spProxy(pMap->GetValueAt(pos));
-            if (!spProxy.IsNull())
-            {
-                if (spProxy->FUN_1416c2040() != 0)
-                {
-                    if (spProxy->kind == 0)
-                    {
-                        if (spProxy->m_cc != 0x3f)
-                        {
-                            __int64 nId = (__int64)spProxy->FUN_1416c22f0();
-                            ids.push_back(nId);
-                        }
-                    }
-                }
-            }
-            pMap->GetNext(pos);
-        }
+        MS2Ptr<CProxyGameObject> spProxy(pMap->GetValueAt(pos));
+        if (spProxy.IsNull())
+            continue;
+        if (spProxy->FUN_1416c2040() == 0)
+            continue;
+        if (spProxy->kind != 0)
+            continue;
+        if (spProxy->m_cc == 0x3f)
+            continue;
+        __int64 nId = (__int64)spProxy->FUN_1416c22f0();
+        ids.push_back(nId);
     }
 }
 
@@ -207,37 +191,31 @@ static unsigned __int64 FUN_140ac5130(std::set<unsigned __int64>& excluded)
     float fBest = FLT_MAX;
     MS2Ptr<CProxyGameObject> spBest;
     Unk_ObsProxyMap* pMap = pWorld->FUN_141bc9fb0();
-    POSITION pos = pMap->GetStartPosition();
-    while (pos != 0)
+    for (POSITION pos = pMap->GetStartPosition(); pos != 0; pMap->GetNext(pos))
     {
         MS2Ptr<CProxyGameObject> spProxy(pMap->GetValueAt(pos));
-        if (!spProxy.IsNull())
+        if (spProxy.IsNull())
+            continue;
+        if (spProxy->FUN_1416c2040() == 0)
+            continue;
+        if (spProxy->kind != 0)
+            continue;
+        if (spProxy->m_cc == 0x3f)
+            continue;
+        unsigned __int64 nId = (unsigned __int64)spProxy->FUN_1416c22f0();
+        bool bExcluded = excluded.find(nId) != excluded.end();
+        if (bExcluded)
+            continue;
+        float fDist = reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(pPlayer->vfunc_18())).FUN_140965c40(spProxy->FUN_1416c2270()).FUN_140967ac0();
+        if (fDist < fBest)
         {
-            if (spProxy->FUN_1416c2040() != 0)
-            {
-                if (spProxy->kind == 0)
-                {
-                    if (spProxy->m_cc != 0x3f)
-                    {
-                        unsigned __int64 nId = (unsigned __int64)spProxy->FUN_1416c22f0();
-                        if (excluded.find(nId) == excluded.end())
-                        {
-                            float fDist = AsPoint(pPlayer->vfunc_18()).FUN_140965c40(spProxy->FUN_1416c2270()).FUN_140967ac0();
-                            if (fDist < fBest)
-                            {
-                                fBest = fDist;
-                                spBest = spProxy;
-                            }
-                        }
-                    }
-                }
-            }
+            fBest = fDist;
+            spBest = spProxy;
         }
-        pMap->GetNext(pos);
     }
-    if (!spBest.IsNull())
-        return (unsigned __int64)spBest->FUN_1416c22f0();
-    return 0;
+    if (spBest.IsNull())
+        return 0;
+    return (unsigned __int64)spBest->FUN_1416c22f0();
 }
 
 // @0x140ac55a0
@@ -300,15 +278,20 @@ void StateObserver::vfunc_4(StateData* pData)
     State::vfunc_4(pData);
     m_spObserve->m_nTarget = 0;
     m_nPending = 0;
-    if (pData != 0)
+    do
     {
+        if (pData == 0)
+            break;
         MS2Ptr<StateObserverData> spData(dynamic_cast<StateObserverData*>(pData));
-        if (!spData.IsNull())
-            m_spObserve = spData;
+        if (spData.IsNull())
+            break;
+        m_spObserve = spData;
+    } while (0);
+    {
+        MS2Ptr<Unk_PCBaseComp_a78> spComp = m_pOwner->vfunc_82();
+        if (spComp.get() != 0)
+            spComp->FUN_140f48dc0(0);
     }
-    MS2Ptr<Unk_PCBaseComp_a78> spComp = m_pOwner->vfunc_82();
-    if (spComp.get() != 0)
-        spComp->FUN_140f48dc0(0);
     m_pOwner->vfunc_23(1);
     m_pOwner->vfunc_31(false);
     FUN_140ac45e0();
@@ -318,28 +301,26 @@ void StateObserver::vfunc_4(StateData* pData)
 void StateObserver::vfunc_5(int n)
 {
     State::vfunc_5(n);
-    if (n != 0x3f)
-    {
-        m_pOwner->vfunc_23(0);
-        m_pOwner->vfunc_31(true);
-        FUN_140ac4760();
-    }
+    if (n == 0x3f)
+        return;
+    m_pOwner->vfunc_23(0);
+    m_pOwner->vfunc_31(true);
+    FUN_140ac4760();
 }
 
 // @0x140ac3f50
 void StateObserver::vfunc_3(double fTime)
 {
     State::vfunc_3(fTime);
-    if (m_pOwner != 0)
+    if (m_pOwner == 0)
+        return;
+    if (m_pOwner->FUN_14123c660() == 0)
     {
-        if (m_pOwner->FUN_14123c660() == 0)
-        {
-            m_pOwner->vfunc_23(1);
-            m_pOwner->vfunc_31(false);
-        }
-        FUN_140ac48e0();
-        FUN_140ac4c00();
+        m_pOwner->vfunc_23(1);
+        m_pOwner->vfunc_31(false);
     }
+    FUN_140ac48e0();
+    FUN_140ac4c00();
 }
 
 // @0x140ac3ff0
@@ -352,19 +333,19 @@ void StateObserver::vfunc_8(double fTime)
 // @0x140ac4040
 int StateObserver::vfunc_22(MS2Ptr<Unk_StateArg22> p)
 {
-    if (!p.IsNull())
-    {
-        if (FUN_140718350(p->m_str70) == (unsigned __int64)m_spObserve->m_nTarget)
-            return 0;
-        return 1;
-    }
-    return 0;
+    if (p.IsNull())
+        return 0;
+    unsigned __int64 nTargetId = FUN_140718350(p->m_str70);
+    if (nTargetId == m_spObserve->m_nTarget)
+        return 0;
+    return 1;
 }
 
 // @0x140ac40f0
 bool StateObserver::vfunc_28(MS2Ptr<Unk_StateArg22> p)
 {
-    return FUN_140ac5ea0() != (__int64)FUN_140718350(p->m_str70);
+    unsigned __int64 nTargetId = FUN_140718350(p->m_str70);
+    return FUN_140ac5ea0() != (__int64)nTargetId;
 }
 
 // @0x140ac4170
@@ -374,9 +355,9 @@ CStringW StateObserver::FUN_140ac4170()
     if (pWorld == 0)
         return CStringW(L"");
     MS2Ptr<CProxyGameObject> spProxy = pWorld->FUN_141bc9c60(m_spObserve->m_nTarget);
-    if (!spProxy.IsNull())
-        return spProxy->FUN_1416c23b0();
-    return CStringW(L"");
+    if (spProxy.IsNull())
+        return CStringW(L"");
+    return spProxy->FUN_1416c23b0();
 }
 
 // @0x140ac4270
@@ -384,13 +365,14 @@ void StateObserver::FUN_140ac4270()
 {
     std::vector<__int64> ids;
     FUN_140ac4fe0(ids);
-    if (!ids.empty())
-    {
-        int nCount = (int)ids.size();
-        int nIdx = FUN_140ac4f90(nCount, (int)(std::find(ids.begin(), ids.end(), m_spObserve->m_nTarget) - ids.begin()) - 1);
-        if (nIdx >= 0 && nIdx <= nCount)
-            FUN_140ac4c90(ids[nIdx]);
-    }
+    if (ids.empty())
+        return;
+    int nCount = (int)ids.size();
+    int nPos = (int)(std::find(ids.begin(), ids.end(), m_spObserve->m_nTarget) - ids.begin());
+    int nIdx = FUN_140ac4f90(nCount, nPos - 1);
+    if ((nIdx >= 0 && nIdx <= nCount) == 0)
+        return;
+    FUN_140ac4c90(ids[nIdx]);
 }
 
 // @0x140ac43e0
@@ -398,129 +380,127 @@ void StateObserver::FUN_140ac43e0()
 {
     std::vector<__int64> ids;
     FUN_140ac4fe0(ids);
-    if (!ids.empty())
-    {
-        int nCount = (int)ids.size();
-        int nIdx = FUN_140ac4f90(nCount, (int)(std::find(ids.begin(), ids.end(), m_spObserve->m_nTarget) - ids.begin()) + 1);
-        if (nIdx >= 0 && nIdx <= nCount)
-            FUN_140ac4c90(ids[nIdx]);
-    }
+    if (ids.empty())
+        return;
+    int nCount = (int)ids.size();
+    int nPos = (int)(std::find(ids.begin(), ids.end(), m_spObserve->m_nTarget) - ids.begin());
+    int nIdx = FUN_140ac4f90(nCount, nPos + 1);
+    if ((nIdx >= 0 && nIdx <= nCount) == 0)
+        return;
+    FUN_140ac4c90(ids[nIdx]);
 }
 
 // @0x140ac4550
 void StateObserver::FUN_140ac4550()
 {
     std::set<unsigned __int64> excluded;
-    excluded.insert(m_spObserve->m_nTarget);
+    excluded.insert(reinterpret_cast<const unsigned __int64&>(m_spObserve->m_nTarget));
     unsigned __int64 nId = FUN_140ac5130(excluded);
-    if (nId != 0)
-        FUN_140ac4c90(nId);
+    if (nId == 0)
+        return;
+    FUN_140ac4c90(nId);
 }
 
 // @0x140ac45e0
 void StateObserver::FUN_140ac45e0()
 {
-    if (FUN_1417b8560() != 0)
-    {
-        MyPC* pPC = FUN_1417b84b0();
-        if (pPC != 0)
-        {
-            FUN_141274f50();
-            FUN_140a7b810(pPC)->FUN_1409536b0(0);
-            UIDamageEffect* pDamage = FUN_140ac55a0(0x4e3c);
-            if (pDamage != 0)
-                pDamage->FUN_141910660();
-            UIMainPlayerInfo* pInfo = FUN_140931900(0x4e5f);
-            if (pInfo != 0)
-                pInfo->FUN_1419f1d10(8, false);
-            FUN_1403ed2b0()->FUN_141add120(0x4e43, 0);
-            FUN_1403ed2b0()->FUN_141add120(0x4e28, 0);
-            FUN_140939a10()->FUN_140da4e40(L"NotifyKillPlayer", Delegate<void(NotifyObject*)>(this, &StateObserver::FUN_140ac4dc0));
-        }
-    }
+    if (FUN_1417b8560() == 0)
+        return;
+    MyPC* pPC = FUN_1417b84b0();
+    if (pPC == 0)
+        return;
+    FUN_141274f50();
+    FUN_140a7b810(pPC)->FUN_1409536b0(0);
+    UIDamageEffect* pDamage = FUN_140ac55a0(0x4e3c);
+    if (pDamage != 0)
+        pDamage->FUN_141910660();
+    UIMainPlayerInfo* pInfo = FUN_140931900(0x4e5f);
+    if (pInfo != 0)
+        pInfo->FUN_1419f1d10(8, false);
+    FUN_1403ed2b0()->FUN_141add120(0x4e43, 0);
+    FUN_1403ed2b0()->FUN_141add120(0x4e28, 0);
+    FUN_140939a10()->FUN_140da4e40(L"NotifyKillPlayer", Delegate<void(NotifyObject*)>(this, &StateObserver::FUN_140ac4dc0));
 }
 
 // @0x140ac4760
 void StateObserver::FUN_140ac4760()
 {
-    if (FUN_1417b8560() != 0)
-    {
-        MyPC* pPC = FUN_1417b84b0();
-        if (pPC != 0)
-        {
-            FUN_140a7b810(pPC)->FUN_1409536b0(1);
-            UIDamageEffect* pDamage = FUN_140ac55a0(0x4e3c);
-            if (pDamage != 0)
-                pDamage->FUN_141910700();
-            UIMainPlayerInfo* pInfo = FUN_140931900(0x4e5f);
-            if (pInfo != 0)
-                pInfo->FUN_1419f1d10(8, true);
-            FUN_1403ed2b0()->FUN_141add120(0x4e43, 1);
-            FUN_1403ed2b0()->FUN_141add120(0x4e28, 1);
-            FUN_140939a10()->FUN_140da4eb0(L"NotifyKillPlayer", Delegate<void(NotifyObject*)>(this, &StateObserver::FUN_140ac4dc0));
-        }
-    }
+    if (FUN_1417b8560() == 0)
+        return;
+    MyPC* pPC = FUN_1417b84b0();
+    if (pPC == 0)
+        return;
+    FUN_140a7b810(pPC)->FUN_1409536b0(1);
+    UIDamageEffect* pDamage = FUN_140ac55a0(0x4e3c);
+    if (pDamage != 0)
+        pDamage->FUN_141910700();
+    UIMainPlayerInfo* pInfo = FUN_140931900(0x4e5f);
+    if (pInfo != 0)
+        pInfo->FUN_1419f1d10(8, true);
+    FUN_1403ed2b0()->FUN_141add120(0x4e43, 1);
+    FUN_1403ed2b0()->FUN_141add120(0x4e28, 1);
+    FUN_140939a10()->FUN_140da4eb0(L"NotifyKillPlayer", Delegate<void(NotifyObject*)>(this, &StateObserver::FUN_140ac4dc0));
 }
 
 // @0x140ac48e0
-// MS2-FUNCTIONAL: written against the unit-local point views
 void StateObserver::FUN_140ac48e0()
 {
-    if (FUN_1417b8560() != 0)
+    if (FUN_1417b8560() == 0)
+        return;
+    Unk_ObsWorld* pWorld = FUN_1403ed2d0();
+    if (pWorld == 0)
+        return;
+    Vector3 vTarget;
+    MS2Ptr<CProxyGameObject> spProxy = pWorld->FUN_141bc9c60(m_spObserve->m_nTarget);
+    if (spProxy.IsNull())
     {
-        Unk_ObsWorld* pWorld = FUN_1403ed2d0();
-        if (pWorld != 0)
-        {
-            Vector3 vTarget;
-            MS2Ptr<CProxyGameObject> spProxy = pWorld->FUN_141bc9c60(m_spObserve->m_nTarget);
-            if (!spProxy.IsNull())
-            {
-                if (spProxy->FUN_1416c2040() == 0)
-                {
-                    FUN_140ac4550();
-                }
-                else if (spProxy->m_cc == 0x3f)
-                {
-                    FUN_140ac4550();
-                }
-                else
-                {
-                    vTarget = spProxy->FUN_1416c2270();
-                    PCBase* pTarget = pWorld->FUN_141bd1530(m_spObserve->m_nTarget);
-                    if (pTarget != 0)
-                        vTarget = AsPoint(pTarget->vfunc_18());
-                    Vector3 vOwner = AsPoint(m_pOwner->vfunc_18());
-                    Vector3 vDir = vTarget.FUN_140965c40(vOwner);
-                    float fLen = vDir.FUN_140968990();
-                    if (fLen <= 1000.0f)
-                    {
-                        float fStep = (fLen / 60.0f) * 10.0f;
-                        Vector3 vNew = vOwner.FUN_14097fd50(vDir.FUN_14097fc90(fStep));
-                        m_pOwner->vfunc_19(AsEfd(vNew));
-                    }
-                    else
-                    {
-                        m_pOwner->vfunc_19(AsEfd(vTarget));
-                    }
-                }
-            }
-        }
+        FUN_140ac4550();
+        return;
     }
+    if (spProxy->FUN_1416c2040() == 0)
+    {
+        FUN_140ac4550();
+        return;
+    }
+    if (spProxy->m_cc == 0x3f)
+    {
+        FUN_140ac4550();
+        return;
+    }
+    vTarget = spProxy->FUN_1416c2270();
+    do
+    {
+        PCBase* pTarget = pWorld->FUN_141bd1530(m_spObserve->m_nTarget);
+        if (pTarget == 0)
+            break;
+        vTarget = reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(pTarget->vfunc_18()));
+    } while (0);
+    const NiPoint3& kOwner = m_pOwner->vfunc_18();
+    Vector3 vDir = vTarget.FUN_140965c40(reinterpret_cast<const Vector3&>(kOwner));
+    float fLen = vDir.FUN_140968990();
+    if (fLen > 1000.0f)
+    {
+        m_pOwner->vfunc_19(reinterpret_cast<const efd::Point3&>(vTarget));
+        return;
+    }
+    const float kFrame = 60.0f;
+    const float kSpeed = 10.0f;
+    float fStep = (fLen / kFrame) * kSpeed;
+    Vector3 vNew = reinterpret_cast<const Vector3&>(kOwner).FUN_14097fd50(vDir.FUN_14097fc90(fStep));
+    m_pOwner->vfunc_19(reinterpret_cast<const efd::Point3&>(vNew));
 }
 
 // @0x140ac4c00
 void StateObserver::FUN_140ac4c00()
 {
-    if (m_nPending != 0)
-    {
-        PCBase* pObject = FUN_1403ed2d0()->FUN_141bd1530(m_nPending);
-        if (pObject != 0)
-        {
-            int nId = pObject->FUN_14123c580();
-            FUN_1409478c0()->FUN_140aecbb0(100, nId, true);
-            m_nPending = 0;
-        }
-    }
+    if (m_nPending == 0)
+        return;
+    PCBase* pObject = FUN_1403ed2d0()->FUN_141bd1530(m_nPending);
+    if (pObject == 0)
+        return;
+    const int nCameraId = 100;
+    FUN_1409478c0()->FUN_140aecbb0(nCameraId, pObject->FUN_14123c580(), true);
+    m_nPending = 0;
 }
 
 // @0x140ac4c90
@@ -530,56 +510,51 @@ void StateObserver::FUN_140ac4c90(__int64 nTarget)
     if (pPC == 0)
     {
         MS2_ASSERT_AT(0x1a9, 0);
+        return;
     }
-    else if (m_spObserve->m_nTarget != nTarget)
-    {
-        unsigned nNow = FUN_140869420();
-        if (nNow - m_nSwitchTick > 299)
-        {
-            FUN_14152e0c0(pPC);
-            COutPacket packet(static_cast<int>(SendOp::SpectateMushtopia), 0);
-            packet.WriteUInt8(2);
-            packet.WriteInt64(nTarget);
-            FUN_140710590(packet);
-            m_spObserve->m_nTarget = nTarget;
-            m_nSwitchTick = nNow;
-        }
-    }
+    if (m_spObserve->m_nTarget == nTarget)
+        return;
+    unsigned nNow = FUN_140869420();
+    if (nNow - m_nSwitchTick < 300)
+        return;
+    FUN_14152e0c0(pPC);
+    COutPacket packet(static_cast<int>(SendOp::SpectateMushtopia), 0);
+    packet.WriteUInt8(2);
+    packet.WriteInt64(nTarget);
+    FUN_140710590(packet);
+    m_spObserve->m_nTarget = nTarget;
+    m_nSwitchTick = nNow;
 }
 
 // @0x140ac4dc0
 void StateObserver::FUN_140ac4dc0(NotifyObject* pNotice)
 {
-    if (pNotice != 0)
+    const Unk_ObsKillView* pKill = reinterpret_cast<const Unk_ObsKillView*>(pNotice);
+    if (pKill == 0)
+        return;
+    const CStringW& strKiller = pKill->m_strKiller;
+    const CStringW& strVictim = pKill->m_strVictim;
+    Unk_ObsWorld* pWorld = FUN_1403ed2d0();
+    if (pWorld == 0)
+        return;
+    MS2Ptr<CProxyGameObject> spVictim = pWorld->FUN_141bc9d60(strVictim);
+    if (spVictim.IsNull())
+        return;
+    if ((__int64)spVictim->FUN_1416c22f0() != m_spObserve->m_nTarget)
+        return;
+    if (FUN_14025cd60(strVictim, strKiller))
     {
-        const Unk_ObsKillView* pKill = reinterpret_cast<const Unk_ObsKillView*>(pNotice);
-        Unk_ObsWorld* pWorld = FUN_1403ed2d0();
-        if (pWorld != 0)
-        {
-            MS2Ptr<CProxyGameObject> spVictim = pWorld->FUN_141bc9d60(pKill->m_strVictim);
-            if (!spVictim.IsNull())
-            {
-                if ((__int64)spVictim->FUN_1416c22f0() == m_spObserve->m_nTarget)
-                {
-                    if (FUN_14025cd60(pKill->m_strVictim, pKill->m_strKiller))
-                    {
-                        FUN_140ac4550();
-                    }
-                    else
-                    {
-                        MS2Ptr<Unk_FieldRef> spMap = pWorld->FUN_141bd30a0();
-                        if (spMap.IsNull())
-                            return;
-                        MS2Ptr<CProxyGameObject> spKiller = pWorld->FUN_141bc9d60(pKill->m_strKiller);
-                        if (spKiller.get() == 0)
-                            FUN_140ac4550();
-                        else
-                            FUN_140ac4c90((__int64)spKiller->FUN_1416c22f0());
-                    }
-                }
-            }
-        }
+        FUN_140ac4550();
+        return;
     }
+    MS2Ptr<Unk_FieldRef> spMap = pWorld->FUN_141bd30a0();
+    if (spMap.IsNull())
+        return;
+    MS2Ptr<CProxyGameObject> spKiller = pWorld->FUN_141bc9d60(strKiller);
+    if (spKiller.get() != 0)
+        FUN_140ac4c90((__int64)spKiller->FUN_1416c22f0());
+    else
+        FUN_140ac4550();
 }
 
 // @0x140ac5c80

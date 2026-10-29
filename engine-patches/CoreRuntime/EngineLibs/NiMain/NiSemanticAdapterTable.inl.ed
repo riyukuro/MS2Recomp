@@ -1,3 +1,10 @@
+54,55c
+    return ms_kNullSemanticName;  // MS2
+
+.
+48c
+inline const NiFixedString& NiSemanticAdapterTable::GetRendererSemanticName(  // MS2: by reference (game 0x1427e35a0 never copies it)
+.
 33,34c
     return ms_kNullSemanticName;  // MS2
 

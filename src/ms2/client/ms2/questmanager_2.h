@@ -73,7 +73,7 @@ public:
     int vfunc_o10_1(int) override;
     int vfunc_o10_2(int) override;
     Unk_PayloadPtr<CQuest> vfunc_o10_3(int) override;
-    int vfunc_o10_4() override;
+    unsigned short vfunc_o10_4() override;
     int vfunc_o10_5() override;
     int vfunc_o10_6() override;
     int vfunc_o10_7() override;

@@ -34,6 +34,7 @@ public:
     void FUN_1418d94e0(UIBuddyEventListener* pListener);    // remove a listener
 private:
     MS2_LAYOUT_FRIEND;
-    ATL::CAtlArray<void*> m_8;                              // +0x8 the registered UIBuddyEventListener*
+    // A typed element (not void*): ATL passes non-primitive elements to Add by const& (lea rdx), as the exe does.
+    ATL::CAtlArray<UIBuddyEventListener*> m_8;              // +0x8 the registered listeners
 };
 MS2_CHECK_SIZE(UIBuddyEventDispatcher, 0x28);

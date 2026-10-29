@@ -24,19 +24,9 @@ public:
     Scaleform::GFx::Value FUN_140e262c0(const char* szMethod, const char* szArg);   // Invoke with one string argument
 };
 
-// The movie child "m_freeCamera" (a check box): handle at +8, the dtor sits at 0x140acd6e0.
-class Unk_PsButton { public: void FUN_1422ce090(int checked); };
-class Unk_PsHandle
-{
-public:
-    Unk_PsHandle() {}
-    Unk_PsButton* FUN_140acd9c0();
-    Unk_PsButton* FUN_140acd9e0();
-    void FUN_140acd6e0();
-private:
-    char m_pad[0x18];
-};
-class Unk_PsMovieEntity : public UIDialog { public: Unk_PsHandle FUN_140bb4b10(const CString& strName); };
+// The movie child "m_freeCamera" (a check box).
+class Unk_140acd6e0 : public ASDisplayObject { public: void FUN_1422ce090(int checked); };
+class Unk_PsMovieEntity : public UIDialog { public: MS2Ptr<Unk_140acd6e0> FUN_140bb4b10(const CString& strName); };
 
 class Unk_PsUiMgr
 {
@@ -117,20 +107,10 @@ void UIPhotoStudioMenuDialog::OnFreeCamera()
 }
 
 // @0x140e761b0
-// MS2-FUNCTIONAL: behaviour-equivalent; the handle (24 bytes in the exe) is copied twice and the name temp has its own EH states
 void UIPhotoStudioMenuDialog::FUN_140e761b0()
 {
-    Unk_PsHandle hCheck;
-    {
-        CString strName("m_freeCamera");
-        hCheck = ((Unk_PsMovieEntity*)this)->FUN_140bb4b10(strName);
-    }
-    if (hCheck.FUN_140acd9c0() != 0)
-    {
-        int nMode = FUN_1409478c0()->FUN_140af7e30();
-        hCheck.FUN_140acd9e0()->FUN_1422ce090(nMode == 1);
-    }
-    hCheck.FUN_140acd6e0();
+    if (MS2Ptr<Unk_140acd6e0> spCheck = ((Unk_PsMovieEntity*)this)->FUN_140bb4b10("m_freeCamera"))
+        spCheck->FUN_1422ce090(FUN_1409478c0()->FUN_140af7e30() == 1);
 }
 
 // @0x140e76270

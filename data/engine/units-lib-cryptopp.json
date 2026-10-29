@@ -1,0 +1,1301 @@
+{
+ "comment": "Crypto++ cryptopp562 TUs (statically linked at 0x142303c10-0x1423915c0), compiled in place from third_party/src/cryptopp562 by the engine stage (tools/gbtree.py library units). lb1, 2026-10-20: version and flags chosen by compiling every candidate (5.5.2-8.2.0) and counting exact matches. Toolset 1414 (cl 19.14.26433, tc1 2026-10-20): 2271 -> 2614 exact, 0 lost vs 1416; 1415 = 2275.",
+ "toolset": "1414",
+ "ranges": [
+  [
+   "0x142303c10",
+   "0x1423915c0"
+  ]
+ ],
+ "flags": [
+  [
+   "-GS",
+   "-EHsc",
+   "-GR",
+   "-MD",
+   "-Z7",
+   "-Gy",
+   "-Zc:wchar_t",
+   "-Zc:forScope",
+   "-Zc:threadSafeInit",
+   "-std:c++14",
+   "-permissive",
+   "-sdl-",
+   "-JMC-",
+   "-O2",
+   "-Oi"
+  ]
+ ],
+ "include_dirs": [
+  [
+   "$(ROOT)/third_party/src/cryptopp562"
+  ]
+ ],
+ "units": [
+  {
+   "name": "cryptopp/adler32",
+   "recipe": "lib-cryptopp",
+   "unit": "gb:CryptoPP/adler32",
+   "source": "$(ROOT)/third_party/src/cryptopp562/adler32.cpp",
+   "flags": 0,
+   "defines": [
+    "NDEBUG"
+   ],
+   "include_dirs": 0
+  },
+  {
+   "name": "cryptopp/channels",
+   "recipe": "lib-cryptopp",
+   "unit": "gb:CryptoPP/channels",
+   "source": "$(ROOT)/third_party/src/cryptopp562/channels.cpp",
+   "flags": 0,
+   "defines": [
+    "NDEBUG"
+   ],
+   "include_dirs": 0
+  },
+  {
+   "name": "cryptopp/fips140",
+   "recipe": "lib-cryptopp",
+   "unit": "gb:CryptoPP/fips140",
+   "source": "$(ROOT)/third_party/src/cryptopp562/fips140.cpp",
+   "flags": 0,
+   "defines": [
+    "NDEBUG"
+   ],
+   "include_dirs": 0
+  },
+  {
+   "name": "cryptopp/gf256",
+   "recipe": "lib-cryptopp",
+   "unit": "gb:CryptoPP/gf256",
+   "source": "$(ROOT)/third_party/src/cryptopp562/gf256.cpp",
+   "flags": 0,
+   "defines": [
+    "NDEBUG"
+   ],
+   "include_dirs": 0
+  },
+  {
+   "name": "cryptopp/gf2_32",
+   "recipe": "lib-cryptopp",
+   "unit": "gb:CryptoPP/gf2_32",
+   "source": "$(ROOT)/third_party/src/cryptopp562/gf2_32.cpp",
+   "flags": 0,
+   "defines": [
+    "NDEBUG"
+   ],
+   "include_dirs": 0
+  },
+  {
+   "name": "cryptopp/pkcspad",
+   "recipe": "lib-cryptopp",
+   "unit": "gb:CryptoPP/pkcspad",
+   "source": "$(ROOT)/third_party/src/cryptopp562/pkcspad.cpp",
+   "flags": 0,
+   "defines": [
+    "NDEBUG"
+   ],
+   "include_dirs": 0
+  },
+  {
+   "name": "cryptopp/skipjack",
+   "recipe": "lib-cryptopp",
+   "unit": "gb:CryptoPP/skipjack",
+   "source": "$(ROOT)/third_party/src/cryptopp562/skipjack.cpp",
+   "flags": 0,
+   "defines": [
+    "NDEBUG"
+   ],
+   "include_dirs": 0
+  },
+  {
+   "name": "cryptopp/3way",
+   "recipe": "lib-cryptopp",
+   "unit": "gb:CryptoPP/3way",
+   "source": "$(ROOT)/third_party/src/cryptopp562/3way.cpp",
+   "flags": 0,
+   "defines": [
+    "NDEBUG"
+   ],
+   "include_dirs": 0
+  },
+  {
+   "name": "cryptopp/adler32",
+   "recipe": "lib-cryptopp",
+   "unit": "gb:CryptoPP/adler32",
+   "source": "$(ROOT)/third_party/src/cryptopp562/adler32.cpp",
+   "flags": 0,
+   "defines": [
+    "NDEBUG"
+   ],
+   "include_dirs": 0
+  },
+  {
+   "name": "cryptopp/algparam",
+   "recipe": "lib-cryptopp",
+   "unit": "gb:CryptoPP/algparam",
+   "source": "$(ROOT)/third_party/src/cryptopp562/algparam.cpp",
+   "flags": 0,
+   "defines": [
+    "NDEBUG"
+   ],
+   "include_dirs": 0
+  },
+  {
+   "name": "cryptopp/arc4",
+   "recipe": "lib-cryptopp",
+   "unit": "gb:CryptoPP/arc4",
+   "source": "$(ROOT)/third_party/src/cryptopp562/arc4.cpp",
+   "flags": 0,
+   "defines": [
+    "NDEBUG"
+   ],
+   "include_dirs": 0
+  },
+  {
+   "name": "cryptopp/asn",
+   "recipe": "lib-cryptopp",
+   "unit": "gb:CryptoPP/asn",
+   "source": "$(ROOT)/third_party/src/cryptopp562/asn.cpp",
+   "flags": 0,
+   "defines": [
+    "NDEBUG"
+   ],
+   "include_dirs": 0
+  },
+  {
+   "name": "cryptopp/authenc",
+   "recipe": "lib-cryptopp",
+   "unit": "gb:CryptoPP/authenc",
+   "source": "$(ROOT)/third_party/src/cryptopp562/authenc.cpp",
+   "flags": 0,
+   "defines": [
+    "NDEBUG"
+   ],
+   "include_dirs": 0
+  },
+  {
+   "name": "cryptopp/base32",
+   "recipe": "lib-cryptopp",
+   "unit": "gb:CryptoPP/base32",
+   "source": "$(ROOT)/third_party/src/cryptopp562/base32.cpp",
+   "flags": 0,
+   "defines": [
+    "NDEBUG"
+   ],
+   "include_dirs": 0
+  },
+  {
+   "name": "cryptopp/base64",
+   "recipe": "lib-cryptopp",
+   "unit": "gb:CryptoPP/base64",
+   "source": "$(ROOT)/third_party/src/cryptopp562/base64.cpp",
+   "flags": 0,
+   "defines": [
+    "NDEBUG"
+   ],
+   "include_dirs": 0
+  },
+  {
+   "name": "cryptopp/basecode",
+   "recipe": "lib-cryptopp",
+   "unit": "gb:CryptoPP/basecode",
+   "source": "$(ROOT)/third_party/src/cryptopp562/basecode.cpp",
+   "flags": 0,
+   "defines": [
+    "NDEBUG"
+   ],
+   "include_dirs": 0
+  },
+  {
+   "name": "cryptopp/blumshub",
+   "recipe": "lib-cryptopp",
+   "unit": "gb:CryptoPP/blumshub",
+   "source": "$(ROOT)/third_party/src/cryptopp562/blumshub.cpp",
+   "flags": 0,
+   "defines": [
+    "NDEBUG"
+   ],
+   "include_dirs": 0
+  },
+  {
+   "name": "cryptopp/camellia",
+   "recipe": "lib-cryptopp",
+   "unit": "gb:CryptoPP/camellia",
+   "source": "$(ROOT)/third_party/src/cryptopp562/camellia.cpp",
+   "flags": 0,
+   "defines": [
+    "NDEBUG"
+   ],
+   "include_dirs": 0
+  },
+  {
+   "name": "cryptopp/cast",
+   "recipe": "lib-cryptopp",
+   "unit": "gb:CryptoPP/cast",
+   "source": "$(ROOT)/third_party/src/cryptopp562/cast.cpp",
+   "flags": 0,
+   "defines": [
+    "NDEBUG"
+   ],
+   "include_dirs": 0
+  },
+  {
+   "name": "cryptopp/casts",
+   "recipe": "lib-cryptopp",
+   "unit": "gb:CryptoPP/casts",
+   "source": "$(ROOT)/third_party/src/cryptopp562/casts.cpp",
+   "flags": 0,
+   "defines": [
+    "NDEBUG"
+   ],
+   "include_dirs": 0
+  },
+  {
+   "name": "cryptopp/cbcmac",
+   "recipe": "lib-cryptopp",
+   "unit": "gb:CryptoPP/cbcmac",
+   "source": "$(ROOT)/third_party/src/cryptopp562/cbcmac.cpp",
+   "flags": 0,
+   "defines": [
+    "NDEBUG"
+   ],
+   "include_dirs": 0
+  },
+  {
+   "name": "cryptopp/ccm",
+   "recipe": "lib-cryptopp",
+   "unit": "gb:CryptoPP/ccm",
+   "source": "$(ROOT)/third_party/src/cryptopp562/ccm.cpp",
+   "flags": 0,
+   "defines": [
+    "NDEBUG"
+   ],
+   "include_dirs": 0
+  },
+  {
+   "name": "cryptopp/channels",
+   "recipe": "lib-cryptopp",
+   "unit": "gb:CryptoPP/channels",
+   "source": "$(ROOT)/third_party/src/cryptopp562/channels.cpp",
+   "flags": 0,
+   "defines": [
+    "NDEBUG"
+   ],
+   "include_dirs": 0
+  },
+  {
+   "name": "cryptopp/cmac",
+   "recipe": "lib-cryptopp",
+   "unit": "gb:CryptoPP/cmac",
+   "source": "$(ROOT)/third_party/src/cryptopp562/cmac.cpp",
+   "flags": 0,
+   "defines": [
+    "NDEBUG"
+   ],
+   "include_dirs": 0
+  },
+  {
+   "name": "cryptopp/cpu",
+   "recipe": "lib-cryptopp",
+   "unit": "gb:CryptoPP/cpu",
+   "source": "$(ROOT)/third_party/src/cryptopp562/cpu.cpp",
+   "flags": 0,
+   "defines": [
+    "NDEBUG"
+   ],
+   "include_dirs": 0
+  },
+  {
+   "name": "cryptopp/crc",
+   "recipe": "lib-cryptopp",
+   "unit": "gb:CryptoPP/crc",
+   "source": "$(ROOT)/third_party/src/cryptopp562/crc.cpp",
+   "flags": 0,
+   "defines": [
+    "NDEBUG"
+   ],
+   "include_dirs": 0
+  },
+  {
+   "name": "cryptopp/cryptlib",
+   "recipe": "lib-cryptopp",
+   "unit": "gb:CryptoPP/cryptlib",
+   "source": "$(ROOT)/third_party/src/cryptopp562/cryptlib.cpp",
+   "flags": 0,
+   "defines": [
+    "NDEBUG"
+   ],
+   "include_dirs": 0
+  },
+  {
+   "name": "cryptopp/default",
+   "recipe": "lib-cryptopp",
+   "unit": "gb:CryptoPP/default",
+   "source": "$(ROOT)/third_party/src/cryptopp562/default.cpp",
+   "flags": 0,
+   "defines": [
+    "NDEBUG"
+   ],
+   "include_dirs": 0
+  },
+  {
+   "name": "cryptopp/des",
+   "recipe": "lib-cryptopp",
+   "unit": "gb:CryptoPP/des",
+   "source": "$(ROOT)/third_party/src/cryptopp562/des.cpp",
+   "flags": 0,
+   "defines": [
+    "NDEBUG"
+   ],
+   "include_dirs": 0
+  },
+  {
+   "name": "cryptopp/dessp",
+   "recipe": "lib-cryptopp",
+   "unit": "gb:CryptoPP/dessp",
+   "source": "$(ROOT)/third_party/src/cryptopp562/dessp.cpp",
+   "flags": 0,
+   "defines": [
+    "NDEBUG"
+   ],
+   "include_dirs": 0
+  },
+  {
+   "name": "cryptopp/dh2",
+   "recipe": "lib-cryptopp",
+   "unit": "gb:CryptoPP/dh2",
+   "source": "$(ROOT)/third_party/src/cryptopp562/dh2.cpp",
+   "flags": 0,
+   "defines": [
+    "NDEBUG"
+   ],
+   "include_dirs": 0
+  },
+  {
+   "name": "cryptopp/dh",
+   "recipe": "lib-cryptopp",
+   "unit": "gb:CryptoPP/dh",
+   "source": "$(ROOT)/third_party/src/cryptopp562/dh.cpp",
+   "flags": 0,
+   "defines": [
+    "NDEBUG"
+   ],
+   "include_dirs": 0
+  },
+  {
+   "name": "cryptopp/dll",
+   "recipe": "lib-cryptopp",
+   "unit": "gb:CryptoPP/dll",
+   "source": "$(ROOT)/third_party/src/cryptopp562/dll.cpp",
+   "flags": 0,
+   "defines": [
+    "NDEBUG"
+   ],
+   "include_dirs": 0
+  },
+  {
+   "name": "cryptopp/dsa",
+   "recipe": "lib-cryptopp",
+   "unit": "gb:CryptoPP/dsa",
+   "source": "$(ROOT)/third_party/src/cryptopp562/dsa.cpp",
+   "flags": 0,
+   "defines": [
+    "NDEBUG"
+   ],
+   "include_dirs": 0
+  },
+  {
+   "name": "cryptopp/eax",
+   "recipe": "lib-cryptopp",
+   "unit": "gb:CryptoPP/eax",
+   "source": "$(ROOT)/third_party/src/cryptopp562/eax.cpp",
+   "flags": 0,
+   "defines": [
+    "NDEBUG"
+   ],
+   "include_dirs": 0
+  },
+  {
+   "name": "cryptopp/ec2n",
+   "recipe": "lib-cryptopp",
+   "unit": "gb:CryptoPP/ec2n",
+   "source": "$(ROOT)/third_party/src/cryptopp562/ec2n.cpp",
+   "flags": 0,
+   "defines": [
+    "NDEBUG"
+   ],
+   "include_dirs": 0
+  },
+  {
+   "name": "cryptopp/ecp",
+   "recipe": "lib-cryptopp",
+   "unit": "gb:CryptoPP/ecp",
+   "source": "$(ROOT)/third_party/src/cryptopp562/ecp.cpp",
+   "flags": 0,
+   "defines": [
+    "NDEBUG"
+   ],
+   "include_dirs": 0
+  },
+  {
+   "name": "cryptopp/elgamal",
+   "recipe": "lib-cryptopp",
+   "unit": "gb:CryptoPP/elgamal",
+   "source": "$(ROOT)/third_party/src/cryptopp562/elgamal.cpp",
+   "flags": 0,
+   "defines": [
+    "NDEBUG"
+   ],
+   "include_dirs": 0
+  },
+  {
+   "name": "cryptopp/emsa2",
+   "recipe": "lib-cryptopp",
+   "unit": "gb:CryptoPP/emsa2",
+   "source": "$(ROOT)/third_party/src/cryptopp562/emsa2.cpp",
+   "flags": 0,
+   "defines": [
+    "NDEBUG"
+   ],
+   "include_dirs": 0
+  },
+  {
+   "name": "cryptopp/esign",
+   "recipe": "lib-cryptopp",
+   "unit": "gb:CryptoPP/esign",
+   "source": "$(ROOT)/third_party/src/cryptopp562/esign.cpp",
+   "flags": 0,
+   "defines": [
+    "NDEBUG"
+   ],
+   "include_dirs": 0
+  },
+  {
+   "name": "cryptopp/files",
+   "recipe": "lib-cryptopp",
+   "unit": "gb:CryptoPP/files",
+   "source": "$(ROOT)/third_party/src/cryptopp562/files.cpp",
+   "flags": 0,
+   "defines": [
+    "NDEBUG"
+   ],
+   "include_dirs": 0
+  },
+  {
+   "name": "cryptopp/filters",
+   "recipe": "lib-cryptopp",
+   "unit": "gb:CryptoPP/filters",
+   "source": "$(ROOT)/third_party/src/cryptopp562/filters.cpp",
+   "flags": 0,
+   "defines": [
+    "NDEBUG"
+   ],
+   "include_dirs": 0
+  },
+  {
+   "name": "cryptopp/fips140",
+   "recipe": "lib-cryptopp",
+   "unit": "gb:CryptoPP/fips140",
+   "source": "$(ROOT)/third_party/src/cryptopp562/fips140.cpp",
+   "flags": 0,
+   "defines": [
+    "NDEBUG"
+   ],
+   "include_dirs": 0
+  },
+  {
+   "name": "cryptopp/fipstest",
+   "recipe": "lib-cryptopp",
+   "unit": "gb:CryptoPP/fipstest",
+   "source": "$(ROOT)/third_party/src/cryptopp562/fipstest.cpp",
+   "flags": 0,
+   "defines": [
+    "NDEBUG"
+   ],
+   "include_dirs": 0
+  },
+  {
+   "name": "cryptopp/gcm",
+   "recipe": "lib-cryptopp",
+   "unit": "gb:CryptoPP/gcm",
+   "source": "$(ROOT)/third_party/src/cryptopp562/gcm.cpp",
+   "flags": 0,
+   "defines": [
+    "NDEBUG"
+   ],
+   "include_dirs": 0
+  },
+  {
+   "name": "cryptopp/gf256",
+   "recipe": "lib-cryptopp",
+   "unit": "gb:CryptoPP/gf256",
+   "source": "$(ROOT)/third_party/src/cryptopp562/gf256.cpp",
+   "flags": 0,
+   "defines": [
+    "NDEBUG"
+   ],
+   "include_dirs": 0
+  },
+  {
+   "name": "cryptopp/gf2_32",
+   "recipe": "lib-cryptopp",
+   "unit": "gb:CryptoPP/gf2_32",
+   "source": "$(ROOT)/third_party/src/cryptopp562/gf2_32.cpp",
+   "flags": 0,
+   "defines": [
+    "NDEBUG"
+   ],
+   "include_dirs": 0
+  },
+  {
+   "name": "cryptopp/gf2n",
+   "recipe": "lib-cryptopp",
+   "unit": "gb:CryptoPP/gf2n",
+   "source": "$(ROOT)/third_party/src/cryptopp562/gf2n.cpp",
+   "flags": 0,
+   "defines": [
+    "NDEBUG"
+   ],
+   "include_dirs": 0
+  },
+  {
+   "name": "cryptopp/gfpcrypt",
+   "recipe": "lib-cryptopp",
+   "unit": "gb:CryptoPP/gfpcrypt",
+   "source": "$(ROOT)/third_party/src/cryptopp562/gfpcrypt.cpp",
+   "flags": 0,
+   "defines": [
+    "NDEBUG"
+   ],
+   "include_dirs": 0
+  },
+  {
+   "name": "cryptopp/gost",
+   "recipe": "lib-cryptopp",
+   "unit": "gb:CryptoPP/gost",
+   "source": "$(ROOT)/third_party/src/cryptopp562/gost.cpp",
+   "flags": 0,
+   "defines": [
+    "NDEBUG"
+   ],
+   "include_dirs": 0
+  },
+  {
+   "name": "cryptopp/gzip",
+   "recipe": "lib-cryptopp",
+   "unit": "gb:CryptoPP/gzip",
+   "source": "$(ROOT)/third_party/src/cryptopp562/gzip.cpp",
+   "flags": 0,
+   "defines": [
+    "NDEBUG"
+   ],
+   "include_dirs": 0
+  },
+  {
+   "name": "cryptopp/hex",
+   "recipe": "lib-cryptopp",
+   "unit": "gb:CryptoPP/hex",
+   "source": "$(ROOT)/third_party/src/cryptopp562/hex.cpp",
+   "flags": 0,
+   "defines": [
+    "NDEBUG"
+   ],
+   "include_dirs": 0
+  },
+  {
+   "name": "cryptopp/hmac",
+   "recipe": "lib-cryptopp",
+   "unit": "gb:CryptoPP/hmac",
+   "source": "$(ROOT)/third_party/src/cryptopp562/hmac.cpp",
+   "flags": 0,
+   "defines": [
+    "NDEBUG"
+   ],
+   "include_dirs": 0
+  },
+  {
+   "name": "cryptopp/hrtimer",
+   "recipe": "lib-cryptopp",
+   "unit": "gb:CryptoPP/hrtimer",
+   "source": "$(ROOT)/third_party/src/cryptopp562/hrtimer.cpp",
+   "flags": 0,
+   "defines": [
+    "NDEBUG"
+   ],
+   "include_dirs": 0
+  },
+  {
+   "name": "cryptopp/ida",
+   "recipe": "lib-cryptopp",
+   "unit": "gb:CryptoPP/ida",
+   "source": "$(ROOT)/third_party/src/cryptopp562/ida.cpp",
+   "flags": 0,
+   "defines": [
+    "NDEBUG"
+   ],
+   "include_dirs": 0
+  },
+  {
+   "name": "cryptopp/integer",
+   "recipe": "lib-cryptopp",
+   "unit": "gb:CryptoPP/integer",
+   "source": "$(ROOT)/third_party/src/cryptopp562/integer.cpp",
+   "flags": 0,
+   "defines": [
+    "NDEBUG"
+   ],
+   "include_dirs": 0
+  },
+  {
+   "name": "cryptopp/iterhash",
+   "recipe": "lib-cryptopp",
+   "unit": "gb:CryptoPP/iterhash",
+   "source": "$(ROOT)/third_party/src/cryptopp562/iterhash.cpp",
+   "flags": 0,
+   "defines": [
+    "NDEBUG"
+   ],
+   "include_dirs": 0
+  },
+  {
+   "name": "cryptopp/luc",
+   "recipe": "lib-cryptopp",
+   "unit": "gb:CryptoPP/luc",
+   "source": "$(ROOT)/third_party/src/cryptopp562/luc.cpp",
+   "flags": 0,
+   "defines": [
+    "NDEBUG"
+   ],
+   "include_dirs": 0
+  },
+  {
+   "name": "cryptopp/mars",
+   "recipe": "lib-cryptopp",
+   "unit": "gb:CryptoPP/mars",
+   "source": "$(ROOT)/third_party/src/cryptopp562/mars.cpp",
+   "flags": 0,
+   "defines": [
+    "NDEBUG"
+   ],
+   "include_dirs": 0
+  },
+  {
+   "name": "cryptopp/marss",
+   "recipe": "lib-cryptopp",
+   "unit": "gb:CryptoPP/marss",
+   "source": "$(ROOT)/third_party/src/cryptopp562/marss.cpp",
+   "flags": 0,
+   "defines": [
+    "NDEBUG"
+   ],
+   "include_dirs": 0
+  },
+  {
+   "name": "cryptopp/md2",
+   "recipe": "lib-cryptopp",
+   "unit": "gb:CryptoPP/md2",
+   "source": "$(ROOT)/third_party/src/cryptopp562/md2.cpp",
+   "flags": 0,
+   "defines": [
+    "NDEBUG"
+   ],
+   "include_dirs": 0
+  },
+  {
+   "name": "cryptopp/md5",
+   "recipe": "lib-cryptopp",
+   "unit": "gb:CryptoPP/md5",
+   "source": "$(ROOT)/third_party/src/cryptopp562/md5.cpp",
+   "flags": 0,
+   "defines": [
+    "NDEBUG"
+   ],
+   "include_dirs": 0
+  },
+  {
+   "name": "cryptopp/misc",
+   "recipe": "lib-cryptopp",
+   "unit": "gb:CryptoPP/misc",
+   "source": "$(ROOT)/third_party/src/cryptopp562/misc.cpp",
+   "flags": 0,
+   "defines": [
+    "NDEBUG"
+   ],
+   "include_dirs": 0
+  },
+  {
+   "name": "cryptopp/modes",
+   "recipe": "lib-cryptopp",
+   "unit": "gb:CryptoPP/modes",
+   "source": "$(ROOT)/third_party/src/cryptopp562/modes.cpp",
+   "flags": 0,
+   "defines": [
+    "NDEBUG"
+   ],
+   "include_dirs": 0
+  },
+  {
+   "name": "cryptopp/mqueue",
+   "recipe": "lib-cryptopp",
+   "unit": "gb:CryptoPP/mqueue",
+   "source": "$(ROOT)/third_party/src/cryptopp562/mqueue.cpp",
+   "flags": 0,
+   "defines": [
+    "NDEBUG"
+   ],
+   "include_dirs": 0
+  },
+  {
+   "name": "cryptopp/mqv",
+   "recipe": "lib-cryptopp",
+   "unit": "gb:CryptoPP/mqv",
+   "source": "$(ROOT)/third_party/src/cryptopp562/mqv.cpp",
+   "flags": 0,
+   "defines": [
+    "NDEBUG"
+   ],
+   "include_dirs": 0
+  },
+  {
+   "name": "cryptopp/nbtheory",
+   "recipe": "lib-cryptopp",
+   "unit": "gb:CryptoPP/nbtheory",
+   "source": "$(ROOT)/third_party/src/cryptopp562/nbtheory.cpp",
+   "flags": 0,
+   "defines": [
+    "NDEBUG"
+   ],
+   "include_dirs": 0
+  },
+  {
+   "name": "cryptopp/network",
+   "recipe": "lib-cryptopp",
+   "unit": "gb:CryptoPP/network",
+   "source": "$(ROOT)/third_party/src/cryptopp562/network.cpp",
+   "flags": 0,
+   "defines": [
+    "NDEBUG"
+   ],
+   "include_dirs": 0
+  },
+  {
+   "name": "cryptopp/oaep",
+   "recipe": "lib-cryptopp",
+   "unit": "gb:CryptoPP/oaep",
+   "source": "$(ROOT)/third_party/src/cryptopp562/oaep.cpp",
+   "flags": 0,
+   "defines": [
+    "NDEBUG"
+   ],
+   "include_dirs": 0
+  },
+  {
+   "name": "cryptopp/osrng",
+   "recipe": "lib-cryptopp",
+   "unit": "gb:CryptoPP/osrng",
+   "source": "$(ROOT)/third_party/src/cryptopp562/osrng.cpp",
+   "flags": 0,
+   "defines": [
+    "NDEBUG"
+   ],
+   "include_dirs": 0
+  },
+  {
+   "name": "cryptopp/panama",
+   "recipe": "lib-cryptopp",
+   "unit": "gb:CryptoPP/panama",
+   "source": "$(ROOT)/third_party/src/cryptopp562/panama.cpp",
+   "flags": 0,
+   "defines": [
+    "NDEBUG"
+   ],
+   "include_dirs": 0
+  },
+  {
+   "name": "cryptopp/pkcspad",
+   "recipe": "lib-cryptopp",
+   "unit": "gb:CryptoPP/pkcspad",
+   "source": "$(ROOT)/third_party/src/cryptopp562/pkcspad.cpp",
+   "flags": 0,
+   "defines": [
+    "NDEBUG"
+   ],
+   "include_dirs": 0
+  },
+  {
+   "name": "cryptopp/pssr",
+   "recipe": "lib-cryptopp",
+   "unit": "gb:CryptoPP/pssr",
+   "source": "$(ROOT)/third_party/src/cryptopp562/pssr.cpp",
+   "flags": 0,
+   "defines": [
+    "NDEBUG"
+   ],
+   "include_dirs": 0
+  },
+  {
+   "name": "cryptopp/pubkey",
+   "recipe": "lib-cryptopp",
+   "unit": "gb:CryptoPP/pubkey",
+   "source": "$(ROOT)/third_party/src/cryptopp562/pubkey.cpp",
+   "flags": 0,
+   "defines": [
+    "NDEBUG"
+   ],
+   "include_dirs": 0
+  },
+  {
+   "name": "cryptopp/queue",
+   "recipe": "lib-cryptopp",
+   "unit": "gb:CryptoPP/queue",
+   "source": "$(ROOT)/third_party/src/cryptopp562/queue.cpp",
+   "flags": 0,
+   "defines": [
+    "NDEBUG"
+   ],
+   "include_dirs": 0
+  },
+  {
+   "name": "cryptopp/rabin",
+   "recipe": "lib-cryptopp",
+   "unit": "gb:CryptoPP/rabin",
+   "source": "$(ROOT)/third_party/src/cryptopp562/rabin.cpp",
+   "flags": 0,
+   "defines": [
+    "NDEBUG"
+   ],
+   "include_dirs": 0
+  },
+  {
+   "name": "cryptopp/randpool",
+   "recipe": "lib-cryptopp",
+   "unit": "gb:CryptoPP/randpool",
+   "source": "$(ROOT)/third_party/src/cryptopp562/randpool.cpp",
+   "flags": 0,
+   "defines": [
+    "NDEBUG"
+   ],
+   "include_dirs": 0
+  },
+  {
+   "name": "cryptopp/rc2",
+   "recipe": "lib-cryptopp",
+   "unit": "gb:CryptoPP/rc2",
+   "source": "$(ROOT)/third_party/src/cryptopp562/rc2.cpp",
+   "flags": 0,
+   "defines": [
+    "NDEBUG"
+   ],
+   "include_dirs": 0
+  },
+  {
+   "name": "cryptopp/rc5",
+   "recipe": "lib-cryptopp",
+   "unit": "gb:CryptoPP/rc5",
+   "source": "$(ROOT)/third_party/src/cryptopp562/rc5.cpp",
+   "flags": 0,
+   "defines": [
+    "NDEBUG"
+   ],
+   "include_dirs": 0
+  },
+  {
+   "name": "cryptopp/rc6",
+   "recipe": "lib-cryptopp",
+   "unit": "gb:CryptoPP/rc6",
+   "source": "$(ROOT)/third_party/src/cryptopp562/rc6.cpp",
+   "flags": 0,
+   "defines": [
+    "NDEBUG"
+   ],
+   "include_dirs": 0
+  },
+  {
+   "name": "cryptopp/rdtables",
+   "recipe": "lib-cryptopp",
+   "unit": "gb:CryptoPP/rdtables",
+   "source": "$(ROOT)/third_party/src/cryptopp562/rdtables.cpp",
+   "flags": 0,
+   "defines": [
+    "NDEBUG"
+   ],
+   "include_dirs": 0
+  },
+  {
+   "name": "cryptopp/rijndael",
+   "recipe": "lib-cryptopp",
+   "unit": "gb:CryptoPP/rijndael",
+   "source": "$(ROOT)/third_party/src/cryptopp562/rijndael.cpp",
+   "flags": 0,
+   "defines": [
+    "NDEBUG"
+   ],
+   "include_dirs": 0
+  },
+  {
+   "name": "cryptopp/ripemd",
+   "recipe": "lib-cryptopp",
+   "unit": "gb:CryptoPP/ripemd",
+   "source": "$(ROOT)/third_party/src/cryptopp562/ripemd.cpp",
+   "flags": 0,
+   "defines": [
+    "NDEBUG"
+   ],
+   "include_dirs": 0
+  },
+  {
+   "name": "cryptopp/rng",
+   "recipe": "lib-cryptopp",
+   "unit": "gb:CryptoPP/rng",
+   "source": "$(ROOT)/third_party/src/cryptopp562/rng.cpp",
+   "flags": 0,
+   "defines": [
+    "NDEBUG"
+   ],
+   "include_dirs": 0
+  },
+  {
+   "name": "cryptopp/rsa",
+   "recipe": "lib-cryptopp",
+   "unit": "gb:CryptoPP/rsa",
+   "source": "$(ROOT)/third_party/src/cryptopp562/rsa.cpp",
+   "flags": 0,
+   "defines": [
+    "NDEBUG"
+   ],
+   "include_dirs": 0
+  },
+  {
+   "name": "cryptopp/rw",
+   "recipe": "lib-cryptopp",
+   "unit": "gb:CryptoPP/rw",
+   "source": "$(ROOT)/third_party/src/cryptopp562/rw.cpp",
+   "flags": 0,
+   "defines": [
+    "NDEBUG"
+   ],
+   "include_dirs": 0
+  },
+  {
+   "name": "cryptopp/safer",
+   "recipe": "lib-cryptopp",
+   "unit": "gb:CryptoPP/safer",
+   "source": "$(ROOT)/third_party/src/cryptopp562/safer.cpp",
+   "flags": 0,
+   "defines": [
+    "NDEBUG"
+   ],
+   "include_dirs": 0
+  },
+  {
+   "name": "cryptopp/salsa",
+   "recipe": "lib-cryptopp",
+   "unit": "gb:CryptoPP/salsa",
+   "source": "$(ROOT)/third_party/src/cryptopp562/salsa.cpp",
+   "flags": 0,
+   "defines": [
+    "NDEBUG"
+   ],
+   "include_dirs": 0
+  },
+  {
+   "name": "cryptopp/seal",
+   "recipe": "lib-cryptopp",
+   "unit": "gb:CryptoPP/seal",
+   "source": "$(ROOT)/third_party/src/cryptopp562/seal.cpp",
+   "flags": 0,
+   "defines": [
+    "NDEBUG"
+   ],
+   "include_dirs": 0
+  },
+  {
+   "name": "cryptopp/serpent",
+   "recipe": "lib-cryptopp",
+   "unit": "gb:CryptoPP/serpent",
+   "source": "$(ROOT)/third_party/src/cryptopp562/serpent.cpp",
+   "flags": 0,
+   "defines": [
+    "NDEBUG"
+   ],
+   "include_dirs": 0
+  },
+  {
+   "name": "cryptopp/shacal2",
+   "recipe": "lib-cryptopp",
+   "unit": "gb:CryptoPP/shacal2",
+   "source": "$(ROOT)/third_party/src/cryptopp562/shacal2.cpp",
+   "flags": 0,
+   "defines": [
+    "NDEBUG"
+   ],
+   "include_dirs": 0
+  },
+  {
+   "name": "cryptopp/sha",
+   "recipe": "lib-cryptopp",
+   "unit": "gb:CryptoPP/sha",
+   "source": "$(ROOT)/third_party/src/cryptopp562/sha.cpp",
+   "flags": 0,
+   "defines": [
+    "NDEBUG"
+   ],
+   "include_dirs": 0
+  },
+  {
+   "name": "cryptopp/shark",
+   "recipe": "lib-cryptopp",
+   "unit": "gb:CryptoPP/shark",
+   "source": "$(ROOT)/third_party/src/cryptopp562/shark.cpp",
+   "flags": 0,
+   "defines": [
+    "NDEBUG"
+   ],
+   "include_dirs": 0
+  },
+  {
+   "name": "cryptopp/sharkbox",
+   "recipe": "lib-cryptopp",
+   "unit": "gb:CryptoPP/sharkbox",
+   "source": "$(ROOT)/third_party/src/cryptopp562/sharkbox.cpp",
+   "flags": 0,
+   "defines": [
+    "NDEBUG"
+   ],
+   "include_dirs": 0
+  },
+  {
+   "name": "cryptopp/skipjack",
+   "recipe": "lib-cryptopp",
+   "unit": "gb:CryptoPP/skipjack",
+   "source": "$(ROOT)/third_party/src/cryptopp562/skipjack.cpp",
+   "flags": 0,
+   "defines": [
+    "NDEBUG"
+   ],
+   "include_dirs": 0
+  },
+  {
+   "name": "cryptopp/socketft",
+   "recipe": "lib-cryptopp",
+   "unit": "gb:CryptoPP/socketft",
+   "source": "$(ROOT)/third_party/src/cryptopp562/socketft.cpp",
+   "flags": 0,
+   "defines": [
+    "NDEBUG"
+   ],
+   "include_dirs": 0
+  },
+  {
+   "name": "cryptopp/square",
+   "recipe": "lib-cryptopp",
+   "unit": "gb:CryptoPP/square",
+   "source": "$(ROOT)/third_party/src/cryptopp562/square.cpp",
+   "flags": 0,
+   "defines": [
+    "NDEBUG"
+   ],
+   "include_dirs": 0
+  },
+  {
+   "name": "cryptopp/squaretb",
+   "recipe": "lib-cryptopp",
+   "unit": "gb:CryptoPP/squaretb",
+   "source": "$(ROOT)/third_party/src/cryptopp562/squaretb.cpp",
+   "flags": 0,
+   "defines": [
+    "NDEBUG"
+   ],
+   "include_dirs": 0
+  },
+  {
+   "name": "cryptopp/tea",
+   "recipe": "lib-cryptopp",
+   "unit": "gb:CryptoPP/tea",
+   "source": "$(ROOT)/third_party/src/cryptopp562/tea.cpp",
+   "flags": 0,
+   "defines": [
+    "NDEBUG"
+   ],
+   "include_dirs": 0
+  },
+  {
+   "name": "cryptopp/tftables",
+   "recipe": "lib-cryptopp",
+   "unit": "gb:CryptoPP/tftables",
+   "source": "$(ROOT)/third_party/src/cryptopp562/tftables.cpp",
+   "flags": 0,
+   "defines": [
+    "NDEBUG"
+   ],
+   "include_dirs": 0
+  },
+  {
+   "name": "cryptopp/tiger",
+   "recipe": "lib-cryptopp",
+   "unit": "gb:CryptoPP/tiger",
+   "source": "$(ROOT)/third_party/src/cryptopp562/tiger.cpp",
+   "flags": 0,
+   "defines": [
+    "NDEBUG"
+   ],
+   "include_dirs": 0
+  },
+  {
+   "name": "cryptopp/tigertab",
+   "recipe": "lib-cryptopp",
+   "unit": "gb:CryptoPP/tigertab",
+   "source": "$(ROOT)/third_party/src/cryptopp562/tigertab.cpp",
+   "flags": 0,
+   "defines": [
+    "NDEBUG"
+   ],
+   "include_dirs": 0
+  },
+  {
+   "name": "cryptopp/trdlocal",
+   "recipe": "lib-cryptopp",
+   "unit": "gb:CryptoPP/trdlocal",
+   "source": "$(ROOT)/third_party/src/cryptopp562/trdlocal.cpp",
+   "flags": 0,
+   "defines": [
+    "NDEBUG"
+   ],
+   "include_dirs": 0
+  },
+  {
+   "name": "cryptopp/ttmac",
+   "recipe": "lib-cryptopp",
+   "unit": "gb:CryptoPP/ttmac",
+   "source": "$(ROOT)/third_party/src/cryptopp562/ttmac.cpp",
+   "flags": 0,
+   "defines": [
+    "NDEBUG"
+   ],
+   "include_dirs": 0
+  },
+  {
+   "name": "cryptopp/twofish",
+   "recipe": "lib-cryptopp",
+   "unit": "gb:CryptoPP/twofish",
+   "source": "$(ROOT)/third_party/src/cryptopp562/twofish.cpp",
+   "flags": 0,
+   "defines": [
+    "NDEBUG"
+   ],
+   "include_dirs": 0
+  },
+  {
+   "name": "cryptopp/vmac",
+   "recipe": "lib-cryptopp",
+   "unit": "gb:CryptoPP/vmac",
+   "source": "$(ROOT)/third_party/src/cryptopp562/vmac.cpp",
+   "flags": 0,
+   "defines": [
+    "NDEBUG"
+   ],
+   "include_dirs": 0
+  },
+  {
+   "name": "cryptopp/wait",
+   "recipe": "lib-cryptopp",
+   "unit": "gb:CryptoPP/wait",
+   "source": "$(ROOT)/third_party/src/cryptopp562/wait.cpp",
+   "flags": 0,
+   "defines": [
+    "NDEBUG"
+   ],
+   "include_dirs": 0
+  },
+  {
+   "name": "cryptopp/wake",
+   "recipe": "lib-cryptopp",
+   "unit": "gb:CryptoPP/wake",
+   "source": "$(ROOT)/third_party/src/cryptopp562/wake.cpp",
+   "flags": 0,
+   "defines": [
+    "NDEBUG"
+   ],
+   "include_dirs": 0
+  },
+  {
+   "name": "cryptopp/whrlpool",
+   "recipe": "lib-cryptopp",
+   "unit": "gb:CryptoPP/whrlpool",
+   "source": "$(ROOT)/third_party/src/cryptopp562/whrlpool.cpp",
+   "flags": 0,
+   "defines": [
+    "NDEBUG"
+   ],
+   "include_dirs": 0
+  },
+  {
+   "name": "cryptopp/winpipes",
+   "recipe": "lib-cryptopp",
+   "unit": "gb:CryptoPP/winpipes",
+   "source": "$(ROOT)/third_party/src/cryptopp562/winpipes.cpp",
+   "flags": 0,
+   "defines": [
+    "NDEBUG"
+   ],
+   "include_dirs": 0
+  },
+  {
+   "name": "cryptopp/xtr",
+   "recipe": "lib-cryptopp",
+   "unit": "gb:CryptoPP/xtr",
+   "source": "$(ROOT)/third_party/src/cryptopp562/xtr.cpp",
+   "flags": 0,
+   "defines": [
+    "NDEBUG"
+   ],
+   "include_dirs": 0
+  },
+  {
+   "name": "cryptopp/xtrcrypt",
+   "recipe": "lib-cryptopp",
+   "unit": "gb:CryptoPP/xtrcrypt",
+   "source": "$(ROOT)/third_party/src/cryptopp562/xtrcrypt.cpp",
+   "flags": 0,
+   "defines": [
+    "NDEBUG"
+   ],
+   "include_dirs": 0
+  },
+  {
+   "name": "cryptopp/zdeflate",
+   "recipe": "lib-cryptopp",
+   "unit": "gb:CryptoPP/zdeflate",
+   "source": "$(ROOT)/third_party/src/cryptopp562/zdeflate.cpp",
+   "flags": 0,
+   "defines": [
+    "NDEBUG"
+   ],
+   "include_dirs": 0
+  },
+  {
+   "name": "cryptopp/zinflate",
+   "recipe": "lib-cryptopp",
+   "unit": "gb:CryptoPP/zinflate",
+   "source": "$(ROOT)/third_party/src/cryptopp562/zinflate.cpp",
+   "flags": 0,
+   "defines": [
+    "NDEBUG"
+   ],
+   "include_dirs": 0
+  },
+  {
+   "name": "cryptopp/zlib",
+   "recipe": "lib-cryptopp",
+   "unit": "gb:CryptoPP/zlib",
+   "source": "$(ROOT)/third_party/src/cryptopp562/zlib.cpp",
+   "flags": 0,
+   "defines": [
+    "NDEBUG"
+   ],
+   "include_dirs": 0
+  }
+ ]
+}

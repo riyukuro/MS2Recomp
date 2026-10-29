@@ -23,9 +23,9 @@
 class Unk_SibButton : public AScript
 {
 public:
-    void FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)> cb, int n);   // click handler
+    void FUN_1422ce240(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, int n);   // click handler
     void FUN_1422cdfb0(const CStringW& strLabel);
-    void FUN_1422c1fe0(bool bEnable);
+    void FUN_1422c1fe0(int bEnable);
 };
 
 // The list of selectable items.
@@ -42,7 +42,7 @@ public:
     virtual void vfunc_25(const Scaleform::GFx::Value& data);           // +0xc8: set the data provider
     void FUN_1422cfa30(ATL::CAtlArray<unsigned>& out);                  // the selected indices
     unsigned FUN_1422cf920();                                           // the selection count
-    void FUN_1422de0e0(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)> cb, int n);   // change handler
+    void FUN_1422de0e0(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, int n);   // change handler
     Scaleform::GFx::Value FUN_140e262c0(const char* szMethod, const wchar_t* sz);
 };
 
@@ -50,18 +50,19 @@ public:
 class Unk_SibSlot : public AScript
 {
 public:
-    virtual void vfunc_1(); virtual void vfunc_2(); virtual void vfunc_3(bool bVisible);
+    virtual void vfunc_1(); virtual void vfunc_2(); virtual void vfunc_3(int bVisible);
 };
 class Unk_SibText : public AScript
 {
 public:
-    virtual void vfunc_1(); virtual void vfunc_2(); virtual void vfunc_3(bool bVisible);
+    virtual void vfunc_1(); virtual void vfunc_2(); virtual void vfunc_3(int bVisible);
     void FUN_1422c4cd0(const CStringW& strText);
 };
 
 
 // The polymorphic reward entries of a drop table and their vector (ctor 0x1405a1910, dtor 0x1405a1a40; shared with
-// UIItemPetBoxDialog's unit-local copy of this declaration).
+// UIItemPetBoxDialog's unit-local copy of this declaration). The vector is a std::vector<ItemDropResult>
+// (commonfiles/itemdroptable.h); the unit clears it as one (0x140f9b7d0).
 class Unk_PetBoxDrop
 {
 public:
@@ -77,7 +78,6 @@ public:
     size_t FUN_140314170();
     Unk_PetBoxDrop* FUN_140c461b0(size_t);
     void FUN_140313cd0(Unk_PetBoxDrop*);
-    void FUN_140f9b7d0();                   // clear (this unit's copy of the glue)
     void* m_begin; void* m_end; void* m_cap;
 };
 MS2_CHECK_SIZE(Unk_PetBoxDropVec, 24);

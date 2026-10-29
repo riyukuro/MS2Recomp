@@ -4,7 +4,7 @@
     python3 tools/gbtree.py [--tree DIR]          # (re)assemble the tree, print a summary
     python3 tools/gbtree.py --check               # also check that every unit's source resolves
 
-engine/units-gb.json lists every engine TU twice-over at most, one entry per recipe:
+data/engine/units-gb.json lists every engine TU twice-over at most, one entry per recipe:
   recipe "v2525": the per-TU flags/defines/forced includes/include order of the v2525 snapshot (work/ext/v2525,
                   units.json; -Zi -> -Z7). Its include dirs and sources are relative to an assembled tree with the
                   snapshot's layout (gamebryo/include/<Module>/..., gamebryo/overlay/<group>/...);
@@ -19,10 +19,10 @@ The tree (build/gb-tree/, symlinks only, rebuilt when its inputs change) reprodu
   - unchanged SDK files (engine/gamebryo-v2525/SDK_FILES.tsv) -> the pristine SDK in third_party/gamebryo (fallback
     engine/gamebryo); $(D3DX) files -> third_party/dxsdk;
   - stock/: the generated include dirs of engine/gamebryo/CMakeLists.txt (DXSDK overlay, XInput, PCH forwarders).
-Library units (2026-10-20, lb3): engine/units-lib-*.json (same format, own flags/include_dirs tables; one file per
+Library units (2026-10-20, lb3): data/engine/units-lib-*.json (same format, own flags/include_dirs tables; one file per
 library lane so lanes do not edit one line of JSON) list statically linked third-party TUs compiled in place from
 third_party/src (CEF libcef_dll wrapper, ...); unit names gb:<lib>/<TU>, credited like engine TUs. Give each library an
-include window (engine/unit-windows.tsv, its span in the exe): its look-alike COMDATs (std::_Tree helpers, tiny
+include window (data/engine/unit-windows.tsv, its span in the exe): its look-alike COMDATs (std::_Tree helpers, tiny
 leaves) otherwise pair with engine functions.
 Path variables in units-gb.json: $(TREE) the tree, $(ROOT) the repo, $(SDK) an SDK file (stock recipe: engine/gamebryo
 first; v2525 recipe: the pristine SDK first), $(PHYSX) the PhysX 2.8.4 SDKs dir, $(D3DX) the DirectX SDK include dir.
@@ -38,13 +38,14 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import ms2paths  # noqa: E402
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-ENGINE = os.path.join(ROOT, "engine", "gamebryo")
-V2525 = os.path.join(ROOT, "engine", "gamebryo-v2525")
-UNITS_JSON = os.path.join(ROOT, "engine", "units-gb.json")
-PRISTINE = os.path.join(ROOT, "third_party", "gamebryo", "APPDIR", "Source")
-VC90 = os.path.join(ROOT, "third_party", "gamebryo", "APPDIR", "Build", "GameFramework", "Win32", "VC90")
-D3DX = os.path.join(ROOT, "third_party", "dxsdk", "DXSDK", "Include")
-PHYSX = os.path.join(ROOT, "third_party", "physx284", "PFiles", "NVIDIA Corporation", "NVIDIA PhysX SDK", "v2.8.4_win",
+# the patched engine and the v2525 snapshot live under MS2_ENGINE_DIR, the SDKs under MS2_THIRD_PARTY (defaults: the checkout)
+ENGINE = os.path.join(ms2paths.ENGINE_DIR, "gamebryo")
+V2525 = os.path.join(ms2paths.ENGINE_DIR, "gamebryo-v2525")
+UNITS_JSON = os.path.join(ROOT, "data", "engine", "units-gb.json")
+PRISTINE = os.path.join(ms2paths.THIRD_PARTY, "gamebryo", "APPDIR", "Source")
+VC90 = os.path.join(ms2paths.THIRD_PARTY, "gamebryo", "APPDIR", "Build", "GameFramework", "Win32", "VC90")
+D3DX = os.path.join(ms2paths.THIRD_PARTY, "dxsdk", "DXSDK", "Include")
+PHYSX = os.path.join(ms2paths.THIRD_PARTY, "physx284", "PFiles", "NVIDIA Corporation", "NVIDIA PhysX SDK", "v2.8.4_win",
                      "SDKs")
 TREE = os.path.join(ROOT, "build", "gb-tree")
 WINSDK = ms2paths.winsdk_include()
@@ -78,7 +79,10 @@ def sdk_file(rel, pristine=False):
     """An SDK path relative to Engine/Source (any case) -> engine/gamebryo copy if we have it, else the pristine file
     (pristine=True: the pristine file first, as the v2525 snapshot copied it).
     Paths the snapshot got wrong (EngineLibs/ for ShaderLibs/UtilityLibs, Generated/ SWIG wrappers that ship in the
-    SDK's Build/.../VC90/<lib>/Release/) fall back to the same file name with the most path components in common."""
+    SDK's Build/.../VC90/<lib>/Release/) fall back to the same file name with the most path components in common,
+    then the one whose name matches case-sensitively (SDK_FILES' _unresolved/tinyxml.h is 3rdParty/TinyXML/efdXML/tinyxml.h,
+    not Foundation/efd/TinyXML.h: that tie went by os.walk order, and TinyXML.h then included itself)."""
+    name = os.path.basename(rel.replace("\\", "/"))
     rel = rel.replace("\\", "/").lower()
     tops = (PRISTINE, ENGINE) if pristine else (ENGINE, PRISTINE)
     hit = _index(tops[0]).get(rel) or _index(tops[1]).get(rel)
@@ -93,7 +97,8 @@ def sdk_file(rel, pristine=False):
     if not cands:
         return None
     order = (1, 0, 2) if pristine else (0, 1, 2)
-    return max(cands, key=lambda c: (len(want & set(c[1].split("/")[:-1])), -order[c[0]], "/release/" in c[1]))[2]
+    return max(cands, key=lambda c: (len(want & set(c[1].split("/")[:-1])), os.path.basename(c[2]) == name, -order[c[0]],
+                                     "/release/" in c[1]))[2]
 
 
 def origin(o):
@@ -175,13 +180,14 @@ def lib_of(path):
 
 
 def expand(s, tree=TREE):
+    s = s.replace("$(ROOT)/engine/", ms2paths.ENGINE_DIR + "/").replace("$(ROOT)/third_party/", ms2paths.THIRD_PARTY + "/")
     return (s.replace("$(TREE)", tree).replace("$(ROOT)", ROOT).replace("$(PHYSX)", PHYSX).replace("$(D3DX)", D3DX))
 
 
 def lib_docs():
-    """the library unit docs engine/units-lib-*.json"""
+    """the library unit docs data/engine/units-lib-*.json"""
     import glob
-    return [json.load(open(p)) for p in sorted(glob.glob(os.path.join(ROOT, "engine", "units-lib-*.json")))]
+    return [json.load(open(p)) for p in sorted(glob.glob(os.path.join(ROOT, "data", "engine", "units-lib-*.json")))]
 
 
 def load_units(tree=TREE):

@@ -87,6 +87,7 @@ public:
     CNMCreateChatRoomExFunc(int n10, unsigned __int64 n18, const char* sz20, const char* sz60, int n498, int n49c,
                             int n4a0, const char* sz4a4, const char* sz730, unsigned short n750, int n754);
     virtual ~CNMCreateChatRoomExFunc() = default;
+    char* vfunc_8() override;
 
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
@@ -147,6 +148,7 @@ public:
     CNMCreateChatRoomFunc(int n10, int n14, const char* sz20, const char* sz60, int n460, int n464,
                           int n468, const char* sz46c, const char* sz850, unsigned short n870); // 0x141599f20
     virtual ~CNMCreateChatRoomFunc() = default;
+    char* vfunc_8() override;
 
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override; // 0x14159a1c0
     unsigned int EncodeFramed(CNMStream* pStream) override;                 // 0x14159a100
@@ -205,6 +207,7 @@ public:
     CNMCustomNotifyFunc(int type, const char* message, int flags);
     explicit CNMCustomNotifyFunc(const CNMCustomNotifyData& data);
     virtual ~CNMCustomNotifyFunc() = default;
+    char* vfunc_8() override;
 
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
@@ -241,6 +244,7 @@ public:
     CNMGetNoteBox2Func(); // 0x14158ba00
     CNMGetNoteBox2Func(int type, int index, int status); // 0x14158ba80
     virtual ~CNMGetNoteBox2Func() = default;
+    char* vfunc_8() override;
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
     unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
@@ -262,6 +266,7 @@ public:
     CNMGetNoteBoxFunc(int type, int index); // 0x14158a260
     CNMGetNoteBoxFunc(int type, int index, int status); // 0x14158a2f0
     virtual ~CNMGetNoteBoxFunc() = default;
+    char* vfunc_8() override;
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
     unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
@@ -282,6 +287,7 @@ public:
     CNMGetServerInfoFunc(); // 0x1415859f0
     CNMGetServerInfoFunc(int server, int channel); // 0x141585a50
     virtual ~CNMGetServerInfoFunc() = default;
+    char* vfunc_8() override;
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
     unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
@@ -300,6 +306,7 @@ class CNMGetUserDataListFunc : public CNMFunc
 public:
     CNMGetUserDataListFunc(); // 0x141580d00
     virtual ~CNMGetUserDataListFunc() = default;
+    char* vfunc_8() override;
 
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
@@ -376,6 +383,7 @@ public:
     CNMJoinToChatRoomExFunc(unsigned __int64 n48, unsigned int n50, const char* sz4a4, const char* sz730,
                             unsigned short n750, unsigned int n4a0, unsigned int n754);
     virtual ~CNMJoinToChatRoomExFunc() = default;
+    char* vfunc_8() override;
 
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
@@ -403,6 +411,7 @@ public:
     CNMJoinToChatRoomFunc(unsigned int n44, unsigned int n48, const char* sz49c, const char* sz850,
                           unsigned short n870);
     virtual ~CNMJoinToChatRoomFunc() = default;
+    char* vfunc_8() override;
 
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
@@ -431,6 +440,7 @@ public:
     CNMLoginAuthFunc(const char* user, const char* password, unsigned int value,
                      const char* token, unsigned int flags);
     virtual ~CNMLoginAuthFunc() = default;
+    char* vfunc_8() override;
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
     unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
@@ -458,6 +468,7 @@ public:
     CNMLoginNexonPassportFunc();
     CNMLoginNexonPassportFunc(const char* passport, unsigned long long token, unsigned int result);
     virtual ~CNMLoginNexonPassportFunc() = default;
+    char* vfunc_8() override;
 
     char m_30[0x1000];
     int m_1030;
@@ -484,6 +495,7 @@ public:
     CNMLoginPassportFunc(const char* account, const char* passport, const unsigned char* payload,
                          int payloadSize, unsigned int flags, unsigned int result);
     virtual ~CNMLoginPassportFunc() = default;
+    char* vfunc_8() override;
 
     char m_30[0x40];
     char m_70[0x40];
@@ -545,6 +557,7 @@ public:
     CNMRequestFileUploadSessionExFunc(const unsigned char* pTarget, unsigned int nTarget,
                                       std::vector<CNMFilePath> files); // 0x141598f10
     virtual ~CNMRequestFileUploadSessionExFunc() = default;
+    char* vfunc_8() override;
 
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override; // 0x1415990a0
     unsigned int EncodeFramed(CNMStream* pStream) override;                 // 0x141598fe0
@@ -568,6 +581,7 @@ public:
     CNMRequestFileUploadSessionFunc(const unsigned char* pTarget, unsigned int nTarget,
                                    std::vector<CNMFilePath> files); // 0x141597860
     virtual ~CNMRequestFileUploadSessionFunc() = default;
+    char* vfunc_8() override;
 
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override; // 0x1415979f0
     unsigned int EncodeFramed(CNMStream* pStream) override;                 // 0x141597930
@@ -590,6 +604,7 @@ public:
     CNMRequestMultiChatSessionExFunc(); // 0x141598820
     CNMRequestMultiChatSessionExFunc(NMKey64 key, const std::vector<NMFriendKey>& targets, int mode); // 0x1415988b0
     virtual ~CNMRequestMultiChatSessionExFunc() = default;
+    char* vfunc_8() override;
 
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override; // 0x141598a20
     unsigned int EncodeFramed(CNMStream* pStream) override;                 // 0x141598960
@@ -611,6 +626,7 @@ public:
     CNMRequestMultiChatSessionFunc(); // 0x1415971e0
     CNMRequestMultiChatSessionFunc(NMKey64 key, const std::vector<NMChatSessionTarget>& targets, int mode); // 0x141597270
     virtual ~CNMRequestMultiChatSessionFunc() = default;
+    char* vfunc_8() override;
 
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override; // 0x1415973e0
     unsigned int EncodeFramed(CNMStream* pStream) override;                 // 0x141597320
@@ -635,6 +651,7 @@ public:
     CNMRequestSessionToOtherFunc(unsigned int n30, unsigned int n34, NMKey64 key, const char* name,
                                  unsigned int n84, unsigned int nA0);
     virtual ~CNMRequestSessionToOtherFunc() = default;
+    char* vfunc_8() override;
 
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
@@ -668,6 +685,7 @@ public:
     CNMSendAccuseNoteMsgFunc(); // 0x14158aea0
     CNMSendAccuseNoteMsgFunc(int type, const void* details, int status); // 0x14158af10
     virtual ~CNMSendAccuseNoteMsgFunc() = default;
+    char* vfunc_8() override;
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
     unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
@@ -706,6 +724,7 @@ public:
     CNMSendNoteExMsgFunc();
     CNMSendNoteExMsgFunc(int nType, const char* szText);
     virtual ~CNMSendNoteExMsgFunc() = default;
+    char* vfunc_8() override;
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
     unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
@@ -724,6 +743,7 @@ public:
     CNMSendNoteInfoFunc(); // 0x14158b610
     CNMSendNoteInfoFunc(const CNMNoteInfo& note, int status); // 0x14158b690
     virtual ~CNMSendNoteInfoFunc() = default;
+    char* vfunc_8() override;
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
     unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
@@ -744,6 +764,7 @@ public:
     CNMSendNoteMsgFunc(int type, int index, const void* subject, const void* message, const void* sender, const void* recipient, int status); // 0x14158a880
     CNMSendNoteMsgFunc(int type, int index, unsigned __int64 timestamp, const void* subject, const void* message, const void* sender, const void* recipient, int status); // 0x14158aa30
     virtual ~CNMSendNoteMsgFunc() = default;
+    char* vfunc_8() override;
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
     unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
@@ -763,6 +784,7 @@ public:
     CNMAddCategoryFunc(); // 0x141588e20
     CNMAddCategoryFunc(long long key, long long name, int flags, int status); // 0x141588eb0
     virtual ~CNMAddCategoryFunc() = default;
+    char* vfunc_8() override;
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
     unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
@@ -784,6 +806,7 @@ public:
     CNMAddFriendToCategoryFunc(); // 0x141587fc0
     CNMAddFriendToCategoryFunc(const unsigned char* key, int category, int flag); // 0x141588050
     virtual ~CNMAddFriendToCategoryFunc() = default;
+    char* vfunc_8() override;
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
     unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
@@ -804,6 +827,7 @@ public:
     CNMAppendRejectedUserFunc(); // 0x14158c3c0
     CNMAppendRejectedUserFunc(const CNMRejectedUser* user); // 0x14158c430
     virtual ~CNMAppendRejectedUserFunc() = default;
+    char* vfunc_8() override;
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
     unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
@@ -822,6 +846,7 @@ public:
     CNMAttachToNMCOServerFunc();
     CNMAttachToNMCOServerFunc(int a, int b, int c, int d, int e);
     virtual ~CNMAttachToNMCOServerFunc() = default;
+    char* vfunc_8() override;
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
     unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
@@ -898,6 +923,7 @@ public:
     CNMBlockFriendFunc(); // 0x1415872d0
     CNMBlockFriendFunc(const unsigned char* key, int blockType); // 0x141587360
     virtual ~CNMBlockFriendFunc() = default;
+    char* vfunc_8() override;
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
     unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
@@ -918,6 +944,7 @@ public:
     CNMCHBanUserFunc();
     CNMCHBanUserFunc(int n18, int n30);
     virtual ~CNMCHBanUserFunc() = default;
+    char* vfunc_8() override;
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
     unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
@@ -991,6 +1018,7 @@ public:
     CNMCHChangeChannelInfoFunc();
     CNMCHChangeChannelInfoFunc(int n18, const CNMClientChannelInfo& rChannelInfo);
     virtual ~CNMCHChangeChannelInfoFunc() = default;
+    char* vfunc_8() override;
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
     unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
@@ -1010,6 +1038,7 @@ public:
     CNMCHChangeMyInfoFunc(int n18);
     CNMCHChangeMyInfoFunc(int n18, const CNMChannelMemberInfo& rMember);
     virtual ~CNMCHChangeMyInfoFunc() = default;
+    char* vfunc_8() override;
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
     unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
@@ -1028,6 +1057,7 @@ public:
     CNMCHCloseFunc();
     CNMCHCloseFunc(int n30);
     virtual ~CNMCHCloseFunc() = default;
+    char* vfunc_8() override;
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
     unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
@@ -1044,6 +1074,7 @@ public:
     CNMCHGetChannelInfoFunc();
     CNMCHGetChannelInfoFunc(int n18);
     virtual ~CNMCHGetChannelInfoFunc() = default;
+    char* vfunc_8() override;
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
     unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
@@ -1062,6 +1093,7 @@ public:
     CNMCHGetMemberInfoListFunc();
     CNMCHGetMemberInfoListFunc(int n18);
     virtual ~CNMCHGetMemberInfoListFunc() = default;
+    char* vfunc_8() override;
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
     unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
@@ -1080,6 +1112,7 @@ public:
     CNMCHInviteUserFunc();
     CNMCHInviteUserFunc(int n18, const char* psz30, const char* psz38);
     virtual ~CNMCHInviteUserFunc() = default;
+    char* vfunc_8() override;
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
     unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
@@ -1100,6 +1133,7 @@ public:
     CNMCHSendChannelMessageFunc(int n18);
     CNMCHSendChannelMessageFunc(int n18, const CNMChannelMessage& rMessage);
     virtual ~CNMCHSendChannelMessageFunc() = default;
+    char* vfunc_8() override;
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
     unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
@@ -1118,6 +1152,7 @@ public:
     CNMCRChangeMyInfoFunc();
     CNMCRChangeMyInfoFunc(int nFlags, const char* pszInfo);
     virtual ~CNMCRChangeMyInfoFunc() = default;
+    char* vfunc_8() override;
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
     unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
@@ -1254,6 +1289,7 @@ public:
     CNMCRGetRoomInfoFunc(); // 0x14159cfb0
     explicit CNMCRGetRoomInfoFunc(unsigned uSerialKey); // 0x14159d020
     virtual ~CNMCRGetRoomInfoFunc() = default;
+    char* vfunc_8() override;
 
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
@@ -1299,6 +1335,7 @@ public:
     CNMCSSendChatMessageFunc();
     CNMCSSendChatMessageFunc(unsigned int serial, const CNMChatMessage& message);
     virtual ~CNMCSSendChatMessageFunc() = default;
+    char* vfunc_8() override;
 
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
@@ -1318,6 +1355,7 @@ public:
     CNMChangeCategoryAllowTypeFunc(); // 0x141589e10
     CNMChangeCategoryAllowTypeFunc(int category, int allowType, int value); // 0x141589e80
     virtual ~CNMChangeCategoryAllowTypeFunc() = default;
+    char* vfunc_8() override;
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
     unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
@@ -1339,6 +1377,7 @@ public:
     CNMChangeCategoryNameFunc(); // 0x141589630
     CNMChangeCategoryNameFunc(int category, long long name, int flag); // 0x1415896a0
     virtual ~CNMChangeCategoryNameFunc() = default;
+    char* vfunc_8() override;
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
     unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
@@ -1359,6 +1398,7 @@ public:
     CNMChangeCategoryPropertyFunc(); // 0x141589a40
     CNMChangeCategoryPropertyFunc(int category, int property, int value); // 0x141589ab0
     virtual ~CNMChangeCategoryPropertyFunc() = default;
+    char* vfunc_8() override;
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
     unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
@@ -1398,6 +1438,7 @@ public:
     CNMChangeConfigFunc(); // 0x141581c00
     CNMChangeConfigFunc(int setting1, int setting2, int setting3, int setting4, long long gameInfo); // 0x141581ca0
     virtual ~CNMChangeConfigFunc() = default;
+    char* vfunc_8() override;
 
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
@@ -1423,6 +1464,7 @@ public:
     CNMChangeFriendMemoExFunc(); // 0x141587b10
     CNMChangeFriendMemoExFunc(const unsigned char* key, long long memo); // 0x141587ba0
     virtual ~CNMChangeFriendMemoExFunc() = default;
+    char* vfunc_8() override;
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
     unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
@@ -1446,6 +1488,7 @@ public:
     CNMChangeFriendMemoFunc(); // 0x141587740
     CNMChangeFriendMemoFunc(long long key, long long memo); // 0x1415877b0
     virtual ~CNMChangeFriendMemoFunc() = default;
+    char* vfunc_8() override;
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
     unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
@@ -1465,6 +1508,7 @@ public:
     CNMChangeLocalConfigFunc(); // 0x1415825b0
     CNMChangeLocalConfigFunc(unsigned result, long long config); // 0x141582620
     virtual ~CNMChangeLocalConfigFunc() = default;
+    char* vfunc_8() override;
 
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
@@ -1485,6 +1529,7 @@ public:
     CNMChangeMetaDataFunc(); // 0x141583480
     CNMChangeMetaDataFunc(long long key, long long metadata); // 0x1415834f0
     virtual ~CNMChangeMetaDataFunc() = default;
+    char* vfunc_8() override;
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
     unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
@@ -1504,6 +1549,7 @@ public:
     CNMChangeMyInfoFunc(); // 0x141581070
     CNMChangeMyInfoFunc(int mode, long long name, long long position, int state, unsigned extra); // 0x141581110
     virtual ~CNMChangeMyInfoFunc() = default;
+    char* vfunc_8() override;
 
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
@@ -1528,6 +1574,7 @@ public:
     CNMChangeMyLevelFunc();
     CNMChangeMyLevelFunc(int level, int job);
     virtual ~CNMChangeMyLevelFunc() = default;
+    char* vfunc_8() override;
 
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
@@ -1551,6 +1598,7 @@ public:
     explicit CNMChangeMyPositionFunc(long long position); // 0x1415800f0
     CNMChangeMyPositionFunc(long long key, long long position); // 0x1415801a0
     virtual ~CNMChangeMyPositionFunc() = default;
+    char* vfunc_8() override;
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
     unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
@@ -1570,6 +1618,7 @@ public:
     CNMChangeNicknameFunc(); // 0x141583080
     CNMChangeNicknameFunc(long long key, long long nickname); // 0x1415830f0
     virtual ~CNMChangeNicknameFunc() = default;
+    char* vfunc_8() override;
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
     unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
@@ -1693,6 +1742,7 @@ public:
     CNMCharacterChangeName64Func();
     CNMCharacterChangeName64Func(const char* sz30, long long n70, int n78);
     virtual ~CNMCharacterChangeName64Func() = default;
+    char* vfunc_8() override;
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
     unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
@@ -1714,6 +1764,7 @@ public:
     CNMCharacterChangeNameFunc();
     CNMCharacterChangeNameFunc(NMKey64 key, const char* pszName, int n78);
     virtual ~CNMCharacterChangeNameFunc() = default;
+    char* vfunc_8() override;
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
     unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
@@ -1735,6 +1786,7 @@ public:
     CNMCharacterLogin64Func();
     CNMCharacterLogin64Func(const char* sz30, long long n70, int n78);
     virtual ~CNMCharacterLogin64Func() = default;
+    char* vfunc_8() override;
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
     unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
@@ -1756,6 +1808,7 @@ public:
     CNMCharacterLoginFunc();
     CNMCharacterLoginFunc(const char* sz30, int n74, int n78);
     virtual ~CNMCharacterLoginFunc() = default;
+    char* vfunc_8() override;
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
     unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
@@ -1778,6 +1831,7 @@ public:
     CNMCharacterLogout64Func();
     CNMCharacterLogout64Func(const char* sz30, long long n70, int n78);
     virtual ~CNMCharacterLogout64Func() = default;
+    char* vfunc_8() override;
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
     unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
@@ -1799,6 +1853,7 @@ public:
     CNMCharacterLogoutFunc();
     CNMCharacterLogoutFunc(const char* sz30, int n74, int n78);
     virtual ~CNMCharacterLogoutFunc() = default;
+    char* vfunc_8() override;
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
     unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
@@ -1821,6 +1876,7 @@ public:
     CNMCharacterRemove64Func();
     CNMCharacterRemove64Func(const char* sz30, long long n70, int n78);
     virtual ~CNMCharacterRemove64Func() = default;
+    char* vfunc_8() override;
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
     unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
@@ -1842,6 +1898,7 @@ public:
     CNMCharacterRemoveFunc();
     CNMCharacterRemoveFunc(NMKey64 key, const char* pszName, int n78);
     virtual ~CNMCharacterRemoveFunc() = default;
+    char* vfunc_8() override;
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
     unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
@@ -1863,6 +1920,7 @@ public:
     CNMCharacterSync64Func();
     CNMCharacterSync64Func(const char* sz30, long long n70, int n78, int n7c);
     virtual ~CNMCharacterSync64Func() = default;
+    char* vfunc_8() override;
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
     unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
@@ -1884,6 +1942,7 @@ public:
     CNMCharacterSyncFunc();
     CNMCharacterSyncFunc(const char* sz30, int n74, int n78, int n7c);
     virtual ~CNMCharacterSyncFunc() = default;
+    char* vfunc_8() override;
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
     unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
@@ -1906,6 +1965,7 @@ public:
     CNMCheckNewsFunc(); // 0x141583b20
     CNMCheckNewsFunc(unsigned result, long long newsKey); // 0x141583b90
     virtual ~CNMCheckNewsFunc() = default;
+    char* vfunc_8() override;
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
     unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
@@ -1926,6 +1986,7 @@ public:
     CNMConfirmNewFriendFunc(); // 0x141586f00
     CNMConfirmNewFriendFunc(int result, int flags, int userId); // 0x141586f70
     virtual ~CNMConfirmNewFriendFunc() = default;
+    char* vfunc_8() override;
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
     unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
@@ -1972,6 +2033,7 @@ class CNMCreateChannelFunc : public CNMFunc
 public:
     CNMCreateChannelFunc(); // 0x14159c0c0
     virtual ~CNMCreateChannelFunc() = default;
+    char* vfunc_8() override;
 
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
@@ -2048,6 +2110,7 @@ public:
     CNMDeleteCategoryFunc(); // 0x1415892b0
     CNMDeleteCategoryFunc(int category, int flag); // 0x141589310
     virtual ~CNMDeleteCategoryFunc() = default;
+    char* vfunc_8() override;
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
     unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
@@ -2067,6 +2130,7 @@ public:
     CNMDeleteFriendFromCategoryFunc(); // 0x141588470
     CNMDeleteFriendFromCategoryFunc(const unsigned char* key, int category, int flag); // 0x141588500
     virtual ~CNMDeleteFriendFromCategoryFunc() = default;
+    char* vfunc_8() override;
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
     unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
@@ -2087,6 +2151,7 @@ public:
     CNMDetachFromNMCOServerFunc();
     CNMDetachFromNMCOServerFunc(int id);
     virtual ~CNMDetachFromNMCOServerFunc() = default;
+    char* vfunc_8() override;
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
     unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
@@ -2106,6 +2171,7 @@ public:
     CNMExecuteCommonFunc();
     CNMExecuteCommonFunc(int nCode, const char* argument);
     virtual ~CNMExecuteCommonFunc() = default;
+    char* vfunc_8() override;
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
     unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
@@ -2125,6 +2191,7 @@ public:
     CNMFDSControlFunc();
     CNMFDSControlFunc(unsigned int serial, int controlType, int controlValue);
     virtual ~CNMFDSControlFunc() = default;
+    char* vfunc_8() override;
 
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
@@ -2157,6 +2224,7 @@ public:
     CNMFDSGetDownloadDirFunc();
     explicit CNMFDSGetDownloadDirFunc(unsigned int serial);
     virtual ~CNMFDSGetDownloadDirFunc() = default;
+    char* vfunc_8() override;
 
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
@@ -2176,6 +2244,7 @@ public:
     CNMFDSSetDownloadDirFunc();
     CNMFDSSetDownloadDirFunc(unsigned int serial, const char* directory);
     virtual ~CNMFDSSetDownloadDirFunc() = default;
+    char* vfunc_8() override;
 
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
@@ -2195,6 +2264,7 @@ public:
     CNMFUDSGetFileEventFunc();
     explicit CNMFUDSGetFileEventFunc(unsigned int serial);
     virtual ~CNMFUDSGetFileEventFunc() = default;
+    char* vfunc_8() override;
 
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
@@ -2214,6 +2284,7 @@ public:
     CNMFUSControlFunc();
     CNMFUSControlFunc(unsigned int serial, int controlType, int controlValue);
     virtual ~CNMFUSControlFunc() = default;
+    char* vfunc_8() override;
 
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
@@ -2233,6 +2304,7 @@ public:
     CNMWSSendWBMessageFunc();
     CNMWSSendWBMessageFunc(unsigned int serial, unsigned int messageType, const unsigned char* data, unsigned int size);
     virtual ~CNMWSSendWBMessageFunc() = default;
+    char* vfunc_8() override;
 
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
@@ -2253,6 +2325,7 @@ public:
     CNMWSGetAssocSerialKeyFunc();
     explicit CNMWSGetAssocSerialKeyFunc(unsigned int serial);
     virtual ~CNMWSGetAssocSerialKeyFunc() = default;
+    char* vfunc_8() override;
 
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
@@ -2284,6 +2357,7 @@ public:
     CNMFUSSendFileFunc();
     CNMFUSSendFileFunc(unsigned int serial, const char* path);
     virtual ~CNMFUSSendFileFunc() = default;
+    char* vfunc_8() override;
 
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
@@ -2302,6 +2376,7 @@ class CNMFinalizeFunc : public CNMFunc
 public:
     CNMFinalizeFunc();
     virtual ~CNMFinalizeFunc() = default;
+    char* vfunc_8() override;
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
     unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
@@ -2343,6 +2418,7 @@ public:
     CNMFindUserFunc();
     CNMFindUserFunc(const CNMFindUserRequestInfo& info);
     virtual ~CNMFindUserFunc() = default;
+    char* vfunc_8() override;
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
     unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
@@ -2413,6 +2489,7 @@ public:
     CNMGSGetInviteCandidateListFunc(); // 0x1415a0960
     explicit CNMGSGetInviteCandidateListFunc(unsigned uSerialKey); // 0x1415a09c0
     virtual ~CNMGSGetInviteCandidateListFunc() = default;
+    char* vfunc_8() override;
 
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
@@ -2432,6 +2509,7 @@ public:
     CNMGSGetMemberListFunc(); // 0x1415a04e0
     explicit CNMGSGetMemberListFunc(unsigned uSerialKey); // 0x1415a0540
     virtual ~CNMGSGetMemberListFunc() = default;
+    char* vfunc_8() override;
 
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
@@ -2479,6 +2557,7 @@ public:
     CNMGSGetSessionInfoFunc();
     explicit CNMGSGetSessionInfoFunc(int nFlags);
     virtual ~CNMGSGetSessionInfoFunc() = default;
+    char* vfunc_8() override;
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
     unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
@@ -2514,6 +2593,7 @@ public:
     CNMGSInviteUserExFunc();
     CNMGSInviteUserExFunc(unsigned int n18, const unsigned char* target);
     virtual ~CNMGSInviteUserExFunc() = default;
+    char* vfunc_8() override;
 
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
@@ -2537,6 +2617,7 @@ public:
     CNMGSInviteUserFunc();
     CNMGSInviteUserFunc(unsigned int n18, const unsigned char* target);
     virtual ~CNMGSInviteUserFunc() = default;
+    char* vfunc_8() override;
 
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
@@ -2595,6 +2676,7 @@ public:
     CNMGSRegisterCallbackFunc(); // 0x14159f5e0
     CNMGSRegisterCallbackFunc(int n18, long long callback, int code); // 0x14159f640
     virtual ~CNMGSRegisterCallbackFunc() = default;
+    char* vfunc_8() override;
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
     unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
@@ -2698,6 +2780,7 @@ public:
     CNMGSSetServingProcessIDFunc(); // 0x1415a01a0
     CNMGSSetServingProcessIDFunc(unsigned uSerialKey, unsigned uProcessId); // 0x1415a01f0
     virtual ~CNMGSSetServingProcessIDFunc() = default;
+    char* vfunc_8() override;
 
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
@@ -2718,6 +2801,7 @@ public:
     CNMGSWantCloseFunc(); // 0x14159f960
     CNMGSWantCloseFunc(int n18, int wantClose); // 0x14159f9c0
     virtual ~CNMGSWantCloseFunc() = default;
+    char* vfunc_8() override;
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
     unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
@@ -2735,6 +2819,7 @@ class CNMGameLogFinalizeFunc : public CNMFunc
 public:
     CNMGameLogFinalizeFunc();
     virtual ~CNMGameLogFinalizeFunc() = default;
+    char* vfunc_8() override;
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
     unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
@@ -2750,6 +2835,7 @@ class CNMGameLogGetSessionIDFunc : public CNMFunc
 public:
     CNMGameLogGetSessionIDFunc();
     virtual ~CNMGameLogGetSessionIDFunc() = default;
+    char* vfunc_8() override;
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
     unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
@@ -2768,6 +2854,7 @@ public:
     CNMGameLogInitializeFunc();
     CNMGameLogInitializeFunc(const char* psz30, const char* psz50, const char* psz150);
     virtual ~CNMGameLogInitializeFunc() = default;
+    char* vfunc_8() override;
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
     unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
@@ -2788,6 +2875,7 @@ public:
     CNMGameLogWriteErrorLogFunc();
     CNMGameLogWriteErrorLogFunc(int n30, const char* psz34);
     virtual ~CNMGameLogWriteErrorLogFunc() = default;
+    char* vfunc_8() override;
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
     unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
@@ -2807,6 +2895,7 @@ public:
     CNMGameLogWriteStageLogFunc();
     CNMGameLogWriteStageLogFunc(int n30, const char* psz34);
     virtual ~CNMGameLogWriteStageLogFunc() = default;
+    char* vfunc_8() override;
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
     unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
@@ -2826,6 +2915,7 @@ public:
     CNMGetConfigFunc(); // 0x141581690
     explicit CNMGetConfigFunc(int configMask); // 0x141581730
     virtual ~CNMGetConfigFunc() = default;
+    char* vfunc_8() override;
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
     unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
@@ -2849,6 +2939,7 @@ class CNMGetConnConfigFunc : public CNMFunc
 public:
     CNMGetConnConfigFunc();
     virtual ~CNMGetConnConfigFunc() = default;
+    char* vfunc_8() override;
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
     unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
@@ -2867,6 +2958,7 @@ public:
     CNMGetCountFunc(); // 0x141582980
     explicit CNMGetCountFunc(int count); // 0x1415829e0
     virtual ~CNMGetCountFunc() = default;
+    char* vfunc_8() override;
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
     unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
@@ -2885,6 +2977,7 @@ class CNMGetDomainFunc : public CNMFunc
 public:
     CNMGetDomainFunc(); // 0x141583ee0
     virtual ~CNMGetDomainFunc() = default;
+    char* vfunc_8() override;
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
     unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
@@ -2903,6 +2996,7 @@ public:
     CNMGetFindUserResultFunc();
     CNMGetFindUserResultFunc(int nResult);
     virtual ~CNMGetFindUserResultFunc() = default;
+    char* vfunc_8() override;
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
     unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
@@ -2923,6 +3017,7 @@ public:
     CNMGetFriendInfoFunc(); // 0x1415866f0
     explicit CNMGetFriendInfoFunc(const unsigned char* key); // 0x141586760
     virtual ~CNMGetFriendInfoFunc() = default;
+    char* vfunc_8() override;
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
     unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
@@ -2946,6 +3041,7 @@ public:
     CNMGetFriendListFunc();
     explicit CNMGetFriendListFunc(unsigned long long key);
     virtual ~CNMGetFriendListFunc() = default;
+    char* vfunc_8() override;
 
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
@@ -2966,6 +3062,7 @@ class CNMGetGameListFunc : public CNMFunc
 public:
     CNMGetGameListFunc();
     virtual ~CNMGetGameListFunc() = default;
+    char* vfunc_8() override;
 
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
@@ -2985,6 +3082,7 @@ public:
     CNMGetGameTokenFunc();
     explicit CNMGetGameTokenFunc(const char* token);
     virtual ~CNMGetGameTokenFunc() = default;
+    char* vfunc_8() override;
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
     unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
@@ -3005,6 +3103,7 @@ public:
     CNMGetLocalConfigFunc(); // 0x141582220
     explicit CNMGetLocalConfigFunc(unsigned result); // 0x141582290
     virtual ~CNMGetLocalConfigFunc() = default;
+    char* vfunc_8() override;
 
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
@@ -3024,6 +3123,7 @@ class CNMGetMyGuildListExFunc : public CNMFunc
 public:
     CNMGetMyGuildListExFunc(); // 0x14158cbf0
     virtual ~CNMGetMyGuildListExFunc() = default;
+    char* vfunc_8() override;
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
     unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
@@ -3041,6 +3141,7 @@ class CNMGetMyInfoFunc : public CNMFunc
 public:
     CNMGetMyInfoFunc(); // 0x141580880
     virtual ~CNMGetMyInfoFunc() = default;
+    char* vfunc_8() override;
 
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
@@ -3065,6 +3166,7 @@ public:
     CNMGetMyVirtualUserListFunc(); // 0x14157fbb0
     explicit CNMGetMyVirtualUserListFunc(unsigned result); // 0x14157fc20
     virtual ~CNMGetMyVirtualUserListFunc() = default;
+    char* vfunc_8() override;
 
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
@@ -3086,6 +3188,7 @@ public:
     CNMGetNexonPassportFunc(); // 0x141584d00
     explicit CNMGetNexonPassportFunc(int passport); // 0x141584d70
     virtual ~CNMGetNexonPassportFunc() = default;
+    char* vfunc_8() override;
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
     unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
@@ -3104,6 +3207,7 @@ class CNMGetNxHWIDFunc : public CNMFunc
 public:
     CNMGetNxHWIDFunc(); // 0x1415856c0
     virtual ~CNMGetNxHWIDFunc() = default;
+    char* vfunc_8() override;
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
     unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
@@ -3122,6 +3226,7 @@ public:
     CNMGetPathFunc();
     CNMGetPathFunc(int nRequest);
     virtual ~CNMGetPathFunc() = default;
+    char* vfunc_8() override;
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
     unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
@@ -3140,6 +3245,7 @@ class CNMGetRejectedUserListFunc : public CNMFunc
 public:
     CNMGetRejectedUserListFunc(); // 0x14158bfa0
     virtual ~CNMGetRejectedUserListFunc() = default;
+    char* vfunc_8() override;
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
     unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
@@ -3157,6 +3263,7 @@ class CNMGetSecurityCodeCNFunc : public CNMFunc
 public:
     CNMGetSecurityCodeCNFunc(); // 0x1415850a0
     virtual ~CNMGetSecurityCodeCNFunc() = default;
+    char* vfunc_8() override;
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
     unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
@@ -3174,6 +3281,7 @@ class CNMGetSecurityQuestionFunc : public CNMFunc
 public:
     CNMGetSecurityQuestionFunc(); // 0x141585390
     virtual ~CNMGetSecurityQuestionFunc() = default;
+    char* vfunc_8() override;
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
     unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
@@ -3191,6 +3299,7 @@ class CNMGetUrlFunc : public CNMFunc
 public:
     CNMGetUrlFunc(); // 0x141591960
     virtual ~CNMGetUrlFunc() = default;
+    char* vfunc_8() override;
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
     unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
@@ -3219,6 +3328,7 @@ public:
     CNMGetUserInfoFunc(); // 0x141595d10
     CNMGetUserInfoFunc(const char* userId, int type); // 0x141595d80
     virtual ~CNMGetUserInfoFunc() = default;
+    char* vfunc_8() override;
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
     unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
@@ -3303,6 +3413,7 @@ public:
     CNMInitializeFunc();
     CNMInitializeFunc(int n30, int n34);
     virtual ~CNMInitializeFunc() = default;
+    char* vfunc_8() override;
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
     unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
@@ -3321,6 +3432,7 @@ class CNMJoinChannelFunc : public CNMFunc
 public:
     CNMJoinChannelFunc();
     virtual ~CNMJoinChannelFunc() = default;
+    char* vfunc_8() override;
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
     unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
@@ -3361,6 +3473,7 @@ public:
     CNMLogReportSyncFunc();
     explicit CNMLogReportSyncFunc(short nCode);
     virtual ~CNMLogReportSyncFunc() = default;
+    char* vfunc_8() override;
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
     unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
@@ -3380,6 +3493,7 @@ public:
     CNMLoginAuthSecurityCNFunc();
     CNMLoginAuthSecurityCNFunc(const char* account, const char* password);
     virtual ~CNMLoginAuthSecurityCNFunc() = default;
+    char* vfunc_8() override;
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
     unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
@@ -3401,6 +3515,7 @@ public:
     CNMLoginMessengerFunc();
     explicit CNMLoginMessengerFunc(int value);
     virtual ~CNMLoginMessengerFunc() = default;
+    char* vfunc_8() override;
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
     unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
@@ -3420,6 +3535,7 @@ public:
     CNMLoginVirtualFunc(); // 0x14157f390
     CNMLoginVirtualFunc(long long login, int value, long long password); // 0x14157f420
     virtual ~CNMLoginVirtualFunc() = default;
+    char* vfunc_8() override;
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
     unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
@@ -3439,8 +3555,9 @@ class CNMLogoutAuthFunc : public CNMFunc
 {
 public:
     CNMLogoutAuthFunc();
-    CNMLogoutAuthFunc(unsigned char flag, unsigned int value);
+    CNMLogoutAuthFunc(int flag, unsigned int value);
     virtual ~CNMLogoutAuthFunc() = default;
+    char* vfunc_8() override;
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
     unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
@@ -3459,6 +3576,7 @@ class CNMLogoutMessengerFunc : public CNMFunc
 public:
     CNMLogoutMessengerFunc();
     virtual ~CNMLogoutMessengerFunc() = default;
+    char* vfunc_8() override;
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
     unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
@@ -3475,6 +3593,7 @@ public:
     CNMLogoutVirtualFunc(); // 0x14157f840
     explicit CNMLogoutVirtualFunc(long long value); // 0x14157f8a0
     virtual ~CNMLogoutVirtualFunc() = default;
+    char* vfunc_8() override;
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
     unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
@@ -3515,6 +3634,7 @@ public:
     CNMMinimizeAllFunc();
     explicit CNMMinimizeAllFunc(int bMinimize);
     virtual ~CNMMinimizeAllFunc() = default;
+    char* vfunc_8() override;
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
     unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
@@ -3536,6 +3656,7 @@ public:
     CNMMonitorGuildOnlineInfoExFunc(unsigned __int64 guildId, int type, int status); // 0x14158d480
     CNMMonitorGuildOnlineInfoExFunc(unsigned __int64 guildId, int type, int status, int flags, int result); // 0x14158d520
     virtual ~CNMMonitorGuildOnlineInfoExFunc() = default;
+    char* vfunc_8() override;
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
     unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
@@ -3559,6 +3680,7 @@ public:
     CNMMonitorGuildOnlineInfoFunc(int type, int enabled); // 0x14158cf80
     CNMMonitorGuildOnlineInfoFunc(int type, int enabled, int status); // 0x14158d000
     virtual ~CNMMonitorGuildOnlineInfoFunc() = default;
+    char* vfunc_8() override;
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
     unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
@@ -3580,6 +3702,7 @@ public:
     CNMMoveFriendCategoryFunc(); // 0x141588920
     CNMMoveFriendCategoryFunc(const unsigned char* key, int source, int destination, int flag); // 0x1415889c0
     virtual ~CNMMoveFriendCategoryFunc() = default;
+    char* vfunc_8() override;
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
     unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
@@ -3661,6 +3784,7 @@ class CNMOpenGameSummaryFunc : public CNMFunc
 public:
     CNMOpenGameSummaryFunc();
     virtual ~CNMOpenGameSummaryFunc() = default;
+    char* vfunc_8() override;
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
     unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
@@ -3677,6 +3801,7 @@ public:
     CNMPCBangLoginFunc();
     explicit CNMPCBangLoginFunc(const char* token);
     virtual ~CNMPCBangLoginFunc();
+    char* vfunc_8() override;
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
     unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
@@ -3697,6 +3822,7 @@ public:
     CNMProcessNoteFunc(); // 0x14158b290
     CNMProcessNoteFunc(int noteType, int noteId); // 0x14158b2f0
     virtual ~CNMProcessNoteFunc() = default;
+    char* vfunc_8() override;
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
     unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
@@ -3780,6 +3906,7 @@ public:
     CNMRegisterCallbackFunc();
     CNMRegisterCallbackFunc(const void* pCallback, int nFlags);
     virtual ~CNMRegisterCallbackFunc() = default;
+    char* vfunc_8() override;
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
     unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
@@ -3817,6 +3944,7 @@ public:
     CNMRemoveMyVirtualUserFunc();
     explicit CNMRemoveMyVirtualUserFunc(const NMKey64* key);
     virtual ~CNMRemoveMyVirtualUserFunc() = default;
+    char* vfunc_8() override;
 
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
@@ -3836,6 +3964,7 @@ public:
     CNMRemoveRejectedUserFunc(); // 0x14158c760
     CNMRemoveRejectedUserFunc(const CNMRejectedUser* user); // 0x14158c7d0
     virtual ~CNMRemoveRejectedUserFunc() = default;
+    char* vfunc_8() override;
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
     unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
@@ -3854,6 +3983,7 @@ public:
     CNMReplySessionRequestFunc(); // 0x141599ab0
     CNMReplySessionRequestFunc(unsigned __int64 nSession, int bReply); // 0x141599b20
     virtual ~CNMReplySessionRequestFunc() = default;
+    char* vfunc_8() override;
 
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override; // 0x141599c60
     unsigned int EncodeFramed(CNMStream* pStream) override;                 // 0x141599ba0
@@ -3875,6 +4005,7 @@ public:
     CNMRequestChatSessionExFunc(); // 0x141598330
     CNMRequestChatSessionExFunc(const unsigned char* pTarget, int nTarget); // 0x1415983d0
     virtual ~CNMRequestChatSessionExFunc() = default;
+    char* vfunc_8() override;
 
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override; // 0x141598520
     unsigned int EncodeFramed(CNMStream* pStream) override;                 // 0x141598460
@@ -3902,6 +4033,7 @@ public:
     CNMRequestChatSessionFunc();                         // 0x141596d50
     CNMRequestChatSessionFunc(const unsigned char* pTarget, int nTarget); // 0x141596de0
     virtual ~CNMRequestChatSessionFunc() = default;
+    char* vfunc_8() override;
 
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override; // 0x141596f30
     unsigned int EncodeFramed(CNMStream* pStream) override;                 // 0x141596e70
@@ -3975,6 +4107,7 @@ public:
     CNMRequestNewFriendFunc(); // 0x141586b60
     explicit CNMRequestNewFriendFunc(const CNMRequestNewFriendData& data); // 0x141586bd0
     virtual ~CNMRequestNewFriendFunc() = default;
+    char* vfunc_8() override;
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
     unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
@@ -3992,6 +4125,7 @@ class CNMRequestNewsFunc : public CNMFunc
 public:
     CNMRequestNewsFunc(); // 0x141583880
     virtual ~CNMRequestNewsFunc() = default;
+    char* vfunc_8() override;
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
     unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
@@ -4029,6 +4163,7 @@ public:
     CNMRequestWBSessionExFunc(); // 0x141599560
     CNMRequestWBSessionExFunc(const unsigned char* pTarget, int n48, int n4c); // 0x141599610
     virtual ~CNMRequestWBSessionExFunc() = default;
+    char* vfunc_8() override;
 
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override; // 0x141599770
     unsigned int EncodeFramed(CNMStream* pStream) override;                 // 0x1415996b0
@@ -4056,6 +4191,7 @@ public:
     CNMRequestWBSessionFunc(); // 0x141597e50
     CNMRequestWBSessionFunc(const unsigned char* pTarget, int n40, int n44); // 0x141597ef0
     virtual ~CNMRequestWBSessionFunc() = default;
+    char* vfunc_8() override;
 
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override; // 0x141598050
     unsigned int EncodeFramed(CNMStream* pStream) override;                 // 0x141597f90
@@ -4081,6 +4217,7 @@ public:
     CNMResetCallbackFunc();
     explicit CNMResetCallbackFunc(unsigned long long callback);
     virtual ~CNMResetCallbackFunc() = default;
+    char* vfunc_8() override;
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
     unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
@@ -4099,6 +4236,7 @@ public:
     CNMRestrictedWordsFunc();
     CNMRestrictedWordsFunc(int nMode, int nCategory, const char* szWords);
     virtual ~CNMRestrictedWordsFunc() = default;
+    char* vfunc_8() override;
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
     unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
@@ -4121,6 +4259,7 @@ public:
     CNMSendRefreshMessageFunc(); // 0x141580530
     explicit CNMSendRefreshMessageFunc(unsigned result); // 0x141580590
     virtual ~CNMSendRefreshMessageFunc() = default;
+    char* vfunc_8() override;
 
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
@@ -4178,6 +4317,7 @@ public:
     CNMSetAuthClosedCallbackFunc();
     explicit CNMSetAuthClosedCallbackFunc(long long callback);
     virtual ~CNMSetAuthClosedCallbackFunc() = default;
+    char* vfunc_8() override;
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
     unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
@@ -4196,6 +4336,7 @@ public:
     CNMSetCodePageFunc(); // 0x1415849b0
     explicit CNMSetCodePageFunc(int codePage); // 0x141584a10
     virtual ~CNMSetCodePageFunc() = default;
+    char* vfunc_8() override;
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
     unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
@@ -4215,6 +4356,7 @@ public:
     CNMSetConnConfigFunc();
     explicit CNMSetConnConfigFunc(const CNMConnConfig& config);
     virtual ~CNMSetConnConfigFunc() = default;
+    char* vfunc_8() override;
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
     unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
@@ -4233,6 +4375,7 @@ public:
     CNMSetCountFunc(); // 0x141582d00
     CNMSetCountFunc(unsigned first, unsigned second); // 0x141582d60
     virtual ~CNMSetCountFunc() = default;
+    char* vfunc_8() override;
 
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
@@ -4253,6 +4396,7 @@ public:
     CNMSetLocaleFunc(); // 0x141584630
     CNMSetLocaleFunc(int locale, int sublocale); // 0x141584690
     virtual ~CNMSetLocaleFunc() = default;
+    char* vfunc_8() override;
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
     unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
@@ -4272,6 +4416,7 @@ public:
     CNMSetStatInfoFunc(); // 0x1415841e0
     CNMSetStatInfoFunc(int a, int b, int c, int d, int e); // 0x141584270
     virtual ~CNMSetStatInfoFunc() = default;
+    char* vfunc_8() override;
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
     unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
@@ -4315,6 +4460,7 @@ public:
     CNMStartStandAloneMsgFunc();
     explicit CNMStartStandAloneMsgFunc(const char* message);
     virtual ~CNMStartStandAloneMsgFunc() = default;
+    char* vfunc_8() override;
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
     unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;
@@ -4333,6 +4479,7 @@ public:
     CNMTPATokenLoginFunc();
     CNMTPATokenLoginFunc(const char* account, const char* password);
     virtual ~CNMTPATokenLoginFunc();
+    char* vfunc_8() override;
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
     unsigned int EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream) override;

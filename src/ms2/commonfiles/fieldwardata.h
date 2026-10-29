@@ -46,7 +46,7 @@ class FieldWarGroup : public CPtred
 {
 public:
     explicit FieldWarGroup(unsigned nGroupID);      // 0x140382300
-    virtual ~FieldWarGroup();
+    // ~FieldWarGroup() is implicit (0x140387c80): the exe dtor stores no vftable pointer
     void AddData(MS2Ptr<FieldWarData> spData);      // 0x140382370
     unsigned GetTotalWeight();                      // 0x1403823f0
     MS2Ptr<FieldWarData> PickData(Unk_Random& kRandom);     // 0x140382440 by weight

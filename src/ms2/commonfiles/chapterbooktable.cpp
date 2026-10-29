@@ -17,7 +17,6 @@
 // MS2-PIN: ??$forward@V?$tuple@AEBI@std@@@std@@YA$$QEAV?$tuple@AEBI@0@AEAV10@@Z 0x1401db5d0 ; prop
 // MS2-PIN: ??$forward_as_tuple@AEBI@std@@YA?AV?$tuple@AEBI@0@AEBI@Z 0x1401db5e0 ; unique
 // MS2-PIN: ??$get@$0A@AEBI@std@@YAAEBI$$QEAV?$tuple@AEBI@0@@Z 0x1401db610 ; unique
-// MS2-PIN: ??$make_pair@AEAHAEAH@std@@YA?AU?$pair@HH@0@AEAH0@Z 0x1401db630 ; unique
 // MS2-PIN: ??$move@AEAV?$tuple@AEBI@std@@@std@@YA$$QEAV?$tuple@AEBI@0@AEAV10@@Z 0x1401db6a0 ; prop
 // MS2-PIN: ??0ArgList@fmt@@QEAA@_KPEBUValue@internal@1@@Z 0x1401db760 ; unique
 // MS2-PIN: ??0?$tuple@AEBI@std@@QEAA@$$QEAV01@@Z 0x1401dbc50 ; unique
@@ -49,6 +48,7 @@
 
 #include <memory>
 #include <string>
+#include <vector>
 
 // Unrecovered helpers (the same xml loader helpers the other table units use).
 class Unk_140165cf0 { public: Unk_140165cf0* FUN_140165cf0(const char*); };
@@ -58,29 +58,19 @@ void* FUN_140166440();
 void FUN_14015eb90(void*, int, int, const wchar_t*, const CString&);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
 void FUN_1408731e0(Unk_140165cf0*, const char*, int&);
-void FUN_140873220(Unk_140165cf0*, const char*, int&);
+void FUN_140873220(Unk_140165cf0*, const char*, unsigned&);
 int FUN_1408733e0(Unk_140165cf0*, const char*, CStringA&);
 void FUN_140873420(Unk_140165cf0*, const char*, CStringW&);
 int FUN_1407181a0(const CStringW& str);
 
-// The <chapterbook> children of a parent (24 bytes) with index access.
-class Unk_ElemArray
-{
-public:
-    void FUN_140163e20();                                           // ctor
-    void FUN_1401644e0();                                           // dtor
-    unsigned __int64 FUN_14016d900();                               // size
-    Unk_140165cf0*& FUN_140164a30(unsigned __int64 n);              // operator[]
-    void *m_a, *m_b, *m_c;
-};
-void FUN_14028faa0(Unk_140165cf0* pParent, const char* pszName, const char* pszAttr, Unk_ElemArray* pOut);
+void FUN_14028faa0(Unk_140165cf0* pParent, const char* pszName, const char* pszAttr, std::vector<Unk_140165cf0*>* pOut);
 
 // The game's fmt::format(StringRef, ArgList) -> std::string path (an old fmt: MemoryWriter over a 500-char buffer).
 // Unit-local stand-ins; the heavy write loop (0x1402d9f20) lives in another unit.
 class Unk_FmtStringRef
 {
 public:
-    Unk_FmtStringRef(const char* pszData, size_t nSize);    // 0x1401db760 (folded with ArgList::ArgList)
+    Unk_FmtStringRef(const char* pszData, size_t nSize = 0);    // 0x1401db760 (folded with ArgList::ArgList)
 private:
     MS2_LAYOUT_FRIEND;
     const char* m_pszData;
@@ -211,10 +201,17 @@ std::string Unk_FmtFormat(Unk_FmtStringRef fmt, fmt::ArgList args)
 }
 
 // @0x1401dca30
-// MS2-FUNCTIONAL: the exe holds two more 16-byte temporaries in the frame (0xc8 vs 0xa8); no source form found
+// A format error (fmt throws a std::runtime_error) asserts and returns the format string itself.
 CString StringFormat(const char* format, const fmt::ArgList& args)
 {
-    return CString(Unk_FmtFormat(Unk_FmtStringRef(format, 0), args).c_str());
+    try {
+        CString str = Unk_FmtFormat(format, args).c_str();
+        return str;
+    } catch (std::runtime_error& e) {
+        // ASSERT(FALSE) of commonfiles\stringutil.h (the function body lives in that header)
+        (void)((!!(FALSE)) || (_wassert(L"FALSE", L"e:\\build\\kr\\22_04\\ms2code\\commonfiles\\stringutil.h", 540), 0));
+    }
+    return CString(format);
 }
 
 // @0x1401d9640
@@ -338,49 +335,47 @@ CChapterBookTable::~CChapterBookTable()
 {
 }
 
+// make_pair<int&,int&>: the exe keeps this unit's own copy (it calls the leaf pair ctor 0x1401d9970, so it is not
+// byte-identical to the shared copy 0x14111d460 the symbol table names); Load calls it under its own name.
+// MS2-FUNCTIONAL ?FUN_1401db630@@YA?AU?$pair@HH@std@@AEAH0@Z: std::make_pair<int&,int&>; differs only through the pair ctor (see 0x1401d9970)
+// @0x1401db630
+std::pair<int, int> FUN_1401db630(int& a, int& b)
+{
+    return std::pair<int, int>(std::forward<int&>(a), std::forward<int&>(b));
+}
+
 // @0x1401d8ff0
-// MS2-FUNCTIONAL: the exe builds the file/dir CString temps and the path in place with early destruction (as in learningquesttable); no source form found
 int CChapterBookTable::Load()
 {
-    CString strPath = FUN_14071a5b0(CString("Table"), CString("chapterBook.xml"));
+    CString strPath = FUN_14071a5b0("Table", "chapterBook.xml");
     TiXmlDocument doc;
-    const char* pszPath = strPath;
-    if (FUN_140166420()->FUN_1403974b0(&doc, pszPath, 0, true, false) == 0)
+    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+        return 0;
+    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+    if (pRoot == 0)
     {
+        FUN_14015eb90(FUN_140166440(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return 0;
     }
-    else
+    std::vector<Unk_140165cf0*> list;
+    FUN_14028faa0(pRoot, "chapterbook", "id", &list);
+    for (unsigned __int64 i = 0; i < list.size(); i++)
     {
-        Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
-        if (pRoot == 0)
-        {
-            FUN_14015eb90(FUN_140166440(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
+        Unk_140165cf0* pNode = list[i];
+        DataPtr data(new CChapterBookData);
+        if (data->Read(pNode) == 0)
             return 0;
-        }
-        else
+        for (unsigned __int64 j = 0; j < data->m_rewards.GetCount(); j++)
         {
-            Unk_ElemArray list;
-            list.FUN_140163e20();
-            FUN_14028faa0(pRoot, "chapterbook", "id", &list);
-            for (unsigned __int64 i = 0; i < list.FUN_14016d900(); i++)
-            {
-                Unk_140165cf0* pNode = list.FUN_140164a30(i);
-                DataPtr data(new CChapterBookData);
-                if (data.get()->Read(pNode) == 0)
-                    return 0;
-                for (unsigned __int64 j = 0; j < data->m_rewards.GetCount(); j++)
-                {
-                    Unk_ChapterReward& rReward = data->m_rewards[j];
-                    if (rReward.m_nType == 3)
-                        m_skill[data->m_nEpilogue] = std::make_pair(rReward.m_nKind, rReward.m_nValue);
-                    else if (rReward.m_nType == 2)
-                        m_stat.SetAt(data->m_nEpilogue, rReward.m_nValue);
-                }
-                m_books.SetAt(data->m_nId, data);
-            }
-            return 1;
+            Unk_ChapterReward& rReward = data->m_rewards[j];
+            if (rReward.m_nType == 3)
+                m_skill[data->m_nEpilogue] = FUN_1401db630(rReward.m_nKind, rReward.m_nValue);
+            else if (rReward.m_nType == 2)
+                m_stat.SetAt(data->m_nEpilogue, rReward.m_nValue);
         }
+        m_books.SetAt(data->m_nId, data);
     }
+    return 1;
 }
 
 // @0x1401d9410

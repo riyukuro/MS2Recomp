@@ -11,7 +11,7 @@ class UICubeUGCHead : public UIObject
 {
 public:
     UICubeUGCHead(Unk_UgcCell cell, CStringW strName, int nType);   // 0x141906490
-    virtual ~UICubeUGCHead();                                       //  0 0x141906d90 (??_G 0x141906dc0)
+    // ~UICubeUGCHead: implicit (slot 0 0x141906d90, ??_G 0x141906dc0; the exe dtor stores no vftable)
     virtual CString GetTypeName();                                      //  1 0x1419065a0 "CubeUGCHead"
     virtual void vfunc_2();                                         //  2 0x141906730 show
     virtual void vfunc_3();                                         //  3 0x141906790 hide

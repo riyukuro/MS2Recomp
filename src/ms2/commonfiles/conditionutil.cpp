@@ -348,7 +348,6 @@ int CConditionCommonData::Load(Unk_ConditionXml* pNode, CStringW strTag, unsigne
 }
 
 // @0x14029edc0
-// MS2-FUNCTIONAL: stack frame/temp layout of the checker + dict pointer differs (26 bytes shorter in the exe); behaviour identical
 int CConditionCommonData::Validate(CStringW* pError)
 {
     switch (m_nType)
@@ -371,7 +370,6 @@ int CConditionCommonData::Validate(CStringW* pError)
                 return 0;
             }
         }
-        break;
     }
     }
     return 1;
@@ -882,7 +880,7 @@ int CQuestConditionCheckerUserFind::HasHandler(const CString& strKey)
 MS2_REPLACE_METHOD(0x1402a6b80, CQuestConditionCheckerUserFind, HasHandler, 74, 0xD35CC63A);
 
 // @0x1402a9100
-// MS2-FUNCTIONAL: the exe inlines the delegate temps differently (19 bytes longer); behaviour identical
+// MS2-FUNCTIONAL: the exe value-initializes the base (zeroes 0x18 bytes before the base ctor) = an implicit, non-user-provided base ctor; needs a questcondition.h change (shared header)
 CQuestConditionCheckerUserFind::CQuestConditionCheckerUserFind()
 {
     m_handlers["jobId"] = DelegateLib::MakeDelegate(this, &CQuestConditionCheckerUserFind::CheckJobId);
@@ -944,13 +942,15 @@ bool CQuestConditionCheckerUserFind::CheckGender(const CString& strValue, Condit
 MS2_REPLACE_METHOD(0x1402a96b0, CQuestConditionCheckerUserFind, CheckGender, 86, 0x4189B854);
 
 // @0x1402a9710
-// MS2-FUNCTIONAL: exe iterates the std::vector with class iterators and a different frame; behaviour identical
 bool CQuestConditionCheckerUserFind::CheckEquipItemsAnd(const CString& strValue, ConditionUserFindContext* pContext)
 {
     std::vector<unsigned int> ids;
     FUN_1401782a0(strValue, ids, " ");
-    for (unsigned int nId : ids)
+    std::vector<unsigned int>& rIds = ids;
+    std::vector<unsigned int>::const_iterator itEnd = rIds.end();
+    for (std::vector<unsigned int>::const_iterator it = rIds.begin(); it != itEnd; ++it)
     {
+        unsigned int nId = *it;
         if (!ContainsId(pContext->m_skills, nId))
             return false;
     }
@@ -958,13 +958,15 @@ bool CQuestConditionCheckerUserFind::CheckEquipItemsAnd(const CString& strValue,
 }
 
 // @0x1402a9810
-// MS2-FUNCTIONAL: exe iterates the std::vector with class iterators and a different frame; behaviour identical
 bool CQuestConditionCheckerUserFind::CheckEquipItemsOr(const CString& strValue, ConditionUserFindContext* pContext)
 {
     std::vector<unsigned int> ids;
     FUN_1401782a0(strValue, ids, " ");
-    for (unsigned int nId : ids)
+    std::vector<unsigned int>& rIds = ids;
+    std::vector<unsigned int>::const_iterator itEnd = rIds.end();
+    for (std::vector<unsigned int>::const_iterator it = rIds.begin(); it != itEnd; ++it)
     {
+        unsigned int nId = *it;
         if (ContainsId(pContext->m_skills, nId))
             return true;
     }

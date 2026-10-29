@@ -149,7 +149,6 @@ void UIIndividualPvPDialog::OnLoadInit()
 }
 
 // @0x1412ca0f0
-// MS2-FUNCTIONAL: temp/spill layout of the child bindings differs (exe 2558 bytes, 0x2b8 frame)
 void UIIndividualPvPDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
@@ -180,8 +179,7 @@ void UIIndividualPvPDialog::OnLoadComplete()
         MS2Ptr<Unk_ArenaData> spData = FUN_1412818c0()->FUN_14051a980(it->first);
         if (spData == 0)
             return;
-        CStringW strName = GetStringManager()->GetText(StringXmlCategory(4), IndividualArenaStringId(spData->m_nNameId));
-        it->second->FUN_1422cdfb0(strName);
+        it->second->FUN_1422cdfb0(GetStringManager()->GetText(StringXmlCategory(4), IndividualArenaStringId(spData->m_nNameId)));
         it->second->FUN_1407cbb20("label2", GetStringCommon(0x425));
     }
     if (m_arenas.empty())
@@ -200,7 +198,7 @@ void UIIndividualPvPDialog::OnLoadComplete()
     }
     FUN_1412cb240();
     m_arenas[2]->FUN_1422c1fe0(0);
-    m_arenas[2]->FUN_1409c0e60("label2", L"");
+    m_arenas[2]->FUN_1409c0e60("label2", L"\xac1c\xd3b8 \xc911\xc785\xb2c8\xb2e4.");  // "개편 중입니다." (under renovation)
 }
 
 // @0x1412cab00
@@ -540,14 +538,14 @@ inline Scaleform::GFx::Value AScript::Invoke(const char* szMethod, CStringW a1, 
 {
     ASArgList args;
     args.FUN_1409b2800(2);
-    FUN_1422bcea0(args.FUN_1409b1f70(0), a1.GetString());
-    FUN_1422bce70(args.FUN_1409b1f70(1), a2.GetString());
+    FUN_1422bcea0(args.FUN_1409b1f70(0), a1);
+    FUN_1422bce70(args.FUN_1409b1f70(1), a2);
     return FUN_1422bb8f0(szMethod, args);
-}   // MS2-FUNCTIONAL: not byte-matched (call order/EH state layout)
+}
 
 // The UCRT's `static __inline memcpy_s` of this TU (unreferenced copy, kept alive by the pointer below).
 // @0x1412d12e0
-// MS2-FUNCTIONAL: unreferenced CRT memcpy_s copy: source spelling differs
+#pragma function(memcpy)   // the exe copy calls memcpy instead of inlining it
 static __inline errno_t ms2_pvp_memcpy_s(void* const d, size_t const dsz, void const* const s, size_t const ssz)
 {
     if (ssz == 0) { return 0; }

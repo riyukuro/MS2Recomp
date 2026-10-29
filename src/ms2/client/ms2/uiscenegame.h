@@ -128,7 +128,7 @@ private:
     int m_a8;                                                   // +0xa8
     int m_ac;                                                   // +0xac the open dialog (UI id)
     int m_b0;                                                   // +0xb0 npc object id
-    int m_b4;                                                   // +0xb4 npc object id
+    unsigned int m_b4;                                          // +0xb4 npc object id
     CString m_b8;                                               // +0xb8 cube id
 };
 MS2_CHECK_SIZE(UISceneGameBeautyShop, 0xc0);
@@ -206,7 +206,7 @@ class UISceneGameScreenShot : public UISceneEntity
 {
 public:
     UISceneGameScreenShot();                                    // 0x141acd1c0 (m_6c = 0x6200020)
-    virtual ~UISceneGameScreenShot();                           //  0 0x141acd820 (??_G 0x141acd850)
+    // ~UISceneGameScreenShot() implicit                        //  0 0x141acd820 (??_G 0x141acd850)
     virtual CString GetTypeName();                                  //  1 0x141acd230 ""
     virtual int vfunc_13();                                     // 13 0x141acd750
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);   // 28 0x141acd7d0

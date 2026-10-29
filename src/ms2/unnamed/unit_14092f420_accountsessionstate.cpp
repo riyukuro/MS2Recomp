@@ -363,7 +363,6 @@ bool FUN_14092f660()
 }
 
 // @0x14092f690
-// MS2-FUNCTIONAL: stack slot order of the CString("") temp differs (frame 0x10 larger), logic identical
 int FUN_14092f690(int nSkillId, int nItemId, __int64 nItemUid, int nSlot, int nKind)
 {
     if (FUN_1409331e0()->FUN_14138c900(10))
@@ -396,7 +395,7 @@ int FUN_14092f690(int nSkillId, int nItemId, __int64 nItemUid, int nSlot, int nK
             Unk_Inventory::ItemPtr spItem = g_143ab2a90.FUN_140a5e2e0(nItemId);
             if (spItem.get() != 0)
             {
-                if (FUN_140526100(spItem.get()) != 0)
+                if (FUN_140526100(spItem) != 0)
                     return 0;
             }
         }
@@ -414,7 +413,7 @@ int FUN_14092f690(int nSkillId, int nItemId, __int64 nItemUid, int nSlot, int nK
         if (!FUN_14053e460(spData.get()))
             return 0;
     }
-    FUN_141276180(s_143ab2ed8, CString(""));
+    FUN_141276180(s_143ab2ed8, "");
     if (!FUN_140930d70())
     {
         COutPacket packet(static_cast<int>(SendOp::KeyTable), 0);
@@ -430,7 +429,6 @@ int FUN_14092f690(int nSkillId, int nItemId, __int64 nItemUid, int nSlot, int nK
 }
 
 // @0x14092fac0
-// MS2-FUNCTIONAL: stack slot order of the CString("") temp differs (frame 0x10 larger), logic identical
 int FUN_14092fac0(int nSkillId, int nItemId, __int64 nItemUid, int nSlot)
 {
     UIMainPlayerInfo* pInfo = FUN_140931900(0x4e5f);
@@ -454,7 +452,7 @@ int FUN_14092fac0(int nSkillId, int nItemId, __int64 nItemUid, int nSlot)
             Unk_Inventory::ItemPtr spItem = g_143ab2a90.FUN_140a5e2e0(nItemId);
             if (spItem.get() != 0)
             {
-                if (FUN_140526100(spItem.get()) != 0)
+                if (FUN_140526100(spItem) != 0)
                     return 0;
             }
         }
@@ -472,25 +470,25 @@ int FUN_14092fac0(int nSkillId, int nItemId, __int64 nItemUid, int nSlot)
         if (!FUN_14053e460(spData.get()))
             return 0;
     }
-    if (FUN_1409331e0()->FUN_14138c900(10) == 0 && FUN_1409331e0()->FUN_14138c900(11) == 0 &&
-        FUN_1409331e0()->FUN_14138c900(12) == 0)
+    if (FUN_1409331e0()->FUN_14138c900(10) != 0 || FUN_1409331e0()->FUN_14138c900(11) != 0 ||
+        FUN_1409331e0()->FUN_14138c900(12) != 0)
     {
-        FUN_141276180(s_143ab2ed8, CString(""));
-        if (!FUN_140930d70())
-        {
-            COutPacket packet(static_cast<int>(SendOp::KeyTable), 0);
-            packet.WriteUInt8(4);
-            packet.WriteInt16((short)nSlot);
-            packet.WriteInt32(nSkillId);
-            packet.WriteInt32(nItemId);
-            packet.WriteInt64(nItemUid);
-            packet.WriteInt32(-1);
-            FUN_140710590(packet);
-        }
-        return 1;
+        FUN_141275260(0x888, 1, 1);
+        return 0;
     }
-    FUN_141275260(0x888, 1, 1);
-    return 0;
+    FUN_141276180(s_143ab2ed8, "");
+    if (!FUN_140930d70())
+    {
+        COutPacket packet(static_cast<int>(SendOp::KeyTable), 0);
+        packet.WriteUInt8(4);
+        packet.WriteInt16((short)nSlot);
+        packet.WriteInt32(nSkillId);
+        packet.WriteInt32(nItemId);
+        packet.WriteInt64(nItemUid);
+        packet.WriteInt32(-1);
+        FUN_140710590(packet);
+    }
+    return 1;
 }
 
 // @0x14092fef0
@@ -498,23 +496,23 @@ int SendKeyTableMode5(int nSkillId, int nItemId, __int64 nItemUid, int nSlot, in
 {
     if (nSkillId == 0 && nItemUid == 0 && nItemId == 0)
         return 0;
-    if (FUN_1409331e0()->FUN_14138c900(10) == 0)
+    if (FUN_1409331e0()->FUN_14138c900(10) != 0)
     {
-        FUN_141276180(s_143ab3008, CString(""));
-        if (!FUN_140930d70())
-        {
-            COutPacket packet(static_cast<int>(SendOp::KeyTable), 0);
-            packet.WriteUInt8(5);
-            packet.WriteInt16((short)nSlot);
-            packet.WriteInt32(nSkillId);
-            packet.WriteInt64(nItemUid);
-            FUN_140710590(packet);
-            FUN_1409331f0()->FUN_14142f470(nSlot, nParam);
-        }
-        return 1;
+        FUN_141275260(0x888, 1, 1);
+        return 0;
     }
-    FUN_141275260(0x888, 1, 1);
-    return 0;
+    FUN_141276180(s_143ab3008, "");
+    if (!FUN_140930d70())
+    {
+        COutPacket packet(static_cast<int>(SendOp::KeyTable), 0);
+        packet.WriteUInt8(5);
+        packet.WriteInt16((short)nSlot);
+        packet.WriteInt32(nSkillId);
+        packet.WriteInt64(nItemUid);
+        FUN_140710590(packet);
+        FUN_1409331f0()->FUN_14142f470(nSlot, nParam);
+    }
+    return 1;
 }
 
 // @0x140930040
@@ -672,34 +670,36 @@ bool FUN_140930590(__int64 nAmount, Unk_PayList* pOut)
 {
     pOut->clear();
     __int64 nRemain = nAmount;
-    if (0 < nAmount)
+    if (nRemain > 0)
     {
-        Unk_Wallet* pWallet = &g_143ab2a78;
-        for (int i = 3; -1 < i; i = i - 1)
+        const Unk_Wallet* pWallet = &g_143ab2a78;
+        int nLast = 3;
+        for (int i = nLast; i >= 0; i = i - 1)
         {
-            if (FUN_140930200(i) != true)
+            if (FUN_140930200(i) == true)
+                continue;
+            if ((*pWallet)[i] >= nRemain)
             {
-                if (nRemain <= pWallet->at(i))
-                {
-                    FUN_140935a90(pOut, std::pair<int, __int64>(i, nRemain));
-                    nRemain = 0;
-                    break;
-                }
-                __int64 nHave = pWallet->at(i);
-                if (0 < nHave)
-                {
-                    nRemain = nRemain - nHave;
-                    FUN_140935a90(pOut, std::pair<int, __int64>(i, nHave));
-                }
+                FUN_140935a90(pOut, {i, nRemain});
+                nRemain = 0;
+                break;
+            }
+            __int64 nHave = (*pWallet)[i];
+            if (nHave > 0)
+            {
+                nRemain = nRemain - nHave;
+                FUN_140935a90(pOut, {i, nHave});
             }
         }
     }
     __int64 nCash = FUN_140930250();
-    if (nRemain < 1 && !pOut->empty())
-        return false;
-    unsigned nKind = FUN_1409301f0();
-    FUN_140935a90(pOut, std::pair<int, __int64>(nKind, nRemain));
-    return nCash < nRemain;
+    if (nRemain > 0 || pOut->empty() == true)
+    {
+        unsigned nKind = FUN_1409301f0();
+        FUN_140935a90(pOut, {nKind, nRemain});
+        return nRemain > nCash;
+    }
+    return false;
 }
 
 bool FUN_140930910(__int64 nAmount, unsigned nMask, Unk_Wallet* pVec);
@@ -708,33 +708,27 @@ bool FUN_140930910(__int64 nAmount, unsigned nMask, Unk_Wallet* pVec);
 bool FUN_140930750(Unk_PayList* pIn, Unk_PayList* pOut)
 {
     pOut->clear();
-    if (!pIn->empty())
-    {
-        Unk_Wallet vecTotals;
-        for (int i = 0; i < 4; i = i + 1)
-        {
-            __int64 nNone = -1;
-            vecTotals.push_back(nNone);
-        }
-        size_t nCount = pIn->size();
-        for (size_t j = 0; j < nCount; j = j + 1)
-        {
-            std::pair<int, __int64>* pEntry = &(*pIn)[j];
-            unsigned nMask = pEntry->first;
-            FUN_140930910(pEntry->second, nMask, &vecTotals);
-        }
-        if (!vecTotals.empty())
-        {
-            size_t k = 0;
-            while (k < vecTotals.size())
-            {
-                if (vecTotals[k] != -1)
-                    FUN_140935a90(pOut, std::pair<int, __int64>(k, vecTotals[k]));
-                k = k + 1;
-            }
-            return true;
-        }
+    if (pIn->empty())
         return false;
+    Unk_Wallet vecTotals;
+    for (int i = 0; i < 4; i = i + 1)
+        vecTotals.push_back(-1);
+    size_t nCount = pIn->size();
+    for (size_t j = 0; j < nCount; j = j + 1)
+    {
+        std::pair<int, __int64>& rEntry = pIn->at(j);
+        unsigned nMask = rEntry.first;
+        FUN_140930910(rEntry.second, nMask, &vecTotals);
+    }
+    if (!vecTotals.empty())
+    {
+        for (size_t k = 0; k < vecTotals.size(); k = k + 1)
+        {
+            if (vecTotals[k] == -1)
+                continue;
+            FUN_140935a90(pOut, {k, vecTotals[k]});
+        }
+        return true;
     }
     return false;
 }
@@ -742,45 +736,45 @@ bool FUN_140930750(Unk_PayList* pIn, Unk_PayList* pOut)
 // @0x140930910
 bool FUN_140930910(__int64 nAmount, unsigned nMask, Unk_Wallet* pVec)
 {
-    bool bResult;
-    if (pVec->size() == 4)
+    if (pVec->size() != 4)
+        return false;
+    __int64 nRemain = nAmount;
+    if (nRemain > 0)
     {
-        __int64 nRemain = nAmount;
-        if (0 < nAmount)
+        const Unk_Wallet* pWallet = &g_143ab2a78;
+        int nLast = 3;
+        for (int i = nLast; i >= 0; i = i - 1)
         {
-            for (int i = 3; -1 < i; i = i - 1)
+            if (FUN_140930200(i) == true)
+                continue;
+            unsigned nBits = FUN_1403bb210(i, 0);
+            if ((nBits & nMask) == 0)
+                continue;
+            if ((*pWallet)[i] >= nRemain)
             {
-                if (FUN_140930200(i) != true && (FUN_1403bb210(i, 0) & nMask) != 0)
-                {
-                    if (nRemain <= g_143ab2a78.at(i))
-                    {
-                        FUN_140931590(pVec, i, nRemain);
-                        nRemain = 0;
-                        break;
-                    }
-                    __int64 nHave = g_143ab2a78.at(i);
-                    if (0 < nHave)
-                    {
-                        nRemain = nRemain - nHave;
-                        FUN_140931590(pVec, i, nHave);
-                    }
-                }
+                FUN_140931590(pVec, i, nRemain);
+                nRemain = 0;
+                break;
+            }
+            __int64 nHave = (*pWallet)[i];
+            if (nHave > 0)
+            {
+                nRemain = nRemain - nHave;
+                FUN_140931590(pVec, i, nHave);
             }
         }
-        __int64 nCash;
-        if (((nMask & 1) == 0 && (nMask & 2) == 0) ||
-            ((nCash = FUN_140930250(), nRemain < 1 && !pVec->empty())))
-            bResult = false;
-        else
+    }
+    if ((nMask & 1) != 0 || (nMask & 2) != 0)
+    {
+        __int64 nCash = FUN_140930250();
+        if (nRemain > 0 || pVec->empty() == true)
         {
             unsigned nKind = FUN_1409301f0();
             FUN_140931590(pVec, nKind, nRemain);
-            bResult = nCash < nRemain;
+            return nRemain > nCash;
         }
     }
-    else
-        bResult = false;
-    return bResult;
+    return false;
 }
 
 // @0x140930ae0
@@ -953,9 +947,7 @@ void FUN_140930fe0(Unk_Notice* pNotice)
             spTarget = DAT_143ab3010.FUN_14041f850(pNotice);
         if (spTarget.get() != 0)
         {
-            void* pRaw = spTarget.get();
-            unsigned nId = spTarget->FUN_14041f250();
-            FUN_140da55a0(FUN_140933220(), nId, pRaw);
+            FUN_140da55a0(FUN_140933220(), spTarget->FUN_14041f250(), spTarget.get());
         }
         break;
     }
@@ -973,8 +965,7 @@ unsigned FUN_140931210(Unk_SlotKey nKey)
 // @0x140931250
 int FUN_140931250(Unk_SlotKey nKey)
 {
-    int nValue = FUN_140931210(nKey);
-    return FUN_14035a870(FUN_140764010(), nKey, nValue);
+    return FUN_14035a870(FUN_140764010(), nKey, FUN_140931210(nKey));
 }
 
 // @0x140931290
@@ -1197,7 +1188,7 @@ struct Unk_TailRefBox { void* m_p; };
 struct Unk_TailSetVal { void* m_unk_00; Unk_TailRefBox m_ref; char m_pad_10[0x8]; };                // element of the set tree (0x18)
 struct Unk_TailAlmVal { void* m_unk_00; Unk_TailRefBox m_ref; char m_pad_10[0x20]; };                // element of the mission tree (0x30)
 struct Unk_TailSetNode { Unk_TailSetNode* m_pLeft; Unk_TailSetNode* m_pParent; Unk_TailSetNode* m_pRight; char m_nColor; char m_bNil; Unk_TailSetVal m_val; };
-struct Unk_TailAlmState { char m_pad_00[0x28]; bool operator<(const Unk_TailAlmState&) const { return false; } };
+struct Unk_TailAlmState { void* m_pad_00[0x5]; bool operator<(const Unk_TailAlmState&) const { return false; } };
 struct Unk_TailAlmTree { char m_pad_00[0x10]; };
 struct Unk_TailAlmNode { Unk_TailAlmNode* m_pLeft; Unk_TailAlmNode* m_pParent; Unk_TailAlmNode* m_pRight; char m_nColor; char m_bNil; Unk_TailAlmVal m_val; };
 struct Unk_TailSetLess { bool operator()(const Unk_TailSetVal&, const Unk_TailSetVal&) const { return false; } };
@@ -1229,7 +1220,7 @@ __int64& FUN_140867870(__int64& n);
 int& FUN_140162e40(int& n);
 const std::less<unsigned>& FUN_140180bc0(const std::less<unsigned>& cmp);
 Unk_TailZeroTag& FUN_140162f10(Unk_TailZeroTag& tag);
-void FUN_1403564a0(Unk_TailVecBase* pBase);
+void FUN_1403564a0(Unk_TailProxy* pVal);
 Unk_TailSetNode*& FUN_140932360(Unk_TailSetNode*& pNode);
 Unk_TailPair* FUN_1409323b0(Unk_TailPair* pPair);
 Unk_TailAlmVal* FUN_140932fa0(Unk_TailAlmVal* pVal, unsigned nFlags);
@@ -1251,7 +1242,7 @@ Unk_TailNodeA* FUN_140933020(Unk_TailNodeA* pNode, unsigned nFlags);
 Unk_TailNodeB* FUN_140933060(Unk_TailNodeB* pNode, unsigned nFlags);
 void FUN_140932970(Unk_TailTreeA* pTree);
 void FUN_1409329b0(Unk_TailTreeB* pTree);
-void FUN_1409329f0(Unk_TailBoxPtr* pBox);
+void FUN_1409329f0(Unk_TailBoxPtr* pBox) noexcept;
 void FUN_140933320(Unk_TailTreeA* pTree);
 void FUN_1409333a0(Unk_TailTreeB* pTree);
 bool FUN_140933240(Unk_TailTreeA* pTree, Unk_TailNodeA* pNode);
@@ -1280,7 +1271,7 @@ Unk_TailAlc* FUN_1409347f0(Unk_TailAlmTree* pTree);
 Unk_TailAlmNode*& FUN_140931d80(Unk_TailAlc* pAlc, Unk_TailAlmNode* pNode);
 void FUN_1409322a0(Unk_TailAlc* pAlc, Unk_TailAlmVal* pVal);
 void* FUN_140786280(size_t n);
-Unk_TailIter* FUN_140935690(Unk_TailSet* pTree, Unk_TailIter* pRet);
+Unk_TailIter* FUN_140935690(Unk_TailSet* pTree, Unk_TailIter* pRet) noexcept;
 Unk_TailIter* FUN_140935280(Unk_TailSet* pTree, Unk_TailIter* pRet);
 Unk_TailIter* FUN_140935890(Unk_TailSet* pTree, Unk_TailIter* pRet, Unk_TailIter itFirst, Unk_TailIter itLast);
 void* FUN_1409346e0(Unk_TailSet* pTree);
@@ -1295,8 +1286,7 @@ void FUN_140935120();
 void* FUN_1409347e0(void* pThis);
 
 // @0x140931620
-// MS2-FUNCTIONAL: template COMDAT of the std container glue, not reproducible from source
-Unk_TailVecBase* FUN_140931620(Unk_TailVecBase* pThis, bool)
+Unk_TailVecBase* FUN_140931620(Unk_TailVecBase* pThis, Unk_TailZeroTag)
 {
     FUN_140932820(pThis);
     FUN_140932780(&pThis->m_val);
@@ -1304,7 +1294,6 @@ Unk_TailVecBase* FUN_140931620(Unk_TailVecBase* pThis, bool)
 }
 
 // @0x140931680
-// MS2-FUNCTIONAL: template COMDAT of the std container glue, not reproducible from source
 Unk_TailPair* FUN_140931680(Unk_TailPair* pThis, int& nKey, __int64& nValue)
 {
     pThis->first = FUN_140162e40(nKey);
@@ -1313,26 +1302,23 @@ Unk_TailPair* FUN_140931680(Unk_TailPair* pThis, int& nKey, __int64& nValue)
 }
 
 // @0x140931720
-// MS2-FUNCTIONAL: template COMDAT of the std container glue, not reproducible from source
+// MS2-FUNCTIONAL: the exe loads pThis into rcx before it copies the tag byte into edx; the free-function call copies the tag first
 Unk_TailVecBase* FUN_140931720(Unk_TailVecBase* pThis, bool, const std::less<unsigned>& cmp, Unk_TailZeroTag& tag)
 {
     FUN_140180bc0(cmp);
-    Unk_TailZeroTag& rTag = FUN_140162f10(tag);
-    FUN_140931620(pThis, *(unsigned char*)&rTag != 0u);
+    FUN_140931620(pThis, FUN_140162f10(tag));
     return pThis;
 }
 
 // @0x1409317c0
-// MS2-FUNCTIONAL: template COMDAT of the std container glue, not reproducible from source
 Unk_TailVecBase* FUN_1409317c0(Unk_TailVecBase* pThis, bool, const Unk_TailAlc& alc)
 {
     std::forward<const std::allocator<__int64>&>(reinterpret_cast<const std::allocator<__int64>&>(alc));   // 0x1409323a0 (ICF)
-    FUN_1403564a0(pThis);
+    FUN_1403564a0(&pThis->m_val);
     return pThis;
 }
 
 // @0x140931840
-// MS2-FUNCTIONAL: template COMDAT of the std container glue, not reproducible from source
 Unk_TailPair* FUN_140931840(Unk_TailPair* pThis, int& nKey, __int64& nValue)
 {
     pThis->first = FUN_140180c20(nKey);
@@ -1341,68 +1327,58 @@ Unk_TailPair* FUN_140931840(Unk_TailPair* pThis, int& nKey, __int64& nValue)
 }
 
 // @0x1409319a0
-// MS2-FUNCTIONAL: template COMDAT of the std container glue, not reproducible from source
 void FUN_1409319a0(void*, void*, void*, bool)
 {
 }
 
 // @0x140932100
-// MS2-FUNCTIONAL: template COMDAT of the std container glue, not reproducible from source
 Unk_TailAlmVal* FUN_140932100(Unk_TailAlmVal* pVal)
 {
     return pVal;
 }
 
 // @0x140932110
-// MS2-FUNCTIONAL: template COMDAT of the std container glue, not reproducible from source
 Unk_TailSetVal* FUN_140932110(Unk_TailSetVal* pVal)
 {
     return pVal;
 }
 
 // @0x140932190
-// MS2-FUNCTIONAL: template COMDAT of the std container glue, not reproducible from source
 void FUN_140932190(Unk_TailAlc*, Unk_TailSetNode** pDst, Unk_TailSetNode** pSrc)
 {
     ::new ((void*)pDst) Unk_TailSetNode*(FUN_140932360(*pSrc));
 }
 
 // @0x140932230
-// MS2-FUNCTIONAL: template COMDAT of the std container glue, not reproducible from source
 void FUN_140932230(Unk_TailAlc*, Unk_TailPair* pDst, Unk_TailPair* pSrc)
 {
     ::new ((void*)pDst) Unk_TailPair(*FUN_1409323b0(pSrc));
 }
 
 // @0x140932290
-// MS2-FUNCTIONAL: template COMDAT of the std container glue, not reproducible from source
 void FUN_140932290(void*, void*)
 {
 }
 
 // @0x1409322a0
-// MS2-FUNCTIONAL: template COMDAT of the std container glue, not reproducible from source
 void FUN_1409322a0(Unk_TailAlc*, Unk_TailAlmVal* pVal)
 {
     FUN_140932fa0(pVal, 0);
 }
 
 // @0x1409322c0
-// MS2-FUNCTIONAL: template COMDAT of the std container glue, not reproducible from source
 void FUN_1409322c0(Unk_TailAlc*, Unk_TailSetVal* pVal)
 {
     FUN_140932fe0(pVal, 0);
 }
 
 // @0x1409323b0
-// MS2-FUNCTIONAL: template COMDAT of the std container glue, not reproducible from source
 Unk_TailPair* FUN_1409323b0(Unk_TailPair* pPair)
 {
     return pPair;
 }
 
 // @0x140932400
-// MS2-FUNCTIONAL: template COMDAT of the std container glue, not reproducible from source
 Unk_TailTreeA* FUN_140932400(Unk_TailTreeA* pThis, size_t nBlock)
 {
     FUN_140932460(pThis, nBlock);
@@ -1410,7 +1386,6 @@ Unk_TailTreeA* FUN_140932400(Unk_TailTreeA* pThis, size_t nBlock)
 }
 
 // @0x140932430
-// MS2-FUNCTIONAL: template COMDAT of the std container glue, not reproducible from source
 Unk_TailTreeB* FUN_140932430(Unk_TailTreeB* pThis, size_t nBlock)
 {
     FUN_1409324c0(pThis, nBlock);
@@ -1418,7 +1393,6 @@ Unk_TailTreeB* FUN_140932430(Unk_TailTreeB* pThis, size_t nBlock)
 }
 
 // @0x140932460
-// MS2-FUNCTIONAL: template COMDAT of the std container glue, not reproducible from source
 Unk_TailTreeA* FUN_140932460(Unk_TailTreeA* pThis, size_t nBlock)
 {
     pThis->m_pRoot = 0;
@@ -1431,7 +1405,6 @@ Unk_TailTreeA* FUN_140932460(Unk_TailTreeA* pThis, size_t nBlock)
 }
 
 // @0x1409324c0
-// MS2-FUNCTIONAL: template COMDAT of the std container glue, not reproducible from source
 Unk_TailTreeB* FUN_1409324c0(Unk_TailTreeB* pThis, size_t nBlock)
 {
     pThis->m_pRoot = 0;
@@ -1444,7 +1417,6 @@ Unk_TailTreeB* FUN_1409324c0(Unk_TailTreeB* pThis, size_t nBlock)
 }
 
 // @0x1409326c0
-// MS2-FUNCTIONAL: template COMDAT of the std container glue, not reproducible from source
 Unk_TailIter* FUN_1409326c0(Unk_TailIter* pThis, void* pNode, const void* pCont)
 {
     FUN_140932640(pThis, pNode, pCont);
@@ -1452,7 +1424,6 @@ Unk_TailIter* FUN_1409326c0(Unk_TailIter* pThis, void* pNode, const void* pCont)
 }
 
 // @0x140932740
-// MS2-FUNCTIONAL: template COMDAT of the std container glue, not reproducible from source
 Unk_TailIter* FUN_140932740(Unk_TailIter* pThis, void* pNode, void* pCont)
 {
     pThis->m_pNode = pNode;
@@ -1461,7 +1432,6 @@ Unk_TailIter* FUN_140932740(Unk_TailIter* pThis, void* pNode, void* pCont)
 }
 
 // @0x140932780
-// MS2-FUNCTIONAL: template COMDAT of the std container glue, not reproducible from source
 Unk_TailProxy* FUN_140932780(Unk_TailProxy* pThis)
 {
     pThis->m_pCont = 0;
@@ -1470,28 +1440,24 @@ Unk_TailProxy* FUN_140932780(Unk_TailProxy* pThis)
 }
 
 // @0x140932820
-// MS2-FUNCTIONAL: template COMDAT of the std container glue, not reproducible from source
 Unk_TailAlc* FUN_140932820(Unk_TailAlc* pThis)
 {
     return pThis;
 }
 
 // @0x140932930
-// MS2-FUNCTIONAL: template COMDAT of the std container glue, not reproducible from source
 void FUN_140932930(Unk_TailTreeA* pThis)
 {
     FUN_140932970(pThis);
 }
 
 // @0x140932950
-// MS2-FUNCTIONAL: template COMDAT of the std container glue, not reproducible from source
 void FUN_140932950(Unk_TailTreeB* pThis)
 {
     FUN_1409329b0(pThis);
 }
 
 // @0x140932970
-// MS2-FUNCTIONAL: template COMDAT of the std container glue, not reproducible from source
 void FUN_140932970(Unk_TailTreeA* pThis)
 {
     FUN_140933320(pThis);
@@ -1500,7 +1466,6 @@ void FUN_140932970(Unk_TailTreeA* pThis)
 }
 
 // @0x1409329b0
-// MS2-FUNCTIONAL: template COMDAT of the std container glue, not reproducible from source
 void FUN_1409329b0(Unk_TailTreeB* pThis)
 {
     FUN_1409333a0(pThis);
@@ -1509,55 +1474,47 @@ void FUN_1409329b0(Unk_TailTreeB* pThis)
 }
 
 // @0x1409329f0
-// MS2-FUNCTIONAL: template COMDAT of the std container glue, not reproducible from source
-void FUN_1409329f0(Unk_TailBoxPtr* pThis)
+void FUN_1409329f0(Unk_TailBoxPtr* pThis) noexcept
 {
     FUN_140934c70(pThis);
 }
 
 // @0x140932b20
-// MS2-FUNCTIONAL: template COMDAT of the std container glue, not reproducible from source
 void FUN_140932b20(Unk_TailAlmTree* pThis)
 {
     FUN_140932a20(pThis);
 }
 
 // @0x140932b40
-// MS2-FUNCTIONAL: template COMDAT of the std container glue, not reproducible from source
 void FUN_140932b40(Unk_TailSet* pThis)
 {
     FUN_140932a50(pThis);
 }
 
 // @0x140932ba0
-// MS2-FUNCTIONAL: template COMDAT of the std container glue, not reproducible from source
 void FUN_140932ba0(Unk_TailNodeA* pThis)
 {
     FUN_140932be0(pThis);
 }
 
 // @0x140932bc0
-// MS2-FUNCTIONAL: template COMDAT of the std container glue, not reproducible from source
 void FUN_140932bc0(Unk_TailNodeB* pThis)
 {
     FUN_140932c00(pThis);
 }
 
 // @0x140932be0
-// MS2-FUNCTIONAL: template COMDAT of the std container glue, not reproducible from source
 void FUN_140932be0(Unk_TailNodeA* pThis)
 {
     FUN_1409329f0(&pThis->m_box);
 }
 
 // @0x140932c00
-// MS2-FUNCTIONAL: template COMDAT of the std container glue, not reproducible from source
 void FUN_140932c00(Unk_TailNodeB*)
 {
 }
 
 // @0x140932e60
-// MS2-FUNCTIONAL: template COMDAT of the std container glue, not reproducible from source
 Unk_TailIter* FUN_140932e60(Unk_TailIter* pThis)
 {
     FUN_140932f10(pThis);
@@ -1565,7 +1522,6 @@ Unk_TailIter* FUN_140932e60(Unk_TailIter* pThis)
 }
 
 // @0x140933020
-// MS2-FUNCTIONAL: template COMDAT of the std container glue, not reproducible from source
 Unk_TailNodeA* FUN_140933020(Unk_TailNodeA* pThis, unsigned nFlags)
 {
     FUN_140932ba0(pThis);
@@ -1575,7 +1531,6 @@ Unk_TailNodeA* FUN_140933020(Unk_TailNodeA* pThis, unsigned nFlags)
 }
 
 // @0x140933060
-// MS2-FUNCTIONAL: template COMDAT of the std container glue, not reproducible from source
 Unk_TailNodeB* FUN_140933060(Unk_TailNodeB* pThis, unsigned nFlags)
 {
     FUN_140932bc0(pThis);
@@ -1585,7 +1540,6 @@ Unk_TailNodeB* FUN_140933060(Unk_TailNodeB* pThis, unsigned nFlags)
 }
 
 // @0x1409330a0
-// MS2-FUNCTIONAL: template COMDAT of the std container glue, not reproducible from source
 void FUN_1409330a0(Unk_TailTreeA* pThis, Unk_TailNodeA* pNode)
 {
     ATLENSURE(pNode != NULL);
@@ -1597,7 +1551,6 @@ void FUN_1409330a0(Unk_TailTreeA* pThis, Unk_TailNodeA* pNode)
 }
 
 // @0x140933140
-// MS2-FUNCTIONAL: template COMDAT of the std container glue, not reproducible from source
 void FUN_140933140(Unk_TailTreeB* pThis, Unk_TailNodeB* pNode)
 {
     ATLENSURE(pNode != NULL);
@@ -1609,21 +1562,18 @@ void FUN_140933140(Unk_TailTreeB* pThis, Unk_TailNodeB* pNode)
 }
 
 // @0x140933240
-// MS2-FUNCTIONAL: template COMDAT of the std container glue, not reproducible from source
 bool FUN_140933240(Unk_TailTreeA* pThis, Unk_TailNodeA* pNode)
 {
     return pNode == pThis->m_pNil;
 }
 
 // @0x140933280
-// MS2-FUNCTIONAL: template COMDAT of the std container glue, not reproducible from source
 bool FUN_140933280(Unk_TailTreeB* pThis, Unk_TailNodeB* pNode)
 {
     return pNode == pThis->m_pNil;
 }
 
 // @0x140933320
-// MS2-FUNCTIONAL: template COMDAT of the std container glue, not reproducible from source
 void FUN_140933320(Unk_TailTreeA* pThis)
 {
     if (!FUN_140933240(pThis, pThis->m_pRoot))
@@ -1636,7 +1586,6 @@ void FUN_140933320(Unk_TailTreeA* pThis)
 }
 
 // @0x1409333a0
-// MS2-FUNCTIONAL: template COMDAT of the std container glue, not reproducible from source
 void FUN_1409333a0(Unk_TailTreeB* pThis)
 {
     if (!FUN_140933280(pThis, pThis->m_pRoot))
@@ -1649,7 +1598,6 @@ void FUN_1409333a0(Unk_TailTreeB* pThis)
 }
 
 // @0x140933420
-// MS2-FUNCTIONAL: template COMDAT of the std container glue, not reproducible from source
 void FUN_140933420(Unk_TailTreeA* pThis, Unk_TailNodeA* pNode)
 {
     if (FUN_140933240(pThis, pNode))
@@ -1660,7 +1608,6 @@ void FUN_140933420(Unk_TailTreeA* pThis, Unk_TailNodeA* pNode)
 }
 
 // @0x140933480
-// MS2-FUNCTIONAL: template COMDAT of the std container glue, not reproducible from source
 void FUN_140933480(Unk_TailTreeB* pThis, Unk_TailNodeB* pNode)
 {
     if (FUN_140933280(pThis, pNode))
@@ -1671,7 +1618,6 @@ void FUN_140933480(Unk_TailTreeB* pThis, Unk_TailNodeB* pNode)
 }
 
 // @0x1409339b0
-// MS2-FUNCTIONAL: template COMDAT of the std container glue, not reproducible from source
 void FUN_1409339b0(Unk_TailAlmTree* pThis, Unk_TailAlmNode* pRoot)
 {
     for (Unk_TailAlmNode* pNode = pRoot; !pNode->m_bNil; pRoot = pNode)
@@ -1685,7 +1631,6 @@ void FUN_1409339b0(Unk_TailAlmTree* pThis, Unk_TailAlmNode* pRoot)
 }
 
 // @0x140933a50
-// MS2-FUNCTIONAL: template COMDAT of the std container glue, not reproducible from source
 void FUN_140933a50(Unk_TailSet* pThis, Unk_TailSetNode* pRoot)
 {
     for (Unk_TailSetNode* pNode = pRoot; !pNode->m_bNil; pRoot = pNode)
@@ -1699,28 +1644,24 @@ void FUN_140933a50(Unk_TailSet* pThis, Unk_TailSetNode* pRoot)
 }
 
 // @0x140934680
-// MS2-FUNCTIONAL: template COMDAT of the std container glue, not reproducible from source
 void FUN_140934680(Unk_TailSet* pThis, Unk_TailSetNode* pNode)
 {
     FUN_140931e10(FUN_140934820(pThis), pNode);
 }
 
 // @0x140934730
-// MS2-FUNCTIONAL: template COMDAT of the std container glue, not reproducible from source
-void FUN_140934730(std::vector<Unk_TailPair>* pThis)
+void* FUN_140934730(std::vector<Unk_TailPair>* pThis)
 {
-    FUN_1409347e0(pThis);
+    return FUN_1409347e0(&reinterpret_cast<Unk_TailRefBox*>(pThis)->m_p);
 }
 
 // @0x1409347e0
-// MS2-FUNCTIONAL: template COMDAT of the std container glue, not reproducible from source
 void* FUN_1409347e0(void* pThis)
 {
     return pThis;
 }
 
 // @0x140934c70
-// MS2-FUNCTIONAL: template COMDAT of the std container glue, not reproducible from source
 void FUN_140934c70(Unk_TailBoxPtr* pThis)
 {
     if (pThis->m_p != 0)
@@ -1741,7 +1682,6 @@ void FUN_140934cd0(Unk_TailBoxPtr* pThis, void*)
 }
 
 // @0x140934fc0
-// MS2-FUNCTIONAL: template COMDAT of the std container glue, not reproducible from source
 void FUN_140934fc0(Unk_TailSet* pThis)
 {
     Unk_TailIter itEnd, itBegin, itRes;
@@ -1751,28 +1691,24 @@ void FUN_140934fc0(Unk_TailSet* pThis)
 }
 
 // @0x140935120
-// MS2-FUNCTIONAL: template COMDAT of the std container glue, not reproducible from source
 void FUN_140935120()
 {
     std::_Xout_of_range("invalid vector<T> subscript");
 }
 
 // @0x140935140
-// MS2-FUNCTIONAL: template COMDAT of the std container glue, not reproducible from source
 void* FUN_140935140(Unk_TailAlc*, size_t n)
 {
     return FUN_14015f9d0(FUN_140786280(n));
 }
 
 // @0x140935170
-// MS2-FUNCTIONAL: template COMDAT of the std container glue, not reproducible from source
 void* FUN_140935170(Unk_TailAlc*, size_t n)
 {
     return FUN_14015f9d0(FUN_140197cb0(n));
 }
 
 // @0x1409351d0
-// MS2-FUNCTIONAL: template COMDAT of the std container glue, not reproducible from source
 Unk_TailPair* FUN_1409351d0(std::vector<Unk_TailPair>* pThis, size_t n)
 {
     if (!(FUN_140935ac0(pThis) > n))
@@ -1781,44 +1717,37 @@ Unk_TailPair* FUN_1409351d0(std::vector<Unk_TailPair>* pThis, size_t n)
 }
 
 // @0x1409354f0
-// MS2-FUNCTIONAL: template COMDAT of the std container glue, not reproducible from source
 void FUN_1409354f0(Unk_TailAlc*, void* p, size_t n)
 {
     FUN_14015fc80(p, n * 0x50);
 }
 
 // @0x140935520
-// MS2-FUNCTIONAL: template COMDAT of the std container glue, not reproducible from source
 void FUN_140935520(Unk_TailAlc*, void* p, size_t n)
 {
     FUN_14015fc80(p, n * 0x38);
 }
 
 // @0x140935550
-// MS2-FUNCTIONAL: template COMDAT of the std container glue, not reproducible from source
 void FUN_140935550(Unk_TailAlc*, void* p, size_t n)
 {
     FUN_14015fc80(p, n * 0x50);
 }
 
 // @0x140935580
-// MS2-FUNCTIONAL: template COMDAT of the std container glue, not reproducible from source
 void FUN_140935580(Unk_TailAlc*, void* p, size_t n)
 {
     FUN_14015fc80(p, n * 0x38);
 }
 
 // @0x1409355e0
-// MS2-FUNCTIONAL: template COMDAT of the std container glue, not reproducible from source
 bool FUN_1409355e0(std::vector<Unk_TailPair>* pThis)
 {
-    const std::vector<Unk_TailPair>* pVec = pThis;
-    return pVec->_Myfirst() == pVec->_Mylast();     // 0x140934be0, 0x140934c20 (compares the pointers, not their slots)
+    return static_cast<const std::vector<Unk_TailPair>*>(pThis)->_Myfirst() == static_cast<const std::vector<Unk_TailPair>*>(pThis)->_Mylast();     // 0x140934be0, 0x140934c20 (compares the pointers, not their slots)
 }
 
 // @0x140935690
-// MS2-FUNCTIONAL: template COMDAT of the std container glue, not reproducible from source
-Unk_TailIter* FUN_140935690(Unk_TailSet* pThis, Unk_TailIter* pRet)
+Unk_TailIter* FUN_140935690(Unk_TailSet* pThis, Unk_TailIter* pRet) noexcept
 {
     Unk_TailSetNode** pVal = (Unk_TailSetNode**)FUN_1409346e0(pThis);
     FUN_1409326c0(pRet, *pVal, FUN_140932130(pVal));
@@ -1826,7 +1755,6 @@ Unk_TailIter* FUN_140935690(Unk_TailSet* pThis, Unk_TailIter* pRet)
 }
 
 // @0x140935980
-// MS2-FUNCTIONAL: template COMDAT of the std container glue, not reproducible from source
 Unk_TailIter* FUN_140935980(Unk_TailSet* pThis, Unk_TailIter* pRet, Unk_TailIter itWhere)
 {
     void* pVal = FUN_1409346e0(pThis);
@@ -1849,22 +1777,15 @@ void FUN_140935a90(std::vector<std::pair<int, __int64> >* pVec, std::pair<int, _
 }
 
 // @0x140932c10
-// MS2-FUNCTIONAL: MS2Ptr<CItemData>::AssignRaw COMDAT (swap through a temp), written through the public assignment
-MS2Ptr<CItemData>* FUN_140932c10(MS2Ptr<CItemData>* pThis, CItemData* pData)
-{
-    MS2Ptr<CItemData> spTmp(pData);
-    *pThis = spTmp;
-    return pThis;
-}
+// MS2Ptr<CItemData>::AssignRaw (ms2ptr_impl.h body: swap through a temp)
+template MS2Ptr<CItemData>& MS2Ptr<CItemData>::AssignRaw(CItemData* p);
 // @0x140932360
-// MS2-FUNCTIONAL: template COMDAT of the std container glue, not reproducible from source
 Unk_TailSetNode*& FUN_140932360(Unk_TailSetNode*& pNode)
 {
     return pNode;
 }
 
 // @0x1409327b0
-// MS2-FUNCTIONAL: template COMDAT of the std container glue, not reproducible from source
 Unk_TailTreeVal* FUN_1409327b0(Unk_TailTreeVal* pThis)
 {
     pThis->m_pHead = 0;
@@ -1873,14 +1794,12 @@ Unk_TailTreeVal* FUN_1409327b0(Unk_TailTreeVal* pThis)
 }
 
 // @0x140932830
-// MS2-FUNCTIONAL: template COMDAT of the std container glue, not reproducible from source
 Unk_TailTreeVal* FUN_140932830(Unk_TailTreeVal* pThis)
 {
     return pThis;
 }
 
 // @0x1409334e0
-// MS2-FUNCTIONAL: template COMDAT of the std container glue, not reproducible from source
 void FUN_1409334e0(CPtred* pPtr)
 {
     FUN_14015b020(pPtr);
@@ -1893,21 +1812,18 @@ Unk_TailVecVal* FUN_140934710(Unk_TailVecVal* pThis)
 }
 
 // @0x140934760
-// MS2-FUNCTIONAL: template COMDAT of the std container glue, not reproducible from source
 Unk_TailVecVal* FUN_140934760(Unk_TailVecVal* pThis)
 {
     return pThis;
 }
 
 // @0x1409347d0
-// MS2-FUNCTIONAL: template COMDAT of the std container glue, not reproducible from source
 Unk_TailVecVal* FUN_1409347d0(Unk_TailVecVal* pThis)
 {
     return pThis;
 }
 
 // @0x140932b80
-// MS2-FUNCTIONAL: template COMDAT of the std container glue, not reproducible from source
 void FUN_140932b80(Unk_TailSetVal* pThis)
 {
     FUN_14063e780(&pThis->m_ref);
@@ -1929,7 +1845,6 @@ Unk_TailAlmVal* FUN_140932fa0(Unk_TailAlmVal* pThis, unsigned nFlags)
 }
 
 // @0x140932fe0
-// MS2-FUNCTIONAL: template COMDAT of the std container glue, not reproducible from source
 Unk_TailSetVal* FUN_140932fe0(Unk_TailSetVal* pThis, unsigned nFlags)
 {
     FUN_140932b80(pThis);

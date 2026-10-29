@@ -234,13 +234,13 @@ int FUN_1413482e0(const Unk_ShopTabArray& arr, MS2Ptr<CShopCategoryTable::TabInf
 MS2_REPLACE(0x1413482e0, FUN_1413482e0, 213, 0x5B7DB259);
 
 // @0x1413483c0
-// MS2-FUNCTIONAL: string search loop; frame / EH temp layout differs from the exe
+// MS2-FUNCTIONAL: code-identical except EH: the exe gives strToken an EH state (nop after Tokenize, a handler, frame 0x68), so its _stricmp counted as throwing there; ours sees the extern "C" _stricmp as nothrow under /EHsc
 // Is strCategory one of the comma separated entries of strList (case-insensitive)?
 int FUN_1413483c0(const CString& strCategory, const CString& strList)
 {
     int nPos = strList.Find(strCategory, 0);
     int nLen = strList.GetLength();
-    for (; nPos > -1 && nPos < nLen; nPos = strList.Find(strCategory, nPos))
+    while (nPos >= 0 && nPos < nLen)
     {
         int nPrev = nPos - 1 < 0 ? 0 : nPos - 1;
         if (nPrev == 0 || strList.GetAt(nPrev) == ',')
@@ -250,27 +250,26 @@ int FUN_1413483c0(const CString& strCategory, const CString& strList)
                 return 1;
         }
         strList.Tokenize(",", nPos);
+        nPos = strList.Find(strCategory, nPos);
     }
     return 0;
 }
 
 // @0x141348530
-// MS2-FUNCTIONAL: tab list loop; temp spill order differs
 void FUN_141348530(int nShop, Unk_ShopTabArray& arr)
 {
     arr.RemoveAll();
     CShopCategoryTable::TabListPtr spTabs = FUN_1406aa4b0()->GetTabs(nShop);
-    if (spTabs.get() && !spTabs->IsEmpty())
+    if ((spTabs.get() ? true : false) && !spTabs->IsEmpty())
         FUN_1413487e0(arr, *spTabs, MS2Ptr<CNpcShopProductBase>(0), 0);
 }
 
 // @0x141348610
-// MS2-FUNCTIONAL: map iteration; iterator temp layout differs
 void FUN_141348610(int nShop, Unk_ShopTabArray& arr, std::map<int, MS2Ptr<CNpcShopProductBase> >& products)
 {
     arr.RemoveAll();
     CShopCategoryTable::TabListPtr spTabs = FUN_1406aa4b0()->GetTabs(nShop);
-    if (spTabs.get() && !spTabs->IsEmpty())
+    if ((spTabs.get() ? true : false) && !spTabs->IsEmpty())
     {
         if (!products.empty())
         {
@@ -351,7 +350,6 @@ void FUN_141348cf0(const Unk_ShopTabArray& arr, MS2Ptr<AScript> spRoot, int nSal
 MS2_REPLACE(0x141348cf0, FUN_141348cf0, 211, 0xEC8D684F);
 
 // @0x141348dd0
-// MS2-FUNCTIONAL: tab writer loop; temp layout differs
 void FUN_141348dd0(const Unk_ShopTabArray& arr, ASArray& out, int* pMaxDepth, int nSale, Delegate<void(AScript&)>* pfnEach)
 {
     *pMaxDepth = 0;
@@ -370,12 +368,10 @@ void FUN_141348dd0(const Unk_ShopTabArray& arr, ASArray& out, int* pMaxDepth, in
         spTab->Write(reinterpret_cast<Unk_AsOut*>(&obj));
         int nDepth = spInfo->m_nDepth;
         obj.FUN_1407cb9c0("depth", nDepth);
-        if (nDepth < *pMaxDepth)
-            nDepth = *pMaxDepth;
-        *pMaxDepth = nDepth;
+        *pMaxDepth = (*pMaxDepth > nDepth) ? *pMaxDepth : nDepth;
         obj.FUN_140e846b0("tabindex", i);
         int nId = spTab->GetId();
-        if (nSale != 0 && FUN_1403ed2a0()->FUN_1407ce690(nId, nSale))
+        if ((unsigned)nSale > 0 && FUN_1403ed2a0()->FUN_1407ce690(nId, nSale))
             obj.FUN_1407cbbe0("saleTag", true);
         obj.FUN_1407cb9c0("space", 1);
         if (pfnEach != 0 && !pfnEach->IsNull())
@@ -473,7 +469,6 @@ void FUN_141349210(MS2Ptr<CItem> spItem, Scaleform::GFx::Value* pOut, bool bCapt
 // ---- shop open / message boxes ----
 
 // @0x1413499b0
-// MS2-FUNCTIONAL: frame size: the exe keeps one fewer temp slot (2 attempts)
 int FUN_1413499b0(int nTab)
 {
     if (FUN_1403ed2b0()->FUN_141adc7f0((eUIClassID)0x4e3b) == 0)
@@ -497,7 +492,7 @@ int FUN_1413499b0(int nTab)
         if (bOpen)
         {
             FUN_140714f90()->FUN_141538c40(nTab, 1);
-            FUN_141276180(s_strBuildOpenShop, CString(""));
+            FUN_141276180(s_strBuildOpenShop, "");
         }
         else
         {

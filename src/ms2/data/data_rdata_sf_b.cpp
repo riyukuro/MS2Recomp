@@ -540,6 +540,9 @@ void FUN_1424e2a10();
 void FUN_1424e2ac0();
 void FUN_1424e2c90();
 void FUN_1424e2e70();
+void FUN_142928b00();
+void FUN_142928dc0();
+void FUN_142928c70();
 void FUN_1424e3020();
 void FUN_1424e3290();
 void FUN_1424e33f0();
@@ -1379,11 +1382,13 @@ struct Sd_14317af80 {
     const void* p10;
     const void* p18;
     unsigned char b20[0x48];
-    const void* p68;
-    const void* p70;
-    const void* p78;
-    const void* p80;
-    const void* p88;
+};
+struct Sd_14317afe8 {
+    const void* p0;
+    const void* p8;
+    const void* p10;
+    const void* p18;
+    const void* p20;
 };
 struct Sd_14317b058 {
     const void* p0;
@@ -3541,12 +3546,19 @@ struct Sd_143214fc8 {
 struct Sd_143215368 {
     const void* p0;
 };
+struct Sd_1432153a0 {
+    const void* p0;
+    const void* p8;
+    const void* p10;
+};
 struct Sd_143215a98 {
     const void* p0;
     const void* p8;
     const void* p10;
-    const void* p18;
-    const void* p20;
+};
+struct Sd_143215ab0 {
+    const void* p0;
+    const void* p8;
 };
 struct Sd_143217750 {
     const void* p0;
@@ -4477,6 +4489,9 @@ alignas(16) Sd_14317af80 DAT_14317af80 = {
         0x5b, 0x6f, 0x62, 0x6a, 0x65, 0x63, 0x74, 0x20, 0x00, 0x00, 0x00, 0x00, 0x76, 0x6f, 0x69, 0x64,
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
+};
+// 0x14317afe8
+alignas(8) Sd_14317afe8 DAT_14317afe8 = {
     (const void*)&FUN_1424e2e70,
     DAT_14280ef52,
     DAT_14280ef52,
@@ -9129,11 +9144,20 @@ alignas(8) Sd_143214fc8 DAT_143214fc8 = {
 alignas(8) Sd_143215368 DAT_143215368 = {
     (const void*)&FUN_142928a40,
 };
+// 0x1432153a0
+alignas(8) Sd_1432153a0 DAT_1432153a0 = {
+    (const void*)&FUN_142928c70,
+    (const void*)&FUN_142928dc0,
+    (const void*)&FUN_142928b00,
+};
 // 0x143215a98
 alignas(8) Sd_143215a98 DAT_143215a98 = {
     (const void*)&FUN_142941190,
     (const void*)&FUN_142942db0,
     (const void*)&FUN_14292ba00,
+};
+// 0x143215ab0
+alignas(8) Sd_143215ab0 DAT_143215ab0 = {
     (const void*)&FUN_1429276e0,
     (const void*)&FUN_142966210,
 };
@@ -9957,5 +9981,11 @@ alignas(8) Sd_1432223d8 DAT_1432223d8 = {
 #pragma comment(linker, "/alternatename:?DAT_14313dbc0@@3PAEA=?ArrayCI@fl@AS3@GFx@Scaleform@@3UClassInfo@234@B")
 #pragma comment(linker, "/alternatename:?DAT_143150b00@@3PAEA=?EventDispatcherCI@fl_events@AS3@GFx@Scaleform@@3UClassInfo@234@B")
 #pragma comment(linker, "/alternatename:?DAT_143a2dd50@@3PAEA=DAT_143a2dd50")
+
+// rt1: vftables the AS2/AS3 TUs declare by address
+#pragma comment(linker, "/alternatename:?DAT_14317afe8@AS2@GFx@Scaleform@@3PAPEBXA=?DAT_14317afe8@@3USd_14317afe8@@A")
+#pragma comment(linker, "/alternatename:?DAT_14317afe8@AS3@GFx@Scaleform@@3PAPEBXA=?DAT_14317afe8@@3USd_14317afe8@@A")
+#pragma comment(linker, "/alternatename:?DAT_1432153a0@AS2@GFx@Scaleform@@3PAPEBXA=?DAT_1432153a0@@3USd_1432153a0@@A")
+#pragma comment(linker, "/alternatename:?DAT_143215ab0@AS2@GFx@Scaleform@@3PAPEBXA=?DAT_143215ab0@@3USd_143215ab0@@A")
 
 #endif // MS2_HOOK_DLL

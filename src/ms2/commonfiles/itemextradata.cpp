@@ -37,9 +37,9 @@ float FUN_14029dd40(float f);                                   // fabs
 extern float DAT_1439f4838;                                     // 0.01f: FUN_14059bfe0's tolerance (a .data global in the exe)
 extern float DAT_1439f483c;                                     // 0.01f: FUN_14059c020's tolerance
 CStringW GetStringCommon(int nId, void* a, void* b, int nFlag);   // string table text with two arguments
+CStringW GetStringCommon(int nId);
 
-static bool FUN_14059d190(Vector3* p);
-static inline const Vector3& AsPt(const efd::Point3& p) { return *(const Vector3*)&p; }
+static int FUN_14059d190(Vector3* p);
 
 // ---- the float helpers of the unit ----
 
@@ -55,10 +55,15 @@ static int FUN_14059bfe0(float a, float b)
 }
 
 // @0x14059c020
-// MS2-FUNCTIONAL: MSVC /Od temp and branch layout of the inlined smart-pointer / vector / point copies differs; same operations in the same order
-static bool FUN_14059c020(const Vector3& a, const Vector3& b)
+static int FUN_14059c020(Vector3 a, Vector3 b)
 {
-    return FUN_14059d930(a.x - b.x) > DAT_1439f483c || FUN_14059d930(a.y - b.y) > DAT_1439f483c || FUN_14059d930(a.z - b.z) > DAT_1439f483c;
+    if (FUN_14059d930(a.x - b.x) > DAT_1439f483c)
+        return 1;
+    if (FUN_14059d930(a.y - b.y) > DAT_1439f483c)
+        return 1;
+    if (FUN_14059d930(a.z - b.z) > DAT_1439f483c)
+        return 1;
+    return 0;
 }
 
 // ---- EquipColorInfo ----
@@ -155,7 +160,6 @@ int CItemExtraData::vfunc_2(const CItemExtraData* pOther)
 MS2_REPLACE_METHOD(0x140598FF0, CItemExtraData, vfunc_2, 82, 0x373D0EFF);
 
 // @0x140599050
-// MS2-FUNCTIONAL: MSVC /Od temp and branch layout of the inlined smart-pointer / vector / point copies differs; same operations in the same order
 void CItemExtraData::vfunc_4(CItemData* pData)
 {
     if (pData->FUN_14053e370())
@@ -213,12 +217,14 @@ void CItemExtraData::vfunc_8(CInputStream& is)
 MS2_REPLACE_METHOD(0x140599340, CItemExtraData, vfunc_8, 95, 0xB13713E5);
 
 // @0x1405993b0
-// MS2-FUNCTIONAL: the temporary for the new slot takes a larger frame; same calls
 void CItemExtraData::FUN_1405993b0(unsigned nCount)
 {
     m_colors.clear();
     for (unsigned i = 0; i < nCount; i++)
-        m_colors.push_back(ColorPtr(new EquipColorInfo));
+    {
+        ColorPtr spColor(new EquipColorInfo);
+        m_colors.push_back(spColor);
+    }
 }
 MS2_REPLACE_METHOD(0x1405993B0, CItemExtraData, FUN_1405993b0, 187, 0xD8265443);
 
@@ -230,45 +236,41 @@ bool CItemExtraData::FUN_140599480(const ItemColorEx& kColor, MS2Ptr<CItemData> 
 MS2_REPLACE_METHOD(0x140599480, CItemExtraData, FUN_140599480, 130, 0x05239006);
 
 // @0x140599510
-// MS2-FUNCTIONAL: local slot numbering of the && temporaries differs; same compares
 int CItemExtraData::FUN_140599510(const ItemColorEx& kColor, MS2Ptr<CItemData> spData)
 {
     int nResult = 1;
     for (unsigned i = 0; i < 3; i++)
     {
-        if (FUN_14059a230(0)->m_aRgb[i] != kColor.m_aValues[i])
+        bool bDiff = FUN_14059a230(0)->m_aRgb[i] != kColor.m_aValues[i];
+        if (bDiff)
         {
             nResult = 0;
             break;
         }
     }
-    if (nResult != 0 || kColor.m_nId != 100000000)
-        return nResult;
-    if (!(spData == 0))
+    if (nResult == 0 && kColor.m_nId == 100000000)
     {
-        if (spData.get() == 0)
-            return nResult;
-        if (!spData->FUN_14053d020())
-            return nResult;
+        if (spData == 0 || ((spData.get() != 0 ? true : false) && spData->FUN_14053d020()))
+        {
+            bool bSame = FUN_14059a230(0)->m_aRgb[0] == kColor.m_n30 && FUN_14059a230(0)->m_aRgb[1] == kColor.m_aValues[1]
+                && FUN_14059a230(0)->m_aRgb[2] == kColor.m_n34;
+            if (bSame)
+                nResult = 1;
+        }
     }
-    bool bSame = FUN_14059a230(0)->m_aRgb[0] == kColor.m_n30 && FUN_14059a230(0)->m_aRgb[1] == kColor.m_aValues[1]
-        && FUN_14059a230(0)->m_aRgb[2] == kColor.m_n34;
-    if (bSame)
-        nResult = 1;
     return nResult;
 }
 MS2_REPLACE_METHOD(0x140599510, CItemExtraData, FUN_140599510, 789, 0xBFB0C7A2);
 
 // @0x140599830
-// MS2-FUNCTIONAL: MSVC /Od temp and branch layout of the inlined smart-pointer / vector / point copies differs; same operations in the same order
 int CItemExtraData::FUN_140599830(const CItemExtraData* pOther)
 {
     if (FUN_14059d140() != pOther->FUN_14059d140())
         return 0;
-    EquipColorInfo* pOtherColor = pOther->FUN_14059a230(0).operator->();
+    int* pOtherRgb = pOther->FUN_14059a230(0)->m_aRgb;
     for (unsigned i = 0; i < 3; i++)
     {
-        if (FUN_14059a230(0)->m_aRgb[i] != pOtherColor->m_aRgb[i])
+        if (FUN_14059a230(0)->m_aRgb[i] != pOtherRgb[i])
             return 0;
     }
     return 1;
@@ -276,15 +278,14 @@ int CItemExtraData::FUN_140599830(const CItemExtraData* pOther)
 MS2_REPLACE_METHOD(0x140599830, CItemExtraData, FUN_140599830, 300, 0x11708C7C);
 
 // @0x140599970
-// MS2-FUNCTIONAL: MSVC /Od temp and branch layout of the inlined smart-pointer / vector / point copies differs; same operations in the same order
 int CItemExtraData::FUN_140599970(const CItemExtraData* pOther)
 {
     if (FUN_14059d130() != pOther->FUN_14059d130())
         return 0;
-    EquipColorInfo* pOtherColor = pOther->FUN_14059a230(0).operator->();
+    int* pOtherRgb = pOther->FUN_14059a230(0)->m_aRgb;
     for (unsigned i = 0; i < 3; i++)
     {
-        if (FUN_14059a230(0)->m_aRgb[i] != pOtherColor->m_aRgb[i])
+        if (FUN_14059a230(0)->m_aRgb[i] != pOtherRgb[i])
             return 0;
     }
     return 1;
@@ -294,19 +295,15 @@ MS2_REPLACE_METHOD(0x140599970, CItemExtraData, FUN_140599970, 300, 0xF1923389);
 ItemModelHead* FUN_14053ec70(CItemData* pData);
 
 // @0x140599ab0
-// MS2-FUNCTIONAL: MSVC /Od temp and branch layout of the inlined smart-pointer / vector / point copies differs; same operations in the same order
 void CItemExtraData::FUN_140599ab0(CItemData* pData)
 {
-    if (pData != 0 && pData->FUN_14053e260() != 0)
+    if (pData == 0 || pData->FUN_14053e260() == 0)
+        return;
+    for (unsigned i = 0; i < (unsigned)FUN_14053ec70(pData)->FUN_140547330(); i++)
     {
-        for (unsigned i = 0; i < FUN_14053ec70(pData)->FUN_140547330(); i++)
-        {
-            int nIndex = pData->FUN_14053e2b0(i);
-            int nPalette = pData->FUN_14053e260();
-            MS2Ptr<ItemColorEx> spColor = FUN_140281980()->GetPaletteColorOrRandom(nPalette, nIndex);
-            if (spColor.get() != 0)
-                FUN_140599bc0(spColor.operator->(), 0, pData->FUN_14053e310(i), i);
-        }
+        MS2Ptr<ItemColorEx> spColor = FUN_140281980()->GetPaletteColorOrRandom(pData->FUN_14053e260(), pData->FUN_14053e2b0(i));
+        if (spColor.get() != 0)
+            FUN_140599bc0(spColor.operator->(), 0, pData->FUN_14053e310(i), i);
     }
 }
 MS2_REPLACE_METHOD(0x140599AB0, CItemExtraData, FUN_140599ab0, 258, 0x31D11ED4);
@@ -335,15 +332,13 @@ void CItemExtraData::FUN_140599d10(ATL::CAtlArray<int>& aValues, unsigned nSlot)
 MS2_REPLACE_METHOD(0x140599D10, CItemExtraData, FUN_140599d10, 383, 0x5601278D);
 
 // @0x140599ea0
-// MS2-FUNCTIONAL: MSVC /Od temp and branch layout of the inlined smart-pointer / vector / point copies differs; same operations in the same order
 void CItemExtraData::FUN_140599ea0(int nIndex, const int& nValue, unsigned nSlot)
 {
-    if (nIndex >= 0 && nIndex < 3)
-    {
-        FUN_14059a230(nSlot)->m_aRgb[nIndex] = nValue;
-        FUN_14059a230(nSlot)->m_n24 = -1;
-        FUN_14059a230(nSlot)->m_n28 = 0;
-    }
+    if (nIndex < 0 || nIndex >= 3)
+        return;
+    FUN_14059a230(nSlot)->m_aRgb[nIndex] = nValue;
+    FUN_14059a230(nSlot)->m_n24 = -1;
+    FUN_14059a230(nSlot)->m_n28 = 0;
 }
 MS2_REPLACE_METHOD(0x140599EA0, CItemExtraData, FUN_140599ea0, 287, 0x2890776D);
 
@@ -419,7 +414,6 @@ CItemExtraData::ColorPtr CItemExtraData::FUN_14059a2c0()
 MS2_REPLACE_METHOD(0x14059A2C0, CItemExtraData, FUN_14059a2c0, 135, 0x5AAF8249);
 
 // @0x14059a350
-// MS2-FUNCTIONAL: MSVC /Od temp and branch layout of the inlined smart-pointer / vector / point copies differs; same operations in the same order
 bool CItemExtraData::FUN_14059a350()
 {
     if (!m_bMulti)
@@ -428,8 +422,7 @@ bool CItemExtraData::FUN_14059a350()
     {
         m_nNextTick = FUN_140869420() + FUN_14059a120();
         int nCount = (int)m_colors.size();
-        m_nIndex++;
-        if (nCount <= m_nIndex)
+        if (++m_nIndex >= nCount)
             m_nIndex = 0;
         return true;
     }
@@ -474,7 +467,6 @@ static float FUN_14059d110(CharacterDecalData* p) { return p->unknown20; }
 static float FUN_14059d120(CharacterDecalData* p) { return p->unknown24; }
 
 // @0x14059a480
-// MS2-FUNCTIONAL: MSVC /Od temp and branch layout of the inlined smart-pointer / vector / point copies differs; same operations in the same order
 void CDecalExtraData::vfunc_4(CItemData* pData)
 {
     CItemExtraData::vfunc_4(pData);
@@ -485,18 +477,17 @@ void CDecalExtraData::vfunc_4(CItemData* pData)
         m_f5c = FUN_14059d120(pDecal);
         m_f64 = FUN_14059d0f0(pDecal);
         m_f60 = FUN_14059d100(pDecal);
-        std::vector<MS2Ptr<ItemCustom> >* pList = pDecal->FUN_1401e41c0();
-        if (!pList->empty())
+        if (!pDecal->FUN_1401e41c0()->empty())
         {
-            int nCount = (int)pList->size();
-            int r = rand();
-            m_nPick = r % nCount;
-            MS2Ptr<ItemCustom>& spCustom = (*pList)[r % nCount];
+            int nCount = (int)pDecal->FUN_1401e41c0()->size();
+            int r = rand() % nCount;
+            m_nPick = r;
+            MS2Ptr<ItemCustom>& spCustom = (*pDecal->FUN_1401e41c0())[r];
             m_f58 = spCustom->unknown18.x;
             m_f5c = spCustom->unknown18.y;
             m_f64 = spCustom->unknown24.z;
         }
-        if (pData->FUN_14053eba0()->FUN_14054b3d0() != 0)
+        if (pData->FUN_14053eba0()->FUN_14054b3d0() > 0)
             m_f60 = pData->FUN_14053eba0()->FUN_14054b2f0(0)->FUN_1405450f0(0);
     }
 }
@@ -540,14 +531,20 @@ void CDecalExtraData::vfunc_6(CInputStream& is)
 MS2_REPLACE_METHOD(0x14059A740, CDecalExtraData, vfunc_6, 138, 0x8D92BBDB);
 
 // @0x14059a7d0
-// MS2-FUNCTIONAL: MSVC /Od temp and branch layout of the inlined smart-pointer / vector / point copies differs; same operations in the same order
 int CDecalExtraData::vfunc_2(const CItemExtraData* p)
 {
-    const CDecalExtraData* pOther = (const CDecalExtraData*)p;
     if (!CItemExtraData::vfunc_2(p))
         return 0;
-    return !FUN_14059bfe0(m_f58, pOther->m_f58) && !FUN_14059bfe0(m_f5c, pOther->m_f5c) && !FUN_14059bfe0(m_f60, pOther->m_f60)
-        && !FUN_14059bfe0(m_f64, pOther->m_f64);
+    const CDecalExtraData* pOther = (const CDecalExtraData*)p;
+    if (FUN_14059bfe0(m_f58, pOther->m_f58))
+        return 0;
+    if (FUN_14059bfe0(m_f5c, pOther->m_f5c))
+        return 0;
+    if (FUN_14059bfe0(m_f60, pOther->m_f60))
+        return 0;
+    if (FUN_14059bfe0(m_f64, pOther->m_f64))
+        return 0;
+    return 1;
 }
 MS2_REPLACE_METHOD(0x14059A7D0, CDecalExtraData, vfunc_2, 192, 0x5E8EF508);
 
@@ -573,59 +570,53 @@ CHairExtraData::CHairExtraData()
 }
 
 // @0x14059aa20
-// MS2-FUNCTIONAL: MSVC /Od temp and branch layout of the inlined smart-pointer / vector / point copies differs; same operations in the same order
 void CHairExtraData::FUN_14059aa20()
 {
     for (int i = 0; i < 2; i++)
     {
         float f;
-        if (m_fScale[i] >= 0.0f)
-            f = m_fScale[i];
-        else
+        if (m_fScale[i] < 0.0f)
             f = 0;
+        else
+            f = m_fScale[i];
         m_fScale[i] = f;
     }
 }
 MS2_REPLACE_METHOD(0x14059AA20, CHairExtraData, FUN_14059aa20, 111, 0x557560E6);
 
 // @0x14059aaa0
-// MS2-FUNCTIONAL: MSVC /Od temp and branch layout of the inlined smart-pointer / vector / point copies differs; same operations in the same order
 void CHairExtraData::vfunc_4(CItemData* pData)
 {
     CItemExtraData::vfunc_4(pData);
-    if (pData->FUN_14053eba0()->FUN_14054b3d0() != 0)
+    if (pData->FUN_14053eba0()->FUN_14054b3d0() == 0)
+        return;
+    const ModelGroup* pGroup = pData->FUN_14053eba0()->FUN_14054b2f0(0);
+    int nPick = -1;
+    int nSlot = 0;
+    for (size_t i = 0; i < pGroup->FUN_1405450c0() && nSlot < 2; i++)
     {
-        const ModelGroup* pGroup = pData->FUN_14053eba0()->FUN_14054b2f0(0);
-        int nPick = -1;
-        int nSlot = 0;
-        for (size_t i = 0; i < pGroup->FUN_1405450c0() && nSlot < 2; i++)
+        const ModelPart* pPart = pGroup->FUN_140544fe0(i);
+        if (pPart->pony != 0 && !pPart->customs.empty())
         {
-            const ModelPart* pPart = pGroup->FUN_140544fe0(i);
-            if (pPart->pony != 0 && !pPart->customs.empty())
-            {
-                size_t nCount = pPart->customs.size();
-                if (nPick == -1)
-                {
-                    int r = rand();
-                    nPick = (int)((unsigned __int64)(__int64)r % nCount);
-                }
-                m_nPick = nPick;
-                MS2Ptr<ItemCustom> spCustom = pPart->customs[nPick];
-                m_aPt1[nSlot] = AsPt(spCustom.get()->unknown18);
-                m_aPt2[nSlot] = AsPt(spCustom.get()->unknown24);
-                nSlot++;
-            }
+            size_t nCount = pPart->customs.size();
+            if (nPick == -1)
+                nPick = (int)(rand() % nCount);
+            m_nPick = nPick;
+            ItemCustom* pCustom = pPart->customs[nPick].get();
+            m_aPt1[nSlot] = *(const Vector3*)&pCustom->unknown18;
+            m_aPt2[nSlot] = *(const Vector3*)&pCustom->unknown24;
+            nSlot++;
         }
-        for (int i = 0; i < 2; i++)
-            m_fScale[i] = pGroup->FUN_140544f20(i)->FUN_140544c20();
-        FUN_14059aa20();
-        m_bUseScale = 1;
-        m_bUsePt2 = 1;
-        m_bUsePt1 = 1;
-        m_bUseScale = FUN_14053ec70(pData)->FUN_140547130();
-        m_bUsePt1 = FUN_14053ec70(pData)->FUN_140547170();
-        m_bUsePt2 = m_bUsePt1;
     }
+    for (int i = 0; i < 2; i++)
+        m_fScale[i] = pGroup->FUN_140544f20(i)->FUN_140544c20();
+    FUN_14059aa20();
+    m_bUseScale = 1;
+    m_bUsePt2 = 1;
+    m_bUsePt1 = 1;
+    m_bUseScale = FUN_14053ec70(pData)->FUN_140547130();
+    m_bUsePt1 = FUN_14053ec70(pData)->FUN_140547170();
+    m_bUsePt2 = m_bUsePt1;
 }
 MS2_REPLACE_METHOD(0x14059AAA0, CHairExtraData, vfunc_4, 619, 0x92D8C0B2);
 
@@ -664,7 +655,6 @@ void CHairExtraData::vfunc_5(COutputStream& os)
 MS2_REPLACE_METHOD(0x14059AE50, CHairExtraData, vfunc_5, 208, 0x03EF954E);
 
 // @0x14059af30
-// MS2-FUNCTIONAL: MSVC /Od temp and branch layout of the inlined smart-pointer / vector / point copies differs; same operations in the same order
 void CHairExtraData::vfunc_6(CInputStream& is)
 {
     CItemExtraData::vfunc_6(is);
@@ -698,12 +688,11 @@ void CHairExtraData::vfunc_6(CInputStream& is)
 MS2_REPLACE_METHOD(0x14059AF30, CHairExtraData, vfunc_6, 678, 0x0721B862);
 
 // @0x14059b1e0
-// MS2-FUNCTIONAL: MSVC /Od temp and branch layout of the inlined smart-pointer / vector / point copies differs; same operations in the same order
 int CHairExtraData::vfunc_2(const CItemExtraData* p)
 {
-    const CHairExtraData* pOther = (const CHairExtraData*)p;
     if (!CItemExtraData::vfunc_2(p))
         return 0;
+    const CHairExtraData* pOther = (const CHairExtraData*)p;
     for (int i = 0; i < 2; i++)
     {
         if (FUN_14059bfe0(m_fScale[i], pOther->m_fScale[i]))
@@ -720,81 +709,70 @@ MS2_REPLACE_METHOD(0x14059B1E0, CHairExtraData, vfunc_2, 348, 0xD1770D42);
 // ---- CCapExtraData ----
 
 // @0x14059b350
-// MS2-FUNCTIONAL: MSVC /Od temp and branch layout of the inlined smart-pointer / vector / point copies differs; same operations in the same order
 CCapExtraData::CCapExtraData()
 {
     m_nKind = 3;
     for (int i = 0; i < 1; i++)
     {
-        m_aPt[0].z = 0;
-        m_aPt[0].y = 0;
-        m_aPt[0].x = 0;
-        m_aPt[1].z = 0;
-        m_aPt[1].y = 0;
-        m_aPt[1].x = 0;
-        m_aPt[2].z = 0;
-        m_aPt[2].y = 0;
-        m_aPt[2].x = 0;
-        m_aPt[3].z = 0;
-        m_aPt[3].y = 0;
-        m_aPt[3].x = 0;
+        m_aPt0[i].z = 0;
+        m_aPt0[i].y = 0;
+        m_aPt0[i].x = 0;
+        m_aPt1[i].z = 0;
+        m_aPt1[i].y = 0;
+        m_aPt1[i].x = 0;
+        m_aPt2[i].z = 0;
+        m_aPt2[i].y = 0;
+        m_aPt2[i].x = 0;
+        m_aPt3[i].z = 0;
+        m_aPt3[i].y = 0;
+        m_aPt3[i].x = 0;
     }
     m_f58 = 0;
 }
 
 // @0x14059b580
-// MS2-FUNCTIONAL: MSVC /Od temp and branch layout of the inlined smart-pointer / vector / point copies differs; same operations in the same order
 void CCapExtraData::vfunc_4(CItemData* pData)
 {
     CItemExtraData::vfunc_4(pData);
-    if (pData->FUN_14053eba0()->FUN_14054b3d0() != 0)
+    if (pData->FUN_14053eba0()->FUN_14054b3d0() == 0)
+        return;
+    const ModelGroup* pGroup = pData->FUN_14053eba0()->FUN_14054b2f0(0);
+    for (unsigned int i = 0; i < 1; i++)
     {
-        const ModelGroup* pGroup = pData->FUN_14053eba0()->FUN_14054b2f0(0);
-        bool bDone = false;
-        while (!bDone)
+        if (i >= pGroup->FUN_1405450c0())
+            continue;
+        const ModelPart* pPart = pGroup->FUN_140544fe0(i);
+        if (!pPart->customs.empty())
         {
-            if (pGroup->FUN_1405450c0() != 0)
-            {
-                const ModelPart* pPart = pGroup->FUN_140544fe0(0);
-                if (!pPart->customs.empty())
-                {
-                    int r = rand();
-                    int nCount = (int)pPart->customs.size();
-                    MS2Ptr<ItemCustom> spCustom = pPart->customs[r % nCount];
-                    m_aPt[0] = AsPt(spCustom.get()->unknown18);
-                    m_aPt[1] = AsPt(spCustom.get()->unknown24);
-                    m_nPick = r % nCount;
-                }
-                if (!pPart->points.empty())
-                {
-                    int r = rand();
-                    int nCount = (int)pPart->points.size();
-                    m_aPt[3] = AsPt(pPart->points[r % nCount]);
-                }
-            }
-            bDone = true;
+            int nIdx = rand() % (int)pPart->customs.size();
+            ItemCustom* pCustom = pPart->customs[nIdx].get();
+            m_aPt0[i] = *(const Vector3*)&pCustom->unknown18;
+            m_aPt1[i] = *(const Vector3*)&pCustom->unknown24;
+            m_nPick = nIdx;
         }
-        m_f58 = pGroup->FUN_140544f20(0)->FUN_140544c20();
+        if (!pPart->points.empty())
+        {
+            int nIdx = rand() % (int)pPart->points.size();
+            m_aPt3[i] = *(const Vector3*)&pPart->points[nIdx];
+        }
     }
+    m_f58 = pGroup->FUN_140544f20(0)->FUN_140544c20();
 }
 MS2_REPLACE_METHOD(0x14059B580, CCapExtraData, vfunc_4, 558, 0x209EDBB1);
 
 // @0x14059b7c0
-// MS2-FUNCTIONAL: MSVC /Od temp and branch layout of the inlined smart-pointer / vector / point copies differs; same operations in the same order
 void CCapExtraData::vfunc_3(const CItemExtraData* p)
 {
     CItemExtraData::vfunc_3(p);
     const CCapExtraData* pOther = (const CCapExtraData*)p;
     if (pOther != 0)
     {
-        bool bDone = false;
-        while (!bDone)
+        for (unsigned int i = 0; i < 1; i++)
         {
-            m_aPt[0] = pOther->m_aPt[0];
-            m_aPt[1] = pOther->m_aPt[1];
-            m_aPt[2] = pOther->m_aPt[2];
-            m_aPt[3] = pOther->m_aPt[3];
-            bDone = true;
+            m_aPt0[i] = pOther->m_aPt0[i];
+            m_aPt1[i] = pOther->m_aPt1[i];
+            m_aPt2[i] = pOther->m_aPt2[i];
+            m_aPt3[i] = pOther->m_aPt3[i];
         }
         m_f58 = pOther->m_f58;
     }
@@ -802,77 +780,74 @@ void CCapExtraData::vfunc_3(const CItemExtraData* p)
 MS2_REPLACE_METHOD(0x14059B7C0, CCapExtraData, vfunc_3, 294, 0x015D4E75);
 
 // @0x14059b8f0
-// MS2-FUNCTIONAL: MSVC /Od temp and branch layout of the inlined smart-pointer / vector / point copies differs; same operations in the same order
 void CCapExtraData::vfunc_5(COutputStream& os)
 {
     CItemExtraData::vfunc_5(os);
     for (int i = 0; i < 1; i++)
     {
-        os.WriteVector3(m_aPt[0]);
-        os.WriteVector3(m_aPt[1]);
-        os.WriteVector3(m_aPt[2]);
-        os.WriteVector3(m_aPt[3]);
+        os.WriteVector3(m_aPt0[i]);
+        os.WriteVector3(m_aPt1[i]);
+        os.WriteVector3(m_aPt2[i]);
+        os.WriteVector3(m_aPt3[i]);
     }
     os.WriteFloat(m_f58);
 }
 MS2_REPLACE_METHOD(0x14059B8F0, CCapExtraData, vfunc_5, 291, 0x1817F2EB);
 
 // @0x14059ba20
-// MS2-FUNCTIONAL: MSVC /Od temp and branch layout of the inlined smart-pointer / vector / point copies differs; same operations in the same order
 void CCapExtraData::vfunc_6(CInputStream& is)
 {
     CItemExtraData::vfunc_6(is);
     CCapExtraData kTemp;
     for (int i = 0; i < 1; i++)
     {
-        kTemp.m_aPt[0] = is.ReadVector3();
-        kTemp.m_aPt[1] = is.ReadVector3();
-        kTemp.m_aPt[2] = is.ReadVector3();
-        kTemp.m_aPt[3] = is.ReadVector3();
+        kTemp.m_aPt0[i] = is.ReadVector3();
+        kTemp.m_aPt1[i] = is.ReadVector3();
+        kTemp.m_aPt2[i] = is.ReadVector3();
+        kTemp.m_aPt3[i] = is.ReadVector3();
     }
     kTemp.m_f58 = is.ReadFloat();
     for (int i = 0; i < 1; i++)
     {
-        if (!FUN_14059d190(&kTemp.m_aPt[0]))
+        if (!FUN_14059d190(&kTemp.m_aPt0[i]))
             return;
-        if (!FUN_14059d190(&kTemp.m_aPt[1]))
+        if (!FUN_14059d190(&kTemp.m_aPt1[i]))
             return;
-        if (!FUN_14059d190(&kTemp.m_aPt[2]))
+        if (!FUN_14059d190(&kTemp.m_aPt2[i]))
             return;
-        if (!FUN_14059d190(&kTemp.m_aPt[3]))
+        if (!FUN_14059d190(&kTemp.m_aPt3[i]))
             return;
     }
     if (!FUN_14059d150(&kTemp.m_f58))
         return;
     for (int i = 0; i < 1; i++)
     {
-        m_aPt[0] = kTemp.m_aPt[0];
-        m_aPt[1] = kTemp.m_aPt[1];
-        m_aPt[2] = kTemp.m_aPt[2];
-        m_aPt[3] = kTemp.m_aPt[3];
+        m_aPt0[i] = kTemp.m_aPt0[i];
+        m_aPt1[i] = kTemp.m_aPt1[i];
+        m_aPt2[i] = kTemp.m_aPt2[i];
+        m_aPt3[i] = kTemp.m_aPt3[i];
     }
     m_f58 = kTemp.m_f58;
 }
 MS2_REPLACE_METHOD(0x14059BA20, CCapExtraData, vfunc_6, 878, 0x7C8BC079);
 
 // @0x14059bda0
-// MS2-FUNCTIONAL: MSVC /Od temp and branch layout of the inlined smart-pointer / vector / point copies differs; same operations in the same order
 int CCapExtraData::vfunc_2(const CItemExtraData* p)
 {
-    const CCapExtraData* pOther = (const CCapExtraData*)p;
     if (!CItemExtraData::vfunc_2(p))
         return 0;
+    const CCapExtraData* pOther = (const CCapExtraData*)p;
     if (FUN_14059bfe0(m_f58, pOther->m_f58))
         return 0;
     for (int i = 0; i < 1; i++)
     {
-        if (FUN_14059c020(m_aPt[0], pOther->m_aPt[0]))
+        if (FUN_14059c020(m_aPt0[i], pOther->m_aPt0[i]))
             return 0;
-        if (FUN_14059c020(m_aPt[1], pOther->m_aPt[1]))
+        if (FUN_14059c020(m_aPt1[i], pOther->m_aPt1[i]))
             return 0;
-        if (FUN_14059c020(m_aPt[2], pOther->m_aPt[2]))
+        if (FUN_14059c020(m_aPt2[i], pOther->m_aPt2[i]))
             return 0;
-        if (FUN_14059c020(m_aPt[3], pOther->m_aPt[3]))
+        if (FUN_14059c020(m_aPt3[i], pOther->m_aPt3[i]))
             return 0;
     }
     return 1;
@@ -891,27 +866,31 @@ int FUN_14059d150(float* p)
 }
 
 // @0x14059d190
-// MS2-FUNCTIONAL: MSVC /Od temp and branch layout of the inlined smart-pointer / vector / point copies differs; same operations in the same order
-static bool FUN_14059d190(Vector3* p)
+static int FUN_14059d190(Vector3* p)
 {
-    return (_fpclass((double)p->x) & 0x207) == 0 && (_fpclass((double)p->y) & 0x207) == 0 && (_fpclass((double)p->z) & 0x207) == 0;
+    if ((_fpclass((double)p->x) & 0x207) != 0 || (_fpclass((double)p->y) & 0x207) != 0 || (_fpclass((double)p->z) & 0x207) != 0)
+        return 0;
+    else
+        return 1;
 }
 
-// The colour hint text of a palette group (no caller in the unit; the arguments are passed through).
+// The colour hint text of a palette group (no caller in the unit).
 // @0x14059dbe0
-// MS2-FUNCTIONAL: MSVC /Od temp and branch layout of the inlined smart-pointer / vector / point copies differs; same operations in the same order
-CStringW FUN_14059dbe0(int nGroup, void* a, void* b)
+CStringW FUN_14059dbe0(int nGroup)
 {
-    if (nGroup == 1)
-        return GetStringCommon(0xd52, a, b, 0);
-    else if (nGroup == 2)
-        return GetStringCommon(0xd53, a, b, 0);
-    else if (nGroup == 3)
-        return GetStringCommon(0xd54, a, b, 0);
-    else if (nGroup == 4)
-        return GetStringCommon(0xd55, a, b, 0);
-    else
-        return GetStringCommon(0xd52, a, b, 0);
+    switch (nGroup)
+    {
+    case 1:
+        return GetStringCommon(0xd52);
+    case 2:
+        return GetStringCommon(0xd53);
+    case 3:
+        return GetStringCommon(0xd54);
+    case 4:
+        return GetStringCommon(0xd55);
+    default:
+        return GetStringCommon(0xd52);
+    }
 }
 
 template class std::vector<Unk_SocketPtr<EquipColorInfo> >;

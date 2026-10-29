@@ -26,7 +26,7 @@ class MS2KFMCache : public egmAnimation::KFMCache {
     EE_DECLARE_CONCRETE_ATOMIC_REFCOUNT;
 public:
     MS2KFMCache();
-    virtual ~MS2KFMCache();
+    // virtual ~MS2KFMCache();                                 // 0x1414abca0, implicit
     virtual void Init(efd::MessageService*,efd::AssetLocatorService*,efd::AssetFactoryManager*);
 };
 

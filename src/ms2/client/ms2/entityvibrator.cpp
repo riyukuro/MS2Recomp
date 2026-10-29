@@ -27,6 +27,7 @@ extern int DAT_143ad1b20;                                           // running a
 extern int DAT_1439f7060;                                           // number of collision masks (8)
 extern unsigned DAT_1439f7040[];                                    // the collision masks
 extern char DAT_143afc898;                                          // assertions throw when set
+extern "C" float (__cdecl* __imp_sinf)(float);                      // the exe calls the CRT import
 
 class Unk_VibZoneMap { public: bool FUN_1402c1f40(const CString& key, CString& out); };
 class Unk_VibZone
@@ -98,16 +99,16 @@ void* FUN_1408b6b20(void* pDst, void* pSrc);                        // copy-cons
 CString FUN_140298360(const char* a, const CString& b);             // a + b
 void FUN_140de0cb0(efd::AssetID* pAsset, const efd::utf8string* pUrn);
 
-class Unk_VibObjTbl { public: bool FUN_141bd8e30(void* pEntityId, char nShow, float fFade); };
+class Unk_VibObjTbl { public: bool FUN_141bd8e30(egf::EntityID kId, char nShow, float fFade); };
 Unk_VibObjTbl* FUN_1403ed2d0();
 
-struct Unk_VibInt3 { int x, y, z; };
+struct Unk_VibInt3 { Unk_VibInt3(); int x, y, z; };
 Unk_VibInt3 FUN_1408a1430(Vector3 pt);                      // point -> cube cell
 class Unk_VibCubeSub { public: void FUN_1410b25a0(int x, int y, int z); void FUN_1410b2510(int x, int y, int z); };
 class Unk_VibCubeSvc
 {
 public:
-    void* FUN_1410b8be0(void* pEntityId);
+    void* FUN_1410b8be0(egf::EntityID kId);
     Unk_VibCubeSub* FUN_1410b9e70();
 };
 Unk_VibCubeSvc* FUN_1410b27c0();
@@ -183,7 +184,7 @@ CEntityVibrator::CEntityVibrator(Unk_Entity* pEntity)
 }
 
 // @0x1411cb390
-// MS2-FUNCTIONAL: not byte-matched (frame layout of the many temporaries)
+// MS2-FUNCTIONAL: behaviour-checked against the exe (calls/args/conditions match); frame 0x10 smaller and two compare forms differ
 CEntityVibrator::CEntityVibrator(Unk_Entity* pEntity, Unk_VibParamRef params, CString strModel, unsigned char nMode)
     : m_entity(0)
 {
@@ -192,24 +193,22 @@ CEntityVibrator::CEntityVibrator(Unk_Entity* pEntity, Unk_VibParamRef params, CS
     m_70 = params.FUN_140975bd0()->m_50;
     m_30 = FUN_141473390(FUN_14086d260());
     int nLimit = 0;
-    pEntity->FUN_1408a2020(0xf5d61d2b, &nLimit);
+    m_entity.FUN_1408a9090()->FUN_1408a2020(0xf5d61d2b, &nLimit);
     if (m_90 != 0 && nLimit < params.FUN_140975bd0()->FUN_14175a130()) {
         m_7c = 1;
         Unk_VibCubeSub* pCube = FUN_1410b27c0()->FUN_1410b9e70();
-        Vector3 ptCell = m_ac;
-        Unk_VibInt3 cell = FUN_1408a1430(ptCell);
+        Unk_VibInt3 cell = FUN_1408a1430(m_ac);
         pCube->FUN_1410b25a0(cell.x, cell.y, cell.z);
         if (m_ab != 0) {
             bool bOff = false;
-            pEntity->FUN_14098c6e0(0x9004569a, &bOff);
+            m_entity.FUN_1408a9090()->FUN_14098c6e0(0x9004569a, &bOff);
         }
     } else {
         m_7c = 0;
         m_2c = FUN_141473390(FUN_14086d260());
     }
     if (m_7c != 0) {
-        Unk_VibParamRef copy(params);
-        MakePhysxActor(copy);
+        MakePhysxActor(params);
     }
     Unk_VibObj* pObj = FUN_141b6efc0(pEntity);
     if (pObj != 0) {
@@ -217,9 +216,9 @@ CEntityVibrator::CEntityVibrator(Unk_Entity* pEntity, Unk_VibParamRef params, CS
         xf.m_scale = 1.0f;
         xf.m_trans = *pObj->FUN_140e69200();
         xf.m_rot = *pObj->FUN_1410b23c0();
-        efd::utf8string strFx;
-        pEntity->FUN_1408a2060(0xdd2ac78a, &strFx);
         {
+            efd::utf8string strFx;
+            pEntity->FUN_1408a2060(0xdd2ac78a, &strFx);
             Unk_VibEffectReq req;
             req.m_name = strFx.c_str();
             req.m_type = 7;
@@ -261,122 +260,110 @@ CEntityVibrator::~CEntityVibrator()
 }
 
 // @0x1411cba60
-// MS2-FUNCTIONAL: not byte-matched (long function, many temporaries)
 int CEntityVibrator::FUN_1411cba60()
 {
-    if (m_7c == 0) {
+    if (m_7c != 0) {
+        unsigned nNow = FUN_141473390(FUN_14086d260());
+        const unsigned kMinDelay = 3000;   // the exe stores these three locals (the uses below fold them)
+        const float kDropHeight = 3.0f;
+        const unsigned kDropTime = 500;
+        if (m_90 < kMinDelay) {
+            m_90 = kMinDelay;
+        }
+        if (m_68 != 0) {
+            int bLate = nNow > m_30 + 3000U;
+            if (m_68->isSleeping() || bLate) {
+                FUN_1411cd040();
+            } else {
+                FUN_1411cd0c0();
+            }
+        }
+        if (m_88 == 0) {
+            m_88 = (nNow > (unsigned)(m_2c + m_90));
+            if (m_88 != 0 && m_94 > 0) {
+                FUN_1403ed2d0()->FUN_141bd8e30(*static_cast<const egf::EntityID*>(m_entity.FUN_1408a9280()->FUN_1408b76f0()), 0, 0.1f);
+            }
+        }
+        if (m_80 == 0) {
+            m_80 = (nNow > (unsigned)(m_2c + m_90 + m_94));
+            if (m_a9) {
+                m_80 = 0;
+            }
+            if (m_80 != 0) {
+                if (m_94 > 0 || m_aa) {
+                    FUN_1403ed2d0()->FUN_141bd8e30(*static_cast<const egf::EntityID*>(m_entity.FUN_1408a9280()->FUN_1408b76f0()), 1, 0.0f);
+                    m_aa = false;
+                    if (m_ab) {
+                        m_entity.FUN_1408a9280()->FUN_14098c6e0(0x9004569a, &m_ab);
+                    }
+                }
+                FUN_1411cdb00(m_54);
+                m_8c = nNow;
+            }
+        }
+        if (m_80 != 0) {
+            if (m_8c > nNow) {
+                m_8c = nNow;
+            }
+            Vector3 ptDrop(0.0f, 0.0f, m_98.z * kDropHeight);
+            Vector3 ptStart = m_48.FUN_140965c40(ptDrop);
+            float fK = ((float)(nNow - m_8c) / kDropTime > 1.0f) ? 1.0f : (float)(nNow - m_8c) / kDropTime;
+            FUN_1411cda60(ptStart.FUN_14097fd50(ptDrop.FUN_14097fc90(fK)));
+            if (1.0f <= fK) {
+                FUN_1411cda60(m_48);
+                FUN_1411cdb00(m_54);
+                Unk_Ptr1401cd040 com(FUN_1401cd040(&DAT_143b059e8));
+                if (com.FUN_140885310() != 0) {
+                    com.FUN_1401cd1a0()->FUN_1410c5570(m_entity);
+                }
+                if (!m_a8) {
+                    if (FUN_141689a10(FUN_1409f7ca0(), reinterpret_cast<egf::Entity*>(m_entity.FUN_1408a9090()))) {
+                        FUN_141689ec0(FUN_1409f7ca0(), reinterpret_cast<egf::Entity*>(m_entity.FUN_1408a9090()), 0, 0, 1);
+                    }
+                }
+                Unk_VibCubeSvc* pCube = FUN_1410b27c0();
+                if (pCube->FUN_1410b8be0(*static_cast<const egf::EntityID*>(m_entity.FUN_1408a9280()->FUN_1408b76f0())) != 0) {
+                    Unk_VibCubeSub* pSub = pCube->FUN_1410b9e70();
+                    Unk_VibInt3 cell = FUN_1408a1430(m_ac);
+                    pSub->FUN_1410b2510(cell.x, cell.y, cell.z);
+                }
+                return 0;
+            }
+        }
+        return 1;
+    } else {
         unsigned nNow = FUN_141473390(FUN_14086d260());
         if (nNow < m_2c) {
             return 1;
-        }
-        if (nNow < m_34) {
+        } else if (nNow < m_34) {
             float fFade = 1.0f;
-            if (m_38 <= nNow) {
+            if (nNow >= m_38) {
                 fFade = 1.0f - (float)((unsigned)(nNow - m_38) / (unsigned)(m_34 - m_38));
             }
-            float fFloor = m_28;
-            float fAmp = m_24;
-            float fSin = sinf(((float)(nNow - m_2c) / (float)(unsigned)(m_34 - m_2c)) * m_20 * 2.0f * 3.1415927f + m_64);
-            float fOffset = fSin * (fFade * (1.0f - fFloor) + fFloor) * fAmp;
-            int nSign = (fOffset < 0.0f);
-            if (m_60 != nSign) {
-                unsigned nA = FUN_140768010(2, 0);
-                unsigned nB = FUN_140768010(2, 0);
-                m_3c.x = FUN_140768090() * ((float)nA - 0.5f) * 2.0f;
-                m_3c.y = FUN_140768090() * ((float)nB - 0.5f) * 2.0f;
+            float fScale = (fFade * (1.0f - m_28) + m_28) * m_24;
+            float fT = (float)(nNow - m_2c) / (float)(unsigned)(m_34 - m_2c);
+            float fOffset = __imp_sinf(fT * m_20 * 2.0f * 3.1415927f + m_64) * fScale;
+            if (m_60 != (fOffset < 0.0f)) {
+                float fA = ((float)FUN_140768010(2, 0) - 0.5f) * 2.0f;
+                float fB = ((float)FUN_140768010(2, 0) - 0.5f) * 2.0f;
+                m_3c.x = FUN_140768090() * fA;
+                m_3c.y = FUN_140768090() * fB;
                 m_3c.FUN_140968990();
                 m_60 = (fOffset < 0.0f);
             }
             FUN_1411cda60(m_48.FUN_14097fd50(m_3c.FUN_14097fc90(fOffset)));
             return 1;
-        }
-        FUN_1411cda60(m_48);
-        FUN_1411cdb00(m_54);
-        return 0;
-    }
-    unsigned nNow = FUN_141473390(FUN_14086d260());
-    const unsigned kMinDelay = 3000;   // the exe stores these three locals (the uses below fold them)
-    const float kDropHeight = 3.0f;
-    const unsigned kDropTime = 500;
-    if (m_90 < kMinDelay) {
-        m_90 = kMinDelay;
-    }
-    if (m_68 != 0) {
-        unsigned nSpawn = m_30;
-        bool bSleeping = m_68->isSleeping();
-        if (!bSleeping && nNow <= nSpawn + 3000U) {
-            FUN_1411cd0c0();
         } else {
-            FUN_1411cd040();
-        }
-    }
-    if (m_88 == 0) {
-        m_88 = ((unsigned)(m_2c + m_90) < nNow);
-        if (m_88 != 0 && m_94 != 0) {
-            unsigned __int64 nId;
-            void* pId = FUN_1408b6b20(&nId, m_entity.FUN_1408a9280()->FUN_1408b76f0());
-            FUN_1403ed2d0()->FUN_141bd8e30(pId, 0, 0.1f);
-        }
-    }
-    if (m_80 == 0) {
-        m_80 = ((unsigned)(m_2c + m_90 + m_94) < nNow);
-        if (m_a9) {
-            m_80 = 0;
-        }
-        if (m_80 != 0) {
-            if (m_94 != 0 || m_aa) {
-                unsigned __int64 nId;
-                void* pId = FUN_1408b6b20(&nId, m_entity.FUN_1408a9280()->FUN_1408b76f0());
-                FUN_1403ed2d0()->FUN_141bd8e30(pId, 1, 0.0f);
-                m_aa = false;
-                if (m_ab) {
-                    m_entity.FUN_1408a9280()->FUN_14098c6e0(0x9004569a, &m_ab);
-                }
-            }
-            FUN_1411cdb00(m_54);
-            m_8c = nNow;
-        }
-    }
-    if (m_80 != 0) {
-        if (nNow < m_8c) {
-            m_8c = nNow;
-        }
-        Vector3 ptDrop(0.0f, 0.0f, m_98.z * kDropHeight);
-        Vector3 ptStart = m_48.FUN_140965c40(ptDrop);
-        float fK = ((float)(nNow - m_8c) / kDropTime > 1.0f) ? 1.0f : (float)(nNow - m_8c) / kDropTime;
-        FUN_1411cda60(ptStart.FUN_14097fd50(ptDrop.FUN_14097fc90(fK)));
-        if (1.0f <= fK) {
             FUN_1411cda60(m_48);
             FUN_1411cdb00(m_54);
-            Unk_Ptr1401cd040 com(FUN_1401cd040(&DAT_143b059e8));
-            if (com.FUN_140885310() != 0) {
-                com.FUN_1401cd1a0()->FUN_1410c5570(m_entity);
-            }
-            if (!m_a8) {
-                egf::Entity* entA = reinterpret_cast<egf::Entity*>(m_entity.FUN_1408a9090());
-                if (FUN_141689a10(FUN_1409f7ca0(), entA)) {
-                    egf::Entity* entB = reinterpret_cast<egf::Entity*>(m_entity.FUN_1408a9090());
-                    FUN_141689ec0(FUN_1409f7ca0(), entB, 0, 0, 1);
-                }
-            }
-            Unk_VibCubeSvc* pCube = FUN_1410b27c0();
-            unsigned __int64 nId;
-            void* pId = FUN_1408b6b20(&nId, m_entity.FUN_1408a9280()->FUN_1408b76f0());
-            if (pCube->FUN_1410b8be0(pId) != 0) {
-                Unk_VibCubeSub* pSub = pCube->FUN_1410b9e70();
-                Vector3 ptCell = m_ac;
-                Unk_VibInt3 cell = FUN_1408a1430(ptCell);
-                pSub->FUN_1410b2510(cell.x, cell.y, cell.z);
-            }
             return 0;
         }
     }
-    return 1;
 }
 MS2_REPLACE_METHOD(0x1411CBA60, CEntityVibrator, FUN_1411cba60, 2806, 0xCBF39D64);
 
 // @0x1411cc570
-// MS2-FUNCTIONAL: not byte-matched (PhysX descriptor temporaries)
+// MS2-FUNCTIONAL: behaviour-checked against the exe (constants and math match); PhysX descriptor temporaries differ
 void CEntityVibrator::MakePhysxActor(Unk_VibParamRef params)
 {
     if (!FUN_140a33ff0(&m_70)) {
@@ -488,19 +475,16 @@ void CEntityVibrator::FUN_1411cd040()
 MS2_REPLACE_METHOD(0x1411CD040, CEntityVibrator, FUN_1411cd040, 118, 0xD620F7BF);
 
 // @0x1411cd0c0
-// MS2-FUNCTIONAL: not byte-matched (matrix temporaries)
 void CEntityVibrator::FUN_1411cd0c0()
 {
     if (m_68 != 0) {
         Vector3 ptBox = m_98;
         NxMat34 pose = m_68->getGlobalPose();
-        Unk_VibNiMat orient;
-        memcpy(&orient, &pose.M, sizeof(orient));
         Vector3 ptPos(pose.t.x, pose.t.y, pose.t.z);
         FUN_140ad0c10(&ptPos, 100.0f);
-        Vector3 col0 = orient.FUN_1411ce070(0);
-        Vector3 col1 = orient.FUN_1411ce070(1);
-        Vector3 col2 = orient.FUN_1411ce070(2);
+        Unk_VibNiPt col0 = reinterpret_cast<const Unk_VibNiMat&>(pose.M).FUN_1411ce070(0);
+        Unk_VibNiPt col1 = reinterpret_cast<const Unk_VibNiMat&>(pose.M).FUN_1411ce070(1);
+        Unk_VibNiPt col2 = reinterpret_cast<const Unk_VibNiMat&>(pose.M).FUN_1411ce070(2);
         Unk_VibMat rot;
         rot.FUN_140a34220(0, col0.x, col0.y, col0.z);
         rot.FUN_140a34220(1, col1.x, col1.y, col1.z);
@@ -520,7 +504,6 @@ void CEntityVibrator::FUN_1411cd0c0()
 MS2_REPLACE_METHOD(0x1411CD0C0, CEntityVibrator, FUN_1411cd0c0, 740, 0x0D133312);
 
 // @0x1411cd3b0
-// MS2-FUNCTIONAL: not byte-matched
 void CEntityVibrator::FUN_1411cd3b0()
 {
     FUN_1411cda60(m_48);
@@ -531,10 +514,8 @@ void CEntityVibrator::FUN_1411cd3b0()
             com.FUN_1401cd1a0()->FUN_1410c5570(m_entity);
         }
         if (!m_a8) {
-            egf::Entity* entA = reinterpret_cast<egf::Entity*>(m_entity.FUN_1408a9090());
-            if (FUN_141689a10(FUN_1409f7ca0(), entA)) {
-                egf::Entity* entB = reinterpret_cast<egf::Entity*>(m_entity.FUN_1408a9090());
-                FUN_141689ec0(FUN_1409f7ca0(), entB, 0, 0, 1);
+            if (FUN_141689a10(FUN_1409f7ca0(), reinterpret_cast<egf::Entity*>(m_entity.FUN_1408a9090()))) {
+                FUN_141689ec0(FUN_1409f7ca0(), reinterpret_cast<egf::Entity*>(m_entity.FUN_1408a9090()), 0, 0, 1);
             }
         }
     }
@@ -627,27 +608,22 @@ MS2_REPLACE_METHOD(0x1411CDB00, CEntityVibrator, FUN_1411cdb00, 144, 0xD81E790E)
 // @0x1411cdba0
 void CEntityVibrator::FUN_1411cdba0()
 {
-    if (m_entity.FUN_1408b70b0(0) == 0) {
-        if (!m_a8) {
-            egf::Entity* entA = reinterpret_cast<egf::Entity*>(m_entity.FUN_1408a9090());
-            if (FUN_141689a10(FUN_1409f7ca0(), entA)) {
-                egf::Entity* entB = reinterpret_cast<egf::Entity*>(m_entity.FUN_1408a9090());
-                FUN_141689ec0(FUN_1409f7ca0(), entB, 5, 0, 1);
-            }
+    if (m_entity.FUN_1408b70b0(0) != 0) return;
+    if (!m_a8) {
+        if (FUN_141689a10(FUN_1409f7ca0(), reinterpret_cast<egf::Entity*>(m_entity.FUN_1408a9090()))) {
+            FUN_141689ec0(FUN_1409f7ca0(), reinterpret_cast<egf::Entity*>(m_entity.FUN_1408a9090()), 5, 0, 1);
         }
-        unsigned __int64 nId;
-        void* pId = FUN_1408b6b20(&nId, m_entity.FUN_1408a9280()->FUN_1408b76f0());
-        FUN_1403ed2d0()->FUN_141bd8e30(pId, 0, 0.1f);
-        if (m_ab) {
-            m_entity.FUN_1408a9280()->FUN_14098c6e0(0x9004569a, &m_ab);
-        }
-        m_7c = 1;
-        m_a9 = true;
-        Unk_VibCubeSub* pSub = FUN_1410b27c0()->FUN_1410b9e70();
-        Vector3 ptCell = m_ac;
-        Unk_VibInt3 cell = FUN_1408a1430(ptCell);
-        pSub->FUN_1410b25a0(cell.x, cell.y, cell.z);
     }
+    FUN_1403ed2d0()->FUN_141bd8e30(*static_cast<const egf::EntityID*>(m_entity.FUN_1408a9280()->FUN_1408b76f0()), 0, 0.1f);
+    if (m_ab) {
+        m_entity.FUN_1408a9280()->FUN_14098c6e0(0x9004569a, &m_ab);
+    }
+    m_7c = 1;
+    m_a9 = true;
+    Unk_VibCubeSvc* pSvc = FUN_1410b27c0();
+    Unk_VibCubeSub* pSub = pSvc->FUN_1410b9e70();
+    Unk_VibInt3 cell = FUN_1408a1430(m_ac);
+    pSub->FUN_1410b25a0(cell.x, cell.y, cell.z);
 }
 MS2_REPLACE_METHOD(0x1411CDBA0, CEntityVibrator, FUN_1411cdba0, 489, 0x0468E30C);
 
@@ -660,38 +636,36 @@ void CEntityVibrator::FUN_1411cdd90()
 MS2_REPLACE_METHOD(0x1411CDD90, CEntityVibrator, FUN_1411cdd90, 30, 0x1214F241);
 
 // @0x1411cddc0
-// MS2-FUNCTIONAL: not byte-matched
 void CEntityVibrator::FUN_1411cddc0(CString strModel, unsigned char nMode)
 {
-    if (m_entity.FUN_1408b70b0(0) == 0) {
-        if (strModel.GetLength() != 0) {
-            if (m_c8.Compare(strModel) != 0) {
-                efd::AssetID asset;
-                CString strUrn = FUN_140298360("urn:gamebryo-scenegraph:", strModel);
-                {
-                    efd::utf8string strTmp((const char*)strUrn);
-                    FUN_140de0cb0(&asset, &strTmp);
-                }
-                bool bHas;
-                {
-                    efd::utf8string strMesh("Mesh");
-                    bHas = m_entity.FUN_1408a9280()->FUN_1408a9bd0()->ContainsModel(strMesh);
-                }
-                if (bHas) {
-                    m_entity.FUN_1408a9280()->FUN_140de8bd0(0x770e5fc6, &asset);
-                    m_c8 = strModel;
-                }
+    if (m_entity.FUN_1408b70b0(0) != 0) return;
+    if (strModel.GetLength() != 0) {
+        if (m_c8.Compare(strModel) != 0) {
+            efd::AssetID asset;
+            CString strUrn = FUN_140298360("urn:gamebryo-scenegraph:", strModel);
+            {
+                efd::utf8string strTmp((const char*)strUrn);
+                FUN_140de0cb0(&asset, &strTmp);
+            }
+            bool bHas;
+            {
+                efd::utf8string strMesh("Mesh");
+                bHas = m_entity.FUN_1408a9280()->FUN_1408a9bd0()->ContainsModel(strMesh);
+            }
+            if (bHas) {
+                m_entity.FUN_1408a9280()->FUN_140de8bd0(0x770e5fc6, &asset);
+                m_c8 = strModel;
             }
         }
-        m_d0 = nMode;
-        if (m_d0 == 1) {
-            bool bOn = true;
-            m_entity.FUN_1408a9280()->FUN_14098c6e0(0xa0b6b179, &bOn);
-        }
-        if (m_d0 == 2) {
-            bool bOff = false;
-            m_entity.FUN_1408a9280()->FUN_14098c6e0(0xa0b6b179, &bOff);
-        }
+    }
+    m_d0 = nMode;
+    if (m_d0 == 1) {
+        bool bOn = true;
+        m_entity.FUN_1408a9280()->FUN_14098c6e0(0xa0b6b179, &bOn);
+    }
+    if (m_d0 == 2) {
+        bool bOff = false;
+        m_entity.FUN_1408a9280()->FUN_14098c6e0(0xa0b6b179, &bOff);
     }
 }
 MS2_REPLACE_METHOD(0x1411CDDC0, CEntityVibrator, FUN_1411cddc0, 614, 0x02DD91E3);

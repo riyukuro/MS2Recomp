@@ -42,13 +42,13 @@ Unk_TexSlot::Unk_TexSlot() : m_spTexture(0)
 // @0x141511690
 Unk_TexSlot::Unk_TexSlot(const Unk_TexSlot& rhs) : m_spTexture(rhs.m_spTexture)
 {
-    m_nClampMode = rhs.m_nClampMode;
+    m_nFilterMode = rhs.m_nFilterMode;
 }
 
 // @0x141511650
 Unk_TexSlot::Unk_TexSlot(Unk_TexSlot&& rhs) : m_spTexture(rhs.m_spTexture)
 {
-    m_nClampMode = rhs.m_nClampMode;
+    m_nFilterMode = rhs.m_nFilterMode;
 }
 
 // @0x14150cd00
@@ -83,15 +83,14 @@ void MS2TextureDensityProcessor::PreRenderProcessList(const NiVisibleArray* pkIn
 
     std::vector<Unk_TexSlot> savedMaps;
     for (std::set<NiTexturingProperty*>::iterator it = props.begin(); it != props.end(); ++it) {
-        NiTexturingProperty* tp = *it;
-        NiTexturingProperty::Map* pBase = tp->GetBaseMap();
+        NiTexturingProperty::Map* pBase = (*it)->GetBaseMap();
         Unk_TexSlot saved;
-        if (pBase == NULL) {
-            saved.m_spTexture.Assign(0);
-            saved.m_nClampMode = 0;
-        } else {
+        if (pBase != NULL) {
             saved.m_spTexture.Assign(pBase->GetTexture());
-            saved.m_nClampMode = pBase->GetClampMode();
+            saved.m_nFilterMode = pBase->GetFilterMode();
+        } else {
+            saved.m_spTexture.Assign(0);
+            saved.m_nFilterMode = 0;
         }
         savedMaps.push_back(saved);
 
@@ -99,18 +98,19 @@ void MS2TextureDensityProcessor::PreRenderProcessList(const NiVisibleArray* pkIn
         if (m_nMode == 0)
             pMap = pBase;
         else if (m_nMode == 1)
-            pMap = tp->GetNormalMap();
+            pMap = (*it)->GetNormalMap();
         else if (m_nMode == 2)
-            pMap = FUN_14121cde0(tp);
+            pMap = FUN_14121cde0(*it);
         if (pMap && pMap->GetTexture()) {
-            NiTexture* pSrc = pMap->GetTexture();
-            tp->SetBaseTexture(FUN_14150d3a0(pSrc->GetWidth(), pSrc->GetHeight()));
-            tp->SetBaseClampMode(NiTexturingProperty::ClampMode(3));
+            (*it)->SetBaseTexture(FUN_14150d3a0(pMap->GetTexture()->GetWidth(), pMap->GetTexture()->GetHeight()));
+            (*it)->SetBaseFilterMode(NiTexturingProperty::FILTER_NEAREST_MIPNEAREST);
         }
     }
 
-    for (unsigned i = 0; i < count; ++i)
-        FUN_1414d1830(pkInput, i)->UpdateProperties();
+    for (unsigned i = 0; i < count; ++i) {
+        NiRenderObject* obj = FUN_1414d1830(pkInput, i);
+        obj->UpdateProperties();
+    }
 
     NiShaderSortProcessor::PreRenderProcessList(pkInput, kOutput, pvExtraData);
 
@@ -119,7 +119,7 @@ void MS2TextureDensityProcessor::PreRenderProcessList(const NiVisibleArray* pkIn
         Unk_TexSlot& saved = savedMaps[idx++];
         if (saved.m_spTexture.Get()) {
             (*it)->SetBaseTexture(static_cast<NiTexture*>(saved.m_spTexture.Get()));
-            (*it)->SetBaseClampMode(NiTexturingProperty::ClampMode(saved.m_nClampMode));
+            (*it)->SetBaseFilterMode(NiTexturingProperty::FilterMode(saved.m_nFilterMode));
         }
     }
 
@@ -171,8 +171,7 @@ NiTexture* MS2TextureDensityProcessor::FUN_14150d3a0(int nWidth, int nHeight)
     prefs.m_ePixelLayout = NiTexture::FormatPrefs::TRUE_COLOR_32;
     prefs.m_eMipMapped = NiTexture::FormatPrefs::YES;
     prefs.m_eAlphaFmt = NiTexture::FormatPrefs::NONE;
-    NiTexture* pTex = NiSourceTexture::Create(spPixels, prefs, true);
-    m_textures[key].Assign(pTex);
+    m_textures[key].Assign(NiSourceTexture::Create(spPixels, prefs, true));
     return FUN_14150d3a0(nWidth, nHeight);
 }
 
@@ -187,11 +186,7 @@ bool Unk_TexSizeKey::operator<(const Unk_TexSizeKey& rhs) const
         return false;
 }
 
-// @0x1415118c0
-// MS2-FUNCTIONAL: the exe dtor does not store the class vftable before destroying members; cl always does here
-MS2TextureDensityProcessor::~MS2TextureDensityProcessor()
-{
-}
+// 0x1415118c0: the destructor is implicit (the exe stores no vftable before destroying members).
 
 // @0x1415120e0
 const NiRTTI* MS2TextureDensityProcessor::GetRTTI() const { return &ms_RTTI; }

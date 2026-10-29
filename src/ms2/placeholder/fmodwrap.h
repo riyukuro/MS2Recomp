@@ -3,5 +3,5 @@
 // import thunks (jmp [IAT]) at 0x142303xxx, bound with symbols-manual `func` rows named after the DLL export.
 #pragma once
 
-#include "../../../third_party/fmod44464/api/inc/fmod.hpp"
-#include "../../../third_party/fmod44464/fmoddesignerapi/api/inc/fmod_event.hpp"
+#include "fmod44464/api/inc/fmod.hpp"
+#include "fmod44464/fmoddesignerapi/api/inc/fmod_event.hpp"

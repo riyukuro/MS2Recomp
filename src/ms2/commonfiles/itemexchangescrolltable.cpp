@@ -49,17 +49,18 @@ __int64 FUN_1405957d0(__int64 nMeso, unsigned int nRate);
 __int64 CExchangeItemInfo::GetMeso() const
 {
     int nRate = FUN_1403ed190(FUN_140302b00())->FUN_140428cb0(m_nId);
-    if (nRate == 0)
-        return m_nMeso;
-    return FUN_1405957d0(m_nMeso, nRate);
+    if (nRate != 0)
+        return FUN_1405957d0(m_nMeso, nRate);
+    return m_nMeso;
 }
 
 // @0x1405950b0
 __int64 CExchangeItemInfo::GetTotalMeso(int nCount) const
 {
-    if (nCount < 1)
+    if (nCount <= 0)
         return 0;
-    return GetMeso() * nCount;
+    __int64 nTotal = GetMeso() * nCount;
+    return nTotal;
 }
 
 // ---- CItemExchangeScrollTable ----
@@ -70,17 +71,15 @@ CItemExchangeScrollTable::CItemExchangeScrollTable()
 {
 }
 
-// MS2-FUNCTIONAL: the toolchain ATL CAtlMap::RemoveAll is not nothrow, so the implicitly-noexcept dtor gets a terminate EH frame (obj 119 vs exe 89 bytes, exe has no FuncInfo); same member/base dtor calls
 // @0x140595190
 CItemExchangeScrollTable::~CItemExchangeScrollTable()
 {
-    m_map.RemoveAll();
 }
 
 // @0x1405951f0
 void CItemExchangeScrollTable::Load()
 {
-    CString strPath = FUN_14071a5b0(CString("Table"), CString("ItemExchangeScrollTable.xml"));
+    CString strPath = FUN_14071a5b0("Table", "ItemExchangeScrollTable.xml");
     TiXmlDocument doc;
     if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return;
@@ -163,11 +162,6 @@ CExchangeItemInfo::CExchangeItemInfo()
 // @0x140595b80
 Unk_ExchangeItemRef::Unk_ExchangeItemRef()
     : m_nId(0), m_nRank(0), m_nCount(0)
-{
-}
-
-// @0x140595cd0
-CExchangeItemInfo::~CExchangeItemInfo()
 {
 }
 

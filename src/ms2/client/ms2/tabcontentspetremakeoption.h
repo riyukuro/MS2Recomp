@@ -45,7 +45,7 @@ class PetRemakeOptionPetCard : public PetRemakeOptionBase
 {
 public:
     PetRemakeOptionPetCard(TabContentsPetRemakeOption* pOwner);   // 0x140b914f0
-    virtual ~PetRemakeOptionPetCard();                  //  0 0x140b9a650 (inline, ??_G 0x140b9a970)
+    // implicit dtor 0x140b9a650 (??_G 0x140b9a970)
     virtual void vfunc_2();                             //  2 0x140b91550
     virtual void vfunc_4();                             //  4 0x140b91590
     virtual void vfunc_5(int nEvent);                   //  5 0x140b917f0
@@ -59,7 +59,7 @@ class PetRemakeOptionPetIngredient : public PetRemakeOptionBase
 {
 public:
     PetRemakeOptionPetIngredient(TabContentsPetRemakeOption* pOwner);   // 0x140b91840
-    virtual ~PetRemakeOptionPetIngredient();            //  0 0x140b9a680 (inline, ??_G 0x140b9a9b0)
+    // implicit dtor 0x140b9a680 (??_G 0x140b9a9b0)
     virtual void vfunc_2();                             //  2 0x140b918b0
     virtual void vfunc_4();                             //  4 0x140b918e0
     virtual void vfunc_5(int nEvent);                   //  5 0x140b91b60
@@ -73,7 +73,7 @@ class PetRemakeOptionBoard : public PetRemakeOptionBase
 {
 public:
     PetRemakeOptionBoard(TabContentsPetRemakeOption* pOwner);   // 0x140b91bb0
-    virtual ~PetRemakeOptionBoard();                    //  0 0x140b9a610 (inline, ??_G 0x140b9a930)
+    // implicit dtor 0x140b9a610 (??_G 0x140b9a930)
     virtual void vfunc_1();                             //  1 0x140b92d90 (empty)
     virtual void vfunc_2();                             //  2 0x140b91c20
     virtual void vfunc_3();                             //  3 0x140b91cd0 submit / debug buttons
@@ -101,7 +101,7 @@ public:
     typedef std::pair<unsigned __int64, int> IdCount;   // item uid and how many of it the inventory holds
 
     TabContentsPetRemakeOption();                       // 0x140b94400
-    virtual ~TabContentsPetRemakeOption();              //  0 0x140b9a6b0 (inline, ??_G 0x140b9a9f0)
+    // implicit dtor 0x140b9a6b0 (??_G 0x140b9a9f0)
     virtual void vfunc_1();                             //  1 0x140b94710 close the sections, drop the UI
     virtual void vfunc_2(int nEvent);                   //  2 0x140b94980
     virtual void vfunc_3(MS2Ptr<ASUIComponent> ui);     //  3 0x140b94aa0 attach the page's UI

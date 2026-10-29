@@ -171,6 +171,7 @@
 // MS2-PIN: ??_7?$CipherModeFinalTemplate_CipherHolder@V?$BlockCipherFinal@$0A@VEnc@Rijndael@CryptoPP@@@CryptoPP@@V?$ConcretePolicyHolder@VEmpty@CryptoPP@@V?$AdditiveCipherTemplate@V?$AbstractPolicyHolder@UAdditiveCipherAbstractPolicy@CryptoPP@@VCTR_ModePolicy@2@@CryptoPP@@@2@UAdditiveCipherAbstractPolicy@2@@2@@CryptoPP@@6B?$AbstractPolicyHolder@UAdditiveCipherAbstractPolicy@CryptoPP@@VCTR_ModePolicy@2@@1@@ 0x142d33bf0
 // MS2-PIN: ??_7?$CipherModeFinalTemplate_CipherHolder@V?$BlockCipherFinal@$0A@VEnc@Rijndael@CryptoPP@@@CryptoPP@@V?$ConcretePolicyHolder@VEmpty@CryptoPP@@V?$AdditiveCipherTemplate@V?$AbstractPolicyHolder@UAdditiveCipherAbstractPolicy@CryptoPP@@VCTR_ModePolicy@2@@CryptoPP@@@2@UAdditiveCipherAbstractPolicy@2@@2@@CryptoPP@@6BRandomNumberGenerator@1@@ 0x142d33c58
 // MS2-PIN: ?StaticGetValidKeyLength@?$VariableKeyLength@$0BA@$0BA@$0CA@$07$03$0A@@CryptoPP@@SA_K_K@Z 0x1403ab430
+// MS2-PIN: ?FUN_1406af680@Unk_FileArchive@@QEAAHV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@PEBD@Z 0x1406af680
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\commonfiles\\filesystem.cpp"
 #include <vcruntime_string.h>
 #pragma function(memcpy, memset)
@@ -186,9 +187,9 @@
 #include "logstring.h"
 #define NDEBUG
 #include <assert.h>
-#include "../../../third_party/src/cryptopp562/aes.h"
-#include "../../../third_party/src/cryptopp562/modes.h"
-#include "../../../third_party/src/cryptopp562/base64.h"
+#include "cryptopp562/aes.h"
+#include "cryptopp562/modes.h"
+#include "cryptopp562/base64.h"
 #undef NDEBUG
 #include <assert.h>
 #include "ms2/ms2recover.h"
@@ -196,6 +197,7 @@
 
 void FUN_140351890();
 void FUN_140351e90();
+void FUN_1401d3700(CString& path);
 bool FUN_140870d70(TiXmlDocument*, const void*, unsigned, int);
 bool FUN_140870fc0(TiXmlDocument*, const char*, int);
 CString FUN_140188f50(const char*, int);
@@ -211,14 +213,6 @@ inline CString Unk_FileConcat(const CString& left, const CString& right) { retur
 inline CString Unk_FileConcat(const CString& left, const char* right) { return left + right; }
 inline CString Unk_FileConcat(const CString& left, const CString& right) { return left + right; }
 #endif
-inline void Unk_FileRecurse(CString pattern, CString directory, ATL::CAtlArray<CString>& output, CString exclude) {
-    FUN_140399100(pattern, directory, output, exclude, false);
-}
-inline void Unk_FileRecurse(CString pattern, CString directory, std::vector<CString>& output, CString exclude) {
-    FUN_1403992a0(pattern, directory, output, exclude, false);
-}
-inline void Unk_FileMoveAppend(ATL::CAtlArray<CString>& output, CString& path) { output.Add(path); }
-inline void Unk_FileMoveAppend(std::vector<CString>& output, CString& path) { output.push_back(std::move(path)); }
 
 template<class T> inline void Unk_FileLog(CLogString* log, int level, int category, const wchar_t* format, const T& value) {
     const fmt::internal::ArgArray<1>::Type args = {fmt::internal::MakeValue<fmt::BasicFormatter<wchar_t>>(value)};
@@ -272,57 +266,6 @@ bool FUN_14050e2a0(Unk_FileIgnoreList*, std::string);
 __time64_t FUN_1403a9480(CFileBuffer*);
 void FUN_1403ab1a0(CFileBuffer*, __time64_t);
 
-template<class Output> void Unk_EnumerateLocal(CFileSystem* fs, const CString& pattern, const CString& directory,
-                                             Output& output, const CString& exclude) {
-    CString base(directory);
-    WIN32_FIND_DATAA entry;
-    BOOL more = TRUE;
-    HANDLE search = FindFirstFileA(Unk_FileConcat(base, "*.*"), &entry);
-    if (search != INVALID_HANDLE_VALUE) {
-        while (more != FALSE) {
-            char drive[4], dir[272], name[256];
-            _splitpath(base, drive, dir, name, nullptr);
-            if ((entry.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) != 0 && entry.cFileName[0] != '.') {
-                char child[272];
-                sprintf(child, "%s%s%s/*.*", drive, dir, entry.cFileName);
-                std::string childPath(drive);
-                childPath.append(dir);
-                childPath.append(entry.cFileName);
-                if (!fs->FUN_140398640(childPath, false)) Unk_FileRecurse(pattern, CString(child), output, exclude);
-            }
-            more = FindNextFileA(search, &entry);
-        }
-        FindClose(search);
-    }
-    more = TRUE;
-    search = FindFirstFileA(Unk_FileConcat(base, "*.*"), &entry);
-    if (search != INVALID_HANDLE_VALUE) {
-        while (more != FALSE) {
-            char drive[8], dir[272], name[256];
-            _splitpath(base, drive, dir, name, nullptr);
-            if ((entry.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == 0) {
-                char ext[256];
-                _splitpath(entry.cFileName, nullptr, nullptr, nullptr, ext);
-                CString extension(ext), filter(pattern);
-                filter.Replace("*", "");
-                if (filter.CompareNoCase(extension) == 0 || pattern == "*.*") {
-                    CString result;
-                    result += dir;
-                    result += entry.cFileName;
-                    std::string path;
-                    path = static_cast<const char*>(result);
-                    if (!fs->FUN_140398640(path, true) && (exclude.IsEmpty() || result.Find(exclude, 0) == -1)) {
-                        result.MakeLower();
-                        Unk_FileMoveAppend(output, result);
-                    }
-                }
-            }
-            more = FindNextFileA(search, &entry);
-        }
-        FindClose(search);
-    }
-}
-
 MS2_EMIT_CRT_MEMMOVE_S();
 // @0x140396260
 double FUN_140396260(__time64_t first, __time64_t second) { return _difftime64(first, second); }
@@ -351,7 +294,6 @@ CFileSystem::~CFileSystem() {
     patchArchives.clear();
     FUN_140351e90();
 }
-// MS2-FUNCTIONAL: standard list/string operations retain descending archive order and one-character trimming.
 // Not hooked: callback construction creates DLL-local ClassFunHandler RTTI.
 #ifndef MS2_HOOK_DLL
 // @0x140396770
@@ -369,7 +311,10 @@ int CFileSystem::FUN_140396770(unsigned char requestedMode, int requestedArchive
         packed = true;
         mode = 0;
         std::list<std::string> lines;
-        while (fgets(line, 2048, file) != nullptr) lines.push_back(std::string(line));
+        while (fgets(line, 2048, file) != nullptr) {
+            std::string text(line);
+            lines.push_back(static_cast<std::string&&>(text));
+        }
         fclose(file);
         if (!lines.empty()) {
             lines.sort();
@@ -377,13 +322,17 @@ int CFileSystem::FUN_140396770(unsigned char requestedMode, int requestedArchive
             std::string path;
             for (auto it = lines.rbegin(); it != lines.rend(); ++it) {
                 path.assign(*it);
-                if (path.empty()) continue;
-                if (*path.rbegin() == '\r' || *path.rbegin() == '\n') path = path.substr(0, path.length() - 1);
-                Unk_FileArchive* archive = new Unk_FileArchive;
-                archive->FUN_1406b1ad0(Unk_FileTransform(this, &CFileSystem::FUN_14039a790));
-                archive->FUN_1406b1b20(Unk_FileTransform(this, &CFileSystem::FUN_14039b470));
-                if (archive->FUN_1406af680(path, 0) == 0) delete archive;
-                else archives.push_back(archive);
+                if (!path.empty()) {
+                    if (*path.rbegin() == '\r' || *path.rbegin() == '\n') path = path.substr(0, path.length() - 1);
+                    Unk_FileArchive* archive = new Unk_FileArchive;
+                    archive->FUN_1406b1ad0(Unk_FileTransform(this, &CFileSystem::FUN_14039a790));
+                    archive->FUN_1406b1b20(Unk_FileTransform(this, &CFileSystem::FUN_14039b470));
+                    if (archive->FUN_1406af680(path, nullptr) == 0) {
+                        delete archive;
+                        continue;
+                    }
+                    archives.push_back(archive);
+                }
             }
         }
         FUN_14039ee50();
@@ -391,7 +340,6 @@ int CFileSystem::FUN_140396770(unsigned char requestedMode, int requestedArchive
     return 1;
 }
 #endif
-// MS2-FUNCTIONAL: typed archive ownership and reverse list iteration preserve patch priority.
 // Not hooked: callback construction creates DLL-local ClassFunHandler RTTI.
 #ifndef MS2_HOOK_DLL
 // @0x140396d00
@@ -411,21 +359,28 @@ int CFileSystem::FUN_140396d00(const char* directory) {
     if (file != nullptr) {
         std::list<std::string> lines;
         char line[2048];
-        while (fgets(line, 2048, file) != nullptr) lines.push_back(std::string(line));
+        while (fgets(line, 2048, file) != nullptr) {
+            std::string text(line);
+            lines.push_back(static_cast<std::string&&>(text));
+        }
         fclose(file);
         if (!lines.empty()) {
             lines.sort();
             patchArchives.reserve(lines.size());
             std::string path;
             for (auto it = lines.rbegin(); it != lines.rend(); ++it) {
-                path.assign(*it);
-                if (path.empty()) continue;
-                if (*path.rbegin() == '\r' || *path.rbegin() == '\n') path = path.substr(0, path.length() - 1);
-                Unk_FileArchive* archive = new Unk_FileArchive;
-                archive->FUN_1406b1ad0(Unk_FileTransform(this, &CFileSystem::FUN_14039a790));
-                archive->FUN_1406b1b20(Unk_FileTransform(this, &CFileSystem::FUN_14039b470));
-                if (archive->FUN_1406af680(path, 0) == 0) delete archive;
-                else patchArchives.push_back(archive);
+                path = *it;
+                if (!path.empty()) {
+                    if (*path.rbegin() == '\r' || *path.rbegin() == '\n') path = path.substr(0, path.length() - 1);
+                    Unk_FileArchive* archive = new Unk_FileArchive;
+                    archive->FUN_1406b1ad0(Unk_FileTransform(this, &CFileSystem::FUN_14039a790));
+                    archive->FUN_1406b1b20(Unk_FileTransform(this, &CFileSystem::FUN_14039b470));
+                    if (archive->FUN_1406af680(path, directory) == 0) {
+                        delete archive;
+                        continue;
+                    }
+                    patchArchives.push_back(archive);
+                }
             }
         }
     }
@@ -443,7 +398,6 @@ int CFileSystem::FUN_1403972f0(const char* path, void** data, unsigned __int64* 
     return 0;
 }
 MS2_REPLACE_METHOD(0x1403972f0, CFileSystem, FUN_1403972f0, 431, 0x9C7E8407);
-// MS2-FUNCTIONAL: preserves XML fallback order and local-only success semantics; frees archive bytes through efd.
 // @0x1403974b0
 int CFileSystem::FUN_1403974b0(TiXmlDocument* document, const char* path, int encoding, bool warn, bool localOnly) {
     if (FUN_140398190() && !FUN_14039f3b0(CString(path))) {
@@ -455,36 +409,39 @@ int CFileSystem::FUN_1403974b0(TiXmlDocument* document, const char* path, int en
                 loaded = FUN_140870fc0(document, FUN_14016a5c0(alternate.c_str(), 0), encoding);
             }
         }
-        if (loaded != 0) return 1;
-        if (localOnly) return 1;
-        void* data;
-        unsigned __int64 size;
-        if (FUN_14039f4b0(path, &data, &size, warn) != 0) {
-            if (FUN_140870d70(document, data, static_cast<unsigned>(size), encoding)) {
+        if (loaded == 0 && !localOnly) {
+            void* data;
+            unsigned __int64 size;
+            if (FUN_14039f4b0(path, &data, &size, warn) != 0) {
+                if (!FUN_140870d70(document, data, static_cast<unsigned>(size), encoding)) {
+                    EE_FREE(data);
+                    return 0;
+                }
                 EE_FREE(data);
-                return 1;
+            } else {
+                return 0;
             }
-            EE_FREE(data);
         }
-        return 0;
-    }
-    if (FUN_140398640(std::string(path), true)) return 0;
-    std::string alternate = FUN_14039b810(std::string(path));
-    if (!FUN_140870fc0(document, FUN_14016a5c0(alternate.c_str(), 0), encoding)) {
-        if (!FUN_140870fc0(document, FUN_14016a5c0(path, 0), encoding)) {
-            if (warn) Unk_FileLog(GetLogString(), 1, 0x13, L"파일을 읽을 수 없습니다 [{0}]", CString(path ? path : ""));
-            return 0;
+    } else {
+        if (FUN_140398640(std::string(path), true)) return 0;
+        std::string alternate = FUN_14039b810(std::string(path));
+        if (!FUN_140870fc0(document, FUN_14016a5c0(alternate.c_str(), 0), encoding)) {
+            if (!FUN_140870fc0(document, FUN_14016a5c0(path, 0), encoding)) {
+                if (warn) {
+                    CString text(path == nullptr ? "" : path);
+                    Unk_FileLog(GetLogString(), 1, 0x13, L"파일을 읽을 수 없습니다 [{0}]", text);
+                }
+                return 0;
+            }
         }
     }
     return 1;
 }
 MS2_REPLACE_METHOD(0x1403974b0, CFileSystem, FUN_1403974b0, 1311, 0x73EE0E90);
-// MS2-FUNCTIONAL: exe stages the size argument through ecx (mov ecx,[size]; mov r8d,ecx), 2 bytes longer; source form not found.
 // @0x1403979e0
 int CFileSystem::FUN_1403979e0(TiXmlDocument* document, BufferPtr buffer) {
     if (buffer.IsNull()) return 0;
-    unsigned size = buffer->GetSize();
-    if (!FUN_140870d70(document, buffer->GetBuffer(), size, 0)) return 0;
+    if (!FUN_140870d70(document, buffer->GetBuffer(), buffer->GetSize(), 0)) return 0;
     return 1;
 }
 MS2_REPLACE_METHOD(0x1403979e0, CFileSystem, FUN_1403979e0, 190, 0xB229CEED);
@@ -544,27 +501,26 @@ MS2_REPLACE_METHOD(0x1403981b0, CFileSystem, FUN_1403981b0, 15, 0x5368A4AC);
 // @0x1403981d0
 bool CFileSystem::FUN_1403981d0() { return mode ? true : false; }
 MS2_REPLACE_METHOD(0x1403981d0, CFileSystem, FUN_1403981d0, 39, 0x6C197E5C);
-// MS2-FUNCTIONAL: typed archive iteration preserves prefix checks and directory attribute semantics.
 // @0x140398200
 bool CFileSystem::FUN_140398200(std::string path) {
     if (FUN_140398190() && !FUN_14039f3b0(CString(path.c_str()))) {
         std::string resolved = FUN_14039c050(path, false);
         if (resolved.empty()) return false;
         if (resolved == "./") return true;
-        const auto& archiveList = archives;
-        for (Unk_FileArchive* const& archive : archiveList) {
+        for (Unk_FileArchive* const& archive : archives) {
             if (FUN_1403ab490(resolved, archive->FUN_1403a9490())) {
                 if (resolved.length() == archive->FUN_1403a9490().length()) return true;
                 std::string relative = resolved.substr(archive->FUN_1403a9490().length() + 1, resolved.length());
                 if (archive->FUN_1406b1760(relative) != 0) return true;
             }
         }
-        return false;
+    } else {
+        if (FUN_140398640(path, false)) return false;
+        DWORD attributes = GetFileAttributesA(path.c_str());
+        if (attributes == INVALID_FILE_ATTRIBUTES) return false;
+        return (attributes & FILE_ATTRIBUTE_DIRECTORY) != 0;
     }
-    if (FUN_140398640(path, false)) return false;
-    DWORD attributes = GetFileAttributesA(path.c_str());
-    if (attributes == INVALID_FILE_ATTRIBUTES) return false;
-    return (attributes & FILE_ATTRIBUTE_DIRECTORY) != 0;
+    return false;
 }
 MS2_REPLACE_METHOD(0x140398200, CFileSystem, FUN_140398200, 1076, 0x9A6476C0);
 // @0x140398640
@@ -577,7 +533,6 @@ bool CFileSystem::FUN_140398640(std::string path, bool checkFile) {
     return false;
 }
 MS2_REPLACE_METHOD(0x140398640, CFileSystem, FUN_140398640, 386, 0x87673FFA);
-// MS2-FUNCTIONAL: preserves local-file priority, archive order, and all seven CreateFileA arguments.
 // @0x1403987d0
 int CFileSystem::FUN_1403987d0(std::string path) {
     if (FUN_140398190() && !FUN_14039f3b0(CString(path.c_str()))) {
@@ -585,19 +540,22 @@ int CFileSystem::FUN_1403987d0(std::string path) {
         if (resolved.empty()) return 0;
         bool stringResource = resolved.find(stringDirectory) != std::string::npos;
         if (FUN_14039bf70()) {
+            HANDLE file = nullptr;
             std::string alternate;
             size_t slash = resolved.find_last_of('/');
-            if (slash == std::string::npos) {
-                if (stringResource) alternate.assign(DAT_143ab0568);
-                else alternate.assign(DAT_143ab0588);
-                alternate += resolved;
-            } else {
+            if (slash != std::string::npos) {
                 if (stringResource) alternate = resolved.substr(0, slash + 1) + DAT_143ab0568;
                 else alternate = resolved.substr(0, slash + 1) + DAT_143ab0588;
                 alternate += resolved.substr(slash + 1, resolved.length());
+                file = CreateFileA(alternate.c_str(), GENERIC_READ, FILE_SHARE_READ, nullptr, OPEN_EXISTING, 0, nullptr);
+                if (file != INVALID_HANDLE_VALUE) { CloseHandle(file); return 1; }
+            } else {
+                if (stringResource) alternate.assign(DAT_143ab0568);
+                else alternate.assign(DAT_143ab0588);
+                alternate += resolved;
+                file = CreateFileA(alternate.c_str(), GENERIC_READ, FILE_SHARE_READ, nullptr, OPEN_EXISTING, 0, nullptr);
+                if (file != INVALID_HANDLE_VALUE) { CloseHandle(file); return 1; }
             }
-            HANDLE file = CreateFileA(alternate.c_str(), GENERIC_READ, FILE_SHARE_READ, nullptr, OPEN_EXISTING, 0, nullptr);
-            if (file != INVALID_HANDLE_VALUE) { CloseHandle(file); return 1; }
             file = CreateFileA(resolved.c_str(), GENERIC_READ, FILE_SHARE_READ, nullptr, OPEN_EXISTING, 0, nullptr);
             if (file != INVALID_HANDLE_VALUE) { CloseHandle(file); return 1; }
         }
@@ -607,14 +565,18 @@ int CFileSystem::FUN_1403987d0(std::string path) {
                 if ((*it)->FUN_1406b14f0(relative, stringResource) != 0) return 1;
             }
         }
-        return 0;
+    } else {
+        if (FUN_140398640(path, true)) return 0;
+        std::string alternate = FUN_14039b810(path);
+        HANDLE file = CreateFileA(alternate.c_str(), GENERIC_READ, FILE_SHARE_READ, nullptr, OPEN_EXISTING, 0, nullptr);
+        if (file != INVALID_HANDLE_VALUE) {
+            CloseHandle(file);
+            return 1;
+        } else {
+            file = CreateFileA(path.c_str(), GENERIC_READ, FILE_SHARE_READ, nullptr, OPEN_EXISTING, 0, nullptr);
+            if (file != INVALID_HANDLE_VALUE) { CloseHandle(file); return 1; }
+        }
     }
-    if (FUN_140398640(path, true)) return 0;
-    std::string alternate = FUN_14039b810(path);
-    HANDLE file = CreateFileA(alternate.c_str(), GENERIC_READ, FILE_SHARE_READ, nullptr, OPEN_EXISTING, 0, nullptr);
-    if (file != INVALID_HANDLE_VALUE) { CloseHandle(file); return 1; }
-    file = CreateFileA(path.c_str(), GENERIC_READ, FILE_SHARE_READ, nullptr, OPEN_EXISTING, 0, nullptr);
-    if (file != INVALID_HANDLE_VALUE) { CloseHandle(file); return 1; }
     return 0;
 }
 MS2_REPLACE_METHOD(0x1403987d0, CFileSystem, FUN_1403987d0, 2332, 0xDC492B22);
@@ -626,7 +588,6 @@ void FUN_140399100(CString pattern, CString directory, ATL::CAtlArray<CString>& 
     for (const CString& path : paths) output.Add(path);
 }
 MS2_REPLACE(0x140399100, FUN_140399100, 403, 0xA8E81207);
-// MS2-FUNCTIONAL: preserves local-first XML deduplication through the original unordered string set.
 // @0x1403992a0
 void FUN_1403992a0(CString pattern, CString directory, std::vector<CString>& output, CString exclude, bool localOnly) {
     if (!directory.IsEmpty()) {
@@ -634,9 +595,7 @@ void FUN_1403992a0(CString pattern, CString directory, std::vector<CString>& out
         if (last != "/" && last != "*") directory += "/";
     }
     if (GetFileSystem()->FUN_140398190() && !GetFileSystem()->FUN_14039f3b0(CString(static_cast<const char*>(directory)))) {
-        if (pattern.Find(".xml", 0) == -1) {
-            if (!localOnly) GetFileSystem()->FUN_14039d9f0(pattern, directory, output, exclude);
-        } else {
+        if (pattern.Find(".xml", 0) != -1) {
             std::vector<CString> archived, local;
             GetFileSystem()->FUN_14039e460(pattern, directory, local, exclude);
             if (!localOnly) GetFileSystem()->FUN_14039d9f0(pattern, directory, archived, exclude);
@@ -649,26 +608,31 @@ void FUN_1403992a0(CString pattern, CString directory, std::vector<CString>& out
             };
             append(local);
             append(archived);
-            for (const auto& path : unique) output.push_back(CString(path.c_str()));
+            for (const auto& path : unique) {
+                CString value(path.c_str());
+                output.push_back(static_cast<CString&&>(value));
+            }
+        } else {
+            if (!localOnly) GetFileSystem()->FUN_14039d9f0(pattern, directory, output, exclude);
         }
     } else GetFileSystem()->FUN_14039e460(pattern, directory, output, exclude);
 }
 MS2_REPLACE(0x1403992a0, FUN_1403992a0, 877, 0xACD21ED3);
-// MS2-FUNCTIONAL: preserves two FindFirstFileA passes, recursive order and extension/exclusion tests.
 // @0x140399620
 void FUN_140399620(CString pattern, CString directory, ATL::CAtlArray<CString>& output, CString exclude, bool localOnly) {
     if (GetFileSystem()->FUN_140398190()) {
         FUN_140399100(pattern, directory, output, exclude, localOnly);
         return;
     }
+    BOOL more = TRUE;
+    HANDLE search;
     CString base(directory);
     if (directory.IsEmpty()) return;
     WIN32_FIND_DATAA entry;
-    BOOL more = TRUE;
-    HANDLE search = FindFirstFileA(Unk_FileConcat(base, "*.*"), &entry);
+    search = FindFirstFileA(Unk_FileConcat(base, "*.*"), &entry);
     if (search != INVALID_HANDLE_VALUE) {
         while (more != FALSE) {
-            char drive[8], dir[272], name[256];
+            char drive[_MAX_DRIVE], dir[272], name[256];
             _splitpath(base, drive, dir, name, nullptr);
             if ((entry.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) != 0 && entry.cFileName[0] != '.') {
                 char child[272];
@@ -683,7 +647,7 @@ void FUN_140399620(CString pattern, CString directory, ATL::CAtlArray<CString>& 
     search = FindFirstFileA(Unk_FileConcat(base, "*.*"), &entry);
     if (search != INVALID_HANDLE_VALUE) {
         while (more != FALSE) {
-            char drive[8], dir[272], name[256];
+            char drive[_MAX_DRIVE], dir[272], name[256];
             _splitpath(base, drive, dir, name, nullptr);
             if ((entry.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == 0) {
                 char ext[256];
@@ -710,20 +674,21 @@ void FUN_140399c50(CString pattern, CString directory, ATL::CAtlArray<CString>& 
     for (const CString& path : paths) output.Add(path);
 }
 MS2_REPLACE(0x140399c50, FUN_140399c50, 379, 0x513E27BC);
-// MS2-FUNCTIONAL: retains nonrecursive enumeration, drive omission in results and lowercase after exclusion.
 // @0x140399de0
 void FUN_140399de0(CString pattern, CString directory, std::vector<CString>& output, CString exclude) {
     if (!directory.IsEmpty()) {
         CString last = directory.Right(1);
         if (last != "/" && last != "*") directory += "/";
     }
+    BOOL more = TRUE;
+    HANDLE search;
     CString base(directory);
     WIN32_FIND_DATAA entry;
-    BOOL more = TRUE;
-    HANDLE search = FindFirstFileA(Unk_FileConcat(base, "*.*"), &entry);
+    more = TRUE;
+    search = FindFirstFileA(Unk_FileConcat(base, "*.*"), &entry);
     if (search != INVALID_HANDLE_VALUE) {
         while (more != FALSE) {
-            char drive[8], dir[272], name[256];
+            char drive[_MAX_DRIVE], dir[272], name[256];
             _splitpath(base, drive, dir, name, nullptr);
             if ((entry.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == 0) {
                 char ext[256];
@@ -737,8 +702,8 @@ void FUN_140399de0(CString pattern, CString directory, std::vector<CString>& out
                     std::string path;
                     path = static_cast<const char*>(result);
                     if (exclude.IsEmpty() || result.Find(exclude, 0) == -1) {
-                        result.MakeLower();
-                        output.push_back(std::move(result));
+                        FUN_1401d3700(result);
+                        output.push_back(result);
                     }
                 }
             }
@@ -748,30 +713,42 @@ void FUN_140399de0(CString pattern, CString directory, std::vector<CString>& out
     }
 }
 MS2_REPLACE(0x140399de0, FUN_140399de0, 889, 0xE5DDE326);
-// MS2-FUNCTIONAL: retains texture-directory priority, capacity checks, int exception 13 and diagnostic arguments.
 // @0x14039a160
 bool CFileSystem::FUN_14039a160(const char* directory, const char* reference, char* result, unsigned capacity) {
     if (FUN_140398190()) {
         std::string resolved = FUN_14039c050(std::string(directory), false);
         std::string name(reference);
         FUN_14039bf80(name);
-        size_t slash;
-        if (name[0] == '.' && (slash = name.find_first_of('/')) != std::string::npos)
-            name = name.substr(slash + 1, name.length());
+        if (name[0] == '.') {
+            size_t slash = name.find_first_of('/');
+            if (slash != std::string::npos) name = name.substr(slash + 1, name.length());
+        }
         std::transform(name.begin(), name.end(), name.begin(), ::tolower);
         std::string candidate = resolved + name;
         if (FUN_1403987d0(candidate) != 0) {
-            if (candidate.length() < capacity) { wsprintfA(result, "%s", candidate.c_str()); return true; }
-            throw 13;
-        }
-        int kind = 3;
-        if (FUN_1403ab490(resolved, effectDirectory)) kind = 0;
-        else if (FUN_1403ab490(resolved, mapDirectory)) kind = 1;
-        else kind = 2;
-        auto found = texturePaths[kind].find(name);
-        if (found != texturePaths[kind].end() && !found->second.empty()) {
-            if (found->second.length() < capacity) { wsprintfA(result, "%s", found->second.c_str()); return true; }
-            throw 13;
+            if (candidate.length() < capacity) {
+                wsprintfA(result, "%s", candidate.c_str());
+                return true;
+            } else {
+                throw 13;
+            }
+        } else {
+            int kind = 3;
+            if (FUN_1403ab490(resolved, effectDirectory)) kind = 0;
+            else if (FUN_1403ab490(resolved, mapDirectory)) kind = 1;
+            else kind = 2;
+            auto found = texturePaths[kind].find(name);
+            if (found != texturePaths[kind].end()) {
+                const std::string& path = found->second;
+                if (!path.empty()) {
+                    if (path.length() < capacity) {
+                        wsprintfA(result, "%s", path.c_str());
+                        return true;
+                    } else {
+                        throw 13;
+                    }
+                }
+            }
         }
     }
     Unk_FileLog(GetLogString(), 1, 0x13, L"파일을 읽을 수 없습니다[{0}] referencePath : {1}", reference, directory);
@@ -820,7 +797,7 @@ unsigned long CFileSystem::FUN_14039a8a0(unsigned char* data, unsigned long size
         CryptoPP::StringSource(data, size, true, new CryptoPP::Base64Decoder(
             new CryptoPP::StreamTransformationFilter(cipher, new CryptoPP::StringSink(result),
                                                      CryptoPP::StreamTransformationFilter::NO_PADDING, false)));
-    } catch (...) {
+    } catch (CryptoPP::Exception&) {
         return 0;
     }
     *output = new unsigned char[result.length()];
@@ -841,7 +818,7 @@ unsigned long CFileSystem::FUN_14039aba0(unsigned char* data, unsigned long size
         CryptoPP::StringSource(data, size, true, new CryptoPP::Base64Decoder(
             new CryptoPP::StreamTransformationFilter(cipher, new CryptoPP::StringSink(result),
                                                      CryptoPP::StreamTransformationFilter::NO_PADDING, false)));
-    } catch (...) {
+    } catch (CryptoPP::Exception&) {
         return 0;
     }
     *output = new unsigned char[result.length()];
@@ -862,7 +839,7 @@ unsigned long CFileSystem::FUN_14039ae90(unsigned char* data, unsigned long size
         CryptoPP::StringSource(data, size, true, new CryptoPP::Base64Decoder(
             new CryptoPP::StreamTransformationFilter(cipher, new CryptoPP::StringSink(result),
                                                      CryptoPP::StreamTransformationFilter::NO_PADDING, false)));
-    } catch (...) {
+    } catch (CryptoPP::Exception&) {
         return 0;
     }
     *output = new unsigned char[result.length()];
@@ -883,7 +860,7 @@ unsigned long CFileSystem::FUN_14039b180(unsigned char* data, unsigned long size
         CryptoPP::StringSource(data, size, true, new CryptoPP::Base64Decoder(
             new CryptoPP::StreamTransformationFilter(cipher, new CryptoPP::StringSink(result),
                                                      CryptoPP::StreamTransformationFilter::NO_PADDING, false)));
-    } catch (...) {
+    } catch (CryptoPP::Exception&) {
         return 0;
     }
     *output = new unsigned char[result.length()];
@@ -956,50 +933,46 @@ MS2_REPLACE_METHOD(0x14039b6b0, CFileSystem, FUN_14039b6b0, 272, 0x26CFCE3D);
 // @0x14039b7d0
 void CFileSystem::FUN_14039b7d0(int enabled) { alternatePaths = enabled ? true : false; }
 MS2_REPLACE_METHOD(0x14039b7d0, CFileSystem, FUN_14039b7d0, 47, 0x717FD09C);
-// MS2-FUNCTIONAL: Typed string operations preserve the alternate-prefix insertion position.
 // @0x14039b810
 std::string CFileSystem::FUN_14039b810(std::string path) {
     path = FUN_14039c050(path, true);
     bool stringResource = path.find(stringDirectory) != std::string::npos;
     std::string result;
     size_t slash = path.find_last_of('/');
-    if (slash == std::string::npos) {
-        if (stringResource) result.assign(DAT_143ab0568);
-        else result.assign(DAT_143ab0588);
-        result += path;
-    } else {
+    if (slash != std::string::npos) {
         if (stringResource) result = path.substr(0, slash + 1) + DAT_143ab0568;
         else result = path.substr(0, slash + 1) + DAT_143ab0588;
         result += path.substr(slash + 1, path.length());
+    } else {
+        if (stringResource) result.assign(DAT_143ab0568);
+        else result.assign(DAT_143ab0588);
+        result += path;
     }
     return result;
 }
 MS2_REPLACE_METHOD(0x14039b810, CFileSystem, FUN_14039b810, 813, 0x0D22C404);
-// MS2-FUNCTIONAL: Typed string operations preserve mode-two language-prefix construction.
 // @0x14039bb50
 std::string CFileSystem::FUN_14039bb50(std::string path) {
-    if (DAT_143ab0560 == 2) {
-        path = FUN_14039c050(path, true);
-        std::string result;
-        size_t slash = path.find_last_of('/');
-        if (slash == std::string::npos) {
-            result.assign(DAT_143ab0588);
-            std::string language(DAT_143ab0568);
-            std::transform(language.begin(), language.end(), language.begin(), ::tolower);
-            result.append(language);
-            result.append("/");
-            result += path;
-        } else {
-            result = path.substr(0, slash + 1) + DAT_143ab0588;
-            std::string language(DAT_143ab0568);
-            std::transform(language.begin(), language.end(), language.begin(), ::tolower);
-            result.append(language);
-            result.append("/");
-            result += path.substr(slash + 1, path.length());
-        }
-        return result;
+    if (DAT_143ab0560 != 2) return std::string("");
+    path = FUN_14039c050(path, true);
+    std::string result;
+    size_t slash = path.find_last_of('/');
+    if (slash != std::string::npos) {
+        result = path.substr(0, slash + 1) + DAT_143ab0588;
+        std::string language(DAT_143ab0568);
+        std::transform(language.begin(), language.end(), language.begin(), ::tolower);
+        result.append(language);
+        result.append("/");
+        result += path.substr(slash + 1, path.length());
+    } else {
+        result.assign(DAT_143ab0588);
+        std::string language(DAT_143ab0568);
+        std::transform(language.begin(), language.end(), language.begin(), ::tolower);
+        result.append(language);
+        result.append("/");
+        result += path;
     }
-    return std::string("");
+    return result;
 }
 MS2_REPLACE_METHOD(0x14039bb50, CFileSystem, FUN_14039bb50, 1047, 0xEF6B46BF);
 // @0x14039bf70
@@ -1017,7 +990,6 @@ void CFileSystem::FUN_14039bf80(std::string& path) {
     }
 }
 MS2_REPLACE_METHOD(0x14039bf80, CFileSystem, FUN_14039bf80, 190, 0xA7F44878);
-// MS2-FUNCTIONAL: explicit list iterators preserve reverse component removal, including repeated parent components.
 // @0x14039c050
 std::string CFileSystem::FUN_14039c050(std::string path, bool checkFile) {
     std::string result;
@@ -1034,11 +1006,16 @@ std::string CFileSystem::FUN_14039c050(std::string path, bool checkFile) {
         if (slash != std::string::npos) {
             result.assign(path);
             std::list<std::string> components;
-            while ((slash = result.find_last_of('/')) != std::string::npos) {
-                components.push_back(result.substr(slash, result.length()));
-                result = result.substr(0, slash);
-            }
-            components.push_back(result);
+            do {
+                slash = result.find_last_of('/');
+                if (slash != std::string::npos) {
+                    components.push_back(result.substr(slash, result.length()));
+                    result = result.substr(0, slash);
+                } else {
+                    components.push_back(result);
+                    break;
+                }
+            } while (true);
             std::list<std::string>::iterator unused;
             for (auto it = components.begin(); it != components.end();) {
                 int parents = 0;
@@ -1049,25 +1026,31 @@ std::string CFileSystem::FUN_14039c050(std::string path, bool checkFile) {
                 for (int i = 0; i < parents; ++i) {
                     if (it != components.end()) it = components.erase(it);
                 }
-                if (parents == 0) ++it;
+                if (parents != 0) continue;
+                ++it;
             }
             path.clear();
-            for (auto it = components.rbegin(); it != components.rend(); ++it)
-                if (*it != "/.") path += *it;
+            for (auto it = components.rbegin(); it != components.rend(); ++it) {
+                if (*it == "/.") continue;
+                path += *it;
+            }
             if (*path.begin() == '/') path = '.' + path;
         }
-        if (*path.begin() == '.') return path;
-        result = "./";
-        if (path.find(workingDirectory) == std::string::npos) result += path;
-        else {
-            if (path == workingDirectory) return result;
-            result += path.substr(workingDirectory.length() + 1, path.length());
+        if (*path.begin() != '.') {
+            result = "./";
+            if (path.find(workingDirectory) != std::string::npos) {
+                if (path == workingDirectory) return result;
+                result += path.substr(workingDirectory.length() + 1, path.length());
+            } else {
+                result += path;
+            }
+        } else {
+            return path;
         }
     }
     return result;
 }
 MS2_REPLACE_METHOD(0x14039c050, CFileSystem, FUN_14039c050, 1968, 0xE34581C1);
-// MS2-FUNCTIONAL: real ATL file wrapper preserves HRESULT tests, FILE_ATTRIBUTE_NORMAL and ignored short-read result.
 // Not hooked: constructs a CFileBuffer with DLL-local RTTI.
 #ifndef MS2_HOOK_DLL
 // @0x14039c810
@@ -1092,14 +1075,12 @@ CFileSystem::BufferPtr CFileSystem::FUN_14039c810(std::string path, int flag) {
     file.GetSize(size);
     BufferPtr buffer(new CFileBuffer);
     buffer->Allocate(static_cast<unsigned>(size));
-    unsigned count = buffer->GetSize();
-    file.Read(buffer->m_pBuffer, count);
+    file.Read(buffer->m_pBuffer, buffer->GetSize());
     buffer->m_field38 = flag;
     file.Close();
-    return std::move(buffer);
+    return buffer;
 }
 #endif
-// MS2-FUNCTIONAL: typed archive iteration retains patch priority and the conditional missing-file warning.
 // Not hooked: constructs a CFileBuffer with DLL-local RTTI.
 #ifndef MS2_HOOK_DLL
 // @0x14039cc50
@@ -1111,7 +1092,7 @@ CFileSystem::BufferPtr CFileSystem::FUN_14039cc50(std::string path, int flag) {
     if (!resolved.empty()) {
         bool stringResource = resolved.find(stringDirectory) != std::string::npos;
         BufferPtr patched = FUN_14039d190(resolved, path, flag);
-        if (patched.get() != nullptr) return std::move(patched);
+        if (patched.get() != nullptr) return patched;
         for (auto it = archives.begin(); it != archives.end(); ++it) {
             if (FUN_1403ab490(resolved, (*it)->FUN_1403a9490())) {
                 std::string relative = resolved.substr((*it)->FUN_1403a9490().length() + 1, resolved.length());
@@ -1123,17 +1104,17 @@ CFileSystem::BufferPtr CFileSystem::FUN_14039cc50(std::string path, int flag) {
             BufferPtr buffer(new CFileBuffer);
             buffer->Adopt(data, static_cast<unsigned>(size));
             buffer->m_field38 = flag;
-            return std::move(buffer);
+            return buffer;
         }
     }
-    if (Unk_FileFailure(this, resolved)()) {
+    Unk_FileFailure failure(this, resolved);
+    if (failure()) {
         const char* text = resolved.c_str();
         Unk_FileLog(GetLogString(), 1, 0x13, L"파일을 읽을 수 없습니다 [{0}]", text);
     }
     return BufferPtr(0);
 }
 #endif
-// MS2-FUNCTIONAL: typed patch archive iteration retains buffer adoption and by-value parameter destruction.
 // Not hooked: constructs a CFileBuffer with DLL-local RTTI.
 #ifndef MS2_HOOK_DLL
 // @0x14039d190
@@ -1141,93 +1122,214 @@ CFileSystem::BufferPtr CFileSystem::FUN_14039d190(std::string resolved, std::str
     void* data = nullptr;
     unsigned __int64 size = 0;
     int found = 0;
-    if (!resolved.empty()) {
-        bool stringResource = resolved.find(stringDirectory) != std::string::npos;
-        for (auto it = patchArchives.begin(); it != patchArchives.end(); ++it) {
-            if (FUN_1403ab490(resolved, (*it)->FUN_1403a9490())) {
-                std::string relative = resolved.substr((*it)->FUN_1403a9490().length() + 1, resolved.length());
-                found = (*it)->FUN_1406b0e20(relative, &data, &size, stringResource);
-                if (found != 0) break;
-            }
+    if (resolved.empty()) return BufferPtr(0);
+    bool stringResource = resolved.find(stringDirectory) != std::string::npos;
+    for (auto it = patchArchives.begin(); it != patchArchives.end(); ++it) {
+        if (FUN_1403ab490(resolved, (*it)->FUN_1403a9490())) {
+            std::string relative = resolved.substr((*it)->FUN_1403a9490().length() + 1, resolved.length());
+            found = (*it)->FUN_1406b0e20(relative, &data, &size, stringResource);
+            if (found != 0) break;
         }
-        if (found != 0) {
-            BufferPtr buffer(new CFileBuffer);
-            buffer->Adopt(data, static_cast<unsigned>(size));
-            buffer->m_field38 = flag;
-            return std::move(buffer);
-        }
+    }
+    if (found != 0) {
+        BufferPtr buffer(new CFileBuffer);
+        buffer->Adopt(data, static_cast<unsigned>(size));
+        buffer->m_field38 = flag;
+        return buffer;
     }
     return BufferPtr(0);
 }
 #endif
-inline void Unk_FileAppend(ATL::CAtlArray<CString>& output, const CString& path) { output.Add(path); }
-inline void Unk_FileAppend(std::vector<CString>& output, const CString& path) { output.push_back(path); }
-template<class Output> void Unk_EnumerateArchive(CFileSystem* fs, CString& pattern, CString& directory,
-                                               Output& output, CString& exclude) {
-    pattern.MakeLower();
-    directory.MakeLower();
-    exclude.MakeLower();
-    bool all = pattern == "*.*";
+// @0x14039d530
+void CFileSystem::FUN_14039d530(CString& pattern, CString& directory, ATL::CAtlArray<CString>& output, CString& exclude) {
+    FUN_1401d3700(pattern);
+    FUN_1401d3700(directory);
+    FUN_1401d3700(exclude);
+    int all = pattern == "*.*";
     std::string filter(static_cast<const char*>(pattern));
     if (*filter.begin() == '*') filter = filter.substr(1, filter.length());
-    for (auto archive = fs->archives.begin(); archive != fs->archives.end(); ++archive) {
-        if (directory.Find((*archive)->FUN_1403a9490().c_str(), 0) != 0) continue;
-        std::string base(static_cast<const char*>(directory));
-        if (*base.rbegin() != '/') base += '/';
-        std::string relative = base.substr((*archive)->FUN_1403a9490().length() + 1, base.length());
-        auto& index = (*archive)->FUN_1403a93e0().FUN_1403a9580();
-        for (Unk_FileArchiveIndex::Entries::const_iterator it = index.begin(); it != index.end(); ++it) {
-            if (it->first.find(relative, 0) != 0) continue;
-            if (!exclude.IsEmpty() && it->first.find(static_cast<const char*>(exclude), 0) != std::string::npos) continue;
-            if (all || it->first.find(filter, 0) != std::string::npos) {
-                std::string path = (*archive)->FUN_1403a9490() + '/';
-                path.append(it->first.c_str());
-                Unk_FileAppend(output, CString(path.c_str()));
+    for (auto archive = archives.begin(); archive != archives.end(); ++archive) {
+        if (directory.Find((*archive)->FUN_1403a9490().c_str(), 0) == 0) {
+            std::string base(static_cast<const char*>(directory));
+            if (*base.rbegin() != '/') base += '/';
+            std::string relative = base.substr((*archive)->FUN_1403a9490().length() + 1, base.length());
+            const Unk_FileArchiveIndex::Entries& index = (*archive)->FUN_1403a93e0().FUN_1403a9580();
+            for (Unk_FileArchiveIndex::Entries::const_iterator it = index.begin(); it != index.end(); ++it) {
+                if (it->first.find(relative, 0) == 0) {
+                    if (!exclude.IsEmpty() && it->first.find(static_cast<const char*>(exclude), 0) != std::string::npos) continue;
+                    if (all) {
+                        std::string path = (*archive)->FUN_1403a9490() + '/';
+                        path.append(it->first.c_str());
+                        CString text(path.c_str());
+                        output.Add(text);
+                    } else if (it->first.find(filter, 0) != std::string::npos) {
+                        std::string path = (*archive)->FUN_1403a9490() + '/';
+                        path.append(it->first.c_str());
+                        CString text(path.c_str());
+                        output.Add(text);
+                    }
+                }
             }
         }
     }
 }
-// MS2-FUNCTIONAL: typed archive index and output adapter preserve lowercase mutations and substring filters.
-// @0x14039d530
-void CFileSystem::FUN_14039d530(CString& pattern, CString& directory, ATL::CAtlArray<CString>& output, CString& exclude) {
-    Unk_EnumerateArchive(this, pattern, directory, output, exclude);
-}
 MS2_REPLACE_METHOD(0x14039d530, CFileSystem, FUN_14039d530, 1206, 0xD4F4CA12);
-// MS2-FUNCTIONAL: same reviewed archive traversal, with the original vector output overload.
 // @0x14039d9f0
 void CFileSystem::FUN_14039d9f0(CString& pattern, CString& directory, std::vector<CString>& output, CString& exclude) {
-    Unk_EnumerateArchive(this, pattern, directory, output, exclude);
+    FUN_1401d3700(pattern);
+    FUN_1401d3700(directory);
+    FUN_1401d3700(exclude);
+    int all = pattern == "*.*";
+    std::string filter(static_cast<const char*>(pattern));
+    if (*filter.begin() == '*') filter = filter.substr(1, filter.length());
+    for (auto archive = archives.begin(); archive != archives.end(); ++archive) {
+        if (directory.Find((*archive)->FUN_1403a9490().c_str(), 0) == 0) {
+            std::string base(static_cast<const char*>(directory));
+            if (*base.rbegin() != '/') base += '/';
+            std::string relative = base.substr((*archive)->FUN_1403a9490().length() + 1, base.length());
+            const Unk_FileArchiveIndex::Entries& index = (*archive)->FUN_1403a93e0().FUN_1403a9580();
+            for (Unk_FileArchiveIndex::Entries::const_iterator it = index.begin(); it != index.end(); ++it) {
+                if (it->first.find(relative, 0) == 0) {
+                    if (!exclude.IsEmpty() && it->first.find(static_cast<const char*>(exclude), 0) != std::string::npos) continue;
+                    if (all) {
+                        std::string path = (*archive)->FUN_1403a9490() + '/';
+                        path.append(it->first.c_str());
+                        CString text(path.c_str());
+                        output.push_back(static_cast<CString&&>(text));
+                    } else if (it->first.find(filter, 0) != std::string::npos) {
+                        std::string path = (*archive)->FUN_1403a9490() + '/';
+                        path.append(it->first.c_str());
+                        CString text(path.c_str());
+                        output.push_back(static_cast<CString&&>(text));
+                    }
+                }
+            }
+        }
+    }
 }
 MS2_REPLACE_METHOD(0x14039d9f0, CFileSystem, FUN_14039d9f0, 1206, 0xAD14E902);
-// MS2-FUNCTIONAL: two-pass local enumeration retains ignore checks, recursion and ATL append semantics.
 // @0x14039deb0
 void CFileSystem::FUN_14039deb0(const CString& pattern, const CString& directory,
                                ATL::CAtlArray<CString>& output, const CString& exclude) {
-    Unk_EnumerateLocal(this, pattern, directory, output, exclude);
+    BOOL more = TRUE;
+    HANDLE search;
+    CString base(directory);
+    WIN32_FIND_DATAA entry;
+    search = FindFirstFileA(Unk_FileConcat(base, "*.*"), &entry);
+    if (search != INVALID_HANDLE_VALUE) {
+        while (more != FALSE) {
+            char drive[_MAX_DRIVE], dir[272], name[256];
+            _splitpath(base, drive, dir, name, nullptr);
+            if ((entry.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) != 0 && entry.cFileName[0] != '.') {
+                char child[272];
+                sprintf(child, "%s%s%s/*.*", drive, dir, entry.cFileName);
+                std::string childPath(drive);
+                childPath.append(dir);
+                childPath.append(entry.cFileName);
+                if (!FUN_140398640(childPath, false)) FUN_140399100(pattern, CString(child), output, exclude, false);
+            }
+            more = FindNextFileA(search, &entry);
+        }
+        FindClose(search);
+    }
+    more = TRUE;
+    search = FindFirstFileA(Unk_FileConcat(base, "*.*"), &entry);
+    if (search != INVALID_HANDLE_VALUE) {
+        while (more != FALSE) {
+            char drive[_MAX_DRIVE], dir[272], name[256];
+            _splitpath(base, drive, dir, name, nullptr);
+            if ((entry.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == 0) {
+                char ext[256];
+                _splitpath(entry.cFileName, nullptr, nullptr, nullptr, ext);
+                CString extension(ext), filter(pattern);
+                filter.Replace("*", "");
+                if (filter.CompareNoCase(extension) == 0 || pattern == "*.*") {
+                    CString result;
+                    result += dir;
+                    result += entry.cFileName;
+                    std::string path;
+                    path = static_cast<const char*>(result);
+                    if (!FUN_140398640(path, true) && (exclude.IsEmpty() || result.Find(exclude, 0) == -1)) {
+                        FUN_1401d3700(result);
+                        output.Add(result);
+                    }
+                }
+            }
+            more = FindNextFileA(search, &entry);
+        }
+        FindClose(search);
+    }
 }
 MS2_REPLACE_METHOD(0x14039deb0, CFileSystem, FUN_14039deb0, 1438, 0x7F7BA977);
-// MS2-FUNCTIONAL: same reviewed two-pass enumeration with vector move insertion.
 // @0x14039e460
 void CFileSystem::FUN_14039e460(const CString& pattern, const CString& directory,
                                std::vector<CString>& output, const CString& exclude) {
-    Unk_EnumerateLocal(this, pattern, directory, output, exclude);
-}
-MS2_REPLACE_METHOD(0x14039e460, CFileSystem, FUN_14039e460, 1438, 0x3837465B);
-// MS2-FUNCTIONAL: keeps files-before-subdirectories search, lowercase comparison and handle closure on early success.
-// @0x14039ea10
-CString CFileSystem::FUN_14039ea10(const CString& filename, CString directory) {
+    BOOL more = TRUE;
+    HANDLE search;
     CString base(directory);
     WIN32_FIND_DATAA entry;
+    search = FindFirstFileA(Unk_FileConcat(base, "*.*"), &entry);
+    if (search != INVALID_HANDLE_VALUE) {
+        while (more != FALSE) {
+            char drive[_MAX_DRIVE], dir[272], name[256];
+            _splitpath(base, drive, dir, name, nullptr);
+            if ((entry.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) != 0 && entry.cFileName[0] != '.') {
+                char child[272];
+                sprintf(child, "%s%s%s/*.*", drive, dir, entry.cFileName);
+                std::string childPath(drive);
+                childPath.append(dir);
+                childPath.append(entry.cFileName);
+                if (!FUN_140398640(childPath, false)) FUN_1403992a0(pattern, CString(child), output, exclude, false);
+            }
+            more = FindNextFileA(search, &entry);
+        }
+        FindClose(search);
+    }
+    more = TRUE;
+    search = FindFirstFileA(Unk_FileConcat(base, "*.*"), &entry);
+    if (search != INVALID_HANDLE_VALUE) {
+        while (more != FALSE) {
+            char drive[_MAX_DRIVE], dir[272], name[256];
+            _splitpath(base, drive, dir, name, nullptr);
+            if ((entry.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == 0) {
+                char ext[256];
+                _splitpath(entry.cFileName, nullptr, nullptr, nullptr, ext);
+                CString extension(ext), filter(pattern);
+                filter.Replace("*", "");
+                if (filter.CompareNoCase(extension) == 0 || pattern == "*.*") {
+                    CString result;
+                    result += dir;
+                    result += entry.cFileName;
+                    std::string path;
+                    path = static_cast<const char*>(result);
+                    if (!FUN_140398640(path, true) && (exclude.IsEmpty() || result.Find(exclude, 0) == -1)) {
+                        FUN_1401d3700(result);
+                        output.push_back(result);
+                    }
+                }
+            }
+            more = FindNextFileA(search, &entry);
+        }
+        FindClose(search);
+    }
+}
+MS2_REPLACE_METHOD(0x14039e460, CFileSystem, FUN_14039e460, 1438, 0x3837465B);
+// @0x14039ea10
+CString CFileSystem::FUN_14039ea10(const CString& filename, CString directory) {
     BOOL more = TRUE;
-    HANDLE search = FindFirstFileA(Unk_FileConcat(base, "*.*"), &entry);
+    HANDLE search;
+    CString base(directory);
+    WIN32_FIND_DATAA entry;
+    more = TRUE;
+    search = FindFirstFileA(Unk_FileConcat(base, "*.*"), &entry);
     if (search != INVALID_HANDLE_VALUE) {
         while (more != FALSE) {
             if ((entry.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == 0) {
                 CString name(entry.cFileName);
-                name.MakeLower();
+                FUN_1401d3700(name);
                 if (filename == name) {
                     base = Unk_FileConcat(directory, name);
-                    base.MakeLower();
+                    FUN_1401d3700(base);
                     FindClose(search);
                     return base;
                 }
@@ -1240,7 +1342,7 @@ CString CFileSystem::FUN_14039ea10(const CString& filename, CString directory) {
     search = FindFirstFileA(Unk_FileConcat(base, "*.*"), &entry);
     if (search != INVALID_HANDLE_VALUE) {
         while (more != FALSE) {
-            char drive[8], dir[272], name[256], ext[272];
+            char drive[_MAX_DRIVE], dir[272], name[256], ext[272];
             _splitpath(base, drive, dir, name, ext);
             if ((entry.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) != 0 && entry.cFileName[0] != '.') {
                 directory.Format("%s%s%s/", drive, dir, entry.cFileName);
@@ -1254,7 +1356,6 @@ CString CFileSystem::FUN_14039ea10(const CString& filename, CString directory) {
     return CString();
 }
 MS2_REPLACE_METHOD(0x14039ea10, CFileSystem, FUN_14039ea10, 1076, 0xC61C1C55);
-// MS2-FUNCTIONAL: typed texture maps retain first insertion on duplicate filenames and three directory priorities.
 // @0x14039ee50
 void CFileSystem::FUN_14039ee50() {
     std::list<std::string> textures;
@@ -1263,15 +1364,24 @@ void CFileSystem::FUN_14039ee50() {
     std::string map = mapDirectory + "textures/";
     std::string model = modelDirectory + "textures/";
     for (auto it = textures.begin(); it != textures.end(); ++it) {
-        int kind;
-        if (FUN_1403ab490(*it, effect)) kind = 0;
-        else if (FUN_1403ab490(*it, map)) kind = 1;
-        else if (FUN_1403ab490(*it, model)) kind = 2;
-        else continue;
-        size_t slash = it->find_last_of('/');
-        if (slash != std::string::npos) {
-            std::string filename = it->substr(slash + 1, it->length());
-            texturePaths[kind].insert(std::make_pair(filename, *it));
+        if (FUN_1403ab490(*it, effect)) {
+            size_t slash = it->find_last_of('/');
+            if (slash != std::string::npos) {
+                std::string filename = it->substr(slash + 1, it->length());
+                texturePaths[0].insert(std::make_pair(filename, *it));
+            }
+        } else if (FUN_1403ab490(*it, map)) {
+            size_t slash = it->find_last_of('/');
+            if (slash != std::string::npos) {
+                std::string filename = it->substr(slash + 1, it->length());
+                texturePaths[1].insert(std::make_pair(filename, *it));
+            }
+        } else if (FUN_1403ab490(*it, model)) {
+            size_t slash = it->find_last_of('/');
+            if (slash != std::string::npos) {
+                std::string filename = it->substr(slash + 1, it->length());
+                texturePaths[2].insert(std::make_pair(filename, *it));
+            }
         }
     }
 }
@@ -1282,7 +1392,6 @@ bool CFileSystem::FUN_14039f3b0(CString path) {
     return resolved.find("./config") == 0;
 }
 MS2_REPLACE_METHOD(0x14039f3b0, CFileSystem, FUN_14039f3b0, 218, 0xB960F3ED);
-// MS2-FUNCTIONAL: retains 64-bit size outputs, patch-before-base search and early-return warning behavior.
 // @0x14039f4b0
 int CFileSystem::FUN_14039f4b0(const char* path, void** data, unsigned __int64* size, bool warn) {
     if (path != nullptr && data != nullptr && size != nullptr) {
@@ -1305,11 +1414,13 @@ int CFileSystem::FUN_14039f4b0(const char* path, void** data, unsigned __int64* 
             }
         }
     }
-    if (warn) Unk_FileLog(GetLogString(), 1, 0x13, L"파일을 읽을 수 없습니다 [{0}]", CString(path ? path : ""));
+    if (warn) {
+        CString text(path == nullptr ? "" : path);
+        Unk_FileLog(GetLogString(), 1, 0x13, L"파일을 읽을 수 없습니다 [{0}]", text);
+    }
     return 0;
 }
 MS2_REPLACE_METHOD(0x14039f4b0, CFileSystem, FUN_14039f4b0, 1584, 0x28E9772F);
-// MS2-FUNCTIONAL: preserves the alternate local checks in packed mode and original-only check in unpacked mode.
 // @0x14039faf0
 int CFileSystem::FUN_14039faf0(std::string path) {
     if (FUN_140398190() && !FUN_14039f3b0(CString(path.c_str()))) {
@@ -1317,19 +1428,22 @@ int CFileSystem::FUN_14039faf0(std::string path) {
         if (resolved.empty()) return 0;
         if (FUN_14039bf70()) {
             bool stringResource = resolved.find(stringDirectory) != std::string::npos;
+            HANDLE file = nullptr;
             std::string alternate;
             size_t slash = resolved.find_last_of('/');
-            if (slash == std::string::npos) {
-                if (stringResource) alternate.assign(DAT_143ab0568);
-                else alternate.assign(DAT_143ab0588);
-                alternate += resolved;
-            } else {
+            if (slash != std::string::npos) {
                 if (stringResource) alternate = resolved.substr(0, slash + 1) + DAT_143ab0568;
                 else alternate = resolved.substr(0, slash + 1) + DAT_143ab0588;
                 alternate += resolved.substr(slash + 1, resolved.length());
+                file = CreateFileA(alternate.c_str(), GENERIC_READ, FILE_SHARE_READ, nullptr, OPEN_EXISTING, 0, nullptr);
+                if (file != INVALID_HANDLE_VALUE) { CloseHandle(file); return 1; }
+            } else {
+                if (stringResource) alternate.assign(DAT_143ab0568);
+                else alternate.assign(DAT_143ab0588);
+                alternate += resolved;
+                file = CreateFileA(alternate.c_str(), GENERIC_READ, FILE_SHARE_READ, nullptr, OPEN_EXISTING, 0, nullptr);
+                if (file != INVALID_HANDLE_VALUE) { CloseHandle(file); return 1; }
             }
-            HANDLE file = CreateFileA(alternate.c_str(), GENERIC_READ, FILE_SHARE_READ, nullptr, OPEN_EXISTING, 0, nullptr);
-            if (file != INVALID_HANDLE_VALUE) { CloseHandle(file); return 1; }
             file = CreateFileA(resolved.c_str(), GENERIC_READ, FILE_SHARE_READ, nullptr, OPEN_EXISTING, 0, nullptr);
             if (file != INVALID_HANDLE_VALUE) { CloseHandle(file); return 1; }
         }
@@ -1339,15 +1453,14 @@ int CFileSystem::FUN_14039faf0(std::string path) {
                 if ((*it)->FUN_1406b1460(relative) != 0) return 1;
             }
         }
-        return 0;
+    } else {
+        if (FUN_140398640(path, true)) return 0;
+        HANDLE file = CreateFileA(path.c_str(), GENERIC_READ, FILE_SHARE_READ, nullptr, OPEN_EXISTING, 0, nullptr);
+        if (file != INVALID_HANDLE_VALUE) { CloseHandle(file); return 1; }
     }
-    if (FUN_140398640(path, true)) return 0;
-    HANDLE file = CreateFileA(path.c_str(), GENERIC_READ, FILE_SHARE_READ, nullptr, OPEN_EXISTING, 0, nullptr);
-    if (file != INVALID_HANDLE_VALUE) { CloseHandle(file); return 1; }
     return 0;
 }
 MS2_REPLACE_METHOD(0x14039faf0, CFileSystem, FUN_14039faf0, 2087, 0x34D09E8B);
-// MS2-FUNCTIONAL: real ATL file API retains alternate-path reporting, zero-size failure and failed-read cleanup.
 // @0x1403a0320
 int CFileSystem::FUN_1403a0320(const char* path, void** data, unsigned __int64* size, std::string* actualPath) {
     std::string normalized(static_cast<const char*>(FUN_140188f50(path, 0)));
@@ -1363,17 +1476,19 @@ int CFileSystem::FUN_1403a0320(const char* path, void** data, unsigned __int64* 
     } else if (actualPath != nullptr) actualPath->assign(alternate);
     *size = 0;
     file.GetSize(*size);
-    if (*size == 0) return 0;
-    *data = EE_MALLOC(*size);
-    if (FAILED(file.Read(*data, static_cast<DWORD>(*size)))) {
-        *size = 0;
-        EE_FREE(*data);
-        *data = nullptr;
+    if (*size != 0) {
+        *data = EE_MALLOC(*size);
+        if (FAILED(file.Read(*data, static_cast<DWORD>(*size)))) {
+            *size = 0;
+            EE_FREE(*data);
+            *data = nullptr;
+            file.Close();
+            return 0;
+        }
         file.Close();
-        return 0;
+        return 1;
     }
-    file.Close();
-    return 1;
+    return 0;
 }
 MS2_REPLACE_METHOD(0x1403a0320, CFileSystem, FUN_1403a0320, 966, 0xB14478D0);
 

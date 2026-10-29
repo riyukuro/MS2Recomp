@@ -15,7 +15,7 @@ class StateTaxiCallData : public StateData
 public:
     StateTaxiCallData();                                    // 0x1417fcf30
     StateTaxiCallData(int nTaxiId);                         // 0x1417fcf70
-    virtual ~StateTaxiCallData();                           // 0  0x1417fe0f0 (??_G 0x1417fe220)
+    // virtual ~StateTaxiCallData();                        // 0  0x1417fe0f0 (implicit; ??_G 0x1417fe220)
     virtual void vfunc_1(Unk_StateDataArg* p);              // 1  0x1417fcfc0 (writes the id as text)
     virtual void vfunc_2(Unk_StateDataArg* p);              // 2  0x1417fd040 (reads it back)
 

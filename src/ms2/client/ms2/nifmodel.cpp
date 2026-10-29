@@ -2,11 +2,13 @@
 // MS2-UNIT: ?\nifmodel.cpp
 // MS2-RANGE: 0x141565560-0x141567000 .text$mn
 // MS2-RANGE: 0x1400fa540-0x1400fa560 .text$di
-// MS2-FUNCTIONAL: extern-heavy; engine/game helpers are opaque void* FUN_ externs. Loops over the node list at +0xf8
-// are written with the exe's iterator helpers (begin 0x141209190, end 0x141209360, neq 0x140b029f0, deref 0x140b02a60,
-// inc 0x140b02a80).
+// MS2-FUNCTIONAL: the 8 loops over the node set at +0xf8 (vfunc_6/10/11/12/13/15/17, FUN_141566b60) call begin
+// 0x141209190 / end 0x141209360, not plain std::set<NiAVObjectPtr>'s 0x140b02f70 / 0x140b02fe0, so m_unk_f8 in the
+// shared equipmodel.h is likely a different set type (comparator?). Until then they use the exe's iterator helpers
+// (neq 0x140b029f0, deref 0x140b02a60, inc 0x140b02a80).
 #include "ms2/placeholder/ms2stdafx.h"
 #include "nifmodel.h"
+#include "kfmmodel_actor.h"
 #include <efd/Matrix3.h>
 #include <string.h>
 #include <errno.h>
@@ -14,10 +16,9 @@
 
 // ---- out-of-unit callees ----
 void* FUN_1405a8ed0(void* sp);   void FUN_1405a85c0(void* sp);   void* FUN_1409849b0(void* sp);   void FUN_14097eb60(void* out, void* p);
-void* FUN_1411dc7a0(void* owner, void* out);   void* FUN_14052cd70(void* p);   void FUN_1401bfde0(void* p);
+void* FUN_1411dc7a0(void* owner, void* out);   void FUN_1401bfde0(void* p);
 void* FUN_1401c0180(void* p);   int FUN_140527a20(void* p);   void* FUN_1411dc7f0(void* owner);   char FUN_14053cfd0(void* p);
-void FUN_141200e30(void* self, int n);   int FUN_1412033e0(void* self);   void* FUN_140a0afd0();
-void* FUN_141551ea0(void* svc, void* out, CString path, bool b, int a, int c, int d);
+void FUN_141200e30(void* self, int n);   int FUN_1412033e0(void* self);
 void FUN_14097f710(void* dst, void* src);   char FUN_1409a7f70(void* sp, int n);
 void FUN_141200ca0(void* self);
 void FUN_141209360(void* list, void* out);   void FUN_141209190(void* list, void* out);
@@ -31,7 +32,7 @@ char FUN_1409f77a0(void* sp, int n);   void* FUN_1409475f0(void* sp);
 int FUN_141422110(void* a, void* b, void* c);   void FUN_141ab6e80(void* o);
 float FUN_141422340(void* self, int n);   void FUN_141167840(void* o, const CString& s, float f);
 char FUN_140534e50(void* p);   void* FUN_140527840(void* p);   char FUN_14053d2b0(void* p);   unsigned FUN_1405258b0(void* p);
-void* FUN_1416561a0(void* p);   int FUN_1411e99a0(void* a, unsigned b, void* c, unsigned d, char e);
+void* FUN_1416561a0(void* p);   int FUN_1411e99a0(void* a, unsigned b, void* c, unsigned d, int e);
 void FUN_140984450(void* out, const char* s);   void FUN_1409845a0(void* s);   void* FUN_14098d8d0(void* tbl, void* key);
 int FUN_141422f30(void* o);
 void FUN_140a0b300(void* o, int b);   void FUN_14098cb80(void* it, void* o);   void* FUN_14098e0d0(void* it, int n);   void FUN_14098cf00(void* it);
@@ -62,11 +63,24 @@ const efd::ClassInfo CNifModel::ms_ClassInfo((efd::ClassInfo::CLASSINFO_FUNC)s_n
 #else
 EE_IMPLEMENT_CONCRETE_CLASS_INFO(CNifModel);
 #endif
-void FUN_141566cb0(void* p);
+void FUN_141566cb0(CNifModel* p);
 void FUN_141566b60(void* p);
 void* FUN_141566d90(void* p);
 void* FUN_141566db0(void* p);
 void* FUN_141566d30(void** p);
+
+// The model's owner (the equipped item; held in MS2Ptr). Only the members this unit calls.
+class Unk_EquipModelOwner : public CPtred
+{
+public:
+    MS2Ptr<CItem> FUN_1411dc7a0();                        // the item
+};
+class CItem : public CPtred
+{
+public:
+    unsigned FUN_140527a20();                             // the item's slot kind
+};
+CItem* FUN_14052cd70(const MS2Ptr<CItem>& sp);                  // sp.get
 
 // @0x141565560
 CNifModel::CNifModel(MS2Ptr<Unk_EquipModelOwner> spOwner, void* p18, void* p20)
@@ -76,37 +90,30 @@ CNifModel::CNifModel(MS2Ptr<Unk_EquipModelOwner> spOwner, void* p18, void* p20)
     m_i11c = 0;
     m_p120 = 0;
     if (*(int*)&DAT_143ae2b38 != 0) {
-        char t0[16];
-        void* r = FUN_1411dc7a0(FUN_1405a8ed0(&spOwner), t0);
-        void* x = FUN_14052cd70(r);
-        FUN_1401bfde0(t0);
-        if (x != 0) {
-            char t1[16];
-            void* r2 = FUN_1411dc7a0(FUN_1405a8ed0(&spOwner), t1);
-            void* o = FUN_1401c0180(r2);
-            int iv = FUN_140527a20(o);
-            m_i11c = (iv == 2);
-            FUN_1401bfde0(t1);
-        }
+        CItem* pItem = FUN_14052cd70(spOwner->FUN_1411dc7a0());
+        if (pItem != 0)
+            m_i11c = spOwner->FUN_1411dc7a0()->FUN_140527a20() == 2;
     }
 }
+
+// The .nif loading service (CNifLoadingService; nifeffectparam.h). Only the loader this unit calls.
+class Unk_NifLoader
+{
+public:
+    NiAVObjectPtr FUN_141551ea0(CString strPath, bool bShared, int a, int b, int c);   // Load
+};
+Unk_NifLoader* FUN_140a0afd0();                           // the service singleton
 
 // @0x141565700
 int CNifModel::vfunc_4(CString strPath)
 {
     FUN_141200e30(this, 1);
-    int nUseFlag = FUN_1412033e0(this);
-    char local20[8];
-    void* svc = FUN_140a0afd0();
-    void* r = FUN_141551ea0(svc, local20, strPath, nUseFlag != 0, 5, 0, 0);
-    FUN_14097f710(&m_unk_f0, r);
-    FUN_1405a85c0(local20);
-    char c = FUN_1409a7f70(&m_unk_f0, 0);
-    if (c == 0) {
-        m_str38 = strPath;
-        FUN_141566cb0(this);
-    }
-    return c == 0;
+    m_unk_f0 = FUN_140a0afd0()->FUN_141551ea0(strPath, FUN_1412033e0(this) != 0, 5, 0, 0);
+    if (m_unk_f0 == 0)
+        return 0;
+    m_str38 = strPath;
+    FUN_141566cb0(this);
+    return 1;
 }
 
 // @0x141565880
@@ -149,12 +156,11 @@ int CNifModel::vfunc_7()
 }
 
 // @0x141565a20
-int FUN_141565a20(CNifModel* self, CString strPath, void* sp)
+int FUN_141565a20(CNifModel* self, CString strPath, NiAVObjectPtr spRoot)
 {
-    FUN_14097f710((char*)self + 0xf0, sp);
+    self->m_unk_f0 = spRoot;
     self->m_str38 = strPath;
     FUN_141566cb0(self);
-    FUN_1405a85c0(sp);
     return 1;
 }
 
@@ -235,7 +241,7 @@ void CNifModel::vfunc_12()
     if (pNode == 0) return;
     alignas(8) char sbuf[8];
     CString& s = *(CString*)sbuf;
-    FUN_1412029d0(this, &s);
+    ::FUN_1412029d0(this, &s);
     if (s.IsEmpty()) {
         s.~CString();
         return;
@@ -287,7 +293,7 @@ void CNifModel::vfunc_13()
     unsigned uAttrB = FUN_1405258b0(FUN_1401c0180(v80));
     alignas(8) char sbuf[8];
     CString& s = *(CString*)sbuf;
-    FUN_1412029d0(this, &s);
+    ::FUN_1412029d0(this, &s);
     int nModelKind = FUN_140527a20(FUN_1401c0180(v80));
     int nResult = FUN_1411e99a0(FUN_1416561a0(pController), nModelKind, &s, uAttrB, cAttrA);
     s.~CString();
@@ -411,9 +417,8 @@ void CNifModel::vfunc_19(double fTime)
     if (m_b111 != 0) {
         if (vfunc_20() != 0) {
             if (FUN_141200820(this) != 0) {
-                void* p = FUN_141200820(this);
-                int v = V0(int, p, 0x208);
-                vfunc_32(v);
+                Unk_ModelActor* p = (Unk_ModelActor*)FUN_141200820(this);
+                vfunc_32(p->vfunc_65());
             }
             m_b111 = false;
         }
@@ -469,17 +474,15 @@ void FUN_141566b60(void* self)
 }
 
 // @0x141566cb0
-void FUN_141566cb0(void* self)
+void FUN_141566cb0(CNifModel* p)
 {
-    CNifModel* p = (CNifModel*)self;
-    FUN_1411dde50(FUN_1405a8ed0(&p->m_spOwner), self);
-    FUN_141203db0(self);
+    FUN_1411dde50(FUN_1405a8ed0(&p->m_spOwner), p);
+    FUN_141203db0(p);
     p->vfunc_6();
     p->m_i118 = 1;
 }
 
-// @0x141566d10
-CNifModel::~CNifModel() {}
+// 0x141566d10 ~CNifModel is implicit (nifmodel.h).
 
 // @0x141566d30
 void* FUN_141566d30(void** p) { return *p; }
@@ -494,9 +497,19 @@ void* FUN_141566db0(void* p) { return FUN_141566d30((void**)((char*)p + 0xa8)); 
 int FUN_141566ee0(void* dst, size_t dstSize, const void* src, size_t count)
 {
     if (count == 0) return 0;
-    if (dst == 0) { *_errno() = EINVAL; _invalid_parameter_noinfo(); return EINVAL; }
-    if (src == 0) { *_errno() = EINVAL; _invalid_parameter_noinfo(); return EINVAL; }
-    if (dstSize < count) { *_errno() = ERANGE; _invalid_parameter_noinfo(); return ERANGE; }
+    // The checks are the CRT's _CRT_MEMCPY_S_VALIDATE_RETURN_ERRCODE (memmove_s in vcruntime_string.h).
+    {
+        int bValid = !!(dst != 0);
+        if (!bValid) { *_errno() = EINVAL; _invalid_parameter_noinfo(); return EINVAL; }
+    }
+    {
+        int bValid = !!(src != 0);
+        if (!bValid) { *_errno() = EINVAL; _invalid_parameter_noinfo(); return EINVAL; }
+    }
+    {
+        int bValid = !!(dstSize >= count);
+        if (!bValid) { *_errno() = ERANGE; _invalid_parameter_noinfo(); return ERANGE; }
+    }
     memmove(dst, src, count);
     return 0;
 }

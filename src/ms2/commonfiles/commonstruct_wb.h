@@ -41,7 +41,7 @@ public:
     bool isPvp;
     bool isUseGrade;
     bool isIgnoreLevelGap;
-    char m_pad_35;
+    char m_pad_35[1];   // an array: /GS treats a stack DamageCalculatorInfo as a GS buffer next to the cookie (scenestategame FUN_14173f860)
     short m_pad_36;
     int m_unk38;   // Unk_CommonBytes4, constructed in the ctor body
     float damageByTargetMaxHP;

@@ -81,12 +81,17 @@ CStringW GetStringCommonByKey(const CStringW& str);                    // the lo
 CStringTable* GetStringTable();                                  // the string table
 void FUN_1422bcd70(Scaleform::GFx::Value* pValue, float f);
 void FUN_1422bce70(Scaleform::GFx::Value* pValue, const char* sz);
-// The player's position as the engine point type.
-static Vector3 PlayerPos(PCBase* pPC)
+// The local player's vtable as the slots used here (vfunc_18 returns the position as the engine point type).
+class Unk_MomPlayer
 {
-    NiPoint3 pt = pPC->vfunc_18();
-    return Vector3(pt.x, pt.y, pt.z);
-}
+public:
+    virtual void vfunc_0(); virtual void vfunc_1(); virtual void vfunc_2(); virtual void vfunc_3();
+    virtual void vfunc_4(); virtual void vfunc_5(); virtual void vfunc_6(); virtual void vfunc_7();
+    virtual void vfunc_8(); virtual void vfunc_9(); virtual void vfunc_10(); virtual void vfunc_11();
+    virtual void vfunc_12(); virtual void vfunc_13(); virtual void vfunc_14(); virtual void vfunc_15();
+    virtual void vfunc_16(); virtual void vfunc_17();
+    virtual Vector3 vfunc_18();                 // 0x90 position
+};
 
 using namespace ATL;
 
@@ -149,7 +154,7 @@ void UIMasteryObjectMark::FUN_140e59bb0(CInteractObject* pObject)
         MS2Ptr<EntityContext> spEmpty(0);
         m_nodes.SetAt(pObject->GetName(), spEmpty);
     }
-}   // MS2-FUNCTIONAL: not byte-matched (call order / stack and EH state layout)
+}
 
 // @0x140e59ea0
 void UIMasteryObjectMark::FUN_140e59ea0(CFunctionCubeObject* pCube)
@@ -175,7 +180,7 @@ void UIMasteryObjectMark::FUN_140e59ea0(CFunctionCubeObject* pCube)
         MS2Ptr<EntityContext> spEmpty(0);
         m_cubes.SetAt(pCube->FUN_141226bd0(), spEmpty);
     }
-}   // MS2-FUNCTIONAL: not byte-matched (call order / stack and EH state layout)
+}
 
 // @0x140e5a190
 void UIMasteryObjectMark::vfunc_2()
@@ -195,39 +200,35 @@ void UIMasteryObjectMark::vfunc_3()
 void UIMasteryObjectMark::OnLoadComplete()
 {
     UIObject::OnLoadComplete();
-    POSITION pos = m_nodes.GetStartPosition();
-    while (pos)
+    for (POSITION pos = m_nodes.GetStartPosition(); pos; m_nodes.GetNext(pos))
     {
         MS2Ptr<EntityContext> spContext = m_nodes.GetValueAt(pos);
         if (spContext == 0)
         {
             CInteractObject* pObject = FUN_1403ed2d0()->FUN_141bc66b0(m_nodes.GetKeyAt(pos));
-            if (pObject)
-            {
-                CInteractGatheringObject* pGather = dynamic_cast<CInteractGatheringObject*>(pObject);
-                if (pGather)
-                    FUN_140e59bb0(pGather);
-            }
+            if (!pObject)
+                continue;
+            CInteractGatheringObject* pGather = dynamic_cast<CInteractGatheringObject*>(pObject);
+            if (!pGather)
+                continue;
+            FUN_140e59bb0(pGather);
         }
-        m_nodes.GetNext(pos);
     }
-    pos = m_cubes.GetStartPosition();
-    while (pos)
+    for (POSITION pos = m_cubes.GetStartPosition(); pos; m_cubes.GetNext(pos))
     {
         MS2Ptr<EntityContext> spContext = m_cubes.GetValueAt(pos);
         if (spContext == 0)
         {
             CFunctionCubeObject* pCube = FUN_1409670b0()->FUN_141230c00(m_cubes.GetKeyAt(pos));
-            if (pCube)
-            {
-                CHomemadeCubeObject* pHome = dynamic_cast<CHomemadeCubeObject*>(pCube);
-                if (pHome)
-                    FUN_140e59ea0(pHome);
-            }
+            if (!pCube)
+                continue;
+            CHomemadeCubeObject* pHome = dynamic_cast<CHomemadeCubeObject*>(pCube);
+            if (!pHome)
+                continue;
+            FUN_140e59ea0(pHome);
         }
-        m_cubes.GetNext(pos);
     }
-}   // MS2-FUNCTIONAL: not byte-matched (call order / stack and EH state layout)
+}
 
 // @0x140e5a560
 void UIMasteryObjectMark::vfunc_15()
@@ -268,52 +269,43 @@ void UIMasteryObjectMark::FUN_140e5a600()
             FUN_140e5b450(strKey);
             continue;
         }
-        CInteractGatheringObject* pGather = dynamic_cast<CInteractGatheringObject*>(spObject.operator->());
-        if (!pGather)
+        if (CInteractGatheringObject* pGather = dynamic_cast<CInteractGatheringObject*>(spObject.operator->()))
         {
-            FUN_140e5b450(strKey);
-            continue;
-        }
-        Vector3 ptScreen;
-        Vector3 ptWorld = pGather->GetPos().FUN_14097fd50(Vector3(0.0f, 0.0f, 200.0f));
-        float fDist = PlayerPos(pPC).FUN_140965c40(pGather->GetPos()).FUN_140967ac0();
-        if (!FUN_1409478c0()->FUN_140af0700(ptWorld, ptScreen) || 1000.0f < fDist)
-        {
-            spContext->m_spEntity->vfunc_3(0);
+            Vector3 ptScreen;
+            Vector3 ptWorld = pGather->GetPos().FUN_14097fd50(Vector3(0.0f, 0.0f, 200.0f));
+            float fDist = reinterpret_cast<Unk_MomPlayer*>(pPC)->vfunc_18().FUN_140965c40(pGather->GetPos()).FUN_140967ac0();
+            if (!FUN_1409478c0()->FUN_140af0700(ptWorld, ptScreen) || 1000.0f < fDist)
+            {
+                spContext->m_spEntity->vfunc_3(0);
+            }
+            else
+            {
+                ptScreen.FUN_140ad0c10(FUN_1422afec0(FUN_14025e7a0(), m_28));
+                ptScreen.y += FUN_1412762d0(pGather->GetPos());
+                ptScreen.x += FUN_1401d3200()->m_ddd0.FUN_140298f40();
+                ptScreen.y += FUN_1401d3200()->m_de28.FUN_140298f40();
+                spContext->m_spEntity->FUN_140e5bf20("setPosition", ptScreen.x, ptScreen.y);
+                int nShow = (fDist < FUN_1401d3200()->m_dfe0.FUN_140298f40() && pGather->FUN_141402b40() != 0) ? 1 : 0;
+                if (FUN_1408a1360(reinterpret_cast<Unk_MomPlayer*>(pPC)->vfunc_18(), pGather->GetPos()) == 0)
+                    nShow = 0;
+                if (spContext->m_nShown != nShow)
+                {
+                    spContext->m_spEntity->Invoke("showTooltip", nShow);
+                    spContext->m_nShown = nShow;
+                }
+                if (FUN_140e5b520(pGather, spContext.get()) != 0)
+                    FUN_140e5bd80(spContext.get());
+                bool bVisible = nShow != 0 ? true : spContext->m_nEnabled != 0;
+                if (spContext->m_spEntity->FUN_1422bfca0() != bVisible)
+                    spContext->m_spEntity->vfunc_4(bVisible);
+            }
         }
         else
         {
-            ptScreen.FUN_140ad0c10(FUN_1422afec0(FUN_14025e7a0(), m_28));
-            ptScreen.y += FUN_1412762d0(pGather->GetPos());
-            ptScreen.x += FUN_1401d3200()->m_ddd0.FUN_140298f40();
-            ptScreen.y += FUN_1401d3200()->m_de28.FUN_140298f40();
-            spContext->m_spEntity->FUN_140e5bf20("setPosition", ptScreen.x, ptScreen.y);
-            int nShow;
-            if (FUN_1401d3200()->m_dfe0.FUN_140298f40() <= fDist || pGather->FUN_141402b40() == 0)
-                nShow = 0;
-            else
-                nShow = 1;
-            Vector3 ptObject = pGather->GetPos();
-            Vector3 ptPlayer = PlayerPos(pPC);
-            if (FUN_1408a1360(ptPlayer, ptObject) == 0)
-                nShow = 0;
-            if (spContext->m_nShown != nShow)
-            {
-                spContext->m_spEntity->Invoke("showTooltip", nShow);
-                spContext->m_nShown = nShow;
-            }
-            if (FUN_140e5b520(pGather, spContext.get()) != 0)
-                FUN_140e5bd80(spContext.get());
-            bool bVisible;
-            if (nShow == 0)
-                bVisible = spContext->m_nEnabled != 0;
-            else
-                bVisible = true;
-            if (spContext->m_spEntity->FUN_1422bfca0() != bVisible)
-                spContext->m_spEntity->vfunc_4(bVisible);
+            FUN_140e5b450(strKey);
         }
     }
-}   // MS2-FUNCTIONAL: not byte-matched (call order / stack and EH state layout)
+}
 
 // @0x140e5ac30
 void UIMasteryObjectMark::FUN_140e5ac30()
@@ -332,8 +324,7 @@ void UIMasteryObjectMark::FUN_140e5ac30()
         MS2Ptr<EntityContext> spContext = m_cubes.GetValueAt(posCur);
         if (spContext == 0)
             continue;
-        CStringA strFind(strKey);
-        MS2Ptr<CFunctionCubeObject> spCube = FUN_1409670b0()->FUN_141230c00(strFind);
+        MS2Ptr<CFunctionCubeObject> spCube = FUN_1409670b0()->FUN_141230c00(strKey);
         if (spCube.IsNull())
         {
             FUN_140e5b450(strKey);
@@ -346,57 +337,49 @@ void UIMasteryObjectMark::FUN_140e5ac30()
                 nOwnerOk = 0;
         }
         MS2Ptr<CHomemadeCubeObject> spHome(dynamic_cast<CHomemadeCubeObject*>(spCube.get()));
-        if (spHome.get() == 0 || nOwnerOk == 0)
+        if ((spHome.get() ? true : false) && nOwnerOk != 0)
         {
-            FUN_140e5b450(strKey);
-            continue;
-        }
-        Vector3 ptScreen;
-        Vector3 ptWorld = spHome->FUN_141226d00().FUN_14097fd50(Vector3(0.0f, 0.0f, 200.0f));
-        float fDist = PlayerPos(pPC).FUN_140965c40(spHome->FUN_141226d00()).FUN_140967ac0();
-        int nRiding = static_cast<Unk_McPc*>(pPC)->FUN_1416595b0() != 0;
-        if (!FUN_1409478c0()->FUN_140af0700(ptWorld, ptScreen) || 1000.0f < fDist || nRiding != 0)
-        {
-            spContext->m_spEntity->vfunc_3(0);
-            if (spContext->m_nShown != 0)
+            Vector3 ptScreen;
+            Vector3 ptWorld = spHome->FUN_141226d00().FUN_14097fd50(Vector3(0.0f, 0.0f, 200.0f));
+            float fDist = reinterpret_cast<Unk_MomPlayer*>(pPC)->vfunc_18().FUN_140965c40(spHome->FUN_141226d00()).FUN_140967ac0();
+            int nRiding = static_cast<Unk_McPc*>(pPC)->FUN_1416595b0() != 0;
+            if (!FUN_1409478c0()->FUN_140af0700(ptWorld, ptScreen) || 1000.0f < fDist || nRiding != 0)
             {
-                spContext->m_spEntity->Invoke("showTooltip", 0);
-                spContext->m_nShown = 0;
+                spContext->m_spEntity->vfunc_3(0);
+                if (spContext->m_nShown != 0)
+                {
+                    spContext->m_spEntity->Invoke("showTooltip", 0);
+                    spContext->m_nShown = 0;
+                }
+            }
+            else
+            {
+                ptScreen.FUN_140ad0c10(FUN_1422afec0(FUN_14025e7a0(), m_28));
+                ptScreen.y += FUN_1412762d0(spHome->FUN_141226d00());
+                ptScreen.x += FUN_1401d3200()->m_de80.FUN_140298f40();
+                ptScreen.y += FUN_1401d3200()->m_ded8.FUN_140298f40();
+                spContext->m_spEntity->FUN_140e5bf20("setPosition", ptScreen.x, ptScreen.y);
+                int nShow = (fDist < FUN_1401d3200()->m_dfe0.FUN_140298f40() && spHome->FUN_141229080() != 0) ? 1 : 0;
+                if (FUN_1408a1360(reinterpret_cast<Unk_MomPlayer*>(pPC)->vfunc_18(), spHome->FUN_141226d00()) == 0)
+                    nShow = 0;
+                if (spContext->m_nShown != nShow)
+                {
+                    spContext->m_spEntity->Invoke("showTooltip", nShow);
+                    spContext->m_nShown = nShow;
+                }
+                if (FUN_140e5b620(spHome.get(), spContext.get()) != 0)
+                    FUN_140e5bd80(spContext.get());
+                bool bVisible = nShow != 0 ? 1 : spContext->m_nEnabled != 0;
+                if (spContext->m_spEntity->FUN_1422bfca0() != bVisible)
+                    spContext->m_spEntity->vfunc_4(bVisible);
             }
         }
         else
         {
-            ptScreen.FUN_140ad0c10(FUN_1422afec0(FUN_14025e7a0(), m_28));
-            ptScreen.y += FUN_1412762d0(spHome->FUN_141226d00());
-            ptScreen.x += FUN_1401d3200()->m_de80.FUN_140298f40();
-            ptScreen.y += FUN_1401d3200()->m_ded8.FUN_140298f40();
-            spContext->m_spEntity->FUN_140e5bf20("setPosition", ptScreen.x, ptScreen.y);
-            int nShow;
-            if (FUN_1401d3200()->m_dfe0.FUN_140298f40() <= fDist || spHome->FUN_141229080() == 0)
-                nShow = 0;
-            else
-                nShow = 1;
-            Vector3 ptObject = spHome->FUN_141226d00();
-            Vector3 ptPlayer = PlayerPos(pPC);
-            if (FUN_1408a1360(ptPlayer, ptObject) == 0)
-                nShow = 0;
-            if (spContext->m_nShown != nShow)
-            {
-                spContext->m_spEntity->Invoke("showTooltip", nShow);
-                spContext->m_nShown = nShow;
-            }
-            if (FUN_140e5b620(spHome.get(), spContext.get()) != 0)
-                FUN_140e5bd80(spContext.get());
-            bool bVisible;
-            if (nShow == 0)
-                bVisible = spContext->m_nEnabled != 0;
-            else
-                bVisible = true;
-            if (spContext->m_spEntity->FUN_1422bfca0() != bVisible)
-                spContext->m_spEntity->vfunc_4(bVisible);
+            FUN_140e5b450(strKey);
         }
     }
-}   // MS2-FUNCTIONAL: not byte-matched (call order / stack and EH state layout)
+}
 
 // @0x140e5b450
 void UIMasteryObjectMark::FUN_140e5b450(const CStringA& strKey)
@@ -406,7 +389,7 @@ void UIMasteryObjectMark::FUN_140e5b450(const CStringA& strKey)
         m_30->Invoke("remove", CString(strKey));
         m_nodes.RemoveKey(strKey);
     }
-}   // MS2-FUNCTIONAL: not byte-matched (call order / stack and EH state layout)
+}
 
 // @0x140e5b520
 int UIMasteryObjectMark::FUN_140e5b520(CInteractObject* pObject, EntityContext* pContext)
@@ -419,7 +402,7 @@ int UIMasteryObjectMark::FUN_140e5b520(CInteractObject* pObject, EntityContext* 
         nChanged = 1;
     }
     return nChanged;
-}   // MS2-FUNCTIONAL: not byte-matched (call order / stack and EH state layout)
+}
 
 // @0x140e5b620
 int UIMasteryObjectMark::FUN_140e5b620(CFunctionCubeObject* pCube, EntityContext* pContext)
@@ -432,7 +415,7 @@ int UIMasteryObjectMark::FUN_140e5b620(CFunctionCubeObject* pCube, EntityContext
         nChanged = 1;
     }
     return nChanged;
-}   // MS2-FUNCTIONAL: not byte-matched (call order / stack and EH state layout)
+}
 
 // @0x140e5b720
 unsigned UIMasteryObjectMark::FUN_140e5b720(int nReceipeId, EntityContext* pContext)
@@ -447,34 +430,45 @@ unsigned UIMasteryObjectMark::FUN_140e5b720(int nReceipeId, EntityContext* pCont
     if (CMasteryManager::GetInstance()->FUN_140b6d470(nReceipeId) == 0)
     {
         int nLimit = FUN_1409670c0()->LimitState(nReceipeId);
-        if (nLimit == 0)
+        switch (nLimit)
+        {
+        case 0:
             strProp = GetStringCommonByKey(L"s_mastery_mark_success_prop_high");
-        else if (nLimit == 1)
+            break;
+        case 1:
             strProp = GetStringCommonByKey(L"s_mastery_mark_success_prop_normal");
-        else if (nLimit == 2)
-            strProp = GetStringCommonByKey(L"s_mastery_mark_success_prop_low");
-        else if (nLimit == 3)
+            break;
+        case 3:
             strProp = GetStringCommonByKey(L"s_mastery_mark_success_prop_zero");
-        int nType = spReceipe->m_nType;
-        if (nType == 3)
-            strType = L"mining";
-        else if (nType == 4)
+            break;
+        case 2:
+            strProp = GetStringCommonByKey(L"s_mastery_mark_success_prop_low");
+            break;
+        }
+        switch (spReceipe->m_nType)
+        {
+        case 4:
             strType = L"gathering";
-        else if (nType == 5)
+            break;
+        case 3:
+            strType = L"mining";
+            break;
+        case 5:
             strType = L"breeding";
-        else if (nType == 6)
+            break;
+        case 6:
             strType = L"farming";
+            break;
+        }
         PCBase* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
         if (pPC)
         {
-            int nFactor = FUN_1409670c0()->Factor(nReceipeId, FUN_141662750(pPC, spReceipe->m_nType));
+            int nLevel = FUN_141662750(pPC, spReceipe->m_nType);
+            int nFactor = FUN_1409670c0()->Factor(nReceipeId, nLevel);
             strStatus = FUN_1409670c0()->DifferentialName(nReceipeId, FUN_141662750(pPC, spReceipe->m_nType));
             if (nFactor == 0)
                 strStatus = "disable";
-            if (nFactor == 0 || nLimit == 3)
-                nEnabled = 0;
-            else
-                nEnabled = 1;
+            nEnabled = (nFactor != 0 && nLimit != 3) ? 1 : 0;
         }
     }
     else
@@ -484,10 +478,12 @@ unsigned UIMasteryObjectMark::FUN_140e5b720(int nReceipeId, EntityContext* pCont
         strType = L"lock";
         nEnabled = 0;
     }
-    bool bTypeChanged = pContext->m_strType != strType;
-    if (bTypeChanged)
+    unsigned nChanged = 0;
+    if (pContext->m_strType != strType)
+    {
         pContext->m_strType = strType;
-    unsigned nChanged = bTypeChanged ? 1 : 0;
+        nChanged = 1;
+    }
     if (pContext->m_strProp != strProp)
     {
         pContext->m_strProp = strProp;
@@ -504,7 +500,7 @@ unsigned UIMasteryObjectMark::FUN_140e5b720(int nReceipeId, EntityContext* pCont
         nChanged = 1;
     }
     return nChanged;
-}   // MS2-FUNCTIONAL: not byte-matched (call order / stack and EH state layout)
+}
 
 // @0x140e5bd80
 void UIMasteryObjectMark::FUN_140e5bd80(EntityContext* pContext)
@@ -515,7 +511,7 @@ void UIMasteryObjectMark::FUN_140e5bd80(EntityContext* pContext)
     obj.FUN_1407cbb20("status", pContext->m_strStatus);
     obj.FUN_1407cbb20("type", pContext->m_strType);
     pContext->m_spEntity->Invoke("setData", obj);
-}   // MS2-FUNCTIONAL: not byte-matched (call order / stack and EH state layout)
+}
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // COMDAT glue

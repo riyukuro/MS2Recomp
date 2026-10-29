@@ -13,7 +13,7 @@
 #include "hook/ms2hook.h"
 
 // ---- nps64.dll imports (the exe calls through their IAT slots, 0x142cd1488 / 0x142cd1480) ----
-extern "C" void (__cdecl* __imp_OpenSurveyWindowA)(const char* pszUrl, int nFlags, const char* pszParam, const char* pszExtra);
+extern "C" __declspec(dllimport) void __cdecl OpenSurveyWindowA(const char* pszUrl, int nFlags, const char* pszParam, const char* pszExtra);
 extern "C" void (__cdecl* __imp_AddSurveyParameterA)(const char* pszName, const char* pszValue);
 
 // ---- unit-local colour types (names invented) ----
@@ -63,7 +63,7 @@ void CNPSMan::FUN_140db8f30()
         return;
     if (IsShown())
         return;
-    __imp_OpenSurveyWindowA((const char*)m_strSurveyUrl, 1, (const char*)FUN_1401d9af0(DAT_142e36cd4, &m_hPlayer), DAT_1439f5dd0);
+    OpenSurveyWindowA((const char*)m_strSurveyUrl, 1, (const char*)FUN_1401d9af0(DAT_142e36cd4, &m_hPlayer), DAT_1439f5dd0);
     m_bShown = true;
 }
 

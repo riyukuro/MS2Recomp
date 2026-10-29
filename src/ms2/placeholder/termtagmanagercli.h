@@ -23,8 +23,7 @@ class TermTagManagerCli : public TSingleton<TermTagManagerCli>
 public:
     // @0x141496330
     TermTagManagerCli() {}
-    // @0x1414976f0
-    virtual ~TermTagManagerCli() {}
+    // implicit dtor @0x1414976f0 (the exe's stores no vftable pointers)
 
     void OnPacket(CInPacket& packet);                       // 0x140ad5f00: mode byte 0/1/2
     void OnLoad(CInPacket& packet);                         // 0x140ad5fa0: mode 0, the finished then the running tags

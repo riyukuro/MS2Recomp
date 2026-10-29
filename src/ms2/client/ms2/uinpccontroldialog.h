@@ -36,7 +36,7 @@ class UINpcControlDialog : public UIDialog
 {
 public:
     UINpcControlDialog();                               // 0x141a623e0
-    virtual ~UINpcControlDialog();                      //  0 0x141a68340 (??_G 0x141a68800)
+    // implicit virtual ~UINpcControlDialog()          //  0 0x141a68340 (??_G 0x141a68800)
     virtual CString GetTypeName();                          //  1 0x141a624b0 "NpcControlDialog"
     virtual int vfunc_13();                             // 13 0x141a63390 enter / tab / escape keys
     virtual void OnLoadInit();                          // 20 0x141a63280
@@ -49,7 +49,7 @@ public:
     void FUN_141a63770();                               // "[name] [GameOID : id] [npcID : npc]" into "m_npcName"
     void SetNpcId(int nNpcId);                     // select the controlled npc
     int FUN_141a638e0();                                // "GetLoopCount" of the movie (0 without a movie)
-    void FUN_141a63970(unsigned char nCmd, __int64 nValue);     // packet 0x50 / 4 / id / cmd / value
+    void FUN_141a63970(int nCmd, __int64 nValue);     // packet 0x50 / 4 / id / cmd / value
     void FUN_141a63a10(int nCmd, const CStringW& strArgs);      // packet 0x50 / 4 / id / 8: skill list with loop count
     void FUN_141a63ce0(const CString& strGroup);        // refill "m_items" with the commands of a group
     void FUN_141a64ba0(int nCommand, const CStringW& strArg);   // run a command of the list

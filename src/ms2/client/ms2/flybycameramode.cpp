@@ -44,7 +44,7 @@ void FUN_140af9950(CCameraMode* pMode, float f);        // m_setting.m_8 = f (+ 
 // @0x1412201a0
 Unk_FlyByCameraData* Unk_CameraManager::FUN_1412201a0()
 {
-    return (Unk_FlyByCameraData*)((char*)this + 0x34);
+    return &m_34;
 }
 
 // @0x14121f110

@@ -97,14 +97,14 @@ UGCCubeCategoryTable::Interior::Interior()
 }
 
 // @0x140886100
-// MS2-FUNCTIONAL: member init order and float constants differ in the ctor
 UGCCubeCategoryTable::UGCCubeCategoryTable()
     : m_tabs(17, 0.75f, 0.25f, 2.25f, 10), m_interiors(17, 0.75f, 0.25f, 2.25f, 10),
       m_bonusInteriors(17, 0.75f, 0.25f, 2.25f, 10)
 {
     m_menus = Unk_CubeNewTag(0);
     m_sorts = Unk_CubeNewTag(0);
-    FUN_1401d1160(FUN_14071a5b0(CString("Table"), CString("cubeCategory.xml")));
+    CString strPath = FUN_14071a5b0("Table", "cubeCategory.xml");
+    FUN_1401d1160(strPath);
 }
 
 // @0x140886380
@@ -141,11 +141,10 @@ UGCCubeCategoryTable::TabArrayPtr UGCCubeCategoryTable::GetTabs(int nCategory)
 }
 
 // @0x1408865b0
-// MS2-FUNCTIONAL: smart pointer copy temporaries placed differently
 UGCCubeCategoryTable::InteriorPtr UGCCubeCategoryTable::GetInterior(int nCategory)
 {
     InteriorPtr interior(0);
-    m_interiors.Lookup((ECubeCategory)nCategory, interior);
+    m_interiors.Lookup(reinterpret_cast<ECubeCategory&>(nCategory), interior);
     return interior;
 }
 
@@ -176,7 +175,6 @@ int UGCCubeCategoryTable::AddMenuById(int nNameId, int nOrder)
 }
 
 // @0x1408867f0
-// MS2-FUNCTIONAL: CString temporaries placed differently
 int UGCCubeCategoryTable::AddMenu(CStringW strName, int nOrder)
 {
     MenuPtr menu((Unk_CubeNewTag(0)));
@@ -184,10 +182,7 @@ int UGCCubeCategoryTable::AddMenu(CStringW strName, int nOrder)
     menu->m_nFilter = NextFilter();
     menu->m_nDelegator = 0;
     menu->m_strName = strName;
-    int nUse = nOrder;
-    if (nOrder == 0)
-        nUse = NextOrder();
-    menu->m_nOrder = nUse;
+    menu->m_nOrder = nOrder == 0 ? NextOrder() : nOrder;
     m_menus->Add(menu);
     SortMenus();
     return menu->m_nFilter;
@@ -222,12 +217,10 @@ bool UGCCubeCategoryTable::HasAnyField(const std::vector<unsigned int>& fields)
 }
 
 // @0x140886af0
-// MS2-FUNCTIONAL: xml loop locals and temporaries placed differently
 void UGCCubeCategoryTable::LoadMenus()
 {
     TiXmlDocument doc;
-    const char* pszPath = *FUN_1401d1140();
-    if (FUN_140166420()->FUN_1403974b0(&doc, pszPath, 0, true, false) != 0)
+    if (FUN_140166420()->FUN_1403974b0(&doc, *FUN_1401d1140(), 0, true, false) != 0)
     {
         Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
         if (pRoot != 0)
@@ -237,23 +230,22 @@ void UGCCubeCategoryTable::LoadMenus()
             {
                 for (Unk_140165cf0* pMenu = pMenus->FUN_140165cf0("menu"); pMenu != 0; pMenu = pMenu->FUN_140168650("menu"))
                 {
-                    if (FUN_14028f710(pMenu))
-                    {
-                        int nName = 0;
-                        FUN_140873220(pMenu, "name", nName);
-                        int nCategory = 0;
-                        FUN_140873220(pMenu, "category", nCategory);
-                        int nFilter = 0;
-                        FUN_140873220(pMenu, "filter", nFilter);
-                        int nDelegator = 1;
-                        FUN_1408731e0(pMenu, "delegator", nDelegator);
-                        MenuPtr menu((Unk_CubeNewTag(0)));
-                        menu->m_strName = FUN_1401a9d70()->FUN_141811980(0x32, nName);
-                        menu->m_nCategory = nCategory;
-                        menu->m_nFilter = nFilter;
-                        menu->m_nDelegator = nDelegator;
-                        m_menus->Add(menu);
-                    }
+                    if (!FUN_14028f710(pMenu))
+                        continue;
+                    int nName = 0;
+                    FUN_140873220(pMenu, "name", nName);
+                    int nCategory = 0;
+                    FUN_140873220(pMenu, "category", nCategory);
+                    int nFilter = 0;
+                    FUN_140873220(pMenu, "filter", nFilter);
+                    int nDelegator = 1;
+                    FUN_1408731e0(pMenu, "delegator", nDelegator);
+                    MenuPtr menu((Unk_CubeNewTag(0)));
+                    menu->m_strName = FUN_1401a9d70()->FUN_141811980(0x32, nName);
+                    menu->m_nCategory = nCategory;
+                    menu->m_nFilter = nFilter;
+                    menu->m_nDelegator = nDelegator;
+                    m_menus->Add(menu);
                 }
             }
             Unk_140165cf0* pSorts = pRoot->FUN_140165cf0("sort");
@@ -286,13 +278,11 @@ void UGCCubeCategoryTable::LoadMenus()
 }
 
 // @0x140886fc0
-// MS2-FUNCTIONAL: xml loop locals and temporaries placed differently
 void UGCCubeCategoryTable::LoadInteriors()
 {
-    CString strPath = FUN_14071a5b0(CString("Table"), CString("ugcCubeDefaultCategory.xml"));
+    CString strPath = FUN_14071a5b0("Table", "ugcCubeDefaultCategory.xml");
     TiXmlDocument doc;
-    const char* pszPath = strPath;
-    if (FUN_140166420()->FUN_1403974b0(&doc, pszPath, 0, true, false) != 0)
+    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) != 0)
     {
         Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
         if (pRoot != 0)
@@ -306,11 +296,8 @@ void UGCCubeCategoryTable::LoadInteriors()
                 FUN_140873220(pList, "housingBonusCount", interior->m_nBonusCount);
                 FUN_140873220(pList, "housingBonusPoint", interior->m_nBonusPoint);
                 interior->m_nCategory = (ECubeCategory)nCategory;
-                if (interior->m_nBonusCount != 0)
-                {
-                    if (interior->m_nBonusPoint != 0)
-                        m_bonusInteriors.SetAt(interior->m_nCategory, interior);
-                }
+                if ((unsigned)interior->m_nBonusCount > 0 && (unsigned)interior->m_nBonusPoint > 0)
+                    m_bonusInteriors.SetAt(interior->m_nCategory, interior);
                 m_interiors.SetAt(interior->m_nCategory, interior);
             }
         }
@@ -365,58 +352,54 @@ UGCCubeCategoryTable::TabPtr UGCCubeCategoryTable::ReadTab(Unk_140165cf0* pElem)
 }
 
 // @0x1408876a0
-// MS2-FUNCTIONAL: loop counter slot layout differs
 int UGCCubeCategoryTable::NextCategory()
 {
     unsigned int nMax = 0;
-    unsigned int i = 0;
-    for (; i < m_menus->GetCount(); i++)
+    for (unsigned int i = 0; i < m_menus->GetCount(); i++)
     {
         MenuPtr menu = m_menus->GetAt(i);
         if (menu == 0)
             continue;
-        if (nMax < (unsigned int)menu->m_nCategory)
+        if ((unsigned int)menu->m_nCategory > nMax)
             nMax = menu->m_nCategory;
     }
-    return nMax + 1;
+    nMax++;
+    return nMax;
 }
 
 // @0x1408877a0
-// MS2-FUNCTIONAL: loop counter slot layout differs
 int UGCCubeCategoryTable::NextOrder()
 {
     unsigned int nMax = 0;
-    unsigned int i = 0;
-    for (; i < m_menus->GetCount(); i++)
+    for (unsigned int i = 0; i < m_menus->GetCount(); i++)
     {
         MenuPtr menu = m_menus->GetAt(i);
         if (menu == 0)
             continue;
-        if (nMax < (unsigned int)menu->m_nOrder)
+        if ((unsigned int)menu->m_nOrder > nMax)
             nMax = menu->m_nOrder;
     }
-    return nMax + 1;
+    nMax++;
+    return nMax;
 }
 
 // @0x1408878a0
-// MS2-FUNCTIONAL: loop counter slot layout differs
 int UGCCubeCategoryTable::NextFilter()
 {
     unsigned int nMax = 0;
-    unsigned int i = 0;
-    for (; i < m_menus->GetCount(); i++)
+    for (unsigned int i = 0; i < m_menus->GetCount(); i++)
     {
         MenuPtr menu = m_menus->GetAt(i);
         if (menu == 0)
             continue;
-        if (nMax < (unsigned int)menu->m_nFilter)
+        if ((unsigned int)menu->m_nFilter > nMax)
             nMax = menu->m_nFilter;
     }
-    return nMax + 1;
+    nMax++;
+    return nMax;
 }
 
 // @0x1408879a0
-// MS2-FUNCTIONAL: sort comparator temporaries placed differently
 void UGCCubeCategoryTable::SortMenus()
 {
     ATL::CAtlArray<MenuPtr> fixed;
@@ -426,7 +409,7 @@ void UGCCubeCategoryTable::SortMenus()
         MenuPtr menu = m_menus->GetAt(i);
         if (menu == 0)
             continue;
-        if (menu->m_nFilter < 0x66)
+        if (menu->m_nFilter <= 0x65)
             fixed.Add(menu);
         else
             sorted.SetAt(menu->m_nOrder, menu);
@@ -470,12 +453,11 @@ int FUN_14088da20(int nType)
 }
 
 // @0x14088da70
-// MS2-FUNCTIONAL: empty-check tail branch folded differently
-bool FUN_14088da70()
+int FUN_14088da70()
 {
     if (!s_mapNames.IsEmpty())
-        return true;
-    return true;
+        return 1;
+    return 1;
 }
 
 // @0x14088daa0

@@ -116,7 +116,6 @@ PaybackManagerClient::PaybackManagerClient()
 {
 }
 
-// MS2-FUNCTIONAL: frame layout differs (status local at a different stack slot); behaviour equivalent
 // @0x140a8afb0
 void PaybackManagerClient::FUN_140a8afb0(CInPacket& packet)
 {
@@ -135,13 +134,14 @@ void PaybackManagerClient::FUN_140a8afb0(CInPacket& packet)
             m_nLevel = status.m_00;
             m_nMerat = (unsigned)status.m_08;
             if (!FUN_1409c1740()->FUN_140a8be20(0))
-                FUN_1403ed2b0()->FUN_141adc5d0(0x4f93);
-            else
             {
-                UIPaybackDialog* pDialog = FUN_140a8c5f0(0x4f93);
-                if (pDialog != 0)
-                    pDialog->FUN_140e6f820(nOldLevel, nOldMerat);
+                FUN_1403ed2b0()->FUN_141adc5d0(0x4f93);
+                break;
             }
+            UIPaybackDialog* pDialog = FUN_140a8c5f0(0x4f93);
+            if (pDialog == 0)
+                break;
+            pDialog->FUN_140e6f820(nOldLevel, nOldMerat);
             break;
         }
         case 1:
@@ -150,7 +150,8 @@ void PaybackManagerClient::FUN_140a8afb0(CInPacket& packet)
             unsigned nCount = packet.ReadInt32();
             for (unsigned i = 0; i < nCount; ++i)
             {
-                m_products.push_back(MS2Ptr<CMeratMarketProduct>(new CMeratMarketProduct(packet)));
+                MS2Ptr<CMeratMarketProduct> spProduct(new CMeratMarketProduct(packet));
+                m_products.push_back(static_cast<MS2Ptr<CMeratMarketProduct>&&>(spProduct));
             }
             std::sort(m_products.begin(), m_products.end(), FUN_140a8c0c0);
             break;
@@ -199,7 +200,6 @@ MS2Ptr<CMeratMarketProduct> PaybackManagerClient::FUN_140a8b360() const
     return MS2Ptr<CMeratMarketProduct>(0);
 }
 
-// MS2-FUNCTIONAL: temp/frame layout and smart-pointer temp order differ; behaviour equivalent
 // @0x140a8b490
 void PaybackManagerClient::FUN_140a8b490(MS2Ptr<TMarketBillDataParam> spParam)
 {

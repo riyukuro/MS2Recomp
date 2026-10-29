@@ -214,7 +214,8 @@ struct Unk_140801790
     short m_s14;
     int m_n18;
     Unk_PDVec3 m_v1c, m_v28, m_v34;
-    int m_n40, m_n44;
+    int m_n40;
+    float m_f44;
     bool m_b48;
     int m_n4c, m_n50;
     __int64 m_n58;
@@ -229,7 +230,7 @@ MS2_CHECK_SIZE(Unk_140801790, 0x80);
 // @0x140801790
 Unk_140801790::Unk_140801790()
     : m_n00(0), m_n08(0), m_n0c(0), m_n10(0), m_s14(1), m_n18(0), m_v1c(0, 0, 0), m_v28(0, 0, 0), m_v34(0, 0, 0),
-      m_n40(0), m_n44(0), m_b48(false), m_n4c(0), m_n50(0), m_n58(0), m_b60(false), m_n64(0), m_b70(false),
+      m_n40(0), m_f44(0), m_b48(false), m_n4c(0), m_n50(0), m_n58(0), m_b60(false), m_n64(0), m_b70(false),
       m_n78(0)
 {
 }
@@ -717,9 +718,8 @@ SkillData* SkillLevelData::GetSkill()
 // @0x140803e30
 SkillMotionData* SkillLevelData::FUN_140803e30(CString strSequence)
 {
-    for (std::vector<MS2Ptr<SkillMotionData> >::iterator it = m_vMotion.begin(); it != m_vMotion.end(); ++it)
+    for (SkillMotionData* pMotion : m_vMotion)
     {
-        SkillMotionData* pMotion = *it;
         if (FUN_1401c0090(pMotion->m_strSequenceName, strSequence))
             return pMotion;
     }
@@ -790,7 +790,8 @@ float SkillLevelData::FUN_140804150(int nMotion, int nAttack)
     SkillAttackData* pAttack = pMotion->FUN_140807e20(nAttack);
     if (pAttack == 0)
         return 0;
-    return pAttack->m_damage.m_fRate;
+    const SkillDamage& damage = pAttack->m_damage;
+    return damage.m_fRate;
 }
 
 // @0x1408041d0
@@ -802,7 +803,8 @@ __int64 SkillLevelData::FUN_1408041d0(int nMotion, int nAttack)
     SkillAttackData* pAttack = pMotion->FUN_140807e20(nAttack);
     if (pAttack == 0)
         return 0;
-    return pAttack->m_damage.m_nValue;
+    const SkillDamage& damage = pAttack->m_damage;
+    return damage.m_nValue;
 }
 
 // @0x140804250
@@ -835,16 +837,12 @@ float SkillLevelData::FUN_140804310()
     for (int nMotion = 0; nMotion < FUN_140804270(); nMotion++)
     {
         int nAttack = 0;
-        while (true)
+        while (Unk_RangeProperty* pRange = FUN_1408040d0(nMotion, nAttack++))
         {
-            Unk_RangeProperty* pRange = FUN_1408040d0(nMotion, nAttack++);
-            if (pRange == 0)
-                break;
             if (pRange->m_nType == 4)
-            {
                 fMax = (std::max)(fMax, pRange->m_f1c);
+            else
                 fMax = (std::max)(fMax, pRange->m_f10);
-            }
         }
     }
     return fMax;
@@ -879,12 +877,15 @@ const CString& SkillLevelData::FUN_140804500(int nKind, int nMotion)
     SkillMotionData* pMotion = FUN_140803f00(nMotion);
     if (pMotion == 0)
         return s_strEmpty;
-    if (nKind == 2)
+    switch (nKind)
+    {
+    case 2:
         return pMotion->m_strMotionEffect;
-    if (nKind == 3)
+    case 3:
         return pMotion->m_strLoopEffect;
-    if (nKind == 4)
+    case 4:
         return pMotion->m_strEndEffect;
+    }
     return s_strEmpty;
 }
 
@@ -918,8 +919,8 @@ int SkillLevelData::Load(Unk_140165cf0* pElem)
     FUN_140873420(pElem, "stringParam", m_strStringParam);
     float fStanceDamageRate = 0;
     FUN_140873360(pElem, "stanceDamageRate", fStanceDamageRate);
-    m_nStanceDamageRate = (int)(fStanceDamageRate * 1000.0f);
-    if (m_nLevel == 0)
+    m_nStanceDamageRate = (unsigned int)(fStanceDamageRate * 1000.0f);
+    if (m_nLevel < 1)
     {
         unsigned nSkillId = FUN_140803dc0();
         FUN_140177a80(FUN_140166440(), 1, 0x13, L"스킬 레벨이 잘못되었습니다.[Skill Level Data - [{0}]]", &nSkillId);
@@ -958,9 +959,9 @@ int SkillLevelData::FUN_140804ae0(void* pParent)
         if (detect.HasAttributes())
             FUN_14086e000(&elem, &detect);
     }
-    for (std::vector<MS2Ptr<SkillMotionData> >::iterator it = m_vMotion.begin(); it != m_vMotion.end(); ++it)
+    for (SkillMotionData* pMotion : m_vMotion)
     {
-        if (!(*it)->FUN_140808240(&elem))
+        if (!pMotion->FUN_140808240(&elem))
             return 0;
     }
     FUN_14086e000(pParent, &elem);
@@ -1022,15 +1023,13 @@ bool SkillMotionData::FUN_140807620(const SkillMotionData& o)
     if (FUN_1401647e0(m_strSplashEndEffect, o.m_strSplashEndEffect)) return 1;
     if (FUN_1401647e0(m_strWeaponSequenceName, o.m_strWeaponSequenceName)) return 1;
     if (m_mapTagEffects.GetCount() != o.m_mapTagEffects.GetCount()) return 1;
-    POSITION pos = m_mapTagEffects.GetHeadPosition();
-    while (pos != 0)
+    for (POSITION pos = m_mapTagEffects.GetHeadPosition(); pos != 0; m_mapTagEffects.GetNext(pos))
     {
         CString strKey = m_mapTagEffects.GetKeyAt(pos);
         CString strValue = m_mapTagEffects.GetValueAt(pos);
         CString strOther;
         if (!o.m_mapTagEffects.Lookup(strKey, strOther)) return 1;
         if (FUN_1401647e0(strValue, strOther)) return 1;
-        m_mapTagEffects.GetNext(pos);
     }
     if (FUN_1401647e0(m_strLoopKeepEffect, o.m_strLoopKeepEffect)) return 1;
     if (FUN_1401647e0(m_strLoopEndEffect, o.m_strLoopEndEffect)) return 1;
@@ -1076,9 +1075,8 @@ SkillAttackData* SkillMotionData::FUN_140807e20(int nAttack)
 // @0x140807e80
 SkillAttackData* SkillMotionData::FUN_140807e80(const CString& strPoint)
 {
-    for (MS2Ptr<SkillAttackData>& spAttack : m_vAttack)
+    for (SkillAttackData* pAttack : m_vAttack)
     {
-        SkillAttackData* pAttack = spAttack;
         if (FUN_1401c0090(pAttack->m_strPoint, strPoint))
             return pAttack;
     }
@@ -1088,10 +1086,11 @@ SkillAttackData* SkillMotionData::FUN_140807e80(const CString& strPoint)
 // @0x140807f20
 SkillAttackData* SkillMotionData::FUN_140807f20(const CString& strPoint)
 {
-    for (MS2Ptr<SkillAttackData>& spAttack : m_vAttack)
+    for (SkillAttackData* pAttack : m_vAttack)
     {
-        SkillAttackData* pAttack = spAttack;
-        if (pAttack->HasPause() && FUN_1401c0090(pAttack->m_strPoint, strPoint))
+        if (!pAttack->HasPause())
+            continue;
+        if (FUN_1401c0090(pAttack->m_strPoint, strPoint))
             return pAttack;
     }
     return 0;
@@ -1134,12 +1133,12 @@ int SkillMotionData::FUN_1408080d0(Unk_140165cf0* pElem)
 int SkillMotionData::FUN_140808240(void* pParent)
 {
     Unk_TiXmlElement elem("motion");
-    for (std::vector<MS2Ptr<SkillAttackData> >::iterator it = m_vAttack.begin(); it != m_vAttack.end(); ++it)
+    for (SkillAttackData* pAttack : m_vAttack)
     {
-        if (!(*it)->Save(&elem))
+        if (!pAttack->Save(&elem))
             return 0;
     }
-    if (elem.HasAttributes() || elem.HasChildren())
+    if (elem.HasAttributes() || elem.HasContent())
         FUN_14086e000(pParent, &elem);
     return 1;
 }

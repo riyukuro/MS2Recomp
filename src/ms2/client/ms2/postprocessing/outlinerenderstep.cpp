@@ -14,9 +14,8 @@
 const NiRTTI OutlineRenderStep::ms_RTTI("OutlineRenderStep", &ReloadablePostProcess::ms_RTTI);
 
 // @0x1416263e0
-// MS2-FUNCTIONAL: exe passes the NiFixedString temporary straight to the base ctor (no copy temp); we get an extra temp
 OutlineRenderStep::OutlineRenderStep(unsigned __int64 a, unsigned int b)
-    : ReloadablePostProcess(a, NiFixedString("OutlineTechnique"), 0, b), m_b8(0), m_c0(0)
+    : ReloadablePostProcess(a, "OutlineTechnique", 0, b), m_b8(0), m_c0(0)
 {
     NiFixedString name("OutlineRenderStep");
     FUN_140c8f950(this, name);
@@ -75,17 +74,7 @@ void OutlineRenderStep::vfunc_16()
     m_c0.Assign(0);
 }
 
-// @0x1416269c0
-// MS2-FUNCTIONAL: see ReloadablePostProcess::~ReloadablePostProcess (vptr store not in exe)
-OutlineRenderStep::~OutlineRenderStep()
-{
-}
-
-// @0x141626a00
-// MS2-FUNCTIONAL: the exe omits the vptr store in this dtor and in ~OutlineRenderStep (cause unknown); ours stores it.
-ReloadablePostProcess::~ReloadablePostProcess()
-{
-}
+// @0x1416269c0 ~OutlineRenderStep and @0x141626a00 ~ReloadablePostProcess are implicit (the exe ones have no vptr store).
 
 // @0x141626a90
 const NiRTTI* OutlineRenderStep::GetRTTI() const { return &ms_RTTI; }

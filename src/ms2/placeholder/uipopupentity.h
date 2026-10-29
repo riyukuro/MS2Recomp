@@ -15,6 +15,7 @@
 #include "ms2/placeholder/ascript.h"
 
 namespace efd { class Point3; }
+class NiPoint3;
 
 // the popup's anchor position (3 floats, passed by pointer to a copy)
 struct Unk_PopupPos
@@ -137,7 +138,7 @@ public:
     virtual void vfunc_41(const Scaleform::GFx::Value& root);       // 41 0x141a7d3a0 m_30 = new ASGameEntity
     virtual int vfunc_48();                                         // 48 0x141a7d450
     virtual void vfunc_52();                                        // 52 0x141a7ccf0
-    virtual void vfunc_53(Unk_PopupPos pos);                        // 53 0x141a7cf60 (empty)
+    virtual void vfunc_53(const NiPoint3& kPos);                    // 53 0x141a7cf60 (empty) place the popup at a screen position
     virtual void vfunc_54(int nMode);                               // 54 0x141a7cf80 start (timer)
     virtual void vfunc_55();                                        // 55 0x141a7cff0 stop
     virtual int vfunc_56();                                         // 56 0x141a7d080 m_84 (active)

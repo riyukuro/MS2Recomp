@@ -134,11 +134,13 @@ void Unk_WeddingLogList::Assign(Unk_WeddingLogList& other)
 // @0x1408fe770
 void Unk_WeddingLogList::Write(COutputStream& out)
 {
-    out.WriteInt32((int)m_list.size());
+    size_t nCount = m_list.size();
+    out.WriteInt32((int)nCount);
     for (std::list<Unk_WeddingLog>::iterator it = m_list.begin(); it != m_list.end(); ++it) {
-        out.WriteInt16((short)it->m_nType);
-        out.WriteInt64(it->m_nAmount);
-        out.WriteInt64(it->m_nTime);
+        Unk_WeddingLog& log = *it;
+        out.WriteInt16((short)log.m_nType);
+        out.WriteInt64(log.m_nAmount);
+        out.WriteInt64(log.m_nTime);
     }
 }
 // @0x1408fe860
@@ -199,8 +201,7 @@ void WeddingProxy::Assign(WeddingProxy& other)
     m_bride.Assign(other.m_bride);
     SetMessageW(other.m_strMessageW0, true);
     SetMessageW(other.m_strMessageW1, true);
-    __int64 nMeso = other.GetMeso();
-    SetMeso(nMeso);
+    SetMeso(other.GetMeso());
     Unk_CriticalSectionLock lock(m_lock, 1);
     m_log.Assign(other.m_log);
 }
@@ -213,8 +214,7 @@ void WeddingProxy::Write(COutputStream& out)
     out.WriteInt64(m_n30);
     m_groom.Write(out);
     m_bride.Write(out);
-    __int64 nMeso = GetMeso();
-    out.WriteInt64(nMeso);
+    out.WriteInt64(GetMeso());
     out.WriteUnicodeString(GetMessageW(true));
     out.WriteUnicodeString(GetMessageW(false));
     out.WriteUnicodeStringA(GetMessageA(true));
@@ -462,8 +462,7 @@ void WeddingGuest::Write(COutputStream& out)
 // @0x140900450
 void WeddingGuest::Read(CInPacket& in)
 {
-    unsigned short nKind = in.ReadInt16();
-    m_nKind = nKind;
+    m_nKind = (unsigned short)in.ReadInt16();
     m_n20 = in.ReadInt64();
     m_n28 = in.ReadInt64();
     m_strName = in.ReadUnicodeString();
@@ -588,17 +587,13 @@ int WeddingProxy::CheckReservationCancel(WeddingHallTicket& ticket, __int64 nCha
 // @0x140900990
 int WeddingProxy::CheckReservationChange(WeddingHallTicket& current, WeddingHallTicket& wanted, __int64 nCharacterId)
 {
-    int nResult;
     int nCurrentGrade = TSingleton<WeddingTable>::GetInstance()->FUN_140909130(current.m_nPackageId, current.m_nHallId);
     int nWantedGrade = TSingleton<WeddingTable>::GetInstance()->FUN_140909130(wanted.m_nPackageId, wanted.m_nHallId);
-    if (nWantedGrade < nCurrentGrade) {
-        nResult = 0x24;
-    } else if (current.m_nPackageId == wanted.m_nPackageId && current.m_nHallId == wanted.m_nHallId && current.m_nTime == wanted.m_nTime && current.m_bPublic == wanted.m_bPublic) {
-        nResult = 0x2c;
-    } else {
-        nResult = CheckReservationCancel(current, nCharacterId);
-    }
-    return nResult;
+    if (nCurrentGrade > nWantedGrade)
+        return 0x24;
+    if (current.m_nPackageId == wanted.m_nPackageId && current.m_nHallId == wanted.m_nHallId && current.m_nTime == wanted.m_nTime && current.m_bPublic == wanted.m_bPublic)
+        return 0x2c;
+    return CheckReservationCancel(current, nCharacterId);
 }
 // @0x140900a80
 int WeddingProxy::CheckDivorce()
@@ -749,14 +744,12 @@ bool FUN_140900f90(int nPackageId, WeddingHallTicket* pTicket)
         return false;
     }
     int nGrade = TSingleton<WeddingTable>::GetInstance()->FUN_140909130(pTicket->m_nPackageId, pTicket->m_nHallId);
-    std::map<int, MS2Ptr<WeddingHallData> >& halls = spPackage->m_halls;
-    std::map<int, MS2Ptr<WeddingHallData> >::iterator it = halls.begin();
-    std::map<int, MS2Ptr<WeddingHallData> >::iterator itEnd = halls.end();
-    while (it != itEnd) {
+    std::map<int, MS2Ptr<WeddingHallData> >::iterator it = spPackage->m_halls.begin();
+    std::map<int, MS2Ptr<WeddingHallData> >::iterator itEnd = spPackage->m_halls.end();
+    for (; it != itEnd; ++it) {
         MS2Ptr<WeddingHallData> spHall = it->second;
-        if (nGrade <= spHall->m_nGrade)
+        if (spHall->m_nGrade >= nGrade)
             return true;
-        ++it;
     }
     return false;
 }

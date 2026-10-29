@@ -1,6 +1,6 @@
 // Recovered from MapleStory2.exe KMS2_DEV x64 (2022-04-13). CFieldDataCli: client-side CFieldData (fieldData.xml + MapXblock xml: bgm, hdr, fog, camera, shadow, minimap).
 // MS2-UNIT: ?\fielddatacli.cpp
-// MS2-FUNCTIONAL: vfunc_1, FUN_140a55df0, LoadXBlock, Find, CMinimap::CMinimap/~CMinimap, FUN_140a56e70, FUN_140a55d20 differ from the exe in temp/EH layout only (extern-FUN style); behaviour identical
+// MS2-FUNCTIONAL: FUN_140a55df0 (stack slot layout), CMinimap::CMinimap (the exe passes the copied zero vector by slot address, not the ctor return) differ in layout only; behaviour identical
 // MS2-RANGE: 0x1400c4040-0x1400c4100 .text$di
 // MS2-RANGE: 0x140a54160-0x140a571b0 .text$mn
 // MS2-PIN: ?get@?$MS2Ptr@VCMinimap@@@@QEBAPEAVCMinimap@@XZ 0x140a56f90
@@ -35,8 +35,6 @@ void FUN_14028d1a0(const CString&, int*);                                // pars
 void FUN_14028c2d0(CString, float*);
 unsigned FUN_14028c0d0(const char*);                                     // parse colour
 void FUN_140203800(float*);
-void FUN_1408850f0(MS2Ptr<CFieldDataCli>*);                              // MS2Ptr<CFieldDataCli>::~MS2Ptr
-CFieldDataCli* FUN_140885340(MS2Ptr<CFieldDataCli>*);                    // MS2Ptr<CFieldDataCli>::operator->
 extern char DAT_143b01a60;
 bool FUN_1401647e0(const CString&, const CString&);                      // CString != CString
 bool FUN_140164830(const CStringW&, const CStringW&);
@@ -47,7 +45,7 @@ class Unk_140166420 { public: int FUN_1403974b0(TiXmlDocument* doc, const char* 
 Unk_140166420* FUN_140166420();
 bool FUN_140a56ee0(const Unk_Vec3Cli*, const Unk_Vec3Cli*);
 bool FUN_140a56f50(const Unk_Vec3Cli*, const Unk_Vec3Cli*);
-bool FUN_140a55df0(Unk_140165cf0* node, MS2Ptr<CFieldDataCli>* sp);
+int FUN_140a55df0(Unk_140165cf0* node, MS2Ptr<CFieldDataCli> sp);
 int FUN_140a56ad0(Unk_140165cf0* node, const char* name, int& out);
 MS2Ptr<CMinimap>* FUN_140a56e70(MS2Ptr<CMinimap>* self, CMinimap* p);
 
@@ -198,8 +196,7 @@ bool FUN_140a545d0(CFieldDataCli* a, CFieldDataCli* b)
 // @0x140a55460
 MS2Ptr<CFieldDataCli> CFieldDataCli::Find(int fieldId)
 {
-    MS2Ptr<CFieldData> sp = CFieldData::FUN_140374140(fieldId);
-    return MS2Ptr<CFieldDataCli>(dynamic_cast<CFieldDataCli*>((CFieldData*)sp));
+    return MS2Ptr<CFieldDataCli>(dynamic_cast<CFieldDataCli*>((CFieldData*)CFieldData::FUN_140374140(fieldId)));
 }
 
 // @0x140a55500
@@ -207,181 +204,178 @@ bool CFieldDataCli::vfunc_1(Unk_140165cf0* node)
 {
     if (!CFieldData::vfunc_1(node))
         return false;
-    Unk_140165cf0* e = node->FUN_140165cf0("ui");
-    if (e) {
-        FUN_1408733e0(e, "bgMask", m_strBgMask);
-        FUN_1408731e0(e, "vscroll", m_nVScroll);
-        FUN_1408731e0(e, "hscroll", m_nHScroll);
-        FUN_1408731e0(e, "useEffLight", m_nUseEffLight);
-        FUN_1408731e0(e, "fieldName", m_nFieldName);
-        FUN_1408731e0(e, "effectLOD", m_nEffectLOD);
-        FUN_140873260(e, "instancingGrid", m_nInstancingGrid);
-        FUN_1408731e0(e, "fallDamage", m_nFallDamage);
-        FUN_1408731e0(e, "useEPSkill", m_nUseEPSkill);
-        FUN_1408731e0(e, "useRidee", m_nUseRidee);
-        FUN_1408731e0(e, "usePet", m_nUsePet);
-        FUN_1408731e0(e, "globalNameTag", m_nGlobalNameTag);
-        FUN_1408731e0(e, "useOptimalHide", m_nUseOptimalHide);
-        FUN_1408731e0(e, "showHitEffect", m_nShowHitEffect);
-        FUN_1408731e0(e, "applyCameraOption", m_nApplyCameraOption);
-        FUN_140873360(e, "cameraExtraDistance", m_fCameraExtraDistance);
-        FUN_1408730a0(e, "isNoSkipFrame", m_bNoSkipFrame);
-        FUN_1408731e0(e, "autoFindTaxiStation", m_nAutoFindTaxiStation);
-        FUN_1408733e0(e, "mapEffectId", m_strMapEffectId);
+    Unk_140165cf0* pUi = node->FUN_140165cf0("ui");
+    if (pUi) {
+        FUN_1408733e0(pUi, "bgMask", m_strBgMask);
+        FUN_1408731e0(pUi, "vscroll", m_nVScroll);
+        FUN_1408731e0(pUi, "hscroll", m_nHScroll);
+        FUN_1408731e0(pUi, "useEffLight", m_nUseEffLight);
+        FUN_1408731e0(pUi, "fieldName", m_nFieldName);
+        FUN_1408731e0(pUi, "effectLOD", m_nEffectLOD);
+        FUN_140873260(pUi, "instancingGrid", m_nInstancingGrid);
+        FUN_1408731e0(pUi, "fallDamage", m_nFallDamage);
+        FUN_1408731e0(pUi, "useEPSkill", m_nUseEPSkill);
+        FUN_1408731e0(pUi, "useRidee", m_nUseRidee);
+        FUN_1408731e0(pUi, "usePet", m_nUsePet);
+        FUN_1408731e0(pUi, "globalNameTag", m_nGlobalNameTag);
+        FUN_1408731e0(pUi, "useOptimalHide", m_nUseOptimalHide);
+        FUN_1408731e0(pUi, "showHitEffect", m_nShowHitEffect);
+        FUN_1408731e0(pUi, "applyCameraOption", m_nApplyCameraOption);
+        FUN_140873360(pUi, "cameraExtraDistance", m_fCameraExtraDistance);
+        FUN_1408730a0(pUi, "isNoSkipFrame", m_bNoSkipFrame);
+        FUN_1408731e0(pUi, "autoFindTaxiStation", m_nAutoFindTaxiStation);
+        FUN_1408733e0(pUi, "mapEffectId", m_strMapEffectId);
     }
-    e = node->FUN_140165cf0("bgm");
-    if (e) {
-        FUN_140873220(e, "id", m_nBgmId);
-        FUN_140873220(e, "param", m_nBgmParam);
-        FUN_140873360(e, "value", m_fBgmValue);
-        FUN_140873220(e, "boss", m_nBossBgmId);
-        FUN_140873220(e, "bossParam", m_nBossBgmParam);
-        FUN_140873360(e, "bossValue", m_fBossBgmValue);
-        FUN_1408733e0(e, "enterSystemSound", m_strEnterSystemSound);
+    Unk_140165cf0* pBgm = node->FUN_140165cf0("bgm");
+    if (pBgm) {
+        FUN_140873220(pBgm, "id", m_nBgmId);
+        FUN_140873220(pBgm, "param", m_nBgmParam);
+        FUN_140873360(pBgm, "value", m_fBgmValue);
+        FUN_140873220(pBgm, "boss", m_nBossBgmId);
+        FUN_140873220(pBgm, "bossParam", m_nBossBgmParam);
+        FUN_140873360(pBgm, "bossValue", m_fBossBgmValue);
+        FUN_1408733e0(pBgm, "enterSystemSound", m_strEnterSystemSound);
     }
-    e = node->FUN_140165cf0("hdr");
-    if (e) {
+    Unk_140165cf0* pHdr = node->FUN_140165cf0("hdr");
+    if (pHdr) {
         m_bHdr = true;
-        FUN_140873360(e, "threshold", m_fHdrThreshold);
-        FUN_140873360(e, "offset", m_fHdrOffset);
-        FUN_140873360(e, "middlegray", m_fHdrMiddleGray);
-        FUN_140873360(e, "bloomscale", m_fHdrBloomScale);
-        FUN_140873360(e, "glowscale", m_fHdrGlowScale);
+        FUN_140873360(pHdr, "threshold", m_fHdrThreshold);
+        FUN_140873360(pHdr, "offset", m_fHdrOffset);
+        FUN_140873360(pHdr, "middlegray", m_fHdrMiddleGray);
+        FUN_140873360(pHdr, "bloomscale", m_fHdrBloomScale);
+        FUN_140873360(pHdr, "glowscale", m_fHdrGlowScale);
     }
-    e = node->FUN_140165cf0("camera");
-    if (e) {
-        FUN_140873360(e, "distance", m_fCameraDistance);
-        FUN_140873360(e, "hangle", m_fCameraHAngle);
-        FUN_140873360(e, "vangle", m_fCameraVAngle);
-        FUN_140873360(e, "zoomOutHeightOffset", m_fZoomOutHeightOffset);
-        FUN_140873360(e, "zoomInHeightOffset", m_fZoomInHeightOffset);
-        FUN_1408730a0(e, "useFileSetting", m_bUseFileSetting);
-        Unk_140165cf0* t = (Unk_140165cf0*)FUN_14086f4b0(e, "dummyTargetPos");
+    Unk_140165cf0* pCamera = node->FUN_140165cf0("camera");
+    if (pCamera) {
+        FUN_140873360(pCamera, "distance", m_fCameraDistance);
+        FUN_140873360(pCamera, "hangle", m_fCameraHAngle);
+        FUN_140873360(pCamera, "vangle", m_fCameraVAngle);
+        FUN_140873360(pCamera, "zoomOutHeightOffset", m_fZoomOutHeightOffset);
+        FUN_140873360(pCamera, "zoomInHeightOffset", m_fZoomInHeightOffset);
+        FUN_1408730a0(pCamera, "useFileSetting", m_bUseFileSetting);
+        Unk_140165cf0* t = (Unk_140165cf0*)FUN_14086f4b0(pCamera, "dummyTargetPos");
         if (t) {
             FUN_141b6ed40(FUN_140188f50(t, 0), &m_vecDummyTargetPos);
         }
-        t = (Unk_140165cf0*)FUN_14086f4b0(e, "usedummytarget");
-        if (t) {
-            FUN_14028d1a0(FUN_140188f50(t, 0), &m_nUseDummyTarget);
+        Unk_140165cf0* t2 = (Unk_140165cf0*)FUN_14086f4b0(pCamera, "usedummytarget");
+        if (t2) {
+            FUN_14028d1a0(FUN_140188f50(t2, 0), &m_nUseDummyTarget);
         }
     }
-    e = node->FUN_140165cf0("shadow");
-    if (e) {
-        FUN_140873360(e, "intensity", m_fShadowIntensity);
-        FUN_140873360(e, "simpleshadow", m_fShadowSimple);
-        FUN_140a56ad0(e, "optionHighLevel", m_nShadowOptionHighLevel);
+    Unk_140165cf0* pShadow = node->FUN_140165cf0("shadow");
+    if (pShadow) {
+        FUN_140873360(pShadow, "intensity", m_fShadowIntensity);
+        FUN_140873360(pShadow, "simpleshadow", m_fShadowSimple);
+        FUN_140a56ad0(pShadow, "optionHighLevel", m_nShadowOptionHighLevel);
     }
-    e = node->FUN_140165cf0("fov");
-    if (e) {
-        FUN_140873360(e, "value", m_fFov);
+    Unk_140165cf0* pFov = node->FUN_140165cf0("fov");
+    if (pFov) {
+        FUN_140873360(pFov, "value", m_fFov);
     }
-    e = node->FUN_140165cf0("optimize");
-    if (e) {
-        FUN_1408730a0(e, "fastglow", m_bFastGlow);
-        FUN_1408731e0(e, "fastshimmer", m_nFastShimmer);
+    Unk_140165cf0* pOptimize = node->FUN_140165cf0("optimize");
+    if (pOptimize) {
+        FUN_1408730a0(pOptimize, "fastglow", m_bFastGlow);
+        FUN_1408731e0(pOptimize, "fastshimmer", m_nFastShimmer);
     }
     LoadXBlock();
     return true;
 }
 
 // @0x140a55d20   (EH-less helper: fills a CStringW with the localized string 0x99d unless a flag is set)
-bool FUN_140a55d20(CFieldDataCli* self, CStringW* out)
+int FUN_140a55d20(CFieldDataCli* self, CStringW* out)
 {
     extern void* FUN_14025e7c0();
-    extern char FUN_14116d720(void*);
+    extern bool FUN_14116d720(void*);
     extern CStringW GetStringCommon(int id);
     extern CStringW FUN_1402a61e0(const wchar_t*);
     if (FUN_14116d720(FUN_14025e7c0()))
-        return true;
-    if (self->m_nEnterAdminLevel < 1)
-        return true;
-    *out = FUN_1402a61e0(GetStringCommon(0x99d));
-    return false;
+        return 1;
+    if (self->m_nEnterAdminLevel > 0)
+    {
+        *out = FUN_1402a61e0(GetStringCommon(0x99d));
+        return 0;
+    }
+    return 1;
 }
 
 // @0x140a55df0   loads <minimap> into a new CMinimap owned by the record (the pointer is consumed)
-bool FUN_140a55df0(Unk_140165cf0* node, MS2Ptr<CFieldDataCli>* sp)
+int FUN_140a55df0(Unk_140165cf0* node, MS2Ptr<CFieldDataCli> sp)
 {
-    if (node == 0) {
-        FUN_1408850f0(sp);
-        return false;
-    }
-    CMinimap* mm = new CMinimap();
-    FUN_140a56e70(&FUN_140885340(sp)->m_spMinimap, mm);
-    MS2Ptr<CMinimap> spMM(FUN_140885340(sp)->m_spMinimap);
-    Unk_140165cf0* cam = node->FUN_140165cf0("camera");
-    if (cam) {
-        Unk_140165cf0* pos = (Unk_140165cf0*)FUN_14086f4b0(cam, "position");
-        if (pos) {
-            float v[3];
-            FUN_140203800(v);
-            FUN_14028c2d0(FUN_140188f50(pos, 0), v);
-            spMM->m_vecCamPos = Unk_GVec3(v[0], v[1], v[2]);
+    if (node) {
+        FUN_140a56e70(&sp->m_spMinimap, new CMinimap());
+        MS2Ptr<CMinimap> spMM(sp->m_spMinimap);
+        Unk_140165cf0* cam = node->FUN_140165cf0("camera");
+        if (cam) {
+            Unk_140165cf0* pos = (Unk_140165cf0*)FUN_14086f4b0(cam, "position");
+            if (pos) {
+                struct { float x, y, z; char pad[4]; } v;
+                FUN_140203800(&v.x);
+                FUN_14028c2d0(FUN_140188f50(pos, 0), &v.x);
+                spMM->m_vecCamPos = Unk_GVec3(v.x, v.y, v.z);
+            }
+            Unk_140165cf0* rot = (Unk_140165cf0*)FUN_14086f4b0(cam, "rotation");
+            if (rot) {
+                struct { float x, y, z; char pad[4]; } v;
+                FUN_140203800(&v.x);
+                FUN_14028c2d0(FUN_140188f50(rot, 0), &v.x);
+                spMM->m_vecCamRot = Unk_GVec3(v.x, v.y, v.z);
+            }
         }
-        Unk_140165cf0* rot = (Unk_140165cf0*)FUN_14086f4b0(cam, "rotation");
-        if (rot) {
-            float v[3];
-            FUN_140203800(v);
-            FUN_14028c2d0(FUN_140188f50(rot, 0), v);
-            spMM->m_vecCamRot = Unk_GVec3(v[0], v[1], v[2]);
+        Unk_140165cf0* fr = node->FUN_140165cf0("frustum");
+        if (fr) {
+            FUN_140873360(fr, "left", spMM->m_frustum.l);
+            FUN_140873360(fr, "right", spMM->m_frustum.r);
+            FUN_140873360(fr, "top", spMM->m_frustum.t);
+            FUN_140873360(fr, "bottom", spMM->m_frustum.b);
+            FUN_140873360(fr, "near", spMM->m_frustum.n);
+            FUN_140873360(fr, "far", spMM->m_frustum.f);
+            const char* s = FUN_14086f4b0(fr, "ortho");
+            if (s) {
+                if (strcmp(s, "true") == 0)
+                    spMM->m_frustum.ortho = true;
+            }
         }
-    }
-    Unk_140165cf0* fr = node->FUN_140165cf0("frustum");
-    if (fr) {
-        FUN_140873360(fr, "left", spMM->m_frustum.l);
-        FUN_140873360(fr, "right", spMM->m_frustum.r);
-        FUN_140873360(fr, "top", spMM->m_frustum.t);
-        FUN_140873360(fr, "bottom", spMM->m_frustum.b);
-        FUN_140873360(fr, "near", spMM->m_frustum.n);
-        FUN_140873360(fr, "far", spMM->m_frustum.f);
-        const char* s = FUN_14086f4b0(fr, "ortho");
-        if (s) {
-            if (strcmp(s, "true") == 0)
-                spMM->m_frustum.ortho = true;
+        Unk_140165cf0* sc = node->FUN_140165cf0("screen");
+        if (sc) {
+            FUN_140873360(sc, "left", spMM->m_rcScreen.l);
+            FUN_140873360(sc, "right", spMM->m_rcScreen.r);
+            FUN_140873360(sc, "top", spMM->m_rcScreen.t);
+            FUN_140873360(sc, "bottom", spMM->m_rcScreen.b);
         }
-    }
-    Unk_140165cf0* sc = node->FUN_140165cf0("screen");
-    if (sc) {
-        FUN_140873360(sc, "left", spMM->m_rcScreen.l);
-        FUN_140873360(sc, "right", spMM->m_rcScreen.r);
-        FUN_140873360(sc, "top", spMM->m_rcScreen.t);
-        FUN_140873360(sc, "bottom", spMM->m_rcScreen.b);
-    }
-    Unk_140165cf0* im = node->FUN_140165cf0("image");
-    if (im) {
-        if (spMM.get()) {
-            const char* icon = FUN_14086f4b0(im, "icon");
-            spMM->m_strImageIcon = icon;
-            const char* nm = FUN_14086f4b0(im, "name");
-            spMM->m_strImageName = nm;
+        Unk_140165cf0* im = node->FUN_140165cf0("image");
+        if (im) {
+            if (spMM.get()) {
+                spMM->m_strImageIcon = FUN_14086f4b0(im, "icon");
+                spMM->m_strImageName = FUN_14086f4b0(im, "name");
+            }
+            FUN_140873360(im, "left", spMM->m_rcImage.l);
+            FUN_140873360(im, "right", spMM->m_rcImage.r);
+            FUN_140873360(im, "top", spMM->m_rcImage.t);
+            FUN_140873360(im, "bottom", spMM->m_rcImage.b);
         }
-        FUN_140873360(im, "left", spMM->m_rcImage.l);
-        FUN_140873360(im, "right", spMM->m_rcImage.r);
-        FUN_140873360(im, "top", spMM->m_rcImage.t);
-        FUN_140873360(im, "bottom", spMM->m_rcImage.b);
+        Unk_140165cf0* vis = node->FUN_140165cf0("visible");
+        if (vis) {
+            const char* s = FUN_14086f4b0(vis, "mypc");
+            if (s) { if (strcmp(s, "false") == 0) spMM->m_bVisibleMyPC = 0; }
+            s = FUN_14086f4b0(vis, "otherpc");
+            if (s) { if (strcmp(s, "false") == 0) spMM->m_bVisibleOtherPC = 0; }
+            s = FUN_14086f4b0(vis, "portal");
+            if (s) { if (strcmp(s, "false") == 0) spMM->m_bVisiblePortal = 0; }
+            s = FUN_14086f4b0(vis, "npc");
+            if (s) { if (strcmp(s, "false") == 0) spMM->m_bVisibleNpc = 0; }
+        }
+        Unk_140165cf0* lim = node->FUN_140165cf0("limit");
+        if (lim) {
+            const char* s = FUN_14086f4b0(lim, "scale");
+            if (s) { if (strcmp(s, "false") == 0) spMM->m_bLimitScale = 0; }
+        }
+        Unk_140165cf0* zm = node->FUN_140165cf0("edit");
+        if (zm) {
+            FUN_140873360(zm, "zoomfactor", spMM->m_fZoomFactor);
+        }
+        return 1;
     }
-    Unk_140165cf0* vis = node->FUN_140165cf0("visible");
-    if (vis) {
-        const char* s = FUN_14086f4b0(vis, "mypc");
-        if (s) { if (strcmp(s, "false") == 0) spMM->m_bVisibleMyPC = 0; }
-        s = FUN_14086f4b0(vis, "otherpc");
-        if (s) { if (strcmp(s, "false") == 0) spMM->m_bVisibleOtherPC = 0; }
-        s = FUN_14086f4b0(vis, "portal");
-        if (s) { if (strcmp(s, "false") == 0) spMM->m_bVisiblePortal = 0; }
-        s = FUN_14086f4b0(vis, "npc");
-        if (s) { if (strcmp(s, "false") == 0) spMM->m_bVisibleNpc = 0; }
-    }
-    Unk_140165cf0* lim = node->FUN_140165cf0("limit");
-    if (lim) {
-        const char* s = FUN_14086f4b0(lim, "scale");
-        if (s) { if (strcmp(s, "false") == 0) spMM->m_bLimitScale = 0; }
-    }
-    Unk_140165cf0* zm = node->FUN_140165cf0("edit");
-    if (zm) {
-        FUN_140873360(zm, "zoomfactor", spMM->m_fZoomFactor);
-    }
-    FUN_1408850f0(sp);
-    return true;
+    return 0;
 }
 
 // @0x140a56690   loads ./Data/Xml/MapXblock/<xblock>.xml (fog, heightfog, clientProperty, minimap)
@@ -406,13 +400,7 @@ bool CFieldDataCli::LoadXBlock()
         FUN_140873360(fog, "far", m_fFogFar);
     }
     Unk_140165cf0* hf = root->FUN_140165cf0("heightfog");
-    if (hf == 0) {
-        m_bHeightFog = false;
-        m_nHeightFogColor = 0;
-        m_fHeightFogUpper = 0;
-        m_fHeightFogLower = -500.0f;
-        m_fHeightFogPercentage = 100.0f;
-    } else {
+    if (hf) {
         m_bHeightFog = true;
         const char* c = FUN_14086f4b0(hf, "color");
         if (c) {
@@ -421,13 +409,18 @@ bool CFieldDataCli::LoadXBlock()
         FUN_140873360(hf, "upper", m_fHeightFogUpper);
         FUN_140873360(hf, "lower", m_fHeightFogLower);
         FUN_140873360(hf, "percentage", m_fHeightFogPercentage);
+    } else {
+        m_bHeightFog = false;
+        m_nHeightFogColor = 0;
+        m_fHeightFogUpper = 0;
+        m_fHeightFogLower = -500.0f;
+        m_fHeightFogPercentage = 100.0f;
     }
     Unk_140165cf0* cp = root->FUN_140165cf0("clientProperty");
     if (cp) {
         FUN_1408733e0(cp, "bgDay", m_strBgDay);
     }
-    MS2Ptr<CFieldDataCli> self(this);
-    FUN_140a55df0(root->FUN_140165cf0("minimap"), &self);
+    FUN_140a55df0(root->FUN_140165cf0("minimap"), MS2Ptr<CFieldDataCli>(this));
     return true;
 }
 
@@ -453,9 +446,9 @@ MS2Ptr<CMinimap>* FUN_140a56e70(MS2Ptr<CMinimap>* self, CMinimap* p)
 {
     struct Raw { void* u; CMinimap* p; };
     MS2Ptr<CMinimap> tmp(p);
-    CMinimap* t = ((Raw*)&tmp)->p;
-    ((Raw*)&tmp)->p = ((Raw*)self)->p;
-    ((Raw*)self)->p = t;
+    CMinimap* t = ((Raw*)self)->p;
+    ((Raw*)self)->p = ((Raw*)&tmp)->p;
+    ((Raw*)&tmp)->p = t;
     return self;
 }
 
@@ -476,27 +469,18 @@ CMinimap::CMinimap()
 // @0x140a56db0
 Unk_Vec3Cli::Unk_Vec3Cli(float x, float y, float z) : Unk_Vec3f(x, y, z) {}
 
-// @0x140a56e30
-CMinimap::~CMinimap()
-{
-}
+// MS2-PIN: ??1CMinimap@@UEAA@XZ 0x140a56e30 ; implicit virtual dtor (no vptr reset, like the exe)
 
 // @0x140a56ee0
 bool FUN_140a56ee0(const Unk_Vec3Cli* a, const Unk_Vec3Cli* b)
 {
-    bool r;
-    if (b->x == a->x && b->y == a->y && b->z == a->z)
-        r = true;
-    else
-        r = false;
-    return r;
+    return a->x == b->x && a->y == b->y && a->z == b->z;
 }
 
 // @0x140a56f50
 bool FUN_140a56f50(const Unk_Vec3Cli* a, const Unk_Vec3Cli* b)
 {
-    char r = FUN_140a56ee0(a, b);
-    return r == 0;
+    return !FUN_140a56ee0(a, b);
 }
 // Atexit thunks of this unit's statics (gap2 yd sweep, yd2).
 // MS2-RANGE: 0x142c9f4f0-0x142c9f520 .text$yd

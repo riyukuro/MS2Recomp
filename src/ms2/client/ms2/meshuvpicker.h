@@ -37,19 +37,13 @@ private:
 };
 MS2_CHECK_SIZE(Unk_ShaderVec4, 0x10);
 
-class Unk_UVTexel : public Unk_ShaderVec4
+// 16-aligned in the exe: the texel local of the pick functions sits on a 16-byte slot.
+class __declspec(align(16)) Unk_UVTexel : public Unk_ShaderVec4
 {
 public:
     Unk_UVTexel() {}                            // 0x141480210
 };
 MS2_CHECK_SIZE(Unk_UVTexel, 0x10);
-
-// The default-constructed element of the render target array (0x141480480 calls the Unk_PPSmartA ctor with null).
-class Unk_UVTexPtr : public Unk_PPSmartA
-{
-public:
-    Unk_UVTexPtr() : Unk_PPSmartA(0) {}         // 0x141480480
-};
 
 class CMeshUVPicker : public NiRefObject
 {
@@ -61,7 +55,7 @@ public:
     bool FUN_14147e940(NiRenderObject* pMesh, NiCamera* pCamera, float fX, float fY, float* pU, float* pV,
                        CAtlArray<NiRenderObject*>* pExtras);    // texel at (fX, fY): the UV
     bool FUN_14147ea50(NiRenderObject* pMesh, NiCamera* pCamera, float fX, float fY, Unk_FcPoint3* pPos0, Unk_FcPoint3* pPos1,
-                       NiPoint2* pUV, unsigned* pIndex, CAtlArray<NiRenderObject*>* pExtras);
+                       NiPoint2* pUV, float* pIndex, CAtlArray<NiRenderObject*>* pExtras);
     void FUN_14147ec90(NiRenderObject* pMesh, CAtlArray<NiRenderObject*>* pExtras, NiCamera* pCamera, float fX, float fY,
                        bool bSecond);                           // render the three targets
     bool FUN_14147f570();                                       // create the render targets and read-back textures
@@ -83,7 +77,7 @@ public:
     NiRenderTargetGroupPtr m_38;
     NiRenderTargetGroupPtr m_40;
     IDirect3DDevice9* m_48;
-    Unk_UVTexPtr m_50[3];                       // the three float render targets (efd::SmartPointer<NiRenderedTexture>)
+    Unk_PPSmartA m_50[3];                       // the three float render targets (efd::SmartPointer<NiRenderedTexture>)
     IDirect3DTexture9* m_68[3];
     IDirect3DTexture9* m_80[3];
 };

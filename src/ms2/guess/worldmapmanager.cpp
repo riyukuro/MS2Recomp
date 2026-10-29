@@ -203,7 +203,7 @@ char* FUN_1401d3200();                                                      // t
 int* FUN_1402056b0(char* pValue);                                           // an int constant
 char* FUN_1401d31f0();                                                      // the path constants (+0xd0 world map images)
 Unk_FieldIdListMap& FUN_141b69360(CFieldMetaTable* pTable);                 // field -> npcs (uiworldmapdialog.cpp)
-Unk_FieldIdListPtr& FUN_141b695b0(Unk_FieldIdListMap* pMap, POSITION pos);  // CAtlMap::GetValueAt (uiworldmapdialog.cpp)
+const Unk_FieldIdListPtr& FUN_141b695b0(Unk_FieldIdListMap* pMap, POSITION pos);  // CAtlMap::GetValueAt (uiworldmapdialog.cpp)
 void FUN_140c956e0(Unk_FieldIdListMap* pMap, POSITION& pos);                // CAtlMap::GetNext (questnavigation.cpp)
 CContinentRegionTable* FUN_1403782c0();
 QuestDataTable* FUN_1407476c0();
@@ -264,15 +264,17 @@ int WorldMapQuestGroup(int nMode, MS2Ptr<CQuestData> spQuest, unsigned short nLe
 {
     if (spQuest.get())
     {
+        unsigned short nRequired = spQuest->m_require.m_level;
         if (nMode == 0)
         {
-            if (nLevel < (unsigned short)spQuest->m_require.m_level)
+            if (nLevel < nRequired)
                 return 10;
-            return WorldMapQuestTier(FUN_14074b030(spQuest.operator->()), 6, 7, 8, 9);
+            else
+                return WorldMapQuestTier(FUN_14074b030(spQuest.operator->()), 6, 7, 8, 9);
         }
-        if (nMode == 2)
+        else if (nMode == 2)
             return WorldMapQuestTier(FUN_14074b030(spQuest.operator->()), 1, 2, 3, 4);
-        if (nMode == 1)
+        else if (nMode == 1)
             return 5;
     }
     return 0;
@@ -289,8 +291,8 @@ bool WorldMapTooltipLess(const UIWorldMap::TooltipEntry& a, const UIWorldMap::To
 
 // @0x141b94ef0
 UIWorldMap::IconInfo::IconInfo()
+    : m_18(0)
 {
-    m_18 = 0;
 }
 
 // @0x141b94fb0
@@ -352,8 +354,8 @@ int UIWorldMap::DisplaySetting::FUN_141b95270(MS2Ptr<DungeonRoom> spRoom)
 
 // @0x141b95380
 WorldMapManager::WorldMapManager()
+    : m_78(0)
 {
-    m_78 = 0;
     LoadWorldMapFiles();
     LoadFieldTiles();
 }
@@ -447,7 +449,7 @@ int WorldMapManager::LoadWorldMapFiles()
                         if (spNpc->GetKind() == 0x55)
                         {
                             CJobConditionTable::NpcJobDataPtr spGate = CJobConditionTable::GetInstance()->GetData(nNpcId);
-                            if (spGate.get() && spGate->m_nMoveFieldId != 0)
+                            if ((spGate.get() ? true : false) && spGate->m_nMoveFieldId != 0)
                             {
                                 MS2Ptr<CFieldDataCli> spTarget = CFieldDataCli::Find(spGate->m_nMoveFieldId);
                                 if (spTarget)
@@ -468,23 +470,23 @@ int WorldMapManager::LoadWorldMapFiles()
             strGreyImage.Format("%sG_%08d.png", (const char*)*reinterpret_cast<CString*>(FUN_1401d31f0() + 0xd0), spTile->m_34);
             spTile->m_40 = strImage;
             spTile->m_48 = strGreyImage;
-            if (spTile->m_78.GetLength() == 0)
-            {
-                m_18[spTile->m_38].push_back(spTile);
-            }
-            else
+            if (spTile->m_78.GetLength() != 0)
             {
                 ATL::CAtlArray<int> worlds;
                 FUN_140177de0(spTile->m_78, worlds, ",");
                 for (size_t j = 0; j < worlds.GetCount(); j++)
                     customWorlds[worlds[j]].push_back(spTile);
             }
+            else
+            {
+                m_18[spTile->m_38].push_back(spTile);
+            }
             m_48[spTile->m_34] = spTile;
             if (bDefault)
                 m_58[spField->GetContinentCode()] = spTile;
         }
     }
-    for (TileGroups::iterator it = customWorlds.begin(); it != customWorlds.end(); ++it)
+    for (TileGroups::iterator it = customWorlds.begin(), itEnd = customWorlds.end(); it != itEnd; ++it)
     {
         for (size_t i = 0; i < it->second.size(); i++)
         {
@@ -500,11 +502,10 @@ int WorldMapManager::LoadWorldMapFiles()
         int nOrder = 1;
         for (size_t i = 0; i < it->second.size(); i++)
         {
-            if (it->second[i]->m_18 != 3)
-            {
-                it->second[i]->m_1c = nOrder;
-                nOrder++;
-            }
+            if (it->second[i]->m_18 == 3)
+                continue;
+            it->second[i]->m_1c = nOrder;
+            nOrder++;
         }
     }
     LoadFieldNameInfo();
@@ -525,10 +526,10 @@ int WorldMapManager::LoadFieldTiles()
         spInfo->m_2c = spRow->m_nContinentCode;
         spInfo->m_2c = spRow->m_bMapSearch;
         unsigned nMapped = 0;
-        if (CFieldMetaTable::GetInstance()->FUN_1406fc110(nId, &nMapped) == 0)
-            spInfo->m_28 = nId;
-        else
+        if (CFieldMetaTable::GetInstance()->FUN_1406fc110(nId, &nMapped))
             spInfo->m_28 = nMapped;
+        else
+            spInfo->m_28 = nId;
         MS2Ptr<UIWorldMap::MapTile> spTile = GetInstance()->FindMapTileByKey(spInfo->m_28);
         if (!spTile || !spRow->m_bMapSearch)
             continue;
@@ -558,7 +559,10 @@ int WorldMapManager::LoadFieldNameInfo()
     for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("key"); pNode != 0; pNode = pNode->FUN_140168650("key"))
     {
         unsigned nId;
-        if (!FUN_14028f710(pNode) || (FUN_140873220(pNode, "mapCode", nId), nId == 0))
+        if (!FUN_14028f710(pNode))
+            continue;
+        FUN_140873220(pNode, "mapCode", nId);
+        if (nId == 0)
             continue;
         MS2Ptr<UIWorldMap::MapTile> spTile = FindMapTileByKey(nId);
         if (spTile == 0)
@@ -592,17 +596,16 @@ void WorldMapManager::PollChangedFiles()
             break;
         }
     }
-    if (bChanged)
-    {
-        m_d8.RemoveAll();
-        m_8.clear();
-        m_18.clear();
-        m_48.clear();
-        m_58.clear();
-        LoadWorldMapFiles();
-        m_68.clear();
-        LoadFieldTiles();
-    }
+    if (!bChanged)
+        return;
+    m_d8.RemoveAll();
+    m_8.clear();
+    m_18.clear();
+    m_48.clear();
+    m_58.clear();
+    LoadWorldMapFiles();
+    m_68.clear();
+    LoadFieldTiles();
 }
 
 // @0x141b96f10
@@ -633,9 +636,11 @@ void WorldMapManager::LoadIconPacket(CInPacket* packet)
 {
     ClearIconInfos();
     LoadSpecialNpcs(packet);
-    if (static_cast<CInputStream*>(packet)->ReadUInt8())
+    int bExtra = packet->ReadUInt8();
+    if (bExtra)
         LoadSpecialNpcs(packet);
-    if (static_cast<CInputStream*>(packet)->ReadUInt8() == 1)
+    int nAdditional = packet->ReadUInt8();
+    if (nAdditional == 1)
         LoadAddtionalInfos(packet);
 }
 
@@ -644,17 +649,17 @@ void WorldMapManager::LoadIconPacket(CInPacket* packet)
 void WorldMapManager::LoadSpecialNpcs(CInPacket* packet)
 {
     std::vector<Unk_BmBoxPtr<SpecialNPCInfo> > records;
-    unsigned nType = static_cast<CInputStream*>(packet)->ReadUInt8();
+    unsigned nType = packet->ReadUInt8();
     if (nType == 1)
     {
-        unsigned nCount = static_cast<CInputStream*>(packet)->ReadInt32();
+        unsigned nCount = packet->ReadInt32();
         for (unsigned i = 0; i < nCount; i++)
         {
-            unsigned nInner = static_cast<CInputStream*>(packet)->ReadInt32();
+            unsigned nInner = packet->ReadInt32();
             for (unsigned j = 0; j < nInner; j++)
             {
                 Unk_BmBoxPtr<SpecialNPCInfo> spRecord(Unk_BmNewTag(0));
-                FUN_14092c190(spRecord.operator->(), *static_cast<CInputStream*>(packet));
+                FUN_14092c190(spRecord.operator->(), *packet);
                 if (!FUN_14116d720(FUN_14025e7c0()))
                 {
                     MS2Ptr<CFieldDataCli> spField = CFieldDataCli::Find(spRecord->m_nFieldId);
@@ -705,7 +710,7 @@ void WorldMapManager::LoadSpecialNpcs(CInPacket* packet)
 struct Unk_WmAddtionalRecord
 {
     Unk_WmAddtionalRecord() : m_0(0), m_4(0), m_8(0) {}
-    void Read(CInputStream* pStream);
+    void Read(CInputStream& stream);
     int m_0;
     int m_4;
     int m_8;
@@ -716,13 +721,14 @@ void WorldMapManager::LoadAddtionalInfos(CInPacket* packet)
 {
     ClearAddtionalInfos();
     std::vector<Unk_BmBoxPtr<SpecialNPCInfo> > unused;
-    if (static_cast<CInputStream*>(packet)->ReadUInt8() == 3)
+    int nType = packet->ReadUInt8();
+    if (nType == 3)
     {
-        unsigned nCount = static_cast<CInputStream*>(packet)->ReadInt32();
+        unsigned nCount = packet->ReadInt32();
         for (unsigned i = 0; i < nCount; i++)
         {
             Unk_WmAddtionalRecord rec;
-            rec.Read(static_cast<CInputStream*>(packet));
+            rec.Read(*packet);
             MS2Ptr<UIWorldMap::AddtionalInfo> spInfo = GetOrAddAddtionalInfo(rec.m_0);
             if (!spInfo)
                 continue;
@@ -756,7 +762,7 @@ MS2Ptr<UIWorldMap::MapTile> WorldMapManager::FindMapTileByKey(unsigned key)
 }
 
 // @0x141b979b0
-std::set<int>& WorldMapManager::GetPortalFields()
+std::set<unsigned>& WorldMapManager::GetPortalFields()
 {
     return m_8;
 }
@@ -904,9 +910,11 @@ int WorldMapManager::WorldOfField(int field)
 }
 
 // @0x141b98380
-bool WorldMapManager::HasFieldSearchInfo(unsigned id)
+BOOL WorldMapManager::HasFieldSearchInfo(unsigned id)
 {
-    return m_68.find(id) != m_68.end();
+    if (m_68.find(id) != m_68.end())
+        return true;
+    return false;
 }
 
 // @0x141b983f0
@@ -932,12 +940,10 @@ Unk_FieldIdListMap& FUN_141bb07e0(CFieldMetaTable* pTable)
     return *reinterpret_cast<Unk_FieldIdListMap*>(reinterpret_cast<char*>(pTable) + 0x10);
 }
 
-// MS2-FUNCTIONAL: locals constructed in a different order (unwind states 9/11/12 permuted, frame 0x20 larger) and the
-// Unk_FieldPtr<CAtlList<unsigned>> copy ctor binds the look-alike 0x1406fead0 instead of the exe copy.
 // @0x141b984a0
 int WorldMapManager::BuildNameSearch(CStringW search, ASObj* script)
 {
-    bool bFound = false;
+    BOOL bFound = FALSE;
     ASArray maps(2);
     ASArray dungeons(2);
     ASArray monsters(2);
@@ -952,7 +958,15 @@ int WorldMapManager::BuildNameSearch(CStringW search, ASObj* script)
         MS2Ptr<UIWorldMap::FieldSearchInfo> spInfo = it->second;
         if (FUN_14083fec0(spInfo->m_20, search) == -1)
             continue;
-        if (spInfo->m_28 == spInfo->m_18)
+        if (spInfo->m_28 != spInfo->m_18)
+        {
+            ASObj item(2);
+            item.FUN_1407cbb20("text", spInfo->m_20);
+            item.FUN_1409c0d20("id", spInfo->m_28);
+            indoors.FUN_1422bbf00(item);
+            bFound = TRUE;
+        }
+        else
         {
             ASObj item(2);
             item.FUN_1407cbb20("text", spInfo->m_20);
@@ -965,15 +979,8 @@ int WorldMapManager::BuildNameSearch(CStringW search, ASObj* script)
                     item.FUN_1409c0dc0("icon", "cashTaxi");
             }
             maps.FUN_1422bbf00(item);
+            bFound = TRUE;
         }
-        else
-        {
-            ASObj item(2);
-            item.FUN_1407cbb20("text", spInfo->m_20);
-            item.FUN_1409c0d20("id", spInfo->m_28);
-            indoors.FUN_1422bbf00(item);
-        }
-        bFound = true;
     }
     Unk_FieldIdListMap& portalMap = CFieldMetaTable::GetInstance()->FUN_1406fc450();
     for (POSITION pos = portalMap.GetStartPosition(); pos != 0; FUN_140c956e0(&portalMap, pos))
@@ -1000,7 +1007,7 @@ int WorldMapManager::BuildNameSearch(CStringW search, ASObj* script)
                     item.FUN_1409c0dc0("icon", spRoom->m_groupType == 2 ? "dungeon_raid" : "dungeon");
                     item.FUN_1409c0d20("iconData", spRoom->m_dungeonRoomID);
                     dungeons.FUN_1422bbf00(item);
-                    bFound = true;
+                    bFound = TRUE;
                 }
             }
         }
@@ -1040,7 +1047,7 @@ int WorldMapManager::BuildNameSearch(CStringW search, ASObj* script)
         if (spNpc->GetKind() == 0x55)
         {
             CJobConditionTable::NpcJobDataPtr spGate = CJobConditionTable::GetInstance()->GetData(nNpcId);
-            if (spGate.get() && spGate->m_nMoveFieldId != 0)
+            if ((spGate.get() ? true : false) && spGate->m_nMoveFieldId != 0)
             {
                 CStringW strLabel = FUN_1405c2690(CStringW(L"s_worldmap_tooltip_shadowgate_field"), GetStringTable()->FUN_141811980(3, spGate->m_nMoveFieldId));
                 FUN_1403b4750()->FUN_1416fb340(strLabel);
@@ -1050,7 +1057,7 @@ int WorldMapManager::BuildNameSearch(CStringW search, ASObj* script)
                 item.FUN_1407cbb20("text", strLabel);
                 item.FUN_1409c0d20("id", nField);
                 gates.FUN_1422bbf00(item);
-                bFound = true;
+                bFound = TRUE;
             }
         }
         else if (spNpc->GetFriendly() == 1 || spNpc->GetFriendly() == 2)
@@ -1063,7 +1070,7 @@ int WorldMapManager::BuildNameSearch(CStringW search, ASObj* script)
             item.FUN_1407cbb20("text", strName);
             item.FUN_1409c0d20("id", nField);
             npcs.FUN_1422bbf00(item);
-            bFound = true;
+            bFound = TRUE;
         }
         else if (spNpc->GetFriendly() == 0)
         {
@@ -1081,7 +1088,7 @@ int WorldMapManager::BuildNameSearch(CStringW search, ASObj* script)
                 if (CFieldMetaTable::GetInstance()->FUN_1406fc620(nNpcId, when) != 0)
                 {
                     CStringW strTime = FUN_140f48210(when.GetHour(), when.GetMinute());
-                    CStringW strFormat = GetStringCommonByKey(CStringW(L"s_spawnnpc_guarantee"));
+                    CStringW strFormat = GetStringCommonByKey(L"s_spawnnpc_guarantee");
                     strName += L" ";
                     strName += FUN_1401e8510(strFormat, strTime);
                 }
@@ -1091,11 +1098,11 @@ int WorldMapManager::BuildNameSearch(CStringW search, ASObj* script)
             item.FUN_1409c0d20("id", nField);
             switch (spNpc->m_nClass)
             {
-            case 3: case 7: elites.FUN_1422bbf00(item); break;
             case 4: case 6: bosses.FUN_1422bbf00(item); break;
+            case 3: case 7: elites.FUN_1422bbf00(item); break;
             default: monsters.FUN_1422bbf00(item); break;
             }
-            bFound = true;
+            bFound = TRUE;
         }
     }
     script->FUN_140c16160("map", maps);
@@ -1107,7 +1114,7 @@ int WorldMapManager::BuildNameSearch(CStringW search, ASObj* script)
     script->FUN_140c16160("indoor", indoors);
     script->FUN_140c16160("npc", npcs);
     if (!bFound)
-        script->FUN_1407cbb20("title", GetStringCommonByKey(CStringW(L"s_err_worldmap_search_none")));
+        script->FUN_1407cbb20("title", GetStringCommonByKey(L"s_err_worldmap_search_none"));
     return 1;
 }
 
@@ -1125,7 +1132,7 @@ void WorldMapManager::BuildNpcRewardPreview(int npc, ASObj* script)
     ASObj reward(2);
     ATL::CAtlList<ItemEntity> items(10);
     spPreview->GetValid(reinterpret_cast<PC*>(pPC), items);
-    if (items.GetCount() != 0)
+    if (items.GetCount() > 0)
     {
         ASArray array(2);
         reward.FUN_140c16160("previewItems", array);
@@ -1201,7 +1208,7 @@ CStringW WorldMapManager::NpcSearchName(int npc, int field)
 {
     CStringW strText;
     MS2Ptr<CNpcData> spNpc = FUN_1406cd330(npc);
-    if (spNpc.get() && spNpc->GetFriendly() == 0)
+    if ((spNpc.get() ? true : false) && spNpc->GetFriendly() == 0)
     {
         unsigned short nLevel = spNpc->GetLevel();
         strText = FUN_140f02bd0(CStringW(L"s_worldmap_search_monster"), FUN_1401aa6a0(npc), nLevel, GetStringTable()->FUN_141811980(0x11, spNpc->GetRace()));
@@ -1294,7 +1301,7 @@ int WorldMapManager::BuildFieldDetails(unsigned field, ASObj* script)
             if (spNpc->GetKind() == 0x55)
             {
                 CJobConditionTable::NpcJobDataPtr spGate = CJobConditionTable::GetInstance()->GetData(nNpcId);
-                if (spGate.get() && spGate->m_nMoveFieldId != 0)
+                if ((spGate.get() ? true : false) && spGate->m_nMoveFieldId != 0)
                 {
                     MS2Ptr<CFieldDataCli> spTarget = CFieldDataCli::Find(spGate->m_nMoveFieldId);
                     if (spTarget)
@@ -1336,7 +1343,7 @@ int WorldMapManager::BuildFieldDetails(unsigned field, ASObj* script)
                             strTime = FUN_140b8e910(when);
                         else
                             strTime = FUN_140f48210(when.GetHour(), when.GetMinute());
-                        CStringW strFormat = GetStringCommonByKey(CStringW(L"s_spawnnpc_guarantee"));
+                        CStringW strFormat = GetStringCommonByKey(L"s_spawnnpc_guarantee");
                         strName += L" ";
                         strName += FUN_1401e8510(strFormat, strTime);
                     }
@@ -1344,8 +1351,8 @@ int WorldMapManager::BuildFieldDetails(unsigned field, ASObj* script)
                 item.FUN_1407cbb20("text", strName);
                 switch (spNpc->m_nClass)
                 {
-                case 3: case 7: elites.FUN_1422bbf00(item); break;
                 case 4: case 6: bosses.FUN_1422bbf00(item); break;
+                case 3: case 7: elites.FUN_1422bbf00(item); break;
                 default: monsters.FUN_1422bbf00(item); break;
                 }
             }
@@ -1356,12 +1363,13 @@ int WorldMapManager::BuildFieldDetails(unsigned field, ASObj* script)
     for (POSITION indoorPos = indoorFields.GetHeadPosition(); indoorPos != 0; indoorFields.GetNext(indoorPos))
     {
         unsigned nConnected = indoorFields.GetAt(indoorPos);
-        if (m_68.find(nConnected) == m_68.end() && field != nConnected)
-        {
-            ASObj item(2);
-            item.FUN_1407cbb20("text", GetStringTable()->FUN_141811980(3, nConnected));
-            indoors.FUN_1422bbf00(item);
-        }
+        if (m_68.find(nConnected) == m_68.end())
+            continue;
+        if (field == nConnected)
+            continue;
+        ASObj item(2);
+        item.FUN_1407cbb20("text", GetStringTable()->FUN_141811980(3, nConnected));
+        indoors.FUN_1422bbf00(item);
     }
     CStringW strTitle = FUN_140b99450(CStringW(L"s_worldmap_search_map_title"), GetStringTable()->FUN_141811980(3, field), spData->m_nMapLevel);
     CStringW strFishing = FUN_140953f20()->FUN_140cdc000(field);
@@ -1397,7 +1405,7 @@ int WorldMapManager::BuildMissionSearch(unsigned field, ASObj* script)
         for (size_t j = 0; j < lines.GetCount(); j++)
         {
             ASObj item(2);
-            item.FUN_1407cbb20("tooltip", lines[j]);
+            item.FUN_1407cbb20("text", lines[j]);
             missions.FUN_1422bbf00(item);
         }
     }
@@ -1431,17 +1439,15 @@ bool WorldMapTileLess(const MS2Ptr<UIWorldMap::MapTile>& a, const MS2Ptr<UIWorld
 {
     if (a->m_18 == b->m_18)
     {
-        if (a->m_2c == b->m_2c)
-        {
-            efd::Matrix3 rotation;
-            rotation.FromEulerAnglesXYZ(0.7853982f, 0.0f, 0.7853982f);
-            efd::Point3 first((float)a->m_24 + (float)a->m_30 / 2.0f, (float)a->m_28 + (float)a->m_30 / 2.0f, (float)a->m_2c);
-            first = first * rotation;
-            efd::Point3 second((float)b->m_24 + (float)b->m_30 / 2.0f, (float)b->m_28 + (float)b->m_30 / 2.0f, (float)b->m_2c);
-            second = second * rotation;
-            return second.y < first.y;
-        }
-        return a->m_2c < b->m_2c;
+        if (a->m_2c != b->m_2c)
+            return a->m_2c < b->m_2c;
+        efd::Matrix3 rotation;
+        rotation.FromEulerAnglesXYZ(0.7853982f, 0.0f, 0.7853982f);
+        efd::Point3 first((float)a->m_24 + (float)a->m_30 / 2.0f, (float)a->m_28 + (float)a->m_30 / 2.0f, (float)a->m_2c);
+        first = first * rotation;
+        efd::Point3 second((float)b->m_24 + (float)b->m_30 / 2.0f, (float)b->m_28 + (float)b->m_30 / 2.0f, (float)b->m_2c);
+        second = second * rotation;
+        return first.y > second.y;
     }
     return a->m_18 < b->m_18;
 }
@@ -1458,18 +1464,19 @@ int WorldMapQuestTier(MS2Ptr<CQuestData> spQuest, const int& a, const int& b, co
 {
     if (spQuest.get())
     {
-        switch (FUN_14074b050(spQuest.operator->()))
+        int nType = FUN_14074b050(spQuest.operator->());
+        switch (nType)
         {
         case 0:
             return a;
-        case 1:
-        case 6:
-            return FUN_1407640c0(spQuest.operator->()) ? c : b;
         case 2:
             return d;
         case 8:
         case 9:
             return b;
+        case 1:
+        case 6:
+            return FUN_1407640c0(spQuest.operator->()) ? c : b;
         }
     }
     return b;
@@ -1555,8 +1562,8 @@ template <> MS2Ptr<UIWorldMap::MapTile>::MS2Ptr(const Unk_BmNewTag&)
 
 // @0x141badbe0
 UIWorldMap::IconInfo::Rect::Rect()
+    : m_0(0)
 {
-    m_0 = 0;
     m_20 = 0;
 }
 
@@ -1570,25 +1577,9 @@ UIWorldMap::DungeonInfo::DungeonInfo()
 
 // @0x141badd30
 UIWorldMap::MapTile::MapTile()
+    : m_18(0), m_1c(0), m_20(false), m_21(false), m_24(0), m_28(0), m_2c(0), m_30(0), m_34(0), m_38(0),
+      m_50(0), m_54(0), m_58(0), m_5c(0), m_68(0), m_6c(0), m_70(0), m_74(0)
 {
-    m_18 = 0;
-    m_1c = 0;
-    m_20 = false;
-    m_21 = false;
-    m_24 = 0;
-    m_28 = 0;
-    m_2c = 0;
-    m_30 = 0;
-    m_34 = 0;
-    m_38 = 0;
-    m_50 = 0;
-    m_54 = 0;
-    m_58 = 0;
-    m_5c = 0;
-    m_68 = 0;
-    m_6c = 0;
-    m_70 = 0;
-    m_74 = 0;
 }
 
 // @0x141bade80
@@ -1606,11 +1597,11 @@ void FUN_141bb0380(UIWorldMap::MapTile* pThis, MS2Ptr<UIWorldMap::MapTile> spTil
 }
 
 // @0x141bb0440
-void Unk_WmAddtionalRecord::Read(CInputStream* pStream)
+void Unk_WmAddtionalRecord::Read(CInputStream& stream)
 {
-    m_0 = pStream->ReadInt32();
-    m_4 = pStream->ReadInt32();
-    m_8 = (unsigned short)pStream->ReadInt16();
+    m_0 = stream.ReadInt32();
+    m_4 = stream.ReadInt32();
+    m_8 = (unsigned short)stream.ReadInt16();
 }
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142cc3a80-0x142cc3aa0 .text$yd

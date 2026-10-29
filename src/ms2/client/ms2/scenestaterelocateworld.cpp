@@ -9,14 +9,12 @@
 #include "networkservice.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include <NiColor.h>
+#include <efd/Helpers.h>
 
 CNetworkService* FUN_140714f90();
 void* FUN_140aae430();
-class Unk_143a09680 { public: void* m_a; void* m_b; };
-class Unk_1409879 : public Unk_143a09680 { };
-Unk_1409879 FUN_140987930(const void*);
-extern char DAT_143a09680[];
-void FUN_141489ff0(void*, Unk_143a09680);
+void FUN_141489ff0(void*, NiColorA);                    // the app's clear colour
 extern CString DAT_143ab2a48;
 extern unsigned short DAT_143ab2848;
 extern __int64 DAT_143ab2868;
@@ -39,10 +37,9 @@ CSceneStateRelocateWorld::~CSceneStateRelocateWorld()
 }
 
 // @0x141750fa0
-// MS2-FUNCTIONAL: the exe keeps the 24-byte FUN_140987930 result slot pointer in a stack temp before the call (same as CSceneStateLogin::OnEnter)
 void CSceneStateRelocateWorld::OnEnter(int nPrevState)
 {
-    FUN_141489ff0(FUN_140aae430(), static_cast<const Unk_143a09680&>(FUN_140987930(DAT_143a09680)));
+    FUN_141489ff0(FUN_140aae430(), efd::ColorA::BLACK);
     m_nState = 0;
     CSceneStateBase::OnEnter(nPrevState);
 }

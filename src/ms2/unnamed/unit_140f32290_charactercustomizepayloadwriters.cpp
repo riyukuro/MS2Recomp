@@ -197,7 +197,7 @@ MS2_REPLACE(0x140F328A0, FUN_140f328a0, 455, 0x566F2A2D);
 
 // The size / degree / position pickers of the customize controller.
 // @0x140f32a70
-// MS2-FUNCTIONAL: code generation differs (register allocation / block layout)
+// MS2-FUNCTIONAL: behaviour-checked against the exe; instructions match, frame is 0x10 larger (one local slot)
 void FUN_140f32a70(MS2Ptr<CItemData> spData, MS2Ptr<Customize> spCustomize, ASObj& obj, unsigned* pnFlags)
 {
     if (spCustomize == 0)
@@ -208,23 +208,25 @@ void FUN_140f32a70(MS2Ptr<CItemData> spData, MS2Ptr<Customize> spCustomize, ASOb
     if (part == 0)
         return;
     *pnFlags = FUN_140cd1b20(spCustomize.get());
-    if ((int)*pnFlags < 1)
+    if ((int)*pnFlags <= 0)
         return;
     if ((*pnFlags & 1) != 0 || (*pnFlags & 2) != 0)
     {
         int nParts = part->vfunc_27();
         ASArray kSizes(2);
-        int i = nParts;
         if (0 < nParts)
         {
-            while (i = i - 1, -1 < i)
+            for (int i = nParts - 1; i >= 0; i--)
             {
                 const Unk_CustomizeRange* pRange = part->vfunc_24(i);
                 float fCur = part->vfunc_22(i);
                 float fMin = pRange->m_fMin;
                 float fMax = pRange->m_fMax;
-                if (*reinterpret_cast<const float*>(&pRange->m_n08) != 0.0f)
-                    fCur = (fMax - fCur) + fMin;
+                if (pRange->m_n08 != 0)
+                {
+                    float fFlip = fMax - fCur;
+                    fCur = fFlip + fMin;
+                }
                 ASObj kEntry(2);
                 int nIndex = i;
                 kEntry.FUN_1407cb9c0("id", nIndex);
@@ -241,28 +243,28 @@ void FUN_140f32a70(MS2Ptr<CItemData> spData, MS2Ptr<Customize> spCustomize, ASOb
         ASObj kDegree(2);
         float fDegree = part->vfunc_18();
         if (fDegree < 0.0f)
-            fDegree = fDegree + 360.0f;
+            fDegree = 360.0f + fDegree;
         obj.FUN_1409c4a30("cur", fDegree);
         obj.FUN_1409adbe0("degreedata", Scaleform::GFx::Value(kDegree.FUN_1422bb870()));
     }
     if ((*pnFlags & 8) != 0)
     {
         ASArray kPos(2);
-        std::vector<MS2Ptr<ItemCustom> >* pList = 0;
+        const std::vector<MS2Ptr<ItemCustom> >* pList = 0;
         int nSelected = part->vfunc_17();
-        if (!spData->FUN_14053d070())
-        {
-            if (spData->FUN_14053eba0()->FUN_14054b3d0() != 0)
-            {
-                if (spData->FUN_14053eba0()->FUN_14054b2f0(0)->FUN_1405450c0() > 1)
-                    pList = &const_cast<ModelPart*>(spData->FUN_14053eba0()->FUN_14054b2f0(0)->FUN_140544fe0(1))->customs;
-            }
-        }
-        else
+        if (spData->FUN_14053d070())
         {
             CharacterDecalData* pDecal = spData->FUN_14053eba0()->FUN_14054b6b0();
             if (pDecal != 0)
                 pList = pDecal->FUN_1401e41c0();
+        }
+        else
+        {
+            if (spData->FUN_14053eba0()->FUN_14054b3d0() > 0)
+            {
+                if (spData->FUN_14053eba0()->FUN_14054b2f0(0)->FUN_1405450c0() > 1)
+                    pList = &spData->FUN_14053eba0()->FUN_14054b2f0(0)->FUN_140544fe0(1)->customs;
+            }
         }
         if (pList != 0)
         {
@@ -270,7 +272,8 @@ void FUN_140f32a70(MS2Ptr<CItemData> spData, MS2Ptr<Customize> spCustomize, ASOb
             {
                 ASObj kEntry(2);
                 kEntry.FUN_140e846b0("id", k);
-                kEntry.FUN_1407cba60("iconpath", (*pList)[k]->name);
+                const MS2Ptr<ItemCustom>& spCustom = (*pList)[k];
+                kEntry.FUN_1407cba60("iconpath", spCustom->name);
                 if ((int)k == nSelected)
                     kEntry.FUN_1407cb9c0("selected", 1);
                 kPos.FUN_1422bc050(Scaleform::GFx::Value(kEntry.FUN_1422bb870()));
@@ -459,7 +462,6 @@ MS2_REPLACE(0x140F33950, FUN_140f33950, 1053, 0x81E7461B);
 
 // The colour page and the pickers of an item's AS object.
 // @0x140f33d80
-// MS2-FUNCTIONAL: code generation differs (register allocation / block layout)
 void FUN_140f33d80(int nColor1, int nColor2, MS2Ptr<CItemData> spData, int nPalette, ASObj& obj, int nFlags)
 {
     if (spData == 0)
@@ -471,7 +473,7 @@ void FUN_140f33d80(int nColor1, int nColor2, MS2Ptr<CItemData> spData, int nPale
     int bColor2 = spData->FUN_14053eba0()->FUN_14054b400() != 3;
     ASArray kColors(2);
     int nSelected = -1;
-    bBuild = (nFlags & 1) > 0;
+    bBuild = (nFlags & 1) > 0 ? true : false;
     ColorArrayPtr spPalette = FUN_140281980()->GetPaletteColors(nPalette);
     if (spPalette.get() != 0)
         FUN_140f33950(kColors, &nSelected, nColor1, nColor2, MS2Ptr<CItemData>(spData), nPalette, ColorArrayPtr(spPalette),
@@ -486,12 +488,8 @@ void FUN_140f33d80(int nColor1, int nColor2, MS2Ptr<CItemData> spData, int nPale
         if (spHair.get() != 0)
             FUN_140f33950(kColors, &nSelected2, nColor1, nColor2, MS2Ptr<CItemData>(spData), nHair, ColorArrayPtr(spHair),
                           bF8);
-        if (nSelected == -1 && -1 < nSelected2)
-        {
-            __int64 nOffset = (__int64)nSelected2;
-            nSelected = (int)spPalette->GetCount();
-            nSelected = (int)nOffset + nSelected;
-        }
+        if (nSelected == -1 && nSelected2 >= 0)
+            nSelected = (int)(nSelected2 + spPalette->GetCount());
     }
     if ((nFlags & 2) != 0)
     {
@@ -528,6 +526,7 @@ void FUN_140f33d80(int nColor1, int nColor2, MS2Ptr<CItemData> spData, int nPale
         }
     }
 }
+MS2_REPLACE(0x140F33D80, FUN_140f33d80, 1669, 0x3EB47E2D);
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142ca9270-0x142ca92e0 .text$yd
 // MS2-RANGE: 0x142ca9300-0x142ca9380 .text$yd

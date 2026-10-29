@@ -225,6 +225,7 @@
 #include <algorithm>
 
 #include "ms2/ms2format.h"
+#include "ms2/client/ms2/ms2dragslot.h"
 #include "ms2/client/ms2/uimessagebox.h"
 #include "ms2/placeholder/asdata.h"
 #include "ms2/placeholder/asdisplayobject.h"
@@ -275,7 +276,7 @@ public:
     virtual void vfunc_14(); virtual void vfunc_15(); virtual void vfunc_16(); virtual void vfunc_17();
     virtual void vfunc_18(); virtual void vfunc_19(); virtual void vfunc_20(); virtual void vfunc_21();
     virtual void vfunc_22(); virtual void vfunc_23();
-    virtual void vfunc_24(int nOn);
+    virtual void vfunc_24(bool bRefresh);
     int FUN_1422e3210();                                                    // the selected tab
     void FUN_1422e31e0(int nTab);                                           // select a tab
 };
@@ -317,9 +318,9 @@ public:
     void FUN_140d08600();                                                   // stop
     void FUN_140d085a0();                                                   // stop the ensemble
     void FUN_140d073b0(int nNote);                                          // press a note
-    void FUN_140d07840(unsigned nNote);                                     // release a note
+    void FUN_140d07840(int nNote);                                     // release a note
     void FUN_140d07260(bool bEnsemble);                                     // set the ensemble mode
-    int FUN_140d0b0c0();                                                    // the auto play volume
+    unsigned int FUN_140d0b0c0();                                                  // the auto play volume
     void FUN_140d0b0e0(int nVolume);                                        // set it
     bool FUN_140d07960(__int64 nScoreUid);                                  // play the score
     bool FUN_140d07f00(__int64 nScoreUid);                                  // play the ensemble score
@@ -380,26 +381,25 @@ CStringW FUN_141b71910(__int64 nUid);                                       // u
 CString FUN_1402bb1c0(const char* szFormat, const int* pn);                 // format one int
 CStringW GetStringCommonByKey(const CStringW& strKey);                             // string table text
 CStringW FUN_140298ea0(CStringW strKey);                             // notice text
-CStringW FUN_14083dc40(const wchar_t* szFormat, int n1, int n2);            // format two ints
+CStringW FUN_14083dc40(const wchar_t* szFormat, const int& n1, const int& n2);   // StringFormat<int, int>: both by reference
 CStringW FUN_1405c2690(CStringW strKey, const CStringW& strArg);     // string table format
 CStringW FUN_140656190(const wchar_t* szFormat, const CStringW& a0, const CStringW& a1);
 void FUN_1412751f0(const CStringW& str, int a, int b);                      // notice
 void FUN_140d73aa0(CStringW text, int nType, void* p, CStringW tag);       // message box
 void FUN_14151f200();
 void FUN_1408741a0(void* pCfg, const char* szSection, const char* szKey, int* pnValue);
-void FUN_140874440(void* pCfg, const char* szSection, const char* szKey, int nValue, int bFlag);
+void FUN_140874440(void* pCfg, const char* szSection, const char* szKey, int nValue, bool bFlag);
 int FUN_1418fc760(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned nArgs, int n);
-class Unk_PiBinder {};
-Unk_PiBinder* FUN_1422c8e90(const CString& strName);
-class Unk_PiSlot : public CPtred { public: __int64 FUN_141405a10(); };
-Unk_PiSlot* FUN_140f15b80(Unk_PiBinder* p);
+namespace NotifyContext { class BindData; }
+NotifyContext::BindData* FUN_1422c8e90(const CString& strName);     // the bind data of a name
+// The inventory slot (invenslot.cpp): only what this unit calls.
+class InvenSlot : public MS2DragSlot
+{
+public:
+    __int64 GetItemUid();                                           // the item uid
+};
+InvenSlot* FUN_140f15b80(NotifyContext::BindData* p);
 void FUN_1409b4bc0(Scaleform::GFx::Value* pOut, Scaleform::GFx::Value& v);
-// The ref-counted pointer to the dragged slot: 16 bytes, driven by the exe functions below.
-struct Unk_PiSlotPtr { void* m_unk_00; Unk_PiSlot* m_p; };
-void FUN_140f17650(Unk_PiSlotPtr* pPtr, Unk_PiSlot* p);                     // ctor
-void FUN_140f177c0(Unk_PiSlotPtr* pPtr);                                    // dtor
-Unk_PiSlot* FUN_140f17a50(Unk_PiSlotPtr* pPtr);                             // get
-Unk_PiSlot* FUN_140f17a70(Unk_PiSlotPtr* pPtr);                             // operator->
 // The instrument row (name accessors are not recovered as members yet).
 class Unk_PiInstrData : public CInstrumentData
 {
@@ -454,7 +454,6 @@ CString UIPlayInstrumentDialog::GetTypeName()
 }
 
 // @0x14100a470
-// MS2-FUNCTIONAL: not byte-exact yet (temporaries / call order differ)
 void UIPlayInstrumentDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
@@ -479,15 +478,13 @@ void UIPlayInstrumentDialog::OnLoadComplete()
     if (m_spTab.get())
     {
         m_spTab->FUN_1422e31e0(m_nTab);
-        m_spTab->vfunc_24(1);
+        m_spTab->vfunc_24(true);
         m_30->Invoke("onSelectTab", m_nTab);
     }
     CInstrumentDataTable::InstrumentPtr spData = FUN_14052d1d0()->GetInstrument(m_nInstrument);
     if (spData == 0)
         return;
-    CStringW strName = static_cast<Unk_PiInstrData*>(spData.get())->FUN_14072c150();
-    CStringW strCategory = static_cast<Unk_PiInstrData*>(spData.get())->FUN_14072c240();
-    CStringW strText = FUN_140656190(L"{0} {1}", strCategory, strName);
+    CStringW strText = FUN_140656190(L"{0} {1}", static_cast<Unk_PiInstrData*>(spData.get())->FUN_14072c240(), static_cast<Unk_PiInstrData*>(spData.get())->FUN_14072c150());
     MS2Ptr<ASTextField> spCurrent = FUN_140bb4cf0("m_currentInstrument");
     if (spCurrent.get())
         spCurrent->FUN_1422c4cd0(strText);
@@ -524,7 +521,6 @@ void UIPlayInstrumentDialog::vfunc_26()
 }
 
 // @0x14100ad90
-// MS2-FUNCTIONAL: not byte-exact yet (temporaries / call order differ)
 void UIPlayInstrumentDialog::vfunc_67()
 {
     Unk_PiPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
@@ -535,7 +531,7 @@ void UIPlayInstrumentDialog::vfunc_67()
     {
         if (FUN_1403ed2b0()->FUN_141adc890(0x4f07))
             FUN_1403ed2b0()->FUN_141adc5d0(0x4f07);
-        if (FUN_140c8dac0()->FUN_140d0b0c0())
+        if (FUN_140c8dac0()->FUN_140d0b0c0() > 0)
             FUN_1412751f0(FUN_140298ea0(CStringW(L"s_msg_auto_play_instrument_extend_cancel")), 1, 1);
         FUN_140c8dac0()->FUN_140d0b0e0(0);
     }
@@ -550,13 +546,12 @@ int UIPlayInstrumentDialog::vfunc_54(void* pCfg)
 }
 
 // @0x14100af20
-// MS2-FUNCTIONAL: not byte-exact yet (temporaries / call order differ)
 int UIPlayInstrumentDialog::vfunc_53(void* pCfg)
 {
     if (m_spTab.get())
         m_nTab = m_spTab->FUN_1422e3210();
     UIDialog::vfunc_53(pCfg);
-    FUN_140874440(pCfg, "Histroy", "lastRadioIndex", m_nTab, 1);
+    FUN_140874440(pCfg, "Histroy", "lastRadioIndex", m_nTab, true);
     return 1;
 }
 
@@ -577,17 +572,17 @@ void UIPlayInstrumentDialog::vfunc_45(Scaleform::GFx::Value* pRetVal, const CStr
 }
 
 // @0x14100b0f0
-// MS2-FUNCTIONAL: not byte-exact yet (temporaries / call order differ)
 int UIPlayInstrumentDialog::vfunc_71()
 {
-    if (!FUN_140c8dac0()->FUN_140d07350())
-        return 0;
-    FUN_140d73aa0(GetStringCommonByKey(CStringW(L"s_play_instrument_ui_ask_close_while_playing_score")), 1, static_cast<IMessageListener*>(this), CStringW(L"askClose"));
-    return 1;
+    if (FUN_140c8dac0()->FUN_140d07350())
+    {
+        FUN_140d73aa0(GetStringCommonByKey(L"s_play_instrument_ui_ask_close_while_playing_score"), 1, static_cast<IMessageListener*>(this), L"askClose");
+        return 1;
+    }
+    return 0;
 }
 
 // @0x14100b1e0
-// MS2-FUNCTIONAL: not byte-exact yet (temporaries / call order differ)
 void UIPlayInstrumentDialog::vfunc_72()
 {
     if (m_nEndTick != 0 && m_nEndTick < FUN_140869420())
@@ -598,74 +593,66 @@ void UIPlayInstrumentDialog::vfunc_72()
     }
     FUN_14100da10();
     FUN_14100d920();
-    if (FUN_140c8dac0()->FUN_140d07330())
+    if (!FUN_140c8dac0()->FUN_140d07330())
+        return;
+    if (FUN_1403ed2b0()->FUN_141adbb00() != 0)
+        return;
+    for (KeyButtonMap::iterator it = m_keyButtons.begin(), itEnd = m_keyButtons.end(); it != itEnd; ++it)
     {
-        if (FUN_1403ed2b0()->FUN_141adbb00() == 0)
+        if (FUN_140a58540()->FUN_140d8ad60(it->first))
         {
-            KeyButtonMap::iterator it = m_keyButtons.begin();
-            KeyButtonMap::iterator itEnd = m_keyButtons.end();
-            while (it != itEnd)
+            int nNote = m_nOctave * 12 + 12 + it->second.first;
+            m_pressed[it->first] = nNote;
+            FUN_140c8dac0()->FUN_140d073b0(nNote);
+            MS2Ptr<Unk_140acd6e0> spButton(it->second.second);
+            spButton->Invoke("onForcePress");
+        }
+    }
+    for (std::vector<std::pair<int, int> >::iterator itKey = m_octaveKeys.begin(), itKeyEnd = m_octaveKeys.end(); itKey != itKeyEnd; ++itKey)
+    {
+        if (FUN_140a58540()->FUN_140d8ad60(itKey->first))
+        {
+            if (itKey->second == 100)
+                m_nOctave--;
+            else if (itKey->second == 101)
+                m_nOctave++;
+            else
+                m_nOctave = itKey->second;
+            FUN_14100e910();
+        }
+    }
+    PressedMap::iterator itDown = m_pressed.begin();
+    PressedMap::iterator itDownEnd = m_pressed.end();
+    size_t nBefore = m_pressed.size();
+    while (itDown != itDownEnd)
+    {
+        if (FUN_140a58540()->FUN_140d8af70(itDown->first))
+        {
+            unsigned long& nNote = itDown->second;
+            FUN_140c8dac0()->FUN_140d07840(nNote);
+            KeyButtonMap::iterator itBtn = m_keyButtons.find(itDown->first);
+            if (itBtn != m_keyButtons.end())
             {
-                if (FUN_140a58540()->FUN_140d8ad60(it->first))
-                {
-                    int nNote = m_nOctave * 12 + 12 + it->second.first;
-                    m_pressed[it->first] = nNote;
-                    FUN_140c8dac0()->FUN_140d073b0(nNote);
-                    MS2Ptr<Unk_140acd6e0> spButton(it->second.second);
-                    spButton->Invoke("onForcePress");
-                }
-                ++it;
-            }
-            std::vector<std::pair<int, int> >::iterator itKey = m_octaveKeys.begin();
-            std::vector<std::pair<int, int> >::iterator itKeyEnd = m_octaveKeys.end();
-            while (itKey != itKeyEnd)
-            {
-                if (FUN_140a58540()->FUN_140d8ad60(itKey->first))
-                {
-                    if (itKey->second == 100)
-                        m_nOctave--;
-                    else if (itKey->second == 101)
-                        m_nOctave++;
-                    else
-                        m_nOctave = itKey->second;
-                    FUN_14100e910();
-                }
-                ++itKey;
-            }
-            PressedMap::iterator itDown = m_pressed.begin();
-            PressedMap::iterator itDownEnd = m_pressed.end();
-            size_t nBefore = m_pressed.size();
-            while (itDown != itDownEnd)
-            {
-                if (FUN_140a58540()->FUN_140d8af70(itDown->first))
-                {
-                    FUN_140c8dac0()->FUN_140d07840(itDown->second);
-                    KeyButtonMap::iterator itBtn = m_keyButtons.find(itDown->first);
-                    if (itBtn != m_keyButtons.end())
-                    {
-                        MS2Ptr<Unk_140acd6e0> spButton(itBtn->second.second);
-                        spButton->Invoke("onForceRelease");
-                        PressedMap::iterator itErase = itDown;
-                        ++itDown;
-                        m_pressed.erase(itErase);
-                        continue;
-                    }
-                }
+                MS2Ptr<Unk_140acd6e0> spButton(itBtn->second.second);
+                spButton->Invoke("onForceRelease");
+                PressedMap::iterator itErase = itDown;
                 ++itDown;
+                m_pressed.erase(itErase);
+                continue;
             }
-            size_t nAfter = m_pressed.size();
-            if (nBefore != 0 && nAfter == 0)
-                m_nIdleTick = FUN_140869420();
-            if (m_pressed.size() == 0 && m_nIdleTick != 0)
-            {
-                unsigned nLimit = m_nIdleTick + 5000;
-                if (nLimit < FUN_140869420())
-                {
-                    m_nIdleTick = 0;
-                    FUN_140c8dac0()->FUN_140d07260(false);
-                    FUN_140c8dac0()->FUN_140d07260(true);
-                }
-            }
+        }
+        ++itDown;
+    }
+    size_t nAfter = m_pressed.size();
+    if (nBefore != 0 && nAfter == 0)
+        m_nIdleTick = FUN_140869420();
+    if (m_pressed.size() == 0 && m_nIdleTick != 0)
+    {
+        if (m_nIdleTick + 5000 < FUN_140869420())
+        {
+            m_nIdleTick = 0;
+            FUN_140c8dac0()->FUN_140d07260(false);
+            FUN_140c8dac0()->FUN_140d07260(true);
         }
     }
 }
@@ -688,7 +675,6 @@ int UIPlayInstrumentDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
 }
 
 // @0x14100b8d0
-// MS2-FUNCTIONAL: not byte-exact yet (temporaries / call order differ)
 int UIPlayInstrumentDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs)
 {
     if (UIDialog::vfunc_28(szMethod, pArgs, nArgs) != 0)
@@ -701,7 +687,7 @@ int UIPlayInstrumentDialog::vfunc_28(const char* szMethod, const Scaleform::GFx:
             m_nAutoPlay = 1;
         return 1;
     }
-    if (_stricmp("onStopNote", szMethod) == 0)
+    else if (_stricmp("onStopNote", szMethod) == 0)
     {
         m_bStop = 1;
         if (m_nMode == 3)
@@ -717,21 +703,24 @@ int UIPlayInstrumentDialog::vfunc_28(const char* szMethod, const Scaleform::GFx:
         {
             if (FUN_1403ed2b0()->FUN_141adc890(0x4f07))
                 FUN_1403ed2b0()->FUN_141adc5d0(0x4f07);
-            if (FUN_140c8dac0()->FUN_140d0b0c0())
+            if (FUN_140c8dac0()->FUN_140d0b0c0() > 0)
                 FUN_1412751f0(FUN_140298ea0(CStringW(L"s_msg_auto_play_instrument_extend_cancel")), 1, 1);
             FUN_140c8dac0()->FUN_140d0b0e0(0);
         }
         m_nAutoPlay = 0;
         return 1;
     }
-    if (_stricmp("OnSelectTab", szMethod) == 0)
+    else if (_stricmp("OnSelectTab", szMethod) == 0)
     {
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs))
-            FUN_14100c200(data.FUN_1422b8a10());
+        {
+            int nTab = data.FUN_1422b8a10();
+            FUN_14100c200(nTab);
+        }
         return 1;
     }
-    if (_stricmp("onNoteRadioSelectChange", szMethod) == 0)
+    else if (_stricmp("onNoteRadioSelectChange", szMethod) == 0)
     {
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs))
@@ -739,14 +728,14 @@ int UIPlayInstrumentDialog::vfunc_28(const char* szMethod, const Scaleform::GFx:
         FUN_14100e9a0(m_nMode);
         return 1;
     }
-    if (_stricmp("OnKeyPress", szMethod) == 0)
+    else if (_stricmp("OnKeyPress", szMethod) == 0)
     {
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs))
         {
             int nKey = data.FUN_1422b8a10();
-            int nOctave = m_nOctave;
-            FUN_140c8dac0()->FUN_140d073b0(nOctave * 12 + 11 + nKey);
+            int nNote = m_nOctave * 12 + 11 + nKey;
+            FUN_140c8dac0()->FUN_140d073b0(nNote);
             return 1;
         }
     }
@@ -756,8 +745,8 @@ int UIPlayInstrumentDialog::vfunc_28(const char* szMethod, const Scaleform::GFx:
         if (data.FUN_1422b9620(pArgs, nArgs))
         {
             int nKey = data.FUN_1422b8a10();
-            int nOctave = m_nOctave;
-            FUN_140c8dac0()->FUN_140d07840(nOctave * 12 + 11 + nKey);
+            int nNote = m_nOctave * 12 + 11 + nKey;
+            FUN_140c8dac0()->FUN_140d07840(nNote);
             return 1;
         }
     }
@@ -782,26 +771,23 @@ int UIPlayInstrumentDialog::vfunc_28(const char* szMethod, const Scaleform::GFx:
             int nIndex = data.FUN_1422b8a10();
             CString strName = data.FUN_1422b8d30();
             Scaleform::GFx::Value value = data.FUN_1422b9260();
-            Unk_PiSlotPtr spSlot;
-            FUN_140f17650(&spSlot, FUN_140f15b80(FUN_1422c8e90(strName)));
-            if (FUN_140f17a50(&spSlot))
+            efd::SmartPointer<InvenSlot> spSlot = FUN_140f15b80(FUN_1422c8e90(strName));
+            if (spSlot)
             {
-                __int64 nUid = FUN_140f17a70(&spSlot)->FUN_141405a10();
+                __int64 nUid = spSlot->GetItemUid();
                 MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(nUid);
                 if (spItem.get())
                 {
                     FUN_14100ca90(nIndex - 1, MS2Ptr<CItem>(spItem));
                     for (int i = 0; i < 3; i++)
                     {
-                        if (nIndex - 1 != i)
-                        {
-                            if (m_spScores[i] == spItem.get())
-                                FUN_14100ca90(i, MS2Ptr<CItem>(0));
-                        }
+                        if (nIndex - 1 == i)
+                            continue;
+                        if (m_spScores[i] == spItem.get())
+                            FUN_14100ca90(i, MS2Ptr<CItem>(0));
                     }
                 }
             }
-            FUN_140f177c0(&spSlot);
         }
         return 1;
     }
@@ -843,7 +829,6 @@ void UIPlayInstrumentDialog::FUN_14100c200(int nPage)
 }
 
 // @0x14100c2c0
-// MS2-FUNCTIONAL: not byte-exact yet (temporaries / call order differ)
 void UIPlayInstrumentDialog::FUN_14100c2c0()
 {
     Unk_PiPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
@@ -858,13 +843,13 @@ void UIPlayInstrumentDialog::FUN_14100c2c0()
         float fProgress = 0.0f;
         CStringW strGrade(L"");
         if (nLevel == 1)
-            strGrade = GetStringCommonByKey(CStringW(L"s_play_instrument_grade_Lv1"));
+            strGrade = GetStringCommonByKey(L"s_play_instrument_grade_Lv1");
         else if (nLevel == 2)
-            strGrade = GetStringCommonByKey(CStringW(L"s_play_instrument_grade_Lv2"));
+            strGrade = GetStringCommonByKey(L"s_play_instrument_grade_Lv2");
         else if (nLevel == 3)
-            strGrade = GetStringCommonByKey(CStringW(L"s_play_instrument_grade_Lv3"));
+            strGrade = GetStringCommonByKey(L"s_play_instrument_grade_Lv3");
         else if (nLevel == 4)
-            strGrade = GetStringCommonByKey(CStringW(L"s_play_instrument_grade_Lv4"));
+            strGrade = GetStringCommonByKey(L"s_play_instrument_grade_Lv4");
         if (nLevel == 4)
         {
             strProgress = L"MAX";
@@ -873,8 +858,7 @@ void UIPlayInstrumentDialog::FUN_14100c2c0()
         else
         {
             int nStart = FUN_14066b310(FUN_1409670c0(), 2, nLevel);
-            int nNext = nLevel + 1;
-            int nEnd = FUN_14066b310(FUN_1409670c0(), 2, nNext);
+            int nEnd = FUN_14066b310(FUN_1409670c0(), 2, nLevel + 1);
             int nNeed = nEnd - nStart;
             int nHave = nExp - nStart;
             fProgress = (float)nHave / (float)nNeed;
@@ -885,7 +869,6 @@ void UIPlayInstrumentDialog::FUN_14100c2c0()
 }
 
 // @0x14100c750
-// MS2-FUNCTIONAL: not byte-exact yet (temporaries / call order differ)
 int UIPlayInstrumentDialog::OnPlayNote()
 {
     bool bEmpty = true;
@@ -901,7 +884,7 @@ int UIPlayInstrumentDialog::OnPlayNote()
     }
     if (bEmpty)
     {
-        FUN_140d73aa0(GetStringCommonByKey(CStringW(L"s_play_instrument_ui_need_score")), 0, 0, CStringW(L""));
+        FUN_140d73aa0(GetStringCommonByKey(L"s_play_instrument_ui_need_score"), 0, 0, L"");
         return 0;
     }
     m_bStop = 0;
@@ -951,7 +934,6 @@ void UIPlayInstrumentDialog::FUN_14100c910(MS2Ptr<CItem> spItem)
 }
 
 // @0x14100ca90
-// MS2-FUNCTIONAL: not byte-exact yet (temporaries / call order differ)
 void UIPlayInstrumentDialog::FUN_14100ca90(int nIndex, MS2Ptr<CItem> spItem)
 {
     if (FUN_140a467d0(&m_30))
@@ -974,35 +956,34 @@ void UIPlayInstrumentDialog::FUN_14100ca90(int nIndex, MS2Ptr<CItem> spItem)
             return;
     }
     m_spScores[nIndex] = spItem;
-    if (m_spScores[nIndex].get() == 0)
+    if (m_spScores[nIndex].get() != 0)
     {
+        ASSlot slot(2);
+        if (slot.FUN_1409c3860(spItem.get(), FUN_1403ed2d0()->FUN_141bd0cc0(), 0x415))
+        {
+            CStringW strTitle = m_spScores[nIndex]->FUN_1405296c0();
+            CStringW strWriter = m_spScores[nIndex]->FUN_140529890();
+            CStringW strInstrument = m_spScores[nIndex]->FUN_140529aa0();
+            int nDuration = (int)((float)m_spScores[nIndex]->FUN_1405299a0() / 1000.0f);
+            CStringW strWriterText(L"");
+            if (strWriter.GetLength() > 0)
+                strWriterText = FUN_1405c2690(CStringW(L"s_play_instrument_ui_score_info_writer"), strWriter);
+            int nMin, nSec, nCenti;
+            FUN_141b706a0(nDuration * 1000, nMin, nSec, nCenti);
+            CStringW strTime = FUN_14083dc40(GetStringCommonByKey(L"s_writemusic_text_playtimer_cur"), nMin, nSec);
+            slot.FUN_1407cbb20("title", FUN_1405c2690(CStringW(L"s_play_instrument_ui_score_info_title"), strTitle));
+            slot.FUN_1407cbb20("writer", CStringW(strWriterText));
+            slot.FUN_1407cbb20("recommendInstrument", FUN_1405c2690(CStringW(L"s_play_instrument_ui_score_info_instrument"), strInstrument));
+            slot.FUN_1407cbb20("playTime", CStringW(strTime));
+            slot.FUN_1407cbb20("itemGUID", FUN_141b71910(m_spScores[nIndex]->FUN_140526a50()));
+            m_30->Invoke("OnSetScore", nIndex + 1, slot.FUN_1422bb870());
+        }
+    }
+    else
         m_30->FUN_1409ba0d0("OnSetScore", nIndex + 1, 0);
-        return;
-    }
-    ASSlot slot(2);
-    if (slot.FUN_1409c3860(spItem.get(), FUN_1403ed2d0()->FUN_141bd0cc0(), 0x415))
-    {
-        CStringW strTitle = m_spScores[nIndex]->FUN_1405296c0();
-        CStringW strWriter = m_spScores[nIndex]->FUN_140529890();
-        CStringW strInstrument = m_spScores[nIndex]->FUN_140529aa0();
-        int nDuration = m_spScores[nIndex]->FUN_1405299a0();
-        CStringW strWriterText;
-        if (strWriter.GetLength() > 0)
-            strWriterText = FUN_1405c2690(CStringW(L"s_play_instrument_ui_score_info_writer"), strWriter);
-        int nMin, nSec, nCenti;
-        FUN_141b706a0((int)((float)nDuration / 1000.0f) * 1000, nMin, nSec, nCenti);
-        CStringW strTime = FUN_14083dc40(GetStringCommonByKey(CStringW(L"s_writemusic_text_playtimer_cur")), nMin, nSec);
-        slot.FUN_1407cbb20("title", FUN_1405c2690(CStringW(L"s_play_instrument_ui_score_info_title"), strTitle));
-        slot.FUN_1407cbb20("writer", CStringW(strWriterText));
-        slot.FUN_1407cbb20("recommendInstrument", FUN_1405c2690(CStringW(L"s_play_instrument_ui_score_info_instrument"), strInstrument));
-        slot.FUN_1407cbb20("playTime", CStringW(strTime));
-        slot.FUN_1407cbb20("itemGUID", FUN_141b71910(m_spScores[nIndex]->FUN_140526a50()));
-        m_30->Invoke("OnSetScore", nIndex + 1, slot.FUN_1422bb870());
-    }
 }
 
 // @0x14100d260
-// MS2-FUNCTIONAL: not byte-exact yet (temporaries / call order differ)
 void UIPlayInstrumentDialog::FUN_14100d260(int nStart, int nEnd)
 {
     m_nStartTick = nStart;
@@ -1013,7 +994,7 @@ void UIPlayInstrumentDialog::FUN_14100d260(int nStart, int nEnd)
     {
         if (m_spScorePage.get())
             m_spScorePage->Invoke("setPlaying", m_nCurrent + 1, true);
-        if (m_spFold.get() && m_spScores[m_nCurrent].get())
+        if ((m_spFold.get() ? true : false) && m_spScores[m_nCurrent].get())
         {
             CStringW strText;
             if (m_nKind == 0)
@@ -1026,7 +1007,6 @@ void UIPlayInstrumentDialog::FUN_14100d260(int nStart, int nEnd)
 }
 
 // @0x14100d600
-// MS2-FUNCTIONAL: not byte-exact yet (temporaries / call order differ)
 void UIPlayInstrumentDialog::FUN_14100d600()
 {
     m_nStartTick = 0;
@@ -1039,13 +1019,11 @@ void UIPlayInstrumentDialog::FUN_14100d600()
             m_spScorePage->Invoke("setPlaying", m_nCurrent + 1, false);
     }
     if (m_spFold.get())
-        m_spFold->FUN_1422c4cd0(CStringW(L""));
+        m_spFold->FUN_1422c4cd0(L"");
     m_nCurrent++;
     bool bFound = false;
-    while (true)
+    while (m_nCurrent < nLimit && m_nCurrent >= 0)
     {
-        if (m_nCurrent >= nLimit || m_nCurrent < 0)
-            break;
         if (m_spScores[m_nCurrent] == 0)
         {
             m_nCurrent++;
@@ -1054,7 +1032,7 @@ void UIPlayInstrumentDialog::FUN_14100d600()
         bFound = true;
         break;
     }
-    if (!m_bStop && bFound)
+    if (!m_bStop && bFound == true)
         FUN_14100f2e0();
     else
     {
@@ -1104,32 +1082,33 @@ int UIPlayInstrumentDialog::GetAutoPlay()
 }
 
 // @0x14100da10
-// MS2-FUNCTIONAL: not byte-exact yet (temporaries / call order differ)
 void UIPlayInstrumentDialog::FUN_14100da10()
 {
     if (m_spScorePage == 0)
         return;
-    if (m_nEndTick != 0 && m_nStartTick != 0 && m_nMode == 3)
+    if (m_nEndTick == 0 || m_nStartTick == 0)
+        return;
+    if (m_nMode != 3)
+        return;
     {
         MS2Ptr<ASTextField> spTime = m_spScorePage->FUN_1409b4620("m_timeText");
         if (spTime == 0)
             return;
         int nElapsed = 0;
-        if (m_nStartTick < FUN_140869420())
-        {
-            nElapsed = FUN_140869420();
-            nElapsed = nElapsed - m_nStartTick;
-        }
+        if (FUN_140869420() > m_nStartTick)
+            nElapsed = FUN_140869420() - m_nStartTick;
         int nTotal = m_nEndTick - m_nStartTick;
+        CStringW strCur;
+        CStringW strTotal;
         int nMin, nSec, nCenti;
         FUN_141b706a0(nElapsed, nMin, nSec, nCenti);
-        CStringW strCur = FUN_14083dc40(GetStringCommonByKey(CStringW(L"s_writemusic_text_playtimer_cur")), nMin, nSec);
+        strCur = FUN_14083dc40(GetStringCommonByKey(L"s_writemusic_text_playtimer_cur"), nMin, nSec);
         int nTotalMin, nTotalSec, nTotalCenti;
         FUN_141b706a0(nTotal, nTotalMin, nTotalSec, nTotalCenti);
-        CStringW strTotal = FUN_14083dc40(GetStringCommonByKey(CStringW(L"s_writemusic_text_playtimer_total")), nTotalMin, nTotalSec);
+        strTotal = FUN_14083dc40(GetStringCommonByKey(L"s_writemusic_text_playtimer_total"), nTotalMin, nTotalSec);
         CStringW strText = FUN_140656190(L"{0} {1}", strCur, strTotal);
         spTime->FUN_1422c4cd0(strText);
-        if ((m_nCurrent < 3 || m_nCurrent >= 0) && m_spFold.get() && m_spScores[m_nCurrent].get())
+        if ((m_nCurrent < 3 || m_nCurrent >= 0) && (m_spFold.get() ? true : false) && m_spScores[m_nCurrent].get())
         {
             CStringW strScore;
             if (m_nKind == 0)
@@ -1146,7 +1125,6 @@ static const int s_nOctaveDown = 100;                                       // 0
 static const int s_nOctaveUp = 101;                                         // 0x142e9cd7c
 
 // @0x14100e060
-// MS2-FUNCTIONAL: not byte-exact yet (temporaries / call order differ)
 void UIPlayInstrumentDialog::FUN_14100e060()
 {
     m_octaveKeys.clear();
@@ -1172,25 +1150,18 @@ void UIPlayInstrumentDialog::FUN_14100e060()
     m_octaveKeys.push_back(std::make_pair(0x42, 8));
     m_octaveKeys.push_back(std::make_pair(0x2a, s_nOctaveDown));
     m_octaveKeys.push_back(std::make_pair(0x36, s_nOctaveUp));
-    size_t nIndex = 0;
-    while (nIndex < m_octaveKeys.size())
+    for (size_t nIndex = 0; nIndex < m_octaveKeys.size(); nIndex++)
     {
         std::pair<int, int>& key = m_octaveKeys.at(nIndex);
-        if (key.second < 9)
+        if (key.second <= 8)
         {
             CString strName = FUN_1402bb1c0("m_octave{0}", &key.second);
             MS2Ptr<ASDisplayObject> spControl = static_cast<Unk_PiClip*>(m_spPlayPage.operator->())->FUN_140acce30(strName);
             if (spControl == 0)
-            {
-                nIndex++;
                 continue;
-            }
             MS2Ptr<ASTextField> spLabel = spControl->FUN_1409b4620("textField");
             if (spLabel == 0)
-            {
-                nIndex++;
                 continue;
-            }
             CStringW strKey = FUN_1409331f0()->FUN_14142d580(key.first);
             spLabel->FUN_1422c4cd0(strKey);
         }
@@ -1204,7 +1175,6 @@ void UIPlayInstrumentDialog::FUN_14100e060()
             CStringW strKey = FUN_1409331f0()->FUN_14142d580(key.first);
             m_spUpperOctave->FUN_1422cdfb0(strKey);
         }
-        nIndex++;
     }
 }
 
@@ -1225,68 +1195,67 @@ void UIPlayInstrumentDialog::FUN_14100e910()
 }
 
 // @0x14100e9a0
-// MS2-FUNCTIONAL: not byte-exact yet (temporaries / call order differ)
 void UIPlayInstrumentDialog::FUN_14100e9a0(int nMode)
 {
     if (!m_spScorePage)
         return;
-    if (nMode != 0)
+    if (nMode == 0)
+        return;
+    MS2Ptr<Unk_140acd6e0> spStop = static_cast<Unk_PiClip*>(m_spScorePage.operator->())->FUN_140acce30("m_stop");
+    MS2Ptr<Unk_140acd6e0> spPlay = static_cast<Unk_PiClip*>(m_spScorePage.operator->())->FUN_140acce30("m_play");
+    MS2Ptr<ASTextField> spTime = m_spScorePage->FUN_1409b4620("m_timeText");
+    if (spStop == 0 || spPlay == 0)
+        return;
+    if (nMode == 1)
     {
-        MS2Ptr<Unk_140acd6e0> spStop = static_cast<Unk_PiClip*>(m_spScorePage.operator->())->FUN_140acce30("m_stop");
-        MS2Ptr<Unk_140acd6e0> spPlay = static_cast<Unk_PiClip*>(m_spScorePage.operator->())->FUN_140acce30("m_play");
-        MS2Ptr<ASTextField> spTime = m_spScorePage->FUN_1409b4620("m_timeText");
-        if (spStop == 0 || spPlay == 0)
-            return;
-        if (nMode == 1)
-        {
-            if (m_30.get())
-                m_30->Invoke("UnLockComponent");
-        }
-        else
-        {
-            if (m_30.get())
-                m_30->Invoke("LockComponent");
-        }
-        m_nMode = nMode;
-        if (nMode == 1)
-        {
-            spStop->vfunc_3(0);
-            spPlay->vfunc_3(1);
-            spTime->vfunc_3(0);
-            if (m_nKind == 0)
-                spPlay->FUN_1422cdfb0(GetStringCommonByKey(CStringW(L"s_play_instrument_ui_button_play_solo")));
-            else if (m_nKind == 1)
-            {
-                if (FUN_1403ed2d0()->FUN_141bd0cc0() == 0)
-                    return;
-                if (!FUN_14162ab60(FUN_1409670d0()))
-                    spPlay->FUN_1422cdfb0(GetStringCommonByKey(CStringW(L"s_play_instrument_ui_button_ready_ensemble")));
-                else
-                    spPlay->FUN_1422cdfb0(GetStringCommonByKey(CStringW(L"s_play_instrument_ui_button_play_ensemble")));
-            }
-        }
-        else if (nMode == 2)
-        {
-            spStop->vfunc_3(1);
-            spPlay->vfunc_3(0);
-            spTime->vfunc_3(0);
-            if (m_nKind == 0)
-                spStop->FUN_1422cdfb0(GetStringCommonByKey(CStringW(L"s_play_instrument_ui_button_stop_solo")));
-            else if (m_nKind == 1)
-                spStop->FUN_1422cdfb0(GetStringCommonByKey(CStringW(L"s_play_instrument_ui_button_stop_ready_ensemble")));
-        }
-        else if (nMode == 3)
-        {
-            spStop->vfunc_3(1);
-            spPlay->vfunc_3(0);
-            spTime->vfunc_3(1);
-            if (m_nKind == 0)
-                spStop->FUN_1422cdfb0(GetStringCommonByKey(CStringW(L"s_play_instrument_ui_button_stop_solo")));
-            else if (m_nKind == 1)
-                spStop->FUN_1422cdfb0(GetStringCommonByKey(CStringW(L"s_play_instrument_ui_button_stop_ensemble")));
-        }
-        FUN_14100f1f0();
+        if (m_30.get())
+            m_30->Invoke("UnLockComponent");
     }
+    else
+    {
+        if (m_30.get())
+            m_30->Invoke("LockComponent");
+    }
+    m_nMode = nMode;
+    if (nMode == 1)
+    {
+        spStop->vfunc_3(0);
+        spPlay->vfunc_3(1);
+        spTime->vfunc_3(0);
+        if (m_nKind == 0)
+            spPlay->FUN_1422cdfb0(GetStringCommonByKey(L"s_play_instrument_ui_button_play_solo"));
+        else if (m_nKind == 1)
+        {
+            Unk_PiPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+            if (pPlayer == 0)
+                return;
+            if (FUN_14162ab60(FUN_1409670d0()))
+                spPlay->FUN_1422cdfb0(GetStringCommonByKey(L"s_play_instrument_ui_button_play_ensemble"));
+            else
+                spPlay->FUN_1422cdfb0(GetStringCommonByKey(L"s_play_instrument_ui_button_ready_ensemble"));
+        }
+    }
+    else if (nMode == 2)
+    {
+        spStop->vfunc_3(1);
+        spPlay->vfunc_3(0);
+        spTime->vfunc_3(0);
+        if (m_nKind == 0)
+            spStop->FUN_1422cdfb0(GetStringCommonByKey(L"s_play_instrument_ui_button_stop_solo"));
+        else if (m_nKind == 1)
+            spStop->FUN_1422cdfb0(GetStringCommonByKey(L"s_play_instrument_ui_button_stop_ready_ensemble"));
+    }
+    else if (nMode == 3)
+    {
+        spStop->vfunc_3(1);
+        spPlay->vfunc_3(0);
+        spTime->vfunc_3(1);
+        if (m_nKind == 0)
+            spStop->FUN_1422cdfb0(GetStringCommonByKey(L"s_play_instrument_ui_button_stop_solo"));
+        else if (m_nKind == 1)
+            spStop->FUN_1422cdfb0(GetStringCommonByKey(L"s_play_instrument_ui_button_stop_ensemble"));
+    }
+    FUN_14100f1f0();
 }
 
 // @0x14100f1f0
@@ -1305,7 +1274,6 @@ void UIPlayInstrumentDialog::FUN_14100f1f0()
 }
 
 // @0x14100f2e0
-// MS2-FUNCTIONAL: not byte-exact yet (temporaries / call order differ)
 unsigned char UIPlayInstrumentDialog::FUN_14100f2e0()
 {
     int nLimit = (std::min)(3, m_nSlotCount);
@@ -1316,13 +1284,11 @@ unsigned char UIPlayInstrumentDialog::FUN_14100f2e0()
     unsigned char nResult = 0;
     if (m_nKind == 0)
     {
-        __int64 nUid = m_spScores[m_nCurrent]->FUN_140526a50();
-        nResult = FUN_140c8dac0()->FUN_140d07960(nUid);
+        nResult = FUN_140c8dac0()->FUN_140d07960(m_spScores[m_nCurrent]->FUN_140526a50());
     }
     else
     {
-        __int64 nUid = m_spScores[m_nCurrent]->FUN_140526a50();
-        nResult = FUN_140c8dac0()->FUN_140d07f00(nUid);
+        nResult = FUN_140c8dac0()->FUN_140d07f00(m_spScores[m_nCurrent]->FUN_140526a50());
     }
     if (nResult != 0)
         FUN_14100e9a0(2);

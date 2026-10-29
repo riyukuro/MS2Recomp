@@ -137,7 +137,7 @@ public:
     void FUN_141916340();                                                               // pop the queue
     void FUN_141916430(MS2Ptr<ASGameEntity> spRoot);                                    // update m_ownerFollowers (clearing)
     void FUN_141916ac0(MS2Ptr<ASGameEntity> spRoot);                                    // update m_normals (clearing)
-    int FUN_1419175c0(MS2Ptr<DamageInfo> spInfo, NiPoint3 kPos, GameObject* pTarget,
+    int FUN_1419175c0(MS2Ptr<DamageInfo> spInfo, const NiPoint3& kPos, GameObject* pTarget,
                       const Scaleform::GFx::Value& clip, const efd::Point3& kScreen, int bAppend);   // bind the clip and insert it
 
     MS2_LAYOUT_FRIEND;

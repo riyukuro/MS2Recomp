@@ -73,7 +73,7 @@ class Unk_LulluBoxButton : public ASDisplayObject
 public:
     void FUN_1422ce240(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>&, int);
 };
-class Unk_LulluBoxCheck : public ASDisplayObject { public: bool FUN_1422ce0e0(); void FUN_1422ce090(bool); };
+class Unk_LulluBoxCheck : public ASDisplayObject { public: bool FUN_1422ce0e0(); void FUN_1422ce090(int); };
 // ASMovieClip with the extra child lookups / setters the dialog uses
 class Unk_LulluBoxClip : public ASMovieClip
 {
@@ -162,7 +162,7 @@ class Unk_LulluBoxNotice { public: void FUN_1416fb300(CStringW&); };
 Unk_LulluBoxNotice* FUN_1403b4750();
 MS2Ptr<CItemData> FUN_14053f870(int);
 extern Unk_Inventory DAT_143ab2a90;
-extern int DAT_143ab2898;
+extern __int64 DAT_143ab2898;                  // the meso
 CStringW FUN_14028dfa0(const CStringW& strKey, const fmt::ArgList& args);   // string table text, formatted
 FMT_VARIADIC_W(CStringW, FUN_14028dfa0, CStringW)
 void FUN_141276180(const CString&, const CString&);
@@ -179,7 +179,7 @@ void FUN_140d73aa0(CStringW, int, int, CStringW);
 bool FUN_14025cd60(const CStringW&, const CStringW&);
 void FUN_1412751f0(const CStringW&, int, int);
 void FUN_1413499b0(int);
-void FUN_140cff840(const Scaleform::GFx::Value&, CString, bool);
+void FUN_140cff840(const Scaleform::GFx::Value&, CString, int);
 void FUN_140cfee80(const Scaleform::GFx::Value&, CString, CStringW);
 void FUN_140d00c80(const Scaleform::GFx::Value&, CString, int);
 bool FUN_140184310(const CString&, const char*);
@@ -228,7 +228,6 @@ void UIItemLulluBoxDialog::vfunc_67()
     FUN_140e9c0d0();
 }
 
-// MS2-FUNCTIONAL: behaviour-equivalent; codegen (temporaries / branch layout) not byte-identical to the exe
 // @0x140e9adf0
 void UIItemLulluBoxDialog::OnLoadComplete()
 {
@@ -266,10 +265,10 @@ void UIItemLulluBoxDialog::OnLoadComplete()
     if (data->function.name == L"OpenItemBoxLulluSimple")
         m_simple = true;
     FUN_140e9c340();
-    if (m_simple == false)
-        FUN_140e9c3e0();
-    else
+    if (m_simple)
         FUN_140e9c550();
+    else
+        FUN_140e9c3e0();
 }
 
 // @0x140e9b670
@@ -277,7 +276,9 @@ void UIItemLulluBoxDialog::vfunc_79(void* p)
 {
 #define LULLUBOX_PKT static_cast<CInPacket*>(p)
     UIDialog::vfunc_79(p);
-    if (LULLUBOX_PKT->FUN_14070fe80() == 0xf5 && m_30 != 0) {
+    if (LULLUBOX_PKT->FUN_14070fe80() == 0xf5) {
+        if (m_30 == 0)
+            return;
         m_sent = false;
         unsigned reset = LULLUBOX_PKT->ReadUInt8();
         if (reset == 0) {
@@ -314,12 +315,13 @@ void UIItemLulluBoxDialog::vfunc_79(void* p)
 #undef LULLUBOX_PKT
 }
 
-// MS2-FUNCTIONAL: behaviour-equivalent; codegen (temporaries / branch layout) not byte-identical to the exe
 // @0x140e9bb90
 void UIItemLulluBoxDialog::vfunc_45(Scaleform::GFx::Value* out, const CString& method, ASData* args)
 {
     UIObject::vfunc_45(out, method, args);
-    if (FUN_140184310(method, "getTooltip") && m_simple != true) {
+    if (FUN_140184310(method, "getTooltip")) {
+        if (m_simple == true)
+            return;
         CString which = args->FUN_1422b8d30();
         MS2Ptr<CItemData> data = FUN_14053f870(m_boxItemId);
         if (data == 0)
@@ -335,12 +337,14 @@ void UIItemLulluBoxDialog::vfunc_45(Scaleform::GFx::Value* out, const CString& m
             tip.FUN_1409c6dc0(5);
             if (tip.FUN_1409e26b0(text))
                 *out = tip.FUN_1422bb870();
+            return;
         } else if (FUN_140184310(which, "m_multiOpenButton")) {
             CStringW text = FUN_14028dfa0(CStringW(L"s_lullu_key_multi_open_tooltip"), keyName, boxName);
             ASTooltip tip(1, 2);
             tip.FUN_1409c6dc0(5);
             if (tip.FUN_1409e26b0(text))
                 *out = tip.FUN_1422bb870();
+            return;
         }
     }
 }
@@ -411,9 +415,9 @@ bool UIItemLulluBoxDialog::FUN_140e9c260(int result, const CMsgBoxData&)
 bool UIItemLulluBoxDialog::FUN_140e9c2a0(int result, const CMsgBoxData&)
 {
     if (result == 0) {
-        if (m_autoPay.get() != 0) {
+        if (m_autoPay.get() ? true : false) {
             if (m_autoPay->FUN_1422bfca0() == true)
-                m_autoPay->FUN_1422ce090(true);
+                m_autoPay->FUN_1422ce090(1);
         }
         FUN_140e9ece0();
     }
@@ -428,7 +432,6 @@ void UIItemLulluBoxDialog::FUN_140e9c340()
     m_title->FUN_1422c4cd0(FUN_1401a9d70()->FUN_141811980(1, m_boxItemId));
 }
 
-// MS2-FUNCTIONAL: behaviour-equivalent; codegen (temporaries / branch layout) not byte-identical to the exe
 // @0x140e9c3e0
 void UIItemLulluBoxDialog::FUN_140e9c3e0()
 {
@@ -447,7 +450,6 @@ void UIItemLulluBoxDialog::FUN_140e9c3e0()
     FUN_140e9d2b0();
 }
 
-// MS2-FUNCTIONAL: behaviour-equivalent; codegen (temporaries / branch layout) not byte-identical to the exe
 // @0x140e9c550
 void UIItemLulluBoxDialog::FUN_140e9c550()
 {
@@ -459,16 +461,12 @@ void UIItemLulluBoxDialog::FUN_140e9c550()
         return;
     bool itemBreak = LULLUBOX_ATTR(data)->FUN_1409e8780(L"itemBreakButton", true);
     bool styleShop = LULLUBOX_ATTR(data)->FUN_1409e8780(L"styleShopButton", true);
-    bool hasBreak = false;
-    if (itemBreak)
-        hasBreak = FUN_140bc6d10("m_openItemBreak", m_itemBreak).get() != 0;
+    bool hasBreak = itemBreak && (FUN_140bc6d10("m_openItemBreak", m_itemBreak).get() ? true : false);
     if (hasBreak) {
         m_itemBreak->vfunc_4(true);
         m_itemBreak->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemLulluBoxDialog::FUN_140e9c1e0), 0);
     }
-    bool hasStyle = false;
-    if (styleShop)
-        hasStyle = FUN_140bc6d10("m_openStyleShop", m_styleShop).get() != 0;
+    bool hasStyle = styleShop && (FUN_140bc6d10("m_openStyleShop", m_styleShop).get() ? true : false);
     if (hasStyle) {
         m_styleShop->vfunc_4(true);
         m_styleShop->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemLulluBoxDialog::FUN_140e9c210), 0);
@@ -485,16 +483,18 @@ void UIItemLulluBoxDialog::FUN_140e9c550()
     FUN_140e9d2b0();
 }
 
-// MS2-FUNCTIONAL: behaviour-equivalent; codegen (temporaries / branch layout) not byte-identical to the exe
 // @0x140e9cde0
 void UIItemLulluBoxDialog::FUN_140e9cde0(int count)
 {
     if (m_30 == 0)
         return;
-    int rows = count / 8;
-    if (count % 8 > 0)
+    const int cols = 8;
+    int rows = count / cols;
+    if (count % cols > 0)
         rows = rows + 1;
-    bool tall = rows > 3;
+    bool tall = false;
+    if (rows > 3)
+        tall = true;
     if (rows < 2)
         rows = 2;
     if (rows > 3)
@@ -512,15 +512,10 @@ void UIItemLulluBoxDialog::FUN_140e9cde0(int count)
     m_singleOpen->FUN_1422c05a0(y2);
     m_multiOpen->FUN_1422c05a0(y2);
     FUN_140d00c80(FUN_1422dbb40(), "m_boxBG", h + 0x10d);
-    if (tall) {
-        float x = bag->FUN_1422c10a0();
-        x = x - 6.0f;
-        bag->FUN_1422c0420(x);
-    }
-    if (rows > 2) {
-        float v = FUN_1422dba50()->FUN_1422c1110() - (float)(h - 0x8c);
-        FUN_1422dba50()->FUN_1422c05a0(v);
-    }
+    if (tall)
+        bag->FUN_1422c0420(bag->FUN_1422c10a0() - 6.0f);
+    if (rows > 2)
+        FUN_1422dba50()->FUN_1422c05a0(FUN_1422dba50()->FUN_1422c1110() - (float)(h - 0x8c));
 }
 
 // @0x140e9d1e0
@@ -533,7 +528,6 @@ bool UIItemLulluBoxDialog::FUN_140e9d1e0(const ItemEntity& e)
     return false;
 }
 
-// MS2-FUNCTIONAL: behaviour-equivalent; codegen (temporaries / branch layout) not byte-identical to the exe
 // @0x140e9d2b0
 bool UIItemLulluBoxDialog::FUN_140e9d2b0()
 {
@@ -560,11 +554,11 @@ bool UIItemLulluBoxDialog::FUN_140e9d2b0()
         MS2Ptr<CItemData> idata = FUN_14053f870(d->vfunc_0());
         if (idata == 0)
             continue;
-        Unk_LulluBoxJobSet* jobs = reinterpret_cast<Unk_LulluBoxJobSet*>(reinterpret_cast<char*>(idata.operator->()) + 0x138);
-        if (jobs->FUN_140545da0(self->FUN_141654700())) {
-            if (static_cast<Unk_LulluBoxData*>(idata.operator->())->FUN_14053c940(self->FUN_141658e60()) != 0)
-                filtered.FUN_140313cd0(d);
-        }
+        if (!reinterpret_cast<Unk_LulluBoxJobSet*>(reinterpret_cast<char*>(idata.operator->()) + 0x138)->FUN_140545da0(self->FUN_141654700()))
+            continue;
+        if (!static_cast<Unk_LulluBoxData*>(idata.operator->())->FUN_14053c940(self->FUN_141658e60()))
+            continue;
+        filtered.FUN_140313cd0(d);
     }
     ATL::CAtlArray<MS2Ptr<CItem> > items;
     m_special1.clear();
@@ -592,22 +586,23 @@ bool UIItemLulluBoxDialog::FUN_140e9d2b0()
     return true;
 }
 
-// MS2-FUNCTIONAL: behaviour-equivalent; codegen (temporaries / branch layout) not byte-identical to the exe
 // @0x140e9dc30
 void UIItemLulluBoxDialog::FUN_140e9dc30()
 {
-    if (m_30 == 0 || LULLUBOX_ITEMS.FUN_140c0e9f0())
+    if (m_30 == 0)
+        return;
+    if (LULLUBOX_ITEMS.FUN_140c0e9f0())
         return;
     FUN_140e9c0d0();
     if (LULLUBOX_ITEMS.FUN_14028b470() == 1) {
         MS2Ptr<ASMovieClip> single = m_resultItem->FUN_1409b4560("m_singleItem");
-        if (single.get() == 0)
+        if (single == 0)
             return;
         MS2Ptr<ASMovieClip> slot = single->FUN_1409b4560("m_itemSlot");
-        if (slot.get() == 0)
+        if (slot == 0)
             return;
         MS2Ptr<Unk_LulluBoxText> name = static_cast<Unk_LulluBoxClip*>(single.operator->())->FUN_140c436d0("m_itemName");
-        if (name.get() == 0)
+        if (name == 0)
             return;
         ItemEntity& e = LULLUBOX_ITEMS.FUN_140be9400(0);
         MS2Ptr<CItem> item(new CItem);
@@ -623,22 +618,23 @@ void UIItemLulluBoxDialog::FUN_140e9dc30()
         item->FUN_140526c70(e.vfunc_o18_2());
         CString bagKey;
         bagKey.Format("ItemLullu_%s_%d", (const char*)GetTypeName(), 1);
-        int count = item->FUN_140526c50();
+        unsigned count = item->FUN_140526c50();
         CStringW txt = StringFormat(L"{0} X {1}", item->FUN_140527b10(), count);
         FUN_141415450(bagKey, MS2Ptr<CItem>(item), 0, 0x415, 0x800);
         static_cast<Unk_LulluBoxClip*>(slot.operator->())->FUN_1407cba60("binding", bagKey);
         name->FUN_1422e4b80(txt);
         LULLUBOX_BINDS.FUN_1403b0310(bagKey);
         m_30->Invoke("SetMultiType", false);
+        return;
     } else {
         for (size_t i = 0; i < 10; ++i) {
             size_t k = i + 1;
             CString nm = StringFormat("m_multi{0}", k);
             MS2Ptr<ASMovieClip> multi = m_resultItem->FUN_1409b4560(nm);
-            if (multi.get() == 0)
+            if (multi == 0)
                 continue;
             MS2Ptr<ASMovieClip> slot = multi->FUN_1409b4560("m_itemSlot");
-            if (slot.get() == 0)
+            if (slot == 0)
                 continue;
             CString bagKey;
             if (i < LULLUBOX_ITEMS.FUN_14028b470()) {
@@ -647,7 +643,7 @@ void UIItemLulluBoxDialog::FUN_140e9dc30()
                 if (item->FUN_14052b130(e.vfunc_o18_0(), e.vfunc_o18_1(), 0) == 0)
                     continue;
                 item->FUN_140526c70(e.vfunc_o18_2());
-                bagKey.Format("ItemLullu_%s_%d", (const char*)GetTypeName(), (int)(i + 1));
+                bagKey.Format("ItemLullu_%s_%d", (const char*)GetTypeName(), i + 1);
                 FUN_141415450(bagKey, MS2Ptr<CItem>(item), (int)i, 0x415, 0x800);
                 LULLUBOX_BINDS.FUN_1403b0310(bagKey);
                 MS2Ptr<ASMovieClip> unc = multi->FUN_1409b4560("m_uncommonEffect");
@@ -665,7 +661,6 @@ void UIItemLulluBoxDialog::FUN_140e9dc30()
     }
 }
 
-// MS2-FUNCTIONAL: behaviour-equivalent; codegen (temporaries / branch layout) not byte-identical to the exe
 // @0x140e9e8f0
 int UIItemLulluBoxDialog::FUN_140e9e8f0()
 {
@@ -690,27 +685,29 @@ int UIItemLulluBoxDialog::FUN_140e9e8f0()
             return 4;
         int haveBox = DAT_143ab2a90.FUN_140a5f7b0(boxId, 0);
         if (haveBox < need) {
-            if (!m_autoPay->FUN_1422ce0e0() || price < 0)
+            if (m_autoPay->FUN_1422ce0e0() && price >= 0) {
+                int lack = need - haveBox;
+                int cost = price * lack;
+                if (DAT_143ab2898 < cost)
+                    return 1;
+            } else
                 return 2;
-            int cost = price * (need - haveBox);
-            if (DAT_143ab2898 < cost)
-                return 1;
         }
     }
     return 0;
 }
 
-// MS2-FUNCTIONAL: behaviour-equivalent; codegen (temporaries / branch layout) not byte-identical to the exe
 // @0x140e9ece0
 void UIItemLulluBoxDialog::FUN_140e9ece0()
 {
     if (m_30 == 0)
         return;
     int r = FUN_140e9e8f0();
-    if (r == 4)
+    if (r == 4) {
         return;
-    if (r == 1) {
+    } else if (r == 1) {
         FUN_140d73aa0(GetStringCommonByKey(L"s_lullu_key_not_enough_money"), 0, 0, L"");
+        return;
     } else if (r == 3) {
         MS2Ptr<CItemData> data = FUN_14053f870(m_boxItemId);
         if (data == 0)
@@ -719,6 +716,7 @@ void UIItemLulluBoxDialog::FUN_140e9ece0()
         unsigned keyId = FUN_140557640(FUN_140281980(), &keyTag);
         int keyItem = FUN_1405575b0(FUN_140281980(), keyId);
         FUN_140e9f870(L"key", keyItem);
+        return;
     } else if (r == 2) {
         MS2Ptr<CItemData> data = FUN_14053f870(m_boxItemId);
         if (data == 0)
@@ -735,10 +733,9 @@ void UIItemLulluBoxDialog::FUN_140e9ece0()
         if (m_multi)
             need = 10;
         if (have < need) {
-            if (price < 0)
-                FUN_140e9f870(L"box", boxItem);
-            else {
-                int total = price * (need - have);
+            if (price >= 0) {
+                int lack = need - have;
+                int total = price * lack;
                 CStringW msg = FUN_14028dfa0(CStringW(L"s_lullu_key_not_enough_box"), FUN_140763e10(total), keyItem, boxItem);
                 FUN_1403b4750()->FUN_1416fb300(msg);
                 MS2Ptr<CMsgBoxData> box = FUN_140d73f20(msg, 1);
@@ -746,19 +743,20 @@ void UIItemLulluBoxDialog::FUN_140e9ece0()
                     box->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIItemLulluBoxDialog::FUN_140e9c2a0));
                     FUN_140d73c60(box);
                 }
-            }
+            } else
+                FUN_140e9f870(L"box", boxItem);
         }
-    } else {
-        m_30->Invoke("enableComponent", false);
-        if (!m_skipEffect->FUN_1422ce0e0()) {
-            m_resultItem->vfunc_4(false);
-            m_itemBox->vfunc_13("open");
-        } else
-            FUN_140e9f540();
+        return;
+    }
+    m_30->Invoke("enableComponent", false);
+    if (m_skipEffect->FUN_1422ce0e0())
+        FUN_140e9f540();
+    else {
+        m_resultItem->vfunc_4(false);
+        m_itemBox->vfunc_13("open");
     }
 }
 
-// MS2-FUNCTIONAL: behaviour-equivalent; codegen (temporaries / branch layout) not byte-identical to the exe
 // @0x140e9f540
 void UIItemLulluBoxDialog::FUN_140e9f540()
 {
@@ -785,34 +783,33 @@ void UIItemLulluBoxDialog::FUN_140e9f540()
     CString keyTag = LULLUBOX_ATTR(data)->FUN_1409e8560(L"keyItemTag", "");
     int keyId = FUN_140557640(FUN_140281980(), &keyTag);
     MS2Ptr<CItem> inv = DAT_143ab2a90.FUN_140a5e040(keyId);
-    if (!(inv == 0)) {
-        if (DAT_143ab2a90.FUN_140a63880(inv.operator->(), mode) == 0)
-            vfunc_67();
-        else
-            m_sent = true;
-    }
+    if (inv == 0)
+        return;
+    if (DAT_143ab2a90.FUN_140a63880(inv.operator->(), mode) == 0)
+        vfunc_67();
+    else
+        m_sent = true;
 }
 
-// MS2-FUNCTIONAL: behaviour-equivalent; codegen (temporaries / branch layout) not byte-identical to the exe
 // @0x140e9f870
-void UIItemLulluBoxDialog::FUN_140e9f870(const CStringW& kind, int itemId)
+void UIItemLulluBoxDialog::FUN_140e9f870(const CStringW& kind, unsigned itemId)
 {
     MS2Ptr<CItemData> data = FUN_14053f870(m_boxItemId);
     if (data == 0)
         return;
     CStringW popup = LULLUBOX_ATTR(data)->FUN_14042cad0(L"meratMarketPopup", L"");
-    if (!FUN_14025cd60(popup, kind)) {
-        CStringW msg = FUN_14028dfa0(CStringW(L"s_lullu_key_not_enough_item"), (unsigned)itemId);   // FUN_14028dfa0<unsigned> in the exe
-        FUN_1403b4750()->FUN_1416fb300(msg);
-        FUN_1412751f0(msg, 1, 1);
-    } else {
-        CStringW msg = FUN_14028dfa0(CStringW(L"s_lullu_key_not_enough_item_shop_link"), (unsigned)itemId);
+    if (FUN_14025cd60(popup, kind)) {
+        CStringW msg = FUN_14028dfa0(CStringW(L"s_lullu_key_not_enough_item_shop_link"), itemId);
         FUN_1403b4750()->FUN_1416fb300(msg);
         MS2Ptr<CMsgBoxData> box = FUN_140d73f20(msg, 1);
         if (box.get()) {
             box->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIItemLulluBoxDialog::FUN_140e9c260));
             FUN_140d73c60(box);
         }
+    } else {
+        CStringW msg = FUN_14028dfa0(CStringW(L"s_lullu_key_not_enough_item"), itemId);
+        FUN_1403b4750()->FUN_1416fb300(msg);
+        FUN_1412751f0(msg, 1, 1);
     }
 }
 

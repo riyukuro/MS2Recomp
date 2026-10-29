@@ -103,7 +103,6 @@ int UIBeautyListDialog::FUN_140f006b0(int nMapId)
     return 0;
 }
 
-// MS2-FUNCTIONAL: the exe shares one return temp / has a larger frame (EH state count 7 vs 8); same calls and branches
 // @0x140f00730
 int UIBeautyListDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs)
 {
@@ -117,44 +116,33 @@ int UIBeautyListDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
         nType = 5;
     else if (_stricmp("onClickFace", szMethod) == 0)
         nType = 3;
-    int nRet;
-    if (nType == 0)
-    {
-        nRet = 0;
-    }
-    else
+    if (nType != 0)
     {
         void* pPlayer = FUN_141bd0cc0(FUN_1403ed2d0());
         if (pPlayer == 0)
+            return 0;
+        int bSalon = FUN_140f006b0(FUN_141bd3060(FUN_1403ed2d0()));
+        int bFlag = FUN_1418fe060();
+        if (bFlag == 0 && bSalon == 0)
         {
-            nRet = 0;
+            if (MS2Ptr<CMsgBoxData> box = FUN_140d73d20(1, GetStringCommonByKey(L"s_beauty_goto_map_return_warn"), 0, L""))
+            {
+                box->FUN_140533ff0(nType);
+                box->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIBeautyListDialog::SendBeautyMode10));
+                FUN_140d73c60(box);
+            }
         }
         else
         {
-            int bSalon = FUN_140f006b0(FUN_141bd3060(FUN_1403ed2d0()));
-            int bFlag = FUN_1418fe060();
-            if (bFlag == 0 && bSalon == 0)
-            {
-                MS2Ptr<CMsgBoxData> box = FUN_140d73d20(1, GetStringCommonByKey(CStringW(L"s_beauty_goto_map_return_warn")), 0, CStringW(L""));
-                if (box.get() != 0)
-                {
-                    box->FUN_140533ff0(nType);
-                    box->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIBeautyListDialog::SendBeautyMode10));
-                    FUN_140d73c60(box);
-                }
-            }
-            else
-            {
-                COutPacket packet(static_cast<int>(SendOp::Beauty), 0);
-                packet.WriteUInt8(10);
-                packet.WriteInt16(nType);
-                FUN_140710590(packet);
-            }
-            vfunc_67();
-            nRet = 1;
+            COutPacket packet(static_cast<int>(SendOp::Beauty), 0);
+            packet.WriteUInt8(10);
+            packet.WriteInt16(nType);
+            FUN_140710590(packet);
         }
+        vfunc_67();
+        return 1;
     }
-    return nRet;
+    return 0;
 }
 
 // ---- hooks ----

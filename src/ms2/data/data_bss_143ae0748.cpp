@@ -28,6 +28,12 @@ int g_nDebugUI;                                                 // 0x143ae0fc0
 int DAT_143ae1f20;                                              // 0x143ae1f20
 char DAT_143ae2848;                                             // 0x143ae2848: NM CNMStr<32> empty-string sentinel
 char DAT_143ae2849;                                             // 0x143ae2849: NM CNMStr<2048> empty-string sentinel
+char DAT_143ae28e8;                                             // 0x143ae28e8: NM CNMStr<1024> empty-string sentinel
+char DAT_143ae28e9;                                             // 0x143ae28e9: NM CNMStr<64> empty-string sentinel
+char DAT_143ae28ea;                                             // 0x143ae28ea: NM CNMStr<4096> empty-string sentinel
+char DAT_143ae28eb;                                             // 0x143ae28eb: NM CNMStr<256> empty-string sentinel
+char DAT_143ae28ec;                                             // 0x143ae28ec: NM CNMStr<9> empty-string sentinel
+char DAT_143ae28ed;                                             // 0x143ae28ed: NM CNMStr<350> empty-string sentinel
 int DAT_143ae2960;                                              // 0x143ae2960
 int DAT_143ae2b30;                                              // 0x143ae2b30
 int DAT_143ae2b34;                                              // 0x143ae2b34

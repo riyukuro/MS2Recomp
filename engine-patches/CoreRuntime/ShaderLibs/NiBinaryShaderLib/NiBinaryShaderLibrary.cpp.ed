@@ -1,1 +1,58 @@
+1281,1290c
+    NiShaderFactory::ReportError(NISHADERERR_UNKNOWN, false,
+        "* ERROR: Unable to find usable implementation for %s\n",
+        pkShader->GetName());
+    return 0;
+.
+1278a
+        kChecked.insert(pkImplementation);
+.
+1268,1275c
+                    // We have found a workable implementation!
+                    return pkImplementation;
+.
+1260,1266c
+            if ((uiVSVers >= kVersionInfo.m_uiVS_Min) &&
+                (uiGSVers <= kVersionInfo.m_uiGS_Req) &&
+                (uiGSVers >= kVersionInfo.m_uiGS_Min) &&
+                (uiPSVers <= kVersionInfo.m_uiPS_Req) &&
+                (uiPSVers >= kVersionInfo.m_uiPS_Min) &&
+                (uiUser <= kVersionInfo.m_uiUser_Req) &&
+                (uiUser >= kVersionInfo.m_uiUser_Min))
+            {
+                if (uiVSVers <= kVersionInfo.m_uiVS_Req ||
+                    (kVersionInfo.m_bSoftwareVSCapable_Sys &&
+                    pkImplementation->GetSoftwareVP()))
+.
+1252,1258c
+            unsigned int uiVSVers;
+            unsigned int uiGSVers;
+            unsigned int uiPSVers;
+            unsigned int uiUser;
+            NSBRequirements* pkReqs = pkImplementation->GetRequirements();
+            EE_ASSERT(pkReqs);
+            GetRequirementValues(pkReqs, uiVSVers, uiGSVers, uiPSVers, uiUser);
+.
+1242,1250c
+        if (IsImplementationValid(pkImplementation, kVersionInfo))
+.
+1214,1240c
+        NSBImplementation* pkImplementation = pkShader->GetImplementationByIndex(ui);
+        if (!pkImplementation || kChecked.find(pkImplementation) != kChecked.end())
+            continue;
+.
+1210,1212c
+    for (unsigned int ui = 0; ui < uiCount; ui++)
+.
+1200,1207c
+    // MS2: the exe (0x141ca9af0) makes a single pass over the implementations
+    // in index order and returns the first one that is valid and fits the
+    // requested versions; a set skips repeated entries. (The stock code built
+    // a list of the valid ones first and then searched it; the choice is the same.)
+    std::set<NSBImplementation*> kChecked;  // MS2: std::allocator (the exe frees the nodes with sized operator delete)
+.
+1190,1192d
 884@34s "" "(const char*)"
+26a
+#include <set>
+.

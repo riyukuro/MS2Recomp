@@ -1,0 +1,164 @@
+#va	defined symbol	why (alias.py: the definition of an exe VA no pairing or symbol row gives)
+142359280	??0Integer@CryptoPP@@QEAA@PEBD@Z	StringToInteger<char>: a static template the exe keeps out of line; our Integer(const char*) inlines it
+1429a8910	?AfxInitialize@@YAHHK@Z	AfxInitialize(FALSE, _MFC_VER): sfr_gfx_13 re-creates appmodul's _afxInitAppState under the FUN_ name; mfcs140 appmodul.obj defines it
+143a07430	?ms_ClassInfo@PropService@ecrPhysX@@2VClassInfo@efd@@B	the GB ClassInfo the exe initializer 0x14012c0d0 completes; data_data_game's Sd_143a07430 image (a whole-group struct) also defines DAT_143a07430 (sfr36)
+143a284b0	?ms_ClassInfo@PropertyVisualizationService@egmVisualizers@@2VClassInfo@efd@@B	the GB ClassInfo the exe initializer 0x140132780 completes (unit_1414a1c30 FUN_1414a5660 returns it); data_data_game's Sd_143a284b0 image also defines DAT_143a284b0 (sfr36)
+143a0eae0	?ms_defaultQualityOfService@QOSCompare@efd@@1IA	QOSCompare.cpp static member (kQOS_TCP); lib_efdqos_tail uses it as DAT_143a0eae0
+143b05548	?ms_configRead@QOSCompare@efd@@1_NA	QOSCompare.cpp static member; lib_efdqos_tail uses it as DAT_143b05548
+143b05550	?ms_virtualToPhysical@QOSCompare@efd@@1V?$map@IIU?$less@I@std@@@2@A	QOSCompare.cpp static member (its initializer is the engine TU's); lib_efdqos_tail uses it as DAT_143b05550
+140289b00	??$_Ucopy@PEAV?$MS2Ptr@VCPtred@@@@@?$vector@V?$MS2Ptr@VCPtred@@@@V?$allocator@V?$MS2Ptr@VCPtred@@@@@std@@@std@@AEAAPEAV?$MS2Ptr@VCPtred@@@@PEAV2@00@Z	vector<16-byte MS2Ptr>::_Ucopy (Getal 0x1402883b0 + _Uninitialized_copy 0x14027b250); commonstruct_wc/_wd call it as FUN_140289b00(vec, first, last, dest); commonstruct_4 defines the CPtred instance (the gates pair it elsewhere) (sfr21)
+141398a90	??D?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBW4Occurrence@CGuideManager@@H@std@@@std@@@std@@@std@@QEBAAEBU?$pair@$$CBW4Occurrence@CGuideManager@@H@1@XZ	map<Occurrence,int>::const_iterator::operator* (guideentity_5's pin); guideentity_9 calls it as FUN_141398a90(pIter) (sfr21)
+141c2e9f0	?pointer_to@?$pointer_traits@PEAU?$pair@$$CBVEntityID@egf@@V?$SmartPointer@VCEntityHider@@@efd@@@std@@@std@@SAPEAU?$pair@$$CBVEntityID@egf@@V?$SmartPointer@VCEntityHider@@@efd@@@2@AEAU32@@Z	an ICF-folded pointer_traits<pair<EntityID const, SmartPointer<..>>*>::pointer_to (return std::addressof(*p)); unit_141bf79d0 calls it as FUN_141c2e9f0(pNode); worldservice_9 defines the code-identical CEntityHider instance (0x141c2ea30) (sfr21)
+143b059e8	?g_bapiContext@egf@@3VScriptContext@1@A	egf::g_bapiContext (ScriptContext: its first member, the ServiceManager smart pointer, is what Scheduler::OnPreInit 0x14214bef0 stores at 0x143b059e8); the units declare it as DAT_/g_143b059e8 of their own framework types
+1431d9618	??_8CefBinaryValueCToCpp@@7B@	lib_cef_tail ctor FUN_142787270 (CefBinaryValueCToCpp, /GR- CEF wrapper) stores it: vbtable
+1431d9568	??_7CefBinaryValue@@6B0@@	lib_cef_tail ctor FUN_142787270 (CefBinaryValueCToCpp, /GR- CEF wrapper) stores it: interface vftable
+1431d95a0	??_7CefBinaryValue@@6BCefBaseRefCounted@@@	lib_cef_tail ctor FUN_142787270 (CefBinaryValueCToCpp, /GR- CEF wrapper) stores it: interface vbase vftable
+1431d6fc8	??_7?$CefCToCppRefCounted@VCefBinaryValueCToCpp@@VCefBinaryValue@@U_cef_binary_value_t@@@@6BCefBinaryValue@@@	lib_cef_tail ctor FUN_142787270 (CefBinaryValueCToCpp, /GR- CEF wrapper) stores it: template vftable
+1431d7000	??_7?$CefCToCppRefCounted@VCefBinaryValueCToCpp@@VCefBinaryValue@@U_cef_binary_value_t@@@@6BCefBaseRefCounted@@@	lib_cef_tail ctor FUN_142787270 (CefBinaryValueCToCpp, /GR- CEF wrapper) stores it: template vbase vftable
+1431d95c0	??_7CefBinaryValueCToCpp@@6BCefBinaryValue@@@	lib_cef_tail ctor FUN_142787270 (CefBinaryValueCToCpp, /GR- CEF wrapper) stores it: vftable
+1431d95f8	??_7CefBinaryValueCToCpp@@6BCefBaseRefCounted@@@	lib_cef_tail ctor FUN_142787270 (CefBinaryValueCToCpp, /GR- CEF wrapper) stores it: vbase vftable
+1431da2a8	??_8CefTaskRunnerCToCpp@@7B@	lib_cef_tail ctor FUN_14278bcd0 (CefTaskRunnerCToCpp, /GR- CEF wrapper) stores it: vbtable
+1431da218	??_7CefTaskRunner@@6B0@@	lib_cef_tail ctor FUN_14278bcd0 (CefTaskRunnerCToCpp, /GR- CEF wrapper) stores it: interface vftable
+1431da240	??_7CefTaskRunner@@6BCefBaseRefCounted@@@	lib_cef_tail ctor FUN_14278bcd0 (CefTaskRunnerCToCpp, /GR- CEF wrapper) stores it: interface vbase vftable
+1431d75e8	??_7?$CefCToCppRefCounted@VCefTaskRunnerCToCpp@@VCefTaskRunner@@U_cef_task_runner_t@@@@6BCefTaskRunner@@@	lib_cef_tail ctor FUN_14278bcd0 (CefTaskRunnerCToCpp, /GR- CEF wrapper) stores it: template vftable
+1431d7610	??_7?$CefCToCppRefCounted@VCefTaskRunnerCToCpp@@VCefTaskRunner@@U_cef_task_runner_t@@@@6BCefBaseRefCounted@@@	lib_cef_tail ctor FUN_14278bcd0 (CefTaskRunnerCToCpp, /GR- CEF wrapper) stores it: template vbase vftable
+1431da260	??_7CefTaskRunnerCToCpp@@6BCefTaskRunner@@@	lib_cef_tail ctor FUN_14278bcd0 (CefTaskRunnerCToCpp, /GR- CEF wrapper) stores it: vftable
+1431da288	??_7CefTaskRunnerCToCpp@@6BCefBaseRefCounted@@@	lib_cef_tail ctor FUN_14278bcd0 (CefTaskRunnerCToCpp, /GR- CEF wrapper) stores it: vbase vftable
+1431df490	??_8CefDOMNodeCToCpp@@7B@	lib_cef_tail ctor FUN_1427a9550 (CefDOMNodeCToCpp, /GR- CEF wrapper) stores it: vbtable
+1431df2b0	??_7CefDOMNode@@6B0@@	lib_cef_tail ctor FUN_1427a9550 (CefDOMNodeCToCpp, /GR- CEF wrapper) stores it: interface vftable
+1431df380	??_7CefDOMNode@@6BCefBaseRefCounted@@@	lib_cef_tail ctor FUN_1427a9550 (CefDOMNodeCToCpp, /GR- CEF wrapper) stores it: interface vbase vftable
+1431dc138	??_7?$CefCToCppRefCounted@VCefDOMNodeCToCpp@@VCefDOMNode@@U_cef_domnode_t@@@@6BCefDOMNode@@@	lib_cef_tail ctor FUN_1427a9550 (CefDOMNodeCToCpp, /GR- CEF wrapper) stores it: template vftable
+1431dc208	??_7?$CefCToCppRefCounted@VCefDOMNodeCToCpp@@VCefDOMNode@@U_cef_domnode_t@@@@6BCefBaseRefCounted@@@	lib_cef_tail ctor FUN_1427a9550 (CefDOMNodeCToCpp, /GR- CEF wrapper) stores it: template vbase vftable
+1431df3a0	??_7CefDOMNodeCToCpp@@6BCefDOMNode@@@	lib_cef_tail ctor FUN_1427a9550 (CefDOMNodeCToCpp, /GR- CEF wrapper) stores it: vftable
+1431df470	??_7CefDOMNodeCToCpp@@6BCefBaseRefCounted@@@	lib_cef_tail ctor FUN_1427a9550 (CefDOMNodeCToCpp, /GR- CEF wrapper) stores it: vbase vftable
+1431e03e8	??_8CefMenuModelCToCpp@@7B@	lib_cef_tail ctor FUN_1427ad990 (CefMenuModelCToCpp, /GR- CEF wrapper) stores it: vbtable
+1431e0028	??_7CefMenuModel@@6B0@@	lib_cef_tail ctor FUN_1427ad990 (CefMenuModelCToCpp, /GR- CEF wrapper) stores it: interface vftable
+1431e01e8	??_7CefMenuModel@@6BCefBaseRefCounted@@@	lib_cef_tail ctor FUN_1427ad990 (CefMenuModelCToCpp, /GR- CEF wrapper) stores it: interface vbase vftable
+1431dcf48	??_7?$CefCToCppRefCounted@VCefMenuModelCToCpp@@VCefMenuModel@@U_cef_menu_model_t@@@@6BCefMenuModel@@@	lib_cef_tail ctor FUN_1427ad990 (CefMenuModelCToCpp, /GR- CEF wrapper) stores it: template vftable
+1431dd108	??_7?$CefCToCppRefCounted@VCefMenuModelCToCpp@@VCefMenuModel@@U_cef_menu_model_t@@@@6BCefBaseRefCounted@@@	lib_cef_tail ctor FUN_1427ad990 (CefMenuModelCToCpp, /GR- CEF wrapper) stores it: template vbase vftable
+1431e0208	??_7CefMenuModelCToCpp@@6BCefMenuModel@@@	lib_cef_tail ctor FUN_1427ad990 (CefMenuModelCToCpp, /GR- CEF wrapper) stores it: vftable
+1431e03c8	??_7CefMenuModelCToCpp@@6BCefBaseRefCounted@@@	lib_cef_tail ctor FUN_1427ad990 (CefMenuModelCToCpp, /GR- CEF wrapper) stores it: vbase vftable
+1431e09b0	??_8CefAuthCallbackCToCpp@@7B@	lib_cef_tail ctor FUN_1427b08f0 (CefAuthCallbackCToCpp, /GR- CEF wrapper) stores it: vbtable
+1431e0950	??_7CefAuthCallback@@6B0@@	lib_cef_tail ctor FUN_1427b08f0 (CefAuthCallbackCToCpp, /GR- CEF wrapper) stores it: interface vftable
+1431e0960	??_7CefAuthCallback@@6BCefBaseRefCounted@@@	lib_cef_tail ctor FUN_1427b08f0 (CefAuthCallbackCToCpp, /GR- CEF wrapper) stores it: interface vbase vftable
+1431de378	??_7?$CefCToCppRefCounted@VCefAuthCallbackCToCpp@@VCefAuthCallback@@U_cef_auth_callback_t@@@@6BCefAuthCallback@@@	lib_cef_tail ctor FUN_1427b08f0 (CefAuthCallbackCToCpp, /GR- CEF wrapper) stores it: template vftable
+1431de388	??_7?$CefCToCppRefCounted@VCefAuthCallbackCToCpp@@VCefAuthCallback@@U_cef_auth_callback_t@@@@6BCefBaseRefCounted@@@	lib_cef_tail ctor FUN_1427b08f0 (CefAuthCallbackCToCpp, /GR- CEF wrapper) stores it: template vbase vftable
+1431e0980	??_7CefAuthCallbackCToCpp@@6BCefAuthCallback@@@	lib_cef_tail ctor FUN_1427b08f0 (CefAuthCallbackCToCpp, /GR- CEF wrapper) stores it: vftable
+1431e0990	??_7CefAuthCallbackCToCpp@@6BCefBaseRefCounted@@@	lib_cef_tail ctor FUN_1427b08f0 (CefAuthCallbackCToCpp, /GR- CEF wrapper) stores it: vbase vftable
+1431e1418	??_8CefPrintSettingsCToCpp@@7B@	lib_cef_tail ctor FUN_1427b3a60 (CefPrintSettingsCToCpp, /GR- CEF wrapper) stores it: vbtable
+1431e1268	??_7CefPrintSettings@@6B0@@	lib_cef_tail ctor FUN_1427b3a60 (CefPrintSettingsCToCpp, /GR- CEF wrapper) stores it: interface vftable
+1431e1320	??_7CefPrintSettings@@6BCefBaseRefCounted@@@	lib_cef_tail ctor FUN_1427b3a60 (CefPrintSettingsCToCpp, /GR- CEF wrapper) stores it: interface vbase vftable
+1431df048	??_7?$CefCToCppRefCounted@VCefPrintSettingsCToCpp@@VCefPrintSettings@@U_cef_print_settings_t@@@@6BCefPrintSettings@@@	lib_cef_tail ctor FUN_1427b3a60 (CefPrintSettingsCToCpp, /GR- CEF wrapper) stores it: template vftable
+1431df100	??_7?$CefCToCppRefCounted@VCefPrintSettingsCToCpp@@VCefPrintSettings@@U_cef_print_settings_t@@@@6BCefBaseRefCounted@@@	lib_cef_tail ctor FUN_1427b3a60 (CefPrintSettingsCToCpp, /GR- CEF wrapper) stores it: template vbase vftable
+1431e1340	??_7CefPrintSettingsCToCpp@@6BCefPrintSettings@@@	lib_cef_tail ctor FUN_1427b3a60 (CefPrintSettingsCToCpp, /GR- CEF wrapper) stores it: vftable
+1431e13f8	??_7CefPrintSettingsCToCpp@@6BCefBaseRefCounted@@@	lib_cef_tail ctor FUN_1427b3a60 (CefPrintSettingsCToCpp, /GR- CEF wrapper) stores it: vbase vftable
+1431de3d8	??_7CefTask@@6B0@@	ICF-folded CEF interface vftable pair (1 pure slot) the inlined CToCpp ~dtors/Release store last; CefTask@@ has the same shape (functional)
+1431de3e0	??_7CefTask@@6BCefBaseRefCounted@@@	ICF-folded CEF interface vftable pair (1 pure slot) the inlined CToCpp ~dtors/Release store last; CefTask@@ has the same shape (functional)
+1431de400	??_7CefAuthCallback@@6B0@@	ICF-folded CEF interface vftable pair (2 pure slots) the inlined CToCpp ~dtors/Release store last; CefAuthCallback@@ has the same shape (functional)
+1431de410	??_7CefAuthCallback@@6BCefBaseRefCounted@@@	ICF-folded CEF interface vftable pair (2 pure slots) the inlined CToCpp ~dtors/Release store last; CefAuthCallback@@ has the same shape (functional)
+1431de6c8	??_7CefStreamWriter@@6B0@@	ICF-folded CEF interface vftable pair (5 pure slots) the inlined CToCpp ~dtors/Release store last; CefStreamWriter@@ has the same shape (functional)
+1431de6f0	??_7CefStreamWriter@@6BCefBaseRefCounted@@@	ICF-folded CEF interface vftable pair (5 pure slots) the inlined CToCpp ~dtors/Release store last; CefStreamWriter@@ has the same shape (functional)
+1431df020	??_7CefPrintJobCallback@@6B0@@	ICF-folded CEF interface vftable pair (1 pure slot) the inlined CToCpp ~dtors/Release store last; CefPrintJobCallback@@ has the same shape (functional)
+1431df028	??_7CefPrintJobCallback@@6BCefBaseRefCounted@@@	ICF-folded CEF interface vftable pair (1 pure slot) the inlined CToCpp ~dtors/Release store last; CefPrintJobCallback@@ has the same shape (functional)
+142303a3b	?release@Sound@FMOD@@QEAA?AW4FMOD_RESULT@@XZ	FMOD Ex C++ wrapper import thunk (jmp [IAT]); the member this in rcx is the free first argument the callers pass
+1428d8e96	?getSoftwareFormat@System@FMOD@@QEAA?AW4FMOD_RESULT@@PEAHPEAW4FMOD_SOUND_FORMAT@@00PEAW4FMOD_DSP_RESAMPLER@@0@Z	FMOD Ex C++ wrapper import thunk (jmp [IAT]); the member this in rcx is the free first argument the callers pass
+1428d8e9c	?getMasterChannelGroup@System@FMOD@@QEAA?AW4FMOD_RESULT@@PEAPEAVChannelGroup@2@@Z	FMOD Ex C++ wrapper import thunk (jmp [IAT]); the member this in rcx is the free first argument the callers pass
+1428d8ea2	?getDSPClock@System@FMOD@@QEAA?AW4FMOD_RESULT@@PEAI0@Z	FMOD Ex C++ wrapper import thunk (jmp [IAT]); the member this in rcx is the free first argument the callers pass
+1428d8ea8	?lock@Sound@FMOD@@QEAA?AW4FMOD_RESULT@@IIPEAPEAX0PEAI1@Z	FMOD Ex C++ wrapper import thunk (jmp [IAT]); the member this in rcx is the free first argument the callers pass
+1428d8eae	?unlock@Sound@FMOD@@QEAA?AW4FMOD_RESULT@@PEAX0II@Z	FMOD Ex C++ wrapper import thunk (jmp [IAT]); the member this in rcx is the free first argument the callers pass
+1428d8eb4	?getDefaults@Sound@FMOD@@QEAA?AW4FMOD_RESULT@@PEAM00PEAH@Z	FMOD Ex C++ wrapper import thunk (jmp [IAT]); the member this in rcx is the free first argument the callers pass
+1428d8eba	?getFormat@Sound@FMOD@@QEAA?AW4FMOD_RESULT@@PEAW4FMOD_SOUND_TYPE@@PEAW4FMOD_SOUND_FORMAT@@PEAH2@Z	FMOD Ex C++ wrapper import thunk (jmp [IAT]); the member this in rcx is the free first argument the callers pass
+1428d8ec0	?readData@Sound@FMOD@@QEAA?AW4FMOD_RESULT@@PEAXIPEAI@Z	FMOD Ex C++ wrapper import thunk (jmp [IAT]); the member this in rcx is the free first argument the callers pass
+1428d8ecc	?getSyncPoint@Sound@FMOD@@QEAA?AW4FMOD_RESULT@@HPEAPEAUFMOD_SYNCPOINT@@@Z	FMOD Ex C++ wrapper import thunk (jmp [IAT]); the member this in rcx is the free first argument the callers pass
+1428d8ed8	?setPaused@Channel@FMOD@@QEAA?AW4FMOD_RESULT@@_N@Z	FMOD Ex C++ wrapper import thunk (jmp [IAT]); the member this in rcx is the free first argument the callers pass
+1428d8ede	?getVolume@Channel@FMOD@@QEAA?AW4FMOD_RESULT@@PEAM@Z	FMOD Ex C++ wrapper import thunk (jmp [IAT]); the member this in rcx is the free first argument the callers pass
+1428d8f26	?getVolume@ChannelGroup@FMOD@@QEAA?AW4FMOD_RESULT@@PEAM@Z	FMOD Ex C++ wrapper import thunk (jmp [IAT]); the member this in rcx is the free first argument the callers pass
+1428d8eea	?getPan@Channel@FMOD@@QEAA?AW4FMOD_RESULT@@PEAM@Z	FMOD Ex C++ wrapper import thunk (jmp [IAT]); the member this in rcx is the free first argument the callers pass
+1428d8ef0	?setDelay@Channel@FMOD@@QEAA?AW4FMOD_RESULT@@W4FMOD_DELAYTYPE@@II@Z	FMOD Ex C++ wrapper import thunk (jmp [IAT]); the member this in rcx is the free first argument the callers pass
+1428d8ef6	?setPosition@Channel@FMOD@@QEAA?AW4FMOD_RESULT@@II@Z	FMOD Ex C++ wrapper import thunk (jmp [IAT]); the member this in rcx is the free first argument the callers pass
+1428d8efc	?setCallback@Channel@FMOD@@QEAA?AW4FMOD_RESULT@@P6A?AW43@PEAUFMOD_CHANNEL@@W4FMOD_CHANNEL_CALLBACKTYPE@@PEAX2@Z@Z	FMOD Ex C++ wrapper import thunk (jmp [IAT]); the member this in rcx is the free first argument the callers pass
+1428d8f02	?setMode@Channel@FMOD@@QEAA?AW4FMOD_RESULT@@I@Z	FMOD Ex C++ wrapper import thunk (jmp [IAT]); the member this in rcx is the free first argument the callers pass
+1428d8f08	?setLoopCount@Channel@FMOD@@QEAA?AW4FMOD_RESULT@@H@Z	FMOD Ex C++ wrapper import thunk (jmp [IAT]); the member this in rcx is the free first argument the callers pass
+1428d8f0e	?setLoopPoints@Channel@FMOD@@QEAA?AW4FMOD_RESULT@@IIII@Z	FMOD Ex C++ wrapper import thunk (jmp [IAT]); the member this in rcx is the free first argument the callers pass
+1428d8f14	?setUserData@Channel@FMOD@@QEAA?AW4FMOD_RESULT@@PEAX@Z	FMOD Ex C++ wrapper import thunk (jmp [IAT]); the member this in rcx is the free first argument the callers pass
+1428d8f1a	?getUserData@Channel@FMOD@@QEAA?AW4FMOD_RESULT@@PEAPEAX@Z	FMOD Ex C++ wrapper import thunk (jmp [IAT]); the member this in rcx is the free first argument the callers pass
+1428d8f2c	?setMute@ChannelGroup@FMOD@@QEAA?AW4FMOD_RESULT@@_N@Z	FMOD Ex C++ wrapper import thunk (jmp [IAT]); the member this in rcx is the free first argument the callers pass
+14280ef5e	__RTDynamicCast	CRT import thunk (jmp [IAT])
+14280f28e	atan2f	CRT import thunk (jmp [IAT])
+14311c1e0	??_C@_09OBGBNIAF@BitBucket?$AA@	CryptoPP BitBucket::AlgorithmName literal (gb:CryptoPP cryptlib)
+14311c638	??_C@_07JPFGOEIJ@NullRNG?$AA@	CryptoPP NullRNG AlgorithmName literal (gb:CryptoPP cryptlib)
+14312b860	??_C@_0M@POHHOAKA@ThisObject?3?$AA@	CryptoPP GetValueHelper "ThisObject:" literal (gb:CryptoPP)
+14312d8d8	??_C@_0BF@DNIHJBOH@OpenPGP?5decode?5error?$AA@	CryptoPP Integer::OpenPGPDecodeErr message literal (gb:CryptoPP integer)
+143130c28	??_C@_0CB@BGEIINPJ@PolynomialMod2?3?5division?5by?5zero@	CryptoPP PolynomialMod2::DivideByZero message literal (gb:CryptoPP gf2n)
+14311ee90	??_7?$AlgorithmParametersTemplate@W4BlockPaddingScheme@BlockPaddingSchemeDef@CryptoPP@@@CryptoPP@@6B@	vftable (COL type .?AV?$AlgorithmParametersTemplate<BlockPaddingScheme>)
+14312d848	??_7OpenPGPDecodeErr@Integer@CryptoPP@@6B@	vftable (COL type .?AVOpenPGPDecodeErr@Integer@CryptoPP@@)
+14312dbf8	??_7?$AlgorithmParametersTemplate@W4RandomNumberType@Integer@CryptoPP@@@CryptoPP@@6B@	vftable (COL type .?AV?$AlgorithmParametersTemplate<Integer::RandomNumberType>)
+143130c18	??_7DivideByZero@PolynomialMod2@CryptoPP@@6B@	vftable (COL type .?AVDivideByZero@PolynomialMod2@CryptoPP@@)
+14311e038	??_7AuthenticatedEncryptionFilter@CryptoPP@@6BAlgorithm@1@@	vftable (COL offset 0: the Algorithm path)
+14311e200	??_7AuthenticatedEncryptionFilter@CryptoPP@@6BWaitable@1@@	vftable (COL offset 8: the Waitable path)
+14311e220	??_7AuthenticatedDecryptionFilter@CryptoPP@@6BAlgorithm@1@@	vftable (COL offset 0: the Algorithm path)
+14311e3e8	??_7AuthenticatedDecryptionFilter@CryptoPP@@6BWaitable@1@@	vftable (COL offset 8: the Waitable path)
+143b0dc48	?AAD_CHANNEL@CryptoPP@@3V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@B	CryptoPP::AAD_CHANNEL: the std::string the exe initializer 0x14013b180 constructs ("AAD")
+143b10184	?g_cacheLineSize@CryptoPP@@3IA	CryptoPP::g_cacheLineSize (cpu.cpp), the cached cache-line size lib_cryptopp_code returns
+143a57d68	??_R0H@8	RTTI type descriptor .H (int)
+143aa1220	??_R0?AW4BlockPaddingScheme@BlockPaddingSchemeDef@CryptoPP@@@8	RTTI type descriptor
+143aa1768	??_R0?AVDL_GroupParameters_GFP@CryptoPP@@@8	RTTI type descriptor
+143aa1d00	??_R0?AVDL_GroupParameters_IntegerBased@CryptoPP@@@8	RTTI type descriptor
+143aa3860	??_R0?AVDL_GroupParameters_GFP_DefaultSafePrime@CryptoPP@@@8	RTTI type descriptor
+143aa7a80	??_R0?AW4RandomNumberType@Integer@CryptoPP@@@8	RTTI type descriptor
+143aa7e20	??_R0?AV?$DL_PublicKeyImpl@VDL_GroupParameters_GFP_DefaultSafePrime@CryptoPP@@@CryptoPP@@@8	RTTI type descriptor
+143aa7e90	??_R0?AV?$DL_PrivateKeyImpl@VDL_GroupParameters_GFP_DefaultSafePrime@CryptoPP@@@CryptoPP@@@8	RTTI type descriptor
+143196858	??_C@_0BM@FGGHCFBF@unexpected?5zlib?5return?5code@	png_zstream_error message literal (libpng png.c)
+143196878	??_C@_0BM@DCGHBGGB@unexpected?5end?5of?5LZ?5stream@	png_zstream_error message literal (libpng png.c)
+143196898	??_C@_0BG@MPHEFODE@missing?5LZ?5dictionary@	png_zstream_error message literal (libpng png.c)
+1431968b0	??_C@_0O@HJOFHIEK@zlib?5IO?5error@	png_zstream_error message literal (libpng png.c)
+1431968c0	??_C@_0BH@MLOBAKCG@bad?5parameters?5to?5zlib@	png_zstream_error message literal (libpng png.c)
+1431968d8	??_C@_0BC@NNBNLNOK@damaged?5LZ?5stream@	png_zstream_error message literal (libpng png.c)
+1431968f0	??_C@_0BE@OGGJBMCE@insufficient?5memory@	png_zstream_error message literal (libpng png.c)
+143196908	??_C@_09IDFJECNO@truncated@	png_zstream_error message literal (libpng png.c)
+143196918	??_C@_0BJ@EHGGFMEH@unsupported?5zlib?5version@	png_zstream_error message literal (libpng png.c)
+143196938	??_C@_0BH@MPOINNNJ@unexpected?5zlib?5return@	png_zstream_error message literal (libpng png.c)
+14274c310	?_com_raise_error@@YAXJPEAUIErrorInfo@@@Z	comsupp _com_raise_error (throws _com_error(hr, perrinfo)); comsuppw is on the full-exe link; data_data_game stores its address
+142303a11	?update@System@FMOD@@QEAA?AW4FMOD_RESULT@@XZ	FMOD Ex C++ wrapper import thunk (jmp [IAT]); the member this in rcx is the free first argument the callers pass (sfr21, TAG 39 trap stubs)
+142303a29	?createSound@System@FMOD@@QEAA?AW4FMOD_RESULT@@PEBDIPEAUFMOD_CREATESOUNDEXINFO@@PEAPEAVSound@2@@Z	FMOD Ex C++ wrapper import thunk (jmp [IAT]); the member this in rcx is the free first argument the callers pass (sfr21, TAG 39 trap stubs)
+142303a35	?playSound@System@FMOD@@QEAA?AW4FMOD_RESULT@@W4FMOD_CHANNELINDEX@@PEAVSound@2@_NPEAPEAVChannel@2@@Z	FMOD Ex C++ wrapper import thunk (jmp [IAT]); the member this in rcx is the free first argument the callers pass (sfr21, TAG 39 trap stubs)
+142303a4d	?getLength@Sound@FMOD@@QEAA?AW4FMOD_RESULT@@PEAII@Z	FMOD Ex C++ wrapper import thunk (jmp [IAT]); the member this in rcx is the free first argument the callers pass (sfr21, TAG 39 trap stubs)
+142303a65	?stop@Channel@FMOD@@QEAA?AW4FMOD_RESULT@@XZ	FMOD Ex C++ wrapper import thunk (jmp [IAT]); the member this in rcx is the free first argument the callers pass (sfr21, TAG 39 trap stubs)
+142303a6b	?getPaused@Channel@FMOD@@QEAA?AW4FMOD_RESULT@@PEA_N@Z	FMOD Ex C++ wrapper import thunk (jmp [IAT]); the member this in rcx is the free first argument the callers pass (sfr21, TAG 39 trap stubs)
+142303a71	?setVolume@Channel@FMOD@@QEAA?AW4FMOD_RESULT@@M@Z	FMOD Ex C++ wrapper import thunk (jmp [IAT]); the member this in rcx is the free first argument the callers pass (sfr21, TAG 39 trap stubs)
+142303a83	?getPosition@Channel@FMOD@@QEAA?AW4FMOD_RESULT@@PEAII@Z	FMOD Ex C++ wrapper import thunk (jmp [IAT]); the member this in rcx is the free first argument the callers pass (sfr21, TAG 39 trap stubs)
+1428d8ec6	?seekData@Sound@FMOD@@QEAA?AW4FMOD_RESULT@@I@Z	FMOD Ex C++ wrapper import thunk (jmp [IAT]); the member this in rcx is the free first argument the callers pass (sfr21, TAG 39 trap stubs)
+1428d8ed2	?addSyncPoint@Sound@FMOD@@QEAA?AW4FMOD_RESULT@@IIPEBDPEAPEAUFMOD_SYNCPOINT@@@Z	FMOD Ex C++ wrapper import thunk (jmp [IAT]); the member this in rcx is the free first argument the callers pass (sfr21, TAG 39 trap stubs)
+1428d8ee4	?setPan@Channel@FMOD@@QEAA?AW4FMOD_RESULT@@M@Z	FMOD Ex C++ wrapper import thunk (jmp [IAT]); the member this in rcx is the free first argument the callers pass (sfr21, TAG 39 trap stubs)
+1428d8f20	?setVolume@ChannelGroup@FMOD@@QEAA?AW4FMOD_RESULT@@M@Z	FMOD Ex C++ wrapper import thunk (jmp [IAT]); the member this in rcx is the free first argument the callers pass (sfr21, TAG 39 trap stubs)
+14250d6d0	?Sfr27DisplayListBounds@AS3@GFx@Scaleform@@YAPEAD_KPEADPEBX@Z	AS3 DisplayList GetRectBounds; symbols.tsv mangling is a stale 2-arg form (sfr21, TAG 39 trap stubs)
+1423e0070	?Func@?$ThunkFunc2@VDate@fl@Classes@AS3@GFx@Scaleform@@$00VValue@456@IPEBV7456@@AS3@GFx@Scaleform@@SAXAEBUThunkInfo@234@AEAVVM@234@AEBVValue@234@AEAV7234@IPEBV7234@@Z	AS3 Date thunk Func (sfr_as2_01e MS2-PIN) (sfr21, TAG 39 trap stubs)
+142931dc0	?AvmSwfEvent_AttachTo@AS2@GFx@Scaleform@@YAXPEAUAvmSwfEventView@123@PEAVInteractiveObject@23@@Z	AS2 AvmSwfEvent::AttachTo free-function form (sfr_as2_03ai) (sfr21, TAG 39 trap stubs)
+1429253d0	??1AvmCharacter@AS2@GFx@Scaleform@@UEAA@XZ	AS2 AvmCharacter dtor (sfr_as2_03p) (sfr21, TAG 39 trap stubs)
+1423dfd20	?ScanInUseCall@?$RefCountCollector@$0BED@@AS3@GFx@Scaleform@@SAXPEAV1234@PEAPEBV?$RefCountBaseGC@$0BED@@234@@Z	AS3 GC ScanInUseCall template instance (sfr_as3_01) (sfr21, TAG 39 trap stubs)
+1423dfda0	?ScanTempInUseCall@?$RefCountCollector@$0BED@@AS3@GFx@Scaleform@@SAXPEAV1234@PEAPEBV?$RefCountBaseGC@$0BED@@234@@Z	AS3 GC ScanTempInUseCall template instance (sfr_as3_01) (sfr21, TAG 39 trap stubs)
+142993ff0	?Visit@LoadVarsStringVisitor@AS2@GFx@Scaleform@@UEAAXAEBVASString@34@AEBVValue@234@E@Z	LoadVars.toString visitor Visit, moved to namespace scope (sfr_as2_01) (sfr21, TAG 39 trap stubs)
+1428f7bb0	?Visit@ASSetPropFlagsVisitor@AS2@GFx@Scaleform@@UEAAXAEBVASString@34@AEBVValue@234@E@Z	ASSetPropFlags visitor Visit, moved to namespace scope (sfr_as2_01) (sfr21, TAG 39 trap stubs)
+143a2fd28	?Instance@SKI_MaskStart@Render@Scaleform@@2V123@A	sfr_render_06e SKI_MaskStart::Instance; no symbol row: its address is taken in 06e static data (the mask key table), so a row would make the hook DLL rebind it to the exe (ADDR64 against an exe global) (sfr22)
+143a2fd38	?InstanceClipped@SKI_MaskStart@Render@Scaleform@@2V123@A	sfr_render_06e SKI_MaskStart::InstanceClipped; no symbol row, same reason (sfr22)
+143a2fd50	?Instance@SKI_MaskEnd@Render@Scaleform@@2V123@A	sfr_render_06e SKI_MaskEnd::Instance; no symbol row, same reason (sfr22)
+141c18890	?RemoveKey@?$CRBMap@IUUnk_WsObjectEntry@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_WsObjectEntry@@@3@@ATL@@QEAA_NI@Z	WorldService m_1a8 (CRBMap<unsigned, {SmartPointer<GameObject>, EntityID}>)::RemoveKey, worldservice_7 pin; stale results.json caches (progress-cx13/cx17/fullexe/gb18/sfr20/up1) pair the code-different Unk_WsTargetF7 instance first, whose node dtor releases the EntityID as a CPtred: AV in Unk_SocketDecrement via FUN_141bca390 (ui1, HUD portrait)
+140a17de0	?GetMaterial@NiMaterialInstance@@QEBAPEAVNiMaterial@@XZ	aliascheck (ui1): a stale gate cache picked ??1TextKeyCallbackData@NiControllerSequence@@QEAA@XZ; this one has a fresh claim and its bytes and callees match the exe
+14111d6e0	??$try_emplace@$$V@?$map@HUUnk_CMISMarkRec@@U?$less@H@std@@V?$CustomAllocator@U?$pair@$$CBHUUnk_CMISMarkRec@@@std@@@efd@@@std@@QEAA?AU?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHUUnk_CMISMarkRec@@@std@@@std@@@std@@@std@@_N@1@AEBH@Z	aliascheck (ui1): a stale gate cache picked ??$try_emplace@$$V@?$map@HV?$MS2Ptr@VSalesInfo@@@@U?$less@H@std@@V?$allocator@U?$pair@$...; this one has a fresh claim and its bytes and callees match the exe
+14111d720	??$try_emplace@$$V@?$map@HUUnk_Int3@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHUUnk_Int3@@@std@@@3@@std@@QEAA?AU?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHUUnk_Int3@@@std@@@std@@@std@@@std@@_N@1@AEBH@Z	aliascheck (ui1): a stale gate cache picked ??$try_emplace@$$V@?$map@HV?$MS2Ptr@VSetItemEffectInfo@@@@U?$less@H@std@@V?$CustomAlloc...; this one has a fresh claim and its bytes and callees match the exe
+14111d7a0	??$try_emplace@$$V@?$map@HUUnk_CMISCell@@U?$less@H@std@@V?$CustomAllocator@U?$pair@$$CBHUUnk_CMISCell@@@std@@@efd@@@std@@QEAA?AU?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHUUnk_CMISCell@@@std@@@std@@@std@@@std@@_N@1@AEBH@Z	aliascheck (ui1): a stale gate cache picked ??$try_emplace@$$V@?$map@HV?$MS2Ptr@VUICubeUGCHead@@@@U?$less@H@std@@V?$allocator@U?$pa...; this one has a fresh claim and its bytes and callees match the exe
+14111d7e0	??$try_emplace@$$V@?$map@JV?$SmartPointer@VEntity@egf@@@efd@@U?$less@J@std@@V?$CustomAllocator@U?$pair@$$CBJV?$SmartPointer@VEntity@egf@@@efd@@@std@@@2@@std@@QEAA?AU?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBJV?$SmartPointer@VEntity@egf@@@efd@@@std@@@std@@@std@@@std@@_N@1@AEBJ@Z	aliascheck (ui1): a stale gate cache picked ??$try_emplace@$$V@?$map@HUUnk_CMISCell@@U?$less@H@std@@V?$CustomAllocator@U?$pair@$$CB...; this one has a fresh claim and its bytes and callees match the exe
+14111d860	??$try_emplace@$$V@?$map@HV?$MS2Ptr@VFittingDollData@@@@U?$less@H@std@@V?$CustomAllocator@U?$pair@$$CBHV?$MS2Ptr@VFittingDollData@@@@@std@@@efd@@@std@@QEAA?AU?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$MS2Ptr@VFittingDollData@@@@@std@@@std@@@std@@@std@@_N@1@AEBH@Z	aliascheck (ui1): a stale gate cache picked ??$try_emplace@$$V@?$map@HUUnk_CMISCubeTimer@@U?$less@H@std@@V?$CustomAllocator@U?$pair...; this one has a fresh claim and its bytes and callees match the exe
+14111d960	??$try_emplace@$$V@?$map@HV?$MS2Ptr@VUICubeUGCHead@@@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHV?$MS2Ptr@VUICubeUGCHead@@@@@std@@@3@@std@@QEAA?AU?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$MS2Ptr@VUICubeUGCHead@@@@@std@@@std@@@std@@@std@@_N@1@AEBH@Z	aliascheck (ui1): a stale gate cache picked ??$try_emplace@$$V@?$map@U?$pair@HH@std@@V?$MS2Ptr@VSaleStateData@@@@U?$less@U?$pair@HH...; this one has a fresh claim and its bytes and callees match the exe
+14111daa0	??$try_emplace@$$V@?$map@HV?$vector@V?$SmartPointer@VEntity@egf@@@efd@@@efd@@U?$less@H@std@@V?$CustomAllocator@U?$pair@$$CBHV?$vector@V?$SmartPointer@VEntity@egf@@@efd@@@efd@@@std@@@2@@std@@QEAA?AU?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$vector@V?$SmartPointer@VEntity@egf@@@efd@@@efd@@@std@@@std@@@std@@@std@@_N@1@AEBH@Z	aliascheck (ui1): a stale gate cache picked ??$try_emplace@$$V@?$map@HV?$map@HV?$MS2Ptr@VCube@@@@U?$less@H@std@@V?$allocator@U?$pai...; this one has a fresh claim and its bytes and callees match the exe
+14111dfa0	??$try_emplace@$$V@?$map@JV?$MS2Ptr@VCube@@@@U?$less@J@std@@V?$CustomAllocator@U?$pair@$$CBJV?$MS2Ptr@VCube@@@@@std@@@efd@@@std@@QEAA?AU?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBJV?$MS2Ptr@VCube@@@@@std@@@std@@@std@@@std@@_N@1@AEBJ@Z	aliascheck (ui1): a stale gate cache picked ??$try_emplace@$$V@?$map@HV?$MS2Ptr@VCube@@@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHV...; this one has a fresh claim and its bytes and callees match the exe
+1413e9c00	??C?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$map@Vutf8string@efd@@UUnk_PropertyCacheEntry@@U?$less@Vutf8string@efd@@@std@@@efd@@@std@@@std@@@std@@@std@@QEBAPEAU?$pair@$$CBIV?$map@Vutf8string@efd@@UUnk_PropertyCacheEntry@@U?$less@Vutf8string@efd@@@std@@@efd@@@1@XZ	aliascheck (ui1): a stale gate cache picked ??C?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBII@std@@@std@@...; this one has a fresh claim and its bytes and callees match the exe
+1413f7220	?end@?$_Tree@V?$_Tmap_traits@IV?$map@Vutf8string@efd@@UUnk_PropertyCacheEntry@@U?$less@Vutf8string@efd@@@std@@@efd@@U?$less@I@std@@V?$CustomAllocator@U?$pair@$$CBIV?$map@Vutf8string@efd@@UUnk_PropertyCacheEntry@@U?$less@Vutf8string@efd@@@std@@@efd@@@std@@@2@$0A@@std@@@std@@QEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$map@Vutf8string@efd@@UUnk_PropertyCacheEntry@@U?$less@Vutf8string@efd@@@std@@@efd@@@std@@@std@@@std@@@2@XZ	aliascheck (ui1): a stale gate cache picked ?end@?$_Tree@V?$_Tmap_traits@IIU?$less@I@std@@V?$CustomAllocator@U?$pair@$$CBII@std@@@e...; this one has a fresh claim and its bytes and callees match the exe
+141bf6870	??1Unk_WsObjEntry@@QEAA@XZ	aliascheck (ui1): a stale gate cache picked ?_Get_data@?$_Vector_alloc@U?$_Vec_base_types@UUnk_WsV9a0@@V?$allocator@UUnk_WsV9a0@@@s...; this one has a fresh claim and its bytes and callees match the exe
+141bfad40	?AddTail@?$CAtlList@V?$SmartPointer@VUnk_WsProp058@@@efd@@V?$CElementTraits@V?$SmartPointer@VUnk_WsProp058@@@efd@@@ATL@@@ATL@@QEAAPEAU__POSITION@@AEBV?$SmartPointer@VUnk_WsProp058@@@efd@@@Z	aliascheck (ui1): a stale gate cache picked ?AddTail@?$CAtlList@V?$SmartPointer@VGameObject@@@efd@@V?$CElementTraits@V?$SmartPointe...; this one has a fresh claim and its bytes and callees match the exe
+141c06d80	?Lookup@?$CAtlMap@_JV?$SmartPointer@VUnk_WsMapV8@@@efd@@V?$CElementTraits@_J@ATL@@V?$CElementTraits@V?$SmartPointer@VUnk_WsMapV8@@@efd@@@4@@ATL@@QEBA_N_JAEAV?$SmartPointer@VUnk_WsMapV8@@@efd@@@Z	aliascheck (ui1): a stale gate cache picked ?Lookup@?$CAtlMap@_JV?$MS2Ptr@VUnk_WsMapV10@@@@V?$CElementTraits@_J@ATL@@V?$CElementTra...; this one has a fresh claim and its bytes and callees match the exe
+14260df50	?AppendText@DocView@Text@Render@Scaleform@@QEAAXPEBD_K@Z	aliascheck (ui1): a stale gate cache picked ?AppendText@DocView@Text@Render@Scaleform@@QEAAXPEB_W_K@Z; this one has a fresh claim and its bytes and callees match the exe
+14035e5b0	??1?$MS2Ptr@VCNpcData@@@@QEAA@XZ	aliascheck (ui1): a stale gate cache picked ??1?$CSimpleArray@GV?$CSimpleArrayEqualHelper@G@ATL@@@ATL@@QEAA@XZ; this one has a fresh claim and its bytes and callees match the exe
+140b22640	?GetRateB@DungeonRecordManagerCli@@QEAAMXZ	aliascheck (ui1): a stale gate cache picked ?GetRateA@DungeonRecordManagerCli@@QEAAMXZ; this one has a fresh claim and its bytes and callees match the exe
+141bf5570	??1?$MS2Ptr@VGameObjectEffectNifCtx@@@@QEAA@XZ	aliascheck (ui1): a stale gate cache picked ??1?$CSimpleArray@GV?$CSimpleArrayEqualHelper@G@ATL@@@ATL@@QEAA@XZ; this one has a fresh claim and its bytes and callees match the exe
+141c07010	?Lookup@?$CRBMap@IV?$MS2Ptr@VUnk_WsTargetF7@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VUnk_WsTargetF7@@@@@3@@ATL@@QEBA_NIAEAV?$MS2Ptr@VUnk_WsTargetF7@@@@@Z	WorldService m_708 (CRBMap<unsigned, MS2Ptr<Unk_WsRec708>>)::Lookup(k, v&): it assigns through MS2Ptr operator= 0x141bf7020 (folded with Unk_WsTargetF7's); worldservice_1 calls it as FUN_141c07010. Stale results.json caches pick the SmartPointer<PC> instance (writes an 8-byte SmartPointer into the 16-byte MS2Ptr) or Unk_WsObjectEntry's (assign 0x141bf7180) (rt1)

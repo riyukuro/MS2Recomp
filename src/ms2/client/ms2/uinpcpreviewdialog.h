@@ -43,7 +43,7 @@ class UINpcPreviewDialog : public UIDialog
 {
 public:
     UINpcPreviewDialog();                               // 0x141a6e060
-    virtual ~UINpcPreviewDialog();                      //  0 0x141a71a40 (??_G 0x141a71b00)
+    // ~UINpcPreviewDialog() is implicit                //  0 0x141a71a40 (??_G 0x141a71b00; no vptr reset)
     virtual CString GetTypeName();                          //  1 0x141a6e100 "NpcPreviewDialog"
     virtual void vfunc_15();                            // 15 0x141a6e510 fill the animation names once the preview npc is ready
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);
@@ -57,7 +57,7 @@ public:
     int FUN_141a6fd90(int nRow);                        // show the scripts of a row in "m_output"
     int FUN_141a70b90(int nRow);                        // open the talk of a row in the talk window
     void FUN_141a71050(int nRow);                       // play the animation of a row
-    bool FUN_141a711b0();                               // the button bar is on its first tab
+    int FUN_141a711b0();                                // the button bar is on its first tab
     efd::SmartPointer<CNpc> FUN_141a71280();            // the npc of the selected npc id in the field (null = none)
     void FUN_141a713a0();                               // spawn the preview npc
     void FUN_141a717c0();                               // remove the preview npc

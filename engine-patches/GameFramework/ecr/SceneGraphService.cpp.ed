@@ -34,10 +34,36 @@ void ecr::SceneGraphService::RemoveFromUpdate(SceneGraphData* pData)
     m_ms2UpdateBucket(0),
     m_ms2UpdateBucketIndex(kInvalidUpdateIndex)  // MS2
 .
+3227a
+#line 3264 // MS2 __LINE__ (linefix)
+.
+3222,3223c
+                // Mark as loading in case smart pointers cause this data to hang around
+                spAssetData->m_state = AssetData::ADS_Unloaded;
+            }
+        }
+        else if (spAssetData->m_state == AssetData::ADS_Loading)
+        {
+            // MS2: an unused asset still loading drops its file from the cache, or flags it in m_ms2Set so
+            // SceneGraphCache evicts it when the load completes
+            m_spSceneGraphCache->MS2_ReleaseLoadingFile(spAssetData->m_identifier);
+.
+3219,3220c
+            if (spAssetData->m_state == AssetData::ADS_Ready)
+            {
+                m_spSceneGraphCache->UnCacheSceneGraph(spAssetData->m_cacheHandle);
+                m_assetsByPhysicalID.erase(spAssetData->m_physicalID);
+.
+3217c
+        if (spAssetData->m_cacheHandle)
+.
 2582a
 // MS2: 3 lines of MS2 source not recovered here; padding keeps the EE_LOG __LINE__s below equal to the exe's
 //
 //
+.
+2464c
+{ if (!pSceneData) return;   // MS2: game 0x142005300 ignores null scene data
 .
 2189a
 // MS2: 3 lines of MS2 source not recovered here; padding keeps the EE_LOG __LINE__s below equal to the exe's
@@ -51,6 +77,9 @@ void ecr::SceneGraphService::RemoveFromUpdate(SceneGraphData* pData)
 // MS2: 3 lines of MS2 source not recovered here; padding keeps the EE_LOG __LINE__s below equal to the exe's
 //
 //
+.
+740c
+    EE_UNUSED_ARG(tags); if (!pEntity) return;   // MS2: game 0x142001400 ignores a null entity
 .
 667a
 // MS2: 24 lines of MS2 source not recovered here; padding keeps the EE_LOG __LINE__s below equal to the exe's

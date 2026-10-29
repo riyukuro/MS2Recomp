@@ -274,29 +274,29 @@ void UIBannerEventListenerCoupleDance::vfunc_1(MS2Ptr<UIBanner::Entity> pEntity)
     MS2Ptr<Unk_CoupleDanceEvent> pEvent = FUN_140302b00()->FUN_1403ed140()->FUN_140428700();
     if (pEvent == NULL)
     {
-        FUN_1412752d0(CStringW(L"s_microgame_couple_dance_end_event"), 1);
+        FUN_1412752d0(L"s_microgame_couple_dance_end_event", 1);
         return;
     }
     if (FUN_14097a780()->FUN_140ae51b0(pTarget->FUN_141656a80()))
     {
-        FUN_1412752d0(CStringW(L"s_microgame_couple_dance_request_failed_blocked_user"), 1);
+        FUN_1412752d0(L"s_microgame_couple_dance_request_failed_blocked_user", 1);
         return;
     }
     Unk_Pos posPlayer = pPlayer->vfunc_18();
     Unk_Pos posTarget = pTarget->vfunc_18();
     if (!FUN_140b88470(posPlayer, posTarget))
     {
-        FUN_1412752d0(CStringW(L"s_microgame_couple_dance_request_failed_wrong_distance"), 1);
+        FUN_1412752d0(L"s_microgame_couple_dance_request_failed_wrong_distance", 1);
         return;
     }
     if (!FUN_140b884e0(posPlayer))
     {
-        FUN_1412752d0(CStringW(L"s_microgame_couple_dance_request_failed_wrong_position"), 1);
+        FUN_1412752d0(L"s_microgame_couple_dance_request_failed_wrong_position", 1);
         return;
     }
     if (!FUN_140b887b0(pPlayer))
     {
-        FUN_1412752d0(CStringW(L"s_microgame_couple_dance_request_failed_wrong_state"), 1);
+        FUN_1412752d0(L"s_microgame_couple_dance_request_failed_wrong_state", 1);
         return;
     }
     COutPacket packet(static_cast<int>(SendOp::Microgame), 0);

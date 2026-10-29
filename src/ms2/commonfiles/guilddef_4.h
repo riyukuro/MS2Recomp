@@ -21,14 +21,7 @@ struct Unk_GuildHistText {
 };
 MS2_CHECK_SIZE(Unk_GuildHistText,0x18);
 
-// {CStringW name; __int64 value; CStringW text} value of the CGuildInfo+0x170 CAtlMap<int,...>:
-// ctor 0x1404ee6b0, copy 0x1404ee640, dtor 0x1404ef6e0 (guilddef_1.h spells it as the opaque Unk_GuildStrRec).
-struct Unk_GuildStrEntry {
-    CStringW name=L"";
-    __int64 value=0;
-    CStringW text=L"";
-};
-MS2_CHECK_SIZE(Unk_GuildStrEntry,0x18);
+// Unk_GuildStrEntry (the CGuildInfo+0x170 map value) lives in guilddef_1.h.
 
 namespace guilddef4 {
 using GX = CGuildXmlData;

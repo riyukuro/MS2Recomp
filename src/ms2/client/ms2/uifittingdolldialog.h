@@ -18,7 +18,7 @@ class UIFittingDollDialog : public UIDialog, public UIDialogEventListener, publi
 {
 public:
     UIFittingDollDialog();                                      // 0x141933270
-    virtual ~UIFittingDollDialog();                             //  0 0x141934eb0 (??_G 0x141934f50)
+    // ~UIFittingDollDialog: implicit (slot 0 0x141934eb0, ??_G 0x141934f50; the exe dtor stores no vftable)
     virtual CString GetTypeName();                                  //  1 0x141933340 "FittingDollDialog"
     virtual void vfunc_15();                                    // 15 0x141933a90
     virtual void OnLoadComplete();                              // 22 0x141933910

@@ -15,13 +15,7 @@
 
 class Unk_140165cf0;    // xml element (declared where the loaders are)
 
-// The VIP effect (skill) found for an effect id / level: a 16-byte reference, null by default.
-struct Unk_VipEffectRef
-{
-    void* m_base;
-    void* m_p;
-    Unk_VipEffectRef(int) { m_p = 0; }
-};
+class AdditionalLevelData;  // the VIP effect (skill) found for an effect id / level
 
 // The rank of a bonus item (ranks are read apart from the other numbers, so their array is a type of its own).
 // "priceType" attribute (0 = pay code 3, 1 = pay code 9).
@@ -113,7 +107,7 @@ public:
     void GetBenefitEffects(ATL::CAtlArray<CVIPBenefitEffectPtr>& rOut);     // 0x1408f6e80
     void GetBenefitItems(ATL::CAtlArray<CVIPBenefitItemPtr>& rOut);         // 0x1408f6f20
     void GetGoodsList(ATL::CAtlArray<CVIPGoodsPtr>& rOut);                  // 0x1408f7010
-    Unk_VipEffectRef GetFirstEffect();      // 0x1408f70b0 the skill of the first effect
+    MS2Ptr<AdditionalLevelData> GetFirstEffect();      // 0x1408f70b0 the skill of the first effect
     static void CheckInit();                       // 0x1408f86b0
     static void SetInit(bool bInit) { s_bInit = bInit; }    // 0x1408fb2a0
     static bool s_bInit;                    // DAT_143ab2630

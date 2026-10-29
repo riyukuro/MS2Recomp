@@ -109,7 +109,6 @@ __int64 FUN_141663990(PCBase* p);
 int FUN_14123c580(PCBase* p);                           // object id
 float FUN_140966f00(Vector3 a, Vector3 b);  // distance
 int FUN_140268870(Unk_CoupleTick* p, unsigned nInterval);   // true once the interval elapsed (re-arms)
-bool FUN_140164830(const CStringW& a, const CStringW& b);
 
 // @0x140b0e5f0
 CoupleEffectSystem::CoupleEffectSystem(PCBase* pOwner, __int64 nPartnerId, int nCoupleType, int bLinked, CStringW strName,
@@ -128,39 +127,52 @@ CoupleEffectSystem::~CoupleEffectSystem()
 
 // @0x140b0e7a0
 // MS2-FUNCTIONAL: transliterated from the decompile; point copies and frame layout differ
-void CoupleEffectSystem::FUN_140b0e7a0()
+void CoupleEffectSystem::FUN_140b0e7a0(float fDelta)
 {
-    if (m_bActive == 0 || m_bLinked == 0 || FUN_1409613d0(m_pOwner) == 0 || !FUN_140b0ef20() ||
-        FUN_140268870(&m_tick, 1000) == 0)
+    if (m_bActive == 0)
         return;
-    PCBase* pPartner = FUN_1403ed2d0()->FUN_141bd1530(m_nPartnerId);
-    if (pPartner == 0 || m_nCoupleType == 0 || m_nCoupleType != FUN_141663940(pPartner))
+    if (m_bLinked == 0)
         return;
-    if (FUN_141656a80(m_pOwner) != FUN_141663990(pPartner))
+    void* pObj = FUN_1409613d0(m_pOwner);
+    if (pObj == 0)
         return;
-    NiPoint3 ptPartner = pPartner->vfunc_18();
-    NiPoint3 ptOwner = m_pOwner->vfunc_18();
-    float fDistance = FUN_140966f00(reinterpret_cast<Vector3&>(ptOwner), reinterpret_cast<Vector3&>(ptPartner));
-    float fMaxDistance = *FUN_140298f40(&FUN_1401d3200()->m_maxDistance);
-    if (fDistance > fMaxDistance)
+    if (!FUN_140b0ef20())
+        return;
+    if (FUN_140268870(&m_tick, 1000) != 0)
     {
-        m_bInRange = 0;
-        if (m_nEffectId != 0)
-            FUN_140b0f3a0(1);
-    }
-    else if (m_bInRange == 0)
-    {
-        m_bInRange = 1;
-        if (m_nEffectId == 0)
-            FUN_140b0f3a0(0);
-    }
-    else
-    {
-        if (m_timer.FUN_140868c00() != 0)
+        PCBase* pPartner = FUN_1403ed2d0()->FUN_141bd1530(m_nPartnerId);
+        if (pPartner == 0)
+            return;
+        if (m_nCoupleType == 0 || m_nCoupleType != FUN_141663940(pPartner))
+            return;
+        if (FUN_141656a80(m_pOwner) != FUN_141663990(pPartner))
+            return;
+        NiPoint3 ptPartner = pPartner->vfunc_18();
+        NiPoint3 ptOwner = m_pOwner->vfunc_18();
+        float fDistance = FUN_140966f00(reinterpret_cast<Vector3&>(ptOwner), reinterpret_cast<Vector3&>(ptPartner));
+        if (!(fDistance > *FUN_140298f40(&FUN_1401d3200()->m_maxDistance)))
         {
-            Unk_CoupleVec ptMid = FUN_140b0f160();
-            float fMove = FUN_140966f00(reinterpret_cast<Vector3&>(m_posEffect), reinterpret_cast<Vector3&>(ptMid));
-            if (50.0f < fMove && m_nEffectId != 0)
+            if (m_bInRange != 0)
+            {
+                if (m_timer.FUN_140868c00() != 0)
+                {
+                    Unk_CoupleVec ptMid = FUN_140b0f160();
+                    float fMove = FUN_140966f00(reinterpret_cast<Vector3&>(m_posEffect), reinterpret_cast<Vector3&>(ptMid));
+                    if (fMove > 50.0f && m_nEffectId != 0)
+                        FUN_140b0f3a0(1);
+                }
+            }
+            else
+            {
+                m_bInRange = 1;
+                if (m_nEffectId == 0)
+                    FUN_140b0f3a0(0);
+            }
+        }
+        else
+        {
+            m_bInRange = 0;
+            if (m_nEffectId != 0)
                 FUN_140b0f3a0(1);
         }
     }
@@ -229,7 +241,7 @@ void CoupleEffectSystem::FUN_140b0ecd0()
 }
 
 // @0x140b0ed30
-// MS2-FUNCTIONAL: effect request/transform stand-ins; frame layout differs
+// MS2-FUNCTIONAL: the exe has the request as a plain local (rsp+0x50, ctor/dtor 0x140a52ef0/0x1405a89e0); the char-buffer reference adds pointer loads. Making it a plain local needs a declared-only ctor/dtor plus symbols-manual rows.
 void CoupleEffectSystem::FUN_140b0ed30()
 {
     if (m_nEffectId != 0)
@@ -276,38 +288,35 @@ bool CoupleEffectSystem::FUN_140b0ef20()
 }
 
 // @0x140b0efb0
-// MS2-FUNCTIONAL: NRVO return-flag shape of the exe not reproduced (CString returned from three paths)
 CString CoupleEffectSystem::FUN_140b0efb0()
 {
     PCBase* pPartner = FUN_1403ed2d0()->FUN_141bd1530(m_nPartnerId);
     if (pPartner == 0)
         return "";
     Unk_GemEffPtr spEffect(dynamic_cast<CGemCharEffectData*>(FUN_1405a96f0()->FUN_1405ac160(m_nGemId).FUN_1405a9970()));
-    if (spEffect.FUN_1405a8d70(0) == 0)
-    {
-        return spEffect.FUN_1405a8ef0()->FUN_1405acc80(FUN_141658e60(m_pOwner), FUN_141658e60(pPartner));
-    }
-    else
-    {
+    if (spEffect.FUN_1405a8d70(0) != 0)
         return "";
-    }
+    return spEffect.FUN_1405a8ef0()->FUN_1405acc80(FUN_141658e60(m_pOwner), FUN_141658e60(pPartner));
 }
 
 // @0x140b0f160
-// MS2-FUNCTIONAL: point temporaries live in different frame slots than in the exe
 Unk_CoupleVec CoupleEffectSystem::FUN_140b0f160()
 {
     PCBase* pPartner = FUN_1403ed2d0()->FUN_141bd1530(m_nPartnerId);
     if (pPartner == 0)
         return Unk_CoupleVec(DAT_143b01a60);
+#ifdef __clang__
     NiPoint3 ptPartner = pPartner->vfunc_18();
     NiPoint3 ptOwner = m_pOwner->vfunc_18();
-    Vector3 ptMid = reinterpret_cast<Vector3&>(ptOwner).FUN_14097fd50(reinterpret_cast<Vector3&>(ptPartner)).FUN_140ae9180(2.0f);
-    return Unk_CoupleVec(ptMid);
+    return Unk_CoupleVec(reinterpret_cast<Vector3&>(ptOwner).FUN_14097fd50(reinterpret_cast<Vector3&>(ptPartner)).FUN_140ae9180(2.0f));
+#else
+    return Unk_CoupleVec(reinterpret_cast<Vector3&>(m_pOwner->vfunc_18())
+                             .FUN_14097fd50(reinterpret_cast<Vector3&>(pPartner->vfunc_18()))
+                             .FUN_140ae9180(2.0f));
+#endif
 }
 
 // @0x140b0f260
-// MS2-FUNCTIONAL: temporary reference slot order differs from the exe
 void CoupleEffectSystem::FUN_140b0f260()
 {
     if (m_bRequested != 0)
@@ -318,9 +327,8 @@ void CoupleEffectSystem::FUN_140b0f260()
     PCBase* pPartner = FUN_1403ed2d0()->FUN_141bd1530(m_nPartnerId);
     if (pPartner == 0)
         return;
-    const CStringW& strPartner = pPartner->vfunc_77();
-    bool bSame = FUN_140164830(m_strName, strPartner);
-    if (bSame)
+    bool bDiffers = m_strName != pPartner->vfunc_77();
+    if (bDiffers)
     {
         COutPacket packet(static_cast<int>(SendOp::BuddyBadge), 0);
         packet.COutPacket::WriteUInt8(3);

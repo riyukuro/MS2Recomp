@@ -12,7 +12,7 @@ class CGFxLanguage : public TSingleton<CGFxLanguage>, public CCacheData
 {
 public:
     CGFxLanguage();                                         // 0x141815d50
-    virtual ~CGFxLanguage();
+    // virtual ~CGFxLanguage(); // 0x141816d90 (implicit)
     bool LoadKorFlash(class TiXmlDocument* pDoc);          // reads korFlash.xml
 };
 MS2_CHECK_SIZE(CGFxLanguage, 0x30);

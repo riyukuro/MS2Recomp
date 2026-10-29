@@ -6,7 +6,7 @@
 
 #include "ms2/ms2layout.h"
 #include "ms2/placeholder/gfxvalue.h"
-#include "GFx/IME/GFx_IMEManager.h"
+#include "ms2/scaleform/include/gfx/gfx_imemanager.h"
 
 namespace Scaleform { namespace GFx { namespace IME {
 

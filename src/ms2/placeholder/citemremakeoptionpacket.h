@@ -17,12 +17,14 @@
 
 class CInPacket;
 
-// A locked option (4 bytes; ctor 0x140b98d30), appended to the option list of the debug record.
+// A locked option (8 bytes: the ctor 0x140b98d30 zeroes +0 and +4; itemremakeoption.h Unk_RemakeLockOpt), appended to the
+// option list of the debug record.
 struct Unk_LockOpt {
     Unk_LockOpt();                                                  // 0x140b98d30
     int m_v;
+    int m_4;
 };
-MS2_CHECK_SIZE(Unk_LockOpt, 4);
+MS2_CHECK_SIZE(Unk_LockOpt, 8);
 
 // The option list of a remake record: a vector of (kind, value) pairs, 0x18 bytes (unit_140267390.cpp defines the same
 // struct; ctor 0x14027d690, dtor 0x14027e3f0).

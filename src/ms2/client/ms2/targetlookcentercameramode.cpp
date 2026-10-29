@@ -12,6 +12,8 @@
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
 
+extern "C" float (__cdecl* __imp_atan2f)(float, float);      // the exe calls atan2f through its import
+
 // ---- unit-local placeholders ----
 
 extern const Vector3 g_143a08cf8;   // NiPoint3::UNIT_Z
@@ -540,10 +542,9 @@ float Unk_Point2::FUN_140a4e630() const
 }
 
 // @0x140a4e660
-// MS2-FUNCTIONAL: exe calls atan2f through an import thunk
 inline float FUN_140a4e660(float fY, float fX)
 {
-    return atan2f(fY, fX);
+    return __imp_atan2f(fY, fX);
 }
 
 // hk1 2026-10-20: hooks for the remaining recovered functions (work/hk1/report.md)

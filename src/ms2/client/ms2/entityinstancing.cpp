@@ -215,43 +215,45 @@ bool EntityInstancing::FUN_1411c5880(egf::Entity* entity, unsigned count) {
     return ready;
 }
 MS2_REPLACE_METHOD(0x1411c5880, EntityInstancing, FUN_1411c5880, 70, 0x555F54F8);
-// MS2-FUNCTIONAL: Named clone/mesh temporaries change stack allocation and EH ranges.
 // No hook: constructs local RTTI functors, directly or through the hide operation.
 // @0x1411c58d0
 int EntityInstancing::FUN_1411c58d0(egf::Entity* entity) {
     NiAVObject* original = FUN_141b6efc0(entity);
-    if (original == NULL) return 0;
-    bool instanced = true;
-    FUN_14098c6e0(entity, 0x2a7fd9f4, instanced);
-    NiCloningProcess process;
-    process.m_eCopyType = NiObjectNET::COPY_EXACT;
-    process.m_eDynamicEffectRelationBehavior = NiCloningProcess::CLONE_RELATION_NONE;
-    process.m_eAffectedNodeRelationBehavior = NiCloningProcess::CLONE_RELATION_NONE;
-    NiPointer<NiNode> clone = NiDynamicCast(NiNode, original->Clone(process));
-    DetachAllPropertiesFunctor detach;
-    EntityHelper::Traverse((NiNode*)clone, detach);
-    efd::vector<NiMesh*> children;
-    EntityHelper::SceneGraphMeshFunctor<NiMesh> collect(children);
-    EntityHelper::Traverse((NiNode*)clone, collect);
-    bool added = false;
-    for (NiMesh* child : children) {
-        NiMesh* mesh = FUN_14147ce70(child->GetName());
-        if (mesh != NULL) {
-            NiMeshHWInstance* instance = NiNew NiMeshHWInstance;
-            if (instance != NULL) {
-                instance->SetName(child->GetName());
-                if (NiInstancingUtilities::AddMeshInstance(mesh, instance)) {
-                    NiNode* parent = NiDynamicCast(NiNode, child->GetParent());
-                    instance->SetLocalTransform(child->GetLocalTransform());
-                    parent->AttachChild(instance, false);
-                    parent->DetachChild(child);
-                    entries[entity->GetEntityID()].instances.push_back(NiPointer<NiMeshHWInstance>(instance));
-                    added = true;
-                } else { NiDelete instance; }
+    if (original != NULL) {
+        bool instanced = true;
+        FUN_14098c6e0(entity, 0x2a7fd9f4, instanced);
+        NiCloningProcess process;
+        process.m_eCopyType = NiObjectNET::COPY_EXACT;
+        process.m_eDynamicEffectRelationBehavior = NiCloningProcess::CLONE_RELATION_NONE;
+        process.m_eAffectedNodeRelationBehavior = NiCloningProcess::CLONE_RELATION_NONE;
+        NiPointer<NiNode> clone = NiDynamicCast(NiNode, original->Clone(process));
+        DetachAllPropertiesFunctor detach;
+        EntityHelper::Traverse((NiNode*)clone, detach);
+        efd::vector<NiMesh*> children;
+        EntityHelper::SceneGraphMeshFunctor<NiMesh> collect(children);
+        EntityHelper::Traverse((NiNode*)clone, collect);
+        bool added = false;
+        efd::vector<NiMesh*>& kChildren = children;
+        efd::vector<NiMesh*>::const_iterator itEnd = kChildren.end();
+        for (efd::vector<NiMesh*>::const_iterator itChild = kChildren.begin(); itChild != itEnd; ++itChild) {
+            NiMesh* child = *itChild;
+            NiMesh* mesh = FUN_14147ce70(child->GetName());
+            if (mesh != NULL) {
+                NiMeshHWInstance* instance = NiNew NiMeshHWInstance;
+                if (instance != NULL) {
+                    instance->SetName(child->GetName());
+                    if (NiInstancingUtilities::AddMeshInstance(mesh, instance)) {
+                        NiNode* parent = NiDynamicCast(NiNode, child->GetParent());
+                        instance->SetLocalTransform(child->GetLocalTransform());
+                        parent->AttachChild(instance, false);
+                        parent->DetachChild(child);
+                        entries[entity->GetEntityID()].instances.push_back(instance);
+                        added = true;
+                    } else { NiDelete instance; }
+                }
             }
         }
-    }
-    if (added) {
+        if (!added) return 0;
         if ((NiNode*)root != NULL) root->AttachChild(clone, false);
         entries[entity->GetEntityID()].entity = entity;
         entries[entity->GetEntityID()].clone = clone;
@@ -260,17 +262,15 @@ int EntityInstancing::FUN_1411c58d0(egf::Entity* entity) {
     }
     return 0;
 }
-// MS2-FUNCTIONAL: Named EntityID reference changes temporary storage.
 // No hook: constructs local RTTI functors, directly or through the hide operation.
 // @0x1411c5e30
 void EntityInstancing::FUN_1411c5e30(egf::Entity* entity, bool visible) {
     if (entity != NULL) {
-        const egf::EntityID& id = entity->GetEntityID();
-        auto it = std::find(hidden.begin(), hidden.end(), id);
-        if (!visible) {
-            if (it == hidden.end()) FUN_1411c6030(entity);
-        } else {
+        auto it = std::find(hidden.begin(), hidden.end(), entity->GetEntityID());
+        if (visible) {
             if (it != hidden.end()) FUN_1411c6390(entity, true);
+        } else {
+            if (it == hidden.end()) FUN_1411c6030(entity);
         }
     }
 }
@@ -288,7 +288,6 @@ void EntityInstancing::FUN_1411c5f40(egf::Entity* entity) {
     }
 }
 MS2_REPLACE_METHOD(0x1411c5f40, EntityInstancing, FUN_1411c5f40, 228, 0x75DF035D);
-// MS2-FUNCTIONAL: Named entry reference changes stack storage and branch layout.
 // No hook: constructs local RTTI functors, directly or through the hide operation.
 // @0x1411c6030
 void EntityInstancing::FUN_1411c6030(egf::Entity* entity) {
@@ -305,7 +304,10 @@ void EntityInstancing::FUN_1411c6030(egf::Entity* entity) {
                     efd::vector<NiMeshHWInstance*> children;
                     EntityHelper::SceneGraphMeshFunctor<NiMeshHWInstance> collect(children);
                     EntityHelper::Traverse((NiNode*)entry.clone, collect);
-                    for (NiMeshHWInstance* instance : children) {
+                    efd::vector<NiMeshHWInstance*>& kChildren = children;
+                    efd::vector<NiMeshHWInstance*>::const_iterator itEnd = kChildren.end();
+                    for (efd::vector<NiMeshHWInstance*>::const_iterator itChild = kChildren.begin(); itChild != itEnd; ++itChild) {
+                        NiMeshHWInstance* instance = *itChild;
                         NiMesh* mesh = FUN_14147ce70(instance->GetName());
                         if (mesh != NULL) {
                             if (NiInstancingUtilities::RemoveMeshInstance(mesh, instance)) {
@@ -319,39 +321,52 @@ void EntityInstancing::FUN_1411c6030(egf::Entity* entity) {
         }
     }
 }
-// MS2-FUNCTIONAL: Early returns and repeated entry access change branch layout.
 // @0x1411c6390
 int EntityInstancing::FUN_1411c6390(egf::Entity* entity, bool eraseHidden) {
-    if (entity == NULL) return 0;
-    egf::EntityID id(entity->GetEntityID());
-    auto it = entries.find(id);
-    if (it == entries.end()) return 0;
-    if ((NiNode*)it->second.clone == NULL) return 0;
-    auto hiddenIt = std::find(hidden.begin(), hidden.end(), id);
-    if (hiddenIt == hidden.end()) return 0;
-    ++config.activeCount;
-    if ((NiNode*)root != NULL) root->AttachChild(it->second.clone, true);
-    if (eraseHidden) hidden.erase(hiddenIt);
-    for (auto& owned : it->second.instances) {
-        NiMeshHWInstance* instance = owned;
-        NiMesh* mesh = FUN_14147ce70(instance->GetName());
-        if (mesh != NULL) {
-            if (NiInstancingUtilities::AddMeshInstance(mesh, instance)) {
-                if ((NiNode*)root != NULL) root->Update(0.0f, true);
-                dirty = true;
+    if (entity != NULL) {
+        egf::EntityID id(entity->GetEntityID());
+        auto it = entries.find(id);
+        if (it != entries.end()) {
+            Unk_MeshInstanceEntry& entry = it->second;
+            if ((NiNode*)entry.clone != NULL) {
+                auto hiddenIt = std::find(hidden.begin(), hidden.end(), id);
+                if (hiddenIt != hidden.end()) {
+                    ++config.activeCount;
+                    if ((NiNode*)root != NULL) root->AttachChild(entry.clone, true);
+                    if (eraseHidden) hidden.erase(hiddenIt);
+                    auto& kInstances = entry.instances;
+                    decltype(entry.instances)::const_iterator itEnd = kInstances.end();
+                    for (decltype(entry.instances)::const_iterator itOwned = kInstances.begin(); itOwned != itEnd; ++itOwned) {
+                        NiMeshHWInstance* instance = *itOwned;
+                        NiMesh* mesh = FUN_14147ce70(instance->GetName());
+                        if (mesh != NULL) {
+                            if (NiInstancingUtilities::AddMeshInstance(mesh, instance)) {
+                                if ((NiNode*)root != NULL) root->Update(0.0f, true);
+                                dirty = true;
+                            }
+                        }
+                    }
+                } else {
+                    return 0;
+                }
+            } else {
+                return 0;
             }
+        } else {
+            return 0;
         }
+        return 1;
     }
-    return 1;
+    return 0;
 }
 MS2_REPLACE_METHOD(0x1411c6390, EntityInstancing, FUN_1411c6390, 831, 0x7AAA780E);
-// MS2-FUNCTIONAL: Named map iterator changes temporary storage.
 // @0x1411c66e0
 void EntityInstancing::FUN_1411c66e0() {
     for (auto it = hidden.begin(); it != hidden.end(); ++it) {
         auto entry = entries.find(*it);
         if (entry != entries.end()) {
-            if (entry->second.entity != NULL) FUN_1411c6390(entry->second.entity, false);
+            Unk_MeshInstanceEntry& kEntry = entry->second;
+            if (kEntry.entity != NULL) FUN_1411c6390(kEntry.entity, false);
         }
     }
     hidden.clear();
@@ -370,28 +385,28 @@ void EntityInstancing::FUN_1411c67f0(const egf::EntityID& id) {
     }
 }
 MS2_REPLACE_METHOD(0x1411c67f0, EntityInstancing, FUN_1411c67f0, 215, 0x8EE47481);
-// MS2-FUNCTIONAL: Named entry reference changes stack storage.
 // @0x1411c68d0
 void EntityInstancing::FUN_1411c68d0() {
     ecr::RenderService* renderer = FUN_1413f9890();
     for (auto it = entries.begin(); it != entries.end(); ++it) {
         Unk_MeshInstanceEntry& entry = it->second;
-        egf::Entity* entity = entry.entity;
+        egf::Entity* entity = it->second.entity;
         if (entity != NULL) {
             NiAVObject* original = FUN_1413fa030(entity);
             if (original != NULL) { entry.clone->SetLocalTransform(original->GetLocalTransform()); dirty = true; }
             bool hidden = false;
             FUN_14098c6e0(entity, 0xa0b6b179, hidden);
-            if (!FUN_141bc7b20(FUN_1403ed2d0(), it->first)) renderer->RemoveRenderedEntity(entity, entry.original);
+            if (!FUN_141bc7b20(FUN_1403ed2d0(), it->first)) renderer->RemoveRenderedEntity(entity, it->second.original);
         }
     }
 }
 MS2_REPLACE_METHOD(0x1411c68d0, EntityInstancing, FUN_1411c68d0, 376, 0xCD9A901E);
-// MS2-FUNCTIONAL: Direct return changes the boolean-result branch layout.
 // @0x1411c6a50
-bool EntityInstancing::FUN_1411c6a50(const egf::EntityID& id) { return std::find(hidden.begin(), hidden.end(), id) != hidden.end(); }
+bool EntityInstancing::FUN_1411c6a50(const egf::EntityID& id) {
+    std::list<egf::EntityID>::iterator it = std::find(hidden.begin(), hidden.end(), id);
+    return it != hidden.end();
+}
 MS2_REPLACE_METHOD(0x1411c6a50, EntityInstancing, FUN_1411c6a50, 133, 0x9E83D04C);
-// MS2-FUNCTIONAL: Named mesh and entry references change stack allocation and EH ranges.
 // No hook: constructs local RTTI functors, directly or through the hide operation.
 // @0x1411c6ae0
 void EntityInstancing::FUN_1411c6ae0(unsigned count) {
@@ -401,28 +416,41 @@ void EntityInstancing::FUN_1411c6ae0(unsigned count) {
             efd::vector<NiMeshHWInstance*> children;
             EntityHelper::SceneGraphMeshFunctor<NiMeshHWInstance> collect(children);
             EntityHelper::Traverse((NiNode*)entry.clone, collect);
-            for (NiMeshHWInstance* instance : children) {
+            efd::vector<NiMeshHWInstance*>& kChildren = children;
+            efd::vector<NiMeshHWInstance*>::const_iterator itEnd = kChildren.end();
+            for (efd::vector<NiMeshHWInstance*>::const_iterator itChild = kChildren.begin(); itChild != itEnd; ++itChild) {
+                NiMeshHWInstance* instance = *itChild;
                 NiMesh* mesh = FUN_14147ce70(instance->GetName());
                 if (mesh != NULL && NiInstancingUtilities::RemoveMeshInstance(mesh, instance)) dirty = true;
             }
         }
     }
-    for (NiMesh* mesh : meshes) NiInstancingUtilities::DisableMeshInstancing(mesh);
+    {
+        auto& kMeshes = meshes;
+        decltype(meshes)::const_iterator itEnd = kMeshes.end();
+        for (decltype(meshes)::const_iterator itMesh = kMeshes.begin(); itMesh != itEnd; ++itMesh) {
+            NiMesh* mesh = *itMesh;
+            NiInstancingUtilities::DisableMeshInstancing(mesh);
+        }
+    }
     capacity = count;
-    for (NiMesh* mesh : meshes) {
+    auto& kMeshes = meshes;
+    decltype(meshes)::const_iterator itEnd = kMeshes.end();
+    for (decltype(meshes)::const_iterator itMesh = kMeshes.begin(); itMesh != itEnd; ++itMesh) {
+        NiMesh* mesh = *itMesh;
         NiInstancingUtilities::EnableMeshInstancing(mesh, capacity, NULL, 0, 0x10000, false, false, false,
                                                    NULL, 0, NiDataStreamElement::F_UINT32_1);
         if (flag2b) FUN_1410865e0(mesh, DAT_143ae51d0, true);
     }
     int activeCount = 0;
     for (auto it = entries.begin(); it != entries.end(); ++it) {
-        if (std::find(hidden.begin(), hidden.end(), it->first) == hidden.end()) {
-            ++activeCount;
-            for (auto instanceIt = it->second.instances.begin(); instanceIt != it->second.instances.end(); ++instanceIt) {
-                NiPointer<NiMeshHWInstance> instance = *instanceIt;
-                NiMesh* mesh = FUN_14147ce70(instance->GetName());
-                if (mesh != NULL) NiInstancingUtilities::AddMeshInstance(mesh, instance);
-            }
+        auto found = std::find(hidden.begin(), hidden.end(), it->first);
+        if (found != hidden.end()) continue;
+        ++activeCount;
+        for (auto instanceIt = it->second.instances.begin(); instanceIt != it->second.instances.end(); ++instanceIt) {
+            NiPointer<NiMeshHWInstance> instance = *instanceIt;
+            NiMesh* mesh = FUN_14147ce70(instance->GetName());
+            if (mesh != NULL) NiInstancingUtilities::AddMeshInstance(mesh, instance);
         }
     }
     config.activeCount = activeCount;

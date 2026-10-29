@@ -194,15 +194,13 @@ int UIRegionListDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
             FUN_140e811d0();
         }
         return 1;
-    }
-    if (_stricmp("OnEndPopdown", szMethod) == 0) {
+    } else if (_stricmp("OnEndPopdown", szMethod) == 0) {
         OnEndPopdown();
         return 1;
     }
     return 0;
 }
 
-// MS2-FUNCTIONAL: destructor placement of the saved-region copy on the early-return paths
 // @0x140e80620
 void UIRegionListDialog::FUN_140e80620()
 {
@@ -216,10 +214,10 @@ void UIRegionListDialog::FUN_140e80620()
             }
         }
         FUN_141924680();
-    } else {
-        FUN_140714f90()->FUN_1415382c0();
-        vfunc_67();
+        return;
     }
+    FUN_140714f90()->FUN_1415382c0();
+    vfunc_67();
 }
 
 // @0x140e80740
@@ -324,10 +322,13 @@ bool UIRegionListDialog::FUN_140e80f10(CStringW strRegion)
             DAT_143ae0928 = FUN_140e819e0(region->m_host);
         FUN_1412609c0(FUN_140cfd260(FUN_1409a8b10()), region->m_id);
         return true;
+    } else {
+        {
+            CStringW strEmpty(L"");
+            FUN_1412609c0(FUN_140cfd260(FUN_1409a8b10()), strEmpty);
+        }
+        return false;
     }
-    CStringW strEmpty(L"");
-    FUN_1412609c0(FUN_140cfd260(FUN_1409a8b10()), strEmpty);
-    return false;
 }
 
 // @0x140e810d0

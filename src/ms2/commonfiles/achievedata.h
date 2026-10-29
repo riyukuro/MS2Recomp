@@ -60,7 +60,7 @@ public:
     bool operator!=(const CAchieveData& o) const;       // 0x14015b8d0 (true when the tables differ)
     MS2Ptr<CAchieveGradeData> GetGrade(int nGrade);     // 0x14015bc40
     CString GetName();                  // 0x14015bcd0 (icon path)
-    bool IsAvailable();                 // 0x14015bd60 (feature and locale of this build)
+    int IsAvailable();                  // 0x14015bd60 (feature and locale of this build)
     void OnLoaded();                    // 0x14015dcb0 (empty)
 
     // The table (loaded from Achieve\*.xml, see LoadAll/Load in achievedata.cpp).
@@ -68,8 +68,8 @@ public:
     static void CheckInit();            // 0x140165670
     static void SetInit(bool bInit);    // 0x14016a500
     static int GetSurvivalFlag(int nId);                // 0x14015be50
-    static bool HasRewardSkill(unsigned nId, int nGrade);   // 0x14015bed0
-    static bool HasRewardStat(unsigned nId, int nGrade);    // 0x14015bf90
+    static int HasRewardSkill(unsigned nId, int nGrade);   // 0x14015bed0
+    static int HasRewardStat(unsigned nId, int nGrade);    // 0x14015bf90
     static void LoadAll();              // 0x14015c050
     static void Load(CString strPath);  // 0x14015c270
     static void LoadClient(CString strPath, MS2Ptr<CAchieveData>& rOut);   // 0x14015cff0

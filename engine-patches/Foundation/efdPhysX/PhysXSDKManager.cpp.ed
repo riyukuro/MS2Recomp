@@ -1,4 +1,11 @@
+81,82c
+    m_pPhysXSDK = ((CreatePhysicsSDKWithGuid)&NxCreatePhysicsSDK)(NX_PHYSICS_SDK_VERSION,
+        pAllocator, pOutputStream, sdkDesc, errorCode, "BE9042F0-ADC4-4b12-A93E-DB8A731FDBD5");
+.
 62a
 
 
+.
+39c
+typedef NxPhysicsSDK* (NX_CALL_CONV *CreatePhysicsSDKWithGuid)(NxU32, NxUserAllocator*, NxUserOutputStream*, const NxPhysicsSDKDesc&, NxSDKCreateError*, const char*); // the shipped PhysXLoader64.dll (2.8.4.6) reads a 6th arg, the app GUID, which the 2.8.4 header lacks
 .

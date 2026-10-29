@@ -86,7 +86,7 @@ extern Unk_M2vCtx* DAT_143ba9db8;               // pool base
 extern int DAT_143ba9d70[16];                   // default parameter block
 extern Unk_M2vCtx* DAT_143ba9d60;               // current context
 extern const char* DAT_143ba9d68;               // version string
-extern void* DAT_143e64b88;
+extern "C" int DAT_143e64b88;                                 // the decoder-ready flag (4-byte store in the exe)
 extern void* DAT_143e64b60;
 extern void* DAT_143e64b20;
 extern void* DAT_143e64b80;
@@ -356,7 +356,7 @@ void FUN_140047840(Unk_M2vCtx* pCtx, int nIndex, int nValue)
 // Fills the decoder's function table.
 void FUN_1400478a0(void)
 {
-    DAT_143e64b88 = (void*)1;
+    DAT_143e64b88 = 1;
     DAT_143e64b60 = (void*)&LAB_140047420;
     DAT_143e64b20 = (void*)FUN_140047430;
     DAT_143e64b80 = (void*)FUN_140047770;

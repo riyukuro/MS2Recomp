@@ -11,7 +11,7 @@ struct Unk_GVec3 {
     Unk_GVec3();                                    // 0x1405522f0
     Unk_GVec3(float x, float y, float z);           // 0x14097f250
     Unk_GVec3(const Unk_GVec3& o);                  // 0x14027dcf0
-    Unk_GVec3& operator=(Unk_GVec3 o);              // 0x14097faa0 (by-value parameter)
+    Unk_GVec3& operator=(const Unk_GVec3& o);      // 0x14097faa0 (NiPoint3 assignment; the exe passes the source by address)
     float x, y, z;
 };
 struct Unk_Rect4 { Unk_Rect4(float l, float r, float t, float b); float l, r, t, b; };   // ctor 0x14097eac0
@@ -22,7 +22,7 @@ struct Unk_Vec3Cli : Unk_Vec3f { Unk_Vec3Cli(float x, float y, float z); };   //
 class CMinimap : public CPtred {
 public:
     CMinimap();                                     // 0x140a56c20
-    virtual ~CMinimap();                            // 0x140a56e30, sdd 0x140a56ff0
+    // ~CMinimap() is implicit                      // 0x140a56e30, sdd 0x140a56ff0 (no vptr reset)
     CString m_strImageName;                         // +0x18 <image name>
     CString m_strImageIcon;                         // +0x20 <image icon>
     Unk_Rect4 m_rcImage;                            // +0x28 <image left right top bottom>

@@ -50,7 +50,7 @@ protected:
     CString m_strStored;                        // +0x1f8 the page reported by the browser
     int m_nWidth;                               // +0x200 current browser size
     int m_nHeight;                              // +0x204
-    int m_nSmallSize;                           // +0x208 "m_textureSize"
+    unsigned int m_nSmallSize;                  // +0x208 "m_textureSize"
     int m_nMinWidth;                            // +0x20c the constants: small size
     int m_nMinHeight;                           // +0x210
     int m_nMaxWidth;                            // +0x214 large size

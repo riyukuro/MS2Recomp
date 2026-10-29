@@ -66,12 +66,13 @@ public:
     void* m_pad_00;
     void* m_p;
 };
+// MS2-PIN: ??0Unk_CbInfoPtr@@QEAA@AEBVUnk_CbNpcDataPtr@@@Z 0x1406cf850
 class Unk_CbInfoPtr                                                 // the converted handle (16 bytes)
 {
 public:
+    Unk_CbInfoPtr(const Unk_CbNpcDataPtr& src);                     // 0x1406cf850 construct from the npc data handle
     ~Unk_CbInfoPtr() { FUN_14035e5b0(); }
-    void FUN_1406cf850(Unk_CbNpcDataPtr* pSrc);                     // construct from the npc data handle
-    bool FUN_140729ad0();                                           // is set
+    Unk_CbNpcInfo* FUN_140729ad0();                                 // get
     Unk_CbNpcInfo* FUN_14035eb90();                                 // operator->
     void FUN_14035e5b0();                                           // release
     void* m_pad_00;
@@ -120,7 +121,7 @@ __int64 FUN_141656a80(PCBase* pPc);                                 // player ac
 CString FUN_141028be0(__int64 nId, const CString& strName, int nFlag, CString strExtra);   // profile image path
 CStringW FUN_14016a730(const char* sz, int nFlags);                 // FormatStringId(id) without arguments
 struct Unk_CbFlags { bool m_0; bool m_1; };
-class Unk_CbFlagHolder { public: Unk_CbFlags* FUN_14124ab20(); char* FUN_140e09150(); };
+class Unk_CbFlagHolder { public: Unk_CbFlags* FUN_14124ab20(); unsigned char* FUN_140e09150(); };
 Unk_CbFlagHolder* FUN_1409a8b10();
 class Unk_CbSvc1 { public: int FUN_140a18070(); };
 Unk_CbSvc1* FUN_1409478c0();
@@ -149,33 +150,31 @@ public:
     virtual void vfunc_12(); virtual void vfunc_13(); virtual void vfunc_14(); virtual void vfunc_15();
     virtual void vfunc_16(); virtual void vfunc_17(); virtual void vfunc_18(); virtual void vfunc_19();
     virtual void vfunc_20(); virtual void vfunc_21(); virtual void vfunc_22(); virtual void vfunc_23();
-    virtual void vfunc_24(int n);
+    virtual void vfunc_24(bool b);
     void FUN_1422dfc10();                                           // clear
     unsigned int FUN_1422dfb90();                                   // item count
     void FUN_1422dfc70(ASObj& obj);                                 // add an item
     void FUN_1422df5f0(unsigned int n);
     void FUN_1422df690(int n);
 };
-class Unk_CbList
+class Unk_CbList                                                    // a 16 byte smart pointer to the list control, passed by value
 {
 public:
-    char FUN_140bc03e0(int n);
-    Unk_CbCtl* FUN_140bc0530();
-    void FUN_140bbfda0();                                           // end the update
+    ~Unk_CbList() { FUN_140bbfda0(); }
+    bool FUN_140bc03e0(int n);                                      // == 0
+    Unk_CbCtl* FUN_140bc0530();                                     // ->
+    void FUN_140bbfda0();                                           // release
+    void* m_pad_00;
+    void* m_p;
 };
-struct Unk_CbListGuard
-{
-    Unk_CbListGuard(Unk_CbList* p) : m_p(p) {}
-    ~Unk_CbListGuard() { m_p->FUN_140bbfda0(); }
-    Unk_CbList* m_p;
-};
+// MS2-PIN: ??0Unk_CbItemPtr@@QEAA@H@Z 0x14053f870
 struct Unk_CbItemData { int FUN_14053c5a0(); };
 class Unk_CbItemPtr
 {
 public:
+    Unk_CbItemPtr(int nItemId);                                     // 0x14053f870 construct from the item id
     ~Unk_CbItemPtr() { FUN_1401b50d0(); }
-    void FUN_14053f870(int nItemId);                                // construct from the item id
-    char FUN_1401b5240(int n);
+    bool FUN_1401b5240(int n);
     Unk_CbItemData* FUN_1401b52a0();
     void FUN_1401b50d0();
     void* m_pad_00;
@@ -190,13 +189,14 @@ Unk_CbDlgB* FUN_14136f3e0(int nUiId);
 class Unk_CbPtr                                                     // a 16 byte smart pointer passed by value
 {
 public:
-    Unk_CbPtr(int n) { FUN_140203510(n); }
+    Unk_CbPtr(int n);                                               // 0x140203510 construct (null)
+    Unk_CbPtr(const Unk_CbPtr& o);                                  // copy (out of line)
     ~Unk_CbPtr() { FUN_1401bfde0(); }
-    void FUN_140203510(int n);                                      // construct (null)
     void FUN_1401bfde0();                                           // release
     void* m_pad_00;
     void* m_p;
 };
+// MS2-PIN: ??0Unk_CbPtr@@QEAA@H@Z 0x140203510
 class Unk_CbSvc2 { public: int FUN_140954150(); void FUN_140cdadb0(Unk_CbPtr tag); };
 Unk_CbSvc2* FUN_140953f20();
 int FUN_141274ff0();
@@ -204,7 +204,7 @@ int FUN_141275080();
 void FUN_141274f50();
 void* FUN_14209c720(void*);
 void* FUN_140aadf80();
-int FUN_141b710a0(unsigned __int64 nChar);
+int FUN_141b710a0(unsigned short wc);
 int FUN_14151f6e0();
 void FUN_140d73bc0(int nStrId, int nType, void* p, CStringW tag);
 
@@ -253,25 +253,24 @@ void UIChatBalloon::Entity::vfunc_5()
     PCBase* pActor = FUN_140f49330();
     if (pActor == 0)
         return;
-    if (m_38.get() == 0)
-        return;
-    Unk_CbPC* pPc = FUN_140974230(pActor);
-    if (pPc != 0)
+    if (m_38.get() != 0)
     {
-        if (pPc->FUN_14165f460()->FUN_141270740(3).FUN_1412722d0(0))
-            m_a8.Empty();
+        Unk_CbPC* pPc = FUN_140974230(pActor);
+        if (pPc != 0)
+            if (pPc->FUN_14165f460()->FUN_141270740(3).FUN_1412722d0(0))
+                m_a8.Empty();
+        ASObj obj(m_18);
+        obj.FUN_1407cbb20("text", m_b0);
+        obj.FUN_1407cbb20("imgPath", FUN_14016a730((const char*)FUN_1418fb7e0(), 0));
+        obj.FUN_1407cbbe0("bNpc", FUN_14087ddc0(pActor ? pActor->GetClassDesc() : 0, 0x6200028));
+        const char* szSkin;
+        if (((Unk_CbActor*)pActor)->FUN_14166ce30() != 0)
+            szSkin = "dead";
+        else
+            szSkin = (const char*)m_a8;
+        obj.FUN_1409c0dc0("skin", szSkin);
+        m_38->Invoke("open", obj);
     }
-    ASObj obj(m_18);
-    obj.FUN_1407cbb20("text", m_b0);
-    obj.FUN_1407cbb20("imgPath", FUN_14016a730((const char*)FUN_1418fb7e0(), 0));
-    obj.FUN_1407cbbe0("bNpc", FUN_14087ddc0(pActor ? pActor->GetClassDesc() : 0, 0x6200028));
-    const char* szSkin;
-    if (((Unk_CbActor*)pActor)->FUN_14166ce30() == 0)
-        szSkin = (const char*)m_a8;
-    else
-        szSkin = "dead";
-    obj.FUN_1409c0dc0("skin", szSkin);
-    m_38->Invoke("open", obj);
 }
 
 // @0x1418fb4a0
@@ -350,7 +349,6 @@ __int64 UIChatBalloon::Entity::FUN_1418fb790()
     return 0;
 }
 
-// MS2-FUNCTIONAL: smart-pointer handle temporaries/cleanup layout differs
 // @0x1418fb7e0
 CString UIChatBalloon::Entity::FUN_1418fb7e0()
 {
@@ -360,39 +358,34 @@ CString UIChatBalloon::Entity::FUN_1418fb7e0()
     CString strUnused1;
     CString strUnused2;
     Unk_CbNpc* pNpc = FUN_14096e110(pActor);
-    if (pNpc == 0)
+    if (pNpc != 0)
     {
-        Unk_CbPC* pPc = FUN_140974230(pActor);
-        if (pPc != 0)
-            return FUN_141028be0(FUN_141656a80(pPc), pPc->FUN_1416612e0(), 1, CString(""));
-        Unk_CbPet* pPet = FUN_1418fc490(pActor);
-        if (pPet != 0)
-        {
-            Unk_CbInfoPtr info;
-            {
-                Unk_CbNpcDataPtr data = pPet->FUN_140a4f1b0();
-                info.FUN_1406cf850(&data);
-            }
-            if (info.FUN_140729ad0() != 0)
-            {
-                CString str(info.FUN_14035eb90()->m_90);
-                if (str.GetLength() != 0)
-                    return str;
-            }
-        }
-    }
-    else
-    {
-        Unk_CbInfoPtr info;
-        {
-            Unk_CbNpcDataPtr data = pNpc->FUN_141093270();
-            info.FUN_1406cf850(&data);
-        }
+        Unk_CbInfoPtr info(pNpc->FUN_141093270());
         if (info.FUN_140729ad0() != 0)
         {
             CString str(info.FUN_14035eb90()->m_90);
             if (str.GetLength() != 0)
                 return str;
+        }
+    }
+    else
+    {
+        Unk_CbPC* pPc = FUN_140974230(pActor);
+        if (pPc != 0)
+            return FUN_141028be0(FUN_141656a80(pPc), pPc->FUN_1416612e0(), 1, CString(""));
+        else
+        {
+            Unk_CbPet* pPet = FUN_1418fc490(pActor);
+            if (pPet != 0)
+            {
+                Unk_CbInfoPtr info(pPet->FUN_140a4f1b0());
+                if (info.FUN_140729ad0() != 0)
+                {
+                    CString str(info.FUN_14035eb90()->m_90);
+                    if (str.GetLength() != 0)
+                        return str;
+                }
+            }
         }
     }
     return FUN_1401d31f0()->m_90;
@@ -587,48 +580,43 @@ int FUN_1418fc810()
     return 0;
 }
 
-// MS2-FUNCTIONAL: unrecovered list control helpers; temporary layout differs
 // @0x1418fc840
-void FUN_1418fc840(Unk_CbList* pList, int nItemId, int nSelRank)
+void FUN_1418fc840(Unk_CbList list, int nItemId, int nSelRank)
 {
-    Unk_CbListGuard guard(pList);
-    if (pList->FUN_140bc03e0(0) != 0)
+    if (list.FUN_140bc03e0(0))
         return;
-    pList->FUN_140bc0530()->FUN_1422dfc10();
-    Unk_CbItemPtr item;
-    item.FUN_14053f870(nItemId);
-    if (item.FUN_1401b5240(0) != 0)
+    list.FUN_140bc0530()->FUN_1422dfc10();
+    Unk_CbItemPtr item(nItemId);
+    if (item.FUN_1401b5240(0))
         return;
     int nSel = 0;
-    if (item.FUN_1401b52a0()->FUN_14053c5a0() == 0)
-    {
-        for (int nRank = 1; nRank < 7; nRank++)
-        {
-            ASObj row(2);
-            row.FUN_1407cbb20("label", FUN_1401a9d70()->FUN_141813150(nRank));
-            row.FUN_1407cb9c0("itemRank", nRank);
-            if (nRank == nSelRank)
-                nSel = pList->FUN_140bc0530()->FUN_1422dfb90();
-            pList->FUN_140bc0530()->FUN_1422dfc70(row);
-        }
-    }
-    else
+    if (item.FUN_1401b52a0()->FUN_14053c5a0() != 0)
     {
         ASObj row(2);
         row.FUN_1407cbb20("label", FUN_1401a9d70()->FUN_141813150(item.FUN_1401b52a0()->FUN_14053c5a0()));
         row.FUN_1409adc90("itemRank", item.FUN_1401b52a0()->FUN_14053c5a0());
-        pList->FUN_140bc0530()->FUN_1422dfc70(row);
+        list.FUN_140bc0530()->FUN_1422dfc70(row);
         nSel = 0;
     }
-    unsigned int nCount = pList->FUN_140bc0530()->FUN_1422dfb90();
-    if (nCount < 2)
-        nCount = 1;
-    pList->FUN_140bc0530()->FUN_1422df5f0(nCount);
-    pList->FUN_140bc0530()->FUN_1422df690(nSel);
-    pList->FUN_140bc0530()->vfunc_24(1);
+    else
+    {
+        for (int i = 1; i < 7; i++)
+        {
+            int nRank = i;
+            ASObj row(2);
+            row.FUN_1407cbb20("label", FUN_1401a9d70()->FUN_141813150(nRank));
+            row.FUN_1407cb9c0("itemRank", i);
+            if (nRank == nSelRank)
+                nSel = list.FUN_140bc0530()->FUN_1422dfb90();
+            list.FUN_140bc0530()->FUN_1422dfc70(row);
+        }
+    }
+    unsigned int nCount = list.FUN_140bc0530()->FUN_1422dfb90();
+    list.FUN_140bc0530()->FUN_1422df5f0(nCount > 1 ? nCount : 1);
+    list.FUN_140bc0530()->FUN_1422df690(nSel);
+    list.FUN_140bc0530()->vfunc_24(true);
 }
 
-// MS2-FUNCTIONAL: by-value smart pointer argument is copied here (rep movs) but constructed in place in the exe
 // @0x1418fcb70
 int FUN_1418fcb70()
 {
@@ -642,27 +630,26 @@ int FUN_1418fcb70()
         return 1;
     if (FUN_1403ed2b0()->FUN_141adbb00() != 0)
         return 0;
-    if (FUN_141274ff0() == 0)
+    if (FUN_141274ff0() != 0)
+    {
+        if (*FUN_1409a8b10()->FUN_140e09150() == 0)
+            return 0;
+        FUN_141274f50();
+    }
+    else
     {
         if (FUN_140953f20()->FUN_140954150() != 0)
         {
-            FUN_140953f20()->FUN_140cdadb0(Unk_CbPtr(0));
+            FUN_140953f20()->FUN_140cdadb0(0);
             return 1;
         }
         if (FUN_141275080() == 0)
             return 0;
         FUN_1403ed2b0()->FUN_141adc750(0x4e21);
     }
-    else
-    {
-        if (*FUN_1409a8b10()->FUN_140e09150() == 0)
-            return 0;
-        FUN_141274f50();
-    }
     return 1;
 }
 
-// MS2-FUNCTIONAL: IME composition branch layout differs
 // @0x1418fccc0
 int FUN_1418fccc0(int nMsg, unsigned __int64 wParam, unsigned __int64 lParam, CStringW* pStr)
 {
@@ -674,42 +661,42 @@ int FUN_1418fccc0(int nMsg, unsigned __int64 wParam, unsigned __int64 lParam, CS
         DWORD nLen = 0;
         wchar_t buf[256];
         memset(buf, 0, sizeof(buf));
-        if ((lParam & 0x2000) == 0)
+        if ((lParam & 0x2000) != 0)
         {
-            if (wParam != 8 && wParam != 0x1b)
-                return 0;
-        }
-        else
-        {
-            if ((lParam & 0x800) == 0)
-            {
-                if ((lParam & 8) == 0)
-                    return 0;
-                nLen = ImmGetCompositionStringW(hImc, 8, 0, 0);
-                if (0 < (int)nLen)
-                    ImmGetCompositionStringW(hImc, 8, buf, nLen);
-            }
-            else
+            if ((lParam & 0x800) != 0)
             {
                 nLen = ImmGetCompositionStringW(hImc, 0x800, 0, 0);
                 if (0 < (int)nLen)
                     ImmGetCompositionStringW(hImc, 0x800, buf, nLen);
             }
+            else if ((lParam & 8) != 0)
+            {
+                nLen = ImmGetCompositionStringW(hImc, 8, 0, 0);
+                if (0 < (int)nLen)
+                    ImmGetCompositionStringW(hImc, 8, buf, nLen);
+            }
+            else
+                return 0;
             ImmReleaseContext((HWND)FUN_14209c720(FUN_140aadf80()), hImc);
             *pStr += buf;
+        }
+        else
+        {
+            if (wParam != 8 && wParam != 0x1b)
+                return 0;
         }
     }
     else
     {
         wchar_t ch = (wchar_t)wParam;
-        if (FUN_141b710a0(wParam & 0xffff) == 0)
+        if (FUN_141b710a0(ch) != 0)
+            *pStr += ch;
+        else
         {
             if (ch != L'\b' && ch != L'\x1b')
                 return 0;
             pStr->Delete(pStr->GetLength() - 1, 1);
         }
-        else
-            *pStr += ch;
     }
     return 1;
 }

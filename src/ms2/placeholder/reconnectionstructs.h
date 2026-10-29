@@ -15,8 +15,7 @@ public:
     virtual ~ReconnectionOptions();
     ReconnectionOptions* FUN_140208460(const ReconnectionOptions* src);   // copies the 0x2c payload bytes at +0x18
     int FUN_140aadf90(int index);                           // inline COMDAT: bounds-asserts 0..10, returns m_values[index]
-    int m_v0, m_v1, m_v2, m_v3, m_v4, m_v5, m_v6, m_v7, m_v8, m_v9;   // +0x18 (0x2c payload bytes: 10 ints + 1 pad int)
-    int m_pad;
+    int m_values[11];                                       // +0x18 (0x2c payload bytes); an array, so a local is a /GS buffer as in the exe
 };
 MS2_CHECK_SIZE(ReconnectionOptions, 0x48);
 

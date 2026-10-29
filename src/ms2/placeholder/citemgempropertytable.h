@@ -27,7 +27,7 @@ public:
     CItemGemPropertyTable();                                // 0x1405abd00
     virtual ~CItemGemPropertyTable();                       // 0x1405abdc0
 
-    int Load();                                             // 0x1405abe50 the four ItemGemProperty_*.xml
+    bool Load();                                            // 0x1405abe50 the four ItemGemProperty_*.xml
     MS2Ptr<CGemDataBase> FUN_1405ac160(int nGemId);         // 0x1405ac160 the row of a gem (null when missing)
     bool FUN_1405ac260();                                   // 0x1405ac260 reloads when a file changed on disk
 
@@ -49,7 +49,7 @@ public:
 private:
     MS2_LAYOUT_FRIEND;
     // Loads one file: rows of <pszTag> become T, keyed by "id" (0x1405adec0 .. 0x1405aeb80, one per row class).
-    template <class T> int LoadGems(const CString& strFile, const CString& strTag);
+    template <class T> bool LoadGems(const CString& strFile, const CString& strTag);
 
     CLockCriticalSection m_lock;                            // +0x10
     ATL::CAtlArray<MS2Ptr<CCacheData> > m_caches;           // +0x40 one per loaded xml (path, write time)

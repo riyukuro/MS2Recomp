@@ -10,7 +10,7 @@
 // MS2-RANGE: 0x14305cd3c-0x14305cd3e .rdata
 // MS2-RANGE: 0x143138360-0x143138510 .rdata
 // MS2-RANGE: 0x143138530-0x1431385b8 .rdata
-// MS2-RANGE: 0x14313a200-0x14313f358 .rdata
+// MS2-RANGE: 0x14313a1d8-0x14313f358 .rdata
 // MS2-RANGE: 0x143144150-0x1431496d0 .rdata
 // MS2-RANGE: 0x14314ed40-0x14314ef70 .rdata
 // MS2-RANGE: 0x14314f3e0-0x14314f738 .rdata
@@ -31,6 +31,7 @@
 // MS2-RANGE: 0x143165210-0x143165920 .rdata
 // MS2-RANGE: 0x143167360-0x143167a30 .rdata
 // MS2-RANGE: 0x143167a30-0x143169970 .rdata
+// MS2-RANGE: 0x14316afc0-0x14316afd8 .rdata
 // MS2-RANGE: 0x14316b3f0-0x14316b640 .rdata
 // MS2-RANGE: 0x14316ccb0-0x14316d038 .rdata
 // MS2-RANGE: 0x14316d040-0x14316e6f0 .rdata
@@ -1186,6 +1187,10 @@ void FUN_1423db970();
 void FUN_1423dba40();
 void FUN_1423dbb60();
 void FUN_1423dbc80();
+void FUN_1423ce040();
+void FUN_1423ce0a0();
+void FUN_1423ce2c0();
+void FUN_1424aa810();
 void FUN_1423dbcb0();
 void FUN_1423dbefc();
 void FUN_1423dbf08();
@@ -1382,6 +1387,13 @@ struct Sd_143138360 {
     const void* p68;
     const void* p70;
     const void* p78;
+};
+struct Sd_14313a1d8 {
+    const void* p0;
+    const void* p8;
+    const void* p10;
+    const void* p18;
+    const void* p20;
 };
 struct Sd_14313a200 {
     const void* p0;
@@ -1606,6 +1618,20 @@ struct Sd_14313b968 {
     const void* p20;
     const void* p28;
     unsigned char b30[0x30];
+};
+struct Sd_14313b9c8 {
+    const void* p0;
+    const void* p8;
+    const void* p10;
+    const void* p18;
+    const void* p20;
+    const void* p28;
+    const void* p30;
+    const void* p38;
+    const void* p40;
+    const void* p48;
+    const void* p50;
+    const void* p58;
     const void* p60;
     const void* p68;
     const void* p70;
@@ -1613,18 +1639,6 @@ struct Sd_14313b968 {
     const void* p80;
     const void* p88;
     const void* p90;
-    const void* p98;
-    const void* pa0;
-    const void* pa8;
-    const void* pb0;
-    const void* pb8;
-    const void* pc0;
-    const void* pc8;
-    const void* pd0;
-    const void* pd8;
-    const void* pe0;
-    const void* pe8;
-    const void* pf0;
 };
 struct Sd_14313ba60 {
     const void* p0;
@@ -7572,6 +7586,11 @@ struct Sd_143167f80 {
     const void* p1228;
     unsigned char b1230[0x7c0];
 };
+struct Sd_14316afc0 {
+    const void* p0;
+    const void* p8;
+    const void* p10;
+};
 struct Sd_14316b3f0 {
     const void* p0;
     const void* p8;
@@ -10668,6 +10687,14 @@ alignas(16) Sd_1431383e0 DAT_1431383e0 = {
     (const void*)&FUN_1423ca080,
     (const void*)&FUN_1423c96d0,
 };
+// 0x14313a1d8
+alignas(8) Sd_14313a1d8 DAT_14313a1d8 = {
+    DAT_14280ef52,
+    DAT_14280ef52,
+    (const void*)&FUN_1423ce2c0,
+    (const void*)&FUN_1423ce0a0,
+    (const void*)&FUN_1423ce040,
+};
 // 0x14313a200
 alignas(16) Sd_14313a200 DAT_14313a200 = {
     (const void*)&FUN_1423ce250,
@@ -11202,6 +11229,9 @@ alignas(8) Sd_14313b968 DAT_14313b968 = {
         0x39, 0xa1, 0x1e, 0xea, 0xdf, 0x19, 0xd7, 0x11, 0xa6, 0xd2, 0x00, 0x06, 0x5b, 0x84, 0x43, 0x5c,
         0x4d, 0x61, 0x6b, 0x65, 0x49, 0x6e, 0x76, 0x69, 0x73, 0x69, 0x62, 0x6c, 0x65, 0x00, 0x00, 0x00,
     },
+};
+// 0x14313b9c8
+alignas(8) Sd_14313b9c8 DAT_14313b9c8 = {
     (const void*)&FUN_1423dbc80,
     DAT_14280ef52,
     DAT_14280ef52,
@@ -22140,6 +22170,12 @@ alignas(16) Sd_143167f80 DAT_143167f80 = {
         0x47, 0x72, 0x69, 0x64, 0x46, 0x69, 0x74, 0x54, 0x79, 0x70, 0x65, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
 };
+// 0x14316afc0
+alignas(8) Sd_14316afc0 DAT_14316afc0 = {
+    (const void*)&FUN_1424aa810,
+    DAT_14280ef52,
+    DAT_14280ef52,
+};
 // 0x14316b3f0
 alignas(16) Sd_14316b3f0 DAT_14316b3f0 = {
     (const void*)&FUN_1424aa770,
@@ -26978,5 +27014,10 @@ alignas(16) Sd_1431726d0 DAT_1431726d0 = {
 // 0x14305cd3c: the root block of VerQueryValue (sfr_ime_01), a C name (group 14305cd3c; the generator sizes
 // unmangled names to the next known global, 0x506c4 bytes here, so it is written by hand)
 extern "C" const char DAT_14305cd3c[] = "\\";
+
+// rt1: vftables the IME and AS2 TUs declare by address
+#pragma comment(linker, "/alternatename:DAT_14313a1d8=?DAT_14313a1d8@@3USd_14313a1d8@@A")
+#pragma comment(linker, "/alternatename:DAT_14313b9c8=?DAT_14313b9c8@@3USd_14313b9c8@@A")
+#pragma comment(linker, "/alternatename:?DAT_14316afc0@AS2@GFx@Scaleform@@3PAPEBXA=?DAT_14316afc0@@3USd_14316afc0@@A")
 
 #endif // MS2_HOOK_DLL

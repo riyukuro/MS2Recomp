@@ -494,22 +494,29 @@ CNMGuildMemberInfo& CNMGuildMemberInfo::operator=(const CNMGuildMemberInfo& r) {
 CNMGuildMemberLevelInfo& CNMGuildMemberLevelInfo::operator=(const CNMGuildMemberLevelInfo& r) { return copy_record_bytes(*this, r); }
 // MS2-PIN: ??4CNMGuildMemberLevelInfo@@QEAAAEAV0@AEBV0@@Z 0x1415f1420
 
-// MS2-FUNCTIONAL: copies the recovered fixed payload after serializable base fields.
+// MS2-FUNCTIONAL: CNMGuildOnlineInfo copy assignment; copies the fixed fields, then assigns the member vector.
 // @0x1415f14b0
 CNMSerializable* FUN_1415f14b0(CNMSerializable* dst, long long src)
 {
+    CNMGuildOnlineInfo* d = static_cast<CNMGuildOnlineInfo*>(dst);
+    const CNMGuildOnlineInfo* s = reinterpret_cast<const CNMGuildOnlineInfo*>(src);
     dst->CopyFrom(reinterpret_cast<CNMSerializable*>(src));
-    std::memcpy(reinterpret_cast<char*>(dst) + 0x10, reinterpret_cast<const char*>(src) + 0x10, 0x88);
+    std::memcpy(&d->m_10, &s->m_10, 0x40 - 0x10);
+    d->m_40 = s->m_40;
     return dst;
 }
 // MS2-PIN: ?FUN_1415f14b0@@YAPEAVCNMSerializable@@PEAV1@_J@Z 0x1415f14b0
 
-// MS2-FUNCTIONAL: copies the recovered fixed payload after serializable base fields.
+// MS2-FUNCTIONAL: CNMGuildOnlineInfoEx copy assignment; copies the fixed fields, assigns the member vector, then m_60.
 // @0x1415f1580
 CNMSerializable* FUN_1415f1580(CNMSerializable* dst, long long src)
 {
+    CNMGuildOnlineInfoEx* d = static_cast<CNMGuildOnlineInfoEx*>(dst);
+    const CNMGuildOnlineInfoEx* s = reinterpret_cast<const CNMGuildOnlineInfoEx*>(src);
     dst->CopyFrom(reinterpret_cast<CNMSerializable*>(src));
-    std::memcpy(reinterpret_cast<char*>(dst) + 0x10, reinterpret_cast<const char*>(src) + 0x10, 0x88);
+    std::memcpy(&d->m_10, &s->m_10, 0x48 - 0x10);
+    d->m_aMembers = s->m_aMembers;
+    d->m_60 = s->m_60;
     return dst;
 }
 // MS2-PIN: ?FUN_1415f1580@@YAPEAVCNMSerializable@@PEAV1@_J@Z 0x1415f1580
@@ -536,12 +543,17 @@ CNMNoteInfo2& CNMNoteInfo2::operator=(const CNMNoteInfo2& r)
 // MS2-PIN: ??4CNMNoteInfo2@@QEAAAEAV0@AEBV0@@Z 0x1415f1760
 // MS2-PIN: ?FUN_1415f1760@@YAPEAVCNMSerializable@@PEAV1@_J@Z 0x1415f1760
 
-// MS2-FUNCTIONAL: copies the recovered fixed payload after base fields.
+CNMSerializable* FUN_1415efb60(CNMSerializable* dst, long long src);
+CNMSerializable* FUN_1415efb30(CNMSerializable* dst, long long src);
+
+// MS2-FUNCTIONAL: CNMNoteInfo copy assignment; copies the fields 0x10..0xeb8 and the m_eb8 avatar sub-object.
 // @0x1415f1be0
 void FUN_1415f1be0(void* dst, const void* src)
 {
     static_cast<CNMSerializable*>(dst)->CopyFrom(const_cast<CNMSerializable*>(static_cast<const CNMSerializable*>(src)));
-    std::memcpy(static_cast<char*>(dst) + 0x10, static_cast<const char*>(src) + 0x10, 0xd0);
+    std::memcpy(static_cast<char*>(dst) + 0x10, static_cast<const char*>(src) + 0x10, 0xea8);
+    FUN_1415efb60(reinterpret_cast<CNMSerializable*>(static_cast<char*>(dst) + 0xeb8),
+                  reinterpret_cast<long long>(static_cast<const char*>(src) + 0xeb8));
 }
 // MS2-PIN: ?FUN_1415f1be0@@YAXPEAXPEBX@Z 0x1415f1be0
 
@@ -3532,17 +3544,15 @@ void FUN_1415f3a10(void* p)
 {
     (void)FUN_1415f3aa0(static_cast<long long*>(p));
 }
-// MS2-FUNCTIONAL: copies the recovered fixed payload and preserves the embedded serializable vtable.
+// MS2-FUNCTIONAL: CNMNoteInfo move assignment; copies the fields 0x10..0xeb8 and moves the m_eb8 avatar sub-object.
 // @0x1415f1930
 CNMSerializable* FUN_1415f1930(CNMSerializable* dst, long long src)
 {
     auto* d = reinterpret_cast<unsigned char*>(dst);
     auto* s = reinterpret_cast<const unsigned char*>(src);
     dst->CopyFrom(reinterpret_cast<CNMSerializable*>(src));
-    std::memcpy(d + 0x10, s + 0x10, 0xd8);
-    reinterpret_cast<CNMSerializable*>(d + 0xe8)->CopyFrom(reinterpret_cast<CNMSerializable*>(const_cast<unsigned char*>(s + 0xe8)));
-    std::memcpy(d + 0xf8, s + 0xf8, 0x3c0);
-    std::memcpy(d + 0x4b8, s + 0x4b8, 0x800);
+    std::memcpy(d + 0x10, s + 0x10, 0xea8);
+    FUN_1415efb30(reinterpret_cast<CNMSerializable*>(d + 0xeb8), reinterpret_cast<long long>(s + 0xeb8));
     return dst;
 }
 // MS2-FUNCTIONAL: applies the recovered field ranges and embedded CopyFrom operation.

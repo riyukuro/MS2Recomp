@@ -120,7 +120,7 @@ public:
     int m_24;
     int m_28;                                   // +0x28 the returned coupon item id
     int m_2c;                                   // +0x2c the coupon's event id
-    char m_30;                                  // +0x30 the page selects a style first
+    unsigned char m_30;                         // +0x30 the page selects a style first (the exe reads it with movzx)
     char m_pad_31[0x88 - 0x11];
 };
 MS2_CHECK_SIZE(CBeautyShopDataCli, 0xa8);
@@ -135,7 +135,7 @@ public:
     {
     public:
         TData() : m_18(0), m_20(0), m_30(0), m_34(0), m_38(0), m_48(0), m_60(0) {}    // 0x140f0b0e0
-        virtual ~TData() {}                                                         // 0x140f0b270
+        virtual ~TData() = default;                                                 // 0x140f0b270 (no vptr store)
 
         MS2_LAYOUT_FRIEND;
         IMessageListener* m_18;                 // +0x18 the owner (answered through OnMessage)
@@ -191,7 +191,7 @@ public:
     virtual int vfunc_48() { return 0x4f03; }
     virtual void vfunc_67();
     virtual int OnMessage(UISwfEntity* pSender, UIMsg* pMsg);
-    virtual bool vfunc_84();                    // 84 (new) the dialog is open
+    virtual int vfunc_84();                     // 84 (new) 1 when the dialog is closed (vfunc_55() == 0)
 
     void FUN_140f05460(NotifyObject* pNotify);
     bool SendBeautyMode19(int nResult, const CMsgBoxData& data);
@@ -200,10 +200,10 @@ public:
     bool FUN_140f05850(int nResult, const CMsgBoxData& data);
     bool FUN_140f05880(int nResult, const CMsgBoxData& data);
     void FUN_140f05a80(CInPacket& packet);
-    int FUN_140f06e10();
+    bool FUN_140f06e10();
     bool FUN_140f07310();
     void FUN_140f07520(Unk_BSFee* pFee, unsigned* pPrice);
-    int FUN_140f07960();
+    unsigned FUN_140f07960();
     int FUN_140f07980();
     void FUN_140f079a0();
     void FUN_140f07a00();

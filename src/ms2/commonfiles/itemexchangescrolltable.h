@@ -32,7 +32,7 @@ class CExchangeItemInfo : public CPtred
 {
 public:
     CExchangeItemInfo();                    // 0x140595ac0
-    virtual ~CExchangeItemInfo();           // 0x140595cd0
+    // ~CExchangeItemInfo() is implicit: the exe dtor 0x140595cd0 stores no vptr.
 
     __int64 GetMeso() const;                // 0x140595050 the meso price, reduced by the discount rate of the item's grade
     __int64 GetTotalMeso(int nCount) const; // 0x1405950b0

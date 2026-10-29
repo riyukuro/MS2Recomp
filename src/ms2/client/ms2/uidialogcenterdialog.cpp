@@ -22,20 +22,12 @@
 #include "ms2/placeholder/cinpacket.h"
 #include "ms2/placeholder/coutpacket.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
+#include "triggerdebugdialog.h"
 #include "ms2/ms2recover.h"
 
 MS2_EMIT_CRT_MEMMOVE_S();
 
 // ---- unit-local views of exe types ----------------------------------------------------------------------------------
-
-// The debug window of a trigger xml (an MFC dialog; CPtred sits behind the 0x130 bytes of CDialog).
-class TriggerDebugDialog : public CDialog, public CPtred
-{
-public:
-    TriggerDebugDialog(CWnd* pParent);                  // 0x140b9b?? (size 0x630)
-    void FUN_140b9b820(CString strPath);                // set the xml path
-    void FUN_140b9b870(int nDialogId);                  // show the dialog id
-};
 
 // The wedding hall reservation dialog (open with a mode and a tab name).
 class UIWeddingHallReservationDialog : public UIDialog
@@ -55,7 +47,7 @@ public:
     void FUN_1422cdfb0(const CStringW& strLabel);                       // set the label
     void FUN_1422ce240(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, void* pUser);
 private:
-    unsigned char m_pad_80[8];
+    void* m_80;
 };
 MS2_CHECK_SIZE(Unk_140acd6e0, 0x88);
 
@@ -116,7 +108,6 @@ void FUN_1414515e0(void* pLog);
 void* FUN_1422bb8b0(int nMovieId);
 void FUN_14256e8e0(void* pMovie, Scaleform::GFx::Value* pValue, const char* szClass, __int64 a, int b);
 unsigned char FUN_1409b0390(Scaleform::GFx::Value* pValue);
-void* FUN_140c7fa70(size_t nSize);
 void FUN_1401d3700(CString& str);
 extern const char DAT_142ed3718[];                                      // the open file filter of the xml dialog
 
@@ -147,9 +138,14 @@ template<> void MS2Ptr<TriggerDebugDialog>::Release()
 static Unk_DcService* FUN_141296a60(Unk_DcService* pSvc)
 {
     Unk_DcService* pOut = 0;
-    if (pSvc == 0 || !pSvc->vfunc_5(0x7002010, &pOut))
-        pOut = 0;
-    return pOut;
+    if (pSvc != 0 && pSvc->vfunc_5(0x7002010, &pOut))
+    {
+        return pOut;
+    }
+    else
+    {
+        return 0;
+    }
 }
 
 // @0x1412976a0
@@ -161,15 +157,15 @@ static void* FUN_1412976a0()
 // @0x1412976b0
 static HWND FUN_1412976b0(CWnd* pWnd)
 {
-    if (pWnd == 0)
-        return 0;
-    return pWnd->m_hWnd;
+    return pWnd == 0 ? 0 : pWnd->m_hWnd;
 }
 
 // @0x141296b50
 Unk_DcService* FUN_141296b50(Unk_DcHost* pHost)
 {
-    return FUN_141296a60(pHost->vfunc_14(0x7002010));
+    Unk_DcService* pRaw = pHost->vfunc_14(0x7002010);
+    Unk_DcService* pSvc = FUN_141296a60(pRaw);
+    return pSvc;
 }
 
 // @0x141296ab0
@@ -192,9 +188,10 @@ static MS2Ptr<Unk_140acd6e0> FUN_1412968a0(int nMovieId, CString strLinkage, __i
         return MS2Ptr<Unk_140acd6e0>(0);
     Scaleform::GFx::Value v;
     FUN_14256e8e0(pMovie, &v, strLinkage, a, b);
-    if (FUN_1409b0390(&v) == 0)
-        return MS2Ptr<Unk_140acd6e0>(MS2Ptr<Unk_140acd6e0>(new Unk_140acd6e0(v, nMovieId)));
-    return MS2Ptr<Unk_140acd6e0>(0);
+    if (FUN_1409b0390(&v) != 0)
+        return MS2Ptr<Unk_140acd6e0>(0);
+    MS2Ptr<Unk_140acd6e0> spBtn(new Unk_140acd6e0(v, nMovieId));
+    return spBtn;
 }
 
 // The ui text service (singleton): the text of a "$s_..." key.
@@ -230,42 +227,72 @@ void UIDialogCenterDialog::OnLoadComplete()
     UIDialog::OnLoadComplete();
     FUN_141925fa0(CString("m_dragBar"));
     FUN_141925ec0(CString("m_closeButton"));
-    FUN_141296370(0, 0, CString("$s_debug_ui_center_menu_npc_info"), 0x4eb0);
-    FUN_141296370(0, 1, CString("$s_debug_ui_center_menu_develop"), 0x4eb1);
-    FUN_141296370(0, 2, CString("$s_debug_ui_center_menu_hsl"), 0x4eab);
-    FUN_141296370(1, 0, CString("$s_debug_ui_center_menu_light"), 0x4ead);
-    FUN_141296370(1, 1, CString("$s_debug_ui_center_menu_rimlight"), 0x4eae);
-    FUN_141296370(1, 2, CString("$s_debug_ui_center_menu_chaoslight"), 0x4eac);
-    FUN_141296500(2, 0, CString("$s_debug_ui_center_menu_visualtracker"), Cb(this, &UIDialogCenterDialog::FUN_141295a70));
-    FUN_141296370(2, 1, CString("$s_debug_ui_center_menu_visualtrackerlist"), 0x4eb2);
-    FUN_141296370(2, 2, CString("$s_debug_ui_center_menu_visualeffect"), 0x4eb3);
-    FUN_141296370(3, 0, CString("$s_debug_ui_center_menu_weapondummy"), 0x4eb4);
-    FUN_141296370(3, 1, CString("$s_debug_ui_center_menu_rangepreview"), 0x4eb5);
-    FUN_141296370(3, 2, CString("$s_debug_ui_center_menu_colorboost"), 0x4eaf);
-    FUN_141296370(4, 0, CString("$s_debug_ui_center_menu_camera"), 0x4eb6);
-    FUN_141296370(4, 1, CString("$s_debug_ui_center_menu_texturedensity"), 0x4eaa);
-    FUN_141296370(4, 2, CString("$s_debug_ui_center_menu_create_packet"), 0x4ecc);
-    FUN_141296370(6, 0, CString("$s_debug_ui_center_menu_debug_command"), 0x4ea3);
-    FUN_141296370(6, 1, CString("$s_debug_ui_center_menu_create_item"), 0x4e25);
-    FUN_141296370(6, 2, CString("$s_debug_ui_center_menu_create_npc"), 0x4e46);
-    FUN_141296370(7, 0, CString("$s_debug_ui_center_menu_edit_deco"), 0x4e2c);
-    FUN_141296370(7, 1, CString("$s_debug_ui_center_menu_edit_minimap"), 0x4e2b);
-    FUN_141296370(7, 2, CString("$s_debug_ui_center_menu_graphic_option"), 0x4e34);
-    FUN_141296370(8, 0, CString("$s_debug_ui_center_menu_damage_meter"), 0x4e44);
-    FUN_141296370(8, 1, CString("$s_debug_ui_center_menu_hairphysx"), 0x4e6f);
-    FUN_141296370(9, 0, CString("$s_debug_ui_center_menu_additional_controller"), 0x4e8f);
-    FUN_141296370(9, 1, CString("$s_debug_ui_center_menu_stat_controller"), 0x4ea6);
-    FUN_141296370(9, 2, CString("$s_debug_ui_center_menu_create_object"), 0x4ed0);
-    FUN_141296370(10, 0, CString("$s_debug_ui_center_menu_preview_text"), 0x4eb7);
-    FUN_141296500(10, 1, CString("$s_debug_ui_center_menu_log_dialog"), Cb(this, &UIDialogCenterDialog::FUN_141295ad0));
-    FUN_141296500(10, 2, CString("$s_debug_ui_center_menu_trigger_debug"), Cb(this, &UIDialogCenterDialog::FUN_141295cb0));
-    FUN_141296500(0xc, 0, CString("$s_debug_ui_center_menu_create_blueprint"), Cb(this, &UIDialogCenterDialog::FUN_141295b00));
-    FUN_141296370(0xd, 0, CString("$s_debug_ui_center_menu_wedding"), 0x4f8c);
-    FUN_141296370(0xd, 1, CString("$s_debug_ui_center_menu_wedding_billboard"), 0x4f90);
-    FUN_141296370(0xd, 2, CString("$s_debug_ui_center_menu_wedding_invitation"), 0x4f8e);
-    FUN_141296500(0xe, 0, CString("$s_debug_ui_center_menu_wedding_hall"), Cb(this, &UIDialogCenterDialog::FUN_141295b30));
-    FUN_141296500(0xe, 1, CString("$s_debug_ui_center_menu_wedding_hall_cancel"), Cb(this, &UIDialogCenterDialog::FUN_141295c30));
-    FUN_141296500(0xe, 2, CString("$s_debug_ui_center_menu_wedding_hall_change"), Cb(this, &UIDialogCenterDialog::FUN_141295bb0));
+    int nRow = -1;
+    int nColumn = 0;
+    ++nRow;
+    nColumn = 0;
+    FUN_141296370(nRow, nColumn++, CString("$s_debug_ui_center_menu_npc_info"), 0x4eb0);
+    FUN_141296370(nRow, nColumn++, CString("$s_debug_ui_center_menu_develop"), 0x4eb1);
+    FUN_141296370(nRow, nColumn++, CString("$s_debug_ui_center_menu_hsl"), 0x4eab);
+    ++nRow;
+    nColumn = 0;
+    FUN_141296370(nRow, nColumn++, CString("$s_debug_ui_center_menu_light"), 0x4ead);
+    FUN_141296370(nRow, nColumn++, CString("$s_debug_ui_center_menu_rimlight"), 0x4eae);
+    FUN_141296370(nRow, nColumn++, CString("$s_debug_ui_center_menu_chaoslight"), 0x4eac);
+    ++nRow;
+    nColumn = 0;
+    FUN_141296500(nRow, nColumn++, CString("$s_debug_ui_center_menu_visualtracker"), Cb(this, &UIDialogCenterDialog::FUN_141295a70));
+    FUN_141296370(nRow, nColumn++, CString("$s_debug_ui_center_menu_visualtrackerlist"), 0x4eb2);
+    FUN_141296370(nRow, nColumn++, CString("$s_debug_ui_center_menu_visualeffect"), 0x4eb3);
+    ++nRow;
+    nColumn = 0;
+    FUN_141296370(nRow, nColumn++, CString("$s_debug_ui_center_menu_weapondummy"), 0x4eb4);
+    FUN_141296370(nRow, nColumn++, CString("$s_debug_ui_center_menu_rangepreview"), 0x4eb5);
+    FUN_141296370(nRow, nColumn++, CString("$s_debug_ui_center_menu_colorboost"), 0x4eaf);
+    ++nRow;
+    nColumn = 0;
+    FUN_141296370(nRow, nColumn++, CString("$s_debug_ui_center_menu_camera"), 0x4eb6);
+    FUN_141296370(nRow, nColumn++, CString("$s_debug_ui_center_menu_texturedensity"), 0x4eaa);
+    FUN_141296370(nRow, nColumn++, CString("$s_debug_ui_center_menu_create_packet"), 0x4ecc);
+    ++nRow;
+    ++nRow;
+    nColumn = 0;
+    FUN_141296370(nRow, nColumn++, CString("$s_debug_ui_center_menu_debug_command"), 0x4ea3);
+    FUN_141296370(nRow, nColumn++, CString("$s_debug_ui_center_menu_create_item"), 0x4e25);
+    FUN_141296370(nRow, nColumn++, CString("$s_debug_ui_center_menu_create_npc"), 0x4e46);
+    ++nRow;
+    nColumn = 0;
+    FUN_141296370(nRow, nColumn++, CString("$s_debug_ui_center_menu_edit_deco"), 0x4e2c);
+    FUN_141296370(nRow, nColumn++, CString("$s_debug_ui_center_menu_edit_minimap"), 0x4e2b);
+    FUN_141296370(nRow, nColumn++, CString("$s_debug_ui_center_menu_graphic_option"), 0x4e34);
+    ++nRow;
+    nColumn = 0;
+    FUN_141296370(nRow, nColumn++, CString("$s_debug_ui_center_menu_damage_meter"), 0x4e44);
+    FUN_141296370(nRow, nColumn++, CString("$s_debug_ui_center_menu_hairphysx"), 0x4e6f);
+    ++nRow;
+    nColumn = 0;
+    FUN_141296370(nRow, nColumn++, CString("$s_debug_ui_center_menu_additional_controller"), 0x4e8f);
+    FUN_141296370(nRow, nColumn++, CString("$s_debug_ui_center_menu_stat_controller"), 0x4ea6);
+    FUN_141296370(nRow, nColumn++, CString("$s_debug_ui_center_menu_create_object"), 0x4ed0);
+    ++nRow;
+    nColumn = 0;
+    FUN_141296370(nRow, nColumn++, CString("$s_debug_ui_center_menu_preview_text"), 0x4eb7);
+    FUN_141296500(nRow, nColumn++, CString("$s_debug_ui_center_menu_log_dialog"), Cb(this, &UIDialogCenterDialog::FUN_141295ad0));
+    FUN_141296500(nRow, nColumn++, CString("$s_debug_ui_center_menu_trigger_debug"), Cb(this, &UIDialogCenterDialog::FUN_141295cb0));
+    ++nRow;
+    ++nRow;
+    nColumn = 0;
+    FUN_141296500(nRow, nColumn++, CString("$s_debug_ui_center_menu_create_blueprint"), Cb(this, &UIDialogCenterDialog::FUN_141295b00));
+    ++nRow;
+    nColumn = 0;
+    FUN_141296370(nRow, nColumn++, CString("$s_debug_ui_center_menu_wedding"), 0x4f8c);
+    FUN_141296370(nRow, nColumn++, CString("$s_debug_ui_center_menu_wedding_billboard"), 0x4f90);
+    FUN_141296370(nRow, nColumn++, CString("$s_debug_ui_center_menu_wedding_invitation"), 0x4f8e);
+    ++nRow;
+    nColumn = 0;
+    FUN_141296500(nRow, nColumn++, CString("$s_debug_ui_center_menu_wedding_hall"), Cb(this, &UIDialogCenterDialog::FUN_141295b30));
+    FUN_141296500(nRow, nColumn++, CString("$s_debug_ui_center_menu_wedding_hall_cancel"), Cb(this, &UIDialogCenterDialog::FUN_141295c30));
+    FUN_141296500(nRow, nColumn++, CString("$s_debug_ui_center_menu_wedding_hall_change"), Cb(this, &UIDialogCenterDialog::FUN_141295bb0));
 }
 
 // @0x141295730
@@ -278,20 +305,21 @@ void UIDialogCenterDialog::vfunc_26()
 // @0x141295770
 void UIDialogCenterDialog::vfunc_79(void* p)
 {
-    CInPacket* pPkt = static_cast<CInPacket*>(p);
     UIDialog::vfunc_79(p);
-    if (pPkt->FUN_14070fe80() == 0x87)
+    int nOp = static_cast<CInPacket*>(p)->FUN_14070fe80();
+    if (nOp == 0x87)
     {
-        unsigned char nKind = pPkt->ReadUInt8();
+        int nKind = static_cast<CInPacket*>(p)->ReadUInt8();
         if (nKind == 10)
         {
-            CString strPath = pPkt->ReadUnicodeStringA();
-            int nDialogId = pPkt->ReadInt32();
+            CString strPath = static_cast<CInPacket*>(p)->ReadUnicodeStringA();
+            int nDialogId = static_cast<CInPacket*>(p)->ReadInt32();
             strPath = strPath.MakeLower();
             Unk_CriticalSectionLock lock(m_lock, 1);
             MS2Ptr<TriggerDebugDialog> spDlg;
-            if (m_triggers.Lookup(strPath, spDlg))
-                spDlg.get()->FUN_140b9b870(nDialogId);
+            if (!m_triggers.Lookup(strPath, spDlg))
+                return;
+            spDlg.get()->AddLine(nDialogId);
         }
     }
 }
@@ -300,7 +328,8 @@ void UIDialogCenterDialog::vfunc_79(void* p)
 void UIDialogCenterDialog::FUN_141295930(const Scaleform::GFx::FunctionHandler::Params& params)
 {
     ASObj evt(params.pArgs[0], 2);
-    Unk_140acd6e0 btn(evt.FUN_1422baa20("target"), m_28);
+    Scaleform::GFx::Value target = evt.FUN_1422baa20("target");
+    Unk_140acd6e0 btn(target, m_28);
     unsigned nId = FUN_1409c17e0(btn.FUN_1422baa20("dialogID"));
     MS2Ptr<UIDialog> spDlg(FUN_140c300a0(nId));
     if (spDlg.get() != 0)
@@ -310,7 +339,8 @@ void UIDialogCenterDialog::FUN_141295930(const Scaleform::GFx::FunctionHandler::
 // @0x141295a70
 void UIDialogCenterDialog::FUN_141295a70(const Scaleform::GFx::FunctionHandler::Params& params)
 {
-    Unk_DcService* pSvc = FUN_141296b50(FUN_140af8310(&FUN_14086d260()->m_svc));
+    auto pHost = FUN_140af8310(&FUN_14086d260()->m_svc);
+    Unk_DcService* pSvc = FUN_141296b50(pHost);
     if (pSvc != 0)
         pSvc->vfunc_16();
 }
@@ -333,7 +363,7 @@ void UIDialogCenterDialog::FUN_141295b30(const Scaleform::GFx::FunctionHandler::
 {
     UIWeddingHallReservationDialog* pDlg = FUN_141296ab0(0x4f8d);
     pDlg->SetPackage(1);
-    pDlg->FUN_140fdcaa0(CString("reservation"));
+    pDlg->FUN_140fdcaa0("reservation");
     pDlg->FUN_141924680();
 }
 
@@ -342,7 +372,7 @@ void UIDialogCenterDialog::FUN_141295bb0(const Scaleform::GFx::FunctionHandler::
 {
     UIWeddingHallReservationDialog* pDlg = FUN_141296ab0(0x4f8d);
     pDlg->SetPackage(1);
-    pDlg->FUN_140fdcaa0(CString("reservationChange"));
+    pDlg->FUN_140fdcaa0("reservationChange");
     pDlg->FUN_141924680();
 }
 
@@ -351,7 +381,7 @@ void UIDialogCenterDialog::FUN_141295c30(const Scaleform::GFx::FunctionHandler::
 {
     UIWeddingHallReservationDialog* pDlg = FUN_141296ab0(0x4f8d);
     pDlg->SetPackage(1);
-    pDlg->FUN_140fdcaa0(CString("reservationCancel"));
+    pDlg->FUN_140fdcaa0("reservationCancel");
     pDlg->FUN_141924680();
 }
 
@@ -363,12 +393,12 @@ CString UIDialogCenterDialog::FUN_1412965f0(CString strInitialDir, const char* p
     ofn.lStructSize = sizeof(ofn);
     ofn.hwndOwner = FUN_1412976b0(AfxGetMainWnd());
     ofn.lpstrFile = szFile;
-    szFile[0] = 0;
+    ofn.lpstrFile[0] = 0;
     ofn.nMaxFile = MAX_PATH;
+    ofn.lpstrFilter = pszFilter;
     ofn.nFilterIndex = 0;
     ofn.lpstrFileTitle = NULL;
     ofn.nMaxFileTitle = 0;
-    ofn.lpstrFilter = pszFilter;
     ofn.lpstrInitialDir = (LPCSTR)strInitialDir;
     ofn.Flags = OFN_FILEMUSTEXIST | OFN_PATHMUSTEXIST | OFN_NOCHANGEDIR;
     CString strResult;
@@ -394,20 +424,17 @@ void UIDialogCenterDialog::FUN_141295cb0(const Scaleform::GFx::FunctionHandler::
     strPath.Replace(strDir, ".");
     Unk_CriticalSectionLock lock(m_lock, 1);
     MS2Ptr<TriggerDebugDialog> spDlg;
-    if (!m_triggers.Lookup(strPath, spDlg))
-    {
-        void* pMem = FUN_140c7fa70(0x630);
-        TriggerDebugDialog* pNew = pMem ? new (pMem) TriggerDebugDialog(0) : 0;
-        spDlg.AssignRaw(pNew);
-        spDlg.get()->FUN_140b9b820(CString(strPath));
-        spDlg.get()->Create(0xa7, CWnd::FromHandle(FUN_14209c720(FUN_140aadf80())));
-        m_triggers.SetAt(strPath, spDlg);
-        COutPacket pkt(static_cast<int>(SendOp::SetDebugMode), 0);
-        pkt.WriteUInt8(9);
-        pkt.WriteUnicodeStringA(strPath);
-        pkt.WriteBool(true);
-        FUN_140710590(pkt);
-    }
+    if (m_triggers.Lookup(strPath, spDlg))
+        return;
+    spDlg.AssignRaw(new TriggerDebugDialog(0));
+    spDlg.get()->SetFile(CString(strPath));
+    spDlg.get()->Create(0xa7, CWnd::FromHandle(FUN_14209c720(FUN_140aadf80())));
+    m_triggers.SetAt(strPath, spDlg);
+    COutPacket pkt(static_cast<int>(SendOp::SetDebugMode), 0);
+    pkt.WriteUInt8(9);
+    pkt.WriteUnicodeStringA(strPath);
+    pkt.WriteBool(true);
+    FUN_140710590(pkt);
 }
 
 // @0x141296070
@@ -431,20 +458,25 @@ MS2Ptr<Unk_140acd6e0> UIDialogCenterDialog::FUN_141296150(int nRow, int nColumn,
     const int nHeight = 0x2a;
     int x = nColumn * nWidth + nX;
     int y = nRow * nHeight + nY;
-    MS2Ptr<Unk_140acd6e0> spBtn = FUN_1412968a0(m_28, CString("UIDialogCenterDialog_btn"), 0, 0);
-    if (spBtn.get() == 0)
-        return MS2Ptr<Unk_140acd6e0>(0);
-    spBtn->FUN_1422c0060(x, y);
-    spBtn->FUN_1422cdfb0(strLabel);
-    m_buttons.Add(spBtn);
-    m_90->FUN_1422c6900(spBtn->FUN_1422bb870());
-    return spBtn;
+    {
+        MS2Ptr<Unk_140acd6e0> spBtn = FUN_1412968a0(m_28, CString("UIDialogCenterDialog_btn"), 0, 0);
+        if (spBtn.get() != 0)
+        {
+            spBtn->FUN_1422c0060(x, y);
+            spBtn->FUN_1422cdfb0(strLabel);
+            m_buttons.Add(spBtn);
+            m_90->FUN_1422c6900(spBtn->FUN_1422bb870());
+            return spBtn;
+        }
+    }
+    return MS2Ptr<Unk_140acd6e0>(0);
 }
 
 // @0x141296370
 void UIDialogCenterDialog::FUN_141296370(int nRow, int nColumn, CString strKey, int nDialogId)
 {
-    MS2Ptr<Unk_140acd6e0> spBtn = FUN_141296150(nRow, nColumn, FUN_14025e7a0()->FUN_1422b0570(strKey));
+    CStringW strLabel = FUN_14025e7a0()->FUN_1422b0570(strKey);
+    MS2Ptr<Unk_140acd6e0> spBtn = FUN_141296150(nRow, nColumn, strLabel);
     if (spBtn.get() != 0)
     {
         spBtn->FUN_1409c0d20("dialogID", nDialogId);
@@ -453,9 +485,10 @@ void UIDialogCenterDialog::FUN_141296370(int nRow, int nColumn, CString strKey, 
 }
 
 // @0x141296500
-void UIDialogCenterDialog::FUN_141296500(int nRow, int nColumn, CString strKey, Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)> cb)
+void UIDialogCenterDialog::FUN_141296500(int nRow, int nColumn, CString strKey, const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb)
 {
-    MS2Ptr<Unk_140acd6e0> spBtn = FUN_141296150(nRow, nColumn, FUN_14025e7a0()->FUN_1422b0570(strKey));
+    CStringW strLabel = FUN_14025e7a0()->FUN_1422b0570(strKey);
+    MS2Ptr<Unk_140acd6e0> spBtn = FUN_141296150(nRow, nColumn, strLabel);
     if (spBtn.get() != 0)
         spBtn->FUN_1422ce240(cb, 0);
 }

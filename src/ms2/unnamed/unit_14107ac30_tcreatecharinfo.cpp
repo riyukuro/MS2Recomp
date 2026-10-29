@@ -132,7 +132,8 @@ private:
     int m_0, m_4, m_8, m_c, m_10, m_14, m_18;
 };
 
-// scene graph walker (0x40 bytes, unrecovered class): a one-slot header and the queue of nodes still to visit
+// scene graph walker (0x30 bytes, unrecovered class; softparticlesmanager.cpp and ms2outlinepreprocessor.cpp declare
+// the same view): the CAtlList of nodes still to visit, whose head (m_p0) sits at +0
 class Unk_C930Walker
 {
 public:
@@ -140,10 +141,9 @@ public:
     ~Unk_C930Walker();                              // 0x14098cf00
     void FUN_14098d6d0(NiObject* pNode);            // queue the children of a node
     void* m_p0;
-    ATL::CAtlList<NiObject*> m_list;
-    void* m_p38;
+    void* m_pad[5];
 };
-MS2_CHECK_SIZE(Unk_C930Walker, 0x40);
+MS2_CHECK_SIZE(Unk_C930Walker, 0x30);
 bool FUN_14098df00(Unk_C930Walker& rWalker);          // the queue is empty
 NiObject* FUN_14098e5c0(Unk_C930Walker& rWalker);     // pop the next node
 NiObject** FUN_14107cbe0(Unk_C930Walker& rWalker);
@@ -579,7 +579,6 @@ int FUN_14107c5f0(int nSlot, PC* pSrc, PC* pDst)
 }
 
 // @0x14107c930
-// MS2-FUNCTIONAL: stack slot order and unwind states of the walker/name locals differ
 NiObject* FUN_14107c930(NiObject* pRoot, const CString* pName)
 {
     if (pRoot == 0)
@@ -594,22 +593,22 @@ NiObject* FUN_14107c930(NiObject* pRoot, const CString* pName)
     NiObject* pNode;
     while ((pNode = FUN_14107cc90(kWalker, bDescend)) != 0)
     {
-        if (FUN_14098d8d0(&DAT_143ad1588, pNode) == 0 && FUN_14098d8d0(&DAT_143afbfb8, pNode) == 0)
+        if (FUN_14098d8d0(&DAT_143ad1588, pNode) != 0 || FUN_14098d8d0(&DAT_143afbfb8, pNode) != 0)
         {
-            if (pNode == pRoot || FUN_1409a7ff0(FUN_1409a8b90(pNode), kRoot) == 0)
-            {
-                if (FUN_1409a7ff0(FUN_1409a8b90(pNode), kName) != 0)
-                {
-                    pFound = pNode;
-                    break;
-                }
-                bDescend = true;
-            }
-            else
-                bDescend = false;
-        }
-        else
             bDescend = false;
+            continue;
+        }
+        if (pNode != pRoot && FUN_1409a7ff0(FUN_1409a8b90(pNode), kRoot) != 0)
+        {
+            bDescend = false;
+            continue;
+        }
+        if (FUN_1409a7ff0(FUN_1409a8b90(pNode), kName) != 0)
+        {
+            pFound = pNode;
+            break;
+        }
+        bDescend = true;
     }
     return pFound;
 }
@@ -654,23 +653,22 @@ void Unk_EfdMatrix3::FUN_14107cc40(float fAngle, const Vector3& kAxis)
     reinterpret_cast<efd::Matrix3*>(this)->MakeRotation(fAngle, kAxis.x, kAxis.y, kAxis.z);
 }
 
-// @0x14107cc90
-// MS2-FUNCTIONAL: call-through-this register shuffle (mov rax;mov rcx,rax) not reproduced
+// @0x14107cc90 the queue helpers are handed the walker through its +0 list head
 NiObject* FUN_14107cc90(Unk_C930Walker& rWalker, bool bDescend)
 {
-    if (FUN_14098df00(rWalker))
+    if (FUN_14098df00(*(Unk_C930Walker*)&rWalker.m_p0))
         return 0;
-    NiObject* pObj = FUN_14098e5c0(rWalker);
+    NiObject* pObj = FUN_14098e5c0(*(Unk_C930Walker*)&rWalker.m_p0);
     if (bDescend)
     {
         NiObject* pNode = FUN_14098d8d0(&DAT_143afa4d8, pObj);
         if (pNode != 0)
             rWalker.FUN_14098d6d0(pNode);
     }
-    if (FUN_14098df00(rWalker))
+    if (FUN_14098df00(*(Unk_C930Walker*)&rWalker.m_p0))
         return 0;
     else
-        return *FUN_14107cbe0(rWalker);
+        return *FUN_14107cbe0(*(Unk_C930Walker*)&rWalker.m_p0);
 }
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142caba10-0x142cabb20 .text$yd

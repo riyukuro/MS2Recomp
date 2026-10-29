@@ -75,7 +75,7 @@ inline Unk_JpBody* JpBody(PCBase* p) { return reinterpret_cast<Unk_JpBody*>(p->F
 class Unk_JpBuff
 {
 public:
-    efd::Point3 FUN_141683290();                           // knock-back velocity
+    efd::Point3 FUN_141683290();                          // knock-back velocity
     bool FUN_141683100(int nBuff);
 };
 
@@ -84,6 +84,7 @@ struct Unk_JpRef { void* m_00; void* m_08; void* FUN_141371260() const { return 
 void FUN_141664200(MyPC* p, Unk_JpRef* pOut);              // 0x141664200 the actor's skill record ref
 void* FUN_140c207b0(Unk_JpRef* p);
 int FUN_14050a6a0(void* pRecord);
+void FUN_141276180(const CString& strCommand, const CString& strArg);   // 0x141276180 run a client command
 void FUN_140c20600(Unk_JpRef* p);
 
 // The efd::utf8string the exe builds out of line (ctor 0x1409989e0, dtor 0x1408a8900; 0x20 bytes).
@@ -101,10 +102,8 @@ static CString s_strHideSeekJump("System_HideNSeek_Jump_01");
 static int s_nJumpToggle;
 
 // @0x1417d5160
-StateJump::StateJump(PCBase* pOwner) : State(pOwner)
+StateJump::StateJump(PCBase* pOwner) : State(pOwner), m_n54(1), m_n80(0x32)
 {
-    m_n54 = 1;
-    m_n80 = 0x32;
     m_n14 = 0;
     m_vDir = efd::Point3::ZERO;
     m_nOnGround = 0;
@@ -114,8 +113,8 @@ StateJump::StateJump(PCBase* pOwner) : State(pOwner)
     m_v64 = efd::Point3::ZERO;
     m_aSub[0] = 0x21;
     m_aSub[1] = 0x23;
-    m_aSub[2] = 0x22;
-    m_aSub[3] = 0x24;
+    (m_aSub + 2)[0] = 0x22;
+    (m_aSub + 2)[1] = 0x24;
 }
 
 // @0x1417d52e0
@@ -124,37 +123,33 @@ StateJump::~StateJump()
 }
 
 // @0x1417d5320
-// MS2-FUNCTIONAL: temporaries / frame layout differ from the exe
+// MS2-FUNCTIONAL: the record ref has no dtor (the exe has two more EH states)
 void StateJump::vfunc_4(StateData* pData)
 {
     State::vfunc_4(pData);
     m_spJump.AssignRaw(dynamic_cast<StateJumpData*>(pData));
-    if (m_pOwner->FUN_141676b70() == 0)
-    {
-        if (m_n10 == 0)
-        {
-            m_n10 = 0x21;
-        }
-        else if (m_n10 == 0x25)
-        {
-            s_nJumpToggle = (s_nJumpToggle + 1) % 2;
-            int nSub;
-            if (rand() % 2 == 0)
-                nSub = m_aSub[s_nJumpToggle];
-            else
-                nSub = m_aSub[2 + s_nJumpToggle];
-            m_n10 = nSub;
-        }
-    }
-    else
+    if (m_pOwner->FUN_141676b70() != 0)
     {
         m_n10 = 0x27;
+    }
+    else if (m_n10 == 0)
+    {
+        m_n10 = 0x21;
+    }
+    else if (m_n10 == 0x25)
+    {
+        s_nJumpToggle = (s_nJumpToggle + 1) % 2;
+        int nSub;
+        if (rand() % 2 != 0)
+            nSub = (m_aSub + 2)[s_nJumpToggle];
+        else
+            nSub = m_aSub[s_nJumpToggle];
+        m_n10 = nSub;
     }
     m_pSeat = 0;
     m_f60 = -FLT_MAX;
     m_v64 = efd::Point3::ZERO;
-    NiPoint3 kPos = m_pOwner->FUN_14123c360();
-    m_vDir = m_pOwner->FUN_141674b60(kPos);
+    m_vDir = m_pOwner->FUN_141674b60(m_pOwner->FUN_14123c360());
     m_n54 = 1;
     m_fSpeed = m_pOwner->FUN_141671940();
     m_nOnGround = m_pOwner->FUN_1416749c0();
@@ -167,20 +162,20 @@ void StateJump::vfunc_4(StateData* pData)
     MyPC* pPC = FUN_1417b84b0();
     if (pPC != 0)
     {
-        NiPoint3 kOwnerPos = m_pOwner->vfunc_18();
-        pPC->FUN_141676060(kOwnerPos);
+        pPC->FUN_141676060(m_pOwner->vfunc_18());
         pPC->FUN_14152e170(0, 6);
         Unk_JpRef ref;
         FUN_141664200(pPC, &ref);
-        if (ref.FUN_141371260() != 0)
+        if (ref.FUN_141371260() ? true : false)
         {
-            void* pRecord = FUN_140c207b0(&ref);
-            if (FUN_14050a6a0(pRecord) == 1)
-                s_strHideSeekJump = CString("");
+            if (FUN_14050a6a0(FUN_140c207b0(&ref)) == 1)
+                FUN_141276180(s_strHideSeekJump, "");
         }
         FUN_140c20600(&ref);
     }
 }
+
+extern const NiPoint3 DAT_143b01a60;
 
 // @0x1417d5700
 // MS2-FUNCTIONAL: the zero point is copied byte-wise in the exe
@@ -192,7 +187,7 @@ void StateJump::vfunc_5(int n)
     if (pPC != 0)
     {
         if (n != 5 && n != 4 && n != 0x10)
-            pPC->FUN_141676060(efd::Point3::ZERO);
+            pPC->FUN_141676060(DAT_143b01a60);
         pPC->FUN_14152e170(1, 6);
     }
 }
@@ -202,34 +197,27 @@ void StateJump::vfunc_6()
 {
     State::vfunc_6();
     m_n10 = 0x26;
-    egf::EntityID kId;
-    unsigned nSeq = FUN_141b6f910()->FUN_140b7f6a0(m_pOwner->FUN_14123c460(kId));
+    unsigned nSeq = FUN_141b6f910()->FUN_140b7f6a0(m_pOwner->FUN_14123c460());
     if (!m_pOwner->FUN_14166de90(0x35, nSeq))
     {
-        Unk_JpString strAnim(m_pOwner->vfunc_123(0x35));
+        efd::utf8string strAnim(m_pOwner->vfunc_123(0x35));
         m_pOwner->FUN_14166dd20(strAnim, 1.0f, false, false);
     }
 }
 
 // @0x1417d58d0
-// MS2-FUNCTIONAL: the zero point is copied byte-wise in the exe
+// MS2-FUNCTIONAL: vfunc_18 returns NiPoint3 in the shared gameobject.h (efd::Point3 in the exe), so extra copies
 void StateJump::vfunc_3(double fTime)
 {
     State::vfunc_3(fTime);
     Unk_JpBody* pBody = JpBody(m_pOwner);
-    if (pBody->FUN_141240780() == 0)
+    if (pBody->FUN_141240780() != 0)
     {
-        m_pOwner->vfunc_59(4, 0, 0, 0);
-    }
-    else
-    {
-        NiPoint3 kPos = m_pOwner->FUN_14123c360();
-        efd::Point3 kWorld = m_pOwner->FUN_141674b60(kPos);
-        efd::Point3 kCur = m_pOwner->FUN_14166dbb0();
-        if (kCur != efd::Point3::ZERO)
+        efd::Point3 kWorld = m_pOwner->FUN_141674b60(m_pOwner->FUN_14123c360());
+        if (m_pOwner->FUN_14166dbb0() != efd::Point3::ZERO)
         {
             m_vDir = m_pOwner->FUN_14166dbb0();
-            if (m_spJump.get() != 0)
+            if (m_spJump)
             {
                 efd::Point3 kJump = m_spJump->m_pos;
                 efd::Point3 kRot = FUN_140a0b080(kJump, m_pOwner->vfunc_18(), DAT_143a08cf8);
@@ -255,50 +243,29 @@ void StateJump::vfunc_3(double fTime)
         efd::Point3 kMove = efd::Point3::ZERO;
         m_pOwner->vfunc_68(&kMove, fTime, 0, 0, 0);
     }
+    else
+    {
+        m_pOwner->vfunc_59(4, 0, 0, 0);
+    }
 }
 
 // @0x1417d5c70
-// MS2-FUNCTIONAL: temporaries / frame layout differ from the exe
 void StateJump::vfunc_8(double fTime)
 {
     State::vfunc_8(fTime);
     MyPC* pPC = FUN_1417b84b0();
     Unk_JpBuff* pBuff = (Unk_JpBuff*)m_pOwner->FUN_14166d240();
-    efd::Point3 kDir = pBuff->FUN_141683290();
-    m_pOwner->vfunc_22(kDir);
+    m_pOwner->vfunc_22(pBuff->FUN_141683290());
     if (m_pOwner->FUN_141676b70() != 0)
         m_n10 = 0x27;
-    if (pPC == 0 || !pBuff->FUN_141683100(0x30d41))
+    if (pPC != 0 && pBuff->FUN_141683100(0x30d41))
     {
-        if (!FUN_1417b9460() && pPC != 0 && FUN_1417d65d0() && FUN_1417d6620() == 0)
+        if (!FUN_1417d65d0())
+            return;
+        egf::Entity* pEntity = FUN_141659af0(pPC, 1);
+        if (pEntity != 0)
         {
-            if (pPC->FUN_1416764a0() == 0)
-            {
-                if (pPC->FUN_141678820() != 0 && FUN_14165b500(pPC, 1) != 0)
-                    pPC->FUN_1416788d0();
-            }
-            else
-            {
-                if (m_pOwner->FUN_141678820() != 0 && FUN_14165b500(pPC, 1) != 0)
-                    pPC->SendRequestRideMode1(new RideOffActionAutoClimb(1));
-            }
-        }
-    }
-    else
-    {
-        if (FUN_1417d65d0())
-        {
-            egf::Entity* pEntity = FUN_141659af0(pPC, 1);
-            if (pEntity == 0)
-            {
-                if (pPC->FUN_141678820() != 0 && FUN_14165b500(pPC, 1) != 0)
-                    pPC->FUN_1416788d0();
-            }
-            else if (pPC->FUN_1416764a0() == 0)
-            {
-                pPC->FUN_1415248d0(1, 0);
-            }
-            else
+            if (pPC->FUN_1416764a0())
             {
                 MS2Ptr<RideOffActionTakeLR> spAction(new RideOffActionTakeLR(1));
                 spAction->m_n28 = 1;
@@ -307,6 +274,31 @@ void StateJump::vfunc_8(double fTime)
                 else if (FUN_1408a9bd0(pEntity)->ContainsModel(0xc13e30c8))
                     spAction->m_n2c = 0xc13e30c8;
                 pPC->SendRequestRideMode1(spAction);
+            }
+            else
+            {
+                pPC->FUN_1415248d0(1, 0);
+            }
+        }
+        else
+        {
+            if (pPC->FUN_141678820() != 0 && FUN_14165b500(pPC, 1) != 0)
+                pPC->FUN_1416788d0();
+        }
+    }
+    else
+    {
+        if (!FUN_1417b9460() && pPC != 0 && FUN_1417d65d0() && FUN_1417d6620() == 0)
+        {
+            if (pPC->FUN_1416764a0())
+            {
+                if (m_pOwner->FUN_141678820() != 0 && FUN_14165b500(pPC, 1) != 0)
+                    pPC->SendRequestRideMode1(new RideOffActionAutoClimb(1));
+            }
+            else
+            {
+                if (pPC->FUN_141678820() != 0 && FUN_14165b500(pPC, 1) != 0)
+                    pPC->FUN_1416788d0();
             }
         }
     }
@@ -318,8 +310,7 @@ void StateJump::vfunc_9(double fTime)
 {
     static int s_nDelay = FUN_14028d260(FUN_14096b1c0(12.0f / FUN_14059d930(FUN_141240c40(true))));
     State::vfunc_9(fTime);
-    egf::EntityID kId;
-    unsigned nSeq = FUN_141b6f910()->FUN_140b7f6a0(m_pOwner->FUN_14123c460(kId));
+    unsigned nSeq = FUN_141b6f910()->FUN_140b7f6a0(m_pOwner->FUN_14123c460());
     unsigned nLimit = s_nDelay;
     nLimit += FUN_14028d260(JpBody(m_pOwner)->FUN_141241090());
     if (m_pOwner->FUN_141671a30() != 0)
@@ -332,57 +323,58 @@ void StateJump::vfunc_9(double fTime)
         m_pOwner->FUN_14166dda0(5);
         return;
     }
-    if (m_n10 != 0x27 && m_n10 != 0x21 && m_n10 != 0x22 && m_n10 != 0x23 && m_n10 != 0x24)
-        return;
-    int nAnim;
-    PCBase* pPC = FUN_1417b8370();
-    if (pPC != 0 && FUN_1416595d0(pPC) != 0 && ((Unk_JpCube*)FUN_141659700(pPC))->FUN_1410aa010())
+    if (m_n10 == 0x27 || m_n10 == 0x21 || m_n10 == 0x22 || m_n10 == 0x23 || m_n10 == 0x24)
     {
-        if (JpBody(m_pOwner)->FUN_1412407a0() == 0)
-            nAnim = 0x3b;
-        else
-            nAnim = 0x3a;
-    }
-    else if (JpBody(m_pOwner)->FUN_1412407a0() == 0)
-    {
-        bool bHas = true;
-        Unk_JpString strSpecial(m_pOwner->vfunc_123(0x2b));
-        if (!m_pOwner->FUN_141679220(FUN_1408ac310(strSpecial)))
-            bHas = false;
-        if (!bHas || (m_n10 != 0x22 && m_n10 != 0x24))
+        int nAnim;
+        PCBase* pPC = FUN_1417b8370();
+        if (pPC != 0 && FUN_1416595d0(pPC) != 0 && ((Unk_JpCube*)FUN_141659700(pPC))->FUN_1410aa010())
         {
-            if (m_n10 == 0x27)
-                nAnim = 0x47;
+            if (JpBody(m_pOwner)->FUN_1412407a0() != 0)
+                nAnim = 0x3a;
             else
-                nAnim = 2;
+                nAnim = 0x3b;
         }
-        else
+        else if (JpBody(m_pOwner)->FUN_1412407a0() != 0)
         {
-            nAnim = 0x2b;
-        }
-    }
-    else
-    {
-        bool bHas = true;
-        Unk_JpString strSpecial(m_pOwner->vfunc_123(0x2a));
-        if (!m_pOwner->FUN_141679220(FUN_1408ac310(strSpecial)))
-            bHas = false;
-        if (!bHas || (m_n10 != 0x22 && m_n10 != 0x24))
-        {
-            if (m_n10 == 0x27)
-                nAnim = 0x46;
+            bool bHas = true;
+            efd::utf8string strSpecial(m_pOwner->vfunc_123(0x2a));
+            if (!m_pOwner->FUN_141679220(FUN_1408ac310(strSpecial)))
+                bHas = false;
+            if (bHas && (m_n10 == 0x22 || m_n10 == 0x24))
+            {
+                nAnim = 0x2a;
+            }
             else
-                nAnim = 4;
+            {
+                if (m_n10 == 0x27)
+                    nAnim = 0x46;
+                else
+                    nAnim = 4;
+            }
         }
         else
         {
-            nAnim = 0x2a;
+            bool bHas = true;
+            efd::utf8string strSpecial(m_pOwner->vfunc_123(0x2b));
+            if (!m_pOwner->FUN_141679220(FUN_1408ac310(strSpecial)))
+                bHas = false;
+            if (bHas && (m_n10 == 0x22 || m_n10 == 0x24))
+            {
+                nAnim = 0x2b;
+            }
+            else
+            {
+                if (m_n10 == 0x27)
+                    nAnim = 0x47;
+                else
+                    nAnim = 2;
+            }
         }
-    }
-    if (!m_pOwner->FUN_14166de90(nAnim, nSeq))
-    {
-        Unk_JpString strAnim(m_pOwner->vfunc_123(nAnim));
-        m_pOwner->FUN_14166dd20(strAnim, 1.0f, false, false);
+        if (!m_pOwner->FUN_14166de90(nAnim, nSeq))
+        {
+            efd::utf8string strAnim(m_pOwner->vfunc_123(nAnim));
+            m_pOwner->FUN_14166dd20(strAnim, 1.0f, false, false);
+        }
     }
 }
 
@@ -399,9 +391,7 @@ int StateJump::vfunc_22(MS2Ptr<Unk_StateArg22> p)
 // @0x1417d6560
 bool StateJump::vfunc_28(MS2Ptr<Unk_StateArg22> p)
 {
-    int nSub = FUN_1417b7e40();
-    int nReq = p->m_nSub;
-    return nSub != nReq;
+    return FUN_1417b7e40() != p->m_nSub;
 }
 
 // @0x1417d65d0
@@ -413,7 +403,6 @@ bool StateJump::FUN_1417d65d0()
 }
 
 // @0x1417d6620
-// MS2-FUNCTIONAL: the zero point is copied byte-wise in the exe
 int StateJump::FUN_1417d6620()
 {
     MyPC* pPC = FUN_1417b84b0();
@@ -428,30 +417,32 @@ int StateJump::FUN_1417d6620()
         }
         m_pSeat = FUN_141659af0(pPC, 0);
     }
-    if (m_pSeat == 0)
-        return 0;
-    if (m_pOwner->GetClassID() == 0x6200045)
+    if (m_pSeat != 0)
     {
-        MS2Ptr<RideOffActionTakeLR> spAction(new RideOffActionTakeLR(1));
-        spAction->m_n28 = 0;
-        if (FUN_1408a9bd0(m_pSeat)->ContainsModel(0xbadf0a13))
-            spAction->m_n2c = 0xbadf0a13;
+        if (m_pOwner->GetClassID() == 0x6200045)
+        {
+            MS2Ptr<RideOffActionTakeLR> spAction(new RideOffActionTakeLR(1));
+            spAction->m_n28 = 0;
+            if (FUN_1408a9bd0(m_pSeat)->ContainsModel(0xbadf0a13))
+                spAction->m_n2c = 0xbadf0a13;
+            else if (FUN_1408a9bd0(m_pSeat)->ContainsModel(0xc13e30c8))
+                spAction->m_n2c = 0xc13e30c8;
+            if (pPC->SendRequestRideMode1(spAction) != 0)
+                pPC->vfunc_59(1, 0, 0, 0);
+        }
+        else if (FUN_1408a9bd0(m_pSeat)->ContainsModel(0xbadf0a13))
+        {
+            m_pOwner->vfunc_22(efd::Point3::ZERO);
+            m_pOwner->vfunc_59(8, 0, 0, 0);
+        }
         else if (FUN_1408a9bd0(m_pSeat)->ContainsModel(0xc13e30c8))
-            spAction->m_n2c = 0xc13e30c8;
-        if (pPC->SendRequestRideMode1(spAction) != 0)
-            pPC->vfunc_59(1, 0, 0, 0);
+        {
+            m_pOwner->vfunc_22(efd::Point3::ZERO);
+            m_pOwner->vfunc_59(9, 0, 0, 0);
+        }
+        return 1;
     }
-    else if (FUN_1408a9bd0(m_pSeat)->ContainsModel(0xbadf0a13))
-    {
-        m_pOwner->vfunc_22(efd::Point3::ZERO);
-        m_pOwner->vfunc_59(8, 0, 0, 0);
-    }
-    else if (FUN_1408a9bd0(m_pSeat)->ContainsModel(0xc13e30c8))
-    {
-        m_pOwner->vfunc_22(efd::Point3::ZERO);
-        m_pOwner->vfunc_59(9, 0, 0, 0);
-    }
-    return 1;
+    return 0;
 }
 
 // @0x1417d6ac0

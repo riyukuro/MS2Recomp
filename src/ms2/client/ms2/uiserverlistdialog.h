@@ -24,7 +24,7 @@ class CMultiServerChannel : public CPtred
 {
 public:
     CMultiServerChannel();                                      // 0x141ad5800
-    virtual ~CMultiServerChannel();                             //  0 0x141ad5c00 (??_G 0x141ad5f30)
+    // implicit virtual ~CMultiServerChannel                  //  0 0x141ad5c00 (??_G 0x141ad5f30)
     int HasLowerLoad(float fLimit) const;                       // 0x141ad6790 (m_20 != 0 && fLimit > m_1c / m_20)
 
     int m_nId;                                                  // +0x18 channel id (packet reader 0x141ad1150)
@@ -38,7 +38,7 @@ class CMultiServer : public CPtred
 {
 public:
     CMultiServer();                                             // 0x141ad5740
-    virtual ~CMultiServer();                                    //  0 0x141ad5ba0 (??_G 0x141ad5ef0)
+    // implicit virtual ~CMultiServer                         //  0 0x141ad5ba0 (??_G 0x141ad5ef0)
 
     int m_nId;                                                  // +0x18
     CStringW m_strName;                                         // +0x20

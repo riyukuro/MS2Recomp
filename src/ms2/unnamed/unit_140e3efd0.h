@@ -37,7 +37,6 @@ private:
 class AdPushEntityBase : public CPtred {
 public:
     explicit AdPushEntityBase(const int& nId);                  // 0x140e424e0
-    virtual ~AdPushEntityBase();                                // 0x140e44fb0
     virtual bool vfunc_1() { return false; }
     virtual void vfunc_2(bool bRemove) {}
     virtual void vfunc_3() {}
@@ -88,6 +87,8 @@ public:
     int m_n124;                                 // +0x124
     char m_pad_128[0x134 - 0x128];
     int m_nRemain;                              // +0x134 seconds the offer lasts
+
+    int FUN_1406a46e0();                        // CMeratMarketProduct::GetType: the premium type, 0 when not premium
 };
 MS2_CHECK_OFFSET(Unk_AdMarketItem, m_info, 0x30);
 MS2_CHECK_OFFSET(Unk_AdMarketItem, m_nSn, 0x48);
@@ -100,7 +101,6 @@ class AdPushEntityLimitedBundle : public AdPushEntityBase {
     friend class UIAdPushLimitedDialog;
 public:
     explicit AdPushEntityLimitedBundle(const int& nId);         // 0x140e425a0
-    virtual ~AdPushEntityLimitedBundle();                       // 0x140e44fd0
     virtual bool vfunc_1();
     virtual void vfunc_2(bool bRemove);
     virtual void vfunc_3();
@@ -180,7 +180,7 @@ public:
     void ShowOrRetry();                                         // 0x140e41c60
     void CloseAll();                                            // 0x140e41cc0
     void FindDirtyPos(float* pX, float* pY);                      // 0x140e41d80
-    bool FindMinimizePos(float* pX);                            // 0x140e41f30
+    bool FindMinimizePos(float* pX, float* pY);                 // 0x140e41f30 (pY unused)
     void OnDirtyPos(const Scaleform::GFx::FunctionHandler::Params&);   // 0x140e42210
     void FixPosition();                                         // 0x140e42250
 private:

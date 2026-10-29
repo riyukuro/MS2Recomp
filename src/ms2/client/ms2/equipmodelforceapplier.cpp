@@ -34,7 +34,7 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 
-extern char DAT_143afc898;                                          // assertions throw when set
+extern unsigned char DAT_143afc898;                                        // assertions throw when set
 
 // ---- out-of-unit types and callees (bound to the exe by their FUN_<va> names) ----
 void* FUN_141200a90(CEquipModel* pModel);                           // the model's info record (CEquipModel +0x18)
@@ -89,7 +89,8 @@ public:
     char m_pad_00[0x30];
     NiTObjectArray<NiPhysXActorDescPtr> m_kActors;                  // +0x30
 };
-Unk_WindSubPtr* FUN_141ef37e0(NiPhysXActorDesc* pDesc, Unk_WindSubPtr* pOut, unsigned nIdx);
+// NiPhysXActorDesc view: the sub-object smart pointer for slot nIdx (0x141ef37e0, returned by value).
+class Unk_WindActorDesc { public: Unk_WindSubPtr FUN_141ef37e0(unsigned nIdx); };
 
 // @0x141209640
 IEquipModelForceApplierPtr FUN_141209640(CEquipModel* pModel)
@@ -141,8 +142,8 @@ EquipModelWindApplier::~EquipModelWindApplier()
 }
 
 // @0x141209940
-// MS2-FUNCTIONAL: not byte-matched (exe frame is 0x10 larger and 56 bytes shorter; local/temporary layout of the CAtlMap set and
-// the smart-pointer temporaries differ, unit-local views of the exe's NiPhysX* layouts)
+// MS2-FUNCTIONAL: not byte-matched: the exe frame is 0x10 larger, and the exe computes the gust-phase sine argument in xmm1
+// before moving it to xmm0. Everything else matches.
 void EquipModelWindApplier::OnTick(double fDeltaTime)
 {
     CEquipModel* pModel = GetOwner();
@@ -162,24 +163,22 @@ void EquipModelWindApplier::OnTick(double fDeltaTime)
         return;
     }
 
-    if (!(m_fPeriod > m_fElapsed)) {
+    if (!(m_fElapsed < m_fPeriod)) {
         static float s_fVariance = FUN_1402bac70(FUN_1401d3200() + 0x2f48);
         static float s_fBase = FUN_1402bac70(FUN_1401d3200() + 0x2fa0);
-        m_fPeriod = s_fBase + s_fVariance * (rand() / 32767.0 - 0.5);
+        m_fPeriod = s_fBase + s_fVariance * (rand() / 32767.0f - 0.5f);
         m_fElapsed = 0;
     }
     static float s_fStrength = FUN_1402bac70(FUN_1401d3200() + 0x2ff8);
     float fStrength = s_fStrength * (float)fDeltaTime;
-    float fGust = fStrength * (FUN_1409f2310((m_fElapsed / m_fPeriod) * 2.0 * 3.1415927 - 3.1415927) + 1.0);
+    float fGust = fStrength * (FUN_1409f2310((m_fElapsed / m_fPeriod) * 2.0f * 3.1415927f - 3.1415927f) + 1.0f);
     m_fElapsed = (float)(m_fElapsed + fDeltaTime);
 
     Vector3 ptRot = pObj->GetRotation();
     ptRot = ptRot.FUN_14097fc90(3.1415927f).FUN_140ae9180(180.0f);
-    float fY = fGust * FUN_1409f2310(ptRot.z);
-    float fX = -fGust * FUN_1409f25a0(ptRot.z);
-    NxVec3 vForce(fX, fY, 0);
+    NxVec3 vForce(-fGust * FUN_1409f25a0(ptRot.z), fGust * FUN_1409f2310(ptRot.z), 0);
     if (!vForce.isFinite()) {
-        EE_LOG_AT(0x12, 1, ("EquipModelWindApplier::OnTick"), MS2_THIS_FILE, 0x54);
+        EE_LOG_AT(0x12, efd::ILogger::kERR1, ("EquipModelWindApplier::OnTick"), MS2_THIS_FILE, 0x54);
         if (DAT_143afc898 != 0) {
             throw 13;
         }
@@ -188,18 +187,15 @@ void EquipModelWindApplier::OnTick(double fDeltaTime)
 
     ATL::CAtlMap<NxActor*, NxActor*> mapActors;
     ecrPhysX::PropService* pService = GetService<ecrPhysX::PropService>();
-    egf::EntityID idEntity = static_cast<CKfmModel*>(pModel)->FUN_14143ff70();
-    unsigned nProps = pService->GetNumProps(idEntity);
+    unsigned nProps = pService->GetNumProps(static_cast<CKfmModel*>(pModel)->FUN_14143ff70());
     for (unsigned i = 0; i < nProps; i++) {
         NiPhysXProp* pProp = pService->GetPropAt(static_cast<CKfmModel*>(pModel)->FUN_14143ff70(), i);
         for (unsigned j = 0; j < pProp->GetSourcesCount(); j++) {
             Unk_WindPropDesc* pDesc = reinterpret_cast<Unk_WindPropDesc*>(pProp->GetSnapshot());
             for (unsigned k = 0; k < pDesc->GetActorCount(); k++) {
-                NiPhysXActorDescPtr spActorDesc = pDesc->GetActorAt(k);
+                NiPhysXActorDesc* pActorDesc = pDesc->GetActorAt(k);
                 for (unsigned l = 0; l < 2; l++) {
-                    Unk_WindSubPtr spSub;
-                    FUN_141ef37e0(spActorDesc, &spSub, l);
-                    NxActor* pActor = spSub->FUN_14120ab90();
+                    NxActor* pActor = reinterpret_cast<Unk_WindActorDesc*>(pActorDesc)->FUN_141ef37e0(l)->FUN_14120ab90();
                     if (pActor && pActor->isDynamic() && !pActor->readBodyFlag(NX_BF_KINEMATIC)
                         && mapActors.Lookup(pActor) == 0) {
                         mapActors.SetAt(pActor, pActor);

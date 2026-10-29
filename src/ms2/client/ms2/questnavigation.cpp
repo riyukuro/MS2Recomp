@@ -268,7 +268,6 @@ int CQuestNavigationMap::FUN_140c912d0(int nFrom, int nTo)
 }
 
 // @0x140c91370
-// MS2-FUNCTIONAL: frame 0x88 vs 0x78, the exe spills m_78[a][b] temporaries to extra slots
 void CQuestNavigationMap::CollectMapPath(short nFrom, short nTo, ATL::CAtlArray<unsigned>& path, int& nDepth)
 {
     if (!m_8)
@@ -276,11 +275,14 @@ void CQuestNavigationMap::CollectMapPath(short nFrom, short nTo, ATL::CAtlArray<
     nDepth++;
     if (nDepth > (int)m_30.GetCount())
         return;
-    if (m_78[nFrom][nTo] == 0)
-        return;
-    CollectMapPath(nFrom, m_78[nFrom][nTo], path, nDepth);
-    path.Add(m_10[m_78[nFrom][nTo]]);
-    CollectMapPath(m_78[nFrom][nTo], nTo, path, nDepth);
+    if (m_78[nFrom][nTo] != 0)
+    {
+        CollectMapPath(nFrom, m_78[nFrom][nTo], path, nDepth);
+        short nMid = m_78[nFrom][nTo];
+        unsigned nMap = m_10[nMid];
+        path.Add(nMap);
+        CollectMapPath(m_78[nFrom][nTo], nTo, path, nDepth);
+    }
 }
 
 // @0x140c915a0
@@ -305,7 +307,6 @@ int CQuestNavigationMap::NearestMap(const ATL::CAtlArray<unsigned>& maps)
 }
 
 // @0x140c91690
-// MS2-FUNCTIONAL: 3.7KB condition/navigation scan, temporaries and stack slots differ (permuter lane)
 int CQuestNavigationMap::InitTraceTable()
 {
     if (!TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0x77))
@@ -325,7 +326,56 @@ int CQuestNavigationMap::InitTraceTable()
         {
             MS2Ptr<TraceTarget> spTarget(new TraceTarget);
             Unk_SocketPtr<CQuestData::NavigationData> spNavi = spQuest->FUN_14074b380((int)c);
-            if (!spNavi.get())
+            if (spNavi.get())
+            {
+                for (size_t n = 0; n < spNavi->m_targets.GetCount(); n++)
+                {
+                    Unk_SocketPtr<CQuestData::NavigationTarget> spEntry(spNavi->m_targets[n]);
+                    if (spEntry->m_kind == 0)
+                    {
+                        for (size_t i = 0; i < spEntry->m_ids.GetCount(); i++)
+                        {
+                            if (spEntry->m_maps.GetCount() != 0)
+                                spTarget->AddMaps(0, spEntry->m_ids[i], spEntry->m_maps);
+                            else
+                            {
+                                ATL::CAtlArray<unsigned> maps;
+                                TSingleton<CFieldMetaTable>::GetInstance()->FUN_1406fb2a0(spEntry->m_ids[i], maps);
+                                spTarget->AddMaps(0, spEntry->m_ids[i], maps);
+                            }
+                        }
+                    }
+                    else if (spEntry->m_kind == 1)
+                    {
+                        for (size_t i = 0; i < spEntry->m_ids.GetCount(); i++)
+                        {
+                            if (spEntry->m_maps.GetCount() != 0)
+                                spTarget->AddMaps(1, spEntry->m_ids[i], spEntry->m_maps);
+                            else
+                            {
+                                ATL::CAtlArray<unsigned> maps;
+                                TSingleton<CFieldMetaTable>::GetInstance()->FUN_1406fb1e0(spEntry->m_ids[i], maps);
+                                spTarget->AddMaps(1, spEntry->m_ids[i], maps);
+                            }
+                        }
+                    }
+                    else if (spEntry->m_kind == 2)
+                    {
+                        for (size_t i = 0; i < spEntry->m_ids.GetCount(); i++)
+                        {
+                            if (spEntry->m_maps.GetCount() != 0)
+                                spTarget->AddMaps(2, spEntry->m_ids[i], spEntry->m_maps);
+                            else
+                            {
+                                ATL::CAtlArray<unsigned> maps;
+                                TSingleton<CFieldMetaTable>::GetInstance()->FUN_1406fb120(spEntry->m_ids[i], maps);
+                                spTarget->AddMaps(2, spEntry->m_ids[i], maps);
+                            }
+                        }
+                    }
+                }
+            }
+            else
             {
                 MS2Ptr<CConditionCommonData> spCond(spQuest->m_conditions[c]);
                 if (ClassifyCondition(spCond->m_nType) == 0)
@@ -374,55 +424,6 @@ int CQuestNavigationMap::InitTraceTable()
                             Unk_QnLog(TSingleton<CLogString>::GetInstance(), 2, 0x13,
                                       L"QuestNavigationMap InitTraceTable Zero Count liftable {0}",
                                       spCond->m_code.m_ids[i]);
-                    }
-                }
-            }
-            else
-            {
-                for (size_t n = 0; n < spNavi->m_targets.GetCount(); n++)
-                {
-                    Unk_SocketPtr<CQuestData::NavigationTarget> spEntry(spNavi->m_targets[n]);
-                    if (spEntry->m_kind == 0)
-                    {
-                        for (size_t i = 0; i < spEntry->m_ids.GetCount(); i++)
-                        {
-                            if (spEntry->m_maps.GetCount() == 0)
-                            {
-                                ATL::CAtlArray<unsigned> maps;
-                                TSingleton<CFieldMetaTable>::GetInstance()->FUN_1406fb2a0(spEntry->m_ids[i], maps);
-                                spTarget->AddMaps(0, spEntry->m_ids[i], maps);
-                            }
-                            else
-                                spTarget->AddMaps(0, spEntry->m_ids[i], spEntry->m_maps);
-                        }
-                    }
-                    else if (spEntry->m_kind == 1)
-                    {
-                        for (size_t i = 0; i < spEntry->m_ids.GetCount(); i++)
-                        {
-                            if (spEntry->m_maps.GetCount() == 0)
-                            {
-                                ATL::CAtlArray<unsigned> maps;
-                                TSingleton<CFieldMetaTable>::GetInstance()->FUN_1406fb1e0(spEntry->m_ids[i], maps);
-                                spTarget->AddMaps(1, spEntry->m_ids[i], maps);
-                            }
-                            else
-                                spTarget->AddMaps(1, spEntry->m_ids[i], spEntry->m_maps);
-                        }
-                    }
-                    else if (spEntry->m_kind == 2)
-                    {
-                        for (size_t i = 0; i < spEntry->m_ids.GetCount(); i++)
-                        {
-                            if (spEntry->m_maps.GetCount() == 0)
-                            {
-                                ATL::CAtlArray<unsigned> maps;
-                                TSingleton<CFieldMetaTable>::GetInstance()->FUN_1406fb120(spEntry->m_ids[i], maps);
-                                spTarget->AddMaps(2, spEntry->m_ids[i], maps);
-                            }
-                            else
-                                spTarget->AddMaps(2, spEntry->m_ids[i], spEntry->m_maps);
-                        }
                     }
                 }
             }
@@ -475,7 +476,6 @@ int CQuestNavigationMap::ClassifyCondition(int nType)
 }
 
 // @0x140c92730
-// MS2-FUNCTIONAL: completed-quest / context-map temporaries differ (permuter lane)
 MS2Ptr<QuestNavigation::TraceContext> CQuestNavigationMap::TraceQuest(int nQuestId)
 {
     if (!TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0x77))
@@ -504,38 +504,36 @@ MS2Ptr<QuestNavigation::TraceContext> CQuestNavigationMap::TraceQuest(int nQuest
     ATL::CAtlMap<unsigned, MS2Ptr<QuestNavigation::TraceContext> > contexts;
     for (size_t c = 0; c < spData->m_conditions.GetCount(); c++)
     {
-        if (!spQuest->IsConditionComplete((int)c))
+        if (spQuest->IsConditionComplete((int)c))
+            continue;
+        MS2Ptr<TraceTarget> spTarget(0);
+        if (!spTable->Lookup((int)c, spTarget))
+            continue;
+        for (size_t nKind = 0; nKind < 3; nKind++)
         {
-            MS2Ptr<TraceTarget> spTarget(0);
-            if (spTable->Lookup((int)c, spTarget))
+            for (POSITION pos = spTarget->m_targets[nKind].GetStartPosition(); pos; spTarget->m_targets[nKind].GetNext(pos))
             {
-                for (size_t nKind = 0; nKind < 3; nKind++)
+                unsigned nMap = spTarget->m_targets[nKind].GetKeyAt(pos);
+                Unk_BmBoxPtr<ATL::CAtlArray<unsigned> > spIds(spTarget->m_targets[nKind].GetValueAt(pos));
+                MS2Ptr<QuestNavigation::TraceContext> spContext(0);
+                if (!contexts.Lookup(nMap, spContext))
                 {
-                    for (POSITION pos = spTarget->m_targets[nKind].GetStartPosition(); pos; spTarget->m_targets[nKind].GetNext(pos))
-                    {
-                        unsigned nMap = spTarget->m_targets[nKind].GetKeyAt(pos);
-                        Unk_BmBoxPtr<ATL::CAtlArray<unsigned> > spIds(spTarget->m_targets[nKind].GetValueAt(pos));
-                        MS2Ptr<QuestNavigation::TraceContext> spContext(0);
-                        if (!contexts.Lookup(nMap, spContext))
-                        {
-                            Unk_QnPtrAccess::Assign(spContext, Unk_BmNewTag(0));
-                            spContext->m_18 = nMap;
-                            maps.Add(nMap);
-                            contexts.SetAt(nMap, spContext);
-                        }
-                        switch (nKind)
-                        {
-                        case 0:
-                            Unk_QnMerge(spIds, spContext->m_20);
-                            break;
-                        case 1:
-                            Unk_QnMerge(spIds, spContext->m_30);
-                            break;
-                        case 2:
-                            Unk_QnMerge(spIds, spContext->m_40);
-                            break;
-                        }
-                    }
+                    Unk_QnPtrAccess::Assign(spContext, Unk_BmNewTag(0));
+                    spContext->m_18 = nMap;
+                    maps.Add(nMap);
+                    contexts.SetAt(nMap, spContext);
+                }
+                switch (nKind)
+                {
+                case 0:
+                    Unk_QnMerge(spIds, spContext->m_20);
+                    break;
+                case 1:
+                    Unk_QnMerge(spIds, spContext->m_30);
+                    break;
+                case 2:
+                    Unk_QnMerge(spIds, spContext->m_40);
+                    break;
                 }
             }
         }
@@ -547,7 +545,6 @@ MS2Ptr<QuestNavigation::TraceContext> CQuestNavigationMap::TraceQuest(int nQuest
 }
 
 // @0x140c92fc0
-// MS2-FUNCTIONAL: temporaries/stack layout differ in the condition loop (permuter lane)
 void CQuestNavigationMap::FUN_140c92fc0(Unk_PayloadPtr<CQuest> spQuest, int nMapId, QuestNavigation::TraceContext& context)
 {
     if (spQuest.IsNull())
@@ -562,32 +559,30 @@ void CQuestNavigationMap::FUN_140c92fc0(Unk_PayloadPtr<CQuest> spQuest, int nMap
         return;
     for (size_t c = 0; c < spData->m_conditions.GetCount(); c++)
     {
-        if (!spQuest->IsConditionComplete((int)c))
+        if (spQuest->IsConditionComplete((int)c))
+            continue;
+        MS2Ptr<TraceTarget> spTarget(0);
+        if (!spTable->Lookup((int)c, spTarget))
+            continue;
+        for (size_t nKind = 0; nKind < 3; nKind++)
         {
-            MS2Ptr<TraceTarget> spTarget(0);
-            if (spTable->Lookup((int)c, spTarget))
+            for (POSITION pos = spTarget->m_targets[nKind].GetStartPosition(); pos; spTarget->m_targets[nKind].GetNext(pos))
             {
-                for (size_t nKind = 0; nKind < 3; nKind++)
+                int nMap = spTarget->m_targets[nKind].GetKeyAt(pos);
+                Unk_BmBoxPtr<ATL::CAtlArray<unsigned> > spIds(spTarget->m_targets[nKind].GetValueAt(pos));
+                if (nMap != nMapId)
+                    continue;
+                switch (nKind)
                 {
-                    for (POSITION pos = spTarget->m_targets[nKind].GetStartPosition(); pos; spTarget->m_targets[nKind].GetNext(pos))
-                    {
-                        int nMap = spTarget->m_targets[nKind].GetKeyAt(pos);
-                        Unk_BmBoxPtr<ATL::CAtlArray<unsigned> > spIds(spTarget->m_targets[nKind].GetValueAt(pos));
-                        if (nMap != nMapId)
-                            continue;
-                        switch (nKind)
-                        {
-                        case 0:
-                            Unk_QnMerge(spIds, context.m_20);
-                            break;
-                        case 1:
-                            Unk_QnMerge(spIds, context.m_30);
-                            break;
-                        case 2:
-                            Unk_QnMerge(spIds, context.m_40);
-                            break;
-                        }
-                    }
+                case 0:
+                    Unk_QnMerge(spIds, context.m_20);
+                    break;
+                case 1:
+                    Unk_QnMerge(spIds, context.m_30);
+                    break;
+                case 2:
+                    Unk_QnMerge(spIds, context.m_40);
+                    break;
                 }
             }
         }

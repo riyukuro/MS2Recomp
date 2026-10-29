@@ -121,7 +121,7 @@ void CSkillPointSimulator::Recalc()
     for (int nRank = 1; nRank < 3; nRank++)
     {
         int nKey = nRank;
-        int nBase = JobSystem::GetLevelSkillPoint(m_nLevel, nRank);
+        int nBase = JobSystem::GetLevelSkillPoint(m_nLevel, nKey);
         int nExtra = m_mapExtra[nKey];
         int nTotal = nBase + nExtra + m_nBonus;
         m_mapTotal[nKey] = nTotal;
@@ -147,14 +147,12 @@ void CSkillPointSimulator::Recalc()
     {
         m_mapSpent[nRank] = used[nRank];
         int nTotal = GetTotalPoints(nRank);
-        int nLeft = nTotal - used[nRank] < 1 ? 0 : nTotal - used[nRank];
-        int nRemain = nLeft;
+        int nRemain = nTotal - used[nRank] > 0 ? nTotal - used[nRank] : 0;
         m_mapRemain[nRank] = nRemain;
         m_nRemain += nRemain;
     }
 }
 
-// MS2-FUNCTIONAL: exe reloads the skill id via ecx->r8d and keeps one fewer 4-byte local (register/temp allocation; same callees and control flow)
 // @0x140abcd70
 int CSkillPointSimulator::Validate(unsigned* pnBadSkill)
 {
@@ -167,8 +165,7 @@ int CSkillPointSimulator::Validate(unsigned* pnBadSkill)
         if (!sp->m_bLearned)
             continue;
         *pnBadSkill = sp->GetID();
-        int nSkillId = sp->GetID();
-        MS2Ptr<SkillData> spSkill = FUN_1401958b0()->FUN_1407ee1d0(nSkillId);
+        MS2Ptr<SkillData> spSkill = FUN_1401958b0()->FUN_1407ee1d0(sp->GetID());
         if (spSkill == 0)
             return 0;
         if (spSkill->FUN_1407e9ac0() < sp->m_nLevel)
@@ -177,7 +174,9 @@ int CSkillPointSimulator::Validate(unsigned* pnBadSkill)
             return 0;
         nSum += sp->GetUsedPoint();
     }
-    return nSum <= m_nSpent;
+    if (m_nSpent < nSum)
+        return 0;
+    return 1;
 }
 
 // @0x140abcfe0
@@ -188,20 +187,18 @@ int CSkillPointSimulator::LevelUp(unsigned nSkillId)
         return 0;
     if (!CanLevelUp(nSkillId))
         return 0;
-    int nId = sp->GetID();
-    MS2Ptr<SkillData> spSkill = FUN_1401958b0()->FUN_1407ee1d0(nId);
+    MS2Ptr<SkillData> spSkill = FUN_1401958b0()->FUN_1407ee1d0(sp->GetID());
     if (spSkill == 0)
         return 0;
-    if (!sp->m_bLearned)
+    if (sp->m_bLearned)
     {
-        sp->m_bLearned = true;
+        if (spSkill->FUN_1407e9ac0() < sp->m_nLevel + 1)
+            return 0;
+        sp->m_nLevel += 1;
     }
     else
     {
-        int nMaxLevel = spSkill->FUN_1407e9ac0();
-        if (nMaxLevel < sp->m_nLevel + 1)
-            return 0;
-        sp->m_nLevel += 1;
+        sp->m_bLearned = true;
     }
     Recalc();
     return 1;
@@ -217,18 +214,18 @@ int CSkillPointSimulator::LevelDown(unsigned nSkillId, unsigned* pnBadSkill)
         return 0;
     unsigned short nOldLevel = sp->m_nLevel;
     bool bOldLearned = sp->m_bLearned;
-    if (!sp->IsLearn())
+    if (sp->IsLearn())
+    {
+        if (sp->m_nLevel == 1)
+            return 0;
+        sp->m_nLevel -= 1;
+    }
+    else
     {
         if (sp->m_nLevel == 1)
             sp->m_bLearned = false;
         else
             sp->m_nLevel -= 1;
-    }
-    else
-    {
-        if (sp->m_nLevel == 1)
-            return 0;
-        sp->m_nLevel -= 1;
     }
     if (!Validate(pnBadSkill))
     {
@@ -248,21 +245,19 @@ int CSkillPointSimulator::CanLevelUp(unsigned nSkillId)
         return 0;
     if (!GetRemainPoints(sp->GetJobLevel()))
         return 0;
-    int nId = sp->GetID();
-    MS2Ptr<SkillData> spSkill = FUN_1401958b0()->FUN_1407ee1d0(nId);
+    MS2Ptr<SkillData> spSkill = FUN_1401958b0()->FUN_1407ee1d0(sp->GetID());
     if (spSkill == 0)
         return 0;
     if (sp->m_bLearned)
     {
-        unsigned nMaxLevel = spSkill->FUN_1407e9ac0();
-        if ((int)nMaxLevel <= (int)sp->m_nLevel)
+        if (spSkill->FUN_1407e9ac0() <= sp->m_nLevel)
             return 0;
     }
-    if (m_nJobRank < sp->GetJobLevel())
+    if (sp->GetJobLevel() > m_nJobRank)
         return 0;
-    short nNext = sp->m_nLevel;
+    unsigned short nNext = sp->m_nLevel;
     if (sp->m_bLearned)
-        nNext++;
+        nNext += 1;
     return CheckRequirements(sp->GetID(), nNext);
 }
 
@@ -298,26 +293,23 @@ int CSkillPointSimulator::CheckRequirements(unsigned nSkillId, unsigned short nL
     JobSkillDataPtr spData = spJob->FindSkill(nSkillId);
     if (spData == 0)
         return 1;
-    if (m_nLevel < spData->GetRequireLevel(nLevel))
+    if (spData->GetRequireLevel(nLevel) > m_nLevel)
         return 0;
-    ATL::CAtlArray<unsigned>* pIds = &spData->m_requireSkillIDs;
-    ATL::CAtlArray<unsigned short>* pLevels = &spData->m_requireSkillLevels;
-    for (unsigned i = 0; i < pIds->GetCount(); i++)
+    ATL::CAtlArray<unsigned>& ids = spData->m_requireSkillIDs;
+    ATL::CAtlArray<unsigned short>& levels = spData->m_requireSkillLevels;
+    for (unsigned i = 0; i < ids.GetCount(); i++)
     {
-        JobSkillPtr spReq = GetEditSkill((*pIds)[i]);
+        JobSkillPtr spReq = GetEditSkill(ids[i]);
         if (spReq == 0)
             return 0;
         if (!spReq->m_bLearned)
             return 0;
-        int nReqLevel = spReq->m_nLevel;
-        if (nReqLevel < (*pLevels)[i])
+        if (spReq->m_nLevel < levels[i])
             return 0;
     }
     if (spData->m_requireQuestID != 0)
     {
-        JobSkillData* pData = spData.operator->();
-        char* pQuest = FUN_141523ba0(pPlayer);
-        if (!FUN_140745590(pQuest + 0x10, pData->m_requireQuestID))
+        if (!FUN_140745590(FUN_141523ba0(pPlayer) + 0x10, spData->m_requireQuestID))
             return 0;
     }
     return 1;
@@ -433,7 +425,6 @@ void CSkillPointSimulator::ResetRank(int nRank)
     Recalc();
 }
 
-// MS2-FUNCTIONAL: exe scopes the JobSkillPtr per while-iteration with separate destructor calls on the break/remove paths (674 vs 688 bytes; same callees and logic)
 // @0x140abe1e0
 int CSkillPointSimulator::AutoDistribute(ATL::CAtlArray<unsigned>& order, ATL::CAtlArray<unsigned>& counts)
 {
@@ -481,9 +472,9 @@ int CSkillPointSimulator::AutoDistribute(ATL::CAtlArray<unsigned>& order, ATL::C
                     order.RemoveAt(i, 1);
                     counts.RemoveAt(i, 1);
                 }
+                continue;
             }
-            else
-                break;
+            break;
         }
     }
     Recalc();
@@ -517,7 +508,6 @@ void CSkillPointSimulator::GetUsedPoints(ATL::CAtlArray<unsigned>& ids, ATL::CAt
 }
 
 // @0x140abe620
-// MS2-FUNCTIONAL: locals are laid out in a different order (the entry's JobSkillPtr slots sit 0x10 lower in the exe)
 void CSkillPointSimulator::Commit(int nRank)
 {
     SkillMap keep(17, 0.75f, 0.25f, 2.25f, 10);
@@ -526,35 +516,27 @@ void CSkillPointSimulator::Commit(int nRank)
         for (POSITION pos = m_mapSnapshot.GetStartPosition(); pos != 0; m_mapSnapshot.GetNext(pos))
         {
             JobSkillPtr sp = m_mapSnapshot.GetValueAt(pos);
-            if (!(sp == 0))
-            {
-                if (nRank == sp->GetJobLevel())
-                {
-                }
-                else
-                {
-                    keep.SetAt(sp->GetID(), sp);
-                }
-            }
+            if (sp == 0)
+                continue;
+            if (nRank == sp->GetJobLevel())
+                continue;
+            keep.SetAt(sp->GetID(), sp);
         }
     }
     m_mapSnapshot.RemoveAll();
     for (POSITION posEdit = m_mapEdit.GetStartPosition(); posEdit != 0; m_mapEdit.GetNext(posEdit))
     {
         JobSkillPtr sp = m_mapEdit.GetValueAt(posEdit);
-        if (!(sp == 0))
-        {
-            JobSkill* pCopy = new JobSkill(*sp.get());
-            JobSkillPtr spCopy(pCopy);
-            m_mapSnapshot.SetAt(sp->GetID(), spCopy);
-        }
+        if (sp == 0)
+            continue;
+        JobSkillPtr spCopy(new JobSkill(*sp.get()));
+        m_mapSnapshot.SetAt(sp->GetID(), spCopy);
     }
     for (POSITION posKeep = keep.GetStartPosition(); posKeep != 0; keep.GetNext(posKeep))
     {
         JobSkillPtr sp = keep.GetValueAt(posKeep);
-        if (!(sp == 0))
-        {
-            m_mapSnapshot.SetAt(sp->GetID(), sp);
-        }
+        if (sp == 0)
+            continue;
+        m_mapSnapshot.SetAt(sp->GetID(), sp);
     }
 }

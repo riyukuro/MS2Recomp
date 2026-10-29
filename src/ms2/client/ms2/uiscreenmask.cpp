@@ -103,7 +103,7 @@ CString UIScreenMask::FUN_141ad09e0()
     Unk_FieldDataPtr spField = FUN_1403ed2d0()->FUN_141bd30a0();
     if (spField.FUN_1409657a0() != 0)
         return spField.FUN_140885340()->m_strName;
-    return "skill";
+    return "";
 }
 
 // @0x141ad0aa0

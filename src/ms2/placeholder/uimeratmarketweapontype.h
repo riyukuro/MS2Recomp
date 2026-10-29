@@ -18,7 +18,7 @@ class WeaponType : public CPtred
 {
 public:
     WeaponType(PC* pOwner);                                 // 0x140ebb6c0
-    virtual ~WeaponType();                                  // 0x140ec3500 (scalar deleting 0x140ec3730)
+    // ~WeaponType (0x140ec3500, scalar deleting 0x140ec3730) is implicit.
     bool FUN_140ebb730(PC* pOwner);                         // 0x140ebb730 (returns true)
     void FUN_140ebb750();                                   // 0x140ebb750 reset the filter
     bool FUN_140ebb780(int nGender, int nJob, MS2Ptr<CItemData> spData);   // 0x140ebb780 the item passes the filter

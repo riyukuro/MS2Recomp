@@ -1,6 +1,33 @@
 // Recovered from MapleStory2.exe KMS2_DEV x64 (2022-04-13).
 // MS2-UNIT: ?\mouseinteract.cpp
 // MS2-RANGE: 0x140a78f70-0x140a7bb20 .text$mn
+// MS2-PIN: ??0Unk_MiVec3@@QEAA@AEBUUnk_Vec3@@@Z 0x14027dcf0
+// MS2-PIN: ??0Unk_MiVec3@@QEAA@AEBVNiPoint3@@@Z 0x14027dcf0
+// MS2-PIN: ??0Unk_MiNpcRecPtr@@QEAA@AEBUUnk_MiNpcDataPtr@@@Z 0x1406cf850
+// MS2-PIN: ??1Unk_MiNpcRecPtr@@QEAA@XZ 0x14035e5b0
+// MS2-PIN: ??1Unk_MiNpcDataPtr@@QEAA@XZ 0x1406d5390
+// MS2-PIN: ??0Unk_PortalHit@@QEAA@H@Z 0x140964110
+// MS2-PIN: ??1Unk_PortalHit@@QEAA@XZ 0x140964a70
+// MS2-PIN: ??CUnk_PortalHit@@QEAAPEAUUnk_Portal@@XZ 0x140965960
+// MS2-PIN: ??0Unk_IdArray@@QEAA@XZ 0x140182ea0
+// MS2-PIN: ??1Unk_IdArray@@QEAA@XZ 0x140183b60
+// MS2-PIN: ??0Unk_MiCompRef@@QEAA@PEAX@Z 0x1408b6680
+// MS2-PIN: ??1Unk_MiCompRef@@QEAA@XZ 0x1408a8720
+// MS2-PIN: ??0Unk_ObjectHit@@QEAA@H@Z 0x140963fd0
+// MS2-PIN: ??1Unk_ObjectHit@@QEAA@XZ 0x1409649b0
+// MS2-PIN: ??CUnk_ObjectHit@@QEAAPEAUUnk_ObjectEnt@@XZ 0x140965920
+// MS2-PIN: ??0Unk_ObjArray@@QEAA@XZ 0x140963a20
+// MS2-PIN: ??1Unk_ObjArray@@QEAA@XZ 0x140964700
+// MS2-PIN: ??1Unk_DataRef@@QEAA@XZ 0x140520fc0
+// MS2-PIN: ??CUnk_DataRef@@QEAAPEADXZ 0x1405212e0
+// MS2-PIN: ??0Unk_WeaponHit@@QEAA@H@Z 0x140964170
+// MS2-PIN: ??0Unk_WeaponHit@@QEAA@AEBU0@@Z 0x140884f70
+// MS2-PIN: ??1Unk_WeaponHit@@QEAA@XZ 0x140885120
+// MS2-PIN: ??CUnk_WeaponHit@@QEAAPEAUUnk_WeaponEnt@@XZ 0x140885350
+// MS2-PIN: ??1Unk_DmIter@@QEAA@XZ 0x1409f20e0
+// MS2-PIN: ??CUnk_DmIter@@QEAAPEAUUnk_DmList@@XZ 0x1409f2190
+// MS2-PIN: ??0Unk_MiDmRef@@QEAA@PEAX@Z 0x1408a7ed0
+// MS2-PIN: ??1Unk_MiDmRef@@QEAA@XZ 0x1408a8720
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\mouseinteract.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
 #include "mouseinteract.h"
@@ -11,23 +38,11 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 
-// MS2-FUNCTIONAL: unit-wide; the picker bodies (vfunc_1/2/3, FindTarget) and the hit / iterator helpers use opaque externs and
-// Ghidra-level approximations of unrecovered smart-pointer types, so most non-trivial functions are not byte-identical.
-// Picker vfuncs (imported by unnamed/unit_140ad1860): the exe's hit results (Unk_PortalHit / Unk_ObjectHit / Unk_WeaponHit)
-// are 16-byte counted handles with dtors (0x140964a70 / 0x1409649b0 / ...) that FindTarget returns by value (sret, EH frame,
-// IsNull tests return bool); here they are raw structs with explicit helper calls (char results, GS cookie, no EH).
-// MS2-FUNCTIONAL 0x140a79090: CMouseInteractNpc::vfunc_1 - raw PCBase*/hit structs instead of the handle temporaries (2 extra helper calls)
-// MS2-FUNCTIONAL 0x140a79a00: CMouseInteractPortal::vfunc_1 - Unk_PortalHit as a raw struct (GS frame, no EH dtor state)
-// MS2-FUNCTIONAL 0x140a79c00: CMouseInteractPortal::vfunc_2 - same: exe early-returns 0 after the bool IsNull test, hit dtor via EH
-// MS2-FUNCTIONAL 0x140a7a0c0: CMouseInteractObject::vfunc_1 - Unk_ObjectHit as a raw struct (GS frame, no EH dtor state)
-// MS2-FUNCTIONAL 0x140a7a250: CMouseInteractObject::vfunc_2 - same handle-type gap as vfunc_1
-// MS2-FUNCTIONAL 0x140a7ad80: CMouseInteractWeaponObject::vfunc_1 - Unk_WeaponHit as a raw struct (GS frame, no EH dtor state)
-// MS2-FUNCTIONAL 0x140a7ae80: CMouseInteractWeaponObject::vfunc_2 - same handle-type gap as vfunc_1
 // ---- RTTI-only action classes (the picker compares the player's current action against the picked object) ----
 class ActionKeyObject { public: virtual ~ActionKeyObject(); };
 class TalkAction : public ActionKeyObject { public: char m_pad[0x10]; int m_nNpcId; };                  // +0x18
 class HoldAction : public ActionKeyObject { public: char m_pad[0x18]; int m_nNpcId; };                  // +0x20
-class PortalAction : public ActionKeyObject { public: char m_pad[0x10]; };
+struct PortalAction : public ActionKeyObject { char m_pad[0x10]; int FUN_140956110(); };   // a struct (.?AUPortalAction@@): as a class the cast never matched
 class InteractAction : public ActionKeyObject { public: char m_pad[0x10]; CStringA m_strObjectId; };    // +0x18
 class PullObjectWeaponAction : public ActionKeyObject { public: char m_pad[0x10]; char m_hit[16]; };    // +0x18
 class UITalkCinematic : public UIObject {};
@@ -45,8 +60,9 @@ struct Unk_MiNpcView { CStringW FUN_141093310(); };       // npc name (member: t
 unsigned FUN_141092fa0(PCBase* pNpc);                    // npc id
 int FUN_141093c60(PCBase* pNpc);
 void FUN_140194470(Unk_Vec3* pDst, const Unk_Vec3* pSrc);
-Unk_Vec3* FUN_14027dcf0(Unk_Vec3* pDst, const Unk_Vec3* pSrc);
-bool FUN_14147ad10(const Unk_Vec3* pOrigin, const Unk_Vec3* pEnd, const Unk_Vec3* pCenter, float fRadius);
+// the exe's vector type has a copy ctor (0x14027dcf0); a ctor-less float struct local would get a /GS cookie
+struct Unk_MiVec3 { float x, y, z; Unk_MiVec3(const Unk_Vec3& v); Unk_MiVec3(const NiPoint3& v); };
+bool FUN_14147ad10(const struct Unk_MiVec3& vOrigin, const struct Unk_MiVec3& vEnd, const struct Unk_MiVec3& vCenter, float fRadius);
 bool FUN_14028d470(float a, float b);
 extern char DAT_143b01a60;
 
@@ -56,10 +72,10 @@ class Unk_MiWorld
 public:
     Unk_MiPlayer* FUN_141bd0cc0();                          // the local player
     Unk_NpcTree* FUN_141bd36d0();                           // npc tree
-    void FUN_141bc2980(struct Unk_IdArray* pOut);           // portal ids
-    void FUN_141bc2800(struct Unk_PortalHit* pOut, unsigned nId);
-    void FUN_141bc5f10(struct Unk_ObjArray* pOut);          // interactable objects
-    void FUN_141bd0420(struct Unk_DmIter* pOut, unsigned nKey);
+    void FUN_141bc2980(struct Unk_IdArray& out);            // portal ids
+    struct Unk_PortalHit FUN_141bc2800(unsigned nId);
+    void FUN_141bc5f10(struct Unk_ObjArray& out);            // interactable objects
+    struct Unk_DmIter FUN_141bd0420(unsigned nKey);
 };
 Unk_MiWorld* FUN_1403ed2d0();
 Unk_MiActionState* Unk_PlayerActionState(Unk_MiPlayer* pPlayer);
@@ -69,7 +85,6 @@ void FUN_140953310(Unk_MiActionState* p);                   // cancel
 int FUN_141527160(Unk_MiPlayer* pPlayer, int nFlag);
 int FUN_14166c930(Unk_MiPlayer* pPlayer);
 bool FUN_1401c0090(const CStringA* a, const CStringA* b);
-int FUN_140956110(PortalAction* p);
 void* FUN_1409331e0();
 int FUN_14138c900(void* p, int n);
 void* FUN_140967100();
@@ -78,15 +93,33 @@ int FUN_14123c660(PCBase* p);
 int FUN_140855d10(unsigned nId);
 
 // smart pointer to the data record of an npc (16 bytes)
-struct Unk_DataRef { char raw[16]; };
-Unk_DataRef* FUN_141093270(PCBase* pNpc, Unk_DataRef* pOut);
-void FUN_1406cf850(Unk_DataRef* pDst, Unk_DataRef* pSrc);
-void FUN_1406d5390(Unk_DataRef* p);
-char FUN_14035e9b0(Unk_DataRef* p);
-void FUN_14035e5b0(Unk_DataRef* p);
-char* FUN_14035eb90(Unk_DataRef* p);
-void* FUN_140965990(Unk_DataRef* p);
-int FUN_1406cd020(void* p);
+struct Unk_DataRef                                          // object component data smart pointer
+{
+    void* m_pad;
+    void* m_p;
+    ~Unk_DataRef();                                         // 0x140520fc0
+    bool FUN_140965160();                                   // null test
+    char* operator->();                                     // 0x1405212e0
+};
+struct Unk_MiNpcData { int FUN_1406cd020(); };
+struct Unk_MiNpcDataPtr                                     // MS2Ptr<npc data> returned by the npc (16 bytes)
+{
+    void* m_pad;
+    Unk_MiNpcData* m_p;
+    Unk_MiNpcDataPtr(const Unk_MiNpcDataPtr& sp);
+    ~Unk_MiNpcDataPtr();                                    // 0x1406d5390
+    Unk_MiNpcData* FUN_140965990();                         // operator->
+};
+struct Unk_MiNpcRecPtr                                      // the npc's model record handle (16 bytes)
+{
+    void* m_pad;
+    void* m_p;
+    Unk_MiNpcRecPtr(const Unk_MiNpcDataPtr& sp);            // 0x1406cf850
+    ~Unk_MiNpcRecPtr();                                     // 0x14035e5b0
+    bool FUN_14035e9b0();                                   // null test
+    char* FUN_14035eb90();                                  // operator->
+};
+struct Unk_MiNpcRef { Unk_MiNpcDataPtr FUN_141093270(); };  // npc data (member: this=rcx, hidden return=rdx)
 
 
 // ---- npc list iteration (a red-black tree of smart pointers, root at +0, nil node at +0x28) ----
@@ -177,69 +210,109 @@ Unk_NpcNode* Unk_NpcTree::Successor(Unk_NpcNode* p)
 }
 
 // ---- hit-result wrappers (16 bytes: unknown qword + the pointer at +8) ----
-struct Unk_Portal { char m_pad[0x4c]; float m_fRadius; CStringW FUN_14169c3b0(); };   // cursor text (member: this=rcx, hidden return=rdx)
-struct Unk_PortalHit { void* m_pad; Unk_Portal* m_p; };
-Unk_PortalHit* FUN_140964110(Unk_PortalHit* p, int n);
-char FUN_140965190(Unk_PortalHit* p);
-char FUN_1409652c0(Unk_PortalHit* p, void* pCmp);           // p->m_p == pCmp
-Unk_Portal* FUN_140965960(Unk_PortalHit* p);
-void FUN_140964a70(Unk_PortalHit* p);
-Unk_Vec3* FUN_14169d2f0(Unk_Portal* p, Unk_Vec3* pTmp);
-int FUN_14169d280(Unk_Portal* p);
+struct Unk_Portal { char m_pad[0x4c]; float m_fRadius; CStringW FUN_14169c3b0(); NiPoint3 FUN_14169d2f0(); int FUN_14169d280(); };   // cursor text (member: this=rcx, hidden return=rdx)
+struct Unk_PortalHit
+{
+    void* m_pad;
+    Unk_Portal* m_p;
+    Unk_PortalHit(int n);                                   // 0x140964110
+    Unk_PortalHit(Unk_PortalHit&& r);
+    ~Unk_PortalHit();                                       // 0x140964a70
+    bool FUN_140965190();                                   // null test
+    bool FUN_1409652c0(Unk_Portal* p);                      // m_p == p
+    Unk_Portal* operator->();                               // 0x140965960
+};
 
 struct Unk_ObjectEnt { virtual int vf0(); virtual int vf1(); virtual int vf2(); virtual int vf3(); virtual int vf4(); virtual int vf5();
-    CStringA FUN_140967060(); };   // object id (member: this=rcx, hidden return=rdx)
-struct Unk_ObjectHit { void* m_pad; Unk_ObjectEnt* m_p; };
-Unk_ObjectHit* FUN_140963fd0(Unk_ObjectHit* p, int n);
-Unk_ObjectEnt* FUN_140965920(Unk_ObjectHit* p);
-void FUN_1409649b0(Unk_ObjectHit* p);
-Unk_Vec3* FUN_1409673c0(Unk_ObjectEnt* p, Unk_Vec3* pTmp);
-unsigned FUN_140967110(Unk_ObjectEnt* p);
-struct Unk_IdArray { char raw[0x20]; };
-struct Unk_ObjArray { char raw[0x20]; };
-void FUN_140182ea0(Unk_IdArray* p);
-size_t FUN_1401910d0(Unk_IdArray* p);
-unsigned* FUN_1404f0a10(Unk_IdArray* p, size_t i);
-void FUN_140183b60(Unk_IdArray* p);
-size_t FUN_140966d80(Unk_ObjArray* p);
-void* FUN_140965610(Unk_ObjArray* p, size_t i);
-Unk_DataRef* FUN_140966e00(Unk_ObjectEnt* p, Unk_DataRef* pOut);
-void FUN_140963a20(Unk_ObjArray* p);
-void FUN_140964700(Unk_ObjArray* p);
-char FUN_140965160(Unk_DataRef* p);
-char* FUN_1405212e0(Unk_DataRef* p);
-void FUN_140520fc0(Unk_DataRef* p);
+    CStringA FUN_140967060();
+    NiPoint3 FUN_1409673c0();
+    unsigned FUN_140967110();
+    struct Unk_DataRef FUN_140966e00(); };   // object id (member: this=rcx, hidden return=rdx)
+struct Unk_ObjectHit
+{
+    void* m_pad;
+    Unk_ObjectEnt* m_p;
+    Unk_ObjectHit(int n);                                   // 0x140963fd0
+    Unk_ObjectHit(const Unk_ObjectHit& r);
+    Unk_ObjectHit(Unk_ObjectHit&& r);
+    ~Unk_ObjectHit();                                       // 0x1409649b0
+    bool IsNil();
+    void AddRefIfSet();
+    void AddRef(void* pUnused);
+    Unk_ObjectEnt* operator->();                            // 0x140965920
+};
+struct Unk_IdArray
+{
+    void* m_pad[3];
+    Unk_IdArray();                                          // 0x140182ea0
+    ~Unk_IdArray();                                         // 0x140183b60
+    size_t FUN_1401910d0();                                 // GetCount
+    unsigned& FUN_1404f0a10(size_t i);                      // operator[]
+};
+struct Unk_ObjArray
+{
+    void* m_pad[4];
+    Unk_ObjArray();                                         // 0x140963a20
+    ~Unk_ObjArray();                                        // 0x140964700
+    size_t FUN_140966d80();                                 // GetCount
+    Unk_ObjectHit& FUN_140965610(size_t i);                 // operator[]
+};
 
 
-struct Unk_DmIter { char raw[16]; };
-struct Unk_DmList;
-Unk_DmList* FUN_1409f2190(Unk_DmIter* p);
-void* FUN_1409f2490(Unk_DmList* p);
+struct Unk_DmList
+{
+    void* FUN_1409f2490();                                  // GetHeadPosition
+    void* FUN_1409f23c0(void* pos);                         // GetAt
+    void FUN_1409f24c0(void*& pos);                         // GetNext
+};
+struct Unk_DmIter                                           // smart pointer to the model list
+{
+    void* m_pad;
+    Unk_DmList* m_p;
+    ~Unk_DmIter();                                          // 0x1409f20e0
+    Unk_DmList* operator->();                               // 0x1409f2190
+};
+struct Unk_MiDmRef                                          // model entity smart pointer
+{
+    void* m_p;
+    Unk_MiDmRef(void* p);                                   // 0x1408a7ed0
+    ~Unk_MiDmRef();                                         // 0x1408a8720
+    void* FUN_1408a9090();                                  // get
+    void* FUN_1408a9280();                                  // operator->
+};
 struct Unk_DmNodeRef { void* m_p; };
 void* FUN_1409670f0();
-void FUN_1411cf440(void* pSvc, void* pKey, Unk_DmNodeRef* pOut);
-void* FUN_1409f23c0(Unk_DmList* p, void* pos);
-void FUN_1409f24c0(Unk_DmList* p, void** pos);
-void FUN_1409f20e0(Unk_DmIter* p);
-void FUN_1408a7ed0(Unk_DmNodeRef* pDst, void* pSrc);
+void* FUN_1411cf440(void* pSvc, void* pKey);                    // EntityWorldManager: entity by id (rax)
+struct Unk_MiCompRef                                        // entity component smart pointer (8 bytes)
+{
+    void* m_p;
+    Unk_MiCompRef(void* pEntity);                           // 0x1408b6680 (AddRef)
+    ~Unk_MiCompRef();                                       // 0x1408a8720
+    void* FUN_1408a9090();                                  // get
+    void* FUN_1408a9280();                                  // operator->
+};
 void* FUN_1408a9280(Unk_DmNodeRef* p);
-void* FUN_1408a9090(Unk_DmNodeRef* p);
-void FUN_1408a8720(Unk_DmNodeRef* p);
 void FUN_1409618c0(void* pObj, unsigned nHash, Unk_Vec3* pOut);
 
 // ---- weapon objects ----
-struct Unk_WeaponEnt { char m_pad_00[0x18]; unsigned long long m_qwId; char m_pad_20[0x28]; int m_n48; char m_pad_4c[4]; int m_n50; };
-struct Unk_WeaponHit { void* m_pad; Unk_WeaponEnt* m_p; };
-Unk_WeaponHit* FUN_140884f70(Unk_WeaponHit* pDst, void* pSrc);
+struct Unk_WeaponEnt { char m_pad_00[0x18]; unsigned long long m_qwId; char m_pad_20[0x28]; int m_n48; char m_pad_4c[4]; int m_n50;
+    NiPoint3 FUN_1408b5370(); };
+struct Unk_WeaponHit
+{
+    void* m_pad;
+    Unk_WeaponEnt* m_p;
+    Unk_WeaponHit(int n);                                   // 0x140964170
+    Unk_WeaponHit(const Unk_WeaponHit& r);                  // 0x140884f70
+    Unk_WeaponHit(Unk_WeaponHit&& r);
+    ~Unk_WeaponHit();                                       // 0x140885120
+    Unk_WeaponEnt* FUN_140885330();                         // get
+    Unk_WeaponEnt* operator->();                            // 0x140885350
+};
 bool FUN_140885220(void* p);                            // MS2Ptr<Cube>::operator!
 Unk_WeaponEnt* FUN_140885350(void* p);
-Unk_WeaponEnt* FUN_140885330(void* p);
-void FUN_140885120(Unk_WeaponHit* p);
-Unk_WeaponHit* FUN_140964170(Unk_WeaponHit* p, int n);
-Unk_Vec3* FUN_1408b5370(Unk_WeaponEnt* p, Unk_Vec3* pTmp);
-void FUN_1408a20a0(void* pDst, unsigned nHash, char* pOut);
+void FUN_1408a20a0(void* pDst, unsigned nHash, bool* pOut);
 void FUN_1408a2020(void* pDst, unsigned nHash, int* pOut);
-struct Unk_WeaponMgr { void FUN_1410d59c0(struct Unk_WeaponArray* pOut); };
+struct Unk_WeaponMgr { void FUN_1410d59c0(struct Unk_WeaponArray& out); };
 Unk_WeaponMgr* FUN_1401cd040(void* p);
 extern char DAT_143b059e8;
 
@@ -254,9 +327,10 @@ struct Unk_WeaponArray
     ~Unk_WeaponArray();
     size_t GetCount();
     Unk_WeaponHit* GetAt(size_t i);
-    static void CallDestructors(Unk_WeaponHit* p, size_t n);
+    static void CallDestructors(Unk_WeaponHit* p, size_t n) throw();
 };
 Unk_WeaponHit* Unk_WeaponHitDelDtor(Unk_WeaponHit* p, unsigned nFlags);
+void FUN_140885120(Unk_WeaponHit* p);                  // the dtor, as the deleting dtor calls it
 void FUN_140159b70(long hr);
 
 // @0x140a7b350
@@ -288,7 +362,7 @@ Unk_WeaponHit* Unk_WeaponArray::GetAt(size_t i)
     return m_pData + i;
 }
 // @0x140a7b7b0
-void Unk_WeaponArray::CallDestructors(Unk_WeaponHit* p, size_t n)
+void Unk_WeaponArray::CallDestructors(Unk_WeaponHit* p, size_t n) throw()
 {
     for (size_t i = 0; i < n; i++)
         Unk_WeaponHitDelDtor(p + i, 0);
@@ -304,50 +378,45 @@ Unk_WeaponHit* Unk_WeaponHitDelDtor(Unk_WeaponHit* p, unsigned nFlags)
 
 // move helpers: take the pointer out of the source
 // @0x140a7b3e0
-Unk_ObjectHit* Unk_ObjectHitMove(Unk_ObjectHit* pDst, Unk_ObjectHit* pSrc)
+Unk_ObjectHit::Unk_ObjectHit(Unk_ObjectHit&& r)
 {
-    pDst->m_p = pSrc->m_p;
-    pSrc->m_p = 0;
-    return pDst;
+    m_p = r.m_p;
+    r.m_p = 0;
 }
 // @0x140a7b410
-void Unk_ObjectHitAddRefIfSet(Unk_ObjectHit* p);
-Unk_ObjectHit* Unk_ObjectHitCopy(Unk_ObjectHit* pDst, Unk_ObjectHit* pSrc)
+Unk_ObjectHit::Unk_ObjectHit(const Unk_ObjectHit& r)
 {
-    pDst->m_p = pSrc->m_p;
-    Unk_ObjectHitAddRefIfSet(pDst);
-    return pDst;
+    m_p = r.m_p;
+    AddRefIfSet();
 }
 // @0x140a7b450
-Unk_PortalHit* Unk_PortalHitMove(Unk_PortalHit* pDst, Unk_PortalHit* pSrc)
+Unk_PortalHit::Unk_PortalHit(Unk_PortalHit&& r)
 {
-    pDst->m_p = pSrc->m_p;
-    pSrc->m_p = 0;
-    return pDst;
+    m_p = r.m_p;
+    r.m_p = 0;
 }
 // @0x140a7b480
-Unk_WeaponHit* Unk_WeaponHitMove(Unk_WeaponHit* pDst, Unk_WeaponHit* pSrc)
+Unk_WeaponHit::Unk_WeaponHit(Unk_WeaponHit&& r)
 {
-    pDst->m_p = pSrc->m_p;
-    pSrc->m_p = 0;
-    return pDst;
+    m_p = r.m_p;
+    r.m_p = 0;
 }
 // @0x140a7b5e0
-bool Unk_ObjectHitIsNil(Unk_ObjectHit* p)
+bool Unk_ObjectHit::IsNil()
 {
-    return p->m_p == 0;
+    return m_p == 0;
 }
 void FUN_140968e90(Unk_ObjectEnt* p);
 // @0x140a7baf0
-void Unk_ObjectHitAddRef(Unk_ObjectHit* p, void* pUnused)
+void Unk_ObjectHit::AddRef(void* pUnused)
 {
-    FUN_140968e90(p->m_p);
+    FUN_140968e90(m_p);
 }
 // @0x140a7bac0
-void Unk_ObjectHitAddRefIfSet(Unk_ObjectHit* p)
+void Unk_ObjectHit::AddRefIfSet()
 {
-    if (p->m_p != 0)
-        Unk_ObjectHitAddRef(p, 0);
+    if (m_p != 0)
+        AddRef(0);
 }
 
 struct Unk_MiPlayer { char m_pad[0x1338]; char m_actionState[8]; };
@@ -404,20 +473,19 @@ int CMouseInteract::vfunc_6()
 int CMouseInteractNpc::vfunc_1(Unk_MouseRay* pRay)
 {
     PCBase* pNpc = FindTarget(&pRay->vOrigin, &pRay->vEnd);
-    if (pNpc == 0)
-        return false;
-    NiPoint3 vTmp = pNpc->vfunc_18();
-    FUN_140194470(&pRay->vPick, reinterpret_cast<const Unk_Vec3*>(&vTmp));
-    if (pNpc->vfunc_117() == 0) {
-        unsigned nNpcId = FUN_141092fa0(pNpc);
-        CStringW strName = FUN_1401a9d70()->FUN_141811980(0xe, nNpcId);
-        if (strName.GetLength() == 0)
-            strName = GetStringCommon(0x62d);
-        pRay->strCursor = FUN_1408f71a0(CStringW(L"s_mouse_interact_talk"), strName, reinterpret_cast<Unk_MiNpcView*>(pNpc)->FUN_141093310());
-    } else {
-        pRay->strCursor = FUN_1405c2690(CStringW(L"s_mouse_interact_hold"), reinterpret_cast<Unk_MiNpcView*>(pNpc)->FUN_141093310());
+    if (pNpc != 0) {
+        FUN_140194470(&pRay->vPick, reinterpret_cast<const Unk_Vec3*>(&static_cast<const NiPoint3&>(pNpc->vfunc_18())));
+        if (pNpc->vfunc_117() != 0) {
+            pRay->strCursor = FUN_1405c2690(CStringW(L"s_mouse_interact_hold"), reinterpret_cast<Unk_MiNpcView*>(pNpc)->FUN_141093310());
+        } else {
+            CStringW strName = FUN_1401a9d70()->FUN_141811980(0xe, FUN_141092fa0(pNpc));
+            if (strName.GetLength() == 0)
+                strName = GetStringCommon(0x62d);
+            pRay->strCursor = FUN_1408f71a0(CStringW(L"s_mouse_interact_talk"), strName, reinterpret_cast<Unk_MiNpcView*>(pNpc)->FUN_141093310());
+        }
+        return true;
     }
-    return true;
+    return false;
 }
 // @0x140a79340
 int CMouseInteractNpc::vfunc_2(Unk_MouseRay* pRay)
@@ -462,7 +530,6 @@ void CMouseInteractNpc::vfunc_5()
     m_nNpcId = 0;
 }
 // @0x140a79580
-// MS2-FUNCTIONAL: npc data-record smart pointer (16 bytes) and the player-state helpers are modelled as opaque externs
 PCBase* CMouseInteractNpc::FindTarget(const Unk_Vec3* pOrigin, const Unk_Vec3* pEnd)
 {
     Unk_MiPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
@@ -477,57 +544,31 @@ PCBase* CMouseInteractNpc::FindTarget(const Unk_Vec3* pOrigin, const Unk_Vec3* p
     if (FUN_14166c930(pPlayer) == 0x20)
         bHold = 0;
     Unk_NpcTree* pTree = FUN_1403ed2d0()->FUN_141bd36d0();
-    Unk_NpcNode* pos = pTree->Begin();
-    while (pos != 0) {
+    for (Unk_NpcNode* pos = pTree->Begin(); pos != 0; pTree->GetNext(pos)) {
         PCBaseRef ref(*pTree->GetAt(pos));
-        if (FUN_14123c660(ref.operator->()) == 0) {
-            PCBase* pCand = ref.operator->();
-            if (pCand->vfunc_116() != 0) {
-                Unk_DataRef kTmp;
-                Unk_DataRef kData;
-                FUN_1406cf850(&kData, FUN_141093270(ref.operator->(), &kTmp));
-                FUN_1406d5390(&kTmp);
-                if (FUN_14035e9b0(&kData) == 0) {
-                    int bPick = 0;
-                    Unk_DataRef kTmp2;
-                    FUN_141093270(ref.operator->(), &kTmp2);
-                    int bType = FUN_1406cd020(FUN_140965990(&kTmp2)) != 0 && bTalk != 0;
-                    FUN_1406d5390(&kTmp2);
-                    if (bType)
-                        bPick = 1;
-                    if (FUN_140855d10(FUN_141092fa0(ref.operator->())) != 0 && bTalk != 0)
-                        bPick = 1;
-                    if (FUN_141093c60(ref.operator->()) != 4 && bTalk != 0)
-                        bPick = 1;
-                    PCBase* pHold = ref.operator->();
-                    if (pHold->vfunc_117() != 0 && bHold != 0)
-                        bPick = 1;
-                    if (bPick == 0) {
-                        FUN_14035e5b0(&kData);
-                    } else {
-                        float fSize = *(float*)(FUN_14035eb90(&kData) + 0x2dc);
-                        PCBase* pPos = ref.operator->();
-                        NiPoint3 vTmp = pPos->vfunc_18();
-                        Unk_Vec3 vCenter;
-                        FUN_14027dcf0(&vCenter, reinterpret_cast<const Unk_Vec3*>(&vTmp));
-                        vCenter.z = (float)(vCenter.z + fSize * 0.5);
-                        Unk_Vec3 vEnd;
-                        Unk_Vec3 vOrigin;
-                        FUN_14027dcf0(&vEnd, pEnd);
-                        FUN_14027dcf0(&vOrigin, pOrigin);
-                        if (FUN_14147ad10(&vOrigin, &vEnd, &vCenter, (float)(fSize * 0.5))) {
-                            PCBase* pResult = ref.operator PCBase*();
-                            FUN_14035e5b0(&kData);
-                            return pResult;
-                        }
-                        FUN_14035e5b0(&kData);
-                    }
-                } else {
-                    FUN_14035e5b0(&kData);
-                }
-            }
-        }
-        pTree->GetNext(pos);
+        if (FUN_14123c660(ref.operator->()) != 0)
+            continue;
+        if (ref->vfunc_116() == 0)
+            continue;
+        Unk_MiNpcRecPtr spRec(reinterpret_cast<Unk_MiNpcRef*>(ref.operator->())->FUN_141093270());
+        if (spRec.FUN_14035e9b0())
+            continue;
+        int bPick = 0;
+        if (reinterpret_cast<Unk_MiNpcRef*>(ref.operator->())->FUN_141093270().FUN_140965990()->FUN_1406cd020() != 0 && bTalk != 0)
+            bPick = 1;
+        if (FUN_140855d10(FUN_141092fa0(ref.operator->())) != 0 && bTalk != 0)
+            bPick = 1;
+        if (FUN_141093c60(ref.operator->()) != 4 && bTalk != 0)
+            bPick = 1;
+        if (ref->vfunc_117() != 0 && bHold != 0)
+            bPick = 1;
+        if (bPick == 0)
+            continue;
+        float fSize = *(float*)(spRec.FUN_14035eb90() + 0x2dc);
+        Unk_MiVec3 vCenter(ref->vfunc_18());
+        vCenter.z += fSize * 0.5;
+        if (FUN_14147ad10(*pOrigin, *pEnd, vCenter, (float)(fSize * 0.5)))
+            return ref;
     }
     return 0;
 }
@@ -536,37 +577,25 @@ PCBase* CMouseInteractNpc::FindTarget(const Unk_Vec3* pOrigin, const Unk_Vec3* p
 // @0x140a79a00
 int CMouseInteractPortal::vfunc_1(Unk_MouseRay* pRay)
 {
-    Unk_PortalHit hit;
-    FindTarget(&hit, &pRay->vOrigin, &pRay->vEnd);
-    if (FUN_140965190(&hit) != 0) {
-        FUN_140964a70(&hit);
+    Unk_PortalHit hit = FindTarget(&pRay->vOrigin, &pRay->vEnd);
+    if (hit.FUN_140965190())
         return false;
-    }
-    Unk_Vec3 vTmp;
-    FUN_140194470(&pRay->vPick, FUN_14169d2f0(FUN_140965960(&hit), &vTmp));
-    if (FUN_14169d280(FUN_140965960(&hit)) == 0) {
-        pRay->strCursor = FUN_140965960(&hit)->FUN_14169c3b0();
-    } else {
-        unsigned nId = FUN_14169d280(FUN_140965960(&hit));
-        CStringW strName = FUN_1401a9d70()->FUN_141811980(3, nId);
-        pRay->strCursor = FUN_1405c2690(CStringW(L"s_mouse_interact_portal"), strName);
-    }
-    FUN_140964a70(&hit);
+    FUN_140194470(&pRay->vPick, reinterpret_cast<const Unk_Vec3*>(&static_cast<const NiPoint3&>(hit->FUN_14169d2f0())));
+    if (hit->FUN_14169d280() == 0)
+        pRay->strCursor = hit->FUN_14169c3b0();
+    else
+        pRay->strCursor = FUN_1405c2690(CStringW(L"s_mouse_interact_portal"), FUN_1401a9d70()->FUN_141811980(3, hit->FUN_14169d280()));
     return true;
 }
 // @0x140a79c00
 int CMouseInteractPortal::vfunc_2(Unk_MouseRay* pRay)
 {
-    Unk_PortalHit hit;
-    FindTarget(&hit, &pRay->vOrigin, &pRay->vEnd);
-    char bNil = FUN_140965190(&hit);
-    if (bNil == 0) {
-        Unk_Vec3 vTmp;
-        FUN_140194470(&pRay->vPick, FUN_14169d2f0(FUN_140965960(&hit), &vTmp));
-        m_nPortalId = FUN_14169d280(FUN_140965960(&hit));
-    }
-    FUN_140964a70(&hit);
-    return bNil == 0;
+    Unk_PortalHit hit = FindTarget(&pRay->vOrigin, &pRay->vEnd);
+    if (hit.FUN_140965190())
+        return false;
+    FUN_140194470(&pRay->vPick, reinterpret_cast<const Unk_Vec3*>(&static_cast<const NiPoint3&>(hit->FUN_14169d2f0())));
+    m_nPortalId = hit->FUN_14169d280();
+    return true;
 }
 // @0x140a79cd0
 int CMouseInteractPortal::vfunc_3()
@@ -579,7 +608,7 @@ int CMouseInteractPortal::vfunc_3()
     PortalAction* pAct = dynamic_cast<PortalAction*>(FUN_140953550(Unk_PlayerActionState(pPlayer)));
     if (pAct == 0)
         return false;
-    return FUN_140956110(pAct) == m_nPortalId;
+    return pAct->FUN_140956110() == m_nPortalId;
 }
 // @0x140a79d90
 void CMouseInteractPortal::vfunc_5()
@@ -587,105 +616,65 @@ void CMouseInteractPortal::vfunc_5()
     m_nPortalId = 0;
 }
 // @0x140a79db0
-// MS2-FUNCTIONAL: portal hit smart pointers and the scene component query are opaque externs
-Unk_PortalHit* CMouseInteractPortal::FindTarget(Unk_PortalHit* pOut, const Unk_Vec3* pOrigin, const Unk_Vec3* pEnd)
+Unk_PortalHit CMouseInteractPortal::FindTarget(const Unk_Vec3* pOrigin, const Unk_Vec3* pEnd)
 {
     Unk_IdArray aIds;
-    FUN_140182ea0(&aIds);
-    FUN_1403ed2d0()->FUN_141bc2980(&aIds);
-    for (size_t i = 0; ; i++) {
-        if (FUN_1401910d0(&aIds) <= i) {
-            FUN_140964110(pOut, 0);
-            FUN_140183b60(&aIds);
-            return pOut;
-        }
-        unsigned* pId = FUN_1404f0a10(&aIds, i);
-        Unk_PortalHit hit;
-        FUN_1403ed2d0()->FUN_141bc2800(&hit, *pId);
-        if (FUN_1409652c0(&hit, 0) != 0) {
-            FUN_140964a70(&hit);
+    FUN_1403ed2d0()->FUN_141bc2980(aIds);
+    for (size_t i = 0; i < aIds.FUN_1401910d0(); i++) {
+        const unsigned& nId = aIds.FUN_1404f0a10(i);
+        Unk_PortalHit hit = FUN_1403ed2d0()->FUN_141bc2800(nId);
+        if (hit.FUN_1409652c0(0))
             continue;
-        }
-        void* pKey = reinterpret_cast<char*>(FUN_140965960(&hit)) + 0x18;
-        Unk_DmNodeRef comp;
-        FUN_1411cf440(FUN_1409670f0(), pKey, &comp);
-        if (FUN_1408a9090(&comp) == 0) {
-            FUN_1408a8720(&comp);
-            FUN_140964a70(&hit);
+        Unk_MiCompRef comp(FUN_1411cf440(FUN_1409670f0(), reinterpret_cast<char*>(hit.operator->()) + 0x18));
+        if (comp.FUN_1408a9090() == 0)
             continue;
-        }
-        char bFlag = 0;
-        FUN_1408a20a0(FUN_1408a9280(&comp), 0x14969c28, &bFlag);
-        if (bFlag == 0) {
-            FUN_1408a8720(&comp);
-            FUN_140964a70(&hit);
+        bool bFlag = false;
+        FUN_1408a20a0(comp.FUN_1408a9280(), 0x14969c28, &bFlag);
+        if (!bFlag)
             continue;
-        }
         int nState;
-        FUN_1408a2020(FUN_1408a9280(&comp), 0x1b8b1161, &nState);
-        if (nState == 1) {
-            FUN_1408a8720(&comp);
-            FUN_140964a70(&hit);
+        FUN_1408a2020(comp.FUN_1408a9280(), 0x1b8b1161, &nState);
+        if (nState == 1)
             continue;
-        }
-        Unk_Vec3 vTmp;
-        Unk_Vec3 vCenter;
-        FUN_14027dcf0(&vCenter, FUN_14169d2f0(FUN_140965960(&hit), &vTmp));
-        vCenter.z = vCenter.z + FUN_140965960(&hit)->m_fRadius * 0.5f;
-        float fRadius = FUN_140965960(&hit)->m_fRadius * 0.5f;
-        Unk_Vec3 vEnd;
-        Unk_Vec3 vOrigin;
-        FUN_14027dcf0(&vEnd, pEnd);
-        FUN_14027dcf0(&vOrigin, pOrigin);
-        if (FUN_14147ad10(&vOrigin, &vEnd, &vCenter, fRadius)) {
-            Unk_PortalHitMove(pOut, &hit);
-            FUN_1408a8720(&comp);
-            FUN_140964a70(&hit);
-            FUN_140183b60(&aIds);
-            return pOut;
-        }
-        FUN_1408a8720(&comp);
-        FUN_140964a70(&hit);
+        Unk_MiVec3 vCenter(hit->FUN_14169d2f0());
+        vCenter.z += hit->m_fRadius * 0.5;
+        float fRadius = hit->m_fRadius * 0.5;
+        if (FUN_14147ad10(*pOrigin, *pEnd, vCenter, fRadius))
+            return hit;
     }
+    return 0;
 }
 
 // ---- object ----
 // @0x140a7a0c0
 int CMouseInteractObject::vfunc_1(Unk_MouseRay* pRay)
 {
-    Unk_ObjectHit hit;
-    FindTarget(&hit, &pRay->vOrigin, &pRay->vEnd);
-    char bNil = Unk_ObjectHitIsNil(&hit);
-    if (bNil == 0) {
-        Unk_Vec3 vTmp;
-        FUN_140194470(&pRay->vPick, FUN_1409673c0(FUN_140965920(&hit), &vTmp));
-        unsigned nId = FUN_140967110(FUN_140965920(&hit));
-        CStringW strName = FUN_1401a9d70()->FUN_141811980(0xb, nId);
-        pRay->strCursor = FUN_1405c2690(CStringW(L"s_mouse_interact_object"), strName);
-    }
-    FUN_1409649b0(&hit);
-    return bNil == 0;
+    Unk_ObjectHit hit = FindTarget(&pRay->vOrigin, &pRay->vEnd);
+    if (hit.IsNil())
+        return false;
+    FUN_140194470(&pRay->vPick, reinterpret_cast<const Unk_Vec3*>(&static_cast<const NiPoint3&>(hit->FUN_1409673c0())));
+    pRay->strCursor = FUN_1405c2690(CStringW(L"s_mouse_interact_object"), FUN_1401a9d70()->FUN_141811980(0xb, hit->FUN_140967110()));
+    return true;
 }
 // @0x140a7a250
 int CMouseInteractObject::vfunc_2(Unk_MouseRay* pRay)
 {
-    Unk_ObjectHit hit;
-    FindTarget(&hit, &pRay->vOrigin, &pRay->vEnd);
-    if (Unk_ObjectHitIsNil(&hit) != 0) {
-        FUN_1409649b0(&hit);
+    Unk_ObjectHit hit = FindTarget(&pRay->vOrigin, &pRay->vEnd);
+    if (hit.IsNil())
         return false;
-    }
-    Unk_Vec3 vTmp;
-    FUN_140194470(&pRay->vPick, FUN_1409673c0(FUN_140965920(&hit), &vTmp));
-    int nKind = FUN_140965920(&hit)->vf5();
-    if (nKind == 6)
-        m_nAction = 4;
-    else if (nKind == 8)
+    FUN_140194470(&pRay->vPick, reinterpret_cast<const Unk_Vec3*>(&static_cast<const NiPoint3&>(hit->FUN_1409673c0())));
+    switch (hit->vf5()) {
+    case 8:
         m_nAction = 0x18;
-    else
+        break;
+    case 6:
+        m_nAction = 4;
+        break;
+    default:
         m_nAction = 0x12;
-    m_strObjectId = FUN_140965920(&hit)->FUN_140967060();
-    FUN_1409649b0(&hit);
+        break;
+    }
+    m_strObjectId = hit->FUN_140967060();
     return true;
 }
 // @0x140a7a3d0
@@ -710,57 +699,27 @@ void CMouseInteractObject::vfunc_5()
     m_strObjectId.Empty();
 }
 // @0x140a7a4e0
-// MS2-FUNCTIONAL: object hit smart pointers and the component handle are opaque externs
-Unk_ObjectHit* CMouseInteractObject::FindTarget(Unk_ObjectHit* pOut, const Unk_Vec3* pOrigin, const Unk_Vec3* pEnd)
+Unk_ObjectHit CMouseInteractObject::FindTarget(const Unk_Vec3* pOrigin, const Unk_Vec3* pEnd)
 {
     Unk_ObjArray aObjs;
-    FUN_140963a20(&aObjs);
-    FUN_1403ed2d0()->FUN_141bc5f10(&aObjs);
-    for (size_t i = 0; ; i++) {
-        if (FUN_140966d80(&aObjs) <= i) {
-            FUN_140963fd0(pOut, 0);
-            FUN_140964700(&aObjs);
-            return pOut;
-        }
-        Unk_ObjectHit hit;
-        Unk_ObjectHitCopy(&hit, (Unk_ObjectHit*)FUN_140965610(&aObjs, i));
-        Unk_ObjectEnt* pEnt = FUN_140965920(&hit);
-        if (pEnt->vf4() == 0) {
-            FUN_1409649b0(&hit);
+    FUN_1403ed2d0()->FUN_141bc5f10(aObjs);
+    for (size_t i = 0; i < aObjs.FUN_140966d80(); i++) {
+        Unk_ObjectHit hit = aObjs.FUN_140965610(i);
+        if (hit->vf4() == 0)
             continue;
-        }
-        Unk_DataRef comp;
-        FUN_140966e00(FUN_140965920(&hit), &comp);
-        if (FUN_140965160(&comp) != 0) {
-            FUN_140520fc0(&comp);
-            FUN_1409649b0(&hit);
+        Unk_DataRef comp = hit->FUN_140966e00();
+        if (comp.FUN_140965160())
             continue;
-        }
-        float fSize = *(float*)(FUN_1405212e0(&comp) + 0x90);
-        if (FUN_14028d470(fSize, 0.0f)) {
-            FUN_140520fc0(&comp);
-            FUN_1409649b0(&hit);
+        float fSize = *(float*)(comp.operator->() + 0x90);
+        if (FUN_14028d470(fSize, 0.0f))
             continue;
-        }
-        Unk_Vec3 vTmp;
-        Unk_Vec3 vCenter;
-        FUN_14027dcf0(&vCenter, FUN_1409673c0(FUN_140965920(&hit), &vTmp));
-        vCenter.z = vCenter.z + fSize * 0.5f;
-        float fRadius = fSize * 0.5f;
-        Unk_Vec3 vEnd;
-        Unk_Vec3 vOrigin;
-        FUN_14027dcf0(&vEnd, pEnd);
-        FUN_14027dcf0(&vOrigin, pOrigin);
-        if (FUN_14147ad10(&vOrigin, &vEnd, &vCenter, fRadius)) {
-            Unk_ObjectHitMove(pOut, &hit);
-            FUN_140520fc0(&comp);
-            FUN_1409649b0(&hit);
-            FUN_140964700(&aObjs);
-            return pOut;
-        }
-        FUN_140520fc0(&comp);
-        FUN_1409649b0(&hit);
+        Unk_MiVec3 vCenter(hit->FUN_1409673c0());
+        vCenter.z += fSize * 0.5;
+        float fRadius = fSize * 0.5;
+        if (FUN_14147ad10(*pOrigin, *pEnd, vCenter, fRadius))
+            return hit;
     }
+    return 0;
 }
 
 // ---- dynamic model (taxi / ugc banner) ----
@@ -794,36 +753,19 @@ int CMouseInteractDynamicModel::vfunc_3()
 // @0x140a7a8e0
 void* CMouseInteractDynamicModel::FindTarget(const Unk_Vec3* pOrigin, const Unk_Vec3* pEnd)
 {
-    Unk_DmIter it;
-    FUN_1403ed2d0()->FUN_141bd0420(&it, m_dwModelKey);
-    void* pos = FUN_1409f2490(FUN_1409f2190(&it));
-    Unk_DmNodeRef ref;
-    while (pos != 0) {
-        FUN_1408a7ed0(&ref, FUN_1409f23c0(FUN_1409f2190(&it), pos));
-        Unk_Vec3 vPos = *reinterpret_cast<Unk_Vec3*>(&DAT_143b01a60);
-        FUN_1409618c0(FUN_1408a9280(&ref), 0xfd95ca52, &vPos);
+    Unk_DmIter it = FUN_1403ed2d0()->FUN_141bd0420(m_dwModelKey);
+    for (void* pos = it->FUN_1409f2490(); pos != 0; it->FUN_1409f24c0(pos)) {
+        Unk_MiDmRef ref = it->FUN_1409f23c0(pos);
+        NiPoint3 vPos = *reinterpret_cast<NiPoint3*>(&DAT_143b01a60);
+        FUN_1409618c0(ref.FUN_1408a9280(), 0xfd95ca52, reinterpret_cast<Unk_Vec3*>(&vPos));
         float fSize = m_fPickSize;
-        Unk_Vec3 vCenter;
-        FUN_14027dcf0(&vCenter, &vPos);
-        vCenter.z = (float)(vCenter.z + fSize * 0.5);
-        float fRadius = (float)(fSize * 0.5);
-        Unk_Vec3 vEnd;
-        Unk_Vec3 vOrigin;
-        FUN_14027dcf0(&vEnd, pEnd);
-        FUN_14027dcf0(&vOrigin, pOrigin);
-        if (FUN_14147ad10(&vOrigin, &vEnd, &vCenter, fRadius))
-            break;
-        FUN_1408a8720(&ref);
-        FUN_1409f24c0(FUN_1409f2190(&it), &pos);
+        Unk_MiVec3 vCenter(vPos);
+        vCenter.z += fSize * 0.5;
+        float fRadius = fSize * 0.5;
+        if (FUN_14147ad10(*pOrigin, *pEnd, vCenter, fRadius))
+            return ref.FUN_1408a9090();
     }
-    if (pos == 0) {
-        FUN_1409f20e0(&it);
-        return 0;
-    }
-    void* pResult = FUN_1408a9090(&ref);
-    FUN_1408a8720(&ref);
-    FUN_1409f20e0(&it);
-    return pResult;
+    return 0;
 }
 // @0x140a7b4b0
 CMouseInteractDynamicModel::CMouseInteractDynamicModel()
@@ -919,30 +861,24 @@ int CMouseInteractTalkCancel::vfunc_4()
 // @0x140a7ad80
 int CMouseInteractWeaponObject::vfunc_1(Unk_MouseRay* pRay)
 {
-    Unk_WeaponHit hit;
-    FindTarget(&hit, &pRay->vOrigin, &pRay->vEnd);
-    Unk_WeaponEnt* pEnt = FUN_140885330(&hit);
-    if (pEnt != 0) {
+    Unk_WeaponHit hit = FindTarget(&pRay->vOrigin, &pRay->vEnd);
+    if (hit.FUN_140885330()) {
         pRay->strCursor = GetStringCommon(0x63c);
-        Unk_Vec3 vTmp;
-        FUN_140194470(&pRay->vPick, FUN_1408b5370(FUN_140885350(&hit), &vTmp));
+        FUN_140194470(&pRay->vPick, reinterpret_cast<const Unk_Vec3*>(&static_cast<const NiPoint3&>(hit->FUN_1408b5370())));
+        return true;
     }
-    FUN_140885120(&hit);
-    return pEnt != 0;
+    return false;
 }
 // @0x140a7ae80
 int CMouseInteractWeaponObject::vfunc_2(Unk_MouseRay* pRay)
 {
-    Unk_WeaponHit hit;
-    FindTarget(&hit, &pRay->vOrigin, &pRay->vEnd);
-    Unk_WeaponEnt* pEnt = FUN_140885330(&hit);
-    if (pEnt != 0) {
-        m_qwObjectId = FUN_140885350(&hit)->m_qwId;
-        Unk_Vec3 vTmp;
-        FUN_140194470(&pRay->vPick, FUN_1408b5370(FUN_140885350(&hit), &vTmp));
+    Unk_WeaponHit hit = FindTarget(&pRay->vOrigin, &pRay->vEnd);
+    if (hit.FUN_140885330()) {
+        m_qwObjectId = hit->m_qwId;
+        FUN_140194470(&pRay->vPick, reinterpret_cast<const Unk_Vec3*>(&static_cast<const NiPoint3&>(hit->FUN_1408b5370())));
+        return true;
     }
-    FUN_140885120(&hit);
-    return pEnt != 0;
+    return false;
 }
 // @0x140a7af50
 int CMouseInteractWeaponObject::vfunc_3()
@@ -960,50 +896,30 @@ int CMouseInteractWeaponObject::vfunc_3()
     return FUN_140885350(pAct->m_hit)->m_qwId == m_qwObjectId;
 }
 // @0x140a7b040
-// MS2-FUNCTIONAL: weapon hit smart pointers and the component flag queries are opaque externs
-Unk_WeaponHit* CMouseInteractWeaponObject::FindTarget(Unk_WeaponHit* pOut, const Unk_Vec3* pOrigin, const Unk_Vec3* pEnd)
+Unk_WeaponHit CMouseInteractWeaponObject::FindTarget(const Unk_Vec3* pOrigin, const Unk_Vec3* pEnd)
 {
     Unk_WeaponArray aWeapons;
-    FUN_1401cd040(&DAT_143b059e8)->FUN_1410d59c0(&aWeapons);
-    for (size_t i = 0; ; i++) {
-        if (aWeapons.GetCount() <= i) {
-            FUN_140964170(pOut, 0);
-            return pOut;
-        }
-        Unk_WeaponHit hit;
-        FUN_140884f70(&hit, aWeapons.GetAt(i));
-        char bFlag = 0;
-        FUN_1408a20a0(FUN_1408a9280(reinterpret_cast<Unk_DmNodeRef*>(reinterpret_cast<char*>(FUN_140885350(&hit)) + 0x20)), 0xa0b6b179, &bFlag);
-        if (bFlag == 0) {
-            FUN_140885120(&hit);
+    Unk_WeaponMgr* pMgr = FUN_1401cd040(&DAT_143b059e8);
+    pMgr->FUN_1410d59c0(aWeapons);
+    for (size_t i = 0; i < aWeapons.GetCount(); i++) {
+        Unk_WeaponHit hit = *aWeapons.GetAt(i);
+        bool bFlag = false;
+        FUN_1408a20a0(FUN_1408a9280(reinterpret_cast<Unk_DmNodeRef*>(reinterpret_cast<char*>(hit.operator->()) + 0x20)), 0xa0b6b179, &bFlag);
+        if (!bFlag)
             continue;
-        }
-        if (FUN_140885350(&hit)->m_n48 != 0) {
-            FUN_140885120(&hit);
+        if (hit->m_n48 != 0)
             continue;
-        }
-        if (FUN_140885350(&hit)->m_n50 != 0) {
-            FUN_140885120(&hit);
+        if (hit->m_n50 != 0)
             continue;
-        }
-        Unk_Vec3 vTmp;
-        FUN_1408b5370(FUN_140885350(&hit), &vTmp);
+        NiPoint3 vPos = hit->FUN_1408b5370();
         float fSize = 150.0f;
-        Unk_Vec3 vCenter;
-        FUN_14027dcf0(&vCenter, &vTmp);
-        vCenter.z = vCenter.z + fSize * 0.5f;
-        float fRadius = fSize * 0.5f;
-        Unk_Vec3 vEnd;
-        Unk_Vec3 vOrigin;
-        FUN_14027dcf0(&vEnd, pEnd);
-        FUN_14027dcf0(&vOrigin, pOrigin);
-        if (FUN_14147ad10(&vOrigin, &vEnd, &vCenter, fRadius)) {
-            Unk_WeaponHitMove(pOut, &hit);
-            FUN_140885120(&hit);
-            return pOut;
-        }
-        FUN_140885120(&hit);
+        Unk_MiVec3 vCenter(vPos);
+        vCenter.z += fSize * 0.5;
+        float fRadius = fSize * 0.5;
+        if (FUN_14147ad10(*pOrigin, *pEnd, vCenter, fRadius))
+            return hit;
     }
+    return 0;
 }
 
 

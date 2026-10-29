@@ -25,7 +25,7 @@ public:
     // A position between the two control points (random fractions per axis).
     Vector3 FUN_14145c030(void* pRandom);                   // 0x14145c030
     CMagicData& operator=(const CMagicData& kOther);                // 0x141468f10 (the implicit copy assignment)
-    bool FUN_14145c180();                                           // 0x14145c180 any control point is not the zero point
+    int FUN_14145c180();                                            // 0x14145c180 any control point is not the zero point
 
     Vector3 m_ptFireOffset;                                 // +0x18 fireOffsetPosition
     Vector3 m_ptFireFixed;                                  // +0x24 fireFixedPosition
@@ -99,6 +99,7 @@ struct Unk_MagicTagPtr {
     ~Unk_MagicTagPtr();                                             // 0x1410a6d40
     Unk_MagicTagPtr& operator=(const Unk_MagicTagPtr&);             // 0x141235040
     Unk_MagicTag* operator->() const;                               // 0x141235260
+    bool operator==(Unk_MagicTag* p) const;                         // 0x141235120
     Unk_MagicTagPtr(Unk_MagicTag* p);                               // 0x1410a6b10 (scenestategame 0x3d)
     Unk_MagicTag* get() const;                                      // 0x1410a7150 (scenestategame 0x3d)
     void* m_pad;
@@ -157,13 +158,13 @@ public:
     void FUN_141460700(unsigned nNow);                              // 0x141460700 restart the flight from the current point
     void FUN_141461140();                                           // 0x141461140 pick the target point
     void FUN_141461a80(Vector3 ptNew);                      // 0x141461a80 move the projectile and its scene root
-    void FUN_141461b60(const Vector3& ptDirection);         // 0x141461b60 set the direction and rotate
+    void FUN_141461b60(Vector3 ptDirection);                // 0x141461b60 set the direction and rotate
     void SetMatRotation(const Unk_NiMatrix3& matRotation);           // 0x141461ba0 set the rotation matrix
     void FUN_141463fb0(unsigned nNow);                              // 0x141463fb0 end-of-flight transitions
     void FUN_141464160();                                           // 0x141464160 show/hide the scene root by distance
     bool FUN_141464220();                                           // 0x141464220 is the projectile out of the visible range
     Unk_MagicEntity* FUN_141464360();                               // 0x141464360 the target entity
-    bool FUN_141464410();                                           // 0x141464410 the caster's lock-on entity
+    int FUN_141464410();                                            // 0x141464410 the caster's lock-on entity
     int FUN_141464490();                                            // 0x141464490 has an attacker record
     void FUN_1414644d0(int bHide);                                  // 0x1414644d0 show or hide the scene root
     Vector3 FUN_141464520();                                // 0x141464520 rotation matrix column 0
@@ -189,7 +190,7 @@ public:
     void FUN_141466da0(unsigned nNow, const Unk_MagicSkillRow* pRow);  // 0x141466da0 piercing hit tick
     void FUN_141461720(int nFlag);                                  // 0x141461720
     void FUN_1414614d0();                                           // 0x1414614d0
-    void FUN_1414607e0();                                           // 0x1414607e0
+    void FUN_1414607e0(unsigned nNow);                              // 0x1414607e0 (nNow unused)
 
     int m_nState;                                                   // +0x18
     unsigned m_nStateTick;                                          // +0x1c

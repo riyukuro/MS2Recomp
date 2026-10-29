@@ -66,19 +66,17 @@ CNpcShopProductBase::CNpcShopProductBase() : m_18(0), m_1c(0)
 }
 
 // @0x140db5cd0
-// MS2-FUNCTIONAL: EH funclet / vptr store shape differs; source form unknown
 CNpcShopProductBase::~CNpcShopProductBase()
 {
 }
 
 // @0x140db5d20
-// MS2-FUNCTIONAL: extra call-result temporaries; source form unknown
 CStringW CNpcShopProductBase::FUN_140db5d20()
 {
-    if (FUN_140db5e90().get() == 0)
-        return CStringW(L"");
-    MS2Ptr<CItem> spItem = FUN_140db5e90();
-    return spItem->FUN_140527b10();
+    CItem* pItem = FUN_140db5e90().get();
+    if (pItem != NULL)
+        return FUN_140db5e90()->FUN_140527b10();
+    return L"";
 }
 
 // @0x140db5e20
@@ -141,7 +139,6 @@ CNpcShopProductCli::~CNpcShopProductCli()
 }
 
 // @0x140db61a0
-// MS2-FUNCTIONAL: first-pass source; frame layout and temp order not byte-compared
 void CNpcShopProductCli::FUN_140db61a0(CInPacket& in, int nMode)
 {
     if (nMode == 1)
@@ -153,7 +150,7 @@ void CNpcShopProductCli::FUN_140db61a0(CInPacket& in, int nMode)
         m_90 = in.ReadInt32();
         m_a0 = (unsigned)in.ReadInt32();
         m_a8 = (unsigned)in.ReadInt32();
-        unsigned char nRarity = in.ReadUInt8();
+        int nRarity = in.ReadUInt8();
         int nCount = in.ReadInt32();
         m_5c = in.ReadInt32();
         int nBought = in.ReadInt32();
@@ -173,13 +170,15 @@ void CNpcShopProductCli::FUN_140db61a0(CInPacket& in, int nMode)
         m_7c = (unsigned short)in.ReadInt16();
         m_80 = in.ReadInt32();
         m_c4 = in.ReadBool();
-        if (in.ReadBool())
+        bool bPeriod = in.ReadBool();
+        if (bPeriod)
         {
             m_c8 = new CNpcShopBuyPeriod();
             m_c8->FUN_1406dcb40(in);
             m_c8->FUN_1406dc810();
         }
-        if (in.ReadBool())
+        bool bLife = in.ReadBool();
+        if (bLife)
         {
             FUN_140db8b90(m_d8, new NpcShopItemLife());
             m_d8.operator->()->FUN_14026ef20(in);
@@ -196,7 +195,7 @@ void CNpcShopProductCli::FUN_140db61a0(CInPacket& in, int nMode)
     {
         m_18 = in.ReadInt32();
         int nItemId = in.ReadInt32();
-        unsigned char nRarity = in.ReadUInt8();
+        int nRarity = in.ReadUInt8();
         __int64 nPrice = in.ReadInt64();
         m_40.AssignRaw(new CItem());
         if (m_40->FUN_140523c40(nItemId, nRarity, 0))
@@ -439,58 +438,60 @@ void CNpcShopProductCli::FUN_140db81c0()
 }
 
 // @0x140db8210
-// MS2-FUNCTIONAL: first-pass source; frame layout and temp order not byte-compared
-unsigned CNpcShopProductCli::FUN_140db8210()
+int CNpcShopProductCli::FUN_140db8210()
 {
-    MS2Ptr<CItem> spItem = FUN_140db5e90();
-    if (spItem.get() == 0)
-        return 0;
-    CItem* pItem = spItem.operator->();
-    if (pItem->FUN_140525f10() != 0)
     {
-        if (pItem->FUN_1405281e0() == 1)
-            return DAT_143ab2a90.FUN_140a615d0(0);
+        MS2Ptr<CItem> spItem = FUN_140db5e90();
+        if (spItem.get() != 0)
+        {
+            if ((spItem.get() ? true : false) && spItem->FUN_140525f10() != 0 && spItem->FUN_1405281e0() == 1)
+                return DAT_143ab2a90.FUN_140a615d0(0);
+            int bStackable = static_cast<Unk_ItemEquipData*>(spItem->FUN_140527840())->FUN_14053c7c0();
+            if (bStackable)
+            {
+                bool bLimit = FUN_140db6ef0() > 0;
+                int nLeft = FUN_140db6eb0();
+                int nCount = (std::max)(1u, spItem->FUN_1405281e0());
+                unsigned nBuy = bLimit ? (std::min)(nLeft, nCount) : nCount;
+                if (m_b8 > 1)
+                    nBuy = nBuy / m_b8;
+                return nBuy;
+            }
+            else
+                return 1;
+        }
     }
-    if (!static_cast<Unk_ItemEquipData*>(pItem->FUN_140527840())->FUN_14053c7c0())
-        return 1;
-    int nLimit = FUN_140db6ef0();
-    int nLeft = FUN_140db6eb0();
-    int nStack = pItem->FUN_1405281e0();
-    int nOne = 1;
-    int nResult = (std::max)(nStack, nOne);
-    if (0 < nLimit)
-        nResult = (std::min)(nLeft, nResult);
-    unsigned nBuy = nResult;
-    if (1 < m_b8)
-        nBuy = nBuy / m_b8;
-    return nBuy;
+    return 0;
 }
 
 // @0x140db8400
-// MS2-FUNCTIONAL: first-pass source; frame layout and temp order not byte-compared
 int CNpcShopProductCli::FUN_140db8400()
 {
+    int nResult = 1;
     __int64 nPrice = FUN_140db8180();
     if (nPrice == 0)
-        return 1;
-    if (m_88 == 1)
+        return nResult;
+    switch (m_88)
     {
-        int nRank = FUN_14053feb0(m_8c);
-        int nHave = DAT_143ab2a90.FUN_140a5f180(m_8c, nRank);
+    case 1:
+    {
+        int nHave = DAT_143ab2a90.FUN_140a5f180(m_8c, FUN_14053feb0(m_8c));
         if (m_90 != 0)
             nHave = DAT_143ab2a90.FUN_140a5f7b0(m_90, 0);
-        if (nHave / nPrice < (__int64)FUN_140db8210())
-            return (int)(nHave / nPrice);
-        return FUN_140db8210();
+        nResult = (int)(nHave / nPrice < FUN_140db8210() ? nHave / nPrice : FUN_140db8210());
+        break;
     }
-    __int64 nHave = FUN_141349ef0(m_88, 0, (unsigned)nPrice);
-    if (nHave / nPrice < (__int64)FUN_140db8210())
-        return (int)(nHave / nPrice);
-    return FUN_140db8210();
+    default:
+    {
+        __int64 nHave = FUN_141349ef0(m_88, 0, (unsigned)nPrice);
+        nResult = (int)(nHave / nPrice < FUN_140db8210() ? nHave / nPrice : FUN_140db8210());
+        break;
+    }
+    }
+    return nResult;
 }
 
 // @0x140db8580
-// MS2-FUNCTIONAL: return value path/temp differs; source form unknown
 int CNpcShopProductCli::FUN_140db8580(int nCount)
 {
     __int64 nTotal = FUN_140db8180() * nCount;
@@ -514,14 +515,11 @@ bool CNpcShopProductCli::FUN_140db8600()
 }
 
 // @0x140db86d0
-// MS2-FUNCTIONAL: return-copy / Format argument spill differ
 CString CNpcShopProductCli::FUN_140db86d0()
 {
     CString str;
-    const char* pszCategory = m_b0;
-    unsigned nItemId = m_40->FUN_1405276c0();
     str.Format("OnShop [ITEM_LIST] : nSerialID = %d, itemID = %u, price = %I64u, randomSeed = %u, nSellCount = %d, nBuyCount = %d, category=%s",
-        (unsigned __int64)(unsigned)m_18, (unsigned __int64)nItemId, m_a0, m_50, m_5c, m_58, pszCategory);
+        m_18, m_40->FUN_1405276c0(), m_a0, m_50, m_5c, m_58, (const char*)m_b0);
     return str;
 }
 
@@ -533,9 +531,6 @@ CNpcShopProductNewCli::CNpcShopProductNewCli()
     m_1c = 2;
 }
 
-// @0x140db8b60
-// MS2-FUNCTIONAL: the exe dtor stores no vptr (implicit); source form not found
-CNpcShopProductNewCli::~CNpcShopProductNewCli() = default;
 
 // @0x140db8840
 void CNpcShopProductNewCli::FUN_140db8840(CInPacket& in)

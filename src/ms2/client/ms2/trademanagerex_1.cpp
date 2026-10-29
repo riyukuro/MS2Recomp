@@ -46,10 +46,10 @@ class Unk_TradeDialog : public UIDialog
 {
 public:
     CStringW GetPartner();                           // m_strPartner (this unit)
-    void FUN_141b27de0(bool bMine, int nSlot, MS2Ptr<CItem> spItem);    // an item was put on the table
-    void FUN_141b27fa0(bool bMine, int nSlot);          // an item was taken off
-    void FUN_141b28130(unsigned char a, __int64 value); // a money amount changed
-    void FUN_141b28290(bool bConfirmed, int bFinal);    // confirm state changed
+    void FUN_141b27de0(int bMine, int nSlot, MS2Ptr<CItem> spItem);     // an item was put on the table
+    void FUN_141b27fa0(int bMine, int nSlot);           // an item was taken off
+    void FUN_141b28130(int nSide, __int64 value);       // a money amount changed
+    void FUN_141b28290(int bConfirmed, int bFinal);     // confirm state changed
     void FUN_141b297e0(int nResult);                    // request result
     char m_pad_178[0x28];
     CStringW m_strPartner;                              // +0x1a0
@@ -105,8 +105,8 @@ void* FUN_140534fc0(const Unk_MessageBoxPtr&);
 void* FUN_140534fe0(const Unk_MessageBoxPtr&);
 void FUN_1405340b0(void*, __int64);
 void FUN_141a01ca0(void*, int, int, const CStringW&);
-void FUN_141a02460(void*, bool);
-void FUN_141a02480(void*, bool);
+void FUN_141a02460(void*, int);
+void FUN_141a02480(void*, int);
 void FUN_141a024a0(void*, bool);
 int FUN_14025a620(void*);
 void* FUN_1401d3200();
@@ -345,7 +345,8 @@ void CTradeManagerEx::SendTradeMode14(__int64 uid)
 // @0x14185bd20
 void CTradeManagerEx::OnTrade(CInPacket& packet)
 {
-    switch (packet.ReadUInt8())
+    int nCode = packet.ReadUInt8();
+    switch (nCode)
     {
     case 0:
         FUN_14185bec0(packet);
@@ -354,7 +355,7 @@ void CTradeManagerEx::OnTrade(CInPacket& packet)
         FUN_14185c2a0(packet);
         break;
     case 2:
-        FUN_14185c230();
+        FUN_14185c230(packet);
         break;
     case 4:
         FUN_14185cc60(packet);
@@ -381,10 +382,10 @@ void CTradeManagerEx::OnTrade(CInPacket& packet)
         FUN_14185d610(packet);
         break;
     case 13:
-        FUN_14185d720();
+        FUN_14185d720(packet);
         break;
     case 14:
-        FUN_14185d750();
+        FUN_14185d750(packet);
         break;
     }
 }
@@ -394,49 +395,48 @@ void CTradeManagerEx::FUN_14185bec0(CInPacket& packet)
 {
     CStringW strName = packet.ReadUnicodeString();
     __int64 uid = packet.ReadInt64();
-    if (FUN_140ae6540(FUN_1409a8b10())->m_bRefuseTrade == 0)
+    if (FUN_140ae6540(FUN_1409a8b10())->m_bRefuseTrade != 0)
+    {
+        FUN_14140ea30()->FUN_14185b8e0(uid, 0);
+        return;
+    }
     {
         BlockPtr blocked = FUN_140a6a830()->FindBlockedAction(0x20);
-        if (blocked.get() == 0)
-        {
-            blocked = 0;
-            Unk_MessageBoxPtr current = FUN_14151f820();
-            if (FUN_140534fc0(current) == 0)
-            {
-                Unk_MessageBoxPtr box = FUN_140d73d20(1, FUN_14052bd00(0x823, strName), 0, s_requestTradeEx);
-                if (FUN_140534fc0(box) != 0)
-                {
-                    FUN_1405340b0(FUN_140534fe0(box), uid);
-                    FUN_141a01ca0(FUN_140534fe0(box), FUN_14025a620(reinterpret_cast<char*>(FUN_1401d3200()) + 0x3788), 1, GetStringCommon(0x2b8));
-                    FUN_141a02460(FUN_140534fe0(box), true);
-                    FUN_141a02480(FUN_140534fe0(box), true);
-                    FUN_141a024a0(FUN_140534fe0(box), false);
-                    FUN_140d73c60(box);
-                    SendTradeMode2(uid);
-                }
-            }
-            else
-            {
-                SendTradeMode14(uid);
-            }
-        }
-        else
+        if (blocked.get() != 0)
         {
             FUN_14140ea30()->FUN_14185b8e0(uid, 0);
-            FUN_1412751b0(FUN_1401ca400(blocked, 0x20), 0x12);
+            CStringW strMsg = FUN_1401ca400(blocked, 0x20);
+            FUN_1412751b0(strMsg, 0x12);
+            return;
         }
+    }
+    Unk_MessageBoxPtr current = FUN_14151f820();
+    if (FUN_140534fc0(current) != 0)
+    {
+        SendTradeMode14(uid);
     }
     else
     {
-        FUN_14140ea30()->FUN_14185b8e0(uid, 0);
+        Unk_MessageBoxPtr box = FUN_140d73d20(1, FUN_14052bd00(0x823, strName), 0, s_requestTradeEx);
+        if (FUN_140534fc0(box) != 0)
+        {
+            FUN_1405340b0(FUN_140534fe0(box), uid);
+            FUN_141a01ca0(FUN_140534fe0(box), FUN_14025a620(reinterpret_cast<char*>(FUN_1401d3200()) + 0x3788), 1, GetStringCommon(0x2b8));
+            FUN_141a02460(FUN_140534fe0(box), true);
+            FUN_141a02480(FUN_140534fe0(box), true);
+            FUN_141a024a0(FUN_140534fe0(box), false);
+            FUN_140d73c60(box);
+            SendTradeMode2(uid);
+        }
     }
 }
 
 // @0x14185c230
-void CTradeManagerEx::FUN_14185c230()
+void CTradeManagerEx::FUN_14185c230(CInPacket& packet)
 {
     FUN_141275260(0x822, 1, 1);
-    FUN_141276180(s_inviteSuccess, CString(""));
+    CString strArg("");
+    FUN_141276180(s_inviteSuccess, strArg);
 }
 
 // @0x14185c2a0
@@ -452,6 +452,9 @@ void CTradeManagerEx::FUN_14185c2a0(CInPacket& packet)
     case 0:
         strMsg = FUN_14052bd00(0x827, strName);
         break;
+    case 0xc:
+        strMsg = FUN_14052bd00(0x829, strName);
+        break;
     case 1:
         strMsg = FUN_14052bd00(0x828, strName);
         break;
@@ -461,14 +464,14 @@ void CTradeManagerEx::FUN_14185c2a0(CInPacket& packet)
     case 3:
         strMsg = FUN_14052bd00(0x82b, strName);
         break;
-    default:
-        strMsg = Unk_TradeFormat(0x837, code);
-        break;
     case 5:
         strMsg = FUN_14052bd00(0x82d, strName);
         break;
     case 6:
         strMsg = FUN_14052bd00(0x82e, strName);
+        break;
+    case 0xe:
+        strMsg = FUN_1409eec40(0x82c);
         break;
     case 7:
         strMsg = FUN_1409eec40(0x82f);
@@ -485,14 +488,8 @@ void CTradeManagerEx::FUN_14185c2a0(CInPacket& packet)
     case 0xb:
         strMsg = FUN_1409eec40(0x833);
         break;
-    case 0xc:
-        strMsg = FUN_14052bd00(0x829, strName);
-        break;
     case 0xd:
         strMsg = FUN_1409eec40(0x834);
-        break;
-    case 0xe:
-        strMsg = FUN_1409eec40(0x82c);
         break;
     case 0xf:
         strMsg = FUN_14052bd00(0x835, strName);
@@ -513,6 +510,9 @@ void CTradeManagerEx::FUN_14185c2a0(CInPacket& packet)
         break;
     case 0x15:
         strMsg = FUN_140a22c00(0x940, FUN_1401a9d70()->FUN_141811980(1, nArg), nLevel);
+        break;
+    default:
+        strMsg = Unk_TradeFormat(0x837, code);
         break;
     }
     if (!strMsg.IsEmpty())
@@ -553,16 +553,16 @@ void CTradeManagerEx::FUN_14185cd10(CInPacket& packet)
 // @0x14185cee0
 void CTradeManagerEx::FUN_14185cee0(CInPacket& packet)
 {
-    bool bAccepted = packet.ReadUInt8() != 0;
+    int bAccepted = packet.ReadUInt8();
     Unk_TradeDialog* pDlg = FUN_14140e820(0x4e83);
     if (pDlg != 0)
     {
         CStringW strPartner = pDlg->GetPartner();
         FUN_1403ed2b0()->FUN_141adc5d0(0x4e83);
-        if (!bAccepted)
-            FUN_1412751b0(FUN_14052bd00(0x825, strPartner), 0x12);
-        else
+        if (bAccepted)
             FUN_1412751b0(FUN_14052bd00(0x826, strPartner), 0x12);
+        else
+            FUN_1412751b0(FUN_14052bd00(0x825, strPartner), 0x12);
     }
     m_uidLastSent = 0;
 }
@@ -571,110 +571,103 @@ void CTradeManagerEx::FUN_14185cee0(CInPacket& packet)
 void CTradeManagerEx::FUN_14185d020(CInPacket& packet)
 {
     Unk_TradeDialog* pDlg = FUN_14140e820(0x4e83);
-    if (pDlg != 0)
+    if (pDlg == 0)
+        return;
+    int bMine = packet.ReadUInt8();
+    int nTemplate = packet.ReadInt32();
+    __int64 uid = packet.ReadInt64();
+    int nRarity = packet.ReadInt32();
+    int nCount = packet.ReadInt32();
+    int nSlotInItem = packet.ReadInt32();
+    int nSlot = packet.ReadInt32();
+    MS2Ptr<CItem> spItem(new CItem);
+    if (!spItem->FUN_140523c40(nTemplate, nRarity, 0))
     {
-        bool bMine = packet.ReadUInt8() != 0;
-        int nTemplate = packet.ReadInt32();
-        __int64 uid = packet.ReadInt64();
-        int nRarity = packet.ReadInt32();
-        int nCount = packet.ReadInt32();
-        int nSlotInItem = packet.ReadInt32();
-        int nSlot = packet.ReadInt32();
-        MS2Ptr<CItem> spItem(new CItem);
-        if (spItem->FUN_140523c40(nTemplate, nRarity, 0))
-        {
-            spItem->FUN_140524eb0(packet);
-            spItem->FUN_140526a70(uid);
-            spItem->FUN_140526c70(nSlotInItem);
-            spItem->FUN_140526b70(nCount);
-            if (bMine)
-            {
-                FUN_140a6a840()->vfunc_17(spItem);
-                DAT_143ab2e80.FUN_14185b2a0(spItem);
-            }
-            pDlg->FUN_141b27de0(bMine, nSlot, spItem);
-        }
-        else
-        {
-            pDlg->vfunc_67();
-        }
+        pDlg->vfunc_67();
+        return;
     }
+    spItem->FUN_140524eb0(packet);
+    spItem->FUN_140526a70(uid);
+    spItem->FUN_140526c70(nSlotInItem);
+    spItem->FUN_140526b70(nCount);
+    if (bMine)
+    {
+        FUN_140a6a840()->vfunc_17(spItem);
+        DAT_143ab2e80.FUN_14185b2a0(spItem);
+    }
+    pDlg->FUN_141b27de0(bMine, nSlot, spItem);
 }
 
 // @0x14185d380
 void CTradeManagerEx::FUN_14185d380(CInPacket& packet)
 {
     Unk_TradeDialog* pDlg = FUN_14140e820(0x4e83);
-    if (pDlg != 0)
+    if (pDlg == 0)
+        return;
+    int bMine = packet.ReadUInt8();
+    int nSlot = packet.ReadInt32();
+    __int64 uid = packet.ReadInt64();
+    if (bMine)
     {
-        bool bMine = packet.ReadUInt8() != 0;
-        int nSlot = packet.ReadInt32();
-        __int64 uid = packet.ReadInt64();
-        if (bMine)
-        {
-            MS2Ptr<CItem> spItem = DAT_143ab2e80.FUN_14185b4a0(uid);
-            if (!spItem.get())
-                return;
-            FUN_140a6a840()->vfunc_18(spItem);
-            DAT_143ab2e80.FUN_14185b3d0(uid);
-        }
-        pDlg->FUN_141b27fa0(bMine, nSlot);
+        MS2Ptr<CItem> spItem = DAT_143ab2e80.FUN_14185b4a0(uid);
+        if (!spItem)
+            return;
+        FUN_140a6a840()->vfunc_18(spItem);
+        DAT_143ab2e80.FUN_14185b3d0(uid);
     }
+    pDlg->FUN_141b27fa0(bMine, nSlot);
 }
 
 // @0x14185d4f0
 void CTradeManagerEx::FUN_14185d4f0(CInPacket& packet)
 {
     Unk_TradeDialog* pDlg = FUN_14140e820(0x4e83);
-    if (pDlg != 0)
-    {
-        unsigned char nSide = packet.ReadUInt8();
-        __int64 nValue = packet.ReadInt64();
-        pDlg->FUN_141b28130(nSide, nValue);
-    }
+    if (pDlg == 0)
+        return;
+    int nSide = packet.ReadUInt8();
+    __int64 nValue = packet.ReadInt64();
+    pDlg->FUN_141b28130(nSide, nValue);
 }
 
 // @0x14185d590
 void CTradeManagerEx::FUN_14185d590(CInPacket& packet)
 {
     Unk_TradeDialog* pDlg = FUN_14140e820(0x4e83);
-    if (pDlg != 0)
-    {
-        bool bMine = packet.ReadUInt8() != 0;
-        if (bMine)
-            m_bConfirmed = true;
-        pDlg->FUN_141b28290(bMine, 1);
-    }
+    if (pDlg == 0)
+        return;
+    int bMine = packet.ReadUInt8();
+    if (bMine)
+        m_bConfirmed = true;
+    pDlg->FUN_141b28290(bMine, 1);
 }
 
 // @0x14185d610
 void CTradeManagerEx::FUN_14185d610(CInPacket& packet)
 {
     Unk_TradeDialog* pDlg = FUN_14140e820(0x4e83);
-    if (pDlg != 0)
+    if (pDlg == 0)
+        return;
+    int bMine = packet.ReadUInt8();
+    if (bMine)
     {
-        bool bMine = packet.ReadUInt8() != 0;
-        if (!bMine)
-        {
-            FUN_1412751b0(GetStringCommon(0x845), 0x12);
-        }
-        else
-        {
-            m_bConfirmed = false;
-            FUN_1412751b0(GetStringCommon(0x844), 0x12);
-        }
-        pDlg->FUN_141b28290(bMine, 0);
+        m_bConfirmed = false;
+        FUN_1412751b0(GetStringCommon(0x844), 0x12);
     }
+    else
+    {
+        FUN_1412751b0(GetStringCommon(0x845), 0x12);
+    }
+    pDlg->FUN_141b28290(bMine, 0);
 }
 
 // @0x14185d720
-void CTradeManagerEx::FUN_14185d720()
+void CTradeManagerEx::FUN_14185d720(CInPacket& packet)
 {
-    FUN_14140e820(0x4e83);
+    Unk_TradeDialog* pDlg = FUN_14140e820(0x4e83);
 }
 
 // @0x14185d750
-void CTradeManagerEx::FUN_14185d750()
+void CTradeManagerEx::FUN_14185d750(CInPacket& packet)
 {
     FUN_1412751b0(GetStringCommon(0x843), 0x12);
 }
@@ -699,22 +692,19 @@ void CTradeManagerEx::FUN_14185d820(__int64 uid, CStringW strName, CString strCh
 }
 
 // @0x14185d8b0
-bool CTradeManagerEx::FUN_14185d8b0()
+int CTradeManagerEx::FUN_14185d8b0()
 {
     if (FUN_1403ed2b0()->FUN_141adc940(0x4e83) == 0)
     {
         FUN_140f8ff40(0x841, 1, 1);
-        return false;
+        return 0;
     }
-    else if (m_uidPartner == 0)
-    {
-        return true;
-    }
-    else
+    if ((unsigned __int64)m_uidPartner > 0)
     {
         FUN_140f8ff40(0x841, 1, 1);
-        return false;
+        return 0;
     }
+    return 1;
 }
 
 // @0x14185d920

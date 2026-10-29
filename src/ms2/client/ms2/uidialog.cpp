@@ -78,7 +78,7 @@ public:
     virtual void vfunc_14(); virtual void vfunc_15(); virtual void vfunc_16(); virtual void vfunc_17();
     virtual void vfunc_18(); virtual void vfunc_19(); virtual void vfunc_20(); virtual void vfunc_21();
     virtual void vfunc_22(); virtual void vfunc_23();
-    virtual void vfunc_24(int n);                                   // MS2: slot 24 (0xc0) apply the new size
+    virtual void vfunc_24(bool bInvalidate);                        // MS2: slot 24 (0xc0) validateNow (apply the new size)
     virtual void vfunc_25();                                        // MS2: slot 25 (0xc8) keep the dialog on screen
 
     void FUN_1422c00f0(float x, float y);                           // set the position
@@ -169,14 +169,13 @@ class Unk_WebGuideEntry : public CPtred {};
 class Unk_1414a5880
 {
 public:
-    // MS2-FUNCTIONAL: temporary/frame layout of the inlined CAtlMap lookup differs (no source form found)
     // @0x141927640
     MS2Ptr<Unk_WebGuideEntry> FUN_141927640(CString strKey)
     {
         MS2Ptr<Unk_WebGuideEntry> sp;
-        if (!m_map.Lookup(strKey, sp))
-            return 0;
-        return sp;
+        if (m_map.Lookup(strKey, sp))
+            return sp;
+        return 0;
     }
 
 private:
@@ -198,8 +197,8 @@ void* FUN_14081b310(TiXmlDocument* pDoc);                           // RootEleme
 void* FUN_14086e090(TiXmlDocument* pDoc, TiXmlElement* pChild);     // LinkEndChild
 bool FUN_1408710c0(TiXmlDocument* pDoc, const char* szPath);        // SaveFile
 void* FUN_140165cf0(TiXmlDocument* pDoc, const char* szName);       // FirstChildElement
-void FUN_140874440(void* pCfg, const char* szGroup, const char* szName, int n, int bCreate);
-void FUN_1408744b0(void* pCfg, const char* szGroup, const char* szName, float f, int bCreate);
+void FUN_140874440(void* pCfg, const char* szGroup, const char* szName, int n, bool bCreate);
+void FUN_1408744b0(void* pCfg, const char* szGroup, const char* szName, float f, bool bCreate);
 void FUN_1408741a0(void* pCfg, const char* szGroup, const char* szName, int* pn);
 void FUN_140874210(void* pCfg, const char* szGroup, const char* szName, float* pf);
 CString FUN_14038f6d0(const CString& str, const char* szExt);       // str + ext
@@ -290,7 +289,6 @@ int UIDialog::vfunc_4()
 }
 MS2_REPLACE_METHOD(0x1419237c0, UIDialog, vfunc_4, 673, 0x49894032);
 
-// MS2-FUNCTIONAL: stack frame and temporary layout differ (extra/merged CString temporaries; no source form found within the time box)
 // @0x141923a70
 int UIDialog::vfunc_5()
 {
@@ -298,16 +296,16 @@ int UIDialog::vfunc_5()
         return 0;
     FUN_14086ddc0(&m_e8);
     vfunc_83();
-    if (!m_e8.FUN_140870fc0(FUN_140cc2a00(FUN_1412755f0(), FUN_14038f6d0(GetTypeName(), ".xml")), 0))
-        return 0;
-    void* pNode = FUN_140165cf0(&m_e8, GetTypeName());
-    if (!pNode)
-        return 0;
-    return m_78 = vfunc_54(pNode);
+    if (m_e8.FUN_140870fc0(FUN_140cc2a00(FUN_1412755f0(), FUN_14038f6d0(GetTypeName(), ".xml")), 0)) {
+        void* pNode = FUN_140165cf0(&m_e8, GetTypeName());
+        if (!pNode)
+            return 0;
+        return m_78 = vfunc_54(pNode);
+    }
+    return 0;
 }
 MS2_REPLACE_METHOD(0x141923a70, UIDialog, vfunc_5, 534, 0x31472310);
 
-// MS2-FUNCTIONAL: stack frame and temporary layout differ (extra/merged CString temporaries; no source form found within the time box)
 // @0x141923c90
 int UIDialog::vfunc_53(void* pCfg)
 {
@@ -382,45 +380,43 @@ void UIDialog::FUN_141924170(int n)
 }
 MS2_REPLACE_METHOD(0x141924170, UIDialog, FUN_141924170, 25, 0xD8FD4C23);
 
-// MS2-FUNCTIONAL: stack frame and temporary layout differ (extra/merged CString temporaries; no source form found within the time box)
 // @0x141924190
 void UIDialog::FUN_141924190()
 {
-    if (!m_68) {
-        m_78 = 0;
-        FUN_14086ddc0(&m_e8);
-        FUN_141926890();
-        vfunc_77();
-        FUN_140b632f0()->FUN_1422d4840(this, m_e0);
-        FUN_14140ea40()->vfunc_2(vfunc_48());
-        if (FUN_1409331e0())
-            FUN_14138d7e0(FUN_1409331e0(), 3, 0);
-        if (!vfunc_56() && m_8c)
-            FUN_141276180(m_d0, "");
-        if (m_164) {
-            POSITION pos = s_openDialogs.Find((Unk_UIType)vfunc_48());
-            if (pos)
-                s_openDialogs.RemoveAt(pos);
-        }
+    if (m_68)
+        return;
+    m_78 = 0;
+    FUN_14086ddc0(&m_e8);
+    FUN_141926890();
+    vfunc_77();
+    FUN_140b632f0()->FUN_1422d4840(this, m_e0);
+    FUN_14140ea40()->vfunc_2(vfunc_48());
+    if (FUN_1409331e0())
+        FUN_14138d7e0(FUN_1409331e0(), 3, 0);
+    if (!vfunc_56() && m_8c)
+        FUN_141276180(m_d0, "");
+    if (m_164) {
+        POSITION pos = s_openDialogs.Find((Unk_UIType)vfunc_48());
+        if (pos)
+            s_openDialogs.RemoveAt(pos);
     }
 }
 // Reads s_openDialogs (the exe list in the hook DLL).
 
-// MS2-FUNCTIONAL: stack frame and temporary layout differ (extra/merged CString temporaries; no source form found within the time box)
 // @0x141924330
 void UIDialog::FUN_141924330(int n)
 {
     if (m_158)
         m_160 = 0;
-    if (!m_30.get() || !m_c4) {
-        FUN_1422dc080();
-        m_c0 = 2;
-    } else {
+    if ((m_30.get() ? true : false) && m_c4 != 0) {
         m_30->Invoke("stopTweens");
         if (!m_68)
             vfunc_4();
         m_c0 = 1;
         m_30->Invoke("startClose");
+    } else {
+        FUN_1422dc080();
+        m_c0 = 2;
     }
 }
 MS2_REPLACE_METHOD(0x141924330, UIDialog, FUN_141924330, 311, 0xBB6B5898);
@@ -432,20 +428,21 @@ int UIDialog::FUN_141924470()
 }
 MS2_REPLACE_METHOD(0x141924470, UIDialog, FUN_141924470, 61, 0x59070A67);
 
-// MS2-FUNCTIONAL: stack frame and temporary layout differ (extra/merged CString temporaries; no source form found within the time box)
 // @0x1419244c0
 int UIDialog::FUN_1419244c0(int nBit)
 {
-    return m_a0.test(nBit);
+    return m_a0.test(nBit) != 0;
 }
 MS2_REPLACE_METHOD(0x1419244c0, UIDialog, FUN_1419244c0, 72, 0x6C241F1A);
 
-// MS2-FUNCTIONAL: stack frame and temporary layout differ (extra/merged CString temporaries; no source form found within the time box)
 // @0x141924510
 void UIDialog::FUN_141924510()
 {
-    if (!(m_90 == 0) && m_c4 && m_c0 == 0) {
-        if (!FUN_1409b0350(m_90->FUN_1422baa20("m_openTween")))
+    if (m_90 == 0 || m_c4 == 0)
+        return;
+    if (m_c0 == 0) {
+        bool bNoTween = FUN_1409b0350(m_90->FUN_1422baa20("m_openTween")) == false;
+        if (bNoTween)
             m_30->Invoke("stopOpenTweens");
     }
 }
@@ -549,7 +546,6 @@ void UIDialog::vfunc_61(int n)
 }
 MS2_REPLACE_METHOD(0x1419248e0, UIDialog, vfunc_61, 25, 0xE467F5FB);
 
-// MS2-FUNCTIONAL: stack frame and temporary layout differ (extra/merged CString temporaries; no source form found within the time box)
 // @0x141924900
 void UIDialog::vfunc_62(int nWidth, int nHeight)
 {
@@ -558,7 +554,7 @@ void UIDialog::vfunc_62(int nWidth, int nHeight)
         int nCurHeight = pDialog->FUN_1422c13b0();
         int nCurWidth = pDialog->FUN_1422c1340();
         pDialog->FUN_1422c79e0((std::max)(nCurWidth, nWidth), (std::max)(nHeight, nCurHeight));
-        pDialog->vfunc_24(1);
+        pDialog->vfunc_24(true);
     }
 }
 MS2_REPLACE_METHOD(0x141924900, UIDialog, vfunc_62, 189, 0x2714202B);
@@ -577,7 +573,6 @@ int UIDialog::vfunc_64()
 }
 MS2_REPLACE_METHOD(0x1419249f0, UIDialog, vfunc_64, 14, 0x69D980EB);
 
-// MS2-FUNCTIONAL: stack frame and temporary layout differ (extra/merged CString temporaries; no source form found within the time box)
 #ifndef MS2_HOOK_DLL
 // @0x141924a10
 int UIDialog::vfunc_65()
@@ -587,13 +582,15 @@ int UIDialog::vfunc_65()
     if (!vfunc_73())
         return 0;
     m_68 = 0;
-    if (!m_158) {
-        FUN_1422dbf00(m_2c, 0, 0);
-    } else if (!m_15c) {
-        FUN_1422dbd70(m_2c, 0);
-        FUN_141924170(0);
+    if (m_158) {
+        if (m_15c) {
+            m_160 = 1;
+            FUN_1422dbf00(m_2c, 0, 0);
+        } else {
+            FUN_1422dbd70(m_2c, 0);
+            FUN_141924170(0);
+        }
     } else {
-        m_160 = 1;
         FUN_1422dbf00(m_2c, 0, 0);
     }
     FUN_140b632f0()->FUN_1422d4780(this, m_e0);
@@ -619,7 +616,6 @@ void UIDialog::vfunc_66()
 }
 MS2_REPLACE_METHOD(0x141924cb0, UIDialog, vfunc_66, 179, 0x90F5B11C);
 
-// MS2-FUNCTIONAL: stack frame and temporary layout differ (extra/merged CString temporaries; no source form found within the time box)
 #ifndef MS2_HOOK_DLL
 // @0x141924d70
 void UIDialog::vfunc_67()
@@ -627,19 +623,19 @@ void UIDialog::vfunc_67()
     FUN_141924190();
     FUN_141924330(m_c4);
     m_68 = 1;
-    m_d8 = NiPoint2(efd::Point2::ZERO);
+    NiPoint2 kZero(efd::Point2::ZERO);
+    m_d8 = kZero;
     m_170.Empty();
 }
 #endif
 // Not hooked: FUN_141924190 reads s_openDialogs.
 
-// MS2-FUNCTIONAL: stack frame and temporary layout differ (extra/merged CString temporaries; no source form found within the time box)
 // @0x141924df0
 void UIDialog::vfunc_68()
 {
-    bool bClose = !m_68 || (m_68 && m_c4 && m_c0 != 2);
+    int bClose = !m_68 || (m_68 && m_c4 && m_c0 != 2);
     if (bClose) {
-        if (m_c4 && m_30.get())
+        if (m_c4 && (m_30.get() ? true : false))
             m_30->Invoke("stopTweens");
         int nTween = m_c4;
         m_c4 = 0;
@@ -836,19 +832,17 @@ void UIDialog::vfunc_78()
 #endif
 // Reads s_openDialogs (the exe list in the hook DLL).
 
-// MS2-FUNCTIONAL: stack frame and temporary layout differ (extra/merged CString temporaries; no source form found within the time box)
 // @0x1419257b0
 void UIDialog::vfunc_43()
 {
     ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30);
     if (pDialog) {
-        bool bCheck = !m_60 && m_78 && vfunc_52();
+        int bCheck = !m_60 && m_78 && vfunc_52();
         if (bCheck) {
-            if ((float)pDialog->FUN_1422c1500() >= pDialog->FUN_1422c10a0() &&
-                (float)pDialog->FUN_1422c1530() >= pDialog->FUN_1422c1110() && pDialog->FUN_1422c10a0() >= 0.0f &&
-                pDialog->FUN_1422c1110() >= 0.0f)
-                return;
-            pDialog->vfunc_25();
+            if (!((float)pDialog->FUN_1422c1500() >= pDialog->FUN_1422c10a0() &&
+                  (float)pDialog->FUN_1422c1530() >= pDialog->FUN_1422c1110() && pDialog->FUN_1422c10a0() >= 0.0f &&
+                  pDialog->FUN_1422c1110() >= 0.0f))
+                pDialog->vfunc_25();
         } else {
             pDialog->vfunc_25();
         }
@@ -885,15 +879,15 @@ void UIDialog::vfunc_80(void* p)
 }
 MS2_REPLACE_METHOD(0x1419259e0, UIDialog, vfunc_80, 11, 0x02239C70);
 
-// MS2-FUNCTIONAL: stack frame and temporary layout differ (extra/merged CString temporaries; no source form found within the time box)
 // @0x141925a00
 int UIDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
 {
-    return UISwfEntity::OnMessage(pSender, pMsg) != 0;
+    if (UISwfEntity::OnMessage(pSender, pMsg))
+        return 1;
+    return 0;
 }
 MS2_REPLACE_METHOD_VIA(0x141925a00, UIDialog, IMessageListener, OnMessage, 60, 0x19B0248A);
 
-// MS2-FUNCTIONAL: stack frame and temporary layout differ (extra/merged CString temporaries; no source form found within the time box)
 // @0x141925a50
 int UIDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs)
 {
@@ -902,20 +896,16 @@ int UIDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs,
     if (_stricmp("OnCloseDialog", szMethod) == 0) {
         vfunc_70();
         return 1;
-    }
-    if (_stricmp("OnStartDrag", szMethod) == 0) {
+    } else if (_stricmp("OnStartDrag", szMethod) == 0) {
         vfunc_76();
         return 1;
-    }
-    if (_stricmp("OnStopDrag", szMethod) == 0) {
+    } else if (_stricmp("OnStopDrag", szMethod) == 0) {
         vfunc_77();
         return 1;
-    }
-    if (_stricmp("OnTopMostLayer", szMethod) == 0) {
+    } else if (_stricmp("OnTopMostLayer", szMethod) == 0) {
         vfunc_78();
         return 1;
-    }
-    if (_stricmp("OnEndClose", szMethod) == 0) {
+    } else if (_stricmp("OnEndClose", szMethod) == 0) {
         if (m_c0 != 2) {
             m_c0 = 2;
             if (FUN_1409331e0())
@@ -948,15 +938,14 @@ void UIDialog::vfunc_32(void* p, float x, float y)
 }
 MS2_REPLACE_METHOD(0x141925c10, UIDialog, vfunc_32, 58, 0x2E88B7AD);
 
-// MS2-FUNCTIONAL: stack frame and temporary layout differ (extra/merged CString temporaries; no source form found within the time box)
 // @0x141925c50
 void UIDialog::vfunc_41(const Scaleform::GFx::Value& root)
 {
     m_30 = FUN_140e43fe0(m_28, root);
-    if (!m_30.get())
-        m_90 = 0;
-    else
+    if (m_30.get())
         m_90 = FUN_140e43fe0(m_28, m_30->FUN_1422bb870());
+    else
+        m_90 = 0;
 }
 MS2_REPLACE_METHOD(0x141925c50, UIDialog, vfunc_41, 264, 0xD6367043);
 
@@ -1025,7 +1014,6 @@ void UIDialog::FUN_1419260d0(CString strName, int n)
 }
 MS2_REPLACE_METHOD(0x1419260d0, UIDialog, FUN_1419260d0, 163, 0x0D892337);
 
-// MS2-FUNCTIONAL: stack frame and temporary layout differ (extra/merged CString temporaries; no source form found within the time box)
 #ifndef MS2_HOOK_DLL
 // @0x141926180
 void UIDialog::FUN_141926180(MS2Ptr<AScript> spRoot, CString strName, int n)
@@ -1078,7 +1066,6 @@ void UIDialog::FUN_1419265e0(const CString& str)
 }
 MS2_REPLACE_METHOD(0x1419265e0, UIDialog, FUN_1419265e0, 44, 0x54890FB2);
 
-// MS2-FUNCTIONAL: stack frame and temporary layout differ (extra/merged CString temporaries; no source form found within the time box)
 // @0x141926620
 void UIDialog::FUN_141926620(int* pnAlign, float* pX, float* pY)
 {
@@ -1086,8 +1073,8 @@ void UIDialog::FUN_141926620(int* pnAlign, float* pX, float* pY)
     if (pDialog) {
         float x = pDialog->FUN_1422c10a0();
         float y = pDialog->FUN_1422c1110();
-        int nWidth = pDialog->FUN_1422c1340();
-        int nHeight = pDialog->FUN_1422c13b0();
+        float fWidth = (float)pDialog->FUN_1422c1340();
+        float fHeight = (float)pDialog->FUN_1422c13b0();
         float fHalfWidth = (float)pDialog->FUN_1422c1500() * 0.5f;
         float fHalfHeight = (float)pDialog->FUN_1422c1530() * 0.5f;
         if (x <= fHalfWidth && y <= fHalfHeight) {
@@ -1096,16 +1083,16 @@ void UIDialog::FUN_141926620(int* pnAlign, float* pX, float* pY)
             *pY = y;
         } else if (x >= fHalfWidth && y <= fHalfHeight) {
             *pnAlign = 6;
-            *pX = (x + (float)nWidth) - fHalfWidth * 2.0f;
+            *pX = (x + fWidth) - fHalfWidth * 2.0f;
             *pY = y;
         } else if (x <= fHalfWidth && y >= fHalfHeight) {
             *pnAlign = 7;
             *pX = x;
-            *pY = (y + (float)nHeight) - fHalfHeight * 2.0f;
+            *pY = (y + fHeight) - fHalfHeight * 2.0f;
         } else if (x >= fHalfWidth && y >= fHalfHeight) {
             *pnAlign = 8;
-            *pX = (x + (float)nWidth) - fHalfWidth * 2.0f;
-            *pY = (y + (float)nHeight) - fHalfHeight * 2.0f;
+            *pX = (x + fWidth) - fHalfWidth * 2.0f;
+            *pY = (y + fHeight) - fHalfHeight * 2.0f;
         }
     }
 }
@@ -1123,13 +1110,13 @@ void UIDialog::FUN_141926890()
 }
 MS2_REPLACE_METHOD(0x141926890, UIDialog, FUN_141926890, 6, 0xA9AF6E37);
 
-// MS2-FUNCTIONAL: stack frame and temporary layout differ (extra/merged CString temporaries; no source form found within the time box)
 // @0x1419268a0
 CString UIDialog::FUN_1419268a0(int n)
 {
     if (n == 0)
         return GetTypeName();
-    return StringFormat("{0}{1}", GetTypeName(), n);
+    else
+        return StringFormat("{0}{1}", GetTypeName(), n);
 }
 MS2_REPLACE_METHOD(0x1419268a0, UIDialog, FUN_1419268a0, 177, 0x6DE46A52);
 

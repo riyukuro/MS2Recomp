@@ -9,6 +9,7 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include <NiDX9Renderer.h>
+#include "ms2/client/ms2/ms2fragmentshader.h"
 
 // ---- unit-local Gamebryo placeholders (NiDX9Renderer is unrecovered; engine headers are not on the include path) --------------
 struct Unk_PtrArray {                                                    // NiTPrimitiveArray<void*>
@@ -69,8 +70,6 @@ extern char DAT_143a4b228;
 extern Unk_PtrArray* DAT_143d6eab8;     // per-frame render object list
 void* FUN_1427e4d90(NiDX9MeshMaterialBinding* binding);
 void FUN_141d4d520(void* shader, Unk_PtrArray* list);
-void* FUN_140876480(void* out, int cat);   void* FUN_14208a860(unsigned __int64 size, unsigned cat);
-void* FUN_140d878b0(void* mem, void* arg);                          // MS2FragmentShader::MS2FragmentShader (0xd8 bytes)
 
 // MS2Renderer::ms_RTTI (parent NiDX9Renderer::ms_RTTI 0x143d6eb58). Its dynamic initializer is the exe's .text$di
 // 0x1400d3cd0, so it runs from this unit's .CRT$XCU slot.
@@ -87,30 +86,23 @@ MS2Renderer::MS2Renderer() {}
 MS2Renderer::~MS2Renderer() {}
 
 // @0x140d9d3e0
-// MS2-FUNCTIONAL: exe inlines the binding dtor on each exit path (different branch layout)
 void MS2Renderer::Do_RenderMesh(NiMesh* pkMesh)
 {
-    if (m_bDeviceLost == 0) {
-        NiDX9MeshMaterialBindingPtr spBinding(0);
-        NiD3DShaderInterface* pkShader = GetShaderAndVertexDecl(pkMesh, spBinding);
-        if (pkShader != 0 && !(spBinding == 0) && FUN_1427e4d90((NiDX9MeshMaterialBinding*)spBinding) != 0) {
-            DAT_143d6eab8->RemoveAll();
-            DAT_143d6eab8->Add(pkMesh);
-            FUN_141d4d520(pkShader, DAT_143d6eab8);
-        }
-    }
+    if (m_bDeviceLost != 0)
+        return;
+    NiDX9MeshMaterialBindingPtr spBinding(0);
+    NiD3DShaderInterface* pkShader = GetShaderAndVertexDecl(pkMesh, spBinding);
+    if (pkShader == 0 || spBinding == 0 || FUN_1427e4d90((NiDX9MeshMaterialBinding*)spBinding) == 0)
+        return;
+    DAT_143d6eab8->RemoveAll();
+    DAT_143d6eab8->Add(pkMesh);
+    FUN_141d4d520(pkShader, DAT_143d6eab8);
 }
 
 // @0x140d9d4c0
-// MS2-FUNCTIONAL: exe has an EH frame (state -2, 0x58 frame) from an unrecovered temp; behaviour identical
 NiShader* MS2Renderer::GetFragmentShader(NiMaterialDescriptor* pkMaterialDescriptor)
 {
-    int tmp;
-    int* cat = (int*)FUN_140876480(&tmp, 0);
-    void* mem = FUN_14208a860(0xd8, *cat);
-    NiShader* r;
-    if (mem == 0) r = 0; else r = (NiShader*)FUN_140d878b0(mem, pkMaterialDescriptor);
-    return r;
+    return new (efd::MemHint(efd::MemHint::NONE)) MS2FragmentShader(pkMaterialDescriptor);
 }
 
 // @0x140d9d690

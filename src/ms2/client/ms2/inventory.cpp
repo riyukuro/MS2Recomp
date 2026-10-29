@@ -209,7 +209,7 @@ static CString s_stun2 = "stun";
 static Unk_1402a9d70 s_condition2(17, 0.75f, 0.25f, 2.25f, 10);
 
 int FUN_140a66510(int category);
-int FUN_140a66750(unsigned category);
+int FUN_140a66750(int category);
 class Unk_InventoryFeature { public: bool FUN_14036d570(int feature); };
 Unk_InventoryFeature* FUN_140166410();
 class Unk_InventoryNames { public: CStringW FUN_141813300(unsigned category); };
@@ -222,6 +222,7 @@ public:
 };
 Unk_InventoryListener* FUN_140a6a840();
 CItemData* FUN_140527840(CItem*);
+struct Unk_InvFunctionArgsView { CStringW FUN_1408d2330(); };   // ItemFunctionArgs: copy of the parameter text
 int FUN_14053fd90(CItemData*);
 int FUN_14053dc20(CItemData*);
 bool FUN_14053cbc0(CItemData*);
@@ -242,7 +243,7 @@ struct Unk_InventorySkillRequest {
     unsigned short level;
     unsigned __int64 tick;
     unsigned serial, unknown14;
-    float origin[3], direction[3];
+    float originX, originY, originZ, directionX, directionY, directionZ;
     unsigned unknown30, unknown34;
     bool remap, suppressDispatch, itemUse;
     __int64 item;
@@ -341,13 +342,29 @@ struct Unk_InventoryConstants {
     unsigned char unknown0[0x6ee8];
     Unk_InventoryIntSetting value6ee8;
     unsigned char unknown6f40[0x598];
-    Unk_InventoryArraySetting bagLimits[16];
+    // the bag size settings, one named field each (the exe switches add constant offsets)
+    Unk_InventoryArraySetting bagLimit0;
+    Unk_InventoryArraySetting bagLimit1;
+    Unk_InventoryArraySetting bagLimit2;
+    Unk_InventoryArraySetting bagLimit3;
+    Unk_InventoryArraySetting bagLimit4;
+    Unk_InventoryArraySetting bagLimit5;
+    Unk_InventoryArraySetting bagLimit6;
+    Unk_InventoryArraySetting bagLimit7;
+    Unk_InventoryArraySetting bagLimit8;
+    Unk_InventoryArraySetting bagLimit9;
+    Unk_InventoryArraySetting bagLimit10;
+    Unk_InventoryArraySetting bagLimit11;
+    Unk_InventoryArraySetting bagLimit12;
+    Unk_InventoryArraySetting bagLimit13;
+    Unk_InventoryArraySetting bagLimit14;
+    Unk_InventoryArraySetting bagLimit15;
     unsigned char unknown7cd8[0x69e8];
     Unk_InventoryIntSetting autoEquipMinLevel;
     Unk_InventoryIntSetting autoEquipMaxLevel;
 };
 MS2_CHECK_SIZE(Unk_InventoryConstants, 0xe770); // accessed prefix
-MS2_CHECK_OFFSET(Unk_InventoryConstants, bagLimits, 0x74d8);
+MS2_CHECK_OFFSET(Unk_InventoryConstants, bagLimit0, 0x74d8);
 MS2_CHECK_OFFSET(Unk_InventoryConstants, autoEquipMinLevel, 0xe6c0);
 MS2_CHECK_OFFSET(Unk_InventoryConstants, autoEquipMaxLevel, 0xe718);
 Unk_InventoryConstants* FUN_1401d3200();
@@ -409,7 +426,7 @@ void FUN_141a01600(CMsgBoxData*, __int64);
 void FUN_141a01ee0(CMsgBoxData*, Unk_Inventory::ItemPtr, const CStringW&, int, int, int, int, int);
 void FUN_141a01700(CMsgBoxData*, int, int, int);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData>);
-CStringW FUN_1405c2690(CStringW, CStringW);
+CStringW FUN_1405c2690(CStringW, const CStringW&);
 class Unk_InventoryBinding { public: int FUN_140635100(); int FUN_140635120(); };
 Unk_InventoryBinding* FUN_140527930(CItem*);
 int FUN_141420a70(CItem*, Unk_InventoryPlayer*);
@@ -431,7 +448,7 @@ MS2_CHECK_SIZE(Unk_InventoryCharacterIterator, 8);
 class Unk_InventoryCharacters {
 public:
     Unk_InventoryCharacterIterator FUN_140341f40();
-    Unk_InventoryCharacterIterator FUN_1404c0270(const __int64& id);
+    Unk_InventoryCharacterIterator FUN_1404c0270(const unsigned __int64& id);
 };
 extern Unk_InventoryCharacters DAT_143ab2a30;
 bool FUN_1403344a0(const Unk_InventoryCharacterIterator&, const Unk_InventoryCharacterIterator&);
@@ -459,7 +476,8 @@ Unk_Inventory::~Unk_Inventory() {}
 // @0x140a5c8e0
 void Unk_Inventory::FUN_140a5c8e0() {
     for (int i = 0; i < 15; ++i) {
-        slots[i].SetCount(FUN_140a66510(i), -1);
+        unsigned count = FUN_140a66510(i);
+        slots[i].SetCount(count, -1);
         extraSlots[i] = 0;
     }
     FUN_140a5c970();
@@ -493,31 +511,31 @@ void Unk_Inventory::FUN_140a5ca60(int category) {
     }
 }
 MS2_REPLACE_METHOD(0x140a5ca60, Unk_Inventory, FUN_140a5ca60, 282, 0x2AC17190);
-// MS2-FUNCTIONAL: typed accessors and equivalent control flow produce different temporaries.
 // @0x140a5cb80
 void Unk_Inventory::FUN_140a5cb80(int category, int extra) {
-    if (category >= 0 && category < 15) {
-        ItemArray removed;
-        if (Unk_LockGuard guard = lock) {} else {
-            ItemArray& bag = slots[category];
-            unsigned oldCount = (unsigned)bag.GetCount();
-            unsigned newCount = FUN_140a66510(category) + extra;
+    if (category < 0 || category >= 15) return;
+    ItemArray removed;
+    if (Unk_LockGuard guard = lock) {} else {
+        ItemArray& bag = slots[category];
+        unsigned oldCount = (unsigned)bag.GetCount();
+        unsigned newCount = FUN_140a66510(category) + extra;
+        if (newCount < oldCount) {
             for (unsigned i = newCount; i < oldCount; ++i) {
                 CItem* item = bag[i].get();
                 if (item != nullptr) {
-                    removed.Add(ItemPtr(item));
+                    removed.Add(item);
                     FUN_140a5d390(item->FUN_140526a50());
                     bag[i] = 0;
                 }
             }
-            bag.SetCount(newCount, -1);
-            extraSlots[category] = extra;
         }
-        for (unsigned i = 0; i < removed.GetCount(); ++i) {
-            CItem* item = removed[i].get();
-            Unk_InventoryListener* listener = FUN_140a6a840();
-            listener->vfunc_2(item, 0);
-        }
+        bag.SetCount(newCount, -1);
+        extraSlots[category] = extra;
+    }
+    for (unsigned j = 0; j < removed.GetCount(); ++j) {
+        CItem* item = removed[j].get();
+        Unk_InventoryListener* listener = FUN_140a6a840();
+        listener->vfunc_2(item, 0);
     }
 }
 MS2_REPLACE_METHOD(0x140a5cb80, Unk_Inventory, FUN_140a5cb80, 555, 0xD641C1CE);
@@ -529,15 +547,13 @@ bool Unk_Inventory::FUN_140a5cdc0(unsigned category) {
     return false;
 }
 MS2_REPLACE_METHOD(0x140a5cdc0, Unk_Inventory, FUN_140a5cdc0, 99, 0xEFF4AAF4);
-// MS2-FUNCTIONAL: typed accessors and equivalent control flow produce different temporaries.
 // @0x140a5ce30
-bool Unk_Inventory::FUN_140a5ce30(CStringW& names) {
+int Unk_Inventory::FUN_140a5ce30(CStringW& names) {
     unsigned count = 0;
     for (size_t i = 0; i < 15; ++i) {
         if (FUN_140a5cdc0((unsigned)i)) {
-            if (count != 0) names += L", ";
+            if (count++ > 0) names += L", ";
             names += FUN_1401a9d70()->FUN_141813300((unsigned)i);
-            ++count;
         }
     }
     return count < 15;
@@ -568,11 +584,9 @@ int Unk_Inventory::FUN_140a5d050(int category) {
     return count;
 }
 MS2_REPLACE_METHOD(0x140a5d050, Unk_Inventory, FUN_140a5d050, 140, 0x437B4833);
-// MS2-FUNCTIONAL: typed accessors and equivalent control flow produce different temporaries.
 // @0x140a5d0f0
-unsigned FUN_140a5d0f0() { return *FUN_1401d3200()->value6ee8.FUN_1401d7c10(); }
-MS2_REPLACE(0x140a5d0f0, FUN_140a5d0f0, 35, 0xEEBD98E0);
-// MS2-FUNCTIONAL: typed accessors and equivalent control flow produce different temporaries.
+unsigned __int64 Unk_Inventory::FUN_140a5d0f0() { return *FUN_1401d3200()->value6ee8.FUN_1401d7c10(); }
+MS2_REPLACE_METHOD(0x140a5d0f0, Unk_Inventory, FUN_140a5d0f0, 35, 0xEEBD98E0);
 // @0x140a5d120
 int Unk_Inventory::FUN_140a5d120(CItem* item) {
     int category = FUN_140a617f0(ItemPtr(item));
@@ -580,16 +594,17 @@ int Unk_Inventory::FUN_140a5d120(CItem* item) {
     if (Unk_LockGuard guard = lock) {} else {
         if (items.Lookup(item->FUN_140526a50()) != nullptr) return 17;
         int slot = item->FUN_140526b50();
-        if (slot == -1) {
-            slot = FUN_140a61190(category);
-            if (slot == -1) return 13;
-            item->FUN_140526b70(slot);
-        } else {
+        if (slot != -1) {
             int count = (int)slots[category].GetCount();
             if (slot < 0 || slot >= count) return 29;
             if (slots[category][slot].get() != nullptr) return 17;
+        } else {
+            int newSlot = FUN_140a61190(category);
+            if (newSlot == -1) return 13;
+            slot = newSlot;
+            item->FUN_140526b70(slot);
         }
-        items.SetAt(item->FUN_140526a50(), ItemPtr(item));
+        items.SetAt(item->FUN_140526a50(), item);
         slots[category][slot].AssignRaw(item);
     }
     return 0;
@@ -611,18 +626,16 @@ void Unk_Inventory::FUN_140a5d390(__int64 id) {
     }
 }
 MS2_REPLACE_METHOD(0x140a5d390, Unk_Inventory, FUN_140a5d390, 408, 0x3477AB4B);
-// MS2-FUNCTIONAL: typed accessors and equivalent control flow produce different temporaries.
 // @0x140a5d530
 void Unk_Inventory::FUN_140a5d530(CItem* item) {
-    if (item != nullptr) {
-        ItemPtr old = FUN_140a5d680(item->FUN_140526a50());
-        if (old.get() != nullptr) {
-            int slot = old->FUN_140526b50();
-            int category = FUN_140a617f0(old);
-            item->FUN_140526b70(slot);
-            items.SetAt(old->FUN_140526a50(), ItemPtr(item));
-            slots[category][slot].AssignRaw(item);
-        }
+    if (item == nullptr) return;
+    ItemPtr old = FUN_140a5d680(item->FUN_140526a50());
+    if (old.get() != nullptr) {
+        int slot = old->FUN_140526b50();
+        int category = FUN_140a617f0(old);
+        item->FUN_140526b70(slot);
+        items.SetAt(old->FUN_140526a50(), item);
+        slots[category][slot].AssignRaw(item);
     }
 }
 MS2_REPLACE_METHOD(0x140a5d530, Unk_Inventory, FUN_140a5d530, 324, 0x1F7F4993);
@@ -674,7 +687,6 @@ Unk_Inventory::ItemPtr Unk_Inventory::FUN_140a5d9a0(CStringW function, int ignor
     return ItemPtr(0);
 }
 MS2_REPLACE_METHOD(0x140a5d9a0, Unk_Inventory, FUN_140a5d9a0, 755, 0x333AFB3F);
-// MS2-FUNCTIONAL: equivalent typed metadata and STL access.
 // @0x140a5dca0
 Unk_Inventory::ItemPtr Unk_Inventory::FUN_140a5dca0(CStringW function, CStringW parameter) {
     if (function.IsEmpty()) return ItemPtr(0);
@@ -686,8 +698,7 @@ Unk_Inventory::ItemPtr Unk_Inventory::FUN_140a5dca0(CStringW function, CStringW 
             ItemPtr item = items.GetValueAt(pos);
             if (!item) continue;
             if (FUN_140527840(item.operator->())->function.name != function) continue;
-            CStringW value(FUN_140527840(item.operator->())->function.parameter.text);
-            if (value != parameter) continue;
+            if (((Unk_InvFunctionArgsView*)&FUN_140527840(item.operator->())->function.parameter)->FUN_1408d2330() != parameter) continue;
             if (player->FUN_141662eb0(item.get()) == 0) continue;
             found.push_back(item);
         }
@@ -717,7 +728,6 @@ Unk_Inventory::ItemPtr Unk_Inventory::FUN_140a5e040(int tag) {
     return ItemPtr(0);
 }
 MS2_REPLACE_METHOD(0x140a5e040, Unk_Inventory, FUN_140a5e040, 656, 0x8F0B4180);
-// MS2-FUNCTIONAL: early-return spelling and shared pointer return copy.
 // @0x140a5e2e0
 Unk_Inventory::ItemPtr Unk_Inventory::FUN_140a5e2e0(int itemId) {
     if (itemId == 0) return ItemPtr(0);
@@ -731,8 +741,7 @@ Unk_Inventory::ItemPtr Unk_Inventory::FUN_140a5e2e0(int itemId) {
         ItemArray& bag = slots[category];
         for (unsigned i = 0; i < bag.GetCount(); ++i) {
             ItemPtr item = bag[i];
-            if (item == nullptr) continue;
-            if (item->FUN_1405276c0() != itemId) continue;
+            if (item == nullptr || item->FUN_1405276c0() != itemId) continue;
             if (player->FUN_141662eb0(item.get()) == 0) continue;
             return item;
         }
@@ -740,7 +749,6 @@ Unk_Inventory::ItemPtr Unk_Inventory::FUN_140a5e2e0(int itemId) {
     return ItemPtr(0);
 }
 MS2_REPLACE_METHOD(0x140a5e2e0, Unk_Inventory, FUN_140a5e2e0, 721, 0xA7F7BFD5);
-// MS2-FUNCTIONAL: early-return spelling and shared pointer return copy.
 // @0x140a5e5c0
 Unk_Inventory::ItemPtr Unk_Inventory::FUN_140a5e5c0(int itemId, int rarity) {
     if (itemId == 0) return ItemPtr(0);
@@ -754,8 +762,7 @@ Unk_Inventory::ItemPtr Unk_Inventory::FUN_140a5e5c0(int itemId, int rarity) {
         ItemArray& bag = slots[category];
         for (unsigned i = 0; i < bag.GetCount(); ++i) {
             ItemPtr item = bag[i];
-            if (item == nullptr) continue;
-            if (item->FUN_1405276c0() != itemId) continue;
+            if (item == nullptr || item->FUN_1405276c0() != itemId) continue;
             if (item->FUN_140526bd0() != rarity) continue;
             if (player->FUN_141662eb0(item.get()) == 0) continue;
             return item;
@@ -764,7 +771,6 @@ Unk_Inventory::ItemPtr Unk_Inventory::FUN_140a5e5c0(int itemId, int rarity) {
     return ItemPtr(0);
 }
 MS2_REPLACE_METHOD(0x140a5e5c0, Unk_Inventory, FUN_140a5e5c0, 758, 0x01CCEAF4);
-// MS2-FUNCTIONAL: typed list access; preserve the original repeated bubble-sort passes.
 // @0x140a5e8d0
 int Unk_Inventory::FUN_140a5e8d0(int itemId, ATL::CAtlList<ItemPtr>& result, int order) {
     if (itemId == 0) return 0;
@@ -778,21 +784,24 @@ int Unk_Inventory::FUN_140a5e8d0(int itemId, ATL::CAtlList<ItemPtr>& result, int
             ItemPtr item = bag[i];
             if (item == nullptr || item->FUN_1405276c0() != itemId) continue;
             if (order == 2) result.AddTail(item);
-            else {
-                unsigned count = FUN_140526c50(item.operator->());
-                if (count < FUN_1405281e0(item.operator->())) result.AddTail(item);
-            }
+            else if ((unsigned)FUN_140526c50(item.operator->()) < FUN_1405281e0(item.operator->())) result.AddTail(item);
         }
     } }
     if (result.GetCount() > 1) {
         int count = (int)result.GetCount();
         int last = count - 1;
+        int first = 0;
+        int second = 0;
         for (int i = 0; i < count; ++i) {
             for (int j = 0; j < last; ++j) {
-                int first = FUN_140526c50(result.GetAt(result.FindIndex(j)).operator->());
-                int second = FUN_140526c50(result.GetAt(result.FindIndex(j + 1)).operator->());
-                if ((order == 2 && second < first) || (order == 1 && first < second))
-                    result.SwapElements(result.FindIndex(j), result.FindIndex(j + 1));
+                first = FUN_140526c50(result.GetAt(result.FindIndex(j)).operator->());
+                second = FUN_140526c50(result.GetAt(result.FindIndex(j + 1)).operator->());
+                if (order == 2) {
+                    if (first > second) result.SwapElements(result.FindIndex(j), result.FindIndex(j + 1));
+                }
+                else if (order == 1) {
+                    if (first < second) result.SwapElements(result.FindIndex(j), result.FindIndex(j + 1));
+                }
             }
         }
     }
@@ -801,19 +810,23 @@ int Unk_Inventory::FUN_140a5e8d0(int itemId, ATL::CAtlList<ItemPtr>& result, int
 MS2_REPLACE_METHOD(0x140a5e8d0, Unk_Inventory, FUN_140a5e8d0, 1024, 0xB1E2B228);
 // MS2-FUNCTIONAL: typed accessors and equivalent control flow produce different temporaries.
 // @0x140a5ece0
-bool Unk_Inventory::FUN_140a5ece0(int itemId, int count) { return count <= FUN_140a5f180(itemId, 0); }
+int Unk_Inventory::FUN_140a5ece0(int itemId, int count) {
+    int have = FUN_140a5f180(itemId, 0);
+    return have >= count;
+}
 MS2_REPLACE_METHOD(0x140a5ece0, Unk_Inventory, FUN_140a5ece0, 76, 0xC0C5259E);
-// MS2-FUNCTIONAL: typed accessors and equivalent control flow produce different temporaries.
 // @0x140a5ed40
-bool Unk_Inventory::FUN_140a5ed40(int itemId, int rarity, int count) { return count <= FUN_140a5f180(itemId, rarity); }
+int Unk_Inventory::FUN_140a5ed40(int itemId, int rarity, int count) {
+    int have = FUN_140a5f180(itemId, rarity);
+    return have >= count;
+}
 MS2_REPLACE_METHOD(0x140a5ed40, Unk_Inventory, FUN_140a5ed40, 83, 0x5CCABB8D);
-// MS2-FUNCTIONAL: typed filter and early-return spelling.
 // @0x140a5eda0
 int Unk_Inventory::FUN_140a5eda0(const int* filter) {
-    if (filter[0] == 0) return 0;
+    if (*filter == 0) return 0;
     Unk_InventoryPlayer* player = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (player == nullptr) return 0;
-    MS2Ptr<CItemData> data = FUN_14053f870(filter[0]);
+    MS2Ptr<CItemData> data = FUN_14053f870(*filter);
     if (data == nullptr) return 0;
     int category = FUN_14053fd90(data.operator->());
     if (category < 0 || category >= 15) return 0;
@@ -822,10 +835,12 @@ int Unk_Inventory::FUN_140a5eda0(const int* filter) {
         ItemArray& bag = slots[category];
         for (unsigned i = 0; i < bag.GetCount(); ++i) {
             ItemPtr item = bag[i];
-            if (item == nullptr || item->FUN_1405276c0() != filter[0]) continue;
-            if (filter[1] != 0 && item->FUN_140526bd0() != filter[1]) continue;
-            if (filter[2] != 0 && FUN_140528e20(item.operator->())) continue;
-            if (player->FUN_141662eb0(item.get()) != 0) count += FUN_140526c50(item.operator->());
+            if (item == nullptr) continue;
+            if (item->FUN_1405276c0() != *filter) continue;
+            if (*(filter + 1) != 0 && item->FUN_140526bd0() != *(filter + 1)) continue;
+            if (*(filter + 2) != 0 && FUN_140528e20(item.operator->())) continue;
+            if (player->FUN_141662eb0(item.get()) == 0) continue;
+            count += FUN_140526c50(item.operator->());
         }
     }
     return count;
@@ -869,7 +884,6 @@ int Unk_Inventory::FUN_140a5f180(int itemId, int rarity) {
     return count;
 }
 MS2_REPLACE_METHOD(0x140a5f180, Unk_Inventory, FUN_140a5f180, 640, 0xA56DD464);
-// MS2-FUNCTIONAL: preserve the original reference-item checks and reference quantity.
 // @0x140a5f410
 int Unk_Inventory::FUN_140a5f410(ItemPtr reference) {
     if (reference == nullptr) return 0;
@@ -887,11 +901,10 @@ int Unk_Inventory::FUN_140a5f410(ItemPtr reference) {
             ItemPtr item = bag[i];
             if (item == nullptr) continue;
             if (item->FUN_1405276c0() != itemId) continue;
-            int rarity = item->FUN_140526bd0();
-            if (rarity != reference->FUN_140526bd0()) continue;
+            if (item->FUN_140526bd0() != reference->FUN_140526bd0()) continue;
             if (player->FUN_141662eb0(reference.get()) == 0) continue;
-            int property = FUN_140529640(item.operator->());
-            if (property == FUN_140529640(reference.operator->())) count += reference->vfunc_4();
+            if (FUN_140529640(item.operator->()) != FUN_140529640(reference.operator->())) continue;
+            count += reference->vfunc_4();
         }
     }
     return count;
@@ -919,20 +932,20 @@ int Unk_Inventory::FUN_140a5f7b0(int tag, int rarity) {
     return count;
 }
 MS2_REPLACE_METHOD(0x140a5f7b0, Unk_Inventory, FUN_140a5f7b0, 460, 0x8916FA33);
-// MS2-FUNCTIONAL: equivalent typed metadata and array access.
 // @0x140a5f990
 int Unk_Inventory::FUN_140a5f990(CStringW function) {
     int count = 0;
-    if (function.IsEmpty()) return 0;
+    if (function.IsEmpty()) return count;
     Unk_InventoryPlayer* player = FUN_1403ed2d0()->FUN_141bd0cc0();
-    if (player == nullptr) return 0;
+    if (player == nullptr) return count;
     if (Unk_LockGuard guard = lock) {} else {
         for (int category = 0; category < 15; ++category) {
             for (unsigned i = 0; i < slots[category].GetCount(); ++i) {
                 ItemPtr item = slots[category][i];
                 if (item == nullptr) continue;
                 if (FUN_140527840(item.operator->())->function.name != function) continue;
-                if (player->FUN_141662eb0(item.get()) != 0) count += FUN_140526c50(item.operator->());
+                if (player->FUN_141662eb0(item.get()) == 0) continue;
+                count += FUN_140526c50(item.operator->());
             }
         }
     }
@@ -959,7 +972,8 @@ int Unk_Inventory::FUN_140a5fbd0(int skill, int includeEquipment) {
                     if (FUN_14053cc80(FUN_140527840(item.operator->()))) continue;
                 }
                 if (FUN_140526100(item.operator->()) != 0) continue;
-                if (player->FUN_141662eb0(item.get()) != 0) count += FUN_140526c50(item.operator->());
+                if (player->FUN_141662eb0(item.get()) == 0) continue;
+                count += FUN_140526c50(item.operator->());
             }
         }
     }
@@ -970,7 +984,8 @@ MS2_REPLACE_METHOD(0x140a5fbd0, Unk_Inventory, FUN_140a5fbd0, 653, 0x115EDCE8);
 // MS2-FUNCTIONAL: preserve redundant accessor calls and signed capacity subtraction.
 // @0x140a5fe70
 int Unk_Inventory::FUN_140a5fe70(int category, ItemPtr reference) {
-    if (reference == nullptr || category < 0 || category >= 15) return 0;
+    if (reference == nullptr) return 0;
+    if (category < 0 || category >= 15) return 0;
     MS2Ptr<CItemData> data = FUN_14053f870(reference->FUN_1405276c0());
     if (!data || data->property.slotMax == 1) return 0;
     int capacity = 0;
@@ -978,20 +993,15 @@ int Unk_Inventory::FUN_140a5fe70(int category, ItemPtr reference) {
         ItemArray& bag = slots[category];
         for (unsigned i = 0; i < bag.GetCount(); ++i) {
             ItemPtr item = bag[i];
-            if (item == nullptr) continue;
-            int id = item->FUN_1405276c0();
-            if (id != reference->FUN_1405276c0()) continue;
+            if (item == nullptr || item->FUN_1405276c0() != reference->FUN_1405276c0()) continue;
             if (FUN_140525f10(reference.operator->()) != 0) {
                 if (FUN_140525f10(item.operator->()) == 0) continue;
                 Unk_InventoryStackIdentity* first = FUN_1405278d0(reference.operator->());
                 Unk_InventoryStackIdentity* second = FUN_1405278d0(item.operator->());
                 if (first != nullptr && second != nullptr && first->owner != second->owner) continue;
+                capacity += FUN_1405281e0(item.operator->()) - FUN_140526c50(item.operator->()) < 0 ? 0 : FUN_1405281e0(item.operator->()) - FUN_140526c50(item.operator->());
             }
-            FUN_1405281e0(item.operator->());
-            FUN_140526c50(item.operator->());
-            int limit = FUN_1405281e0(item.operator->());
-            int count = FUN_140526c50(item.operator->());
-            capacity += limit - count;
+            else capacity += FUN_1405281e0(item.operator->()) - FUN_140526c50(item.operator->()) < 0 ? 0 : FUN_1405281e0(item.operator->()) - FUN_140526c50(item.operator->());
         }
     }
     return capacity;
@@ -1155,13 +1165,16 @@ int Unk_Inventory::FUN_140a61190(int category) {
     return -1;
 }
 MS2_REPLACE_METHOD(0x140a61190, Unk_Inventory, FUN_140a61190, 280, 0xC58578CC);
-// MS2-FUNCTIONAL: equivalent early-return spelling.
 // @0x140a612b0
 int Unk_Inventory::FUN_140a612b0(int category, ItemPtr item, int quantity) {
     if (item == nullptr) return 0;
     if (category == -1) category = FUN_140a617f0(item);
-    if (item.get() != nullptr && FUN_1405281e0(item.operator->()) > 1) {
-        if (quantity <= FUN_140a5fe70(category, item)) return 0;
+    bool bHasItem;
+    if (item.get() != nullptr) bHasItem = true;
+    else bHasItem = false;
+    if (bHasItem && FUN_1405281e0(item.operator->()) > 1) {
+        int nFree = FUN_140a5fe70(category, item);
+        if (nFree >= quantity) return 0;
     }
     return FUN_140a61190(category);
 }
@@ -1213,11 +1226,14 @@ int Unk_Inventory::FUN_140a617f0(ItemPtr item) {
     return FUN_140a61870(MS2Ptr<CItemData>(FUN_140527840(item.operator->())));
 }
 MS2_REPLACE_METHOD(0x140a617f0, Unk_Inventory, FUN_140a617f0, 107, 0xFDCE65E4);
-// MS2-FUNCTIONAL: typed accessors and equivalent control flow produce different temporaries.
 // @0x140a61870
 int Unk_Inventory::FUN_140a61870(MS2Ptr<CItemData> data) {
-    if (data.get() == nullptr) return 7;
-    return FUN_14053fd90(data.operator->());
+    int type;
+    if (data.get() != nullptr)
+        type = FUN_14053fd90(data.operator->());
+    else
+        type = 7;
+    return type;
 }
 
 // MS2-FUNCTIONAL: equivalent adjacent-item comparison loop.
@@ -1225,12 +1241,14 @@ int Unk_Inventory::FUN_140a61870(MS2Ptr<CItemData> data) {
 int Unk_Inventory::FUN_140a618e0(int category) {
     if (category < 0 || category >= 15) return 0;
     ItemPtr first(0), second(0);
+    int compare = 0;
     if (Unk_LockGuard guard = lock) {} else {
         if (FUN_140a61b40(category) != 0) return 1;
         for (unsigned i = 1; i < slots[category].GetCount(); ++i) {
             first = slots[category][i - 1];
             second = slots[category][i];
-            if (FUN_14052a7e0(first, second) == 1) return 1;
+            compare = FUN_14052a7e0(first, second);
+            if (compare == 1) return 1;
         }
     }
     return 0;
@@ -1242,19 +1260,19 @@ int Unk_Inventory::FUN_140a61b40(int category) {
     if (category < 0 || category >= 15) return 0;
     ItemPtr item(0);
     MS2Ptr<CItemData> data(0);
+    unsigned limit = 0;
     ATL::CAtlMap<int, unsigned> seen;
     for (unsigned i = 0; i < slots[category].GetCount(); ++i) {
         item = slots[category][i];
         if (item == nullptr) continue;
         data.AssignRaw(FUN_140527840(item.operator->()));
         if (data == nullptr) continue;
-        if (FUN_14053c7c0(data.operator->())) {
-            unsigned limit = data->property.slotMax;
-            if ((unsigned)FUN_140526c50(item.operator->()) < limit) {
-                unsigned previous;
-                if (seen.Lookup(item->FUN_1405276c0(), previous)) return 1;
-                seen.SetAt(item->FUN_1405276c0(), i);
-            }
+        if (!FUN_14053c7c0(data.operator->())) continue;
+        limit = data->property.slotMax;
+        if ((unsigned)FUN_140526c50(item.operator->()) < limit) {
+            unsigned previous;
+            if (seen.Lookup(item->FUN_1405276c0(), previous)) return 1;
+            else seen.SetAt(item->FUN_1405276c0(), i);
         }
     }
     return 0;
@@ -1296,7 +1314,6 @@ int Unk_Inventory::FUN_140a621c0(__int64 id, int slot, int mode) {
     return FUN_140a62270(item.get(), slot, mode, 0);
 }
 MS2_REPLACE_METHOD(0x140a621c0, Unk_Inventory, FUN_140a621c0, 161, 0x7EC969E0);
-// MS2-FUNCTIONAL: typed binding prompt and packet payload; equivalent early returns.
 // @0x140a62270
 int Unk_Inventory::FUN_140a62270(CItem* item, int slot, int mode, int skipBinding) {
     if (FUN_1409331e0()->FUN_14138c900(4) != 0) { FUN_141275260(2185, 1, 1); return 0; }
@@ -1362,16 +1379,14 @@ int Unk_Inventory::FUN_140a62920(__int64 id) {
     return 1;
 }
 MS2_REPLACE_METHOD(0x140a62920, Unk_Inventory, FUN_140a62920, 908, 0x22CFDA56);
-// MS2-FUNCTIONAL: typed accessors and equivalent control flow produce different temporaries.
 // @0x140a62cc0
-void Unk_Inventory::SendRequestItemInventory(unsigned char category) {
+void Unk_Inventory::SendRequestItemInventory(int category) {
     COutPacket packet(static_cast<int>(SendOp::RequestItemInventory), 0);
     packet.Encode1(9);
     packet.Encode1(category);
     FUN_140710590(packet);
 }
 MS2_REPLACE_METHOD(0x140a62cc0, Unk_Inventory, SendRequestItemInventory, 94, 0x4BFCB7B4);
-// MS2-FUNCTIONAL: typed skill request and owned skill pointer; equivalent early returns.
 // @0x140a62d30
 unsigned Unk_Inventory::FUN_140a62d30(int skill) {
     Unk_InventoryPlayer* player = FUN_1403ed2d0()->FUN_141bd0cc0();
@@ -1379,17 +1394,19 @@ unsigned Unk_Inventory::FUN_140a62d30(int skill) {
     ItemPtr item = FUN_140a5d760(skill, 0);
     if (item.IsNull()) return 0;
     if (FUN_1409331e0()->FUN_14138c900(8)) { FUN_141275260(2184, 1, 1); return 0; }
-    if (!FUN_14053d270(FUN_140527840(item.operator->())) &&
-        !FUN_14053cb40(FUN_140527840(item.operator->())) &&
-        !FUN_14053cc80(FUN_140527840(item.operator->()))) return 0;
-    MS2Ptr<Unk_InventorySkillLevel> data = FUN_1401958b0()->FUN_1407ee2f0(skill, 1);
-    if (data == 0) return 0;
-    Unk_InventorySkillRequest request(skill, 1);
-    request.remap = FUN_140804450(data.operator->());
-    request.item = item->FUN_140526a50();
-    MS2Ptr<CSkillRecord> record = player->FUN_141523bc0()->FUN_141765570(request);
-    if (record == 0) return 0;
-    return player->vfunc_102(record);
+    if (FUN_14053d270(FUN_140527840(item.operator->())) ||
+        FUN_14053cb40(FUN_140527840(item.operator->())) ||
+        FUN_14053cc80(FUN_140527840(item.operator->()))) {
+        MS2Ptr<Unk_InventorySkillLevel> data = FUN_1401958b0()->FUN_1407ee2f0(skill, 1);
+        if (data == 0) return 0;
+        Unk_InventorySkillRequest request(skill, 1);
+        request.remap = FUN_140804450(data.operator->());
+        request.item = item->FUN_140526a50();
+        MS2Ptr<CSkillRecord> record = player->FUN_141523bc0()->FUN_141765570(request);
+        if (record == 0) return 0;
+        return player->vfunc_102(record);
+    }
+    return 0;
 }
 MS2_REPLACE_METHOD(0x140a62d30, Unk_Inventory, FUN_140a62d30, 702, 0xBAB5FC29);
 // MS2-FUNCTIONAL: typed skill request and owned skill pointer; equivalent early returns.
@@ -1402,17 +1419,18 @@ unsigned Unk_Inventory::FUN_140a63000(int itemId) {
     ItemPtr item = FUN_140a5e2e0(itemId);
     if (item == 0) return 0;
     if (FUN_1409331e0()->FUN_14138c900(8)) { FUN_141275260(2184, 1, 1); return 0; }
-    if (!FUN_14053d270(FUN_140527840(item.operator->()))) return 0;
-    int skill = FUN_14053dc20(metadata.operator->());
-    MS2Ptr<Unk_InventorySkillLevel> data = FUN_1401958b0()->FUN_1407ee2f0(skill, 1);
-    if (data == 0) return 0;
-    Unk_InventorySkillRequest request(FUN_14053dc20(metadata.operator->()), 1);
-    request.remap = FUN_140804450(data.operator->());
-    request.itemUse = true;
-    request.item = item->FUN_140526a50();
-    MS2Ptr<CSkillRecord> record = player->FUN_141523bc0()->FUN_141765570(request);
-    if (record == 0) return 0;
-    return player->vfunc_102(record);
+    if (FUN_14053d270(FUN_140527840(item.operator->()))) {
+        MS2Ptr<Unk_InventorySkillLevel> data = FUN_1401958b0()->FUN_1407ee2f0(FUN_14053dc20(metadata.operator->()), 1);
+        if (data == 0) return 0;
+        Unk_InventorySkillRequest request(FUN_14053dc20(metadata.operator->()), 1);
+        request.remap = FUN_140804450(data.operator->());
+        request.itemUse = true;
+        request.item = item->FUN_140526a50();
+        MS2Ptr<CSkillRecord> record = player->FUN_141523bc0()->FUN_141765570(request);
+        if (record == 0) return 0;
+        return player->vfunc_102(record);
+    }
+    return 0;
 }
 MS2_REPLACE_METHOD(0x140a63000, Unk_Inventory, FUN_140a63000, 857, 0x12C5EF21);
 // MS2-FUNCTIONAL: typed skill request and owned skill pointer; equivalent early returns.
@@ -1423,16 +1441,18 @@ unsigned Unk_Inventory::FUN_140a63360(int skill) {
     ItemPtr item = FUN_140a5d760(skill, 0);
     if (item == 0) return 0;
     if (FUN_1409331e0()->FUN_14138c900(8)) { FUN_141275260(2184, 1, 1); return 0; }
-    if (!FUN_14053d270(FUN_140527840(item.operator->()))) return 0;
-    MS2Ptr<Unk_InventorySkillLevel> data = FUN_1401958b0()->FUN_1407ee2f0(skill, 1);
-    if (data == 0) return 0;
-    Unk_InventorySkillRequest request(skill, 1);
-    request.remap = FUN_140804450(data.operator->());
-    request.item = item->FUN_140526a50();
-    request.itemUse = true;
-    MS2Ptr<CSkillRecord> record = player->FUN_141523bc0()->FUN_141765570(request);
-    if (record == 0) return 0;
-    return player->vfunc_102(record);
+    if (FUN_14053d270(FUN_140527840(item.operator->()))) {
+        MS2Ptr<Unk_InventorySkillLevel> data = FUN_1401958b0()->FUN_1407ee2f0(skill, 1);
+        if (data == 0) return 0;
+        Unk_InventorySkillRequest request(skill, 1);
+        request.remap = FUN_140804450(data.operator->());
+        request.item = item->FUN_140526a50();
+        request.itemUse = true;
+        MS2Ptr<CSkillRecord> record = player->FUN_141523bc0()->FUN_141765570(request);
+        if (record == 0) return 0;
+        return player->vfunc_102(record);
+    }
+    return 0;
 }
 MS2_REPLACE_METHOD(0x140a63360, Unk_Inventory, FUN_140a63360, 646, 0xC31C5C98);
 // MS2-FUNCTIONAL: preserve initial lookup before player skill/level adjustment and owned call arguments.
@@ -1442,20 +1462,22 @@ unsigned Unk_Inventory::FUN_140a635f0(CItem* item) {
     Unk_InventoryPlayer* player = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (!player) return 0;
     if (FUN_1409331e0()->FUN_14138c900(8)) { FUN_141275260(2184, 1, 1); return 0; }
-    if (!FUN_14053d270(FUN_140527840(item)) && !FUN_14053cb40(FUN_140527840(item)) &&
-        !FUN_14053cc80(FUN_140527840(item))) return 0;
-    int skill = FUN_141769320(MS2Ptr<CItemData>(FUN_140527840(item)));
-    unsigned short level = 1;
-    MS2Ptr<Unk_InventorySkillLevel> data = FUN_1401958b0()->FUN_1407ee2f0(skill, level);
-    if (data == 0) return 0;
-    player->FUN_141526c80(&skill, &level);
-    Unk_InventorySkillRequest request(skill, 1);
-    request.level = level;
-    request.remap = FUN_140804450(data.operator->());
-    request.item = item->FUN_140526a50();
-    MS2Ptr<CSkillRecord> record = player->FUN_141523bc0()->FUN_141765570(request);
-    if (record == 0) return 0;
-    return player->vfunc_102(record);
+    if (FUN_14053d270(FUN_140527840(item)) || FUN_14053cb40(FUN_140527840(item)) ||
+        FUN_14053cc80(FUN_140527840(item))) {
+        int skill = FUN_141769320(MS2Ptr<CItemData>(FUN_140527840(item)));
+        unsigned short level = 1;
+        MS2Ptr<Unk_InventorySkillLevel> data = FUN_1401958b0()->FUN_1407ee2f0(skill, level);
+        if (data == 0) return 0;
+        player->FUN_141526c80(&skill, &level);
+        Unk_InventorySkillRequest request(skill, 1);
+        request.level = level;
+        request.remap = FUN_140804450(data.operator->());
+        request.item = item->FUN_140526a50();
+        MS2Ptr<CSkillRecord> record = player->FUN_141523bc0()->FUN_141765570(request);
+        if (record == 0) return 0;
+        return player->vfunc_102(record);
+    }
+    return 0;
 }
 MS2_REPLACE_METHOD(0x140a635f0, Unk_Inventory, FUN_140a635f0, 650, 0x3575D5E0);
 // @0x140a63880
@@ -1473,7 +1495,6 @@ int Unk_Inventory::FUN_140a63900(CItem* item, int mode) {
     return FUN_140a63950(item, FUN_140527a20(item), mode);
 }
 MS2_REPLACE_METHOD(0x140a63900, Unk_Inventory, FUN_140a63900, 69, 0xD5A0FEBB);
-// MS2-FUNCTIONAL: typed accessors; the repeated per-slot equip checks are shared helpers.
 // Check of an equipped slot against the item being worn (mask/type from the item data); false blocks the change.
 static bool Unk_InventorySlotAllows(const MS2Ptr<Unk_InventoryEquipment>& slot, int mask, int type) {
     if (slot.get() == nullptr) return true;
@@ -1584,7 +1605,7 @@ int Unk_Inventory::FUN_140a655b0(CItem* item) {
     if (player->FUN_14166ce30() != 0) { FUN_140d73bc0(66, 0, nullptr, L""); return 0; }
     if (FUN_140a61430(FUN_140a617f0(ItemPtr(item))) == 0) {
         FUN_141275260(67, 1, 1);
-        FUN_141276180(DAT_143ab78e8, CString(""));
+        FUN_141276180(DAT_143ab78e8, "");
         return 0;
     }
     return 1;
@@ -1602,11 +1623,11 @@ int Unk_Inventory::FUN_140a65770(CItem* item) {
     return 0;
 }
 MS2_REPLACE_METHOD(0x140a65770, Unk_Inventory, FUN_140a65770, 220, 0x8761E71D);
-// MS2-FUNCTIONAL: equivalent validation with typed player virtual and early returns.
 // @0x140a65860
 int Unk_Inventory::FUN_140a65860(MS2Ptr<CItemData> data, int) {
     Unk_InventoryPlayer* player = FUN_1403ed2d0()->FUN_141bd0cc0();
-    if (player == nullptr || data == nullptr) return 11;
+    if (player == nullptr) return 11;
+    if (data == nullptr) return 11;
     if (FUN_14053ce20(data.operator->()) && player->FUN_141658f30() == 0) return 6;
     if (FUN_14053c940(data.operator->(), player->FUN_141658e60()) == 0) return 2;
     if (FUN_14053c8e0(data.operator->(), player->FUN_141654700()) == 0) return 3;
@@ -1614,31 +1635,27 @@ int Unk_Inventory::FUN_140a65860(MS2Ptr<CItemData> data, int) {
     if (FUN_14053d1f0(data.operator->()) && player->FUN_141662de0() == 0) return 7;
     if (FUN_14053d210(data.operator->()) && !FUN_1409eed90()->FUN_141b89990()) return 7;
     if (FUN_14053ce40(data.operator->())) {
-        unsigned short level = FUN_14053dc40(data.operator->());
-        int skill = FUN_14053dc20(data.operator->());
-        if (player->FUN_141523bc0()->FUN_141768fb0(skill, level) != 0) return 9;
+        if (player->FUN_141523bc0()->FUN_141768fb0(FUN_14053dc20(data.operator->()), FUN_14053dc40(data.operator->())) != 0) return 9;
     }
     return 0;
 }
 // MS2-FUNCTIONAL: typed accessors and equivalent control flow produce different temporaries.
 // @0x140a65b70
-int FUN_140a65b70() {
+int Unk_Inventory::FUN_140a65b70() {
     Unk_InventoryDialog* dialog = FUN_1405344f0(20013);
-    if (dialog == nullptr) return -1;
-    return dialog->FUN_141999de0();
+    if (dialog != nullptr)
+        return dialog->FUN_141999de0();
+    return -1;
 }
-MS2_REPLACE(0x140a65b70, FUN_140a65b70, 54, 0x9D821E3C);
-// MS2-FUNCTIONAL: equivalent error paths and packet arguments.
+MS2_REPLACE_METHOD(0x140a65b70, Unk_Inventory, FUN_140a65b70, 54, 0x9D821E3C);
 // @0x140a65bb0
 int Unk_Inventory::SendEmotion(CItem* item) {
     Unk_InventoryPlayer* player = FUN_1403ed2d0()->FUN_141bd0cc0();
-    if (player == nullptr || item == nullptr || FUN_140527840(item) == nullptr) {
-        FUN_140d73bc0(2135, 0, nullptr, L""); return 0;
-    }
+    if (player == nullptr) { FUN_140d73bc0(2135, 0, nullptr, L""); return 0; }
+    if (item == nullptr) { FUN_140d73bc0(2135, 0, nullptr, L""); return 0; }
+    if (FUN_140527840(item) == nullptr) { FUN_140d73bc0(2135, 0, nullptr, L""); return 0; }
     if (FUN_14053c5c0(FUN_140527840(item)) != 24) { FUN_140d73bc0(2135, 0, nullptr, L""); return 0; }
-    unsigned short level = FUN_14053dc40(FUN_140527840(item));
-    int skill = FUN_14053dc20(FUN_140527840(item));
-    if (player->FUN_141523bc0()->FUN_141768fb0(skill, level) != 0) { FUN_140d73bc0(2136, 0, nullptr, L""); return 0; }
+    if (player->FUN_141523bc0()->FUN_141768fb0(FUN_14053dc20(FUN_140527840(item)), FUN_14053dc40(FUN_140527840(item))) != 0) { FUN_140d73bc0(2136, 0, nullptr, L""); return 0; }
     COutPacket packet(static_cast<int>(SendOp::Emote), 0);
     packet.Encode1(1);
     packet.Encode8(item->FUN_140526a50());
@@ -1646,26 +1663,27 @@ int Unk_Inventory::SendEmotion(CItem* item) {
     return 1;
 }
 MS2_REPLACE_METHOD(0x140a65bb0, Unk_Inventory, SendEmotion, 628, 0x3B4AB7C0);
-// MS2-FUNCTIONAL: equivalent error dispatch using constant string statics.
 // @0x140a65e30
 int Unk_Inventory::FUN_140a65e30(CItem* item) {
     int error = FUN_140a65770(item);
-    if (error == 1) {
-        FUN_141276180(s_warningLevel, CString("")); FUN_140d73bc0(224, 0, nullptr, L""); return 1;
+    if (error != 0) {
+        if (error == 1) {
+            FUN_141276180(s_warningLevel, ""); FUN_140d73bc0(224, 0, nullptr, L""); return 1;
+        }
+        else if (error == 2) {
+            FUN_141276180(s_warningGender, ""); FUN_140d73bc0(45, 0, nullptr, L""); return 1;
+        }
+        else if (error == 3) {
+            FUN_141276180(s_warningClass, "");
+            if (FUN_14053cbc0(FUN_140527840(item))) FUN_140d73bc0(232, 0, nullptr, L"");
+            else FUN_140d73bc0(233, 0, nullptr, L"");
+            return 1;
+        }
+        else if (error == 5) { FUN_140d73bc0(225, 0, nullptr, L""); return 1; }
+        else if (error == 6) { FUN_140d73bc0(226, 0, nullptr, L""); return 1; }
+        else if (error == 7) { FUN_140d73aa0(GetStringCommonByKey(L"s_item_err_puton_vip"), 0, nullptr, L""); return 1; }
+        else if (error == 10) return 1;
     }
-    if (error == 2) {
-        FUN_141276180(s_warningGender, CString("")); FUN_140d73bc0(45, 0, nullptr, L""); return 1;
-    }
-    if (error == 3) {
-        FUN_141276180(s_warningClass, CString(""));
-        if (FUN_14053cbc0(FUN_140527840(item))) FUN_140d73bc0(232, 0, nullptr, L"");
-        else FUN_140d73bc0(233, 0, nullptr, L"");
-        return 1;
-    }
-    if (error == 5) { FUN_140d73bc0(225, 0, nullptr, L""); return 1; }
-    if (error == 6) { FUN_140d73bc0(226, 0, nullptr, L""); return 1; }
-    if (error == 7) { FUN_140d73aa0(GetStringCommonByKey(L"s_item_err_puton_vip"), 0, nullptr, L""); return 1; }
-    if (error == 10) return 1;
     return 0;
 }
 MS2_REPLACE_METHOD(0x140a65e30, Unk_Inventory, FUN_140a65e30, 896, 0x74FFD74C);
@@ -1680,7 +1698,8 @@ MS2_REPLACE_METHOD(0x140a661e0, Unk_Inventory, FUN_140a661e0, 16, 0x32804D89);
 int Unk_Inventory::FUN_140a66200(CItem* item, int* reason, CStringW& name) {
     *reason = 1;
     Unk_InventoryPlayer* player = FUN_1403ed2d0()->FUN_141bd0cc0();
-    if (player == nullptr || player->FUN_14166ce30() != 0) return 0;
+    if (player == nullptr) return 0;
+    if (player->FUN_14166ce30() != 0) return 0;
     Unk_InventoryBinding* binding = FUN_140527930(item);
     if (binding == nullptr) return 0;
     CStringW unused;
@@ -1692,16 +1711,15 @@ int Unk_Inventory::FUN_140a66200(CItem* item, int* reason, CStringW& name) {
     bool enchanted = FUN_1405279c0(item)->FUN_1406210e0();
     if (allowed && enchanted) { *reason = 2; return 0; }
     if (allowed) return 1;
-    __int64 owner = output.characterId;
-    if (owner != 0) {
-        Unk_InventoryCharacterIterator end = DAT_143ab2a30.FUN_140341f40();
-        Unk_InventoryCharacterIterator found = DAT_143ab2a30.FUN_1404c0270(owner);
-        if (!FUN_1403344a0(found, end)) {
-            if (output.kind == 1) *reason = 4;
-            else if (output.kind == 2) *reason = 5;
+    unsigned __int64 owner = output.characterId;
+    if (owner > 0) {
+        int kind = output.kind;
+        if (FUN_1403344a0(DAT_143ab2a30.FUN_1404c0270(owner), DAT_143ab2a30.FUN_140341f40())) {
+            if (kind == 1) *reason = 3;
+            else if (kind == 2) *reason = 2;
         } else {
-            if (output.kind == 1) *reason = 3;
-            else if (output.kind == 2) *reason = 2;
+            if (kind == 1) *reason = 4;
+            else if (kind == 2) *reason = 5;
         }
     }
     return 0;
@@ -1711,33 +1729,61 @@ int Unk_Inventory::FUN_140a66200(CItem* item, int* reason, CStringW& name) {
 // MS2-FUNCTIONAL: indexed typed setting selection replaces the duplicated switch body.
 // @0x140a66510
 int FUN_140a66510(int category) {
+    if (!FUN_140166410()->FUN_14036d570(116)) return 48;
     int count = 48;
-    if (FUN_140166410()->FUN_14036d570(116)) {
-        Unk_InventoryArraySetting* setting = nullptr;
-        static const int indices[] = {0,1,2,3,5,6,7,11,4,8,10,12,13,14,15};
-        if (category >= 0 && category < 15) setting = &FUN_1401d3200()->bagLimits[indices[category]];
-        else MS2_ASSERT_AT(2333, 0);
-        if (setting != nullptr) {
-            const std::vector<int>& values = setting->FUN_140a6aa40();
-            if (values.size() != 0) count = values[0];
-        }
+    Unk_InventoryArraySetting* setting = nullptr;
+    switch (category) {
+    case 0: setting = &FUN_1401d3200()->bagLimit0; break;
+    case 1: setting = &FUN_1401d3200()->bagLimit1; break;
+    case 2: setting = &FUN_1401d3200()->bagLimit2; break;
+    case 3: setting = &FUN_1401d3200()->bagLimit3; break;
+    case 4: setting = &FUN_1401d3200()->bagLimit5; break;
+    case 5: setting = &FUN_1401d3200()->bagLimit6; break;
+    case 6: setting = &FUN_1401d3200()->bagLimit7; break;
+    case 7: setting = &FUN_1401d3200()->bagLimit11; break;
+    case 8: setting = &FUN_1401d3200()->bagLimit4; break;
+    case 9: setting = &FUN_1401d3200()->bagLimit8; break;
+    case 10: setting = &FUN_1401d3200()->bagLimit10; break;
+    case 11: setting = &FUN_1401d3200()->bagLimit12; break;
+    case 12: setting = &FUN_1401d3200()->bagLimit13; break;
+    case 13: setting = &FUN_1401d3200()->bagLimit14; break;
+    case 14: setting = &FUN_1401d3200()->bagLimit15; break;
+    default: MS2_ASSERT_AT(2333, 0);
+    }
+    if (setting != nullptr) {
+        const std::vector<int>& values = setting->FUN_140a6aa40();
+        if (values.size() > 0) count = values[0];
     }
     return count;
 }
 MS2_REPLACE(0x140a66510, FUN_140a66510, 499, 0x76FF035D);
 // MS2-FUNCTIONAL: indexed typed setting selection replaces the duplicated switch body.
 // @0x140a66750
-int FUN_140a66750(unsigned category) {
+int FUN_140a66750(int category) {
+    if (!FUN_140166410()->FUN_14036d570(116)) return 48;
     int count = 48;
-    if (FUN_140166410()->FUN_14036d570(116)) {
-        Unk_InventoryArraySetting* setting = nullptr;
-        static const int indices[] = {0,1,2,3,5,6,7,11,4,8,10,12,13,14,15};
-        if (category < 15) setting = &FUN_1401d3200()->bagLimits[indices[category]];
-        else MS2_ASSERT_AT(2406, 0);
-        if (setting != nullptr) {
-            const std::vector<int>& values = setting->FUN_140a6aa40();
-            if (values.size() > 1) count = values[1];
-        }
+    Unk_InventoryArraySetting* setting = nullptr;
+    switch (category) {
+    case 0: setting = &FUN_1401d3200()->bagLimit0; break;
+    case 1: setting = &FUN_1401d3200()->bagLimit1; break;
+    case 2: setting = &FUN_1401d3200()->bagLimit2; break;
+    case 3: setting = &FUN_1401d3200()->bagLimit3; break;
+    case 4: setting = &FUN_1401d3200()->bagLimit5; break;
+    case 5: setting = &FUN_1401d3200()->bagLimit6; break;
+    case 6: setting = &FUN_1401d3200()->bagLimit7; break;
+    case 7: setting = &FUN_1401d3200()->bagLimit11; break;
+    case 8: setting = &FUN_1401d3200()->bagLimit4; break;
+    case 9: setting = &FUN_1401d3200()->bagLimit8; break;
+    case 10: setting = &FUN_1401d3200()->bagLimit10; break;
+    case 11: setting = &FUN_1401d3200()->bagLimit12; break;
+    case 12: setting = &FUN_1401d3200()->bagLimit13; break;
+    case 13: setting = &FUN_1401d3200()->bagLimit14; break;
+    case 14: setting = &FUN_1401d3200()->bagLimit15; break;
+    default: MS2_ASSERT_AT(2406, 0);
+    }
+    if (setting != nullptr) {
+        const std::vector<int>& values = setting->FUN_140a6aa40();
+        if (values.size() > 1) count = values[1];
     }
     return count;
 }
@@ -1772,28 +1818,29 @@ void Unk_Inventory::FUN_140a66c00() {
     }
 }
 MS2_REPLACE_METHOD(0x140a66c00, Unk_Inventory, FUN_140a66c00, 154, 0x80D2AB72);
-// MS2-FUNCTIONAL: typed map and equipment-pointer access.
 // @0x140a66ca0
 void Unk_Inventory::FUN_140a66ca0(ATL::CAtlMap<Unk_InventoryEquipSlot, ItemPtr>& result, unsigned short level) {
     Unk_InventoryPlayer* player = FUN_1403ed2d0()->FUN_141bd0cc0();
-    if (player != nullptr) {
-        ItemArray candidates;
-        FUN_140a60880(0, candidates);
-        for (size_t i = 0; i < candidates.GetCount(); ++i) {
-            ItemPtr item = candidates[i];
-            if (item.get() == nullptr) continue;
+    if (player == nullptr) return;
+    ItemArray candidates;
+    FUN_140a60880(0, candidates);
+    for (size_t i = 0; i < candidates.GetCount(); ++i) {
+        ItemPtr item = candidates[i];
+        if (item.get() != nullptr) {
             if (FUN_140a67390(item->FUN_140526a50())) continue;
             Unk_InventoryEquipSlot slot = (Unk_InventoryEquipSlot)FUN_140527a20(item.operator->());
             int mode = FUN_14052a170(item.operator->());
-            if (mode != 0) continue;
-            if (!(player->FUN_141655e80(slot, 0) == nullptr)) continue;
-            if (level != 0 && (unsigned)level != FUN_1405282d0(item.operator->())) continue;
-            ItemPtr old;
-            result.Lookup(slot, old);
-            if (old.get() == nullptr) result.SetAt(slot, item);
-            else {
-                int score = FUN_140529070(old.operator->());
-                if (score < FUN_140529070(item.operator->())) result.SetAt(slot, item);
+            if (mode == 0) {
+                if (player->FUN_141655e80(slot, mode) == nullptr) {
+                    if (level == 0 || (unsigned)level == FUN_1405282d0(item.operator->())) {
+                        ItemPtr old;
+                        result.Lookup(slot, old);
+                        if (old.get() != nullptr) {
+                            if (FUN_140529070(old.operator->()) < FUN_140529070(item.operator->())) result.SetAt(slot, item);
+                        }
+                        else result.SetAt(slot, item);
+                    }
+                }
             }
         }
     }
@@ -1815,7 +1862,6 @@ MS2_REPLACE_METHOD(0x140a66fa0, Unk_Inventory, FUN_140a66fa0, 87, 0xEFEB9F60);
 // @0x140a67000
 int Unk_Inventory::FUN_140a67000() { return autoEquipEnabled; }
 MS2_REPLACE_METHOD(0x140a67000, Unk_Inventory, FUN_140a67000, 17, 0xD08230F1);
-// MS2-FUNCTIONAL: typed player virtual and constant-setting access.
 // @0x140a67020
 int Unk_Inventory::FUN_140a67020(ItemPtr item) {
     if (item == nullptr) return 0;
@@ -1828,19 +1874,24 @@ int Unk_Inventory::FUN_140a67020(ItemPtr item) {
     Unk_InventoryPlayer* player = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (player == nullptr) return 0;
     unsigned short level = (unsigned short)player->vfunc_78();
-    if (*FUN_1401d3200()->autoEquipMinLevel.FUN_1401d7c10() > (unsigned)level) return 0;
-    if ((unsigned)level > *FUN_1401d3200()->autoEquipMaxLevel.FUN_1401d7c10()) return 0;
+    if ((unsigned)level < *FUN_1401d3200()->autoEquipMinLevel.FUN_1401d7c10() ||
+        (unsigned)level > *FUN_1401d3200()->autoEquipMaxLevel.FUN_1401d7c10()) return 0;
     int slot = FUN_140527a20(item.operator->());
-    if (FUN_14052a170(item.operator->()) != 0) return 0;
-    if (player->FUN_141655e80(slot, 0) == nullptr) {
-        if (FUN_140a65770(item.get()) == 0) return 1;
+    int mode = FUN_14052a170(item.operator->());
+    if (mode == 0) {
+        if (player->FUN_141655e80(slot, mode) == nullptr) {
+            if (FUN_140a65770(item.get()) == 0) return 1;
+        }
     }
     return 0;
 }
 MS2_REPLACE_METHOD(0x140a67020, Unk_Inventory, FUN_140a67020, 869, 0x5B763EAC);
 // MS2-FUNCTIONAL: typed accessors and equivalent control flow produce different temporaries.
 // @0x140a67390
-bool Unk_Inventory::FUN_140a67390(__int64 id) { return excludedItems.Find(id, nullptr) != nullptr; }
+int Unk_Inventory::FUN_140a67390(__int64 id) {
+    if (excludedItems.Find(id, nullptr) != nullptr) return 1;
+    return 0;
+}
 MS2_REPLACE_METHOD(0x140a67390, Unk_Inventory, FUN_140a67390, 60, 0xA7CD9978);
 // @0x140a673e0
 void Unk_Inventory::FUN_140a673e0(ItemPtr item) {
@@ -1880,9 +1931,7 @@ Unk_InventoryEquipPacket::Unk_InventoryEquipPacket() : id(0), slot(0), mode(3) {
 ItemUtilTransfer::TOutBindingParam::TOutBindingParam() : kind(0), characterId(0) {}
 // @0x140a69df0
 Unk_InventoryUsePacket::~Unk_InventoryUsePacket() {}
-// MS2-FUNCTIONAL: typed accessors and equivalent control flow produce different temporaries.
-// @0x140a69eb0
-ItemUtilTransfer::TOutBindingParam::~TOutBindingParam() {}
+// @0x140a69eb0 ~TOutBindingParam is implicit: the exe dtor never resets the vptr.
 // @0x140a6a0d0
 bool Unk_InventoryAccount::FUN_140a6a0d0() { return flag; }
 // @0x140a6a830

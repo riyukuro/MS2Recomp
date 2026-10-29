@@ -132,7 +132,7 @@ class Unk_SnowmanItem : public CPtred { public: CString FUN_14053fdd0(); };
 MS2Ptr<Unk_SnowmanItem> FUN_14053f870(int);
 void FUN_140710590(COutPacket&);
 
-class Unk_SnowmanPopup { public: void FUN_141abf6e0(int, unsigned short); };
+class Unk_SnowmanPopup { public: void FUN_141abf6e0(int, int); };
 Unk_SnowmanPopup* FUN_140938cd0(int);
 
 // ASObj members used here only (the shared header lacks them).
@@ -601,37 +601,48 @@ void UISnowmanEventDialog::FUN_140e96a90(const CStringW& path)
 MS2_REPLACE_METHOD(0x140E96A90, UISnowmanEventDialog, FUN_140e96a90, 431, 0x570BF6B3);
 
 // @0x140e96c50
-// MS2-FUNCTIONAL: the exe falls off the end after the loop (returns the last-loaded loop bound in eax) and keeps a switch temp; we return the count explicitly.
+// The exe returns no value on any path (eax holds whatever was last loaded); the only caller ignores it.
+#pragma warning(push)
+#pragma warning(disable : 4716)
 int UISnowmanEventDialog::FUN_140e96c50(int type, CInPacket& packet)
 {
     if (m_30.IsNull()) {
         MS2_ASSERT_AT(190, "m_ascript" && 0);
-        return 0;
+    } else {
+        switch (type) {
+        case 0xc: {
+            Unk_SnowmanPopup* popup = FUN_140938cd0(20061);
+            if (popup == 0)
+                break;
+            int count = packet.ReadInt32();
+            for (int i = 0; i < count; ++i) {
+                int id = packet.ReadInt32();
+                int num = (unsigned short)packet.ReadInt16();
+                popup->FUN_141abf6e0(id, num);
+            }
+            break;
+        }
+        case 0xd: {
+            Unk_SnowmanPopup* popup = FUN_140938cd0(20061);
+            if (popup == 0)
+                break;
+            int count = packet.ReadInt32();
+            for (int i = 0; i < count; ++i) {
+                int id = packet.ReadInt32();
+                int num = (unsigned short)packet.ReadInt16();
+                popup->FUN_141abf6e0(id, num);
+            }
+            break;
+        }
+        default:
+            MS2_ASSERT_AT(227, 0);
+        }
     }
-    switch (type) {
-    case 0xc: {
-        Unk_SnowmanPopup* popup = FUN_140938cd0(20061);
-        if (popup == 0)
-            return 0;
-        int count = packet.ReadInt32();
-        for (int i = 0; i < count; ++i)
-            popup->FUN_141abf6e0(packet.ReadInt32(), packet.ReadInt16());
-        return count;
-    }
-    case 0xd: {
-        Unk_SnowmanPopup* popup = FUN_140938cd0(20061);
-        if (popup == 0)
-            return 0;
-        int count = packet.ReadInt32();
-        for (int i = 0; i < count; ++i)
-            popup->FUN_141abf6e0(packet.ReadInt32(), packet.ReadInt16());
-        return count;
-    }
-    default:
-        MS2_ASSERT_AT(227, 0);
-        return 0;
-    }
+#ifdef __clang__
+    return 0;   // clang would treat the fall-off as unreachable
+#endif
 }
+#pragma warning(pop)
 MS2_REPLACE_METHOD(0x140E96C50, UISnowmanEventDialog, FUN_140e96c50, 622, 0x872ADDA2);
 
 // @0x140e96ed0

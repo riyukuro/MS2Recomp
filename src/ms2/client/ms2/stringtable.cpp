@@ -241,7 +241,6 @@ void CStoryQuest::Complete(CInPacket& packet)
 }
 
 // The dispatch confirmation the story quest raises when it is accepted from another channel.
-// MS2-FUNCTIONAL: the exe allocates the dispatch box argument strings in a different frame order (EH state map differs).
 // @0x14180f5c0
 void CStoryQuest::FUN_140d73960()
 {
@@ -253,15 +252,17 @@ void CStoryQuest::FUN_140d73960()
             CStringW strWho = GetStringTable()->FUN_141811980(0x47, m_data->m_2f0.m_c);
             CStringW strText = FUN_1401e8510((const wchar_t*)strWho, GetStringTable()->FUN_141811980(3, m_data->m_2f0.m_4));
             FUN_1403b4750()->FUN_1416fb340(strText);
-            MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x28, CStringW(L""), 0, CStringW(strText));
-            if (spBox.get() != 0)
             {
-                spBox->FUN_140534050(FUN_14074b030(m_data.operator->()));
-                spBox->FUN_140533ff0(m_7c);
-                spBox->SetTitle(FUN_1403ed2d0()->FUN_141bd0d30());
-                spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(FUN_140764020(), &CQuestManager::SendQuestMode20));
-                spBox->FUN_141a01690(GetStringCommonByKey(CStringW(L"s_quest_dispatch_yes")), GetStringCommonByKey(CStringW(L"s_quest_dispatch_no")), CStringW(L""));
-                FUN_140d73c60(spBox);
+                MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x28, CStringW(strText), 0, CStringW(L""));
+                if (spBox.get() != 0)
+                {
+                    spBox->FUN_140534050(FUN_14074b030(m_data.operator->()));
+                    spBox->FUN_140533ff0(m_7c);
+                    spBox->SetTitle(FUN_1403ed2d0()->FUN_141bd0d30());
+                    spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(FUN_140764020(), &CQuestManager::SendQuestMode20));
+                    spBox->FUN_141a01690(GetStringCommonByKey(L"s_quest_dispatch_yes"), GetStringCommonByKey(L"s_quest_dispatch_no"), L"");
+                    FUN_140d73c60(spBox);
+                }
             }
             m_7c = 0;
         }
@@ -519,11 +520,6 @@ CGFxLanguage::CGFxLanguage()
 {
 }
 
-// @0x141816d90
-CGFxLanguage::~CGFxLanguage()
-{
-}
-
 // @0x141815de0
 bool CGFxLanguage::LoadKorFlash(TiXmlDocument* pDoc)
 {
@@ -533,7 +529,7 @@ bool CGFxLanguage::LoadKorFlash(TiXmlDocument* pDoc)
 }
 
 // @0x141815db0
-void FUN_141815db0()
+void FUN_141815db0(void* pThis)
 {
     FUN_1422b09a0(FUN_14025e7a0());
 }
@@ -596,43 +592,42 @@ void CStringTable::CDesc::FUN_141813b80(const CString& strTag, const CStringW& s
 
 #define MS2_XML_FORMAT_ERROR L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]"
 
-// MS2-FUNCTIONAL: the literal-CString temporaries and the many xml-loader locals are laid out differently from the exe (precedent reactordata.cpp)
 // @0x141810f70
-bool CStringTable::Load()
+BOOL CStringTable::Load()
 {
-    CString strPath = FUN_14071a5b0(CString("Table"), CString("string.xml"));
+    CString strPath = FUN_14071a5b0("Table", "string.xml");
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
-        return false;
+        return FALSE;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
     {
         FUN_14015eb90(FUN_140166440(), 1, 0x13, MS2_XML_FORMAT_ERROR, strPath);
-        return false;
+        return FALSE;
     }
     for (Unk_140165cf0* pKey = pRoot->FUN_140165cf0("key"); pKey != 0; pKey = pKey->FUN_140168650("key"))
     {
-        if (FUN_14028f710(pKey))
+        if (!FUN_14028f710(pKey))
+            continue;
+        int nId = 0;
+        CString strName;
+        CString strParser;
+        CString strParserValue;
+        FUN_1408731e0(pKey, "id", nId);
+        FUN_1408733e0(pKey, "name", strName);
+        FUN_1408733e0(pKey, "parser", strParser);
+        FUN_1408733e0(pKey, "parserValue", strParserValue);
+        CachePtr spCache(0);
+        if (!m_caches.Lookup(nId, spCache))
         {
-            int nId = 0;
-            CString strName;
-            CString strParser;
-            CString strParserValue;
-            FUN_1408731e0(pKey, "id", nId);
-            FUN_1408733e0(pKey, "name", strName);
-            FUN_1408733e0(pKey, "parser", strParser);
-            FUN_1408733e0(pKey, "parserValue", strParserValue);
-            CachePtr spCache(0);
-            if (!m_caches.Lookup(nId, spCache))
-            {
-                spCache.AssignRaw(new CStringCache);
-                spCache->m_strParser = strParser;
-                spCache->m_strParserValue = strParserValue;
-                m_caches.SetAt(nId, spCache);
-            }
-            spCache->FUN_1418176e0(FUN_140536a50("{0}.xml", strName));
-            FUN_141813c80(CachePtr(spCache), CString(strParser), CString(strParserValue));
+            spCache.AssignRaw(new CStringCache);
+            spCache->m_strParser = strParser;
+            spCache->m_strParserValue = strParserValue;
+            m_caches.SetAt(nId, spCache);
         }
+        CString strFile = FUN_140536a50("{0}.xml", strName);
+        spCache->FUN_1418176e0(strFile);
+        FUN_141813c80(CachePtr(spCache), CString(strParser), CString(strParserValue));
     }
     for (POSITION pos = m_caches.GetStartPosition(); pos; m_caches.GetNext(pos))
     {
@@ -657,11 +652,11 @@ bool CStringTable::Load()
     FUN_141814750(CString("SetItemName.xml"), m_setItemNames, m_setItemNameStamp);
     FUN_141814750(CString("UGCMapSetItemName.xml"), m_ugcSetItemNames, m_ugcSetItemNameStamp);
     SetInit(true);
-    return true;
+    return TRUE;
 }
 
 // @0x141811960
-bool CStringTable::FUN_141811960()
+BOOL CStringTable::FUN_141811960()
 {
     return Load();
 }
@@ -765,18 +760,20 @@ CStringW CStringTable::GetSkillDescription(int nSkillId, unsigned short nLevel, 
     Unk_CriticalSectionLock lock(m_lock, 1);
     if (FUN_1401d1320(&m_skillDescStamp))
         FUN_141814750(CString("stringSkillDescription.xml"), m_skillDescs, m_skillDescStamp);
-    if (!m_skillDescs.Lookup(nSkillId, spDesc))
-        return CStringW(L"");
-    CStringW strText = spDesc->FUN_141813a30(strTag);
-    MS2Ptr<Unk_StSkillRow> spSkill = FUN_1401958b0()->FUN_1407ee1d0(nSkillId);
-    if (spSkill == 0)
-        return CStringW(L"");
-    MS2Ptr<Unk_StSkillLevel> spLevel = spSkill->FUN_1407e90a0(nLevel);
-    if (spLevel == 0)
-        return CStringW(L"");
-    if (!spLevel->m_strArgs.IsEmpty())
-        strText = FUN_141813790(CStringW(strText), CStringW(spLevel->m_strArgs));
-    return strText;
+    if (m_skillDescs.Lookup(nSkillId, spDesc))
+    {
+        CStringW strText = spDesc->FUN_141813a30(strTag);
+        MS2Ptr<Unk_StSkillRow> spSkill = FUN_1401958b0()->FUN_1407ee1d0(nSkillId);
+        if (spSkill == 0)
+            return CStringW(L"");
+        MS2Ptr<Unk_StSkillLevel> spLevel = spSkill->FUN_1407e90a0(nLevel);
+        if (spLevel == 0)
+            return CStringW(L"");
+        if (!spLevel->m_strArgs.IsEmpty())
+            strText = FUN_141813790(CStringW(strText), CStringW(spLevel->m_strArgs));
+        return strText;
+    }
+    return CStringW(L"");
 }
 
 // @0x141812290
@@ -985,14 +982,14 @@ CStringW CStringTable::FUN_141813610(int a, int b, int c)
 }
 
 // The format arguments of a text: the type bits of the arguments and their values.
-struct Unk_StFmtArg { unsigned long long m_a; unsigned long long m_b; };
-struct Unk_StFmtPack { char m_pad[0x20]; };
+struct Unk_StFmtArg { unsigned long long m_a; unsigned long long m_b; Unk_StFmtArg(); };
+struct Unk_StFmtPack { unsigned long long m_nTypes; const Unk_StFmtArg* m_pArgs; Unk_StFmtPack(); };
 unsigned long long FUN_1401cfc00(const CStringW& str);
 Unk_StFmtArg FUN_1401cfcf0(const CStringW& str);
 Unk_StFmtPack FUN_140163e50(unsigned long long nTypes, const Unk_StFmtArg* pArgs);
 CStringW FUN_1401d02a0(const wchar_t* pszFormat, const Unk_StFmtPack& rPack);
 
-// MS2-FUNCTIONAL: the argument pack helpers are unit-local stand-ins
+// The argument pack helpers are unit-local stand-ins (an fmt-style ArgList).
 // @0x141813790
 CStringW CStringTable::FUN_141813790(CStringW strFormat, CStringW strArgs)
 {
@@ -1008,7 +1005,7 @@ CStringW CStringTable::FUN_141813790(CStringW strFormat, CStringW strArgs)
         else
         {
             unsigned long long n = FUN_1401cfc00(strText);
-            nTypes |= n << (((unsigned char)aArgs.GetCount() & 0xf) << 2);
+            nTypes |= n << (aArgs.GetCount() << 2);
         }
         aArgs.Add(FUN_1401cfcf0(strText));
     }
@@ -1054,10 +1051,8 @@ int CStringTable::FUN_141813f10(CachePtr spCache)
 {
     Unk_CriticalSectionLock lock(spCache->m_lock, 1);
     spCache->m_strings.RemoveAll();
-    for (POSITION pos = spCache->m_files.GetHeadPosition(); ; spCache->m_files.GetNext(pos))
+    for (POSITION pos = spCache->m_files.GetHeadPosition(); pos != 0; spCache->m_files.GetNext(pos))
     {
-        if (pos == 0)
-            return 1;
         MS2Ptr<CCacheData> spFile = spCache->m_files.GetAt(pos);
         if (spFile == 0)
             continue;
@@ -1072,19 +1067,19 @@ int CStringTable::FUN_141813f10(CachePtr spCache)
         }
         for (Unk_140165cf0* pKey = pRoot->FUN_140165cf0("key"); pKey != 0; pKey = pKey->FUN_140168650("key"))
         {
-            if (FUN_14028f710(pKey))
-            {
-                CString strId;
-                CStringW strText;
-                FUN_1408733e0(pKey, "id", strId);
-                FUN_140873420(pKey, "name", strText);
-                strText.Replace(L"\\n", L"\n");
-                unsigned nId = FUN_14021c7c0(strId);
-                spCache->m_strings.SetAt(nId, strText);
-            }
+            if (!FUN_14028f710(pKey))
+                continue;
+            CString strId;
+            CStringW strText;
+            FUN_1408733e0(pKey, "id", strId);
+            FUN_140873420(pKey, "name", strText);
+            strText.Replace(L"\\n", L"\n");
+            unsigned nId = FUN_14021c7c0(strId);
+            spCache->m_strings.SetAt(nId, strText);
         }
         spFile->FUN_1401d1160(CString(*spFile->FUN_1401d1140()));
     }
+    return 1;
 }
 
 // @0x141814310
@@ -1092,10 +1087,8 @@ int CStringTable::FUN_141814310(CachePtr spCache, CString strAttr)
 {
     Unk_CriticalSectionLock lock(spCache->m_lock, 1);
     spCache->m_strings.RemoveAll();
-    for (POSITION pos = spCache->m_files.GetHeadPosition(); ; spCache->m_files.GetNext(pos))
+    for (POSITION pos = spCache->m_files.GetHeadPosition(); pos != 0; spCache->m_files.GetNext(pos))
     {
-        if (pos == 0)
-            return 1;
         MS2Ptr<CCacheData> spFile = spCache->m_files.GetAt(pos);
         if (spFile == 0)
             continue;
@@ -1110,21 +1103,20 @@ int CStringTable::FUN_141814310(CachePtr spCache, CString strAttr)
         }
         for (Unk_140165cf0* pKey = pRoot->FUN_140165cf0("key"); pKey != 0; pKey = pKey->FUN_140168650("key"))
         {
-            if (FUN_14028f710(pKey))
-            {
-                int nId = 0;
-                CStringW strText;
-                FUN_1408731e0(pKey, "id", nId);
-                FUN_140873420(pKey, strAttr, strText);
-                if (!strText.IsEmpty())
-                {
-                    strText.Replace(L"\\n", L"\n");
-                    spCache->m_strings.SetAt(nId, strText);
-                }
-            }
+            if (!FUN_14028f710(pKey))
+                continue;
+            int nId = 0;
+            CStringW strText;
+            FUN_1408731e0(pKey, "id", nId);
+            FUN_140873420(pKey, strAttr, strText);
+            if (strText.IsEmpty())
+                continue;
+            strText.Replace(L"\\n", L"\n");
+            spCache->m_strings.SetAt(nId, strText);
         }
         spFile->FUN_1401d1160(CString(*spFile->FUN_1401d1140()));
     }
+    return 1;
 }
 
 // @0x141814750

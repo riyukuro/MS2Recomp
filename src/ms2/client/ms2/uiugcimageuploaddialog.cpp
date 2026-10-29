@@ -207,31 +207,37 @@ int UIUGCImageUploadDialog::vfunc_28(const char* szMethod, const Scaleform::GFx:
         OnOpenFolder();
         return 1;
     }
-    if (_stricmp("OnPreview", szMethod) == 0)
+    else if (_stricmp("OnPreview", szMethod) == 0)
     {
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs) != 0)
-            FUN_141b3acb0(data.FUN_1422b8a10());
+        {
+            int nIndex = data.FUN_1422b8a10();
+            FUN_141b3acb0(nIndex);
+        }
         return 1;
     }
-    if (_stricmp("OnUpload", szMethod) == 0)
+    else if (_stricmp("OnUpload", szMethod) == 0)
     {
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs) != 0)
-            FUN_141b3adc0(data.FUN_1422b8a10());
+        {
+            int nIndex = data.FUN_1422b8a10();
+            FUN_141b3adc0(nIndex);
+        }
         return 1;
     }
-    if (_stricmp("OnNewTemplate", szMethod) == 0)
+    else if (_stricmp("OnNewTemplate", szMethod) == 0)
     {
         OnNewTemplate();
         return 1;
     }
-    if (_stricmp("OnAddImage", szMethod) == 0)
+    else if (_stricmp("OnAddImage", szMethod) == 0)
     {
         OnAddImage();
         return 1;
     }
-    if (_stricmp("onScrollPosition", szMethod) == 0)
+    else if (_stricmp("onScrollPosition", szMethod) == 0)
     {
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs) != 0)
@@ -243,7 +249,7 @@ int UIUGCImageUploadDialog::vfunc_28(const char* szMethod, const Scaleform::GFx:
         }
         return 1;
     }
-    if (_stricmp("OnItemDoubleClick", szMethod) == 0)
+    else if (_stricmp("OnItemDoubleClick", szMethod) == 0)
     {
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs) != 0)
@@ -266,23 +272,27 @@ void UIUGCImageUploadDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pA
 {
     CString strType = pArgs->FUN_1422b8d30();
     Scaleform::GFx::Value arg = pArgs->FUN_1422b9260();
-    if (FUN_1409b0390(&arg) == 0 && FUN_1409b0350(&arg) == 0)
+    if (FUN_1409b0390(&arg) || FUN_1409b0350(&arg))
+        return;
+    AScript root((const Scaleform::GFx::Value&)arg, 2);
+    if (FUN_140184310(strType, "image"))
     {
-        AScript root((const Scaleform::GFx::Value&)arg, 2);
-        if (FUN_140184310(strType, "image"))
+#ifdef __clang__
+        AScript data(root.FUN_1422baa20("data"), 2);
+#else
+        // the exe binds the returned temp to the non-const Value& ctor (an MSVC extension)
+        AScript data((Scaleform::GFx::Value&)root.FUN_1422baa20("data"), 2);
+#endif
+        if (data.FUN_1422ba9a0() == 0)
         {
-            AScript data(root.FUN_1422baa20("data"), 2);
-            if (data.FUN_1422ba9a0() == 0)
+            ASTooltip tip(1, 2);
+            CStringW strText = ((Unk_UgcImageData*)&data)->FUN_1422bb2b0("tooltip");
+            if (tip.FUN_1409e26b0(strText) != 0)
             {
-                ASTooltip tip(1, 2);
-                CStringW strText = ((Unk_UgcImageData*)&data)->FUN_1422bb2b0("tooltip");
-                if (tip.FUN_1409e26b0(strText) != 0)
-                {
-                    tip.FUN_1409c6dc0(2);
-                    tip.FUN_1409c6e60(-4);
-                    tip.FUN_1409c6e90(1);
-                    *pRetVal = tip.FUN_1422bb870();
-                }
+                tip.FUN_1409c6dc0(2);
+                tip.FUN_1409c6e60(-4);
+                tip.FUN_1409c6e90(1);
+                *pRetVal = tip.FUN_1422bb870();
             }
         }
     }
@@ -304,8 +314,9 @@ void UIUGCImageUploadDialog::FUN_141b3a600()
 // @0x141b3a630
 void UIUGCImageUploadDialog::vfunc_ugc_4(int nDialog)
 {
-    if (vfunc_48() == nDialog)
-        m_18c = 1;
+    if (vfunc_48() != nDialog)
+        return;
+    m_18c = 1;
 }
 
 // @0x141b3a690
@@ -333,35 +344,31 @@ bool UIUGCImageUploadDialog::FUN_141b3a780(const int* pnKind)
     MS2Ptr<CUgcUploadCtrl> spUpload = FUN_14052d220()->FUN_141882610();
     if (spUpload == 0)
         return false;
-    bool bOk;
-    if (spUpload->m_nKind == *pnKind)
+    if (spUpload->m_nKind != *pnKind)
+        return false;
+    bool bOk = false;
+    switch (*pnKind)
     {
-        bOk = false;
-        switch (*pnKind)
-        {
-        case 3:
-            bOk = dynamic_cast<CUgcViewerBanner*>((IUgcViewer*)spUpload->m_spViewer) != 0;
-            break;
-        case 5:
-            bOk = dynamic_cast<CUgcViewerProfile*>((IUgcViewer*)spUpload->m_spViewer) != 0;
-            break;
-        case 6:
-            bOk = dynamic_cast<CUgcViewerGuildMark*>((IUgcViewer*)spUpload->m_spViewer) != 0;
-            break;
-        case 8:
-            bOk = dynamic_cast<CUgcViewerGuildPoster*>((IUgcViewer*)spUpload->m_spViewer) != 0;
-            break;
-        case 9:
-        case 0xd1:
-            bOk = dynamic_cast<CUgcViewerBlueprintImage*>((IUgcViewer*)spUpload->m_spViewer) != 0;
-            break;
-        case 10:
-            bOk = dynamic_cast<CUgcViewerWeddingProfile*>((IUgcViewer*)spUpload->m_spViewer) != 0;
-            break;
-        }
+    case 3:
+        bOk = dynamic_cast<CUgcViewerBanner*>((IUgcViewer*)spUpload->m_spViewer) != 0;
+        break;
+    case 5:
+        bOk = dynamic_cast<CUgcViewerProfile*>((IUgcViewer*)spUpload->m_spViewer) != 0;
+        break;
+    case 10:
+        bOk = dynamic_cast<CUgcViewerWeddingProfile*>((IUgcViewer*)spUpload->m_spViewer) != 0;
+        break;
+    case 6:
+        bOk = dynamic_cast<CUgcViewerGuildMark*>((IUgcViewer*)spUpload->m_spViewer) != 0;
+        break;
+    case 8:
+        bOk = dynamic_cast<CUgcViewerGuildPoster*>((IUgcViewer*)spUpload->m_spViewer) != 0;
+        break;
+    case 9:
+    case 0xd1:
+        bOk = dynamic_cast<CUgcViewerBlueprintImage*>((IUgcViewer*)spUpload->m_spViewer) != 0;
+        break;
     }
-    else
-        bOk = false;
     return bOk;
 }
 
@@ -412,12 +419,17 @@ int UIUGCImageUploadDialog::FUN_141b3adc0(int nIndex)
         FUN_140d73bc0(0x2e0, 0, 0, CStringW(L""));
         return 0;
     }
-    if (m_188 == 3 && FUN_141b3b390() > DAT_143ab2898)
+    if (m_188 == 3)
     {
-        FUN_140d73bc0(0x34, 0, 0, CStringW(L""));
-        return 0;
+        __int64 nPrice = FUN_141b3b390();
+        if (nPrice > DAT_143ab2898)
+        {
+            FUN_140d73bc0(0x34, 0, 0, CStringW(L""));
+            return 0;
+        }
     }
-    if (FUN_14052d220()->FUN_141881890(nIndex) == 0)
+    int nExist = FUN_14052d220()->FUN_141881890(nIndex);
+    if (nExist == 0)
     {
         FUN_140d73bc0(0x2e2, 0, static_cast<IMessageListener*>(this), CStringW(L"noexist"));
         return 0;
@@ -458,7 +470,7 @@ int UIUGCImageUploadDialog::OnNewTemplate()
 // @0x141b3b060
 int UIUGCImageUploadDialog::OnAddImage()
 {
-    int nResult = FUN_14052d220()->FUN_1418810c0(CStringW(L"./"), L"Image Files (*.dds, *.png, *.jpg)");
+    int nResult = FUN_14052d220()->FUN_1418810c0(L"./", L"Image Files (*.dds, *.png, *.jpg)");
     if (nResult == 0)
         return 0;
     FUN_141b3a600();
@@ -472,9 +484,10 @@ int UIUGCImageUploadDialog::FUN_141b3b0e0(int nIndex)
         return 0;
     if (FUN_140a467d0(&m_30) != 0)
         return 0;
+    int nPos = nIndex << 2;
     ASArray arr(2);
-    FUN_14052d220()->FUN_141889e20(0x10, nIndex << 2, &arr);
-    ((Unk_UgcScript*)m_30.operator->())->FUN_141b36aa0("buildScrollPosition", nIndex << 2, arr);
+    FUN_14052d220()->FUN_141889e20(0x10, nPos, &arr);
+    ((Unk_UgcScript*)m_30.operator->())->FUN_141b36aa0("buildScrollPosition", nPos, arr);
     return 1;
 }
 

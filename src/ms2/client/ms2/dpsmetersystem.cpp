@@ -71,7 +71,7 @@
 // MS2-PIN: ??__Fs_strLog@?1??GetDamageLog@Aggregation@CMeterRecordData@@QEAAAEBV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@XZ@YAXXZ 0x142cac990 ; unique
 // MS2-PIN: ??__Fs_strLog@?1??GetEffectLog@Aggregation@CMeterRecordData@@QEAAAEBV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@XZ@YAXXZ 0x142cac9b0 ; unique
 // MS2-PIN: ??__Fs_str@?1??GetItemText@@YAAEBV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@PEAVCItem@@@Z@YAXXZ 0x142cac9d0 ; unique
-// MS2-PIN: ??__Fs_str@?1??FUN_141181540@@YAAEBV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@XZ@YAXXZ 0x142cac9f0 ; probe
+// MS2-PIN: ??__Fs_str@?1??FUN_141181540@CDPSMeterSystem@@QEAAAEBV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@XZ@YAXXZ 0x142cac9f0 ; probe
 // MS2-PIN: ??__Fs_strReport@?1??GetDotReport@Aggregation@CMeterRecordData@@QEAAAEBV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@XZ@YAXXZ 0x142caca30 ; probe
 // MS2-PIN: ??__Fs_strReport@?1??GetSkillReport@Aggregation@CMeterRecordData@@QEAAAEBV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@XZ@YAXXZ 0x142caca50 ; probe
 // MS2-PINS-END tplpin
@@ -100,6 +100,8 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+
+extern "C" wchar_t* (__cdecl* __imp_wcscat)(wchar_t*, const wchar_t*);   // the exe calls wcscat through its import
 
 IMPLEMENT_DYNAMIC(CDPSDialog, CDialog)
 
@@ -232,19 +234,16 @@ CDPSDialog::~CDPSDialog()
 }
 
 // @0x1411784d0
-// MS2-FUNCTIONAL: not byte-exact yet (partial unit; frame/temporary layout and branch shape differ)
 BOOL CDPSDialog::OnInitDialog()
 {
-    BOOL bRet = CToolBaseDialog::OnInitDialog();
-    if (bRet)
-    {
-        GetClientRect(&m_rcClient);
-        m_editText.MoveWindow(10, 10, m_rcClient.right - m_rcClient.left - 0x28, m_rcClient.bottom - m_rcClient.top - 0x78, 1);
-        CRect rcText;
-        m_editText.GetRect(&rcText);
-        m_btnSave.MoveWindow(10, rcText.bottom + 0x14, rcText.right + 5, 0x32, 1);
-    }
-    return bRet != 0;
+    if (!CToolBaseDialog::OnInitDialog())
+        return FALSE;
+    GetWindowRect(&m_rcWindow);
+    m_editText.MoveWindow(10, 10, m_rcWindow.right - m_rcWindow.left - 0x28, m_rcWindow.bottom - m_rcWindow.top - 0x78, 1);
+    RECT rcText;
+    m_editText.GetRect(&rcText);
+    m_btnSave.MoveWindow(10, rcText.bottom + 0x14, rcText.right + 5, 0x32, 1);
+    return TRUE;
 }
 MS2_REPLACE_METHOD(0x1411784D0, CDPSDialog, OnInitDialog, 297, 0xC56A997A);
 
@@ -278,15 +277,14 @@ void CDPSDialog::OnEnChangeText()
 MS2_REPLACE_METHOD(0x1411786D0, CDPSDialog, OnEnChangeText, 6, 0xA9AF6E37);
 
 // @0x1411786e0
-// MS2-FUNCTIONAL: not byte-exact yet (partial unit; frame/temporary layout and branch shape differ)
 void CDPSDialog::OnSizing(UINT fwSide, LPRECT pRect)
 {
     CToolBaseDialog::OnSizing(fwSide, pRect);
     m_editText.MoveWindow(10, 10, pRect->right - pRect->left - 0x28, pRect->bottom - pRect->top - 0x78, 1);
-    CRect rcText;
+    RECT rcText;
     m_editText.GetRect(&rcText);
-    CRect rcButton;
-    m_btnSave.GetClientRect(&rcButton);
+    RECT rcButton;
+    m_btnSave.GetWindowRect(&rcButton);
     m_btnSave.MoveWindow(10, rcText.bottom + 0x14, rcText.right + 5, 0x32, 1);
 }
 MS2_REPLACE_METHOD(0x1411786E0, CDPSDialog, OnSizing, 319, 0xD572249B);
@@ -300,7 +298,6 @@ void CDPSDialog::OnBnClickedSave()
 MS2_REPLACE_METHOD(0x141178830, CDPSDialog, OnBnClickedSave, 48, 0x682FA97F);
 
 // @0x141178870
-// MS2-FUNCTIONAL: not byte-exact yet (partial unit; frame/temporary layout and branch shape differ)
 void CDPSDialog::Refresh()
 {
     if (Unk_LockGuard guard = m_lock)
@@ -308,20 +305,20 @@ void CDPSDialog::Refresh()
     }
     else
     {
-        if (FUN_14109a6f0()->IsRecording() == 0)
-        {
-            CString strText;
-            m_editText.GetWindowText(strText);
-            if (strText.GetLength() != 0)
-                m_btnSave.EnableWindow(1);
-        }
-        else
+        if (FUN_14109a6f0()->IsRecording())
         {
             if (m_btnSave.IsWindowVisible())
                 m_btnSave.EnableWindow(0);
             CStringW strSummary;
             FUN_14109a6f0()->GetSummary(strSummary);
             m_editText.SetWindowText(FUN_1401d4330(strSummary, 0));
+        }
+        else
+        {
+            CString strText;
+            m_editText.GetWindowText(strText);
+            if (strText.GetLength() != 0)
+                m_btnSave.EnableWindow(1);
         }
     }
 }
@@ -351,49 +348,51 @@ CMeterRecordData::Aggregation::Aggregation()
 }
 
 // @0x141178de0
-// MS2-FUNCTIONAL: not byte-exact yet (partial unit; frame/temporary layout and branch shape differ)
 void CMeterRecordData::Aggregation::AddDamage(MS2Ptr<CDamageMeterData> spData)
 {
     if (spData->m_nKind == 0)
     {
         m_damages.AddTail(spData);
         TPtrValue<float> spUnused(nullptr);
-        if (m_skillRates.find(spData->m_nSkillId) == m_skillRates.end())
+        std::map<unsigned, float>::iterator it = m_skillRates.find(spData->m_nSkillId);
+        if (it == m_skillRates.end())
             m_skillRates.insert(std::make_pair(spData->m_nSkillId, spData->m_dRate));
         else
-            m_skillRates[spData->m_nSkillId] = (float)(m_skillRates[spData->m_nSkillId] + spData->m_dRate);
+            m_skillRates[spData->m_nSkillId] += spData->m_dRate;
     }
     else if (spData->m_nKind == 1)
     {
         m_dots.AddTail(spData);
-        if (m_dotRates.find(spData->m_nSkillId) == m_dotRates.end())
+        std::map<unsigned, float>::iterator it = m_dotRates.find(spData->m_nSkillId);
+        if (it == m_dotRates.end())
             m_dotRates.insert(std::make_pair(spData->m_nSkillId, spData->m_dRate));
         else
-            m_dotRates[spData->m_nSkillId] = (float)(m_dotRates[spData->m_nSkillId] + spData->m_dRate);
+            m_dotRates[spData->m_nSkillId] += spData->m_dRate;
     }
 }
 MS2_REPLACE_METHOD(0x141178DE0, CMeterRecordData::Aggregation, AddDamage, 694, 0x36BB5F74);
 
-// The use count and the per-skill sums of a damage list; one row per skill level.
-static void SumSkills(ATL::CAtlList<MS2Ptr<CDamageMeterData> >& list,
-    ATL::CAtlMap<CStringW, int, CStringElementTraits<CStringW> >& mapCount,
-    ATL::CAtlMap<CStringW, MS2Ptr<CSkillMeterData>, CStringElementTraits<CStringW> >& mapSkill)
+// @0x1411790a0
+const CStringW& CMeterRecordData::Aggregation::GetSkillReport()
 {
-    for (POSITION pos = list.GetHeadPosition(); pos != NULL; list.GetNext(pos))
+    ATL::CAtlMap<CStringW, int, CStringElementTraits<CStringW> > mapCount;
+    ATL::CAtlMap<CStringW, MS2Ptr<CSkillMeterData>, CStringElementTraits<CStringW> > mapSkill;
+    for (POSITION pos = m_damages.GetHeadPosition(); pos != NULL; m_damages.GetNext(pos))
     {
-        MS2Ptr<CDamageMeterData> spData = list.GetAt(pos);
-        if (spData == 0)
+        MS2Ptr<CDamageMeterData> spData = m_damages.GetAt(pos);
+        if (!spData)
             continue;
         CStringW strKey = MakeSkillKey(spData->m_nSkillId, spData->m_nLevel);
         ATL::CAtlMap<CStringW, int, CStringElementTraits<CStringW> >::CPair* pCount = mapCount.Lookup(strKey);
-        if (pCount == NULL)
+        if (pCount != NULL)
         {
-            mapCount.SetAt(strKey, 1);
+            int nCount = mapCount.GetValueAt(pCount);
+            nCount++;
+            mapCount.SetValueAt(pCount, nCount);
         }
         else
         {
-            int nCount = mapCount.GetValueAt(pCount) + 1;
-            mapCount.SetValueAt(pCount, nCount);
+            mapCount.SetAt(strKey, 1);
         }
         MS2Ptr<CSkillMeterData> spSkill(0);
         if (!mapSkill.Lookup(strKey, spSkill))
@@ -422,22 +421,13 @@ static void SumSkills(ATL::CAtlList<MS2Ptr<CDamageMeterData> >& list,
         if (spData->m_nGrade != -2)
             spSkill->m_nHit++;
     }
-}
-
-// @0x1411790a0
-// MS2-FUNCTIONAL: written from the decompile (the list loop is shared with GetDotReport through SumSkills)
-const CStringW& CMeterRecordData::Aggregation::GetSkillReport()
-{
-    ATL::CAtlMap<CStringW, int, CStringElementTraits<CStringW> > mapCount;
-    ATL::CAtlMap<CStringW, MS2Ptr<CSkillMeterData>, CStringElementTraits<CStringW> > mapSkill;
-    SumSkills(m_damages, mapCount, mapSkill);
     static CStringW s_strReport;
     s_strReport.Empty();
     s_strReport.Format(L"아이디, 레벨, 이름, 사용횟수, 전체 대미지, 전체 일반 대미지, 전체 크리티컬 대미지, 일반 최대 대미지, 크리티컬 최대 대미지, 명중 횟수, 미스 횟수, 대미지 속성\r\n");
     for (POSITION pos = mapSkill.GetStartPosition(); pos != NULL; mapSkill.GetNext(pos))
     {
         MS2Ptr<CSkillMeterData> spSkill = mapSkill.GetValueAt(pos);
-        if (spSkill == 0)
+        if (!spSkill)
             continue;
         int nCount = 0;
         ATL::CAtlMap<CStringW, int, CStringElementTraits<CStringW> >::CPair* pCount =
@@ -454,7 +444,6 @@ const CStringW& CMeterRecordData::Aggregation::GetSkillReport()
 MS2_REPLACE_METHOD(0x1411790A0, CMeterRecordData::Aggregation, GetSkillReport, 2579, 0xBF2B6765);
 
 // @0x141179ac0
-// MS2-FUNCTIONAL: not byte-exact yet (partial unit; frame/temporary layout and branch shape differ)
 const CStringW& CMeterRecordData::Aggregation::GetDamageLog()
 {
     static CStringW s_strLog;
@@ -463,7 +452,7 @@ const CStringW& CMeterRecordData::Aggregation::GetDamageLog()
     for (POSITION pos = m_damages.GetHeadPosition(); pos != NULL; m_damages.GetNext(pos))
     {
         MS2Ptr<CDamageMeterData> spData = m_damages.GetAt(pos);
-        if (spData == 0)
+        if (!spData)
             continue;
         CStringW strTime;
         strTime.Format(L"%02d:%02d:%02d", spData->m_time.wHour, spData->m_time.wMinute, spData->m_time.wSecond);
@@ -478,19 +467,61 @@ const CStringW& CMeterRecordData::Aggregation::GetDamageLog()
 MS2_REPLACE_METHOD(0x141179AC0, CMeterRecordData::Aggregation, GetDamageLog, 1015, 0xBDE024CB);
 
 // @0x141179ec0
-// MS2-FUNCTIONAL: written from the decompile (the list loop is shared with GetSkillReport through SumSkills)
 const CStringW& CMeterRecordData::Aggregation::GetDotReport()
 {
     ATL::CAtlMap<CStringW, int, CStringElementTraits<CStringW> > mapCount;
     ATL::CAtlMap<CStringW, MS2Ptr<CSkillMeterData>, CStringElementTraits<CStringW> > mapSkill;
-    SumSkills(m_dots, mapCount, mapSkill);
+    for (POSITION pos = m_dots.GetHeadPosition(); pos != NULL; m_dots.GetNext(pos))
+    {
+        MS2Ptr<CDamageMeterData> spData = m_dots.GetAt(pos);
+        if (!spData)
+            continue;
+        CStringW strKey = MakeSkillKey(spData->m_nSkillId, spData->m_nLevel);
+        ATL::CAtlMap<CStringW, int, CStringElementTraits<CStringW> >::CPair* pCount = mapCount.Lookup(strKey);
+        if (pCount != NULL)
+        {
+            int nCount = mapCount.GetValueAt(pCount);
+            nCount++;
+            mapCount.SetValueAt(pCount, nCount);
+        }
+        else
+        {
+            mapCount.SetAt(strKey, 1);
+        }
+        MS2Ptr<CSkillMeterData> spSkill(0);
+        if (!mapSkill.Lookup(strKey, spSkill))
+        {
+            spSkill.AssignRaw(new CSkillMeterData());
+            spSkill->m_nSkillId = spData->m_nSkillId;
+            spSkill->m_nLevel = spData->m_nLevel;
+            spSkill->m_nAttribute = spData->m_nAttribute;
+            mapSkill.SetAt(strKey, spSkill);
+        }
+        spSkill->m_nTotal += spData->m_nDamage;
+        if (spData->m_nGrade == 0)
+        {
+            spSkill->m_nNormal += spData->m_nDamage;
+            spSkill->m_nNormalMax = spSkill->m_nNormalMax > spData->m_nDamage ? spSkill->m_nNormalMax : spData->m_nDamage;
+        }
+        else if (spData->m_nGrade == 1)
+        {
+            spSkill->m_nCritical += spData->m_nDamage;
+            spSkill->m_nCriticalMax = spSkill->m_nCriticalMax > spData->m_nDamage ? spSkill->m_nCriticalMax : spData->m_nDamage;
+        }
+        else if (spData->m_nGrade == 2)
+        {
+            spSkill->m_nMiss++;
+        }
+        if (spData->m_nGrade != -2)
+            spSkill->m_nHit++;
+    }
     static CStringW s_strReport;
     s_strReport.Empty();
     s_strReport.Format(L"아이디, 레벨, 이름, 사용횟수, 전체 대미지, 전체 일반 대미지, 전체 크리티컬 대미지, 일반 최대 대미지, 크리티컬 최대 대미지, 명중 횟수, 미스 횟수, 대미지 속성\r\n");
     for (POSITION pos = mapSkill.GetStartPosition(); pos != NULL; mapSkill.GetNext(pos))
     {
         MS2Ptr<CSkillMeterData> spSkill = mapSkill.GetValueAt(pos);
-        if (spSkill == 0)
+        if (!spSkill)
             continue;
         int nCount = 0;
         ATL::CAtlMap<CStringW, int, CStringElementTraits<CStringW> >::CPair* pCount =
@@ -508,7 +539,6 @@ const CStringW& CMeterRecordData::Aggregation::GetDotReport()
 MS2_REPLACE_METHOD(0x141179EC0, CMeterRecordData::Aggregation, GetDotReport, 2694, 0xE8292B5D);
 
 // @0x14117a950
-// MS2-FUNCTIONAL: not byte-exact yet (partial unit; frame/temporary layout and branch shape differ)
 const CStringW& CMeterRecordData::Aggregation::GetEffectLog()
 {
     static CStringW s_strLog;
@@ -517,7 +547,7 @@ const CStringW& CMeterRecordData::Aggregation::GetEffectLog()
     for (POSITION pos = m_effects.GetHeadPosition(); pos != NULL; m_effects.GetNext(pos))
     {
         MS2Ptr<CAdditionalEffectMeterData> spData = m_effects.GetAt(pos);
-        if (spData == 0)
+        if (!spData)
             continue;
         CStringW strTime;
         strTime.Format(L"%02d:%02d:%02d", spData->m_time.wHour, spData->m_time.wMinute, spData->m_time.wSecond);
@@ -546,7 +576,6 @@ CDPSMeterSystem::~CDPSMeterSystem()
 }
 
 // @0x14117ae30
-// MS2-FUNCTIONAL: not byte-exact yet (partial unit; frame/temporary layout and branch shape differ)
 void CDPSMeterSystem::StartThread()
 {
     if (m_bRunning != 0)
@@ -573,66 +602,52 @@ void CDPSMeterSystem::StartThread()
     memset(szPath, 0, sizeof(szPath));
     GetModuleFileNameW(NULL, szPath, MAX_PATH);
     _wsplitpath(szPath, szDrive, szDir, NULL, NULL);
-    wcscat(m_szDir, szDrive);
-    wcscat(m_szDir, szDir);
-    wcscat(m_szDir, pszSub);
+    __imp_wcscat(m_szDir, szDrive);
+    __imp_wcscat(m_szDir, szDir);
+    __imp_wcscat(m_szDir, pszSub);
     if (!PathIsDirectoryW(m_szDir))
         CreateDirectoryW(m_szDir, NULL);
 }
 MS2_REPLACE_METHOD(0x14117AE30, CDPSMeterSystem, StartThread, 571, 0xF2C5B042);
 
 // @0x14117b080
-// MS2-FUNCTIONAL: not byte-exact yet (partial unit; frame/temporary layout and branch shape differ)
 void CDPSMeterSystem::StopThread()
 {
-    if (m_hThread == 0)
-        return;
-    m_bRunning = 0;
-    SetEvent(m_hEvent);
-    DWORD dwResult = WaitForSingleObject(m_hThread, INFINITE);
-    if (dwResult == WAIT_ABANDONED || dwResult == WAIT_TIMEOUT)
-        TerminateThread(m_hThread, 0);
-    CloseHandle(m_hThread);
-    m_hThread = INVALID_HANDLE_VALUE;
+    if (m_hThread != 0)
+    {
+        m_bRunning = 0;
+        SetEvent(m_hEvent);
+        DWORD dwResult = WaitForSingleObject(m_hThread, INFINITE);
+        switch (dwResult)
+        {
+        case WAIT_ABANDONED:
+        case WAIT_TIMEOUT:
+            TerminateThread(m_hThread, 0);
+        }
+        CloseHandle(m_hThread);
+        m_hThread = INVALID_HANDLE_VALUE;
+    }
 }
 MS2_REPLACE_METHOD(0x14117B080, CDPSMeterSystem, StopThread, 152, 0xB6845AB6);
 
 // @0x14117b120
-// MS2-FUNCTIONAL: not byte-exact yet (partial unit; frame/temporary layout and branch shape differ)
 unsigned __stdcall CDPSMeterSystem::ThreadEntry(void* ptr)
 {
-    MS2_ASSERT_AT(0x1ac, NULL != ptr);
-    static_cast<CDPSMeterSystem*>(ptr)->ThreadProc();
-    return 0;
+    CDPSMeterSystem* pThis = static_cast<CDPSMeterSystem*>(ptr);
+    MS2_ASSERT_AT(0x1ac, NULL != pThis);
+    return pThis->ThreadProc();
 }
 MS2_REPLACE(0x14117B120, CDPSMeterSystem::ThreadEntry, 70, 0x8338A783);
 
-// Writes one text of a finished record to <dir>\<name><suffix>.
-static void WriteRecordFile(wchar_t* szFile, const wchar_t* szDir, const wchar_t* pszName, const CStringW& strSuffix,
-    const CStringA& strText)
-{
-    wcscat(szFile, szDir);
-    wcscat(szFile, pszName);
-    wcscat(szFile, strSuffix);
-    CFile file;
-    if (file.Open(FUN_1401d4330(szFile, 0), 0x5022, NULL))
-    {
-        file.Write(strText, strText.GetLength());
-        file.Close();
-    }
-    memset(szFile, 0, sizeof(wchar_t) * MAX_PATH);
-}
-
-const CStringW& FUN_141181540();                            // the character info text (below)
-
 // @0x14117b170
-// MS2-FUNCTIONAL: written from the decompile (the ten file writes share WriteRecordFile)
 unsigned CDPSMeterSystem::ThreadProc()
 {
     while (m_bRunning)
     {
         WaitForSingleObject(m_hEvent, INFINITE);
-        if (IsRecording() != 0 || m_bFlush == 0)
+        if (IsRecording() != 0)
+            continue;
+        if (m_bFlush == 0)
             continue;
         if (Unk_LockGuard guard = m_lock)
         {
@@ -652,8 +667,7 @@ unsigned CDPSMeterSystem::ThreadProc()
             PCBase* pMe = FUN_1403ed2d0()->FUN_141bd0cc0();
             if (pMe != 0)
             {
-                int nJob = FUN_141654730(pMe);
-                strName.Format(L"_%s_%s", (const wchar_t*)pMe->vfunc_77(), (const wchar_t*)GetStringTable()->FUN_141811980(6, nJob));
+                strName.Format(L"_%s_%s", (const wchar_t*)pMe->vfunc_77(), (const wchar_t*)GetStringTable()->FUN_141811980(6, FUN_141654730(pMe)));
             }
             if (!PathIsDirectoryW(m_szDir))
                 CreateDirectoryW(m_szDir, NULL);
@@ -664,9 +678,9 @@ unsigned CDPSMeterSystem::ThreadProc()
                 st.wMilliseconds);
             wchar_t szDir[MAX_PATH];
             memset(szDir, 0, sizeof(szDir));
-            wcscat(szDir, m_szDir);
-            wcscat(szDir, strTime);
-            wcscat(szDir, strName);
+            __imp_wcscat(szDir, m_szDir);
+            __imp_wcscat(szDir, strTime);
+            __imp_wcscat(szDir, strName);
             if (!PathIsDirectoryW(szDir))
                 CreateDirectoryW(szDir, NULL);
             CStringW strCsv(strName);
@@ -674,17 +688,160 @@ unsigned CDPSMeterSystem::ThreadProc()
             strName.Append(L".txt");
             wchar_t szFile[MAX_PATH];
             memset(szFile, 0, sizeof(szFile));
-            WriteRecordFile(szFile, szDir, L"\\0_캐릭터정보", strName, FUN_140390ea0(FUN_141181540(), 0));
-            WriteRecordFile(szFile, szDir, L"\\1_DPS_기본정보", strName, FUN_140390ea0(spRecord->m_strSummary, 0));
-            WriteRecordFile(szFile, szDir, L"\\2_타격_스킬_상세정보", strName, FUN_140390ea0(spRecord->m_attack.GetSkillReport(), 0));
-            WriteRecordFile(szFile, szDir, L"\\3_타격_스킬_대미지_상세정보", strName, FUN_140390ea0(spRecord->m_attack.GetDamageLog(), 0));
-            WriteRecordFile(szFile, szDir, L"\\4_피격_스킬_상세정보", strName, FUN_140390ea0(spRecord->m_defense.GetSkillReport(), 0));
-            WriteRecordFile(szFile, szDir, L"\\5_피격_스킬_대미지_상세정보", strName, FUN_140390ea0(spRecord->m_defense.GetDamageLog(), 0));
-            WriteRecordFile(szFile, szDir, L"\\6_타격_Dot_상세정보", strName, FUN_140390ea0(spRecord->m_attack.GetDotReport(), 0));
-            WriteRecordFile(szFile, szDir, L"\\7_피격_Dot_상세정보", strName, FUN_140390ea0(spRecord->m_defense.GetDotReport(), 0));
-            WriteRecordFile(szFile, szDir, L"\\8_플레이어_상세정보", strCsv, FUN_14016a600(spRecord->m_strCsv, 0));
-            WriteRecordFile(szFile, szDir, L"\\9_AdditionalEffect_캐스터로그", strName, FUN_140390ea0(spRecord->m_attack.GetEffectLog(), 0));
-            WriteRecordFile(szFile, szDir, L"\\10_AdditionalEffect_타겟로그", strName, FUN_140390ea0(spRecord->m_defense.GetEffectLog(), 0));
+            {
+                __imp_wcscat(szFile, szDir);
+                __imp_wcscat(szFile, L"\\0_캐릭터정보");
+                __imp_wcscat(szFile, strName);
+                CFile file;
+                int bOpen = file.Open(FUN_1401d4330(szFile, 0), 0x5022, NULL);
+                if (bOpen)
+                {
+                    CStringA strText = FUN_140390ea0(FUN_141181540(), 0);
+                    file.Write(strText, strText.GetLength());
+                    file.Close();
+                }
+                memset(szFile, 0, sizeof(szFile));
+            }
+            {
+                __imp_wcscat(szFile, szDir);
+                __imp_wcscat(szFile, L"\\1_DPS_기본정보");
+                __imp_wcscat(szFile, strName);
+                CFile file;
+                int bOpen = file.Open(FUN_1401d4330(szFile, 0), 0x5022, NULL);
+                if (bOpen)
+                {
+                    CStringA strText = FUN_140390ea0(spRecord->m_strSummary, 0);
+                    file.Write(strText, strText.GetLength());
+                    file.Close();
+                }
+                memset(szFile, 0, sizeof(szFile));
+            }
+            {
+                __imp_wcscat(szFile, szDir);
+                __imp_wcscat(szFile, L"\\2_타격_스킬_상세정보");
+                __imp_wcscat(szFile, strName);
+                CFile file;
+                int bOpen = file.Open(FUN_1401d4330(szFile, 0), 0x5022, NULL);
+                if (bOpen)
+                {
+                    CStringA strText = FUN_140390ea0(spRecord->m_attack.GetSkillReport(), 0);
+                    file.Write(strText, strText.GetLength());
+                    file.Close();
+                }
+                memset(szFile, 0, sizeof(szFile));
+            }
+            {
+                __imp_wcscat(szFile, szDir);
+                __imp_wcscat(szFile, L"\\3_타격_스킬_대미지_상세정보");
+                __imp_wcscat(szFile, strName);
+                CFile file;
+                int bOpen = file.Open(FUN_1401d4330(szFile, 0), 0x5022, NULL);
+                if (bOpen)
+                {
+                    CStringA strText = FUN_140390ea0(spRecord->m_attack.GetDamageLog(), 0);
+                    file.Write(strText, strText.GetLength());
+                    file.Close();
+                }
+                memset(szFile, 0, sizeof(szFile));
+            }
+            {
+                __imp_wcscat(szFile, szDir);
+                __imp_wcscat(szFile, L"\\4_피격_스킬_상세정보");
+                __imp_wcscat(szFile, strName);
+                CFile file;
+                int bOpen = file.Open(FUN_1401d4330(szFile, 0), 0x5022, NULL);
+                if (bOpen)
+                {
+                    CStringA strText = FUN_140390ea0(spRecord->m_defense.GetSkillReport(), 0);
+                    file.Write(strText, strText.GetLength());
+                    file.Close();
+                }
+                memset(szFile, 0, sizeof(szFile));
+            }
+            {
+                __imp_wcscat(szFile, szDir);
+                __imp_wcscat(szFile, L"\\5_피격_스킬_대미지_상세정보");
+                __imp_wcscat(szFile, strName);
+                CFile file;
+                int bOpen = file.Open(FUN_1401d4330(szFile, 0), 0x5022, NULL);
+                if (bOpen)
+                {
+                    CStringA strText = FUN_140390ea0(spRecord->m_defense.GetDamageLog(), 0);
+                    file.Write(strText, strText.GetLength());
+                    file.Close();
+                }
+                memset(szFile, 0, sizeof(szFile));
+            }
+            {
+                __imp_wcscat(szFile, szDir);
+                __imp_wcscat(szFile, L"\\6_타격_Dot_상세정보");
+                __imp_wcscat(szFile, strName);
+                CFile file;
+                int bOpen = file.Open(FUN_1401d4330(szFile, 0), 0x5022, NULL);
+                if (bOpen)
+                {
+                    CStringA strText = FUN_140390ea0(spRecord->m_attack.GetDotReport(), 0);
+                    file.Write(strText, strText.GetLength());
+                    file.Close();
+                }
+                memset(szFile, 0, sizeof(szFile));
+            }
+            {
+                __imp_wcscat(szFile, szDir);
+                __imp_wcscat(szFile, L"\\7_피격_Dot_상세정보");
+                __imp_wcscat(szFile, strName);
+                CFile file;
+                int bOpen = file.Open(FUN_1401d4330(szFile, 0), 0x5022, NULL);
+                if (bOpen)
+                {
+                    CStringA strText = FUN_140390ea0(spRecord->m_defense.GetDotReport(), 0);
+                    file.Write(strText, strText.GetLength());
+                    file.Close();
+                }
+                memset(szFile, 0, sizeof(szFile));
+            }
+            {
+                __imp_wcscat(szFile, szDir);
+                __imp_wcscat(szFile, L"\\8_플레이어_상세정보");
+                __imp_wcscat(szFile, strCsv);
+                CFile file;
+                int bOpen = file.Open(FUN_1401d4330(szFile, 0), 0x5022, NULL);
+                if (bOpen)
+                {
+                    CStringA strText = FUN_14016a600(spRecord->m_strCsv, 0);
+                    file.Write(strText, strText.GetLength());
+                    file.Close();
+                }
+                memset(szFile, 0, sizeof(szFile));
+            }
+            {
+                __imp_wcscat(szFile, szDir);
+                __imp_wcscat(szFile, L"\\9_AdditionalEffect_캐스터로그");
+                __imp_wcscat(szFile, strName);
+                CFile file;
+                int bOpen = file.Open(FUN_1401d4330(szFile, 0), 0x5022, NULL);
+                if (bOpen)
+                {
+                    CStringA strText = FUN_140390ea0(spRecord->m_attack.GetEffectLog(), 0);
+                    file.Write(strText, strText.GetLength());
+                    file.Close();
+                }
+                memset(szFile, 0, sizeof(szFile));
+            }
+            {
+                __imp_wcscat(szFile, szDir);
+                __imp_wcscat(szFile, L"\\10_AdditionalEffect_타겟로그");
+                __imp_wcscat(szFile, strName);
+                CFile file;
+                int bOpen = file.Open(FUN_1401d4330(szFile, 0), 0x5022, NULL);
+                if (bOpen)
+                {
+                    CStringA strText = FUN_140390ea0(spRecord->m_defense.GetEffectLog(), 0);
+                    file.Write(strText, strText.GetLength());
+                    file.Close();
+                }
+                memset(szFile, 0, sizeof(szFile));
+            }
             m_bFlush = 0;
             MessageBoxW(NULL, szDir, L"Complete!", 0);
         }
@@ -742,10 +899,9 @@ int CDPSMeterSystem::StopRecord(unsigned nTime)
 MS2_REPLACE_METHOD(0x14117C7C0, CDPSMeterSystem, StopRecord, 230, 0x7E6E05B7);
 
 // @0x14117c8b0
-// MS2-FUNCTIONAL: not byte-exact yet (partial unit; frame/temporary layout and branch shape differ)
 int CDPSMeterSystem::IsRecording()
 {
-    return (m_bRecording != 0 && m_spRecord.get() != 0) ? 1 : 0;
+    return (m_bRecording && m_spRecord) ? 1 : 0;
 }
 MS2_REPLACE_METHOD(0x14117C8B0, CDPSMeterSystem, IsRecording, 92, 0xC5BF3CB4);
 
@@ -777,7 +933,6 @@ void CDPSMeterSystem::Flush()
 MS2_REPLACE_METHOD(0x14117C9B0, CDPSMeterSystem, Flush, 57, 0x04E998D2);
 
 // @0x14117c9f0
-// MS2-FUNCTIONAL: not byte-exact yet (partial unit; frame/temporary layout and branch shape differ)
 void CDPSMeterSystem::Accumulate(CMeterRecordData::Aggregation* pAgg, MS2Ptr<CDamageMeterData> spData)
 {
     pAgg->m_nCount++;
@@ -794,16 +949,16 @@ void CDPSMeterSystem::Accumulate(CMeterRecordData::Aggregation* pAgg, MS2Ptr<CDa
         pAgg->m_nTotal += spData->m_nDamage;
         pAgg->m_nCritical += spData->m_nDamage;
         break;
-    case 2:
-        pAgg->m_nMiss++;
-        break;
     case 3:
         pAgg->m_nBlock++;
+        break;
+    case 2:
+        pAgg->m_nMiss++;
         break;
     }
     if (spData->m_bKilled != 0)
         pAgg->m_nKill++;
-    pAgg->m_attributes[spData->m_nAttribute] += spData->m_nDamage;
+    pAgg->m_attributes[(unsigned)spData->m_nAttribute] += spData->m_nDamage;
     if ((unsigned)spData->m_nAttribute < 6)
         pAgg->m_nMagic += spData->m_nDamage;
     else if ((unsigned)spData->m_nAttribute < 8)
@@ -855,7 +1010,6 @@ int CDPSMeterSystem::AddDamage(int nSide, int nCasterId, int nTargetId, int nKin
 MS2_REPLACE_METHOD(0x14117CCC0, CDPSMeterSystem, AddDamage, 966, 0x244AD59E);
 
 // @0x14117d090
-// MS2-FUNCTIONAL: not byte-exact yet (partial unit; frame/temporary layout and branch shape differ)
 int CDPSMeterSystem::AddStat(int nSide, int nList, __int64 nValue, __int64 nEffective, __int64 nOver, int nType)
 {
     if (IsRecording() == 0)
@@ -880,15 +1034,15 @@ int CDPSMeterSystem::AddStat(int nSide, int nList, __int64 nValue, __int64 nEffe
             pAgg->m_heals.AddTail(spStat);
             if (nSide == 0)
             {
-                if (nType == 0)
-                {
-                    m_spRecord->m_nSkillSp += nEffective;
-                    m_spRecord->m_nHealed += nValue;
-                }
-                else
+                if (nType != 0)
                 {
                     m_spRecord->m_nNaturalSp += nEffective;
                     m_spRecord->m_nNaturalEp += nOver;
+                }
+                else
+                {
+                    m_spRecord->m_nSkillSp += nEffective;
+                    m_spRecord->m_nHealed += nValue;
                 }
             }
             else if (nSide == 1 && nType == 0)
@@ -939,21 +1093,24 @@ int CDPSMeterSystem::AddEffect(CStringW strEvent, int nSide, int nCasterId, int 
 MS2_REPLACE_METHOD(0x14117D460, CDPSMeterSystem, AddEffect, 735, 0xC9DC9D73);
 
 // @0x14117d750
-// MS2-FUNCTIONAL: not byte-exact yet (partial unit; frame/temporary layout and branch shape differ)
 void CDPSMeterSystem::OnDamage(MS2Ptr<CDamageRecord> spRecord)
 {
     if (IsRecording() == 0 || spRecord.IsNull())
         return;
+    do
+    {
     PCBase* pMe = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pMe == 0)
-        return;
+        break;
     int nAttackerId = spRecord->m_nOwnerId;
     Unk_DpsSummon* pSummon = FUN_1403ed2d0()->FUN_141bd13a0(nAttackerId);
     if (pSummon != 0)
         nAttackerId = pSummon->FUN_141094f40();
+    int bTarget = 0;
     if (spRecord->m_nCasterId != FUN_14123c580(pMe) && nAttackerId != FUN_14123c580(pMe))
-        return;
-    bool bTarget = spRecord->m_nCasterId == FUN_14123c580(pMe);
+        break;
+    else if (spRecord->m_nCasterId == FUN_14123c580(pMe))
+        bTarget = 1;
     float fRate = 0.0f;
     if (!bTarget)
     {
@@ -968,35 +1125,38 @@ void CDPSMeterSystem::OnDamage(MS2Ptr<CDamageRecord> spRecord)
     unsigned nCount = (unsigned)spRecord->m_damages.GetCount();
     for (unsigned i = 0; i < nCount; i++)
     {
-        __int64 nDamage = abs(spRecord->m_damages[i]);
         AddDamage(bTarget, nAttackerId, spRecord->m_nCasterId, 0, spRecord->m_spSkill->GetElement(), spRecord->m_nTagId,
-            spRecord->m_nSkillId, spRecord->m_nLevel, spRecord->m_types[i], nDamage, fRate);
+            spRecord->m_nSkillId, spRecord->m_nLevel, spRecord->m_types[i], abs(spRecord->m_damages[i]), fRate);
     }
+    } while (0);
 }
 MS2_REPLACE_METHOD(0x14117D750, CDPSMeterSystem, OnDamage, 1154, 0xC509C0DD);
 
 // @0x14117dbe0
-// MS2-FUNCTIONAL: not byte-exact yet (partial unit; frame/temporary layout and branch shape differ)
 void CDPSMeterSystem::OnDotDamage(MS2Ptr<CDotDamageRecord> spRecord)
 {
     if (IsRecording() == 0 || spRecord.IsNull())
         return;
+    do
+    {
     PCBase* pMe = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pMe == 0)
-        return;
+        break;
     int nAttackerId = spRecord->m_nOwnerId;
     Unk_DpsSummon* pSummon = FUN_1403ed2d0()->FUN_141bd13a0(nAttackerId);
     if (pSummon != 0)
         nAttackerId = pSummon->FUN_141094f40();
+    int bTarget = 0;
     if (spRecord->m_nCasterId != FUN_14123c580(pMe) && nAttackerId != FUN_14123c580(pMe))
-        return;
-    bool bTarget = spRecord->m_nCasterId == FUN_14123c580(pMe);
+        break;
+    else if (spRecord->m_nCasterId == FUN_14123c580(pMe))
+        bTarget = 1;
     MS2Ptr<AdditionalCli> spBuff;
     PCBase* pCaster = FUN_1403ed2d0()->FUN_141bd1200(spRecord->m_nCasterId);
     if (pCaster != 0)
         spBuff = pCaster->FUN_1416749a0()->FUN_14096fc80(spRecord->m_nEffectLevel);
     if (spBuff.IsNull())
-        return;
+        break;
     float fRate = 0.0f;
     if (!bTarget)
     {
@@ -1010,25 +1170,29 @@ void CDPSMeterSystem::OnDotDamage(MS2Ptr<CDotDamageRecord> spRecord)
     unsigned nEffectId = spBuff->FUN_14096d810()->GetID();
     AddDamage(bTarget, nAttackerId, spRecord->m_nCasterId, 1, spBuff->FUN_14096d810()->m_dotDamage.m_eElement,
         (unsigned)spRecord->m_nEffectLevel, nEffectId, nLevel, nGrade, nDamage, fRate);
+    } while (0);
 }
 MS2_REPLACE_METHOD(0x14117DBE0, CDPSMeterSystem, OnDotDamage, 1093, 0xE87D6C3E);
 
 // @0x14117e030
-// MS2-FUNCTIONAL: not byte-exact yet (partial unit; frame/temporary layout and branch shape differ)
 void CDPSMeterSystem::OnSplashDamage(MS2Ptr<CSplashDamageRecord> spRecord)
 {
     if (IsRecording() == 0 || spRecord.IsNull())
         return;
+    do
+    {
     PCBase* pMe = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pMe == 0)
-        return;
+        break;
     int nAttackerId = spRecord->m_nOwnerId;
     Unk_DpsSummon* pSummon = FUN_1403ed2d0()->FUN_141bd13a0(nAttackerId);
     if (pSummon != 0)
         nAttackerId = pSummon->FUN_141094f40();
+    int bTarget = 0;
     if (spRecord->m_nCasterId != FUN_14123c580(pMe) && nAttackerId != FUN_14123c580(pMe))
-        return;
-    bool bTarget = spRecord->m_nCasterId == FUN_14123c580(pMe);
+        break;
+    else if (spRecord->m_nCasterId == FUN_14123c580(pMe))
+        bTarget = 1;
     float fRate = 0.0f;
     if (!bTarget)
     {
@@ -1043,10 +1207,10 @@ void CDPSMeterSystem::OnSplashDamage(MS2Ptr<CSplashDamageRecord> spRecord)
     unsigned nCount = (unsigned)spRecord->m_damages.GetCount();
     for (unsigned i = 0; i < nCount; i++)
     {
-        __int64 nDamage = abs(spRecord->m_damages[i]);
         AddDamage(bTarget, nAttackerId, spRecord->m_nCasterId, 0, spRecord->m_spSkill->GetElement(), spRecord->m_nTagId,
-            spRecord->m_nSkillId, spRecord->m_nLevel, spRecord->m_types[i], nDamage, fRate);
+            spRecord->m_nSkillId, spRecord->m_nLevel, spRecord->m_types[i], abs(spRecord->m_damages[i]), fRate);
     }
+    } while (0);
 }
 MS2_REPLACE_METHOD(0x14117E030, CDPSMeterSystem, OnSplashDamage, 1154, 0x5CD12C2E);
 
@@ -1191,7 +1355,6 @@ MS2_REPLACE_METHOD(0x14117E960, CDPSMeterSystem, GetSummary, 285, 0x1832DDFF);
 
 // A stat value as text (IsStatKindTwo false: a whole number).
 // @0x141182600
-// MS2-FUNCTIONAL: written from the decompile; not compared yet
 static CStringW GetStatValueString(int nStat, int nValue)
 {
     CStringW str = StringFormat((const wchar_t*)GetStatValueText(nStat), nValue);
@@ -1201,7 +1364,6 @@ MS2_REPLACE(0x141182600, GetStatValueString, 153, 0xA6B66BA4);
 
 // A stat value as text (IsStatKindTwo true: tenths).
 // @0x1411826a0
-// MS2-FUNCTIONAL: written from the decompile; not compared yet
 static CStringW GetStatRateString(int nStat, int nValue)
 {
     float fValue = (float)nValue / 10.0f;
@@ -1212,7 +1374,6 @@ MS2_REPLACE(0x1411826A0, GetStatRateString, 173, 0xDBADBA8D);
 
 // One line of the character sheet: the item id and name, its additional effects and every option of its status.
 // @0x141182760
-// MS2-FUNCTIONAL: written from the decompile; not compared yet
 static const CStringW& GetItemText(CItem* pItem)
 {
     static CStringW s_str;
@@ -1223,33 +1384,35 @@ static const CStringW& GetItemText(CItem* pItem)
     s_str.AppendFormat(L"%d, %s", pItem->FUN_1405276c0(), (const wchar_t*)pItem->FUN_140527b10());
     if (pItem->FUN_140526390() != 0)
     {
-        for (unsigned i = 0; i < pItem->FUN_140527840()->additionalEffect.ids.GetCount(); i++)
+        unsigned nCount = (unsigned)pItem->FUN_140527840()->additionalEffect.ids.GetCount();
+        for (unsigned i = 0; i < nCount; i++)
         {
-            s_str.AppendFormat(L", %s", (const wchar_t*)GetStringTable()->FUN_141812290(
-                pItem->FUN_140527840()->additionalEffect.ids[i], pItem->FUN_140527840()->additionalEffect.levels[i],
-                CString("name")));
+            CStringW strName = GetStringTable()->FUN_141812290(pItem->FUN_140527840()->additionalEffect.ids[i],
+                pItem->FUN_140527840()->additionalEffect.levels[i], CString("name"));
+            s_str.AppendFormat(L", %s", (const wchar_t*)strName);
         }
     }
-    for (int nRank = 0; nRank < 5; nRank++)
+    for (size_t nRank = 0; nRank < 5; nRank++)
     {
         for (unsigned nStat = 0; nStat < 0x23; nStat++)
         {
+            int nStatId = nStat;
             Unk_EnchantPtr<BaseOption> spStat(new BaseOption);
-            spStat->SetValue(pItem->FUN_1405278a0()->FUN_14062ffb0(nStat, 0, nRank));
+            spStat->SetValue(pItem->FUN_1405278a0()->FUN_14062ffb0(nStatId, 0, (int)nRank));
             int nValue = spStat->GetValue();
-            if (nValue != 0)
-            {
-                if (!IsStatKindTwo(nStat))
-                    s_str.AppendFormat(L", %s", (const wchar_t*)GetStatValueString(nStat, nValue));
-                else
-                    s_str.AppendFormat(L", %s", (const wchar_t*)GetStatRateString(nStat, nValue));
-            }
+            if (nValue == 0)
+                continue;
+            if (IsStatKindTwo(nStatId))
+                s_str.AppendFormat(L", %s", (const wchar_t*)GetStatRateString(nStatId, nValue));
+            else
+                s_str.AppendFormat(L", %s", (const wchar_t*)GetStatValueString(nStatId, nValue));
         }
         for (unsigned nType = 1; nType < 0xcf; nType++)
         {
-            Unk_EnchantPtr<BaseOption> spSpecial = spOption->FUN_1405cb800(nRank, nType);
+            int nTypeId = nType;
+            Unk_EnchantPtr<BaseOption> spSpecial = spOption->FUN_1405cb800((int)nRank, nTypeId);
             if (spSpecial.get() != 0)
-                s_str.AppendFormat(L", %s", (const wchar_t*)pItem->FUN_1405278a0()->FUN_1406305e0(nRank, nType, 0));
+                s_str.AppendFormat(L", %s", (const wchar_t*)pItem->FUN_1405278a0()->FUN_1406305e0((int)nRank, nTypeId, 0));
         }
     }
     return s_str;
@@ -1258,7 +1421,6 @@ MS2_REPLACE(0x141182760, GetItemText, 1471, 0xCB4EE308);
 
 // The summary text (and with bCsv the csv line) of the running record at nTime.
 // @0x14117ea90
-// MS2-FUNCTIONAL: written from the decompile; not compared yet
 void CDPSMeterSystem::FUN_14117ea90(unsigned nTime, int bCsv)
 {
     if (Unk_LockGuard guard = m_lock)
@@ -1293,7 +1455,7 @@ void CDPSMeterSystem::FUN_14117ea90(unsigned nTime, int bCsv)
             strCsv.AppendFormat(L"%s, ", (const wchar_t*)*FUN_1403ed2d0()->FUN_141bd3080());
             strCsv.AppendFormat(L"%s, ", (const wchar_t*)pMe->vfunc_77());
             strCsv.AppendFormat(L"%s, ", (const wchar_t*)GetStringTable()->FUN_141811980(6, FUN_141654730(pMe)));
-            strCsv.AppendFormat(L"%d, ", pMe->vfunc_78());
+            strCsv.AppendFormat(L"%d, ", (unsigned short)pMe->vfunc_78());
             strCsv.AppendFormat(L"%s, ", (const wchar_t*)GetStatText(4, 0));
             strCsv.AppendFormat(L"%s, ", (const wchar_t*)GetStatText(7, 0));
             strCsv.AppendFormat(L"%s, ", (const wchar_t*)GetStatText(0xa, 0));
@@ -1456,57 +1618,55 @@ MS2_REPLACE_METHOD(0x14117EA90, CDPSMeterSystem, FUN_14117ea90, 10915, 0x1CF2855
 
 // The character sheet of the own player (the "0_캐릭터정보" file): name, job, level and the worn items of both layers.
 // @0x141181540
-// MS2-FUNCTIONAL: written from the decompile; not compared yet
-const CStringW& FUN_141181540()
+const CStringW& CDPSMeterSystem::FUN_141181540()
 {
     static CStringW s_str;
     s_str.Empty();
-    PCBase* pMe = FUN_1403ed2d0()->FUN_141bd0cc0();
-    if (pMe != 0)
+    do
     {
+        PCBase* pMe = FUN_1403ed2d0()->FUN_141bd0cc0();
+        if (pMe == 0)
+            break;
         s_str.AppendFormat(L"캐릭터명 : %s\r\n", (const wchar_t*)pMe->vfunc_77());
         s_str.AppendFormat(L"클래스 : %s\r\n", (const wchar_t*)GetStringTable()->FUN_141811980(6, FUN_141654730(pMe)));
-        s_str.AppendFormat(L"레벨 : %d\r\n", pMe->vfunc_78());
+        s_str.AppendFormat(L"레벨 : %d\r\n", (unsigned short)pMe->vfunc_78());
         s_str.AppendFormat(L"\r\n");
         s_str.AppendFormat(L"--- 게임 레이어 장착 장비 목록 ---\r\n");
-        ATL::CAtlList<MS2Ptr<CEquipItem> > equips(10);
-        FUN_1411e1ce0(static_cast<Unk_DpsPC*>(pMe)->FUN_1416561a0(), equips, 0);
-        POSITION pos = equips.GetHeadPosition();
-        while (pos != NULL)
         {
-            MS2Ptr<CEquipItem> spEquip = equips.GetAt(pos);
-            if (!spEquip.IsNull())
+            ATL::CAtlList<MS2Ptr<CEquipItem> > equips(10);
+            FUN_1411e1ce0(static_cast<Unk_DpsPC*>(pMe)->FUN_1416561a0(), equips, 0);
+            for (POSITION pos = equips.GetHeadPosition(); pos != NULL; equips.GetNext(pos))
             {
+                MS2Ptr<CEquipItem> spEquip = equips.GetAt(pos);
+                if (spEquip.IsNull())
+                    continue;
                 MS2Ptr<CItem> spItem = spEquip->GetItem();
-                if (!spItem.IsNull())
-                    s_str.AppendFormat(L"%s\r\n", (const wchar_t*)GetItemText(spItem.get()));
+                if (spItem.IsNull())
+                    continue;
+                s_str.AppendFormat(L"%s\r\n", (const wchar_t*)GetItemText(spItem.get()));
             }
-            equips.GetNext(pos);
         }
         s_str.AppendFormat(L"\r\n");
         s_str.AppendFormat(L"--- 스킨 레이어 장착 장비 목록 ---\r\n");
         ATL::CAtlList<MS2Ptr<CEquipItem> > skins(10);
         FUN_1411e1ce0(static_cast<Unk_DpsPC*>(pMe)->FUN_1416561a0(), skins, 1);
-        POSITION posSkin = skins.GetHeadPosition();
-        while (posSkin != NULL)
+        for (POSITION pos = skins.GetHeadPosition(); pos != NULL; skins.GetNext(pos))
         {
-            MS2Ptr<CEquipItem> spEquip = skins.GetAt(posSkin);
-            if (!spEquip.IsNull())
-            {
-                MS2Ptr<CItem> spItem = spEquip->GetItem();
-                if (!spItem.IsNull())
-                    s_str.AppendFormat(L"%s\r\n", (const wchar_t*)GetItemText(spItem.get()));
-            }
-            skins.GetNext(posSkin);
+            MS2Ptr<CEquipItem> spEquip = skins.GetAt(pos);
+            if (spEquip.IsNull())
+                continue;
+            MS2Ptr<CItem> spItem = spEquip->GetItem();
+            if (spItem.IsNull())
+                continue;
+            s_str.AppendFormat(L"%s\r\n", (const wchar_t*)GetItemText(spItem.get()));
         }
-    }
+    } while (0);
     return s_str;
 }
-MS2_REPLACE(0x141181540, FUN_141181540, 1175, 0x80BAE760);
+MS2_REPLACE_METHOD(0x141181540, CDPSMeterSystem, FUN_141181540, 1175, 0x80BAE760);
 
 // The mean weapon attack of the two hands (slots 4 and 5); the plain stat value when a hand is empty.
 // @0x1411819e0
-// MS2-FUNCTIONAL: written from the decompile; not compared yet
 __int64 CDPSMeterSystem::GetAverageWeaponAttack()
 {
     PCBase* pMe = FUN_1403ed2d0()->FUN_141bd0cc0();
@@ -1516,7 +1676,7 @@ __int64 CDPSMeterSystem::GetAverageWeaponAttack()
     __int64 nMax = 0;
     MS2Ptr<CEquipItem> spRight = static_cast<Unk_DpsPC*>(pMe)->FUN_141655c90(4);
     MS2Ptr<CEquipItem> spLeft = static_cast<Unk_DpsPC*>(pMe)->FUN_141655c90(5);
-    if (spRight.get() != 0 && spLeft.get() != 0)
+    if (spRight && spLeft)
     {
         if (spLeft->GetItem().IsNull())
             return 0;
@@ -1536,7 +1696,6 @@ MS2_REPLACE_METHOD(0x1411819E0, CDPSMeterSystem, GetAverageWeaponAttack, 834, 0x
 
 // The text of a basic stat (bPercent: as a percent string 0x98e).
 // @0x141181d30
-// MS2-FUNCTIONAL: written from the decompile; not compared yet
 CStringW CDPSMeterSystem::GetStatText(int nStat, int bPercent)
 {
     CStringW str;
@@ -1566,7 +1725,6 @@ MS2_REPLACE_METHOD(0x141181D30, CDPSMeterSystem, GetStatText, 624, 0xCDC470FC);
 
 // The text of a bonus stat of the worn items (bPercent: a rate, as a percent string 0x98e).
 // @0x141181fb0
-// MS2-FUNCTIONAL: written from the decompile; not compared yet
 CStringW CDPSMeterSystem::GetBonusText(int nStat, int bPercent)
 {
     CStringW str;

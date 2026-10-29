@@ -77,11 +77,11 @@ ItemGachaBoxTable* FUN_14052d230();
 class NpcShopItemLife : public CPtred { public: Unk_ItemSlot188 FUN_14026eab0(); };   // commonstruct_wa.h has the full class
 class Unk_SingletonObj {};
 // The UGC model download manager behind DAT_143aaf1d8 (avatarpc.cpp declares the same class).
-struct Unk_UgcNullKey { Unk_UgcNullKey(int n); void* m_pad; };   // ctor 0x1401cd100
+struct Unk_UgcNullKey { Unk_UgcNullKey(int n); Unk_UgcNullKey(const Unk_UgcNullKey&); void* m_pad; };   // ctor 0x1401cd100; copy ctor only makes it pass by address
 class Unk_UgcRideeMgr : public Unk_SingletonObj
 {
 public:
-    void FUN_141883df0(MS2Ptr<CItem> spItem, const Unk_UgcNullKey& kKey);
+    void FUN_141883df0(MS2Ptr<CItem> spItem, Unk_UgcNullKey kKey);
     void FUN_141885880(MS2Ptr<CItem> spItem);
 };
 class Unk_MusicBookInfo : public CPtred { public: char m_pad18[0x10]; CString m_str28; CStringW FUN_14072c480(); };
@@ -597,23 +597,21 @@ int CItem::FUN_140525e50(int nGender, int nCategory)
 }
 MS2_REPLACE_METHOD(0x140525E50, CItem, FUN_140525e50, 86, 0xCD65FAD7);
 
-// MS2-FUNCTIONAL: bytes differ from the exe (operand order / temporaries / SEH state layout); behaviour equivalent
 // @0x140525eb0
 int CItem::FUN_140525eb0(int nGender, int nB)
 {
-    if (m_spData.get() == 0)
-        return 0;
-    return m_spData->FUN_14053c9e0(nGender, nB);
+    if (m_spData.get() != 0)
+        return m_spData->FUN_14053c9e0(nGender, nB);
+    return 0;
 }
 MS2_REPLACE_METHOD(0x140525EB0, CItem, FUN_140525eb0, 87, 0x3CF14EF1);
 
-// MS2-FUNCTIONAL: bytes differ from the exe (operand order / temporaries / SEH state layout); behaviour equivalent
 // @0x140526010
 int CItem::FUN_140526010()
 {
-    if (m_spData.get() == 0)
-        return 0;
-    return m_spData->FUN_14053d900();
+    if (m_spData.get() != 0)
+        return m_spData->FUN_14053d900();
+    return 0;
 }
 MS2_REPLACE_METHOD(0x140526010, CItem, FUN_140526010, 72, 0x6813C8A0);
 
@@ -637,10 +635,10 @@ MS2_REPLACE_METHOD(0x1405262C0, CItem, FUN_1405262c0, 76, 0x8CD26A7C);
 
 // MS2-FUNCTIONAL: bytes differ from the exe (operand order / temporaries / SEH state layout); behaviour equivalent
 // @0x140526320
-bool CItem::FUN_140526320()
+int CItem::FUN_140526320()
 {
     if (m_spData == 0)
-        return false;
+        return 0;
     return m_spData->FUN_14053c6f0() == 0x60;
 }
 MS2_REPLACE_METHOD(0x140526320, CItem, FUN_140526320, 100, 0x95712DC4);
@@ -689,11 +687,7 @@ CItemTransfer::CItemBinding::CItemBinding() : m_n18(0)
 {
 }
 
-// MS2-FUNCTIONAL: bytes differ from the exe (operand order / temporaries / SEH state layout); behaviour equivalent
-// @0x14052c4e0
-CItemTransfer::CItemBinding::~CItemBinding()
-{
-}
+// @0x14052c4e0: CItemTransfer::CItemBinding::~CItemBinding() is implicit (no vftable store in the exe)
 
 // @0x14052c140
 CItemCoupleInfo::CItemCoupleInfo()
@@ -710,11 +704,7 @@ void CItemCoupleInfo::FUN_14052d000()
 }
 MS2_REPLACE_METHOD(0x14052D000, CItemCoupleInfo, FUN_14052d000, 61, 0xDD3E3735);
 
-// MS2-FUNCTIONAL: bytes differ from the exe (operand order / temporaries / SEH state layout); behaviour equivalent
-// @0x14052c510
-CItemCoupleInfo::~CItemCoupleInfo()
-{
-}
+// @0x14052c510: CItemCoupleInfo::~CItemCoupleInfo() is implicit (no vftable store in the exe)
 
 // @0x14052c1a0
 CItemCustomMusicScore::CItemCustomMusicScore()
@@ -2291,7 +2281,6 @@ CStringW CItem::FUN_140528010()
 MS2_REPLACE_METHOD(0x140528010, CItem, FUN_140528010, 322, 0x89EAC3CB);
 
 // @0x140527b10
-// MS2-FUNCTIONAL: branch layout / pet-name tail ordering differs from the exe
 CStringW CItem::FUN_140527b10()
 {
     CStringW strName = FUN_1401a9d70()->FUN_141811980(1, FUN_1405276c0());
@@ -2308,34 +2297,36 @@ CStringW CItem::FUN_140527b10()
         if (m_strB8.GetLength() > 0)
             strName = m_strB8;
         MS2Ptr<Unk_PetRow> spRow = FUN_14052d210()->FUN_1407290f0(FUN_140527840()->FUN_14053dc60());
-        if (spRow.get() == 0)
-            return strName;
-        if (spRow->m_n18 == 1)
-            return FormatStringId(0xcd6, strName);
-        return FormatStringId(0xcd5, strName);
-    }
-    else
-    {
-        if (m_spData->FUN_14053da20() || m_spData->FUN_14053d9d0())
-            return strName;
-        if (FUN_140525a30() != 0)
+        if (spRow.get() != 0)
         {
-            CStringW strGem = FUN_140529de0();
-            if (!strGem.IsEmpty())
-                return FUN_1401d0080(strName, strGem); // strName + strGem (exe operator+; clang would import MFC CopyChars)
-        }
-        unsigned short nUnlimited = FUN_1405278a0()->FUN_140630d90()->FUN_1408bbc50();
-        if (nUnlimited != 0)
-            return FUN_14028dfa0(CStringW(L"s_word_item_unlimited_enchant"), nUnlimited, strName);
-        unsigned short nEnchant = FUN_1405278a0()->FUN_140630d00();
-        if (nEnchant != 0)
-        {
-            CStringW strFormatted;
-            strFormatted.Format(L"+%d %s", nEnchant, (LPCWSTR)strName);
-            return strFormatted;
+            if (spRow->m_n18 == 1)
+                return FormatStringId(0xcd6, strName);
+            else
+                return FormatStringId(0xcd5, strName);
         }
         return strName;
     }
+    else if (m_spData->FUN_14053da20() || m_spData->FUN_14053d9d0())
+    {
+        return strName;
+    }
+    else if (FUN_140525a30() != 0)
+    {
+        CStringW strGem = FUN_140529de0();
+        if (!strGem.IsEmpty())
+            return FUN_1401d0080(strName, strGem); // strName + strGem (exe operator+; clang would import MFC CopyChars)
+    }
+    unsigned short nUnlimited = FUN_1405278a0()->FUN_140630d90()->FUN_1408bbc50();
+    if (nUnlimited > 0)
+        return FUN_14028dfa0(CStringW(L"s_word_item_unlimited_enchant"), nUnlimited, strName);
+    unsigned short nEnchant = FUN_1405278a0()->FUN_140630d00();
+    if (nEnchant > 0)
+    {
+        CStringW strFormatted;
+        strFormatted.Format(L"+%d %s", nEnchant, (LPCWSTR)strName);
+        return strFormatted;
+    }
+    return strName;
 }
 
 // @0x140528160
@@ -2389,8 +2380,7 @@ bool CItem::FUN_140528e80(int nType, __int64 nTime)
 MS2_REPLACE_METHOD(0x140528E80, CItem, FUN_140528e80, 254, 0x4CEA5801);
 
 // @0x140528f90
-// MS2-FUNCTIONAL: the exe takes no parameter (no home-slot spill of edx) although uiitemenchantdialog passes one; kept for the shared prototype
-int CItem::FUN_140528f90(int)
+int CItem::FUN_140528f90()
 {
     Unk_ItemEnchantData* pEnchant = FUN_1405278a0();
     if (pEnchant == 0)
@@ -2509,7 +2499,6 @@ int FUN_14052a620(MS2Ptr<CItem> spFirst, MS2Ptr<CItem> spSecond)
 }
 
 // @0x14052a7e0
-// MS2-FUNCTIONAL: behaviour-equivalent; exe keeps the two equip-data pointers in different frame slots (0xa8/0x50 vs 0x50/0x30), frame 0xd8 vs 0xc8
 // item ordering (inventory sort comparator): empty first, then category, equip level, enchant level, id, count
 int FUN_14052a7e0(MS2Ptr<CItem> spFirst, MS2Ptr<CItem> spSecond)
 {
@@ -2538,27 +2527,30 @@ int FUN_14052a7e0(MS2Ptr<CItem> spFirst, MS2Ptr<CItem> spSecond)
     nKind[1] = spSecond->FUN_14052afe0();
     if (nKind[0] < nKind[1])
         return -1;
-    else if (nKind[1] < nKind[0])
+    else if (nKind[0] > nKind[1])
         return 1;
     int nLevel[2];
     nLevel[0] = pFirst->FUN_14053c620();
     nLevel[1] = pSecond->FUN_14053c620();
     if (nLevel[0] < nLevel[1])
         return -1;
-    else if (nLevel[1] < nLevel[0])
+    else if (nLevel[0] > nLevel[1])
         return 1;
     if (nKind[0] == 2)
     {
-        if ((int)pFirst->limit.levelLimit < (int)pSecond->limit.levelLimit)
+        int nLimit[2];
+        nLimit[0] = pFirst->limit.levelLimit;
+        nLimit[1] = pSecond->limit.levelLimit;
+        if (nLimit[0] < nLimit[1])
             return -1;
-        if ((int)pSecond->limit.levelLimit < (int)pFirst->limit.levelLimit)
+        else if (nLimit[0] > nLimit[1])
             return 1;
         int nRarity[2];
         nRarity[0] = spFirst->FUN_140526bd0();
         nRarity[1] = spSecond->FUN_140526bd0();
         if (nRarity[0] < nRarity[1])
             return -1;
-        if (nRarity[1] < nRarity[0])
+        else if (nRarity[0] > nRarity[1])
             return 1;
     }
     unsigned nId[2];
@@ -2566,21 +2558,21 @@ int FUN_14052a7e0(MS2Ptr<CItem> spFirst, MS2Ptr<CItem> spSecond)
     nId[1] = spSecond->FUN_1405276c0();
     if (nId[0] < nId[1])
         return -1;
-    else if (nId[1] < nId[0])
+    else if (nId[0] > nId[1])
         return 1;
     if (nKind[0] != 1)
     {
         int nCount[2];
         nCount[0] = spFirst->FUN_140526c50();
         nCount[1] = spSecond->FUN_140526c50();
-        if (nCount[1] < nCount[0])
+        if (nCount[0] > nCount[1])
             return -1;
-        if (nCount[0] < nCount[1])
+        else if (nCount[0] < nCount[1])
             return 1;
     }
-    unsigned nIdTie[2];
-    nIdTie[0] = spFirst->FUN_1405276c0();
-    nIdTie[1] = spSecond->FUN_1405276c0();
+    unsigned __int64 nIdTie[2];
+    nIdTie[0] = (unsigned)spFirst->FUN_1405276c0();
+    nIdTie[1] = (unsigned)spSecond->FUN_1405276c0();
     if (nIdTie[0] < nIdTie[1])
         return -1;
     else
@@ -2703,7 +2695,7 @@ void CItem::FUN_140524eb0(CInputStream& in)
         {
             if (m_spUgc->FUN_140632100().GetLength() > 0)
             {
-                FUN_14052d220()->FUN_141883df0(MS2Ptr<CItem>(this), Unk_UgcNullKey(0));
+                FUN_14052d220()->FUN_141883df0(this, 0);
             }
         }
         if (FUN_140526010() != 0)
@@ -2946,11 +2938,11 @@ int CItemBreakIngredientTable::Reload()
 int CItemBreakIngredientTable::LoadBreakItems()
 {
     m_mapBreak.RemoveAll();
-    CString strPath = FUN_14071a5b0(CString("Table"), CString("itemBreakIngredient.xml"));
-    m_spCache = new CCacheData;
-    m_spCache->FUN_1401d1160(CString(strPath));
+    CString strPath = FUN_14071a5b0("Table", "itemBreakIngredient.xml");
+    m_spCache.AssignRaw(new CCacheData);
+    m_spCache->FUN_1401d1160(strPath);
     TiXmlDocument doc;
-    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (FUN_140166420()->FUN_1403974b0(&doc, (const char*)strPath, 0, true, false) == 0)
         return 0;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)

@@ -102,7 +102,7 @@ Unk_SmCubeSvc* FUN_1409670e0();
 struct Unk_SmDgData
 {
     char m_pad_00[0x140];
-    int m_140;                                              // +0x140
+    unsigned int m_140;                                     // +0x140
 };
 MS2_CHECK_OFFSET(Unk_SmDgData, m_140, 0x140);
 class Unk_SmDgRef
@@ -151,8 +151,8 @@ void FUN_140dffb50(IMessageListener* pListener);                        // the l
 CStringW GetStringCommon(int nStringId);
 CStringW FUN_1409eec40(int nStringId);
 CStringW GetStringCommonByKey(const CStringW& strKey);
-CStringW FUN_14052bd00(int nStringId, CStringW strArg);
-CStringW FUN_1405c2690(CStringW strKey, CStringW strArg);
+CStringW FUN_14052bd00(int nStringId, const CStringW& strArg);
+CStringW FUN_1405c2690(CStringW strKey, const CStringW& strArg);
 CStringW FUN_1401ceea0(const wchar_t* pszFormat, const int& n);        // one int argument
 CStringW FUN_140cd7d20();                                               // the dungeon name
 MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW text, IMessageListener* pListener, CStringW tag);
@@ -164,7 +164,7 @@ void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
 
 // @0x141b12ad0
 UISystemMenuDialog::UISystemMenuDialog()
-    : m_180(0), m_198(0)
+    : m_180(0), m_198(false)
 {
     FUN_141924170(1);
     FUN_141925e70(1, 1);
@@ -195,32 +195,33 @@ void UISystemMenuDialog::vfunc_67()
 }
 
 // @0x141b12d50
-// MS2-FUNCTIONAL: code generation differs (register allocation / block layout)
 void UISystemMenuDialog::OnLoadInit()
 {
     UIObject::OnLoadInit();
-    m_188 = FUN_140bb4b10(CString("m_exitRoom"));
-    MS2Ptr<CFieldDataCli> spField = FUN_1403ed2d0()->FUN_141bd30a0();
-    if (spField.get() != 0)
+    m_188 = FUN_140bb4b10("m_exitRoom");
     {
-        if (spField->FUN_1403751b0())
+        MS2Ptr<CFieldDataCli> spField = FUN_1403ed2d0()->FUN_141bd30a0();
+        if (spField.get() != 0)
         {
-            if (spField->m_nMapType == 3)
+            if (spField->FUN_1403751b0())
             {
-                m_188->FUN_1422ce240(SmClickDelegate(this, &UISystemMenuDialog::FUN_141b13b00), 0);
-                m_188->FUN_1422cdfb0(FUN_141b146a0(spField->m_nMapType));
-                m_188->vfunc_3(1);
-            }
-            else if (FUN_1418fd280() == 0)
-            {
-                m_188->FUN_1422ce240(SmClickDelegate(this, &UISystemMenuDialog::FUN_141b13880), 0);
-                m_188->FUN_1422cdfb0(FUN_141b146a0(spField->m_nMapType));
-                m_188->vfunc_3(1);
+                if (spField->m_nMapType == 3)
+                {
+                    m_188->FUN_1422ce240(SmClickDelegate(this, &UISystemMenuDialog::FUN_141b13b00), 0);
+                    m_188->FUN_1422cdfb0(FUN_141b146a0(spField->m_nMapType));
+                    m_188->vfunc_3(1);
+                }
+                else if (FUN_1418fd280() == 0)
+                {
+                    m_188->FUN_1422ce240(SmClickDelegate(this, &UISystemMenuDialog::FUN_141b13880), 0);
+                    m_188->FUN_1422cdfb0(FUN_141b146a0(spField->m_nMapType));
+                    m_188->vfunc_3(1);
+                }
             }
         }
     }
     m_30->Invoke("arrangeConrols");
-    m_30->Invoke("setSystemOptionNotifyRedCircle", m_198 != 0);
+    m_30->Invoke("setSystemOptionNotifyRedCircle", m_198);
 }
 
 // @0x141b13180
@@ -232,33 +233,30 @@ void UISystemMenuDialog::vfunc_26()
 
 // The answers of the message boxes: the leave box and the server notice.
 // @0x141b131c0
-// MS2-FUNCTIONAL: code generation differs (register allocation / block layout)
 int UISystemMenuDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
 {
-    if (UIDialog::OnMessage(pSender, pMsg) == 0)
+    if (UIDialog::OnMessage(pSender, pMsg) != 0)
+        return 1;
+    if (pMsg->FUN_1422e4520() == 0)
     {
-        if (pMsg->FUN_1422e4520() == 0)
+        int nResult = pMsg->FUN_1422b8a10();
+        CStringW strTag = pMsg->FUN_1422b8f40();
+        if (nResult == 0)
         {
-            int nResult = pMsg->FUN_1422b8a10();
-            CStringW strTag = pMsg->FUN_1422b8f40();
-            if (nResult == 0)
-            {
-                if (FUN_1403b3c40(strTag, L"leaveInField"))
-                    FUN_14151f200();
-            }
+            if (FUN_1403b3c40(strTag, L"leaveInField"))
+                FUN_14151f200();
         }
-        else
-        {
-            if (pMsg->FUN_1422e4520() == 0x7d2)
-            {
-                COutPacket packet(static_cast<int>(SendOp::RequestMoveField), 0);
-                packet.WriteUInt8(1);
-                FUN_140710590(packet);
-            }
-        }
-        return 0;
     }
-    return 1;
+    else
+    {
+        if (pMsg->FUN_1422e4520() == 0x7d2)
+        {
+            COutPacket packet(static_cast<int>(SendOp::RequestMoveField), 0);
+            packet.WriteUInt8(1);
+            FUN_140710590(packet);
+        }
+    }
+    return 0;
 }
 
 // @0x141b132d0
@@ -266,116 +264,115 @@ void UISystemMenuDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
     FUN_141923680(1);
-    static_cast<UIServerEventListener*>(this)->Notify();
+    Notify();
 }
 
 // @0x141b13330
-// MS2-FUNCTIONAL: code generation differs (register allocation / block layout)
 int UISystemMenuDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs)
 {
-    if (UIDialog::vfunc_28(szMethod, pArgs, nArgs) == 0)
+    if (UIDialog::vfunc_28(szMethod, pArgs, nArgs) != 0)
+        return 1;
+    if (FUN_1418fc760(szMethod, pArgs, nArgs, 0) != 0)
+        return 1;
+    ASData data;
+    if (_stricmp("OnGameOptionDialog", szMethod) == 0)
     {
-        if (FUN_1418fc760(szMethod, pArgs, nArgs, 0) == 0)
+        FUN_141b14560(1);
+        return 1;
+    }
+    else if (_stricmp("OnSelectCharacter", szMethod) == 0)
+    {
+        OnSelectCharacter();
+        return 1;
+    }
+    else if (_stricmp("onGraphic", szMethod) == 0)
+    {
+        FUN_141b14560(6);
+        return 1;
+    }
+    else if (_stricmp("OnChangeChannel", szMethod) == 0)
+    {
+        ASData channel;
+        if (channel.FUN_1422b9620(pArgs, nArgs) != 0)
         {
-            ASData data;
-            if (_stricmp("OnGameOptionDialog", szMethod) == 0)
-            {
-                FUN_141b14560(1);
-                return 1;
-            }
-            if (_stricmp("OnSelectCharacter", szMethod) == 0)
-            {
-                OnSelectCharacter();
-                return 1;
-            }
-            if (_stricmp("onGraphic", szMethod) == 0)
-            {
-                FUN_141b14560(6);
-                return 1;
-            }
-            if (_stricmp("OnChangeChannel", szMethod) == 0)
-            {
-                ASData channel;
-                if (channel.FUN_1422b9620(pArgs, nArgs) != 0)
-                {
-                    int nChannel = channel.FUN_1422b8a10();
-                    if (FUN_1403ed2d0()->FUN_141bc80c0(nChannel) == 0)
-                        FUN_141b14630();
-                }
-                return 1;
-            }
-            return 0;
+            int nChannel = channel.FUN_1422b8a10();
+            if (FUN_1403ed2d0()->FUN_141bc80c0(nChannel) == 0)
+                FUN_141b14630();
         }
         return 1;
     }
-    return 1;
+    return 0;
 }
 
 // @0x141b13570
-// MS2-FUNCTIONAL: code generation differs (register allocation / block layout)
 void UISystemMenuDialog::vfunc_79(void* p)
 {
     UIDialog::vfunc_79(p);
-    CInPacket* pPacket = static_cast<CInPacket*>(p);
-    if (vfunc_55() == 0 && !(m_30 == 0) && pPacket->FUN_14070fe80() == 0x10 && !(m_30 == 0) && pPacket->ReadUInt8() != 0)
-        FUN_141b14630();
+    if (vfunc_55() != 0 || !m_30)
+        return;
+    switch (static_cast<CInPacket*>(p)->FUN_14070fe80())
+    {
+    case 0x10:
+        if (!m_30)
+            return;
+        int bSelect = static_cast<CInPacket*>(p)->ReadUInt8();
+        if (bSelect != 0)
+            FUN_141b14630();
+        break;
+    }
 }
 
 // A server event arrived: rebuild the channel list.
 // @0x141b13640
-// MS2-FUNCTIONAL: code generation differs (register allocation / block layout)
 void UISystemMenuDialog::Notify()
 {
-    if (FUN_1422dc2d0() != 0 && !(m_30 == 0))
+    if (FUN_1422dc2d0() == 0)
+        return;
+    if (!m_30)
+        return;
+    ASArray array(2);
+    int nSelected = 0;
+    m_180 = FUN_14092f640();
+    UIServerListDialog* pList = FUN_14136f520(0x4ef0);
+    if (pList != 0)
+        pList->FUN_141ad2f60(array, &nSelected, m_180);
+    CStringW strName;
+    CStringW strPrefix;
+    if (DAT_143ab0248 == 2)
     {
-        ASArray array(2);
-        int nSelected = 0;
-        m_180 = FUN_14092f640();
-        UIServerListDialog* pList = FUN_14136f520(0x4ef0);
-        if (pList != 0)
-            pList->FUN_141ad2f60(array, &nSelected, m_180);
-        CStringW strName;
-        CStringW strPrefix;
-        if (DAT_143ab0248 == 2)
-        {
-            strName = L"";
-        }
-        else
-        {
-            int nClass = FUN_1403ed2d0()->FUN_141bd98f0();
-            strName = FUN_1401a9d70()->FUN_141811980(0x17, nClass);
-        }
-        if (!strName.IsEmpty())
-        {
-            strPrefix = strName;
-            strPrefix.Append(L" ");
-        }
-        static_cast<Unk_SmScript*>(m_30.operator->())->FUN_141b151d0("buildChannelList", array, nSelected, CStringW(strPrefix));
+        strName = L"";
     }
+    else
+    {
+        strName = FUN_1401a9d70()->FUN_141811980(0x17, FUN_1403ed2d0()->FUN_141bd98f0());
+    }
+    if (!strName.IsEmpty())
+    {
+        strPrefix = strName;
+        strPrefix.Append(L" ");
+    }
+    static_cast<Unk_SmScript*>(m_30.operator->())->FUN_141b151d0("buildChannelList", array, nSelected, CStringW(strPrefix));
 }
 
 // The leave click of a normal field: ask, or leave at once in the dungeon-like fields.
 // @0x141b13880
-// MS2-FUNCTIONAL: code generation differs (register allocation / block layout)
 void UISystemMenuDialog::FUN_141b13880(const Scaleform::GFx::FunctionHandler::Params&)
 {
     MS2Ptr<CFieldDataCli> spField = FUN_1403ed2d0()->FUN_141bd30a0();
-    if (!(spField == 0))
+    if (spField == 0)
         return;
     if (spField->m_nFieldID == 0x3a2c94b)
     {
         FUN_140dffb50(static_cast<IMessageListener*>(this));
+        return;
     }
-    else
+    CStringW strText = FUN_141b149d0(spField->m_nMapType);
+    MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0, CStringW(strText), static_cast<IMessageListener*>(this), CStringW(L"leaveInField"));
+    if (spBox.get() != 0)
     {
-        CStringW strText = FUN_141b149d0(spField->m_nMapType);
-        MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0, CStringW(strText), static_cast<IMessageListener*>(this), CStringW(L"leaveInField"));
-        if (spBox.get() != 0)
-        {
-            spBox->FUN_141a01700(0x476, 0, 0);
-            spBox->FUN_141a01ca0(*FUN_1402056b0(&FUN_1401d3200()->m_cfe0), 1, GetStringCommon(0x2b8));
-            FUN_140d73c60(MS2Ptr<CMsgBoxData>(spBox));
-        }
+        spBox->FUN_141a01700(0x476, 0, 0);
+        spBox->FUN_141a01ca0(*FUN_1402056b0(&FUN_1401d3200()->m_cfe0), 1, GetStringCommon(0x2b8));
+        FUN_140d73c60(MS2Ptr<CMsgBoxData>(spBox));
     }
 }
 
@@ -387,91 +384,79 @@ void UISystemMenuDialog::FUN_141b13b00(const Scaleform::GFx::FunctionHandler::Pa
 
 // The leave click of a home: leave at once, or ask first when the design has changes.
 // @0x141b13b30
-// MS2-FUNCTIONAL: code generation differs (register allocation / block layout)
 void UISystemMenuDialog::FUN_141b13b30()
 {
     Unk_SmPc* pPc = static_cast<Unk_SmPc*>(FUN_1403ed2d0()->FUN_141bd0cc0());
     if (pPc == 0)
         return;
-    if (FUN_1409670e0()->FUN_1410c3600(2) == 0)
-    {
-        if (FUN_1409670e0()->FUN_1410c3600(1) == 0)
-        {
-            if (FUN_1409670e0()->FUN_1410c3600(3) == 0)
-            {
-                int nBuild = pPc->FUN_14152e950();
-                if (nBuild == 0)
-                {
-                    MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, FUN_1409eec40(0x877), 0, CStringW(L""));
-                    spBox->FUN_141a01800(1);
-                    auto lambda = [](int nResult, const CMsgBoxData&) -> bool
-                    {
-                        if (nResult == 0)
-                        {
-                            COutPacket packet(static_cast<int>(SendOp::RequestMoveField), 0);
-                            packet.WriteUInt8(1);
-                            FUN_140710590(packet);
-                        }
-                        return true;
-                    };
-                    spBox->FUN_141a027c0(SmBoxDelegate(lambda));
-                    FUN_140d73c60(MS2Ptr<CMsgBoxData>(spBox));
-                }
-                else
-                {
-                    CStringW strText = FUN_14052bd00(0x876, FUN_1401a9d70()->FUN_141811980(3, nBuild));
-                    MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, CStringW(strText), 0, CStringW(L""));
-                    if (spBox.get() != 0)
-                    {
-                        spBox->FUN_141a01800(1);
-                        spBox->FUN_141a027c0(SmBoxDelegate(this, &UISystemMenuDialog::FUN_141b14510));
-                        FUN_140d73c60(MS2Ptr<CMsgBoxData>(spBox));
-                    }
-                }
-            }
-            else
-            {
-                if (FUN_1409670e0()->FUN_1410d5530() == 0)
-                {
-                    pPc->FUN_14152a040();
-                }
-                else
-                {
-                    MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, GetStringCommonByKey(CStringW(L"s_home_info_exit_blueprint_messagebox_save")), 0, CStringW(L""));
-                    spBox->FUN_141a024a0(0);
-                    spBox->FUN_141a01800(1);
-                    spBox->FUN_141a027c0(SmBoxDelegate(this, &UISystemMenuDialog::FUN_141b14510));
-                    FUN_140d73c60(MS2Ptr<CMsgBoxData>(spBox));
-                }
-            }
-        }
-        else
-        {
-            if (FUN_1409670e0()->FUN_1410d5530() == 0)
-            {
-                pPc->FUN_14152a040();
-            }
-            else
-            {
-                MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, GetStringCommonByKey(CStringW(L"s_home_info_exit_messagebox_save")), 0, CStringW(L""));
-                spBox->FUN_141a024a0(0);
-                spBox->FUN_141a01800(1);
-                spBox->FUN_141a027c0(SmBoxDelegate(this, &UISystemMenuDialog::FUN_141b14510));
-                FUN_140d73c60(MS2Ptr<CMsgBoxData>(spBox));
-            }
-        }
-    }
-    else
+    if (FUN_1409670e0()->FUN_1410c3600(2))
     {
         MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, FUN_1409eec40(0x877), 0, CStringW(L""));
         spBox->FUN_141a01800(1);
         spBox->FUN_141a027c0(SmBoxDelegate(this, &UISystemMenuDialog::FUN_141b14510));
         FUN_140d73c60(MS2Ptr<CMsgBoxData>(spBox));
     }
+    else if (FUN_1409670e0()->FUN_1410c3600(1))
+    {
+        if (FUN_1409670e0()->FUN_1410d5530())
+        {
+            MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, GetStringCommonByKey(L"s_home_info_exit_messagebox_save"), 0, CStringW(L""));
+            spBox->FUN_141a024a0(0);
+            spBox->FUN_141a01800(1);
+            spBox->FUN_141a027c0(SmBoxDelegate(this, &UISystemMenuDialog::FUN_141b14510));
+            FUN_140d73c60(MS2Ptr<CMsgBoxData>(spBox));
+        }
+        else
+        {
+            pPc->FUN_14152a040();
+        }
+    }
+    else if (FUN_1409670e0()->FUN_1410c3600(3))
+    {
+        if (FUN_1409670e0()->FUN_1410d5530())
+        {
+            MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, GetStringCommonByKey(L"s_home_info_exit_blueprint_messagebox_save"), 0, CStringW(L""));
+            spBox->FUN_141a024a0(0);
+            spBox->FUN_141a01800(1);
+            spBox->FUN_141a027c0(SmBoxDelegate(this, &UISystemMenuDialog::FUN_141b14510));
+            FUN_140d73c60(MS2Ptr<CMsgBoxData>(spBox));
+        }
+        else
+        {
+            pPc->FUN_14152a040();
+        }
+    }
+    else if (pPc->FUN_14152e950())
+    {
+        CStringW strText = FUN_14052bd00(0x876, FUN_1401a9d70()->FUN_141811980(3, pPc->FUN_14152e950()));
+        MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, CStringW(strText), 0, CStringW(L""));
+        if (spBox.get() != 0)
+        {
+            spBox->FUN_141a01800(1);
+            spBox->FUN_141a027c0(SmBoxDelegate(this, &UISystemMenuDialog::FUN_141b14510));
+            FUN_140d73c60(MS2Ptr<CMsgBoxData>(spBox));
+        }
+    }
+    else
+    {
+        MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, FUN_1409eec40(0x877), 0, CStringW(L""));
+        spBox->FUN_141a01800(1);
+        spBox->FUN_141a027c0(SmBoxDelegate([](int nResult, const CMsgBoxData&) -> bool
+        {
+            if (nResult == 0)
+            {
+                COutPacket packet(static_cast<int>(SendOp::RequestMoveField), 0);
+                packet.WriteUInt8(1);
+                FUN_140710590(packet);
+            }
+            return true;
+        }));
+        FUN_140d73c60(MS2Ptr<CMsgBoxData>(spBox));
+    }
 }
 
 // @0x141b144f0
-void UISystemMenuDialog::FUN_141b144f0(char b)
+void UISystemMenuDialog::FUN_141b144f0(bool b)
 {
     m_198 = b;
 }
@@ -490,10 +475,10 @@ bool UISystemMenuDialog::FUN_141b14510(int nResult, const CMsgBoxData&)
 
 // Open the option dialog at a page and close the menu.
 // @0x141b14560
-// MS2-FUNCTIONAL: code generation differs (register allocation / block layout)
 void UISystemMenuDialog::FUN_141b14560(int nPage)
 {
-    FUN_140a02e60(0x4ef3)->FUN_141b15670(nPage);
+    UIGameOptionDialog* pDialog = FUN_140a02e60(0x4ef3);
+    pDialog->FUN_141b15670(nPage);
     FUN_1403ed2b0()->FUN_141adc530(0x4ef3);
     vfunc_67();
 }
@@ -513,36 +498,28 @@ void UISystemMenuDialog::OnSelectCharacter()
 
 // Select the current channel in the list.
 // @0x141b14630
-// MS2-FUNCTIONAL: code generation differs (register allocation / block layout)
 void UISystemMenuDialog::FUN_141b14630()
 {
-    if (!(m_30 == 0))
+    if (m_30.get())
         m_30->Invoke("setSelectedChannel", m_180);
 }
 
 // The text of the leave button by map type.
 // @0x141b146a0
-// MS2-FUNCTIONAL: code generation differs (register allocation / block layout)
 CStringW UISystemMenuDialog::FUN_141b146a0(int nMapType)
 {
     switch (nMapType)
     {
     case 3:
-        if (FUN_1409670e0()->FUN_1410c3600(1) == 0)
-        {
-            if (FUN_1409670e0()->FUN_1410c3600(3) == 0)
-            {
-                if (FUN_1409670e0()->FUN_1410c3600(2) == 0)
-                    return GetStringCommon(0xaaf);
-                return GetStringCommon(0xabd);
-            }
+        if (FUN_1409670e0()->FUN_1410c3600(1))
+            return GetStringCommon(0xabb);
+        else if (FUN_1409670e0()->FUN_1410c3600(3))
             return GetStringCommon(0xabc);
-        }
-        return GetStringCommon(0xabb);
-    default:
-        return GetStringCommonByKey(FUN_1401ceea0(L"s_room_exit_name_{0}", nMapType));
+        else if (FUN_1409670e0()->FUN_1410c3600(2))
+            return GetStringCommon(0xabd);
+        return GetStringCommon(0xaaf);
     case 5:
-        return GetStringCommonByKey(CStringW(L"s_room_exit_dungeon"));
+        return GetStringCommonByKey(L"s_room_exit_dungeon");
     case 7:
         return GetStringCommon(0xab0);
     case 8:
@@ -551,30 +528,34 @@ CStringW UISystemMenuDialog::FUN_141b146a0(int nMapType)
     case 9:
         return GetStringCommon(0xab2);
     case 0xd:
-        return GetStringCommonByKey(CStringW(L"s_room_exit_arcade"));
+        return GetStringCommonByKey(L"s_room_exit_arcade");
+    default:
+    {
+        int nType = nMapType;
+        return GetStringCommonByKey(FUN_1401ceea0(L"s_room_exit_name_{0}", nType));
+    }
     }
 }
 
 // The text of the leave box by map type.
 // @0x141b149d0
-// MS2-FUNCTIONAL: code generation differs (register allocation / block layout)
 CStringW UISystemMenuDialog::FUN_141b149d0(int nMapType)
 {
-    int nRoom = DAT_143ab2884;
     switch (nMapType)
     {
     case 3:
         return FUN_14052bd00(0xab3, FUN_140cd7d20());
-    default:
-        return FUN_1405c2690(FUN_1401ceea0(L"s_room_exit_msg_{0}", nMapType), FUN_140cd7d20());
     case 5:
-        if (DAT_143ab2884 != 0)
+    {
+        int nRoom = DAT_143ab2884;
+        if (nRoom != 0)
         {
             Unk_SmDgRef spRoom = FUN_14031c2a0()->FUN_1403206b0(nRoom);
-            if (spRoom.FUN_14031c160() != 0 && spRoom.FUN_1403347d0()->m_140 != 0)
+            if (spRoom.FUN_14031c160() != 0 && spRoom.FUN_1403347d0()->m_140 > 0)
                 return FUN_1405c2690(CStringW(L"s_room_exit_msg_default_revival_limit_dungeon"), FUN_140cd7d20());
         }
         return FUN_1405c2690(CStringW(L"s_room_exit_msg_dungeon"), FUN_140cd7d20());
+    }
     case 7:
         return FUN_14052bd00(0xab7, FUN_140cd7d20());
     case 8:
@@ -584,6 +565,8 @@ CStringW UISystemMenuDialog::FUN_141b149d0(int nMapType)
         return FUN_14052bd00(0xab9, FUN_140cd7d20());
     case 0xd:
         return FUN_1405c2690(CStringW(L"s_room_exit_msg_arcade"), FUN_140cd7d20());
+    default:
+        return FUN_1405c2690(FUN_1401ceea0(L"s_room_exit_msg_{0}", (int)(unsigned)nMapType), FUN_140cd7d20());
     }
 }
 

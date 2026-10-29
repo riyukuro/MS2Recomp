@@ -19,7 +19,7 @@ class ASMovieClip;
 class ASObj;
 class CInPacket;
 class NotifyObject;
-class Unk_DmTabBar;
+class ASButtonBar;
 class Unk_DmList;
 class Unk_DmGuideBar;
 
@@ -56,7 +56,7 @@ public:
     int FUN_140c01f50();                                        // 0x140c01f50 the highest reward point of the finished quests
     int FUN_140c020d0();                                        // 0x140c020d0 the largest mission point of the open quests
     int FUN_140c02320(int nGroup);                              // 0x140c02320 the group has a quest that can be received
-    MS2Ptr<Unk_DmTabBar> FUN_140c02870(const CString& strName);     // 0x140c02870 bind a tab child
+    MS2Ptr<ASButtonBar> FUN_140c02870(const CString& strName);     // 0x140c02870 bind a tab child
     MS2Ptr<Unk_DmList> FUN_140c02900(const CString& strName);       // 0x140c02900 bind a list child
     MS2Ptr<Unk_DmGuideBar> FUN_140c02990(const CString& strName);   // 0x140c02990 bind the guide bar child
     MS2Ptr<ASMovieClip> FUN_140ba7930(const CString& strName);      // 0x140ba7930 movie clip child lookup (a UIDialog member)

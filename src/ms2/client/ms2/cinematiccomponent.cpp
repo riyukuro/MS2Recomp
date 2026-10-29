@@ -201,7 +201,7 @@ int FUN_14074b050(CQuestData*);
 int FUN_14074b840(int nQuestId);
 int FUN_14074b950(int nQuestId);
 int FUN_140748050(CQuestData::QuestRewardItem*, int);
-char FUN_1407640c0(CQuestData*);
+bool FUN_1407640c0(CQuestData*);
 __int64 FUN_140761ba0(int, int);
 __int64 FUN_140761cc0(int, int);
 __int64 FUN_140761d80(int, int);
@@ -315,7 +315,6 @@ void FUN_141083080(void* pDst, void* pSrc, size_t n)
 {
     ATL::Checked::memmove_s(pDst, n * sizeof(Unk_CinIcon), pSrc, n * sizeof(Unk_CinIcon));
 }
-// MS2-FUNCTIONAL: ternary temporaries of the allocation size land in different stack slots
 // @0x141082ed0
 bool Unk_CinIconArray::GrowBuffer(size_t nNewSize)
 {
@@ -331,7 +330,10 @@ bool Unk_CinIconArray::GrowBuffer(size_t nNewSize)
             if (nGrow == 0 && (nGrow = m_nMaxSize / 2, nNewSize - m_nMaxSize > nGrow))
                 nGrow = nNewSize - m_nMaxSize;
             size_t nAlloc;
-            nAlloc = nNewSize < m_nMaxSize + nGrow ? m_nMaxSize + nGrow : nNewSize;
+            if (nNewSize < m_nMaxSize + nGrow)
+                nAlloc = m_nMaxSize + nGrow;
+            else
+                nAlloc = nNewSize;
             Unk_CinIcon* pNew = static_cast<Unk_CinIcon*>(calloc(nAlloc, sizeof(Unk_CinIcon)));
             if (pNew == 0)
                 return false;
@@ -455,18 +457,16 @@ void CCinematicComponent::FUN_14107d4b0(const ATL::CAtlArray<CQuestData::QuestRe
         }
     }
 }
-// MS2-FUNCTIONAL: local slot layout / temp ordering of the reward-building branches differs from the exe
 // @0x14107d760
 unsigned CCinematicComponent::FUN_14107d760(ASObj& obj)
 {
-    unsigned nRet;
-    if (m_spContent->m_openTalkReward == 0) {
-        nRet = 0;
-    } else {
+    if (m_spContent->m_openTalkReward == 0)
+        return 0;
+    {
+        unsigned bAny = 0;
         ASObj reward(2);
         reward.FUN_1407cbb20("title", GetStringCommon(0x94b));
         Unk_CinReward* pReward = FUN_140967100()->FUN_141082d60();
-        unsigned bAny = 0;
         if (pReward->m_exp != 0) {
             bAny = 1;
             reward.FUN_1407cbb20("exp", FUN_1409404f0(pReward->m_exp));
@@ -479,13 +479,11 @@ unsigned CCinematicComponent::FUN_14107d760(ASObj& obj)
             reward.FUN_1407cbb20("title", GetStringCommon(0x7c1));
             bAny = 1;
             CStringW mood(L"");
-            if (pReward->m_mood < 1) {
-                if (pReward->m_mood < 0) {
-                    int nAbs = abs(pReward->m_mood);
-                    mood = FUN_1408116a0(0x7c5, nAbs);
-                }
-            } else {
+            if (pReward->m_mood > 0) {
                 mood = FUN_1408116a0(0x7c4, pReward->m_mood);
+            } else if (pReward->m_mood < 0) {
+                int nAbs = abs(pReward->m_mood);
+                mood = FUN_1408116a0(0x7c5, nAbs);
             }
             reward.FUN_1407cbb20("mood", CStringW(mood));
         }
@@ -497,11 +495,11 @@ unsigned CCinematicComponent::FUN_14107d760(ASObj& obj)
             if (pNpc != 0) {
                 Unk_CinAffinity* pAffinity = reinterpret_cast<Unk_CinNpcView*>(pNpc)->FUN_141093800().FUN_1409ee260();
                 if (pAffinity != 0) {
-                    if (pReward->m_affinityBonus == 0) {
-                        affinity = FUN_1408116a0(0x7c2, pReward->m_affinityExp);
-                    } else {
+                    if (pReward->m_affinityBonus != 0) {
                         affinity = FUN_140656190(L"{0} {1}", FUN_1408116a0(0x7c2, pReward->m_affinityExp),
                                                  FUN_1408116a0(0x7c3, reinterpret_cast<Unk_CinNpcView*>(pNpc)->FUN_141093800().FUN_14067e8c0()->m_54));
+                    } else {
+                        affinity = FUN_1408116a0(0x7c2, pReward->m_affinityExp);
                     }
                 }
             }
@@ -521,11 +519,9 @@ unsigned CCinematicComponent::FUN_14107d760(ASObj& obj)
         pReward->FUN_141b1dbd0();
         if (bAny != 0)
             obj.FUN_1409eb270("reward", reward);
-        nRet = bAny;
+        return bAny;
     }
-    return nRet;
 }
-// MS2-FUNCTIONAL: an extra int local (zero) and the ternary temp slots of the key-variant selection are not reproduced
 // @0x14107dfa0
 CStringW CCinematicComponent::FUN_14107dfa0(int nStringId)
 {
@@ -535,7 +531,7 @@ CStringW CCinematicComponent::FUN_14107dfa0(int nStringId)
     CStringW keyNext = FUN_1409331f0()->FUN_14142d220(0x39);
     int nVariant = *FUN_140a58500(FUN_1409a8b10()) != 0 ? 2 : 0;
     if (nVariant == 2)
-        text.Replace(keyConfirm, FUN_1409331f0()->FUN_14142d760(0x49409, 2));
+        text.Replace(keyConfirm, FUN_1409331f0()->FUN_14142d760(0x49409, nVariant));
     text.Replace(keyNext, FUN_1409331f0()->FUN_14142d760(0x493e2, nVariant));
     return text;
 }
@@ -919,7 +915,6 @@ int FUN_141081a50(MS2Ptr<Unk_CinNpcData> spNpc, int bFlag)
     }
     return 0;
 }
-// MS2-FUNCTIONAL: the exe frame holds one more 8-byte local (unidentified temp) than the switch-on-kind body produces
 // @0x141082150
 CStringA FUN_141082150(MS2Ptr<CQuestData> spQuest, const CStringA& sNormal, const CStringA& sDefault, const CStringA& sAlt, const CStringA& sEpic)
 {
@@ -928,18 +923,14 @@ CStringA FUN_141082150(MS2Ptr<CQuestData> spQuest, const CStringA& sNormal, cons
         switch (nKind) {
         case 0:
             return sNormal;
-        case 1:
-        case 6: {
-            const CStringA* p = &sDefault;
-            if (FUN_1407640c0(spQuest.operator->()) != 0)
-                p = &sAlt;
-            return *p;
-        }
         case 2:
             return sEpic;
         case 8:
         case 9:
             return sDefault;
+        case 1:
+        case 6:
+            return FUN_1407640c0(spQuest.operator->()) ? sAlt : sDefault;
         }
     }
     return sDefault;
@@ -963,7 +954,6 @@ struct Unk_CinNpcId
 };
 
 // ---- CSelectableTalkCinematicComponent::vfunc_5 ----
-// MS2-FUNCTIONAL: one unidentified 8-byte stack local below the script pointers shifts every later slot by 8
 // @0x14107fd20
 void CSelectableTalkCinematicComponent::vfunc_5(ASObj& obj)
 {
@@ -1006,14 +996,20 @@ void CSelectableTalkCinematicComponent::vfunc_5(ASObj& obj)
                     int nState = FUN_1416e6100(nQuestId, 1);
                     if (nState == 0x5dc)
                         nState = 0x5d9;
-                    if (nState == 0x5d9)
-                        icon.m_icon = "talk_icon_quest_accept";
-                    else if (nState == 0x5da)
-                        icon.m_icon = "talk_icon_quest_progress";
-                    else if (nState == 0x5db)
+                    switch (nState) {
+                    case 0x5db:
                         icon.m_icon = "talk_icon_quest_complete";
-                    else
+                        break;
+                    case 0x5da:
                         icon.m_icon = "talk_icon_quest_progress";
+                        break;
+                    case 0x5d9:
+                        icon.m_icon = "talk_icon_quest_accept";
+                        break;
+                    default:
+                        icon.m_icon = "talk_icon_quest_progress";
+                        break;
+                    }
                     MS2Ptr<CQuestData> spQuest = FUN_14074bc40(nQuestId);
                     if (spQuest.get() != 0) {
                         icon.m_icon += FUN_141082090(nQuestId, "_epic", "", "_repeat", "_event");
@@ -1087,7 +1083,7 @@ int CChangeJobComponent::vfunc_2(int nMsg)
         if (pDlg != 0)
             nResult = FUN_1419dc530(pDlg);
         if (FUN_14151f6e0() != 0)
-            FUN_140d73bc0(nResult != 0 ? 0x75 : 0x7cb, 1, this, "");
+            FUN_140d73bc0(nResult != 0 ? 0x75 : 0x7cb, 1, this, L"");
     }
     return 1;
 }
@@ -1126,7 +1122,6 @@ void CChangeJobComponent::vfunc_5(ASObj& obj)
 CUgcSignCinematicComponent::CUgcSignCinematicComponent(UITalkCinematic* pOwner) : CCinematicComponent(pOwner) {}
 // @0x141080940
 CUgcSignCinematicComponent::~CUgcSignCinematicComponent() {}
-// MS2-FUNCTIONAL: the exe passes the pc id through a register copy (mov ecx / mov edx,ecx) and keeps pc in a lower slot; not reproduced
 // @0x141080970
 int CUgcSignCinematicComponent::vfunc_2(int nMsg)
 {
@@ -1136,18 +1131,14 @@ int CUgcSignCinematicComponent::vfunc_2(int nMsg)
     if (pc == 0)
         return 0;
     Unk_CinSvcPtr spSvc(FUN_1401cd040(&DAT_143b059e8));
-    int nPcId = FUN_141529620(pc);
-    spSvc.FUN_1401cd1a0()->FUN_1410ccc00(nPcId, 0, 0);
+    spSvc.FUN_1401cd1a0()->FUN_1410ccc00(FUN_141529620(pc), 0, 0);
     if (nMsg == 0x493e2) {
         FUN_140967100()->FUN_141b20db0(0);
         int nOut = 0;
-        int nPcId2 = FUN_141529620(pc);
-        if (FUN_1408a0890(FUN_141bd3060(FUN_1403ed2d0()), nPcId2, &nOut) == 0)
+        if (FUN_1408a0890(FUN_141bd3060(FUN_1403ed2d0()), FUN_141529620(pc), &nOut) == 0)
             return 0;
         Unk_CinSvcPtr spSvc2(FUN_1401cd040(&DAT_143b059e8));
-        int nPcId3 = FUN_141529620(pc);
-        __int64 nOwner = spSvc2.FUN_1401cd1a0()->FUN_1410c8030(nPcId3, 0);
-        if (nOwner == FUN_141656ad0(pc)) {
+        if (spSvc2.FUN_1401cd1a0()->FUN_1410c8030(FUN_141529620(pc), 0) == FUN_141656ad0(pc)) {
             COutPacket pkt(static_cast<int>(SendOp::RequestCube), 0);
             pkt.Encode1(5);
             pkt.Encode4(FUN_141529620(pc));
@@ -1159,8 +1150,7 @@ int CUgcSignCinematicComponent::vfunc_2(int nMsg)
             pkt.Encode4(FUN_141529620(pc));
             int nRand = 0;
             if (FUN_141527e00(pc) != 0) {
-                nRand = rand();
-                nRand = nRand % 3;
+                nRand = rand() % 3;
             }
             pkt.Encode4(nRand);
             FUN_140710590(pkt);

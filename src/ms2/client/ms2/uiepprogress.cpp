@@ -8,6 +8,7 @@
 #include "ms2/placeholder/asgameentity.h"
 #include "ms2/placeholder/asobj.h"
 #include "ms2/placeholder/asdata.h"
+#include <NiPoint3.h>
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 
@@ -32,7 +33,7 @@ class Unk_PopupTarget : public CPtred
 {
 public:
     int FUN_141a5e690();                                            // has an anchor
-    void FUN_141a5e5d0(Unk_PopupPos* pPos);                         // the anchor position
+    void FUN_141a5e5d0(NiPoint3* pPos);                             // the anchor position
 };
 Unk_PopupOwner* FUN_14096e160(Unk_PopupOwner* pOwner);
 
@@ -86,8 +87,7 @@ void UIEpProgress::vfunc_52()
 }
 
 // @0x1419317b0
-// MS2-FUNCTIONAL: the MS2Ptr temporary of vfunc_82 spills one extra stack slot in the exe (frame 0x08 smaller)
-void UIEpProgress::vfunc_53(Unk_PopupPos pos)
+void UIEpProgress::vfunc_53(const NiPoint3& kPos)
 {
     if (m_30.IsNull() || vfunc_9() == 0)
         return;
@@ -95,16 +95,17 @@ void UIEpProgress::vfunc_53(Unk_PopupPos pos)
         MS2Ptr<ASGameEntity> pClip(dynamic_cast<ASGameEntity*>((AScript*)m_30));
         if (pClip.get())
         {
-            Unk_PopupPos pt = pos;
+            NiPoint3 pt = kPos;
             Unk_PopupOwner* pActor = FUN_14096e160(m_68);
             if (pActor)
             {
-                Unk_PopupTarget* pTarget = pActor->vfunc_82();
-                if (pTarget && pTarget->FUN_141a5e690() != 0)
+                if (Unk_PopupTarget* pTarget = pActor->vfunc_82().get())
                 {
-                    pTarget->FUN_141a5e5d0(&pt);
-                    int nWidth = static_cast<Unk_EpEntity*>(pClip.operator->())->FUN_1422c1340();
-                    pt.x = pt.x - (nWidth * 0.5 + 10.0);
+                    if (pTarget->FUN_141a5e690() != 0)
+                    {
+                        pTarget->FUN_141a5e5d0(&pt);
+                        pt.x -= static_cast<Unk_EpEntity*>(pClip.operator->())->FUN_1422c1340() * 0.5 + 10.0;
+                    }
                 }
             }
             pt.y = pt.y - 10.0f;

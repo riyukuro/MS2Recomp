@@ -26,12 +26,6 @@ MS2_EMIT_CRT_MEMMOVE_S();
 // ---- unit-local views of exe types (unrecovered helpers) ----
 
 class ASDialog : public ASDisplayObject { public: void FUN_1422c00f0(float fX, float fY); };   // set the position
-struct Unk_IpIdSet                                                   // a hash set of item ids
-{
-    Unk_IpIdSet(unsigned nBuckets);                                  // 0x140203150
-    ~Unk_IpIdSet();                                                  // 0x1402038f0
-    void* m_pad[7];
-};
 struct Unk_IpArgs { CStringW FUN_1408d21c0(int nIndex, CStringW strDefault); };   // ItemFunctionArgs::GetString
 class Unk_IpReg { public: Unk_IpReg(void (*pfnCallback)(void*, void*)); };   // registers a callback in a global table
 void FUN_140f50a40(void*, void*);
@@ -39,8 +33,6 @@ class Unk_IpWorld;
 class Unk_IpActor;
 class Unk_IpUIMgr { public: void FUN_141adc530(int nClass); };
 
-void* FUN_140204740(Unk_IpIdSet* pSet, int nKey, int nDefault);     // lookup: the value or 0
-void FUN_140203f00(Unk_IpIdSet* pSet, int nKey);                    // insert
 CString FUN_14016a600(const wchar_t* psz, int nCodePage);          // narrow copy
 CStringW GetStringCommon(int nStringId);
 void FUN_141415450(const CString& strKey, MS2Ptr<CItem> spItem, int nIndex, int nFlags, int nMask);   // bind the item to a name
@@ -158,61 +150,63 @@ void UIInteriorPreviewDialog::vfunc_45(Scaleform::GFx::Value* pRetVal, const CSt
 
 #ifndef MS2_HOOK_DLL
 // @0x140f4d110
-// MS2-FUNCTIONAL: a 2.4 KB list builder over unrecovered containers (id set, bound item keys); temp / frame layout differs
 void UIInteriorPreviewDialog::FUN_140f4d110()
 {
     MS2Ptr<CItemData> spData = FUN_14053f870(m_178);
     if (spData == (CItemData*)0)
         return;
     ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30);
-    if (pDialog == 0)
-        return;
-    CStringW strDefault(L"");
-    CString strPackage = FUN_14016a600(reinterpret_cast<Unk_IpArgs*>(&spData->function.parameter)->FUN_1408d21c0(0, strDefault), 0);
-    UGCMapPackageDataPtr spPackage = FUN_1408b9b90(strPackage);
-    if (spPackage == (CUGCMapPackageData*)0)
-        return;
-    ASArray arrItems(m_28);
-    Unk_IpIdSet seen(10);
-    unsigned nBound = 0;
-    for (unsigned i = 0; i < spPackage->m_cubes.GetCount(); ++i)
+    if (pDialog != 0)
     {
-        UGCMapPackageInfoPtr spInfo = spPackage->m_cubes[i];
-        if (spInfo.get() == 0)
-            continue;
-        int nCubeItemId = spInfo->m_nItemId;
-        if (FUN_140204740(&seen, nCubeItemId, 0) != 0)
-            continue;
-        MS2Ptr<CItemData> spCubeData = FUN_14053f870(nCubeItemId);
-        if (spCubeData == (CItemData*)0)
-            continue;
-        MS2Ptr<CItem> spItem(new CItem);
-        if (spItem->FUN_14052b130(nCubeItemId, 0, 0) != 0)
+        CString strPackage = FUN_14016a600(reinterpret_cast<Unk_IpArgs*>(&spData->function.parameter)->FUN_1408d21c0(0, L""), 0);
+        UGCMapPackageDataPtr spPackage = FUN_1408b9b90(strPackage);
+        if (spPackage == (CUGCMapPackageData*)0)
+            return;
+        ASArray arrItems(m_28);
+        ATL::CAtlList<unsigned> seen(10);
+        ATL::CAtlArray<UGCMapPackageInfoPtr>& cubes = spPackage->m_cubes;
+        unsigned nBound = 0;
+        for (unsigned i = 0; i < cubes.GetCount(); ++i)
         {
-            int nCount = spPackage->FUN_1408b9ab0(nCubeItemId);
-            spItem->FUN_140526c70(nCount);
-            CString strKey;
-            ++nBound;
-            strKey.Format("%s.%d", (const char*)GetTypeName(), (unsigned __int64)nBound);
-            ASObj objItem(m_28);
-            objItem.FUN_1407cbb20((const char*)s_strItemName, spItem->FUN_140527b10());
-            objItem.FUN_1407cba60((const char*)s_strBinding, strKey);
-            FUN_141415450(strKey, MS2Ptr<CItem>(spItem), nBound, 0x415, 0x800);
-            arrItems.FUN_1422bc050(objItem.FUN_1422bb870());
-            m_188.Add(strKey);
-            FUN_140203f00(&seen, nCubeItemId);
+            UGCMapPackageInfoPtr spInfo = cubes[i];
+            if (spInfo.get() != 0)
+            {
+                int nCubeItemId = spInfo->m_nItemId;
+                int nAmount = 0;
+                if (seen.Find(nCubeItemId) != 0)
+                    continue;
+                MS2Ptr<CItemData> spCubeData = FUN_14053f870(nCubeItemId);
+                if (spCubeData == (CItemData*)0)
+                    continue;
+                MS2Ptr<CItem> spItem(new CItem);
+                if (spItem->FUN_14052b130(nCubeItemId, nAmount, 0) != 0)
+                {
+                    spItem->FUN_140526c70(spPackage->FUN_1408b9ab0(nCubeItemId));
+                    CString strKey;
+                    ++nBound;
+                    strKey.Format("%s.%d", (const char*)GetTypeName(), nBound);
+                    ASObj objItem(m_28);
+                    objItem.FUN_1407cbb20((const char*)s_strItemName, spItem->FUN_140527b10());
+                    objItem.FUN_1407cba60((const char*)s_strBinding, strKey);
+                    FUN_141415450(strKey, MS2Ptr<CItem>(spItem), nBound, 0x415, 0x800);
+                    arrItems.FUN_1422bc050(objItem.FUN_1422bb870());
+                    m_188.Add(strKey);
+                    seen.AddTail(nCubeItemId);
+                }
+            }
         }
+        if (MS2Ptr<ASTextField> spName = FUN_140bb4cf0("m_itemName"))
+            spName->FUN_1422c4cd0(GetStringTable()->FUN_141811980(1, m_178));
+        if (MS2Ptr<ASTextField> spSize = FUN_140bb4cf0("m_cubeSize"))
+        {
+            CStringW strSize = StringFormat(L"{0} {1}", GetStringCommon(0x56c), spPackage->m_strIndoorSizeType);
+            spSize->FUN_1422c4cd0(strSize);
+        }
+        ASObj objData(m_28);
+        objData.FUN_1409adbe0((const char*)s_strItemPackageList, arrItems.FUN_1422bb870());
+        objData.FUN_1407cba60((const char*)s_strItemMovie, spData->property.movie);
+        pDialog->FUN_140acd1f0("setData", objData);
     }
-    MS2Ptr<ASTextField> spName = FUN_140bb4cf0("m_itemName");
-    if (spName.get() != 0)
-        spName->FUN_1422c4cd0(GetStringTable()->FUN_141811980(1, m_178));
-    MS2Ptr<ASTextField> spSize = FUN_140bb4cf0("m_cubeSize");
-    if (spSize.get() != 0)
-        spSize->FUN_1422c4cd0(StringFormat(L"{0} {1}", GetStringCommon(0x56c), spPackage->m_strIndoorSizeType));
-    ASObj objData(m_28);
-    objData.FUN_1409adbe0((const char*)s_strItemPackageList, arrItems.FUN_1422bb870());
-    objData.FUN_1407cba60((const char*)s_strItemMovie, spData->property.movie);
-    pDialog->FUN_140acd1f0("setData", objData);
 }
 #endif
 

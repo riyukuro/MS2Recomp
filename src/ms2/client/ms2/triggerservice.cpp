@@ -84,9 +84,12 @@ struct Unk_TrigSvcFxReq
     int m_pad_0c;
     void* m_pSlot10;                                                // +0x10
     Unk_TrigFxXform* m_pXform;                                      // +0x18
-    char m_pad_20[0x58];
+    void* m_apPad20[10];                                            // +0x20 (pointer-typed so the stack copy is not a /GS buffer)
+
+    Unk_TrigSvcFxReq();                                             // 0x140a52ef0
+    ~Unk_TrigSvcFxReq();                                            // 0x1405a89e0
 };
-MS2_CHECK_SIZE(Unk_TrigSvcFxReq, 0x78);
+MS2_CHECK_SIZE(Unk_TrigSvcFxReq, 0x70);
 class Unk_TrigSvcFxMgr
 {
 public:
@@ -94,15 +97,12 @@ public:
     void FUN_1411a6060(int nHandle);                                // release
 };
 Unk_TrigSvcFxMgr* FUN_1403ed280();
-void FUN_140a52ef0(Unk_TrigSvcFxReq* p);
-void FUN_1405a89e0(Unk_TrigSvcFxReq* p);
 
 // ---- entities ----
 egf::FlatModel* FUN_1408a9bd0(egf::Entity* pEntity);
 void FUN_1408a2020(egf::Entity* pEntity, unsigned uPropId, int* pOut);
-const void* FUN_1408b76f0(const void* pEntity);                     // &entity id
-void* FUN_1408b6b20(void* pDst, const void* pSrc);                  // copy an entity id
-bool FUN_140de6d70(TriggerObject* pObject, void* pEntityId);
+const egf::EntityID& FUN_1408b76f0(const egf::Entity* pEntity);       // the entity id
+bool FUN_140de6d70(TriggerObject* pObject, egf::EntityID kEntityId);
 bool FUN_140de6db0(TriggerObject* pObject);
 
 // ---- camera ----
@@ -111,7 +111,7 @@ int FUN_140af7e30(Unk_CameraManager* p);                            // id of the
 CCameraMode* FUN_140af2520(Unk_CameraManager* p);
 Unk_CameraSetting* FUN_140947880(CCameraMode* p);
 void FUN_140aed720(Unk_CameraManager* p, Unk_CameraSetting* pSetting);
-void FUN_140aed750(Unk_CameraManager* p, int nMode, bool bFlag);
+void FUN_140aed750(void* p, int nMode, int nFlag);
 void FUN_140aed580(Unk_CameraManager* p, Unk_FlyByCameraData* pData, int n, float f);
 void FUN_140aed1c0(Unk_CameraManager* p);
 float FUN_140ad4b30(CCameraMode* p);
@@ -263,13 +263,11 @@ const char* CTriggerService::GetDisplayName() const
 void CTriggerService::vfunc_3(int nMap)
 {
     m_mapObjects.RemoveAll();
-    POSITION pos = m_mapHandles.GetHeadPosition();
-    while (pos)
+    for (POSITION pos = m_mapHandles.GetHeadPosition(); pos; m_mapHandles.GetNext(pos))
     {
-        int nHandle = m_mapHandles.GetValueAt(pos);
+        int nHandle = m_mapHandles.GetValueAt(pos).m_n;
         if (nHandle != 0)
             FUN_1403ed280()->FUN_1411a6060(nHandle);
-        m_mapHandles.GetNext(pos);
     }
     m_mapHandles.RemoveAll();
 }
@@ -327,20 +325,19 @@ MS2_REPLACE_METHOD(0x141861410, CTriggerService, OnShutdown, 512, 0x9DCA81B1);
 void CTriggerService::FUN_141861620(const egf::EntityChangeMessage* pMsg, efd::Category)
 {
     egf::Entity* pEntity = pMsg->GetEntity();
-    if (pEntity == 0)
-        return;
-    egf::FlatModel* pModel = FUN_1408a9bd0(pEntity);
-    if (!(pModel->ContainsModel(0xe8dd99d)))
-        return;
-    int nId = 0;
-    FUN_1408a2020(pEntity, 0x6c37a861, &nId);
-    MS2Ptr<TriggerObject> spObject = TriggerObject::Create(pEntity);
-    if (spObject == 0)
-        return;
-    Unk_EntRef kRef(0);
-    kRef.FUN_1408b6ec0(reinterpret_cast<Unk_Entity*>(pEntity));
-    spObject->Init(nId, kRef);
-    m_mapObjects.SetAt(nId, spObject);
+    if (pEntity != 0)
+    {
+        if (FUN_1408a9bd0(pEntity)->ContainsModel(0xe8dd99d))
+        {
+            int nId = 0;
+            FUN_1408a2020(pEntity, 0x6c37a861, &nId);
+            MS2Ptr<TriggerObject> spObject = TriggerObject::Create(pEntity);
+            if (spObject == 0)
+                return;
+            spObject->Init(nId, reinterpret_cast<Unk_Entity*>(pEntity));
+            m_mapObjects.SetAt(nId, spObject);
+        }
+    }
 }
 
 // @0x141861760
@@ -351,8 +348,7 @@ void CTriggerService::FUN_141861760(const egf::EntityChangeMessage* pMsg, efd::C
         egf::Entity* pEntity = pMsg->GetEntity();
         if (pEntity != 0)
         {
-            egf::FlatModel* pModel = FUN_1408a9bd0(pEntity);
-            if (pModel->ContainsModel(0xe8dd99d))
+            if (FUN_1408a9bd0(pEntity)->ContainsModel(0xe8dd99d))
             {
                 int nId = 0;
                 FUN_1408a2020(pEntity, 0x6c37a861, &nId);
@@ -370,7 +366,7 @@ void CTriggerService::FUN_141861810(const efd::IMessage*, efd::Category)
 // @0x141861840
 void CTriggerService::FUN_141861840(CInPacket* pEvent)
 {
-    unsigned char nType = pEvent->ReadUInt8();
+    int nType = pEvent->ReadUInt8();
     switch (nType)
     {
     case 2:
@@ -388,14 +384,17 @@ void CTriggerService::FUN_141861840(CInPacket* pEvent)
     case 7:
         FUN_141861f30(pEvent);
         break;
-    case 9:
-        FUN_1418627c0(pEvent);
-        break;
     case 0xc:
         FUN_141861fc0(pEvent);
         break;
     case 0xf:
         FUN_141862110(pEvent);
+        break;
+    case 9:
+        FUN_1418627c0(pEvent);
+        break;
+    case 0x16:
+        FUN_141862930(pEvent);
         break;
     case 0x10:
         FUN_1403ed2d0()->FUN_141bd42f0(pEvent);
@@ -414,9 +413,6 @@ void CTriggerService::FUN_141861840(CInPacket* pEvent)
         break;
     case 0x15:
         FUN_141862ec0(pEvent);
-        break;
-    case 0x16:
-        FUN_141862930(pEvent);
         break;
     case 0x17:
     case 0x18:
@@ -455,14 +451,15 @@ void CTriggerService::FUN_141861b00(CInPacket* pEvent)
 // @0x141861c20
 void CTriggerService::FUN_141861c20(CInPacket* pEvent)
 {
-    char nSub = pEvent->ReadUInt8();
-    if (nSub == 0)
+    int nSub = pEvent->ReadUInt8();
+    switch (nSub)
+    {
+    case 0:
     {
         Vector3 ptCenter = pEvent->FUN_1407140d0();
-        unsigned uOuter = pEvent->ReadInt32();
-        unsigned uInner = pEvent->ReadInt32();
-        Unk_CameraManager* pCamera = Unk_CameraManager::FUN_1409478c0();
-        if (FUN_140af7e30(pCamera) != 0x13)
+        float fOuter = (float)(unsigned)pEvent->ReadInt32();
+        float fInner = (float)(unsigned)pEvent->ReadInt32();
+        if (FUN_140af7e30(Unk_CameraManager::FUN_1409478c0()) != 0x13)
         {
             Unk_CameraSetting* pSetting = FUN_140947880(FUN_140af2520(Unk_CameraManager::FUN_1409478c0()));
             FUN_140aed720(Unk_CameraManager::FUN_1409478c0(), pSetting);
@@ -470,32 +467,35 @@ void CTriggerService::FUN_141861c20(CInPacket* pEvent)
         }
         CTargetLookCenterCameraMode* pMode =
             dynamic_cast<CTargetLookCenterCameraMode*>(FUN_140af2520(Unk_CameraManager::FUN_1409478c0()));
-        if (pMode != 0)
-        {
-            pMode->FUN_140a4e0d0(ptCenter);
-            pMode->FUN_140a4e150((float)uOuter);
-            pMode->FUN_140a4e1d0((float)uInner);
-        }
+        if (pMode == 0)
+            break;
+        pMode->FUN_140a4e0d0(ptCenter);
+        pMode->FUN_140a4e150(fOuter);
+        pMode->FUN_140a4e1d0(fInner);
+        break;
     }
-    else if (nSub == 1)
+    case 1:
     {
         bool bCheck = pEvent->ReadBool();
         CTargetLookCenterCameraMode* pMode =
             dynamic_cast<CTargetLookCenterCameraMode*>(FUN_140af2520(Unk_CameraManager::FUN_1409478c0()));
-        if (pMode != 0)
-            pMode->FUN_140a4e180(bCheck);
+        if (pMode == 0)
+            break;
+        pMode->FUN_140a4e180(bCheck);
+        break;
     }
-    else if (nSub == 2)
+    case 2:
     {
         bool bFixed = pEvent->ReadBool();
         float fAngle = pEvent->ReadFloat();
         CTargetLookCenterCameraMode* pMode =
             dynamic_cast<CTargetLookCenterCameraMode*>(FUN_140af2520(Unk_CameraManager::FUN_1409478c0()));
-        if (pMode != 0)
-        {
-            pMode->FUN_140a4e110(fAngle);
-            pMode->FUN_140a4e200(bFixed);
-        }
+        if (pMode == 0)
+            break;
+        pMode->FUN_140a4e110(fAngle);
+        pMode->FUN_140a4e200(bFixed);
+        break;
+    }
     }
 }
 
@@ -508,7 +508,8 @@ void CTriggerService::FUN_141861f30(CInPacket*)
 // @0x141861f60
 void CTriggerService::FUN_141861f60(CInPacket* pEvent)
 {
-    FUN_141863460(pEvent->ReadFloat());
+    float fFade = pEvent->ReadFloat();
+    FUN_141863460(fFade);
 }
 
 // Show a text popup (UI 0x4e6b) with a text file buffer.
@@ -526,38 +527,38 @@ void CTriggerService::FUN_141861fc0(CInPacket* pEvent)
 // @0x141862110
 void CTriggerService::FUN_141862110(CInPacket* pEvent)
 {
-    char nKind = pEvent->ReadUInt8();
+    int nKind = pEvent->ReadUInt8();
     if (nKind == 1)
     {
         int nA = pEvent->ReadInt32();
-        int nB = pEvent->ReadInt32();
-        unsigned char nC = pEvent->ReadUInt8();
+        unsigned nB = pEvent->ReadInt32();
+        int nC = pEvent->ReadUInt8();
         int nD = pEvent->ReadInt32();
         CStringW strCompare = pEvent->ReadUnicodeString();
         FUN_1403ed2d0()->FUN_141bc6f60(nA, nB, nC);
-        if (nB == 0)
-        {
-            FUN_141adc5d0(FUN_1403ed2b0(), 0x4e95);
-        }
-        else
+        if (nB > 0)
         {
             FUN_141adc530(FUN_1403ed2b0(), 0x4e95);
             Unk_TrigHintUI* pUi = FUN_140ee6300(0x4e95);
             if (pUi != 0)
             {
                 pUi->FUN_141b334d0(nD);
-                if (!FUN_140841300(strCompare, "TR"))
-                    pUi->FUN_141b33510(1);
-                else
+                if (FUN_140841300(strCompare, "TR"))
                     pUi->FUN_141b33510(6);
+                else
+                    pUi->FUN_141b33510(1);
             }
+        }
+        else
+        {
+            FUN_141adc5d0(FUN_1403ed2b0(), 0x4e95);
         }
     }
     else if (nKind == 2)
     {
         int nA = pEvent->ReadInt32();
         int nB = pEvent->ReadInt32();
-        unsigned char nC = pEvent->ReadUInt8();
+        int nC = pEvent->ReadUInt8();
         FUN_1403ed2d0()->FUN_141bc6f60(nA, nB, nC);
         Unk_TrigPvpA kBlock;
         FUN_140743ca0(&kBlock, pEvent);
@@ -579,7 +580,7 @@ void CTriggerService::FUN_141862110(CInPacket* pEvent)
     {
         int nA = pEvent->ReadInt32();
         int nB = pEvent->ReadInt32();
-        unsigned char nC = pEvent->ReadUInt8();
+        int nC = pEvent->ReadUInt8();
         FUN_1403ed2d0()->FUN_141bc6f60(nA, nB, nC);
         Unk_TrigPvpB kBlock;
         FUN_140743f50(&kBlock, pEvent);
@@ -600,27 +601,27 @@ void CTriggerService::FUN_141862110(CInPacket* pEvent)
     else if (nKind == 3)
     {
         int nA = pEvent->ReadInt32();
-        int nB = pEvent->ReadInt32();
-        unsigned char nC = pEvent->ReadUInt8();
+        unsigned nB = pEvent->ReadInt32();
+        int nC = pEvent->ReadUInt8();
         FUN_1403ed2d0()->FUN_141bc6f60(nA, nB, nC);
-        if (nB == 0)
-        {
-            FUN_141adc5d0(FUN_1403ed2b0(), 0x4e99);
-            FUN_141adc5d0(FUN_1403ed2b0(), 0x4e9a);
-        }
-        else
+        if (nB > 0)
         {
             FUN_141adc530(FUN_1403ed2b0(), 0x4e99);
             FUN_141adc530(FUN_1403ed2b0(), 0x4e9a);
+        }
+        else
+        {
+            FUN_141adc5d0(FUN_1403ed2b0(), 0x4e99);
+            FUN_141adc5d0(FUN_1403ed2b0(), 0x4e9a);
         }
     }
     else if (nKind == 4)
     {
         int nA = pEvent->ReadInt32();
-        int nB = pEvent->ReadInt32();
-        unsigned char nC = pEvent->ReadUInt8();
+        unsigned nB = pEvent->ReadInt32();
+        int nC = pEvent->ReadUInt8();
         FUN_1403ed2d0()->FUN_141bc6f60(nA, nB, nC);
-        if (nB != 0)
+        if (nB > 0)
         {
             FUN_141adc530(FUN_1403ed2b0(), 0x4e95);
             FUN_141adc530(FUN_1403ed2b0(), 0x4ed3);
@@ -673,7 +674,8 @@ void CTriggerService::FUN_1418627c0(CInPacket* pEvent)
 // @0x141862930
 void CTriggerService::FUN_141862930(CInPacket* pEvent)
 {
-    if (pEvent->ReadInt32() == 0)
+    int nResult = pEvent->ReadInt32();
+    if (nResult == 0)
         FUN_140d73bc0(0xb03, 0, 0, CStringW(L""));
 }
 
@@ -851,16 +853,17 @@ void CTriggerService::FUN_141863340(const ATL::CAtlArray<int>& aObjects, int bEn
 }
 
 // Fade the camera (fade 0 = back to the normal mode).
-// MS2-FUNCTIONAL: locals/temporaries of the fly-by block are laid out by the compiler
+// MS2-FUNCTIONAL: ops match; the exe frame is 0x20 larger (its Vector3 temps sit at 0xb0, not 0x90)
 // @0x141863460
 void CTriggerService::FUN_141863460(float fFade)
 {
     m_listCamera.RemoveAll();
+    int bFade = 0;
     if (fFade != 0.0f)
     {
         Unk_FlyByCameraData kData;
-        kData.m_nKind = 1;
         kData.m_fDuration = fFade;
+        kData.m_nKind = 1;
         kData.m_from.m_0 = Unk_CameraManager::FUN_1409478c0()->FUN_140ad4b40();
         kData.m_from.m_4 = Unk_CameraManager::FUN_1409478c0()->FUN_140af7f00();
         kData.m_from.m_8 = Unk_CameraManager::FUN_1409478c0()->FUN_140af7ea0();
@@ -872,39 +875,38 @@ void CTriggerService::FUN_141863460(float fFade)
         kData.m_to.m_8 = FUN_140af7e90(Unk_CameraManager::FUN_1409478c0()->FUN_140af24f0());
         kData.m_to.m_18 = Unk_CameraManager::FUN_1409478c0()->FUN_140af24f0()->FUN_140af8260();
         FUN_140aed580(Unk_CameraManager::FUN_1409478c0(), &kData, 1, 1.0f);
+        bFade = 1;
     }
     FUN_140aed1c0(Unk_CameraManager::FUN_1409478c0());
-    FUN_140aed750(Unk_CameraManager::FUN_1409478c0(), 2, fFade != 0.0f);
+    FUN_140aed750(Unk_CameraManager::FUN_1409478c0(), 2, bFade);
 }
 
 // Create or release the effect shown for a trigger object.
 // @0x141863630
-void CTriggerService::FUN_141863630(int nId, char bAdd, CStringA strName)
+void CTriggerService::FUN_141863630(int nId, bool bAdd, CStringA strName)
 {
-    if (bAdd == 0)
+    // The exe's map holds plain ints; the handles are int locals viewed as the map's value type.
+    if (bAdd)
     {
-        Unk_TrigHandle nHandle;
-        if (m_mapHandles.Lookup(nId, nHandle))
+        int nExisting = 0;
+        if (m_mapHandles.Lookup(nId, reinterpret_cast<Unk_TrigHandle&>(nExisting)))
+            return;
+        Unk_TrigSvcFxReq kRequest;
+        kRequest.m_strName = strName;
+        kRequest.m_nOwnerId = 0;
+        int nHandle = FUN_1403ed280()->FUN_1411a49c0(&kRequest);
+        if (nHandle != 0)
+            m_mapHandles.SetAt(nId, reinterpret_cast<Unk_TrigHandle&>(nHandle));
+    }
+    else
+    {
+        int nHandle = 0;
+        if (m_mapHandles.Lookup(nId, reinterpret_cast<Unk_TrigHandle&>(nHandle)))
         {
             if (nHandle != 0)
                 FUN_1403ed280()->FUN_1411a6060(nHandle);
             m_mapHandles.RemoveKey(nId);
         }
-    }
-    else
-    {
-        Unk_TrigHandle nExisting;
-        if (m_mapHandles.Lookup(nId, nExisting))
-            return;
-        alignas(8) char kRequestBuf[sizeof(Unk_TrigSvcFxReq)];   // FUN_140a52ef0 / FUN_1405a89e0 construct and destroy it: no implicit dtor
-        Unk_TrigSvcFxReq& kRequest = *reinterpret_cast<Unk_TrigSvcFxReq*>(kRequestBuf);
-        FUN_140a52ef0(&kRequest);
-        kRequest.m_strName = strName;
-        kRequest.m_nOwnerId = 0;
-        int nHandle = FUN_1403ed280()->FUN_1411a49c0(&kRequest);
-        if (nHandle != 0)
-            m_mapHandles.SetAt(nId, nHandle);
-        FUN_1405a89e0(&kRequest);
     }
 }
 
@@ -929,23 +931,18 @@ bool CTriggerService::FUN_1418637a0(const unsigned& rModel, std::vector<int>& rI
 // @0x1418638d0
 bool CTriggerService::FUN_1418638d0(egf::Entity* pEntity)
 {
-    POSITION pos = m_mapObjects.GetHeadPosition();
-    while (pos)
+    static const unsigned s_uMesh = 0x74b363a7;
+    for (POSITION pos = m_mapObjects.GetHeadPosition(); pos; m_mapObjects.GetNext(pos))
     {
         MS2Ptr<TriggerObject> spObject = m_mapObjects.GetValueAt(pos);
-        unsigned uMesh = 0x74b363a7;
-        if (spObject->HasModel(uMesh))
+        if (spObject->HasModel(s_uMesh))
         {
             MS2Ptr<TriggerObjectMesh> spMesh(dynamic_cast<TriggerObjectMesh*>((TriggerObject*)spObject));
-            if (!(spMesh == 0))
-            {
-                char aId[8];
-                FUN_1408b6b20(aId, FUN_1408b76f0(pEntity));
-                if (FUN_140de6d70(spMesh.get(), aId) && FUN_140de6db0(spMesh.get()))
-                    return true;
-            }
+            if (spMesh == 0)
+                continue;
+            if (FUN_140de6d70(spMesh.get(), FUN_1408b76f0(pEntity)) && FUN_140de6db0(spMesh.get()))
+                return true;
         }
-        m_mapObjects.GetNext(pos);
     }
     return false;
 }

@@ -1,0 +1,11 @@
+48c
+    // MS2: MS2::RegisterServices installs a factory for its MS2MeshCullingProcess
+    if (DAT_143afe6f8)
+        m_spCuller = DAT_143afe6f8(&m_visibleArray, pWorkflowManager);
+    else
+        m_spCuller = EE_NEW NiMeshCullingProcess(&m_visibleArray, pWorkflowManager);
+.
+27a
+extern NiCullingProcessPtr (*DAT_143afe6f8)(NiVisibleArray*, NiSPWorkflowManager*); // MS2: the game's mesh culling process factory (exe 0x143afe6f8)
+
+.

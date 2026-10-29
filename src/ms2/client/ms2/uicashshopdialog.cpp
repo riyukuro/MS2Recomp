@@ -23,7 +23,7 @@
 // MS2-PIN: ??0?$DelegateImpl@U?$pair@PEAVUICashShopDialog@@P81@EAA_NPEAVValue@GFx@Scaleform@@AEAVASData@@V?$MS2Ptr@VTMarketBillDataParam@@@@@Z@std@@@?$Delegate@$$A6A_NPEAVValue@GFx@Scaleform@@AEAVASData@@V?$MS2Ptr@VTMarketBillDataParam@@@@@Z@@QEAA@AEBU?$pair@PEAVUICashShopDialog@@P81@EAA_NPEAVValue@GFx@Scaleform@@AEAVASData@@V?$MS2Ptr@VTMarketBillDataParam@@@@@Z@std@@@Z 0x14103b250 ; prop
 // MS2-PIN: ??0?$DelegateImpl@U?$pair@PEAVUICashShopDialog@@P81@EAA_NV?$MS2Ptr@VTMarketBillDataParam@@@@AEBV?$CAtlMap@W4ePayType@@_JV?$CElementTraits@W4ePayType@@@ATL@@V?$CElementTraits@_J@3@@ATL@@@Z@std@@@?$Delegate@$$A6A_NV?$MS2Ptr@VTMarketBillDataParam@@@@AEBV?$CAtlMap@W4ePayType@@_JV?$CElementTraits@W4ePayType@@@ATL@@V?$CElementTraits@_J@3@@ATL@@@Z@@QEAA@AEBV01@@Z 0x14103b2a0 ; prop
 // MS2-PIN: ??0?$DelegateImpl@U?$pair@PEAVUICashShopDialog@@P81@EAA_NV?$MS2Ptr@VTMarketBillDataParam@@@@AEBV?$CAtlMap@W4ePayType@@_JV?$CElementTraits@W4ePayType@@@ATL@@V?$CElementTraits@_J@3@@ATL@@@Z@std@@@?$Delegate@$$A6A_NV?$MS2Ptr@VTMarketBillDataParam@@@@AEBV?$CAtlMap@W4ePayType@@_JV?$CElementTraits@W4ePayType@@@ATL@@V?$CElementTraits@_J@3@@ATL@@@Z@@QEAA@AEBU?$pair@PEAVUICashShopDialog@@P81@EAA_NV?$MS2Ptr@VTMarketBillDataParam@@@@AEBV?$CAtlMap@W4ePayType@@_JV?$CElementTraits@W4ePayType@@@ATL@@V?$CElementTraits@_J@3@@ATL@@@Z@std@@@Z 0x14103b2f0 ; prop
-// MS2-PIN: ??0?$MS2Ptr@VTMarketBillDataParam@@@@QEAA@H@Z 0x14103b410 ; unique
+// MS2-PIN: ??0?$MS2Ptr@VTCashShopBillDataParam@@@@QEAA@H@Z 0x14103b410 ; unique
 // MS2-PIN: ??0?$MS2Ptr@VTCashShopBillDataParam@@@@QEAA@PEAVTCashShopBillDataParam@@@Z 0x14103b430 ; unique
 // MS2-PIN: ??0?$TPtrValue@V?$CRBMap@HV?$MS2Ptr@VAScript@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VAScript@@@@@3@@ATL@@@@QEAA@AEBV0@@Z 0x14103b460 ; prop
 // MS2-PIN: ??0?$TPtrValue@V?$CRBMap@HV?$MS2Ptr@VAScript@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VAScript@@@@@3@@ATL@@@@QEAA@AEBUUnk_GrNewTag@@@Z 0x14103b4a0 ; unique
@@ -39,7 +39,7 @@
 // MS2-PIN: ??1?$DelegateImpl@U?$pair@PEAVUICashShopDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEAA@XZ 0x14103bb60 ; prop
 // MS2-PIN: ??1?$DelegateImpl@U?$pair@PEAVUICashShopDialog@@P81@EAA_NPEAVValue@GFx@Scaleform@@AEAVASData@@V?$MS2Ptr@VTMarketBillDataParam@@@@@Z@std@@@?$Delegate@$$A6A_NPEAVValue@GFx@Scaleform@@AEAVASData@@V?$MS2Ptr@VTMarketBillDataParam@@@@@Z@@UEAA@XZ 0x14103bb80 ; prop
 // MS2-PIN: ??1?$DelegateImpl@U?$pair@PEAVUICashShopDialog@@P81@EAA_NV?$MS2Ptr@VTMarketBillDataParam@@@@AEBV?$CAtlMap@W4ePayType@@_JV?$CElementTraits@W4ePayType@@@ATL@@V?$CElementTraits@_J@3@@ATL@@@Z@std@@@?$Delegate@$$A6A_NV?$MS2Ptr@VTMarketBillDataParam@@@@AEBV?$CAtlMap@W4ePayType@@_JV?$CElementTraits@W4ePayType@@@ATL@@V?$CElementTraits@_J@3@@ATL@@@Z@@UEAA@XZ 0x14103bba0 ; prop
-// MS2-PIN: ??1?$MS2Ptr@VTMarketBillDataParam@@@@QEAA@XZ 0x14103bbe0 ; unique
+// MS2-PIN: ??1?$MS2Ptr@VTCashShopBillDataParam@@@@QEAA@XZ 0x14103bbe0 ; unique
 // MS2-PIN: ??1?$TPtrValue@V?$CRBMap@HV?$MS2Ptr@VAScript@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VAScript@@@@@3@@ATL@@@@QEAA@XZ 0x14103bc10 ; prop
 // MS2-PIN: ??1CNode@?$CRBTree@HV?$MS2Ptr@VAScript@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VAScript@@@@@3@@ATL@@QEAA@XZ 0x14103bd50 ; unique
 // MS2-PIN: ??1CNode@?$CRBTree@HV?$TPtrValue@V?$CRBMap@HV?$MS2Ptr@VAScript@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VAScript@@@@@3@@ATL@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$TPtrValue@V?$CRBMap@HV?$MS2Ptr@VAScript@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VAScript@@@@@3@@ATL@@@@@3@@ATL@@QEAA@XZ 0x14103bd30 ; unique
@@ -112,7 +112,7 @@
 // MS2-PIN: ??$Call@VUICashShopDialog@@P81@EAA_NPEAVValue@GFx@Scaleform@@AEAVASData@@V?$MS2Ptr@VTMarketBillDataParam@@@@@Z@?$DelegateImpl@U?$pair@PEAVUICashShopDialog@@P81@EAA_NPEAVValue@GFx@Scaleform@@AEAVASData@@V?$MS2Ptr@VTMarketBillDataParam@@@@@Z@std@@@?$Delegate@$$A6A_NPEAVValue@GFx@Scaleform@@AEAVASData@@V?$MS2Ptr@VTMarketBillDataParam@@@@@Z@@CA_NAEAU?$pair@PEAVUICashShopDialog@@P81@EAA_NPEAVValue@GFx@Scaleform@@AEAVASData@@V?$MS2Ptr@VTMarketBillDataParam@@@@@Z@std@@PEAVValue@GFx@Scaleform@@AEAVASData@@V?$MS2Ptr@VTMarketBillDataParam@@@@@Z 0x141040660
 // MS2-PIN: ??$Call@VUICashShopDialog@@P81@EAA_NV?$MS2Ptr@VTMarketBillDataParam@@@@AEBV?$CAtlMap@W4ePayType@@_JV?$CElementTraits@W4ePayType@@@ATL@@V?$CElementTraits@_J@3@@ATL@@AEBV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@4@2@Z@?$DelegateImpl@U?$pair@PEAVUICashShopDialog@@P81@EAA_NV?$MS2Ptr@VTMarketBillDataParam@@@@AEBV?$CAtlMap@W4ePayType@@_JV?$CElementTraits@W4ePayType@@@ATL@@V?$CElementTraits@_J@3@@ATL@@AEBV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@4@2@Z@std@@@?$Delegate@$$A6A_NV?$MS2Ptr@VTMarketBillDataParam@@@@AEBV?$CAtlMap@W4ePayType@@_JV?$CElementTraits@W4ePayType@@@ATL@@V?$CElementTraits@_J@3@@ATL@@AEBV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@3@2@Z@@CA_NAEAU?$pair@PEAVUICashShopDialog@@P81@EAA_NV?$MS2Ptr@VTMarketBillDataParam@@@@AEBV?$CAtlMap@W4ePayType@@_JV?$CElementTraits@W4ePayType@@@ATL@@V?$CElementTraits@_J@3@@ATL@@AEBV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@4@2@Z@std@@V?$MS2Ptr@VTMarketBillDataParam@@@@AEBV?$CAtlMap@W4ePayType@@_JV?$CElementTraits@W4ePayType@@@ATL@@V?$CElementTraits@_J@3@@ATL@@AEBV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@6@3@Z 0x141040770
 // MS2-PIN: ??$?0VASCashShopBillData@@@?$MS2Ptr@VASBillData@@@@QEAA@AEBV?$MS2Ptr@VASCashShopBillData@@@@@Z 0x14103a3f0
-// MS2-PIN: ??$?0VTCashShopBillDataParam@@@?$MS2Ptr@VTMarketBillDataParam@@@@QEAA@AEBV?$MS2Ptr@VTCashShopBillDataParam@@@@@Z 0x14103a3b0
+// MS2-PIN: ??0?$MS2Ptr@VTCashShopBillDataParam@@@@QEAA@$$QEAV0@@Z 0x14103b3e0
 // MS2-PIN: ??_GCWin32Heap@ATL@@UEAAPEAXI@Z 0x14103c3a0
 // MS2-PIN: ??_7?$TPtredDummy@V?$CRBMap@HV?$MS2Ptr@VAScript@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VAScript@@@@@3@@ATL@@@@6B@ 0x142ea2488
 // MS2-PIN: ??_7?$DelegateImpl@U?$pair@PEAVUICashShopDialog@@P81@EAA_NV?$MS2Ptr@VTMarketBillDataParam@@@@AEBV?$CAtlMap@W4ePayType@@_JV?$CElementTraits@W4ePayType@@@ATL@@V?$CElementTraits@_J@3@@ATL@@@Z@std@@@?$Delegate@$$A6A_NV?$MS2Ptr@VTMarketBillDataParam@@@@AEBV?$CAtlMap@W4ePayType@@_JV?$CElementTraits@W4ePayType@@@ATL@@V?$CElementTraits@_J@3@@ATL@@@Z@@6B@ 0x142ea2410
@@ -125,6 +125,7 @@
 // banner map, the page maps of the sale list and the uiswfentity.inl child lookups.
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uicashshopdialog.cpp"    // assumed
 
+#define MS2_PTR_MOVE_CONVERT
 #include "ms2/placeholder/ms2stdafx.h"
 
 #include "uicashshopdialog.h"
@@ -133,6 +134,7 @@
 #include "uimessagebox.h"
 #include "uimessageboxdata.h"
 #include "cashunlockdialog.h"
+#include "ms2/commonfiles/commonstringtable.h"
 #include "ms2/placeholder/asbilldata.h"
 #include "ms2/placeholder/asdata.h"
 #include "ms2/placeholder/asdisplayobject.h"
@@ -149,6 +151,7 @@
 #include "ms2/placeholder/imessagelistener.h"
 #include "ms2/placeholder/tptrvalue.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
+#include "ms2/placeholder/mstime.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 
@@ -266,7 +269,7 @@ class Unk_CashBag : public ASObj {};                                // "m_inven"
 class Unk_CashButton : public ASDisplayObject                       // "m_btnNext" / "m_btnPrev"
 {
 public:
-    void FUN_1422c1fe0(bool bEnable);
+    void FUN_1422c1fe0(int bEnable);
 };
 
 class Unk_CashAdMgr { public: int FUN_14096b540(int nType, ATL::CAtlArray<MS2Ptr<Unk_CashBannerRecord> >& rOut); };
@@ -314,7 +317,7 @@ void FUN_140bf2260(Scaleform::GFx::Value& v);                       // clear a v
 void FUN_14134a480(AScript& root, const CString& strName, MS2Ptr<ASMovieClip>* pOut);   // bind a child of the root
 void FUN_140b05680(const CString& strMovie);                        // close the shop movie of the manager
 void FUN_140b055c0(const CString& strMovie, int nCategory);         // open the inventory movie
-char FUN_141900a90(UICashShopDialog* pDialog);
+bool FUN_141900a90(UICashShopDialog* pDialog);
 bool FUN_1418ffe80(int nFlags, int nBit);                           // test a flag
 void FUN_1418ffef0(int* pnFlags, int nBit);                         // clear a flag
 void FUN_1418ffec0(int* pnFlags, int nBit);                         // set a flag
@@ -355,11 +358,7 @@ void FUN_140d73c60(MS2Ptr<CMsgBoxData> spBox);                                  
 void FUN_140d2cd80(MS2Ptr<Unk_CashProduct> spProduct);                          // the link of a product
 void FUN_1416fb340(void* pLog, const CStringW& strText);
 void* FUN_1403b4750();
-void* FUN_14025e7d0();
-class Unk_CashChecker { public: int FUN_140226260(const CStringW& strText, CStringW& rError); };
-void FUN_14025c670(void* p);                                    // text-checker smart pointer dtor
-struct Unk_CashCheckerRef { void* m_00; Unk_CashChecker* m_p; ~Unk_CashCheckerRef() { FUN_14025c670(this); } };
-class Unk_CashCommon { public: Unk_CashCheckerRef FUN_140229a50(); };   // returns the smart pointer by value
+CommonString* FUN_14025e7d0();
 
 // ---- delegates ----
 
@@ -409,13 +408,13 @@ void UICashShopDialog::CategoryFilter::FUN_141033240(int nCategory)
 }
 
 // @0x141033300
-bool UICashShopDialog::CategoryFilter::FUN_141033300(int nCategory, int nId)
+int UICashShopDialog::CategoryFilter::FUN_141033300(int nCategory, int nId)
 {
     if (m_mapInclude.Lookup(nCategory) == 0)
-        return false;
-    if (m_mapExclude.Lookup(nId) == 0)
-        return true;
-    return false;
+        return 0;
+    if (m_mapExclude.Lookup(nId) != 0)
+        return 0;
+    return 1;
 }
 
 // @0x14103b9a0
@@ -468,10 +467,11 @@ CString UICashShopDialog::GetTypeName()
 // @0x1410336b0
 int UICashShopDialog::vfunc_73()
 {
-    if (FUN_1402c4c90(FUN_14025e7b0() + 8, 0x15) == 0)
-        return UIDialog::vfunc_73();
-    FUN_141275260(0x2f7, 1, 1);
-    return 0;
+    if (FUN_1402c4c90(FUN_14025e7b0() + 8, 0x15) != 0) {
+        FUN_141275260(0x2f7, 1, 1);
+        return 0;
+    }
+    return UIDialog::vfunc_73();
 }
 
 // @0x141033710
@@ -532,7 +532,9 @@ void UICashShopDialog::OnLoadComplete()
 // @0x141033a50
 int UICashShopDialog::vfunc_13()
 {
-    return UIDialog::vfunc_13() != 0;
+    if (UIDialog::vfunc_13())
+        return 1;
+    return 0;
 }
 
 // @0x141033a80
@@ -550,8 +552,7 @@ void UICashShopDialog::vfunc_15()
         FUN_141036ca0();
     }
     if (FUN_1418ffe80(m_nDirty, 2)) {
-        MS2Ptr<Unk_CashBag> spBag = FUN_140ba4b70(CString("m_inven"));
-        if (spBag.get() != 0) {
+        if (MS2Ptr<Unk_CashBag> spBag = FUN_140ba4b70("m_inven")) {
             FUN_1418ffef0(&m_nDirty, 2);
             FUN_140b05680(GetTypeName());
             FUN_140b055c0(GetTypeName(), m_nCategory);
@@ -574,9 +575,12 @@ int UICashShopDialog::vfunc_46()
 {
     if (UISwfEntity::vfunc_46() == 0)
         return 0;
-    if (m_30)
+    if (m_30 == NULL)
         return 0;
-    FUN_14134a480(*m_30, CString("m_probInfo"), &m_spProbInfo);
+    {
+        CString strName("m_probInfo");
+        FUN_14134a480(*m_30, strName, &m_spProbInfo);
+    }
     return 1;
 }
 
@@ -585,46 +589,45 @@ int UICashShopDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
 {
     if (UIDialog::OnMessage(pSender, pMsg) != 0)
         return 1;
-    if (pMsg->FUN_1422e4520() != 0)
-        return 0;
-    if (dynamic_cast<UIMessageBox*>(pSender) == 0)
-        return 0;
-    FUN_14151f200();
-    int nResult = pMsg->FUN_1422b8a10();
-    CStringW strTag = pMsg->FUN_1422b8f40();
-    if (nResult == 0) {
-        ATL::CAtlArray<CStringW> parts;
-        FUN_14025a680(strTag, parts, L":");
-        if (parts.GetCount() != 2)
-            return 0;
-        if (strTag.Find(L"pickup", 0) != -1) {
-            ATL::CAtlArray<CStringW> values;
-            FUN_14025a680(parts[1], values, L",");
-            if (values.GetCount() != 2)
+    if (pMsg->FUN_1422e4520() == 0 && dynamic_cast<UIMessageBox*>(pSender) != 0) {
+        FUN_14151f200();
+        int nResult = pMsg->FUN_1422b8a10();
+        CStringW strTag = pMsg->FUN_1422b8f40();
+        if (nResult == 0) {
+            ATL::CAtlArray<CStringW> parts;
+            FUN_14025a680(strTag, parts, L":");
+            if (parts.GetCount() != 2)
                 return 0;
-            int nSerial = FUN_1407181a0(values[0]);
-            int nCount = FUN_140718200(values[1]);
-            MS2Ptr<Unk_CashInvItem> spRow = FUN_140b05bf0()->FUN_140b06870(nSerial, nCount);
-            if (spRow.get() != 0)
-                FUN_140b05bf0()->FUN_140b064c0(nSerial, nCount, 1, 0);
-        }
-        else if (strTag.Find(L"retraction", 0) != -1) {
-            ATL::CAtlArray<CStringW> values;
-            FUN_14025a680(parts[1], values, L",");
-            if (values.GetCount() != 2)
-                return 0;
-            int nSerial = FUN_1407181a0(values[0]);
-            int nCount = FUN_140718200(values[1]);
-            MS2Ptr<CMsgBoxData> spBox = FUN_140d73e40(1, 0xa58, 0, CStringW(L""));
-            if (spBox.get() != 0) {
-                spBox->FUN_140533ff0(nSerial);
-                spBox->FUN_140534050(nCount);
-                spBox->FUN_141a027c0(Unk_CashBoxDelegate(this, &UICashShopDialog::FUN_141039da0));
-                FUN_140d73c60(spBox);
+            if (strTag.Find(L"pickup", 0) != -1) {
+                ATL::CAtlArray<CStringW> values;
+                FUN_14025a680(parts[1], values, L",");
+                if (values.GetCount() != 2)
+                    return 0;
+                int nSerial = FUN_1407181a0(values[0]);
+                int nCount = FUN_140718200(values[1]);
+                MS2Ptr<Unk_CashInvItem> spRow = FUN_140b05bf0()->FUN_140b06870(nSerial, nCount);
+                if (spRow.get() != 0)
+                    FUN_140b05bf0()->FUN_140b064c0(nSerial, nCount, 1, 0);
+            }
+            else if (strTag.Find(L"retraction", 0) != -1) {
+                ATL::CAtlArray<CStringW> values;
+                FUN_14025a680(parts[1], values, L",");
+                if (values.GetCount() != 2)
+                    return 0;
+                int nSerial = FUN_1407181a0(values[0]);
+                int nCount = FUN_140718200(values[1]);
+                MS2Ptr<CMsgBoxData> spBox = FUN_140d73e40(1, 0xa58, 0, CStringW(L""));
+                if (spBox.get() != 0) {
+                    spBox->FUN_140533ff0(nSerial);
+                    spBox->FUN_140534050(nCount);
+                    spBox->FUN_141a027c0(Unk_CashBoxDelegate(this, &UICashShopDialog::FUN_141039da0));
+                    FUN_140d73c60(spBox);
+                }
             }
         }
+        return 1;
     }
-    return 1;
+    return 0;
 }
 
 // @0x141034350
@@ -639,13 +642,14 @@ int UICashShopDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
             MS2Ptr<Unk_CashProduct> spProduct = FUN_140b05bf0()->FUN_140b06750(nProductId);
             if (spProduct == 0)
                 return 0;
-            if (m_nCash < spProduct->m_nSalePrice) {
-                FUN_141039a90();
+            if (m_nCash >= spProduct->m_nSalePrice) {
+                ATL::CAtlArray<unsigned> ids;
+                ids.Add(nProductId);
+                CString strName(szMethod);
+                FUN_141035990(strName, ids, true);
             }
             else {
-                ATL::CAtlArray<int> ids;
-                ids.Add(nProductId);
-                FUN_141035990(CString(szMethod), ids, true);
+                FUN_141039a90();
             }
         }
     }
@@ -700,12 +704,13 @@ int UICashShopDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
             CStringW strIds = data.FUN_1422b8f40();
             ATL::CAtlArray<CStringW> parts;
             FUN_14025a680(strIds, parts, L",");
-            if (parts.GetCount() != 0) {
-                ATL::CAtlArray<int> ids;
+            if (parts.GetCount() > 0) {
+                ATL::CAtlArray<unsigned> ids;
                 size_t nParts = parts.GetCount();
                 for (size_t i = 0; i < nParts; i++)
-                    ids.Add(FUN_140718200(parts[i]));
-                FUN_141035990(CString(szMethod), ids, false);
+                    ids.Add(FUN_140718200(parts.GetAt(i)));
+                CString strName(szMethod);
+                FUN_141035990(strName, ids, false);
             }
         }
     }
@@ -729,7 +734,7 @@ int UICashShopDialog::GetCategory()
 }
 
 // @0x141034dc0
-bool UICashShopDialog::FUN_141034dc0(int nId)
+int UICashShopDialog::FUN_141034dc0(int nId)
 {
     return m_filter.FUN_141033300(m_nCategory, nId);
 }
@@ -738,16 +743,15 @@ bool UICashShopDialog::FUN_141034dc0(int nId)
 void UICashShopDialog::FUN_141034e00(int nCash)
 {
     m_nCash = nCash;
-    MS2Ptr<ASTextField> spText = FUN_140bb4cf0(CString("m_cash"));
-    if (spText.get() != 0)
+    if (MS2Ptr<ASTextField> spText = FUN_140bb4cf0("m_cash"))
         spText->FUN_1422c4cd0(FUN_140763e10(nCash));
 }
 
 // @0x141034ef0
 void UICashShopDialog::FUN_141034ef0(int n, CInPacket& rPacket)
 {
-    unsigned nCount = rPacket.ReadInt32();
-    for (unsigned i = 0; i < nCount; i++) {
+    size_t nCount = (unsigned)rPacket.ReadInt32();
+    for (size_t i = 0; i < nCount; i++) {
         int nProductId = rPacket.ReadInt32();
         POSITION pos = m_basket.Find(nProductId);
         if (pos != 0) {
@@ -755,7 +759,7 @@ void UICashShopDialog::FUN_141034ef0(int n, CInPacket& rPacket)
             FUN_1418ffec0(&m_nDirty, 4);
         }
     }
-    if (m_waiting.GetCount() != 0) {
+    if (m_waiting.GetCount() > 0) {
         int nNext = m_waiting[0];
         FUN_140b05bf0()->FUN_140b06240(nNext, 1);
         m_waiting.RemoveAt(0, 1);
@@ -781,17 +785,18 @@ void UICashShopDialog::FUN_1410350d0(MS2Ptr<CashBannerInfo> spBanner)
 {
     if (spBanner == 0)
         return;
-    if (spBanner->m_strType == "link") {
+    CString& strType = spBanner->m_strType;
+    if (strType == "link") {
         FUN_1418fe1c0(spBanner->m_strValue);
     }
-    else if (spBanner->m_strType == "product") {
+    else if (strType == "product") {
         int nProductId = FUN_1407181d0(spBanner->m_strValue);
         MS2Ptr<Unk_CashProduct> spProduct = FUN_140b05bf0()->FUN_140b06750(nProductId);
         if (spProduct == 0)
             return;
-        ATL::CAtlArray<int> ids;
+        ATL::CAtlArray<unsigned> ids;
         ids.Add(nProductId);
-        FUN_141035990(CString("OnClickBanner"), ids, true);
+        FUN_141035990("OnClickBanner", ids, true);
     }
 }
 
@@ -828,7 +833,7 @@ void UICashShopDialog::FUN_1410355e0(CString strSide, CString strPath)
 }
 
 // @0x1410356a0
-bool UICashShopDialog::FUN_1410356a0()
+int UICashShopDialog::FUN_1410356a0()
 {
     return m_waiting.GetCount() != 0;
 }
@@ -843,14 +848,14 @@ void UICashShopDialog::FUN_1410356f0()
         m_pUnlockDialog = 0;
     }
     char szUrl[1024];
-    if (FUN_1415c3b50("http://maplestory2.nexon.com/Auth/CashCertify", szUrl, 0, 0, 0x10000) == 0)
-        return;
-    m_pUnlockDialog = new CCashUnlockDialog(0);
-    if (m_pUnlockDialog->Create(0x96, CWnd::FromHandle(FUN_14209c720(FUN_140aadf80()))) != 0) {
-        SetUnlockState(1);
-        m_pUnlockDialog->Navigate(CString(szUrl));
-        m_pUnlockDialog->CenterOnScreen();
-        m_pUnlockDialog->ShowWindow(SW_SHOW);
+    if (FUN_1415c3b50("http://maplestory2.nexon.com/Auth/CashCertify", szUrl, 0, 0, 0x10000)) {
+        m_pUnlockDialog = new CCashUnlockDialog(0);
+        if (m_pUnlockDialog->Create(0x96, CWnd::FromHandle(FUN_14209c720(FUN_140aadf80()))) != 0) {
+            SetUnlockState(1);
+            m_pUnlockDialog->Navigate(CString(szUrl));
+            m_pUnlockDialog->CenterOnScreen();
+            m_pUnlockDialog->ShowWindow(SW_SHOW);
+        }
     }
 }
 
@@ -871,14 +876,15 @@ void UICashShopDialog::SetUnlockState(int nState)
 }
 
 // @0x141035990
-bool UICashShopDialog::FUN_141035990(const CString& strName, ATL::CAtlArray<int>& rIds, bool bGift)
+bool UICashShopDialog::FUN_141035990(const CString& strName, ATL::CAtlArray<unsigned>& rIds, bool bGift)
 {
-    MS2Ptr<TMarketBillDataParam> spParam = FUN_141037f40(strName, bGift);
+    MS2Ptr<TCashShopBillDataParam> spParam = FUN_141037f40(strName, bGift);
     if (spParam == 0)
         return false;
     UIMarketBillDialog* pBillDialog = FUN_140b09580(0x4f17);
     if (pBillDialog == 0)
         return false;
+    int nZero = 0;
     ATL::CAtlArray<MS2Ptr<ASBillData> >& bills = spParam->m_bills;
     unsigned nIds = rIds.GetCount();
     for (unsigned i = 0; i < nIds; i++) {
@@ -892,9 +898,9 @@ bool UICashShopDialog::FUN_141035990(const CString& strName, ATL::CAtlArray<int>
         MS2Ptr<ASCashShopBillData> spBill(new ASCashShopBillData());
         spBill->FUN_1409ab990(spItem, spProduct->m_nRank);
         spBill->FUN_1409aba80(GetStringTable()->FUN_141811980(1, spProduct->m_nItemId));
-        spBill->FUN_1409abad0(FUN_1418fec00(0, spProduct->m_nSalePrice, 0), spProduct->m_nSalePrice);
+        spBill->FUN_1409abad0(FUN_1418fec00(nZero, spProduct->m_nSalePrice, 0), spProduct->m_nSalePrice);
         spBill->FUN_1409abc90(spProduct->m_nDiscount == 1);
-        spBill->FUN_1409abcd0(0);
+        spBill->FUN_1409abcd0(nZero);
         spBill->FUN_14103fba0(nProductId);
         bills.Add(spBill);
     }
@@ -908,21 +914,20 @@ bool UICashShopDialog::FUN_141035990(const CString& strName, ATL::CAtlArray<int>
 void UICashShopDialog::FUN_141035e40()
 {
     Unk_CashInvArr* pRows = FUN_140b05bf0()->FUN_140b05c00();
-    MS2Ptr<Unk_CashButton> spNext = FUN_140bb4b10(CString("m_btnNext"));
-    if (spNext.get() != 0)
-        spNext->FUN_1422c1fe0(pRows->FUN_140b05be0() == 0x1e);
-    MS2Ptr<Unk_CashButton> spPrev = FUN_140bb4b10(CString("m_btnPrev"));
-    if (spPrev.get() != 0)
+    if (MS2Ptr<Unk_CashButton> spNext = FUN_140bb4b10("m_btnNext")) {
+        int bFullPage = pRows->FUN_140b05be0() == 0x1e;
+        spNext->FUN_1422c1fe0(bFullPage);
+    }
+    if (MS2Ptr<Unk_CashButton> spPrev = FUN_140bb4b10("m_btnPrev"))
         spPrev->FUN_1422c1fe0(m_nCategory > 1);
-    MS2Ptr<ASTextField> spPage = FUN_140bb4cf0(CString("m_page"));
-    if (spPage.get() != 0)
+    if (MS2Ptr<ASTextField> spPage = FUN_140bb4cf0("m_page"))
         spPage->FUN_1422c4cd0(FUN_1401ceea0(L"{0}", m_nCategory));
 }
 
 // @0x1410360c0
 void UICashShopDialog::FUN_1410360c0()
 {
-    MS2Ptr<Unk_CashList> spList = FUN_14103a890(CString("m_saleProduct"));
+    MS2Ptr<Unk_CashList> spList = FUN_14103a890("m_saleProduct");
     if (spList == 0)
         return;
     spList->Invoke("resetRenderer");
@@ -930,8 +935,10 @@ void UICashShopDialog::FUN_1410360c0()
     FUN_140bf2260(header.FUN_1422bb870());
     spList->FUN_1422dd230(header);
     Unk_CashPageMap pages(10);
-    for (int nPage = 1; nPage < 4; nPage++)
-        pages.SetAt(nPage, TPtrValue<Unk_CashSlotMap>(Unk_GrNewTag(0)));
+    for (size_t nPage = 1; nPage <= 3; nPage++) {
+        TPtrValue<Unk_CashSlotMap> spNew(Unk_GrNewTag(0));
+        pages.SetAt((int)nPage, spNew);
+    }
     int nPayType = 0;
     ATL::CAtlArray<MS2Ptr<Unk_CashProduct> >& products = FUN_140b05bf0()->FUN_14103d2c0();
     for (size_t i = 0; i < products.GetCount(); i++) {
@@ -939,21 +946,23 @@ void UICashShopDialog::FUN_1410360c0()
         if (FUN_140b05bf0()->FUN_140b06680(spProduct) != 0)
             continue;
         MS2Ptr<CItemData> spItem = FUN_14053f870(spProduct->m_nItemId);
-        if (spItem == 0)
+        if (!spItem)
             continue;
-        MS2Ptr<ASObj> spRow(new ASObj(2));
+        MS2Ptr<AScript> spRow(new AScript(2));
         spRow->FUN_1407cba60("productSN", FUN_140513200("{0}", spProduct->m_nSerial));
         spRow->FUN_1407cbb20("itemName", GetStringTable()->FUN_141811980(1, spProduct->m_nItemId));
         spRow->FUN_1407cba60("iconPath", spItem->FUN_14053fdd0());
         spRow->FUN_1407cb9c0("saleTag", spProduct->m_nSaleTag);
         __int64 nPrice = spProduct->m_nPrice;
         __int64 nSalePrice = spProduct->m_nSalePrice;
-        CStringW strOriginal = nSalePrice < nPrice ? FUN_1409404f0(nPrice) : CStringW(L"");
-        spRow->FUN_1407cbb20("salePrice", FUN_1418fec00(nPayType, nSalePrice, 0));
+        bool bSale = nPrice > nSalePrice;
+        CStringW strOriginal = bSale ? FUN_1409404f0(nPrice) : CStringW(L"");
+        CStringW strSale = FUN_1418fec00(nPayType, nSalePrice, 0);
+        spRow->FUN_1407cbb20("salePrice", strSale);
         spRow->FUN_1407cbb20("originalPrice", strOriginal);
         spRow->FUN_1407cb9c0("tooltip", 1);
         if (spProduct->m_nLimitKind == 3)
-            spRow->FUN_1407cbbe0("soldout", spProduct->m_nLimitMax <= spProduct->m_nLimitCount);
+            spRow->FUN_1407cbbe0("soldout", spProduct->m_nLimitCount >= spProduct->m_nLimitMax ? true : false);
         int nSlot = spProduct->m_nSlot;
         int nPageOfRow = spProduct->m_nPage;
         TPtrValue<Unk_CashSlotMap> spSlots(0);
@@ -961,7 +970,7 @@ void UICashShopDialog::FUN_1410360c0()
             spSlots = Unk_GrNewTag(0);
             pages.SetAt(nPageOfRow, spSlots);
         }
-        spSlots->SetAt(nSlot, MS2Ptr<AScript>(spRow));
+        spSlots->SetAt(nSlot, spRow);
     }
     for (POSITION pos = pages.GetHeadPosition(); pos != 0; pages.GetNext(pos)) {
         TPtrValue<Unk_CashSlotMap> spSlots(pages.GetValueAt(pos));
@@ -969,8 +978,7 @@ void UICashShopDialog::FUN_1410360c0()
         size_t nCapacity = 6;
         if (nPageKey == 1)
             nCapacity = 5;
-        MS2Ptr<ASUIComponent> spEmpty = FUN_14103a700(FUN_1402bb1c0("empty{0}", nPageKey));
-        if (spEmpty != 0)
+        if (MS2Ptr<ASUIComponent> spEmpty = FUN_14103a700(FUN_1402bb1c0("empty{0}", nPageKey)))
             spEmpty->vfunc_4(spSlots->GetCount() == 0);
         size_t nAdded = 0;
         for (POSITION posSlot = spSlots->GetHeadPosition(); posSlot != 0; spSlots->GetNext(posSlot)) {
@@ -992,16 +1000,15 @@ void UICashShopDialog::FUN_1410360c0()
 // @0x141036ca0
 void UICashShopDialog::FUN_141036ca0()
 {
-    MS2Ptr<Unk_CashList> spList = FUN_14103a890(CString("m_basketProduct"));
+    MS2Ptr<Unk_CashList> spList = FUN_14103a890("m_basketProduct");
     spList->Invoke("resetRenderer");
     int nPayType = 0;
     for (POSITION pos = m_basket.GetHeadPosition(); pos != 0; m_basket.GetNext(pos)) {
-        int nProductId = m_basket.GetAt(pos);
-        MS2Ptr<Unk_CashProduct> spProduct = FUN_140b05bf0()->FUN_140b06750(nProductId);
+        MS2Ptr<Unk_CashProduct> spProduct = FUN_140b05bf0()->FUN_140b06750(m_basket.GetAt(pos));
         if (FUN_140b05bf0()->FUN_140b06680(spProduct) != 0)
             continue;
         MS2Ptr<CItemData> spItem = FUN_14053f870(spProduct->m_nItemId);
-        if (spItem == 0)
+        if (!spItem)
             continue;
         MS2Ptr<ASObj> spRow(new ASObj(2));
         spRow->FUN_1407cba60("productSN", FUN_140513200("{0}", spProduct->m_nSerial));
@@ -1010,8 +1017,10 @@ void UICashShopDialog::FUN_141036ca0()
         spRow->FUN_1407cb9c0("saleTag", spProduct->m_nSaleTag);
         __int64 nPrice = spProduct->m_nPrice;
         __int64 nSalePrice = spProduct->m_nSalePrice;
-        CStringW strOriginal = nSalePrice < nPrice ? FUN_1409404f0(nPrice) : CStringW(L"");
-        spRow->FUN_1407cbb20("salePrice", FUN_1418fec00(nPayType, nSalePrice, 0));
+        bool bSale = nPrice > nSalePrice;
+        CStringW strOriginal = bSale ? FUN_1409404f0(nPrice) : CStringW(L"");
+        CStringW strSale = FUN_1418fec00(nPayType, nSalePrice, 0);
+        spRow->FUN_1407cbb20("salePrice", strSale);
         spRow->FUN_1407cbb20("price", strOriginal);
         spRow->FUN_1407cb9c0("tooltip", 1);
         spList->FUN_1422dd230(*spRow);
@@ -1025,22 +1034,20 @@ void UICashShopDialog::FUN_141037360()
     Unk_CashInvArr* pRows = FUN_140b05bf0()->FUN_140b05c00();
     for (size_t i = 0; i < pRows->FUN_140b05be0(); i++) {
         MS2Ptr<Unk_CashInvItem> spRow = pRows->FUN_140b05b10(i);
-        if (spRow->m_nState != 0)
-            continue;
-        if (spRow->m_strSender.GetLength() == 0)
-            continue;
-        CStringW strText = FUN_140656190(GetStringCommon(0xa66), spRow->m_strSender, spRow->m_strMessage);
-        MS2Ptr<CItem> spGift(new CItem());
-        if (spGift->FUN_140523c40(spRow->m_nItemId, 1, 0) == 0)
-            continue;
-        MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x11, CStringW(L""), 0, strText);
-        if (spBox.get() != 0) {
-            spGift->FUN_140526c70(1);
-            spBox->FUN_141a01ee0(spGift, spGift->FUN_140527b10(), 1, 0, -1, -1, 1);
-            spBox->FUN_140533ff0(spRow->m_nSerial);
-            spBox->FUN_140534050(spRow->m_nId);
-            spBox->FUN_141a027c0(Unk_CashBoxDelegate(this, &UICashShopDialog::FUN_141039d30));
-            FUN_140d73c60(spBox);
+        if (spRow->m_nState == 0 && spRow->m_strSender.GetLength() != 0) {
+            CStringW strText = FUN_140656190(GetStringCommon(0xa66), spRow->m_strSender, spRow->m_strMessage);
+            MS2Ptr<CItem> spGift(new CItem());
+            if (spGift->FUN_140523c40(spRow->m_nItemId, 1, 0) == 0)
+                continue;
+            MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x11, strText, 0, L"");
+            if (spBox.get() != 0) {
+                spGift->FUN_140526c70(1);
+                spBox->FUN_141a01ee0(spGift, spGift->FUN_140527b10(), 1, 0, -1, -1, 1);
+                spBox->FUN_140533ff0(spRow->m_nSerial);
+                spBox->FUN_140534050(spRow->m_nId);
+                spBox->FUN_141a027c0(Unk_CashBoxDelegate(this, &UICashShopDialog::FUN_141039d30));
+                FUN_140d73c60(spBox);
+            }
         }
     }
 }
@@ -1048,7 +1055,8 @@ void UICashShopDialog::FUN_141037360()
 // @0x141037880
 void UICashShopDialog::OnChargeCash()
 {
-    FUN_1403ed2d0()->FUN_141bd9990(FUN_140c84fc0(DAT_143ab2840));
+    CString strUrl = FUN_140c84fc0(DAT_143ab2840);
+    FUN_1403ed2d0()->FUN_141bd9990(strUrl);
 }
 
 // @0x1410378d0
@@ -1058,7 +1066,7 @@ CString UICashShopDialog::FUN_1410378d0()
     ATL::CStringT<char, ATL::StrTraitATL<char, ATL::ChTraitsCRT<char> > > strSource;
     strSource.AppendFormat("%s", "MS2");
     strSource.AppendFormat("%s", (LPCSTR)strNexonId);
-    CTime now(FUN_140869440());
+    CMsTime now(FUN_140869440());
     int nHour = now.GetHour();
     if (nHour > 12)
         nHour -= 12;
@@ -1124,33 +1132,36 @@ int UICashShopDialog::FUN_141037ea0(const PaymentMap& mapPay)
     int nTotal = 0;
     for (POSITION pos = mapPay.GetStartPosition(); pos != 0; mapPay.GetNext(pos)) {
         __int64 nAmount = mapPay.GetValueAt(pos);
-        if (nAmount != 0 && mapPay.GetKeyAt(pos) == 0)
-            nTotal += (int)nAmount;
+        if (nAmount == 0)
+            continue;
+        ePayType eType = mapPay.GetKeyAt(pos);
+        if (eType != 0)
+            continue;
+        nTotal += nAmount;
     }
     return nTotal;
 }
 
 // @0x141037f40
-MS2Ptr<TMarketBillDataParam> UICashShopDialog::FUN_141037f40(const CString& strName, bool bGift)
+MS2Ptr<TCashShopBillDataParam> UICashShopDialog::FUN_141037f40(const CString& strName, bool bGift)
 {
     MS2Ptr<TCashShopBillDataParam> spParam(new TCashShopBillDataParam());
     if (spParam == 0)
-        return MS2Ptr<TMarketBillDataParam>(0);
+        return MS2Ptr<TCashShopBillDataParam>(0);
     spParam->m_nDialogId = vfunc_48();
     spParam->m_strMovie = strName;
     spParam->m_nCurrency = 0;
     spParam->m_b2c = bGift;
     spParam->m_dgBuy = TMarketBillDataParam::BuyCallback(this, &UICashShopDialog::FUN_1410382a0);
     spParam->m_dgTooltip = TMarketBillDataParam::TooltipCallback(this, &UICashShopDialog::FUN_141039540);
-    Unk_CashGiftDelegate dgGift(this, &UICashShopDialog::FUN_141038aa0);
-    spParam->m_dgGift = reinterpret_cast<TMarketBillDataParam::GiftCallback&>(dgGift);
-    return MS2Ptr<TMarketBillDataParam>(spParam);
+    reinterpret_cast<Unk_CashGiftDelegate&>(spParam->m_dgGift) = Unk_CashGiftDelegate(this, &UICashShopDialog::FUN_141038aa0);
+    return spParam;
 }
 
 // @0x1410382a0
 bool UICashShopDialog::FUN_1410382a0(MS2Ptr<TMarketBillDataParam> spParam, const PaymentMap& mapPay)
 {
-    if (!m_30)
+    if (m_30 == NULL)
         return false;
     if (spParam == 0)
         return false;
@@ -1166,7 +1177,7 @@ bool UICashShopDialog::FUN_1410382a0(MS2Ptr<TMarketBillDataParam> spParam, const
         return true;
     }
     int nFirstId = 0;
-    ATL::CAtlArray<int> ids;
+    ATL::CAtlArray<unsigned> ids;
     size_t nBills = bills.GetCount();
     for (size_t i = 0; i < nBills; i++) {
         MS2Ptr<ASBillData> spBill = bills[i];
@@ -1183,31 +1194,34 @@ bool UICashShopDialog::FUN_1410382a0(MS2Ptr<TMarketBillDataParam> spParam, const
         int nReason = 0;
         if (!FUN_141037cd0(spProduct->m_nItemId, &nReason, &nTab)) {
             CStringW strText;
-            if (nTab < 0)
-                strText = GetStringCommon(nReason);
-            else
+            if (nTab > -1)
                 strText = FUN_14052bd00(nReason, GetStringTable()->FUN_141813300(nTab));
-            MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, CStringW(strText), 0, CStringW(L""));
-            if (spBox.get() != 0) {
-                spBox->FUN_140534050(nProductId);
-                spBox->FUN_141a027c0(Unk_CashBoxDelegate(this, &UICashShopDialog::FUN_141039ca0));
-                FUN_140d73c60(spBox);
+            else
+                strText = GetStringCommon(nReason);
+            {
+                MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, CStringW(strText), 0, CStringW(L""));
+                if (spBox.get() != 0) {
+                    spBox->FUN_140534050(nProductId);
+                    spBox->FUN_141a027c0(Unk_CashBoxDelegate(this, &UICashShopDialog::FUN_141039ca0));
+                    FUN_140d73c60(spBox);
+                }
             }
             return true;
         }
         int nPending = FUN_140b05bf0()->FUN_140b06600(nProductId);
-        if (nPending != 0) {
+        if (nPending == 0) {
+            if (nFirstId == 0)
+                nFirstId = nProductId;
+            else
+                ids.Add(nProductId);
+        } else {
             FUN_140b05bf0()->FUN_140b06980(2, nPending);
             return true;
         }
-        if (nFirstId != 0)
-            ids.Add(nProductId);
-        else
-            nFirstId = nProductId;
     }
     if (nFirstId != 0)
         FUN_140b05bf0()->FUN_140b06240(nFirstId, 1);
-    if (ids.GetCount() != 0)
+    if (ids.GetCount() > 0)
         m_waiting.Copy(ids);
     return true;
 }
@@ -1219,11 +1233,11 @@ bool UICashShopDialog::FUN_141038aa0(MS2Ptr<TMarketBillDataParam> spParam, const
         FUN_140d73bc0(0xa6d, 0, 0, CStringW(L""));
         return true;
     }
-    if (!m_30)
+    if (m_30 == NULL)
         return false;
     if (spParam == 0)
         return false;
-    if (FUN_140166410()->FUN_14036d570(0x111) == true && DAT_143ab2943 != 7) {
+    if (FUN_140166410()->FUN_14036d570(0x111) == true && (unsigned char)DAT_143ab2943 != 7) {
         FUN_140d73bc0(0xd56, 0, 0, CStringW(L""));
         return false;
     }
@@ -1238,9 +1252,9 @@ bool UICashShopDialog::FUN_141038aa0(MS2Ptr<TMarketBillDataParam> spParam, const
         FUN_141039a90();
         return true;
     }
-    ATL::CAtlArray<int> ids;
-    MS2Ptr<Unk_CashProduct> spGift(0);
+    ATL::CAtlArray<unsigned> ids;
     size_t nBills = bills.GetCount();
+    MS2Ptr<Unk_CashProduct> spGift(0);
     for (size_t i = 0; i < nBills; i++) {
         MS2Ptr<ASBillData> spBill = bills[i];
         if (spBill == 0)
@@ -1263,8 +1277,8 @@ bool UICashShopDialog::FUN_141038aa0(MS2Ptr<TMarketBillDataParam> spParam, const
     if (spGift == 0)
         return true;
     if (!strMessage.IsEmpty()) {
-        Unk_CashCheckerRef checkerRef = ((Unk_CashCommon*)FUN_14025e7d0())->FUN_140229a50();
-        Unk_CashChecker* pChecker = checkerRef.m_p;
+        CBanTextChecker* pChecker;
+        CBanTextChecker* pDead = pChecker = FUN_14025e7d0()->GetChecker();
         if (pChecker != 0) {
             CStringW strError;
             if (pChecker->FUN_140226260(strMessage, strError) != 0) {
@@ -1275,16 +1289,18 @@ bool UICashShopDialog::FUN_141038aa0(MS2Ptr<TMarketBillDataParam> spParam, const
     }
     CStringW strText = FUN_14052bd00(0xa67, strRecipient);
     FUN_1416fb340(FUN_1403b4750(), strText);
-    MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x11, CStringW(L""), 0, strText);
-    if (spBox.get() != 0) {
-        spBox->FUN_140534050(spGift->m_nId);
-        spBox->FUN_140b76940(strRecipient);
-        spBox->FUN_140b76940(strMessage);
-        spBox->FUN_141a027c0(Unk_CashBoxDelegate(this, &UICashShopDialog::FUN_141039e80));
-        spBox->FUN_141a024a0(0);
-        static_cast<Unk_CashMsgBox*>(spBox.operator->())->FUN_141a020b0(spGift->m_nItemId, spGift->m_nRank, 0);
-        spBox->FUN_141a01700(0x477, 0x478, 0);
-        FUN_140d73c60(spBox);
+    {
+        MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x11, strText, 0, L"");
+        if (spBox.get() != 0) {
+            spBox->FUN_140534050(spGift->m_nId);
+            spBox->FUN_140b76940(strRecipient);
+            spBox->FUN_140b76940(strMessage);
+            spBox->FUN_141a027c0(Unk_CashBoxDelegate(this, &UICashShopDialog::FUN_141039e80));
+            spBox->FUN_141a024a0(0);
+            static_cast<Unk_CashMsgBox*>(spBox.operator->())->FUN_141a020b0(spGift->m_nItemId, spGift->m_nRank, 0);
+            spBox->FUN_141a01700(0x477, 0x478, 0);
+            FUN_140d73c60(spBox);
+        }
     }
     return true;
 }
@@ -1292,11 +1308,12 @@ bool UICashShopDialog::FUN_141038aa0(MS2Ptr<TMarketBillDataParam> spParam, const
 // @0x141039540
 bool UICashShopDialog::FUN_141039540(Scaleform::GFx::Value* pRetVal, ASData& rData, MS2Ptr<TMarketBillDataParam> spParam)
 {
-    if (!m_30)
+    if (m_30 == NULL)
         return false;
     if (spParam == 0)
         return false;
-    ASObj obj(rData.FUN_1422b9260(), 2);
+    const Scaleform::GFx::Value vArg = rData.FUN_1422b9260();
+    ASObj obj(vArg, 2);
     if (obj.FUN_1422ba9a0())
         return false;
     unsigned nIndex = rData.FUN_1422b8b10();
@@ -1318,10 +1335,10 @@ bool UICashShopDialog::FUN_141039540(Scaleform::GFx::Value* pRetVal, ASData& rDa
 // @0x1410398f0
 void UICashShopDialog::FUN_1410398f0(const CString& strSide)
 {
-    if (!m_30 || strSide.IsEmpty() || m_banners.IsEmpty())
+    if (m_30 == NULL || strSide.IsEmpty() == true || m_banners.IsEmpty() == true)
         return;
     MS2Ptr<CashBannerInfo> spBanner(0);
-    CString strFunction = strSide.CompareNoCase("left") == 0 ? "setBannerL" : "setBannerR";
+    const CString& strFunction = strSide.CompareNoCase("left") == 0 ? "setBannerL" : "setBannerR";
     if (m_banners.Lookup(strSide, spBanner))
         m_30->Invoke(strFunction, spBanner->m_strPath);
 }
@@ -1329,11 +1346,11 @@ void UICashShopDialog::FUN_1410398f0(const CString& strSide)
 // @0x141039a90
 void UICashShopDialog::FUN_141039a90()
 {
-    MS2Ptr<CMsgBoxData> spBox = FUN_140d73f20(GetStringCommonByKey(CStringW(L"s_cashshop_lack_balance_ask")), 1);
-    if (spBox.get() != 0) {
-        spBox->FUN_141a027c0(Unk_CashBoxDelegate(this, &UICashShopDialog::FUN_14103a040));
-        FUN_140d73c60(spBox);
-    }
+    MS2Ptr<CMsgBoxData> spBox = FUN_140d73f20(GetStringCommonByKey(L"s_cashshop_lack_balance_ask"), 1);
+    if (spBox == NULL)
+        return;
+    spBox->FUN_141a027c0(Unk_CashBoxDelegate(this, &UICashShopDialog::FUN_14103a040));
+    FUN_140d73c60(spBox);
 }
 
 // @0x141039bf0
@@ -1370,26 +1387,26 @@ bool UICashShopDialog::FUN_141039ca0(int nButton, const CMsgBoxData& rData)
 // @0x141039d30
 bool UICashShopDialog::FUN_141039d30(int nButton, const CMsgBoxData& rData)
 {
-    if (nButton == 0) {
-        int nSerial = rData.FUN_141a02e50(0, 0);
-        unsigned nCount = rData.FUN_141a02e90(1, 0);
-        FUN_140b05bf0()->FUN_140b06580(nSerial, nCount);
-    }
+    if (nButton != 0)
+        return true;
+    int nSerial = rData.FUN_141a02e50(0, 0);
+    unsigned nCount = rData.FUN_141a02e90(1, 0);
+    FUN_140b05bf0()->FUN_140b06580(nSerial, nCount);
     return true;
 }
 
 // @0x141039da0
 bool UICashShopDialog::FUN_141039da0(int nButton, const CMsgBoxData& rData)
 {
-    if (nButton == 0) {
-        int nSerial = rData.FUN_141a02e50(0, 0);
-        unsigned nCount = rData.FUN_141a02e90(1, 0);
-        MS2Ptr<Unk_CashInvItem> spRow = FUN_140b05bf0()->FUN_140b06870(nSerial, nCount);
-        if (spRow.get() != 0) {
-            if (spRow->m_nUsable == 0)
-                return false;
-            FUN_140b05bf0()->FUN_140b063b0(nSerial, nCount, 1);
-        }
+    if (nButton != 0)
+        return true;
+    int nSerial = rData.FUN_141a02e50(0, 0);
+    unsigned nCount = rData.FUN_141a02e90(1, 0);
+    MS2Ptr<Unk_CashInvItem> spRow = FUN_140b05bf0()->FUN_140b06870(nSerial, nCount);
+    if (spRow.get() != 0) {
+        if (spRow->m_nUsable == 0)
+            return false;
+        FUN_140b05bf0()->FUN_140b063b0(nSerial, nCount, 1);
     }
     return true;
 }
@@ -1397,21 +1414,23 @@ bool UICashShopDialog::FUN_141039da0(int nButton, const CMsgBoxData& rData)
 // @0x141039e80
 bool UICashShopDialog::FUN_141039e80(int nButton, const CMsgBoxData& rData)
 {
-    if (nButton == 0) {
-        unsigned nProductId = rData.FUN_141a02e90(0, 0);
-        CStringW strRecipient = rData.FUN_141a02fd0(1, CStringW());
-        CStringW strMessage = rData.FUN_141a02fd0(2, CStringW());
-        if (FUN_140b05bf0()->FUN_140b06600(nProductId) == 0)
-            FUN_140b05bf0()->FUN_140b062c0(nProductId, 1, FUN_1401d4330(strRecipient, 0), FUN_1401d4330(strMessage, 0));
-    }
+    if (nButton != 0)
+        return true;
+    unsigned nProductId = rData.FUN_141a02e90(0, 0);
+    CStringW strRecipient = rData.FUN_141a02fd0(1, CStringW());
+    CStringW strMessage = rData.FUN_141a02fd0(2, CStringW());
+    int nOwned = FUN_140b05bf0()->FUN_140b06600(nProductId);
+    if (nOwned == 0)
+        FUN_140b05bf0()->FUN_140b062c0(nProductId, 1, FUN_1401d4330(strRecipient, 0), FUN_1401d4330(strMessage, 0));
     return true;
 }
 
 // @0x14103a040
 bool UICashShopDialog::FUN_14103a040(int nButton, const CMsgBoxData& rData)
 {
-    if (nButton != 1)
-        OnChargeCash();
+    if (nButton == 1)
+        return true;
+    OnChargeCash();
     return true;
 }
 
@@ -1467,7 +1486,7 @@ ASCashShopBillData::~ASCashShopBillData()
 // @0x14103a700
 MS2Ptr<ASUIComponent> UICashShopDialog::FUN_14103a700(const CString& strName)
 {
-    if (!m_30)
+    if (m_30 == NULL)
         return MS2Ptr<ASUIComponent>(0);
     MS2Ptr<ASDisplayObjectContainer> spContainer(dynamic_cast<ASDisplayObjectContainer*>((AScript*)m_30));
     if (spContainer == 0) {
@@ -1486,7 +1505,7 @@ template <class T> MS2Ptr<T> Unk_CashChildFinder::FUN_14103a840(const CString& s
 // @0x14103a890
 MS2Ptr<Unk_CashList> UICashShopDialog::FUN_14103a890(const CString& strName)
 {
-    if (!m_30)
+    if (m_30 == NULL)
         return MS2Ptr<Unk_CashList>(0);
     MS2Ptr<ASDisplayObjectContainer> spContainer(dynamic_cast<ASDisplayObjectContainer*>((AScript*)m_30));
     if (spContainer == 0) {

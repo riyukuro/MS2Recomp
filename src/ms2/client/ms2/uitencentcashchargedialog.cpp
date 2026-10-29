@@ -9,6 +9,7 @@
 #include "ms2/placeholder/ms2stdafx.h"
 
 #include "uiupperhuddialog.h"
+#include "uitencentaas2dialog.h"
 #include "ms2/placeholder/asdisplayobject.h"
 #include "ms2/placeholder/asuicomponent.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
@@ -16,11 +17,27 @@
 #include "hook/ms2hook.h"
 
 // ---- exe callees ----
-class Unk_CashImage : public AScript {};                                    // the image holder the page is drawn into (0x90 bytes)
-struct Unk_CashImagePtr                                                     // its smart pointer (16 bytes, pointer at +8)
+class Unk_AasImage : public AScript                                         // the image holder the page is drawn into (0x90 bytes)
 {
+public:
+    Unk_AasImage(int nMovieId);                                             // 0x1422e5300
+    char m_pad_ascript[0x90 - sizeof(AScript)];
+};
+class Unk_AasSource                                                         // the image source: the page url (0x40 bytes)
+{
+public:
+    Unk_AasSource(CStringW strUrl, int nMovieId);                           // 0x1422e5a70
+    char m_pad_00[0x40];
+};
+typedef Unk_AasImage Unk_CashImage;
+typedef Unk_AasImagePtr Unk_CashImagePtr;                                   // its smart pointer (uitencentaas2dialog.h)
+struct Unk_AasSourcePtr                                                     // the image source handle (16 bytes, pointer at +8)
+{
+    Unk_AasSourcePtr(Unk_AasSource* pRaw);                                  // 0x140d03040 wraps a raw object (AddRef)
+    Unk_AasSourcePtr(const Unk_AasSourcePtr& other);
+    ~Unk_AasSourcePtr();                                                    // 0x140d03100
     void* m_0;
-    Unk_CashImage* m_p;
+    void* m_p;
 };
 class Unk_CashConstInt { public: int m_n; char m_pad_04[0x54]; };                                // one value of the client constants
 class Unk_CashConstStr { public: CString& FUN_140298f80(); char m_pad_00[0x60]; };
@@ -53,17 +70,12 @@ public:
 
 void FUN_141901470(int n, int nTypeId);
 bool FUN_141900a90(UIObject* pObject);
-void FUN_140e999b0(Unk_CashImagePtr* p);                                    // null ctor
-void FUN_140d030a0(Unk_CashImagePtr* p);                                    // dtor
 void* FUN_140e999d0(Unk_CashImagePtr* p, int nNull);                        // p = NULL
 void* FUN_140e99a00(Unk_CashImagePtr* p, Unk_CashImage* pImage);            // p = pImage
 Unk_CashImage* FUN_140e99a70(Unk_CashImagePtr* p);                          // get
 Unk_CashImage* FUN_140e99a80(Unk_CashImagePtr* p);                          // operator->
 Unk_CashImage* FUN_140d03240(Unk_CashImagePtr* p);                          // operator->
-Unk_CashImagePtr FUN_140d03040(void* pRaw);                                 // wraps a raw object
-Unk_CashImage* FUN_1422e5300(void* pMem, int nMovieId);                     // image holder ctor
-void* FUN_1422e5a70(void* pMem, CStringW strUrl, int nMovieId);             // image source ctor
-void FUN_1422e5530(Unk_CashImage* pImage, const Unk_CashImagePtr& spSource);
+void FUN_1422e5530(Unk_CashImage* pImage, Unk_AasSourcePtr spSource);
 CStringW FUN_140e99600(const wchar_t* szFormat, const CString& strKey, const int& nWidth, const int& nHeight);   // StringFormat
 
 class UITencentCashChargeDialog : public UIWebBrowserBase
@@ -100,23 +112,19 @@ private:
 MS2_CHECK_SIZE(UITencentCashChargeDialog, 0x1c0);
 MS2_CHECK_OFFSET(UITencentCashChargeDialog, m_spTarget, 0x1a0);
 
-// MS2-FUNCTIONAL: ctor EH state count differs
 // @0x140e99b90
 UITencentCashChargeDialog::UITencentCashChargeDialog()
     : UIWebBrowserBase(3)
 {
-    FUN_140e999b0(&m_spImage);
     m_84 = 1;
     m_e0 = 0;
     m_spTarget = 0;
     FUN_140e999d0(&m_spImage, 0);
 }
 
-// MS2-FUNCTIONAL: the exe dtor has no EH data
 // @0x140e99c70
 UITencentCashChargeDialog::~UITencentCashChargeDialog()
 {
-    FUN_140d030a0(&m_spImage);
 }
 
 // @0x140e99cf0
@@ -157,7 +165,6 @@ void UITencentCashChargeDialog::vfunc_68()
     UIDialog::vfunc_68();
 }
 
-// MS2-FUNCTIONAL: temporaries of the Value/CString returns differ
 // @0x140e99ec0
 void UITencentCashChargeDialog::OnLoadComplete()
 {
@@ -169,11 +176,9 @@ void UITencentCashChargeDialog::OnLoadComplete()
         m_30->Invoke("setDialogSize", m_nDialogWidth, m_nDialogHeight);
     }
     vfunc_43();
-    CString strName("m_renderTarget");
-    FUN_140e48e10(strName, &m_spTarget);
+    FUN_140e48e10("m_renderTarget", &m_spTarget);
     int nId = vfunc_88();
-    const char* pszUrl = FUN_1401d3200()->m_strUrl.FUN_140298f80();
-    FUN_140cc18a0()->FUN_141b781e0(m_nBrowserId, pszUrl, "", nId);
+    FUN_140cc18a0()->FUN_141b781e0(m_nBrowserId, FUN_1401d3200()->m_strUrl.FUN_140298f80(), "", nId);
     vfunc_87(&m_size);
     FUN_140cc18a0()->FUN_141b788b0(m_nBrowserId, m_size.cx, m_size.cy);
     vfunc_85();
@@ -187,23 +192,11 @@ void UITencentCashChargeDialog::vfunc_26()
     FUN_140e999d0(&m_spImage, 0);
 }
 
-// MS2-FUNCTIONAL: operator new / ternary temporaries differ
 // @0x140e9a160
 void UITencentCashChargeDialog::vfunc_85()
 {
-    void* pMem = operator new(0x90);
-    Unk_CashImage* pImage = 0;
-    if (pMem != 0)
-        pImage = FUN_1422e5300(pMem, 2);
-    FUN_140e99a00(&m_spImage, pImage);
-    void* pMem2 = operator new(0x40);
-    void* pSource = 0;
-    if (pMem2 != 0)
-    {
-        CString strKey = FUN_1422db6e0();
-        pSource = FUN_1422e5a70(pMem2, FUN_140e99600(L"img://{0}:webBrowser/{1}/{2}", strKey, FUN_1401d3200()->m_nWidth.m_n, FUN_1401d3200()->m_nHeight.m_n), 2);
-    }
-    FUN_1422e5530(FUN_140d03240(&m_spImage), FUN_140d03040(pSource));
+    FUN_140e99a00(&m_spImage, new Unk_CashImage(2));
+    FUN_1422e5530(FUN_140d03240(&m_spImage), Unk_AasSourcePtr(new Unk_AasSource(FUN_140e99600(L"img://{0}:webBrowser/{1}/{2}", FUN_1422db6e0(), *FUN_1402056b0(&FUN_1401d3200()->m_nWidth), *FUN_1402056b0(&FUN_1401d3200()->m_nHeight)), 2)));
     if (m_spTarget.get() != 0)
     {
         static_cast<ASDisplayObjectContainer*>(m_spTarget.operator->())->FUN_1422c6900(FUN_140e99a80(&m_spImage)->FUN_1422bb890());

@@ -149,14 +149,23 @@ MS2_REPLACE_METHOD(0x1414d7060, MS2PropService, OnPreInit, 106, 0xBB7BCA87);
 // @0x1414d70d0
 efd::AsyncResult MS2PropService::OnInit() { return ecrPhysX::PropService::OnInit(); }
 MS2_REPLACE_METHOD(0x1414d70d0, MS2PropService, OnInit, 24, 0xB162AC72);
-// MS2-FUNCTIONAL: Named locals and explicit mask bit-copy change stack layout; physics arguments and locking are preserved.
+// MS2-FUNCTIONAL: the exe's NiTransformToNxMat34 takes the translation as efd::Point3 (the shared NiPhysXTypes.h
+// declares NiPoint3), so ours builds one NiPoint3 conversion temp; the mask 0.0f compares also reference a
+// linker-folded constant. Control flow and arguments match.
 // @0x1414d70f0
 void MS2PropService::OnPropertyUpdate(const efd::ClassID&, egf::Entity* entity,
                                      const egf::PropertyID& property, const egf::IProperty*, efd::UInt32) {
-    if (entity != NULL && (property == 0xfd95ca52 || property == 0x68c7c29d)) {
+    if (entity == NULL)
+        return;
+    if (property == 0xfd95ca52 || property == 0x68c7c29d) {
         if (entity->GetModel()->ContainsModel(0xb30dd8f0)) {
-            auto it = m_props.find(egf::EntityID(entity->GetEntityIDValue()));
-            if (it != m_props.end()) {
+            egf::EntityID id(entity->GetEntityIDValue());
+            auto it = m_props.find(id);
+            if (it == m_props.end()) {
+                EE_LOG_AT(0x12, efd::ILogger::kERR2, ("PropService::HandleEntityUpdatedMessage: entity ID %s updated when it was never added to the service",
+                                    entity->GetEntityID().ToString().c_str()),
+                          "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\ms2propservice.cpp", 0x62);
+            } else {
                 PropData* data = it->second;
                 SceneData* scene = NULL;
                 FUN_1409618c0(entity, 0xfd95ca52, &data->m_initialTranslation);
@@ -166,55 +175,16 @@ void MS2PropService::OnPropertyUpdate(const efd::ClassID&, egf::Entity* entity,
                     AppendPropData(data, scene->m_pPropsPending);
                 }
                 if (property == 0x68c7c29d) {
-                    efd::Matrix3 rotation;
-                    float x = data->m_initialEulerAngles.x * -0.017453292f;
-                    rotation.FromEulerAnglesXYZ(x, data->m_initialEulerAngles.y * -0.017453292f,
-                                                  data->m_initialEulerAngles.z * -0.017453292f);
+                    NiMatrix3 rotation;
+                    rotation.FromEulerAnglesXYZ(data->m_initialEulerAngles.x * -0.017453292f,
+                                                data->m_initialEulerAngles.y * -0.017453292f,
+                                                data->m_initialEulerAngles.z * -0.017453292f);
+                    efd::Point3 translation = data->m_initialTranslation / 100.0f;
                     NxMat34 pose(NX_IDENTITY_MATRIX);
-                    NiPhysXTypes::NiTransformToNxMat34(rotation, data->m_initialTranslation * 100.0f, pose);
+                    NiPhysXTypes::NiTransformToNxMat34(rotation, translation, pose);
                     bool cube = false;
                     FUN_1408a20a0(entity, 0x38141815, &cube);
-                    if (!cube) {
-                        unsigned propCount = GetNumProps(entity->GetEntityID());
-                        for (unsigned p = 0; p < propCount; ++p) {
-                            NiPhysXProp* prop = GetPropAt(entity->GetEntityID(), p);
-                            if (prop != NULL) {
-                                NiPhysXPropDesc* snapshot = prop->GetSnapshot();
-                                if (snapshot != NULL) {
-                                    unsigned actorCount = snapshot->GetActorCount();
-                                    if (actorCount != 0) {
-                                        FUN_14168a540(FUN_1409f7ca0(), 0);
-                                        for (unsigned a = 0; a < actorCount; ++a) {
-                                            NiPhysXActorDesc* desc = snapshot->GetActorAt(a);
-                                            if (desc != NULL) {
-                                                NxActor* actor = desc->GetActor();
-                                                if (actor != NULL && !actor->isDynamic()) {
-                                                    unsigned shapeCount = actor->getNbShapes();
-                                                    NxShape* const* shapes = actor->getShapes();
-                                                    int skip = 0;
-                                                    for (unsigned s = 0; s < shapeCount; ++s) {
-                                                        NxShape* shape = shapes[s];
-                                                        NxCollisionGroup group = shape->getGroup();
-                                                        NxGroupsMask mask = shape->getGroupsMask();
-                                                        // The original compares these mask words as IEEE floats,
-                                                        // including negative zero; integer-zero tests differ.
-                                                        float bits[4];
-                                                        std::memcpy(bits, &mask, sizeof bits);
-                                                        if (group == 5 || (bits[0] == 0.0f && bits[1] == 0.0f &&
-                                                                          bits[2] == 0.0f && bits[3] == 0.0f)) {
-                                                            skip = 1; break;
-                                                        }
-                                                    }
-                                                    if (skip == 0) actor->setGlobalPose(pose);
-                                                }
-                                            }
-                                        }
-                                        FUN_14168a570(FUN_1409f7ca0());
-                                    }
-                                }
-                            }
-                        }
-                    } else {
+                    if (cube) {
                         efd::SmartPointer<efd::ISystemService> service(FUN_1401cd040(&DAT_143b059e8));
                         NxActor* actor = FUN_1410c5420(service, entity->GetEntityID());
                         if (actor != NULL) {
@@ -229,12 +199,46 @@ void MS2PropService::OnPropertyUpdate(const efd::ClassID&, egf::Entity* entity,
                             if (skip == 0) actor->setGlobalPose(pose);
                             FUN_14168a570(FUN_1409f7ca0());
                         }
+                    } else {
+                        unsigned propCount = GetNumProps(entity->GetEntityID());
+                        for (unsigned p = 0; p < propCount; ++p) {
+                            NiPhysXProp* prop = GetPropAt(entity->GetEntityID(), p);
+                            if (prop == NULL)
+                                continue;
+                            NiPhysXPropDesc* snapshot = prop->GetSnapshot();
+                            if (snapshot == NULL)
+                                continue;
+                            unsigned actorCount = snapshot->GetActorCount();
+                            if (actorCount == 0)
+                                continue;
+                            FUN_14168a540(FUN_1409f7ca0(), 0);
+                            for (unsigned a = 0; a < actorCount; ++a) {
+                                NiPhysXActorDesc* desc = snapshot->GetActorAt(a);
+                                if (desc == NULL)
+                                    continue;
+                                NxActor* actor = desc->GetActor();
+                                if (actor != NULL && !actor->isDynamic()) {
+                                    unsigned shapeCount = actor->getNbShapes();
+                                    NxShape* const* shapes = actor->getShapes();
+                                    int skip = 0;
+                                    for (unsigned s = 0; s < shapeCount; ++s) {
+                                        NxShape* shape = shapes[s];
+                                        NxCollisionGroup group = shape->getGroup();
+                                        NxGroupsMask mask = shape->getGroupsMask();
+                                        // The exe converts each mask word to float before comparing with 0.0f,
+                                        // which is the same as an integer-zero test.
+                                        if (group == 5 || (mask.bits0 == 0.0f && mask.bits1 == 0.0f &&
+                                                           mask.bits2 == 0.0f && mask.bits3 == 0.0f)) {
+                                            skip = 1; break;
+                                        }
+                                    }
+                                    if (skip == 0) actor->setGlobalPose(pose);
+                                }
+                            }
+                            FUN_14168a570(FUN_1409f7ca0());
+                        }
                     }
                 }
-            } else {
-                EE_LOG_AT(0x12, 2, ("PropService::HandleEntityUpdatedMessage: entity ID %s updated when it was never added to the service",
-                                    entity->GetEntityID().ToString().c_str()),
-                          "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\ms2propservice.cpp", 0x62);
             }
         }
     }

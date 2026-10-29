@@ -14,6 +14,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <vector>
+#include <efd/MemoryDefines.h>
 #include <efd/SmartPointer.h>
 #include <efd/utf8string.h>
 
@@ -89,7 +90,7 @@ class Unk_NpWorld
 public:
     PCBase* FUN_141bd1320(int nId);                     // the actor of an object id
     PCBase* FUN_141bd0cc0();                            // the local player
-    int FUN_141bd0dd0(Vector3* pPos, Vector3* pDir);    // a spawn position in front of the camera
+    int FUN_141bd0dd0(efd::Point3* pPos, efd::Point3* pDir);    // a spawn position in front of the camera
     int FUN_141bbb1e0(GameObject* pObj, int nA, unsigned nB);   // add an actor to the field
     void FUN_141bbb7f0(GameObject* pObj, int nA);       // remove an actor from the field
     ATL::CRBMap<unsigned int, efd::SmartPointer<CNpc> >* FUN_141bd36d0();   // the npc tree
@@ -124,14 +125,13 @@ int* FUN_1401844d0(ATL::CAtlArray<int>& arr, size_t i);                         
 int FUN_1402bacf0(ATL::CAtlArray<int>& arr, const int& n);                          // Find (-1 = absent)
 
 // Text helpers and formatters instantiated by other units.
-CStringW FUN_1406c6bd0(const wchar_t* szFormat, const __int64& n);
+CStringW FUN_1406c6bd0(const wchar_t* szFormat, const unsigned __int64& n);
 CStringW FUN_140656190(const wchar_t* szFormat, const CStringW& a, const CStringW& b);
 CStringW FUN_1416e4df0(int n);
 CStringW FUN_1401e8510(const wchar_t* szFormat, const CStringW& a);
 CStringW GetStringCommon(int nKey);
 CString FUN_14016a5c0(const char* psz, int nCodePage);          // narrows a string
 CString FUN_14016a600(const wchar_t* psz, int nCodePage);
-void FUN_1409989e0(efd::utf8string* pOut, const CString& str);   // utf8string from a narrow string
 MS2Ptr<CNpcData> FUN_1406cd330(int nNpcId);
 class Unk_NpQuestTable { public: std::vector<unsigned>* FUN_14074e0f0(int nNpcId); };
 Unk_NpQuestTable* FUN_1407476c0();
@@ -142,13 +142,11 @@ CFieldMetaTable* FUN_140700390();
 class Unk_NpTextFilter { public: void FUN_1416fb380(CStringW& strText); void FUN_1416fb340(CStringW& strText); };
 Unk_NpTextFilter* FUN_1403b4750();
 class Unk_NpPathCfg;
-CString FUN_14071ae20(CString str);                     // the path of a data file
+CString FUN_14071ae20(const CString& str);              // the path of a data file
 class Unk_NpXml { public: int FUN_1403974b0(TiXmlDocument* pDoc, const char* szPath, int nA, bool bB, bool bC); };
 Unk_NpXml* FUN_140166420();
 CStringW FUN_1401bf530(Unk_140165cf0*, const char*, CStringW strDefault);   // string attribute with default
-void* FUN_14208a860(unsigned __int64 nSize, unsigned nCategory);            // tracked allocation
-void* FUN_140876480(void* pkOut, int nCategory);                            // memory category helper, returns unsigned int*
-class Unk_NpPhys { public: int FUN_14168a310(const Vector3& ptFrom, Vector3& ptHit, void* pInfo, float fLen, Vector3* pNormal, int nMask); };
+class Unk_NpPhys { public: int FUN_14168a310(const efd::Point3& ptFrom, efd::Point3& ptHit, void* pInfo, float fLen, efd::Point3* pNormal, int nMask); };
 Unk_NpPhys* FUN_1409f7ca0();
 int FUN_1404ad1f0(void* pMap, unsigned nKey, CStringW* pValue);     // CAtlMap::SetAt of the filter result
 extern int DAT_143ab2914;                               // the ui level: below 0x32 the panel does not react
@@ -156,21 +154,15 @@ extern int DAT_143ab2914;                               // the ui level: below 0
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // @0x141a71990
-Unk_NpRow::Unk_NpRow()
+Unk_NpRow::Unk_NpRow() : m_kind(0)
 {
-    m_kind = 0;
     m_a = 0;
     m_b = 0;
 }
 
 // @0x141a71910
-Unk_NpRow::Unk_NpRow(const Unk_NpRow& o)
+Unk_NpRow::Unk_NpRow(const Unk_NpRow& o) : m_kind(o.m_kind), m_text(o.m_text), m_a(o.m_a), m_b(o.m_b), m_c(o.m_c)
 {
-    m_kind = o.m_kind;
-    m_text = o.m_text;
-    m_a = o.m_a;
-    m_b = o.m_b;
-    m_c = o.m_c;
 }
 
 // @0x141a71a20
@@ -185,11 +177,6 @@ UINpcPreviewDialog::UINpcPreviewDialog()
     m_40 = 1;
     m_bPending = 0;
     m_nActorOid = 0;
-}
-
-// @0x141a71a40
-UINpcPreviewDialog::~UINpcPreviewDialog()
-{
 }
 
 // @0x141a6e100
@@ -220,11 +207,12 @@ int UINpcPreviewDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
             return FUN_141a6fd90(nRow);
         }
         return 1;
-    }
-    if (_stricmp("onLoad", szMethod) == 0) {
+    } else if (_stricmp("onLoad", szMethod) == 0) {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
-            return FUN_141a6e7e0(data.FUN_1422b8f40());
+        if (data.FUN_1422b9620(pArgs, nArgs) != 0) {
+            CStringW strFilter = data.FUN_1422b8f40();
+            return FUN_141a6e7e0(strFilter);
+        }
     } else if (_stricmp("onSelectNpc", szMethod) == 0) {
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs) != 0) {
@@ -265,8 +253,7 @@ void UINpcPreviewDialog::vfunc_15()
     if (names.size() == 0)
         return;
     m_bPending = 0;
-    MS2Ptr<Unk_NpList> spList = FUN_140c02900("m_list");
-    if (spList.get() != 0) {
+    if (MS2Ptr<Unk_NpList> spList = FUN_140c02900("m_list")) {
         spList->FUN_1422dd1d0();
         for (std::vector<CString>::iterator it = names.begin(); it != names.end(); ++it) {
             Unk_NpRow row;
@@ -323,7 +310,7 @@ int UINpcPreviewDialog::FUN_141a6e7e0(CStringW strFilter)
 // @0x141a6ec20
 int UINpcPreviewDialog::LoadNpcName()
 {
-    CString strPath = FUN_14071ae20(CString("npcName.xml"));
+    CString strPath = FUN_14071ae20("npcName.xml");
     TiXmlDocument doc;
     if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return 0;
@@ -406,8 +393,7 @@ int UINpcPreviewDialog::FUN_141a6ee60(int nNpcId)
                     rowTalk.m_kind = 3;
                     rowTalk.m_c = spTalk->m_id;
                     CStringW strTalk = FUN_14025e7a0()->FUN_1422b0570(CString("$s_npcpreview_dialog_msg_cinematic_talk2"));
-                    __int64 nTalk = spTalk->m_id;
-                    rowTalk.m_text = FUN_1406c6bd0(strTalk, nTalk);
+                    rowTalk.m_text = FUN_1406c6bd0(strTalk, i);
                     m_rows.Add(rowTalk);
                 }
             }
@@ -421,19 +407,18 @@ int UINpcPreviewDialog::FUN_141a6ee60(int nNpcId)
                     rowMono.m_kind = 5;
                     rowMono.m_c = spTalk->m_id;
                     CStringW strMono = FUN_14025e7a0()->FUN_1422b0570(CString("$s_npcpreview_dialog_msg_monologue"));
-                    __int64 nTalk = spTalk->m_id;
-                    rowMono.m_text = FUN_1406c6bd0(strMono, nTalk);
+                    rowMono.m_text = FUN_1406c6bd0(strMono, i);
                     m_rows.Add(rowMono);
                 }
             }
         }
-    }
-    MS2Ptr<Unk_NpList> spList2 = FUN_140c02900("m_list");
-    if (spList2.IsNull() == 0) {
-        spList2->FUN_1422dd1d0();
-        for (size_t i = 0; i < m_rows.GetCount(); i++)
-            spList2->FUN_1422dd310(m_rows[i].m_text);
-        spList2->vfunc_24(1);
+        MS2Ptr<Unk_NpList> spList2 = FUN_140c02900("m_list");
+        if (spList2.IsNull() == 0) {
+            spList2->FUN_1422dd1d0();
+            for (size_t i = 0; i < m_rows.GetCount(); i++)
+                spList2->FUN_1422dd310(m_rows[i].m_text);
+            spList2->vfunc_24(1);
+        }
     }
     return 1;
 }
@@ -462,8 +447,7 @@ int UINpcPreviewDialog::FUN_141a6fd90(int nRow)
         FUN_140700390()->FUN_1406fb520(m_nNpcId, ids);
         for (POSITION pos = ids.GetHeadPosition(); pos != 0; ) {
             unsigned int nId = ids.GetNext(pos);
-            strOut += GetStringTable()->FUN_141811980(3, nId);
-            spOut->FUN_1422c5ab0(strOut);
+            spOut->FUN_1422c5ab0(GetStringTable()->FUN_141811980(3, nId));
         }
     } else if (row.m_kind == 2) {
         ATL::CAtlArray<int> talkIds;
@@ -500,6 +484,7 @@ int UINpcPreviewDialog::FUN_141a6fd90(int nRow)
     return 1;
 }
 
+// MS2-FUNCTIONAL: needs Unk_ScriptPtr IsNull (14085a420) and CCinematicDistractor choice count (14078d3a0) in shared scriptcontent.h
 // @0x141a708e0
 int UINpcPreviewDialog::FUN_141a708e0(int nQuestId, int nTalkId, ATL::CAtlArray<int>& rOut)
 {
@@ -508,21 +493,19 @@ int UINpcPreviewDialog::FUN_141a708e0(int nQuestId, int nTalkId, ATL::CAtlArray<
     if (spTalk.get() == 0)
         return 0;
     for (size_t i = 0; i < spTalk->m_contents.GetCount(); i++) {
-        if (spTalk->m_contents[i]->vfunc_1() != 0)
-            continue;
-        CCinematicContent* pCine = static_cast<CCinematicContent*>(spTalk->m_contents[i].get());
-        if (pCine->m_distractors.get() == 0)
-            continue;
-        for (size_t j = 0; j < pCine->m_distractors->m_choices.GetCount(); j++) {
-            CStringA strGoto(pCine->m_distractors->m_choices.GetAt(j).m_goto);
-            ATL::CAtlArray<int> ids;
-            FUN_140177de0(strGoto, ids, ",");
-            for (size_t k = 0; k < FUN_140186260(ids); k++) {
-                int nId = *FUN_1401844d0(ids, k);
-                if (FUN_1402bacf0(rOut, nId) != -1)
-                    continue;
-                if (nId != spTalk->m_id)
-                    FUN_141a708e0(nQuestId, nId, rOut);
+        if (spTalk->m_contents[i]->vfunc_1() == 0) {
+            CCinematicContent* pCine = static_cast<CCinematicContent*>(spTalk->m_contents[i].get());
+            if (pCine->m_distractors.get() != 0) {
+                for (size_t j = 0; j < pCine->m_distractors->m_choices.GetCount(); j++) {
+                    ATL::CAtlArray<int> ids;
+                    FUN_140177de0(pCine->m_distractors->m_choices.GetAt(j).m_goto, ids, ",");
+                    for (size_t k = 0; k < FUN_140186260(ids); k++) {
+                        if (FUN_1402bacf0(rOut, *FUN_1401844d0(ids, k)) != -1)
+                            continue;
+                        if (ids.GetAt(k) != spTalk->m_id)
+                            FUN_141a708e0(nQuestId, ids.GetAt(k), rOut);
+                    }
+                }
             }
         }
     }
@@ -536,14 +519,14 @@ int UINpcPreviewDialog::FUN_141a70b90(int nRow)
         return 0;
     Unk_NpRow row = m_rows.GetAt(nRow);
     if (row.m_kind == 2) {
-        TalkPtr spTalk = FUN_1408564b0(row.m_a, row.m_b == 0 ? 300 : 100);
-        FUN_140967100()->FUN_141b213f0(MS2Ptr<CTalkScript>(spTalk.get()), row.m_b, 4, 0);
+        CTalkScript* pTalk = FUN_1408564b0(row.m_a, row.m_b != 0 ? 100 : 300).get();
+        FUN_140967100()->FUN_141b213f0(MS2Ptr<CTalkScript>(pTalk), row.m_b, 4, 0);
     } else if (row.m_kind == 4) {
-        TalkPtr spTalk = FUN_140856c50(m_nNpcId, row.m_c);
-        FUN_140967100()->FUN_141b213f0(MS2Ptr<CTalkScript>(spTalk.get()), m_nNpcId, 8, 0);
+        CTalkScript* pTalk = FUN_140856c50(m_nNpcId, row.m_c).get();
+        FUN_140967100()->FUN_141b213f0(MS2Ptr<CTalkScript>(pTalk), m_nNpcId, 8, 0);
     } else if (row.m_kind == 3) {
-        TalkPtr spTalk = FUN_140856820(m_nNpcId, row.m_c);
-        FUN_140967100()->FUN_141b213f0(MS2Ptr<CTalkScript>(spTalk.get()), m_nNpcId, 2, 0);
+        CTalkScript* pTalk = FUN_140856820(m_nNpcId, row.m_c).get();
+        FUN_140967100()->FUN_141b213f0(MS2Ptr<CTalkScript>(pTalk), m_nNpcId, 2, 0);
     } else if (row.m_kind == 5) {
         TalkPtr spTalk = FUN_140856af0(m_nNpcId, row.m_c);
         if (spTalk.get() == 0)
@@ -570,17 +553,17 @@ void UINpcPreviewDialog::FUN_141a71050(int nRow)
         return;
     Unk_NpRow row = m_rows.GetAt(nRow);
     if (row.m_kind == 6) {
-        efd::utf8string strAnim;
-        FUN_1409989e0(&strAnim, FUN_14016a600(row.m_text, 0));
+        efd::utf8string strAnim(FUN_14016a600(row.m_text, 0));
         pActor->FUN_14166dd20(strAnim, 1.0f, false, false);
     }
 }
 
 // @0x141a711b0
-bool UINpcPreviewDialog::FUN_141a711b0()
+int UINpcPreviewDialog::FUN_141a711b0()
 {
-    MS2Ptr<Unk_NpTab> spTab = FUN_140c02870("m_buttonBar");
-    return !spTab.IsNull() && spTab->FUN_1422e3210() == 0;
+    if (MS2Ptr<Unk_NpTab> spTab = FUN_140c02870("m_buttonBar"))
+        return spTab->FUN_1422e3210() == 0;
+    return 0;
 }
 
 // @0x141a71280
@@ -599,35 +582,30 @@ efd::SmartPointer<CNpc> UINpcPreviewDialog::FUN_141a71280()
 // @0x141a713a0
 void UINpcPreviewDialog::FUN_141a713a0()
 {
-    Vector3 kPos;
-    Vector3 kDir;
+    efd::Point3 kPos;
+    efd::Point3 kDir;
     PCBase* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pPlayer != 0) {
-        NiPoint3 kP = pPlayer->vfunc_18();
-        kPos = reinterpret_cast<Vector3&>(kP);
-        NiPoint3 kD = pPlayer->vfunc_20();
-        kDir = reinterpret_cast<Vector3&>(kD);
+        kPos = pPlayer->vfunc_18();
+        kDir = pPlayer->vfunc_20();
     } else if (FUN_1403ed2d0()->FUN_141bd0dd0(&kPos, &kDir) == 0) {
         return;
     }
-    int nCatTmp;
-    unsigned int* pCat = (unsigned int*)FUN_140876480(&nCatTmp, 0);
-    void* pMem = FUN_14208a860(sizeof(CNpc), *pCat);
-    efd::SmartPointer<CNpc> spNpc(pMem == 0 ? 0 : ::new (pMem) CNpc);
+    efd::SmartPointer<CNpc> spNpc = EE_NEW CNpc;
     spNpc->FUN_14123c5a0(999999);
-    spNpc->vfunc_19(reinterpret_cast<efd::Point3&>(kPos));
-    spNpc->vfunc_21(reinterpret_cast<efd::Point3&>(kDir));
+    spNpc->vfunc_19(kPos);
+    spNpc->vfunc_21(kDir);
     if (spNpc->vfunc_124(m_nNpcId) == 0)
         return;
     kPos.z += 100.0f;
-    Vector3 kHit;
+    efd::Point3 kHit;
     if (FUN_1409f7ca0()->FUN_14168a310(kPos, kHit, 0, 0.0f, 0, 0) == 0)
         return;
     kHit.z += 1.0f;
-    spNpc->vfunc_19(reinterpret_cast<efd::Point3&>(kHit));
+    spNpc->vfunc_19(kHit);
     for (int i = 0; i < 0x23; i++) {
         spNpc->FUN_1416708a0(i, 100);
-        spNpc->FUN_141670700(i, 0);
+        spNpc->FUN_141670700(i, 100);
     }
     spNpc->vfunc_59(1, 0, 0, 0);
     if (FUN_1403ed2d0()->FUN_141bbb1e0(spNpc, 0, 1) == 0)
@@ -639,7 +617,7 @@ void UINpcPreviewDialog::FUN_141a713a0()
 void UINpcPreviewDialog::FUN_141a717c0()
 {
     efd::SmartPointer<PCBase> spActor(FUN_1403ed2d0()->FUN_141bd1320(m_nActorOid));
-    if (spActor != 0) {
+    if (spActor) {
         FUN_1403ed2d0()->FUN_141bbb7f0(spActor, 0);
         m_nActorOid = 0;
     }
@@ -649,9 +627,10 @@ void UINpcPreviewDialog::FUN_141a717c0()
 CNpc* FUN_141a71850(const efd::SmartPointer<GameObject>& spObj)
 {
     CNpc* pNpc = 0;
-    if (spObj != 0 && spObj->TypeCast(0x6200028, (void**)&pNpc))
+    if ((spObj ? true : false) && spObj->TypeCast(0x6200028, (void**)&pNpc))
         return pNpc;
-    return 0;
+    else
+        return 0;
 }
 
 MS2_EMIT_CRT_MEMMOVE_S();

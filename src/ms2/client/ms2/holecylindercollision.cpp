@@ -149,36 +149,41 @@ void CHoleCylinderCollision::vfunc_5()
         BuildWire(*aRings[r].pMesh, aPts, kRingPoints);
     }
 
-    // Radial edges: the four axis points at both radii on the bottom ring, the same on the top ring, then the
-    // vertical lines joining them.
+    // Radial edges: on the bottom ring, then the top ring, a short segment across the wall at each of the four
+    // axis points; then the vertical lines joining the bottom and top rings at the same points.
     int n = 0;
-    const float aZ[2] = { fBottom, fTop };
-    const float aR[2] = { m_fOuterRadius, m_fInnerRadius };
-    for (int z = 0; z < 2; z++)
-    {
-        for (int axis = 0; axis < 2; axis++)
-        {
-            for (int ri = 0; ri < 2; ri++)
-            {
-                float fR = aR[ri];
-                float fX = axis == 0 ? -fR : 0.0f;
-                float fY = axis == 0 ? 0.0f : -fR;
-                aPts[n++] = m_ptCenter.FUN_14097fd50(Vector3(fX, fY, aZ[z]));
-                aPts[n++] = m_ptCenter.FUN_14097fd50(Vector3(-fX, -fY, aZ[z]));
-            }
-        }
-    }
-    for (int ri = 0; ri < 2; ri++)
-    {
-        float fR = aR[ri];
-        const float aX[4] = { -fR, fR, 0.0f, 0.0f };
-        const float aY[4] = { 0.0f, 0.0f, -fR, fR };
-        for (int k = 0; k < 4; k++)
-        {
-            aPts[n++] = m_ptCenter.FUN_14097fd50(Vector3(aX[k], aY[k], fBottom));
-            aPts[n++] = m_ptCenter.FUN_14097fd50(Vector3(aX[k], aY[k], fTop));
-        }
-    }
+    aPts[n++] = m_ptCenter.FUN_14097fd50(Vector3(-m_fOuterRadius, 0.0f, fBottom));
+    aPts[n++] = m_ptCenter.FUN_14097fd50(Vector3(-m_fInnerRadius, 0.0f, fBottom));
+    aPts[n++] = m_ptCenter.FUN_14097fd50(Vector3(m_fOuterRadius, 0.0f, fBottom));
+    aPts[n++] = m_ptCenter.FUN_14097fd50(Vector3(m_fInnerRadius, 0.0f, fBottom));
+    aPts[n++] = m_ptCenter.FUN_14097fd50(Vector3(0.0f, -m_fOuterRadius, fBottom));
+    aPts[n++] = m_ptCenter.FUN_14097fd50(Vector3(0.0f, -m_fInnerRadius, fBottom));
+    aPts[n++] = m_ptCenter.FUN_14097fd50(Vector3(0.0f, m_fOuterRadius, fBottom));
+    aPts[n++] = m_ptCenter.FUN_14097fd50(Vector3(0.0f, m_fInnerRadius, fBottom));
+    aPts[n++] = m_ptCenter.FUN_14097fd50(Vector3(-m_fOuterRadius, 0.0f, fTop));
+    aPts[n++] = m_ptCenter.FUN_14097fd50(Vector3(-m_fInnerRadius, 0.0f, fTop));
+    aPts[n++] = m_ptCenter.FUN_14097fd50(Vector3(m_fOuterRadius, 0.0f, fTop));
+    aPts[n++] = m_ptCenter.FUN_14097fd50(Vector3(m_fInnerRadius, 0.0f, fTop));
+    aPts[n++] = m_ptCenter.FUN_14097fd50(Vector3(0.0f, -m_fOuterRadius, fTop));
+    aPts[n++] = m_ptCenter.FUN_14097fd50(Vector3(0.0f, -m_fInnerRadius, fTop));
+    aPts[n++] = m_ptCenter.FUN_14097fd50(Vector3(0.0f, m_fOuterRadius, fTop));
+    aPts[n++] = m_ptCenter.FUN_14097fd50(Vector3(0.0f, m_fInnerRadius, fTop));
+    aPts[n++] = m_ptCenter.FUN_14097fd50(Vector3(-m_fOuterRadius, 0.0f, fBottom));
+    aPts[n++] = m_ptCenter.FUN_14097fd50(Vector3(-m_fOuterRadius, 0.0f, fTop));
+    aPts[n++] = m_ptCenter.FUN_14097fd50(Vector3(m_fOuterRadius, 0.0f, fBottom));
+    aPts[n++] = m_ptCenter.FUN_14097fd50(Vector3(m_fOuterRadius, 0.0f, fTop));
+    aPts[n++] = m_ptCenter.FUN_14097fd50(Vector3(0.0f, -m_fOuterRadius, fBottom));
+    aPts[n++] = m_ptCenter.FUN_14097fd50(Vector3(0.0f, -m_fOuterRadius, fTop));
+    aPts[n++] = m_ptCenter.FUN_14097fd50(Vector3(0.0f, m_fOuterRadius, fBottom));
+    aPts[n++] = m_ptCenter.FUN_14097fd50(Vector3(0.0f, m_fOuterRadius, fTop));
+    aPts[n++] = m_ptCenter.FUN_14097fd50(Vector3(-m_fInnerRadius, 0.0f, fBottom));
+    aPts[n++] = m_ptCenter.FUN_14097fd50(Vector3(-m_fInnerRadius, 0.0f, fTop));
+    aPts[n++] = m_ptCenter.FUN_14097fd50(Vector3(m_fInnerRadius, 0.0f, fBottom));
+    aPts[n++] = m_ptCenter.FUN_14097fd50(Vector3(m_fInnerRadius, 0.0f, fTop));
+    aPts[n++] = m_ptCenter.FUN_14097fd50(Vector3(0.0f, -m_fInnerRadius, fBottom));
+    aPts[n++] = m_ptCenter.FUN_14097fd50(Vector3(0.0f, -m_fInnerRadius, fTop));
+    aPts[n++] = m_ptCenter.FUN_14097fd50(Vector3(0.0f, m_fInnerRadius, fBottom));
+    aPts[n++] = m_ptCenter.FUN_14097fd50(Vector3(0.0f, m_fInnerRadius, fTop));
     m_spLines->SetPrimitiveType(NiPrimitiveType::PRIMITIVE_LINES);
     BuildWire(m_spLines, aPts, n);
 

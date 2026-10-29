@@ -65,14 +65,14 @@ int UIUGCModelHouseDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
         if (pPlayer == 0)
             return 0;
         int nConcept = data.FUN_1422b8a10();
-        if (m_nPlot == 0) {
-            FUN_14152a240(pPlayer, nConcept);
-        } else {
+        if (m_nPlot != 0) {
             COutPacket packet(static_cast<int>(SendOp::RequestCube), 0);
             packet.WriteUInt8(2);
             packet.WriteInt32(m_nPlot);
             packet.WriteInt32(nConcept);
             FUN_140710590(packet);
+        } else {
+            FUN_14152a240(pPlayer, nConcept);
         }
         CUIService::GetInstance()->FUN_141adc5d0((eUIClassID)0x4f3f);
         return 1;

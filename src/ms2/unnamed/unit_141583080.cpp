@@ -6,6 +6,7 @@
 #include "ms2/placeholder/nmstream.h"
 #include "ms2/placeholder/nmobjects.h"
 #include "ms2/placeholder/nmfunc.h"
+#include "ms2/placeholder/nmencoder.h"
 #include "ms2/ms2recover.h"
 
 extern void FUN_14156bcb0(void*, void*, void*);
@@ -18,7 +19,7 @@ extern void FUN_1415fbe70(void*, unsigned int, const void*);
 extern void FUN_1415f9990(void*);
 extern int FUN_1415fb700(void*);
 extern int FUN_1415fb750(void*);
-extern int FUN_1415fb6d0(void*);
+extern int FUN_1415fb6d0(CNMSerializableDecoder*);
 
 // MS2-FUNCTIONAL 0x141583080: initializes the request key and nickname buffer.
 // @0x141583080
@@ -41,26 +42,17 @@ CNMChangeNicknameFunc::CNMChangeNicknameFunc(long long key, long long nickname)
 // @0x141583190
 unsigned int CNMChangeNicknameFunc::EncodeFramed(CNMStream* pStream)
 {
-    unsigned char storage[0x18];
-    FUN_14156bcb0(storage, pStream, this);
-    void** vtable = *reinterpret_cast<void***>(this);
-    using Method = unsigned int(__fastcall*)(CNMChangeNicknameFunc*, CNMEncoder*, CNMStream*);
-    const unsigned int result = reinterpret_cast<Method>(vtable[2])(this, reinterpret_cast<CNMEncoder*>(storage), pStream);
-    FUN_14156bd50(storage);
-    return result;
+    CNMSerializableEncoder encoder(pStream, this);
+    return CNMChangeNicknameFunc::Encode(reinterpret_cast<CNMEncoder*>(&encoder), pStream);
 }
 
 // MS2-FUNCTIONAL 0x1415831f0: selects raw or framed encoding by the format flag.
 // @0x1415831f0
 unsigned int CNMChangeNicknameFunc::EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream)
 {
-    void** vtable = *reinterpret_cast<void***>(this);
-    if (m_bFormat == 1) {
-        using Method = unsigned int(__fastcall*)(CNMChangeNicknameFunc*, CNMEncoder*, CNMStream*);
-        return reinterpret_cast<Method>(vtable[2])(this, pEncoder, pStream);
-    }
-    using Framed = unsigned int(__fastcall*)(CNMChangeNicknameFunc*, CNMStream*);
-    return reinterpret_cast<Framed>(vtable[3])(this, pStream);
+    if (m_bFormat == 1)
+        return CNMChangeNicknameFunc::Encode(pEncoder, pStream);
+    return CNMChangeNicknameFunc::EncodeFramed(pStream);
 }
 
 // MS2-FUNCTIONAL 0x141583250: encodes the key and nickname when the direction carries a reply.
@@ -81,29 +73,19 @@ unsigned int CNMChangeNicknameFunc::Encode(CNMEncoder* pEncoder, CNMStream* pStr
 // @0x1415832e0
 unsigned int CNMChangeNicknameFunc::DecodeFramed(CNMStream* pStream)
 {
-    unsigned char storage[0x38];
-    FUN_14156be10(storage, pStream, this);
-    unsigned int result = 0;
-    if (FUN_1415fb750(storage)) {
-        void** vtable = *reinterpret_cast<void***>(this);
-        using Method = unsigned int(__fastcall*)(CNMChangeNicknameFunc*, CNMSerializableDecoder*, CNMStream*);
-        result = reinterpret_cast<Method>(vtable[5])(this, reinterpret_cast<CNMSerializableDecoder*>(storage), pStream);
-    }
-    FUN_14156bf10(storage);
-    return result;
+    CNMSerializableDecoder decoder(pStream, this);
+    if (FUN_1415fb750(&decoder) == 0)
+        return 0;
+    return CNMChangeNicknameFunc::Decode(&decoder, pStream);
 }
 
 // MS2-FUNCTIONAL 0x141583370: selects framed decoding for wire format 2.
 // @0x141583370
 unsigned int CNMChangeNicknameFunc::DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream)
 {
-    void** vtable = *reinterpret_cast<void***>(this);
-    if (FUN_1415fb6d0(pDecoder) == 2) {
-        using Framed = unsigned int(__fastcall*)(CNMChangeNicknameFunc*, CNMStream*);
-        return reinterpret_cast<Framed>(vtable[6])(this, pStream);
-    }
-    using Method = unsigned int(__fastcall*)(CNMChangeNicknameFunc*, CNMSerializableDecoder*, CNMStream*);
-    return reinterpret_cast<Method>(vtable[5])(this, pDecoder, pStream);
+    if (FUN_1415fb6d0(pDecoder) == 2)
+        return CNMChangeNicknameFunc::DecodeFramed(pStream);
+    return CNMChangeNicknameFunc::Decode(pDecoder, pStream);
 }
 
 // MS2-FUNCTIONAL 0x1415833d0: restores key and nickname from the reply decoder.

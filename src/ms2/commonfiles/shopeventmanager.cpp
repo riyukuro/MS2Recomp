@@ -68,17 +68,27 @@ bool FUN_1407cde30(PreminmMarketSaleEventContext* pContext, int nId, int nCurren
 }
 
 // @0x1407cdfc0
-// MS2-FUNCTIONAL: the exe keeps the id test in explicit bool temporaries (the (special id || whole id) result is stored
-// before the zero id lookup); a plain && / || condition compiles to 245 bytes instead of 310.
 bool FUN_1407cdfc0(PreminmMarketSaleEventContext* pContext, int nId, int nCurrency)
 {
     if (nCurrency != pContext->m_30)
         return false;
     bool bFound = pContext->m_20.find(nId) != pContext->m_20.end();
-    if (!bFound && (FUN_1406a5040(nId) || nId % 100 == 0))
+    if (!bFound)
     {
-        int nAll = 0;
-        bFound = pContext->m_20.find(nAll) != pContext->m_20.end();
+        bool bWhole = false;
+        bool bSpecial = FUN_1406a5040(nId);
+        if (bSpecial)
+            bWhole = true;
+        else
+        {
+            int nRest = nId % 100;
+            bWhole = nRest == 0;
+        }
+        if (bWhole)
+        {
+            int nAll = 0;
+            bFound = pContext->m_20.find(nAll) != pContext->m_20.end();
+        }
     }
     return bFound;
 }

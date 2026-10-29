@@ -107,56 +107,58 @@ int FUN_14081c880()
         SAType nType = (SAType)i;
         g_mapSANameToType.insert(std::make_pair(DAT_143ab1a40[i].m_strKey, nType));
     }
-    Unk_SAListPtr spList;
-    spList = Unk_BmNewTag(0);
-    eSpecialAbility e1 = (eSpecialAbility)0x18;
-    spList->AddTail(e1);
-    eSpecialAbility e2 = (eSpecialAbility)0x19;
-    spList->AddTail(e2);
-    eSpecialAbility e3 = (eSpecialAbility)0x12;
-    spList->AddTail(e3);
-    eSpecialAbility e4 = (eSpecialAbility)0x13;
-    spList->AddTail(e4);
-    eSpecialAbility e5 = (eSpecialAbility)0x14;
-    spList->AddTail(e5);
-    eSpecialAbility e6 = (eSpecialAbility)0x15;
-    spList->AddTail(e6);
-    eSpecialAbility e7 = (eSpecialAbility)0x16;
-    spList->AddTail(e7);
-    eSpecialAbility e8 = (eSpecialAbility)0x17;
-    spList->AddTail(e8);
-    eSpecialAbility e9 = (eSpecialAbility)7;
-    spList->AddTail(e9);
-    eSpecialAbility e10 = (eSpecialAbility)9;
-    spList->AddTail(e10);
-    eSpecialAbility e11 = (eSpecialAbility)0xb;
-    spList->AddTail(e11);
-    eSpecialAbility e12 = (eSpecialAbility)0xc;
-    spList->AddTail(e12);
-    eSpecialAbility k1 = (eSpecialAbility)0x18;
-    g_mapSAAbilityList.SetAt(k1, spList);
-    eSpecialAbility k2 = (eSpecialAbility)0x19;
-    g_mapSAAbilityList.SetAt(k2, spList);
-    eSpecialAbility k3 = (eSpecialAbility)0x12;
-    g_mapSAAbilityList.SetAt(k3, spList);
-    eSpecialAbility k4 = (eSpecialAbility)0x13;
-    g_mapSAAbilityList.SetAt(k4, spList);
-    eSpecialAbility k5 = (eSpecialAbility)0x14;
-    g_mapSAAbilityList.SetAt(k5, spList);
-    eSpecialAbility k6 = (eSpecialAbility)0x15;
-    g_mapSAAbilityList.SetAt(k6, spList);
-    eSpecialAbility k7 = (eSpecialAbility)0x16;
-    g_mapSAAbilityList.SetAt(k7, spList);
-    eSpecialAbility k8 = (eSpecialAbility)0x17;
-    g_mapSAAbilityList.SetAt(k8, spList);
-    eSpecialAbility k9 = (eSpecialAbility)7;
-    g_mapSAAbilityList.SetAt(k9, spList);
-    eSpecialAbility k10 = (eSpecialAbility)9;
-    g_mapSAAbilityList.SetAt(k10, spList);
-    eSpecialAbility k11 = (eSpecialAbility)0xb;
-    g_mapSAAbilityList.SetAt(k11, spList);
-    eSpecialAbility k12 = (eSpecialAbility)0xc;
-    g_mapSAAbilityList.SetAt(k12, spList);
+    {
+        Unk_SAListPtr spList;
+        spList = Unk_BmNewTag(0);
+        eSpecialAbility e1 = (eSpecialAbility)0x18;
+        spList->AddTail(e1);
+        eSpecialAbility e2 = (eSpecialAbility)0x19;
+        spList->AddTail(e2);
+        eSpecialAbility e3 = (eSpecialAbility)0x12;
+        spList->AddTail(e3);
+        eSpecialAbility e4 = (eSpecialAbility)0x13;
+        spList->AddTail(e4);
+        eSpecialAbility e5 = (eSpecialAbility)0x14;
+        spList->AddTail(e5);
+        eSpecialAbility e6 = (eSpecialAbility)0x15;
+        spList->AddTail(e6);
+        eSpecialAbility e7 = (eSpecialAbility)0x16;
+        spList->AddTail(e7);
+        eSpecialAbility e8 = (eSpecialAbility)0x17;
+        spList->AddTail(e8);
+        eSpecialAbility e9 = (eSpecialAbility)7;
+        spList->AddTail(e9);
+        eSpecialAbility e10 = (eSpecialAbility)9;
+        spList->AddTail(e10);
+        eSpecialAbility e11 = (eSpecialAbility)0xb;
+        spList->AddTail(e11);
+        eSpecialAbility e12 = (eSpecialAbility)0xc;
+        spList->AddTail(e12);
+        eSpecialAbility k1 = (eSpecialAbility)0x18;
+        g_mapSAAbilityList.SetAt(k1, spList);
+        eSpecialAbility k2 = (eSpecialAbility)0x19;
+        g_mapSAAbilityList.SetAt(k2, spList);
+        eSpecialAbility k3 = (eSpecialAbility)0x12;
+        g_mapSAAbilityList.SetAt(k3, spList);
+        eSpecialAbility k4 = (eSpecialAbility)0x13;
+        g_mapSAAbilityList.SetAt(k4, spList);
+        eSpecialAbility k5 = (eSpecialAbility)0x14;
+        g_mapSAAbilityList.SetAt(k5, spList);
+        eSpecialAbility k6 = (eSpecialAbility)0x15;
+        g_mapSAAbilityList.SetAt(k6, spList);
+        eSpecialAbility k7 = (eSpecialAbility)0x16;
+        g_mapSAAbilityList.SetAt(k7, spList);
+        eSpecialAbility k8 = (eSpecialAbility)0x17;
+        g_mapSAAbilityList.SetAt(k8, spList);
+        eSpecialAbility k9 = (eSpecialAbility)7;
+        g_mapSAAbilityList.SetAt(k9, spList);
+        eSpecialAbility k10 = (eSpecialAbility)9;
+        g_mapSAAbilityList.SetAt(k10, spList);
+        eSpecialAbility k11 = (eSpecialAbility)0xb;
+        g_mapSAAbilityList.SetAt(k11, spList);
+        eSpecialAbility k12 = (eSpecialAbility)0xc;
+        g_mapSAAbilityList.SetAt(k12, spList);
+    }
     return 1;
 }
 
@@ -167,75 +169,51 @@ int LoadSpecialAbilityStringTable()
     DAT_143ab1a40.resize(0xcf);
     std::map<int, CStringW> mapNames;
     LoadStringSpecialAbilityName(mapNames);
-    CStringA strPath = FUN_14071a5b0(CStringA("Table"), CStringA("specialAbilityStringTable.xml"));
+    CStringA strPath = FUN_14071a5b0("Table", "specialAbilityStringTable.xml");
     TiXmlDocument doc;
-    int nResult;
     if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+        return 0;
+    Unk_140165cf0* pRoot = FUN_140165cf0(reinterpret_cast<Unk_140165cf0*>(&doc), "ms2");
+    if (pRoot == 0)
+        return 0;
+    for (Unk_140165cf0* pElem = FUN_140165cf0(pRoot, "key"); pElem != 0; pElem = FUN_140168650(pElem, "key"))
     {
-        nResult = 0;
+        CStringA strOption;
+        int nId;
+        int nValueType;
+        int nCommonId;
+        int nValueId;
+        FUN_1408731e0(pElem, "id", nId);
+        FUN_1408733e0(pElem, "option", strOption);
+        FUN_1408731e0(pElem, "valueType", nValueType);
+        FUN_1408731e0(pElem, "commonStringID", nCommonId);
+        FUN_1408731e0(pElem, "valueStringID", nValueId);
+        DAT_143ab1a40[nId] = SpecialAbilityInfo(strOption, mapNames[nValueId], mapNames[nCommonId], nValueType);
     }
-    else
-    {
-        Unk_140165cf0* pRoot = FUN_140165cf0(reinterpret_cast<Unk_140165cf0*>(&doc), "ms2");
-        if (pRoot == 0)
-        {
-            nResult = 0;
-        }
-        else
-        {
-            for (Unk_140165cf0* pElem = FUN_140165cf0(pRoot, "key"); pElem != 0; pElem = FUN_140168650(pElem, "key"))
-            {
-                CStringA strOption;
-                int nId;
-                int nValueType;
-                int nCommonId;
-                int nValueId;
-                FUN_1408731e0(pElem, "id", nId);
-                FUN_1408733e0(pElem, "option", strOption);
-                FUN_1408731e0(pElem, "valueType", nValueType);
-                FUN_1408731e0(pElem, "commonStringID", nCommonId);
-                FUN_1408731e0(pElem, "valueStringID", nValueId);
-                DAT_143ab1a40[nId] = SpecialAbilityInfo(strOption, mapNames[nValueId], mapNames[nCommonId], nValueType);
-            }
-            mapNames.clear();
-            nResult = 1;
-        }
-    }
-    return nResult;
+    mapNames.clear();
+    return 1;
 }
 
 // @0x14081d060
 int LoadStringSpecialAbilityName(std::map<int, CStringW>& mapNames)
 {
-    CStringA strPath = FUN_14071ae20(CStringA("stringSpecialAbilityName.xml"));
+    CStringA strPath = FUN_14071ae20("stringSpecialAbilityName.xml");
     TiXmlDocument doc;
-    int nResult;
     if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+        return 0;
+    Unk_140165cf0* pRoot = FUN_140165cf0(reinterpret_cast<Unk_140165cf0*>(&doc), "ms2");
+    if (pRoot == 0)
+        return 0;
+    for (Unk_140165cf0* pElem = FUN_140165cf0(pRoot, "key"); pElem != 0; pElem = FUN_140168650(pElem, "key"))
     {
-        nResult = 0;
+        CStringW strName;
+        CStringW strUnused;
+        int nId;
+        FUN_1408731e0(pElem, "id", nId);
+        FUN_140873420(pElem, "name", strName);
+        mapNames[nId] = strName;
     }
-    else
-    {
-        Unk_140165cf0* pRoot = FUN_140165cf0(reinterpret_cast<Unk_140165cf0*>(&doc), "ms2");
-        if (pRoot == 0)
-        {
-            nResult = 0;
-        }
-        else
-        {
-            for (Unk_140165cf0* pElem = FUN_140165cf0(pRoot, "key"); pElem != 0; pElem = FUN_140168650(pElem, "key"))
-            {
-                CStringW strName;
-                CStringW strUnused;
-                int nId;
-                FUN_1408731e0(pElem, "id", nId);
-                FUN_140873420(pElem, "name", strName);
-                mapNames[nId] = strName;
-            }
-            nResult = 1;
-        }
-    }
-    return nResult;
+    return 1;
 }
 
 // @0x14081d260 the row index of a name (case insensitive), 0 if there is none
@@ -288,9 +266,6 @@ int FUN_14081d480(int nType)
     case 3: return 0x9b;
     case 4: return 0xb4;
     case 5: return 0xb5;
-    default:
-        MS2_ASSERT_AT(0xdd, 0);
-        return 0;
     case 7: return 0xb6;
     case 8: return 0xb7;
     case 10: return 0xb8;
@@ -312,32 +287,28 @@ int FUN_14081d480(int nType)
     case 0x1d: return 0xc9;
     case 0x1f: return 199;
     case 0x20: return 200;
+    default:
+        MS2_ASSERT_AT(0xdd, 0);
+        return 0;
     }
 }
 
 // @0x14081d650 the option has one of the abilities of the group
 int FUN_14081d650(MS2Ptr<CItemOption> spOption, int nGroup, unsigned nType)
 {
-    int nResult;
     Unk_SAListPtr spList = FUN_14081d7b0((eSpecialAbility)nType);
-    if (spList.get() == 0)
-    {
-        nResult = 0;
-    }
-    else
+    if (spList.get() != 0)
     {
         POSITION pos = spList->GetHeadPosition();
-        BaseOption* pFound;
-        do
+        while (pos != 0)
         {
-            if (pos == 0)
-                return 0;
             eSpecialAbility nStat = spList->GetNext(pos);
-            pFound = spOption->FUN_1405cb800(nGroup, nStat).get();
-        } while (pFound == 0);
-        nResult = 1;
+            bool bFound = spOption->FUN_1405cb800(nGroup, nStat).get() != 0;
+            if (bFound)
+                return 1;
+        }
     }
-    return nResult;
+    return 0;
 }
 
 // @0x14081d7b0 the ability list of a group
@@ -457,42 +428,28 @@ int FUN_14081da20(int nType)
 }
 
 // @0x14081da60
-bool FUN_14081da60(int nType, int nItemId)
+int FUN_14081da60(int nType, int nItemId)
 {
-    bool bResult;
     switch (nType)
     {
     case 0x62:
-        bResult = nItemId == 0x3a2c943;
-        break;
+        return nItemId == 0x3a2c943;
     case 99:
-        bResult = nItemId == 0x3a2c941;
-        break;
+        return nItemId == 0x3a2c941;
     case 100:
-        bResult = nItemId == 0x3a2c942;
-        break;
+        return nItemId == 0x3a2c942;
     case 0x65:
-        bResult = nItemId == 0x3a2c946;
-        break;
-    case 0x66:
-        bResult = nItemId == 0x3a2c944;
-        break;
-    case 0x67:
-        bResult = nItemId == 0x3a2c947;
-        break;
-    case 0x68:
-        if (nItemId == 0x3a2c948 || nItemId == 0x3f221c1)
-            bResult = true;
-        else
-            bResult = false;
-        break;
-    default:
-        bResult = true;
-        break;
+        return nItemId == 0x3a2c946;
     case 0xa2:
-        bResult = nItemId == 0x3a2c94a;
+        return nItemId == 0x3a2c94a;
+    case 0x66:
+        return nItemId == 0x3a2c944;
+    case 0x67:
+        return nItemId == 0x3a2c947;
+    case 0x68:
+        return nItemId == 0x3a2c948 || nItemId == 0x3f221c1;
     }
-    return bResult;
+    return 1;
 }
 
 // @0x14081dc50 the value is a plain number

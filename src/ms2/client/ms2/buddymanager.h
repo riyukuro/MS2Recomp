@@ -76,9 +76,9 @@ struct Unk_BuddyRequest {
     unsigned char protocol; __int64 id; CStringW name,memo;
 };
 struct Unk_BuddyResponse {
-    Unk_BuddyResponse() : protocol(0),id(0),unknown10(0),flag(0),result(0),unknown30(0) {} ~Unk_BuddyResponse() {}
+    Unk_BuddyResponse() : protocol(0),unknown08(0),id(0),flag(0),result(0),unknown30(0) {} ~Unk_BuddyResponse() {}
     void FUN_1407a3cc0(Unk_BuddyInput&);
-    unsigned char protocol; __int64 id,unknown10; CStringW name,memo; char flag; int result; __int64 unknown30;
+    unsigned char protocol; __int64 unknown08,id; CStringW name,memo; unsigned char flag; int result; __int64 unknown30;
 };
 class CBuddyManager : public TSingleton<CBuddyManager> {
 public:

@@ -1,6 +1,7 @@
 // Guild wire payloads, part 1. RTTI class names are original; field/helper names inferred.
 #pragma once
 #include <afx.h>
+#include <deque>
 #include <map>
 #include "ms2/placeholder/clockcriticalsection.h"
 #include "ms2/placeholder/cptred.h"
@@ -10,15 +11,15 @@
 #include <atlcoll.h>
 #include "ms2/commonfiles/itemgift.h"
 #include "ms2/unnamed/payloadptr_1401f9eb0.h"
+#include "ms2/placeholder/cguildxmldata.h"   // Unk_GuildNpcKind (key of CGuildInfo+0x2c8)
 struct Unk_GuildTriple {
     Unk_GuildTriple(); void FUN_140267bd0(); int FUN_140267c10(); void FUN_140267ea0(const Unk_GuildTriple&);
     void FUN_140267f50(COutputStream&); void FUN_140267fb0(CInputStream&);
-    int x,y,z;
+    int v[3];
 };
 MS2_CHECK_SIZE(Unk_GuildTriple,12);
-struct Unk_GuildArray {
+struct Unk_GuildArray : ATL::CAtlArray<unsigned char> {
     Unk_GuildArray(); ~Unk_GuildArray(); void FUN_1401c0580();
-    void* p0; size_t p8,p10; int p18;
 };
 MS2_CHECK_SIZE(Unk_GuildArray,32);
 
@@ -28,10 +29,35 @@ struct Unk_GuildMapLock { Unk_GuildMapLock(CLockCriticalSection&,int); ~Unk_Guil
 MS2_CHECK_SIZE(Unk_GuildMapLock,8);
 struct Unk_GuildNameLock { Unk_GuildNameLock(CLockCriticalSection&,int); ~Unk_GuildNameLock(); void* p; };
 MS2_CHECK_SIZE(Unk_GuildNameLock,8);
-// External character record: only pointer passing; named helpers retain the original member ABI.
+// External character record: never constructed here; the fields are the ones CGuildMember's data copy
+// (Unk_GuildMemberData::FUN_1404ca3e0) reads, at the exe offsets.
 class Unk_GuildCharacter {
 public: CStringW FUN_1408f19e0(); CString FUN_1408f1a60();
+    __int64 m_00, m_08;
+    char m_pad10[4];
+    unsigned char m_14;
+    char m_pad15[0x17];
+    int m_2c;
+    char m_pad30[4];
+    unsigned short m_34;
+    char m_pad36[2];
+    int m_38, m_3c, m_40;
+    char m_pad44[0x54];
+    int m_98, m_9c, m_a0;
+    char m_pada4[4];
+    __int64 m_a8;
+    char m_padb0[0x20];
+    int m_d0;
+    Unk_GuildTriple m_d4;
 };
+MS2_CHECK_OFFSET(Unk_GuildCharacter, m_14, 0x14);
+MS2_CHECK_OFFSET(Unk_GuildCharacter, m_2c, 0x2c);
+MS2_CHECK_OFFSET(Unk_GuildCharacter, m_34, 0x34);
+MS2_CHECK_OFFSET(Unk_GuildCharacter, m_38, 0x38);
+MS2_CHECK_OFFSET(Unk_GuildCharacter, m_98, 0x98);
+MS2_CHECK_OFFSET(Unk_GuildCharacter, m_a8, 0xa8);
+MS2_CHECK_OFFSET(Unk_GuildCharacter, m_d0, 0xd0);
+MS2_CHECK_OFFSET(Unk_GuildCharacter, m_d4, 0xd4);
 class Unk_GuildSeason {
 public:
     Unk_GuildSeason();
@@ -42,7 +68,7 @@ public:
     void FUN_1404c6030(const Unk_GuildSeason& other);
     int FUN_1404c60e0(int rank);
     int FUN_1404c6110(int score);
-    int FUN_1404c6160();
+    bool FUN_1404c6160();
     int id; CStringW name; CMsTime begin,end; int points[8];
 };
 MS2_CHECK_SIZE(Unk_GuildSeason,0x50);
@@ -232,7 +258,15 @@ MS2_CHECK_SIZE(Unk_GuildRef,16);
 // Opaque blobs for containers whose element helpers live in other chunks (sizes proven by the neighbouring member offsets).
 template<int N> struct Unk_GuildBlob { __int64 q[N/8]; };
 struct Unk_GuildPair { int a,b; };
-// {CStringW name; __int64 value; CStringW text} map value of CGuildInfo (size 0x18); ctor 0x1404ee6b0, dtor 0x1404ef6e0.
+// {CStringW name; __int64 value; CStringW text} value of the CGuildInfo+0x170 CAtlMap<int,...>:
+// ctor 0x1404ee6b0, copy 0x1404ee640, dtor 0x1404ef6e0.
+struct Unk_GuildStrEntry {
+    CStringW name=L"";
+    __int64 value=0;
+    CStringW text=L"";
+};
+MS2_CHECK_SIZE(Unk_GuildStrEntry,0x18);
+// Opaque spelling of Unk_GuildStrEntry kept for the raw helpers below.
 struct Unk_GuildStrRec {
     __int64 q0,q1,q2;
     CStringW& name() { return *(CStringW*)&q0; }
@@ -265,15 +299,14 @@ public:
     int f18; __int64 f20;
 };
 MS2_CHECK_SIZE(CGuildCustomEvent,0x28);
-void FUN_1404edfa0(void*); void FUN_1404ee000(void*); void FUN_1404ede30(void*); void FUN_1404ee5f0(void*);
-void FUN_1404ef230(void*); void FUN_1404ef270(void*); void FUN_1404ef120(void*); void FUN_1404ef6a0(void*);
-struct Unk_GuildMapA { __int64 q[2]; Unk_GuildMapA(){FUN_1404edfa0(this);} ~Unk_GuildMapA(){FUN_1404ef230(this);} };
-struct Unk_GuildMapB { __int64 q[2]; Unk_GuildMapB(){FUN_1404ee000(this);} ~Unk_GuildMapB(){FUN_1404ef270(this);} };
-struct Unk_GuildMapC { __int64 q[5]; Unk_GuildMapC(){FUN_1404ede30(this);} ~Unk_GuildMapC(){FUN_1404ef120(this);} };
-struct Unk_GuildHist { __int64 a,b,text;   /* MS2: no array (the exe frames have no /GS cookie); text is the CStringW the out-of-line ctor/dtor manage */ Unk_GuildHist(){FUN_1404ee5f0(this);} ~Unk_GuildHist(){FUN_1404ef6a0(this);}
+// Storage history endpoint {2 qwords, text}: implicit ctor 0x1404ee5f0, dtor 0x1404ef6a0, copy-assign 0x1404efd90
+// (the same layout as guilddef_4.h's Unk_GuildHistText).
+struct Unk_GuildHist {
+    __int64 a=0;
+    __int64 b=0;
+    CStringW text=L"";
     void FUN_1404c5be0(CInputStream& in);   // MS2: reads a, b (8 bytes each) and the text (CGuildManager 0x1413c5dc0)
 };
-struct Unk_GuildPtr { void* p; };   // distinct element type so the CAtlArray instantiation has a guild-only mangled name
 class CGuildStorage;
 // Nested record type name (sic) comes from the RTTI: CGuildStorage::CGuildStroageHistory.
 class CGuildStorage : public CPtred {
@@ -289,10 +322,15 @@ public:
     void FUN_1404cc110(const CGuildStorage* other);
     void FUN_1404cc160(COutputStream& out);
     void FUN_1404cc210(CInPacket& packet);
-    Unk_GuildMapA f18; Unk_GuildMapB f28; Unk_GuildMapC f38; ATL::CAtlArray<Unk_GuildPtr> f60;
+    std::map<std::pair<unsigned,int>,ItemEntity> f18;                    // items by (id, rank)
+    std::map<std::pair<__int64,int>,ItemEntity> f28;
+    std::deque<Unk_PayloadPtr<CGuildStroageHistory> > f38;               // history, newest last
+    ATL::CAtlArray<Unk_PayloadPtr<CGuildStroageHistory> > f60;
 };
 MS2_CHECK_SIZE(CGuildStorage::CGuildStroageHistory,0x80);
 MS2_CHECK_SIZE(CGuildStorage,0x80);
+// Older spelling of CGuildStorage::f38 (guildmanager.cpp declares the deque clear over it).
+typedef std::deque<Unk_PayloadPtr<CGuildStorage::CGuildStroageHistory> > Unk_GuildMapC;
 class CGuildNpc : public CPtred {
 public:
     CGuildNpc();
@@ -303,11 +341,12 @@ public:
     int f18,f1c;
 };
 MS2_CHECK_SIZE(CGuildNpc,0x20);
+class CGuildNpcShopMgr;
 class CGuildInfo {
 public:
     CGuildInfo();
     ~CGuildInfo();
-    virtual int vfunc_0(Unk_GuildRef* member);
+    virtual int vfunc_0(Unk_PayloadPtr<CGuildMember> member);
     virtual void vfunc_1(CStringW name);
     virtual void vfunc_2(__int64 value,CStringW name,int key,const CStringW& text);
     void FUN_1404cc900();
@@ -337,18 +376,17 @@ public:
     void FUN_1404cfc70(const CStringW& oldName,const CStringW& newName);
     void FUN_1404cfdb0(const CStringW& name,int value);
     void FUN_1404cfe60(const CStringW& name,__int64 value);
-    unsigned __int64 FUN_1404cff20();
+    int FUN_1404cff20();
     int FUN_1404d0020();
-    Unk_PayloadPtr<CGuildMember> FUN_1404d00a0();   // the same function as a value return: the master (uiguilddialog.cpp)
-    Unk_GuildRef* FUN_1404d00a0(Unk_GuildRef* ret); void FUN_1404d0130(Unk_GuildRef* v);
+    Unk_PayloadPtr<CGuildMember> FUN_1404d00a0();   // the master
+    void FUN_1404d0130(Unk_PayloadPtr<CGuildMember> v);
     int FUN_1404d01b0(CStringW name);
     void FUN_1404d0330(void* out); void FUN_1404d0420(void* out);
     int FUN_1404d0510(); int FUN_1404d0580();
     int FUN_1404d0600(CStringW name,unsigned mask);
     unsigned FUN_1404d06a0(CStringW name);
-    Unk_GuildRef* FUN_1404d0860(Unk_GuildRef* ret,int index);
-    Unk_PayloadPtr<CGuildGrade> FUN_1404d0860(int index);   // the same function as a value return (uiguilddialog.cpp)
-    int FUN_1404d0990(int index,Unk_GuildRef* grade);
+    Unk_PayloadPtr<CGuildGrade> FUN_1404d0860(int index);
+    int FUN_1404d0990(int index,Unk_PayloadPtr<CGuildGrade> grade);
     CStringW FUN_1404d0af0(int index);
     int FUN_1404d0c00(); int FUN_1404d0d00(); int FUN_1404d0df0(); int FUN_1404d0ee0();
     unsigned FUN_1404d0ff0(); void FUN_1404d1060(int v);
@@ -365,9 +403,9 @@ public:
     void FUN_1404d1940(int v);
     bool FUN_1404d1990(int delta);
     int FUN_1404d1a80(); int FUN_1404d1ad0();
-    void FUN_1404d1b40(int v);
+    void FUN_1404d1b40(int v,bool bNotify);
     bool FUN_1404d1ba0(int delta);
-    void FUN_1404d1c90(int v);
+    void FUN_1404d1c90(int v,bool bNotify);
     bool FUN_1404d1d00(int delta);
     int FUN_1404d1df0(); int FUN_1404d1e40(); int FUN_1404d1e90();
     int FUN_1404d1f20();
@@ -378,37 +416,42 @@ public:
     __int64 FUN_1404d2330(int key);
     CStringW FUN_1404d2400(int key);
     int FUN_1404d2510(int a,int b);
-    void FUN_1404d25a0(Unk_GuildRef* skill);
+    void FUN_1404d25a0(Unk_PayloadPtr<CGuildSkill> skill);
     MS2Ptr<CGuildSkill> FUN_1404d2640(int key);           // skill by id (sret)
     int FUN_1404d26f0(int key);
     MS2Ptr<CGuildCustomEvent> FUN_1404d27b0(int key);     // custom event by id (sret)
-    void FUN_1404d2860(Unk_GuildRef* npc);
-    Unk_GuildRef* FUN_1404d28e0(Unk_GuildRef* ret,int key);
+    void FUN_1404d2860(Unk_PayloadPtr<CGuildNpc> npc);
+    Unk_PayloadPtr<CGuildNpc> FUN_1404d28e0(int key);
     int FUN_1404d2990(int key);
     void FUN_1404d2a10(CInPacket* packet);
     void FUN_1404d2b00(int a,void* b); void FUN_1404d2ba0(int a,void* b);
     bool FUN_1404d2c60(); int FUN_1404d2ca0();
     void FUN_1404d2cc0(ItemEntity* item);
-    int FUN_1404d2db0(int a,int b);
+    int FUN_1404d2db0(unsigned a,int b);
     void FUN_1404d2e90(const Unk_GuildHist* a,const Unk_GuildHist* b,const ItemEntity* item,__int64 c);   // MS2: the callers pass Unk_GuildHist (ctor 0x1404ee5f0)
     void FUN_1404d3050(void* list);
     void FUN_1404d3140(const Unk_GuildSeason* season);
     Unk_GuildSeason* FUN_1404d3180();
     void FUN_1404d31b0();
-    int FUN_1404d3400(void* out);   // fills a member map, returns its count
+    int FUN_1404d3400(ATL::CAtlMap<__int64,__int64>* out);   // fills a member map, returns its count
     void FUN_1404d3600(int v); int FUN_1404d3620();
-    Unk_GuildRef* FUN_1404d3640(Unk_GuildRef* ret);
+    Unk_PayloadPtr<CGuildNpcShopMgr> FUN_1404d3640();
     void FUN_1404d36d0();
     void FUN_1404d3b80();
     void FUN_1404d3e70();
     // @0x1404d3fe0 / 0x1404d4060: the Unk_GuildStrRec (de)serializers are free helpers in guilddef_1.cpp.
     CLockCriticalSection lock; __int64 f38; CStringW f40; CString f48; int f50; CStringW f58,f60; __int64 f68,f70,f78; CStringW f80; __int64 f88,f90; CStringW f98;
     ATL::CAtlArray<Unk_PayloadPtr<CGuildGrade> > fa0; int fc0,fc4; __int64 fc8,fd0; CStringW fd8; Unk_GuildSeason season;   // MS2: fa0 holds the grades (CAtlArray<Unk_PayloadPtr<CGuildGrade>> RemoveAll 0x1404f86e0 / SetCount 0x1404f9b50 / SetAt 0x1404f9730)
-    int f130,f134,f138,f13c,f140,f144,f148,f14c,f150,f154,f158,f15c,f160,f164,f168,f16c;
-    Unk_GuildBlob<0x48> f170; CGuildStorage storage; Unk_GuildBlob<0x48> f238,f280,f2c8; Unk_GuildRef f310; Unk_GuildBlob<0x30> f320;
+    int f130,f134,f138,f13c,f140,f144,f148,f14c,f150=1000,f154,f158,f15c,f160,f164,f168,f16c;
+    ATL::CAtlMap<int,Unk_GuildStrEntry> f170; CGuildStorage storage;
+    ATL::CAtlMap<int,Unk_PayloadPtr<CGuildSkill> > f238;                 // skills by id
+    ATL::CAtlMap<int,Unk_PayloadPtr<CGuildCustomEvent> > f280;           // custom events by id
+    ATL::CAtlMap<Unk_GuildNpcKind,Unk_PayloadPtr<CGuildNpc> > f2c8;      // npcs by kind
+    Unk_PayloadPtr<CGuildMember> f310;                                   // the master
+    ATL::CRBMap<CStringW,Unk_PayloadPtr<CGuildMember>,ATL::CStringElementTraitsI<CStringW> > f320;   // members by name (case-insensitive)
     // @0x14197dff0
     CGuildStorage* FUN_14197dff0() { return &storage; }   // the storage (inline; uiguilddialog.cpp)
-    int f350; unsigned char f354; int f358; Unk_GuildRef f360;   // f360: MS2Ptr<CGuildNpcShopMgr> (new 0x28, ctor 0x1404ee230)
+    int f350; unsigned char f354; int f358=0; Unk_PayloadPtr<CGuildNpcShopMgr> f360;   // f360: new 0x28, ctor 0x1404ee230
     MS2_LAYOUT_FRIEND;
 };
 MS2_CHECK_SIZE(CGuildInfo,0x370);

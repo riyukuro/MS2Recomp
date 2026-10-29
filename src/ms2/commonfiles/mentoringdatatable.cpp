@@ -6,6 +6,7 @@
 #include "ms2/placeholder/ms2stdafx.h"
 #include "ms2/placeholder/mentoringdatatable.h"
 #include <algorithm>
+#include <iterator>
 #include "ms2/placeholder/tixmldocument.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
@@ -51,13 +52,11 @@ bool MentoringDataTable::Init()
 }
 
 // @0x14069bd90
-// MS2-FUNCTIONAL: path/document temporaries and EH state placed differently (frame 0x108 vs 0xe8)
 bool MentoringDataTable::Load()
 {
-    CString strPath = FUN_14071a5b0(CString("Table"), CString("MentoringConfig.xml"));
+    CString strPath = FUN_14071a5b0("Table", "MentoringConfig.xml");
     TiXmlDocument doc;
-    const char* pszPath = strPath;
-    if (FUN_140166420()->FUN_1403974b0(&doc, pszPath, 0, true, false) == 0)
+    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return false;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
@@ -91,10 +90,16 @@ unsigned int MentoringDataTable::GetAttendRewardCoin(short nDay)
     return m_attendRewardCoins[nIndex];
 }
 
-// @0x14069c070
-void MentoringDataTable::SwapAttendRewardCoins(std::vector<unsigned int>& rOut)
+// Appends src to the end of out (0x140323a40, the dungeonroom helper).
+template <class C> void AppendTo(const C& src, C& out)
 {
-    m_attendRewardCoins.swap(rOut);
+    std::copy(src.begin(), src.end(), std::back_inserter(out));
+}
+
+// @0x14069c070
+void MentoringDataTable::GetAttendRewardCoins(std::vector<unsigned int>& rOut)
+{
+    AppendTo(m_attendRewardCoins, rOut);
 }
 
 // @0x14069c0a0

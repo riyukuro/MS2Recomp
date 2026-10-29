@@ -30,7 +30,7 @@ class UIChatEmoticonInfo : public CPtred
 {
 public:
     UIChatEmoticonInfo() : m_bNew(false), m_nEmoticonId(0) {}       // 0x140bd5220 (COMDAT)
-    virtual ~UIChatEmoticonInfo();                                  //  0 0x140bd5510 (??_G 0x140bd5b60)
+    // implicit virtual ~UIChatEmoticonInfo() //  0 0x140bd5510 (??_G 0x140bd5b60; the exe stores no vptr)
 
     bool m_bNew;                        // +0x18
     int m_nEmoticonId;                  // +0x1c
@@ -43,7 +43,7 @@ class NotifyChatEmoticonSelected : public NotifyObject
 {
 public:
     NotifyChatEmoticonSelected(const CStringW& strTarget, int nEmoticonId);     // 0x140bd51b0
-    virtual ~NotifyChatEmoticonSelected();                          //  0 0x140bd5470 (??_G 0x140bd5ae0)
+    // implicit virtual ~NotifyChatEmoticonSelected() //  0 0x140bd5470 (??_G 0x140bd5ae0; the exe stores no vptr)
     virtual CStringW GetTypeName();                                     //  1 0x140db5520 (notify name; another unit)
 
     CStringW m_strTarget;               // +0x18
@@ -62,7 +62,7 @@ class UIChatEmoticonDialog : public UIDialog
 {
 public:
     UIChatEmoticonDialog();                                         // 0x140bd0e90
-    virtual ~UIChatEmoticonDialog();                                //  0 0x140bd54a0 (??_G 0x140bd5b20)
+    // implicit virtual ~UIChatEmoticonDialog() //  0 0x140bd54a0 (??_G 0x140bd5b20; the exe stores no vptr)
     virtual CString GetTypeName();                                      //  1 0x140bd0f60 "ChatEmoticonDialog"
     virtual int vfunc_13();                                         // 13 0x140bd11a0 closed ? UIDialog::vfunc_13() : 0
     virtual void OnLoadComplete();                                  // 22 0x140bd1080

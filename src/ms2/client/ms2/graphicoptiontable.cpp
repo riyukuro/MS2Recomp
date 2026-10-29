@@ -40,45 +40,30 @@ CGraphicOptionTable::~CGraphicOptionTable()
 }
 
 // @0x141375e50
-// MS2-FUNCTIONAL: frame is 0x60 larger and the EH state layout differs (temp CString placement in the error paths)
 void CGraphicOptionTable::Load()
 {
-    if (FUN_140166420()->FUN_1403974b0(&m_doc, FUN_14071a5b0(CString("Table"), CString("graphicOption.xml")), 0, true, false) == 0)
-    {
-        FUN_14036e770(GetLogString(), 1, 0x13, L"파일을 읽을 수 없습니다[{0}]",
-                      FUN_14016a730(FUN_14071a5b0(CString("Table"), CString("graphicOption.xml")), 0));
-    }
-    else
+    if (FUN_140166420()->FUN_1403974b0(&m_doc, FUN_14071a5b0("Table", "graphicOption.xml"), 0, true, false))
     {
         Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&m_doc)->FUN_140165cf0("ms2");
-        if (pRoot == 0)
-        {
-            FUN_14036e770(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]",
-                          FUN_14016a730(FUN_14071a5b0(CString("Table"), CString("graphicOption.xml")), 0));
-        }
-        else
+        if (pRoot != 0)
         {
             CString strKey;
             int nValue;
             for (Unk_140165cf0* pOption = pRoot->FUN_140165cf0("option"); pOption != 0; pOption = pOption->FUN_140168650("option"))
             {
                 CString strName = FUN_14015f710(pOption, "name", CString(""));
-                for (unsigned int i = 1; i < 6; i++)
+                for (unsigned int i = 1; i <= 5; i++)
                 {
                     strKey.Format("option%d", i);
                     FUN_14086f500(pOption, strKey, &nValue);
-                    if (!FUN_140184310(strName, "multisample"))
-                    {
-                        if (nValue != 0)
-                        {
-                            int nLevel = i - 1;
-                            m_mapLevel.SetAt(strName, nLevel);
-                            break;
-                        }
-                    }
-                    else
+                    if (FUN_140184310(strName, "multisample"))
                     {
                         m_multisample[i - 1] = nValue;
+                    }
+                    else if (nValue != 0)
+                    {
+                        m_mapLevel.SetAt(strName, i - 1);
+                        break;
                     }
                 }
             }
@@ -87,25 +72,33 @@ void CGraphicOptionTable::Load()
                 CString strName = FUN_14015f710(pShadow, "name", CString(""));
                 int bSet1 = 0;
                 int bSet2 = 0;
-                for (unsigned int i = 1; i < 6; i++)
+                for (unsigned int i = 1; i <= 5; i++)
                 {
                     strKey.Format("option%d", i);
                     FUN_14086f500(pShadow, strKey, &nValue);
                     if (nValue == 1 && bSet1 == 0)
                     {
-                        int nLevel1 = i - 1;
-                        m_mapShadow1.SetAt(strName, nLevel1);
+                        m_mapShadow1.SetAt(strName, i - 1);
                         bSet1 = 1;
                     }
                     if (nValue == 2 && bSet2 == 0)
                     {
-                        int nLevel2 = i - 1;
-                        m_mapShadow2.SetAt(strName, nLevel2);
+                        m_mapShadow2.SetAt(strName, i - 1);
                         bSet2 = 1;
                     }
                 }
             }
         }
+        else
+        {
+            FUN_14036e770(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]",
+                          FUN_14016a730(FUN_14071a5b0("Table", "graphicOption.xml"), 0));
+        }
+    }
+    else
+    {
+        FUN_14036e770(GetLogString(), 1, 0x13, L"파일을 읽을 수 없습니다[{0}]",
+                      FUN_14016a730(FUN_14071a5b0("Table", "graphicOption.xml"), 0));
     }
 }
 

@@ -111,6 +111,7 @@ public:
     T* get() const { return m_p; }
     T* operator->() const { return m_p; }
     bool IsNull() const { return m_p == 0; }
+    bool operator==(const T* p) const { return m_p == p; }                                     // @0x1412db8c0
 private:
     static CPtred* Base(T* p) { return reinterpret_cast<CPtred*>(reinterpret_cast<char*>(p) - sizeof(CPtred)); }
     void AddRef() const { if (m_p) CPtred::AddRefPtred(Base(m_p)); }
@@ -147,16 +148,18 @@ public:
     size_t FUN_14068acc0() const;                               // count
     Unk_UmValuePtr<Unk_UmRecipeRef>& FUN_140689a50(size_t n);   // 0x140689a50 returns &slot[n] (0x10 stride) in rax, no hidden slot
 };
-class Unk_UmBook
+class Unk_UmBook;
+// The book pointer's two accessors return its payload (mov rax, [this+8]) as the recipe array.
+class Unk_UmBookPtr : public Unk_UmValuePtr<Unk_UmBook>
 {
 public:
-    Unk_UmRecipeArr& FUN_140689bf0();
-    Unk_UmRecipeArr& FUN_140689c20();
+    Unk_UmRecipeArr* FUN_140689bf0() const;
+    Unk_UmRecipeArr* FUN_140689c20() const;
 };
 class Unk_UmBookTable
 {
 public:
-    Unk_UmValuePtr<Unk_UmBook> FUN_140685da0(int nBookId);
+    Unk_UmBookPtr FUN_140685da0(int nBookId);
     int FUN_140685e60(int nBookId, int nRecipeId, int* pnGrade);   // the grade a recipe needs
 };
 Unk_UmBookTable* FUN_1412db940();
@@ -231,7 +234,7 @@ class Unk_UmLua { public: int FUN_1406769f0(unsigned nSeconds); };
 Unk_UmLua* FUN_1401c0db0();
 class Unk_UmFeatures { public: bool FUN_14036d710(int nFeature); };
 Unk_UmFeatures* FUN_140166410();
-int FUN_14116d720(void* pHook);
+bool FUN_14116d720(void* pHook);
 void* FUN_14025e7c0();                                          // the client's text-hook object
 int FUN_1412dd760(Unk_UmMfItem* pItem);                         // the manufacture time of a record
 void FUN_140d73bc0(int nStrId, int nType, void* pListener, CStringW strTag);   // pop the system message
@@ -277,7 +280,7 @@ public:
     virtual void vfunc_13(); virtual void vfunc_14(); virtual void vfunc_15(); virtual void vfunc_16();
     virtual void vfunc_17(); virtual void vfunc_18(); virtual void vfunc_19(); virtual void vfunc_20();
     virtual void vfunc_21(); virtual void vfunc_22(); virtual void vfunc_23();
-    virtual void vfunc_24(int n);
+    virtual void vfunc_24(bool b);
 };
 class Unk_UmList : public Unk_UmCtl
 {
@@ -397,7 +400,6 @@ void UIManufactureDialog::OnLoadInit()
 }
 
 // @0x1412e2930
-// MS2-FUNCTIONAL: not byte-exact yet (temporaries / call order differ)
 int UIManufactureDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs)
 {
     if (UIDialog::vfunc_28(szMethod, pArgs, nArgs) != 0)
@@ -409,7 +411,7 @@ int UIManufactureDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
         vfunc_67();
         return 1;
     }
-    if (_stricmp("OnSelectedList", szMethod) == 0)
+    else if (_stricmp("OnSelectedList", szMethod) == 0)
     {
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs) != 0)
@@ -419,39 +421,44 @@ int UIManufactureDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
         }
         return 1;
     }
-    if (_stricmp("OnCraft", szMethod) == 0)
+    else if (_stricmp("OnCraft", szMethod) == 0)
     {
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs) != 0)
-            FUN_1412e5dd0(data.FUN_1422b8a10());
+        {
+            int nIndex = data.FUN_1422b8a10();
+            FUN_1412e5dd0(nIndex);
+        }
         return 1;
     }
-    if (_stricmp("OnCraftAdmin", szMethod) == 0)
+    else if (_stricmp("OnCraftAdmin", szMethod) == 0)
     {
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs) != 0)
-            FUN_1412e5f70(data.FUN_1422b8a10());
+        {
+            int nIndex = data.FUN_1422b8a10();
+            FUN_1412e5f70(nIndex);
+        }
         return 1;
     }
-    if (_stricmp("onRecieve", szMethod) == 0)
+    else if (_stricmp("onRecieve", szMethod) == 0)
     {
         OnRecieve();
         return 1;
     }
-    if (_stricmp("onRecieveOrCancel", szMethod) == 0)
+    else if (_stricmp("onRecieveOrCancel", szMethod) == 0)
     {
         if (m_nState == 2)
             OnRecieve();
         else if (m_nState == 1)
             FUN_140d73bc0(0x7b7, 1, static_cast<IMessageListener*>(this), CStringW(L"OnCancel"));
-        return 0;
     }
-    if (_stricmp("onRecieveByMerat", szMethod) == 0)
+    else if (_stricmp("onRecieveByMerat", szMethod) == 0)
     {
         OnRecieveByMerat();
         return 1;
     }
-    if (_stricmp("onRecieveJackpot", szMethod) == 0)
+    else if (_stricmp("onRecieveJackpot", szMethod) == 0)
     {
         OnRecieveJackpot();
         return 1;
@@ -462,7 +469,8 @@ int UIManufactureDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
 // @0x1412e2cf0
 int UIManufactureDialog::vfunc_13()
 {
-    vfunc_55();
+    if (vfunc_55() != 0)
+        return 0;
     return 0;
 }
 
@@ -518,11 +526,15 @@ void UIManufactureDialog::OnLoadComplete()
 }
 
 // @0x1412e3010
-// MS2-FUNCTIONAL: frame layout of the string temporaries and the handle copies differs
 void UIManufactureDialog::vfunc_72()
 {
     UIDialog::vfunc_72();
-    if (m_30.IsNull() || m_nState != 1 || m_nLastTick + 1000 > FUN_140869420())
+    if (m_30.IsNull())
+        return;
+    if (m_nState != 1)
+        return;
+    int nInterval = 1000;
+    if (m_nLastTick + nInterval > FUN_140869420())
         return;
     m_nLastTick = FUN_140869420();
     MS2Ptr<Unk_UmMfItem> spItem(0);
@@ -531,26 +543,26 @@ void UIManufactureDialog::vfunc_72()
     CMsTime tReady(spItem->FUN_140694170());
     CMsTime tNow(FUN_140869440());
     ATL::CTimeSpan span = tReady - tNow;
-    if (!(tReady > tNow))
+    if (tReady > tNow)
     {
-        m_nState = 2;
-        m_30->Invoke("setProgress", m_nState, FUN_14116d720(FUN_14025e7c0()) ? true : false);
-        m_30->Invoke("updateProgressGauge", GetStringCommon(0x7b8), 1000);
-    }
-    else
-    {
-        unsigned __int64 nSeconds = span.GetTotalSeconds();
-        int nLeft = FUN_1401c0db0()->FUN_1406769f0((unsigned)nSeconds);
+        int nLeft = FUN_1401c0db0()->FUN_1406769f0(span.GetTotalSeconds());
         int nCurrency = 3;
         if (FUN_140166410()->FUN_14036d710(0x102))
             nCurrency = 10;
         m_30->Invoke("setItemMeratLabel", FUN_14052bd00(0x7ba, FUN_1418fec90(nCurrency, (__int64)nLeft, 0)));
         int nTotal = FUN_1412dd760(spItem.operator->());
-        __int64 nRemain = span.GetTotalSeconds();
+        int nRemain = span.GetTotalSeconds();
         int nPermille = 0;
         if (0 < nTotal)
-            nPermille = 1000 - ((int)nRemain * 1000) / nTotal;
-        m_30->Invoke("updateProgressGauge", FUN_1412e1e50(span, 0, 1), nPermille);
+            nPermille = 1000 - (nRemain * 1000) / nTotal;
+        CStringW strTime = FUN_1412e1e50(span, 0, 1);
+        m_30->Invoke("updateProgressGauge", strTime, nPermille);
+    }
+    else
+    {
+        m_nState = 2;
+        m_30->Invoke("setProgress", m_nState, FUN_14116d720(FUN_14025e7c0()));
+        m_30->Invoke("updateProgressGauge", GetStringCommon(0x7b8), 1000);
     }
 }
 
@@ -594,7 +606,6 @@ void UIManufactureDialog::FUN_1412e34c0()
 }
 
 // @0x1412e3990
-// MS2-FUNCTIONAL: not byte-exact yet (temporaries / call order differ)
 void UIManufactureDialog::FUN_1412e3990(int bSelect)
 {
     if (m_30.IsNull())
@@ -605,79 +616,75 @@ void UIManufactureDialog::FUN_1412e3990(int bSelect)
     MS2Ptr<Unk_UmMaid> spMaid = pNpc->FUN_141093800();
     if (spMaid.IsNull())
         return;
-    Unk_UmValuePtr<Unk_UmBook> spBook = FUN_1412db940()->FUN_140685da0(spMaid->m_34);
-    if (spBook.get() == 0)
+    Unk_UmBookPtr spBook = FUN_1412db940()->FUN_140685da0(spMaid->m_34);
+    if (spBook == 0)
         return;
-    MS2Ptr<Unk_UmList> spList = FUN_140c02900<Unk_UmList>(CString("m_scrollList"));
-    if (spList.get() == 0)
-        return;
-    spList->FUN_1422dd1d0();
-    int nFirst = 0;
-    for (size_t i = 0; i < spBook->FUN_140689bf0().FUN_14068acc0(); i++)
+    if (MS2Ptr<Unk_UmList> spList = FUN_140c02900<Unk_UmList>("m_scrollList"))
     {
-        Unk_UmValuePtr<Unk_UmRecipeRef> spRef = spBook->FUN_140689c20().FUN_140689a50(i);
-        if (spRef.IsNull())
-            continue;
-        Unk_UmValuePtr<Unk_UmRecipe> spRecipe = FUN_1409eed30()->FUN_1406855c0(spRef->m_id);
-        if (spRecipe.get() == 0)
-            continue;
-        ASObj row(2);
-        row.FUN_140e846b0("id", i + 1);
-        row.FUN_1407cbb20("itemName", FUN_1401a9d70()->FUN_141811980(1, spRecipe->m_50));
-        row.FUN_1407cb9c0("recipeID", spRef->m_id);
-        if (*reinterpret_cast<Unk_UmLevels*>(FUN_1401d3200())->m_5180.FUN_1402056b0() < spRef->m_level)   // exe: add rax, 0x5180
-            row.FUN_1407cbb20("require", FUN_1408116a0(0x7ab, spRef->m_level));
-        else
-            row.FUN_1407cbb20("require", FUN_1408116a0(0x7aa, spRef->m_level));
-        m_mapRecipes.SetAt((int)i, spRef->m_id);
-        bool bAvailable = spRef->m_level <= spMaid->m_54;
-        if (bAvailable)
-            nFirst = (int)i;
-        row.FUN_1407cb9c0("available", bAvailable);
-        spList->FUN_1422dd230(row);
-        int nItemId = spRecipe->m_50;
-        int nRarity = spRecipe->m_58;
-        int nAmount = spRecipe->m_54;
-        MS2Ptr<CItem> spItem(new CItem());
-        if (spItem->FUN_14052b130(nItemId, nRarity, 0))
+        spList->FUN_1422dd1d0();
+        int nFirst = 0;
+        for (size_t i = 0; i < spBook.FUN_140689bf0()->FUN_14068acc0(); i++)
         {
-            spItem->FUN_140526c70(nAmount);
-            int nFlags;
-            if (bAvailable)
-                nFlags = 0x415;
-            else
-                nFlags = 0x2415;
-            CString strKey;
-            strKey.Format("%s.%d", (const char*)GetTypeName(), i + 1);
-            FUN_141415450(strKey, spItem, (int)i, nFlags, 0x800);
-            m_30->Invoke("bind", CString(strKey), i + 1, spItem->FUN_140528590());
-            m_aRowKeys.Add(strKey);
+            Unk_UmValuePtr<Unk_UmRecipeRef> spRef = spBook.FUN_140689c20()->FUN_140689a50(i);
+            if (spRef.IsNull())
+                continue;
+            Unk_UmValuePtr<Unk_UmRecipe> spRecipe = FUN_1409eed30()->FUN_1406855c0(spRef->m_id);
+            if (spRecipe.get() != 0)
+            {
+                ASObj row(2);
+                row.FUN_140e846b0("id", i + 1);
+                row.FUN_1407cbb20("itemName", FUN_1401a9d70()->FUN_141811980(1, spRecipe->m_50));
+                row.FUN_1407cb9c0("recipeID", spRef->m_id);
+                if (spRef->m_level > *reinterpret_cast<Unk_UmLevels*>(FUN_1401d3200())->m_5180.FUN_1402056b0())   // exe: add rax, 0x5180
+                    row.FUN_1407cbb20("require", FUN_1408116a0(0x7ab, spRef->m_level));
+                else
+                    row.FUN_1407cbb20("require", FUN_1408116a0(0x7aa, spRef->m_level));
+                m_mapRecipes.SetAt((int)i, spRef->m_id);
+                int bAvailable = spRef->m_level <= spMaid->m_54;
+                if (bAvailable != 0)
+                    nFirst = (int)i;
+                row.FUN_1407cb9c0("available", bAvailable);
+                spList->FUN_1422dd230(row);
+                int nItemId = spRecipe->m_50;
+                int nRarity = spRecipe->m_58;
+                int nAmount = spRecipe->m_54;
+                MS2Ptr<CItem> spItem(new CItem());
+                if (spItem->FUN_14052b130(nItemId, nRarity, 0))
+                {
+                    spItem->FUN_140526c70(nAmount);
+                    int nFlags = 0;
+                    if (bAvailable != 0)
+                        nFlags = 0x415;
+                    else
+                        nFlags = 0x2415;
+                    CString strKey;
+                    strKey.Format("%s.%d", (const char*)GetTypeName(), i + 1);
+                    FUN_141415450(strKey, spItem, (int)i, nFlags, 0x800);
+                    m_30->Invoke("bind", CString(strKey), i + 1, spItem->FUN_140528590());
+                    m_aRowKeys.Add(strKey);
+                }
+            }
         }
-    }
-    spList->vfunc_24(1);
-    if (bSelect != 0)
-    {
-        spList->FUN_1422dcca0(nFirst);
-        m_nSelected = nFirst;
-        FUN_1412e48a0();
+        spList->vfunc_24(true);
+        if (bSelect != 0)
+        {
+            spList->FUN_1422dcca0(nFirst);
+            m_nSelected = nFirst;
+            FUN_1412e48a0();
+        }
     }
 }
 
 // @0x1412e4240
-// MS2-FUNCTIONAL: not byte-exact yet (temporaries / call order differ)
 void UIManufactureDialog::FUN_1412e4240()
 {
     if (m_30.IsNull())
         return;
     MS2Ptr<Unk_UmMfItem> spMf(0);
-    if (FUN_1409eed40()->FUN_140d51370(m_nManufactureId, spMf) == 0)
-        m_nState = 0;
-    else
+    if (FUN_1409eed40()->FUN_140d51370(m_nManufactureId, spMf) != 0)
     {
         Unk_UmValuePtr<Unk_UmRecipe> spRecipe = FUN_1409eed30()->FUN_1406855c0(spMf->FUN_1409eedf0());
-        if (spRecipe.get() == 0)
-            m_nState = 0;
-        else
+        if (spRecipe.get() != 0)
         {
             CStringW strName = FUN_1401a9d70()->FUN_141811980(1, spRecipe->m_50);
             int nItemId = spRecipe->m_50;
@@ -695,24 +702,26 @@ void UIManufactureDialog::FUN_1412e4240()
             CMsTime tReady(spMf->FUN_140694170());
             CMsTime tNow(FUN_140869440());
             ATL::CTimeSpan span = tReady - tNow;
-            unsigned __int64 nSeconds = span.GetTotalSeconds();
-            int nLeft = FUN_1401c0db0()->FUN_1406769f0((unsigned)nSeconds);
+            int nLeft = FUN_1401c0db0()->FUN_1406769f0(span.GetTotalSeconds());
             int nCurrency = 3;
             if (FUN_140166410()->FUN_14036d710(0x102))
                 nCurrency = 10;
             m_30->Invoke("setItemMeratLabel", FUN_14052bd00(0x7ba, FUN_1418fec90(nCurrency, (__int64)nLeft, 0)));
-            if (!(tReady > tNow))
-                m_nState = 2;
-            else
+            if (tReady > tNow)
                 m_nState = 1;
+            else
+                m_nState = 2;
         }
+        else
+            m_nState = 0;
     }
-    m_30->Invoke("setProgress", m_nState, FUN_14116d720(FUN_14025e7c0()) ? true : false);
+    else
+        m_nState = 0;
+    m_30->Invoke("setProgress", m_nState, FUN_14116d720(FUN_14025e7c0()));
     m_30->Invoke("updateProgressGauge", GetStringCommon(0x7b8), 1000);
 }
 
 // @0x1412e48a0
-// MS2-FUNCTIONAL: not byte-exact yet (temporaries / call order differ)
 void UIManufactureDialog::FUN_1412e48a0()
 {
     if (m_30.IsNull())
@@ -730,120 +739,100 @@ void UIManufactureDialog::FUN_1412e48a0()
     if (!m_mapRecipes.Lookup(m_nSelected, nRecipeId))
         return;
     Unk_UmValuePtr<Unk_UmRecipe> spRecipe = FUN_1409eed30()->FUN_1406855c0(nRecipeId);
-    if (spRecipe.get() == 0)
-        return;
-    int nGrade = 0;
-    if (FUN_1412db940()->FUN_140685e60(spMaid->m_34, nRecipeId, &nGrade) == 0)
-        return;
-    int bAvailable = 1;
-    if (spMaid->m_54 < nGrade)
-        bAvailable = 0;
-    if (m_nState != 0)
-        bAvailable = 0;
-    float fCraftRate = pPlayer->FUN_1416561a0()->FUN_1411e1110(0x3e);
-    unsigned nMeso = FUN_1401c0d90()->FUN_14047b7c0(fCraftRate, spRecipe->m_2c);
-    CStringW strGrade = FUN_1408116a0(0x7aa, nGrade);
-    CStringW strName = FUN_1401a9d70()->FUN_141811980(1, spRecipe->m_50);
-    ATL::CTimeSpan span((unsigned __int64)spRecipe->m_20[spMaid->FUN_14067dd10()]);
-    CStringW strTime = FUN_1412e1e50(span, 1, 0);
-    CStringW strCost = FUN_14028dee0(0x7ac, strTime, nMeso);
-    m_30->Invoke("selectItem", m_nSelected, CStringW(strName), CStringW(strGrade), CStringW(strCost), bAvailable, FUN_14116d720(FUN_14025e7c0()) ? true : false);
-    int nItemId = spRecipe->m_50;
-    int nRarity = spRecipe->m_58;
-    int nAmount = spRecipe->m_54;
-    MS2Ptr<CItem> spProduct(new CItem());
-    if (spProduct->FUN_14052b130(nItemId, nRarity, 0))
+    if (spRecipe.get() != 0)
     {
-        spProduct->FUN_140526c70(nAmount);
-        m_strProductKey.Format("%s_product", (const char*)GetTypeName());
-        FUN_141415450(m_strProductKey, spProduct, 0, 0x415, 0x800);
-        m_30->Invoke("bindProduct", CString(m_strProductKey));
-    }
-    for (size_t i = 0; i < m_aIngredientKeys.GetCount(); i++)
-        FUN_141415600(m_aIngredientKeys[i]);
-    std::vector<CStringW> aUnused;
-    for (size_t k = 0; k < spRecipe->m_38.size(); k++)
-    {
-        Unk_UmValuePtr<Unk_UmIngredient> spIngredient = spRecipe->m_38[k];
-        if (spIngredient.IsNull())
-            continue;
-        int nIngItem = spIngredient->FUN_140684c40();
-        int nGroup = spIngredient->FUN_140684c80();
-        MS2Ptr<CItemData> spData = FUN_14053f870(nIngItem);
-        if (spData.get() == 0)
-            continue;
-        int nIngRarity;
-        if (!spData->FUN_14053cbc0())
-            nIngRarity = FUN_14053feb0(nIngItem);
-        else
-            nIngRarity = spIngredient->m_nRarity;
-        float fSaveRate = pPlayer->FUN_1416561a0()->FUN_1411e1110(0x3f);
-        unsigned nNeeded = FUN_1401c0d90()->FUN_14047b860(fSaveRate, spIngredient->m_nCount);
-        MS2Ptr<CItem> spIngItem(new CItem());
-        if (spIngItem->FUN_14052b130(nIngItem, nIngRarity, 0))
+        int nGrade = 0;
+        if (FUN_1412db940()->FUN_140685e60(spMaid->m_34, nRecipeId, &nGrade) == 0)
+            return;
+        int bAvailable = 1;
+        if (nGrade > spMaid->m_54)
+            bAvailable = 0;
+        if (m_nState != 0)
+            bAvailable = 0;
+        unsigned nMeso = FUN_1401c0d90()->FUN_14047b7c0(pPlayer->FUN_1416561a0()->FUN_1411e1110(0x3e), spRecipe->m_2c);
+        CStringW strGrade = FUN_1408116a0(0x7aa, nGrade);
+        CStringW strName = FUN_1401a9d70()->FUN_141811980(1, spRecipe->m_50);
+        ATL::CTimeSpan span((unsigned __int64)spRecipe->m_20[spMaid->FUN_14067dd10()]);
+        CStringW strTime = FUN_1412e1e50(span, 1, 0);
+        CStringW strCost = FUN_14028dee0(0x7ac, strTime, nMeso);
+        m_30->Invoke("selectItem", m_nSelected, CStringW(strName), CStringW(strGrade), CStringW(strCost), bAvailable, FUN_14116d720(FUN_14025e7c0()));
+        int nItemId = spRecipe->m_50;
+        int nRarity = spRecipe->m_58;
+        int nAmount = spRecipe->m_54;
+        MS2Ptr<CItem> spProduct(new CItem());
+        if (spProduct->FUN_14052b130(nItemId, nRarity, 0))
         {
-            spIngItem->FUN_140526c70(nNeeded);
-            CString strKey;
-            strKey.Format("%s_Ingredient.%d", (const char*)GetTypeName(), k + 1);
-            FUN_141415450(strKey, spIngItem, (int)k, 0x415, 0x800);
-            m_aIngredientKeys.Add(strKey);
-            unsigned nHave = 0;
-            if (nGroup == 0)
-                nHave = DAT_143ab2a90.FUN_140a5f180(nIngItem, 0);
+            spProduct->FUN_140526c70(nAmount);
+            m_strProductKey.Format("%s_product", (const char*)GetTypeName());
+            FUN_141415450(m_strProductKey, spProduct, 0, 0x415, 0x800);
+            m_30->Invoke("bindProduct", CString(m_strProductKey));
+        }
+        for (size_t i = 0; i < m_aIngredientKeys.GetCount(); i++)
+            FUN_141415600(m_aIngredientKeys[i]);
+        std::vector<CStringW> aUnused;
+        for (size_t k = 0; k < spRecipe->m_38.size(); k++)
+        {
+            Unk_UmValuePtr<Unk_UmIngredient> spIngredient = spRecipe->m_38[k];
+            if (spIngredient.IsNull())
+                continue;
+            int nIngItem = spIngredient->FUN_140684c40();
+            int nGroup = spIngredient->FUN_140684c80();
+            MS2Ptr<CItemData> spData = FUN_14053f870(nIngItem);
+            if (spData == 0)
+                continue;
+            int nIngRarity = spData->FUN_14053cbc0() ? spIngredient->m_nRarity : FUN_14053feb0(nIngItem);
+            unsigned nNeeded = FUN_1401c0d90()->FUN_14047b860(pPlayer->FUN_1416561a0()->FUN_1411e1110(0x3f), spIngredient->m_nCount);
+            MS2Ptr<CItem> spIngItem(new CItem());
+            if (spIngItem->FUN_14052b130(nIngItem, nIngRarity, 0))
+            {
+                spIngItem->FUN_140526c70(nNeeded);
+                CString strKey;
+                strKey.Format("%s_Ingredient.%d", (const char*)GetTypeName(), k + 1);
+                FUN_141415450(strKey, spIngItem, (int)k, 0x415, 0x800);
+                m_aIngredientKeys.Add(strKey);
+                unsigned nHave = 0;
+                if (nGroup == 0)
+                    nHave = DAT_143ab2a90.FUN_140a5f180(nIngItem, 0);
+                else
+                    nHave = DAT_143ab2a90.FUN_140a5f780(nGroup, 0);
+                CStringW strBreak(L"");
+                if (nHave >= 10000 || (nHave >= 1000 && nNeeded >= 100))
+                    strBreak = L"\n";
+                CStringW strCount(L"");
+                if (nHave >= nNeeded)
+                    strCount = FUN_14028dee0(0x7ad, nHave, strBreak, nNeeded);
+                else
+                    strCount = FUN_14028dee0(0x7ae, nHave, strBreak, nNeeded);
+                m_30->Invoke("ingredients", (unsigned __int64)(k + 1), CString(strKey), CStringW(strCount));
+            }
+        }
+        if (spRecipe->m_1c > 0)
+        {
+            int nRow = (int)(spRecipe->m_38.size() + 1);
+            int nMesoCost = spRecipe->m_1c;
+            int nCode = 0;
+            efd::SmartPointer<Unk_MfCubeService> spService(FUN_1401cd040(&DAT_143b059e8));
+            int nResult = spService->FUN_1410d2fb0(DAT_143ab2820, nMesoCost, &nCode);
+            CStringW strMesoText(L"");
+            if (nMesoCost == 0x1c)
+                strMesoText = nResult != 0 ? GetStringCommon(0x7bb) : GetStringCommon(0x7bc);
+            else if (nMesoCost == 0x1d)
+                strMesoText = nResult != 0 ? GetStringCommon(0x7bd) : GetStringCommon(0x7be);
+            else if (nMesoCost == 0x1e)
+                strMesoText = nResult != 0 ? GetStringCommon(0x7bf) : GetStringCommon(0x7c0);
+            CStringW strMesoCount(L"");
+            if (nResult != 0)
+            {
+                int nOne = 1;
+                strMesoCount = FUN_14028dee0_wc(0x7ad, nCode, L"", nOne);
+            }
             else
-                nHave = DAT_143ab2a90.FUN_140a5f780(nGroup, 0);
-            CStringW strBreak(L"");
-            if (nHave > 9999 || (nHave > 999 && nNeeded > 99))
-                strBreak = L"\n";
-            CStringW strCount(L"");
-            if (nHave < nNeeded)
-                strCount = FUN_14028dee0(0x7ae, nHave, strBreak, nNeeded);
-            else
-                strCount = FUN_14028dee0(0x7ad, nHave, strBreak, nNeeded);
-            m_30->Invoke("ingredients", (unsigned __int64)(k + 1), CString(strKey), CStringW(strCount));
+            {
+                int nOne = 1;
+                strMesoCount = FUN_14028dee0_wc(0x7ae, nCode, L"", nOne);
+            }
+            m_30->Invoke("workbench", nRow, CStringW(strMesoCount), CStringW(strMesoText));
         }
-    }
-    if (0 < spRecipe->m_1c)
-    {
-        int nRow = (int)spRecipe->m_38.size() + 1;
-        int nMesoCost = spRecipe->m_1c;
-        int nCode = 0;
-        efd::SmartPointer<Unk_MfCubeService> spService(FUN_1401cd040(&DAT_143b059e8));
-        int nResult = spService->FUN_1410d2fb0(DAT_143ab2820, nMesoCost, &nCode);
-        CStringW strMesoText(L"");
-        if (nMesoCost == 0x1c)
-        {
-            if (nResult == 0)
-                strMesoText = GetStringCommon(0x7bc);
-            else
-                strMesoText = GetStringCommon(0x7bb);
-        }
-        else if (nMesoCost == 0x1d)
-        {
-            if (nResult == 0)
-                strMesoText = GetStringCommon(0x7be);
-            else
-                strMesoText = GetStringCommon(0x7bd);
-        }
-        else if (nMesoCost == 0x1e)
-        {
-            if (nResult == 0)
-                strMesoText = GetStringCommon(0x7c0);
-            else
-                strMesoText = GetStringCommon(0x7bf);
-        }
-        CStringW strMesoCount(L"");
-        if (nResult == 0)
-        {
-            int nOne = 1;
-            strMesoCount = FUN_14028dee0_wc(0x7ae, nCode, L"", nOne);
-        }
-        else
-        {
-            int nOne = 1;
-            strMesoCount = FUN_14028dee0_wc(0x7ad, nCode, L"", nOne);
-        }
-        m_30->Invoke("workbench", nRow, CStringW(strMesoText), CStringW(strMesoCount));
     }
 }
 
@@ -952,7 +941,6 @@ void UIManufactureDialog::OnRecieve()
 }
 
 // @0x1412e63b0
-// MS2-FUNCTIONAL: not byte-exact yet (temporaries / call order differ)
 void UIManufactureDialog::OnRecieveByMerat()
 {
     MS2Ptr<Unk_UmMfItem> spMf(0);
@@ -961,11 +949,10 @@ void UIManufactureDialog::OnRecieveByMerat()
     CMsTime tReady(spMf->FUN_140694170());
     CMsTime tNow(FUN_140869440());
     ATL::CTimeSpan span = tReady - tNow;
-    unsigned __int64 nSeconds = span.GetTotalSeconds();
-    __int64 nCost = FUN_1401c0db0()->FUN_1406769f0((unsigned)nSeconds);
-    if (!FUN_140166410()->FUN_14036d710(0x102))
+    __int64 nCost = FUN_1401c0db0()->FUN_1406769f0(span.GetTotalSeconds());
+    if (FUN_140166410()->FUN_14036d710(0x102))
     {
-        if (!FUN_140d86260()->vfunc_40(nCost))
+        if (!FUN_140d86260()->vfunc_41(nCost) && !FUN_140d86260()->vfunc_40(nCost))
         {
             FUN_141275260(0x35, 1, 1);
             return;
@@ -973,13 +960,10 @@ void UIManufactureDialog::OnRecieveByMerat()
     }
     else
     {
-        if (!FUN_140d86260()->vfunc_41(nCost))
+        if (!FUN_140d86260()->vfunc_40(nCost))
         {
-            if (!FUN_140d86260()->vfunc_40(nCost))
-            {
-                FUN_141275260(0x35, 1, 1);
-                return;
-            }
+            FUN_141275260(0x35, 1, 1);
+            return;
         }
     }
     Unk_MfNpc* pNpc = FUN_1403ed2d0()->FUN_141bd1320(m_nNpcId);
@@ -1080,7 +1064,6 @@ void UIManufactureDialog::FUN_1412e6af0(int nResult)
 }
 
 // @0x1412e6c30
-// MS2-FUNCTIONAL: not byte-exact yet (temporaries / call order differ)
 void UIManufactureDialog::FUN_1412e6c30(int nItemId, int nRarity, int nAmount, int nExp, int nBonus, int nJackpot, int nMerat)
 {
     if (m_30.IsNull())
@@ -1092,34 +1075,33 @@ void UIManufactureDialog::FUN_1412e6c30(int nItemId, int nRarity, int nAmount, i
     if (spMaid.IsNull())
         return;
     MS2Ptr<CItem> spItem(new CItem());
-    if (!spItem->FUN_140523c40(nItemId, nRarity, 0))
-        return;
-    spItem->FUN_140526c70(nAmount);
-    Unk_TalkItemList aItems;
-    aItems.FUN_140720b80(spItem);
-    UITalkCinematic* pTalk = FUN_140a7b2b0(0x4e40);
-    if (pTalk == 0)
-        return;
-    CStringW strExp(L"");
-    CStringW strBonus(L"");
-    if (nExp < 1)
+    if (spItem->FUN_140523c40(nItemId, nRarity, 0))
     {
-        if (nExp < 0)
+        spItem->FUN_140526c70(nAmount);
+        Unk_TalkItemList aItems;
+        aItems.FUN_140720b80(spItem);
+        UITalkCinematic* pTalk = FUN_140a7b2b0(0x4e40);
+        if (pTalk != 0)
         {
-            int nAbs = abs(nExp);
-            strExp = FUN_1408116a0(0x7c5, nAbs);
+            CStringW strExp(L"");
+            CStringW strBonus(L"");
+            if (nExp > 0)
+                strExp = FUN_1408116a0(0x7c4, nExp);
+            else if (nExp < 0)
+            {
+                int nAbs = abs(nExp);
+                strExp = FUN_1408116a0(0x7c5, nAbs);
+            }
+            if (nBonus != 0)
+            {
+                if (nMerat != 0)
+                    strBonus = FUN_140656190(L"{0} {1}", FUN_1408116a0(0x7c2, nBonus), FUN_1408116a0(0x7c3, spMaid->m_54));
+                else
+                    strBonus = FUN_1408116a0(0x7c2, nBonus);
+            }
+            pTalk->FUN_141b1b000(aItems, nJackpot != 0 ? GetStringCommon(0x7b9) : GetStringCommon(0x7b8), strExp, strBonus, nJackpot);
         }
     }
-    else
-        strExp = FUN_1408116a0(0x7c4, nExp);
-    if (nBonus != 0)
-    {
-        if (nMerat == 0)
-            strBonus = FUN_1408116a0(0x7c2, nBonus);
-        else
-            strBonus = FUN_140656190(L"{0} {1}", FUN_1408116a0(0x7c2, nBonus), FUN_1408116a0(0x7c3, spMaid->m_54));
-    }
-    pTalk->FUN_141b1b000(aItems, nJackpot == 0 ? GetStringCommon(0x7b8) : GetStringCommon(0x7b9), strExp, strBonus, nJackpot);
 }
 
 // @0x1412e7170

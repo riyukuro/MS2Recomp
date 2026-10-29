@@ -19,13 +19,18 @@
 
 // ---- unit-local views of the exe objects and unrecovered callees --------------------------------------------------------
 
+// A field portal, only held through MS2Ptr here.
+class Unk_GcPortal : public CPtred
+{
+};
+
 // The world manager (FUN_1403ed2d0).
 class Unk_GcWorld
 {
 public:
     int FUN_141bc2f40();                                    // any field object of type 6?
     void* FUN_141bd0cc0();                                  // the local player
-    void FUN_141bc2c90(Vector3 pt, ATL::CAtlArray<void*>& arrOut);   // field objects containing pt, nearest first
+    void FUN_141bc2c90(Vector3 pt, ATL::CAtlArray<MS2Ptr<Unk_GcPortal> >& arrOut);   // portals containing pt, nearest first (AddRef'd)
 };
 Unk_GcWorld* FUN_1403ed2d0();
 
@@ -55,7 +60,7 @@ int FUN_14142c940(Unk_GcKeyBinds* pBinds, __int64 nAction, int nPriority);   // 
 void* FUN_1408e57f0();
 int FUN_1422b9e00(void* p);
 unsigned FUN_140869420();                                   // millisecond clock
-__int64 FUN_140966da0(ATL::CAtlArray<void*>& arr);          // element count
+__int64 FUN_140966da0(ATL::CAtlArray<MS2Ptr<Unk_GcPortal> >& arr);   // element count
 
 #ifndef MS2_HOOK_DLL
 static ClassObjectRegistrar s_regActionInput(L"CGuideConditionActionInput", CGuideConditionActionInput::CreateObject);   // .text$di 0x1400f2ed0
@@ -142,13 +147,11 @@ CStringW CGuideConditionActionInput::GetTypeName()
 MS2_REPLACE_METHOD(0x1413A6910, CGuideConditionActionInput, GetTypeName, 61, 0x9F425B26);
 
 // @0x1413a6960
-// MS2-FUNCTIONAL: the exe passes the 64-bit action id through rcx (mov rdx,rcx) before each FUN_14142c940 call
 int CGuideConditionActionInput::vfunc_3()
 {
     int nKey = 0;
     int nAltKey0, nAltKey1, nAltKey2;
-    __int64 nAction0 = m_n20;
-    nKey = FUN_14142c940(FUN_1409331f0(), nAction0, 0);
+    nKey = FUN_14142c940(FUN_1409331f0(), m_n20, 0);
     if (nKey != 0)
     {
         if (FUN_14025e7c0()->FUN_14116d950(nKey, false, 0))
@@ -157,8 +160,7 @@ int CGuideConditionActionInput::vfunc_3()
         if (FUN_1409331f0()->FUN_14142c830(nKey, &nAltKey0) != 0 && FUN_14025e7c0()->FUN_14116d950(nAltKey0, false, 0))
             return FUN_1413a55a0(1);
     }
-    __int64 nAction1 = m_n20;
-    nKey = FUN_14142c940(FUN_1409331f0(), nAction1, 1);
+    nKey = FUN_14142c940(FUN_1409331f0(), m_n20, 1);
     if (nKey != 0)
     {
         if (FUN_14025e7c0()->FUN_14116d950(nKey, false, 0))
@@ -167,8 +169,7 @@ int CGuideConditionActionInput::vfunc_3()
         if (FUN_1409331f0()->FUN_14142c830(nKey, &nAltKey1) != 0 && FUN_14025e7c0()->FUN_14116d950(nAltKey1, false, 0))
             return FUN_1413a55a0(1);
     }
-    __int64 nAction2 = m_n20;
-    nKey = FUN_14142c940(FUN_1409331f0(), nAction2, 2);
+    nKey = FUN_14142c940(FUN_1409331f0(), m_n20, 2);
     if (nKey != 0)
     {
         if (FUN_14025e7c0()->FUN_14116d950(nKey, false, 0))
@@ -225,7 +226,7 @@ int CGuideConditionPortalEnable::vfunc_3()
     Unk_GcPC* pPC = (Unk_GcPC*)FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pPC == 0)
         return 0;
-    ATL::CAtlArray<void*> arrPortals;
+    ATL::CAtlArray<MS2Ptr<Unk_GcPortal> > arrPortals;
     Vector3 pt = pPC->vfunc_18();
     FUN_1403ed2d0()->FUN_141bc2c90(pt, arrPortals);
     return FUN_1413a5600(FUN_140966da0(arrPortals) != 0);

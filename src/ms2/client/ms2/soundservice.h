@@ -79,7 +79,7 @@ public:
     FMOD::EventSystem* GetEventSystem();                         // m_pEventSystem
     FMOD::Sound* GetNetSound();                               // m_pNetSound
     void FUN_1417ae760(float fVolume);                          // set the volume (also of the net stream)
-    bool FUN_1417ae990();                                       // (re)acquire the system objects after a device change
+    int FUN_1417ae990();                                        // (re)acquire the system objects after a device change
     int FUN_1417aea70();                                       // init the event system for the client language
     int FUN_1417aeb40();                                       // create the event system and check the version
     int FUN_1417aec60();                                       // speaker mode, DSP buffer size, software format

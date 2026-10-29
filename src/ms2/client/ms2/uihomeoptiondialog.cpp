@@ -39,7 +39,7 @@ public:
     static const efd::ClassID CLASS_ID = 0x06100017;
     bool FUN_1410c3e00(int nRow);                                   // row enabled
     int FUN_1410c3e80(int nRow);                                    // row level
-    char FUN_1410d5640();                                           // may change the options
+    bool FUN_1410d5640();                                           // may change the options
 };
 Unk_HoService* FUN_1401cd040(Unk_EntityAppFramework* framework);
 
@@ -51,16 +51,18 @@ public:
     ~Unk_HoServicePtr();                                            // 0x1401cd150
     Unk_HoService* FUN_1401cd1a0() const;                           // operator->
     Unk_HoService* FUN_140885310() const;                           // get
+    bool FUN_140ef4cb0(int n);                                      // operator== against a raw pointer
 private:
     Unk_HoService* m_p;
 };
-char FUN_140ef4cb0(Unk_HoServicePtr* pService, int n);
 
 class Unk_HoUnused;                                                 // element of an unused local array
 class Unk_HoWorld { public: MyPC* FUN_141bd0cc0(); };               // the local player
 Unk_HoWorld* FUN_1403ed2d0();
 
-void FUN_141530720(MyPC* pPC, bool bOpen, CStringW strPassword, int n);   // the player sends the open type
+// The house open type (compared as a byte: a scoped enum over unsigned char, as MyPC's house setting).
+enum class Unk_HomeOpenType : unsigned char { Kind0 = 0, Kind1 = 1, Kind2 = 2 };
+void FUN_141530720(MyPC* pPC, unsigned char nOpenType, CStringW strPassword, unsigned char bFlag);   // the player sends the open type
 CStringW FUN_140298ea0(CStringW strKey);                            // string table by key
 CString FUN_140223190(int nRow);                                   // the name of a permission row
 int FUN_1418fd280();
@@ -109,7 +111,6 @@ void UIHomeOptionDialog::OnLoadComplete()
 }
 MS2_REPLACE_METHOD(0x140FA8DB0, UIHomeOptionDialog, OnLoadComplete, 34, 0x713AD346);
 
-// MS2-FUNCTIONAL: small codegen diffs (temp spills / register choice) vs exe
 // @0x140fa8de0
 int UIHomeOptionDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs)
 {
@@ -123,7 +124,8 @@ int UIHomeOptionDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs) != 0)
         {
-            if (data.FUN_1422b8a90() == 1)
+            unsigned char bConfirm = data.FUN_1422b8a90();
+            if (bConfirm == 1)
                 FUN_140d73aa0(FUN_140298ea0(CStringW(L"s_home_option_msg_confirm")), 1, static_cast<IMessageListener*>(this), CStringW(L"OnConfirm"));
             else
                 vfunc_67();
@@ -135,7 +137,7 @@ int UIHomeOptionDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
         if (data.FUN_1422b9620(pArgs, nArgs) != 0)
         {
             Unk_HoServicePtr spService(FUN_1401cd040(&DAT_143b059e8));
-            if (FUN_140ef4cb0(&spService, 0) != 0)
+            if (spService.FUN_140ef4cb0(0))
                 return 1;
             if (spService.FUN_1401cd1a0()->FUN_1410d5640() == 0)
             {
@@ -150,7 +152,10 @@ int UIHomeOptionDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
                 FUN_140d73bc0(0xb0a, 0, 0, CStringW(L""));
                 return 1;
             }
-            FUN_140fa99b0(nOpenType, CStringW(strPassword));
+            else
+            {
+                FUN_140fa99b0(nOpenType, CStringW(strPassword));
+            }
             for (int i = 0; i < 9; ++i)
                 FUN_140fa9a50(i, data.FUN_1422b8a10());
         }
@@ -195,7 +200,6 @@ int UIHomeOptionDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
 }
 MS2_REPLACE_METHOD(0x140FA9570, UIHomeOptionDialog, OnMessage, 549, 0xC6230034);
 
-// MS2-FUNCTIONAL: small codegen diffs (temp spills / register choice) vs exe
 // @0x140fa97a0
 void UIHomeOptionDialog::FUN_140fa97a0()
 {
@@ -207,34 +211,35 @@ void UIHomeOptionDialog::FUN_140fa97a0()
         if (spHouse.get() != 0)
             FUN_140fa9c90(&obj, "opentype", spHouse->m_n40);
     }
-    Unk_HoServicePtr spService(FUN_1401cd040(&DAT_143b059e8));
-    if (spService.FUN_140885310() == 0)
-        return;
-    for (int i = 0; i < 9; ++i)
     {
-        int nRow = i;
-        bool bOn = spService.FUN_1401cd1a0()->FUN_1410c3e00(nRow);
-        int nLevel = spService.FUN_1401cd1a0()->FUN_1410c3e80(nRow);
-        int nValue;
-        if (!bOn)
-            nValue = 0;
-        else
-            nValue = nLevel + 1;
-        obj.FUN_1407cb9c0(FUN_140223190(nRow), nValue);
+        Unk_HoServicePtr spService(FUN_1401cd040(&DAT_143b059e8));
+        if (spService.FUN_140885310() == 0)
+            return;
+        for (int i = 0; i < 9; ++i)
+        {
+            int nRow = i;
+            bool bOn = spService.FUN_1401cd1a0()->FUN_1410c3e00(nRow);
+            int nLevel = spService.FUN_1401cd1a0()->FUN_1410c3e80(nRow);
+            int nValue;
+            if (!bOn)
+                nValue = 0;
+            else
+                nValue = nLevel + 1;
+            obj.FUN_1407cb9c0(FUN_140223190(nRow), nValue);
+        }
     }
     m_30->Invoke("setData", obj);
 }
 MS2_REPLACE_METHOD(0x140FA97A0, UIHomeOptionDialog, FUN_140fa97a0, 515, 0xB6C067B7);
 
-// MS2-FUNCTIONAL: FUN_140fa99b0: the exe compares the open type byte in memory (cmp byte, 1) and passes a bool; cl widens it
 // @0x140fa99b0
-void UIHomeOptionDialog::FUN_140fa99b0(bool bOpen, CStringW strPassword)
+void UIHomeOptionDialog::FUN_140fa99b0(unsigned char nOpenType, CStringW strPassword)
 {
-    if (bOpen != true)
+    if (static_cast<Unk_HomeOpenType>(nOpenType) != Unk_HomeOpenType::Kind1)
         strPassword = L"";
     MyPC* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pPC != 0)
-        FUN_141530720(pPC, bOpen, CStringW(strPassword), 1);
+        FUN_141530720(pPC, nOpenType, CStringW(strPassword), 1);
 }
 MS2_REPLACE_METHOD(0x140FA99B0, UIHomeOptionDialog, FUN_140fa99b0, 149, 0x7577FED5);
 

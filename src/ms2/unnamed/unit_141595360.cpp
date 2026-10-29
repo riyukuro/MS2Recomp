@@ -5,6 +5,8 @@
 #define MS2_THIS_FILE ""
 #include "ms2/placeholder/ms2stdafx.h"
 #include "ms2/placeholder/nmobjects.h"
+#include "ms2/placeholder/nmstream.h"
+#include "ms2/placeholder/nmencoder.h"
 #include "ms2/ms2recover.h"
 
 extern void FUN_1415fbe70(void*, unsigned int, const char*);
@@ -14,7 +16,7 @@ extern void FUN_1415f9990(void*);
 extern void* FUN_14156bcb0(void*, void*, void*);
 extern void FUN_14156bd50(void*);
 extern int FUN_1415fb750(void*);
-extern int FUN_1415fb6d0(void*);
+extern int FUN_1415fb6d0(CNMSerializableDecoder*);
 
 // @0x141595360
 CNMGetSessionValueFunc::CNMGetSessionValueFunc() : CNMFunc(0x8007, 1, 0, 0)
@@ -50,18 +52,17 @@ unsigned int CNMGetSessionValueFunc::Encode(CNMEncoder* pEncoder, CNMStream* pSt
 // @0x141595470
 unsigned int CNMGetSessionValueFunc::EncodeFramed(CNMStream* pStream)
 {
-    alignas(8) unsigned char encoder[0x18];
-    FUN_14156bcb0(encoder, pStream, this);
-    const auto result = Encode(reinterpret_cast<CNMEncoder*>(encoder), pStream);
-    FUN_14156bd50(encoder);
-    return result;
+    CNMSerializableEncoder encoder(pStream, this);
+    return CNMGetSessionValueFunc::Encode(reinterpret_cast<CNMEncoder*>(&encoder), pStream);
 }
 
 // MS2-FUNCTIONAL: dispatch condition and target slots match; direct calls replace the executable's indirect calls.
 // @0x1415954d0
 unsigned int CNMGetSessionValueFunc::EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream)
 {
-    return m_bFormat == 1 ? Encode(pEncoder, pStream) : EncodeFramed(pStream);
+    if (m_bFormat == 1)
+        return CNMGetSessionValueFunc::Encode(pEncoder, pStream);
+    return CNMGetSessionValueFunc::EncodeFramed(pStream);
 }
 
 // MS2-FUNCTIONAL: field selection, capacity and final decoder status match; the decoder read remains an indirect call.
@@ -83,18 +84,19 @@ unsigned int CNMGetSessionValueFunc::Decode(CNMSerializableDecoder* pDecoder, CN
 // @0x1415955b0
 unsigned int CNMGetSessionValueFunc::DecodeFramed(CNMStream* pStream)
 {
-    alignas(8) unsigned char decoder[0x38];
-    FUN_14156bcb0(decoder, pStream, this);
-    const auto result = Decode(reinterpret_cast<CNMSerializableDecoder*>(decoder), pStream);
-    FUN_14156bd50(decoder);
-    return result;
+    CNMSerializableDecoder decoder(pStream, this);
+    if (FUN_1415fb750(&decoder) == 0)
+        return 0;
+    return CNMGetSessionValueFunc::Decode(&decoder, pStream);
 }
 
 // MS2-FUNCTIONAL: format dispatch is recovered; direct calls replace the executable's indirect calls.
 // @0x141595640
 unsigned int CNMGetSessionValueFunc::DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream)
 {
-    return FUN_1415fb6d0(pDecoder) == 2 ? DecodeFramed(pStream) : Decode(pDecoder, pStream);
+    if (FUN_1415fb6d0(pDecoder) == 2)
+        return CNMGetSessionValueFunc::DecodeFramed(pStream);
+    return CNMGetSessionValueFunc::Decode(pDecoder, pStream);
 }
 
 // MS2-PIN: ??0CNMGetSessionValueFunc@@QEAA@XZ 0x141595360

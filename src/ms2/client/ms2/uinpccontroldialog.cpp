@@ -141,7 +141,7 @@ CStringTable* GetStringTable();
 
 void FUN_140988d60(CStringW& str, Unk_NpcFileList& out, const wchar_t* szDelim);    // split a text
 __int64 FUN_140718320(const CStringW& str);
-unsigned short FUN_140718200(const CStringW& str);
+int FUN_140718200(const CStringW& str);
 unsigned FUN_140718140(const CStringW& str);
 unsigned long FUN_1407182c0(const CStringW& str);
 CStringW FUN_1418fe4e0(const CStringW& strDir);
@@ -166,8 +166,10 @@ __declspec(selectany) extern errno_t(__cdecl* const ms2_pfnNcMemcpyS)(void*, siz
 // @0x141a65420
 static bool FUN_141a65420(const Unk_CtlIntVec& v, int i)
 {
-    int n = (int)v.FUN_1401910d0() - 1;
-    return i >= 0 && i <= n;
+    int n = (int)v.FUN_1401910d0();
+    if (i < 0 || i > n - 1)
+        return false;
+    return true;
 }
 
 // @0x141a65c70
@@ -176,11 +178,6 @@ void ASObj::FUN_141a65c70(const char* szName, int n)
     ASData data;
     data.FUN_1422b7f70(n);
     FUN_1407cd930(&m_value, szName, data.FUN_1422b9260());
-}
-
-// @0x141a68340
-UINpcControlDialog::~UINpcControlDialog()
-{
 }
 
 // @0x141a623e0
@@ -200,87 +197,92 @@ CString UINpcControlDialog::GetTypeName()
 // @0x141a62500
 void UINpcControlDialog::vfunc_79(void* p)
 {
-    CInPacket* pPkt = static_cast<CInPacket*>(p);
     UIDialog::vfunc_79(p);
-    if (pPkt->FUN_14070fe80() == 0x87) {
-        char nKind = pPkt->ReadUInt8();
+    int nOp = static_cast<CInPacket*>(p)->FUN_14070fe80();
+    if (nOp != 0x87)
+        return;
+    {
+        int nKind = static_cast<CInPacket*>(p)->ReadUInt8();
         if (nKind == 6) {
             m_skills.clear();
-            int nCount = pPkt->ReadInt32();
+            int nCount = static_cast<CInPacket*>(p)->ReadInt32();
             for (int i = 0; i < nCount; i++) {
                 Unk_CtlSkill skill;
-                skill.nId = pPkt->ReadInt32();
-                skill.nLevel = pPkt->ReadInt32();
-                int nKey = (int)m_skills.size();
-                nKey = nKey + 1000;
+                skill.nId = static_cast<CInPacket*>(p)->ReadInt32();
+                skill.nLevel = static_cast<CInPacket*>(p)->ReadInt32();
+                int nKey = (int)(m_skills.size() + 1000);
                 m_skills.insert(std::make_pair(nKey, skill));
             }
         } else if (nKind == 5) {
-            if (m_30.IsNull() == 0) {
-                int nId = pPkt->ReadInt32();
-                if (nId == m_nNpcId) {
-                    PCBase* pActor = FUN_1403ed2d0()->FUN_141bd1320(nId);
-                    if (pActor != 0) {
-                        CString strNode = pPkt->ReadUnicodeStringA();
-                        CString strAction = pPkt->ReadUnicodeStringA();
-                        int nTarget = (int)pPkt->ReadInt64();
-                        CStringW strExtra(L"ExtraData");
-                        if (pPkt->ReadBool())
-                            strExtra += "(Tracking)";
-                        int nExtra = pPkt->ReadInt32();
-                        for (int i = 0; i < nExtra; i++) {
-                            CString strKey = pPkt->ReadUnicodeStringA();
-                            int nValue = pPkt->ReadInt32();
-                            strExtra += FUN_14136e740(L"\n{0} : {1}", strKey, nValue);
-                        }
-                        CStringW strTarget(L"");
-                        Unk_CtlObj* pObj = FUN_1403ed2d0()->FUN_141bd1180(nTarget);
-                        if (pObj != 0) {
-                            PCBase* pPc = FUN_14099eef0(pObj);
-                            if (pPc == 0) {
-                                Unk_CtlNpc* pNpc = FUN_140a38a00(pObj);
-                                if (pNpc != 0)
-                                    strTarget = pNpc->FUN_141093310();
-                            } else {
-                                strTarget = pPc->vfunc_77();
-                            }
-                        }
-                        __int64 nPap = pPkt->ReadInt64();
-                        __int64 nMap = pPkt->ReadInt64();
-                        __int64 nNdd = pPkt->ReadInt64();
-                        __int64 nCap = pPkt->ReadInt64();
-                        __int64 nHp = pPkt->ReadInt64();
-                        __int64 nMhp = pPkt->ReadInt64();
-                        if (FUN_1401647e0(m_strCurrent, strNode))
-                            m_strPrev = m_strCurrent;
-                        m_strCurrent = strNode;
-                        CStringW strInfo = StringFormat(L"{0}\n\nCurrent : {1}\nPrev : {2}\nTarget : {3}\n", strAction, m_strCurrent, m_strPrev, strTarget);
-                        int nZ = (int)pActor->vfunc_18().z;
-                        int nY = (int)pActor->vfunc_18().y;
-                        int nX = (int)pActor->vfunc_18().x;
-                        strInfo += FUN_1406a7830(L"\nX: {0}\nY: {1}\nZ: {2}", nX, nY, nZ);
-                        strInfo += FUN_1401e8510(L"\n\n{0}", strExtra);
-                        CStringW strStat = StringFormat(L"Current Stat\nPAP : {0}\nMAP : {1}\nNDD : {2}\nCAP : {3}\nHP : {4}\nMHP : {5}", nPap, nMap, nNdd, nCap, nHp, nMhp);
-                        if (m_30.get() != 0) {
-                            m_30->Invoke("SetAiText", strInfo);
-                            m_30->Invoke("SetStatText", strStat);
-                        }
-                    }
+            if (m_30.IsNull())
+                return;
+            int nId = static_cast<CInPacket*>(p)->ReadInt32();
+            if (nId != m_nNpcId)
+                return;
+            PCBase* pActor = FUN_1403ed2d0()->FUN_141bd1320(nId);
+            if (pActor == 0)
+                return;
+            CString strNode = static_cast<CInPacket*>(p)->ReadUnicodeStringA();
+            CString strAction = static_cast<CInPacket*>(p)->ReadUnicodeStringA();
+            int nTarget = (int)static_cast<CInPacket*>(p)->ReadInt64();
+            CStringW strExtra(L"ExtraData");
+            bool bTracking = static_cast<CInPacket*>(p)->ReadBool();
+            if (bTracking)
+                strExtra += "(Tracking)";
+            int nExtra = static_cast<CInPacket*>(p)->ReadInt32();
+            for (int i = 0; i < nExtra; i++) {
+                CString strKey = static_cast<CInPacket*>(p)->ReadUnicodeStringA();
+                int nValue = static_cast<CInPacket*>(p)->ReadInt32();
+                strExtra += FUN_14136e740(L"\n{0} : {1}", strKey, nValue);
+            }
+            CStringW strTarget(L"");
+            Unk_CtlObj* pObj = FUN_1403ed2d0()->FUN_141bd1180(nTarget);
+            if (pObj != 0) {
+                PCBase* pPc = FUN_14099eef0(pObj);
+                if (pPc != 0) {
+                    strTarget = pPc->vfunc_77();
+                } else {
+                    Unk_CtlNpc* pNpc = FUN_140a38a00(pObj);
+                    if (pNpc != 0)
+                        strTarget = pNpc->FUN_141093310();
                 }
             }
+            __int64 nPap = static_cast<CInPacket*>(p)->ReadInt64();
+            __int64 nMap = static_cast<CInPacket*>(p)->ReadInt64();
+            __int64 nNdd = static_cast<CInPacket*>(p)->ReadInt64();
+            __int64 nCap = static_cast<CInPacket*>(p)->ReadInt64();
+            __int64 nHp = static_cast<CInPacket*>(p)->ReadInt64();
+            __int64 nMhp = static_cast<CInPacket*>(p)->ReadInt64();
+            if (FUN_1401647e0(m_strCurrent, strNode))
+                m_strPrev = m_strCurrent;
+            m_strCurrent = strNode;
+            CStringW strInfo = StringFormat(L"{0}\n\nCurrent : {1}\nPrev : {2}\nTarget : {3}\n", strAction, m_strCurrent, m_strPrev, strTarget);
+            int nZ = (int)pActor->vfunc_18().z;
+            int nY = (int)pActor->vfunc_18().y;
+            int nX = (int)pActor->vfunc_18().x;
+            strInfo += FUN_1406a7830(L"\nX: {0}\nY: {1}\nZ: {2}", nX, nY, nZ);
+            strInfo += FUN_1401e8510(L"\n\n{0}", strExtra);
+            CStringW strStat = StringFormat(L"Current Stat\nPAP : {0}\nMAP : {1}\nNDD : {2}\nCAP : {3}\nHP : {4}\nMHP : {5}", nPap, nMap, nNdd, nCap, nHp, nMhp);
+            if (m_30.get() != 0) {
+                m_30->Invoke("SetAiText", strInfo);
+                m_30->Invoke("SetStatText", strStat);
+            }
         } else if (nKind == 7) {
-            CString strFile = pPkt->ReadUnicodeStringA();
-            int nId = pPkt->ReadInt32();
-            AiDebugDialog* pDlg = new AiDebugDialog(0);
-            m_spAi.AssignRaw(pDlg);
+            CString strFile = static_cast<CInPacket*>(p)->ReadUnicodeStringA();
+            int nId = static_cast<CInPacket*>(p)->ReadInt32();
+            m_spAi.AssignRaw(new AiDebugDialog(0));
             m_spAi->SetTarget(strFile, nId);
             AiDebugDialog* pAi = m_spAi.operator->();
             pAi->Create(0xa5, CWnd::FromHandle(FUN_14209c720(FUN_140aadf80())));
         } else if (nKind == 8) {
-            int nId = pPkt->ReadInt32();
-            int nLine = pPkt->ReadInt32();
-            if (FUN_1403ed2d0()->FUN_141bd1320(nId) != 0 && !(m_spAi == 0))
-                m_spAi->AddLine(nId, nLine);
+            int nId = static_cast<CInPacket*>(p)->ReadInt32();
+            int nLine = static_cast<CInPacket*>(p)->ReadInt32();
+            PCBase* pActor = FUN_1403ed2d0()->FUN_141bd1320(nId);
+            if (pActor == 0)
+                return;
+            if (m_spAi == 0)
+                return;
+            m_spAi->AddLine(nId, nLine);
         }
     }
 }
@@ -296,32 +298,30 @@ void UINpcControlDialog::OnLoadInit()
 void UINpcControlDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    if (m_30.IsNull() == 0) {
-        ASObj obj(2);
-        m_30->Invoke("initData", obj.FUN_1422bb870());
-    }
+    if (m_30.IsNull())
+        return;
+    ASObj obj(2);
+    m_30->Invoke("initData", obj.FUN_1422bb870());
 }
 
 // @0x141a63390
 int UINpcControlDialog::vfunc_13()
 {
-    if (UIDialog::vfunc_13() == 0) {
-        if (FUN_14025e7c0()->FUN_14116d9c0(0x1c, 0, 0) == 0) {
-            if (FUN_14025e7c0()->FUN_14116d9c0(0xf, 0, 0) == 0) {
-                if (FUN_14025e7c0()->FUN_14116d840() == 0)
-                    return 0;
-                vfunc_67();
-                return 1;
-            }
-            if (m_30.get() != 0)
-                m_30->Invoke("onTabKey");
-            return 1;
-        }
+    if (UIDialog::vfunc_13() != 0)
+        return 1;
+    if (FUN_14025e7c0()->FUN_14116d9c0(0x1c, 0, 0)) {
         if (m_30.get() != 0)
             m_30->Invoke("onEnterKey");
         return 1;
+    } else if (FUN_14025e7c0()->FUN_14116d9c0(0xf, 0, 0)) {
+        if (m_30.get() != 0)
+            m_30->Invoke("onTabKey");
+        return 1;
+    } else if (FUN_14025e7c0()->FUN_14116d840()) {
+        vfunc_67();
+        return 1;
     }
-    return 1;
+    return 0;
 }
 
 // @0x141a634d0
@@ -332,23 +332,19 @@ int UINpcControlDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
     if (_stricmp("OnCommandChange", szMethod) == 0) {
         data.FUN_1422b9620(pArgs, nArgs);
         return 1;
-    }
-    if (_stricmp("OnGroupChange", szMethod) == 0) {
+    } else if (_stricmp("OnGroupChange", szMethod) == 0) {
         if (data.FUN_1422b9620(pArgs, nArgs) != 0) {
-            CString strGroup = data.FUN_1422b8d30();
-            FUN_141a63ce0(strGroup);
+            FUN_141a63ce0(data.FUN_1422b8d30());
         }
         return 1;
-    }
-    if (_stricmp("OnExecute", szMethod) == 0) {
+    } else if (_stricmp("OnExecute", szMethod) == 0) {
         if (data.FUN_1422b9620(pArgs, nArgs) != 0) {
             int nCommand = data.FUN_1422b8b10();
             CStringW strArg = data.FUN_1422b8f40();
             FUN_141a64ba0(nCommand, strArg);
         }
         return 1;
-    }
-    if (_stricmp("OnStopSkill", szMethod) == 0) {
+    } else if (_stricmp("OnStopSkill", szMethod) == 0) {
         COutPacket pkt(static_cast<int>(SendOp::SetDebugMode), 0);
         pkt.WriteUInt8(4);
         pkt.WriteInt32(m_nNpcId);
@@ -363,14 +359,13 @@ int UINpcControlDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
 void UINpcControlDialog::FUN_141a63770()
 {
     PCBase* pActor = FUN_1403ed2d0()->FUN_141bd1320(m_nNpcId);
-    if (pActor != 0) {
-        CStringW strName = FUN_1401aa6a0(FUN_141092fa0(pActor));
-        int nNpc = FUN_141092fa0(pActor);
-        CStringW strTitle = FUN_1409e8180(L"[{0}] [GameOID : {1}] [npcID : {2}]", strName, m_nNpcId, nNpc);
-        MS2Ptr<ASTextField> spName = FUN_140bb4cf0("m_npcName");
-        if (spName.get() != 0)
-            spName->FUN_1422c4cd0(strTitle);
-    }
+    if (pActor == 0)
+        return;
+    CStringW strName = FUN_1401aa6a0(FUN_141092fa0(pActor));
+    int nNpc = FUN_141092fa0(pActor);
+    CStringW strTitle = FUN_1409e8180(L"[{0}] [GameOID : {1}] [npcID : {2}]", strName, m_nNpcId, nNpc);
+    if (MS2Ptr<ASTextField> spName = FUN_140bb4cf0("m_npcName"))
+        spName->FUN_1422c4cd0(strTitle);
 }
 
 // @0x141a638c0
@@ -382,66 +377,68 @@ void UINpcControlDialog::SetNpcId(int nNpcId)
 // @0x141a638e0
 int UINpcControlDialog::FUN_141a638e0()
 {
-    if (m_30.IsNull() == 0)
-        return FUN_1409c17e0(m_30->Invoke("GetLoopCount"));
-    return 0;
+    if (m_30.IsNull())
+        return 0;
+    return FUN_1409c17e0(m_30->Invoke("GetLoopCount"));
 }
 
 // @0x141a63970
-void UINpcControlDialog::FUN_141a63970(unsigned char nCmd, __int64 nValue)
+void UINpcControlDialog::FUN_141a63970(int nCmd, __int64 nValue)
 {
-    if (m_nNpcId != 0) {
-        COutPacket pkt(static_cast<int>(SendOp::SetDebugMode), 0);
-        pkt.WriteUInt8(4);
-        pkt.WriteInt32(m_nNpcId);
-        pkt.WriteUInt8(nCmd);
-        pkt.WriteInt64(nValue);
-        FUN_140710590(pkt);
-    }
+    if (m_nNpcId == 0)
+        return;
+    COutPacket pkt(static_cast<int>(SendOp::SetDebugMode), 0);
+    pkt.WriteUInt8(4);
+    pkt.WriteInt32(m_nNpcId);
+    pkt.WriteUInt8((unsigned char)nCmd);
+    pkt.WriteInt64(nValue);
+    FUN_140710590(pkt);
 }
 
 // @0x141a63a10
 void UINpcControlDialog::FUN_141a63a10(int nCmd, const CStringW& strArgs)
 {
     int nLoop = FUN_141a638e0();
-    if (0 < nLoop) {
-        Unk_CtlIntVec args;
-        std::vector<Unk_CtlSkill> skills;
+    if (nLoop <= 0)
+        return;
+    Unk_CtlIntVec args;
+    std::vector<Unk_CtlSkill> skills;
+    do {
         FUN_141632630(strArgs, args, L",/[] ");
         int nArgs = (int)args.FUN_1401910d0();
-        if (nArgs < 1) {
+        if (nArgs <= 0) {
             int nKey = nCmd;
             Unk_CtlSkill skill = m_skills[nKey];
             skills.push_back(skill);
-        } else {
-            int i = 0;
-            while (i < nArgs && FUN_141a65420(args, i) && FUN_141a65420(args, i + 1)) {
-                int nId = args.FUN_1404f0a10(i);
-                unsigned short nLevel = *(unsigned short*)&args.FUN_1404f0a10(i + 1);
-                Unk_CtlSkill skill;
-                skill.nId = nId;
-                skill.nLevel = nLevel;
-                skills.push_back(skill);
-                i += 2;
-            }
+            break;
         }
-        int nSkills = (int)skills.size();
-        if (nSkills < 1)
-            return;
-        COutPacket pkt(static_cast<int>(SendOp::SetDebugMode), 0);
-        pkt.WriteUInt8(4);
-        pkt.WriteInt32(m_nNpcId);
-        pkt.WriteUInt8(8);
-        short nLoopShort = (short)nLoop;
-        pkt.WriteInt16(nLoopShort);
-        short nCountShort = (short)nSkills;
-        pkt.WriteInt16(nCountShort);
-        for (int j = 0; j < nSkills; j++) {
-            pkt.WriteInt32(skills[j].nId);
-            pkt.WriteInt32(skills[j].nLevel);
+        for (int i = 0; i < nArgs; i += 2) {
+            if (!FUN_141a65420(args, i))
+                break;
+            if (!FUN_141a65420(args, i + 1))
+                break;
+            int nId = args.FUN_1404f0a10(i);
+            unsigned short nLevel = *(unsigned short*)&args.FUN_1404f0a10(i + 1);
+            Unk_CtlSkill skill;
+            skill.nId = nId;
+            skill.nLevel = nLevel;
+            skills.push_back(skill);
         }
-        FUN_140710590(pkt);
+    } while (0);
+    int nSkills = (int)skills.size();
+    if (nSkills <= 0)
+        return;
+    COutPacket pkt(static_cast<int>(SendOp::SetDebugMode), 0);
+    pkt.WriteUInt8(4);
+    pkt.WriteInt32(m_nNpcId);
+    pkt.WriteUInt8(8);
+    pkt.WriteInt16((short)nLoop);
+    pkt.WriteInt16((short)nSkills);
+    for (int j = 0; j < nSkills; j++) {
+        pkt.WriteInt32(skills[j].nId);
+        pkt.WriteInt32(skills[j].nLevel);
     }
+    FUN_140710590(pkt);
 }
 
 // @0x141a63ce0
@@ -453,61 +450,73 @@ void UINpcControlDialog::FUN_141a63ce0(const CString& strGroup)
     spList->FUN_1422dd1d0();
     if (FUN_140184310(strGroup, "ALL") || FUN_140184310(strGroup, "STAT")) {
         ASObj itemHpPercent(2);
-        itemHpPercent.FUN_1407cbb20("label", FUN_14025e7a0()->FUN_1422b0570(CString("$s_npccontrol_dialog_msg_hp_percent_apply")));
+        itemHpPercent.FUN_1407cbb20("label", FUN_14025e7a0()->FUN_1422b0570("$s_npccontrol_dialog_msg_hp_percent_apply"));
         itemHpPercent.FUN_141a65c70("commandId", 1);
         spList->FUN_1422dd230(itemHpPercent);
         ASObj itemHp(2);
-        itemHp.FUN_1407cbb20("label", FUN_14025e7a0()->FUN_1422b0570(CString("$s_npccontrol_dialog_msg_hp_apply")));
+        itemHp.FUN_1407cbb20("label", FUN_14025e7a0()->FUN_1422b0570("$s_npccontrol_dialog_msg_hp_apply"));
         itemHp.FUN_141a65c70("commandId", 2);
         spList->FUN_1422dd230(itemHp);
         ASObj itemDamage(2);
-        itemDamage.FUN_1407cbb20("label", FUN_14025e7a0()->FUN_1422b0570(CString("$s_npccontrol_dialog_msg_fix_damage")));
+        itemDamage.FUN_1407cbb20("label", FUN_14025e7a0()->FUN_1422b0570("$s_npccontrol_dialog_msg_fix_damage"));
         itemDamage.FUN_141a65c70("commandId", 10);
         spList->FUN_1422dd230(itemDamage);
     }
     if (FUN_140184310(strGroup, "ALL") || FUN_140184310(strGroup, "AI")) {
-        ASObj itemAiOn(2);
-        itemAiOn.FUN_1407cbb20("label", FUN_14025e7a0()->FUN_1422b0570(CString("$s_npccontrol_dialog_msg_ai_on")));
-        itemAiOn.FUN_141a65c70("commandId", 3);
-        spList->FUN_1422dd230(itemAiOn);
-        ASObj itemAiOff(2);
-        itemAiOff.FUN_1407cbb20("label", FUN_14025e7a0()->FUN_1422b0570(CString("$s_npccontrol_dialog_msg_ai_off")));
-        itemAiOff.FUN_141a65c70("commandId", 4);
-        spList->FUN_1422dd230(itemAiOff);
-        ASObj itemTrace(2);
-        itemTrace.FUN_1407cbb20("label", FUN_14025e7a0()->FUN_1422b0570(CString("$s_npccontrol_dialog_msg_trace_ai")));
-        itemTrace.FUN_141a65c70("commandId", 5);
-        spList->FUN_1422dd230(itemTrace);
-        ASObj itemTraceClient(2);
-        itemTraceClient.FUN_1407cbb20("label", FUN_14025e7a0()->FUN_1422b0570(CString("$s_npccontrol_dialog_msg_trace_ai_client")));
-        itemTraceClient.FUN_141a65c70("commandId", 6);
-        spList->FUN_1422dd230(itemTraceClient);
-        ASObj itemBattle(2);
-        itemBattle.FUN_1407cbb20("label", FUN_14025e7a0()->FUN_1422b0570(CString("$s_npccontrol_dialog_msg_battle_setting")));
-        itemBattle.FUN_141a65c70("commandId", 7);
-        spList->FUN_1422dd230(itemBattle);
-        ASObj itemFile(2);
-        itemFile.FUN_1407cbb20("label", FUN_14025e7a0()->FUN_1422b0570(CString("$s_npccontrol_dialog_msg_change_ai_file")));
-        itemFile.FUN_141a65c70("commandId", 0xb);
-        spList->FUN_1422dd230(itemFile);
+        {
+            ASObj itemAiOn(2);
+            itemAiOn.FUN_1407cbb20("label", FUN_14025e7a0()->FUN_1422b0570("$s_npccontrol_dialog_msg_ai_on"));
+            itemAiOn.FUN_141a65c70("commandId", 3);
+            spList->FUN_1422dd230(itemAiOn);
+        }
+        {
+            ASObj itemAiOff(2);
+            itemAiOff.FUN_1407cbb20("label", FUN_14025e7a0()->FUN_1422b0570("$s_npccontrol_dialog_msg_ai_off"));
+            itemAiOff.FUN_141a65c70("commandId", 4);
+            spList->FUN_1422dd230(itemAiOff);
+        }
+        {
+            ASObj itemTrace(2);
+            itemTrace.FUN_1407cbb20("label", FUN_14025e7a0()->FUN_1422b0570("$s_npccontrol_dialog_msg_trace_ai"));
+            itemTrace.FUN_141a65c70("commandId", 5);
+            spList->FUN_1422dd230(itemTrace);
+        }
+        {
+            ASObj itemTraceClient(2);
+            itemTraceClient.FUN_1407cbb20("label", FUN_14025e7a0()->FUN_1422b0570("$s_npccontrol_dialog_msg_trace_ai_client"));
+            itemTraceClient.FUN_141a65c70("commandId", 6);
+            spList->FUN_1422dd230(itemTraceClient);
+        }
+        {
+            ASObj itemBattle(2);
+            itemBattle.FUN_1407cbb20("label", FUN_14025e7a0()->FUN_1422b0570("$s_npccontrol_dialog_msg_battle_setting"));
+            itemBattle.FUN_141a65c70("commandId", 7);
+            spList->FUN_1422dd230(itemBattle);
+        }
+        {
+            ASObj itemFile(2);
+            itemFile.FUN_1407cbb20("label", FUN_14025e7a0()->FUN_1422b0570("$s_npccontrol_dialog_msg_change_ai_file"));
+            itemFile.FUN_141a65c70("commandId", 0xb);
+            spList->FUN_1422dd230(itemFile);
+        }
     }
     if (FUN_140184310(strGroup, "ALL") || FUN_140184310(strGroup, "ADDITIONAL")) {
         ASObj itemAdd(2);
-        itemAdd.FUN_1407cbb20("label", FUN_14025e7a0()->FUN_1422b0570(CString("$s_npccontrol_dialog_msg_add_additional")));
+        itemAdd.FUN_1407cbb20("label", FUN_14025e7a0()->FUN_1422b0570("$s_npccontrol_dialog_msg_add_additional"));
         itemAdd.FUN_141a65c70("commandId", 0xc);
         spList->FUN_1422dd230(itemAdd);
         ASObj itemRemove(2);
-        itemRemove.FUN_1407cbb20("label", FUN_14025e7a0()->FUN_1422b0570(CString("$s_npccontrol_dialog_msg_remove_additional")));
+        itemRemove.FUN_1407cbb20("label", FUN_14025e7a0()->FUN_1422b0570("$s_npccontrol_dialog_msg_remove_additional"));
         itemRemove.FUN_141a65c70("commandId", 0xd);
         spList->FUN_1422dd230(itemRemove);
         ASObj itemCurrent(2);
-        itemCurrent.FUN_1407cbb20("label", FUN_14025e7a0()->FUN_1422b0570(CString("$s_npccontrol_dialog_msg_current_additional")));
+        itemCurrent.FUN_1407cbb20("label", FUN_14025e7a0()->FUN_1422b0570("$s_npccontrol_dialog_msg_current_additional"));
         itemCurrent.FUN_141a65c70("commandId", 0xe);
         spList->FUN_1422dd230(itemCurrent);
     }
     if (FUN_140184310(strGroup, "ALL") || FUN_140184310(strGroup, "SKILL")) {
         std::map<int, Unk_CtlSkill>::iterator it = m_skills.begin();
-        std::map<int, Unk_CtlSkill>::iterator itEnd = m_skills.end();
+        std::map<int, Unk_CtlSkill>::const_iterator itEnd = m_skills.end();
         for (; it != itEnd; ++it) {
             int nCommand = it->first;
             const Unk_CtlSkill* pSkill = &it->second;
@@ -522,11 +531,11 @@ void UINpcControlDialog::FUN_141a63ce0(const CString& strGroup)
     }
     if (FUN_140184310(strGroup, "ALL") || FUN_140184310(strGroup, "ETC")) {
         ASObj itemAssist(2);
-        itemAssist.FUN_1407cbb20("label", FUN_14025e7a0()->FUN_1422b0570(CString("$s_npccontrol_dialog_msg_assist")));
+        itemAssist.FUN_1407cbb20("label", FUN_14025e7a0()->FUN_1422b0570("$s_npccontrol_dialog_msg_assist"));
         itemAssist.FUN_141a65c70("commandId", 8);
         spList->FUN_1422dd230(itemAssist);
         ASObj itemExtra(2);
-        itemExtra.FUN_1407cbb20("label", FUN_14025e7a0()->FUN_1422b0570(CString("$s_npccontrol_dialog_msg_extra")));
+        itemExtra.FUN_1407cbb20("label", FUN_14025e7a0()->FUN_1422b0570("$s_npccontrol_dialog_msg_extra"));
         itemExtra.FUN_141a65c70("commandId", 9);
         spList->FUN_1422dd230(itemExtra);
     }
@@ -538,7 +547,7 @@ void UINpcControlDialog::FUN_141a64ba0(int nCommand, const CStringW& strArg)
 {
     __int64 nArg = FUN_140718320(strArg);
     if (nCommand == 1) {
-        if (0 < nArg && nArg < 0x65)
+        if (0 < nArg && nArg <= 0x64)
             FUN_141a63970(1, nArg);
     } else if (nCommand == 2) {
         if (0 < nArg)
@@ -550,10 +559,9 @@ void UINpcControlDialog::FUN_141a64ba0(int nCommand, const CStringW& strArg)
     } else if (nCommand == 5) {
         FUN_141a63970(6, 0);
     } else if (nCommand == 6) {
-        if (m_spAi.get() != 0) {
+        if (m_spAi) {
             m_spAi->RequestTrace();
-            HWND hWnd = m_spAi->GetSafeHwnd();
-            SendMessageA(hWnd, 0x10, 0, 0);
+            SendMessageA(m_spAi->GetSafeHwnd(), 0x10, 0, 0);
             m_spAi.AssignRaw(0);
         }
         FUN_141a63970(7, 1);
@@ -563,44 +571,42 @@ void UINpcControlDialog::FUN_141a64ba0(int nCommand, const CStringW& strArg)
         FUN_141a63970(10, 0);
     } else if (nCommand == 9) {
         FUN_141a63970(0xb, 0);
-    } else if (nCommand != 10) {
-        if (nCommand == 0xc) {
-            if (m_nNpcId != 0) {
-                Unk_NpcFileList parts;
-                CStringW strText(strArg);
-                FUN_140988d60(strText, parts, L",");
-                int nAdditional;
-                short nLevel;
-                int nExtra;
-                nAdditional = 0;
-                nLevel = 1;
-                nExtra = 0;
-                if (parts.FUN_14041af10() != 0)
-                    nAdditional = FUN_140718200(parts.FUN_1405e99b0(0));
-                if (1 < parts.FUN_14041af10())
-                    nLevel = FUN_140718140(parts.FUN_1405e99b0(1));
-                if (2 < parts.FUN_14041af10())
-                    nExtra = FUN_1407182c0(parts.FUN_1405e99b0(2));
-                if (nAdditional == 0)
-                    return;
-                COutPacket pkt(static_cast<int>(SendOp::SetDebugMode), 0);
-                pkt.WriteUInt8(4);
-                pkt.WriteInt32(m_nNpcId);
-                pkt.WriteUInt8(0xe);
-                pkt.WriteInt32(nAdditional);
-                pkt.WriteInt32(nLevel);
-                pkt.WriteInt32(nExtra);
-                FUN_140710590(pkt);
-            }
-        } else if (nCommand == 0xd) {
-            FUN_141a63970(0xf, nArg);
-        } else if (nCommand == 0xe) {
-            FUN_141a63970(0x10, 0);
-        } else if (nCommand == 0xb) {
-            FUN_141a65000();
-        } else if (nCommand / 1000 == 1) {
-            FUN_141a63a10(nCommand, strArg);
-        }
+    } else if (nCommand == 10) {
+    } else if (nCommand == 0xc) {
+        if (m_nNpcId == 0)
+            return;
+        Unk_NpcFileList parts;
+        FUN_140988d60(const_cast<CStringW&>(strArg), parts, L",");
+        int nAdditional;
+        unsigned short nLevel;
+        int nExtra;
+        nAdditional = 0;
+        nLevel = 1;
+        nExtra = 0;
+        if (parts.FUN_14041af10() >= 1)
+            nAdditional = FUN_140718200(parts.FUN_1405e99b0(0));
+        if (parts.FUN_14041af10() >= 2)
+            nLevel = FUN_140718140(parts.FUN_1405e99b0(1));
+        if (parts.FUN_14041af10() >= 3)
+            nExtra = FUN_1407182c0(parts.FUN_1405e99b0(2));
+        if (nAdditional == 0)
+            return;
+        COutPacket pkt(static_cast<int>(SendOp::SetDebugMode), 0);
+        pkt.WriteUInt8(4);
+        pkt.WriteInt32(m_nNpcId);
+        pkt.WriteUInt8(0xe);
+        pkt.WriteInt32(nAdditional);
+        pkt.WriteInt32(nLevel);
+        pkt.WriteInt32(nExtra);
+        FUN_140710590(pkt);
+    } else if (nCommand == 0xd) {
+        FUN_141a63970(0xf, nArg);
+    } else if (nCommand == 0xe) {
+        FUN_141a63970(0x10, 0);
+    } else if (nCommand == 0xb) {
+        FUN_141a65000();
+    } else if (nCommand / 1000 == 1) {
+        FUN_141a63a10(nCommand, strArg);
     }
 }
 
@@ -609,9 +615,7 @@ void UINpcControlDialog::FUN_141a65000()
 {
     if (PathIsDirectoryW(L"./Data/Xml/AI") == 0)
         CreateDirectoryW(L"./Data/Xml/AI", 0);
-    CStringW strEmpty(L"");
-    CStringW strDir(L"./Data/Xml/AI");
-    CStringW strFile = FUN_141b6e360(FUN_1418fe4e0(strDir), L"xml Files (*.xml)", strEmpty);
+    CStringW strFile = FUN_141b6e360(FUN_1418fe4e0(L"./Data/Xml/AI"), L"xml Files (*.xml)", L"");
     if (strFile.IsEmpty())
         return;
     if (m_nNpcId == 0)

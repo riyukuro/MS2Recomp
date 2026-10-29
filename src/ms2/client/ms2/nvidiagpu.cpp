@@ -11,6 +11,8 @@
 struct Unk_NvMemEntry { int m_nValue; int m_nPad; };
 struct Unk_NvMemInfo { unsigned int m_nVersion; int m_nPad[2]; Unk_NvMemEntry m_aEntry[8]; };
 struct Unk_NvClockInfo { unsigned int m_nVersion; int m_aValue[5]; };                                  // 0x18 bytes
+struct Unk_NvPStateInfo { unsigned int m_nVersion; int m_aValue[0x22]; };                             // 0x8c bytes
+struct Unk_NvDisplayInfo { unsigned int m_nVersion; int m_aValue[0x120]; };                           // 0x484 bytes
 struct Unk_NvGpuMemory { int m_nCount; int m_aHandle[4]; unsigned int m_nTotal; int m_nFree; };
 
 int FUN_14160ccd0(NvidiaGPU* pGpu, int nIndex, Unk_NvGpuMemory* pOut);
@@ -34,17 +36,18 @@ NvidiaGPU::~NvidiaGPU()
 }
 
 // @0x14160c770
-// MS2-FUNCTIONAL: the exe keeps the nvapi pointers in a different temporary layout (frame/temporary differences)
 int NvidiaGPU::vfunc_1()
 {
     int nResult = 0;
+    int nOk = 0;
+    int i = 0;
+    int nRet = 0;
     m_hModule = LoadLibraryA("nvapi.dll");
     if (m_hModule != 0)
     {
         m_pfnQueryInterface = (Unk_NvQueryInterface)GetProcAddress(m_hModule, "nvapi_QueryInterface");
         if (m_pfnQueryInterface != 0)
         {
-            
             m_pfn10 = (decltype(m_pfn10))m_pfnQueryInterface(0x150e828);
             m_pfn18 = (decltype(m_pfn18))m_pfnQueryInterface(0xceee8e9f);
             m_pfn20 = (decltype(m_pfn20))m_pfnQueryInterface(0xe3640a56);
@@ -61,22 +64,26 @@ int NvidiaGPU::vfunc_1()
             m_pfn78 = (decltype(m_pfn78))m_pfnQueryInterface(0xf951a4d1);
             m_pfn80 = (decltype(m_pfn80))m_pfnQueryInterface(0x1053fa5);
             m_pfn88 = (decltype(m_pfn88))m_pfnQueryInterface(0x2ddfb66e);
-            if (m_pfn10 != 0 && m_pfn10() == 0)
+            if (m_pfn10 != 0)
             {
-                m_pGpus = (Unk_NvGpu*)operator new[](0x8c0);
-                memset(m_pGpus, 0, 0x8c0);
-                if (FUN_14160ce50(this) > 0)
+                nRet = m_pfn10();
+                if (nRet == 0)
                 {
-                    for (int i = 0; i < m_nGpus; i++)
+                    m_pGpus = new Unk_NvGpu[4];
+                    memset(m_pGpus, 0, 0x8c0);
+                    nRet = FUN_14160ce50(this);
+                    do { if (!(nRet > 0)) goto LExit; } while (0);
+                    for (i = 0; i < m_nGpus; i++)
                     {
-                        if (FUN_14160cf10(this, m_pGpus[i].m_nHandle, &m_pGpus[i]) == 0)
-                            return 0;
+                        nOk = FUN_14160cf10(this, m_pGpus[i].m_nHandle, &m_pGpus[i]);
+                        do { if (!(nOk != 0)) goto LExit; } while (0);
                     }
                     nResult = 1;
                 }
             }
         }
     }
+LExit:
     return nResult;
 }
 
@@ -133,33 +140,36 @@ int FUN_14160ccb0(NvidiaGPU* pGpu)
 }
 
 // @0x14160ccd0
-// MS2-FUNCTIONAL: the exe wraps the lookup in a do/while(0)-style break chain (extra jumps)
 int FUN_14160ccd0(NvidiaGPU* pGpu, int nIndex, Unk_NvGpuMemory* pOut)
 {
     int nResult = 0;
+    int i = 0;
     if (nIndex < pGpu->m_nGpus && pGpu->m_nGpus != 0)
     {
         pOut->m_nCount = pGpu->m_pGpus[nIndex].m_nDisplays;
-        for (int i = 0; i < pOut->m_nCount; i++)
+        for (i = 0; i < pOut->m_nCount; i++)
             pOut->m_aHandle[i] = pGpu->m_pGpus[nIndex].m_aDisplay[i].m_nValue;
         nResult = FUN_14160d1d0(pGpu, pGpu->m_pGpus[nIndex].m_nHandle, &pGpu->m_pGpus[nIndex]);
-        if (nResult != 0)
+        do
         {
-            pOut->m_nTotal = pGpu->m_pGpus[nIndex].m_n8;
-            pOut->m_nFree = pGpu->m_pGpus[nIndex].m_nC;
-        }
+            if (nResult == 0)
+                goto Exit;
+        } while (0);
+        pOut->m_nTotal = pGpu->m_pGpus[nIndex].m_n8;
+        pOut->m_nFree = pGpu->m_pGpus[nIndex].m_nC;
     }
+Exit:
     return nResult;
 }
 
 // @0x14160ce50
-// MS2-FUNCTIONAL: the exe keeps a pre-initialised extra local
 int FUN_14160ce50(NvidiaGPU* pGpu)
 {
+    int i = 0;
     pGpu->m_nGpus = 0;
     if (pGpu->m_pfn28 != 0)
     {
-        for (int i = 0; i < 4; i++)
+        for (i = 0; i < 4; i++)
         {
             int nHandle;
             int nRet = pGpu->m_pfn28(i, &nHandle);
@@ -174,21 +184,22 @@ int FUN_14160ce50(NvidiaGPU* pGpu)
 }
 
 // @0x14160cf10
-// MS2-FUNCTIONAL: the exe frame has extra temporaries for the new[]/delete[] pointer
 int FUN_14160cf10(NvidiaGPU* pGpu, int nHandle, Unk_NvGpu* pRec)
 {
     int nResult = 0;
+    int* pBuf = 0;
+    int i = 0;
     int nCount = 0;
     if (pGpu->m_pfn30 != 0)
     {
-        int* pBuf = (int*)operator new[](0x100);
-        int nRet = pGpu->m_pfn30(nHandle, pBuf, &nCount, 0, 0);
+        pBuf = new int[0x40];
+        int nRet = pGpu->m_pfn30(nHandle, pBuf, &nCount);
         if (nRet == 0)
         {
             int nMax = 4;
             int nLimit = nCount;
             pRec->m_nDisplays = *FUN_14160d380(&nLimit, &nMax);
-            for (int i = 0; i < pRec->m_nDisplays; i++)
+            for (i = 0; i < pRec->m_nDisplays; i++)
             {
                 pRec->m_aDisplay[i].m_nHandle = pBuf[i];
                 if (pGpu->m_pfn18 != 0 && pBuf[i] != 0)
@@ -196,44 +207,47 @@ int FUN_14160cf10(NvidiaGPU* pGpu, int nHandle, Unk_NvGpu* pRec)
             }
             nResult = 1;
         }
-        operator delete[](pBuf);
+        delete[] pBuf;
+        pBuf = 0;
     }
     return nResult;
 }
 
 // @0x14160d090
-// MS2-FUNCTIONAL: the exe returns int, uses a class-typed new/delete (sized delete) and a different record view
-bool FUN_14160d090(NvidiaGPU* pGpu, void* pUnused, Unk_NvGpu* pRec)
+int FUN_14160d090(NvidiaGPU* pGpu, int nUnused, Unk_NvGpu* pRec)
 {
-    bool bOk = false;
+    int nResult = 0;
+    int i = 0;
     int nRet = -1;
+    Unk_NvPStateInfo* pInfo = 0;
     if (pGpu->m_pfn58 != 0)
     {
-        unsigned int* pInfo = (unsigned int*)operator new(0x8c);
-        *pInfo = 0x1008c;
-        for (int i = 0; i < pRec->m_nDisplays; i++)
+        pInfo = new Unk_NvPStateInfo;
+        pInfo->m_nVersion = 0x1008c;
+        for (i = 0; i < pRec->m_nDisplays; i++)
         {
             nRet = pGpu->m_pfn58(pRec->m_aDisplay[i].m_nHandle, pInfo);
             if (nRet == 0)
-                pRec->m_aDisplay[i].m_nValue = pInfo[3];
+                pRec->m_aDisplay[i].m_nValue = pInfo->m_aValue[2];
         }
-        operator delete(pInfo);
-        bOk = nRet == 0;
+        delete pInfo;
+        pInfo = 0;
+        nResult = nRet == 0 ? 1 : 0;
     }
-    return bOk;
+    return nResult;
 }
 
 // @0x14160d1d0
 int FUN_14160d1d0(NvidiaGPU* pGpu, int nHandle, Unk_NvGpu* pRec)
 {
-    int nUnused;
+    int nRet;
     int nResult = 0;
-    nUnused = -1;
+    nRet = -1;
     if (pGpu->m_pfn70 != 0)
     {
         Unk_NvClockInfo info;
         info.m_nVersion = 0x20018;
-        int nRet = pGpu->m_pfn70(nHandle, &info);
+        nRet = pGpu->m_pfn70(nHandle, &info);
         if (nRet == 0)
         {
             pRec->m_n8 = info.m_aValue[0];
@@ -245,21 +259,24 @@ int FUN_14160d1d0(NvidiaGPU* pGpu, int nHandle, Unk_NvGpu* pRec)
 }
 
 // @0x14160d280
-// MS2-FUNCTIONAL: the exe returns int, uses a class-typed new/delete (sized delete) and a different record view
-bool FUN_14160d280(NvidiaGPU* pGpu, void* pUnused, Unk_NvGpu* pRec)
+// MS2-BEHAVIOUR: the exe checks m_pfn58 but calls m_pfn48
+int FUN_14160d280(NvidiaGPU* pGpu, int nUnused, Unk_NvGpu* pRec)
 {
-    bool bOk = false;
+    int nResult = 0;
+    int i = 0;
     int nRet = -1;
+    Unk_NvDisplayInfo* pInfo = 0;
     if (pGpu->m_pfn58 != 0)
     {
-        unsigned int* pInfo = (unsigned int*)operator new(0x484);
-        *pInfo = 0x20484;
-        for (int i = 0; i < pRec->m_nDisplays; i++)
+        pInfo = new Unk_NvDisplayInfo;
+        pInfo->m_nVersion = 0x20484;
+        for (i = 0; i < pRec->m_nDisplays; i++)
             nRet = pGpu->m_pfn48(pRec->m_aDisplay[i].m_nHandle, pInfo);
-        operator delete(pInfo);
-        bOk = nRet == 0;
+        delete pInfo;
+        pInfo = 0;
+        nResult = nRet == 0 ? 1 : 0;
     }
-    return bOk;
+    return nResult;
 }
 
 // @0x14160d380 (std::min<int>)

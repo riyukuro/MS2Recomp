@@ -229,7 +229,8 @@ void UIItemPreviewDialog::FUN_1412d62d0()
 }
 MS2_REPLACE_METHOD(0x1412D62D0, UIItemPreviewDialog, FUN_1412d62d0, 83, 0x87029718);
 
-// MS2-FUNCTIONAL: the exe loads the item through rcx before rdx for the slot fill call (one extra mov); no source form found
+ASSlot* FUN_1412d6c80(const MS2Ptr<ASSlot>& p);   // folded MS2Ptr<ASSlot>::operator-> copy
+
 // @0x1412d6330
 void UIItemPreviewDialog::FUN_1412d6330(MS2Ptr<CItem> spItem)
 {
@@ -239,12 +240,10 @@ void UIItemPreviewDialog::FUN_1412d6330(MS2Ptr<CItem> spItem)
     if (spOutfit.get() != 0) spView = spOutfit->FUN_140d3cf00();
     MS2Ptr<ASSlot> spSlot(new ASSlot(2));
     if (spSlot.get() != 0) {
-        CItem* pItem;
         void* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
-        pItem = spItem.get();
-        spSlot->FUN_1409c3860(pItem, pPlayer, 0xd01);
+        spSlot->FUN_1409c3860(spItem.get(), pPlayer, 0xd01);
     }
-    MS2Ptr<ASEquipIcon> spIcon = m_equip->FUN_140e2a090(0x81, spItem, MS2Ptr<AScript>(spSlot.operator->()), MS2Ptr<Unk_EquipOutfit>(0));
+    MS2Ptr<ASEquipIcon> spIcon = m_equip->FUN_140e2a090(0x81, spItem, MS2Ptr<AScript>(FUN_1412d6c80(spSlot)), MS2Ptr<Unk_EquipOutfit>(0));
     if (spIcon.get() != 0) {
         spIcon->FUN_1409b9240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemPreviewDialog::FUN_1412d66e0), 0);
     }

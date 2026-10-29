@@ -1702,24 +1702,22 @@ void CUgcItemMusicNote::CopyFrom(const CUgcItemMusicNote* pOther)
     m_info.m_str18 = pOther->m_info.m_str18;
 }
 
-// MS2-FUNCTIONAL: early-return layout differs
 // @0x140893bb0
 void CUgcItemMusicNote::FUN_140893bb0(const void* pSource, __int64 nId)
 {
     Clear();
-    const Unk_MusicSrcView* pSrc = (const Unk_MusicSrcView*)pSource;
-    if (pSrc == 0)
+    if (pSource == 0)
         return;
     m_n18 = nId;
-    m_n20 = pSrc->m_n18;
-    m_n24 = pSrc->m_n1c;
-    m_str28 = pSrc->m_str20;
-    m_str30 = pSrc->m_str28;
-    m_str38 = pSrc->m_str30;
-    m_info.m_n00 = pSrc->m_n50;
-    m_info.m_n08 = pSrc->m_n58;
-    m_info.m_n10 = pSrc->m_n60;
-    m_info.m_str18 = pSrc->m_str68;
+    m_n20 = ((const Unk_MusicSrcView*)pSource)->m_n18;
+    m_n24 = ((const Unk_MusicSrcView*)pSource)->m_n1c;
+    m_str28 = ((const Unk_MusicSrcView*)pSource)->m_str20;
+    m_str30 = ((const Unk_MusicSrcView*)pSource)->m_str28;
+    m_str38 = ((const Unk_MusicSrcView*)pSource)->m_str30;
+    m_info.m_n00 = ((const Unk_MusicSrcView*)pSource)->m_n50;
+    m_info.m_n08 = ((const Unk_MusicSrcView*)pSource)->m_n58;
+    m_info.m_n10 = ((const Unk_MusicSrcView*)pSource)->m_n60;
+    m_info.m_str18 = ((const Unk_MusicSrcView*)pSource)->m_str68;
 }
 
 // @0x140893cc0
@@ -2632,7 +2630,6 @@ void CUgcGetCostTable::SetTable(const CostMap& src)
     }
 }
 
-// MS2-FUNCTIONAL: map accessor call order / this materialisation
 // @0x1408981a0
 void CUgcGetCostTable::GetTable(CostMap& dst)
 {
@@ -2641,19 +2638,18 @@ void CUgcGetCostTable::GetTable(CostMap& dst)
         dst.RemoveAll();
         for (POSITION pos = m_table.GetHeadPosition(); pos != NULL; m_table.GetNext(pos))
         {
-            const int* pnPercent = &m_table.GetValueAt(pos);
-            dst.SetAt(m_table.GetKeyAt(pos), *pnPercent);
+            dst.SetAt(m_table.GetKeyAt(pos), m_table.GetValueAt(pos));
         }
     }
 }
 
-// MS2-FUNCTIONAL: stack frame 0x10 larger than the exe
 // @0x140898280
 void CUgcGetCostTable::Write(COutputStream& stream)
 {
     CostMap table(10);
     GetTable(table);
-    stream.WriteInt32((int)table.GetCount());
+    int nCount = (int)table.GetCount();
+    stream.WriteInt32(nCount);
     for (POSITION pos = table.GetHeadPosition(); pos != NULL; table.GetNext(pos))
     {
         __int64 nKey = table.GetKeyAt(pos);
@@ -2677,7 +2673,6 @@ void CUgcGetCostTable::Read(CInPacket& packet)
     SetTable(table);
 }
 
-// MS2-FUNCTIONAL: stack frame and loop shape differ from the exe
 // Blueprint fee currency selector (unit-local view of the fee object; its owner unit is uiitemblueprintcreatedialog.cpp)
 enum Unk_BpCurrency { Unk_BpCurrency_Default = 1 };
 class Unk_140166410_Opt { public: bool FUN_14036d710(int); };
@@ -2714,44 +2709,39 @@ bool CUgcGetCostTable::FUN_1408984b0(__int64 nStart, __int64 nLength, CostList& 
     GetTable(table);
     POSITION posLast = NULL;
     __int64 nEnd = nStart + nLength;
-    POSITION pos = table.GetHeadPosition();
-    while (pos != NULL)
+    for (POSITION pos = table.GetHeadPosition(); pos != NULL; table.GetNext(pos))
     {
         __int64 nKey = table.GetKeyAt(pos);
         if (nEnd < nKey)
         {
-            posLast = pos;
+            posLast = (POSITION)table.GetPrev(pos);      // the node at pos (pos steps back)
             break;
         }
         posLast = pos;
-        table.GetNext(pos);
     }
     if (posLast != NULL)
     {
-        POSITION posCur = posLast;
-        __int64 nLeft = nLength;
-        while (posCur != NULL)
+        for (POSITION posCur = posLast; posCur != NULL; table.GetPrev(posCur))
         {
             __int64 nKey = table.GetKeyAt(posCur);
-            if (nKey <= nEnd)
+            if (nEnd >= nKey)
             {
                 __int64 nSpan = nEnd - nKey;
-                if (nLeft < nSpan)
-                    nSpan = nLeft;
-                __int64 nPart = nSpan;
+                nSpan = nLength < nSpan ? nLength : nSpan;
                 int nPercent = table.GetValueAt(posCur);
-                MS2Ptr<TUgcGetCostInfo> spInfo(new TUgcGetCostInfo);
-                if (spInfo.get() != 0)
                 {
-                    spInfo->FUN_140897f30(nPart, nPercent);
-                    out.Add(spInfo);
+                    MS2Ptr<TUgcGetCostInfo> spInfo(new TUgcGetCostInfo);
+                    if (spInfo.get() != 0)
+                    {
+                        spInfo->FUN_140897f30(nSpan, nPercent);
+                        out.Add(spInfo);
+                    }
                 }
-                nEnd -= nPart;
-                nLeft -= nPart;
-                if (nLeft < 1)
+                nEnd -= nSpan;
+                nLength -= nSpan;
+                if (nLength <= 0)
                     return true;
             }
-            table.GetPrev(posCur);
         }
     }
     return true;

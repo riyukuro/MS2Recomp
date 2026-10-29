@@ -56,7 +56,6 @@ ChangeJobData::~ChangeJobData()
 }
 
 // @0x1401d6550
-// MS2-FUNCTIONAL: the skill id Add() calls pass the by-value argument through ecx (mov ecx,[n]; mov edx,ecx); no source form found
 void CChangeJobTable::Load()
 {
     if (!FUN_140166410()->FUN_14036d570(0xca))
@@ -99,8 +98,7 @@ void CChangeJobTable::Load()
         FUN_14015f050(strSkills1, tokens1, ",");
         for (size_t i = 0; i < tokens1.GetCount(); i++)
         {
-            int nSkillId = atoi(tokens1[i]);
-            spData->m_skills1.Add(nSkillId);
+            spData->m_skills1.Add(atoi(tokens1[i]));
         }
         ATL::CAtlArray<CString> tokens2;
         CString strSkills2;
@@ -108,8 +106,7 @@ void CChangeJobTable::Load()
         FUN_14015f050(strSkills2, tokens2, ",");
         for (size_t i = 0; i < tokens2.GetCount(); i++)
         {
-            int nSkillId = atoi(tokens2[i]);
-            spData->m_skills2.Add(nSkillId);
+            spData->m_skills2.Add(atoi(tokens2[i]));
         }
         m_map.SetAt(spData->m_nSubJobCode, spData);
     }

@@ -99,7 +99,7 @@ public:
     void FUN_141863260();                           // run the next camera step
     void FUN_141863340(const ATL::CAtlArray<int>& aObjects, int bEnd);
     void FUN_141863460(float fFade);
-    void FUN_141863630(int nId, char bAdd, CStringA strName);
+    void FUN_141863630(int nId, bool bAdd, CStringA strName);
     bool FUN_1418637a0(const unsigned& rModel, std::vector<int>& rIds);
     bool FUN_1418638d0(egf::Entity* pEntity);   // is the entity inside a mesh trigger object
     void FUN_141863a90(CInPacket* pEvent, bool bSkipFx);

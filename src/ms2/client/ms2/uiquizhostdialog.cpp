@@ -13,6 +13,7 @@
 
 #include "ms2/placeholder/asdata.h"
 #include "ms2/placeholder/asdisplayobject.h"
+#include "ms2/placeholder/asbutton.h"
 #include "ms2/placeholder/coutpacket.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
@@ -32,25 +33,10 @@ public:
 // The free functions below reach the dialog's protected AS pointer (UISwfEntity::m_30 at +0x30) through this view.
 struct Unk_QhDialogAS { char m_pad_00[0x30]; MS2Ptr<AScript> m_30; };
 
-// A child of the movie (a button): handle at +8, the dtor sits at 0x140acd6e0.
-class Unk_QhButton : public ASDisplayObject
-{
-public:
-    void FUN_1422c1fe0(int bEnabled);
-};
-class Unk_QhHandle
-{
-public:
-    Unk_QhButton* FUN_140acd9c0();
-    Unk_QhButton* FUN_140acd9e0();
-    void FUN_140acd6e0();
-    // 0x10 bytes in the exe (MS2Ptr-like; FUN_140bb4b10 returns it by sret through ctor 0x140acd3b0, +8 = the pointer)
-    void* m_pad[2];
-};
 class Unk_QhMovieEntity : public UIDialog
 {
 public:
-    Unk_QhHandle FUN_140bb4b10(const CString& strName);         // child lookup
+    MS2Ptr<ASButton> FUN_140bb4b10(const CString& strName);     // GetChild<ASButton>
 };
 
 void FUN_140710590(COutPacket& packet);                         // 0x140710590 send the packet
@@ -63,6 +49,11 @@ UIQuizHostDialog::UIQuizHostDialog()
 {
     m_nRound = 1;
     FUN_141925e70(1, 1);
+}
+
+// @0x140e7dc90
+UIQuizHostDialog::~UIQuizHostDialog()
+{
 }
 
 // @0x140e7dcd0
@@ -105,8 +96,7 @@ int UIQuizHostDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
         if (data.FUN_1422b9620(pArgs, nArgs) != 0)
             FUN_140e7e160(this, data.FUN_1422b8f40());
         return 1;
-    }
-    if (_stricmp("OnFinishEvent", szMethod) == 0)
+    } else if (_stricmp("OnFinishEvent", szMethod) == 0)
         FUN_140e7e220(this);
     return 0;
 }
@@ -140,10 +130,8 @@ void FUN_140e7e030(UIQuizHostDialog* pDialog, bool bEnable)
 // @0x140e7e0b0
 void FUN_140e7e0b0(UIQuizHostDialog* pDialog, bool bEnable)
 {
-    Unk_QhHandle hButton = static_cast<Unk_QhMovieEntity*>(static_cast<UIDialog*>(pDialog))->FUN_140bb4b10("m_btnEventFinish");
-    if (hButton.FUN_140acd9c0() != 0)
-        hButton.FUN_140acd9e0()->FUN_1422c1fe0(bEnable);
-    hButton.FUN_140acd6e0();
+    if (MS2Ptr<ASButton> spButton = static_cast<Unk_QhMovieEntity*>(static_cast<UIDialog*>(pDialog))->FUN_140bb4b10("m_btnEventFinish"))
+        spButton->FUN_1422c1fe0(bEnable);
 }
 
 // @0x140e7e160

@@ -119,8 +119,8 @@ CString FUN_14016a5c0(const char* pszName, int);
 class Unk_ElemArray
 {
 public:
-    void FUN_140163e20();                                           // ctor
-    void FUN_1401644e0();                                           // dtor
+    Unk_ElemArray();                                                // 0x140163e20
+    ~Unk_ElemArray();                                               // 0x1401644e0
     unsigned __int64 FUN_14016d900();                               // size
     Unk_ScriptXmlNode*& FUN_140164a30(unsigned __int64 n);          // operator[]
     void *m_a, *m_b, *m_c;
@@ -205,8 +205,7 @@ void CTalkScript::Serialize(COutputStream* out)
     out->WriteInt32(m_npcId);
     out->WriteUInt8((unsigned char)m_popupState);
     out->WriteInt32(m_popupProp);
-    int randomPick = m_randomPick != 0 ? 1 : 0;
-    out->WriteUInt8(randomPick);
+    out->WriteUInt8(m_randomPick != 0 ? 1 : 0);
     out->WriteInt32((int)m_contents.GetCount());
     for (size_t i = 0; i < m_contents.GetCount(); i++)
         m_contents[i]->vfunc_5(*out);
@@ -228,11 +227,15 @@ void CTalkScript::Deserialize(CInPacket& in)
     for (int i = 0; i < count; i++)
     {
         Unk_TalkContentPtr<CScriptContent> content(0);
-        unsigned char type = in.ReadUInt8();
-        if (type == 0)
-            content = new CCinematicContent();
-        else if (type == 1)
+        int nType = in.ReadUInt8();
+        switch (nType) {
+        case 1:
             content = new CChatballonContent();
+            break;
+        case 0:
+            content = new CCinematicContent();
+            break;
+        }
         content->vfunc_6(reinterpret_cast<CByteBuffer&>(in));    // same input stream at +8
         m_contents.Add(content);
     }
@@ -257,101 +260,100 @@ int FUN_140855cd0(unsigned char nFlags)
 }
 
 // @0x140857330
-// MS2-FUNCTIONAL: calls into ATL/TPtr COMDATs owned by other units resolve to different targets and the hand-written control flow differs in the large body; permuter lane
 TalkArrayPtr FUN_140857330(int nNpcId)
 {
     CheckValid();
     TalkArrayPtr result(0);
-    Unk_LockGuard guard(s_lock);
-    if (!guard && s_npcTalks.Lookup(nNpcId, result))
+    if (Unk_LockGuard guard = s_lock) {} else
     {
-        bool bChanged = false;
-        for (unsigned i = 0; i < s_npcFiles.GetCount(); i++)
+        if (s_npcTalks.Lookup(nNpcId, result))
         {
-            if (FUN_1401d1320(s_npcFiles[i].get()))
-            {
-                bChanged = true;
-                break;
-            }
-        }
-        if (bChanged)
-        {
-            ATL::CAtlArray<CString> paths;
+            BOOL bChanged = FALSE;
             for (unsigned i = 0; i < s_npcFiles.GetCount(); i++)
-                paths.Add(*s_npcFiles[i]->FUN_1401d1140());
-            s_npcFiles.RemoveAll();
-            s_npcTalks.RemoveAll();
-            s_npcAlt.RemoveAll();
-            for (int k = 0; k < 2; k++)
-                s_pick[k].RemoveAll();
-            for (unsigned i = 0; i < paths.GetCount(); i++)
-                FUN_140858440(paths[i]);
-            if (!s_npcTalks.Lookup(nNpcId, result))
-                return TalkArrayPtr(0);
+            {
+                if (FUN_1401d1320(s_npcFiles[i].get()))
+                {
+                    bChanged = TRUE;
+                    break;
+                }
+            }
+            if (bChanged)
+            {
+                ATL::CAtlArray<CString> paths;
+                for (unsigned i = 0; i < s_npcFiles.GetCount(); i++)
+                    paths.Add(*s_npcFiles[i]->FUN_1401d1140());
+                s_npcFiles.RemoveAll();
+                s_npcTalks.RemoveAll();
+                s_npcAlt.RemoveAll();
+                for (int k = 0; k < 2; k++)
+                    s_pick[k].RemoveAll();
+                for (unsigned i = 0; i < paths.GetCount(); i++)
+                    FUN_140858440(paths[i]);
+                if (!s_npcTalks.Lookup(nNpcId, result))
+                    return TalkArrayPtr(0);
+            }
+            return result;
         }
-        return result;
     }
     return TalkArrayPtr(0);
 }
 
 // @0x140857660
-// MS2-FUNCTIONAL: calls into ATL/TPtr COMDATs owned by other units resolve to different targets and the hand-written control flow differs in the large body; permuter lane
 TalkArrayPtr FUN_140857660(int nNpcId)
 {
     CheckValid();
     TalkArrayPtr result(0);
-    Unk_LockGuard guard(s_lock);
-    if (!guard && s_npcAlt.Lookup(nNpcId, result))
+    if (Unk_LockGuard guard = s_lock) {} else
     {
-        bool bChanged = false;
-        for (unsigned i = 0; i < s_npcFiles.GetCount(); i++)
+        if (s_npcAlt.Lookup(nNpcId, result))
         {
-            if (FUN_1401d1320(s_npcFiles[i].get()))
-            {
-                bChanged = true;
-                break;
-            }
-        }
-        if (bChanged)
-        {
-            ATL::CAtlArray<CString> paths;
+            BOOL bChanged = FALSE;
             for (unsigned i = 0; i < s_npcFiles.GetCount(); i++)
-                paths.Add(*s_npcFiles[i]->FUN_1401d1140());
-            s_npcFiles.RemoveAll();
-            s_npcTalks.RemoveAll();
-            s_npcAlt.RemoveAll();
-            for (int k = 0; k < 2; k++)
-                s_pick[k].RemoveAll();
-            for (unsigned i = 0; i < paths.GetCount(); i++)
-                FUN_140858440(paths[i]);
-            if (!s_npcAlt.Lookup(nNpcId, result))
-                return TalkArrayPtr(0);
+            {
+                if (FUN_1401d1320(s_npcFiles[i].get()))
+                {
+                    bChanged = TRUE;
+                    break;
+                }
+            }
+            if (bChanged)
+            {
+                ATL::CAtlArray<CString> paths;
+                for (unsigned i = 0; i < s_npcFiles.GetCount(); i++)
+                    paths.Add(*s_npcFiles[i]->FUN_1401d1140());
+                s_npcFiles.RemoveAll();
+                s_npcTalks.RemoveAll();
+                s_npcAlt.RemoveAll();
+                for (int k = 0; k < 2; k++)
+                    s_pick[k].RemoveAll();
+                for (unsigned i = 0; i < paths.GetCount(); i++)
+                    FUN_140858440(paths[i]);
+                if (!s_npcAlt.Lookup(nNpcId, result))
+                    return TalkArrayPtr(0);
+            }
+            return result;
         }
-        return result;
     }
     return TalkArrayPtr(0);
 }
 
 // @0x140855d10
-// MS2-FUNCTIONAL: calls into ATL/TPtr COMDATs owned by other units resolve to different targets and the hand-written control flow differs in the large body; permuter lane
 int FUN_140855d10(int nNpcId)
 {
-    return !!FUN_140857330(nNpcId);
+    return FUN_140857330(nNpcId).operator->() ? 1 : 0;
 }
 
 // @0x140855d80
-// MS2-FUNCTIONAL: calls into ATL/TPtr COMDATs owned by other units resolve to different targets and the hand-written control flow differs in the large body; permuter lane
-bool FUN_140855d80(int nNpcId)
+int FUN_140855d80(int nNpcId)
 {
-    return !!FUN_140857660(nNpcId);
+    return FUN_140857660(nNpcId).operator->() ? 1 : 0;
 }
 
 // @0x140856820
-// MS2-FUNCTIONAL: calls into ATL/TPtr COMDATs owned by other units resolve to different targets and the hand-written control flow differs in the large body; permuter lane
 TalkPtr FUN_140856820(int nNpcId, int nTalkId)
 {
     TalkArrayPtr list = FUN_140857330(nNpcId);
-    if (!list)
+    if (list == 0)
         return TalkPtr(0);
     for (size_t i = 0; i < (*list.operator->()).GetCount(); i++)
     {
@@ -363,11 +365,10 @@ TalkPtr FUN_140856820(int nNpcId, int nTalkId)
 }
 
 // @0x140856980
-// MS2-FUNCTIONAL: calls into ATL/TPtr COMDATs owned by other units resolve to different targets and the hand-written control flow differs in the large body; permuter lane
 TalkPtr FUN_140856980(int nNpcId, const CStringW& strTag)
 {
     TalkArrayPtr list = FUN_140857330(nNpcId);
-    if (!list)
+    if (list == 0)
         return TalkPtr(0);
     for (size_t i = 0; i < (*list.operator->()).GetCount(); i++)
     {
@@ -379,11 +380,10 @@ TalkPtr FUN_140856980(int nNpcId, const CStringW& strTag)
 }
 
 // @0x140856af0
-// MS2-FUNCTIONAL: calls into ATL/TPtr COMDATs owned by other units resolve to different targets and the hand-written control flow differs in the large body; permuter lane
 TalkPtr FUN_140856af0(int nNpcId, int nTalkId)
 {
     TalkArrayPtr list = FUN_140857660(nNpcId);
-    if (!list)
+    if (list == 0)
         return TalkPtr(0);
     for (size_t i = 0; i < (*list.operator->()).GetCount(); i++)
     {
@@ -395,45 +395,45 @@ TalkPtr FUN_140856af0(int nNpcId, int nTalkId)
 }
 
 // @0x140856c50
-// MS2-FUNCTIONAL: calls into ATL/TPtr COMDATs owned by other units resolve to different targets and the hand-written control flow differs in the large body; permuter lane
 TalkPtr FUN_140856c50(int nNpcId, int nKind)
 {
     CheckValid();
     TalkPtr result(0);
-    Unk_LockGuard guard(s_lock);
-    if (!guard && s_pick[nKind].Lookup(nNpcId, result))
+    if (Unk_LockGuard guard = s_lock) {} else
     {
-        bool bChanged = false;
-        for (unsigned i = 0; i < s_npcFiles.GetCount(); i++)
+        if (s_pick[nKind].Lookup(nNpcId, result))
         {
-            if (FUN_1401d1320(s_npcFiles[i].get()))
-            {
-                bChanged = true;
-                break;
-            }
-        }
-        if (bChanged)
-        {
-            ATL::CAtlArray<CString> paths;
+            BOOL bChanged = FALSE;
             for (unsigned i = 0; i < s_npcFiles.GetCount(); i++)
-                paths.Add(*s_npcFiles[i]->FUN_1401d1140());
-            s_npcFiles.RemoveAll();
-            s_npcTalks.RemoveAll();
-            s_npcAlt.RemoveAll();
-            for (int k = 0; k < 2; k++)
-                s_pick[k].RemoveAll();
-            for (unsigned i = 0; i < paths.GetCount(); i++)
-                FUN_140858440(paths[i]);
-            if (!s_pick[nKind].Lookup(nNpcId, result))
-                return TalkPtr(0);
+            {
+                if (FUN_1401d1320(s_npcFiles[i].get()))
+                {
+                    bChanged = TRUE;
+                    break;
+                }
+            }
+            if (bChanged)
+            {
+                ATL::CAtlArray<CString> paths;
+                for (unsigned i = 0; i < s_npcFiles.GetCount(); i++)
+                    paths.Add(*s_npcFiles[i]->FUN_1401d1140());
+                s_npcFiles.RemoveAll();
+                s_npcTalks.RemoveAll();
+                s_npcAlt.RemoveAll();
+                for (int k = 0; k < 2; k++)
+                    s_pick[k].RemoveAll();
+                for (unsigned i = 0; i < paths.GetCount(); i++)
+                    FUN_140858440(paths[i]);
+                if (!s_pick[nKind].Lookup(nNpcId, result))
+                    return TalkPtr(0);
+            }
+            return result;
         }
-        return result;
     }
     return TalkPtr(0);
 }
 
 // @0x140856fa0
-// MS2-FUNCTIONAL: calls into ATL/TPtr COMDATs owned by other units resolve to different targets and the hand-written control flow differs in the large body; permuter lane
 TalkPtr FUN_140856fa0(int nNpcId, int nState)
 {
     TalkArrayPtr list = FUN_140857660(nNpcId);
@@ -449,7 +449,9 @@ TalkPtr FUN_140856fa0(int nNpcId, int nState)
         candidates.Add(script);
         total += script->m_popupProp;
     }
-    if (candidates.GetCount() == 0 || total == 0)
+    if (candidates.GetCount() == 0)
+        return TalkPtr(0);
+    if (total == 0)
         return TalkPtr(0);
     int roll = FUN_140767ff0() % 100;
     if (roll < total)
@@ -479,21 +481,21 @@ void FUN_1408572b0()
 }
 
 // @0x1408564b0
-// MS2-FUNCTIONAL: calls into ATL/TPtr COMDATs owned by other units resolve to different targets and the hand-written control flow differs in the large body; permuter lane
+// MS2-FUNCTIONAL: body matches; the exe's dtor tail on the guard-held path (falls off the end) carries no EH-state nops between the three dtors
 TalkPtr FUN_1408564b0(int nQuestId, int nTalkId)
 {
     CheckValid();
     TalkPtr result(0);
     TalkIdMapPtr talks(0);
     Unk_LockGuard guard(s_lock);
-    if (!guard)
+    if (guard) {} else
     {
-        bool bChanged = false;
+        BOOL bChanged = FALSE;
         for (unsigned i = 0; i < s_questFiles.GetCount(); i++)
         {
             if (FUN_1401d1320(s_questFiles[i].get()))
             {
-                bChanged = true;
+                bChanged = TRUE;
                 break;
             }
         }
@@ -514,25 +516,26 @@ TalkPtr FUN_1408564b0(int nQuestId, int nTalkId)
         talks->Lookup(nTalkId, result);
         return result;
     }
+    // the exe falls off the end here (guard held: rax and the return slot are left unset)
+#ifdef __clang__
     return result;
+#endif
 }
 
 // @0x140855ed0
-// MS2-FUNCTIONAL: calls into ATL/TPtr COMDATs owned by other units resolve to different targets and the hand-written control flow differs in the large body; permuter lane
 TalkPtr FUN_140855ed0(int nQuestId, int nTier, int nJob)
 {
     CheckValid();
     TalkPtr unused(0);
     TalkIdMapPtr talks(0);
-    Unk_LockGuard guard(s_lock);
-    if (!guard)
+    if (Unk_LockGuard guard = s_lock) {} else
     {
-        bool bChanged = false;
+        BOOL bChanged = FALSE;
         for (unsigned i = 0; i < s_questFiles.GetCount(); i++)
         {
             if (FUN_1401d1320(s_questFiles[i].get()))
             {
-                bChanged = true;
+                bChanged = TRUE;
                 break;
             }
         }
@@ -552,15 +555,18 @@ TalkPtr FUN_140855ed0(int nQuestId, int nTier, int nJob)
             return TalkPtr(0);
         int low = 0;
         int high = 0;
-        if (nTier == 0) { low = 100; high = 200; }
-        else if (nTier == 1) { low = 200; high = 300; }
-        else if (nTier == 2) { low = 300; high = 400; }
+        switch (nTier)
+        {
+        case 0: low = 100; high = 200; break;
+        case 1: low = 200; high = 300; break;
+        case 2: low = 300; high = 400; break;
+        }
         TalkPtr jobMatch(0);
         TalkPtr exact(0);
         for (POSITION pos = talks->GetStartPosition(); pos != 0; talks->GetNext(pos))
         {
             TalkPtr script = talks->GetValueAt(pos);
-            if (script->m_id < low || high <= script->m_id)
+            if (script->m_id < low || script->m_id >= high)
                 continue;
             if (script->m_id == low)
                 exact = script;
@@ -611,7 +617,6 @@ void FUN_140859320(Unk_ScriptXmlNode* pNode, TalkPtr script)
 }
 
 // @0x140857f20
-// MS2-FUNCTIONAL: calls into ATL/TPtr COMDATs owned by other units resolve to different targets and the hand-written control flow differs in the large body; permuter lane
 void FUN_140857f20(CStringA path)
 {
     TiXmlDocument doc;
@@ -636,14 +641,18 @@ void FUN_140857f20(CStringA path)
             continue;
         }
         TalkIdMapPtr talks(0);
-        Unk_LockGuard guard(s_lock);
-        if (!guard && !s_questTalks.Lookup(questId, talks))
         {
-            talks = Unk_GrNewTag(0);
-            s_questTalks.SetAt(questId, talks);
+            Unk_LockGuard guard(s_lock);
+            if (guard)
+            {
+            }
+            else if (!s_questTalks.Lookup(questId, talks))
+            {
+                talks = Unk_GrNewTag(0);
+                s_questTalks.SetAt(questId, talks);
+            }
         }
         Unk_ElemArray nodes;
-        nodes.FUN_140163e20();
         FUN_14028faa0(quest, "script", "id", &nodes);
         for (unsigned __int64 i = 0; i < nodes.FUN_14016d900(); i++)
         {
@@ -656,7 +665,6 @@ void FUN_140857f20(CStringA path)
             FUN_140859160(node, script);
             talks->SetAt(script->m_id, script);
         }
-        nodes.FUN_1401644e0();
     }
 }
 
@@ -682,54 +690,54 @@ void FUN_140858440(CStringA path)
         int npcId = 0;
         FUN_140873220(npc, "id", npcId);
         std::set<unsigned> usedIds;
-        TalkArrayPtr talks(Unk_GrNewTag(0));
-        Unk_ElemArray scriptNodes;
-        scriptNodes.FUN_140163e20();
-        FUN_14028faa0(npc, "script", "id", &scriptNodes);
-        for (unsigned __int64 i = 0; i < scriptNodes.FUN_14016d900(); i++)
         {
-            Unk_ScriptXmlNode* node = scriptNodes.FUN_140164a30(i);
-            TalkPtr script(new CTalkScript());
-            script->m_npcId = npcId;
-            FUN_1408731e0(node, "id", script->m_id);
-            FUN_140873420(node, "tag", script->m_tag);
+            TalkArrayPtr talks(Unk_GrNewTag(0));
+            Unk_ElemArray scriptNodes;
+            FUN_14028faa0(npc, "script", "id", &scriptNodes);
+            for (unsigned __int64 i = 0; i < scriptNodes.FUN_14016d900(); i++)
             {
-                CStringA gotoIds = FUN_14015f710(node, "gotoConditionTalkID", "");
-                if (gotoIds.GetLength() != 0)
-                    FUN_140177de0(gotoIds, script->m_gotoConditionTalkIds, ",");
+                Unk_ScriptXmlNode* node = scriptNodes.FUN_140164a30(i);
+                TalkPtr script(new CTalkScript());
+                script->m_npcId = npcId;
+                FUN_1408731e0(node, "id", script->m_id);
+                FUN_140873420(node, "tag", script->m_tag);
+                {
+                    CStringA gotoIds = FUN_14015f710(node, "gotoConditionTalkID", "");
+                    if (gotoIds.GetLength() != 0)
+                        FUN_140177de0(gotoIds, script->m_gotoConditionTalkIds, ",");
+                }
+                FUN_140859160(node, script);
+                if (script->m_randomPick == 1 && script->m_contents.GetCount() == 0)
+                    continue;
+                talks->Add(script);
+                usedIds.insert(script->m_id);
             }
-            FUN_140859160(node, script);
-            if (script->m_randomPick == 1 && script->m_contents.GetCount() == 0)
-                continue;
-            talks->Add(script);
-            usedIds.insert(script->m_id);
+            if (talks->GetCount() > 0)
+                s_npcTalks.SetAt(npcId, talks);
         }
-        if (talks->GetCount() != 0)
-            s_npcTalks.SetAt(npcId, talks);
-        scriptNodes.FUN_1401644e0();
-
-        TalkArrayPtr monologues(Unk_GrNewTag(0));
-        for (Unk_ScriptXmlNode* node = FUN_140165cf0(npc, "monologue"); node != 0; node = FUN_140168650(node, "monologue"))
         {
-            if (!FUN_14028f710(node))
-                continue;
-            TalkPtr script(new CTalkScript());
-            script->m_npcId = npcId;
-            FUN_1408731e0(node, "id", script->m_id);
-            FUN_140873420(node, "tag", script->m_tag);
-            FUN_140859320(node, script);
-            monologues->Add(script);
-            usedIds.insert(script->m_id);
+            TalkArrayPtr monologues(Unk_GrNewTag(0));
+            for (Unk_ScriptXmlNode* node = FUN_140165cf0(npc, "monologue"); node != 0; node = FUN_140168650(node, "monologue"))
+            {
+                if (!FUN_14028f710(node))
+                    continue;
+                TalkPtr script(new CTalkScript());
+                script->m_npcId = npcId;
+                FUN_1408731e0(node, "id", script->m_id);
+                FUN_140873420(node, "tag", script->m_tag);
+                FUN_140859320(node, script);
+                monologues->Add(script);
+                usedIds.insert(script->m_id);
+            }
+            if (monologues->GetCount() > 0)
+                s_npcAlt.SetAt(npcId, monologues);
         }
-        if (monologues->GetCount() != 0)
-            s_npcAlt.SetAt(npcId, monologues);
 
         bool hasSelect = false;
         const char* kinds[2] = { "select", "job" };
         for (int k = 0; k < 2; k++)
         {
             Unk_ElemArray nodes;
-            nodes.FUN_140163e20();
             FUN_14028faa0(npc, kinds[k], "id", &nodes);
             if (nodes.FUN_14016d900() != 0)
             {
@@ -751,7 +759,6 @@ void FUN_140858440(CStringA path)
                 }
                 s_pick[k].SetAt(npcId, script);
             }
-            nodes.FUN_1401644e0();
         }
         if (!hasSelect)
         {
@@ -759,7 +766,7 @@ void FUN_140858440(CStringA path)
             do
             {
                 id = FUN_140767ff0();
-            } while (usedIds.find(id) != usedIds.end());
+            } while ((usedIds.find(id) == usedIds.end()) != true);
             TalkPtr script(new CTalkScript());
             script->m_npcId = npcId;
             script->m_id = id;
@@ -777,8 +784,8 @@ void FUN_140858440(CStringA path)
 void FUN_1408559b0()
 {
     Unk_LockGuard guard(s_lock);
-    if (!guard)
-    {
+    if (guard) {
+    } else {
         for (POSITION pos = s_npcTalks.GetStartPosition(); pos != 0; s_npcTalks.GetNext(pos))
         {
             int npcId = s_npcTalks.GetKeyAt(pos);

@@ -38,34 +38,29 @@ CContinentRegionTable::~CContinentRegionTable()
 }
 
 // @0x1402c52b0
-// MS2-FUNCTIONAL: exe builds the two literal CString temps and path before the TiXmlDocument with a different EH state layout; not reproduced
 void CContinentRegionTable::Load()
 {
     CString strPath = FUN_14071a5b0("Table", "MapContinentTable.xml");
     TiXmlDocument doc;
-    const char* pszPath = strPath;
-    if (FUN_140166420()->FUN_1403974b0(&doc, pszPath, 0, true, false) != 0)
+    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+        return;
+    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+    if (pRoot == 0)
     {
-        Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
-        if (pRoot == 0)
-        {
-            FUN_14015eb90(FUN_140166440(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
-        }
-        else
-        {
-            for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("continent"); pNode != 0;
-                 pNode = reinterpret_cast<Unk_140165cf0*>(reinterpret_cast<Unk_140168650*>(pNode)->FUN_140168650("continent")))
-            {
-                InfoPtr info(new ContinentInfo);
-                FUN_1408731e0(pNode, "id", info->m_nId);
-                FUN_1408731e0(pNode, "hideOtherWorldQuest", info->m_nHideOtherWorldQuest);
-                FUN_1408731e0(pNode, "shadowContinent", info->m_nShadowContinent);
-                FUN_1408731e0(pNode, "representWorldmapContinent", info->m_nRepresentWorldmapContinent);
-                m_map.SetAt(info->m_nId, info);
-            }
-            SetInit(true);
-        }
+        FUN_14015eb90(FUN_140166440(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
+        return;
     }
+    for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("continent"); pNode != 0;
+         pNode = reinterpret_cast<Unk_140165cf0*>(reinterpret_cast<Unk_140168650*>(pNode)->FUN_140168650("continent")))
+    {
+        InfoPtr info(new ContinentInfo);
+        FUN_1408731e0(pNode, "id", info->m_nId);
+        FUN_1408731e0(pNode, "hideOtherWorldQuest", info->m_nHideOtherWorldQuest);
+        FUN_1408731e0(pNode, "shadowContinent", info->m_nShadowContinent);
+        FUN_1408731e0(pNode, "representWorldmapContinent", info->m_nRepresentWorldmapContinent);
+        m_map.SetAt(info->m_nId, info);
+    }
+    SetInit(true);
 }
 
 // @0x1402c5570

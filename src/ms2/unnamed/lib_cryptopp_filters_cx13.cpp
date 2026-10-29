@@ -41,6 +41,8 @@ static CryptoPPOutputProxyCx13* NewCryptoPPOutputProxy(void* owner, std::uintptr
                                                        std::uintptr_t vtable1)
 {
     auto* proxy = static_cast<CryptoPPOutputProxyCx13*>(::operator new(sizeof(CryptoPPOutputProxyCx13)));
+    if (proxy == nullptr)    // the exe's new-expression: a failed allocation passes null on unconstructed
+        return nullptr;
     FUN_1423049e0(proxy, 0);
     proxy->vtable0 = reinterpret_cast<void*>(vtable0);
     proxy->vtable1 = reinterpret_cast<void*>(vtable1);

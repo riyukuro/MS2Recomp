@@ -122,7 +122,7 @@ UnlimitedEnchantTable::~UnlimitedEnchantTable()
 bool UnlimitedEnchantTable::Load()
 {
     InitializeCosts();
-    CString strPath = FUN_14071a5b0(CString("Table/Server"), CString("UnlimitedEnchantOption.xml"));
+    CString strPath = FUN_14071a5b0("Table/Server", "UnlimitedEnchantOption.xml");
     TiXmlDocument doc;
     if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return false;
@@ -183,8 +183,7 @@ bool UnlimitedEnchantTable::Load()
                     spOption->SetValue((int)nValue);
                 else
                     spOption->FUN_140266e50(fRate);
-                std::pair<UnlimitedEnchantInfo::OptionKey, Unk_EnchantPtr<BaseOption> > entry(nOption, spOption);
-                spInfo->m_stats.insert(entry);
+                spInfo->m_stats.insert(std::pair<UnlimitedEnchantInfo::OptionKey, Unk_EnchantPtr<BaseOption> >(nOption, spOption));
             }
             Unk_SocketSpecialStat nSpecial = (Unk_SocketSpecialStat)0;
             float fSpecialRate = 0;
@@ -194,8 +193,7 @@ bool UnlimitedEnchantTable::Load()
             {
                 Unk_EnchantPtr<BaseOption> spOption(new BaseOption);
                 spOption->FUN_140266e50(fSpecialRate);
-                std::pair<Unk_SocketSpecialStat, Unk_EnchantPtr<BaseOption> > entry(nSpecial, spOption);
-                spInfo->m_specials.insert(entry);
+                spInfo->m_specials.insert(std::pair<Unk_SocketSpecialStat, Unk_EnchantPtr<BaseOption> >(nSpecial, spOption));
             }
         }
         ranges[nSlot].insert(std::make_pair(key, spInfo));
@@ -240,8 +238,9 @@ MS2Ptr<UnlimitedEnchantOption> UnlimitedEnchantTable::Find(unsigned nItemId, int
     MS2Ptr<CItemData> spData = FUN_14053f870(nItemId);
     if (spData == 0)
         return MS2Ptr<UnlimitedEnchantOption>(0);
-    int nSlot = spData->FUN_14053c620();
-    if (m_options.find(nSlot) == m_options.end())
+    unsigned nSlot = spData->FUN_14053c620();
+    std::map<int, GradeMap>::iterator itSlot = m_options.find(nSlot);
+    if (itSlot == m_options.end())
         return MS2Ptr<UnlimitedEnchantOption>(0);
     GradeMap::iterator it = m_options[nSlot].find(nGrade);
     if (it == m_options[nSlot].end())

@@ -7,7 +7,7 @@
 
 #include "ms2/ms2layout.h"
 #include "ms2/placeholder/gfxvalue.h"
-#include "Sound/Sound_SoundRendererFMOD.h"
+#include "ms2/scaleform/include/sound/sound_soundrendererfmod.h"
 
 namespace FMOD { class System; }
 

@@ -21,10 +21,3 @@ MS2_REPLACE_METHOD(0x14072FF60, CPortalData, FUN_14072ff60, 17, 0x3F39D72B);
 // @0x14072ff80
 CPortalHistoryData::CPortalHistoryData() { m_138 = 0; }
 
-// @0x14072ffe0 (dtor, scalar deleting dtor 0x1407300a0)
-// MS2-FUNCTIONAL: exe dtor omits the vptr store; no source form found that does that while the ctor keeps it
-CPortalData::~CPortalData() {}
-
-// @0x140730070 (dtor, scalar deleting dtor 0x1407300e0)
-// MS2-FUNCTIONAL: exe dtor omits the vptr store (see CPortalData dtor)
-CPortalHistoryData::~CPortalHistoryData() {}

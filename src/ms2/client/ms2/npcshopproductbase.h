@@ -71,7 +71,7 @@ public:
     __int64 FUN_140db8180();                        // sale price
     __int64 FUN_140db81a0();                        // original price
     void FUN_140db81c0();                                           // m_54 = max(m_5c - m_58, 0)
-    unsigned FUN_140db8210();                                       // the most that can be bought at once
+    int FUN_140db8210();                                            // the most that can be bought at once
     int FUN_140db8400();                                            // the most the player can afford
     int FUN_140db8580(int nCount);                                  // pay nCount items; 1 when the payment can be made (exe: xor eax,eax / mov eax,1; callers test eax)
     bool FUN_140db8600();                                           // the star point event is running
@@ -102,7 +102,6 @@ class CNpcShopProductNewCli : public CNpcShopProductBase
 {
 public:
     CNpcShopProductNewCli();                                        // 0x140db87e0
-    virtual ~CNpcShopProductNewCli();                               //  0 0x140db8b60 (??_G 0x140db8cc0)
     virtual int vfunc_1() { return m_item.m_nProductType; }         //  1 0x140db8d20
     virtual int vfunc_2() { return m_item.m_nProductKind; }         //  2 0x140db8d60
 

@@ -49,7 +49,7 @@ public:
     int FUN_140e9e8f0();
     void FUN_140e9ece0();
     void FUN_140e9f540();
-    void FUN_140e9f870(const CStringW&, int);
+    void FUN_140e9f870(const CStringW&, unsigned);
     MS2Ptr<ASTextField> FUN_140e48d80(const CString&, MS2Ptr<ASTextField>&);
     MS2Ptr<Unk_LulluBoxCheck> FUN_140e52700(const CString&, MS2Ptr<Unk_LulluBoxCheck>&);
     MS2Ptr<Unk_LulluBoxButton> FUN_140bc6d10(const CString&, MS2Ptr<Unk_LulluBoxButton>&);

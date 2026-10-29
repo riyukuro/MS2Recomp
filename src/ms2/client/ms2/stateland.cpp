@@ -11,6 +11,7 @@
 #include <new>
 #include <egf/Entity.h>
 #include <efd/utf8string.h>
+#include <NiActorManager.h>
 
 #include "stateland.h"
 
@@ -67,6 +68,19 @@ public:
     efd::Point3 FUN_141683290();                            // knock-back direction
     bool FUN_141682fe0(int nBuff);
 };
+// The owner seen through its vftable where gameobject.h declares slot 22 by reference: the exe passes the point by
+// value (the caller copies it into an argument temp).
+class Unk_LandOwnerSlots
+{
+public:
+#define MS2_LAND_SLOTS(a, b, c, d, e, f, g, h, i, j, k) virtual void vfunc_##a(); virtual void vfunc_##b(); \
+    virtual void vfunc_##c(); virtual void vfunc_##d(); virtual void vfunc_##e(); virtual void vfunc_##f(); \
+    virtual void vfunc_##g(); virtual void vfunc_##h(); virtual void vfunc_##i(); virtual void vfunc_##j(); \
+    virtual void vfunc_##k();
+    MS2_LAND_SLOTS(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10) MS2_LAND_SLOTS(11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21)
+#undef MS2_LAND_SLOTS
+    virtual void vfunc_22(efd::Point3 kDir);                                // 22 0x14123c3a0
+};
 // The land sound service.
 class Unk_LandSound { public: void FUN_141377420(PCBase* pOwner, CString strKey); };
 Unk_LandSound* FUN_141475cf0();
@@ -90,15 +104,14 @@ StateLand::~StateLand()
 }
 
 // @0x1417d9d20
-// MS2-FUNCTIONAL: first draft
 void StateLand::vfunc_4(StateData* pData)
 {
     State::vfunc_4(pData);
     m_spLand.AssignRaw(dynamic_cast<StateLandData*>(pData));
-    if (m_pOwner->FUN_141676b70() == 0)
-        m_n10 = 0x86;
-    else
+    if (m_pOwner->FUN_141676b70() != 0)
         m_n10 = 0x87;
+    else
+        m_n10 = 0x86;
     PCBase* pPC = FUN_1417b8370();
     Unk_LandRay kRay;
     efd::Point3 kFrom = m_pOwner->vfunc_18() + efd::Point3(0.0f, 0.0f, 30.0f);
@@ -107,9 +120,8 @@ void StateLand::vfunc_4(StateData* pData)
     int nHit = FUN_1409f7ca0()->FUN_14168a310(kFrom, &kHit, &kRay, 50.0f, &kNormal, 0);
     if (nHit != 0 && pPC != 0 && kRay.m_hitEntity != 0)
     {
-        Unk_LandHitReport* pReport = ((Unk_LandBody*)pPC->FUN_14166d220())->FUN_141240f20();
-        if (*FUN_1408b76f0(kRay.m_hitEntity) != pReport->FUN_140cfaf70())
-            pReport->FUN_140cfb020(kRay.m_hitEntity);
+        if (*FUN_1408b76f0(kRay.m_hitEntity) != ((Unk_LandBody*)pPC->FUN_14166d220())->FUN_141240f20()->FUN_140cfaf70())
+            ((Unk_LandBody*)pPC->FUN_14166d220())->FUN_141240f20()->FUN_140cfb020(kRay.m_hitEntity);
     }
     m_pOwner->vfunc_93(true);
     FUN_141475cf0()->FUN_141377420(m_pOwner, CString("land"));
@@ -129,49 +141,31 @@ void StateLand::vfunc_3(double fTime)
 }
 
 // @0x1417da0f0
-// MS2-FUNCTIONAL: the knock-back copy sequence differs from the exe
 void StateLand::vfunc_8(double fTime)
 {
     State::vfunc_8(fTime);
     Unk_LandBuff* pBuff = (Unk_LandBuff*)m_pOwner->FUN_14166d240();
-    efd::Point3 kTmp = pBuff->FUN_141683290();
-    efd::Point3 kDir = kTmp;
-    m_pOwner->vfunc_22(kDir);
-    if (!m_pOwner->FUN_1416749c0())
-    {
-        if (m_pOwner->FUN_141671a30() != 0 && pBuff->FUN_141682fe0(0x493e1))
-        {
-            m_pOwner->vfunc_59(6, 0, 0x25, 0);
-            return;
-        }
-        if (m_pOwner->FUN_141675ed0() == 0)
-            FUN_1417b9460();
-        else
-            m_pOwner->vfunc_59(1, 0, 0, 0);
-    }
-    else
-    {
+    reinterpret_cast<Unk_LandOwnerSlots*>(m_pOwner)->vfunc_22(pBuff->FUN_141683290());
+    if (m_pOwner->FUN_1416749c0())
         m_pOwner->vfunc_59(2, 0, 0, 0);
-    }
+    else if (m_pOwner->FUN_141671a30() != 0 && pBuff->FUN_141682fe0(0x493e1))
+        m_pOwner->vfunc_59(6, 0, 0x25, 0);
+    else if (m_pOwner->FUN_141675ed0() != 0)
+        m_pOwner->vfunc_59(1, 0, 0, 0);
+    else
+        FUN_1417b9460();
 }
 
 // @0x1417da290
-// MS2-FUNCTIONAL: the goto-shaped name selection is written as a flag
 void StateLand::vfunc_9(double fTime)
 {
     State::vfunc_9(fTime);
     efd::utf8string strAnim;
-    bool bNamed = false;
-    bool bHasData = m_spLand.get() != 0;
-    if (bHasData)
+    if ((m_spLand.get() ? true : false) && !m_spLand->m_str.IsEmpty())
     {
-        if (!m_spLand->m_str.IsEmpty())
-        {
-            strAnim = (const char*)FUN_1409a2360((const char*)m_spLand->m_str, 0);
-            bNamed = true;
-        }
+        strAnim = (const char*)FUN_1409a2360((const char*)m_spLand->m_str, 0);
     }
-    if (!bNamed)
+    else
     {
         if (m_n10 == 0x86)
         {
@@ -190,38 +184,38 @@ void StateLand::vfunc_9(double fTime)
             strAnim = m_pOwner->vfunc_123(0x48);
         }
     }
-    int nSeq = -2;
+    unsigned int nSeq = NiActorManager::INVALID_SEQUENCE_ID;
     nSeq = FUN_141b6f910()->FUN_140999490(m_pOwner->FUN_14123c460(), strAnim);
-    if (nSeq == -2)
+    if (nSeq == NiActorManager::INVALID_SEQUENCE_ID)
+    {
         m_pOwner->vfunc_59(1, 0, 0, 0);
-    else
-        m_pOwner->FUN_14166dd20(strAnim, 1.0f, false, false);
+        return;
+    }
+    m_pOwner->FUN_14166dd20(strAnim, 1.0f, false, false);
 }
 
 // @0x1417da580
-// MS2-FUNCTIONAL: the exe nests the animation tests instead of chaining them
 void StateLand::EndOfSequence(NiActorManager* pkManager, unsigned int eSequenceID,
     NiControllerSequence* pkSeq, float fEventTime)
 {
-    bool bDone = false;
-    bool bHasData = m_spLand.get() != 0;
-    if (bHasData && !m_spLand->m_str.IsEmpty())
+    int bDone = 0;
+    if ((m_spLand.get() ? true : false) && !m_spLand->m_str.IsEmpty())
     {
-        bDone = true;
+        bDone = 1;
     }
     else if (m_pOwner->FUN_14166de90(3, eSequenceID))
     {
-        bDone = true;
+        bDone = 1;
     }
     else if (m_pOwner->FUN_14166de90(0x3c, eSequenceID))
     {
-        bDone = true;
+        bDone = 1;
     }
     else if (m_pOwner->FUN_14166de90(0x48, eSequenceID))
     {
-        bDone = true;
+        bDone = 1;
     }
-    if (bDone)
+    if (bDone != 0)
         m_pOwner->vfunc_59(1, 0, 0, 0);
 }
 

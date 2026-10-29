@@ -42,7 +42,7 @@ class Unk_140165cf0 { public: Unk_140165cf0* FUN_140165cf0(const char*); Unk_140
 class Unk_140166420 { public: int FUN_1403974b0(TiXmlDocument* doc, const char* path, int a, bool b, bool c); };
 Unk_140166420* FUN_140166420();
 void* FUN_140166440();
-void FUN_14015eb90(void*, int, int, const wchar_t*, const CString&);
+void FUN_1403a1280(void*, int, int, const wchar_t*, const char* const&);   // log, const char* argument instance
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
 void FUN_140873220(void*, const char*, int&);                           // integer attribute
 const char* FUN_14086f4b0(Unk_140165cf0*, const char*);                 // string attribute
@@ -99,7 +99,6 @@ MS2_REPLACE_METHOD(0x140C9F8F0, StateEffectMgr, Load, 253, 0x7EC8B773);
 #endif
 
 // @0x140c9fa00
-// MS2-FUNCTIONAL: loop/iterator frame layout differs
 void StateEffectMgr::GetEffects(GameObject* pObject, int nStateType, Unk_StateEffectIdList* pOut)
 {
     if (FUN_1401d1320(&m_cache) != 0)
@@ -110,20 +109,16 @@ void StateEffectMgr::GetEffects(GameObject* pObject, int nStateType, Unk_StateEf
     for (EffectList::iterator it = list.begin(); it != list.end(); ++it)
     {
         Unk_StateActorInfo* pInfo;
-        int nGender;
-        int nEmotion;
         if (it->m_nGender != 2 && (pInfo = FUN_140974230(pObject)) != 0)
         {
-            nGender = FUN_141658e60(pInfo);
-            if (nGender != it->m_nGender)
+            if (FUN_141658e60(pInfo) != it->m_nGender)
                 continue;
         }
         if (it->m_nEmotionSkillId != 0)
         {
             if (!(nStateType == 0xb || nStateType == 0xf || nStateType == 0x3a))
                 continue;
-            nEmotion = FUN_14166f6d0(pObject);
-            if (nEmotion != it->m_nEmotionSkillId)
+            else if (FUN_14166f6d0(pObject) != it->m_nEmotionSkillId)
                 continue;
         }
         Unk_EffectQuery query;
@@ -140,12 +135,16 @@ MS2_REPLACE_METHOD(0x140C9FA00, StateEffectMgr, GetEffects, 537, 0x416A3AC9);
 #endif
 
 // @0x140c9fc30
-// MS2-FUNCTIONAL: temp slot layout differs
 bool StateEffectMgr::IsPlayerObject(GameObject* pObject)
 {
     unsigned id = pObject->GetClassID();
-    if ((id >= 0x6200003 && id <= 0x6200004) || id == 0x6200044)
+    switch (id)
+    {
+    case 0x6200003:
+    case 0x6200004:
+    case 0x6200044:
         return true;
+    }
     return false;
 }
 #ifndef MS2_HOOK_DLL
@@ -153,7 +152,6 @@ MS2_REPLACE_METHOD(0x140C9FC30, StateEffectMgr, IsPlayerObject, 85, 0xEDD991A6);
 #endif
 
 // @0x140c9fc90
-// MS2-FUNCTIONAL: XML loop layout differs
 bool StateEffectMgr::LoadXml(const char* pszPath, EffectMap* pMap)
 {
     TiXmlDocument doc;
@@ -162,12 +160,13 @@ bool StateEffectMgr::LoadXml(const char* pszPath, EffectMap* pMap)
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
     {
-        FUN_14015eb90(FUN_140166440(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", pszPath);
+        FUN_1403a1280(FUN_140166440(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", pszPath);
         return false;
     }
     for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("StateEffect"); pNode != 0; pNode = pNode->FUN_1403f0510())
     {
-        int nStateType = FUN_1417b90f0(FUN_14086f4b0(pNode, "stateType"));
+        const char* pszType = FUN_14086f4b0(pNode, "stateType");
+        int nStateType = FUN_1417b90f0(pszType);
         if (nStateType != 0)
         {
             StateEffectData data;

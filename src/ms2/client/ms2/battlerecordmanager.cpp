@@ -295,12 +295,11 @@ void CBattleRecordGroup::FUN_140a03920() {
     }
 }
 MS2_REPLACE_METHOD(0x140a03920, CBattleRecordGroup, FUN_140a03920, 517, 0xD0AF2240);
-// MS2-FUNCTIONAL: Equivalent log formatting/write path; cl omits an intermediate DWORD argument register copy (2 bytes).
 // @0x140a03b30
 void CBattleRecordGroup::FUN_140a03b30(const CString& text) {
     if(!DAT_143ab5b00) return; {
         SYSTEMTIME time; GetLocalTime(&time); CString line; line.Format("%02d:%02d:%02d\t",time.wHour,time.wMinute,time.wSecond); line.Append(text);
-        Unk_BattleBytes bytes(line); int length=bytes.FUN_140298f20(); file.FUN_140299dc0(bytes.FUN_140297d10(),(unsigned)length,0);
+        Unk_BattleBytes bytes(line); file.FUN_140299dc0(bytes.FUN_140297d10(),bytes.FUN_140298f20(),0);
     }
 }
 MS2_REPLACE_METHOD(0x140a03b30, CBattleRecordGroup, FUN_140a03b30, 246, 0x2A052D05);
@@ -393,12 +392,11 @@ CStringW CBattleRecordManager::FUN_140a04bc0(int type) {
     }
 }
 MS2_REPLACE(0x140a04bc0, CBattleRecordManager::FUN_140a04bc0, 762, 0x64D39263);
-// MS2-FUNCTIONAL: All damage-event branches recovered; cl omits an intermediate owner-ID argument register copy (2 bytes).
 // @0x140a04ef0
 void CBattleRecordManager::FUN_140a04ef0(Unk_BattleDamage* damage) {
     if(!damage) return;
     __int64 source=FUN_1403ed2d0()->FUN_141bd1980(damage->source);
-    if(!source) { Unk_BattleNpc* npc=FUN_1403ed2d0()->FUN_141bd13a0(damage->source); if(npc && npc->FUN_141094f40()) { unsigned owner=npc->FUN_141094f40(); source=FUN_1403ed2d0()->FUN_141bd1980((unsigned long)owner); } }
+    if(!source) { Unk_BattleNpc* npc=FUN_1403ed2d0()->FUN_141bd13a0(damage->source); if(npc && npc->FUN_141094f40()) source=FUN_1403ed2d0()->FUN_141bd1980(npc->FUN_141094f40()); }
     __int64 target=FUN_1403ed2d0()->FUN_141bd1980(damage->target);
     for(unsigned i=0;i<3;++i) {
         Ptr group=groups[i]; if(!group->FUN_140a03530()) continue;

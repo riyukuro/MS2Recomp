@@ -35,6 +35,7 @@ MS2_CHECK_SIZE(Unk_CtbBounds3, 0x18);
 // 3x3 matrix, row-major (default ctor 0x140adb9d0 does nothing).
 struct Unk_CtbMat33
 {
+    Unk_CtbMat33();                                     // 0x140adb9d0 (also keeps it out of the /GS buffer heuristic)
     bool FUN_140afff50(Unk_CtbMat33* pOut) const;       // inverse (false when singular: the output is the identity)
     float m00, m01, m02;                                // rows
     float m10, m11, m12;

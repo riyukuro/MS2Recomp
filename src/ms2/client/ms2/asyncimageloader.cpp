@@ -31,7 +31,9 @@
 #include <NiSourceTexture.h>
 #include <NiPixelData.h>
 #include <NiImageConverter.h>
+#include <efd/utf8string.h>
 #include "ms2/placeholder/casyncimageloader.h"
+#include "ms2/commonfiles/chatemoticontable.h"
 #include "ms2/placeholder/cptred.h"
 #include "ms2/placeholder/cthread_startup.h"
 #include "ms2/ms2recover.h"
@@ -45,21 +47,7 @@ unsigned int FUN_140869420();                               // a random seed
 NiImageConverter* FUN_141851720();                          // the calling thread's NiImageConverter
 CString FUN_14016a5c0(const char* sz, int n);               // the normalized asset path
 CString FUN_1409a2360(const char* sz, int n);               // a copy of the string
-unsigned short FUN_1407181d0(const CString& str);           // parses the string to a number (the emoticon id)
-
-struct Unk_EmoEntry;
-class Unk_EmoTable { public: void FUN_1401e7120(Unk_EmoEntry* pOut, int nId); };
-Unk_EmoTable* FUN_1409eecd0();                              // the emoticon table
-bool FUN_1401f0b70(Unk_EmoEntry* p);                        // the entry is empty
-void* FUN_1401f1080(Unk_EmoEntry* p);                       // its data
-void FUN_1401f0530(Unk_EmoEntry* p);                        // release the entry
-struct Unk_EmoEntry { char m_pad[0x10]; };
-
-// A path object (a Gamebryo file name) built from a char string.
-struct Unk_PathStr { char m_pad[32]; };
-void FUN_1409989e0(Unk_PathStr* p, const char* sz);         // build
-const char* FUN_1408ac310(Unk_PathStr* p);                  // the characters
-void FUN_1408a8900(Unk_PathStr* p);                         // destroy
+int FUN_1407181d0(const CString& str);                      // atoi of the string (the emoticon id)
 
 // The texture cache of the loading service (singleton 0x140a0afd0).
 class Unk_TexCache
@@ -128,8 +116,8 @@ GfxImageLoaderParam::~GfxImageLoaderParam()
 // @0x140a58820
 CAsyncImageLoader::CAsyncImageLoader()
 {
-    m_20 = 0;
     m_28 = 0;
+    m_20 = 0;
     m_30 = CreateSemaphoreA(0, 0, 0x7fffffff, 0);
 }
 
@@ -149,9 +137,16 @@ void CAsyncImageLoader::FUN_140a589d0(const CString& strFile, Unk_GfxRef spImage
     pParam->m_18 = strFile;
     pParam->m_20 = 0;
     pParam->m_28 = spImage;
-    Unk_LockGuard guard(m_38);
-    if (guard == 0)
-        m_68.push_back(ParamPtr(pParam));
+    {
+        Unk_LockGuard guard(m_38);
+        if (guard != 0)
+        {
+        }
+        else
+        {
+            m_68.push_back(pParam);
+        }
+    }
     ReleaseSemaphore(m_30, 1, 0);
 }
 
@@ -258,32 +253,26 @@ bool CAsyncImageLoader::FUN_140a59090(ParamPtr spParam)
         spParam->m_20 = spTexture;
         return true;
     }
-    Unk_PathStr path;
-    FUN_1409989e0(&path, FUN_1409a2360(strFile, 0));
+    efd::utf8string path(FUN_1409a2360(strFile, 0));
     NiImageConverter* pkConverter = NiDynamicCast(NiImageConverter, FUN_141851720());
     if (pkConverter == 0)
     {
         MS2_ASSERT_AT(0xcc, 0);
-        FUN_1408a8900(&path);
         return false;
     }
-    NiPointer<NiPixelData> spPixels = pkConverter->ReadImageFile(FUN_1408ac310(&path), 0);
-    if (spPixels == 0)
+    NiPointer<NiPixelData> spPixels = pkConverter->ReadImageFile(path.c_str(), 0);
+    if (spPixels.operator NiPixelData*() == 0)
     {
         MS2_ASSERT_AT(0xd3, 0);
-        FUN_1408a8900(&path);
         return false;
     }
-    NiPointer<NiPixelData> spCopy(spPixels);
-    efd::SmartPointer<NiTexture> spCreated = FUN_140a0afd0()->FUN_1415534d0(CString(strFile), spCopy, 5);
+    efd::SmartPointer<NiTexture> spCreated = FUN_140a0afd0()->FUN_1415534d0(CString(strFile), spPixels, 5);
     if (spCreated.operator NiTexture*() == 0)
     {
         MS2_ASSERT_AT(0xda, 0);
-        FUN_1408a8900(&path);
         return false;
     }
     spParam->m_20 = spCreated;
-    FUN_1408a8900(&path);
     return true;
 }
 
@@ -309,7 +298,9 @@ bool CAsyncImageLoader::FUN_140a59540(ParamPtr spParam)
     NiTexture::RendererData* pRendererData = spParam->m_20->GetRendererData();
     if (pRendererData == 0)
         return false;
-    if (spParam->vfunc_1() == 1)
+    switch (spParam->vfunc_1())
+    {
+    case 1:
     {
         GfxImageLoaderParam* pGfx = static_cast<GfxImageLoaderParam*>(spParam.get());
         void* pTarget = pGfx->m_28->vfunc_24(pCtx);
@@ -319,6 +310,8 @@ bool CAsyncImageLoader::FUN_140a59540(ParamPtr spParam)
             return false;
         }
         FUN_14272b7f0(pTarget, ((NiDX9TextureData*)pRendererData)->GetD3DTexture());
+        break;
+    }
     }
     return true;
 }
@@ -327,7 +320,10 @@ bool CAsyncImageLoader::FUN_140a59540(ParamPtr spParam)
 void CAsyncImageLoader::FUN_140a597a0()
 {
     Unk_LockGuard guard(m_38);
-    if (guard == 0)
+    if (guard != 0)
+    {
+    }
+    else
     {
         m_68.clear();
         m_78.clear();
@@ -345,24 +341,37 @@ struct Unk_ImgReq
     int m_kind;                                             // +0x20 5 = emoticon id
 };
 
+// Image::GetSize (slot 5) returns the size by value; the shared Unk_GfxImage declares it with an out pointer.
+class Unk_GfxImageSizeView
+{
+public:
+    virtual void vfunc_0();
+    virtual void vfunc_1();
+    virtual void vfunc_2();
+    virtual void vfunc_3();
+    virtual void vfunc_4();
+    virtual Unk_ImgSize GetSize();
+};
+#define MS2_IMAGE_SIZE(p) (reinterpret_cast<Unk_GfxImageSizeView*>(p)->GetSize())
+
 // @0x140a59830
 Unk_GfxImage* FUN_140a59830(Unk_ImgReq* pReq, void* pCtx)
 {
     CString strFile;
-    if (pReq->m_kind == 5)
+    switch (pReq->m_kind)
     {
-        Unk_EmoEntry entry;
-        FUN_1409eecd0()->FUN_1401e7120(&entry, FUN_1407181d0(pReq->m_name));
-        if (FUN_1401f0b70(&entry) == 0)
+    case 5:
         {
-            strFile = (const wchar_t*)((char*)FUN_1401f1080(&entry) + 0x20);
-            FUN_1401f0530(&entry);
+            int nId = FUN_1407181d0(pReq->m_name);
+            ChatEmoticonDataPtr spData = CChatEmoticonTable::GetInstance()->FUN_1401e7120(nId);
+            if (!spData)
+                break;
+            strFile = spData->m_strImagePath;
         }
-        else
-            FUN_1401f0530(&entry);
-    }
-    else
+        break;
+    default:
         strFile = pReq->m_name;
+    }
     NiImageConverter* pkConverter = NiDynamicCast(NiImageConverter, FUN_141851720());
     if (pkConverter == 0)
     {
@@ -376,39 +385,41 @@ Unk_GfxImage* FUN_140a59830(Unk_ImgReq* pReq, void* pCtx)
     unsigned int uiFaces;
     if (!pkConverter->ReadImageFileInfo(strFile, kFormat, bMipmap, uiWidth, uiHeight, uiFaces))
         return 0;
+    const int nUse = 0x11;
     Unk_ImgSize size(uiWidth, uiHeight);
-    Unk_GfxImage* pImage = (Unk_GfxImage*)FUN_14257a340(3, 1, &size, 0x11, 0, pCtx, 0);
+    const int nFormat = 3;
+    Unk_GfxImage* pImage = (Unk_GfxImage*)FUN_14257a340(nFormat, 1, &size, nUse, 0, pCtx, 0);
     if (pImage == 0)
         return 0;
     void* pTarget = pImage->vfunc_24(pCtx);
     if (pTarget == 0)
         return pImage;
-    efd::SmartPointer<NiTexture> spTexture = FUN_140a0afd0()->FUN_141553eb0(CString(strFile), 0);
-    if (spTexture.operator NiTexture*() != 0)
+    do
     {
+        efd::SmartPointer<NiTexture> spTexture = FUN_140a0afd0()->FUN_141553eb0(CString(strFile), 0);
+        if (spTexture.operator NiTexture*() == 0)
+            break;
         NiTexture::RendererData* pRendererData = spTexture->GetRendererData();
-        if (pRendererData != 0)
-        {
-            FUN_14272b7f0(pTarget, ((NiDX9TextureData*)pRendererData)->GetD3DTexture());
-            return pImage;
-        }
-    }
+        if (pRendererData == 0)
+            break;
+        FUN_14272b7f0(pTarget, ((NiDX9TextureData*)pRendererData)->GetD3DTexture());
+        return pImage;
+    } while (0);
     CAsyncImageLoader::GetInstance()->FUN_140a589d0(strFile, Unk_GfxRef(pImage));
     // The placeholder shown until the file is read: a half transparent fill of the image size.
-    Unk_ImgSize dims(0, 0);
-    Unk_ImgSize* pDims = pImage->GetSize(&dims);
-    Unk_ImgSize pixels(pDims->m_w, pDims->m_h);
-    NiPointer<NiPixelData> spFill = NiNew NiPixelData(pixels.m_w, pixels.m_h, DAT_1439fb040, 1, 1);
-    if (spFill == 0)
+    NiPointer<NiPixelData> spFill = NiNew NiPixelData(MS2_IMAGE_SIZE(pImage).m_w, MS2_IMAGE_SIZE(pImage).m_h,
+                                                      DAT_1439fb040, 1, 1);
+    if ((NiPixelData*)spFill == 0)
         return pImage;
-    unsigned char aucPixel[4] = {0, 0, 0, 0x3f};
-    NiRect<unsigned int> kRect(0, pixels.m_w, 0, pixels.m_h);
-    FUN_14184d520(aucPixel, spFill, kRect);
+    unsigned int uiPixel = 0x3f000000;     // r, g, b 0 and alpha 0x3f
+    NiRect<unsigned int> kRect(0, MS2_IMAGE_SIZE(pImage).m_w, 0, MS2_IMAGE_SIZE(pImage).m_h);
+    FUN_14184d520((const unsigned char*)&uiPixel, spFill, kRect);
     NiPointer<NiSourceTexture> spPlaceholder = FUN_141d33530(spFill, DAT_1439fc800, true);
-    if (spPlaceholder == 0)
+    if ((NiSourceTexture*)spPlaceholder == 0)
         return pImage;
     NiTexture::RendererData* pData = spPlaceholder->GetRendererData();
-    if (pData != 0)
-        FUN_14272b7f0(pTarget, ((NiDX9TextureData*)pData)->GetD3DTexture());
+    if (pData == 0)
+        return pImage;
+    FUN_14272b7f0(pTarget, ((NiDX9TextureData*)pData)->GetD3DTexture());
     return pImage;
 }

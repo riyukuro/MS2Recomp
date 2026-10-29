@@ -50,7 +50,6 @@ StatePvPWinLose::~StatePvPWinLose()
 }
 
 // @0x1412824c0
-// MS2-FUNCTIONAL: the animation-name temporaries differ from the exe
 void StatePvPWinLose::vfunc_4(StateData* pData)
 {
     State::vfunc_4(pData);
@@ -58,23 +57,19 @@ void StatePvPWinLose::vfunc_4(StateData* pData)
     PCBase* pPC = FUN_1417b8370();
     if (pPC != 0)
     {
-        Unk_PvPTeamPtr kTeam = reinterpret_cast<Unk_PwlTeamOwner*>(pPC)->FUN_140967420();
-        nId = kTeam.FUN_140965970()->m_nValue;
+        nId = reinterpret_cast<Unk_PwlTeamOwner*>(pPC)->FUN_140967420().FUN_140965970()->m_nValue;
     }
     if (m_n10 == 0x73)
     {
-        efd::utf8string kAnim = reinterpret_cast<Unk_PwlAnimOwner*>(m_pOwner)->FUN_141679170(0x41, nId);
-        m_pOwner->FUN_14166dd20(kAnim, 1.0f, false, false);
+        m_pOwner->FUN_14166dd20(reinterpret_cast<Unk_PwlAnimOwner*>(m_pOwner)->FUN_141679170(0x41, nId), 1.0f, false, false);
     }
     else if (m_n10 == 0x74)
     {
-        efd::utf8string kAnim = reinterpret_cast<Unk_PwlAnimOwner*>(m_pOwner)->FUN_141679170(0x40, nId);
-        m_pOwner->FUN_14166dd20(kAnim, 1.0f, false, false);
+        m_pOwner->FUN_14166dd20(reinterpret_cast<Unk_PwlAnimOwner*>(m_pOwner)->FUN_141679170(0x40, nId), 1.0f, false, false);
     }
 }
 
 // @0x141282670
-// MS2-FUNCTIONAL: the zero point is copied byte-wise in the exe
 void StatePvPWinLose::vfunc_3(double fTime)
 {
     State::vfunc_3(fTime);

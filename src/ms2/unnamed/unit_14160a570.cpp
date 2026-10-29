@@ -10,12 +10,20 @@
 struct NmByteTreeIter
 {
     void* node;
+
+    bool FUN_1415f2a60(const NmByteTreeIter& right) const;     // operator==
+};
+
+// The byte-keyed std::map the iterators walk; the helpers are its members (this = the map, the iterator comes back
+// through the hidden return slot).
+struct NmByteTree
+{
+    NmByteTreeIter FUN_1416099b0();                             // end()
+    NmByteTreeIter FUN_14160a570(const unsigned char& key);     // find()
 };
 
 extern void* FUN_1415dbdb0(void* tree, const unsigned char& key);
 extern void* FUN_14160a790(void* tree, void* result, const unsigned char* key);
-extern void* FUN_1416099b0(void* tree, void* result);
-extern bool FUN_1415f2a60(const NmByteTreeIter* left, const NmByteTreeIter* right);
 extern const unsigned char& FUN_141602800(void* tree, void* node);
 extern const std::less<unsigned char>& FUN_141602090(void* tree);
 extern void** FUN_141600e10(void* tree);
@@ -23,25 +31,12 @@ extern const void* FUN_1415e1750(void* data);
 extern void FUN_1415e5cf0(void* iterator, void* node, const void* data);
 
 // @0x14160a570
-void* FUN_14160a570(void* tree, void* result, const unsigned char* key)
+NmByteTreeIter NmByteTree::FUN_14160a570(const unsigned char& key)
 {
-    NmByteTreeIter lowerBound{};
-    NmByteTreeIter end{};
-    NmByteTreeIter selected{};
-
-    FUN_14160a790(tree, &lowerBound, key);
-    FUN_1416099b0(tree, &end);
-    if (!FUN_1415f2a60(&lowerBound, &end) &&
-        !FUN_141602090(tree)(*key, FUN_141602800(tree, lowerBound.node)))
-    {
-        selected = lowerBound;
-    }
-    else
-    {
-        FUN_1416099b0(tree, &selected);
-    }
-    *static_cast<void**>(result) = selected.node;
-    return result;
+    NmByteTreeIter lowerBound;
+    FUN_14160a790(this, &lowerBound, &key);
+    return (lowerBound.FUN_1415f2a60(FUN_1416099b0()) || FUN_141602090(this)(key, FUN_141602800(this, lowerBound.node)))
+        ? FUN_1416099b0() : lowerBound;
 }
 
 // MS2-FUNCTIONAL: uses the recovered std::string operation; template helper code generation differs from the executable.
@@ -61,8 +56,6 @@ size_t FUN_14160a6f0(const std::string* text, const std::string* chars, size_t s
 // @0x14160a790
 void* FUN_14160a790(void* tree, void* result, const unsigned char* key)
 {
-    void** data = FUN_141600e10(tree);
-    void* node = FUN_1415dbdb0(tree, *key);
-    FUN_1415e5cf0(result, node, FUN_1415e1750(data));
+    FUN_1415e5cf0(result, FUN_1415dbdb0(tree, *key), FUN_1415e1750(FUN_141600e10(tree)));
     return result;
 }

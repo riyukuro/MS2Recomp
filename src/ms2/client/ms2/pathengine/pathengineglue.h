@@ -14,12 +14,12 @@
 
 #include "i_pathengine.h"   // shim next to this header
 
-#include "../third_party/src/pathengine-sigmaco/samples/Code Snippets/Building from Physics Scene Data/SolidObjects.h"
-#include "../third_party/src/pathengine-sigmaco/samples/Code Snippets/Building from Physics Scene Data/PhysXTerrainWrapper.h"
+#include "pathengine-sigmaco/samples/Code Snippets/Building from Physics Scene Data/SolidObjects.h"
+#include "pathengine-sigmaco/samples/Code Snippets/Building from Physics Scene Data/PhysXTerrainWrapper.h"
 // CoordinateMapping.h tests but never defines its guard macro.
 #ifndef MS2_PATHENGINE_COORDINATEMAPPING_INCLUDED
 #define MS2_PATHENGINE_COORDINATEMAPPING_INCLUDED
-#include "../third_party/src/pathengine-sigmaco/samples/Code Snippets/Building from Physics Scene Data/CoordinateMapping.h"
+#include "pathengine-sigmaco/samples/Code Snippets/Building from Physics Scene Data/CoordinateMapping.h"
 #endif
 
 class NxShape;

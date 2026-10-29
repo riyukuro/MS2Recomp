@@ -1526,7 +1526,7 @@ bool FUN_14025fab0(CStringW& str)
     {
         str.MakeLower();
     }
-    catch (ATL::CAtlException e)
+    catch (CException* e)
     {
         (void)((!!(FALSE)) || (_wassert(L"FALSE", L"e:\\build\\kr\\22_04\\ms2code\\commonfiles\\stringutil.h", 0x1a3), 0));
         return false;

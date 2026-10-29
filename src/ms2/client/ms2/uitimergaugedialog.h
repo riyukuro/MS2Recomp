@@ -6,6 +6,7 @@
 class UITimerBase : public UIDialog {
 public:UITimerBase();
  virtual ~UITimerBase();
+ virtual CString GetTypeName()=0;   // _purecall in the exe vftable (0x142e691d8)
  virtual void vfunc_84(unsigned int,unsigned int,int);virtual void vfunc_85();virtual void vfunc_86();virtual void vfunc_87(unsigned long,unsigned int);
  unsigned int FUN_140edeba0();
 protected:MS2_LAYOUT_FRIEND;unsigned int m_start,m_duration;int m_offset;

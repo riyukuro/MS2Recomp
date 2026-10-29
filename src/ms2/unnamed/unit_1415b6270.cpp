@@ -7,6 +7,7 @@
 #include "ms2/placeholder/nmstream.h"
 #include "ms2/placeholder/nmobjects.h"
 #include "ms2/placeholder/nmfunc.h"
+#include "ms2/placeholder/nmencoder.h"
 #include "ms2/ms2recover.h"
 
 extern void FUN_14156bcb0(void*, void*, void*);
@@ -15,7 +16,7 @@ extern void FUN_14156be10(void*, void*, void*);
 extern void FUN_14156bf10(void*);
 extern void FUN_14156ac20(void*, unsigned int);
 extern unsigned int FUN_1415f9990(void*);
-extern int FUN_1415fb6d0(void*);
+extern int FUN_1415fb6d0(CNMSerializableDecoder*);
 extern int FUN_1415fb750(void*);
 
 // MS2-FUNCTIONAL 0x1415b6270: initializes the secondary-auth close event with reason 1.
@@ -31,18 +32,17 @@ CNMAuthSecondaryConnectionClosedEvent::CNMAuthSecondaryConnectionClosedEvent(int
 // @0x1415b6330
 unsigned int CNMAuthSecondaryConnectionClosedEvent::EncodeFramed(CNMStream* pStream)
 {
-    unsigned char storage[0x18];
-    FUN_14156bcb0(storage, pStream, this);
-    const unsigned int result = Encode(reinterpret_cast<CNMEncoder*>(storage), pStream);
-    FUN_14156bd50(storage);
-    return result;
+    CNMSerializableEncoder encoder(pStream, this);
+    return CNMAuthSecondaryConnectionClosedEvent::Encode(reinterpret_cast<CNMEncoder*>(&encoder), pStream);
 }
 
 // MS2-FUNCTIONAL 0x1415b6390: chooses direct or framed encoding by format.
 // @0x1415b6390
 unsigned int CNMAuthSecondaryConnectionClosedEvent::EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream)
 {
-    return m_bFormat == 1 ? Encode(pEncoder, pStream) : EncodeFramed(pStream);
+    if (m_bFormat == 1)
+        return CNMAuthSecondaryConnectionClosedEvent::Encode(pEncoder, pStream);
+    return CNMAuthSecondaryConnectionClosedEvent::EncodeFramed(pStream);
 }
 
 // MS2-FUNCTIONAL 0x1415b63f0: serializes the base event and close reason.
@@ -59,20 +59,19 @@ unsigned int CNMAuthSecondaryConnectionClosedEvent::Encode(CNMEncoder* pEncoder,
 // @0x1415b6450
 unsigned int CNMAuthSecondaryConnectionClosedEvent::DecodeFramed(CNMStream* pStream)
 {
-    unsigned char storage[0x38];
-    FUN_14156be10(storage, pStream, this);
-    unsigned int result = 0;
-    if (FUN_1415fb750(storage))
-        result = Decode(reinterpret_cast<CNMSerializableDecoder*>(storage), pStream);
-    FUN_14156bf10(storage);
-    return result;
+    CNMSerializableDecoder decoder(pStream, this);
+    if (FUN_1415fb750(&decoder) == 0)
+        return 0;
+    return CNMAuthSecondaryConnectionClosedEvent::Decode(&decoder, pStream);
 }
 
 // MS2-FUNCTIONAL 0x1415b64e0: dispatches format-2 input through framed decode.
 // @0x1415b64e0
 unsigned int CNMAuthSecondaryConnectionClosedEvent::DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream)
 {
-    return FUN_1415fb6d0(pDecoder) == 2 ? DecodeFramed(pStream) : Decode(pDecoder, pStream);
+    if (FUN_1415fb6d0(pDecoder) == 2)
+        return CNMAuthSecondaryConnectionClosedEvent::DecodeFramed(pStream);
+    return CNMAuthSecondaryConnectionClosedEvent::Decode(pDecoder, pStream);
 }
 
 // MS2-FUNCTIONAL 0x1415b6540: restores the close reason and validates the decoder.

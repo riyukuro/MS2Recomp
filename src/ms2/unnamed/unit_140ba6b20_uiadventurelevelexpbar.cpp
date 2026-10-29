@@ -168,8 +168,7 @@ void UIAdventureLevelExpBar::FUN_140ba6cf0(__int64 nGain)
         nGain = 0;
     if (nGain > FUN_140ba6fc0() - FUN_140ba6fa0())
         nGain = FUN_140ba6fc0() - FUN_140ba6fa0();
-    int nLevel = (unsigned short)pPlayer->vfunc_78();
-    static_cast<Unk_AdvEntity*>(pEntity.operator->())->FUN_140ba79c0("setPoint", fCur, fNext, StringFormat(L"0", nGain), nLevel >= FUN_1401d3200()->m_9298.FUN_140ba4b30());
+    static_cast<Unk_AdvEntity*>(pEntity.operator->())->FUN_140ba79c0("setPoint", fCur, fNext, StringFormat(L"0", nGain), pPlayer->vfunc_78() >= FUN_1401d3200()->m_9298.FUN_140ba4b30());
 }
 
 // @0x140ba6fa0

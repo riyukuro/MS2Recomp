@@ -29,9 +29,17 @@
 // MS2-PIN: ?GcFmtBool@@YA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@PEB_WAEB_N@Z 0x14136f150
 // MS2-PIN: ?GcFmtSize@@YA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@PEB_WAEB_K@Z 0x1406c6bd0
 // MS2-PIN: ?GcFmtStr@@YA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@PEB_WAEBV12@@Z 0x1401e8510
-__declspec(noinline) CStringW GcFmtId(const wchar_t* f, const int& a) { return StringFormat(f, a); }
+// MS2-PIN: ??0Unk_GcTime@@QEAA@HHHHHH@Z 0x1406c47d0
+// MS2-PIN: ??0Unk_G9Val@@QEAA@H@Z 0x140d02f80
+// MS2-PIN: ??0Unk_G9Val@@QEAA@HAEAVUnk_GcNode@@@Z 0x140d01be0
+// GcFmtId and GcFmtIntInt: the exe's copies are StringFormat<unsigned int> / <unsigned int, unsigned int> (make_type<unsigned
+// int>), so the int ids are formatted as unsigned.
+__declspec(noinline) CStringW GcFmtId(const wchar_t* f, const int& a) { return StringFormat(f, reinterpret_cast<const unsigned&>(a)); }
 __declspec(noinline) CStringW GcFmtMinMax(const wchar_t* f, const int& a) { return StringFormat(f, a); }
-__declspec(noinline) CStringW GcFmtIntInt(const wchar_t* f, const int& a, const int& b) { return StringFormat(f, a, b); }
+__declspec(noinline) CStringW GcFmtIntInt(const wchar_t* f, const int& a, const int& b)
+{
+    return StringFormat(f, reinterpret_cast<const unsigned&>(a), reinterpret_cast<const unsigned&>(b));
+}
 __declspec(noinline) CStringW GcFmtPos(const wchar_t* f, const float& a, const float& b, const float& c) { return StringFormat(f, a, b, c); }
 __declspec(noinline) CStringW GcFmtBool(const wchar_t* f, const bool& a) { return StringFormat(f, a); }
 __declspec(noinline) CStringW GcFmtSize(const wchar_t* f, const size_t& a) { return StringFormat(f, a); }
@@ -70,18 +78,12 @@ CStringW CGuideConditionContinentCode::GetTypeName()
 }
 
 // @0x1413a9fc0
-// MS2-FUNCTIONAL: branch layout / instruction order differs from the exe (same calls and conditions)
 int CGuideConditionContinentCode::vfunc_3()
 {
     Unk_G9MapInfo info = FUN_1403ed2d0()->FUN_141bd30a0();
-    if (info.FUN_140965240(0)) {
-        FUN_1408850f0(&info);
+    if (info.FUN_140965240(0))
         return 0;
-    }
-    int nContinent = FUN_140375350(info.FUN_140885340());
-    int nResult = FUN_1413a5600(m_n20 == nContinent);
-    FUN_1408850f0(&info);
-    return nResult;
+    return FUN_1413a5600(m_n20 == FUN_140375350(info.FUN_140885340()));
 }
 
 // @0x1413aa070
@@ -200,14 +202,13 @@ int CGuideConditionAchieveExistTrophy::vfunc_3()
 }
 
 // @0x1413aa6c0
-// MS2-FUNCTIONAL: branch layout / instruction order differs from the exe (same calls and conditions)
 CStringW CGuideConditionAchieveExistTrophy::vfunc_7()
 {
     CStringW str = FUN_1413a5820();
-    if (m_type.m_bSet)
-        str.Append(StringFormat(L"achieveType({0})", GcEnum<Unk_GcAchieveType>(m_type.m_nValue)));
-    else
+    if (Unk_GcIntIsNull(&m_type))
         str.Append(StringFormat(L"achieveType"));
+    else
+        str.Append(StringFormat(L"achieveType({0})", *reinterpret_cast<Unk_GcAchieveType*>(FUN_1409393d0(&m_type))));
     return str;
 }
 
@@ -233,17 +234,12 @@ void CGuideConditionGuideOpen::vfunc_2(Unk_140165cf0* pElem)
 }
 
 // @0x1413aa8f0
-// MS2-FUNCTIONAL: branch layout / instruction order differs from the exe (same calls and conditions)
 int CGuideConditionGuideOpen::vfunc_3()
 {
     Unk_G9GuideRef ref = FUN_1409331e0()->FUN_14138b990(m_nGuideId);
-    if (ref.m_pEntry == 0) {
-        FUN_141397db0(&ref);
-        return 0;
-    }
-    int nResult = FUN_1413a5600(ref.FUN_141398900()->m_n1c != 0);
-    FUN_141397db0(&ref);
-    return nResult;
+    if (ref.FUN_1413b4130())
+        return FUN_1413a5600(ref.FUN_141398900()->m_n1c != 0);
+    return 0;
 }
 
 // @0x1413aa990
@@ -454,31 +450,29 @@ void CGuideConditionPlaceUgcCube::vfunc_2(Unk_140165cf0* pElem)
 }
 
 // @0x1413ab490
-// MS2-FUNCTIONAL: branch layout / instruction order differs from the exe (same calls and conditions)
 int CGuideConditionPlaceUgcCube::vfunc_3()
 {
     if (m_nItemId != 0 && FUN_1409670e0()->FUN_1410b9850(m_nItemId) == 0)
         return FUN_1413a55a0(0);
-    if (m_min.m_bSet || m_max.m_bSet) {
+    if (FUN_140d1a9d0(&m_min) || FUN_140d1a9d0(&m_max)) {
         int nCount = FUN_1409670e0()->FUN_1410b9a50();
-        if (m_min.m_bSet && nCount < m_min.m_nValue)
+        if (FUN_140d1a9d0(&m_min) && nCount < *FUN_1413989f0(&m_min))
             return FUN_1413a55a0(0);
-        if (m_max.m_bSet && m_max.m_nValue < nCount)
+        if (FUN_140d1a9d0(&m_max) && nCount > *FUN_1413989f0(&m_max))
             return FUN_1413a55a0(0);
     }
     return FUN_1413a55a0(1);
 }
 
 // @0x1413ab5b0
-// MS2-FUNCTIONAL: branch layout / instruction order differs from the exe (same calls and conditions)
 CStringW CGuideConditionPlaceUgcCube::vfunc_7()
 {
     CStringW str = FUN_1413a5820();
     str.Append(GcFmtId(L"itemID({0})", m_nItemId));
-    if (m_min.m_bSet)
-        str.Append(GcFmtMinMax(L", minCount({0})", m_min.m_nValue));
-    if (m_max.m_bSet)
-        str.Append(GcFmtMinMax(L", maxCount({0})", m_max.m_nValue));
+    if (FUN_140d1a9d0(&m_min))
+        str.Append(GcFmtMinMax(L", minCount({0})", *FUN_1413989f0(&m_min)));
+    if (FUN_140d1a9d0(&m_max))
+        str.Append(GcFmtMinMax(L", maxCount({0})", *FUN_1413989f0(&m_max)));
     return str;
 }
 
@@ -503,37 +497,32 @@ void CGuideConditionPlaceUgcCubeItem::vfunc_2(Unk_140165cf0* pElem)
 }
 
 // @0x1413ab870
-// MS2-FUNCTIONAL: branch layout / instruction order differs from the exe (same calls and conditions)
 int CGuideConditionPlaceUgcCubeItem::vfunc_3()
 {
-    if (!m_pos.m_bSet)
+    if (Unk_GcVec3IsNull(&m_pos))
         return 0;
-    Vector3 pos(m_pos.m_x, m_pos.m_y, m_pos.m_z);
+    Vector3 pos = m_pos.GetValue();
     void* pCube = FUN_1409670e0()->FUN_1410b8ab0(pos);
     if (pCube == 0)
         return FUN_1413a55a0(0);
-    if (m_attachable.m_bSet) {
+    if (Unk_GcBoolHasValue(&m_attachable)) {
         Unk_G9ItemRef item = FUN_14053f870(FUN_1408b4f20(pCube));
-        int nAttach = item.FUN_1401b52a0()->m_nValue;
-        if ((nAttach != 0) != m_attachable.m_bValue) {
-            int nResult = FUN_1413a55a0(0);
-            item.FUN_1401b50d0();
-            return nResult;
-        }
-        item.FUN_1401b50d0();
+        bool bAttach = item.FUN_1401b52a0()->m_nValue != 0;
+        if (bAttach != m_attachable.GetValue())
+            return FUN_1413a55a0(0);
     }
     return FUN_1413a55a0(1);
 }
 
 // @0x1413ab9e0
-// MS2-FUNCTIONAL: branch layout / instruction order differs from the exe (same calls and conditions)
 CStringW CGuideConditionPlaceUgcCubeItem::vfunc_7()
 {
     CStringW str = FUN_1413a5820();
-    if (m_pos.m_bSet)
-        str.Append(GcFmtPos(L"pos({0},{1},{2})", m_pos.m_x, m_pos.m_y, m_pos.m_z));
-    if (m_attachable.m_bSet)
-        str.Append(GcFmtBool(L"isAttachable({0})", m_attachable.m_bValue));
+    if (Unk_GcVec3HasValue(&m_pos))
+        str.Append(GcFmtPos(L"pos({0},{1},{2})", static_cast<const Unk_GcOptVec3&>(m_pos).GetValue().x, static_cast<const Unk_GcOptVec3&>(m_pos).GetValue().y,
+            static_cast<const Unk_GcOptVec3&>(m_pos).GetValue().z));   // the exe calls the const GetValue 0x1413b4140 here
+    if (Unk_GcBoolHasValue(&m_attachable))
+        str.Append(GcFmtBool(L"isAttachable({0})", m_attachable.GetValue()));
     return str;
 }
 
@@ -594,24 +583,23 @@ void CGuideConditionInteractObject::vfunc_2(Unk_140165cf0* pElem)
     FUN_1408731e0(pElem, "state", m_nState);
 }
 
+// MS2-FUNCTIONAL: op-identical; the exe frame is 0x10 larger (sub rsp,0xc8), one more 16-byte local slot than this form
 // @0x1413abec0
-// MS2-FUNCTIONAL: branch layout / instruction order differs from the exe (same calls and conditions)
 int CGuideConditionInteractObject::vfunc_3()
 {
     Unk_G9Player* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pPC == 0)
         return 0;
     Vector3 posPC = pPC->vfunc_18();
-    Unk_G9ObjRef ref = FUN_1403ed2d0()->FUN_141bc6510(posPC, m_nInteractId);
-    Unk_G9Obj* pObj = static_cast<Unk_G9Obj*>(ref.FUN_1409657e0());
-    FUN_1409649b0(&ref);
+    Unk_G9Obj* pObj = static_cast<Unk_G9Obj*>(FUN_1403ed2d0()->FUN_141bc6510(posPC, m_nInteractId).FUN_1409657e0());
     if (pObj == 0)
         return 0;
-    Vector3 posObj = pObj->FUN_1409673c0();
-    float fDist = pPC->vfunc_18().FUN_140965c40(posObj).FUN_140967ac0();
-    if (fDist <= m_fDistance)
-        return FUN_1413a55a0(FUN_1413b5600(pObj) == m_nState);
-    return FUN_1413a55a0(0);
+    float fDist = pPC->vfunc_18().FUN_140965c40(pObj->FUN_1409673c0()).FUN_140967ac0();
+    if (fDist > m_fDistance)
+        return FUN_1413a55a0(0);
+    if (FUN_1413b5600(pObj) != m_nState)
+        return FUN_1413a55a0(0);
+    return FUN_1413a55a0(1);
 }
 
 // @0x1413ac050
@@ -765,31 +753,22 @@ int CGuideConditionServerTime::vfunc_3()
 }
 
 // @0x1413ac8e0
-// MS2-FUNCTIONAL: branch layout / instruction order differs from the exe (same calls and conditions)
 void CGuideConditionServerTime::vfunc_5()
 {
-    Unk_GcTime now;
-    now.FUN_1406c47a0(FUN_140869440());
-    Unk_GcTime target;
-    target.FUN_1406c47d0(2015, 4, 21, 16, 0, 0);
-    m_time.FUN_1406c4930(target);
-    CStringW strNow = FUN_14083bdc0(now, 1, CStringW(L"/"), CStringW(L":"));
-    CStringW strTarget = FUN_14083bdc0(m_time, 1, CStringW(L"/"), CStringW(L":"));
+    Unk_GcTime now(FUN_140869440());
+    m_time.FUN_1406c4930(Unk_GcTime(2015, 4, 21, 16, 0, 0));
+    CStringW strNow = FUN_14083bdc0(now, true, CStringW(L"/"), CStringW(L":"));
+    CStringW strTarget = FUN_14083bdc0(m_time, true, CStringW(L"/"), CStringW(L":"));
     FUN_1412751b0(GcFmtStr(L"curTime={0}", strNow), 0x14);
     FUN_1412751b0(GcFmtStr(L"targetTime={0}", strTarget), 0x14);
-    bool bPassed = m_time.FUN_1406c4cc0(now);
-    FUN_1412751b0(GcFmtStr(L"(passed)={0}", FUN_140719730(bPassed)), 0x14);
+    FUN_1412751b0(GcFmtStr(L"(passed)={0}", FUN_140719730(m_time.FUN_1406c4cc0(now))), 0x14);
 }
 
 // @0x1413acbe0
-// MS2-FUNCTIONAL: branch layout / instruction order differs from the exe (same calls and conditions)
 CStringW CGuideConditionServerTime::vfunc_7()
 {
     CStringW str = FUN_1413a5820();
-    Unk_GcTime t;
-    t.FUN_1406c47a0(m_time.FUN_140282020());
-    CStringW strTime = FUN_14083bdc0(t, 1, CStringW(L"/"), CStringW(L":"));
-    str.Append(GcFmtStr(L"dateTime({0})", strTime));
+    str.Append(GcFmtStr(L"dateTime({0})", FUN_14083bdc0(m_time.FUN_140282020(), true, CStringW(L"/"), CStringW(L":"))));
     return str;
 }
 

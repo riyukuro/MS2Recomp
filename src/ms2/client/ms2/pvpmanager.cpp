@@ -68,7 +68,7 @@ CPVPManager::CPVPManager()
 }
 
 // @0x141280be0
-CPVPManager::~CPVPManager()
+CPVPManager::~CPVPManager() noexcept
 {
     Clear();
 }
@@ -125,9 +125,7 @@ void CPVPManager::SendCancelRequest()
 }
 
 // @0x141281610
-// MS2-FUNCTIONAL: the exe's block destructor has no EH table although the timer destructor (try/catch(...), not noexcept)
-// is called from it; cl 19.16 emits a noexcept FuncInfo here, and the base TSingleton forces the noexcept chain
-Unk_PvpTimerBlock::~Unk_PvpTimerBlock() noexcept
+Unk_PvpTimerBlock::~Unk_PvpTimerBlock()
 {
 }
 

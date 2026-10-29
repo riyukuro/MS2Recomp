@@ -45,7 +45,6 @@ CStringW FUN_1401bf530(Unk_140165cf0*, const char*, CStringW);
 void FUN_14025a680(const CStringW&, ATL::CAtlArray<CStringW>&, const wchar_t*);
 CStringW FUN_1401e8510(const wchar_t* pszFormat, const CStringW& strArg);   // formats one text argument into the message
 CString FUN_14016a5c0(const char* psz, int n);
-void FUN_1403455f0(std::set<unsigned>* pSet, void* pResult, const unsigned* pValue);   // set<unsigned>::insert
 
 // The statics are exe globals (symbols-manual.tsv); the hook DLL binds the exe's.
 #ifndef MS2_HOOK_DLL
@@ -57,10 +56,10 @@ CDynamicActionData::SkillSet CDynamicActionData::s_allSkills;
 #endif
 
 // @0x140346f60
-// MS2-FUNCTIONAL: member init order/temp layout differs from the exe
 CDynamicActionData::CDynamicActionData()
-    : m_nDefault(0), m_nSkillId(0)
 {
+    m_nDefault = 0;
+    m_nSkillId = 0;
 }
 
 // @0x140346ff0
@@ -69,7 +68,6 @@ CDynamicActionData::~CDynamicActionData()
 }
 
 // @0x140347050
-// MS2-FUNCTIONAL: MS2Ptr temp/frame layout differs from the exe
 MS2Ptr<CDynamicActionData> CDynamicActionData::Find(int nSkillId)
 {
     CheckInit();
@@ -77,65 +75,62 @@ MS2Ptr<CDynamicActionData> CDynamicActionData::Find(int nSkillId)
     if (Unk_LockGuard guard = s_lock) {}
     else
     {
-        POSITION pos = s_rows.GetHeadPosition();
-        while (pos)
+        for (POSITION pos = s_rows.GetHeadPosition(); pos; s_rows.GetNext(pos))
         {
             spRow = s_rows.GetAt(pos);
             if (spRow->m_nSkillId == nSkillId)
                 return spRow;
-            s_rows.GetNext(pos);
         }
     }
     return MS2Ptr<CDynamicActionData>(0);
 }
 
 // @0x1403477b0
-// MS2-FUNCTIONAL: MS2Ptr temp/frame layout differs from the exe
 void CDynamicActionData::GetDefaults(ATL::CAtlArray<MS2Ptr<CDynamicActionData> >& rOut)
 {
     CheckInit();
     if (Unk_LockGuard guard = s_lock) {}
     else
     {
-        POSITION pos = s_rows.GetHeadPosition();
-        while (pos)
+        for (POSITION pos = s_rows.GetHeadPosition(); pos; s_rows.GetNext(pos))
         {
             MS2Ptr<CDynamicActionData> spRow = s_rows.GetAt(pos);
-            if (spRow->m_nDefault != 0)
-                rOut.Add(spRow);
-            s_rows.GetNext(pos);
+            if (spRow->m_nDefault == 0)
+                continue;
+            rOut.Add(spRow);
         }
     }
 }
 
 // @0x140347890
-// MS2-FUNCTIONAL: iterator temp layout differs from the exe
 bool CDynamicActionData::IsDefault(unsigned nSkillId)
 {
     CheckInit();
     SkillSet spSet = s_defaultSkills;
     if (!spSet)
         return false;
-    return spSet->find(nSkillId) != spSet->end();
+    if (spSet->find(nSkillId) == spSet->end())
+        return false;
+    return true;
 }
 
 // @0x140347960
-// MS2-FUNCTIONAL: iterator temp layout differs from the exe
 bool CDynamicActionData::IsListed(unsigned nSkillId)
 {
     CheckInit();
     SkillSet spSet = s_allSkills;
     if (!spSet)
         return false;
-    return spSet->find(nSkillId) != spSet->end();
+    if (spSet->find(nSkillId) == spSet->end())
+        return false;
+    return true;
 }
 
 // @0x140347180
-// MS2-FUNCTIONAL: EH-state/temp layout of the XML loader differs from the exe (precedent vipgoods.cpp)
 void CDynamicActionData::Load()
 {
     TiXmlDocument doc;
-    CString strPath = FUN_14071ae20(CString("korDynamicAction.xml"));
+    CString strPath = FUN_14071ae20("korDynamicAction.xml");
     if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
@@ -150,7 +145,9 @@ void CDynamicActionData::Load()
     spAll = Unk_GrNewTag(0);
     std::vector<Unk_140165cf0*> nodes;
     FUN_14028faa0(pRoot, "key", "skillID", &nodes);
-    for (std::vector<Unk_140165cf0*>::iterator it = nodes.begin(); it != nodes.end(); ++it)
+    std::vector<Unk_140165cf0*>& rNodes = nodes;
+    std::vector<Unk_140165cf0*>::const_iterator itEnd = rNodes.end();
+    for (std::vector<Unk_140165cf0*>::const_iterator it = rNodes.begin(); it != itEnd; ++it)
     {
         Unk_140165cf0* pNode = *it;
         MS2Ptr<CDynamicActionData> spRow(new CDynamicActionData);
@@ -165,10 +162,9 @@ void CDynamicActionData::Load()
         if (Unk_LockGuard guard = s_lock) {}
         else
             s_rows.AddTail(spRow);
-        char result[16];
         if (spRow->m_nDefault != 0)
-            FUN_1403455f0(spDefaults.get(), result, &spRow->m_nSkillId);
-        FUN_1403455f0(spAll.get(), result, &spRow->m_nSkillId);
+            spDefaults.get()->insert(spRow->m_nSkillId);
+        spAll.get()->insert(spRow->m_nSkillId);
     }
     s_defaultSkills = SkillSet(spDefaults);
     s_allSkills = SkillSet(spAll);

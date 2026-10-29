@@ -156,7 +156,6 @@ void CClientPlatformTencent::vfunc_25(void*) {}
 // @0x140c7d0d0
 void CClientPlatformTencent::vfunc_38(void*) {}
 
-// MS2-FUNCTIONAL: compiler scheduling/register-allocation differs from the exe
 // @0x140c7d0f0 the merat (+0x20 text id) / blue merat notice: the packet holds a type byte, then per currency a
 // "show" flag, the new balance and the change
 void CClientPlatformTencent::vfunc_42(void* a1)
@@ -164,7 +163,7 @@ void CClientPlatformTencent::vfunc_42(void* a1)
     int nType = static_cast<CInPacket*>(a1)->ReadUInt8();
     switch (nType) {
     case 0: {
-        DAT_143ab2947 = static_cast<CInPacket*>(a1)->ReadUInt8() == 1;
+        DAT_143ab2947 = static_cast<CInPacket*>(a1)->ReadUInt8() == 1 ? true : false;
         __int64 nBalance = static_cast<CInPacket*>(a1)->ReadInt64();
         __int64 nDelta = static_cast<CInPacket*>(a1)->ReadInt64();
         FUN_1409304d0(nBalance, 0, 0, 0);
@@ -173,11 +172,11 @@ void CClientPlatformTencent::vfunc_42(void* a1)
             Unk_TcRewardNotify* pNotify = FUN_140938cd0(0x4e5d);
             if (pNotify != 0)
                 pNotify->FUN_141ac0860(nDelta);
-            FUN_141276180(CString("Merat_Get"), CString(""));
+            FUN_141276180("Merat_Get", "");
             CStringW strDelta = FUN_1409404f0(nDelta);
             FUN_1412751b0(FUN_14052bd00(0x2c7, strDelta), 6);
         } else if (nDelta < 0) {
-            FUN_141276180(CString("Merat_Use"), CString(""));
+            FUN_141276180("Merat_Use", "");
             CStringW strDelta = FUN_1409404f0(-nDelta);
             FUN_1412751b0(FUN_14052bd00(0x2d9, strDelta), 6);
             if (FUN_140166410()->FUN_14036d570(0xba))
@@ -186,7 +185,7 @@ void CClientPlatformTencent::vfunc_42(void* a1)
         break;
     }
     case 1: {
-        DAT_143ab2966 = static_cast<CInPacket*>(a1)->ReadUInt8() == 1;
+        DAT_143ab2966 = static_cast<CInPacket*>(a1)->ReadUInt8() == 1 ? true : false;
         __int64 nBalance = static_cast<CInPacket*>(a1)->ReadInt64();
         __int64 nDelta = static_cast<CInPacket*>(a1)->ReadInt64();
         FUN_140930af0(nBalance);
@@ -195,11 +194,11 @@ void CClientPlatformTencent::vfunc_42(void* a1)
             Unk_TcRewardNotify* pNotify = FUN_140938cd0(0x4e5d);
             if (pNotify != 0)
                 pNotify->FUN_141ac0990(nDelta);
-            FUN_141276180(CString("Merat_Get"), CString(""));
+            FUN_141276180("Merat_Get", "");
             CStringW strDelta = FUN_1409404f0(nDelta);
             FUN_1412751b0(FUN_14052bd00(0x2c8, strDelta), 6);
         } else if (nDelta < 0) {
-            FUN_141276180(CString("Merat_Use"), CString(""));
+            FUN_141276180("Merat_Use", "");
             CStringW strDelta = FUN_1409404f0(-nDelta);
             FUN_1412751b0(FUN_14052bd00(0x2da, strDelta), 6);
             if (FUN_140166410()->FUN_14036d570(0xba))
@@ -208,19 +207,25 @@ void CClientPlatformTencent::vfunc_42(void* a1)
         break;
     }
     case 2:
-        DAT_143ab2947 = static_cast<CInPacket*>(a1)->ReadUInt8() == 1;
-        FUN_1409304d0(static_cast<CInPacket*>(a1)->ReadInt64(), 0, 0, 0);
+        DAT_143ab2947 = static_cast<CInPacket*>(a1)->ReadUInt8() == 1 ? true : false;
+    {
+        __int64 nMerat = static_cast<CInPacket*>(a1)->ReadInt64();
+        FUN_1409304d0(nMerat, 0, 0, 0);
         FUN_141b0ce20(FUN_140aa6d40(), 0xb, 0);
-        DAT_143ab2966 = static_cast<CInPacket*>(a1)->ReadUInt8() == 1;
-        FUN_140930af0(static_cast<CInPacket*>(a1)->ReadInt64());
+        DAT_143ab2966 = static_cast<CInPacket*>(a1)->ReadUInt8() == 1 ? true : false;
+        __int64 nBalance = static_cast<CInPacket*>(a1)->ReadInt64();
+        FUN_140930af0(nBalance);
         FUN_141b0ce20(FUN_140aa6d40(), 0xd, 0);
         break;
+    }
     case 4:
         FUN_140d86260()->vfunc_45();
         break;
-    case 5:
-        FUN_1403ed2b0()->FUN_141adc5d0((eUIClassID)static_cast<CInPacket*>(a1)->ReadInt32());
+    case 5: {
+        int nId = static_cast<CInPacket*>(a1)->ReadInt32();
+        FUN_1403ed2b0()->FUN_141adc5d0((eUIClassID)nId);
         break;
+    }
     default:
         MS2_ASSERT_AT(500, FALSE);
         break;
@@ -277,7 +282,6 @@ bool CClientPlatformTencent::vfunc_41(__int64 a1)
     return CClientPlatformBase::vfunc_41(a1);
 }
 
-// MS2-FUNCTIONAL: compiler scheduling/register-allocation differs from the exe
 // @0x140c7dc20 opens the Tencent report dialog with the report copied into its data
 void CClientPlatformTencent::vfunc_48(MS2Ptr<CUserReportData> spReport)
 {
@@ -314,7 +318,7 @@ void CClientPlatformTencent::vfunc_48(MS2Ptr<CUserReportData> spReport)
         data.guildNumber = spReport->GetField58();
         FUN_140c7ee40(pDialog, &data);
         pDialog->FUN_141924680();
-        FUN_141276180(s_strReportSiren, CString(""));
+        FUN_141276180(s_strReportSiren, "");
     }
 }
 
@@ -371,7 +375,6 @@ bool FUN_140c7e3d0(CClientPlatformTencent*, unsigned char nKind, bool bOn, int n
     return FUN_1407105c0(packet, nKind, nParam);
 }
 
-// MS2-FUNCTIONAL: compiler scheduling/register-allocation differs from the exe
 // @0x140c7e460 the open dialog of the given ui class id as a Tencent report dialog
 UITencentUserReportDialog* FUN_140c7e460(int nId)
 {
@@ -423,17 +426,10 @@ Unk_ReportData* FUN_140c7e6c0(Unk_ReportData* pTo, const Unk_ReportData* pFrom)
     return pTo;
 }
 
-// MS2-FUNCTIONAL: compiler scheduling/register-allocation differs from the exe
-// FUN_140c7ee40 reaches the dialog's private data member through the layout friend
-template <> struct MS2LayoutCheck<UITencentUserReportDialog, 7001>
-{
-    static Unk_ReportData& Data(UITencentUserReportDialog* p) { return p->m_data; }
-};
-
-// @0x140c7ee40
+// @0x140c7ee40 copies the report into the dialog's private m_data (+0x188)
 void FUN_140c7ee40(UITencentUserReportDialog* pDialog, const Unk_ReportData* pData)
 {
-    FUN_140c7e6c0(&MS2LayoutCheck<UITencentUserReportDialog, 7001>::Data(pDialog), pData);
+    FUN_140c7e6c0(reinterpret_cast<Unk_ReportData*>(reinterpret_cast<char*>(pDialog) + 0x188), pData);
 }
 
 // @0x140c7e570 frees the BSTR a holder points at
@@ -442,32 +438,29 @@ void FUN_140c7e570(BSTR* p)
     SysFreeString(*p);
 }
 
-// MS2-FUNCTIONAL: the exe loads the holder pointer through a register copy before the call
+// the 0x10 byte BSTR holder; the string pointer is its first word
+struct Unk_TcBstrHolder { BSTR m_bstr; void* m_8; };
 // @0x140c7e6a0
-void FUN_140c7e6a0(BSTR* p)
+void FUN_140c7e6a0(Unk_TcBstrHolder* p)
 {
-    FUN_140c7e570(p);
+    FUN_140c7e570(&p->m_bstr);
 }
 
 // @0x140c7e9b0 vector/scalar deleting destructor of the 0x10 byte BSTR holders
-// MS2-FUNCTIONAL: element destruction loop is open coded instead of the CRT eh vector iterator
-void* FUN_140c7e9b0(void* p, unsigned int nFlags)
+void FUN_142749a60(void* p, size_t nSize, size_t nCount, void (*pfnDtor)(void*));   // eh vector destructor iterator
+// 0x142749a60 is in the exe's CRT, which is never mapped: bind it to the DLL CRT's `eh vector destructor iterator'
+#pragma comment(linker, "/alternatename:?FUN_142749a60@@YAXPEAX_K1P6AX0@Z@Z=??_M@YAXPEAX_K1P6AX0@Z@Z")
+void* FUN_140c7e9b0(void* p, unsigned int nFlags) noexcept
 {
-    if ((nFlags & 2) == 0) {
-        FUN_140c7e6a0((BSTR*)p);
-        if (nFlags & 1) {
-            operator delete(p);
-        }
-    } else {
-        char* pBase = (char*)p - 8;
-        for (unsigned long long n = *(unsigned long long*)pBase; n > 0; --n) {
-            FUN_140c7e6a0((BSTR*)((char*)p + (n - 1) * 0x10));
-        }
-        if (nFlags & 1) {
-            operator delete[](pBase);
-        }
-        p = pBase;
+    if (nFlags & 2) {
+        FUN_142749a60(p, 0x10, *(size_t*)((char*)p - 8), (void (*)(void*))FUN_140c7e6a0);
+        if (nFlags & 1)
+            operator delete[]((char*)p - 8, *(size_t*)((char*)p - 8) * 0x10 + 8);
+        return (char*)p - 8;
     }
+    FUN_140c7e6a0((Unk_TcBstrHolder*)p);
+    if (nFlags & 1)
+        operator delete(p, 0x10);
     return p;
 }
 

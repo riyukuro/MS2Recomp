@@ -58,7 +58,6 @@ CString UITokenPocketDialog::GetTypeName()
 }
 
 // @0x141351af0
-// MS2-FUNCTIONAL: nine inline MS2Ptr temporaries; temp / frame layout differs
 void UITokenPocketDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
@@ -85,9 +84,10 @@ void UITokenPocketDialog::OnLoadComplete()
         m_200 = FUN_141352cf0(0x10, L"$s_token_pocket_meso_market_token_tooltip");
     MS2Ptr<ASMovieClip> spBgWhite = FUN_140ba7930("m_bgWhite");
     MS2Ptr<ASMovieClip> spBgBlack = FUN_140ba7930("m_bgBlack");
-    int nY = m_178;
-    static_cast<Unk_TpClip*>(spBgWhite.get())->FUN_1422c0ec0(nY + 0xb);
-    static_cast<Unk_TpClip*>(spBgBlack.get())->FUN_1422c0ec0(nY - 0x2c);
+    int nBlackY = m_178 - 0x2c;
+    int nWhiteY = nBlackY + 0x37;
+    static_cast<Unk_TpClip*>(spBgWhite.get())->FUN_1422c0ec0(nWhiteY);
+    static_cast<Unk_TpClip*>(spBgBlack.get())->FUN_1422c0ec0(nBlackY);
     FUN_140939a10()->FUN_140da4e40(L"NotifyChangedTokenMoney", Delegate<void(NotifyObject*)>(this, &UITokenPocketDialog::FUN_141352530));
     FUN_141352560();
 }
@@ -123,12 +123,11 @@ void UITokenPocketDialog::FUN_141352530(NotifyObject* pNotify)
 }
 
 // @0x141352560
-// MS2-FUNCTIONAL: nine unrolled refresh blocks; temp / frame layout differs
 void UITokenPocketDialog::FUN_141352560()
 {
     if (m_30.IsNull() != 0)
         return;
-    CString strField = "textField";
+    const CString& strField = "textField";
     if (m_180.get() != 0)
         FUN_140cfee80(m_180->FUN_1422bb890(), strField, FUN_141900120(4, 0, 0));
     if (m_190.get() != 0)
@@ -150,13 +149,12 @@ void UITokenPocketDialog::FUN_141352560()
 }
 
 // @0x141352cf0
-// MS2-FUNCTIONAL: MS2Ptr return temp / frame layout differs
-MS2Ptr<ASUIComponent> UITokenPocketDialog::FUN_141352cf0(int nTokenKind, CStringW strTooltip)
+MS2Ptr<ASUIComponent> UITokenPocketDialog::FUN_141352cf0(int nTokenKind, const CStringW& strTooltip)
 {
     MS2Ptr<ASUIComponent> spSlot(new ASUIComponent(CString("UITokenPocketDialog_slot"), 2));
     int nVSpace = -4;
-    CStringW strImg = FUN_140275590(L"<img src='{0}' vspace='{1}'/>", FUN_1418fe870(nTokenKind, &nVSpace, 0), nVSpace);
-    FUN_140cff1b0(spSlot->FUN_1422bb890(), "icon", strImg);
+    const CStringW& strSrc = FUN_1418fe870(nTokenKind, &nVSpace, 0);
+    FUN_140cff1b0(spSlot->FUN_1422bb890(), "icon", FUN_140275590(L"<img src='{0}' vspace='{1}'/>", strSrc, nVSpace));
     spSlot.get()->FUN_1422bffe0(0xe, m_178);
     m_178 += 0x17;
     m_90->FUN_1422c6900(spSlot->FUN_1422bb890());

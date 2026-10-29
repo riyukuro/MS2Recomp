@@ -29,7 +29,7 @@ class StateCoupleEmotionData : public StateData
 {
 public:
     StateCoupleEmotionData();                               // 0x140b7fa70
-    virtual ~StateCoupleEmotionData();                      // 0x140b85cb0 (??_G 0x140b860c0)
+    // ~StateCoupleEmotionData() is implicit (0x140b85cb0, ??_G 0x140b860c0): the exe dtor stores no vftable
     virtual void vfunc_1(Unk_StateDataArg* p);              // 1 0x140b7fb00
     virtual void vfunc_2(Unk_StateDataArg* p);              // 2 0x140b7fbe0
 

@@ -38,7 +38,7 @@ public:
     Unk_FileArchive();
     ~Unk_FileArchive();
     void FUN_1406b1450();
-    int FUN_1406af680(std::string path, int mode);
+    int FUN_1406af680(std::string path, const char* prefix);
     void FUN_1406b1ad0(Unk_FileTransform transform);
     void FUN_1406b1b20(Unk_FileTransform transform);
     int FUN_1406b1760(std::string path);

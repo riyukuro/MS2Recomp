@@ -122,13 +122,9 @@ int TradeSlot::vfunc_18(void* p)
             if (spItem.get())
                 pInven->FUN_14140b6d0(spItem);
         }
-        pInven->vfunc_10();
+        return pInven->vfunc_10();
     }
-    else
-    {
-        static_cast<DragSlot*>(p)->vfunc_10();
-    }
-    return 1;   // MS2-FUNCTIONAL: the exe's override returns void (eax is whatever vfunc_10 left)
+    return static_cast<DragSlot*>(p)->vfunc_10();
 }
 
 // @0x14185df40 (ITooltip::vfunc_0)

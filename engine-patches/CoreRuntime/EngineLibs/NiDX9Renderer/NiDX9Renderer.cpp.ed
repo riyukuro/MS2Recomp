@@ -1,4 +1,31 @@
+5202a
+
+//------------------------------------------------------------------------------------------------
+// MS2: the dtor's pre-pack cleanup as a separate member (0x1427d4ae0)
+void NiDX9Renderer::PurgePrePackData()
+{
+    NiTListIterator kPrepackIter = m_kPrePackMeshes.GetHeadPos();
+    while (kPrepackIter)
+    {
+        PrePackMesh* pkObject = m_kPrePackMeshes.GetNext(kPrepackIter);
+        pkObject->m_spMesh = NULL;
+    }
+    m_kPrePackMeshes.RemoveAll();
+
+    kPrepackIter = m_kPrePackTextures.GetHeadPos();
+    while (kPrepackIter)
+    {
+        PrePackTexture* pkObject = m_kPrePackTextures.GetNext(kPrepackIter);
+        pkObject->m_spTexture = NULL;
+        pkObject->m_spSrcPixelData = NULL;
+    }
+    m_kPrePackTextures.RemoveAll();
+}
+.
 4778@37s "" "(const char*)"
+4110c
+        if (!pkTexture->GetRendererData() && !pkTexture->GetLoadDirectToRendererHint())   // MS2: game 0x1427cc5f0 skips a texture that already has renderer data
+.
 4008a
 // MS2: fullscreen display mode switching (exe 0x1427cb2a0, 0x1427d5390) and the game's device-lost hold
 // (exe 0x1427d5c10)
@@ -150,6 +177,23 @@ const char* NiDX9Renderer::GetDriverName() const
         ms_pkDefaultVisibleArray->RemoveAll();
     ReleaseDeferredResources();
 
+.
+566a
+
+    // MS2: back to the desktop mode (RestoreDisplayMode inlined, exe 0x1427c9eb2)
+    if (m_bMS2DisplayModeChanged)
+    {
+        if (m_kMS2DisplayMode.dmPelsWidth != m_kMS2OriginalMode.dmPelsWidth ||
+            m_kMS2DisplayMode.dmPelsHeight != m_kMS2OriginalMode.dmPelsHeight)
+        {
+            SetDisplayMode(m_kMS2OriginalMode.dmPelsWidth, m_kMS2OriginalMode.dmPelsHeight);
+        }
+        m_bMS2DisplayModeChanged = false;
+    }
+.
+445,460c
+    PurgePrePackData();  // MS2: out of line (0x1427d4ae0)
+#line 469 // MS2 __LINE__ (linefix)
 .
 164a
     m_bMS2DeviceLostHeld = false;  // MS2: +0x851

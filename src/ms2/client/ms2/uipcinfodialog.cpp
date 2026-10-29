@@ -238,6 +238,7 @@ CStringW FUN_140632a60(int nId, const CStringW& a, const CStringW& b);
 CStringW FUN_14052bd00(int nStringId, const CStringW& str);
 CStringW FUN_14082f000(int nStat);
 CStringW FUN_140630e10(int nStat);
+CString FUN_14052ea30(const char* pszFormat, const int& nArg);    // StringFormat<int> copy
 CStringW FUN_14016a730(const char* sz, int n);
 CString FUN_141028be0(__int64 nCharacterId, const CString& strKey, int nKind, CString strExt);
 const CStringA& FUN_14082efb0(int nStat);
@@ -331,187 +332,186 @@ MS2_REPLACE_METHOD(0x14132C130, UIPCInfoDialog, FUN_14132c130, 498, 0x0DF6E9F0);
 // @0x14132c330
 void UIPCInfoDialog::FUN_14132c330(CPCDataPack* pPack)
 {
-    if ((PCInfo*)m_spInfo == 0)
+    if ((PCInfo*)m_spInfo != 0)
+        return;
+    CPCData data;
+    pPack->FUN_14071f8a0(&data);
+    MS2Ptr<PCInfo> spInfo(new PCInfo());
+    spInfo->m_18 = data.m_n30;
+    spInfo->m_1c = data.m_n34;
+    spInfo->m_20 = data.m_n38;
+    spInfo->m_28 = data.m_n18;
+    spInfo->m_30 = data.m_n20;
+    spInfo->m_38 = data.m_n3d4;
+    spInfo->m_aIds.Copy(reinterpret_cast<const ATL::CAtlArray<unsigned int>&>(data.m_arr3d8));
+    spInfo->m_60 = data.m_n44;
+    *reinterpret_cast<Unk_PciStatBlock*>(spInfo->m_aStats0) = *reinterpret_cast<const Unk_PciStatBlock*>(data.m_a48);
+    *reinterpret_cast<Unk_PciStatBlock*>(spInfo->m_aStats1) = *reinterpret_cast<const Unk_PciStatBlock*>(data.m_a160);
+    *reinterpret_cast<Unk_PciStatBlock*>(spInfo->m_aStats2) = *reinterpret_cast<const Unk_PciStatBlock*>(data.m_a278);
+    spInfo->m_3b0 = reinterpret_cast<const std::map<SAType, int>&>(data.m_map390);
+    spInfo->m_3c0 = 0;
+    spInfo->m_3c4 = data.m_n3c;
+    spInfo->m_3d4 = data.m_n3f8;
+    spInfo->m_3e0 = data.m_str3a0;
+    spInfo->m_3e8 = data.m_str28;
+    spInfo->m_3f0 = CAddressTable::FormatBuddy(data.m_n20, data.m_n3c8, data.m_n3cc, data.m_n3d0, data.m_str3c0);
+    spInfo->m_3f8 = data.m_str3b0;
+    spInfo->m_400 = data.m_str3b8;
+    spInfo->m_408 = data.m_str3a8;
+    spInfo->m_3c8 = data.m_n3fc;
+    spInfo->m_3d8 = data.m_n408;
+    spInfo->m_3dc = data.m_n40c;
+    spInfo->m_530 = data.m_n40;
+    spInfo->m_nGuildRank = data.m_n418;
+    spInfo->m_strGuildEmblemPath = data.m_str428;
+    spInfo->m_strGuildName = data.m_str420;
+    spInfo->m_nGuildId = data.m_n430;
+    spInfo->m_nGuildEmblem = data.m_n438;
+
+    CPCDataPack::ItemArray aEquip;
+    CPCDataPack::ItemArray aGems;
+    CPCDataPack::ItemArray aSkins;
+    pPack->FUN_140720030(aEquip, aGems, spInfo->m_508, spInfo->m_510, spInfo->m_520, aSkins);
+
+    m_spAvatar.AssignRaw(new UIAvatarPC(reinterpret_cast<MS2Ptr<Unk_PCArg125>&>(spInfo), false));
+    m_spAvatar->vfunc_1(this);
+    UIAvatarPC* pAvatar = dynamic_cast<UIAvatarPC*>((UIAvatarBase*)m_spAvatar);
+    AvatarPC* pAvatarPC = 0;
+    if (pAvatar != 0 && (pAvatarPC = pAvatar->FUN_1418bd1d0()) != 0)
     {
-        CPCData data;
-        pPack->FUN_14071f8a0(&data);
-        MS2Ptr<PCInfo> spInfo(new PCInfo());
-        spInfo->m_18 = data.m_n30;
-        spInfo->m_1c = data.m_n34;
-        spInfo->m_20 = data.m_n38;
-        spInfo->m_28 = data.m_n18;
-        spInfo->m_30 = data.m_n20;
-        spInfo->m_38 = data.m_n3d4;
-        spInfo->m_aIds.Copy(reinterpret_cast<const ATL::CAtlArray<unsigned int>&>(data.m_arr3d8));
-        spInfo->m_60 = data.m_n44;
-        *reinterpret_cast<Unk_PciStatBlock*>(spInfo->m_aStats0) = *reinterpret_cast<const Unk_PciStatBlock*>(data.m_a48);
-        *reinterpret_cast<Unk_PciStatBlock*>(spInfo->m_aStats1) = *reinterpret_cast<const Unk_PciStatBlock*>(data.m_a160);
-        *reinterpret_cast<Unk_PciStatBlock*>(spInfo->m_aStats2) = *reinterpret_cast<const Unk_PciStatBlock*>(data.m_a278);
-        spInfo->m_3b0 = reinterpret_cast<const std::map<SAType, int>&>(data.m_map390);
-        spInfo->m_3c0 = 0;
-        spInfo->m_3c4 = data.m_n3c;
-        spInfo->m_3d4 = data.m_n3f8;
-        spInfo->m_3e0 = data.m_str3a0;
-        spInfo->m_3e8 = data.m_str28;
-        spInfo->m_3f0 = CAddressTable::FormatBuddy(data.m_n20, data.m_n3c8, data.m_n3cc, data.m_n3d0, data.m_str3c0);
-        spInfo->m_3f8 = data.m_str3b0;
-        spInfo->m_400 = data.m_str3b8;
-        spInfo->m_408 = data.m_str3a8;
-        spInfo->m_3c8 = data.m_n3fc;
-        spInfo->m_3d8 = data.m_n408;
-        spInfo->m_3dc = data.m_n40c;
-        spInfo->m_530 = data.m_n40;
-        spInfo->m_nGuildRank = data.m_n418;
-        spInfo->m_strGuildEmblemPath = data.m_str428;
-        spInfo->m_strGuildName = data.m_str420;
-        spInfo->m_nGuildId = data.m_n430;
-        spInfo->m_nGuildEmblem = data.m_n438;
+        pAvatarPC->FUN_1410885b0(true);
+        pAvatarPC->FUN_1416591e0(0, FUN_141b6dea0(data.m_an410[0]));
+        pAvatarPC->FUN_1416591e0(1, FUN_141b6dea0(data.m_an410[1]));
+    }
 
-        CPCDataPack::ItemArray aEquip;
-        CPCDataPack::ItemArray aGems;
-        CPCDataPack::ItemArray aSkins;
-        pPack->FUN_140720030(aEquip, aGems, spInfo->m_508, spInfo->m_510, spInfo->m_520, aSkins);
-
-        m_spAvatar.AssignRaw(new UIAvatarPC(reinterpret_cast<MS2Ptr<Unk_PCArg125>&>(spInfo), false));
-        m_spAvatar->vfunc_1(this);
-        UIAvatarPC* pAvatar = dynamic_cast<UIAvatarPC*>((UIAvatarBase*)m_spAvatar);
-        AvatarPC* pAvatarPC = 0;
-        if (pAvatar != 0 && (pAvatarPC = pAvatar->FUN_1418bd1d0()) != 0)
+    unsigned int nAttackMin = 0;
+    unsigned int nAttackMax = 0;
+    unsigned int nRightMin = 0;
+    unsigned int nLeftMin = 0;
+    unsigned int nRightMax = 0;
+    unsigned int nLeftMax = 0;
+    int nRings = 0;
+    int nCount = (int)aEquip.GetCount();
+    for (int i = 0; i < nCount; i++)
+    {
+        MS2Ptr<CItem> spItem = aEquip[i];
+        if (spItem == 0)
         {
-            pAvatarPC->FUN_1410885b0(true);
-            pAvatarPC->FUN_1416591e0(0, FUN_141b6dea0(data.m_an410[0]));
-            pAvatarPC->FUN_1416591e0(1, FUN_141b6dea0(data.m_an410[1]));
+            MS2_ASSERT_AT(235, FALSE);
+            continue;
         }
-
-        unsigned int nAttackMin = 0;
-        unsigned int nAttackMax = 0;
-        unsigned int nRightMin = 0;
-        unsigned int nLeftMin = 0;
-        unsigned int nRightMax = 0;
-        unsigned int nLeftMax = 0;
-        int nRings = 0;
-        int nCount = (int)aEquip.GetCount();
-        for (int i = 0; i < nCount; i++)
+        Unk_InventoryEquipSlot nSlot = (Unk_InventoryEquipSlot)spItem->FUN_140526c30();
+        if (nSlot == 0)
+            nSlot = (Unk_InventoryEquipSlot)spItem->FUN_140527a20();
+        if (spItem->FUN_1405258b0() != 0)
+            spInfo->m_mapEquip1.SetAt(nSlot, spItem);
+        else
+            spInfo->m_mapEquip0.SetAt(nSlot, spItem);
+        if (pAvatarPC != 0)
         {
-            MS2Ptr<CItem> spItem = aEquip[i];
+            MS2Ptr<CItem> spCopy = spItem->FUN_140524250();
+            spCopy->FUN_140526b30(pAvatar->vfunc_25());
+            pAvatarPC->vfunc_127(spCopy.get(), 0);
+        }
+        MS2Ptr<CItemData> spData(FUN_140527840(spItem.operator->()));
+        if (spData == 0)
+            continue;
+        if (spItem->FUN_1405258b0() != 0)
+            continue;
+        if (!spItem->FUN_140528980())
+            continue;
+        unsigned int nMin = spItem->FUN_140529070();
+        unsigned int nMax = spItem->FUN_140529090();
+        if (nSlot == 4)
+        {
+            nRightMin = nMin;
+            nRightMax = nMax;
+            if (spData->FUN_14053d510())
+                nRings++;
+        }
+        else if (nSlot == 5)
+        {
+            nLeftMin = nMin;
+            nLeftMax = nMax;
+            if (spData->FUN_14053d510())
+                nRings++;
+        }
+        else
+        {
+            nAttackMin += nMin;
+            nAttackMax += nMax;
+        }
+    }
+    Unk_PciRange range;
+    float fDivisor = *FUN_1401d3200()->m_ae10.FUN_140298f40();
+    switch (nRings)
+    {
+    case 0:
+        nAttackMin += nLeftMin;
+        nAttackMax += nLeftMax;
+        break;
+    case 1:
+        nAttackMin += (float)nLeftMin / fDivisor;
+        nAttackMax += (float)nLeftMax / fDivisor;
+        break;
+    case 2:
+    {
+        unsigned int nLow = nRightMin < nLeftMin ? nRightMin : nLeftMin;
+        unsigned int nHigh = nRightMin > nLeftMin ? nRightMin : nLeftMin;
+        unsigned int nLowMax = nRightMax < nLeftMax ? nRightMax : nLeftMax;
+        unsigned int nHighMax = nRightMax > nLeftMax ? nRightMax : nLeftMax;
+        int nAddMin = 0;
+        int nAddMax = 0;
+        FUN_1401c0db0()->CalcOHItemAdditionalLevel(nLow, nHigh, nLowMax, nHighMax, &nAddMin, &nAddMax);
+        nAttackMin += nAddMin;
+        nAttackMax += nAddMax;
+        break;
+    }
+    default:
+        nAttackMin += (float)nLeftMin / fDivisor;
+        nAttackMax += (float)nLeftMax / fDivisor;
+        break;
+    }
+    spInfo->m_3cc = nAttackMin;
+    spInfo->m_3d0 = nAttackMax;
+
+    spInfo->m_aItems.Copy(aGems);
+    size_t nGems = aGems.GetCount();
+    for (size_t i = 0; i < nGems; i++)
+    {
+        MS2Ptr<CItem> spItem = aGems[i];
+        if (spItem == 0)
+            continue;
+        if (pAvatarPC != 0)
+        {
+            MS2Ptr<CItem> spCopy = spItem->FUN_140524250();
+            FUN_14165f460(pAvatarPC)->FUN_141270bf0(spCopy);
+        }
+    }
+    if (spInfo->m_508)
+    {
+        size_t nSkins = aSkins.GetCount();
+        for (size_t i = 0; i < nSkins; i++)
+        {
+            MS2Ptr<CItem> spItem = aSkins[i];
             if (spItem == 0)
             {
-                MS2_ASSERT_AT(235, FALSE);
+                MS2_ASSERT_AT(363, FALSE);
                 continue;
             }
             Unk_InventoryEquipSlot nSlot = (Unk_InventoryEquipSlot)spItem->FUN_140526c30();
             if (nSlot == 0)
                 nSlot = (Unk_InventoryEquipSlot)spItem->FUN_140527a20();
-            if (spItem->FUN_1405258b0() == 0)
-                spInfo->m_mapEquip0.SetAt(nSlot, spItem);
-            else
-                spInfo->m_mapEquip1.SetAt(nSlot, spItem);
+            spInfo->m_mapEquip2.SetAt(nSlot, spItem);
             if (pAvatarPC != 0)
             {
-                MS2Ptr<CItem> spCopy = spItem->FUN_140524250();
+                MS2Ptr<CItem> spCopy = FUN_140ccac60(spItem);
                 spCopy->FUN_140526b30(pAvatar->vfunc_25());
                 pAvatarPC->vfunc_127(spCopy.get(), 0);
             }
-            MS2Ptr<CItemData> spData(FUN_140527840(spItem.get()));
-            if (spData == 0)
-                continue;
-            if (spItem->FUN_1405258b0() != 0)
-                continue;
-            if (!spItem->FUN_140528980())
-                continue;
-            unsigned int nMin = spItem->FUN_140529070();
-            unsigned int nMax = spItem->FUN_140529090();
-            if (nSlot == 4)
-            {
-                nRightMin = nMin;
-                nRightMax = nMax;
-                if (spData->FUN_14053d510())
-                    nRings++;
-            }
-            else if (nSlot == 5)
-            {
-                nLeftMin = nMin;
-                nLeftMax = nMax;
-                if (spData->FUN_14053d510())
-                    nRings++;
-            }
-            else
-            {
-                nAttackMin += nMin;
-                nAttackMax += nMax;
-            }
         }
-        Unk_PciRange range;
-        float fDivisor = *FUN_1401d3200()->m_ae10.FUN_140298f40();
-        switch (nRings)
-        {
-        case 0:
-            nAttackMin += nLeftMin;
-            nAttackMax += nLeftMax;
-            break;
-        case 1:
-            nAttackMin = (unsigned int)(__int64)((float)nAttackMin + (float)nLeftMin / fDivisor);
-            nAttackMax = (unsigned int)(__int64)((float)nAttackMax + (float)nLeftMax / fDivisor);
-            break;
-        case 2:
-        {
-            unsigned int nLow = nRightMin < nLeftMin ? nRightMin : nLeftMin;
-            unsigned int nHigh = nLeftMin < nRightMin ? nRightMin : nLeftMin;
-            unsigned int nLowMax = nRightMax < nLeftMax ? nRightMax : nLeftMax;
-            unsigned int nHighMax = nLeftMax < nRightMax ? nRightMax : nLeftMax;
-            int nAddMin = 0;
-            int nAddMax = 0;
-            FUN_1401c0db0()->CalcOHItemAdditionalLevel(nLow, nHigh, nLowMax, nHighMax, &nAddMin, &nAddMax);
-            nAttackMin += nAddMin;
-            nAttackMax += nAddMax;
-            break;
-        }
-        default:
-            nAttackMin = (unsigned int)(__int64)((float)nAttackMin + (float)nLeftMin / fDivisor);
-            nAttackMax = (unsigned int)(__int64)((float)nAttackMax + (float)nLeftMax / fDivisor);
-            break;
-        }
-        spInfo->m_3cc = nAttackMin;
-        spInfo->m_3d0 = nAttackMax;
-
-        spInfo->m_aItems.Copy(aGems);
-        size_t nGems = aGems.GetCount();
-        for (size_t i = 0; i < nGems; i++)
-        {
-            MS2Ptr<CItem> spItem = aGems[i];
-            if (spItem == 0)
-                continue;
-            if (pAvatarPC != 0)
-            {
-                MS2Ptr<CItem> spCopy = spItem->FUN_140524250();
-                FUN_14165f460(pAvatarPC)->FUN_141270bf0(spCopy);
-            }
-        }
-        if (spInfo->m_508)
-        {
-            size_t nSkins = aSkins.GetCount();
-            for (size_t i = 0; i < nSkins; i++)
-            {
-                MS2Ptr<CItem> spItem = aSkins[i];
-                if (spItem == 0)
-                {
-                    MS2_ASSERT_AT(363, FALSE);
-                    continue;
-                }
-                Unk_InventoryEquipSlot nSlot = (Unk_InventoryEquipSlot)spItem->FUN_140526c30();
-                if (nSlot == 0)
-                    nSlot = (Unk_InventoryEquipSlot)spItem->FUN_140527a20();
-                spInfo->m_mapEquip2.SetAt(nSlot, spItem);
-                if (pAvatarPC != 0)
-                {
-                    MS2Ptr<CItem> spCopy = FUN_140ccac60(spItem);
-                    spCopy->FUN_140526b30(pAvatar->vfunc_25());
-                    pAvatarPC->vfunc_127(spCopy.get(), 0);
-                }
-            }
-        }
-        m_spInfo = spInfo;
     }
+    m_spInfo = spInfo;
 }
 
 // @0x14132d500
@@ -629,21 +629,20 @@ void UIPCInfoDialog::OnLoadComplete()
     if (pAvatar != 0 && pAvatar->FUN_1418bd1d0() != 0)
         pAvatar->FUN_1418bd1d0()->FUN_1410885b0(true);
     bool bCodi = FUN_140166410()->FUN_14036d570(0x8e);
-    if ((PCInfo*)m_spInfo != 0)
-    {
-        if (m_spInfo->FUN_140dba1c0() == 0)
-            bCodi = m_spInfo->m_508;
-    }
+    if (((PCInfo*)m_spInfo != 0 ? true : false) && m_spInfo->FUN_140dba1c0() == 0)
+        bCodi = m_spInfo->m_508;
     if (m_30.get() != 0)
     {
         ASObj obj(2);
-        ASDataProvider aTabs(2);
-        FUN_141336e40(aTabs, 0, L"$s_myInfo_game", L"equip", L"$s_tooltip_myinfo_tab_equip");
-        FUN_141336e40(aTabs, 1, L"$s_myInfo_skin", L"equip", L"$s_tooltip_myinfo_tab_skin");
-        if (bCodi)
-            FUN_141336e40(aTabs, 3, L"$s_myInfo_codi", L"equip", L"$s_tooltip_myinfo_tab_codi");
-        FUN_141336e40(aTabs, 2, L"$s_myInfo_badge", L"gem", L"$s_tooltip_myinfo_tab_badge");
-        obj.FUN_1409adbe0("dpTab", aTabs.FUN_1422bb870());
+        {
+            ASDataProvider aTabs(2);
+            FUN_141336e40(aTabs, 0, L"$s_myInfo_game", L"equip", L"$s_tooltip_myinfo_tab_equip");
+            FUN_141336e40(aTabs, 1, L"$s_myInfo_skin", L"equip", L"$s_tooltip_myinfo_tab_skin");
+            if (bCodi)
+                FUN_141336e40(aTabs, 3, L"$s_myInfo_codi", L"equip", L"$s_tooltip_myinfo_tab_codi");
+            FUN_141336e40(aTabs, 2, L"$s_myInfo_badge", L"gem", L"$s_tooltip_myinfo_tab_badge");
+            obj.FUN_1409adbe0("dpTab", aTabs.FUN_1422bb870());
+        }
         m_30->Invoke("initData", obj.FUN_1422bb870());
     }
     vfunc_84();
@@ -656,7 +655,7 @@ void UIPCInfoDialog::OnLoadComplete()
     m_spMyNews->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIPCInfoDialog::FUN_14132ed50), 0);
     if (MS2Ptr<ASButton> spScreenshot = ((Unk_PciMovieEntity*)this)->FUN_140bb4b10("m_screenshot"))
     {
-        if ((PCInfo*)m_spInfo != 0 && m_spInfo->FUN_140dba1c0() != 0 && FUN_140166410()->FUN_14036d570(0xf7))
+        if (((PCInfo*)m_spInfo != 0 ? true : false) && m_spInfo->FUN_140dba1c0() != 0 && FUN_140166410()->FUN_14036d570(0xf7))
         {
             ((Unk_PciComp*)spScreenshot.operator->())->FUN_1422c1fe0(1);
             spScreenshot->vfunc_3(1);
@@ -845,7 +844,6 @@ show:
 }
 MS2_REPLACE_METHOD(0x14132F020, UIPCInfoDialog, FUN_14132f020, 1446, 0x42E4BD98);
 
-// MS2-FUNCTIONAL: wedding tooltip from the decompile
 // @0x14132f5d0
 void UIPCInfoDialog::FUN_14132f5d0(const Scaleform::GFx::FunctionHandler::Params& params)
 {
@@ -866,8 +864,7 @@ void UIPCInfoDialog::FUN_14132f5d0(const Scaleform::GFx::FunctionHandler::Params
             break;
         case 2:
         {
-            __int64 nNow = FUN_140869440();
-            int nDays = FUN_14086b900(m_spInfo->m_nGuildEmblem, nNow);
+            int nDays = FUN_14086b900(m_spInfo->m_nGuildEmblem, FUN_140869440());
             strText = FUN_14028dfa0(CStringW(L"s_wedding_state_marriage"), strPartner, nDays);
             break;
         }
@@ -948,11 +945,11 @@ void UIPCInfoDialog::vfunc_86()
         return;
     if (MS2Ptr<Unk_PciLabel> spItemLevel = ((Unk_PciMovieEntity*)this)->FUN_140e6d820("m_itemLevelInfo"))
     {
-        int nBase = m_spInfo->m_3cc - m_spInfo->m_3d0;
-        CStringW strDetail = StringFormat(L"{0} + ({1})", nBase, m_spInfo->m_3d0);
+        unsigned int nBase = m_spInfo->m_3cc - m_spInfo->m_3d0;
+        CStringW strDetail = StringFormat(L"{0} + ({1})", nBase, (unsigned int)m_spInfo->m_3d0);
         CStringW strValue = StringFormat(L"{0}", (unsigned int)m_spInfo->m_3cc);
-        FUN_140cfee80(spItemLevel->FUN_1422bb890(), "detail", strDetail);
-        FUN_140cfee80(spItemLevel->FUN_1422bb890(), "value", strValue);
+        FUN_140cfee80((*spItemLevel).FUN_1422bb890(), "detail", strDetail);
+        FUN_140cfee80((*spItemLevel).FUN_1422bb890(), "value", strValue);
         spItemLevel->Invoke("changeTooltipText", FUN_14025e7a0()->FUN_1422b0570("$s_tooltip_myinfo_stat_itemLevel_ohAdditional"));
     }
     if (MS2Ptr<Unk_PciLabel> spAttack = ((Unk_PciMovieEntity*)this)->FUN_140e6d820("m_attackInfo"))
@@ -960,11 +957,11 @@ void UIPCInfoDialog::vfunc_86()
         CStringW strDetail(L"");
         __int64 nScore = FUN_141334890();
         CStringW strValue = StringFormat(L"{0}", nScore);
-        FUN_140cfee80(spAttack->FUN_1422bb890(), "detail", strDetail);
-        FUN_140cfee80(spAttack->FUN_1422bb890(), "value", strValue);
+        FUN_140cfee80((*spAttack).FUN_1422bb890(), "detail", strDetail);
+        FUN_140cfee80((*spAttack).FUN_1422bb890(), "value", strValue);
         if (FUN_140166410()->FUN_14036d570(0xdf))
         {
-            FUN_140cff1b0(spAttack->FUN_1422bb890(), "textField", FUN_14025e7a0()->FUN_1422b0570("$s_myInfo_label_attackScore"));
+            FUN_140cff1b0((*spAttack).FUN_1422bb890(), "textField", FUN_14025e7a0()->FUN_1422b0570("$s_myInfo_label_attackScore"));
             ASTooltip tooltip(2);
             tooltip.FUN_1409c6d70("export_common_tooltip_tooltipText");
             tooltip.FUN_1409c6cb0(L"$s_tooltip_myinfo_stat_attackScore");
@@ -979,11 +976,11 @@ void UIPCInfoDialog::vfunc_86()
         CStringW strDetail(L"");
         __int64 nScore = FUN_141335290();
         CStringW strValue = StringFormat(L"{0}", nScore);
-        FUN_140cfee80(spDefense->FUN_1422bb890(), "detail", strDetail);
-        FUN_140cfee80(spDefense->FUN_1422bb890(), "value", strValue);
+        FUN_140cfee80((*spDefense).FUN_1422bb890(), "detail", strDetail);
+        FUN_140cfee80((*spDefense).FUN_1422bb890(), "value", strValue);
         if (FUN_140166410()->FUN_14036d570(0xdf))
         {
-            FUN_140cff1b0(spDefense->FUN_1422bb890(), "textField", FUN_14025e7a0()->FUN_1422b0570("$s_myInfo_label_defenseScore"));
+            FUN_140cff1b0((*spDefense).FUN_1422bb890(), "textField", FUN_14025e7a0()->FUN_1422b0570("$s_myInfo_label_defenseScore"));
             ASTooltip tooltip(2);
             tooltip.FUN_1409c6d70("export_common_tooltip_tooltipText");
             tooltip.FUN_1409c6cb0(L"$s_tooltip_myinfo_stat_defenseScore");
@@ -1055,88 +1052,86 @@ void UIPCInfoDialog::vfunc_86()
 }
 MS2_REPLACE_METHOD(0x14132FF30, UIPCInfoDialog, vfunc_86, 9098, 0x7D3617B9);
 
-// MS2-FUNCTIONAL: stat point rows from the decompile
 // @0x1413322c0
 void UIPCInfoDialog::vfunc_87()
 {
-    if (m_spInfo == 0 == false)
+    if (m_spInfo == 0)
+        return;
+    ATL::CAtlArray<int> aStats;
+    FUN_1408377d0(aStats);
+    unsigned int nRemaining = 0;
+    unsigned int nUsed = 0;
+    if (m_spInfo->m_3c0 != 0)
     {
-        ATL::CAtlArray<int> aStats;
-        FUN_1408377d0(aStats);
-        int nRemaining = 0;
-        int nUsed = 0;
-        if (m_spInfo->m_3c0 != 0)
+        Unk_PciMyPC* pPC = FUN_141bd0cc0(FUN_1403ed2d0());
+        if (pPC == 0)
+            return;
+        nRemaining = pPC->FUN_140c25130()->GetRemaining();
+        nUsed = pPC->FUN_140c25130()->GetUsed();
+    }
+    for (unsigned int i = 0; i < aStats.GetCount(); i++)
+    {
+        int nNumber = i + 1;
+        CString strName = FUN_14052ea30("m_statPoint{0}", nNumber);
+        if (MS2Ptr<ASMovieClip> spRow = GetChild<ASMovieClip>(strName))
         {
-            Unk_PciMyPC* pPC = FUN_141bd0cc0(FUN_1403ed2d0());
-            if (pPC == 0)
-                return;
-            nRemaining = pPC->FUN_140c25130()->GetRemaining();
-            nUsed = pPC->FUN_140c25130()->GetUsed();
-        }
-        for (unsigned int i = 0; i < aStats.GetCount(); i++)
-        {
-            int nNumber = i + 1;
-            CString strName = StringFormat("m_statPoint{0}", nNumber);
-            if (MS2Ptr<ASMovieClip> spRow = GetChild<ASMovieClip>(strName))
-            {
-                int nStat = aStats[i];
-                FUN_140cfee80((*spRow).FUN_1422bb890(), "m_Label", FUN_14082f000(nStat));
-                __int64 nValue = 0;
-                if (nStat == 4)
-                    nValue = m_spInfo->m_aStats0[4];
-                else
-                    nValue = m_spInfo->m_aStats2[nStat];
-                CStringW strValue = StringFormat(L"{0}", nValue);
-                FUN_140cfee80((*spRow).FUN_1422bb890(), "m_point", strValue);
-                if (m_spInfo->m_3c0 != 0)
-                {
-                    unsigned int nColor = 0xffffff;
-                    Unk_PciMyPC* pPC = FUN_141bd0cc0(FUN_1403ed2d0());
-                    if (pPC != 0)
-                    {
-                        int nPoints = pPC->FUN_140c25130()->GetStatPoints((CStatPointManager::Unk_StatKey)nStat);
-                        if (nPoints != 0)
-                            nColor = 0xffa200;
-                    }
-                    FUN_140cff740((*spRow).FUN_1422bb890(), "m_point", nColor);
-                }
-                if (MS2Ptr<ASButton> spPlus = spRow->FUN_140acce30<ASButton>("m_plus"))
-                {
-                    if (nRemaining == 0)
-                        ((Unk_PciComp*)spPlus.operator->())->FUN_1422c1fe0(0);
-                    else if (((Unk_PciComp*)spPlus.operator->())->FUN_1422c2030() == 0)
-                        ((Unk_PciComp*)spPlus.operator->())->FUN_1422c1fe0(1);
-                }
-                void* pUserData = FUN_140bb9630(nStat);
-                ((Unk_PciComp*)spRow.operator->())->FUN_1422c2d10(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIPCInfoDialog::FUN_14132eed0), pUserData);
-                FUN_1422c6240(2)->FUN_1422c6160(spRow->FUN_1422bb870());
-            }
-        }
-        if (MS2Ptr<ASButton> spReset = ((Unk_PciMovieEntity*)this)->FUN_140bb4b10("m_resetStatPoint"))
-            ((Unk_PciComp*)spReset.operator->())->FUN_1422c1fe0(nUsed != 0);
-        if (MS2Ptr<ASMovieClip> spRemain = GetChild<ASMovieClip>("m_remainPoint"))
-        {
-            if (MS2Ptr<ASTextField> spText = spRemain->FUN_1409b4620("m_remainStatPoint"))
-            {
-                if (m_spInfo->m_3c0 == 0)
-                {
-                    spText->vfunc_4(false);   // exe: call [rax+0x20] (slot 4, bool), not slot 3
-                }
-                else
-                {
-                    spText->vfunc_4(true);
-                    spText->FUN_1422c4cd0(StringFormat(L"{0}", (unsigned int)nRemaining));
-                    unsigned int nColor = 0xffffff;
-                    if (nRemaining != 0)
-                        nColor = 0xffa200;
-                    spText->FUN_1422c50e0(nColor);
-                }
-            }
+            int nStat = aStats[i];
+            FUN_140cfee80((*spRow).FUN_1422bb890(), "m_Label", FUN_14082f000(nStat));
+            __int64 nValue = 0;
+            if (nStat == 4)
+                nValue = m_spInfo->m_aStats0[nStat];
+            else
+                nValue = m_spInfo->m_aStats2[nStat];
+            CStringW strValue = StringFormat(L"{0}", nValue);
+            FUN_140cfee80((*spRow).FUN_1422bb890(), "m_point", strValue);
             if (m_spInfo->m_3c0 != 0)
             {
-                ((Unk_PciComp*)spRemain.operator->())->FUN_1422c2d10(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIPCInfoDialog::FUN_14132f020), 0);
-                FUN_1422c6240(2)->FUN_1422c6160(spRemain->FUN_1422bb870());
+                unsigned int nColor = 0xffffff;
+                Unk_PciMyPC* pPC = FUN_141bd0cc0(FUN_1403ed2d0());
+                if (pPC != 0)
+                {
+                    unsigned int nPoints = pPC->FUN_140c25130()->GetStatPoints((CStatPointManager::Unk_StatKey)nStat);
+                    if (nPoints > 0)
+                        nColor = 0xffa200;
+                }
+                FUN_140cff740((*spRow).FUN_1422bb890(), "m_point", nColor);
             }
+            if (MS2Ptr<ASButton> spPlus = spRow->FUN_140acce30<ASButton>("m_plus"))
+            {
+                if (nRemaining <= 0)
+                    ((Unk_PciComp*)spPlus.operator->())->FUN_1422c1fe0(0);
+                else if (((Unk_PciComp*)spPlus.operator->())->FUN_1422c2030() == 0)
+                    ((Unk_PciComp*)spPlus.operator->())->FUN_1422c1fe0(1);
+            }
+            ((Unk_PciComp*)spRow.operator->())->FUN_1422c2d10(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIPCInfoDialog::FUN_14132eed0), FUN_140bb9630(nStat));
+            FUN_1422c6240(2)->FUN_1422c6160(spRow->FUN_1422bb870());
+        }
+    }
+    if (MS2Ptr<ASButton> spReset = ((Unk_PciMovieEntity*)this)->FUN_140bb4b10("m_resetStatPoint"))
+        ((Unk_PciComp*)spReset.operator->())->FUN_1422c1fe0(nUsed > 0);
+    if (MS2Ptr<ASMovieClip> spRemain = GetChild<ASMovieClip>("m_remainPoint"))
+    {
+        if (MS2Ptr<ASTextField> spText = spRemain->FUN_1409b4620("m_remainStatPoint"))
+        {
+            if (m_spInfo->m_3c0 != 0)
+            {
+                spText->vfunc_4(true);   // exe: call [rax+0x20] (slot 4, bool), not slot 3
+                CStringW strRemain = StringFormat(L"{0}", nRemaining);
+                spText->FUN_1422c4cd0(strRemain);
+                unsigned int nColor = 0xffffff;
+                if (nRemaining > 0)
+                    nColor = 0xffa200;
+                spText->FUN_1422c50e0(nColor);
+            }
+            else
+            {
+                spText->vfunc_4(false);
+            }
+        }
+        if (m_spInfo->m_3c0 != 0)
+        {
+            ((Unk_PciComp*)spRemain.operator->())->FUN_1422c2d10(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIPCInfoDialog::FUN_14132f020), 0);
+            FUN_1422c6240(2)->FUN_1422c6160(spRemain->FUN_1422bb870());
         }
     }
 }

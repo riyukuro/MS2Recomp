@@ -63,24 +63,19 @@ void TermTagContext::FUN_1408667e0()
 }
 
 // @0x140866820
-// MS2-FUNCTIONAL: three bytes shorter in the exe (return form of the && chain not found)
-int TermTagContext::FUN_140866820(const CMsTime& kTime)
+bool TermTagContext::FUN_140866820(const CMsTime& kTime)
 {
-    if (m_28 <= kTime)
-    {
-        if (kTime < m_38)
-            return 1;
-    }
-    return 0;
+    if (m_28 <= kTime && kTime < m_38)
+        return true;
+    return false;
 }
 
 // @0x140866880
-// MS2-FUNCTIONAL: exe call-result temporaries / frame-slot order differ (source form not found)
-int TermTagContext::FUN_140866880(const __time64_t* pTime)
+bool TermTagContext::FUN_140866880(const __time64_t* pTime)
 {
-    if (m_28 <= CMsTime(*pTime) && m_38 > CMsTime(*pTime))
-        return 1;
-    return 0;
+    if (m_28 <= *pTime && m_38 > *pTime)
+        return true;
+    return false;
 }
 
 // @0x140866900

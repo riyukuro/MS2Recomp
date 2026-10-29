@@ -49,12 +49,14 @@
 #include "ms2/placeholder/asdata.h"
 #include "ms2/placeholder/asobj.h"
 #include <NiFixedString.h>
+#include <NiPoint2.h>
 #include <NiShaderFactory.h>
 #include <NiGlobalConstantEntry.h>
 #include <NiNode.h>
 #include "ms2/placeholder/asuicomponent.h"
 #include "ms2/placeholder/unk_nodeptr.h"
 #include "ms2/client/ms2/pcbase.h"
+#include "ms2/client/ms2/weaponattachtransformnode.h"
 #include "ms2/placeholder/notifyobject.h"
 #include "ms2/placeholder/coutpacket.h"
 #include "ms2/placeholder/gfxexception.h"
@@ -227,12 +229,12 @@ public:
 class Unk_HudMaidItem : public CPtred
 {
 public:
-    __int64 FUN_1409eedf0();
+    int FUN_1409eedf0();
     __int64 FUN_140694170();                                                    // the time the maid is ready
 };
 class Unk_HudMaidInfo : public CPtred {};
 class Unk_HudMaidItems { public: int FUN_140d51370(__int64 nKey, MS2Ptr<Unk_HudMaidItem>& out); };
-class Unk_HudMaidInfos { public: MS2Ptr<Unk_HudMaidInfo> FUN_1406855c0(__int64 nId); };
+class Unk_HudMaidInfos { public: MS2Ptr<Unk_HudMaidInfo> FUN_1406855c0(int nId); };
 class Unk_HudMaidList
 {
 public:
@@ -275,22 +277,25 @@ void FUN_140710590(COutPacket& packet);
 
 CStringW GetStringCommonByKey(const CStringW& strKey);                                 // string table text
 CStringW GetStringCommon(int nId);                                                // string table text by id
-CStringW FUN_14083bdc0(const CMsTime& t, int n, CStringW strSep, CStringW strSep2);
+CStringW FUN_14083bdc0(const CMsTime& t, bool n, CStringW strSep, CStringW strSep2);
 CStringW FUN_140f48210(int nHour, int nMinute);                                 // the clock text
 CStringW FUN_1402761d0(const wchar_t* szFormat, const CStringW& a1, const __int64& a2);
 CStringW FUN_1401e8510(const wchar_t* szFormat, const CStringW& a1);
 CStringW FUN_140656190(const wchar_t* szFormat, const CStringW& a1, const CStringW& a2);
 CStringW FUN_1405c2690(CStringW strKey, const CStringW& a1);
 CStringW FUN_1409404f0(__int64 n);                                              // the number as text
+bool FUN_140ba28d0(const MS2Ptr<AScript>* pAS, int n);                         // has the AS object been released
 CStringW FUN_1401ceea0(const wchar_t* szFormat, const int& n);
+CString FUN_1401d4330(const wchar_t* psz, int nCodePage);                         // narrows a string
+CString FUN_14016a5c0(const char* psz, int nCodePage);
 CStringW FUN_141900120(int nCurrency, bool bIcon, bool bNewline);
 
 class Unk_HudMerat
 {
 public:
-    int FUN_140358390();
-    int FUN_140358770();
-    __int64* FUN_140356840(int nIndex);
+    bool FUN_140358390();
+    size_t FUN_140358770();                                                     // the merat kind count (a vector size)
+    __int64* FUN_140356840(size_t nIndex);
 };
 Unk_HudMerat* FUN_140930580();
 bool FUN_140930200(unsigned int nIndex);
@@ -313,13 +318,10 @@ extern __int64 DAT_143ab2898;                                                   
 
 // @0x141353540
 UIUpperHudDialog::UIUpperHudDialog()
-    : m_tokenPocket(0), m_maidStatus(0), m_pcBang(0), m_fishingBook(0), m_keyboardGuide(0), m_keyboardMode(0),
-      m_mouseMode(0), m_gamePadOn(0), m_gamePadOff(0), m_search(0), m_searchInput(0)
+    : m_nHour(0), m_nMinute(0), m_nMaidReady(0), m_tokenPocket(0), m_maidStatus(0), m_pcBang(0), m_fishingBook(0),
+      m_keyboardGuide(0), m_keyboardMode(0), m_mouseMode(0), m_gamePadOn(0), m_gamePadOff(0), m_search(0),
+      m_searchInput(0), m_nHotTime(0)
 {
-    m_nHour = 0;
-    m_nMinute = 0;
-    m_nMaidReady = 0;
-    m_nHotTime = 0;
     m_bNoticeOnce = false;
     m_fNoticeSpeed = 50.0f;
     m_fNoticePos = 0.0f;
@@ -348,6 +350,7 @@ CString UIUpperHudDialog::GetTypeName()
 MS2_REPLACE_METHOD(0x141353E80, UIUpperHudDialog, GetTypeName, 61, 0xF83C7D54);
 
 // @0x141353ed0
+// MS2-FUNCTIONAL: the exe frame is 0x10 smaller; the temp slot order of the movie clip lookups is not reproduced
 void UIUpperHudDialog::OnLoadComplete()
 {
     UIObject::OnLoadComplete();
@@ -511,7 +514,7 @@ int UIUpperHudDialog::vfunc_13()
             m_searchInput->FUN_1422c7630(0);
             return 1;
         }
-        if (FUN_14025e7c0()->FUN_14116d840())
+        else if (FUN_14025e7c0()->FUN_14116d840())
         {
             m_searchInput->FUN_1422c7630(0);
             return 1;
@@ -546,15 +549,16 @@ void UIUpperHudDialog::vfunc_oa0_11(void* a1)
 // @0x141356950
 void UIUpperHudDialog::vfunc_oa0_14(void* a1, int a2)
 {
-    if (FUN_140166410()->FUN_14036d570(0x3d) && m_30 != 0)
+    if (!FUN_140166410()->FUN_14036d570(0x3d))
+        return;
+    if (FUN_140ba28d0(&m_30, 0))
+        return;
+    FUN_140cfee80(FUN_1422dbc00(), "maratText", FUN_1409404f0(reinterpret_cast<__int64>(a1)));
+    m_30->Invoke("arrangePos");
+    if (a2 > 0)
     {
-        FUN_140cfee80(FUN_1422dbc00(), "maratText", FUN_1409404f0(reinterpret_cast<__int64>(a1)));
-        m_30->Invoke("arrangePos");
-        if (a2 > 0)
-        {
-            FUN_140cff840(FUN_1422dbc00(), "m_effectMerat", 1);
-            FUN_140cffef0(FUN_1422dbc00(), "m_effectMerat", "1");
-        }
+        FUN_140cff840(FUN_1422dbc00(), "m_effectMerat", 1);
+        FUN_140cffef0(FUN_1422dbc00(), "m_effectMerat", "1");
     }
 }
 
@@ -565,9 +569,9 @@ int UIUpperHudDialog::vfunc_46()
         return 0;
     if (m_30 == 0)
         return 0;
+    if (MS2Ptr<ASMovieClip> spMarat = m_30->FUN_140acce30<ASMovieClip>("m_marat"))
     {
-        MS2Ptr<ASMovieClip> spMarat = m_30->FUN_140acce30<ASMovieClip>("m_marat");
-        if (spMarat && !FUN_140166410()->FUN_14036d570(0x3d))
+        if (!FUN_140166410()->FUN_14036d570(0x3d))
             spMarat->vfunc_4(false);
     }
     m_30->Invoke("arrangePos");
@@ -641,7 +645,7 @@ void UIUpperHudDialog::FUN_141356ed0(const Scaleform::GFx::FunctionHandler::Para
         return;
     UIWebBrowserBase* pBrowser = FUN_140c43790(0x4e6a);
     if (pBrowser != 0)
-        pBrowser->FUN_14135ec00(CString(strUrl), true);
+        pBrowser->FUN_14135ec00(FUN_1401d4330(strUrl, 0), true);
 }
 
 // @0x141356f90
@@ -684,7 +688,8 @@ void UIUpperHudDialog::FUN_141357180(NotifyObject* pObj)
 // @0x1413571f0
 void UIUpperHudDialog::FUN_1413571f0(NotifyObject* pObj)
 {
-    if (static_cast<Unk_HudNotifyMoney*>(pObj)->m_nAmount > 0)
+    Unk_HudNotifyMoney* pMoney = static_cast<Unk_HudNotifyMoney*>(pObj);
+    if (pMoney->m_nAmount > 0)
     {
         FUN_140cff840(FUN_1422dbc00(), "m_effectTokenPocket", 1);
         FUN_140cffef0(FUN_1422dbc00(), "m_effectTokenPocket", "1");
@@ -728,13 +733,12 @@ void UIUpperHudDialog::FUN_141357430(CStringW strText)
 // @0x1413574a0
 void UIUpperHudDialog::FUN_1413574a0(int nMode)
 {
-    if (FUN_140166410()->FUN_14036d570(0xb5))
-    {
-        if (m_gamePadOn)
-            m_gamePadOn->vfunc_3(nMode);
-        if (m_gamePadOff)
-            m_gamePadOff->vfunc_4(nMode == 0);
-    }
+    if (!FUN_140166410()->FUN_14036d570(0xb5))
+        return;
+    if (m_gamePadOn)
+        m_gamePadOn->vfunc_3(nMode);
+    if (m_gamePadOff)
+        m_gamePadOff->vfunc_4(nMode == 0);
 }
 
 // @0x141357580
@@ -750,21 +754,18 @@ void UIUpperHudDialog::FUN_141357580(int nMode)
 void UIUpperHudDialog::FUN_141357640(__int64 tTime, __int64 nBonus)
 {
     MS2Ptr<Unk_HudText> spVersion = FUN_140bb4cf0("m_version");
-    if (!(spVersion == 0))
+    if (spVersion == 0)
+        return;
+    if (!spVersion->FUN_1422bfca0())
+        return;
+    if (FUN_140166410()->FUN_14036d570(0xc9) == true)
     {
-        if (!spVersion->FUN_1422bfca0())
-            return;
-        if (FUN_140166410()->FUN_14036d570(0xc9) == true)
-        {
-            CMsTime tm(tTime);
-            spVersion->FUN_1422c4f00(StringFormat(L"{0}\n{1}\t{2:+#}", GetStringCommonByKey(L"s_upper_hud_version"),
-                                                  FUN_14083bdc0(tm, 1, CStringW(L"/"), CStringW(L":")), nBonus));
-        }
-        else
-        {
-            CMsTime tm(tTime);
-            spVersion->FUN_1422c4f00(FUN_1402761d0(L"{0}\t{1:+#}", FUN_14083bdc0(tm, 1, CStringW(L"/"), CStringW(L":")), nBonus));
-        }
+        spVersion->FUN_1422c4f00(StringFormat(L"{0}\n{1}\t{2:+#}", GetStringCommonByKey(L"s_upper_hud_version"),
+                                              FUN_14083bdc0(tTime, true, L"/", L":"), nBonus));
+    }
+    else
+    {
+        spVersion->FUN_1422c4f00(FUN_1402761d0(L"{0}\t{1:+#}", FUN_14083bdc0(tTime, true, L"/", L":"), nBonus));
     }
 }
 
@@ -772,13 +773,10 @@ void UIUpperHudDialog::FUN_141357640(__int64 tTime, __int64 nBonus)
 bool UIUpperHudDialog::FUN_1413579d0()
 {
     MS2Ptr<Unk_HudText> spVersion = FUN_140bb4cf0("m_version");
-    if (!(spVersion == 0))
-    {
-        bool bVisible = spVersion->FUN_1422bfca0();
-        spVersion->vfunc_4(!bVisible);
-        return spVersion->FUN_1422bfca0();
-    }
-    return false;
+    if (spVersion == 0)
+        return false;
+    spVersion->vfunc_4(!spVersion->FUN_1422bfca0());
+    return spVersion->FUN_1422bfca0();
 }
 
 // @0x141357ac0
@@ -806,11 +804,8 @@ void UIUpperHudDialog::FUN_141357b30()
         m_nHour = nHour;
         m_nMinute = nMinute;
         CStringW strTime = FUN_140f48210(nHour, nMinute);
-        {
-            MS2Ptr<ASMovieClip> spTime = FUN_140ba7930("m_time");
-            if (spTime)
-                FUN_140cfee80(spTime->FUN_1422bb890(), "timeText", strTime);
-        }
+        if (MS2Ptr<ASMovieClip> spTime = FUN_140ba7930("m_time"))
+            FUN_140cfee80(spTime->FUN_1422bb890(), "timeText", strTime);
         FUN_140cffca0(FUN_1422dbc00(), "m_clockIcon", "clock");
     }
 }
@@ -827,7 +822,7 @@ void UIUpperHudDialog::FUN_141357d90(int nQuiet)
         MS2Ptr<Unk_HudMaidRec> spMaid = pList->FUN_1412dd780(pos);
         if (spMaid.IsNull())
             continue;
-        if (spMaid->m_4c < 1)
+        if (spMaid->m_4c <= 0)
             continue;
         MS2Ptr<Unk_HudMaidItem> spItem(0);
         if (FUN_1409eed40()->FUN_140d51370(spMaid->m_20, spItem))
@@ -878,9 +873,12 @@ void UIUpperHudDialog::FUN_141358020(bool bForce)
 // @0x1413581f0
 void UIUpperHudDialog::FUN_1413581f0()
 {
-    if (m_noticeText == 0 || m_nNoticeWidth == 0)
+    if (m_noticeText == 0)
         return;
-    m_fNoticePos -= m_fNoticeSpeed * FUN_14086d260()->FUN_141473230();
+    if (m_nNoticeWidth == 0)
+        return;
+    float fDelta = FUN_14086d260()->FUN_141473230();
+    m_fNoticePos -= m_fNoticeSpeed * fDelta;
     int x = (int)m_fNoticePos;
     if (!m_bNoticeOnce)
     {
@@ -891,7 +889,7 @@ void UIUpperHudDialog::FUN_1413581f0()
         }
         m_noticeText->FUN_1422bffe0(x, m_nNoticeY);
     }
-    else if (-m_noticeText->FUN_1422c1340() < x)
+    else if (x > -m_noticeText->FUN_1422c1340())
         m_noticeText->FUN_1422bffe0(x, m_nNoticeY);
     else
         FUN_141358490();
@@ -935,8 +933,10 @@ void UIUpperHudDialog::FUN_141358490()
     m_eventText->vfunc_3(1);
     m_noticeText->FUN_1422c4f00(m_strNotice);
     m_nNoticeWidth = (int)m_noticeText->FUN_1422c5970();
+    int nTotal = m_nNoticeWidth + 0x1d6;
+    int nCount = nTotal / m_nNoticeWidth + 1;
     CStringW strRepeat;
-    for (int i = 0; i < (m_nNoticeWidth + 0x1d6) / m_nNoticeWidth + 1; i++)
+    for (int i = 0; i < nCount; i++)
         strRepeat += m_strNotice;
     m_noticeText->FUN_1422c4f00(strRepeat);
     m_noticeText->FUN_1422c0e20((int)(m_noticeText->FUN_1422c5970() + 20.0));
@@ -1029,20 +1029,30 @@ void UIUpperHudDialog::FUN_141358df0(Scaleform::GFx::Value* pRetVal)
     CStringW strLine = GetStringCommon(0x9ca);
     CStringW strFormat = GetStringCommon(0x987);
     CStringW strList;
-    int nCount = pMerat->FUN_140358770();
-    strList.Append(FUN_140656190(strLine, FUN_1418fe590(), FUN_1401e8510(strFormat, FUN_1409404f0(FUN_140930250()))));
-    for (int i = 0; i < nCount; i++)
+    size_t nCount = pMerat->FUN_140358770();
+    __int64 nMerat = FUN_140930250();
+    CStringW strName = FUN_1418fe590();
+    CStringW strValue = FUN_1401e8510(strFormat, FUN_1409404f0(nMerat));
+    strList.Append(FUN_140656190(strLine, strName, strValue));
+    for (size_t i = 0; i < nCount; i++)
     {
-        if (FUN_140930200(i) == true)
+        if (FUN_140930200((unsigned int)i) == true)
             continue;
         __int64 nAmount = *pMerat->FUN_140356840(i);
-        if (nAmount != 0)
-            strList.Append(FUN_140656190(strLine, FUN_1418fe5d0(i), FUN_1401e8510(strFormat, FUN_1409404f0(nAmount))));
+        if (nAmount == 0)
+            continue;
+        CStringW strItemName = FUN_1418fe5d0((unsigned int)i);
+        CStringW strItemValue = FUN_1401e8510(strFormat, FUN_1409404f0(nAmount));
+        strList.Append(FUN_140656190(strLine, strItemName, strItemValue));
     }
     if (FUN_1406a5720())
-        strList.Append(FUN_140656190(strLine, GetStringCommonByKey(L"s_common_meratname_red"),
-                                     FUN_1405c2690(L"s_common_redmerat", FUN_1409404f0(FUN_140930ae0()))));
-    tip.FUN_1409c6cb0(FUN_1401e8510(strTitle, strList));
+    {
+        CStringW strRedName = GetStringCommonByKey(L"s_common_meratname_red");
+        CStringW strRedValue = FUN_1405c2690(L"s_common_redmerat", FUN_1409404f0(FUN_140930ae0()));
+        strList.Append(FUN_140656190(strLine, strRedName, strRedValue));
+    }
+    CStringW strText = FUN_1401e8510(strTitle, strList);
+    tip.FUN_1409c6cb0(strText);
     *pRetVal = tip.FUN_1422bb870();
 }
 
@@ -1072,23 +1082,22 @@ void UIUpperHudDialog::FUN_141359510(int nState)
     {
         if (nState >= 0)
             m_pcBang->vfunc_3(1);
-        return;
     }
-    if (!FUN_140166410()->FUN_14036e510())
-        return;
-    if (nState != 0)
+    else if (FUN_140166410()->FUN_14036e510())
     {
-        if (nState < 1)
-            return;
-        if (nState < 4)
+        switch (nState)
         {
+        case 1:
+        case 2:
+        case 3:
             m_pcBangCn1->vfunc_3(1);
-            return;
+            break;
+        case 0:
+        case 4:
+            m_pcBangCn2->vfunc_3(1);
+            break;
         }
-        if (nState != 4)
-            return;
     }
-    m_pcBangCn2->vfunc_3(1);
 }
 
 // @0x141359de0
@@ -1111,7 +1120,7 @@ int UIUpperHudDialog::vfunc_48()
 
 // ==== UIVideoContents ====
 
-class Unk_HudSound { public: char m_bMuted; };
+class Unk_HudSound { public: unsigned char m_bMuted; };
 MS2Ptr<AScript> FUN_1409e7dc0(int nMovieId, const Scaleform::GFx::Value& v);
 MS2Ptr<AScript> FUN_140acca70(int nMovieId, const Scaleform::GFx::Value& v);
 float FUN_1412602e0(Unk_HudSound* pSound);                                      // the volume of the sound option
@@ -1165,27 +1174,31 @@ int UIVideoContents::vfunc_52(const CString& strPath, float fVolume)
     m_68 = fVolume;
     if (m_strPath.IsEmpty())
         return 0;
-    if (m_4c == 0)
+    if (m_4c != 0)
+    {
+        if (MS2Ptr<Unk_ASVideoPlayer> spPlayer = GetChild<Unk_ASVideoPlayer>("m_videoPlayer"))
+        {
+            Unk_HudSound* pSound = FUN_1409a8b10()->FUN_140d13c70();
+            if (pSound != 0)
+            {
+                float fSound;
+                if (pSound->m_bMuted != 0)
+                    fSound = 0;
+                else
+                    fSound = FUN_1412602e0(pSound);
+                spPlayer->FUN_1422e9490(fSound);
+            }
+            spPlayer->FUN_1422e95b0(strPath);
+            spPlayer->FUN_1422e9690(fVolume);
+            return 1;
+        }
+    }
+    else
     {
         FUN_1422dbf00(m_2c, 0, 0);
         return 1;
     }
-    MS2Ptr<Unk_ASVideoPlayer> spPlayer = GetChild<Unk_ASVideoPlayer>("m_videoPlayer");
-    if (spPlayer.get() == 0)
-        return 0;
-    Unk_HudSound* pSound = FUN_1409a8b10()->FUN_140d13c70();
-    if (pSound != 0)
-    {
-        float fSound;
-        if (pSound->m_bMuted == 0)
-            fSound = FUN_1412602e0(pSound);
-        else
-            fSound = 0;
-        spPlayer->FUN_1422e9490(fSound);
-    }
-    spPlayer->FUN_1422e95b0(strPath);
-    spPlayer->FUN_1422e9690(fVolume);
-    return 1;
+    return 0;
 }
 
 // @0x14135ad10
@@ -1202,8 +1215,7 @@ int UIVideoContents::vfunc_53()
 // @0x14135adc0
 int UIVideoContents::vfunc_54(float fTimeout)
 {
-    MS2Ptr<Unk_ASVideoPlayer> spPlayer = GetChild<Unk_ASVideoPlayer>("m_videoPlayer");
-    if (spPlayer.get() != 0)
+    if (MS2Ptr<Unk_ASVideoPlayer> spPlayer = GetChild<Unk_ASVideoPlayer>("m_videoPlayer"))
     {
         Scaleform::GFx::Value vStream = spPlayer->Invoke("getNetStream");
         if (vStream.IsObject())
@@ -1236,18 +1248,17 @@ int UIVideoContents::vfunc_13()
 // @0x14135afa0
 void UIVideoContents::FUN_14135afa0(int bMute)
 {
-    MS2Ptr<Unk_ASVideoPlayer> spPlayer = GetChild<Unk_ASVideoPlayer>("m_videoPlayer");
-    if (spPlayer.get() != 0)
+    if (MS2Ptr<Unk_ASVideoPlayer> spPlayer = GetChild<Unk_ASVideoPlayer>("m_videoPlayer"))
     {
         float fSound = 1.0f;
         Unk_HudSound* pSound = FUN_1409a8b10()->FUN_140d13c70();
         if (pSound != 0)
             fSound = FUN_1412602e0(pSound);
         float fVolume;
-        if (bMute == 0)
-            fVolume = fSound;
-        else
+        if (bMute != 0)
             fVolume = 0;
+        else
+            fVolume = fSound;
         spPlayer->FUN_1422e9490(fVolume);
     }
 }
@@ -1279,7 +1290,7 @@ public:
     bool FUN_141b78a50(int nId);
     bool FUN_141b78910(int nId, int nMsg, void* p2, void* p3, int x, int y);   // forward an input message
     Unk_HudBrowserInst* FUN_141b786a0(int nId);
-    void FUN_141b78b40(int a1, int nId);
+    void FUN_141b78b40(bool bUnk, int nId);
     void FUN_141b789d0(int nId);
     void FUN_141b784f0(int nId);
     void FUN_141b781e0(int nId, const char* pszFrom, const char* pszTo, int n);
@@ -1293,9 +1304,8 @@ class Unk_HudApp { public: HWND FUN_14209c720(); };
 Unk_HudApp* FUN_140aadf80();
 float FUN_14028aed0(float f);                                                   // round
 
-class Unk_HudHome { public: };
+class Unk_HudHome { public: CStringW FUN_1410c31d0(); };                      // the owner name
 Unk_HudHome* FUN_1409670e0();
-void FUN_1410c31d0(Unk_HudHome* pHome, CStringW& strOut);                       // the owner name
 __int64 FUN_1410c3180(Unk_HudHome* pHome);                                      // the owner id
 CString FUN_1401d9af0(const char* pszFormat, const __int64& a1);               // StringFormat, one narrow argument
 
@@ -1347,9 +1357,10 @@ void UIVisitorsBookDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
     float fScale = FUN_1403ed2b0()->FUN_141adbe70();
-    int nSize = (int)(__int64)(1290.0f / fScale);
-    FUN_14135eda0(nSize, nSize);
-    FUN_140cc18a0()->FUN_141b78b40(1, m_nBrowserId);
+    int nWidth = (int)(__int64)(1290.0f / fScale);
+    int nHeight = (int)(__int64)(1290.0f / fScale);
+    FUN_14135eda0(nWidth, nHeight);
+    FUN_140cc18a0()->FUN_141b78b40(true, m_nBrowserId);
     ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30);
     if (pDialog != 0)
     {
@@ -1363,14 +1374,13 @@ void UIVisitorsBookDialog::OnLoadComplete()
     ASDialog* pDialog2 = dynamic_cast<ASDialog*>((AScript*)m_30);
     if (pDialog2 != 0)
     {
-        CStringW strOwner;
-        FUN_1410c31d0(FUN_1409670e0(), strOwner);
+        CStringW strOwner = FUN_1409670e0()->FUN_1410c31d0();
         pDialog2->Invoke("setHomeOwnerName", strOwner);
     }
     vfunc_84(true);
     __int64 nOwnerId = FUN_1410c3180(FUN_1409670e0());
     CString strUrl = FUN_1401d9af0(FUN_14135bb70(&FUN_1401d3200()->m_url), nOwnerId);
-    FUN_140166410()->FUN_14036d570(0x5c);
+    if (FUN_140166410()->FUN_14036d570(0x5c)) {}   // empty body in the exe (movzx, no branch)
     FUN_140cc18a0()->FUN_141b794e0(m_strUrl, strUrl);
 }
 
@@ -1395,8 +1405,9 @@ bool UIVisitorsBookDialog::vfunc_90(POINT* pPos)
     ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30);
     if (pDialog == 0)
         return false;
-    int nX = pPos->x;
-    int nY = pPos->y;
+    POINT kOrig;
+    kOrig.x = pPos->x;
+    kOrig.y = pPos->y;
     pPos->x -= pDialog->FUN_1422c10a0();
     pPos->y -= pDialog->FUN_1422c1110();
     MS2Ptr<ASUIComponent> spTarget = pDialog->FUN_140accfb0<ASUIComponent>("m_renderTarget");
@@ -1429,13 +1440,13 @@ public:
     virtual void s6(); virtual void s7(); virtual void s8(); virtual void s9(); virtual void s10(); virtual void s11();
     virtual void s12(); virtual void s13(); virtual void s14(); virtual void s15(); virtual void s16(); virtual void s17();
     virtual void s18(); virtual void s19(); virtual void s20(); virtual void s21(); virtual void s22(); virtual void s23();
-    virtual void vfunc_24(int n);
+    virtual void vfunc_24(bool b);
     void FUN_1422ce6a0(float f);
     void FUN_1422ce8b0(float f);
     void FUN_1422ce5f0(float f);                                                // the slider value
 };
 
-class Unk_HudRenderOpt { public: char m_pad_00[0x1e]; char m_bOutGlow; };      // +0x1e outer glow
+class Unk_HudRenderOpt { public: char m_pad_00[0x1e]; bool m_bOutGlow; };      // +0x1e outer glow
 
 // The post process service (0x1409a8b20) and the post effect manager (0x1409a8b00).
 class Unk_HudPPEffect;
@@ -1461,7 +1472,7 @@ Unk_PostEffectMgr* FUN_1409a8b00();
 
 void FUN_1409a5770(const NiFixedString& kName, const float* pf, int n);
 void FUN_1409a5850(const NiFixedString& kName, const bool* pb, int n);
-void FUN_1411781e0(const NiFixedString& kName, const efd::Point2* pk, int n);
+void FUN_1411781e0(const NiFixedString& kName, const NiPoint2* pk, int n);
 const char* FUN_142087e50(const NiFixedString& kName);
 extern NiFixedString DAT_143ae5348;
 extern NiFixedString DAT_143ae5350;
@@ -1549,12 +1560,20 @@ void FUN_14135db70(const NiFixedString& kName, const Unk_ShaderColor* pv, int n)
 float FUN_14135dad0(const char* pszName);
 void FUN_14135d9d0(int nMode);
 
+// A 12-byte rgb with the default (inline) copy: the glow colour assignment is a rep movsb in the exe. The ctor is
+// only declared: an all-float 12-byte aggregate counts as a GS buffer, the exe's frame has no cookie.
+struct Unk_HudColor3
+{
+    Unk_HudColor3();
+    float r, g, b;
+};
+
 // The world environment behind the player table (0x141bd30a0).
 class Unk_HudEnvData
 {
 public:
     char m_pad_00[0x17c];
-    Unk_HudStreamPoint m_glowColor;                                                // +0x17c
+    Unk_HudColor3 m_glowColor;                                                     // +0x17c
     char m_pad_188[0x74];
     char m_bGlow;                                                               // +0x1fc
 };
@@ -1562,13 +1581,13 @@ class Unk_HudEnvPtr
 {
 public:
     ~Unk_HudEnvPtr();                                                           // 0x1408850f0
-    long FUN_1409657a0() const;                                                 // not null
+    Unk_HudEnvData* FUN_1409657a0() const;                                      // get
     Unk_HudEnvData* FUN_140885340() const;                                      // operator->
 private:
     void* m_unk;
     Unk_HudEnvData* m_p;
 };
-Unk_HudStreamPoint FUN_140a56db0(float r, float g, float b);
+Unk_HudColor3 FUN_140a56db0(float r, float g, float b);
 
 // @0x14135bc20
 UIVisualEffectDialog::UIVisualEffectDialog()
@@ -1595,90 +1614,88 @@ void UIVisualEffectDialog::OnLoadComplete()
     bool bEnable = false;
     bEnable = FUN_1409a8b20()->FUN_1416a3a00(7);
     obj.FUN_1407cbbe0("blackAndWhiteEnable", bEnable);
-    Unk_HudPPEffectPtr spEffect(FUN_1411782c0(FUN_1409a8b20(), 3));
-    Unk_HudMotionBlurPtr spBlur(FUN_14135de30(&DAT_143ae0e88, FUN_1409a8c40(FUN_14135dd90(&spEffect))));
-    bool bAll = false;
-    if (FUN_14135dd70(&spBlur) != 0)
-        bAll = FUN_14135dd80(&spBlur)->GetMode() == 0;
-    obj.FUN_1407cbbe0("motionBlurAll", bAll);
-    obj.FUN_1409c4a30("motionBlurValue", FUN_14135dad0(FUN_142087e50(DAT_143ae5450)));
-    bEnable = FUN_1409a8b20()->FUN_1416a3a00(9);
-    obj.FUN_1407cbbe0("radiarBlurEnable", bEnable);
-    obj.FUN_1409c4a30("radiarBlurValue", FUN_14135dad0(FUN_142087e50(DAT_143ae5458)));
-    bEnable = FUN_1409a8b20()->FUN_1416a3a00(8);
-    obj.FUN_1407cbbe0("screenMaskEnable", bEnable);
-    obj.FUN_1409c4a30("hdrBPThreshold", FUN_14135dad0(FUN_142087e50(DAT_143ae5358)));
-    obj.FUN_1409c4a30("hdrBPOffset", FUN_14135dad0(FUN_142087e50(DAT_143ae5360)));
-    obj.FUN_1409c4a30("hdrBloomScale", FUN_14135dad0(FUN_142087e50(DAT_143ae5370)));
-    obj.FUN_1409c4a30("hdrGlowScale", FUN_14135dad0(FUN_142087e50(DAT_143ae5378)));
-    bEnable = FUN_1409a8b20()->FUN_1416a3a00(0xc);
-    obj.FUN_1407cbbe0("shimmerEnable", bEnable);
-    obj.FUN_1409c4a30("shimmerMultiplier", FUN_14135dad0(FUN_142087e50(DAT_143ae5430)));
-    obj.FUN_1409c4a30("shimmerBrightness", FUN_14135dad0(FUN_142087e50(DAT_143ae5440)));
-    bEnable = FUN_1409a8b10()->FUN_1409a8ac0()->m_bOutGlow;
-    obj.FUN_1407cbbe0("outGlowEnable", bEnable);
-    unsigned int nSize = 0xc;
-    float fRed = 0;
-    float fGreen = 0;
-    float fBlue = 0;
-    NiShaderFactory::GetInstance();
-    const void* pData;
-    if (NiShaderFactory::RetrieveGlobalShaderConstant(DAT_143ae5348, nSize, pData))
     {
-        const float* pf = static_cast<const float*>(pData);
-        fRed = pf[0];
-        fGreen = pf[1];
-        fBlue = pf[2];
-    }
-    obj.FUN_1409c4a30("outGlowRed", fRed);
-    obj.FUN_1409c4a30("outGlowGreen", fGreen);
-    obj.FUN_1409c4a30("outGlowBlue", fBlue);
-    obj.FUN_1407cbbe0("effectDetailEnable", false);
-    obj.FUN_1409c4a30("effectTime1", DAT_1439f824c);
-    obj.FUN_1409c4a30("effectTime2", DAT_1439f8250);
-    obj.FUN_1409c4a30("effectTime3", DAT_1439f8254);
-    obj.FUN_1407cbbe0("gaussianBlurEnable", false);
-    float fGaussian = 0;
-    obj.FUN_1409c4a30("gaussianBlur", fGaussian);
-    float fNear = 0;
-    float fFar = 0;
-    NiGlobalConstantEntry* pDof = NiShaderFactory::GetInstance()->GetGlobalShaderConstantEntry(DAT_143ae53b0);
-    if (pDof != 0)
-    {
-        pDof->GetData(nSize, pData);
-        const Unk_ShaderVec4* pRange = static_cast<const Unk_ShaderVec4*>(pData);
-        fNear = pRange->FUN_14135e160();
-        fFar = pRange->FUN_14135e180();
-    }
-    obj.FUN_1409c4a30("dofNear", fNear);
-    obj.FUN_1409c4a30("dofFar", fFar);
-    bEnable = FUN_1409a8b20()->FUN_1416a3a00(5);
-    obj.FUN_1407cbbe0("colorPersEnable", bEnable);
-    NiGlobalConstantEntry* pPers = NiShaderFactory::GetInstance()->GetGlobalShaderConstantEntry(DAT_143ae53d0);
-    if (pPers != 0)
-    {
-        unsigned int nPersSize;
-        const void* pPersData;
-        pPers->GetData(nPersSize, pPersData);
-        const Unk_ShaderVec4* pColorPers = static_cast<const Unk_ShaderVec4*>(pPersData);
-        float afRange[4];
-        afRange[0] = pColorPers->FUN_14135e160();
-        afRange[1] = pColorPers->FUN_14135e180();
-        afRange[2] = pColorPers->FUN_14135e1a0();
-        afRange[3] = pColorPers->FUN_14135e140();
-        for (int i = 0; i < 3; i++)
-            afRange[i + 1] = (std::max)(afRange[i], afRange[i + 1]);
-        CString astrName[4] = {"colorPersNearStart", "colorPersNearEnd", "colorPersFarStart", "colorPersFarEnd"};
-        for (int i = 0; i < 4; i++)
-            obj.FUN_1409c4a30(astrName[i], afRange[i]);
+        Unk_HudPPEffectPtr spEffect(FUN_1411782c0(FUN_1409a8b20(), 3));
+        Unk_HudMotionBlurPtr spBlur(FUN_14135de30(&DAT_143ae0e88, FUN_1409a8c40(FUN_14135dd90(&spEffect))));
+        bool bAll = false;
+        if (FUN_14135dd70(&spBlur) != 0)
+            bAll = FUN_14135dd80(&spBlur)->GetMode() == 0;
+        obj.FUN_1407cbbe0("motionBlurAll", bAll);
+        obj.FUN_1409c4a30("motionBlurValue", FUN_14135dad0(FUN_142087e50(DAT_143ae5450)));
+        bEnable = FUN_1409a8b20()->FUN_1416a3a00(9);
+        obj.FUN_1407cbbe0("radiarBlurEnable", bEnable);
+        obj.FUN_1409c4a30("radiarBlurValue", FUN_14135dad0(FUN_142087e50(DAT_143ae5458)));
+        bEnable = FUN_1409a8b20()->FUN_1416a3a00(8);
+        obj.FUN_1407cbbe0("screenMaskEnable", bEnable);
+        obj.FUN_1409c4a30("hdrBPThreshold", FUN_14135dad0(FUN_142087e50(DAT_143ae5358)));
+        obj.FUN_1409c4a30("hdrBPOffset", FUN_14135dad0(FUN_142087e50(DAT_143ae5360)));
+        obj.FUN_1409c4a30("hdrBloomScale", FUN_14135dad0(FUN_142087e50(DAT_143ae5370)));
+        obj.FUN_1409c4a30("hdrGlowScale", FUN_14135dad0(FUN_142087e50(DAT_143ae5378)));
+        bEnable = FUN_1409a8b20()->FUN_1416a3a00(0xc);
+        obj.FUN_1407cbbe0("shimmerEnable", bEnable);
+        obj.FUN_1409c4a30("shimmerMultiplier", FUN_14135dad0(FUN_142087e50(DAT_143ae5430)));
+        obj.FUN_1409c4a30("shimmerBrightness", FUN_14135dad0(FUN_142087e50(DAT_143ae5440)));
+        bEnable = FUN_1409a8b10()->FUN_1409a8ac0()->m_bOutGlow;
+        obj.FUN_1407cbbe0("outGlowEnable", bEnable);
+        unsigned int nSize = 0xc;
+        float fRed = 0;
+        float fGreen = 0;
+        float fBlue = 0;
+        NiShaderFactory::GetInstance();
+        const void* pData;
+        if (NiShaderFactory::RetrieveGlobalShaderConstant(DAT_143ae5348, nSize, pData))
+        {
+            const Unk_HudXyz* pColor = static_cast<const Unk_HudXyz*>(pData);
+            fRed = pColor->x;
+            fGreen = pColor->y;
+            fBlue = pColor->z;
+        }
+        obj.FUN_1409c4a30("outGlowRed", fRed);
+        obj.FUN_1409c4a30("outGlowGreen", fGreen);
+        obj.FUN_1409c4a30("outGlowBlue", fBlue);
+        obj.FUN_1407cbbe0("effectDetailEnable", false);
+        obj.FUN_1409c4a30("effectTime1", DAT_1439f824c);
+        obj.FUN_1409c4a30("effectTime2", DAT_1439f8250);
+        obj.FUN_1409c4a30("effectTime3", DAT_1439f8254);
+        obj.FUN_1407cbbe0("gaussianBlurEnable", false);
+        float fGaussian = 0;
+        obj.FUN_1409c4a30("gaussianBlur", fGaussian);
+        float fNear = 0;
+        float fFar = 0;
+        NiGlobalConstantEntry* pDof = NiShaderFactory::GetInstance()->GetGlobalShaderConstantEntry(DAT_143ae53b0);
+        if (pDof != 0)
+        {
+            pDof->GetData(nSize, pData);
+            const Unk_ShaderVec4* pRange = static_cast<const Unk_ShaderVec4*>(pData);
+            fNear = pRange->FUN_14135e160();
+            fFar = pRange->FUN_14135e180();
+        }
+        obj.FUN_1409c4a30("dofNear", fNear);
+        obj.FUN_1409c4a30("dofFar", fFar);
+        bEnable = FUN_1409a8b20()->FUN_1416a3a00(5);
+        obj.FUN_1407cbbe0("colorPersEnable", bEnable);
+        NiGlobalConstantEntry* pPers = NiShaderFactory::GetInstance()->GetGlobalShaderConstantEntry(DAT_143ae53d0);
+        if (pPers != 0)
+        {
+            unsigned int nPersSize;
+            const void* pPersData;
+            pPers->GetData(nPersSize, pPersData);
+            const Unk_ShaderVec4* pColorPers = static_cast<const Unk_ShaderVec4*>(pPersData);
+            float afRange[4] = {pColorPers->FUN_14135e160(), pColorPers->FUN_14135e180(), pColorPers->FUN_14135e1a0(),
+                                pColorPers->FUN_14135e140()};
+            for (int i = 0; i < 3; i++)
+                afRange[i + 1] = (std::max)(afRange[i], afRange[i + 1]);
+            CString astrName[4] = {"colorPersNearStart", "colorPersNearEnd", "colorPersFarStart", "colorPersFarEnd"};
+            for (int i = 0; i < 4; i++)
+                obj.FUN_1409c4a30(astrName[i], afRange[i]);
+        }
     }
     m_30->Invoke("initData", obj.FUN_1422bb870());
-    MS2Ptr<Unk_HudSlider> spSlider = m_30->FUN_140accef0<Unk_HudSlider>("m_sliderGaussianBlur");
-    if (spSlider.get() != 0)
+    if (MS2Ptr<Unk_HudSlider> spSlider = m_30->FUN_140accef0<Unk_HudSlider>("m_sliderGaussianBlur"))
     {
         spSlider->FUN_1422ce6a0(3.0f);
         spSlider->FUN_1422ce8b0(0.1f);
-        spSlider->vfunc_24(1);
+        spSlider->vfunc_24(true);
     }
 }
 
@@ -1691,104 +1708,143 @@ int UIVisualEffectDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
     {
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs))
-            FUN_14135d310(data.FUN_1422b8a90());
+        {
+            bool bValue = data.FUN_1422b8a90();
+            FUN_14135d310(bValue);
+        }
         return 1;
     }
-    if (_stricmp("onSelectRadioMotionBlurAll", szMethod) == 0)
+    else if (_stricmp("onSelectRadioMotionBlurAll", szMethod) == 0)
     {
         OnSelectRadioMotionBlurAll();
         return 1;
     }
-    if (_stricmp("onSelectRadioMotionBlurCharacter", szMethod) == 0)
+    else if (_stricmp("onSelectRadioMotionBlurCharacter", szMethod) == 0)
     {
         OnSelectRadioMotionBlurCharacter();
         return 1;
     }
-    if (_stricmp("onChangeSliderMotionBlur", szMethod) == 0)
+    else if (_stricmp("onChangeSliderMotionBlur", szMethod) == 0)
     {
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs))
-            FUN_14135d2d0(DAT_143ae5450, data.FUN_1422b8c10());
+        {
+            float fValue = data.FUN_1422b8c10();
+            FUN_14135d2d0(DAT_143ae5450, fValue);
+        }
         return 1;
     }
-    if (_stricmp("onCheckRadialBlurEnable", szMethod) == 0)
+    else if (_stricmp("onCheckRadialBlurEnable", szMethod) == 0)
     {
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs))
-            FUN_14135d410(data.FUN_1422b8a90());
+        {
+            bool bValue = data.FUN_1422b8a90();
+            FUN_14135d410(bValue);
+        }
         return 1;
     }
-    if (_stricmp("onChangeSliderRadialBlur", szMethod) == 0)
+    else if (_stricmp("onChangeSliderRadialBlur", szMethod) == 0)
     {
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs))
-            FUN_14135d2d0(DAT_143ae5458, data.FUN_1422b8c10());
+        {
+            float fValue = data.FUN_1422b8c10();
+            FUN_14135d2d0(DAT_143ae5458, fValue);
+        }
         return 1;
     }
-    if (_stricmp("onCheckScreenMaskEnable", szMethod) == 0)
+    else if (_stricmp("onCheckScreenMaskEnable", szMethod) == 0)
     {
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs))
-            FUN_14135d440(data.FUN_1422b8a90());
+        {
+            bool bValue = data.FUN_1422b8a90();
+            FUN_14135d440(bValue);
+        }
         return 1;
     }
-    if (_stricmp("onChangeSliderHdrBPThreshold", szMethod) == 0)
+    else if (_stricmp("onChangeSliderHdrBPThreshold", szMethod) == 0)
     {
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs))
-            FUN_14135d2d0(DAT_143ae5358, data.FUN_1422b8c10());
+        {
+            float fValue = data.FUN_1422b8c10();
+            FUN_14135d2d0(DAT_143ae5358, fValue);
+        }
         return 1;
     }
-    if (_stricmp("onChangeSliderHdrBPOffset", szMethod) == 0)
+    else if (_stricmp("onChangeSliderHdrBPOffset", szMethod) == 0)
     {
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs))
-            FUN_14135d2d0(DAT_143ae5360, data.FUN_1422b8c10());
+        {
+            float fValue = data.FUN_1422b8c10();
+            FUN_14135d2d0(DAT_143ae5360, fValue);
+        }
         return 1;
     }
-    if (_stricmp("onChangeSliderHdrBloomScale", szMethod) == 0)
+    else if (_stricmp("onChangeSliderHdrBloomScale", szMethod) == 0)
     {
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs))
-            FUN_14135d2d0(DAT_143ae5370, data.FUN_1422b8c10());
+        {
+            float fValue = data.FUN_1422b8c10();
+            FUN_14135d2d0(DAT_143ae5370, fValue);
+        }
         return 1;
     }
-    if (_stricmp("onChangeSliderHdrGlowScale", szMethod) == 0)
+    else if (_stricmp("onChangeSliderHdrGlowScale", szMethod) == 0)
     {
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs))
-            FUN_14135d2d0(DAT_143ae5378, data.FUN_1422b8c10());
+        {
+            float fValue = data.FUN_1422b8c10();
+            FUN_14135d2d0(DAT_143ae5378, fValue);
+        }
         return 1;
     }
-    if (_stricmp("onCheckShimmerEnable", szMethod) == 0)
+    else if (_stricmp("onCheckShimmerEnable", szMethod) == 0)
     {
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs))
-            FUN_14135d490(data.FUN_1422b8a90());
+        {
+            bool bValue = data.FUN_1422b8a90();
+            FUN_14135d490(bValue);
+        }
         return 1;
     }
-    if (_stricmp("onChangeSliderShimmerMultiplier", szMethod) == 0)
+    else if (_stricmp("onChangeSliderShimmerMultiplier", szMethod) == 0)
     {
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs))
-            FUN_14135d2d0(DAT_143ae5430, data.FUN_1422b8c10());
+        {
+            float fValue = data.FUN_1422b8c10();
+            FUN_14135d2d0(DAT_143ae5430, fValue);
+        }
         return 1;
     }
-    if (_stricmp("onChangeSliderShimmerBrightness", szMethod) == 0)
+    else if (_stricmp("onChangeSliderShimmerBrightness", szMethod) == 0)
     {
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs))
-            FUN_14135d2d0(DAT_143ae5440, data.FUN_1422b8c10());
+        {
+            float fValue = data.FUN_1422b8c10();
+            FUN_14135d2d0(DAT_143ae5440, fValue);
+        }
         return 1;
     }
-    if (_stricmp("onCheckOutGlowEnable", szMethod) == 0)
+    else if (_stricmp("onCheckOutGlowEnable", szMethod) == 0)
     {
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs))
-            FUN_14135d4f0(data.FUN_1422b8a90());
+        {
+            bool bValue = data.FUN_1422b8a90();
+            FUN_14135d4f0(bValue);
+        }
         return 1;
     }
-    if (_stricmp("onChangeSliderOutGlowColor", szMethod) == 0)
+    else if (_stricmp("onChangeSliderOutGlowColor", szMethod) == 0)
     {
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs))
@@ -1800,7 +1856,7 @@ int UIVisualEffectDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
         }
         return 1;
     }
-    if (_stricmp("onChangeSliderEffectTime", szMethod) == 0)
+    else if (_stricmp("onChangeSliderEffectTime", szMethod) == 0)
     {
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs))
@@ -1811,21 +1867,27 @@ int UIVisualEffectDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
         }
         return 1;
     }
-    if (_stricmp("onCheckGaussianBlurEnable", szMethod) == 0)
+    else if (_stricmp("onCheckGaussianBlurEnable", szMethod) == 0)
     {
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs))
-            FUN_14135d630(data.FUN_1422b8a90());
+        {
+            bool bValue = data.FUN_1422b8a90();
+            FUN_14135d630(bValue);
+        }
         return 1;
     }
-    if (_stricmp("onChangeSliderGaussianBlur", szMethod) == 0)
+    else if (_stricmp("onChangeSliderGaussianBlur", szMethod) == 0)
     {
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs))
-            FUN_14135d660(data.FUN_1422b8c10());
+        {
+            float fValue = data.FUN_1422b8c10();
+            FUN_14135d660(fValue);
+        }
         return 1;
     }
-    if (_stricmp("onChangeSliderDOF", szMethod) == 0)
+    else if (_stricmp("onChangeSliderDOF", szMethod) == 0)
     {
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs))
@@ -1836,14 +1898,17 @@ int UIVisualEffectDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
         }
         return 1;
     }
-    if (_stricmp("onCheckColorPersEnable", szMethod) == 0)
+    else if (_stricmp("onCheckColorPersEnable", szMethod) == 0)
     {
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs))
-            FUN_14135d700(data.FUN_1422b8a90());
+        {
+            bool bValue = data.FUN_1422b8a90();
+            FUN_14135d700(bValue);
+        }
         return 1;
     }
-    if (_stricmp("onChangeSliderColorPerspective", szMethod) == 0)
+    else if (_stricmp("onChangeSliderColorPerspective", szMethod) == 0)
     {
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs))
@@ -1925,8 +1990,7 @@ void UIVisualEffectDialog::FUN_14135d580(float fRed, float fGreen, float fBlue)
     Unk_HudEnvPtr spEnv = FUN_1403ed2d0()->FUN_141bd30a0();
     if (spEnv.FUN_1409657a0() != 0)
     {
-        Unk_HudStreamPoint color = FUN_140a56db0(fRed, fGreen, fBlue);
-        spEnv.FUN_140885340()->m_glowColor = color;
+        spEnv.FUN_140885340()->m_glowColor = FUN_140a56db0(fRed, fGreen, fBlue);
     }
 }
 
@@ -1945,10 +2009,9 @@ void UIVisualEffectDialog::FUN_14135d660(float fValue)
 // @0x14135d690
 void UIVisualEffectDialog::FUN_14135d690(float fNear, float fFar)
 {
-    float afRange[2] = {fNear, fFar};
-    efd::Point2 kRange(fNear, fFar);
+    NiPoint2 kRange(fNear, fFar);
     FUN_1411781e0(DAT_143ae53b0, &kRange, 1);
-    FUN_1409a5770(DAT_143ae53b8, afRange, 1);
+    FUN_1409a5770(DAT_143ae53b8, &fNear, 1);
 }
 
 // @0x14135d700
@@ -1960,11 +2023,11 @@ void UIVisualEffectDialog::FUN_14135d700(bool bOn)
 // @0x14135d730
 void UIVisualEffectDialog::FUN_14135d730(ASData& data)
 {
-    float afRange[4];
-    afRange[0] = data.FUN_1422b8c10();
-    afRange[1] = data.FUN_1422b8c10();
-    afRange[2] = data.FUN_1422b8c10();
-    afRange[3] = data.FUN_1422b8c10();
+    float fNearStart = data.FUN_1422b8c10();
+    float fNearEnd = data.FUN_1422b8c10();
+    float fFarStart = data.FUN_1422b8c10();
+    float fFarEnd = data.FUN_1422b8c10();
+    float afRange[4] = {fNearStart, fNearEnd, fFarStart, fFarEnd};
     for (int i = 0; i < 3; i++)
         afRange[i + 1] = (std::max)(afRange[i], afRange[i + 1]);
     Unk_ShaderColor kColor(afRange[0], afRange[1], afRange[2], afRange[3]);
@@ -1989,9 +2052,10 @@ void FUN_14135d9d0(int nMode)
     Unk_HudMotionBlurPtr spBlur(FUN_14135de30(&DAT_143ae0e88, FUN_1409a8c40(FUN_14135dd90(&spEffect))));
     if (FUN_14135dd70(&spBlur) != 0)
         FUN_14135dd80(&spBlur)->SetMode(nMode);
-    if (!FUN_1409a8b20()->FUN_1416a3a00(10))
+    bool bOk = FUN_1409a8b20()->FUN_1416a3a00(10);
+    if (!bOk)
     {
-        bool bOk = FUN_1409a8b20()->FUN_1416a37a0(10, true);
+        bOk = FUN_1409a8b20()->FUN_1416a37a0(10, true);
         FUN_1409a8b20()->FUN_1416aa450(3, bOk);
     }
 }
@@ -1999,14 +2063,17 @@ void FUN_14135d9d0(int nMode)
 // @0x14135dad0
 float FUN_14135dad0(const char* pszName)
 {
-    unsigned int nSize = 4;
     const void* pData = 0;
-    NiFixedString kName(pszName);
-    NiGlobalConstantEntry* pEntry = NiShaderFactory::GetInstance()->GetGlobalShaderConstantEntry(kName);
-    if (pEntry == 0)
-        return 0;
-    pEntry->GetData(nSize, pData);
-    return *static_cast<const float*>(pData);
+    unsigned int nSize = 4;
+    float fValue = 0;
+    NiGlobalConstantEntry* pEntry = NiShaderFactory::GetInstance()->GetGlobalShaderConstantEntry(pszName);
+    if (pEntry)
+    {
+        pEntry->GetData(nSize, pData);
+        fValue = *static_cast<const float*>(pData);
+        return fValue;
+    }
+    return 0;
 }
 
 // @0x14135db70
@@ -2235,7 +2302,7 @@ void UIWeaponDummyDialog::OnLoadComplete()
     UIDialog::OnLoadComplete();
     DAT_143aad1e0 = 1;
     ASObj obj(2);
-    obj.FUN_1407cba60("defaultTargetNode", CString("Weapon_Hand_L_Point"));
+    obj.FUN_1407cba60("defaultTargetNode", FUN_14016a5c0("Weapon_Hand_L_Point", 0));
     obj.FUN_1407cb9c0("defaultSliderValue", 0);
     m_30->Invoke("initData", obj.FUN_1422bb870());
 }
@@ -2252,7 +2319,7 @@ int UIWeaponDummyDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
             FUN_14135e660(data);
         return 1;
     }
-    if (_stricmp("onChangeSliderTranslation", szMethod) == 0)
+    else if (_stricmp("onChangeSliderTranslation", szMethod) == 0)
     {
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs))
@@ -2272,10 +2339,9 @@ void UIWeaponDummyDialog::vfunc_67()
 // @0x14135e570
 CString UIWeaponDummyDialog::FUN_14135e570()
 {
-    MS2Ptr<Unk_HudText> spInput = FUN_140bb4cf0("m_inputTargetNode");
-    if (static_cast<Unk_HudText*>(spInput) == 0)
-        return CString("");
-    return spInput->FUN_1422c4d20();
+    if (MS2Ptr<Unk_HudText> spInput = FUN_140bb4cf0("m_inputTargetNode"))
+        return spInput->FUN_1422c4d20();
+    return FUN_14016a5c0("", 0);
 }
 
 // @0x14135e660
@@ -2308,25 +2374,28 @@ void UIWeaponDummyDialog::FUN_14135e880(const CString& strNode, const Unk_HudStr
         return;
     PCBase* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
     NiNode* pRoot = NiDynamicCast(NiNode, FUN_141b6efc0(pPlayer->FUN_14123c410()));
-    if (pRoot == 0)
-        return;
-    NiNode* pNode = NiDynamicCast(NiNode, pRoot->GetObjectByName(NiFixedString((const char*)strNode)));
-    if (pNode == 0)
-        return;
-    NiAVObject* pChild = 0;
-    for (unsigned int i = 0; i < pNode->GetArrayCount(); i++)
+    if (pRoot != 0)
     {
-        pChild = pNode->GetAt(i);
-        if (pChild != 0 && pChild->GetName().Contains("Weapon_Attach_Transform"))
-            break;
-    }
-    NiAVObject* pAttach = NiDynamicCast(NiAVObject, pChild);
-    if (pAttach != 0)
-    {
-        NiMatrix3 kMatrix;
-        kMatrix.FromEulerAnglesXYZ(kRot.x, kRot.y, kRot.z);
-        pAttach->SetRotate(kMatrix);
-        pAttach->SetTranslate(NiPoint3(kTrans.x, kTrans.y, kTrans.z));
+        NiNode* pNode = NiDynamicCast(NiNode, pRoot->GetObjectByName((const char*)strNode));
+        if (pNode != 0)
+        {
+            NiAVObject* pChild = 0;
+            for (unsigned int i = 0; i < pNode->GetArrayCount(); i++)
+            {
+                pChild = pNode->GetAt(i);
+                if (pChild != 0 && pChild->GetName().Contains("Weapon_Attach_Transform"))
+                    break;
+            }
+            WeaponAttachTransformNode* pAttach = NiDynamicCast(WeaponAttachTransformNode, pChild);
+            if (pAttach != 0)
+            {
+                NiMatrix3 kMatrix;
+                kMatrix.FromEulerAnglesXYZ(kRot.x, kRot.y, kRot.z);
+                pAttach->SetBaseRotate(kMatrix);
+                // the exe passes the xyz itself as the NiPoint3
+                pAttach->SetBasePosition(*reinterpret_cast<const NiPoint3*>(&kTrans));
+            }
+        }
     }
 }
 
@@ -2372,7 +2441,7 @@ void UIWebBrowserBase::vfunc_84(bool bVisible)
 }
 
 // @0x14135ed80
-bool UIWebBrowserBase::IsVisible() const
+int UIWebBrowserBase::IsVisible() const
 {
     return m_bVisible;
 }
@@ -2510,22 +2579,24 @@ bool UIWebBrowserBase::vfunc_17()
 // @0x14135f480
 int UIWebBrowserBase::vfunc_74(int a1, void* p2, void* p3)
 {
-    unsigned int nMsg = a1;
     if (m_nBrowserId == -1)
         return UIDialog::vfunc_74(a1, p2, p3);
     if (!IsVisible())
         return UIDialog::vfunc_74(a1, p2, p3);
     POINT kPoint;
-    kPoint.x = (short)(__int64)p3;
-    kPoint.y = (short)((unsigned __int64)p3 >> 16);
-    if (nMsg == 0x20a)
+    kPoint.x = (short)LOWORD(p3);   // GET_X_LPARAM
+    kPoint.y = (short)HIWORD(p3);   // GET_Y_LPARAM
+    if ((unsigned int)a1 == 0x20a)
         ScreenToClient(FUN_140aadf80()->FUN_14209c720(), &kPoint);
-    kPoint.x = (LONG)((float)kPoint.x * FUN_14025e7a0()->FUN_1422afec0(m_28));
-    kPoint.y = (LONG)((float)kPoint.y * FUN_14025e7a0()->FUN_1422afec0(m_28));
-    if (!vfunc_90(&kPoint) && 0x1ff < nMsg && nMsg < 0x20e)
+    kPoint.x *= FUN_14025e7a0()->FUN_1422afec0(m_28);
+    kPoint.y *= FUN_14025e7a0()->FUN_1422afec0(m_28);
+    // one bool for the hit test and the forward result (WM_MOUSEFIRST..WM_MOUSELAST, unsigned)
+    bool bResult = vfunc_90(&kPoint);
+    if (!bResult && (unsigned int)a1 >= 0x200 && (unsigned int)a1 <= 0x20d)
         return UIDialog::vfunc_74(a1, p2, p3);
-    if (FUN_140cc18a0()->FUN_141b78910(m_nBrowserId, nMsg, p2, p3, kPoint.x, kPoint.y) == 1)
-        return 1;
+    bResult = FUN_140cc18a0()->FUN_141b78910(m_nBrowserId, a1, p2, p3, kPoint.x, kPoint.y);
+    if (bResult == 1)
+        return bResult;
     return UIDialog::vfunc_74(a1, p2, p3);
 }
 
@@ -2538,7 +2609,8 @@ void UIWebBrowserBase::vfunc_89(const CString& strUrl)
     FUN_140cc18a0()->FUN_141b781e0(m_nBrowserId, pszFrom, (const char*)strUrl, vfunc_88());
     m_strUrl = "";
     vfunc_85();
-    if (dynamic_cast<ASDialog*>((AScript*)m_30) != 0)
+    ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30);
+    if (pDialog != 0)
     {
         vfunc_87(&m_size);
         FUN_140cc18a0()->FUN_141b788b0(m_nBrowserId, m_size.cx, m_size.cy);

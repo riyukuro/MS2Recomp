@@ -66,56 +66,59 @@ u64 FUN_141bf8160(void* p);
 u64 FUN_141bf8180(void* p);
 
 // ---------------------------------------------------------------------------
-// find-or-insert forwards: insert fills an 8-byte scratch in place, the node accessor
+// find-or-insert forwards: insert fills a 16-byte pair<iterator, bool> scratch in place, the node accessor
 // turns the node into its payload pointer, and the payload's first field is at +8.
 // ---------------------------------------------------------------------------
+
+// pair<iterator, bool> of the insert: the node at +0, the inserted flag at +8
+struct Unk_InsertPair { void* m_node; bool m_bInserted; };
 
 // @0x141bf79d0
 u64 FUN_141bf79d0(void* pMap, void* pKey)
 {
-    void* keybuf;
+    Unk_InsertPair keybuf;
     return (u64)FUN_141bf7dd0(FUN_141beef50(pMap, &keybuf, pKey)) + 8;
 }
 
 // @0x141bf7a10
 u64 FUN_141bf7a10(void* pMap, void* pKey)
 {
-    void* keybuf;
+    Unk_InsertPair keybuf;
     return (u64)FUN_141bf7df0(FUN_141beef90(pMap, &keybuf, pKey)) + 8;
 }
 
 // @0x141bf7a50
 u64 FUN_141bf7a50(void* pMap, void* pKey)
 {
-    void* keybuf;
+    Unk_InsertPair keybuf;
     return (u64)FUN_141bf7e10(FUN_141beefd0(pMap, &keybuf, pKey)) + 8;
 }
 
 // @0x141bf7a90
 u64 FUN_141bf7a90(void* pMap, void* pKey)
 {
-    void* keybuf;
+    Unk_InsertPair keybuf;
     return (u64)FUN_141bf7e90(FUN_141bef010(pMap, &keybuf, pKey)) + 8;
 }
 
 // @0x141bf7ad0
 u64 FUN_141bf7ad0(void* pMap, void* pKey)
 {
-    void* keybuf;
+    Unk_InsertPair keybuf;
     return (u64)FUN_141bf7eb0(FUN_141bef050(pMap, &keybuf, pKey)) + 8;
 }
 
 // @0x141bf7b10
 u64 FUN_141bf7b10(void* pMap, void* pKey)
 {
-    void* keybuf;
+    Unk_InsertPair keybuf;
     return (u64)FUN_141bf7ed0(FUN_141bef090(pMap, &keybuf, FUN_1403b8210(pKey))) + 8;
 }
 
 // @0x141bf7b50
 u64 FUN_141bf7b50(void* pMap, void* pKey)
 {
-    void* keybuf;
+    Unk_InsertPair keybuf;
     return (u64)FUN_141bf7ed0(FUN_141bef0d0(pMap, &keybuf, pKey)) + 8;
 }
 

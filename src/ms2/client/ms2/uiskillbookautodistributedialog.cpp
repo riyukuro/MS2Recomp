@@ -108,6 +108,8 @@ static Unk_1402a9d70 s_unk1402a9d70b(17, 0.75f, 0.25f, 2.25f, 10);
 class Unk_SkillField;
 class Unk_SkillWorld { public: MyPC* FUN_141bd0cc0(); MS2Ptr<Unk_SkillField> FUN_141bd30a0(); };
 Unk_SkillWorld* FUN_1403ed2d0();
+JobSkillPtr* FUN_1406420e0(std::vector<JobSkillPtr>* pVec);       // begin
+JobSkillPtr* FUN_1406421b0(std::vector<JobSkillPtr>* pVec);       // end
 
 // The three "m_distribute{N}" buttons.
 class Unk_140acd6e0 : public ASDisplayObject
@@ -272,27 +274,24 @@ void UISkillBookAutoDistributeDialog::FUN_140ec48e0()
         if (m_names.GetCount() <= i)
         {
             spButton->vfunc_3(0);
+            continue;
         }
-        else
+        spButton->FUN_1422cdfb0(GetStringCommonByKey(m_names[i]));
+        CStringW strTooltip = GetStringCommonByKey(m_tooltips[i]);
+        if (!strTooltip.IsEmpty())
         {
-            spButton->FUN_1422cdfb0(GetStringCommonByKey(m_names[i]));
-            CStringW strTooltip = GetStringCommonByKey(m_tooltips[i]);
-            if (!strTooltip.IsEmpty())
-            {
-                ASTooltip tooltip(2);
-                tooltip.FUN_1409e26b0(strTooltip);
-                tooltip.FUN_1409c6dc0(4);
-                spButton->FUN_1422c7cd0(tooltip.FUN_1422bb890());
-            }
-            nShown++;
+            ASTooltip tooltip(2);
+            tooltip.FUN_1409e26b0(strTooltip);
+            tooltip.FUN_1409c6dc0(4);
+            spButton->FUN_1422c7cd0(tooltip.FUN_1422bb890());
         }
+        nShown++;
     }
     if (MS2Ptr<ASDialog> spDialog = dynamic_cast<ASDialog*>((AScript*)m_30))
     {
         if (MS2Ptr<ASMovieClip> spBg = static_cast<Unk_SkillDlgView*>(static_cast<UIDialog*>(this))->FUN_140ba7930("m_bg"))
         {
-            int nHeight = nShown * 0x2a + 0x41;
-            static_cast<Unk_SkillBgClip*>(spBg.operator->())->FUN_1422c0ef0(nHeight);
+            static_cast<Unk_SkillBgClip*>(spBg.operator->())->FUN_1422c0ef0(nShown * 0x2a + 0x41);
         }
         reinterpret_cast<Unk_ASDialogSlots*>(spDialog.operator->())->Invalidate(true);
     }
@@ -312,7 +311,7 @@ inline Scaleform::GFx::Value AScript::Invoke(const char* szMethod, int a1, int a
     args.FUN_1409b2800(3);
     FUN_1422bcd10(args.FUN_1409b1f70(0), a1);
     FUN_1422bccb0(args.FUN_1409b1f70(1), a2);
-    FUN_1422bcea0(args.FUN_1409b1f70(2), a3.GetString());
+    FUN_1422bcea0(args.FUN_1409b1f70(2), (const wchar_t*)a3);
     return FUN_1422bb8f0(szMethod, args);
 }
 
@@ -331,8 +330,8 @@ inline Scaleform::GFx::Value AScript::Invoke(const char* szMethod, CStringW a1, 
 {
     ASArgList args;
     args.FUN_1409b2800(3);
-    FUN_1422bcea0(args.FUN_1409b1f70(0), a1.GetString());
-    FUN_1422bcea0(args.FUN_1409b1f70(1), a2.GetString());
+    FUN_1422bcea0(args.FUN_1409b1f70(0), (const wchar_t*)a1);
+    FUN_1422bcea0(args.FUN_1409b1f70(1), (const wchar_t*)a2);
     FUN_1422bccb0(args.FUN_1409b1f70(2), a3);
     return FUN_1422bb8f0(szMethod, args);
 }
@@ -352,7 +351,7 @@ inline Scaleform::GFx::Value AScript::Invoke(const char* szMethod, unsigned __in
     ASArgList args;
     args.FUN_1409b2800(2);
     FUN_1422bce00(args.FUN_1409b1f70(0), a1);
-    FUN_1422bcea0(args.FUN_1409b1f70(1), a2.GetString());
+    FUN_1422bcea0(args.FUN_1409b1f70(1), (const wchar_t*)a2);
     return FUN_1422bb8f0(szMethod, args);
 }
 
@@ -411,8 +410,8 @@ public:
     virtual int State();                                        // +0x120
     virtual int Execute(class Unk_SkillCommand& command);       // +0x128
     virtual void S38(); virtual void S39();
-    virtual bool HasMeret(unsigned nAmount);                    // +0x140
-    virtual bool HasMoney(unsigned nAmount);                    // +0x148
+    virtual bool HasMeret(__int64 nAmount);                     // +0x140
+    virtual bool HasMoney(__int64 nAmount);                     // +0x148
     virtual void S42();
     virtual void Notify(int nA, int nB, int nC);                // +0x158
 };
@@ -516,8 +515,8 @@ CStringW FUN_14052bd00(int nId, const CStringW& str);
 
 // @0x140ec4e50
 UISkillBookTreeDialog::UISkillBookTreeDialog()
-    : m_strSlotPrefix("skillTreeSlot"), m_simulators(17, 0.75f, 0.25f, 2.25f, 10), m_spSimulator(0), m_tabs(10),
-      m_slotOrder(17, 0.75f, 0.25f, 2.25f, 10), m_nMaxTabs(1), m_nTabId(0), m_nShownTabId(0), m_nJobLevel(0), m_spCache(0),
+    : m_strSlotPrefix("skillTreeSlot"), m_simulators(17, 0.75f, 0.25f, 2.25f, 10), m_spSimulator(), m_tabs(10),
+      m_slotOrder(17, 0.75f, 0.25f, 2.25f, 10), m_nMaxTabs(1), m_nShownTabId(0), m_nJobLevel(0), m_spCache(0),
       m_autoDistribute(17, 0.75f, 0.25f, 2.25f, 10)
 {
     m_spButtonBar = 0;
@@ -539,15 +538,16 @@ CString UISkillBookTreeDialog::GetTypeName()
 {
     if (FUN_140166410()->FUN_14036d570(0xca))
         return "SkillBookTreeDialog_jobchange01";
-    return "SkillBookTreeDialog";
+    else
+        return "SkillBookTreeDialog";
 }
 
 // @0x140ec5250
-bool UISkillBookTreeDialog::vfunc_84()
+int UISkillBookTreeDialog::vfunc_84()
 {
     if (vfunc_55() != 0)
-        return false;
-    return true;
+        return 0;
+    return 1;
 }
 
 // @0x140ec5290
@@ -597,7 +597,7 @@ int UISkillBookTreeDialog::vfunc_73()
 void UISkillBookTreeDialog::OnLoadInit()
 {
     UIObject::OnLoadInit();
-    if ((m_spCache.get() ? true : false) && FUN_1401d1320(m_spCache.get()))
+    if ((m_spCache ? true : false) && FUN_1401d1320(m_spCache.get()))
         LoadAutoDistribute();
     Unk_SkillNotify* pNotify = FUN_140938cd0(0x4e5d);
     if (pNotify != 0)
@@ -662,18 +662,16 @@ MS2Ptr<CSkillPointSimulator> UISkillBookTreeDialog::GetSimulator()
 }
 
 // @0x140ecce40
-bool UISkillBookTreeDialog::HasPendingChanges()
+int UISkillBookTreeDialog::HasPendingChanges()
 {
     if (m_spSimulator == 0)
-        return false;
+        return 0;
     MyPC* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pPlayer == 0)
-        return false;
-    if (IsCurrentTab(m_nShownTabId) == 0)
-        return m_spSimulator->GetSpentPoints(m_nJobLevel) != 0;
-    if (FUN_1416546d0(pPlayer)->GetTotalPoint() == 0 && m_spSimulator->GetSpentPoints(m_nJobLevel) == 0)
-        return false;
-    return true;
+        return 0;
+    if (IsCurrentTab(m_nShownTabId))
+        return FUN_1416546d0(pPlayer)->GetTotalPoint() > 0u || m_spSimulator->GetSpentPoints(m_nJobLevel) > 0u;
+    return m_spSimulator->GetSpentPoints(m_nJobLevel) > 0u;
 }
 
 // @0x140ecd4b0
@@ -734,7 +732,8 @@ void UISkillBookTreeDialog::RefreshJob()
     MyPC* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pPlayer == 0)
         return;
-    RefreshJobSkills(pPlayer->FUN_141654700());
+    int nJob = pPlayer->FUN_141654700();
+    RefreshJobSkills(nJob);
     RefreshRemainPoint();
     RefreshPoints();
 }
@@ -742,7 +741,9 @@ void UISkillBookTreeDialog::RefreshJob()
 // @0x140ecb5c0
 void UISkillBookTreeDialog::RefreshTabButtons(int bKeepSelection)
 {
-    if (m_tabs.IsEmpty() || m_spButtonBar == 0)
+    if (m_tabs.IsEmpty())
+        return;
+    if (m_spButtonBar.IsNull())
         return;
     m_spButtonBar->FUN_1422e3400();
     int nSelected = 0;
@@ -750,7 +751,7 @@ void UISkillBookTreeDialog::RefreshTabButtons(int bKeepSelection)
     for (POSITION pos = m_tabs.GetHeadPosition(); pos != 0; m_tabs.GetNext(pos))
     {
         MS2Ptr<CSkillBookTreeTabConfig> spTab = m_tabs.GetAt(pos);
-        CStringW strId = StringFormat(L"{0}", spTab->m_nId);
+        CStringW strId = StringFormat(L"{0}", reinterpret_cast<const unsigned __int64&>(spTab->m_nId));
         m_30->Invoke("AddTab", CStringW(spTab->m_strName), CStringW(strId), 0);
         if (spTab->m_nId == m_nTabId)
             nSelected = nIndex;
@@ -772,7 +773,8 @@ void UISkillBookTreeDialog::RefreshSlotsIfShown()
 // @0x140ec91c0
 void UISkillBookTreeDialog::RegisterShortcut(int nSkillId)
 {
-    FUN_14092fac0(nSkillId, 0, 0, FUN_140a700b0(FUN_1409331f0()));
+    int nSlot = FUN_140a700b0(FUN_1409331f0());
+    FUN_14092fac0(nSkillId, 0, 0, nSlot);
 }
 
 // @0x140ec9130
@@ -802,7 +804,10 @@ void UISkillBookTreeDialog::RefreshSlots(int bKeep)
 {
     if (m_30 == 0)
         return;
-    if (FUN_1403ed2d0()->FUN_141bd0cc0() == 0 || m_spSimulator == 0)
+    MyPC* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    if (pPlayer == 0)
+        return;
+    if (m_spSimulator == 0)
         return;
     if (bKeep == 0)
     {
@@ -812,17 +817,22 @@ void UISkillBookTreeDialog::RefreshSlots(int bKeep)
         FUN_140a36c30(m_strSlotPrefix, skills);
         m_slotOrder.RemoveAll();
         int nIndex = 0;
-        for (std::vector<JobSkillPtr>::iterator it = skills.begin(); it != skills.end(); ++it)
+        std::vector<JobSkillPtr>& range = skills;
+        JobSkillPtr* it = FUN_1406420e0(&range);
+        JobSkillPtr* itEnd = FUN_1406421b0(&range);
+        for (; it != itEnd; ++it)
         {
-            m_slotOrder.SetAt((*it)->GetID(), nIndex);
+            JobSkillPtr& spSkill = *it;
+            int nSlot = nIndex;
+            m_slotOrder.SetAt(spSkill->GetID(), nSlot);
             nIndex++;
         }
     }
     RefreshJob();
-    if (bKeep == 0)
-        RefreshAll();
-    else
+    if (bKeep != 0)
         RefreshTree();
+    else
+        RefreshAll();
     ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30);
     if (pDialog != 0)
         reinterpret_cast<Unk_ASDialogSlots*>(pDialog)->Invalidate(true);
@@ -903,7 +913,7 @@ void UISkillBookTreeDialog::RefreshTabs(__int64 nTabId)
     ATL::CAtlArray<unsigned> ids;
     ATL::CAtlArray<unsigned> points;
     spSim->GetUsedPoints(ids, points, 0);
-    for (size_t i = 0; i < ids.GetCount(); i++)
+    for (unsigned i = 0; i < ids.GetCount(); i++)
     {
         unsigned nSkill = ids[i];
         unsigned nPoint = points[i];
@@ -1026,17 +1036,17 @@ bool UISkillBookTreeDialog::OnResetConfirm(int nResult, const CMsgBoxData& box)
         }
         m_spSimulator->ResetRank(nRank);
         RequestTree(m_nShownTabId, 0, nRank);
-        if (IsCurrentTab(m_nShownTabId) == 0)
-        {
-            RefreshSlots(1);
-        }
-        else
+        if (IsCurrentTab(m_nShownTabId))
         {
             COutPacket packet(static_cast<int>(SendOp::Job), 0);
             packet.Encode1(10);
             packet.Encode4(nRank);
             FUN_140710590(packet);
             m_nWaitServer = 1;
+        }
+        else
+        {
+            RefreshSlots(1);
         }
         FUN_1412751b0(GetStringCommonByKey(L"s_msg_skillbook_reset_skill"), 0x14);
     }
@@ -1076,12 +1086,12 @@ bool UISkillBookTreeDialog::OnApplyTabConfirm(int nResult, const CMsgBoxData& bo
     if (nResult == 0)
     {
         MS2Ptr<CSkillBookTreeTabConfig> spTab = FindTab(m_nShownTabId);
-        if (!spTab)
+        if (spTab == 0)
             return false;
         m_nTabId = spTab->m_nId;
         RequestTree(0, 1, 0);
         RequestJob(0, 1, 0);
-        FUN_1412751f0(FUN_1405c2690(GetStringCommonByKey(L"s_skillbook_tree_config_apply_tab"), spTab->m_strName), 1, 1);
+        FUN_1412751f0(FUN_1405c2690(L"s_skillbook_tree_config_apply_tab", spTab->m_strName), 1, 1);
     }
     FUN_14151f200();
     return true;
@@ -1123,7 +1133,7 @@ bool UISkillBookTreeDialog::OnAddTabConfirm(int nResult, const CMsgBoxData& box)
 {
     if (nResult == 0)
     {
-        if ((unsigned)m_nMaxTabs <= m_tabs.GetCount())
+        if (m_tabs.GetCount() >= (unsigned)m_nMaxTabs)
             return false;
         CStringW strName = box.FUN_141a02d50();
         strName = strName.Mid(strName.Find(L',', 0) + 1);
@@ -1143,21 +1153,22 @@ bool UISkillBookTreeDialog::OnAddTabPayConfirm(int nResult, const CMsgBoxData& b
 {
     if (nResult == 0)
     {
-        if (m_tabs.GetCount() > 2)
+        if (m_tabs.GetCount() >= 3)
             return false;
         bool bCoupon = const_cast<CMsgBoxData&>(box).FUN_141a04aa0();
-        bool bHasCoupon = false;
+        int bHasCoupon = 0;
         if (bCoupon)
         {
             MS2Ptr<Unk_SkillCoupon> spCoupon = DAT_143ab2a90.FUN_140a5e040(0x76);
-            bHasCoupon = spCoupon.get() != 0;
+            if (spCoupon.get() != 0)
+                bHasCoupon = 1;
         }
-        unsigned nPrice = *FUN_1401d7c10(FUN_1401d3200() + 0x8bb8);
-        bool bEnough = false;
+        unsigned __int64 nPrice = *FUN_1401d7c10(FUN_1401d3200() + 0x8bb8);
+        int bEnough = 0;
         if (FUN_140d86260()->HasMoney(nPrice) == true)
-            bEnough = true;
+            bEnough = 1;
         else if (FUN_140d86260()->HasMeret(nPrice) == true)
-            bEnough = true;
+            bEnough = 1;
         if (!bHasCoupon && !bEnough)
         {
             FUN_141add1f0(FUN_1403ed2b0());
@@ -1219,12 +1230,14 @@ void UISkillBookTreeDialog::RequestTree(__int64 nTabId, int bKeep, int nRank)
 // @0x140ec9fd0
 void UISkillBookTreeDialog::PromptChangeTab()
 {
-    if (CanApply() == 0 || CheckApply(true) == 1)
+    if (CanApply() == 0)
+        return;
+    if (CheckApply(true) == 1)
         return;
     MS2Ptr<CSkillBookTreeTabConfig> spTab = FindTab(m_nShownTabId);
     if (spTab == 0)
         return;
-    MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, FUN_1405c2690(GetStringCommonByKey(L"s_skillbook_tree_config_change_tab"), spTab->m_strName), 0, L"");
+    MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, FUN_1405c2690(L"s_skillbook_tree_config_change_tab", spTab->m_strName), 0, L"");
     spBox->FUN_141a027c0(SkillBoxDelegate(this, &UISkillBookTreeDialog::OnApplyTabConfirm));
     FUN_140d73c60(spBox);
 }
@@ -1248,18 +1261,22 @@ void UISkillBookTreeDialog::RequestJob(int bConfirm, int bAll, int nRank)
         return;
     }
     std::vector<JobSkillPtr> skills;
-    if (bAll == 0)
-        m_spSimulator->GetMerged(skills, nRank);
-    else
+    if (bAll != 0)
         m_spSimulator->GetSnapshot(skills, 0);
+    else
+        m_spSimulator->GetMerged(skills, nRank);
     COutPacket packet(static_cast<int>(SendOp::Job), 0);
-    packet.Encode1(bConfirm == 0 ? 9 : 0xb);
+    packet.Encode1(bConfirm != 0 ? 0xb : 9);
     packet.Encode4(skills.size());
-    for (std::vector<JobSkillPtr>::iterator it = skills.begin(); it != skills.end(); ++it)
+    std::vector<JobSkillPtr>& range = skills;
+    JobSkillPtr* it = FUN_1406420e0(&range);
+    JobSkillPtr* itEnd = FUN_1406421b0(&range);
+    for (; it != itEnd; ++it)
     {
-        packet.Encode4((*it)->GetID());
-        packet.Encode2((*it)->m_nLevel);
-        packet.WriteBool((*it)->m_bLearned);
+        JobSkillPtr& spSkill = *it;
+        packet.Encode4(spSkill->GetID());
+        packet.Encode2(spSkill->m_nLevel);
+        packet.WriteBool(spSkill->m_bLearned);
     }
     FUN_140710590(packet);
     m_nWaitServer = 1;
@@ -1269,32 +1286,34 @@ void UISkillBookTreeDialog::RequestJob(int bConfirm, int bAll, int nRank)
         m_spSimulator->GetChanged(applied, nRank);
         m_spSimulator->Commit(nRank);
     }
-    for (std::vector<JobSkillPtr>::iterator it = applied.begin(); it != applied.end(); ++it)
-        PlayChangeEffect((*it)->GetID());
+    std::vector<JobSkillPtr>& range2 = applied;
+    JobSkillPtr* it2 = FUN_1406420e0(&range2);
+    JobSkillPtr* itEnd2 = FUN_1406421b0(&range2);
+    for (; it2 != itEnd2; ++it2)
+    {
+        JobSkillPtr& spSkill = *it2;
+        PlayChangeEffect(spSkill->GetID());
+    }
     FUN_141276180("System_Skillbook_Skill_Fixed_01", "");
 }
 
 // @0x140ec9610
 void UISkillBookTreeDialog::PromptReset()
 {
-    if (CanApply() == 0 || HasPendingChanges() == 0 || CheckApply(true) == 1)
+    if (CanApply() == 0)
+        return;
+    if (HasPendingChanges() == 0)
+        return;
+    if (CheckApply(true) == 1)
         return;
     MS2Ptr<CMsgBoxData> spBox(0);
-    if (!FUN_140166410()->FUN_14036d570(0xca))
-    {
-        spBox = FUN_140d73d20(1, GetStringCommonByKey(L"s_msg_skillbook_reset_desc"), 0, L"");
-    }
-    else
+    if (FUN_140166410()->FUN_14036d570(0xca))
     {
         MyPC* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
         if (pPlayer == 0)
             return;
         int nLevel = FUN_1401d7a50()->FUN_140644b80(FUN_141654730(pPlayer));
-        if (nLevel < 1)
-        {
-            spBox = FUN_140d73d20(1, GetStringCommonByKey(L"s_msg_skillbook_reset_desc"), 0, L"");
-        }
-        else
+        if (nLevel > 0)
         {
             spBox = FUN_140d73d20(0x19, GetStringCommonByKey(L"s_msg_skillbook_reset_desc"), 0, L"");
             spBox->FUN_141a01800(1);
@@ -1302,7 +1321,15 @@ void UISkillBookTreeDialog::PromptReset()
             spBox->FUN_141a024e0(GetStringCommonByKey(L"s_msg_skillbook_skill_level_0"), m_nJobLevel == 1);
             spBox->FUN_141a02560(GetStringCommonByKey(L"s_msg_skillbook_skill_level_1"), m_nJobLevel == 2);
         }
+        else
+        {
+            spBox = FUN_140d73d20(1, GetStringCommonByKey(L"s_msg_skillbook_reset_desc"), 0, L"");
+        }
         spBox->FUN_140533ff0(nLevel);
+    }
+    else
+    {
+        spBox = FUN_140d73d20(1, GetStringCommonByKey(L"s_msg_skillbook_reset_desc"), 0, L"");
     }
     spBox->FUN_141a027c0(SkillBoxDelegate(this, &UISkillBookTreeDialog::OnResetConfirm));
     FUN_140d73c60(spBox);
@@ -1312,23 +1339,26 @@ void UISkillBookTreeDialog::PromptReset()
 void UISkillBookTreeDialog::ApplyDistribute(unsigned int nIndex)
 {
     MyPC* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
-    if (pPlayer == 0 || m_spSimulator == 0)
+    if (pPlayer == 0)
+        return;
+    if (m_spSimulator == 0)
         return;
     TPtrValue<AutoDistributeArray> spList(0);
     int nJob = pPlayer->FUN_141654700();
     if (!m_autoDistribute.Lookup(nJob, spList))
         return;
     AutoDistributeArray candidates;
-    for (size_t i = 0; i < spList->GetCount(); i++)
+    for (unsigned i = 0; i < spList->GetCount(); i++)
     {
         MS2Ptr<AutoDistribute> spItem = spList->GetAt(i);
-        if (spItem->m_nSubJob == 0 || spItem->m_nSubJob == FUN_141654730(pPlayer))
-            candidates.Add(spItem);
+        if (spItem->m_nSubJob != 0 && spItem->m_nSubJob != FUN_141654730(pPlayer))
+            continue;
+        candidates.Add(spItem);
     }
-    if (nIndex >= candidates.GetCount())
+    if (candidates.GetCount() <= nIndex)
         return;
     MS2Ptr<AutoDistribute> spPick = candidates[nIndex];
-    if (!spPick)
+    if (spPick == 0)
         return;
     ATL::CAtlArray<unsigned> ids;
     ids.Copy(spPick->m_skillIds);
@@ -1336,16 +1366,16 @@ void UISkillBookTreeDialog::ApplyDistribute(unsigned int nIndex)
     points.Copy(spPick->m_skillPoints);
     if (m_spSimulator->AutoDistribute(ids, points) == 0)
         return;
-    if (IsCurrentTab(m_nShownTabId) == 0)
+    if (IsCurrentTab(m_nShownTabId) != 0)
     {
         RequestTree(m_nShownTabId, 0, 0);
-        RefreshSlots(1);
-        FUN_141276180("System_Skillbook_Skill_Fixed_01", "");
+        RequestJob(1, 0, 0);
     }
     else
     {
         RequestTree(m_nShownTabId, 0, 0);
-        RequestJob(1, 0, 0);
+        RefreshSlots(1);
+        FUN_141276180("System_Skillbook_Skill_Fixed_01", "");
     }
     FUN_1412751b0(GetStringCommonByKey(L"s_msg_skillbook_auto_distribute_skill"), 0x14);
 }
@@ -1353,7 +1383,9 @@ void UISkillBookTreeDialog::ApplyDistribute(unsigned int nIndex)
 // @0x140eca230
 void UISkillBookTreeDialog::ApplyAutoDistribute()
 {
-    if (CanApply() == 0 || CheckApply(true) == 1)
+    if (CanApply() == 0)
+        return;
+    if (CheckApply(true) == 1)
         return;
     MyPC* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pPlayer == 0)
@@ -1370,14 +1402,13 @@ void UISkillBookTreeDialog::ApplyAutoDistribute()
         if (pDialog->vfunc_55() != 0)
         {
             pDialog->m_names.RemoveAll();
-            for (size_t i = 0; i < spList->GetCount(); i++)
+            for (unsigned i = 0; i < spList->GetCount(); i++)
             {
                 MS2Ptr<AutoDistribute> spItem = spList->GetAt(i);
-                if (spItem->m_nSubJob == 0 || spItem->m_nSubJob == FUN_141654730(pPlayer))
-                {
-                    pDialog->m_names.Add(spItem->m_strName);
-                    pDialog->m_tooltips.Add(spItem->m_strTooltip);
-                }
+                if (spItem->m_nSubJob != 0 && spItem->m_nSubJob != FUN_141654730(pPlayer))
+                    continue;
+                pDialog->m_names.Add(spItem->m_strName);
+                pDialog->m_tooltips.Add(spItem->m_strTooltip);
             }
         }
         pDialog->FUN_1419246f0();
@@ -1405,7 +1436,7 @@ void UISkillBookTreeDialog::SkillPointDown(int nSkillId)
     unsigned nBadSkill = 0;
     if (m_spSimulator->LevelDown(nSkillId, &nBadSkill) == 0)
     {
-        FUN_1412751f0(FUN_1405c2690(GetStringCommonByKey(L"s_msg_skillbook_require_learn_skill"), FUN_1401a9d70()->FUN_141811980(4, nBadSkill)), 1, 1);
+        FUN_1412751f0(FUN_1405c2690(L"s_msg_skillbook_require_learn_skill", FUN_1401a9d70()->FUN_141811980(4, nBadSkill)), 1, 1);
     }
     else
     {
@@ -1418,10 +1449,12 @@ void UISkillBookTreeDialog::SkillPointDown(int nSkillId)
 // @0x140ecac10
 void UISkillBookTreeDialog::RequireSkillEffect(int nSkillId, int bFlag)
 {
-    if (m_30 == 0 || m_spSimulator == 0)
+    if (m_30 == 0)
+        return;
+    if (m_spSimulator == 0)
         return;
     JobSkillPtr spSkill = m_spSimulator->GetEditSkill(nSkillId);
-    if (!spSkill)
+    if (spSkill == 0)
         return;
     if (spSkill->m_bLearned)
         return;
@@ -1431,20 +1464,20 @@ void UISkillBookTreeDialog::RequireSkillEffect(int nSkillId, int bFlag)
     if (pPlayer == 0)
         return;
     JobDataPtr spJob = FUN_1416546d0(pPlayer)->GetJobData();
-    if (!spJob)
+    if (spJob == 0)
         return;
     JobSkillDataPtr spData = spJob->FindSkill(spSkill->GetID());
-    if (!spData)
+    if (spData == 0)
         return;
     MS2Ptr<SkillLevelData> spLevel = FUN_1401958b0()->FUN_1407ee2f0(spSkill->GetID(), spSkill->m_nLevel);
     if (!spLevel)
         return;
     ATL::CAtlArray<unsigned>& requireIds = spData->m_requireSkillIDs;
     ATL::CAtlArray<unsigned short>& requireLevels = spData->m_requireSkillLevels;
-    for (size_t i = 0; i < requireIds.GetCount(); i++)
+    for (unsigned i = 0; i < requireIds.GetCount(); i++)
     {
         JobSkillPtr spRequire = m_spSimulator->GetEditSkill(requireIds[i]);
-        if (!spRequire)
+        if (spRequire == 0)
             continue;
         if (!spRequire->m_bLearned || spRequire->m_nLevel < requireLevels[i])
         {
@@ -1465,15 +1498,7 @@ void UISkillBookTreeDialog::OnPointClick(const Scaleform::GFx::FunctionHandler::
     unsigned nBase = JobSystem::GetLevelSkillPoint(pPlayer->vfunc_78(), m_nJobLevel);
     unsigned nExtra = DAT_143ab32f8[m_nJobLevel];
     CStringW strText;
-    if (!FUN_140166410()->FUN_14036d570(0xca))
-    {
-        unsigned nTotal = nBase + nExtra;
-        unsigned nSecond = GetJobSkillPoint(2);
-        unsigned nFirst = GetJobSkillPoint(1);
-        nTotal += FUN_140ed47e0(pPlayer);
-        strText = FUN_14028dfa0(CStringW(L"s_msg_skillbook_skillpoint_tooltip"), nTotal, nBase, nSecond, nFirst);
-    }
-    else
+    if (FUN_140166410()->FUN_14036d570(0xca))
     {
         unsigned short nLimit = *(unsigned short*)(FUN_1401d3200() + 0x9718);
         if (m_nJobLevel == 2)
@@ -1484,24 +1509,37 @@ void UISkillBookTreeDialog::OnPointClick(const Scaleform::GFx::FunctionHandler::
         nTotal += FUN_140ed47e0(pPlayer);
         strText = FUN_14028dfa0(CStringW(L"s_msg_skillbook_skillpoint_tooltip_jobchange"), nTotal, nBase, nSecond, nFirst, nLimit);
     }
+    else
+    {
+        unsigned nFirst = GetJobSkillPoint(1);
+        unsigned nSecond = GetJobSkillPoint(2);
+        unsigned nTotal = nBase + nExtra;
+        nTotal += FUN_140ed47e0(pPlayer);
+        strText = FUN_14028dfa0(CStringW(L"s_msg_skillbook_skillpoint_tooltip"), nTotal, nBase, nSecond, nFirst);
+    }
     ASTooltip tooltip(pPlayer, 1, 2);
     tooltip.FUN_1409c6d70("export_common_tooltip_tooltipText");
     tooltip.FUN_1409c6dc0(4);
     tooltip.FUN_1409c6cb0(strText);
-    FUN_1409b4bc0(params.pRetVal, tooltip.FUN_1422bb870());
+    Scaleform::GFx::Value* pRetVal = params.pRetVal;
+    FUN_1409b4bc0(pRetVal, tooltip.FUN_1422bb870());
 }
 
 // @0x140ecc030
 void UISkillBookTreeDialog::RefreshRemainPoint()
 {
-    if (m_30 == 0 || m_spSimulator == 0)
+    if (m_30 == 0)
+        return;
+    if (m_spSimulator == 0)
         return;
     MyPC* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pPlayer == 0)
         return;
     int nRemain = m_spSimulator->GetRemainPoints(m_nJobLevel);
-    int nTotal = pPlayer->FUN_14152e970(m_nJobLevel);
-    m_30->FUN_140ed0fd0("setRemainSkillPoint", nRemain, nTotal != nRemain);
+    bool bChanged = false;
+    if (pPlayer->FUN_14152e970(m_nJobLevel) != nRemain)
+        bChanged = true;
+    m_30->FUN_140ed0fd0("setRemainSkillPoint", nRemain, bChanged);
     if (MS2Ptr<ASMovieClip> spPoint = static_cast<Unk_SkillDlgView*>(static_cast<UIDialog*>(this))->FUN_140ba7930("m_point"))
     {
         static_cast<Unk_SkillPointLabel*>(spPoint.operator->())->FUN_1422c2d10(SkillClickDelegate(this, &UISkillBookTreeDialog::OnPointClick), 0);
@@ -1512,9 +1550,7 @@ void UISkillBookTreeDialog::RefreshRemainPoint()
 // @0x140ecc2e0
 void UISkillBookTreeDialog::RefreshPoints()
 {
-    Unk_SkillDlgView* pView = static_cast<Unk_SkillDlgView*>(static_cast<UIDialog*>(this));
-    MS2Ptr<Unk_140acd6e0> spApply = pView->FUN_140bb4b10("m_applySkill");
-    if (spApply.get() != 0)
+    if (MS2Ptr<Unk_140acd6e0> spApply = static_cast<Unk_SkillDlgView*>(static_cast<UIDialog*>(this))->FUN_140bb4b10("m_applySkill"))
     {
         unsigned bChanged = 0;
         if (m_spSimulator.get() != 0)
@@ -1522,8 +1558,7 @@ void UISkillBookTreeDialog::RefreshPoints()
         static_cast<Unk_SkillBtn*>(spApply.operator->())->FUN_1422c1fe0(bChanged);
         reinterpret_cast<Unk_ASDialogSlots*>(spApply.operator->())->Invalidate(true);
     }
-    MS2Ptr<Unk_140acd6e0> spReset = pView->FUN_140bb4b10("m_skillReset");
-    if (spReset.get() != 0)
+    if (MS2Ptr<Unk_140acd6e0> spReset = static_cast<Unk_SkillDlgView*>(static_cast<UIDialog*>(this))->FUN_140bb4b10("m_skillReset"))
     {
         unsigned bPending = HasPendingChanges();
         static_cast<Unk_SkillBtn*>(spReset.operator->())->FUN_1422c1fe0(bPending);
@@ -1533,23 +1568,20 @@ void UISkillBookTreeDialog::RefreshPoints()
     if (spTab.get() != 0)
     {
         bool bCurrent = spTab->m_nId == m_nTabId;
-        MS2Ptr<Unk_140acd6e0> spUse = pView->FUN_140bb4b10("m_useCurrentTab");
-        if (spUse.get() != 0)
+        if (MS2Ptr<Unk_140acd6e0> spUse = static_cast<Unk_SkillDlgView*>(static_cast<UIDialog*>(this))->FUN_140bb4b10("m_useCurrentTab"))
         {
             bool bNotCurrent = !bCurrent;
             spUse->vfunc_4(bNotCurrent);
             reinterpret_cast<Unk_ASDialogSlots*>(spUse.operator->())->Invalidate(true);
         }
-        MS2Ptr<Unk_140acd6e0> spCurrent = pView->FUN_140bb4b10("m_currentTab");
-        if (spCurrent.get() != 0)
+        if (MS2Ptr<Unk_140acd6e0> spCurrent = static_cast<Unk_SkillDlgView*>(static_cast<UIDialog*>(this))->FUN_140bb4b10("m_currentTab"))
         {
             static_cast<Unk_SkillBtn*>(spCurrent.operator->())->FUN_1422c1fe0(0);
             spCurrent->vfunc_3(bCurrent);
             reinterpret_cast<Unk_ASDialogSlots*>(spCurrent.operator->())->Invalidate(true);
         }
     }
-    MS2Ptr<Unk_140acd6e0> spDistribute = pView->FUN_140bb4b10("m_autoDistribute");
-    if (spDistribute.get() != 0)
+    if (MS2Ptr<Unk_140acd6e0> spDistribute = static_cast<Unk_SkillDlgView*>(static_cast<UIDialog*>(this))->FUN_140bb4b10("m_autoDistribute"))
     {
         int nPoints = m_spSimulator->GetTotalPoints(m_nJobLevel);
         static_cast<Unk_SkillBtn*>(spDistribute.operator->())->FUN_1422c1fe0(nPoints != 0);
@@ -1560,19 +1592,9 @@ void UISkillBookTreeDialog::RefreshPoints()
 // @0x140ecb820
 void UISkillBookTreeDialog::RefreshJobSkills(int nJobCode)
 {
-    Unk_SkillDlgView* pView = static_cast<Unk_SkillDlgView*>(static_cast<UIDialog*>(this));
-    if (!FUN_140166410()->FUN_14036d570(0xca))
+    if (FUN_140166410()->FUN_14036d570(0xca))
     {
-        if (MS2Ptr<ASMovieClip> spSymbol = pView->FUN_140ba7930("m_jobSymbol"))
-        {
-            CString strFrame;
-            strFrame.Format("_%d", nJobCode);
-            spSymbol->vfunc_15(strFrame);
-        }
-    }
-    else
-    {
-        if (MS2Ptr<ASMovieClip> spBody = pView->FUN_140ba7930("m_skillTreeBody"))
+        if (MS2Ptr<ASMovieClip> spBody = static_cast<Unk_SkillDlgView*>(static_cast<UIDialog*>(this))->FUN_140ba7930("m_skillTreeBody"))
         {
             CString strJob = "job0";
             if (m_nJobLevel == 2)
@@ -1595,7 +1617,7 @@ void UISkillBookTreeDialog::RefreshJobSkills(int nJobCode)
                 strButton = "m_subJobBtn0";
             else if (i == 2)
                 strButton = "m_subJobBtn1";
-            if (MS2Ptr<ASMovieClip> spButton = pView->FUN_140ba7930(strButton))
+            if (MS2Ptr<ASMovieClip> spButton = static_cast<Unk_SkillDlgView*>(static_cast<UIDialog*>(this))->FUN_140ba7930(strButton))
             {
                 if (nJobCode == 1 && i > 0)
                     spButton->vfunc_3(0);
@@ -1617,15 +1639,27 @@ void UISkillBookTreeDialog::RefreshJobSkills(int nJobCode)
         }
         UpdateSubJobLevel();
     }
-    if (MS2Ptr<ASMovieClip> spLine = pView->FUN_140ba7930("m_treeLine"))
+    else
+    {
+        if (MS2Ptr<ASMovieClip> spSymbol = static_cast<Unk_SkillDlgView*>(static_cast<UIDialog*>(this))->FUN_140ba7930("m_jobSymbol"))
+        {
+            CString strFrame;
+            strFrame.Format("_%d", nJobCode);
+            spSymbol->vfunc_15(strFrame);
+        }
+    }
+    if (MS2Ptr<ASMovieClip> spLine = static_cast<Unk_SkillDlgView*>(static_cast<UIDialog*>(this))->FUN_140ba7930("m_treeLine"))
     {
         spLine->vfunc_3(1);
         CString strFrame;
         strFrame.Format("_%d", nJobCode);
-        if (!FUN_140166410()->FUN_14036d570(0xca))
-            spLine->vfunc_15(strFrame);
-        else if (m_nJobLevel == 2)
-            spLine->vfunc_3(0);
+        if (FUN_140166410()->FUN_14036d570(0xca))
+        {
+            if (m_nJobLevel == 2)
+                spLine->vfunc_3(0);
+            else
+                spLine->vfunc_15(strFrame);
+        }
         else
             spLine->vfunc_15(strFrame);
     }
@@ -1660,8 +1694,7 @@ bool UISkillBookTreeDialog::IsLearnable(MS2Ptr<JobSkill> spSkill)
     bool bLearn = spSkill->m_bLearned;
     if (!bLearn)
     {
-        unsigned nSkillId = spSkill->GetID();
-        unsigned short nLevel = pPlayer->FUN_1409eee00()->FUN_14080baf0(nSkillId);
+        unsigned short nLevel = pPlayer->FUN_1409eee00()->FUN_14080baf0(spSkill->GetID());
         if (nLevel > 0)
             bLearn = true;
     }
@@ -1679,8 +1712,7 @@ bool UISkillBookTreeDialog::IsDisabled(MS2Ptr<JobSkill> spSkill)
     bool bDisabled = m_spSimulator->CheckRequirements(spSkill->GetID(), spSkill->m_nLevel) == 0;
     if (bDisabled == true)
     {
-        unsigned nSkillId = spSkill->GetID();
-        unsigned short nLevel = pPlayer->FUN_1409eee00()->FUN_14080baf0(nSkillId);
+        unsigned short nLevel = pPlayer->FUN_1409eee00()->FUN_14080baf0(spSkill->GetID());
         if (nLevel > 0)
             bDisabled = false;
     }
@@ -1693,18 +1725,20 @@ unsigned short UISkillBookTreeDialog::GetLevelValue(MS2Ptr<JobSkill> spSkill)
     MyPC* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pPlayer == 0)
         return 0;
-    if (!spSkill)
+    if (spSkill == 0)
         return 0;
-    if (!IsLearnable(spSkill))
-        return spSkill->m_nLevel;
-    MS2Ptr<SkillData> spData = FUN_1401958b0()->FUN_1407ee1d0(spSkill->GetID());
-    if (!spData)
-        return 0;
-    unsigned short nBonus = pPlayer->FUN_1409eee00()->FUN_14080baf0(spSkill->GetID());
-    unsigned nOwned = spSkill->m_bLearned ? spSkill->m_nLevel : 0;
-    if (spData->GetMaxLevel() < nOwned + nBonus)
-        return spData->GetMaxLevel();
-    return (unsigned short)(nOwned + nBonus);
+    if (IsLearnable(spSkill))
+    {
+        MS2Ptr<SkillData> spData = FUN_1401958b0()->FUN_1407ee1d0(spSkill->GetID());
+        if (spData == 0)
+            return 0;
+        unsigned short nTier = pPlayer->FUN_1409eee00()->FUN_14080baf0(spSkill->GetID());
+        unsigned short nUnused = 0;
+        unsigned short nOwned = spSkill->m_bLearned ? spSkill->m_nLevel : 0;
+        unsigned short nBonus = nTier;
+        return spData->GetMaxLevel() < nOwned + nBonus ? spData->GetMaxLevel() : nOwned + nBonus;
+    }
+    return spSkill->m_nLevel;
 }
 
 // @0x140ecd960
@@ -1720,19 +1754,20 @@ CStringW UISkillBookTreeDialog::GetLevelText(MS2Ptr<JobSkill> spSkill)
     if (spData == 0)
         return L"";
     unsigned short nTier = pPlayer->FUN_1409eee00()->FUN_14080baf0(spSkill->GetID());
-    unsigned short nMax;
-    if (!IsChangedSkill(spSkill))
+    unsigned short nUnused = 0;
+    unsigned short nTierLevel = nTier;
+    if (IsChangedSkill(spSkill))
     {
-        if (nTier == 0)
-        {
-            nMax = spData->FUN_1407e9ac0();
-            return FUN_14028dfa0(CStringW(L"s_mag_skillbook_job_and_level"), nLevel, nMax);
-        }
-        nMax = spData->FUN_1407e9ac0();
+        unsigned short nMax = spData->FUN_1407e9ac0();
+        return FUN_14028dfa0(CStringW(L"s_msg_skillbook_job_and_level_change"), nLevel, nMax);
+    }
+    else if (nTierLevel > 0)
+    {
+        unsigned short nMax = spData->FUN_1407e9ac0();
         return FUN_14028dfa0(CStringW(L"s_mag_skillbook_job_and_level_tier"), nLevel, nMax);
     }
-    nMax = spData->FUN_1407e9ac0();
-    return FUN_14028dfa0(CStringW(L"s_msg_skillbook_job_and_level_change"), nLevel, nMax);
+    unsigned short nMax = spData->FUN_1407e9ac0();
+    return FUN_14028dfa0(CStringW(L"s_mag_skillbook_job_and_level"), nLevel, nMax);
 }
 
 // @0x140ece300
@@ -1741,10 +1776,10 @@ int UISkillBookTreeDialog::FillSkill(MS2Ptr<JobSkill> spSkill, ASObj& info)
     MyPC* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pPlayer == 0)
         return 0;
-    if (!spSkill)
+    if (spSkill == 0)
         return 0;
     MS2Ptr<SkillData> spData = FUN_1401958b0()->FUN_1407ee1d0(spSkill->GetID());
-    if (!spData)
+    if (spData == 0)
         return 0;
     bool bLearn = IsLearnable(spSkill);
     bool bPassive = spData->FUN_1407e9de0();
@@ -1753,9 +1788,7 @@ int UISkillBookTreeDialog::FillSkill(MS2Ptr<JobSkill> spSkill, ASObj& info)
     if (spSkill->GetData() == 0)
         return 0;
     CPoint pos = spSkill->GetData()->m_uiPosition;
-    bool bHighlight = false;
-    if (!bDisable && spSkill->GetData()->m_uiHighlight)
-        bHighlight = true;
+    bool bHighlight = !bDisable && spSkill->GetData()->m_uiHighlight;
     int nIndex = 0;
     m_slotOrder.Lookup(spSkill->GetID(), nIndex);
     info.FUN_1409c0d20("index", nIndex);
@@ -1777,7 +1810,9 @@ int UISkillBookTreeDialog::FillSkill(MS2Ptr<JobSkill> spSkill, ASObj& info)
 // @0x140ecc8b0
 void UISkillBookTreeDialog::RefreshAll()
 {
-    if (m_30 == 0 || m_spSimulator == 0)
+    if (m_30 == 0)
+        return;
+    if (m_spSimulator == 0)
         return;
     MyPC* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pPlayer == 0)
@@ -1789,7 +1824,8 @@ void UISkillBookTreeDialog::RefreshAll()
         JobSkillPtr spSkill = skills.GetValueAt(pos);
         if (spSkill->m_bExtra)
             continue;
-        if (spSkill->GetJobLevel() != m_nJobLevel)
+        int nJobLevel = spSkill->GetJobLevel();
+        if (nJobLevel != m_nJobLevel)
             continue;
         MS2Ptr<SkillData> spData = FUN_1401958b0()->FUN_1407ee1d0(spSkill->GetID());
         if (!spData)
@@ -1804,7 +1840,9 @@ void UISkillBookTreeDialog::RefreshAll()
 // @0x140eccbb0
 void UISkillBookTreeDialog::RefreshTree()
 {
-    if (m_30 == 0 || m_spSimulator == 0)
+    if (m_30 == 0)
+        return;
+    if (m_spSimulator == 0)
         return;
     MyPC* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pPlayer == 0)
@@ -1858,14 +1896,14 @@ bool UISkillBookTreeDialog::CanLevelUp(int nSkillId, unsigned short nLevel, int 
 // @0x140ecf840
 bool UISkillBookTreeDialog::CanLearn(int nSkillId, unsigned short nLevel, int bCheck)
 {
-    if (nLevel >= 2)
+    if (nLevel > 1)
         return false;
     MyPC* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pPlayer == 0)
         return false;
-    if (!FUN_1416546d0(pPlayer)->vfunc_2(nSkillId))
-        return CanReachLevel(nSkillId, nLevel, bCheck);
-    return false;
+    if (FUN_1416546d0(pPlayer)->vfunc_2(nSkillId))
+        return false;
+    return CanReachLevel(nSkillId, nLevel, bCheck);
 }
 
 // @0x140ecf8d0
@@ -1882,23 +1920,20 @@ bool UISkillBookTreeDialog::CanReachLevel(int nSkillId, unsigned short nLevel, i
     JobSkillDataPtr spData = spJob->FindSkill(nSkillId);
     if (spData == 0)
         return true;
-    int nRequire = spData->GetRequireLevel(nLevel);
-    if (pPlayer->vfunc_78() < nRequire)
+    if (spData->GetRequireLevel(nLevel) > pPlayer->vfunc_78())
         return false;
     JobSkillPtr spSkill = FUN_1416546d0(pPlayer)->FindSkill(nSkillId);
     if (spSkill == 0)
         return false;
-    int nRank = spSkill->GetJobLevel();
-    if (FUN_141654760(pPlayer) < nRank)
+    if (spSkill->GetJobLevel() > FUN_141654760(pPlayer))
         return false;
     ATL::CAtlArray<unsigned>& requireIds = spData->m_requireSkillIDs;
     ATL::CAtlArray<unsigned short>& requireLevels = spData->m_requireSkillLevels;
-    for (size_t i = 0; i < requireIds.GetCount(); i++)
+    for (unsigned i = 0; i < requireIds.GetCount(); i++)
     {
         if (!FUN_1416546d0(pPlayer)->vfunc_2(requireIds[i]))
             return false;
-        int nHave = pPlayer->FUN_141528b80(requireIds[i]);
-        if (nHave < requireLevels[i])
+        if (pPlayer->FUN_141528b80(requireIds[i]) < requireLevels[i])
             return false;
     }
     if (spData->m_requireQuestID != 0)
@@ -1913,14 +1948,14 @@ bool UISkillBookTreeDialog::CanReachLevel(int nSkillId, unsigned short nLevel, i
 
 // @0x140ed34a0
 UISkillBookTreeDialog::AutoDistribute::AutoDistribute()
+    : m_nSubJob(0)
 {
-    m_nSubJob = 0;
 }
 
 // @0x140eccf50
 void UISkillBookTreeDialog::LoadAutoDistribute()
 {
-    CString strPath = FUN_14071a5b0(CString("Table"), CString("skillAutoDistribute.xml"));
+    CString strPath = FUN_14071a5b0("Table", "skillAutoDistribute.xml");
     if (m_spCache == 0)
     {
         m_spCache.AssignRaw(new CCacheData);
@@ -1944,23 +1979,22 @@ void UISkillBookTreeDialog::LoadAutoDistribute()
         for (size_t i = 0; i < nodes.size(); i++)
         {
             Unk_140165cf0* pNode = nodes[i];
-            if (pNode != 0)
+            if (pNode == 0)
+                continue;
+            MS2Ptr<AutoDistribute> spItem(new AutoDistribute);
+            FUN_140873b30(pNode, "name", &spItem->m_strName);
+            FUN_140873b30(pNode, "tooltip", &spItem->m_strTooltip);
+            FUN_1406452a0(pNode, "subJobCode", &spItem->m_nSubJob);
+            for (Unk_140165cf0* pSkill = pNode->FUN_140165cf0("skill"); pSkill != 0; pSkill = pSkill->FUN_140168650("skill"))
             {
-                MS2Ptr<AutoDistribute> spItem(new AutoDistribute);
-                FUN_140873b30(pNode, "name", &spItem->m_strName);
-                FUN_140873b30(pNode, "tooltip", &spItem->m_strTooltip);
-                FUN_1406452a0(pNode, "subJobCode", &spItem->m_nSubJob);
-                for (Unk_140165cf0* pSkill = pNode->FUN_140165cf0("skill"); pSkill != 0; pSkill = pSkill->FUN_140168650("skill"))
-                {
-                    unsigned nId = 0;
-                    unsigned nPoint = 0;
-                    FUN_140873220(pSkill, "id", nId);
-                    FUN_140873220(pSkill, "point", nPoint);
-                    spItem->m_skillIds.Add(nId);
-                    spItem->m_skillPoints.Add(nPoint);
-                }
-                spList->Add(spItem);
+                unsigned nId = 0;
+                unsigned nPoint = 0;
+                FUN_140873220(pSkill, "id", nId);
+                FUN_140873220(pSkill, "point", nPoint);
+                spItem->m_skillIds.Add(nId);
+                spItem->m_skillPoints.Add(nPoint);
             }
+            spList->Add(spItem);
         }
         m_autoDistribute.SetAt(nJob, spList);
     }
@@ -1996,91 +2030,92 @@ void UISkillBookTreeDialog::OnLoadComplete()
 void UISkillBookTreeDialog::vfunc_79(void* pPacket)
 {
     UIDialog::vfunc_79(pPacket);
-    CInPacket& packet = *static_cast<CInPacket*>(pPacket);
-    if (packet.FUN_14070fe80() != 0x10c)
-        return;
-    int nMode = packet.ReadUInt8();
-    if (nMode == 0)
+    if (static_cast<CInPacket*>(pPacket)->FUN_14070fe80() == 0x10c)
     {
-        m_tabs.RemoveAll();
-        m_simulators.RemoveAll();
-        m_nMaxTabs = packet.ReadInt32();
-        m_nTabId = packet.ReadInt64();
-        unsigned nCount = packet.ReadInt32();
-        for (unsigned i = 0; i < nCount; i++)
+        int nMode = static_cast<CInPacket*>(pPacket)->ReadUInt8();
+        if (nMode == 0)
         {
-            MS2Ptr<CSkillBookTreeTabConfig> spTab(new CSkillBookTreeTabConfig);
-            spTab->Read(&packet);
-            if (spTab->m_strName.IsEmpty())
+            m_tabs.RemoveAll();
+            m_simulators.RemoveAll();
+            m_nMaxTabs = static_cast<CInPacket*>(pPacket)->ReadInt32();
+            m_nTabId = static_cast<CInPacket*>(pPacket)->ReadInt64();
+            unsigned nCount = static_cast<CInPacket*>(pPacket)->ReadInt32();
+            for (unsigned i = 0; i < nCount; i++)
             {
-                unsigned nNo = m_tabs.GetCount() + 1;
-                spTab->m_strName = FUN_14028dfa0(CStringW(L"s_skillbook_tree_config_default_tab_name"), nNo);
+                MS2Ptr<CSkillBookTreeTabConfig> spTab(new CSkillBookTreeTabConfig);
+                spTab->Read(static_cast<CInPacket*>(pPacket));
+                if (spTab->m_strName.IsEmpty())
+                {
+                    size_t nNo = m_tabs.GetCount() + 1;
+                    spTab->m_strName = FUN_14028dfa0(CStringW(L"s_skillbook_tree_config_default_tab_name"), nNo);
+                }
+                m_tabs.AddTail(spTab);
+                LoadTab(spTab);
             }
-            m_tabs.AddTail(spTab);
-            LoadTab(spTab);
-        }
-        if (!m_tabs.IsEmpty())
-        {
-            MS2Ptr<CSkillBookTreeTabConfig> spTab = FindTab(m_nTabId);
-            if (spTab == 0)
+            if (m_tabs.IsEmpty())
             {
-                spTab = m_tabs.GetHead();
+                int nNo = 1;
+                CStringW strName = FUN_14028dfa0(CStringW(L"s_skillbook_tree_config_default_tab_name"), nNo);
+                __int64 nTabId = AddTab(strName, 0);
+                m_nTabId = nTabId;
+                m_nShownTabId = nTabId;
+            }
+            else
+            {
+                MS2Ptr<CSkillBookTreeTabConfig> spTab = FindTab(m_nTabId);
                 if (spTab == 0)
-                    return;
-                m_nTabId = spTab->m_nId;
+                {
+                    spTab = m_tabs.GetHead();
+                    if (spTab == 0)
+                        return;
+                    m_nTabId = spTab->m_nId;
+                }
             }
+            SelectTab(m_nTabId);
+            RefreshTabs(m_nTabId);
+            RefreshTabButtons(0);
+            RefreshSlots(0);
+            if (vfunc_9() == 0)
+                vfunc_8(1);
+            m_n290 = 1;
         }
-        else
+        else if (nMode == 4)
         {
-            int nNo = 1;
-            __int64 nTabId = AddTab(FUN_14028dfa0(CStringW(L"s_skillbook_tree_config_default_tab_name"), nNo), 0);
-            m_nTabId = nTabId;
-            m_nShownTabId = nTabId;
+            m_nMaxTabs = static_cast<CInPacket*>(pPacket)->ReadInt32();
+            FUN_1412751f0(GetStringCommonByKey(L"s_skillbook_tree_config_payment_sucess"), 1, 1);
+            AddPaidTab(FUN_14028dfa0(CStringW(L"s_skillbook_tree_config_default_tab_name"), m_tabs.GetCount() + 1));
+            m_nWaitServer = 0;
         }
-        SelectTab(m_nTabId);
-        RefreshTabs(m_nTabId);
-        RefreshTabButtons(0);
-        RefreshSlots(0);
-        if (vfunc_9() == 0)
-            vfunc_8(1);
-        m_n290 = 1;
-    }
-    else if (nMode == 4)
-    {
-        m_nMaxTabs = packet.ReadInt32();
-        FUN_1412751f0(GetStringCommonByKey(L"s_skillbook_tree_config_payment_sucess"), 1, 1);
-        unsigned nNo = m_tabs.GetCount() + 1;
-        AddPaidTab(FUN_14028dfa0(CStringW(L"s_skillbook_tree_config_default_tab_name"), nNo));
-        m_nWaitServer = 0;
-    }
-    else if (nMode == 1)
-    {
-        m_nTabId = packet.ReadInt64();
-        __int64 nTabId = packet.ReadInt64();
-        int nRank = packet.ReadInt32();
-        MS2Ptr<CSkillPointSimulator> spSim(0);
-        if (m_simulators.Lookup(nTabId, spSim))
+        else if (nMode == 1)
         {
+            m_nTabId = static_cast<CInPacket*>(pPacket)->ReadInt64();
+            __int64 nTabId = static_cast<CInPacket*>(pPacket)->ReadInt64();
+            int nRank = static_cast<CInPacket*>(pPacket)->ReadInt32();
+            MS2Ptr<CSkillPointSimulator> spSim(0);
+            if (!m_simulators.Lookup(nTabId, spSim))
+                return;
             spSim->Commit(nRank);
             RefreshPoints();
         }
-    }
-    else if (nMode == 2)
-    {
-        __int64 nTabId = packet.ReadInt64();
-        CStringW strName = packet.ReadUnicodeString();
-        int nResult = packet.ReadUInt8();
-        if (nResult == 0)
-            RenameTab(nTabId, CStringW(strName));
-        else
-            FUN_140d73aa0(FUN_14052bd00(0x8b9, strName), 0, 0, L"");
+        else if (nMode == 2)
+        {
+            __int64 nTabId = static_cast<CInPacket*>(pPacket)->ReadInt64();
+            CStringW strName = static_cast<CInPacket*>(pPacket)->ReadUnicodeString();
+            int nResult = static_cast<CInPacket*>(pPacket)->ReadUInt8();
+            if (nResult == 0)
+                RenameTab(nTabId, CStringW(strName));
+            else
+                FUN_140d73aa0(FUN_14052bd00(0x8b9, strName), 0, 0, L"");
+        }
     }
 }
 
 // @0x140ec5820
 void UISkillBookTreeDialog::vfunc_45(Scaleform::GFx::Value* pRetVal, const CString& strMethod, ASData* pArgs)
 {
-    if (m_30 == 0 || FUN_141924630() == 0 || m_spSimulator == 0)
+    if (m_30 == 0 || !FUN_141924630())
+        return;
+    if (m_spSimulator == 0)
         return;
     MyPC* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pPlayer == 0)
@@ -2089,55 +2124,51 @@ void UISkillBookTreeDialog::vfunc_45(Scaleform::GFx::Value* pRetVal, const CStri
     {
         int nSkillId = pArgs->FUN_1422b8b10();
         JobSkillPtr spSkill = m_spSimulator->GetEditSkill(nSkillId);
-        if (!spSkill)
+        if (spSkill == 0)
             return;
         ASTooltip tooltip(pPlayer, 0x10, 2);
-        unsigned short nLevel = GetLevelValue(spSkill);
-        if (tooltip.FUN_1409e1c50(spSkill->GetID(), nLevel, 1) != 0)
+        if (tooltip.FUN_1409e1c50(spSkill->GetID(), GetLevelValue(spSkill), 1) != 0)
             FUN_1409b4bc0(pRetVal, tooltip.FUN_1422bb870());
     }
     else if (_stricmp("getTooltipFromNextLevel", strMethod) == 0)
     {
         unsigned nSkillId = pArgs->FUN_1422b8b10();
         JobSkillPtr spSkill = m_spSimulator->GetEditSkill(nSkillId);
-        if (!spSkill)
+        if (spSkill == 0)
             return;
         MS2Ptr<SkillData> spData = FUN_1401958b0()->FUN_1407ee1d0(nSkillId);
-        if (!spData)
+        if (spData == 0)
             return;
         unsigned short nLevel = GetLevelValue(spSkill);
-        if (nLevel < spData->FUN_1407e9ac0())
+        if (!(spData->FUN_1407e9ac0() > nLevel))
+            return;
+        unsigned short nNext = nLevel;
+        if (IsLearnable(spSkill))
+            nNext = nNext + 1;
+        ASTooltip tooltip(pPlayer, 0x10, 2);
+        if (tooltip.FUN_1409e1c50(spSkill->GetID(), nNext, 1) != 0)
         {
-            if (IsLearnable(spSkill))
-                nLevel = nLevel + 1;
-            ASTooltip tooltip(pPlayer, 0x10, 2);
-            if (tooltip.FUN_1409e1c50(spSkill->GetID(), nLevel, 1) != 0)
-            {
-                tooltip.FUN_1409c6dc0(7);
-                tooltip.FUN_1409c0dc0("enablePuton", "");
-                FUN_1409b4bc0(pRetVal, tooltip.FUN_1422bb870());
-            }
+            tooltip.FUN_1409c6dc0(7);
+            tooltip.FUN_1409c0dc0("enablePuton", "");
+            FUN_1409b4bc0(pRetVal, tooltip.FUN_1422bb870());
         }
     }
     else if (_stricmp("getTooltipFromPrevLevel", strMethod) == 0)
     {
         unsigned nSkillId = pArgs->FUN_1422b8b10();
-        if (m_spSimulator->CanLevelDown(nSkillId) != 0)
+        if (m_spSimulator->CanLevelDown(nSkillId) == 0)
+            return;
+        JobSkillPtr spSkill = m_spSimulator->GetEditSkill(nSkillId);
+        if (spSkill == 0)
+            return;
+        if (spSkill->m_nLevel == 1)
+            return;
+        ASTooltip tooltip(pPlayer, 0x10, 2);
+        if (tooltip.FUN_1409e1c50(spSkill->GetID(), spSkill->m_nLevel - 1, 1) != 0)
         {
-            JobSkillPtr spSkill = m_spSimulator->GetEditSkill(nSkillId);
-            if (!spSkill)
-                return;
-            if (spSkill->m_nLevel != 1)
-            {
-                ASTooltip tooltip(pPlayer, 0x10, 2);
-                unsigned short nPrev = spSkill->m_nLevel - 1;
-                if (tooltip.FUN_1409e1c50(spSkill->GetID(), nPrev, 1) != 0)
-                {
-                    tooltip.FUN_1409c6dc0(7);
-                    tooltip.FUN_1409c0dc0("enablePuton", "");
-                    FUN_1409b4bc0(pRetVal, tooltip.FUN_1422bb870());
-                }
-            }
+            tooltip.FUN_1409c6dc0(7);
+            tooltip.FUN_1409c0dc0("enablePuton", "");
+            FUN_1409b4bc0(pRetVal, tooltip.FUN_1422bb870());
         }
     }
 }

@@ -87,7 +87,7 @@ void FUN_140d42540(const CString& strName, unsigned __int64 nOwner, MS2Ptr<CItem
 void FUN_140d42630(const CString& strName);
 MS2DragSlot* FUN_140a50b50(NotifyContext::BindData* p);
 __int64 FUN_141405a10(MS2DragSlot* pSlot);
-CStringW FUN_14028dfa0(CStringW strKey, const fmt::ArgList& args);        // the string table formatter
+CStringW FUN_14028dfa0(const CStringW& strKey, const fmt::ArgList& args);        // the string table formatter
 FMT_VARIADIC_W(CStringW, FUN_14028dfa0, CStringW)
 
 // @0x140e56eb0
@@ -112,7 +112,6 @@ CString UIItemPetTrainingDialog::GetTypeName()
 }
 
 // @0x140e571a0
-// MS2-FUNCTIONAL: exe call-result temporaries / branch layout differ (source form not found)
 void UIItemPetTrainingDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
@@ -125,29 +124,25 @@ void UIItemPetTrainingDialog::OnLoadComplete()
         FUN_140d42b70(pSlot, PtDropFn(this, &UIItemPetTrainingDialog::FUN_140e58300));
     }
     m_spBox = DAT_143ab2a90.FUN_140a5d680(m_nOwner);
-    if (!(m_spBox == 0))
-    {
-        if (m_spBox->FUN_140527840() != 0)
-        {
-            int nDefault = 0;
-            m_nOffsetExp = PT_ATTR(m_spBox->FUN_140527840())->FUN_14054c530(CStringW(L"offsetExp"), nDefault);
-            if (m_nOffsetExp != 0)
-            {
-                FUN_1412761e0(m_30, 1);
-                CStringW strDesc = FUN_1405c2690(CStringW(L"s_pet_training_dialog_exp_desc"), FUN_1409404f0(m_nOffsetExp));
-                ASObj obj(2);
-                obj.FUN_1407cba60("bindID", CString(m_strSlot));
-                obj.FUN_1407cbb20("trainingItemName", m_spBox->FUN_140527b10());
-                obj.FUN_1407cbb20("trainingExpDesc", CStringW(strDesc));
-                obj.FUN_1409c1180("offsetExp", m_nOffsetExp);
-                m_30->Invoke("setData", obj);
-            }
-        }
-    }
+    if (m_spBox == 0)
+        return;
+    if (m_spBox->FUN_140527840() == 0)
+        return;
+    int nDefault = 0;
+    m_nOffsetExp = PT_ATTR(m_spBox->FUN_140527840())->FUN_14054c530(L"offsetExp", nDefault);
+    if (m_nOffsetExp == 0)
+        return;
+    FUN_1412761e0(m_30, 1);
+    CStringW strDesc = FUN_1405c2690(CStringW(L"s_pet_training_dialog_exp_desc"), FUN_1409404f0(m_nOffsetExp));
+    ASObj obj(2);
+    obj.FUN_1407cba60("bindID", CString(m_strSlot));
+    obj.FUN_1407cbb20("trainingItemName", m_spBox->FUN_140527b10());
+    obj.FUN_1407cbb20("trainingExpDesc", CStringW(strDesc));
+    obj.FUN_1409c1180("offsetExp", m_nOffsetExp);
+    m_30->Invoke("setData", obj);
 }
 
 // @0x140e577c0
-// MS2-FUNCTIONAL: exe call-result temporaries / branch layout differ (source form not found)
 int UIItemPetTrainingDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs)
 {
     if (UIDialog::vfunc_28(szMethod, pArgs, nArgs) != 0)
@@ -238,7 +233,6 @@ ItemScrollSlot* UIItemPetTrainingDialog::FUN_140e57e50(CString strName)
 }
 
 // @0x140e57ed0
-// MS2-FUNCTIONAL: exe call-result temporaries / branch layout differ (source form not found)
 int UIItemPetTrainingDialog::FUN_140e57ed0(MS2Ptr<CItem> spPet, int bMessage)
 {
     if (spPet == 0)
@@ -246,27 +240,29 @@ int UIItemPetTrainingDialog::FUN_140e57ed0(MS2Ptr<CItem> spPet, int bMessage)
     if (spPet->FUN_140525640() == 0)
     {
         if (bMessage != 0)
-            FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_pet_training_dialog_invalid_item")), 1, 0);
+            FUN_1412751f0(GetStringCommonByKey(L"s_pet_training_dialog_invalid_item"), 1, 0);
         return 0;
     }
     if ((unsigned)spPet->FUN_140528c20() == *FUN_1401d3200()->m_petMaxLevel.FUN_1401d7c10())
     {
         if (bMessage != 0)
-            FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_pet_training_dialog_max_level")), 1, 0);
+            FUN_1412751f0(GetStringCommonByKey(L"s_pet_training_dialog_max_level"), 1, 0);
         return 0;
     }
     MS2Ptr<Unk_PetRow> spRow = FUN_14052d210()->FUN_1407290f0(reinterpret_cast<CItemData*>(spPet->FUN_140527840())->FUN_14053dc60());
-    if (!(spRow == 0))
+    if (spRow == 0)
     {
-        if (spRow->m_n18 == 1)
-            return 1;
         if (bMessage != 0)
-            FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_pet_training_dialog_invalid_item")), 1, 0);
+            FUN_1412751f0(GetStringCommonByKey(L"s_pet_training_dialog_invalid_item"), 1, 0);
         return 0;
     }
-    if (bMessage != 0)
-        FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_pet_training_dialog_invalid_item")), 1, 0);
-    return 0;
+    if (spRow->m_n18 != 1)
+    {
+        if (bMessage != 0)
+            FUN_1412751f0(GetStringCommonByKey(L"s_pet_training_dialog_invalid_item"), 1, 0);
+        return 0;
+    }
+    return 1;
 }
 
 // @0x140e58280
@@ -280,51 +276,55 @@ void UIItemPetTrainingDialog::FUN_140e58280(ItemScrollSlot& slot)
 }
 
 // @0x140e58300
-// MS2-FUNCTIONAL: exe call-result temporaries / branch layout differ (source form not found)
 void UIItemPetTrainingDialog::FUN_140e58300(ItemScrollSlot& slot, DragSlot* pDrag)
 {
-    MS2DragSlot* pSrc;
-    if (m_30 == 0 || m_nOwner == 0 || m_bDone != 0 || (pSrc = FUN_140a50b50(pDrag)) == 0)
+    if (m_30 == 0)
         return;
-    MS2Ptr<CItem> spPet = DAT_143ab2a90.FUN_140a5d680(FUN_141405a10(pSrc));
-    if (FUN_140e57ed0(spPet, 1) == 0)
+    if (m_nOwner == 0)
         return;
-    MS2Ptr<CItem> spBox = DAT_143ab2a90.FUN_140a5d680(m_nOwner);
-    if (!(spBox == 0) && spBox->FUN_140527840() != 0)
+    if (m_bDone != 0)
+        return;
+    MS2DragSlot* pSrc = FUN_140a50b50(pDrag);
+    if (pSrc != 0)
     {
-        FUN_140d428a0(&slot, spPet);
-        slot.vfunc_10();
-        m_spPet = spPet;
-        unsigned short nLevel = spPet->FUN_140528c20();
-        unsigned short nKind = spPet->FUN_1405282d0();
-        int nRank = spPet->FUN_140526bd0();
-        __int64 nNeed = FUN_1404a1bb0()->FUN_140353930(nLevel, nRank, nKind);
-        __int64 nCur = spPet->FUN_140528b90();
-        nCur = nCur + m_nOffsetExp;
-        unsigned short nUp = 0;
-        while (nNeed <= nCur)
+        MS2Ptr<CItem> spPet = DAT_143ab2a90.FUN_140a5d680(FUN_141405a10(pSrc));
+        if (FUN_140e57ed0(spPet, 1) == 0)
+            return;
+        MS2Ptr<CItem> spBox = DAT_143ab2a90.FUN_140a5d680(m_nOwner);
+        if (spBox == 0 || spBox->FUN_140527840() == 0)
+            return;
         {
-            nCur = nCur - nNeed;
-            nUp = nUp + 1;
-            nNeed = FUN_1404a1bb0()->FUN_140353930((unsigned short)((unsigned)nLevel + (unsigned)nUp), spPet->FUN_140526bd0(), spPet->FUN_1405282d0());
+            FUN_140d428a0(&slot, spPet);
+            slot.vfunc_10();
+            m_spPet = spPet;
+            unsigned short nLevel = spPet->FUN_140528c20();
+            __int64 nNeed = FUN_1404a1bb0()->FUN_140353930(nLevel, spPet->FUN_140526bd0(), spPet->FUN_1405282d0());
+            __int64 nCur = spPet->FUN_140528b90() + m_nOffsetExp;
+            unsigned short nUp = 0;
+            while (nNeed <= nCur)
+            {
+                nCur = nCur - nNeed;
+                ++nUp;
+                nNeed = FUN_1404a1bb0()->FUN_140353930(nLevel + nUp, spPet->FUN_140526bd0(), spPet->FUN_1405282d0());
+            }
+            nLevel += nUp;
+            nNeed = FUN_1404a1bb0()->FUN_140353930(nLevel, spPet->FUN_140526bd0(), spPet->FUN_1405282d0());
+            if (nLevel >= *FUN_1401d3200()->m_petMaxLevel.FUN_1401d7c10())
+            {
+                nLevel = (unsigned short)*FUN_1401d3200()->m_petMaxLevel.FUN_1401d7c10();
+                nCur = FUN_1404a1bb0()->FUN_140353930((unsigned short)(nLevel - 1), spPet->FUN_140526bd0(), spPet->FUN_1405282d0());
+                nNeed = FUN_1404a1bb0()->FUN_140353930((unsigned short)(nLevel - 1), spPet->FUN_140526bd0(), spPet->FUN_1405282d0());
+            }
+            CStringW strName = spPet->FUN_140528160();
+            CStringW strExp = FUN_14028dfa0(CStringW(L"s_pet_training_dialog_pet_exp"), nLevel, FUN_1409404f0(nCur), FUN_1409404f0(nNeed));
+            ASObj obj(2);
+            obj.FUN_1407cbb20("petName", CStringW(strName));
+            obj.FUN_1407cbb20("petGUID", FUN_141b71910(spPet->FUN_140526a50()));
+            obj.FUN_1407cbb20("petExp", CStringW(strExp));
+            obj.FUN_1409c1180("petCurrentExp", nCur);
+            obj.FUN_1409c1180("petMaxExp", nNeed);
+            m_30->Invoke("selectPet", obj.FUN_1422bb870());
         }
-        nLevel = nLevel + nUp;
-        nNeed = FUN_1404a1bb0()->FUN_140353930(nLevel, spPet->FUN_140526bd0(), spPet->FUN_1405282d0());
-        if (*FUN_1401d3200()->m_petMaxLevel.FUN_1401d7c10() <= (unsigned)nLevel)
-        {
-            nLevel = (unsigned short)*FUN_1401d3200()->m_petMaxLevel.FUN_1401d7c10();
-            nCur = FUN_1404a1bb0()->FUN_140353930((unsigned short)(nLevel - 1), spPet->FUN_140526bd0(), spPet->FUN_1405282d0());
-            nNeed = FUN_1404a1bb0()->FUN_140353930((unsigned short)(nLevel - 1), spPet->FUN_140526bd0(), spPet->FUN_1405282d0());
-        }
-        CStringW strName = spPet->FUN_140528160();
-        CStringW strExp = FUN_14028dfa0(CStringW(L"s_pet_training_dialog_pet_exp"), nLevel, FUN_1409404f0(nCur), FUN_1409404f0(nNeed));
-        ASObj obj(2);
-        obj.FUN_1407cbb20("petName", CStringW(strName));
-        obj.FUN_1407cbb20("petGUID", FUN_141b71910(spPet->FUN_140526a50()));
-        obj.FUN_1407cbb20("petExp", CStringW(strExp));
-        obj.FUN_1409c1180("petCurrentExp", nCur);
-        obj.FUN_1409c1180("petMaxExp", nNeed);
-        m_30->Invoke("selectPet", obj.FUN_1422bb870());
     }
 }
 // Atexit thunks of this unit's statics (gap1 yd sweep).

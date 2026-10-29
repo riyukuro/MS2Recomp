@@ -102,13 +102,11 @@ int CPriceTable::IsHousingBuyable(unsigned nId)
 MS2_REPLACE_METHOD(0x140738E00, CPriceTable, IsHousingBuyable, 81, 0x4EF58335);
 
 // @0x140738e60
-// MS2-FUNCTIONAL: exe keeps the path pointer in rcx and moves it to r8 for the loader call (+3 bytes; precedent banktable/continentregiontable)
 int CPriceTable::LoadHousing(const CString& strFile)
 {
     CString strPath = FUN_14071a5b0("Table", strFile);
     TiXmlDocument doc;
-    const char* pszPath = strPath;
-    if (FUN_140166420()->FUN_1403974b0(&doc, pszPath, 0, true, false) == 0)
+    if (FUN_140166420()->FUN_1403974b0(&doc, (const char*)strPath, 0, true, false) == 0)
         return 0;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
@@ -137,13 +135,11 @@ int CPriceTable::LoadHousing(const CString& strFile)
 MS2_REPLACE_METHOD(0x140738E60, CPriceTable, LoadHousing, 626, 0x6696CFE3);
 
 // @0x1407390e0
-// MS2-FUNCTIONAL: same loader-call register shuffle as LoadHousing
 int CPriceTable::LoadSalary(const CString& strFile)
 {
     CString strPath = FUN_14071a5b0("Table", strFile);
     TiXmlDocument doc;
-    const char* pszPath = strPath;
-    if (FUN_140166420()->FUN_1403974b0(&doc, pszPath, 0, true, false) == 0)
+    if (FUN_140166420()->FUN_1403974b0(&doc, (const char*)strPath, 0, true, false) == 0)
         return 0;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)

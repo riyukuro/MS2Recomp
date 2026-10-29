@@ -47,7 +47,7 @@ public:
     void FUN_1409fc540(MS2Ptr<CDetectContext> spCtx, const NiMatrix3& kRot);     // place by a rotation, then Detect
     void Detect(MS2Ptr<CDetectContext> spCtx);                      // 0x1409fc6c0 collect and sort the hit objects
     void Invalidate();                                              // 0x1409fe440 rebuild the wire meshes on next draw
-    static bool TestShape(efd::Point3 kPos, efd::Point3 kRight, efd::Point3 kDir, CBaseCollision* pShape,
+    static int TestShape(efd::Point3 kPos, efd::Point3 kRight, efd::Point3 kDir, CBaseCollision* pShape,
                           CBoxCollision* pBox, Unk_DetectHit* pHit);   // 0x1409fe460
     static bool Intersect(CBaseCollision* pShape, CBaseCollision* pBox);   // 0x1409ff0d0
 

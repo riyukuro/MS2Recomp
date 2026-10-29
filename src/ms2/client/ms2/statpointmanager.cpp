@@ -121,13 +121,11 @@ int CStatPointManager::GetTotal()
 MS2_REPLACE_METHOD(0x140CAA260, CStatPointManager, GetTotal, 14, 0xA25B27BF);
 
 // @0x140caa280
-// MS2-FUNCTIONAL: limit compare loads the limit into eax (cmp [nNew],eax) where the exe loads nNew into edx (cmp edx,[limit]); same semantics
 void CStatPointManager::RequestAdd(int nStat, int nAmount)
 {
     if (m_nRemaining == 0)
         return;
-    unsigned nNew = GetStatPoints((Unk_StatKey)nStat) + nAmount;
-    if (nNew > (&FUN_1401d3200()->StatPointLimit_str)[nStat])
+    if ((unsigned)(GetStatPoints((Unk_StatKey)nStat) + nAmount) > (unsigned)(&FUN_1401d3200()->StatPointLimit_str)[nStat])
     {
         FUN_1412751f0(GetStringCommonByKey(L"s_char_info_limit_stat_point"), 1, 1);
     }

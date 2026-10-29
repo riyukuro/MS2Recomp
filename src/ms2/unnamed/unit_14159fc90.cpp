@@ -8,6 +8,7 @@
 #include "ms2/placeholder/nmstream.h"
 #include "ms2/placeholder/nmobjects.h"
 #include "ms2/placeholder/nmfunc.h"
+#include "ms2/placeholder/nmencoder.h"
 #include "ms2/ms2recover.h"
 
 extern void FUN_14156bcb0(void*, void*, void*);
@@ -18,7 +19,7 @@ extern void FUN_14156ac20(void*, unsigned int);
 extern void FUN_1415f9990(void*);
 extern int FUN_1415fb720(void*);
 extern int FUN_1415fb750(void*);
-extern int FUN_1415fb6d0(void*);
+extern int FUN_1415fb6d0(CNMSerializableDecoder*);
 
 // MS2-FUNCTIONAL 0x14159fc90: initializes the session query and its member vector.
 // @0x14159fc90
@@ -38,27 +39,17 @@ CNMGSGetSessionInfoFunc::CNMGSGetSessionInfoFunc(int nFlags)
 // @0x14159fd90
 unsigned int CNMGSGetSessionInfoFunc::EncodeFramed(CNMStream* pStream)
 {
-    unsigned char storage[0x18];
-    FUN_14156bcb0(storage, pStream, this);
-    void** vtable = *reinterpret_cast<void***>(this);
-    using Method = unsigned int(__fastcall*)(CNMGSGetSessionInfoFunc*, CNMEncoder*, CNMStream*);
-    const unsigned int result = reinterpret_cast<Method>(vtable[2])(
-        this, reinterpret_cast<CNMEncoder*>(storage), pStream);
-    FUN_14156bd50(storage);
-    return result;
+    CNMSerializableEncoder encoder(pStream, this);
+    return CNMGSGetSessionInfoFunc::Encode(reinterpret_cast<CNMEncoder*>(&encoder), pStream);
 }
 
 // MS2-FUNCTIONAL 0x14159fdf0: chooses raw or framed encoding by format.
 // @0x14159fdf0
 unsigned int CNMGSGetSessionInfoFunc::EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream)
 {
-    void** vtable = *reinterpret_cast<void***>(this);
-    if (m_bFormat == 1) {
-        using Method = unsigned int(__fastcall*)(CNMGSGetSessionInfoFunc*, CNMEncoder*, CNMStream*);
-        return reinterpret_cast<Method>(vtable[2])(this, pEncoder, pStream);
-    }
-    using Framed = unsigned int(__fastcall*)(CNMGSGetSessionInfoFunc*, CNMStream*);
-    return reinterpret_cast<Framed>(vtable[3])(this, pStream);
+    if (m_bFormat == 1)
+        return CNMGSGetSessionInfoFunc::Encode(pEncoder, pStream);
+    return CNMGSGetSessionInfoFunc::EncodeFramed(pStream);
 }
 
 // MS2-FUNCTIONAL 0x14159fe50: encodes session data and all member records for response direction.
@@ -69,8 +60,8 @@ unsigned int CNMGSGetSessionInfoFunc::Encode(CNMEncoder* pEncoder, CNMStream* pS
     if (FUN_1415fb720(this)) {
         m_30.EncodeFramed(pStream);
         FUN_14156ac20(pEncoder, static_cast<unsigned int>(m_78.size()));
-        for (auto& member : m_78)
-            member.EncodeFramed(pStream);
+        for (std::vector<CNMSessionMemberInfo>::iterator it = m_78.begin(), end = m_78.end(); it != end; ++it)
+            (*it).EncodeFramed(pStream);
     }
     FUN_1415f9990(pEncoder);
     return 1;
@@ -80,45 +71,33 @@ unsigned int CNMGSGetSessionInfoFunc::Encode(CNMEncoder* pEncoder, CNMStream* pS
 // @0x14159ff60
 unsigned int CNMGSGetSessionInfoFunc::DecodeFramed(CNMStream* pStream)
 {
-    unsigned char storage[0x38];
-    FUN_14156be10(storage, pStream, this);
-    unsigned int result = 0;
-    if (FUN_1415fb750(storage)) {
-        void** vtable = *reinterpret_cast<void***>(this);
-        using Method = unsigned int(__fastcall*)(CNMGSGetSessionInfoFunc*, CNMSerializableDecoder*, CNMStream*);
-        result = reinterpret_cast<Method>(vtable[5])(
-            this, reinterpret_cast<CNMSerializableDecoder*>(storage), pStream);
-    }
-    FUN_14156bf10(storage);
-    return result;
+    CNMSerializableDecoder decoder(pStream, this);
+    if (FUN_1415fb750(&decoder) == 0)
+        return 0;
+    return CNMGSGetSessionInfoFunc::Decode(&decoder, pStream);
 }
 
 // MS2-FUNCTIONAL 0x14159fff0: selects direct or framed response decoding.
 // @0x14159fff0
 unsigned int CNMGSGetSessionInfoFunc::DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream)
 {
-    void** vtable = *reinterpret_cast<void***>(this);
-    if (FUN_1415fb6d0(pDecoder) == 2) {
-        using Framed = unsigned int(__fastcall*)(CNMGSGetSessionInfoFunc*, CNMStream*);
-        return reinterpret_cast<Framed>(vtable[6])(this, pStream);
-    }
-    using Method = unsigned int(__fastcall*)(CNMGSGetSessionInfoFunc*, CNMSerializableDecoder*, CNMStream*);
-    return reinterpret_cast<Method>(vtable[5])(this, pDecoder, pStream);
+    if (FUN_1415fb6d0(pDecoder) == 2)
+        return CNMGSGetSessionInfoFunc::DecodeFramed(pStream);
+    return CNMGSGetSessionInfoFunc::Decode(pDecoder, pStream);
 }
 
-// MS2-FUNCTIONAL 0x1415a0050: restores session data and decodes each returned member.
 // @0x1415a0050
 unsigned int CNMGSGetSessionInfoFunc::Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream)
 {
     CNMFunc::DecodeDispatch(pDecoder, pStream);
     if (FUN_1415fb720(this)) {
-        m_30.DecodeFramed(pStream);
-        void** vtable = *reinterpret_cast<void***>(pDecoder);
-        using ReadU32 = unsigned int(__fastcall*)(void*);
-        const unsigned int count = reinterpret_cast<ReadU32>(vtable[3])(pDecoder);
+        (&m_30)->DecodeFramed(pStream);
+        // One member is decoded into the same local each time and a copy is pushed (a failed decode keeps the
+        // previous member's data).
+        CNMSessionMemberInfo member;
+        unsigned int count = pDecoder->ReadU32();
         m_78.clear();
         for (unsigned int i = 0; i < count; ++i) {
-            CNMSessionMemberInfo member;
             member.DecodeFramed(pStream);
             m_78.push_back(member);
         }

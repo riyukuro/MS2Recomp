@@ -88,9 +88,11 @@ public:
 // An item reference (16 bytes; released by 0x1401b50d0).
 class Unk_MbItemRef;
 void FUN_1401b50d0(Unk_MbItemRef*);
+void FUN_1401c3570(Unk_MbItemRef*);                             // AddRef
 class Unk_MbItemRef
 {
 public:
+    Unk_MbItemRef(const Unk_MbItemRef& o) : m_08(o.m_08) { FUN_1401c3570(this); }   // 0x1403bb3b0
     ~Unk_MbItemRef() { FUN_1401b50d0(this); }
     void* FUN_140203c60() const;                            // the item is known
     CItemData* FUN_1401b52a0() const;                       // the item's table row
@@ -100,14 +102,7 @@ private:
 };
 MS2_CHECK_SIZE(Unk_MbItemRef, 0x10);
 Unk_MbItemRef FUN_14053f870(int nItemId);
-
-// The locked-item view of an item reference (24 bytes).
-struct Unk_MbLockView
-{
-    void* m_p[3];
-};
-Unk_MbLockView FUN_1403bb3b0(const Unk_MbItemRef& ref);
-int FUN_1418ffba0(const Unk_MbLockView& view);                  // the item is locked
+int FUN_1418ffba0(Unk_MbItemRef ref);                           // the item is locked
 
 // The purchase block notice (the state manager answers whether buying is blocked right now).
 struct Unk_MbBlockRef;
@@ -119,9 +114,8 @@ struct Unk_MbBlockRef
     ~Unk_MbBlockRef() { FUN_1401cb250(this); }
 };
 MS2_CHECK_SIZE(Unk_MbBlockRef, 0x10);
-class Unk_MbStateMgr;
+class Unk_MbStateMgr { public: Unk_MbBlockRef FUN_140a2f620(int nKind); };
 Unk_MbStateMgr* FUN_140a6a830();
-void FUN_140a2f620(Unk_MbStateMgr* pMgr, Unk_MbBlockRef* pOut, int nKind);
 void* FUN_1401cb3d0(Unk_MbBlockRef* pRef);
 void FUN_140a2ff20(Unk_MbBlockRef* pRef, int nKind, __int64 n);
 
@@ -154,6 +148,7 @@ CStringW GetStringCommon(int nStringId);
 CStringW FUN_14052bd00(int nId, const CStringW& strArg);
 CStringW FUN_140632a60(int nId, const CStringW& strArg0, const CStringW& strArg1);
 CStringW FUN_1405c2690(CStringW strFormat, const CStringW& strArg);
+std::pair<int, __int64> FUN_140931680(int& nKey, __int64& nValue);   // folded copy of std::make_pair<int&, __int64&>
 int FUN_1406a6140();                                            // the pay type of the blueprint rows
 void FUN_140930590(__int64 nId, std::vector<std::pair<int, __int64> >& vecOut);
 void FUN_140930750(const std::vector<std::pair<int, __int64> >& vecIn, std::vector<std::pair<int, __int64> >& vecOut);
@@ -373,10 +368,12 @@ int UIMarketBillDialog::vfunc_13()
         return 1;
     if (FUN_140ba28d0(&m_30, 0))
         return 0;
-    if (!FUN_14025e7c0()->FUN_14116d9c0(0xf, 0, 0))
-        return 0;
-    m_30->Invoke("onTabKey");
-    return 1;
+    if (FUN_14025e7c0()->FUN_14116d9c0(0xf, 0, 0))
+    {
+        m_30->Invoke("onTabKey");
+        return 1;
+    }
+    return 0;
 }
 
 // @0x140ea7310
@@ -403,8 +400,7 @@ int UIMarketBillDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
         else
         {
             {
-                Unk_MbBlockRef block;
-                FUN_140a2f620(FUN_140a6a830(), &block, 0x26);
+                Unk_MbBlockRef block = FUN_140a6a830()->FUN_140a2f620(0x26);
                 if (FUN_1401cb3d0(&block))
                 {
                     FUN_140a2ff20(&block, 0x26, 0);
@@ -415,21 +411,21 @@ int UIMarketBillDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
         }
         return 1;
     }
-    if (_stricmp("onClickGiftOk", szMethod) == 0)
+    else if (_stricmp("onClickGiftOk", szMethod) == 0)
     {
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs))
             FUN_140eaa1e0(szMethod, &data);
         return 1;
     }
-    if (_stricmp("onUpdateTotalPrice", szMethod) == 0)
+    else if (_stricmp("onUpdateTotalPrice", szMethod) == 0)
     {
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs))
             FUN_140eaa5e0(&data);
         return 1;
     }
-    if (_stricmp("onChangeMode", szMethod) == 0)
+    else if (_stricmp("onChangeMode", szMethod) == 0)
     {
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs))
@@ -471,13 +467,12 @@ void UIMarketBillDialog::FUN_140ea7770(MS2Ptr<TMarketBillDataParam> spParam)
     m_nTotal = 0;
     m_mapPrice.RemoveAll();
     m_mapRandomPayback.RemoveAll();
-    if (!(m_spParam.get()))
-        return;
-    if (!(m_spParam->FUN_140eacfc0()))
-        return;
-    m_mapPrice.SetAt((ePayType)m_spParam->m_nCurrency, m_spParam->m_n30);
-    m_nTotal = m_spParam->m_n30;
-    m_mapPayback.SetAt((ePayType)m_spParam->m_n38, m_spParam->m_n40);
+    if ((m_spParam.get() ? true : false) && m_spParam->FUN_140eacfc0())
+    {
+        m_mapPrice.SetAt((ePayType&)m_spParam->m_nCurrency, m_spParam->m_n30);
+        m_nTotal = m_spParam->m_n30;
+        m_mapPayback.SetAt((ePayType&)m_spParam->m_n38, m_spParam->m_n40);
+    }
 }
 
 // Write the fee / payback texts and grow the movie by the lines they gained.
@@ -493,13 +488,13 @@ void UIMarketBillDialog::FUN_140ea7900()
         return;
     }
     float fGrow = 0.0f;
-    MS2Ptr<ASTextField> spFee = m_30->FUN_1409b4620(CString("m_totalFee"));
-    MS2Ptr<ASTextField> spFeeText = m_30->FUN_1409b4620(CString("m_totalFeeText"));
+    MS2Ptr<ASTextField> spFee = m_30->FUN_1409b4620("m_totalFee");
+    MS2Ptr<ASTextField> spFeeText = m_30->FUN_1409b4620("m_totalFeeText");
     if (spFee.get() && spFeeText.get())
         fGrow = FUN_140ea7e70(spFee, spFeeText, m_mapPrice);
-    MS2Ptr<ASTextField> spPayback = m_30->FUN_1409b4620(CString("m_totalPayback"));
-    MS2Ptr<ASTextField> spPaybackText = m_30->FUN_1409b4620(CString("m_totalPaybackText"));
-    if (spPayback.get() && spPaybackText.get())
+    MS2Ptr<ASTextField> spPayback = m_30->FUN_1409b4620("m_totalPayback");
+    MS2Ptr<ASTextField> spPaybackText = m_30->FUN_1409b4620("m_totalPaybackText");
+    if ((spPayback.get() ? true : false) && (spPaybackText.get() ? true : false))
     {
         bool bAny = false;
         for (POSITION pos = m_mapRandomPayback.GetStartPosition(); pos; m_mapRandomPayback.GetNext(pos))
@@ -518,10 +513,11 @@ void UIMarketBillDialog::FUN_140ea7900()
             fGrow = FUN_140805fc0(fGrow, fGrowPayback);
         }
     }
-    if (m_90.get() && fGrow != 0.0f)
+    if ((m_90.get() ? true : false) && fGrow != 0.0f)
     {
         float fHeight = m_90->FUN_1422c1490();
-        m_90->FUN_1422c0f20(fHeight + fGrow);
+        float fNewHeight = fHeight + fGrow;
+        m_90->FUN_1422c0f20(fNewHeight);
         m_90->vfunc_24(true);
     }
     m_bDirty = false;
@@ -536,42 +532,67 @@ float UIMarketBillDialog::FUN_140ea7e70(MS2Ptr<ASTextField> spFee, MS2Ptr<ASText
     CStringW strAmounts;
     CStringW strTotals;
     int nLines = 0;
-    CStringW strLf(L"\n");
-    for (POSITION pos = mapPay.GetStartPosition(); pos; mapPay.GetNext(pos))
+    const CStringW& strLf = L"\n";
+    if (m_bBlueprint)
     {
-        int nPayType = mapPay.GetKeyAt(pos);
-        __int64 nValue = mapPay.GetValueAt(pos);
-        if (nPayType == 3)
+        for (POSITION pos = mapPay.GetStartPosition(); pos; mapPay.GetNext(pos))
         {
-            CStringW strPoolNames;
-            CStringW strPoolAmounts;
-            if (!m_bBlueprint)
+            int nPayType = mapPay.GetKeyAt(pos);
+            __int64 nValue = mapPay.GetValueAt(pos);
+            if (nPayType == 3)
             {
-                FUN_140eabc00(&strPoolNames, &strPoolAmounts, nValue);
+                CStringW strPoolNames;
+                CStringW strPoolAmounts;
+                int nKey = FUN_1406a6140();
+                std::vector<std::pair<int, __int64> > vecRows;
+                vecRows.push_back(FUN_140931680(nKey, nValue));
+                FUN_140eabdc0(&strPoolNames, &strPoolAmounts, vecRows);
+                strNames.Append(strPoolNames);
+                strAmounts.Append(strPoolAmounts);
             }
             else
             {
-                int nKey = FUN_1406a6140();
-                std::vector<std::pair<int, __int64> > vecRows;
-                vecRows.push_back(std::make_pair(nKey, nValue));
-                FUN_140eabdc0(&strPoolNames, &strPoolAmounts, vecRows);
+                if (!strNames.IsEmpty())
+                    strNames.Append(strLf);
+                strNames.Append(FUN_1418fe6c0(nPayType, -1));
+                if (!strAmounts.IsEmpty())
+                    strAmounts.Append(strLf);
+                strAmounts.Append(FUN_1418fec00(nPayType, nValue, 0));
             }
-            strNames.Append(strPoolNames);
-            strAmounts.Append(strPoolAmounts);
+            if (!strTotals.IsEmpty())
+                strTotals.Append(strLf);
+            strTotals.Append(FUN_1418fec00(nPayType, nValue, 0));
+            ++nLines;
         }
-        else
+    }
+    else
+    {
+        for (POSITION pos = mapPay.GetStartPosition(); pos; mapPay.GetNext(pos))
         {
-            if (!strNames.IsEmpty())
-                strNames.Append(strLf);
-            strNames.Append(FUN_1418fe6c0(nPayType, -1));
-            if (!strAmounts.IsEmpty())
-                strAmounts.Append(strLf);
-            strAmounts.Append(FUN_1418fec00(nPayType, nValue, 0));
+            int nPayType = mapPay.GetKeyAt(pos);
+            __int64 nValue = mapPay.GetValueAt(pos);
+            if (nPayType == 3)
+            {
+                CStringW strPoolNames;
+                CStringW strPoolAmounts;
+                FUN_140eabc00(&strPoolNames, &strPoolAmounts, nValue);
+                strNames.Append(strPoolNames);
+                strAmounts.Append(strPoolAmounts);
+            }
+            else
+            {
+                if (!strNames.IsEmpty())
+                    strNames.Append(strLf);
+                strNames.Append(FUN_1418fe6c0(nPayType, -1));
+                if (!strAmounts.IsEmpty())
+                    strAmounts.Append(strLf);
+                strAmounts.Append(FUN_1418fec00(nPayType, nValue, 0));
+            }
+            if (!strTotals.IsEmpty())
+                strTotals.Append(strLf);
+            strTotals.Append(FUN_1418fec00(nPayType, nValue, 0));
+            ++nLines;
         }
-        if (!strTotals.IsEmpty())
-            strTotals.Append(strLf);
-        strTotals.Append(FUN_1418fec00(nPayType, nValue, 0));
-        ++nLines;
     }
     if (strTotals.IsEmpty())
     {
@@ -583,40 +604,44 @@ float UIMarketBillDialog::FUN_140ea7e70(MS2Ptr<ASTextField> spFee, MS2Ptr<ASText
     }
     CStringW strNameText = FUN_14052bd00(0x998, strNames);
     CStringW strAmountText = FUN_140632a60(0x999, strAmounts, strTotals);
-    for (int i = 0; i < nLines - 1; ++i)
-        strNameText.Append(strLf);
+    if (nLines > 1)
+    {
+        int nExtra = nLines - 1;
+        for (int i = 0; i < nExtra; ++i)
+            strNameText.Append(strLf);
+    }
     CStringW strGiveNames;
     CStringW strGiveAmounts;
     if (!m_mapPayback.IsEmpty())
     {
+        CStringW strUnused;
         for (POSITION pos = m_mapPayback.GetStartPosition(); pos; m_mapPayback.GetNext(pos))
         {
             int nPayType = m_mapPayback.GetKeyAt(pos);
             __int64 nValue = m_mapPayback.GetValueAt(pos);
-            if (nValue > 0)
-            {
-                if (!strGiveNames.IsEmpty())
-                    strGiveNames.Append(strLf);
-                strGiveNames.Append(FUN_1418fe6c0(nPayType, -1));
-                if (!strGiveAmounts.IsEmpty())
-                    strGiveAmounts.Append(strLf);
-                strGiveAmounts.Append(FUN_1418fec00(nPayType, nValue, 0));
-            }
+            if (nValue <= 0)
+                continue;
+            if (!strGiveNames.IsEmpty())
+                strGiveNames.Append(strLf);
+            strGiveNames.Append(FUN_1418fe6c0(nPayType, -1));
+            if (!strGiveAmounts.IsEmpty())
+                strGiveAmounts.Append(strLf);
+            strGiveAmounts.Append(FUN_1418fec00(nPayType, nValue, 0));
         }
         if (!strGiveAmounts.IsEmpty())
         {
             strNameText.Append(strLf);
             strAmountText.Append(strLf);
-            strNameText.Append(FUN_1405c2690(CStringW(L"s_bill_givename_total"), strGiveNames));
-            strAmountText.Append(FUN_1405c2690(CStringW(L"s_bill_givepoint_total"), strGiveAmounts));
+            strNameText.Append(FUN_1405c2690(L"s_bill_givename_total", strGiveNames));
+            strAmountText.Append(FUN_1405c2690(L"s_bill_givepoint_total", strGiveAmounts));
         }
     }
     spFeeText->FUN_1422c4f00(strNameText);
     spFee->FUN_1422c4f00(strAmountText);
-    float fX = spFee->FUN_1422c10a0();
-    spFeeText->FUN_1422c0420(fX);
+    spFeeText->FUN_1422c0420(spFee->FUN_1422c10a0());
     int nNewHeight = spFee->FUN_1422c13b0();
-    return (float)(nNewHeight - nOldHeight);
+    int nDiff = nNewHeight - nOldHeight;
+    return (float)nDiff;
 }
 
 // The same for the random payback (one line per pay type).
@@ -626,22 +651,25 @@ float UIMarketBillDialog::FUN_140ea8ab0(MS2Ptr<ASTextField> spPayback, MS2Ptr<AS
     int nOldHeight = spPayback->FUN_1422c13b0();
     CStringW strNames;
     CStringW strAmounts;
-    CStringW strLf(L"\n");
+    int nIndex = 0;
+    const CStringW& strLf = L"\n";
     for (POSITION pos = mapPay.GetStartPosition(); pos; mapPay.GetNext(pos))
     {
         int nPayType = mapPay.GetKeyAt(pos);
         __int64 nValue = mapPay.GetValueAt(pos);
         if (!strNames.IsEmpty())
             strNames.Append(strLf);
-        strNames.Append(FUN_1405c2690(CStringW(L"s_meratmarket_random_payback"), FUN_1418fe6c0(nPayType, 0)));
+        strNames.Append(FUN_1405c2690(L"s_meratmarket_random_payback", FUN_1418fe6c0(nPayType, 0)));
         if (!strAmounts.IsEmpty())
             strAmounts.Append(strLf);
         strAmounts.Append(FUN_1418fec00(nPayType, nValue, 0));
+        nIndex++;
     }
     spPaybackText->FUN_1422c4f00(strNames);
     spPayback->FUN_1422c4f00(strAmounts);
     int nNewHeight = spPayback->FUN_1422c13b0();
-    return (float)(nNewHeight - nOldHeight);
+    int nDiff = nNewHeight - nOldHeight;
+    return (float)nDiff;
 }
 
 // A copy of the parameter.
@@ -664,8 +692,9 @@ void UIMarketBillDialog::FUN_140ea8df0()
         for (size_t i = 0; i < bills.GetCount(); ++i)
         {
             MS2Ptr<ASBillData> spBill = bills[i];
-            if (!spBill.IsNull())
-                rows.FUN_1422bc050(Scaleform::GFx::Value(spBill->FUN_1422bb870()));
+            if (spBill == 0)
+                continue;
+            rows.FUN_1422bc050(Scaleform::GFx::Value(spBill->FUN_1422bb870()));
         }
         objData.FUN_1409c0e60("noticeKey", L"$s_marketbill_notice_meratmarket_basket");
     }
@@ -675,27 +704,26 @@ void UIMarketBillDialog::FUN_140ea8df0()
         for (size_t i = 0; i < bills.GetCount(); ++i)
         {
             MS2Ptr<ASBillData> spBill = bills[i];
-            if (!spBill.IsNull())
+            if (spBill == 0)
+                continue;
+            rows.FUN_1422bc050(Scaleform::GFx::Value(spBill->FUN_1422bb870()));
+            int nPayType = spBill->vfunc_4();
+            FUN_140ea9770(nPayType, spBill->vfunc_2());
+            FUN_140ea9880(nPayType, spBill->vfunc_9());
+            int nPaybackType = spBill->vfunc_8();
+            FUN_140ea9970(nPaybackType, spBill->vfunc_6());
+            if (nPayType == 3)
             {
-                rows.FUN_1422bc050(Scaleform::GFx::Value(spBill->FUN_1422bb870()));
-                int nPayType = spBill->vfunc_4();
-                FUN_140ea9770(nPayType, spBill->vfunc_2());
-                FUN_140ea9880(nPayType, spBill->vfunc_9());
-                int nPaybackType = spBill->vfunc_8();
-                FUN_140ea9970(nPaybackType, spBill->vfunc_6());
-                if (nPayType == 3)
+                int nItemId = spBill->vfunc_1();
+                Unk_MbItemRef ref = FUN_14053f870(nItemId);
+                if (ref.FUN_140203c60() ? true : false)
                 {
-                    int nItemId = spBill->vfunc_1();
-                    Unk_MbItemRef ref = FUN_14053f870(nItemId);
-                    if (ref.FUN_140203c60())
-                    {
-                        if (ref.FUN_1401b52a0()->FUN_14053cd10())
-                            m_bBlueprint = true;
-                    }
+                    if (ref.FUN_1401b52a0()->FUN_14053cd10())
+                        m_bBlueprint = true;
                 }
-                if (!spBill->FUN_140eacf20())
-                    ++nCount;
             }
+            if (!spBill->FUN_140eacf20())
+                ++nCount;
         }
         CStringW strTotal = FUN_1409e97f0(0xa40, nCount);
         objData.FUN_1407cbb20("totalText", strTotal);
@@ -709,8 +737,7 @@ void UIMarketBillDialog::FUN_140ea8df0()
                 bool bGift = false;
                 if (MS2Ptr<TMeratMarketBillDataParam> spMerat = dynamic_cast<TMeratMarketBillDataParam*>(m_spParam.get()))
                     bGift = spMerat->FUN_140eacf70();
-                const char* szNotice = bGift ? "$s_marketbill_notice_meratmarket" : "$s_marketbill_notice_meratmarket_only_premium";
-                strNotice = szNotice;
+                strNotice = bGift ? "$s_marketbill_notice_meratmarket" : "$s_marketbill_notice_meratmarket_only_premium";
                 strNoticeGift = strNotice;
             }
             else if (nDialogId == 0x4ebc)
@@ -736,7 +763,7 @@ void UIMarketBillDialog::FUN_140ea8df0()
 // @0x140ea9710
 CStringW UIMarketBillDialog::FUN_140ea9710(int nPayType, __int64 nAmount)
 {
-    return FUN_1418fec00(nPayType, nAmount, 0, 0);
+    return FUN_1418fec00(nPayType, nAmount, 0);
 }
 
 // Add to the price of a pay type (and the total).
@@ -807,12 +834,8 @@ bool UIMarketBillDialog::FUN_140ea9a70()
         if (nItemId == 0)
             continue;
         Unk_MbItemRef ref = FUN_14053f870(nItemId);
-        if (ref.FUN_140203c60())
-        {
-            CItemData* pItem = ref.FUN_1401b52a0();
-            if (FUN_1403b3c40(pItem->function.name, L"UGCMapPackage"))
-                return true;
-        }
+        if (ref.FUN_140203c60() && FUN_1403b3c40(ref.FUN_1401b52a0()->function.name, L"UGCMapPackage"))
+            return true;
     }
     return false;
 }
@@ -860,11 +883,8 @@ bool UIMarketBillDialog::FUN_140ea9df0()
         if (nItemId == 0)
             continue;
         Unk_MbItemRef ref = FUN_14053f870(nItemId);
-        if (ref.FUN_140203c60())
-        {
-            if (FUN_1418ffba0(FUN_1403bb3b0(ref)) != 0)
-                return true;
-        }
+        if (ref.FUN_140203c60() && FUN_1418ffba0(ref))
+            return true;
     }
     return false;
 }
@@ -905,7 +925,7 @@ void UIMarketBillDialog::FUN_140eaa1e0(const char* szMethod, ASData* pData)
     CStringW strName = pData->FUN_1422b8f40();
     if (strName.GetLength() == 0)
     {
-        FUN_140d73bc0(0xa6d, 0, 0, CStringW(L""));
+        FUN_140d73bc0(0xa6d, 0, 0, L"");
         return;
     }
     MyPC* pPlayer = static_cast<MyPC*>(FUN_141bd0cc0(FUN_1403ed2d0()));
@@ -914,14 +934,14 @@ void UIMarketBillDialog::FUN_140eaa1e0(const char* szMethod, ASData* pData)
         bool bSelf = strName.CompareNoCase(pPlayer->vfunc_77()) == 0;
         if (bSelf)
         {
-            FUN_140d73bc0(0xa6e, 0, 0, CStringW(L""));
+            FUN_140d73bc0(0xa6e, 0, 0, L"");
             return;
         }
         if (m_spParam->m_nDialogId != 0x4ebc)
         {
             if (FUN_14097a780()->FUN_140ae5240(strName) == 1)
             {
-                FUN_140d73aa0(GetStringCommonByKey(CStringW(L"s_cashshop_err_fail_gift_block")), 0, 0, CStringW(L""));
+                FUN_140d73aa0(GetStringCommonByKey(L"s_cashshop_err_fail_gift_block"), 0, 0, L"");
                 return;
             }
         }
@@ -949,27 +969,34 @@ void UIMarketBillDialog::FUN_140eaa5e0(ASData* pData)
         return;
     ASBillData bill(value, 2);
     MS2Ptr<ASBillData> spBill = m_spParam->FUN_140eaba00(nIndex);
-    if (!spBill.IsNull())
-    {
-        int nPayType = spBill->vfunc_4();
-        __int64 nPrice = spBill->vfunc_2() - spBill->vfunc_3();
-        FUN_140ea9770(nPayType, nPrice);
-        int nPaybackType = spBill->vfunc_8();
-        __int64 nPayback = spBill->vfunc_6() - spBill->vfunc_7();
-        FUN_140ea9970(nPaybackType, nPayback);
-        m_bDirty = true;
-    }
+    if (spBill == 0)
+        return;
+    int nPayType = spBill->vfunc_4();
+    __int64 nPrice = spBill->vfunc_2();
+    nPrice -= spBill->vfunc_3();
+    FUN_140ea9770(nPayType, nPrice);
+    int nPaybackType = spBill->vfunc_8();
+    __int64 nPayback = spBill->vfunc_6();
+    nPayback -= spBill->vfunc_7();
+    FUN_140ea9970(nPaybackType, nPayback);
+    m_bDirty = true;
 }
 
 // "onChangeMode".
 // @0x140eaa860
 void UIMarketBillDialog::FUN_140eaa860(ASData* pData)
 {
-    if (!pData->FUN_1422b8a90())
-        SetMode(1);
-    else
+    bool bOn = pData->FUN_1422b8a90();
+    if (bOn)
+    {
         SetMode(2);
-    FUN_140eaa8d0();
+        FUN_140eaa8d0();
+    }
+    else
+    {
+        SetMode(1);
+        FUN_140eaa8d0();
+    }
 }
 
 // Rebuild the sums from the rows.
@@ -977,15 +1004,15 @@ void UIMarketBillDialog::FUN_140eaa860(ASData* pData)
 void UIMarketBillDialog::FUN_140eaa8d0()
 {
     MS2Ptr<TMarketBillDataParam> spParam = m_spParam;
-    if (spParam.IsNull())
+    if (spParam == 0)
         return;
-    if ((__int64)spParam->m_n30 >= 1)
+    if ((__int64)m_spParam->m_n30 > 0)
         return;
     m_nTotal = 0;
     m_mapPrice.RemoveAll();
     m_mapPayback.RemoveAll();
     m_mapRandomPayback.RemoveAll();
-    int nMode = FUN_140eacad0();
+    bool bOnlyChecked = FUN_140eacad0() == 2;
     ATL::CAtlArray<MS2Ptr<ASBillData> >& bills = spParam->m_bills;
     if (!bills.IsEmpty())
     {
@@ -993,9 +1020,9 @@ void UIMarketBillDialog::FUN_140eaa8d0()
         for (size_t i = 0; i < nCount; ++i)
         {
             MS2Ptr<ASBillData> spBill = bills.GetAt(i);
-            if (spBill.IsNull())
+            if (spBill == 0)
                 continue;
-            if (nMode == 2 && !spBill->FUN_140eacf60())
+            if (bOnlyChecked && !spBill->FUN_140eacf60())
                 continue;
             FUN_140ea9770(spBill->vfunc_4(), spBill->vfunc_2());
             FUN_140ea9970(spBill->vfunc_8(), spBill->vfunc_6());
@@ -1015,12 +1042,15 @@ void UIMarketBillDialog::SetMode(int nMode)
 // @0x140eaac50
 CString UIMarketBillDialog::FUN_140eaac50(int nMode)
 {
-    if (nMode == 1)
+    switch (nMode)
+    {
+    case 1:
         return CString("buyGift");
-    if (nMode == 3)
+    case 3:
         return CString("buy");
-    if (nMode == 4)
+    case 4:
         return CString("basket");
+    }
     return CString("");
 }
 
@@ -1034,20 +1064,19 @@ bool UIMarketBillDialog::FUN_140eaad30(bool* pbClose)
         int nBlueprint = 0x16;
         if (FUN_140ea9c30(nBlueprint))
         {
-            CStringW strKey(L"s_meratmarket_buy_notice_blueprint");
-            MS2Ptr<CMsgBoxData> spBox = FUN_140d74230(Delegate<bool(int, const CMsgBoxData&)>(this, &UIMarketBillDialog::FUN_140eab6b0), GetStringCommonByKey(strKey));
+            FUN_140d74230(Delegate<bool(int, const CMsgBoxData&)>(this, &UIMarketBillDialog::FUN_140eab6b0), GetStringCommonByKey(L"s_meratmarket_buy_notice_blueprint"));
             *pbClose = false;
             return true;
         }
     }
     MyPC* pPlayer = static_cast<MyPC*>(FUN_141bd0cc0(FUN_1403ed2d0()));
-    if (pPlayer)
+    if (!pPlayer)
+        return false;
+    if (pPlayer->FUN_141527e00() != 0)
     {
-        if (pPlayer->FUN_141527e00() == 0)
-        {
-            if (FUN_140ea9df0())
+        if (FUN_140ea9a70())
             {
-                MS2Ptr<CMsgBoxData> spBox = FUN_140d73e40(0x1f, 0x6ec, 0, CStringW(L""));
+                MS2Ptr<CMsgBoxData> spBox = FUN_140d73e40(0x1f, 0x6eb, 0, L"");
                 if (spBox.get())
                 {
                     spBox->FUN_141a01800(2);
@@ -1059,12 +1088,12 @@ bool UIMarketBillDialog::FUN_140eaad30(bool* pbClose)
                     return true;
                 }
             }
-        }
-        else
-        {
-            if (FUN_140ea9a70())
+    }
+    else
+    {
+        if (FUN_140ea9df0())
             {
-                MS2Ptr<CMsgBoxData> spBox = FUN_140d73e40(0x1f, 0x6eb, 0, CStringW(L""));
+                MS2Ptr<CMsgBoxData> spBox = FUN_140d73e40(0x1f, 0x6ec, 0, L"");
                 if (spBox.get())
                 {
                     spBox->FUN_141a01800(2);
@@ -1076,7 +1105,6 @@ bool UIMarketBillDialog::FUN_140eaad30(bool* pbClose)
                     return true;
                 }
             }
-        }
     }
     return false;
 }
@@ -1088,19 +1116,21 @@ bool UIMarketBillDialog::FUN_140eab330(bool* pbClose, const CStringW& strName, c
     CStringW strText;
     int nBlueprint = 0x16;
     if (FUN_140ea9c30(nBlueprint) && FUN_140166410()->FUN_14036d570(0xec))
-        strText = FUN_1405c2690(CStringW(L"s_meratmarket_gift_ask_confirm_blueprint"), strName);
+        strText = FUN_1405c2690(L"s_meratmarket_gift_ask_confirm_blueprint", strName);
     else if (m_spParam->m_nDialogId == 0x4ec1)
-        strText = FUN_1405c2690(CStringW(L"s_meratmarket_gift_ask_confirm"), strName);
-    if (strText.IsEmpty())
-        return false;
-    MS2Ptr<CMsgBoxData> spBox = FUN_140d74230(Delegate<bool(int, const CMsgBoxData&)>(this, &UIMarketBillDialog::FUN_140eab7b0), strText);
-    if (spBox.get())
+        strText = FUN_1405c2690(L"s_meratmarket_gift_ask_confirm", strName);
+    if (!strText.IsEmpty())
     {
-        spBox->FUN_140b76940(strName);
-        spBox->FUN_140b76940(strMessage);
+        MS2Ptr<CMsgBoxData> spBox = FUN_140d74230(Delegate<bool(int, const CMsgBoxData&)>(this, &UIMarketBillDialog::FUN_140eab7b0), strText);
+        if (spBox.get())
+        {
+            spBox->FUN_140b76940(strName);
+            spBox->FUN_140b76940(strMessage);
+        }
+        *pbClose = false;
+        return true;
     }
-    *pbClose = false;
-    return true;
+    return false;
 }
 
 // The answer of the buy warning.

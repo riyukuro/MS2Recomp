@@ -48,7 +48,7 @@ public:
     void OnBalance();                                       // balance: ask for the amount to move
     void SendRequestCubeMode58(CStringW strName);                       // send the "remove user" request
     bool FUN_1412c7aa0(int nResult, const CMsgBoxData& data);
-    bool FUN_1412c7af0(int nSlot);                              // save slot action (0 save, 1 load, 2 demolish)
+    bool FUN_1412c7af0(int nSlot, const CMsgBoxData& data);    // save slot action (0 save, 1 load, 2 demolish)
     bool FUN_1412c7ef0(int nResult, const CMsgBoxData& data);
     bool SendRequestCubeMode31(int nResult, const CMsgBoxData& data);
     bool FUN_1412c7ff0(int nResult, const CMsgBoxData& data);

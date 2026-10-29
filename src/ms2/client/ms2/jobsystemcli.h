@@ -22,7 +22,7 @@ public:
     };
 
     JobSystemCli();                                                 // 0x140a6d890
-    virtual ~JobSystemCli();                                        //  0 0x140a6e6b0 (??_G 0x140a6e6d0)
+    // virtual ~JobSystemCli();                                     //  0 0x140a6e6b0 (??_G 0x140a6e6d0), implicit
     virtual MS2Ptr<SkillLevelData> vfunc_1(unsigned nSkillId);      //  1 0x140a6d910 the level data with the temporary skill sets
     virtual bool vfunc_2(unsigned nSkillId);                        //  2 0x140a6da90 learnt, or granted by a temporary source
     virtual void vfunc_3(int nJobGroup, unsigned nSkillId, unsigned short nLevel);   //  3 0x140a6de30

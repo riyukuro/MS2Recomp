@@ -29,6 +29,7 @@
 // MS2-PIN: ?InsertImpl@?$CRBTree@VEntityID@egf@@V?$MS2Ptr@VCInteractObject@@@@V?$CElementTraits@VEntityID@egf@@@ATL@@V?$CElementTraits@V?$MS2Ptr@VCInteractObject@@@@@5@@ATL@@AEAAPEAVCNode@12@AEBVEntityID@egf@@AEBV?$MS2Ptr@VCInteractObject@@@@@Z 0x141c04c70 ; prop
 // MS2-PIN: ?InsertImpl@?$CRBTree@W4Unk_WsKindKey@@HV?$CElementTraits@W4Unk_WsKindKey@@@ATL@@V?$CElementTraits@H@3@@ATL@@AEAAPEAVCNode@12@AEBW4Unk_WsKindKey@@H@Z 0x141c04d70 ; unique
 // MS2-PIN: ?InsertImpl@?$CRBTree@_KV?$SmartPointer@VGameObject@@@efd@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@V?$SmartPointer@VGameObject@@@efd@@@4@@ATL@@AEAAPEAVCNode@12@_KAEBV?$SmartPointer@VGameObject@@@efd@@@Z 0x141c04e70 ; unique
+// MS2-PIN: ?Lookup@?$CRBMap@IV?$MS2Ptr@VUnk_WsTargetF7@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VUnk_WsTargetF7@@@@@3@@ATL@@QEBA_NIAEAV?$MS2Ptr@VUnk_WsTargetF7@@@@@Z 0x141c07010 ; byte-identical copies elsewhere
 // MS2-PIN: ?LeftRotate@?$CRBTree@HV?$MS2Ptr@VCLiftableTargetBox@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCLiftableTargetBox@@@@@3@@ATL@@AEAAPEAVCNode@12@PEAV312@@Z 0x141c05850 ; prop
 // MS2-PIN: ?LeftRotate@?$CRBTree@HV?$MS2Ptr@VCLiftableTargetGuide@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCLiftableTargetGuide@@@@@3@@ATL@@AEAAPEAVCNode@12@PEAV312@@Z 0x141c05960 ; prop
 // MS2-PIN: ?LeftRotate@?$CRBTree@IUUnk_WsObjectEntry@@V?$CElementTraits@I@ATL@@V?$CElementTraits@UUnk_WsObjectEntry@@@3@@ATL@@AEAAPEAVCNode@12@PEAV312@@Z 0x141c05a70 ; prop
@@ -96,6 +97,12 @@
 // MS2-PIN: ?RBDelete@?$CRBTree@PEAVEntity@egf@@PEAV12@V?$CElementTraits@PEAVEntity@egf@@@ATL@@V34@@ATL@@AEAA_NPEAVCNode@12@@Z 0x141c0dd20 ; prop
 // MS2-PIN: ?RBDelete@?$CRBTree@PEAVEntity@egf@@V?$MS2Ptr@VUnk_WsMarker@@@@V?$CElementTraits@PEAVEntity@egf@@@ATL@@V?$CElementTraits@V?$MS2Ptr@VUnk_WsMarker@@@@@5@@ATL@@AEAA_NPEAVCNode@12@@Z 0x141c0ded0 ; prop
 // MS2-PINS-END tplpin
+// rt1: the CAtlMap<Unk_WsMapKey7, MS2Ptr<V7>> / <__int64, MS2Ptr<V9>> NewNode pair by the exe call graph (auto-order had them
+// swapped): CreateNode 0x141bfb2f0 (Key7) calls NewNode 0x141c08ed0, whose CNode ctor 0x141bf3820 -> CPair 0x141bf4030 copies a
+// dword key through a reference (the enum key, AEBW4); 0x141bfb3f0 (V9) calls 0x141c092f0 -> CNode 0x141bf38a0 -> CPair 0x141bf40b0
+// stores a by-value qword key. The CNode ctors are outside this range (progress/symbols.tsv: the V9 one is 0x141bf38a0).
+// MS2-PIN: ?NewNode@?$CAtlMap@W4Unk_WsMapKey7@@V?$MS2Ptr@VUnk_WsMapV7@@@@V?$CElementTraits@W4Unk_WsMapKey7@@@ATL@@V?$CElementTraits@V?$MS2Ptr@VUnk_WsMapV7@@@@@4@@ATL@@AEAAPEAVCNode@12@AEBW4Unk_WsMapKey7@@II@Z 0x141c08ed0
+// MS2-PIN: ?NewNode@?$CAtlMap@_JV?$MS2Ptr@VUnk_WsMapV9@@@@V?$CElementTraits@_J@ATL@@V?$CElementTraits@V?$MS2Ptr@VUnk_WsMapV9@@@@@3@@ATL@@AEAAPEAVCNode@12@_JII@Z 0x141c092f0
 // MS2-GUESS-LOOKALIKES
 #define NOMINMAX                                // interactobject.h includes NxPhysics.h
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\worldservice.cpp"
@@ -246,21 +253,14 @@ class Unk_WsB_Marker;
 // @0x141c002e0
 const void* FUN_141c002e0(const void* assetID)
 {
-    return &static_cast<const efd::AssetID*>(assetID)->GetURN();
+    struct Holder { efd::AssetID m_assetID; };
+    return &static_cast<const Holder*>(assetID)->m_assetID.GetURN();
 }
 
-// m_468.Lookup(key, out): the vibrator of an entity key.
-// MS2-FUNCTIONAL: Lookup(key) of the M11 family plus an MS2Ptr<CPtred> assignment; the exe calls GetNode and the
-// value type's operator= directly
-// @0x141c06ed0
-bool FUN_141c06ed0(void* map, unsigned __int64 key, MS2Ptr<Unk_WsB_Vibrator>* out)   // key by value: GetNode 0x141bffcf0 hashes its home
-{
-    Unk_WsM11::CPair* p = static_cast<Unk_WsM11*>(map)->Lookup((__int64)key);
-    if (!p)
-        return false;
-    *(MS2Ptr<CPtred>*)out = *(MS2Ptr<CPtred>*)&p->m_value;
-    return true;
-}
+// m_468.Lookup(key, out): the vibrator of an entity key. FUN_141c06ed0 is the ATL member itself (GetNode, then the
+// value's operator=), so worldservice_1's FUN_141c06ed0 references bind to this instance by address.
+template bool ATL::CAtlMap<__int64, MS2Ptr<Unk_WsMapV11> >::Lookup(__int64, MS2Ptr<Unk_WsMapV11>&) const;
+// MS2-PIN: ?Lookup@?$CAtlMap@_JV?$MS2Ptr@VUnk_WsMapV11@@@@V?$CElementTraits@_J@ATL@@V?$CElementTraits@V?$MS2Ptr@VUnk_WsMapV11@@@@@3@@ATL@@QEBA_N_JAEAV?$MS2Ptr@VUnk_WsMapV11@@@@@Z 0x141c06ed0
 
 // m_4b0.Lookup(name, out): the marker of a name.
 // MS2-FUNCTIONAL: Lookup(key) of the m_4b0 map plus an MS2Ptr<CPtred> assignment; the exe calls Find and the value
@@ -291,97 +291,72 @@ template class efd::MessageHandlerImpl<WorldService, ecr::SceneGraphRemovedMessa
 struct Unk_WsC_ActorRef;
 class Unk_WsC_GameObj;
 class FieldProperty;
-static inline void* WsNodeValue(void* pos)
-{
-    ATLENSURE(pos != NULL);
-    return (char*)pos + 8;
-}
+// CAtlMap::GetValueAt names its node (CNode* pNode = static_cast<CNode*>(pos)); CRBTree::GetValueAt does not.
+#define WS_MAP_VALUE_AT(T) ATLENSURE(pos != NULL); void* pNode = pos; return (T)((char*)pNode + 8)
+#define WS_TREE_VALUE_AT(T) ATLENSURE(pos != NULL); return (T)((char*)pos + 8)
 
-// MS2-FUNCTIONAL: ATL GetValueAt written over the node layout; the exe is the member instance
-void* FUN_141c00300(void* map, void* pos) { return WsNodeValue(pos); }
+void* FUN_141c00300(void* map, void* pos) { WS_MAP_VALUE_AT(void*); }
 
-// MS2-FUNCTIONAL: ATL GetValueAt written over the node layout; the exe is the member instance
-MS2Ptr<FieldProperty>* FUN_141c00530(void* map, void* pos) { return (MS2Ptr<FieldProperty>*)WsNodeValue(pos); }
+MS2Ptr<FieldProperty>* FUN_141c00530(void* map, void* pos) { WS_MAP_VALUE_AT(MS2Ptr<FieldProperty>*); }
 
-// MS2-FUNCTIONAL: ATL GetValueAt written over the node layout; the exe is the member instance
-void* FUN_141c007a0(void* map, void* pos) { return WsNodeValue(pos); }
+void* FUN_141c007a0(void* map, void* pos) { WS_TREE_VALUE_AT(void*); }
 
 // The m_0e8 spelling of the same body (CRBMap<unsigned, Unk_WsV0e8>, a SmartPointer<GameObject> value).
-// MS2-FUNCTIONAL: ATL GetValueAt written over the node layout; the exe is the member instance
 efd::SmartPointer<Unk_WsC_GameObj>* FUN_141c007a0(ATL::CRBMap<unsigned, Unk_WsV0e8>* map, void* pos)
 {
-    return (efd::SmartPointer<Unk_WsC_GameObj>*)WsNodeValue(pos);
+    WS_TREE_VALUE_AT(efd::SmartPointer<Unk_WsC_GameObj>*);
 }
 
-// MS2-FUNCTIONAL: ATL GetValueAt written over the node layout; the exe is the member instance
-Unk_WsC_ActorRef* FUN_141c00800(void* map, void* pos) { return (Unk_WsC_ActorRef*)WsNodeValue(pos); }
+Unk_WsC_ActorRef* FUN_141c00800(void* map, void* pos) { WS_TREE_VALUE_AT(Unk_WsC_ActorRef*); }
+// MS2-PIN: ?FUN_141c00800@@YAPEAUUnk_WsC_ActorRef@@PEAX0@Z 0x141c00800
 
-// MS2-FUNCTIONAL: ATL GetValueAt written over the node layout; the exe is the member instance
-void* FUN_141c009e0(void* map, void* pos) { return WsNodeValue(pos); }
+void* FUN_141c009e0(void* map, void* pos) { WS_TREE_VALUE_AT(void*); }
 
 // The rest of the GetValueAt entry points (all exe bodies are ATLENSURE(pos); return pos + 8).
 struct Unk_WsF_EntRef;
 class Unk_WsB_Active;
 class Unk_WsB_Spawn;
 
-// MS2-FUNCTIONAL: ATL GetValueAt written over the node layout; the exe is the member instance
-void* FUN_141c00370(void* map, void* pos) { return WsNodeValue(pos); }
+void* FUN_141c00370(void* map, void* pos) { WS_MAP_VALUE_AT(void*); }
 
-// MS2-FUNCTIONAL: ATL GetValueAt written over the node layout; the exe is the member instance
-void* FUN_141c003e0(void* map, void* pos) { return WsNodeValue(pos); }
+void* FUN_141c003e0(void* map, void* pos) { WS_MAP_VALUE_AT(void*); }
 
-// MS2-FUNCTIONAL: ATL GetValueAt written over the node layout; the exe is the member instance
-void* FUN_141c00450(void* map, void* pos) { return WsNodeValue(pos); }
+void* FUN_141c00450(void* map, void* pos) { WS_MAP_VALUE_AT(void*); }
 
 // m_3a0.GetValueAt.
-// MS2-FUNCTIONAL: ATL GetValueAt written over the node layout; the exe is the member instance
-Unk_WsV3a0* FUN_141c004c0(ATL::CAtlMap<unsigned, Unk_WsV3a0>* map, void* pos) { return (Unk_WsV3a0*)WsNodeValue(pos); }
+Unk_WsV3a0* FUN_141c004c0(ATL::CAtlMap<unsigned, Unk_WsV3a0>* map, void* pos) { WS_MAP_VALUE_AT(Unk_WsV3a0*); }
 
-// MS2-FUNCTIONAL: ATL GetValueAt written over the node layout; the exe is the member instance
-void* FUN_141c004c0(void* map, void* pos) { return WsNodeValue(pos); }
+void* FUN_141c004c0(void* map, void* pos) { WS_MAP_VALUE_AT(void*); }
 
-// MS2-FUNCTIONAL: ATL GetValueAt written over the node layout; the exe is the member instance
-Unk_WsV3a0* FUN_141c004c0_G(void* map, void* pos) { return (Unk_WsV3a0*)WsNodeValue(pos); }
+Unk_WsV3a0* FUN_141c004c0_G(void* map, void* pos) { WS_MAP_VALUE_AT(Unk_WsV3a0*); }
 
-// MS2-FUNCTIONAL: ATL GetValueAt written over the node layout; the exe is the member instance
-MS2Ptr<Unk_WsB_Active>* FUN_141c005a0(void* map, void* pos) { return (MS2Ptr<Unk_WsB_Active>*)WsNodeValue(pos); }
+MS2Ptr<Unk_WsB_Active>* FUN_141c005a0(void* map, void* pos) { WS_MAP_VALUE_AT(MS2Ptr<Unk_WsB_Active>*); }
 
-// MS2-FUNCTIONAL: ATL GetValueAt written over the node layout; the exe is the member instance
-void* FUN_141c00610(void* map, void* pos) { return WsNodeValue(pos); }
+void* FUN_141c00610(void* map, void* pos) { WS_MAP_VALUE_AT(void*); }
 
-// MS2-FUNCTIONAL: ATL GetValueAt written over the node layout; the exe is the member instance
-void* FUN_141c00680(void* map, void* pos) { return WsNodeValue(pos); }
+void* FUN_141c00680(void* map, void* pos) { WS_TREE_VALUE_AT(void*); }
 
-// MS2-FUNCTIONAL: ATL GetValueAt written over the node layout; the exe is the member instance
-void* FUN_141c006e0(void* map, void* pos) { return WsNodeValue(pos); }
+void* FUN_141c006e0(void* map, void* pos) { WS_TREE_VALUE_AT(void*); }
 
 // m_1a8.GetValueAt.
-// MS2-FUNCTIONAL: ATL GetValueAt written over the node layout; the exe is the member instance
-Unk_WsV1a8* FUN_141c00740(void* map, void* pos) { return (Unk_WsV1a8*)WsNodeValue(pos); }
+Unk_WsV1a8* FUN_141c00740(void* map, void* pos) { WS_TREE_VALUE_AT(Unk_WsV1a8*); }
+// MS2-PIN: ?FUN_141c00740@@YAPEAUUnk_WsV1a8@@PEAX0@Z 0x141c00740
 
 // m_6d8.GetValueAt.
-// MS2-FUNCTIONAL: ATL GetValueAt written over the node layout; the exe is the member instance
-Unk_WsV6d8* FUN_141c00860(void* map, void* pos) { return (Unk_WsV6d8*)WsNodeValue(pos); }
+Unk_WsV6d8* FUN_141c00860(void* map, void* pos) { WS_TREE_VALUE_AT(Unk_WsV6d8*); }
 
-// MS2-FUNCTIONAL: ATL GetValueAt written over the node layout; the exe is the member instance
-efd::SmartPointer<Unk_WsB_Spawn>* FUN_141c008c0(void* map, void* pos) { return (efd::SmartPointer<Unk_WsB_Spawn>*)WsNodeValue(pos); }
+efd::SmartPointer<Unk_WsB_Spawn>* FUN_141c008c0(void* map, void* pos) { WS_TREE_VALUE_AT(efd::SmartPointer<Unk_WsB_Spawn>*); }
 
 // m_5e8.GetValueAt.
-// MS2-FUNCTIONAL: ATL GetValueAt written over the node layout; the exe is the member instance
-void* FUN_141c00920(void* map, void* pos) { return WsNodeValue(pos); }
+void* FUN_141c00920(void* map, void* pos) { WS_TREE_VALUE_AT(void*); }
 
-// MS2-FUNCTIONAL: ATL GetValueAt written over the node layout; the exe is the member instance
-Unk_WsF_EntRef* FUN_141c00920_F(void* map, void* pos) { return (Unk_WsF_EntRef*)WsNodeValue(pos); }
+Unk_WsF_EntRef* FUN_141c00920_F(void* map, void* pos) { WS_TREE_VALUE_AT(Unk_WsF_EntRef*); }
 
 // m_4b0.GetValueAt.
-// MS2-FUNCTIONAL: ATL GetValueAt written over the node layout; the exe is the member instance
-void* FUN_141c00980(void* map, void* pos) { return WsNodeValue(pos); }
+void* FUN_141c00980(void* map, void* pos) { WS_TREE_VALUE_AT(void*); }
 
-// MS2-FUNCTIONAL: ATL GetValueAt written over the node layout; the exe is the member instance
-MS2Ptr<Unk_WsB_Marker>* FUN_141c00980_B(void* map, void* pos) { return (MS2Ptr<Unk_WsB_Marker>*)WsNodeValue(pos); }
+MS2Ptr<Unk_WsB_Marker>* FUN_141c00980_B(void* map, void* pos) { WS_TREE_VALUE_AT(MS2Ptr<Unk_WsB_Marker>*); }
 
-// MS2-FUNCTIONAL: ATL GetValueAt written over the node layout; the exe is the member instance
-Unk_WsV4b0* FUN_141c00980_G(void* map, void* pos) { return (Unk_WsV4b0*)WsNodeValue(pos); }
+Unk_WsV4b0* FUN_141c00980_G(void* map, void* pos) { WS_TREE_VALUE_AT(Unk_WsV4b0*); }
 
-// MS2-FUNCTIONAL: ATL GetValueAt written over the node layout; the exe is the member instance
-void* FUN_141c00a40(void* map, void* pos) { return WsNodeValue(pos); }
+void* FUN_141c00a40(void* map, void* pos) { WS_TREE_VALUE_AT(void*); }

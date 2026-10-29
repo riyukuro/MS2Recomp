@@ -28,7 +28,6 @@ MS2_CHECK_SIZE(Unk_CriUtfColumn, 0x30);
 struct Unk_CriUtfValue                                          // a decoded cell
 {
     unsigned char type;                                         // +0x00
-    unsigned char pad_01[7];
     union
     {
         unsigned char u8;
@@ -101,13 +100,13 @@ int FUN_140046a1c(const unsigned* pA, const unsigned* pB)
     case 7:
         return a.v.s64 < b.v.s64 ? 1 : (a.v.s64 == b.v.s64 ? 0 : -1);
     case 8:
-        if (a.v.f32 < b.v.f32)
+        if (b.v.f32 > a.v.f32)
             return 1;
-        return a.v.f32 == b.v.f32 ? 0 : -1;
+        return a.v.f32 > b.v.f32 ? -1 : 0;                         // unordered (NaN) compares equal
     case 9:
-        if (a.v.f64 < b.v.f64)
+        if (b.v.f64 > a.v.f64)
             return 1;
-        return a.v.f64 == b.v.f64 ? 0 : -1;
+        return a.v.f64 > b.v.f64 ? -1 : 0;                         // unordered (NaN) compares equal
     case 10:
     {
         const char* strA = FUN_14003a7f4(DAT_143ba9d40, rowA, DAT_143ba9d48);
@@ -120,44 +119,44 @@ int FUN_140046a1c(const unsigned* pA, const unsigned* pB)
 }
 
 // @0x140046c0c
-// MS2-FUNCTIONAL: exe's error-string selection is merged differently
+// MS2-FUNCTIONAL: same checks, allocation and sort as the exe; /Ox register allocation differs (r12/r14/r15 roles)
 unsigned long long FUN_140046c0c(Unk_CriUtfSortTable* table, unsigned slot, unsigned column)
 {
-    const char* err;
     if (table->m_heap == 0)
-        err = "E08070301:No Heap";
-    else if (slot < 4)
     {
-        if (table->m_slots[slot].key == (unsigned)-1)
-        {
-            if (table->m_slots[slot].value == 0)
-            {
-                unsigned n = FUN_14003a45c(table);
-                unsigned* rows = (unsigned*)FUN_14003a0d0(table->m_heap, n << 2, "UtfRtvIdxTbl", 4, table->m_nRows);
-                table->m_slots[slot].value = rows;
-                if (rows == 0)
-                {
-                    FUN_140038e24(0, "E06100300", -3);
-                    return 0;
-                }
-                memset(rows, 0, (long long)(int)(n << 2));
-                table->m_slots[slot].key = column;
-                for (unsigned i = 0; i < n; i++)
-                    rows[i] = i;
-                DAT_143ba9d40 = table;
-                DAT_143ba9d48 = column;
-                qsort(rows, n, 4, (int (*)(const void*, const void*))FUN_140046a1c);
-                return 1;
-            }
-            err = "E08012803:Internal Error";
-        }
-        else
-            err = "E08012802:Not Empty Index Table";
+        FUN_140038ddc(0, "E08070301:No Heap");
+        return 0;
     }
-    else
-        err = "E08012801:Invalid table no";
-    FUN_140038ddc(0, err);
-    return 0;
+    if (slot >= 4)
+    {
+        FUN_140038ddc(0, "E08012801:Invalid table no");
+        return 0;
+    }
+    if (table->m_slots[slot].key != (unsigned)-1)
+    {
+        FUN_140038ddc(0, "E08012802:Not Empty Index Table");
+        return 0;
+    }
+    if (table->m_slots[slot].value != 0)
+    {
+        FUN_140038ddc(0, "E08012803:Internal Error");
+        return 0;
+    }
+    unsigned n = FUN_14003a45c(table);
+    table->m_slots[slot].value = (unsigned*)FUN_14003a0d0(table->m_heap, n << 2, "UtfRtvIdxTbl", 4, table->m_nRows);
+    if (table->m_slots[slot].value == 0)
+    {
+        FUN_140038e24(0, "E06100300", -3);
+        return 0;
+    }
+    memset(table->m_slots[slot].value, 0, (long long)(int)(n << 2));
+    table->m_slots[slot].key = column;
+    for (unsigned i = 0; i < n; i++)
+        table->m_slots[slot].value[i] = i;
+    DAT_143ba9d40 = table;
+    DAT_143ba9d48 = column;
+    qsort(table->m_slots[slot].value, n, 4, (int (*)(const void*, const void*))FUN_140046a1c);
+    return 1;
 }
 
 // @0x140046d50

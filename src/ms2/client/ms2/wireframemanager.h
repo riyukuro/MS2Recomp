@@ -18,7 +18,7 @@ struct Unk_WfEntTraits : public ATL::CElementTraitsBase<Unk_EntRef>
     // MS2-FUNCTIONAL: the exe copy loads the result through a movzx/cmp pair
     static bool CompareElements(const Unk_EntRef& a, const Unk_EntRef& b)
     {
-        return FUN_14168af30(a, b);
+        return FUN_14168af30(a, b) != 0;
     }
 };
 

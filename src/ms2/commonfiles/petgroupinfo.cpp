@@ -78,12 +78,14 @@ void CPetCollectTable::Add(unsigned nPetId, int nGroupId)
 {
     if (nGroupId == 0)
         return;
-    m_petGroups[nPetId] = nGroupId;
+    // The exe's id map shares its folded copies with map<DWORD, int> (operator[] 0x1403e89a0, ctor/dtor 0x14025bf00/0x14025c810)
+    // and indexes it with the parameter's own slot, no conversion temporary.
+    m_petGroups[reinterpret_cast<const DWORD&>(nPetId)] = nGroupId;
     m_groupPets[nGroupId].push_back(nPetId);
 }
 
 // @0x140721480
-std::map<unsigned, unsigned>& CPetCollectTable::PetGroups()
+std::map<DWORD, int>& CPetCollectTable::PetGroups()
 {
     return m_petGroups;
 }

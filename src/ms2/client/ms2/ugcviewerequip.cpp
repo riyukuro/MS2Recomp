@@ -223,8 +223,8 @@ CUgcViewerEquip::CUgcViewerEquip()
 
 // @0x14189ec30
 CUgcViewerEquip::CUgcViewerEquip(CItem* pItem)
-    : m_item(pItem, pItem == 0 ? 0 : pItem->FUN_140526b10())
-    , m_icon(pItem, pItem == 0 ? 0 : pItem->FUN_140526b10())
+    : m_item(pItem, pItem != 0 ? pItem->FUN_140526b10() : 0)
+    , m_icon(pItem, pItem != 0 ? pItem->FUN_140526b10() : 0)
 {
 }
 
@@ -368,9 +368,9 @@ void CUgcViewerEquip::FUN_14189f750(int nObjectId)
 }
 
 // @0x14189f770
-MS2Ptr<IUgcProxy> CUgcViewerEquip::FUN_14189f770(MS2Ptr<IUgcProxy> spOut)
+efd::SmartPointer<NiSourceTexture> CUgcViewerEquip::FUN_14189f770()
 {
-    return spOut;
+    return m_spTexture;
 }
 
 // ---- CUgcViewerCube -----------------------------------------------------------------------------------------------
@@ -986,8 +986,8 @@ int CUgcViewerGuildPoster::vfunc_3(MS2Ptr<CUploadFile> spFile)
     if (strThumb.GetLength() == 0)
         return 0;
     spCtrl->m_spFile = spFile;
-    MS2Ptr<CInteractObject> spObject = FUN_1403ed2d0()->FUN_141bc66b0(m_poster.m_strName);
-    CInteractGuildPosterObject* pPoster = dynamic_cast<CInteractGuildPosterObject*>(spObject.get());
+    CInteractObject* pObject = FUN_1403ed2d0()->FUN_141bc66b0(m_poster.m_strName).get();
+    CInteractGuildPosterObject* pPoster = dynamic_cast<CInteractGuildPosterObject*>(pObject);
     if (pPoster != 0)
         FUN_141403180(pPoster, strThumb);
     return 1;
@@ -996,8 +996,8 @@ int CUgcViewerGuildPoster::vfunc_3(MS2Ptr<CUploadFile> spFile)
 // @0x1418a2520
 void CUgcViewerGuildPoster::vfunc_4()
 {
-    MS2Ptr<CInteractObject> spObject = FUN_1403ed2d0()->FUN_141bc66b0(m_poster.m_strName);
-    CInteractGuildPosterObject* pPoster = dynamic_cast<CInteractGuildPosterObject*>(spObject.get());
+    CInteractObject* pObject = FUN_1403ed2d0()->FUN_141bc66b0(m_poster.m_strName).get();
+    CInteractGuildPosterObject* pPoster = dynamic_cast<CInteractGuildPosterObject*>(pObject);
     if (pPoster != 0)
         FUN_141402eb0(pPoster, 1);
 }
@@ -1341,10 +1341,7 @@ IUgcViewer::IUgcViewer()
 {
 }
 
-// @0x1418a6c90
-IUgcViewer::~IUgcViewer()
-{
-}
+// ~IUgcViewer (0x1418a6c90) is implicit: the exe dtor has no vftable store.
 
 // @0x1418a70a0
 int IUgcViewer::vfunc_2()
@@ -1440,11 +1437,15 @@ void CUgcUploadCtrl::FUN_1418a3840(int nType)
 void CUgcUploadCtrl::FUN_1418a38a0()
 {
     Unk_VwDialogUi* pDialog = FUN_140c300a0(m_nDialog);
-    if (pDialog != 0 && pDialog->vfunc_55() != 1 && m_spViewer.get() != 0)
+    if (pDialog == 0)
+        return;
+    if (pDialog->vfunc_55() == 1)
+        return;
+    if (m_spViewer.get() != 0)
     {
         m_spViewer->vfunc_5();
         m_spViewer->vfunc_1();
-        if (m_spFile.get() != 0)
+        if (m_spFile.get() ? true : false)
         {
             if (m_spFile->Refresh() != 0)
             {
@@ -1526,26 +1527,22 @@ int CUgcUploadCtrl::FUN_1418a3c20(__int64 uid)
 }
 
 // @0x1418a3db0
-// MS2-FUNCTIONAL: second upload (the preview image) of an item/cube/mount/blueprint upload
 void CUgcUploadCtrl::FUN_1418a3db0()
 {
-    if (m_nKind == 1 || m_nKind == 2 || m_nKind == 7 || m_nKind == 9)
-    {
-        CStringW strDir = FUN_14016a730(static_cast<Unk_VwConfig*>(FUN_1401d31f0())->m_strUploadDir, 0);
-        if (_waccess(strDir, 0) == 0)
-        {
-            MS2Ptr<CUploadFile> spFile(new CUploadFile());
-            CStringW strName = FUN_14016a730("upload_i.png", 0);
-            spFile->Set(strDir, strName, 0, 0, 0);
-            m_spImage.AssignRaw(new CUgcUploadCtrl());
-            m_spImage->m_nKind = m_nKind == 9 ? 0xd1 : 0xc9;
-            m_spImage->m_user.CopyFrom(&m_user);
-            m_spImage->m_upload.CopyFrom(&m_upload);
-            m_spImage->m_spFile = spFile;
-            m_spImage->m_spViewer = m_spViewer;
-            m_spImage->FUN_1418a3c20(0);
-        }
-    }
+    if (!(m_nKind == 1 || m_nKind == 2 || m_nKind == 7 || m_nKind == 9))
+        return;
+    CStringW strDir = FUN_14016a730(static_cast<Unk_VwConfig*>(FUN_1401d31f0())->m_strUploadDir, 0);
+    if (_waccess(strDir, 0) != 0)
+        return;
+    MS2Ptr<CUploadFile> spFile(new CUploadFile());
+    spFile->Set(strDir, FUN_14016a730("upload_i.png", 0), 0, 0, 0);
+    m_spImage.AssignRaw(new CUgcUploadCtrl());
+    m_spImage->m_nKind = m_nKind == 9 ? 0xd1 : 0xc9;
+    m_spImage->m_user.CopyFrom(&m_user);
+    m_spImage->m_upload.CopyFrom(&m_upload);
+    m_spImage->m_spFile = spFile;
+    m_spImage->m_spViewer = m_spViewer;
+    m_spImage->FUN_1418a3c20(0);
 }
 
 // @0x1418a4100
@@ -1593,22 +1590,22 @@ int CUgcUploadCtrl::FUN_1418a4470(__int64 uid)
 {
     if (m_spFile == 0)
         return 0xb;
+    int nResult = 1;
     int nSize = m_spViewer->vfunc_9();
-    Unk_UgcFileResult result = ChangeFormat(m_nKind, m_spFile, nSize, FUN_14036e510(FUN_140166410()));
-    int nResult = result.m_nResult;
-    if (nResult == 0)
-    {
-        CUgcCompress compress;
-        nResult = compress.Compress(result.m_strPath, (void*)uid);
-        if (nResult == 0)
-        {
-            m_strResult = compress.GetZipFile();
-            if (result.m_bTemporary == 1)
-                DeleteFileW(result.m_strPath);
-            nResult = 0;
-        }
-    }
-    return nResult;
+    bool bSwitch = false;
+    if (FUN_14036e510(FUN_140166410()))
+        bSwitch = true;
+    Unk_UgcFileResult result = ChangeFormat(m_nKind, m_spFile, nSize, bSwitch);
+    if (result.m_nResult != 0)
+        return result.m_nResult;
+    CUgcCompress compress;
+    nResult = compress.Compress(result.m_strPath, (void*)uid);
+    if (nResult != 0)
+        return nResult;
+    m_strResult = compress.GetZipFile();
+    if (result.m_bTemporary == 1)
+        DeleteFileW(result.m_strPath);
+    return 0;
 }
 
 // @0x1418a4690
@@ -1617,13 +1614,10 @@ int CUgcUploadCtrl::FUN_1418a4690()
     if (m_spFile == 0)
         return 0xb;
     Unk_UgcFileResult result = ChangeFormat(m_nKind, m_spFile, 0x30, 0);
-    int nResult = result.m_nResult;
-    if (nResult == 0)
-    {
-        m_strResult = result.m_strPath;
-        nResult = 0;
-    }
-    return nResult;
+    if (result.m_nResult != 0)
+        return result.m_nResult;
+    m_strResult = result.m_strPath;
+    return 0;
 }
 
 // @0x1418a4780
@@ -1633,13 +1627,10 @@ int CUgcUploadCtrl::FUN_1418a4780()
         return 0xb;
     int nSize = m_spViewer->vfunc_9();
     Unk_UgcFileResult result = ChangeFormat(m_nKind, m_spFile, nSize, 0);
-    int nResult = result.m_nResult;
-    if (nResult == 0)
-    {
-        m_strResult = result.m_strPath;
-        nResult = 0;
-    }
-    return nResult;
+    if (result.m_nResult != 0)
+        return result.m_nResult;
+    m_strResult = result.m_strPath;
+    return 0;
 }
 
 // @0x1418a71f0

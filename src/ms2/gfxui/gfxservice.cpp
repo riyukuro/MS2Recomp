@@ -10,7 +10,6 @@
 // EE_DECLARE_CONCRETE_ATOMIC_REFCOUNT members.
 // MS2-PIN: ??_GGFxService@@UEAAPEAXI@Z 0x1422ea450
 #include "ms2/placeholder/ms2stdafx.h"
-
 #include <efd/IConfigManager.h>
 #include <efd/IServiceDetailRegister.h>
 #include <efd/MessageService.h>
@@ -26,6 +25,7 @@
 #include "ms2/placeholder/uniqueswfidcreator.h"
 #include "ms2/gfxui/uialignwidget.h"
 #include "ms2/gfxui/gfxatlascache.h"
+#include "ms2/scaleform/include/gfx/gfx_system.h"
 #include "ms2/commonfiles/logstring.h"
 #include "hook/ms2hook.h"
 

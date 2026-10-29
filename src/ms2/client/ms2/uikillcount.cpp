@@ -97,7 +97,6 @@ void UIKillCount::FUN_1419df220()
     m_nShown = 0;
 }
 
-// MS2-FUNCTIONAL: the exe loads the player's vtable into a temp before the vfunc_78 call (mine calls through the pointer)
 // @0x1419df2a0
 void UIKillCount::FUN_1419df2a0(void* pKilled)
 {
@@ -113,8 +112,7 @@ void UIKillCount::FUN_1419df2a0(void* pKilled)
                 PCBase* pPlayer = FUN_141bd0cc0(FUN_1403ed2d0());
                 if (pPlayer != 0)
                 {
-                    unsigned short nMobLevel = pMob->vfunc_78();
-                    if (m_kill.FUN_14064c5f0(pPlayer->vfunc_78(), nMobLevel) != 0)
+                    if (m_kill.FUN_14064c5f0(pPlayer->vfunc_78(), pMob->vfunc_78()) != 0)
                         FUN_1419df580();
                 }
             }
@@ -138,11 +136,10 @@ int UIKillCount::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pAr
     return 0;
 }
 
-// MS2-FUNCTIONAL: the exe materialises m_30's null test as a bool temp before the && (no source form found)
 // @0x1419df490
 void UIKillCount::vfunc_15()
 {
-    if (m_30.get() && 0 < m_nShown)
+    if (static_cast<bool>(m_30.get()) && 0 < m_nShown)
     {
         if (m_kill.FUN_14064c840(FUN_140869420()) == 0)
             FUN_1419df220();

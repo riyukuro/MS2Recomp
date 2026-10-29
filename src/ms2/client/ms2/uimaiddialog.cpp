@@ -199,10 +199,8 @@ struct Unk_MaidProfileFields
 };
 MS2_CHECK_SIZE(Unk_MaidProfileFields, 0x68);
 
-void FUN_14025c670(void* p);                                    // text-checker smart pointer dtor
-struct Unk_MaidTextCheckRef { void* m_00; CBanTextChecker* m_p; ~Unk_MaidTextCheckRef() { FUN_14025c670(this); } };
-class Unk_MaidTextSvc { public: Unk_MaidTextCheckRef FUN_140229a50(); };   // returns the smart pointer by value
-Unk_MaidTextSvc* FUN_14025e7d0();
+CommonString* FUN_14025e7d0();                                  // the CommonString singleton
+extern template class MS2Ptr<CBanTextChecker>;
 
 CStringW GetStringCommon(int nStringId);                          // string table text by id
 CStringW FUN_140656190(const wchar_t* pszFormat, const CStringW& strArg0, const CStringW& strArg1);
@@ -217,9 +215,10 @@ void FUN_140d73bc0(int nStrId, int nType, void* pListener, CStringW strTag);   /
 void FUN_140d73aa0(CStringW text, int nA, int nB, CStringW strTag);     // pop the notice
 int FUN_1418fc760(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned nArgs, int n);
 void FUN_14151f200();
-int FUN_1403b3c40(const CStringW& str, const wchar_t* psz);
+bool FUN_1403b3c40(const CStringW& str, const wchar_t* psz);       // str == psz
 void FUN_140710590(COutPacket& packet);                         // send
 UITalkCinematic* FUN_140a7b2b0(int nId);                         // a dialog's position record
+class Unk_MaidUnused;                                            // element of an unused local array (its CAtlArray dtor COMDAT is 0x140164210, not the void* one)
 
 // The "int" setters of ASObj used here only exist in the shared header; the exe calls them from this unit.
 
@@ -280,7 +279,6 @@ int UIMaidDialog::vfunc_13()
 }
 
 // @0x1412d7310
-// MS2-FUNCTIONAL: not byte-exact yet (call-result temporaries / frame-slot order differ)
 void UIMaidDialog::vfunc_43()
 {
     ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30);
@@ -288,16 +286,16 @@ void UIMaidDialog::vfunc_43()
     if (pDialog != 0 && (pRef = FUN_140a7b2b0(0x4e40)) != 0)
     {
         int nX = pRef->FUN_141b1d3d0();
-        int nY = pRef->FUN_141b1d460();
-        if (nY - 0x14 != -1 && nX != -1)
+        int nY = pRef->FUN_141b1d460() - 0x14;
+        if (nX != -1 && nY != -1)
         {
-            pDialog->vfunc_2(5, nY - 0x14, nX - pDialog->FUN_1422c13b0() - 2);
+            pDialog->vfunc_2(5, nY, nX - pDialog->FUN_1422c13b0() - 2);
             return;
         }
     }
-    pDialog = dynamic_cast<ASDialog*>((AScript*)m_30);
-    if (pDialog != 0)
-        pDialog->vfunc_2(1, 0, 0);
+    ASDialog* pDefault = dynamic_cast<ASDialog*>((AScript*)m_30);
+    if (pDefault != 0)
+        pDefault->vfunc_2(1, 0, 0);
 }
 
 // @0x1412d7450
@@ -308,13 +306,10 @@ void UIMaidDialog::OnLoadComplete()
 }
 
 // @0x1412d7480
-// MS2-FUNCTIONAL: the exe returns a value (movzx eax,al after the null test); the shared base slot is void
 void UIMaidDialog::vfunc_79(void* p)
 {
     UIDialog::vfunc_79(p);
-    int n = vfunc_55();
-    if (n == 0)
-        m_30.IsNull();
+    vfunc_55() == 0 && m_30.IsNull();      // an unused && expression: movzx eax,al after the null test
 }
 
 // @0x1412d74e0
@@ -325,7 +320,6 @@ void UIMaidDialog::OnLoadInit()
 }
 
 // @0x1412d7520
-// MS2-FUNCTIONAL: not byte-exact yet (temporaries / call order differ)
 int UIMaidDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs)
 {
     if (UIDialog::vfunc_28(szMethod, pArgs, nArgs) != 0)
@@ -337,7 +331,7 @@ int UIMaidDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pA
         vfunc_67();
         return 1;
     }
-    if (_stricmp("OnSave", szMethod) == 0)
+    else if (_stricmp("OnSave", szMethod) == 0)
     {
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs) != 0)
@@ -353,54 +347,53 @@ int UIMaidDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pA
             FUN_140d73bc0(0x79e, 1, static_cast<IMessageListener*>(this), CStringW(L"OnSave"));
             return 1;
         }
-        return 0;
     }
-    if (_stricmp("OnDebugAffinityGrade", szMethod) == 0)
+    else if (_stricmp("OnDebugAffinityGrade", szMethod) == 0)
     {
         CUserMaidManager::GetInstance()->SendRequest5(m_nMaidUid);
         return 1;
     }
-    if (_stricmp("OnDebugAffinityUp", szMethod) == 0)
+    else if (_stricmp("OnDebugAffinityUp", szMethod) == 0)
     {
         CUserMaidManager::GetInstance()->SendRequest6(m_nMaidUid);
         return 1;
     }
-    if (_stricmp("OnDebugAffinityReset", szMethod) == 0)
+    else if (_stricmp("OnDebugAffinityReset", szMethod) == 0)
     {
         CUserMaidManager::GetInstance()->SendRequest7(m_nMaidUid);
         return 1;
     }
-    if (_stricmp("OnDebugMoodUp", szMethod) == 0)
+    else if (_stricmp("OnDebugMoodUp", szMethod) == 0)
     {
         CUserMaidManager::GetInstance()->SendRequest8(m_nMaidUid);
         return 1;
     }
-    if (_stricmp("OnDebugMoodDown", szMethod) == 0)
+    else if (_stricmp("OnDebugMoodDown", szMethod) == 0)
     {
         CUserMaidManager::GetInstance()->SendRequest9(m_nMaidUid);
         return 1;
     }
-    if (_stricmp("OnDebugExpiredDay", szMethod) == 0)
+    else if (_stricmp("OnDebugExpiredDay", szMethod) == 0)
     {
         CUserMaidManager::GetInstance()->SendRequest10(m_nMaidUid, 0x15180, 0);
         return 1;
     }
-    if (_stricmp("OnDebugExpiredHour", szMethod) == 0)
+    else if (_stricmp("OnDebugExpiredHour", szMethod) == 0)
     {
         CUserMaidManager::GetInstance()->SendRequest10(m_nMaidUid, 0xe10, 0);
         return 1;
     }
-    if (_stricmp("OnDebugExpiredMin", szMethod) == 0)
+    else if (_stricmp("OnDebugExpiredMin", szMethod) == 0)
     {
         CUserMaidManager::GetInstance()->SendRequest10(m_nMaidUid, 0x3c, 0);
         return 1;
     }
-    if (_stricmp("OnDebugExtendHour", szMethod) == 0)
+    else if (_stricmp("OnDebugExtendHour", szMethod) == 0)
     {
         CUserMaidManager::GetInstance()->SendRequest10(m_nMaidUid, 0xe10, 1);
         return 1;
     }
-    if (_stricmp("onDebugExtendMin", szMethod) == 0)
+    else if (_stricmp("onDebugExtendMin", szMethod) == 0)
     {
         CUserMaidManager::GetInstance()->SendRequest10(m_nMaidUid, 0x3c, 1);
         return 1;
@@ -409,18 +402,19 @@ int UIMaidDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pA
 }
 
 // @0x1412d7aa0
-// MS2-FUNCTIONAL: not byte-exact yet (temporaries / call order differ)
 void UIMaidDialog::FUN_1412d7aa0()
 {
     void* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
-    if (pPlayer == 0 || m_30.IsNull() || m_nMaidId == 0)
+    if (pPlayer == 0)
         return;
-    PCBase* pActor = FUN_1403ed2d0()->FUN_141bd1320(m_nMaidId);
-    if (pActor == 0)
+    if (m_30.IsNull())
         return;
-    CNpc* pNpc = static_cast<CNpc*>(pActor);
-    Unk_MaidNpcView* pView = reinterpret_cast<Unk_MaidNpcView*>(pActor);
-    Unk_MaidRef spMaid = pView->FUN_141093800();
+    if (m_nMaidId == 0)
+        return;
+    CNpc* pNpc = static_cast<CNpc*>(FUN_1403ed2d0()->FUN_141bd1320(m_nMaidId));
+    if (pNpc == 0)
+        return;
+    Unk_MaidRef spMaid = reinterpret_cast<Unk_MaidNpcView*>(pNpc)->FUN_141093800();
     if (spMaid.FUN_140d51d60())
         return;
     Unk_MaidDescRef spDesc = FUN_1409eed10()->FUN_14067f780(spMaid.FUN_14067e8c0()->m_nMsgId);
@@ -432,24 +426,22 @@ void UIMaidDialog::FUN_1412d7aa0()
 
     ASObj obj(2);
     m_strSpecialTitle = spDesc.FUN_1406810d0()->m_strSpecialTitle;
-    if (pNpc->GetNpcData().get() != 0)
+    if (pNpc->GetNpcData().get())
     {
         CString strFace = pNpc->GetNpcData()->m_strPortrait;
         if (strFace.GetLength() != 0)
             obj.FUN_1407cba60("maidFace", CString(strFace));
     }
     obj.FUN_1407cbb20("specialty", CStringW(spDesc.FUN_1406810d0()->m_strSpecialty));
-    obj.FUN_1407cbb20("name", pView->FUN_141093310());
-    obj.FUN_1407cbb20("title", pView->FUN_141093980());
+    obj.FUN_1407cbb20("name", reinterpret_cast<Unk_MaidNpcView*>(pNpc)->FUN_141093310());
+    obj.FUN_1407cbb20("title", reinterpret_cast<Unk_MaidNpcView*>(pNpc)->FUN_141093980());
     obj.FUN_1409adc90("rank", FUN_14053feb0(spMaid.FUN_14067e8c0()->m_nItemId));
     obj.FUN_1407cbb20("specialTitle", CStringW(m_strSpecialTitle));
     obj.FUN_1407cb9c0("salaryType", spInfo.FUN_1406810e0()->m_nSalaryType);
     obj.FUN_1407cbb20("salary", FUN_140656190(L"{0} {1}", GetStringCommon(0x793), FUN_140763e10(spInfo.FUN_1406810e0()->m_nSalary)));
     obj.FUN_1407cbb20("endDate", FUN_1412da590());
 
-    int nOne = 1;
-    int nLevelExp = FUN_14067e910()->FUN_14067ed30(spMaid.FUN_14067e8c0()->m_nLevel);
-    int nMaxExp = FUN_1404eb7e0(nOne, nLevelExp);
+    int nMaxExp = FUN_1404eb7e0(1, FUN_14067e910()->FUN_14067ed30(spMaid.FUN_14067e8c0()->m_nLevel));
     int nGauge = spMaid.FUN_14067e8c0()->m_nExp * 100 / nMaxExp;
     CStringW strLevel = FUN_1408116a0(0x79a, spMaid.FUN_14067e8c0()->m_nLevel);
     if (spMaid.FUN_14067e8c0()->FUN_14067dca0() != 0)
@@ -470,18 +462,17 @@ void UIMaidDialog::FUN_1412d7aa0()
     obj.FUN_1407cb9c0("editable", nEditable);
     if (spMaid.FUN_14067e8c0()->FUN_1409eeda0().IsEmpty())
     {
-        Unk_MaidDescRow* pRow = spDesc.FUN_1406810d0();
-        obj.FUN_1407cbb20("title", CStringW(pRow->m_strTitle));
-        obj.FUN_1407cbb20("birth", CStringW(pRow->m_strBirth));
-        obj.FUN_1407cbb20("constel", CStringW(pRow->m_strConstel));
-        obj.FUN_1407cbb20("height", CStringW(pRow->m_strHeight));
-        obj.FUN_1407cbb20("weight", CStringW(pRow->m_strWeight));
-        obj.FUN_1407cbb20("special", CStringW(pRow->m_strSpecial));
-        obj.FUN_1407cbb20("like", CStringW(pRow->m_strLike));
-        obj.FUN_1407cbb20("hate", CStringW(pRow->m_strHate));
-        obj.FUN_1407cbb20("hobby", CStringW(pRow->m_strHobby));
-        obj.FUN_1407cbb20("ownername", CStringW(pRow->m_strOwnerName));
-        obj.FUN_1407cbb20("belongto", CStringW(pRow->m_strBelongTo));
+        obj.FUN_1407cbb20("title", CStringW(spDesc.FUN_1406810d0()->m_strTitle));
+        obj.FUN_1407cbb20("birth", CStringW(spDesc.FUN_1406810d0()->m_strBirth));
+        obj.FUN_1407cbb20("constel", CStringW(spDesc.FUN_1406810d0()->m_strConstel));
+        obj.FUN_1407cbb20("height", CStringW(spDesc.FUN_1406810d0()->m_strHeight));
+        obj.FUN_1407cbb20("weight", CStringW(spDesc.FUN_1406810d0()->m_strWeight));
+        obj.FUN_1407cbb20("special", CStringW(spDesc.FUN_1406810d0()->m_strSpecial));
+        obj.FUN_1407cbb20("like", CStringW(spDesc.FUN_1406810d0()->m_strLike));
+        obj.FUN_1407cbb20("hate", CStringW(spDesc.FUN_1406810d0()->m_strHate));
+        obj.FUN_1407cbb20("hobby", CStringW(spDesc.FUN_1406810d0()->m_strHobby));
+        obj.FUN_1407cbb20("ownername", CStringW(spDesc.FUN_1406810d0()->m_strOwnerName));
+        obj.FUN_1407cbb20("belongto", CStringW(spDesc.FUN_1406810d0()->m_strBelongTo));
     }
     else
     {
@@ -501,11 +492,10 @@ void UIMaidDialog::FUN_1412d7aa0()
     obj.FUN_1407cb9c0("maxChars2", *FUN_1402056b0(&FUN_1401d3200()->m_maxChars2));
     m_30->Invoke("setData", obj);
     if (FUN_14025e7c0()->IsDebugMode())
-        m_30->Invoke("showDebugBtn", true);
+        m_30->Invoke("showDebugBtn", 1);           // an int, not a bool: the movie gets the Number 1
 }
 
 // @0x1412d8c40
-// MS2-FUNCTIONAL: not byte-exact yet (temporaries / call order differ)
 int UIMaidDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
 {
     if (UIDialog::OnMessage(pSender, pMsg) != 0)
@@ -514,9 +504,9 @@ int UIMaidDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
     {
         int nResult = pMsg->FUN_1422b8a10();
         CStringW strTag = pMsg->FUN_1422b8f40();
-        ATL::CAtlArray<void*> kArr;
+        ATL::CAtlArray<Unk_MaidUnused*> kArr;
         FUN_14151f200();
-        if (nResult == 0 && FUN_1403b3c40(strTag, L"OnSave") != 0)
+        if (nResult == 0 && FUN_1403b3c40(strTag, L"OnSave"))
         {
             COutPacket packet(static_cast<int>(SendOp::Maid), 0);
             packet.WriteUInt8(4);
@@ -524,6 +514,7 @@ int UIMaidDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
             packet.WriteInt32(m_nMaidId);
             FUN_14067c610(&m_profile, &packet);
             FUN_140710590(packet);
+            return 1;
         }
         return 1;
     }
@@ -531,83 +522,81 @@ int UIMaidDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
 }
 
 // @0x1412d8e10
-// MS2-FUNCTIONAL: not byte-exact yet (temporaries / call order differ)
 int UIMaidDialog::FUN_1412d8e10(int nField, CStringW strValue, Unk_MaidProfile* pProfile)
 {
-    Unk_MaidProfileFields* pFields = reinterpret_cast<Unk_MaidProfileFields*>(pProfile);
     CStringW strName(L"");
     switch (nField)
     {
     case 0:
         strName = GetStringCommon(0x791);
-        pFields->m_str08 = strValue;
+        reinterpret_cast<Unk_MaidProfileFields*>(pProfile)->m_str08 = strValue;
         break;
     case 1:
         strName = GetStringCommon(0x792);
-        pFields->m_str00 = strValue;
+        reinterpret_cast<Unk_MaidProfileFields*>(pProfile)->m_str00 = strValue;
         break;
     case 2:
         strName = GetStringCommon(0x788);
-        pFields->m_str10 = strValue;
+        reinterpret_cast<Unk_MaidProfileFields*>(pProfile)->m_str10 = strValue;
         break;
     case 3:
         strName = GetStringCommon(0x789);
-        pFields->m_str18 = strValue;
+        reinterpret_cast<Unk_MaidProfileFields*>(pProfile)->m_str18 = strValue;
         break;
     case 4:
         strName = GetStringCommon(0x78a);
-        pFields->m_str20 = strValue;
+        reinterpret_cast<Unk_MaidProfileFields*>(pProfile)->m_str20 = strValue;
         break;
     case 5:
         strName = GetStringCommon(0x78b);
-        pFields->m_str28 = strValue;
+        reinterpret_cast<Unk_MaidProfileFields*>(pProfile)->m_str28 = strValue;
         break;
     case 6:
         strName = m_strSpecialTitle;
-        pFields->m_str38 = strValue;
+        reinterpret_cast<Unk_MaidProfileFields*>(pProfile)->m_str38 = strValue;
         break;
     case 7:
         strName = GetStringCommon(0x78c);
-        pFields->m_str40 = strValue;
+        reinterpret_cast<Unk_MaidProfileFields*>(pProfile)->m_str40 = strValue;
         break;
     case 8:
         strName = GetStringCommon(0x78d);
-        pFields->m_str48 = strValue;
+        reinterpret_cast<Unk_MaidProfileFields*>(pProfile)->m_str48 = strValue;
         break;
     case 9:
         strName = GetStringCommon(0x78e);
-        pFields->m_str50 = strValue;
+        reinterpret_cast<Unk_MaidProfileFields*>(pProfile)->m_str50 = strValue;
         break;
     case 10:
         strName = GetStringCommon(0x78f);
-        pFields->m_str58 = strValue;
+        reinterpret_cast<Unk_MaidProfileFields*>(pProfile)->m_str58 = strValue;
         break;
     case 11:
         strName = GetStringCommon(0x790);
-        pFields->m_str60 = strValue;
+        reinterpret_cast<Unk_MaidProfileFields*>(pProfile)->m_str60 = strValue;
     }
-    Unk_MaidTextCheckRef checkRef = FUN_14025e7d0()->FUN_140229a50();
-    CBanTextChecker* pCheck = checkRef.m_p;
-    if (pCheck == 0)
-        return 0;
-    CStringW strBad;
-    if (nField == 0 || nField == 1 || nField == 10)
+    if (CBanTextChecker* pCheck = FUN_14025e7d0()->GetChecker())
     {
-        if (pCheck->FUN_140225470(strValue, strBad) != 0)
+        CStringW strBad;
+        if (nField == 0 || nField == 1 || nField == 10)
         {
-            FUN_140d73aa0(FUN_140656190(L"[ {0} ] {1}", strName, strBad), 0, 0, CStringW(L""));
-            return 0;
+            if (pCheck->FUN_140225470(strValue, strBad) != 0)
+            {
+                FUN_140d73aa0(FUN_140656190(L"[ {0} ] {1}", strName, strBad), 0, 0, CStringW(L""));
+                return 0;
+            }
         }
-    }
-    else
-    {
-        if (pCheck->FUN_140225550(strValue, strBad) != 0)
+        else
         {
-            FUN_140d73aa0(FUN_140656190(L"[ {0} ] {1}", strName, strBad), 0, 0, CStringW(L""));
-            return 0;
+            if (pCheck->FUN_140225550(strValue, strBad) != 0)
+            {
+                FUN_140d73aa0(FUN_140656190(L"[ {0} ] {1}", strName, strBad), 0, 0, CStringW(L""));
+                return 0;
+            }
         }
+        return 1;
     }
-    return 1;
+    return 0;
 }
 
 // @0x1412d9640
@@ -618,16 +607,18 @@ void UIMaidDialog::FUN_1412d9640(int nMaidId, unsigned __int64 nMaidUid)
 }
 
 // @0x1412d9680
-// MS2-FUNCTIONAL: not byte-exact yet (temporaries / call order differ)
 void UIMaidDialog::FUN_1412d9680()
 {
     void* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
-    if (pPlayer == 0 || m_30.IsNull() || m_nMaidId == 0)
+    if (pPlayer == 0)
         return;
-    PCBase* pActor = FUN_1403ed2d0()->FUN_141bd1320(m_nMaidId);
-    if (pActor == 0)
+    if (m_30.IsNull())
         return;
-    Unk_MaidNpcView* pView = reinterpret_cast<Unk_MaidNpcView*>(pActor);
+    if (m_nMaidId == 0)
+        return;
+    Unk_MaidNpcView* pView = reinterpret_cast<Unk_MaidNpcView*>(FUN_1403ed2d0()->FUN_141bd1320(m_nMaidId));
+    if (pView == 0)
+        return;
     Unk_MaidRef spMaid = pView->FUN_141093800();
     if (spMaid.FUN_140d51d60())
         return;
@@ -640,9 +631,7 @@ void UIMaidDialog::FUN_1412d9680()
 
     ASObj obj(2);
     obj.FUN_1407cbb20("endDate", FUN_1412da590());
-    int nOne = 1;
-    int nLevelExp = FUN_14067e910()->FUN_14067ed30(spMaid.FUN_14067e8c0()->m_nLevel);
-    int nMaxExp = FUN_1404eb7e0(nOne, nLevelExp);
+    int nMaxExp = FUN_1404eb7e0(1, FUN_14067e910()->FUN_14067ed30(spMaid.FUN_14067e8c0()->m_nLevel));
     int nGauge = spMaid.FUN_14067e8c0()->m_nExp * 100 / nMaxExp;
     CStringW strLevel = FUN_1408116a0(0x79a, spMaid.FUN_14067e8c0()->m_nLevel);
     if (spMaid.FUN_14067e8c0()->FUN_14067dca0() != 0)
@@ -658,16 +647,18 @@ void UIMaidDialog::FUN_1412d9680()
 }
 
 // @0x1412d9b90
-// MS2-FUNCTIONAL: not byte-exact yet (temporaries / call order differ)
 void UIMaidDialog::FUN_1412d9b90()
 {
     void* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
-    if (pPlayer == 0 || m_30.IsNull() || m_nMaidId == 0)
+    if (pPlayer == 0)
         return;
-    PCBase* pActor = FUN_1403ed2d0()->FUN_141bd1320(m_nMaidId);
-    if (pActor == 0)
+    if (m_30.IsNull())
         return;
-    Unk_MaidNpcView* pView = reinterpret_cast<Unk_MaidNpcView*>(pActor);
+    if (m_nMaidId == 0)
+        return;
+    Unk_MaidNpcView* pView = reinterpret_cast<Unk_MaidNpcView*>(FUN_1403ed2d0()->FUN_141bd1320(m_nMaidId));
+    if (pView == 0)
+        return;
     Unk_MaidRef spMaid = pView->FUN_141093800();
     if (spMaid.FUN_140d51d60())
         return;
@@ -683,18 +674,17 @@ void UIMaidDialog::FUN_1412d9b90()
     obj.FUN_1407cbb20("title", pView->FUN_141093980());
     if (spMaid.FUN_14067e8c0()->FUN_1409eeda0().IsEmpty())
     {
-        Unk_MaidDescRow* pRow = spDesc.FUN_1406810d0();
-        obj.FUN_1407cbb20("title", CStringW(pRow->m_strTitle));
-        obj.FUN_1407cbb20("birth", CStringW(pRow->m_strBirth));
-        obj.FUN_1407cbb20("constel", CStringW(pRow->m_strConstel));
-        obj.FUN_1407cbb20("height", CStringW(pRow->m_strHeight));
-        obj.FUN_1407cbb20("weight", CStringW(pRow->m_strWeight));
-        obj.FUN_1407cbb20("special", CStringW(pRow->m_strSpecial));
-        obj.FUN_1407cbb20("like", CStringW(pRow->m_strLike));
-        obj.FUN_1407cbb20("hate", CStringW(pRow->m_strHate));
-        obj.FUN_1407cbb20("hobby", CStringW(pRow->m_strHobby));
-        obj.FUN_1407cbb20("ownername", CStringW(pRow->m_strOwnerName));
-        obj.FUN_1407cbb20("belongto", CStringW(pRow->m_strBelongTo));
+        obj.FUN_1407cbb20("title", CStringW(spDesc.FUN_1406810d0()->m_strTitle));
+        obj.FUN_1407cbb20("birth", CStringW(spDesc.FUN_1406810d0()->m_strBirth));
+        obj.FUN_1407cbb20("constel", CStringW(spDesc.FUN_1406810d0()->m_strConstel));
+        obj.FUN_1407cbb20("height", CStringW(spDesc.FUN_1406810d0()->m_strHeight));
+        obj.FUN_1407cbb20("weight", CStringW(spDesc.FUN_1406810d0()->m_strWeight));
+        obj.FUN_1407cbb20("special", CStringW(spDesc.FUN_1406810d0()->m_strSpecial));
+        obj.FUN_1407cbb20("like", CStringW(spDesc.FUN_1406810d0()->m_strLike));
+        obj.FUN_1407cbb20("hate", CStringW(spDesc.FUN_1406810d0()->m_strHate));
+        obj.FUN_1407cbb20("hobby", CStringW(spDesc.FUN_1406810d0()->m_strHobby));
+        obj.FUN_1407cbb20("ownername", CStringW(spDesc.FUN_1406810d0()->m_strOwnerName));
+        obj.FUN_1407cbb20("belongto", CStringW(spDesc.FUN_1406810d0()->m_strBelongTo));
     }
     else
     {
@@ -714,21 +704,23 @@ void UIMaidDialog::FUN_1412d9b90()
 }
 
 // @0x1412da590
-// MS2-FUNCTIONAL: not byte-exact yet (temporaries / call order differ)
 CStringW UIMaidDialog::FUN_1412da590()
 {
     CStringW strText(L"");
     void* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
-    if (pPlayer == 0 || m_nMaidId == 0)
+    if (pPlayer == 0)
         return strText;
-    PCBase* pActor = FUN_1403ed2d0()->FUN_141bd1320(m_nMaidId);
-    if (pActor == 0)
+    if (m_nMaidId == 0)
         return strText;
-    Unk_MaidNpcView* pView = reinterpret_cast<Unk_MaidNpcView*>(pActor);
+    Unk_MaidNpcView* pView = reinterpret_cast<Unk_MaidNpcView*>(FUN_1403ed2d0()->FUN_141bd1320(m_nMaidId));
+    if (pView == 0)
+        return strText;
     Unk_MaidRef spMaid = pView->FUN_141093800();
     if (spMaid.FUN_140d51d60())
         return strText;
-    if (GetServerTime() < spMaid.FUN_14067e8c0()->m_nExpireTime)
+    if (spMaid.FUN_14067e8c0()->m_nExpireTime <= GetServerTime())
+        strText = GetStringCommon(0x794);
+    else
     {
         CMsTime kTime(spMaid.FUN_14067e8c0()->m_nExpireTime);
         int nYear = kTime.GetYear();
@@ -738,8 +730,6 @@ CStringW UIMaidDialog::FUN_1412da590()
         int nMinute = kTime.GetMinute();
         strText = FUN_1409e90c0(0x795, nYear, nMonth, nDay, nHour, nMinute);
     }
-    else
-        strText = GetStringCommon(0x794);
     return strText;
 }
 

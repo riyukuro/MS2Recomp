@@ -1,0 +1,4 @@
+120,121c
+            if (pkShader)
+                pkShader->RenderMeshes(pkVisibleArray);   // MS2: game 0x141db7770 skips a null cached shader
+.

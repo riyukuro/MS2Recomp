@@ -76,45 +76,44 @@ void CWarFogEffect::FUN_141b734a0(bool bVisible)
 MS2_REPLACE_METHOD(0x141b734a0, CWarFogEffect, FUN_141b734a0, 137, 0xEF7188DD);
 
 // @0x141b73530
-// MS2-FUNCTIONAL: efd::Point3/NiPoint3 operators and SmartPointer accessors are DLL-local COMDATs here but out-of-line exe copies there; frame and temporaries differ
 void CWarFogEffect::FUN_141b73530(const Unk_WarFogParam* pParam, const efd::Point3& ptCenter)
 {
     if (FUN_141b739e0(pParam)) {
         FUN_141b733c0();
         FUN_141b73ab0(pParam);
     }
-    if (!(m_spMesh == NULL)) {
-        efd::Point3 center = ptCenter;
-        center.z = (center.z + 75.0f + m_fZ) * 0.5f;
-        m_fZ = center.z;
-        if (m_nTick + 10U < FUN_140869420() && m_bFlag2c) {
-            for (int i = 0; i < 0x40; ++i) {
-                float angle = ((float)i / 63.0f) * 3.1415927f * 2.0f;
-                float fSin = FUN_14029dba0(angle);
-                float fCos = FUN_14029cc60(angle);
-                efd::Point3 dir(fCos, fSin, 0.0f);
-                efd::Point3 point = dir * m_fRadius + center;
-                Unk_WarFogRay ray;
-                ray.m_origin = center;
-                ray.m_dir = dir;
-                ray.m_distance = m_fRadius - 50.0f;
-                ray.m_mask = 0x201;
-                ray.m_pad_20 = ray.m_pad_24 = ray.m_pad_28 = ray.m_pad_2c = 0;
-                if (!FUN_1416892f0(FUN_1409f7ca0(), &ray, 0)) {
-                    ((CMesh*)m_spMesh)->SetPosition(i * 3, NiPoint3((m_fRadius - 50.0f) * dir));
-                    ((CMesh*)m_spMesh)->SetPosition(i * 3 + 1, NiPoint3((m_fRadius + 50.0f) * dir));
-                } else {
-                    point = ray.m_hit + dir * 50.0f;
-                    ((CMesh*)m_spMesh)->SetPosition(i * 3, NiPoint3(point - center));
-                    ((CMesh*)m_spMesh)->SetPosition(i * 3 + 1, NiPoint3(point - center));
-                }
+    if (m_spMesh == NULL)
+        return;
+    efd::Point3 center = ptCenter;
+    center.z += 75.0f;
+    center.z = (center.z + m_fZ) * 0.5f;
+    m_fZ = center.z;
+    if (FUN_140869420() > m_nTick + 10U && m_bFlag2c) {
+        float angle = 0.0f;
+        for (int i = 0; i < 0x40; ++i) {
+            angle = ((float)i / 63.0f) * 3.1415927f * 2.0f;
+            NiPoint3 dir(FUN_14029cc60(angle), FUN_14029dba0(angle), 0.0f);
+            NiPoint3 point(dir * m_fRadius + center);
+            Unk_WarFogRay ray;
+            ray.m_origin = center;
+            ray.m_dir = dir;
+            ray.m_distance = m_fRadius - 50.0f;
+            ray.m_mask = 0x201;
+            ray.m_pad_20 = 0;
+            ray.m_pad_28 = 0;
+            if (FUN_1416892f0(FUN_1409f7ca0(), &ray, 0)) {
+                point = ray.m_hit + dir * 50.0f;
+                ((CMesh*)m_spMesh)->SetPosition(i * 3, point - center);
+                ((CMesh*)m_spMesh)->SetPosition(i * 3 + 1, point - center);
+            } else {
+                ((CMesh*)m_spMesh)->SetPosition(i * 3, (m_fRadius - 50.0f) * dir);
+                ((CMesh*)m_spMesh)->SetPosition(i * 3 + 1, (m_fRadius + 50.0f) * dir);
             }
-            ((CMesh*)m_spMesh)->UpdateBound();
-            m_nTick = FUN_140869420();
         }
-        NiPoint3 translate(center);
-        ((CMesh*)m_spMesh)->GetMesh()->SetTranslate(translate);
+        ((CMesh*)m_spMesh)->UpdateBound();
+        m_nTick = FUN_140869420();
     }
+    ((CMesh*)m_spMesh)->GetMesh()->SetTranslate(center);
 }
 
 // @0x141b739e0
@@ -135,7 +134,6 @@ bool CWarFogEffect::FUN_141b739e0(const Unk_WarFogParam* pParam)
 MS2_REPLACE_METHOD(0x141b739e0, CWarFogEffect, FUN_141b739e0, 200, 0xC4235DE6);
 
 // @0x141b73ab0
-// MS2-FUNCTIONAL: efd::Point3/NiPoint3 operators and SmartPointer accessors are DLL-local COMDATs here but out-of-line exe copies there; frame and temporaries differ
 void CWarFogEffect::FUN_141b73ab0(const Unk_WarFogParam* pParam)
 {
     m_fRadius = pParam->FUN_1403812a0();
@@ -143,21 +141,17 @@ void CWarFogEffect::FUN_141b73ab0(const Unk_WarFogParam* pParam)
     m_fAlpha = pParam->FUN_140381340();
     m_bFlag24 = pParam->FUN_140381320();
     m_spMesh = NiNew CMesh(false, true, 0, 0xc3, 0x100, 0x15);
-    FUN_1411a6b10(FUN_1403ed280())->AttachChild(((CMesh*)m_spMesh)->GetMesh(), false);
+    NiNode* pScene = FUN_1411a6b10(FUN_1403ed280());
+    pScene->AttachChild(((CMesh*)m_spMesh)->GetMesh(), false);
+    float angle = 0.0f;
     for (int i = 0; i < 0x40; ++i) {
-        float angle = ((float)i / 63.0f) * 3.1415927f * 2.0f;
-        float fSin = FUN_14029dba0(angle);
-        float fCos = FUN_14029cc60(angle);
+        angle = ((float)i / 63.0f) * 3.1415927f * 2.0f;
         ((CMesh*)m_spMesh)->SetPosition(i * 3,
-            NiPoint3(fCos * (m_fRadius - 50.0f), fSin * (m_fRadius - 50.0f), 0.0f));
-        fSin = FUN_14029dba0(angle);
-        fCos = FUN_14029cc60(angle);
+            NiPoint3(FUN_14029cc60(angle) * (m_fRadius - 50.0f), FUN_14029dba0(angle) * (m_fRadius - 50.0f), 0.0f));
         ((CMesh*)m_spMesh)->SetPosition(i * 3 + 1,
-            NiPoint3(fCos * (m_fRadius + 50.0f), fSin * (m_fRadius + 50.0f), 0.0f));
-        fSin = FUN_14029dba0(angle);
-        fCos = FUN_14029cc60(angle);
+            NiPoint3(FUN_14029cc60(angle) * (m_fRadius + 50.0f), FUN_14029dba0(angle) * (m_fRadius + 50.0f), 0.0f));
         ((CMesh*)m_spMesh)->SetPosition(i * 3 + 2,
-            NiPoint3(fCos * (m_fRadius + 2000.0f), fSin * (m_fRadius + 2000.0f), 0.0f));
+            NiPoint3(FUN_14029cc60(angle) * (m_fRadius + 2000.0f), FUN_14029dba0(angle) * (m_fRadius + 2000.0f), 0.0f));
         ((CMesh*)m_spMesh)->SetColor(i * 3, NiColorA(0.0f, 0.0f, 0.0f, 0.0f));
         ((CMesh*)m_spMesh)->SetColor(i * 3 + 1, NiColorA(0.0f, 0.0f, 0.0f, m_fAlpha));
         ((CMesh*)m_spMesh)->SetColor(i * 3 + 2, NiColorA(0.0f, 0.0f, 0.0f, m_fAlpha));
@@ -170,7 +164,7 @@ void CWarFogEffect::FUN_141b73ab0(const Unk_WarFogParam* pParam)
     }
     NiMesh* pMesh = ((CMesh*)m_spMesh)->GetMesh();
     NiVertexColorProperty* pColor = NiNew NiVertexColorProperty;
-    pColor->SetSourceMode(NiVertexColorProperty::SOURCE_AMB_DIFF);
+    pColor->SetSourceMode(NiVertexColorProperty::SOURCE_EMISSIVE);
     pColor->SetLightingMode(NiVertexColorProperty::LIGHTING_E);
     pMesh->AttachProperty(pColor);
     if (!m_bFlag2c) {
@@ -191,7 +185,6 @@ void CWarFogEffect::FUN_141b73ab0(const Unk_WarFogParam* pParam)
     ((CMesh*)m_spMesh)->SetVertexCount(0xc0);
     ((CMesh*)m_spMesh)->SetTriangleCount(0x2f4);
     ((CMesh*)m_spMesh)->UpdateBound();
-    NiNode* pScene = FUN_1411a6b10(FUN_1403ed280());
     pScene->UpdateProperties();
     pScene->UpdateEffects();
     pScene->UpdateNodeBound();

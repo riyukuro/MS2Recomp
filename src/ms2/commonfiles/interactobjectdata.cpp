@@ -289,7 +289,7 @@ bool CInteractObjectData::Load(Unk_140165cf0* pElem)
             XmlSplit(strCode, aCode, "[], ");
             XmlSplit(strLevel, aLevel, "[], ");
             XmlSplit(strProp, aProp, "[], ");
-            bool bPaired = aCode.GetCount() == aLevel.GetCount() && aCode.GetCount() == aProp.GetCount();
+            bool bPaired = aCode.GetCount() == aLevel.GetCount() && aCode.GetCount() == aProp.GetCount() ? true : false;
             if (!bPaired)
             {
                 Unk_InteractLog(GetLogString(), 1, 0x13,
@@ -300,14 +300,13 @@ bool CInteractObjectData::Load(Unk_140165cf0* pElem)
             int nCount = (int)aCode.GetCount();
             for (int i = 0; i < nCount; i++)
             {
-                if (aCode[i] > 0)
-                {
-                    AdditionalEffect effect;
-                    effect.m_nCode = aCode[i];
-                    effect.m_nLevel = (unsigned short)aLevel[i];
-                    effect.m_nProp = aProp[i];
-                    m_aInvoke.Add(effect);
-                }
+                if (aCode[i] <= 0)
+                    continue;
+                AdditionalEffect effect;
+                effect.m_nCode = aCode[i];
+                effect.m_nLevel = (unsigned short)aLevel[i];
+                effect.m_nProp = aProp[i];
+                m_aInvoke.Add(effect);
             }
         }
     }

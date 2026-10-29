@@ -37,7 +37,7 @@ typedef Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)> ParamsDel
 class Unk_SdToggle : public ASDisplayObject
 {
 public:
-    void FUN_1422cdf20(int bVisible);                           // show
+    void FUN_1422cdf20(bool bVisible);                           // show
     void FUN_1422cdfb0(const CStringW& strText);                // label
     void FUN_1422ce090(int bChecked);                           // set checked
     unsigned char FUN_1422ce0e0();                              // is checked
@@ -56,7 +56,7 @@ public:
 class Unk_SdRow : public ASDisplayObject
 {
 public:
-    void FUN_1422c6640(int bVisible);
+    void FUN_1422c6640(bool bVisible);
     void FUN_1422e1f50(ParamsDelegate onClick, void* pUserData);
     template <class T> MS2Ptr<T> FUN_140c12010(const CString& strName, MS2Ptr<T>& outChild);   // bind a check box
 };
@@ -149,7 +149,6 @@ CString UIDungeonSearchSelectDialog::GetTypeName()
     return "DungeonSearchSelectDialog";
 }
 
-// MS2-FUNCTIONAL: frame/slot order of the AS bind temporaries (0x30 bytes longer than the exe)
 // @0x140e26eb0
 void UIDungeonSearchSelectDialog::OnLoadComplete()
 {
@@ -164,13 +163,16 @@ void UIDungeonSearchSelectDialog::OnLoadComplete()
         throw new GfxExceptionSwfLoad(StringFormat("GfxError:{0} {1}({2}) function:{3}", "SwfLoadError",
                                                   MS2_THIS_FILE, MS2_LINE(0x2e), __FUNCTION__));
     unsigned nZero = 0;
-    m_roomOfRow.assign(m_rows.size(), nZero);
+    m_roomOfRow.resize(m_rows.size(), nZero);
     m_okButton->FUN_1422c2a70(ParamsDelegate(this, &UIDungeonSearchSelectDialog::FUN_140e281f0), 0);
     m_radio->FUN_1422c2a70(ParamsDelegate(this, &UIDungeonSearchSelectDialog::FUN_140e28170), 0);
-    m_checks.resize(m_rows.size(), MS2Ptr<Unk_SdCheck>(0));
+    {
+        MS2Ptr<Unk_SdCheck> spNone(0);
+        m_checks.resize(m_rows.size(), spNone);
+    }
     for (unsigned i = 0; i < m_rows.size(); ++i) {
         m_rows[i]->FUN_1422e1f50(ParamsDelegate(this, &UIDungeonSearchSelectDialog::FUN_140e28280), FUN_140bd09d0(i));
-        if (m_rows[i]->FUN_140c12010<Unk_SdCheck>("m_checkBox", m_checks[i]).get() != 0) {
+        if (m_rows[i]->FUN_140c12010<Unk_SdCheck>("m_checkBox", m_checks[i]).get()) {
             m_checks[i]->FUN_1422ce320(ParamsDelegate(this, &UIDungeonSearchSelectDialog::FUN_140e288f0), FUN_140bd09d0(i));
             m_checks[i]->FUN_1422ce240(ParamsDelegate(this, &UIDungeonSearchSelectDialog::FUN_140e28a40), 0);
         }
@@ -247,13 +249,11 @@ void UIDungeonSearchSelectDialog::FUN_140e281f0(const Scaleform::GFx::FunctionHa
     vfunc_67();
 }
 
-// MS2-FUNCTIONAL: frame slot order of the MS2Ptr copies and the widened index
 // @0x140e28280
 void UIDungeonSearchSelectDialog::FUN_140e28280(const Scaleform::GFx::FunctionHandler::Params& params)
 {
     unsigned nRow = FUN_140bd09c0(params.pUserData);
-    unsigned __int64 nRowWide = nRow;
-    if (!(nRowWide < m_rows.size()))
+    if (!((unsigned __int64)nRow < m_rows.size()))
         return;
     MS2Ptr<Unk_SdRow> row = m_rows[nRow];
     MS2Ptr<Unk_SdCheck> check = m_checks[nRow];
@@ -262,11 +262,13 @@ void UIDungeonSearchSelectDialog::FUN_140e28280(const Scaleform::GFx::FunctionHa
     void* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pPlayer == 0)
         return;
-    unsigned nRoom = params.pArgs->GetUInt();
-    unsigned __int64 nRoomWide = nRoom;
-    if (nRoomWide < m_rooms.size()) {
-        int nDungeonId = m_rooms[nRoom]->GetDungeonRoomID();
-        bool bOk = FUN_14162ac70(FUN_1409670d0(), nDungeonId);
+    unsigned nRoom = params.pArgs[0].GetUInt();
+    if (!((unsigned __int64)nRoom < m_rooms.size())) {
+        row->vfunc_3(0);
+        return;
+    }
+    {
+        bool bOk = FUN_14162ac70(FUN_1409670d0(), m_rooms[nRoom]->GetDungeonRoomID());
         CStringW strName = FUN_140e14bd0(m_rooms[nRoom], true);
         int nColor;
         if (bOk)
@@ -279,27 +281,23 @@ void UIDungeonSearchSelectDialog::FUN_140e28280(const Scaleform::GFx::FunctionHa
         row->FUN_1422c6640(1);
         check->FUN_1422cdf20(1);
         check->FUN_1422cdfb0(strName);
-        int nDungeon = m_rooms[nRoom]->GetDungeonRoomID();
-        unsigned nChecked = m_selected.find(nDungeon) == m_selected.end();
-        check->FUN_1422ce090(nChecked);
-    } else {
-        row->vfunc_3(0);
+        unsigned nDungeon = m_rooms[nRoom]->GetDungeonRoomID();
+        check->FUN_1422ce090(m_selected.find(nDungeon) != m_selected.end());
     }
 }
 
-// MS2-FUNCTIONAL: frame slot order of the MS2Ptr copies and the widened index
 // @0x140e286a0
 void UIDungeonSearchSelectDialog::FUN_140e286a0(const Scaleform::GFx::FunctionHandler::Params& params)
 {
     unsigned nRow = FUN_140bd09c0(params.pUserData);
-    unsigned __int64 nRowWide = nRow;
-    if (!(nRowWide < m_rows.size()))
+    if (!((unsigned __int64)nRow < m_rows.size()))
         return;
     MS2Ptr<Unk_SdRow> row = m_rows[nRow];
     MS2Ptr<Unk_SdCheck> check = m_checks[nRow];
     if (row == NULL || check == NULL)
         return;
-    CStringW strName = FUN_140e14bd0(m_rooms[m_roomOfRow[nRow]], true);
+    unsigned nRoom = m_roomOfRow[nRow];
+    CStringW strName = FUN_140e14bd0(m_rooms[nRoom], true);
     ASTooltip tooltip(1, 2);
     tooltip.FUN_1409c6d70("export_common_tooltip_tooltipText");
     tooltip.FUN_1409c6e00(300);
@@ -309,19 +307,17 @@ void UIDungeonSearchSelectDialog::FUN_140e286a0(const Scaleform::GFx::FunctionHa
     FUN_1409b4bc0(params.pRetVal, tooltip.FUN_1422bb870());
 }
 
-// MS2-FUNCTIONAL: frame slot order of the MS2Ptr copy, the widened index and the set::insert result
 // @0x140e288f0
 void UIDungeonSearchSelectDialog::FUN_140e288f0(const Scaleform::GFx::FunctionHandler::Params& params)
 {
     unsigned nRow = FUN_140bd09c0(params.pUserData);
-    unsigned __int64 nRowWide = nRow;
-    if (!(nRowWide < m_rows.size()))
+    if (!((unsigned __int64)nRow < m_rows.size()))
         return;
     MS2Ptr<Unk_SdCheck> check = m_checks[nRow];
     if (check == NULL)
         return;
     unsigned nRoom = m_roomOfRow[nRow];
-    int nDungeon = m_rooms[nRoom]->GetDungeonRoomID();
+    unsigned nDungeon = m_rooms[nRoom]->GetDungeonRoomID();
     if (check->FUN_1422ce0e0())
         m_selected.insert(nDungeon);
     else

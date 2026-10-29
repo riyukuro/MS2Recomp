@@ -6,6 +6,7 @@
 
 #include "ms2/ms2layout.h"
 #include "ms2/placeholder/gfxvalue.h"
+#include "ms2/scaleform/include/gfx/gfx_textclipboard.h"
 
 class GFxClipboard : public Scaleform::GFx::TextClipboard
 {

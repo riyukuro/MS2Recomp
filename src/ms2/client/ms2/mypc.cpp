@@ -498,10 +498,9 @@ class Unk_QgNavi { public: void FUN_140c99ee0(); };
 Unk_QgNavi* FUN_140e7c990();
 class Unk_14025e7c0 { public: bool FUN_14116d720(); };     // the locale selection (true: the dev locale)
 Unk_14025e7c0* FUN_14025e7c0();
-// PCBase members pcbase.h does not declare yet: the queue at +0x6d8 (typed void* there) and the move update.
+// PCBase members pcbase.h does not declare yet: the queue at +0x6d8 (typed void* there).
 void FUN_141683a90(void* pQueue);                           // flush the queue
 bool FUN_141682f80(void* pQueue, int nId);                  // the queue holds nId
-void FUN_141676140(PCBase* pActor);                         // move update
 // PC members fittingdollpc.h does not declare.
 void* FUN_141659b80(PC* pPC, int nSide, unsigned nType, float fRange);   // the nearest object of nType on a side
 extern Vector3 DAT_143b01a60;                       // the zero point
@@ -931,7 +930,6 @@ MyPC::~MyPC()
 }
 
 // The message box answers of the local character (portal moves and the user-out notice).
-// MS2-FUNCTIONAL: frame 0x30 larger and the temporaries of the portal calls are laid out in another order.
 // @0x141520cc0
 int MyPC::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
 {
@@ -973,7 +971,7 @@ int MyPC::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
                     MS2Ptr<Unk_MyPCPortalLock> spLock;
                     if (DAT_143ab3288.Lookup(key, spLock))
                     {
-                        if (GetServerTime() < spLock->m_nUntil)
+                        if (spLock->m_nUntil > GetServerTime())
                         {
                             bLocked = 1;
                             FUN_14151f200();
@@ -982,12 +980,12 @@ int MyPC::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
                     }
                     if (bLocked == 0)
                     {
-                        if (m_kPortalMove.m_bWithPwd == 0)
-                            SendRequestMoveFieldMode0(m_kPortalMove.m_nPortalId, m_kPortalMove.m_nD, m_kPortalMove.m_nA,
-                                          m_kPortalMove.m_nB, CStringW(L""), strPwd);
-                        else
+                        if (m_kPortalMove.m_bWithPwd != 0)
                             SendRequestMoveFieldMode2(m_kPortalMove.m_nPortalId, m_kPortalMove.m_nA, m_kPortalMove.m_nB,
                                           m_kPortalMove.m_nC, strPwd);
+                        else
+                            SendRequestMoveFieldMode0(m_kPortalMove.m_nPortalId, m_kPortalMove.m_nD, m_kPortalMove.m_nA,
+                                          m_kPortalMove.m_nB, CStringW(L""), strPwd);
                     }
                 }
                 else
@@ -997,7 +995,7 @@ int MyPC::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
                 }
                 return 1;
             }
-            if (strTag.Find(L"userOutNotice") != -1)
+            else if (strTag.Find(L"userOutNotice") != -1)
             {
                 FUN_14151f200();
                 if (nResult == 0)
@@ -1015,10 +1013,9 @@ int MyPC::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
 MS2_REPLACE_METHOD_VIA(0x141520CC0, MyPC, IMessageListener, OnMessage, 1754, 0xBDE417B3);
 
 // @0x1415213b0
-void MyPC::vfunc_22(const efd::Point3& kPos)
+void MyPC::vfunc_22(efd::Point3 kPos)
 {
-    efd::Point3 kCopy = kPos;
-    GameObject::vfunc_22(kCopy);
+    GameObject::vfunc_22(kPos);
     if (kPos == efd::Point3::ZERO)
         m_n15d8 = 0;
     else
@@ -1026,14 +1023,12 @@ void MyPC::vfunc_22(const efd::Point3& kPos)
 }
 MS2_REPLACE_METHOD(0x1415213B0, MyPC, vfunc_22, 114, 0xEAA1FF32);
 
-// MS2-FUNCTIONAL: the exe moves the setting through ecx before the call (mov ecx, [n]; mov edx, ecx).
 // @0x141521430
 int MyPC::vfunc_10()
 {
     PC::vfunc_10();
     FUN_14123c680(true);
-    int n = *FUN_1409a8b10()->FUN_140af7de0();
-    FUN_14123ee80()->FUN_140a0d0c0(n);
+    FUN_14123ee80()->FUN_140a0d0c0(*FUN_1409a8b10()->FUN_140af7de0());
     FUN_1403ed2d0()->FUN_141bca240();
     FUN_140939a10()->FUN_140da4fe0(MS2Ptr<NotifyObject>(new NotifyCompleteMyPC));
     FUN_140b632f0()->vfunc_3();
@@ -1108,24 +1103,21 @@ void MyPC::vfunc_66(int n)
 MS2_REPLACE_METHOD(0x1415216C0, MyPC, vfunc_66, 147, 0x1430228C);
 
 // The stat table: 0x23 means every stat in order, otherwise (type, values) records.
-// MS2-FUNCTIONAL: slot 90 takes void* in the shared PCBase/PC declarations; the exe reads the packet parameter
-// directly (no local pointer).
 // @0x141521760
 void MyPC::vfunc_90(void* p)
 {
-    CInPacket* pPacket = static_cast<CInPacket*>(p);
-    unsigned char nCount = pPacket->ReadUInt8();
+    unsigned char nCount = static_cast<CInPacket*>(p)->ReadUInt8();
     if (nCount == 0x23)
     {
         for (int nType = 0; nType < 0x23; nType++)
         {
             for (int i = 0; i < 3; i++)
             {
-                __int64 nValue;
-                if (FUN_14082f1a0(nType) == 0)
-                    nValue = (unsigned)pPacket->ReadInt32();
+                __int64 nValue = 0;
+                if (FUN_14082f1a0(nType) != 0)
+                    nValue = static_cast<CInPacket*>(p)->ReadInt64();
                 else
-                    nValue = pPacket->ReadInt64();
+                    nValue = (unsigned)static_cast<CInPacket*>(p)->ReadInt32();
                 FUN_141670540(i, nType, nValue);
             }
         }
@@ -1134,14 +1126,14 @@ void MyPC::vfunc_90(void* p)
     {
         for (int n = 0; n < nCount; n++)
         {
-            unsigned char nType = pPacket->ReadUInt8();
+            int nType = static_cast<CInPacket*>(p)->ReadUInt8();
             for (int i = 0; i < 3; i++)
             {
-                __int64 nValue;
-                if (FUN_14082f1a0(nType) == 0)
-                    nValue = (unsigned)pPacket->ReadInt32();
+                __int64 nValue = 0;
+                if (FUN_14082f1a0(nType) != 0)
+                    nValue = static_cast<CInPacket*>(p)->ReadInt64();
                 else
-                    nValue = pPacket->ReadInt64();
+                    nValue = (unsigned)static_cast<CInPacket*>(p)->ReadInt32();
                 FUN_141670540(i, nType, nValue);
             }
         }
@@ -1773,7 +1765,6 @@ MS2Ptr<Unk_PCBaseComp_b18> MyPC::vfunc_104(bool a, bool b, bool c)
 MS2_REPLACE_METHOD(0x1415219D0, MyPC, vfunc_104, 1509, 0xDEE50707);
 
 // @0x1415248d0
-// MS2-FUNCTIONAL: the exe keeps the zero point copy 8 bytes higher in the frame (one more hidden slot)
 int MyPC::FUN_1415248d0(int nSide, int nType)
 {
     if (nType == (int)0xbadf0a13 || nType == 0) {
@@ -1794,7 +1785,7 @@ int MyPC::FUN_1415248d0(int nSide, int nType)
             if (nSide == 2)
                 return 0;
             if (nSide == 1)
-                vfunc_22(efd::Point3(reinterpret_cast<const efd::Point3&>(DAT_143b01a60)));
+                vfunc_22(reinterpret_cast<const efd::Point3&>(DAT_143b01a60));
             vfunc_59(9, 0, 0, 0);
             return 1;
         }
@@ -2051,7 +2042,6 @@ MS2_REPLACE_METHOD(0x141527960, MyPC, FUN_141527960, 91, 0x43AD2A6D);
 
 // No house.
 // @0x1415279d0
-// MS2-FUNCTIONAL: the exe loads the buddy id as `mov rcx, [id]; mov rdx, rcx` (3 bytes longer, same value); not reproduced.
 int MyPC::FUN_1415279d0(PCBase* pOther)
 {
     if (!pOther)
@@ -2064,8 +2054,7 @@ int MyPC::FUN_1415279d0(PCBase* pOther)
         return 0;
     if (::FUN_140166410()->FUN_14036d570(0xad) == true)
     {
-        __int64 nCharId = pOther->FUN_141656a80();
-        if (::FUN_14097a780()->FUN_140ae4d70(nCharId) == true)
+        if (::FUN_14097a780()->FUN_140ae4d70(pOther->FUN_141656a80()) == true)
             return 1;
         if (FUN_1415278d0(reinterpret_cast<void*>(pOther->FUN_141656a80())) == 1)
             return 1;
@@ -2077,10 +2066,10 @@ int MyPC::FUN_1415279d0(PCBase* pOther)
                     return 1;
             }
         }
-        return 0;
     }
     else
         return 1;
+    return 0;
 }
 MS2_REPLACE_METHOD(0x1415279d0, MyPC, FUN_1415279d0, 373, 0x24BD4BFC);
 
@@ -2479,8 +2468,6 @@ Unk_MyPCItemCoolOwner* FUN_140302b00();
 // The record may be cast now (the state, the held item, the buffs, the item cooldown). A skill that dismounts
 // is cast by getting off first (the ride-off action casts it).
 // @0x141525580
-// MS2-FUNCTIONAL: two argument loads go through an extra register (the level to FUN_141768fb0, the item id to
-// FUN_141534720), otherwise identical.
 bool MyPC::FUN_141525580(MS2Ptr<CSkillRecord> spRecord)
 {
     switch (FUN_14166c930())
@@ -2533,8 +2520,7 @@ bool MyPC::FUN_141525580(MS2Ptr<CSkillRecord> spRecord)
     }
     if (spRow->FUN_1407e9d30())
     {
-        unsigned short nLevel = ::FUN_140803df0(spLevel.operator->());
-        if (m_kSkillSystem.FUN_141768fb0(FUN_140803dc0(spLevel.operator->()), nLevel) == 0)
+        if (m_kSkillSystem.FUN_141768fb0(FUN_140803dc0(spLevel.operator->()), ::FUN_140803df0(spLevel.operator->())) == 0)
             return false;
     }
     Unk_MyPCSkillMotion* pMotion = spRecord->FUN_141759830();
@@ -2555,8 +2541,7 @@ bool MyPC::FUN_141525580(MS2Ptr<CSkillRecord> spRecord)
         {
             if (DAT_143ab2a90.FUN_140a661e0(spItem.get()) == 0)
                 return false;
-            int nItemId = spItem->FUN_1405276c0();
-            if (FUN_140302b00()->FUN_1403f3250()->FUN_141534720(nItemId))
+            if (FUN_140302b00()->FUN_1403f3250()->FUN_141534720(spItem->FUN_1405276c0()))
             {
                 FUN_141275260(0x2f7, 1, 1);
                 return false;
@@ -2749,7 +2734,6 @@ void MyPC::FUN_141526c80(int& nSkillId, unsigned short& nLevel)
 MS2_REPLACE_METHOD(0x141526c80, MyPC, FUN_141526c80, 1173, 0x188392BE);
 
 // Open the item remake option talk (npc 0xa7dabc), unless in a forced battle talk state.
-// MS2-FUNCTIONAL: the exe also copies the script pointer to a dead stack slot before the handle temp dies (frame 0x108 vs 0xf8)
 // @0x141528970
 int MyPC::FUN_141528970()
 {
@@ -2760,7 +2744,8 @@ int MyPC::FUN_141528970()
     }
     int nKind = 0x1e;
     int nNpcId = 0xa7dabc;
-    Unk_MyPCTalkScript* pScript = FUN_140856820(nNpcId, nKind).FUN_14078f3a0();
+    Unk_MyPCTalkScript* pScript;
+    Unk_MyPCTalkScript* pFound = pScript = FUN_140856820(nNpcId, nKind).FUN_14078f3a0();  // the exe's dead copy
     if (pScript != 0)
     {
         FUN_140967100()->FUN_141b213f0(Unk_MyPCTalkScriptPtr(pScript), nNpcId, 2, 0);
@@ -2959,11 +2944,10 @@ void MyPC::vfunc_125(MS2Ptr<Unk_PCArg125> sp)
 MS2_REPLACE_METHOD(0x141522D40, MyPC, vfunc_125, 357, 0x3E09E636);
 
 // @0x141523010
-// MS2-FUNCTIONAL: the exe passes the face-to point by value (pcbase.h declares const&) and tests an extra always-true
-// local next to nObjectId
 void MyPC::vfunc_94(int nObjectId)
 {
-    if (nObjectId != 0)
+    int bValid;
+    if (nObjectId != 0 && (bValid = 1))   // the exe stores and tests a constant 1 here
     {
         PCBase* pTarget = FUN_1403ed2d0()->FUN_141bd1200(nObjectId);
         if (pTarget)
@@ -2974,7 +2958,13 @@ void MyPC::vfunc_94(int nObjectId)
             if (bFixed)
                 bFace = false;
             if (bFace)
-                FUN_14166d2d0(pTarget->vfunc_18(), 0);
+#ifdef __clang__
+                FUN_14166d2d0([&] { NiPoint3 k = pTarget->vfunc_18(); return efd::Point3(k.x, k.y, k.z); }(), 0);
+#else
+                // cl binds the temporary straight to the by-value point (one copy, as in the exe); clang-cl
+                // (the hook DLL build) has no rvalue reinterpret_cast, so it builds the point there
+                FUN_14166d2d0(reinterpret_cast<const efd::Point3&>(pTarget->vfunc_18()), 0);
+#endif
             static_cast<PCBase*>(this)->vfunc_59(0x16, 0, 0, 0);
         }
     }
@@ -2988,8 +2978,6 @@ void MyPC::vfunc_94(int nObjectId)
 MS2_REPLACE_METHOD(0x141523010, MyPC, vfunc_94, 463, 0x1FC34F5D);
 
 // @0x141530950
-// MS2-FUNCTIONAL: the exe calls the PCBase member FUN_141676140 through spRidee's operator->; with the free stand-in
-// (qualified: pcbase.h is gaining the member in w112's pcbase work) the pointer comes from operator Ridee*
 void MyPC::vfunc_53(float fDelta)
 {
     efd::SmartPointer<Ridee> spRidee(FUN_1416764a0());
@@ -2997,9 +2985,9 @@ void MyPC::vfunc_53(float fDelta)
         FUN_141683a90(&m_unk_6d8);
     PC::vfunc_53(fDelta);
     if (spRidee && spRidee->FUN_14123bea0())
-        ::FUN_141676140(spRidee);
+        spRidee->FUN_141676140();
     else
-        ::FUN_141676140(this);
+        FUN_141676140();
     FUN_141530d70(fDelta);
     FUN_14152dbc0();
     State* pState = FUN_14166ccb0();
@@ -3076,11 +3064,10 @@ int MyPC::FUN_141529a50(int nNpcId)
 MS2_REPLACE_METHOD(0x141529a50, MyPC, FUN_141529a50, 123, 0x33B013F2);
 
 // @0x141529750
-// MS2-FUNCTIONAL: the exe passes the range as `movss xmm0, [f]; movaps xmm3, xmm0` (3 bytes longer, same value); not reproduced.
 egf::Entity* MyPC::FUN_141529750()
 {
-    float fRange = FUN_1401d3200()->TelescopeFindDistance.Read();
-    egf::Entity* pEntity = FUN_1403ed2d0()->FUN_141bcfd30(0x62f7a42c, FUN_1416767d0(), fRange, 1, 0);
+    egf::Entity* pEntity = FUN_1403ed2d0()->FUN_141bcfd30(0x62f7a42c, FUN_1416767d0(),
+        FUN_1401d3200()->TelescopeFindDistance.Read(), 1, 0);
     if (!pEntity)
         return 0;
     efd::utf8string kValue;

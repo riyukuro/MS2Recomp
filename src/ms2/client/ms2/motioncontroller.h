@@ -78,7 +78,7 @@ public:
     static const NiRTTI ms_RTTI;                                // 0x143adffc8
 
     CArcMotionController();                                     // 0x141488490
-    virtual ~CArcMotionController();                            // 0x1414898a0 (??_G 0x1414898c0)
+    // ~CArcMotionController() is implicit (0x1414898a0, ??_G 0x1414898c0: no vptr store).
     virtual const NiRTTI* vfunc_1();                            // 0x141489960
     virtual int vfunc_2(Unk_MotionData* pData, PCBase* pTarget);    // 0x141488520
     virtual Vector3 vfunc_3();                          // 0x141488b40

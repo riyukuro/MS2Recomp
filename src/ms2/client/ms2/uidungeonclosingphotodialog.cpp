@@ -251,15 +251,18 @@ void UIDungeonClosingPhotoDialog::vfunc_67()
 // @0x140e0e090
 void UIDungeonClosingPhotoDialog::vfunc_72()
 {
-    if (m_1b0 == 0 || FUN_140869420() <= m_1b0) {
-        if (m_1b4 != 0 && m_1b4 < FUN_140869420()) {
-            m_1b4 = 0;
-            vfunc_67();
-        }
-    } else {
+    if (m_1b0 != 0 && m_1b0 < FUN_140869420()) {
         m_1b0 = 0;
         if (FUN_1403ed2d0()->FUN_141bd3060() == m_1bc)
             FUN_141924680();
+    } else {
+        if (m_1b4 == 0)
+            return;
+        unsigned int nNow = FUN_140869420();
+        if (m_1b4 < nNow) {
+            m_1b4 = 0;
+            vfunc_67();
+        }
     }
 }
 
@@ -278,20 +281,21 @@ void UIDungeonClosingPhotoDialog::OnLoadComplete()
         e.m_clip->vfunc_3(1);
         int x = 0, y = 0;
         unsigned scale = 100;
-        FUN_140e10010(x, y, scale, (int)i + 1, n);
-        Unk_ClosingClip* clip = static_cast<Unk_ClosingClip*>(e.m_clip.operator->());
-        clip->FUN_1422c00f0((float)x, (float)y);
-        clip->FUN_1422c0180(scale, scale);
-        clip->vfunc_24(1);
+        FUN_140e10010(x, y, scale, (int)(i + 1), n);
+        static_cast<Unk_ClosingClip*>(e.m_clip.operator->())->FUN_1422c00f0((float)x, (float)y);
+        static_cast<Unk_ClosingClip*>(e.m_clip.operator->())->FUN_1422c0180(scale, scale);
+        static_cast<Unk_ClosingClip*>(e.m_clip.operator->())->vfunc_24(1);
         FUN_140e102b0(&e);
     }
-    std::vector<int> pending(m_pending);
-    m_pending.clear();
-    for (size_t k = 0; k < pending.size(); ++k)
-        FUN_140e0fd20(pending[k]);
+    {
+        std::vector<int> pending(m_pending);
+        m_pending.clear();
+        for (size_t k = 0; k < pending.size(); ++k)
+            FUN_140e0fd20(pending[k]);
+    }
     FUN_140e0f790();
     int delay = 5000;
-    if (4 < n)
+    if (n >= 5)
         delay = 8000;
     m_1b4 = FUN_140869420() + delay;
     m_1b8 = false;
@@ -303,21 +307,21 @@ void UIDungeonClosingPhotoDialog::vfunc_25(void* a, TPtr<Unk_UISwfEntity_25> tp,
     if (tp.get() == 0 || b == 0)
         return;
     int idx = FUN_140718170(*static_cast<const CString*>(c));
-    if (idx >= 0 && idx <= (int)m_entries.size()) {
-        if (m_entries[idx].m_avatar == 0)
-            return;
-        Unk_ClosingActor* actor = m_entries[idx].m_avatar->vfunc_24();
-        if (!actor)
-            return;
-        m_entries[idx].m_avatar->vfunc_28(a, tp, b, c);
-        Unk_ClosingCameraData data;
-        data.FUN_141b48530();
-        data.f1c = 300.0f;
-        data.target += actor->vfunc_18();
-        data.eye += data.target;
-        m_entries[idx].m_avatar->FUN_1418b9bc0()->vfunc_13(data);
-        m_entries[idx].m_avatar->FUN_1418bc790(14, 85);
-    }
+    if (idx < 0 || idx > (int)m_entries.size())
+        return;
+    if (m_entries[idx].m_avatar == 0)
+        return;
+    Unk_ClosingActor* actor = m_entries[idx].m_avatar->vfunc_24();
+    if (!actor)
+        return;
+    m_entries[idx].m_avatar->vfunc_28(a, tp, b, c);
+    Unk_ClosingCameraData data;
+    data.FUN_141b48530();
+    data.f1c = 300.0f;
+    data.target += actor->vfunc_18();
+    data.eye += data.target;
+    m_entries[idx].m_avatar->FUN_1418b9bc0()->vfunc_13(data);
+    m_entries[idx].m_avatar->FUN_1418bc790(14, 85);
 }
 
 // @0x140e0e810
@@ -340,12 +344,11 @@ bool UIDungeonClosingPhotoDialog::vfunc_17()
 void UIDungeonClosingPhotoDialog::vfunc_79(void* p)
 {
     UIDialog::vfunc_79(p);
-    Unk_BuddyInput* in = static_cast<Unk_BuddyInput*>(p);
-    if (in->FUN_14070fe80() == 0x61) {
-        unsigned pos = in->vfunc_0();
+    if (static_cast<Unk_BuddyInput*>(p)->FUN_14070fe80() == 0x61) {
+        unsigned pos = static_cast<Unk_BuddyInput*>(p)->vfunc_0();
         Unk_BuddyResponse r;
-        r.FUN_1407a3cc0(*in);
-        in->FUN_140715280(pos);
+        r.FUN_1407a3cc0(*static_cast<Unk_BuddyInput*>(p));
+        static_cast<Unk_BuddyInput*>(p)->FUN_140715280(pos);
         FUN_140e10800(r.result, r.name);
     }
 }
@@ -367,7 +370,11 @@ int UIDungeonClosingPhotoDialog::vfunc_28(const char* szMethod, const Scaleform:
 // @0x140e0ea40
 bool UIDungeonClosingPhotoDialog::FUN_140e0ea40()
 {
-    return m_1b0 != 0 || FUN_141924630() != 0;
+    if (m_1b0 != 0)
+        return true;
+    if (FUN_141924630() != 0)
+        return true;
+    return false;
 }
 
 // @0x140e0ea80
@@ -513,12 +520,12 @@ void UIDungeonClosingPhotoDialog::FUN_140e0fcf0(int n)
 // @0x140e0fd20
 void UIDungeonClosingPhotoDialog::FUN_140e0fd20(int idx)
 {
-    if (idx <= (int)m_entries.size()) {
-        if (m_entries[idx].m_clip.get() == 0)
-            m_pending.push_back(idx);
-        else
-            m_entries[idx].m_clip->Invoke("loadRenderTarget", StringFormat(L"{0}", idx));
-    }
+    if (idx > (int)m_entries.size())
+        return;
+    if (m_entries[idx].m_clip)
+        m_entries[idx].m_clip->Invoke("loadRenderTarget", StringFormat(L"{0}", idx));
+    else
+        m_pending.push_back(idx);
 }
 
 // @0x140e0fe40
@@ -544,23 +551,38 @@ void UIDungeonClosingPhotoDialog::FUN_140e10010(int& x, int& y, unsigned& scale,
 {
     if (slot > total)
         return;
-    if (total < 5) {
-        scale = 100;
-        x = (slot - 1) * 0x1b6 - (total * 0x1b6 - 10) / 2;
-        y = -0x135;
-    } else {
+    int nWidth = 0x1ac;
+    int nHeight = 0x26a;
+    int nGap = 10;
+    int nRowGap = 0x32;
+    if (total > 4) {
+        nWidth = 0x156;
+        nHeight = 0x1ee;
         scale = 0x50;
-        int half = total / 2;
-        int s;
-        if (half < slot) {
-            s = slot - half;
-            y = 0x19;
-            half = total - half;
+    } else {
+        scale = 100;
+    }
+    if (total <= 4) {
+        int nSpan = total * nWidth + (total - 1) * nGap;
+        int nLeft = -(nSpan / 2);
+        x = nLeft + (slot - 1) * (nWidth + nGap);
+        y = -(nHeight / 2);
+    } else {
+        int nCol = slot;
+        int nHalf = total / 2;
+        int nRest = total - nHalf;
+        int nCount = nHalf;
+        if (slot > nHalf) {
+            nCount = nRest;
+            nCol = nCol - nHalf;
+            y = nRowGap / 2;
         } else {
-            s = slot;
-            y = -0x207;
+            nCount = nHalf;
+            y = -(nHeight + nRowGap / 2);
         }
-        x = (s - 1) * 0x160 - (half * 0x160 - 10) / 2;
+        int nSpan = nCount * nWidth + (nCount - 1) * nGap;
+        int nLeft = -(nSpan / 2);
+        x = nLeft + (nCol - 1) * (nWidth + nGap);
     }
     MS2Ptr<ASMovieClip> bg = GetChild<ASMovieClip>("m_bg");
     if (bg.get()) {
@@ -572,15 +594,13 @@ void UIDungeonClosingPhotoDialog::FUN_140e10010(int& x, int& y, unsigned& scale,
 // @0x140e102b0
 void UIDungeonClosingPhotoDialog::FUN_140e102b0(Unk_ClosingEntry* e)
 {
-    MS2Ptr<ASMovieClip> info = e->m_clip->FUN_1409b4560("m_characterInfo");
-    if (info.get()) {
-        MS2Ptr<Unk_ClosingButton> btn = info->FUN_140acce30<Unk_ClosingButton>("m_addFriend");
-        if (btn.get()) {
+    if (MS2Ptr<ASMovieClip> info = e->m_clip->FUN_1409b4560("m_characterInfo")) {
+        if (MS2Ptr<Unk_ClosingButton> btn = info->FUN_140acce30<Unk_ClosingButton>("m_addFriend")) {
             Unk_ClosingSelf* self = FUN_1403ed2d0()->FUN_141bd0cc0();
-            bool isSelf = self && self->FUN_141656a80() == e->m_uid;
+            bool isSelf = self ? self->FUN_141656a80() == e->m_uid : false;
             bool buddy = FUN_14097a780()->FUN_140ae4d70(e->m_uid);
-            int show = (isSelf || buddy) ? 0 : 1;
-            btn->vfunc_4(show != 0);
+            bool show = !isSelf && !buddy;
+            btn->vfunc_4(show);
             btn->FUN_1422c1fe0(show);
         }
     }
@@ -589,25 +609,30 @@ void UIDungeonClosingPhotoDialog::FUN_140e102b0(Unk_ClosingEntry* e)
 // @0x140e104d0
 void UIDungeonClosingPhotoDialog::FUN_140e104d0(int slot)
 {
-    slot -= 1;
-    bool valid;
-    if (slot < 0 || (int)m_entries.size() - 1 < slot)
-        valid = false;
+    int idx = slot - 1;
+    int valid;
+    if (idx >= 0 && idx <= (int)m_entries.size() - 1)
+        valid = 1;
     else
-        valid = true;
+        valid = 0;
     if (!valid)
         return;
-    Unk_ClosingEntry* e = &m_entries[slot];
-    __int64 selfId = FUN_1403ed2d0()->FUN_141bd0cc0()->FUN_141656a80();
-    if (selfId != e->m_uid && !(FUN_14097a780()->FUN_140ae4d70(e->m_uid) == 1)) {
-        UIAvatarPC* av = e->m_avatar;
-        Unk_ClosingActor* actor = av ? av->FUN_1418bd1d0() : 0;
-        if (!actor || e->m_clip == 0)
+    Unk_ClosingEntry* e = &m_entries[idx];
+    if (FUN_1403ed2d0()->FUN_141bd0cc0()->FUN_141656a80() == e->m_uid)
+        return;
+    if (FUN_14097a780()->FUN_140ae4d70(e->m_uid) == 1)
+        return;
+    {
+        UIAvatarPC* av = e->m_avatar.get();
+        if (!av)
             return;
-        MS2Ptr<ASMovieClip> info = e->m_clip->FUN_1409b4560("m_characterInfo");
-        if (info.get()) {
-            MS2Ptr<Unk_ClosingButton> btn = info->FUN_140acce30<Unk_ClosingButton>("m_addFriend");
-            if (btn.get())
+        Unk_ClosingActor* actor = av->FUN_1418bd1d0();
+        if (!actor)
+            return;
+        if (e->m_clip == 0)
+            return;
+        if (MS2Ptr<ASMovieClip> info = e->m_clip->FUN_1409b4560("m_characterInfo")) {
+            if (MS2Ptr<Unk_ClosingButton> btn = info->FUN_140acce30<Unk_ClosingButton>("m_addFriend"))
                 btn->FUN_1422c1fe0(0);
         }
         Unk_BuddyRequest req;
@@ -624,25 +649,27 @@ void UIDungeonClosingPhotoDialog::FUN_140e10800(int result, CStringW name)
     if (result == 0)
         return;
     CBuddyManager::Ptr buddy = FUN_14097a780()->FUN_140ae4950(name);
-    if (buddy.get() == 0) {
-        result -= 1;
-        switch (result) {
-        case 0: FUN_141275260(0x614, 1, 1); break;
-        case 1: FUN_140961010(0x622, 1, 1, name); break;
-        case 2: FUN_140961010(0x621, 1, 1, name); break;
-        case 3: FUN_140961010(0x617, 1, 1, name); break;
-        case 4: FUN_140961010(0x61c, 1, 1, name); break;
-        case 5: FUN_140961010(0x61b, 1, 1, name); break;
-        case 6: FUN_140961010(0x61d, 1, 1, name); break;
-        case 7: FUN_140961010(0x61e, 1, 1, name); break;
-        case 8: FUN_140961010(0x602, 1, 1, name); break;
-        default: FUN_141275260(0x613, 1, 1); break;
+    if (buddy.get()) {
+        if (buddy->FUN_1401cc5d0() == 1) {
+            FUN_140961010(0x61a, 1, 1, name);
+            return;
+        } else if (buddy->FUN_1401cc5b0() == 1) {
+            FUN_140961010(0x619, 1, 1, name);
+            return;
         }
     } else {
-        if (buddy->FUN_1401cc5d0() == 1)
-            FUN_140961010(0x61a, 1, 1, name);
-        else if (buddy->FUN_1401cc5b0() == 1)
-            FUN_140961010(0x619, 1, 1, name);
+        switch (result) {
+        case 1: FUN_141275260(0x614, 1, 1); break;
+        case 2: FUN_140961010(0x622, 1, 1, name); break;
+        case 3: FUN_140961010(0x621, 1, 1, name); break;
+        case 4: FUN_140961010(0x617, 1, 1, name); break;
+        case 5: FUN_140961010(0x61c, 1, 1, name); break;
+        case 6: FUN_140961010(0x61b, 1, 1, name); break;
+        case 7: FUN_140961010(0x61d, 1, 1, name); break;
+        case 8: FUN_140961010(0x61e, 1, 1, name); break;
+        case 9: FUN_140961010(0x602, 1, 1, name); break;
+        default: FUN_141275260(0x613, 1, 1); break;
+        }
     }
 }
 

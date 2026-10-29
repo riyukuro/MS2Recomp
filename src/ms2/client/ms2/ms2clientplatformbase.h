@@ -47,7 +47,7 @@ public:
     // getters inline in ms2clientplatformtencent.cpp (the Tencent report copy)
     int GetField28() const { return m_n28; }                        // @0x140c7eb70
     __int64 GetField88() const { return m_n88; }                    // @0x140c7eb50
-    int GetField90() const { return (int)m_n90; }                   // @0x140c7eae0
+    int GetField90() const { return m_n90; }                        // @0x140c7eae0
     CStringW GetField98() const { return m_str98; }                 // @0x140c7eb00
     __int64 GetFielda0() const { return m_na0; }                    // @0x140c7eb80
     __int64 GetFielda8() const { return m_na8; }                    // @0x140c7eba0
@@ -83,7 +83,7 @@ public:
     void SetField78(CStringW str) { m_str78 = str; }                // @0x141a89810
     void SetField80(CStringW str) { m_str80 = str; }                // @0x141a89990
     void SetField88(__int64 n) { m_n88 = n; }                       // @0x141a898c0
-    void SetField90(int n) { m_n90 = n; }                           // @0x141a89850 (the exe stores 4 bytes)
+    void SetField90(int n) { m_n90 = n; }                           // @0x141a89850
     void SetField98(CStringW str) { m_str98 = str; }                // @0x141a89870
     void SetFieldd0(CStringW str) { m_strd0 = str; }                // @0x141a899e0
     void SetFielde0(__int64 n) { m_ne0 = n; }                       // @0x141a89a30
@@ -107,7 +107,8 @@ public:
     int m_n74;
     CStringW m_str78;
     CStringW m_str80;
-    __int64 m_n88; __int64 m_n90;
+    __int64 m_n88;
+    int m_n90;                                  // +0x90 (4 bytes, as SetField90 0x141a89850 stores)
     CStringW m_str98;
     __int64 m_na0;
     __int64 m_na8;
@@ -130,7 +131,7 @@ MS2_CHECK_SIZE(CUserReportData, 0x118);
 // The 0x38-byte tagged value of the Nexon Analytics wrapper (a 16-byte header, then payload storage).
 struct Unk_NxValue
 {
-    Unk_NxValue() : m_nKind(0), m_nFlags(0), m_nSize(0), m_n8(0) {}         // @0x140c771f0
+    Unk_NxValue* Reset() { m_nKind = 0; m_nFlags = 0; m_nSize = 0; m_n8 = 0; return this; }   // @0x140c771f0
     unsigned short m_nKind;
     unsigned short m_nFlags;
     unsigned m_nSize;
@@ -142,24 +143,25 @@ MS2_CHECK_SIZE(Unk_NxValue, 0x38);
 
 struct Unk_NxString : Unk_NxValue
 {
-    Unk_NxString() {}                                           // @0x140c77120
+    Unk_NxString() { Reset(); }                                 // @0x140c77120
     void FUN_140c777f0(const char* psz, int nMode);             // @0x140c777f0 -> Set
-    Unk_NxString(const char* psz, int nMode);                            // @0x140c77310
+    Unk_NxString(const char* psz);                              // @0x140c77310
+    Unk_NxString(const char* psz, int nMode);                   // 0x14092e380 (unit_14092cb30_nxa)
     ~Unk_NxString();                                            // 0x14092e560 (another unit)
     void Set(const char* psz, int nMode);                       // 0x14092e710
 };
 
 struct Unk_NxNumber : Unk_NxValue
 {
-    Unk_NxNumber() {}                                           // @0x140c77170
+    Unk_NxNumber() { Reset(); }                                 // @0x140c77170
     Unk_NxNumber(int n);                                        // @0x140c77140
+    Unk_NxNumber(unsigned n);                                   // @0x140c77190
     Unk_NxNumber(__int64 n);                                    // @0x140c77340
     ~Unk_NxNumber();                                            // @0x140c772f0 (calls 0x14092e580)
     void Set(unsigned n);                                       // @0x140c77850
     void Set(__int64 n);                                        // @0x140c77820 -> 0x140c778a0
     __int64 GetValue() const { return m_n10; }                  // @0x140c77980
     void SetStorage(__int64 n);                                 // @0x140c778a0
-    void Init(unsigned n);                                      // @0x140c77190
 };
 
 struct Unk_NxEvent
@@ -182,8 +184,8 @@ public:
     ~Unk_NexonAnalytics();                                      // @0x140c77260 -> 0x14092cbf0
     const char* GetModuleName() const;                          // @0x140c778f0 "NexonAnalytics64.dll"
     bool FUN_14092ca70(const char* pszModule);
-    void FUN_14092d1f0(int nCode, const CStringA& strLog);
-    void FUN_14092d280(int nCode, const CStringA& strLog);
+    bool FUN_14092d1f0(int nCode, const CStringA& strLog);
+    bool FUN_14092d280(int nCode, const CStringA& strLog);
     bool FUN_14092ce80(const Unk_NxString* pVersion, const Unk_NxString* pHost);
     bool FUN_14092cf80(const Unk_NxEvent* pEvent, const Unk_NxString* pHost, const Unk_NxNumber* pService);
     void FUN_14092d070(bool bFlush);
@@ -194,11 +196,13 @@ public:
 // The option profile object the game option owner keeps at +0x9c (copy ctor/dtor 0x14125ec20/0x14125ef90).
 struct Unk_OptionProfile
 {
-    // ctor 0x14125ec20 / dtor 0x14125ef90 live in another unit (called as FUN_ helpers)
+    // The 0x14-byte graphic-option block (Unk_GraphicState2 in gameoptionstruct): init 0x14125ec20,
+    // copy 0x14125ef60, apply 0x14125ef90, all called as FUN_ helpers.
+    Unk_OptionProfile& operator=(const Unk_OptionProfile&);     // never called; makes the local a non-POD, so /GS skips it
     int m_nMode;
-    int m_nRest[9];
+    int m_n04, m_n08, m_n0c, m_n10;
 };
-MS2_CHECK_SIZE(Unk_OptionProfile, 40);
+MS2_CHECK_SIZE(Unk_OptionProfile, 0x14);
 
 class CClientPlatformBase : public IClientPlatform
 {

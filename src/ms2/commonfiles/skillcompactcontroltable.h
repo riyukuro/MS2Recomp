@@ -20,7 +20,7 @@ class CCompactControlSkill : public CPtred
 {
 public:
     CCompactControlSkill();                     // 0x140dcb4a0
-    virtual ~CCompactControlSkill();            // 0x140dcb800
+    // ~CCompactControlSkill() implicit (0x140dcb800: no vftable store)
 
     unsigned m_nSkillId;                        // +0x18 "id"
     unsigned m_nRepeatCount;                    // +0x1c "repeatCount"

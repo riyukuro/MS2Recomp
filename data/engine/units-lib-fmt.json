@@ -1,0 +1,44 @@
+{
+ "comment": "cppformat (fmt) format.cc at upstream commit 5ca3d00e2 (2014-09-25, between 0.11 and 0.12; found by a history scan, 0.12.0 gave 422 of 512 matched) with Nexon patches, kept in engine/fmt-ms2 (MIT, // MS2 markers: Arg::CHAR_INT, korean numeric locale _l printf calls, isinfinity(long double), FMT_USE_VARIADIC_TEMPLATES 0, write_double width reuse; gb18 2026-10-23, 512/512 exact), linked at 0x1402cb2a0-0x1402e1070 (the game map's source-less ?\\fmt.cpp row, owned here through owned_game_units). Built like game code (/Od /Ob0, game flags of tools/progress.py) plus NDEBUG (+4 exact over the game's live-assert default); toolset 1416 (1415 equal, 1414 -9). tc1, 2026-10-20 (work/libsearch/report.md: 0.12.0 literals).",
+ "owned_game_units": [
+  "1402cb2a0"
+ ],
+ "flags": [
+  [
+   "-Od",
+   "-Ob0",
+   "-Oi",
+   "-EHsc",
+   "-GS",
+   "-GR",
+   "-Gy",
+   "-fp:fast",
+   "-Zc:wchar_t",
+   "-Zc:threadSafeInit",
+   "-std:c++14",
+   "-MD",
+   "-Z7",
+   "-W3"
+  ]
+ ],
+ "include_dirs": [
+  [
+   "$(ROOT)/engine/fmt-ms2"
+  ]
+ ],
+ "units": [
+  {
+   "name": "fmt/format",
+   "recipe": "lib-fmt",
+   "unit": "gb:fmt/format",
+   "source": "$(ROOT)/engine/fmt-ms2/format.cc",
+   "flags": 0,
+   "defines": [
+    "_MBCS",
+    "_AFXDLL",
+    "NDEBUG"
+   ],
+   "include_dirs": 0
+  }
+ ]
+}

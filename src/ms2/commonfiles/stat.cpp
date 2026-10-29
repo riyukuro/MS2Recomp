@@ -77,6 +77,7 @@ public:
     Unk_StatOptPtr& operator=(const Unk_StatOptPtr& o) { o.AddRef(); Release(); p = o.p; return *this; }
     T* operator->() const { return p; }
     bool operator==(T* value) const { return p == value; }
+    bool operator!() const { return !p; }
     operator T*() const { return p; }
     T* get() const { return p; }
 private:
@@ -116,7 +117,6 @@ StatDefinition::StatDefinition(int nId, CStringA strName, int nValueType, CStrin
 }
 
 // @0x14082e2b0
-// MS2-FUNCTIONAL: temp/EH layout of the option merge differs
 void MergeOptions(StatOptionSet* pDest, MS2Ptr<StatOptionSet> spSource)
 {
     if (!spSource)
@@ -127,13 +127,13 @@ void MergeOptions(StatOptionSet* pDest, MS2Ptr<StatOptionSet> spSource)
     {
         Unk_StatKey nKey = spSource->value.GetKeyAt(pos);
         Unk_StatOptPtr<BaseOption> spOption = spSource->value.GetValueAt(pos);
-        if (spOption == 0)
+        if (!spOption)
             continue;
         Unk_StatOptPtr<BaseOption> spExisting(0);
-        if (!pDest->value.Lookup(nKey, spExisting))
-            pDest->value.SetAt(nKey, spOption);
-        else
+        if (pDest->value.Lookup(nKey, spExisting))
             FUN_140267220(spExisting, Unk_StatOptPtr<BaseOption>(spOption));
+        else
+            pDest->value.SetAt(nKey, spOption);
     }
 }
 
@@ -160,7 +160,6 @@ int LoadStatNames(std::map<int, CStringW>& rNames)
 }
 
 // @0x14082e7b0
-// MS2-FUNCTIONAL: local layout/EH states differ
 int LoadStatDefinitions()
 {
     s_definitions.clear();
@@ -206,8 +205,7 @@ int LoadStats()
 }
 
 // @0x14082eb80
-// MS2-FUNCTIONAL: stack layout of the 56000-byte local differs
-int LoadUserStats(unsigned nJob)
+int LoadUserStats(int nJob)
 {
     CStringA strFile;
     strFile.Format("userStat%d.xml", nJob);

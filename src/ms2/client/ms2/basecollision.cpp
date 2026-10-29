@@ -95,6 +95,20 @@ struct Unk_BcRotSetter
     virtual void vfunc_0();
     virtual void vfunc_1();
     virtual void vfunc_2(NiPoint3 kPos, const NiMatrix3& kRot, float fScale);   // MS2: slot 2
+    virtual void vfunc_3(NiPoint3 kPos, efd::Point3 kRot, float fScale);        // MS2: slot 3
+};
+
+// GameObject slots 18 and 20 return efd::Point3 (the shared header declares NiPoint3).
+struct Unk_BcGoPlace
+{
+    virtual void vfunc_0(); virtual void vfunc_1(); virtual void vfunc_2(); virtual void vfunc_3();
+    virtual void vfunc_4(); virtual void vfunc_5(); virtual void vfunc_6(); virtual void vfunc_7();
+    virtual void vfunc_8(); virtual void vfunc_9(); virtual void vfunc_10(); virtual void vfunc_11();
+    virtual void vfunc_12(); virtual void vfunc_13(); virtual void vfunc_14(); virtual void vfunc_15();
+    virtual void vfunc_16(); virtual void vfunc_17();
+    virtual efd::Point3 vfunc_18();   // MS2: slot 18 (position)
+    virtual void vfunc_19();
+    virtual efd::Point3 vfunc_20();   // MS2: slot 20 (rotation)
 };
 
 // @0x1409fbb80
@@ -155,16 +169,15 @@ void CBaseCollision::vfunc_4()
 }
 
 // @0x1409fc050
-// MS2-FUNCTIONAL: GameObject::vfunc_18/vfunc_20 really return efd::Point3 (the exe converts the result with NiPoint3(const efd::Point3&) 0x14027dcf0); the shared header declares NiPoint3
 int CBaseCollision::vfunc_7(efd::SmartPointer<GameObject> spSelf, efd::SmartPointer<GameObject> spTarget)
 {
     if (!spSelf || !spTarget)
         return 0;
-    efd::Point3 kPos = spSelf->vfunc_18();
-    efd::Point3 kRot = spSelf->vfunc_20();
+    NiPoint3 kPos(reinterpret_cast<Unk_BcGoPlace*>(spSelf.operator->())->vfunc_18());
+    NiPoint3 kRot(reinterpret_cast<Unk_BcGoPlace*>(spSelf.operator->())->vfunc_20());
     vfunc_3(*(Vector3*)&kPos, *(Vector3*)&kRot, 1.0f);
-    efd::Point3 kDir;
     efd::Point3 kRight;
+    efd::Point3 kDir;
     FUN_140a01250(kRot, &kDir, &kRight);
     kDir.Unitize();
     kRight.Unitize();
@@ -173,29 +186,27 @@ int CBaseCollision::vfunc_7(efd::SmartPointer<GameObject> spSelf, efd::SmartPoin
         return 0;
     Unk_DetectHit kHit;
     kHit.m_nMode = 3;
-    kHit.m_kMetric = efd::Point3::ZERO;
+    static_cast<efd::Point3&>(kHit.m_kMetric) = efd::Point3::ZERO;
     return TestShape(kPos, kRight, kDir, this, pBox, &kHit);
 }
 
 // @0x1409fc390
-// MS2-FUNCTIONAL: temporaries / point-type conversions not byte-matched yet
 void CBaseCollision::FUN_1409fc390(MS2Ptr<CDetectContext> spCtx, const efd::Point3& kRot)
 {
-    NiPoint3 kPos(spCtx->m_kPos);
-    vfunc_3(*(const Vector3*)&kPos, *(const Vector3*)&kRot, 1.0f);
+    reinterpret_cast<Unk_BcRotSetter*>(this)->vfunc_3(spCtx->m_kPos, kRot, 1.0f);
     NiPoint3 kDir;
     NiPoint3 kRight;
-    FUN_140a01250(kRot, &spCtx->m_kDir, &spCtx->m_kRight);
+    efd::Point3 kRotCopy = kRot;
+    FUN_140a01250(kRotCopy, &spCtx->m_kDir, &spCtx->m_kRight);
     spCtx->m_kDir.Unitize();
     spCtx->m_kRight.Unitize();
     Detect(spCtx);
 }
 
 // @0x1409fc540
-// MS2-FUNCTIONAL: temporaries / point-type conversions not byte-matched yet
 void CBaseCollision::FUN_1409fc540(MS2Ptr<CDetectContext> spCtx, const NiMatrix3& kRot)
 {
-    reinterpret_cast<Unk_BcRotSetter*>(this)->vfunc_2(NiPoint3(spCtx->m_kPos), kRot, 1.0f);
+    reinterpret_cast<Unk_BcRotSetter*>(this)->vfunc_2(spCtx->m_kPos, kRot, 1.0f);
     kRot.GetCol(0, spCtx->m_kDir);
     spCtx->m_kDir.Unitize();
     spCtx->m_kRight = spCtx->m_kDir.Cross(efd::Point3::UNIT_Z);
@@ -215,26 +226,71 @@ void CBaseCollision::Detect(MS2Ptr<CDetectContext> spCtx)
         nQueryFlags = spCtx->m_pRange->m_nQueryFlags;
     WorldService::GetInstance()->FUN_141bd2ea0(spCtx->m_pOwner, &kObjects, spCtx->m_nTargetKind, nQueryFlags,
                                                (Unk_WsFilter)s_pfnTargetFilter);
-    if (kObjects.GetCount() == 0)
+    if (kObjects.GetCount() <= 0)
         return;
 
     int bFacing = (spCtx->m_nSortMode == 5 || spCtx->m_nSortMode == 6) ? 1 : 0;
     GameObject* pFirst = NULL;
     ATL::CAtlMap<unsigned int, NiPoint3> kMetrics(17, 0.75f, 0.25f, 2.25f, 10);
     ATL::CAtlMap<unsigned int, float> kFacing(17, 0.75f, 0.25f, 2.25f, 10);
-    POSITION pos = kObjects.GetHeadPosition();
-    while (pos != NULL)
+    for (POSITION pos = kObjects.GetHeadPosition(); pos != NULL; kObjects.GetNext(pos))
     {
         GameObject* pObj = kObjects.GetAt(pos);
-        if (pObj->GetClassID() != Ridee::CLASS_ID)
+        if (pObj->GetClassID() == Ridee::CLASS_ID)
+            continue;
+        if (spCtx->m_pExclude != NULL)
         {
-            if (spCtx->m_pExclude != NULL)
+            unsigned int nId = pObj->FUN_14123c580();
+            if (spCtx->m_pExclude->Lookup(nId) != NULL)
+                continue;
+        }
+        if (!TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0xd7))
+        {
+            int nId = pObj->FUN_14123c580();
+            if (nId == spCtx->m_pOwner->FUN_14123c580())
             {
-                unsigned int nId = pObj->FUN_14123c580();
-                if (spCtx->m_pExclude->Lookup(nId) != NULL)
-                    goto next;
+                if (spCtx->m_bRideToRider != 0)
+                {
+                    efd::SmartPointer<Ridee> spRidee = efd::DynamicCast<Ridee>(pObj);
+                    pFirst = spRidee ? spRidee->GetRider() : pObj;
+                }
+                continue;
             }
-            if (!TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0xd7))
+        }
+        {
+            Unk_DetectHit kHit;
+            kHit.m_nMode = spCtx->m_nSortMode;
+            static_cast<efd::Point3&>(kHit.m_kMetric) = efd::Point3::ZERO;
+            ATL::CAtlArray<MS2Ptr<CBoxCollision> > kBoxes;
+            if (spCtx->m_bUseAllAnchors != 0)
+                pObj->vfunc_28(&kBoxes);
+            if (kBoxes.IsEmpty())
+                pObj->vfunc_27(reinterpret_cast<ATL::CAtlArray<Unk_GoAnchorPtr>&>(kBoxes));
+            if (!kBoxes.IsEmpty())
+            {
+                int bHit = 0;
+                for (unsigned int i = 0; i < reinterpret_cast<ATL::CAtlArray<Unk_GoAnchorPtr>&>(kBoxes).GetCount(); i++)
+                {
+                    MS2Ptr<CBoxCollision> spBox(kBoxes[i]);
+                    if (spBox == NULL)
+                        continue;
+                    bHit = TestShape(spCtx->m_kPos, spCtx->m_kRight, spCtx->m_kDir, this, spBox.get(), &kHit);
+                    if (bHit)
+                        break;
+                }
+                if (bHit == 0)
+                    continue;
+            }
+            else
+            {
+                CBoxCollision* pBox = reinterpret_cast<CBoxCollision*>(pObj->vfunc_26());
+                if (pBox == NULL)
+                    continue;
+                int bHit = TestShape(spCtx->m_kPos, spCtx->m_kRight, spCtx->m_kDir, this, pBox, &kHit);
+                if (bHit == 0)
+                    continue;
+            }
+            if (TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0xd7))
             {
                 int nId = pObj->FUN_14123c580();
                 if (nId == spCtx->m_pOwner->FUN_14123c580())
@@ -242,75 +298,22 @@ void CBaseCollision::Detect(MS2Ptr<CDetectContext> spCtx)
                     if (spCtx->m_bRideToRider != 0)
                     {
                         efd::SmartPointer<Ridee> spRidee = efd::DynamicCast<Ridee>(pObj);
-                        if (spRidee)
-                            pObj = spRidee->GetRider();
-                        pFirst = pObj;
+                        pFirst = spRidee ? spRidee->GetRider() : pObj;
                     }
-                    goto next;
+                    continue;
                 }
             }
+            spCtx->m_arrTargets.Add(efd::SmartPointer<GameObject>(pObj));
+            kMetrics.SetAt(pObj->FUN_14123c580(), kHit.m_kMetric);
+            if (bFacing)
             {
-                Unk_DetectHit kHit;
-                kHit.m_nMode = spCtx->m_nSortMode;
-                kHit.m_kMetric = efd::Point3::ZERO;
-                ATL::CAtlArray<MS2Ptr<CBoxCollision> > kBoxes;
-                if (spCtx->m_bUseAllAnchors != 0)
-                    pObj->vfunc_28(&kBoxes);
-                if (kBoxes.IsEmpty())
-                    pObj->vfunc_27(reinterpret_cast<ATL::CAtlArray<Unk_GoAnchorPtr>&>(kBoxes));
-                if (!kBoxes.IsEmpty())
-                {
-                    int bHit = 0;
-                    for (unsigned int i = 0; i < kBoxes.GetCount(); i++)
-                    {
-                        MS2Ptr<CBoxCollision> spBox(kBoxes[i]);
-                        if (spBox == NULL)
-                            continue;
-                        bHit = TestShape(spCtx->m_kPos, spCtx->m_kRight, spCtx->m_kDir, this, spBox.get(), &kHit);
-                        if (bHit)
-                            break;
-                    }
-                    if (bHit == 0)
-                        goto next;
-                }
-                else
-                {
-                    CBoxCollision* pBox = reinterpret_cast<CBoxCollision*>(pObj->vfunc_26());
-                    if (pBox == NULL)
-                        goto next;
-                    int bHit = TestShape(spCtx->m_kPos, spCtx->m_kRight, spCtx->m_kDir, this, pBox, &kHit);
-                    if (bHit == 0)
-                        goto next;
-                }
-                if (TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0xd7))
-                {
-                    int nId = pObj->FUN_14123c580();
-                    if (nId == spCtx->m_pOwner->FUN_14123c580())
-                    {
-                        if (spCtx->m_bRideToRider != 0)
-                        {
-                            efd::SmartPointer<Ridee> spRidee = efd::DynamicCast<Ridee>(pObj);
-                            if (spRidee)
-                                pObj = spRidee->GetRider();
-                            pFirst = pObj;
-                        }
-                        goto next;
-                    }
-                }
-                spCtx->m_arrTargets.Add(efd::SmartPointer<GameObject>(pObj));
-                kMetrics.SetAt(pObj->FUN_14123c580(), kHit.m_kMetric);
-                if (bFacing)
-                {
-                    efd::Point3 kTo = pObj->vfunc_18() - spCtx->m_kPos;
-                    kTo.z = 0.0f;
-                    kTo.Unitize();
-                    float fDot = spCtx->m_kDir.Dot(kTo);
-                    kFacing.SetAt(pObj->FUN_14123c580(), fDot);
-                }
+                efd::Point3 kTo = pObj->vfunc_18() - spCtx->m_kPos;
+                kTo.z = 0.0f;
+                kTo.Unitize();
+                float fDot = spCtx->m_kDir.Dot(kTo);
+                kFacing.SetAt(pObj->FUN_14123c580(), fDot);
             }
         }
-    next:
-        kObjects.GetNext(pos);
     }
 
     ATL::CAtlArray<efd::SmartPointer<GameObject> > kFiltered;
@@ -328,17 +331,12 @@ void CBaseCollision::Detect(MS2Ptr<CDetectContext> spCtx)
                 continue;
             if (nBuff != 0)
             {
-                int bHas;
-                if (bFromOwner == 0)
+                if (bFromOwner != 0)
                 {
-                    bHas = pTarget->FUN_1416749a0()->FUN_140971260(nBuff);
+                    if (!pTarget->FUN_1416749a0()->FUN_140971300(nBuff, spCtx->m_pOwner->FUN_14123c580()))
+                        continue;
                 }
-                else
-                {
-                    int nOwnerId = spCtx->m_pOwner->FUN_14123c580();
-                    bHas = pTarget->FUN_1416749a0()->FUN_140971300(nBuff, nOwnerId);
-                }
-                if (bHas == 0)
+                else if (!pTarget->FUN_1416749a0()->FUN_140971260(nBuff))
                     continue;
             }
             PCBase* pTargetPC = FUN_140974230(pTarget);
@@ -347,18 +345,12 @@ void CBaseCollision::Detect(MS2Ptr<CDetectContext> spCtx)
             {
                 if (bSameParty != 0)
                 {
-                    if (FUN_141661bc0(pOwnerPC) == 0)
-                        continue;
-                    int nParty = FUN_141661bc0(pOwnerPC);
-                    if (nParty != FUN_141661bc0(pTargetPC))
+                    if (FUN_141661bc0(pOwnerPC) == 0 || FUN_141661bc0(pOwnerPC) != FUN_141661bc0(pTargetPC))
                         continue;
                 }
                 if (bSameGuild != 0)
                 {
-                    if (FUN_141656be0(pOwnerPC)->IsEmpty())
-                        continue;
-                    CStringW* pGuild = FUN_141656be0(pTargetPC);
-                    if (*FUN_141656be0(pOwnerPC) != *pGuild)
+                    if (FUN_141656be0(pOwnerPC)->IsEmpty() || *FUN_141656be0(pOwnerPC) != *FUN_141656be0(pTargetPC))
                         continue;
                 }
             }
@@ -381,74 +373,7 @@ void CBaseCollision::Detect(MS2Ptr<CDetectContext> spCtx)
     int nStatSort = 0;
     if (spCtx->m_pRange != NULL)
         nStatSort = spCtx->m_pRange->m_nStatSort;
-    if (nStatSort == 0)
-    {
-        if (spCtx->m_nSortMode == 0)
-        {
-            ShuffleTargets(spCtx->m_arrTargets);
-        }
-        else
-        {
-            for (unsigned int i = 0; i < spCtx->m_arrTargets.GetCount(); i++)
-            {
-                for (unsigned int j = i + 1; j < spCtx->m_arrTargets.GetCount(); j++)
-                {
-                    NiPoint3 kA;
-                    NiPoint3 kB;
-                    kMetrics.Lookup(spCtx->m_arrTargets[i]->FUN_14123c580(), kA);
-                    kMetrics.Lookup(spCtx->m_arrTargets[j]->FUN_14123c580(), kB);
-                    float fA = 0.0f;
-                    float fB = 0.0f;
-                    kFacing.Lookup(spCtx->m_arrTargets[i]->FUN_14123c580(), fA);
-                    kFacing.Lookup(spCtx->m_arrTargets[j]->FUN_14123c580(), fB);
-                    if (spCtx->m_nSortMode == 2)
-                    {
-                        if (kA.x < kB.x)
-                            SwapTargets(spCtx->m_arrTargets[i], spCtx->m_arrTargets[j]);
-                    }
-                    else if (spCtx->m_nSortMode == 1)
-                    {
-                        if (kB.x < kA.x)
-                            SwapTargets(spCtx->m_arrTargets[i], spCtx->m_arrTargets[j]);
-                    }
-                    else if (spCtx->m_nSortMode == 3)
-                    {
-                        if ((m_nShape != 2 && m_nShape != 4) || kA.z <= kB.z)
-                        {
-                            if (kB.y < kA.y)
-                                SwapTargets(spCtx->m_arrTargets[i], spCtx->m_arrTargets[j]);
-                        }
-                        else
-                        {
-                            SwapTargets(spCtx->m_arrTargets[i], spCtx->m_arrTargets[j]);
-                        }
-                    }
-                    else if (spCtx->m_nSortMode == 4)
-                    {
-                        if ((m_nShape != 2 && m_nShape != 4) || kB.z <= kA.z)
-                        {
-                            if (kA.y < kB.y)
-                                SwapTargets(spCtx->m_arrTargets[i], spCtx->m_arrTargets[j]);
-                        }
-                        else
-                        {
-                            SwapTargets(spCtx->m_arrTargets[i], spCtx->m_arrTargets[j]);
-                        }
-                    }
-                    else if (spCtx->m_nSortMode == 5)
-                    {
-                        if (fA < fB)
-                            SwapTargets(spCtx->m_arrTargets[i], spCtx->m_arrTargets[j]);
-                    }
-                    else if (spCtx->m_nSortMode == 6 && fB < fA)
-                    {
-                        SwapTargets(spCtx->m_arrTargets[i], spCtx->m_arrTargets[j]);
-                    }
-                }
-            }
-        }
-    }
-    else
+    if (nStatSort != 0)
     {
         int nStat = spCtx->m_pRange->m_nStatKind;
         for (unsigned int i = 0; i < spCtx->m_arrTargets.GetCount(); i++)
@@ -477,7 +402,7 @@ void CBaseCollision::Detect(MS2Ptr<CDetectContext> spCtx)
                     float fRateA = fCurA / (float)pA->FUN_141670990(0, nStat);
                     float fCurB = (float)pB->FUN_141670990(2, nStat);
                     float fRateB = fCurB / (float)pB->FUN_141670990(0, nStat);
-                    if (fRateB < fRateA)
+                    if (fRateA > fRateB)
                         SwapTargets(spCtx->m_arrTargets[i], spCtx->m_arrTargets[j]);
                 }
                 else if (nStatSort == 4)
@@ -488,6 +413,63 @@ void CBaseCollision::Detect(MS2Ptr<CDetectContext> spCtx)
                     float fRateB = fCurB / (float)pB->FUN_141670990(0, nStat);
                     if (fRateA < fRateB)
                         SwapTargets(spCtx->m_arrTargets[i], spCtx->m_arrTargets[j]);
+                }
+            }
+        }
+    }
+    else
+    {
+        if (spCtx->m_nSortMode == 0)
+        {
+            ShuffleTargets(spCtx->m_arrTargets);
+        }
+        else
+        {
+            for (unsigned int i = 0; i < spCtx->m_arrTargets.GetCount(); i++)
+            {
+                for (unsigned int j = i + 1; j < spCtx->m_arrTargets.GetCount(); j++)
+                {
+                    NiPoint3 kA;
+                    NiPoint3 kB;
+                    kMetrics.Lookup(spCtx->m_arrTargets[i]->FUN_14123c580(), kA);
+                    kMetrics.Lookup(spCtx->m_arrTargets[j]->FUN_14123c580(), kB);
+                    float fA = 0.0f;
+                    float fB = 0.0f;
+                    kFacing.Lookup(spCtx->m_arrTargets[i]->FUN_14123c580(), fA);
+                    kFacing.Lookup(spCtx->m_arrTargets[j]->FUN_14123c580(), fB);
+                    if (spCtx->m_nSortMode == 2)
+                    {
+                        if (kA.x < kB.x)
+                            SwapTargets(spCtx->m_arrTargets[i], spCtx->m_arrTargets[j]);
+                    }
+                    else if (spCtx->m_nSortMode == 1)
+                    {
+                        if (kA.x > kB.x)
+                            SwapTargets(spCtx->m_arrTargets[i], spCtx->m_arrTargets[j]);
+                    }
+                    else if (spCtx->m_nSortMode == 3)
+                    {
+                        if ((m_nShape == 2 || m_nShape == 4) && kA.z > kB.z)
+                            SwapTargets(spCtx->m_arrTargets[i], spCtx->m_arrTargets[j]);
+                        else if (kA.y > kB.y)
+                            SwapTargets(spCtx->m_arrTargets[i], spCtx->m_arrTargets[j]);
+                    }
+                    else if (spCtx->m_nSortMode == 4)
+                    {
+                        if ((m_nShape == 2 || m_nShape == 4) && kA.z < kB.z)
+                            SwapTargets(spCtx->m_arrTargets[i], spCtx->m_arrTargets[j]);
+                        else if (kA.y < kB.y)
+                            SwapTargets(spCtx->m_arrTargets[i], spCtx->m_arrTargets[j]);
+                    }
+                    else if (spCtx->m_nSortMode == 5)
+                    {
+                        if (fA < fB)
+                            SwapTargets(spCtx->m_arrTargets[i], spCtx->m_arrTargets[j]);
+                    }
+                    else if (spCtx->m_nSortMode == 6 && fA > fB)
+                    {
+                        SwapTargets(spCtx->m_arrTargets[i], spCtx->m_arrTargets[j]);
+                    }
                 }
             }
         }
@@ -530,8 +512,7 @@ void CBaseCollision::Invalidate()
 // Fills pHit for the sort modes: x the signed lateral offset (modes 1/2) or its size, y the forward distance, z the
 // planar distance of a cylinder test.
 // @0x1409fe460
-// MS2-FUNCTIONAL: behaviour from the disassembly; temporaries / branch layout not byte-matched yet
-bool CBaseCollision::TestShape(efd::Point3 kPos, efd::Point3 kRight, efd::Point3 kDir, CBaseCollision* pShape,
+int CBaseCollision::TestShape(efd::Point3 kPos, efd::Point3 kRight, efd::Point3 kDir, CBaseCollision* pShape,
                                CBoxCollision* pBox, Unk_DetectHit* pHit)
 {
     bool bHit = false;
@@ -544,10 +525,10 @@ bool CBaseCollision::TestShape(efd::Point3 kPos, efd::Point3 kRight, efd::Point3
         {
             NxVec3 kCenter(pTargetBox->m_kBox.GetCenter());
             efd::Point3 kPt(kCenter.x, kCenter.y, kCenter.z);
-            NiPlane kFront((NiPoint3(kDir)), NiPoint3(kPos));
-            NiPlane kSide((NiPoint3(kRight)), NiPoint3(kPos));
-            float fForward = kFront.Distance(NiPoint3(kPt));
-            float fLateral = kSide.Distance(NiPoint3(kPt));
+            NiPlane kFront(kDir, kPos);
+            NiPlane kSide(kRight, kPos);
+            float fForward = kFront.Distance(kPt);
+            float fLateral = kSide.Distance(kPt);
             if (pHit->m_nMode == 2 || pHit->m_nMode == 1)
             {
                 pHit->m_kMetric.x = fLateral;
@@ -563,15 +544,16 @@ bool CBaseCollision::TestShape(efd::Point3 kPos, efd::Point3 kRight, efd::Point3
     else if (pShape->m_nShape == 2 && pBox->m_nShape == 1)
     {
         CCylinderCollision* pCyl = static_cast<CCylinderCollision*>(pShape);
+        CBoxCollision* pTargetBox = pBox;
         NxVec3 kPoint(pCyl->m_center.x, pCyl->m_center.y, pCyl->m_center.z);
         NxVec3 kParams;
-        NxVec3 kBoxCenter(pBox->m_kBox.GetCenter());
+        NxVec3 kBoxCenter(pTargetBox->m_kBox.GetCenter());
         kBoxCenter.setz(pCyl->m_center.z);
-        float fDistSq = NxGetUtilLib()->NxPointOBBSqrDist(kPoint, kBoxCenter, pBox->m_kBox.GetExtents(),
-                                                          pBox->m_kBox.GetRot(), &kParams);
+        float fDistSq = NxGetUtilLib()->NxPointOBBSqrDist(kPoint, kBoxCenter, pTargetBox->m_kBox.GetExtents(),
+                                                          pTargetBox->m_kBox.GetRot(), &kParams);
         if (fDistSq <= pCyl->m_radius * pCyl->m_radius)
         {
-            if (pBox->FUN_140adad80() < pCyl->GetTopZ() && pCyl->GetBottomZ() < pBox->FUN_140adad00())
+            if (pCyl->GetTopZ() > pTargetBox->FUN_140adad80() && pCyl->GetBottomZ() < pTargetBox->FUN_140adad00())
                 bHit = true;
             else
                 bHit = false;
@@ -582,7 +564,8 @@ bool CBaseCollision::TestShape(efd::Point3 kPos, efd::Point3 kRight, efd::Point3
     else if (pShape->m_nShape == 4 && pBox->m_nShape == 1)
     {
         CHoleCylinderCollision* pRing = static_cast<CHoleCylinderCollision*>(pShape);
-        if (pRing->Contains(*(const Vector3*)&pBox->m_kBox.center))
+        CBoxCollision* pTargetBox = pBox;
+        if (pRing->Contains(*(const Vector3*)&pTargetBox->m_kBox.center))
         {
             bHit = true;
         }
@@ -590,16 +573,16 @@ bool CBaseCollision::TestShape(efd::Point3 kPos, efd::Point3 kRight, efd::Point3
         {
             for (int i = 0; i < 8; i++)
             {
-                if (pRing->Contains(reinterpret_cast<const Vector3&>(pBox->m_akCorners[i])))
+                if (pRing->Contains(reinterpret_cast<const Vector3&>(pTargetBox->m_akCorners[i])))
                 {
                     bHit = true;
                     break;
                 }
             }
         }
-        if (!bHit && pBox->FUN_140adad80() < pRing->GetTop() && pRing->GetBottom() < pBox->FUN_140adad00())
+        if (!bHit && pTargetBox->FUN_140adad80() < pRing->GetTop() && pTargetBox->FUN_140adad00() > pRing->GetBottom())
         {
-            NiPoint3 kBoxCenter(FUN_141b6e150(pBox->m_kBox.center));
+            NiPoint3 kBoxCenter(FUN_141b6e150(pTargetBox->m_kBox.center));
             kBoxCenter.z = 0.0f;
             NiPoint3 kRingCenter(*(const efd::Point3*)&pRing->m_ptCenter);
             kRingCenter.z = 0.0f;
@@ -609,25 +592,24 @@ bool CBaseCollision::TestShape(efd::Point3 kPos, efd::Point3 kRight, efd::Point3
             NxVec3 kOuter = FUN_141b6e0e0(kRingCenter + kAxis * pRing->m_fOuterRadius);
             NxSegment kSegment(kInner, kOuter);
             float fDistSq = NxGetUtilLib()->NxSegmentOBBSqrDist(kSegment, FUN_141b6e0e0(kBoxCenter),
-                                                                pBox->m_kBox.GetExtents(), pBox->m_kBox.GetRot(),
+                                                                pTargetBox->m_kBox.GetExtents(), pTargetBox->m_kBox.GetRot(),
                                                                 NULL, NULL);
             float fLimit = std::min(150.0f, pRing->m_fOuterRadius - pRing->m_fInnerRadius);
-            bHit = fDistSq < fLimit;
+            bHit = fLimit > fDistSq;
         }
         if (bHit)
             pHit->m_kMetric.z = FUN_140966ea0(*(const efd::Point3*)&pRing->m_ptCenter,
-                                              FUN_141b6e150(pBox->m_kBox.center));
+                                              FUN_141b6e150(pTargetBox->m_kBox.center));
     }
     else if (pShape->m_nShape == 3 && pBox->m_nShape == 1)
     {
         CFrustumCollision* pFrustum = static_cast<CFrustumCollision*>(pShape);
-        float fTop = pFrustum->GetMaxZ();
-        if (pBox->FUN_140adad80() < fTop)
+        CBoxCollision* pTargetBox = pBox;
+        if (pFrustum->GetMaxZ() > pTargetBox->FUN_140adad80())
         {
-            float fBottom = pFrustum->GetMinZ();
-            if (fBottom < pBox->FUN_140adad00())
+            if (pFrustum->GetMinZ() < pTargetBox->FUN_140adad00())
             {
-                if (pFrustum->Contains(*(const Vector3*)&pBox->m_kBox.center))
+                if (pFrustum->Contains(*(const Vector3*)&pTargetBox->m_kBox.center))
                 {
                     bHit = true;
                 }
@@ -635,7 +617,7 @@ bool CBaseCollision::TestShape(efd::Point3 kPos, efd::Point3 kRight, efd::Point3
                 {
                     for (int i = 0; i < 8; i++)
                     {
-                        if (pFrustum->Contains(reinterpret_cast<const Vector3&>(pBox->m_akCorners[i])))
+                        if (pFrustum->Contains(reinterpret_cast<const Vector3&>(pTargetBox->m_akCorners[i])))
                         {
                             bHit = true;
                             break;
@@ -645,13 +627,13 @@ bool CBaseCollision::TestShape(efd::Point3 kPos, efd::Point3 kRight, efd::Point3
                     {
                         for (int i = 0; i < 8; i++)
                         {
-                            if (pBox->FUN_140adacb0(pFrustum->m_aCorners[i]))
+                            if (pTargetBox->FUN_140adacb0(pFrustum->m_aCorners[i]))
                             {
                                 bHit = true;
                                 break;
                             }
                         }
-                        if (!bHit && pFrustum->IntersectsBox(&pBox->m_kBox))
+                        if (!bHit && pFrustum->IntersectsBox(&pTargetBox->m_kBox))
                             bHit = true;
                     }
                 }
@@ -659,12 +641,12 @@ bool CBaseCollision::TestShape(efd::Point3 kPos, efd::Point3 kRight, efd::Point3
         }
         if (bHit)
         {
-            NxVec3 kCenter(pBox->m_kBox.GetCenter());
+            NxVec3 kCenter(pTargetBox->m_kBox.GetCenter());
             efd::Point3 kPt(kCenter.x, kCenter.y, kCenter.z);
-            NiPlane kFront((NiPoint3(kDir)), NiPoint3(kPos));
-            NiPlane kSide((NiPoint3(kRight)), NiPoint3(kPos));
-            float fForward = kFront.Distance(NiPoint3(kPt));
-            float fLateral = kSide.Distance(NiPoint3(kPt));
+            NiPlane kFront(kDir, kPos);
+            NiPlane kSide(kRight, kPos);
+            float fForward = kFront.Distance(kPt);
+            float fLateral = kSide.Distance(kPt);
             if (pHit->m_nMode == 2 || pHit->m_nMode == 1)
             {
                 pHit->m_kMetric.x = fLateral;
@@ -682,27 +664,23 @@ bool CBaseCollision::TestShape(efd::Point3 kPos, efd::Point3 kRight, efd::Point3
 
 // TestShape without the sort metrics (0x140ded420, 0x141231730).
 // @0x1409ff0d0
-// MS2-FUNCTIONAL: behaviour from the disassembly; temporaries / branch layout not byte-matched yet
+// MS2-FUNCTIONAL: 1 byte off: the exe returns the null early-out as xor eax,eax (cl emits xor al,al for every spelling tried)
 bool CBaseCollision::Intersect(CBaseCollision* pShape, CBaseCollision* pTarget)
 {
-    bool bHit;
     if (pShape == NULL || pTarget == NULL)
+        return false;
     {
-        bHit = false;
-    }
-    else
-    {
-        bHit = false;
-        CBoxCollision* pBox = static_cast<CBoxCollision*>(pTarget);
+        bool bHit = false;
         if (pShape->m_nShape == 1 && pTarget->m_nShape == 1)
         {
             CBoxCollision* pShapeBox = static_cast<CBoxCollision*>(pShape);
-            CBoxCollision* pTargetBox = pBox;
+            CBoxCollision* pTargetBox = static_cast<CBoxCollision*>(pTarget);
             bHit = NxBoxBoxIntersect(pShapeBox->m_kBox, pTargetBox->m_kBox, true);
         }
         else if (pShape->m_nShape == 2 && pTarget->m_nShape == 1)
         {
             CCylinderCollision* pCyl = static_cast<CCylinderCollision*>(pShape);
+            CBoxCollision* pBox = static_cast<CBoxCollision*>(pTarget);
             NxVec3 kPoint(pCyl->m_center.x, pCyl->m_center.y, pCyl->m_center.z);
             NxVec3 kParams;
             NxVec3 kBoxCenter(pBox->m_kBox.GetCenter());
@@ -711,7 +689,7 @@ bool CBaseCollision::Intersect(CBaseCollision* pShape, CBaseCollision* pTarget)
                                                               pBox->m_kBox.GetRot(), &kParams);
             if (fDistSq <= pCyl->m_radius * pCyl->m_radius)
             {
-                if (pBox->FUN_140adad80() < pCyl->GetTopZ() && pCyl->GetBottomZ() < pBox->FUN_140adad00())
+                if (pCyl->GetTopZ() > pBox->FUN_140adad80() && pCyl->GetBottomZ() < pBox->FUN_140adad00())
                     bHit = true;
                 else
                     bHit = false;
@@ -720,6 +698,7 @@ bool CBaseCollision::Intersect(CBaseCollision* pShape, CBaseCollision* pTarget)
         else if (pShape->m_nShape == 4 && pTarget->m_nShape == 1)
         {
             CHoleCylinderCollision* pRing = static_cast<CHoleCylinderCollision*>(pShape);
+            CBoxCollision* pBox = static_cast<CBoxCollision*>(pTarget);
             if (pRing->Contains(*(const Vector3*)&pBox->m_kBox.center))
             {
                 bHit = true;
@@ -735,7 +714,7 @@ bool CBaseCollision::Intersect(CBaseCollision* pShape, CBaseCollision* pTarget)
                     }
                 }
             }
-            if (!bHit && pBox->FUN_140adad80() < pRing->GetTop() && pRing->GetBottom() < pBox->FUN_140adad00())
+            if (!bHit && pBox->FUN_140adad80() < pRing->GetTop() && pBox->FUN_140adad00() > pRing->GetBottom())
             {
                 NiPoint3 kBoxCenter(FUN_141b6e150(pBox->m_kBox.center));
                 kBoxCenter.z = 0.0f;
@@ -750,17 +729,16 @@ bool CBaseCollision::Intersect(CBaseCollision* pShape, CBaseCollision* pTarget)
                                                                     pBox->m_kBox.GetExtents(),
                                                                     pBox->m_kBox.GetRot(), NULL, NULL);
                 float fLimit = std::min(150.0f, pRing->m_fOuterRadius - pRing->m_fInnerRadius);
-                bHit = fDistSq < fLimit;
+                bHit = fLimit > fDistSq;
             }
         }
         else if (pShape->m_nShape == 3 && pTarget->m_nShape == 1)
         {
             CFrustumCollision* pFrustum = static_cast<CFrustumCollision*>(pShape);
-            float fTop = pFrustum->GetMaxZ();
-            if (pBox->FUN_140adad80() < fTop)
+            CBoxCollision* pBox = static_cast<CBoxCollision*>(pTarget);
+            if (pFrustum->GetMaxZ() > pBox->FUN_140adad80())
             {
-                float fBottom = pFrustum->GetMinZ();
-                if (fBottom < pBox->FUN_140adad00())
+                if (pFrustum->GetMinZ() < pBox->FUN_140adad00())
                 {
                     if (pFrustum->Contains(*(const Vector3*)&pBox->m_kBox.center))
                     {
@@ -793,14 +771,13 @@ bool CBaseCollision::Intersect(CBaseCollision* pShape, CBaseCollision* pTarget)
                 }
             }
         }
+        return bHit;
     }
-    return bHit;
 }
 
 // The world query's per-object filter: can pSelf target pTarget. nFlags: 1 hostile, 2 friendly, 4 ignore the
 // untargetable states, 8 pets (only owner-less ones); nNpcKinds: npc kinds (bit = kind) that are never targets.
 // @0x1409ff8d0
-// MS2-FUNCTIONAL: behaviour from the disassembly; local layout (frame 0x88) not byte-matched yet
 static int FilterTarget(GameObject* pSelf, GameObject* pTarget, unsigned int nFlags, unsigned int nNpcKinds)
 {
     PCBase* pActor = efd::DynamicCast<PCBase>(pSelf);
@@ -835,13 +812,17 @@ static int FilterTarget(GameObject* pSelf, GameObject* pTarget, unsigned int nFl
     {
         return 0;
     }
-    if (pActorPC != NULL && pOtherPC != NULL && FUN_14165ef30(pActorPC) != FUN_14165ef30(pOtherPC))
+    if (pActorPC != NULL && pOtherPC != NULL && (FUN_14165ef30(pActorPC) ^ FUN_14165ef30(pOtherPC)) != 0)
         return 0;
     if (nNpcKinds != 0)
     {
         CNpc* pNpc = FUN_14096e110(pOther);
-        if (pNpc != NULL && (nNpcKinds & (1 << pNpc->FUN_1410934c0())) != 0)
-            return 0;
+        if (pNpc != NULL)
+        {
+            int nKind = pNpc->FUN_1410934c0();
+            if ((nNpcKinds & (1 << nKind)) != 0)
+                return 0;
+        }
     }
     if ((nFlags & 1) != 0)
     {

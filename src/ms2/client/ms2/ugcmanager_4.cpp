@@ -1330,7 +1330,6 @@ void CUgcManager::FUN_141882450(MS2Ptr<CUgcUploadCtrl> spCtrl)
 
 // @0x141882610
 // The current upload (taken under the lock).
-// MS2-FUNCTIONAL: the failed-lock path falls off the end (no return value); the exe has one more nop after the guard dtor
 MS2Ptr<CUgcUploadCtrl> CUgcManager::FUN_141882610()
 {
     if (Unk_LockGuard guard = m_lock)
@@ -2459,7 +2458,6 @@ MS2_REPLACE_METHOD(0x1418885b0, CUgcManager, FUN_1418885b0, 430, 0x33BEC29F);
 
 // @0x141888770
 // Puts pTexture as the decal of the banner object's "Index00MeshName" mesh.
-// MS2-FUNCTIONAL: same calls and flow; the exe frame is 0x20 smaller (stack slots of the temporaries differ)
 int CUgcManager::FUN_141888770(efd::SmartPointer<egf::Entity> spEntity, NiTexture* pTexture)
 {
     if (spEntity == 0)
@@ -2468,11 +2466,10 @@ int CUgcManager::FUN_141888770(efd::SmartPointer<egf::Entity> spEntity, NiTextur
     if (pRoot != 0)
     {
         efd::utf8string strMeshName;
-        spEntity->GetPropertyValue(efd::utf8string("Index00MeshName"), strMeshName);
+        spEntity->GetPropertyValue("Index00MeshName", strMeshName);
         if (!strMeshName.empty())
         {
-            NiAVObject* pMesh = pRoot->GetObjectByName(NiFixedString(strMeshName.c_str()));
-            if (pMesh != 0)
+            if (NiAVObject* pMesh = pRoot->GetObjectByName(strMeshName.c_str()))
             {
                 NiTexturingProperty* pTexturing = NiDynamicCast(NiTexturingProperty, pMesh->GetProperty(NiProperty::TEXTURING));
                 if (pTexturing != 0)
@@ -2644,7 +2641,6 @@ void CUgcManager::FUN_141888de0(int nBannerId, const Unk_BannerDay& day, CRBMap<
 
 // @0x141889150
 // Keeps the decal image of every banner object that has none in the map yet.
-// MS2-FUNCTIONAL: same calls and flow; the exe frame is 0x20 smaller (stack slots of the temporaries differ)
 void CUgcManager::FUN_141889150()
 {
     Unk_UgcBoxPtr<CAtlList<efd::SmartPointer<egf::Entity> > > spList = FUN_1403ed2d0()->FUN_141bd0420(0xc7f9dd65);
@@ -2659,20 +2655,19 @@ void CUgcManager::FUN_141889150()
             int nId;
             spEntity->GetPropertyValue(0x819a96c0, nId);
             int nObjectId = nId;
-            bool bNone = FUN_1418896e0(nId) == 0;
+            bool bNone = FUN_1418896e0(nObjectId) == 0;
             if (bNone)
             {
                 NiAVObject* pRoot = FUN_141b6efc0(spEntity);
                 if (pRoot != 0)
                 {
                     efd::utf8string strMeshName;
-                    spEntity->GetPropertyValue(efd::utf8string("Index00MeshName"), strMeshName);
+                    spEntity->GetPropertyValue("Index00MeshName", strMeshName);
                     efd::utf8string strTexturePath;
-                    spEntity->GetPropertyValue(efd::utf8string("Index00TexturePath"), strTexturePath);
+                    spEntity->GetPropertyValue("Index00TexturePath", strTexturePath);
                     if (!strMeshName.empty())
                     {
-                        NiAVObject* pMesh = pRoot->GetObjectByName(NiFixedString(strMeshName.c_str()));
-                        if (pMesh != 0)
+                        if (NiAVObject* pMesh = pRoot->GetObjectByName(strMeshName.c_str()))
                         {
                             NiTexturingProperty* pTexturing = NiDynamicCast(NiTexturingProperty, pMesh->GetProperty(NiProperty::TEXTURING));
                             if (pTexturing != 0)
@@ -3055,7 +3050,6 @@ MS2_REPLACE_METHOD(0x14188a7c0, CUgcManager, FUN_14188a7c0, 591, 0xD415BDD3);
 
 // @0x14188aa20
 // 1 when the file was downloaded in this session.
-// MS2-FUNCTIONAL: same calls and flow; the exe has a nop after the guard dtor on the fall-off path (no return value)
 int CUgcManager::FUN_14188aa20(const CString& strName)
 {
     if (Unk_LockGuard guard = m_lock)
@@ -3143,7 +3137,6 @@ MS2_REPLACE_METHOD(0x14188b480, CUgcManager, FUN_14188b480, 88, 0x81D22A9B);
 // @0x14188b4e0
 // Clear the download cache (the banner directories are kept), create its directories again and delete the converted
 // images.
-// MS2-FUNCTIONAL: same calls and flow; the exe keeps the _bstr_t("\\") temporary in a low stack slot (frame 0x10 smaller)
 void CUgcManager::FUN_14188b4e0()
 {
     std::set<CStringW> exclude;
@@ -3181,7 +3174,7 @@ void CUgcManager::FUN_14188b4e0()
     HANDLE hFind = FindFirstFileW(strFind, &fd);
     do
     {
-        CString strPath = (const char*)((const wchar_t*)strConvert + _bstr_t("\\"));
+        CString strPath = (const char*)operator+((const wchar_t*)strConvert, "\\");
         strPath += fd.cFileName;
         DeleteFileA(strPath);
     } while (FindNextFileW(hFind, &fd));
@@ -3700,7 +3693,6 @@ MS2_REPLACE_METHOD(0x14188e200, CUgcManager, FUN_14188e200, 938, 0xC12C1044);
 
 // @0x14188e5b0
 // The look of one of my items was changed (0xe: an item of the cube inventory).
-// MS2-FUNCTIONAL: same calls and flow; the exe materializes both viewer checks as bool temporaries (frame 0x10 larger)
 void CUgcManager::FUN_14188e5b0(CInPacket& packet, int nType)
 {
     int nObjectId = packet.ReadInt32();
@@ -3724,7 +3716,7 @@ void CUgcManager::FUN_14188e5b0(CInPacket& packet, int nType)
         return;
     spItem->FUN_140528300(&look);
     MS2Ptr<CUgcUploadCtrl> spCtrl = FUN_141882610();
-    if (spCtrl.get() != 0 && spCtrl->m_spViewer.get() != 0)
+    if ((spCtrl.get() ? true : false) && (spCtrl->m_spViewer.get() ? true : false))
         spCtrl->m_spViewer->vfunc_12(itemUid);
     UIUGCItemEditDialog* pDialog = FUN_140eeff60(0x4e69);
     if (pDialog != 0 && pDialog->vfunc_55() == 0)

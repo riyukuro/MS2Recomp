@@ -49,7 +49,7 @@ Unk_MoveErrConfig* FUN_1401d31f0();
 void FUN_140cc2650(i64 ctx, i64* pOut, int* pValue);
 void FUN_140cc2770(i64 ctx, i64 value, i64* pOut);
 i64 FUN_140cc27a0(int* pValue);
-i64 FUN_140cc27c0();
+i64 FUN_140cc27c0(int* pValue);
 
 // fmt::internal::MakeValue<int>: box the int (tag 1) and hand it to the formatter.
 // @0x140cc2650
@@ -80,13 +80,13 @@ Unk_FmtArg* FUN_140cc2570(Unk_FmtArg* pOut, int* pValue)
 
 // The argument-type id handed to make_args for this lambda.
 // @0x140cc27a0
-i64 FUN_140cc27a0(int*)
+i64 FUN_140cc27a0(int* pValue)
 {
-    return FUN_140cc27c0();
+    return FUN_140cc27c0(pValue);
 }
 
 // @0x140cc27c0
-i64 FUN_140cc27c0()
+i64 FUN_140cc27c0(int*)
 {
     return 0xd;
 }
@@ -96,10 +96,8 @@ i64 FUN_140cc27c0()
 CStringW FUN_140cc25a0(CStringW strKey, int* pValue)
 {
     Unk_FmtArg arg;
-    FUN_140cc2570(&arg, pValue);
     Unk_FmtPack pack;
-    FUN_140163e50(&pack, FUN_140cc27a0(pValue), arg);
-    return FUN_14028dfa0(strKey, pack);
+    return FUN_14028dfa0(strKey, *FUN_140163e50(&pack, FUN_140cc27a0(pValue), *FUN_140cc2570(&arg, pValue)));
 }
 
 // @0x140cc27d0 - the CRT's bounds-checked memmove_s (UCRT static-inline copy, unreferenced in this TU).

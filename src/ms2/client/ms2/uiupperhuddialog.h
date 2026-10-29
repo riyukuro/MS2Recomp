@@ -24,14 +24,23 @@ class CMsTime;
 class UIPcBangDialog;
 class Unk_UISwfEntity_25;
 
+// The plain xyz that the divide helper 0x140ae9180 returns; Unk_HudStreamPoint is built from it.
+struct Unk_HudXyz
+{
+    Unk_HudXyz();                   // declared only (an all-float aggregate would get a GS cookie)
+    float x, y, z;
+};
+
 // A 12-byte xyz value with its own ctor/assign (not the shared Vector3, whose ctor lives at 0x1402bd040).
 struct Unk_HudStreamPoint
 {
     Unk_HudStreamPoint();                                           // 0x1405522f0
     explicit Unk_HudStreamPoint(const void* p);                     // 0x14027dcf0 copy from an xyz
+    Unk_HudStreamPoint(const Unk_HudXyz& k);                        // 0x14027dcf0 (same copy)
     Unk_HudStreamPoint& operator=(const Unk_HudStreamPoint&);       // 0x14097fad0
+    Unk_HudStreamPoint& operator=(Unk_HudStreamPoint&&);            // 0x14097faa0
     Unk_HudStreamPoint FUN_14097fc90(float f) const;                // operator*(float)
-    Unk_HudStreamPoint FUN_140ae9180(float f) const;                // operator/(float)
+    Unk_HudXyz FUN_140ae9180(float f) const;                        // operator/(float)
     float x, y, z;
 };
 
@@ -168,7 +177,7 @@ public:
     virtual bool vfunc_90(POINT* pPos);                                       // 90 0x14135f840 hit test (window -> view coordinates)
 
     void FUN_14135ec00(const CString& strUrl, bool bOnce);
-    bool IsVisible() const;
+    int IsVisible() const;
     void FUN_14135eda0(int nWidth, int nHeight);
     void FUN_14135f7f0();
 

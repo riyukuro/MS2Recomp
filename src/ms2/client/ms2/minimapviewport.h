@@ -27,10 +27,9 @@ struct Unk_MvPoint3 : Unk_GVec3
 MS2_CHECK_SIZE(Unk_MvPoint3, 12);
 
 // efd::Matrix3 / NiMatrix3 (0x24), the rotation the view matrix is built from. Its default ctor is the exe's
-// 0x1409f72e0 (called explicitly, see the .cpp).
+// 0x1409f72e0, called explicitly (see the .cpp), so the view itself declares none.
 struct Unk_MvMatrix3
 {
-    Unk_MvMatrix3() {}                                          // 0x1409f72e0 efd::Matrix3::Matrix3()
     void FUN_142083d40(float fX, float fY, float fZ);           // 0x142083d40 efd::Matrix3::FromEulerAnglesXYZ (radians)
     void FUN_140a01190(unsigned uiCol, Unk_GVec3& kCol) const;  // 0x140a01190 efd::Matrix3::GetCol
     float m_afEntry[3][3];
@@ -53,7 +52,7 @@ public:
     void FUN_141486a20(Unk_GVec3 kRot, Unk_GVec3& kAxisX, Unk_GVec3& kAxisY, Unk_GVec3& kAxisZ);   // 0x141486a20
     void FUN_1414863e0();                                                           // 0x1414863e0 (m_fScale = 1)
     // Projects a world position onto the minimap with the current zoom.
-    void FUN_141486410(const Unk_GVec3& kPos, Unk_GVec3& kOut);                     // 0x141486410
+    bool FUN_141486410(const Unk_GVec3& kPos, Unk_GVec3& kOut);                     // 0x141486410
     bool FUN_141486450(const Unk_GVec3& kPos, Unk_GVec3& kOut, float fScale);       // 0x141486450
     bool FUN_141486410(const NiPoint3& kPos, NiPoint3& kOut);                      // 0x141486410 (NiPoint3 form, returns the in-view flag; uiminimapentity.cpp)
     // Transforms a world position by m_afMatrix; false (and FLT_MAX outputs) when it is behind the camera.

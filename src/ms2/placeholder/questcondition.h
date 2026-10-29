@@ -13,7 +13,7 @@ struct ConditionContext
 struct ConditionUserFindContext : public ConditionContext
 {
     ConditionUserFindContext();
-    ~ConditionUserFindContext();
+    // ~ConditionUserFindContext is implicit (0x1416c7df0): the exe dtor stores no vptr.
     int FUN_1402a90e0() override;
     void* m_user;
     unsigned short m_level;

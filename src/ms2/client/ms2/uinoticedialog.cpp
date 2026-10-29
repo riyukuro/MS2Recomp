@@ -23,8 +23,12 @@
     (void)((!!(expression)) || (_wassert(_CRT_WIDE(#expression), L"e:\\build\\kr\\22_04\\ms2code\\client\\gfxlib\\ascript.inl", (unsigned)(line)), 0))
 
 // ---- exe callees ----
+class Unk_AasSource;
 struct Unk_AasSourcePtr                                                     // the image source handle (16 bytes, pointer at +8)
 {
+    Unk_AasSourcePtr(Unk_AasSource* pRaw);                                  // 0x140d03040 wraps a raw object (AddRef)
+    Unk_AasSourcePtr(const Unk_AasSourcePtr& other);
+    ~Unk_AasSourcePtr();                                                    // 0x140d03100
     void* m_0;
     void* m_p;
 };
@@ -57,7 +61,7 @@ class Unk_NdBrowserMgr                                                      // t
 public:
     void FUN_141b78aa0(int nId, int n);
     void FUN_141b794e0(CString* pPage, const char* pszUrl);                 // remember the url in the dialog's page
-    void FUN_141b78b40(int a, int nId);
+    void FUN_141b78b40(bool a, int nId);
 };
 Unk_NdBrowserMgr* FUN_140cc18a0();
 class Unk_NdFeatures { public: bool FUN_14036d570(int nFeature); };
@@ -85,8 +89,7 @@ public:
 };
 
 Unk_AasImage* FUN_140d03240(Unk_AasImagePtr* p);                            // operator->
-Unk_AasSourcePtr FUN_140d03040(Unk_AasSource* pRaw);                                 // wraps a raw object
-void FUN_1422e5530(Unk_AasImage* pImage, const Unk_AasSourcePtr& spSource);
+void FUN_1422e5530(Unk_AasImage* pImage, Unk_AasSourcePtr spSource);
 void FUN_1422e55c0(Unk_AasImage* pImage, bool b);
 
 // ---- AScript::FUN_141009c70 ----
@@ -175,26 +178,25 @@ void UINoticeDialog::vfunc_43()
 }
 
 // @0x141008f30
-// MS2-FUNCTIONAL: null-check branch layout (the exe materializes the bool compare)
 void UINoticeDialog::vfunc_72()
 {
     UIDialog::vfunc_72();
-    if (FUN_140ba28d0(&m_30, 0) == 0 && m_nHideAt != 0 && FUN_140869420() > m_nHideAt)
+    if (FUN_140ba28d0(&m_30, 0))
+        return;
+    if (m_nHideAt != 0 && FUN_140869420() > m_nHideAt)
         FUN_141009a60();
 }
 
 // @0x141008fa0
-// MS2-FUNCTIONAL: the temporaries of the nested new expressions differ (the exe builds the source handle in place)
 void UINoticeDialog::vfunc_85()
 {
-    if (FUN_140acd940(&m_renderTarget, 0) == 0)
-    {
-        vfunc_86();
-        m_spImage.AssignRaw(new Unk_AasImage(2));
-        FUN_1422e5530(FUN_140d03240(&m_spImage), FUN_140d03040(new Unk_AasSource(StringFormat(L"img://{0}:webBrowser/{1}/{2}", FUN_1422db6e0(), m_renderTarget->FUN_1422c1340(), m_renderTarget->FUN_1422c13b0()), 2)));
-        m_renderTarget->FUN_1422c6900(m_spImage->FUN_1422bb890());
-        FUN_140cc18a0()->FUN_141b78aa0(m_nBrowserId, 0);
-    }
+    if (FUN_140acd940(&m_renderTarget, 0))
+        return;
+    vfunc_86();
+    m_spImage.AssignRaw(new Unk_AasImage(2));
+    FUN_1422e5530(FUN_140d03240(&m_spImage), Unk_AasSourcePtr(new Unk_AasSource(StringFormat(L"img://{0}:webBrowser/{1}/{2}", FUN_1422db6e0(), m_renderTarget->FUN_1422c1340(), m_renderTarget->FUN_1422c13b0()), 2)));
+    m_renderTarget->FUN_1422c6900(m_spImage->FUN_1422bb890());
+    FUN_140cc18a0()->FUN_141b78aa0(m_nBrowserId, 0);
 }
 
 // @0x1410092a0
@@ -216,14 +218,12 @@ void UINoticeDialog::vfunc_77()
 }
 
 // @0x1410093f0
-// MS2-FUNCTIONAL: null-check branch layout (the exe materializes the bool compare)
 void UINoticeDialog::vfunc_87(SIZE* pSize)
 {
-    if (FUN_140acd940(&m_renderTarget, 0) == 0)
-    {
-        pSize->cx = m_renderTarget->FUN_1422c1340();
-        pSize->cy = m_renderTarget->FUN_1422c13b0();
-    }
+    if (FUN_140acd940(&m_renderTarget, 0))
+        return;
+    pSize->cx = m_renderTarget->FUN_1422c1340();
+    pSize->cy = m_renderTarget->FUN_1422c13b0();
 }
 
 // @0x141009470
@@ -248,14 +248,18 @@ bool UINoticeDialog::vfunc_90(POINT* pPos)
 }
 
 // @0x141009680
-// MS2-FUNCTIONAL: flag sub-object access and bool compare layout differ
 void UINoticeDialog::OnNoticeDialog(NotifyObject* pNotify)
 {
-    Unk_NdFlag* pFlag = &pNotify->m_8;
-    if (pFlag->vfunc_1() == 0 && FUN_141924630())
+    int bFlag = (&pNotify->m_8)->vfunc_1();
+    switch (bFlag)
     {
-        FUN_141009950(*static_cast<Client::Constants*>(FUN_1401d3200())->NoticeDialogOpenSeconds.Get());
-        FUN_141009980();
+    case 0:
+        if (FUN_141924630())
+        {
+            FUN_141009950(*static_cast<Client::Constants*>(FUN_1401d3200())->NoticeDialogOpenSeconds.Get());
+            FUN_141009980();
+        }
+        break;
     }
 }
 
@@ -284,29 +288,26 @@ void UINoticeDialog::FUN_1410097a0(const Scaleform::GFx::FunctionHandler::Params
 }
 
 // @0x1410097d0
-// MS2-FUNCTIONAL: null-check branch layout (the exe materializes the bool compare)
 void UINoticeDialog::FUN_1410097d0()
 {
-    if (FUN_140e04c20(&m_90, 0) == 0)
-    {
-        if (m_90->FUN_1422c2420() == "show")
-            FUN_141009a60();
-        else
-            FUN_141009980();
-    }
+    if (FUN_140e04c20(&m_90, 0))
+        return;
+    if (m_90->FUN_1422c2420() == "show")
+        FUN_141009a60();
+    else
+        FUN_141009980();
 }
 
 // @0x141009870
-// MS2-FUNCTIONAL: a discarded bool result is widened in the exe; temporaries differ
 void UINoticeDialog::FUN_141009870()
 {
     CString strUrl(*reinterpret_cast<Unk_NdConfigString*>(&static_cast<Client::Constants*>(FUN_1401d3200())->NoticeDialogUrl)->FUN_140298f80());
     if (strUrl.IsEmpty())
         return;
-    FUN_140166410()->FUN_14036d570(0x5c);
-    const char* pszUrl = strUrl;
-    CString* pPage = &m_strUrl;
-    FUN_140cc18a0()->FUN_141b794e0(pPage, pszUrl);
+    if (FUN_140166410()->FUN_14036d570(0x5c))
+    {
+    }
+    FUN_140cc18a0()->FUN_141b794e0(&m_strUrl, strUrl);
     FUN_140cc18a0()->FUN_141b78b40(1, m_nBrowserId);
 }
 

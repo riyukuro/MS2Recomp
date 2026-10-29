@@ -149,7 +149,6 @@ bool MS2OuterGlowCharacterMaterial::GeneratePixelShadeTree(Context& kContext, Ni
 MS2_REPLACE_METHOD(0x14276FF60, MS2OuterGlowCharacterMaterial, GeneratePixelShadeTree, 1555, 0xA852492F);
 
 //--------------------------------------------------------------------------------------------------
-// MS2-FUNCTIONAL: exe keeps the base result in edi with a different frame; same behaviour
 // @0x142770580
 NiFragmentMaterial::ReturnCode MS2OuterGlowCharacterMaterial::GenerateShaderDescArray(
     NiMaterialDescriptor* pkMaterialDescriptor, RenderPassDescriptor* pkRenderPasses, unsigned int uiMaxCount,
@@ -157,21 +156,21 @@ NiFragmentMaterial::ReturnCode MS2OuterGlowCharacterMaterial::GenerateShaderDesc
 {
     ReturnCode eResult = MS2StandardMaterial::GenerateShaderDescArray(pkMaterialDescriptor, pkRenderPasses,
         uiMaxCount, uiCountAdded);
-    if (eResult != RC_SUCCESS)
-        return eResult;
-
-    NiStandardVertexProgramDescriptor* pkVertexDesc =
-        (NiStandardVertexProgramDescriptor*)pkRenderPasses[0].m_pkVertexDesc;
-    NiStandardPixelProgramDescriptor* pkPixelDesc =
-        (NiStandardPixelProgramDescriptor*)pkRenderPasses[0].m_pkPixelDesc;
-    pkVertexDesc->m_kIdentifier = "NiStandardVertexProgramDescriptor";
-    pkPixelDesc->m_kIdentifier = "NiStandardPixelProgramDescriptor";
-
-    // APPLYMODE set: a world view vector in both stages
-    if (pkMaterialDescriptor->m_pkBitArray[0] & 0x200)
+    if (eResult == RC_SUCCESS)
     {
-        pkVertexDesc->m_pkBitArray[0] |= 0x10;  // OUTPUTWORLDVIEW
-        pkPixelDesc->m_pkBitArray[0] |= 0x10;   // WORLDVIEW
+        NiStandardVertexProgramDescriptor* pkVertexDesc =
+            (NiStandardVertexProgramDescriptor*)pkRenderPasses[0].m_pkVertexDesc;
+        NiStandardPixelProgramDescriptor* pkPixelDesc =
+            (NiStandardPixelProgramDescriptor*)pkRenderPasses[0].m_pkPixelDesc;
+        pkVertexDesc->m_kIdentifier = "NiStandardVertexProgramDescriptor";
+        pkPixelDesc->m_kIdentifier = "NiStandardPixelProgramDescriptor";
+
+        // APPLYMODE set: a world view vector in both stages
+        if (pkMaterialDescriptor->m_pkBitArray[0] & 0x200)
+        {
+            pkVertexDesc->m_pkBitArray[0] |= 0x10;  // OUTPUTWORLDVIEW
+            pkPixelDesc->m_pkBitArray[0] |= 0x10;   // WORLDVIEW
+        }
     }
 
     return eResult;

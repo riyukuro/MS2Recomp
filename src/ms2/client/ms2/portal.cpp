@@ -106,7 +106,7 @@ extern char DAT_143afa4f0;                                          // NiTexturi
 NiTexturingProperty::Map* FUN_14109a6b0(NiTexturingProperty* pProp);   // GetBaseMap
 void FUN_140981040(NiTexturingProperty::Map* pMap, void* pTexture);    // SetTexture
 void* FUN_140a0afd0();                                              // texture manager
-void FUN_141552f90(void* pMgr, void* pOutTexture, CString strPath, char bFlag);   // load a texture
+void FUN_141552f90(void* pMgr, void* pOutTexture, CString strPath, int nFlags);   // load a texture
 void* FUN_14097fbf0(void* pTexture);                                // texture pointer
 void FUN_14097f4a0(void* pTexture);                                 // release
 
@@ -216,14 +216,14 @@ bool CPortal::FUN_14169b650(efd::SmartPointer<egf::Entity> spEntity)
 // @0x14169b890
 bool CPortal::FUN_14169b890()
 {
-    if (m_nEndTime != 0)
+    if (m_nEndTime > 0)
     {
         egf::Entity* pEntity = FUN_1411cf440(FUN_1409670f0(), m_idEntity);
         if (pEntity == 0)
             return false;
         Vector3 ptPos = DAT_143b01a60;
         FUN_1409618c0(pEntity, 0xfd95ca52, &ptPos);
-        m_tooltip = new UIDebugTooltip(CString(""));
+        m_tooltip.AssignRaw(new UIDebugTooltip(CString("")));
         m_tooltip->SetFollowsAnchor(0);
         Vector3 ptCopy = ptPos;
         m_tooltip->FUN_14191aae0(ptCopy);
@@ -281,11 +281,16 @@ bool CPortal::FUN_14169ba90()
 // @0x14169bd40
 void CPortal::FUN_14169bd40()
 {
-    if ((m_nType == 6 || m_nType == 3 || m_nType == 10 || m_nType == 0x10) && m_nEndTime != 0 && m_tooltip.get() != 0)
+    if ((m_nType == 6 || m_nType == 3 || m_nType == 10 || m_nType == 0x10) && m_nEndTime > 0 && m_tooltip.get() != 0)
     {
         CStringW strText;
         unsigned nNow = FUN_141473390(FUN_14086d260());
-        if (nNow < m_nEndTime)
+        if (nNow >= m_nEndTime)
+        {
+            strText = L"00:00";
+            m_nEndTime = 0;
+        }
+        else
         {
             unsigned nRemain = m_nEndTime - nNow;
             int nSeconds = (int)FUN_14028d280(nRemain);
@@ -297,18 +302,12 @@ void CPortal::FUN_14169bd40()
                     FUN_140ae1e80(pNode, 1.0f, 0.0f, 0.0f, FUN_14028d280(500), m_idEntity);
             }
             CStringW strTime;
-            unsigned nSecond = nSeconds % 60;
-            strTime.Format(L"%02d:%02d", nSeconds / 60, nSecond);
+            strTime.Format(L"%02d:%02d", nSeconds / 60, nSeconds % 60);
             if (FUN_140164830(m_strTime, strTime))
             {
                 strText = strTime;
                 m_strTime = strTime;
             }
-        }
-        else
-        {
-            strText = L"00:00";
-            m_nEndTime = 0;
         }
         if (strText.GetLength() > 0)
         {
@@ -321,7 +320,7 @@ void CPortal::FUN_14169bd40()
     if (m_nEventTime != 0)
     {
         unsigned nTick = FUN_141472bc0();
-        if (m_nEventTime < nTick)
+        if (nTick > m_nEventTime)
         {
             m_nEventTime = 0;
             FUN_14169cd50(1, 1);
@@ -374,19 +373,19 @@ CStringW CPortal::FUN_14169c3b0()
     switch (m_nType)
     {
     case 8:
-        return GetStringCommonByKey(CStringW(L"s_action_portal_DungeonLobby"));
+        return GetStringCommonByKey(L"s_action_portal_DungeonLobby");
     case 9:
-        return GetStringCommonByKey(CStringW(L"s_action_portal_DungeonRoomIn"));
+        return GetStringCommonByKey(L"s_action_portal_DungeonRoomIn");
+    case 0xc:
+        return GetStringCommonByKey(L"s_action_portal_ChaosDungeon");
+    case 0xd:
+        return GetStringCommonByKey(L"s_action_portal_MoveBackupField");
+    case 0xe:
+        return GetStringCommonByKey(L"s_action_portal_ReverseRaid");
+    case 0x12:
+        return GetStringCommonByKey(L"s_action_portal_RandomTarget");
     default:
         return GetStringCommon(0x632);
-    case 0xc:
-        return GetStringCommonByKey(CStringW(L"s_action_portal_ChaosDungeon"));
-    case 0xd:
-        return GetStringCommonByKey(CStringW(L"s_action_portal_MoveBackupField"));
-    case 0xe:
-        return GetStringCommonByKey(CStringW(L"s_action_portal_ReverseRaid"));
-    case 0x12:
-        return GetStringCommonByKey(CStringW(L"s_action_portal_RandomTarget"));
     }
 }
 

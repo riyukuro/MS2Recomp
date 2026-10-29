@@ -14,6 +14,7 @@
 #include <egf/Entity.h>
 #include <egf/FlatModel.h>
 #include <efd/utf8string.h>
+#include <efd/SmartPointer.h>
 
 #include "stateidle.h"
 
@@ -64,13 +65,13 @@ public:
     int FUN_141659610();                                 // sitting
     int FUN_141659690();                                 // lying
     int FUN_141654700();                                 // the job
+    int FUN_141661970();                                 // busy (a count at +0x10ec, a flag at +0x10f0 or the +0x748 timer)
     MS2Ptr<Unk_PCD88> FUN_14165c2d0();                   // copies the +0xd88 pointer out
     CString FUN_14165e010(int nKey);                     // the player's sound name of a key
     void FUN_14165e2a0(void* pStr, int nKey);            // the player's animation name of a key
 };
 // The actor's +0xd00 action table lookup (returns an int; pcbase.h declares it void).
 class Unk_SiActor { public: int FUN_141679120(int n); };
-inline Unk_SiActor* AsActor(PCBase* p) { return reinterpret_cast<Unk_SiActor*>(p); }
 #define AsPC(p) reinterpret_cast<Unk_SiPC*>(p)
 
 // The efd::utf8string the exe builds out of line (ctor 0x1409989e0, dtor 0x1408a8900; 0x20 bytes).
@@ -95,8 +96,8 @@ struct Unk_SiString
 class Unk_SiAnimSvc
 {
 public:
-    unsigned FUN_140b7f6a0(const Unk_GoModelKey& kKey);
-    NiActorManager* FUN_140999440(const Unk_GoModelKey& kKey);
+    unsigned FUN_140b7f6a0(const egf::EntityID& kKey);
+    NiActorManager* FUN_140999440(const egf::EntityID& kKey);
 };
 Unk_SiAnimSvc* FUN_141b6f910();
 unsigned FUN_1409a1a00(NiActorManager* pMgr);              // 0x1409a1a00 the manager's target animation
@@ -202,7 +203,6 @@ void StateIdle::vfunc_4(StateData* pData)
 }
 
 // @0x1417cd680
-// MS2-FUNCTIONAL: slot 68 takes the move point by value in the exe, but the shared header declares void*.
 void StateIdle::vfunc_3(double fTime)
 {
     State::vfunc_3(fTime);
@@ -229,8 +229,8 @@ int StateIdle::vfunc_15()
 }
 
 // @0x1417cd770
-// MS2-FUNCTIONAL: slot 22 of GameObject takes the point by value in the exe (second 12-byte copy), but the shared
-// header declares it by reference; the sit / lie action pointer is a plain MS2Ptr.
+// MS2-FUNCTIONAL: slot 22 of GameObject takes the point by value in the exe (the returned point is copied into the
+// argument slot), but the shared header declares it by reference.
 void StateIdle::vfunc_8(double fTime)
 {
     State::vfunc_8(fTime);
@@ -244,41 +244,38 @@ void StateIdle::vfunc_8(double fTime)
         return;
     int nWater = m_pOwner->FUN_141675ed0();
     Unk_SiBuffMgr* pBuff = static_cast<Unk_SiBuffMgr*>(m_pOwner->FUN_14166d240());
-    Vector3 kPos = pBuff->FUN_141683290();
-    Vector3 kArg = kPos;
-    m_pOwner->vfunc_22(*reinterpret_cast<const efd::Point3*>(&kArg));
-    if (m_pOwner->FUN_141676b70() == 0)
-    {
-        if (m_n10 == 0xc)
-            vfunc_2(1);
-    }
-    else
+    Vector3 kPos = static_cast<const Vector3&>(pBuff->FUN_141683290());
+    m_pOwner->vfunc_22(*reinterpret_cast<const efd::Point3*>(&kPos));
+    if (m_pOwner->FUN_141676b70() != 0)
     {
         vfunc_2(0xc);
+    }
+    else if (m_n10 == 0xc)
+    {
+        vfunc_2(1);
     }
     if (pPC != 0 && pBuff->FUN_141683100(0x30d41))
     {
         egf::Entity* pEntity = FUN_141659af0(pPC, 1);
         if (pEntity != 0)
         {
-            if (pPC->FUN_1416764a0() == 0)
+            if (pPC->FUN_1416764a0() != 0)
             {
-                pPC->FUN_1415248d0(1, 0);
-            }
-            else
-            {
-                RideOffActionTakeLR* pAction = new RideOffActionTakeLR(1);
-                MS2Ptr<RideOffAction> spAction(pAction);
-                pAction->m_n28 = 1;
+                MS2Ptr<RideOffActionTakeLR> spAction(new RideOffActionTakeLR(1));
+                spAction->m_n28 = 1;
                 if (FUN_1408a9bd0(pEntity)->ContainsModel(0xbadf0a13))
                 {
-                    pAction->m_n2c = 0xbadf0a13;
+                    spAction->m_n2c = 0xbadf0a13;
                 }
                 else if (FUN_1408a9bd0(pEntity)->ContainsModel(0xc13e30c8))
                 {
-                    pAction->m_n2c = 0xc13e30c8;
+                    spAction->m_n2c = 0xc13e30c8;
                 }
                 pPC->SendRequestRideMode1(spAction.get());
+            }
+            else
+            {
+                pPC->FUN_1415248d0(1, 0);
             }
         }
     }
@@ -294,31 +291,29 @@ void StateIdle::vfunc_8(double fTime)
     {
         m_pOwner->vfunc_59(2, 0, 0, 0);
     }
-    else if (pBuff->FUN_141682fe0(0x493e5) == 0 || nWater != 0)
+    else if (pBuff->FUN_141682fe0(0x493e5) && nWater == 0)
     {
-        FUN_1417b9460();
+        m_pOwner->vfunc_59(3, 0, 0, 0);
     }
     else
     {
-        m_pOwner->vfunc_59(3, 0, 0, 0);
+        FUN_1417b9460();
     }
     if (nWater == 0)
         FUN_1417cef60();
 }
 
 // @0x1417cdbb0
-// MS2-FUNCTIONAL: the exe holds the ridee in a CComPtr (temp + EH frame); a raw pointer is used here
 void StateIdle::vfunc_9(double fTime)
 {
     State::vfunc_9(fTime);
-    Unk_GoModelKey kKey;
-    Unk_GoModelKey& rKey = m_pOwner->FUN_14123c460(kKey);
-    unsigned nSeq = FUN_141b6f910()->FUN_140b7f6a0(rKey);
+    efd::UInt64 qwKey;
+    unsigned nSeq = FUN_141b6f910()->FUN_140b7f6a0(m_pOwner->FUN_14123c460(reinterpret_cast<egf::EntityID&>(qwKey)));
     const efd::ClassInfo* pDesc;
-    if (m_pOwner == 0)
-        pDesc = 0;
-    else
+    if (m_pOwner != 0)
         pDesc = m_pOwner->GetClassDesc();
+    else
+        pDesc = 0;
     if (!FUN_14087ddc0(pDesc, 0x6200044))
     {
         int nWater = m_pOwner->FUN_141675ed0();
@@ -327,147 +322,149 @@ void StateIdle::vfunc_9(double fTime)
             m_pOwner->vfunc_59(5, 0, 0, 0);
             return;
         }
-        PCBase* pPC = FUN_1417b8370();
-        if (FUN_1417b84b0() != 0)
+        else
         {
-            Ridee* pRidee = FUN_141468360(m_pOwner);
-            if (pRidee != 0)
+            PCBase* pPC = FUN_1417b8370();
+            if (FUN_1417b84b0() != 0)
             {
-                if (pRidee->FUN_1417075e0() != 0)
-                    nWater = 0;
-            }
-            if (nWater == 0)
-            {
-                if (pPC != 0)
+                efd::SmartPointer<Ridee> spRidee(FUN_141468360(m_pOwner));
+                if (spRidee ? true : false)
+                {
+                    if (spRidee->FUN_1417075e0() != 0)
+                        nWater = 0;
+                }
+                if (nWater != 0)
+                {
+                    vfunc_2(7);
+                }
+                else if (pPC != 0)
                 {
                     if (m_n10 == 7)
                         vfunc_2(1);
-                    if (AsPC(pPC)->FUN_141659610() == 0)
-                    {
-                        if (AsPC(pPC)->FUN_141659690() == 0)
-                        {
-                            if (m_n10 == 8 || m_n10 == 9)
-                                vfunc_2(1);
-                        }
-                        else
-                        {
-                            vfunc_2(8);
-                        }
-                    }
-                    else
+                    if (AsPC(pPC)->FUN_141659610() != 0)
                     {
                         vfunc_2(9);
                     }
+                    else if (AsPC(pPC)->FUN_141659690() != 0)
+                    {
+                        vfunc_2(8);
+                    }
+                    else if (m_n10 == 8 || m_n10 == 9)
+                    {
+                        vfunc_2(1);
+                    }
                 }
             }
-            else
+            if (m_n10 != 7 && m_nSoundIdle != 0)
             {
-                vfunc_2(7);
+                FUN_1417cf210();
+                return;
             }
         }
-        if (m_n10 != 7 && m_nSoundIdle != 0)
-        {
-            FUN_1417cf210();
-            return;
-        }
     }
-    switch (m_n10 - 1)
+    switch (m_n10)
     {
-    case 0:
-        FUN_1417ce6f0(nSeq);
+    case 0xc:
+    {
+        Unk_SiString kName(m_pOwner->vfunc_123(0x1e));
+        m_pOwner->FUN_14166dd20(SI_STR(kName), 1.0f, false, false);
+    }
+        break;
+    case 6:
+        FUN_1417ce9f0(nSeq);
         break;
     case 1:
+        FUN_1417ce6f0(nSeq);
+        break;
+    case 0x14:
+        FUN_1417cee40(nSeq);
+        break;
+    case 0x15:
+        FUN_1417cee90(nSeq);
+        break;
     case 2:
     case 3:
     case 4:
+    case 5:
         FUN_1417ce820(nSeq);
         break;
-    case 5:
-        FUN_1417ce9f0(nSeq);
-        break;
-    case 6:
+    case 7:
         FUN_1417ceab0(nSeq);
         break;
-    case 7:
+    case 8:
         FUN_1417ceca0(nSeq);
         break;
-    case 8:
+    case 9:
         FUN_1417ced70(nSeq);
         break;
-    case 9:
+    case 0xa:
         if (m_pOwner->vfunc_65() != 0)
             m_pOwner->FUN_14166ce70(0);
         if (m_pOwner->FUN_14166dda0(0x3d))
             m_pOwner->FUN_14166f8f0(0, 1);
         break;
-    case 10:
-    {
-        if (m_pOwner->vfunc_65() != 0)
-            m_pOwner->FUN_14166ce70(0);
-        Unk_SiString kName("FittingDoll_Idle_A");
-        bool bPlayed = m_pOwner->FUN_14166dd20(SI_STR(kName), 1.0f, false, false);
-        if (bPlayed)
-            m_pOwner->FUN_14166f8f0(0, 1);
-        break;
-    }
     case 0xb:
     {
-        Unk_SiString kName(m_pOwner->vfunc_123(0x1e));
-        m_pOwner->FUN_14166dd20(SI_STR(kName), 1.0f, false, false);
-        break;
+        if (m_pOwner->vfunc_65() != 0)
+            m_pOwner->FUN_14166ce70(0);
+        bool bPlayed;
+        {
+            Unk_SiString kName("FittingDoll_Idle_A");
+            bPlayed = m_pOwner->FUN_14166dd20(SI_STR(kName), 1.0f, false, false);
+        }
+        if (bPlayed)
+            m_pOwner->FUN_14166f8f0(0, 1);
     }
-    case 0xc:
-        FUN_1417ce970(nSeq);
         break;
-    case 0xd:
-        FUN_1417ce9b0(nSeq);
-        break;
-    case 0x13:
-        FUN_1417cee40(nSeq);
-        break;
-    case 0x14:
-        FUN_1417cee90(nSeq);
-        break;
-    case 0x15:
+    case 0x16:
     {
         if (m_pOwner->vfunc_65() != 0)
             m_pOwner->FUN_14166ce70(0);
-        Unk_SiString kName("Emotion_MusicStart_A");
-        bool bPlayed = m_pOwner->FUN_14166dd20(SI_STR(kName), 1.0f, false, false);
+        bool bPlayed;
+        {
+            Unk_SiString kName("Emotion_MusicStart_A");
+            bPlayed = m_pOwner->FUN_14166dd20(SI_STR(kName), 1.0f, false, false);
+        }
         if (bPlayed)
             m_pOwner->FUN_14166f8f0(0, 1);
-        break;
     }
-    case 0x4b:
+        break;
+    case 0xd:
+        FUN_1417ce970(nSeq);
+        break;
+    case 0xe:
+        FUN_1417ce9b0(nSeq);
+        break;
+    case 0x4c:
     {
         Unk_SiString kName("Equip_Change_Cap_A");
         m_pOwner->FUN_14166dd20(SI_STR(kName), 1.0f, false, false);
-        break;
     }
-    case 0x4d:
+        break;
+    case 0x4e:
     {
         Unk_SiString kName("Equip_Change_Body_A");
         m_pOwner->FUN_14166dd20(SI_STR(kName), 1.0f, false, false);
-        break;
     }
-    case 0x50:
-    {
-        Unk_SiString kName("Equip_Change_Glove_A");
-        m_pOwner->FUN_14166dd20(SI_STR(kName), 1.0f, false, false);
         break;
-    }
-    case 0x51:
-    {
-        Unk_SiString kName("Equip_Change_Mantle_A");
-        m_pOwner->FUN_14166dd20(SI_STR(kName), 1.0f, false, false);
-        break;
-    }
-    case 0x52:
+    case 0x53:
     {
         Unk_SiString kName("Equip_Change_Shoes_A");
         m_pOwner->FUN_14166dd20(SI_STR(kName), 1.0f, false, false);
-        break;
     }
+        break;
+    case 0x51:
+    {
+        Unk_SiString kName("Equip_Change_Glove_A");
+        m_pOwner->FUN_14166dd20(SI_STR(kName), 1.0f, false, false);
+    }
+        break;
+    case 0x52:
+    {
+        Unk_SiString kName("Equip_Change_Mantle_A");
+        m_pOwner->FUN_14166dd20(SI_STR(kName), 1.0f, false, false);
+    }
+        break;
     }
 }
 
@@ -475,21 +472,18 @@ void StateIdle::vfunc_9(double fTime)
 void StateIdle::EndOfSequence(NiActorManager* pkManager, unsigned int eSequenceID, NiControllerSequence* pkSeq,
     float fEventTime)
 {
-    if (!m_pOwner->FUN_14166de90(0x27, eSequenceID))
-    {
-        if (m_pOwner->FUN_14166de90(0x49, eSequenceID))
-        {
-            vfunc_2(0x15);
-            unsigned nSeq = FUN_1409a1a00(pkManager);
-            FUN_1417cee90(nSeq);
-            FUN_1417cf360();
-        }
-    }
-    else
+    if (m_pOwner->FUN_14166de90(0x27, eSequenceID))
     {
         vfunc_2(1);
         unsigned nSeq = FUN_1409a1a00(pkManager);
         FUN_1417ce6f0(nSeq);
+    }
+    else if (m_pOwner->FUN_14166de90(0x49, eSequenceID))
+    {
+        vfunc_2(0x15);
+        unsigned nSeq = FUN_1409a1a00(pkManager);
+        FUN_1417cee90(nSeq);
+        FUN_1417cf360();
     }
     if (m_n10 == 0x4c || m_n10 == 0x4e || m_n10 == 0x53 || m_n10 == 0x51 || m_n10 == 0x52)
     {
@@ -551,7 +545,6 @@ void StateIdle::FUN_1417ce6f0(unsigned nSeq)
 }
 
 // @0x1417ce820
-// MS2-FUNCTIONAL: the efd::utf8string temporaries differ from the exe
 void StateIdle::FUN_1417ce820(unsigned nSeq)
 {
     if (!m_pOwner->FUN_14166de90(0x27, nSeq))
@@ -591,14 +584,13 @@ void StateIdle::FUN_1417ce9f0(unsigned nSeq)
 }
 
 // @0x1417ceab0
-// MS2-FUNCTIONAL: the exe holds the ridee in a CComPtr (temp + EH frame); a raw pointer is used here
 void StateIdle::FUN_1417ceab0(unsigned nSeq)
 {
     int nKey = 0x30;
-    Ridee* pRidee = FUN_141468360(m_pOwner);
-    if (pRidee != 0)
+    efd::SmartPointer<Ridee> spRidee(FUN_141468360(m_pOwner));
+    if (spRidee ? true : false)
     {
-        if (pRidee->FUN_1417075e0() != 0)
+        if (spRidee->FUN_1417075e0() != 0)
             nKey = 0;
     }
     Unk_SiString kName;
@@ -657,39 +649,38 @@ void StateIdle::FUN_1417cee90(unsigned nSeq)
 }
 
 // @0x1417cef60
-// MS2-FUNCTIONAL: the player's target handle is held as a raw MS2Ptr view
 void StateIdle::FUN_1417cef60()
 {
     MyPC* pPC = FUN_1417b84b0();
-    if (pPC != 0 && pPC->FUN_1416764a0() == 0)
+    if (pPC == 0)
+        return;
+    if (pPC->FUN_1416764a0() != 0)
+        return;
+    if (m_pOwner->vfunc_65() != 0)
+        m_timerBore.FUN_1408687f0();
+    bool bBusy = FUN_1422b9ea0(FUN_1408e57f0()) == 1;
+    if (!bBusy)
+        bBusy = FUN_1422ae940(FUN_14025e7a0()) == 1;
+    if (m_n10 == 1 && m_pOwner->vfunc_65() == 0 && !bBusy)
     {
-        if (m_pOwner->vfunc_65() != 0)
+        Unk_PCD88* pTarget = AsPC(pPC)->FUN_14165c2d0().get();
+        if (pTarget != 0 && pTarget->FUN_140a35780() == 0 && m_timerBore.FUN_140868c00() != 0)
+        {
+            int nBore = reinterpret_cast<Unk_SiActor*>(m_pOwner)->FUN_141679120(0x27);
+            vfunc_2(nBore + 2);
+            if (m_n10 < 2)
+                m_n10 = 2;
+            if (5 < m_n10)
+                m_n10 = 5;
             m_timerBore.FUN_1408687f0();
-        bool bBusy = FUN_1422b9ea0(FUN_1408e57f0()) == 1;
-        if (!bBusy)
-            bBusy = FUN_1422ae940(FUN_14025e7a0()) == 1;
-        if (m_n10 != 1 || m_pOwner->vfunc_65() != 0 || bBusy)
-        {
-            if (m_timerLeave.FUN_140868c00() != 0)
-                vfunc_2(1);
         }
-        else
-        {
-            MS2Ptr<Unk_PCD88> spTarget = AsPC(pPC)->FUN_14165c2d0();
-            Unk_PCD88* pTarget = spTarget.get();
-            if (pTarget != 0 && pTarget->FUN_140a35780() == 0 && m_timerBore.FUN_140868c00() != 0)
-            {
-                int nBore = AsActor(m_pOwner)->FUN_141679120(0x27);
-                vfunc_2(nBore + 2);
-                if (m_n10 < 2)
-                    m_n10 = 2;
-                if (5 < m_n10)
-                    m_n10 = 5;
-                m_timerBore.FUN_1408687f0();
-            }
-            if (m_timerBore.FUN_140868ba0() == 0)
-                m_timerBore.FUN_140868750(FUN_1401d3200()->m_delayBore.FUN_14025a620());
-        }
+        if (m_timerBore.FUN_140868ba0() == 0)
+            m_timerBore.FUN_140868750(FUN_1401d3200()->m_delayBore.FUN_14025a620());
+    }
+    else
+    {
+        if (m_timerLeave.FUN_140868c00() != 0)
+            vfunc_2(1);
     }
 }
 
@@ -730,11 +721,13 @@ void StateIdle::FUN_1417cf360()
         {
             kTarget.m_strName = *FUN_1401d3200()->m_strSoundJob50.FUN_140298f80();
         }
+        else if (AsPC(pPC)->FUN_141654700() == 0x6e)
+        {
+            kTarget.m_strName = *FUN_1401d3200()->m_strSoundJob110.FUN_140298f80();
+        }
         else
         {
-            if (AsPC(pPC)->FUN_141654700() != 0x6e)
-                return;
-            kTarget.m_strName = *FUN_1401d3200()->m_strSoundJob110.FUN_140298f80();
+            return;
         }
         kTarget.m_nKind = FUN_1403ed2d0()->FUN_141bd1a10(m_pOwner);
         kTarget.FUN_140a53190(m_pOwner->FUN_14123c580());
@@ -754,14 +747,14 @@ void StateIdle::FUN_1417cf4a0()
 }
 
 // @0x1417cf4f0
-// MS2-FUNCTIONAL: the exe's smart-pointer temporaries and EH frame are not reproduced
 void StateIdle::vfunc_29(MS2Ptr<Unk_StateArg29> p)
 {
     State::vfunc_29(p);
-    CItemGem* pGem = p->FUN_140527900();
-    if (pGem != 0 && pGem->GetGem().get() != 0 && m_n10 == 7)
+    MS2Ptr<CItemGem> spGem(p->FUN_140527900());
+    bool bGem = (spGem.get() ? true : false) && (spGem->GetGem().get() ? true : false);
+    if (bGem && m_n10 == 7)
     {
-        MS2Ptr<CGemSwim> spSwim(dynamic_cast<CGemSwim*>(pGem->GetGem().get()));
+        MS2Ptr<CGemSwim> spSwim(dynamic_cast<CGemSwim*>((CGemBase*)spGem->GetGem()));
         if (spSwim.get() != 0)
             FUN_1417cf210();
     }
@@ -784,16 +777,13 @@ void StateIdleNPC::vfunc_4(StateData* pData)
 {
     State::vfunc_4(pData);
     m_n10 = 1;
-    Unk_GoModelKey kKey;
-    NiActorManager* pMgr = FUN_141b6f910()->FUN_140999440(m_pOwner->FUN_14123c460(kKey));
+    efd::UInt64 qwKey;
+    NiActorManager* pMgr = FUN_141b6f910()->FUN_140999440(m_pOwner->FUN_14123c460(reinterpret_cast<egf::EntityID&>(qwKey)));
     if (pMgr != 0)
     {
         unsigned nSeq = FUN_1409a1a00(pMgr);
-        if (!m_pOwner->FUN_14166de90(0, nSeq))
-        {
-            if (!m_pOwner->FUN_14166de90(1, nSeq))
-                m_pOwner->FUN_14166de90(0x27, nSeq);
-        }
+        m_pOwner->FUN_14166de90(0, nSeq) || m_pOwner->FUN_14166de90(1, nSeq) ||
+            m_pOwner->FUN_14166de90(0x27, nSeq);
     }
 }
 
@@ -857,46 +847,43 @@ void StateIdlePet::vfunc_5(int n)
 void StateIdlePet::vfunc_9(double fTime)
 {
     PCBase* pNpc = FUN_1417b83a0();
-    if (pNpc != 0)
+    if (pNpc == 0)
+        return;
+    PCBase* pPet = FUN_140b10360(pNpc);
+    if (pPet == 0)
+        return;
+    if (pPet->FUN_14166ce30() != 0 && AsPC(pPet)->FUN_141661970() != 0)
     {
-        PCBase* pPet = FUN_140b10360(pNpc);
-        if (pPet != 0)
+        Unk_SiString kName("Tired_A");
+        m_pOwner->FUN_14166dd20(SI_STR(kName), m_pOwner->FUN_1416713c0(), false, false);
+    }
+    else
+    {
+        efd::UInt64 qwKey;
+        unsigned nSeq = FUN_141b6f910()->FUN_140b7f6a0(m_pOwner->FUN_14123c460(reinterpret_cast<egf::EntityID&>(qwKey)));
+        switch (m_n10)
         {
-            if (pPet->FUN_14166ce30() == 0 || AsPC(pPet)->FUN_141659610() == 0)
-            {
-                Unk_GoModelKey kKey;
-                Unk_GoModelKey& rKey = m_pOwner->FUN_14123c460(kKey);
-                unsigned nSeq = FUN_141b6f910()->FUN_140b7f6a0(rKey);
-                switch (m_n10 - 1)
-                {
-                case 0:
-                    FUN_1417cfea0(nSeq);
-                    break;
-                case 1:
-                case 2:
-                case 3:
-                case 4:
-                    FUN_1417d0140(nSeq);
-                    break;
-                case 0xe:
-                    FUN_1417d0210(nSeq);
-                    break;
-                case 0xf:
-                    FUN_1417d02e0(nSeq);
-                    break;
-                case 0x10:
-                    FUN_1417d03b0(nSeq);
-                    break;
-                case 0x12:
-                    FUN_1417d0470(nSeq);
-                    break;
-                }
-            }
-            else
-            {
-                Unk_SiString kName("Tired_A");
-                m_pOwner->FUN_14166dd20(SI_STR(kName), m_pOwner->FUN_1416713c0(), false, false);
-            }
+        case 1:
+            FUN_1417cfea0(nSeq);
+            break;
+        case 2:
+        case 3:
+        case 4:
+        case 5:
+            FUN_1417d0140(nSeq);
+            break;
+        case 0xf:
+            FUN_1417d0210(nSeq);
+            break;
+        case 0x10:
+            FUN_1417d02e0(nSeq);
+            break;
+        case 0x11:
+            FUN_1417d03b0(nSeq);
+            break;
+        case 0x13:
+            FUN_1417d0470(nSeq);
+            break;
         }
     }
 }
@@ -910,7 +897,7 @@ void StateIdlePet::EndOfSequence(NiActorManager* pkManager, unsigned int eSequen
         return;
     {
         MS2Ptr<Unk_PCBaseComp_aa8> spComp = pNpc->vfunc_85();
-        if (spComp.get() != 0)
+        if (spComp.get() ? true : false)
         {
             if (spComp->FUN_140f48d40() == 0)
             {
@@ -934,38 +921,33 @@ void StateIdlePet::EndOfSequence(NiActorManager* pkManager, unsigned int eSequen
 void StateIdlePet::FUN_1417cfea0(unsigned nSeq)
 {
     PCBase* pNpc = FUN_1417b83a0();
-    if (pNpc != 0)
+    if (pNpc == 0)
+        return;
+    PCBase* pPet = FUN_140b10360(pNpc);
+    if (pPet != 0)
     {
-        PCBase* pPet = FUN_140b10360(pNpc);
-        if (pPet != 0)
+        if (m_timerVoiceA.FUN_140268870(*FUN_1401d3200()->m_intervalA.FUN_1401d7c10()) != 0)
+            FUN_1417d0540(0x5a);
+        if (m_timerVoiceB.FUN_140268870(*FUN_1401d3200()->m_intervalB.FUN_1401d7c10()) != 0)
         {
-            if (m_timerVoiceA.FUN_140268870(*FUN_1401d3200()->m_intervalA.FUN_1401d7c10()) != 0)
-                FUN_1417d0540(0x5a);
-            if (m_timerVoiceB.FUN_140268870(*FUN_1401d3200()->m_intervalB.FUN_1401d7c10()) != 0)
+            int nPetId = FUN_140c8b450(FUN_140535320())->m_book.FUN_140b11e90(pPet);
+            if (nPetId != 0)
             {
-                Unk_SiPetData* pData = FUN_140c8b450(FUN_140535320());
-                int nPetId = pData->m_book.FUN_140b11e90(pPet);
-                if (nPetId != 0)
-                {
-                    MS2Ptr<Unk_SiPetRow> spRow = FUN_140c8b430(FUN_140535320())->FUN_140c892c0(nPetId);
-                    if (spRow == 0)
-                        FUN_1417d0540(0x5f);
-                }
+                MS2Ptr<Unk_SiPetRow> spRow = FUN_140c8b430(FUN_140535320())->FUN_140c892c0(nPetId);
+                if (spRow == 0)
+                    FUN_1417d0540(0x5f);
             }
         }
-        if (!m_pOwner->FUN_14166de90(0x27, nSeq))
-        {
-            if (!m_pOwner->FUN_14166de90(0, nSeq))
-            {
-                Unk_SiString kName(m_pOwner->vfunc_123(0));
-                m_pOwner->FUN_14166dd20(SI_STR(kName), m_pOwner->FUN_1416713c0(), false, false);
-            }
-        }
-        else
-        {
-            Unk_SiString kName(m_pOwner->vfunc_123(0x27));
-            m_pOwner->FUN_14166dd20(SI_STR(kName), m_pOwner->FUN_1416713c0(), false, false);
-        }
+    }
+    if (m_pOwner->FUN_14166de90(0x27, nSeq))
+    {
+        Unk_SiString kName(m_pOwner->vfunc_123(0x27));
+        m_pOwner->FUN_14166dd20(SI_STR(kName), m_pOwner->FUN_1416713c0(), false, false);
+    }
+    else if (!m_pOwner->FUN_14166de90(0, nSeq))
+    {
+        Unk_SiString kName(m_pOwner->vfunc_123(0));
+        m_pOwner->FUN_14166dd20(SI_STR(kName), m_pOwner->FUN_1416713c0(), false, false);
     }
 }
 
@@ -1054,17 +1036,7 @@ void StateJumpNpc::vfunc_4(StateData* pData)
     m_pNpc->FUN_14166dd20(SI_STR(kName), 1.0f, false, false);
 }
 
-// @0x1417d08a0
-StateJumpNpc::~StateJumpNpc()
-{
-}
-
 // ---- StatePuppetNpc ----
-
-// @0x1417d08c0
-StatePuppetNpc::~StatePuppetNpc()
-{
-}
 
 // @0x1417d06e0
 StatePuppetNpc::StatePuppetNpc(PCBase* pOwner) : State(pOwner)

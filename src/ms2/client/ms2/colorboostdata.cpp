@@ -45,21 +45,27 @@ CColorBoostData::~CColorBoostData()
 {
 }
 
-// MS2-FUNCTIONAL: the exe keeps an extra local for the duration and a single-exit return flag
 // @0x14109b770
 bool CColorBoostData::FUN_14109b770(float* pfScale, int nIndex)
 {
-    float fElapsed = (float)FUN_14086d260()->FUN_141473280() - m_f0c;
+    float fNow = (float)FUN_14086d260()->FUN_141473280();
+    float fElapsed = fNow - m_f0c;
     if (fElapsed > m_f14)
-        return false;
-    float fRemain = 1.0f - fElapsed / m_f14;
-    if (!m_b08)
     {
-        float fTarget = FUN_140a0fde0(*pfScale + m_f10, ((float)nIndex * m_f18 + 1.0f) * m_f10 + 1.0f);
-        m_f1c = fTarget - *pfScale;
-        m_b08 = true;
+        return false;
     }
-    *pfScale = *pfScale + m_f1c * fRemain;
+    else
+    {
+        float fRemain = 1.0f - fElapsed / m_f14;
+        if (!m_b08)
+        {
+            float fTarget = *pfScale + m_f10;
+            fTarget = FUN_140a0fde0(fTarget, 1.0f + (1.0f + (float)nIndex * m_f18) * m_f10);
+            m_f1c = fTarget - *pfScale;
+            m_b08 = true;
+        }
+        *pfScale = *pfScale + m_f1c * fRemain;
+    }
     return true;
 }
 MS2_REPLACE_METHOD(0x14109b770, CColorBoostData, FUN_14109b770, 325, 0xFE3D2DE6);

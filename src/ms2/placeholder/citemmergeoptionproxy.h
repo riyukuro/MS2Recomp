@@ -39,7 +39,7 @@ class CItemMergeOptionVariation : public CPtred
 {
 public:
     CItemMergeOptionVariation();                    // 0x1405bea40
-    virtual ~CItemMergeOptionVariation();           // 0x1405c4590
+    // implicit virtual dtor 0x1405c4590 (no vptr store in the exe)
     CItemMergeOptionVariation& operator=(const CItemMergeOptionVariation& o);   // 0x1405c4670 (not the pad)
     int FUN_1405beaa0();                            // the number of values of the range
     int FUN_1405beac0();                            // the minimum, as an integer
@@ -98,7 +98,7 @@ class CItemMergeOption : public CPtred
 {
 public:
     CItemMergeOption();                             // 0x1405bf2e0
-    virtual ~CItemMergeOption();                    // 0x1405c44d0
+    // implicit virtual dtor 0x1405c44d0 (no vptr store in the exe)
 
     int m_nNormal;                                  // +0x18 the stat id of a normal option, -1 for a special one
     int m_nSpecial;                                 // +0x1c the special ability id (0 for a normal option)
@@ -114,7 +114,7 @@ class CItemMergeOptionData : public CPtred
 public:
     CItemMergeOptionData();                         // 0x1405bf380
     virtual ~CItemMergeOptionData();                // 0x1405bf410
-    int Load(Unk_140165cf0* pSlot);        // loads a <slot> of itemMergeOptionBase.xml (1 on success)
+    bool Load(Unk_140165cf0* pSlot);       // loads a <slot> of itemMergeOptionBase.xml
     int GetProbVer();                            // the probability version
 
     int m_nId;                                      // +0x18 the part id of the slot
@@ -130,7 +130,7 @@ class CItemMergeOptionProxy : public CPtred
 {
 public:
     CItemMergeOptionProxy();                        // 0x1405beb40
-    virtual ~CItemMergeOptionProxy();               // 0x1405c4530
+    // implicit virtual dtor 0x1405c4530 (no vptr store in the exe)
     void FUN_1405bec30(COutputStream& stream);      // write the record
     void FUN_1405bef60(CInPacket& packet);          // read the record from the packet
 

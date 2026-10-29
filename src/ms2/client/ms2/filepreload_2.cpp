@@ -9,12 +9,12 @@
 // MS2-PIN: ?vfunc_1@CFileSearcher@@UEAAIPEAXAEAVUnk_140659080@@@Z 0x1412181a0 ; unique
 // MS2-PIN: ?FUN_141218730@CFileSearcher@@QEAAXV?$TFunctor@XV?$ParamList@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$ParamList@MVEmptyParam@@@@@@@@@Z 0x141218730 ; unique
 // MS2-PIN: ?FUN_1412187a0@CFileSearcher@@QEAAXV?$TFunctor@XVEmptyParam@@@@@Z 0x1412187a0 ; unique
-// MS2-PIN: ?FUN_141218810@CFileSearcher@@QEAA_NAEBV?$list@UUnk_FileSearchEntry@@V?$allocator@UUnk_FileSearchEntry@@@std@@@std@@AEBV?$list@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@3@H_N@Z 0x141218810 ; unique
+// MS2-PIN: ?FUN_141218810@CFileSearcher@@QEAA_NAEBV?$list@UUnk_FileSearchEntry@@V?$allocator@UUnk_FileSearchEntry@@@std@@@std@@AEBV?$set@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@U?$less@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@4@@3@H_N@Z 0x141218810 ; unique
 // MS2-PIN: ?FUN_141218900@CFileSearcher@@QEAAXXZ 0x141218900 ; unique
 // MS2-PIN: ?FUN_141218920@CFileSearcher@@QEAAXXZ 0x141218920 ; unique
 // MS2-PIN: ??$?0$$V@?$_Compressed_pair@V?$allocator@U?$_List_node@UUnk_FileSearchEntry@@PEAX@std@@@std@@V?$_List_val@U?$_List_simple_types@UUnk_FileSearchEntry@@@std@@@2@$00@std@@QEAA@U_Zero_then_variadic_args_t@1@@Z 0x141219980 ; unique
-// MS2-PIN: ??$?8V?$_List_iterator@V?$_List_val@U?$_List_simple_types@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@@std@@V01@@std@@YA_NAEBV?$reverse_iterator@V?$_List_iterator@V?$_List_val@U?$_List_simple_types@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@@std@@@0@0@Z 0x1412199b0 ; unique
-// MS2-PIN: ??$?9V?$_List_iterator@V?$_List_val@U?$_List_simple_types@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@@std@@V01@@std@@YA_NAEBV?$reverse_iterator@V?$_List_iterator@V?$_List_val@U?$_List_simple_types@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@@std@@@0@0@Z 0x141219a00 ; unique
+// MS2-PIN: ??$?8V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@@std@@V01@@std@@YA_NAEBV?$reverse_iterator@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@@std@@@0@0@Z 0x1412199b0 ; unique
+// MS2-PIN: ??$?9V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@@std@@V01@@std@@YA_NAEBV?$reverse_iterator@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@@std@@@0@0@Z 0x141219a00 ; unique
 // MS2-PIN: ?Clone@?$TFunctor@XV?$ParamList@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$ParamList@MVEmptyParam@@@@@@@@CAPEAV?$FunctorImpl@XV?$ParamList@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$ParamList@MVEmptyParam@@@@@@@@PEAV2@@Z 0x141219a40 ; unique
 // MS2-PIN: ??$_Buynode@AEBUUnk_FileSearchEntry@@@?$_List_buy@UUnk_FileSearchEntry@@V?$allocator@UUnk_FileSearchEntry@@@std@@@std@@QEAAPEAU?$_List_node@UUnk_FileSearchEntry@@PEAX@1@PEAU21@0AEBUUnk_FileSearchEntry@@@Z 0x141219a80 ; unique
 // MS2-PIN: ??$_Freenode0@V?$allocator@U?$_List_node@UUnk_FileSearchEntry@@PEAX@std@@@std@@@?$_List_node@UUnk_FileSearchEntry@@PEAX@std@@SAXAEAV?$allocator@U?$_List_node@UUnk_FileSearchEntry@@PEAX@std@@@1@PEAU01@@Z 0x141219b10 ; unique
@@ -45,7 +45,7 @@
 // MS2-PIN: ??0?$_List_val@U?$_List_simple_types@UUnk_FileSearchEntry@@@std@@@std@@QEAA@XZ 0x14121a190 ; unique
 // MS2-PIN: ??0?$allocator@U?$_List_node@UUnk_FileSearchEntry@@PEAX@std@@@std@@QEAA@XZ 0x14121a1c0 ; unique
 // MS2-PIN: ??0?$list@UUnk_FileSearchEntry@@V?$allocator@UUnk_FileSearchEntry@@@std@@@std@@QEAA@XZ 0x14121a1d0 ; unique
-// MS2-PIN: ??0?$reverse_iterator@V?$_List_iterator@V?$_List_val@U?$_List_simple_types@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@@std@@@std@@QEAA@V?$_List_iterator@V?$_List_val@U?$_List_simple_types@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@@1@@Z 0x14121a1f0 ; unique
+// MS2-PIN: ??0?$reverse_iterator@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@@std@@@std@@QEAA@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@@1@@Z 0x14121a1f0 ; unique
 // MS2-PIN: ??0Unk_FileSearchEntry@@QEAA@AEBU0@@Z 0x14121a210 ; unique
 // MS2-PIN: ??0Unk_FileSearchEntry@@QEAA@XZ 0x14121a270 ; unique
 // MS2-PIN: ??1?$TFunctor@XV?$ParamList@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$ParamList@MVEmptyParam@@@@@@@@QEAA@XZ 0x14121a2b0 ; unique
@@ -62,11 +62,11 @@
 // MS2-PIN: ??C?$_List_iterator@V?$_List_val@U?$_List_simple_types@UUnk_FileSearchEntry@@@std@@@std@@@std@@QEBAPEAUUnk_FileSearchEntry@@XZ 0x14121a540 ; unique
 // MS2-PIN: ??D?$_List_const_iterator@V?$_List_val@U?$_List_simple_types@UUnk_FileSearchEntry@@@std@@@std@@@std@@QEBAAEBUUnk_FileSearchEntry@@XZ 0x14121a560 ; unique
 // MS2-PIN: ??D?$_List_iterator@V?$_List_val@U?$_List_simple_types@UUnk_FileSearchEntry@@@std@@@std@@@std@@QEBAAEAUUnk_FileSearchEntry@@XZ 0x14121a580 ; unique
-// MS2-PIN: ??D?$reverse_iterator@V?$_List_iterator@V?$_List_val@U?$_List_simple_types@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@@std@@@std@@QEBAAEAV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@XZ 0x14121a5a0 ; unique
+// MS2-PIN: ??D?$reverse_iterator@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@@std@@@std@@QEBAAEBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@XZ 0x14121a5a0 ; unique
 // MS2-PIN: ??E?$_List_const_iterator@V?$_List_val@U?$_List_simple_types@UUnk_FileSearchEntry@@@std@@@std@@@std@@QEAA?AV01@H@Z 0x14121a5d0 ; unique
 // MS2-PIN: ??E?$_List_const_iterator@V?$_List_val@U?$_List_simple_types@UUnk_FileSearchEntry@@@std@@@std@@@std@@QEAAAEAV01@XZ 0x14121a620 ; unique
 // MS2-PIN: ??E?$_List_iterator@V?$_List_val@U?$_List_simple_types@UUnk_FileSearchEntry@@@std@@@std@@@std@@QEAAAEAV01@XZ 0x14121a640 ; unique
-// MS2-PIN: ??E?$reverse_iterator@V?$_List_iterator@V?$_List_val@U?$_List_simple_types@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@@std@@@std@@QEAAAEAV01@XZ 0x14121a660 ; unique
+// MS2-PIN: ??E?$reverse_iterator@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@@std@@@std@@QEAAAEAV01@XZ 0x14121a660 ; unique
 // MS2-PIN: ??R?$TFunctor@XV?$ParamList@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$ParamList@MVEmptyParam@@@@@@@@QEAAXV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@M@Z 0x14121a680 ; unique
 // MS2-PIN: ??_GUnk_FileSearchEntry@@QEAAPEAXI@Z 0x14121a780 ; unique
 // MS2-PIN: ?IsNull@?$TFunctor@XV?$ParamList@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$ParamList@MVEmptyParam@@@@@@@@QEBA_NXZ 0x14121a7c0 ; unique
@@ -97,7 +97,7 @@
 // MS2-PIN: ?_Unchecked_end@?$list@UUnk_FileSearchEntry@@V?$allocator@UUnk_FileSearchEntry@@@std@@@std@@QEAA?AV?$_List_unchecked_iterator@V?$_List_val@U?$_List_simple_types@UUnk_FileSearchEntry@@@std@@@std@@@2@XZ 0x14121acd0 ; unique
 // MS2-PIN: ?_Unlinknode@?$list@UUnk_FileSearchEntry@@V?$allocator@UUnk_FileSearchEntry@@@std@@@std@@QEAAPEAU?$_List_node@UUnk_FileSearchEntry@@PEAX@2@V?$_List_const_iterator@V?$_List_val@U?$_List_simple_types@UUnk_FileSearchEntry@@@std@@@std@@@2@@Z 0x14121ad10 ; unique
 // MS2-PIN: ?allocate@?$allocator@U?$_List_node@UUnk_FileSearchEntry@@PEAX@std@@@std@@QEAAPEAU?$_List_node@UUnk_FileSearchEntry@@PEAX@2@_K@Z 0x14121ad80 ; unique
-// MS2-PIN: ?base@?$reverse_iterator@V?$_List_iterator@V?$_List_val@U?$_List_simple_types@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@@std@@@std@@QEBA?AV?$_List_iterator@V?$_List_val@U?$_List_simple_types@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@@2@XZ 0x14121adb0 ; unique
+// MS2-PIN: ?base@?$reverse_iterator@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@@std@@@std@@QEBA?AV?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@@2@XZ 0x14121adb0 ; unique
 // MS2-PIN: ?begin@?$list@UUnk_FileSearchEntry@@V?$allocator@UUnk_FileSearchEntry@@@std@@@std@@QEAA?AV?$_List_iterator@V?$_List_val@U?$_List_simple_types@UUnk_FileSearchEntry@@@std@@@std@@@2@XZ 0x14121add0 ; unique
 // MS2-PIN: ?begin@?$list@UUnk_FileSearchEntry@@V?$allocator@UUnk_FileSearchEntry@@@std@@@std@@QEBA?AV?$_List_const_iterator@V?$_List_val@U?$_List_simple_types@UUnk_FileSearchEntry@@@std@@@std@@@2@XZ 0x14121ae30 ; unique
 // MS2-PIN: ?clear@?$list@UUnk_FileSearchEntry@@V?$allocator@UUnk_FileSearchEntry@@@std@@@std@@QEAAXXZ 0x14121ae90 ; unique
@@ -111,8 +111,8 @@
 // MS2-PIN: ?max_size@?$list@UUnk_FileSearchEntry@@V?$allocator@UUnk_FileSearchEntry@@@std@@@std@@QEBA_KXZ 0x14121b230 ; unique
 // MS2-PIN: ?pointer_to@?$pointer_traits@PEAUUnk_FileSearchEntry@@@std@@SAPEAUUnk_FileSearchEntry@@AEAU3@@Z 0x14121b250 ; unique
 // MS2-PIN: ?push_back@?$list@UUnk_FileSearchEntry@@V?$allocator@UUnk_FileSearchEntry@@@std@@@std@@QEAAXAEBUUnk_FileSearchEntry@@@Z 0x14121b270 ; unique
-// MS2-PIN: ?rbegin@?$list@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@QEAA?AV?$reverse_iterator@V?$_List_iterator@V?$_List_val@U?$_List_simple_types@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@@std@@@2@XZ 0x14121b2b0 ; unique
-// MS2-PIN: ?rend@?$list@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@QEAA?AV?$reverse_iterator@V?$_List_iterator@V?$_List_val@U?$_List_simple_types@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@@std@@@2@XZ 0x14121b2f0 ; unique
+// MS2-PIN: ?rbegin@?$_Tree@V?$_Tset_traits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@U?$less@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@4@$0A@@std@@@std@@QEAA?AV?$reverse_iterator@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@@std@@@2@XZ 0x14121b2b0 ; unique
+// MS2-PIN: ?rend@?$_Tree@V?$_Tset_traits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@U?$less@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@4@$0A@@std@@@std@@QEAA?AV?$reverse_iterator@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@@std@@@2@XZ 0x14121b2f0 ; unique
 // MS2-PIN: ?size@?$list@UUnk_FileSearchEntry@@V?$allocator@UUnk_FileSearchEntry@@@std@@@std@@QEBA_KXZ 0x14121b330 ; unique
 // MS2-PINS-END tplpin
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\filepreload.cpp"
@@ -140,6 +140,7 @@ inline CString Unk_FileSearchConcat(const CString& a,const CString& b) { return 
 #else
 #define MS2_SEARCH_CONCAT(a,b) ((a)+(b))
 #endif
+void FUN_1401d3700(CString& str);   // commonfiles/cachedata.cpp: in-place MakeLower
 // Local synchronization only, no registry writes. Methods using this lock are not hooked.
 static CLockCriticalSection g_searchLock;
 CFileSearcher* TSingleton<CFileSearcher>::s_instance=0;
@@ -191,7 +192,7 @@ void CFileSearcher::FUN_1412187a0(CompletionCallback callback) {
     if(Unk_LockGuard lock=g_searchLock) {} else complete=callback;
 }
 // @0x141218810
-bool CFileSearcher::FUN_141218810(const EntryList& entries,const std::list<CString>& paths,int searchMode,bool remove) {
+bool CFileSearcher::FUN_141218810(const EntryList& entries,const std::set<CString>& paths,int searchMode,bool remove) {
     if(entries.empty() || paths.empty() || running)return false;
     {
         queries=entries;directories=paths;running=true;cancelled=false;mode=searchMode;removeFound=remove;
@@ -215,30 +216,29 @@ void CFileSearcher::FUN_141218990(CString directory) {
     BOOL more=find.FindFile(MS2_SEARCH_CONCAT(directory,"*.*"),0);
     while(more && !cancelled) {
         more=find.FindNextFile();
-        CString name=find.GetFileName();name.MakeLower();
+        CString name=find.GetFileName();FUN_1401d3700(name);
         if(find.IsDirectory()) {
             if(name.GetAt(0)!='.') FUN_141218990(MS2_SEARCH_CONCAT(MS2_SEARCH_CONCAT(directory,name),"\\"));
-            continue;
         }
-        if(mode==0) {
+        else if(mode==0) {
             for(auto it=queries.begin();it!=queries.end();++it) {
                 if(name.Find(it->text,0)!=-1) {
                     Unk_FileSearchEntry entry;entry.path=directory;entry.text=name;results.push_back(entry);
                 }
             }
-            continue;
         }
-        CString path=MS2_SEARCH_CONCAT(directory,name);
-        HANDLE file=CreateFileA(path,GENERIC_READ,FILE_SHARE_READ,0,OPEN_EXISTING,0,0);
-        if(file==INVALID_HANDLE_VALUE)continue;
-        { if(Unk_LockGuard lock=g_searchLock) {} else if(!progress.IsNull()) {
-            CString text;text.Format("%s ... ",static_cast<const char*>(name));progress(text,1.0f);
-        } }
-        DWORD high=0;
-        DWORD bytes=GetFileSize(file,&high),read;
-        char* buffer=new char[bytes+1];
-        ReadFile(file,buffer,bytes,&read,0);
-        if(read==bytes) {
+        else {
+            CString path=MS2_SEARCH_CONCAT(directory,name);
+            HANDLE file=CreateFileA(path,GENERIC_READ,FILE_SHARE_READ,0,OPEN_EXISTING,0,0);
+            if(file==INVALID_HANDLE_VALUE)continue;
+            { if(Unk_LockGuard lock=g_searchLock) {} else if(!progress.IsNull()) {
+                CString text;text.Format("%s ... ",static_cast<const char*>(name));progress(text,1.0f);
+            } }
+            DWORD high=0;
+            DWORD bytes=GetFileSize(file,&high),read;
+            char* buffer=new char[bytes+1];
+            ReadFile(file,buffer,bytes,&read,0);
+            if(read!=bytes) { delete[] buffer;CloseHandle(file); continue; }
             buffer[bytes]=0;CloseHandle(file);
             for(unsigned i=0;i<bytes;++i)buffer[i]=static_cast<char>(tolower(static_cast<unsigned char>(buffer[i])));
             CString contents(buffer);
@@ -248,7 +248,7 @@ void CFileSearcher::FUN_141218990(CString directory) {
                 }
             }
             delete[] buffer;
-        } else { delete[] buffer;CloseHandle(file); }
+        }
     }
 }
 // MS2-FUNCTIONAL: removes matched queries, preserving file I/O and early-empty termination.
@@ -258,31 +258,31 @@ void CFileSearcher::FUN_141219020(CString directory) {
     BOOL more=find.FindFile(MS2_SEARCH_CONCAT(directory,"*.*"),0);
     while(more && !cancelled && !queries.empty()) {
         more=find.FindNextFile();
-        CString name=find.GetFileName();name.MakeLower();
+        CString name=find.GetFileName();FUN_1401d3700(name);
         if(find.IsDirectory()) {
             if(name.GetAt(0)!='.') FUN_141219020(MS2_SEARCH_CONCAT(MS2_SEARCH_CONCAT(directory,name),"\\"));
-            continue;
         }
-        CString path=MS2_SEARCH_CONCAT(directory,name);
-        HANDLE file=CreateFileA(path,GENERIC_READ,FILE_SHARE_READ,0,OPEN_EXISTING,0,0);
-        if(file==INVALID_HANDLE_VALUE)continue;
-        { if(Unk_LockGuard lock=g_searchLock) {} else if(!progress.IsNull()) {
-            CString text;text.Format("%s ... ",static_cast<const char*>(name));progress(text,1.0f);
-        } }
-        DWORD high=0;
-        DWORD bytes=GetFileSize(file,&high),read;
-        char* buffer=new char[bytes+1];
-        ReadFile(file,buffer,bytes,&read,0);
-        if(read==bytes) {
+        else {
+            CString path=MS2_SEARCH_CONCAT(directory,name);
+            HANDLE file=CreateFileA(path,GENERIC_READ,FILE_SHARE_READ,0,OPEN_EXISTING,0,0);
+            if(file==INVALID_HANDLE_VALUE)continue;
+            { if(Unk_LockGuard lock=g_searchLock) {} else if(!progress.IsNull()) {
+                CString text;text.Format("%s ... ",static_cast<const char*>(name));progress(text,1.0f);
+            } }
+            DWORD high=0;
+            DWORD bytes=GetFileSize(file,&high),read;
+            char* buffer=new char[bytes+1];
+            ReadFile(file,buffer,bytes,&read,0);
+            if(read!=bytes) { delete[] buffer;CloseHandle(file); continue; }
             buffer[bytes]=0;CloseHandle(file);
             for(unsigned i=0;i<bytes;++i)buffer[i]=static_cast<char>(tolower(static_cast<unsigned char>(buffer[i])));
             CString contents(buffer);
             for(auto it=queries.begin();it!=queries.end();) {
-                if(contents.Find(it->text,0)==-1)++it;
-                else it=queries.erase(it);
+                if(contents.Find(it->text,0)!=-1) { it=queries.erase(it); continue; }
+                ++it;
             }
             delete[] buffer;
-        } else { delete[] buffer;CloseHandle(file); }
+        }
     }
 }
 // MS2-FUNCTIONAL: preserves cancellation only after successful reads and DWORD size arithmetic.
@@ -300,17 +300,16 @@ void CFileSearcher::FUN_1412195a0(ATL::CAtlArray<CString>& files) {
         DWORD bytes=GetFileSize(file,&high),read;
         char* buffer=new char[bytes+1];
         ReadFile(file,buffer,bytes,&read,0);
-        if(read==bytes) {
-            buffer[bytes]=0;CloseHandle(file);
-            for(unsigned i=0;i<bytes;++i)buffer[i]=static_cast<char>(tolower(static_cast<unsigned char>(buffer[i])));
-            CString contents(buffer);
-            for(auto it=queries.begin();it!=queries.end();) {
-                if(contents.Find(it->text,0)==-1)++it;
-                else it=queries.erase(it);
-            }
-            delete[] buffer;
-            if(cancelled)return;
-        } else { delete[] buffer;CloseHandle(file); }
+        if(read!=bytes) { delete[] buffer;CloseHandle(file); continue; }
+        buffer[bytes]=0;CloseHandle(file);
+        for(unsigned i=0;i<bytes;++i)buffer[i]=static_cast<char>(tolower(static_cast<unsigned char>(buffer[i])));
+        CString contents(buffer);
+        for(auto it=queries.begin();it!=queries.end();) {
+            if(contents.Find(it->text,0)!=-1) { it=queries.erase(it); continue; }
+            ++it;
+        }
+        delete[] buffer;
+        if(cancelled)return;
     }
 }
 // Atexit thunks of this unit's statics (gap1 yd sweep).

@@ -45,6 +45,7 @@ public:
     Unk_MpRideePtr& AssignRaw(UIAvatarRidee* p);            // 0x1419f4200
     UIAvatarRidee* get() const;                             // 0x141314ec0
     UIAvatarRidee* operator->() const;                      // 0x141314f00
+    void AddRef() const;                                    // 0x1413163f0 (declared only; the MS2Ptr<T>::AddRef COMDAT)
     void Release();                                         // 0x141316680
     void* m_0;
     UIAvatarRidee* m_p;

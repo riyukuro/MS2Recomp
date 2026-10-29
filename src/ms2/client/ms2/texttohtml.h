@@ -11,6 +11,6 @@ class TextToHtml : public NiRefObject
 {
 public:
     TextToHtml();                                       // 0x14183e640
-    virtual ~TextToHtml();                              // 0x141847300 (deleting 0x141847340)
+    // ~TextToHtml is implicit: 0x141847300 (deleting 0x141847340), no vptr store in the exe.
 };
 MS2_CHECK_SIZE(TextToHtml, 0x10);

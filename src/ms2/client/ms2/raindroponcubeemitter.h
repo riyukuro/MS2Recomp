@@ -53,7 +53,7 @@ class RainDropOnCubeEmitter : public NiPSVolumeEmitter
 public:
     RainDropOnCubeEmitter(const NiFixedString& kName, NiAVObject* pkEmitterObj, float fSize, float fSizeVar,
                           float fLifeSpan, float fLifeSpanVar);     // 0x1416ec650
-    virtual ~RainDropOnCubeEmitter();                               // 0x1416f05b0, ??_G 0x1416f0df0
+    // ~RainDropOnCubeEmitter is implicit: 0x1416f05b0, ??_G 0x1416f0df0
     virtual bool ComputeVolumeInitialPositionAndVelocity(NiQuatTransform& kEmitterToPSys, NiPoint3& kPosition,
                                                          NiPoint3& kVelocity);   // 0x1416eccc0
     void MarkDirty();                                               // 0x1416f17e0

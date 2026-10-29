@@ -125,7 +125,6 @@ int UIQuestPostBoxDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
 }
 MS2_REPLACE_METHOD(0x140E7F540, UIQuestPostBoxDialog, vfunc_28, 268, 0x60E4B318);
 
-// MS2-FUNCTIONAL: qsort count argument is loaded through rcx in the exe (mov rcx,[n]; mov rdx,rcx), no source form found.
 // @0x140e7f660
 void UIQuestPostBoxDialog::FUN_140e7f660()
 {
@@ -133,8 +132,7 @@ void UIQuestPostBoxDialog::FUN_140e7f660()
         list->FUN_1422dd1d0();
         ATL::CAtlArray<unsigned> quests;
         FUN_140764020()->FUN_1416d0920(quests);
-        size_t nCount = quests.GetCount();
-        qsort(quests.GetData(), (size_t)nCount, 4, FUN_140e7fc90);
+        qsort(quests.GetData(), quests.GetCount(), 4, FUN_140e7fc90);
         for (size_t i = 0; i < quests.GetCount(); ++i) {
             unsigned nQuest = quests[i];
             ASObj row(2);
@@ -190,15 +188,10 @@ int FUN_140e7fc40(unsigned nQuest)
     }
 }
 
-// MS2-FUNCTIONAL: the exe loads the first count into ecx before the compare; no source form found.
 // @0x140e7fc90
 int FUN_140e7fc90(const void* pa, const void* pb)
 {
     const unsigned* pA = (const unsigned*)pa;
     const unsigned* pB = (const unsigned*)pb;
-    int nA = FUN_140e7fc40(*pA);
-    int nResult;
-    if (nA < FUN_140e7fc40(*pB)) nResult = -1;
-    else nResult = 1;
-    return nResult;
+    return FUN_140e7fc40(*pA) < FUN_140e7fc40(*pB) ? -1 : 1;
 }

@@ -93,6 +93,7 @@ class CDailyMission : public CQuest
 {
 public:
     CDailyMission();
+    virtual ~CDailyMission();               // 0x140d72ab0 (resets the vfptrs: user-declared)
     int GetQuestType() override;
     void ShowProgress(int index) override;              // 0x140d72af0
     void PlayAcceptSound() override;                    // 0x140d72c20
@@ -107,6 +108,7 @@ class CFieldMission : public CQuest
 {
 public:
     CFieldMission();
+    virtual ~CFieldMission();               // 0x140d72db0 (resets the vfptrs: user-declared)
     int GetQuestType() override;
     void Complete(CInPacket& packet) override;          // 0x140d72df0
 };
@@ -116,6 +118,7 @@ class CEventMission : public CQuest
 {
 public:
     CEventMission();
+    virtual ~CEventMission();               // 0x140d730d0 (resets the vfptrs: user-declared)
     int GetQuestType() override;
     int Init(int id, int state) override;               // 0x140d73110
     void ShowProgress(int index) override;              // 0x140d73340
@@ -132,6 +135,7 @@ class CMentoringMission : public CQuest
 {
 public:
     CMentoringMission();
+    virtual ~CMentoringMission();           // 0x140d73490 (resets the vfptrs: user-declared)
     int GetQuestType() override;
     void ShowExpired() override;                        // 0x140d734d0
     int FUN_1407447c0() override;                       // 0x140d734e0 (CQuestCommon slot 8)
@@ -142,6 +146,7 @@ class CWeddingMission : public CQuest
 {
 public:
     CWeddingMission();
+    virtual ~CWeddingMission();             // 0x140d735c0 (resets the vfptrs: user-declared)
     int GetQuestType() override;
     void ShowRewards(int reward) override;              // 0x140d73600
 };

@@ -24,22 +24,24 @@ extern void FUN_1401bfde0(void*);
 void FUN_1418c35d0(Unk_ItemProxySummary*);
 
 // @0x1418c34c0
+// MS2-FUNCTIONAL: the by-value smart-pointer parameter is a void*; its dtor is called explicitly
 void FUN_1418c34c0(Unk_ItemProxySummary* result, void* node)
 {
-    void* item = FUN_14052cd70(node);
-    if (item == nullptr) {
-        FUN_1418c35d0(result);
-    } else {
-        result->m_itemId = FUN_1405276c0(FUN_1401c0180(item));
-        result->m_itemUid = FUN_140526a50(FUN_1401c0180(item));
-        void* proxy = FUN_140527870(FUN_1401c0180(item));
-        if (proxy == nullptr) {
-            for (int i = 0; i < 3; ++i)
-                result->m_values[i] = 0;
-        } else {
+    // node is the exe's by-value item smart pointer: 14052cd70 tests it, 1401c0180 is its operator->, and
+    // 1401bfde0 its dtor (callee-destroyed parameter; the exe's EH frame for it is not reproduced)
+    if (FUN_14052cd70(node)) {
+        result->m_itemId = FUN_1405276c0(FUN_1401c0180(node));
+        result->m_itemUid = FUN_140526a50(FUN_1401c0180(node));
+        void* proxy = FUN_140527870(FUN_1401c0180(node));
+        if (proxy) {
             for (int i = 0; i < 3; ++i)
                 result->m_values[i] = FUN_140599fd0(proxy, i);
+        } else {
+            for (int i = 0; i < 3; ++i)
+                result->m_values[i] = 0;
         }
+    } else {
+        FUN_1418c35d0(result);
     }
     FUN_1401bfde0(node);
 }

@@ -115,6 +115,17 @@ void FUN_14165f170(PCBase* p);
 class Unk_NuBuffMgr { public: Vector3 FUN_141683290(); };
 Unk_NuBuffMgr* FUN_14166d240(PCBase* p);
 bool FUN_1416749c0(PCBase* p);
+// vtable-slot view: slot 22 takes the point by value (the exe copies 12 bytes into an arg slot)
+class Unk_NuSlots
+{
+public:
+#define MS2_NU_SLOTS(a, b, c, d, e) virtual void vfunc_##a(); virtual void vfunc_##b(); virtual void vfunc_##c(); \
+    virtual void vfunc_##d(); virtual void vfunc_##e();
+    MS2_NU_SLOTS(0, 1, 2, 3, 4) MS2_NU_SLOTS(5, 6, 7, 8, 9) MS2_NU_SLOTS(10, 11, 12, 13, 14) MS2_NU_SLOTS(15, 16, 17, 18, 19)
+#undef MS2_NU_SLOTS
+    virtual void vfunc_20(); virtual void vfunc_21();
+    virtual void vfunc_22(Vector3 kPos);                                    // 22
+};
 int FUN_1408a1360(Vector3 a, Vector3 b);
 CStringW GetStringCommonByKey(const CStringW& str);
 CFunctionCubeService* FUN_1409670b0();
@@ -158,7 +169,7 @@ Unk_CastInfo::~Unk_CastInfo() {}
 // ---- ICastingEventListener ----
 
 // @0x140ac2e60
-ICastingEventListener::ICastingEventListener() {}
+ICastingEventListener::ICastingEventListener() throw() {}
 
 // ---- StateNurturing ----
 
@@ -292,7 +303,6 @@ void StateNurturing::vfunc_3(double fTime)
 }
 MS2_REPLACE_METHOD(0x140AC10C0, StateNurturing, vfunc_3, 245, 0xD3F33937);
 
-// MS2-FUNCTIONAL: stack-slot/temporary placement of the Vector3 copies differs
 // @0x140ac11c0
 void StateNurturing::vfunc_8(double fTime)
 {
@@ -301,9 +311,7 @@ void StateNurturing::vfunc_8(double fTime)
     if (pPC)
     {
         Unk_NuBuffMgr* pBuff = FUN_14166d240(pPC);
-        Vector3 kPos = pBuff->FUN_141683290();
-        Vector3 kArg = kPos;
-        pPC->vfunc_22(*reinterpret_cast<const efd::Point3*>(&kArg));
+        reinterpret_cast<Unk_NuSlots*>(pPC)->vfunc_22(pBuff->FUN_141683290());
         if (FUN_1416749c0(m_pOwner))
             pPC->vfunc_59(2, 0, 0, 0);
     }
@@ -330,7 +338,6 @@ unsigned StateNurturing::FUN_140ac1370()
 }
 MS2_REPLACE_METHOD(0x140AC1370, StateNurturing, FUN_140ac1370, 41, 0x32A092A2);
 
-// MS2-FUNCTIONAL: by-value utf8string return flag pattern differs
 // @0x140ac13a0
 efd::utf8string StateNurturing::FUN_140ac13a0()
 {
@@ -340,25 +347,22 @@ efd::utf8string StateNurturing::FUN_140ac13a0()
         return efd::utf8string("Functobj_Feed_A01");
     else if (m_n10 == 0xa6)
         return efd::utf8string("Functobj_Play_A01");
-    else
-        return efd::utf8string("Object_React_C");
+    return efd::utf8string("Object_React_C");
 }
 
-// MS2-FUNCTIONAL: branch layout and stack slots differ
 // @0x140ac1480
 void StateNurturing::FUN_140ac1480(Unk_CastInfo* pInfo)
 {
     MyPC* pPC = FUN_1417b84b0();
-    if (pPC)
-    {
-        pInfo->m_nDuration = FUN_140ac1370();
-        if (m_n10 == 0xa7)
-            pInfo->m_str28 = GetStringCommonByKey(CStringW(L"s_action_nurturing_gifting"));
-        else if (m_n10 == 0xa5)
-            pInfo->m_str28 = GetStringCommonByKey(CStringW(L"s_action_nurturing_eating"));
-        else if (m_n10 == 0xa6)
-            pInfo->m_str28 = GetStringCommonByKey(CStringW(L"s_action_nurturing_playing"));
-    }
+    if (!pPC)
+        return;
+    pInfo->m_nDuration = FUN_140ac1370();
+    if (m_n10 == 0xa7)
+        pInfo->m_str28 = GetStringCommonByKey(L"s_action_nurturing_gifting");
+    else if (m_n10 == 0xa5)
+        pInfo->m_str28 = GetStringCommonByKey(L"s_action_nurturing_eating");
+    else if (m_n10 == 0xa6)
+        pInfo->m_str28 = GetStringCommonByKey(L"s_action_nurturing_playing");
 }
 
 // @0x140ac1650
@@ -616,12 +620,8 @@ errno_t FUN_140ac3a20(void* const dst, rsize_t const dstSize, void const* const 
 {
     if (srcSize == 0) return 0;
     MS2_VALIDATE_RETURN_ERRCODE(dst != NULL, EINVAL);
-    if (src == NULL || dstSize < srcSize) {
-        memset(dst, 0, dstSize);
-        MS2_VALIDATE_RETURN_ERRCODE(src != NULL, EINVAL);
-        MS2_VALIDATE_RETURN_ERRCODE(dstSize >= srcSize, ERANGE);
-        return EINVAL;
-    }
+    MS2_VALIDATE_RETURN_ERRCODE(src != NULL, EINVAL);
+    MS2_VALIDATE_RETURN_ERRCODE(dstSize >= srcSize, ERANGE);
     memcpy(dst, src, srcSize);
     return 0;
 }

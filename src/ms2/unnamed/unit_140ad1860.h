@@ -38,7 +38,7 @@ public:
     int FUN_140ad2260();                                   // move vector y < 0
     Vector3 GetMove();                        // the move vector
     void FUN_140ad22d0();                                   // reset and go idle
-    void FUN_140ad2300(Vector3 pt);                 // spawn the click effect at pt
+    void FUN_140ad2300(const Vector3& pt);                 // spawn the click effect at pt
     void FUN_140ad23f0(int nX, int nY);                     // button released
     void FUN_140ad2660(int nX, int nY);                                // button pressed
     void FUN_140ad26d0(int nX, int nY);                     // mouse moved while the button is held

@@ -112,7 +112,7 @@ public:
     // ---- non-virtual members (exe order) ----
     void FUN_141a0d880(bool bVisible);                                      // 0x141a0d880 shows the two extra components
     static bool LoadDebugChatCommand();                                            // 0x141a0d930 loads DebugChatCommand.xml
-    static int FUN_141a0df10();                                             // 0x141a0df10 reloads it when it changed
+    static bool FUN_141a0df10();                                            // 0x141a0df10 reloads it when it changed
     CStringW GetName();                                               // 0x141a0df70 the window name
     CStringW FUN_141a0dfc0();                                               // 0x141a0dfc0 the default tab name
     MessengerData::TalkTab* FUN_141a0e050();                                // 0x141a0e050 the selected tab
@@ -155,7 +155,7 @@ public:
     bool FUN_141a12380(int nType, CStringW strText);                        // 0x141a12380 the chat actions
     void FUN_141a12e40(int nType, CStringW strText, bool bHistory);         // 0x141a12e40 sends a chat line
     int FUN_141a12f30();                                                    // 0x141a12f30 has the key focus
-    bool FUN_141a13030(CStringW& strText);                                  // 0x141a13030 blank
+    int FUN_141a13030(CStringW& strText);                                   // 0x141a13030 blank
     int FUN_141a13070(const CStringW& strName);                            // 0x141a13070 a tab exists
     int FUN_141a13160(MessengerData::TalkTab* pTab, int nChannel);          // 0x141a13160 the tab hides a channel
     int FUN_141a131a0(MessengerData::TalkTab* pTab, int nType);             // 0x141a131a0 the tab hides a line type
@@ -176,7 +176,7 @@ public:
     void FUN_141a14600();
     void FUN_141a146d0(int nType);                                          // 0x141a146d0 selects a subject
     void FUN_141a14760();
-    int FUN_141a148b0(const CStringW& strText);                             // 0x141a148b0 an emotion command
+    bool FUN_141a148b0(const CStringW& strText);                            // 0x141a148b0 an emotion command
     void FUN_141a14bb0(const CStringW& strTarget);                          // 0x141a14bb0 whispers anyone but oneself
     bool FUN_141a14c40(CStringW& strText, CStringW strPart);                // 0x141a14c40 cuts a part out
     bool FUN_141a14ce0(CStringW strText, int nMax);                         // 0x141a14ce0 fits without the markup
@@ -187,7 +187,7 @@ public:
     void FUN_141a13200();                                                   // 0x141a13200 hides the whisper list (empty)
     void FUN_141a16730(const CStringW& strName, int nX, int nY, int nWidth, int nHeight, int nTarget);
                                                                             // 0x141a16730 detaches a tab to a new window
-    void FUN_141a168a0(const ATL::CAtlArray<CStringW>& args);               // 0x141a168a0 a party link of a chat line
+    void FUN_141a168a0(ATL::CAtlArray<CStringW>& args);                     // 0x141a168a0 a party link of a chat line
     void FUN_141a16bb0(int nProductId, int nA, int nB);                     // 0x141a16bb0 opens the user bill
     void FUN_141a16b90(const ATL::CAtlArray<CStringW>& args) {}             // 0x141a16b90 a right click on a chat link (empty)
     void FUN_141a16c50(int nRoomId);                                        // 0x141a16c50 opens a dungeon room
@@ -305,7 +305,7 @@ public:
     int FUN_141a26e00(const CStringW& strHtml, int nKind);                  // 0x141a26e00 adds a line
     int FUN_141a26f10(const CStringW& strName, const CStringW& strText, int nType);   // 0x141a26f10 the speech balloon
     int FUN_141a271b0(const CStringW& strName, const CStringW& strText, int nType);   // 0x141a271b0 records a report line
-    static int FUN_141a27570();                                             // 0x141a27570 the saved windows are valid
+    int FUN_141a27570();                                                    // 0x141a27570 the saved windows are valid
     void FUN_141a27ad0(unsigned nFontSize);                                 // 0x141a27ad0 resizes the logged lines
     void FUN_141a27bf0();                                                   // 0x141a27bf0 refreshes every window
     void FUN_141a27ca0();                                                   // 0x141a27ca0 flushes the pending lines

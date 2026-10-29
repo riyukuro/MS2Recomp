@@ -52,9 +52,15 @@ Unk_MenteeConfig* FUN_14025e7b0();                                          // g
 CStringW GetStringCommonByKey(const CStringW& strKey);                             // string table text
 void FUN_1412751b0(const CStringW& strText, int nKind);                     // shows the text as a notice
 void FUN_141b6de20();                                                       // thread start-up
-struct Unk_IoThreadScope { char m_buf[0x40]; };
-void FUN_141b721f0(Unk_IoThreadScope* p, CString strName);
-void FUN_141b722b0(Unk_IoThreadScope* p);
+class Unk_UtilLogScope
+{
+public:
+    Unk_UtilLogScope(CStringA kTag);                            // 0x141b721f0
+    ~Unk_UtilLogScope();                                        // 0x141b722b0
+private:
+    DWORD m_dwThread;
+    CStringA m_kTag;
+};
 class Unk_MenteeSoap { public: MS2Ptr<CMenteeSearchWebResult> FUN_141770be0(MS2Ptr<CMenteeSearchParam> pParam); };
 Unk_MenteeSoap* FUN_140b2e990();                                            // the web client
 class Unk_MenteeUIManager { public: MS2Ptr<UIObject> FUN_141adcea0(int nClass); };
@@ -75,16 +81,21 @@ static CMentorPtr FUN_140b6f200(CByteBuffer& buffer);
 // @0x140b6dfb0
 int MenteeSearch::ResponseMenteeList::FUN_140b6dfb0(CByteBuffer& buffer)
 {
-    m_nResult = buffer.ReadInt32();
-    if (m_nResult == 0)
-    {
-        int nCount = buffer.ReadInt32();
-        for (int i = 0; i < nCount; ++i)
+    try {
+        m_nResult = buffer.ReadInt32();
+        if (m_nResult == 0)
         {
-            CMentorPtr spMentor = FUN_140b6f200(buffer);
-            if (spMentor.get() != 0)
-                m_map.SetAt(spMentor->c, spMentor);
+            int nCount = buffer.ReadInt32();
+            for (int i = 0; i < nCount; ++i)
+            {
+                CMentorPtr spMentor = FUN_140b6f200(buffer);
+                if (spMentor.get() != 0)
+                    m_map.SetAt(spMentor->c, spMentor);
+            }
         }
+    }
+    catch (Exception&) {
+        return 0;
     }
     return 1;
 }
@@ -100,11 +111,10 @@ CMenteeSearchParam::CMenteeSearchParam()
 // @0x140b6e170
 void CMenteeSearchParam::FUN_140b6e170(const CMenteeSearchParam* pSrc)
 {
-    if (pSrc != 0)
-    {
-        m_nOption30 = pSrc->m_nOption30;
-        m_nOption34 = pSrc->m_nOption34;
-    }
+    if (pSrc == 0)
+        return;
+    m_nOption30 = pSrc->m_nOption30;
+    m_nOption34 = pSrc->m_nOption34;
 }
 
 // ---- CMenteeSearchWebResult ----
@@ -143,8 +153,9 @@ CMenteeSearchManager::~CMenteeSearchManager()
 // @0x140b6e3e0
 void CMenteeSearchManager::FUN_140b6e3e0()
 {
-    if (FUN_140166410()->FUN_14036d570(0x3f))
-        FUN_140b6eae0();
+    if (!FUN_140166410()->FUN_14036d570(0x3f))
+        return;
+    FUN_140b6eae0();
 }
 
 // Shuffles the list (declared here, defined with the other helpers below).
@@ -159,13 +170,11 @@ void CMenteeSearchManager::GetMentees(CMentorArray& arrOut)
     {
         if (m_pResponse == 0)
             return;
-        POSITION pos = m_pResponse->m_map.GetHeadPosition();
-        while (pos != 0)
+        for (POSITION pos = m_pResponse->m_map.GetHeadPosition(); pos != 0; m_pResponse->m_map.GetNext(pos))
         {
             CMentorPtr spMentor = m_pResponse->m_map.GetValueAt(pos);
             if (spMentor.get() != 0)
                 arrOut.Add(spMentor);
-            m_pResponse->m_map.GetNext(pos);
         }
     }
     FUN_140b6f560(arrOut);
@@ -204,16 +213,14 @@ void CMenteeSearchManager::ClearParam()
 // @0x140b6e730
 void CMenteeSearchManager::RequestSearch(const CMenteeSearchParam* pParam)
 {
-    if (FUN_14025e7b0()->m_8.FUN_1402c4c90(0x41) != 1)
-    {
-        if (FUN_140166410()->FUN_14036d570(0x3f))
-        {
-            SetParam(pParam);
-            MS2Ptr<CMenteeSearchParam> spParam = GetParam();
-            if (spParam.get() != 0)
-                AfxBeginThread(RequestWeb, spParam.get(), 0, 0, 0, 0);
-        }
-    }
+    if (FUN_14025e7b0()->m_8.FUN_1402c4c90(0x41) == 1)
+        return;
+    if (!FUN_140166410()->FUN_14036d570(0x3f))
+        return;
+    SetParam(pParam);
+    MS2Ptr<CMenteeSearchParam> spParam = GetParam();
+    if (spParam.get() != 0)
+        AfxBeginThread(RequestWeb, spParam.get(), 0, 0, 0, 0);
 }
 
 // @0x140b6e800
@@ -230,7 +237,8 @@ void CMenteeSearchManager::OnWebResult(MS2Ptr<CMenteeSearchParam> pParam, MS2Ptr
         MS2Ptr<MenteeSearch::ResponseMenteeList> spList(new MenteeSearch::ResponseMenteeList);
         if (spList == 0)
             throw Exception(0x20);
-        if (spList->FUN_140b6dfb0(pResult->m_buffer) == 0)
+        int nRead = spList->FUN_140b6dfb0(pResult->m_buffer);
+        if (nRead == 0)
             throw Exception(0x21);
         if (spList->m_nResult == 0)
         {
@@ -290,17 +298,13 @@ void CMenteeSearchManager::SetResponse(MS2Ptr<MenteeSearch::ResponseMenteeList> 
 UINT CMenteeSearchManager::RequestWeb(LPVOID pParam)
 {
     FUN_141b6de20();
-    Unk_IoThreadScope scope;
-    FUN_141b721f0(&scope, CString("CMenteeSearchManager::RequestWeb"));
+    Unk_UtilLogScope scope(CString("CMenteeSearchManager::RequestWeb"));
     MS2Ptr<CMenteeSearchParam> spParam(static_cast<CMenteeSearchParam*>(pParam));
-    bool bNull = spParam == 0;
-    if (!bNull)
-    {
-        MS2Ptr<CMenteeSearchWebResult> spResult = FUN_140b2e990()->FUN_141770be0(spParam);
-        GetInstance()->OnWebResult(spParam, spResult);
-    }
-    FUN_141b722b0(&scope);
-    return bNull;
+    if (spParam == 0)
+        return 1;
+    MS2Ptr<CMenteeSearchWebResult> spResult = FUN_140b2e990()->FUN_141770be0(spParam);
+    GetInstance()->OnWebResult(spParam, spResult);
+    return 0;
 }
 
 // ---- the answer parser ----
@@ -314,7 +318,11 @@ static CStringW FUN_140b6ee70(CByteBuffer& buffer)
     memset(pBuf, 0, nLen + 2);
     buffer.ReadBytes(pBuf, nLen);
     CStringW str(reinterpret_cast<wchar_t*>(pBuf));
-    delete[] pBuf;
+    if (pBuf)
+    {
+        delete[] pBuf;
+        pBuf = 0;
+    }
     return str;
 }
 
@@ -323,13 +331,14 @@ static CStringW FUN_140b6ee70(CByteBuffer& buffer)
 __time64_t FUN_140b6efa0(CByteBuffer& buffer)
 {
     CStringW str = FUN_140b6ee70(buffer);
-    int nYear = _wtoi(str.Mid(0));
-    int nMonth = _wtoi(str.Mid(5));
-    int nDay = _wtoi(str.Mid(8));
-    int nHour = _wtoi(str.Mid(11));
-    int nMinute = _wtoi(str.Mid(14));
-    int nSecond = _wtoi(str.Mid(17));
-    return CMsTime(nYear, nMonth, nDay, nHour, nMinute, nSecond).Get();
+    int nYear = _wtoi(str.Mid(0, 4));
+    int nMonth = _wtoi(str.Mid(5, 2));
+    int nDay = _wtoi(str.Mid(8, 2));
+    int nHour = _wtoi(str.Mid(11, 2));
+    int nMinute = _wtoi(str.Mid(14, 2));
+    int nSecond = _wtoi(str.Mid(17, 2));
+    CMsTime time(nYear, nMonth, nDay, nHour, nMinute, nSecond);
+    return time.Get();
 }
 
 // One mentor of the answer.
@@ -343,7 +352,8 @@ static CMentorPtr FUN_140b6f200(CByteBuffer& buffer)
     spMentor->guild = FUN_140b6ee70(buffer);
     spMentor->level = (short)buffer.ReadInt32();
     spMentor->y = buffer.ReadInt32();
-    spMentor->online = buffer.ReadInt32() != 0;
+    int nOnline = buffer.ReadInt32();
+    spMentor->online = nOnline == 0 ? false : true;
     return spMentor;
 }
 
@@ -375,11 +385,9 @@ static void FUN_140b6f610(CMentorPtr& a, CMentorPtr& b)
 static void FUN_140b6f560(CMentorArray& arrMentors)
 {
     int n = (int)arrMentors.GetCount();
-    int i;
-    while (i = n - 1, i > 0)
+    for (int i = n - 1; i >= 1; --i)
     {
-        int j = rand() % n;
-        n = i;
+        int j = rand() % (i + 1);
         if (i != j)
             FUN_140b6f610(arrMentors[i], arrMentors[j]);
     }

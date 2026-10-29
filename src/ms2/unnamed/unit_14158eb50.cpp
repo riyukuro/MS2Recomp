@@ -6,6 +6,7 @@
 #include "ms2/placeholder/nmstream.h"
 #include "ms2/placeholder/nmobjects.h"
 #include "ms2/placeholder/nmfunc.h"
+#include "ms2/placeholder/nmencoder.h"
 #include "ms2/ms2recover.h"
 
 extern void FUN_14156bcb0(void*, void*, void*);
@@ -19,6 +20,7 @@ extern void FUN_1415f9990(void*);
 extern int FUN_1415fb700(void*);
 extern int FUN_1415fb750(void*);
 extern int FUN_1415fb6d0(void*);
+extern int FUN_1415fb6d0(CNMSerializableDecoder*);
 
 // MS2-FUNCTIONAL 0x14158eb50: initializes an empty NGM patcher request.
 CNMExecuteNGMPatcher2Func::CNMExecuteNGMPatcher2Func()
@@ -32,21 +34,18 @@ CNMExecuteNGMPatcher2Func::CNMExecuteNGMPatcher2Func(const char* argument, int n
 }
 
 // MS2-FUNCTIONAL 0x14158ec60: frames a serialized NGM patcher2 request.
-unsigned int CNMExecuteNGMPatcher2Func::EncodeFramed(CNMStream* stream)
+unsigned int CNMExecuteNGMPatcher2Func::EncodeFramed(CNMStream* pStream)
 {
-    unsigned char storage[0x18]; FUN_14156bcb0(storage, stream, this);
-    void** vt = *reinterpret_cast<void***>(this);
-    using Method = unsigned int(__fastcall*)(CNMExecuteNGMPatcher2Func*, CNMEncoder*, CNMStream*);
-    auto result = reinterpret_cast<Method>(vt[2])(this, reinterpret_cast<CNMEncoder*>(storage), stream);
-    FUN_14156bd50(storage); return result;
+    CNMSerializableEncoder encoder(pStream, this);
+    return CNMExecuteNGMPatcher2Func::Encode(reinterpret_cast<CNMEncoder*>(&encoder), pStream);
 }
 
 // MS2-FUNCTIONAL 0x14158ecc0: selects the encoder based on wire format.
-unsigned int CNMExecuteNGMPatcher2Func::EncodeDispatch(CNMEncoder* encoder, CNMStream* stream)
+unsigned int CNMExecuteNGMPatcher2Func::EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream)
 {
-    void** vt = *reinterpret_cast<void***>(this);
-    if (m_bFormat == 1) { using Method = unsigned int(__fastcall*)(CNMExecuteNGMPatcher2Func*, CNMEncoder*, CNMStream*); return reinterpret_cast<Method>(vt[2])(this, encoder, stream); }
-    using Method = unsigned int(__fastcall*)(CNMExecuteNGMPatcher2Func*, CNMStream*); return reinterpret_cast<Method>(vt[3])(this, stream);
+    if (m_bFormat == 1)
+        return CNMExecuteNGMPatcher2Func::Encode(pEncoder, pStream);
+    return CNMExecuteNGMPatcher2Func::EncodeFramed(pStream);
 }
 
 // MS2-FUNCTIONAL 0x14158ed20: encodes the argument and option in replies.
@@ -58,19 +57,20 @@ unsigned int CNMExecuteNGMPatcher2Func::Encode(CNMEncoder* encoder, CNMStream* s
 }
 
 // MS2-FUNCTIONAL 0x14158eda0: decodes a framed NGM patcher2 response.
-unsigned int CNMExecuteNGMPatcher2Func::DecodeFramed(CNMStream* stream)
+unsigned int CNMExecuteNGMPatcher2Func::DecodeFramed(CNMStream* pStream)
 {
-    unsigned char storage[0x38]; FUN_14156be10(storage, stream, this); unsigned int result = 0;
-    if (FUN_1415fb750(storage)) { void** vt = *reinterpret_cast<void***>(this); using Method = unsigned int(__fastcall*)(CNMExecuteNGMPatcher2Func*, CNMSerializableDecoder*, CNMStream*); result = reinterpret_cast<Method>(vt[5])(this, reinterpret_cast<CNMSerializableDecoder*>(storage), stream); }
-    FUN_14156bf10(storage); return result;
+    CNMSerializableDecoder decoder(pStream, this);
+    if (FUN_1415fb750(&decoder) == 0)
+        return 0;
+    return CNMExecuteNGMPatcher2Func::Decode(&decoder, pStream);
 }
 
 // MS2-FUNCTIONAL 0x14158ee30: selects the decoder based on response format.
-unsigned int CNMExecuteNGMPatcher2Func::DecodeDispatch(CNMSerializableDecoder* decoder, CNMStream* stream)
+unsigned int CNMExecuteNGMPatcher2Func::DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream)
 {
-    void** vt = *reinterpret_cast<void***>(this);
-    if (FUN_1415fb6d0(decoder) == 2) { using Method = unsigned int(__fastcall*)(CNMExecuteNGMPatcher2Func*, CNMStream*); return reinterpret_cast<Method>(vt[6])(this, stream); }
-    using Method = unsigned int(__fastcall*)(CNMExecuteNGMPatcher2Func*, CNMSerializableDecoder*, CNMStream*); return reinterpret_cast<Method>(vt[5])(this, decoder, stream);
+    if (FUN_1415fb6d0(pDecoder) == 2)
+        return CNMExecuteNGMPatcher2Func::DecodeFramed(pStream);
+    return CNMExecuteNGMPatcher2Func::Decode(pDecoder, pStream);
 }
 
 // MS2-FUNCTIONAL 0x14158ee90: restores the patch argument and option.

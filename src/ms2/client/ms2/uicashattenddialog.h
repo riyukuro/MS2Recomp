@@ -24,7 +24,6 @@ class UICashAttendDialog;
 class UICashAttendGifList : public CPtred {
 public:
     UICashAttendGifList(UICashAttendDialog* pDialog, MS2Ptr<Unk_CadGiftClip> spClip);
-    virtual ~UICashAttendGifList();
     void FUN_140bc2620(const Scaleform::GFx::FunctionHandler::Params& params);   // row clicked: show the day's rewards
     void FUN_140bc2b10();                                                        // clear the row
 private:

@@ -9,6 +9,7 @@
 // MS2-PIN: ??1?$CAtlArray@HV?$CDefaultElementTraits@H@ATL@@@ATL@@QEAA@XZ 0x140c6a090
 // MS2-PIN: ?CallConstructors@?$CAtlArray@HV?$CDefaultElementTraits@H@ATL@@@ATL@@CAXPEAH_K@Z 0x140c6a630
 // MS2-PIN: ?CallDestructors@?$CAtlArray@HV?$CDefaultElementTraits@H@ATL@@@ATL@@CAXPEAH_K@Z 0x140c6a6a0
+// MS2-PIN: ??A?$CAtlArray@HV?$CDefaultElementTraits@H@ATL@@@ATL@@QEAAAEAH_K@Z 0x140c6a330
 // MS2-PIN: ?GrowBuffer@?$CAtlArray@HV?$CDefaultElementTraits@H@ATL@@@ATL@@AEAA_N_K@Z 0x140c6a7e0
 // MS2-PIN: ?SetCount@?$CAtlArray@HV?$CDefaultElementTraits@H@ATL@@@ATL@@QEAA_N_KH@Z 0x140c6abf0
 // MS2-PIN: ??1?$CAtlArray@V?$MS2Ptr@VTabInfo@UILapenshardSystemDialog@@@@V?$CElementTraits@V?$MS2Ptr@VTabInfo@UILapenshardSystemDialog@@@@@ATL@@@ATL@@QEAA@XZ 0x140c62ab0
@@ -174,8 +175,8 @@ static UICommon::CMyPCKeyInputController s_keyInput;
 
 // ---- unit-local views of the exe objects and unrecovered callees ----------------------------------------------------
 
-class Unk_LsMapInfo;
-class Unk_LsWorld { public: MyPC* FUN_141bd0cc0(); Unk_LsMapInfo FUN_141bd30a0(); };                   // the local player
+class Unk_McMapPtr;
+class Unk_LsWorld { public: MyPC* FUN_141bd0cc0(); Unk_McMapPtr FUN_141bd30a0(); };                   // the local player
 Unk_LsWorld* FUN_1403ed2d0();
 
 // The item bag control inside a section clip (as Unk_PetItemBag in tabcontentspetcompose.cpp).
@@ -223,11 +224,6 @@ LapenshardSystemTabPanelBase::~LapenshardSystemTabPanelBase()
 {
 }
 
-// @0x140c5e4a0
-LapenshardSystemTabContents::LapenshardSystemTabContents()
-{
-}
-
 // @0x140c5e5f0
 LapenshardSystemTabContents::~LapenshardSystemTabContents()
 {
@@ -267,7 +263,7 @@ void LapenshardSystemTabPanelBase::vfunc_6(MS2Ptr<CItem> spA, MS2Ptr<CItem> spB)
 }
 
 // @0x140c5ec20
-void LapenshardSystemTabPanelBase::vfunc_7()
+void LapenshardSystemTabPanelBase::vfunc_7(int a1)
 {
 }
 
@@ -348,11 +344,6 @@ LapenshardItemSlotBagPanel::LapenshardItemSlotBagPanel(UILapenshardEquipTab* pTa
 {
 }
 
-// @0x140c5e5c0
-LapenshardItemSlotBagPanel::~LapenshardItemSlotBagPanel()
-{
-}
-
 // @0x140c5d290
 void LapenshardItemSlotBagPanel::vfunc_1()
 {
@@ -412,11 +403,6 @@ void LapenshardItemSlotBagPanel::vfunc_5(int nEvent)
 // @0x140c5d5c0
 LapenshardEquipSlotPanel::LapenshardEquipSlotPanel(UILapenshardEquipTab* pTab)
     : m_pTab(pTab)
-{
-}
-
-// @0x140c5e590
-LapenshardEquipSlotPanel::~LapenshardEquipSlotPanel()
 {
 }
 
@@ -547,8 +533,7 @@ void LapenshardEquipSlotPanel::FUN_140c5d9c0(int bOn)
         MS2Ptr<ASMovieClip> slot = m_ui->FUN_1409b4560(strName);
         if (slot.get() != 0)
         {
-            MS2Ptr<ASMovieClip> effect = slot->FUN_1409b4560(CString("m_equipEffect"));
-            if (effect.get() != 0)
+            if (MS2Ptr<ASMovieClip> effect = slot->FUN_1409b4560("m_equipEffect"))
                 effect->vfunc_3(bOn);
         }
     }
@@ -566,15 +551,10 @@ void LapenshardSystemTabPanelBase::FUN_140c5ee50(MS2Ptr<ASUIComponent> ui)
 
 // @0x140c5dba0
 UILapenshardEquipTab::UILapenshardEquipTab()
-    : m_panels(10), m_ui(0)
+    : LapenshardSystemTabContents(), m_panels(10), m_ui(0)
 {
-    m_panels.AddTail(LapenshardPanelPtr(new LapenshardItemSlotBagPanel(this)));
-    m_panels.AddTail(LapenshardPanelPtr(new LapenshardEquipSlotPanel(this)));
-}
-
-// @0x140c5e660
-UILapenshardEquipTab::~UILapenshardEquipTab()
-{
+    m_panels.AddTail(new LapenshardItemSlotBagPanel(this));
+    m_panels.AddTail(new LapenshardEquipSlotPanel(this));
 }
 
 // @0x140c5dd20
@@ -724,22 +704,12 @@ UILapenshardSystemDialog::TabInfo::TabInfo(CString strName, CStringW strLabel, L
 {
 }
 
-// @0x140c62b50
-UILapenshardSystemDialog::TabInfo::~TabInfo()
-{
-}
-
 // @0x140c611d0
 UILapenshardSystemDialog::UILapenshardSystemDialog()
     : m_spPage(0), m_nSlot(0)
 {
     m_164 = 1;
     FUN_141924170(1);
-}
-
-// @0x140c62ba0
-UILapenshardSystemDialog::~UILapenshardSystemDialog()
-{
 }
 
 // @0x140c612a0
@@ -919,6 +889,11 @@ class UIRewardNotify;
 #include "ms2/placeholder/astextfield.h"
 #include "ms2/placeholder/mstime.h"
 #include "ms2/placeholder/cmainsystem.h"
+#include "ms2/commonfiles/commonstruct_wa.h"
+#ifdef __clang__
+// FUN_140c60920 passes the address of the temporary CStringW from vfunc_77 (an MSVC extension).
+#pragma clang diagnostic ignored "-Waddress-of-temporary"
+#endif
 
 extern Unk_LsEntityEvents* DAT_143abf028;                               // the entity event hub
 void FUN_1419308c0(Unk_LsEntityEvents* pHub, UIEntityEventListener* pListener);
@@ -978,6 +953,7 @@ void UILapenshardShieldBar::vfunc_26()
     m_strBind.Empty();
 }
 
+AScript* FUN_1409ee290(MS2Ptr<AScript>* p);                     // operator-> (another copy)
 // @0x140c5f2a0
 void UILapenshardShieldBar::vfunc_43()
 {
@@ -997,7 +973,7 @@ void UILapenshardShieldBar::vfunc_43()
         spEntity->vfunc_2(1, 0, nOffset);
         int nW = (int)spEntity->FUN_1422c10a0();
         int nH = (int)spEntity->FUN_1422c1110();
-        m_30->Invoke("alignmentWithHpBarOffsetY", nOffset, nX, nY, nW, nH);
+        FUN_1409ee290(&m_30)->Invoke("alignmentWithHpBarOffsetY", nOffset, nX, nY, nW, nH);
     }
 }
 
@@ -1170,7 +1146,7 @@ public:
     unsigned char m_pad_1e[2];
     int m_n20;                                                          // +0x20
     unsigned char m_pad_24[4];
-    int m_nNeed;                                                        // +0x28 the number of ingredients
+    unsigned m_nNeed;                                                   // +0x28 the number of ingredients
     unsigned char m_pad_2c[4];
     __int64 m_nCost;                                                    // +0x30 the money an upgrade costs
     MS2Ptr<class Unk_LsRecipe> FUN_1405b41b0(unsigned nTier);           // the recipe of an upgrade tier
@@ -1190,11 +1166,6 @@ MS2_EMIT_CRT_MEMMOVE_S_COPY(2);
 // @0x140c63710
 LapenshardSourceItemSlotBagPanel::LapenshardSourceItemSlotBagPanel(UILapenshardUpgradeTab* pTab)
     : m_pTab(pTab)
-{
-}
-
-// @0x140c6a1c0
-LapenshardSourceItemSlotBagPanel::~LapenshardSourceItemSlotBagPanel()
 {
 }
 
@@ -1293,11 +1264,6 @@ LapenshardIngredientItemSlotBagPanel::LapenshardIngredientItemSlotBagPanel(UILap
 {
 }
 
-// @0x140c6a180
-LapenshardIngredientItemSlotBagPanel::~LapenshardIngredientItemSlotBagPanel()
-{
-}
-
 // @0x140c63ce0
 void LapenshardIngredientItemSlotBagPanel::vfunc_1()
 {
@@ -1322,7 +1288,7 @@ void LapenshardIngredientItemSlotBagPanel::vfunc_3()
     MS2Ptr<Unk_LsRecord> spRec = FUN_1409c4b30()->FUN_1405b56a0(spSource->FUN_1405276c0());
     if (spRec == 0)
         return;
-    if (spRec->m_nNeed == 0)
+    if (spRec->m_nNeed <= 0)
         return;
     m_strBag = "LapenshardIngredientItemSlotBag";
     if (MS2Ptr<Unk_LsBag> bag = m_ui->FUN_140accef0<Unk_LsBag>("m_ingredientItemBag"))
@@ -1330,16 +1296,13 @@ void LapenshardIngredientItemSlotBagPanel::vfunc_3()
         bag->Invoke("resetRenderer");
         bag->FUN_1422dcca0(0xffffffff);
         FUN_140c60920(&m_items, 0, 0, 0, 0, spRec->m_nKind, spSource->FUN_140526a50());
-        if (MS2Ptr<CItem> spCopy = spSource->FUN_140524250())
+        MS2Ptr<CItem> spCopy = spSource->FUN_140524250();
+        if (spCopy)
         {
             if (!spCopy->FUN_140528e20())
             {
-                int nLeft;
-                if (spCopy->FUN_140526c50() == 1)
-                    nLeft = 0;
-                else
-                    nLeft = spCopy->FUN_140526c50() - 1;
-                if (nLeft != 0)
+                unsigned nLeft = (unsigned)spCopy->FUN_140526c50() - 1 > 0 ? spCopy->FUN_140526c50() - 1 : 0;
+                if (nLeft > 0)
                 {
                     spCopy->FUN_140526c70(nLeft);
                     m_items.Add(spCopy);
@@ -1409,10 +1372,11 @@ int LapenshardIngredientItemSlotBagPanel::vfunc_8(const char* szMethod, const Sc
 }
 
 // @0x140c64390
-// MS2-FUNCTIONAL: nested early-outs and message-box temporaries are laid out differently
 void LapenshardIngredientItemSlotBagPanel::FUN_140c64390(int nIndex)
 {
-    if (m_pTab == 0 || nIndex <= -1 || nIndex >= (int)m_items.GetCount())
+    if (m_pTab == 0)
+        return;
+    if (nIndex < 0 || nIndex >= (int)m_items.GetCount())
         return;
     MS2Ptr<CItem> spSource = m_pTab->GetSource();
     if (spSource == 0)
@@ -1426,20 +1390,24 @@ void LapenshardIngredientItemSlotBagPanel::FUN_140c64390(int nIndex)
     MS2Ptr<Unk_LsRecord> spItemRec = FUN_1409c4b30()->FUN_1405b56a0(spItem->FUN_1405276c0());
     if (spItemRec == 0)
         return;
-    if (!spItem->FUN_14052a290(2))
+    if (spItem->FUN_14052a290(2))
     {
-        int nNeed = spSrcRec->m_nNeed - m_pTab->FUN_140c68fd0();
+        int nHave = m_pTab->FUN_140c68ff0(spItem->FUN_140526a50());
+        FUN_140c64960(nIndex, nHave);
+    }
+    else
+    {
+        unsigned nNeed = spSrcRec->m_nNeed - m_pTab->FUN_140c68fd0() < 0 ? 0 : spSrcRec->m_nNeed - m_pTab->FUN_140c68fd0();
         if (nNeed == 0)
             return;
         if (spItemRec->m_nGrade < 2)
         {
-            if ((unsigned)spItem->FUN_140526c50() < (unsigned)nNeed)
-                nNeed = spItem->FUN_140526c50();
-            FUN_140c64960(nIndex, -nNeed);
+            int nTake = (unsigned)spItem->FUN_140526c50() < nNeed ? spItem->FUN_140526c50() : nNeed;
+            FUN_140c64960(nIndex, -nTake);
         }
         else
         {
-            if (MS2Ptr<CMsgBoxData> box = FUN_140d73d20(1, GetStringCommonByKey(CStringW(L"s_lapenshard_upgraded_item")), 0, CStringW(L"")))
+            if (MS2Ptr<CMsgBoxData> box = FUN_140d73d20(1, GetStringCommonByKey(L"s_lapenshard_upgraded_item"), 0, CStringW(L"")))
             {
                 box->FUN_140533ff0(nIndex);
                 box->FUN_140534050(spSource->FUN_1405276c0());
@@ -1448,11 +1416,6 @@ void LapenshardIngredientItemSlotBagPanel::FUN_140c64390(int nIndex)
                 FUN_140d73c60(box);
             }
         }
-    }
-    else
-    {
-        int nHave = m_pTab->FUN_140c68ff0(spItem->FUN_140526a50());
-        FUN_140c64960(nIndex, nHave);
     }
 }
 
@@ -1560,11 +1523,6 @@ int FUN_14047f880(void* p);
 // @0x140c64d50
 LapenshardUpgradeSlotPanel::LapenshardUpgradeSlotPanel(UILapenshardUpgradeTab* pTab)
     : m_strSource("lapenshardUpgradeSourceSlot"), m_strResult("lapenshardUpgradeResultSlot"), m_pTab(pTab), m_spSource(0), m_body(0)
-{
-}
-
-// @0x140c6a200
-LapenshardUpgradeSlotPanel::~LapenshardUpgradeSlotPanel()
 {
 }
 
@@ -1705,16 +1663,11 @@ void LapenshardUpgradeSlotPanel::FUN_140c654a0(CString& strSlot, MS2Ptr<CItem> s
 
 // @0x140c67de0
 UILapenshardUpgradeTab::UILapenshardUpgradeTab()
-    : m_panels(10), m_nState(0), m_ui(0), m_spSource(0), m_ingredients(0x11, 0.75f, 0.25f, 2.25f, 10), m_nTotal(0), m_n_bc(0), m_n_c0(0)
+    : LapenshardSystemTabContents(), m_panels(10), m_nState(0), m_ui(0), m_spSource(0), m_ingredients(0x11, 0.75f, 0.25f, 2.25f, 10), m_nTotal(0), m_n_bc(0), m_n_c0(0)
 {
-    m_panels.AddTail(LapenshardPanelPtr(new LapenshardSourceItemSlotBagPanel(this)));
-    m_panels.AddTail(LapenshardPanelPtr(new LapenshardUpgradeSlotPanel(this)));
-    m_panels.AddTail(LapenshardPanelPtr(new LapenshardIngredientItemSlotBagPanel(this)));
-}
-
-// @0x140c6a2d0
-UILapenshardUpgradeTab::~UILapenshardUpgradeTab()
-{
+    m_panels.AddTail(new LapenshardSourceItemSlotBagPanel(this));
+    m_panels.AddTail(new LapenshardUpgradeSlotPanel(this));
+    m_panels.AddTail(new LapenshardIngredientItemSlotBagPanel(this));
 }
 
 // @0x140c68090
@@ -2089,14 +2042,17 @@ void LapenshardUpgradeSlotPanel::FUN_140c67ce0()
 // ---- the window: opening conditions ----
 
 // The map the player stands on.
-class Unk_LsMapInfo
+// The same holder as uiquesteventlistener's Unk_McMapPtr (its dtor 0x1408850f0 has that name's symbols-manual row).
+class Unk_McMapPtr
 {
 public:
+    ~Unk_McMapPtr();                                                    // 0x1408850f0
     bool FUN_140965240(int nFlag);                                      // no map
     CFieldData* FUN_140885340();                                        // its field data
-    void* m_p0; void* m_p1; void* m_p2; void* m_p3;
+private:
+    void* m_pad_00;
+    void* m_p;
 };
-void FUN_1408850f0(Unk_LsMapInfo* pInfo);
 void FUN_140d73aa0(CStringW strMsg, int nType, int nTarget, CStringW strTag);
 void FUN_1412751f0(const CStringW& text, int nA, int nB);
 void FUN_141275260(int nStringId, int nA, int nB);
@@ -2107,35 +2063,38 @@ int FUN_140c62520()
     MyPC* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pPlayer == 0)
         return 0;
-    if (pPlayer->vfunc_65() == 0)
+    if (pPlayer->vfunc_65() != 0)
     {
-        Unk_LsMapInfo info = FUN_1403ed2d0()->FUN_141bd30a0();
-        if (!info.FUN_140965240(0))
-        {
-            if (info.FUN_140885340()->FUN_140375660(0x200) == 0)
-            {
-                FUN_1408850f0(&info);
-                return 1;
-            }
-            FUN_140d73aa0(GetStringCommonByKey(CStringW(L"s_lapenshard_disable_field")), 0, 0, CStringW(L""));
-            FUN_1408850f0(&info);
-            return 0;
-        }
-        FUN_1408850f0(&info);
+        FUN_140d73aa0(GetStringCommonByKey(L"s_lapenshard_disable_battle"), 0, 0, L"");
         return 0;
     }
-    FUN_140d73aa0(GetStringCommonByKey(CStringW(L"s_lapenshard_disable_battle")), 0, 0, CStringW(L""));
-    return 0;
+    Unk_McMapPtr info = FUN_1403ed2d0()->FUN_141bd30a0();
+    if (info.FUN_140965240(0))
+        return 0;
+    if (info.FUN_140885340()->FUN_140375660(0x200) != 0)
+    {
+        FUN_140d73aa0(GetStringCommonByKey(L"s_lapenshard_disable_field"), 0, 0, L"");
+        return 0;
+    }
+    return 1;
 }
 
 // The singletons the opening conditions read.
 class Unk_LsRuleFlags { public: int FUN_1402c4c90(int nRule); };
 class Unk_LsRules { public: unsigned char m_pad[8]; Unk_LsRuleFlags m_flags; };
 Unk_LsRules* FUN_14025e7b0();
-class Unk_LsQuestRef;
-class Unk_LsGameTables { public: unsigned char m_pad[0xa040]; Unk_LsQuestRef* m_pQuests; };
+// The constants manager's int-array setting (inventory.cpp has the same layout).
+struct Unk_InventoryArraySetting {
+    void* unknown0;
+    bool initialized;
+    unsigned char unknown9[0x47];
+    std::vector<int> values;
+    void* unknown68; void* unknown70; void* unknown78;
+    const std::vector<int>& FUN_140a6aa40();
+};
+MS2_CHECK_SIZE(Unk_InventoryArraySetting, 0x80);
+class Unk_LsGameTables { public: unsigned char m_pad[0xa040]; Unk_InventoryArraySetting m_quests; };   // +0xa040 embedded, not a pointer
 Unk_LsGameTables* FUN_1401d3200();
-const ATL::CAtlArray<int>& FUN_140a6aa40(Unk_LsQuestRef* pRef);         // the quests that open the window
 class Unk_LsQuestDone { public: int FUN_140745590(int nQuest); };
 class Unk_LsQuestLog { public: unsigned char m_pad[0x10]; Unk_LsQuestDone m_done; };
 Unk_LsQuestLog* FUN_140764020();
@@ -2155,17 +2114,17 @@ int UILapenshardSystemDialog::vfunc_73()
         FUN_141275260(0x2f7, 1, 1);
         return 0;
     }
-    ATL::CAtlArray<int> quests;
-    quests.Copy(FUN_140a6aa40(FUN_1401d3200()->m_pQuests));
-    if (quests.GetCount() != 2)
+    std::vector<int> quests = FUN_1401d3200()->m_quests.FUN_140a6aa40();
+    if (quests.size() != 2)
         return 0;
     int nNewbie = quests[0];
     int nQuest = quests[1];
     if (FUN_14116d720(FUN_14025e7c0()))
         return 1;
-    for (unsigned i = 0; i < quests.GetCount(); ++i)
+    for (size_t i = 0; i < quests.size(); ++i)
     {
-        if (FUN_140764020()->m_done.FUN_140745590(quests[i]) != 0)
+        int nId = quests[i];
+        if (FUN_140764020()->m_done.FUN_140745590(nId) != 0)
             return 1;
     }
     CStringW strName;
@@ -2184,38 +2143,21 @@ int UILapenshardSystemDialog::vfunc_73()
 // @0x140c612f0
 int UILapenshardSystemDialog::vfunc_65()
 {
-    if (UIDialog::vfunc_65() != 0)
-    {
-        m_tabs.Add(TabInfoPtr(new TabInfo(CString("equip"), GetStringCommonByKey(CStringW(L"s_lapenshard_tabname_equip")), LapenshardTabPtr(new UILapenshardEquipTab()))));
-        m_tabs.Add(TabInfoPtr(new TabInfo(CString("upgrade"), GetStringCommonByKey(CStringW(L"s_lapenshard_tabname_upgrade")), LapenshardTabPtr(new UILapenshardUpgradeTab()))));
-        FUN_1419cae20(FUN_140a6a840(), static_cast<UIItemEventListener*>(this));
-    }
+    if (UIDialog::vfunc_65() == 0)
+        return 0;
+    m_tabs.Add(new TabInfo("equip", GetStringCommonByKey(L"s_lapenshard_tabname_equip"), new UILapenshardEquipTab()));
+    m_tabs.Add(new TabInfo("upgrade", GetStringCommonByKey(L"s_lapenshard_tabname_upgrade"), new UILapenshardUpgradeTab()));
+    FUN_1419cae20(FUN_140a6a840(), static_cast<UIItemEventListener*>(this));
     return 0;
 }
 
 
 // ---- the upgrade request ----
 
-// The item table's upgrade recipe of a lapenshard.
-class Unk_LsCostEntry : public CPtred
-{
-public:
-    bool FUN_14026b350();                                               // the entry is not an ingredient
-    unsigned FUN_14026b500();                                           // its item id
-    unsigned char m_pad_18[4];
-    int m_n1c;                                                          // +0x1c
-    int m_nNeed;                                                        // +0x20 how many are needed
-};
-class Unk_LsCostList : public CPtred
-{
-public:
-    int FUN_14028b500();                                                // the number of entries
-    Unk_LsCostEntry* FUN_14028a0f0(int nIndex);                        // 0x14028a0f0 returns the raw entry pointer in rax (no hidden slot)
-};
 class Unk_LsRecipe : public CPtred
 {
 public:
-    Unk_LsCostList* FUN_14026c230();                                  // the ingredient entries
+    Unk_IngVec* FUN_14026c230();                                      // the ingredient entries
 };
 
 extern char DAT_143ab2a90;                                              // the inventory
@@ -2244,7 +2186,6 @@ static void Unk_LsCopyMap(ATL::CAtlMap<unsigned __int64, int>& dst, ATL::CAtlMap
 }
 
 // @0x140c691f0
-// MS2-FUNCTIONAL: the recipe walk keeps different temporaries than the exe
 int UILapenshardUpgradeTab::FUN_140c691f0()
 {
     if (m_nState != 1)
@@ -2259,30 +2200,28 @@ int UILapenshardUpgradeTab::FUN_140c691f0()
         FUN_141275260(0x34, 1, 1);
         return 0;
     }
-    if ((unsigned)FUN_140c68fd0() < (unsigned)spRec->m_nNeed)
+    if (spRec->m_nNeed > (unsigned)FUN_140c68fd0())
     {
-        FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_lapenshard_tabname_upgrade_lack_ingredient")), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(L"s_lapenshard_tabname_upgrade_lack_ingredient"), 1, 1);
         return 0;
     }
     MS2Ptr<Unk_LsRecipe> spRecipe = spRec->FUN_1405b41b0(m_n_c0);
     if (spRecipe == 0)
         return 0;
-    Unk_LsCostList* spList = spRecipe->FUN_14026c230();
-    int nEntries = spList->FUN_14028b500();
-    for (int i = 0; i < nEntries; ++i)
+    Unk_IngVec* pList = spRecipe->FUN_14026c230();
+    unsigned nEntries = (unsigned)pList->FUN_14028b500();
+    for (unsigned i = 0; i < nEntries; ++i)
     {
-        Unk_LsCostEntry* spEntry = spList->FUN_14028a0f0(i);
-        if (spEntry == 0)
-            continue;
-        if (spEntry->FUN_14026b350())
+        Unk_IngRef spEntry = *pList->FUN_14028a0f0(i);
+        if (spEntry == 0 || spEntry->FUN_14026b350())
             continue;
         unsigned nItemId = spEntry->FUN_14026b500();
         int nGrade = FUN_14053feb0(nItemId);
-        int nNeed = spEntry->m_nNeed;
-        int nHave = FUN_140c69670(nItemId, nGrade, &spEntry->m_n1c);
-        if (nHave < nNeed)
+        int nNeed = spEntry->m_c;
+        int nHave = FUN_140c69670(nItemId, nGrade, &spEntry->m_b);
+        if (nNeed > nHave)
         {
-            FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_lapenshard_tabname_upgrade_lack_ingredient")), 1, 1);
+            FUN_1412751f0(GetStringCommonByKey(L"s_lapenshard_tabname_upgrade_lack_ingredient"), 1, 1);
             return 0;
         }
     }
@@ -2334,7 +2273,6 @@ Unk_LsSkillNames* FUN_1401a9d70();
 void FUN_1422c8f10(const CString& strName, NotifyContext::BindData* pBag);
 
 // @0x140c5fbd0
-// MS2-FUNCTIONAL: the allocation hint temporaries and the skill list walk differ from the exe
 void UILapenshardShieldBar::FUN_140c5fbd0()
 {
     m_bImpending = 0;
@@ -2345,8 +2283,8 @@ void UILapenshardShieldBar::FUN_140c5fbd0()
     if (!m_strBind.IsEmpty())
         FUN_1422c8f70(m_strBind);
     m_strBind = "LapenshardShieldBarSkillBindID";
-    Unk_LsBuffInfo* pInfo = FUN_14096d810(m_spBuff.operator->());
-    SkillSlot* pSlot = new (efd::MemHint(efd::MemHint::NONE)) SkillSlot(m_strBind, 0, pInfo->m_nSkillId, 0, 0);
+    int nSkill = FUN_14096d810(m_spBuff.operator->())->m_nSkillId;
+    SkillSlot* pSlot = new (efd::MemHint(efd::MemHint::NONE)) SkillSlot(m_strBind, 0, nSkill, 0, 0);
     if (pSlot == 0)
         return;
     pSlot->SetFixed(1);
@@ -2356,10 +2294,9 @@ void UILapenshardShieldBar::FUN_140c5fbd0()
     UIRewardNotify* pReward = FUN_140938cd0(0x4e5d);
     if (pReward != 0)
     {
-        Unk_LsBuffInfo* pBuffInfo = FUN_14096d810(m_spBuff.operator->());
-        if (!pBuffInfo->m_skills.FUN_140311670())
+        if (!FUN_14096d810(m_spBuff.operator->())->m_skills.FUN_140311670())
         {
-            unsigned nSkillId = *pBuffInfo->m_skills.FUN_14018ee60().FUN_1403e8d90();
+            unsigned nSkillId = *FUN_14096d810(m_spBuff.operator->())->m_skills.FUN_14018ee60().FUN_1403e8d90();
             CStringW strMsg = FUN_1405c2690(CStringW(L"s_lapenshard_skill_possible_msg"), FUN_1401a9d70()->FUN_141811980(4, nSkillId));
             pReward->FUN_141ac05d0(nSkillId, strMsg, 1);
         }
@@ -2372,11 +2309,8 @@ void UILapenshardShieldBar::FUN_140c5fbd0()
 class Unk_ItemOwnerRef { public: int FUN_140635190(); };                // the binding owner holder of an item
 int FUN_1405b5a50(Unk_LsTable* pTable, unsigned nItemId);               // the item is a lapenshard of the table
 int FUN_1405b59d0(Unk_LsTable* pTable, unsigned nItemId);               // its category
-int FUN_140526790(CItem* pItem, int nJob);                              // the job may use it
-int FUN_140526810(CItem* pItem, unsigned nGender);                      // the gender may use it
 
 // @0x140c60920
-// MS2-FUNCTIONAL: the three nested item-reference scopes use different temporaries than the exe
 void FUN_140c60920(ItemArray* pOut, int bCheckUse, int bWithBound, int bWithEquipped, int bTableOnly, int nKind, __int64 nExcludeUid)
 {
     pOut->RemoveAll();
@@ -2389,67 +2323,65 @@ void FUN_140c60920(ItemArray* pOut, int bCheckUse, int bWithBound, int bWithEqui
     {
         ATL::CAtlArray<unsigned int> equipped;
         pPlayer->FUN_14152f960(equipped);
-        for (size_t i = 0; i < equipped.GetCount(); ++i)
+        for (unsigned i = 0; i < equipped.GetCount(); ++i)
         {
             unsigned nItemId = equipped[i];
-            if (bTableOnly == 0 || FUN_1405b5a50(FUN_1409c4b30(), nItemId) != 0)
+            if (bTableOnly != 0 && FUN_1405b5a50(FUN_1409c4b30(), nItemId) == 0)
+                continue;
+            MS2Ptr<CItem> spItem(new CItem());
+            int nGrade = FUN_14053feb0(nItemId);
+            if (spItem->FUN_14052b2e0(nItemId, nGrade, 0, 1) == 0)
+                continue;
+            if (spItem->FUN_140527930()->FUN_140635190() == 2)
             {
-                MS2Ptr<CItem> spItem(new CItem());
-                int nGrade = FUN_14053feb0(nItemId);
-                if (spItem->FUN_14052b2e0(nItemId, nGrade, 0, 1) != 0)
-                {
-                    if (spItem->FUN_140527930()->FUN_140635190() == 2)
-                    {
-                        __int64 nCharId = pPlayer->FUN_141656a80();
-                        CStringW strName = pPlayer->vfunc_77();
-                        spItem->FUN_14052b5e0(&nCharId, &strName);
-                    }
-                    items.Add(spItem);
-                }
+                __int64 nCharId = pPlayer->FUN_141656a80();
+                spItem->FUN_14052b5e0(&nCharId, &pPlayer->vfunc_77());
             }
+            items.Add(spItem);
         }
     }
-    if (items.IsEmpty())
-        return;
-    size_t nCount = items.GetCount();
-    for (size_t i = 0; i < nCount; ++i)
+    if (!items.IsEmpty())
     {
-        MS2Ptr<CItem> spItem = items[i];
-        if (spItem == 0)
-            continue;
-        if (bCheckUse != 0)
+        size_t nCount = items.GetCount();
+        for (size_t i = 0; i < nCount; ++i)
         {
-            if (pPlayer->FUN_141662eb0(spItem.get()) == 0)
+            MS2Ptr<CItem> spItem = items[i];
+            if (spItem == 0)
                 continue;
-            if (FUN_140526790(spItem.get(), pPlayer->FUN_141654700()) == 0)
+            if (bCheckUse != 0)
+            {
+                if (pPlayer->FUN_141662eb0(spItem.get()) == 0)
+                    continue;
+                if (spItem->FUN_140526790(pPlayer->FUN_141654700()) == 0)
+                    continue;
+                if (spItem->FUN_140526810(pPlayer->vfunc_78()) == 0)
+                    continue;
+            }
+            if (spItem->FUN_140526100() == 0)
                 continue;
-            if (FUN_140526810(spItem.get(), pPlayer->vfunc_78()) == 0)
+            if (bWithBound == 0 && spItem->FUN_140528e20())
                 continue;
+            if (bTableOnly != 0 && FUN_1405b5a50(FUN_1409c4b30(), spItem->FUN_1405276c0()) == 0)
+                continue;
+            if (nKind != 0 && FUN_1405b59d0(FUN_1409c4b30(), spItem->FUN_1405276c0()) != nKind)
+                continue;
+            if (nExcludeUid != 0 && spItem->FUN_140526a50() == nExcludeUid)
+                continue;
+            if (spItem->FUN_1405291f0() != 0)
+                pOut->Add(spItem);
+            else
+                pOut->Add(spItem->FUN_140524250());
         }
-        if (spItem->FUN_140526100() == 0)
-            continue;
-        if (bWithBound == 0 && spItem->FUN_140528e20())
-            continue;
-        if (bTableOnly != 0 && FUN_1405b5a50(FUN_1409c4b30(), spItem->FUN_1405276c0()) == 0)
-            continue;
-        if (nKind != 0 && FUN_1405b59d0(FUN_1409c4b30(), spItem->FUN_1405276c0()) != nKind)
-            continue;
-        if (nExcludeUid != 0 && spItem->FUN_140526a50() == nExcludeUid)
-            continue;
-        if (spItem->FUN_1405291f0() == 0)
-            pOut->Add(spItem->FUN_140524250());
-        else
-            pOut->Add(spItem);
     }
 }
 
 CStringW FUN_1418fec00(int nType, __int64 nValue, int);                 // money text by pay type
 
 // @0x140c65540
-// MS2-FUNCTIONAL: the ingredient rows are built with different temporaries
 void LapenshardUpgradeSlotPanel::FUN_140c65540(CString& strBag, MS2Ptr<Unk_LsRecord> spRec, ItemArray& items, LapenshardKindArray& kinds, ASObj& out)
 {
-    if (spRec->m_nNeed != 0)
+    int bNeed = spRec->m_nNeed > 0;
+    if (bNeed != 0)
     {
         unsigned nItemId = FUN_1409c4b30()->FUN_1405b5af0(spRec->m_nKind);
         int nGrade = FUN_14053feb0(nItemId);
@@ -2465,45 +2397,47 @@ void LapenshardUpgradeSlotPanel::FUN_140c65540(CString& strBag, MS2Ptr<Unk_LsRec
     if (m_pTab != 0)
         nTier = m_pTab->FUN_140c69650();
     MS2Ptr<Unk_LsRecipe> spRecipe = spRec->FUN_1405b41b0(nTier);
-    if (!(spRecipe == 0))
+    if (spRecipe)
     {
-        Unk_LsCostList* spList = spRecipe->FUN_14026c230();
-        unsigned nEntries = spList->FUN_14028b500();
+        Unk_IngVec* pList = spRecipe->FUN_14026c230();
+        unsigned nEntries = (unsigned)pList->FUN_14028b500();
         for (unsigned i = 0; i < nEntries; ++i)
         {
-            Unk_LsCostEntry* spEntry = spList->FUN_14028a0f0(i);
-            if (spEntry == 0)
-                continue;
-            if (spEntry->FUN_14026b350())
+            Unk_IngRef spEntry = *pList->FUN_14028a0f0(i);
+            if (spEntry == 0 || spEntry->FUN_14026b350())
                 continue;
             unsigned nItemId = spEntry->FUN_14026b500();
-            int nKind = spEntry->m_n1c;
+            int nKind = spEntry->m_b;
             int nGrade = FUN_14053feb0(nItemId);
+            int nCount = spEntry->m_c;
             MS2Ptr<CItem> spItem(new CItem());
-            if (spItem->FUN_14052b2e0(nItemId, nGrade, 0, spEntry->m_nNeed) == 0)
+            if (spItem->FUN_14052b2e0(nItemId, nGrade, 0, nCount) == 0)
                 continue;
             if (nTier != 0)
             {
-                if (nKind == 0x5d || nKind == 0x5e || nKind == 0x5f)
+                bool bMark = nKind == 0x5d || nKind == 0x5e || nKind == 0x5f;
+                if (bMark)
                     spItem->FUN_140526910(1);
             }
             items.Add(spItem);
             kinds.Add(nKind);
         }
     }
-    FUN_14141f770(strBag, items.GetCount(), items, FUN_141420330, 0x20403, 0x2020);
+    int nStyle = 0x20403;
+    int nFlags = 0x2020;
+    FUN_14141f770(strBag, items.GetCount(), items, FUN_141420330, nStyle, nFlags);
     ASArray rows(2);
     for (unsigned i = 0; i < items.GetCount(); ++i)
     {
         MS2Ptr<CItem> spItem = items[i];
         if (spItem == 0)
             continue;
+        CString strBinding = FUN_1422cc860(strBag, i);
         ASObj row(2);
-        row.FUN_1407cba60("binding", FUN_1422cc860(strBag, i));
-        int nHave = 0;
-        if (spItem->FUN_140526100() == 0)
-            nHave = FUN_140c69670(spItem->FUN_1405276c0(), spItem->FUN_140526bd0(), &kinds[i]);
-        row.FUN_1407cbb20("countText", FUN_1419021b0(nHave, spItem->FUN_140526c50()));
+        row.FUN_1407cba60("binding", strBinding);
+        int nHave = spItem->FUN_140526100() != 0 ? 0 : FUN_140c69670(spItem->FUN_1405276c0(), spItem->FUN_140526bd0(), &kinds[i]);
+        int nNeed = spItem->FUN_140526c50();
+        row.FUN_1407cbb20("countText", FUN_1419021b0(nHave, nNeed));
         rows.FUN_1422bc050(row.FUN_1422bb870());
     }
     out.FUN_1409adbe0("ingredient", rows.FUN_1422bb870());
@@ -2517,35 +2451,19 @@ void FUN_140d01420(const Scaleform::GFx::Value& root, CString strName, int n);  
 void FUN_141416650(ItemInfoSlot* pSlot, Delegate<void(ItemInfoSlot&, ASSlot&)> fn);
 void FUN_1414166a0(ItemInfoSlot* pSlot, Delegate<void(ItemInfoSlot&, ASTooltip&)> fn);
 
-// Shows an item's name in the textField of a named child of the upgrade body.
-static void Unk_LsSetNameText(MS2Ptr<ASUIComponent>& spBody, const char* szClip, const CStringW& strText)
-{
-    MS2Ptr<ASMovieClip> clip = spBody->FUN_1409b4560(CString(szClip));
-    if (clip.get() != 0)
-    {
-        MS2Ptr<ASTextField> tf = clip->FUN_1409b4620(CString("textField"));
-        if (tf.get() != 0)
-        {
-            FUN_140d01420(clip->FUN_1422bb890(), CString("textField"), 2);
-            tf->FUN_1422c4f00(strText);
-        }
-    }
-}
-
 // @0x140c664e0
-// MS2-FUNCTIONAL: the source and result halves share one helper and the temporaries are laid out differently
 void LapenshardUpgradeSlotPanel::FUN_140c664e0()
 {
     if (m_body == 0)
         return;
-    MS2Ptr<ASMovieClip> spSourceSlot = m_body->FUN_1409b4560(CString("m_sourceSlot"));
-    if (spSourceSlot.get() != 0)
+    if (MS2Ptr<ASMovieClip> spSourceSlot = m_body->FUN_1409b4560("m_sourceSlot"))
     {
         CStringW strName;
-        if (!(m_spSource == 0))
+        if (m_spSource)
         {
             MS2Ptr<CItem> spItem(new CItem());
-            if (spItem->FUN_14052b2e0(m_spSource->FUN_1405276c0(), 0, 0, 0) != 0)
+            int nRarity = 0;
+            if (spItem->FUN_14052b2e0(m_spSource->FUN_1405276c0(), nRarity, 0, 0) != 0)
             {
                 spItem->FUN_140526a70(m_spSource->FUN_140526a50());
                 FUN_140c654a0(m_strSource, spItem);
@@ -2557,22 +2475,28 @@ void LapenshardUpgradeSlotPanel::FUN_140c664e0()
                     ASObj obj(2);
                     obj.FUN_1407cba60("bindID", m_strSource);
                     spSourceSlot->FUN_140acd1f0("setData", AScript(obj));
-                    unsigned nItemId = spItem->FUN_1405276c0();
-                    strName = FUN_14183e9c0(FUN_1401a9d70()->FUN_141811980(1, nItemId), FUN_14053feb0(nItemId));
+                    strName = FUN_14183e9c0(FUN_1401a9d70()->FUN_141811980(1, spItem->FUN_1405276c0()), FUN_14053feb0(spItem->FUN_1405276c0()));
                 }
             }
         }
-        Unk_LsSetNameText(m_body, "m_sourceItemName", strName);
+        if (MS2Ptr<ASMovieClip> spNameClip = m_body->FUN_1409b4560("m_sourceItemName"))
+        {
+            if (MS2Ptr<ASTextField> tf = spNameClip->FUN_1409b4620("textField"))
+            {
+                FUN_140d01420((*spNameClip).FUN_1422bb890(), CString("textField"), 2);
+                tf->FUN_1422c4f00(strName);
+            }
+        }
     }
-    MS2Ptr<ASMovieClip> spResultSlot = m_body->FUN_1409b4560(CString("m_resultSlot"));
-    if (spResultSlot.get() != 0)
+    if (MS2Ptr<ASMovieClip> spResultSlot = m_body->FUN_1409b4560("m_resultSlot"))
     {
         CStringW strName;
         MS2Ptr<Unk_LsRecord> spRec = FUN_140c65d60();
-        if (!(spRec == 0) && spRec->m_n20 != 0)
+        if (spRec.get() != 0 && spRec->m_n20 != 0)
         {
             MS2Ptr<CItem> spItem(new CItem());
-            if (spItem->FUN_14052b2e0(spRec->m_n20, 0, 0, 0) != 0)
+            int nRarity = 0;
+            if (spItem->FUN_14052b2e0(spRec->m_n20, nRarity, 0, 0) != 0)
             {
                 FUN_140c654a0(m_strResult, spItem);
                 ItemInfoSlot* pBag = FUN_140c69ab0(FUN_1422c8e90(m_strResult));
@@ -2582,19 +2506,27 @@ void LapenshardUpgradeSlotPanel::FUN_140c664e0()
                     ASObj obj(2);
                     obj.FUN_1407cba60("bindID", m_strResult);
                     spResultSlot->FUN_140acd1f0("setData", AScript(obj));
-                    unsigned nItemId = spItem->FUN_1405276c0();
-                    strName = FUN_14183e9c0(FUN_1401a9d70()->FUN_141811980(1, nItemId), FUN_14053feb0(nItemId));
+                    strName = FUN_14183e9c0(FUN_1401a9d70()->FUN_141811980(1, spItem->FUN_1405276c0()), FUN_14053feb0(spItem->FUN_1405276c0()));
                 }
             }
         }
-        Unk_LsSetNameText(m_body, "m_resultItemName", strName);
+        if (MS2Ptr<ASMovieClip> spNameClip = m_body->FUN_1409b4560("m_resultItemName"))
+        {
+            if (MS2Ptr<ASTextField> tf = spNameClip->FUN_1409b4620("textField"))
+            {
+                FUN_140d01420((*spNameClip).FUN_1422bb890(), CString("textField"), 2);
+                tf->FUN_1422c4f00(strName);
+            }
+        }
     }
 }
 
 // @0x140c660f0
 void LapenshardUpgradeSlotPanel::FUN_140c660f0()
 {
-    if (!(!(m_ui == 0) && !m_items.IsEmpty() && !m_kinds.IsEmpty()))
+    if (m_ui == 0)
+        return;
+    if (m_items.IsEmpty() || m_kinds.IsEmpty())
         return;
     ASArray rows(2);
     for (unsigned i = 0; i < m_items.GetCount(); ++i)
@@ -2602,12 +2534,12 @@ void LapenshardUpgradeSlotPanel::FUN_140c660f0()
         MS2Ptr<CItem> spItem = m_items[i];
         if (spItem == 0)
             continue;
+        CString strBinding = FUN_1422cc860(m_strBind, i);
         ASObj row(2);
-        row.FUN_1407cba60("binding", FUN_1422cc860(m_strBind, i));
-        int nHave = 0;
-        if (spItem->FUN_140526100() == 0)
-            nHave = FUN_140c69670(spItem->FUN_1405276c0(), spItem->FUN_140526bd0(), &m_kinds[i]);
-        row.FUN_1407cbb20("countText", FUN_1419021b0(nHave, spItem->FUN_140526c50()));
+        row.FUN_1407cba60("binding", strBinding);
+        int nHave = spItem->FUN_140526100() != 0 ? 0 : FUN_140c69670(spItem->FUN_1405276c0(), spItem->FUN_140526bd0(), &m_kinds[i]);
+        int nNeed = spItem->FUN_140526c50();
+        row.FUN_1407cbb20("countText", FUN_1419021b0(nHave, nNeed));
         rows.FUN_1422bc050(row.FUN_1422bb870());
     }
     ASObj data(2);
@@ -2639,26 +2571,7 @@ void LapenshardUpgradeSlotPanel::FUN_140c671d0()
     m_ui->Invoke("selectItem", data.FUN_1422bb870());
 }
 
-// Binds an item to a named slot of the result animation and returns its coloured name.
-static CStringW Unk_LsBindResultSlot(LapenshardUpgradeSlotPanel* pPanel, CString& strSlot, unsigned nItemId, ASObj& obj, const char* szBindKey, const char* szNameKey)
-{
-    MS2Ptr<CItem> spItem(new CItem());
-    if (spItem->FUN_14052b2e0(nItemId, 0, 0, 0) != 0)
-    {
-        pPanel->FUN_140c654a0(strSlot, spItem);
-        ItemInfoSlot* pBag = FUN_140c69ab0(FUN_1422c8e90(strSlot));
-        if (pBag != 0)
-            FUN_1414166a0(pBag, Delegate<void(ItemInfoSlot&, ASTooltip&)>(pPanel, &LapenshardUpgradeSlotPanel::FUN_140c65360));
-    }
-    unsigned nShown = spItem->FUN_1405276c0();
-    CStringW strName = FUN_14183e9c0(FUN_1401a9d70()->FUN_141811980(1, nShown), FUN_14053feb0(nShown));
-    obj.FUN_1407cba60(szBindKey, strSlot);
-    obj.FUN_1407cbb20(szNameKey, strName);
-    return strName;
-}
-
 // @0x140c67440
-// MS2-FUNCTIONAL: the success and fail slots share one helper and the temporaries are laid out differently
 void LapenshardUpgradeSlotPanel::FUN_140c67440(bool bSuccess)
 {
     if (m_body == 0)
@@ -2673,21 +2586,45 @@ void LapenshardUpgradeSlotPanel::FUN_140c67440(bool bSuccess)
     if (spRec->m_n20 == 0)
         return;
     ASObj obj(2);
-    obj.FUN_1407cbbe0("success", bSuccess != 0);
-    CString strSuccess("lapenshardUpgradeSuccessSlotID");
-    Unk_LsBindResultSlot(this, strSuccess, spRec->m_n20, obj, "successSlotBindID", "successItemName");
+    obj.FUN_1407cbbe0("success", bSuccess);
+    {
+        CString strSuccess("lapenshardUpgradeSuccessSlotID");
+        MS2Ptr<CItem> spItem(new CItem());
+        int nRarity = 0;
+        if (spItem->FUN_14052b2e0(spRec->m_n20, nRarity, 0, 0) != 0)
+        {
+            FUN_140c654a0(strSuccess, spItem);
+            ItemInfoSlot* pBag = FUN_140c69ab0(FUN_1422c8e90(strSuccess));
+            if (pBag != 0)
+                FUN_1414166a0(pBag, Delegate<void(ItemInfoSlot&, ASTooltip&)>(this, &LapenshardUpgradeSlotPanel::FUN_140c65360));
+        }
+        CStringW strName = FUN_14183e9c0(FUN_1401a9d70()->FUN_141811980(1, spItem->FUN_1405276c0()), FUN_14053feb0(spItem->FUN_1405276c0()));
+        obj.FUN_1407cba60("successSlotBindID", strSuccess);
+        obj.FUN_1407cbb20("successItemName", strName);
+    }
     int bLimit = 0;
     if (bSuccess != 0)
     {
         MS2Ptr<Unk_LsRecord> spNext = FUN_1409c4b30()->FUN_1405b56a0(spRec->m_n20);
-        if (!(spNext == 0) && spNext->m_n20 == 0)
+        if (spNext && spNext->m_n20 == 0)
             bLimit = 1;
     }
     obj.FUN_1407cb9c0("limitLevel", bLimit);
-    if (!(m_spSource == 0))
+    if (m_spSource)
     {
         CString strFail("lapenshardUpgradeFailSlotID");
-        Unk_LsBindResultSlot(this, strFail, m_spSource->FUN_1405276c0(), obj, "failSlotBindID", "failItemName");
+        MS2Ptr<CItem> spItem(new CItem());
+        int nRarity = 0;
+        if (spItem->FUN_14052b2e0(m_spSource->FUN_1405276c0(), nRarity, 0, 0) != 0)
+        {
+            FUN_140c654a0(strFail, spItem);
+            ItemInfoSlot* pBag = FUN_140c69ab0(FUN_1422c8e90(strFail));
+            if (pBag != 0)
+                FUN_1414166a0(pBag, Delegate<void(ItemInfoSlot&, ASTooltip&)>(this, &LapenshardUpgradeSlotPanel::FUN_140c65360));
+        }
+        CStringW strName = FUN_14183e9c0(FUN_1401a9d70()->FUN_141811980(1, spItem->FUN_1405276c0()), FUN_14053feb0(spItem->FUN_1405276c0()));
+        obj.FUN_1407cba60("failSlotBindID", strFail);
+        obj.FUN_1407cbb20("failItemName", strName);
     }
     m_ui->Invoke("upgradeComplete", obj.FUN_1422bb870());
     m_spSource = 0;

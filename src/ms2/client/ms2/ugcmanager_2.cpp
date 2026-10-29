@@ -498,13 +498,13 @@ CUgcDownloadEquip::~CUgcDownloadEquip()
 }
 
 // @0x14186fa90
-// MS2-FUNCTIONAL: the exe moves pProxy through an extra pointer temp before the downcast (two-level proxy
-// classes); no cast form tried reproduces it
+// The exe copies pProxy into a pointer temp before the downcast; a named IUgcProxy* local gives that.
 void CUgcDownloadEquip::AddProxy(IUgcProxy* pProxy)
 {
     if (pProxy == NULL)
         return;
-    CUgcItemPC* pSrc = static_cast<CUgcItemPC*>(pProxy);
+    IUgcProxy* pTmp = pProxy;
+    CUgcItemPC* pSrc = static_cast<CUgcItemPC*>(pTmp);
     if (pSrc == NULL)
         return;
     MS2Ptr<CUgcItemPC> sp(new CUgcItemPC);
@@ -566,13 +566,12 @@ CUgcDownloadCube::~CUgcDownloadCube()
 }
 
 // @0x141870030
-// MS2-FUNCTIONAL: the exe moves pProxy through an extra pointer temp before the downcast (two-level proxy
-// classes); no cast form tried reproduces it
 void CUgcDownloadCube::AddProxy(IUgcProxy* pProxy)
 {
     if (pProxy == NULL)
         return;
-    CUgcItemCube* pSrc = static_cast<CUgcItemCube*>(pProxy);
+    IUgcProxy* pTmp = pProxy;
+    CUgcItemCube* pSrc = static_cast<CUgcItemCube*>(pTmp);
     if (pSrc == NULL)
         return;
     MS2Ptr<CUgcItemCube> sp(new CUgcItemCube);
@@ -636,13 +635,12 @@ CUgcDownloadItemIcon::~CUgcDownloadItemIcon()
 }
 
 // @0x141870650
-// MS2-FUNCTIONAL: the exe moves pProxy through an extra pointer temp before the downcast (two-level proxy
-// classes); no cast form tried reproduces it
 void CUgcDownloadItemIcon::AddProxy(IUgcProxy* pProxy)
 {
     if (pProxy == NULL)
         return;
-    CUgcItemIconPC* pSrc = static_cast<CUgcItemIconPC*>(pProxy);
+    IUgcProxy* pTmp = pProxy;
+    CUgcItemIconPC* pSrc = static_cast<CUgcItemIconPC*>(pTmp);
     if (pSrc == NULL)
         return;
     MS2Ptr<CUgcItemIconPC> sp(new CUgcItemIconPC);
@@ -711,19 +709,18 @@ CUgcDownloadBanner::~CUgcDownloadBanner()
 }
 
 // @0x141870c90
-// MS2-FUNCTIONAL: the exe moves pProxy through an extra pointer temp before the downcast (two-level proxy
-// classes); no cast form tried reproduces it
 void CUgcDownloadBanner::AddProxy(IUgcProxy* pProxy)
 {
-    if (m_spPost.get() == 0 && pProxy)
-    {
-        CUgcBannerPost* pSrc = static_cast<CUgcBannerPost*>(pProxy);
-        if (pSrc)
-        {
-            m_spPost.AssignRaw(new CUgcBannerPost);
-            m_spPost->CopyFrom(pSrc);
-        }
-    }
+    if (m_spPost.get() != 0)
+        return;
+    if (pProxy == NULL)
+        return;
+    IUgcProxy* pTmp = pProxy;
+    CUgcBannerPost* pSrc = static_cast<CUgcBannerPost*>(pTmp);
+    if (pSrc == NULL)
+        return;
+    m_spPost.AssignRaw(new CUgcBannerPost);
+    m_spPost->CopyFrom(pSrc);
 }
 MS2_REPLACE_METHOD(0x141870c90, CUgcDownloadBanner, AddProxy, 231, 0x285DCB5C);
 
@@ -1033,13 +1030,12 @@ CUgcDownloadRidee::~CUgcDownloadRidee()
 }
 
 // @0x1418728d0
-// MS2-FUNCTIONAL: the exe moves pProxy through an extra pointer temp before the downcast (two-level proxy
-// classes); no cast form tried reproduces it
 void CUgcDownloadRidee::AddProxy(IUgcProxy* pProxy)
 {
     if (pProxy == NULL)
         return;
-    CUgcItemRidee* pSrc = static_cast<CUgcItemRidee*>(pProxy);
+    IUgcProxy* pTmp = pProxy;
+    CUgcItemRidee* pSrc = static_cast<CUgcItemRidee*>(pTmp);
     if (pSrc == NULL)
         return;
     MS2Ptr<CUgcItemRidee> sp(new CUgcItemRidee);
@@ -1300,13 +1296,12 @@ CUgcDownloadBlueprintImage::~CUgcDownloadBlueprintImage()
 }
 
 // @0x141873f00
-// MS2-FUNCTIONAL: the exe moves pProxy through an extra pointer temp before the downcast (two-level proxy
-// classes); no cast form tried reproduces it
 void CUgcDownloadBlueprintImage::AddProxy(IUgcProxy* pProxy)
 {
     if (pProxy == NULL)
         return;
-    CUgcBlueprintImageProxy* pSrc = static_cast<CUgcBlueprintImageProxy*>(pProxy);
+    IUgcProxy* pTmp = pProxy;
+    CUgcBlueprintImageProxy* pSrc = static_cast<CUgcBlueprintImageProxy*>(pTmp);
     if (pSrc == NULL)
         return;
     MS2Ptr<CUgcBlueprintImageProxy> sp(new CUgcBlueprintImageProxy);
@@ -1368,13 +1363,12 @@ CUgcDownloadBlueprintIcon::~CUgcDownloadBlueprintIcon()
 }
 
 // @0x1418745b0
-// MS2-FUNCTIONAL: the exe moves pProxy through an extra pointer temp before the downcast (two-level proxy
-// classes); no cast form tried reproduces it
 void CUgcDownloadBlueprintIcon::AddProxy(IUgcProxy* pProxy)
 {
     if (pProxy == NULL)
         return;
-    CUgcItemIconPC* pSrc = static_cast<CUgcItemIconPC*>(pProxy);
+    IUgcProxy* pTmp = pProxy;
+    CUgcItemIconPC* pSrc = static_cast<CUgcItemIconPC*>(pTmp);
     if (pSrc == NULL)
         return;
     MS2Ptr<CUgcItemIconPC> sp(new CUgcItemIconPC);

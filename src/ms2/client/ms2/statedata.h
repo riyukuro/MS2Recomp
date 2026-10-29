@@ -285,7 +285,7 @@ public:
     int FUN_1417bd310(efd::Point3 kPos);                        // re-attach to the wall at kPos
     int FUN_1417bd420(void* pWall);                             // the wall edges are far enough
     int FUN_1417bd6c0();                                        // the top / bottom is walkable ground
-    bool FUN_1417bda60();                                       // phase checks (top, ground, fall off)
+    int FUN_1417bda60();                                        // phase checks (top, ground, fall off)
     int FUN_1417bdee0();                                        // pick the phase from the input
     int FUN_1417be120(double fTime);                            // move by the phase
     int FUN_1417be590(double fTime);                            // up

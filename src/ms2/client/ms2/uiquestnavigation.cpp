@@ -61,7 +61,7 @@ class Unk_QgNavi
 public:
     TraceResult* FUN_140c9ac60();                               // the current trace
     TraceContext* FUN_140c9adf0();                              // the current trace context
-    int FUN_140c9af60();                                        // nonzero: the player's arrow is shown
+    bool FUN_140c9af60();                                        // nonzero: the player's arrow is shown
 };
 extern Unk_QgNavi* DAT_143abf7e8;                              // the quest navigator
 Unk_QgNavi* FUN_140e7c990() { return DAT_143abf7e8; }           // 0x140e7c990
@@ -123,33 +123,36 @@ int NavigationEntity::vfunc_3(AScript* pParent)
     ASObj obj(FUN_141277f40());
     obj.FUN_1407cba60("id", vfunc_1());
     Scaleform::GFx::Value v = pParent->Invoke("create", vfunc_2(), obj);
-    if (FUN_1409b0390(&v))
-        return 0;
-    ASGameEntity* pEntity = new ASGameEntity(v, FUN_141277f40());
-    if (pEntity)
-        m_20.AssignRaw(pEntity);
-    return 1;
-}   // MS2-FUNCTIONAL: not byte-matched (call order / stack and EH state layout)
+    if (!FUN_1409b0390(&v))
+    {
+        ASGameEntity* pEntity = new ASGameEntity(v, FUN_141277f40());
+        if (pEntity)
+            m_20.AssignRaw(pEntity);
+        return 1;
+    }
+    return 0;
+}
 
 // @0x140e78870
 void NavigationEntity::vfunc_4(const TraceResult* pResult)
 {
-    if (!(m_20 == 0) && m_18 != 0)
+    if (m_20 == 0)
+        return;
+    if (m_18 == 0)
+        return;
+    Vector3 pt;
+    if (FUN_1409478c0()->FUN_140af0700(vfunc_7(), pt))
     {
-        Vector3 pt;
-        if (!FUN_1409478c0()->FUN_140af0700(vfunc_7(), pt))
-        {
-            m_20->vfunc_3(0);
-        }
-        else
-        {
-            pt.FUN_140ad0c10(FUN_1422afec0(FUN_14025e7a0(), FUN_141277f40()));
-            pt.y += vfunc_8();
-            m_20->FUN_1422c00f0(pt.x, pt.y);
-            m_20->vfunc_3(1);
-        }
+        pt.FUN_140ad0c10(FUN_1422afec0(FUN_14025e7a0(), FUN_141277f40()));
+        pt.y += vfunc_8();
+        m_20->FUN_1422c00f0(pt.x, pt.y);
+        m_20->vfunc_3(1);
     }
-}   // MS2-FUNCTIONAL: not byte-matched (call order / stack and EH state layout)
+    else
+    {
+        m_20->vfunc_3(0);
+    }
+}
 
 // @0x140e789d0
 int NavigationEntity::vfunc_5(const TraceResult* pResult)
@@ -191,22 +194,24 @@ PcHudNavigationEntity::~PcHudNavigationEntity()
 // @0x140e78af0
 int PcHudNavigationEntity::vfunc_5(const TraceResult* pResult)
 {
-    if (!pResult || pResult->m_1c == 0)
+    if (!pResult)
+        return 0;
+    if (pResult->m_1c == 0)
         return 0;
     return FUN_140e7c990()->FUN_140c9af60();
-}   // MS2-FUNCTIONAL: not byte-matched (call order / stack and EH state layout)
+}
 
 // @0x140e78b40
 void PcHudNavigationEntity::vfunc_4(const TraceResult* pResult)
 {
     NavigationEntity::vfunc_4(pResult);
-    if (pResult && !(m_20 == 0))
-    {
-        MS2Ptr<ASTextField> spText = m_20->FUN_1409b4620("m_distance");
-        if (spText.get())
-            spText->FUN_1422c4cd0(pResult->m_38);
-    }
-}   // MS2-FUNCTIONAL: not byte-matched (call order / stack and EH state layout)
+    if (!pResult)
+        return;
+    if (m_20 == 0)
+        return;
+    if (MS2Ptr<ASTextField> spText = m_20->FUN_1409b4620("m_distance"))
+        spText->FUN_1422c4cd0(pResult->m_38);
+}
 
 // @0x140e78c40
 Vector3 PcHudNavigationEntity::vfunc_7()
@@ -216,13 +221,14 @@ Vector3 PcHudNavigationEntity::vfunc_7()
         return DAT_143b01a60;
     NiPoint3 pt = pPC->vfunc_18();
     return Vector3(pt.x, pt.y, pt.z);
-}   // MS2-FUNCTIONAL: not byte-matched (call order / stack and EH state layout)
+}   // MS2-FUNCTIONAL: the exe builds vfunc_18 straight into the return slot (pcbase.h declares it as NiPoint3)
 
 // @0x140e78cc0
 float PcHudNavigationEntity::vfunc_8()
 {
-    return 40.0f - NavigationEntity::vfunc_8();
-}   // MS2-FUNCTIONAL: not byte-matched (call order / stack and EH state layout)
+    float fDist = NavigationEntity::vfunc_8();
+    return 40.0f - fDist;
+}
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // NpcNavigationEntity
@@ -243,7 +249,7 @@ NpcNavigationEntity::~NpcNavigationEntity()
 CString NpcNavigationEntity::vfunc_1()
 {
     return Unk_SocketFormat<unsigned>("npc_{0}", m_30);
-}   // MS2-FUNCTIONAL: not byte-matched (call order / stack and EH state layout)
+}
 
 // @0x140e78e00
 int NpcNavigationEntity::vfunc_5(const TraceResult* pResult)
@@ -252,46 +258,47 @@ int NpcNavigationEntity::vfunc_5(const TraceResult* pResult)
         return 0;
     if (pResult->m_40 == 0)
         return 0;
-    TraceContext* pContext = pResult->m_40.operator->();
-    if (pContext->m_18 != FUN_1403ed2d0()->FUN_141bd3060())
+    if (pResult->m_40->m_18 != FUN_1403ed2d0()->FUN_141bd3060())
         return 0;
-    if (pContext->m_20.find(m_34) == pContext->m_20.end())
+    if (pResult->m_40->m_20.find(m_34) == pResult->m_40->m_20.end())
         return 0;
     if (pResult->m_1c == 2)
         return 0;
     Unk_SSGNpc* pNpc = FUN_1403ed2d0()->FUN_141bd1320(m_30);
     if (!pNpc)
         return 0;
-    return pNpc->FUN_14166ce30() == 0 ? 1 : 0;
-}   // MS2-FUNCTIONAL: not byte-matched (call order / stack and EH state layout)
+    if (pNpc->FUN_14166ce30())
+        return 0;
+    return 1;
+}
 
 // @0x140e78f50
 int NpcNavigationEntity::vfunc_6(const TraceContext* pContext)
 {
-    if (!pContext)
-        return 0;
     if (pContext->m_20.find(m_34) == pContext->m_20.end())
         return 0;
     Unk_SSGNpc* pNpc = FUN_1403ed2d0()->FUN_141bd1320(m_30);
     if (!pNpc)
         return 0;
-    return pNpc->FUN_14166ce30() == 0 ? 1 : 0;
-}   // MS2-FUNCTIONAL: not byte-matched (call order / stack and EH state layout)
+    if (pNpc->FUN_14166ce30())
+        return 0;
+    return 1;
+}
 
 // @0x140e79010
 Vector3 NpcNavigationEntity::vfunc_7()
 {
     Unk_SSGNpc* pNpc = FUN_1403ed2d0()->FUN_141bd1320(m_30);
-    if (!pNpc)
-        return DAT_143b01a60;
-    NiAVObject* pNode = pNpc->FUN_141675150("Eff_UI");
-    if (!pNode)
+    if (pNpc)
     {
+        NiAVObject* pNode = pNpc->FUN_141675150("Eff_UI");
+        if (pNode)
+            return FUN_140947900(pNode);
         NiPoint3 pt = pNpc->vfunc_18();
         return Vector3(pt.x, pt.y, pt.z);
     }
-    return FUN_140947900(pNode);
-}   // MS2-FUNCTIONAL: not byte-matched (call order / stack and EH state layout)
+    return DAT_143b01a60;
+}   // MS2-FUNCTIONAL: the exe builds vfunc_18 straight into the return slot (gameobject.h declares it as NiPoint3)
 
 // @0x140e790f0
 float NpcNavigationEntity::vfunc_8()
@@ -327,40 +334,43 @@ int InteractNavigationEntity::vfunc_5(const TraceResult* pResult)
         return 0;
     if (pResult->m_40 == 0)
         return 0;
-    TraceContext* pContext = pResult->m_40.operator->();
-    if (pContext->m_18 != FUN_1403ed2d0()->FUN_141bd3060())
+    if (pResult->m_40->m_18 != FUN_1403ed2d0()->FUN_141bd3060())
         return 0;
-    if (pContext->m_30.find(m_30) == pContext->m_30.end())
+    if (pResult->m_40->m_30.find(m_30) == pResult->m_40->m_30.end())
         return 0;
     MS2Ptr<CInteractObject> spObj = FUN_1403ed2d0()->FUN_141bc66b0(m_38);
     if (spObj.IsNull())
         return 0;
-    return spObj->vfunc_7() != 0 ? 1 : 0;   // exe: test eax / jne -> 1
-}   // MS2-FUNCTIONAL: not byte-matched (call order / stack and EH state layout)
+    if (spObj->vfunc_7() == 0)
+        return 0;
+    return 1;
+}
 
 // @0x140e79450
 int InteractNavigationEntity::vfunc_6(const TraceContext* pContext)
 {
-    if (!pContext)
-        return 0;
     if (pContext->m_30.find(m_30) == pContext->m_30.end())
         return 0;
     MS2Ptr<CInteractObject> spObj = FUN_1403ed2d0()->FUN_141bc66b0(m_38);
     if (spObj.IsNull())
         return 0;
-    return spObj->vfunc_7() != 0 ? 1 : 0;   // exe: test eax / jne -> 1
-}   // MS2-FUNCTIONAL: not byte-matched (call order / stack and EH state layout)
+    if (spObj->vfunc_7() == 0)
+        return 0;
+    return 1;
+}
 
 // @0x140e79590
 Vector3 InteractNavigationEntity::vfunc_7()
 {
     MS2Ptr<CInteractObject> spObj = FUN_1403ed2d0()->FUN_141bc66b0(m_38);
-    if (spObj.get() == 0)
-        return DAT_143b01a60;
-    Vector3 pt = spObj->GetPos();
-    pt.z += 200.0f;
-    return pt;
-}   // MS2-FUNCTIONAL: not byte-matched (call order / stack and EH state layout)
+    if (spObj.get() != 0)
+    {
+        Vector3 pt = spObj->GetPos();
+        pt.z += 200.0f;
+        return pt;
+    }
+    return DAT_143b01a60;
+}
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // LiftableNavigationEntity
@@ -390,40 +400,41 @@ int LiftableNavigationEntity::vfunc_5(const TraceResult* pResult)
         return 0;
     if (pResult->m_40 == 0)
         return 0;
-    TraceContext* pContext = pResult->m_40.operator->();
-    if (pContext->m_18 != FUN_1403ed2d0()->FUN_141bd3060())
+    if (pResult->m_40->m_18 != FUN_1403ed2d0()->FUN_141bd3060())
         return 0;
-    if (pContext->m_40.find(m_30) == pContext->m_40.end())
+    if (pResult->m_40->m_40.find(m_30) == pResult->m_40->m_40.end())
         return 0;
     MS2Ptr<Unk_SSGNamedObj> spObj = FUN_1403ed2d0()->FUN_141bc5a20(m_38);
     if (spObj.IsNull())
         return 0;
-    return spObj->FUN_141447ae0() == 0 ? 1 : 0;
-}   // MS2-FUNCTIONAL: not byte-matched (call order / stack and EH state layout)
+    if (!spObj->FUN_141447ae0() == false)
+        return 0;
+    return 1;
+}
 
 // @0x140e799b0
 int LiftableNavigationEntity::vfunc_6(const TraceContext* pContext)
 {
-    if (!pContext)
-        return 0;
     if (pContext->m_40.find(m_30) == pContext->m_40.end())
         return 0;
     MS2Ptr<Unk_SSGNamedObj> spObj = FUN_1403ed2d0()->FUN_141bc5a20(m_38);
     if (spObj.IsNull())
         return 0;
-    return spObj->FUN_141447ae0() == 0 ? 1 : 0;
-}   // MS2-FUNCTIONAL: not byte-matched (call order / stack and EH state layout)
+    if (!spObj->FUN_141447ae0() == false)
+        return 0;
+    return 1;
+}
 
 // @0x140e79b20
 Vector3 LiftableNavigationEntity::vfunc_7()
 {
     MS2Ptr<Unk_SSGNamedObj> spObj = FUN_1403ed2d0()->FUN_141bc5a20(m_38);
-    if (spObj.get() == 0)
+    if (spObj.IsNull())
         return DAT_143b01a60;
     Vector3 pt = spObj->FUN_141447c80();
     pt.z += 200.0f;
     return pt;
-}   // MS2-FUNCTIONAL: not byte-matched (call order / stack and EH state layout)
+}
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // PortalNavigationEntity
@@ -457,22 +468,25 @@ int PortalNavigationEntity::vfunc_5(const TraceResult* pResult)
     MS2Ptr<CPortal> spPortal = FUN_1403ed2d0()->FUN_141bc2800(m_30);
     if (spPortal.IsNull())
         return 0;
-    Vector3 pt = spPortal->FUN_14169d2f0();
-    if (pt.FUN_140552700(Vector3(pResult->m_20.x, pResult->m_20.y, pResult->m_20.z)))
+    if (spPortal->FUN_14169d2f0().FUN_140552700(reinterpret_cast<const Vector3&>(pResult->m_20)))   // efd::Point3 !=
         return 0;
-    return spPortal->FUN_14169d160() ? 1 : 0;
-}   // MS2-FUNCTIONAL: not byte-matched (call order / stack and EH state layout)
+    if (!spPortal->FUN_14169d160())
+        return 0;
+    return 1;
+}
 
 // @0x140e79e50
 Vector3 PortalNavigationEntity::vfunc_7()
 {
     MS2Ptr<CPortal> spPortal = FUN_1403ed2d0()->FUN_141bc2800(m_30);
-    if (spPortal.get() == 0)
-        return DAT_143b01a60;
-    Vector3 pt = spPortal->FUN_14169d2f0();
-    pt.z += 200.0f;
-    return pt;
-}   // MS2-FUNCTIONAL: not byte-matched (call order / stack and EH state layout)
+    if (spPortal.get() != 0)
+    {
+        Vector3 pt = spPortal->FUN_14169d2f0();
+        pt.z += 200.0f;
+        return pt;
+    }
+    return DAT_143b01a60;
+}
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // UIQuestNavigation
@@ -528,15 +542,13 @@ void UIQuestNavigation::vfunc_3()
 void UIQuestNavigation::OnLoadComplete()
 {
     UIObject::OnLoadComplete();
-    POSITION pos = m_entities.GetStartPosition();
-    while (pos)
+    for (POSITION pos = m_entities.GetStartPosition(); pos != 0; m_entities.GetNext(pos))
     {
         MS2Ptr<NavigationEntity> spEntity = m_entities.GetValueAt(pos);
-        if (!(spEntity->m_20 == 0))
+        if (spEntity->m_20 == 0)
             spEntity->vfunc_3(m_30.get());
-        m_entities.GetNext(pos);
     }
-}   // MS2-FUNCTIONAL: not byte-matched (call order / stack and EH state layout)
+}
 
 // @0x140e7ac40
 void UIQuestNavigation::vfunc_15()
@@ -546,12 +558,11 @@ void UIQuestNavigation::vfunc_15()
         return;
     TraceResult* pResult = FUN_140e7c990()->FUN_140c9ac60();
     TraceContext* pContext = FUN_140e7c990()->FUN_140c9adf0();
-    POSITION pos = m_entities.GetStartPosition();
-    while (pos)
+    for (POSITION pos = m_entities.GetStartPosition(); pos != 0; m_entities.GetNext(pos))
     {
         MS2Ptr<NavigationEntity> spEntity = m_entities.GetValueAt(pos);
         Vector3 ptTemp;
-        int nState;
+        int nState = 0;
         float fAlpha = 0.0f;
         if (spEntity->vfunc_5(pResult))
         {
@@ -569,47 +580,47 @@ void UIQuestNavigation::vfunc_15()
         }
         if (spEntity->m_18 != nState)
         {
-            if (nState == 0)
-            {
-                if (FUN_140e7ba00(spEntity))
-                    spEntity->m_18 = 0;
-            }
-            else
+            if (nState != 0)
             {
                 if (FUN_140e7b890(spEntity))
                     spEntity->m_18 = 1;
             }
+            else
+            {
+                if (FUN_140e7ba00(spEntity))
+                    spEntity->m_18 = 0;
+            }
         }
         if (fAlpha != spEntity->m_1c && nState != 0)
         {
-            if (spEntity->m_20.get())
+            if (static_cast<bool>(spEntity->m_20.get()))
             {
                 spEntity->m_20->FUN_1422bfe00(fAlpha);
                 spEntity->m_1c = fAlpha;
             }
         }
         spEntity->vfunc_4(pResult);
-        m_entities.GetNext(pos);
     }
-}   // MS2-FUNCTIONAL: not byte-matched (call order / stack and EH state layout)
+}
 
 // @0x140e7af40
 int UIQuestNavigation::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs)
 {
-    return UISwfEntity::vfunc_28(szMethod, pArgs, nArgs) != 0;
-}   // MS2-FUNCTIONAL: not byte-matched (call order / stack and EH state layout)
+    if (UISwfEntity::vfunc_28(szMethod, pArgs, nArgs) != 0)
+        return 1;
+    return 0;
+}
 
 // @0x140e7af90
 void UIQuestNavigation::FUN_140e7af90(NotifyObject* pNotify)
 {
     NotifyAddNpc* pAdd = dynamic_cast<NotifyAddNpc*>(pNotify);
-    if (pAdd)
-    {
-        MS2Ptr<NavigationEntity> spEntity(new NpcNavigationEntity(pAdd->m_spNpc));
-        spEntity->vfunc_3(m_30.get());
-        m_entities.SetAt(spEntity->vfunc_1(), spEntity);
-    }
-}   // MS2-FUNCTIONAL: not byte-matched (call order / stack and EH state layout)
+    if (!pAdd)
+        return;
+    MS2Ptr<NavigationEntity> spEntity(new NpcNavigationEntity(pAdd->m_spNpc));
+    spEntity->vfunc_3(m_30.get());
+    m_entities.SetAt(spEntity->vfunc_1(), spEntity);
+}
 
 // @0x140e7b130
 void UIQuestNavigation::FUN_140e7b130(NotifyObject* pNotify)
@@ -617,50 +628,43 @@ void UIQuestNavigation::FUN_140e7b130(NotifyObject* pNotify)
     if (m_30.IsNull())
         return;
     NotifyRemoveNpc* pRemove = dynamic_cast<NotifyRemoveNpc*>(pNotify);
-    if (pRemove)
+    if (!pRemove)
+        return;
+    CStringA strKey = Unk_SocketFormat<unsigned>("npc_{0}", pRemove->m_spNpc->FUN_14123c580());
+    MS2Ptr<NavigationEntity> spEntity(0);
+    if (m_entities.Lookup(strKey, spEntity))
     {
-        CStringA strKey = Unk_SocketFormat<unsigned>("npc_{0}", pRemove->m_spNpc->FUN_14123c580());
-        MS2Ptr<NavigationEntity> spEntity(0);
-        if (m_entities.Lookup(strKey, spEntity))
-        {
-            FUN_140e7ba00(spEntity);
-            m_entities.RemoveKey(strKey);
-        }
+        FUN_140e7ba00(spEntity);
+        m_entities.RemoveKey(strKey);
     }
-}   // MS2-FUNCTIONAL: not byte-matched (call order / stack and EH state layout)
+}
 
 // @0x140e7b290
 void UIQuestNavigation::FUN_140e7b290(NotifyObject* pNotify)
 {
     NotifyAddInteract* pAdd = dynamic_cast<NotifyAddInteract*>(pNotify);
-    if (pAdd)
-    {
-        CInteractObject* pObject = static_cast<CInteractObject*>(pAdd->m_pObj);
-        if (pObject->vfunc_5() == 1)
-        {
-            MS2Ptr<NavigationEntity> spEntity(new InteractNavigationEntity(pObject));
-            spEntity->vfunc_3(m_30.get());
-            m_entities.SetAt(spEntity->vfunc_1(), spEntity);
-        }
-    }
-}   // MS2-FUNCTIONAL: not byte-matched (call order / stack and EH state layout)
+    if (!pAdd)
+        return;
+    if (static_cast<CInteractObject*>(pAdd->m_pObj)->vfunc_5() != 1)
+        return;
+    MS2Ptr<NavigationEntity> spEntity(new InteractNavigationEntity(static_cast<CInteractObject*>(pAdd->m_pObj)));
+    spEntity->vfunc_3(m_30.get());
+    m_entities.SetAt(spEntity->vfunc_1(), spEntity);
+}
 
 // @0x140e7b430
 void UIQuestNavigation::FUN_140e7b430(NotifyObject* pNotify)
 {
     NotifyAddLiftable* pAdd = dynamic_cast<NotifyAddLiftable*>(pNotify);
-    if (pAdd)
-    {
-        CLiftableObject* pObject = static_cast<CLiftableObject*>(pAdd->m_pObj);
-        CStringA strKey = Unk_SocketFormat<CString>("liftable_{0}", pObject->FUN_1414472a0());
-        if (!m_entities.Lookup(strKey))
-        {
-            MS2Ptr<NavigationEntity> spEntity(new LiftableNavigationEntity(pObject));
-            spEntity->vfunc_3(m_30.get());
-            m_entities.SetAt(spEntity->vfunc_1(), spEntity);
-        }
-    }
-}   // MS2-FUNCTIONAL: not byte-matched (call order / stack and EH state layout)
+    if (!pAdd)
+        return;
+    CStringA strKey = Unk_SocketFormat<CString>("liftable_{0}", static_cast<CLiftableObject*>(pAdd->m_pObj)->FUN_1414472a0());
+    if (m_entities.Lookup(strKey))
+        return;
+    MS2Ptr<NavigationEntity> spEntity(new LiftableNavigationEntity(static_cast<CLiftableObject*>(pAdd->m_pObj)));
+    spEntity->vfunc_3(m_30.get());
+    m_entities.SetAt(spEntity->vfunc_1(), spEntity);
+}
 
 // @0x140e7b640
 void UIQuestNavigation::FUN_140e7b640(NotifyObject* pNotify)
@@ -674,14 +678,12 @@ void UIQuestNavigation::FUN_140e7b640(NotifyObject* pNotify)
 void UIQuestNavigation::FUN_140e7b720(NotifyObject* pNotify)
 {
     NotifyAddPortal* pAdd = dynamic_cast<NotifyAddPortal*>(pNotify);
-    if (pAdd)
-    {
-        CPortal* pPortal = static_cast<CPortal*>(pAdd->m_pObj);
-        MS2Ptr<NavigationEntity> spEntity(new PortalNavigationEntity(pPortal));
-        spEntity->vfunc_3(m_30.get());
-        m_entities.SetAt(spEntity->vfunc_1(), spEntity);
-    }
-}   // MS2-FUNCTIONAL: not byte-matched (call order / stack and EH state layout)
+    if (!pAdd)
+        return;
+    MS2Ptr<NavigationEntity> spEntity(new PortalNavigationEntity(static_cast<CPortal*>(pAdd->m_pObj)));
+    spEntity->vfunc_3(m_30.get());
+    m_entities.SetAt(spEntity->vfunc_1(), spEntity);
+}
 
 // @0x140e7b890
 int UIQuestNavigation::FUN_140e7b890(MS2Ptr<NavigationEntity> spEntity)
@@ -690,10 +692,11 @@ int UIQuestNavigation::FUN_140e7b890(MS2Ptr<NavigationEntity> spEntity)
         return 0;
     if (spEntity->m_20 == 0)
         return 0;
-    if (spEntity->m_18 == 0)
-        m_30->Invoke("addChild", Scaleform::GFx::Value(spEntity->m_20->FUN_1422bb870()));
+    if (spEntity->m_18 != 0)
+        return 1;
+    m_30->Invoke("addChild", Scaleform::GFx::Value(spEntity->m_20->FUN_1422bb870()));
     return 1;
-}   // MS2-FUNCTIONAL: not byte-matched (call order / stack and EH state layout)
+}
 
 // @0x140e7ba00
 int UIQuestNavigation::FUN_140e7ba00(MS2Ptr<NavigationEntity> spEntity)
@@ -702,10 +705,11 @@ int UIQuestNavigation::FUN_140e7ba00(MS2Ptr<NavigationEntity> spEntity)
         return 0;
     if (spEntity->m_20 == 0)
         return 0;
-    if (spEntity->m_18 != 0)
-        m_30->Invoke("removeChild", Scaleform::GFx::Value(spEntity->m_20->FUN_1422bb870()));
+    if (spEntity->m_18 == 0)
+        return 1;
+    m_30->Invoke("removeChild", Scaleform::GFx::Value(spEntity->m_20->FUN_1422bb870()));
     return 1;
-}   // MS2-FUNCTIONAL: not byte-matched (call order / stack and EH state layout)
+}
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // COMDAT glue
@@ -715,10 +719,10 @@ inline Scaleform::GFx::Value AScript::Invoke(const char* szMethod, CString a1, c
 {
     ASArgList args;
     args.FUN_1409b2800(2);
-    FUN_1422bce70(args.FUN_1409b1f70(0), a1.GetString());
+    FUN_1422bce70(args.FUN_1409b1f70(0), a1);
     FUN_1422bce40(args.FUN_1409b1f70(1), a2);
     return FUN_1422bb8f0(szMethod, args);
-}   // MS2-FUNCTIONAL: not byte-matched (call order / stack and EH state layout)
+}
 
 // @0x140e7daf0
 MS2_EMIT_CRT_MEMMOVE_S_COPY(16);

@@ -46,7 +46,6 @@ static const unsigned char s_padding[64] = {0x80};            // the exe's table
 CString FUN_140695130(const unsigned char* pDigest)
 {
     int i;
-    unsigned nUnused = 0;
     char szHex[256];
     char szByte[24];
     memset(szHex, 0, sizeof(szHex));
@@ -61,11 +60,10 @@ CString FUN_140695130(const unsigned char* pDigest)
 }
 
 // @0x140695240
-// MS2-FUNCTIONAL: the exe measures the string with an inlined length loop into a four-field temp; frame layout differs
 CString FUN_140695240(const char* pszText)
 {
-    Unk_Md5 md5;
     unsigned nLen = (unsigned)strlen(pszText);
+    Unk_Md5 md5;
     md5.Update((const unsigned char*)pszText, nLen);
     md5.Final();
     return FUN_140695130(md5.Digest());
@@ -92,8 +90,7 @@ void Unk_Md5::Update(const unsigned char* pInput, unsigned nLen)
 {
     unsigned i;
     unsigned nIndex = (m_count[0] >> 3) & 0x3f;
-    m_count[0] += nLen << 3;
-    if (m_count[0] < (nLen << 3))
+    if ((m_count[0] += nLen << 3) < (nLen << 3))
         m_count[1]++;
     m_count[1] += nLen >> 29;
     unsigned nPartLen = 64 - nIndex;

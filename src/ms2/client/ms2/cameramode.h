@@ -110,16 +110,19 @@ public:
     virtual Vector3 vfunc_18();                 // world position (consoleCameraMode adds its offset to it)
 };
 
-// The fly-by camera request stored in the camera manager at +0x34 (0x58 bytes): interpolation kind (1 linear, 2 log,
-// 3 exp), duration, then the start and end camera settings.
+// The fly-by camera request stored in the camera manager at +0x34 (0x80 bytes, camera.h's Unk_CameraFlyBy):
+// interpolation kind (1 linear, 2 log, 3 exp), duration, then the start and end camera settings. FUN_140aed580 copies
+// all 0x80 bytes; the setting the fly-by returns to (+0x58) is left unset here, as the exe's triggerservice local does.
 struct Unk_FlyByCameraData
 {
     int m_nKind;                                // +0x00
     float m_fDuration;                          // +0x04
     Unk_CameraSetting m_from;                   // +0x08
     Unk_CameraSetting m_to;                     // +0x30
+    float m_r58, m_r5c, m_r60, m_r64, m_r68;    // +0x58 the return Unk_CameraSetting, not constructed
+    float m_r6c, m_r70, m_r74, m_r78, m_r7c;
 };
-MS2_CHECK_SIZE(Unk_FlyByCameraData, 0x58);
+MS2_CHECK_SIZE(Unk_FlyByCameraData, 0x80);
 
 class CCameraMode;
 class Unk_PickListPtr;                  // picked-object list (defined by the units that use it)
@@ -146,6 +149,10 @@ public:
     void FUN_140a38d90(Vector3 pt);             // m_138 = pt
     Unk_FlyByCameraData* FUN_1412201a0();               // &m_34 (inline, ?\flybycameramode.cpp obj)
     Unk_PickListPtr FUN_140af0850(float fX, float fY, bool b1, bool b2, bool b3, void* p);  // pick at the cursor
+private:
+    Unk_CameraManager();                                // never built here (the camera manager is camera.cpp's CameraMgr)
+    int m_n0[0xd];                                      // +0x00
+    Unk_FlyByCameraData m_34;                           // +0x34 the fly-by request
 };
 
 // Argument of vfunc_36 (a camera preset row).

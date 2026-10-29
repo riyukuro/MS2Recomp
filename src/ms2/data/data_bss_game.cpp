@@ -172,117 +172,233 @@ alignas(8) unsigned char DAT_143b15f88[0x8];                    // 0x143b15f88
 alignas(16) unsigned char DAT_143b15f90[0x60];                  // 0x143b15f90
 alignas(8) unsigned char DAT_143b16008[0x18];                   // 0x143b16008
 void* DAT_143b16080;                                            // 0x143b16080
+// 0x143ba9d08.. is CRI/video state the code walks as larger objects than the per-address names below
+// (the b60/bb8 per-thread record arrays, the 0x143e65800 pair table, the decode tables, ...). The
+// compiler does not keep .bss globals in source order, so each one gets an ordered .bss$ group section
+// named by its exe address: the link keeps them contiguous in exe order with nothing in between.
+#pragma bss_seg(".bss$cri_143ba9d08")
 alignas(8) unsigned char DAT_143ba9d08[0x8];                    // 0x143ba9d08
+#pragma bss_seg(".bss$cri_143ba9d10")
 alignas(16) unsigned char DAT_143ba9d10[0x8];                   // 0x143ba9d10
+#pragma bss_seg(".bss$cri_143ba9d18")
 alignas(8) unsigned char DAT_143ba9d18[0x8];                    // 0x143ba9d18
+#pragma bss_seg(".bss$cri_143ba9d20")
 alignas(16) unsigned char DAT_143ba9d20[0x8];                   // 0x143ba9d20
+#pragma bss_seg(".bss$cri_143ba9d28")
 alignas(8) unsigned char DAT_143ba9d28[0x18];                   // 0x143ba9d28
+#pragma bss_seg(".bss$cri_143ba9d40")
 Unk_CriUtfSortTable* DAT_143ba9d40;                             // 0x143ba9d40
-unsigned int DAT_143ba9d48 = 0x0u;                              // 0x143ba9d48
-const char* DAT_143ba9d50 = nullptr;                            // 0x143ba9d50
+#pragma bss_seg(".bss$cri_143ba9d48")
+unsigned int DAT_143ba9d48;                                     // 0x143ba9d48
+#pragma bss_seg(".bss$cri_143ba9d50")
+const char* DAT_143ba9d50;                                      // 0x143ba9d50
+#pragma bss_seg(".bss$cri_143ba9d60")
 Unk_M2vCtx* DAT_143ba9d60;                                      // 0x143ba9d60
-const char* DAT_143ba9d68 = nullptr;                            // 0x143ba9d68
+#pragma bss_seg(".bss$cri_143ba9d68")
+const char* DAT_143ba9d68;                                      // 0x143ba9d68
+#pragma bss_seg(".bss$cri_143ba9d70")
 alignas(16) unsigned char DAT_143ba9d70[0x40];                  // 0x143ba9d70
+#pragma bss_seg(".bss$cri_143ba9db0")
 int DAT_143ba9db0;                                              // 0x143ba9db0
+#pragma bss_seg(".bss$cri_143ba9db8")
 Unk_M2vCtx* DAT_143ba9db8;                                      // 0x143ba9db8
+#pragma bss_seg(".bss$cri_143ba9dd0")
 alignas(16) unsigned char DAT_143ba9dd0[0x400];                 // 0x143ba9dd0
+#pragma bss_seg(".bss$cri_143baa1d0")
 alignas(16) unsigned char DAT_143baa1d0[0x400];                 // 0x143baa1d0
+#pragma bss_seg(".bss$cri_143baa5d0")
 alignas(16) unsigned char DAT_143baa5d0[0x400];                 // 0x143baa5d0
+#pragma bss_seg(".bss$cri_143baa9d0")
 alignas(16) unsigned char DAT_143baa9d0[0x400];                 // 0x143baa9d0
+#pragma bss_seg(".bss$cri_143baadd0")
 alignas(16) unsigned char DAT_143baadd0[0x400];                 // 0x143baadd0
+#pragma bss_seg(".bss$cri_143bab1d0")
 alignas(16) unsigned char DAT_143bab1d0[0x400];                 // 0x143bab1d0
+#pragma bss_seg(".bss$cri_143bab5d0")
 alignas(16) unsigned char DAT_143bab5d0[0x400];                 // 0x143bab5d0
+#pragma bss_seg(".bss$cri_143bab9d0")
 alignas(16) unsigned char DAT_143bab9d0[0x400];                 // 0x143bab9d0
+#pragma bss_seg(".bss$cri_143babdd0")
 alignas(16) unsigned char DAT_143babdd0[0x8];                   // 0x143babdd0
+#pragma bss_seg(".bss$cri_143babdd8")
 alignas(8) unsigned char DAT_143babdd8[0x8];                    // 0x143babdd8
+#pragma bss_seg(".bss$cri_143babde0")
 alignas(16) unsigned char DAT_143babde0[0x10];                  // 0x143babde0
+#pragma bss_seg(".bss$cri_143babdf0")
 alignas(16) unsigned char DAT_143babdf0[0x800];                 // 0x143babdf0
+#pragma bss_seg(".bss$cri_143bac5f0")
 alignas(16) unsigned char DAT_143bac5f0[0x50];                  // 0x143bac5f0
+#pragma bss_seg(".bss$cri_143bac640")
 alignas(16) unsigned char DAT_143bac640[0x8];                   // 0x143bac640
+#pragma bss_seg(".bss$cri_143bac648")
 alignas(8) unsigned char DAT_143bac648[0x8];                    // 0x143bac648
+#pragma bss_seg(".bss$cri_143bac650")
 alignas(16) unsigned char DAT_143bac650[0x8];                   // 0x143bac650
+#pragma bss_seg(".bss$cri_143bac658")
 alignas(8) unsigned char DAT_143bac658[0x8];                    // 0x143bac658
+#pragma bss_seg(".bss$cri_143bac660")
 alignas(16) unsigned char DAT_143bac660[0x8];                   // 0x143bac660
+#pragma bss_seg(".bss$cri_143bac668")
 alignas(8) unsigned char DAT_143bac668[0x8];                    // 0x143bac668
+#pragma bss_seg(".bss$cri_143bac670")
 alignas(16) unsigned char DAT_143bac670[0x8];                   // 0x143bac670
+#pragma bss_seg(".bss$cri_143bac678")
 alignas(8) unsigned char DAT_143bac678[0x8];                    // 0x143bac678
+#pragma bss_seg(".bss$cri_143bac680")
 alignas(16) unsigned char DAT_143bac680[0x10];                  // 0x143bac680
+#pragma bss_seg(".bss$cri_143bac690")
 alignas(16) unsigned char DAT_143bac690[0x800];                 // 0x143bac690
+#pragma bss_seg(".bss$cri_143bace90")
 alignas(16) unsigned char DAT_143bace90[0x800];                 // 0x143bace90
+#pragma bss_seg(".bss$cri_143bad690")
 alignas(16) unsigned char DAT_143bad690[0x10];                  // 0x143bad690
+#pragma bss_seg(".bss$cri_143bad6a0")
 alignas(16) unsigned char DAT_143bad6a0[0x8];                   // 0x143bad6a0
+#pragma bss_seg(".bss$cri_143bad6a8")
 alignas(8) unsigned char DAT_143bad6a8[0x8];                    // 0x143bad6a8
+#pragma bss_seg(".bss$cri_143bad6b0")
 alignas(16) unsigned char DAT_143bad6b0[0x180];                 // 0x143bad6b0
+#pragma bss_seg(".bss$cri_143bad830")
 alignas(16) unsigned char DAT_143bad830[0x280];                 // 0x143bad830
+#pragma bss_seg(".bss$cri_143badab0")
 alignas(16) unsigned char DAT_143badab0[0x50];                  // 0x143badab0
+#pragma bss_seg(".bss$cri_143badb00")
 alignas(16) unsigned char DAT_143badb00[0x8];                   // 0x143badb00
+#pragma bss_seg(".bss$cri_143badb08")
 alignas(8) unsigned char DAT_143badb08[0x8];                    // 0x143badb08
+#pragma bss_seg(".bss$cri_143badb10")
 alignas(16) unsigned char DAT_143badb10[0x8];                   // 0x143badb10
+#pragma bss_seg(".bss$cri_143badb18")
 alignas(8) unsigned char DAT_143badb18[0xc];                    // 0x143badb18
+#pragma bss_seg(".bss$cri_143badb24")
 alignas(4) unsigned char DAT_143badb24[0x4];                    // 0x143badb24
+#pragma bss_seg(".bss$cri_143badb28")
 alignas(8) unsigned char DAT_143badb28[0x8];                    // 0x143badb28
+#pragma bss_seg(".bss$cri_143badb30")
 alignas(16) unsigned char DAT_143badb30[0x8];                   // 0x143badb30
+#pragma bss_seg(".bss$cri_143badb38")
 alignas(8) unsigned char DAT_143badb38[0x8];                    // 0x143badb38
+#pragma bss_seg(".bss$cri_143badb40")
 alignas(16) unsigned char DAT_143badb40[0x8];                   // 0x143badb40
+#pragma bss_seg(".bss$cri_143badb48")
 alignas(8) unsigned char DAT_143badb48[0x8];                    // 0x143badb48
+#pragma bss_seg(".bss$cri_143badb50")
 alignas(16) unsigned char DAT_143badb50[0x10];                  // 0x143badb50
+#pragma bss_seg(".bss$cri_143badb60")
 alignas(16) unsigned char DAT_143badb60[0x4];                   // 0x143badb60
+#pragma bss_seg(".bss$cri_143badb64")
 alignas(4) unsigned char DAT_143badb64[0x4];                    // 0x143badb64
+#pragma bss_seg(".bss$cri_143badb68")
 alignas(8) unsigned char DAT_143badb68[0x1c];                   // 0x143badb68
+#pragma bss_seg(".bss$cri_143badb84")
 alignas(4) unsigned char DAT_143badb84[0x4];                    // 0x143badb84
+#pragma bss_seg(".bss$cri_143badb88")
 alignas(8) unsigned char DAT_143badb88[0x30];                   // 0x143badb88
+#pragma bss_seg(".bss$cri_143badbb8")
 alignas(8) unsigned char DAT_143badbb8[0x4];                    // 0x143badbb8
+#pragma bss_seg(".bss$cri_143badbbc")
 alignas(4) unsigned char DAT_143badbbc[0x20];                   // 0x143badbbc
+#pragma bss_seg(".bss$cri_143badbdc")
 alignas(4) unsigned char DAT_143badbdc[0x24];                   // 0x143badbdc
+#pragma bss_seg(".bss$cri_143badc00")
 alignas(16) unsigned char DAT_143badc00[0x380];                 // 0x143badc00
+#pragma bss_seg(".bss$cri_143badf80")
 alignas(16) unsigned char DAT_143badf80[0x9b160];               // 0x143badf80
+#pragma bss_seg(".bss$cri_143d6eab8")
 Unk_PtrArray* DAT_143d6eab8;                                    // 0x143d6eab8
+#pragma bss_seg(".bss$cri_143d6eb38")
 alignas(8) unsigned char DAT_143d6eb38[0x8];                    // 0x143d6eb38
+#pragma bss_seg(".bss$cri_143d6eb40")
 alignas(16) unsigned char DAT_143d6eb40[0x8];                   // 0x143d6eb40
+#pragma bss_seg(".bss$cri_143d6eb48")
 alignas(8) unsigned char DAT_143d6eb48[0x8];                    // 0x143d6eb48
+#pragma bss_seg(".bss$cri_143d6eb50")
 alignas(16) unsigned char DAT_143d6eb50[0x8];                   // 0x143d6eb50
+#pragma bss_seg(".bss$cri_143e64b00")
 alignas(16) unsigned char DAT_143e64b00[0x8];                   // 0x143e64b00
+#pragma bss_seg(".bss$cri_143e64b08")
 alignas(8) unsigned char DAT_143e64b08[0x8];                    // 0x143e64b08
+#pragma bss_seg(".bss$cri_143e64b10")
 alignas(16) unsigned char DAT_143e64b10[0x8];                   // 0x143e64b10
+#pragma bss_seg(".bss$cri_143e64b18")
 alignas(8) unsigned char DAT_143e64b18[0x8];                    // 0x143e64b18
+#pragma bss_seg(".bss$cri_143e64b20")
 void* DAT_143e64b20;                                            // 0x143e64b20
+#pragma bss_seg(".bss$cri_143e64b28")
 alignas(8) unsigned char DAT_143e64b28[0x8];                    // 0x143e64b28
+#pragma bss_seg(".bss$cri_143e64b30")
 alignas(16) unsigned char DAT_143e64b30[0x8];                   // 0x143e64b30
+#pragma bss_seg(".bss$cri_143e64b38")
 alignas(8) unsigned char DAT_143e64b38[0x8];                    // 0x143e64b38
+#pragma bss_seg(".bss$cri_143e64b40")
 alignas(16) unsigned char DAT_143e64b40[0x8];                   // 0x143e64b40
+#pragma bss_seg(".bss$cri_143e64b48")
 alignas(8) unsigned char DAT_143e64b48[0x8];                    // 0x143e64b48
+#pragma bss_seg(".bss$cri_143e64b50")
 alignas(16) unsigned char DAT_143e64b50[0x8];                   // 0x143e64b50
+#pragma bss_seg(".bss$cri_143e64b58")
 alignas(8) unsigned char DAT_143e64b58[0x8];                    // 0x143e64b58
+#pragma bss_seg(".bss$cri_143e64b60")
 void* DAT_143e64b60;                                            // 0x143e64b60
+#pragma bss_seg(".bss$cri_143e64b68")
 alignas(8) unsigned char DAT_143e64b68[0x8];                    // 0x143e64b68
+#pragma bss_seg(".bss$cri_143e64b70")
 alignas(16) unsigned char DAT_143e64b70[0x8];                   // 0x143e64b70
+#pragma bss_seg(".bss$cri_143e64b78")
 alignas(8) unsigned char DAT_143e64b78[0x8];                    // 0x143e64b78
+#pragma bss_seg(".bss$cri_143e64b80")
 alignas(16) unsigned char DAT_143e64b80[0x8];                   // 0x143e64b80
+#pragma bss_seg(".bss$cri_143e64b88")
 alignas(8) unsigned char DAT_143e64b88[0x8];                    // 0x143e64b88
+#pragma bss_seg(".bss$cri_143e64b90")
 alignas(16) unsigned char DAT_143e64b90[0x8];                   // 0x143e64b90
+#pragma bss_seg(".bss$cri_143e64b98")
 alignas(8) unsigned char DAT_143e64b98[0x8];                    // 0x143e64b98
+#pragma bss_seg(".bss$cri_143e64ba0")
 alignas(16) unsigned char DAT_143e64ba0[0x8];                   // 0x143e64ba0
+#pragma bss_seg(".bss$cri_143e64ba8")
 alignas(8) unsigned char DAT_143e64ba8[0x18];                   // 0x143e64ba8
+#pragma bss_seg(".bss$cri_143e64bc0")
 alignas(16) unsigned char DAT_143e64bc0[0x20];                  // 0x143e64bc0
+#pragma bss_seg(".bss$cri_143e64be0")
 alignas(16) unsigned char DAT_143e64be0[0x1];                   // 0x143e64be0
+#pragma bss_seg(".bss$cri_143e64be1")
 alignas(1) unsigned char DAT_143e64be1[0x1f];                   // 0x143e64be1
+#pragma bss_seg(".bss$cri_143e64c00")
 alignas(16) unsigned char DAT_143e64c00[0x1];                   // 0x143e64c00
+#pragma bss_seg(".bss$cri_143e64c01")
 alignas(1) unsigned char DAT_143e64c01[0x7ff];                  // 0x143e64c01
+#pragma bss_seg(".bss$cri_143e65400")
 alignas(16) unsigned char DAT_143e65400[0x1];                   // 0x143e65400
+#pragma bss_seg(".bss$cri_143e65401")
 alignas(1) unsigned char DAT_143e65401[0x400];                  // 0x143e65401
+#pragma bss_seg(".bss$cri_143e65801")
 alignas(1) unsigned char DAT_143e65801[0x1];                    // 0x143e65801
+#pragma bss_seg(".bss$cri_143e65802")
 alignas(2) unsigned char DAT_143e65802[0x1e];                   // 0x143e65802
+#pragma bss_seg(".bss$cri_143e65820")
 alignas(16) unsigned char DAT_143e65820[0x1];                   // 0x143e65820
+#pragma bss_seg(".bss$cri_143e65821")
 alignas(1) unsigned char DAT_143e65821[0xfff];                  // 0x143e65821
+#pragma bss_seg(".bss$cri_143e66820")
 alignas(16) unsigned char DAT_143e66820[0x1];                   // 0x143e66820
+#pragma bss_seg(".bss$cri_143e66821")
 alignas(1) unsigned char DAT_143e66821[0xf];                    // 0x143e66821
+#pragma bss_seg(".bss$cri_143e66830")
 alignas(16) unsigned char DAT_143e66830[0x1];                   // 0x143e66830
+#pragma bss_seg(".bss$cri_143e66831")
 alignas(1) unsigned char DAT_143e66831[0xf];                    // 0x143e66831
+#pragma bss_seg(".bss$cri_143e66840")
 alignas(16) unsigned char DAT_143e66840[0x1];                   // 0x143e66840
+#pragma bss_seg(".bss$cri_143e66841")
 alignas(1) unsigned char DAT_143e66841[0x7f];                   // 0x143e66841
+#pragma bss_seg(".bss$cri_143e668c0")
 alignas(16) unsigned char DAT_143e668c0[0x1];                   // 0x143e668c0
+#pragma bss_seg(".bss$cri_143e668c1")
 alignas(1) unsigned char DAT_143e668c1[0x1];                    // 0x143e668c1
+#pragma bss_seg(".bss$cri_143e668c2")
 alignas(2) unsigned char DAT_143e668c2[0x7fffe];                // 0x143e668c2
+#pragma bss_seg()
 
 #pragma comment(linker, "/alternatename:?s_instance@Unk_CrashSingleton@@2PEAVCCrashManager@@EA=?DAT_143aac538@@3PEAXEA")
 #pragma comment(linker, "/alternatename:?ms_pSingleton@?$SingletonClass@VGFxManager@@@@2PEAVGFxManager@@EA=?DAT_143aaccf8@@3PEAVUnk_AltStringMgr@@EA")
@@ -325,6 +441,7 @@ alignas(2) unsigned char DAT_143e668c2[0x7fffe];                // 0x143e668c2
 #pragma comment(linker, "/alternatename:?DAT_143afbfc8@@3P6AXPEAVNiAVObject@@@ZEA=?DAT_143afbfc8@@3PAEA")
 #pragma comment(linker, "/alternatename:?DAT_143afc898@@3EA=?DAT_143afc898@@3DA")
 #pragma comment(linker, "/alternatename:?DAT_143afe6f8@@3P6A?AUUnk_MCPPtr@@PEAVNiVisibleArray@@PEAVNiSPWorkflowManager@@@ZEA=?DAT_143afe6f8@@3PAEA")
+#pragma comment(linker, "/alternatename:?DAT_143afe6f8@@3P6A?AV?$SmartPointer@VNiCullingProcess@@@efd@@PEAVNiVisibleArray@@PEAVNiSPWorkflowManager@@@ZEA=?DAT_143afe6f8@@3PAEA")
 #pragma comment(linker, "/alternatename:?DAT_143b023c0@@3P6AXXZEA=?DAT_143b023c0@@3PAEA")
 #pragma comment(linker, "/alternatename:?DAT_143b023c8@@3P6AH_K@ZEA=?DAT_143b023c8@@3PAEA")
 #pragma comment(linker, "/alternatename:?DAT_143b03490@@3P6AXFEPEBD@ZEA=?DAT_143b03490@@3PAEA")

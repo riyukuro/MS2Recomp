@@ -43,7 +43,7 @@ void* FUN_1415fa260(void) { return 0; }
 int FUN_1415c4540(void*, int, int, int, int) { return 0; }
 int FUN_1415c4810(void*, int) { return 0; }
 // Messenger connect (0x1415c4990): CNXMan::FUN_14160db80 treats 0 as success, so the error is non-zero.
-int FUN_1415c4990(void*, const char*) { return 1; }
+int FUN_1415c4990(void*, const char*, unsigned int) { return 1; }
 // Patcher available (0x1415c3780): no.
 int FUN_1415c3780(void) { return 0; }
 // Certify / auth URL (0x1415c3b50, UICashShopDialog): none, so the caller returns before its dialog.
@@ -59,7 +59,7 @@ void FUN_1415c5010(void*, char* psz) { if (psz != 0) psz[0] = 0; }
 // Requests with nothing to do without NM: run the patcher (0x1415c3430), logout (0x1415c4930), disconnect
 // (0x1415c4a30), set the service names (0x1415ca030), the log context (0x1415ca240), register / unregister the
 // manager (0x1415cb420, 0x1415cb430), and the window-message forward (0x1415cb760).
-void FUN_1415c3430(int, const char*, const char*, const char*) {}
+int FUN_1415c3430(int, const char*, const char*, const char*, int, int, int, const char*, int, const char*, int) { return 0; }
 void FUN_1415c4930(void*, int) {}
 void FUN_1415c4a30(void*) {}
 void FUN_1415ca030(const char*, const char*, const char*) {}

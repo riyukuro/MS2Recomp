@@ -79,9 +79,9 @@ MS2_REPLACE_METHOD(0x140F3A940, UIDungeonExpenseRewardDialog, GetTypeName, 61, 0
 void UIDungeonExpenseRewardDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    if (FUN_140bc6d10("m_acceptButton", m_acceptButton).get() != 0)
+    if (FUN_140bc6d10("m_acceptButton", m_acceptButton))
         m_acceptButton->FUN_1422ce240(DxClickDelegate(this, &UIDungeonExpenseRewardDialog::FUN_140f3aee0), 0);
-    if (FUN_140bc6d10("m_cancelButton", m_cancelButton).get() != 0)
+    if (FUN_140bc6d10("m_cancelButton", m_cancelButton))
         m_cancelButton->FUN_1422ce240(DxClickDelegate(this, &UIDungeonExpenseRewardDialog::FUN_140f3af10), 0);
     FUN_140f3ad50();
     FUN_140d86260()->vfunc_43(2, 0, 1000);

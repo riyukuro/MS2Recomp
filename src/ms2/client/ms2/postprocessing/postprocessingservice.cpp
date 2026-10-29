@@ -161,14 +161,14 @@ public:
     void Assign(float a, float b, float c, float d);        // 0x14135e000
     Unk_ShaderVec4& operator=(const Unk_ShaderVec4& rhs)    // 0x14169f230 (user-declared, so the derived copy/move both call it)
     {
-        m_af[0] = rhs.m_af[0];
-        m_af[1] = rhs.m_af[1];
-        m_af[2] = rhs.m_af[2];
-        m_af[3] = rhs.m_af[3];
+        ((float*)this)[0] = ((const float*)&rhs)[0];
+        ((float*)this)[1] = ((const float*)&rhs)[1];
+        ((float*)this)[2] = ((const float*)&rhs)[2];
+        ((float*)this)[3] = ((const float*)&rhs)[3];
         return *this;
     }
 private:
-    float m_af[4];
+    float m_x, m_y, m_z, m_w;                               // scalars, not float[4]: the exe puts no /GS cookie on these temporaries
 };
 MS2_CHECK_SIZE(Unk_ShaderVec4, 0x10);
 
@@ -275,7 +275,6 @@ BloomRenderStep::~BloomRenderStep()
 }
 
 // @0x14169e000
-// MS2-FUNCTIONAL: argument temporaries of the five render-click calls are spilled in a different order; behaviour equivalent
 bool BloomRenderStep::vfunc_15(unsigned int a, void* b)
 {
     if (!PostProcessEffect::vfunc_15(a, 0))
@@ -300,6 +299,7 @@ bool BloomRenderStep::vfunc_15(unsigned int a, void* b)
         vfunc_16();
         return false;
     }
+    kPrefs.m_ePixelLayout = static_cast<NiTexture::FormatPrefs::PixelLayout>(9); // dead store, overwritten below (in the exe)
     kPrefs.m_ePixelLayout = static_cast<NiTexture::FormatPrefs::PixelLayout>(2);
     for (int i = 0; i < 2; i++)
     {
@@ -310,33 +310,37 @@ bool BloomRenderStep::vfunc_15(unsigned int a, void* b)
             return false;
         }
     }
-    efd::SmartPointer<NiRenderedTexture>* pkTargets = static_cast<efd::SmartPointer<NiRenderedTexture>*>(b);
-    if (FUN_140c8f690(FUN_1416b4990(this, "Scene_To_Scene_Scaled", FUN_14169ea50, m_80->GetBuffer(), m_80, 0, 0, m_a8,
-        "HDRRenderStep_DownScale4x4", 0, 0, 0)) == 0)
+    void* pkClick = FUN_140c8f690(FUN_1416b4990(this, "Scene_To_Scene_Scaled", FUN_14169ea50, m_80->GetBuffer(), m_80, 0, 0, m_a8,
+        "HDRRenderStep_DownScale4x4", 0, 0, 0));
+    if (pkClick == 0)
     {
         vfunc_16();
         return false;
     }
-    if (FUN_140c8f690(FUN_1416b4990(this, "SceneScaled_To_BrightPass", 0, 0, m_a8, 0, 0, m_b0,
-        "HDRRenderStep_BrightPassFilter", pkTargets[8], 0, 0)) == 0)
+    pkClick = FUN_140c8f690(FUN_1416b4990(this, "SceneScaled_To_BrightPass", 0, 0, m_a8, 0, 0, m_b0,
+        "HDRRenderStep_BrightPassFilter", static_cast<efd::SmartPointer<NiRenderedTexture>*>(b)[8], 0, 0));
+    if (pkClick == 0)
     {
         vfunc_16();
         return false;
     }
-    if (FUN_140c8f690(FUN_1416b4990(this, "Bloom1", FUN_14169eb00, m_b0->GetBuffer(), m_b0, 0, 0, m_b8[1],
-        "HDRRenderStep_Bloom", 0, 0, 0)) == 0)
+    pkClick = FUN_140c8f690(FUN_1416b4990(this, "Bloom1", FUN_14169eb00, m_b0->GetBuffer(), m_b0, 0, 0, m_b8[1],
+        "HDRRenderStep_Bloom", 0, 0, 0));
+    if (pkClick == 0)
     {
         vfunc_16();
         return false;
     }
-    if (FUN_140c8f690(FUN_1416b4990(this, "Bloom0", FUN_14169ec70, m_b0->GetBuffer(), m_b8[1], 0, 0, m_b8[0],
-        "HDRRenderStep_Bloom", 0, 0, 0)) == 0)
+    pkClick = FUN_140c8f690(FUN_1416b4990(this, "Bloom0", FUN_14169ec70, m_b0->GetBuffer(), m_b8[1], 0, 0, m_b8[0],
+        "HDRRenderStep_Bloom", 0, 0, 0));
+    if (pkClick == 0)
     {
         vfunc_16();
         return false;
     }
-    if (FUN_140c8f690(FUN_1416b4990(this, "FinalScenePass", 0, 0, m_80, 1, 0, 0,
-        "HDRRenderStep_FinalScenePass", m_b8[0], 0, pkTargets[6])) == 0)
+    pkClick = FUN_140c8f690(FUN_1416b4990(this, "FinalScenePass", 0, 0, m_80, 1, 0, 0,
+        "HDRRenderStep_FinalScenePass", m_b8[0], 0, static_cast<efd::SmartPointer<NiRenderedTexture>*>(b)[6]));
+    if (pkClick == 0)
     {
         vfunc_16();
         return false;
@@ -437,7 +441,6 @@ float FUN_14169ef20(float x, float y, float fRho)   // GaussianDistribution
 }
 
 // @0x14169efd0
-// MS2-FUNCTIONAL: our build adds a /GS cookie for the Unk_ShaderColor temporaries (the exe has none); behaviour equivalent
 void FUN_14169efd0(unsigned int uiTexSize, float* afTexCoordOffset, Unk_ShaderColor* akColorWeight, float fDeviation,
     float fMultiplier)   // GetSampleOffsets_Bloom
 {
@@ -496,13 +499,15 @@ bool ColorPerspectiveRenderStep::vfunc_15(unsigned int a, void* b)
 MS2_REPLACE_METHOD(0x14169f460, ColorPerspectiveRenderStep, vfunc_15, 142, 0x1D07049C);
 
 // @0x14169f500
-// MS2-FUNCTIONAL: one extra 8-byte stack slot in our frame shifts the spill offsets; behaviour equivalent
 bool ColorPerspectiveRenderStep::vfunc_23()
 {
     NiRenderClick* pkClick = GetRenderClickByName("ColorPerspectiveRenderClick");
     if (pkClick != 0)
         RemoveRenderClick(pkClick);
-    return FUN_140c8f690(FUN_1416b4990(this, "ColorPerspectiveRenderClick", 0, 0, m_80, 0, 3, 0, "ColorPerspective", m_b8, 0, 0)) != 0;
+    pkClick = static_cast<NiRenderClick*>(FUN_140c8f690(FUN_1416b4990(this, "ColorPerspectiveRenderClick", 0, 0, m_80, 0, 3, 0, "ColorPerspective", m_b8, 0, 0)));
+    if (pkClick == 0)
+        return false;
+    return true;
 }
 MS2_REPLACE_METHOD(0x14169f500, ColorPerspectiveRenderStep, vfunc_23, 341, 0x047DD5E6);
 
@@ -530,7 +535,6 @@ DepthOfFieldRenderStep::~DepthOfFieldRenderStep()
 }
 
 // @0x14169fe90
-// MS2-FUNCTIONAL: argument temporaries of the seven render-click calls are spilled in a different order; behaviour equivalent
 bool DepthOfFieldRenderStep::vfunc_15(unsigned int a, void* b)
 {
     if (!PostProcessEffect::vfunc_15(a, 0))
@@ -566,38 +570,45 @@ bool DepthOfFieldRenderStep::vfunc_15(unsigned int a, void* b)
         vfunc_16();
         return false;
     }
-    if (FUN_140c8f690(FUN_1416b4990(this, "Dof_DownSample", 0, 0, m_80, 0, 0, m_b0, "Dof_DownSample", 0, 0, 0)) == 0)
+    void* pkClick = FUN_140c8f690(FUN_1416b4990(this, "Dof_DownSample", 0, 0, m_80, 0, 0, m_b0, "Dof_DownSample", 0, 0, 0));
+    if (pkClick == 0)
     {
         vfunc_16();
         return false;
     }
-    if (FUN_140c8f690(FUN_1416b4990(this, "Dof_HorzBlur", 0, 0, m_b0, 0, 0, m_b8, "Dof_HorzBlur", 0, 0, 0)) == 0)
+    pkClick = FUN_140c8f690(FUN_1416b4990(this, "Dof_HorzBlur", 0, 0, m_b0, 0, 0, m_b8, "Dof_HorzBlur", 0, 0, 0));
+    if (pkClick == 0)
     {
         vfunc_16();
         return false;
     }
-    if (FUN_140c8f690(FUN_1416b4990(this, "Dof_VertBlur", 0, 0, m_b8, 0, 0, m_b0, "Dof_VertBlur", 0, 0, 0)) == 0)
+    pkClick = FUN_140c8f690(FUN_1416b4990(this, "Dof_VertBlur", 0, 0, m_b8, 0, 0, m_b0, "Dof_VertBlur", 0, 0, 0));
+    if (pkClick == 0)
     {
         vfunc_16();
         return false;
     }
-    if (FUN_140c8f690(FUN_1416b4990(this, "Dof_DepthBlurMask", 0, 0, m_b0, 0, 0, m_a0, "Dof_DepthBlurMask",
-        static_cast<efd::SmartPointer<NiRenderedTexture>*>(b)[1], 0, 0)) == 0)
+    pkClick = FUN_140c8f690(FUN_1416b4990(this, "Dof_DepthBlurMask", 0, 0, m_b0, 0, 0, m_a0, "Dof_DepthBlurMask",
+        static_cast<efd::SmartPointer<NiRenderedTexture>*>(b)[1], 0, 0));
+    if (pkClick == 0)
     {
         vfunc_16();
         return false;
     }
-    if (FUN_140c8f690(FUN_1416b4990(this, "Dof_DepthBlurHorzFore", 0, 0, m_a0, 0, 0, m_a8, "Dof_DepthBlurHorzFore", m_a0, 0, 0)) == 0)
+    pkClick = FUN_140c8f690(FUN_1416b4990(this, "Dof_DepthBlurHorzFore", 0, 0, m_a0, 0, 0, m_a8, "Dof_DepthBlurHorzFore", m_a0, 0, 0));
+    if (pkClick == 0)
     {
         vfunc_16();
         return false;
     }
-    if (FUN_140c8f690(FUN_1416b4990(this, "Dof_DepthBlurVertFore", 0, 0, m_a8, 0, 0, m_a0, "Dof_DepthBlurVertFore", m_a8, 0, 0)) == 0)
+    pkClick = FUN_140c8f690(FUN_1416b4990(this, "Dof_DepthBlurVertFore", 0, 0, m_a8, 0, 0, m_a0, "Dof_DepthBlurVertFore", m_a8, 0, 0));
+    if (pkClick == 0)
     {
         vfunc_16();
         return false;
     }
-    if (FUN_140c8f690(FUN_1416b4990(this, "Dof_DepthOfField", 0, 0, m_b0, 1, 0, 0, "Dof_DepthOfField", m_80, m_a0, 0)) == 0)
+    pkClick = FUN_140c8f690(FUN_1416b4990(this, "Dof_DepthOfField", 0, 0, m_b0, 1, 0, 0, "Dof_DepthOfField", m_80, m_a0, 0));
+    if (pkClick == 0)
     {
         vfunc_16();
         return false;
@@ -677,20 +688,22 @@ bool FadeInOutRenderStep::vfunc_15(unsigned int a, void* b)
 }
 
 // @0x1416a0cd0
-// MS2-FUNCTIONAL: the exe spills the elapsed time and converts the duration first (16 bytes more frame); behaviour equivalent
 bool FadeInOutRenderStep::FUN_1416a0cd0(NiRenderClick* pkClick, void* pvData)
 {
     if (ms_iState == 2)
         return true;
     int iDuration = (ms_iState == 1) ? ms_iFadeOutTime : ms_iFadeInTime;
     if (iDuration != 0)
-        ms_fAlpha = ((float)GetTickCountMs2() - (float)ms_uiStartTime) / (float)iDuration;
+    {
+        float fElapsed = (float)GetTickCountMs2() - (float)ms_uiStartTime;
+        ms_fAlpha = fElapsed / (float)iDuration;
+    }
     else
         ms_fAlpha = 1.0f;
     if (ms_iState == 1)
     {
         ms_fAlpha = 1.0f - ms_fAlpha;
-        if (ms_fAlpha <= 0.0f)
+        if (!(ms_fAlpha > 0.0f))
         {
             ms_fAlpha = 0.0f;
             ms_iFadeOutTime = DAT_1439f823c;
@@ -811,7 +824,6 @@ GaussianBlurRenderStep::~GaussianBlurRenderStep()
 }
 
 // @0x1416a1490
-// MS2-FUNCTIONAL: argument temporaries of the two render-click calls are spilled in a different order; behaviour equivalent
 bool GaussianBlurRenderStep::vfunc_15(unsigned int a, void* b)
 {
     if (!PostProcessEffect::vfunc_15(a, 0))
@@ -828,14 +840,16 @@ bool GaussianBlurRenderStep::vfunc_15(unsigned int a, void* b)
         vfunc_16();
         return false;
     }
-    if (FUN_140c8f690(FUN_1416b4990(this, "OuterBlur_H", 0, 0, m_80, 0, 0, m_a0, "OuterGaussianBlur_H",
-        static_cast<efd::SmartPointer<NiRenderedTexture>*>(b)[2], static_cast<efd::SmartPointer<NiRenderedTexture>*>(b)[1], 0)) == 0)
+    void* pkClick = FUN_140c8f690(FUN_1416b4990(this, "OuterBlur_H", 0, 0, m_80, 0, 0, m_a0, "OuterGaussianBlur_H",
+        static_cast<efd::SmartPointer<NiRenderedTexture>*>(b)[2], static_cast<efd::SmartPointer<NiRenderedTexture>*>(b)[1], 0));
+    if (pkClick == 0)
     {
         vfunc_16();
         return false;
     }
-    if (FUN_140c8f690(FUN_1416b4990(this, "OuterBlur_V", 0, 0, m_a0, 0, 0, 0, "OuterGaussianBlur_V",
-        static_cast<efd::SmartPointer<NiRenderedTexture>*>(b)[2], static_cast<efd::SmartPointer<NiRenderedTexture>*>(b)[1], 0)) == 0)
+    pkClick = FUN_140c8f690(FUN_1416b4990(this, "OuterBlur_V", 0, 0, m_a0, 0, 0, 0, "OuterGaussianBlur_V",
+        static_cast<efd::SmartPointer<NiRenderedTexture>*>(b)[2], static_cast<efd::SmartPointer<NiRenderedTexture>*>(b)[1], 0));
+    if (pkClick == 0)
     {
         vfunc_16();
         return false;
@@ -1005,14 +1019,16 @@ bool OverdrawRenderStep::vfunc_15(unsigned int a, void* b)
 MS2_REPLACE_METHOD(0x1416a2640, OverdrawRenderStep, vfunc_15, 74, 0x483F2540);
 
 // @0x1416a2690
-// MS2-FUNCTIONAL: one extra 8-byte stack slot in our frame shifts the spill offsets; behaviour equivalent
 bool OverdrawRenderStep::vfunc_23()
 {
     NiRenderClick* pkClick = GetRenderClickByName("Overdraw");
     if (pkClick != 0)
         RemoveRenderClick(pkClick);
-    return FUN_140c8f690(FUN_1416b4990(this, "Overdraw", 0, 0, m_80, 0, 3, 0, "OverdrawColorize",
-        static_cast<efd::SmartPointer<NiRenderedTexture>*>(m_98)[9], 0, 0)) != 0;
+    pkClick = static_cast<NiRenderClick*>(FUN_140c8f690(FUN_1416b4990(this, "Overdraw", 0, 0, m_80, 0, 3, 0, "OverdrawColorize",
+        static_cast<efd::SmartPointer<NiRenderedTexture>*>(m_98)[9], 0, 0)));
+    if (pkClick == 0)
+        return false;
+    return true;
 }
 MS2_REPLACE_METHOD(0x1416a2690, OverdrawRenderStep, vfunc_23, 351, 0xA9CC357A);
 
@@ -1041,7 +1057,6 @@ PostProcessEffect::~PostProcessEffect()
 }
 
 // @0x1416a2990
-// MS2-FUNCTIONAL: locals sit one slot higher and m_90 (unsigned char in the shared header, bool in the exe) is returned via a compare
 bool PostProcessEffect::vfunc_15(unsigned int a, void* b)
 {
     RemoveAllRenderClicks();
@@ -1062,7 +1077,7 @@ bool PostProcessEffect::vfunc_15(unsigned int a, void* b)
         }
     }
     m_90 = m_80 != 0;
-    return m_90;
+    return reinterpret_cast<bool&>(m_90);
 }
 MS2_REPLACE_METHOD(0x1416a2990, PostProcessEffect, vfunc_15, 432, 0x140FA897);
 
@@ -1089,26 +1104,20 @@ MS2_CHECK_OFFSET(ReloadablePostProcess, m_a0, 0xa0);
 MS2_CHECK_OFFSET(ReloadablePostProcess, m_b0, 0xb0);
 
 // @0x1416a2c60
-// MS2-FUNCTIONAL: the exe keeps the factory/library in different stack slots (frame 0x48 vs 0x38); behaviour equivalent
 void ReloadablePostProcess::vfunc_21()
 {
     if (!m_a8)
         return;
     NiShaderFactory* pkFactory = NiShaderFactory::GetInstance();
     NiShaderLibrary* pkLibrary = pkFactory->GetFirstLibrary();
-    while (true)
-    {
-        if (strcmp(pkLibrary->GetName(), "NiD3DXEffectShaderLib") == 0)
-        {
-            FUN_1427b7820(pkLibrary, &m_b0, m_a0);
-            if (m_b0 != 0)
-                pkLibrary->LoadShader(static_cast<const char*>(m_b0));   // exe: slot 9 [rax+0x48], not SetShaderLibraryDesc
-            if (!vfunc_23())
-                vfunc_16();
-            return;
-        }
+    while (strcmp(pkLibrary->GetName(), "NiD3DXEffectShaderLib") != 0)
         pkLibrary = pkFactory->GetNextLibrary();
-    }
+    NiShaderLibrary* pkEffectLibrary = pkLibrary;
+    FUN_1427b7820(pkEffectLibrary, &m_b0, m_a0);
+    if (m_b0 != 0)
+        pkEffectLibrary->LoadShader(static_cast<const char*>(m_b0));   // exe: slot 9 [rax+0x48], not SetShaderLibraryDesc
+    if (!vfunc_23())
+        vfunc_16();
 }
 MS2_REPLACE_METHOD(0x1416a2c60, ReloadablePostProcess, vfunc_21, 288, 0xF934429C);
 
@@ -1181,15 +1190,17 @@ bool MotionBlurRenderStep::vfunc_15(unsigned int a, void* b)
 }
 
 // @0x1416a21c0
-// MS2-FUNCTIONAL: our NiNew expansion keeps the MemHint differently (exe spills its address); behaviour equivalent
 bool MotionBlurRenderStep::FUN_1416a21c0(NiRenderClick* pkClick, void* pvData)
 {
-    int iFrame = reinterpret_cast<Unk_PPOwner*>(static_cast<MotionBlurRenderStep*>(pvData)->m_70)->m_iFrame;
+    MotionBlurRenderStep* pkStep = static_cast<MotionBlurRenderStep*>(pvData);
+    int iTexture = reinterpret_cast<Unk_PPOwner*>(pkStep->m_70)->m_iFrame + 3;
     NiTexturingProperty::ShaderMap* pkMap0 = NiNew NiTexturingProperty::ShaderMap(
-        reinterpret_cast<Unk_PPOwner*>(static_cast<MotionBlurRenderStep*>(pvData)->m_70)->FUN_1416a23f0(iFrame + 3), 1);
-    int iPrev = (reinterpret_cast<Unk_PPOwner*>(static_cast<MotionBlurRenderStep*>(pvData)->m_70)->m_iFrame + 1) % 2;
+        reinterpret_cast<Unk_PPOwner*>(pkStep->m_70)->FUN_1416a23f0(iTexture), 1,
+        NiTexturingProperty::CLAMP_S_CLAMP_T, NiTexturingProperty::FILTER_NEAREST, 0);
+    iTexture = (reinterpret_cast<Unk_PPOwner*>(pkStep->m_70)->m_iFrame + 1) % 2 + 3;
     NiTexturingProperty::ShaderMap* pkMap1 = NiNew NiTexturingProperty::ShaderMap(
-        reinterpret_cast<Unk_PPOwner*>(static_cast<MotionBlurRenderStep*>(pvData)->m_70)->FUN_1416a23f0(iPrev + 3), 0);
+        reinterpret_cast<Unk_PPOwner*>(pkStep->m_70)->FUN_1416a23f0(iTexture), 0,
+        NiTexturingProperty::CLAMP_S_CLAMP_T, NiTexturingProperty::FILTER_NEAREST, 0);
     ms_pkTexProp->SetShaderMap(0, pkMap0);
     ms_pkTexProp->SetShaderMap(1, pkMap1);
     return true;
@@ -1733,13 +1744,13 @@ efd::SyncResult PostProcessingService::OnPreInit(efd::IDependencyRegistrar* pReg
 MS2_REPLACE_METHOD_VIA(0x1416a4800, PostProcessingService, efd::ISystemService, OnPreInit, 84, 0x822D00AC);
 
 // @0x1416a4860
-// MS2-FUNCTIONAL: frame is 0x20 bytes larger than the exe (temporary layout of the step allocations); same calls in the same order
 efd::AsyncResult PostProcessingService::OnInit()
 {
     egf::FlatModelManager* pFlatModelManager = m_pServiceManager->GetSystemServiceAs<egf::FlatModelManager>();
     pFlatModelManager->RegisterBuiltinModelFactory("PostProcessSetting", 0xc1e6b8c7, FUN_1416a3b10, 0);
     pFlatModelManager->RegisterBuiltinModelFactory("PlaneReflectionSetting", 0xddb91342, FUN_1416aa1a0, 0);
-    m_pServiceManager->GetSystemServiceAs<efd::MessageService>()->Subscribe(this, DAT_143ae4c20, 0, false);
+    efd::MessageService* pkMessageService = m_pServiceManager->GetSystemServiceAs<efd::MessageService>();
+    pkMessageService->Subscribe(this, DAT_143ae4c20, 0, false);
     FUN_141bbae40(FUN_1403ed2d0(), this);
 
     if (FUN_1416a69a0())
@@ -1749,8 +1760,8 @@ efd::AsyncResult PostProcessingService::OnInit()
     FUN_1416a3bb0();
     FUN_1416a7570();
 
-    FUN_1416a6d90(0, NiNew SSAORenderStep((unsigned __int64)this, &NiFixedString("SSAO"), 0));
-    FUN_1416a6d90(1, NiNew SSAORenderStep((unsigned __int64)this, &NiFixedString("SSAOOnly"), 0));
+    FUN_1416a6d90(0, NiNew SSAORenderStep((unsigned __int64)this, "SSAO", 0));
+    FUN_1416a6d90(1, NiNew SSAORenderStep((unsigned __int64)this, "SSAOOnly", 0));
     FUN_1416a6d90(5, NiNew ColorPerspectiveRenderStep((unsigned __int64)this, 0));
     FUN_1416a6d90(10, NiNew MotionBlurRenderStep((unsigned __int64)this, 0));
     FUN_1416a6d90(6, NiNew OuterBlurRenderStep((unsigned __int64)this, 0));
@@ -1937,7 +1948,6 @@ bool PostProcessingService::FUN_1416a66d0()
 MS2_REPLACE_METHOD(0x1416a66d0, PostProcessingService, FUN_1416a66d0, 699, 0x3366DDCD);
 
 // @0x1416a69a0
-// MS2-FUNCTIONAL: the exe routes the device-type local through edx before r8 (one extra mov); behaviour equivalent
 bool PostProcessingService::FUN_1416a69a0()
 {
     NiDX9Renderer* pkRenderer = NiDynamicCast(NiDX9Renderer, NiRenderer::GetRenderer());
@@ -1964,8 +1974,8 @@ bool PostProcessingService::FUN_1416a69a0()
             {
                 D3DFORMAT eFloat = NiDX9PixelFormat::DetermineD3DFormat(*pkFloatFormat);
                 D3DFORMAT eColor = NiDX9PixelFormat::DetermineD3DFormat(*pkColorFormat);
-                unsigned int uiDevType = pkRenderer->GetDevType();
-                HRESULT hr = pkD3D->CheckDeviceFormatConversion(pkRenderer->GetAdapter(), (D3DDEVTYPE)uiDevType, eColor, eFloat);
+                HRESULT hr = pkD3D->CheckDeviceFormatConversion(pkRenderer->GetAdapter(),
+                    (D3DDEVTYPE)pkRenderer->GetDevType(), eColor, eFloat);
                 if (hr == D3D_OK)
                 {
                     m_bHDR = true;
@@ -2155,7 +2165,6 @@ bool PostProcessingService::FUN_1416abce0(bool bBeforeReset, void* pvData)
 }
 
 // @0x1416aa450
-// MS2-FUNCTIONAL: the exe builds the "PlaneReflection" name in a named local and keeps an extra copy of the found object (frame 0x10 smaller)
 void PostProcessingService::FUN_1416aa450(int nClick, bool bActive)
 {
     if (nClick >= 11 || !m_aspClicks[nClick])
@@ -2180,7 +2189,12 @@ void PostProcessingService::FUN_1416aa450(int nClick, bool bActive)
                 NiNode* pkNode = NiDynamicCast(NiNode, FUN_141b6efc0(pkEntity));
                 if (pkNode == 0)
                     continue;
-                NiAVObject* pkObject = pkNode->GetObjectByName(NiFixedString("PlaneReflection"));
+                NiAVObject* pkObject;
+                {
+                    NiFixedString kName("PlaneReflection");
+                    pkObject = pkNode->GetObjectByName(kName);
+                    NiAVObject* pkFound = pkObject; // dead copy, kept by the exe
+                }
                 if (pkObject != 0)
                     pkObject->UpdateEffects();
             }
@@ -2886,7 +2900,6 @@ efd::SmartPointer<NiViewRenderClick> PostProcessingService::FUN_1416a8600()
 MS2_REPLACE_METHOD(0x1416a8600, PostProcessingService, FUN_1416a8600, 2118, 0xAE544DEE);
 
 // @0x1416aa950
-// MS2-FUNCTIONAL: the exe keeps the GetObjectByName result in an extra slot and uses jne/jmp for the cast test; locals swapped
 // Turn the mirrored (plane reflection) view on: mirror the main view's scenes and attach the reflection texture
 // effect to every entity's "PlaneReflection" node.
 void PostProcessingService::FUN_1416aa950()
@@ -2923,10 +2936,17 @@ void PostProcessingService::FUN_1416aa950()
             NiNode* pkRoot = NiDynamicCast(NiNode, FUN_141b6efc0(pEntity));
             if (!pkRoot)
                 continue;
-            NiAVObject* pkObject = pkRoot->GetObjectByName("PlaneReflection");
-            NiNode* pkNode;
-            if (pkObject && (pkNode = NiDynamicCast(NiNode, pkObject)) != 0)
+            NiAVObject* pkObject;
             {
+                NiFixedString kName("PlaneReflection");
+                pkObject = pkRoot->GetObjectByName(kName);
+                NiAVObject* pkFound = pkObject; // dead copy, kept by the exe
+            }
+            if (pkObject)
+            {
+                NiNode* pkNode = NiDynamicCast(NiNode, pkObject);
+                if (!pkNode)
+                    continue;
                 m_spTextureEffect->AttachAffectedNode(pkNode);
                 pkObject->UpdateEffects();
             }
@@ -2937,7 +2957,6 @@ void PostProcessingService::FUN_1416aa950()
 MS2_REPLACE_METHOD(0x1416aa950, PostProcessingService, FUN_1416aa950, 775, 0x502A26EE);
 
 // @0x1416abd20
-// MS2-FUNCTIONAL: the exe calls the virtual GetOutputRenderTargetGroup before GetRenderer and copies the step map's begin()/end() temporaries into separate locals
 // Device reset: before the reset detach every target that is not the back buffer and release the copy target; after
 // it rebuild the targets, the pre-process step and the effect chain.
 bool PostProcessingService::FUN_1416abd20(bool bBeforeReset)
@@ -2953,18 +2972,36 @@ bool PostProcessingService::FUN_1416abd20(bool bBeforeReset)
             NiRenderStep* pkStep = pkRenderService->GetActiveRenderSurface()->GetRenderStep();
             if (pkStep != 0)
             {
-                if (pkStep->GetOutputRenderTargetGroup() != pkRenderService->GetRenderer()->GetDefaultRenderTargetGroup())
+                NiRenderTargetGroup* pkOutput = pkStep->GetOutputRenderTargetGroup();
+                if (pkOutput != pkRenderService->GetRenderer()->GetDefaultRenderTargetGroup())
                     FUN_1416ac3b0(0);
                 MS2_FOR_EACH(const auto& kStep, m_kSteps)
                 {
-                    if (kStep.second->GetOutputRenderTargetGroup() != pkRenderService->GetRenderer()->GetDefaultRenderTargetGroup()
-                        && kStep.second)
-                        kStep.second->SetOutputRenderTargetGroup(0);
+                    NiRenderTargetGroup* pkStepOutput = kStep.second->GetOutputRenderTargetGroup();
+                    if (pkStepOutput != pkRenderService->GetRenderer()->GetDefaultRenderTargetGroup())
+                    {
+                        if (kStep.second)
+                            kStep.second->SetOutputRenderTargetGroup(0);
+                    }
                 }
             }
         }
     }
-    if (!bBeforeReset)
+    if (bBeforeReset)
+    {
+        if (m_spTarget190)
+        {
+            Ni2DBuffer* pkBuffer = m_spTarget190->GetBuffer(0);
+            if (pkBuffer != 0)
+            {
+                Ni2DBuffer::RendererData* pkData = pkBuffer->GetRendererData();
+                if (pkData != 0)
+                    FUN_1427e7520(pkData);
+                m_spTarget190 = 0;
+            }
+        }
+    }
+    else
     {
         FUN_1416a3bb0();
         FUN_1416a7570();
@@ -2972,17 +3009,6 @@ bool PostProcessingService::FUN_1416abd20(bool bBeforeReset)
             FUN_1416aa450(7, true);
         FUN_1416ab960();
         LinkEffects();
-    }
-    else if (m_spTarget190)
-    {
-        Ni2DBuffer* pkBuffer = m_spTarget190->GetBuffer(0);
-        if (pkBuffer != 0)
-        {
-            Ni2DBuffer::RendererData* pkData = pkBuffer->GetRendererData();
-            if (pkData != 0)
-                FUN_1427e7520(pkData);
-            m_spTarget190 = 0;
-        }
     }
     FUN_1409a8b00()->FUN_1409a3b60(bBeforeReset);
     return true;

@@ -97,8 +97,12 @@ extern NiFixedString DAT_143ae5468; // "gfGaussianValueY"
 
 // ---- statics of this TU, in definition order (.text$di) ----
 
+#ifndef MS2_HOOK_DLL   // s_k_gkShadowAdjust: the exe's object at 0x143ae53d8, which other units reach as DAT_143ae53d8 (the hook DLL binds it)
 // @0x1400fd610
-static NiFixedString s_k_gkShadowAdjust;
+NiFixedString DAT_143ae53d8;
+#else
+extern NiFixedString DAT_143ae53d8;
+#endif
 #ifndef MS2_HOOK_DLL   // s_k_gkSSSPower: the exe's object at 0x143ae53a0, which other units reach as DAT_143ae53a0 (the hook DLL binds it)
 // @0x1400fd640
 NiFixedString DAT_143ae53a0;
@@ -307,7 +311,7 @@ void InitShaderConstantNames()
     DAT_143ae53c0 = "gfEnableShimmerRender";
     DAT_143ae53c8 = "g_kOutlineColors";
     DAT_143ae53d0 = "g_vColorPerspectiveRange";
-    s_k_gkShadowAdjust = "gkShadowAdjust";
+    DAT_143ae53d8 = "gkShadowAdjust";
     DAT_143ae53e0 = "gakNormalSampleOffsets";
     DAT_143ae53e8 = "gakSampleOffsets";
     DAT_143ae53f0 = "gakSampleWeights";
@@ -359,7 +363,7 @@ void ResetShaderConstantNames()
     DAT_143ae53c0 = NiFixedString();
     DAT_143ae53c8 = NiFixedString();
     DAT_143ae53d0 = NiFixedString();
-    s_k_gkShadowAdjust = NiFixedString();
+    DAT_143ae53d8 = NiFixedString();
     DAT_143ae53e0 = NiFixedString();
     DAT_143ae53e8 = NiFixedString();
     DAT_143ae53f0 = NiFixedString();

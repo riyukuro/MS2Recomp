@@ -10,7 +10,7 @@
 
 #include "ms2/placeholder/ichromamanager.h"
 // the sample helper types (FChromaSDKGuid, FChromaSDKEffectResult, FChromaSDKColors, the device enums): the Razer header
-#include "../../../third_party/razer/CSDK_SampleApp/Razer/ChromaSDKPluginTypes.h"
+#include "razer/CSDK_SampleApp/Razer/ChromaSDKPluginTypes.h"
 #include "ms2/placeholder/uistatuseventlistener.h"
 #include "ms2/placeholder/chromacolortable.h"
 

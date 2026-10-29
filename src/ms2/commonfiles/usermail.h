@@ -28,6 +28,8 @@ public:
     Unk_MailPtr& AssignRaw(T* value) { Unk_MailPtr temp(value); T* old = p; p = temp.p; temp.p = old; return *this; }
     bool operator==(T* value) const { return p == value; }
     T* get() const { return p; }
+    // @0x1419ea470 (CMailInfo)
+    bool IsNull() const { return p == 0; }
     T* operator->() const { return p; }
 private:
     void AddRef() const { if (p) AddRefImpl(0); }

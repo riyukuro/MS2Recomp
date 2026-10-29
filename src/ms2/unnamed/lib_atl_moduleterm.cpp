@@ -10,49 +10,76 @@
 #include "ms2/placeholder/ms2stdafx.h"
 
 // ~CAtlComModule: Term() releases the cached class factories (DecodePointer'd), deletes the object-map lock and
-// clears cbSize.
-// MS2-FUNCTIONAL: calls the ATL 14.16 destructor out of line; the exe inlines it
+// clears cbSize. Written out because the exe inlines the noexcept destructor and 14.16 ATL here keeps it out of line.
+static __forceinline void AtlComModuleTerm() noexcept
+{
+    ATL::CAtlComModule& m = ATL::_AtlComModule;
+    if (m.cbSize == 0)
+        return;
+    for (ATL::_ATL_OBJMAP_ENTRY_EX** ppEntry = m.m_ppAutoObjMapFirst; ppEntry < m.m_ppAutoObjMapLast; ppEntry++) {
+        if (*ppEntry != NULL) {
+            ATL::_ATL_OBJMAP_CACHE* pCache = (**ppEntry).pCache;
+            if (pCache->pCF != NULL) {
+                IUnknown* pFactory = static_cast<IUnknown*>(DecodePointer(pCache->pCF));
+                pFactory->Release();
+                pCache->pCF = NULL;
+            }
+        }
+    }
+    m.m_csObjMap.Term();
+    m.cbSize = 0;
+}
+
 // @0x142cc4300
 void FUN_142cc4300()
 {
-    ATL::_AtlComModule.~CAtlComModule();
+    AtlComModuleTerm();
 }
 
 // ~CAtlWinModule: AtlWinModuleTerm with the base module's instance (unregisters the window classes), then the
-// atom array's destructor.
-// MS2-FUNCTIONAL: calls the ATL 14.16 destructor out of line; the exe inlines it
+// atom array's destructor, written out for the same reason (the exe build is MBCS: UnregisterClassA).
+static __forceinline void AtlWinModuleDtor() noexcept
+{
+    ATL::CAtlWinModule& m = ATL::_AtlWinModule;
+    HINSTANCE hInst = ATL::_AtlBaseModule.GetModuleInstance();
+    if (m.cbSize == sizeof(ATL::_ATL_WIN_MODULE)) {
+        for (int i = 0; i < m.m_rgWindowClassAtoms.GetSize(); i++)
+            UnregisterClassA((LPCSTR)m.m_rgWindowClassAtoms[i], hInst);
+        m.m_rgWindowClassAtoms.RemoveAll();
+        m.m_csWindowCreate.Term();
+        m.cbSize = 0;
+    }
+    m.m_rgWindowClassAtoms.RemoveAll();
+}
+
 // @0x142cc4390
 void FUN_142cc4390()
 {
-    ATL::_AtlWinModule.~CAtlWinModule();
+    AtlWinModuleDtor();
 }
 
 // The second object's copies.
-// MS2-FUNCTIONAL: calls the ATL 14.16 destructor out of line; the exe inlines it
 // @0x142cc4590
 void FUN_142cc4590()
 {
-    ATL::_AtlComModule.~CAtlComModule();
+    AtlComModuleTerm();
 }
 
-// MS2-FUNCTIONAL: calls the ATL 14.16 destructor out of line; the exe inlines it
 // @0x142cc4620
 void FUN_142cc4620()
 {
-    ATL::_AtlWinModule.~CAtlWinModule();
+    AtlWinModuleDtor();
 }
 
 // The third object's copies.
-// MS2-FUNCTIONAL: calls the ATL 14.16 destructor out of line; the exe inlines it
 // @0x142cc5d00
 void FUN_142cc5d00()
 {
-    ATL::_AtlComModule.~CAtlComModule();
+    AtlComModuleTerm();
 }
 
-// MS2-FUNCTIONAL: calls the ATL 14.16 destructor out of line; the exe inlines it
 // @0x142cc5d90
 void FUN_142cc5d90()
 {
-    ATL::_AtlWinModule.~CAtlWinModule();
+    AtlWinModuleDtor();
 }

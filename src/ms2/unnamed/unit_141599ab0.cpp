@@ -6,11 +6,13 @@
 #define MS2_THIS_FILE ""
 #include "ms2/placeholder/ms2stdafx.h"
 #include "ms2/placeholder/nmobjects.h"
+#include "ms2/placeholder/nmstream.h"
+#include "ms2/placeholder/nmencoder.h"
 #include "ms2/ms2recover.h"
 
 extern int FUN_1415fb700(const void*);
 extern int FUN_1415fb750(void*);
-extern int FUN_1415fb6d0(void*);
+extern int FUN_1415fb6d0(CNMSerializableDecoder*);
 extern void FUN_1415f9990(void*);
 extern void FUN_14156ac20(void*, unsigned int);
 extern void FUN_14156acb0(void*, unsigned __int64);
@@ -34,11 +36,8 @@ CNMReplySessionRequestFunc::CNMReplySessionRequestFunc(unsigned __int64 nSession
 // @0x141599ba0
 unsigned int CNMReplySessionRequestFunc::EncodeFramed(CNMStream* pStream)
 {
-    alignas(8) unsigned char encoder[0x18];
-    FUN_14156bcb0(encoder, pStream, this);
-    const unsigned int result = Encode(reinterpret_cast<CNMEncoder*>(encoder), pStream);
-    FUN_14156bd50(encoder);
-    return result;
+    CNMSerializableEncoder encoder(pStream, this);
+    return CNMReplySessionRequestFunc::Encode(reinterpret_cast<CNMEncoder*>(&encoder), pStream);
 }
 
 // MS2-FUNCTIONAL: recovered format branch; direct calls replace indirect virtual dispatch.
@@ -46,10 +45,8 @@ unsigned int CNMReplySessionRequestFunc::EncodeFramed(CNMStream* pStream)
 unsigned int CNMReplySessionRequestFunc::EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream)
 {
     if (m_bFormat == 1)
-        Encode(pEncoder, pStream);
-    else
-        EncodeFramed(pStream);
-    return 0;
+        return CNMReplySessionRequestFunc::Encode(pEncoder, pStream);
+    return CNMReplySessionRequestFunc::EncodeFramed(pStream);
 }
 
 // MS2-FUNCTIONAL: recovered request data and boolean field order match; direct calls differ in codegen.
@@ -71,13 +68,10 @@ unsigned int CNMReplySessionRequestFunc::Encode(CNMEncoder* pEncoder, CNMStream*
 // @0x141599cf0
 unsigned int CNMReplySessionRequestFunc::DecodeFramed(CNMStream* pStream)
 {
-    alignas(8) unsigned char decoder[0x38];
-    FUN_14156bcb0(decoder, pStream, this);
-    unsigned int result = 0;
-    if (FUN_1415fb750(decoder) != 0)
-        result = Decode(reinterpret_cast<CNMSerializableDecoder*>(decoder), pStream);
-    FUN_14156bd50(decoder);
-    return result;
+    CNMSerializableDecoder decoder(pStream, this);
+    if (FUN_1415fb750(&decoder) == 0)
+        return 0;
+    return CNMReplySessionRequestFunc::Decode(&decoder, pStream);
 }
 
 // MS2-FUNCTIONAL: framed decoder selection matches; direct dispatch replaces the indirect virtual call.
@@ -85,10 +79,8 @@ unsigned int CNMReplySessionRequestFunc::DecodeFramed(CNMStream* pStream)
 unsigned int CNMReplySessionRequestFunc::DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream)
 {
     if (FUN_1415fb6d0(pDecoder) == 2)
-        DecodeFramed(pStream);
-    else
-        Decode(pDecoder, pStream);
-    return 0;
+        return CNMReplySessionRequestFunc::DecodeFramed(pStream);
+    return CNMReplySessionRequestFunc::Decode(pDecoder, pStream);
 }
 
 // MS2-FUNCTIONAL: recovered request data and boolean reader calls match; indirect reader dispatch is preserved.

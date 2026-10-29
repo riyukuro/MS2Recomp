@@ -160,7 +160,6 @@ ReactorData::~ReactorData()
 }
 
 // @0x14076ab40
-// MS2-FUNCTIONAL: EH-state/temp-CString layout of the XML loader differs from the exe (precedent banktable.cpp); behaviour matches the decompile, not byte-reproduced
 bool ReactorData::Load(Unk_140165cf0* pNode)
 {
     FUN_1408731e0(pNode, "id", m_nId);
@@ -184,10 +183,12 @@ bool ReactorData::Load(Unk_140165cf0* pNode)
         }
         m_states.Add(state);
     }
-    CStringW strXml;
-    FUN_140873420(pNode, "rewardItemListXml", strXml);
-    if (!strXml.IsEmpty())
+    do
     {
+        CStringW strXml;
+        FUN_140873420(pNode, "rewardItemListXml", strXml);
+        if (strXml.IsEmpty())
+            break;
         TiXmlDocument doc;
         if (GetFileSystem()->FUN_140397ab0(&doc, strXml) == 0)
         {
@@ -206,7 +207,7 @@ bool ReactorData::Load(Unk_140165cf0* pNode)
             item.vfunc_2(pItem);
             FUN_14034f0c0(m_rewards, item);
         }
-    }
+    } while (0);
     return true;
 }
 
@@ -249,13 +250,11 @@ bool CReactorDataTable::IsCacheStale()
 }
 
 // @0x14076b2e0
-// MS2-FUNCTIONAL: EH-state/temp-CString layout of the XML loader differs from the exe (precedent banktable.cpp); behaviour matches the decompile, not byte-reproduced
 bool CReactorDataTable::LoadReactors()
 {
     TiXmlDocument doc;
     CString strPath(m_strReactorXml);
-    const char* pszPath = strPath;
-    if (GetFileSystem()->FUN_1403974b0(&doc, pszPath, 0, true, false) == 0)
+    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return false;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
@@ -265,30 +264,26 @@ bool CReactorDataTable::LoadReactors()
     }
     for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("reactor"); pNode != 0; pNode = pNode->FUN_140168650("reactor"))
     {
-        if (FUN_14028f710(pNode))
+        if (!FUN_14028f710(pNode))
+            continue;
+        DataPtr data(new ReactorData);
+        if (!data->Load(pNode))
+            continue;
+        if (Unk_LockGuard guard = m_lock)
         {
-            DataPtr data(new ReactorData);
-            if (data->Load(pNode))
-            {
-                if (Unk_LockGuard guard = m_lock)
-                {
-                }
-                else
-                    m_reactors.SetAt(data->m_nId, data);
-            }
         }
+        else
+            m_reactors.SetAt(data->m_nId, data);
     }
     return true;
 }
 
 // @0x14076b560
-// MS2-FUNCTIONAL: EH-state/temp-CString layout of the XML loader differs from the exe (precedent banktable.cpp); behaviour matches the decompile, not byte-reproduced
 bool CReactorDataTable::LoadStates()
 {
     TiXmlDocument doc;
     CString strPath(m_strStateXml);
-    const char* pszPath = strPath;
-    if (GetFileSystem()->FUN_1403974b0(&doc, pszPath, 0, true, false) == 0)
+    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return false;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
@@ -299,14 +294,13 @@ bool CReactorDataTable::LoadStates()
     for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("reactorState"); pNode != 0; pNode = pNode->FUN_140168650("reactorState"))
     {
         StatePtr state(new ReactorStateData);
-        if (state->Load(pNode))
+        if (!state->Load(pNode))
+            continue;
+        if (Unk_LockGuard guard = m_lock)
         {
-            if (Unk_LockGuard guard = m_lock)
-            {
-            }
-            else
-                m_states.SetAt(state->m_nId, state);
         }
+        else
+            m_states.SetAt(state->m_nId, state);
     }
     return true;
 }

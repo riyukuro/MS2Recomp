@@ -91,7 +91,7 @@ class Unk_StItemNames;
 class Unk_StModel
 {
 public:
-    int FUN_140de27c0();                                                    // a request is pending
+    void* FUN_140de27c0();                                                  // the pending request
     int FUN_140de2860();                                                    // initialised
     void FUN_140de2b50();                                                   // request the data
     void FUN_140de2d60();                                                   // reset
@@ -137,8 +137,8 @@ public:
     virtual void vfunc_0(); virtual void vfunc_1(); virtual void vfunc_2(); virtual void vfunc_3();
     virtual void vfunc_4(); virtual void vfunc_5(); virtual void vfunc_6(); virtual void vfunc_7();
     virtual void vfunc_8(); virtual void vfunc_9(); virtual void vfunc_10();
-    virtual void vfunc_11(int n);                           // 11 (+0x58)
-    virtual void vfunc_12(int n);                           // 12 (+0x60)
+    virtual void vfunc_11(void* p);                         // 11 (+0x58) DragSlotBag: for each slot, slot->vfunc_23(p)
+    virtual void vfunc_12(void* p);                         // 12 (+0x60) DragSlotBag: for each slot, slot->vfunc_24(p)
 };
 Unk_StBagCtl* FUN_140c544d0(Unk_StBagBind* pBind);
 
@@ -192,6 +192,8 @@ public:
     DC_V(20) DC_V(21) DC_V(22) DC_V(23) DC_V(24) DC_V(25) DC_V(26) DC_V(27) DC_V(28) DC_V(29)
     DC_V(30) DC_V(31) DC_V(32) DC_V(33) DC_V(34) DC_V(35) DC_V(36)
     virtual int vfunc_37(void* pRequest);
+    DC_V(38) DC_V(39)
+    virtual bool vfunc_40(__int64 nPrice);                                  // can pay the price
 #undef DC_V
 };
 Unk_DictPlatform* FUN_140d86260();
@@ -244,7 +246,7 @@ MS2Ptr<CMsgBoxData> FUN_140d74390(CStringW text, int nType, Delegate<bool(int, c
 void FUN_141275260(int nStringId, int nA, int nB);
 void FUN_14199e740(int nStringId, int nA, int nB, const int* pnKind, const CStringW& str);
 void FUN_140961010(int nStringId, int nA, int nB, const CStringW& str);
-void FUN_1409e97f0(CStringW* pOut, int nStringId, const int* pnArg);
+CStringW FUN_1409e97f0(int nStringId, const int* pnArg);
 void FUN_14151f200();
 int FUN_1412772f0(__int64 n, int a);
 void FUN_141276180(const CString& strKey, const CString& strValue);
@@ -355,13 +357,14 @@ void UIStatusEventDispatcher::FUN_141b0cd90(UIStatusEventListener* pListener)
 }
 MS2_REPLACE_METHOD(0x141B0CD90, UIStatusEventDispatcher, FUN_141b0cd90, 131, 0x46B00969);
 
+struct Unk_StActor { virtual void Unk_Slot0(); virtual void Unk_Slot1(); virtual void Unk_Slot2(); virtual void Unk_Slot3(); virtual void Unk_Slot4(); virtual void Unk_Slot5(); virtual void Unk_Slot6(); virtual void Unk_Slot7(); virtual void Unk_Slot8(); virtual void Unk_Slot9(); virtual void Unk_Slot10(); virtual void Unk_Slot11(); virtual void Unk_Slot12(); virtual void Unk_Slot13(); virtual void Unk_Slot14(); virtual void Unk_Slot15(); virtual void Unk_Slot16(); virtual void Unk_Slot17(); virtual void Unk_Slot18(); virtual void Unk_Slot19(); virtual void Unk_Slot20(); virtual void Unk_Slot21(); virtual void Unk_Slot22(); virtual void Unk_Slot23(); virtual void Unk_Slot24(); virtual void Unk_Slot25(); virtual void Unk_Slot26(); virtual void Unk_Slot27(); virtual void Unk_Slot28(); virtual void Unk_Slot29(); virtual void Unk_Slot30(); virtual void Unk_Slot31(); virtual void Unk_Slot32(); virtual void Unk_Slot33(); virtual void Unk_Slot34(); virtual void Unk_Slot35(); virtual void Unk_Slot36(); virtual void Unk_Slot37(); virtual void Unk_Slot38(); virtual void Unk_Slot39(); virtual void Unk_Slot40(); virtual void Unk_Slot41(); virtual void Unk_Slot42(); virtual void Unk_Slot43(); virtual void Unk_Slot44(); virtual void Unk_Slot45(); virtual void Unk_Slot46(); virtual void Unk_Slot47(); virtual void Unk_Slot48(); virtual void Unk_Slot49(); virtual void Unk_Slot50(); virtual void Unk_Slot51(); virtual void Unk_Slot52(); virtual void Unk_Slot53(); virtual void Unk_Slot54(); virtual void Unk_Slot55(); virtual void Unk_Slot56(); virtual void Unk_Slot57(); virtual void Unk_Slot58(); virtual void Unk_Slot59(); virtual void Unk_Slot60(); virtual void Unk_Slot61(); virtual void Unk_Slot62(); virtual void Unk_Slot63(); virtual void Unk_Slot64(); virtual void Unk_Slot65(); virtual void Unk_Slot66(); virtual void Unk_Slot67(); virtual void Unk_Slot68(); virtual void Unk_Slot69(); virtual void Unk_Slot70(); virtual void Unk_Slot71(); virtual void Unk_Slot72(); virtual void Unk_Slot73(); virtual void Unk_Slot74(); virtual void Unk_Slot75(); virtual void Unk_Slot76(); virtual void Unk_Slot77(); virtual unsigned short vfunc_78(); virtual void Unk_Slot79(); virtual void Unk_Slot80(); virtual void Unk_Slot81(); virtual void Unk_Slot82(); virtual void Unk_Slot83(); virtual void Unk_Slot84(); virtual void Unk_Slot85(); virtual void Unk_Slot86(); virtual void Unk_Slot87(); virtual void Unk_Slot88(); virtual void Unk_Slot89(); virtual void Unk_Slot90(); virtual void Unk_Slot91(); virtual void Unk_Slot92(); virtual void Unk_Slot93(); virtual void Unk_Slot94(); virtual void Unk_Slot95(); virtual void Unk_Slot96(); virtual void Unk_Slot97(); virtual void Unk_Slot98(); virtual void Unk_Slot99(); virtual void Unk_Slot100(); virtual void Unk_Slot101(); virtual void Unk_Slot102(); virtual void Unk_Slot103(); virtual void Unk_Slot104(); virtual void Unk_Slot105(); virtual void Unk_Slot106(); virtual void Unk_Slot107(); virtual void Unk_Slot108(); virtual void Unk_Slot109(); virtual void Unk_Slot110(); virtual void Unk_Slot111(); virtual void Unk_Slot112(); virtual void Unk_Slot113(); virtual void Unk_Slot114(); virtual void Unk_Slot115(); virtual void Unk_Slot116(); virtual void Unk_Slot117(); virtual void Unk_Slot118(); virtual void Unk_Slot119(); virtual void Unk_Slot120(); virtual void Unk_Slot121(); virtual void Unk_Slot122(); virtual void Unk_Slot123(); virtual void Unk_Slot124(); virtual void Unk_Slot125(); virtual void Unk_Slot126(); virtual void Unk_Slot127(); virtual void Unk_Slot128(); virtual void Unk_Slot129(); virtual void Unk_Slot130(); virtual void Unk_Slot131(); virtual void Unk_Slot132(); virtual void Unk_Slot133(); virtual void Unk_Slot134(); virtual void Unk_Slot135(); virtual void Unk_Slot136(); virtual void Unk_Slot137(); virtual void Unk_Slot138(); virtual void Unk_Slot139(); virtual void Unk_Slot140(); virtual int vfunc_141(); };   // the local player: the level (slot 78, +0x270) and slot 141 (+0x468)
+
 #define ST_EACH_LISTENER(i, pL) \
     for (size_t i = 0; i < m_listeners.GetCount(); ++i) \
         if (UIStatusEventListener* pL = static_cast<UIStatusEventListener*>(m_listeners.GetAt(i))) \
             if (pL->vfunc_oa0_1() != 0)
 
 // @0x141b0ce20
-// MS2-FUNCTIONAL: frame layout of the per-case temporaries differs
 void UIStatusEventDispatcher::FUN_141b0ce20(int nEvent, int nValue)
 {
     PCBase* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
@@ -386,18 +389,24 @@ void UIStatusEventDispatcher::FUN_141b0ce20(int nEvent, int nValue)
     else if (nEvent == 3)
     {
         ST_EACH_LISTENER(i3, pL)
-            pL->vfunc_oa0_6((void*)DAT_143ab28a0, FUN_1404a1bb0()->FUN_140353610((unsigned short)pPlayer->vfunc_78()));
+            pL->vfunc_oa0_6((void*)DAT_143ab28a0, FUN_1404a1bb0()->FUN_140353610(reinterpret_cast<Unk_StActor*>(pPlayer)->vfunc_78()));
     }
     else if (nEvent == 4)
     {
         ST_EACH_LISTENER(i4, pL)
-            pL->vfunc_oa0_7(FUN_141654730(pPlayer), CStringW(FUN_1401a9d70()->FUN_141811980(6, FUN_141654730(pPlayer))));
+        {
+            CStringW strJob = FUN_1401a9d70()->FUN_141811980(6, FUN_141654730(pPlayer));
+            pL->vfunc_oa0_7(FUN_141654730(pPlayer), strJob);
+        }
         FUN_1409670d0()->FUN_14162a840(TPtr<PCBase>(pPlayer));
     }
     else if (nEvent == 5)
     {
         ST_EACH_LISTENER(i5, pL)
-            pL->vfunc_oa0_8(CStringW(pPlayer->vfunc_77()));
+        {
+            CStringW strName = pPlayer->vfunc_77();
+            pL->vfunc_oa0_8(strName);
+        }
     }
     else if (nEvent == 6)
     {
@@ -409,7 +418,10 @@ void UIStatusEventDispatcher::FUN_141b0ce20(int nEvent, int nValue)
     else if (nEvent == 7)
     {
         ST_EACH_LISTENER(i7, pL)
-            pL->vfunc_oa0_10(CStringW(FUN_141656be0(pPlayer)));
+        {
+            CStringW strGuild(FUN_141656be0(pPlayer));
+            pL->vfunc_oa0_10(strGuild);
+        }
     }
     else if (nEvent == 8)
     {
@@ -459,7 +471,7 @@ void UIStatusEventDispatcher::FUN_141b0ce20(int nEvent, int nValue)
     else if (nEvent == 0x11)
     {
         ST_EACH_LISTENER(i17, pL)
-            pL->vfunc_oa0_30(((int (*)(PCBase*))(*(void***)pPlayer)[0x468 / 8])(pPlayer));
+            pL->vfunc_oa0_30(reinterpret_cast<Unk_StActor*>(pPlayer)->vfunc_141());
     }
     else if (nEvent == 0x12)
     {
@@ -589,7 +601,9 @@ MS2_REPLACE_METHOD(0x141B0EE20, UIStoreDialog, GetTypeName, 61, 0xCD7E5793);
 // @0x141b0ee70
 int UIStoreDialog::vfunc_oa0_1()
 {
-    return vfunc_55() == 0;
+    if (vfunc_55() != 0)
+        return 0;
+    return 1;
 }
 MS2_REPLACE_METHOD_VIA(0x141B0EE70, UIStoreDialog, UIStatusEventListener, vfunc_oa0_1, 69, 0x93DD6E81);
 
@@ -769,80 +783,82 @@ int UIStoreDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
 MS2_REPLACE_METHOD_VIA(0x141B0F7C0, UIStoreDialog, IMessageListener, OnMessage, 627, 0xBC88E193);
 
 // @0x141b0fa40
-// MS2-FUNCTIONAL: frame layout of the message box temporaries differs
 int UIStoreDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs)
 {
     if (UIDialog::vfunc_28(szMethod, pArgs, nArgs) != 0)
         return 1;
     if (_stricmp("onClickDeposit", szMethod) == 0)
     {
-        if (FUN_141b11490() == 0)
-        {
-            FUN_141275260(0x42, 1, 1);
-        }
-        else
+        if (FUN_141b11490() != 0)
         {
             MS2Ptr<CMsgBoxData> box = FUN_140d73e40(7, 0x2a9, static_cast<IMessageListener*>(this), CStringW(L"deposit"));
             if (box.get() != 0)
             {
-                int nMax = FUN_1412772f0(DAT_143ab2d80.FUN_140de2a80(), 1);
-                box->FUN_141a01d30(1, CStringW(L""), nMax, 0, 0);
+                __int64 nMoney = DAT_143ab2d80.FUN_140de2a80();
+                int nMax = FUN_1412772f0(nMoney, 1);
+                box->FUN_141a01d30(1, L"", nMax, 0, 0);
                 FUN_140d73c60(box);
             }
         }
-        return 1;
-    }
-    if (_stricmp("onClickWithDraw", szMethod) == 0)
-    {
-        if (FUN_141b11490() == 0)
+        else
         {
             FUN_141275260(0x42, 1, 1);
         }
-        else
+        return 1;
+    }
+    else if (_stricmp("onClickWithDraw", szMethod) == 0)
+    {
+        if (FUN_141b11490() != 0)
         {
             MS2Ptr<CMsgBoxData> box = FUN_140d73e40(7, 0x2aa, static_cast<IMessageListener*>(this), CStringW(L"withdraw"));
             if (box.get() != 0)
             {
                 int nMax = FUN_1412772f0(DAT_143ab2d80.FUN_140de2ab0(), 1);
-                box->FUN_141a01d30(1, CStringW(L""), nMax, 0, 0);
+                box->FUN_141a01d30(1, L"", nMax, 0, 0);
                 FUN_140d73c60(box);
             }
         }
+        else
+        {
+            FUN_141275260(0x42, 1, 1);
+        }
         return 1;
     }
-    if (_stricmp("onClickExpandSlot", szMethod) == 0)
+    else if (_stricmp("onClickExpandSlot", szMethod) == 0)
     {
-        if (FUN_141b114f0() == 0)
-        {
-            int nStep = DAT_143ab2d80.FUN_140de29b0();
-            CStringW strMsg;
-            FUN_1409e97f0(&strMsg, 0x2b0, &nStep);
-            FUN_140d73aa0(CStringW(L""), 0, 0, strMsg);
-        }
-        else
+        if (FUN_141b114f0() != 0)
         {
             CStringW strQuestion = FUN_14028dee0(0x2a8, (__int64)DAT_143ab2d80.FUN_140de2ae0(), 6);
             MS2Ptr<CMsgBoxData> box = FUN_140d74390(CStringW(strQuestion), 1, Delegate<bool(int, const CMsgBoxData&)>(this, &UIStoreDialog::FUN_141b11c90));
         }
+        else
+        {
+            int nStep = DAT_143ab2d80.FUN_140de29b0();
+            CStringW strMsg = FUN_1409e97f0(0x2b0, &nStep);
+            FUN_140d73aa0(strMsg, 0, 0, L"");
+        }
         return 1;
     }
-    if (_stricmp("onClickSort", szMethod) == 0)
+    else if (_stricmp("onClickSort", szMethod) == 0)
     {
         DAT_143ab2d80.FUN_140de2bd0();
         return 1;
     }
-    if (_stricmp("OnItemSearch", szMethod) == 0)
+    else if (_stricmp("OnItemSearch", szMethod) == 0)
     {
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs) != 0)
             FUN_141b10ed0(data.FUN_1422b8f40());
         return 1;
     }
-    if (_stricmp("OnSelected", szMethod) == 0)
+    else if (_stricmp("OnSelected", szMethod) == 0)
     {
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs) != 0)
-            FUN_141b116d0(CStringW(FUN_1413fa9b0(data.FUN_1422b8f40())));
+        {
+            CStringW strItem = FUN_1413fa9b0(data.FUN_1422b8f40());
+            FUN_141b116d0(strItem);
+        }
         return 1;
     }
     return 0;
@@ -853,15 +869,14 @@ MS2_REPLACE_METHOD(0x141B0FA40, UIStoreDialog, vfunc_28, 1967, 0x698AF0F7);
 void UIStoreDialog::vfunc_15()
 {
     UISwfEntity::vfunc_15();
-    if (vfunc_55() == 0)
+    if (vfunc_55() != 0)
+        return;
+    if (0 < m_198)
     {
-        if (0 < m_198)
-        {
-            if ((m_198 & 4) != 0)
-                FUN_141b110e0();
-            if ((m_198 & 2) != 0)
-                FUN_141b11590();
-        }
+        if ((m_198 & 4) != 0)
+            FUN_141b110e0();
+        if ((m_198 & 2) != 0)
+            FUN_141b11590();
     }
 }
 MS2_REPLACE_METHOD(0x141B10210, UIStoreDialog, vfunc_15, 119, 0xC8F4DB08);
@@ -932,7 +947,8 @@ void UIStoreDialog::vfunc_oa0_13(void* a1)
 {
     if (m_30.get() != 0)
     {
-        static_cast<Unk_StScript*>(m_30.operator->())->FUN_140acd130("changeMoney", CStringW(FUN_140719a00((__int64)a1)));
+        CStringW strMoney = FUN_140719a00((__int64)a1);
+        static_cast<Unk_StScript*>(m_30.operator->())->FUN_140acd130("changeMoney", strMoney);
     }
 }
 MS2_REPLACE_METHOD_VIA(0x141B106B0, UIStoreDialog, UIStatusEventListener, vfunc_oa0_13, 189, 0x2E2DBA5D);
@@ -966,7 +982,7 @@ void UIStoreDialog::vfunc_oa0_25(void* a1)
 {
     Unk_StBagCtl* pCtl = FUN_140c544d0(FUN_1422c8e90(m_188));
     if (pCtl != 0)
-        pCtl->vfunc_11((int)(__int64)a1);
+        pCtl->vfunc_11(a1);
 }
 MS2_REPLACE_METHOD_VIA(0x141B10860, UIStoreDialog, UIStatusEventListener, vfunc_oa0_25, 78, 0x9F46CB42);
 
@@ -975,7 +991,7 @@ void UIStoreDialog::vfunc_oa0_26(void* a1)
 {
     Unk_StBagCtl* pCtl = FUN_140c544d0(FUN_1422c8e90(m_188));
     if (pCtl != 0)
-        pCtl->vfunc_12((int)(__int64)a1);
+        pCtl->vfunc_12(a1);
 }
 MS2_REPLACE_METHOD_VIA(0x141B108C0, UIStoreDialog, UIStatusEventListener, vfunc_oa0_26, 78, 0x794CF81A);
 
@@ -1178,20 +1194,21 @@ MS2_REPLACE_METHOD(0x141B11350, UIStoreDialog, FUN_141b11350, 311, 0x41BAD15F);
 // @0x141b11490
 int UIStoreDialog::FUN_141b11490()
 {
-    if (DAT_143ab2d80.FUN_140de27c0() == 0)
-    {
-        PCBase* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
-        if (pPlayer != 0 && pPlayer->FUN_14166ce30() == 0)
-            return 1;
-    }
+    if (DAT_143ab2d80.FUN_140de27c0() != 0)
+        return 0;
+    PCBase* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    if (pPlayer != 0 && pPlayer->FUN_14166ce30() == 0)
+        return 1;
     return 0;
 }
 MS2_REPLACE_METHOD(0x141B11490, UIStoreDialog, FUN_141b11490, 84, 0x951EC76A);
 
 // @0x141b114f0
-bool UIStoreDialog::FUN_141b114f0()
+int UIStoreDialog::FUN_141b114f0()
 {
-    return DAT_143ab2d80.FUN_140de2970() == 0;
+    if (DAT_143ab2d80.FUN_140de2970() != 0)
+        return 0;
+    return 1;
 }
 MS2_REPLACE_METHOD(0x141B114F0, UIStoreDialog, FUN_141b114f0, 39, 0x9C32443A);
 
@@ -1199,7 +1216,7 @@ MS2_REPLACE_METHOD(0x141B114F0, UIStoreDialog, FUN_141b114f0, 39, 0x9C32443A);
 void UIStoreDialog::FUN_141b11520()
 {
     Unk_DictPlatform* pPlatform = FUN_140d86260();
-    if (((char (*)(Unk_DictPlatform*, __int64))(*(void***)pPlatform)[0x140 / 8])(pPlatform, DAT_143ab2d80.FUN_140de2ae0()) == 1)
+    if (pPlatform->vfunc_40(DAT_143ab2d80.FUN_140de2ae0()) == 1)
         DAT_143ab2d80.FUN_140de2ce0();
     else
         FUN_141add1f0(FUN_1403ed2b0());
@@ -1294,8 +1311,9 @@ MS2_REPLACE_METHOD(0x141B11BA0, UIStoreDialog, FUN_141b11ba0, 233, 0xFB122B7D);
 // @0x141b11c90
 bool UIStoreDialog::FUN_141b11c90(int nButton, const CMsgBoxData& box)
 {
-    if (nButton == 0)
-        FUN_141b11520();
+    if (nButton != 0)
+        return true;
+    FUN_141b11520();
     return true;
 }
 MS2_REPLACE_METHOD(0x141B11C90, UIStoreDialog, FUN_141b11c90, 46, 0xE9C7C327);

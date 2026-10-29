@@ -5,11 +5,13 @@
 #define MS2_THIS_FILE ""
 #include "ms2/placeholder/ms2stdafx.h"
 #include "ms2/placeholder/nmobjects.h"
+#include "ms2/placeholder/nmstream.h"
+#include "ms2/placeholder/nmencoder.h"
 #include "ms2/ms2recover.h"
 
 extern int FUN_1415fb700(const void*);
 extern int FUN_1415fb750(void*);
-extern int FUN_1415fb6d0(void*);
+extern int FUN_1415fb6d0(CNMSerializableDecoder*);
 extern void FUN_1415f9990(void*);
 extern void FUN_1415fbe70(void*, unsigned int, const char*);
 extern void* FUN_14156bcb0(void*, void*, void*);
@@ -35,11 +37,8 @@ CNMSendNoteExMsgFunc::CNMSendNoteExMsgFunc(int nType, const char* szText)
 // @0x141596aa0
 unsigned int CNMSendNoteExMsgFunc::EncodeFramed(CNMStream* pStream)
 {
-    alignas(8) unsigned char encoder[0x18];
-    FUN_14156bcb0(encoder, pStream, this);
-    const auto result = Encode(reinterpret_cast<CNMEncoder*>(encoder), pStream);
-    FUN_14156bd50(encoder);
-    return result;
+    CNMSerializableEncoder encoder(pStream, this);
+    return CNMSendNoteExMsgFunc::Encode(reinterpret_cast<CNMEncoder*>(&encoder), pStream);
 }
 
 // MS2-FUNCTIONAL: request format branch and selected serializer slot match; direct calls replace indirect dispatch.
@@ -47,10 +46,8 @@ unsigned int CNMSendNoteExMsgFunc::EncodeFramed(CNMStream* pStream)
 unsigned int CNMSendNoteExMsgFunc::EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream)
 {
     if (m_bFormat == 1)
-        Encode(pEncoder, pStream);
-    else
-        EncodeFramed(pStream);
-    return 0;
+        return CNMSendNoteExMsgFunc::Encode(pEncoder, pStream);
+    return CNMSendNoteExMsgFunc::EncodeFramed(pStream);
 }
 
 // MS2-FUNCTIONAL: base request fields, payload encoding and final marker are recovered.
@@ -72,13 +69,10 @@ unsigned int CNMSendNoteExMsgFunc::Encode(CNMEncoder* pEncoder, CNMStream* pStre
 // @0x141596be0
 unsigned int CNMSendNoteExMsgFunc::DecodeFramed(CNMStream* pStream)
 {
-    alignas(8) unsigned char decoder[0x38];
-    FUN_14156bcb0(decoder, pStream, this);
-    unsigned int result = 0;
-    if (FUN_1415fb750(decoder))
-        result = Decode(reinterpret_cast<CNMSerializableDecoder*>(decoder), pStream);
-    FUN_14156bd50(decoder);
-    return result;
+    CNMSerializableDecoder decoder(pStream, this);
+    if (FUN_1415fb750(&decoder) == 0)
+        return 0;
+    return CNMSendNoteExMsgFunc::Decode(&decoder, pStream);
 }
 
 // MS2-FUNCTIONAL: the decoder's format discriminator selects the same framed or direct path.
@@ -86,10 +80,8 @@ unsigned int CNMSendNoteExMsgFunc::DecodeFramed(CNMStream* pStream)
 unsigned int CNMSendNoteExMsgFunc::DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream)
 {
     if (FUN_1415fb6d0(pDecoder) == 2)
-        DecodeFramed(pStream);
-    else
-        Decode(pDecoder, pStream);
-    return 0;
+        return CNMSendNoteExMsgFunc::DecodeFramed(pStream);
+    return CNMSendNoteExMsgFunc::Decode(pDecoder, pStream);
 }
 
 // MS2-FUNCTIONAL: base decode, request payload branch and final decoder status are recovered.

@@ -57,10 +57,10 @@ public:
     virtual void vfunc_43();                                        // 43 0x141b1a2a0 stage size
     virtual int vfunc_48() { return 0x4e40; }                       // 48 0x141b1d840 UI type id
 
-    bool FUN_141b1a8e0(const CStringW& strScript, const CString& strSound, const CString& strIllust);   // show a plain script page (the 'modifyScript' call)
+    int FUN_141b1a8e0(const CStringW& strScript, const CString& strSound, const CString& strIllust);   // show a plain script page (the 'modifyScript' call)
     void FUN_141b1ac40(Unk_TalkItemList& rItems, const CStringW& strTitle, unsigned nMeso, unsigned nExp, __int64 nMerat);   // reward page
     void FUN_141b1b000(Unk_TalkItemList& rItems, const CStringW& strTitle, const CStringW& strMood, const CStringW& strAffinityExp, int nJackpot);   // maid reward page
-    int FUN_141b1b440(CCinematicContent* pContent, bool bLast);                 // show a page (nonzero: shown)
+    int FUN_141b1b440(CCinematicContent* pContent, int bLast);                  // show a page (nonzero: shown)
     void FUN_141b1b8b0();                                           // clear the page and close the window
     void FUN_141b1b9f0();                                           // the skip button
     void FUN_141b1bad0();                                           // focus up

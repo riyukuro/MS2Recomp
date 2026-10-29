@@ -1,0 +1,10 @@
+158c
+}  // MS2: the exe tail-jumps to Normalize (0x14209c140), not FastNormalize
+.
+157@14s "Fast" ""
+124c
+}  // MS2: the exe normalizes with Normalize (0x14209c140), not FastNormalize
+.
+122c
+    result.Normalize();
+.

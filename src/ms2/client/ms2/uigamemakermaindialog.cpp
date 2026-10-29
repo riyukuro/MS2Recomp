@@ -61,7 +61,6 @@ void UIGameMakerMainDialog::OnLoadComplete()
 MS2_REPLACE_METHOD(0x140C19500, UIGameMakerMainDialog, OnLoadComplete, 24, 0xEDBAA11B);
 
 // @0x140c19520
-// MS2-FUNCTIONAL: behaviour-equivalent; the CFileDialog temporaries (GetPathName / GetFileName) get extra copies in our cl
 int UIGameMakerMainDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs)
 {
     if (UIDialog::vfunc_28(szMethod, pArgs, nArgs))
@@ -69,11 +68,10 @@ int UIGameMakerMainDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
     if (_stricmp("OnOpen", szMethod) == 0) {
         CString strFilter("Lua Script (*.lua)|*.lua|");
         CFileDialog dlg(0, ".lua", 0, 0, strFilter, 0, 0, 1);
-        if (dlg.DoModal() == 1) {
-            m_strPath = dlg.GetPathName();
-            m_30->Invoke("setLabel", dlg.GetFileName());
+        if (dlg.DoModal() != 1)
             return 1;
-        }
+        m_strPath = dlg.GetPathName();
+        m_30->Invoke("setLabel", dlg.GetFileName());
         return 1;
     }
     else if (_stricmp("OnPlay", szMethod) == 0) {
@@ -86,7 +84,7 @@ int UIGameMakerMainDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
         buffer[nLength] = 0;
         COutPacket packet(static_cast<int>(SendOp::Ugd), 0);
         packet.WriteInt16(0x1e);
-        packet.WriteString(CString(&buffer[0]));
+        packet.WriteString(&buffer[0]);
         FUN_140710590(packet);
         return 1;
     }

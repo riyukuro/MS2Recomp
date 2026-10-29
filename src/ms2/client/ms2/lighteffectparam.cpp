@@ -132,19 +132,6 @@ static Unk_Handle1401cd100 s_dat_143adc8e8(0);                                  
 const NiRTTI CLightEffect::ms_RTTI("CLightEffect", &TransitionEffect::ms_RTTI);
 #endif
 
-// "r,g,b" (0..255) attribute -> colour, white when it does not have three components.
-static Unk_LightColor ParseColor(Unk_140165cf0* pNode, const char* pszName)
-{
-    CString str = FUN_140188f50(FUN_14086f4b0(pNode, pszName), 0);
-    ATL::CAtlArray<unsigned int> arr;
-    FUN_140177e10(str, arr, ",");
-    if (arr.GetCount() < 3)
-        return Unk_LightColor(1.0f, 1.0f, 1.0f);
-    float fB = (float)arr[2] / 255.0f;
-    float fG = (float)arr[1] / 255.0f;
-    return Unk_LightColor((float)arr[0] / 255.0f, fG, fB);
-}
-
 // @0x14144b240
 Unk_BitRef::Unk_BitRef(Unk_LightUpdateBits* pBits, unsigned nPos)
     : m_pBits(pBits), m_nPos(nPos)
@@ -191,12 +178,6 @@ Unk_LightColor Unk_LightColor::operator+(const Unk_LightColor& o) const
     return t;
 }
 
-// @0x14144b1d0
-LightEffectTransitionData::LightEffectTransitionData()
-    : m_clrDiffuse(0.0f, 0.0f, 0.0f), m_clrSpecular(0.0f, 0.0f, 0.0f)
-{
-}
-
 // @0x1414494d0
 CLightEffectParam::CLightEffectParam()
     : TransitionEffectParam(9), m_strParentNode(""), m_ptTranslate(0.0f, 0.0f, 0.0f), m_clrDiffuse(0.0f, 0.0f, 0.0f),
@@ -205,8 +186,15 @@ CLightEffectParam::CLightEffectParam()
 {
 }
 
+// "r,g,b" (0..255) attribute -> colour, white when it does not have three components
+// (written out at each use in the exe).
+#define LIGHT_PARSE_COLOR(dst, pNode, pszName, str, arr)                                        \
+    CString str = FUN_140188f50(FUN_14086f4b0(pNode, pszName), 0);                              \
+    FUN_140177e10(str, arr, ",");                                                               \
+    dst = arr.GetCount() < 3 ? Unk_LightColor(1.0f, 1.0f, 1.0f)                                 \
+        : Unk_LightColor((float)arr[0] / 255.0f, (float)arr[1] / 255.0f, (float)arr[2] / 255.0f)
+
 // @0x141449600
-// MS2-FUNCTIONAL: not byte-matched (colour temporaries, inlined bitset proxies)
 void CLightEffectParam::vfunc_1(Unk_140165cf0* pNode)
 {
     CEffectParam::vfunc_1(pNode);
@@ -235,8 +223,10 @@ void CLightEffectParam::vfunc_1(Unk_140165cf0* pNode)
     Unk_140165cf0* pLight = pNode->FUN_140165cf0("light");
     if (pLight != 0)
     {
-        m_clrDiffuse = ParseColor(pLight, "diffuse");
-        m_clrSpecular = ParseColor(pLight, "specular");
+        ATL::CAtlArray<unsigned int> arrDiffuse;
+        ATL::CAtlArray<unsigned int> arrSpecular;
+        LIGHT_PARSE_COLOR(m_clrDiffuse, pLight, "diffuse", strDiffuse, arrDiffuse);
+        LIGHT_PARSE_COLOR(m_clrSpecular, pLight, "specular", strSpecular, arrSpecular);
         FUN_140873360(pLight, "dimmer", m_fDimmer);
         FUN_140873360(pLight, "range", m_fRange);
         FUN_1408730a0(pLight, "usePreDataTransform", m_bUsePreDataTransform);
@@ -252,10 +242,12 @@ void CLightEffectParam::vfunc_1(Unk_140165cf0* pNode)
     float fTime = m_fStartDelay;
     for (Unk_140165cf0* pKey = pNode->FUN_140165cf0("transition"); pKey != 0; pKey = pKey->FUN_140168650("transition"))
     {
-        NiPointer<LightEffectTransitionData> spData(new (efd::MemHint(efd::MemHint::NONE)) LightEffectTransitionData);
+        NiPointer<LightEffectTransitionData> spData(new (efd::MemHint(efd::MemHint::NONE)) LightEffectTransitionData());
         FUN_14185f0b0(spData.operator->(), pKey, &fTime);
-        spData->m_clrDiffuse = ParseColor(pKey, "diffuse");
-        spData->m_clrSpecular = ParseColor(pKey, "specular");
+        ATL::CAtlArray<unsigned int> arrDiffuse;
+        ATL::CAtlArray<unsigned int> arrSpecular;
+        LIGHT_PARSE_COLOR(spData->m_clrDiffuse, pKey, "diffuse", strDiffuse, arrDiffuse);
+        LIGHT_PARSE_COLOR(spData->m_clrSpecular, pKey, "specular", strSpecular, arrSpecular);
         FUN_140873360(pKey, "dimmer", spData->m_fDimmer);
         FUN_140873360(pKey, "range", spData->m_fRange);
         CString strLoop = FUN_140188f50(FUN_14086f4b0(pKey, "loop"), 0);

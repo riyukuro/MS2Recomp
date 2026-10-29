@@ -2,7 +2,7 @@
 // MS2-UNIT: ?\uichaosdpsdialog.cpp
 // MS2-RANGE: 0x140e05460-0x140e09a90 .text$mn
 // MS2-RANGE: 0x1400d6fd0-0x1400d7230 .text$di
-// MS2-FUNCTIONAL: five functions (055b0, 05950, vfunc_28, vfunc_72, the sort comparator) differ in register/stack allocation only; behaviour-equivalent.
+// MS2-FUNCTIONAL: two functions (vfunc_72, the sort comparator) differ in register/stack allocation only; behaviour-equivalent.
 // MS2-PINS-BEGIN tplpin
 // MS2-PIN: ??A?$CAtlArray@V?$MS2Ptr@VCPartyMember@@@@V?$CElementTraits@V?$MS2Ptr@VCPartyMember@@@@@ATL@@@ATL@@QEAAAEAV?$MS2Ptr@VCPartyMember@@@@_K@Z 0x140e09040 ; unique
 // MS2-PIN: ?vfunc_48@UIChaosDPSDialog@@UEAAHXZ 0x140e09160 ; unique
@@ -109,20 +109,22 @@ CString UIChaosDPSDialog::GetTypeName()
 }
 
 // @0x140e055b0
-bool UIChaosDPSDialog::FUN_140e055b0(ASObj& obj, CPartyMember* pMember, unsigned nRank)
+int UIChaosDPSDialog::FUN_140e055b0(ASObj& obj, CPartyMember* pMember, unsigned nRank)
 {
-    if (pMember != 0)
+    if (pMember == 0)
+        return 0;
+    Unk_UserProxy& user = pMember->user;
+    obj.FUN_1409c0d20("rank", nRank);
+    obj.FUN_1409c48f0("level", user.m_34);
+    FUN_140bd0d90(&obj, "job", user.m_40);
+    obj.FUN_1407cbb20("name", user.FUN_1408f19e0());
+    double dMeter = FUN_1407184e0(CBattleRecordManager::GetInstance()->FUN_140a04260(m_nGroup, pMember->FUN_141637bb0(), m_nMode));
+    obj.FUN_140e06d60("meterValue", dMeter);
     {
-        obj.FUN_1409c0d20("rank", nRank);
-        obj.FUN_1409c48f0("level", pMember->user.m_34);
-        FUN_140bd0d90(&obj, "job", pMember->user.m_40);
-        obj.FUN_1407cbb20("name", pMember->user.FUN_1408f19e0());
-        double dMeter = FUN_1407184e0(CBattleRecordManager::GetInstance()->FUN_140a04260(m_nGroup, pMember->FUN_141637bb0(), m_nMode));
-        obj.FUN_140e06d60("meterValue", dMeter);
         CStringW strMeter = CBattleRecordManager::GetInstance()->FUN_140a04830(m_nGroup, pMember->FUN_141637bb0(), m_nMode);
         obj.FUN_1407cbb20("meterText", strMeter);
     }
-    return pMember != 0;
+    return 1;
 }
 
 // @0x140e057d0
@@ -139,50 +141,52 @@ void UIChaosDPSDialog::OnTextToggle()
 // @0x140e05950
 void UIChaosDPSDialog::FUN_140e05950()
 {
-    if (m_30.IsNull() == 0)
+    if (m_30.IsNull())
+        return;
+    CStringW strTime = CBattleRecordManager::GetInstance()->FUN_140a04b00(m_nGroup);
+    static_cast<Unk_ChaosAS*>(m_30.operator->())->FUN_140acd130("setTime", strTime);
+    ATL::CAtlArray<MS2Ptr<CPartyMember> >& members = FUN_1409670d0()->FUN_14162ba30();
+    if (members.IsEmpty())
+        return;
+    m_members.clear();
+    for (unsigned i = 0; i < members.GetCount(); i++)
     {
-        CStringW strTime = CBattleRecordManager::GetInstance()->FUN_140a04b00(m_nGroup);
-        static_cast<Unk_ChaosAS*>(m_30.operator->())->FUN_140acd130("setTime", strTime);
-        ATL::CAtlArray<MS2Ptr<CPartyMember> >& members = FUN_1409670d0()->FUN_14162ba30();
-        if (members.IsEmpty() == 0)
+        CPartyMember* pMember = members[i].get();
+        if (pMember != 0)
         {
-            m_members.clear();
-            for (unsigned i = 0; i < members.GetCount(); i++)
-            {
-                CPartyMember* pMember = members[i].get();
-                if (pMember != 0)
-                    m_members.push_back(MS2Ptr<CPartyMember>(pMember));
-            }
-            s_nSortMode = m_nMode;
-            std::sort(m_members.begin(), m_members.end(), FUN_140e066f0);
-            MS2Ptr<CPartyMember> spLast = m_members[m_members.size() - 1];
-            if (spLast.get() != 0)
-            {
-                double dBottom = FUN_1407184e0(CBattleRecordManager::GetInstance()->FUN_140a04260(m_nGroup, spLast->FUN_141637bb0(), m_nMode));
-                static_cast<Unk_ChaosAS*>(m_30.operator->())->FUN_140e06cc0("setBottomMeterValue", dBottom);
-            }
-            for (unsigned i = 0; i < m_members.size(); i++)
-            {
-                MS2Ptr<CPartyMember> spMember = m_members[i];
-                if (i < 10)
-                {
-                    ASObj obj(2);
-                    if (FUN_140e055b0(obj, spMember.get(), i + 1) != 0)
-                        m_30->Invoke("UpdateMember", Scaleform::GFx::Value(obj.FUN_1422bb870()));
-                }
-                PCBase* pMe = FUN_141bd0cc0(FUN_1403ed2d0());
-                if (pMe != 0)
-                {
-                    __int64 nMyId = FUN_141656a80(pMe);
-                    if (nMyId == spMember->user.m_8)
-                    {
-                        ASObj objMy(2);
-                        if (FUN_140e055b0(objMy, spMember.get(), i + 1) != 0)
-                            m_30->Invoke("SetMyRank", Scaleform::GFx::Value(objMy.FUN_1422bb870()));
-                    }
-                }
-            }
+            MS2Ptr<CPartyMember> spMember(pMember);
+            m_members.push_back(static_cast<MS2Ptr<CPartyMember>&&>(spMember));
         }
+    }
+    s_nSortMode = m_nMode;
+    std::sort(m_members.begin(), m_members.end(), FUN_140e066f0);
+    MS2Ptr<CPartyMember> spLast = m_members[m_members.size() - 1];
+    if (spLast.get() != 0)
+    {
+        double dBottom = FUN_1407184e0(CBattleRecordManager::GetInstance()->FUN_140a04260(m_nGroup, spLast->FUN_141637bb0(), m_nMode));
+        static_cast<Unk_ChaosAS*>(m_30.operator->())->FUN_140e06cc0("setBottomMeterValue", dBottom);
+    }
+    for (unsigned i = 0; i < m_members.size(); i++)
+    {
+        MS2Ptr<CPartyMember> spMember = m_members[i];
+        if (i < 10)
+        {
+            ASObj obj(2);
+            if (FUN_140e055b0(obj, spMember.get(), i + 1))
+                m_30->Invoke("UpdateMember", Scaleform::GFx::Value(obj.FUN_1422bb870()));
+        }
+        do
+        {
+            PCBase* pMe = FUN_141bd0cc0(FUN_1403ed2d0());
+            if (pMe == 0)
+                break;
+            if (FUN_141656a80(pMe) != spMember->user.m_8)
+                break;
+            ASObj objMy(2);
+            if (!FUN_140e055b0(objMy, spMember.get(), i + 1))
+                break;
+            m_30->Invoke("SetMyRank", Scaleform::GFx::Value(objMy.FUN_1422bb870()));
+        } while (0);
     }
 }
 #endif
@@ -230,7 +234,7 @@ int UIChaosDPSDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
         CBattleRecordManager::GetInstance()->FUN_140a03fa0(m_nGroup);
         return 1;
     }
-    if (_stricmp("onNotice", szMethod) == 0)
+    else if (_stricmp("onNotice", szMethod) == 0)
     {
         CMsTime kNow(GetServerTime());
         int nSecond = kNow.GetSecond();
@@ -238,15 +242,16 @@ int UIChaosDPSDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
         int nHour = kNow.GetHour();
         CStringW strHistory = FUN_140c2fcc0(CStringW(L"s_chaosdps_notice_history_prefix"), nHour, nMinute, nSecond, CBattleRecordManager::FUN_140a04bc0(m_nMode));
         CStringW strRow = GetStringCommonByKey(L"s_chaosdps_notice_history_row");
-        for (unsigned i = 0; i < m_members.size() && i <= 9; i++)
+        for (unsigned i = 0; i < m_members.size(); i++)
         {
+            if (i >= 10)
+                break;
             MS2Ptr<CPartyMember> spMember = m_members[i];
-            strHistory.Append(StringFormat((const wchar_t*)strRow, i + 1, spMember->user.FUN_1408f19e0(),
-                CBattleRecordManager::GetInstance()->FUN_140a04830(m_nGroup, spMember->FUN_141637bb0(), m_nMode)));
+            CStringW strMeter = CBattleRecordManager::GetInstance()->FUN_140a04830(m_nGroup, spMember->FUN_141637bb0(), m_nMode);
+            strHistory.Append(StringFormat((const wchar_t*)strRow, i + 1, spMember->user.FUN_1408f19e0(), strMeter));
         }
         int nNow = GetTickCountMs2();
-        int nTime = CBattleRecordManager::GetInstance()->FUN_140a04060(m_nGroup);
-        nTime = nNow - nTime;
+        int nTime = nNow - CBattleRecordManager::GetInstance()->FUN_140a04060(m_nGroup);
         CStringW strTotal;
         FUN_141b70810(nTime, strTotal);
         strHistory.Append(FUN_1405c2690(CStringW(L"s_chaosdps_notice_history_total_time"), strTotal));
@@ -256,10 +261,10 @@ int UIChaosDPSDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
         FUN_141276f80(kChat);
         return 1;
     }
-    if (_stricmp("onTextToggle", szMethod) == 0)
+    else if (_stricmp("onTextToggle", szMethod) == 0)
     {
         m_nMode = m_nMode + 1;
-        if (6 < m_nMode)
+        if (m_nMode >= 7)
             m_nMode = 0;
         OnTextToggle();
         return 1;
@@ -296,12 +301,10 @@ bool FUN_140e066f0(MS2Ptr<CPartyMember> spA, MS2Ptr<CPartyMember> spB)
 {
     double dA = FUN_1407184e0(CBattleRecordManager::GetInstance()->FUN_140a04260(2, spA->FUN_141637bb0(), s_nSortMode));
     double dB = FUN_1407184e0(CBattleRecordManager::GetInstance()->FUN_140a04260(2, spB->FUN_141637bb0(), s_nSortMode));
-    bool bLess;
     if (s_nSortMode == 6)
-        bLess = dA < dB;
+        return dB > dA;
     else
-        bLess = dB < dA;
-    return bLess;
+        return dA > dB;
 }
 #endif
 

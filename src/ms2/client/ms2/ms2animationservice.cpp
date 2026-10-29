@@ -111,6 +111,9 @@ private:
     void* m_pad[6];
 };
 MS2_CHECK_SIZE(Unk_ShList, 0x30);
+// GameObject view: 0x14123c460 returns the actor entity id by value (written through the hidden return pointer).
+class Unk_MasEntityView { public: egf::EntityID FUN_14123c460(); };
+
 // The game's NiStream (the engine's plus a 0x104 byte label buffer at +8; 0x5d0 bytes; ctor 0x141d44620, dtor 0x141d451c0).
 class Unk_KFStream
 {
@@ -251,7 +254,6 @@ efd::AsyncResult MS2AnimationService::OnShutdown()
 }
 
 // Reloads the KF files of the local player when it is a female model (same pass as ReloadMaleKF with the other label).
-// MS2-FUNCTIONAL: player-name handling / local buffer layout differs from the exe
 #ifndef MS2_HOOK_DLL
 // @0x1414a8980
 void MS2AnimationService::ReloadFemaleKF()
@@ -267,8 +269,7 @@ void MS2AnimationService::ReloadFemaleKF()
         FUN_1401d3700(kName);
         if (kName.Find(":female", 0) != -1)
         {
-            egf::EntityID kID;
-            pPlayer->FUN_14123c460(kID);
+            egf::EntityID kID = ((Unk_MasEntityView*)pPlayer)->FUN_14123c460();
             NiActorManager* pActor = GetActorManager(kID);
             if (pActor != 0)
             {
@@ -296,7 +297,6 @@ void MS2AnimationService::ReloadFemaleKF()
 }
 #endif
 
-// MS2-FUNCTIONAL: player-name handling / local buffer layout differs from the exe
 #ifndef MS2_HOOK_DLL
 // @0x1414a8c40
 void MS2AnimationService::ReloadMaleKF()
@@ -312,8 +312,7 @@ void MS2AnimationService::ReloadMaleKF()
         FUN_1401d3700(kName);
         if (kName.Find(":male", 0) != -1)
         {
-            egf::EntityID kID;
-            pPlayer->FUN_14123c460(kID);
+            egf::EntityID kID = ((Unk_MasEntityView*)pPlayer)->FUN_14123c460();
             NiActorManager* pActor = GetActorManager(kID);
             if (pActor != 0)
             {
@@ -371,12 +370,11 @@ MS2_REPLACE_METHOD(0x1414A8F60, MS2AnimationService, UnCacheNpcAssets, 336, 0x51
 
 // Reads the "preload" table of a KF file (<ms2><kfm-name><key text= time=/>...</...></ms2>) into a new array of
 // entries and returns their number. The preload files are cached per path in s_mapXml / s_mapCache.
-// MS2-FUNCTIONAL: 1.8 KB XML reader; CString/temporary layout not byte-identical
 // @0x1414a90c0
 int FUN_1414a90c0(NiString kPath, NiString kAnim, Unk_PreloadEntry** ppEntries)
 {
-    int nCount = 0;
     Unk_XmlNode* pRoot = 0;
+    int nCount = 0;
     if (Unk_LockGuard kGuard = s_lock) {}
     else
     {
@@ -385,27 +383,29 @@ int FUN_1414a90c0(NiString kPath, NiString kAnim, Unk_PreloadEntry** ppEntries)
             MS2Ptr<CCacheData> spCache(0);
             NiString kKey(kPath);
             kKey.Replace("\\", "/");
-            if (!s_mapCache.Lookup(kKey, spCache))
+            if (s_mapCache.Lookup(kKey, spCache))
             {
-                CCacheData* pNew = new CCacheData();
-                spCache.AssignRaw(pNew);
+                if (FUN_1401d1320(spCache.get()))
+                {
+                    spCache.get()->FUN_1401d1160(CString((const char*)kKey));
+                    s_nReloading = 1;
+                }
+            }
+            else
+            {
+                spCache.AssignRaw(new CCacheData());
                 spCache.get()->FUN_1401d1160(CString((const char*)kKey));
                 s_mapCache.SetAt(kKey, spCache);
-            }
-            else if (FUN_1401d1320(spCache.get()))
-            {
-                spCache.get()->FUN_1401d1160(CString((const char*)kKey));
-                s_nReloading = 1;
             }
         }
         TiXmlDocument kDoc;
         XmlDocMap::iterator it = s_mapXml.find(kPath);
         if (it != s_mapXml.end())
         {
-            if (s_nReloading == 0)
-                pRoot = FUN_140165cf0(&it->second, "ms2");
-            else
+            if (s_nReloading != 0)
                 s_mapXml.erase(it);
+            else
+                pRoot = FUN_140165cf0(&it->second, "ms2");
         }
         if (pRoot == 0)
         {
@@ -428,9 +428,10 @@ int FUN_1414a90c0(NiString kPath, NiString kAnim, Unk_PreloadEntry** ppEntries)
                 for (Unk_XmlNode* pKey = pAnim->FUN_140165cf0("key"); pKey != 0; pKey = pKey->FUN_140168650("key"))
                 {
                     CString kText = FUN_140188f50(pKey->FUN_14086f4b0("text"), 0);
-                    (*ppEntries)[nIndex].SetName(NiFixedString(pKey->FUN_14086f4b0("text")));
+                    (*ppEntries)[nIndex].SetName(pKey->FUN_14086f4b0("text"));
                     (*ppEntries)[nIndex].SetTime((float)atof(pKey->FUN_14086f4b0("time")));
-                    if (pKey->FUN_14086f4b0("preload") == 0)
+                    const char* szPreload = pKey->FUN_14086f4b0("preload");
+                    if (szPreload == 0)
                     {
                         pKey->FUN_140873ca0("preload", 1);
                         if (kText.Find("effect_", 0) == 0)
@@ -474,14 +475,14 @@ bool MS2AnimationService::FUN_1414a9810(Unk_AssetEvent* pEvent)
 }
 
 // @0x1414a9940
-size_t MS2AnimationService::GetAssetCount()
+efd::UInt32 MS2AnimationService::GetAssetCount()
 {
     return m_assetsByPhysicalID.size();
 }
 MS2_REPLACE_METHOD(0x1414A9940, MS2AnimationService, GetAssetCount, 31, 0x38BAB10B);
 
 // @0x1414a9970
-size_t MS2AnimationService::GetActorCount()
+efd::UInt32 MS2AnimationService::GetActorCount()
 {
     return m_entityData.size();
 }
@@ -501,7 +502,7 @@ egmAnimation::KFMCache* MS2AnimationService::GetKFMCache()
 }
 
 // @0x1414a99a0
-size_t MS2AnimationService::GetKFMCacheCount()
+efd::UInt32 MS2AnimationService::GetKFMCacheCount()
 {
     if (GetKFMCache())
         return static_cast<Unk_KFMCacheView*>(GetKFMCache())->FUN_1414ac840();
@@ -567,10 +568,6 @@ MS2KFMCache::MS2KFMCache()
 {
 }
 
-// MS2-FUNCTIONAL: exe omits the vftable resets in the destructor
-// @0x1414abca0
-MS2KFMCache::~MS2KFMCache()
-{
-}
+// ~MS2KFMCache (0x1414abca0) is implicit: an explicit empty body keeps a dead vptr store the exe does not have.
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142cb2bf0-0x142cb2d20 .text$yd

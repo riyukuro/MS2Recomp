@@ -45,14 +45,16 @@ public:
         : m_nTotal(0)
     {
     }
-    // 0x1416f5530
+    // 0x1416f5530 (indexes the map with the caller's key slot, no conversion temporary)
     void Set(const unsigned int& nKey, const unsigned int& nWeight)
     {
-        m_mapWeights[nKey] = nWeight;
+        m_mapWeights[reinterpret_cast<const DWORD&>(nKey)] = nWeight;
     }
     bool Build();                                                   // 0x1416f5250
     const unsigned int* Pick(Unk_Random& kRandom);                  // 0x1416f55b0 NULL when every weight is 0
-    typedef std::map<unsigned int, unsigned int> WeightMap;
+    // map<DWORD, int>: the exe's picker uses that instantiation's copies (ctor 0x14025bf00, dtor 0x14025c810,
+    // operator[] 0x1403e89a0, which calls the DWORD-keyed try_emplace 0x1403e1410)
+    typedef std::map<DWORD, int> WeightMap;
 public:
     Unk_Random m_kRandom;                           // +0x00 (unused here)
     WeightMap m_mapWeights;                                         // +0x40 key -> weight

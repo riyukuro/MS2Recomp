@@ -10,6 +10,7 @@
 #include <atlcoll.h>
 
 class Unk_UpperEvt;
+class UIEntityEventListener;
 class CProxyGameObject;
 template <class T> class MS2Ptr;
 
@@ -25,6 +26,7 @@ public:
     virtual void vfunc_5(MS2Ptr<CProxyGameObject> p, int n);
 protected:
     MS2_LAYOUT_FRIEND;
-    ATL::CAtlArray<void*> m_listeners;                      // +0x08 the registered UIEntityEventListener*
+    // A typed element (not void*): ATL passes non-primitive elements to Add by const& (lea rdx), as the exe does.
+    ATL::CAtlArray<UIEntityEventListener*> m_listeners;     // +0x08 the registered listeners
 };
 MS2_CHECK_SIZE(UIEntityEventDispatcher, 0x28);

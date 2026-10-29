@@ -26,6 +26,8 @@
 #include "ms2/placeholder/ms2stdafx.h"
 #include "randomtargeteffect.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
+#include "ms2/placeholder/effectquery.h"
+#include <egf/Entity.h>
 #include <NiNode.h>
 #include <NiAVObject.h>
 #include <NiTransform.h>
@@ -33,13 +35,14 @@
 #include "hook/ms2hook.h"
 
 // ---- exe callees (recovered elsewhere / not yet) ----
-extern char DAT_143afa4d8;                                  // shadow-node table (see FUN_14098d8d0)
+extern char DAT_143afa4d8;                                  // NiNode::ms_RTTI
 unsigned FUN_140869420();                                   // GetTickCount-like millisecond clock
 bool FUN_14028d470(float a, float b);                       // nearly equal
 int FUN_14123c580(void* pOwner);                            // owner -> object id
-void* FUN_14123c460(void* pOwner, void* pTmp);
-void* FUN_141b6ef70(void* p);
-void* FUN_14098d8d0(void* pTable, void* pKey);              // table lookup
+// The owner game object: its entity id (by value) and the scene object of an entity id.
+class Unk_RteOwner { public: egf::EntityID FUN_14123c460(); };
+void* FUN_141b6ef70(egf::EntityID kId);
+void* FUN_14098d8d0(void* pRtti, void* pObject);            // NiObject::DynamicCast
 void FUN_140a0b2a0(void* pNode);                            // detach the node from its parent
 void FUN_14098b3e0(void* pNode, float fScale, int nFlags);  // apply a uniform scale to the node
 void* FUN_140a0b000(void* pNode);                           // parent
@@ -49,25 +52,12 @@ class Unk_1403ed280
 {
 public:
     void* FUN_1411a6b10();                                  // the effect root NiNode
-    int FUN_1411a49c0(struct Unk_EffectRequest* pRequest);  // spawn, returns the handle
+    int FUN_1411a49c0(NoticeMessage* pRequest);             // spawn, returns the handle
     void FUN_1411a6060(int nHandle);                        // release
     void FUN_1411a68f0(int nHandle, bool bVisible);
 };
 Unk_1403ed280* FUN_1403ed280();
 
-// Spawn request handed to the effect manager (0x78 bytes; only the leading CString, the owner id at +8 and the
-// node smart pointer at +0x10 are proven). Constructed / destroyed by two out-of-line helpers.
-struct Unk_EffectRequest
-{
-    CString& Name() { return *reinterpret_cast<CString*>(m_raw); }
-    int& OwnerId() { return *reinterpret_cast<int*>(m_raw + 8); }
-    void* AttachSlot() { return m_raw + 0x10; }
-    char m_raw[0x78];
-};
-void FUN_140a52ef0(Unk_EffectRequest* p);                   // construct (CString name, ...)
-void FUN_140a53190(Unk_EffectRequest* p, int nOwnerId);     // set owner
-void FUN_1405a89e0(Unk_EffectRequest* p);                   // destroy
-void FUN_1409fabf0(void* pSmartPointer, void* pNode);       // efd::SmartPointer<NiAVObject>::operator=
 
 // The world service singleton (0x1403ed2d0, typed Unk_AttendAvatarMgr in the symbol table) and its object maps.
 class Unk_AttendAvatarMgr;
@@ -114,30 +104,24 @@ CRandomTargetEffect::~CRandomTargetEffect()
 }
 
 // @0x140aaaea0
-// MS2-FUNCTIONAL: effect-request struct (0x78) and NiNode allocation are only partly recovered
 void CRandomTargetEffect::Create(CString strName)
 {
     if (m_nEffectId != 0)
         Destroy();
 
-    NiNode* pNode = NiNew NiNode(0);
-    Unk_NodePtr spNode(pNode);
+    Unk_NodePtr spNode(NiNew NiNode(0));
     NiNode* pRoot = static_cast<NiNode*>(FUN_1403ed280()->FUN_1411a6b10());
     pRoot->AttachChild(static_cast<NiAVObject*>(FUN_1409475d0(&spNode)), false);
-
-    Unk_EffectRequest kRequest;
-    FUN_140a52ef0(&kRequest);
-    kRequest.Name() = strName;
-    kRequest.OwnerId() = 0;
-    FUN_140a53190(&kRequest, FUN_14123c580(m_pOwner));
-    FUN_1409fabf0(kRequest.AttachSlot(), FUN_1409475d0(&spNode));
-
+    NoticeMessage kRequest;
+    kRequest.m_strName = strName;
+    kRequest.m_nObject = 0;
+    kRequest.SetActor(FUN_14123c580(m_pOwner));
+    kRequest.m_spNode = static_cast<NiAVObject*>(FUN_1409475d0(&spNode));
     m_nEffectId = FUN_1403ed280()->FUN_1411a49c0(&kRequest);
     m_spNode = spNode;
     FUN_14098b3e0(FUN_1409475d0(&spNode), m_fScale, 0);
     UpdatePosition();
     SetVisible(false);
-    FUN_1405a89e0(&kRequest);
 }
 
 // @0x140aab080
@@ -151,28 +135,25 @@ void CRandomTargetEffect::Destroy()
 }
 
 // @0x140aab0f0
-// MS2-FUNCTIONAL: transform temporaries; GetWorldTransform is an out-of-line call in the exe
 void CRandomTargetEffect::UpdatePosition()
 {
-    if (m_nEffectId == 0 || m_spNode.FUN_1409f77a0(0))
+    if (m_nEffectId == 0)
+        return;
+    if (m_spNode.FUN_1409f77a0(0))
         return;
 
-    char aTmp[8];
-    void* pKey = FUN_141b6ef70(FUN_14123c460(m_pOwner, aTmp));
-    Unk_NodePtr spTarget(FUN_14098d8d0(&DAT_143afa4d8, pKey));
+    Unk_NodePtr spTarget(FUN_14098d8d0(&DAT_143afa4d8, FUN_141b6ef70(static_cast<Unk_RteOwner*>(m_pOwner)->FUN_14123c460())));
     if (spTarget.FUN_1409f77a0(0))
         return;
 
-    NiAVObject* pTarget = static_cast<NiAVObject*>(FUN_1409475f0(&spTarget));
-    NiAVObject* pNode = static_cast<NiAVObject*>(FUN_1409475f0(&m_spNode));
-    NiTransform kTarget = pTarget->GetWorldTransform();
-    NiTransform kWorld = pNode->GetWorldTransform();
+    NiTransform kTarget = static_cast<NiAVObject*>(FUN_1409475f0(&spTarget))->GetWorldTransform();
+    NiTransform kWorld = static_cast<NiAVObject*>(FUN_1409475f0(&m_spNode))->GetWorldTransform();
     kWorld = kTarget;
     kWorld.m_Translate.z += 150.0f;
-    pNode->SetWorldTranslate(kWorld.m_Translate);
-    pNode->SetWorldRotate(kWorld.m_Rotate);
-    pNode->SetWorldScale(kWorld.m_fScale);
-    pNode->SetLocalFromWorldTransform(kWorld);
+    static_cast<NiAVObject*>(FUN_1409475f0(&m_spNode))->SetWorldTranslate(kWorld.m_Translate);
+    static_cast<NiAVObject*>(FUN_1409475f0(&m_spNode))->SetWorldRotate(kWorld.m_Rotate);
+    static_cast<NiAVObject*>(FUN_1409475f0(&m_spNode))->SetWorldScale(kWorld.m_fScale);
+    static_cast<NiAVObject*>(FUN_1409475f0(&m_spNode))->SetLocalFromWorldTransform(kWorld);
 }
 
 // @0x140aab2e0
@@ -342,13 +323,12 @@ void CRandomTargetEffectController::Update()
 }
 
 // @0x140aabd10
-// MS2-FUNCTIONAL: world-object map value type is a game smart pointer in the exe; modelled with ATL::CComPtr
 MS2Ptr<CRandomTargetEffect> CRandomTargetEffectController::FindByPlayerMap(unsigned nId)
 {
     MS2Ptr<CRandomTargetEffect> spResult(0);
     RtePlayerMap* pMap = reinterpret_cast<RtePlayerMap*>(
         reinterpret_cast<WorldService*>(FUN_1403ed2d0())->FUN_141bd36b0());
-    ATL::CComPtr<Unk_RtePlayer> spObj;
+    ATL::CComPtr<Unk_RtePlayer> spObj(NULL);
     pMap->Lookup(nId, spObj);
     if (spObj)
         spResult.AssignRaw(spObj->GetEffectPtr());
@@ -356,13 +336,12 @@ MS2Ptr<CRandomTargetEffect> CRandomTargetEffectController::FindByPlayerMap(unsig
 }
 
 // @0x140aabde0
-// MS2-FUNCTIONAL: world-object map value type is a game smart pointer in the exe; modelled with ATL::CComPtr
 MS2Ptr<CRandomTargetEffect> CRandomTargetEffectController::FindByNpcMap(unsigned nId)
 {
     MS2Ptr<CRandomTargetEffect> spResult(0);
     RteNpcMap* pMap = reinterpret_cast<RteNpcMap*>(
         reinterpret_cast<WorldService*>(FUN_1403ed2d0())->FUN_141bd36d0());
-    ATL::CComPtr<Unk_UpperNpc> spObj;
+    ATL::CComPtr<Unk_UpperNpc> spObj(NULL);
     pMap->Lookup(nId, spObj);
     if (spObj)
         spResult = spObj->GetEffect();

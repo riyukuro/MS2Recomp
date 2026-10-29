@@ -69,14 +69,12 @@ CStoryBookTable::~CStoryBookTable()
 {
 }
 
-// MS2-FUNCTIONAL: exe hops the c_str / text pointer args through rcx (mov rcx,[x]; mov r8,rcx); no source form found
 // @0x14180bd40
 void CStoryBookTable::Load()
 {
     CString strPath = FUN_14071a5b0("Table", "storybook.xml");
     TiXmlDocument doc;
-    const char* pszPath = strPath;
-    if (FUN_140166420()->FUN_1403974b0(&doc, pszPath, 0, true, false) == 0)
+    if (FUN_140166420()->FUN_1403974b0(&doc, (const char*)strPath, 0, true, false) == 0)
         return;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
@@ -119,8 +117,7 @@ void CStoryBookTable::Load()
                 CString strDir = FUN_140536a50("StoryBook/{0}", arrPath[0]);
                 spPage->m_strImage = FUN_140cc2ad0(strDir, arrPath[1]);
             }
-            CStringW* pText = &spPage->m_strText;
-            FUN_1403b4750()->FUN_1416fb380(pText);
+            FUN_1403b4750()->FUN_1416fb380(&spPage->m_strText);
             spData->m_pages.SetAt(nNumber, spPage);
             if (nNumber > spData->m_nMaxPage)
                 spData->m_nMaxPage = nNumber;

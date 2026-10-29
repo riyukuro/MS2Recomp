@@ -131,16 +131,10 @@ struct Unk_MpSkillSet { char m_pad_00[0x18]; int m_18; int m_1c; int m_20; };
 class Unk_MpSkillSetPtr
 {
 public:
+    Unk_MpSkillSetPtr(const Unk_MpSkillSetPtr& o);                      // 0x14176ca20
     ~Unk_MpSkillSetPtr();                                               // 0x14080a3e0
     Unk_MpSkillSet* get() const;                                        // 0x140932d80
     Unk_MpSkillSet* operator->() const;                                 // 0x14080a4b0
-    void* m_0;
-    Unk_MpSkillSet* m_p;
-};
-class Unk_MpSkillSetArg
-{
-public:
-    Unk_MpSkillSetArg(const Unk_MpSkillSetPtr& o);                      // 0x14176ca20
     void* m_0;
     Unk_MpSkillSet* m_p;
 };
@@ -156,7 +150,7 @@ public:
     __int64 FUN_14142d190(int nKey);
     bool FUN_14142e030(int nSlot, Unk_MpSlotData& data);
     int FUN_14142e090(unsigned nItemId, __int64 nUid);
-    void FUN_14142e8c0(Unk_MpSkillSetArg sp);
+    void FUN_14142e8c0(Unk_MpSkillSetPtr sp);
     void FUN_14142f1c0(int nItemId, int nId, __int64 nUid);
     void FUN_14142fc10(CString strName);
     void FUN_1414294e0(int nKey);
@@ -216,6 +210,7 @@ struct Unk_MpMountRow
 class Unk_AdvMountPtr
 {
 public:
+    Unk_AdvMountPtr(const Unk_AdvMountPtr& o);
     ~Unk_AdvMountPtr();                                                 // 0x140788ed0
     Unk_AdvMountRow* FUN_1407895d0() const;                             // operator->
     void* m_pad_00;
@@ -240,6 +235,9 @@ struct Unk_MpCamData
     Unk_MpCamData();                                                    // 0x140cb13b0
     NiPoint3 m_eye;
     NiPoint3 m_target;
+    float m_18, m_1c, m_20, m_24;                                       // the ctor zeroes +0x18..+0x24
+    int m_28;                                                           // 1
+    int m_2c;                                                           // 0
 };
 class Unk_MpCamera
 {
@@ -314,6 +312,7 @@ class Unk_MpState
 public:
     ~Unk_MpState();                                                     // 0x14063e530
     bool FUN_14063e9f0(int n);
+    void* m_00;                                                         // an MS2Ptr: 16 bytes, m_p at +8
     void* m_p;
 };
 class Unk_MpStateHolder { public: Unk_MpState FUN_140639bb0(); };
@@ -371,7 +370,7 @@ public:
     char m_pad_00[0x18];
     float m_18;                                                         // +0x18 last notified percentage
 };
-Unk_MpAchieveRow* FUN_140159a80(Unk_MpAchieveRowPtr* p);
+Unk_MpAchieveRow* FUN_140159a80(const Unk_MpAchieveRowPtr& p);
 
 class CItemData;
 class CItem
@@ -746,7 +745,6 @@ int UIMainPlayerInfo::vfunc_13()
 }
 
 // @0x1419efa60
-// MS2-FUNCTIONAL: the exe frame is 0x10 larger (one more temp around the TPtr argument copy); source form not found
 void UIMainPlayerInfo::vfunc_25(void* p1, TPtr<Unk_UISwfEntity_25> p2, void* p3, void* p4)
 {
     if (p2.get() == 0 || p3 == 0)
@@ -758,8 +756,8 @@ void UIMainPlayerInfo::vfunc_25(void* p1, TPtr<Unk_UISwfEntity_25> p2, void* p3,
         m_camera = m_ridee->FUN_1418b9bc0();
         Unk_AdvMountPtr spMount = m_ridee->FUN_1418be810();
         Unk_MpCamData data;
-        data.m_target = NiPoint3(MP_ROW(spMount)->m_250);
-        data.m_eye = NiPoint3(MP_ROW(spMount)->m_25c);
+        data.m_target = MP_ROW(spMount)->m_250;
+        data.m_eye = MP_ROW(spMount)->m_25c;
         m_camera->vfunc_13(data);
     }
 }
@@ -878,13 +876,14 @@ void UIMainPlayerInfo::vfunc_oa0_27(int a1, int a2)
 }
 
 // @0x1419f0460
-// MS2-FUNCTIONAL: frame layout (rsi/rdi saved, ASObj/holder temps placed differently).
 void UIMainPlayerInfo::vfunc_oa0_20(int bRiding)
 {
     if (m_playerInfo == 0)
         return;
     Unk_MpPC* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
-    if (pPc == 0 || FUN_1419f16b0() == 0)
+    if (pPc == 0)
+        return;
+    if (FUN_1419f16b0() == 0)
         return;
     FUN_1419f32f0();
     m_ridee = 0;
@@ -895,30 +894,29 @@ void UIMainPlayerInfo::vfunc_oa0_20(int bRiding)
     obj.FUN_1409c1180("maxHP", pPc->FUN_141670a30(4));
     obj.FUN_1409c1180("curSP", pPc->FUN_141670a00(7));
     obj.FUN_1409c1180("maxSP", pPc->FUN_141670a30(7));
-    if (bRiding != 0)
+    do
     {
+        if (bRiding == 0)
+            break;
         Unk_AdvHolderRef holder(pPc->FUN_1416764a0());
-        if (!FUN_141020b20(&holder, 0))
-        {
-            bool bNoAvatar = MP_ROW(holder.FUN_140975bc0()->FUN_141707750())->m_68 == 0;
-            if (!bNoAvatar)
-            {
-                nMode = 1;
-                obj.FUN_1407cb9c0("rideOff", MP_ROW(holder.FUN_140975bc0()->FUN_141707750())->m_64);
-                obj.FUN_1407cbb20("rideeName", FUN_1401a9d70()->FUN_141811980(0x31, MP_ROW(holder.FUN_140975bc0()->FUN_141707750())->m_30));
-                m_ridee.AssignRaw(new UIAvatarRidee(holder.FUN_140975bc0()->FUN_141707750()));
-                m_ridee->vfunc_1(0);
-            }
-        }
-    }
-    if (m_nSlotMode != nMode)
-    {
-        m_nSlotMode = nMode;
-        FUN_1419f18f0();
-        m_playerInfo->Invoke("onRiding", obj);
-        if (m_nSlotMode == 1)
-            FUN_1419f3280();
-    }
+        if (FUN_141020b20(&holder, 0))
+            break;
+        bool bNoAvatar = MP_ROW(holder.FUN_140975bc0()->FUN_141707750())->m_68 == 0;
+        if (bNoAvatar)
+            break;
+        nMode = 1;
+        obj.FUN_1407cb9c0("rideOff", MP_ROW(holder.FUN_140975bc0()->FUN_141707750())->m_64);
+        obj.FUN_1407cbb20("rideeName", FUN_1401a9d70()->FUN_141811980(0x31, MP_ROW(holder.FUN_140975bc0()->FUN_141707750())->m_30));
+        m_ridee.AssignRaw(new UIAvatarRidee(holder.FUN_140975bc0()->FUN_141707750()));
+        m_ridee->vfunc_1(0);
+    } while (0);
+    if (m_nSlotMode == nMode)
+        return;
+    m_nSlotMode = nMode;
+    FUN_1419f18f0();
+    m_playerInfo->Invoke("onRiding", obj);
+    if (m_nSlotMode == 1)
+        FUN_1419f3280();
 }
 
 // @0x1419f0960
@@ -971,20 +969,23 @@ void UIMainPlayerInfo::vfunc_33(int nClassId, int)
 }
 
 // @0x1419f0bb0
-// MS2-FUNCTIONAL: the exe keeps the row temp alive through a cleanup flag (local_d0 & 1); ternary spelling not found
 void UIMainPlayerInfo::FUN_1419f0bb0(Unk_MpAchieve* pAchieve)
 {
-    if (FUN_1409331e0()->IsRestricted(0x16) != 0 || pAchieve->FUN_14015a280() != 2)
+    if (FUN_1409331e0()->IsRestricted(0x16) != 0)
+        return;
+    if (pAchieve->FUN_14015a280() != 2)
         return;
     float fPercent = (float)pAchieve->FUN_140941790() / (float)pAchieve->FUN_140158ef0() * 100.0f;
-    if (fPercent < 99.0f)
+    if (fPercent >= 99.0f)
     {
-        float fStep = (float)(int)((float)(int)fPercent - pAchieve->m_18);
-        bool bNotify;
-        {
-            Unk_MpAchieveRowPtr row = pAchieve->FUN_1409398d0();
-            bNotify = !(fStep < (float)FUN_140159a80(&row)->m_50 || fPercent < 1.0f);
-        }
+        CStringW strMessage = FUN_14028dfa0(CStringW(L"s_achieve_progress_notify_float"), FUN_14093b970(pAchieve->FUN_1409399f0()), fPercent);
+        FUN_1419f0ef0(strMessage, "achieve");
+    }
+    else
+    {
+        int nStep = (float)(int)fPercent - pAchieve->m_18;
+        float fStep = nStep;
+        bool bNotify = fStep >= (float)FUN_140159a80(pAchieve->FUN_1409398d0())->m_50 && fPercent >= 1.0f;
         if (bNotify)
         {
             pAchieve->m_18 = fPercent;
@@ -992,11 +993,6 @@ void UIMainPlayerInfo::FUN_1419f0bb0(Unk_MpAchieve* pAchieve)
             CStringW strMessage = FUN_140bfa7f0(CStringW(L"s_achieve_progress_notify_integer"), FUN_14093b970(pAchieve->FUN_1409399f0()), nPercent);
             FUN_1419f0ef0(strMessage, "achieve");
         }
-    }
-    else
-    {
-        CStringW strMessage = FUN_14028dfa0(CStringW(L"s_achieve_progress_notify_float"), FUN_14093b970(pAchieve->FUN_1409399f0()), fPercent);
-        FUN_1419f0ef0(strMessage, "achieve");
     }
 }
 
@@ -1148,26 +1144,20 @@ void UIMainPlayerInfo::FUN_1419f1880(int bBattle)
 }
 
 // @0x1419f18f0
-// MS2-FUNCTIONAL: the exe copies the GetChild result through two more temps (frame 0x20 larger); form not found
 void UIMainPlayerInfo::FUN_1419f18f0()
 {
-    MS2Ptr<ASUIComponent> spSlot = GetChild<ASUIComponent>("m_slot");
-    if (spSlot.get() != 0)
+    if (MS2Ptr<ASUIComponent> spSlot = GetChild<ASUIComponent>("m_slot"))
         spSlot->Invoke("onSlotModeChange", m_nSlotMode);
     FUN_1419f37f0(1);
 }
 
 // @0x1419f19c0
-// MS2-FUNCTIONAL: frame layout (rsi/rdi saved, one more EH state in the exe).
 void UIMainPlayerInfo::FUN_1419f19c0()
 {
     FUN_1417634a0(FUN_1419f31f0());
     FUN_1417633f0(FUN_1419f31f0(), 0x19);
-    {
-        MS2Ptr<ASUIComponent> spSlot = GetChild<ASUIComponent>("m_slot");
-        if (spSlot.get() != 0)
-            spSlot->Invoke("updateBindSlot", FUN_1409a8b10()->FUN_140a58500()->m_bExpand);
-    }
+    if (MS2Ptr<ASUIComponent> spSlot = GetChild<ASUIComponent>("m_slot"))
+        spSlot->Invoke("updateBindSlot", FUN_1409a8b10()->FUN_140a58500()->m_bExpand);
     Unk_MpPC* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pPc == 0)
         return;
@@ -1177,7 +1167,7 @@ void UIMainPlayerInfo::FUN_1419f19c0()
         FUN_1409331f0()->FUN_14142e8c0(spSet);
         if (spSet->m_20 == 0)
         {
-            CString strName = StringFormat("SkillSet{0}_{1}", spSet->m_18, spSet->m_1c);
+            CString strName = Unk_SocketFormat("SkillSet{0}_{1}", spSet->m_18, spSet->m_1c);
             FUN_1409331f0()->FUN_14142fc10(strName);
         }
     }
@@ -1268,12 +1258,12 @@ void UIMainPlayerInfo::FUN_1419f21b0()
 }
 
 // @0x1419f22a0
-// MS2-FUNCTIONAL: the exe spills the key-table result to a temp before the subtraction (frame 0x10 larger); form not found
 void UIMainPlayerInfo::FUN_1419f22a0(int nKey, int bPress)
 {
     if (m_30.IsNull())
         return;
-    int nIndex = FUN_1409331f0()->FUN_14142d190(nKey) - 800001;
+    __int64 nSlotKey = FUN_1409331f0()->FUN_14142d190(nKey);
+    int nIndex = nSlotKey - 800001;
     int nFirst = nIndex * 8;
     ASObj obj(2);
     obj.FUN_1407cb9c0("index", nIndex);
@@ -1352,7 +1342,6 @@ void UIMainPlayerInfo::FUN_1419f2720(bool bHideAndSeek)
 }
 
 // @0x1419f27e0
-// MS2-FUNCTIONAL: the exe reloads the item id through ecx for the key-table call (an argument conversion); type not found
 Unk_MpSlot* UIMainPlayerInfo::FUN_1419f27e0(CItem* pItem)
 {
     if (pItem == 0)
@@ -1365,8 +1354,7 @@ Unk_MpSlot* UIMainPlayerInfo::FUN_1419f27e0(CItem* pItem)
         pSlot = pBar->FUN_141763710(pItem->FUN_1405276c0());
     if (pSlot == 0)
     {
-        int nItemId = FUN_14053dc20(pItem->FUN_140527840());
-        int nSlot = FUN_1409331f0()->FUN_14142e090(nItemId, nUid);
+        int nSlot = FUN_1409331f0()->FUN_14142e090(FUN_14053dc20(pItem->FUN_140527840()), nUid);
         pSlot = FUN_1419f2930(nSlot);
     }
     return pSlot;
@@ -1485,7 +1473,6 @@ void UIMainPlayerInfo::FUN_1419f2e60(CItem* pItem)
 }
 
 // @0x1419f2eb0
-// MS2-FUNCTIONAL: the exe places the state temp above the AS objects (frame 0x10 smaller); local order not found
 void UIMainPlayerInfo::FUN_1419f2eb0()
 {
     Unk_MpPC* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();

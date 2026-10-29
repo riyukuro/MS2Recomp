@@ -197,14 +197,11 @@ void UIMassiveEvent::FUN_1419f5e90(CInPacket* pPacket)
     case 0:
         FUN_1419f5fc0(pPacket);
         break;
-    case 1:
-        FUN_1419f6240(pPacket);
-        break;
-    case 2:
-        FUN_1419f66a0(pPacket);
-        break;
     case 3:
         FUN_1419f6180(pPacket);
+        break;
+    case 1:
+        FUN_1419f6240(pPacket);
         break;
     case 4:
         FUN_1419f63d0(pPacket);
@@ -217,6 +214,9 @@ void UIMassiveEvent::FUN_1419f5e90(CInPacket* pPacket)
         break;
     case 7:
         FUN_1419f60a0(pPacket);
+        break;
+    case 2:
+        FUN_1419f66a0(pPacket);
         break;
     case 8:
         FUN_1419f6790(pPacket);
@@ -313,7 +313,6 @@ void UIMassiveEvent::FUN_1419f6790(CInPacket* pPacket)
     FUN_1419f6bc0(GetStringCommon(0x974), 0, nDuration, 2);
 }
 
-// MS2-FUNCTIONAL: the exe's case 2 arm ends in two jmps (+10 bytes); no source form found
 // @0x1419f6810
 void UIMassiveEvent::FUN_1419f6810(int nSubType, CStringW& strText, int nDuration)
 {
@@ -332,6 +331,10 @@ void UIMassiveEvent::FUN_1419f6810(int nSubType, CStringW& strText, int nDuratio
         FUN_141276180(s_strBattleWin, "");
         FUN_140a94350()->vfunc_10(9);
         break;
+    case 3:
+        break;
+    case 4:
+        break;
     case 5:
         FUN_141276180(s_strBattleWin, "");
         FUN_140a94350()->vfunc_10(9);
@@ -343,15 +346,13 @@ void UIMassiveEvent::FUN_1419f6810(int nSubType, CStringW& strText, int nDuratio
     }
 }
 
-// MS2-FUNCTIONAL: the exe copies the text before evaluating m_30.operator->() for the member call; mine evaluates the object first
 // @0x1419f6a70
 void UIMassiveEvent::FUN_1419f6a70(int nSubType, CStringW strText, int nDuration)
 {
     if (m_30.get() != 0)
     {
         strText.Replace(L"\\n", L"\n");
-        ASObj* pObj = static_cast<ASObj*>(m_30.operator->());
-        pObj->FUN_1407cb9c0("m_subType", nSubType);
+        static_cast<ASObj*>(m_30.operator->())->FUN_1407cb9c0("m_subType", nSubType);
         static_cast<ASObj*>(m_30.operator->())->FUN_1407cbb20("m_text", CStringW(strText));
         static_cast<ASObj*>(m_30.operator->())->FUN_1407cb9c0("m_duration", nDuration);
         m_30->Invoke("clearAndSetPanel");

@@ -756,13 +756,9 @@ int MessengerData::TalkTab::FUN_141482880(Unk_MdXml* pXml)
     pXml->FUN_140873ca0("close", m_nClose);
     pXml->FUN_140873ca0("detach", m_nDetach);
     pXml->FUN_140873ca0("additive", m_nAdditive);
-    bool bEmpty = m_strName.IsEmpty();
-    int nResult;
-    if (bEmpty)
-        nResult = 0;
-    else
-        nResult = m_panel.FUN_141482340(pXml);
-    return nResult;
+    if (m_strName.IsEmpty())
+        return 0;
+    return m_panel.FUN_141482340(pXml);
 }
 
 // @0x141482940
@@ -814,14 +810,14 @@ void Unk_MdNames::FUN_141482b70()
 // @0x141482bb0
 void Unk_MdNames::FUN_141482bb0()
 {
-    if (m_names.IsEmpty() == 0)
-    {
-        m_strCurrent = m_names.RemoveTail();
-    }
-    else
+    if (m_names.IsEmpty())
     {
         if (FUN_141482e80()->m_pChat != 0)
             m_strCurrent = FUN_141482e80()->m_pChat->FUN_141a258a0();
+    }
+    else
+    {
+        m_strCurrent = m_names.RemoveTail();
     }
 }
 
@@ -838,8 +834,11 @@ void Unk_MdNames::FUN_141482c80(CStringW strName)
 // @0x141482d30
 void Unk_MdNames::FUN_141482d30(CStringW strName)
 {
-    for (POSITION pos = m_names.Find(strName, 0); pos != 0; pos = m_names.Find(strName, 0))
+    POSITION pos = m_names.Find(strName, 0);
+    while (pos != 0) {
         m_names.RemoveAt(pos);
+        pos = m_names.Find(strName, 0);
+    }
     if (m_strCurrent == strName)
         m_strCurrent = L"";
 }
@@ -1033,8 +1032,8 @@ struct Unk_MdTalkName { CString FUN_141484200(); };
 // @0x141484200
 CString Unk_MdTalkName::FUN_141484200()
 {
-    GroupMessengerData::TalkLog* pLog = reinterpret_cast<GroupMessengerData::TalkLog*>(this);
-    return FUN_1414842b0(pLog->m_nKind, CStringW(pLog->m_strMsg));
+    return FUN_1414842b0(reinterpret_cast<GroupMessengerData::TalkLog*>(this)->m_nKind,
+                         CStringW(reinterpret_cast<GroupMessengerData::TalkLog*>(this)->m_strMsg));
 }
 
 // @0x141484270

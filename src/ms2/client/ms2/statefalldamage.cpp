@@ -7,6 +7,7 @@
 
 #include <new>
 #include <egf/Entity.h>
+#include <NiActorManager.h>
 
 #include "statefalldamage.h"
 
@@ -18,6 +19,18 @@
 
 // The actor's buff set: the fall-damage knock-back direction.
 class Unk_FallDmgBuff { public: efd::Point3 FUN_1416836d0(); };
+
+// PCBase vtable view: slot 22 takes the point by value (the exe copies it to a 16-aligned temp)
+class Unk_FallDmgSlots
+{
+public:
+#define MS2_FD_SLOTS(a, b, c, d, e) virtual void vfunc_##a(); virtual void vfunc_##b(); virtual void vfunc_##c(); \
+    virtual void vfunc_##d(); virtual void vfunc_##e();
+    MS2_FD_SLOTS(0, 1, 2, 3, 4) MS2_FD_SLOTS(5, 6, 7, 8, 9) MS2_FD_SLOTS(10, 11, 12, 13, 14) MS2_FD_SLOTS(15, 16, 17, 18, 19)
+#undef MS2_FD_SLOTS
+    virtual void vfunc_20(); virtual void vfunc_21();
+    virtual void vfunc_22(efd::Point3 kPos);                                // 22 0x14123c3a0
+};
 
 // @0x1417c7be0
 StateFallDamage::StateFallDamage(PCBase* pOwner) : State(pOwner)
@@ -31,7 +44,6 @@ StateFallDamage::~StateFallDamage()
 }
 
 // @0x1417c7c90
-// MS2-FUNCTIONAL: frame / temporaries differ from the exe
 void StateFallDamage::vfunc_4(StateData* pData)
 {
     State::vfunc_4(pData);
@@ -46,8 +58,7 @@ void StateFallDamage::vfunc_4(StateData* pData)
         if (!strRec.IsEmpty())
         {
             efd::utf8string kAnim((const char*)FUN_14038f6d0(strRec, m_strAnim.c_str()));
-            int nSeq = FUN_141b6f910()->FUN_140999490(m_pOwner->FUN_14123c460(), kAnim);
-            if (nSeq != -2)
+            if (FUN_141b6f910()->FUN_140999490(m_pOwner->FUN_14123c460(), kAnim) != NiActorManager::INVALID_SEQUENCE_ID)
                 m_strAnim = kAnim;
         }
     }
@@ -55,11 +66,10 @@ void StateFallDamage::vfunc_4(StateData* pData)
 }
 
 // @0x1417c7f30
-// MS2-FUNCTIONAL: the entity key temporary differs from the exe
+// MS2-FUNCTIONAL: the exe passes the entity key return slot through a pointer temp (lea rax,[k]; mov [p],rax; mov rdx,[p])
 void StateFallDamage::vfunc_5(int n)
 {
-    egf::EntityID kKey = m_pOwner->FUN_14123c460();
-    FUN_141b6f910()->FUN_1409fad80(kKey, false);
+    FUN_141b6f910()->FUN_1409fad80(m_pOwner->FUN_14123c460(), false);
     m_strAnim = "";
     State::vfunc_5(n);
 }
@@ -73,21 +83,17 @@ void StateFallDamage::vfunc_3(double fTime)
 }
 
 // @0x1417c8030
-// MS2-FUNCTIONAL: the knock-back copy sequence differs from the exe
 void StateFallDamage::vfunc_8(double fTime)
 {
     State::vfunc_8(fTime);
-    if (m_pOwner->vfunc_63() != 0)
-    {
-        Unk_FallDmgBuff* pBuff = (Unk_FallDmgBuff*)m_pOwner->FUN_14166d240();
-        efd::Point3 kTmp = pBuff->FUN_1416836d0();
-        efd::Point3 kDir = kTmp;
-        m_pOwner->vfunc_22(kDir);
-        if (!m_pOwner->FUN_1416749c0())
-            FUN_1417b9460();
-        else
-            m_pOwner->vfunc_59(2, 0, 0, 0);
-    }
+    if (m_pOwner->vfunc_63() == 0)
+        return;
+    Unk_FallDmgBuff* pBuff = (Unk_FallDmgBuff*)m_pOwner->FUN_14166d240();
+    reinterpret_cast<Unk_FallDmgSlots*>(m_pOwner)->vfunc_22(pBuff->FUN_1416836d0());
+    if (m_pOwner->FUN_1416749c0())
+        m_pOwner->vfunc_59(2, 0, 0, 0);
+    else
+        FUN_1417b9460();
 }
 
 // @0x1417c8150

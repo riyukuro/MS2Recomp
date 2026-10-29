@@ -25,7 +25,6 @@
 #include "ms2/placeholder/gfxmovie.h"
 #include "ms2/placeholder/delegate.h"
 #include "ms2/gfxui/nigfxlocalizemanager.h"
-
 class TiXmlDocument;
 
 // The movies GFxUIService creates (vftables in the GFx UI library); only their RTTI is recovered here.

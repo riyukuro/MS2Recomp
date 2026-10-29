@@ -533,7 +533,6 @@ Unk_AlignOffset* FUN_1419265c0(UISwfEntity* pDlg);      // dialog position (x, y
 
 // Places two dialogs side by side: when they do not fit next to each other, the left one is moved to make room.
 // @0x141275c30
-// MS2-FUNCTIONAL: MS2Ptr temporaries keep three result-pointer copy slots in the exe (extra movs per smart-pointer call)
 void FUN_141275c30(UISwfEntity* pLeft, UISwfEntity* pRight, Unk_AlignOffset offLeft, Unk_AlignOffset offRight)
 {
     if (pLeft == 0 || pRight == 0)
@@ -545,29 +544,24 @@ void FUN_141275c30(UISwfEntity* pLeft, UISwfEntity* pRight, Unk_AlignOffset offL
     Unk_AlignOffset* pPos = FUN_1419265c0(pLeft);
     float fX = pPos->x;
     float fY = pPos->y;
-    {
-        MS2Ptr<ASMovieClip> panel = winLeft->FUN_1409b4560("m_panel");
-        if (panel.get() != 0)
-            fLeftWidth = (float)panel->FUN_1422c1340();
-        else
-            fLeftWidth = (float)winLeft->FUN_1422e6310();
-    }
+    if (MS2Ptr<ASMovieClip> panel = winLeft->FUN_1409b4560("m_panel"))
+        fLeftWidth = (float)panel->FUN_1422c1340();
+    else
+        fLeftWidth = (float)winLeft->FUN_1422e6310();
     MS2Ptr<ASWindow> winRight(dynamic_cast<ASWindow*>((AScript*)pRight->FUN_1422dba00()));
     if (winRight.IsNull())
         return;
     float fRightWidth = 436.0f;
-    {
-        MS2Ptr<ASMovieClip> panel = winRight->FUN_1409b4560("m_panel");
-        if (panel.get() != 0)
-            fRightWidth = (float)panel->FUN_1422c1340();
-        else
-            fRightWidth = (float)winRight->FUN_1422e6310();
-    }
+    if (MS2Ptr<ASMovieClip> panel = winRight->FUN_1409b4560("m_panel"))
+        fRightWidth = (float)panel->FUN_1422c1340();
+    else
+        fRightWidth = (float)winRight->FUN_1422e6310();
     int nTotal = winLeft->FUN_1422c1500();
     float fBoth = fLeftWidth + fRightWidth;
     float fOverflow = (float)nTotal - (fX + fBoth);
     if (fOverflow < 0.0f) {
-        fX = (fX + fOverflow) - ((float)nTotal - fBoth) * 0.5f;
+        fX = fX + fOverflow;
+        fX = fX - ((float)nTotal - fBoth) * 0.5f;
         winLeft->FUN_1422c00f0(fX + offLeft.x, fY + offLeft.y);
     }
     winRight->FUN_1422c00f0(fX + fLeftWidth + offRight.x, fY + offRight.y);
@@ -600,14 +594,13 @@ int FUN_141276180(const CString& str, const CString& strArg)
 MS2_REPLACE(0x141276180, FUN_141276180, 90, 0x95D6641F);
 
 // @0x1412761e0
-// MS2-FUNCTIONAL: ambiguous MS2Ptr<ASDisplayObjectContainer>/MS2Ptr<ASWindow> template COMDATs shift the layout
 void FUN_1412761e0(MS2Ptr<AScript> pScript, int bShow)
 {
     if (pScript.get() != 0) {
         MS2Ptr<ASDisplayObjectContainer> pContainer(dynamic_cast<ASDisplayObjectContainer*>((AScript*)pScript));
-        if (pContainer.get() != 0) {
-            FUN_1422c6640(pContainer.get(), bShow != 0);
-            FUN_1422deb40(pContainer.get(), bShow != 0);
+        if (pContainer) {
+            FUN_1422c6640(pContainer.get(), bShow ? true : false);
+            FUN_1422deb40(pContainer.get(), bShow ? true : false);
         }
     }
 }
@@ -624,12 +617,14 @@ public:
 };
 class Unk_Vec2Pair {
 public:
-    void* m_a; void* m_b; void* m_c;
+    float m_x, m_y;
 };
 void* FUN_1409478c0();
 int FUN_140a18070(void*);
-struct Unk_HlpVec3 { float m_x, m_y, m_z; };   // CameraMgr::FUN_140a17e10 returns a Vector3 (12 bytes)
-void FUN_140a17e10(void*, Unk_HlpVec3* pOut);
+// CameraMgr::FUN_140a17e10 returns a Vector3 (12 bytes) by value. The type has a user ctor (never called here), so it
+// is returned through a hidden pointer and is not a /GS buffer.
+struct Unk_HlpVec3 { float m_x, m_y, m_z; Unk_HlpVec3(const Unk_HlpVec3& o); };
+struct Unk_HlpCamera { Unk_HlpVec3 FUN_140a17e10(); };
 float FUN_140affe70(Unk_Vec2Pair*);
 float FUN_141032df0(void*);
 float FUN_141032e60(void*);
@@ -638,11 +633,11 @@ const float& FUN_140805fc0(const float&, const float&);
 float FUN_14028aed0(float);
 
 // @0x1412762d0
-// MS2-FUNCTIONAL: local stack-slot order of the vector temporaries / constants differs (387 vs 390 bytes); logic equivalent
 float FUN_1412762d0(const Unk_Point2* pPos)
 {
     float fZoomRaw;
     float fLength;
+    float fRatio;
     float fMaxAngle;
     float fAngle;
     float fZero;
@@ -650,23 +645,20 @@ float FUN_1412762d0(const Unk_Point2* pPos)
     float fT;
     float fBase;
     float fZoom;
-    Unk_Vec2* pFrom;
     if (FUN_140a18070(FUN_1409478c0()) == 0)
         return 0.0f;
-    Unk_HlpVec3 vOrigin;
-    FUN_140a17e10(FUN_1409478c0(), &vOrigin);
+    Unk_HlpVec3 vOrigin = ((Unk_HlpCamera*)FUN_1409478c0())->FUN_140a17e10();
     Unk_Vec2 vFromBuf, vToBuf;
     Unk_Vec2Pair vDelta;
-    pFrom = vFromBuf.FUN_140a0a600(pPos->m_x, pPos->m_y);
-    fLength = FUN_140affe70(vToBuf.FUN_140a0a600(vOrigin.m_x, vOrigin.m_y)->FUN_140a4e500(&vDelta, pFrom));
+    fLength = FUN_140affe70(vToBuf.FUN_140a0a600(vOrigin.m_x, vOrigin.m_y)->FUN_140a4e500(&vDelta, vFromBuf.FUN_140a0a600(pPos->m_x, pPos->m_y)));
     fBase = -40.0f;
     fRange = 70.0f;
     fZoomRaw = FUN_141032df0(FUN_1409478c0());
-    if (fZoomRaw < fLength)
-        fZoomRaw = fZoomRaw / fLength;
+    if (fLength <= fZoomRaw)
+        fRatio = 1.0f;
     else
-        fZoomRaw = 1.0f;
-    fZoom = fZoomRaw;
+        fRatio = fZoomRaw / fLength;
+    fZoom = fRatio;
     fMaxAngle = 90.0f;
     fAngle = FUN_141032e60(FUN_1409478c0());
     fZero = 0.0f;
@@ -698,7 +690,6 @@ bool FUN_14028d470(float, float);
 float FUN_141276490(float fWidth, float fHeight);
 #ifndef MS2_HOOK_DLL
 // @0x141276490
-// MS2-FUNCTIONAL: the exe frame holds 16 more bytes of key temporaries (607 vs 583 bytes); logic equivalent
 float FUN_141276490(float fWidth, float fHeight)
 {
     if (FUN_1422b9dc0(FUN_1408e57f0()) == 0x6200018)
@@ -721,7 +712,11 @@ float FUN_141276490(float fWidth, float fHeight)
     else if (fWidth == 1024.0f)
         fScale = 2.32f - fWidth / fRefWidth;
     if ((!FUN_14028d470(fScale, 1.0f) || !FUN_14028d470(fHeight, 1.0f)) && !FUN_14028d470(fHeight, 1.0f))
-        fScale = (fScale * 100.0f * fHeight * 100.0f) / 10000.0f;
+    {
+        float fScalePct = fScale * 100.0f;
+        float fHeightPct = fHeight * 100.0f;
+        fScale = (fScalePct * fHeightPct) / 10000.0f;
+    }
     s_scaleCache.SetAt(Unk_ScreenKey(fWidth, fHeight), fScale);
     return fScale;
 }
@@ -938,18 +933,14 @@ public:
 struct Unk_ChatWorldView { Unk_ChatMapPtr FUN_141bd30a0(); };   // WorldService member (this=rcx, hidden return=rdx)
 
 // @0x141276f80
-// MS2-FUNCTIONAL: named temporaries for the string-id / literal key differ (910 vs 867 bytes); logic equivalent
 int FUN_141276f80(Unk_CommandChat* pChat)
 {
-    if (pChat->kind == 4) {
+    int nKind = pChat->kind;
+    if (nKind == 4) {
         CStringW strReply;
         int nResult = FUN_141276e00(pChat->target, strReply);
         if (nResult != 0) {
-            int nStringId;
-            if (nResult == 10)
-                nStringId = 0x430;
-            else
-                nStringId = 0x431;
+            int nStringId = (nResult == 10) ? 0x430 : 0x431;
             FUN_1412751b0(GetStringCommon(nStringId), 0x14);
             return 0;
         }
@@ -968,8 +959,9 @@ int FUN_141276f80(Unk_CommandChat* pChat)
         }
     }
     if (DAT_143ab2914 < 0x32) {
-        if (reinterpret_cast<Unk_ChatWorldView*>(FUN_1403ed2d0())->FUN_141bd30a0().FUN_140885340()->FUN_140375660(0x100) != 0) {
-            FUN_1412751b0(GetStringCommonByKey(CStringW(L"s_field_limit_content_chat")), 0x14);
+        int nRestricted = reinterpret_cast<Unk_ChatWorldView*>(FUN_1403ed2d0())->FUN_141bd30a0().FUN_140885340()->FUN_140375660(0x100);
+        if (nRestricted != 0) {
+            FUN_1412751b0(GetStringCommonByKey(L"s_field_limit_content_chat"), 0x14);
             return 0;
         }
     }
@@ -1098,7 +1090,7 @@ public:
     ~Unk_LapenPtr();                                             // 0x1405b6e60
     void* FUN_140c6a370() const;
     Unk_LapenData* FUN_1405b70e0() const;
-    void* m_00; void* m_08; void* m_10;
+    void* m_00; void* m_08;
 };
 class Unk_LapenMgr { public: Unk_LapenPtr FUN_1405b56a0(int nItemId); };
 Unk_LapenMgr* FUN_1409c4b30();
@@ -1147,7 +1139,6 @@ CStringW FUN_141277b90(const CStringW& str)
 MS2_REPLACE(0x141277b90, FUN_141277b90, 59, 0x41F5801C);
 
 // @0x141277be0
-// MS2-FUNCTIONAL: large CStringW builder: unwind frame size and temp ordering differ
 CStringW FUN_141277be0(Unk_IconItemPtr item)
 {
     Unk_LapenPtr lapen = FUN_1409c4b30()->FUN_1405b56a0(item.FUN_1401b52a0()->FUN_14053c510());

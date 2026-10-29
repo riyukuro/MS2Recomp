@@ -1,6 +1,6 @@
 # Configure-time BYO-SDK check: every manifest row's file must exist under its root variable and hash to the pinned value.
 # Input: MANIFEST, plus one variable per root (MS2_GAMEBRYO_ROOT, MS2_DXSDK_ROOT, MS2_PHYSX_ROOT, MS2_CEF_ROOT,
-# MS2_PATHENGINE_ROOT, MS2_SCALEFORM_ROOT). Names and hashes only; nothing of any SDK is read beyond the hashed files.
+# MS2_PATHENGINE_ROOT). Names and hashes only; nothing of any SDK is read beyond the hashed files.
 file(STRINGS "${MANIFEST}" _rows)
 set(_bad "")
 foreach(_row IN LISTS _rows)

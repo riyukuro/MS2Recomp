@@ -287,7 +287,6 @@ CEffect::~CEffect()
 }
 
 // @0x14119eae0
-// MS2-FUNCTIONAL: the exe spills the world object pointer before the entity id return buffer (one extra 8-byte temp, frame 0x10 larger); not reproduced
 CEffectPtr FUN_14119eae0(CEffectParam* pParam, Unk_EffectTarget* pTarget)
 {
     pTarget->FUN_140a534a0();
@@ -310,7 +309,10 @@ CEffectPtr FUN_14119eae0(CEffectParam* pParam, Unk_EffectTarget* pTarget)
             kCheck.m_fViewDistance = fDistance;
         GameObject* pOwner = pTarget->FUN_140a533b0();
         if (efd::ClassInfo::IsKindOf(pOwner ? pOwner->GetClassDesc() : NULL, 0x6200044))
-            pTarget->m_spObject = FUN_141b6ef70(FUN_1403ed2d0()->FUN_141bd0cc0()->FUN_14123c460());
+        {
+            Unk_EsPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+            pTarget->m_spObject = FUN_141b6ef70(pPlayer->FUN_14123c460());
+        }
         break;
     }
     }
@@ -1361,7 +1363,6 @@ unsigned CEffectService::FUN_1411a49c0(Unk_EffectTarget& kTarget)
 MS2_REPLACE_METHOD(0x1411a49c0, CEffectService, FUN_1411a49c0, 43, 0xA316FB5D);
 
 // @0x1411a4a00
-// MS2-FUNCTIONAL: same calls and flow; the exe spills the param pointer before the call (one extra temp, 13 bytes longer) and calls the second CAtlList GetAt/GetNext copy (see FUN_1411a4800)
 unsigned CEffectService::FUN_1411a4a00(Unk_EffectTarget& kTarget)
 {
     if (!IsEnabled())
@@ -1389,7 +1390,8 @@ unsigned CEffectService::FUN_1411a4a00(Unk_EffectTarget& kTarget)
     pGroup->SetName(kTarget.m_strName);
     int nCount = 0;
     for (POSITION pos = spData->FUN_14119f540().GetHeadPosition(); pos != 0; spData->FUN_14119f540().GetNext(pos)) {
-        CEffectPtr spEffect = FUN_14119eae0(spData->FUN_14119f540().GetAt(pos).get(), &kTarget);
+        CEffectParam* pParam = spData->FUN_14119f540().GetAt(pos).get();
+        CEffectPtr spEffect = FUN_14119eae0(pParam, &kTarget);
         if (spEffect == 0)
             continue;
         pGroup->FUN_1411b15b0(spEffect);
@@ -2072,7 +2074,6 @@ void CEffectService::FUN_1411a7e80(int nType)
 MS2_REPLACE_METHOD(0x1411a7e80, CEffectService, FUN_1411a7e80, 454, 0x4C74E821);
 
 // @0x1411a8070
-// MS2-FUNCTIONAL: same calls and control flow; the exe frame is 0x10 smaller (field/row ptrs above the temporaries)
 void CEffectService::vfunc_1(int nMap)
 {
     Unk_EsFieldPtr spField = FUN_140a55460(nMap);
@@ -2085,7 +2086,7 @@ void CEffectService::vfunc_1(int nMap)
         }
         FUN_1411a7e00(strArea);
         if (spField.FUN_140885340()->m_strEffect1a0.GetLength() > 0)
-            FUN_1411a5a60(spField.FUN_140885340()->m_strEffect1a0, CString(""));
+            FUN_1411a5a60(spField.FUN_140885340()->m_strEffect1a0, "");
     }
 }
 MS2_REPLACE_METHOD_VIA(0x1411a8070, CEffectService, IWorldServiceCallback, vfunc_1, 0, 0);
@@ -2188,13 +2189,13 @@ MS2_REPLACE_METHOD(0x1411a8e90, CEffectService, FUN_1411a8e90, 818, 0x25B03289);
 int CEffectService::FUN_1411a88c0() { return m_unk_188; }
 
 // @0x1411a88e0
-// MS2-FUNCTIONAL: the exe's caster switch has one more `jmp` to the end after the dispatch (5 bytes longer); not found
 int CEffectService::FUN_1411a88e0(int nKind, float fDistance)
 {
     int nLevel = m_unk_188;
     if (m_unk_128 == 0)
         return m_unk_188;
     switch (nKind) {
+        break;
     case 3:
     case 5:
     case 6:

@@ -68,6 +68,7 @@
 #include "ms2/commonfiles/sounddatatable.h"
 #include "ms2/commonfiles/filesystem.h"
 #include <NiPoint3.h>
+#include <d3dx9math.h>
 #include "ms2/commonfiles/localepath.h"
 #include "ms2/placeholder/citemdata.h"
 #include "ms2/client/ms2/soundservice.h"
@@ -82,6 +83,7 @@ class Unk_ExportLog;                                            // the editor pr
 Unk_ExportLog* FUN_141168200();
 void FUN_141168270(Unk_ExportLog*);
 void FUN_141168580(Unk_ExportLog*, int);
+void FUN_1411682d0(Unk_ExportLog*);
 void FUN_1411683e0(Unk_ExportLog*, const char*);                // append a line
 int FUN_1406516c0();                                            // current language id
 CSoundDataTable* FUN_1414a57c0();
@@ -160,10 +162,10 @@ struct PortalInfo                           // <portal> row collected per field,
 
 struct _NpcInfo                              // npc spawn of a field, 0x20 bytes
 {
-    _NpcInfo() { m_pos = NiPoint3(0.0f, 0.0f, 0.0f); }
+    _NpcInfo() { m_pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f); }
     bool operator==(const _NpcInfo& o) const;
     unsigned int m_nFieldId;
-    NiPoint3 m_pos;                             // spawn position
+    D3DXVECTOR3 m_pos;                          // spawn position
     CStringW m_strStart;                        // event start / end (gameEvent spawns)
     CStringW m_strEnd;
 };
@@ -229,12 +231,12 @@ bool FUN_1408710c0(TiXmlDocument* pDoc, const char* pszPath);           // SaveF
 bool FUN_140184310(const CString& str, const char* psz);                // str == psz
 
 // Model manager property readers: (manager, entity element, model name, property name, out).
-void FUN_140a2b550(Unk_ModelMgr* pMgr, Unk_140165cf0* pEntity, CString strModel, const char* pszProp, unsigned int* pOut);
-void FUN_140a2b270(Unk_ModelMgr* pMgr, Unk_140165cf0* pEntity, CString strModel, const char* pszProp, int* pOut);
-void FUN_140a2b9d0(Unk_ModelMgr* pMgr, Unk_140165cf0* pEntity, CString strModel, const char* pszProp, bool* pOut);
-void FUN_140a2bc30(Unk_ModelMgr* pMgr, Unk_140165cf0* pEntity, CString strModel, const char* pszProp, CString* pOut);
-void FUN_140a2aab0(Unk_ModelMgr* pMgr, Unk_140165cf0* pEntity, CString strModel, const char* pszProp, Unk_PtrArray* pOut);
-void FUN_140a2afd0(Unk_ModelMgr* pMgr, Unk_140165cf0* pEntity, CString strModel, const char* pszProp, NiPoint3* pOut);
+void FUN_140a2b550(Unk_ModelMgr* pMgr, Unk_140165cf0* pEntity, const CString& strModel, const char* pszProp, unsigned int* pOut);
+void FUN_140a2b270(Unk_ModelMgr* pMgr, Unk_140165cf0* pEntity, const CString& strModel, const char* pszProp, int* pOut);
+void FUN_140a2b9d0(Unk_ModelMgr* pMgr, Unk_140165cf0* pEntity, const CString& strModel, const char* pszProp, bool* pOut);
+void FUN_140a2bc30(Unk_ModelMgr* pMgr, Unk_140165cf0* pEntity, const CString& strModel, const char* pszProp, CString* pOut);
+void FUN_140a2aab0(Unk_ModelMgr* pMgr, Unk_140165cf0* pEntity, const CString& strModel, const char* pszProp, Unk_PtrArray* pOut);
+void FUN_140a2afd0(Unk_ModelMgr* pMgr, Unk_140165cf0* pEntity, const CString& strModel, const char* pszProp, D3DXVECTOR3* pOut);
 void FUN_140a2c120(Unk_Ref* pRef, void* pRaw);
 Unk_NpcData* FUN_140a2c430(Unk_Ref* pRef);
 void FUN_140a2c340(Unk_Ref* pRef);
@@ -306,7 +308,7 @@ CString FUN_1402bf9a0(const char* pszFormat, const fmt::ArgList& args);
 CString FUN_141827280(const char* pszFormat, const unsigned long long& nIndex, const CString& strName);
 
 // Removes the named <property> children from every xblock / block entity whose model the model manager knows.
-// MS2-FUNCTIONAL: instruction sequence matches but stack frame is 0x20 larger than the exe
+// MS2-FUNCTIONAL: instruction sequence matches but stack frame is 0x10 larger than the exe
 // @0x141821bf0
 void FUN_141821bf0(CString strModelFilter, CString strDeleteProps)
 {
@@ -324,77 +326,82 @@ void FUN_141821bf0(CString strModelFilter, CString strDeleteProps)
     ATL::CAtlArray<CString> props;
     FUN_14015f050(strDeleteProps, props, ",");
 
-    ATL::CAtlArray<CString> xblocks;
-    FUN_140399100(".xblock", "./Data/Resource/Exported/XBlock", xblocks, "", false);
-    for (size_t i = 0; i < xblocks.GetCount(); i++) {
-        TiXmlDocument doc;
-        int nDeleted = 0;
-        if (GetFileSystem()->FUN_1403974b0(&doc, xblocks[i], 0, true, false) == 0)
-            continue;
-        Unk_140165cf0* pGame = FUN_140165cf0(&doc, "game");
-        if (pGame == NULL)
-            continue;
-        Unk_140165cf0* pEntitySet = FUN_140165cf0(pGame, "entitySet");
-        if (pEntitySet == NULL)
-            continue;
-        FUN_1411683e0(FUN_141168200(), FUN_141827280("{0} Read xblock {1}", i, xblocks[i]));
-        for (Unk_140165cf0* pEntity = FUN_140165cf0(pEntitySet, "entity"); pEntity != NULL;
-             pEntity = FUN_140168650(pEntity, "entity")) {
-            CString strModel = FUN_140188f50(FUN_14086f4b0(pEntity, "modelName"), 0);
-            if (FUN_140a2a920(&mgr, strModel, strModelFilter) != 0) {
-                for (Unk_140165cf0* pProp = FUN_140165cf0(pEntity, "property"); pProp != NULL;
-                     pProp = FUN_140168650(pProp, "property")) {
-                    CString strName = FUN_140188f50(FUN_14086f4b0(pProp, "name"), 0);
-                    if (FUN_141827210(props, strName) != -1) {
-                        FUN_14086e580(pEntity, pProp);
-                        nDeleted++;
-                    }
-                }
-            }
-        }
-        if (nDeleted > 0) {
-            FUN_140870f90(&doc);
-            FUN_1411683e0(FUN_141168200(), StringFormat("{0} Save file. deleted {1} property ", xblocks[i], nDeleted));
-        }
-    }
-
-    ATL::CAtlArray<CString> blocks;
-    FUN_140399100(".block", "./Data/Resource/Block", blocks, "", false);
-    for (size_t i = 0; i < blocks.GetCount(); i++) {
-        TiXmlDocument doc;
-        int nDeleted = 0;
-        if (GetFileSystem()->FUN_1403974b0(&doc, blocks[i], 0, true, false) == 0)
-            continue;
-        Unk_140165cf0* pBlock = FUN_140165cf0(&doc, "block");
-        if (pBlock == NULL)
-            continue;
-        Unk_140165cf0* pEntities = FUN_140165cf0(pBlock, "entities");
-        if (pEntities == NULL)
-            continue;
-        FUN_1411683e0(FUN_141168200(), FUN_141827280("{0} Read block {1}", i, blocks[i]));
-        for (Unk_140165cf0* pEntity = FUN_140165cf0(pEntities, "entity"); pEntity != NULL;
-             pEntity = FUN_140168650(pEntity, "entity")) {
-            CString strModel = FUN_140188f50(FUN_14086f4b0(pEntity, "model-name"), 0);
-            if (FUN_140a2a920(&mgr, strModel, strModelFilter) != 0) {
-                Unk_140165cf0* pProps = FUN_140165cf0(pEntity, "properties");
-                if (pProps != NULL) {
-                    for (Unk_140165cf0* pProp = FUN_140165cf0(pProps, "property"); pProp != NULL;
+    {
+        ATL::CAtlArray<CString> xblocks;
+        FUN_140399100(".xblock", "./Data/Resource/Exported/XBlock", xblocks, "", false);
+        for (size_t i = 0; i < xblocks.GetCount(); i++) {
+            TiXmlDocument doc;
+            int nDeleted = 0;
+            if (GetFileSystem()->FUN_1403974b0(&doc, xblocks[i], 0, true, false) == 0)
+                continue;
+            Unk_140165cf0* pGame = FUN_140165cf0(&doc, "game");
+            if (pGame == NULL)
+                continue;
+            Unk_140165cf0* pNode = FUN_140165cf0(pGame, "entitySet");
+            if (pNode == NULL)
+                continue;
+            FUN_1411683e0(FUN_141168200(), FUN_141827280("{0} Read xblock {1}", i, xblocks[i]));
+            for (pNode = FUN_140165cf0(pNode, "entity"); pNode != NULL;
+                 pNode = FUN_140168650(pNode, "entity")) {
+                CString strModel = FUN_140188f50(FUN_14086f4b0(pNode, "modelName"), 0);
+                if (FUN_140a2a920(&mgr, strModel, strModelFilter) != 0) {
+                    for (Unk_140165cf0* pProp = FUN_140165cf0(pNode, "property"); pProp != NULL;
                          pProp = FUN_140168650(pProp, "property")) {
                         CString strName = FUN_140188f50(FUN_14086f4b0(pProp, "name"), 0);
                         if (FUN_141827210(props, strName) != -1) {
-                            FUN_14086e580(pProps, pProp);
+                            FUN_14086e580(pNode, pProp);
                             nDeleted++;
                         }
                     }
                 }
             }
+            if (nDeleted > 0) {
+                FUN_140870f90(&doc);
+                FUN_1411683e0(FUN_141168200(), StringFormat("{0} Save file. deleted {1} property ", xblocks[i], nDeleted));
+            }
         }
-        if (nDeleted > 0) {
-            FUN_140870f90(&doc);
-            FUN_1411683e0(FUN_141168200(), StringFormat("{0} Save file. deleted {1} property ", blocks[i], nDeleted));
+    }
+
+    {
+        ATL::CAtlArray<CString> blocks;
+        FUN_140399100(".block", "./Data/Resource/Block", blocks, "", false);
+        for (size_t i = 0; i < blocks.GetCount(); i++) {
+            TiXmlDocument doc;
+            int nDeleted = 0;
+            if (GetFileSystem()->FUN_1403974b0(&doc, blocks[i], 0, true, false) == 0)
+                continue;
+            Unk_140165cf0* pBlock = FUN_140165cf0(&doc, "block");
+            if (pBlock == NULL)
+                continue;
+            Unk_140165cf0* pNode = FUN_140165cf0(pBlock, "entities");
+            if (pNode == NULL)
+                continue;
+            FUN_1411683e0(FUN_141168200(), FUN_141827280("{0} Read block {1}", i, blocks[i]));
+            for (pNode = FUN_140165cf0(pNode, "entity"); pNode != NULL;
+                 pNode = FUN_140168650(pNode, "entity")) {
+                CString strModel = FUN_140188f50(FUN_14086f4b0(pNode, "model-name"), 0);
+                if (FUN_140a2a920(&mgr, strModel, strModelFilter) != 0) {
+                    Unk_140165cf0* pProps = FUN_140165cf0(pNode, "properties");
+                    if (pProps != NULL) {
+                        for (Unk_140165cf0* pProp = FUN_140165cf0(pProps, "property"); pProp != NULL;
+                             pProp = FUN_140168650(pProp, "property")) {
+                            CString strName = FUN_140188f50(FUN_14086f4b0(pProp, "name"), 0);
+                            if (FUN_141827210(props, strName) != -1) {
+                                FUN_14086e580(pProps, pProp);
+                                nDeleted++;
+                            }
+                        }
+                    }
+                }
+            }
+            if (nDeleted > 0) {
+                FUN_140870f90(&doc);
+                FUN_1411683e0(FUN_141168200(), StringFormat("{0} Save file. deleted {1} property ", blocks[i], nDeleted));
+            }
         }
     }
     MessageBoxA(NULL, "Complete!", "", 0);
+    FUN_1411682d0(FUN_141168200());
 }
 
 // index of the first string equal to str in the array, -1 if absent
@@ -496,7 +503,6 @@ void FUN_141826360(CSoundDataTable::SoundList& rOut)
 }
 
 // Writes ms2_market's tb_item_info rows (item id, language, name, category, level, job, gender) as SQL inserts.
-// MS2-FUNCTIONAL: hidden temporaries of the CString/MS2Ptr copies differ; 17 bytes longer than the exe
 // @0x141825610
 bool FUN_141825610(CString strPath, bool bMessageBox)
 {
@@ -522,33 +528,30 @@ bool FUN_141825610(CString strPath, bool bMessageBox)
     for (unsigned int i = 0; i < ids.size(); i++) {
         unsigned int nItemId = ids[i];
         MS2Ptr<CItemData> spItem = FUN_14053f870(nItemId);
-        if (spItem.get() == 0)
-            continue;
-        if (nItemId == 0x9a1d21)
-            continue;
-        if (spItem->FUN_14053d550())
-            continue;
-        CString strCategory(spItem->property.blackMarketCategory);
-        int nCategory = FUN_1401bd070(strCategory);
-        int nLevel = spItem->limit.levelLimit;
-        int nJob = FUN_1401bd120(&spItem->limit.jobLimit);
-        int nGender = FUN_1401bd340(spItem->limit.genderLimit);
-        for (size_t j = 0; j < languages.GetCount(); j++) {
-            int nLanguage = languages[j];
-            CString strName = FUN_140390ea0(FUN_1401bd850((Unk_BmLanguage)nLanguage, nItemId), 0);
-            if (strName.IsEmpty())
+        if (spItem.get() != 0) {
+            if (nItemId == 0x9a1d21)
                 continue;
-            strName.Replace("'", "''");
-            if (nRows == 0 || nRows % 1000 != 0) {
-                if (nRows > 0)
+            if (spItem->FUN_14053d550())
+                continue;
+            int nCategory = FUN_1401bd070(spItem->property.blackMarketCategory);
+            int nLevel = spItem->limit.levelLimit;
+            int nJob = FUN_1401bd120(&spItem->limit.jobLimit);
+            int nGender = FUN_1401bd340(spItem->limit.genderLimit);
+            for (size_t j = 0; j < languages.GetCount(); j++) {
+                Unk_BmLanguage nLanguage = (Unk_BmLanguage)languages[j];
+                CString strName = FUN_140390ea0(FUN_1401bd850(nLanguage, nItemId), 0);
+                if (strName.IsEmpty())
+                    continue;
+                strName.Replace("'", "''");
+                if (nRows != 0 && nRows % 1000 == 0)
+                    FUN_140299dc0(&file, strInsert, strInsert.GetLength(), 0);
+                else if (nRows > 0)
                     FUN_140299dc0(&file, strComma, strComma.GetLength(), 0);
-            } else {
-                FUN_140299dc0(&file, strInsert, strInsert.GetLength(), 0);
+                strRow = StringFormat("({0}, {1}, '{2}', {3}, {4}, {5}, {6})\n", nItemId, (int)nLanguage,
+                                      FUN_14016a5c0(strName, 0), nCategory, nLevel, nJob, nGender);
+                FUN_140299dc0(&file, strRow, strRow.GetLength());
+                nRows++;
             }
-            strRow = StringFormat("({0}, {1}, '{2}', {3}, {4}, {5}, {6})\n", nItemId, nLanguage,
-                                  FUN_14016a5c0(strName, 0), nCategory, nLevel, nJob, nGender);
-            FUN_140299dc0(&file, strRow, strRow.GetLength());
-            nRows++;
         }
     }
     file.Close();
@@ -1118,8 +1121,8 @@ struct Unk_RefArrayB
     size_t m_nGrowBy;
 };
 
-void FUN_141830cb0(Unk_Ref* pData, size_t nCount);
-void FUN_141830d10(Unk_Ref* pData, size_t nCount);
+void FUN_141830cb0(Unk_Ref* pData, size_t nCount) throw();
+void FUN_141830d10(Unk_Ref* pData, size_t nCount) throw();
 
 // @0x14182f2c0
 Unk_RefArrayA::~Unk_RefArrayA()
@@ -1139,28 +1142,18 @@ Unk_RefArrayB::~Unk_RefArrayB()
     }
 }
 
-// @0x14182f9b0
-int FUN_14182f9b0(const efd::Point3* pFirst, const efd::Point3* pSecond)
-{
-    if (pSecond->x == pFirst->x && pSecond->y == pFirst->y && pSecond->z == pFirst->z)
-        return 1;
-    return 0;
-}
+// MS2-PIN: ??8D3DXVECTOR3@@QEBAHAEBU0@@Z 0x14182f9b0
 
 // @0x14182fa20
 bool PortalInfo::operator==(const PortalInfo& o) const
 {
-    if (m_nId == o.m_nId && m_nTargetField == o.m_nTargetField)
-        return true;
-    return false;
+    return m_nId == o.m_nId && m_nTargetField == o.m_nTargetField;
 }
 
 // @0x14182fa70
 bool _NpcInfo::operator==(const _NpcInfo& o) const
 {
-    if (m_nFieldId == o.m_nFieldId && FUN_14182f9b0(&m_pos, &o.m_pos) != 0)
-        return true;
-    return false;
+    return m_nFieldId == o.m_nFieldId && m_pos == o.m_pos;
 }
 
 // @0x14182fc10
@@ -1203,14 +1196,14 @@ Unk_Ref* FUN_1418308d0(Unk_Ref* pRef, unsigned int nFlags)
 }
 
 // @0x141830cb0
-void FUN_141830cb0(Unk_Ref* pData, size_t nCount)
+void FUN_141830cb0(Unk_Ref* pData, size_t nCount) throw()
 {
     for (size_t i = 0; i < nCount; i++)
         FUN_1418308d0(&pData[i], 0);
 }
 
 // @0x141830d10
-void FUN_141830d10(Unk_Ref* pData, size_t nCount)
+void FUN_141830d10(Unk_Ref* pData, size_t nCount) throw()
 {
     for (size_t i = 0; i < nCount; i++)
         FUN_140335fe0(&pData[i], 0);

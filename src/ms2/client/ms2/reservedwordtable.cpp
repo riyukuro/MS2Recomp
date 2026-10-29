@@ -6,7 +6,7 @@
 // MS2-RANGE: 0x1416fa4b0-0x141701380 .text$mn
 // MS2-RANGE: 0x1400ff140-0x1400ff2b0 .text$di
 // MS2-PINS-BEGIN tplpin
-// MS2-PIN: ?FUN_141700510@Unk_RwOwnerRec@@QEAA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@XZ 0x141700510 ; unique
+// MS2-PIN: ?FUN_141700510@CMaid@@QEAA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@XZ 0x141700510 ; unique
 // MS2-PINS-END tplpin
 // MS2-GUESS-LOOKALIKES
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\reservedwordtable.cpp"
@@ -15,7 +15,11 @@
 #include "ms2/placeholder/creservedwordtable.h"
 #include "ms2/placeholder/fittingdollpc.h"
 #include "ms2/placeholder/cnpc.h"
+#include "ms2/commonfiles/maid.h"
+#include "ms2/commonfiles/timeutil.h"
 #include "ms2/commonfiles/npcdata.h"
+#include "ms2/client/ms2/fielddatacli.h"
+#include "ms2/placeholder/citemdata.h"
 #include "ms2/placeholder/cstringtable.h"
 #include "ms2/placeholder/cscripttable.h"
 #include "ms2/client/ms2/uirewardnotify.h"
@@ -49,18 +53,14 @@ int FUN_141658e60(PC* pPc);                                                     
 CString FUN_140740ef0(const char* pszFormat, const CString& strKind, const int& nId);                                              // a text of the common string table
 
 // The local player / world.
-class Unk_RwMapInfo { public: void* m_p0; void* m_p1; };
-MS2_CHECK_SIZE(Unk_RwMapInfo, 0x10);
 class Unk_RwWorld
 {
 public:
     PC* FUN_141bd0cc0();                                    // the local player
-    Unk_RwMapInfo FUN_141bd30a0();                          // the map info of the player
+    MS2Ptr<CFieldDataCli> FUN_141bd30a0();                  // the field data of the player
 };
 Unk_RwWorld* FUN_1403ed2d0();
-char FUN_1408851f0(Unk_RwMapInfo* pInfo);                   // the map is a town / safe map
-void FUN_1408850f0(Unk_RwMapInfo* pInfo);
-void* FUN_140885340(Unk_RwMapInfo* pInfo);
+struct Unk_RwLevelView { virtual void Unk_Slot0(); virtual void Unk_Slot1(); virtual void Unk_Slot2(); virtual void Unk_Slot3(); virtual void Unk_Slot4(); virtual void Unk_Slot5(); virtual void Unk_Slot6(); virtual void Unk_Slot7(); virtual void Unk_Slot8(); virtual void Unk_Slot9(); virtual void Unk_Slot10(); virtual void Unk_Slot11(); virtual void Unk_Slot12(); virtual void Unk_Slot13(); virtual void Unk_Slot14(); virtual void Unk_Slot15(); virtual void Unk_Slot16(); virtual void Unk_Slot17(); virtual void Unk_Slot18(); virtual void Unk_Slot19(); virtual void Unk_Slot20(); virtual void Unk_Slot21(); virtual void Unk_Slot22(); virtual void Unk_Slot23(); virtual void Unk_Slot24(); virtual void Unk_Slot25(); virtual void Unk_Slot26(); virtual void Unk_Slot27(); virtual void Unk_Slot28(); virtual void Unk_Slot29(); virtual void Unk_Slot30(); virtual void Unk_Slot31(); virtual void Unk_Slot32(); virtual void Unk_Slot33(); virtual void Unk_Slot34(); virtual void Unk_Slot35(); virtual void Unk_Slot36(); virtual void Unk_Slot37(); virtual void Unk_Slot38(); virtual void Unk_Slot39(); virtual void Unk_Slot40(); virtual void Unk_Slot41(); virtual void Unk_Slot42(); virtual void Unk_Slot43(); virtual void Unk_Slot44(); virtual void Unk_Slot45(); virtual void Unk_Slot46(); virtual void Unk_Slot47(); virtual void Unk_Slot48(); virtual void Unk_Slot49(); virtual void Unk_Slot50(); virtual void Unk_Slot51(); virtual void Unk_Slot52(); virtual void Unk_Slot53(); virtual void Unk_Slot54(); virtual void Unk_Slot55(); virtual void Unk_Slot56(); virtual void Unk_Slot57(); virtual void Unk_Slot58(); virtual void Unk_Slot59(); virtual void Unk_Slot60(); virtual void Unk_Slot61(); virtual void Unk_Slot62(); virtual void Unk_Slot63(); virtual void Unk_Slot64(); virtual void Unk_Slot65(); virtual void Unk_Slot66(); virtual void Unk_Slot67(); virtual void Unk_Slot68(); virtual void Unk_Slot69(); virtual void Unk_Slot70(); virtual void Unk_Slot71(); virtual void Unk_Slot72(); virtual void Unk_Slot73(); virtual void Unk_Slot74(); virtual void Unk_Slot75(); virtual void Unk_Slot76(); virtual void Unk_Slot77(); virtual unsigned short vfunc_78(); };   // the local player: the level (slot 78, +0x270) returns a word
 int FUN_1403754f0(void* pCode);
 __int64 FUN_141670a00(PC* pPc, int nStat);                  // PCBase stat
 class Unk_RwTaxi { public: int FUN_140675730(unsigned short nLevel, int nPvp, int nMapKind); };
@@ -83,60 +83,14 @@ class CScriptTable;
 CScriptTable* FUN_141371b30();
 
 // The view / dictionary (maview) switches.
-struct Unk_RwView { char m_pad[0x8b]; char m_bMaview; };
-struct Unk_RwViewRef { void* m_p0; void* m_p1; };
-void FUN_1406cd330(Unk_RwViewRef* pRef, int nNpcId);   // the common npc row (returned through pRef)
-__int64 FUN_140729ad0(Unk_RwViewRef* pRef);
-Unk_RwView* FUN_14035eb90(Unk_RwViewRef* pRef);
+MS2Ptr<CNpcData> FUN_1406cd330(int nNpcId);             // the common npc row
 
-// An item reference (smart pointer to the item data).
-struct Unk_RwItemRef { void* m_p0; void* m_p1; };
-struct Unk_RwItemData { char m_pad[0x79]; char m_bDictionary; };
-void FUN_14053f870(Unk_RwItemRef* pRef, int nItemId);
-char FUN_1402ffd90(Unk_RwItemRef* pRef);                    // the reference is empty
-Unk_RwItemData* FUN_1401b52a0(Unk_RwItemRef* pRef);
-int FUN_14053c5c0(Unk_RwItemData* pData);                   // the item slot kind
-void FUN_1401b50d0(Unk_RwItemRef* pRef);
+// The item data row.
+MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 
-// A maid (housing) entry.
-struct Unk_RwOwnerRef { void* m_p0; void* m_p1; };
-struct Unk_RwOwnerRec
-{
-    char m_pad_0[0x34];
-    int m_nId;                                              // +0x34
-    char m_pad_38[0x88 - 0x38];
-    __int64 m_nEnd;                                         // +0x88
-    char m_pad_90[0xe8 - 0x90];
-    CStringW m_strName;                                     // +0xe8
-    CStringW FUN_141700510() { return m_strName; }          // 0x141700510
-};
-void FUN_141093800(void* pMaid, Unk_RwOwnerRef* pRef);
-__int64 FUN_1409ee260(Unk_RwOwnerRef* pRef);
-Unk_RwOwnerRec* FUN_14067e8c0(Unk_RwOwnerRef* pRef);
-void FUN_14067e620(Unk_RwOwnerRef* pRef);
-int FUN_14067db20(Unk_RwOwnerRec* pRec);
-struct Unk_RwUserRef { void* m_p0; void* m_p1; };
-class Unk_RwUserDb { public: };
-Unk_RwUserDb* FUN_1409eed10();
-void FUN_14067f780(Unk_RwUserDb* pDb, Unk_RwUserRef* pRef, int nId);
-__int64 FUN_14109a370(Unk_RwUserRef* pRef);
-struct Unk_RwUser { char m_pad[0x60]; CStringW m_strName; };
-Unk_RwUser* FUN_1406810d0(Unk_RwUserRef* pRef);
-void FUN_140680b50(Unk_RwUserRef* pRef);
-struct Unk_RwMaidRef { void* m_p0; void* m_p1; };
-class Unk_RwMaidDb { public: };
-Unk_RwMaidDb* FUN_1409eed20();
-void FUN_14067f180(Unk_RwMaidDb* pDb, Unk_RwMaidRef* pRef, int nId);
-__int64 FUN_140df5ae0(Unk_RwMaidRef* pRef);
-struct Unk_RwMaid { char m_pad[0x10]; int m_nSalary; };
-Unk_RwMaid* FUN_1406810e0(Unk_RwMaidRef* pRef);
-int FUN_1409eee80(Unk_RwMaid* pMaid);
-void FUN_140680b80(Unk_RwMaidRef* pRef);
 CStringW FUN_140763e10(int nMoney);                         // a money text
 CStringW FUN_14052bd00(int nStringId, const CStringW& strArg);
 CStringW FUN_1408116a0(int nStringId, const int& nArg);
-__int64 FUN_140869440();
-__int64* FUN_1402e4970(__int64* pBase, __int64* pKey);
 struct Unk_RwConfig { char m_pad[0x50d0]; int m_nValue; };
 Unk_RwConfig* FUN_1401d3200();
 int* FUN_1402056b0(int* pValue);
@@ -199,7 +153,7 @@ static void Rw_PetCollectGroupBold(CStringW& strOut, CStringW strArg, CStringW& 
 static void Rw_Maview(CStringW& strOut, CStringW strArg, CStringW& strWhole);
 static void Rw_ExternalWeb(CStringW& strOut, CStringW strArg, CStringW& strWhole);
 static void Rw_GenderOf(CStringW& strToken, PC* pPc);
-static void Rw_NpcLink(unsigned int nId, CStringW strText, CStringW& strOut);
+static void Rw_NpcLink(unsigned int nId, CStringW& strText, CStringW& strOut);
 static void Rw_GenderId(CStringW& strToken, int nGender);
 
 // ---------------------------------------------------------------------------------------------------------------
@@ -246,13 +200,11 @@ CReservedWordTable::CReservedWordTable()
     m_mapObject.SetAt(L"$masteryRecipePlural", Rw_MasteryRecipePlural);
     m_mapObject.SetAt(L"$job", Rw_Job);
 
-    POSITION pos = m_mapObject.GetStartPosition();
-    while (pos != 0)
+    for (POSITION pos = m_mapObject.GetStartPosition(); pos != 0; m_mapObject.GetNext(pos))
     {
         CStringW strKey = m_mapObject.GetKeyAt(pos);
         FnWord pfnWord = m_mapObject.GetValueAt(pos);
         m_mapBold.SetAt(strKey, pfnWord);
-        m_mapObject.GetNext(pos);
     }
     m_mapBold.SetAt(L"$item", Rw_ItemBold);
     m_mapBold.SetAt(L"$map", Rw_MapBold);
@@ -264,9 +216,18 @@ CReservedWordTable::CReservedWordTable()
     m_mapBold.SetAt(L"$quest", Rw_QuestBold);
     m_mapBold.SetAt(L"$petCollectGroup", Rw_PetCollectGroupBold);
 
-    m_mapColor.SetAt(L"[y", CStringW(L"<font color=\"#ffd200\">"));
-    m_mapColor.SetAt(L"[b", CStringW(L"<font color=\"#00a2ed\">"));
-    m_mapColor.SetAt(L"[g", CStringW(L"<font color=\"#909090\">"));
+    {
+        CStringW strColor(L"<font color=\"#ffd200\">");
+        m_mapColor.SetAt(L"[y", strColor);
+    }
+    {
+        CStringW strColor(L"<font color=\"#00a2ed\">");
+        m_mapColor.SetAt(L"[b", strColor);
+    }
+    {
+        CStringW strColor(L"<font color=\"#909090\">");
+        m_mapColor.SetAt(L"[g", strColor);
+    }
 
     m_mapPlain.SetAt(L"$item", Rw_Item);
     m_mapPlain.SetAt(L"$map", Rw_Map);
@@ -323,56 +284,39 @@ void CReservedWordTable::FUN_1416fb400(CStringW& str, void* pMaid)
     int nPassed = 0;
     CStringW strEnd(L"");
     CStringW strExtend(L"");
-    Unk_RwOwnerRef kOwner;
-    FUN_141093800(pMaid, &kOwner);
-    if (FUN_1409ee260(&kOwner) == 0)
-        str.Replace(L"$OwnerName$", GetStringCommon(0x787));
-    else
     {
-        if (!FUN_14067e8c0(&kOwner)->FUN_141700510().IsEmpty())
-            str.Replace(L"$OwnerName$", FUN_14067e8c0(&kOwner)->FUN_141700510());
+        MS2Ptr<CMaid> spMaid = ((CNpc*)pMaid)->FUN_141093800();
+        if (spMaid.get())
+        {
+            if (!spMaid->FUN_141700510().IsEmpty())
+                str.Replace(L"$OwnerName$", spMaid->FUN_141700510());
+            else
+            {
+                TPtrValue<MaidDesc> spDesc = CMaidDescTable::GetInstance()->Find(spMaid->m_nMaidId);
+                if (spDesc.get())
+                    str.Replace(L"$OwnerName$", spDesc->ownerName);
+                else
+                    str.Replace(L"$OwnerName$", GetStringCommon(0x787));
+            }
+            TPtrValue<MaidInfo> spInfo = CMaidInfoTable::GetInstance()->Find(spMaid->m_nMaidId);
+            if (spInfo.get())
+            {
+                if (spInfo->FUN_1409eee80())
+                    str.Replace(L"$MaidSalary$", FUN_14052bd00(0x7a6, FUN_140763e10(spInfo->salary)));
+                else
+                    str.Replace(L"$MaidSalary$", FUN_14052bd00(0x7a7, FUN_140763e10(spInfo->salary)));
+            }
+            nPassed = spMaid->GetOverDays();
+            __int64 nBase = (std::max)(spMaid->m_nExpireTime, GetServerTime());
+            __int64 nExtend = nBase + *FUN_1402056b0(&FUN_1401d3200()->m_nValue) * 24 * 60 * 60;
+            CMsTime kEnd(spMaid->m_nExpireTime);
+            CMsTime kExtendTime(nExtend);
+            strEnd = FUN_1409e90c0(0x798, kEnd.GetYear(), kEnd.GetMonth(), kEnd.GetDay(), kEnd.GetHour(), kEnd.GetMinute());
+            strExtend = FUN_1409e90c0(0x799, kExtendTime.GetYear(), kExtendTime.GetMonth(), kExtendTime.GetDay(), kExtendTime.GetHour(), kExtendTime.GetMinute());
+        }
         else
-        {
-            Unk_RwOwnerRec* pRec = FUN_14067e8c0(&kOwner);
-            Unk_RwUserRef kUser;
-            FUN_14067f780(FUN_1409eed10(), &kUser, pRec->m_nId);
-            if (FUN_14109a370(&kUser) == 0)
-                str.Replace(L"$OwnerName$", GetStringCommon(0x787));
-            else
-                str.Replace(L"$OwnerName$", FUN_1406810d0(&kUser)->m_strName);
-            FUN_140680b50(&kUser);
-        }
-        Unk_RwOwnerRec* pRec2 = FUN_14067e8c0(&kOwner);
-        Unk_RwMaidRef kMaid;
-        FUN_14067f180(FUN_1409eed20(), &kMaid, pRec2->m_nId);
-        if (FUN_140df5ae0(&kMaid) != 0)
-        {
-            if (FUN_1409eee80(FUN_1406810e0(&kMaid)) == 0)
-                str.Replace(L"$MaidSalary$", FUN_14052bd00(0x7a7, FUN_140763e10(FUN_1406810e0(&kMaid)->m_nSalary)));
-            else
-                str.Replace(L"$MaidSalary$", FUN_14052bd00(0x7a6, FUN_140763e10(FUN_1406810e0(&kMaid)->m_nSalary)));
-        }
-        nPassed = FUN_14067db20(FUN_14067e8c0(&kOwner));
-        __int64 nKey = FUN_140869440();
-        __int64 nBase = *FUN_1402e4970(&FUN_14067e8c0(&kOwner)->m_nEnd, &nKey);
-        __int64 nExtend = nBase + *FUN_1402056b0(&FUN_1401d3200()->m_nValue) * 0x15180;
-        CMsTime kEnd(FUN_14067e8c0(&kOwner)->m_nEnd);
-        CMsTime kExtendTime(nExtend);
-        int nMinute = kEnd.GetMinute();
-        int nHour = kEnd.GetHour();
-        int nDay = kEnd.GetDay();
-        int nMonth = kEnd.GetMonth();
-        int nYear = kEnd.GetYear();
-        strEnd = FUN_1409e90c0(0x798, nYear, nMonth, nDay, nHour, nMinute);
-        nMinute = kExtendTime.GetMinute();
-        nHour = kExtendTime.GetHour();
-        nDay = kExtendTime.GetDay();
-        nMonth = kExtendTime.GetMonth();
-        nYear = kExtendTime.GetYear();
-        strExtend = FUN_1409e90c0(0x799, nYear, nMonth, nDay, nHour, nMinute);
-        FUN_140680b80(&kMaid);
+            str.Replace(L"$OwnerName$", GetStringCommon(0x787));
     }
-    FUN_14067e620(&kOwner);
     str.Replace(L"$MaidName$", ((CNpc*)pMaid)->FUN_141093310());
     str.Replace(L"$MaidEndDate$", strEnd);
     str.Replace(L"$MaidExtendDate$", strExtend);
@@ -393,14 +337,14 @@ void CReservedWordTable::FUN_1416fbc20(CStringW& str, PC* pPc)
             break;
         CStringW strToken = str.Mid(nPos, nEnd - nPos + 1);
         CStringW strKey = FUN_1416fc180(CStringW(strToken));
-        if (strKey.Compare(L"$male") != 0 && strKey.Compare(L"$female") != 0)
-            nPos = nEnd + 1;
-        else
+        if (strKey.Compare(L"$male") != 0 || strKey.Compare(L"$female") != 0)
         {
             Rw_GenderOf(strToken, pPc);
             str.Delete(nPos, nEnd - nPos + 1);
             str.Insert(nPos, strToken);
         }
+        else
+            nPos = nEnd + 1;
     }
 }
 
@@ -416,14 +360,14 @@ void CReservedWordTable::FUN_1416fbda0(CStringW& str, int nGender)
             break;
         CStringW strToken = str.Mid(nPos, nEnd - nPos + 1);
         CStringW strKey = FUN_1416fc180(CStringW(strToken));
-        if (strKey.Compare(L"$male") != 0 && strKey.Compare(L"$female") != 0)
-            nPos = nEnd + 1;
-        else
+        if (strKey.Compare(L"$male") != 0 || strKey.Compare(L"$female") != 0)
         {
             Rw_GenderId(strToken, nGender);
             str.Delete(nPos, nEnd - nPos + 1);
             str.Insert(nPos, strToken);
         }
+        else
+            nPos = nEnd + 1;
     }
 }
 
@@ -445,11 +389,14 @@ MS2_REPLACE_METHOD(0x1416FBF60, CReservedWordTable, FUN_1416fbf60, 115, 0x395CBD
 CStringW CReservedWordTable::FUN_1416fbfe0(unsigned int nMapId, CStringW strColor)
 {
     CStringW strRet;
-    if (FUN_141b98380(FUN_140cb17d0(), nMapId) == 0)
-        strRet = CStringTable::GetInstance()->FUN_141811980(3, nMapId);
+    if (FUN_141b98380(FUN_140cb17d0(), nMapId) != 0)
+    {
+        CStringW strName = CStringTable::GetInstance()->FUN_141811980(3, nMapId);
+        CStringW strId = StringFormat(L"{0}", nMapId);
+        strRet = StringFormat(L"<u><a href='event:worldmap,{0}'><FONT color='{2}'>{1}</FONT></a></u>", strId, strName, strColor);
+    }
     else
-        strRet = StringFormat(L"<u><a href='event:worldmap,{0}'><FONT color='{2}'>{1}</FONT></a></u>",
-                              StringFormat(L"{0}", nMapId), CStringTable::GetInstance()->FUN_141811980(3, nMapId), strColor);
+        strRet = CStringTable::GetInstance()->FUN_141811980(3, nMapId);
     return strRet;
 }
 
@@ -512,21 +459,20 @@ void CReservedWordTable::FUN_1416fc540(CStringW& str, TextMap& map)
         CStringW strRest = str.Mid(nStart, nEnd - nStart + 1);
         CStringW strValue;
         CStringW strKey = FUN_1416fc180(CStringW(strRest));
-        if (!map.Lookup(strKey, strValue))
-            nStart = nEnd + 1;
-        else
+        if (map.Lookup(strKey, strValue))
         {
             str.Delete(nEnd, 1);
             str.Insert(nEnd, L"</font>");
-            int nLen = strKey.GetLength();
-            str.Delete(nStart, nLen + 1);
+            str.Delete(nStart, strKey.GetLength() + 1);
             str.Insert(nStart, strValue);
         }
+        else
+            nStart = nEnd + 1;
     }
 }
 
 // @0x1416fc6f0
-void CReservedWordTable::FUN_1416fc6f0()
+void CReservedWordTable::FUN_1416fc6f0(CStringW& str)
 {
 }
 
@@ -535,35 +481,32 @@ void CReservedWordTable::FUN_1416fc710(CStringW& str, int nCount)
 {
     int nFirst = str.Find(L"$", 0);
     int nSecond = str.Find(L"$", nFirst + 1);
-    if (nFirst != -1 && nSecond != -1)
+    if (nFirst == -1 || nSecond == -1)
+        return;
+    CStringW strToken = str.Mid(nFirst, nSecond - nFirst + 1);
+    if (strToken.IsEmpty())
+        return;
+    CStringW strBody(strToken);
+    strBody.Trim(L"$");
+    CStrArray aItems;
+    FUN_14025a680(strBody, aItems, L",");
+    CStringW strPick(L"");
+    for (size_t i = 0; i < aItems.GetCount(); i++)
     {
-        CStringW strToken = str.Mid(nFirst, nSecond - nFirst + 1);
-        if (!strToken.IsEmpty())
+        CStrArray aParts;
+        FUN_14025a680(aItems[i], aParts, L":");
+        if (aParts.GetCount() != 2)
+            continue;
+        if (aParts[0].CompareNoCase(L"singular") == 0)
         {
-            CStringW strBody(strToken);
-            strBody.Trim(L"$");
-            CStrArray aItems;
-            FUN_14025a680(strBody, aItems, L",");
-            CStringW strPick(L"");
-            for (size_t i = 0; i < aItems.GetCount(); i++)
-            {
-                CStrArray aParts;
-                FUN_14025a680(aItems[i], aParts, L":");
-                if (aParts.GetCount() == 2)
-                {
-                    if (aParts[0].CompareNoCase(L"singular") == 0)
-                    {
-                        if (nCount == 1)
-                            strPick = aParts[1];
-                    }
-                    else if (aParts[0].CompareNoCase(L"plural") == 0 && nCount > 1)
-                        strPick = aParts[1];
-                }
-            }
-            if (!strPick.IsEmpty())
-                str.Replace(strToken, strPick);
+            if (nCount == 1)
+                strPick = aParts[1];
         }
+        else if (aParts[0].CompareNoCase(L"plural") == 0 && nCount > 1)
+            strPick = aParts[1];
     }
+    if (!strPick.IsEmpty())
+        str.Replace(strToken, strPick);
 }
 
 // ---------------------------------------------------------------------------------------------------------------
@@ -603,8 +546,7 @@ static void Rw_MyPCLevel(CStringW& strOut, CStringW strArg, CStringW& strWhole)
         strOut = L"";
         return;
     }
-    unsigned short nLevel = (unsigned short)pPc->vfunc_78();
-    strOut.Format(L"%d", nLevel);
+    strOut.Format(L"%d", (unsigned short)pPc->vfunc_78());
 }
 
 
@@ -629,21 +571,31 @@ static void Rw_NpcName(CStringW& strOut, CStringW strArg, CStringW& strWhole)
 // @0x1416fcd70
 static void Rw_NpcPlural(CStringW& strOut, CStringW strArg, CStringW& strWhole)
 {
-    int nLocale = *FUN_140cfd280(FUN_1409a8b10());
-    if (nLocale < 0 || (nLocale > 1 && nLocale != 3))
-        strOut = FUN_141700820(_wtoi(strArg));
-    else
+    switch (*FUN_140cfd280(FUN_1409a8b10()))
+    {
+    case 0:
+    case 1:
+    case 3:
         strOut = FUN_1401aa6a0(_wtoi(strArg));
+        break;
+    default:
+        strOut = FUN_141700820(_wtoi(strArg));
+    }
 }
 
 // @0x1416fce70
 static void Rw_NpcNamePlural(CStringW& strOut, CStringW strArg, CStringW& strWhole)
 {
-    int nLocale = *FUN_140cfd280(FUN_1409a8b10());
-    if (nLocale < 0 || (nLocale > 1 && nLocale != 3))
-        strOut = CStringTable::GetInstance()->FUN_141811980(0x3d, _wtoi(strArg));
-    else
+    switch (*FUN_140cfd280(FUN_1409a8b10()))
+    {
+    case 0:
+    case 1:
+    case 3:
         strOut = CStringTable::GetInstance()->FUN_141811980(2, _wtoi(strArg));
+        break;
+    default:
+        strOut = CStringTable::GetInstance()->FUN_141811980(0x3d, _wtoi(strArg));
+    }
 }
 
 // @0x1416fcfb0
@@ -661,11 +613,16 @@ static void Rw_Item(CStringW& strOut, CStringW strArg, CStringW& strWhole)
 // @0x1416fd0f0
 static void Rw_ItemPlural(CStringW& strOut, CStringW strArg, CStringW& strWhole)
 {
-    int nLocale = *FUN_140cfd280(FUN_1409a8b10());
-    if (nLocale < 0 || (nLocale > 1 && nLocale != 3))
-        strOut = CStringTable::GetInstance()->FUN_141811980(0x3e, _wtoi(strArg));
-    else
+    switch (*FUN_140cfd280(FUN_1409a8b10()))
+    {
+    case 0:
+    case 1:
+    case 3:
         strOut = CStringTable::GetInstance()->FUN_141811980(1, _wtoi(strArg));
+        break;
+    default:
+        strOut = CStringTable::GetInstance()->FUN_141811980(0x3e, _wtoi(strArg));
+    }
 }
 
 // @0x1416fd230
@@ -685,25 +642,18 @@ static void Rw_PenaltyPrice(CStringW& strOut, CStringW strArg, CStringW& strWhol
 {
     PC* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pPc == 0)
-        strOut = L"";
-    else
     {
-        Unk_RwMapInfo kMap = FUN_1403ed2d0()->FUN_141bd30a0();
-        char cTown = FUN_1408851f0(&kMap);
-        FUN_1408850f0(&kMap);
-        if (cTown == 0)
-        {
-            Unk_RwMapInfo kMap2 = FUN_1403ed2d0()->FUN_141bd30a0();
-            int nMapKind = FUN_1403754f0(FUN_140885340(&kMap2));
-            int nPvp = pPc->FUN_141661aa0();
-            unsigned short nLevel = (unsigned short)pPc->vfunc_78();
-            unsigned int nPrice = FUN_1401c0db0()->FUN_140675730(nLevel, nPvp, nMapKind);
-            FUN_1408850f0(&kMap2);
-            strOut.Format(L"%d", nPrice);
-        }
-        else
-            strOut = L"";
+        strOut = L"";
+        return;
     }
+    if (!FUN_1403ed2d0()->FUN_141bd30a0())
+    {
+        strOut = L"";
+        return;
+    }
+    unsigned int nPrice = FUN_1401c0db0()->FUN_140675730(((Unk_RwLevelView*)pPc)->vfunc_78(), pPc->FUN_141661aa0(),
+                                                          FUN_1403754f0(FUN_1403ed2d0()->FUN_141bd30a0().operator->()));
+    strOut.Format(L"%d", nPrice);
 }
 
 // @0x1416fd510
@@ -728,22 +678,15 @@ static void Rw_Ppr(CStringW& strOut, CStringW strArg, CStringW& strWhole)
             strPrev.Remove(L']');
             strPrev.Remove(L')');
             CStringW strWord(strPrev);
-            if (strWord.GetLength() > 0)
-            {
-                CStrArray aForms;
-                FUN_14025a680(strArg, aForms, L", ");
-                if (aForms.GetCount() != 2)
-                    return;
-                wchar_t chLast = strWord.GetAt(strWord.GetLength() - 1);
-                int nFinal = FUN_1413faab0(chLast);
-                CStringW* pForm;
-                if (nFinal == 1)
-                    pForm = &aForms[1];
-                else
-                    pForm = &aForms[0];
-                strOut = *pForm;
+            if (strWord.GetLength() < 1)
+                continue;
+            CStrArray aForms;
+            FUN_14025a680(strArg, aForms, L", ");
+            if (aForms.GetCount() != 2)
                 return;
-            }
+            int nFinal = FUN_1413faab0(strWord.GetAt(strWord.GetLength() - 1));
+            strOut = nFinal != 1 ? aForms[0] : aForms[1];
+            return;
         }
     }
 }
@@ -763,22 +706,15 @@ static void Rw_Pp2(CStringW& strOut, CStringW strArg, CStringW& strWhole)
             strPrev.Remove(L']');
             strPrev.Remove(L')');
             CStringW strWord(strPrev);
-            if (strWord.GetLength() > 0)
-            {
-                CStrArray aForms;
-                FUN_14025a680(strArg, aForms, L", ");
-                if (aForms.GetCount() != 2)
-                    return;
-                wchar_t chLast = strWord.GetAt(strWord.GetLength() - 1);
-                int nFinal = FUN_1413fab50(chLast);
-                CStringW* pForm;
-                if (nFinal == 1)
-                    pForm = &aForms[1];
-                else
-                    pForm = &aForms[0];
-                strOut = *pForm;
+            if (strWord.GetLength() < 1)
+                continue;
+            CStrArray aForms;
+            FUN_14025a680(strArg, aForms, L", ");
+            if (aForms.GetCount() != 2)
                 return;
-            }
+            int nFinal = FUN_1413fab50(strWord.GetAt(strWord.GetLength() - 1));
+            strOut = nFinal != 1 ? aForms[0] : aForms[1];
+            return;
         }
     }
 }
@@ -842,8 +778,7 @@ static void Rw_RouletteCurrent(CStringW& strOut, CStringW strArg, CStringW& strW
     UIRouletteDialog* pDlg = FUN_1416ffcb0(0x4e6d);
     if (pDlg != 0)
     {
-        int nIndex = pDlg->GetSpinIndex();
-        nIndex = nIndex + 1;
+        int nIndex = pDlg->GetSpinIndex() + 1;
         strOut = StringFormat(L"{0}", nIndex);
     }
 }
@@ -866,30 +801,29 @@ static void Rw_Gender(CStringW& strOut, CStringW strArg, CStringW& strWhole)
 {
     PC* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pPc == 0)
-        strOut = L"";
-    else
     {
-        strOut.Replace(L"$", L"");
-        CStrArray aItems;
-        FUN_14025a680(strOut, aItems, L",");
-        CStringW strPick(L"");
-        for (size_t i = 0; i < aItems.GetCount(); i++)
-        {
-            CStrArray aParts;
-            FUN_14025a680(aItems[i], aParts, L":");
-            if (aParts.GetCount() == 2)
-            {
-                if (aParts[0].CompareNoCase(L"male") == 0)
-                {
-                    if (FUN_141658e60(pPc) == 0)
-                        strPick = aParts[1];
-                }
-                else if (aParts[0].CompareNoCase(L"female") == 0 && FUN_141658e60(pPc) == 1)
-                    strPick = aParts[1];
-            }
-        }
-        strOut = strPick;
+        strOut = L"";
+        return;
     }
+    strOut.Replace(L"$", L"");
+    CStrArray aItems;
+    FUN_14025a680(strOut, aItems, L",");
+    CStringW strPick(L"");
+    for (size_t i = 0; i < aItems.GetCount(); i++)
+    {
+        CStrArray aParts;
+        FUN_14025a680(aItems[i], aParts, L":");
+        if (aParts.GetCount() != 2)
+            continue;
+        if (aParts[0].CompareNoCase(L"male") == 0)
+        {
+            if (FUN_141658e60(pPc) == 0)
+                strPick = aParts[1];
+        }
+        else if (aParts[0].CompareNoCase(L"female") == 0 && FUN_141658e60(pPc) == 1)
+            strPick = aParts[1];
+    }
+    strOut = strPick;
 }
 
 // @0x1416fe1f0
@@ -924,7 +858,7 @@ static void Rw_Job(CStringW& strOut, CStringW strArg, CStringW& strWhole)
 // @0x1416fe430
 static void Rw_GenderOf(CStringW& strToken, PC* pPc)
 {
-    int nGender;
+    int nGender = 0;
     if (pPc == 0)
     {
         PC* pLocal = FUN_1403ed2d0()->FUN_141bd0cc0();
@@ -945,16 +879,15 @@ static void Rw_GenderOf(CStringW& strToken, PC* pPc)
     {
         CStrArray aParts;
         FUN_14025a680(aItems[i], aParts, L":");
-        if (aParts.GetCount() == 2)
+        if (aParts.GetCount() != 2)
+            continue;
+        if (aParts[0].CompareNoCase(L"male") == 0)
         {
-            if (aParts[0].CompareNoCase(L"male") == 0)
-            {
-                if (nGender == 0)
-                    strPick = aParts[1];
-            }
-            else if (aParts[0].CompareNoCase(L"female") == 0 && nGender == 1)
+            if (nGender == 0)
                 strPick = aParts[1];
         }
+        else if (aParts[0].CompareNoCase(L"female") == 0 && nGender == 1)
+            strPick = aParts[1];
     }
     strToken = strPick;
 }
@@ -975,16 +908,15 @@ static void Rw_GenderId(CStringW& strToken, int nGender)
         {
             CStrArray aParts;
             FUN_14025a680(aItems[i], aParts, L":");
-            if (aParts.GetCount() == 2)
+            if (aParts.GetCount() != 2)
+                continue;
+            if (aParts[0].CompareNoCase(L"male") == 0)
             {
-                if (aParts[0].CompareNoCase(L"male") == 0)
-                {
-                    if (nGender == 0)
-                        strPick = aParts[1];
-                }
-                else if (aParts[0].CompareNoCase(L"female") == 0 && nGender == 1)
+                if (nGender == 0)
                     strPick = aParts[1];
             }
+            else if (aParts[0].CompareNoCase(L"female") == 0 && nGender == 1)
+                strPick = aParts[1];
         }
         strToken = strPick;
     }
@@ -992,29 +924,23 @@ static void Rw_GenderId(CStringW& strToken, int nGender)
 
 // The encyclopedia link of a monster / npc: the dictionary page when the feature is on, else the web page.
 // @0x1416fe850
-static void Rw_NpcLink(unsigned int nId, CStringW strText, CStringW& strOut)
+static void Rw_NpcLink(unsigned int nId, CStringW& strText, CStringW& strOut)
 {
     strOut.Empty();
-    Unk_RwViewRef kView;
-    FUN_1406cd330(&kView, nId);
-    if (FUN_140729ad0(&kView) == 0 || FUN_14035eb90(&kView)->m_bMaview == 0)
-        strOut = strText;
-    else
+    MS2Ptr<CNpcData> spNpc = FUN_1406cd330(nId);
+    if ((spNpc.get() ? true : false) && spNpc->m_bBossNotifyDefault)
     {
-        const char* pszKind;
-        if (nId / 10000000 == 1)
-            pszKind = "NpcView";
-        else
-            pszKind = "MonsterView";
-        const char* pszKindArg = pszKind;
-        CString strUrl = Unk_SocketFormat("maview:/Encyclopedia/{0}?c={1:08d}", pszKindArg, nId);
+        int bMonster = nId / 10000000 != 1;
+        const char* pszKind = bMonster ? "MonsterView" : "NpcView";
+        CString strUrl = Unk_SocketFormat("maview:/Encyclopedia/{0}?c={1:08d}", pszKind, nId);
         if (CFeatureManager::GetInstance()->FUN_14036d570(0x2f) == 1)
             strOut = StringFormat(L"<u><a href='event:npcdictionary,{0}'><FONT color='#5c2b00'>{1}</FONT></a></u>", nId, strText);
         else
             strOut = StringFormat(L"<a href='event:webPage,{0}'><FONT color='#5c2b00'><u>{1}</u></FONT></a>",
                                   FUN_14016a730((const char*)strUrl, 0), strText);
     }
-    reinterpret_cast<MS2Ptr<CNpcData>*>(&kView)->~MS2Ptr<CNpcData>();
+    else
+        strOut = strText;
 }
 
 // @0x1416fea90
@@ -1053,76 +979,78 @@ static void Rw_NpcNamePluralBold(CStringW& strOut, CStringW strArg, CStringW& st
 static void Rw_ItemBold(CStringW& strOut, CStringW strArg, CStringW& strWhole)
 {
     strOut.Empty();
-    int nItemId = _wtoi(strArg);
-    if (nItemId != 0)
+    unsigned int nItemId = _wtoi(strArg);
+    if (nItemId == 0)
+        return;
+    MS2Ptr<CItemData> spItem = FUN_14053f870(nItemId);
+    if (!spItem)
+        return;
+    if (spItem->property.flag09)
     {
-        Unk_RwItemRef kItem;
-        FUN_14053f870(&kItem, nItemId);
-        if (FUN_1402ffd90(&kItem) == 0)
+        CString strView;
+        switch (spItem->FUN_14053c5c0())
         {
-            if (FUN_1401b52a0(&kItem)->m_bDictionary == 0)
-                strOut = CStringTable::GetInstance()->FUN_141811980(1, nItemId);
-            else
-            {
-                CString strView;
-                int nKind = FUN_14053c5c0(FUN_1401b52a0(&kItem));
-                if (nKind == 1)
-                    strView = "ItemEquipView";
-                else if (nKind == 6)
-                    strView = "ItemInstallView";
-                else if (nKind == 9)
-                    strView = "ItemRideView";
-                else
-                    strView = "ItemEtcView";
-                CStringW strName = CStringTable::GetInstance()->FUN_141811980(1, nItemId);
-                CString strUrl = StringFormat("maview:/Encyclopedia/{0}?c={1:08d}", strView, nItemId);
-                if (CFeatureManager::GetInstance()->FUN_14036d570(0x2f) == 1)
-                    strOut = StringFormat(L"<u><a href='event:itemdictionary,{0}'><FONT color='#5c2b00'>{1}</FONT></a></u>", (unsigned int)nItemId, strName);
-                else
-                    strOut = StringFormat(L"<a href='event:webPage,{0}'><u><FONT color='#5c2b00'>{1}</FONT></u></a>",
-                                          FUN_14016a730((const char*)strUrl, 0), strName);
-            }
+        case 1:
+            strView = "ItemEquipView";
+            break;
+        case 6:
+            strView = "ItemInstallView";
+            break;
+        case 9:
+            strView = "ItemRideView";
+            break;
+        default:
+            strView = "ItemEtcView";
+            break;
         }
-        FUN_1401b50d0(&kItem);
+        CStringW strName = CStringTable::GetInstance()->FUN_141811980(1, nItemId);
+        CString strUrl = Unk_SocketFormat("maview:/Encyclopedia/{0}?c={1:08d}", strView, nItemId);
+        if (CFeatureManager::GetInstance()->FUN_14036d570(0x2f) == 1)
+            strOut = StringFormat(L"<u><a href='event:itemdictionary,{0}'><FONT color='#5c2b00'>{1}</FONT></a></u>", nItemId, strName);
+        else
+            strOut = StringFormat(L"<a href='event:webPage,{0}'><u><FONT color='#5c2b00'>{1}</FONT></u></a>",
+                                  FUN_14016a730((const char*)strUrl, 0), strName);
     }
+    else
+        strOut = CStringTable::GetInstance()->FUN_141811980(1, nItemId);
 }
 
 // @0x1416ff030
 static void Rw_MapBold(CStringW& strOut, CStringW strArg, CStringW& strWhole)
 {
     strOut.Empty();
-    int nMapId = _wtoi(strArg);
-    if (nMapId != 0)
+    unsigned int nMapId = _wtoi(strArg);
+    if (nMapId == 0)
+        return;
+    if (FUN_141b98380(FUN_140cb17d0(), nMapId) != 0)
     {
-        if (FUN_141b98380(FUN_140cb17d0(), nMapId) == 0)
-            strOut = CStringTable::GetInstance()->FUN_141811980(3, nMapId);
-        else
-        {
-            CStringW strName = CStringTable::GetInstance()->FUN_141811980(3, nMapId);
-            strOut = StringFormat(L"<u><a href='event:worldmap,{0}'><FONT color='#5c2b00'>{1}</FONT></a></u>",
-                                  StringFormat(L"{0}", (unsigned int)nMapId), strName);
-        }
+        CStringW strName = CStringTable::GetInstance()->FUN_141811980(3, nMapId);
+        CStringW strId = StringFormat(L"{0}", nMapId);
+        strOut = StringFormat(L"<u><a href='event:worldmap,{0}'><FONT color='#5c2b00'>{1}</FONT></a></u>", strId, strName);
     }
+    else
+        strOut = CStringTable::GetInstance()->FUN_141811980(3, nMapId);
 }
 
 // @0x1416ff1b0
 static void Rw_DungeonTitleBold(CStringW& strOut, CStringW strArg, CStringW& strWhole)
 {
     strOut.Empty();
-    int nId = FUN_140718200(strArg);
+    unsigned int nId = FUN_140718200(strArg);
     if (nId == 0)
         return;
-    strOut = StringFormat(L"<u><a href='event:dungeon,{0}'><FONT color='#5c2b00'>{1}</FONT></a></u>", (unsigned int)nId, FUN_1416ff950(nId));
+    strOut = StringFormat(L"<u><a href='event:dungeon,{0}'><FONT color='#5c2b00'>{1}</FONT></a></u>", nId, FUN_1416ff950(nId));
 }
 
 // @0x1416ff280
 static void Rw_QuestBold(CStringW& strOut, CStringW strArg, CStringW& strWhole)
 {
     strOut.Empty();
-    int nId = FUN_140718200(strArg);
+    unsigned int nId = FUN_140718200(strArg);
     if (nId == 0)
         return;
-    strOut = StringFormat(L"<u><a href='event:quest,{0}'><FONT color='#5c2b00'>{1}</FONT></a></u>", (unsigned int)nId, FUN_1416e4df0(nId));
+    CStringW strName = FUN_1416e4df0(nId);
+    strOut = StringFormat(L"<u><a href='event:quest,{0}'><FONT color='#5c2b00'>{1}</FONT></a></u>", nId, strName);
 }
 
 // @0x1416ff350
@@ -1160,17 +1088,16 @@ static void Rw_Maview(CStringW& strOut, CStringW strArg, CStringW& strWhole)
     CStrArray aParts;
     FUN_14025a680(strArg, aParts, L",");
     CStringW strText, strUrl, strColor;
-    if (Rw_SplitLink(aParts, strText, strUrl, strColor))
+    if (!Rw_SplitLink(aParts, strText, strUrl, strColor))
+        return;
+    if (strUrl.Replace(L"http://maview.nexon.com/", L"maview:/") == 0)
+        strUrl.Replace(L"maview.nexon.com/", L"maview:/");
+    CStringW strFormat(L"<a href ='event:webPage,{0}'><u>{1}</u></a></font>");
+    strOut = StringFormat((const wchar_t*)strFormat, strUrl, strText);
+    if (!strColor.IsEmpty())
     {
-        if (strUrl.Replace(L"http://maview.nexon.com/", L"maview:/") == 0)
-            strUrl.Replace(L"maview.nexon.com/", L"maview:/");
-        CStringW strFormat(L"<a href ='event:webPage,{0}'><u>{1}</u></a></font>");
-        strOut = StringFormat((const wchar_t*)strFormat, strUrl, strText);
-        if (!strColor.IsEmpty())
-        {
-            CStringW strColored(L"<font color='#{0}'>{1}</font>");
-            strOut = StringFormat((const wchar_t*)strColored, strColor, strOut);
-        }
+        CStringW strColored(L"<font color='#{0}'>{1}</font>");
+        strOut = StringFormat((const wchar_t*)strColored, strColor, strOut);
     }
 }
 
@@ -1181,15 +1108,14 @@ static void Rw_ExternalWeb(CStringW& strOut, CStringW strArg, CStringW& strWhole
     CStrArray aParts;
     FUN_14025a680(strArg, aParts, L",");
     CStringW strText, strUrl, strColor;
-    if (Rw_SplitLink(aParts, strText, strUrl, strColor))
+    if (!Rw_SplitLink(aParts, strText, strUrl, strColor))
+        return;
+    CStringW strFormat(L"<a href ='event:externalWeb,{0}'><u>{1}</u></a></font>");
+    strOut = StringFormat((const wchar_t*)strFormat, strUrl, strText);
+    if (!strColor.IsEmpty())
     {
-        CStringW strFormat(L"<a href ='event:externalWeb,{0}'><u>{1}</u></a></font>");
-        strOut = StringFormat((const wchar_t*)strFormat, strUrl, strText);
-        if (!strColor.IsEmpty())
-        {
-            CStringW strColored(L"<font color='#{0}'>{1}</font>");
-            strOut = StringFormat((const wchar_t*)strColored, strColor, strOut);
-        }
+        CStringW strColored(L"<font color='#{0}'>{1}</font>");
+        strOut = StringFormat((const wchar_t*)strColored, strColor, strOut);
     }
 }
 
@@ -1198,11 +1124,13 @@ CStringW FUN_141700820(int nId)
 {
     CStringW strFirst = CStringTable::GetInstance()->FUN_141811980(0x13, nId);
     CStringW strSecond = CStringTable::GetInstance()->FUN_141811980(0x3d, nId);
-    if (strFirst.GetLength() == 0)
-        return strSecond;
-    CStringW strRet;
-    strRet.Format(L"%s %s", (const wchar_t*)strFirst, (const wchar_t*)strSecond);
-    return strRet;
+    if (strFirst.GetLength() != 0)
+    {
+        CStringW strRet;
+        strRet.Format(L"%s %s", (const wchar_t*)strFirst, (const wchar_t*)strSecond);
+        return strRet;
+    }
+    return strSecond;
 }
 
 // @0x1416ff950

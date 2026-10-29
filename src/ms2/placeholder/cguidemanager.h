@@ -68,7 +68,7 @@ public:
     void ProcessOccurrences();                              // 0x14138be90
     void AddTrigger(TriggerType eType, int nValue, int nSubValue);  // 0x14138bf00
     bool CheckTrigger(TriggerType eType, Unk_GcOptInt oValue, Unk_GcOptInt oSubValue);   // 0x14138c0d0
-    bool CheckTriggerRange(TriggerType eType, Unk_GameEventIntRange range);              // 0x14138c210
+    bool CheckTriggerRange(TriggerType eType, const Unk_GameEventIntRange& range);              // 0x14138c210
     bool ProcessEntity(MS2Ptr<CGuideEntity> spEntity, int nMode);                // 0x14138c2d0
     void FinishById(int nId);                               // 0x14138c680
     void FinishEntity(MS2Ptr<CGuideEntity> spEntity);       // 0x14138c710
@@ -113,7 +113,7 @@ public:
     std::set<Occurrence> m_setIndexed;                      // +0x168 occurrences with a sub-value index
     std::vector<std::pair<Occurrence, int> > m_vecSub;      // +0x178 raised (occurrence, sub value) pairs
     std::map<Occurrence, GuideOccurContainer> m_byOccur;    // +0x190
-    std::set<long> m_setQueued;                             // +0x1a0 ids of the queued entities
+    std::set<unsigned int> m_setQueued;                     // +0x1a0 ids of the queued entities
     std::list<MS2Ptr<CGuideEntity> > m_listQueued;          // +0x1b0
     std::map<CStringA, int> m_mapNames;                     // +0x1c0 interned occurrence names
 };

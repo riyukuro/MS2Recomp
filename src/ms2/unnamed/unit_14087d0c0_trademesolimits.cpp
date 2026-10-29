@@ -34,13 +34,14 @@ int FUN_14087d120()
 }
 
 // @0x14087d150
-// MS2-FUNCTIONAL: exe keeps the meso*percent product and the quotient in a stack temp (extra stores, xmm order)
 __int64 FUN_14087d150(__int64 nMeso, float fRate)
 {
     if (nMeso == 0)
         return 0;
     int nPercent = FUN_14087d120();
-    __int64 nFee = (__int64)((float)((nMeso * nPercent) / 100) * (1.0f - fRate));
+    __int64 nFee = nMeso * nPercent;
+    nFee /= 100;
+    nFee *= (1.0f - fRate);
     return nFee < 0 ? 0 : nFee;
 }
 

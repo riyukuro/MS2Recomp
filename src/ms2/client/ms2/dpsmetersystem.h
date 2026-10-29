@@ -29,7 +29,7 @@ public:
 
     SYSTEMTIME m_time;                                      // +0x18
     __int64 m_nTagId;                                       // +0x28 the hit's tag (CDamageRecord::m_nTagId)
-    int m_nSkillId;                                         // +0x30 skill or additional effect id
+    unsigned m_nSkillId;                                    // +0x30 skill or additional effect id
     short m_nLevel;                                         // +0x34
     int m_nCasterId;                                        // +0x38
     int m_nTargetId;                                        // +0x3c
@@ -210,6 +210,7 @@ public:
     void SetCombat(int bCombat);                            // 0x14117e860
     void GetSummary(CStringW& str);                         // 0x14117e960
     void FUN_14117ea90(unsigned nTime, int bCsv);           // 0x14117ea90 builds m_strSummary / m_strCsv
+    const CStringW& FUN_141181540();                        // 0x141181540 the character sheet text
     __int64 GetAverageWeaponAttack();                       // 0x1411819e0 the mean weapon attack of both hands
     CStringW GetStatText(int nStat, int bPercent);          // 0x141181d30 a stat of the player as text
     CStringW GetBonusText(int nStat, int bPercent);         // 0x141181fb0 an item bonus of the player as text
@@ -256,10 +257,10 @@ public:
     CRichEditCtrl m_editText;                               // +0x140 DDX 0x4d0
     CButton m_btnSave;                                      // +0x228 DDX 0x406
     CLockCriticalSection m_lock;                            // +0x310
-    RECT m_rcClient;                                        // +0x340 (no ctor in the exe)
+    RECT m_rcWindow;                                        // +0x340 (no ctor in the exe)
 };
 MS2_CHECK_OFFSET(CDPSDialog, m_editText, 0x140);
 MS2_CHECK_OFFSET(CDPSDialog, m_btnSave, 0x228);
 MS2_CHECK_OFFSET(CDPSDialog, m_lock, 0x310);
-MS2_CHECK_OFFSET(CDPSDialog, m_rcClient, 0x340);
+MS2_CHECK_OFFSET(CDPSDialog, m_rcWindow, 0x340);
 MS2_CHECK_SIZE(CDPSDialog, 0x350);

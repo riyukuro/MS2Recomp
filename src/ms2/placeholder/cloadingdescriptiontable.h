@@ -51,7 +51,7 @@ class CLoadingDescription : public CPtred
 {
 public:
     CLoadingDescription();                                  // 0x14144f0a0
-    virtual ~CLoadingDescription();                         // 0x14144f220 (deleting dtor 0x14144f390)
+    virtual ~CLoadingDescription() = default;               // 0x14144f220 (deleting dtor 0x14144f390; implicit: no vptr store; pinned)
 
     CString m_strId;                                        // +0x18 "id"
     CString m_strStart;                                     // +0x20 "startTime": y-m-d-h-m-s
@@ -67,7 +67,7 @@ public:
     typedef Unk_LdRowPtr<CLoadingDescription> DescPtr;
 
     CLoadingDescriptionCache();                             // 0x14144f120
-    virtual ~CLoadingDescriptionCache();                    // 0x14144f280 (deleting dtor 0x14144f3d0)
+    virtual ~CLoadingDescriptionCache() = default;          // 0x14144f280 (deleting dtor 0x14144f3d0; implicit: no vptr store; pinned)
 
     ATL::CAtlArray<DescPtr> m_descs;                        // +0x28
     CLockCriticalSection m_lock;                            // +0x48

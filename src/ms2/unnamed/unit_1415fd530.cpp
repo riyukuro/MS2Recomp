@@ -441,75 +441,122 @@ void FUN_1416000f0(void*, const void*) {}
 // MS2-FUNCTIONAL: std::allocator is stateless and does not propagate on copy assignment; _Pocca therefore has no effect.
 // @0x141600120
 void FUN_141600120(void*, const void*) {}
-// MS2-FUNCTIONAL: std::allocator is stateless and does not propagate on copy assignment; _Pocca therefore has no effect.
+extern void* FUN_141601ad0(void*);
+extern void* FUN_141601b10(void*);
+extern void* FUN_141601b50(void*);
+extern void* FUN_141601b90(void*);
+extern void* FUN_141601bd0(void*);
+extern void* FUN_141601c10(void*);
+extern void* FUN_141601c50(void*);
+extern void* FUN_141601c90(void*);
+extern void* FUN_141601cd0(void*);
+extern void* FUN_141601d10(void*);
+extern void* FUN_141601d50(void*);
+extern void* FUN_141601d90(void*);
+extern void* FUN_141601dd0(void*);
+extern void* FUN_141601e10(void*);
+extern void* FUN_141601e50(void*);
+extern void* FUN_141601e90(void*);
+extern void* FUN_141601ed0(void*);
+extern void* FUN_141601f10(void*);
+extern void* FUN_141601f50(void*);
+extern void* FUN_141601f90(void*);
+extern void* FUN_141601fd0(void*);
+extern void* FUN_141602010(void*);
+extern void* FUN_141602050(void*);
+extern void FUN_1415d3d90(void*, void*, void*);
+extern void FUN_1415d3de0(void*, void*, void*);
+extern void FUN_1415d3e30(void*, void*, void*);
+extern void FUN_1415d3e80(void*, void*, void*);
+extern void FUN_1415d3ed0(void*, void*, void*);
+extern void FUN_1415d3f20(void*, void*, void*);
+extern void FUN_1415d3f70(void*, void*, void*);
+extern void FUN_1415d3fc0(void*, void*, void*);
+extern void FUN_1415d4010(void*, void*, void*);
+extern void FUN_1415d4060(void*, void*, void*);
+extern void FUN_1415d40b0(void*, void*, void*);
+extern void FUN_1415d4100(void*, void*, void*);
+extern void FUN_1415d4150(void*, void*, void*);
+extern void FUN_1415d41a0(void*, void*, void*);
+extern void FUN_1415d41f0(void*, void*, void*);
+extern void FUN_1415d4240(void*, void*, void*);
+extern void FUN_1415d4290(void*, void*, void*);
+extern void FUN_1415d42e0(void*, void*, void*);
+extern void FUN_1415d4330(void*, void*, void*);
+extern void FUN_1415d4380(void*, void*, void*);
+extern void FUN_1415d43d0(void*, void*, void*);
+extern void FUN_1415d4420(void*, void*, void*);
+extern void FUN_1415d4470(void*, void*, void*);
+// 0x141600150..0x1416006d0: std::vector<T>::_Destroy(first, last), one per element type: _Destroy_range(first, last, _Getal()).
+// MS2-FUNCTIONAL: vector _Destroy, calling the exe getter and _Destroy_range
 // @0x141600150
-void FUN_141600150(void*, const void*) {}
-// MS2-FUNCTIONAL: std::allocator is stateless and does not propagate on copy assignment; _Pocca therefore has no effect.
+void FUN_141600150(void* self, void* pFirst, void* pLast) { FUN_1415d3d90(pFirst, pLast, FUN_141601ad0(self)); }
+// MS2-FUNCTIONAL: vector _Destroy, calling the exe getter and _Destroy_range
 // @0x141600190
-void FUN_141600190(void*, const void*) {}
-// MS2-FUNCTIONAL: std::allocator is stateless and does not propagate on copy assignment; _Pocca therefore has no effect.
+void FUN_141600190(void* self, void* pFirst, void* pLast) { FUN_1415d3de0(pFirst, pLast, FUN_141601b10(self)); }
+// MS2-FUNCTIONAL: vector _Destroy, calling the exe getter and _Destroy_range
 // @0x1416001d0
-void FUN_1416001d0(void*, const void*) {}
-// MS2-FUNCTIONAL: std::allocator is stateless and does not propagate on copy assignment; _Pocca therefore has no effect.
+void FUN_1416001d0(void* self, void* pFirst, void* pLast) { FUN_1415d3e30(pFirst, pLast, FUN_141601b50(self)); }
+// MS2-FUNCTIONAL: vector _Destroy, calling the exe getter and _Destroy_range
 // @0x141600210
-void FUN_141600210(void*, const void*) {}
-// MS2-FUNCTIONAL: std::allocator is stateless and does not propagate on copy assignment; _Pocca therefore has no effect.
+void FUN_141600210(void* self, void* pFirst, void* pLast) { FUN_1415d3e80(pFirst, pLast, FUN_141601b90(self)); }
+// MS2-FUNCTIONAL: vector _Destroy, calling the exe getter and _Destroy_range
 // @0x141600250
-void FUN_141600250(void*, const void*) {}
-// MS2-FUNCTIONAL: std::allocator is stateless and does not propagate on copy assignment; _Pocca therefore has no effect.
+void FUN_141600250(void* self, void* pFirst, void* pLast) { FUN_1415d3ed0(pFirst, pLast, FUN_141601bd0(self)); }
+// MS2-FUNCTIONAL: vector _Destroy, calling the exe getter and _Destroy_range
 // @0x141600290
-void FUN_141600290(void*, const void*) {}
-// MS2-FUNCTIONAL: std::allocator is stateless and does not propagate on copy assignment; _Pocca therefore has no effect.
+void FUN_141600290(void* self, void* pFirst, void* pLast) { FUN_1415d3f20(pFirst, pLast, FUN_141601c10(self)); }
+// MS2-FUNCTIONAL: vector _Destroy, calling the exe getter and _Destroy_range
 // @0x1416002d0
-void FUN_1416002d0(void*, const void*) {}
-// MS2-FUNCTIONAL: std::allocator is stateless and does not propagate on copy assignment; _Pocca therefore has no effect.
+void FUN_1416002d0(void* self, void* pFirst, void* pLast) { FUN_1415d3f70(pFirst, pLast, FUN_141601c50(self)); }
+// MS2-FUNCTIONAL: vector _Destroy, calling the exe getter and _Destroy_range
 // @0x141600310
-void FUN_141600310(void*, const void*) {}
-// MS2-FUNCTIONAL: std::allocator is stateless and does not propagate on copy assignment; _Pocca therefore has no effect.
+void FUN_141600310(void* self, void* pFirst, void* pLast) { FUN_1415d3fc0(pFirst, pLast, FUN_141601c90(self)); }
+// MS2-FUNCTIONAL: vector _Destroy, calling the exe getter and _Destroy_range
 // @0x141600350
-void FUN_141600350(void*, const void*) {}
-// MS2-FUNCTIONAL: std::allocator is stateless and does not propagate on copy assignment; _Pocca therefore has no effect.
+void FUN_141600350(void* self, void* pFirst, void* pLast) { FUN_1415d4010(pFirst, pLast, FUN_141601cd0(self)); }
+// MS2-FUNCTIONAL: vector _Destroy, calling the exe getter and _Destroy_range
 // @0x141600390
-void FUN_141600390(void*, const void*) {}
-// MS2-FUNCTIONAL: std::allocator is stateless and does not propagate on copy assignment; _Pocca therefore has no effect.
+void FUN_141600390(void* self, void* pFirst, void* pLast) { FUN_1415d4060(pFirst, pLast, FUN_141601d10(self)); }
+// MS2-FUNCTIONAL: vector _Destroy, calling the exe getter and _Destroy_range
 // @0x1416003d0
-void FUN_1416003d0(void*, const void*) {}
-// MS2-FUNCTIONAL: std::allocator is stateless and does not propagate on copy assignment; _Pocca therefore has no effect.
+void FUN_1416003d0(void* self, void* pFirst, void* pLast) { FUN_1415d40b0(pFirst, pLast, FUN_141601d50(self)); }
+// MS2-FUNCTIONAL: vector _Destroy, calling the exe getter and _Destroy_range
 // @0x141600410
-void FUN_141600410(void*, const void*) {}
-// MS2-FUNCTIONAL: std::allocator is stateless and does not propagate on copy assignment; _Pocca therefore has no effect.
+void FUN_141600410(void* self, void* pFirst, void* pLast) { FUN_1415d4100(pFirst, pLast, FUN_141601d90(self)); }
+// MS2-FUNCTIONAL: vector _Destroy, calling the exe getter and _Destroy_range
 // @0x141600450
-void FUN_141600450(void*, const void*) {}
-// MS2-FUNCTIONAL: std::allocator is stateless and does not propagate on copy assignment; _Pocca therefore has no effect.
+void FUN_141600450(void* self, void* pFirst, void* pLast) { FUN_1415d4150(pFirst, pLast, FUN_141601dd0(self)); }
+// MS2-FUNCTIONAL: vector _Destroy, calling the exe getter and _Destroy_range
 // @0x141600490
-void FUN_141600490(void*, const void*) {}
-// MS2-FUNCTIONAL: std::allocator is stateless and does not propagate on copy assignment; _Pocca therefore has no effect.
+void FUN_141600490(void* self, void* pFirst, void* pLast) { FUN_1415d41a0(pFirst, pLast, FUN_141601e10(self)); }
+// MS2-FUNCTIONAL: vector _Destroy, calling the exe getter and _Destroy_range
 // @0x1416004d0
-void FUN_1416004d0(void*, const void*) {}
-// MS2-FUNCTIONAL: std::allocator is stateless and does not propagate on copy assignment; _Pocca therefore has no effect.
+void FUN_1416004d0(void* self, void* pFirst, void* pLast) { FUN_1415d41f0(pFirst, pLast, FUN_141601e50(self)); }
+// MS2-FUNCTIONAL: vector _Destroy, calling the exe getter and _Destroy_range
 // @0x141600510
-void FUN_141600510(void*, const void*) {}
-// MS2-FUNCTIONAL: std::allocator is stateless and does not propagate on copy assignment; _Pocca therefore has no effect.
+void FUN_141600510(void* self, void* pFirst, void* pLast) { FUN_1415d4240(pFirst, pLast, FUN_141601e90(self)); }
+// MS2-FUNCTIONAL: vector _Destroy, calling the exe getter and _Destroy_range
 // @0x141600550
-void FUN_141600550(void*, const void*) {}
-// MS2-FUNCTIONAL: std::allocator is stateless and does not propagate on copy assignment; _Pocca therefore has no effect.
+void FUN_141600550(void* self, void* pFirst, void* pLast) { FUN_1415d4290(pFirst, pLast, FUN_141601ed0(self)); }
+// MS2-FUNCTIONAL: vector _Destroy, calling the exe getter and _Destroy_range
 // @0x141600590
-void FUN_141600590(void*, const void*) {}
-// MS2-FUNCTIONAL: std::allocator is stateless and does not propagate on copy assignment; _Pocca therefore has no effect.
+void FUN_141600590(void* self, void* pFirst, void* pLast) { FUN_1415d42e0(pFirst, pLast, FUN_141601f10(self)); }
+// MS2-FUNCTIONAL: vector _Destroy, calling the exe getter and _Destroy_range
 // @0x1416005d0
-void FUN_1416005d0(void*, const void*) {}
-// MS2-FUNCTIONAL: std::allocator is stateless and does not propagate on copy assignment; _Pocca therefore has no effect.
+void FUN_1416005d0(void* self, void* pFirst, void* pLast) { FUN_1415d4330(pFirst, pLast, FUN_141601f50(self)); }
+// MS2-FUNCTIONAL: vector _Destroy, calling the exe getter and _Destroy_range
 // @0x141600610
-void FUN_141600610(void*, const void*) {}
-// MS2-FUNCTIONAL: std::allocator is stateless and does not propagate on copy assignment; _Pocca therefore has no effect.
+void FUN_141600610(void* self, void* pFirst, void* pLast) { FUN_1415d4380(pFirst, pLast, FUN_141601f90(self)); }
+// MS2-FUNCTIONAL: vector _Destroy, calling the exe getter and _Destroy_range
 // @0x141600650
-void FUN_141600650(void*, const void*) {}
-// MS2-FUNCTIONAL: std::allocator is stateless and does not propagate on copy assignment; _Pocca therefore has no effect.
+void FUN_141600650(void* self, void* pFirst, void* pLast) { FUN_1415d43d0(pFirst, pLast, FUN_141601fd0(self)); }
+// MS2-FUNCTIONAL: vector _Destroy, calling the exe getter and _Destroy_range
 // @0x141600690
-void FUN_141600690(void*, const void*) {}
-// MS2-FUNCTIONAL: std::allocator is stateless and does not propagate on copy assignment; _Pocca therefore has no effect.
+void FUN_141600690(void* self, void* pFirst, void* pLast) { FUN_1415d4420(pFirst, pLast, FUN_141602010(self)); }
+// MS2-FUNCTIONAL: vector _Destroy, calling the exe getter and _Destroy_range
 // @0x1416006d0
-void FUN_1416006d0(void*, const void*) {}
+void FUN_1416006d0(void* self, void* pFirst, void* pLast) { FUN_1415d4470(pFirst, pLast, FUN_141602050(self)); }
 
 // @0x141601a20
 void* FUN_141601a20(void* p) { return p; }
@@ -748,29 +795,6 @@ void* FUN_141601ed0(void* p) { return p; }
 // MS2-PIN: ?FUN_1416000c0@@YAXPEBX@Z 0x1416000c0 ; MS2-FUNCTIONAL: stateless allocator copy-assignment hook
 // MS2-PIN: ?FUN_1416000f0@@YAXPEBX@Z 0x1416000f0 ; MS2-FUNCTIONAL: stateless allocator copy-assignment hook
 // MS2-PIN: ?FUN_141600120@@YAXPEBX@Z 0x141600120 ; MS2-FUNCTIONAL: stateless allocator copy-assignment hook
-// MS2-PIN: ?FUN_141600150@@YAXPEBX@Z 0x141600150 ; MS2-FUNCTIONAL: stateless allocator copy-assignment hook
-// MS2-PIN: ?FUN_141600190@@YAXPEBX@Z 0x141600190 ; MS2-FUNCTIONAL: stateless allocator copy-assignment hook
-// MS2-PIN: ?FUN_1416001d0@@YAXPEBX@Z 0x1416001d0 ; MS2-FUNCTIONAL: stateless allocator copy-assignment hook
-// MS2-PIN: ?FUN_141600210@@YAXPEBX@Z 0x141600210 ; MS2-FUNCTIONAL: stateless allocator copy-assignment hook
-// MS2-PIN: ?FUN_141600250@@YAXPEBX@Z 0x141600250 ; MS2-FUNCTIONAL: stateless allocator copy-assignment hook
-// MS2-PIN: ?FUN_141600290@@YAXPEBX@Z 0x141600290 ; MS2-FUNCTIONAL: stateless allocator copy-assignment hook
-// MS2-PIN: ?FUN_1416002d0@@YAXPEBX@Z 0x1416002d0 ; MS2-FUNCTIONAL: stateless allocator copy-assignment hook
-// MS2-PIN: ?FUN_141600310@@YAXPEBX@Z 0x141600310 ; MS2-FUNCTIONAL: stateless allocator copy-assignment hook
-// MS2-PIN: ?FUN_141600350@@YAXPEBX@Z 0x141600350 ; MS2-FUNCTIONAL: stateless allocator copy-assignment hook
-// MS2-PIN: ?FUN_141600390@@YAXPEBX@Z 0x141600390 ; MS2-FUNCTIONAL: stateless allocator copy-assignment hook
-// MS2-PIN: ?FUN_1416003d0@@YAXPEBX@Z 0x1416003d0 ; MS2-FUNCTIONAL: stateless allocator copy-assignment hook
-// MS2-PIN: ?FUN_141600410@@YAXPEBX@Z 0x141600410 ; MS2-FUNCTIONAL: stateless allocator copy-assignment hook
-// MS2-PIN: ?FUN_141600450@@YAXPEBX@Z 0x141600450 ; MS2-FUNCTIONAL: stateless allocator copy-assignment hook
-// MS2-PIN: ?FUN_141600490@@YAXPEBX@Z 0x141600490 ; MS2-FUNCTIONAL: stateless allocator copy-assignment hook
-// MS2-PIN: ?FUN_1416004d0@@YAXPEBX@Z 0x1416004d0 ; MS2-FUNCTIONAL: stateless allocator copy-assignment hook
-// MS2-PIN: ?FUN_141600510@@YAXPEBX@Z 0x141600510 ; MS2-FUNCTIONAL: stateless allocator copy-assignment hook
-// MS2-PIN: ?FUN_141600550@@YAXPEBX@Z 0x141600550 ; MS2-FUNCTIONAL: stateless allocator copy-assignment hook
-// MS2-PIN: ?FUN_141600590@@YAXPEBX@Z 0x141600590 ; MS2-FUNCTIONAL: stateless allocator copy-assignment hook
-// MS2-PIN: ?FUN_1416005d0@@YAXPEBX@Z 0x1416005d0 ; MS2-FUNCTIONAL: stateless allocator copy-assignment hook
-// MS2-PIN: ?FUN_141600610@@YAXPEBX@Z 0x141600610 ; MS2-FUNCTIONAL: stateless allocator copy-assignment hook
-// MS2-PIN: ?FUN_141600650@@YAXPEBX@Z 0x141600650 ; MS2-FUNCTIONAL: stateless allocator copy-assignment hook
-// MS2-PIN: ?FUN_141600690@@YAXPEBX@Z 0x141600690 ; MS2-FUNCTIONAL: stateless allocator copy-assignment hook
-// MS2-PIN: ?FUN_1416006d0@@YAXPEBX@Z 0x1416006d0 ; MS2-FUNCTIONAL: stateless allocator copy-assignment hook
 // MS2-PIN: ?FUN_1415ffde0@@YAXXZ 0x1415ffde0 ; MS2-FUNCTIONAL: empty allocator hook
 // MS2-PIN: ?FUN_141600e10@@YAPEAXPEAX@Z 0x141600e10 ; MS2-FUNCTIONAL: returns proxy address after read-only accessors
 // MS2-PIN: ?FUN_141600e40@@YAPEAXPEAX@Z 0x141600e40 ; MS2-FUNCTIONAL: returns proxy address after read-only accessors

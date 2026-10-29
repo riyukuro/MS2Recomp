@@ -171,34 +171,31 @@ void UISystemText::OnLoadComplete()
     }
 }
 
-// MS2-FUNCTIONAL: the exe keeps extra call-result temporaries (frame / EH layout differs); source form unknown
 // @0x141b15b50
 void UISystemText::vfunc_15()
 {
-    if (!FUN_140a467d0(&m_30) && !m_88.empty())
+    if (FUN_140a467d0(&m_30))
+        return;
+    if (m_88.empty())
+        return;
+    unsigned int nNow = FUN_140869420();
+    std::map<int, unsigned int>::iterator it = m_88.begin();
+    std::map<int, unsigned int>::iterator itEnd = m_88.end();
+    while (it != itEnd)
     {
-        unsigned int nNow = FUN_140869420();
-        std::map<int, unsigned int>::iterator it = m_88.begin();
-        std::map<int, unsigned int>::iterator itEnd = m_88.end();
-        while (it != itEnd)
+        if (it->second > nNow)
         {
-            if (nNow < it->second)
-            {
-                ++it;
-            }
-            else
-            {
-                if (it->first == 0xc)
-                    m_30.operator->()->Invoke("onAiWarningMessage");
-                std::map<int, unsigned int>::iterator itDel = it;
-                ++it;
-                m_88.erase(itDel);
-            }
+            ++it;
+            continue;
         }
+        if (it->first == 0xc)
+            m_30.operator->()->Invoke("onAiWarningMessage");
+        std::map<int, unsigned int>::iterator itDel = it;
+        ++it;
+        m_88.erase(itDel);
     }
 }
 
-// MS2-FUNCTIONAL: the exe keeps extra call-result temporaries (frame / EH layout differs); source form unknown
 // @0x141b15ca0
 void UISystemText::vfunc_43()
 {
@@ -209,8 +206,7 @@ void UISystemText::vfunc_43()
         UISwfEntity* pUpper = FUN_14096e340(0x4e3d);
         if (pUpper != 0)
         {
-            MS2Ptr<ASGameEntity> pUpperRoot(dynamic_cast<ASGameEntity*>((AScript*)pUpper->FUN_1422dba00()));
-            if (pUpperRoot.get())
+            if (MS2Ptr<ASGameEntity> pUpperRoot = dynamic_cast<ASGameEntity*>((AScript*)pUpper->FUN_1422dba00()))
                 nTop = (int)(static_cast<Unk_StEntity*>(pUpperRoot.operator->())->FUN_1422c1110() + (float)pUpperRoot->FUN_1422c13b0() + 10.0f);
         }
         pEntity->vfunc_2(1, 0, nTop);
@@ -231,32 +227,26 @@ void UISystemText::vfunc_3()
     m_70 = 0;
 }
 
-// MS2-FUNCTIONAL: the exe keeps extra call-result temporaries (frame / EH layout differs); source form unknown
 // @0x141b15ec0
 void UISystemText::FUN_141b15ec0(const CStringW& strText, int nType, int nOption)
 {
     MS2Ptr<ASGameEntity> pEntity(dynamic_cast<ASGameEntity*>((AScript*)m_30));
-    if (pEntity.get() == 0)
-    {
-        m_70 = nType;
-        m_78 = strText;
-    }
-    else
+    if (pEntity.get())
     {
         CString strMethod;
-        switch (nType - 1)
+        switch (nType)
         {
-        case 0: strMethod = "appendWarningMessage"; break;
-        case 1: strMethod = "appendWarningMessage2"; break;
-        case 2: strMethod = "appendInfoMessage"; break;
-        case 3: strMethod = "appendInfoMessage2"; break;
-        case 4: strMethod = "appendQuestMessage"; break;
-        case 5: strMethod = "setGmMessage"; break;
-        case 6: strMethod = "setFieldName"; break;
-        case 7: strMethod = "appendLetterMessage"; break;
-        case 8: strMethod = "appendEmergencyMessage"; break;
-        case 9: strMethod = "appendInteractMessage"; break;
-        case 10: strMethod = "appendGuildMegaphone"; break;
+        case 3: strMethod = "appendInfoMessage"; break;
+        case 4: strMethod = "appendInfoMessage2"; break;
+        case 1: strMethod = "appendWarningMessage"; break;
+        case 2: strMethod = "appendWarningMessage2"; break;
+        case 5: strMethod = "appendQuestMessage"; break;
+        case 6: strMethod = "setGmMessage"; break;
+        case 7: strMethod = "setFieldName"; break;
+        case 8: strMethod = "appendLetterMessage"; break;
+        case 9: strMethod = "appendEmergencyMessage"; break;
+        case 10: strMethod = "appendInteractMessage"; break;
+        case 11: strMethod = "appendGuildMegaphone"; break;
         }
         CStringW strFiltered(strText);
         FUN_1403b4750()->FUN_1416fb340(strFiltered);
@@ -271,21 +261,20 @@ void UISystemText::FUN_141b15ec0(const CStringW& strText, int nType, int nOption
             pEntity.operator->()->Invoke(strMethod, CStringW(strFiltered));
         }
     }
-}
-
-// MS2-FUNCTIONAL: the exe keeps extra call-result temporaries (frame / EH layout differs); source form unknown
-// @0x141b16270
-void UISystemText::FUN_141b16270(const CStringW& strText, int nType, int nDuration)
-{
-    int nExpire = nDuration + FUN_140869420();
-    MS2Ptr<ASGameEntity> pEntity(dynamic_cast<ASGameEntity*>((AScript*)m_30));
-    if (pEntity.get() == 0)
+    else
     {
         m_70 = nType;
         m_78 = strText;
-        m_80 = nExpire;
     }
-    else
+}
+
+// @0x141b16270
+void UISystemText::FUN_141b16270(const CStringW& strText, int nType, int nDuration)
+{
+    unsigned int nNow = FUN_140869420();
+    int nExpire = nDuration + nNow;
+    MS2Ptr<ASGameEntity> pEntity(dynamic_cast<ASGameEntity*>((AScript*)m_30));
+    if (pEntity.get())
     {
         CString strMethod;
         if (nType == 0xc)
@@ -303,6 +292,12 @@ void UISystemText::FUN_141b16270(const CStringW& strText, int nType, int nDurati
             m_88.erase(it);
         }
         m_88[nType] = nExpire;
+    }
+    else
+    {
+        m_70 = nType;
+        m_78 = strText;
+        m_80 = nExpire;
     }
 }
 

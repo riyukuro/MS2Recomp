@@ -14,6 +14,7 @@
 #include <atlcoll.h>
 #include "ms2/commonfiles/pcdata.h"
 #include "ms2/placeholder/exception.h"
+#include "cryptopp562/cryptlib.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
@@ -26,15 +27,15 @@ __int64 FUN_140869440();                                    // the server time
 class Unk_Crc32
 {
 public:
-    Unk_Crc32* FUN_142351b30();                             // ctor 0x142351b30
-    void FUN_1403901d0(int& nOut, const unsigned char* pData, unsigned nSize);   // hash a block
-    void FUN_140720aa0();                                   // dtor (forwards to the hash base dtor 0x14038f3b0)
+    Unk_Crc32();                                            // 0x142351b30
+    ~Unk_Crc32();                                           // forwards to the hash base dtor 0x14038f3b0
+    void FUN_1403901d0(int& nOut, const unsigned char* pData, size_t nSize);   // CryptoPP::HashTransformation::CalculateDigest
     void* m_vfptr;
     unsigned m_nCrc;
     unsigned m_pad;
 };
 MS2_CHECK_SIZE(Unk_Crc32, 0x10);
-void FUN_14038f3b0(Unk_Crc32*);
+void FUN_14038f3b0(Unk_Crc32*) noexcept;            // ~HashTransformation
 
 // ---- CPCData ---------------------------------------------------------------------------------------------------------------
 
@@ -313,40 +314,37 @@ void CPCDataPack::FUN_140720030(ItemArray& aEquip, ItemArray& aExtra, bool& bTim
     }
 }
 
-// @0x140720850 MS2-FUNCTIONAL: the exe frame is an EH function around the Crypto++ CRC32 (a try state not reproduced)
+// @0x140720850
 int CPCDataPack::FUN_140720850()
 {
     int nCrcRecord = 0;
     int nCrcItems = 0;
     int nCrcExtra = 0;
-    Unk_Crc32 crc;
-    crc.FUN_142351b30();
-    int nOut;
-    unsigned nRecord = m_bufRecord.GetLength();
-    const unsigned char* pRecord = m_bufRecord.FUN_14067c4c0();
-    crc.FUN_1403901d0(nOut, pRecord, nRecord);
-    nCrcRecord = nOut;
-    unsigned nItems = m_bufItems.GetLength();
-    const unsigned char* pItems = m_bufItems.FUN_14067c4c0();
-    crc.FUN_1403901d0(nOut, pItems, nItems);
-    nCrcItems = nOut;
-    unsigned nExtra = m_bufExtra.GetLength();
-    const unsigned char* pExtra = m_bufExtra.FUN_14067c4c0();
-    crc.FUN_1403901d0(nOut, pExtra, nExtra);
-    nCrcExtra = nOut;
-    crc.FUN_140720aa0();
+    try {
+        Unk_Crc32 crc;
+        int nOut;
+        crc.FUN_1403901d0(nOut, m_bufRecord.FUN_14067c4c0(), m_bufRecord.GetLength());
+        nCrcRecord = nOut;
+        crc.FUN_1403901d0(nOut, m_bufItems.FUN_14067c4c0(), m_bufItems.GetLength());
+        nCrcItems = nOut;
+        crc.FUN_1403901d0(nOut, m_bufExtra.FUN_14067c4c0(), m_bufExtra.GetLength());
+        nCrcExtra = nOut;
+    } catch (CryptoPP::Exception&) {
+        return 0;
+    }
     return nCrcRecord + nCrcItems + nCrcExtra;
 }
 
 // @0x140720aa0
-void Unk_Crc32::FUN_140720aa0()
+Unk_Crc32::~Unk_Crc32()
 {
     FUN_14038f3b0(this);
 }
 
 // ---- CByteBuffer members defined here ------------------------------------------------------------------------------------
 
-// @0x140720c30
+// @0x140720c30 The exe calls the const CAtlArray::operator[] (0x140517f50) on this+0x18 directly, so the member is
+// probably const there. Making it const means changing the shared stream.h declaration, so that is left for now.
 void CByteBuffer::FUN_140720c30(CByteBuffer& dest)
 {
     unsigned nCount = m_uLength - m_uOffset;

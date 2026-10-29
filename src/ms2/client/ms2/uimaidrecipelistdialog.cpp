@@ -18,7 +18,6 @@
 #include "ms2/placeholder/ms2stdafx.h"
 #include "ms2/placeholder/mstime.h"
 #include "uimaidrecipelistdialog.h"
-#include "ms2/placeholder/header_statics_a.h"
 #include "ms2/placeholder/asdata.h"
 #include "ms2/placeholder/asobj.h"
 #include "ms2/placeholder/astooltip.h"
@@ -84,6 +83,7 @@ public:
     // @0x1412db8c0
     bool operator==(T* p) const { return m_p == p; }
     T* operator->() const { return m_p; }
+    T& operator*() const { return *m_p; }
     T* get() const { return m_p; }
 private:
     void* m_pad;
@@ -100,7 +100,7 @@ public:
     virtual void vfunc_13(); virtual void vfunc_14(); virtual void vfunc_15(); virtual void vfunc_16();
     virtual void vfunc_17(); virtual void vfunc_18(); virtual void vfunc_19(); virtual void vfunc_20();
     virtual void vfunc_21(); virtual void vfunc_22(); virtual void vfunc_23();
-    virtual void vfunc_24(int n);
+    virtual void vfunc_24(bool bInvalidate);               // 24 0x1422c80c0 validateNow
 };
 class Unk_MdList : public Unk_MdCtl
 {
@@ -113,19 +113,13 @@ class ASDialog : public ASDisplayObject {};
 
 // The tables of the maid recipes and the maid books.
 struct Unk_MdRecipeRef { int m_id; int m_level; };          // one entry of a maid's recipe book
-class Unk_MdRecipeArr
+class Unk_MdRecipeArr                                       // a maid's recipe book: CAtlArray<TPtrValue<RecipeLevel>>
 {
 public:
     size_t FUN_14068acc0() const;                           // count
     Unk_MdPtr<Unk_MdRecipeRef>& FUN_140689a50(size_t n);
 };
-class Unk_MdBook                                            // the recipes of a maid
-{
-public:
-    Unk_MdRecipeArr& FUN_140689bf0();
-    Unk_MdRecipeArr& FUN_140689c20();
-};
-class Unk_MdBookTable { public: Unk_MdPtr<Unk_MdBook> FUN_140685da0(int nBookId); };
+class Unk_MdBookTable { public: Unk_MdPtr<Unk_MdRecipeArr> FUN_140685da0(int nBookId); };
 extern Unk_MdBookTable* g_pMaidBooks;                       // the recipe books
 // @0x1412db940
 Unk_MdBookTable* FUN_1412db940() { return g_pMaidBooks; }
@@ -240,54 +234,56 @@ void UIMaidRecipeListDialog::vfunc_67()
 }
 
 // @0x1412dac40
-// MS2-FUNCTIONAL: frame layout of the string temporaries and the handle copies differs
 void UIMaidRecipeListDialog::FUN_1412dac40()
 {
-    if (m_30.IsNull() || m_178 == 0)
+    if (m_30.IsNull())
         return;
-    Unk_MdPtr<Unk_MdBook> spBook = FUN_1412db940()->FUN_140685da0(m_178);
+    if (m_178 == 0)
+        return;
+    Unk_MdPtr<Unk_MdRecipeArr> spBook = FUN_1412db940()->FUN_140685da0(m_178);
     if (spBook == 0)
         return;
     Unk_MdPtr<Unk_MdBookInfo> spInfo = FUN_1409eed10()->FUN_14067f780(m_178);
     if (!spInfo)
         return;
     FUN_140cfee80(FUN_1422dbc00(), CString("m_txtTitle"), FUN_14052bd00(0x7c7, spInfo->m_strSpecialty));
-    MS2Ptr<Unk_MdList> spList = FUN_140c02900<Unk_MdList>(CString("m_scrollList"));
-    if (spList.get() != 0)
+    if (MS2Ptr<Unk_MdList> spList = FUN_140c02900<Unk_MdList>("m_scrollList"))
     {
         spList->FUN_1422dd1d0();
-        for (size_t i = 0; i < spBook->FUN_140689bf0().FUN_14068acc0(); i++)
+        for (size_t i = 0; i < spBook->FUN_14068acc0(); i++)
         {
-            Unk_MdPtr<Unk_MdRecipeRef> spRef = spBook->FUN_140689c20().FUN_140689a50(i);
+            Unk_MdPtr<Unk_MdRecipeRef> spRef = (*spBook).FUN_140689a50(i);
             if (!spRef)
                 continue;
             Unk_MdPtr<Unk_MdRecipe> spRecipe = FUN_1409eed30()->FUN_1406855c0(spRef->m_id);
-            if (spRecipe.get() == 0)
-                continue;
-            ASObj row(2);
-            row.FUN_140e846b0("id", i + 1);
-            row.FUN_1407cbb20("itemName", FUN_1401a9d70()->FUN_141811980(1, spRecipe->m_50));
-            row.FUN_1407cb9c0("recipeID", spRef->m_id);
-            if (*reinterpret_cast<Unk_MdLevels*>(FUN_1401d3200())->m_5180.FUN_1402056b0() < spRef->m_level)   // exe: add rax, 0x5180
-                row.FUN_1407cbb20("require", FUN_1408116a0(0x7ab, spRef->m_level));
-            else
-                row.FUN_1407cbb20("require", FUN_1408116a0(0x7aa, spRef->m_level));
-            spList->FUN_1422dd230(row);
-            int nItemId = spRecipe->m_50;
-            int nRarity = spRecipe->m_58;
-            int nAmount = spRecipe->m_54;
-            MS2Ptr<CItem> spItem(new CItem());
-            if (spItem->FUN_14052b130(nItemId, nRarity, 0))
+            if (spRecipe.get())
             {
-                spItem->FUN_140526c70(nAmount);
-                CString strKey;
-                strKey.Format("%s.%d", (const char*)GetTypeName(), (int)(i + 1));
-                FUN_141415450(strKey, spItem, (int)i, 0x415, 0x800);
-                m_30->Invoke("bind", CString(strKey), i + 1, spItem->FUN_140528590());
-                m_188.Add(strKey);
+                ASObj row(2);
+                row.FUN_140e846b0("id", i + 1);
+                row.FUN_1407cbb20("itemName", FUN_1401a9d70()->FUN_141811980(1, spRecipe->m_50));
+                row.FUN_1407cb9c0("recipeID", spRef->m_id);
+                if (spRef->m_level > *reinterpret_cast<Unk_MdLevels*>(FUN_1401d3200())->m_5180.FUN_1402056b0())   // exe: add rax, 0x5180
+                    row.FUN_1407cbb20("require", FUN_1408116a0(0x7ab, spRef->m_level));
+                else
+                    row.FUN_1407cbb20("require", FUN_1408116a0(0x7aa, spRef->m_level));
+                spList->FUN_1422dd230(row);
+                int nItemId = spRecipe->m_50;
+                int nRarity = spRecipe->m_58;
+                int nAmount = spRecipe->m_54;
+                MS2Ptr<CItem> spItem(new CItem());
+                if (spItem->FUN_14052b130(nItemId, nRarity, 0))
+                {
+                    spItem->FUN_140526c70(nAmount);
+                    int nSlotType = 0x415;
+                    CString strKey;
+                    strKey.Format("%s.%d", (const char*)GetTypeName(), i + 1);
+                    FUN_141415450(strKey, spItem, (int)i, nSlotType, 0x800);
+                    m_30->Invoke("bind", CString(strKey), i + 1, spItem->FUN_140528590());
+                    m_188.Add(strKey);
+                }
             }
         }
-        spList->vfunc_24(1);
+        spList->vfunc_24(true);
         spList->FUN_1422dcca0(1);
     }
     m_30->Invoke("resetList");
@@ -398,10 +394,12 @@ struct Unk_MdNpcData : public CPtred
     char m_pad_18[0x78];
     CString m_90;                                           // +0x90 the portrait
 };
-struct Unk_MdNpcInfo : public CPtred
+struct Unk_MdNpcInfo                                        // a maid row: the npc id at +8 (uimaiddialog's Unk_NpcRef)
 {
-    int m_8_;
+    char m_pad_00[8];
+    int m_8_;                                               // the npc id
 };
+MS2_CHECK_OFFSET(Unk_MdNpcInfo, m_8_, 0x8);                 // exe 0x1412dcbc7: mov edx, dword ptr [rax + 8]
 class Unk_MdNpcInfos { public: Unk_MdPtr<Unk_MdNpcInfo> FUN_14067f180(int nMaidKey); };
 Unk_MdNpcInfos* FUN_1409eed20();
 MS2Ptr<Unk_MdNpcData> FUN_1406cd330(int nNpcId);
@@ -412,6 +410,8 @@ void FUN_14256e3e0(void* pMovie, Scaleform::GFx::Value* pValue);    // movie->Cr
 // A GFx::Value that the string-value builders construct themselves (no ctor call); the dtor is Value's (0x140614800).
 struct Unk_MdValue
 {
+    Unk_MdValue(const char* sz);
+    Unk_MdValue(const wchar_t* sz);
     ~Unk_MdValue();
     void* m_pInterface;                                     // +0x00
     int m_type;                                             // +0x08 6 string, 7 wide string
@@ -419,20 +419,18 @@ struct Unk_MdValue
     void* m_aux;                                            // +0x18
 };
 // @0x1412dd640
-Unk_MdValue* FUN_1412dd640(Unk_MdValue* pOut, const char* sz)
+Unk_MdValue::Unk_MdValue(const char* sz)
 {
-    pOut->m_pInterface = 0;
-    pOut->m_type = 6;
-    pOut->m_pValue = sz;
-    return pOut;
+    m_pInterface = 0;
+    m_type = 6;
+    m_pValue = sz;
 }
 // @0x1412dd680
-Unk_MdValue* FUN_1412dd680(Unk_MdValue* pOut, const wchar_t* sz)
+Unk_MdValue::Unk_MdValue(const wchar_t* sz)
 {
-    pOut->m_pInterface = 0;
-    pOut->m_type = 7;
-    pOut->m_pValue = sz;
-    return pOut;
+    m_pInterface = 0;
+    m_type = 7;
+    m_pValue = sz;
 }
 void FUN_1409f08d0(Scaleform::GFx::Value* pArray, const Unk_MdValue& v);   // push to a GFx array
 
@@ -522,16 +520,18 @@ void UIManufactureStatus::vfunc_79(void* p)
 }
 
 // @0x1412dbd00
-// MS2-FUNCTIONAL: frame layout of the string temporaries and the handle copies differs
 void UIManufactureStatus::vfunc_72()
 {
     UIDialog::vfunc_72();
-    if (m_30.IsNull() || m_19c == 0)
+    if (m_30.IsNull())
         return;
-    if (m_198 + 1000 > FUN_140869420())
+    if (m_19c == 0)
+        return;
+    int nInterval = 1000;
+    if (m_198 + nInterval > FUN_140869420())
         return;
     m_198 = FUN_140869420();
-    bool bWorking = false;
+    int bWorking = 0;
     int nIndex = 0;
     Unk_MdMaidList* pList = FUN_14127eff0(FUN_1409eed60());
     for (void* pos = pList->FUN_1412dd700(); pos != 0; pList->FUN_1412dd720(pos))
@@ -539,7 +539,7 @@ void UIManufactureStatus::vfunc_72()
         MS2Ptr<Unk_MdMaidRec> spRec = pList->FUN_1412dd780(pos);
         if (spRec.IsNull())
             continue;
-        if (spRec->m_4c < 1)
+        if (spRec->m_4c <= 0)
             continue;
         int nPercent = 0;
         CStringW strRemain = L"";
@@ -551,12 +551,7 @@ void UIManufactureStatus::vfunc_72()
             {
                 CMsTime tReady(spItem->FUN_140694170());
                 CMsTime tNow(FUN_140869440());
-                if (!(tReady > tNow))
-                {
-                    nPercent = 100;
-                    strRemain = GetStringCommon(0x7b8);
-                }
-                else
+                if (tReady > tNow)
                 {
                     ATL::CTimeSpan span = tReady - tNow;
                     int nTotal = FUN_1412dd760(spItem.operator->());
@@ -566,7 +561,12 @@ void UIManufactureStatus::vfunc_72()
                         nPercent = 100 - (nSeconds * 100) / nTotal;
                         strRemain = FUN_1412e1e50(span, 0, 1);
                     }
-                    bWorking = true;
+                    bWorking = 1;
+                }
+                else
+                {
+                    nPercent = 100;
+                    strRemain = GetStringCommon(0x7b8);
                 }
                 m_30->Invoke("updateProgress", nIndex, nPercent, CStringW(strRemain));
             }
@@ -635,7 +635,6 @@ void FUN_1412dc3c0(UIManufactureStatus* pDlg)
 }
 
 // @0x1412dc480
-// MS2-FUNCTIONAL: frame layout of the string temporaries and the handle copies differs
 void UIManufactureStatus::FUN_1412dc480()
 {
     if (m_30.IsNull())
@@ -644,14 +643,21 @@ void UIManufactureStatus::FUN_1412dc480()
     if (pMovie == 0)
         return;
     ASObj data(2);
-    Scaleform::GFx::Value aMaidID, aMaidName, aState, aPortrait, aBindID, aItemName, aPercent, aRemain;
+    Scaleform::GFx::Value aMaidID;
     FUN_14256e3e0(pMovie, &aMaidID);
+    Scaleform::GFx::Value aMaidName;
     FUN_14256e3e0(pMovie, &aMaidName);
+    Scaleform::GFx::Value aState;
     FUN_14256e3e0(pMovie, &aState);
+    Scaleform::GFx::Value aPortrait;
     FUN_14256e3e0(pMovie, &aPortrait);
+    Scaleform::GFx::Value aBindID;
     FUN_14256e3e0(pMovie, &aBindID);
+    Scaleform::GFx::Value aItemName;
     FUN_14256e3e0(pMovie, &aItemName);
+    Scaleform::GFx::Value aPercent;
     FUN_14256e3e0(pMovie, &aPercent);
+    Scaleform::GFx::Value aRemain;
     FUN_14256e3e0(pMovie, &aRemain);
     int nIndex = 0;
     int nCount = 0;
@@ -661,7 +667,7 @@ void UIManufactureStatus::FUN_1412dc480()
         MS2Ptr<Unk_MdMaidRec> spRec = pList->FUN_1412dd780(pos);
         if (spRec.IsNull())
             continue;
-        if (spRec->m_4c < 1)
+        if (spRec->m_4c <= 0)
             continue;
         nCount++;
         int nState = 0;
@@ -670,33 +676,27 @@ void UIManufactureStatus::FUN_1412dc480()
         int nPercent = 0;
         CStringW strRemain = L"";
         MS2Ptr<Unk_MdMaidItem> spItem(0);
-        if (FUN_1409eed40()->FUN_140d51370(spRec->m_20, spItem) == 0)
-        {
-            nState = 0;
-        }
-        else
+        if (FUN_1409eed40()->FUN_140d51370(spRec->m_20, spItem) != 0)
         {
             nState = 2;
             Unk_MdPtr<Unk_MdRecipe> spRecipe = FUN_1409eed30()->FUN_1406855c0(spItem->FUN_1409eedf0());
             if (spRecipe.get() != 0)
             {
                 strItemName = FUN_1401a9d70()->FUN_141811980(1, spRecipe->m_50);
+                int nItemId = spRecipe->m_50;
+                int nRank = spRecipe->m_58;
+                int nAmount = spRecipe->m_54;
                 MS2Ptr<CItem> spItemObj(new CItem());
-                if (spItemObj->FUN_14052b130(spRecipe->m_50, spRecipe->m_58, 0))
+                if (spItemObj->FUN_14052b130(nItemId, nRank, 0))
                 {
-                    spItemObj->FUN_140526c70(spRecipe->m_54);
+                    spItemObj->FUN_140526c70(nAmount);
                     strBind.Format("ManufactureStatusPanel_.%d", nIndex + 1);
                     FUN_141415450(strBind, FUN_1402034d0(spItemObj), nIndex, 0x415, 0x800);
                     m_178.Add(strBind);
                 }
                 CMsTime tReady(spItem->FUN_140694170());
                 CMsTime tNow(FUN_140869440());
-                if (!(tReady > tNow))
-                {
-                    nPercent = 100;
-                    strRemain = GetStringCommon(0x7b8);
-                }
-                else
+                if (tReady > tNow)
                 {
                     ATL::CTimeSpan span = tReady - tNow;
                     int nTotal = FUN_1412dd760(spItem.operator->());
@@ -708,30 +708,40 @@ void UIManufactureStatus::FUN_1412dc480()
                     }
                     m_19c = 1;
                 }
+                else
+                {
+                    nPercent = 100;
+                    strRemain = GetStringCommon(0x7b8);
+                }
             }
+        }
+        else
+        {
+            nState = 0;
         }
         CStringW strPortrait = L"";
         CStringW strMaidName = L"";
         Unk_MdPtr<Unk_MdNpcInfo> spMaid = FUN_1409eed20()->FUN_14067f180(spRec->m_34);
         if (spMaid.get() != 0)
         {
-            MS2Ptr<Unk_MdNpcData> spNpc = FUN_1406cd330(spMaid->m_8_);
-            if (spNpc.get() != 0)
-                strPortrait = spNpc->m_90;
+            {
+                MS2Ptr<Unk_MdNpcData> spNpc = FUN_1406cd330(spMaid->m_8_);
+                if (spNpc.get() != 0)
+                    strPortrait = spNpc->m_90;
+            }
             if (spRec->FUN_1409eeda0().IsEmpty())
                 strMaidName = FUN_1401aa6a0(spMaid->m_8_);
             else
                 strMaidName = spRec->FUN_1409eeda0();
         }
-        Unk_MdValue v;
-        FUN_1409f08d0(&aPortrait, *FUN_1412dd680(&v, strPortrait));
-        FUN_1409f08d0(&aMaidID, *FUN_1412dd680(&v, FUN_1401ceea0(L"{0}", spRec->m_34)));
-        FUN_1409f08d0(&aMaidName, *FUN_1412dd680(&v, strMaidName));
-        FUN_1409f08d0(&aState, *FUN_1412dd680(&v, FUN_1401ceea0(L"{0}", nState)));
-        FUN_1409f08d0(&aBindID, *FUN_1412dd640(&v, strBind));
-        FUN_1409f08d0(&aItemName, *FUN_1412dd680(&v, strItemName));
-        FUN_1409f08d0(&aPercent, *FUN_1412dd680(&v, FUN_1401ceea0(L"{0}", nPercent)));
-        FUN_1409f08d0(&aRemain, *FUN_1412dd680(&v, strRemain));
+        FUN_1409f08d0(&aPortrait, Unk_MdValue(strPortrait));
+        FUN_1409f08d0(&aMaidID, Unk_MdValue(FUN_1401ceea0(L"{0}", spRec->m_34)));
+        FUN_1409f08d0(&aMaidName, Unk_MdValue(strMaidName));
+        FUN_1409f08d0(&aState, Unk_MdValue(FUN_1401ceea0(L"{0}", nState)));
+        FUN_1409f08d0(&aBindID, Unk_MdValue(strBind));
+        FUN_1409f08d0(&aItemName, Unk_MdValue(strItemName));
+        FUN_1409f08d0(&aPercent, Unk_MdValue(FUN_1401ceea0(L"{0}", nPercent)));
+        FUN_1409f08d0(&aRemain, Unk_MdValue(strRemain));
         nIndex++;
     }
     data.FUN_1409c0d20("count", nCount);
@@ -876,10 +886,10 @@ void FUN_14151f200();
 int FUN_14083d890(CStringW str);                     // show a notice
 
 // The AS controls the edit window binds.
-class Unk_MdText : public AScript { public: void FUN_1422c4cd0(CStringW str); };
+class Unk_MdText : public AScript { public: void FUN_1422c4cd0(const CStringW& str); };
 class Unk_MdShopList : public Unk_MdList {};
 class Unk_MdShopPanel : public AScript {};
-MS2Ptr<ASObj> FUN_1409e7dc0(int nUiId, Scaleform::GFx::Value v);   // the AS object of a row/dialog by the value
+MS2Ptr<ASObj> FUN_1409e7dc0(int nUiId, const Scaleform::GFx::Value& v);   // the AS object of a row/dialog by the value
 struct Unk_MdChildFinder { template <class T> MS2Ptr<T> FUN_1409b4620(const CString& strName); };   // text child of a panel (AScript member)
 MS2Ptr<Unk_MdShopList> FUN_140accef0_(AScript* p);
 
@@ -889,7 +899,6 @@ size_t FUN_14059d0e0(Unk_MdColors* p);
 unsigned* FUN_141278750(Unk_MdColors* p, size_t i);
 int FUN_1412e1080(int nMode, AScript* pData);               // export the merat tables
 UIMDEditDialog* FUN_1412df350(UIMDEditDialog* p);
-void FUN_1412df370();
 int FUN_1412dfc20();
 
 // The merat table (CMeratMarketPremium) and the products as the edit tool reads them.
@@ -897,14 +906,15 @@ CMeratMarketPremium* FUN_1406f2370();
 bool FUN_1406ab310(CAtlMap<int, MS2Ptr<CMeratMarketPremiumProduct> >* pMap, int nId, MS2Ptr<CMeratMarketPremiumProduct>& spOut);
 CAtlMap<int, MS2Ptr<CMeratMarketPremiumProduct> >* FUN_1406a3470(CMeratMarketPremium* p);
 CAtlArray<MS2Ptr<CMeratMarketPremiumProduct> >* FUN_1406a3490(CMeratMarketPremium* p);
-bool FUN_1409e1770(ASTooltip* pTip, unsigned nItemId, int nGrade);
+int FUN_1409e1770(ASTooltip* pTip, unsigned nItemId, int nGrade);
 void FUN_1409c69b0(ASTooltip* pTip, const CStringW& str);
 void FUN_1409c4990_(ASObj* p);
 
 
 int FUN_1412dffb0(CString strPath, int nMode, AScript* pTarget);
-int FUN_1412dfe70(CString strMode, AScript* pTarget);
+int FUN_1412dfe70(const CString& strMode, AScript* pTarget);
 int FUN_1412dfa90(AScript* pTarget);
+void FUN_1401d3700(CString* s);                             // lower-cases in place
 struct Unk_MdSingleton;
 Unk_MdSingleton* FUN_1406aa4b0();
 void FUN_1406a9940();
@@ -912,7 +922,7 @@ void FUN_1407cb390(Unk_MdSingleton* p, int n);
 void FUN_141215500();
 void FUN_1406a27b0(CMeratMarketPremium* p);
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);
-CString FUN_141b6e500(CString strDir, const char* szExt, CString strDefault);   // pick a file
+CString FUN_141b6e500(const CString& strDir, const char* szExt, const CString& strDefault);   // pick a file
 bool FUN_140184310(const CString& str, const char* sz);     // the text is sz
 int FUN_1408738d0(Unk_140165cf0* pElem, const char* pszName, unsigned& nOut);
 
@@ -979,8 +989,9 @@ void UIMDEditDialog::OnLoadComplete()
     {
         ASObj color(2);
         unsigned nColor = *FUN_141278750(pColors, i);
-        color.FUN_1409c4990("realColor", nColor | 0xff000000);
-        color.FUN_1409c4990("visibleColor", nColor | 0xff000000);
+        nColor |= 0xff000000;
+        color.FUN_1409c4990("realColor", nColor);
+        color.FUN_1409c4990("visibleColor", nColor);
         colors.FUN_1422bc050(color.FUN_1422bb870());
     }
     m_30->Invoke("initData", colors.FUN_1422bb870());
@@ -1008,10 +1019,10 @@ int UIMDEditDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
         {
             Scaleform::GFx::Value vExport = m_30->Invoke("getExportData");
             MS2Ptr<ASObj> spData = FUN_1409e7dc0(m_28, vExport);
-            if (!spData.IsNull())
+            if (spData.get())
             {
                 FUN_1412df350(this);
-                if (FUN_1412e1080(m_28, spData.get()) != 0)
+                if (FUN_1412e1080(m_28, &*spData) != 0)
                     FUN_1412df370();
             }
         }
@@ -1025,6 +1036,7 @@ int UIMDEditDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
 // The layout entry of a home xml <item> (12 bytes).
 struct Unk_MdLayoutItem
 {
+    Unk_MdLayoutItem();                                     // 0x1412e1630
     int m_sn;                                               // +0x00 the product sn
     int m_index;                                            // +0x04 the slot
     bool m_visible;                                         // +0x08
@@ -1043,14 +1055,13 @@ void FUN_1412e1d20(int nMode)
 #endif
 
 // @0x1412e1630
-Unk_MdLayoutItem* FUN_1412e1630(Unk_MdLayoutItem* p)
+Unk_MdLayoutItem::Unk_MdLayoutItem()
 {
-    p->m_sn = 0;
-    p->m_index = -1;
-    p->m_visible = false;
-    p->m_category = false;
-    p->m_editable = false;
-    return p;
+    m_sn = 0;
+    m_index = -1;
+    m_visible = false;
+    m_category = false;
+    m_editable = false;
 }
 
 // @0x1412df3b0
@@ -1073,7 +1084,7 @@ void FUN_1412e1bd0(Unk_MdLayoutItem* p, Unk_140165cf0* pElem)
     FUN_1408730a0(pElem, "visible", p->m_visible);
     FUN_1408730a0(pElem, "category", p->m_category);
     if (s_nHomeMode == 0)
-        p->m_editable = p->m_index > 9;
+        p->m_editable = p->m_index >= 10;
     else if (s_nHomeMode == 1 || s_nHomeMode == 2)
         p->m_editable = true;
     else if (s_nHomeMode == 3)
@@ -1088,7 +1099,7 @@ UIMDEditDialog* FUN_1412df350(UIMDEditDialog* p)
 }
 
 // @0x1412df370
-void FUN_1412df370()
+void UIMDEditDialog::FUN_1412df370()
 {
     ShellExecuteA(0, "open", "MS2Util.exe", 0, 0, 1);
 }
@@ -1118,14 +1129,16 @@ int FUN_1412df4f0(MS2Ptr<CMeratMarketPremiumProduct> spProduct, ASObj* pRow)
     CMeratMarketPremiumProduct* pProduct = spProduct.get();
     pRow->FUN_1407cba60("sn", FUN_1412df3f0(pProduct->m_nId));
     unsigned nItemId = pProduct->m_nItemId;
-    pRow->FUN_1409c0d20("itemID", nItemId);
+    pRow->FUN_1409c0d20("itemID", pProduct->m_nItemId);
     pRow->FUN_1407cb9c0("itemGrade", pProduct->m_nGrade);
-    Unk_MdItemRef item = FUN_14053f870(nItemId);
-    if (item.FUN_140203c60() != 0)
     {
-        pRow->FUN_1407cba60("iconPath", item.FUN_1401b52a0()->FUN_14053fdd0());
-        pRow->FUN_1407cbb20("itemName", FUN_1401a9d70()->FUN_141811980(1, nItemId));
-        pRow->FUN_1407cb9c0("disable", 0);
+        Unk_MdItemRef item = FUN_14053f870(nItemId);
+        if (item.FUN_140203c60() != 0)
+        {
+            pRow->FUN_1407cba60("iconPath", item.FUN_1401b52a0()->FUN_14053fdd0());
+            pRow->FUN_1407cbb20("itemName", FUN_1401a9d70()->FUN_141811980(1, nItemId));
+            pRow->FUN_1407cb9c0("disable", 0);
+        }
     }
     pRow->FUN_1409c1180("price", spProduct->GetPriceOf(0));
     pRow->FUN_1409c1180("salePrice", spProduct->GetSalePriceOf(0));
@@ -1134,11 +1147,13 @@ int FUN_1412df4f0(MS2Ptr<CMeratMarketPremiumProduct> spProduct, ASObj* pRow)
     pRow->FUN_1407cb9c0("isBlind", 0);
     pRow->FUN_1409c0e60("seller", L"");
     pRow->FUN_1407cb9c0("ugctag", 0);
-    ASTooltip tip(4, 2);
-    if (FUN_1409e1770(&tip, nItemId, pProduct->m_nGrade) != 0)
     {
-        FUN_1409c69b0(&tip, GetStringCommon(0x758));
-        pRow->FUN_1409adbe0("tooltip", tip.FUN_1422bb870());
+        ASTooltip tip(4, 2);
+        if (FUN_1409e1770(&tip, nItemId, pProduct->m_nGrade) != 0)
+        {
+            FUN_1409c69b0(&tip, GetStringCommon(0x758));
+            pRow->FUN_1409adbe0("tooltip", tip.FUN_1422bb870());
+        }
     }
     return 1;
 }
@@ -1147,7 +1162,12 @@ int FUN_1412df4f0(MS2Ptr<CMeratMarketPremiumProduct> spProduct, ASObj* pRow)
 // @0x1412df8b0
 int FUN_1412df8b0(ASObj* pRow, MS2Ptr<CMeratMarketPremiumProduct> spProduct, Unk_MdLayoutItem* pItem)
 {
-    if (spProduct.IsNull())
+    if (spProduct.get() != 0)
+    {
+        FUN_1412df4f0(spProduct, pRow);
+        pRow->FUN_1407cbbe0("category", pItem->m_category);
+    }
+    else
     {
         pRow->FUN_1407cbbe0("category", pItem->m_category);
         pRow->FUN_1409c0e60("itemName", L"");
@@ -1156,13 +1176,12 @@ int FUN_1412df8b0(ASObj* pRow, MS2Ptr<CMeratMarketPremiumProduct> spProduct, Unk
         pRow->FUN_1409c0dc0("iconPath", "");
         pRow->FUN_1407cbbe0("empty", true);
         CStringW strEmpty = L"";
-        strEmpty = L"\xad11\xace0 \xad6c\xc778\xc911(\xba54\xb7ff)";
+        int nHome = 0;  // the merat home (3 = the designers' home)
+        if (nHome == 0)
+            strEmpty = L"\xad11\xace0 \xad6c\xc778\xc911(\xba54\xb7ff)";
+        else if (nHome == 3)
+            strEmpty = L"\xad11\xace0 \xad6c\xc778\xc911(ugc)";
         pRow->FUN_1407cbb20("emptyText", strEmpty);
-    }
-    else
-    {
-        FUN_1412df4f0(spProduct, pRow);
-        pRow->FUN_1407cbbe0("category", pItem->m_category);
     }
     return 1;
 }
@@ -1195,7 +1214,7 @@ int FUN_1412dfe60()
 
 // Load a shop xml into a CShop (only the <item visible="1"> rows).
 // @0x1412dfc40
-int FUN_1412dfc40(CString strPath, UIMDEditDialogCommon::CShop* pShop)
+int FUN_1412dfc40(const CString& strPath, UIMDEditDialogCommon::CShop* pShop)
 {
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
@@ -1210,11 +1229,11 @@ int FUN_1412dfc40(CString strPath, UIMDEditDialogCommon::CShop* pShop)
         if (!bVisible)
             continue;
         MS2Ptr<CMeratMarketPremiumProduct> spProduct(new CMeratMarketPremiumProduct());
-        if (spProduct.IsNull())
-            continue;
-        spProduct->LoadXml(pItem);
-        pShop->m_products.Add(spProduct);
-        pShop->m_productMap.SetAt(spProduct->m_nId, spProduct);
+        if (spProduct.get() != 0) {
+            spProduct->LoadXml(pItem);
+            pShop->m_products.Add(spProduct);
+            pShop->m_productMap.SetAt(spProduct->m_nId, spProduct);
+        }
     }
     return 1;
 }
@@ -1230,7 +1249,7 @@ int FUN_1412dfa90(AScript* pTarget)
 }
 
 // @0x1412dfe70
-int FUN_1412dfe70(CString strMode, AScript* pTarget)
+int FUN_1412dfe70(const CString& strMode, AScript* pTarget)
 {
     CString strPath = FUN_141b6e500("./Data/Xml/Table/Server", "xml", "");
     int nMode = 5;
@@ -1247,58 +1266,62 @@ int FUN_1412dfe70(CString strMode, AScript* pTarget)
 // @0x1412dffb0
 int FUN_1412dffb0(CString strPath, int nMode, AScript* pTarget)
 {
-    if (strPath.IsEmpty())
-        return 0;
-    TiXmlDocument doc;
-    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
-        return 0;
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
-    if (pRoot == 0)
-        return 0;
-    FUN_1412e1d20(nMode);
-    ASArray items(2);
-    for (Unk_140165cf0* pItem = pRoot->FUN_140165cf0("item"); pItem != 0; pItem = pItem->FUN_140168650("item"))
+    if (!strPath.IsEmpty())
     {
-        Unk_MdLayoutItem entry;
-        FUN_1412e1630(&entry);
-        FUN_1412e1bd0(&entry, pItem);
-        MS2Ptr<CMeratMarketPremiumProduct> spProduct(0);
-        if (entry.m_sn > 0)
-            spProduct = FUN_1406f2370()->FindProduct(entry.m_sn);
-        ASObj row(2);
-        FUN_1412df8b0(&row, spProduct, &entry);
-        items.FUN_1422bc050(row.FUN_1422bb870());
+        TiXmlDocument doc;
+        if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+            return 0;
+        Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+        if (pRoot == 0)
+            return 0;
+        CString strUnused1;                                      // two strings the exe constructs and never uses
+        CString strUnused2;
+        FUN_1412e1d20(nMode);
+        ASArray items(2);
+        for (Unk_140165cf0* pItem = pRoot->FUN_140165cf0("item"); pItem != 0; pItem = pItem->FUN_140168650("item"))
+        {
+            Unk_MdLayoutItem entry;
+            FUN_1412e1bd0(&entry, pItem);
+            MS2Ptr<CMeratMarketPremiumProduct> spProduct(0);
+            if (entry.m_sn > 0)
+                spProduct = FUN_1406f2370()->FindProduct(entry.m_sn);
+            ASObj row(2);
+            FUN_1412df8b0(&row, spProduct, &entry);
+            items.FUN_1422bc050(row.FUN_1422bb870());
+        }
+        ASArray categories(2);
+        int nCategory = 0;
+        for (Unk_140165cf0* pCat = pRoot->FUN_140165cf0("category"); pCat != 0; pCat = pCat->FUN_140168650("category"))
+        {
+            ASObj row(2);
+            CStringW strName;
+            FUN_140873420(pCat, "name", strName);
+            ATL::CAtlArray<int> arrIndexes;
+            CString strIndexes;
+            FUN_1408733e0(pCat, "indexes", strIndexes);
+            XmlSplitImpl(strIndexes, arrIndexes, ",");
+            unsigned nColorIndex = 0;
+            FUN_1408738d0(pCat, "colorIndex", nColorIndex);
+            int nStringId = -1;
+            FUN_1408731e0(pCat, "stringId", nStringId);
+            row.FUN_1407cbb20("name", strName);
+            ASArray indexes(2);
+            for (size_t i = 0; i < arrIndexes.GetCount(); i++)
+                indexes.FUN_1422bbc60(arrIndexes.GetAt(i));
+            row.FUN_1409adbe0("indexes", indexes.FUN_1422bb870());
+            int nColor = 0xffffff;
+            row.FUN_1409c4990("color", nColor);
+            row.FUN_1409c0d20("colorIndex", nColorIndex);
+            if (nStringId == -1)
+                nStringId = nCategory;
+            row.FUN_1407cb9c0("stringId", nStringId);
+            categories.FUN_1422bc050(row.FUN_1422bb870());
+            nCategory++;
+        }
+        pTarget->Invoke("buildHome", items.FUN_1422bb870(), categories.FUN_1422bb870(), nMode);
+        return 1;
     }
-    ASArray categories(2);
-    int nCategory = 0;
-    for (Unk_140165cf0* pCat = pRoot->FUN_140165cf0("category"); pCat != 0; pCat = pCat->FUN_140168650("category"))
-    {
-        ASObj row(2);
-        CStringW strName;
-        FUN_140873420(pCat, "name", strName);
-        ATL::CAtlArray<int> arrIndexes;
-        CString strIndexes;
-        FUN_1408733e0(pCat, "indexes", strIndexes);
-        XmlSplit(strIndexes, arrIndexes, ",");
-        unsigned nColorIndex = 0;
-        FUN_1408738d0(pCat, "colorIndex", nColorIndex);
-        int nStringId = -1;
-        FUN_1408731e0(pCat, "stringId", nStringId);
-        row.FUN_1407cbb20("name", strName);
-        ASArray indexes(2);
-        for (size_t i = 0; i < arrIndexes.GetCount(); i++)
-            indexes.FUN_1422bbc60(arrIndexes[i]);
-        row.FUN_1409adbe0("indexes", indexes.FUN_1422bb870());
-        row.FUN_1409c4990("color", 0xffffff);
-        row.FUN_1409c0d20("colorIndex", nColorIndex);
-        if (nStringId == -1)
-            nStringId = nCategory;
-        row.FUN_1407cb9c0("stringId", nStringId);
-        categories.FUN_1422bc050(row.FUN_1422bb870());
-        nCategory++;
-    }
-    pTarget->Invoke("buildHome", items.FUN_1422bb870(), categories.FUN_1422bb870(), nMode);
-    return 1;
+    return 0;
 }
 
 // ---- UIMDEditDialog: the shop list, the xml export ----------------------------------------------------------------------
@@ -1316,7 +1339,7 @@ bool FUN_1409c1720(const Scaleform::GFx::Value& v);         // the value as bool
 int FUN_1409c1750(const Scaleform::GFx::Value& v);
 bool FUN_1409b0390(const Scaleform::GFx::Value& v);         // the value is undefined
 CString FUN_1409a2360(const char* sz, int bUtf8);
-CString FUN_14016a5c0(const CString& strPath, int n);
+CString FUN_14016a5c0(const char* psz, int n);
 
 // Unit-local views of the TinyXML nodes that are written (the exe's classes are not recovered).
 struct Unk_MdXmlElement { Unk_MdXmlElement(const char* szName); ~Unk_MdXmlElement(); char m_pad[0x120]; };
@@ -1408,7 +1431,7 @@ bool FUN_1412e06f0(CString strPath, int nMode, AScript* pData, ATL::CAtlList<int
 }
 
 // The sql script entry of one xml (a tb_game_variable row).
-void FUN_140299dc0(void* pFile, const char* sz, int nLen, int n);
+void FUN_140299dc0(void* pFile, const char* sz, int nLen, int n) throw();  // CAtlFile::Write (throw() in ATL)
 CString FUN_1406a7260(const char* szFormat, const CString& a0, const int& a1, const CString& a2, const CString& a3,
                       const CString& a4, const int& a5, const CString& a6, const int& a7, const CString& a8,
                       const CString& a9, const CString& a10, const int& a11);
@@ -1449,64 +1472,62 @@ int FUN_1412e1080(int nMode, AScript* pData)
 }
 
 // @0x1412dea90
-void UIMDEditDialog::FUN_1412dea90(CStringW strSearch)
+void UIMDEditDialog::FUN_1412dea90(const CStringW& strSearch)
 {
-    MS2Ptr<Unk_MdShopPanel> spPanel = FUN_140f880c0<Unk_MdShopPanel>(CString("m_shopItemList"));
+    MS2Ptr<Unk_MdShopPanel> spPanel = FUN_140f880c0<Unk_MdShopPanel>("m_shopItemList");
     if (!spPanel)
         return;
-    MS2Ptr<Unk_MdShopList> spList = spPanel->FUN_140accef0<Unk_MdShopList>(CString("m_itemList"));
+    MS2Ptr<Unk_MdShopList> spList = spPanel->FUN_140accef0<Unk_MdShopList>("m_itemList");
     if (!spList)
         return;
-    MS2Ptr<Unk_MdText> spName = reinterpret_cast<Unk_MdChildFinder*>(spPanel.get())->FUN_1409b4620<Unk_MdText>(CString("m_name"));
-    if (spName.get() != 0)
-        spName->FUN_1422c4cd0(CStringW(m_180 == 2 ? L"\xce90\xc2dc\xc0f5" : L"\xba54\xb7ff\xc0f5"));
-    ATL::CAtlArray<MS2Ptr<CMeratMarketPremiumProduct> >* pProducts;
-    if (m_180 == 2)
-        pProducts = &s_shop.m_products;
-    else
-        pProducts = FUN_1406a3490(FUN_1406f2370());
+    if (MS2Ptr<Unk_MdText> spName = reinterpret_cast<Unk_MdChildFinder*>(spPanel.get())->FUN_1409b4620<Unk_MdText>("m_name"))
+        spName->FUN_1422c4cd0(m_180 == 2 ? L"\xce90\xc2dc\xc0f5" : L"\xba54\xb7ff\xc0f5");
+    ATL::CAtlArray<MS2Ptr<CMeratMarketPremiumProduct> >& rProducts = m_180 == 2 ? s_shop.m_products : *FUN_1406a3490(FUN_1406f2370());
     spList->Invoke("resetRenderer");
-    for (size_t i = 0; i < pProducts->GetCount(); i++)
+    for (size_t i = 0; i < rProducts.GetCount(); i++)
     {
-        MS2Ptr<CMeratMarketPremiumProduct> spProduct = (*pProducts)[i];
-        if (spProduct.IsNull())
-            continue;
-        if (spProduct->m_bVisible == 0)
-            continue;
-        unsigned nItemId = spProduct->m_nItemId;
-        Unk_MdItemRef item = FUN_14053f870(nItemId);
-        if (item.FUN_1402ffd90())
-            continue;
-        CStringW strLabel;
-        CStringW strFormat = L"[%s] %s";
-        if (item.FUN_1401b52a0()->FUN_14053e130())
-            strLabel.Format(strFormat, L"CASH", (const wchar_t*)FUN_1401a9d70()->FUN_141811980(1, nItemId));
-        else if (item.FUN_1401b52a0()->FUN_14053cf90())
-            strLabel.Format(strFormat, L"SKIN", (const wchar_t*)FUN_1401a9d70()->FUN_141811980(1, nItemId));
-        else
-            strLabel.Format(strFormat, L"GAME", (const wchar_t*)FUN_1401a9d70()->FUN_141811980(1, nItemId));
-        CStringW strCode = FUN_141b71990(nItemId);
-        ASObj row(2);
-        row.FUN_1407cbb20("field", strLabel);
-        row.FUN_1407cbb20("code", strCode);
-        row.FUN_1409c0d20("itemID", nItemId);
-        row.FUN_1409c1180("price", spProduct->GetPriceOf(0));
-        row.FUN_1409c1180("salePrice", spProduct->GetSalePriceOf(0));
-        row.FUN_1407cb9c0("saleTag", spProduct->m_nSaleTag);
-        row.FUN_1407cb9c0("priceDay", spProduct->GetB4(0));
-        row.FUN_1407cbb20("sn", FUN_141b71910(spProduct->m_nId));
-        if (!strSearch.IsEmpty())
+        MS2Ptr<CMeratMarketPremiumProduct> spProduct = rProducts[i];
+        if (spProduct.get())
         {
-            if (strLabel.Find(strSearch, 0) == -1)
+            if (spProduct->m_bVisible == 0)
+                continue;
+            unsigned nItemId = spProduct->m_nItemId;
+            Unk_MdItemRef item = FUN_14053f870(nItemId);
+            if (item.FUN_1402ffd90())
+                continue;
+            CStringW strLabel;
+            CStringW strFormat = L"[%s] %s";
+            if (item.FUN_1401b52a0()->FUN_14053e130())
+                strLabel.Format(strFormat, L"CASH", (const wchar_t*)FUN_1401a9d70()->FUN_141811980(1, nItemId));
+            else if (item.FUN_1401b52a0()->FUN_14053cf90())
+                strLabel.Format(strFormat, L"SKIN", (const wchar_t*)FUN_1401a9d70()->FUN_141811980(1, nItemId));
+            else
+                strLabel.Format(strFormat, L"GAME", (const wchar_t*)FUN_1401a9d70()->FUN_141811980(1, nItemId));
+            CStringW strCode = FUN_141b71990(nItemId);
+            ASObj row(2);
+            row.FUN_1407cbb20("field", strLabel);
+            row.FUN_1407cbb20("code", strCode);
+            row.FUN_1409c0d20("itemID", nItemId);
+            row.FUN_1409c1180("price", spProduct->GetPriceOf(0));
+            row.FUN_1409c1180("salePrice", spProduct->GetSalePriceOf(0));
+            row.FUN_1407cb9c0("saleTag", spProduct->m_nSaleTag);
+            row.FUN_1407cb9c0("priceDay", spProduct->GetB4(0));
+            row.FUN_1407cbb20("sn", FUN_141b71910(spProduct->m_nId));
+            if (strSearch.IsEmpty())
+                spList->FUN_1422dd230(row);
+            else
             {
-                CStringW strId = FUN_141b71990(nItemId);
-                if (strId.Find(strSearch, 0) == -1)
-                    continue;
+                if (strLabel.Find(strSearch, 0) == -1)
+                {
+                    CStringW strId = FUN_141b71990(nItemId);
+                    if (strId.Find(strSearch, 0) == -1)
+                        continue;
+                }
+                spList->FUN_1422dd230(row);
             }
         }
-        spList->FUN_1422dd230(row);
     }
-    spList->vfunc_24(1);
+    spList->vfunc_24(true);
 }
 
 // @0x1412ddec0
@@ -1519,34 +1540,20 @@ int UIMDEditDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* 
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs) != 0)
         {
-            MS2Ptr<ASObj> spObj = FUN_1409e7dc0(m_28, data.FUN_1422b9260());
-            if (!spObj.IsNull())
+            Scaleform::GFx::Value vRow = data.FUN_1422b9260();
+            MS2Ptr<ASObj> spObj = FUN_1409e7dc0(m_28, vRow);
+            if (spObj.get())
             {
-                int nSn = FUN_1412df3b0(reinterpret_cast<Unk_MdMemberText*>(spObj.get())->FUN_1422bb2b0("sn"));
-                const Scaleform::GFx::Value& vItemId = spObj->FUN_1422baa20("itemID");
-                unsigned nItemId = FUN_141b71a10(reinterpret_cast<const Unk_SfValueView&>(vItemId).FUN_142576d50().ToCStr());
+                int nSn = FUN_1412df3b0(reinterpret_cast<Unk_MdMemberText*>(spObj.operator->())->FUN_1422bb2b0("sn"));
+                unsigned nItemId = FUN_141b71a10(reinterpret_cast<const Unk_SfValueView&>(static_cast<const Scaleform::GFx::Value&>(spObj->FUN_1422baa20("itemID"))).FUN_142576d50().ToCStr());
                 Unk_MdItemRef item = FUN_14053f870(nItemId);
-                if (item.FUN_140203c60() == 0)
-                {
-                    spObj->FUN_1409c0dc0(s_strIconPath, "");
-                    spObj->FUN_1409c0dc0(s_strItemName, "");
-                    spObj->FUN_1407cb9c0("salePrice", 0);
-                    spObj->FUN_1407cb9c0("saleTag", 0);
-                    spObj->FUN_1407cb9c0("price", 0);
-                    ASTooltip tip(4, 2);
-                    spObj->FUN_1409adbe0("tooltip", tip.FUN_1422bb870());
-                }
-                else
+                if (item.FUN_140203c60() != 0)
                 {
                     spObj->FUN_1407cba60(s_strIconPath, item.FUN_1401b52a0()->FUN_14053fdd0());
                     spObj->FUN_1407cbb20(s_strItemName, FUN_1401a9d70()->FUN_141811980(1, nItemId));
-                    CAtlMap<int, MS2Ptr<CMeratMarketPremiumProduct> >* pMap;
-                    if (m_180 == 2)
-                        pMap = &s_shop.m_productMap;
-                    else
-                        pMap = FUN_1406a3470(FUN_1406f2370());
+                    CAtlMap<int, MS2Ptr<CMeratMarketPremiumProduct> >& rMap = m_180 == 2 ? s_shop.m_productMap : *FUN_1406a3470(FUN_1406f2370());
                     MS2Ptr<CMeratMarketPremiumProduct> spProduct(0);
-                    if (FUN_1406ab310(pMap, nSn, spProduct))
+                    if (FUN_1406ab310(&rMap, nSn, spProduct))
                     {
                         spObj->FUN_1409c1180("salePrice", spProduct->GetSalePriceOf(0));
                         spObj->FUN_1407cb9c0("saleTag", spProduct->m_nSaleTag);
@@ -1557,11 +1564,21 @@ int UIMDEditDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* 
                     if (FUN_1409e1770(&tip, nItemId, 0) != 0)
                         spObj->FUN_1409adbe0("tooltip", tip.FUN_1422bb870());
                 }
+                else
+                {
+                    spObj->FUN_1409c0dc0(s_strIconPath, "");
+                    spObj->FUN_1409c0dc0(s_strItemName, "");
+                    spObj->FUN_1407cb9c0("salePrice", 0);
+                    spObj->FUN_1407cb9c0("saleTag", 0);
+                    spObj->FUN_1407cb9c0("price", 0);
+                    ASTooltip tip(4, 2);
+                    spObj->FUN_1409adbe0("tooltip", tip.FUN_1422bb870());
+                }
             }
         }
         return 1;
     }
-    if (_stricmp("onClickExportDBScript", szMethod) == 0)
+    else if (_stricmp("onClickExportDBScript", szMethod) == 0)
     {
         if (m_180 == 1)
             FUN_140d73aa0(CStringW(L"\xc544\xb798 \xb370\xc774\xd0c0 \xd30c\xc77c\xc744 \xc0dd\xc131\xd569\xb2c8\xb2e4.\n1. \xc5d1\xc140 shop_merat.xlsx \n=> shop_merat.xml\n2. shop_merat.xml\nmeratHomeLayout.xml\npremiumHomeLayout.xml\ndesignersHomeLayout.xml\n=> merat_products.sql\n\n\xba54\xb7ff\xc0f5 \xd648\n\xd504\xb9ac\xbbf8\xc5c4\xc0f5 \xd648\n\xb514\xc790\xc774\xb108\xc2a4\xc0f5 \xd648\n\n\xc704\xc758 \xd648\xb4e4\xc744 \xbaa8\xb450 \xd3b8\xc9d1\xd55c \xd6c4\xc5d0 \xac00\xb2a5\xd569\xb2c8\xb2e4.\n\xacc4\xc18d \xd558\xc2dc\xaca0\xc2b5\xb2c8\xae4c?"), 1, static_cast<IMessageListener*>(this), CStringW(L"exportMerat"));
@@ -1569,63 +1586,69 @@ int UIMDEditDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* 
             FUN_1412dfe60();
         return 1;
     }
-    if (_stricmp("onClickImportLayout", szMethod) == 0)
+    else if (_stricmp("onClickImportLayout", szMethod) == 0)
     {
         ASData data;
-        if (data.FUN_1422b9620(pArgs, nArgs) != 0 && !m_30.IsNull())
-            FUN_1412dfe70(data.FUN_1422b8d30(), m_30.get());
+        if (data.FUN_1422b9620(pArgs, nArgs) != 0 && m_30.get())
+        {
+            CString strFile = data.FUN_1422b8d30();
+            FUN_1412dfe70(strFile, &*m_30);
+        }
         return 1;
     }
-    if (_stricmp("onClickMeratShopXml", szMethod) == 0)
+    else if (_stricmp("onClickMeratShopXml", szMethod) == 0)
     {
-        if (!m_30.IsNull() && m_180 == 1)
+        if (m_30.get() && m_180 == 1)
         {
             FUN_1412df350(this);
             FUN_1412dfbd0();
         }
         return 1;
     }
-    if (_stricmp("onClickOpenMS2Util", szMethod) == 0)
+    else if (_stricmp("onClickOpenMS2Util", szMethod) == 0)
     {
         FUN_1412df370();
         return 1;
     }
-    if (_stricmp("onClickItemSearch", szMethod) == 0)
+    else if (_stricmp("onClickItemSearch", szMethod) == 0)
     {
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs) != 0)
-            FUN_1412dea90(data.FUN_1422b8f40());
+        {
+            CStringW strSearch = data.FUN_1422b8f40();
+            FUN_1412dea90(strSearch);
+        }
         return 1;
     }
-    if (_stricmp("onChangeMode", szMethod) == 0)
+    else if (_stricmp("onChangeMode", szMethod) == 0)
     {
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs) != 0)
         {
             CString strMode = data.FUN_1422b8d30();
-            strMode.MakeLower();
+            FUN_1401d3700(&strMode);
             int nOld = m_180;
-            if (strMode.Find("cash", 0) < 0)
-            {
-                m_180 = 1;
-                if (!m_30.IsNull() && m_188 == 0)
-                {
-                    FUN_1412dfa90(m_30.get());
-                    m_188 = 1;
-                }
-            }
-            else
+            if (strMode.Find("cash", 0) >= 0)
             {
                 m_180 = 2;
                 if (m_184 == 0)
                     m_184 = 1;
             }
+            else
+            {
+                m_180 = 1;
+                if ((m_30.get() ? true : false) && m_188 == 0)
+                {
+                    FUN_1412dfa90(&*m_30);
+                    m_188 = 1;
+                }
+            }
             if (nOld != m_180)
-                FUN_1412dea90(CStringW(L""));
+                FUN_1412dea90(L"");
         }
         return 1;
     }
-    if (_stricmp("onClickToDBScript", szMethod) == 0)
+    else if (_stricmp("onClickToDBScript", szMethod) == 0)
         return 1;
     return 0;
 }
@@ -1637,10 +1660,7 @@ UIMDEditDialogCommon::CShop::CShop()
 {
 }
 
-// @0x1412e1730
-UIMDEditDialogCommon::CShop::~CShop()
-{
-}
+// @0x1412e1730 ~CShop is implicit: the exe dtor never resets the vptr.
 
 // UCRT memmove_s: the static inline copies that the container glue of this unit pulled in (three of them)
 // @0x1412db960
@@ -1681,25 +1701,13 @@ __declspec(selectany) extern errno_t(__cdecl* const ms2_pfnMdMemmoveS[3])(void*,
 
 // The remaining time as text ("1 hour 2 min 3 sec"); bShort drops the zero parts, bSuffix appends the "left" word.
 // @0x1412e1e50
-// MS2-FUNCTIONAL: frame layout of the string temporaries differs
 CStringW FUN_1412e1e50(ATL::CTimeSpan span, int bShort, int bSuffix)
 {
-    CStringW strRet;
     int nHours = (int)span.GetTotalHours();
     int nMinutes = FUN_14086d270(&span);
     int nSeconds = span.GetSeconds();
-    if (bShort == 0)
-    {
-        if (nHours == 0 && nMinutes == 0)
-            strRet = FUN_14086cfc0(0x7b5, nSeconds);
-        else if (nHours == 0)
-            strRet = FUN_1401d0080(FUN_14061ad70(FUN_14086cfc0(0x7b4, nMinutes), L" "), FUN_14086cfc0(0x7b5, nSeconds));
-        else
-            strRet = FUN_1401d0080(FUN_14061ad70(FUN_1401d0080(FUN_14061ad70(FUN_14086cfc0(0x7b3, nHours), L" "),
-                                                               FUN_14086cfc0(0x7b4, nMinutes)), L" "),
-                                   FUN_14086cfc0(0x7b5, nSeconds));
-    }
-    else
+    CStringW strRet;
+    if (bShort != 0)
     {
         CStringW strHours = L"";
         if (nHours > 0)
@@ -1711,6 +1719,17 @@ CStringW FUN_1412e1e50(ATL::CTimeSpan span, int bShort, int bSuffix)
         if (nSeconds > 0)
             strSeconds = FUN_14086cfc0(0x7b5, nSeconds);
         strRet = FUN_1401d0080(FUN_1401d0080(strHours, strMinutes), strSeconds);
+    }
+    else
+    {
+        if (nHours == 0 && nMinutes == 0)
+            strRet = FUN_14086cfc0(0x7b5, nSeconds);
+        else if (nHours == 0)
+            strRet = FUN_1401d0080(FUN_14061ad70(FUN_14086cfc0(0x7b4, nMinutes), L" "), FUN_14086cfc0(0x7b5, nSeconds));
+        else
+            strRet = FUN_1401d0080(FUN_14061ad70(FUN_1401d0080(FUN_14061ad70(FUN_14086cfc0(0x7b3, nHours), L" "),
+                                                               FUN_14086cfc0(0x7b4, nMinutes)), L" "),
+                                   FUN_14086cfc0(0x7b5, nSeconds));
     }
     if (bSuffix != 0)
         strRet = FUN_1401d0080(strRet, GetStringCommon(0x7b6));

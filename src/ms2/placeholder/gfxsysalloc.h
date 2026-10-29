@@ -7,7 +7,7 @@
 
 #include "ms2/ms2layout.h"
 #include "ms2/placeholder/gfxvalue.h"
-#include "Kernel/HeapMH/HeapMH_SysAllocMalloc.h"
+#include "ms2/scaleform/kernel/heapmh/sf_heapmh_sysallocmalloc.h"
 
 extern int DAT_143b0d788;               // GFx system allocation total (bytes)
 

@@ -12,7 +12,7 @@
 #include "ms2/ms2layout.h"
 #include "ms2/placeholder/singletonclass.h"
 #include "ms2/gfxui/nigfxoverlayclick.h"
-#include "GFx/GFx_ImageCreator.h"
+#include "ms2/scaleform/include/gfx/gfx_imagecreator.h"
 
 class GFxAtlasCache : public efd::MemObject, public SingletonClass<GFxAtlasCache>
 {

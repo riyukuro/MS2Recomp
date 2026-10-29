@@ -8,6 +8,7 @@
 // MS2-RANGE: 0x1400c7d40-0x1400c7e00 .text$di
 // MS2-PINS-BEGIN tplpin
 // MS2-PIN: ??8?$MS2Ptr@VUnk_DungeonEvent@@@@QEBA_NPEAVUnk_DungeonEvent@@@Z 0x140b246a0 ; unique
+// MS2-PIN: ??0?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@QEAA@XZ 0x140b240b0 ; unique
 // MS2-PINS-END tplpin
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\dungeonrecordcli.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
@@ -94,8 +95,6 @@ bool FUN_14031e190(DungeonRoom* pThis);                         // DungeonRoom::
 unsigned FUN_14031e2b0(DungeonRoom* pThis, unsigned nCount);    // DungeonRoom::GetExtraRewardTicketCost
 struct Unk_DrcRoomTable { DungeonRoomPtr FUN_1403206b0(unsigned nRoomId); }; // DungeonRoomTable::GetRoom
 
-// the empty callback of the message boxes (declared by unit_140d73aa0)
-Unk_MsgBoxCallback FUN_140b240b0();
 
 // the "the number of ... is in the order list" names (the .text$di initializer)
 static CStringA s_orderNames[7] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
@@ -115,7 +114,7 @@ DungeonRecordCli::DungeonRecordCli(unsigned nRoomID)
 }
 
 // @0x140b20750
-int DungeonRecordCli::GetBonusRewardCountNow()
+unsigned DungeonRecordCli::GetBonusRewardCountNow()
 {
     return GetBonusRewardCount(FUN_140869440());
 }
@@ -148,10 +147,11 @@ long DungeonRecordCli::Get5c()
 }
 
 // @0x140b20840
-// MS2-FUNCTIONAL: return value is widened to int in the exe (xor eax,eax); the uchar ternary differs
-unsigned char DungeonRecordCli::GetBonusCountNow()
+int DungeonRecordCli::GetBonusCountNow()
 {
-    return IsExpired() ? 0 : m_bonusCount;
+    if (IsExpired())
+        return 0;
+    return m_bonusCount;
 }
 
 // @0x140b20880
@@ -167,7 +167,7 @@ short DungeonRecordCli::Get60()
 }
 
 // @0x140b208c0
-unsigned short DungeonRecordCli::Get68(__int64 tNow)
+short DungeonRecordCli::Get68(__int64 tNow)
 {
     return m_68.Get(tNow);
 }
@@ -229,11 +229,10 @@ void DungeonRecordManagerCli::Clear()
 }
 
 // @0x140b20be0
-// MS2-FUNCTIONAL: exe keeps the stream sub-object pointer in an extra temp (12 bytes longer)
 void DungeonRecordManagerCli::OnPacket(CInPacket& packet)
 {
-    CInputStream& in = packet;
-    switch (in.ReadUInt8())
+    int nType = packet.ReadUInt8();
+    switch (nType)
     {
     case 5:
         OnRecords(packet);
@@ -291,20 +290,25 @@ void DungeonRecordManagerCli::OnAddRecord(CInPacket& packet)
 }
 
 // @0x140b20e80
-// MS2-FUNCTIONAL: CStringW temp slots / branch layout of the notice chain not matched
 void DungeonRecordManagerCli::OnRewardNotice(CInPacket& packet)
 {
-    CInputStream& in = packet;
-    unsigned char nKind = in.ReadUInt8();
-    int nValue = in.ReadInt32();
-    if (nKind == 1)
-        FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_room_dungeon_give_reward")), 1, 1);
-    else if (nKind == 2)
-        FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_room_dungeon_give_dungeonHelperReward")), 1, 1);
-    else if (nKind == 3)
-        FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_room_dungeon_reward_addExtraCount")), 1, 1);
-    else if (nKind == 4)
-        FUN_1412751f0(FUN_1405c2690(CStringW(L"s_room_dungeon_record_notify_change_expert"), FUN_1401a9d70()->FUN_141811980(0x14, nValue)), 1, 1);
+    int nKind = packet.ReadUInt8();
+    int nValue = packet.ReadInt32();
+    switch (nKind)
+    {
+    case 1:
+        FUN_1412751f0(GetStringCommonByKey(L"s_room_dungeon_give_reward"), 1, 1);
+        break;
+    case 2:
+        FUN_1412751f0(GetStringCommonByKey(L"s_room_dungeon_give_dungeonHelperReward"), 1, 1);
+        break;
+    case 3:
+        FUN_1412751f0(GetStringCommonByKey(L"s_room_dungeon_reward_addExtraCount"), 1, 1);
+        break;
+    case 4:
+        FUN_1412751f0(FUN_1405c2690(L"s_room_dungeon_record_notify_change_expert", FUN_1401a9d70()->FUN_141811980(0x14, nValue)), 1, 1);
+        break;
+    }
 }
 
 // the end-of-dungeon photo dialog, if open
@@ -334,126 +338,121 @@ void DungeonRecordManagerCli::OnOpenDialog(CInPacket& packet)
 }
 
 // @0x140b211c0
-// MS2-FUNCTIONAL: temp slot order of the new record / MS2Ptr not matched
 void DungeonRecordManagerCli::OnAddRecordExtra(CInPacket& packet)
 {
     DungeonRecordCliPtr spRecord(new DungeonRecordCli);
     packet >> *spRecord;
     m_records.SetAt(spRecord->GetDungeonRoomID(), spRecord);
-    FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_room_dungeon_reward_addExtraCount")), 1, 1);
+    FUN_1412751f0(GetStringCommonByKey(L"s_room_dungeon_reward_addExtraCount"), 1, 1);
     if (UIGameMenuDialog* pMenu = FUN_140938b90(0x4e28))
         pMenu->FUN_141938ae0(0x4f1c, 0);
 }
 
 // @0x140b21310
-// MS2-FUNCTIONAL: CStringW literal temps and message-box temp slots of the 33-way switch not matched
 void DungeonRecordManagerCli::OnError(CInPacket& packet)
 {
-    CInputStream& in = packet;
-    int nError = in.ReadInt32();
-    int nArg = in.ReadInt32();
+    int nError = packet.ReadInt32();
+    int nArg = packet.ReadInt32();
     switch (nError)
     {
     case 1:
-        FUN_140d73ff0(CStringW(L"s_room_party_err_not_chief"));
+        FUN_140d73ff0(L"s_room_party_err_not_chief");
         break;
     case 2:
-        FUN_140d73ff0(CStringW(L"s_room_party_err_full_room"));
+        FUN_140d73ff0(L"s_room_party_err_full_room");
         break;
     case 3:
-        FUN_140d73ff0(CStringW(L"s_room_dungeon_error_invalidPartyOID"));
+        FUN_140d73ff0(L"s_room_dungeon_error_invalidPartyOID");
         break;
     case 4:
     {
         DungeonRoomPtr spRoom = reinterpret_cast<Unk_DrcRoomTable*>(DungeonRoomTable::GetInstance())->FUN_1403206b0((unsigned)nArg);
-        if (!(spRoom == 0))
+        if (spRoom == 0)
+            break;
         {
             DungeonRecordCliPtr spRecord = GetRecord(FUN_14031ddd0(spRoom.operator->()));
             if (spRecord.get())
-            {
-                CMsTime tExpire(spRecord->GetExpire());
-                FUN_140d73aa0(FUN_14052bd00(0x9a2, FUN_140b8e9a0(tExpire)), 0, 0, CStringW(L""));
-            }
+                FUN_140d73aa0(FUN_14052bd00(0x9a2, FUN_140b8e9a0(spRecord->GetExpire())), 0, 0, L"");
         }
         break;
     }
     case 5:
-        FUN_140d73ff0(CStringW(L"s_room_dungeon_reward_CantUseExtraReward"));
+        FUN_140d73ff0(L"s_room_dungeon_reward_CantUseExtraReward");
+        break;
+    case 7:
+        FUN_140d73ff0(L"s_room_dungeon_max_reward_count");
         break;
     case 6:
         ShowLackExtraTicket(nArg);
         break;
-    case 7:
-        FUN_140d73ff0(CStringW(L"s_room_dungeon_max_reward_count"));
-        break;
     case 8:
-        FUN_140d73ff0(CStringW(L"s_room_dungeon_expired"));
+        FUN_140d73ff0(L"s_room_dungeon_expired");
         break;
     case 9:
-        FUN_140d73ff0(CStringW(L"s_room_dungeon_commingSoon"));
+        FUN_140d73ff0(L"s_room_dungeon_commingSoon");
         break;
     case 10:
-        FUN_140d73ff0(CStringW(L"s_room_dungeon_canEnterOnDungeonMatch"));
+        FUN_140d73ff0(L"s_room_dungeon_canEnterOnDungeonMatch");
         break;
     case 0xb:
-        FUN_140d73ff0(CStringW(L"s_room_dungeon_canEnterTutorialField"));
+        FUN_140d73ff0(L"s_room_dungeon_canEnterTutorialField");
         break;
     case 0xc:
-        FUN_140d73ff0(CStringW(L"s_room_dungeon_canEnterDayOfWeeks"));
+        FUN_140d73ff0(L"s_room_dungeon_canEnterDayOfWeeks");
         break;
     case 0xd:
-        FUN_140d73ff0(CStringW(L"s_room_dungeon_AlreadyChaosHall"));
+        FUN_140d73ff0(L"s_room_dungeon_AlreadyChaosHall");
         break;
     case 0xe:
-        FUN_140d73ff0(CStringW(L"s_room_dungeon_AlreadyLapentaHall"));
+        FUN_140d73ff0(L"s_room_dungeon_AlreadyLapentaHall");
         break;
     case 0xf:
-        FUN_140d73ff0(CStringW(L"s_room_dungeon_AlreadyColosseumHall"));
+        FUN_140d73ff0(L"s_room_dungeon_AlreadyColosseumHall");
         break;
     case 0x10:
-        FUN_140d73ff0(CStringW(L"s_room_dungeon_CantEnterInDungeon"));
+        FUN_140d73ff0(L"s_room_dungeon_CantEnterInDungeon");
         break;
     case 0x11:
-        FUN_140d74390(FUN_14062b4f0(CStringW(L"s_room_dungeon_OverMaxUserCount"), nArg), 0, FUN_140b240b0());
+        FUN_140d74390(FUN_14062b4f0(CStringW(L"s_room_dungeon_OverMaxUserCount"), nArg), 0, Unk_MsgBoxCallback());
         break;
     case 0x12:
-        FUN_140d74390(FUN_14062b4f0(CStringW(L"s_room_dungeon_UnderMinUserCount"), nArg), 0, FUN_140b240b0());
+        FUN_140d74390(FUN_14062b4f0(CStringW(L"s_room_dungeon_UnderMinUserCount"), nArg), 0, Unk_MsgBoxCallback());
         break;
     case 0x13:
-        FUN_1412752d0(CStringW(L"s_room_dungeon_noRewardDayOfWeeks"), 1);
+        FUN_1412752d0(L"s_room_dungeon_noRewardDayOfWeeks", 1);
         break;
     case 0x14:
-        FUN_140d73ff0(CStringW(L"s_room_dungeon_HasNotLimitItem"));
+        FUN_140d73ff0(L"s_room_dungeon_HasNotLimitItem");
         break;
     case 0x15:
-        FUN_140d73ff0(CStringW(L"s_room_dungeon_NotAllowTime"));
+        FUN_140d73ff0(L"s_room_dungeon_NotAllowTime");
         break;
     case 0x16:
-        FUN_140d73ff0(CStringW(L"s_room_dungeon_CantUseAtDungeonRoom"));
+        FUN_140d73ff0(L"s_room_dungeon_CantUseAtDungeonRoom");
         break;
     case 0x17:
-        FUN_140d73ff0(CStringW(L"s_room_dungeon_notOpenTimeDungeon"));
+        FUN_140d73ff0(L"s_room_dungeon_notOpenTimeDungeon");
         break;
     case 0x18:
-        FUN_140d73ff0(CStringW(L"s_room_dungeon_cannot_giveup_yet"));
+        FUN_140d73ff0(L"s_room_dungeon_cannot_giveup_yet");
         break;
     case 0x19:
-        FUN_140d73ff0(CStringW(L"s_room_dungeon_require_guild_partry"));
+        FUN_140d73ff0(L"s_room_dungeon_require_guild_partry");
         break;
     case 0x1a:
-        FUN_140d73ff0(CStringW(L"s_room_dungeon_require_guild_join_date"));
+        FUN_140d73ff0(L"s_room_dungeon_require_guild_join_date");
         break;
     case 0x1b:
-        FUN_140d73ff0(CStringW(L"s_room_dungeon_shutdown_find_dungeon_helper"));
+        FUN_140d73ff0(L"s_room_dungeon_shutdown_find_dungeon_helper");
         break;
     case 0x1c:
-        FUN_140d73ff0(CStringW(L"s_room_dungeon_is_not_open_period_date"));
+        FUN_140d73ff0(L"s_room_dungeon_is_not_open_period_date");
         break;
     case 0x1d:
-        FUN_140d73ff0(CStringW(L"s_room_dungeon_is_not_open_period"));
+        FUN_140d73ff0(L"s_room_dungeon_is_not_open_period");
         break;
     case 0x1e:
-        FUN_140d73ff0(CStringW(L"s_room_dungeon_cant_enter_in_partymember"));
+        FUN_140d73ff0(L"s_room_dungeon_cant_enter_in_partymember");
         break;
     case 0x1f:
         FUN_1412751f0(FUN_140298ea0(CStringW(L"s_room_dungeon_error_used_reset_united_reward")), 1, 1);
@@ -500,16 +499,13 @@ void DungeonRecordManagerCli::OnRates(CInPacket& packet)
 }
 
 // @0x140b22160
-// MS2-FUNCTIONAL: MS2Ptr return-copy temp order not matched
 DungeonRecordCliPtr DungeonRecordManagerCli::GetRecord(unsigned nRoomID)
 {
     DungeonRecordCliPtr spRecord;
-    if (!m_records.Lookup(nRoomID, spRecord))
-    {
-        spRecord.AssignRaw(new DungeonRecordCli(nRoomID));
-        m_records.SetAt(nRoomID, spRecord);
+    if (m_records.Lookup(nRoomID, spRecord))
         return spRecord;
-    }
+    spRecord.AssignRaw(new DungeonRecordCli(nRoomID));
+    m_records.SetAt(nRoomID, spRecord);
     return spRecord;
 }
 
@@ -523,39 +519,36 @@ bool DungeonRecordManagerCli::CanEnter(unsigned nRoomID)
 }
 
 // @0x140b22320
-// MS2-FUNCTIONAL: branch layout around the MS2Ptr dtor not matched
 bool DungeonRecordManagerCli::HasProgress(unsigned nRoomID)
 {
-    DungeonRecordCliPtr spRecord = GetRecord(nRoomID);
-    if (spRecord.get())
     {
-        if (spRecord->GetBonusRewardCountNow() != 0)
-            return true;
-        if (spRecord->GetExtraCountNow() != 0)
-            return true;
+        DungeonRecordCliPtr spRecord = GetRecord(nRoomID);
+        if (spRecord.get())
+        {
+            if (spRecord->GetBonusRewardCountNow() > 0)
+                return true;
+            else if (spRecord->GetExtraCountNow() > 0)
+                return true;
+        }
     }
     return false;
 }
 
 // @0x140b223d0
-// MS2-FUNCTIONAL: branch layout around the MS2Ptr dtors not matched
 bool DungeonRecordManagerCli::CanClaimHelperReward(unsigned nRoomID)
 {
-    if (WorldService::GetInstance()->FUN_141bd0cc0())
+    void* pPlayer = WorldService::GetInstance()->FUN_141bd0cc0();
+    if (pPlayer == 0)
+        return false;
+    DungeonRoomPtr spRoom = reinterpret_cast<Unk_DrcRoomTable*>(DungeonRoomTable::GetInstance())->FUN_1403206b0(nRoomID);
+    if (spRoom == 0)
+        return false;
+    if (spRoom->m_dungeonHelperRequireClearCount == 0)
+        return false;
     {
-        DungeonRoomPtr spRoom = reinterpret_cast<Unk_DrcRoomTable*>(DungeonRoomTable::GetInstance())->FUN_1403206b0(nRoomID);
-        if (!(spRoom == 0))
-        {
-            if (spRoom->m_dungeonHelperRequireClearCount != 0)
-            {
-                DungeonRecordCliPtr spRecord = GetRecord(nRoomID);
-                if (spRecord.get())
-                {
-                    if (spRoom->m_dungeonHelperRequireClearCount <= spRecord->Get5c())
-                        return spRecord->TestFlag(0);
-                }
-            }
-        }
+        DungeonRecordCliPtr spRecord = GetRecord(nRoomID);
+        if (spRecord.get() && spRecord->Get5c() >= spRoom->m_dungeonHelperRequireClearCount)
+            return spRecord->TestFlag(0);
     }
     return false;
 }
@@ -570,12 +563,13 @@ bool DungeonRecordManagerCli::IsBoostActive()
 }
 
 // @0x140b225a0
-// MS2-FUNCTIONAL: exe returns without a temp after the MS2Ptr dtor (return slot layout)
 bool DungeonRecordManagerCli::IsSeasonRoom(unsigned nRoomID)
 {
-    DungeonRecordCliPtr spRecord = GetRecord(nRoomID);
-    if (spRecord.get())
-        return spRecord->TestFlag(1);
+    {
+        DungeonRecordCliPtr spRecord = GetRecord(nRoomID);
+        if (spRecord.get())
+            return spRecord->TestFlag(1);
+    }
     return false;
 }
 
@@ -601,42 +595,42 @@ short DungeonRecordManagerCli::GetRoomScore60(unsigned nRoomID)
 }
 
 // @0x140b226f0
-// MS2-FUNCTIONAL: branch layout / tNow temp order not matched
 unsigned short DungeonRecordManagerCli::GetRoomScore68(unsigned nRoomID)
 {
-    DungeonRecordCliPtr spRecord = GetRecord(nRoomID);
-    if (spRecord.get() == 0)
-        return 0;
-    return spRecord->Get68(FUN_140869440());
+    {
+        DungeonRecordCliPtr spRecord = GetRecord(nRoomID);
+        if (spRecord.get())
+            return spRecord->Get68(FUN_140869440());
+    }
+    return 0;
 }
 
 // @0x140b22780
-// MS2-FUNCTIONAL: loop temp slots not matched
 int DungeonRecordManagerCli::GetTotalScore()
 {
     int nTotal = 0;
     for (POSITION pos = m_records.GetHeadPosition(); pos != 0; m_records.GetNext(pos))
     {
         DungeonRecordCliPtr spRecord = m_records.GetValueAt(pos);
-        if (FUN_14031b900(spRecord.operator->()))
-        {
-            __int64 tNow = FUN_140869440();
-            short nScore = spRecord->Get68(tNow);
-            if (nScore > 0)
-                nTotal += nScore;
-        }
+        if (!FUN_14031b900(spRecord.operator->()))
+            continue;
+        int nScore = spRecord->Get68(FUN_140869440());
+        if (nScore <= 0)
+            continue;
+        nTotal += nScore;
     }
     return nTotal;
 }
 
 // @0x140b22890
-// MS2-FUNCTIONAL: exe returns without a temp after the MS2Ptr dtor (return slot layout)
 long DungeonRecordManagerCli::GetRoomValue5c(unsigned nRoomID)
 {
-    DungeonRecordCliPtr spRecord = GetRecord(nRoomID);
-    if (spRecord.get() == 0)
-        return 0;
-    return spRecord->Get5c();
+    {
+        DungeonRecordCliPtr spRecord = GetRecord(nRoomID);
+        if (spRecord.get())
+            return spRecord->Get5c();
+    }
+    return 0;
 }
 
 // @0x140b22910
@@ -652,35 +646,37 @@ int DungeonRecordManagerCli::GetRankRewardCount(unsigned nRank)
 }
 
 // @0x140b229c0
-// MS2-FUNCTIONAL: loop temp slots not matched
 void DungeonRecordManagerCli::GetScoredRecords(std::vector<DungeonRecordCliPtr>& out)
 {
     __int64 tNow = FUN_140869440();
     for (POSITION pos = m_records.GetHeadPosition(); pos != 0; m_records.GetNext(pos))
     {
         DungeonRecordCliPtr spRecord = m_records.GetValueAt(pos);
-        if (spRecord->Get68(tNow) > 0)
-            out.push_back(spRecord);
+        int nScore = spRecord->Get68(tNow);
+        if (nScore <= 0)
+            continue;
+        out.push_back(spRecord);
     }
 }
 
 // @0x140b22aa0
-// MS2-FUNCTIONAL: by-value MS2Ptr param / return temp layout not matched
 unsigned DungeonRecordManagerCli::GetExtraTicketCost(DungeonRoomPtr pRoom)
 {
     if (pRoom == 0)
         return 0;
-    return FUN_14031e2b0(pRoom.operator->(), GetRoomBonusCount(FUN_14031ddd0(pRoom.operator->())));
+    int nBonus = GetRoomBonusCount(FUN_14031ddd0(pRoom.operator->()));
+    return FUN_14031e2b0(pRoom.operator->(), nBonus);
 }
 
 // @0x140b22b40
-// MS2-FUNCTIONAL: exe returns without a temp after the MS2Ptr dtor (return slot layout)
-unsigned char DungeonRecordManagerCli::GetRoomBonusCount(unsigned nRoomID)
+int DungeonRecordManagerCli::GetRoomBonusCount(unsigned nRoomID)
 {
-    DungeonRecordCliPtr spRecord = GetRecord(nRoomID);
-    if (spRecord.get() == 0)
-        return 0;
-    return spRecord->GetBonusCountNow();
+    {
+        DungeonRecordCliPtr spRecord = GetRecord(nRoomID);
+        if (spRecord.get())
+            return spRecord->GetBonusCountNow();
+    }
+    return 0;
 }
 
 // @0x140b22bc0
@@ -695,24 +691,19 @@ void DungeonRecordManagerCli::GetSeasonRooms(std::vector<DungeonRoomPtr>& out)
 }
 
 // @0x140b22cb0
-// MS2-FUNCTIONAL: CStringW temp slots not matched
 void DungeonRecordManagerCli::ShowLackExtraTicket(unsigned nRoomID)
 {
     DungeonRoomPtr spRoom = reinterpret_cast<Unk_DrcRoomTable*>(DungeonRoomTable::GetInstance())->FUN_1403206b0(nRoomID);
-    if (!(spRoom == 0))
+    if (spRoom == 0)
+        return;
+    if (!FUN_14031e190(spRoom.operator->()))
     {
-        if (!FUN_14031e190(spRoom.operator->()))
-        {
-            FUN_1412751f0(FUN_1409eec40(0x31), 1, 1);
-        }
-        else
-        {
-            unsigned nItemID = FUN_14031e110(spRoom.operator->());
-            CStringW strItem = FUN_1401a9d70()->FUN_141811980(1, nItemID);
-            CStringW strText = FUN_1405c2690(CStringW(L"s_dungeonRoom_lack_extra_ticket"), strItem);
-            CUIService::GetInstance()->FUN_141add520(CStringW(strText), CStringW(strItem));
-        }
+        FUN_1412751f0(FUN_1409eec40(0x31), 1, 1);
+        return;
     }
+    CStringW strItem = FUN_1401a9d70()->FUN_141811980(1, FUN_14031e110(spRoom.operator->()));
+    CStringW strText = FUN_1405c2690(CStringW(L"s_dungeonRoom_lack_extra_ticket"), strItem);
+    CUIService::GetInstance()->FUN_141add520(CStringW(strText), CStringW(strItem));
 }
 
 // @0x140b22ea0
@@ -759,8 +750,8 @@ CInputStream& FUN_140b23070(CInputStream& in, DungeonRecordCliPtr& spRecord)
     return in;
 }
 
-// @0x140b240b0
-// MS2-FUNCTIONAL: hidden-return Delegate init differs
+// The empty message-box callback other units still call by this name. The exe has no such function: 0x140b240b0
+// is the Delegate default ctor (pinned above), which callers reach directly when constructing the temp.
 Unk_MsgBoxCallback FUN_140b240b0()
 {
     return Unk_MsgBoxCallback();

@@ -109,26 +109,6 @@ UgcHomeOptionData::UgcHomeOptionData()
 {
 }
 
-// @0x140b69780
-UgcHomeBgData::~UgcHomeBgData()
-{
-}
-
-// @0x140b697c0
-UgcHomeCameraData::~UgcHomeCameraData()
-{
-}
-
-// @0x140b697f0
-UgcHomeLightData::~UgcHomeLightData()
-{
-}
-
-// @0x140b69820
-UgcHomeOptionData::~UgcHomeOptionData()
-{
-}
-
 // @0x140b67fa0
 void UgcHomeOptionData::Load()
 {

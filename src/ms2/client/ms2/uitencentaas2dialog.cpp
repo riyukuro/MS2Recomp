@@ -20,9 +20,23 @@
 #include "hook/ms2hook.h"
 
 // ---- exe callees ----
-class Unk_AasImage : public AScript {};                                     // the image holder the page is drawn into (0x90 bytes)
+class Unk_AasImage : public AScript                                         // the image holder the page is drawn into (0x90 bytes)
+{
+public:
+    Unk_AasImage(int nMovieId);                                             // 0x1422e5300
+    char m_pad_ascript[0x90 - sizeof(AScript)];
+};
+class Unk_AasSource                                                         // the image source: the page url (0x40 bytes)
+{
+public:
+    Unk_AasSource(CStringW strUrl, int nMovieId);                           // 0x1422e5a70
+    char m_pad_00[0x40];
+};
 struct Unk_AasSourcePtr                                                     // the image source handle (16 bytes, pointer at +8)
 {
+    Unk_AasSourcePtr(Unk_AasSource* pRaw);                                  // 0x140d03040 wraps a raw object (AddRef)
+    Unk_AasSourcePtr(const Unk_AasSourcePtr& other);
+    ~Unk_AasSourcePtr();                                                    // 0x140d03100
     void* m_0;
     void* m_p;
 };
@@ -59,10 +73,7 @@ CString FUN_14016a600(const wchar_t* psz, int n);                           // w
 void FUN_140d03450(Unk_AasImagePtr* p);                                     // p = NULL (releases)
 void FUN_140d03320(Unk_AasImage* p);                                        // add a reference
 Unk_AasImage* FUN_140d03240(Unk_AasImagePtr* p);                            // operator->
-Unk_AasSourcePtr FUN_140d03040(void* pRaw);                                 // wraps a raw object
-Unk_AasImage* FUN_1422e5300(void* pMem, int nMovieId);                      // image holder ctor
-void* FUN_1422e5a70(void* pMem, CStringW strUrl, int nMovieId);             // image source ctor
-void FUN_1422e5530(Unk_AasImage* pImage, const Unk_AasSourcePtr& spSource);
+void FUN_1422e5530(Unk_AasImage* pImage, Unk_AasSourcePtr spSource);
 void FUN_1416a0e70();
 CNetworkService* FUN_140714f90();
 
@@ -199,7 +210,6 @@ void UITencentAas2Dialog::vfunc_68()
 MS2_REPLACE_METHOD(0x140E98CA0, UITencentAas2Dialog, vfunc_68, 42, 0x942CEDD9);
 
 // @0x140e98cd0
-// MS2-FUNCTIONAL: one byte shorter in the exe (temporaries of the Value return)
 void UITencentAas2Dialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
@@ -210,11 +220,8 @@ void UITencentAas2Dialog::OnLoadComplete()
         m_30->Invoke("setDialogSize", m_nDialogWidth, m_nDialogHeight);
     }
     vfunc_43();
-    CString strName("m_renderTarget");
-    FUN_140e48e10(strName, &m_spTarget);
-    int nId = vfunc_88();
-    const char* pszUrl = m_strPage;
-    FUN_140cc18a0()->FUN_141b781e0(m_nBrowserId, pszUrl, "", nId);
+    FUN_140e48e10("m_renderTarget", &m_spTarget);
+    FUN_140cc18a0()->FUN_141b781e0(m_nBrowserId, m_strPage, "", vfunc_88());
     vfunc_87(&m_size);
     FUN_140cc18a0()->FUN_141b788b0(m_nBrowserId, m_size.cx, m_size.cy);
     vfunc_85();
@@ -231,22 +238,11 @@ void UITencentAas2Dialog::vfunc_26()
 MS2_REPLACE_METHOD(0x140E98F20, UITencentAas2Dialog, vfunc_26, 66, 0x3FE26FC5);
 
 // @0x140e98f70
-// MS2-FUNCTIONAL: operator new / ternary temporaries and the conditional-destruct flag differ
 void UITencentAas2Dialog::vfunc_85()
 {
-    void* pMem = operator new(0x90);
-    Unk_AasImage* pImage = 0;
-    if (pMem != 0)
-        pImage = FUN_1422e5300(pMem, 2);
-    m_spImage.AssignRaw(pImage);
-    void* pMem2 = operator new(0x40);
-    void* pSource = 0;
-    if (pMem2 != 0)
-    {
-        CString strKey = FUN_1422db6e0();
-        pSource = FUN_1422e5a70(pMem2, StringFormat(L"img://{0}:webBrowser/{1}/{2}", strKey, *FUN_1402056b0(&FUN_1401d3200()->m_nWidth), *FUN_1402056b0(&FUN_1401d3200()->m_nHeight)), 2);
-    }
-    FUN_1422e5530(FUN_140d03240(&m_spImage), FUN_140d03040(pSource));
+    m_spImage.AssignRaw(new Unk_AasImage(2));
+    FUN_1422e5530(FUN_140d03240(&m_spImage), Unk_AasSourcePtr(new Unk_AasSource(StringFormat(L"img://{0}:webBrowser/{1}/{2}",
+        FUN_1422db6e0(), *FUN_1402056b0(&FUN_1401d3200()->m_nWidth), *FUN_1402056b0(&FUN_1401d3200()->m_nHeight)), 2)));
     if (m_spTarget.get() != 0)
     {
         static_cast<ASDisplayObjectContainer*>(m_spTarget.operator->())->FUN_1422c6900(m_spImage->FUN_1422bb890());

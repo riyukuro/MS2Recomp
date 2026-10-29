@@ -386,7 +386,7 @@ public:
     bool FUN_14053d020();    // 0x14053d020
     bool FUN_14053d070();    // 0x14053d070
     bool FUN_14053d0c0();    // 0x14053d0c0
-    int FUN_14053d110();    // 0x14053d110
+    bool FUN_14053d110();    // 0x14053d110
     bool FUN_14053d150();    // 0x14053d150
     bool FUN_14053d1f0();    // 0x14053d1f0
     bool FUN_14053d210();    // 0x14053d210
@@ -400,7 +400,7 @@ public:
     bool FUN_14053d5c0();    // 0x14053d5c0
     bool FUN_14053d600();    // 0x14053d600
     int FUN_14053d640();    // 0x14053d640
-    bool FUN_14053d660();    // 0x14053d660
+    int FUN_14053d660();    // 0x14053d660
     bool FUN_14053d740();    // 0x14053d740
     bool FUN_14053d760();    // 0x14053d760
     bool FUN_14053d7c0();    // 0x14053d7c0
@@ -411,7 +411,7 @@ public:
     bool FUN_14053d900();    // 0x14053d900
     bool FUN_14053d940();    // 0x14053d940
     bool FUN_14053d990();    // 0x14053d990
-    int FUN_14053d9d0();    // 0x14053d9d0
+    bool FUN_14053d9d0();    // 0x14053d9d0
     bool FUN_14053da20();    // 0x14053da20
     bool FUN_14053dad0();    // 0x14053dad0
     int FUN_14053db80();    // 0x14053db80
@@ -431,16 +431,16 @@ public:
     int FUN_14053df20();    // 0x14053df20
     int FUN_14053df80();    // 0x14053df80
     bool FUN_14053dfd0(const CStringW& strName);    // 0x14053dfd0
-    bool FUN_14053e010();    // 0x14053e010
-    bool FUN_14053e070();    // 0x14053e070
-    bool FUN_14053e0d0();    // 0x14053e0d0
+    int FUN_14053e010();    // 0x14053e010
+    int FUN_14053e070();    // 0x14053e070
+    int FUN_14053e0d0();    // 0x14053e0d0
     bool FUN_14053e130();    // 0x14053e130
     bool FUN_14053e170();    // 0x14053e170
-    int FUN_14053e210();    // 0x14053e210
+    bool FUN_14053e210();    // 0x14053e210
     int FUN_14053e260();    // 0x14053e260
     int FUN_14053e2b0(int nIndex);    // 0x14053e2b0
     int FUN_14053e310(int nIndex);    // 0x14053e310
-    int FUN_14053e370();    // 0x14053e370
+    bool FUN_14053e370();    // 0x14053e370
     int FUN_14053e3c0();    // 0x14053e3c0
     int FUN_14053e410();    // 0x14053e410
     bool FUN_14053e460();    // 0x14053e460
@@ -459,8 +459,8 @@ public:
     CString FUN_14053eca0();    // 0x14053eca0
     bool FUN_14053ecf0();    // 0x14053ecf0 always true
     void FUN_14053ed00();    // 0x14053ed00
-    int FUN_14053ef40();    // 0x14053ef40
-    int FUN_14053ef80();    // 0x14053ef80
+    bool FUN_14053ef40();    // 0x14053ef40
+    unsigned char FUN_14053ef80();    // 0x14053ef80
     int FUN_14053efd0();    // 0x14053efd0
     int FUN_14053eff0(int nType);    // 0x14053eff0
     int FUN_14053f080();    // 0x14053f080

@@ -14,9 +14,10 @@
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/client/ms2/fielddatacli.h"
 #include <NiRenderer.h>
+#include "ms2/client/ms2/postprocessing/outlinerenderstep.h"
 
 // ---- out-of-unit callees (bound to the exe by their FUN_<va> names / symbols) ----
-class Unk_LpInput { public: void FUN_14116d760(int n); };          // the input service: (un)lock the mouse for the loading screen
+class Unk_LpInput { public: void FUN_14116d760(bool b); };          // the input service: (un)lock the mouse for the loading screen
 Unk_LpInput* FUN_14025e7c0();
 void* FUN_1408e57f0();                                              // the scene manager
 int FUN_1422b9dc0(void* pSceneMgr);                                 // the current scene id
@@ -30,7 +31,7 @@ class Unk_LpSingleton
 public:
     int FUN_140d44bd0(int nMap);
     int FUN_140d44c50(int nMap, int n);
-    CString FUN_140d44e80(int nMap, int a, int b);
+    CString FUN_140d44e80(int nMap, int a);
 };
 Unk_LpSingleton* FUN_1414a5700();
 class Unk_LpGuide { public: CStringW FUN_14144e640(); };
@@ -44,40 +45,33 @@ class Unk_LpTexture;
 Unk_LpTexture* FUN_14127c9b0(Unk_PPSmartA* p);                      // smart pointer -> texture
 void* FUN_140994450();                                              // NiRenderer::GetRenderer
 NiRenderer* FUN_14098d8d0(void* pTable, void* pKey);
-char FUN_1416b1d20(NiRenderer* p);
-char FUN_141419be0(NiRenderer* p);
+bool FUN_1416b1d20(NiRenderer* p);
+bool FUN_141419be0(NiRenderer* p);
 void* FUN_14184e5d0(int n);
-void* FUN_141d61a80(int nWidth, int nHeight, void* pRenderer, void* pFormat, int nFlags);
-void FUN_140984420(void* pFormat);
 void FUN_14272b7f0(void* pTarget, void* pTexture);
 void* FUN_140980440(void* p);
 void* FUN_140980360(void* p);
 int FUN_141277f50();                                                // next UI layer
 WorldService* FUN_1403ed2d0();
 int FUN_1419e0b70(WorldService* pWorld);
-int FUN_1419e0600();
 extern int DAT_143af62d4, DAT_143af62d8, DAT_143ab2874;
 extern char DAT_143d6eb58;
 
-// MS2-FUNCTIONAL: frame layout: the exe constructor keeps a smaller frame and no EH state for the texture member
 // @0x1419df870
 UILoadingProgress::UILoadingProgress()
     : m_70(0), m_74(0), m_78(0)
 {
     m_2c = 0x29;
     m_28 = FUN_141277f50();
-    IWorldServiceCallback* pCallback = this ? static_cast<IWorldServiceCallback*>(this) : 0;
-    FUN_1403ed2d0()->FUN_141bbae40(pCallback);
+    FUN_1403ed2d0()->FUN_141bbae40(static_cast<IWorldServiceCallback*>(this));
 }
 
-// MS2-FUNCTIONAL: frame layout: the exe destructor keeps a smaller frame (see the constructor)
 // @0x1419df960
 UILoadingProgress::~UILoadingProgress()
 {
     if (FUN_1403ed2d0() != 0)
     {
-        IWorldServiceCallback* pCallback = this ? static_cast<IWorldServiceCallback*>(this) : 0;
-        FUN_1403ed2d0()->FUN_141bbae80(pCallback);
+        FUN_1403ed2d0()->FUN_141bbae80(static_cast<IWorldServiceCallback*>(this));
     }
 }
 
@@ -88,35 +82,36 @@ CString UILoadingProgress::GetTypeName()
 }
 MS2_REPLACE_METHOD(0x1419DFA10, UILoadingProgress, GetTypeName, 61, 0xD91F5B27);
 
-// MS2-FUNCTIONAL: AS object setter order / temporaries of the string getters differ
 // @0x1419dfa60
 void UILoadingProgress::FUN_1419dfa60(int nMap)
 {
     m_74 = nMap;
     FUN_14025e7c0()->FUN_14116d760(1);
-    bool bShowGuide = false;
+    int bShowGuide = 0;
     Unk_LpPlayer* pPlayer = reinterpret_cast<Unk_LpPlayer*>(FUN_1403ed2d0()->FUN_141bd0cc0());
     if (pPlayer != 0)
     {
-        unsigned short nLevel = (*reinterpret_cast<unsigned short (***)(void*)>(pPlayer))[78](pPlayer);
-        bShowGuide = (unsigned int)nLevel < *FUN_1401d7c10((char*)FUN_1401d3200() + 0x6e28);
+        bShowGuide = (unsigned int)(*reinterpret_cast<unsigned short (**)(void*)>(*reinterpret_cast<char**>(pPlayer) + 0x270))(pPlayer)
+            < *FUN_1401d7c10((char*)FUN_1401d3200() + 0x6e28);   // level below the guide limit
     }
     if (m_30.get() != 0)
     {
         ASObj obj(FUN_1422db730());
-        obj.FUN_1407cba60("filePath", FUN_1419e0710());
-        obj.FUN_1407cba60("maskPath", FUN_1419e0650());
-        obj.FUN_1407cbb20("tip", FUN_1414a56f0()->FUN_14144e640());
-        obj.FUN_1407cb9c0("useFadeOut", FUN_1419e0600());
-        obj.FUN_1407cb9c0("showGuide", bShowGuide);
-        obj.FUN_1407cba60("showGuideType", FUN_141900b70());
-        obj.FUN_1407cb9c0("showMove", FUN_1419e0630());
-        obj.FUN_1407cbbe0("showFrame", vfunc_52());
+        {
+            CString strPath = FUN_1419e0710();
+            obj.FUN_1407cba60("filePath", strPath);
+            obj.FUN_1407cba60("maskPath", FUN_1419e0650());
+            obj.FUN_1407cbb20("tip", FUN_1414a56f0()->FUN_14144e640());
+            obj.FUN_1407cb9c0("useFadeOut", FUN_1419e0600());
+            obj.FUN_1407cb9c0("showGuide", bShowGuide);
+            obj.FUN_1407cba60("showGuideType", FUN_141900b70());
+            obj.FUN_1407cb9c0("showMove", FUN_1419e0630());
+            obj.FUN_1407cbbe0("showFrame", vfunc_52());
+        }
         m_30->Invoke("startProgress", obj.FUN_1422bb870());
     }
 }
 
-// MS2-FUNCTIONAL: FUN_1419e0600 call sequence differs (frame/spill)
 // @0x1419dfd90
 void UILoadingProgress::FUN_1419dfd90()
 {
@@ -127,19 +122,19 @@ void UILoadingProgress::FUN_1419dfd90()
         pClip->Invoke("stopProgress", FUN_1419e0600());
 }
 
-// MS2-FUNCTIONAL: callee symbol pairing of the map helpers (unit-local FUN_1419e04b0/04f0 spills)
 // @0x1419dfe70
-bool UILoadingProgress::FUN_1419dfe70()
+int UILoadingProgress::FUN_1419dfe70()
 {
-    int nMap = FUN_1419e04f0();
-    if (FUN_1414a5700()->FUN_140d44bd0(nMap) == 0)
-        return false;
+    if (FUN_1414a5700()->FUN_140d44bd0(FUN_1419e04f0()) == 0)
+        return 0;
     UICutSceneMovie* pCut = FUN_14138fd50(0x4e7e);
     if (pCut != 0 && FUN_14190f1d0(pCut, FUN_1419e04b0()) != 0)
-        return false;
+        return 0;
     if (FUN_1422b9dc0(FUN_1408e57f0()) == 0x620000d)
-        return true;
-    return FUN_1414a5700()->FUN_140d44c50(FUN_1419e04f0(), FUN_1419e04b0()) == 0;
+        return 1;
+    int nMap = FUN_1419e04f0();
+    int n = FUN_1419e04b0();
+    return FUN_1414a5700()->FUN_140d44c50(nMap, n) == 0;
 }
 
 // @0x1419dff50
@@ -217,7 +212,6 @@ int UILoadingProgress::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
 }
 MS2_REPLACE_METHOD(0x1419E0320, UILoadingProgress, vfunc_28, 108, 0x1B935AA6);
 
-// MS2-FUNCTIONAL: TPtr<> get/operator-> split differs (0x140a5ac60 vs 0x140a5ac90)
 // @0x1419e03a0
 void UILoadingProgress::vfunc_25(void* p1, TPtr<Unk_UISwfEntity_25> p2, void* p3, void* p4)
 {
@@ -227,8 +221,8 @@ void UILoadingProgress::vfunc_25(void* p1, TPtr<Unk_UISwfEntity_25> p2, void* p3
         return;
     if (FUN_140c8f680(&m_78) == 0)
         return;
-    void* pTarget = p2.get();
-    void* pChild = (*reinterpret_cast<void* (***)(void*, void*)>(pTarget))[0xc0 / 8](pTarget, p3);
+    Unk_UISwfEntity_25* pTarget = p2.operator->();
+    void* pChild = (*reinterpret_cast<void* (**)(void*, void*)>(*reinterpret_cast<char**>(pTarget) + 0xc0))(pTarget, p3);
     if (pChild != 0)
     {
         FUN_1419e07a0();
@@ -265,28 +259,27 @@ void UILoadingProgress::vfunc_41(const Scaleform::GFx::Value& root)
     m_30 = FUN_1409b40c0(m_28, root);
 }
 
-// MS2-FUNCTIONAL: branch layout of the scene-id test
 // @0x1419e05c0
-int UILoadingProgress::vfunc_52()
+bool UILoadingProgress::vfunc_52()
 {
     int nScene = FUN_1422b9dc0(FUN_1408e57f0());
     if (nScene == 0x6200009 || nScene == 0x6200085)
-        return 0;
-    return 1;
+        return false;
+    return true;
 }
 
-// MS2-FUNCTIONAL: exe keeps the world pointer in a spill slot
 // @0x1419e0600
-int FUN_1419e0600()
+int UILoadingProgress::FUN_1419e0600()
 {
     return FUN_1419e0b70(FUN_1403ed2d0());
 }
 
-// MS2-FUNCTIONAL: leaf function in the exe (no frame): the member is likely compiled differently
 // @0x1419e0630
-bool UILoadingProgress::FUN_1419e0630()
+int UILoadingProgress::FUN_1419e0630()
 {
-    return m_74 != 0;
+    if (m_74 == 0)
+        return 0;
+    return 1;
 }
 
 // @0x1419e0650
@@ -300,45 +293,45 @@ CString UILoadingProgress::FUN_1419e0650()
     return "";
 }
 
-// MS2-FUNCTIONAL: callee pairing of the string getters
 // @0x1419e0710
 CString UILoadingProgress::FUN_1419e0710()
 {
-    int nFlag = 0;
     if (FUN_1419dfe70() == 0)
         return "";
-    return FUN_1414a5700()->FUN_140d44e80(FUN_1419e04f0(), 1, nFlag);
+    return FUN_1414a5700()->FUN_140d44e80(FUN_1419e04f0(), 1);
 }
 
-// MS2-FUNCTIONAL: renderer smart-pointer lookup / vtable call shape
 // @0x1419e07a0
 void UILoadingProgress::FUN_1419e07a0()
 {
-    if (FUN_1403ed2d0()->FUN_141bcfc10() != 0 && FUN_140c8f680(&m_78) != 0)
+    if (FUN_1403ed2d0()->FUN_141bcfc10() == 0)
+        return;
+    if (FUN_140c8f680(&m_78) == 0)
+        return;
+    NiRenderer* pRenderer = FUN_14098d8d0(&DAT_143d6eb58, FUN_140994450());
+    if (pRenderer == 0)
+        return;
+    if (FUN_1416b1d20(pRenderer))
+        pRenderer->EndUsingRenderTargetGroup();
+    if (!FUN_141419be0(pRenderer))
     {
-        NiRenderer* pRenderer = FUN_14098d8d0(&DAT_143d6eb58, FUN_140994450());
-        if (pRenderer != 0)
+        void* pBack = FUN_14184e5d0(1);
+        if (pBack != 0)
         {
-            if (FUN_1416b1d20(pRenderer) != 0)
-                pRenderer->EndUsingRenderTargetGroup();
-            void* pBack = FUN_14184e5d0(1);
-            if (FUN_141419be0(pRenderer) == 0 && pBack != 0)
-            {
-                void* pTex = (*reinterpret_cast<void* (***)(void*)>(FUN_14127c9b0(&m_78)))[0xa0 / 8](FUN_14127c9b0(&m_78));
-                (*reinterpret_cast<bool (***)(NiRenderer*, void*, void*, void*, void*, int)>(pRenderer))[0x1b0 / 8](pRenderer, pBack, pTex, 0, 0, 2);   // Copy(src, dest, srcRect, destRect, filter)
-            }
+            Unk_LpTexture* pSrc = FUN_14127c9b0(&m_78);
+            // Copy(src, dest, srcRect, destRect, filter)
+            (*reinterpret_cast<bool (**)(NiRenderer*, void*, void*, void*, void*, int)>(*reinterpret_cast<char**>(pRenderer) + 0x1b0))(
+                pRenderer, pBack, (*reinterpret_cast<void* (**)(void*)>(*reinterpret_cast<char**>(pSrc) + 0xa0))(pSrc), 0, 0, 2);
         }
     }
 }
 
-// MS2-FUNCTIONAL: format struct local layout
 // @0x1419e08b0
 void UILoadingProgress::FUN_1419e08b0(int nWidth, int nHeight)
 {
-    char fmt[12];                                                   // FUN_140984420 fills three ints (12 bytes)
-    FUN_140984420(fmt);
-    *(int*)(fmt + 4) = 3;
-    m_78.Assign(FUN_141d61a80(nWidth, nHeight, FUN_140994450(), fmt, 0x100));
+    Unk_PPFmt fmt;
+    fmt.b = 3;
+    m_78.Assign(FUN_141d61a80(nWidth, nHeight, static_cast<NiRenderer*>(FUN_140994450()), &fmt, 0x100));
 }
 
 // @0x1419e0920
@@ -367,11 +360,10 @@ CString UILoadingProgressLobby::vfunc_7()
 }
 MS2_REPLACE_METHOD(0x1419E0A30, UILoadingProgressLobby, vfunc_7, 61, 0x02971948);
 
-// MS2-FUNCTIONAL: return type: the exe returns a byte
 // @0x1419e0a80
-int UILoadingProgressLobby::vfunc_52()
+bool UILoadingProgressLobby::vfunc_52()
 {
-    return 0;
+    return false;
 }
 
 // @0x1419e0b70

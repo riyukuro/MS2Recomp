@@ -22,6 +22,10 @@ public:
     // CPtred contexts of the unrecovered events; ContextB0 and Context350 carry their map key at +0x18.
     class Context38 : public CPtred {};
     class ContextB0 : public CPtred { public: int m_key; };
+    // The m_mentoring pointee. Not MentoringContext (gameeventcontext.h): the exe's Release/ReleaseImpl/dtor/op= of
+    // this pointer are their own COMDATs (0x1408e2950 / 0x1408e2c20 (67 bytes, not the 65-byte MentoringContext one) /
+    // 0x1408d9130 / 0x1408d95b0); its Reference is 0x14041d1b0, shared with GameEventReturnUser's +0xd0 pointer.
+    class ContextMentoring : public CPtred {};
     class Context1A0 : public CPtred {};
     class Context218 : public CPtred {};
     class Context258 : public CPtred {};
@@ -40,9 +44,9 @@ public:
     void AddB0(MS2Ptr<ContextB0> spContext);                            // 0x1408d71d0
     void RemoveB0(int nKey);                                            // 0x1408d7250
     void GetAllB0(ATL::CAtlArray<MS2Ptr<ContextB0> >& rOut);            // 0x1408d72b0
-    void AddMentoring(int nKey, MS2Ptr<MentoringContext> spContext);    // 0x1408d7360
+    void AddMentoring(int nKey, MS2Ptr<ContextMentoring> spContext);    // 0x1408d7360
     void RemoveMentoring(int nKey);                                     // 0x1408d73e0
-    void GetAllMentoring(ATL::CAtlArray<MS2Ptr<MentoringContext> >& rOut);   // 0x1408d7440
+    void GetAllMentoring(ATL::CAtlArray<MS2Ptr<ContextMentoring> >& rOut);   // 0x1408d7440
     void Add1A0(int nKey, MS2Ptr<Context1A0> spContext);                // 0x1408d74f0
     void Remove1A0(int nKey);                                           // 0x1408d7570
     void GetAll1A0(ATL::CAtlArray<MS2Ptr<Context1A0> >& rOut);          // 0x1408d75d0
@@ -73,7 +77,7 @@ private:
     CLockCriticalSection m_lockB0;
     ATL::CAtlMap<int, MS2Ptr<ContextB0> > m_mapB0;                      // +0xb0
     CLockCriticalSection m_lockMentoring;
-    ATL::CAtlMap<int, MS2Ptr<MentoringContext> > m_mentoring;           // +0x128
+    ATL::CAtlMap<int, MS2Ptr<ContextMentoring> > m_mentoring;           // +0x128
     CLockCriticalSection m_lock1A0;
     ATL::CAtlMap<int, MS2Ptr<Context1A0> > m_map1A0;                    // +0x1a0
     CLockCriticalSection m_lock218;

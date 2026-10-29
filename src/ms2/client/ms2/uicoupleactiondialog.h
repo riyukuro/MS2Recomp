@@ -30,7 +30,7 @@ public:
     __int64 m_28;                                           // +0x28 expiry time of a timed action (0 = none)
     void* m_pad_30;
     unsigned char m_pad_38;
-    unsigned char m_favorite;                               // +0x39 "isFavorite"
+    bool m_favorite;                                        // +0x39 "isFavorite"
 };
 MS2_CHECK_SIZE(Unk_Emotion, 0x40);
 
@@ -55,7 +55,7 @@ public:
     void FUN_140beced0(const Scaleform::GFx::FunctionHandler::Params& params);   // empty (the search input callback)
     void FUN_140becef0();                                   // rebuild the emotions of the player and the pages
     void FUN_140bed170(int nEmotion);                       // "setFocusByEmotion"
-    int FUN_140bed1f0(int nEmotion);                        // select an emotion for the player
+    void FUN_140bed1f0(int nEmotion);                       // select an emotion for the player
     void FUN_140bed2a0(unsigned __int64 nSelection);        // m_178 = nSelection
     void FUN_140bed2d0();                                   // "buildActions" in id order
     void FUN_140bed8a0();                                   // "buildActions" in reverse id order

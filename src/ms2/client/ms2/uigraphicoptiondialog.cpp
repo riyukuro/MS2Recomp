@@ -99,9 +99,9 @@ public:
 
     MS2Ptr<Unk_GoCheck> FUN_140e52670(const CString& strName);                      // child lookup (ICF'd GetChild instance)
     MS2Ptr<Unk_GoCombo> FUN_140c28560(const CString& strName);                      // child lookup (ICF'd GetChild instance)
-    void FUN_1419475a0(bool bHdr);                                                  // HDR on/off
-    void FUN_141947600(bool bShimmer);                                              // shimmer on/off
-    void FUN_141947710(bool bMirror);                                               // mirror on/off
+    void FUN_1419475a0(int bHdr);                                                  // HDR on/off
+    void FUN_141947600(int bShimmer);                                              // shimmer on/off
+    void FUN_141947710(int bMirror);                                               // mirror on/off
     void FUN_141947770(int nShadow);                                                // shadow quality
 };
 
@@ -133,43 +133,26 @@ int UIGraphicOptionDialog::vfunc_65()
 MS2_REPLACE_METHOD(0x141946cf0, UIGraphicOptionDialog, vfunc_65, 37, 0xE40486DA);
 
 // @0x141946d20
-// MS2-FUNCTIONAL: temp layout of the MS2Ptr child lookups differs (frame 0x108 vs 0xe8)
 int UIGraphicOptionDialog::vfunc_5()
 {
-    {
-        MS2Ptr<Unk_GoCheck> spHdr = FUN_140e52670(CString("m_hdr"));
-        if (spHdr.get() != 0)
-            spHdr->FUN_1422ce090(FUN_1409a8b10()->FUN_1409a8ac0()->m_bHdr);
-    }
-    {
-        MS2Ptr<Unk_GoCheck> spShimmer = FUN_140e52670(CString("m_shimmer"));
-        if (spShimmer.get() != 0)
-            spShimmer->FUN_1422ce090(FUN_1409a8b10()->FUN_1409a8ac0()->m_bShimmer);
-    }
-    {
-        MS2Ptr<Unk_GoCheck> spMirror = FUN_140e52670(CString("m_mirror"));
-        if (spMirror.get() != 0)
-            spMirror->FUN_1422ce090(FUN_1409a8b10()->FUN_1409a8ac0()->m_bMirror);
-    }
-    {
-        MS2Ptr<Unk_GoCombo> spShadow = FUN_140c28560(CString("m_shadow"));
-        if (spShadow.get() != 0) {
-            Unk_GoGraphics* pGraphics = FUN_1409a8b10()->FUN_1409a8ac0();
-            spShadow->FUN_1422df690(pGraphics->m_nShadow);
-        }
-    }
+    if (MS2Ptr<Unk_GoCheck> spHdr = FUN_140e52670("m_hdr"))
+        spHdr->FUN_1422ce090(FUN_1409a8b10()->FUN_1409a8ac0()->m_bHdr);
+    if (MS2Ptr<Unk_GoCheck> spShimmer = FUN_140e52670("m_shimmer"))
+        spShimmer->FUN_1422ce090(FUN_1409a8b10()->FUN_1409a8ac0()->m_bShimmer);
+    if (MS2Ptr<Unk_GoCheck> spMirror = FUN_140e52670("m_mirror"))
+        spMirror->FUN_1422ce090(FUN_1409a8b10()->FUN_1409a8ac0()->m_bMirror);
+    if (MS2Ptr<Unk_GoCombo> spShadow = FUN_140c28560("m_shadow"))
+        spShadow->FUN_1422df690(FUN_1409a8b10()->FUN_1409a8ac0()->m_nShadow);
     return UIDialog::vfunc_5();
 }
 MS2_REPLACE_METHOD(0x141946d20, UIGraphicOptionDialog, vfunc_5, 718, 0x445E1ECF);
 
 // @0x141947000
-// MS2-FUNCTIONAL: CStringW temp lifetimes after AddItem differ
 void UIGraphicOptionDialog::OnLoadInit()
 {
     UIDialog::OnLoadInit();
     {
-        MS2Ptr<Unk_GoCombo> spShadow = FUN_140c28560(CString("m_shadow"));
-        if (spShadow.get() != 0) {
+        if (MS2Ptr<Unk_GoCombo> spShadow = FUN_140c28560("m_shadow")) {
             spShadow->FUN_1422dfce0(GetStringCommon(0x311));
             spShadow->FUN_1422dfce0(GetStringCommon(0x312));
             spShadow->FUN_1422dfce0(GetStringCommon(0x313));
@@ -178,73 +161,65 @@ void UIGraphicOptionDialog::OnLoadInit()
         }
     }
     if (m_30.get() != 0) {
-        Unk_GoScale* pScale = FUN_1409a8b10()->FUN_140e09150();
-        m_30->Invoke("initData", pScale->m_fScale);
+        m_30->Invoke("initData", FUN_1409a8b10()->FUN_140e09150()->m_fScale);
     }
 }
 MS2_REPLACE_METHOD(0x141947000, UIGraphicOptionDialog, OnLoadInit, 641, 0x9F3488BD);
 
 // @0x141947290
-// MS2-FUNCTIONAL: branch/temp layout differs
 int UIGraphicOptionDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs)
 {
-    if (UIDialog::vfunc_28(szMethod, pArgs, nArgs) == 0) {
-        ASData data;
-        if (_stricmp("OnDisplayHdr", szMethod) == 0) {
-            if (data.FUN_1422b9620(pArgs, nArgs)) {
-                bool bValue = data.FUN_1422b8a90();
-                FUN_1419475a0(bValue);
-                return 1;
-            }
-        }
-        else if (_stricmp("OnDisplayShimmer", szMethod) == 0) {
-            if (data.FUN_1422b9620(pArgs, nArgs)) {
-                bool bValue = data.FUN_1422b8a90();
-                FUN_141947600(bValue);
-                return 1;
-            }
-        }
-        else if (_stricmp("OnDisplayMirror", szMethod) == 0) {
-            if (data.FUN_1422b9620(pArgs, nArgs)) {
-                bool bValue = data.FUN_1422b8a90();
-                FUN_141947710(bValue);
-                return 1;
-            }
-        }
-        else if (_stricmp("OnDisplayShadow", szMethod) == 0) {
-            if (data.FUN_1422b9620(pArgs, nArgs)) {
-                int nValue = data.FUN_1422b8a10();
-                FUN_141947770(nValue);
-                return 1;
-            }
-        }
-        else if (_stricmp("OnUIScale", szMethod) == 0 && data.FUN_1422b9620(pArgs, nArgs)) {
-            int nValue = data.FUN_1422b8a10();
-            if (FUN_1403ed2b0()->FUN_141adbe00((float)(200 - nValue) * 0.01f, 1) != 0)
-                reinterpret_cast<Unk_GoMovieMgr*>(FUN_140b632f0())->vfunc_6();      // MS2: slot 6
+    if (UIDialog::vfunc_28(szMethod, pArgs, nArgs) != 0)
+        return 1;
+    ASData data;
+    if (_stricmp("OnDisplayHdr", szMethod) == 0) {
+        if (data.FUN_1422b9620(pArgs, nArgs)) {
+            FUN_1419475a0(data.FUN_1422b8a90());
             return 1;
         }
-        return 0;
     }
-    return 1;
+    else if (_stricmp("OnDisplayShimmer", szMethod) == 0) {
+        if (data.FUN_1422b9620(pArgs, nArgs)) {
+            FUN_141947600(data.FUN_1422b8a90());
+            return 1;
+        }
+    }
+    else if (_stricmp("OnDisplayMirror", szMethod) == 0) {
+        if (data.FUN_1422b9620(pArgs, nArgs)) {
+            FUN_141947710(data.FUN_1422b8a90());
+            return 1;
+        }
+    }
+    else if (_stricmp("OnDisplayShadow", szMethod) == 0) {
+        if (data.FUN_1422b9620(pArgs, nArgs)) {
+            FUN_141947770(data.FUN_1422b8a10());
+            return 1;
+        }
+    }
+    else if (_stricmp("OnUIScale", szMethod) == 0 && data.FUN_1422b9620(pArgs, nArgs)) {
+        int nValue = data.FUN_1422b8a10();
+        float fScale = (200 - nValue) * 0.01;
+        if (FUN_1403ed2b0()->FUN_141adbe00(fScale, 1) != 0)
+            reinterpret_cast<Unk_GoMovieMgr*>(FUN_140b632f0())->vfunc_6();      // MS2: slot 6
+        return 1;
+    }
+    return 0;
 }
 MS2_REPLACE_METHOD(0x141947290, UIGraphicOptionDialog, vfunc_28, 766, 0x22DD0AE9);
 
 // @0x1419475a0
-// MS2-FUNCTIONAL: register/stack temp ordering differs
-void UIGraphicOptionDialog::FUN_1419475a0(bool bHdr)
+void UIGraphicOptionDialog::FUN_1419475a0(int bHdr)
 {
     if (FUN_1409a8b10()->FUN_1409a8ac0()->m_bHdr != bHdr)
-        FUN_1409a8b10()->FUN_1409a8ac0()->m_bHdr = bHdr != 0;
+        FUN_1409a8b10()->FUN_1409a8ac0()->m_bHdr = bHdr ? true : false;
 }
 MS2_REPLACE_METHOD(0x1419475a0, UIGraphicOptionDialog, FUN_1419475a0, 81, 0x89AE58C7);
 
 // @0x141947600
-// MS2-FUNCTIONAL: branch/temp layout differs
-void UIGraphicOptionDialog::FUN_141947600(bool bShimmer)
+void UIGraphicOptionDialog::FUN_141947600(int bShimmer)
 {
     if (FUN_1409a8b10()->FUN_1409a8ac0()->m_bShimmer != bShimmer) {
-        FUN_1409a8b10()->FUN_1409a8ac0()->m_bShimmer = bShimmer != 0;
+        FUN_1409a8b10()->FUN_1409a8ac0()->m_bShimmer = bShimmer ? true : false;
         if (FUN_1409a8b20()->FUN_1416aa850(6) != bShimmer)
             FUN_1409a8b20()->FUN_1416aa450(6, bShimmer != 0);
         if (bShimmer == 0) {
@@ -259,11 +234,10 @@ void UIGraphicOptionDialog::FUN_141947600(bool bShimmer)
 MS2_REPLACE_METHOD(0x141947600, UIGraphicOptionDialog, FUN_141947600, 251, 0x88436EBF);
 
 // @0x141947710
-// MS2-FUNCTIONAL: register/stack temp ordering differs
-void UIGraphicOptionDialog::FUN_141947710(bool bMirror)
+void UIGraphicOptionDialog::FUN_141947710(int bMirror)
 {
     if (FUN_1409a8b10()->FUN_1409a8ac0()->m_bMirror != bMirror)
-        FUN_1409a8b10()->FUN_1409a8ac0()->m_bMirror = bMirror != 0;
+        FUN_1409a8b10()->FUN_1409a8ac0()->m_bMirror = bMirror ? true : false;
 }
 MS2_REPLACE_METHOD(0x141947710, UIGraphicOptionDialog, FUN_141947710, 81, 0xA404FEDE);
 

@@ -4,14 +4,10 @@
 // MS2-RANGE: 0x140591330-0x1405942e0 .text$mn
 // MS2-RANGE: 0x1400b9dd0-0x1400b9f50 .text$di
 // MS2-PINS-BEGIN tplpin
-// MS2-PIN: ??$StringFormat@HHHW4EnchantTransformRank@@H@@YA?AV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@PEBDAEBH11AEBW4EnchantTransformRank@@1@Z 0x140592730 ; unique
-// MS2-PIN: ?GetNode@?$CAtlMap@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$MS2Ptr@VCEnchantTransformData@@@@V?$CStringElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@V?$CElementTraits@V?$MS2Ptr@VCEnchantTransformData@@@@@2@@ATL@@AEBAPEAVCNode@12@PEBDAEAI1AEAPEAV312@@Z 0x1405934d0 ; unique
+// MS2-PIN: ??$Unk_SocketFormat@IIIW4EnchantTransformRank@@I@@YA?AV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@PEBDAEBI11AEBW4EnchantTransformRank@@1@Z 0x140592730 ; unique
+// MS2-PIN: ?GetNode@?$CAtlMap@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$MS2Ptr@VCEnchantTransformData@@@@V?$CStringElementTraitsI@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$CDefaultCharTraits@D@2@@2@V?$CElementTraits@V?$MS2Ptr@VCEnchantTransformData@@@@@2@@ATL@@AEBAPEAVCNode@12@PEBDAEAI1AEAPEAV312@@Z 0x1405934d0 ; unique
 // MS2-PINS-END tplpin
 // MS2-GUESS-LOOKALIKES
-// MS2-PIN: ??$?0H@ArgType@internal@fmt@@QEAA@AEBH@Z 0x14015e5d0
-// MS2-PIN: ?CompareElements@?$CStringElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@ATL@@SA_NPEBD0@Z 0x140165770
-// MS2-PIN: ?Hash@?$CStringElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@ATL@@SAKPEBD@Z 0x1401671a0
-// MS2-PIN: ?StringFormat@@YA?AV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@PEBDAEBVArgList@fmt@@@Z 0x1402bf9a0
 // MS2-PIN: ??$format_arg@DW4EnchantTransformRank@@@fmt@@YAXAEAV?$BasicFormatter@D@0@AEAPEBDAEBW4EnchantTransformRank@@@Z 0x140592b30
 // MS2-PIN: ??_7?$TSingleton@VCItemEnchantTransformTable@@@@6B@ 0x142d60998
 // MS2-PIN: ??_7?$CValidData@VCItemEnchantTransformTable@@@@6B@ 0x142d609a8
@@ -91,7 +87,6 @@ int CItemEnchantTransformTable::FUN_1405915b0()
 }
 
 // @0x140591630
-// MS2-FUNCTIONAL: loop-body temporaries and cleanup order differ
 int CItemEnchantTransformTable::LoadItemEnchantTransform()
 {
     m_map.RemoveAll();
@@ -190,9 +185,9 @@ int CItemEnchantTransformTable::LoadItemEnchantTransform()
 }
 
 // @0x140592090
-CString CItemEnchantTransformTable::FUN_140592090(int nItemId, EnchantTransformRank eRank, int nLimitLevel, int nEnchantLevel, int nSlot)
+CString CItemEnchantTransformTable::FUN_140592090(unsigned int nItemId, EnchantTransformRank eRank, unsigned int nLimitLevel, unsigned int nEnchantLevel, unsigned int nSlot)
 {
-    return StringFormat("{0}-{1}-{2}-{3}-(4)", nItemId, nSlot, nEnchantLevel, eRank, nLimitLevel);
+    return Unk_SocketFormat("{0}-{1}-{2}-{3}-(4)", nItemId, nSlot, nEnchantLevel, eRank, nLimitLevel);
 }
 
 // @0x140592110

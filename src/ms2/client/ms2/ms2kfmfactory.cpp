@@ -336,10 +336,10 @@ MS2KFMFactory::LoadStatus MS2KFMFactory::LoadAsset(efd::AssetFactoryManager*,con
 MS2KFMFactory::ResponseData::ResponseData() {}
 // @0x140d90090
 MS2KFMFactory::ResponseData::~ResponseData() {}
-// MS2-FUNCTIONAL: equivalent typed sequence grouping and ownership.
 // @0x140d900c0
 void MS2KFMFactory::ResponseData::LoadKFMTool(NiKFMTool* tool,const egmAnimation::KFMFactoryRequest* request) {
-    NiActorManagerPtr actor=FUN_140d815d0(tool,tool->GetBaseKFMPath(),request->GetAccumulation(),false,0,0);
+    bool accumulation=request->GetAccumulation();
+    NiActorManagerPtr actor=FUN_140d815d0(tool,tool->GetBaseKFMPath(),accumulation,false,0,0);
     if(!actor)return;
     m_spResponse->SetActor(actor);
     efd::UInt32* ids;

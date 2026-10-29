@@ -132,8 +132,16 @@ MS2_CHECK_SIZE(RemakeOptionContext, 0x80);
 MS2_CS_SCALAR_DELETING_DTOR(AccountBlockInfo)
 // @0x14027f9f0
 MS2_CS_SCALAR_DELETING_DTOR(AdditionalEffectEventCtx)
+// itemenchantinfo.h's BaseOption is a dtor-less view; the record's dtor is CPtred's (FUN_14027e510).
+void FUN_14027e510(CPtred* t);
 // @0x14027fa30
-MS2_CS_SCALAR_DELETING_DTOR(BaseOption)
+void* Unk_ScalarDeletingDtor(BaseOption* self, unsigned int flags)
+{
+    FUN_14027e510((CPtred*)self);
+    if (flags & 1)
+        operator delete(self, sizeof(BaseOption));
+    return self;
+}
 // @0x14027fa70
 MS2_CS_SCALAR_DELETING_DTOR(BillBoardInfo)
 // @0x14027fab0

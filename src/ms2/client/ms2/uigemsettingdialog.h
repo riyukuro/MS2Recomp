@@ -19,7 +19,7 @@ public:
     virtual int vfunc_48() { return 0x4e75; }                   // 48 0x141946c00
 
     class CGemTransparency* FUN_1419469b0();                    // the worn transparency gem (null: none)
-    bool FUN_141946a70(CString strName);                        // the check box value
+    int FUN_141946a70(CString strName);                         // the check box value
     void FUN_141946b10(CString strName, int nValue);            // set the check box value
 };
 MS2_CHECK_SIZE(UIGemSettingDialog, 0x180);

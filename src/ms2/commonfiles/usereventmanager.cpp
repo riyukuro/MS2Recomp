@@ -5,27 +5,27 @@
 // MS2-RANGE: 0x1408d6b30-0x1408e1840 .text$mn
 // MS2-GUESS-LOOKALIKES
 // MS2-PINS-BEGIN tplpin
-// MS2-PIN: ??0?$MS2Ptr@VMentoringContext@@@@QEAA@AEBV0@@Z 0x1408d8960 ; prop
-// MS2-PIN: ??0?$MS2Ptr@VMentoringContext@@@@QEAA@XZ 0x1408d89a0 ; unique
+// MS2-PIN: ??0?$MS2Ptr@VContextMentoring@CUserEventManager@@@@QEAA@AEBV0@@Z 0x1408d8960 ; prop
+// MS2-PIN: ??0?$MS2Ptr@VContextMentoring@CUserEventManager@@@@QEAA@XZ 0x1408d89a0 ; unique
 // MS2-PIN: ??0?$MS2Ptr@VContext258@CUserEventManager@@@@QEAA@AEBV0@@Z 0x1408d8a80 ; unique
 // MS2-PIN: ??0?$MS2Ptr@VContext218@CUserEventManager@@@@QEAA@AEBV0@@Z 0x1408d8ae0 ; unique
-// MS2-PIN: ??0CNode@?$CAtlMap@HV?$MS2Ptr@VMentoringContext@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VMentoringContext@@@@@3@@ATL@@QEAA@HI@Z 0x1408d8c70 ; unique
-// MS2-PIN: ??0CPair@?$CAtlMap@HV?$MS2Ptr@VMentoringContext@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VMentoringContext@@@@@3@@ATL@@IEAA@H@Z 0x1408d8e30 ; unique
-// MS2-PIN: ??1CPair@?$CAtlMap@HV?$MS2Ptr@VMentoringContext@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VMentoringContext@@@@@3@@ATL@@QEAA@XZ 0x1408d93a0 ; unique
-// MS2-PIN: ??4?$MS2Ptr@VMentoringContext@@@@QEAAAEAV0@AEBV0@@Z 0x1408d95b0 ; unique
-// MS2-PIN: ?Add@?$CAtlArray@V?$MS2Ptr@VMentoringContext@@@@V?$CElementTraits@V?$MS2Ptr@VMentoringContext@@@@@ATL@@@ATL@@QEAA_KAEBV?$MS2Ptr@VMentoringContext@@@@@Z 0x1408d9c20 ; unique
-// MS2-PIN: ?CreateNode@?$CAtlMap@HV?$MS2Ptr@VMentoringContext@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VMentoringContext@@@@@3@@ATL@@AEAAPEAVCNode@12@HII@Z 0x1408da030 ; unique
+// MS2-PIN: ??0CNode@?$CAtlMap@HV?$MS2Ptr@VContextMentoring@CUserEventManager@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VContextMentoring@CUserEventManager@@@@@3@@ATL@@QEAA@HI@Z 0x1408d8c70 ; unique
+// MS2-PIN: ??0CPair@?$CAtlMap@HV?$MS2Ptr@VContextMentoring@CUserEventManager@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VContextMentoring@CUserEventManager@@@@@3@@ATL@@IEAA@H@Z 0x1408d8e30 ; unique
+// MS2-PIN: ??1CPair@?$CAtlMap@HV?$MS2Ptr@VContextMentoring@CUserEventManager@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VContextMentoring@CUserEventManager@@@@@3@@ATL@@QEAA@XZ 0x1408d93a0 ; unique
+// MS2-PIN: ??4?$MS2Ptr@VContextMentoring@CUserEventManager@@@@QEAAAEAV0@AEBV0@@Z 0x1408d95b0 ; unique
+// MS2-PIN: ?Add@?$CAtlArray@V?$MS2Ptr@VContextMentoring@CUserEventManager@@@@V?$CElementTraits@V?$MS2Ptr@VContextMentoring@CUserEventManager@@@@@ATL@@@ATL@@QEAA_KAEBV?$MS2Ptr@VContextMentoring@CUserEventManager@@@@@Z 0x1408d9c20 ; unique
+// MS2-PIN: ?CreateNode@?$CAtlMap@HV?$MS2Ptr@VContextMentoring@CUserEventManager@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VContextMentoring@CUserEventManager@@@@@3@@ATL@@AEAAPEAVCNode@12@HII@Z 0x1408da030 ; unique
 // MS2-PIN: ?GetNode@?$CAtlMap@HV?$MS2Ptr@VContext1A0@CUserEventManager@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VContext1A0@CUserEventManager@@@@@3@@ATL@@AEBAPEAVCNode@12@HAEAI0AEAPEAV312@@Z 0x1408db480 ; unique
 // MS2-PIN: ?GetNode@?$CAtlMap@HV?$MS2Ptr@VDTRewardEventContext@CommonUserEvent@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VDTRewardEventContext@CommonUserEvent@@@@@3@@ATL@@AEBAPEAVCNode@12@HAEAI0AEAPEAV312@@Z 0x1408db570 ; unique
 // MS2-PIN: ?GetNode@?$CAtlMap@HV?$MS2Ptr@VContext350@CUserEventManager@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VContext350@CUserEventManager@@@@@3@@ATL@@AEBAPEAVCNode@12@HAEAI0AEAPEAV312@@Z 0x1408db660 ; unique
 // MS2-PIN: ?GetNode@?$CAtlMap@HV?$MS2Ptr@VContext38@CUserEventManager@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VContext38@CUserEventManager@@@@@3@@ATL@@AEBAPEAVCNode@12@HAEAI0AEAPEAV312@@Z 0x1408db750 ; unique
-// MS2-PIN: ?GetNode@?$CAtlMap@HV?$MS2Ptr@VMentoringContext@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VMentoringContext@@@@@3@@ATL@@AEBAPEAVCNode@12@HAEAI0AEAPEAV312@@Z 0x1408db840 ; unique
+// MS2-PIN: ?GetNode@?$CAtlMap@HV?$MS2Ptr@VContextMentoring@CUserEventManager@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VContextMentoring@CUserEventManager@@@@@3@@ATL@@AEBAPEAVCNode@12@HAEAI0AEAPEAV312@@Z 0x1408db840 ; unique
 // MS2-PIN: ?GetNode@?$CAtlMap@HV?$MS2Ptr@VContext2D8@CUserEventManager@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VContext2D8@CUserEventManager@@@@@3@@ATL@@AEBAPEAVCNode@12@HAEAI0AEAPEAV312@@Z 0x1408db930 ; unique
 // MS2-PIN: ?GetNode@?$CAtlMap@HV?$MS2Ptr@VContextB0@CUserEventManager@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VContextB0@CUserEventManager@@@@@3@@ATL@@AEBAPEAVCNode@12@HAEAI0AEAPEAV312@@Z 0x1408dba20 ; unique
-// MS2-PIN: ?GrowBuffer@?$CAtlArray@V?$MS2Ptr@VMentoringContext@@@@V?$CElementTraits@V?$MS2Ptr@VMentoringContext@@@@@ATL@@@ATL@@AEAA_N_K@Z 0x1408dc7b0 ; unique
-// MS2-PIN: ?NewNode@?$CAtlMap@HV?$MS2Ptr@VMentoringContext@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VMentoringContext@@@@@3@@ATL@@AEAAPEAVCNode@12@HII@Z 0x1408ddf50 ; unique
-// MS2-PIN: ?RelocateElements@?$CElementTraitsBase@V?$MS2Ptr@VMentoringContext@@@@@ATL@@SAXPEAV?$MS2Ptr@VMentoringContext@@@@0_K@Z 0x1408dfc60 ; unique
-// MS2-PIN: ?SetAt@?$CAtlMap@HV?$MS2Ptr@VMentoringContext@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VMentoringContext@@@@@3@@ATL@@QEAAPEAU__POSITION@@HAEBV?$MS2Ptr@VMentoringContext@@@@@Z 0x1408e1630 ; unique
+// MS2-PIN: ?GrowBuffer@?$CAtlArray@V?$MS2Ptr@VContextMentoring@CUserEventManager@@@@V?$CElementTraits@V?$MS2Ptr@VContextMentoring@CUserEventManager@@@@@ATL@@@ATL@@AEAA_N_K@Z 0x1408dc7b0 ; unique
+// MS2-PIN: ?NewNode@?$CAtlMap@HV?$MS2Ptr@VContextMentoring@CUserEventManager@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VContextMentoring@CUserEventManager@@@@@3@@ATL@@AEAAPEAVCNode@12@HII@Z 0x1408ddf50 ; unique
+// MS2-PIN: ?RelocateElements@?$CElementTraitsBase@V?$MS2Ptr@VContextMentoring@CUserEventManager@@@@@ATL@@SAXPEAV?$MS2Ptr@VContextMentoring@CUserEventManager@@@@0_K@Z 0x1408dfc60 ; unique
+// MS2-PIN: ?SetAt@?$CAtlMap@HV?$MS2Ptr@VContextMentoring@CUserEventManager@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VContextMentoring@CUserEventManager@@@@@3@@ATL@@QEAAPEAU__POSITION@@HAEBV?$MS2Ptr@VContextMentoring@CUserEventManager@@@@@Z 0x1408e1630 ; unique
 // MS2-PINS-END tplpin
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\commonfiles\\usereventmanager.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
@@ -122,7 +122,7 @@ void CUserEventManager::GetAllB0(ATL::CAtlArray<MS2Ptr<ContextB0> >& rOut)
 }
 
 // @0x1408d7360
-void CUserEventManager::AddMentoring(int nKey, MS2Ptr<MentoringContext> spContext)
+void CUserEventManager::AddMentoring(int nKey, MS2Ptr<ContextMentoring> spContext)
 {
     Unk_UserEventLock guard(m_lockMentoring, 1);
     m_mentoring.SetAt(nKey, spContext);
@@ -136,7 +136,7 @@ void CUserEventManager::RemoveMentoring(int nKey)
 }
 
 // @0x1408d7440
-void CUserEventManager::GetAllMentoring(ATL::CAtlArray<MS2Ptr<MentoringContext> >& rOut)
+void CUserEventManager::GetAllMentoring(ATL::CAtlArray<MS2Ptr<ContextMentoring> >& rOut)
 {
     Unk_UserEventLock guard(m_lockMentoring, 1);
     for (POSITION pos = m_mentoring.GetStartPosition(); pos != 0; m_mentoring.GetNext(pos))

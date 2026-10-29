@@ -69,7 +69,6 @@ void FUN_141901470(int n, int nUiId);
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// MS2-FUNCTIONAL: ASArgList setup codegen differs; same behavior
 // @0x140bfedf0
 inline Scaleform::GFx::Value AScript::Invoke(const char* szMethod, unsigned int a1, unsigned int a2, CStringW a3)
 {
@@ -77,7 +76,7 @@ inline Scaleform::GFx::Value AScript::Invoke(const char* szMethod, unsigned int 
     args.FUN_1409b2800(3);
     FUN_1422bcd10(args.FUN_1409b1f70(0), a1);
     FUN_1422bcd10(args.FUN_1409b1f70(1), a2);
-    FUN_1422bcea0(args.FUN_1409b1f70(2), a3.GetString());
+    FUN_1422bcea0(args.FUN_1409b1f70(2), a3);
     return FUN_1422bb8f0(szMethod, args);
 }
 
@@ -120,7 +119,6 @@ void UIRandomCoupon::vfunc_26()
     UIObject::vfunc_26();
 }
 
-// MS2-FUNCTIONAL: branch layout of the nested method-name chain differs; same behavior
 // @0x140bfe7e0
 int UIRandomCoupon::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs)
 {
@@ -128,9 +126,9 @@ int UIRandomCoupon::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* 
         return 1;
     if (_stricmp(szMethod, "onVibrate") == 0)
         return 1;
-    if (_stricmp(szMethod, "onEffectPick") == 0)
+    else if (_stricmp(szMethod, "onEffectPick") == 0)
         return 1;
-    if (_stricmp(szMethod, "onButtonShow") == 0)
+    else if (_stricmp(szMethod, "onButtonShow") == 0)
     {
         m_bButtonShown = 1;
         if (m_spProduct.get())
@@ -141,7 +139,7 @@ int UIRandomCoupon::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* 
         }
         return 1;
     }
-    if (_stricmp(szMethod, "onHide") == 0)
+    else if (_stricmp(szMethod, "onHide") == 0)
     {
         vfunc_3();
         return 1;
@@ -149,20 +147,18 @@ int UIRandomCoupon::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* 
     return 0;
 }
 
-// MS2-FUNCTIONAL: branch layout of the key/close checks differs; same behavior
 // @0x140bfe930
 int UIRandomCoupon::vfunc_13()
 {
     if (FUN_140a467d0(&m_30))
         return 0;
-    if (!FUN_14025e7c0()->FUN_14116d840())
+    if (FUN_14025e7c0()->FUN_14116d840() || FUN_14025e7c0()->FUN_14116d9c0(0x1c, 0, 0))
     {
-        if (!FUN_14025e7c0()->FUN_14116d9c0(0x1c, 0, 0))
-            return 0;
+        if (m_bButtonShown)
+            m_30->Invoke("playClose");
+        return 1;
     }
-    if (m_bButtonShown)
-        m_30->Invoke("playClose");
-    return 1;
+    return 0;
 }
 
 // @0x140bfe9e0
@@ -219,23 +215,28 @@ void UIRandomCoupon::SetProduct(MS2Ptr<Unk_RcProduct> spProduct)
     m_spProduct = spProduct;
 }
 
-// MS2-FUNCTIONAL: branch layout / temporaries of the coupon-kind chain differ; same behavior
 #ifndef MS2_HOOK_DLL
 // @0x140bfec40
 void UIRandomCoupon::FUN_140bfec40()
 {
-    if (m_nCoupon == 1)
+    switch (m_nCoupon)
+    {
+    case 1:
         FUN_141276180(s_strCoupon1, "");
-    else if (m_nCoupon == 2)
+        break;
+    case 2:
         FUN_141276180(s_strCoupon2, "");
-    else if (m_nCoupon == 3)
+        break;
+    case 3:
         FUN_141276180(s_strCoupon3, "");
-    else
+        break;
+    default:
         FUN_141276180(s_strCoupon1, "");
+        break;
+    }
 }
 #endif
 
-// MS2-FUNCTIONAL: dynamic_cast / ref release codegen differs; same behavior
 // @0x140bfed50
 UIMeratMarketDialog* FUN_140bfed50(int nId)
 {
@@ -243,7 +244,7 @@ UIMeratMarketDialog* FUN_140bfed50(int nId)
     {
         MS2Ptr<UIObject> ref = FUN_1403ed2b0()->FUN_141adcea0(nId);
         if (ref.get())
-            return dynamic_cast<UIMeratMarketDialog*>(ref.get());
+            return dynamic_cast<UIMeratMarketDialog*>((UIObject*)ref);
     }
     return 0;
 }

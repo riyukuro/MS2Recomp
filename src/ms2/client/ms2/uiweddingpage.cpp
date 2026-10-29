@@ -29,6 +29,7 @@
 #include "ms2/placeholder/asdata.h"
 #include "ms2/placeholder/asdisplayobject.h"
 #include "ms2/placeholder/asobj.h"
+#include "ms2/placeholder/asuicomponent.h"
 #include "ms2/placeholder/astooltip.h"
 #include "ms2/placeholder/citem.h"
 #include "ms2/placeholder/coutpacket.h"
@@ -87,7 +88,7 @@ public:
 class Unk_WpPerk : public CPtred
 {
 public:
-    short FUN_140907ad0(int nGrade);                            // the skill level the grade gives
+    unsigned short FUN_140907ad0(int nGrade);                            // the skill level the grade gives
     float FUN_140907b50(int nGrade);                            // the progress to the next level
 
     int m_pad_18;
@@ -147,18 +148,18 @@ extern __int64 DAT_143ab2828;                                   // the own chara
 
 bool FUN_140a467d0(const MS2Ptr<AScript>& kScript);             // has the AS object been released
 unsigned char FUN_1409b0350(Scaleform::GFx::Value* pValue);     // Value::IsNull
-MS2Ptr<AScript> FUN_140acca70(int nMovieId, const Scaleform::GFx::Value& v);
+MS2Ptr<ASUIComponent> FUN_140acca70(int nMovieId, const Scaleform::GFx::Value& v);
 WeddingManager* FUN_1409eed90();
 int FUN_141b89950(WeddingManager* pManager);                    // the wedding grade
 CStringW FUN_140298ea0(CStringW strKey);                        // string table text
 CStringW GetStringCommonByKey(const CStringW& strKey);                 // string table text
 CStringW FUN_14062b4f0(CStringW strKey, const int& nArg);       // string table format
-CStringW FUN_1405c2690(CStringW strKey, CStringW strArg);       // string table format
+CStringW FUN_1405c2690(CStringW strKey, const CStringW& strArg);       // string table format
 CStringW FUN_1409404f0(__int64 nValue);                         // number with separators
 CStringW FUN_1416e5350(int nQuestId, int n);                    // quest title
 MS2Ptr<CQuestData> FUN_14074bc40(int nQuestId);
 bool FUN_140841300(const CStringW& str, const char* sz);        // string equals
-void FUN_1412752d0(CStringW strText, int n);                    // notice
+void FUN_1412752d0(const CStringW& strText, int n);                    // notice
 MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW strText, int nUnk, CStringW strTag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> spBox);
 void FUN_140710590(COutPacket& pkt);
@@ -205,12 +206,10 @@ bool UIWeddingPage::vfunc_1()
     if (FUN_140a467d0(m_28->FUN_1422dba00()))
         return false;
     Scaleform::GFx::Value kPage = m_28->FUN_1422dba00()->FUN_1422baa20("m_currentPage");
-    if (FUN_1409b0350(&kPage) == 0)
-    {
-        m_pScript = FUN_140acca70(m_28->FUN_1422db730(), kPage);
-        return true;
-    }
-    return false;
+    if (FUN_1409b0350(&kPage) != 0)
+        return false;
+    m_pScript = FUN_140acca70(m_28->FUN_1422db730(), kPage);
+    return true;
 }
 
 // @0x140fe75a0
@@ -254,10 +253,7 @@ UIWeddingPageMessage::UIWeddingPageMessage(UIWeddingDialog* pDialog) : UIWedding
 {
 }
 
-// @0x140fe9790
-UIWeddingPageMessage::~UIWeddingPageMessage()
-{
-}
+// @0x140fe9790 ~UIWeddingPageMessage is implicit (uiweddingpage.h).
 
 // @0x140fe76d0
 bool UIWeddingPageMessage::vfunc_1()
@@ -266,11 +262,9 @@ bool UIWeddingPageMessage::vfunc_1()
         return false;
     WeddingProxy* pProxy = WeddingManager::GetInstance()->FUN_140d295d0();
     bool bGroom = pProxy->IsGroom(DAT_143ab2828);
-    MS2Ptr<Unk_WpInput> spMine = static_cast<Unk_WpRoot*>(m_pScript.operator->())->FUN_140bbe880<Unk_WpInput>("m_myMessage");
-    if (spMine.get() != 0)
+    if (MS2Ptr<Unk_WpInput> spMine = static_cast<Unk_WpRoot*>(m_pScript.operator->())->FUN_140bbe880<Unk_WpInput>("m_myMessage"))
         spMine->FUN_1422e0ab0(pProxy->GetMessageW(bGroom));
-    MS2Ptr<Unk_WpInput> spPartner = static_cast<Unk_WpRoot*>(m_pScript.operator->())->FUN_140bbe880<Unk_WpInput>("m_partnerMessage");
-    if (spPartner.get() != 0)
+    if (MS2Ptr<Unk_WpInput> spPartner = static_cast<Unk_WpRoot*>(m_pScript.operator->())->FUN_140bbe880<Unk_WpInput>("m_partnerMessage"))
         spPartner->FUN_1422e0ab0(pProxy->GetMessageW(!bGroom));
     return true;
 }
@@ -284,40 +278,41 @@ CString UIWeddingPageMessage::vfunc_6()
 // @0x140fe7950
 CStringW UIWeddingPageMessage::vfunc_7()
 {
-    return GetStringCommonByKey(CStringW(L"s_wedding_dialog_page_message"));
+    return GetStringCommonByKey(L"s_wedding_dialog_page_message");
 }
 
 // @0x140fe79c0
 bool UIWeddingPageMessage::vfunc_3(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs)
 {
-    if (_stricmp(szMethod, "onChangeMessage") != 0)
-        return false;
-    ASData data;
-    if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+    if (_stricmp(szMethod, "onChangeMessage") == 0)
     {
-        CStringW strMessage = data.FUN_1422b8f40();
-        MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, FUN_140298ea0(CStringW(L"s_wedding_dialog_couple_message_confirm")), 0, CStringW(L""));
-        if (spBox.get() != 0)
+        ASData data;
+        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
         {
-            spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIWeddingPageMessage::SendWedding));
-            spBox->FUN_140b76940(CStringW(strMessage));
-            FUN_140d73c60(spBox);
+            CStringW strMessage = data.FUN_1422b8f40();
+            MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, FUN_140298ea0(CStringW(L"s_wedding_dialog_couple_message_confirm")), 0, CStringW(L""));
+            if (spBox.get() != 0)
+            {
+                spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIWeddingPageMessage::SendWedding));
+                spBox->FUN_140b76940(CStringW(strMessage));
+                FUN_140d73c60(spBox);
+            }
         }
+        return true;
     }
-    return true;
+    return false;
 }
 
 // @0x140fe7c60
 bool UIWeddingPageMessage::SendWedding(int nResult, const CMsgBoxData& box)
 {
-    if (nResult == 0)
-    {
-        CStringW strMessage = box.FUN_141a02fd0(0, CStringW());
-        COutPacket pkt(static_cast<int>(SendOp::Wedding), 0);
-        pkt.WriteUInt8(0x22);
-        pkt.WriteUnicodeString(strMessage);
-        FUN_140710590(pkt);
-    }
+    if (nResult != 0)
+        return true;
+    CStringW strMessage = box.FUN_141a02fd0(0, CStringW());
+    COutPacket pkt(static_cast<int>(SendOp::Wedding), 0);
+    pkt.WriteUInt8(0x22);
+    pkt.WriteUnicodeString(strMessage);
+    FUN_140710590(pkt);
     return true;
 }
 
@@ -328,10 +323,7 @@ UIWeddingPageSkill::UIWeddingPageSkill(UIWeddingDialog* pDialog) : UIWeddingPage
 {
 }
 
-// @0x140fe97f0
-UIWeddingPageSkill::~UIWeddingPageSkill()
-{
-}
+// @0x140fe97f0 ~UIWeddingPageSkill is implicit (uiweddingpage.h).
 
 // @0x140fe7d70
 bool UIWeddingPageSkill::vfunc_1()
@@ -339,47 +331,38 @@ bool UIWeddingPageSkill::vfunc_1()
     if (!UIWeddingPage::vfunc_1())
         return false;
     int nGrade = FUN_141b89950(FUN_1409eed90());
-    MS2Ptr<Unk_WpList> spList = static_cast<Unk_WpRoot*>(m_pScript.operator->())->FUN_140bc7280<Unk_WpList>("m_list");
-    if (spList.get() != 0)
+    if (MS2Ptr<Unk_WpList> spList = static_cast<Unk_WpRoot*>(m_pScript.operator->())->FUN_140bc7280<Unk_WpList>("m_list"))
     {
         spList->FUN_1422dd1d0();
         std::map<int, MS2Ptr<Unk_WpPerk> >& perks = FUN_1409023c0()->FUN_140909a80();
         std::map<int, MS2Ptr<Unk_WpPerk> >::iterator it = perks.begin();
         std::map<int, MS2Ptr<Unk_WpPerk> >::iterator itEnd = perks.end();
-        while (it != itEnd)
+        for (; it != itEnd; ++it)
         {
             MS2Ptr<Unk_WpPerk> spPerk(it->second);
             ASObj obj(2);
             obj.FUN_1407cb9c0("id", it->first);
             obj.FUN_140fe95a0("type", spPerk->m_nType);
             obj.FUN_1407cbb20("level", FUN_14062b4f0(CStringW(L"s_wedding_dialog_wedding_grade"), spPerk->m_nGrade));
-            obj.FUN_1407cbbe0("activate", spPerk->m_nGrade <= nGrade);
+            obj.FUN_1407cbbe0("activate", nGrade >= spPerk->m_nGrade);
             if (spPerk->m_nType == 0)
             {
-                short nOne = 1;
-                short nLevel = spPerk->FUN_140907ad0(nGrade);
-                short nSkillLevel = (nLevel < nOne ? nOne : nLevel);
+                unsigned short nSkillLevel = std::max<unsigned short>(spPerk->FUN_140907ad0(nGrade), 1);
                 MS2Ptr<Unk_WpSkill> spSkill = FUN_1401958b0()->FUN_140aafef0(spPerk->m_nSkillId, nSkillLevel);
-                if (spSkill.get() != 0)
-                {
-                    obj.FUN_1407cbb20("name", FUN_1401a9d70()->FUN_141812290(spPerk->m_nSkillId, nSkillLevel, CString("name")));
-                    obj.FUN_1409c4a30("status", spPerk->FUN_140907b50(nGrade));
-                    obj.FUN_1407cba60("imgPath", spSkill->FUN_1401756c0());
-                    spList->FUN_1422dd230(obj);
-                }
+                if (spSkill == 0)
+                    continue;
+                obj.FUN_1407cbb20("name", FUN_1401a9d70()->FUN_141812290(spPerk->m_nSkillId, nSkillLevel, CString("name")));
+                obj.FUN_1409c4a30("status", spPerk->FUN_140907b50(nGrade));
+                obj.FUN_1407cba60("imgPath", spSkill->FUN_1401756c0());
             }
-            else
+            else if (spPerk->m_nType == 1)
             {
-                if (spPerk->m_nType == 1)
-                {
-                    MS2Ptr<Unk_WpItemData> spItem = FUN_14053f870(spPerk->GetGrant()->vfunc_0());
-                    obj.FUN_1407cbb20("name", FUN_1401a9d70()->FUN_141811980(1, spPerk->GetGrant()->vfunc_0()));
-                    obj.FUN_1407cb9c0("status", 0);
-                    obj.FUN_1407cba60("imgPath", spItem->FUN_14053fdd0());
-                }
-                spList->FUN_1422dd230(obj);
+                MS2Ptr<Unk_WpItemData> spItem = FUN_14053f870((&spPerk->m_grant)->vfunc_0());
+                obj.FUN_1407cbb20("name", FUN_1401a9d70()->FUN_141811980(1, (&spPerk->m_grant)->vfunc_0()));
+                obj.FUN_1407cb9c0("status", 0);
+                obj.FUN_1407cba60("imgPath", spItem->FUN_14053fdd0());
             }
-            ++it;
+            spList->FUN_1422dd230(obj);
         }
         spList->vfunc_24(true);
     }
@@ -395,34 +378,39 @@ CString UIWeddingPageSkill::vfunc_6()
 // @0x140fe8440
 CStringW UIWeddingPageSkill::vfunc_7()
 {
-    return GetStringCommonByKey(CStringW(L"s_wedding_dialog_page_skill"));
+    return GetStringCommonByKey(L"s_wedding_dialog_page_skill");
 }
 
 // @0x140fe84b0
 bool UIWeddingPageSkill::vfunc_3(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs)
 {
-    if (_stricmp(szMethod, "onReceive") != 0)
-        return false;
-    ASData data;
-    if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+    if (_stricmp(szMethod, "onReceive") == 0)
     {
-        int nId = data.FUN_1422b8a10();
-        MS2Ptr<Unk_WpPerk> spPerk = FUN_1409023c0()->FUN_140909910(nId);
-        if (spPerk == 0)
-            return true;
-        if (spPerk->m_nType != 1)
-            return true;
-        if (DAT_143ab2a90.FUN_140a5e2e0(spPerk->GetGrant()->vfunc_0()).get() != 0)
+        ASData data;
+        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
         {
-            FUN_1412752d0(CStringW(L"s_wedding_dialog_page_skill_exist"), 1);
-            return true;
+            int nId = data.FUN_1422b8a10();
+            MS2Ptr<Unk_WpPerk> spPerk = FUN_1409023c0()->FUN_140909910(nId);
+            if (spPerk == 0)
+                return true;
+            if (spPerk->m_nType != 1)
+                return true;
+            if (DAT_143ab2a90.FUN_140a5e2e0((&spPerk->m_grant)->vfunc_0()).get() != 0)
+            {
+                {
+                    CStringW strMsg(L"s_wedding_dialog_page_skill_exist");
+                    FUN_1412752d0(strMsg, 1);
+                }
+                return true;
+            }
+            COutPacket pkt(static_cast<int>(SendOp::Wedding), 0);
+            pkt.WriteUInt8(0x25);
+            pkt.WriteInt32(nId);
+            FUN_140710590(pkt);
         }
-        COutPacket pkt(static_cast<int>(SendOp::Wedding), 0);
-        pkt.WriteUInt8(0x25);
-        pkt.WriteInt32(nId);
-        FUN_140710590(pkt);
+        return true;
     }
-    return true;
+    return false;
 }
 
 // @0x140fe8720
@@ -430,26 +418,23 @@ void UIWeddingPageSkill::vfunc_5(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
 {
     int nId = pArgs->FUN_1422b8a10();
     MS2Ptr<Unk_WpPerk> spPerk = FUN_1409023c0()->FUN_140909910(nId);
-    if (!(spPerk == 0))
+    if (spPerk == 0)
+        return;
+    int nGrade = FUN_141b89950(FUN_1409eed90());
+    if (spPerk->m_nType == 0)
     {
-        int nGrade = FUN_141b89950(FUN_1409eed90());
-        if (spPerk->m_nType == 0)
-        {
-            short nOne = 1;
-            short nLevel = spPerk->FUN_140907ad0(nGrade);
-            short nSkillLevel = (nLevel < nOne ? nOne : nLevel);
-            MS2Ptr<Unk_WpSkill> spSkill = FUN_1401958b0()->FUN_140aafef0(spPerk->m_nSkillId, nSkillLevel);
-            if (spSkill.get() != 0)
-            {
-                ASTooltip tip(*pRetVal, 2);
-                tip.FUN_1409e2750(spSkill.get(), 6, 0);
-            }
-        }
-        else if (spPerk->m_nType == 1)
+        unsigned short nSkillLevel = std::max<unsigned short>(spPerk->FUN_140907ad0(nGrade), 1);
+        MS2Ptr<Unk_WpSkill> spSkill = FUN_1401958b0()->FUN_140aafef0(spPerk->m_nSkillId, nSkillLevel);
+        if (spSkill.get() != 0)
         {
             ASTooltip tip(*pRetVal, 2);
-            tip.FUN_1409e1770(spPerk->GetGrant()->vfunc_0(), spPerk->GetGrant()->vfunc_1());
+            tip.FUN_1409e2750(spSkill.get(), 6, 0);
         }
+    }
+    else if (spPerk->m_nType == 1)
+    {
+        ASTooltip tip(*pRetVal, 2);
+        tip.FUN_1409e1770((&spPerk->m_grant)->vfunc_0(), (&spPerk->m_grant)->vfunc_1());
     }
 }
 
@@ -460,10 +445,7 @@ UIWeddingPageMission::UIWeddingPageMission(UIWeddingDialog* pDialog) : UIWedding
 {
 }
 
-// @0x140fe97b0
-UIWeddingPageMission::~UIWeddingPageMission()
-{
-}
+// @0x140fe97b0 ~UIWeddingPageMission is implicit (uiweddingpage.h).
 
 // @0x140fe89f0
 bool UIWeddingPageMission::vfunc_1()
@@ -492,40 +474,45 @@ CString UIWeddingPageMission::vfunc_6()
 // @0x140fe8b20
 CStringW UIWeddingPageMission::vfunc_7()
 {
-    return GetStringCommonByKey(CStringW(L"s_wedding_dialog_page_mission"));
+    return GetStringCommonByKey(L"s_wedding_dialog_page_mission");
 }
 
 // @0x140fe8b90
 bool UIWeddingPageMission::vfunc_3(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs)
 {
-    if (_stricmp(szMethod, "onReceiveItem") != 0)
-        return false;
-    ASData data;
-    if (data.FUN_1422b9620(pArgs, nArgs) != 0)
-        SendQuest(data.FUN_1422b8b10());
-    return true;
+    if (_stricmp(szMethod, "onReceiveItem") == 0)
+    {
+        ASData data;
+        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+        {
+            int nQuestId = data.FUN_1422b8b10();
+            SendQuest(nQuestId);
+        }
+        return true;
+    }
+    return false;
 }
 
 // @0x140fe8c40
 void UIWeddingPageMission::vfunc_5(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
 {
     UIWeddingPage::vfunc_5(pRetVal, pArgs);
-    if (FUN_1403ed2d0()->FUN_141bd0cc0() != 0)
+    void* pScene = FUN_1403ed2d0()->FUN_141bd0cc0();
+    if (pScene == 0)
+        return;
+    CStringW strName = pArgs->FUN_1422b8f40();
+    int nQuestId = pArgs->FUN_1422b8b10();
+    MS2Ptr<CQuestData> spData = FUN_14074bc40(nQuestId);
+    if (spData.IsNull())
+        return;
+    if (FUN_140841300(strName, "exp"))
     {
-        CStringW strName = pArgs->FUN_1422b8f40();
-        MS2Ptr<CQuestData> spData = FUN_14074bc40(pArgs->FUN_1422b8b10());
-        if (!spData.IsNull())
+        ASTooltip tip(2);
+        CStringW strTip = FUN_1405c2690(CStringW(L"s_wedding_dialog_page_wedding_exp_tooltip"), FUN_1409404f0(spData->m_complete.m_weddingExp));
+        if (tip.FUN_1409e26b0(strTip) != 0)
         {
-            if (FUN_140841300(strName, "exp"))
-            {
-                ASTooltip tip(2);
-                CStringW strTip = FUN_1405c2690(CStringW(L"s_wedding_dialog_page_wedding_exp_tooltip"), FUN_1409404f0(spData->m_complete.m_weddingExp));
-                if (tip.FUN_1409e26b0(strTip) != 0)
-                {
-                    tip.FUN_1409c6dc0(1);
-                    FUN_1409b4bc0(pRetVal, tip.FUN_1422bb870());
-                }
-            }
+            tip.FUN_1409c6dc0(1);
+            FUN_1409b4bc0(pRetVal, tip.FUN_1422bb870());
         }
     }
 }
@@ -540,27 +527,23 @@ void UIWeddingPageMission::vfunc_o178_12(void* pQuest)
 void UIWeddingPageMission::SendQuest(int nQuestId)
 {
     Unk_PayloadPtr<CQuest> spQuest = FUN_140764020()->vfunc_o10_3(nQuestId);
-    if (!spQuest.IsNull())
-    {
-        if (spQuest->IsComplete() != 0)
-        {
-            MS2Ptr<CQuestData> spData = spQuest->GetData();
-            if (!spData.IsNull())
-            {
-                COutPacket pkt(static_cast<int>(SendOp::Quest), 0);
-                pkt.WriteUInt8(0x27);
-                pkt.WriteInt32(nQuestId);
-                FUN_140710590(pkt);
-            }
-        }
-    }
+    if (spQuest.IsNull())
+        return;
+    if (spQuest->IsComplete() == 0)
+        return;
+    MS2Ptr<CQuestData> spData = spQuest->GetData();
+    if (spData.IsNull())
+        return;
+    COutPacket pkt(static_cast<int>(SendOp::Quest), 0);
+    pkt.WriteUInt8(0x27);
+    pkt.WriteInt32(nQuestId);
+    FUN_140710590(pkt);
 }
 
 // @0x140fe8fb0
 void UIWeddingPageMission::FUN_140fe8fb0()
 {
-    MS2Ptr<Unk_WpList> spList = static_cast<Unk_WpRoot*>(m_pScript.operator->())->FUN_140bbe880<Unk_WpList>("m_list");
-    if (spList.get() != 0)
+    if (MS2Ptr<Unk_WpList> spList = static_cast<Unk_WpRoot*>(m_pScript.operator->())->FUN_140bc7280<Unk_WpList>("m_list"))
     {
         spList->FUN_1422dd1d0();
         m_binder.FUN_140d43990();
@@ -578,7 +561,7 @@ void UIWeddingPageMission::FUN_140fe8fb0()
             row.FUN_1407cb9c0("completed", spQuest->IsRewarded());
             row.FUN_1409c1180("exp", spData->m_complete.m_weddingExp);
             const ATL::CAtlArray<CQuestData::QuestRewardItem>& rewards = spData->m_complete.m_choiceRewards;
-            if (rewards.GetCount() != 0)
+            if (rewards.GetCount() > 0)
                 row.FUN_1407cba60("binding", m_binder.FUN_140d43310(rewards[0].m_itemId, rewards[0].m_count, rewards[0].m_job));
             if (1 < rewards.GetCount())
                 row.FUN_1407cba60("binding2", m_binder.FUN_140d43310(rewards[1].m_itemId, rewards[1].m_count, rewards[1].m_job));

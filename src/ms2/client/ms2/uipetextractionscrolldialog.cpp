@@ -230,66 +230,63 @@ void UIPetExtractionScrollDialog::vfunc_67()
 }
 
 // @0x140e712e0
-// MS2-FUNCTIONAL: written from the decompile; temporaries / frame slots not tuned
 void UIPetExtractionScrollDialog::vfunc_79(void* pPacket)
 {
     UIDialog::vfunc_79(pPacket);
     if (!FUN_140166410()->FUN_14036d570(0x6c))
         return;
-    CInPacket* pIn = static_cast<CInPacket*>(pPacket);
-    if (pIn->FUN_14070fe80() != 0x108)
+    if (static_cast<CInPacket*>(pPacket)->FUN_14070fe80() != 0x108)
         return;
-    CInputStream* pStream = static_cast<CInputStream*>(pIn);
-    unsigned nResult = pStream->ReadUInt8();
-    if (nResult == 0)
+    unsigned nResult = static_cast<CInPacket*>(pPacket)->ReadUInt8();
+    switch (nResult)
     {
-        __int64 nUidPet = pStream->ReadInt64();
-        __int64 nUidResult = pStream->ReadInt64();
+    case 0:
+    {
+        __int64 nUidPet = static_cast<CInPacket*>(pPacket)->ReadInt64();
+        __int64 nUidResult = static_cast<CInPacket*>(pPacket)->ReadInt64();
         MS2Ptr<CItem> spPet = DAT_143ab2a90.FUN_140a5d680(nUidPet);
         if (spPet.IsNull())
-            return;
+            break;
         MS2Ptr<CItem> spResult = DAT_143ab2a90.FUN_140a5d680(nUidResult);
         if (spResult.IsNull())
-            return;
+            break;
         CItemGem* pGem = spResult->FUN_140527900();
         if (pGem == 0)
-            return;
+            break;
         MS2Ptr<CGemBase> spGem = pGem->GetGem();
-        if (spGem.get() == 0)
-            return;
+        if (spGem.IsNull())
+            break;
         if (spGem->vfunc_1() != 0xb)
-            return;
+            break;
         CGemBase* pSkin = spGem.get();
         if (pSkin == 0)
-            return;
-        pSkin->vfunc_3(*pStream);
+            break;
+        pSkin->vfunc_3(*static_cast<CInPacket*>(pPacket));
         FUN_1412751f0(FUN_1405c2690(CStringW(L"s_petextraction_success"), spResult->FUN_140527b10()), 1, 0);
+        break;
     }
-    else if (nResult == 2)
-    {
+    case 2:
         FUN_1412751f0(FUN_140298ea0(CStringW(L"s_petextraction_inventoryfull")), 1, 0);
-    }
-    else if (nResult == 3)
-    {
+        break;
+    case 3:
         FUN_1412751f0(FUN_140298ea0(CStringW(L"s_petextraction_invalid")), 1, 0);
-    }
-    else
-    {
+        break;
+    default:
         FUN_1412751f0(FUN_140298ea0(CStringW(L"s_petextraction_invalid")), 1, 0);
+        break;
     }
     vfunc_67();
 }
 
 // @0x140e71880
-// MS2-FUNCTIONAL: written from the decompile; temporaries / frame slots not tuned
 bool UIPetExtractionScrollDialog::FUN_140e71880(int nResult, const CMsgBoxData& box)
 {
-    if (nResult == 0)
-    {
-        MS2Ptr<CItem> spScroll = DAT_143ab2a90.FUN_140a5d680(m_nScrollUid);
-        if (!spScroll.IsNull())
-            DAT_143ab2a90.FUN_140a63880(spScroll.get(), FUN_1406c6bd0(L"{0}", m_nTargetUid));
-    }
+    if (nResult != 0)
+        return true;
+    MS2Ptr<CItem> spScroll = DAT_143ab2a90.FUN_140a5d680(m_nScrollUid);
+    if (spScroll.IsNull())
+        return true;
+    DAT_143ab2a90.FUN_140a63880(spScroll.get(), FUN_1406c6bd0(L"{0}", m_nTargetUid));
     return true;
 }
 
@@ -334,7 +331,6 @@ int UIPetExtractionScrollDialog::vfunc_28(const char* szMethod, const Scaleform:
 }
 
 // @0x140e71d40
-// MS2-FUNCTIONAL: written from the decompile; temporaries / frame slots not tuned
 void UIPetExtractionScrollDialog::FUN_140e71d40(__int64 nItemUid)
 {
     if (vfunc_55() != 0)
@@ -346,20 +342,19 @@ void UIPetExtractionScrollDialog::FUN_140e71d40(__int64 nItemUid)
         return;
     int nPetId = spPet->FUN_140527840()->FUN_14053dc60();
     MS2Ptr<CPetData> spPetData = FUN_14052d210()->Find(nPetId);
-    if (spPetData.get() == 0)
+    if (spPetData.IsNull())
         return;
     if (!spPetData->m_bEnablePetExtraction)
         return;
     unsigned nGemItemId = *Client::Constants::GetInstance()->gemPetSkinBaseItemID.Get();
     MS2Ptr<CItemData> spGemData = FUN_14053f870(nGemItemId);
-    if (spGemData.get() == 0)
+    if (spGemData.IsNull())
         return;
     MS2Ptr<CItem> spResult(new CItem);
-    int nRarity = FUN_14053feb0(nGemItemId);
-    if (!spResult->FUN_140523c40(nGemItemId, nRarity, 0))
+    if (!spResult->FUN_140523c40(nGemItemId, FUN_14053feb0(nGemItemId), 0))
         return;
     MS2Ptr<CItemData> spData(spResult->FUN_140527840());
-    if (spData.get() == 0)
+    if (spData.IsNull())
         return;
     if (spResult->FUN_140525a30() == 0)                 // not a gem
         return;
@@ -368,7 +363,7 @@ void UIPetExtractionScrollDialog::FUN_140e71d40(__int64 nItemUid)
         return;
     pGem->FUN_1405a7020(spData->FUN_14053e900(), spData->FUN_14053c650());
     MS2Ptr<CGemBase> spGem = pGem->GetGem();
-    if (spGem.get() == 0)
+    if (spGem.IsNull())
         return;
     if (spGem->vfunc_1() != 0xb)                        // the pet skin gem
         return;
@@ -376,9 +371,7 @@ void UIPetExtractionScrollDialog::FUN_140e71d40(__int64 nItemUid)
     if (pSkin == 0)
         return;
     pSkin->m_nPetId = nPetId;
-    MS2Ptr<CItemData> spSocketData(spResult->FUN_140527840());
-    int nRank = spResult->FUN_140526bd0();
-    unsigned nSockets = FUN_14052d200()->FUN_14062d4b0(spData->property.socketDataId, nRank, spSocketData);
+    unsigned nSockets = FUN_14052d200()->FUN_14062d4b0(spData->property.socketDataId, spResult->FUN_140526bd0(), spResult->FUN_140527840());
     CItemSocket* pSocket = spResult->FUN_1405279c0();
     if (pSocket != 0)
         pSocket->FUN_140620840(nSockets, 0);

@@ -86,9 +86,9 @@ void StateJumpTo::vfunc_5(int n)
     {
         if (m_spJump->m_n34 != 0)
         {
-            efd::Point3 kRot = m_pOwner->vfunc_20();
+            NiPoint3 kRot = m_pOwner->vfunc_20();
             kRot.z = m_spJump->m_f38;
-            m_pOwner->FUN_14166d970(kRot);
+            m_pOwner->FUN_14166d970(*reinterpret_cast<efd::Point3*>(&kRot));
         }
         m_pOwner->vfunc_19(m_spJump->m_pos);
     }

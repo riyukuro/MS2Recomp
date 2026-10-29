@@ -92,7 +92,6 @@ MS2Ptr<SkillLevelData> JobSystemCli::vfunc_1(unsigned nSkillId)
 }
 
 // @0x140a6da90
-// MS2-FUNCTIONAL: the exe keeps one GetJobData()/tree temp per use and releases the row / set on each exit path; cl orders the temps differently
 bool JobSystemCli::vfunc_2(unsigned nSkillId)
 {
     MS2Ptr<Unk_JscSkillRow> spRow = FUN_1401958b0()->FUN_1407ee1d0(nSkillId);
@@ -109,16 +108,17 @@ bool JobSystemCli::vfunc_2(unsigned nSkillId)
             if (spSet->FUN_140809410(nSkillId, 0) != 0)
                 return true;
         }
-        if (pPlayer->FUN_1409eee00()->FUN_14080baf0(nSkillId) != 0)
+        if (pPlayer->FUN_1409eee00()->FUN_14080baf0(nSkillId) > 0)
             return true;
-        if (FUN_140166410()->FUN_14036d570(0xd3) && pPlayer->FUN_14152fce0(nSkillId) != 0)
+        if (FUN_140166410()->FUN_14036d570(0xd3) && pPlayer->FUN_14152fce0(nSkillId) > 0)
             return true;
-        if (GetJobData().get() != 0)
+        JobData* pJobData = GetJobData().get();
+        if (pJobData != 0)
         {
             int nMain = GetJobData()->GetSubSkillParent(nSkillId);
             if (nMain != 0)
             {
-                if (pPlayer->FUN_1409eee00()->FUN_14080baf0(nMain) != 0)
+                if (pPlayer->FUN_1409eee00()->FUN_14080baf0(nMain) > 0)
                     return true;
             }
         }
@@ -141,7 +141,7 @@ void JobSystemCli::vfunc_4(unsigned short nLevel)
 }
 
 // @0x140a6dec0
-// MS2-FUNCTIONAL: temp lifetimes of the tree / job data MS2Ptrs differ (frame 0x88 vs 0x78)
+// MS2-FUNCTIONAL: after each tree lookup the exe spills the level to a temp, releases the tree, zeroes a dead word temp and only then copies the level (frame 0xd8 vs 0xc8); the same shape is open in UISkillBookTreeDialog::GetLevelText
 unsigned short JobSystemCli::vfunc_5(unsigned nSkillId)
 {
     Unk_JscPlayer* pPlayer = FUN_1409613d0(m_pOwner);
@@ -194,27 +194,31 @@ void JobSystemCli::SendRequest(int nJob, unsigned __int64 nSerial, int nSkill, u
 }
 
 // @0x140a6e240
-// MS2-FUNCTIONAL: the exe holds the lock state in a local and runs the loop on raw element pointers; cl lays out the frame differently
 void JobSystemCli::Refresh()
 {
     Unk_CriticalSectionLock lock(m_lock, 1);
     std::vector<JobSkillPtr> skills;
     GetSkills(skills, 1, false);
-    for (JobSkillPtr* it = FUN_1406420e0(&skills); it != FUN_1406421b0(&skills); it++)
+    std::vector<JobSkillPtr>& range = skills;
+    JobSkillPtr* it = FUN_1406420e0(&range);
+    JobSkillPtr* itEnd = FUN_1406421b0(&range);
+    for (; it != itEnd; ++it)
     {
-        if (!it->IsNull())
-            NotifySkill((*it)->GetID(), (*it)->m_nLevel);
+        JobSkillPtr& spSkill = *it;
+        if (spSkill.IsNull())
+            continue;
+        NotifySkill(spSkill->GetID(), spSkill->m_nLevel);
     }
 }
 
 // @0x140a6e360
-// MS2-FUNCTIONAL: local layout of the lock / skill pointer differs (the exe stores the raw skill pointer in a local)
 void JobSystemCli::RefreshActiveStance()
 {
     if (m_pOwner != 0)
     {
         Unk_CriticalSectionLock lock(m_lock, 1);
-        JobSkillPtr spSkill = FindSkill(1);
+        const int nStanceSlot = 1;
+        JobSkillPtr spSkill = FindSkill(nStanceSlot);
         if (spSkill.get() != 0)
             NotifySkill(FUN_14165c570(m_pOwner), spSkill->m_nLevel);
     }
@@ -233,22 +237,18 @@ void JobSystemCli::NotifySkill(int nSkillId, unsigned short nLevel)
 }
 
 // @0x140a6e4d0
-// MS2-FUNCTIONAL: iterator temp placement of the map loop differs
 int JobSystemCli::ChangedMainSkills()
 {
     Unk_CriticalSectionLock lock(m_lock, 1);
     int nCount = 0;
-    for (SkillMap::iterator it = m_skills.begin(); it != m_skills.end(); ++it)
+    for (auto& kv : m_skills)
     {
-        JobSkillPtr spSkill = it->second;
+        JobSkillPtr spSkill = kv.second;
         if (spSkill->m_bChanged)
         {
             MS2Ptr<SkillData> spData = GetSkillData(spSkill->GetID());
-            if (spData.get() != 0)
-            {
-                if (!spSkill->IsSubSkill())
-                    nCount++;
-            }
+            if ((spData.get() ? true : false) && !spSkill->IsSubSkill())
+                nCount++;
         }
     }
     return nCount;
@@ -268,10 +268,6 @@ JobSystemCli::Request::Request()
 {
 }
 
-// @0x140a6e6b0
-// MS2-FUNCTIONAL: the exe dtor is a bare call into the base destructor without the vftable store
-JobSystemCli::~JobSystemCli()
-{
-}
+// @0x140a6e6b0 JobSystemCli::~JobSystemCli is implicit (a bare call into the base destructor, no vftable store).
 
 MS2_EMIT_CRT_MEMMOVE_S();

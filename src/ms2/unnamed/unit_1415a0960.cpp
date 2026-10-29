@@ -6,11 +6,13 @@
 #define MS2_THIS_FILE ""
 #include "ms2/placeholder/ms2stdafx.h"
 #include "ms2/placeholder/nmobjects.h"
+#include "ms2/placeholder/nmstream.h"
+#include "ms2/placeholder/nmencoder.h"
 #include "ms2/ms2recover.h"
 
 extern int FUN_1415fb720(void*);
 extern int FUN_1415fb750(void*);
-extern int FUN_1415fb6d0(void*);
+extern int FUN_1415fb6d0(CNMSerializableDecoder*);
 extern void FUN_1415f9990(void*);
 extern void FUN_14156ac20(void*, unsigned int);
 extern void FUN_14156bcb0(void*, void*, void*);
@@ -34,11 +36,8 @@ CNMGSGetInviteCandidateListFunc::CNMGSGetInviteCandidateListFunc(unsigned uSeria
 // @0x1415a0a20
 unsigned int CNMGSGetInviteCandidateListFunc::EncodeFramed(CNMStream* pStream)
 {
-    alignas(8) unsigned char encoder[0x18];
-    FUN_14156bcb0(encoder, pStream, this);
-    const unsigned int result = Encode(reinterpret_cast<CNMEncoder*>(encoder), pStream);
-    FUN_14156bd50(encoder);
-    return result;
+    CNMSerializableEncoder encoder(pStream, this);
+    return CNMGSGetInviteCandidateListFunc::Encode(reinterpret_cast<CNMEncoder*>(&encoder), pStream);
 }
 
 // MS2-FUNCTIONAL: recovered format branch; direct calls replace virtual dispatch.
@@ -46,10 +45,8 @@ unsigned int CNMGSGetInviteCandidateListFunc::EncodeFramed(CNMStream* pStream)
 unsigned int CNMGSGetInviteCandidateListFunc::EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream)
 {
     if (m_bFormat == 1)
-        Encode(pEncoder, pStream);
-    else
-        EncodeFramed(pStream);
-    return 0;
+        return CNMGSGetInviteCandidateListFunc::Encode(pEncoder, pStream);
+    return CNMGSGetInviteCandidateListFunc::EncodeFramed(pStream);
 }
 
 // MS2-FUNCTIONAL: reply count and ordered candidate payloads match; vector iteration codegen differs.
@@ -71,13 +68,10 @@ unsigned int CNMGSGetInviteCandidateListFunc::Encode(CNMEncoder* pEncoder, CNMSt
 // @0x1415a0bd0
 unsigned int CNMGSGetInviteCandidateListFunc::DecodeFramed(CNMStream* pStream)
 {
-    alignas(8) unsigned char decoder[0x38];
-    FUN_14156bcb0(decoder, pStream, this);
-    unsigned int result = 0;
-    if (FUN_1415fb750(decoder) != 0)
-        result = Decode(reinterpret_cast<CNMSerializableDecoder*>(decoder), pStream);
-    FUN_14156bd50(decoder);
-    return result;
+    CNMSerializableDecoder decoder(pStream, this);
+    if (FUN_1415fb750(&decoder) == 0)
+        return 0;
+    return CNMGSGetInviteCandidateListFunc::Decode(&decoder, pStream);
 }
 
 // MS2-FUNCTIONAL: recovered decoder format branch; direct calls replace virtual dispatch.
@@ -85,29 +79,25 @@ unsigned int CNMGSGetInviteCandidateListFunc::DecodeFramed(CNMStream* pStream)
 unsigned int CNMGSGetInviteCandidateListFunc::DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream)
 {
     if (FUN_1415fb6d0(pDecoder) == 2)
-        DecodeFramed(pStream);
-    else
-        Decode(pDecoder, pStream);
-    return 0;
+        return CNMGSGetInviteCandidateListFunc::DecodeFramed(pStream);
+    return CNMGSGetInviteCandidateListFunc::Decode(pDecoder, pStream);
 }
 
-// MS2-FUNCTIONAL: reply count, vector reset, and candidate reads match; STL allocation codegen differs.
 // @0x1415a0cc0
 unsigned int CNMGSGetInviteCandidateListFunc::Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream)
 {
     CNMFunc::DecodeDispatch(pDecoder, pStream);
     if (FUN_1415fb720(this) != 0)
     {
-        void** vftable = *reinterpret_cast<void***>(pDecoder);
-        using ReadU32 = unsigned int(__fastcall*)(void*);
-        const unsigned int count = reinterpret_cast<ReadU32>(vftable[3])(pDecoder);
+        // One record is decoded into the same local each time and a copy is pushed (a failed decode keeps
+        // the previous record's data).
+        CNMFriendInfo friendInfo;
+        unsigned int count = pDecoder->ReadU32();
         m_30.clear();
-        m_30.reserve(count);
         for (unsigned int i = 0; i < count; ++i)
         {
-            CNMFriendInfo friendInfo;
             friendInfo.DecodeFramed(pStream);
-            m_30.push_back(std::move(friendInfo));
+            m_30.push_back(friendInfo);
         }
     }
     return FUN_1415fb750(pDecoder);

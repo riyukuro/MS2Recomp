@@ -87,24 +87,20 @@ Scaleform::GFx::Value AScript::Invoke(const char* szMethod, CString name, int nI
 
 MS2Ptr<Unk_PiCheck> FUN_140a463d0(int nId, const Scaleform::GFx::Value& v)    // 0x140a463d0
 {
-    Unk_PiCheck* p = new Unk_PiCheck(v, nId);
-    MS2Ptr<Unk_PiCheck> tmp(p);
-    MS2Ptr<Unk_PiCheck> res(0);
-    res = tmp;
-    return res;
+    MS2Ptr<Unk_PiCheck> sp(new Unk_PiCheck(v, nId));
+    return sp;
 }
 
 MS2Ptr<Unk_PiCheck> Unk_PiDialog::FUN_140a46480(CString name, int nIndex)   // 0x140a46480
 {
-    if (!m_root.IsNull())
+    if (m_root.IsNull())
+        return MS2Ptr<Unk_PiCheck>(0);
+    Scaleform::GFx::Value child = m_root->Invoke("getTabChild", name, nIndex);
+    if (FUN_1407cce10(&child))
     {
-        Scaleform::GFx::Value child = m_root->Invoke("getTabChild", name, nIndex);
-        if (FUN_1407cce10(&child))
-        {
-            MS2Ptr<Unk_PiCheck> check = FUN_140a463d0(m_nDialogId, child);
-            if (!check.IsNull())
-                return check;
-        }
+        MS2Ptr<Unk_PiCheck> check = FUN_140a463d0(m_nDialogId, child);
+        if (check.get())
+            return check;
     }
     return MS2Ptr<Unk_PiCheck>(0);
 }
@@ -139,57 +135,52 @@ int CGameOptionPersonalInfoAgreement::vfunc_5(const char* pszName, void* pArg, i
     return 0;
 }
 
-// MS2-FUNCTIONAL: MS2Ptr/CString temporaries and EH states differ
 void CGameOptionPersonalInfoAgreement::vfunc_6()   // @0x140a45ed0
 {
-    MS2Ptr<Unk_PiCheck> agree = ((Unk_PiDialog*)GetOptionDialog())->FUN_140a46480(CString("m_sendLogAgree"), -1);
-    if (agree.get() != 0)
-        agree->FUN_1422ce090(m_state.m_bAgree);
-    agree = 0;
+    {
+        MS2Ptr<Unk_PiCheck> agree = ((Unk_PiDialog*)GetOptionDialog())->FUN_140a46480(CString("m_sendLogAgree"), -1);
+        if (agree.get() != 0)
+            agree->FUN_1422ce090(m_state.m_bAgree);
+    }
     MS2Ptr<Unk_PiCheck> deny = ((Unk_PiDialog*)GetOptionDialog())->FUN_140a46480(CString("m_sendLogDeny"), -1);
     if (deny.get() != 0)
         deny->FUN_1422ce090(m_state.m_bAgree == 0);
 }
 
-// MS2-FUNCTIONAL: MS2Ptr/CString temporaries and EH states differ
 void CGameOptionPersonalInfoAgreement::vfunc_7()   // @0x140a46040
 {
-    MS2Ptr<Unk_PiCheck> agree = ((Unk_PiDialog*)GetOptionDialog())->FUN_140a46480(CString("m_sendLogAgree"), -1);
-    if (agree.get() != 0)
     {
-        if (agree->FUN_1422ce0e0())
-            m_state.m_bAgree = true;
+        MS2Ptr<Unk_PiCheck> agree = ((Unk_PiDialog*)GetOptionDialog())->FUN_140a46480(CString("m_sendLogAgree"), -1);
+        if (agree.get() != 0)
+        {
+            if (agree->FUN_1422ce0e0())
+                m_state.m_bAgree = true;
+        }
     }
-    agree = 0;
-    MS2Ptr<Unk_PiCheck> deny = ((Unk_PiDialog*)GetOptionDialog())->FUN_140a46480(CString("m_sendLogDeny"), -1);
-    if (deny.get() != 0)
     {
-        if (deny->FUN_1422ce0e0())
-            m_state.m_bAgree = false;
+        MS2Ptr<Unk_PiCheck> deny = ((Unk_PiDialog*)GetOptionDialog())->FUN_140a46480(CString("m_sendLogDeny"), -1);
+        if (deny.get() != 0)
+        {
+            if (deny->FUN_1422ce0e0())
+                m_state.m_bAgree = false;
+        }
     }
-    deny = 0;
-    int nMode;
-    if (m_state.m_bAgree == 0)
-        nMode = 4;
-    else
-        nMode = 2;
+    int nMode = m_state.m_bAgree ? 2 : 4;
     FUN_141261e40(&m_state, 0, nMode);
     FUN_141262090(FUN_140a46860(FUN_1409a8b10()));
 }
 
-// MS2-FUNCTIONAL: exe keeps extra frame locals (byte 0 + dword) not reproduced
 void CGameOptionPersonalInfoAgreement::vfunc_10()   // @0x140a461f0
 {
     CBaseOption::vfunc_10();
-    unsigned char cOld = m_state.m_bAgree;
-    unsigned char cNew = *FUN_140a46860(FUN_1409a8b10());
-    if (!FUN_141261f00(FUN_140a46860(FUN_1409a8b10()), 0) || cOld != cNew)
+    bool bChanged = false;
+    if (m_state.m_bAgree != *FUN_140a46860(FUN_1409a8b10()))
+        bChanged = true;
+    if (!FUN_141261f00(FUN_140a46860(FUN_1409a8b10()), 0))
+        bChanged = true;
+    if (bChanged)
     {
-        int nMode;
-        if (m_state.m_bAgree == 0)
-            nMode = 4;
-        else
-            nMode = 2;
+        int nMode = m_state.m_bAgree ? 2 : 4;
         FUN_141261da0(FUN_140a46860(FUN_1409a8b10()), &m_state);
         FUN_141261dd0(FUN_140a46860(FUN_1409a8b10()), nMode);
         FUN_141262090(FUN_140a46860(FUN_1409a8b10()));
@@ -209,11 +200,11 @@ CString CGameOptionPersonalInfoAgreement::GetTypeName()   // @0x140a46340
     return CString("GameOptionPersonalInfoAgreement");
 }
 
-// MS2-FUNCTIONAL: bool compare temp placement
 int CGameOptionPersonalInfoAgreement::vfunc_14()   // @0x140a46390
 {
-    int c = m_state.m_bAgree;
-    return c != *FUN_140a46860(FUN_1409a8b10()) ? true : false;
+    if (m_state.m_bAgree != *FUN_140a46860(FUN_1409a8b10()))
+        return 1;
+    return 0;
 }
 
 MS2_EMIT_CRT_MEMMOVE_S();

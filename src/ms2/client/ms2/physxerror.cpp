@@ -45,7 +45,7 @@ CPhysXError::~CPhysXError()
 {
 }
 
-// MS2-FUNCTIONAL: exe frame is 0x40 smaller (CString temp slot layout not reproduced); not hooked (throws/terminates)
+// Not hooked (throws/terminates).
 // @0x141688a60
 void CPhysXError::reportError(NxErrorCode code, const char* message, const char* file, int line)
 {
@@ -88,30 +88,31 @@ void CPhysXError::reportError(NxErrorCode code, const char* message, const char*
     {
         const char* pszType = strType.c_str();
         FUN_1403a1310(FUN_140166440(), 2, 0x13, L"{0} {1}", pszType, message);
-        return;
     }
-    if (FUN_140d8ee90() != 0)
+    else
     {
-        CString strLog;
-        strLog.Format("%s %s", strType.c_str(), message);
-        FUN_140d8ee90()->FUN_140a1f970("physx", strLog);
+        if (FUN_140d8ee90() != 0)
+        {
+            CString strLog;
+            strLog.Format("%s %s", strType.c_str(), message);
+            FUN_140d8ee90()->FUN_140a1f970("physx", strLog);
+        }
+        switch (code)
+        {
+        case NXE_INTERNAL_ERROR:
+            FUN_140392040(DAT_143ae37d0, 0x100, "%s \nCheck your graphic driver.", message);
+            FUN_141b6fc50(DAT_143ae37d0, "PhysX", 0);
+            TerminateProcess(GetCurrentProcess(), 2);
+            break;
+        case NXE_OUT_OF_MEMORY:
+            FUN_141b6fc50(message, "PhysX", 0);
+            TerminateProcess(GetCurrentProcess(), 2);
+            break;
+        }
+        FUN_140a44830()->FUN_1401ce2b0("\n--- CPhysXError Log---");
+        FUN_140a44830()->FUN_1401ce2f0("reportError : %s, %s, %s, %d", strType.c_str(), message, file, line);
+        throw 13;
     }
-    int nError = code;
-    if (nError == 3)
-    {
-        FUN_141b6fc50(CString(message), CString("PhysX"), 0);
-        TerminateProcess(GetCurrentProcess(), 2);
-    }
-    else if (nError == 4)
-    {
-        FUN_140392040(DAT_143ae37d0, 0x100, "%s \nCheck your graphic driver.", message);
-        FUN_141b6fc50(CString(DAT_143ae37d0), CString("PhysX"), 0);
-        TerminateProcess(GetCurrentProcess(), 2);
-    }
-    FUN_140a44830()->FUN_1401ce2b0("\n--- CPhysXError Log---");
-    const char* pszType = strType.c_str();
-    FUN_140a44830()->FUN_1401ce2f0("reportError : %s, %s, %s, %d", pszType, message, file, line);
-    throw 13;
 }
 
 // @0x141688f50

@@ -5,3 +5,8 @@
 __declspec(noinline)
 #endif
 .
+86c
+    // MS2: the exe looks the name up with map::operator[] (egmAnimationBindings::SetTargetAnimationByName 0x1428d5af0,
+    // as in the MS2 4-arg overload 0x1409a1fc0), so an unknown name is inserted with id 0 and sequence 0 is played.
+    NiActorManager::SequenceID sequenceID = pAssetData->m_sequenceIDs[sequenceName];
+.

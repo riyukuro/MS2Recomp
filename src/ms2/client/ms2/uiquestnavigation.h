@@ -85,7 +85,7 @@ public:
     virtual Vector3 vfunc_7();                              //  7 0x140e79010
     virtual float vfunc_8();                                        //  8 0x140e790f0
 
-    int m_30;                                                       // +0x30 npc object id
+    unsigned m_30;                                                  // +0x30 npc object id
     unsigned m_34;                                                  // +0x34 npc id
 };
 MS2_CHECK_SIZE(NpcNavigationEntity, 0x38);
@@ -119,7 +119,7 @@ public:
     virtual int vfunc_6(const TraceContext* pContext);              //  6 0x140e799b0
     virtual Vector3 vfunc_7();                              //  7 0x140e79b20
 
-    int m_30;                                                       // +0x30 liftable id
+    unsigned m_30;                                                  // +0x30 liftable id
     CStringA m_38;                                                  // +0x38 liftable name
 };
 MS2_CHECK_SIZE(LiftableNavigationEntity, 0x40);

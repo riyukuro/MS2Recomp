@@ -48,7 +48,6 @@ public:
     int m_nStart;               // +0x20
     int m_bValid;               // +0x24
     unsigned char m_bVersion;   // +0x28
-    unsigned char m_pad[3];     // +0x29
     unsigned int m_nEnd;        // +0x2c
 };
 MS2_CHECK_SIZE(CNMSerializableDecoder, 0x30);

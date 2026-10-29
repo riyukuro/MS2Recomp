@@ -269,9 +269,6 @@ void* FUN_14111eb20(void* pThis)
 void* FUN_14111eb40(void* pThis)
 {
     *(void**)pThis = (void*)&DAT_142eb3950;
-    if (pThis != 0)
-        DAT_143ab3908 = (char*)pThis - 0x18;
-    else
-        DAT_143ab3908 = 0;
+    DAT_143ab3908 = pThis != 0 ? (char*)pThis - 0x18 : 0;
     return pThis;
 }

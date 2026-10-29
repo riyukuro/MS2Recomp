@@ -112,7 +112,6 @@ void CUGCMapSetItemTable::FUN_140b9e0a0()
 }
 
 // @0x140b9e100
-// MS2-FUNCTIONAL: 3611 vs 3568 bytes; FUN_1403974b0 path arg routed via rcx in exe, Data operator-> binds to foreign COMDAT, residual drift
 UGCMapSetItemDataPtr CUGCMapSetItemTable::LoadUGCMapSetItem(unsigned int nGroup)
 {
     CString strPath;
@@ -127,8 +126,7 @@ UGCMapSetItemDataPtr CUGCMapSetItemTable::LoadUGCMapSetItem(unsigned int nGroup)
     else
         m_map.RemoveAll();
     TiXmlDocument doc;
-    const char* pszPath = strPath;
-    if (FUN_140166420()->FUN_1403974b0(&doc, pszPath, 0, false, false) == 0)
+    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, false, false) == 0)
         return UGCMapSetItemDataPtr(0);
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)

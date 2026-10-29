@@ -49,7 +49,7 @@ class SystemSoundProperty : public CPtred
 {
 public:
     SystemSoundProperty();                                      // 0x141790a20
-    virtual ~SystemSoundProperty();                             // 0x1417a07b0
+    // implicit dtor 0x1417a07b0
 
     void Load(Unk_140165cf0* pElem);                            // 0x141790ae0
     CString GetCategory(int nGender);                          // 0x141790e00 (FUN_ name kept: the callers bind it)
@@ -74,7 +74,7 @@ class TriggerVoiceProperty : public CPtred
 {
 public:
     TriggerVoiceProperty();                                     // 0x141791140
-    virtual ~TriggerVoiceProperty();                            // 0x1417a0800
+    // implicit dtor 0x1417a0800
 
     void Load(Unk_140165cf0* pElem);                            // 0x1417911e0
     bool GetVoice(unsigned nGender, int nJob, CString& strOut); // 0x141791400
@@ -128,7 +128,7 @@ public:
     typedef MS2Ptr<CCacheData> CachePtr;
 
     SoundPropertyMgr();                                         // 0x141791810
-    virtual ~SoundPropertyMgr();                                // 0x1417a0710
+    // implicit dtor 0x1417a0710
 
     unsigned Load();                                            // 0x141791940 (all five tables)
     unsigned FUN_141792d70(int nAttack, int nDefence);          // a random hit sound id of the materials

@@ -22,6 +22,7 @@ class PCBase;
 // A cell of the fishing grid (3 ints); FUN_1408a1430 builds it from a point, FUN_1408a03c0 hashes it.
 struct Unk_FsCell
 {
+    Unk_FsCell();                                               // 0x1408850a0
     int x, y, z;
 };
 MS2_CHECK_SIZE(Unk_FsCell, 12);
@@ -98,7 +99,7 @@ public:
     virtual void vfunc_8(double fTime);                     // 8  0x140ddc180
     virtual void vfunc_9(double fTime);                     // 9  0x140ddc240
 
-    Unk_FsCell FUN_140ddc3c0(Vector3 kPoint);       // the grid cell of a point, shifted to the corner of its quadrant
-    bool FUN_140ddc4b0(Vector3 kStep);              // the owner may move by this step (ray cast to the water)
+    Unk_FsCell FUN_140ddc3c0(efd::Point3 kPoint);     // the grid cell of a point, shifted to the corner of its quadrant
+    int FUN_140ddc4b0(efd::Point3 kDir);              // the owner may move by this step (ray cast to the water)
 };
 MS2_CHECK_SIZE(StateFishingFloat, 0x40);

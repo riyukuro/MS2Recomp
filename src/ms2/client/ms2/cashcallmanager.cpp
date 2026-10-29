@@ -38,30 +38,31 @@ int FUN_141661aa0(MyPC* p);
 unsigned int FUN_141662de0(MyPC* p);                            // vip
 
 // the ids of the cash call items the player may use
-class Unk_CcIdList { public: unsigned __int64 FUN_140186270(); int* FUN_140184510(unsigned n); };
+class Unk_CcIdList { public: unsigned __int64 FUN_140186270(); int* FUN_140184510(unsigned __int64 n); };
 extern Unk_CcIdList DAT_143ab3058;
-class Unk_CcConfig { public: char FUN_14036d570(int nId); char FUN_14036e5b0(); };
+class Unk_CcConfig { public: unsigned char FUN_14036d570(int nId); unsigned char FUN_14036e5b0(); };
 Unk_CcConfig* FUN_140166410();
 class Unk_CcOption { public: int FUN_140477ea0(); };
 Unk_CcOption* FUN_1401c0d90();
 // A 16-byte item handle.
 struct Unk_CcHandle
 {
-    char m_data[0x10];
+    void* m_p0;
+    void* m_p8;
     ~Unk_CcHandle() { FUN_1401bfde0(this); }
     static void FUN_1401bfde0(Unk_CcHandle* p);
 };
-class Unk_CcInventory { public: Unk_CcHandle* FUN_140a5e040(Unk_CcHandle* pOut, int nSlot); int FUN_140a5f7b0(int nSlot, int n); };
+class Unk_CcInventory { public: Unk_CcHandle FUN_140a5e040(int nSlot); int FUN_140a5f7b0(int nSlot, int n); };
 extern Unk_CcInventory DAT_143ab2a90;
-char FUN_1401c0050(Unk_CcHandle* p, int n);
-void FUN_140692c90(Unk_CcHandle* pDst, Unk_CcHandle* pSrc);
+unsigned char FUN_1401c0050(Unk_CcHandle* p, int n);
+void FUN_140692c90(Unk_CcHandle* pDst, const Unk_CcHandle& src);
 __int64 FUN_14052cd70(Unk_CcHandle* p);
 void* FUN_1401c0180(Unk_CcHandle* p);
 __int64 FUN_140526a50(void* p);
 __int64 FUN_140930240();
 char* FUN_1401d3200();
 __int64* FUN_1402c05b0(char* p);
-char FUN_140930b10();
+unsigned char FUN_140930b10();
 extern int DAT_1439f4a7c;
 
 // @0x140b03040
@@ -74,7 +75,6 @@ CCashCallManager::~CCashCallManager()
 {
 }
 
-// MS2-FUNCTIONAL: call-result temporaries / frame slots differ from the exe
 // @0x140b030b0
 int CCashCallManager::FUN_140b030b0(int nCallType)
 {
@@ -104,14 +104,9 @@ int CCashCallManager::FUN_140b030b0(int nCallType)
     {
         if (FUN_1401c0d90()->FUN_140477ea0() == 0)
         {
-            Unk_CcHandle hItem;
-            DAT_143ab2a90.FUN_140a5e040(&hItem, 10);
+            Unk_CcHandle hItem = DAT_143ab2a90.FUN_140a5e040(10);
             if (FUN_1401c0050(&hItem, 0) != 0)
-            {
-                Unk_CcHandle hOther;
-                DAT_143ab2a90.FUN_140a5e040(&hOther, 0xb);
-                FUN_140692c90(&hItem, &hOther);
-            }
+                FUN_140692c90(&hItem, DAT_143ab2a90.FUN_140a5e040(0xb));
             if (FUN_14052cd70(&hItem) != 0)
             {
                 nItemUid = FUN_140526a50(FUN_1401c0180(&hItem));
@@ -128,33 +123,30 @@ int CCashCallManager::FUN_140b030b0(int nCallType)
         int nNeed = 3;
         if (FUN_140166410()->FUN_14036e5b0() != 0)
             nNeed = 1;
-        if (DAT_143ab2a90.FUN_140a5f7b0(0xb, 0) < nNeed)
+        int nHave = DAT_143ab2a90.FUN_140a5f7b0(0xb, 0);
+        if (nHave >= nNeed)
         {
-            if (FUN_140166410()->FUN_14036d570(0x83) == 0)
-                return 0;
-            __int64 nMeso = FUN_140930240();
-            if (nMeso < *FUN_1402c05b0(FUN_1401d3200() + 0x8aa8))
-                return 0;
-            nKind = 3;
-        }
-        else
-        {
-            Unk_CcHandle hItem;
-            DAT_143ab2a90.FUN_140a5e040(&hItem, 0xb);
+            Unk_CcHandle hItem = DAT_143ab2a90.FUN_140a5e040(0xb);
             if (FUN_1401c0050(&hItem, 0) != 0)
                 return 0;
             nItemUid = FUN_140526a50(FUN_1401c0180(&hItem));
             nKind = 2;
         }
+        else
+        {
+            if (FUN_140166410()->FUN_14036d570(0x83) != 0)
+            {
+                if (FUN_140930240() < *FUN_1402c05b0(FUN_1401d3200() + 0x8aa8))
+                    return 0;
+                nKind = 3;
+            }
+            else
+            {
+                return 0;
+            }
+        }
     }
-    if (pPC->FUN_1416764d0() == 0)
-    {
-        if (pPC->FUN_141527160(0x2a) == 0)
-            return 0;
-        pPC->FUN_14166d970(pPC->vfunc_20());
-        pPC->vfunc_59(0x2a, new StateCashCallData(nKind, nItemUid, nCallType), 0, 0);
-    }
-    else
+    if (pPC->FUN_1416764d0() != 0)
     {
         MS2Ptr<RideOffActionCashCall> spAction(new RideOffActionCashCall(0));
         spAction->m_n28 = nCallType;
@@ -162,10 +154,17 @@ int CCashCallManager::FUN_140b030b0(int nCallType)
         spAction->m_n30 = nItemUid;
         pPC->SendRequestRideMode1(spAction.get());
     }
+    else
+    {
+        if (pPC->FUN_141527160(0x2a) == 0)
+            return 0;
+        NiPoint3 kRot = pPC->vfunc_20();
+        pPC->FUN_14166d970(kRot);
+        pPC->vfunc_59(0x2a, new StateCashCallData(nKind, nItemUid, nCallType), 0, 0);
+    }
     return 1;
 }
 
-// MS2-FUNCTIONAL: call-result temporaries / frame slots differ from the exe
 // @0x140b03590
 int CCashCallManager::FUN_140b03590(__int64 nItemUid)
 {
@@ -182,7 +181,7 @@ int CCashCallManager::FUN_140b03590(__int64 nItemUid)
         FUN_140d73bc0(0x95, 0, 0, CStringW(L""));
         return 0;
     }
-    if (FUN_141661aa0(pPC) < 1)
+    if (FUN_141661aa0(pPC) <= 0)
     {
         FUN_140d73bc0(0x96, 0, 0, CStringW(L""));
         return 0;
@@ -192,27 +191,28 @@ int CCashCallManager::FUN_140b03590(__int64 nItemUid)
         FUN_140d73bc0(0x94, 0, 0, CStringW(L""));
         return 0;
     }
-    if (pPC->FUN_1416764d0() == 0)
+    int nKind = 5;
+    if (pPC->FUN_1416764d0() != 0)
+    {
+        MS2Ptr<RideOffActionCashCall> spAction(new RideOffActionCashCall(0));
+        spAction->m_n2c = nKind;
+        spAction->m_n30 = nItemUid;
+        pPC->SendRequestRideMode1(spAction.get());
+    }
+    else
     {
         if (pPC->FUN_141527160(0x2a) == 0)
         {
             FUN_140d73bc0(0x97, 0, 0, CStringW(L""));
             return 0;
         }
-        pPC->FUN_14166d970(pPC->vfunc_20());
-        pPC->vfunc_59(0x2a, new StateCashCallData(5, nItemUid, 0), 0, 0);
-    }
-    else
-    {
-        MS2Ptr<RideOffActionCashCall> spAction(new RideOffActionCashCall(0));
-        spAction->m_n2c = 5;
-        spAction->m_n30 = nItemUid;
-        pPC->SendRequestRideMode1(spAction.get());
+        NiPoint3 kRot = pPC->vfunc_20();
+        pPC->FUN_14166d970(kRot);
+        pPC->vfunc_59(0x2a, new StateCashCallData(nKind, nItemUid, 0), 0, 0);
     }
     return 1;
 }
 
-// MS2-FUNCTIONAL: call-result temporaries / frame slots differ from the exe
 // @0x140b03980
 int CCashCallManager::FUN_140b03980(__int64 nItemUid)
 {
@@ -239,27 +239,28 @@ int CCashCallManager::FUN_140b03980(__int64 nItemUid)
         FUN_140d73bc0(0x99, 0, 0, CStringW(L""));
         return 0;
     }
-    if (pPC->FUN_1416764d0() == 0)
+    int nKind = 4;
+    if (pPC->FUN_1416764d0() != 0)
+    {
+        MS2Ptr<RideOffActionCashCall> spAction(new RideOffActionCashCall(0));
+        spAction->m_n2c = nKind;
+        spAction->m_n30 = nItemUid;
+        pPC->SendRequestRideMode1(spAction.get());
+    }
+    else
     {
         if (pPC->FUN_141527160(0x2a) == 0)
         {
             FUN_140d73bc0(0x9b, 0, 0, CStringW(L""));
             return 0;
         }
-        pPC->FUN_14166d970(pPC->vfunc_20());
-        pPC->vfunc_59(0x2a, new StateCashCallData(4, nItemUid, 0), 0, 0);
-    }
-    else
-    {
-        MS2Ptr<RideOffActionCashCall> spAction(new RideOffActionCashCall(0));
-        spAction->m_n2c = 4;
-        spAction->m_n30 = nItemUid;
-        pPC->SendRequestRideMode1(spAction.get());
+        NiPoint3 kRot = pPC->vfunc_20();
+        pPC->FUN_14166d970(kRot);
+        pPC->vfunc_59(0x2a, new StateCashCallData(nKind, nItemUid, 0), 0, 0);
     }
     return 1;
 }
 
-// MS2-FUNCTIONAL: call-result temporaries / frame slots differ from the exe
 // @0x140b03d70
 int CCashCallManager::FUN_140b03d70(__int64 nItemUid)
 {
@@ -281,27 +282,29 @@ int CCashCallManager::FUN_140b03d70(__int64 nItemUid)
         FUN_140d73bc0(0x9d, 0, 0, CStringW(L""));
         return 0;
     }
-    if (pPC->FUN_1416764d0() == 0)
+    int nKind = 6;
+    if (pPC->FUN_1416764d0() != 0)
+    {
+        MS2Ptr<RideOffActionCashCall> spAction(new RideOffActionCashCall(0));
+        spAction->m_n2c = nKind;
+        spAction->m_n30 = nItemUid;
+        pPC->SendRequestRideMode1(spAction.get());
+    }
+    else
     {
         if (pPC->FUN_141527160(0x2a) == 0)
         {
             FUN_140d73bc0(0x9f, 0, 0, CStringW(L""));
             return 0;
         }
-        pPC->FUN_14166d970(pPC->vfunc_20());
-        pPC->vfunc_59(0x2a, new StateCashCallData(6, nItemUid, 0), 0, 0);
-    }
-    else
-    {
-        MS2Ptr<RideOffActionCashCall> spAction(new RideOffActionCashCall(0));
-        spAction->m_n2c = 6;
-        spAction->m_n30 = nItemUid;
-        pPC->SendRequestRideMode1(spAction.get());
+        NiPoint3 kRot = pPC->vfunc_20();
+        pPC->FUN_14166d970(kRot);
+        pPC->vfunc_59(0x2a, new StateCashCallData(nKind, nItemUid, 0), 0, 0);
     }
     return 1;
 }
 
-// MS2-FUNCTIONAL: call-result temporaries / frame slots differ from the exe
+// MS2-FUNCTIONAL: the limit sum adds nA into nCount (add ecx,edx) in the exe; every spelling tried adds nCount into nA
 // @0x140b040a0
 int CCashCallManager::FUN_140b040a0(int nCount)
 {
@@ -342,8 +345,7 @@ int CCashCallManager::FUN_140b040a0(int nCount)
     if (nLimit > 0)
     {
         int nA = FUN_1403ed2d0()->FUN_141bc2bc0();
-        int nB = FUN_1403ed2d0()->FUN_141bc2b30();
-        if (nLimit < nB + nCount + nA)
+        if (FUN_1403ed2d0()->FUN_141bc2b30() + (nA + nCount) > nLimit)
         {
             FUN_140d73bc0(0xb5f, 0, 0, CStringW(L""));
             return 0;
@@ -352,7 +354,6 @@ int CCashCallManager::FUN_140b040a0(int nCount)
     return 1;
 }
 
-// MS2-FUNCTIONAL: call-result temporaries / frame slots differ from the exe
 // @0x140b04430
 int CCashCallManager::FUN_140b04430(__int64 nTarget, int nCount)
 {
@@ -361,21 +362,22 @@ int CCashCallManager::FUN_140b04430(__int64 nTarget, int nCount)
         return 0;
     if (FUN_140b040a0(nCount) == 0)
         return 0;
-    if (pPC->FUN_1416764d0() == 0)
+    if (pPC->FUN_1416764d0() != 0)
+    {
+        MS2Ptr<RideOffActionRecall> spAction(new RideOffActionRecall(0));
+        spAction->m_n28 = nTarget;
+        pPC->SendRequestRideMode1(spAction.get());
+    }
+    else
     {
         if (pPC->FUN_141527160(0x2c) == 0)
         {
             FUN_140d73bc0(0xb59, 0, 0, CStringW(L""));
             return 0;
         }
-        pPC->FUN_14166d970(pPC->vfunc_20());
+        NiPoint3 kRot = pPC->vfunc_20();
+        pPC->FUN_14166d970(kRot);
         pPC->vfunc_59(0x2c, new StateRecallData(reinterpret_cast<void*>(nTarget)), 0, 0);
-    }
-    else
-    {
-        MS2Ptr<RideOffActionRecall> spAction(new RideOffActionRecall(0));
-        spAction->m_n28 = nTarget;
-        pPC->SendRequestRideMode1(spAction.get());
     }
     return 1;
 }

@@ -291,7 +291,7 @@ public:
     int Open(std::string path, const char* directory);
     int Read(std::string path, unsigned char** data, unsigned __int64* size, bool stringFile);
     void Close();
-    bool Exists(std::string path);
+    int Exists(std::string path);
     int IsPacked(std::string path, bool stringFile);
     int Contains(std::string text);
     void GetTexturePaths(std::list<std::string>& paths);

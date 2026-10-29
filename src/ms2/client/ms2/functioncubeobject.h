@@ -9,6 +9,7 @@
 #include <atlcoll.h>
 #include <map>
 #include <list>
+#include <set>
 #include <efd/ISystemService.h>
 #include <efd/Category.h>
 
@@ -53,11 +54,21 @@ typedef ATL::CAtlArray<Unk_FcStrList> Unk_FcStrListList;
 struct Unk_FcSkillText
 {
     Unk_FcSkillText();                                            // 0x140708950
+    ~Unk_FcSkillText();                                           // 0x140708dc0
     CString m_strA;                                               // +0x00
     CString m_strB;                                               // +0x08
     int m_nValue;                                                 // +0x10
 };
 MS2_CHECK_SIZE(Unk_FcSkillText, 0x18);
+
+// The notice popup type (FunctionCubeData +0x130): implicit assign 0x14122def0.
+struct Unk_FcNotice
+{
+    Unk_FcNotice();                                               // 0x140708810
+    ~Unk_FcNotice();                                              // 0x140708d40
+    CStringW m_strType;                                           // +0x00
+};
+MS2_CHECK_SIZE(Unk_FcNotice, 0x8);
 
 // The object's data row, copied from the cube table row when the object is created. Heap 0x138.
 // vftable 0x142ec4d50 (1 slot), scalar deleting dtor 0x14122e2c0, ctor 0x14122d840, dtor 0x14122dbb0.
@@ -65,7 +76,7 @@ class FunctionCubeData : public CPtred
 {
 public:
     FunctionCubeData();                                           // 0x14122d840
-    virtual ~FunctionCubeData();                                  // 0x14122dbb0
+    // implicit virtual dtor 0x14122dbb0 (no vftable store, members then CPtred)
 
     int m_nCubeId;                                                // +0x18
     int m_bBuff;                                                  // +0x1c "Buy"-like flag (1 for kind 3/9 with sub 1)
@@ -99,7 +110,7 @@ public:
     CString m_str108;                                             // +0x108
     int m_n110;                                                   // +0x110
     Unk_FcSkillText m_skill;                                      // +0x118
-    CStringW m_strNotice;                                         // +0x130
+    Unk_FcNotice m_notice;                                        // +0x130
 };
 MS2_CHECK_SIZE(FunctionCubeData, 0x138);
 
@@ -167,14 +178,14 @@ struct Unk_FcRow
     Unk_FcObjData m_objData;                                      // +0x180
     char m_pad_278[8];
     Unk_FcSkillText m_skill;                                      // +0x280
-    CStringW m_strNotice;                                         // +0x298
+    Unk_FcNotice m_notice;                                        // +0x298
 };
 MS2_CHECK_OFFSET(Unk_FcRow, m_anims, 0x40);
 MS2_CHECK_OFFSET(Unk_FcRow, m_aAnim, 0x80);
 MS2_CHECK_OFFSET(Unk_FcRow, m_strModel, 0x110);
 MS2_CHECK_OFFSET(Unk_FcRow, m_opt, 0x158);
 MS2_CHECK_OFFSET(Unk_FcRow, m_skill, 0x280);
-MS2_CHECK_OFFSET(Unk_FcRow, m_strNotice, 0x298);
+MS2_CHECK_OFFSET(Unk_FcRow, m_notice, 0x298);
 
 // Popups the objects own (classes of other units; only the constructors and the setters used here).
 class UIBootyPopup : public CPtred
@@ -242,7 +253,7 @@ public:
     virtual CStringW vfunc_6();                                   // 6  0x141226340 hover text
     virtual CStringW vfunc_7();                                   // 7  0x141226580 "key"
     virtual void vfunc_8(CString str);                            // 8  0x1412265d0 send the use packet
-    virtual bool vfunc_9(CString str);                            // 9  0x1412266c0 is this the object with that id
+    virtual BOOL vfunc_9(CString str);                            // 9  0x1412266c0 TRUE when the id differs (ATL operator!=)
     virtual void vfunc_10(int nState, bool bFlag);                // 10 0x141226730 play a random sound of the state
     virtual void vfunc_11(int nState);                            // 11 0x141226950
     virtual void vfunc_12(int nState, bool bFlag);                // 12 0x141226a90 set the state
@@ -341,6 +352,7 @@ public:
     virtual int vfunc_16();                                       // 16 0x141228fa0 mastery kind
     virtual int vfunc_17();                                       // 17 0x1412291e0 mastery is enough
 
+    MS2Ptr<FunctionCubeData> FUN_140ca6580();                     // 0x140ca6580 the cube data (by value)
     void FUN_141228fb0(__int64 n);                                // 0x141228fb0
     __int64 FUN_141228fe0();                                      // 0x141228fe0
     int FUN_141229000(bool bWatch);                               // 0x141229000
@@ -519,7 +531,7 @@ public:
     CubeMap m_mapCubes;                                           // +0x30 cube id -> object
     CubeMap m_mapPending;                                         // +0x60 "<a>_<b>" -> object created from the table
     TagMap m_mapTags;                                             // +0x90
-    std::map<int, std::list<CString> > m_mapStrings;              // +0xc0 cube item id -> object ids
+    std::map<int, std::set<CString> > m_mapStrings;               // +0xc0 cube item id -> object ids
 };
 MS2_CHECK_SIZE(CFunctionCubeService, 0xd0);
 MS2_CHECK_OFFSET(CFunctionCubeService, m_catGlobal, 0x28);

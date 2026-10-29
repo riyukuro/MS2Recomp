@@ -6,6 +6,7 @@
 #include <atlcoll.h>
 #include "ms2/ms2layout.h"
 #include "ms2/ms2recover.h"
+#include "ms2/client/ms2/equipmodel.h"
 #include "hook/ms2hook.h"
 
 // ---- unit-local placeholders (names invented; layouts pinned) ------------------------------------------------------------
@@ -101,13 +102,13 @@ void* FUN_140a0a480(void* out, const void* a, const void* b, const void* c);   /
 float FUN_140a17940(float v, float lo, float hi);
 void FUN_140aacaa0(void* node, const void* xform);
 void* FUN_14086d260();   double FUN_141473280(void* p);
-void FUN_14098e840(void* p, float v);   void* FUN_14098d8d0(void* table, void* key);
+void FUN_14098e840(void* p, float v);   void* FUN_14098d8d0(void* table, void* key);   void* FUN_141d14f90(void* obj, int type);
 void* FUN_14123c410(void* owner);   void* FUN_141b6efc0(void* p);   void FUN_141567540(void* p, bool b);
 void* FUN_14099eef0(void* owner);
 void* FUN_1416561a0(void* p);   void FUN_1411e1b80(void* src, void* list);
 void* FUN_140885670(void* list);   void* FUN_140885600(void* list, void* pos);   void FUN_140885680(void* list, void** pos);
-void* FUN_1405a8ed0(void* elem);   int FUN_1411dc0d0(void* p);   void FUN_1411dcc80(void* p, CAtlArray<void*>* arr);
-unsigned __int64 FUN_141168120(CAtlArray<void*>* arr);   void* FUN_1411f9020(CAtlArray<void*>* arr, unsigned i);
+void* FUN_1405a8ed0(void* elem);   int FUN_1411dc0d0(void* p);   void FUN_1411dcc80(void* p, CAtlArray<MS2Ptr<CEquipModel> >* arr);
+unsigned __int64 FUN_141168120(CAtlArray<MS2Ptr<CEquipModel> >* arr);   void* FUN_1411f9020(CAtlArray<MS2Ptr<CEquipModel> >* arr, unsigned i);
 void* FUN_140b02a50(void* p);   void* FUN_141200ab0(void* p);
 void* FUN_1409f7c90();   int FUN_140ddcc90(void* p);
 void* FUN_140a0b280();   void* FUN_140a0b6f0();                     // vertex stream semantic ids
@@ -117,7 +118,7 @@ void FUN_14147b6d0(CObjectShadow* self, short a, short b, short c, short d, shor
 void FUN_14147b8b0(CObjectShadow* self, int k);   void FUN_14147b9c0(CObjectShadow* self, int k);
 void FUN_140984450(void* name, const char* s);   void FUN_1409845a0(void* name);   // NiFixedString ctor / dtor
 void FUN_141d18b90(void* obj, void* name);                          // NiObjectNET::SetName
-void FUN_141552f90(void* mgr, void* outTex, CString path, char b); // load texture
+void FUN_141552f90(void* mgr, void* outTex, CString path, int b); // load texture
 void* FUN_14097fbf0(void* texPtr);   void FUN_14097f4a0(void* texPtr);
 void FUN_140980880(void* tex, void* src);   void FUN_140980200(void* geom, void* prop);   // NiTexturingProperty::SetBaseTexture / AttachProperty
 void* FUN_141d1d470(void* mem);                                     // NiTexturingProperty ctor
@@ -194,13 +195,11 @@ void FUN_14160fe70(CObjectShadow* self, bool v)
 }
 
 // @0x14160feb0   per-frame update: position/orient the shadow under the character, fade by distance, push LOD visibility to the owner's models
-// MS2-FUNCTIONAL: transliterated from the decompile; locals, EH states and temp slots differ
+// MS2-FUNCTIONAL: behaviour-checked against the exe (same calls, conditions and branch order); the frame is 0x10 smaller and a few temp slots differ
 void FUN_14160feb0(CObjectShadow* self, int active, const void* pos, const void* dir, float dt, bool force)
 {
     FUN_1416105c0(self);
-    if (self->m_bVisible == 0 || active == 0) {
-        FUN_140a0b300(FUN_1409475f0(&self->m_node), 1);
-    } else {
+    if (self->m_bVisible != 0 && active != 0) {
         float one = 1.0f;
         float fade;
         Unk_ShadowXform xf;
@@ -217,23 +216,25 @@ void FUN_14160feb0(CObjectShadow* self, int active, const void* pos, const void*
         FUN_140968990(&p130);
         Unk_NiPt3 p100(dir);
         *(Unk_ShadowMat3*)&xf = *(Unk_ShadowMat3*)FUN_140a0a480(&t48, &p130, &p148, &p100);
-        if (0.001f <= DAT_1439f81f4) {
-            float f = FUN_140a17940(dt / DAT_1439f81f4, 0.0f, 1.0f);
-            fade = one - f * (one - DAT_1439f81f8);
-        } else {
+        if (DAT_1439f81f4 < 0.001f) {
             fade = DAT_1439f81f8;
+        } else {
+            fade = one - FUN_140a17940(dt / DAT_1439f81f4, 0.0f, 1.0f) * (one - DAT_1439f81f8);
         }
-        xf.scale = fade;
+        float scale = fade;
+        xf.scale = scale;
         FUN_140aacaa0(FUN_1409475f0(&self->m_node), &xf);
         float now = (float)FUN_141473280(FUN_14086d260());
         FUN_141d16040(FUN_1409475f0(&self->m_node), now, true);
-        void* geom = FUN_140a0afe0(self);
-        void* prop = FUN_14098d8d0(&DAT_143afa608, geom);
+        void* prop = FUN_14098d8d0(&DAT_143afa608, FUN_141d14f90(FUN_140a0afe0(self), 3));   // material property
         if (prop != 0) {
-            FUN_14098e840(prop, DAT_1439f8204 * fade);
+            float alpha = DAT_1439f8204 * scale;
+            FUN_14098e840(prop, alpha);
             FUN_141d16370(FUN_140a0afe0(self));
         }
         FUN_140a0b300(FUN_1409475f0(&self->m_node), 0);
+    } else {
+        FUN_140a0b300(FUN_1409475f0(&self->m_node), 1);
     }
     if (force || self->m_bDirty != 0) {
         void* h = FUN_141b6efc0(FUN_14123c410(self->m_pOwner));
@@ -248,10 +249,8 @@ void FUN_14160feb0(CObjectShadow* self, int active, const void* pos, const void*
             FUN_1411e1b80(FUN_1416561a0(o), &list);
             for (pos2 = FUN_140885670(&list); pos2 != 0; FUN_140885680(&list, &pos2)) {
                 void* elem = FUN_140885600(&list, pos2);
-                if (FUN_1411dc0d0(FUN_1405a8ed0(elem)) == 0) {
-                    self->m_bDirty = true;
-                } else {
-                    CAtlArray<void*> arr;
+                if (FUN_1411dc0d0(FUN_1405a8ed0(elem)) != 0) {
+                    CAtlArray<MS2Ptr<CEquipModel> > arr;
                     FUN_1411dcc80(FUN_1405a8ed0(elem), &arr);
                     unsigned i;
                     for (i = 0; i < FUN_141168120(&arr); ++i) {
@@ -262,6 +261,8 @@ void FUN_14160feb0(CObjectShadow* self, int active, const void* pos, const void*
                             FUN_141567540(model->vfunc_14(), self->m_bShown);
                         }
                     }
+                } else {
+                    self->m_bDirty = true;
                 }
             }
         }
@@ -333,7 +334,7 @@ void FUN_1416105c0(CObjectShadow* self)
 }
 
 // @0x1416106e0   build the shadow quad mesh, its render properties and the scene node
-// MS2-FUNCTIONAL: transliterated from the decompile; locals, EH states and temp slots differ
+// MS2-FUNCTIONAL: behaviour-checked against the exe (same calls in the same order); the exe frame is 0x50 larger, so locals and temp slots differ
 void FUN_1416106e0(CObjectShadow* self, void* owner, int lodHi, int lodLo, float radius, float zOffset)
 {
     self->m_pOwner = (Unk_ShadowOwner*)owner;
@@ -365,21 +366,20 @@ void FUN_1416106e0(CObjectShadow* self, void* owner, int lodHi, int lodLo, float
     }
     FUN_14147b6d0(self, 0, 0, 1, 2, 3);
 
-    char name[8];
+    void* name[1];
     FUN_140984450(name, "Character Shadow");
     FUN_141d18b90(FUN_140a0afe0(self), name);
     FUN_1409845a0(name);
 
-    CString path(*(CString*)((char*)FUN_1401d31f0() + 0xf0));
-    char tex[8];
-    FUN_141552f90(FUN_140a0afd0(), tex, path, 1);
+    void* tex[1];
+    FUN_141552f90(FUN_140a0afd0(), tex, *(CString*)((char*)FUN_1401d31f0() + 0xf0), 1);
     void* texProp;
     MS2_SHADOW_NEW(texProp, 0x58, FUN_141d1d470(mem));
     FUN_140980880(texProp, FUN_14097fbf0(tex));
     FUN_140980200(FUN_140a0afe0(self), texProp);
 
     void* alpha;
-    char alphaPtr[8];
+    void* alphaPtr[1];
     MS2_SHADOW_NEW(alpha, 0x38, FUN_14097f0b0(mem));
     FUN_140a0a0d0(alphaPtr, alpha);
     FUN_140980560(FUN_140a0abd0(alphaPtr), 1);
@@ -392,7 +392,7 @@ void FUN_1416106e0(CObjectShadow* self, void* owner, int lodHi, int lodLo, float
     FUN_140980200(FUN_140a0afe0(self), vcol);
 
     void* mat;
-    char matPtr[8];
+    void* matPtr[1];
     MS2_SHADOW_NEW(mat, 0x78, FUN_141d24d60(mem));
     FUN_1410b1f20(matPtr, mat);
     FUN_1415699c0(FUN_1410b2250(matPtr), Unk_Colc(0.0f, 0.0f, 0.0f));
@@ -408,7 +408,7 @@ void FUN_1416106e0(CObjectShadow* self, void* owner, int lodHi, int lodLo, float
     FUN_140980200(FUN_140a0afe0(self), fog);
 
     void* zbuf;
-    char zPtr[8];
+    void* zPtr[1];
     MS2_SHADOW_NEW(zbuf, 0x38, FUN_14097f330(mem));
     FUN_14097eda0(zPtr, zbuf);
     FUN_140981100(FUN_14097fc50(zPtr), 0);
@@ -416,7 +416,7 @@ void FUN_1416106e0(CObjectShadow* self, void* owner, int lodHi, int lodLo, float
 
     FUN_14147b8b0(self, 4);
     FUN_14147b9c0(self, 6);
-    char bound[16];
+    void* bound[2];
     FUN_14097f1b0(bound);
     Unk_Pt3c origin(0.0f, 0.0f, 0.0f);
     FUN_140980a70(bound, &origin, radius);

@@ -7,21 +7,21 @@
 // MS2-PIN: ??$?8PEAVUIGameMenuDialog@@P80@EAAXPEAVGameEventVariable@@@Z@std@@YA_NAEBU?$pair@PEAVUIGameMenuDialog@@P81@EAAXPEAVGameEventVariable@@@Z@0@0@Z 0x14193efb0 ; prop: caller ?vfunc_3@?$DelegateImpl@U?$pair@PEAVUIGameMenuDialog@@P81@EAAXPEAV...
 // MS2-PIN: ??$?8PEAVUIGameMenuDialog@@P80@EAAXPEAVNotifyObject@@@Z@std@@YA_NAEBU?$pair@PEAVUIGameMenuDialog@@P81@EAAXPEAVNotifyObject@@@Z@0@0@Z 0x14193f020 ; prop: caller ?vfunc_3@?$DelegateImpl@U?$pair@PEAVUIGameMenuDialog@@P81@EAAXPEAV...
 // MS2-PIN: ??$?8PEAVUIGameMenuDialog@@P80@EAA_NHAEBVCMsgBoxData@@@Z@std@@YA_NAEBU?$pair@PEAVUIGameMenuDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@0@0@Z 0x14193f090 ; prop: caller ?vfunc_3@?$DelegateImpl@U?$pair@PEAVUIGameMenuDialog@@P81@EAA_NHAE...
-// MS2-PIN: ??0?$CAtlArray@HV?$CElementTraits@H@ATL@@@ATL@@QEAA@XZ 0x14193f5b0 ; unique: single byte-identical candidate
+// MS2-PIN: ??0?$CAtlArray@W4EMenuKey@@V?$CElementTraits@W4EMenuKey@@@ATL@@@ATL@@QEAA@XZ 0x14193f5b0 ; unique: single byte-identical candidate
 // MS2-PIN: ??0?$DelegateImpl@U?$pair@PEAVUIGameMenuDialog@@P81@EAAXAEAVCInPacket@@@Z@std@@@?$Delegate@$$A6AXAEAVCInPacket@@@Z@@QEAA@AEBV01@@Z 0x14193f6e0 ; prop: 0x14193f820 taken by ??0?$DelegateImpl@U?$pair@PEAVUIGameMenuDialog@@P81@EAAXPEAVNotify...
 // MS2-PIN: ??0?$DelegateImpl@U?$pair@PEAVUIGameMenuDialog@@P81@EAAXPEAVGameEventVariable@@@Z@std@@@?$Delegate@$$A6AXPEAVGameEventVariable@@@Z@@QEAA@AEBV01@@Z 0x14193f780 ; prop: symbol ??0DelegateImplBase@?$Delegate@$$A6AXPEAVGameEventVariable@@@Z@@QE...
 // MS2-PIN: ??0?$DelegateImpl@U?$pair@PEAVUIGameMenuDialog@@P81@EAAXPEAVNotifyObject@@@Z@std@@@?$Delegate@$$A6AXPEAVNotifyObject@@@Z@@QEAA@AEBV01@@Z 0x14193f820 ; prop: symbol ??0DelegateImplBase@?$Delegate@$$A6AXPEAVNotifyObject@@@Z@@QEAA@XZ
-// MS2-PIN: ??1?$CAtlArray@HV?$CElementTraits@H@ATL@@@ATL@@QEAA@XZ 0x14193fa10 ; unique: caller ??1UIGameMenuDialog@@UEAA@XZ
-// MS2-PIN: ??A?$CAtlArray@HV?$CElementTraits@H@ATL@@@ATL@@QEAAAEAH_K@Z 0x14193fc40 ; unique: single byte-identical candidate
-// MS2-PIN: ?CallConstructors@?$CAtlArray@HV?$CElementTraits@H@ATL@@@ATL@@CAXPEAH_K@Z 0x14193ff50 ; unique: single byte-identical candidate
-// MS2-PIN: ?CallDestructors@?$CAtlArray@HV?$CElementTraits@H@ATL@@@ATL@@CAXPEAH_K@Z 0x14193ffc0 ; unique: single byte-identical candidate
-// MS2-PIN: ?Copy@?$CAtlArray@HV?$CElementTraits@H@ATL@@@ATL@@QEAAXAEBV12@@Z 0x141940000 ; unique: single byte-identical candidate
-// MS2-PIN: ?GetCount@?$CAtlArray@HV?$CElementTraits@H@ATL@@@ATL@@QEBA_KXZ 0x1419403a0 ; unique: caller ?FUN_14193f100@@YAHAEBV?$CAtlArray@HV?$CElementTraits@H@ATL@@@ATL@...
+// MS2-PIN: ??1?$CAtlArray@W4EMenuKey@@V?$CElementTraits@W4EMenuKey@@@ATL@@@ATL@@QEAA@XZ 0x14193fa10 ; unique: caller ??1UIGameMenuDialog@@UEAA@XZ
+// MS2-PIN: ??A?$CAtlArray@W4EMenuKey@@V?$CElementTraits@W4EMenuKey@@@ATL@@@ATL@@QEAAAEAW4EMenuKey@@_K@Z 0x14193fc40 ; unique: single byte-identical candidate
+// MS2-PIN: ?CallConstructors@?$CAtlArray@W4EMenuKey@@V?$CElementTraits@W4EMenuKey@@@ATL@@@ATL@@CAXPEAW4EMenuKey@@_K@Z 0x14193ff50 ; unique: single byte-identical candidate
+// MS2-PIN: ?CallDestructors@?$CAtlArray@W4EMenuKey@@V?$CElementTraits@W4EMenuKey@@@ATL@@@ATL@@CAXPEAW4EMenuKey@@_K@Z 0x14193ffc0 ; unique: single byte-identical candidate
+// MS2-PIN: ?Copy@?$CAtlArray@W4EMenuKey@@V?$CElementTraits@W4EMenuKey@@@ATL@@@ATL@@QEAAXAEBV12@@Z 0x141940000 ; unique: single byte-identical candidate
+// MS2-PIN: ?GetCount@?$CAtlArray@W4EMenuKey@@V?$CElementTraits@W4EMenuKey@@@ATL@@@ATL@@QEBA_KXZ 0x1419403a0 ; unique: caller ?FUN_14193f100@@YAHAEBV?$CAtlArray@HV?$CElementTraits@H@ATL@@@ATL@...
 // MS2-PIN: ?vfunc_48@UIGameMenuDialog@@UEAAHXZ 0x1419405e0 ; unique: vftable slot 48 of ??_7UIGameMenuDialog@@6BCPtred@@@
-// MS2-PIN: ?GrowBuffer@?$CAtlArray@HV?$CElementTraits@H@ATL@@@ATL@@AEAA_N_K@Z 0x141940660 ; unique: single byte-identical candidate
-// MS2-PIN: ?RelocateElements@?$CElementTraitsBase@H@ATL@@SAXPEAH0_K@Z 0x141940eb0 ; unique: single byte-identical candidate
-// MS2-PIN: ?RemoveAll@?$CAtlArray@HV?$CElementTraits@H@ATL@@@ATL@@QEAAXXZ 0x141940ef0 ; unique: caller ?vfunc_67@UIGameMenuDialog@@UEAAXXZ
-// MS2-PIN: ?SetCount@?$CAtlArray@HV?$CElementTraits@H@ATL@@@ATL@@QEAA_N_KH@Z 0x141941280 ; unique: single byte-identical candidate
+// MS2-PIN: ?GrowBuffer@?$CAtlArray@W4EMenuKey@@V?$CElementTraits@W4EMenuKey@@@ATL@@@ATL@@AEAA_N_K@Z 0x141940660 ; unique: single byte-identical candidate
+// MS2-PIN: ?RelocateElements@?$CElementTraitsBase@W4EMenuKey@@@ATL@@SAXPEAW4EMenuKey@@0_K@Z 0x141940eb0 ; unique: single byte-identical candidate
+// MS2-PIN: ?RemoveAll@?$CAtlArray@W4EMenuKey@@V?$CElementTraits@W4EMenuKey@@@ATL@@@ATL@@QEAAXXZ 0x141940ef0 ; unique: caller ?vfunc_67@UIGameMenuDialog@@UEAAXXZ
+// MS2-PIN: ?SetCount@?$CAtlArray@W4EMenuKey@@V?$CElementTraits@W4EMenuKey@@@ATL@@@ATL@@QEAA_N_KH@Z 0x141941280 ; unique: single byte-identical candidate
 // MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUIGameMenuDialog@@P81@EAAXAEAVCInPacket@@@Z@std@@@?$Delegate@$$A6AXAEAVCInPacket@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x1419416b0 ; unique: vftable slot 1 of ??_7?$DelegateImpl@U?$pair@PEAVUIGameMenuDialog@@P81@EAAXAEAVCInPa...
 // MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUIGameMenuDialog@@P81@EAAXPEAVGameEventVariable@@@Z@std@@@?$Delegate@$$A6AXPEAVGameEventVariable@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x141941710 ; unique: vftable slot 1 of ??_7?$DelegateImpl@U?$pair@PEAVUIGameMenuDialog@@P81@EAAXPEAVGameE...
 // MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUIGameMenuDialog@@P81@EAAXPEAVNotifyObject@@@Z@std@@@?$Delegate@$$A6AXPEAVNotifyObject@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x141941770 ; unique: vftable slot 1 of ??_7?$DelegateImpl@U?$pair@PEAVUIGameMenuDialog@@P81@EAAXPEAVNotif...
@@ -40,7 +40,7 @@
 // MS2-PIN: ?vfunc_3@?$DelegateImpl@U?$pair@PEAVUIGameMenuDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEBA_NPEBVDelegateImplBase@2@@Z 0x141941b20 ; unique: vftable slot 3 of ??_7?$DelegateImpl@U?$pair@PEAVUIGameMenuDialog@@P81@EAA_NHAEBVCMs...
 // MS2-PINS-END tplpin
 // MS2-PIN: ?GetValueAt@?$CAtlMap@W4EMenuKey@@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@V?$CElementTraits@W4EMenuKey@@@3@V?$CElementTraits@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@3@@ATL@@QEAAAEAV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@2@PEAU__POSITION@@@Z 0x1419405f0 ; guess
-// MS2-PIN: ?Add@?$CAtlArray@HV?$CElementTraits@H@ATL@@@ATL@@QEAA_KH@Z 0x14193fea0 ; guess
+// MS2-PIN: ?Add@?$CAtlArray@W4EMenuKey@@V?$CElementTraits@W4EMenuKey@@@ATL@@@ATL@@QEAA_KAEBW4EMenuKey@@@Z 0x14193fea0 ; guess
 // MS2-PIN: ??0?$MS2Ptr@VUILearningQuestDialog@@@@QEAA@PEAVUILearningQuestDialog@@@Z 0x14193f960 ; guess
 // MS2-PIN: ??1?$MS2Ptr@VUILearningQuestDialog@@@@QEAA@XZ 0x14193fb00 ; guess
 // MS2-PIN: ?get@?$MS2Ptr@VUILearningQuestDialog@@@@QEBAPEAVUILearningQuestDialog@@XZ 0x14193fcc0 ; guess
@@ -71,6 +71,8 @@
 #include "ms2/ms2format.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/client/ms2/mentoringmanager.h"
+#include "ms2/placeholder/cpet.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
 
 // ---- statics (the exe runs them in this order: gameexit, the 8-name table, the shared header, the handle, the condition, the key input) ----
@@ -94,9 +96,23 @@ class ASDialog : public ASDisplayObject
 public:
     Scaleform::GFx::Value FUN_14193f350(const char* szMethod, bool a1, int a2, int a3);       // 0x14193f350
 };
-class Unk_GmEvtList { public: char m_pad[0x40]; };                          // a list of event rows (out parameter)
 class Unk_GmEvtKey { public: int m_0; };
-class Unk_GmEvtMgr;
+// the event contexts the game rule hands out (CPtred objects behind an MS2Ptr)
+class Unk_GmStampEvent : public CPtred {};
+class Unk_GmLtaEvent : public CPtred {};
+class Unk_GmTimeRunEvent : public CPtred {};
+class Unk_GmGalleryEvent : public CPtred {};
+class Unk_GmRpsEvent : public CPtred {};
+class Unk_GmDanceEvent : public CPtred {};
+class Unk_GmEvtMgr
+{
+public:
+    MS2Ptr<Unk_GmStampEvent> FUN_14047ca40(const Unk_GmEvtKey& key);
+    MS2Ptr<Unk_GmLtaEvent> FUN_14047ce70();
+    MS2Ptr<Unk_GmGalleryEvent> FUN_14047cf60();
+    MS2Ptr<Unk_GmRpsEvent> FUN_14047d140();
+    MS2Ptr<Unk_GmTimeRunEvent> FUN_14047d6c0();
+};
 class Unk_GmNet
 {
 public:
@@ -248,13 +264,15 @@ struct Unk_GmMenuEntry
     CStringW m_strTip;                          // +0x48
     CStringW m_strTipOff;                       // +0x50
     int m_58;                                   // +0x58 tooltip id
-    char m_pad_5c[0x68 - 0x5c];
+    char m_pad_5c[0x60 - 0x5c];
+    CString m_strCaption;                       // +0x60 the "$s_..." caption key (0x14193a7b0 looks it up)
     int m_nOpenUi;                              // +0x68 dialog opened by the entry
 };
 MS2_CHECK_OFFSET(Unk_GmMenuEntry, m_strName, 0x20);
 MS2_CHECK_OFFSET(Unk_GmMenuEntry, m_eventPeriod, 0x38);
 MS2_CHECK_OFFSET(Unk_GmMenuEntry, m_period, 0x40);
 MS2_CHECK_OFFSET(Unk_GmMenuEntry, m_strTip, 0x48);
+MS2_CHECK_OFFSET(Unk_GmMenuEntry, m_strCaption, 0x60);
 MS2_CHECK_OFFSET(Unk_GmMenuEntry, m_nOpenUi, 0x68);
 class Unk_GmMenuRef                             // = Unk_GuideMenuRef
 {
@@ -264,7 +282,7 @@ public:
     // this the implicit bitwise copy released the same entry twice.
     Unk_GmMenuRef(Unk_GmMenuRef&& o) : m_0(o.m_0), m_8(o.m_8) { o.m_8 = 0; }   // 0x140cf8e30
     ~Unk_GmMenuRef();                           // 0x140c1ccf0
-    bool FUN_140c1cd90() const;
+    void* FUN_140c1cd90() const;                // the entry pointer (null: none)
     Unk_GmMenuEntry* FUN_140c1cda0() const;
     void* m_0;
     void* m_8;                                  // the entry (null: no such menu)
@@ -282,8 +300,12 @@ public:
     void FUN_140c1cc60();                                        // dtor (releases the elements)
     size_t FUN_140c1d2c0() const;
     const Unk_GmNodeRef& FUN_140c1cd50(size_t i) const;           // operator[] (returns a reference, bounds-checked)
-    char m_pad[0x20];
+    void* m_pData;                              // CAtlArray fields (no char pad: a char[] local gets a /GS cookie)
+    size_t m_nSize;
+    size_t m_nMaxSize;
+    int m_nGrowBy;
 };
+MS2_CHECK_SIZE(Unk_GmNodeArr, 0x20);
 struct Unk_GmNodeBody
 {
     char m_pad_0[0x18];
@@ -301,7 +323,7 @@ public:
     Unk_GmNodeRef() {}
     Unk_GmNodeRef(const Unk_GmNodeRef& o) : m_0(o.m_0), m_8(o.m_8) { if (m_8) CPtred::AddRefPtred(static_cast<CPtred*>(m_8)); }   // copy: adds a reference
     ~Unk_GmNodeRef();                           // 0x140c1cd20
-    bool FUN_140c1cd90() const;
+    void* FUN_140c1cd90() const;                // the entry pointer (null: none)
     Unk_GmNodeBody* FUN_140c1cdb0() const;
     Unk_GmMenuEntry* FUN_140c1cda0() const;
     void* m_0;
@@ -315,7 +337,7 @@ public:
     int FUN_140cf72f0(int nId, int nLang);
     int FUN_140cf7250(NotifyObject* pNotify, int nLang);
     int FUN_140cf73a0(int nId);
-    Unk_GmMenuRef* FUN_140cf7590(Unk_GmMenuRef* pOut, int nId);
+    Unk_GmMenuRef FUN_140cf7590(int nId);
     Unk_GmMenuRef FUN_140cf7690(int nId);
     void FUN_140cf7710(Unk_GmNodeArr* pOut, int nLang);
     Unk_GmNodeRef FUN_140cf77a0(int nId, int nLang);
@@ -327,7 +349,7 @@ public:
     ~Unk_GmGridRef();                           // 0x1401cd150
     void* FUN_140885310();
     Unk_GmGrid* FUN_1401cd1a0();
-    char m_pad[0x10];
+    void* m_p;
 };
 class Unk_GmTarget { public: int m_pad_0[7]; int m_1c; int m_20; int m_24; };
 class Unk_GmTargetRef
@@ -339,19 +361,17 @@ public:
     void* m_0;
     void* m_8;
 };
-class Unk_GmPtrBase
+class Unk_GmPcInfoPtr
 {
 public:
-    Unk_GmPtrBase(void* p);
-    ~Unk_GmPtrBase();
+    Unk_GmPcInfoPtr(void* p);
+    ~Unk_GmPcInfoPtr();
     bool FUN_140ba7bb0(int);
     void* FUN_140975bc0();
-    char m_pad[0x10];
+    void* m_p;
 };
 class Unk_GmStatusInfo : public CPtred { public: char m_pad_18[0x6c - 0x18]; int m_6c; };
-class Unk_GmPetInfoRef { public: char m_pad[0x20]; };
-class Unk_GmPetRow { public: char m_pad_0[0x18]; int m_18; };
-class Unk_GmIdEntry { public: char m_pad[0x10]; };   // 16 bytes: the exe iterates the list with add rax, 0x10 (0x141938700)
+class Unk_GmIdEntry { public: Unk_GmIdEntry(const Unk_GmIdEntry& o); ~Unk_GmIdEntry(); void* m_vt; void* m_p; };   // the smart pointer of an id entry (copy ctor 0x14063dd20); the exe iterates the list with add rax, 0x10 (0x141938700)
 MS2_CHECK_SIZE(Unk_GmIdEntry, 0x10);
 class Unk_GmIdList
 {
@@ -360,13 +380,13 @@ public:
     ~Unk_GmIdList();
     Unk_GmIdEntry* begin();
     Unk_GmIdEntry* end();
-    char m_pad[0x20];
+    void* m_0; void* m_8; void* m_10;
 };
 class Unk_GmQuestRow { public: char m_pad_0[0x18]; int m_18; int m_1c; unsigned short m_20; };
 class Unk_GmQuestIface { public: virtual void vfunc_0(); virtual int vfunc_1(); virtual void vfunc_2(); virtual int vfunc_3(); };
 class Unk_GmQuest : public CPtred, public Unk_GmQuestIface {};
-class Unk_GmQuestRef { public: Unk_GmQuestRef(void* p); ~Unk_GmQuestRef(); Unk_GmQuestRow* FUN_1401e13a0(); char m_pad[0x10]; };
-class Unk_GmQuestIter { public: Unk_GmQuestIter(int n); ~Unk_GmQuestIter(); void* FUN_140f2d120(POSITION pos); POSITION FUN_140f2d200(); void FUN_140f2d260(POSITION& pos); char m_pad[0x40]; };
+class Unk_GmQuestRef { public: Unk_GmQuestRef(void* p); ~Unk_GmQuestRef(); Unk_GmQuestRow* FUN_1401e13a0(); void* m_pad[2]; };
+class Unk_GmQuestIter { public: Unk_GmQuestIter(int n); ~Unk_GmQuestIter(); void* FUN_140f2d120(POSITION pos); POSITION FUN_140f2d200(); void FUN_140f2d260(POSITION& pos); void* m_pad[6]; };
 
 // Base of the movie clips this dialog binds.
 class Unk_GmButton : public ASMovieClip
@@ -384,10 +404,9 @@ public:
     MS2Ptr<Unk_GmClip> FUN_1409b4560(const CString& strName);
     template <class T> MS2Ptr<T> FUN_140bbe700(const CString& strName);
 };
-class Unk_GmPoint { public: int x; int y; };   // exe 0x141937345 loads both with integer moves
-class Unk_UISwfEntity_25 { public: virtual void vfunc_0(); virtual void vfunc_1(); virtual void vfunc_2(); virtual void vfunc_3(); virtual void vfunc_4(); virtual Unk_GmPoint* vfunc_5(Unk_GmPoint* pOut); };
+class Unk_GmPoint { public: int x; int y; Unk_GmPoint& operator=(const Unk_GmPoint& o); };   // returned through a hidden pointer; exe 0x141937345 loads both with integer moves
+class Unk_UISwfEntity_25 { public: virtual void vfunc_0(); virtual void vfunc_1(); virtual void vfunc_2(); virtual void vfunc_3(); virtual void vfunc_4(); virtual Unk_GmPoint vfunc_5(); };
 class Unk_GmSlot : public CPtred { public: char m_pad[0x20]; };
-class Unk_GmStatusTmp { public: char m_pad[0x20]; };
 class Unk_GmField
 {
 public:
@@ -553,7 +572,7 @@ class Unk_GmDtEvents { public: void FUN_140da5430(int, Delegate<void(GameEventVa
 class Unk_GmTrigCmd { public: void FUN_14138bf00(int nKind, int nId, int nArg); };
 class Unk_GmMentorStatus { public: int FUN_140424de0(); };
 class Unk_GmMentorConfig { public: Unk_GmMentorStatus* FUN_14041d160(); };
-class Unk_GmEventHolder { public: void FUN_140428700(Unk_GmEvtList* pOut); };
+class Unk_GmEventHolder { public: MS2Ptr<Unk_GmDanceEvent> FUN_140428700(); };
 class Unk_GmGuideTable { public: CStringW FUN_14142d760(int nId, int n); };   // member (this=rcx, hidden return=rdx)
 class Unk_GmPetBoxStrings
 {
@@ -621,7 +640,6 @@ void* FUN_14140ea30();
 void* FUN_140939a00();
 void* FUN_140bd8b60();
 void* FUN_14025e7a0();
-Unk_GmPetInfoRef* FUN_140b102b0(void* pPet, Unk_GmPetInfoRef* pOut);
 
 // ---- exe functions: events, quests, shop ----
 
@@ -629,29 +647,12 @@ int FUN_14047c240(Unk_GmEvtMgr*);
 int FUN_14047c530(Unk_GmEvtMgr*, int nField);
 int FUN_14047c820(Unk_GmEvtMgr*);
 void FUN_14047c870(Unk_GmEvtMgr*, ATL::CAtlArray<int>* pOut);
-void FUN_14047ca40(Unk_GmEvtMgr*, Unk_GmEvtList* pOut, Unk_GmEvtKey* pKey);
-void FUN_14047ce70(Unk_GmEvtMgr*, Unk_GmEvtList* pOut);
-void FUN_14047cf60(Unk_GmEvtMgr*, Unk_GmEvtList* pOut);
-void FUN_14047d140(Unk_GmEvtMgr*, Unk_GmEvtList* pOut);
-void FUN_14047d6c0(Unk_GmEvtMgr*, Unk_GmEvtList* pOut);
 float FUN_14047d4e0(Unk_GmEvtMgr*);
 float FUN_14047d5c0(Unk_GmEvtMgr*);
-bool FUN_14049bfd0(Unk_GmEvtList*, int);
-bool FUN_14049c050(Unk_GmEvtList*, int);
-bool FUN_1403e84f0(Unk_GmEvtList*);
-bool FUN_1403e85d0(Unk_GmEvtList*, int);
-bool FUN_140b76c90(Unk_GmEvtList*, int);
-bool FUN_140c19220(Unk_GmEvtList*, int);
-void FUN_1403e51e0(Unk_GmEvtList*);
-void FUN_1403e5360(Unk_GmEvtList*);
-void FUN_1403e53c0(Unk_GmEvtList*);
-void FUN_1403e5450(Unk_GmEvtList*);
-void FUN_1403e5510(Unk_GmEvtList*);
-void FUN_1403e5540(Unk_GmEvtList*);
 bool FUN_14028d470(float, float);
 CStringW FUN_14042cb90(CStringW strFmt, const float* pArg);
 int FUN_1401d6d70(void*, int);
-int FUN_1401e0800(int nLevel);
+int FUN_1401e0800(unsigned short nLevel);
 void FUN_1401e0450(void*, Unk_GmQuestIter* pOut);
 int FUN_140f29e00(void*);
 int FUN_140f2a0b0(void*, int);
@@ -665,10 +666,7 @@ int FUN_14074bc90(int nQuest);
 int FUN_140bfc580(void* pQuest);
 int FUN_140424de0(Unk_GmMentorStatus*);
 Unk_GmMentorStatus* FUN_14041d160(Unk_GmMentorConfig*);
-void FUN_140428700(Unk_GmEventHolder*, Unk_GmEvtList* pOut);
 int FUN_140b71580(void*);
-void FUN_140b71780(void*, CStringW* pOut);
-void FUN_140b718b0(void*, CStringW* pOut);
 int FUN_1409364d0(void*, int);
 int FUN_140ae5070(void*);
 int FUN_140b6d0e0(void*);
@@ -686,9 +684,9 @@ int FUN_14185d8b0(void*);
 int FUN_140a6e4d0(void*);
 int FUN_140c8b320(void*);
 int FUN_140c8b340(void*);
-int FUN_140caa1a0(void*);
-void* FUN_140c24af0(void*);
-void* FUN_140c25130(PCBase*, void*);
+unsigned FUN_140caa1a0(void* pRef);
+class Unk_GmStatRef { public: ~Unk_GmStatRef(); void* FUN_140c24af0(); private: void* m_p0; void* m_p1; };
+class Unk_GmStatOwner { public: Unk_GmStatRef FUN_140c25130(); };
 
 // ---- exe functions: dialogs ----
 
@@ -728,11 +726,11 @@ void FUN_140c29710(void*);
 void FUN_140c29980(void*);
 void FUN_141ab4000(void*, int, int);
 bool FUN_140ef4cb0(Unk_GmGridRef&, int);
-bool FUN_14193fb70(Unk_GmMenuRef*);
+bool FUN_14193fb70(const Unk_GmMenuRef&);
 bool FUN_14193fba0(Unk_GmNodeRef*);
 bool FUN_14193fbd0(Unk_GmTargetRef*);
 bool FUN_14193fc00(Unk_GmMenuRef*, void* p);
-int FUN_14193f100(const ATL::CAtlArray<int>& arr, const int& nValue);
+int FUN_14193f100(const ATL::CAtlArray<EMenuKey>& arr, const EMenuKey& nValue);
 bool FUN_140a467d0(const MS2Ptr<AScript>*);
 void FUN_141ab7200(Unk_GmSlot*, TPtr<Unk_UISwfEntity_25>, void*);
 Unk_GmSlot* FUN_141a90540(int x, int y, Unk_GmField* pField, float fScale);
@@ -759,14 +757,10 @@ int FUN_141659690(PCBase*);
 int FUN_14166ce30(PCBase*);
 void* FUN_1416764a0(PCBase*);
 void* FUN_141676a10(PCBase*);
-void FUN_1406395c0(void*, Unk_GmIdList* pOut, int, int);
+void FUN_1406395c0(void*, Unk_GmIdList* pOut, int, bool);
 int FUN_140637e00(void*);
-struct Unk_GmEntryPtr { void* vt; void* p; };                   // the smart pointer at the head of an id entry
-Unk_GmEntryPtr* FUN_14063dd20(Unk_GmEntryPtr* pDst, Unk_GmIdEntry* pSrc);   // its copy ctor
 void* FUN_14063ed30(Unk_GmIdEntry*);
-bool FUN_140ecf630(Unk_GmEntryPtr* pByValue, int);           // takes the pointer by value (the callee destroys it)
-Unk_GmPetRow* FUN_14052ceb0(void*);
-void FUN_14052c420(Unk_GmPetInfoRef*);
+bool FUN_140ecf630(Unk_GmIdEntry ptr, int);                   // takes the pointer by value (the callee destroys it)
 struct Unk_GmStatusView { MS2Ptr<Unk_GmStatusInfo> FUN_141707750(); };   // member (this=rcx, hidden return=rdx)
 int FUN_1418dd0c0();
 int FUN_1418dd110();
@@ -781,7 +775,7 @@ CStringW FUN_1401e8510(const wchar_t* szFormat, const CStringW& a1);
 CStringW FUN_1401ceea0(const wchar_t* szFormat, const int* pArg);
 CStringW FUN_1405c2690(CStringW, const CStringW&);
 CString FUN_140536a50(const char* szFormat, const CString& a1);
-struct Unk_GmMovieMgrView { CStringW FUN_1422b0570(Unk_GmMenuEntry* pEntry); };   // $-key lookup (member: this=rcx, hidden return=rdx)
+struct Unk_GmMovieMgrView { CStringW FUN_1422b0570(const CString& strKey); };   // $-key lookup ("" if unknown)
 void FUN_1412751f0(const CStringW&, int, int);
 void FUN_141275260(int, int, int);
 void FUN_1412752d0(const CStringW& str, int n);
@@ -805,14 +799,10 @@ bool FUN_1409c1720(const Scaleform::GFx::Value& v);
 
 // ---- free functions of this unit (opened by the menu table) ----
 int FUN_14193a010();
-void FUN_14193d450();
-void FUN_14193e760();
-void FUN_14193e790();
-bool FUN_14193e9c0();
 UIFamePointBoardDialog* FUN_14193f170(int nId);
 UILearningQuestDialog* FUN_14193f210(int nId);
 UIWorldChampionRewardDialog* FUN_14193f2b0(int nId);
-bool FUN_14193fb70(Unk_GmMenuRef* p);
+bool FUN_14193fb70(const Unk_GmMenuRef& r);
 bool FUN_14193fba0(Unk_GmNodeRef* p);
 bool FUN_14193fbd0(Unk_GmTargetRef* p);
 bool FUN_14193fc00(Unk_GmMenuRef* p, void* pOther);
@@ -820,12 +810,12 @@ bool FUN_14193fc00(Unk_GmMenuRef* p, void* pOther);
 
 // @0x141935f20
 UIGameMenuDialog::UIGameMenuDialog()
+    : m_bPetUpdate(false)
 {
-    m_bPetUpdate = false;
-    m_nDirty = 0;
     m_bFlag258 = false;
     m_bFlag259 = false;
     m_bFlag25a = false;
+    m_nDirty = 0;
     FUN_140933220()->FUN_140da5430(0x69, Delegate<void(GameEventVariable*)>(this, &UIGameMenuDialog::FUN_14193b320));
     FUN_140bccd50()->FUN_140da5180(0x10b, Delegate<void(CInPacket&)>(this, &UIGameMenuDialog::FUN_14193b2f0));
     FUN_140bccd50()->FUN_140da5180(0x53, Delegate<void(CInPacket&)>(this, &UIGameMenuDialog::FUN_1419381f0));
@@ -899,7 +889,7 @@ void UIGameMenuDialog::vfunc_43()
         int nHeight = FUN_1418dd0c0();
         if (FUN_14036d570(FUN_140166410(), 0xbd))
             nHeight = nHeight - 6 + FUN_1418dd110();
-        dialog->vfunc_2(8, 5, -nHeight);
+        dialog->vfunc_2(8, 5, nHeight * -1);
     }
 }
 
@@ -912,7 +902,6 @@ int UIGameMenuDialog::vfunc_13()
 }
 
 // @0x141936e30
-// MS2-FUNCTIONAL: the per-branch result slot and ASData temp placement differ
 int UIGameMenuDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs)
 {
     if (UIDialog::vfunc_28(szMethod, pArgs, nArgs))
@@ -923,55 +912,48 @@ int UIGameMenuDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
     if (_stricmp("OnUgcUpload", szMethod) == 0) {
         FUN_14193e790();
         return 1;
-    }
-    if (_stricmp("OnCamera", szMethod) == 0) {
+    } else if (_stricmp("OnCamera", szMethod) == 0) {
         FUN_14193e760();
         return 1;
-    }
-    if (_stricmp("OnPetInfo", szMethod) == 0) {
+    } else if (_stricmp("OnPetInfo", szMethod) == 0) {
         FUN_1403ed2b0()->FUN_141adc750(0x4f38);
         return 1;
-    }
-    if (_stricmp("OnPetAttack", szMethod) == 0) {
+    } else if (_stricmp("OnPetAttack", szMethod) == 0) {
         OnPetAttack();
         return 1;
-    }
-    if (_stricmp("OnQuest", szMethod) == 0) {
+    } else if (_stricmp("OnQuest", szMethod) == 0) {
         FUN_1403ed2b0()->FUN_141adc750(0x4f56);
         return 1;
-    }
-    if (_stricmp("OnContract", szMethod) == 0) {
+    } else if (_stricmp("OnContract", szMethod) == 0) {
         FUN_14193d450();
         return 1;
+    } else {
+        CString strName(szMethod);
+        int nPos = strName.Find("_event", 0);
+        if (nPos != -1)
+            strName = strName.Mid(0, nPos);
+        Unk_GmMenuRef ref = FUN_140c1d2f0()->FUN_140cf7470(CString(strName));
+        if (ref.FUN_140c1cd90()) {
+            if (!ref.FUN_140c1cda0()->m_action.FUN_14098d930()) {
+                ref.FUN_140c1cda0()->m_action.FUN_14098d150();
+            } else if (ref.FUN_140c1cda0()->m_nOpenUi != 0) {
+                FUN_1403ed2b0()->FUN_141adc750(ref.FUN_140c1cda0()->m_nOpenUi);
+            }
+            if (ref.FUN_140c1cda0()->m_18 < 0x41)
+                FUN_1409331e0()->FUN_14138bf00(0x1f, ref.FUN_140c1cda0()->m_18, 0);
+            return 1;
+        }
     }
-    CString strName(szMethod);
-    int nPos = strName.Find("_event", 0);
-    if (nPos != -1)
-        strName = strName.Mid(0, nPos);
-    Unk_GmMenuRef ref = FUN_140c1d2f0()->FUN_140cf7470(CString(strName));
-    if (!ref.FUN_140c1cd90())
-        return 0;
-    if (!ref.FUN_140c1cda0()->m_action.FUN_14098d930()) {
-        ref.FUN_140c1cda0()->m_action.FUN_14098d150();
-    } else if (ref.FUN_140c1cda0()->m_nOpenUi != 0) {
-        FUN_1403ed2b0()->FUN_141adc750(ref.FUN_140c1cda0()->m_nOpenUi);
-    }
-    if (ref.FUN_140c1cda0()->m_18 <= 0x40)
-        FUN_1409331e0()->FUN_14138bf00(0x1f, ref.FUN_140c1cda0()->m_18, 0);
-    return 1;
+    return 0;
 }
 
 // @0x141937290
-// MS2-FUNCTIONAL: drag preview: the object tree is unrecovered
+// MS2-FUNCTIONAL: stack slots only (the exe puts ref below pField; frame 0x10 smaller)
 void UIGameMenuDialog::vfunc_25(void* p1, TPtr<Unk_UISwfEntity_25> p2, void* p3, void* p4)
 {
     Unk_GmField* pField = FUN_1403ed2d0()->FUN_141bd3620();
     if (pField != NULL) {
-        Unk_GmPoint ptA;
-        Unk_GmPoint ptB;
-        Unk_GmPoint* a = p2.get()->vfunc_5(&ptA);
-        Unk_GmPoint* b = p2.get()->vfunc_5(&ptB);
-        MS2Ptr<Unk_GmSlot> ref(FUN_141a90540(b->x, a->y, pField, 0.9f));
+        MS2Ptr<Unk_GmSlot> ref(FUN_141a90540(p2->vfunc_5().x, p2->vfunc_5().y, pField, 0.9f));
         if (ref.get() == 0)
             return;
         FUN_141ab7200(ref.operator->(), TPtr<Unk_UISwfEntity_25>(p2), p3);
@@ -1018,11 +1000,12 @@ void UIGameMenuDialog::vfunc_4(void*, int)
 // @0x1419375a0
 void UIGameMenuDialog::vfunc_o178_8(void* p)
 {
-    Unk_GmQuest* q = (Unk_GmQuest*)p;
-    if (q != NULL && (q->vfunc_1() != 0 || q->vfunc_3() != 0)) {
-        FUN_141938ae0(0x4efa, 0);
-        FUN_141938ae0(0x4f53, 0);
-    }
+    if (p == NULL)
+        return;
+    if (static_cast<Unk_GmQuest*>(p)->vfunc_1() == 0 && static_cast<Unk_GmQuest*>(p)->vfunc_3() == 0)
+        return;
+    FUN_141938ae0(0x4efa, 0);
+    FUN_141938ae0(0x4f53, 0);
 }
 
 // @0x141937650
@@ -1036,8 +1019,7 @@ void UIGameMenuDialog::vfunc_o178_1(void* p)
 void UIGameMenuDialog::vfunc_o178_2(void* p)
 {
     FUN_141938ae0(0x4f18, 0);
-    int n = FUN_140bfc580(p);
-    if (n == *FUN_1401d7c10(&FUN_1401d3200()->m_6dd0))
+    if (FUN_140bfc580(p) == *FUN_1401d7c10(&FUN_1401d3200()->m_6dd0))
         FUN_141938850();
     FUN_14193b360();
     FUN_141938100();
@@ -1105,20 +1087,20 @@ bool UIGameMenuDialog::vfunc_17()
 // @0x141937980
 void UIGameMenuDialog::vfunc_15()
 {
-    if (vfunc_55() == 0) {
-        if (m_nDirty != 0) {
-            m_nDirty = 0;
-            FUN_141939910();
-        }
-        if (m_bPetUpdate) {
-            m_bPetUpdate = false;
-            FUN_14193daf0(FUN_140d5b6b0(FUN_140939a00()) == 1);
-        }
+    if (vfunc_55() != 0)
+        return;
+    if (m_nDirty != 0) {
+        m_nDirty = 0;
+        FUN_141939910();
+    }
+    if (m_bPetUpdate) {
+        m_bPetUpdate = false;
+        bool bShow = FUN_140d5b6b0(FUN_140939a00()) == 1;
+        FUN_14193daf0(bShow);
     }
 }
 
 // @0x141937a30
-// MS2-FUNCTIONAL: string temporaries are ordered by the compiler
 void UIGameMenuDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
 {
     CString strName = pArgs->FUN_1422b8d30();
@@ -1127,19 +1109,18 @@ void UIGameMenuDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
         strName = strName.Mid(0, nPos);
     if (FUN_140184310(strName, "characterability")) {
         FUN_14193df10(pRetVal);
-    } else if (strName.Find("mushking", 0) == -1) {
+    } else if (strName.Find("mushking", 0) != -1) {
+        FUN_14193e0e0(pRetVal);
+    } else {
         Unk_GmMenuRef ref = FUN_140c1d2f0()->FUN_140cf7470(CString(strName));
         if (ref.FUN_140c1cd90()) {
             CStringW strTip(ref.FUN_140c1cda0()->m_strTip);
-            MS2Ptr<Unk_GmItem> item = FUN_14193b180(strName);
-            if (item.get() != 0) {
+            if (MS2Ptr<Unk_GmItem> item = FUN_14193b180(strName)) {
                 if (FUN_140bc0530(&item)->FUN_1422c2030() == 0)
                     strTip = ref.FUN_140c1cda0()->m_strTipOff;
             }
             FUN_14193dd90(pRetVal, ref.FUN_140c1cda0()->m_18, strTip, ref.FUN_140c1cda0()->m_58);
         }
-    } else {
-        FUN_14193e0e0(pRetVal);
     }
 }
 
@@ -1147,11 +1128,13 @@ void UIGameMenuDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
 void UIGameMenuDialog::vfunc_oa0_29()
 {
     PC* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
-    if (pPc != NULL) {
-        Unk_GmStatusTmp tmp;
-        int n = FUN_140caa1a0(FUN_140c24af0(FUN_140c25130(pPc, &tmp)));
-        FUN_141938350(8, n != 0);
-    }
+    if (pPc == NULL)
+        return;
+    int bHas = 0;
+    bool bLeft = FUN_140caa1a0(reinterpret_cast<Unk_GmStatOwner*>(pPc)->FUN_140c25130().FUN_140c24af0()) > 0;
+    if (bLeft)
+        bHas = 1;
+    FUN_141938350(8, bHas);
 }
 
 // @0x141937d70
@@ -1169,32 +1152,31 @@ void UIGameMenuDialog::vfunc_oa0_20(int)
 }
 
 // @0x141937e00
-void UIGameMenuDialog::FUN_141937e00()
+void UIGameMenuDialog::FUN_141937e00(int)
 {
     FUN_141938ae0(0x4f2d, 0);
     FUN_141938700();
 }
 
 // @0x141937e40
-void UIGameMenuDialog::FUN_141937e40()
+void UIGameMenuDialog::FUN_141937e40(int)
 {
     FUN_141938ae0(0x4e49, 0);
 }
 
 // @0x141937e70
-void UIGameMenuDialog::FUN_141937e70()
+void UIGameMenuDialog::FUN_141937e70(int)
 {
     FUN_141938ae0(0x4e4d, 0);
 }
 
 // @0x141937ea0
-void UIGameMenuDialog::FUN_141937ea0()
+void UIGameMenuDialog::FUN_141937ea0(void*, int)
 {
     FUN_141938ae0(0x4e73, 0);
 }
 
 // @0x141937ed0
-// MS2-FUNCTIONAL: the grid ref and clip locals are placed by the compiler
 void UIGameMenuDialog::FUN_141937ed0()
 {
     PC* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
@@ -1203,17 +1185,14 @@ void UIGameMenuDialog::FUN_141937ed0()
     int nContract = FUN_141527ed0(pPc);
     if (m_30.get() != 0)
         m_30->Invoke("initContract", nContract == 0);
-    MS2Ptr<Unk_GmClip> spMenus = FUN_140ba7930("m_menus");
-    if (spMenus.get() != 0) {
-        int nShown;
+    if (MS2Ptr<Unk_GmClip> spMenus = FUN_140ba7930("m_menus")) {
+        int nShown = 0;
         Unk_GmGridRef grid(FUN_1401cd040(&DAT_143b059e8));
-        if (grid.FUN_140885310() == 0 || FUN_1410d2f10(grid.FUN_1401cd1a0()) == 0 || FUN_1410c35c0(grid.FUN_1401cd1a0()) != 0 ||
-            FUN_1410c3180(grid.FUN_1401cd1a0()) == DAT_143ab2820) {
-            MS2Ptr<Unk_GmFieldInfo> spInfo = FUN_1403ed2d0()->FUN_141bd30a0();
-            nShown = spInfo->m_5c;
-        } else {
+        if ((grid.FUN_140885310() ? true : false) && FUN_1410d2f10(grid.FUN_1401cd1a0()) != 0 &&
+            !FUN_1410c35c0(grid.FUN_1401cd1a0()) && FUN_1410c3180(grid.FUN_1401cd1a0()) != DAT_143ab2820)
             nShown = 1;
-        }
+        else
+            nShown = FUN_1403ed2d0()->FUN_141bd30a0()->m_5c;
         FUN_141939770(0x16, nShown);
     }
 }
@@ -1221,9 +1200,11 @@ void UIGameMenuDialog::FUN_141937ed0()
 // @0x141938100
 void UIGameMenuDialog::FUN_141938100()
 {
-    bool bShow = FUN_1403ed2d0()->FUN_141bd3060() != *FUN_1401d7c10(&FUN_1401d3200()->m_8de0);
+    int bShow = 1;
+    if (FUN_1403ed2d0()->FUN_141bd3060() == *FUN_1401d7c10(&FUN_1401d3200()->m_8de0))
+        bShow = 0;
     if (FUN_1403ed2d0()->FUN_141bd3060() != 62000000 && !FUN_1409312f0())
-        bShow = false;
+        bShow = 0;
     FUN_141939770(0x2e, bShow);
 }
 
@@ -1242,9 +1223,18 @@ void UIGameMenuDialog::FUN_1419381c0()
 // @0x1419381f0
 void UIGameMenuDialog::FUN_1419381f0(CInPacket& packet)
 {
-    unsigned char nType = packet.ReadUInt8();
-    if (nType > 1 && (nType < 5 || (nType > 6 && nType < 10)))
+    int nType = packet.ReadUInt8();
+    switch (nType)
+    {
+    case 2:
+    case 3:
+    case 4:
+    case 7:
+    case 8:
+    case 9:
         FUN_14193a120();
+        break;
+    }
 }
 
 // @0x141938270
@@ -1268,7 +1258,7 @@ void UIGameMenuDialog::FUN_141938350(int nId, int bUp)
 // @0x141938490
 void UIGameMenuDialog::FUN_141938490(int nId, const CStringW& strText)
 {
-    m_menuText.SetAt((EMenuKey)nId, strText);
+    m_menuText.SetAt(reinterpret_cast<const EMenuKey&>(nId), strText);   // the exe passes &nId straight through
 }
 
 // @0x1419384d0
@@ -1288,24 +1278,21 @@ void UIGameMenuDialog::FUN_1419384d0()
 void UIGameMenuDialog::FUN_141938700()
 {
     PC* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
-    if (pPc != NULL) {
-        int bHas = 0;
-        Unk_GmIdList list;
-        FUN_1406395c0(FUN_1416546d0(pPc), &list, 0, 1);
-        for (Unk_GmIdEntry* p = list.begin(); p != list.end(); ++p) {
-            int nSlot = FUN_14152e970(pPc, FUN_140637e00(FUN_14063ed30(p)));
-            Unk_GmEntryPtr tmp;
-            if (FUN_140ecf630(FUN_14063dd20(&tmp, p), nSlot)) {
-                bHas = 1;
-                break;
-            }
+    if (pPc == NULL)
+        return;
+    int bHas = 0;
+    Unk_GmIdList list;
+    FUN_1406395c0(FUN_1416546d0(pPc), &list, 0, true);
+    for (Unk_GmIdEntry& e : list) {
+        if (FUN_140ecf630(e, FUN_14152e970(pPc, FUN_140637e00(FUN_14063ed30(&e))))) {
+            bHas = 1;
+            break;
         }
-        FUN_141938350(10, bHas);
     }
+    FUN_141938350(10, bHas);
 }
 
 // @0x141938850
-// MS2-FUNCTIONAL: iterator locals
 void UIGameMenuDialog::FUN_141938850()
 {
     PC* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
@@ -1315,11 +1302,10 @@ void UIGameMenuDialog::FUN_141938850()
     if (FUN_140764020()->state.FUN_140745590(*pQuest) == 0)
         return;
     int bFound = 0;
-    if (FUN_140f29e00(FUN_140f2d240()) != 0) {
+    if (FUN_140f29e00(FUN_140f2d240()) > 0u) {
         Unk_GmQuestIter list(10);
         FUN_1401e0450(FUN_140f2d250(), &list);
-        POSITION pos = list.FUN_140f2d200();
-        while (pos != 0) {
+        for (POSITION pos = list.FUN_140f2d200(); pos != 0; list.FUN_140f2d260(pos)) {
             Unk_GmQuestRef ref(list.FUN_140f2d120(pos));
             if (ref.FUN_1401e13a0()->m_20 <= (unsigned short)pPc->vfunc_78()) {
                 if (FUN_140f2a0b0(FUN_140f2d240(), ref.FUN_1401e13a0()->m_18) == 0) {
@@ -1327,7 +1313,6 @@ void UIGameMenuDialog::FUN_141938850()
                     break;
                 }
             }
-            list.FUN_140f2d260(pos);
         }
     }
     FUN_141938350(0x14, bFound);
@@ -1336,14 +1321,15 @@ void UIGameMenuDialog::FUN_141938850()
 // @0x141938a00
 int UIGameMenuDialog::FUN_141938a00(CString strName)
 {
-    MS2Ptr<Unk_GmItem> spItem = FUN_14193b180(strName);
-    if (spItem.get() == 0)
-        return false;
-    return FUN_1409c1720(spItem->Invoke("isExpand"));
+    {
+        MS2Ptr<Unk_GmItem> spItem = FUN_14193b180(strName);
+        if (spItem.get() != 0)
+            return FUN_1409c1720(spItem->Invoke("isExpand"));
+    }
+    return false;
 }
 
 // @0x141938ae0
-// MS2-FUNCTIONAL: the if/else chain over the menu id is compiled to a different branch layout
 void UIGameMenuDialog::FUN_141938ae0(int nId, int nValue)
 {
     PC* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
@@ -1365,74 +1351,66 @@ void UIGameMenuDialog::FUN_141938ae0(int nId, int nValue)
     } else if (nId == 0x4f53) {
         nCount = FUN_1416cfe20(FUN_140764020());
     } else if (nId == 0x4f1e) {
-        nCount = FUN_140b6d0e0(FUN_140e5ca20());
+        nCount = nCount + FUN_140b6d0e0(FUN_140e5ca20());
         nCount = nCount + FUN_140930e10();
     } else if (nId == 0x4f18) {
         nCount = FUN_1416d0530(FUN_140764020());
-    } else {
+    } else if (nId == 0x4f0c) {
         nCount = nValue;
-        if (nId != 0x4f0c) {
-            if (nId == 0x4f2f) {
-                ATL::CAtlArray<int> arr;
-                FUN_14047c870(FUN_1401c0d90(), &arr);
-                int nDone = 0;
-                for (size_t i = 0; i < arr.GetCount(); ++i) {
-                    if (FUN_140764020()->state.FUN_1407456d0(arr[i]) != 0)
-                        nDone = nDone + 1;
-                }
-                nCount = nDone;
-            } else if (nId == 0x4e4f) {
-                nCount = FUN_1413bd560(FUN_1403ed290());
-            } else {
-                nCount = 0;
-                if (nId == 0x4f43) {
-                    void* p = FUN_140cf8380(0x4f43);
-                    if (p != 0)
-                        nCount = FUN_140ee45c0(p);
-                } else if (nId == 0x4f1b) {
-                    void* p = FUN_141743550(0x4f1b);
-                    if (p != 0)
-                        nCount = FUN_140fb8680(p);
-                } else if (nId == 0x4eb8) {
-                    void* p = FUN_140c053e0(0x4eb8);
-                    if (p != 0)
-                        nCount = FUN_14102ccd0(p);
-                } else if (nId == 0x4eb9) {
-                    void* p = FUN_140ce8130(0x4eb9);
-                    if (p != 0)
-                        nCount = FUN_140bc4080(p);
-                } else if (nId == 0x4f4b) {
-                    void* p = FUN_140b72e80(0x4f4b);
-                    if (p != 0)
-                        nCount = FUN_140e5e940(p);
-                } else if (nId == 0x4f59) {
-                    void* p = FUN_141742a00(0x4f59);
-                    if (p != 0)
-                        nCount = FUN_140c17560(p);
-                } else if (nId == 0x4f5f) {
-                    void* p = FUN_140ce83b0(0x4f5f);
-                    if (p != 0)
-                        nCount = FUN_140e841a0(p);
-                } else if (nId == 0x4f87) {
-                    nCount = FUN_140195f70(FUN_1401958a0(), pPc->vfunc_141(), &DAT_143ab3308);
-                } else if (nId == 0x4f71) {
-                    void* p = FUN_140b769d0(0x4f71);
-                    if (p != 0)
-                        nCount = FUN_140bfe180(p);
-                } else if (nId == 0x4f33) {
-                    void* p = FUN_141743230(0x4f33);
-                    if (p != 0)
-                        nCount = FUN_140ed8040(p);
-                } else {
-                    if (nId != 0x4f67)
-                        return;
-                    nCount = FUN_140195f70(FUN_1401958a0(), pPc->vfunc_141(), &DAT_143ab3308);
-                    void* p = FUN_141742310(0x4f67);
-                    if (p != 0)
-                        nCount = nCount + FUN_140ba3240(p);
-                }
-            }
+    } else if (nId == 0x4f2f) {
+        ATL::CAtlArray<int> arr;
+        FUN_14047c870(FUN_1401c0d90(), &arr);
+        for (size_t i = 0; i < arr.GetCount(); ++i) {
+            if (FUN_140764020()->state.FUN_1407456d0(arr[i]) != 0)
+                nCount++;
         }
+    } else if (nId == 0x4e4f) {
+        nCount = FUN_1413bd560(FUN_1403ed290());
+    } else if (nId == 0x4f43) {
+        void* p = FUN_140cf8380(0x4f43);
+        if (p != 0)
+            nCount = FUN_140ee45c0(p);
+    } else if (nId == 0x4f1b) {
+        void* p = FUN_141743550(0x4f1b);
+        if (p != 0)
+            nCount = FUN_140fb8680(p);
+    } else if (nId == 0x4eb8) {
+        void* p = FUN_140c053e0(0x4eb8);
+        if (p != 0)
+            nCount = FUN_14102ccd0(p);
+    } else if (nId == 0x4eb9) {
+        void* p = FUN_140ce8130(0x4eb9);
+        if (p != 0)
+            nCount = FUN_140bc4080(p);
+    } else if (nId == 0x4f4b) {
+        void* p = FUN_140b72e80(0x4f4b);
+        if (p != 0)
+            nCount = FUN_140e5e940(p);
+    } else if (nId == 0x4f59) {
+        void* p = FUN_141742a00(0x4f59);
+        if (p != 0)
+            nCount = FUN_140c17560(p);
+    } else if (nId == 0x4f5f) {
+        void* p = FUN_140ce83b0(0x4f5f);
+        if (p != 0)
+            nCount = FUN_140e841a0(p);
+    } else if (nId == 0x4f87) {
+        nCount = FUN_140195f70(FUN_1401958a0(), pPc->vfunc_141(), &DAT_143ab3308);
+    } else if (nId == 0x4f71) {
+        void* p = FUN_140b769d0(0x4f71);
+        if (p != 0)
+            nCount = FUN_140bfe180(p);
+    } else if (nId == 0x4f33) {
+        void* p = FUN_141743230(0x4f33);
+        if (p != 0)
+            nCount = FUN_140ed8040(p);
+    } else if (nId == 0x4f67) {
+        nCount = FUN_140195f70(FUN_1401958a0(), pPc->vfunc_141(), &DAT_143ab3308);
+        void* p = FUN_141742310(0x4f67);
+        if (p != 0)
+            nCount = nCount + FUN_140ba3240(p);
+    } else {
+        return;
     }
     int nMenu = FUN_140c1d2f0()->FUN_140cf73a0(nId);
     int nKey = FUN_14193b530(nMenu);
@@ -1532,10 +1510,10 @@ void UIGameMenuDialog::FUN_141939910()
     FUN_141938ae0(0x4eb8, 0);
     FUN_141938ae0(0x4eb9, 0);
     FUN_141938ae0(0x4f4b, 0);
-    if (FUN_14036d570(FUN_140166410(), 0xfb) == 0)
-        FUN_141938ae0(0x4f87, 0);
-    else
+    if (FUN_14036d570(FUN_140166410(), 0xfb))
         FUN_141938ae0(0x4f67, 0);
+    else
+        FUN_141938ae0(0x4f87, 0);
     FUN_141938ae0(0x4f33, 0);
     FUN_141938ae0(0x4f59, 0);
     FUN_1419391c0();
@@ -1546,16 +1524,15 @@ void UIGameMenuDialog::FUN_141939910()
     FUN_1419384d0();
     FUN_141938700();
     FUN_141938850();
-    static_cast<UIStatusEventListener*>(this)->vfunc_oa0_29();
+    vfunc_oa0_29();
     FUN_141937ed0();
     FUN_14193b360();
     FUN_141938100();
     PC* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
-    if (pPc != NULL && FUN_141676a10(pPc) != 0) {
-        Unk_GmPetInfoRef info;
-        int nKind = FUN_14052ceb0(FUN_140b102b0(FUN_141676a10(pPc), &info))->m_18;
-        FUN_141938270(1, nKind == 1, FUN_140c8b320(FUN_140535320()));
-        FUN_14052c420(&info);
+    if (pPc != NULL) {
+        CPet* pPet = (CPet*)FUN_141676a10(pPc);
+        if (pPet != NULL)
+            FUN_141938270(1, pPet->GetRow()->m_nF18 == 1, FUN_140c8b320(FUN_140535320()));
     }
     FUN_141939ec0();
     FUN_14193a120();
@@ -1584,17 +1561,17 @@ void UIGameMenuDialog::FUN_141939ec0()
 {
     int nEnable = 1;
     PC* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
-    if (pPc != NULL) {
-        Unk_GmPtrBase spInfo(FUN_1416764a0(pPc));
-        if (spInfo.FUN_140ba7bb0(0)) {
-            MS2Ptr<Unk_GmStatusInfo> spStatus = static_cast<Unk_GmStatusView*>(spInfo.FUN_140975bc0())->FUN_141707750();
-            if (spStatus->m_6c != 0)
-                nEnable = 0;
-        }
-        ASDialog* dialog = dynamic_cast<ASDialog*>((AScript*)m_30);
-        if (dialog != NULL)
-            dialog->vfunc_3(nEnable);
+    if (pPc == NULL)
+        return;
+    Unk_GmPcInfoPtr spInfo(FUN_1416764a0(pPc));
+    if (spInfo.FUN_140ba7bb0(0)) {
+        bool bBusy = static_cast<Unk_GmStatusView*>(spInfo.FUN_140975bc0())->FUN_141707750()->m_6c != 0;
+        if (bBusy)
+            nEnable = 0;
     }
+    ASDialog* dialog = dynamic_cast<ASDialog*>((AScript*)m_30);
+    if (dialog != NULL)
+        dialog->vfunc_3(nEnable);
 }
 
 // @0x14193a010
@@ -1606,12 +1583,12 @@ int FUN_14193a010()
 // @0x14193a020
 void UIGameMenuDialog::FUN_14193a020(NotifyObject* pNotify)
 {
-    int nLang = FUN_14193a010();
-    if (FUN_140c1d2f0()->FUN_140cf7250(pNotify, nLang) != 0)
+    Unk_GmNotify* p = static_cast<Unk_GmNotify*>(pNotify);
+    if (FUN_140c1d2f0()->FUN_140cf7250(p, FUN_14193a010()) != 0)
         m_nDirty = 1;
-    if (FUN_1403b3c40(&static_cast<Unk_GmNotify*>(pNotify)->m_20, L"QuestTag"))
+    if (FUN_1403b3c40(&p->m_20, L"QuestTag"))
         FUN_14193b360();
-    if (FUN_1403b3c40(&static_cast<Unk_GmNotify*>(pNotify)->m_20, L"SurvivalKillExp") || FUN_1403b3c40(&static_cast<Unk_GmNotify*>(pNotify)->m_20, L"SurvivalTimeExp"))
+    if (FUN_1403b3c40(&p->m_20, L"SurvivalKillExp") || FUN_1403b3c40(&p->m_20, L"SurvivalTimeExp"))
         FUN_14193a120();
 }
 
@@ -1628,12 +1605,11 @@ void UIGameMenuDialog::FUN_14193a120()
 }
 
 // @0x14193a140
-// MS2-FUNCTIONAL: ASObj/array/ref temporaries are ordered by the compiler
 void UIGameMenuDialog::FUN_14193a140()
 {
     if (FUN_140a467d0(&m_30))
         return;
-    ATL::CAtlArray<int> arrAdded;
+    ATL::CAtlArray<EMenuKey> arrAdded;
     Unk_GmNodeArr arrMenus;
     FUN_140c1d2f0()->FUN_140cf7710(&arrMenus, FUN_14193a010());
     for (size_t i = 0; i < arrMenus.FUN_140c1d2c0(); ++i) {
@@ -1645,8 +1621,8 @@ void UIGameMenuDialog::FUN_14193a140()
             continue;
         if (FUN_14193a7b0(ref.FUN_140c1cdb0()->m_18, &obj) == 0)
             continue;
-        arrAdded.Add(ref.FUN_140c1cdb0()->m_18);
-        if (ref.FUN_140c1cdb0()->m_children.FUN_140c1d2c0() != 0) {
+        arrAdded.Add(reinterpret_cast<const EMenuKey&>(ref.FUN_140c1cdb0()->m_18));
+        if (ref.FUN_140c1cdb0()->m_children.FUN_140c1d2c0() > 0) {
             ASDataProvider children(2);   // exe 0x1422deec0: addEntity wants a CLIK DataProvider
             for (size_t j = 0; j < ref.FUN_140c1cdb0()->m_children.FUN_140c1d2c0(); ++j) {
                 Unk_GmNodeRef child(ref.FUN_140c1cdb0()->m_children.FUN_140c1cd50(j));
@@ -1656,13 +1632,13 @@ void UIGameMenuDialog::FUN_14193a140()
                 if (FUN_14193a7b0(child.FUN_140c1cdb0()->m_18, &childObj) == 0)
                     continue;
                 children.FUN_1422bc050(childObj.FUN_1422bb870());
-                arrAdded.Add(child.FUN_140c1cdb0()->m_18);
+                arrAdded.Add(reinterpret_cast<const EMenuKey&>(child.FUN_140c1cdb0()->m_18));
             }
             obj.FUN_1409adbe0("child", children.FUN_1422bb870());
         }
         m_30->Invoke("addMenuEntity", obj.FUN_1422bb870());
     }
-    if (m_order.GetCount() != 0) {
+    if (m_order.GetCount() > 0) {
         for (size_t k = 0; k < arrAdded.GetCount(); ++k) {
             if (FUN_14193f100(m_order, arrAdded[k]) == -1) {
                 int nKey = FUN_14193b530(arrAdded[k]);
@@ -1675,35 +1651,38 @@ void UIGameMenuDialog::FUN_14193a140()
 }
 
 // @0x14193a7b0
-// MS2-FUNCTIONAL: string temporaries are ordered by the compiler
 int UIGameMenuDialog::FUN_14193a7b0(int nId, ASObj* pObj)
 {
-    Unk_GmMenuRef ref = FUN_140c1d2f0()->FUN_140cf7690(nId);
-    if (!ref.FUN_140c1cd90())
-        return 0;
-    if (!ref.FUN_140c1cda0()->m_period.FUN_140c1d130() && ref.FUN_140c1cda0()->m_period.FUN_140c1cdc0() == 0)
-        return 0;
-    CStringW strTip = static_cast<Unk_GmMovieMgrView*>(FUN_14025e7a0())->FUN_1422b0570(ref.FUN_140c1cda0());
-    if (FUN_14193b570(nId) != 0 && ref.FUN_140c1cda0()->m_58 != 0) {
-        CStringW strExtra = FUN_1409331f0()->FUN_14142d760(ref.FUN_140c1cda0()->m_58, 0);
-        if (strExtra.GetLength() > 0)
-            strTip += FUN_1401e8510(L" [{0}]", strExtra);
+    {
+        Unk_GmMenuRef ref = FUN_140c1d2f0()->FUN_140cf7690(nId);
+        if (ref.FUN_140c1cd90()) {
+            if (!ref.FUN_140c1cda0()->m_period.FUN_140c1d130() && ref.FUN_140c1cda0()->m_period.FUN_140c1cdc0() == 0)
+                return 0;
+            CStringW strTip = static_cast<Unk_GmMovieMgrView*>(FUN_14025e7a0())->FUN_1422b0570(ref.FUN_140c1cda0()->m_strCaption);
+            if (FUN_14193b570(nId) != 0 && ref.FUN_140c1cda0()->m_58 != 0) {
+                CStringW strExtra = FUN_1409331f0()->FUN_14142d760(ref.FUN_140c1cda0()->m_58, 0);
+                if (strExtra.GetLength() > 0)
+                    strTip += FUN_1401e8510(L" [{0}]", strExtra);
+            }
+            CString strName = FUN_14193afc0(nId);
+            pObj->FUN_1407cba60("name", CString(strName));
+            pObj->FUN_1407cba60("layerName", CString(strName));
+            pObj->FUN_1407cb9c0("isBig", ref.FUN_140c1cda0()->m_28);
+            int nEnabled = 1;
+            if (m_enabled.Lookup(reinterpret_cast<const EMenuKey&>(nId), nEnabled))
+                pObj->FUN_1407cb9c0("enabled", nEnabled);
+            if (!FUN_14036d570(FUN_140166410(), 0xc4)) {
+                if (FUN_14193b570(nId) == 0)
+                    pObj->FUN_1409c0e60("tooltipName", L"");
+                else
+                    pObj->FUN_1407cbb20("tooltipName", CStringW(strTip));
+            } else {
+                pObj->FUN_1407cbb20("tooltipName", CStringW(strTip));
+            }
+            return 1;
+        }
     }
-    CString strName = FUN_14193afc0(nId);
-    pObj->FUN_1407cba60("name", CString(strName));
-    pObj->FUN_1407cba60("layerName", CString(strName));
-    pObj->FUN_1407cb9c0("isBig", ref.FUN_140c1cda0()->m_28);
-    int nEnabled = 1;
-    if (m_enabled.Lookup(reinterpret_cast<const EMenuKey&>(nId), nEnabled))
-        pObj->FUN_1407cb9c0("enabled", nEnabled);
-    if (FUN_14036d570(FUN_140166410(), 0xc4)) {
-        pObj->FUN_1407cbb20("tooltipName", CStringW(strTip));
-    } else if (FUN_14193b570(nId) == 0) {
-        pObj->FUN_1409c0e60("tooltipName", L"");
-    } else {
-        pObj->FUN_1407cbb20("tooltipName", CStringW(strTip));
-    }
-    return 1;
+    return 0;
 }
 
 // @0x14193ab80
@@ -1721,21 +1700,16 @@ void UIGameMenuDialog::FUN_14193abe0()
 }
 
 // @0x14193ac40
-// MS2-FUNCTIONAL: ref/ptr temporaries are ordered by the compiler
 void UIGameMenuDialog::FUN_14193ac40(int nEnable, int nId)
 {
-    Unk_GmMenuRef ref;
-    bool bSkip = FUN_14193fb70(FUN_140c1d2f0()->FUN_140cf7590(&ref, nId));
-    if (!bSkip) {
-        MS2Ptr<Unk_GmClip> spMenus = FUN_140ba7930("m_menus");
-        if (spMenus.get() != 0) {
-            MS2Ptr<Unk_GmClip> spEntry = spMenus->FUN_1409b4560(FUN_14193ae90(nId));
-            if (spEntry.get() != 0) {
-                MS2Ptr<Unk_GmButton> spButton = spEntry->FUN_140acce30<Unk_GmButton>("m_button");
-                if (spButton.get() != 0) {
-                    spButton->FUN_1422c7630(nEnable);
-                    spButton->FUN_1422ce090(nEnable);
-                }
+    bool bSkip = FUN_14193fb70(FUN_140c1d2f0()->FUN_140cf7590(nId));
+    if (bSkip)
+        return;
+    if (MS2Ptr<Unk_GmClip> spMenus = FUN_140ba7930("m_menus")) {
+        if (MS2Ptr<Unk_GmClip> spEntry = spMenus->FUN_1409b4560(FUN_14193ae90(nId))) {
+            if (MS2Ptr<Unk_GmButton> spButton = spEntry->FUN_140acce30<Unk_GmButton>("m_button")) {
+                spButton->FUN_1422c7630(nEnable);
+                spButton->FUN_1422ce090(nEnable);
             }
         }
     }
@@ -1744,30 +1718,35 @@ void UIGameMenuDialog::FUN_14193ac40(int nEnable, int nId)
 // @0x14193ae90
 CString UIGameMenuDialog::FUN_14193ae90(int nId)
 {
-    Unk_GmMenuRef ref;
-    FUN_140c1d2f0()->FUN_140cf7590(&ref, nId);
-    if (ref.FUN_140c1cd90() == 0)
-        return "";
-    CString strName(ref.FUN_140c1cda0()->m_strName);
-    if (!ref.FUN_140c1cda0()->m_eventPeriod.FUN_140c1d130() && ref.FUN_140c1cda0()->m_eventPeriod.FUN_140c1cdc0() != 0)
-        strName += "_event";
-    return strName;
+    {
+        Unk_GmMenuRef ref = FUN_140c1d2f0()->FUN_140cf7590(nId);
+        if (ref.FUN_140c1cd90() != 0) {
+            CString strName(ref.FUN_140c1cda0()->m_strName);
+            if (!ref.FUN_140c1cda0()->m_eventPeriod.FUN_140c1d130() && ref.FUN_140c1cda0()->m_eventPeriod.FUN_140c1cdc0() != 0)
+                strName += "_event";
+            return strName;
+        }
+    }
+    return "";
 }
 
 // @0x14193afc0
 CString UIGameMenuDialog::FUN_14193afc0(int nId)
 {
-    Unk_GmMenuRef ref = FUN_140c1d2f0()->FUN_140cf7690(nId);
-    if (ref.FUN_140c1cd90() == 0)
-        return "";
-    CString strName(ref.FUN_140c1cda0()->m_strName);
-    if (!ref.FUN_140c1cda0()->m_eventPeriod.FUN_140c1d130() && ref.FUN_140c1cda0()->m_eventPeriod.FUN_140c1cdc0() != 0)
-        strName += "_event";
-    return strName;
+    {
+        Unk_GmMenuRef ref = FUN_140c1d2f0()->FUN_140cf7690(nId);
+        if (ref.FUN_140c1cd90() != 0) {
+            CString strName(ref.FUN_140c1cda0()->m_strName);
+            if (!ref.FUN_140c1cda0()->m_eventPeriod.FUN_140c1d130() && ref.FUN_140c1cda0()->m_eventPeriod.FUN_140c1cdc0() != 0)
+                strName += "_event";
+            return strName;
+        }
+    }
+    return "";
 }
 
 // @0x14193b0f0
-MS2Ptr<Unk_GmItem> UIGameMenuDialog::FUN_14193b0f0(int nId, void*)
+MS2Ptr<Unk_GmItem> UIGameMenuDialog::FUN_14193b0f0(int nId)
 {
     return FUN_14193b180(FUN_14193ae90(nId));
 }
@@ -1775,10 +1754,8 @@ MS2Ptr<Unk_GmItem> UIGameMenuDialog::FUN_14193b0f0(int nId, void*)
 // @0x14193b180
 MS2Ptr<Unk_GmItem> UIGameMenuDialog::FUN_14193b180(const CString& strName)
 {
-    MS2Ptr<Unk_GmClip> spMenus = FUN_140ba7930("m_menus");
-    if (spMenus.get() != 0) {
-        MS2Ptr<Unk_GmClip> spEntry = spMenus->FUN_1409b4560(strName);
-        if (spEntry.get() != 0)
+    if (MS2Ptr<Unk_GmClip> spMenus = FUN_140ba7930("m_menus")) {
+        if (MS2Ptr<Unk_GmClip> spEntry = spMenus->FUN_1409b4560(strName))
             return spEntry->FUN_140bbe700<Unk_GmItem>("m_button");
     }
     return MS2Ptr<Unk_GmItem>(0);
@@ -1819,14 +1796,14 @@ void UIGameMenuDialog::FUN_14193b360()
 // @0x14193b4a0
 void UIGameMenuDialog::FUN_14193b4a0(void* pQuest)
 {
-    if (pQuest != NULL) {
-        PC* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
-        if (pPc != NULL) {
-            int nJob = FUN_1401d6d70(FUN_140bd8b60(), FUN_141654730(pPc));
-            if (FUN_140bfc580(pQuest) == nJob)
-                m_nDirty = 1;
-        }
-    }
+    if (pQuest == NULL)
+        return;
+    PC* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
+    if (pPc == NULL)
+        return;
+    int nJob = FUN_1401d6d70(FUN_140bd8b60(), FUN_141654730(pPc));
+    if (FUN_140bfc580(pQuest) == nJob)
+        m_nDirty = 1;
 }
 
 // @0x14193b530
@@ -1844,10 +1821,10 @@ int UIGameMenuDialog::FUN_14193b570(int nId)
 // @0x14193b5b0
 void UIGameMenuDialog::FUN_14193b5b0()
 {
-    if (FUN_140b06000(FUN_140b05bf0()))
-        FUN_1403ed2b0()->FUN_141adc750(0x4ebc);
-    else
+    if (!FUN_140b06000(FUN_140b05bf0()))
         FUN_140d73bc0(0xa69, 0, 0, CStringW(L""));
+    else
+        FUN_1403ed2b0()->FUN_141adc750(0x4ebc);
 }
 
 // @0x14193b630
@@ -1868,7 +1845,6 @@ void UIGameMenuDialog::FUN_14193b670()
 }
 
 // @0x14193b750
-// MS2-FUNCTIONAL: grid ref / target ref / msgbox temporaries are placed by the compiler
 void UIGameMenuDialog::FUN_14193b750()
 {
     PC* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
@@ -1884,58 +1860,59 @@ void UIGameMenuDialog::FUN_14193b750()
     }
     int nShown = 0;
     Unk_GmGridRef grid(FUN_1401cd040(&DAT_143b059e8));
-    if (grid.FUN_140885310() == 0 || FUN_1410d2f10(grid.FUN_1401cd1a0()) == 0 || FUN_1410c35c0(grid.FUN_1401cd1a0()) != 0 ||
-        FUN_1410c3180(grid.FUN_1401cd1a0()) == DAT_143ab2820) {
-        MS2Ptr<Unk_GmFieldInfo> spInfo = FUN_1403ed2d0()->FUN_141bd30a0();
-        nShown = spInfo->m_5c;
-    } else {
+    if ((grid.FUN_140885310() ? true : false) && FUN_1410d2f10(grid.FUN_1401cd1a0()) != 0 && FUN_1410c35c0(grid.FUN_1401cd1a0()) == 0 &&
+        FUN_1410c3180(grid.FUN_1401cd1a0()) != DAT_143ab2820) {
         nShown = 1;
+    } else {
+        nShown = FUN_1403ed2d0()->FUN_141bd30a0()->m_5c;
     }
-    if (nShown != 0) {
-        Unk_GmTargetRef target(FUN_141523c50(pPc));
-        if (FUN_14193fbd0(&target))
+    if (nShown == 0) {
+        if (FUN_14193e9c0() != 0)
             return;
-        if (FUN_141527e00(pPc) == 0) {
-            if (target.FUN_14050dee0()->m_1c == 0 && FUN_141527e00(pPc) == 0) {
-                FUN_141275260(0x878, 1, 0);
-                return;
-            }
-            MS2Ptr<CMsgBoxData> box = FUN_140d73e40(1, 0x875, 0, CStringW(L""));
-            if (box.get() != 0) {
-                box->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIGameMenuDialog::FUN_14193d9e0));
-                FUN_140d73c60(box);
-            }
-        } else {
-            if (FUN_1403ed2b0()->FUN_141adc940(0x4f3f) != 0)
-                FUN_1403ed2b0()->FUN_141adc530(0x4f3f);
-        }
+        if ((grid.FUN_140885310() ? true : false) && FUN_1410d2f10(grid.FUN_1401cd1a0()) != 0 && FUN_1410c35c0(grid.FUN_1401cd1a0()) == 0 &&
+            FUN_1410c3180(grid.FUN_1401cd1a0()) == DAT_143ab2820)
+            FUN_141275260(0x870, 1, 0);
+        else
+            FUN_141275260(0x86f, 1, 0);
         return;
     }
-    if (FUN_14193e9c0() != 0)
+    Unk_GmTargetRef target(FUN_141523c50(pPc));
+    if (FUN_14193fbd0(&target))
         return;
-    if (grid.FUN_140885310() != 0 && FUN_1410d2f10(grid.FUN_1401cd1a0()) != 0 && FUN_1410c35c0(grid.FUN_1401cd1a0()) == 0 &&
-        FUN_1410c3180(grid.FUN_1401cd1a0()) == DAT_143ab2820)
-        FUN_141275260(0x870, 1, 0);
-    else
-        FUN_141275260(0x86f, 1, 0);
+    if (FUN_141527e00(pPc) != 0) {
+        if (FUN_1403ed2b0()->FUN_141adc940(0x4f3f) != 0)
+            FUN_1403ed2b0()->FUN_141adc530(0x4f3f);
+    } else {
+        if (target.FUN_14050dee0()->m_1c == 0 && FUN_141527e00(pPc) == 0) {
+            FUN_141275260(0x878, 1, 0);
+            return;
+        }
+        MS2Ptr<CMsgBoxData> box = FUN_140d73e40(1, 0x875, 0, CStringW(L""));
+        if (box.get() != 0) {
+            box->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIGameMenuDialog::FUN_14193d9e0));
+            FUN_140d73c60(box);
+        }
+    }
 }
 
 // @0x14193bbe0
 void UIGameMenuDialog::FUN_14193bbe0()
 {
-    if (FUN_1403ed2b0()->FUN_141adc890(0x4e69) == 0) {
-        if (m_bFlag258 == false) {
-            MS2Ptr<CMsgBoxData> box = FUN_140d74500(CStringW(L"$s_msgbox_ugc_turms_content"), 0x1e,
-                                                    Delegate<bool(int, const CMsgBoxData&)>(this, &UIGameMenuDialog::FUN_14193d8a0));
-            if (box.get() != 0) {
-                FUN_141a015d0(box.get(), CStringW(L"$s_msgbox_ugc_turms_title"));
-                FUN_140d73c60(box);
-            }
-        } else {
-            FUN_1403ed2b0()->FUN_141adc530(0x4e69);
-        }
+    int nId = 0x4e69;
+    if (FUN_1403ed2b0()->FUN_141adc890(nId) != 0) {
+        FUN_1403ed2b0()->FUN_141adc5d0(nId);
+    } else if (m_bFlag258 != false) {
+        FUN_1403ed2b0()->FUN_141adc530(nId);
     } else {
-        FUN_1403ed2b0()->FUN_141adc5d0(0x4e69);
+        MS2Ptr<CMsgBoxData> box = FUN_140d74500(L"$s_msgbox_ugc_turms_content", 0x1e,
+                                                Delegate<bool(int, const CMsgBoxData&)>(this, &UIGameMenuDialog::FUN_14193d8a0));
+        if (box.get() != 0) {
+            {
+                CStringW strTitle(L"$s_msgbox_ugc_turms_title");
+                FUN_141a015d0(box.operator->(), strTitle);
+            }
+            FUN_140d73c60(box);
+        }
     }
 }
 
@@ -1950,17 +1927,17 @@ void UIGameMenuDialog::FUN_14193bda0()
 // @0x14193bdf0
 void UIGameMenuDialog::FUN_14193bdf0()
 {
-    if (FUN_1403ed2b0()->FUN_141adc890(0x4f18) == 0) {
-        if (!FUN_140930b70()) {
-            FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_learning_quest_dungeon")), 1, 1);
-        } else {
-            MS2Ptr<UILearningQuestDialog> pane = FUN_14193f210(0x4f18);
-            if (pane.get() != 0) {
-                if (pane->FUN_141924630() != 0)
-                    return;
-                if (FUN_140ea1e20(pane.operator->(), 0) == 0)
-                    FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_learning_quest_empty")), 1, 1);
-            }
+    if (FUN_1403ed2b0()->FUN_141adc890(0x4f18) != 0)
+        return;
+    if (!FUN_140930b70()) {
+        FUN_1412751f0(GetStringCommonByKey(L"s_learning_quest_dungeon"), 1, 1);
+    } else {
+        MS2Ptr<UILearningQuestDialog> pane = FUN_14193f210(0x4f18);
+        if (pane.get() != 0) {
+            if (pane->FUN_141924630() != 0)
+                return;
+            if (FUN_140ea1e20(pane.operator->(), 0) == 0)
+                FUN_1412751f0(GetStringCommonByKey(L"s_learning_quest_empty"), 1, 1);
         }
     }
 }
@@ -1984,28 +1961,26 @@ void UIGameMenuDialog::FUN_14193bfd0()
 }
 
 // @0x14193c000
-// MS2-FUNCTIONAL: string and msgbox temporaries are ordered by the compiler
 void UIGameMenuDialog::FUN_14193c000()
 {
     int nQuest = FUN_14047c240(FUN_1401c0d90());
     if (nQuest == 0) {
-        FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_quest_epic_restart_event_end")), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(L"s_quest_epic_restart_event_end"), 1, 1);
         return;
     }
     int nOut = 0;
-    if (DAT_143ab3010.FUN_1409617d0(0x44c, nQuest, &nOut) == 0) {
-        int nField = FUN_1403ed2d0()->FUN_141bd3060();
-        if (FUN_14047c530(FUN_1401c0d90(), nField) == 0) {
-            FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_quest_epic_restart_invalid_field")), 1, 1);
+    int nRestarted = DAT_143ab3010.FUN_1409617d0(0x44c, nQuest, &nOut);
+    if (nRestarted != 0) {
+        FUN_1412751f0(GetStringCommonByKey(L"s_quest_epic_restart_restarted"), 1, 1);
+    } else {
+        if (FUN_14047c530(FUN_1401c0d90(), FUN_1403ed2d0()->FUN_141bd3060()) == 0) {
+            FUN_1412751f0(GetStringCommonByKey(L"s_quest_epic_restart_invalid_field"), 1, 1);
         } else {
-            MS2Ptr<CMsgBoxData> box = FUN_140d73d20(1, GetStringCommonByKey(CStringW(L"s_quest_epic_restart_warning")), 0, CStringW(L""));
-            if (box.get() != 0) {
+            if (MS2Ptr<CMsgBoxData> box = FUN_140d73d20(1, GetStringCommonByKey(L"s_quest_epic_restart_warning"), 0, CStringW(L""))) {
                 box->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIGameMenuDialog::SendQuest));
                 FUN_140d73c60(box);
             }
         }
-    } else {
-        FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_quest_epic_restart_restarted")), 1, 1);
     }
 }
 
@@ -2013,30 +1988,27 @@ void UIGameMenuDialog::FUN_14193c000()
 void UIGameMenuDialog::FUN_14193c3c0()
 {
     void* pDlg = FUN_140cf82e0(0x4f2f);
-    if (pDlg == 0)
-        return;
-    int nItem = FUN_14047c820(FUN_1401c0d90());
-    if (nItem == 0) {
-        FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_quest_scroll_package_invalid_event")), 1, 1);
-    } else if (FUN_140ea4b70(pDlg) == 0) {
-        FUN_1412751f0(FUN_1405c2690(CStringW(L"s_quest_scroll_package_use_item_warn"), FUN_1401a9d70()->FUN_141811980(1, nItem)), 1, 1);
-    } else {
-        ::FUN_141924680(pDlg);
+    if (pDlg != 0) {
+        int nItem = FUN_14047c820(FUN_1401c0d90());
+        if (nItem == 0) {
+            FUN_1412751f0(GetStringCommonByKey(L"s_quest_scroll_package_invalid_event"), 1, 1);
+        } else if (FUN_140ea4b70(pDlg) == 0) {
+            FUN_1412751f0(FUN_1405c2690(CStringW(L"s_quest_scroll_package_use_item_warn"), FUN_1401a9d70()->FUN_141811980(1, nItem)), 1, 1);
+        } else {
+            ::FUN_141924680(pDlg);
+        }
     }
 }
 
 // @0x14193c550
 void UIGameMenuDialog::FUN_14193c550()
 {
-    Unk_GmEvtList list;
-    FUN_14047ca40(FUN_1401c0d90(), &list, &DAT_143ab2fc0);
-    if (FUN_14049c050(&list, 0) == 0) {
-        FUN_1403ed2b0()->FUN_141adc750(0x4f33);
-        FUN_1403e5510(&list);
-    } else {
-        FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_stampevent_invalid_event")), 1, 1);
-        FUN_1403e5510(&list);
+    MS2Ptr<Unk_GmStampEvent> spEvent = FUN_1401c0d90()->FUN_14047ca40(DAT_143ab2fc0);
+    if (spEvent == NULL) {
+        FUN_1412751f0(GetStringCommonByKey(L"s_stampevent_invalid_event"), 1, 1);
+        return;
     }
+    FUN_1403ed2b0()->FUN_141adc750(0x4f33);
 }
 
 // @0x14193c630
@@ -2048,15 +2020,12 @@ void UIGameMenuDialog::FUN_14193c630()
 // @0x14193c660
 void UIGameMenuDialog::FUN_14193c660()
 {
-    Unk_GmEvtList list;
-    FUN_14047ce70(FUN_1401c0d90(), &list);
-    if (FUN_14049bfd0(&list, 0) == 0) {
-        FUN_1403ed2b0()->FUN_141adc750(0x4f98);
-        FUN_1403e53c0(&list);
-    } else {
-        FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_longtermattendgift_dialog_invalid_event")), 1, 1);
-        FUN_1403e53c0(&list);
+    MS2Ptr<Unk_GmLtaEvent> spEvent = FUN_1401c0d90()->FUN_14047ce70();
+    if (spEvent == NULL) {
+        FUN_1412751f0(GetStringCommonByKey(L"s_longtermattendgift_dialog_invalid_event"), 1, 1);
+        return;
     }
+    FUN_1403ed2b0()->FUN_141adc750(0x4f98);
 }
 
 // @0x14193c730
@@ -2085,20 +2054,17 @@ void UIGameMenuDialog::FUN_14193c800()
         FUN_141275260(0x2f7, 1, 1);
         return;
     }
-    Unk_GmEvtList list;
-    FUN_14047d6c0(FUN_1401c0d90(), &list);
-    if (FUN_1403e84f0(&list) == 0) {
-        void* pDlg = FUN_140cf8380(0x4f43);
-        if (pDlg != 0) {
-            if (FUN_140ee3290(pDlg) == 0) {
-                FUN_1412751f0(FUN_140298ea0(CStringW(L"s_event_mission_timerun_invalid")), 1, 1);
-                FUN_1403e5540(&list);
-                return;
-            }
-            ::FUN_141924680(pDlg);
+    MS2Ptr<Unk_GmTimeRunEvent> spEvent = FUN_1401c0d90()->FUN_14047d6c0();
+    if (spEvent.IsNull())
+        return;
+    void* pDlg = FUN_140cf8380(0x4f43);
+    if (pDlg != 0) {
+        if (FUN_140ee3290(pDlg) == 0) {
+            FUN_1412751f0(FUN_140298ea0(CStringW(L"s_event_mission_timerun_invalid")), 1, 1);
+            return;
         }
+        ::FUN_141924680(pDlg);
     }
-    FUN_1403e5540(&list);
 }
 
 // @0x14193c930
@@ -2108,7 +2074,7 @@ void UIGameMenuDialog::FUN_14193c930()
     if (pPc == NULL)
         return;
     if (FUN_140424de0(FUN_14041d160(FUN_140302b00())) == 0) {
-        FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_mentoring_error_season")), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(L"s_mentoring_error_season"), 1, 1);
         return;
     }
     if (FUN_14025e7b0()->m_8.FUN_1402c4c90(0x4a) != 0) {
@@ -2116,38 +2082,36 @@ void UIGameMenuDialog::FUN_14193c930()
         return;
     }
     if (FUN_140b71580(FUN_140c70240()) == 3) {
-        CStringW strName;
-        FUN_140b718b0(FUN_140c70240(), &strName);
+        CStringW strName = static_cast<CMentoringManager*>(FUN_140c70240())->FUN_140b718b0();
         if (strName.IsEmpty())
-            FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_mentoring_error_mentee_none_candidate")), 1, 1);
+            FUN_1412751f0(GetStringCommonByKey(L"s_mentoring_error_mentee_none_candidate"), 1, 1);
         else
             FUN_1412751f0(FUN_1405c2690(CStringW(L"s_mentoring_error_mentee_none_mentee"), strName), 1, 1);
     } else if (FUN_140b71580(FUN_140c70240()) == 6) {
-        CStringW strName;
-        FUN_140b71780(FUN_140c70240(), &strName);
+        CStringW strName = static_cast<CMentoringManager*>(FUN_140c70240())->FUN_140b71780();
         if (strName.IsEmpty())
-            FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_mentoring_error_mentor_none_candidate")), 1, 1);
+            FUN_1412751f0(GetStringCommonByKey(L"s_mentoring_error_mentor_none_candidate"), 1, 1);
         else
             FUN_1412751f0(FUN_1405c2690(CStringW(L"s_mentoring_error_mentor_none_mentor"), strName), 1, 1);
     } else {
         if (FUN_140b71580(FUN_140c70240()) == 4) {
             if ((unsigned int)pPc->vfunc_78() < *FUN_1401d7c10(&FUN_1401d3200()->m_8c10)) {
-                FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_mentoring_error_mentor_candidate_level")), 1, 1);
+                FUN_1412751f0(GetStringCommonByKey(L"s_mentoring_error_mentor_candidate_level"), 1, 1);
                 return;
             }
         }
         if (FUN_140b71580(FUN_140c70240()) == 1) {
             if ((unsigned int)pPc->vfunc_78() < *FUN_1401d7c10(&FUN_1401d3200()->m_8c68)) {
-                FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_mentoring_error_mentee_candidate_level")), 1, 1);
+                FUN_1412751f0(GetStringCommonByKey(L"s_mentoring_error_mentee_candidate_level"), 1, 1);
                 return;
             }
         }
-        if (FUN_1403ed2b0()->FUN_141adc890(0x4f4b) == 0) {
+        if (FUN_1403ed2b0()->FUN_141adc890(0x4f4b) != 0) {
+            FUN_1403ed2b0()->FUN_141adc5d0(0x4f4b);
+        } else {
             COutPacket packet(static_cast<int>(SendOp::Mentor), 0);
             packet.WriteUInt8(9);
             FUN_140710590(packet);
-        } else {
-            FUN_1403ed2b0()->FUN_141adc5d0(0x4f4b);
         }
     }
 }
@@ -2156,26 +2120,23 @@ void UIGameMenuDialog::FUN_14193c930()
 void UIGameMenuDialog::FUN_14193cea0()
 {
     void* pDlg = FUN_14193f170(0x4f54);
-    if (pDlg != 0) {
-        if (FUN_140c156d0(pDlg) == 0)
-            FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_fame_point_board_warn2")), 1, 1);
-        else
-            FUN_1403ed2b0()->FUN_141adc750(0x4f54);
-    }
+    if (pDlg == 0)
+        return;
+    if (FUN_140c156d0(pDlg) == 0)
+        FUN_1412751f0(GetStringCommonByKey(L"s_fame_point_board_warn2"), 1, 1);
+    else
+        FUN_1403ed2b0()->FUN_141adc750(0x4f54);
 }
 
 // @0x14193cf60
 void UIGameMenuDialog::FUN_14193cf60()
 {
-    Unk_GmEvtList list;
-    FUN_14047cf60(FUN_1401c0d90(), &list);
-    if (FUN_140c19220(&list, 0) == 0) {
-        FUN_1403ed2b0()->FUN_141adc750(0x4f59);
-        FUN_1403e5360(&list);
-    } else {
-        FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_galleryevent_invalid_event")), 1, 1);
-        FUN_1403e5360(&list);
+    MS2Ptr<Unk_GmGalleryEvent> spEvent = FUN_1401c0d90()->FUN_14047cf60();
+    if (spEvent == NULL) {
+        FUN_1412751f0(GetStringCommonByKey(L"s_galleryevent_invalid_event"), 1, 1);
+        return;
     }
+    FUN_1403ed2b0()->FUN_141adc750(0x4f59);
 }
 
 // @0x14193d030
@@ -2192,29 +2153,23 @@ void UIGameMenuDialog::FUN_14193d030()
 // @0x14193d250
 void UIGameMenuDialog::FUN_14193d250()
 {
-    Unk_GmEvtList list;
-    FUN_14047d140(FUN_1401c0d90(), &list);
-    if (FUN_1403e85d0(&list, 0) == 0) {
-        FUN_1403ed2b0()->FUN_141adc750(0x4f5f);
-        FUN_1403e5450(&list);
-    } else {
-        FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_rpsevent_invalid_event")), 1, 1);
-        FUN_1403e5450(&list);
+    MS2Ptr<Unk_GmRpsEvent> spEvent = FUN_1401c0d90()->FUN_14047d140();
+    if (spEvent == NULL) {
+        FUN_1412751f0(GetStringCommonByKey(L"s_rpsevent_invalid_event"), 1, 1);
+        return;
     }
+    FUN_1403ed2b0()->FUN_141adc750(0x4f5f);
 }
 
 // @0x14193d320
 void UIGameMenuDialog::FUN_14193d320()
 {
-    Unk_GmEvtList list;
-    FUN_140428700(FUN_1403ed140(FUN_140302b00()), &list);
-    if (FUN_140b76c90(&list, 0) == 0) {
-        FUN_1403ed2b0()->FUN_141adc750(0x4f71);
-        FUN_1403e51e0(&list);
-    } else {
-        FUN_1412752d0(CStringW(L"s_microgame_couple_dance_event_invalid_event"), 1);
-        FUN_1403e51e0(&list);
+    MS2Ptr<Unk_GmDanceEvent> spEvent = FUN_1403ed140(FUN_140302b00())->FUN_140428700();
+    if (spEvent == NULL) {
+        FUN_1412752d0(L"s_microgame_couple_dance_event_invalid_event", 1);
+        return;
     }
+    FUN_1403ed2b0()->FUN_141adc750(0x4f71);
 }
 
 // @0x14193d3d0
@@ -2230,16 +2185,18 @@ void UIGameMenuDialog::FUN_14193d400()
 }
 
 // @0x14193d450
-void FUN_14193d450()
+void UIGameMenuDialog::FUN_14193d450()
 {
     PC* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
-    if (pPc != NULL && FUN_141527ed0(pPc) != 0) {
-        FUN_1403ed2b0()->FUN_141adc750(0x4e76);
-        void* pDlg = FUN_140961690(0x4e76);
-        if (pDlg != 0) {
-            Unk_GmTargetRef target(FUN_141523c50(pPc));
-            FUN_141ab4000(pDlg, target.FUN_14050dee0()->m_24, target.FUN_14050dee0()->m_20);
-        }
+    if (pPc == NULL)
+        return;
+    if (FUN_141527ed0(pPc) == 0)
+        return;
+    FUN_1403ed2b0()->FUN_141adc750(0x4e76);
+    void* pDlg = FUN_140961690(0x4e76);
+    if (pDlg != 0) {
+        Unk_GmTargetRef target(FUN_141523c50(pPc));
+        FUN_141ab4000(pDlg, target.FUN_14050dee0()->m_24, target.FUN_14050dee0()->m_20);
     }
 }
 
@@ -2282,36 +2239,34 @@ void UIGameMenuDialog::FUN_14193d5e0()
 // @0x14193d640
 void UIGameMenuDialog::vfunc_ugc_5()
 {
-    if (vfunc_55() == 0)
-        FUN_141937ed0();
+    if (vfunc_55() != 0)
+        return;
+    FUN_141937ed0();
 }
 
 // @0x14193d6a0
 void UIGameMenuDialog::vfunc_ugc_6()
 {
-    if (vfunc_55() == 0)
-        FUN_141937ed0();
+    if (vfunc_55() != 0)
+        return;
+    FUN_141937ed0();
 }
 
 // @0x14193d700
 void UIGameMenuDialog::FUN_14193d700()
 {
-    if (FUN_14036d570(FUN_140166410(), 0x109)) {
-        if (FUN_14025e7b0()->m_8.FUN_1402c4c90(0x6f) == 0) {
-            if (FUN_14071b9c0(FUN_14071d7d0()) == 0) {
-                if (FUN_140a8be20(FUN_1409c1740(), 0) == 0) {
-                    FUN_1403ed2b0()->FUN_141adc5d0(0x4f93);
-                    FUN_140d73aa0(GetStringCommonByKey(CStringW(L"s_payback_error_uiopen_end_time")), 0, 0, CStringW(L""));
-                } else {
-                    FUN_1403ed2b0()->FUN_141adc750(0x4f93);
-                }
-            } else {
-                FUN_1403ed2b0()->FUN_141adc5d0(0x4f93);
-                FUN_140d73bc0(0xd4f, 0, 0, CStringW(L""));
-            }
-        } else {
-            FUN_141275260(0x2f7, 1, 1);
-        }
+    if (!FUN_14036d570(FUN_140166410(), 0x109))
+        return;
+    if (FUN_14025e7b0()->m_8.FUN_1402c4c90(0x6f) != 0) {
+        FUN_141275260(0x2f7, 1, 1);
+    } else if (FUN_14071b9c0(FUN_14071d7d0()) != 0) {
+        FUN_1403ed2b0()->FUN_141adc5d0(0x4f93);
+        FUN_140d73bc0(0xd4f, 0, 0, CStringW(L""));
+    } else if (FUN_140a8be20(FUN_1409c1740(), 0) == 0) {
+        FUN_1403ed2b0()->FUN_141adc5d0(0x4f93);
+        FUN_140d73aa0(GetStringCommonByKey(L"s_payback_error_uiopen_end_time"), 0, 0, CStringW(L""));
+    } else {
+        FUN_1403ed2b0()->FUN_141adc750(0x4f93);
     }
 }
 
@@ -2374,25 +2329,25 @@ bool UIGameMenuDialog::FUN_14193dab0(int nResult, const CMsgBoxData&)
 }
 
 // @0x14193daf0
-// MS2-FUNCTIONAL: string and ref temporaries are ordered by the compiler
 void UIGameMenuDialog::FUN_14193daf0(bool bEvent)
 {
     int nId = 0xf;
-    CString strName = FUN_14193afc0(FUN_14193b530(nId));
+    int nKey = FUN_14193b530(nId);
+    CString strName = FUN_14193afc0(nKey);
     MS2Ptr<Unk_GmItem> spItem = FUN_14193b180(strName);
-    if (spItem.get() != 0) {
+    if (spItem == NULL) {
         strName = FUN_140536a50("{0}_event", strName);
         spItem = FUN_14193b180(strName);
     }
-    if (spItem.get() == 0) {
-        Unk_GmMenuRef ref = FUN_140c1d2f0()->FUN_140cf7690(nId);
-        if (!FUN_14193fc00(&ref, 0)) {
-            CString strLayer(ref.FUN_140c1cda0()->m_strName);
-            if (bEvent)
-                strLayer += "_event";
-            FUN_140bc0530(&spItem)->FUN_1407cba60("layerName", CString(strLayer));
-        }
-    }
+    if (spItem == NULL)
+        return;
+    Unk_GmMenuRef ref = FUN_140c1d2f0()->FUN_140cf7690(nId);
+    if (FUN_14193fc00(&ref, 0))
+        return;
+    CString strLayer(ref.FUN_140c1cda0()->m_strName);
+    if (bEvent)
+        strLayer += "_event";
+    FUN_140bc0530(&spItem)->FUN_1407cba60("layerName", CString(strLayer));
 }
 
 // @0x14193dd50
@@ -2427,23 +2382,23 @@ void UIGameMenuDialog::FUN_14193dd90(Scaleform::GFx::Value* pOut, int nId, const
 void UIGameMenuDialog::FUN_14193df10(Scaleform::GFx::Value* pOut)
 {
     PC* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
-    if (pPc != NULL) {
-        int nQuestDone = FUN_140764020()->state.FUN_140745590(*FUN_1401d7c10(&FUN_1401d3200()->m_6dd0));
-        CStringW strText;
-        if (FUN_1401e0800(pPc->vfunc_78()) == 0 || nQuestDone == 0)
-            strText = GetStringCommonByKey(CStringW(L"s_tooltip_gamemenu_disable_characterability"));
-        else
-            strText = GetStringCommonByKey(CStringW(L"s_tooltip_gamemenu_enable_characterability"));
-        ASTooltip tip(1, 2);
-        if (tip.FUN_1409e26b0(strText) != 0)
-            *pOut = tip.FUN_1422bb870();
-    }
+    if (pPc == NULL)
+        return;
+    int nQuestDone = FUN_140764020()->state.FUN_140745590(*FUN_1401d7c10(&FUN_1401d3200()->m_6dd0));
+    CStringW strText;
+    if (FUN_1401e0800(pPc->vfunc_78()) != 0 && nQuestDone != 0)
+        strText = GetStringCommonByKey(L"s_tooltip_gamemenu_enable_characterability");
+    else
+        strText = GetStringCommonByKey(L"s_tooltip_gamemenu_disable_characterability");
+    ASTooltip tip(1, 2);
+    if (tip.FUN_1409e26b0(strText) != 0)
+        *pOut = tip.FUN_1422bb870();
 }
 
 // @0x14193e0e0
 void UIGameMenuDialog::FUN_14193e0e0(Scaleform::GFx::Value* pOut)
 {
-    CStringW strText = GetStringCommonByKey(CStringW(L"s_tooltip_gamemenu_mushking_royal"));
+    CStringW strText = GetStringCommonByKey(L"s_tooltip_gamemenu_mushking_royal");
     float nKillExp = FUN_14047d4e0(FUN_1401c0d90());
     float nTimeExp = FUN_14047d5c0(FUN_1401c0d90());
     if (FUN_14028d470(nKillExp, 0) == 0) {
@@ -2460,25 +2415,23 @@ void UIGameMenuDialog::FUN_14193e0e0(Scaleform::GFx::Value* pOut)
 }
 
 // @0x14193e2e0
-// MS2-FUNCTIONAL: msgbox and string temporaries are ordered by the compiler
 void UIGameMenuDialog::FUN_14193e2e0(int nMapType)
 {
     PC* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pPc == NULL)
         return;
     int nField = FUN_14193e940(FUN_1403ed2d0()->FUN_141bd3060());
-    if (FUN_1418fe060() == 0 && nField == 0) {
-        MS2Ptr<CMsgBoxData> box = FUN_140d73d20(1, GetStringCommonByKey(CStringW(L"s_beauty_goto_map_return_warn")), 0, CStringW(L""));
-        if (box.get() != 0) {
-            FUN_140533ff0(box.get(), nMapType);
+    int nBeauty = FUN_1418fe060();
+    if (nBeauty == 0 && nField == 0) {
+        if (MS2Ptr<CMsgBoxData> box = FUN_140d73d20(1, GetStringCommonByKey(L"s_beauty_goto_map_return_warn"), 0, CStringW(L""))) {
+            box->FUN_140533ff0(nMapType);
             box->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIGameMenuDialog::SendBeauty));
             FUN_140d73c60(box);
         }
     } else {
         CStringW strMsg = GetStringCommonByKey(FUN_1401ceea0(L"s_beauty_goto_map_beauty_{0}", &nMapType));
-        MS2Ptr<CMsgBoxData> box = FUN_140d73d20(1, CStringW(strMsg), 0, CStringW(L""));
-        if (box.get() != 0) {
-            FUN_140533ff0(box.get(), nMapType);
+        if (MS2Ptr<CMsgBoxData> box = FUN_140d73d20(1, CStringW(strMsg), 0, CStringW(L""))) {
+            box->FUN_140533ff0(nMapType);
             box->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIGameMenuDialog::SendBeauty));
             FUN_140d73c60(box);
         }
@@ -2486,19 +2439,21 @@ void UIGameMenuDialog::FUN_14193e2e0(int nMapType)
 }
 
 // @0x14193e760
-void FUN_14193e760()
+void UIGameMenuDialog::FUN_14193e760()
 {
     FUN_1403ed2b0()->FUN_141adc750(0x4e5b);
 }
 
 // @0x14193e790
-void FUN_14193e790()
+void UIGameMenuDialog::FUN_14193e790()
 {
     CStringW strPath;
-    if (FUN_14184fe60(strPath) < 0)
-        FUN_140d73aa0(FUN_1401e8510(L"Could not create directory. path={0}", strPath), 0, 0, CStringW(L""));
-    else
-        ShellExecuteW((HWND)0, L"open", L"explorer", (const wchar_t*)strPath, (LPCWSTR)0, 1);
+    if (FUN_14184fe60(strPath) < 0) {
+        CStringW strMsg = FUN_1401e8510(L"Could not create directory. path={0}", strPath);
+        FUN_140d73aa0(strMsg, 0, 0, CStringW(L""));
+        return;
+    }
+    ShellExecuteW((HWND)0, L"open", L"explorer", (const wchar_t*)strPath, (LPCWSTR)0, 1);
 }
 
 // @0x14193e8b0
@@ -2523,30 +2478,30 @@ int UIGameMenuDialog::FUN_14193e940(int nField)
 }
 
 // @0x14193e9c0
-// MS2-FUNCTIONAL: grid ref local is placed by the compiler
-bool FUN_14193e9c0()
+bool UIGameMenuDialog::FUN_14193e9c0()
 {
     Unk_GmGridRef grid(FUN_1401cd040(&DAT_143b059e8));
     if (FUN_140ef4cb0(grid, 0) != 0)
         return false;
-    bool bField = false;
-    if (FUN_1410d2f10(grid.FUN_1401cd1a0()) != 0 && FUN_1410c3180(grid.FUN_1401cd1a0()) == DAT_143ab2820)
-        bField = true;
-    void* pDlg;
-    if (FUN_1410c3650(grid.FUN_1401cd1a0()) == 0 && bField && (pDlg = FUN_140bbea00(0x4ed8)) != 0) {
-        FUN_1412c7600(pDlg);
+    bool bField = FUN_1410d2f10(grid.FUN_1401cd1a0()) != 0 && FUN_1410c3180(grid.FUN_1401cd1a0()) == DAT_143ab2820;
+    void* pDlg1;
+    if (FUN_1410c3650(grid.FUN_1401cd1a0()) == 0 && bField && (pDlg1 = FUN_140bbea00(0x4ed8)) != 0) {
+        FUN_1412c7600(pDlg1);
         return true;
     }
-    if (FUN_1410c3600(grid.FUN_1401cd1a0(), 1) != 0 && bField && (pDlg = FUN_140ef49b0(0x4f7c)) != 0) {
-        FUN_140c29710(pDlg);
+    void* pDlg2;
+    if (FUN_1410c3600(grid.FUN_1401cd1a0(), 1) != 0 && bField && (pDlg2 = FUN_140ef49b0(0x4f7c)) != 0) {
+        FUN_140c29710(pDlg2);
         return true;
     }
-    if (FUN_1410c3600(grid.FUN_1401cd1a0(), 3) != 0 && bField && (pDlg = FUN_140ef49b0(0x4f7c)) != 0) {
-        FUN_140c29980(pDlg);
+    void* pDlg3;
+    if (FUN_1410c3600(grid.FUN_1401cd1a0(), 3) != 0 && bField && (pDlg3 = FUN_140ef49b0(0x4f7c)) != 0) {
+        FUN_140c29980(pDlg3);
         return true;
     }
-    if (FUN_1410c3600(grid.FUN_1401cd1a0(), 2) != 0 && bField && (pDlg = FUN_140bbea00(0x4ed8)) != 0) {
-        FUN_1412c7600(pDlg);
+    void* pDlg4;
+    if (FUN_1410c3600(grid.FUN_1401cd1a0(), 2) != 0 && bField && (pDlg4 = FUN_140bbea00(0x4ed8)) != 0) {
+        FUN_1412c7600(pDlg4);
         return true;
     }
     return false;
@@ -2586,7 +2541,7 @@ UIWorldChampionRewardDialog* FUN_14193f2b0(int nId)
 }
 
 // @0x14193f100
-int FUN_14193f100(const ATL::CAtlArray<int>& arr, const int& nValue)
+int FUN_14193f100(const ATL::CAtlArray<EMenuKey>& arr, const EMenuKey& nValue)
 {
     for (int i = 0; i < (int)arr.GetCount(); i++) {
         if (arr[i] == nValue)
@@ -2607,9 +2562,9 @@ Scaleform::GFx::Value ASDialog::FUN_14193f350(const char* szMethod, bool a1, int
 }
 
 // @0x14193fb70
-bool FUN_14193fb70(Unk_GmMenuRef* p)
+bool FUN_14193fb70(const Unk_GmMenuRef& r)
 {
-    return p->m_8 == 0;
+    return r.m_8 == 0;
 }
 
 // @0x14193fba0
@@ -2733,7 +2688,7 @@ MS2_REPLACE_METHOD(0x14193D250, UIGameMenuDialog, FUN_14193d250, 197, 0xDFF06827
 MS2_REPLACE_METHOD(0x14193D320, UIGameMenuDialog, FUN_14193d320, 157, 0x7F80820D);
 MS2_REPLACE_METHOD(0x14193D3D0, UIGameMenuDialog, FUN_14193d3d0, 27, 0x8762DE36);
 MS2_REPLACE_METHOD(0x14193D400, UIGameMenuDialog, FUN_14193d400, 70, 0xB1286B0A);
-MS2_REPLACE(0x14193D450, FUN_14193d450, 193, 0xB4642BB9);
+MS2_REPLACE_METHOD(0x14193D450, UIGameMenuDialog, FUN_14193d450, 193, 0xB4642BB9);
 MS2_REPLACE_METHOD(0x14193D520, UIGameMenuDialog, FUN_14193d520, 49, 0x1F026EC1);
 MS2_REPLACE_METHOD(0x14193D560, UIGameMenuDialog, FUN_14193d560, 32, 0xE23E0543);
 MS2_REPLACE_METHOD(0x14193D590, UIGameMenuDialog, FUN_14193d590, 32, 0xA9D322C4);
@@ -2754,11 +2709,11 @@ MS2_REPLACE_METHOD(0x14193DD90, UIGameMenuDialog, FUN_14193dd90, 377, 0x0838E7F9
 MS2_REPLACE_METHOD(0x14193DF10, UIGameMenuDialog, FUN_14193df10, 452, 0xAF036E0B);
 MS2_REPLACE_METHOD(0x14193E0E0, UIGameMenuDialog, FUN_14193e0e0, 505, 0x78F5CCDC);
 MS2_REPLACE_METHOD(0x14193E2E0, UIGameMenuDialog, FUN_14193e2e0, 1137, 0x6849F1A4);
-MS2_REPLACE(0x14193E760, FUN_14193e760, 32, 0x4F1FAE19);
-MS2_REPLACE(0x14193E790, FUN_14193e790, 267, 0x001BE172);
+MS2_REPLACE_METHOD(0x14193E760, UIGameMenuDialog, FUN_14193e760, 32, 0x4F1FAE19);
+MS2_REPLACE_METHOD(0x14193E790, UIGameMenuDialog, FUN_14193e790, 267, 0x001BE172);
 MS2_REPLACE_METHOD(0x14193E8B0, UIGameMenuDialog, OnPetAttack, 130, 0x7C97C2FA);
 MS2_REPLACE_METHOD(0x14193E940, UIGameMenuDialog, FUN_14193e940, 122, 0x12716BE9);
-MS2_REPLACE(0x14193E9C0, FUN_14193e9c0, 563, 0x5F8D2F57);
+MS2_REPLACE_METHOD(0x14193E9C0, UIGameMenuDialog, FUN_14193e9c0, 563, 0x5F8D2F57);
 MS2_REPLACE(0x14193F170, FUN_14193f170, 147, 0xD0F97E1E);
 MS2_REPLACE(0x14193F210, FUN_14193f210, 147, 0x7BA75E9D);
 MS2_REPLACE(0x14193F2B0, FUN_14193f2b0, 147, 0xD1A57867);

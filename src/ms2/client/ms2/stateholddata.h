@@ -36,7 +36,7 @@ public:
     void FUN_1417ccca0(int nState, int nSub);          // @0x1417ccca0: owner slot 59 (switch state)
     void FUN_1417ccd50();                              // @0x1417ccd50: remember whether the holder rides, aim the camera
     void FUN_1417cce10();                              // @0x1417cce10: cast the hold skill at the holder
-    int FUN_1417cd060();                               // @0x1417cd060: the holder rides a mount
+    bool FUN_1417cd060();                              // @0x1417cd060: the holder rides a mount
     int FUN_1417cd0d0();                               // @0x1417cd0d0: the held actor's id, 0 without a payload
 
     MS2Ptr<StateHoldData> m_spHold;                    // +0x78

@@ -87,7 +87,7 @@ class Unk_TaxiCtx
 {
 public:
     Unk_TaxiHolder FUN_141bd30a0();
-    void FUN_141bd0420(Unk_TaxiListPtr* out, unsigned hash);
+    Unk_TaxiListPtr FUN_141bd0420(unsigned hash);
     Unk_TaxiPlayer* FUN_141bd0cc0();
 };
 struct Unk_TaxiInfo { char m_pad[0xb8]; int m_nValue; };
@@ -125,7 +125,7 @@ float FUN_140af0d30(Unk_CameraManager* cam);
 struct Unk_TaxiCamMove { int m_nKind; int m_04; void* m_pad[16]; };
 void FUN_140aeffd0(Unk_CameraManager* cam, Unk_TaxiCamMove* out, float t, Unk_CameraSetting* setting);
 void FUN_140aed580(Unk_CameraManager* cam, Unk_TaxiCamMove* mv, int n, float fDuration);
-void FUN_140aed750(Unk_CameraManager* cam, int a, bool b);
+void FUN_140aed750(Unk_CameraManager* cam, int a, int b);
 void FUN_140947980(Unk_CameraManager* cam, int n);
 float FUN_14029cc60(float f);
 float FUN_14029dba0(float f);
@@ -175,8 +175,7 @@ void CAutoFindTaxiStation::FUN_1409f1240()
     bool bNone = FUN_1403ed2d0()->FUN_141bd30a0().FUN_140885340()->m_nValue == 0;
     if (bNone)
         return;
-    Unk_TaxiListPtr list;
-    FUN_1403ed2d0()->FUN_141bd0420(&list, 0x85359406);
+    Unk_TaxiListPtr list = FUN_1403ed2d0()->FUN_141bd0420(0x85359406);
     if (list == 0)
         return;
     if (list->IsEmpty())
@@ -212,19 +211,14 @@ void CAutoFindTaxiStation::FUN_1409f1450()
             {
                 if (!FUN_14085f730(FUN_1409f24a0(), DAT_143ab2870))
                 {
-                    Unk_TaxiListPtr list;
-    FUN_1403ed2d0()->FUN_141bd0420(&list, 0x85359406);
+                    Unk_TaxiListPtr list = FUN_1403ed2d0()->FUN_141bd0420(0x85359406);
                     if (list.get() != 0)
                     {
                         for (POSITION pos = list->GetHeadPosition(); pos != 0; list->GetNext(pos))
                         {
                             ent.FUN_1408a7ed0(list->GetAt(pos));
                             Unk_CameraSetting setting;
-                            if (FUN_140aed440(Unk_CameraManager::FUN_1409478c0(), &setting) == 0)
-                            {
-                                SendRequestTaxiMode5();
-                            }
-                            else
+                            if (FUN_140aed440(Unk_CameraManager::FUN_1409478c0(), &setting) != 0)
                             {
                                 Vector3 base;
                                 ent.FUN_1408a9280()->FUN_1409618c0(0xfd95ca52, &base);
@@ -236,16 +230,21 @@ void CAutoFindTaxiStation::FUN_1409f1450()
                                 float z = fDist * FUN_1409f2310(fPitch) + base.z;
                                 Vector3 delta = setting.m_c.FUN_140965c40(Vector3(x, y, z));
                                 setting.m_c = Vector3(x, y, z);
-                                float fLen = delta.FUN_140967ac0();
+                                float fTime = delta.FUN_140967ac0() * 0.8f;
+                                float fSec = fTime / 1000.0f;
                                 Unk_TaxiCamMove mv;
-                                FUN_140aeffd0(Unk_CameraManager::FUN_1409478c0(), &mv, (fLen * 0.8) / 1000.0, &setting);
+                                FUN_140aeffd0(Unk_CameraManager::FUN_1409478c0(), &mv, fSec, &setting);
                                 mv.m_nKind = 2;
                                 FUN_140aed580(Unk_CameraManager::FUN_1409478c0(), &mv, 1, 1.0f);
-                                FUN_140aed750(Unk_CameraManager::FUN_1409478c0(), 4, false);
-                                FUN_140ca7230(FUN_1409f24b0(), (unsigned)(long long)(fLen * 0.8),
+                                FUN_140aed750(Unk_CameraManager::FUN_1409478c0(), 4, 0);
+                                FUN_140ca7230(FUN_1409f24b0(), (unsigned)(long long)fTime,
                                               Unk_TaxiCallback(this, &CAutoFindTaxiStation::SendRequestTaxiMode5));
                                 if (player != 0)
                                     FUN_14166cce0(player, 0x100);
+                            }
+                            else
+                            {
+                                SendRequestTaxiMode5();
                             }
                             ent.FUN_1408a8720();
                         }
@@ -271,27 +270,30 @@ void CAutoFindTaxiStation::SendRequestTaxiMode5()
     COutPacket packet(static_cast<int>(SendOp::RequestTaxi), 0);
     packet.WriteUInt8(5);
     FUN_140710590(&packet);
-    FUN_140ca7230(FUN_1409f24b0(), 5000, Unk_TaxiCallback(this, &CAutoFindTaxiStation::FUN_1409f1a00));
+    int nDelay = 5000;
+    FUN_140ca7230(FUN_1409f24b0(), nDelay, Unk_TaxiCallback(this, &CAutoFindTaxiStation::FUN_1409f1a00));
 }
 
 // @0x1409f1970
 void CAutoFindTaxiStation::FUN_1409f1970()
 {
-    if (m_nActive == 0 || m_nDone != 0)
-        return;
-    FUN_140ca7230(FUN_1409f24b0(), 0x5dc, Unk_TaxiCallback(this, &CAutoFindTaxiStation::FUN_1409f1af0));
+    if (m_nActive != 0 && m_nDone == 0)
+        FUN_140ca7230(FUN_1409f24b0(), 0x5dc, Unk_TaxiCallback(this, &CAutoFindTaxiStation::FUN_1409f1af0));
 }
 
 // @0x1409f1a00
 void CAutoFindTaxiStation::FUN_1409f1a00()
 {
-    if (m_nActive == 0 || m_nDone != 0)
+    if (m_nActive == 0)
         return;
-    if (FUN_140408410(&DAT_143ab3078, &DAT_143ab2870) >= 0)
+    if (m_nDone != 0)
         return;
-    m_nDone = 1;
-    FUN_140947980(Unk_CameraManager::FUN_1409478c0(), 2);
-    FUN_1409f1a70();
+    if (FUN_140408410(&DAT_143ab3078, &DAT_143ab2870) < 0)
+    {
+        m_nDone = 1;
+        FUN_140947980(Unk_CameraManager::FUN_1409478c0(), 2);
+        FUN_1409f1a70();
+    }
 }
 
 // @0x1409f1a70
@@ -312,25 +314,23 @@ void CAutoFindTaxiStation::FUN_1409f1a70()
 void CAutoFindTaxiStation::FUN_1409f1af0()
 {
     Unk_CameraSetting setting;
-    if (FUN_140aed440(Unk_CameraManager::FUN_1409478c0(), &setting) == 0)
+    if (FUN_140aed440(Unk_CameraManager::FUN_1409478c0(), &setting) != 0)
     {
-        FUN_140947980(Unk_CameraManager::FUN_1409478c0(), 2);
-        FUN_1409f1a70();
+        Vector3 delta = setting.m_c.FUN_140965c40(Unk_CameraManager::FUN_1409478c0()->FUN_140af24f0()->FUN_1409f2540());
+        float fLen = delta.FUN_140967ac0() * 0.5f;
+        setting.m_c = Unk_CameraManager::FUN_1409478c0()->FUN_140af24f0()->FUN_1409f2540();
+        Unk_TaxiCamMove mv;
+        FUN_140aeffd0(Unk_CameraManager::FUN_1409478c0(), &mv, fLen / 1000.0f, &setting);
+        mv.m_nKind = 2;
+        FUN_140aed580(Unk_CameraManager::FUN_1409478c0(), &mv, 1, 1.0f);
+        FUN_140aed750(Unk_CameraManager::FUN_1409478c0(), 2, 1);
+        FUN_140ca7230(FUN_1409f24b0(), (unsigned)fLen,
+                      Unk_TaxiCallback(this, &CAutoFindTaxiStation::FUN_1409f1a70));
     }
     else
     {
-        CCameraMode* pMode = Unk_CameraManager::FUN_1409478c0()->FUN_140af24f0();
-        Vector3 delta = setting.m_c.FUN_140965c40(pMode->FUN_1409f2540());
-        float fLen = delta.FUN_140967ac0();
-        pMode = Unk_CameraManager::FUN_1409478c0()->FUN_140af24f0();
-        setting.m_c = pMode->FUN_1409f2540();
-        Unk_TaxiCamMove mv;
-        FUN_140aeffd0(Unk_CameraManager::FUN_1409478c0(), &mv, (fLen * 0.5) / 1000.0, &setting);
-        mv.m_nKind = 2;
-        FUN_140aed580(Unk_CameraManager::FUN_1409478c0(), &mv, 1, 1.0f);
-        FUN_140aed750(Unk_CameraManager::FUN_1409478c0(), 2, true);
-        FUN_140ca7230(FUN_1409f24b0(), (unsigned)(long long)(fLen * 0.5),
-                      Unk_TaxiCallback(this, &CAutoFindTaxiStation::FUN_1409f1a70));
+        FUN_140947980(Unk_CameraManager::FUN_1409478c0(), 2);
+        FUN_1409f1a70();
     }
 }
 
@@ -339,16 +339,7 @@ int CAutoFindTaxiStation::FUN_1409f1cb0()
 {
     if (m_nDone == 0)
     {
-        if (m_nActive == 0)
-        {
-            if (m_nPending != 0 && m_nPaused == 0)
-            {
-                FUN_1409f1240();
-                m_nPending = 0;
-                return 0;
-            }
-        }
-        else
+        if (m_nActive != 0)
         {
             if (FUN_14116d840(FUN_14025e7c0()))
             {
@@ -364,6 +355,15 @@ int CAutoFindTaxiStation::FUN_1409f1cb0()
                 }
                 FUN_1409f1a00();
                 return 1;
+            }
+        }
+        else
+        {
+            if (m_nPending != 0 && m_nPaused == 0)
+            {
+                FUN_1409f1240();
+                m_nPending = 0;
+                return 0;
             }
         }
     }

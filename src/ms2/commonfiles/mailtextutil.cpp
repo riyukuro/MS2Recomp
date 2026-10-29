@@ -212,7 +212,7 @@ bool MailText::LoadTitle(const CStringW& text) {
     TiXmlDocument document;
     if (!GetFileSystem()->FUN_140397ab0(&document, text)) return false;
     void* root = FUN_140165cf0(&document, "ms2"); if (!root) return false;
-    void* title = FUN_140165cf0(root, "title"); if (!title) return false;
+    void* title = FUN_140165cf0(root, "v"); if (!title) return false;
     bool loaded = m_title.Load(title);
     if (!loaded) MS2_ASSERT_AT(0x1e6, FALSE);
     return true;
@@ -224,9 +224,9 @@ bool MailText::LoadBody(const CStringW& text) {
     TiXmlDocument document;
     if (!GetFileSystem()->FUN_140397ab0(&document, text)) return false;
     void* root = FUN_140165cf0(&document, "ms2"); if (!root) return false;
-    void* firstChild = FUN_140165cf0(root, "body");
+    void* firstChild = FUN_140165cf0(root, "v");
     if (!firstChild) return false;
-    for (void* child = firstChild; child; child = FUN_140168650(child, "body")) {
+    for (void* child = firstChild; child; child = FUN_140168650(child, "v")) {
         MailTextParagraph paragraph;
         bool loaded = paragraph.Load(child);
         m_paragraphs.Add(paragraph);

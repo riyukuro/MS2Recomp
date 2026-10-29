@@ -32,7 +32,7 @@ public:
     CFeatureTable();                        // 0x14036eef0
 
     bool Init();                            // 0x1403687f0 fills the name -> id map, false when the count is not 279
-    void FUN_14036b9e0();                   // runs the map destructor (never called)
+    void FUN_14036b9e0();                   // empties the map with RemoveAll (never called)
     static CFeatureTable* FUN_14036f550();  // the instance (created when missing)
     static void FUN_14036f750();            // deletes the instance
 

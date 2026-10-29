@@ -335,12 +335,6 @@ UIDungeonSearchPage::UIDungeonSearchPage(int nPage)
 {
 }
 
-// MS2-FUNCTIONAL: behaviour-equivalent; the exe body does not store the vftable pointer (the COMDAT destroys members only)
-// @0x140e1ee20
-UIDungeonSearchPage::~UIDungeonSearchPage()
-{
-}
-
 // @0x140e18790
 bool UIDungeonSearchPage::Init(MS2Ptr<ASMovieClip> root)
 {
@@ -493,7 +487,6 @@ void UIDungeonSearchPage::FUN_140e19770()
 }
 MS2_REPLACE_METHOD(0x140e19770, UIDungeonSearchPage, FUN_140e19770, 570, 0x3A42B720);
 
-// MS2-FUNCTIONAL: behaviour-equivalent; the exe keeps an extra 16-byte temporary in the room loop (frame 0x78 vs 0x68)
 // @0x140e199b0
 void UIDungeonSearchPage::FUN_140e199b0(Unk_DsRoomVec& out)
 {
@@ -513,8 +506,7 @@ void UIDungeonSearchPage::FUN_140e199b0(Unk_DsRoomVec& out)
     Unk_DsRoomVec rooms;
     FUN_14031c2a0()->FUN_140320da0(nLevelMin, nLevelMax, rooms);
     for (unsigned i = 0; i < rooms.size(); ++i) {
-        int nId = rooms[i]->FUN_14031ddd0();
-        if (!FUN_14162ac70(FUN_1409670d0(), nId))
+        if (!FUN_14162ac70(FUN_1409670d0(), rooms[i]->FUN_14031ddd0()))
             continue;
         if (rooms[i]->m_bHidden)
             continue;

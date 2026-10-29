@@ -110,7 +110,6 @@ CString FUN_140651350();
 CString FUN_1411c0aa0(const char* pszPath);
 class Unk_DebugGuideWorld { public: CStringW FUN_141bd0d30(); };
 Unk_DebugGuideWorld* FUN_1403ed2d0();
-bool FUN_140164830(const CStringW& a, const CStringW& b);
 void* FUN_140a3ab70(int nUiType);
 void FUN_141a25770(void* pChat, CStringW strText, int n);
 void FUN_1412751b0(const CStringW& str, int n);
@@ -288,21 +287,20 @@ void UIDebugGuideDialog::vfunc_26()
 }
 
 // @0x141287bf0
-// MS2-FUNCTIONAL: control flow follows the exe; the key is read through an extra register copy.
 int UIDebugGuideDialog::vfunc_13()
 {
     if (UIDialog::vfunc_13())
         return 1;
     for (int i = 0; i < 10; i++)
     {
-        if (FUN_14025e7c0()->FUN_14116d9c0(i + 0x3b, true, 0) && PrintCommand(i))
+        int nKey = i + 0x3b;
+        if (FUN_14025e7c0()->FUN_14116d9c0(nKey, true, 0) && PrintCommand(i))
             return 1;
     }
     return 0;
 }
 
 // @0x141287c80
-// MS2-FUNCTIONAL: control flow follows the exe; the two loop-read string locals sit in swapped stack slots.
 void UIDebugGuideDialog::OnPacket(CInPacket& iPacket)
 {
     int nType = iPacket.ReadUInt8();
@@ -312,10 +310,10 @@ void UIDebugGuideDialog::OnPacket(CInPacket& iPacket)
         int nCount = iPacket.ReadInt32();
         for (int i = 0; i < nCount; i++)
         {
-            CStringW strDesc = iPacket.ReadUnicodeString();
-            CStringW strName = iPacket.ReadUnicodeString();
-            PrintLine(CStringW(strName), CStringW(strDesc));
-            FUN_1412751b0(FUN_1406564a0(L"{0}님이 {1} {2} 커맨드 실행", strHeader, strDesc, strName), 20);
+            CStringW strCmd = iPacket.ReadUnicodeString();
+            CStringW strArg = iPacket.ReadUnicodeString();
+            PrintLine(CStringW(strCmd), CStringW(strArg));
+            FUN_1412751b0(FUN_1406564a0(L"{0}님이 {1} {2} 커맨드 실행", strHeader, strCmd, strArg), 20);
         }
     }
 }
@@ -352,39 +350,24 @@ void UIDebugGuideDialog::OnDoubleClick(const Scaleform::GFx::FunctionHandler::Pa
 }
 
 // @0x141287fc0
-// MS2-FUNCTIONAL: control flow follows the exe; the exe keeps the load result in an int local and destroys the group temporaries in a different order.
 void UIDebugGuideDialog::LoadXml(CString strPath)
 {
-    bool bTemp = false;
     TiXmlDocument doc;
-    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 1, true, false) != 0)
+    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 1, true, false) == 0)
+        return;
+    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+    if (pRoot == 0)
     {
-        Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
-        if (pRoot == 0)
-        {
-            FUN_14015eb90(FUN_140166440(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
-        }
-        else
-        {
-            for (Unk_140165cf0* pElem = pRoot->FUN_140165cf0("Group"); pElem != 0; pElem = pElem->FUN_140168650("Group"))
-            {
-                Unk_DebugGuideGroup group(pElem);
-                bool bSkip;
-                if (group.m_strCharOnly.IsEmpty())
-                {
-                    bSkip = false;
-                }
-                else
-                {
-                    bTemp = true;
-                    bSkip = !FUN_140164830(FUN_1403ed2d0()->FUN_141bd0d30(), group.m_strCharOnly);
-                }
-                if (bTemp)
-                    bTemp = false;
-                if (!bSkip)
-                    m_groups.push_back(group);
-            }
-        }
+        FUN_14015eb90(FUN_140166440(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
+        return;
+    }
+    for (Unk_140165cf0* pElem = pRoot->FUN_140165cf0("Group"); pElem != 0; pElem = pElem->FUN_140168650("Group"))
+    {
+        Unk_DebugGuideGroup group(pElem);
+        bool bSkip = !group.m_strCharOnly.IsEmpty() && FUN_1403ed2d0()->FUN_141bd0d30() != group.m_strCharOnly;
+        if (bSkip)
+            continue;
+        m_groups.push_back(group);
     }
 }
 
@@ -401,111 +384,99 @@ void UIDebugGuideDialog::FillGroups()
 }
 
 // @0x141288320
-// MS2-FUNCTIONAL: control flow follows the exe; temporaries differ.
 void UIDebugGuideDialog::FillCommands()
 {
-    if (!m_groups.empty())
+    if (m_groups.empty())
+        return;
+    int nGroup = m_leftList->FUN_1422dccd0();
+    if (nGroup >= (int)m_groups.size())
+        return;
+    m_rightList->FUN_1422dd1d0();
+    Unk_DebugGuideGroup& rGroup = m_groups[nGroup];
+    for (unsigned int i = 0; i < rGroup.m_commands.size(); i++)
     {
-        int nGroup = m_leftList->FUN_1422dccd0();
-        if (nGroup < (int)m_groups.size())
+        CStringW strPrefix;
+        if (i < 10)
         {
-            m_rightList->FUN_1422dd1d0();
-            Unk_DebugGuideGroup& rGroup = m_groups[nGroup];
-            for (unsigned int i = 0; i < rGroup.m_commands.size(); i++)
-            {
-                CStringW strPrefix;
-                if (i < 10)
-                {
-                    int nKey = i + 1;
-                    strPrefix = FUN_140292a70(L"F{0}] ", nKey);
-                }
-                m_rightList->FUN_1422dd310(FUN_140656190(L"{0}{1}", strPrefix, rGroup.m_commands[i].m_strName));
-            }
-            if (!rGroup.m_commands.empty())
-                m_rightList->FUN_1422dcca0(0);
-            m_rightList->vfunc_24(true);
+            int nKey = i + 1;
+            strPrefix = FUN_140292a70(L"F{0}] ", nKey);
         }
+        m_rightList->FUN_1422dd310(FUN_140656190(L"{0}{1}", strPrefix, rGroup.m_commands[i].m_strName));
     }
+    if (!rGroup.m_commands.empty())
+        m_rightList->FUN_1422dcca0(0);
+    m_rightList->vfunc_24(true);
 }
 
 // @0x141288570
-// MS2-FUNCTIONAL: control flow follows the exe; temporaries differ.
 void UIDebugGuideDialog::ShowExplain()
 {
     int nGroup = m_leftList->FUN_1422dccd0();
-    if (nGroup < (int)m_groups.size())
-    {
-        int nCommand = m_rightList->FUN_1422dccd0();
-        if (nCommand < (int)m_groups[nGroup].m_commands.size())
-        {
-            CStringW strText = m_groups[nGroup].m_commands[nCommand].m_strDesc;
-            strText.Replace(L"\\n", L"\n");
-            FUN_140cfee80(FUN_1422dbc00(), "explainText", strText);
-        }
-    }
+    if (nGroup >= (int)m_groups.size())
+        return;
+    int nCommand = m_rightList->FUN_1422dccd0();
+    if (nCommand >= (int)m_groups[nGroup].m_commands.size())
+        return;
+    Unk_DebugGuideCommand& rCommand = m_groups[nGroup].m_commands[nCommand];
+    CStringW strText = rCommand.m_strDesc.IsEmpty() ? rCommand.m_strName : rCommand.m_strDesc;
+    strText.Replace(L"\\n", L"\n");
+    FUN_140cfee80(FUN_1422dbc00(), "explainText", strText);
 }
 
 // @0x141288770
-// MS2-FUNCTIONAL: control flow follows the exe; temporaries differ.
 bool UIDebugGuideDialog::PrintCommand(int nIndex)
 {
     int nGroup = m_leftList->FUN_1422dccd0();
-    if (nGroup < (int)m_groups.size())
+    if (nGroup >= (int)m_groups.size())
+        return false;
+    int nCommand = nIndex;
+    if (nCommand < 0)
+        nCommand = m_rightList->FUN_1422dccd0();
+    if (nCommand >= (int)m_groups[nGroup].m_commands.size())
+        return false;
+    Unk_DebugGuideCommand& rCommand = m_groups[nGroup].m_commands[nCommand];
+    void* pChat = FUN_140a3ab70(0x4e61);
+    if (pChat != 0)
     {
-        int nCommand = nIndex;
-        if (nCommand < 0)
-            nCommand = m_rightList->FUN_1422dccd0();
-        if (nCommand < (int)m_groups[nGroup].m_commands.size())
+        for (int i = 0; i < (int)rCommand.m_args.size(); i++)
         {
-            Unk_DebugGuideCommand& rCommand = m_groups[nGroup].m_commands[nCommand];
-            if (FUN_140a3ab70(0x4e61) != 0)
-            {
-                for (int i = 0; i < (int)rCommand.m_args.size(); i++)
-                {
-                    Unk_DebugGuideArg& rArg = rCommand.m_args[i];
-                    if (!rArg.m_bUseArg)
-                        PrintLine(rArg.m_strCmd, L"");
-                    else
-                        PrintLine(rArg.m_strCmd, m_input->FUN_1422e0b00().Trim());
-                }
-            }
-            return true;
+            Unk_DebugGuideArg& rArg = rCommand.m_args[i];
+            if (!rArg.m_bUseArg)
+                PrintLine(rArg.m_strCmd, L"");
+            else if (rArg.m_bUseArg)
+                PrintLine(rArg.m_strCmd, m_input->FUN_1422e0b00().Trim());
         }
     }
-    return false;
+    return true;
 }
 
 // @0x141288a70
-// MS2-FUNCTIONAL: control flow follows the exe; temporaries differ.
 bool UIDebugGuideDialog::SendCommand(int nIndex)
 {
     int nGroup = m_leftList->FUN_1422dccd0();
-    if (nGroup < (int)m_groups.size())
+    if (nGroup >= (int)m_groups.size())
+        return false;
+    int nCommand = nIndex;
+    if (nCommand < 0)
+        nCommand = m_rightList->FUN_1422dccd0();
+    if (nCommand >= (int)m_groups[nGroup].m_commands.size())
+        return false;
+    Unk_DebugGuideCommand& rCommand = m_groups[nGroup].m_commands[nCommand];
+    unsigned __int64 nCount = rCommand.m_args.size();
+    COutPacket pkt(static_cast<int>(SendOp::SetDebugMode), 0);
+    pkt.WriteUInt8(7);
+    pkt.WriteInt32((int)nCount);
+    for (unsigned __int64 i = 0; i < nCount; i++)
     {
-        int nCommand = nIndex;
-        if (nCommand < 0)
-            nCommand = m_rightList->FUN_1422dccd0();
-        if (nCommand < (int)m_groups[nGroup].m_commands.size())
-        {
-            Unk_DebugGuideCommand& rCommand = m_groups[nGroup].m_commands[nCommand];
-            unsigned __int64 nCount = rCommand.m_args.size();
-            COutPacket pkt(static_cast<int>(SendOp::SetDebugMode), 0);
-            pkt.WriteUInt8(7);
-            pkt.WriteInt32((int)nCount);
-            for (unsigned __int64 i = 0; i < nCount; i++)
-            {
-                Unk_DebugGuideArg& rArg = rCommand.m_args[i];
-                pkt.WriteUnicodeString(rArg.m_strCmd);
-                if (!rArg.m_bUseArg)
-                    pkt.WriteUnicodeString(CStringW(L""));
-                else
-                    pkt.WriteUnicodeString(m_input->FUN_1422e0b00().Trim());
-            }
-            FUN_140710590(&pkt);
-            return true;
-        }
+        Unk_DebugGuideArg& rArg = rCommand.m_args[i];
+        pkt.WriteUnicodeString(rArg.m_strCmd);
+        if (!rArg.m_bUseArg)
+            pkt.WriteUnicodeString(L"");
+        else
+            pkt.WriteUnicodeString(m_input->FUN_1422e0b00().Trim());
     }
-    return false;
+    FUN_140710590(&pkt);
+    return true;
 }
 
 // @0x141288d00

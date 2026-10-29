@@ -29,7 +29,7 @@ public:
     {
     public:
         Slot(const CString& strName, int nIndex, MS2Ptr<CItem> spItem);     // 0x140f24e40
-        virtual ~Slot();                                // 0x140f26450
+        // ~Slot implicit (0x140f26450, no vftable store)
 
         // slots 2-4: GetClassDesc 0x140f26630, TypeCast 0x140f26730 / 0x140f26780; ms_ClassInfo 0x143ac9880,
         // SetupClassInfo 0x140f26670 (parent MS2DragSlot, id 0x620006d).
@@ -47,7 +47,7 @@ public:
     {
     public:
         SlotBag(const CString& strName, int nNpcId);    // 0x140f251c0
-        virtual ~SlotBag();                             // 0x140f26480
+        // ~SlotBag implicit (0x140f26480, no vftable store)
 
         // slots 2-4: GetClassDesc 0x140f26640, TypeCast 0x140f267d0 / 0x140f26820; ms_ClassInfo 0x143ac9c90,
         // SetupClassInfo 0x140f266d0 (parent DragSlotBag, id 0x620006e).
@@ -64,7 +64,7 @@ public:
     };
 
     UIBossRewardPreviewDialog();                                    // 0x140f255e0
-    virtual ~UIBossRewardPreviewDialog();                           //  0 0x140f264b0 (??_G 0x140f265f0)
+    // ~UIBossRewardPreviewDialog implicit (0 0x140f264b0, ??_G 0x140f265f0; no vftable store)
     virtual CString GetTypeName();                                      //  1 0x140f256b0 "BossRewardPreviewDialog"
     virtual void OnLoadComplete();                                  // 22 0x140f257a0 bind the title / exp / meso rows
     virtual int vfunc_48() { return 0x4efb; }                       // 48 0x140f26660

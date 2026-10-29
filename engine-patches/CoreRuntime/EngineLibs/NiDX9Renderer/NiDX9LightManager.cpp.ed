@@ -1,0 +1,6 @@
+325c
+            case NiVertexColorProperty::SOURCE_AMB: m_pkRenderState->SetRenderState(D3DRS_EMISSIVEMATERIALSOURCE, D3DMCS_MATERIAL); m_pkRenderState->SetRenderState(D3DRS_AMBIENTMATERIALSOURCE, D3DMCS_COLOR1); m_pkRenderState->SetRenderState(D3DRS_DIFFUSEMATERIALSOURCE, D3DMCS_MATERIAL); break; }   // MS2: the game's fourth vertex-color source mode, ambient only from the vertex color (game 0x1427d7a30)
+.
+273c
+        case NiVertexColorProperty::SOURCE_AMB_DIFF: case NiVertexColorProperty::SOURCE_AMB:   // MS2: game 0x1427d7a30
+.

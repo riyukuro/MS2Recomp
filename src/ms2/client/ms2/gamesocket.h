@@ -89,11 +89,12 @@ public:
     CLockCriticalSection m_lock;
     ATL::CAtlList<Unk_SocketCommand> m_commands;
     ATL::CAtlMap<HANDLE,CSimpleSocket*> m_sockets;
-    int m_quit;
+    volatile int m_quit;
 };
 MS2_CHECK_SIZE(CSocketThread,0x100);
 MS2_CHECK_OFFSET(CSocketThread,m_events,0x30);
 MS2_CHECK_OFFSET(CSocketThread,m_sockets,0xb0);
+enum class Unk_SocketState : int { Connecting=0,Connected=1,Closed=2 };
 class CGameSocket : public ISocketCallBack {
 public:
     CGameSocket(); ~CGameSocket();
@@ -114,7 +115,7 @@ private:
     friend class CNetworkService;   // its logger getters test and use m_logger directly
     CSimpleSocket m_socket;
     CLockCriticalSection m_lock,m_sendLock;
-    int m_state;
+    Unk_SocketState m_state;
     Unk_BufferPtr m_receiveBuffer;
     int m_received;
     ATL::CAtlList<Unk_InPtr> m_packets;

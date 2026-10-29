@@ -29,6 +29,7 @@ class Unk_CustomizeCopy
 {
 public:
     ~Unk_CustomizeCopy();                                         // 0x1401bfde0
+    CItem* FUN_1401c0180();                                       // 0x1401c0180 operator->
 private:
     void* m_pad;
     void* m_p;
@@ -47,14 +48,18 @@ private:
     void* m_pad;
     void* m_p;
 };
-void FUN_141655e10(AvatarPC* pAvatar, void* pOut, int nSlot);     // 0x141655e10
-void FUN_141655c90(AvatarPC* pAvatar, void* pOut, int nSlot);     // 0x141655c90
-void FUN_141655cf0(AvatarPC* pAvatar, void* pOut, int nSlot);     // 0x141655cf0
-char FUN_1409edd90(void* pHandle, int n);                         // 0x1409edd90
-CEquipItem* FUN_1411dc7a0(void* pEquip, void* pOut);              // 0x1411dc7a0 (returns pOut)
-void* FUN_1401c0180(void* pSp);                                   // 0x1401c0180 operator->
+// The avatar's equip-slot getters return a handle by value (rcx = avatar, rdx = result, r8d = slot).
+struct Unk_CzAvatarView
+{
+    Unk_CustomizeHandle FUN_141655e10(int nSlot);
+    Unk_CustomizeHandle FUN_141655c90(int nSlot);
+    Unk_CustomizeHandle FUN_141655cf0(int nSlot);
+};
+// The equipped item returns a copy of its item pointer by value.
+struct Unk_CzEquipView { Unk_CustomizeCopy FUN_1411dc7a0(); };
+bool FUN_1409edd90(void* pHandle, int n);                         // 0x1409edd90
 void* FUN_1411dc7f0(void* pEquip);                                // 0x1411dc7f0
-class Unk_ContentSwitch { public: char FUN_14036d570(int nFeature); };
+class Unk_ContentSwitch { public: bool FUN_14036d570(int nFeature); };
 Unk_ContentSwitch* FUN_140166410();
 
 int FUN_141420b30(CItemData* pData, AvatarPC* pAvatar);
@@ -73,7 +78,6 @@ int FUN_141420a70(CItem* pItem, AvatarPC* pAvatar)
     return nId;
 }
 
-// MS2-FUNCTIONAL: frame is 0x10 smaller (stack slot layout of the handle locals); branch structure matches
 // @0x141420b30
 int FUN_141420b30(CItemData* pData, AvatarPC* pAvatar)
 {
@@ -90,16 +94,12 @@ int FUN_141420b30(CItemData* pData, AvatarPC* pAvatar)
     {
         if (pData->FUN_14053cf90())
         {
-            Unk_CustomizeHandle a4;
-            Unk_CustomizeHandle a5;
-            FUN_141655c90(pAvatar, &a4, 4);
-            FUN_141655c90(pAvatar, &a5, 5);
+            Unk_CustomizeHandle a4 = reinterpret_cast<Unk_CzAvatarView*>(pAvatar)->FUN_141655c90(4);
+            Unk_CustomizeHandle a5 = reinterpret_cast<Unk_CzAvatarView*>(pAvatar)->FUN_141655c90(5);
             if ((bool)a5.FUN_1405a8e70() && (bool)a4.FUN_1405a8e70())
             {
-                Unk_CustomizeHandle b4;
-                Unk_CustomizeHandle b5;
-                FUN_141655cf0(pAvatar, &b4, 4);
-                FUN_141655cf0(pAvatar, &b5, 5);
+                Unk_CustomizeHandle b4 = reinterpret_cast<Unk_CzAvatarView*>(pAvatar)->FUN_141655cf0(4);
+                Unk_CustomizeHandle b5 = reinterpret_cast<Unk_CzAvatarView*>(pAvatar)->FUN_141655cf0(5);
                 if (FUN_1409edd90(&b5, 0))
                     nResult = 5;
                 else if (FUN_1409edd90(&b4, 0))
@@ -118,10 +118,8 @@ int FUN_141420b30(CItemData* pData, AvatarPC* pAvatar)
         }
         else
         {
-            Unk_CustomizeHandle h4;
-            Unk_CustomizeHandle h5;
-            FUN_141655e10(pAvatar, &h4, 4);
-            FUN_141655e10(pAvatar, &h5, 5);
+            Unk_CustomizeHandle h4 = reinterpret_cast<Unk_CzAvatarView*>(pAvatar)->FUN_141655e10(4);
+            Unk_CustomizeHandle h5 = reinterpret_cast<Unk_CzAvatarView*>(pAvatar)->FUN_141655e10(5);
             if (h5.FUN_1405a8e70())
             {
                 if (reinterpret_cast<CItemData*>(FUN_1411dc7f0(h5.FUN_1405a8ed0()))->FUN_14053d460())
@@ -133,13 +131,8 @@ int FUN_141420b30(CItemData* pData, AvatarPC* pAvatar)
                     nResult = 5;
                     if (FUN_140166410()->FUN_14036d570(0xda))
                     {
-                        Unk_CustomizeCopy c5;
-                        Unk_CustomizeCopy c4;
-                        CItem* p5 = (CItem*)FUN_1401c0180(FUN_1411dc7a0(h5.FUN_1405a8ed0(), &c5));
-                        int n5 = p5->FUN_140529070();
-                        CItem* p4 = (CItem*)FUN_1401c0180(FUN_1411dc7a0(h4.FUN_1405a8ed0(), &c4));
-                        int n4 = p4->FUN_140529070();
-                        if (n4 < n5)
+                        if (reinterpret_cast<Unk_CzEquipView*>(h5.FUN_1405a8ed0())->FUN_1411dc7a0().FUN_1401c0180()->FUN_140529070()
+                            > reinterpret_cast<Unk_CzEquipView*>(h4.FUN_1405a8ed0())->FUN_1411dc7a0().FUN_1401c0180()->FUN_140529070())
                             nResult = 4;
                     }
                 }

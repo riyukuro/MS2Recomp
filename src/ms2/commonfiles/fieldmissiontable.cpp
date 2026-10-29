@@ -82,53 +82,43 @@ CFieldMissionTable::~CFieldMissionTable()
 }
 
 // @0x14037c010
-// MS2-FUNCTIONAL: the exe builds the file/dir CString temps and the path in place with early destruction (as in chapterbooktable); no source form found
 int CFieldMissionTable::Load()
 {
-    CString strPath = FUN_14071a5b0(CString("Table"), CString("fieldMission.xml"));
+    CString strPath = FUN_14071a5b0("Table", "fieldMission.xml");
     TiXmlDocument doc;
-    const char* pszPath = strPath;
-    if (GetFileSystem()->FUN_1403974b0(&doc, pszPath, 0, true, false) == 0)
+    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+        return 0;
+    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+    if (pRoot == 0)
     {
+        FUN_140166440()->FUN_14015eb90(1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return 0;
     }
-    else
+    for (Unk_140165cf0* pRound = pRoot->FUN_140165cf0("round"); pRound != 0; pRound = pRound->FUN_140168650("round"))
     {
-        Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
-        if (pRoot == 0)
+        RewardPtr spReward(new CFieldMissionReward);
+        int nRound = 0;
+        FUN_1408731e0(pRound, "mission", nRound);
+        FUN_14037cb70(pRound, "type", &spReward->m_nType);
+        if (spReward->m_nType == 1)
         {
-            FUN_140166440()->FUN_14015eb90(1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
-            return 0;
+            CStringW strValue;
+            FUN_140873420(pRound, "value", strValue);
+            spReward->m_item.vfunc_1(CStringW(strValue));
         }
         else
         {
-            for (Unk_140165cf0* pRound = pRoot->FUN_140165cf0("round"); pRound != 0; pRound = pRound->FUN_140168650("round"))
-            {
-                RewardPtr spReward(new CFieldMissionReward);
-                int nRound = 0;
-                FUN_1408731e0(pRound, "mission", nRound);
-                FUN_14037cb70(pRound, "type", &spReward->m_nType);
-                if (spReward->m_nType == 1)
-                {
-                    CStringW strValue;
-                    FUN_140873420(pRound, "value", strValue);
-                    spReward->m_item.vfunc_1(CStringW(strValue));
-                }
-                else
-                {
-                    FUN_1408731e0(pRound, "value", spReward->m_nValue);
-                    int nSubJob = 0;
-                    FUN_1408731e0(pRound, "subJobLevel", nSubJob);
-                    if (nSubJob == 0)
-                        spReward->m_nSubJob = Unk_SubJobLevel_1;
-                    else if (nSubJob == 1)
-                        spReward->m_nSubJob = Unk_SubJobLevel_2;
-                }
-                m_rewards.SetAt(nRound, spReward);
-            }
-            return 1;
+            FUN_1408731e0(pRound, "value", spReward->m_nValue);
+            int nSubJob = 0;
+            FUN_1408731e0(pRound, "subJobLevel", nSubJob);
+            if (nSubJob == 0)
+                spReward->m_nSubJob = Unk_SubJobLevel_1;
+            else if (nSubJob == 1)
+                spReward->m_nSubJob = Unk_SubJobLevel_2;
         }
+        m_rewards.SetAt(nRound, spReward);
     }
+    return 1;
 }
 
 // @0x14037c3d0
@@ -140,106 +130,89 @@ CFieldMissionTable::RewardPtr CFieldMissionTable::GetReward(int nRound)
 }
 
 // @0x14037c450
-// MS2-FUNCTIONAL: CRBMap iteration/lookup compiles to different inlined glue/reg allocation than the exe; permuter lane
 int CFieldMissionTable::GetPrevRound(int nRound)
 {
-    POSITION pos = m_rewards.GetHeadPosition();
-    while (true)
+    for (POSITION pos = m_rewards.GetHeadPosition(); pos != 0; m_rewards.GetNext(pos))
     {
-        if (pos == 0)
-            return 0;
-        if (m_rewards.GetKeyAt(pos) == nRound)
-            break;
-        m_rewards.GetNext(pos);
+        int nKey = m_rewards.GetKeyAt(pos);
+        if (nKey == nRound)
+        {
+            m_rewards.GetPrev(pos);
+            if (pos == 0)
+                return 0;
+            return m_rewards.GetKeyAt(pos);
+        }
     }
-    m_rewards.GetPrev(pos);
-    if (pos == 0)
-        return 0;
-    return m_rewards.GetKeyAt(pos);
+    return 0;
 }
 
 // @0x14037c510
-// MS2-FUNCTIONAL: CRBMap iteration/lookup compiles to different inlined glue/reg allocation than the exe; permuter lane
 int CFieldMissionTable::GetNextRound(int nRound)
 {
-    POSITION pos = m_rewards.GetHeadPosition();
-    if (nRound == 0 && pos != 0)
-        return m_rewards.GetKeyAt(pos);
-    pos = m_rewards.GetHeadPosition();
-    while (true)
+    if (nRound == 0)
     {
-        if (pos == 0)
-            return 0;
-        if (m_rewards.GetKeyAt(pos) == nRound)
-            break;
-        m_rewards.GetNext(pos);
+        POSITION pos = m_rewards.GetHeadPosition();
+        if (pos != 0)
+            return m_rewards.GetKeyAt(pos);
     }
-    m_rewards.GetNext(pos);
-    if (pos == 0)
-        return 0;
-    return m_rewards.GetKeyAt(pos);
+    for (POSITION pos = m_rewards.GetHeadPosition(); pos != 0; m_rewards.GetNext(pos))
+    {
+        int nKey = m_rewards.GetKeyAt(pos);
+        if (nKey == nRound)
+        {
+            m_rewards.GetNext(pos);
+            if (pos == 0)
+                return 0;
+            return m_rewards.GetKeyAt(pos);
+        }
+    }
+    return 0;
 }
 
 // @0x14037c610
-// MS2-FUNCTIONAL: CRBMap iteration/lookup compiles to different inlined glue/reg allocation than the exe; permuter lane
 int CFieldMissionTable::GetMaxRound()
 {
     int nMax = 0;
-    POSITION pos = m_rewards.GetHeadPosition();
-    while (pos != 0)
+    for (POSITION pos = m_rewards.GetHeadPosition(); pos != 0; m_rewards.GetNext(pos))
     {
-        if (nMax < m_rewards.GetKeyAt(pos))
-            nMax = m_rewards.GetKeyAt(pos);
-        m_rewards.GetNext(pos);
+        int nKey = m_rewards.GetKeyAt(pos);
+        if (nKey > nMax)
+            nMax = nKey;
     }
     return nMax;
 }
 
 // @0x14037c6a0
-// MS2-FUNCTIONAL: CRBMap iteration/lookup compiles to different inlined glue/reg allocation than the exe; permuter lane
 void CFieldMissionTable::GetSkillPoints(int nRound, std::map<Unk_SubJobLevel, int>& rOut)
 {
-    if (nRound != 0)
+    if (nRound == 0)
+        return;
+    for (POSITION pos = m_rewards.GetHeadPosition(); pos != 0; m_rewards.GetNext(pos))
     {
-        POSITION pos = m_rewards.GetHeadPosition();
-        while (pos != 0)
+        int nKey = m_rewards.GetKeyAt(pos);
+        if (nKey <= nRound)
         {
-            if (m_rewards.GetKeyAt(pos) <= nRound)
-            {
-                RewardPtr spReward = m_rewards.GetValueAt(pos);
-                if (spReward->m_nType == 3)
-                {
-                    int& rnPoints = rOut[spReward->m_nSubJob];
-                    rnPoints += spReward->m_nValue;
-                }
-            }
-            m_rewards.GetNext(pos);
+            RewardPtr spReward = m_rewards.GetValueAt(pos);
+            if (spReward->m_nType == 3)
+                rOut[spReward->m_nSubJob] += spReward->m_nValue;
         }
     }
 }
 
 // @0x14037c7c0
-// MS2-FUNCTIONAL: CRBMap iteration/lookup compiles to different inlined glue/reg allocation than the exe; permuter lane
 int CFieldMissionTable::GetStatPoints(int nRound)
 {
-    int nSum;
     if (nRound == 0)
+        return 0;
+    int nSum = 0;
+    for (POSITION pos = m_rewards.GetHeadPosition(); pos != 0; m_rewards.GetNext(pos))
     {
-        nSum = 0;
-    }
-    else
-    {
-        nSum = 0;
-        POSITION pos = m_rewards.GetHeadPosition();
-        while (pos != 0)
+        int nKey = m_rewards.GetKeyAt(pos);
+        if (nKey <= nRound)
         {
-            if (m_rewards.GetKeyAt(pos) <= nRound)
-            {
-                RewardPtr spReward = m_rewards.GetValueAt(pos);
-                if (spReward->m_nType == 2)
-                    nSum = nSum + spReward->m_nValue;
-            }
-            m_rewards.GetNext(pos);
+            RewardPtr spReward = m_rewards.GetValueAt(pos);
+            if (spReward->m_nType == 2)
+                nSum = nSum + spReward->m_nValue;
         }
     }
     return nSum;

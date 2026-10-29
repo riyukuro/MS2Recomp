@@ -189,23 +189,23 @@ void UIBlueMarbleGameDialog::OnLoadInit()
 // @0x140f21850
 void UIBlueMarbleGameDialog::vfunc_79(void* p)
 {
-    CInPacket* pPacket = static_cast<CInPacket*>(p);
+#define BM_PKT static_cast<CInPacket*>(p)   // the exe reads the packet through p, no named local
     UIDialog::vfunc_79(p);
-    if (pPacket->FUN_14070fe80() == 0xe5) {
-        char nKind = pPacket->ReadUInt8();
+    if (BM_PKT->FUN_14070fe80() == 0xe5) {
+        int nKind = BM_PKT->ReadUInt8();
         if (nKind == 0) {
             FUN_1422b9fd0(FUN_1408e57f0(), 0x6200022);
             FUN_141ad9e50(FUN_1403ed2b0(), 0x6200022);
             FUN_141ada6f0(FUN_1403ed2b0(), 0x6200022);
             FUN_141901470(0, 0x4f15);
-            m_nPosition = pPacket->ReadInt32();
-            m_nFreeDice = pPacket->ReadInt32();
-            m_nConsumeItemId = pPacket->ReadInt32();
-            m_nConsumeItemCount = pPacket->ReadInt32();
+            m_nPosition = BM_PKT->ReadInt32();
+            m_nFreeDice = BM_PKT->ReadInt32();
+            m_nConsumeItemId = BM_PKT->ReadInt32();
+            m_nConsumeItemCount = BM_PKT->ReadInt32();
             FUN_140cfee80((*m_30).FUN_1422bb890(), "m_warning",
                           FUN_140f24320("$s_bluemarble_warning", GetStringTable()->FUN_141811980(1, m_nConsumeItemId),
                                         m_nConsumeItemCount));
-            FUN_140f227a0(*pPacket);
+            FUN_140f227a0(*BM_PKT);
             FUN_140f22bb0(m_nPosition);
             FUN_140f23b90();
             FUN_140f23ca0();
@@ -215,11 +215,11 @@ void UIBlueMarbleGameDialog::vfunc_79(void* p)
             vfunc_8(1);
             m_bIdle = 1;
         } else if (nKind == 2) {
-            char nAction = pPacket->ReadUInt8();
-            m_nPosition = pPacket->ReadInt32();
-            int nDice1 = pPacket->ReadInt32();
-            int nDice2 = pPacket->ReadInt32();
-            m_nFreeDice = pPacket->ReadInt32();
+            int nAction = BM_PKT->ReadUInt8();
+            m_nPosition = BM_PKT->ReadInt32();
+            int nDice1 = BM_PKT->ReadInt32();
+            int nDice2 = BM_PKT->ReadInt32();
+            m_nFreeDice = BM_PKT->ReadInt32();
             FUN_140f22fe0(nDice1, nDice2, nAction);
             FUN_140f237e0(m_nPosition - (nDice1 + nDice2), m_nPosition);
             if (nAction == 2) {
@@ -232,16 +232,12 @@ void UIBlueMarbleGameDialog::vfunc_79(void* p)
             FUN_140710590(packet);
         } else if (nKind == 4) {
             int nPrevPosition = m_nPosition;
-            short nAction = pPacket->ReadInt16();
-            m_nPosition = pPacket->ReadInt32();
-            m_nFreeDice = pPacket->ReadInt32();
-            int nArg = pPacket->ReadInt32();
-            int nArg2 = pPacket->ReadInt32();
-            bool bReset;
-            if (nAction == 2 || nAction == 3)
-                bReset = false;
-            else
-                bReset = true;
+            int nAction = (unsigned short)BM_PKT->ReadInt16();
+            m_nPosition = BM_PKT->ReadInt32();
+            m_nFreeDice = BM_PKT->ReadInt32();
+            int nArg = BM_PKT->ReadInt32();
+            int nArg2 = BM_PKT->ReadInt32();
+            int bReset = (nAction != 2 && nAction != 3);
             FUN_140f23200(nAction, nArg, nPrevPosition);
             FUN_140f237e0(nPrevPosition, m_nPosition);
             if (nAction == 10 || nAction == 9)
@@ -258,7 +254,7 @@ void UIBlueMarbleGameDialog::vfunc_79(void* p)
                 FUN_140710590(packet);
             }
         } else if (nKind == 6) {
-            char nResult = pPacket->ReadUInt8();
+            int nResult = BM_PKT->ReadUInt8();
             if (nResult == 1) {
                 CStringW strText = FUN_140938ae0(CStringW(L"s_bluemarble_result_consume_fail"), m_nConsumeItemId);
                 FUN_1403b4750()->FUN_1416fb300(strText);
@@ -272,7 +268,8 @@ void UIBlueMarbleGameDialog::vfunc_79(void* p)
             m_bIdle = 1;
         }
     }
-}   // MS2-FUNCTIONAL: not byte-matched (call order/EH state layout)
+#undef BM_PKT
+}
 
 // @0x140f22350
 int UIBlueMarbleGameDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs)
@@ -316,12 +313,12 @@ int UIBlueMarbleGameDialog::vfunc_28(const char* szMethod, const Scaleform::GFx:
 int UIBlueMarbleGameDialog::vfunc_71()
 {
     if (m_bIdle == 0) {
-        MS2Ptr<CMsgBoxData> spBox = FUN_140d74390(GetStringCommonByKey(L"s_bluemarble_close"), 1,
+        FUN_140d74390(GetStringCommonByKey(L"s_bluemarble_close"), 1,
             Delegate<bool(int, const CMsgBoxData&)>(this, &UIBlueMarbleGameDialog::FUN_140f22760));
         return 1;
     }
     return 0;
-}   // MS2-FUNCTIONAL: not byte-matched (call order/EH state layout)
+}
 
 // @0x140f22760
 bool UIBlueMarbleGameDialog::FUN_140f22760(int nResult, const CMsgBoxData& box)
@@ -336,7 +333,7 @@ void UIBlueMarbleGameDialog::FUN_140f227a0(CInPacket& packet)
 {
     unsigned int nCells = packet.ReadInt32();
     for (unsigned int i = 0; i < nCells; i++) {
-        short nKind = packet.ReadInt16();
+        int nKind = (unsigned short)packet.ReadInt16();
         int nArg = packet.ReadInt32();
         int nCount = packet.ReadInt32();
         ASObj row(2);
@@ -357,28 +354,28 @@ void UIBlueMarbleGameDialog::FUN_140f227a0(CInPacket& packet)
         if (m_30.get())
             m_30->Invoke("setBoard", row);
     }
-}   // MS2-FUNCTIONAL: not byte-matched (call order/EH state layout)
+}
 
 // @0x140f22bb0
 void UIBlueMarbleGameDialog::FUN_140f22bb0(int nPosition)
 {
     ASArray rewards(2);
-    MS2Ptr<BlueMarbleEventContext> spContext = FUN_1401c0d90()->FUN_14047b940();
-    if (spContext.get()) {
-        POSITION pos = spContext->m_rewards.GetHeadPosition();
-        while (pos) {
-            MS2Ptr<ItemEntity> spReward = spContext->m_rewards.GetValueAt(pos);
-            int nRound = spContext->m_rewards.GetKeyAt(pos);
-            MS2Ptr<CItemData> spData = FUN_14053f870(spReward->m_itemId);
-            if (spData == 0) {
-            } else {
+    {
+        MS2Ptr<BlueMarbleEventContext> spContext = FUN_1401c0d90()->FUN_14047b940();
+        if (spContext.get()) {
+            for (POSITION pos = spContext->m_rewards.GetHeadPosition(); pos; spContext->m_rewards.GetNext(pos)) {
+                MS2Ptr<ItemEntity> spReward = spContext->m_rewards.GetValueAt(pos);
+                int nRound = spContext->m_rewards.GetKeyAt(pos);
+                MS2Ptr<CItemData> spData = FUN_14053f870(spReward->m_itemId);
+                if (spData == 0)
+                    continue;
                 ASObj row(2);
                 row.FUN_1407cba60("binding", FUN_140f23f10(spData->FUN_14053c510(), spData->FUN_14053c5a0(), spReward->m_count));
                 bool bReceive;
-                if (nPosition < nRound * 0x1c || nRound == 0)
-                    bReceive = false;
-                else
+                if (nPosition >= nRound * 0x1c && nRound != 0)
                     bReceive = true;
+                else
+                    bReceive = false;
                 row.FUN_1407cbbe0("receive", bReceive);
                 CStringW strRound;
                 if (nRound == 0)
@@ -388,12 +385,11 @@ void UIBlueMarbleGameDialog::FUN_140f22bb0(int nPosition)
                 row.FUN_1407cbb20("round", strRound);
                 rewards.FUN_1422bbf00(row);
             }
-            spContext->m_rewards.GetNext(pos);
         }
     }
     if (m_30.get())
         m_30->FUN_140bd2cb0("onReward", rewards);
-}   // MS2-FUNCTIONAL: not byte-matched (call order/EH state layout)
+}
 
 // @0x140f22fe0
 void UIBlueMarbleGameDialog::FUN_140f22fe0(int nDice1, int nDice2, int nKind)

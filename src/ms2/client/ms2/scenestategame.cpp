@@ -88,7 +88,7 @@
 // MS2-PIN: ?Find@?$CRBTree@_JHV?$CElementTraits@_J@ATL@@V?$CElementTraits@H@2@@ATL@@IEBAPEAVCNode@12@_J@Z 0x141747bc0 ; w131 manual (call site 0x14174a3d0)
 // MS2-PIN: ?InsertImpl@?$CRBTree@_JHV?$CElementTraits@_J@ATL@@V?$CElementTraits@H@2@@ATL@@AEAAPEAVCNode@12@_JH@Z 0x1417484c0 ; w131 manual (call site 0x1417496f0)
 // MS2-PIN: ?ReleaseImpl@?$Unk_BmBoxPtr@USpecialNPCInfo@@@@AEAAXPEAX@Z 0x14174b370 ; w131 manual (call site 0x14174b230)
-// MS2-PIN: ?deallocate@?$CustomAllocator@U?$_Tree_node@U?$pair@$$CBVutf8string@efd@@UUnk_PropertyCacheEntry@@@std@@PEAX@std@@@efd@@QEAAXPEAU?$_Tree_node@U?$pair@$$CBVutf8string@efd@@UUnk_PropertyCacheEntry@@@std@@PEAX@std@@_K@Z 0x14174b850 ; w131 manual (call site 0x14174b8a0)
+// MS2-PIN: ?deallocate@?$CustomAllocator@U?$_Tree_node@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@PEAX@std@@@efd@@QEAAXPEAU?$_Tree_node@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@PEAX@std@@_K@Z 0x14174b850 ; w131 manual (call site 0x14174b8a0)
 // MS2-PIN: ??$format_arg@_WW4Unk_SSGSkillUseError@@@fmt@@YAXAEAV?$BasicFormatter@_W@0@AEAPEB_WAEBW4Unk_SSGSkillUseError@@@Z 0x141744c20 ; w131 manual (call site 0x1417450a0)
 // MS2-PIN: ??$?0IVCAdventureLevelMissionData@@$0A@@?$pair@$$CBIVCAdventureLevelMissionData@@@std@@QEAA@$$QEAU?$pair@IVCAdventureLevelMissionData@@@1@@Z 0x141740530 ; w131 manual (called by construct 0x141744ac0)
 #define NOMINMAX                        // NxPhysics (interactobject.h)
@@ -330,12 +330,8 @@ class Unk_SSGQuery { public: int FUN_140a18070(); void FUN_140aeb1a0(); void FUN
 Unk_SSGQuery* FUN_1409478c0();
 
 // OnEnter/OnLeave service calls
-class Unk_143a09680 { public: void* m_a; void* m_b; };
-class Unk_1409879 : public Unk_143a09680 { };
-Unk_1409879 FUN_140987930(const void*);
-extern char DAT_143a09680[];
 void* FUN_140aae430();
-void FUN_141489ff0(void*, Unk_143a09680);
+void FUN_141489ff0(void*, NiColorA);                    // the app's clear colour
 void* FUN_14086d260();
 double FUN_141473280(void*);
 void* FUN_140c7a250();
@@ -1289,7 +1285,7 @@ public:
 };
 MS2_CHECK_SIZE(Unk_SSG5b5e70, 4);
 
-bool FUN_1418fd6c0(__int64 nUid);
+int FUN_1418fd6c0(__int64 nUid);
 
 // ---- statics (exe .di order) -----------------------------------------------------------------------------------
 class Unk_Handle1401cd100 { public: Unk_Handle1401cd100(int nNull); void* m_p; };     // ctor 0x1401cd100
@@ -1427,13 +1423,12 @@ int CSceneStateGame::vfunc_15()
 MS2_REPLACE_METHOD(0x14170be90, CSceneStateGame, vfunc_15, 11, 0x30025ED0);
 
 // @0x14170beb0
-// MS2-FUNCTIONAL: the exe keeps the 24-byte FUN_140987930 result slot pointer in a stack temp before the call (same as CSceneStateMove/Multi::OnEnter)
 void CSceneStateGame::OnEnter(int nPrevState)
 {
     CSceneStateBase::OnEnter(nPrevState);
     FUN_1403ed2d0()->FUN_141bbae40(this);
     m_f20 = FUN_141473280(FUN_14086d260());
-    FUN_141489ff0(FUN_140aae430(), static_cast<const Unk_143a09680&>(FUN_140987930(DAT_143a09680)));
+    FUN_141489ff0(FUN_140aae430(), efd::ColorA::BLACK);
     FUN_140d8ee90()->FUN_140a1f7f0(true);
     FUN_140db8eb0(FUN_140c7a250());
     m_bReconnecting = false;
@@ -2559,7 +2554,6 @@ void CSceneStateGame::FUN_141712340(CInPacket& packet)
 }
 MS2_REPLACE_METHOD(0x141712340, CSceneStateGame, FUN_141712340, 205, 0x49E1B8C7);
 // @0x141712420
-// MS2-FUNCTIONAL: stack temp layout differs (the exe spills the uid and EP reads to expression temps); same calls and args
 void CSceneStateGame::OnFieldPickupItem(CInPacket& packet)
 {
     int bPicked = packet.ReadUInt8();
@@ -2585,8 +2579,7 @@ void CSceneStateGame::OnFieldPickupItem(CInPacket& packet)
             if (pMyPC != 0)
             {
                 // MS2: slot 88 (MyPC's override returns its EP gauge; PCBase declares the slot as int)
-                Unk_SSGMyPCSlots* pSlots = (Unk_SSGMyPCSlots*)pMyPC;
-                pSlots->vfunc_88()->FUN_141931bd0(pMyPC->FUN_141670a00(10) + nAdd, pMyPC->FUN_141670a30(10));
+                ((Unk_SSGMyPCSlots*)pMyPC)->vfunc_88()->FUN_141931bd0(pMyPC->FUN_141670a00(10) + nAdd, pMyPC->FUN_141670a30(10));
             }
         }
         pDrop->FUN_141190b70(nOwnerId);
@@ -2716,23 +2709,26 @@ void CSceneStateGame::FUN_141712a90(CInPacket& packet)
 MS2_REPLACE_METHOD(0x141712a90, CSceneStateGame, FUN_141712a90, 1298, 0xE15A5F74);
 
 // @0x141712fb0
-// MS2-FUNCTIONAL: exe frame 0x20 larger (the uid reads go through extra expression temps); same calls and args
 void CSceneStateGame::OnItemPutOnOrOff(CInPacket& packet)
 {
-    switch (packet.ReadUInt8())
+    int nMode = packet.ReadUInt8();
+    if (nMode == 2)
     {
-    case 2:
-        DAT_143ab2a90.FUN_140a621c0(packet.ReadInt64(), 0, 0);
-        break;
-    case 3:
-        DAT_143ab2a90.FUN_140a62920(packet.ReadInt64());
-        break;
-    case 5:
+        __int64 nItemUid = packet.ReadInt64();
+        DAT_143ab2a90.FUN_140a621c0(nItemUid, 0, 0);
+    }
+    else if (nMode == 3)
+    {
+        __int64 nItemUid = packet.ReadInt64();
+        DAT_143ab2a90.FUN_140a62920(nItemUid);
+    }
+    else if (nMode == 5)
     {
         int nId = packet.ReadInt32();
         __int64 nItemUid = packet.ReadInt64();
-        unsigned char nSlot = packet.ReadUInt8();
-        int nKind = FUN_140222f60(packet.ReadUInt8());
+        int nSlot = packet.ReadUInt8();
+        int nType = packet.ReadUInt8();
+        int nKind = FUN_140222f60(nType);
         MyPC* pMyPC = FUN_1409613d0(FUN_1403ed2d0()->FUN_141bd1290(nId));
         if (pMyPC == 0)
             return;
@@ -2742,8 +2738,6 @@ void CSceneStateGame::OnItemPutOnOrOff(CInPacket& packet)
         pMyPC->FUN_1416561a0()->FUN_1411e4150(nItemUid, nSlot, nKind);
         Unk_SSGItemHub* pHub = FUN_140a6a840();
         pHub->vfunc_22(spEquip->GetItem().get());
-        break;
-    }
     }
 }
 MS2_REPLACE_METHOD(0x141712fb0, CSceneStateGame, OnItemPutOnOrOff, 748, 0xAE8F8967);
@@ -3552,7 +3546,7 @@ void CSceneStateGame::FUN_141718150(CInPacket& packet)
         else
         {
             spCast->m_kRot = kRot;
-            pActor->vfunc_22(efd::Point3(reinterpret_cast<efd::Point3&>(kMove)));
+            pActor->vfunc_22(reinterpret_cast<efd::Point3&>(kMove));
             if (pActor->FUN_14166c930() == 0x10)
             {
                 StateSkill* pState = static_cast<StateSkill*>(pActor->FUN_14166ccb0());
@@ -4399,17 +4393,17 @@ void CSceneStateGame::FUN_14172f1c0(CInPacket& packet)
 MS2_REPLACE_METHOD(0x14172f1c0, CSceneStateGame, FUN_14172f1c0, 65, 0xDA4F33D3);
 
 // @0x14172f210
-// MS2-FUNCTIONAL: exe frame 0x10 larger (one extra stack temp shifts the later slots); same reads, calls and stores
 void CSceneStateGame::FUN_14172f210(CInPacket& packet)
 {
-    DAT_143ab2954 = packet.ReadInt32();
+    int nValue0 = packet.ReadInt32();
+    DAT_143ab2954 = nValue0;
     DAT_143ab32e8.FUN_1409353d0();
     DAT_143ab32f8.FUN_140642910();
-    int nGroupCount = packet.ReadInt32();
+    unsigned nGroupCount = packet.ReadInt32();
     for (int i = 0; i < nGroupCount; i++)
     {
         int nGroup = packet.ReadInt32();
-        int nCount = packet.ReadInt32();
+        unsigned nCount = packet.ReadInt32();
         Unk_SSGCountMap& kGroup = DAT_143ab32e8.FUN_140ed3b20(nGroup);
         for (int j = 0; j < nCount; j++)
         {
@@ -4854,7 +4848,6 @@ void FUN_14151f200();                                       // show the next que
 MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW text, int nUnk, CStringW tag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
 
-// MS2-FUNCTIONAL: same code; the exe keeps kResult low in the frame (rsp+0x60, ours +0xf8), so every slot differs.
 // @0x141737db0
 void CSceneStateGame::FUN_141737db0(CInputStream& in)
 {
@@ -4866,8 +4859,8 @@ void CSceneStateGame::FUN_141737db0(CInputStream& in)
     {
         CStringW strMsg = FUN_14052bd00(0x2a, strName);
         FUN_140d73aa0(strMsg, 0, 0, CStringW(L""));
+        return;
     }
-    else
     {
         MyPC* pMyPC = FUN_1403ed2d0()->FUN_141bd0cc0();
         if (pMyPC != 0)
@@ -5545,12 +5538,12 @@ void FUN_140274970(DamageCalculatorInfo* pInfo);           // show ToString() as
 CStringW FUN_14061ad70(const CStringW& str, const wchar_t* pszSuffix);
 
 // @0x14173f860
-// MS2-FUNCTIONAL: stack slots differ (SYSTEMTIME/strText/hFile placement) and the exe has one extra dead jmp after the switch dispatch.
 void CSceneStateGame::FUN_14173f860(CInPacket& packet)
 {
     int nMode = packet.ReadUInt8();
     switch (nMode)
     {
+        break;
     case 1:
     {
         CStringW strFile = packet.ReadUnicodeString();
@@ -5573,8 +5566,8 @@ void CSceneStateGame::FUN_14173f860(CInPacket& packet)
         WriteFile(hFile, &wBom, 2, &dwWritten, NULL);
         WriteFile(hFile, static_cast<const wchar_t*>(strText), static_cast<DWORD>(strText.GetLength() * sizeof(wchar_t)), &dwWritten, NULL);
         CloseHandle(hFile);
-        break;
     }
+    break;
     case 2:
     {
         DamageCalculatorInfo kInfo;
@@ -5582,7 +5575,6 @@ void CSceneStateGame::FUN_14173f860(CInPacket& packet)
         kInfo.Read(reinterpret_cast<CByteBuffer&>(packet));
         kInfo.SaveToFile();
         FUN_140274970(&kInfo);
-        break;
     }
     }
 }
@@ -5970,34 +5962,32 @@ void CSceneStateGame::FUN_141722fb0(CInPacket& packet)
 }
 MS2_REPLACE_METHOD(0x141722fb0, CSceneStateGame, FUN_141722fb0, 152, 0x8674E8E3);
 
-// MS2-FUNCTIONAL: small residual code difference (the old 0x10 Unk_EffectQuery frame-size cause is fixed)
 // @0x141723050
 void CSceneStateGame::OnStateFallDamage(CInPacket& packet)
 {
     int nId = packet.ReadInt32();
     __int64 nAmount = static_cast<unsigned int>(packet.ReadInt32());
     PC* pPC = FUN_1403ed2d0()->FUN_141bd1290(nId);
-    if (pPC != 0)
+    if (pPC == 0)
+        return;
+    if (FUN_1403ed2d0()->FUN_141bd0cc0() == static_cast<PCBase*>(pPC))
     {
-        if (FUN_1403ed2d0()->FUN_141bd0cc0() == static_cast<PCBase*>(pPC))
+        if (pPC->FUN_14166ce30() == 0)
+            pPC->vfunc_59(0x1f, 0, 0, 0);
+        Unk_SSGDlg4e3c* pDlg = FUN_140ac55a0(0x4e3c);
+        if (pDlg != 0)
+            pDlg->FUN_141910b10(-nAmount);
+        FUN_1409331e0()->FUN_14138bf00(0xf, pPC->FUN_14166ce30() != 0 ? 1 : -1, 0);
+        if (pPC->FUN_1416764a0() != 0)
         {
-            if (pPC->FUN_14166ce30() == 0)
-                pPC->vfunc_59(0x1f, 0, 0, 0);
-            Unk_SSGDlg4e3c* pDlg = FUN_140ac55a0(0x4e3c);
-            if (pDlg != 0)
-                pDlg->FUN_141910b10(-nAmount);
-            FUN_1409331e0()->FUN_14138bf00(0xf, pPC->FUN_14166ce30() == 0 ? -1 : 1, 0);
-            if (pPC->FUN_1416764a0() != 0)
-            {
-                Unk_EffectQuery query;
-                if (FUN_141658e60(pPC) == 1)
-                    query.m_strName = FUN_1401d31f0()->m_str2d0;
-                else if (FUN_141658e60(pPC) == 0)
-                    query.m_strName = FUN_1401d31f0()->m_str2d8;
-                query.m_nObject = FUN_1403ed2d0()->FUN_141bd1a10(pPC);
-                query.SetActor(pPC->FUN_14123c580());
-                FUN_1403ed280()->FUN_1411a4a00(&query);
-            }
+            Unk_EffectQuery query;
+            if (FUN_141658e60(pPC) == 1)
+                query.m_strName = FUN_1401d31f0()->m_str2d0;
+            else if (FUN_141658e60(pPC) == 0)
+                query.m_strName = FUN_1401d31f0()->m_str2d8;
+            query.m_nObject = FUN_1403ed2d0()->FUN_141bd1a10(pPC);
+            query.SetActor(pPC->FUN_14123c580());
+            FUN_1403ed280()->FUN_1411a4a00(&query);
         }
     }
 }
@@ -7070,7 +7060,6 @@ void CSceneStateGame::OnLimitBreak(CInPacket& packet)
 MS2_REPLACE_METHOD(0x14173f1a0, CSceneStateGame, OnLimitBreak, 206, 0xE5A97C8E);
 
 // @0x14173f280
-// MS2-FUNCTIONAL: the exe places the smart pointer below the vtable spill temps (stack slot order); same calls and control flow
 void CSceneStateGame::FUN_14173f280(CInPacket& packet)
 {
     int nMode = packet.ReadUInt8();
@@ -7085,9 +7074,8 @@ void CSceneStateGame::FUN_14173f280(CInPacket& packet)
             MS2Ptr<Unk_PCWaterGunInfo> spInfo = pPC->FUN_141664250();
             if (spInfo.get() != 0)
                 spInfo->FUN_1408fdfe0(packet);
-            return;
+            break;
         }
-        break;
     case 1:
         {
             int nId = packet.ReadInt32();
@@ -8073,7 +8061,6 @@ void CSceneStateGame::OnSetCraftMode(CInPacket& packet)
 MS2_REPLACE_METHOD(0x141723410, CSceneStateGame, OnSetCraftMode, 384, 0xE64CE8BE);
 
 // @0x14172f030
-// MS2-FUNCTIONAL: exe passes nSkillId to FUN_141768530 as mov ecx,[x]; mov edx,ecx (unrecovered argument conversion)
 void CSceneStateGame::FUN_14172f030(CInPacket& packet)
 {
     MyPC* pMyPC = FUN_1403ed2d0()->FUN_141bd0cc0();
@@ -8089,8 +8076,7 @@ void CSceneStateGame::FUN_14172f030(CInPacket& packet)
             pMyPC->FUN_141523bc0()->FUN_141765f60(nUid);
         else
             pMyPC->FUN_141523bc0()->FUN_141766900(nUid, nSlot);
-        int nSkillId = FUN_1417692f0(nUid);
-        pMyPC->FUN_141523bc0()->FUN_141768530(nSkillId, nValue);
+        pMyPC->FUN_141523bc0()->FUN_141768530(FUN_1417692f0(nUid), nValue);
     }
     FUN_1419f37f0(5);
 }
@@ -8427,8 +8413,17 @@ Unk_SSG9670e0* FUN_1409670e0();
 
 UIDialog* FUN_141386950(const CString& strName);           // a dialog by its name
 
+// MyPC's vftable as far as slot 22: the position setter takes the point by value (PCBase declares it const&).
+class Unk_SSGArcadePCSlots
+{
+public:
+    virtual void vfunc_0(); virtual void vfunc_1(); virtual void vfunc_2(); virtual void vfunc_3(); virtual void vfunc_4(); virtual void vfunc_5(); virtual void vfunc_6(); virtual void vfunc_7();
+    virtual void vfunc_8(); virtual void vfunc_9(); virtual void vfunc_10(); virtual void vfunc_11(); virtual void vfunc_12(); virtual void vfunc_13(); virtual void vfunc_14(); virtual void vfunc_15();
+    virtual void vfunc_16(); virtual void vfunc_17(); virtual void vfunc_18(); virtual void vfunc_19(); virtual void vfunc_20(); virtual void vfunc_21();
+    virtual void vfunc_22(efd::Point3 kPos);
+};
+
 // @0x141734e00
-// MS2-FUNCTIONAL: exe frame is 0x10 bytes larger (point copy at +0xe0, unwind state at +0xf0); code otherwise identical
 void CSceneStateGame::OnPlayArcade(CInPacket& packet)
 {
     unsigned char nMode = packet.ReadUInt8();
@@ -8522,8 +8517,7 @@ void CSceneStateGame::OnPlayArcade(CInPacket& packet)
             pPC->FUN_14166cd70(0x200);
         else
         {
-            efd::Point3 kPos = efd::Point3::ZERO;
-            pPC->vfunc_22(kPos);
+            reinterpret_cast<Unk_SSGArcadePCSlots*>(pPC)->vfunc_22(efd::Point3::ZERO);
             pPC->FUN_14166cce0(0x200);
         }
     }
@@ -9652,12 +9646,12 @@ extern CString DAT_143ae7968;                               // the low-hp sound 
 extern CString DAT_143ae7970;
 
 // @0x1417176b0
-// MS2-FUNCTIONAL: the exe spills the world singleton to a temp slot before the actor lookup (one extra stack temp); everything else matches.
 void CSceneStateGame::OnStat(CInPacket& packet)
 {
     int nId = packet.ReadInt32();
     int nFlag = packet.ReadUInt8();
-    PCBase* pActor = FUN_1403ed2d0()->FUN_141bd1200(nId);
+    Unk_SSGWorld* pWorld = FUN_1403ed2d0();
+    PCBase* pActor = pWorld->FUN_141bd1200(nId);
     if (pActor == 0)
         return;
     __int64 aBefore[3][0x23];
@@ -9738,7 +9732,6 @@ void FUN_141b16550(unsigned short nLevel);
 UIExpBar* FUN_14125b200(int nId);                           // GetDialog<UIExpBar> (another unit's COMDAT)
 
 // @0x14171aec0
-// MS2-FUNCTIONAL: small residual code difference (the old 0x10 Unk_EffectQuery frame-size cause is fixed)
 void CSceneStateGame::OnLevelUp(CInPacket& packet)
 {
     int nId = packet.ReadInt32();
@@ -9773,30 +9766,31 @@ void CSceneStateGame::OnLevelUp(CInPacket& packet)
     Unk_SSGSkillBook* pBook = FUN_1416546d0(pPC);
     pBook->vfunc_4(nLevel);
     MyPC* pMyPC = FUN_1409613d0(pPC);
-    if (pMyPC == 0)
-        return;
-    FUN_141b16550(nLevel);
-    Unk_SSGChatDialog* pNotify = FUN_140938cd0(0x4e5d);
-    if (pNotify != 0)
+    if (pMyPC != 0)
     {
-        pNotify->FUN_141ac0210(pMyPC);
-        if ((unsigned short)pMyPC->vfunc_78() >= 10 && nLevel > nOldLevel)
+        FUN_141b16550(nLevel);
+        Unk_SSGChatDialog* pNotify = FUN_140938cd0(0x4e5d);
+        if (pNotify != 0)
         {
-            unsigned short nCap = FUN_1401d3200()->m_n9718 > FUN_1401d3200()->m_n971a ? FUN_1401d3200()->m_n9718 : FUN_1401d3200()->m_n971a;
-            if (nLevel <= nCap)
+            pNotify->FUN_141ac0210(pMyPC);
+            if ((unsigned short)pMyPC->vfunc_78() >= 10 && nLevel > nOldLevel)
             {
-                if (FUN_1403ed2b0()->FUN_141adc940(0x4f2d) != 0)
-                    pNotify->FUN_141ac14b0();
-                FUN_1412751b0(GetStringCommonByKey(L"s_msg_skillbook_add_skillpoint"), 0x14);
+                unsigned short nCap = FUN_1401d3200()->m_n9718 > FUN_1401d3200()->m_n971a ? FUN_1401d3200()->m_n9718 : FUN_1401d3200()->m_n971a;
+                if (nLevel <= nCap)
+                {
+                    if (FUN_1403ed2b0()->FUN_141adc940(0x4f2d) != 0)
+                        pNotify->FUN_141ac14b0();
+                    FUN_1412751b0(GetStringCommonByKey(L"s_msg_skillbook_add_skillpoint"), 0x14);
+                }
             }
         }
+        FUN_140aa6d40()->FUN_141b0ce20(6, 0);
+        FUN_140939a10()->FUN_140da4fe0(MS2Ptr<NotifyObject>(new NotifyChangeMyLevel((unsigned short)pMyPC->vfunc_78(), nOldLevel)));
+        DAT_143ab2a90.FUN_140a66990(nLevel);
+        UIExpBar* pBar = FUN_14125b200(0x4e27);
+        if (pBar != 0)
+            pBar->FUN_141932080(3);
     }
-    FUN_140aa6d40()->FUN_141b0ce20(6, 0);
-    FUN_140939a10()->FUN_140da4fe0(MS2Ptr<NotifyObject>(new NotifyChangeMyLevel((unsigned short)pMyPC->vfunc_78(), nOldLevel)));
-    DAT_143ab2a90.FUN_140a66990(nLevel);
-    UIExpBar* pBar = FUN_14125b200(0x4e27);
-    if (pBar != 0)
-        pBar->FUN_141932080(3);
 }
 MS2_REPLACE_METHOD(0x14171aec0, CSceneStateGame, OnLevelUp, 1199, 0xEAC30A37);
 
@@ -10102,7 +10096,8 @@ template <> template <> Unk_SSGHouseTree::_Pairib Unk_SSGHouseTree::insert<false
 extern std::set<Unk_SSGHouseKey> DAT_143ab32d8;
 
 // @0x141723670
-// MS2-FUNCTIONAL: identical instructions; the exe swaps two dword stack slots (mode 2 nError at +0x90, the mode 5 `nFlag == 0` temp at +0x128) and shifts the four loop counters by 4
+// MS2-FUNCTIONAL: identical instructions and length; the exe swaps two dword stack slots (mode 2 nError at +0x90, the mode 5 `nFlag == 0` temp at +0x128)
+//   and shifts the four loop counters by 4. Renaming nError or hoisting it to function scope doesn't move it.
 void CSceneStateGame::OnResponseCube(CInPacket& packet)
 {
     efd::SmartPointer<Unk_Service6100017> spService(FUN_1401cd040(&DAT_143b059e8));
@@ -10521,8 +10516,10 @@ void CSceneStateGame::OnResponseCube(CInPacket& packet)
     {
         int nError = packet.ReadUInt8();
         if (nError == 0)
-            break;
-        spService->FUN_1410d6590(nError);
+        {
+        }
+        else
+            spService->FUN_1410d6590(nError);
     }
         break;
     case 0x16:
@@ -10538,8 +10535,10 @@ void CSceneStateGame::OnResponseCube(CInPacket& packet)
     {
         int nError = packet.ReadUInt8();
         if (nError == 0)
-            break;
-        spService->FUN_1410d6590(nError);
+        {
+        }
+        else
+            spService->FUN_1410d6590(nError);
     }
         break;
     case 0x19:
@@ -10861,16 +10860,20 @@ void CSceneStateGame::OnResponseCube(CInPacket& packet)
     {
         int nError = packet.ReadUInt8();
         if (nError == 0)
-            break;
-        spService->FUN_1410d6590(nError);
+        {
+        }
+        else
+            spService->FUN_1410d6590(nError);
     }
         break;
     case 0x29:
     {
         int nError = packet.ReadUInt8();
         if (nError == 0)
-            break;
-        spService->FUN_1410d6590(nError);
+        {
+        }
+        else
+            spService->FUN_1410d6590(nError);
     }
         break;
     case 0x2e:
@@ -11224,11 +11227,10 @@ extern "C" void (__cdecl* __imp_CrashReporter_SetInt64Info)(const wchar_t*, __in
 
 // The item a state is told about in its slots 29/30 (state.h passes it as MS2Ptr<Unk_StateArg29>).
 class Unk_StateArg29 : public CItem { };
+template <> MS2Ptr<Unk_StateArg29>::MS2Ptr(const MS2Ptr& o);          // 0x1402034d0 (ICF-folded MS2Ptr copy ctor)
 
 // 0x7f gem slots: mode 0 socket an item (owner, item id/uid/rarity, slot, item data), mode 1 take it out (owner,
 // slot), mode 4 an error code.
-// MS2-FUNCTIONAL: the states' slots 29/30 take MS2Ptr<Unk_StateArg29>, so the item is passed through a pointer
-// ctor instead of the exe's MS2Ptr<CItem> copy ctor.
 // @0x141730920
 void CSceneStateGame::FUN_141730920(CInPacket& packet)
 {
@@ -11251,7 +11253,7 @@ void CSceneStateGame::FUN_141730920(CInPacket& packet)
             if (pPC != 0)
             {
                 pPC->FUN_14165f460()->FUN_141270bf0(spItem);
-                pPC->FUN_14166ccb0()->vfunc_29(MS2Ptr<Unk_StateArg29>(static_cast<Unk_StateArg29*>(spItem.get())));
+                pPC->FUN_14166ccb0()->vfunc_29(reinterpret_cast<MS2Ptr<Unk_StateArg29>&>(spItem));
             }
             bool bMine = efd::ClassInfo::IsKindOf(pPC != NULL ? pPC->GetClassDesc() : NULL, 0x6200004);
             bool bShow = false;
@@ -11276,7 +11278,7 @@ void CSceneStateGame::FUN_141730920(CInPacket& packet)
             MS2Ptr<CItem> spItem = pPC->FUN_14165f460()->FUN_141270ab0(nSlot);
             if (spItem.get() != 0)
             {
-                pPC->FUN_14166ccb0()->vfunc_30(MS2Ptr<Unk_StateArg29>(static_cast<Unk_StateArg29*>(spItem.get())));
+                pPC->FUN_14166ccb0()->vfunc_30(reinterpret_cast<MS2Ptr<Unk_StateArg29>&>(spItem));
                 if (FUN_1409613d0(pPC) != 0)
                     FUN_140a6a840()->vfunc_30(spItem.get());
             }

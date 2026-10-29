@@ -9,6 +9,9 @@
 
 #include "ms2/ms2layout.h"
 
+class CProxyGameObject;
+template <class T> class MS2Ptr;
+
 class UIEntityEventListener
 {
 public:
@@ -16,8 +19,9 @@ public:
     virtual ~UIEntityEventListener();
     virtual void vfunc_1(void*);
     virtual void vfunc_o70_2(const void*);
-    virtual void vfunc_3(void*);
-    virtual void vfunc_4(void*);
-    virtual void vfunc_5(void*, int);
+    // 3..5 get the actor as a by-value MS2Ptr (the callee destroys it; the overrides keep it in an EH state).
+    virtual void vfunc_3(MS2Ptr<CProxyGameObject> spActor);
+    virtual void vfunc_4(MS2Ptr<CProxyGameObject> spActor);
+    virtual void vfunc_5(MS2Ptr<CProxyGameObject> spActor, int);
 };
 MS2_CHECK_SIZE(UIEntityEventListener, 8);

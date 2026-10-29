@@ -6,6 +6,7 @@
 #include "ms2/placeholder/nmstream.h"
 #include "ms2/placeholder/nmobjects.h"
 #include "ms2/placeholder/nmfunc.h"
+#include "ms2/placeholder/nmencoder.h"
 #include "ms2/ms2recover.h"
 
 extern void FUN_14156bcb0(void*, void*, void*);
@@ -16,7 +17,7 @@ extern void FUN_14156ac20(void*, unsigned int);
 extern void FUN_1415f9990(void*);
 extern int FUN_1415fb720(void*);
 extern int FUN_1415fb750(void*);
-extern int FUN_1415fb6d0(void*);
+extern int FUN_1415fb6d0(CNMSerializableDecoder*);
 
 // MS2-FUNCTIONAL 0x14158bfa0: initializes the rejected-user vector.
 // @0x14158bfa0
@@ -25,28 +26,19 @@ CNMGetRejectedUserListFunc::CNMGetRejectedUserListFunc()
 
 // MS2-FUNCTIONAL 0x14158c000: frames the rejected-user list response.
 // @0x14158c000
-unsigned int CNMGetRejectedUserListFunc::EncodeFramed(CNMStream* stream)
+unsigned int CNMGetRejectedUserListFunc::EncodeFramed(CNMStream* pStream)
 {
-    unsigned char storage[0x18];
-    FUN_14156bcb0(storage, stream, this);
-    void** vtable = *reinterpret_cast<void***>(this);
-    using Method = unsigned int(__fastcall*)(CNMGetRejectedUserListFunc*, CNMEncoder*, CNMStream*);
-    const unsigned int result = reinterpret_cast<Method>(vtable[2])(this, reinterpret_cast<CNMEncoder*>(storage), stream);
-    FUN_14156bd50(storage);
-    return result;
+    CNMSerializableEncoder encoder(pStream, this);
+    return CNMGetRejectedUserListFunc::Encode(reinterpret_cast<CNMEncoder*>(&encoder), pStream);
 }
 
 // MS2-FUNCTIONAL 0x14158c060: selects the encoder by wire format.
 // @0x14158c060
-unsigned int CNMGetRejectedUserListFunc::EncodeDispatch(CNMEncoder* encoder, CNMStream* stream)
+unsigned int CNMGetRejectedUserListFunc::EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream)
 {
-    void** vtable = *reinterpret_cast<void***>(this);
-    if (m_bFormat == 1) {
-        using Method = unsigned int(__fastcall*)(CNMGetRejectedUserListFunc*, CNMEncoder*, CNMStream*);
-        return reinterpret_cast<Method>(vtable[2])(this, encoder, stream);
-    }
-    using Method = unsigned int(__fastcall*)(CNMGetRejectedUserListFunc*, CNMStream*);
-    return reinterpret_cast<Method>(vtable[3])(this, stream);
+    if (m_bFormat == 1)
+        return CNMGetRejectedUserListFunc::Encode(pEncoder, pStream);
+    return CNMGetRejectedUserListFunc::EncodeFramed(pStream);
 }
 
 // MS2-FUNCTIONAL 0x14158c0c0: serializes rejected-user records when the response flag is set.
@@ -64,31 +56,21 @@ unsigned int CNMGetRejectedUserListFunc::Encode(CNMEncoder* encoder, CNMStream* 
 
 // MS2-FUNCTIONAL 0x14158c1b0: decodes a framed rejected-user response.
 // @0x14158c1b0
-unsigned int CNMGetRejectedUserListFunc::DecodeFramed(CNMStream* stream)
+unsigned int CNMGetRejectedUserListFunc::DecodeFramed(CNMStream* pStream)
 {
-    unsigned char storage[0x38];
-    FUN_14156be10(storage, stream, this);
-    unsigned int result = 0;
-    if (FUN_1415fb750(storage)) {
-        void** vtable = *reinterpret_cast<void***>(this);
-        using Method = unsigned int(__fastcall*)(CNMGetRejectedUserListFunc*, CNMSerializableDecoder*, CNMStream*);
-        result = reinterpret_cast<Method>(vtable[5])(this, reinterpret_cast<CNMSerializableDecoder*>(storage), stream);
-    }
-    FUN_14156bf10(storage);
-    return result;
+    CNMSerializableDecoder decoder(pStream, this);
+    if (FUN_1415fb750(&decoder) == 0)
+        return 0;
+    return CNMGetRejectedUserListFunc::Decode(&decoder, pStream);
 }
 
 // MS2-FUNCTIONAL 0x14158c240: selects the decoder by wire format.
 // @0x14158c240
-unsigned int CNMGetRejectedUserListFunc::DecodeDispatch(CNMSerializableDecoder* decoder, CNMStream* stream)
+unsigned int CNMGetRejectedUserListFunc::DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream)
 {
-    void** vtable = *reinterpret_cast<void***>(this);
-    if (FUN_1415fb6d0(decoder) == 2) {
-        using Method = unsigned int(__fastcall*)(CNMGetRejectedUserListFunc*, CNMStream*);
-        return reinterpret_cast<Method>(vtable[6])(this, stream);
-    }
-    using Method = unsigned int(__fastcall*)(CNMGetRejectedUserListFunc*, CNMSerializableDecoder*, CNMStream*);
-    return reinterpret_cast<Method>(vtable[5])(this, decoder, stream);
+    if (FUN_1415fb6d0(pDecoder) == 2)
+        return CNMGetRejectedUserListFunc::DecodeFramed(pStream);
+    return CNMGetRejectedUserListFunc::Decode(pDecoder, pStream);
 }
 
 // MS2-FUNCTIONAL 0x14158c2a0: restores the rejected-user list from the response.

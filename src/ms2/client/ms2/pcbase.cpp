@@ -959,12 +959,10 @@ PCBase::~PCBase()
 }
 
 // @0x14166b470
-// MS2-FUNCTIONAL: the exe keeps two extra pointer temporaries around the utf8string argument (frame 0x88).
 void PCBase::vfunc_9(void* p)
 {
     GameObject::vfunc_9(p);
-    CString strIdle = FUN_1409a2360("Idle_A", 0);
-    FUN_140ae1240(p, 0x3ff293c8, (const char*)strIdle);
+    FUN_140ae1240(p, 0x3ff293c8, efd::utf8string((const char*)FUN_1409a2360("Idle_A", 0)));
 }
 MS2_REPLACE_METHOD(0x14166b470, PCBase, vfunc_9, 203, 0x4ACEA6A0);
 
@@ -1084,15 +1082,13 @@ NiPoint3 PCBase::vfunc_20()
 MS2_REPLACE_METHOD(0x14166bc50, PCBase, vfunc_20, 99, 0xA554E806);
 
 // @0x14166bcc0
-// MS2-FUNCTIONAL: the exe returns the efd::Point3 local with a plain 12-byte copy (its return type is efd::Point3); the
-// NiPoint3 return of the GameObject slot converts through NiPoint3(const efd::Point3&).
 NiPoint3 PCBase::vfunc_37()
 {
     efd::Point3 kOffset(0, 0, 0);
     vfunc_51(&kOffset);
     if (Unk_GoAttachment* pAttach = vfunc_26())
         kOffset.z += pAttach->vfunc_6() * 0.5f;
-    return kOffset;
+    return (const NiPoint3&)kOffset;
 }
 MS2_REPLACE_METHOD(0x14166bcc0, PCBase, vfunc_37, 166, 0x76F42DDD);
 
@@ -1106,11 +1102,11 @@ Unk_GoAttachment* PCBase::vfunc_26()
 MS2_REPLACE_METHOD(0x14166bd70, PCBase, vfunc_26, 83, 0x28C24E0F);
 
 // @0x14166bdd0
-// MS2-FUNCTIONAL: the exe materialises the distance test as an int temporary before narrowing it to the bool argument.
 void PCBase::vfunc_32(bool b)
 {
     if (m_spShadow) {
-        m_spShadow->FUN_14160fe50(FUN_140f4a450() < 200000.0f);
+        bool bNear = FUN_140f4a450() < 200000.0f ? 1 : 0;
+        m_spShadow->FUN_14160fe50(bNear);
         m_spShadow->FUN_14160feb0(m_unk_9a8, m_pos9ac, m_pos9b8, m_f9c8, b);
     }
 }
@@ -1478,14 +1474,16 @@ void PCBase::FUN_14166d260()
 MS2_REPLACE_METHOD(0x14166d260, PCBase, FUN_14166d260, 98, 0x6C91CBAE);
 
 // @0x14166d2d0
-// MS2-FUNCTIONAL: temporaries of the mount branch are laid out differently (frame 0x70).
-void PCBase::FUN_14166d2d0(const efd::Point3& kTarget, int bTurn)
+void PCBase::FUN_14166d2d0(efd::Point3 kTarget, int bTurn)
 {
     efd::SmartPointer<Ridee> spRidee(FUN_1416764a0());
-    if (spRidee != 0)
-        spRidee->FUN_14166d430(kTarget - spRidee->vfunc_18(), bTurn, 1);
-    else
-        FUN_14166d430(kTarget - vfunc_18(), bTurn, 1);
+    if (spRidee != 0) {
+        efd::Point3 kDir = kTarget - spRidee->vfunc_18();
+        spRidee->FUN_14166d430(kDir, bTurn, 1);
+    } else {
+        efd::Point3 kDir = kTarget - vfunc_18();
+        FUN_14166d430(kDir, bTurn, 1);
+    }
 }
 MS2_REPLACE_METHOD(0x14166d2d0, PCBase, FUN_14166d2d0, 331, 0xBA911878);
 
@@ -1506,17 +1504,14 @@ void PCBase::FUN_14166d430(efd::Point3 kDir, int bTurn, int bResetTilt)
     efd::Point3 kAngles(0, 0, fZ * 180.0f / 3.1415927f);
     FUN_140291b70(&kAngles.z);
     FUN_14166d8b0(kAngles.z);
-    if (bResetTilt) {
-        efd::Point3 kZero = efd::Point3::ZERO;
-        vfunc_22(kZero);
-    }
+    if (bResetTilt)
+        vfunc_22(efd::Point3::ZERO);
     if (bTurn)
         vfunc_21(kAngles);
 }
 MS2_REPLACE_METHOD(0x14166d430, PCBase, FUN_14166d430, 493, 0x7EEA4855);
 
 // @0x14166d630
-// MS2-FUNCTIONAL: the exe passes the NiPoint3 local to slot 21 with a single 12-byte copy (one temporary less).
 void PCBase::FUN_14166d630(float fTime)
 {
     NiPoint3 kRot = vfunc_20();
@@ -1540,14 +1535,14 @@ void PCBase::FUN_14166d630(float fTime)
             kRot.z = m_f934;
     }
     FUN_140291bc0(&kRot);
-    vfunc_21(kRot);
+    vfunc_21(static_cast<efd::Point3&>(kRot));
 }
 MS2_REPLACE_METHOD(0x14166d630, PCBase, FUN_14166d630, 480, 0x758C90FC);
 
 // @0x14166d820
 void PCBase::FUN_14166d820()
 {
-    NiPoint3 kLook = FUN_14123c360();
+    efd::Point3 kLook = FUN_14123c360();
     if (kLook != efd::Point3::ZERO) {
         efd::Point3 kA;
         efd::Point3 kB;
@@ -1564,7 +1559,6 @@ void PCBase::FUN_14166d8b0(float fAngle)
 }
 
 // @0x14166d8e0
-// MS2-FUNCTIONAL: the exe copies kTilt into a local before the slot-22 call.
 void PCBase::FUN_14166d8e0(efd::Point3 kTilt)
 {
     vfunc_22(kTilt);
@@ -1576,7 +1570,7 @@ void PCBase::FUN_14166d8e0(efd::Point3 kTilt)
 MS2_REPLACE_METHOD(0x14166d8e0, PCBase, FUN_14166d8e0, 132, 0x81D98B51);
 
 // @0x14166d970
-void PCBase::FUN_14166d970(efd::Point3 kRot)
+void PCBase::FUN_14166d970(const efd::Point3& kRot)
 {
     FUN_14166d8b0(kRot.z);
     vfunc_21(kRot);
@@ -1615,12 +1609,11 @@ float PCBase::FUN_14166dab0()
 }
 
 // @0x14166dad0
-// MS2-FUNCTIONAL: the exe spills the second degree term to a temporary before the add.
 float PCBase::FUN_14166dad0(const efd::Point3& kLook, const efd::Point3& kDir)
 {
-    float fA = atan2f(kDir.y, kDir.x);
-    float fB = atan2f(kLook.x, kLook.y);
-    float fAngle = fA * 180.0f / 3.1415927f + fB * 180.0f / 3.1415927f;
+    float fA = atan2f(kDir.y, kDir.x) * 180.0f / 3.1415927f;
+    float fB = atan2f(kLook.x, kLook.y) * 180.0f / 3.1415927f;
+    float fAngle = fA + fB;
     if (fAngle < 0.0f)
         fAngle += 360.0f;
     if (fAngle >= 360.0f)
@@ -1675,10 +1668,14 @@ MS2_REPLACE_METHOD(0x14166de50, PCBase, FUN_14166de50, 51, 0x1292505D);
 // @0x14166f6d0
 int PCBase::FUN_14166f6d0()
 {
-    if (FUN_14166c930() == 0xb)
-        return static_cast<Unk_PCBaseState0b*>(FUN_14166ccb0())->FUN_1417c4320();
-    if (FUN_14166c930() == 0xf)
-        return static_cast<Unk_PCBaseState0f*>(FUN_14166ccb0())->FUN_1417c6a30();
+    if (FUN_14166c930() == 0xb) {
+        Unk_PCBaseState0b* pState = static_cast<Unk_PCBaseState0b*>(FUN_14166ccb0());
+        return pState->FUN_1417c4320();
+    }
+    if (FUN_14166c930() == 0xf) {
+        Unk_PCBaseState0f* pState = static_cast<Unk_PCBaseState0f*>(FUN_14166ccb0());
+        return pState->FUN_1417c6a30();
+    }
     return 0;
 }
 MS2_REPLACE_METHOD(0x14166f6d0, PCBase, FUN_14166f6d0, 100, 0xE80CDCB9);
@@ -1802,7 +1799,7 @@ void PCBase::FUN_14166fff0(CStringW str)
 MS2_REPLACE_METHOD(0x14166fff0, PCBase, FUN_14166fff0, 184, 0xF815B00C);
 
 // @0x14166fda0
-int PCBase::vfunc_78()
+unsigned short PCBase::vfunc_78()
 {
     return 0;
 }
@@ -2533,32 +2530,31 @@ void PCBase::FUN_141670920(int nStat, __int64 nValue)
 MS2_REPLACE_METHOD(0x141670920, PCBase, FUN_141670920, 106, 0x9D769AB6);
 
 // @0x141670a90
-// MS2-FUNCTIONAL: slot 90 takes void* in the shared PCBase/PC declarations (as in MyPC::vfunc_90).
+// slot 90 takes void* in the shared PCBase/PC declarations (as in MyPC::vfunc_90).
 void PCBase::vfunc_90(void* p)
 {
-    CInPacket* pPacket = static_cast<CInPacket*>(p);
-    unsigned char nCount = pPacket->ReadUInt8();
+    unsigned char nCount = static_cast<CInPacket*>(p)->ReadUInt8();
     if (nCount == 0x23) {
         for (int nType = 0; nType < 0x23; nType++) {
             for (int i = 0; i < 3; i++) {
-                __int64 nValue;
-                if (FUN_14082f1a0(nType) == 0)
-                    nValue = (unsigned)pPacket->ReadInt32();
+                __int64 nValue = 0;
+                if (FUN_14082f1a0(nType))
+                    nValue = static_cast<CInPacket*>(p)->ReadInt64();
                 else
-                    nValue = pPacket->ReadInt64();
+                    nValue = (unsigned)static_cast<CInPacket*>(p)->ReadInt32();
                 FUN_141670540(i, nType, nValue);
             }
         }
     }
     else {
         for (int n = 0; n < nCount; n++) {
-            unsigned char nType = pPacket->ReadUInt8();
+            int nType = static_cast<CInPacket*>(p)->ReadUInt8();
             for (int i = 0; i < 3; i++) {
-                __int64 nValue;
-                if (FUN_14082f1a0(nType) == 0)
-                    nValue = (unsigned)pPacket->ReadInt32();
+                __int64 nValue = 0;
+                if (FUN_14082f1a0(nType))
+                    nValue = static_cast<CInPacket*>(p)->ReadInt64();
                 else
-                    nValue = pPacket->ReadInt64();
+                    nValue = (unsigned)static_cast<CInPacket*>(p)->ReadInt32();
                 FUN_141670540(i, nType, nValue);
             }
         }
@@ -2851,7 +2847,7 @@ MS2_REPLACE_METHOD(0x1416739c0, PCBase, vfunc_104, 65, 0x3097854B);
 // @0x1416749c0
 bool PCBase::FUN_1416749c0()
 {
-    NiPoint3 kPos = FUN_14123c360();
+    efd::Point3 kPos = FUN_14123c360();
     if (kPos != efd::Point3::ZERO)
         return true;
     return false;
@@ -2938,7 +2934,6 @@ int PCBase::vfunc_118(const NiPoint3& kPos, float* pDist, CString* pName)
 MS2_REPLACE_METHOD(0x1416752f0, PCBase, vfunc_118, 346, 0x49F5AB68);
 
 // @0x141673a10
-// MS2-FUNCTIONAL: the exe moves the saved z pointer through rcx into rdx for FUN_140970eb0; the source loads rdx directly (register choice only).
 void PCBase::vfunc_105(efd::Point3 kPos, void* b, void* c, int d)
 {
     float fYaw = 0;
@@ -2950,8 +2945,7 @@ void PCBase::vfunc_105(efd::Point3 kPos, void* b, void* c, int d)
     }
     if (*static_cast<efd::Point3*>(b) != efd::Point3::ZERO)
         static_cast<efd::Point3*>(c)->z = fYaw;
-    float* pRotZ = &static_cast<efd::Point3*>(c)->z;
-    FUN_1416749a0()->FUN_140970eb0(*pRotZ);
+    FUN_1416749a0()->FUN_140970eb0(static_cast<efd::Point3*>(c)->z);
 }
 MS2_REPLACE_METHOD(0x141673a10, PCBase, vfunc_105, 288, 0xE5649AD4);
 
@@ -3466,9 +3460,11 @@ void PCBase::vfunc_120(MS2Ptr<RideOnAction> spAction)
         FUN_14166ca20(2);
     if (FUN_14166cb00(1))
         m_spB10->FUN_14166ca20(1);
-    MS2Ptr<Unk_PCBaseComp_a78> spNameTag = vfunc_82();
-    if (spNameTag.get())
-        spNameTag->FUN_140f48d80();
+    {
+        MS2Ptr<Unk_PCBaseComp_a78> spNameTag = vfunc_82();
+        if (spNameTag.get())
+            spNameTag->FUN_140f48d80();
+    }
     PC* pPC = FUN_140974230(this);
     if (pPC)
         pPC->FUN_1416642c0(spAction->m_b28);
@@ -3538,12 +3534,12 @@ void PCBase::vfunc_121(MS2Ptr<RideOffAction> spAction)
     FUN_141676320(MS2Ptr<RideOnAction>(0));
     FUN_1416766b0(MS2Ptr<Unk_PCBaseComp_b18>(0));
     FUN_14166d220()->FUN_141240730();
-    if (bGround == 0) {
-        FUN_14166d220()->FUN_141241070();
-        vfunc_59(5, new StateFallData(kRideePos), 0, 0);
+    if (bGround != 0) {
+        vfunc_59(1, 0, 0, 0);
     }
     else {
-        vfunc_59(1, 0, 0, 0);
+        FUN_14166d220()->FUN_141241070();
+        vfunc_59(5, new StateFallData(kRideePos), 0, 0);
     }
     if (vfunc_25() == 0) {
         Unk_PCBaseFxQuery kQuery;
@@ -4000,7 +3996,6 @@ GameObject* PCBase::FUN_141679ad0(CAtlArray<efd::SmartPointer<GameObject> >& arr
 MS2_REPLACE_METHOD(0x141679ad0, PCBase, FUN_141679ad0, 807, 0x7FC7CEBC);
 
 // @0x141679fa0
-// MS2-FUNCTIONAL: pointer locals get other frame slots (the exe copies the "FA_Skin" child into a second slot); same calls and stores.
 void PCBase::FUN_141679fa0()
 {
     if (FUN_1409f7c90()->FUN_14109a9d0() != 0) {
@@ -4030,16 +4025,15 @@ void PCBase::FUN_141679fa0()
         NiActorManager* pActor = FUN_141b6f910()->FUN_140999440(FUN_14123c460());
         NiAVObject* pRoot;
         if (pActor != 0 && (pRoot = pActor->GetNIFRoot()) != 0) {
-            NiAVObject* pSkin = pRoot->GetObjectByName("FA_Skin");
-            if (pSkin != 0) {
+            if (NiAVObject* pSkin = pRoot->GetObjectByName("FA_Skin")) {
                 NiFloatsExtraData* pData = NiDynamicCast(NiFloatsExtraData, pSkin->GetExtraData(DAT_143ae50f8));
                 if (pData == 0) {
                     m_afA20[0] = 0.0f;
                     m_afA20[1] = 0.0f;
                     m_afA20[2] = 0.0f;
                     m_afA20[3] = 0.0f;
-                    NiExtraData* pNew = NiNew NiFloatsExtraData(4, m_afA20);
-                    pSkin->AddExtraData(DAT_143ae50f8, pNew);
+                    pData = NiNew NiFloatsExtraData(4, m_afA20);
+                    pSkin->AddExtraData(DAT_143ae50f8, pData);
                 } else {
                     m_afA20[0] = pData->GetValue(0);
                     m_afA20[1] = pData->GetValue(1);
@@ -4452,13 +4446,11 @@ void PCBase::FUN_141678ad0(CString strName, bool bOutline, float fScale, float f
 MS2_REPLACE_METHOD(0x141678ad0, PCBase, FUN_141678ad0, 1135, 0x6DF40066);
 
 // @0x141678f50
-// MS2-FUNCTIONAL: the exe keeps the NiNode smart pointer's ctor result in three extra slots (frame 0x78 vs 0x58); same calls and order.
 void PCBase::FUN_141678f50()
 {
     if (m_spC40 == 0)
         return;
-    efd::SmartPointer<NiNode> spRoot = (NiNode*)FUN_141675150("Eff_UI");
-    if (spRoot)
+    if (efd::SmartPointer<NiNode> spRoot = (NiNode*)FUN_141675150("Eff_UI"))
         spRoot->DetachChild(m_spC40);
     m_spC40 = 0;
 }

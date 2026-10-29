@@ -22,7 +22,7 @@ public:
     virtual void vfunc_41(const Scaleform::GFx::Value& root);       // 41 0x141931d10 m_30 = new ASGameEntity
     virtual int vfunc_48() { return 0x4e66; }                       // 48 0x141931ea0 UI type id
     virtual void vfunc_52();                                        // 52 0x141931790
-    virtual void vfunc_53(Unk_PopupPos pos);                        // 53 0x1419317b0 place the clip above the target's tag
+    virtual void vfunc_53(const NiPoint3& kPos);                    // 53 0x1419317b0 place the clip above the target's tag
     virtual void vfunc_54(int nMode);                               // 54 0x141931740
     virtual void vfunc_55();                                        // 55 0x141931770
     virtual int vfunc_57(int nForce);                               // 57 0x1419319a0

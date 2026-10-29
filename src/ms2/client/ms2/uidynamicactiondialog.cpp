@@ -138,12 +138,11 @@ int FUN_1416595d0(PCBase* pActor);
 CUIService* FUN_1403ed2b0();                                // the UI service
 
 // Sort orders of the action pages (the comparators live in the skill system unit).
-struct Unk_EmotionLess { bool operator()(const MS2Ptr<Unk_Emotion>& a, const MS2Ptr<Unk_Emotion>& b) const; };   // 0x141764410
-struct Unk_EmotionGreater { bool operator()(const MS2Ptr<Unk_Emotion>& a, const MS2Ptr<Unk_Emotion>& b) const; };   // 0x141764570
+struct Unk_EmotionLess { bool operator()(const MS2Ptr<Unk_Emotion>& a, const MS2Ptr<Unk_Emotion>& b) const; };   // runs the 0x141764570 body (skillslot.cpp)
+struct Unk_EmotionGreater { bool operator()(const MS2Ptr<Unk_Emotion>& a, const MS2Ptr<Unk_Emotion>& b) const; };   // runs the 0x141764410 body (skillslot.cpp)
 
 // @0x14192e660
-// MS2-FUNCTIONAL: compiler scheduling/register-allocation differs from the exe
-bool Unk_DaSlot::IsSet() const
+int Unk_DaSlot::IsSet() const
 {
     return m_4 != 0;
 }
@@ -165,17 +164,15 @@ CString UIDynamicActionDialog::GetTypeName()
 MS2_REPLACE_METHOD(0x14192AD20, UIDynamicActionDialog, GetTypeName, 61, 0);
 
 // @0x14192ad70
-// MS2-FUNCTIONAL: compiler scheduling/register-allocation differs from the exe
 int UIDynamicActionDialog::vfunc_65()
 {
-    int r = UIDialog::vfunc_65();
-    if (r != 0) {
-        m_178.Clear();
-        m_1b8.Empty();
-        m_1b0 = false;
-        m_1b1 = false;
-    }
-    return r != 0;
+    if (!UIDialog::vfunc_65())
+        return 0;
+    m_178.Clear();
+    m_1b8.Empty();
+    m_1b0 = false;
+    m_1b1 = false;
+    return 1;
 }
 MS2_REPLACE_METHOD(0x14192AD70, UIDynamicActionDialog, vfunc_65, 100, 0);
 
@@ -191,7 +188,7 @@ void UIDynamicActionDialog::vfunc_67()
 MS2_REPLACE_METHOD(0x14192ADE0, UIDynamicActionDialog, vfunc_67, 87, 0);
 
 // @0x14192ae40
-// MS2-FUNCTIONAL: compiler scheduling/register-allocation differs from the exe
+// MS2-FUNCTIONAL: the exe spills the zero-extended action id to its own temp before the this-adjust (frame 0x88); no source form found
 int UIDynamicActionDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
 {
     if (pMsg->FUN_1422e4520() == 0) {
@@ -199,11 +196,10 @@ int UIDynamicActionDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
             int nResult = pMsg->FUN_1422b8a10();
             FUN_14151f200();
             if (nResult == 0) {
-                FUN_14192df00(m_178.m_8, m_178.m_4);
+                FUN_14192df00(m_178.m_8, (unsigned)m_178.m_4);
             } else {
-                FUN_14192df00(m_184.m_8, m_184.m_4);
-                MS2Ptr<Unk_DaList> spList = FUN_140ba4b70("m_list");
-                if (spList.get() != 0)
+                FUN_14192df00(m_184.m_8, (unsigned)m_184.m_4);
+                if (MS2Ptr<Unk_DaList> spList = FUN_140ba4b70("m_list"))
                     spList->FUN_1422dcca0(-1);
             }
             m_178.Clear();
@@ -256,7 +252,7 @@ int UIDynamicActionDialog::vfunc_13()
     if (FUN_14025e7c0()->FUN_14116d9c0(0x1c, 0, 0) != 0) {
         ASDialog* pDlg = dynamic_cast<ASDialog*>(static_cast<AScript*>(m_30));
         if (pDlg != 0 && FUN_140b632f0() != 0) {
-            if (FUN_140b632f0()->FUN_1422d4e20(CString(m_20)) != 0 && m_1a0.get() != 0) {
+            if (FUN_140b632f0()->FUN_1422d4e20(CString(m_20)) != 0 && (Unk_DaInput*)m_1a0 != 0) {
                 if (FUN_1422c76c0(m_1a0.operator->()) != 0) {
                     FUN_14192d790(m_1a0->FUN_1422e0b00());
                     FUN_1422c7630(pDlg, 1);
@@ -266,46 +262,47 @@ int UIDynamicActionDialog::vfunc_13()
             }
         }
     }
-    if (m_178.m_0 == 0) {
-        if (m_178.IsSet()) {
-            int nKey = FUN_1409331f0()->FUN_14142e340(0);
-            if (nKey != 0) {
-                if (FUN_1409331f0()->FUN_14142cc40(nKey) == 0) {
-                    m_178.Clear();
-                    FUN_140d73bc0(0x84c, 0, 0, CStringW(L""));
-                } else if (FUN_14192deb0(nKey) == 0) {
+    if (m_178.m_0 != 0)
+        return 0;
+    if (m_178.IsSet()) {
+        int nKey = FUN_1409331f0()->FUN_14142e340(0);
+        if (nKey != 0) {
+            if (FUN_1409331f0()->FUN_14142cc40(nKey) != 0) {
+                if (FUN_14192deb0(nKey) != 0) {
+                    if (FUN_14192df00(nKey, (unsigned)m_178.m_4) != 0)
+                        m_178.Clear();
+                } else {
                     m_178.m_0 = 1;
                     m_178.m_8 = nKey;
                     unsigned __int64 nOther = FUN_1409331f0()->FUN_14142d190(nKey);
                     CStringW strOther;
-                    if (FUN_1409331f0()->FUN_14142cf10(nOther) == 0) {
-                        strOther = GetStringTable()->FUN_1418125b0((unsigned)nOther);
-                    } else {
-                        strOther = FUN_140656190(L"{0}[{1}]", GetStringTable()->FUN_1418125b0((unsigned)nOther),
+                    if (FUN_1409331f0()->FUN_14142cf10(nOther) != 0) {
+                        strOther = FUN_140656190(L"{0}[{1}]", GetStringTable()->FUN_1418125b0((unsigned)FUN_1409331f0()->FUN_14142d190(nKey)),
                                                  FUN_1409331f0()->FUN_14142d220(nKey));
+                    } else {
+                        strOther = GetStringTable()->FUN_1418125b0((unsigned)nOther);
                     }
                     if (FUN_1409331f0()->FUN_141430470(nOther) == 0) {
                         FUN_140d73aa0(FUN_14052bd00(0x84f, strOther), 1, static_cast<IMessageListener*>(this), CStringW(L""));
                     } else if (FUN_14192df00(nKey, (unsigned)m_178.m_4) != 0) {
                         m_178.Clear();
                     }
-                } else if (FUN_14192df00(nKey, (unsigned)m_178.m_4) != 0) {
-                    m_178.Clear();
                 }
-                return 1;
+            } else {
+                m_178.Clear();
+                FUN_140d73bc0(0x84c, 0, 0, CStringW(L""));
             }
+            return 1;
         }
-        return UIDialog::vfunc_13();
     }
-    return 0;
+    return UIDialog::vfunc_13();
 }
 MS2_REPLACE_METHOD(0x14192B520, UIDynamicActionDialog, vfunc_13, 1539, 0);
 
 // @0x14192bb30
-// MS2-FUNCTIONAL: compiler scheduling/register-allocation differs from the exe
 void UIDynamicActionDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
 {
-    int nAction = pArgs->FUN_1422b8b10();
+    unsigned int nAction = pArgs->FUN_1422b8b10();
     MS2Ptr<Unk_EmotionKeywords> spData = FUN_140347050(nAction);
     if (spData.IsNull())
         return;
@@ -324,14 +321,15 @@ void UIDynamicActionDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pAr
         if (0 < nPeriod) {
             CMsTime time(nPeriod);
             int nStringId = 0xb8;
-            if (nPeriod < FUN_140869440())
+            if (FUN_140869440() > nPeriod)
                 nStringId = 0xb9;
             int nMinute = time.GetMinute();
             int nHour = time.GetHour();
             int nDay = time.GetDay();
             int nMonth = time.GetMonth();
             int nYear = time.GetYear();
-            tooltip.FUN_1407cbb20("skillPeriod", FUN_1409e90c0(nStringId, nYear, nMonth, nDay, nHour, nMinute));
+            CStringW strPeriod = FUN_1409e90c0(nStringId, nYear, nMonth, nDay, nHour, nMinute);
+            tooltip.FUN_1407cbb20("skillPeriod", strPeriod);
         }
         *pRetVal = tooltip.FUN_1422bb870();
     }
@@ -441,31 +439,33 @@ void UIDynamicActionDialog::FUN_14192c690(const Scaleform::GFx::FunctionHandler:
 MS2_REPLACE_METHOD(0x14192C690, UIDynamicActionDialog, FUN_14192c690, 11, 0);
 
 // @0x14192c6b0
-// MS2-FUNCTIONAL: compiler scheduling/register-allocation differs from the exe
 void UIDynamicActionDialog::FUN_14192c6b0()
 {
     m_190.clear();
     ASDialog* pDlg = dynamic_cast<ASDialog*>(static_cast<AScript*>(m_30));
-    if (pDlg != 0) {
-        MyPC* pPlayer = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
-        if (pPlayer != 0) {
-            ATL::CAtlArray<MS2Ptr<Unk_Emotion> > list;
-            FUN_1417691a0(pPlayer->FUN_141523bc0(), list);
-            int nMode = FUN_141765cf0(pPlayer->FUN_141523bc0(), 0);
-            FUN_141765cf0(pPlayer->FUN_141523bc0(), nMode);
-            std::map<unsigned int, Unk_Emotion> unused;
-            for (size_t i = 0; i < list.GetCount(); i++) {
-                unsigned int nId = list[i]->m_id;
-                SkillData* pSkill = FUN_1401958b0()->GetSkillData(nId);
-                if (pSkill != 0 && pSkill->GetMainType() == 0xe)
-                    m_190.insert(std::make_pair(nId, list[i]));
-            }
-            if (m_1b0 == false)
-                FUN_14192ca70();
-            else
-                FUN_14192d100();
-        }
+    if (pDlg == 0)
+        return;
+    MyPC* pPlayer = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    if (pPlayer == 0)
+        return;
+    ATL::CAtlArray<MS2Ptr<Unk_Emotion> > list;
+    FUN_1417691a0(pPlayer->FUN_141523bc0(), list);
+    int nMode = FUN_141765cf0(pPlayer->FUN_141523bc0(), 0);
+    FUN_141765cf0(pPlayer->FUN_141523bc0(), nMode);
+    std::map<unsigned int, Unk_Emotion> unused;
+    for (size_t i = 0; i < list.GetCount(); i++) {
+        unsigned int nId = list[i]->m_id;
+        SkillData* pSkill = FUN_1401958b0()->GetSkillData(nId);
+        if (pSkill == 0)
+            continue;
+        if (pSkill->GetMainType() != 0xe)
+            continue;
+        m_190.insert(std::make_pair(nId, list[i]));
     }
+    if (m_1b0)
+        FUN_14192d100();
+    else
+        FUN_14192ca70();
 }
 MS2_REPLACE_METHOD(0x14192C6B0, UIDynamicActionDialog, FUN_14192c6b0, 621, 0);
 
@@ -479,18 +479,19 @@ void UIDynamicActionDialog::FUN_14192c930(int nAction)
 MS2_REPLACE_METHOD(0x14192C930, UIDynamicActionDialog, FUN_14192c930, 117, 0);
 
 // @0x14192c9b0
-// MS2-FUNCTIONAL: compiler scheduling/register-allocation differs from the exe
 void UIDynamicActionDialog::FUN_14192c9b0(int nAction)
 {
     MyPC* pPlayer = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
-    if (pPlayer != 0 && FUN_1416595d0(pPlayer) == 0)
-        pPlayer->FUN_141525480(nAction, 0);
+    if (pPlayer == 0)
+        return;
+    if (FUN_1416595d0(pPlayer))
+        return;
+    pPlayer->FUN_141525480(nAction, 0);
 }
 MS2_REPLACE_METHOD(0x14192C9B0, UIDynamicActionDialog, FUN_14192c9b0, 79, 0);
 
 // The skill preview dialog (UI id 0x4ec3), when it exists.
 // @0x14192e1f0
-// MS2-FUNCTIONAL: compiler scheduling/register-allocation differs from the exe
 UISkillPreviewDialog* FUN_14192e1f0(int nDialog)
 {
     if (FUN_1403ed2b0() != 0) {
@@ -502,14 +503,13 @@ UISkillPreviewDialog* FUN_14192e1f0(int nDialog)
 }
 
 // @0x14192ca10
-// MS2-FUNCTIONAL: compiler scheduling/register-allocation differs from the exe
 void UIDynamicActionDialog::FUN_14192ca10(int nAction)
 {
     UISkillPreviewDialog* pPreview = FUN_14192e1f0(0x4ec3);
-    if (pPreview != 0) {
-        FUN_1403ed2b0()->OpenDialog((eUIClassID)0x4ec3);
-        pPreview->FUN_140e93e70(nAction, 0);
-    }
+    if (pPreview == 0)
+        return;
+    FUN_1403ed2b0()->OpenDialog((eUIClassID)0x4ec3);
+    pPreview->FUN_140e93e70(nAction, 0);
 }
 MS2_REPLACE_METHOD(0x14192CA10, UIDynamicActionDialog, FUN_14192ca10, 78, 0);
 
@@ -518,16 +518,18 @@ MS2_REPLACE_METHOD(0x14192CA10, UIDynamicActionDialog, FUN_14192ca10, 78, 0);
 void UIDynamicActionDialog::FUN_14192ca70()
 {
     ASDialog* pDlg = dynamic_cast<ASDialog*>(static_cast<AScript*>(m_30));
-    if (pDlg != 0) {
+    if (pDlg == 0)
+        return;
+    {
         ASArray actions(2);
         int nFocus = 0;
-        std::set<MS2Ptr<Unk_Emotion>, Unk_EmotionLess> sorted;
+        std::set<MS2Ptr<Unk_Emotion>, Unk_EmotionGreater> sorted;
         for (std::map<unsigned int, MS2Ptr<Unk_Emotion> >::iterator it = m_190.begin(); it != m_190.end(); ++it)
         {
             MS2Ptr<Unk_Emotion> spCopy(it->second);
             sorted.insert(spCopy);
         }
-        for (std::set<MS2Ptr<Unk_Emotion>, Unk_EmotionLess>::iterator sit = sorted.begin(); sit != sorted.end(); ++sit) {
+        for (std::set<MS2Ptr<Unk_Emotion>, Unk_EmotionGreater>::iterator sit = sorted.begin(); sit != sorted.end(); ++sit) {
             MS2Ptr<Unk_Emotion> spAction(*sit);
             int nId = spAction->m_id;
             int nNew = spAction->m_isNew;
@@ -542,7 +544,9 @@ void UIDynamicActionDialog::FUN_14192ca70()
                     continue;
                 bool bFound = false;
                 CStringW strName = GetStringTable()->FUN_141811980(4, nId);
-                if (strName.Find(m_1b8, 0) == -1) {
+                if (strName.Find(m_1b8, 0) != -1) {
+                    bFound = true;
+                } else {
                     std::vector<CStringW> words;
                     CStringW strKeywords = FUN_14192d820(nId);
                     FUN_140988d60(strKeywords, words, L", ");
@@ -552,8 +556,6 @@ void UIDynamicActionDialog::FUN_14192ca70()
                             break;
                         }
                     }
-                } else {
-                    bFound = true;
                 }
                 if (!bFound)
                     continue;
@@ -583,16 +585,18 @@ MS2_REPLACE_METHOD(0x14192CA70, UIDynamicActionDialog, FUN_14192ca70, 1659, 0);
 void UIDynamicActionDialog::FUN_14192d100()
 {
     ASDialog* pDlg = dynamic_cast<ASDialog*>(static_cast<AScript*>(m_30));
-    if (pDlg != 0) {
+    if (pDlg == 0)
+        return;
+    {
         ASArray actions(2);
         int nFocus = 0;
-        std::set<MS2Ptr<Unk_Emotion>, Unk_EmotionGreater> sorted;
+        std::set<MS2Ptr<Unk_Emotion>, Unk_EmotionLess> sorted;
         for (std::map<unsigned int, MS2Ptr<Unk_Emotion> >::iterator it = m_190.begin(); it != m_190.end(); ++it)
         {
             MS2Ptr<Unk_Emotion> spCopy(it->second);
             sorted.insert(spCopy);
         }
-        for (std::set<MS2Ptr<Unk_Emotion>, Unk_EmotionGreater>::iterator sit = sorted.begin(); sit != sorted.end(); ++sit) {
+        for (std::set<MS2Ptr<Unk_Emotion>, Unk_EmotionLess>::iterator sit = sorted.begin(); sit != sorted.end(); ++sit) {
             MS2Ptr<Unk_Emotion> spAction(*sit);
             int nId = spAction->m_id;
             int nNew = spAction->m_isNew;
@@ -607,7 +611,9 @@ void UIDynamicActionDialog::FUN_14192d100()
                     continue;
                 bool bFound = false;
                 CStringW strName = GetStringTable()->FUN_141811980(4, nId);
-                if (strName.Find(m_1b8, 0) == -1) {
+                if (strName.Find(m_1b8, 0) != -1) {
+                    bFound = true;
+                } else {
                     std::vector<CStringW> words;
                     CStringW strKeywords = FUN_14192d820(nId);
                     FUN_140988d60(strKeywords, words, L", ");
@@ -617,8 +623,6 @@ void UIDynamicActionDialog::FUN_14192d100()
                             break;
                         }
                     }
-                } else {
-                    bFound = true;
                 }
                 if (!bFound)
                     continue;
@@ -668,12 +672,10 @@ CStringW UIDynamicActionDialog::FUN_14192d820(unsigned int nAction)
 MS2_REPLACE_METHOD(0x14192D820, UIDynamicActionDialog, FUN_14192d820, 311, 0);
 
 // @0x14192d960
-// MS2-FUNCTIONAL: compiler scheduling/register-allocation differs from the exe
 void UIDynamicActionDialog::FUN_14192d960(ASArray& arr)
 {
     int nRounded = (int)(std::ceil((float)arr.FUN_1422bc5d0() / 6.0f) * 6.0f);
-    int nPages = nRounded > 0x18 ? nRounded : 0x18;
-    int nMissing = nPages - arr.FUN_1422bc5d0();
+    int nMissing = (nRounded > 0x18 ? nRounded : 0x18) - arr.FUN_1422bc5d0();
     if (nMissing < 0)
         return;
     for (int i = 0; i < nMissing; i++) {
@@ -685,34 +687,29 @@ void UIDynamicActionDialog::FUN_14192d960(ASArray& arr)
 MS2_REPLACE_METHOD(0x14192D960, UIDynamicActionDialog, FUN_14192d960, 254, 0);
 
 // @0x14192da70
-// MS2-FUNCTIONAL: compiler scheduling/register-allocation differs from the exe
 void UIDynamicActionDialog::FUN_14192da70(int nKey)
 {
     if (nKey == 0x79) {
-        MS2Ptr<Unk_DaList> spList = FUN_140ba4b70("m_list");
-        if (spList.get() != 0) {
+        if (MS2Ptr<Unk_DaList> spList = FUN_140ba4b70("m_list")) {
             int nIndex = spList->FUN_1422dccd0();
             spList->FUN_1422dcca0(FUN_140ad02c0(0, nIndex - 4));
         }
     } else if (nKey == 0x7e) {
-        MS2Ptr<Unk_DaList> spList = FUN_140ba4b70("m_list");
-        if (spList.get() != 0) {
+        if (MS2Ptr<Unk_DaList> spList = FUN_140ba4b70("m_list")) {
             int nIndex = spList->FUN_1422dccd0();
-            int nLast = spList->FUN_1422dcd80()->FUN_1422bc5d0();
-            spList->FUN_1422dcca0(FUN_140ad02f0(nLast - 1, nIndex + 4));
+            int nLast = spList->FUN_1422dcd80()->FUN_1422bc5d0() - 1;
+            spList->FUN_1422dcca0(FUN_140ad02f0(nLast, nIndex + 4));
         }
     } else if (nKey == 0x7b) {
-        MS2Ptr<Unk_DaList> spList = FUN_140ba4b70("m_list");
-        if (spList.get() != 0) {
+        if (MS2Ptr<Unk_DaList> spList = FUN_140ba4b70("m_list")) {
             int nIndex = spList->FUN_1422dccd0();
             spList->FUN_1422dcca0(FUN_140ad02c0(0, nIndex - 1));
         }
     } else if (nKey == 0x7c) {
-        MS2Ptr<Unk_DaList> spList = FUN_140ba4b70("m_list");
-        if (spList.get() != 0) {
+        if (MS2Ptr<Unk_DaList> spList = FUN_140ba4b70("m_list")) {
             int nIndex = spList->FUN_1422dccd0();
-            int nLast = spList->FUN_1422dcd80()->FUN_1422bc5d0();
-            spList->FUN_1422dcca0(FUN_140ad02f0(nLast - 1, nIndex + 1));
+            int nLast = spList->FUN_1422dcd80()->FUN_1422bc5d0() - 1;
+            spList->FUN_1422dcca0(FUN_140ad02f0(nLast, nIndex + 1));
         }
     }
 }

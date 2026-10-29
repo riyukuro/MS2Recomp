@@ -248,7 +248,7 @@ public:
     void Read(CInPacket* pPacket);          // 0x1401bdf60
     long long TotalPrice();                 // 0x1401be2f0 count * unit price
     long long PriceFor(int nCount);         // 0x1401be310
-    unsigned long long GetState(bool bLike);    // 0x1401be330 2 = open, 3 = expired, 4 / 5 = already used
+    int GetState(bool bLike);    // 0x1401be330 2 = open, 3 = expired, 4 / 5 = already used
     int GetRemain();                        // 0x1401be3b0 count - bought
     void SetQw78(unsigned long long qw);    // 0x1401be3d0
     unsigned int RollCount();               // 0x1401be3f0 a random purchase count within the remaining stock
@@ -333,7 +333,7 @@ public:
     {
     public:
         StatInfo();                     // 0x1401c5540
-        virtual ~StatInfo();            // 0x1401c5980
+        // ~StatInfo() is implicit (0x1401c5980: no vptr reset)
 
         int m_nId;                      // +0x18 stat id (-1 none)
         CStringW m_strName;             // +0x20
@@ -351,7 +351,7 @@ public:
     {
     public:
         TabInfo();                      // 0x1401c55b0
-        virtual ~TabInfo();             // 0x1401c59b0
+        // ~TabInfo() is implicit (0x1401c59b0: no vptr reset)
 
         CStringW m_strName;             // +0x18 localized tab name (string id "name")
         int m_nPriority;                // +0x20 "priority"

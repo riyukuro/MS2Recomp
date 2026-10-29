@@ -48,27 +48,26 @@
 // MS2-PINS-END tplpin
 #define MS2_NO_ENGINE_STATIC_INIT
 #ifndef MS2_HOOK_DLL
-// This TU saw the Scaleform headers without SF_BUILD_STATICLIB: SF_EXPORT is __declspec(dllexport), so it emits (and the exe
-// exports, ordinals 1-20) the inline SF_EXPORT members and default-constructor closures it reached first. The hook DLL keeps
-// the static-library form.
-#undef SF_BUILD_STATICLIB
+// This TU saw the Scaleform headers as a DLL build: SF_EXPORT is __declspec(dllexport) (kernel/sf_types.h), so it emits
+// (and the exe exports, ordinals 1-20) the inline SF_EXPORT members and default-constructor closures it reached first.
+// The hook DLL keeps the static-library form.
+#define MS2_SF_EXPORT_TU
 #endif
+#define SF_SYSALLOC_DEFAULT_CLASS SysAllocMalloc     // ??_FSystem builds the MH heap's SysAllocMalloc singleton
 #define MS2_THIS_FILE ""
 #include "ms2/placeholder/ms2stdafx.h"
 #include "ms2/ms2recover.h"
 #include <winsock2.h>
 #include <dbghelp.h>
-#include "GFxConfig.h"
-#include "Kernel/SF_System.h"
-#include "Kernel/SF_Threads.h"
-#include "GFx/GFx_Loader.h"
-#include "Kernel/HeapPT/HeapPT_SysAllocMalloc.h"
-#include "Kernel/HeapPT/HeapPT_SysAllocWinAPI.h"
-#include "Render/Render_Matrix2x4.h"
-#include "Render/Render_Matrix3x4.h"
-#include "Render/Render_Matrix4x4.h"
+#include "ms2/scaleform/kernel/heapmh/sf_heapmh_sysallocmalloc.h"
+#include "ms2/scaleform/kernel/sf_system.h"
+#include "ms2/scaleform/kernel/sf_threads.h"
+#include "ms2/scaleform/include/gfx/gfx_system.h"
+#include "ms2/scaleform/kernel/heappt/sf_sysallocmalloc.h"
+#include "ms2/scaleform/kernel/heappt/sf_sysallocwinapi.h"
+#include "ms2/scaleform/include/render/render_matrix2x4.h"
+#include "ms2/scaleform/include/render/render_matrix4x4.h"
 #include <atlimage.h>
-
 #ifndef NOMINMAX
 #define NOMINMAX
 #endif
@@ -123,7 +122,7 @@ EE_USE_DEFAULT_ALLOCATOR
 
 struct Unk_WsaStartup
 {
-    int m_nResult;
+    volatile int m_nResult;
     Unk_WsaStartup();
     ~Unk_WsaStartup();
 };
@@ -276,7 +275,6 @@ LONG Unk_CrashDumper::Write(EXCEPTION_POINTERS* pException)
 // MS2-FUNCTIONAL: efd::SmallObjectAllocator / ExternalMemAllocator below are MS2-modified in the exe (object size 0x7020,
 // a lock-add counter at +0x7018, Allocate throws bad_alloc on null); the stock Gamebryo headers are compiled, so the
 // SmallObjectAllocator ctor/??_G/Allocate/Deallocate/Reallocate and CreateDefaultGlobalMemoryAllocator are functional.
-// ??_FThread: Scaleform 4.1.18 defaults the thread stack to 0x100000, the 4.1.19 headers to 0x20000.
 // MS2-PIN: ??0?$SmallObjectAllocator@VExternalMemAllocator@efd@@@efd@@QEAA@_K@Z 0x141803420
 // MS2-PIN: ??0CComCriticalSection@ATL@@QEAA@XZ 0x141803660
 // MS2-FUNCTIONAL ??0CComCriticalSection@ATL@@QEAA@XZ: the exe's copy zeroes m_sec through a memset call; the stock ATL ctor inlines it (rep stosb), same effect

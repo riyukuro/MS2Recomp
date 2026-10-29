@@ -18,6 +18,7 @@
 
 #include "ms2/ms2format.h"
 #include "ms2/placeholder/citem.h"
+#include "ms2/placeholder/mstime.h"
 #include "ms2/placeholder/unk_1402a9d70.h"
 #include "ms2/placeholder/wcformat.h"
 #include "ms2/ms2recover.h"
@@ -49,7 +50,7 @@ static CString s_strStun = "stun";                                          // @
 static Unk_1402a9d70 s_unk1402a9d70(17, 0.75f, 0.25f, 2.25f, 10);           // @0x14010db40
 
 // The chat colours (the chat colour table of the UI constants, 25 entries of 0x58 bytes from +0xb528; the last is set elsewhere).
-static ULong s_colors[26];
+static ULong s_color0, s_color1, s_color2, s_color3, s_color4, s_color5, s_color6, s_color7, s_color8, s_color9, s_color10, s_color11, s_color12, s_color13, s_color14, s_color15, s_color16, s_color17, s_color18, s_color19, s_color20, s_color21, s_color22, s_color23, s_color24, s_color25;
 
 // ---- unit-local views of exe objects and unrecovered callees ----
 
@@ -87,7 +88,6 @@ struct Unk_ThWedding
 MS2_CHECK_SIZE(Unk_ThWedding, 0x28);
 
 // A time value (the date text helper).
-struct Unk_ThTime { char m_pad[0x20]; };
 
 // The item record handle (the item of a megaphone): the function name at +0x290 and its parameter list at +0x2b0.
 class Unk_ThName { public: bool FUN_14034eee0(const wchar_t* psz) const; private: char m_pad[0x20]; };
@@ -205,13 +205,13 @@ public:
 };
 class Unk_ThWorld { public: Unk_ThPc* FUN_141bd0cc0(); };
 Unk_ThWorld* FUN_1403ed2d0();
-bool FUN_14025cd60(const CStringW& strA, const CStringW& strB);   // equal names
+bool FUN_14025cd60(const CStringW& strA, const CStringW& strB) noexcept;   // equal names (no EH state in the exe callers)
 
 class Unk_ThColorTbl { public: unsigned FUN_1405569f0(int nIdx) const; };
 Unk_ThColorTbl* FUN_140281980();
 class Unk_ThOptions { public: bool FUN_14036d570(int nOption) const; };
 Unk_ThOptions* FUN_140166410();
-struct Unk_ThFlags { char m_pad[0x30]; char m_30; };
+struct Unk_ThFlags { char m_pad[0x30]; bool m_30; };
 Unk_ThFlags* FUN_1406c7610();
 char* FUN_1401d3200();                                          // the UI constants
 unsigned FUN_1412780f0(void* pColor);
@@ -223,7 +223,7 @@ class Unk_ThRoomRef
 public:
     void* FUN_141847320() const { return m_8; }                 // 0x141847320
     Unk_ThRoomRec* FUN_1409020e0() const;
-    void FUN_140901e30();                                       // release
+    ~Unk_ThRoomRef();                                           // 0x140901e30 (release)
 private:
     void* m_0;
     void* m_8;
@@ -234,7 +234,7 @@ class Unk_ThHallRef
 public:
     void* FUN_141847330() const { return m_8; }                 // 0x141847330
     class Unk_ThHallBook* FUN_1409020f0() const;
-    void FUN_140901e60();                                       // release
+    ~Unk_ThHallRef();                                           // 0x140901e60 (release)
 private:
     void* m_0;
     void* m_8;
@@ -246,8 +246,8 @@ Unk_ThHallMgr* FUN_1409023c0();
 unsigned char FUN_140900f30(unsigned __int64 nTime);
 class Unk_ThStrTbl { public: CStringW FUN_141811980(int nType, unsigned nId) const; };
 Unk_ThStrTbl* FUN_1401a9d70();
-Unk_ThTime FUN_1406c47a0(unsigned __int64 nTime);
-CStringW FUN_14083bdc0(const Unk_ThTime& t, int nFlag, CStringW strDateSep, CStringW strTimeSep);
+// 0x1406c47a0 is CMsTime(__time64_t) (ms2/placeholder/mstime.h)
+CStringW FUN_14083bdc0(const CMsTime& t, bool bSeconds, CStringW strDateSep, CStringW strTimeSep);   // date and time text
 class Unk_ThUgc { public: CStringW FUN_140b15150(unsigned __int64 nId) const; };
 Unk_ThUgc* FUN_140e0d900();
 void FUN_14025a680(const CStringW& strText, ATL::CAtlArray<CStringW>& arr, const wchar_t* pszSep);
@@ -258,10 +258,9 @@ CStringW FUN_1405c2690(CStringW strKey, const CStringW& a);
 CStringW FUN_1401e8510(const wchar_t* pszFormat, const CStringW& a);
 CStringW FUN_140292a70(const wchar_t* pszFormat, const unsigned& a);
 CStringW FUN_14052bd00(int nId, const CStringW& a);
-CStringW FUN_14086d060(int nId, const unsigned __int64& a, const CStringW& b);
+CStringW FUN_14086d060(int nId, const __int64& n);              // FormatStringId<__int64>
 CStringW FUN_1409eaa20(CStringW strKey, const CStringW& a, const CStringW& b, const CStringW& c);
 CStringW FUN_140cbf840(unsigned nId);                           // the dungeon name
-class Unk_ThItem;
 unsigned FUN_141275c00(unsigned nRank);
 unsigned FUN_141275bd0(unsigned __int64 nId);
 unsigned FUN_141275b40();
@@ -282,19 +281,19 @@ CStringW FUN_14183f1c0(const CStringW& strText, const CStringW& strIcon, ULong n
 CStringW FUN_14183f310(const Unk_ThMsg& msg, const CStringW& strText, unsigned nSize);
 CStringW FUN_141841180(const Unk_ThMsg& msg, const Unk_ThWedding& wed, const CStringW& strText, unsigned nSize);
 CStringW FUN_141841a80(const CStringW& strText, int nSize);
-CStringW FUN_141841b40(Unk_ThItem* pItem, int nUnused, unsigned nSize);
+CStringW FUN_141841b40(CItem* pItem, const CStringW& strKind, int nSize);   // strKind unused (uimessenger passes L"inven")
 CStringW FUN_141841c60(unsigned nSize, CStringW strName, unsigned __int64 nIdA, unsigned __int64 nIdB, unsigned nRoomId,
                        unsigned nDungeonId, int nP8, int nP9, unsigned nSize2);
 CStringW FUN_141841fd0(CStringW strName, unsigned nSize);
-CStringW FUN_141842130(unsigned __int64 nId, unsigned __int64 nUnused, const CStringW& strArg);
-CStringW FUN_1418421e0(unsigned __int64 nId, unsigned __int64 nUnused, const CStringW& strArg);
+CStringW FUN_141842130(__int64 nId);
+CStringW FUN_1418421e0(__int64 nId);
 void FUN_141842290(CStringW& str);
 CStringW FUN_141842320(const CStringW& strText);
 CStringW FUN_1418423c0(unsigned nSize, CStringW& strText);
 CStringW FUN_141842560(const CStringW& strText, unsigned nColor, unsigned nColorCmp);
 ULong FUN_141842680(int nOwnFlag, int nIsMe, ULong nColor);
-bool FUN_1418426b0(const CStringW& strName);
-bool FUN_141842770(const Unk_ThMsg& msg);
+int FUN_1418426b0(const CStringW& strName);
+int FUN_141842770(const Unk_ThMsg& msg);
 void FUN_1418473a0(CStringW& str);
 bool FUN_1418473c0(CStringW& str);
 
@@ -310,31 +309,31 @@ void FUN_14183e690()
     char* pBase = FUN_1401d3200();
     if (pBase != 0)
     {
-        s_colors[0] = FUN_1412780f0(pBase + 0xb528);
-        s_colors[1] = FUN_1412780f0(pBase + 0xb580);
-        s_colors[2] = FUN_1412780f0(pBase + 0xb5d8);
-        s_colors[3] = FUN_1412780f0(pBase + 0xb630);
-        s_colors[4] = FUN_1412780f0(pBase + 0xb688);
-        s_colors[5] = FUN_1412780f0(pBase + 0xb6e0);
-        s_colors[6] = FUN_1412780f0(pBase + 0xb738);
-        s_colors[7] = FUN_1412780f0(pBase + 0xb790);
-        s_colors[8] = FUN_1412780f0(pBase + 0xb7e8);
-        s_colors[9] = FUN_1412780f0(pBase + 0xb840);
-        s_colors[10] = FUN_1412780f0(pBase + 0xb898);
-        s_colors[11] = FUN_1412780f0(pBase + 0xb8f0);
-        s_colors[12] = FUN_1412780f0(pBase + 0xb948);
-        s_colors[13] = FUN_1412780f0(pBase + 0xb9a0);
-        s_colors[14] = FUN_1412780f0(pBase + 0xb9f8);
-        s_colors[15] = FUN_1412780f0(pBase + 0xba50);
-        s_colors[16] = FUN_1412780f0(pBase + 0xbaa8);
-        s_colors[17] = FUN_1412780f0(pBase + 0xbb00);
-        s_colors[18] = FUN_1412780f0(pBase + 0xbb58);
-        s_colors[19] = FUN_1412780f0(pBase + 0xbbb0);
-        s_colors[20] = FUN_1412780f0(pBase + 0xbc08);
-        s_colors[21] = FUN_1412780f0(pBase + 0xbc60);
-        s_colors[22] = FUN_1412780f0(pBase + 0xbcb8);
-        s_colors[23] = FUN_1412780f0(pBase + 0xbd10);
-        s_colors[24] = FUN_1412780f0(pBase + 0xbd68);
+        s_color0 = FUN_1412780f0(pBase + 0xb528);
+        s_color1 = FUN_1412780f0(pBase + 0xb580);
+        s_color2 = FUN_1412780f0(pBase + 0xb5d8);
+        s_color3 = FUN_1412780f0(pBase + 0xb630);
+        s_color4 = FUN_1412780f0(pBase + 0xb688);
+        s_color5 = FUN_1412780f0(pBase + 0xb6e0);
+        s_color6 = FUN_1412780f0(pBase + 0xb738);
+        s_color7 = FUN_1412780f0(pBase + 0xb790);
+        s_color8 = FUN_1412780f0(pBase + 0xb7e8);
+        s_color9 = FUN_1412780f0(pBase + 0xb840);
+        s_color10 = FUN_1412780f0(pBase + 0xb898);
+        s_color11 = FUN_1412780f0(pBase + 0xb8f0);
+        s_color12 = FUN_1412780f0(pBase + 0xb948);
+        s_color13 = FUN_1412780f0(pBase + 0xb9a0);
+        s_color14 = FUN_1412780f0(pBase + 0xb9f8);
+        s_color15 = FUN_1412780f0(pBase + 0xba50);
+        s_color16 = FUN_1412780f0(pBase + 0xbaa8);
+        s_color17 = FUN_1412780f0(pBase + 0xbb00);
+        s_color18 = FUN_1412780f0(pBase + 0xbb58);
+        s_color19 = FUN_1412780f0(pBase + 0xbbb0);
+        s_color20 = FUN_1412780f0(pBase + 0xbc08);
+        s_color21 = FUN_1412780f0(pBase + 0xbc60);
+        s_color22 = FUN_1412780f0(pBase + 0xbcb8);
+        s_color23 = FUN_1412780f0(pBase + 0xbd10);
+        s_color24 = FUN_1412780f0(pBase + 0xbd68);
     }
 }
 
@@ -342,14 +341,15 @@ void FUN_14183e690()
 CStringW FUN_14183e930(const CStringW& strText, unsigned nColor)
 {
     CStringW str;
-    str.Format(L"<FONT color='#%x'>%s</FONT>", nColor, strText.GetString());
+    str.Format(L"<FONT color='#%x'>%s</FONT>", nColor, (LPCWSTR)strText);
     return str;
 }
 
 // @0x14183e9c0
 CStringW FUN_14183e9c0(CStringW strText, int nIdx)
 {
-    return FUN_14183e930(strText, FUN_140281980()->FUN_1405569f0(nIdx));
+    unsigned nColor = FUN_140281980()->FUN_1405569f0(nIdx);
+    return FUN_14183e930(strText, nColor);
 }
 
 // @0x14183ea40
@@ -422,7 +422,7 @@ void FUN_14183ee10(unsigned nItemId, CStringW& strIcon, ULong& nSize, ULong& nCo
 // @0x14183f080
 CStringW FUN_14183f080(const CStringW& strText, int bSystem, unsigned nSize)
 {
-    return FUN_14183f1c0(strText, bSystem ? CStringW(s_strIconSystem) : CStringW(L""), s_colors[21], nSize);
+    return FUN_14183f1c0(strText, bSystem ? CStringW(s_strIconSystem) : CStringW(L""), s_color21, nSize);
 }
 
 // @0x14183f1c0
@@ -451,145 +451,145 @@ CStringW FUN_14183f310(const Unk_ThMsg& msg, const CStringW& strText, unsigned n
     unsigned __int64 nExtra = msg.m_40;
     unsigned nItemId = msg.m_50;
     CStringW strUser;
-    strUser.Format(L"'event:userSelect,%s,%I64u,%I64u'", strName.GetString(), nIdA, nIdB);
+    strUser.Format(L"'event:userSelect,%s,%I64u,%I64u'", (LPCWSTR)strName, nIdA, nIdB);
     CStringW strHome;
-    strHome.Format(L"'event:moveToHome,%s,%I64u,%I64u'", strName.GetString(), nIdA, nIdB);
+    strHome.Format(L"'event:moveToHome,%s,%I64u,%I64u'", (LPCWSTR)strName, nIdA, nIdB);
     int bMe = FUN_1418426b0(strName);
     CStringW strImg;
     if (FUN_141842770(msg))
         strImg = FUN_1405c2690(CStringW(L"s_html_chat_img"), s_strIconReturn);
     if (nKind == 0x10)
     {
-        ULong nColorA = FUN_141842680(nOwnFlag, bMe, s_colors[6]);
-        ULong nColorB = FUN_141842680(nOwnFlag, bMe, s_colors[18]);
+        ULong nColorA = FUN_141842680(nOwnFlag, bMe, s_color6);
+        ULong nColorB = FUN_141842680(nOwnFlag, bMe, s_color18);
         ULong nIconSize = 1;
         CStringW strIcon(DAT_143aef3b8);
         FUN_14183eba0(nItemId, strIcon, nIconSize, nColorA, nColorB);
         strResult = FUN_14028dee0(0x67c, nIconSize);
-        if (!FUN_140166410()->FUN_14036d570(0xde))
-            strResult = FUN_14028dee0(0x66e, strResult, DAT_143aef3b8, strIcon, strUser, nColorA, nSize, strName, nSex,
-                                      strImg, strHome, s_strIconMoveToHouse, nColorB, nSize, strText2);
-        else
+        if (FUN_140166410()->FUN_14036d570(0xde))
             strResult = FUN_14028dee0(0x66e, strResult, DAT_143aef3b8, strIcon, strUser, nColorA, nSize, strName, strImg,
                                       strHome, s_strIconMoveToHouse, nColorB, nSize, strText2);
+        else
+            strResult = FUN_14028dee0(0x66e, strResult, DAT_143aef3b8, strIcon, strUser, nColorA, nSize, strName, nSex,
+                                      strImg, strHome, s_strIconMoveToHouse, nColorB, nSize, strText2);
         strResult = FUN_141842560(strResult, nColorB, 0xfffffe);
     }
     else if (nKind == 0xb)
     {
-        ULong nColorA = FUN_141842680(nOwnFlag, bMe, s_colors[7]);
-        ULong nColorB = FUN_141842680(nOwnFlag, bMe, s_colors[19]);
-        if (!FUN_140166410()->FUN_14036d570(0xde))
-            strResult = FUN_14028dee0(0x66f, s_strIconMegaphone3, strUser, nColorA, nSize, strName, nSex, strImg, strHome,
+        ULong nColorA = FUN_141842680(nOwnFlag, bMe, s_color7);
+        ULong nColorB = FUN_141842680(nOwnFlag, bMe, s_color19);
+        if (FUN_140166410()->FUN_14036d570(0xde))
+            strResult = FUN_14028dee0(0x66f, s_strIconMegaphone3, strUser, nColorA, nSize, strName, strImg, strHome,
                                       s_strIconMoveToHouse, nColorB, nSize, strText2);
         else
-            strResult = FUN_14028dee0(0x66f, s_strIconMegaphone3, strUser, nColorA, nSize, strName, strImg, strHome,
+            strResult = FUN_14028dee0(0x66f, s_strIconMegaphone3, strUser, nColorA, nSize, strName, nSex, strImg, strHome,
                                       s_strIconMoveToHouse, nColorB, nSize, strText2);
         strResult = FUN_141842560(strResult, nColorB, 0xfffffe);
     }
     else if (nKind == 0xc)
     {
-        ULong nColorA = FUN_141842680(nOwnFlag, bMe, s_colors[8]);
-        ULong nColorB = FUN_141842680(nOwnFlag, bMe, s_colors[20]);
+        ULong nColorA = FUN_141842680(nOwnFlag, bMe, s_color8);
+        ULong nColorB = FUN_141842680(nOwnFlag, bMe, s_color20);
         strResult = FUN_14028dee0(0x670, s_strIconMegaphone2, strUser, nColorA, nSize, strName, strImg, strHome,
                                   s_strIconMoveToHouse, nColorB, nSize, strText2);
         strResult = FUN_141842560(strResult, nColorB, 0xfffffe);
     }
     else if (nKind == 0)
     {
-        ULong nColorA = FUN_141842680(nOwnFlag, bMe, s_colors[0]);
-        ULong nColorB = FUN_141842680(nOwnFlag, bMe, s_colors[10]);
+        ULong nColorA = FUN_141842680(nOwnFlag, bMe, s_color0);
+        ULong nColorB = FUN_141842680(nOwnFlag, bMe, s_color10);
         strResult = FUN_14028dee0(0x671, strUser, nColorA, nSize, strName, strImg, nColorB, nSize, strText2);
         strResult = FUN_141842560(strResult, nColorB, 0xfffffe);
     }
     else if (nKind == 7)
     {
-        ULong nColorA = FUN_141842680(nOwnFlag, bMe, s_colors[4]);
-        ULong nColorB = FUN_141842680(nOwnFlag, bMe, s_colors[16]);
-        if (!FUN_140166410()->FUN_14036d570(0xde))
-            strResult = FUN_14028dee0(0x671, strUser, nColorA, nSize, strName, strImg, nColorB, nSize, strText2);
-        else
+        ULong nColorA = FUN_141842680(nOwnFlag, bMe, s_color4);
+        ULong nColorB = FUN_141842680(nOwnFlag, bMe, s_color16);
+        if (FUN_140166410()->FUN_14036d570(0xde))
             strResult = FUN_14028dee0(0x672, strUser, nColorA, nSize, strName, strImg, nColorB, nSize, strText2);
+        else
+            strResult = FUN_14028dee0(0x671, strUser, nColorA, nSize, strName, strImg, nColorB, nSize, strText2);
         strResult = FUN_141842560(strResult, nColorB, 0xfffffe);
     }
     else if (nKind == 0x12)
     {
-        ULong nColorA = FUN_141842680(nOwnFlag, bMe, s_colors[5]);
-        ULong nColorB = FUN_141842680(nOwnFlag, bMe, s_colors[17]);
+        ULong nColorA = FUN_141842680(nOwnFlag, bMe, s_color5);
+        ULong nColorB = FUN_141842680(nOwnFlag, bMe, s_color17);
         strResult = FUN_14028dee0(0x67d, s_strIconMegaphone5, strUser, nColorA, nSize, strName, strImg, nColorB, nSize,
                                   strText2);
         strResult = FUN_141842560(strResult, nColorB, 0xfffffe);
     }
     else if (nKind == 8)
     {
-        ULong nColorA = FUN_141842680(nOwnFlag, bMe, s_colors[5]);
-        ULong nColorB = FUN_141842680(nOwnFlag, bMe, s_colors[17]);
-        if (!FUN_140166410()->FUN_14036d570(0xde))
-            strResult = FUN_14028dee0(0x671, strUser, nColorA, nSize, strName, strImg, nColorB, nSize, strText2);
-        else
+        ULong nColorA = FUN_141842680(nOwnFlag, bMe, s_color5);
+        ULong nColorB = FUN_141842680(nOwnFlag, bMe, s_color17);
+        if (FUN_140166410()->FUN_14036d570(0xde))
             strResult = FUN_14028dee0(0x673, strUser, nColorA, nSize, strName, strImg, nColorB, nSize, strText2);
+        else
+            strResult = FUN_14028dee0(0x671, strUser, nColorA, nSize, strName, strImg, nColorB, nSize, strText2);
         strResult = FUN_141842560(strResult, nColorB, 0xfffffe);
     }
     else if (nKind == 1)
     {
-        ULong nColorA = FUN_141842680(nOwnFlag, bMe, s_colors[3]);
-        ULong nColorB = FUN_141842680(nOwnFlag, bMe, s_colors[12]);
+        ULong nColorA = FUN_141842680(nOwnFlag, bMe, s_color3);
+        ULong nColorB = FUN_141842680(nOwnFlag, bMe, s_color12);
         strResult = FUN_14028dee0(0x670, s_strIconMegaphone2, strUser, nColorA, nSize, strName, strImg, nColorB, nSize,
                                   strText2);
         strResult = FUN_141842560(strResult, nColorB, 0xfffffe);
     }
     else if (nKind == 2)
     {
-        ULong nColorA = FUN_141842680(nOwnFlag, bMe, s_colors[3]);
-        ULong nColorB = FUN_141842680(nOwnFlag, bMe, s_colors[12]);
+        ULong nColorA = FUN_141842680(nOwnFlag, bMe, s_color3);
+        ULong nColorB = FUN_141842680(nOwnFlag, bMe, s_color12);
         strResult = FUN_14028dee0(0x670, s_strIconMegaphone2, strUser, nColorA, nSize, strName, strImg, nColorB, nSize,
                                   strText2);
         strResult = FUN_141842560(strResult, nColorB, 0xfffffe);
     }
     else if (nKind == 4)
     {
-        ULong nColorA = FUN_141842680(nOwnFlag, bMe, s_colors[2]);
-        ULong nColorB = FUN_141842680(nOwnFlag, bMe, s_colors[13]);
+        ULong nColorA = FUN_141842680(nOwnFlag, bMe, s_color2);
+        ULong nColorB = FUN_141842680(nOwnFlag, bMe, s_color13);
         strResult = FUN_14028dee0(0x674, s_strIconWhisper, strUser, nColorA, nSize, strName, strImg, nColorB, nSize,
                                   strText2);
         strResult = FUN_141842560(strResult, nColorB, 0xfffffe);
     }
     else if (nKind == 3)
     {
-        ULong nColorA = FUN_141842680(nOwnFlag, bMe, s_colors[2]);
-        ULong nColorB = FUN_141842680(nOwnFlag, bMe, s_colors[15]);
+        ULong nColorA = FUN_141842680(nOwnFlag, bMe, s_color2);
+        ULong nColorB = FUN_141842680(nOwnFlag, bMe, s_color15);
         strResult = FUN_14028dee0(0x675, s_strIconWhisper, strUser, nColorA, nSize, strName, strImg, nColorB, nSize,
                                   strText2);
         strResult = FUN_141842560(strResult, nColorB, 0xfffffe);
     }
     else if (nKind == 6)
     {
-        strResult = FUN_14028dee0(0x676, s_colors[14], nSize, strText2);
+        strResult = FUN_14028dee0(0x676, s_color14, nSize, strText2);
     }
     else if (nKind == 5)
     {
-        strResult = FUN_14028dee0(0x676, s_colors[14], nSize, strText2);
+        strResult = FUN_14028dee0(0x676, s_color14, nSize, strText2);
     }
     else if (nKind == 9)
     {
-        strResult = FUN_14028dee0(0x677, s_strIconSystem, s_colors[21], nSize, strText2);
+        strResult = FUN_14028dee0(0x677, s_strIconSystem, s_color21, nSize, strText2);
     }
     else if (nKind == 0xf)
     {
-        strResult = FUN_14028dee0(0x679, s_colors[21], nSize, strText2);
+        strResult = FUN_14028dee0(0x679, s_color21, nSize, strText2);
     }
     else if (nKind == 0x13)
     {
-        ULong nColorA = FUN_141842680(nOwnFlag, bMe, s_colors[5]);
-        ULong nColorB = FUN_141842680(nOwnFlag, bMe, s_colors[17]);
-        if (!FUN_140166410()->FUN_14036d570(0xde))
-            strResult = FUN_14028dee0(0x671, strUser, nColorA, nSize, strName, strImg, nColorB, nSize, strText2);
-        else
+        ULong nColorA = FUN_141842680(nOwnFlag, bMe, s_color5);
+        ULong nColorB = FUN_141842680(nOwnFlag, bMe, s_color17);
+        if (FUN_140166410()->FUN_14036d570(0xde))
             strResult = FUN_14028dee0(0x67e, strUser, nColorA, nSize, strName, strImg, nColorB, nSize, strText2);
+        else
+            strResult = FUN_14028dee0(0x671, strUser, nColorA, nSize, strName, strImg, nColorB, nSize, strText2);
     }
     else if (nKind == 0x14)
     {
-        ULong nColorA = FUN_141842680(nOwnFlag, bMe, s_colors[9]);
-        ULong nColorB = FUN_141842680(nOwnFlag, bMe, s_colors[24]);
+        ULong nColorA = FUN_141842680(nOwnFlag, bMe, s_color9);
+        ULong nColorB = FUN_141842680(nOwnFlag, bMe, s_color24);
         CStringW strUgcName = FUN_140e0d900()->FUN_140b15150(nExtra);
         strResult = FUN_14028dee0(0x67a, strUser, nColorA, nSize, strUgcName, strName, strImg, nColorB, nSize, strText2);
         strResult = FUN_141842560(strResult, nColorB, 0xfffffe);
@@ -599,8 +599,8 @@ CStringW FUN_14183f310(const Unk_ThMsg& msg, const CStringW& strText, unsigned n
         ATL::CAtlArray<CStringW> arrParam;
         FUN_14025a680(strText2, arrParam, L",");
         CStringW strJoin;
-        strJoin.Format(L"'event:joinUGCEvent,%s,%I64u,%I64u,%s,%s,%s'", strName.GetString(), nIdA, nIdB,
-                       arrParam[3].GetString(), arrParam[4].GetString(), arrParam[5].GetString());
+        strJoin.Format(L"'event:joinUGCEvent,%s,%I64u,%I64u,%s,%s,%s'", (LPCWSTR)strName, nIdA, nIdB,
+                       (LPCWSTR)arrParam[3], (LPCWSTR)arrParam[4], (LPCWSTR)arrParam[5]);
         strResult = FUN_14028dee0(0x67b, strUser, strName, strJoin, s_strIconOxQuiz, arrParam[0]);
     }
     return FUN_1418423c0(nSize, strResult);
@@ -617,18 +617,18 @@ CStringW FUN_141841180(const Unk_ThMsg& msg, const Unk_ThWedding& wed, const CSt
     unsigned __int64 nIdB = msg.m_8;
     unsigned nItemId = msg.m_50;
     CStringW strUser;
-    strUser.Format(L"'event:userSelect,%s,%I64u,%I64u'", strName.GetString(), nIdA, nIdB);
+    strUser.Format(L"'event:userSelect,%s,%I64u,%I64u'", (LPCWSTR)strName, nIdA, nIdB);
     CStringW strHome;
-    strHome.Format(L"'event:moveToHome,%s,%I64u,%I64u'", strName.GetString(), nIdA, nIdB);
+    strHome.Format(L"'event:moveToHome,%s,%I64u,%I64u'", (LPCWSTR)strName, nIdA, nIdB);
     CStringW strHall;
-    strHall.Format(L"'event:moveToWeddingHall,%I64u,%d,%d,%s,%s'", wed.m_0, wed.m_8, wed.m_c, wed.m_18.GetString(),
-                   wed.m_20.GetString());
+    strHall.Format(L"'event:moveToWeddingHall,%I64u,%d,%d,%s,%s'", wed.m_0, wed.m_8, wed.m_c, (LPCWSTR)wed.m_18,
+                   (LPCWSTR)wed.m_20);
     int bMe = FUN_1418426b0(strName);
     CStringW strImg;
     if (FUN_141842770(msg))
         strImg = FUN_1405c2690(CStringW(L"s_html_chat_img"), s_strIconReturn);
-    ULong nColorA = FUN_141842680(nOwnFlag, bMe, s_colors[6]);
-    ULong nColorB = FUN_141842680(nOwnFlag, bMe, s_colors[18]);
+    ULong nColorA = FUN_141842680(nOwnFlag, bMe, s_color6);
+    ULong nColorB = FUN_141842680(nOwnFlag, bMe, s_color18);
     ULong nIconSize = 1;
     CStringW strIcon(DAT_143aef3b8);
     FUN_14183ee10(nItemId, strIcon, nIconSize, nColorA, nColorB);
@@ -643,20 +643,15 @@ CStringW FUN_141841180(const Unk_ThMsg& msg, const Unk_ThWedding& wed, const CSt
         Unk_ThRoomRef room = hall.FUN_1409020f0()->FUN_140907110(wed.m_c);
         if (room.FUN_141847320() != 0)
         {
-            unsigned char b = FUN_140900f30(wed.m_10);
-            unsigned nValue = room.FUN_1409020e0()->FUN_140906e40(b);
-            strDate = FUN_1401a9d70()->FUN_141811980(3, nValue);
+            strDate = FUN_1401a9d70()->FUN_141811980(3, room.FUN_1409020e0()->FUN_140906e40(FUN_140900f30(wed.m_10)));
         }
-        room.FUN_140901e30();
     }
     CStringW strBody2 = FUN_14028dee0(0x680, nIconSize);
     strBody2 = FUN_14028dee0(0x67f, strBody2, strIcon, strHall, nColorA, nSize, wed.m_18, wed.m_20, nColorB, nSize,
-                             FUN_14083bdc0(FUN_1406c47a0(wed.m_10), 1, CStringW(L"/"), CStringW(L":")), strDate);
+                             FUN_14083bdc0(CMsTime(wed.m_10), true, CStringW(L"/"), CStringW(L":")), strDate);
     strBody2 = FUN_141842560(strBody2, nColorB, 0xfffffe);
     strBody.Append(strBody2);
-    CStringW strRet = FUN_1418423c0(nSize, strBody);
-    hall.FUN_140901e60();
-    return strRet;
+    return FUN_1418423c0(nSize, strBody);
 }
 
 // @0x141841a80
@@ -669,11 +664,11 @@ CStringW FUN_141841a80(const CStringW& strText, int nSize)
 }
 
 // @0x141841b40
-CStringW FUN_141841b40(Unk_ThItem* pItem, int nUnused, unsigned nSize)
+CStringW FUN_141841b40(CItem* pItem, const CStringW& strKind, int nSize)
 {
     CStringW strQuote(L"''");
-    CStringW strName = FUN_14052bd00(0x626, ((CItem*)pItem)->FUN_140527b10());
-    ULong nColor = FUN_141275c00(((CItem*)pItem)->FUN_140526bd0());
+    CStringW strName = FUN_14052bd00(0x626, pItem->FUN_140527b10());
+    ULong nColor = FUN_141275c00(pItem->FUN_140526bd0());
     CStringW strResult = FUN_14028dee0(0x678, strQuote, nColor, nSize, strName);
     return strResult;
 }
@@ -690,7 +685,7 @@ CStringW FUN_141841c60(unsigned nSize, CStringW strName, unsigned __int64 nIdA, 
     CStringW strDungeon = FUN_1409eaa20(CStringW(L"s_html_chat_dungeon_name"), strRoomLink, FUN_140cbf840(nDungeonId),
                                         FUN_1401a9d70()->FUN_141811980(0x14, nRoomId));
     CStringW strLine = FUN_14028dfa0(CStringW(L"s_html_chat_find_dungeon_helper"), strHelper, strDungeon, nP8, nP9, strJoin);
-    return FUN_14028dfa0(CStringW(L"s_html_chat_system_notice"), s_colors[25], nSize2, strLine);
+    return FUN_14028dfa0(CStringW(L"s_html_chat_system_notice"), s_color25, nSize2, strLine);
 }
 
 // @0x141841fd0
@@ -699,32 +694,36 @@ CStringW FUN_141841fd0(CStringW strName, unsigned nSize)
     CStringW strLink = FUN_1401e8510(L"'event:inviteParty,{0}'", strName);
     CStringW strInvite = FUN_1405c2690(CStringW(L"s_html_chat_invite_party"), strLink);
     CStringW strMessage = FUN_1408f71a0(CStringW(L"s_html_chat_invite_party_message"), strName, strInvite);
-    return FUN_14028dfa0(CStringW(L"s_html_chat_system_notice"), s_colors[16], nSize, strMessage);
+    return FUN_14028dfa0(CStringW(L"s_html_chat_system_notice"), s_color16, nSize, strMessage);
 }
 
 // @0x141842130
-CStringW FUN_141842130(unsigned __int64 nId, unsigned __int64 nUnused, const CStringW& strArg)
+CStringW FUN_141842130(__int64 nId)
 {
     CStringW strBody;
-    strBody = FUN_14086d060(0x625, nId, strArg);
+    strBody = FUN_14086d060(0x625, nId);
     return FUN_14183e930(strBody, FUN_141275bd0(nId));
 }
 
 // @0x1418421e0
-CStringW FUN_1418421e0(unsigned __int64 nId, unsigned __int64 nUnused, const CStringW& strArg)
+CStringW FUN_1418421e0(__int64 nId)
 {
     CStringW strBody;
-    strBody = FUN_14086d060(0x624, nId, strArg);
+    strBody = FUN_14086d060(0x624, nId);
     return FUN_14183e930(strBody, FUN_141275b40());
 }
 
 // @0x141842290
 void FUN_141842290(CStringW& str)
 {
-    int nStart;
-    int nEnd;
-    while ((nStart = str.Find(L"<", 0)) != -1 && (nEnd = str.Find(L">", nStart + 1)) != -1)
+    int nStart = 0;
+    while ((nStart = str.Find(L"<", 0)) != -1)
+    {
+        int nEnd = str.Find(L">", nStart + 1);
+        if (nEnd == -1)
+            break;
         str.Delete(nStart, nEnd - nStart + 1);
+    }
 }
 
 // @0x141842320
@@ -743,14 +742,14 @@ CStringW FUN_1418423c0(unsigned nSize, CStringW& strText)
     strSizeSq.Format(L"size='%d'", nSize);
     CStringW strSizeDq;
     strSizeDq.Format(L"SIZE=\"%d\"", nSize);
-    for (int i = 12; i < 19; ++i)
+    for (int i = 12; i <= 18; ++i)
     {
         CStringW strOldSq;
         strOldSq.Format(L"size='%d'", i);
         CStringW strOldDq;
         strOldDq.Format(L"SIZE=\"%d\"", i);
-        strText.Replace(strOldSq.GetString(), strSizeSq.GetString());
-        strText.Replace(strOldDq.GetString(), strSizeDq.GetString());
+        strText.Replace((LPCWSTR)strOldSq, (LPCWSTR)strSizeSq);
+        strText.Replace((LPCWSTR)strOldDq, (LPCWSTR)strSizeDq);
     }
     return strText;
 }
@@ -765,7 +764,7 @@ CStringW FUN_141842560(const CStringW& strText, unsigned nColor, unsigned nColor
     strOld.Format(L"color=\"#%x\"", nColorCmp);
     FUN_1418473a0(strOld);
     CStringW str(strText);
-    str.Replace(strOld.GetString(), strNew.GetString());
+    str.Replace((LPCWSTR)strOld, (LPCWSTR)strNew);
     return str;
 }
 
@@ -774,46 +773,62 @@ CStringW FUN_141842560(const CStringW& strText, unsigned nColor, unsigned nColor
 ULong FUN_141842680(int nOwnFlag, int nIsMe, ULong nColor)
 {
     if (nOwnFlag != 0 && nIsMe == 0)
-        nColor = s_colors[23];
+        return s_color23;
     return nColor;
 }
 
 // Is the sender the local player.
 // @0x1418426b0
-bool FUN_1418426b0(const CStringW& strName)
+int FUN_1418426b0(const CStringW& strName)
 {
-    bool bHasName = false;
     Unk_ThPc* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
-    if (pPc != 0)
-    {
-        CStringW strMyName = pPc->vfunc_77();
-        bHasName = true;
-        if (FUN_14025cd60(strMyName, strName))
-            return true;
-    }
-    return false;
+    bool bMe = pPc != 0 && FUN_14025cd60(pPc->vfunc_77(), strName);
+    if (bMe)
+        return 1;
+    return 0;
 }
 
 // Does the line kind carry the chat image.
 // @0x141842770
-bool FUN_141842770(const Unk_ThMsg& msg)
+int FUN_141842770(const Unk_ThMsg& msg)
 {
-    if (FUN_1406c7610()->m_30 == 0)
-        return false;
+    if (!FUN_1406c7610()->m_30)
+        return 0;
     if (msg.m_4c != 0)
     {
-        if (msg.m_20 == 0x10 || msg.m_20 == 0xb || msg.m_20 == 0xc || msg.m_20 == 0 || msg.m_20 == 0x19 || msg.m_20 == 7 ||
-            msg.m_20 == 8 || msg.m_20 == 0x12 || msg.m_20 == 1 || msg.m_20 == 2 || msg.m_20 == 4 || msg.m_20 == 3 ||
-            msg.m_20 == 0x13 || msg.m_20 == 0x14)
-            return true;
+        if (msg.m_20 == 0x10)
+            return 1;
+        if (msg.m_20 == 0xb)
+            return 1;
+        if (msg.m_20 == 0xc)
+            return 1;
+        if (msg.m_20 == 0)
+            return 1;
+        if (msg.m_20 == 0x19)
+            return 1;
+        if (msg.m_20 == 7)
+            return 1;
+        if (msg.m_20 == 8)
+            return 1;
+        if (msg.m_20 == 0x12)
+            return 1;
+        if (msg.m_20 == 1)
+            return 1;
+        if (msg.m_20 == 2)
+            return 1;
+        if (msg.m_20 == 4)
+            return 1;
+        if (msg.m_20 == 3)
+            return 1;
+        if (msg.m_20 == 0x13)
+            return 1;
+        if (msg.m_20 == 0x14)
+            return 1;
     }
-    return false;
+    return 0;
 }
 
-// @0x141847300
-TextToHtml::~TextToHtml()
-{
-}
+// 0x141847300 ~TextToHtml is implicit (the exe's dtor has no vptr store).
 
 // @0x1418473a0
 void FUN_1418473a0(CStringW& str)
@@ -825,7 +840,16 @@ void FUN_1418473a0(CStringW& str)
 // @0x1418473c0
 bool FUN_1418473c0(CStringW& str)
 {
-    str.MakeUpper();
+    try
+    {
+        str.MakeUpper();
+    }
+    catch (CException* e)
+    {
+        // ASSERT(FALSE) of commonfiles\stringutil.h (the function body lives in that header)
+        (void)((!!(FALSE)) || (_wassert(L"FALSE", L"e:\\build\\kr\\22_04\\ms2code\\commonfiles\\stringutil.h", 461), 0));
+        return false;
+    }
     return true;
 }
 // Atexit thunks of this unit's statics (gap1 yd sweep).

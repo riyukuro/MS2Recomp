@@ -761,8 +761,6 @@ CString FUN_1409a2360(const char* psz, int n);                  // text conversi
 void FUN_141b70490(const CStringA& strDir);                     // deletes a directory tree
 
 // @0x14148a9a0
-// MS2-FUNCTIONAL: written from the decomp (the CFileSystem getter whose result the static file search ignores is not
-// called; the comment text temporary dies before the insert)
 void MS2::PrepareShaderCache()
 {
     int nVersion = 0;
@@ -771,7 +769,7 @@ void MS2::PrepareShaderCache()
     CString strVersionFile("Config/ShaderVer.xml");
     CString strCurrent("Data/Shaders/Current");
     CString strPreGenerated("Data/Shaders/PreGenerated");
-    efd::utf8string kWorkDir = efd::PathUtils::PathMakeNative(efd::utf8string((const char*)strCurrent));
+    efd::utf8string kWorkDir = efd::PathUtils::PathMakeNative((const char*)strCurrent);
     kWorkDir = efd::PathUtils::ConvertToAbsolute(kWorkDir);
     NiMaterial::SetDefaultWorkingDirectory(kWorkDir.c_str());
     NiFragmentMaterial::SetDefaultAutoSaveProgramCache(true);
@@ -799,11 +797,16 @@ void MS2::PrepareShaderCache()
         TiXmlDocument kNewDoc;
         Unk_TiXmlDeclaration kDeclaration("1.0", "utf-8", "");
         FUN_14086e000(&kNewDoc, &kDeclaration);
-        {
-            Unk_TiXmlComment kComment(FUN_1409a2360(" \xc6\xc4\xbd\xcc\xc7\xd8\xbc\xad \xbb\xe7\xbf\xeb\xc7\xcf\xb4\xc2 "
-                "\xb5\xa5\xc0\xcc\xc5\xcd\xc0\xcc\xb4\xcf \xc1\xf7\xc1\xa2 \xbc\xf6\xc1\xa4\xc7\xcf\xc1\xf6 \xb8\xb6\xbc\xbc\xbf\xe4 ", 0));
-            FUN_14086e000(&kNewDoc, &kComment);
-        }
+#ifdef __clang__
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Waddress-of-temporary"
+#endif
+        // the comment is a temporary whose address is passed (MSVC extension: & of an rvalue)
+        FUN_14086e000(&kNewDoc, &Unk_TiXmlComment(FUN_1409a2360(" \xc6\xc4\xbd\xcc\xc7\xd8\xbc\xad \xbb\xe7\xbf\xeb\xc7\xcf\xb4\xc2 "
+            "\xb5\xa5\xc0\xcc\xc5\xcd\xc0\xcc\xb4\xcf \xc1\xf7\xc1\xa2 \xbc\xf6\xc1\xa4\xc7\xcf\xc1\xf6 \xb8\xb6\xbc\xbc\xbf\xe4 ", 0)));
+#ifdef __clang__
+#pragma clang diagnostic pop
+#endif
         Unk_TiXmlElement kRoot("ms2");
         Unk_TiXmlElement kShader("shader");
         FUN_140873ca0(&kShader, "ver", 8);
@@ -816,7 +819,8 @@ void MS2::PrepareShaderCache()
         FUN_141b70490(strCurrent);
         CreateDirectoryA(strCurrent, NULL);
         ATL::CAtlArray<CString> kSources;
-        FUN_140399620(CString("*.cache"), CString(strPreGenerated), kSources, CString(""));
+        // the exe calls the file search through the CFileSystem instance and ignores the pointer (a static member)
+        GetFileSystem(), FUN_140399620(CString("*.cache"), CString(strPreGenerated), kSources, CString(""));
         if (kSources.GetCount() == 0)
             return;
         ATL::CAtlArray<CString> kTargets;
@@ -837,7 +841,6 @@ void MS2::SetCrashOnShutdown()
 }
 MS2_REPLACE_METHOD(0x14148B090, MS2, SetCrashOnShutdown, 21, 0x28735968);
 // @0x14148b0b0
-// MS2-FUNCTIONAL: the exe calls FUN_1414a6180 (an MS2 engine addition to efd::ServiceManager, not in the SDK headers) through SmartPointer::operator->; here the pointer goes through operator T*
 void MS2::Shutdown()
 {
     if (FUN_140aadf80() && FUN_140aadf80()->FUN_14209c720())
@@ -847,7 +850,7 @@ void MS2::Shutdown()
     if (CrashManagerCli::GetInstance())
         CrashManagerCli::GetInstance()->FUN_1401ce420();
     if (m_spServiceManager) {
-        FUN_1414a6180(m_spServiceManager);
+        FUN_1414a6180(m_spServiceManager.operator->());   // the exe calls it as a member, through operator->
         m_spServiceManager->Shutdown(false);
         int nState = m_spServiceManager->GetCurrentState();
         while (nState != efd::ServiceManager::kSysServState_Complete) {
@@ -1604,11 +1607,7 @@ template class CValidData<ReactorData>;
 CReactorDataTable::CReactorDataTable()
 {
 }
-// MS2-FUNCTIONAL: see the ctor (the CValidData base).
-// @0x1414974d0
-CReactorDataTable::~CReactorDataTable()
-{
-}
+// The dtor @0x1414974d0 is implicit (no vftable stores in the exe).
 
 // ---- CGameApp
 // @0x14148f2d0
@@ -1760,10 +1759,10 @@ BOOL CGameApp::InitInstance()
             TSingleton<CIgnoreFile>::GetInstance()->FUN_14050e200(std::string("./data/xmldebug/ignorepackfile.xml"),
                 FUN_1414a5690(TSingleton<CFileSystem>::GetInstance()));
     }
-    if (!TSingleton<CFileSystem>::GetInstance()->FUN_140398190())
-        FUN_141627390();
-    else
+    if (TSingleton<CFileSystem>::GetInstance()->FUN_140398190())
         FUN_1416275e0();
+    else
+        FUN_141627390();
     Unk_SingletonCreator<CFilePreload>::CreateInstance();
     FUN_1416bc0f0();
     FUN_1416bb2e0();
@@ -2087,7 +2086,17 @@ BOOL CGameApp::InitInstance()
     GetClientPlatform()->vfunc_22(0x27b, "");
     efd::SmartPointer<MS2> spMS2 = EE_NEW MS2;
     if (spMS2)
-        spMS2->Run(m_hInstance, NULL, GetCommandLineA(), SW_SHOW);
+    {
+        try
+        {
+            spMS2->Run(m_hInstance, NULL, GetCommandLineA(), SW_SHOW);
+        }
+        catch (std::bad_alloc& e)
+        {
+            e.what();
+            FUN_141b6db40(0);
+        }
+    }
     spMS2->Shutdown();
     spMS2 = NULL;
     FUN_1414a0a20();

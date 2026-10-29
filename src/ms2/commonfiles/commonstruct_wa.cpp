@@ -137,7 +137,6 @@ CIngredientContainer::CIngredientContainer() {}
 // @0x14026b640
 CIngredientContainer::CIngredientContainer(size_t reserve) { m_items.FUN_14028b3a0(reserve); }
 // @0x14026b6b0
-// MS2-FUNCTIONAL: range-for temporaries sit in different stack slots (code identical otherwise).
 CIngredientContainer::CIngredientContainer(CIngredientContainer* other) {
     m_items.FUN_14028a610();
     m_items.FUN_14028b3a0(other->m_items.FUN_14028b500());
@@ -146,39 +145,36 @@ CIngredientContainer::CIngredientContainer(CIngredientContainer* other) {
     Unk_IngRef* end = source->FUN_140289dc0();
     for (; it != end; ++it) {
         Unk_IngRef ref(*it);
-        if (!(ref == 0)) {
-            Unk_IngRef copy(new CIngredientInfo(ref->m_a, ref->m_c, ref->m_b));
-            m_items.FUN_14028b330(copy);
-        }
+        if (ref == 0) continue;
+        Unk_IngRef copy(new CIngredientInfo(ref->m_a, ref->m_c, ref->m_b));
+        m_items.FUN_14028b330(copy);
     }
 }
 // @0x14026b890
-// MS2-FUNCTIONAL: register allocation / operand order differs (logic identical)
 bool CIngredientContainer::FUN_14026b890(CIngredientContainer* other) {
     if (m_items.FUN_14028b500() != other->m_items.FUN_14028b500()) return true;
     size_t count = m_items.FUN_14028b500();
     for (size_t i = 0; i < count; ++i) {
-        CIngredientInfo* b = other->m_items.FUN_14027f220(i)->FUN_140281f10();
-        if (m_items.FUN_14027f1f0(i)->FUN_140281f10()->FUN_14026b2f0(b)) return true;
+        if (m_items.FUN_14027f1f0(i)->FUN_140281f10()->FUN_14026b2f0(other->m_items.FUN_14027f220(i)->FUN_140281f10())) return true;
     }
     return false;
 }
 // @0x14026b980
 CIngredientContainer::~CIngredientContainer() { m_items.FUN_14028a610(); }
 // @0x14026b9d0
-// MS2-FUNCTIONAL: minor codegen diff (logic identical)
 void CIngredientContainer::FUN_14026b9d0(const CStringW& text) {
     Unk_StrVec parts;
     FUN_140275180(text, &parts, L",");
-    if (parts.FUN_14028b4c0() == 3) {
-        Unk_IngRef ref(new CIngredientInfo());
+    if (parts.FUN_14028b4c0() != 3) return;
+    Unk_IngRef ref(new CIngredientInfo());
+    {
         Unk_StrVec sub;
         FUN_140275080(*parts.FUN_14027f1c0(0), &sub, ":");
-        if (sub.FUN_14028b4c0() != 0) ref->m_a = FUN_1407181d0(sub.FUN_14027f1c0(0));
+        if (sub.FUN_14028b4c0() > 0) ref->m_a = FUN_1407181d0(sub.FUN_14027f1c0(0));
         if (sub.FUN_14028b4c0() > 1) ref->m_b = FUN_140557640(FUN_140281980(), sub.FUN_14027f1c0(1));
-        ref->m_c = FUN_1407181d0(parts.FUN_14027f1c0(2));
-        if (ref->m_a != 0) FUN_14026bca0(Unk_IngRef(ref));
     }
+    ref->m_c = FUN_1407181d0(parts.FUN_14027f1c0(2));
+    if (ref->m_a != 0) FUN_14026bca0(Unk_IngRef(ref));
 }
 // @0x14026bbf0
 void CIngredientContainer::FUN_14026bbf0(int a, int b) {
@@ -228,65 +224,53 @@ void CIngredientContainer::FUN_14026bfd0(COutputStream& out) {
     }
 }
 // @0x14026c0b0
-// MS2-FUNCTIONAL: minor codegen diff (logic identical)
 void CIngredientContainer::FUN_14026c0b0(CInPacket& in) {
     m_items.FUN_14028a610();
-    unsigned char count = in.ReadUInt8();
+    size_t count = in.ReadUInt8();
     m_items.FUN_14028b3a0(count);
     for (size_t i = 0; i < count; ++i) {
         Unk_IngRef ref(new CIngredientInfo());
-        if (!(ref == 0)) {
-            ref->FUN_14026b410(in);
-            FUN_14026bca0(Unk_IngRef(ref));
-        }
+        if (ref == 0) continue;
+        ref->FUN_14026b410(in);
+        FUN_14026bca0(ref);
     }
 }
 // @0x14026c230
 Unk_IngVec* CIngredientContainer::FUN_14026c230() { return &m_items; }
 // @0x14026c250
-// MS2-FUNCTIONAL: minor codegen diff (logic identical)
 void CIngredientContainer::FUN_14026c250(CIngredientContainer* other) {
-    if (!other->FUN_14026bf40()) {
-        Unk_IngVec pending;
-        size_t count = other->FUN_14026bee0();
-        for (size_t i = 0; i < count; ++i) {
-            Unk_IngRef cur = other->FUN_14026bdc0(i);
-            if (cur == 0 || cur->FUN_14026b350()) continue;
-            Unk_IngRef found = FUN_14026c450(cur->m_a);
-            if (found.FUN_14027f250() == 0) {
-                pending.FUN_14028b330(cur);
-            } else {
-                int* dst = &found->m_c;
-                *dst = *dst + cur->m_c;
-            }
+    if (other->FUN_14026bf40()) return;
+    Unk_IngVec pending;
+    size_t count = other->FUN_14026bee0();
+    for (size_t i = 0; i < count; ++i) {
+        Unk_IngRef cur = other->FUN_14026bdc0(i);
+        if (cur == 0 || cur->FUN_14026b350()) continue;
+        Unk_IngRef found = FUN_14026c450(cur->m_a);
+        if (found.FUN_14027f250() != 0) {
+            int* dst = &found->m_c;
+            *dst = *dst + cur->m_c;
+        } else {
+            pending.FUN_14028b330(cur);
         }
-        if (!pending.FUN_14028a8c0()) {
-            Unk_It t30, t28, t20;
-            Unk_It24 result;
-            Unk_It pos = *m_items.FUN_14028aa90(&t30);
-            Unk_It* last = pending.FUN_14028aa90(&t28);
-            Unk_It* first = pending.FUN_14028a260(&t20);
-            m_items.FUN_14027c290(&result, pos, *first, *last);
-        }
+    }
+    if (!pending.FUN_14028a8c0()) {
+        Unk_It t30, t28, t20;
+        Unk_It result;
+        Unk_It pos = *m_items.FUN_14028aa90(&t30);
+        m_items.FUN_14027c290(&result, pos, *pending.FUN_14028a260(&t20), *pending.FUN_14028aa90(&t28));
     }
 }
 // @0x14026c450
-// MS2-FUNCTIONAL: minor codegen diff (logic identical)
 Unk_IngRef CIngredientContainer::FUN_14026c450(unsigned key) {
     int keyBuffer;
-    int* keyPtr = FUN_14026b540(&keyBuffer, key);
-    Unk_It t28, t20, t18, lower;
-    Unk_It* last = m_items.FUN_14028aa90(&t28);
-    Unk_It* first = m_items.FUN_14028a260(&t20);
-    FUN_14027bf30(&lower, *first, *last, *keyPtr);
-    if (FUN_14027f000(&lower, m_items.FUN_14028aa90(&t18))) return *FUN_14027f490(&lower);
+    Unk_It lower, t40, t48, t50;
+    FUN_14027bf30(&lower, *m_items.FUN_14028a260(&t48), *m_items.FUN_14028aa90(&t40), *FUN_14026b540(&keyBuffer, key));
+    if (FUN_14027f000(&lower, m_items.FUN_14028aa90(&t50))) return *FUN_14027f490(&lower);
     return Unk_IngRef(0);
 }
 // @0x14026c550
-// MS2-FUNCTIONAL: register choice differs (logic identical)
 bool Unk_IngHolder::FUN_14026c550(Unk_IngHolder* other) {
-    CIngredientContainer* b = other->m_container.FUN_140281f00();
-    if (m_container.FUN_140281f00()->FUN_14026b890(b)) return true;
+    if (m_container.FUN_140281f00()->FUN_14026b890(other->m_container.FUN_140281f00())) return true;
     return false;
 }
 
@@ -295,31 +279,30 @@ bool Unk_IngHolder::FUN_14026c550(Unk_IngHolder* other) {
 DungeonRewardInfo::DungeonRewardInfo() {}
 // @0x14026c610
 DungeonRewardInfo::~DungeonRewardInfo() {}
+// map<unsigned char,int> value_type.
+struct Unk_RewardPair { unsigned char key; int value; };
 // @0x14026c660
-// MS2-FUNCTIONAL: minor codegen diff (logic identical)
 void DungeonRewardInfo::FUN_14026c660(COutputStream& out) {
     out.WriteInt32((int)m_rewards.FUN_14028b3f0());
-    Unk_It t28, t20, t18, t10;
-    Unk_It end = *m_rewards.FUN_14028a910(&t28);
-    Unk_It it = *m_rewards.FUN_14028a130(&t20);
-    while (FUN_14027ef80(&it, &end)) {
-        unsigned char* entry = (unsigned char*)FUN_14027f410(&it);
-        out.WriteUInt8(entry[0]);
-        out.WriteInt32(*(int*)(entry + 4));
-        FUN_14027f600(&it);
+    Unk_It t80, t88, t90, t98;
+    Unk_RewardMap& rewards = m_rewards;
+    Unk_It end = *rewards.FUN_14028a910(&t80);
+    for (Unk_It it = *rewards.FUN_14028a130(&t88); FUN_14027ef80(&it, &end); FUN_14027f600(&it)) {
+        Unk_RewardPair* entry = (Unk_RewardPair*)FUN_14027f410(&it);
+        out.WriteUInt8(entry->key);
+        out.WriteInt32(entry->value);
     }
     out.WriteInt32((int)m_items.FUN_14028b470());
-    Unk_It end2 = *m_items.FUN_14028aa30(&t18);
-    Unk_It it2 = *m_items.FUN_14028a200(&t10);
-    while (FUN_14027efc0(&it2, &end2)) {
+    Unk_ItemVec& items = m_items;
+    Unk_It end2 = *items.FUN_14028aa30(&t90);
+    for (Unk_It it2 = *items.FUN_14028a200(&t98); FUN_14027efc0(&it2, &end2); FUN_14027f6b0(&it2)) {
         ItemEntity* item = (ItemEntity*)FUN_14027f450(&it2);
         out.WriteInt32(item->m_itemId);
         out.WriteInt32(item->m_count);
-        out.WriteInt32(static_cast<ItemAble*>(item)->vfunc_o18_1());
+        out.WriteInt32(static_cast<ItemAble&>(*item).vfunc_o18_1());
         out.WriteBool(item->m_28);
         out.WriteBool(item->m_29);
         out.WriteBool(item->m_2b);
-        FUN_14027f6b0(&it2);
     }
 }
 // @0x14026c900
@@ -732,7 +715,6 @@ bool CChangeableHistoryInfo::FUN_14026fea0(__int64 id) {
     return false;
 }
 // @0x14026ffd0
-// MS2-FUNCTIONAL: minor codegen diff (logic identical)
 Unk_HistRef CChangeableHistoryInfo::FUN_14026ffd0() {
     Unk_HistLock lock(m_lock, 1);
     if (m_list.FUN_14028b410() == 0) return Unk_HistRef(0);
@@ -741,8 +723,7 @@ Unk_HistRef CChangeableHistoryInfo::FUN_14026ffd0() {
     FUN_14027c480(&it, *m_list.FUN_14028a1a0(&t30), 1);
     Unk_It t28;
     for (; FUN_14027ef00(&it, m_list.FUN_14028a9d0(&t28)); FUN_14027f550(&it)) {
-        CUserChangeableItemHistory* cur = (*FUN_14027f3b0(&it)).operator->();
-        if (cur->m_38 < best->m_38) best.FUN_14027eab0(*FUN_14027f3b0(&it));
+        if ((*FUN_14027f3b0(&it))->m_38 < best->m_38) best.FUN_14027eab0(*FUN_14027f3b0(&it));
     }
     return best;
 }

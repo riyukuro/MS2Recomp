@@ -28,7 +28,7 @@ class UIItemExchangeScrollDialog : public UIDialog, public UIStatusEventListener
 {
 public:
     UIItemExchangeScrollDialog();                                   // 0x140f50d60
-    virtual ~UIItemExchangeScrollDialog();                          //  0 0x140f566d0 (??_G 0x140f56920)
+    // slot 0: implicit dtor 0x140f566d0 (??_G 0x140f56920); the exe dtor stores no vftable
     virtual CString GetTypeName();                                      //  1 0x140f50eb0 "ItemExchangeScrollDialog"
     virtual void vfunc_15();                                        // 15 0x140f51350
     virtual void OnLoadComplete();                                  // 22 0x140f51150

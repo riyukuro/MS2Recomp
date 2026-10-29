@@ -335,6 +335,12 @@ typedef efd::SmartPointer<CCachedTexture> CCachedTexturePtr;
 struct Unk_NifTexKey
 {
     Unk_NifTexKey() : m_nPrefs(0) {}
+    // 0x14155b070. The exe copies the prefs as a 4-byte struct (source loaded first), so they are copied through one.
+    Unk_NifTexKey(const Unk_NifTexKey& o) : m_strPath(o.m_strPath)
+    {
+        struct Prefs { unsigned char b[4]; };
+        *reinterpret_cast<Prefs*>(&m_nPrefs) = *reinterpret_cast<const Prefs*>(&o.m_nPrefs);
+    }
     Unk_NifTexKey(CString strPath, NiTexture::FormatPrefs kPrefs)     // 0x14155b0b0
     {
         m_strPath = strPath;

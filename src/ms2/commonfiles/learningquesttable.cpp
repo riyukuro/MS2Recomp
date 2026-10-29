@@ -29,8 +29,8 @@ MS2Ptr<CQuestData> FUN_14074bc40(int nQuestId);
 class Unk_ElemArray
 {
 public:
-    void FUN_140163e20();                                           // ctor
-    void FUN_1401644e0();                                           // dtor
+    Unk_ElemArray();                                                // 0x140163e20
+    ~Unk_ElemArray();                                               // 0x1401644e0
     unsigned __int64 FUN_14016d900();                               // size
     Unk_140165cf0*& FUN_140164a30(unsigned __int64 n);              // operator[]
     void *m_a, *m_b, *m_c;
@@ -68,40 +68,30 @@ CLearningQuestTable::~CLearningQuestTable()
 }
 
 // @0x14064cc80
-// MS2-FUNCTIONAL: the exe builds the file/dir CString temps and the path in place with early destruction (as in continentregiontable); no source form found
+// MS2-FUNCTIONAL: the exe Load returns int (dword result temps); learningquesttable.h is shared (filepreload_1, questmanager_2, uilearningquestdialog), so it stays bool
 bool CLearningQuestTable::Load()
 {
-    CString strPath = FUN_14071a5b0(CString("Table"), CString("learningQuest.xml"));
+    CString strPath = FUN_14071a5b0("Table", "learningQuest.xml");
     TiXmlDocument doc;
-    const char* pszPath = strPath;
-    if (FUN_140166420()->FUN_1403974b0(&doc, pszPath, 0, true, false) == 0)
+    if (FUN_140166420()->FUN_1403974b0(&doc, (const char*)strPath, 0, true, false) == 0)
+        return false;
+    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+    if (pRoot == 0)
     {
+        FUN_14015eb90(FUN_140166440(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return false;
     }
-    else
+    Unk_ElemArray list;
+    FUN_14028faa0(pRoot, "learning", "id", &list);
+    for (unsigned __int64 i = 0; i < list.FUN_14016d900(); i++)
     {
-        Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
-        if (pRoot == 0)
-        {
-            FUN_14015eb90(FUN_140166440(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
+        Unk_140165cf0* pNode = list.FUN_140164a30(i);
+        DataPtr data(new CLearningQuestData);
+        if (data->Read(pNode) == 0)
             return false;
-        }
-        else
-        {
-            Unk_ElemArray list;
-            list.FUN_140163e20();
-            FUN_14028faa0(pRoot, "learning", "id", &list);
-            for (unsigned __int64 i = 0; i < list.FUN_14016d900(); i++)
-            {
-                Unk_140165cf0* pNode = list.FUN_140164a30(i);
-                DataPtr data(new CLearningQuestData);
-                if (data.get()->Read(pNode) == 0)
-                    return false;
-                m_map.SetAt(data->m_nId, data);
-            }
-            return true;
-        }
+        m_map.SetAt(data->m_nId, data);
     }
+    return true;
 }
 
 // @0x14064cf80

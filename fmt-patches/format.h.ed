@@ -1,0 +1,25 @@
+1965c
+        width = spec.width();  // MS2: reuses the outer width (no shadowing local)
+.
+852a
+    case Arg::CHAR_INT:  // MS2
+      return FMT_DISPATCH(visit_char_int(arg.int_value));
+.
+804a
+  Result visit_char_int(int value) {  // MS2
+    return FMT_DISPATCH(visit_any_int(value));
+  }
+.
+645c
+    // MS2: Nexon added CHAR_INT after CHAR (an int formatted as a number unless the type is 'c').
+    INT, UINT, LONG_LONG, ULONG_LONG, CHAR, CHAR_INT, LAST_INTEGER_TYPE = CHAR_INT,
+.
+388a
+inline int isinfinity(long double x) { return !_finite(x); }  // MS2
+.
+75a
+// MS2: the exe's fmt::format wrappers use the non-variadic FMT_WRAP/ArgType path.
+#ifndef FMT_USE_VARIADIC_TEMPLATES
+# define FMT_USE_VARIADIC_TEMPLATES 0
+#endif
+.

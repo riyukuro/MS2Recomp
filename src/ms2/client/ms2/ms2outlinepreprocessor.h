@@ -4,6 +4,8 @@
 #pragma once
 #include "ms2/ms2layout.h"
 #include <NiShaderSortProcessor.h>
+#include <NiMaterial.h>
+#include <efd/SmartPointer.h>
 
 class MS2OutlinePreProcessor : public NiShaderSortProcessor
 {
@@ -11,11 +13,11 @@ class MS2OutlinePreProcessor : public NiShaderSortProcessor
 
 public:
     MS2OutlinePreProcessor();                               // 0x1414d3120
-    virtual ~MS2OutlinePreProcessor();                      // 0x1414d3cc0, ??_G 0x1414d3cf0
+    // ~MS2OutlinePreProcessor is implicit (0x1414d3cc0, ??_G 0x1414d3cf0): the exe dtor stores no vftable.
     virtual void PreRenderProcessList(const NiVisibleArray* pkInput, NiVisibleArray& kOutput, void* pvExtraData);   // 0x1414d3360
 
 public:
-    void* m_spOutlineMaterial;   // +0xb0 smart pointer (ctor 0x1409a7460, assign 0x1414802a0, get 0x1409a8120, dtor 0x1409a7b00)
+    efd::SmartPointer<NiMaterial> m_spOutlineMaterial;   // +0xb0
     int m_nOutlined;             // +0xb8 count of objects in the last re-sorted list
 };
 MS2_CHECK_SIZE(MS2OutlinePreProcessor, 0xc0);

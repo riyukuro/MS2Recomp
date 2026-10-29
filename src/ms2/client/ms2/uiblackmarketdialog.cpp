@@ -3,16 +3,12 @@
 // MS2-RANGE: 0x140110a70-0x140110b20 .text$di
 // MS2-RANGE: 0x1418cf080-0x1418d3050 .text$mn
 // MS2-PINS-BEGIN tplpin
-// MS2-PIN: ??0?$MS2Ptr@VBlackMarketPageItemRegister@@@@QEAA@PEAVBlackMarketPageItemRegister@@@Z 0x1418d1e00 ; prop
-// MS2-PIN: ??0?$MS2Ptr@VBlackMarketPageItemSearch@@@@QEAA@PEAVBlackMarketPageItemSearch@@@Z 0x1418d1e30 ; prop
-// MS2-PIN: ??0?$MS2Ptr@VBlackMarketPageMesoRegister@@@@QEAA@PEAVBlackMarketPageMesoRegister@@@Z 0x1418d1e60 ; prop
-// MS2-PIN: ??8?$MS2Ptr@VBlackMarketPageItemRegister@@@@QEBA_NPEAVBlackMarketPageItemRegister@@@Z 0x1418d2080 ; unique
-// MS2-PIN: ??8?$MS2Ptr@VBlackMarketPageItemSearch@@@@QEBA_NPEAVBlackMarketPageItemSearch@@@Z 0x1418d20c0 ; unique
-// MS2-PIN: ?get@?$MS2Ptr@VBlackMarketPageItemRegister@@@@QEBAPEAVBlackMarketPageItemRegister@@XZ 0x1418d2130 ; unique
-// MS2-PIN: ??C?$MS2Ptr@VAScript@@@@QEBAPEAVAScript@@XZ 0x1418d2140 ; probe
-// MS2-PIN: ?get@?$MS2Ptr@VBlackMarketPageMesoRegister@@@@QEBAPEAVBlackMarketPageMesoRegister@@XZ 0x1418d2160 ; unique
-// MS2-PIN: ??C?$MS2Ptr@VBlackMarketPageItemSearch@@@@QEBAPEAVBlackMarketPageItemSearch@@XZ 0x1418d2180 ; unique
-// MS2-PIN: ?GetTypeName@?$DelegateImpl@U?$pair@PEAVUIBlackMarketDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x1418d2d00 ; unique
+// MS2-PIN: ?get@?$MS2Ptr@VBlackMarketPageMesoSearch@@@@QEBAPEAVBlackMarketPageMesoSearch@@XZ 0x1418d2160 ; unique
+// MS2-PIN: ??C?$MS2Ptr@VBlackMarketPageItemRegister@@@@QEBAPEAVBlackMarketPageItemRegister@@XZ 0x1418d2170 ; unique
+// MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUIBlackMarketDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x1418d2d00 ; unique
+// MS2-PIN: ?vfunc_2@?$DelegateImpl@U?$pair@PEAVUIBlackMarketDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z 0x1418d2d90 ; unique
+// MS2-PIN: ??$Call@VUIBlackMarketDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@?$DelegateImpl@U?$pair@PEAVUIBlackMarketDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@CAXAEAU?$pair@PEAVUIBlackMarketDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@AEBUParams@FunctionHandler@GFx@Scaleform@@@Z 0x1418d2dc0 ; unique
+// MS2-PIN: ?vfunc_3@?$DelegateImpl@U?$pair@PEAVUIBlackMarketDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEBA_NPEBVDelegateImplBase@2@@Z 0x1418d2e00 ; unique
 // MS2-PINS-END tplpin
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uiblackmarketdialog.cpp"    // assumed
 #include "ms2/placeholder/ms2stdafx.h"
@@ -89,14 +85,13 @@ bool FUN_140a467d0(const MS2Ptr<AScript>* p);
 Scaleform::GFx::Value& FUN_1422dbc00();
 
 // @0x1418cf080
-// MS2-FUNCTIONAL: not byte-exact yet (registers / call order differ)
 UIBlackMarketDialog::UIBlackMarketDialog()
+    : m_spItemSearch(new BlackMarketPageItemSearch())
+    , m_spItemRegister(new BlackMarketPageItemRegister())
+    , m_spMesoSearch(new BlackMarketPageMesoSearch("m_mesoSearchPage"))
+    , m_spMesoRegister(new BlackMarketPageMesoRegister())
+    , m_spMesoSearchSingle(new BlackMarketPageMesoSearch("m_mesoSearchPageSingleRange"))
 {
-    m_spItemSearch = new BlackMarketPageItemSearch();
-    m_spItemRegister = new BlackMarketPageItemRegister();
-    m_spMesoSearch = new BlackMarketPageMesoSearch(CString("m_mesoSearchPage"));
-    m_spMesoRegister = new BlackMarketPageMesoRegister();
-    m_spMesoSearchSingle = new BlackMarketPageMesoSearch(CString("m_mesoSearchPageSingleRange"));
     m_pages.clear();
     m_pages.push_back(m_spItemSearch.get());
     m_pages.push_back(m_spItemRegister.get());
@@ -134,15 +129,16 @@ int UIBlackMarketDialog::vfunc_65()
 }
 
 // @0x1418cf680
-// MS2-FUNCTIONAL: not byte-exact yet (registers / call order differ)
 void UIBlackMarketDialog::vfunc_67()
 {
     UIDialog::vfunc_67();
     m_pCurPage = 0;
     for (size_t i = 0; i < m_pages.size(); i++)
     {
-        if (m_pages[i])
-            m_pages[i]->vfunc_2();
+        BlackMarketPage* pPage = m_pages[i];
+        if (pPage == 0)
+            continue;
+        pPage->vfunc_2();
     }
     if (m_spDetailButton.get())
         m_spDetailButton = 0;
@@ -151,21 +147,21 @@ void UIBlackMarketDialog::vfunc_67()
 }
 
 // @0x1418cf770
-// MS2-FUNCTIONAL: not byte-exact yet (registers / call order differ)
 int UIBlackMarketDialog::vfunc_73()
 {
-    if (FUN_14025e7b0()->m_8.FUN_1402c4c90(7) == 0)
+    if (FUN_14025e7b0()->m_8.FUN_1402c4c90(7) != 0)
     {
-        Unk_LocalPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
-        if (pPlayer && pPlayer->FUN_14166ce30() != 0)
-        {
-            FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_blackmarket_error_not_useable_by_dead")), 1, 1);
-            return 0;
-        }
-        return UIDialog::vfunc_73();
+        FUN_141275260(0x2f7, 1, 1);
+        return 0;
     }
-    FUN_141275260(0x2f7, 1, 1);
-    return 0;
+    Unk_LocalPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    if (pPlayer && pPlayer->FUN_14166ce30() != 0)
+    {
+        CStringW strMsg = GetStringCommonByKey(L"s_blackmarket_error_not_useable_by_dead");
+        FUN_1412751f0(strMsg, 1, 1);
+        return 0;
+    }
+    return UIDialog::vfunc_73();
 }
 
 // @0x1418cf860
@@ -182,16 +178,18 @@ void UIBlackMarketDialog::vfunc_72()
 }
 
 // @0x1418cf920
-// MS2-FUNCTIONAL: not byte-exact yet (registers / call order differ)
 void UIBlackMarketDialog::vfunc_79(void* p)
 {
     UIDialog::vfunc_79(p);
-    CInPacket* pIn = static_cast<CInPacket*>(p);
-    if (pIn->FUN_14070fe80() == 0x98)
+    if (static_cast<CInPacket*>(p)->FUN_14070fe80() == 0x98)
     {
-        char c = pIn->ReadUInt8();
-        if (c == 0)
-            c = pIn->ReadUInt8();
+        int nFirst = static_cast<CInPacket*>(p)->ReadUInt8();
+        int c = nFirst;
+        if (nFirst == 0)
+        {
+            int nSecond = static_cast<CInPacket*>(p)->ReadUInt8();
+            c = nSecond;
+        }
         if (m_spItemRegister.get())
             m_spItemRegister->FUN_140f133b0(c);
         if (m_spItemSearch.get())
@@ -219,14 +217,13 @@ void UIBlackMarketDialog::OnLoadInit()
 }
 
 // @0x1418cfb50
-// MS2-FUNCTIONAL: not byte-exact yet (registers / call order differ)
 void UIBlackMarketDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
     if (FUN_140ba28d0(&m_30, 0))
         return;
     if (!FUN_140166410()->FUN_14036d570(0x15))
-        FUN_140cff840(m_30->FUN_1422bb890(), "m_radioMeso", 0);
+        FUN_140cff840((*m_30).FUN_1422bb890(), "m_radioMeso", 0);
     if (FUN_140166410()->FUN_14036d570(0xf4))
     {
         m_30->Invoke("SetIsSingleRangeMesoMarketProductUnit", FUN_1401d3200()->m_6078.FUN_140f20b90() == 1);
@@ -237,6 +234,8 @@ void UIBlackMarketDialog::OnLoadComplete()
     for (size_t i = 0; i < m_pages.size(); i++)
     {
         BlackMarketPage* pPage = m_pages[i];
+        if (pPage == 0)
+            continue;
         pPage->FUN_140f0c150(m_30);
         pPage->FUN_140f0c1a0(m_28);
         pPage->OnInit();
@@ -270,14 +269,13 @@ void UIBlackMarketDialog::vfunc_15()
 }
 
 // @0x1418d00a0
-// MS2-FUNCTIONAL: not byte-exact yet (registers / call order differ)
 int UIBlackMarketDialog::vfunc_13()
 {
     if (UIDialog::vfunc_13())
         return 1;
-    if (vfunc_55() == 0 && m_30.get() && FUN_140b632f0()->FUN_1422d4980(m_e0) == this)
+    if (vfunc_55() == 0 && (m_30.get() ? true : false) && FUN_140b632f0()->FUN_1422d4980(m_e0) == this)
     {
-        CString strKey;
+        CString strKey = "";
         if (FUN_14025e7c0()->FUN_14116d9c0(0x1c, 0, 0))
             strKey = "onEnterKey";
         else if (FUN_14025e7c0()->FUN_14116d9c0(0xf, 0, 0))
@@ -292,7 +290,6 @@ int UIBlackMarketDialog::vfunc_13()
 }
 
 // @0x1418d0270
-// MS2-FUNCTIONAL: not byte-exact yet (registers / call order differ)
 void UIBlackMarketDialog::vfunc_45(Scaleform::GFx::Value* pRetVal, const CString& strMethod, ASData* pArgs)
 {
     if (m_pCurPage == 0)
@@ -318,8 +315,7 @@ void UIBlackMarketDialog::vfunc_45(Scaleform::GFx::Value* pRetVal, const CString
         if (spEntry.get())
         {
             MS2Ptr<CItem> spItem = spEntry->m_item;
-            bool bRegister = FUN_1418d0da0(m_spItemSearch.get());
-            FUN_1413490b0(spItem, pRetVal, bRegister, 0x400, 0);
+            FUN_1413490b0(spItem, pRetVal, FUN_1418d0da0(m_spItemSearch.get()), 0x400, 0);
             ASTooltip tip(*pRetVal, 2);
             if (!tip.FUN_1422ba9a0())
                 tip.FUN_1409db930(MS2Ptr<CItem>(0), spItem);
@@ -327,13 +323,9 @@ void UIBlackMarketDialog::vfunc_45(Scaleform::GFx::Value* pRetVal, const CString
     }
     else if (strMethod.CompareNoCase("OnRightClick") == 0)
     {
-        if (FUN_140d40670(FUN_1409bb9e0()) == 0)
+        if (FUN_140d40670(FUN_1409bb9e0()) != 0)
         {
-            if (m_30.get())
-                m_30->Invoke("clearRegisterPageSlot");
-        }
-        else
-        {
+            MS2Ptr<CItem> spItem(0);
             CString strArg = pArgs->FUN_1422b8d30();
             if (FUN_140184310(strArg, "ItemGUID"))
             {
@@ -348,6 +340,11 @@ void UIBlackMarketDialog::vfunc_45(Scaleform::GFx::Value* pRetVal, const CString
                 if (spEntry.get())
                     FUN_140d40120(FUN_1409bb9e0(), spEntry->m_item, 0);
             }
+        }
+        else
+        {
+            if (m_30.get())
+                m_30->Invoke("clearRegisterPageSlot");
         }
     }
     else if (strMethod.CompareNoCase("OnSlotShiftClick") == 0)
@@ -387,16 +384,16 @@ bool UIBlackMarketDialog::FUN_1418d0be0()
 }
 
 // @0x1418d0c20
-// MS2-FUNCTIONAL: not byte-exact yet (registers / call order differ)
 void UIBlackMarketDialog::FUN_1418d0c20(int nIndex)
 {
     if (nIndex < 0 || nIndex >= (int)m_pages.size())
         return;
     m_pCurPage = m_pages[nIndex];
-    m_pCurPage->vfunc_3();
+    if (m_pCurPage)
+        m_pCurPage->vfunc_3();
     if (FUN_140166410()->FUN_14036d570(0xf4))
     {
-        if (m_pCurPage == m_spMesoRegister.get() || m_pCurPage == m_spMesoSearch.get() || m_pCurPage == m_spMesoSearchSingle.get())
+        if (FUN_1418d0da0(m_spMesoRegister.get()) || FUN_1418d0da0(m_spMesoSearch.get()) || FUN_1418d0da0(m_spMesoSearchSingle.get()))
             FUN_140cff840(FUN_1422dbc00(), "m_mesoMarketDetailButton", 1);
     }
 }
@@ -442,18 +439,18 @@ void UIBlackMarketDialog::FUN_1418d0fc0(void* p2, void* p3)
 }
 
 // @0x1418d1080
-// MS2-FUNCTIONAL: not byte-exact yet (registers / call order differ)
 void UIBlackMarketDialog::FUN_1418d1080(MS2Ptr<Unk_BlackMarketEntry> spEntry, int n)
 {
     if (vfunc_55() != 0 || m_spItemSearch == 0)
         return;
-    if (spEntry.get() && spEntry->m_item.get())
+    if ((spEntry.get() ? true : false) && (spEntry->m_item.get() ? true : false))
     {
+        MS2Ptr<CItem> spItem = spEntry->m_item;
         MS2Ptr<CItem> spNew = new CItem();
-        spNew->FUN_14052b2e0(FUN_1405276c0(spEntry->m_item.get()), FUN_140526bd0(spEntry->m_item.get()), 0, n);
-        FUN_141349ae0(spNew, 0x945, CString(""));
+        static_cast<CItem*>(spNew)->FUN_14052b2e0(FUN_1405276c0(spItem), FUN_140526bd0(spItem), 0, n);
+        FUN_141349ae0(spNew, 0x945, "");
+        m_spItemSearch->FUN_140f0db00(spEntry, (int)spEntry->GetState(false));
     }
-    m_spItemSearch->FUN_140f0db00(spEntry, (int)spEntry->GetState(false));
 }
 
 // @0x1418d1330

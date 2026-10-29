@@ -23,7 +23,7 @@ class CSkillTierOption : public CPtred
 {
 public:
     CSkillTierOption();                                         // 0x14080cbf0
-    virtual ~CSkillTierOption();                                // 0x14080ce40
+    // ~CSkillTierOption (0x14080ce40) is implicit: the exe dtor stores no vptr.
 
     void* m_18;                                                 // +0x18
     TPtrValue<Unk_SkillJobMap> m_skills;                        // +0x20
@@ -37,7 +37,7 @@ public:
     enum TierId { TierId_None = 0 };
 
     CSkillTierOptionManager(PC* pOwner);                        // 0x14080b800
-    virtual ~CSkillTierOptionManager();                         // 0x14080ce70
+    // ~CSkillTierOptionManager (0x14080ce70) is implicit: the exe dtor stores no vptr.
 
     int Update();                                               // 0x14080b8e0 refresh the tier levels; 1 when one changed
     unsigned short GetSkillLevel(unsigned int nSkillId);        // 0x14080baf0

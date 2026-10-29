@@ -138,18 +138,16 @@ public:
     int FUN_1422c15d0(int x, int y, bool bShapeFlag);          // hitTestPoint
     int FUN_1422c1670(float x, float y, bool bShapeFlag);      // hitTestPoint
     int FUN_1422c1710(MS2Ptr<ASDisplayObject> spObj);          // hitTestObject (spObj by value: the callee destroys it)
-#if defined(MS2_HAVE_SCALEFORM_SDK)   // Value::DisplayInfo exists only in the real SDK header
     int FUN_1422c17d0(const Scaleform::GFx::Value::DisplayInfo& info);   // SetDisplayInfo
     int FUN_1422c1810(Scaleform::GFx::Value::DisplayInfo& info);         // GetDisplayInfo (false if not a display object)
-#endif
 
     // ---- defined in other units of the GFx UI library ----
     // Registers an AS -> C++ callback under a name (the list lives at +0x60; aseffect.cpp "GetTooltipCallback").
     void FUN_1422c3180(CString strName, const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb);
     int FUN_1422c2510(double* pX, double* pY);                  // get the position (double; uiminimapentity.cpp; ASMovieClip's, asmovieclip.cpp)
-    // addEventListener: an AS event of the object calls the delegate (uiblackmarketpage.cpp "changeTotalPrice")
-    void FUN_1422c3600(const CString& strEvent, const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, bool bCapture, int nPriority, int a5, int a6);
-    // the same callee: its last parameter is the pointer-sized user data of the AS function object (asbutton.cpp)
+    // addEventListener: an AS event of the object calls the delegate (uiblackmarketpage.cpp "changeTotalPrice").
+    // The last parameter is the pointer-sized user data of the AS function object (asbutton.cpp); there is no int
+    // overload, so a literal 0 goes out as a 64-bit null.
     void FUN_1422c3600(const CString& strEvent, const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, bool bCapture, int nPriority, int a5, void* pUser);
     // removeEventListener: drops the delegate registered for the event (asbutton.cpp)
     void FUN_1422c3820(const CString& strEvent, const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, bool bCapture);

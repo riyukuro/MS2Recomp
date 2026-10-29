@@ -367,7 +367,7 @@ public:
     Unk_GameEventValueDayItem();                    // 0x140427af0
     void Add(unsigned id, Unk_DayItemContext* pContext);    // 0x140427b60
     void Remove(unsigned id);                       // 0x140427be0
-    void GetContexts(ATL::CAtlArray<MS2Ptr<Unk_DayItemContext> >& contexts, bool bAll);   // 0x140427c30: active ones
+    void GetContexts(ATL::CAtlList<MS2Ptr<Unk_DayItemContext> >& contexts, bool bAll);   // 0x140427c30: active ones
     CLockCriticalSection m_lock;
     ATL::CAtlMap<unsigned, MS2Ptr<Unk_DayItemContext> > m_contexts;     // +0x30
 };
@@ -377,7 +377,7 @@ public:
     Unk_GameEventValueFieldObjectDrop();            // 0x140427d20
     void Add(unsigned id, Unk_FieldObjectDropContext* pContext);    // 0x140427d90
     void Remove(unsigned id);                       // 0x140427e10
-    void GetContexts(ATL::CAtlArray<MS2Ptr<Unk_FieldObjectDropContext> >& contexts);  // 0x140427e60
+    void GetContexts(ATL::CAtlList<MS2Ptr<Unk_FieldObjectDropContext> >& contexts);  // 0x140427e60
     CLockCriticalSection m_lock;
     ATL::CAtlMap<unsigned, MS2Ptr<Unk_FieldObjectDropContext> > m_contexts;     // +0x30
 };
@@ -387,7 +387,7 @@ public:
     Unk_GameEventValueFieldObjectDropList();        // 0x140427f30
     void Add(unsigned id, Unk_FieldObjectDropListContext* pContext);    // 0x140427fa0
     void Remove(unsigned id);                       // 0x140428020
-    void GetContexts(ATL::CAtlArray<MS2Ptr<Unk_FieldObjectDropListContext> >& contexts);  // 0x140428070
+    void GetContexts(ATL::CAtlList<MS2Ptr<Unk_FieldObjectDropListContext> >& contexts);  // 0x140428070
     CLockCriticalSection m_lock;
     ATL::CAtlMap<unsigned, MS2Ptr<Unk_FieldObjectDropListContext> > m_contexts; // +0x30
 };

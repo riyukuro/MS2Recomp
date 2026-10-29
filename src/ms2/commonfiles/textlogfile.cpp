@@ -52,64 +52,47 @@ CTextLogFile::~CTextLogFile()
 // The time stamp text of a log line.
 CString FUN_1408673d0(const __time64_t* pTime);
 
-// MS2-FUNCTIONAL: fprintf/loop block layout (2 bytes longer)
 // @0x140866c70
 void CTextLogFile::FUN_140866c70()
 {
-    if (!m_lines.empty() || !m_tail.empty()) {
-        WCHAR szModule[MAX_PATH];
-        WCHAR szPath[MAX_PATH];
-        LPWSTR pszFile;
-        GetModuleFileNameW(0, szModule, MAX_PATH);
-        GetFullPathNameW(szModule, MAX_PATH, szPath, &pszFile);
-        if (pszFile != 0)
-            *pszFile = L'\0';
-        wcscat_s(szPath, MAX_PATH, m_name);
-        FILE* pFile = _wfopen(szPath, L"w");
-        fprintf(pFile, s_pszHeadSection);
-        for (std::list<std::pair<__time64_t, CString> >::iterator it = m_lines.begin(); it != m_lines.end(); ++it) {
-            const char* pszText = it->second.GetBuffer();
-            fprintf(pFile, "[%s] %s\r\n", FUN_1408673d0(&it->first).GetBuffer(), pszText);
-        }
-        fprintf(pFile, s_pszBodySection);
-        for (std::list<std::pair<__time64_t, CString> >::iterator it = m_tail.begin(); it != m_tail.end(); ++it) {
-            const char* pszText = it->second.GetBuffer();
-            fprintf(pFile, "[%s] %s\r\n", FUN_1408673d0(&it->first).GetBuffer(), pszText);
-        }
-        fclose(pFile);
-        FUN_140867220();
+    if (m_lines.empty() && m_tail.empty())
+        return;
+    WCHAR szModule[MAX_PATH];
+    WCHAR szPath[MAX_PATH];
+    LPWSTR pszFile;
+    GetModuleFileNameW(0, szModule, MAX_PATH);
+    GetFullPathNameW(szModule, MAX_PATH, szPath, &pszFile);
+    if (pszFile != 0)
+        *pszFile = L'\0';
+    wcscat_s(szPath, MAX_PATH, m_name);
+    FILE* pFile = _wfopen(szPath, L"w");
+    fprintf(pFile, s_pszHeadSection);
+    for (std::list<std::pair<__time64_t, CString> >::iterator it = m_lines.begin(); it != m_lines.end(); ++it) {
+        fprintf(pFile, "[%s] %s\r\n", FUN_1408673d0(&it->first).GetBuffer(), it->second.GetBuffer());
     }
+    fprintf(pFile, s_pszBodySection);
+    for (std::list<std::pair<__time64_t, CString> >::iterator it = m_tail.begin(); it != m_tail.end(); ++it) {
+        fprintf(pFile, "[%s] %s\r\n", FUN_1408673d0(&it->first).GetBuffer(), it->second.GetBuffer());
+    }
+    fclose(pFile);
+    FUN_140867220();
 }
 
-// MS2-FUNCTIONAL: inline strlen loop shape (exe increments in place, compares the byte directly)
-// MS2-FUNCTIONAL: inline strlen loop shape
 // @0x140866f60
 void CTextLogFile::FUN_140866f60(const char* pszLine)
 {
-    if (m_nLimit != -1) {
-        __int64 nLen = -1;
-        do {
-            ++nLen;
-        } while (pszLine[nLen]);
-        FUN_140867330(nLen);
-    }
+    if (m_nLimit != -1)
+        FUN_140867330(strlen(pszLine));
     __time64_t tNow;
     FUN_140866b20(&tNow);
     m_lines.push_back(std::make_pair(tNow, pszLine));
 }
 
-// MS2-FUNCTIONAL: inline strlen loop shape (exe increments in place, compares the byte directly)
-// MS2-FUNCTIONAL: inline strlen loop shape
 // @0x140867020
 void CTextLogFile::FUN_140867020(const char* pszLine)
 {
-    if (m_nLimit != -1) {
-        __int64 nLen = -1;
-        do {
-            ++nLen;
-        } while (pszLine[nLen]);
-        FUN_140867330(nLen);
-    }
+    if (m_nLimit != -1)
+        FUN_140867330(strlen(pszLine));
     __time64_t tNow;
     FUN_140866b20(&tNow);
     m_tail.push_back(std::make_pair(tNow, pszLine));
@@ -142,22 +125,10 @@ void CTextLogFile::FUN_140867220()
     m_nRemain = m_nLimit;
 }
 
-// MS2-FUNCTIONAL: inline strlen loop shape (exe increments in place, compares the byte directly)
-// MS2-FUNCTIONAL: inline strlen loop shape
 // @0x140867260
 void CTextLogFile::FUN_140867260(unsigned long long nLimit)
 {
-    const char* pszHead = s_pszHeadSection;
-    __int64 nHead = -1;
-    do {
-        ++nHead;
-    } while (pszHead[nHead]);
-    const char* pszBody = s_pszBodySection;
-    __int64 nBody = -1;
-    do {
-        ++nBody;
-    } while (pszBody[nBody]);
-    nLimit = nLimit - (nHead + nBody);
+    nLimit = nLimit - (strlen(s_pszHeadSection) + strlen(s_pszBodySection));
     m_nLimit = nLimit;
     m_nRemain = nLimit;
 }

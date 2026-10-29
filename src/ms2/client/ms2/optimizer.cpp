@@ -186,15 +186,7 @@ void COptimizer::FUN_14161bb60()
         }
         else
         {
-            bool bUpdate;
-            if (GetEnabled() == 0 || GetSuppressed() != 0)
-            {
-                bUpdate = true;
-            }
-            else
-            {
-                bUpdate = false;
-            }
+            int bUpdate = GetEnabled() == 0 || GetSuppressed() != 0;
             if (bUpdate)
             {
                 m_fUpdateTime += fDelta;
@@ -207,7 +199,7 @@ void COptimizer::FUN_14161bb60()
             m_players.clear();
         }
     }
-    if (m_nSampleCount != 0)
+    if (m_nSampleCount > 0)
     {
         FUN_14161c990();
     }
@@ -261,76 +253,75 @@ void COptimizer::FUN_14161bee0()
         strText.Format("GPU : %s", (const char*)FUN_14016a600((const wchar_t*)FUN_141245b20()->FUN_141245ab0(), 0));
         FUN_140a44830()->FUN_1401ce270(strText);
     }
-    int nGfx = FUN_1422e9e50(FUN_1414a56c0()) / 0x100000;
-    FUN_140a44830()->FUN_1401ce2f0("GFXSysAlloc : %d(MB)", nGfx);
+    FUN_140a44830()->FUN_1401ce2f0("GFXSysAlloc : %d(MB)", FUN_1422e9e50(FUN_1414a56c0()) / 0x100000);
     const char* pszMultiScene;
-    if (DAT_143ae2b30 == 0)
-    {
-        pszMultiScene = "FALSE";
-    }
-    else
+    if (DAT_143ae2b30 != 0)
     {
         pszMultiScene = "TRUE";
     }
+    else
+    {
+        pszMultiScene = "FALSE";
+    }
     FUN_140a44830()->FUN_1401ce2f0("bUseMultiSceneUpdate %s", pszMultiScene);
     const char* pszRemoveExtra;
-    if (DAT_143ae2b34 == 0)
-    {
-        pszRemoveExtra = "FALSE";
-    }
-    else
+    if (DAT_143ae2b34 != 0)
     {
         pszRemoveExtra = "TRUE";
     }
+    else
+    {
+        pszRemoveExtra = "FALSE";
+    }
     FUN_140a44830()->FUN_1401ce2f0("bUseRemoveExtraData %s", pszRemoveExtra);
     const char* pszExceptRender;
-    if (DAT_143ae2b38 == 0)
-    {
-        pszExceptRender = "FALSE";
-    }
-    else
+    if (DAT_143ae2b38 != 0)
     {
         pszExceptRender = "TRUE";
     }
+    else
+    {
+        pszExceptRender = "FALSE";
+    }
     FUN_140a44830()->FUN_1401ce2f0("bUseExceptRender %s", pszExceptRender);
     const char* pszIndoor;
-    if (DAT_143ae2b3c == 0)
-    {
-        pszIndoor = "FALSE";
-    }
-    else
+    if (DAT_143ae2b3c != 0)
     {
         pszIndoor = "TRUE";
     }
+    else
+    {
+        pszIndoor = "FALSE";
+    }
     FUN_140a44830()->FUN_1401ce2f0("bUseIndoorInstancing %s", pszIndoor);
     const char* pszProgressive;
-    if (DAT_143ae2b40 == 0)
-    {
-        pszProgressive = "FALSE";
-    }
-    else
+    if (DAT_143ae2b40 != 0)
     {
         pszProgressive = "TRUE";
     }
+    else
+    {
+        pszProgressive = "FALSE";
+    }
     FUN_140a44830()->FUN_1401ce2f0("bUseProgressiveLoading %s", pszProgressive);
     const char* pszRemoveShadow;
-    if (DAT_143ae2b44 == 0)
-    {
-        pszRemoveShadow = "FALSE";
-    }
-    else
+    if (DAT_143ae2b44 != 0)
     {
         pszRemoveShadow = "TRUE";
     }
+    else
+    {
+        pszRemoveShadow = "FALSE";
+    }
     FUN_140a44830()->FUN_1401ce2f0("bRemoveShadowEntity %s", pszRemoveShadow);
     const char* pszKfm;
-    if (DAT_143ae2b48 == 0)
+    if (DAT_143ae2b48 != 0)
     {
-        pszKfm = "FALSE";
+        pszKfm = "TRUE";
     }
     else
     {
-        pszKfm = "TRUE";
+        pszKfm = "FALSE";
     }
     FUN_140a44830()->FUN_1401ce2f0("bMS2KFM %s", pszKfm);
     FUN_141245b20()->FUN_141375a80();
@@ -485,7 +476,7 @@ void COptimizer::FUN_14161c990()
         {
             fLowest = fFrame;
         }
-        if (fHighest < fFrame)
+        if (fFrame > fHighest)
         {
             fHighest = fFrame;
         }
@@ -494,7 +485,8 @@ void COptimizer::FUN_14161c990()
     fAverage = fAverage / (float)m_samples.size();
     if (GetLogString() != 0)
     {
-        Unk_OptLog(GetLogString(), 0xb, 6, L"[SamplingFrame] sampleCount:{0} sampleCycleTick:{1}", m_nSampleCount, (unsigned)m_nSampleCycle);
+        Unk_OptLog(GetLogString(), 0xb, 6, L"[SamplingFrame] sampleCount:{0} sampleCycleTick:{1}", m_nSampleCount,
+                   reinterpret_cast<const unsigned&>(m_nSampleCycle));   // the exe member is unsigned
     }
     if (GetLogString() != 0)
     {
@@ -701,40 +693,35 @@ void COptimizer::FUN_14161d130(bool bForce)
             {
                 std::list<Entry> candidates;
                 Unk_OptObjMap* pMap = FUN_141bd36b0(FUN_1403ed2d0());
-                POSITION pos = FUN_140c20a10(pMap);
-                while (pos != 0)
+                for (POSITION pos = FUN_140c20a10(pMap); pos != 0; FUN_140c20a30(pMap, &pos))
                 {
                     TPtr<PC>& spRef = FUN_140c20a80(pMap, pos);
-                    if (FUN_140aac420(spRef) != 0 && FUN_14161e580(spRef) == 0)
+                    if (FUN_140aac420(spRef) != 0)
                     {
-                        if (FUN_140aac440(spRef)->GetClassID() != 0x6200044)
+                        if (FUN_14161e580(spRef) != 0)
+                            continue;
+                        if (FUN_140aac440(spRef)->GetClassID() == 0x6200044)
+                            continue;
+                        if (FUN_140aac440(spRef)->GetClassID() == 0x6200047)
+                            continue;
+                        if (FUN_140aac440(spRef)->GetClassID() == 0x620005e)
+                            continue;
+                        if (FUN_140aac440(spRef)->GetClassID() == 0x6200016)
+                            continue;
+                        unsigned __int64 nUid = FUN_140aac440(spRef)->FUN_141656a80();
+                        if (selected.find(nUid) == selected.end())
                         {
-                            if (FUN_140aac440(spRef)->GetClassID() != 0x6200047)
-                            {
-                                if (FUN_140aac440(spRef)->GetClassID() != 0x620005e)
-                                {
-                                    if (FUN_140aac440(spRef)->GetClassID() != 0x6200016)
-                                    {
-                                        unsigned __int64 nUid = FUN_140aac440(spRef)->FUN_141656a80();
-                                        if (selected.find(nUid) == selected.end())
-                                        {
-                                            PCBase* pActor = FUN_140aac420(spRef);
-                                            float fDistance = FUN_140aac440(spRef)->FUN_140f4a450();
-                                            candidates.push_back(Entry(fDistance, pActor));
-                                        }
-                                    }
-                                }
-                            }
+                            candidates.push_back(Entry(FUN_140aac440(spRef)->FUN_140f4a450(), FUN_140aac420(spRef)));
                         }
                     }
-                    FUN_140c20a30(pMap, &pos);
                 }
                 if (bForce)
                 {
                     for (std::list<Entry>::iterator it = candidates.begin(); it != candidates.end(); ++it)
                     {
                         unsigned __int64 nKey = it->m_pPC->FUN_141656a80();
-                        if (selected.find(nKey) == selected.end())
+                        std::map<unsigned __int64, Entry>::iterator itFound = selected.find(nKey);
+                        if (itFound == selected.end())
                         {
                             FUN_14161dbe0(it->m_pPC, preloadMode);
                         }
@@ -746,23 +733,21 @@ void COptimizer::FUN_14161d130(bool bForce)
                     candidates.sort();
                     unsigned __int64 nWant = (__int64)m_nLimit - preferred.size();
                     unsigned __int64 nAdded = 0;
-                    std::list<Entry>::iterator it = candidates.begin();
-                    while (it != candidates.end() && nAdded < nWant)
+                    for (std::list<Entry>::iterator it = candidates.begin(); it != candidates.end(); ++it)
                     {
-                        unsigned __int64 nKey = it->m_pPC->FUN_141656a80();
-                        std::map<unsigned __int64, Entry>::iterator itOld = m_selected.find(nKey);
-                        if (itOld == m_selected.end())
-                        {
-                            FUN_14161dbe0(it->m_pPC, 0);
-                            selected[it->m_pPC->FUN_141656a80()] = Entry(0, it->m_pPC);
-                        }
-                        else
+                        if (nAdded >= nWant) break;
+                        std::map<unsigned __int64, Entry>::iterator itOld = m_selected.find(it->m_pPC->FUN_141656a80());
+                        if (itOld != m_selected.end())
                         {
                             selected[it->m_pPC->FUN_141656a80()] = *it;
                             m_selected.erase(itOld);
                         }
+                        else
+                        {
+                            FUN_14161dbe0(it->m_pPC, 0);
+                            selected[it->m_pPC->FUN_141656a80()] = Entry(0, it->m_pPC);
+                        }
                         nAdded = nAdded + 1;
-                        ++it;
                     }
                 }
             }
@@ -870,15 +855,10 @@ void COptimizer::FUN_14161dd30(int nFlags, int nLimit)
 MyPC* FUN_14161e580(const TPtr<PC>& spPC)
 {
     MyPC* pMyPC = 0;
-    if (FUN_140aac420(spPC) ? true : false)
-    {
-        PC* pPC = FUN_140aac440(spPC);
-        if (pPC->TypeCast(0x6200004, (void**)&pMyPC))
-        {
-            return pMyPC;
-        }
-    }
-    return 0;
+    if ((FUN_140aac420(spPC) ? true : false) && FUN_140aac440(spPC)->TypeCast(0x6200004, (void**)&pMyPC))
+        return pMyPC;
+    else
+        return 0;
 }
 
 // @0x1416226d0

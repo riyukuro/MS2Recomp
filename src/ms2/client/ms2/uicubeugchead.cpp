@@ -20,8 +20,8 @@ class Unk_UgcUiMgr { public: int FUN_141adc890(int nUIType); };
 Unk_UgcUiMgr* FUN_1403ed2b0();
 struct Unk_UgcRes16 { Unk_UgcRes16(const Unk_UgcRes16& o) : m_a(o.m_a), m_b(o.m_b) {} __int64 m_a, m_b; };
 Unk_UgcRes16 FUN_1408a15b0(Unk_UgcCell cell, Vector3 ptOrigin);   // the world point of a cell
-Unk_UgcRes16 FUN_14027dcf0(Unk_UgcRes16 res);
-class Unk_WorldToScreen { public: bool FUN_140af0700(Unk_UgcRes16 world, Vector3& out); };
+Unk_UgcRes16 FUN_14027dcf0(const Unk_UgcRes16& res);
+class Unk_WorldToScreen { public: bool FUN_140af0700(const Unk_UgcRes16& world, Vector3& out); };
 Unk_WorldToScreen* FUN_1409478c0();                                 // camera service
 class Unk_UIScale;
 Unk_UIScale* FUN_14025e7a0();                                       // ui scale service
@@ -111,7 +111,6 @@ void UICubeUGCHead::vfunc_3()
     FUN_141906650();
 }
 
-// MS2-FUNCTIONAL: operator-> / Invoke store order differs
 // @0x1419067d0
 void UICubeUGCHead::vfunc_52()
 {
@@ -127,7 +126,7 @@ void UICubeUGCHead::vfunc_52()
         FUN_1422bfe00(pClip.operator->(), 100.0f);
         CStringW strId;
         strId.Format(L"ID:%d", m_88);
-        reinterpret_cast<Unk_UgcMovie*>(pClip.operator->())->FUN_140e78470("setData", strId, m_78);
+        reinterpret_cast<Unk_UgcMovie*>(pClip.operator->())->FUN_140e78470("setData", m_78, strId);
         pClip->Invoke("setFontSize", 0x12);
         if (FUN_140707660(m_8c) != 0)
             pClip->Invoke("setFontColor", 0x45ff98);
@@ -159,16 +158,13 @@ int UICubeUGCHead::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
     return 0;
 }
 
-// MS2-FUNCTIONAL: stack-slot layout of the world-point temporaries differs
+// MS2-FUNCTIONAL: code identical; world, the FUN_1408a15b0 temporary and pEntity sit in different stack slots
 // @0x141906b60
 void UICubeUGCHead::FUN_141906b60()
 {
+    Unk_UgcRes16 world = FUN_14027dcf0(FUN_1408a15b0(m_68, DAT_143b01a60));
     Vector3 screen;
-    Vector3 ptZero = DAT_143b01a60;
-    Unk_UgcRes16 world = FUN_14027dcf0(FUN_1408a15b0(m_68, ptZero));
-    if (FUN_1409478c0()->FUN_140af0700(world, screen) == 0)
-        vfunc_8(0);
-    else
+    if (FUN_1409478c0()->FUN_140af0700(world, screen) != 0)
     {
         MS2Ptr<ASGameEntity> pEntity(dynamic_cast<ASGameEntity*>((AScript*)m_30));
         if (pEntity.get())
@@ -181,6 +177,8 @@ void UICubeUGCHead::FUN_141906b60()
             FUN_1422c00f0(pEntity.operator->(), screen.x, screen.y);
         }
     }
+    else
+        vfunc_8(0);
 }
 
 // @0x141906d20
@@ -189,9 +187,6 @@ void UICubeUGCHead::vfunc_41(const Scaleform::GFx::Value& root)
     m_30 = FUN_140ba77e0(m_28, root);
 }
 
-// @0x141906d90
-UICubeUGCHead::~UICubeUGCHead()
-{
-}
+// ~UICubeUGCHead (0x141906d90) is implicit.
 
 MS2_EMIT_CRT_MEMMOVE_S();

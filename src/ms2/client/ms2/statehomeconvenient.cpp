@@ -90,6 +90,23 @@ Unk_HcDialogMgr* FUN_140967100();
 int FUN_141661aa0(MyPC* p);
 class Unk_HcBuffMgr { public: Vector3 FUN_141683290(); };
 Unk_HcBuffMgr* FUN_14166d240(PCBase* p);
+// the owner's vtable seen with the by-value point parameters of vfunc_22 and vfunc_68
+class Unk_HcSlots
+{
+public:
+#define MS2_HC_SLOTS(a, b, c, d, e) virtual void vfunc_##a(); virtual void vfunc_##b(); virtual void vfunc_##c(); \
+    virtual void vfunc_##d(); virtual void vfunc_##e();
+    MS2_HC_SLOTS(0, 1, 2, 3, 4) MS2_HC_SLOTS(5, 6, 7, 8, 9) MS2_HC_SLOTS(10, 11, 12, 13, 14) MS2_HC_SLOTS(15, 16, 17, 18, 19)
+    virtual void vfunc_20(); virtual void vfunc_21();
+    virtual void vfunc_22(efd::Point3 kPos);                                // 22 0x14123c3a0
+    virtual void vfunc_23(); virtual void vfunc_24();
+    MS2_HC_SLOTS(25, 26, 27, 28, 29) MS2_HC_SLOTS(30, 31, 32, 33, 34) MS2_HC_SLOTS(35, 36, 37, 38, 39)
+    MS2_HC_SLOTS(40, 41, 42, 43, 44) MS2_HC_SLOTS(45, 46, 47, 48, 49) MS2_HC_SLOTS(50, 51, 52, 53, 54)
+    MS2_HC_SLOTS(55, 56, 57, 58, 59) MS2_HC_SLOTS(60, 61, 62, 63, 64)
+#undef MS2_HC_SLOTS
+    virtual void vfunc_65(); virtual void vfunc_66(); virtual void vfunc_67();
+    virtual bool vfunc_68(efd::Point3 kMove, double fTime, int b, unsigned c, int d);   // 68 0x14166e100
+};
 bool FUN_1416749c0(PCBase* p);
 void* FUN_14165f100(PCBase* p);
 void FUN_14165f170(PCBase* p);
@@ -103,7 +120,6 @@ StateHomeConvenientData::StateHomeConvenientData() : m_nKind(0) {}
 StateHomeConvenientData::StateHomeConvenientData(int nKind) : m_nKind(nKind) {}
 
 // @0x140ddcf90
-// MS2-FUNCTIONAL: CString temporary handling around the int->string helper differs
 void StateHomeConvenientData::vfunc_1(Unk_StateDataArg* p)
 {
     StateData::vfunc_1(p);
@@ -111,7 +127,6 @@ void StateHomeConvenientData::vfunc_1(Unk_StateDataArg* p)
 }
 
 // @0x140ddd010
-// MS2-FUNCTIONAL: string parse helper call shape differs
 void StateHomeConvenientData::vfunc_2(Unk_StateDataArg* p)
 {
     StateData::vfunc_2(p);
@@ -130,77 +145,75 @@ StateHomeConvenient::~StateHomeConvenient()
 }
 
 // @0x140ddd6f0
-// MS2-FUNCTIONAL: accessor pairing of the MS2Ptr operators differs
 int StateHomeConvenient::GetKind()
 {
-    return m_spHome.get() == 0 ? 0 : m_spHome->m_nKind;
+    if (m_spHome.get())
+        return m_spHome->m_nKind;
+    return 0;
 }
 
 // @0x140ddd740
-// MS2-FUNCTIONAL: branch layout on the kind differs (exe places the bank branch after the compares)
 int StateHomeConvenient::GetDuration()
 {
-    int nKind = GetKind();
-    if (nKind > 0)
+    switch (GetKind())
     {
-        if (nKind <= 2)
-            return FUN_140ac2250(&static_cast<Client::Constants*>(FUN_1401d3200())->HomeBankCallDuration);
-        if (nKind == 3)
-            return FUN_140ac2250(&static_cast<Client::Constants*>(FUN_1401d3200())->HomeDoctorCallDuration);
+    case 1:
+    case 2:
+        return FUN_140ac2250(&static_cast<Client::Constants*>(FUN_1401d3200())->HomeBankCallDuration);
+    case 3:
+        return FUN_140ac2250(&static_cast<Client::Constants*>(FUN_1401d3200())->HomeDoctorCallDuration);
     }
     return FUN_140ac2250(&static_cast<Client::Constants*>(FUN_1401d3200())->HomeBankCallDuration);
 }
 
 // @0x140ddd7c0
-// MS2-FUNCTIONAL: branch layout on the kind differs (exe places the bank branch after the compares)
 CStringW StateHomeConvenient::GetLabel()
 {
-    int nKind = GetKind();
-    if (nKind > 0)
+    switch (GetKind())
     {
-        if (nKind <= 2)
-            return GetStringCommon(0x65f);
-        if (nKind == 3)
-            return GetStringCommon(0x663);
+    case 1:
+    case 2:
+        return GetStringCommon(0x65f);
+    case 3:
+        return GetStringCommon(0x663);
     }
     return GetStringCommon(0);
 }
 
 // @0x140ddd870
-// MS2-FUNCTIONAL: branch layout on the kind and the Value<CString> accessor differ
 efd::utf8string StateHomeConvenient::GetAnimation()
 {
-    int nKind = GetKind();
-    if (nKind == 1)
-        return efd::utf8string(FUN_140298f80(&static_cast<Client::Constants*>(FUN_1401d3200())->HomeBankCallSequence)->GetString());
-    if (nKind == 3)
-        return efd::utf8string(FUN_140298f80(&static_cast<Client::Constants*>(FUN_1401d3200())->HomeDoctorCallSequence)->GetString());
+    switch (GetKind())
+    {
+    case 1:
+        return efd::utf8string(static_cast<const char*>(*FUN_140298f80(&static_cast<Client::Constants*>(FUN_1401d3200())->HomeBankCallSequence)));
+    case 3:
+        return efd::utf8string(static_cast<const char*>(*FUN_140298f80(&static_cast<Client::Constants*>(FUN_1401d3200())->HomeDoctorCallSequence)));
+    }
     return efd::utf8string("Object_React_A");
 }
 
 // @0x140ddd950
-// MS2-FUNCTIONAL: written from the decompile; the NPC script handles and the dialog request carry more temporaries in the exe
 void StateHomeConvenient::Finish(double fTime)
 {
     m_pOwner->FUN_14166dda0(0);
-    int nKind = GetKind();
-    if (nKind > 0)
+    switch (GetKind())
     {
-        if (nKind < 3)
+    case 1:
+    case 2:
+        if (FUN_1417b8560())
         {
-            if (FUN_1417b8560())
-            {
-                UICastingBar* pBar = FUN_140ac2270(0x4e72);
-                if (pBar)
-                    pBar->FUN_1418e1390();
-                COutPacket packet(static_cast<int>(SendOp::RequestHomeBank), 0);
-                packet.WriteUInt8((unsigned char)GetKind());
-                FUN_140710590(packet);
-                m_n40 = 1;
-            }
-            SetSub(0x89, 0);
+            UICastingBar* pBar = FUN_140ac2270(0x4e72);
+            if (pBar)
+                pBar->FUN_1418e1390();
+            COutPacket packet(static_cast<int>(SendOp::RequestHomeBank), 0);
+            packet.WriteUInt8((unsigned char)GetKind());
+            FUN_140710590(packet);
+            m_n40 = 1;
         }
-        else if (nKind == 3)
+        SetSub(0x89, 0);
+        break;
+    case 3:
         {
             MyPC* pRider = FUN_1417b84b0();
             if (pRider)
@@ -208,24 +221,23 @@ void StateHomeConvenient::Finish(double fTime)
                 UICastingBar* pBar = FUN_140ac2270(0x4e72);
                 if (pBar)
                     pBar->FUN_1418e1390();
-                Client::Constants* pConst = static_cast<Client::Constants*>(FUN_1401d3200());
-                unsigned nNpc = *pConst->HomeDoctorNpcID.Get();
-                if (FUN_141661aa0(pRider) < 1)
+                unsigned nNpc = *static_cast<Client::Constants*>(FUN_1401d3200())->HomeDoctorNpcID.Get();
+                if (FUN_141661aa0(pRider) > 0)
                 {
-                    MS2Ptr<Unk_HcNpcScript> spScript = FUN_140856820(nNpc, *pConst->HomeDoctorScriptID1.Get());
-                    if (spScript.get())
-                        FUN_140967100()->FUN_141b213f0(MS2Ptr<Unk_HcNpcScript>(spScript.get()), nNpc, 2, 0);
+                    if (Unk_HcNpcScript* pScript = FUN_140856c50(nNpc, 1).get())
+                        FUN_140967100()->FUN_141b213f0(MS2Ptr<Unk_HcNpcScript>(pScript), nNpc, 1, 0x12);
                 }
                 else
                 {
-                    MS2Ptr<Unk_HcNpcScript> spScript = FUN_140856c50(nNpc, 1);
-                    if (spScript.get())
-                        FUN_140967100()->FUN_141b213f0(MS2Ptr<Unk_HcNpcScript>(spScript.get()), nNpc, 1, 0x12);
+                    int nScript = *static_cast<Client::Constants*>(FUN_1401d3200())->HomeDoctorScriptID1.Get();
+                    if (Unk_HcNpcScript* pScript = FUN_140856820(nNpc, nScript).get())
+                        FUN_140967100()->FUN_141b213f0(MS2Ptr<Unk_HcNpcScript>(pScript), nNpc, 2, 0);
                 }
                 m_n40 = 1;
             }
             SetSub(0x89, 0);
         }
+        break;
     }
 }
 
@@ -237,39 +249,36 @@ void StateHomeConvenient::SetSub(int nSub, int nAddTime)
 }
 
 // @0x140ddd120
-// MS2-FUNCTIONAL: the exe keeps the animation name, label and cast texts in separately scoped temporaries (larger frame, more EH states)
 void StateHomeConvenient::vfunc_4(StateData* pData)
 {
     State::vfunc_4(pData);
     m_spHome.AssignRaw(dynamic_cast<StateHomeConvenientData*>(pData));
-    if (!(m_spHome == 0))
-    {
-        m_n10 = 0x88;
-        m_pOwner->FUN_14166dd20(GetAnimation(), 1.0f, false, false);
-        int nStart = FUN_140869420();
-        int nDuration = GetDuration();
-        m_n44 = nStart;
-        m_n48 = nStart + nDuration;
-        PCBase* pPC = FUN_1417b8370();
-        if (pPC)
-        {
-            m_n48 += 100;
-            if (FUN_14165f100(pPC))
-                FUN_14165f170(pPC);
-        }
-        if (FUN_1417b8560())
-        {
-            UICastingBar* pBar = FUN_140ac2270(0x4e72);
-            if (pBar)
-            {
-                CStringW strExtra(L"");
-                pBar->FUN_1418e12f0(0, GetLabel(), nDuration, false, true, strExtra);
-            }
-        }
-    }
-    else
+    if (m_spHome == 0)
     {
         m_pOwner->vfunc_59(1, 0, 0, 0);
+        return;
+    }
+    m_n10 = 0x88;
+    m_pOwner->FUN_14166dd20(GetAnimation(), 1.0f, false, false);
+    int nStart = FUN_140869420();
+    int nDuration = GetDuration();
+    m_n44 = nStart;
+    m_n48 = nStart + nDuration;
+    PCBase* pPC = FUN_1417b8370();
+    if (pPC)
+    {
+        m_n48 += 100;
+        if (FUN_14165f100(pPC))
+            FUN_14165f170(pPC);
+    }
+    if (FUN_1417b8560())
+    {
+        UICastingBar* pBar = FUN_140ac2270(0x4e72);
+        if (pBar)
+        {
+            CStringW strExtra(L"");
+            pBar->FUN_1418e12f0(0, GetLabel(), nDuration, false, true, strExtra);
+        }
     }
 }
 
@@ -303,40 +312,40 @@ void StateHomeConvenient::vfunc_5(int n)
 }
 
 // @0x140ddd4c0
-// MS2-FUNCTIONAL: temporaries around the zero point copy and the tick add differ
 void StateHomeConvenient::vfunc_3(double fTime)
 {
     State::vfunc_3(fTime);
-    Vector3 kZero = DAT_143b01a60;
-    m_pOwner->vfunc_68(&kZero, fTime, 0, 0, 0);
+    reinterpret_cast<Unk_HcSlots*>(m_pOwner)->vfunc_68(reinterpret_cast<const efd::Point3&>(DAT_143b01a60), fTime, 0, 0, 0);
     m_n44 += FUN_14028d260((float)fTime);
     if ((unsigned)m_n44 >= (unsigned)m_n48)
     {
-        if (m_n10 == 0x88)
+        switch (m_n10)
+        {
+        case 0x88:
             Finish(fTime);
-        else
+            break;
+        default:
             vfunc_7(1);
+            break;
+        }
     }
 }
 
 // @0x140ddd5b0
-// MS2-FUNCTIONAL: the exe holds the buffer manager's point in the upper frame slot and copies it down
 void StateHomeConvenient::vfunc_8(double fTime)
 {
     if (m_n10 != 0x88)
         return;
     State::vfunc_8(fTime);
     MyPC* pPC = FUN_1417b84b0();
-    if (pPC)
-    {
-        Vector3 kPos = FUN_14166d240(pPC)->FUN_141683290();
-        Vector3 kArg = kPos;
-        pPC->vfunc_22(*reinterpret_cast<const efd::Point3*>(&kArg));
-        if (FUN_1416749c0(m_pOwner))
-            pPC->vfunc_59(2, 0, 0, 0);
-        else
-            FUN_1417b9460();
-    }
+    if (!pPC)
+        return;
+    Unk_HcBuffMgr* pMgr = FUN_14166d240(pPC);
+    reinterpret_cast<Unk_HcSlots*>(pPC)->vfunc_22(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(pMgr->FUN_141683290())));
+    if (FUN_1416749c0(m_pOwner))
+        pPC->vfunc_59(2, 0, 0, 0);
+    else
+        FUN_1417b9460();
 }
 
 // @0x140ddd6b0

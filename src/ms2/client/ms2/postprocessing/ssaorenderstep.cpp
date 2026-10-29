@@ -11,13 +11,13 @@
 const NiRTTI SSAORenderStep::ms_RTTI("SSAORenderStep", &ReloadablePostProcess::ms_RTTI);
 
 // @0x1416ba7f0
-SSAORenderStep::SSAORenderStep(unsigned __int64 a, NiFixedString* name, unsigned int b)
-    : ReloadablePostProcess(a, *name, 0, b), m_b8(0), m_c0(0)
+SSAORenderStep::SSAORenderStep(unsigned __int64 a, const NiFixedString& name, unsigned int b)
+    : ReloadablePostProcess(a, name, 0, b), m_b8(0), m_c0(0)
 {
     NiString buf((size_t)0x100);
-    buf.Format("%sRenderStep", (const char*)*name);
+    buf.Format("%sRenderStep", (const char*)name);
     FUN_140c8f950(this, NiFixedString((const char*)buf));
-    m_a0 = *name;
+    m_a0 = name;
 }
 
 // @0x1416ba920

@@ -410,7 +410,7 @@ static void FUN_140a388b0(Unk_CachedEntity* pEntity, unsigned nId, const Vector3
         {
             Vector3 ptOld;
             pEntity->GetPropertyValueUnsafe(nId, &ptOld, FUN_1409614a0());
-            pEntity->m_d0.FUN_140947580(nId) = Unk_PropertyCacheEntry(nId, new Vector3(ptOld), FUN_1409614a0());
+            pEntity->m_d0.FUN_140947580(nId) = Unk_PropertyCacheEntry(nId, ::new Vector3(ptOld), FUN_1409614a0());
         }
     }
 }

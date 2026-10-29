@@ -59,7 +59,7 @@ Unk_PoConfig* FUN_1401d31f0();
 class Unk_PoCameraUI                                            // the spectator camera buttons (UI 0x4e32)
 {
 public:
-    void FUN_1419139d0(int bShow);
+    void FUN_1419139d0(bool bShow);
     void FUN_1419139f0(__int64 nCharId);
 };
 Unk_PoCameraUI* FUN_140b624b0(int nUiId);
@@ -116,7 +116,7 @@ void UIPvPObserverDialog::vfunc_67()
     if (m_1d5 != false) {
         Unk_PoCameraUI* pCamera = FUN_140b624b0(0x4e32);
         if (pCamera != 0) {
-            pCamera->FUN_1419139d0(0);
+            pCamera->FUN_1419139d0(false);
             __int64 nNone = 0;
             pCamera->FUN_1419139f0(nNone);
         }
@@ -179,7 +179,6 @@ void UIPvPObserverDialog::vfunc_79(void* pData)
 }
 
 // @0x141a916d0
-// MS2-FUNCTIONAL: the exe's end jumps differ by one jmp (a single result variable; two attempts did not reproduce it)
 int UIPvPObserverDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs)
 {
     Unk_PoMe* pMe = FUN_1403ed2d0()->FUN_141bd0cc0();
@@ -193,22 +192,20 @@ int UIPvPObserverDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
         vfunc_67();
         return 1;
     }
-    else {
-        if (_stricmp("onObserveLeft", szMethod) == 0) {
-            PC* pTarget = FUN_1403ed2d0()->FUN_141bd1530(m_178.m_nCharId);
-            if (pTarget != 0)
-                pMe->FUN_14152a4a0(pTarget);
-        }
-        else if (_stricmp("onObserveRight", szMethod) == 0) {
-            PC* pTarget = FUN_1403ed2d0()->FUN_141bd1530(m_1a0.m_nCharId);
-            if (pTarget != 0)
-                pMe->FUN_14152a4a0(pTarget);
-        }
-        else if (_stricmp("onObserveCenter", szMethod) == 0) {
-            pMe->FUN_14152a640(m_1c8);
-        }
-        return 0;
+    else if (_stricmp("onObserveLeft", szMethod) == 0) {
+        PC* pTarget = FUN_1403ed2d0()->FUN_141bd1530(m_178.m_nCharId);
+        if (pTarget != 0)
+            pMe->FUN_14152a4a0(pTarget);
     }
+    else if (_stricmp("onObserveRight", szMethod) == 0) {
+        PC* pTarget = FUN_1403ed2d0()->FUN_141bd1530(m_1a0.m_nCharId);
+        if (pTarget != 0)
+            pMe->FUN_14152a4a0(pTarget);
+    }
+    else if (_stricmp("onObserveCenter", szMethod) == 0) {
+        pMe->FUN_14152a640(m_1c8);
+    }
+    return 0;
 }
 
 // @0x141a91860
@@ -268,81 +265,78 @@ void UIPvPObserverDialog::FUN_141a91a30(const Unk_PvPObsInfo& info)
 // Send both fighters to the movie: names, status (win count or duel rating), job level and portrait, the hp bars, the
 // camera buttons and the win marks.
 // @0x141a91b40
-// MS2-FUNCTIONAL: 4 KB of CStringW temporaries; frame/temporary order differs from the exe (14 bytes)
 void UIPvPObserverDialog::FUN_141a91b40()
 {
     Unk_PoMe* pMe = FUN_1403ed2d0()->FUN_141bd0cc0();
-    if (pMe != 0 && !FUN_140a467d0(&m_30)) {
-        CStringW strNameA(L"");
-        CStringW strNameB(L"");
-        CStringW strJobA(L"");
-        CStringW strJobB(L"");
-        CStringW strProfileA(L"");
-        CStringW strProfileB(L"");
-        CStringW strStatusA(L"");
-        CStringW strStatusB(L"");
-        bool bObservableA = false;
-        PC* pA = FUN_1403ed2d0()->FUN_141bd1530(m_178.m_nCharId);
-        if (pA != 0) {
-            strNameA.Format(L"%s", (LPCWSTR)pA->vfunc_77());
-            if (m_1d4 == false) {
-                strStatusA = (m_178.m_nWins < 1) ? GetStringCommon(0x89b) : FUN_1408116a0(0x89a, &m_178.m_nWins);
-            }
-            else {
-                strStatusA = FUN_14062b4f0(CStringW(L"s_rank_duel_ui_rating"), &m_178.m_nRating);
-            }
-            strJobA.Format(L"_%d", FUN_141654730(pA));
-            strProfileA = FUN_14016a730(FUN_141028be0(pA->FUN_141656a80(), pA->FUN_1416612e0(), 1, CString("")), 0);
-            bObservableA = pMe->vfunc_122(pA) != 0;
+    if (pMe == 0)
+        return;
+    if (FUN_140a467d0(&m_30))
+        return;
+    CStringW strNameA(L"");
+    CStringW strNameB(L"");
+    CStringW strJobA(L"");
+    CStringW strJobB(L"");
+    CStringW strProfileA(L"");
+    CStringW strProfileB(L"");
+    CStringW strStatusA(L"");
+    CStringW strStatusB(L"");
+    bool bObservableA = false;
+    PC* pA = FUN_1403ed2d0()->FUN_141bd1530(m_178.m_nCharId);
+    if (pA != 0) {
+        strNameA.Format(L"%s", (LPCWSTR)pA->vfunc_77());
+        if (m_1d4 != false) {
+            strStatusA = FUN_14062b4f0(CStringW(L"s_rank_duel_ui_rating"), &m_178.m_nRating);
         }
-        __int64 nCharIdB = 0;
-        bool bObservableB = false;
-        PC* pB = FUN_1403ed2d0()->FUN_141bd1530(m_1a0.m_nCharId);
-        if (pB != 0) {
-            strNameB.Format(L"%s", (LPCWSTR)pB->vfunc_77());
-            if (m_1d4 == false) {
-                strStatusB = (m_1a0.m_nWins < 1) ? GetStringCommon(0x89b) : FUN_1408116a0(0x89a, &m_1a0.m_nWins);
-            }
-            else {
-                strStatusB = FUN_14062b4f0(CStringW(L"s_rank_duel_ui_rating"), &m_1a0.m_nRating);
-            }
-            strJobB.Format(L"_%d", FUN_141654730(pB));
-            strProfileB = FUN_14016a730(FUN_141028be0(pB->FUN_141656a80(), pB->FUN_1416612e0(), 1, CString("")), 0);
-            bObservableB = pMe->vfunc_122(pB) != 0;
-            nCharIdB = pB->FUN_141656a80();
+        else {
+            strStatusA = (m_178.m_nWins > 0) ? FUN_1408116a0(0x89a, &m_178.m_nWins) : GetStringCommon(0x89b);
         }
-        m_30->Invoke("setName", strNameA, strNameB);
-        m_30->Invoke("setStatus", strStatusA, strStatusB);
-        m_30->Invoke("setJob", strJobA, strJobB);
-        m_30->Invoke("setProfile", strProfileA, strProfileB);
-        FUN_141a92b10(m_178.m_nCharId, m_178.m_nHp, m_178.m_nMaxHp);
-        FUN_141a92b10(m_1a0.m_nCharId, m_1a0.m_nHp, m_1a0.m_nMaxHp);
-        m_1d5 = true;
-        if (m_178.m_nCharId == pMe->FUN_141656a80() || m_1a0.m_nCharId == pMe->FUN_141656a80())
-            m_1d5 = false;
-        m_30->Invoke("setCameraEnable", m_1d5);
-        m_30->Invoke("setDuelMode", m_1d4);
-        bool bCenter;
-        if (m_1d5 == false || m_1c8 == 0)
-            bCenter = false;
-        else
-            bCenter = true;
-        m_30->Invoke("setCenterCameraEnable", bCenter);
-        if (m_178.m_nShownWins != m_178.m_nWins) {
-            m_30->FUN_14184af30("setWinMark", true, m_178.m_nWins);
-            m_178.m_nShownWins = m_178.m_nWins;
+        strJobA.Format(L"_%d", FUN_141654730(pA));
+        strProfileA = FUN_14016a730(FUN_141028be0(pA->FUN_141656a80(), pA->FUN_1416612e0(), 1, CString("")), 0);
+        bObservableA = pMe->vfunc_122(pA) ? true : false;
+    }
+    __int64 nCharIdB = 0;
+    bool bObservableB = false;
+    PC* pB = FUN_1403ed2d0()->FUN_141bd1530(m_1a0.m_nCharId);
+    if (pB != 0) {
+        strNameB.Format(L"%s", (LPCWSTR)pB->vfunc_77());
+        if (m_1d4 != false) {
+            strStatusB = FUN_14062b4f0(CStringW(L"s_rank_duel_ui_rating"), &m_1a0.m_nRating);
         }
-        if (m_1a0.m_nShownWins != m_1a0.m_nWins) {
-            m_30->FUN_14184af30("setWinMark", false, m_1a0.m_nWins);
-            m_1a0.m_nShownWins = m_1a0.m_nWins;
+        else {
+            strStatusB = (m_1a0.m_nWins > 0) ? FUN_1408116a0(0x89a, &m_1a0.m_nWins) : GetStringCommon(0x89b);
         }
-        if (m_1d5 != false) {
-            Unk_PoCameraUI* pCamera = FUN_140b624b0(0x4e32);
-            if (pCamera != 0) {
-                pCamera->FUN_1419139d0(1);
-                if (!bObservableA && !bObservableB)
-                    pCamera->FUN_1419139f0(nCharIdB);
-            }
+        strJobB.Format(L"_%d", FUN_141654730(pB));
+        strProfileB = FUN_14016a730(FUN_141028be0(pB->FUN_141656a80(), pB->FUN_1416612e0(), 1, CString("")), 0);
+        bObservableB = pMe->vfunc_122(pB) ? true : false;
+        nCharIdB = pB->FUN_141656a80();
+    }
+    m_30->Invoke("setName", strNameA, strNameB);
+    m_30->Invoke("setStatus", strStatusA, strStatusB);
+    m_30->Invoke("setJob", strJobA, strJobB);
+    m_30->Invoke("setProfile", strProfileA, strProfileB);
+    FUN_141a92b10(m_178.m_nCharId, m_178.m_nHp, m_178.m_nMaxHp);
+    FUN_141a92b10(m_1a0.m_nCharId, m_1a0.m_nHp, m_1a0.m_nMaxHp);
+    m_1d5 = true;
+    if (m_178.m_nCharId == pMe->FUN_141656a80() || m_1a0.m_nCharId == pMe->FUN_141656a80())
+        m_1d5 = false;
+    m_30->Invoke("setCameraEnable", m_1d5);
+    m_30->Invoke("setDuelMode", m_1d4);
+    bool bCenter = m_1d5 != false && m_1c8 != 0;
+    m_30->Invoke("setCenterCameraEnable", bCenter);
+    if (m_178.m_nShownWins != m_178.m_nWins) {
+        m_30->FUN_14184af30("setWinMark", true, m_178.m_nWins);
+        m_178.m_nShownWins = m_178.m_nWins;
+    }
+    if (m_1a0.m_nShownWins != m_1a0.m_nWins) {
+        m_30->FUN_14184af30("setWinMark", false, m_1a0.m_nWins);
+        m_1a0.m_nShownWins = m_1a0.m_nWins;
+    }
+    if (m_1d5 != false) {
+        Unk_PoCameraUI* pCamera = FUN_140b624b0(0x4e32);
+        if (pCamera != 0) {
+            pCamera->FUN_1419139d0(true);
+            if (!bObservableA && !bObservableB)
+                pCamera->FUN_1419139f0(nCharIdB);
         }
     }
 }

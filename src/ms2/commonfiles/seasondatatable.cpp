@@ -51,7 +51,7 @@
 // MS2-PIN: ?Add@?$CAtlArray@V?$MS2Ptr@VCSeasonData@@@@V?$CElementTraits@V?$MS2Ptr@VCSeasonData@@@@@ATL@@@ATL@@QEAA_KAEBV?$MS2Ptr@VCSeasonData@@@@@Z 0x140798330 ; unique
 // MS2-PIN: ?AddTail@?$CAtlList@V?$MS2Ptr@VCSeasonRewardData@@@@V?$CElementTraits@V?$MS2Ptr@VCSeasonRewardData@@@@@ATL@@@ATL@@QEAAPEAU__POSITION@@AEBV?$MS2Ptr@VCSeasonRewardData@@@@@Z 0x1407983e0 ; unique
 // MS2-PIN: ?GetAt@?$CAtlList@V?$MS2Ptr@VCSeasonRewardData@@@@V?$CElementTraits@V?$MS2Ptr@VCSeasonRewardData@@@@@ATL@@@ATL@@QEAAAEAV?$MS2Ptr@VCSeasonRewardData@@@@PEAU__POSITION@@@Z 0x140799730 ; unique
-// MS2-PIN: ?GetTailPosition@?$CRBTree@HV?$MS2Ptr@VCSeasonData@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCSeasonData@@@@@3@@ATL@@QEBAPEAU__POSITION@@XZ 0x140799890 ; unique
+// MS2-PIN: ?GetTailPosition@?$CRBTree@HV?$MS2Ptr@VCSeasonData@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCSeasonData@@@@@3@@ATL@@QEBAPEAU__POSITION@@XZ 0x140799ad0 ; unique
 // MS2-PIN: ?GetHeadPosition@?$CRBTree@HV?$MS2Ptr@VCSeasonReward@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCSeasonReward@@@@@3@@ATL@@QEBAPEAU__POSITION@@XZ 0x1407998b0 ; unique
 // MS2-PIN: ?GetHeadPosition@?$CRBTree@HV?$MS2Ptr@VCSeasonRewardData@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCSeasonRewardData@@@@@3@@ATL@@QEBAPEAU__POSITION@@XZ 0x1407998d0 ; unique
 // MS2-PIN: ?GetKeyAt@?$CRBTree@HV?$MS2Ptr@VCSeasonReward@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCSeasonReward@@@@@3@@ATL@@QEBAAEBHPEAU__POSITION@@@Z 0x1407998f0 ; unique
@@ -60,7 +60,7 @@
 // MS2-PIN: ?GetNext@?$CRBTree@HV?$MS2Ptr@VCSeasonReward@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCSeasonReward@@@@@3@@ATL@@QEAAPEAVCPair@12@AEAPEAU__POSITION@@@Z 0x140799a10 ; prop
 // MS2-PIN: ?GetNext@?$CRBTree@HV?$MS2Ptr@VCSeasonRewardData@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCSeasonRewardData@@@@@3@@ATL@@QEAAPEAVCPair@12@AEAPEAU__POSITION@@@Z 0x140799a50 ; prop
 // MS2-PIN: ?GetPrev@?$CRBTree@HV?$MS2Ptr@VCSeasonData@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCSeasonData@@@@@3@@ATL@@QEAAPEAVCPair@12@AEAPEAU__POSITION@@@Z 0x140799a90 ; prop
-// MS2-PIN: ?GetHeadPosition@?$CRBTree@HV?$MS2Ptr@VCSeasonData@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCSeasonData@@@@@3@@ATL@@QEBAPEAU__POSITION@@XZ 0x140799ad0 ; unique
+// MS2-PIN: ?GetHeadPosition@?$CRBTree@HV?$MS2Ptr@VCSeasonData@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCSeasonData@@@@@3@@ATL@@QEBAPEAU__POSITION@@XZ 0x140799890 ; unique
 // MS2-PIN: ?InsertImpl@?$CRBTree@HV?$MS2Ptr@VCSeasonData@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCSeasonData@@@@@3@@ATL@@AEAAPEAVCNode@12@HAEBV?$MS2Ptr@VCSeasonData@@@@@Z 0x140799f50 ; prop
 // MS2-PIN: ?InsertImpl@?$CRBTree@HV?$MS2Ptr@VCSeasonReward@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCSeasonReward@@@@@3@@ATL@@AEAAPEAVCNode@12@HAEBV?$MS2Ptr@VCSeasonReward@@@@@Z 0x14079a050 ; prop
 // MS2-PIN: ?LeftRotate@?$CRBTree@HV?$MS2Ptr@VCSeasonData@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCSeasonData@@@@@3@@ATL@@AEAAPEAVCNode@12@PEAV312@@Z 0x14079abf0 ; prop
@@ -251,12 +251,10 @@ int CSeasonReward::CalcKey(int nCategory, int nValue)
 void CSeasonReward::GetData(ATL::CAtlList<MS2Ptr<CSeasonRewardData> >& rOut)
 {
     rOut.RemoveAll();
-    POSITION pos = m_data.GetHeadPosition();
-    while (pos) {
+    for (POSITION pos = m_data.GetHeadPosition(); pos != 0; m_data.GetNext(pos)) {
         MS2Ptr<CSeasonRewardData> spData(m_data.GetValueAt(pos));
         if (spData.get() != 0)
             rOut.AddTail(spData);
-        m_data.GetNext(pos);
     }
 }
 
@@ -328,22 +326,22 @@ void CSeasonDataTable::Tick()
 {
     {
         Unk_LockGuard guard(m_lock);
-        int nError = guard;
-        if (nError == 0 && m_bInitialized == 0)
-            return;
-    }
-    if (CMsTime::IsTimeZoneSet()) {
-        __int64 nNow = FUN_140869440();
-        if (m_nLastUpdate == 0 || nNow - m_nLastUpdate > 59) {
-            m_nLastUpdate = nNow;
-            std::map<SeasonRankType, CStringA>::_Unchecked_iterator it = m_typeNames._Unchecked_begin();
-            std::map<SeasonRankType, CStringA>::_Unchecked_iterator end = m_typeNames._Unchecked_end();
-            while (it != end) {
-                Refresh(it->first, 0);
-                ++it;
-            }
+        if (guard) {} else {
+            if (m_bInitialized == 0)
+                return;
         }
     }
+    if (!CMsTime::IsTimeZoneSet())
+        return;
+    __int64 nNow = FUN_140869440();
+    if (m_nLastUpdate != 0) {
+        __int64 nDiff = nNow - m_nLastUpdate;
+        if (nDiff < 60)
+            return;
+    }
+    m_nLastUpdate = nNow;
+    for (auto& kv : m_typeNames)
+        Refresh(kv.first, 0);
 }
 
 // @0x140791c10
@@ -357,26 +355,23 @@ void CSeasonDataTable::Callback2()
 }
 
 // @0x140791c30
-bool CSeasonDataTable::Load()
+int CSeasonDataTable::Load()
 {
-    std::map<SeasonRankType, CStringA>::_Unchecked_iterator it = m_typeNames._Unchecked_begin();
-    std::map<SeasonRankType, CStringA>::_Unchecked_iterator end = m_typeNames._Unchecked_end();
-    while (it != end) {
-        std::pair<const SeasonRankType, CStringA> entry(*it);
+    for (auto entry : m_typeNames) {
         CStringA strFile = FUN_140536a50("SeasonData_{0}.xml", entry.second);
-        CStringA strPath = FUN_14071a5b0(CStringA("Table"), strFile);
+        CStringA strPath = FUN_14071a5b0("Table", strFile);
         if (!ReadData(entry.first, strPath)) {
             Log(FUN_140536a50("CSeasonDataTable read failed - {0}", entry.second));
-            return false;
+            return 0;
         }
-        ++it;
     }
     ReadNames();
-    Unk_LockGuard guard(m_lock);
-    int nError = guard;
-    if (nError == 0)
-        m_bInitialized = 1;
-    return true;
+    {
+        Unk_LockGuard guard(m_lock);
+        if (guard) {} else
+            m_bInitialized = 1;
+    }
+    return 1;
 }
 
 // @0x140791e40
@@ -420,43 +415,44 @@ void CSeasonDataTable::GetUpcoming(SeasonRankType type, ATL::CAtlArray<MS2Ptr<CS
 {
     rOut.RemoveAll();
     MS2Ptr<CSeasonDataCurrent> spCurrent = GetCurrentRecord(type);
-    if (spCurrent == static_cast<CSeasonDataCurrent*>(0) || spCurrent->m_position == 0)
+    if (spCurrent == static_cast<CSeasonDataCurrent*>(0))
         return;
-    TPtrValue<Seasons> spSeasons;
-    m_seasons.Lookup(type, spSeasons);
-    if (spSeasons.get() == 0)
-        return;
-    POSITION pos = spCurrent->m_position;
-    int nCount = 0;
-    while (nCount < 4 && pos) {
-        MS2Ptr<CSeasonData> spData(spSeasons->GetValueAt(pos));
-        if (spData.get() != 0) {
-            rOut.Add(spData);
-            ++nCount;
+    if (spCurrent->m_position != 0) {
+        TPtrValue<Seasons> spSeasons;
+        m_seasons.Lookup(type, spSeasons);
+        if (spSeasons.get() != 0) {
+            POSITION pos = spCurrent->m_position;
+            for (int nCount = 0; nCount <= 3; nCount++) {
+                if (!pos)
+                    break;
+                MS2Ptr<CSeasonData> spData(spSeasons->GetValueAt(pos));
+                if (spData.get() != 0)
+                    rOut.Add(spData);
+                spSeasons->GetPrev(pos);
+            }
         }
-        spSeasons->GetNext(pos);
     }
 }
 
 // @0x140792250
 void CSeasonDataTable::GetRecent(SeasonRankType type, ATL::CAtlArray<MS2Ptr<CSeasonData> >& rOut)
 {
-    rOut.RemoveAll();
-    if (type != 6)
-        return;
-    TPtrValue<Seasons> spSeasons;
-    m_seasons.Lookup(type, spSeasons);
-    if (spSeasons.get() == 0)
-        return;
-    POSITION pos = GetRecentPosition(type);
-    int nCount = 0;
-    while (nCount < 3 && pos) {
-        MS2Ptr<CSeasonData> spData(spSeasons->GetValueAt(pos));
-        if (spData.get() != 0) {
-            rOut.Add(spData);
-            ++nCount;
+    if (type == 6) {
+        TPtrValue<Seasons> spSeasons;
+        m_seasons.Lookup(type, spSeasons);
+        if (spSeasons.get() != 0) {
+            POSITION pos = GetRecentPosition(type);
+            if (pos == 0)
+                return;
+            for (int nCount = 0; nCount <= 2; nCount++) {
+                if (!pos)
+                    break;
+                MS2Ptr<CSeasonData> spData(spSeasons->GetValueAt(pos));
+                if (spData.get() != 0)
+                    rOut.Add(spData);
+                spSeasons->GetPrev(pos);
+            }
         }
-        spSeasons->GetNext(pos);
     }
 }
 
@@ -479,7 +475,7 @@ SeasonRankType CSeasonDataTable::GetType(CStringA strName)
 CStringW CSeasonDataTable::GetDisplayName(MS2Ptr<CSeasonData> spData)
 {
     CStringW strResult(L"");
-    if (spData.get() != 0 && spData->m_nSeasonID > 0) {
+    if ((spData.get() ? true : false) && spData->m_nSeasonID > 0) {
         if (spData->m_strDisplayName.IsEmpty())
             strResult = FUN_14062b4f0(CStringW(L"s_gameranking_tab_season"), spData->m_nSeasonID);
         else
@@ -491,14 +487,14 @@ CStringW CSeasonDataTable::GetDisplayName(MS2Ptr<CSeasonData> spData)
 // @0x1407925e0
 CStringW CSeasonDataTable::GetContentsName(MS2Ptr<CSeasonData> spData, int nContents)
 {
+    CStringW strResult(L"");
     if (spData.get() != 0 && nContents > 0) {
-        MS2Ptr<CSeasonContentsName> spName;
+        MS2Ptr<CSeasonContentsName> spName(0);
         m_names.Lookup(spData->m_type, spName);
-        if (spName.get() != 0) {
-            CStringW strResult = spName->Find(nContents, spData->m_nSeasonID);
-            if (!strResult.IsEmpty())
-                return strResult;
-        }
+        if (spName.get() != 0)
+            strResult = spName->Find(nContents, spData->m_nSeasonID);
+        if (!strResult.IsEmpty())
+            return strResult;
     }
     return GetDisplayName(spData);
 }
@@ -514,7 +510,7 @@ int CSeasonDataTable::ReadData(SeasonRankType type, CStringA strPath)
         FUN_14015eb90(FUN_140166440(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return 0;
     }
-    TPtrValue<Seasons> spSeasons(0);
+    TPtrValue<Seasons> spSeasons;
     spSeasons = Unk_GrNewTag(0);
     for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("Season"); pNode != 0; pNode = pNode->FUN_140168650("Season")) {
         MS2Ptr<CSeasonData> spData(new CSeasonData);
@@ -542,7 +538,7 @@ void CSeasonDataTable::Refresh(SeasonRankType type, int nMode)
     CMsTime now(FUN_140869440());
     int nState = 0;
     POSITION posNext = 0;
-    unsigned bAdvance = (nMode != 1);
+    int bAdvance = (nMode == 1) ? 0 : 1;
     MS2Ptr<CSeasonDataCurrent> spCurrent = GetCurrentRecord(type);
     if (spCurrent == static_cast<CSeasonDataCurrent*>(0)) {
         nState = 1;
@@ -562,13 +558,14 @@ void CSeasonDataTable::Refresh(SeasonRankType type, int nMode)
     }
     POSITION pos = posNext;
     if (nState == 2) {
-        pos = spSeasons->GetTailPosition();
+        pos = spSeasons->GetHeadPosition();
     } else if (nState == 1) {
         Unk_LockGuard guard(m_lock);
-        int nError = guard;
-        if (nError == 0 && !m_positions.Lookup(type, pos)) {
-            pos = spSeasons->GetTailPosition();
-            bAdvance = 0;
+        if (guard) {} else {
+            if (!m_positions.Lookup(type, pos)) {
+                pos = spSeasons->GetHeadPosition();
+                bAdvance = 0;
+            }
         }
     }
     if (pos == 0) {
@@ -577,24 +574,22 @@ void CSeasonDataTable::Refresh(SeasonRankType type, int nMode)
     }
     POSITION posStart = pos;
     if (bAdvance == 1)
-        spSeasons->GetPrev(posStart);
+        spSeasons->GetNext(posStart);
     if (posStart == 0) {
         SetCurrent(type, 0);
         return;
     }
     MS2Ptr<CSeasonData> spChosen(0);
     POSITION posSelected = 0;
-    POSITION posCursor = posStart;
-    while (posCursor) {
+    for (POSITION posCursor = posStart; posCursor != 0; spSeasons->GetNext(posCursor)) {
         MS2Ptr<CSeasonData> spData(spSeasons->GetValueAt(posCursor));
-        if (!(spData == static_cast<CSeasonData*>(0))) {
-            if (now >= spData->m_start && now < spData->m_end) {
-                spChosen = spData;
-                posSelected = posCursor;
-                break;
-            }
+        if (spData == static_cast<CSeasonData*>(0))
+            continue;
+        if (now >= spData->m_start && now < spData->m_end) {
+            spChosen = spData;
+            posSelected = posCursor;
+            break;
         }
-        spSeasons->GetPrev(posCursor);
     }
     if (posSelected == 0) {
         SetCurrent(type, 0);
@@ -607,7 +602,7 @@ void CSeasonDataTable::Refresh(SeasonRankType type, int nMode)
 }
 
 // @0x1407931f0
-bool CSeasonDataTable::ReadNames()
+int CSeasonDataTable::ReadNames()
 {
 #ifdef __clang__
     // clang emits an unavailable MFC CopyChars import for operator+; bind the exe's concatenation helpers.
@@ -617,10 +612,10 @@ bool CSeasonDataTable::ReadNames()
 #endif
     TiXmlDocument doc;
     if (!FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false))
-        return false;
+        return 0;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
-        return false;
+        return 0;
     for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("season"); pNode != 0; pNode = pNode->FUN_140168650("season")) {
         CStringA strKind;
         FUN_1408733e0(pNode, "type", strKind);
@@ -645,7 +640,7 @@ bool CSeasonDataTable::ReadNames()
             }
         }
     }
-    return true;
+    return 1;
 }
 
 // @0x140793690
@@ -654,8 +649,7 @@ MS2Ptr<CSeasonDataCurrent> CSeasonDataTable::GetCurrentRecord(SeasonRankType typ
     MS2Ptr<CSeasonDataCurrent> spResult(0);
     {
         Unk_LockGuard guard(m_lock);
-        int nError = guard;
-        if (nError == 0)
+        if (guard) {} else
             m_currents.Lookup(type, spResult);
     }
     return spResult;
@@ -667,12 +661,12 @@ POSITION CSeasonDataTable::GetRecentPosition(SeasonRankType type)
     CMsTime now(FUN_140869440());
     TPtrValue<Seasons> spSeasons;
     m_seasons.Lookup(type, spSeasons);
-    POSITION pos = spSeasons->GetHeadPosition();
-    while (pos) {
+    for (POSITION pos = spSeasons->GetTailPosition(); pos != 0; spSeasons->GetPrev(pos)) {
         MS2Ptr<CSeasonData> spData(spSeasons->GetValueAt(pos));
-        if (!(spData == static_cast<CSeasonData*>(0)) && now >= spData->m_end)
+        if (spData == static_cast<CSeasonData*>(0))
+            continue;
+        if (now >= spData->m_end)
             return pos;
-        spSeasons->GetNext(pos);
     }
     return 0;
 }
@@ -686,8 +680,7 @@ void CSeasonDataTable::Log(CStringA strText)
 void CSeasonDataTable::SetCurrent(SeasonRankType type, MS2Ptr<CSeasonDataCurrent> spCurrent)
 {
     Unk_LockGuard guard(m_lock);
-    int nError = guard;
-    if (nError == 0) {
+    if (guard) {} else {
         m_currents.SetAt(type, spCurrent);
         if (spCurrent.get() != 0)
             m_positions.SetAt(type, spCurrent->m_position);
@@ -698,7 +691,7 @@ void CSeasonDataTable::SetCurrent(SeasonRankType type, MS2Ptr<CSeasonDataCurrent
 int CSeasonDataTable::ReadRewards()
 {
     CStringA strFile("SeasonReward_mapleSurvival.xml");
-    CStringA strPath = FUN_14071a5b0(CStringA("Table"), strFile);
+    CStringA strPath = FUN_14071a5b0("Table", strFile);
     TiXmlDocument doc;
     if (!FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false))
         return 0;
@@ -720,39 +713,36 @@ int CSeasonDataTable::ReadRewards()
         FUN_140873420(pNode, "systemMailContent", spData->m_strMailContent);
         FUN_1408732e0(pNode, "rewardMeso", spData->m_nRewardMeso);
         for (int i = 0; i < 5; ++i) {
-            int nIndex = i + 1;
-            CStringA strKey = FUN_1402bb1c0("rewardItemID{0}", nIndex);
+            CStringA strKey = FUN_1402bb1c0("rewardItemID{0}", i + 1);
             FUN_140873220(pNode, strKey, spData->m_nItemID[i]);
-            strKey = FUN_1402bb1c0("rewardItemRank{0}", nIndex);
+            strKey = FUN_1402bb1c0("rewardItemRank{0}", i + 1);
             FUN_1408731e0(pNode, strKey, spData->m_nItemRank[i]);
-            strKey = FUN_1402bb1c0("rewardItemCount{0}", nIndex);
+            strKey = FUN_1402bb1c0("rewardItemCount{0}", i + 1);
             FUN_1408731e0(pNode, strKey, spData->m_nItemCount[i]);
-            strKey = FUN_1402bb1c0("rewardItemDuration{0}", nIndex);
+            strKey = FUN_1402bb1c0("rewardItemDuration{0}", i + 1);
             FUN_1408731e0(pNode, strKey, spData->m_nItemDuration[i]);
         }
         entries.AddTail(spData);
     }
-    POSITION pos = entries.GetHeadPosition();
-    while (pos) {
+    for (POSITION pos = entries.GetHeadPosition(); pos != 0; entries.GetNext(pos)) {
         MS2Ptr<CSeasonRewardData> spData(entries.GetAt(pos));
-        if (!(spData == static_cast<CSeasonRewardData*>(0))) {
-            SeasonRankType type = static_cast<SeasonRankType>(spData->m_nRankType);
-            TPtrValue<Rewards> spRewards(0);
-            m_rewards.Lookup(type, spRewards);
-            if (spRewards == static_cast<Rewards*>(0)) {
-                spRewards = Unk_GrNewTag(0);
-                m_rewards.SetAt(type, spRewards);
-            }
-            MS2Ptr<CSeasonReward> spReward(0);
-            spRewards->Lookup(spData->m_nRewardID, spReward);
-            if (spReward == static_cast<CSeasonReward*>(0)) {
-                spReward.AssignRaw(new CSeasonReward);
-                spReward->Initialize(spData->m_nRewardID, spData->m_nRankType, spData->m_startDate);
-                spRewards->SetAt(spData->m_nRewardID, spReward);
-            }
-            spReward->Add(spData);
+        if (spData == static_cast<CSeasonRewardData*>(0))
+            continue;
+        SeasonRankType type = static_cast<SeasonRankType>(spData->m_nRankType);
+        TPtrValue<Rewards> spRewards(0);
+        m_rewards.Lookup(type, spRewards);
+        if (spRewards == static_cast<Rewards*>(0)) {
+            spRewards = Unk_GrNewTag(0);
+            m_rewards.SetAt(type, spRewards);
         }
-        entries.GetNext(pos);
+        MS2Ptr<CSeasonReward> spReward(0);
+        spRewards->Lookup(spData->m_nRewardID, spReward);
+        if (spReward == static_cast<CSeasonReward*>(0)) {
+            spReward.AssignRaw(new CSeasonReward);
+            spReward->Initialize(spData->m_nRewardID, spData->m_nRankType, spData->m_startDate);
+            spRewards->SetAt(spData->m_nRewardID, spReward);
+        }
+        spReward->Add(spData);
     }
     return 1;
 }
@@ -765,15 +755,13 @@ MS2Ptr<CSeasonReward> CSeasonDataTable::GetReward(SeasonRankType type)
     m_rewards.Lookup(type, spRewards);
     if (spRewards == static_cast<Rewards*>(0))
         return 0;
-    unsigned __int64 nSelected = 0;
-    POSITION pos = spRewards->GetHeadPosition();
-    while (pos) {
-        unsigned __int64 nKey = spRewards->GetKeyAt(pos);
-        if (nNow < static_cast<__int64>(nKey))
+    __int64 nSelected = 0;
+    for (POSITION pos = spRewards->GetHeadPosition(); pos != 0; spRewards->GetNext(pos)) {
+        __int64 nKey = spRewards->GetKeyAt(pos);
+        if (nNow < nKey)
             break;
-        if (static_cast<__int64>(nSelected) < static_cast<__int64>(nKey))
+        if (nSelected < nKey)
             nSelected = nKey;
-        spRewards->GetNext(pos);
     }
     if (nSelected == 0)
         return 0;
@@ -789,7 +777,7 @@ MS2_EMIT_CRT_MEMMOVE_S_COPY(1);
 
 // Full-executable aliases for existing CSeasonDataTable methods.
 // MS2-PIN: ?Tick@CSeasonDataTable@@QEAAXXZ 0x140791ac0
-// MS2-PIN: ?Load@CSeasonDataTable@@QEAA_NXZ 0x140791c30
+// MS2-PIN: ?Load@CSeasonDataTable@@QEAAHXZ 0x140791c30
 // MS2-PIN: ?GetUpcoming@CSeasonDataTable@@QEAAXW4SeasonRankType@@AEAV?$CAtlArray@V?$MS2Ptr@VCSeasonData@@@@V?$CElementTraits@V?$MS2Ptr@VCSeasonData@@@@@ATL@@@ATL@@@Z 0x1407920d0
 // MS2-PIN: ?GetRecent@CSeasonDataTable@@QEAAXW4SeasonRankType@@AEAV?$CAtlArray@V?$MS2Ptr@VCSeasonData@@@@V?$CElementTraits@V?$MS2Ptr@VCSeasonData@@@@@ATL@@@ATL@@@Z 0x140792250
 // MS2-PIN: ?GetContentsName@CSeasonDataTable@@QEAA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@V?$MS2Ptr@VCSeasonData@@@@H@Z 0x1407925e0

@@ -146,18 +146,24 @@ void FUN_1410a77e0(PCBase* p, float f);
 void FUN_141678160(PCBase* p, efd::Point3 kPos);
 void FUN_1416781a0(PCBase* p, int n);
 void FUN_141671990(PCBase* p, float f);
-void FUN_141678290(PCBase* p, const egf::EntityID* pId, efd::Point3 kPos);
+void FUN_141678290(PCBase* p, egf::EntityID kId, efd::Point3 kPos);
+egf::EntityID* FUN_1408b76f0(egf::Entity* pEntity);             // the entity's id (+0x40)
+egf::Entity* FUN_1408a9280(const egf::EntityPtr& sp);           // folded copy of SmartPointer<Entity>::operator Entity*
 void FUN_141678300(PCBase* p, int n);
 Unk_SMField690* FUN_141675eb0(PCBase* p);
 void* FUN_14166d220(PCBase* p);             // +0x150
 void* FUN_141240f20(void* p);               // +0x18
-egf::EntityID* FUN_140cfaf70(void* p, egf::EntityID* pOut);
+class Unk_SMHitReport
+{
+public:
+    egf::EntityID FUN_140cfaf70();   // id of the entity stood on
+};
 float FUN_14029d220(float f);               // fabs
 void* FUN_140cea080();                      // a global accessor whose result the exe drops
 float FUN_14028d280(unsigned n);            // milliseconds -> seconds
 
 // The helper component of vfunc_103 (a skill record holder): +0x30 table row.
-class Unk_SMRow { public: char m_pad[0xad]; char m_bAd; };
+class Unk_SMRow { public: char m_pad[0xad]; unsigned char m_bAd; };
 class Unk_SMTable { public: Unk_SMRow* FUN_14063ed50(); };
 class Unk_PCBaseComp_b18 : public CPtred
 {
@@ -167,10 +173,18 @@ public:
     Unk_SMTable m_table30;
 };
 
+// efd::ClassInfo layout (m_Classes is protected; the exe reads m_Classes[0].m_ID inline)
+struct Unk_SMClassDef { efd::ClassID m_ID; const char* m_Name; const efd::ClassInfo* m_ClassInfo; efd::UInt32 m_Offset; };
+struct Unk_SMClassInfoView { efd::UInt32 m_ClassCount; Unk_SMClassDef m_Classes[32]; };
+
 // @0x1417ddbf0
 bool FUN_1417ddbf0(const efd::ClassInfo* pInfo, int nId)
 {
-    return pInfo != 0 && pInfo->GetClassID() == (efd::ClassID)nId;
+    if (pInfo == 0)
+        return false;
+    if (reinterpret_cast<const Unk_SMClassInfoView*>(pInfo)->m_Classes[0].m_ID == (efd::ClassID)nId)
+        return true;
+    return false;
 }
 
 // @0x1417dcb20
@@ -185,16 +199,11 @@ PCBase* FUN_1417dcb20(PCBase* p)
 
 // ---- CStateManager ----
 
-// MS2-FUNCTIONAL: m_pos (+0x88) is efd::Point3 here (default ctor + operator= calls); the exe member is a trivially copyable point (no ctor, rep movsb copy from Point3::ZERO); retyping the shared statemanager.h member touches the vfunc_18 compare/assign users
 // @0x1417da7a0
-CStateManager::CStateManager(PCBase* pOwner) : m_states(17, 0.75f, 0.25f, 2.25f, 10)
+CStateManager::CStateManager(PCBase* pOwner)
+    : m_nPrev(0), m_nCur(0), m_pOwner(pOwner), m_states(17, 0.75f, 0.25f, 2.25f, 10), m_pos(efd::Point3::ZERO)
 {
-    m_nPrev = 0;
-    m_nCur = 0;
-    m_pOwner = pOwner;
-    m_pos = efd::Point3::ZERO;
-    StateNone* pNone = new StateNone(m_pOwner);
-    m_states.SetAt(0, pNone);
+    m_states.SetAt(0, new StateNone(m_pOwner));
     m_pState = FUN_1417db1e0(0);
     m_pState->vfunc_4(0);
 }
@@ -202,8 +211,7 @@ CStateManager::CStateManager(PCBase* pOwner) : m_states(17, 0.75f, 0.25f, 2.25f,
 // @0x1417da950
 CStateManager::~CStateManager()
 {
-    POSITION pos = m_states.GetStartPosition();
-    while (pos != 0)
+    for (POSITION pos = m_states.GetStartPosition(); pos != 0; m_states.GetNext(pos))
     {
         State* pState = m_states.GetValueAt(pos);
         if (pState != 0)
@@ -211,7 +219,6 @@ CStateManager::~CStateManager()
             delete pState;
             pState = 0;
         }
-        m_states.GetNext(pos);
     }
     m_states.RemoveAll();
 }
@@ -222,22 +229,24 @@ void CStateManager::FUN_1417daa70()
     m_requests.clear();
 }
 
-// MS2-FUNCTIONAL: the exe resets the slot-22 argument by destroying a MS2Ptr temporary (dtor 0x140837140) where the obj assigns 0 (operator=(int)), and builds the hit-report EntityID by value without the default-ctor call; body restructure pending
 // @0x1417daaa0
 void CStateManager::FUN_1417daaa0(double fTime)
 {
     float fDelta = (float)fTime;
-    MS2Ptr<Unk_StateArg22> spReq = FUN_1417dc230(&fDelta);
-    if (spReq.get() != 0)
-        FUN_1417db550(spReq.get());
-    spReq = 0;
+    {
+        MS2Ptr<Unk_StateArg22> spReq = FUN_1417dc230(&fDelta);
+        if (spReq.get() != 0)
+            FUN_1417db550(spReq.get());
+    }
     m_pState->vfunc_3((double)fDelta);
     m_pState->vfunc_9((double)fDelta);
-    if (DAT_143ab0248 != 2 || 0x32 < DAT_143ab2914)
+    bool bCheck = true;
+    if (DAT_143ab0248 == 2)
+        bCheck = DAT_143ab2914 >= 0x33;
+    if (bCheck)
     {
         Unk_SMCtx* pCtx = FUN_14025e7c0();
-        const efd::ClassInfo* pInfo = m_pOwner == 0 ? 0 : m_pOwner->GetClassDesc();
-        if (FUN_1417ddbf0(pInfo, 0x6200004) && pCtx != 0 && pCtx->FUN_14116d9c0(0x23, true, 0)
+        if (FUN_1417ddbf0(m_pOwner != 0 ? m_pOwner->GetClassDesc() : 0, 0x6200004) && pCtx != 0 && pCtx->FUN_14116d9c0(0x23, true, 0)
             && pCtx->FUN_14116d950(0x1d, true, 0))
         {
             Unk_SMStateSlots* pSlots = (Unk_SMStateSlots*)FUN_1417db1e0(2);
@@ -247,24 +256,20 @@ void CStateManager::FUN_1417daaa0(double fTime)
     }
     if (m_pState->vfunc_20() != 0)
     {
-        const efd::ClassInfo* pInfo = m_pOwner == 0 ? 0 : m_pOwner->GetClassDesc();
-        if (FUN_1417ddbf0(pInfo, 0x6200004))
+        if (FUN_1417ddbf0(m_pOwner != 0 ? m_pOwner->GetClassDesc() : 0, 0x6200004))
         {
-            NiPoint3 kPos = m_pOwner->vfunc_18();
-            if (kPos != m_pos)
+            if (m_pOwner->vfunc_18() != m_pos)
             {
-                bool bFound = false;
-                egf::EntityID kId;
-                FUN_140cfaf70(FUN_141240f20(FUN_14166d220(m_pOwner)), &kId);
+                int bFound = 0;
+                egf::EntityID kId = static_cast<Unk_SMHitReport*>(FUN_141240f20(FUN_14166d220(m_pOwner)))->FUN_140cfaf70();
                 egf::Entity* pEntity = FUN_1409670f0()->FUN_1411cf440(kId);
                 if (pEntity != 0)
                 {
                     MS2Ptr<Unk_SMMarker> spMarker = FUN_1403ed2d0()->FUN_141bc4f10(pEntity);
                     if (spMarker.get() != 0)
                     {
-                        NiPoint3 kOwnerPos = m_pOwner->FUN_14123c360();
-                        if (kOwnerPos == efd::Point3::ZERO)
-                            bFound = true;
+                        if (m_pOwner->FUN_14123c360() == efd::Point3::ZERO)
+                            bFound = 1;
                     }
                 }
                 if (!bFound)
@@ -282,13 +287,21 @@ void CStateManager::FUN_1417daeb0(int state, State* pState)
     m_states.Lookup(state, pOld);
     m_states.SetAt(state, pState);
     if (pOld != 0)
-        delete pOld;
+    {
+        if (pOld != 0)   // the exe's safe-delete idiom re-tests and clears the pointer
+        {
+            delete pOld;
+            pOld = 0;
+        }
+    }
 }
 
 // @0x1417dafa0
 void CStateManager::FUN_1417dafa0(int nState, StateData* pData, int nSub, int bForce)
 {
-    if (m_pOwner->FUN_14123bea0() == 0 || m_states.Lookup(nState) == 0)
+    if (m_pOwner->FUN_14123bea0() == 0)
+        return;
+    if (m_states.Lookup(nState) == 0)
         return;
     if (nState == m_nCur && bForce == 0 && m_pState->vfunc_25(nSub, pData))
         return;
@@ -301,8 +314,7 @@ void CStateManager::FUN_1417dafa0(int nState, StateData* pData, int nSub, int bF
     m_nPrev = m_nCur;
     if (nSub != 0)
         m_pState->vfunc_2(nSub);
-    const efd::ClassInfo* pInfo = m_pOwner == 0 ? 0 : m_pOwner->GetClassDesc();
-    if (FUN_1417ddbf0(pInfo, 0x6200004))
+    if (FUN_1417ddbf0(m_pOwner != 0 ? m_pOwner->GetClassDesc() : 0, 0x6200004))
         FUN_140953f30()->FUN_140ad1f30(m_nCur, nState);
     m_nCur = nState;
     m_pState->vfunc_4(pData);
@@ -353,11 +365,14 @@ void CStateManager::FUN_1417db2e0(Unk_StateArg22* pReq)
 {
     if (m_pOwner->FUN_14123bea0() == 0)
         return;
-    m_requests.push_back(MS2Ptr<Unk_StateArg22>(pReq));
+    {
+        MS2Ptr<Unk_StateArg22> spNew(pReq);
+        m_requests.push_back(static_cast<MS2Ptr<Unk_StateArg22>&&>(spNew));
+    }
     // MS2: the queue is walked newest first (reverse iterators); the oldest requests past 100 ms are dropped
     float fSum = pReq->m_fTime;
     std::list<MS2Ptr<Unk_StateArg22> >::reverse_iterator it = m_requests.rbegin();
-    while (it != m_requests.rend())
+    for (; it != m_requests.rend(); it++)
     {
         MS2Ptr<Unk_StateArg22> spReq = *it;
         if (spReq->m_fTime != 0.0f)
@@ -366,122 +381,101 @@ void CStateManager::FUN_1417db2e0(Unk_StateArg22* pReq)
             it++;
             break;
         }
-        it++;
     }
-    while (it != m_requests.rend())
+    for (; it != m_requests.rend(); it++)
     {
         MS2Ptr<Unk_StateArg22> spReq = *it;
         fSum = fSum + spReq->m_fTime;
         FUN_140cea080();
-        if (FUN_14028d280(100) < fSum)
+        if (fSum > FUN_14028d280(100))
             break;
-        it++;
     }
     m_requests.erase(m_requests.begin(), it.base());
 }
 
 // @0x1417db550
-// MS2-FUNCTIONAL: the five actor casts are chained as in the exe; the request fields are copied through typed members
+// MS2-FUNCTIONAL: GameObject::vfunc_22 takes Point3 by value in the exe (shared header gameobject.h; see shared-header-leftovers)
 void CStateManager::FUN_1417db550(Unk_StateArg22* pReq)
 {
     if (pReq == 0)
         return;
     PCBase* pActor = FUN_140974230(m_pOwner);
-    if (pActor == 0)
-    {
-        pActor = FUN_1417dcb20(m_pOwner);
-        if (pActor == 0)
-        {
-            pActor = FUN_141468360(m_pOwner);
-            if (pActor == 0)
-            {
-                pActor = FUN_140ddc910(m_pOwner);
-                if (pActor == 0)
-                {
-                    pActor = FUN_140ac06f0(m_pOwner);
-                    if (pActor != 0)
-                    {
-                        FUN_1417dbd00(pActor, pReq);
-                        pActor->vfunc_22(pReq->m_vel3c);
-                        pActor->vfunc_21(pReq->m_dir2c);
-                        FUN_14166d8b0(pActor, pReq->m_f58);
-                        pActor->vfunc_59(pReq->m_nState, 0, pReq->m_nSub, 0);
-                    }
-                }
-                else
-                {
-                    pActor->vfunc_22(pReq->m_vel3c);
-                    pActor->vfunc_19(pReq->m_pos20);
-                    pActor->vfunc_21(pReq->m_dir2c);
-                    FUN_14166d8b0(pActor, pReq->m_f58);
-                    FUN_1410a77e0(pActor, pReq->m_fA4);
-                    pActor->vfunc_59(pReq->m_nState, 0, pReq->m_nSub, 0);
-                }
-            }
-            else
-            {
-                FUN_1417dbd00(pActor, pReq);
-                pActor->vfunc_22(pReq->m_vel3c);
-                pActor->vfunc_21(pReq->m_dir2c);
-                FUN_14166d8b0(pActor, pReq->m_f58);
-                if (FUN_14166c930(pActor) != 0x10 && pReq->m_nState != 0x10)
-                {
-                    int nForce = 0;
-                    if (GetCur() == pReq->m_nState)
-                    {
-                        if (m_pState->vfunc_28(MS2Ptr<Unk_StateArg22>(pReq)))
-                            nForce = 1;
-                    }
-                    MS2Ptr<StateData> spData = FUN_1417dc9a0(pReq->m_nState);
-                    if (spData.get() != 0)
-                        spData->vfunc_2(reinterpret_cast<Unk_StateDataArg*>(pReq));   // MS2: StateData slot 2 reads the same record
-                    pActor->vfunc_59(pReq->m_nState, spData.get(), pReq->m_nSub, nForce);
-                }
-            }
-        }
-        else
-        {
-            pActor->vfunc_22(pReq->m_vel3c);
-            pActor->vfunc_19(pReq->m_pos20);
-            pActor->vfunc_21(pReq->m_dir2c);
-            FUN_14166d8b0(pActor, pReq->m_f58);
-            FUN_1410a77e0(pActor, pReq->m_fA4);
-            pActor->vfunc_59(pReq->m_nState, 0, pReq->m_nSub, 0);
-        }
-    }
-    else
+    if (pActor != 0)
     {
         pActor->vfunc_22(pReq->m_vel3c);
         FUN_141678160(pActor, pReq->m_pos48);
         FUN_1416781a0(pActor, pReq->m_n54);
         FUN_141671990(pActor, 1.0f);
-        bool bApply = false;
-        if (FUN_14166c930(pActor) == 0x10 || pReq->m_nState == 0x10 || pReq->m_nState == 4)
+        int bApply = 0;
+        if (FUN_14166c930(pActor) != 0x10 && pReq->m_nState != 0x10 && pReq->m_nState != 4)
         {
-            if (FUN_14166c930(pActor) == 0x10)
+            bApply = 1;
+        }
+        else if (FUN_14166c930(pActor) == 0x10)
+        {
+            MS2Ptr<Unk_PCBaseComp_b18> spComp = pActor->vfunc_103();
+            if (spComp.get() != 0)
             {
-                MS2Ptr<Unk_PCBaseComp_b18> spComp = pActor->vfunc_103();
-                if (spComp.get() != 0)
+                if (pReq->m_n64 != 0)
                 {
-                    if (pReq->m_n64 != 0)
-                    {
-                        if (spComp->FUN_141759960() != pReq->m_n64)
-                            bApply = true;
-                    }
-                    if (pReq->m_nState != 0x10)
-                    {
-                        if (spComp->m_table30.FUN_14063ed50()->m_bAd != 0)
-                            bApply = true;
-                    }
+                    if (spComp->FUN_141759960() != pReq->m_n64)
+                        bApply = 1;
+                }
+                if (pReq->m_nState != 0x10)
+                {
+                    if (spComp->m_table30.FUN_14063ed50()->m_bAd != 0)
+                        bApply = 1;
                 }
             }
         }
-        else
-        {
-            bApply = true;
-        }
         if (bApply)
             FUN_1417dc4c0(pReq);
+    }
+    else if ((pActor = FUN_1417dcb20(m_pOwner)) != 0)
+    {
+        pActor->vfunc_22(pReq->m_vel3c);
+        pActor->vfunc_19(pReq->m_pos20);
+        pActor->vfunc_21(pReq->m_dir2c);
+        FUN_14166d8b0(pActor, pReq->m_f58);
+        FUN_1410a77e0(pActor, pReq->m_fA4);
+        pActor->vfunc_59(pReq->m_nState, 0, pReq->m_nSub, 0);
+    }
+    else if ((pActor = FUN_141468360(m_pOwner)) != 0)
+    {
+        FUN_1417dbd00(pActor, pReq);
+        pActor->vfunc_22(pReq->m_vel3c);
+        pActor->vfunc_21(pReq->m_dir2c);
+        FUN_14166d8b0(pActor, pReq->m_f58);
+        if (FUN_14166c930(pActor) != 0x10 && pReq->m_nState != 0x10)
+        {
+            int nForce = 0;
+            if (GetCur() == pReq->m_nState)
+            {
+                if (m_pState->vfunc_28(MS2Ptr<Unk_StateArg22>(pReq)))
+                    nForce = 1;
+            }
+            MS2Ptr<StateData> spData = FUN_1417dc9a0(pReq->m_nState);
+            if (spData.get() != 0)
+                spData->vfunc_2(reinterpret_cast<Unk_StateDataArg*>(pReq));   // MS2: StateData slot 2 reads the same record
+            pActor->vfunc_59(pReq->m_nState, spData.get(), pReq->m_nSub, nForce);
+        }
+    }
+    else if ((pActor = FUN_140ddc910(m_pOwner)) != 0)
+    {
+        pActor->vfunc_22(pReq->m_vel3c);
+        pActor->vfunc_19(pReq->m_pos20);
+        pActor->vfunc_21(pReq->m_dir2c);
+        FUN_14166d8b0(pActor, pReq->m_f58);
+        FUN_1410a77e0(pActor, pReq->m_fA4);
+        pActor->vfunc_59(pReq->m_nState, 0, pReq->m_nSub, 0);
+    }
+    else if ((pActor = FUN_140ac06f0(m_pOwner)) != 0)
+    {
+        FUN_1417dbd00(pActor, pReq);
+        pActor->vfunc_22(pReq->m_vel3c);
+        pActor->vfunc_21(pReq->m_dir2c);
+        FUN_14166d8b0(pActor, pReq->m_f58);
+        pActor->vfunc_59(pReq->m_nState, 0, pReq->m_nSub, 0);
     }
 }
 
@@ -489,21 +483,20 @@ void CStateManager::FUN_1417db550(Unk_StateArg22* pReq)
 void CStateManager::FUN_1417dbd00(PCBase* pActor, Unk_StateArg22* pReq)
 {
     bool bSnap = true;
-    NiPoint3 kPos = pActor->vfunc_18();
-    efd::Point3 kDelta = kPos - pReq->m_pos20;
+    efd::Point3 kDelta = pActor->vfunc_18() - pReq->m_pos20;
     float fDz = kDelta.z;
     kDelta.z = 0.0f;
     float fDist = kDelta.Length();
-    int n = pReq->m_nState;
-    if ((n == 2 || n == 0x1b || n == 0x1c || n == 0x1e || n == 5 || n == 3 || n == 1 || n == 0xd || n == 0x41
-            || n == 0x46) && fDist < 100.0f)
+    if ((pReq->m_nState == 2 || pReq->m_nState == 0x1b || pReq->m_nState == 0x1c || pReq->m_nState == 0x1e
+            || pReq->m_nState == 5 || pReq->m_nState == 3 || pReq->m_nState == 1 || pReq->m_nState == 0xd
+            || pReq->m_nState == 0x41 || pReq->m_nState == 0x46) && fDist < 100.0f)
         bSnap = false;
     float fLimit = 200.0f;
-    if (n == 0x1e)
+    if (pReq->m_nState == 0x1e)
         fLimit = 400.0f;
-    if (fLimit < FUN_14029d220(fDz))
+    if (FUN_14029d220(fDz) > fLimit)
         bSnap = true;
-    if (n == 0x1e && FUN_14166c930(pActor) != 0x1e)
+    if (pReq->m_nState == 0x1e && FUN_14166c930(pActor) != 0x1e)
         bSnap = true;
     if (bSnap)
         pActor->vfunc_19(pReq->m_pos20);
@@ -538,7 +531,7 @@ void CStateManager::FUN_1417dc020(int n)
 }
 
 // @0x1417dc070
-bool CStateManager::FUN_1417dc070(int nState)
+int CStateManager::FUN_1417dc070(int nState)
 {
     switch (nState)
     {
@@ -549,9 +542,9 @@ bool CStateManager::FUN_1417dc070(int nState)
     case 0x3b:
     case 0x3c:
     case 0x45:
-        return false;
+        return 0;
     default:
-        return true;
+        return 1;
     }
 }
 
@@ -573,37 +566,50 @@ MS2Ptr<Unk_StateArg22> CStateManager::FUN_1417dc230(float* pDelta)
 {
     if (m_requests.empty())
         return MS2Ptr<Unk_StateArg22>(0);
-    MS2Ptr<Unk_StateArg22> spReq = m_requests.front();
-    if (spReq->m_fTime < *pDelta)
+    MS2Ptr<Unk_StateArg22> spReq = *m_requests.begin();
+    if (spReq->m_fTime >= *pDelta)
+    {
+        spReq->m_fTime -= *pDelta;
+        if (spReq->m_nA8 != 0)
+        {
+            return MS2Ptr<Unk_StateArg22>(0);
+        }
+        else
+        {
+            spReq->m_nA8 = 1;
+            return spReq;
+        }
+    }
+    else
     {
         if (m_requests.size() == 1)
         {
             spReq->m_fTime = 0.0f;
-            if (spReq->m_nA8 == 0)
+            if (spReq->m_nA8 != 0)
+            {
+                return MS2Ptr<Unk_StateArg22>(0);
+            }
+            else
             {
                 spReq->m_nA8 = 1;
                 return spReq;
             }
-            return MS2Ptr<Unk_StateArg22>(0);
         }
-        m_requests.pop_front();
-        spReq = m_requests.front();
-        return spReq;
+        else
+        {
+            m_requests.pop_front();
+            spReq = *m_requests.begin();
+            return spReq;
+        }
     }
-    spReq->m_fTime = spReq->m_fTime - *pDelta;
-    if (spReq->m_nA8 == 0)
-    {
-        spReq->m_nA8 = 1;
-        return spReq;
-    }
-    return MS2Ptr<Unk_StateArg22>(0);
 }
 
 // @0x1417dc4c0
 void CStateManager::FUN_1417dc4c0(Unk_StateArg22* pReq)
 {
     PCBase* pActor = FUN_140974230(m_pOwner);
-    if (FUN_141675eb0(pActor)->m_pos18 == efd::Point3::ZERO)
+    bool bPushed = FUN_141675eb0(pActor)->m_pos18 != efd::Point3::ZERO;
+    if (!bPushed)
     {
         if (FUN_1417dc070(GetCur()) == 1)
         {
@@ -618,30 +624,27 @@ void CStateManager::FUN_1417dc4c0(Unk_StateArg22* pReq)
         if (spMarker.get() != 0)
         {
             pActor->vfunc_19(spMarker->FUN_140adf8e0() + pReq->m_pos78);
-            egf::EntityPtr spEntity = spMarker->FUN_140adf980();
-            if (spEntity != 0)
-            {
-                efd::Point3 kPos = spMarker->FUN_140adf8e0();
-                egf::EntityID kId = spEntity->GetEntityID();
-                FUN_141678290(pActor, &kId, kPos);
-            }
+            egf::Entity* pEntity = spMarker->FUN_140adf980();
+            if (pEntity != 0)
+                FUN_141678290(pActor, *FUN_1408b76f0(FUN_1408a9280(spMarker->FUN_140adf980())), spMarker->FUN_140adf8e0());
         }
     }
     if (pReq->m_nA0 != 0x7fffffff)
         FUN_141678300(pActor, pReq->m_nA0);
-    if (m_pState->vfunc_32() != false && pReq->m_nState != 0xd && pReq->m_nState != 0x12)
+    if (!m_pState->vfunc_32())
+        return;
+    if (pReq->m_nState == 0xd || pReq->m_nState == 0x12)
+        return;
+    int nForce = 0;
+    if (GetCur() == pReq->m_nState)
     {
-        int nForce = 0;
-        if (GetCur() == pReq->m_nState)
-        {
-            if (m_pState->vfunc_28(MS2Ptr<Unk_StateArg22>(pReq)))
-                nForce = 1;
-        }
-        MS2Ptr<StateData> spData = FUN_1417dc9a0(pReq->m_nState);
-        if (spData.get() != 0)
-            spData->vfunc_2(reinterpret_cast<Unk_StateDataArg*>(pReq));
-        pActor->vfunc_59(pReq->m_nState, spData.get(), pReq->m_nSub, nForce);
+        if (m_pState->vfunc_28(MS2Ptr<Unk_StateArg22>(pReq)))
+            nForce = 1;
     }
+    MS2Ptr<StateData> spData = FUN_1417dc9a0(pReq->m_nState);
+    if (spData.get() != 0)
+        spData->vfunc_2(reinterpret_cast<Unk_StateDataArg*>(pReq));
+    pActor->vfunc_59(pReq->m_nState, spData.get(), pReq->m_nSub, nForce);
 }
 
 // @0x1417dc9a0
@@ -757,7 +760,7 @@ int StateMoveSkill::FUN_1417df3e0()
 // @0x1417df430
 long long StateMoveSkill::FUN_1417df430()
 {
-    if (m_spRec.IsNull())
+    if (m_spRec == 0)
         return 0;
     return (long long)m_spRec->m_n1c;
 }
@@ -781,15 +784,19 @@ int StateMoveSkill::vfunc_37()
     return 1;
 }
 
+// The dynamic_cast view: the exe casts to StateSkillData (RTTI names are compared, so casting to Unk_SMSkillData always
+// gave NULL).
+class StateSkillData : public StateData {};
 // @0x1417df570
-// MS2-FUNCTIONAL: the cast target is the exe's StateSkillData; dynamic_cast here uses this DLL's RTTI stand-in
 bool StateMoveSkill::vfunc_38(StateData* pData)
 {
-    m_spData.AssignRaw(dynamic_cast<Unk_SMSkillData*>(pData));
+    m_spData.AssignRaw(reinterpret_cast<Unk_SMSkillData*>(dynamic_cast<StateSkillData*>(pData)));
     if (m_spData == 0)
         return false;
     m_spRec = FUN_1401958b0()->FUN_1407ee2f0(m_spData->m_nSkill, m_spData->m_nLevel);
-    return !m_spRec.IsNull();
+    if (m_spRec == 0)
+        return false;
+    return true;
 }
 
 // @0x1417df6a0
@@ -873,11 +880,6 @@ PCBase* FUN_1417dfaa0(PCBase* p)
         return 0;
 }
 
-// @0x1417dfaf0
-StateNone::~StateNone()
-{
-}
-
 // @0x1417dfb50
 int StateNone::vfunc_1()
 {
@@ -919,15 +921,24 @@ extern long long DAT_143ab2820;
 class Unk_AnimName { public: alignas(8) char m_pad[0x20]; };   // efd::utf8string stand-in, 0x20 bytes (ctor 0x1409989e0, dtor 0x1408a8900)
 void FUN_1409989e0(Unk_AnimName* p, const char* psz);
 void FUN_1408a8900(Unk_AnimName* p);
-bool FUN_141b6fa90(const egf::EntityID& kKey, const Unk_AnimName* pName);
+// The same string as a real temporary (ctor 0x1409989e0, dtor 0x1408a8900).
+class Unk_SMAnimStr
+{
+public:
+    Unk_SMAnimStr(const char* psz);
+    ~Unk_SMAnimStr();
+    alignas(8) char m_pad[0x20];
+};
+bool FUN_141b6fa90(const egf::EntityID& kKey, const Unk_SMAnimStr& kName);
 void FUN_14166dd20(PCBase* p, Unk_AnimName* pName, float fSpeed, bool bA, bool bB);
+void FUN_14166dd20(PCBase* p, const Unk_SMAnimStr& kName, float fSpeed, bool bA, bool bB);
 bool FUN_14166de90(PCBase* p, int nAnim, unsigned nSeq);
 
 // NPC table row data (the regen / spawn flags).
 class Unk_SMNpcData : public CPtred
 {
 public:
-    bool FUN_14067dbc0();
+    int FUN_14067dbc0();
     int FUN_1417e0590();
     char m_pad_18[0x10];
     long long m_n28;                    // +0x28
@@ -949,7 +960,8 @@ public:
     void FUN_1410943b0(int n);
 };
 Unk_SMNpc* FUN_14096e110(PCBase* p);
-class Unk_SMEffectSvc { public: int FUN_1411a4a00(const CStringA& strName); };
+struct Unk_VibEffectReq;
+class Unk_SMEffectSvc { public: int FUN_1411a4a00(const Unk_VibEffectReq& kReq); };
 // Effect request layout shared with entityvibrator.cpp.
 struct Unk_VibEffectReq
 {
@@ -963,6 +975,11 @@ struct Unk_VibEffectReq
     void* m_pad_20[10];
 };
 MS2_CHECK_SIZE(Unk_VibEffectReq, 0x70);
+// NiPoint3(const efd::Point3&) 0x14027dcf0; the owner's position comes back as an efd::Point3.
+struct Unk_SMNiPt3 : public NiPoint3
+{
+    Unk_SMNiPt3(const NiPoint3& kPt);
+};
 Unk_SMEffectSvc* FUN_1403ed280();
 
 // @0x1417dfc70
@@ -985,25 +1002,21 @@ void StateRegen::vfunc_4(StateData* pData)
 {
     State::vfunc_4(pData);
     m_pOwner->FUN_14123cb20(false);
-    Unk_AnimName kRegenA;
-    FUN_1409989e0(&kRegenA, "Regen_A");
-    egf::EntityID kKey;
-    bool bNoRegenA = !FUN_141b6fa90(m_pOwner->FUN_14123c460(kKey), &kRegenA);
-    FUN_1408a8900(&kRegenA);
-    if (!bNoRegenA)
-    {
-        FUN_14166ca20(m_pOwner, 9);
-        Unk_Random kRandom(m_pOwner->FUN_14123c580());
-        m_timer.FUN_140868750(kRandom.FUN_1407684c0() % 300 + 100);
-    }
-    else
+    if (!FUN_141b6fa90(m_pOwner->FUN_14123c460(), "Regen_A"))
     {
         m_pOwner->vfunc_59(1, 0, 0, 0);
     }
-    Unk_SMNpc* pNpc = FUN_14096e110(m_pOwner);
+    else
+    {
+        FUN_14166ca20(m_pOwner, 9);
+        Unk_Random kRandom(m_pOwner->FUN_14123c580());
+        int nDelay = kRandom.FUN_1407684c0() % 300 + 100;
+        m_timer.FUN_140868750(nDelay);
+    }
+    Unk_SMNpc* pNpc = reinterpret_cast<Unk_SMNpc*>(FUN_1417b8480());
     if (pNpc != 0)
     {
-        if (pNpc->FUN_141093800().get() != 0)
+        if (pNpc->FUN_141093800().get())
         {
             if (pNpc->FUN_141093800()->FUN_14067dbc0())
                 m_nSkip = 1;
@@ -1011,12 +1024,7 @@ void StateRegen::vfunc_4(StateData* pData)
             {
                 if (DAT_143ab2820 == pNpc->FUN_141093800()->m_n28)
                     m_nSpecial = 1;
-                Unk_AnimName kRegenB;
-                FUN_1409989e0(&kRegenB, "Regen_B");
-                egf::EntityID kKeyB;
-                bool bRegenB = FUN_141b6fa90(m_pOwner->FUN_14123c460(kKeyB), &kRegenB);
-                FUN_1408a8900(&kRegenB);
-                if (bRegenB)
+                if (FUN_141b6fa90(m_pOwner->FUN_14123c460(), "Regen_B"))
                     m_nVariantB = 1;
             }
         }
@@ -1041,46 +1049,53 @@ void StateRegen::vfunc_5(int n)
 }
 
 // @0x1417e01d0
-// MS2-FUNCTIONAL: the spawn effect uses the recovered 0x70-byte request and an identity transform; local construction differs
 void StateRegen::vfunc_9(double fTime)
 {
     State::vfunc_9(fTime);
-    if (m_timer.FUN_140868ba0() == 0 && m_nStarted == 0)
+    if (m_timer.FUN_140868ba0())
+        return;
+    if (m_nStarted == 0)
     {
-        Unk_SMNpc* pNpc = FUN_14096e110(m_pOwner);
-        if (pNpc == 0)
+        Unk_SMNpc* pNpc = reinterpret_cast<Unk_SMNpc*>(FUN_1417b8480());
+        if (pNpc != 0)
         {
-            Unk_AnimName kAnim;
-            FUN_1409989e0(&kAnim, "Regen_A");
-            FUN_14166dd20(m_pOwner, &kAnim, 1.0f, true, false);
-            FUN_1408a8900(&kAnim);
+            {
+                Unk_SMAnimStr kName(m_nVariantB != 0 ? "Regen_B" : "Regen_A");
+                FUN_14166dd20(m_pOwner, kName, 1.0f, true, false);
+            }
             FUN_14166ca80(m_pOwner, 9);
-        }
-        else
-        {
-            Unk_AnimName kAnim;
-            FUN_1409989e0(&kAnim, m_nVariantB == 0 ? "Regen_A" : "Regen_B");
-            FUN_14166dd20(m_pOwner, &kAnim, 1.0f, true, false);
-            FUN_1408a8900(&kAnim);
-            FUN_14166ca80(m_pOwner, 9);
-            m_pOwner->vfunc_18();
-            NiPoint3 kRegenPos = m_pOwner->vfunc_18();
-            float afXform[13] = { 1, 0, 0, 0, 1, 0, 0, 0, 1, kRegenPos.x, kRegenPos.y, kRegenPos.z, 1.0f };
+            NiTransform kXform;
+            kXform.m_Rotate.MakeIdentity();
+            kXform.m_fScale = 1.0f;
+            Unk_SMNiPt3 kPos(m_pOwner->vfunc_18());
+            kXform.m_Translate = kPos;
             Unk_VibEffectReq req;
             req.m_name = pNpc->FUN_141093270()->m_str550;
             req.m_type = 0;
-            req.m_pXform = afXform;
-            // The recovered import takes the full request; its first field is the name.
-            FUN_1403ed280()->FUN_1411a4a00(*reinterpret_cast<const CStringA*>(&req));
+            req.m_pXform = &kXform;
+            FUN_1403ed280()->FUN_1411a4a00(req);
             if (m_nSkip == 0)
             {
-                if (m_nVariantB == 0)
-                    pNpc->FUN_1410943b0(2);
-                else if (m_nSpecial == 0)
-                    pNpc->FUN_1410943b0(3);
+                if (m_nVariantB != 0)
+                {
+                    if (m_nSpecial != 0)
+                        pNpc->FUN_1410943b0(6);
+                    else
+                        pNpc->FUN_1410943b0(3);
+                }
                 else
-                    pNpc->FUN_1410943b0(6);
+                {
+                    pNpc->FUN_1410943b0(2);
+                }
             }
+        }
+        else
+        {
+            {
+                Unk_SMAnimStr kName("Regen_A");
+                FUN_14166dd20(m_pOwner, kName, 1.0f, true, false);
+            }
+            FUN_14166ca80(m_pOwner, 9);
         }
         m_nStarted = 1;
     }
@@ -1197,47 +1212,60 @@ void StateRide::vfunc_9(double fTime)
     MS2Ptr<Unk_SMRideAnim> spAnim = spRide->FUN_140784970();
     if (spAnim == 0)
         return;
-    const CStringA* pName;
-    int nState = FUN_14166c930(pRider);
-    if (nState == 2 || nState == 0x1b)
+    if (FUN_14166c930(pRider) == 2 || FUN_14166c930(pRider) == 0x1b)
     {
-        int nSub = FUN_14166cc80(pRider);
-        if (nSub == 0x17 || nSub == 0x85)
-            pName = &spAnim->m_str50;
+        if (FUN_14166cc80(pRider) == 0x17 || FUN_14166cc80(pRider) == 0x85)
+        {
+            Unk_SMAnimStr kName(spAnim->m_str50);
+            FUN_14166dd20(m_pOwner, kName, FUN_1416713c0(pRider), false, false);
+        }
         else
-            pName = &spAnim->m_str38;
+        {
+            Unk_SMAnimStr kName(spAnim->m_str38);
+            FUN_14166dd20(m_pOwner, kName, FUN_1416713c0(pRider), false, false);
+        }
     }
-    else if (nState == 6)
+    else if (FUN_14166c930(pRider) == 6)
     {
         if (FUN_14166cc80(pRider) == 0x27)
-            pName = &spAnim->m_str58;
+        {
+            Unk_SMAnimStr kName(spAnim->m_str58);
+            FUN_14166dd20(m_pOwner, kName, FUN_1416713c0(pRider), false, false);
+        }
         else
-            pName = &spAnim->m_str40;
+        {
+            Unk_SMAnimStr kName(spAnim->m_str40);
+            FUN_14166dd20(m_pOwner, kName, FUN_1416713c0(pRider), false, false);
+        }
     }
-    else if (nState == 4)
+    else if (FUN_14166c930(pRider) == 4)
     {
-        pName = &spAnim->m_str30;
+        Unk_SMAnimStr kName(spAnim->m_str30);
+        FUN_14166dd20(m_pOwner, kName, FUN_1416713c0(pRider), false, false);
     }
-    else if (nState == 1)
+    else if (FUN_14166c930(pRider) == 1)
     {
-        int nSub = FUN_14166cc80(pRider);
-        if (nSub == 0xc || nSub == 0x87)
-            pName = &spAnim->m_str48;
+        if (FUN_14166cc80(pRider) == 0xc || FUN_14166cc80(pRider) == 0x87)
+        {
+            Unk_SMAnimStr kName(spAnim->m_str48);
+            FUN_14166dd20(m_pOwner, kName, FUN_1416713c0(pRider), false, false);
+        }
         else
-            pName = &spAnim->m_str30;
+        {
+            Unk_SMAnimStr kName(spAnim->m_str30);
+            FUN_14166dd20(m_pOwner, kName, FUN_1416713c0(pRider), false, false);
+        }
     }
-    else if (FUN_141676b70(pRider) == 0)
+    else if (FUN_141676b70(pRider))
     {
-        pName = &spAnim->m_str28;
+        Unk_SMAnimStr kName(spAnim->m_str48);
+        FUN_14166dd20(m_pOwner, kName, FUN_1416713c0(pRider), false, false);
     }
     else
     {
-        pName = &spAnim->m_str48;
+        Unk_SMAnimStr kName(spAnim->m_str28);
+        FUN_14166dd20(m_pOwner, kName, FUN_1416713c0(pRider), false, false);
     }
-    Unk_AnimName kAnim;
-    FUN_1409989e0(&kAnim, (const char*)*pName);
-    FUN_14166dd20(m_pOwner, &kAnim, FUN_1416713c0(pRider), false, false);
-    FUN_1408a8900(&kAnim);
 }
 
 // @0x1417e0d20
@@ -1260,7 +1288,7 @@ struct Unk_SMExtent { float m_fWidth; float m_fHeight; };
 Unk_SMKeys* FUN_14166d240(PCBase* p);
 Unk_SMExtent* FUN_141671390(PCBase* p, Unk_SMExtent* pOut);
 bool FUN_1412410c0(void* pCollider, const efd::Point3* pPos, float fHalfHeight);
-bool FUN_140552700(const efd::Point3* pA, const efd::Point3* pB);
+bool FUN_140552700(const efd::Point3& kA, const efd::Point3& kB);    // efd::Point3::operator!=
 bool FUN_1416749c0(PCBase* p);
 void FUN_141240730(void* p);
 void* FUN_14165f100(PCBase* p);
@@ -1268,22 +1296,21 @@ void FUN_14166e0a0(PCBase* p);
 egf::Entity* FUN_141659af0(PCBase* p, int n);
 egf::Entity* FUN_141659b80(PCBase* p, int n, unsigned nProp, float fRange);
 void FUN_1409618c0(egf::Entity* pEntity, unsigned nProp, const efd::Point3* pValue);
-void FUN_1408a20a0(egf::Entity* pEntity, unsigned nProp, char* pOut);
-egf::EntityID* FUN_1408b76f0(egf::Entity* pEntity);             // the entity's id (+0x40)
-void FUN_141658fc0(PCBase* p, const egf::EntityID* pId);
+void FUN_1408a20a0(egf::Entity* pEntity, unsigned nProp, bool* pOut);
+void FUN_141658fc0(PCBase* p, egf::EntityID kId);      // PC::FUN_141658fc0(const EntityID&); callers pass a copy
 bool FUN_140998dc0(const NiFixedString& kKey, const char* psz);
 void* FUN_1409f7ca0();
-int FUN_14168a450(void* pSvc, const efd::Point3* pPos, float* pGround, float fZ);
+int FUN_14168a450(void* pSvc, const NiPoint3* pPos, float* pGround, float fZ);
 float FUN_1409f25a0(float f);
 float FUN_1409f2310(float f);
 bool FUN_14028d470(float a, float b);
-float FUN_140a00ef0(const NiPlane* plane, efd::Point3 pt);      // NiPlane distance
+float FUN_140a00ef0(const NiPlane* plane, const NiPoint3& pt);   // NiPlane distance
 
 // @0x1417e0d30
 StateRope::StateRope(PCBase* pOwner) : State(pOwner)
 {
     m_n14 = 0;
-    m_n60 = 0;
+    m_f60 = 0.0f;
     m_fAngle = 0.0f;
     m_pRope = 0;
     m_pos54 = efd::Point3::ZERO;
@@ -1314,29 +1341,29 @@ void StateRope::vfunc_4(StateData* pData)
     MyPC* pMy = FUN_1417b84b0();
     if (pMy != 0 && FUN_14165f100(pMy) != 0)
         FUN_14165f170(pMy);
-    if (m_pRope == 0)
+    if (m_pRope != 0)
     {
-        m_pOwner->vfunc_59(1, 0, 0, 0);
-    }
-    else
-    {
-        efd::Point3 kPos = m_pOwner->vfunc_18();
+        NiPoint3 kPos = m_pOwner->vfunc_18();
         efd::Point3 kZero = efd::Point3::ZERO;
         FUN_1409618c0(m_pRope, 0xfd95ca52, &m_pos54);
         FUN_1409618c0(m_pRope, 0x68c7c29d, &kZero);
-        NiPoint3 kOrigin = m_pOwner->vfunc_18();
-        NiPoint3 kFacing = m_pOwner->FUN_14123cc20();
+        NiPoint3 kOrigin(static_cast<const efd::Point3&>(m_pOwner->vfunc_18()));
+        NiPoint3 kFacing(m_pOwner->FUN_14123cc20());
         NiPlane kPlane(kFacing, kOrigin);
-        if (FUN_140a00ef0(&kPlane, m_pos54) < 0.0f)
+        if (FUN_140a00ef0(&kPlane, m_pos54) >= 0.0f)
+        {
+            m_fAngle = GameObject::FUN_14123ce70(m_pOwner->FUN_14123cc20());
+        }
+        else
         {
             efd::Point3 kDiff = m_pos54 - kPos;
             m_fAngle = GameObject::FUN_14123ce70(kDiff);
             m_pOwner->vfunc_21(efd::Point3(0.0f, 0.0f, GameObject::FUN_14123cd50(kDiff)));
         }
-        else
-        {
-            m_fAngle = GameObject::FUN_14123ce70(m_pOwner->FUN_14123cc20());
-        }
+    }
+    else
+    {
+        m_pOwner->vfunc_59(1, 0, 0, 0);
     }
     m_pOwner->FUN_14123cb20(false);
 }
@@ -1348,8 +1375,7 @@ void StateRope::vfunc_5(int n)
     m_pOwner->FUN_14123cb20(true);
     if (m_pRope != 0 && FUN_1417b8370() != 0)
     {
-        // MS2-FUNCTIONAL: the exe copy-constructs the id into a temporary first
-        FUN_141658fc0(FUN_1417b8370(), FUN_1408b76f0(m_pRope));
+        FUN_141658fc0(FUN_1417b8370(), *FUN_1408b76f0(m_pRope));
     }
     FUN_14166d8b0(m_pOwner, m_pOwner->vfunc_20().z);
 }
@@ -1359,18 +1385,19 @@ void StateRope::vfunc_3(double fTime)
 {
     if (m_pRope == 0)
         return;
-    NiPoint3 kInput = m_pOwner->FUN_14123c360();
+    efd::Point3 kInput = m_pOwner->FUN_14123c360();
+    NiPoint3 kPos = m_pOwner->vfunc_18();
     PCBase* pPC = FUN_1417b8370();
     if (pPC == 0)
         return;
     if (m_n10 == 0x38)
     {
         efd::Point3 kTop;
-        kTop.x = FUN_1409f25a0(m_fAngle) * 20.0f + m_pos54.x;
-        kTop.y = FUN_1409f2310(m_fAngle) * 20.0f + m_pos54.y;
+        kTop.x = 20.0f * FUN_1409f25a0(m_fAngle) + m_pos54.x;
+        kTop.y = 20.0f * FUN_1409f2310(m_fAngle) + m_pos54.y;
         kTop.z = m_pos54.z + 50.0f;
         efd::Point3 kDelta = kTop - m_pos48;
-        kDelta = kDelta * m_timer68.FUN_140868940();
+        kDelta *= m_timer68.FUN_140868940();
         efd::Point3 kTarget = m_pos48 + kDelta;
         Unk_SMExtent kExtent;
         FUN_141671390(m_pOwner, &kExtent);
@@ -1385,30 +1412,27 @@ void StateRope::vfunc_3(double fTime)
     }
     else
     {
-        if (kInput.y <= 0.0f)
+        if (kInput.y > 0.0f)
         {
-            if (kInput.y < 0.0f)
-                m_n10 = 0x35;
+            if (m_n10 == 0x36 || m_n10 == 0x33)
+                m_n10 = 0x34;
         }
-        else if (m_n10 == 0x36 || m_n10 == 0x33)
+        else if (kInput.y < 0.0f)
         {
-            m_n10 = 0x34;
+            m_n10 = 0x35;
         }
-        if (0.0f <= kInput.x)
+        if (kInput.x < 0.0f)
         {
-            if (0.0f < kInput.x)
+            m_fAngle = m_fAngle + 2.0f * (float)fTime;
+            if (FUN_14028d470(kInput.y, 0.0f))
             {
-                m_fAngle = m_fAngle - (float)fTime * 2.0f;
-                if (FUN_14028d470(kInput.y, 0.0f))
-                {
-                    m_n10 = 0x37;
-                    m_timerA0.FUN_1408687f0();
-                }
+                m_n10 = 0x37;
+                m_timerA0.FUN_1408687f0();
             }
         }
-        else
+        else if (kInput.x > 0.0f)
         {
-            m_fAngle = m_fAngle + (float)fTime * 2.0f;
+            m_fAngle = m_fAngle - 2.0f * (float)fTime;
             if (FUN_14028d470(kInput.y, 0.0f))
             {
                 m_n10 = 0x37;
@@ -1517,11 +1541,11 @@ float StateRope::FUN_1417e1e60()
     if (pPC == 0)
         return 0.0f;
     float fStep = 0.0f;
-    efd::Point3 kPos = pPC->vfunc_18();
-    char bOnRope = 0;
+    NiPoint3 kPos = pPC->vfunc_18();
+    bool bOnRope = false;
     if (m_pRope != 0)
         FUN_1408a20a0(m_pRope, 0x4df0c0de, &bOnRope);
-    if (bOnRope == 0)
+    if (!bOnRope)
     {
         float fGround = 0.0f;
         if (FUN_14168a450(FUN_1409f7ca0(), &kPos, &fGround, 0.0f) != 0 && fGround != FLT_MAX)
@@ -1529,11 +1553,11 @@ float StateRope::FUN_1417e1e60()
     }
     else if (m_n10 == 0x34)
     {
-        fStep = m_timerA0.FUN_140868b20() * 150.0f;
+        fStep = 150.0f * m_timerA0.FUN_140868b20();
         egf::Entity* pNext = FUN_141659b80(pPC, 1, 0xc13e30c8, 150.0f);
         if (pNext == 0)
         {
-            if (m_pos54.z + 50.0f < kPos.z + fStep)
+            if (kPos.z + fStep > m_pos54.z + 50.0f)
             {
                 m_n10 = 0x33;
                 m_timerA0.FUN_1408687f0();
@@ -1546,14 +1570,14 @@ float StateRope::FUN_1417e1e60()
     }
     else if (m_n10 == 0x35)
     {
-        fStep = m_timerA0.FUN_140868b20() * 150.0f;
+        fStep = 150.0f * m_timerA0.FUN_140868b20();
         egf::Entity* pNext = FUN_141659b80(pPC, 2, 0xc13e30c8, 90.0f);
         if (pNext == 0)
         {
             if (kPos.z - fStep < m_pos54.z)
             {
                 pPC->vfunc_59(5, 0, 0, 0);
-                fStep = 0.0f;
+                return 0.0f;
             }
         }
         else
@@ -1567,7 +1591,7 @@ float StateRope::FUN_1417e1e60()
 // @0x1417e20d0
 void StateRope::FUN_1417e20d0(float fDz, float fAngle)
 {
-    efd::Point3 kTarget = m_pOwner->vfunc_18();
+    NiPoint3 kTarget = m_pOwner->vfunc_18();
     if (m_n10 == 0x34 || m_n10 == 0x35)
     {
         if (fDz != 0.0f)
@@ -1585,17 +1609,16 @@ void StateRope::FUN_1417e20d0(float fDz, float fAngle)
     }
     if (fAngle != 0.0f)
     {
-        kTarget.x = FUN_1409f25a0(m_fAngle) * 20.0f + m_pos54.x;
-        kTarget.y = FUN_1409f2310(m_fAngle) * 20.0f + m_pos54.y;
+        kTarget.x = 20.0f * FUN_1409f25a0(m_fAngle) + m_pos54.x;
+        kTarget.y = 20.0f * FUN_1409f2310(m_fAngle) + m_pos54.y;
         m_pOwner->vfunc_21(efd::Point3(0.0f, 0.0f, -((m_fAngle * 180.0f) / 3.1415927f)));
     }
-    efd::Point3 kCur = m_pOwner->vfunc_18();
-    if (FUN_140552700(&kCur, &kTarget))
+    if (FUN_140552700(m_pOwner->vfunc_18(), kTarget))
     {
         Unk_SMExtent kExtent;
         FUN_141671390(m_pOwner, &kExtent);
         if (!FUN_1412410c0(FUN_14166d220(m_pOwner), &kTarget, kExtent.m_fHeight * 0.5f))
-            m_pOwner->vfunc_19(kTarget);
+            m_pOwner->vfunc_19(static_cast<efd::Point3&>(kTarget));
     }
 }
 
@@ -1617,10 +1640,9 @@ int StateRope::vfunc_1()
 struct Unk_SMDepPlatform : efd::ISystemService { static const efd::ClassID CLASS_ID = 0x0700001a; };
 struct Unk_SMDepWorld : efd::ISystemService { static const efd::ClassID CLASS_ID = 0x06100002; };
 struct Unk_SMDepSix : efd::ISystemService { static const efd::ClassID CLASS_ID = 0x06100006; };
-struct Unk_SMInputHandle { char m_pad_00[8]; void* m_pTarget; };
+struct Unk_SMInputHandle { void* m_p0; void* m_pTarget; ~Unk_SMInputHandle(); };   // dtor 0x140b62a60 (release)
 class Unk_SMInputSvc { public: Unk_SMInputHandle FUN_1422b02f0(int nSlot); };
 Unk_SMInputSvc* FUN_14025e7a0();
-void FUN_140b62a60(Unk_SMInputHandle* p);                                   // release
 class Unk_SMOptions { public: bool FUN_14036d570(int nId); };
 Unk_SMOptions* FUN_140166410();
 class Unk_SMReconn { public: void FUN_140aad970(); };
@@ -1630,26 +1652,15 @@ class Unk_SMSceneHook { public: void FUN_1422b9ef0(int nScene); };
 Unk_SMSceneHook* FUN_1408e57f0();
 void* FUN_14086d260();
 float FUN_141473230(void* pApp);
-void* FUN_140876480(void* pOut, int nCategory);                             // memory category helper
-void* FUN_14208a860(unsigned __int64 nSize, unsigned nCategory);            // tracked allocation
 
 // The service singleton: s_instance is set by the TSingleton constructor.
 CStateService* TSingleton<CStateService>::s_instance = 0;
 inline TSingleton<CStateService>::TSingleton() { s_instance = static_cast<CStateService*>(this); }
 
-// A scene state allocated from the tracked pool (the exe passes the sizes explicitly).
-template <class T>
-static T* Unk_SMNewScene(unsigned __int64 nSize)
-{
-    int nTmp;
-    void* pMem = FUN_14208a860(nSize, *(unsigned*)FUN_140876480(&nTmp, 0));
-    return pMem != 0 ? new (pMem) T() : 0;
-}
-
 // @0x1417e3620
-static bool FUN_1417e3620(Unk_SMInputHandle* p)
+static bool FUN_1417e3620(const Unk_SMInputHandle& h)
 {
-    return p->m_pTarget == 0;
+    return h.m_pTarget == 0;
 }
 
 // Not in the hook DLL: MS2::RegisterServices (hooked) must build the exe object (exe vtable; unhooked virtuals stay exe).
@@ -1728,7 +1739,7 @@ int CStateService::FUN_1417e2830(int nScene)
 {
     if (nScene == 0)
     {
-        if (m_spCurrent != 0)
+        if (m_spCurrent)
         {
             m_spCurrent->OnLeave(0);
             m_spCurrent = 0;
@@ -1740,10 +1751,10 @@ int CStateService::FUN_1417e2830(int nScene)
     efd::SmartPointer<CSceneStateBase> spNext(0);
     if (!m_mapScenes.Lookup(nScene, spNext))
         return 0;
-    if (m_spCurrent != 0)
+    if (m_spCurrent)
         m_spCurrent->OnLeave(spNext->GetClassID());
     int nPrev = 0;
-    if (m_spCurrent != 0)
+    if (m_spCurrent)
         nPrev = m_spCurrent->GetClassID();
     m_spCurrent = spNext;
     m_spCurrent->OnEnter(nPrev);
@@ -1752,31 +1763,30 @@ int CStateService::FUN_1417e2830(int nScene)
 }
 
 // @0x1417e2a60
-// MS2-FUNCTIONAL: the scene-state creations are a macro-like repeat in the exe (temporaries and EH states differ)
 efd::SyncResult CStateService::OnPreInit(efd::IDependencyRegistrar* pRegistrar)
 {
     pRegistrar->AddDependency<Unk_SMDepPlatform>(1);
     pRegistrar->AddDependency<Unk_SMDepWorld>(1);
     pRegistrar->AddDependency<Unk_SMDepSix>(1);
     efd::SmartPointer<CSceneStateBase> spScene(0);
-    spScene = Unk_SMNewScene<CSceneStateLogo>(0x18);
+    spScene = EE_NEW CSceneStateLogo;
     m_mapScenes.SetAt(spScene->GetClassID(), spScene);
     if (FUN_140166410()->FUN_14036d570(0xd8))
     {
-        spScene = Unk_SMNewScene<CSceneStateModeSelect>(0x18);
+        spScene = EE_NEW CSceneStateModeSelect;
         m_mapScenes.SetAt(spScene->GetClassID(), spScene);
     }
-    spScene = Unk_SMNewScene<CSceneStateLogin>(0x18);
+    spScene = EE_NEW CSceneStateLogin;
     m_mapScenes.SetAt(spScene->GetClassID(), spScene);
-    spScene = Unk_SMNewScene<CSceneStateMulti>(0x1a0);
+    spScene = EE_NEW CSceneStateMulti;
     m_mapScenes.SetAt(spScene->GetClassID(), spScene);
-    spScene = Unk_SMNewScene<CSceneStateGame>(0x78);
+    spScene = EE_NEW CSceneStateGame;
     m_mapScenes.SetAt(spScene->GetClassID(), spScene);
-    spScene = Unk_SMNewScene<CSceneStateLoading>(0x10);
+    spScene = EE_NEW CSceneStateLoading;
     m_mapScenes.SetAt(spScene->GetClassID(), spScene);
-    spScene = Unk_SMNewScene<CSceneStateMove>(0x60);
+    spScene = EE_NEW CSceneStateMove;
     m_mapScenes.SetAt(spScene->GetClassID(), spScene);
-    spScene = Unk_SMNewScene<CSceneStateRelocateWorld>(0x20);
+    spScene = EE_NEW CSceneStateRelocateWorld;
     m_mapScenes.SetAt(spScene->GetClassID(), spScene);
     return efd::SyncResult_Success;
 }
@@ -1786,9 +1796,7 @@ efd::AsyncResult CStateService::OnInit()
 {
     if (FUN_1403ed2d0()->FUN_141bcfb70() == 0)
         return efd::AsyncResult_Pending;
-    Unk_SMInputHandle kHandle = FUN_14025e7a0()->FUN_1422b02f0(2);
-    bool bNone = FUN_1417e3620(&kHandle);
-    FUN_140b62a60(&kHandle);
+    bool bNone = FUN_1417e3620(FUN_14025e7a0()->FUN_1422b02f0(2));
     if (bNone)
         return efd::AsyncResult_Pending;
     FUN_1417e25a0(0x620000b);

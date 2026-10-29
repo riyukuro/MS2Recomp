@@ -396,26 +396,25 @@ void UICoupleActionDialog::FUN_140becef0()
 {
     m_180.clear();
     ASDialog* pDlg = dynamic_cast<ASDialog*>(static_cast<AScript*>(m_30));
-    if (pDlg != 0) {
-        MyPC* pPlayer = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
-        if (pPlayer != 0) {
-            ATL::CAtlArray<MS2Ptr<Unk_Emotion> > list;
-            FUN_1417691a0(pPlayer->FUN_141523bc0(), list);
-            int nMode = FUN_141765cf0(pPlayer->FUN_141523bc0(), 0);
-            FUN_141765cf0(pPlayer->FUN_141523bc0(), nMode);
-            std::map<unsigned int, Unk_Emotion> unused;
-            for (size_t i = 0; i < list.GetCount(); i++) {
-                unsigned int nId = list[i]->m_id;
-                SkillData* pSkill = FUN_1401958b0()->GetSkillData(nId);
-                if (pSkill != 0 && pSkill->GetMainType() == 0xf)
-                    m_180.insert(std::make_pair(nId, list[i]));
-            }
-            if (m_1a0 == false)
-                FUN_140bed2d0();
-            else
-                FUN_140bed8a0();
-        }
+    if (pDlg == 0) return;
+    MyPC* pPlayer = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
+    if (pPlayer == 0) return;
+    ATL::CAtlArray<MS2Ptr<Unk_Emotion> > list;
+    FUN_1417691a0(pPlayer->FUN_141523bc0(), list);
+    int nMode = FUN_141765cf0(pPlayer->FUN_141523bc0(), 0);
+    FUN_141765cf0(pPlayer->FUN_141523bc0(), nMode);
+    std::map<unsigned int, Unk_Emotion> unused;
+    for (size_t i = 0; i < list.GetCount(); i++) {
+        unsigned int nId = list[i]->m_id;
+        SkillData* pSkill = FUN_1401958b0()->GetSkillData(nId);
+        if (pSkill == 0) continue;
+        if (pSkill->GetMainType() != 0xf) continue;
+        m_180.insert(std::make_pair(nId, list[i]));
     }
+    if (m_1a0)
+        FUN_140bed8a0();
+    else
+        FUN_140bed2d0();
 }
 MS2_REPLACE_METHOD(0x140BECEF0, UICoupleActionDialog, FUN_140becef0, 621, 0x38B953F4);
 
@@ -429,20 +428,20 @@ void UICoupleActionDialog::FUN_140bed170(int nEmotion)
 MS2_REPLACE_METHOD(0x140BED170, UICoupleActionDialog, FUN_140bed170, 117, 0x195C0E2E);
 
 // @0x140bed1f0
-int UICoupleActionDialog::FUN_140bed1f0(int nEmotion)
+void UICoupleActionDialog::FUN_140bed1f0(int nEmotion)
 {
     WorldService* pWorld = WorldService::GetInstance();
     if (pWorld == 0) {
         MS2_ASSERT_AT(0x209, "pWorldService" && 0);
-        return 0;
+        return;
     }
     MyPC* pPlayer = static_cast<MyPC*>(pWorld->FUN_141bd0cc0());
     if (pPlayer == 0)
-        return 0;
+        return;
     Unk_WsC_GameObj* pActor = pWorld->FUN_141bd1530(m_178);
     if (pActor == 0)
-        return 0;
-    return pPlayer->FUN_141525480(nEmotion, 0);
+        return;
+    pPlayer->FUN_141525480(nEmotion, 0);
 }
 MS2_REPLACE_METHOD(0x140BED1F0, UICoupleActionDialog, FUN_140bed1f0, 163, 0xB26B551B);
 
@@ -461,60 +460,59 @@ struct Unk_EmotionGreater { bool operator()(const MS2Ptr<Unk_Emotion>& a, const 
 void UICoupleActionDialog::FUN_140bed2d0()
 {
     ASDialog* pDlg = dynamic_cast<ASDialog*>(static_cast<AScript*>(m_30));
-    if (pDlg != 0) {
-        ASArray actions(2);
-        int nFocus = 0;
-        std::set<MS2Ptr<Unk_Emotion>, Unk_EmotionLess> sorted;
-        for (std::map<unsigned int, MS2Ptr<Unk_Emotion> >::iterator it = m_180.begin(); it != m_180.end(); ++it)
-        {
-            MS2Ptr<Unk_Emotion> spCopy(it->second);
-            sorted.insert(spCopy);
-        }
-        for (std::set<MS2Ptr<Unk_Emotion>, Unk_EmotionLess>::iterator sit = sorted.begin(); sit != sorted.end(); ++sit) {
-            MS2Ptr<Unk_Emotion> spEmotion(*sit);
-            int nId = spEmotion->m_id;
-            int nNew = spEmotion->m_isNew;
-            bool bFavorite = spEmotion->m_favorite;
-            SkillData* pSkill = FUN_1401958b0()->GetSkillData(nId);
-            if (pSkill == 0)
-                continue;
-            if (m_1a1 != 0 && !bFavorite)
-                continue;
-            if (!m_1a8.IsEmpty()) {
-                if (FUN_1403b3c40(m_1a8, L"/") != 0)
-                    continue;
-                bool bFound = false;
-                CStringW strName = GetStringTable()->FUN_141811980(4, nId);
-                if (strName.Find(m_1a8, 0) == -1) {
-                    std::vector<CStringW> words;
-                    CStringW strKeywords = FUN_140bedf00(nId);
-                    FUN_140988d60(strKeywords, words, L", ");
-                    for (CStringW& strWord : words) {
-                        if (strWord.Find(m_1a8, 0) != -1) {
-                            bFound = true;
-                            break;
-                        }
-                    }
-                } else {
-                    bFound = true;
-                }
-                if (!bFound)
-                    continue;
-            }
-            if (nNew != 0)
-                nFocus = nId;
-            ASObj action(2);
-            action.FUN_1409c0d20("id", nId);
-            action.FUN_1407cb9c0("isNew", nNew);
-            action.FUN_1407cba60("iconPath", pSkill->m_strIcon);
-            action.FUN_1407cbbe0("isFavorite", bFavorite);
-            actions.FUN_1422bbf00(action);
-        }
-        FUN_140bee040(actions);
-        pDlg->FUN_140bd2cb0("buildActions", actions);
-        if (nFocus != 0)
-            FUN_140bed170(nFocus);
+    if (pDlg == 0) return;
+    ASArray actions(2);
+    int nFocus = 0;
+    std::set<MS2Ptr<Unk_Emotion>, Unk_EmotionLess> sorted;
+    for (std::map<unsigned int, MS2Ptr<Unk_Emotion> >::iterator it = m_180.begin(); it != m_180.end(); ++it)
+    {
+        MS2Ptr<Unk_Emotion> spCopy(it->second);
+        sorted.insert(spCopy);
     }
+    for (std::set<MS2Ptr<Unk_Emotion>, Unk_EmotionLess>::iterator sit = sorted.begin(); sit != sorted.end(); ++sit) {
+        MS2Ptr<Unk_Emotion> spEmotion(*sit);
+        int nId = spEmotion->m_id;
+        int nNew = spEmotion->m_isNew;
+        bool bFavorite = spEmotion->m_favorite;
+        SkillData* pSkill = FUN_1401958b0()->GetSkillData(nId);
+        if (pSkill == 0)
+            continue;
+        if (m_1a1 != 0 && !bFavorite)
+            continue;
+        if (!m_1a8.IsEmpty()) {
+            if (FUN_1403b3c40(m_1a8, L"/") != 0)
+                continue;
+            bool bFound = false;
+            CStringW strName = GetStringTable()->FUN_141811980(4, nId);
+            if (strName.Find(m_1a8, 0) == -1) {
+                std::vector<CStringW> words;
+                CStringW strKeywords = FUN_140bedf00(nId);
+                FUN_140988d60(strKeywords, words, L", ");
+                for (CStringW& strWord : words) {
+                    if (strWord.Find(m_1a8, 0) != -1) {
+                        bFound = true;
+                        break;
+                    }
+                }
+            } else {
+                bFound = true;
+            }
+            if (!bFound)
+                continue;
+        }
+        if (nNew != 0)
+            nFocus = nId;
+        ASObj action(2);
+        action.FUN_1409c0d20("id", nId);
+        action.FUN_1407cb9c0("isNew", nNew);
+        action.FUN_1407cba60("iconPath", pSkill->m_strIcon);
+        action.FUN_1407cbbe0("isFavorite", bFavorite);
+        actions.FUN_1422bbf00(action);
+    }
+    FUN_140bee040(actions);
+    pDlg->FUN_140bd2cb0("buildActions", actions);
+    if (nFocus != 0)
+        FUN_140bed170(nFocus);
 }
 MS2_REPLACE_METHOD(0x140BED2D0, UICoupleActionDialog, FUN_140bed2d0, 1468, 0xF1993D52);
 
@@ -522,60 +520,59 @@ MS2_REPLACE_METHOD(0x140BED2D0, UICoupleActionDialog, FUN_140bed2d0, 1468, 0xF19
 void UICoupleActionDialog::FUN_140bed8a0()
 {
     ASDialog* pDlg = dynamic_cast<ASDialog*>(static_cast<AScript*>(m_30));
-    if (pDlg != 0) {
-        ASArray actions(2);
-        int nFocus = 0;
-        std::set<MS2Ptr<Unk_Emotion>, Unk_EmotionGreater> sorted;
-        for (std::map<unsigned int, MS2Ptr<Unk_Emotion> >::iterator it = m_180.begin(); it != m_180.end(); ++it)
-        {
-            MS2Ptr<Unk_Emotion> spCopy(it->second);
-            sorted.insert(spCopy);
-        }
-        for (std::set<MS2Ptr<Unk_Emotion>, Unk_EmotionGreater>::iterator sit = sorted.begin(); sit != sorted.end(); ++sit) {
-            MS2Ptr<Unk_Emotion> spEmotion(*sit);
-            int nId = spEmotion->m_id;
-            int nNew = spEmotion->m_isNew;
-            bool bFavorite = spEmotion->m_favorite;
-            SkillData* pSkill = FUN_1401958b0()->GetSkillData(nId);
-            if (pSkill == 0)
-                continue;
-            if (m_1a1 != 0 && !bFavorite)
-                continue;
-            if (!m_1a8.IsEmpty()) {
-                if (FUN_1403b3c40(m_1a8, L"/") != 0)
-                    continue;
-                bool bFound = false;
-                CStringW strName = GetStringTable()->FUN_141811980(4, nId);
-                if (strName.Find(m_1a8, 0) == -1) {
-                    std::vector<CStringW> words;
-                    CStringW strKeywords = FUN_140bedf00(nId);
-                    FUN_140988d60(strKeywords, words, L", ");
-                    for (CStringW& strWord : words) {
-                        if (strWord.Find(m_1a8, 0) != -1) {
-                            bFound = true;
-                            break;
-                        }
-                    }
-                } else {
-                    bFound = true;
-                }
-                if (!bFound)
-                    continue;
-            }
-            if (nNew != 0)
-                nFocus = nId;
-            ASObj action(2);
-            action.FUN_1409c0d20("id", nId);
-            action.FUN_1407cb9c0("isNew", nNew);
-            action.FUN_1407cba60("iconPath", pSkill->m_strIcon);
-            action.FUN_1407cbbe0("isFavorite", bFavorite);
-            actions.FUN_1422bbf00(action);
-        }
-        FUN_140bee040(actions);
-        pDlg->FUN_140bd2cb0("buildActions", actions);
-        if (nFocus != 0)
-            FUN_140bed170(nFocus);
+    if (pDlg == 0) return;
+    ASArray actions(2);
+    int nFocus = 0;
+    std::set<MS2Ptr<Unk_Emotion>, Unk_EmotionGreater> sorted;
+    for (std::map<unsigned int, MS2Ptr<Unk_Emotion> >::iterator it = m_180.begin(); it != m_180.end(); ++it)
+    {
+        MS2Ptr<Unk_Emotion> spCopy(it->second);
+        sorted.insert(spCopy);
     }
+    for (std::set<MS2Ptr<Unk_Emotion>, Unk_EmotionGreater>::iterator sit = sorted.begin(); sit != sorted.end(); ++sit) {
+        MS2Ptr<Unk_Emotion> spEmotion(*sit);
+        int nId = spEmotion->m_id;
+        int nNew = spEmotion->m_isNew;
+        bool bFavorite = spEmotion->m_favorite;
+        SkillData* pSkill = FUN_1401958b0()->GetSkillData(nId);
+        if (pSkill == 0)
+            continue;
+        if (m_1a1 != 0 && !bFavorite)
+            continue;
+        if (!m_1a8.IsEmpty()) {
+            if (FUN_1403b3c40(m_1a8, L"/") != 0)
+                continue;
+            bool bFound = false;
+            CStringW strName = GetStringTable()->FUN_141811980(4, nId);
+            if (strName.Find(m_1a8, 0) == -1) {
+                std::vector<CStringW> words;
+                CStringW strKeywords = FUN_140bedf00(nId);
+                FUN_140988d60(strKeywords, words, L", ");
+                for (CStringW& strWord : words) {
+                    if (strWord.Find(m_1a8, 0) != -1) {
+                        bFound = true;
+                        break;
+                    }
+                }
+            } else {
+                bFound = true;
+            }
+            if (!bFound)
+                continue;
+        }
+        if (nNew != 0)
+            nFocus = nId;
+        ASObj action(2);
+        action.FUN_1409c0d20("id", nId);
+        action.FUN_1407cb9c0("isNew", nNew);
+        action.FUN_1407cba60("iconPath", pSkill->m_strIcon);
+        action.FUN_1407cbbe0("isFavorite", bFavorite);
+        actions.FUN_1422bbf00(action);
+    }
+    FUN_140bee040(actions);
+    pDlg->FUN_140bd2cb0("buildActions", actions);
+    if (nFocus != 0)
+        FUN_140bed170(nFocus);
 }
 MS2_REPLACE_METHOD(0x140BED8A0, UICoupleActionDialog, FUN_140bed8a0, 1468, 0x5CE27D3B);
 
@@ -607,8 +604,7 @@ MS2_REPLACE_METHOD(0x140BEDF00, UICoupleActionDialog, FUN_140bedf00, 311, 0x1F48
 void UICoupleActionDialog::FUN_140bee040(ASArray& arr)
 {
     int nRounded = (int)(std::ceil((float)arr.FUN_1422bc5d0() / 6.0f) * 6.0f);
-    int nPages = nRounded > 0x1e ? nRounded : 0x1e;
-    int nMissing = nPages - arr.FUN_1422bc5d0();
+    int nMissing = (nRounded > 0x1e ? nRounded : 0x1e) - arr.FUN_1422bc5d0();
     if (nMissing < 0)
         return;
     for (int i = 0; i < nMissing; i++) {
@@ -623,30 +619,26 @@ MS2_REPLACE_METHOD(0x140BEE040, UICoupleActionDialog, FUN_140bee040, 254, 0xB7B5
 void UICoupleActionDialog::FUN_140bee150(int nKey)
 {
     if (nKey == 0x79) {
-        MS2Ptr<Unk_CoupleList> spList = FUN_140ba4b70("m_list");
-        if (spList.get() != 0) {
+        if (MS2Ptr<Unk_CoupleList> spList = FUN_140ba4b70("m_list")) {
             int nIndex = spList->FUN_1422dccd0();
             spList->FUN_1422dcca0(FUN_140ad02c0(0, nIndex - 4));
         }
     } else if (nKey == 0x7e) {
-        MS2Ptr<Unk_CoupleList> spList = FUN_140ba4b70("m_list");
-        if (spList.get() != 0) {
+        if (MS2Ptr<Unk_CoupleList> spList = FUN_140ba4b70("m_list")) {
             int nIndex = spList->FUN_1422dccd0();
-            int nLast = spList->FUN_1422dcd80()->FUN_1422bc5d0();
-            spList->FUN_1422dcca0(FUN_140ad02f0(nLast - 1, nIndex + 4));
+            int nLast = spList->FUN_1422dcd80()->FUN_1422bc5d0() - 1;
+            spList->FUN_1422dcca0(FUN_140ad02f0(nLast, nIndex + 4));
         }
     } else if (nKey == 0x7b) {
-        MS2Ptr<Unk_CoupleList> spList = FUN_140ba4b70("m_list");
-        if (spList.get() != 0) {
+        if (MS2Ptr<Unk_CoupleList> spList = FUN_140ba4b70("m_list")) {
             int nIndex = spList->FUN_1422dccd0();
             spList->FUN_1422dcca0(FUN_140ad02c0(0, nIndex - 1));
         }
     } else if (nKey == 0x7c) {
-        MS2Ptr<Unk_CoupleList> spList = FUN_140ba4b70("m_list");
-        if (spList.get() != 0) {
+        if (MS2Ptr<Unk_CoupleList> spList = FUN_140ba4b70("m_list")) {
             int nIndex = spList->FUN_1422dccd0();
-            int nLast = spList->FUN_1422dcd80()->FUN_1422bc5d0();
-            spList->FUN_1422dcca0(FUN_140ad02f0(nLast - 1, nIndex + 1));
+            int nLast = spList->FUN_1422dcd80()->FUN_1422bc5d0() - 1;
+            spList->FUN_1422dcca0(FUN_140ad02f0(nLast, nIndex + 1));
         }
     }
 }

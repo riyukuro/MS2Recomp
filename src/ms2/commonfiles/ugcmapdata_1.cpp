@@ -60,15 +60,13 @@ public:
     virtual void vfunc_2();
     void FUN_1410bb610(int mode,PCBase* player,float distance,std::vector<efd::SmartPointer<egf::Entity> >& hits);
 };
-class Unk_UgcPhysSvcRef {
+class Unk_Ptr1401cd040 {
 public:
-    Unk_UgcPhysSvcRef(Unk_UgcPhysSvc* svc) { m_p=svc; if(m_p) m_p->vfunc_1(); }
-    ~Unk_UgcPhysSvcRef();
+    Unk_Ptr1401cd040(void* p);                                      // 0x1401cd0b0
+    ~Unk_Ptr1401cd040();                                            // 0x1401cd150
     Unk_UgcPhysSvc* FUN_1401cd1a0();
     Unk_UgcPhysSvc* m_p;
 };
-void FUN_1401cd150(Unk_UgcPhysSvcRef*);
-Unk_UgcPhysSvcRef::~Unk_UgcPhysSvcRef() { FUN_1401cd150(this); }
 Unk_UgcPhysSvc* FUN_1401cd040(char*);
 class Unk_UgcWorld { public: PCBase* FUN_141bd0cc0(); };
 Unk_UgcWorld* FUN_1403ed2d0();
@@ -164,21 +162,16 @@ bool FUN_1408a07f0(unsigned mapID) {
     return p->m_nMassiveEventField==1;
 }
 MS2_REPLACE(0x1408a07f0, FUN_1408a07f0, 139, 0x6AAD10DC);
-// MS2-FUNCTIONAL: reviewed branches and side effects; compiler temporaries differ.
 // @0x1408a0890
 int FUN_1408a0890(int mapID,int group,int* result) {
     Unk_UGCMapPtr p=FUN_1408ad3f0(mapID);
     if(p==0) return 0;
-    if(!(p==0)) {
-        if(p->groups.find(group)!=p->groups.end()) {
-            *result=p->groups[group].sellType;
-            return 1;
-        }
-    }
-    return 0;
+    if(p==0 || p->groups.find(group)==p->groups.end()) return 0;
+    Unk_UGCGroup& info=p->groups[group];
+    *result=info.sellType;
+    return 1;
 }
 MS2_REPLACE(0x1408a0890, FUN_1408a0890, 303, 0x384A4FFD);
-// MS2-FUNCTIONAL: reviewed branches and side effects; compiler temporaries differ.
 // @0x1408a09d0
 int FUN_1408a09d0(unsigned* item,__int64* price,int mapID,int group) {
     *price=0;
@@ -190,16 +183,15 @@ int FUN_1408a09d0(unsigned* item,__int64* price,int mapID,int group) {
             *item=p->groups[group].contractPriceItemCode;
             *price=p->groups[group].contractPrice;
             if(FUN_14053f8c0(*item) || FUN_14053f940(*item)) {
-                void* manager=FUN_1401c0d90();
-                unsigned discount=FUN_140479720(manager);
-                *price=*price-(__int64)(*price*(unsigned __int64)discount)/10000;
+                __int64 nDiscount=*price*(unsigned __int64)FUN_140479720(FUN_1401c0d90());
+                nDiscount/=10000;
+                *price=*price-nDiscount;
             }
         }
     }
     return result;
 }
 MS2_REPLACE(0x1408a09d0, FUN_1408a09d0, 417, 0xBB65AC27);
-// MS2-FUNCTIONAL: reviewed branches and side effects; compiler temporaries differ.
 // @0x1408a0b80
 int FUN_1408a0b80(unsigned* item,__int64* price,int mapID,int group) {
     *price=0;
@@ -211,21 +203,20 @@ int FUN_1408a0b80(unsigned* item,__int64* price,int mapID,int group) {
             *item=p->groups[group].extensionPriceItemCode;
             *price=p->groups[group].extensionPrice;
             if(FUN_14053f8c0(*item) || FUN_14053f940(*item)) {
-                void* manager=FUN_1401c0d90();
-                unsigned discount=FUN_140479870(manager);
-                *price=*price-(__int64)(*price*(unsigned __int64)discount)/10000;
+                __int64 nDiscount=*price*(unsigned __int64)FUN_140479870(FUN_1401c0d90());
+                nDiscount/=10000;
+                *price=*price-nDiscount;
             }
         }
     }
     return result;
 }
 MS2_REPLACE(0x1408a0b80, FUN_1408a0b80, 418, 0x255B7FA3);
-// MS2-FUNCTIONAL: reviewed branches and side effects; compiler temporaries differ.
 // @0x1408a0d30
 int FUN_1408a0d30(int group,Unk_UGCGroup& result,int mapID) {
     Unk_UGCMapPtr p(0);
-    if(mapID==0) return 0;
-    p=FUN_1408ad3f0(mapID);
+    if((unsigned)mapID>0) p=FUN_1408ad3f0(mapID);
+    else return 0;
     if(p==0) return 0;
     if(p->groups.find(group)==p->groups.end()) return 0;
     result=p->groups[group];
@@ -250,7 +241,6 @@ Unk_CubeOwnerPtr FUN_1408a0fa0(Unk_CubeOwners& owners,int mapID,int blockID) {
 }
 MS2_REPLACE(0x1408a0fa0, FUN_1408a0fa0, 302, 0xE574321C);
 // Not hooked: constructs CubeOwner with DLL-local RTTI.
-// MS2-FUNCTIONAL: reviewed branches and side effects; compiler temporaries differ.
 void FUN_1408a10e0(Unk_CubeOwners& owners,int mapID,int blockID,const CStringW& name,__int64 ownerID);
 #ifndef MS2_HOOK_DLL
 // @0x1408a10e0
@@ -273,7 +263,6 @@ void FUN_1408a10e0(Unk_CubeOwners& owners,int mapID,int blockID,const CStringW& 
 int FUN_1408a1360(const NiPoint3& a,const NiPoint3& b) { int x=(int)(a.z/150.0f); int y=(int)(b.z/150.0f); return x==y; }
 MS2_REPLACE(0x1408a1360, FUN_1408a1360, 100, 0x09C21056);
 Unk_Int3 FUN_1408a1430(NiPoint3);
-// MS2-FUNCTIONAL: reviewed branches and side effects; compiler temporaries differ.
 // @0x1408a13d0
 int FUN_1408a13d0(NiPoint3 p) { Unk_Int3 cube; cube=FUN_1408a1430(p); return FUN_1408a03c0(cube); }
 MS2_REPLACE(0x1408a13d0, FUN_1408a13d0, 81, 0x560BD7D8);
@@ -337,18 +326,16 @@ void FUN_1408a1640(Cube* cube) {
     cube->field6c=animatable;
 }
 MS2_REPLACE(0x1408a1640, FUN_1408a1640, 640, 0x80A95CB0);
-// MS2-FUNCTIONAL: float argument reaches the call via movss xmm0; movaps xmm3,xmm0 in the exe (no source form found).
 // @0x1408a18d0
 int FUN_1408a18d0(__int64 charID) {
-    Unk_UgcPhysSvcRef service(FUN_1401cd040(&DAT_143b059e8));
+    Unk_Ptr1401cd040 service(FUN_1401cd040(&DAT_143b059e8));
     int style=0;
     PCBase* player=FUN_1403ed2d0()->FUN_141bd0cc0();
     if(player!=0) {
         if(charID==FUN_141656a80(player)) {
             std::vector<efd::SmartPointer<egf::Entity> > hits;
             MS2Color color(3);
-            float packed=(float)(unsigned)(FUN_1401d3200()->ConstructUgcDistance.Read()*color);
-            service.FUN_1401cd1a0()->FUN_1410bb610(3,player,packed,hits);
+            service.FUN_1401cd1a0()->FUN_1410bb610(3,player,(float)(unsigned)(FUN_1401d3200()->ConstructUgcDistance.Read()*color),hits);
             if(hits.size()>0) {
                 efd::SmartPointer<egf::Entity> first=hits[0];
                 first->GetPropertyValue(0x85ef19e7,style);

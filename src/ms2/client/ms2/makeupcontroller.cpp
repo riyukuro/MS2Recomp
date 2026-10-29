@@ -124,7 +124,7 @@ public:
     virtual void vfunc_1(CItemCustomizeController* pController);                                // drag begin
     virtual void vfunc_2(CItemCustomizeController* pController, float fValue, int nIndex);      // value changed
     virtual void vfunc_3(CItemCustomizeController* pController, float fDegrees);                // angle changed
-    virtual void vfunc_4(CItemCustomizeController* pController, Vector3 kPos);          // x / y changed
+    virtual void vfunc_4(CItemCustomizeController* pController, const NiPoint3& kPos);  // x / y changed
 };
 
 // This unit's free functions.
@@ -264,7 +264,6 @@ void CMakeupController::vfunc_14(float fValue)
 }
 
 // @0x1414768d0
-// MS2-FUNCTIONAL: min/max/rand temp order and slot layout differ from the exe frame
 void CMakeupController::vfunc_16()
 {
     if (m_spEquipItem.get() != 0)
@@ -279,7 +278,10 @@ void CMakeupController::vfunc_16()
                 {
                     float fMin = vfunc_19();
                     float fMax = vfunc_20();
-                    vfunc_42(FUN_140768090() * (fMax - fMin) + fMin, pExtra);
+                    float fRange = fMax - fMin;
+                    float fValue = FUN_140768090();
+                    fValue = fMin + fValue * fRange;
+                    vfunc_42(fValue, pExtra);
                 }
                 if (pItem->FUN_14053ec70()->FUN_140547150() != 0)
                 {
@@ -340,15 +342,12 @@ int CMakeupController::vfunc_29()
 }
 
 // @0x141476d50
-// MS2-FUNCTIONAL: CString temp layout differs (named temps vs the exe frame)
 void CMakeupController::vfunc_28()
 {
     m_aPartNames.RemoveAll();
-    CString strPart("FA_Skin");
-    m_aPartNames.Add(strPart);
+    m_aPartNames.Add("FA_Skin");
     m_aMeshNames.RemoveAll();
-    CString strMesh("FA_Skin");
-    m_aMeshNames.Add(strMesh);
+    m_aMeshNames.Add("FA_Skin");
 }
 
 // @0x141476e00
@@ -375,7 +374,6 @@ void CMakeupController::vfunc_32(const NiPoint3& kHit, const NiPoint3& kNormal, 
 }
 
 // @0x141476f40
-// MS2-FUNCTIONAL: exe loads the Start() arg via movaps; source shape not recovered
 void CMakeupController::vfunc_33()
 {
     NiFloatsExtraData* pExtra = MAKEUP_FACE_EXTRA();
@@ -385,8 +383,7 @@ void CMakeupController::vfunc_33()
         m_spScale->SetDuration(0.35f);
         if (m_spScale->IsRunning())
         {
-            float fBase = m_spScale->GetOriginalScale();
-            m_spScale->Start(fBase);
+            m_spScale->Start(m_spScale->GetOriginalScale());
         }
         else
         {
@@ -397,7 +394,6 @@ void CMakeupController::vfunc_33()
 }
 
 // @0x141477080
-// MS2-FUNCTIONAL: exe frame/temp layout (MS2Ptr by-value temp for the item) differs
 void CMakeupController::vfunc_42(float fValue, NiFloatsExtraData* pExtra)
 {
     if (pExtra == 0)
@@ -406,18 +402,19 @@ void CMakeupController::vfunc_42(float fValue, NiFloatsExtraData* pExtra)
     {
         const Unk_CustomizeRange* pRange = vfunc_23();
         m_afValue[m_nCurIndex] = FUN_140a17940(fValue, pRange->m_fMin, pRange->m_fMax);
-        float fNow = vfunc_21();
-        FUN_141d580c0(pExtra, 3, fNow);
-        Unk_MakeupProxyData* pData = FUN_140527870((CItem*)m_spEquipItem->GetItem());
+        float fNow;
+        float fScale = fNow = vfunc_21();
+        FUN_141d580c0(pExtra, 3, fScale);
+        Unk_MakeupProxyData* pData;
+        Unk_MakeupProxyData* pCopy = pData = FUN_140527870((CItem*)m_spEquipItem->GetItem());   // pCopy unused (the exe keeps it)
         if (pData != 0)
-            pData->m_fScale = fNow;
+            pData->m_fScale = fScale;
         if (m_pListener != 0)
             reinterpret_cast<Unk_MakeupListener*>(m_pListener)->vfunc_2(this, fNow, 0);
     }
 }
 
 // @0x141477260
-// MS2-FUNCTIONAL: exe frame/temp layout (MS2Ptr by-value temp for the item) differs
 void CMakeupController::vfunc_43(float fRadians, NiFloatsExtraData* pExtra)
 {
     if (pExtra == 0)
@@ -427,7 +424,8 @@ void CMakeupController::vfunc_43(float fRadians, NiFloatsExtraData* pExtra)
         if (FUN_141d57ca0(pExtra, 2) != fRadians)
         {
             FUN_141d580c0(pExtra, 2, fRadians);
-            Unk_MakeupProxyData* pData = FUN_140527870((CItem*)m_spEquipItem->GetItem());
+            Unk_MakeupProxyData* pData;
+            Unk_MakeupProxyData* pCopy = pData = FUN_140527870((CItem*)m_spEquipItem->GetItem());   // pCopy unused (the exe keeps it)
             if (pData != 0)
                 pData->m_fAngle = fRadians;
             if (m_pListener != 0)
@@ -437,7 +435,6 @@ void CMakeupController::vfunc_43(float fRadians, NiFloatsExtraData* pExtra)
 }
 
 // @0x1414773d0
-// MS2-FUNCTIONAL: exe frame/temp layout (MS2Ptr by-value temp for the item) differs
 void CMakeupController::vfunc_44(float fX, float fY, NiFloatsExtraData* pExtra)
 {
     if (pExtra == 0)
@@ -446,14 +443,15 @@ void CMakeupController::vfunc_44(float fX, float fY, NiFloatsExtraData* pExtra)
     {
         FUN_141d580c0(pExtra, 0, fX);
         FUN_141d580c0(pExtra, 1, fY);
-        Unk_MakeupProxyData* pData = FUN_140527870((CItem*)m_spEquipItem->GetItem());
+        Unk_MakeupProxyData* pData;
+        Unk_MakeupProxyData* pCopy = pData = FUN_140527870((CItem*)m_spEquipItem->GetItem());   // pCopy unused (the exe keeps it)
         if (pData != 0)
         {
             pData->m_fX = fX;
             pData->m_fY = fY;
         }
         if (m_pListener != 0)
-            reinterpret_cast<Unk_MakeupListener*>(m_pListener)->vfunc_4(this, Vector3(fX, fY, 0.0f));
+            reinterpret_cast<Unk_MakeupListener*>(m_pListener)->vfunc_4(this, NiPoint3(fX, fY, 0.0f));
     }
 }
 
@@ -499,34 +497,34 @@ void CMakeupController::SetPreviewApply(bool bOn)
 }
 
 // @0x141477780
-// MS2-FUNCTIONAL: exe frame/temp layout (MS2Ptr by-value temp for the item) differs
 // Writes the face mesh values and the preset index back to the item's proxy data.
 void CMakeupController::SaveToProxy()
 {
-    if (m_spEquipItem.get() == 0)
-        return;
-    bool bFace = m_spEquipItem.get() != 0 && FUN_140527a20((CItem*)m_spEquipItem->GetItem()) == 3;
-    if (bFace && m_spFaceMesh.FUN_141412c90() != 0)
+    if (m_spEquipItem.get() != 0)
     {
-        NiFloatsExtraData* pExtra = MAKEUP_FACE_EXTRA();
-        Unk_MakeupProxyData* pData = FUN_140527870((CItem*)m_spEquipItem->GetItem());
-        FUN_141477d40(pData, pExtra);
-        FUN_14059a1f0(pData, m_nPresetIndex);
+        bool bFace = (m_spEquipItem.get() ? true : false) && FUN_140527a20((CItem*)m_spEquipItem->GetItem()) == 3;
+        if (bFace && m_spFaceMesh.FUN_141412c90() != 0)
+        {
+            NiFloatsExtraData* pExtra = MAKEUP_FACE_EXTRA();
+            Unk_MakeupProxyData* pData = FUN_140527870((CItem*)m_spEquipItem->GetItem());
+            FUN_141477d40(pData, pExtra);
+            FUN_14059a1f0(pData, m_nPresetIndex);
+        }
     }
 }
 
 // @0x141477960
-// MS2-FUNCTIONAL: exe frame/temp layout (MS2Ptr by-value temp for the item) differs
 // Reads the proxy data of the item into the face mesh values.
 void CMakeupController::LoadFromProxy()
 {
     if (m_spEquipItem.get() != 0)
     {
-        int nKind = FUN_140527a20((CItem*)m_spEquipItem->GetItem());
-        if (nKind == 3 && m_spFaceMesh.FUN_141412c90() != 0)
+        bool bFace = FUN_140527a20((CItem*)m_spEquipItem->GetItem()) == 3;
+        if (bFace && m_spFaceMesh.FUN_141412c90() != 0)
         {
             Unk_MakeupProxyData* pData = FUN_140527870((CItem*)m_spEquipItem->GetItem());
-            FUN_141477cb0(MAKEUP_FACE_EXTRA(), pData);
+            NiFloatsExtraData* pExtra = MAKEUP_FACE_EXTRA();
+            FUN_141477cb0(pExtra, pData);
             if (pData != 0)
             {
                 m_nPresetIndex = FUN_14059a210(pData);

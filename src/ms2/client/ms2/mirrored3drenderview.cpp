@@ -89,11 +89,7 @@ void CMirrored3DRenderView::SetMirrorPoints(const NiPoint3& kPoint, const NiPoin
     FUN_140194470(&m_kPlaneNormal, &kNormal);
 }
 
-// @0x1414872a0
-// MS2-FUNCTIONAL: the exe destructor omits the vptr store that the compiler emits
-CMirrored3DRenderView::~CMirrored3DRenderView()
-{
-}
+// @0x1414872a0 ~CMirrored3DRenderView is implicit (mirrored3drenderview.h).
 
 // hk1 2026-10-20: hooks for the remaining recovered functions (work/hk1/report.md)
 #include "hook/ms2hook.h"

@@ -385,7 +385,6 @@ void UIAdventureLevelOldDialog::FUN_140ba5ab0()
 }
 
 // @0x140ba5c30
-// MS2-FUNCTIONAL: the exe reaches m_30 into rcx directly for the operator-> call (cl goes through rax); same call sequence otherwise
 void UIAdventureLevelOldDialog::FUN_140ba5c30()
 {
     if (m_30.IsNull())
@@ -395,8 +394,7 @@ void UIAdventureLevelOldDialog::FUN_140ba5c30()
         return;
     float fExp = (float)DAT_143ab2958;
     float fRatio = fExp / FUN_140ba4b50(&FUN_1401d3200()->m_expMax);
-    unsigned int nLevel = pPlayer->vfunc_141();
-    m_30->Invoke("setLevelAndExp", nLevel, fRatio);
+    m_30->Invoke("setLevelAndExp", pPlayer->vfunc_141(), fRatio);
 }
 
 // @0x140ba5d20
@@ -488,7 +486,6 @@ int UIAdventureLevelOldDialog::FUN_140ba63d0(ASObj& obj, unsigned int nLevel)
 }
 
 // @0x140ba66a0
-// MS2-FUNCTIONAL: the exe loads the class id into ecx before the signed compare with the min-class getter; cl compares against the memory operand
 int UIAdventureLevelOldDialog::FUN_140ba66a0(ASObj& obj, unsigned int nLevel)
 {
     Unk_ALReward* pReward = FUN_1401958a0()->FUN_140195e30(nLevel);
@@ -501,8 +498,7 @@ int UIAdventureLevelOldDialog::FUN_140ba66a0(ASObj& obj, unsigned int nLevel)
         return 0;
     if (nLevel <= pPlayer->vfunc_141())
         obj.FUN_1409c0dc0("state", "inactive");
-    unsigned int nClass = pPlayer->vfunc_78();
-    if ((int)nClass < (int)FUN_140ba4b30(&FUN_1401d3200()->m_stat))
+    if ((int)pPlayer->vfunc_78() < (int)FUN_140ba4b30(&FUN_1401d3200()->m_stat))
         obj.FUN_1409c0dc0("state", "lock");
     ItemInfoSlot::CreateParam param;
     param.m_strSlotText = FUN_1401d31f0()->m_1d0;

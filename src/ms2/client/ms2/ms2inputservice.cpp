@@ -482,18 +482,15 @@ bool MS2InputService::FUN_140d8b370() const
 }
 MS2_REPLACE_METHOD(0x140D8B370, MS2InputService, FUN_140d8b370, 106, 0xB57266D3);
 
-// MS2-FUNCTIONAL: one-case switch on the settings flag: exe compares the zero-extended return in a register, we spill it to a byte temp; frame 0x10 smaller.
 // @0x140d8b3e0
 void MS2InputService::FUN_140d8b3e0(double dSeconds)
 {
-    switch (FUN_14036d570(FUN_140166410(), 0xc3))
-    {
-    case 1:
-        m_nRumbleActive = 1;
-        m_dRumbleStart = FUN_141473280(FUN_14086d260());
-        m_dRumbleEnd = m_dRumbleStart + dSeconds;
-        FUN_140d8b470();
-    }
+    if (FUN_14036d570(FUN_140166410(), 0xc3) != 1)
+        return;
+    m_nRumbleActive = 1;
+    m_dRumbleStart = FUN_141473280(FUN_14086d260());
+    m_dRumbleEnd = m_dRumbleStart + dSeconds;
+    FUN_140d8b470();
 }
 MS2_REPLACE_METHOD(0x140D8B3E0, MS2InputService, FUN_140d8b3e0, 131, 0xDE1C9608);
 
@@ -619,7 +616,6 @@ bool MS2InputService::FUN_140d8b870(int nKey)
 }
 MS2_REPLACE_METHOD(0x140D8B870, MS2InputService, FUN_140d8b870, 130, 0xE2098423);
 
-// MS2-FUNCTIONAL: gamepad enable: identical calls and control flow; message-box argument temporaries are laid out differently (frame 0x30 larger).
 // @0x140d8b900
 void MS2InputService::FUN_140d8b900(bool bEnable, bool bNotify)
 {
@@ -635,7 +631,7 @@ void MS2InputService::FUN_140d8b900(bool bEnable, bool bNotify)
             FUN_140d8be40();
             if (m_spGamePad == 0 && bNotify)
             {
-                MS2Ptr<CMsgBoxData> box = FUN_140d73d20(1, FUN_140298ea0(CStringW(L"s_gamepad_notice_search_gamepad")), 0, CStringW(L""));
+                MS2Ptr<CMsgBoxData> box = FUN_140d73d20(1, FUN_140298ea0(L"s_gamepad_notice_search_gamepad"), 0, L"");
                 if (box)
                 {
                     box->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &MS2InputService::FUN_140d8c8d0));
@@ -645,9 +641,9 @@ void MS2InputService::FUN_140d8b900(bool bEnable, bool bNotify)
             if (FUN_1409331f0()->FUN_14142c940(0x30d41, 2) == 0)
             {
                 if (FUN_140a58540()->FUN_140d8ee40() == 2)
-                    FUN_1409331f0()->FUN_141429e60(CString("./Data/Xml/Table/default/DefaultPSKey.xml"));
+                    FUN_1409331f0()->FUN_141429e60("./Data/Xml/Table/default/DefaultPSKey.xml");
                 else
-                    FUN_1409331f0()->FUN_141429e60(CString("./Data/Xml/Table/default/DefaultXboxKey.xml"));
+                    FUN_1409331f0()->FUN_141429e60("./Data/Xml/Table/default/DefaultXboxKey.xml");
             }
         }
         else
@@ -656,7 +652,7 @@ void MS2InputService::FUN_140d8b900(bool bEnable, bool bNotify)
             m_spGamePad = 0;
         }
         if (nOldKind != m_nPadKind && FUN_140d8ee90() != 0)
-            FUN_140d8ee90()->FUN_140a1f970(CString("controller"), StringFormat("{0}", m_nPadKind));
+            FUN_140d8ee90()->FUN_140a1f970("controller", StringFormat("{0}", m_nPadKind));
     }
 }
 MS2_REPLACE_METHOD(0x140D8B900, MS2InputService, FUN_140d8b900, 1016, 0x66A2098E);
@@ -695,15 +691,16 @@ float MS2InputService::FUN_140d8be10()
 }
 MS2_REPLACE_METHOD(0x140D8BE10, MS2InputService, FUN_140d8be10, 32, 0xCBEBD717);
 
-// MS2-FUNCTIONAL: gamepad probe: identical calls and loop; the guard on the existing pad/enumerator tests compile to a different branch shape.
 // @0x140d8be40
 void MS2InputService::FUN_140d8be40()
 {
     if (FUN_14036d570(FUN_140166410(), 0xb5) == 1)
     {
         NiInputSystem* pInput = GetInputSystem();
-        if (pInput != NULL && !m_spGamePad)
+        if (pInput != NULL)
         {
+            if (m_spGamePad)
+                return;
             m_nPadKind = PADKIND_NONE;
             if (!m_spGamePad)
             {
@@ -727,7 +724,7 @@ void MS2InputService::FUN_140d8be40()
                 m_spXInputPad = 0;
                 m_spGamePad = 0;
                 m_spDI8Pad = NiDynamicCast(NiInputDI8GamePad, pInput->GetGamePad(4));
-                if (m_spDI8Pad)
+                if (m_spDI8Pad ? true : false)
                 {
                     if (m_spDI8Pad->GetStatus() == 0)
                     {
@@ -789,7 +786,6 @@ int MS2InputService::FUN_140d8c150(int nKey)
 }
 MS2_REPLACE_METHOD(0x140D8C150, MS2InputService, FUN_140d8c150, 158, 0x643CAA41);
 
-// MS2-FUNCTIONAL: rumble tick: identical logic; exe has extra dead jmp blocks from a nested early-return layout we could not reproduce.
 // @0x140d8c230
 void MS2InputService::FUN_140d8c230()
 {
@@ -798,10 +794,11 @@ void MS2InputService::FUN_140d8c230()
         return;
     if (dNow < m_dRumbleStart)
         return;
-    if (dNow < m_dRumbleEnd)
+    else if (dNow < m_dRumbleEnd)
     {
         if (m_spGamePad)
             m_spGamePad->StartRumble();
+        return;
     }
     else
     {

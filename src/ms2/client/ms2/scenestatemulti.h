@@ -108,7 +108,7 @@ private:
     LobbyFieldTable m_lobbyField;                           // +0x38
     unsigned long long m_nServerTime;                       // +0x118 (opcode 0x10f)
     Timer m_timer;                                          // +0x120
-    char m_bReconnecting;                                   // +0x158
+    bool m_bReconnecting;                                   // +0x158
     Timer m_reconnectTimer;                                 // +0x160
     int m_nRetry;                                           // +0x198
 };
