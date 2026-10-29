@@ -46,10 +46,21 @@ public:
 Unk_FallConsts* FUN_1401d3200();
 
 // The actor's buff set: the knock-back direction.
-class Unk_FallBuff { public: efd::Point3 FUN_141683290(); };
+class Unk_FallBuff { public: Vector3 FUN_141683290(); };
+// PCBase vtable view: slot 22 takes the position by value (the exe copies it to a 16-aligned temp)
+class Unk_FallPointSlots
+{
+public:
+#define MS2_FALL_SLOTS(a, b, c, d, e) virtual void vfunc_##a(); virtual void vfunc_##b(); virtual void vfunc_##c(); \
+    virtual void vfunc_##d(); virtual void vfunc_##e();
+    MS2_FALL_SLOTS(0, 1, 2, 3, 4) MS2_FALL_SLOTS(5, 6, 7, 8, 9) MS2_FALL_SLOTS(10, 11, 12, 13, 14) MS2_FALL_SLOTS(15, 16, 17, 18, 19)
+#undef MS2_FALL_SLOTS
+    virtual void vfunc_20(); virtual void vfunc_21();
+    virtual void vfunc_22(efd::Point3 kPos);                                // 22 0x14123c3a0
+};
 
 // The casting skill record (CSkillRecord); +0x30 holds the table row of its skill.
-class Unk_FallRow { public: int FUN_1407e9bd0(); char FUN_1407e9d70(); };
+class Unk_FallRow { public: int FUN_1407e9bd0(); bool FUN_1407e9d70(); };
 class Unk_FallTable { public: Unk_FallRow* FUN_14063ed50(); };
 class Unk_PCBaseComp_b18 : public CPtred
 {
@@ -75,23 +86,25 @@ StateFall::~StateFall()
 }
 
 // @0x1417c6ef0
-// MS2-FUNCTIONAL: frame 0x20 larger than the exe (temporaries), call order otherwise equal
 void StateFall::vfunc_4(StateData* pData)
 {
     State::vfunc_4(pData);
     PCBase* pPC = FUN_1417b8370();
     NiPoint3 kPos = m_pOwner->vfunc_18();
     MS2Ptr<StateFallData> spData(dynamic_cast<StateFallData*>(pData));
-    bool bHasData = spData.get() != 0;
-    if (bHasData)
+    if (spData.get() ? true : false)
     {
         if (spData->m_pos != efd::Point3::ZERO)
-            kPos = spData->m_pos;
+            reinterpret_cast<efd::Point3&>(kPos) = spData->m_pos;
     }
     MyPC* pMyPC = FUN_1417b84b0();
     if (pMyPC != 0)
         pMyPC->FUN_141676060(kPos);
-    if (m_pOwner->FUN_141675ed0() == 0 || m_pOwner->FUN_141671a30() == 0)
+    if (m_pOwner->FUN_141675ed0() != 0 && m_pOwner->FUN_141671a30() != 0)
+    {
+        m_pOwner->vfunc_59(4, 0, 0, 0);
+        return;
+    }
     {
         m_strAnim = m_pOwner->vfunc_123(5);
         if (pPC != 0)
@@ -103,21 +116,16 @@ void StateFall::vfunc_4(StateData* pData)
             if (!strRec.IsEmpty())
             {
                 efd::utf8string kAnim((const char*)FUN_14038f6d0(strRec, m_strAnim.c_str()));
-                int nSeq = FUN_141b6f910()->FUN_140999490(m_pOwner->FUN_14123c460(), kAnim);
-                if (nSeq != -2)
+                if (FUN_141b6f910()->FUN_140999490(m_pOwner->FUN_14123c460(), kAnim) !=
+                    NiActorManager::INVALID_SEQUENCE_ID)
                     m_strAnim = kAnim;
             }
         }
         m_pOwner->FUN_14166dd20(m_strAnim, m_pOwner->FUN_1416713c0(), false, false);
     }
-    else
-    {
-        m_pOwner->vfunc_59(4, 0, 0, 0);
-    }
 }
 
 // @0x1417c7330
-// MS2-FUNCTIONAL: the zero point is copied byte-wise in the exe
 void StateFall::vfunc_5(int n)
 {
     State::vfunc_5(n);
@@ -125,7 +133,7 @@ void StateFall::vfunc_5(int n)
     {
         MyPC* pMyPC = FUN_1417b84b0();
         if (pMyPC != 0)
-            pMyPC->FUN_141676060(efd::Point3::ZERO);
+            pMyPC->FUN_141676060(reinterpret_cast<const NiPoint3&>(efd::Point3::ZERO));
     }
     m_strAnim = "";
 }
@@ -135,7 +143,8 @@ void StateFall::vfunc_5(int n)
 void StateFall::vfunc_3(double fTime)
 {
     State::vfunc_3(fTime);
-    efd::Point3 kDir = m_pOwner->FUN_141674b60(m_pOwner->FUN_14123c360());
+    NiPoint3 kPos = m_pOwner->FUN_14123c360();
+    efd::Point3 kDir = m_pOwner->FUN_141674b60(reinterpret_cast<const efd::Point3&>(kPos));
     if (kDir != efd::Point3::ZERO)
     {
         float fSpeed = m_pOwner->vfunc_95();
@@ -147,7 +156,6 @@ void StateFall::vfunc_3(double fTime)
 }
 
 // @0x1417c7550
-// MS2-FUNCTIONAL: frame 0x20 larger than the exe (temporaries), call order otherwise equal
 void StateFall::vfunc_8(double fTime)
 {
     State::vfunc_8(fTime);
@@ -155,60 +163,58 @@ void StateFall::vfunc_8(double fTime)
     if (pPC == 0)
         return;
     Unk_FallBuff* pBuff = (Unk_FallBuff*)m_pOwner->FUN_14166d240();
-    efd::Point3 kDir = pBuff->FUN_141683290();
-    m_pOwner->vfunc_22(kDir);
+    reinterpret_cast<Unk_FallPointSlots*>(m_pOwner)->vfunc_22(
+        reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(pBuff->FUN_141683290())));
     MS2Ptr<Unk_PCBaseComp_b18> spRec = m_pOwner->vfunc_104(true, false, false);
-    if (spRec.get() == 0)
+    if (spRec.get() != 0)
     {
-        if (pPC->FUN_1416764a0() == 0)
-        {
-            if (pPC->FUN_141678820() != 0 && FUN_14165b500(pPC, 1) != 0)
-                pPC->FUN_1416788d0();
-        }
-        else
-        {
-            if (m_pOwner->FUN_141678820() != 0 && FUN_14165b500(pPC, 1) != 0)
-                pPC->SendRequestRideMode1(new RideOffActionAutoClimb(1));
-        }
+        if (spRec->m_table30.FUN_14063ed50()->FUN_1407e9bd0() == 0x1d ||
+            spRec->m_table30.FUN_14063ed50()->FUN_1407e9bd0() == 0x20 ||
+            spRec->m_table30.FUN_14063ed50()->FUN_1407e9d70())
+            m_pOwner->vfunc_102(reinterpret_cast<const MS2Ptr<CSkillRecord>&>(spRec));
+    }
+    else if (pPC->FUN_1416764a0() != 0)
+    {
+        if (m_pOwner->FUN_141678820() != 0 && FUN_14165b500(pPC, 1) != 0)
+            pPC->SendRequestRideMode1(new RideOffActionAutoClimb(1));
     }
     else
     {
-        int nKind = spRec->m_table30.FUN_14063ed50()->FUN_1407e9bd0();
-        if (nKind == 0x1d || nKind == 0x20 || spRec->m_table30.FUN_14063ed50()->FUN_1407e9d70() != 0)
-            m_pOwner->vfunc_102(MS2Ptr<CSkillRecord>(static_cast<CSkillRecord*>(spRec.get())));
+        if (pPC->FUN_141678820() != 0 && FUN_14165b500(pPC, 1) != 0)
+            pPC->FUN_1416788d0();
     }
 }
 
 // @0x1417c77e0
-// MS2-FUNCTIONAL: the zero point is copied byte-wise in the exe
 void StateFall::vfunc_9(double fTime)
 {
     State::vfunc_9(fTime);
-    if (m_pOwner->FUN_141671a30() == 0)
-        return;
-    MyPC* pPC = FUN_1417b84b0();
-    if (pPC != 0)
+    if (m_pOwner->FUN_141671a30() != 0)
     {
-        int nSide = 3;
-        if (FUN_14028d470(m_pOwner->FUN_14123c360().y, -1.0f))
-            nSide = 2;
-        egf::Entity* pEntity = FUN_141659af0(pPC, nSide);
-        if (pEntity != 0)
+        MyPC* pPC = FUN_1417b84b0();
+        if (pPC != 0)
         {
-            if (pPC->FUN_1416764a0() != 0)
+            int nSide = 3;
+            if (FUN_14028d470(m_pOwner->FUN_14123c360().y, -1.0f))
+                nSide = 2;
+            egf::Entity* pEntity = FUN_141659af0(pPC, nSide);
+            if (pEntity != 0)
             {
-                MS2Ptr<RideOffActionTakeLR> spAction(new RideOffActionTakeLR(1));
-                spAction->m_n28 = nSide;
-                spAction->m_n2c = 0xbadf0a13;
-                if (pPC->SendRequestRideMode1(spAction) != 0)
-                    pPC->vfunc_59(1, 0, 0, 0);
-                return;
+                if (pPC->FUN_1416764a0() != 0)
+                {
+                    MS2Ptr<RideOffActionTakeLR> spAction(new RideOffActionTakeLR(1));
+                    spAction->m_n28 = nSide;
+                    spAction->m_n2c = 0xbadf0a13;
+                    if (pPC->SendRequestRideMode1(spAction) != 0)
+                        pPC->vfunc_59(1, 0, 0, 0);
+                    return;
+                }
+                else if (pPC->FUN_1415248d0(nSide, 0xbadf0a13) != 0)
+                    return;
             }
-            if (pPC->FUN_1415248d0(nSide, 0xbadf0a13) != 0)
-                return;
         }
+        m_pOwner->vfunc_59(4, 0, 0, 0);
     }
-    m_pOwner->vfunc_59(4, 0, 0, 0);
 }
 
 // @0x1417c7aa0

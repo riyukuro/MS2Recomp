@@ -336,7 +336,7 @@ class Unk_PCFxMgr
 public:
     void FUN_1411a5770(int nKind, PCBase* pTarget);                 // play an event effect on an actor
     void FUN_1411a6060(unsigned nId);                               // stop the effects of an id
-    unsigned FUN_1411a5580(int nMaterial, int nKind, int nRelation, const NiPoint3& kPos, float fVolume);   // play a hit sound
+    unsigned FUN_1411a5580(int nMaterial, int nKind, int nRelation, NiPoint3 kPos, float fVolume);   // play a hit sound
     unsigned int FUN_1411a49c0(Unk_EffectTarget& kTarget);          // play an effect (its id)
 };
 Unk_PCFxMgr* FUN_1403ed280();
@@ -823,7 +823,6 @@ PC::PC()
     m_spWaterGun1260.AssignRaw(new WaterGunBattleInfo());
 }
 
-// MS2-FUNCTIONAL: written from the decompile.
 // @0x141650b10
 PC::~PC()
 {
@@ -859,18 +858,18 @@ PC::~PC()
                 pPlayer->FUN_14152a960();
         }
     }
-    for (std::set<unsigned int>::iterator it = m_set11a8.begin(); it != m_set11a8.end(); ++it)
+    for (std::set<unsigned int>::iterator it = m_set11a8.begin(), itEnd = m_set11a8.end(); it != itEnd; ++it)
     {
-        if (ClonePC* pClone = dynamic_cast<ClonePC*>(FUN_1403ed2d0()->FUN_141bd1290(*it)))
-            pClone->FUN_1410873d0();
+        ClonePC* pClone = dynamic_cast<ClonePC*>(FUN_1403ed2d0()->FUN_141bd1290(*it));
+        if (pClone == 0)
+            continue;
+        pClone->FUN_1410873d0();
     }
     m_set11a8.clear();
-    POSITION pos = m_mapTail1280.GetStartPosition();
-    while (pos)
+    for (POSITION pos = m_mapTail1280.GetStartPosition(); pos != 0; m_mapTail1280.GetNext(pos))
     {
         MS2Ptr<CTailEffectObjectFromAdditional> spTail = m_mapTail1280.GetValueAt(pos);
         spTail->FUN_140ad01d0();
-        m_mapTail1280.GetNext(pos);
     }
     m_spWaterGun1260 = 0;
 }
@@ -903,7 +902,6 @@ int PC::vfunc_10()
     return 1;
 }
 
-// MS2-FUNCTIONAL: written from the decompile (temporaries and the effect-dummy loop differ)
 // @0x1416515a0
 void PC::vfunc_12()
 {
@@ -940,9 +938,11 @@ void PC::vfunc_12()
         FUN_14165f1f0(m_n1038, 1);
     m_n1038 = 0;
     m_kGemEquip1078.FUN_141270610();
-    MS2Ptr<CGemBase> spGem = reinterpret_cast<PCGemEquip*>(FUN_14165f460())->FUN_141270740(2);
-    if (spGem.get())
-        spGem->vfunc_8();
+    {
+        MS2Ptr<CGemBase> spGem = reinterpret_cast<PCGemEquip*>(FUN_14165f460())->FUN_141270740(2);
+        if (spGem.get())
+            spGem->vfunc_8();
+    }
     FUN_1409f7c90()->FUN_14161cf60(this);
     if (DAT_143ae2b38 != 0)
     {
@@ -959,7 +959,7 @@ void PC::vfunc_12()
         spComp->vfunc_2();
 }
 
-// MS2-FUNCTIONAL: written from the decompile
+// MS2-FUNCTIONAL: behaviour-checked (same call sequence); frame differs - the exe takes b as a by-value 12-byte point it copies for the base call, and keeps the reaction flags as int locals (ours are bool)
 // @0x141652080
 void PC::vfunc_33(void* a, void* b)
 {
@@ -1050,50 +1050,49 @@ void PC::vfunc_33(void* a, void* b)
     vfunc_113(pRecord);
 }
 
-// MS2-FUNCTIONAL: written from the decompile
 // @0x1416529f0
 void PC::vfunc_34(void* p)
 {
-    CDotDamageRecord* pRecord = static_cast<CDotDamageRecord*>(p);
     GameObject::vfunc_34(p);
-    int nOwnerRel = FUN_1403ed2d0()->FUN_141bd19d0(pRecord->m_nOwnerId);
-    int nCasterRel = FUN_1403ed2d0()->FUN_141bd19d0(pRecord->m_nCasterId);
-    if (pRecord->FUN_14175ac30() < 0)
+    int nOwnerRel = FUN_1403ed2d0()->FUN_141bd19d0(static_cast<CDotDamageRecord*>(p)->m_nOwnerId);
+    int nCasterRel = FUN_1403ed2d0()->FUN_141bd19d0(static_cast<CDotDamageRecord*>(p)->m_nCasterId);
+    if (static_cast<CDotDamageRecord*>(p)->FUN_14175ac30() < 0)
     {
         State* pState = FUN_14166ccb0();
-        if (m_unk_748.FUN_140970b30() == 0 && pState->vfunc_14() != 0 && pRecord->vfunc_1() > vfunc_64())
+        int bNoBuff = 1;
+        unsigned nBuffs = m_unk_748.FUN_140970b30();
+        if (nBuffs > 0)
+            bNoBuff = 0;
+        if (bNoBuff && pState->vfunc_14() != 0 && static_cast<CDotDamageRecord*>(p)->vfunc_1() > vfunc_64())
         {
             vfunc_59(0xd, 0, 0, 0);
-            FUN_14166ccb0();
+            pState = FUN_14166ccb0();
         }
     }
-    FUN_141673f70(DAT_1439f8210, DAT_1439f8214, DAT_1439f8218);
+    float fR = DAT_1439f8210;
+    float fG = DAT_1439f8214;
+    float fB = DAT_1439f8218;
+    FUN_141673f70(fR, fG, fB);
     m_unk_748.FUN_14096fb20(0);
-    MS2Ptr<AdditionalCli> spBuff = m_unk_748.FUN_14096fc80(pRecord->m_nEffectLevel);
-    bool bNone = !spBuff;
-    if (!bNone)
+    do
     {
+        MS2Ptr<AdditionalCli> spBuff = m_unk_748.FUN_14096fc80(static_cast<CDotDamageRecord*>(p)->m_nEffectLevel);
+        if (!spBuff)
+            break;
         int nMaterial = spBuff->FUN_14096d810()->m_dotDamage.m_nSoundMaterial;
-        if (nMaterial != 0)
-        {
-            Common::Constants::Value<float>* pVolume;
-            if (nCasterRel == 1 || nCasterRel == 2)
-                pVolume = &FUN_1401d3200()->VolumeNpcToMyPc;
-            else
-                pVolume = &FUN_1401d3200()->VolumeNpcToPc;
-            float fVolume = pVolume->Read();
-            NiPoint3 kPos = vfunc_18();
-            FUN_1403ed280()->FUN_1411a5580(nMaterial, 1, nOwnerRel, kPos, fVolume);
-        }
-    }
-    FUN_141672020(MS2Ptr<CDotDamageRecord>(pRecord));
+        if (nMaterial == 0)
+            break;
+        float fVolume = (nCasterRel == 1 || nCasterRel == 2 ? FUN_1401d3200()->VolumeNpcToMyPc : FUN_1401d3200()->VolumeNpcToPc).Read();
+        FUN_1403ed280()->FUN_1411a5580(nMaterial, 1, nOwnerRel, vfunc_18(), fVolume);
+    } while (0);
+    FUN_141672020(MS2Ptr<CDotDamageRecord>(static_cast<CDotDamageRecord*>(p)));
     if (FUN_14166ce30())
-        FUN_141653740(pRecord->m_nOwnerId, pRecord->m_nCasterId, nOwnerRel, nCasterRel);
-    CDPSMeterSystem::GetInstance()->OnDotDamage(MS2Ptr<CDotDamageRecord>(pRecord));
-    vfunc_113(pRecord);
+        FUN_141653740(static_cast<CDotDamageRecord*>(p)->m_nOwnerId, static_cast<CDotDamageRecord*>(p)->m_nCasterId, nOwnerRel, nCasterRel);
+    CDPSMeterSystem::GetInstance()->OnDotDamage(MS2Ptr<CDotDamageRecord>(static_cast<CDotDamageRecord*>(p)));
+    vfunc_113(static_cast<CDotDamageRecord*>(p));
 }
 
-// MS2-FUNCTIONAL: frame differs - the exe keeps the reaction flags as int locals (ours are bool), saves rsi/rdi for a block copy and has no copy of p
+// MS2-FUNCTIONAL: behaviour-checked (same call sequence); frame differs - the exe keeps the reaction flags as int locals (ours are bool), saves rsi/rdi for a block copy and has no copy of p
 // @0x141652e20
 void PC::vfunc_35(void* p)
 {
@@ -1733,10 +1732,9 @@ void PC::vfunc_131(short n)
 }
 
 // @0x1416578f0
-int PC::vfunc_78() { return m_nLevelDDC; }
+unsigned short PC::vfunc_78() { return m_nLevelDDC; }
 
 // @0x141657910
-// MS2-FUNCTIONAL: the exe frame is 0x30 bytes larger (value temporaries in the 0x23-stat path)
 void PC::vfunc_90(void* p)
 {
     unsigned char nCount = static_cast<CInPacket*>(p)->ReadUInt8();
@@ -1744,25 +1742,30 @@ void PC::vfunc_90(void* p)
     {
         for (int i = 0; i < 3; i++)
         {
-            FUN_141670540(i, 4, static_cast<CInPacket*>(p)->ReadInt64());
-            FUN_141670540(i, 0xd, (unsigned)static_cast<CInPacket*>(p)->ReadInt32());
-            FUN_141670540(i, 0xe, (unsigned)static_cast<CInPacket*>(p)->ReadInt32());
-            FUN_141670540(i, 0x20, (unsigned)static_cast<CInPacket*>(p)->ReadInt32());
-            FUN_141670540(i, 0x16, (unsigned)static_cast<CInPacket*>(p)->ReadInt32());
+            __int64 n4 = static_cast<CInPacket*>(p)->ReadInt64();
+            FUN_141670540(i, 4, n4);
+            __int64 nD = (unsigned)static_cast<CInPacket*>(p)->ReadInt32();
+            FUN_141670540(i, 0xd, nD);
+            __int64 nE = (unsigned)static_cast<CInPacket*>(p)->ReadInt32();
+            FUN_141670540(i, 0xe, nE);
+            __int64 n20 = (unsigned)static_cast<CInPacket*>(p)->ReadInt32();
+            FUN_141670540(i, 0x20, n20);
+            __int64 n16 = (unsigned)static_cast<CInPacket*>(p)->ReadInt32();
+            FUN_141670540(i, 0x16, n16);
         }
     }
     else
     {
         for (int n = 0; n < nCount; n++)
         {
-            unsigned char nType = static_cast<CInPacket*>(p)->ReadUInt8();
+            int nType = static_cast<CInPacket*>(p)->ReadUInt8();
             for (int i = 0; i < 3; i++)
             {
-                __int64 nValue;
-                if (FUN_14082f1a0(nType) == 0)
-                    nValue = (unsigned)static_cast<CInPacket*>(p)->ReadInt32();
-                else
+                __int64 nValue = 0;
+                if (FUN_14082f1a0(nType))
                     nValue = static_cast<CInPacket*>(p)->ReadInt64();
+                else
+                    nValue = (unsigned)static_cast<CInPacket*>(p)->ReadInt32();
                 FUN_141670540(i, nType, nValue);
             }
         }
@@ -2871,7 +2874,13 @@ void PC::FUN_141660d50()
     FUN_141670fd0(kSize, kOffset);
 }
 
-// MS2-FUNCTIONAL: structure aligned, the exe keeps the attack and the owner in different temporaries
+// The grab-node lookup (PCBase::FUN_141675cd0) with the position by value as the exe passes it.
+class Unk_PCGrabNodes
+{
+public:
+    int FUN_141675cd0(NiPoint3 kPos, CString strUnused, CString* pName, float* pDist);
+};
+
 // @0x1416538d0
 int PC::FUN_1416538d0(CDamageRecord* pRecord)
 {
@@ -2885,7 +2894,9 @@ int PC::FUN_1416538d0(CDamageRecord* pRecord)
     PCBase* pOwner = FUN_1403ed2d0()->FUN_141bd1200(pRecord->m_nOwnerId);
     if (pOwner == 0)
         return 0;
-    if (pOwner->FUN_14166ce30() != 0 || pOwner->FUN_1416749a0()->FUN_1409709b0() != 0)
+    if (pOwner->FUN_14166ce30())
+        return 0;
+    if (pOwner->FUN_1416749a0()->FUN_1409709b0())
         return 0;
     if (pOwner->FUN_141675e60() == 0)
         return 0;
@@ -2896,7 +2907,9 @@ int PC::FUN_1416538d0(CDamageRecord* pRecord)
         CString strCategory(pAttack->m_arrGrabNodeCategory[i]);
         float fDist = 0.0f;
         CString strName;
-        if (pOwner->FUN_141675cd0(vfunc_18(), strCategory, &strName, &fDist) != 0 && fDist < fNearest)
+        if (reinterpret_cast<Unk_PCGrabNodes*>(pOwner)->FUN_141675cd0(vfunc_18(), strCategory, &strName, &fDist) == 0)
+            continue;
+        if (fDist < fNearest)
         {
             fNearest = fDist;
             strNode = strName;
@@ -2915,28 +2928,27 @@ int PC::FUN_1416538d0(CDamageRecord* pRecord)
     return 1;
 }
 
-// MS2-FUNCTIONAL: structure aligned, the exe re-fetches the item records for each test
 // @0x141653f00
 int PC::FUN_141653f00()
 {
     int nRight = 0;
     int nLeft = 0;
     MS2Ptr<CEquipItem> spRight = FUN_141655d50(5);
-    if (!spRight)
+    if (spRight == 0)
         spRight = FUN_141655ee0(5, 1);
     if (spRight.get())
         nRight = spRight->FUN_1411dc7f0()->FUN_14053c620();
-    if (spRight.get() && spRight->GetItem().get())
+    if ((spRight.get() ? true : false) && (spRight->GetItem().get() ? true : false))
     {
         if (FUN_141662eb0(spRight->GetItem().get()) == 0)
             nRight = 0;
     }
     MS2Ptr<CEquipItem> spLeft = FUN_141655d50(4);
-    if (!spLeft)
+    if (spLeft == 0)
         spLeft = FUN_141655ee0(4, 1);
     if (spLeft.get())
         nLeft = spLeft->FUN_1411dc7f0()->FUN_14053c620();
-    if (spLeft.get() && spLeft->GetItem().get())
+    if ((spLeft.get() ? true : false) && (spLeft->GetItem().get() ? true : false))
     {
         if (FUN_141662eb0(spLeft->GetItem().get()) == 0)
             nLeft = 0;
@@ -2948,7 +2960,10 @@ int PC::FUN_141653f00()
     MS2Ptr<CWeaponAction> spOld(m_spWeaponActionD70);
     m_spWeaponActionD70 = CWeaponActionTable::FindAction(nRight, nLeft);
     if (spOld.get() != m_spWeaponActionD70.get() && m_spWeaponActionD70.get())
-        FUN_14165c720(FUN_14165c570(), 1);
+    {
+        unsigned int nSkillId = FUN_14165c570();
+        FUN_14165c720(nSkillId, 1);
+    }
     return spOld.get() != m_spWeaponActionD70.get();
 }
 

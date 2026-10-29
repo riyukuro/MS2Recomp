@@ -11,6 +11,7 @@
 #include "ms2/ms2format.h"
 #include "ms2/placeholder/ascript.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
+#include "ms2/placeholder/mstime.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 
@@ -18,7 +19,7 @@ MS2_EMIT_CRT_MEMMOVE_S();
 
 // ---- unit-local views of exe types ----
 
-CStringW FUN_14028dfa0(CStringW strKey, const fmt::ArgList& args);   // string table text, formatted
+CStringW FUN_14028dfa0(const CStringW& strKey, const fmt::ArgList& args);   // string table text, formatted
 FMT_VARIADIC_W(CStringW, FUN_14028dfa0, CStringW)
 
 // The wedding data of the own character: the marriage time (+0x30) and the affinity experience log (+0x130, a map keyed
@@ -49,9 +50,7 @@ class Unk_WdRates { public: __int64 FUN_140908e60(int a, int b); };   // the bas
 Unk_WdRates* FUN_1409023c0();
 __int64 FUN_140869440();                                        // server time
 int FUN_14086b900(__int64 nFrom, __int64 nTo);                  // whole days between
-struct Unk_WdTime { __int64 m_a; __int64 m_b; };
-Unk_WdTime FUN_1406c47a0(__int64 time);
-CStringW FUN_140b8e850(Unk_WdTime time);                           // the date text
+CStringW FUN_140b8e850(const CMsTime& time);                    // the date text
 CStringW FUN_140c160b0(CStringW strKey, const __int64* pValue);
 CStringW FUN_140656190(const wchar_t* pszFormat, const CStringW& arg0, const CStringW& arg1);
 
@@ -86,7 +85,6 @@ void UIWeddingAffinityDialog::vfunc_67()
     UIDialog::vfunc_67();
 }
 
-// MS2-FUNCTIONAL: behaviour-equivalent (temporaries / EH states differ)
 // @0x140fc21e0
 void UIWeddingAffinityDialog::OnLoadComplete()
 {
@@ -101,14 +99,14 @@ void UIWeddingAffinityDialog::OnLoadComplete()
     Unk_WdIter itEnd;
     pWedding->m_log.FUN_140902c10(&it);
     pWedding->m_log.FUN_140902e70(&itEnd);
-    while (it.FUN_140902060(itEnd))
+    for (; it.FUN_140902060(itEnd); it.FUN_1409021f0())
     {
         Unk_WdNode* pNode = it.FUN_140902120();
-        CStringW strDate = FUN_140b8e850(FUN_1406c47a0(pNode->m_event.m_nTime));
+        CMsTime kTime(pNode->m_event.m_nTime);
+        CStringW strDate = FUN_140b8e850(kTime);
         CStringW strText = FUN_140c160b0(StringFormat(L"s_wedding_dialog_exp_{0}", pNode->m_kind), &pNode->m_event.m_nExp);
         strHistory += L"\n";
         strHistory += FUN_140656190(L"[{0}] {1}", strDate, strText);
-        it.FUN_1409021f0();
     }
     if (m_30.get() != 0)
         m_30->Invoke("setHistory", strHistory);

@@ -12,6 +12,8 @@
 // The effect / sound manager and its 0x78-byte play request (same shapes as functioncubeobject.cpp).
 struct Unk_LiftSoundReq
 {
+    Unk_LiftSoundReq();                                             // 0x140a52ef0
+    ~Unk_LiftSoundReq();                                            // 0x1405a89e0
     CString m_strName;                                              // +0x00
     int m_nType;                                                    // +0x08
     int m_nPad0c;                                                   // +0x0c
@@ -24,8 +26,6 @@ public:
     void FUN_1411a6060(int nHandle);                                // stop
 };
 Unk_LiftFxMgr* FUN_1403ed280();
-void FUN_140a52ef0(Unk_LiftSoundReq* p);                            // construct
-void FUN_1405a89e0(Unk_LiftSoundReq* p);                            // destroy
 void FUN_1409fabf0(void* pSub, void* pAnchor);                      // construct the 0x68 block from an anchor
 void* FUN_14098d8d0(void* pCell, void* pRoot);
 extern char DAT_143afa4d8;
@@ -94,27 +94,53 @@ void* FUN_140939a10();                                              // the notif
 void FUN_140da4fe0(void* pMgr, Unk_LiftNotifyPtr* pNotice);         // post
 
 // Quest-mask checks (the quest manager's condition interface sits at +0x10).
-void* FUN_140764020();
-void FUN_140764310(const CString& strA, const CString& strB, QuestMask* pMask, void* pArg, long long nFlag);
-static int Unk_LiftMaskCheck(void* pMgr, QuestMask* pMask)
+struct Unk_LiftQuestCond
 {
-    void* pIf = (char*)pMgr + 0x10;
-    void** vt = *(void***)pIf;
-    return ((int (*)(void*, QuestMask*))vt[0x17])(pIf, pMask);
-}
+    virtual void vfunc_0();
+    virtual void vfunc_1();
+    virtual void vfunc_2();
+    virtual void vfunc_3();
+    virtual void vfunc_4();
+    virtual void vfunc_5();
+    virtual void vfunc_6();
+    virtual void vfunc_7();
+    virtual void vfunc_8();
+    virtual void vfunc_9();
+    virtual void vfunc_10();
+    virtual void vfunc_11();
+    virtual void vfunc_12();
+    virtual void vfunc_13();
+    virtual void vfunc_14();
+    virtual void vfunc_15();
+    virtual void vfunc_16();
+    virtual void vfunc_17();
+    virtual void vfunc_18();
+    virtual void vfunc_19();
+    virtual void vfunc_20();
+    virtual void vfunc_21();
+    virtual void vfunc_22();
+    virtual int vfunc_23(QuestMask* pMask);                         // 0xb8 the mask's condition holds
+};
+struct Unk_LiftQuestMgr
+{
+    char m_pad[0x10];
+    Unk_LiftQuestCond m_cond;                                       // +0x10
+};
+Unk_LiftQuestMgr* FUN_140764020();
+void FUN_140764310(const CString& strA, const CString& strB, QuestMask* pMask);
 
 // The entity's collision / highlight components and their calls.
 float FUN_14028d280(unsigned nMs);                                  // milliseconds -> seconds
 struct Unk_LiftHandle
 {
+    Unk_LiftHandle(void* pSrc);                                     // 0x1408b6b20
+    Unk_LiftHandle(const Unk_LiftHandle& other);                    // never called: the by-value args are built in place
     void* m_a;
     void* m_b;
-    void* m_c;
 };
 void* FUN_1408b76f0(Unk_Entity* pEntity);
-Unk_LiftHandle* FUN_1408b6b20(Unk_LiftHandle* pOut, void* pSrc);
-void FUN_141b71e70(Unk_LiftHandle* pHandle, bool bOn, int nArg, bool bFlag);
-void FUN_140ae1e80(void* pComp, float fA, float fB, float fC, float fD, Unk_LiftHandle* pHandle);
+void FUN_141b71e70(Unk_LiftHandle kHandle, bool bOn, int nArg, bool bFlag);   // the handle by value
+void FUN_140ae1e80(void* pComp, float fA, float fB, float fC, float fD, Unk_LiftHandle kHandle);
 void FUN_14098b3e0(void* pComp, float fA, int nB);
 void FUN_141567330(void* pComp, bool bOn);
 int FUN_140ae1c10();
@@ -122,9 +148,8 @@ void* FUN_140ae1c00();
 int FUN_141376880(void* pObj, int nKind);
 
 // @0x141447080
-CLiftableObject::CLiftableObject() : m_ent(0)
+CLiftableObject::CLiftableObject() : m_ent(0), m_bC2(true)
 {
-    m_bC2 = 1;
     m_ent.FUN_1408b6ec0(0);
     m_nKind = 0;
     m_bFixed = 0;
@@ -161,11 +186,11 @@ int CLiftableObject::FUN_141447340() const
 {
     if (m_bC0 == 0)
         return 0;
-    if (m_nKind < 1)
+    if (m_nKind <= 0)
         return 0;
-    if (m_nState == 0)
-        return 1;
-    return 0;
+    if (m_nState != 0)
+        return 0;
+    return 1;
 }
 
 // @0x141447390
@@ -228,54 +253,48 @@ void CLiftableObject::FUN_141447410(Unk_Entity* pEntity)
 }
 
 // @0x1414477f0
-void CLiftableObject::FUN_1414477f0(CString strA, CString strB, void* pArg)
+void CLiftableObject::FUN_1414477f0(CString strA, CString strB)
 {
-    FUN_140764310(strA, strB, &m_maskA, pArg, -2LL);
+    FUN_140764310(strA, strB, &m_maskA);
 }
 
 // @0x141447850
-void CLiftableObject::FUN_141447850(CString strA, CString strB, void* pArg)
+void CLiftableObject::FUN_141447850(CString strA, CString strB)
 {
-    FUN_140764310(strA, strB, &m_maskB, pArg, -2LL);
+    FUN_140764310(strA, strB, &m_maskB);
 }
 
 // @0x1414478b0
-void CLiftableObject::FUN_1414478b0(char bValue)
+void CLiftableObject::FUN_1414478b0(bool bValue)
 {
-    if (bValue != m_bC0)
-        m_bC0 = bValue;
+    if (bValue == m_bC0)
+        return;
+    m_bC0 = bValue;
 }
 
 // @0x1414478f0
-char CLiftableObject::FUN_1414478f0() const
+bool CLiftableObject::FUN_1414478f0() const
 {
     return m_bC0;
 }
 
 // @0x141447910
-void CLiftableObject::FUN_141447910(char bOn)
+void CLiftableObject::FUN_141447910(bool bOn)
 {
-    if (m_ent.FUN_1408b70b0(0) == 0)
+    if (m_ent.FUN_1408b70b0(0) != 0)
+        return;
+    if (bOn && m_nEffect == 0)
     {
-        if (bOn == 0 || m_nEffect != 0)
-        {
-            if (bOn == 0 && m_nEffect != 0)
-            {
-                FUN_1403ed280()->FUN_1411a6060(m_nEffect);
-                m_nEffect = 0;
-            }
-        }
-        else
-        {
-            alignas(8) char kReqBuf[sizeof(Unk_LiftSoundReq)];   // FUN_140a52ef0 / FUN_1405a89e0 construct and destroy it: no implicit dtor
-            Unk_LiftSoundReq& kReq = *reinterpret_cast<Unk_LiftSoundReq*>(kReqBuf);
-            FUN_140a52ef0(&kReq);
-            kReq.m_strName = *(CString*)((char*)FUN_1401d31f0() + 0x350);
-            kReq.m_nType = 0;
-            FUN_1409fabf0(kReq.m_unk, FUN_14098d8d0(&DAT_143afa4d8, FUN_141b6efc0(m_ent.FUN_1408a9090())));
-            m_nEffect = FUN_1403ed280()->FUN_1411a49c0(&kReq);
-            FUN_1405a89e0(&kReq);
-        }
+        Unk_LiftSoundReq kReq;
+        kReq.m_strName = *(CString*)((char*)FUN_1401d31f0() + 0x350);
+        kReq.m_nType = 0;
+        FUN_1409fabf0(kReq.m_unk, FUN_14098d8d0(&DAT_143afa4d8, FUN_141b6efc0(m_ent.FUN_1408a9090())));
+        m_nEffect = FUN_1403ed280()->FUN_1411a49c0(&kReq);
+    }
+    else if (!bOn && m_nEffect != 0)
+    {
+        FUN_1403ed280()->FUN_1411a6060(m_nEffect);
+        m_nEffect = 0;
     }
 }
 
@@ -292,7 +311,7 @@ int CLiftableObject::GetKind() const
 }
 
 // @0x141447aa0
-void CLiftableObject::FUN_141447aa0(char bValue)
+void CLiftableObject::FUN_141447aa0(bool bValue)
 {
     m_bC2 = bValue;
 }
@@ -315,21 +334,18 @@ void CLiftableObject::FUN_141447b00(int nState)
     m_nState = nState;
     if (m_ent.FUN_1408b70b0(0) != 0)
         return;
-    int nCur = m_nState;
-    if (nCur != 0)
+    switch (m_nState)
     {
-        if (nCur == 1)
-        {
-            FUN_141689ec0(FUN_1409f7ca0(), m_ent.FUN_1408a9090(), 5, 0, 1);
-            FUN_141447ec0(0);
-            goto done;
-        }
-        if (nCur != 2)
-            goto done;
+    case 0:
+    case 2:
+        FUN_141689ec0(FUN_1409f7ca0(), m_ent.FUN_1408a9090(), 9, 0, 1);
+        FUN_141447ec0(1);
+        break;
+    case 1:
+        FUN_141689ec0(FUN_1409f7ca0(), m_ent.FUN_1408a9090(), 5, 0, 1);
+        FUN_141447ec0(0);
+        break;
     }
-    FUN_141689ec0(FUN_1409f7ca0(), m_ent.FUN_1408a9090(), 9, 0, 1);
-    FUN_141447ec0(1);
-done:
     FUN_141447de0();
 }
 
@@ -363,60 +379,39 @@ void CLiftableObject::FUN_141447ce0()
 }
 
 // @0x141447d10
-bool CLiftableObject::FUN_141447d10() const
+int CLiftableObject::FUN_141447d10() const
 {
-    return m_bFixed == 0;
+    return m_bFixed ? 0 : 1;
 }
 
 // @0x141447d50
 void CLiftableObject::FUN_141447d50(int nOn)
 {
-    if (m_ent.FUN_1408a9090() != 0)
-    {
-        Unk_LiftHandle kHandle;
-        FUN_141b71e70(FUN_1408b6b20(&kHandle, FUN_1408b76f0(m_ent.FUN_1408a9280())), nOn != 0, 1, 0);
-    }
+    if (m_ent.FUN_1408a9090() == 0)
+        return;
+    FUN_141b71e70(FUN_1408b76f0(m_ent.FUN_1408a9280()), nOn ? true : false, 1, 0);
 }
 
 // @0x141447de0
 void CLiftableObject::FUN_141447de0()
 {
-    int nRes = Unk_LiftMaskCheck(FUN_140764020(), &m_maskA);
-    if (nRes == 0)
-        FUN_1414478b0(0);
-    else
+    if ((&FUN_140764020()->m_cond)->vfunc_23(&m_maskA))
         FUN_1414478b0(1);
-    if (m_bC2 != 0)
+    else
+        FUN_1414478b0(0);
+    if (m_bC2 != 0 && (&FUN_140764020()->m_cond)->vfunc_23(&m_maskB) && FUN_141447340() != 0)
     {
-        nRes = Unk_LiftMaskCheck(FUN_140764020(), &m_maskB);
-        if (nRes != 0 && FUN_141447340() != 0)
-        {
-            FUN_141447910(1);
-            return;
-        }
+        FUN_141447910(1);
+        return;
     }
     FUN_141447910(0);
 }
 
 // @0x141447ec0
-void CLiftableObject::FUN_141447ec0(char bActive)
+void CLiftableObject::FUN_141447ec0(bool bActive)
 {
     m_bC1 = bActive;
-    if (bActive == 0)
-    {
-        if (m_ent.FUN_1408a9090() != 0)
-        {
-            void* pComp = FUN_141b6efc0(m_ent.FUN_1408a9090());
-            if (pComp != 0)
-            {
-                Unk_LiftHandle kHandle;
-                Unk_LiftHandle* pHandle = FUN_1408b6b20(&kHandle, FUN_1408b76f0(m_ent.FUN_1408a9280()));
-                FUN_140ae1e80(pComp, 1.0f, 0.0f, 0.0f, FUN_14028d280(500), pHandle);
-            }
-        }
-        m_timer.FUN_140868750(500);
-    }
-    else
+    if (bActive)
     {
         if (m_ent.FUN_1408a9090() != 0)
         {
@@ -427,29 +422,37 @@ void CLiftableObject::FUN_141447ec0(char bActive)
                 FUN_14098b3e0(pComp, 1.0f, 0);
         }
     }
+    else
+    {
+        if (m_ent.FUN_1408a9090() != 0)
+        {
+            void* pComp = FUN_141b6efc0(m_ent.FUN_1408a9090());
+            if (pComp != 0)
+                FUN_140ae1e80(pComp, 1.0f, 0.0f, 0.0f, FUN_14028d280(500), FUN_1408b76f0(m_ent.FUN_1408a9280()));
+        }
+        m_timer.FUN_140868750(500);
+    }
     FUN_141448050(bActive);
 }
 
 // @0x141448050
-void CLiftableObject::FUN_141448050(char bActive)
+void CLiftableObject::FUN_141448050(bool bActive)
 {
-    if (m_ent.FUN_1408b70b0(0) == 0)
+    if (m_ent.FUN_1408b70b0(0) != 0)
+        return;
+    if (bActive)
     {
-        if (bActive == 0)
+        void* pComp = FUN_141b6efc0(m_ent.FUN_1408a9090());
+        if (pComp != 0 && m_b108 != 0)
         {
-            void* pComp = FUN_141b6efc0(m_ent.FUN_1408a9090());
-            if (pComp != 0)
-                FUN_141567330(pComp, false);
+            bool bOn = FUN_140ae1c10() >= FUN_141376880(FUN_140ae1c00(), 5);
+            FUN_141567330(pComp, bOn);
         }
-        else
-        {
-            void* pComp = FUN_141b6efc0(m_ent.FUN_1408a9090());
-            if (pComp != 0 && m_b108 != 0)
-            {
-                int nNow = FUN_140ae1c10();
-                int nLimit = FUN_141376880(FUN_140ae1c00(), 5);
-                FUN_141567330(pComp, nLimit <= nNow);
-            }
-        }
+    }
+    else
+    {
+        void* pComp = FUN_141b6efc0(m_ent.FUN_1408a9090());
+        if (pComp != 0)
+            FUN_141567330(pComp, false);
     }
 }

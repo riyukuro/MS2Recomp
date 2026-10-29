@@ -115,82 +115,79 @@ void UIUGCCubeNoticePopup::FUN_140fb4cc0(const CStringW& strTitle, const CString
     m_strText = strText;
 }
 
-// MS2-FUNCTIONAL: EH state / temporary layout differs
 // @0x140fb4d10
 void UIUGCCubeNoticePopup::vfunc_52()
 {
-    if (!FUN_140a467d0(&m_30))
+    if (FUN_140a467d0(&m_30))
+        return;
+    MS2Ptr<ASMovieClip> spClip(dynamic_cast<ASMovieClip*>((AScript*)m_30));
+    if (spClip.get() != 0)
     {
-        MS2Ptr<ASMovieClip> spClip(dynamic_cast<ASMovieClip*>((AScript*)m_30));
-        if (spClip.get() != 0)
-        {
-            vfunc_8(0);
-            m_bPending = 0;
-        }
+        vfunc_8(0);
+        m_bPending = 0;
     }
 }
 
-// MS2-FUNCTIONAL: branch layout and EH state differ
 // @0x140fb4dc0
 void UIUGCCubeNoticePopup::vfunc_15()
 {
     UIObject::vfunc_15();
-    if (!FUN_140a467d0(&m_30))
-    {
-        if (FUN_1403ed2d0()->FUN_141bd0cc0() != 0)
-        {
-            if (m_bPending != 0)
-                vfunc_52();
-            if (IsShown() == 0)
-                vfunc_8(0);
-            else
-                FUN_140fb4eb0();
-        }
-    }
+    if (FUN_140a467d0(&m_30))
+        return;
+    void* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    if (pPlayer == 0)
+        return;
+    if (m_bPending != 0)
+        vfunc_52();
+    if (IsShown() != 0)
+        FUN_140fb4eb0();
+    else
+        vfunc_8(0);
 }
 
-// MS2-FUNCTIONAL: the exe returns bool from the int slot (source spelling unknown)
 // @0x140fb4e60
 int UIUGCCubeNoticePopup::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs)
 {
-    return UIObject::vfunc_28(szMethod, pArgs, nArgs) != 0;
+    if (UIObject::vfunc_28(szMethod, pArgs, nArgs) != 0)
+        return 1;
+    return 0;
 }
 
-// MS2-FUNCTIONAL: EH state / float temporaries differ
 // @0x140fb4eb0
 void UIUGCCubeNoticePopup::FUN_140fb4eb0()
 {
-    if (FUN_1403ed2d0()->FUN_141bd0cc0() != 0 && m_bVisible != 0)
+    void* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    if (pPlayer == 0)
+        return;
+    if (m_bVisible != 0)
     {
         Vector3 ptScreen;
-        if (!FUN_1409478c0()->FUN_140af0700(&m_ptWorld, &ptScreen))
-            vfunc_8(0);
-        else
+        if (FUN_1409478c0()->FUN_140af0700(&m_ptWorld, &ptScreen))
         {
             MS2Ptr<ASGameEntity> spEntity(dynamic_cast<ASGameEntity*>((AScript*)m_30));
             if (spEntity.get() != 0)
             {
                 vfunc_8(1);
                 ptScreen.FUN_140ad0c10(FUN_1422afec0(FUN_14025e7a0(), m_28));
-                int nHeight = spEntity->FUN_1422c13b0();
-                int nWidth = spEntity->FUN_1422c1340();
-                spEntity->FUN_1422c00f0(ptScreen.x - (float)(nWidth / 2), (ptScreen.y - (float)nHeight) - 15.0f);
+                spEntity->FUN_1422c00f0(ptScreen.x - (float)(spEntity->FUN_1422c1340() / 2), (ptScreen.y - (float)spEntity->FUN_1422c13b0()) - 15.0f);
             }
         }
+        else
+            vfunc_8(0);
     }
 }
 
-// MS2-FUNCTIONAL: EH state / string temporaries differ
 // @0x140fb5080
 void UIUGCCubeNoticePopup::FUN_140fb5080(int bShow)
 {
-    if (!FUN_140a467d0(&m_30) && m_bVisible != bShow)
-    {
-        m_bVisible = bShow;
-        if (bShow != 0)
-            m_30->Invoke("setText", m_strTitle, m_strText);
-        m_30->Invoke("setShow", bShow);
-    }
+    if (FUN_140a467d0(&m_30))
+        return;
+    if (m_bVisible == bShow)
+        return;
+    m_bVisible = bShow;
+    if (bShow != 0)
+        m_30->Invoke("setText", m_strTitle, m_strText);
+    m_30->Invoke("setShow", bShow);
 }
 
 // @0x140fb51f0

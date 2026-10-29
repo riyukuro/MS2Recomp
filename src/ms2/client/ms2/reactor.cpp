@@ -52,27 +52,30 @@ static Unk_1402a9d70 condition(17, 0.75f, 0.25f, 2.25f, 10);
 
 // ---- unit-local placeholders and externals ----
 
-// Effect play request (0x78 bytes; ctor 0x140a52ef0, dtor 0x1405a89e0) and its transform; as in interactobject.cpp.
+// Effect play request (0x70 bytes; ctor 0x140a52ef0, dtor 0x1405a89e0) and its transform (NiTransform).
+// Their ctors and dtor are bound in symbols-manual.tsv.
 struct Unk_RxXform
 {
+    Unk_RxXform();                                              // 0x140a332d0
     Unk_EfdMatrix3 m_rotate;
     float m_afTranslate[3];
     float m_fScale;
 };
 MS2_CHECK_SIZE(Unk_RxXform, 0x34);
-void* FUN_140a332d0(Unk_RxXform* p);
 void FUN_14097faa0(float* pDst, const Unk_NiPoint3* pSrc);
 Unk_NiPoint3 FUN_14027dcf0(const Vector3& pt);          // NiPoint3(const efd::Point3&)
 struct Unk_RxFxRequest
 {
+    Unk_RxFxRequest();                                          // 0x140a52ef0
+    ~Unk_RxFxRequest();                                         // 0x1405a89e0 (also releases +0x10 and +0x40)
     CString m_strName;
     int m_nOwnerId;
     int m_pad_0c;
     void* m_pSlot10;
     Unk_RxXform* m_pXform;
-    char m_pad_20[0x58];
+    void* m_pad_20[(0x70 - 0x20) / 8];                          // not a char array: that would add a /GS cookie
 };
-MS2_CHECK_SIZE(Unk_RxFxRequest, 0x78);
+MS2_CHECK_SIZE(Unk_RxFxRequest, 0x70);
 class Unk_RxFxMgr
 {
 public:
@@ -80,8 +83,6 @@ public:
     void FUN_1411a6060(int nHandle);                            // stops it
 };
 Unk_RxFxMgr* FUN_1403ed280();
-void FUN_140a52ef0(Unk_RxFxRequest* p);
-void FUN_1405a89e0(Unk_RxFxRequest* p);
 #ifdef __clang__
 CString FUN_140298360(const char* psz, const CString& str);             // psz + str (ATL operator+)
 #endif
@@ -164,14 +165,16 @@ public:
 class Unk_RxGridRef
 {
 public:
-    Unk_RxGridRef(Unk_RxGrid* p) : m_p(p) {}                    // CComPtrBase<>(p)
-    ~Unk_RxGridRef();                                           // 0x1401cd150
+    Unk_RxGridRef(Unk_RxGrid* p);                               // efd::SmartPointer<>(p) 0x1401cd0b0: stores p and AddRefs it
+    ~Unk_RxGridRef();                                           // 0x1401cd150: Releases
     void* FUN_140885310();                                      // the grid, tested for null
     Unk_RxGrid* FUN_1401cd1a0();                                // the grid
     Unk_RxGrid* m_p;
 };
 Unk_RxGrid* FUN_1401cd040(Unk_EntityAppFramework* p);
+void FUN_1401cd0b0(Unk_RxGridRef* p, Unk_RxGrid* pGrid);
 void FUN_1401cd150(Unk_RxGridRef* p);
+Unk_RxGridRef::Unk_RxGridRef(Unk_RxGrid* p) { FUN_1401cd0b0(this, p); }
 Unk_RxGridRef::~Unk_RxGridRef() { FUN_1401cd150(this); }
 class Unk_RxMapInfo : public CPtred
 {
@@ -181,7 +184,7 @@ public:
 };
 class Unk_RxPhys;
 Unk_RxPhys* FUN_1409f7ca0();
-int FUN_14168a450(Unk_RxPhys* p, Vector3* pPos, int* pOut, float fRange);
+int FUN_14168a450(Unk_RxPhys* p, Vector3* pPos, float* pOut, float fRange);
 Unk_Int3 FUN_1408a14c0(Vector3 pt);                     // cell of a point
 int FUN_1408a03c0(Unk_Int3 cell);                               // cell id
 Unk_Int3 FUN_1408a0400(int nCellId);
@@ -214,11 +217,10 @@ CReactor::CReactor()
 // @0x140b789c0
 CReactor::~CReactor()
 {
-    for (POSITION pos = m_mapEffects.GetHeadPosition(); pos != 0;)
+    for (POSITION pos = m_mapEffects.GetHeadPosition(); pos != 0; m_mapEffects.GetNext(pos))
     {
         int nHandle = m_mapEffects.GetValueAt(pos);
         FUN_1403ed280()->FUN_1411a6060(nHandle);
-        m_mapEffects.GetNext(pos);
     }
     m_mapEffects.RemoveAll();
 }
@@ -232,8 +234,9 @@ CString CReactor::GetName()
 // @0x140b78b40
 void CReactor::FUN_140b78b40(bool bFlag)
 {
-    if (m_unk_80 != 0)
-        FUN_141b71e70(egf::EntityID(*FUN_1408b76f0(m_unk_80)), bFlag, 1, 0);
+    if (m_unk_80 == 0)
+        return;
+    FUN_141b71e70(egf::EntityID(*FUN_1408b76f0(m_unk_80)), bFlag, 1, 0);
 }
 
 // @0x140b78bb0
@@ -280,48 +283,41 @@ void CReactor::FUN_140b78d90(Unk_ReactorInfo* pOut)
 // @0x140b78ea0
 void CReactor::FUN_140b78ea0(const CString& strAni)
 {
-    if (!strAni.IsEmpty())
-        m_listAnims.AddTail(strAni);
+    if (strAni.IsEmpty())
+        return;
+    m_listAnims.AddTail(strAni);
 }
 
 // @0x140b78ef0
 bool CReactor::FUN_140b78ef0(const CString& strEffect)
 {
     if (m_mapEffects.Lookup(strEffect))
-    {
         return true;
-    }
-    else
-    {
-        const NiPoint3& pos = vfunc_18();
-        const NiPoint3& rot = vfunc_20();
-        Unk_RxXform xf;
-        FUN_140a332d0(&xf);
-        Unk_NiPoint3 niTop = FUN_14027dcf0(reinterpret_cast<const Vector3&>(pos).FUN_14097fd50(Vector3(0.0f, 0.0f, 1.0f)));
-        FUN_14097faa0(xf.m_afTranslate, &niTop);
-        xf.m_rotate.FUN_142083d40((rot.x * 3.1415927f) / 180.0f, (rot.y * 3.1415927f) / 180.0f,
-                                  (rot.z * 3.1415927f) / 180.0f);
-        xf.m_fScale = 1.0f;
-        Unk_RxFxRequest request;
-        FUN_140a52ef0(&request);
-        request.m_strName = strEffect;
-        request.m_nOwnerId = 0;
-        request.m_pXform = &xf;
-        int nHandle = FUN_1403ed280()->FUN_1411a49c0(&request);
-        m_mapEffects.SetAt(strEffect, nHandle);
-        return true;
-    }
+    const NiPoint3& pos = vfunc_18();
+    const NiPoint3& rot = vfunc_20();
+    Unk_RxXform xf;
+    Unk_NiPoint3 niTop = FUN_14027dcf0(reinterpret_cast<const Vector3&>(pos).FUN_14097fd50(Vector3(0.0f, 0.0f, 1.0f)));
+    FUN_14097faa0(xf.m_afTranslate, &niTop);
+    xf.m_rotate.FUN_142083d40((rot.x * 3.1415927f) / 180.0f, (rot.y * 3.1415927f) / 180.0f,
+                              (rot.z * 3.1415927f) / 180.0f);
+    xf.m_fScale = 1.0f;
+    Unk_RxFxRequest request;
+    request.m_strName = strEffect;
+    request.m_nOwnerId = 0;
+    request.m_pXform = &xf;
+    int nHandle = FUN_1403ed280()->FUN_1411a49c0(&request);
+    m_mapEffects.SetAt(strEffect, nHandle);
+    return true;
 }
 
 // @0x140b79120
 bool CReactor::FUN_140b79120(const CString& strEffect)
 {
     int nHandle = 0;
-    if (m_mapEffects.Lookup(strEffect, nHandle))
-    {
-        FUN_1403ed280()->FUN_1411a6060(nHandle);
-        m_mapEffects.RemoveKey(strEffect);
-    }
+    if (!m_mapEffects.Lookup(strEffect, nHandle))
+        return true;
+    FUN_1403ed280()->FUN_1411a6060(nHandle);
+    m_mapEffects.RemoveKey(strEffect);
     return true;
 }
 
@@ -469,21 +465,18 @@ int CReactor::FUN_140b79cc0(PCBase* pPc)
     MS2Ptr<ReactorStateData> spState = FUN_140b78c00(m_nStateIdx);
     if (spState.IsNull())
         return 1;
-    int nType = spState->m_nType;
-    if (nType == 1)
+    switch (spState->m_nType)
     {
+    case 1:
         if (m_setPlayers.find(FUN_141656a80(pPc)) != m_setPlayers.end())
             return 1;
-    }
-    else
-    {
-        if (nType == 2)
+        break;
+    case 3:
+        if (m_setPlayers.find(FUN_141656a80(pPc)) == m_setPlayers.end())
             return 1;
-        if (nType == 3)
-        {
-            if (m_setPlayers.find(FUN_141656a80(pPc)) == m_setPlayers.end())
-                return 1;
-        }
+        break;
+    case 2:
+        return 1;
     }
     return 0;
 }
@@ -505,24 +498,27 @@ int CReactor::FUN_140b79ee0(PCBase* pPc)
         MS2Ptr<ReactorCondition> spCond = conds.GetAt(pos);
         if (spCond.IsNull())
             continue;
-        if (spCond->m_nType == 0)
+        switch (spCond->m_nType)
+        {
+        case 0:
         {
             ReactorConditionItem* pItem = static_cast<ReactorConditionItem*>(spCond.get());
-            if (pItem != 0)
-            {
-                int nCode = pItem->m_nCode;
-                int nConsume = pItem->m_nConsume;
-                int nCheck = pItem->m_nCheckCount;
-                int nRank = pItem->m_nRank;
-                int nNeed = (std::max)(nCheck, nConsume);
-                if (nCode != 0 && nNeed != 0)
-                {
-                    if (nRank == 0)
-                        nRank = FUN_14053feb0(nCode);
-                    if (DAT_143ab2a90.FUN_140a5f180(nCode, nRank) < nNeed)
-                        return 1;
-                }
-            }
+            if (pItem == 0)
+                break;
+            int nCode = pItem->m_nCode;
+            int nConsume = pItem->m_nConsume;
+            int nCheck = pItem->m_nCheckCount;
+            int nRank = pItem->m_nRank;
+            nCheck = (std::max)(nCheck, nConsume);   // the count needed
+            if (nCode == 0 || nCheck == 0)
+                break;
+            if (nRank == 0)
+                nRank = FUN_14053feb0(nCode);
+            int nHave = DAT_143ab2a90.FUN_140a5f180(nCode, nRank);
+            if (nHave < nCheck)
+                return 1;
+        }
+            break;
         }
     }
     return 0;
@@ -549,14 +545,13 @@ void CReactor::EndOfSequence(NiActorManager* pkManager, NiActorManager::Sequence
     NiControllerSequence* pkSeq, float fEventTime)
 {
     GameObject::EndOfSequence(pkManager, eSequenceID, pkSeq, fEventTime);
-    if (m_unk_80 != 0 && !m_listAnims.IsEmpty() && FUN_141b6f910() != 0)
+    if (m_unk_80 == 0)
+        return;
+    if (!m_listAnims.IsEmpty() && FUN_141b6f910() != 0)
     {
-        bool bSame;
-        {   // the scope exit is the exe's FUN_1408a8900 (~utf8string): an explicit call on top released it twice
-            efd::utf8string strCur = FUN_141b6f910()->FUN_140b7cc50(*FUN_1408b76f0(m_unk_80));
-            bSame = FUN_140184310(m_listAnims.GetHead(), FUN_1408ac310(&strCur));
-        }
-        if (bSame)
+        const CString& strHead = m_listAnims.GetHead();
+        const egf::EntityID& id = *FUN_1408b76f0(m_unk_80);
+        if (strHead == FUN_141b6f910()->FUN_140b7cc50(id).c_str())
             m_listAnims.RemoveHead();
     }
 }
@@ -566,18 +561,21 @@ bool FUN_140b7a330(PCBase* pPc, int nReactorId)
 {
     if (pPc == 0)
         return false;
-    int nError = FUN_140b7a3d0(pPc, nReactorId);
+    int nError = 1;
+    nError = FUN_140b7a3d0(pPc, nReactorId);
     if (nError != 0)
     {
         FUN_140b7b7a0(nError);
         return false;
     }
-    if (FUN_140b7a5e0(pPc) != 0)
+    nError = FUN_140b7a5e0(pPc);
+    if (nError != 0)
     {
         FUN_140b7b7a0(2);
         return false;
     }
-    if (FUN_140b7a650(pPc) != 0)
+    nError = FUN_140b7a650(pPc);
+    if (nError != 0)
     {
         FUN_140b7b7a0(3);
         return false;
@@ -606,9 +604,9 @@ int FUN_140b7a3d0(PCBase* pPc, int nReactorId)
         return 5;
     int nDummy = 0;
     int nCount = g_attendTable.FUN_1409617d0(0x76d, nEvent, &nDummy);
-    if (nCount < spRec->m_nNeed)
-        return 0;
-    return 6;
+    if (nCount >= spRec->m_nNeed)
+        return 6;
+    return 0;
 }
 
 // @0x140b7a5e0
@@ -616,21 +614,17 @@ int FUN_140b7a5e0(PCBase* pPc)
 {
     if (pPc == 0)
         return 1;
-    if (FUN_14166c930(pPc) == 1)
-    {
-        if (FUN_141675ed0(pPc) == 0)
-        {
-            if (FUN_1422b9e00(FUN_1408e57f0()) == 0x620001d)
-                return 0;
-            return 1;
-        }
+    if (FUN_14166c930(pPc) != 1)
         return 1;
-    }
-    return 1;
+    if (FUN_141675ed0(pPc) != 0)
+        return 1;
+    if (FUN_1422b9e00(FUN_1408e57f0()) != 0x620001d)
+        return 1;
+    return 0;
 }
 
 // @0x140b7a650
-// MS2-FUNCTIONAL: opaque field-grid, actor and raycast helpers (stand-in classes); the statement order follows the exe.
+// MS2-FUNCTIONAL: behaviour-checked against the exe (same calls, conditions, constants and vector lifetimes); the stand-in grid/actor/raycast helper types and the exe's by-reference point locals keep the frame different.
 int FUN_140b7a650(PCBase* pPc)
 {
     if (pPc == 0)
@@ -712,6 +706,7 @@ int FUN_140b7a650(PCBase* pPc)
     if (grid.FUN_1401cd1a0()->FUN_1410b8b00(nCellId) != 0)
         return 1;
 
+    {
     std::vector<efd::Point3> samples;   // the exe's glue is vector<efd::Point3> (itemdatastruct's _Umove_if_noexcept etc.)
     samples.push_back(efd::Point3(ptCenter.x, ptCenter.y, ptCenter.z));
     samples.push_back(efd::Point3(ptCenter.x + 75.0f, ptCenter.y, ptCenter.z));
@@ -722,9 +717,10 @@ int FUN_140b7a650(PCBase* pPc)
     {
         efd::Point3* pSample = &samples[i];
         pSample->z = pSample->z + 10.0f;
-        int nHit = 0;
-        if (FUN_14168a450(FUN_1409f7ca0(), reinterpret_cast<Vector3*>(pSample), &nHit, 50.0f) == 0)
+        float fHit = 0.0f;
+        if (FUN_14168a450(FUN_1409f7ca0(), reinterpret_cast<Vector3*>(pSample), &fHit, 50.0f) == 0)
             return 1;
+    }
     }
 
     Vector3 ptLow = ptCenter;
@@ -735,6 +731,7 @@ int FUN_140b7a650(PCBase* pPc)
     if (pInfo->m_nState != 1)
         return 1;
 
+    {
     std::vector<Unk_Int3> cells;
     cells.reserve(9);
     cells.push_back(Unk_Int3(cell.x, cell.y, cell.z - 1));
@@ -749,20 +746,25 @@ int FUN_140b7a650(PCBase* pPc)
     for (size_t i = 0; i < cells.size(); ++i)
     {
         Unk_RxCellInfo* pCell = grid.FUN_1401cd1a0()->FUN_1410b8a60(cells[i]);
-        if (pCell != 0 && pCell->m_nCount != 0)
+        if (pCell == 0)
+            continue;
+        if (pCell->m_nCount != 0)
             return 1;
     }
+    }
 
-    ATL::CAtlArray<int> arrIds;
-    arrIds.Add(DAT_142de2684);
-    arrIds.Add(DAT_142de2698);
-    arrIds.Add(DAT_142de265c);
-    arrIds.Add(DAT_142de2674);
-    arrIds.Add(DAT_142de269c);
-    for (size_t i = 0; i < arrIds.GetCount(); ++i)
+    {
+    std::vector<unsigned> arrIds;
+    arrIds.push_back(DAT_142de2684);
+    arrIds.push_back(DAT_142de2698);
+    arrIds.push_back(DAT_142de265c);
+    arrIds.push_back(DAT_142de2674);
+    arrIds.push_back(DAT_142de269c);
+    for (size_t i = 0; i < arrIds.size(); ++i)
     {
         if (pWorld->FUN_141bcfd30(arrIds[i], ptCenter, 230.0f, 0, 0) != 0)
             return 1;
+    }
     }
     return 0;
 }
@@ -882,31 +884,30 @@ struct Unk_RxAnimRec
     void* m_spActorManager;
     void* m_spAssetData;
 };
-bool FUN_1409991a0(Unk_RxAnimSvc* pSvc, const egf::EntityID* pId, Unk_RxAnimRec** ppRec, int a, int b);
+bool FUN_1409991a0(Unk_RxAnimSvc* pSvc, const egf::EntityID* pId, Unk_RxAnimRec** ppRec);
 void* FUN_140998e80(void* pSp);              // SmartPointer<AssetData>::operator AssetData*
 void* FUN_140998e90(void* pSp);              // SmartPointer<NiActorManager>::operator NiActorManager*
 const efd::utf8string& FUN_1409a1a90();      // the empty name
 void* FUN_1409f7900(void* pSp);              // SmartPointer<NiActorManager>::operator->
-int FUN_1409a1890(void* p);
-void FUN_1409a1940(void* pName, efd::utf8string* pOut, int nIdx);
+unsigned int FUN_1409a1890(void* p);        // NiActorManager::GetCurAnimation
+class Unk_EmAssetData { public: efd::utf8string FUN_1409a1940(unsigned int nIdx) const; };
 // @0x140b7cc50
 // MS2-FUNCTIONAL: animation-service current-name lookup (AnimationService::GetCurrentAnimation: the getters take the ActorEntry smart-pointer members, not the entry)
 efd::utf8string Unk_RxAnimSvc::FUN_140b7cc50(const egf::EntityID& id)
 {
-    Unk_RxAnimRec* pRec = 0;
-    if (!FUN_1409991a0(this, &id, &pRec, 0, 0))
+    Unk_RxAnimRec* pRec;
+    if (!FUN_1409991a0(this, &id, &pRec))
         return FUN_1409a1a90();
-    void* pName = FUN_140998e80(&pRec->m_spAssetData);
+    Unk_EmAssetData* pName = static_cast<Unk_EmAssetData*>(FUN_140998e80(&pRec->m_spAssetData));
     if (!pName)
         return FUN_1409a1a90();
     if (!FUN_140998e90(&pRec->m_spActorManager))
         return FUN_1409a1a90();
-    int nIdx = FUN_1409a1890(FUN_1409f7900(&pRec->m_spActorManager));
-    if (nIdx == -2)
+    unsigned int nIdx = FUN_1409a1890(FUN_1409f7900(&pRec->m_spActorManager));
+    if (nIdx == NiActorManager::INVALID_SEQUENCE_ID)
         return FUN_1409a1a90();
-    efd::utf8string strOut;
-    FUN_1409a1940(pName, &strOut, nIdx);
-    return strOut;
+    else
+        return pName->FUN_1409a1940(nIdx);
 }
 
 // @0x140b7ce20
@@ -953,19 +954,20 @@ void* FUN_140b7e900(void* p) { return static_cast<char*>(FUN_140b7e770(p)) + 8; 
 // @0x140b7e920
 void FUN_140b7e920(void* p) { FUN_14016c7c0(FUN_140b7e750(p)); }
 
+void FUN_140b7ec60(void* pAlloc, void* pMem, __int64 nCount);
+
 // @0x140b7ea10
-// MS2-FUNCTIONAL: std::vector<Unk_Int3> _Tidy stand-in
+// std::vector<Unk_Int3> _Tidy stand-in
 void FUN_140b7ea10(void* pVec)
 {
-    std::vector<Unk_Int3>* v = static_cast<std::vector<Unk_Int3>*>(pVec);
     FUN_140b7e920(pVec);
-    if (v->_Myfirst() != 0)
+    if (static_cast<std::vector<Unk_Int3>*>(pVec)->_Myfirst() != 0)
     {
-        FUN_140b7e710(pVec, v->_Myfirst(), v->_Mylast());
-        FUN_14015fc80(v->_Myfirst(), static_cast<__int64>(v->capacity()) * 0xc);
-        v->_Myfirst() = 0;
-        v->_Mylast() = 0;
-        v->_Myend() = 0;
+        FUN_140b7e710(pVec, static_cast<std::vector<Unk_Int3>*>(pVec)->_Myfirst(), static_cast<std::vector<Unk_Int3>*>(pVec)->_Mylast());
+        FUN_140b7ec60(FUN_140b7e7d0(pVec), static_cast<std::vector<Unk_Int3>*>(pVec)->_Myfirst(), static_cast<std::vector<Unk_Int3>*>(pVec)->capacity());
+        static_cast<std::vector<Unk_Int3>*>(pVec)->_Myfirst() = 0;
+        static_cast<std::vector<Unk_Int3>*>(pVec)->_Mylast() = 0;
+        static_cast<std::vector<Unk_Int3>*>(pVec)->_Myend() = 0;
     }
 }
 

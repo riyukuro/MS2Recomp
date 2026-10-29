@@ -29,8 +29,8 @@ MS2Ptr<ASGameEntity> FUN_140ba77e0(int n, const Scaleform::GFx::Value& v);    //
 // The client's world service and the local player (worldservice.h spells the player as void*).
 WorldService* FUN_1403ed2d0();
 Unk_ActionKeyManager* FUN_140a7b810(MyPC* pPlayer);                    // MyPC's action key table
-bool FUN_1403b3c40(const CStringW& str, const wchar_t* psz);           // case-insensitive equal
-bool FUN_14034eee0(const CStringW& str, const wchar_t* psz);           // operator!=
+bool FUN_1403b3c40(const CStringW& str, const wchar_t* psz) throw();           // case-insensitive equal
+bool FUN_14034eee0(const CStringW& str, const wchar_t* psz) throw();           // operator!=
 
 // The ui manager (FUN_1403ed2b0) and the dialogue singleton.
 class Unk_AtUIMgr { public: int FUN_141adc940(int nUiId); };           // the ui is open
@@ -52,7 +52,7 @@ Unk_AtSound* FUN_140a94350();
 class Unk_AtHintTable { public: CStringW FUN_14142d760(int nId, int nFlag); };
 Unk_AtHintTable* FUN_1409331f0();
 void* FUN_1409a8b10();
-const char* FUN_140a58500(void* p);
+const unsigned char* FUN_140a58500(void* p);
 unsigned int FUN_141277f40();                                          // next UI layer
 
 // The client constants singleton: two values at +0xc768 / +0xc7c0 give the screen origin.
@@ -69,11 +69,11 @@ MS2_CHECK_OFFSET(Unk_AtConstants, m_c7c0, 0xc7c0);
 Unk_AtConstants* FUN_1401d3200();
 
 // The target point accessors (a "valid" flag then the point, see Unk_AkoTarget).
-int FUN_1413b58d0(Unk_AkoTarget* p);                                   // has a point
-int FUN_1413b5870(Unk_AkoTarget* p);                                   // has no point
+bool FUN_1413b58d0(Unk_AkoTarget* p);                                  // has a point
+bool FUN_1413b5870(Unk_AkoTarget* p);                                  // has no point
 Vector3* FUN_1413b4140(Unk_AkoTarget* p);
 Vector3* FUN_1413b4180(Unk_AkoTarget* p);
-void FUN_140d00fb0(Vector3 ptWorld, NiPoint2* pScreen);        // project a world point to the screen
+void FUN_140d00fb0(Vector3 ptWorld, efd::Point2* pScreen);        // project a world point to the screen
 float FUN_1408f2120(const float& v, float fLo, float fHi);             // clamp
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -125,16 +125,15 @@ void UIActionTooltip::vfunc_3()
     UIHeadUpDisplay::vfunc_3();
 }
 
-// MS2-FUNCTIONAL: temporary-lifetime / EH layout of the || condition differs
 // @0x1418b16f0
 void UIActionTooltip::FUN_1418b16f0()
 {
     if (FUN_1418b23a0() == 0x1e || FUN_1403b3c40(FUN_1418b1a20(), L""))
         FUN_1418b1e60();
-    else if (FUN_1418b2140() == 0)
-        FUN_1418b1ab0();
-    else
+    else if (FUN_1418b2140() != 0)
         FUN_1418b1e60();
+    else
+        FUN_1418b1ab0();
 }
 
 // @0x1418b17d0
@@ -181,15 +180,10 @@ int UIActionTooltip::FUN_1418b1950()
     return nId;
 }
 
-// MS2-FUNCTIONAL: temporary and return-slot layout differs
 // @0x1418b1990
 CStringW UIActionTooltip::FUN_1418b1990()
 {
-    int nFlag;
-    if (*FUN_140a58500(FUN_1409a8b10()) == 0)
-        nFlag = 0;
-    else
-        nFlag = 2;
+    int nFlag = *FUN_140a58500(FUN_1409a8b10()) ? 2 : 0;
     int nId = FUN_1418b1950();
     return FUN_1409331f0()->FUN_14142d760(nId, nFlag);
 }
@@ -203,24 +197,25 @@ CStringW UIActionTooltip::FUN_1418b1a20()
     return pAction->vfunc_6();
 }
 
-// MS2-FUNCTIONAL: EH state / temporary layout differs
 // @0x1418b1ab0
 void UIActionTooltip::FUN_1418b1ab0()
 {
-    if (m_30.get() == 0)
-        return;
-    ActionKeyObject* pAction = FUN_1418b1900();
-    if (pAction != 0 && FUN_14034eee0(pAction->vfunc_6(), L""))
+    if (m_30.get() != 0)
     {
-        m_pAction = pAction;
-        m_strTitle = pAction->vfunc_7();
-        m_strText = pAction->vfunc_6();
-        m_kTarget = pAction->vfunc_12();
-        if (FUN_1413b58d0(&m_kTarget))
-            FUN_1413b4140(&m_kTarget)->z += 75.0f;
-        FUN_1418b1ef0();
-        m_30->FUN_1412e80d0("show", FUN_1418b1990(), pAction->vfunc_6(), pAction->vfunc_8());
-        FUN_140a94350()->vfunc_7(FUN_1418b1950(), 0);
+        ActionKeyObject* pAction = FUN_1418b1900();
+        if (pAction != 0 && FUN_14034eee0(pAction->vfunc_6(), L""))
+        {
+            m_pAction = pAction;
+            m_strTitle = pAction->vfunc_7();
+            m_strText = pAction->vfunc_6();
+            m_kTarget = m_pAction->vfunc_12();
+            const float fLift = 75.0f;
+            if (FUN_1413b58d0(&m_kTarget))
+                FUN_1413b4140(&m_kTarget)->z += fLift;
+            FUN_1418b1ef0();
+            m_30->FUN_1412e80d0("show", FUN_1418b1990(), pAction->vfunc_6(), pAction->vfunc_8());
+            FUN_140a94350()->vfunc_7(FUN_1418b1950(), 0);
+        }
     }
 }
 
@@ -237,24 +232,13 @@ void UIActionTooltip::FUN_1418b1e60()
     FUN_140a94350()->vfunc_8(0);
 }
 
-// MS2-FUNCTIONAL: float temporaries and struct-copy layout differ
 // @0x1418b1ef0
 void UIActionTooltip::FUN_1418b1ef0()
 {
     MS2Ptr<ASGameEntity> spEntity(dynamic_cast<ASGameEntity*>(m_30.get()));
     if (spEntity.get() != 0)
     {
-        if (FUN_1413b5870(&m_kTarget) == 0)
-        {
-            NiPoint2 kScreen;
-            FUN_140d00fb0(*FUN_1413b4180(&m_kTarget), &kScreen);
-            int nWidth = spEntity->FUN_1422c1500();
-            float fX = FUN_1408f2120(kScreen.x, 0, (float)(nWidth - spEntity->FUN_1422c1340()));
-            int nHeight = spEntity->FUN_1422c1530();
-            float fY = FUN_1408f2120(kScreen.y, 0, (float)(nHeight - spEntity->FUN_1422c13b0()));
-            spEntity->FUN_1422c00f0(fX, fY);
-        }
-        else
+        if (FUN_1413b5870(&m_kTarget))
         {
             int nX = FUN_1401d3200()->m_c768.FUN_14025a620();
             int nY = FUN_1401d3200()->m_c7c0.FUN_14025a620();
@@ -262,10 +246,19 @@ void UIActionTooltip::FUN_1418b1ef0()
             int nCenterY = (int)((float)spEntity->FUN_1422c1530() * 0.5f + (float)nY);
             spEntity->FUN_1422bffe0(nCenterX, nCenterY);
         }
+        else
+        {
+            efd::Point2 kScreen;
+            FUN_140d00fb0(*FUN_1413b4180(&m_kTarget), &kScreen);
+            int nWidth = spEntity->FUN_1422c1500();
+            float fX = FUN_1408f2120(kScreen.x, 0, (float)(nWidth - spEntity->FUN_1422c1340()));
+            int nHeight = spEntity->FUN_1422c1530();
+            float fY = FUN_1408f2120(kScreen.y, 0, (float)(nHeight - spEntity->FUN_1422c13b0()));
+            spEntity->FUN_1422c00f0(fX, fY);
+        }
     }
 }
 
-// MS2-FUNCTIONAL: switch lowering and repeated player lookups differ
 // @0x1418b2140
 int UIActionTooltip::FUN_1418b2140()
 {
@@ -276,35 +269,40 @@ int UIActionTooltip::FUN_1418b2140()
         return 1;
     switch (FUN_1418b23a0())
     {
-    case 4:
-    case 0x11:
-    case 0x12:
-        pPlayer = static_cast<MyPC*>(FUN_1403ed2d0()->FUN_141bd0cc0());
-        if (pPlayer == 0)
-            return 1;
-        return pPlayer->FUN_14166c930() == 0x19;
-    default:
-        return 0;
-    case 0xe:
-        return FUN_1403ed2b0()->FUN_141adc940(0x4e77) == 0;
-    case 0x10:
-        return FUN_1403ed2b0()->FUN_141adc940(0x4e56) == 0;
-    case 0x13:
-        return FUN_1403ed2b0()->FUN_141adc940(0x4ebd) == 0;
     case 0x14:
     case 0x16:
         return FUN_141b21220(FUN_140967100());
-    case 0x1a:
-        pPlayer = static_cast<MyPC*>(FUN_1403ed2d0()->FUN_141bd0cc0());
-        if (pPlayer == 0)
+    case 0x10:
+        return FUN_1403ed2b0()->FUN_141adc940(0x4e56) == 0;
+    case 4:
+    case 0x11:
+    case 0x12:
+    {
+        MyPC* pMyPC = static_cast<MyPC*>(FUN_1403ed2d0()->FUN_141bd0cc0());
+        if (pMyPC == 0)
             return 1;
-        return pPlayer->FUN_14166c930() == 0x3d;
-    case 0x1c:
-        pPlayer = static_cast<MyPC*>(FUN_1403ed2d0()->FUN_141bd0cc0());
-        if (pPlayer == 0)
-            return 1;
-        return pPlayer->FUN_14166c930() == 0x3e;
+        return pMyPC->FUN_14166c930() == 0x19;
     }
+    case 0xe:
+        return FUN_1403ed2b0()->FUN_141adc940(0x4e77) == 0;
+    case 0x13:
+        return FUN_1403ed2b0()->FUN_141adc940(0x4ebd) == 0;
+    case 0x1a:
+    {
+        MyPC* pMyPC = static_cast<MyPC*>(FUN_1403ed2d0()->FUN_141bd0cc0());
+        if (pMyPC == 0)
+            return 1;
+        return pMyPC->FUN_14166c930() == 0x3d;
+    }
+    case 0x1c:
+    {
+        MyPC* pMyPC = static_cast<MyPC*>(FUN_1403ed2d0()->FUN_141bd0cc0());
+        if (pMyPC == 0)
+            return 1;
+        return pMyPC->FUN_14166c930() == 0x3e;
+    }
+    }
+    return 0;
 }
 
 // @0x1418b23a0
@@ -314,12 +312,6 @@ int UIActionTooltip::FUN_1418b23a0()
     if (pPlayer == 0)
         return 0x1e;
     return FUN_140a7b810(pPlayer)->GetCur();
-}
-
-// MS2-FUNCTIONAL: the exe dtor does not reset the vftables (source spelling unknown)
-// @0x1418b23f0
-UIActionTooltip::~UIActionTooltip()
-{
 }
 
 MS2_EMIT_CRT_MEMMOVE_S();

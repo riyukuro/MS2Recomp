@@ -77,8 +77,8 @@ CItemRePackingScrollTable::~CItemRePackingScrollTable()
 // @0x14061d130
 int CItemRePackingScrollTable::Load()
 {
-    CString strPath = FUN_14071a5b0(CString("Table"), CString("itemRePackingScroll.xml"));
-    FUN_1401d1160(CString(strPath));
+    CString strPath = FUN_14071a5b0("Table", "itemRePackingScroll.xml");
+    FUN_1401d1160(strPath);
     TiXmlDocument doc;
     if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return 1;
@@ -151,13 +151,13 @@ int CItemRePackingScrollTable::Check(MS2Ptr<CItem> pItem, CItemRePackingScrollDa
     MS2Ptr<CItemData> pItemData(FUN_140527840(pItem));
     if (pItemData == 0)
         return 2;
-    ATL::CAtlArray<int>& rScrolls = pItemData->property.rePackingScrollID;
-    if (!rScrolls.IsEmpty())
+    if (!pItemData->property.rePackingScrollID.IsEmpty())
     {
         int bFound = 0;
-        for (unsigned i = 0; i < rScrolls.GetCount(); i++)
+        for (unsigned i = 0; i < pItemData->property.rePackingScrollID.GetCount(); i++)
         {
-            if (rScrolls[i] == pData->m_nId)
+            int nScroll = pItemData->property.rePackingScrollID[(size_t)i];
+            if (nScroll == pData->m_nId)
             {
                 bFound = 1;
                 break;
@@ -166,25 +166,27 @@ int CItemRePackingScrollTable::Check(MS2Ptr<CItem> pItem, CItemRePackingScrollDa
         if (bFound == 0)
             return 1;
     }
-    int nPet = pData->m_nPet;
-    if (nPet == 0)
+    switch (pData->m_nPet)
+    {
+    case 0:
     {
         int nType = pItemData->FUN_14053c620();
         if (Unk_ArrayFind<int>(reinterpret_cast<const ATL::CAtlArray<int>&>(pData->m_arrSlot), nType) == -1)
             return 3;
+        break;
     }
-    else if (nPet == 1)
-    {
+    case 1:
         if (!FUN_140166410()->FUN_14036d570(0xa4))
             return 7;
         if (!pItemData->FUN_14053cc40())
             return 3;
+        break;
     }
     int nRank = ((CItem*)pItem)->FUN_140526bd0();
     if (Unk_ArrayFind<int>(reinterpret_cast<const ATL::CAtlArray<int>&>(pData->m_arrRank), nRank) == -1)
         return 4;
     int nLevel = pItemData->limit.levelLimit;
-    if (nLevel < (int)pData->m_nMinLv || (int)pData->m_nMaxLv < nLevel)
+    if (nLevel < (int)pData->m_nMinLv || nLevel > (int)pData->m_nMaxLv)
         return 5;
     if (!pItemData->FUN_14053d800())
         return 8;
@@ -196,13 +198,9 @@ int CItemRePackingScrollTable::Check(MS2Ptr<CItem> pItem, CItemRePackingScrollDa
         return 1;
     if (((CItem*)pItem)->FUN_140527580() == 0)
         return 10;
-    if (((CItem*)pItem)->FUN_140528ca0() != 1)
-    {
-        __int64 nTime = ((CItem*)pItem)->FUN_140528e00();
-        if (nTime <= FUN_140869440())
-            return 0;
-    }
-    return 0xb;
+    if (((CItem*)pItem)->FUN_140528ca0() == 1 || ((CItem*)pItem)->FUN_140528e00() > FUN_140869440())
+        return 0xb;
+    return 0;
 }
 
 // @0x14061e350

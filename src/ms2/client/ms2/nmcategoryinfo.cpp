@@ -7,10 +7,12 @@
 #include "ms2/placeholder/ms2stdafx.h"
 #include "ms2/placeholder/nmfunc.h"
 #include "ms2/placeholder/nmstream.h"
+#include "ms2/placeholder/nmencoder.h"
 #include "ms2/ms2recover.h"
 
 extern int FUN_1415fb750(void*);
-extern int FUN_1415fb6d0(void*);
+extern int FUN_1415fb6d0(const void*);
+extern int FUN_1415fb6d0(CNMSerializableDecoder*);
 extern void FUN_1415f9990(void*);
 extern void FUN_14156ac20(void*, unsigned int);
 extern void FUN_14156ab00(void*, unsigned char);
@@ -23,7 +25,7 @@ extern void FUN_1415e81d0(void*);
 // MS2-FUNCTIONAL: reconstructs the zeroed category record with the recovered serializer signature.
 // @0x14156f7e0
 CNMCategoryInfo::CNMCategoryInfo()
-    : CNMSerializable(0x6369, 1, 1), m_10(0), m_14{}, m_1c{}, m_3c(0), m_3d(0)
+    : CNMSerializable(0x6369, 1, 1), m_10(0), m_14{0, 0}, m_1c{}, m_3c(0), m_3d(0)
 {
 }
 
@@ -31,11 +33,8 @@ CNMCategoryInfo::CNMCategoryInfo()
 // @0x14156f870
 unsigned int CNMCategoryInfo::EncodeFramed(CNMStream* pStream)
 {
-    alignas(8) unsigned char encoder[0x18];
-    FUN_14156bcb0(encoder, pStream, this);
-    const unsigned int result = Encode( reinterpret_cast<CNMEncoder*>(encoder), pStream);
-    FUN_14156bd50(encoder);
-    return result;
+    CNMSerializableEncoder encoder(pStream, this);
+    return CNMCategoryInfo::Encode(reinterpret_cast<CNMEncoder*>(&encoder), pStream);
 }
 
 // MS2-FUNCTIONAL: routes category encoding according to the record format.
@@ -43,10 +42,8 @@ unsigned int CNMCategoryInfo::EncodeFramed(CNMStream* pStream)
 unsigned int CNMCategoryInfo::EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream)
 {
     if (m_bFormat == 1)
-        Encode(pEncoder, pStream);
-    else
-        EncodeFramed(pStream);
-    return 0;
+        return CNMCategoryInfo::Encode(pEncoder, pStream);
+    return CNMCategoryInfo::EncodeFramed(pStream);
 }
 
 // MS2-FUNCTIONAL: writes the three scalar fields, fixed text, and kind-specific state in recovered order.
@@ -70,13 +67,10 @@ unsigned int CNMCategoryInfo::Encode(CNMEncoder* pEncoder, CNMStream*)
 // @0x14156f9e0
 unsigned int CNMCategoryInfo::DecodeFramed(CNMStream* pStream)
 {
-    alignas(8) unsigned char decoder[0x38];
-    FUN_14156be10(decoder, pStream, this);
-    unsigned int result = 0;
-    if (FUN_1415fb750(decoder) != 0)
-        result = Decode(reinterpret_cast<CNMSerializableDecoder*>(decoder), pStream);
-    FUN_14156bd50(decoder);
-    return result;
+    CNMSerializableDecoder decoder(pStream, this);
+    if (FUN_1415fb750(&decoder) == 0)
+        return 0;
+    return CNMCategoryInfo::Decode(&decoder, pStream);
 }
 
 // MS2-FUNCTIONAL: routes category decoding according to the decoder version.
@@ -84,10 +78,8 @@ unsigned int CNMCategoryInfo::DecodeFramed(CNMStream* pStream)
 unsigned int CNMCategoryInfo::DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream)
 {
     if (FUN_1415fb6d0(pDecoder) == 2)
-        DecodeFramed(pStream);
-    else
-        Decode(pDecoder, pStream);
-    return 0;
+        return CNMCategoryInfo::DecodeFramed(pStream);
+    return CNMCategoryInfo::Decode(pDecoder, pStream);
 }
 
 // MS2-FUNCTIONAL: restores the scalar fields, fixed text, and base-category flags from the decoder.
@@ -103,8 +95,7 @@ unsigned int CNMCategoryInfo::Decode(CNMSerializableDecoder* pDecoder, CNMStream
         m_3c = pDecoder->ReadU8();
         m_3d = pDecoder->ReadU8();
     }
-    FUN_1415fb750(pDecoder);
-    return 1;
+    return FUN_1415fb750(pDecoder);
 }
 
 // MS2-FUNCTIONAL: initializes the friend category and its vector, then applies the derived record kind.
@@ -119,11 +110,8 @@ CNMCateFriendInfo::CNMCateFriendInfo()
 // @0x14156fc10
 unsigned int CNMCateFriendInfo::EncodeFramed(CNMStream* pStream)
 {
-    alignas(8) unsigned char encoder[0x18];
-    FUN_14156bcb0(encoder, pStream, this);
-    const unsigned int result = Encode(reinterpret_cast<CNMEncoder*>(encoder), pStream);
-    FUN_14156bd50(encoder);
-    return result;
+    CNMSerializableEncoder encoder(pStream, this);
+    return CNMCateFriendInfo::Encode(reinterpret_cast<CNMEncoder*>(&encoder), pStream);
 }
 
 // MS2-FUNCTIONAL: selects the derived encoder using the record format.
@@ -131,20 +119,17 @@ unsigned int CNMCateFriendInfo::EncodeFramed(CNMStream* pStream)
 unsigned int CNMCateFriendInfo::EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream)
 {
     if (m_bFormat == 1)
-        Encode(pEncoder, pStream);
-    else
-        EncodeFramed(pStream);
-    return 0;
+        return CNMCateFriendInfo::Encode(pEncoder, pStream);
+    return CNMCateFriendInfo::EncodeFramed(pStream);
 }
 
-// MS2-FUNCTIONAL: emits the friend count, each framed friend, and the two category flags.
 // @0x14156fcd0
 unsigned int CNMCateFriendInfo::Encode(CNMEncoder* pEncoder, CNMStream* pStream)
 {
     CNMCategoryInfo::EncodeDispatch(pEncoder, pStream);
     FUN_14156ac20(pEncoder, static_cast<unsigned int>(m_aFriends.size()));
-    for (auto& friendInfo : m_aFriends)
-        friendInfo.EncodeFramed(pStream);
+    for (std::vector<CNMFriendInfo>::iterator it = m_aFriends.begin(), end = m_aFriends.end(); it != end; ++it)
+        (*it).EncodeFramed(pStream);
     FUN_14156ab00(pEncoder, m_3c);
     FUN_14156ab00(pEncoder, m_3d);
     FUN_1415f9990(pEncoder);
@@ -155,13 +140,10 @@ unsigned int CNMCateFriendInfo::Encode(CNMEncoder* pEncoder, CNMStream* pStream)
 // @0x14156fdd0
 unsigned int CNMCateFriendInfo::DecodeFramed(CNMStream* pStream)
 {
-    alignas(8) unsigned char decoder[0x38];
-    FUN_14156be10(decoder, pStream, this);
-    unsigned int result = 0;
-    if (FUN_1415fb750(decoder) != 0)
-        result = Decode(reinterpret_cast<CNMSerializableDecoder*>(decoder), pStream);
-    FUN_14156bd50(decoder);
-    return result;
+    CNMSerializableDecoder decoder(pStream, this);
+    if (FUN_1415fb750(&decoder) == 0)
+        return 0;
+    return CNMCateFriendInfo::Decode(&decoder, pStream);
 }
 
 // MS2-FUNCTIONAL: dispatches derived decoding by the decoder record version.
@@ -169,29 +151,27 @@ unsigned int CNMCateFriendInfo::DecodeFramed(CNMStream* pStream)
 unsigned int CNMCateFriendInfo::DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream)
 {
     if (FUN_1415fb6d0(pDecoder) == 2)
-        DecodeFramed(pStream);
-    else
-        Decode(pDecoder, pStream);
-    return 0;
+        return CNMCateFriendInfo::DecodeFramed(pStream);
+    return CNMCateFriendInfo::Decode(pDecoder, pStream);
 }
 
-// MS2-FUNCTIONAL: decodes inherited fields, the friend vector, and category flags in the recovered order.
 // @0x14156fec0
 unsigned int CNMCateFriendInfo::Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream)
 {
     CNMCategoryInfo::DecodeDispatch(pDecoder, pStream);
-    const unsigned int count = pDecoder->ReadU32();
-    m_aFriends.clear();
-    for (unsigned int i = 0; i < count; ++i)
     {
         CNMFriendInfo friendInfo;
-        friendInfo.DecodeFramed(pStream);
-        m_aFriends.push_back(friendInfo);
+        unsigned int count = pDecoder->ReadU32();
+        m_aFriends.clear();
+        for (unsigned int i = 0; i < count; ++i)
+        {
+            friendInfo.DecodeFramed(pStream);
+            m_aFriends.push_back(friendInfo);
+        }
     }
     m_3c = pDecoder->ReadU8();
     m_3d = pDecoder->ReadU8();
-    FUN_1415fb750(pDecoder);
-    return 1;
+    return FUN_1415fb750(pDecoder);
 }
 
 // MS2-PIN: ??0CNMCategoryInfo@@QEAA@XZ 0x14156f7e0

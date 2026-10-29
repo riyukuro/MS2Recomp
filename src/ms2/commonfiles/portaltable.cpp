@@ -76,20 +76,25 @@ CStringW FUN_1401bf530(Unk_140165cf0*, const char*, CStringW);
 int FUN_140197390(Unk_140165cf0*, const char*, int);                    // integer attribute with default
 
 // A list of child elements (24 bytes; a std::vector<Unk_140165cf0*> of the original) and its iterator.
-class Unk_ElemIter
+class Unk_ElemConstIter
+{
+public:
+    Unk_ElemConstIter() {}
+    bool FUN_1401f0f20(const Unk_ElemConstIter&) const;             // operator!=
+    Unk_140165cf0* const& FUN_1401f1250();                          // operator*
+    Unk_ElemConstIter& FUN_1401f1710();                             // operator++
+    Unk_140165cf0** m_p;
+};
+class Unk_ElemIter : public Unk_ElemConstIter
 {
 public:
     Unk_ElemIter() {}
-    bool FUN_1401f0f20(const Unk_ElemIter&) const;                  // operator!=
-    Unk_140165cf0*& FUN_1401f1250();                                // operator*
-    Unk_ElemIter& FUN_1401f1710();                                  // operator++
-    Unk_140165cf0** m_p;
 };
 class Unk_ElemList
 {
 public:
-    void FUN_140163e20();                                           // ctor
-    void FUN_1401644e0();                                           // dtor
+    Unk_ElemList();                                                 // 0x140163e20
+    ~Unk_ElemList();                                                // 0x1401644e0
     Unk_ElemIter FUN_1401f6590();                                   // begin
     Unk_ElemIter FUN_1401f6f10();                                   // end
     void *m_a, *m_b, *m_c;
@@ -107,17 +112,11 @@ CPortalTable::~CPortalTable()
 }
 
 // @0x1407301d0
-// MS2-FUNCTIONAL: the exe builds strPath in place from the call while the file temp dies at once (no operator=); no source form found
 bool CPortalTable::LoadNames()
 {
-    CString strPath;
-    {
-        CString strFile("stringPortal.xml");
-        strPath = FUN_14071ae20(strFile);
-    }
+    CString strPath = FUN_14071ae20("stringPortal.xml");
     TiXmlDocument doc;
-    const char* pszPath = strPath;
-    if (FUN_140166420()->FUN_1403974b0(&doc, pszPath, 0, true, false) == 0)
+    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
     {
         FUN_14015eb90(FUN_140166440(), 1, 0x13, L"파일을 읽을 수 없습니다[{0}]", strPath);
         return false;
@@ -129,11 +128,10 @@ bool CPortalTable::LoadNames()
         return false;
     }
     Unk_ElemList list;
-    list.FUN_140163e20();
     FUN_14028f5d0(pRoot, "v", &list);
-    Unk_ElemIter itEnd = list.FUN_1401f6f10();
-    Unk_ElemIter it = list.FUN_1401f6590();
-    for (; it.FUN_1401f0f20(itEnd); it.FUN_1401f1710())
+    Unk_ElemList& rList = list;
+    Unk_ElemConstIter itEnd = rList.FUN_1401f6f10();
+    for (Unk_ElemConstIter it = rList.FUN_1401f6590(); it.FUN_1401f0f20(itEnd); it.FUN_1401f1710())
     {
         Unk_140165cf0* pNode = it.FUN_1401f1250();
         int nFieldId = FUN_140197390(pNode, "fieldID", 0);
@@ -141,23 +139,15 @@ bool CPortalTable::LoadNames()
         unsigned __int64 key = ((unsigned __int64)(unsigned)nFieldId << 32) | (unsigned)nPortalId;
         m_names[key] = FUN_1401bf530(pNode, "name", L"");
     }
-    list.FUN_1401644e0();
     return true;
 }
 
 // @0x140730500
-// MS2-FUNCTIONAL: same in-place strPath construction as LoadNames
 bool CPortalTable::LoadRandomTargets()
 {
-    CString strPath;
-    {
-        CString strFile("portalRandomTarget.xml");
-        CString strDir("Table");
-        strPath = FUN_14071a5b0(strDir, strFile);
-    }
+    CString strPath = FUN_14071a5b0("Table", "portalRandomTarget.xml");
     TiXmlDocument doc;
-    const char* pszPath = strPath;
-    if (FUN_140166420()->FUN_1403974b0(&doc, pszPath, 0, true, false) == 0)
+    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
     {
         FUN_14015eb90(FUN_140166440(), 1, 0x13, L"파일을 읽을 수 없습니다[{0}]", strPath);
         return false;
@@ -169,11 +159,10 @@ bool CPortalTable::LoadRandomTargets()
         return false;
     }
     Unk_ElemList list;
-    list.FUN_140163e20();
     FUN_14028f5d0(pRoot, "v", &list);
-    Unk_ElemIter itEnd = list.FUN_1401f6f10();
-    Unk_ElemIter it = list.FUN_1401f6590();
-    for (; it.FUN_1401f0f20(itEnd); it.FUN_1401f1710())
+    Unk_ElemList& rList = list;
+    Unk_ElemConstIter itEnd = rList.FUN_1401f6f10();
+    for (Unk_ElemConstIter it = rList.FUN_1401f6590(); it.FUN_1401f0f20(itEnd); it.FUN_1401f1710())
     {
         Unk_140165cf0* pNode = it.FUN_1401f1250();
         int nFieldId = FUN_140197390(pNode, "fieldID", 0);
@@ -191,7 +180,6 @@ bool CPortalTable::LoadRandomTargets()
         slot->m_nTotalWeight += target.nWeight;
         slot->m_targets.push_back(target);
     }
-    list.FUN_1401644e0();
     return true;
 }
 
@@ -248,11 +236,8 @@ PortalRandomTargetData::PortalRandomTargetData() : m_nFieldId(0), m_nPortalId(0)
 {
 }
 
-// MS2-FUNCTIONAL: exe dtor has no vptr store
 // MS2-PIN: ??1PortalRandomTargetData@@UEAA@XZ 0x1407352d0
-PortalRandomTargetData::~PortalRandomTargetData()
-{
-}
+// The destructor is implicit (the exe one has no vptr store).
 
 // hk1 2026-10-20: hooks for the remaining recovered functions (work/hk1/report.md)
 MS2_REPLACE_METHOD(0x1407301d0, CPortalTable, LoadNames, 796, 0xF33D09CB);

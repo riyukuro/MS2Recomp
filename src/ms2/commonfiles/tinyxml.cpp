@@ -1186,9 +1186,9 @@ void TiXmlAttribute::SetDoubleValue( double _value )
 {
 	char buf [256];
 	#if defined(TIXML_SNPRINTF)		
-		TIXML_SNPRINTF( buf, sizeof(buf), "%lf", _value);
+		TIXML_SNPRINTF( buf, sizeof(buf), "%g", _value);
 	#else
-		sprintf (buf, "%lf", _value);
+		sprintf (buf, "%g", _value);
 	#endif
 	SetValue (buf);
 }
@@ -1262,7 +1262,7 @@ void TiXmlText::Print( FILE* cfile, int depth ) const
 		int i;
 		fprintf( cfile, "\n" );
 		for ( i=0; i<depth; i++ ) {
-			fprintf( cfile, "    " );
+			fprintf( cfile, "\t" );
 		}
 		fprintf( cfile, "<![CDATA[%s]]>\n", value.c_str() );	// unformatted output
 	}
@@ -1331,20 +1331,20 @@ TiXmlDeclaration& TiXmlDeclaration::operator=( const TiXmlDeclaration& copy )
 
 void TiXmlDeclaration::Print( FILE* cfile, int /*depth*/, TIXML_STRING* str ) const
 {
-	if ( cfile ) fprintf( cfile, "<?xml " );
-	if ( str )	 (*str) += "<?xml ";
+	if ( cfile ) fprintf( cfile, "<?xml" );
+	if ( str )	 (*str) += "<?xml";
 
 	if ( !version.empty() ) {
-		if ( cfile ) fprintf (cfile, "version=\"%s\" ", version.c_str ());
-		if ( str ) { (*str) += "version=\""; (*str) += version; (*str) += "\" "; }
+		if ( cfile ) fprintf (cfile, " version=\"%s\"", version.c_str ());
+		if ( str ) { (*str) += " version=\""; (*str) += version; (*str) += "\""; }
 	}
 	if ( !encoding.empty() ) {
-		if ( cfile ) fprintf (cfile, "encoding=\"%s\" ", encoding.c_str ());
-		if ( str ) { (*str) += "encoding=\""; (*str) += encoding; (*str) += "\" "; }
+		if ( cfile ) fprintf (cfile, " encoding=\"%s\"", encoding.c_str ());
+		if ( str ) { (*str) += " encoding=\""; (*str) += encoding; (*str) += "\""; }
 	}
 	if ( !standalone.empty() ) {
-		if ( cfile ) fprintf (cfile, "standalone=\"%s\" ", standalone.c_str ());
-		if ( str ) { (*str) += "standalone=\""; (*str) += standalone; (*str) += "\" "; }
+		if ( cfile ) fprintf (cfile, " standalone=\"%s\" ", standalone.c_str ());
+		if ( str ) { (*str) += " standalone=\""; (*str) += standalone; (*str) += "\""; }
 	}
 	if ( cfile ) fprintf( cfile, "?>" );
 	if ( str )	 (*str) += "?>";

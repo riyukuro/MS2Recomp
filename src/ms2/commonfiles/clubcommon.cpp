@@ -24,6 +24,7 @@
 #include "ms2/commonfiles/userproxy.h"
 #include "ms2/placeholder/cinpacket.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
+#include "ms2/commonfiles/blackmarketitemoption.h"
 #include "ms2/placeholder/tixmldocument.h"
 
 #include "ms2/ms2recover.h"
@@ -242,11 +243,12 @@ void Club::UserClub::FUN_14020ce50(COutputStream& out)
 // @0x14020cfc0
 void Club::UserClub::FUN_14020cfc0(CInputStream& in)
 {
-    unsigned char count = in.ReadUInt8();
+    int count = in.ReadUInt8();
     MS2_ASSERT_AT(0xd0, count <= CLUB_JOIN_MAX);
-    for (int i = 0; i < (int)count; i++)
+    for (int i = 0; i < count; i++)
     {
-        if (in.ReadUInt8() == 1)
+        int nFlag = in.ReadUInt8();
+        if (nFlag == 1)
         {
             MS2Ptr<NameInfo> sp(new NameInfo);
             sp->m_18 = in.ReadInt64();
@@ -668,10 +670,10 @@ void CClub::vfunc_0()
     m_creationTime = 0;
     m_leaderAccountId = 0;
     m_leaderCharacterId = 0;
-    m_leaderName = L"";
+    m_leaderName = "";
     m_78 = 0;
     m_80 = 0;
-    m_88 = L"";
+    m_88 = "";
     m_50 = 0;
     m_54 = 0;
     m_leader = 0;
@@ -876,7 +878,7 @@ unsigned CClub::FUN_14020f6b0()
 }
 
 // @0x14020f720
-void CClub::FUN_14020f720(__int64 nAccountId, __int64 nCharacterId, CStringW strName)
+void CClub::FUN_14020f720(__int64 nAccountId, __int64 nCharacterId, CStringW strName, int nUnused)
 {
     {
         if (Unk_LockGuard guard = m_lock)
@@ -1027,14 +1029,14 @@ void CClub::FUN_14020fd80(CInPacket& packet)
         __int64 nLeaderCharacter = packet.ReadInt64();
         CStringW strLeader = packet.ReadUnicodeString();
         __int64 nCreated = packet.ReadInt64();
-        unsigned char nState = packet.ReadUInt8();
+        int nState = packet.ReadUInt8();
         int nBuffId = packet.ReadInt32();
         int nBuffLevel = packet.ReadInt32();
         __int64 n90 = packet.ReadInt64();
         FUN_14020f4e0(nState);
         FUN_14020f130(nId);
         FUN_14020f230(strName);
-        FUN_14020f720(nLeaderAccount, nLeaderCharacter, strLeader);
+        FUN_14020f720(nLeaderAccount, nLeaderCharacter, strLeader, 1);
         FUN_14020f310(nCreated);
         FUN_14020f5b0(nBuffId, nBuffLevel);
         FUN_14020f3f0(n90);
@@ -1051,7 +1053,8 @@ void CClub::FUN_1402100e0(COutputStream& out)
     }
     else
     {
-        out.WriteUInt8((unsigned char)FUN_140210df0());
+        int nCount = FUN_140210df0();
+        out.WriteUInt8((unsigned char)nCount);
         for (POSITION pos = m_members.GetHeadPosition(); pos; m_members.GetNext(pos))
         {
             MS2Ptr<CClubMember> sp = m_members.GetValueAt(pos);
@@ -1069,8 +1072,8 @@ void CClub::FUN_1402101e0(CInPacket& packet)
     }
     else
     {
-        unsigned char count = packet.ReadUInt8();
-        for (int i = 0; i < (int)count; i++)
+        int count = packet.ReadUInt8();
+        for (int i = 0; i < count; i++)
         {
             MS2Ptr<CClubMember> sp(new CClubMember);
             sp->FUN_14020ea50(&packet);
@@ -1090,19 +1093,13 @@ int CClub::vfunc_4(MS2Ptr<CClubMember> spMember)
     }
     else
     {
-        if (m_members.GetCount() < 10)
-        {
-            m_members.SetAt(spMember->m_info.FUN_14020e5d0(), spMember);
-            if (m_leader == 0)
-            {
-                if (spMember->m_info.m_characterId == m_leaderCharacterId)
-                    m_leader = spMember;
-            }
-            return 1;
-        }
-        return 0;
+        if ((int)m_members.GetCount() >= 10)
+            return 0;
+        m_members.SetAt(spMember->m_info.FUN_14020e5d0(), spMember);
+        if (m_leader == 0 && spMember->m_info.m_characterId == m_leaderCharacterId)
+            m_leader = spMember;
+        return 1;
     }
-    __nop();
 }
 
 // @0x1402104e0
@@ -1146,7 +1143,7 @@ MS2Ptr<CClubMember> CClub::FUN_140210630(__int64 nId)
         for (POSITION pos = m_members.GetHeadPosition(); pos; m_members.GetNext(pos))
         {
             MS2Ptr<CClubMember> sp = m_members.GetValueAt(pos);
-            if (sp.get() != 0 && sp->m_18 == nId)
+            if ((sp.get() ? true : false) && sp->m_18 == nId)
             {
                 spFound = sp;
                 break;
@@ -1225,13 +1222,9 @@ void CClub::FUN_140210ad0(ATL::CAtlArray<MS2Ptr<CClubMember> >& members)
         {
             MS2Ptr<CClubMember> sp = m_members.GetValueAt(pos);
             if (sp == 0)
-            {
-            }
-            else
-            {
-                if (sp->FUN_14020edd0() == 1)
-                    members.Add(sp);
-            }
+                continue;
+            if (sp->FUN_14020edd0() == 1)
+                members.Add(sp);
         }
     }
 }
@@ -1249,13 +1242,9 @@ void CClub::FUN_140210be0(ATL::CAtlArray<MS2Ptr<CClubMember> >& members)
         {
             MS2Ptr<CClubMember> sp = m_members.GetValueAt(pos);
             if (sp == 0)
-            {
-            }
-            else
-            {
-                if (sp->m_c8 == 2)
-                    members.Add(sp);
-            }
+                continue;
+            if (sp->m_c8 == 2)
+                members.Add(sp);
         }
     }
 }
@@ -1390,10 +1379,7 @@ CClubDataTable::ClubBuffData::ClubBuffData()
     m_effectLevel = 0;
 }
 
-// @0x140212480
-CClubDataTable::ClubBuffData::~ClubBuffData()
-{
-}
+// MS2-PIN: ??1ClubBuffData@CClubDataTable@@UEAA@XZ 0x140212480 ; implicit virtual dtor (no vptr reset, like the exe)
 
 // @0x140211280
 void CClubDataTable::ClubBuffData::FUN_140211280(Unk_140165cf0* pElem)
@@ -1426,10 +1412,9 @@ int CClubDataTable::FUN_1402113c0()
 // @0x1402113f0
 int CClubDataTable::LoadClubBuff()
 {
-    CString strPath = FUN_14071a5b0(CString("Table"), CString("clubBuff.xml"));
+    CString strPath = FUN_14071a5b0("Table", "clubBuff.xml");
     TiXmlDocument doc;
-    const char* pszPath = strPath;
-    if (FUN_140166420()->FUN_1403974b0(&doc, pszPath, 0, true, false) == 0)
+    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return 0;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
@@ -1482,15 +1467,11 @@ CClubDataTable::BuffPtr CClubDataTable::FUN_140211760(int nEffectId, int nEffect
         {
             BuffPtr sp = m_buffs.GetValueAt(pos);
             if (sp == 0)
+                continue;
+            if (sp->m_effectId == nEffectId && sp->m_effectLevel == nEffectLevel)
             {
-            }
-            else
-            {
-                if (sp->m_effectId == nEffectId && sp->m_effectLevel == nEffectLevel)
-                {
-                    spFound = sp;
-                    break;
-                }
+                spFound = sp;
+                break;
             }
         }
     }
@@ -1525,17 +1506,19 @@ void CClubDataTable::FUN_140211990(ATL::CAtlArray<BuffPtr>& buffs)
     }
 }
 
+template <> MS2Ptr<CClubDataTable::ClubBuffData>::MS2Ptr(const Unk_BmNewTag&);
+
 // @0x140211a40
 CClubDataTable::BuffPtr CClubDataTable::FUN_140211a40()
 {
-    BuffPtr spFirst(0);
+    BuffPtr spFirst(Unk_BmNewTag(0));
     if (Unk_LockGuard guard = m_lock)
     {
-        __assume(0);
     }
     else
     {
-        spFirst = m_buffs.GetValueAt(m_buffs.GetHeadPosition());
+        POSITION pos = m_buffs.GetHeadPosition();
+        spFirst = m_buffs.GetValueAt(pos);
     }
     return spFirst;
 }
@@ -1570,11 +1553,10 @@ void Unk_BuffPtrResetNew(void** pThis)
 }
 
 // @0x140211da0
-void* Unk_BuffPtrNew(void** pThis, void* pTag)
+template <> MS2Ptr<CClubDataTable::ClubBuffData>::MS2Ptr(const Unk_BmNewTag&)
 {
-    ((Unk_BuffPtrView*)pThis)->m_p = 0;
-    Unk_BuffPtrResetNew(pThis);
-    return pThis;
+    m_p = 0;
+    Unk_BuffPtrResetNew((void**)this);
 }
 
 // @0x140212650

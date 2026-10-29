@@ -326,7 +326,6 @@ void CTextureAnimation::FUN_141848650()
 MS2_REPLACE_METHOD(0x141848650, CTextureAnimation, FUN_141848650, 221, 0x6AD946C3);
 
 // @0x141848740
-// MS2-FUNCTIONAL: the tail `return true` blocks are laid out differently
 bool CTextureAnimation::FUN_141848740(int nTime)
 {
     if (m_nState == 0)
@@ -346,11 +345,9 @@ bool CTextureAnimation::FUN_141848740(int nTime)
         FUN_141848650();
         return false;
     }
-    if (!(m_spLayer == 0) && nFrame != m_nFrame)
-    {
-        FUN_141848890(nFrame);
+    if (m_spLayer == 0 || nFrame == m_nFrame)
         return true;
-    }
+    FUN_141848890(nFrame);
     return true;
 }
 
@@ -384,11 +381,9 @@ void CTextureAnimation::FUN_141848890(unsigned int nFrame)
 MS2_REPLACE_METHOD(0x141848890, CTextureAnimation, FUN_141848890, 787, 0x840C4DB0);
 
 // @0x141848bb0
-// MS2-FUNCTIONAL: the m_spData-> call loads its this pointer into rcx and the count compare is reg-reg
 Unk_PPSmartC CTextureAnimation::FUN_141848bb0(unsigned int nFrame)
 {
-    unsigned __int64 nIndex = nFrame;
-    if (!(nIndex < m_spData->m_arrFrames.GetCount()))
+    if (nFrame >= m_spData->m_arrFrames.GetCount())
         return Unk_PPSmartC(0);
     if (m_vecBase.size() > 0)
     {
@@ -405,14 +400,11 @@ Unk_PPSmartC CTextureAnimation::FUN_141848bb0(unsigned int nFrame)
 }
 
 // @0x141848dc0
-// MS2-FUNCTIONAL: same as FUN_141848bb0
 Unk_PPSmartC CTextureAnimation::FUN_141848dc0(unsigned int nFrame)
 {
-    unsigned __int64 nIndex = nFrame;
-    if (!(nIndex < m_spData->m_arrFrames.GetCount()))
+    if (nFrame >= m_spData->m_arrFrames.GetCount())
         return Unk_PPSmartC(0);
-    unsigned __int64 nAt = nFrame;
-    if (!m_spData->m_arrFrames.GetAt(nAt).FUN_141847bb0())
+    if (!m_spData->m_arrFrames.GetAt(nFrame).FUN_141847bb0())
         return Unk_PPSmartC(0);
     if (m_vecMap.size() > 0)
     {
@@ -429,30 +421,22 @@ Unk_PPSmartC CTextureAnimation::FUN_141848dc0(unsigned int nFrame)
 }
 
 // @0x141849060
-// MS2-FUNCTIONAL: stack slot order of the entity id / result temporaries differs
 NiAVObject* CTextureAnimation::FUN_141849060(const CString& strName)
 {
-    egf::EntityID kId;
     if (m_pOwner == 0)
         return 0;
-    NiActorManager* pActorMgr = FUN_141b6f910()->FUN_140999440(m_pOwner->FUN_14123c460(kId));
+    NiActorManager* pActorMgr = FUN_141b6f910()->FUN_140999440(m_pOwner->FUN_14123c460());
     if (pActorMgr == 0)
         return 0;
     NiObject* pRoot = pActorMgr->GetNIFRoot();
     if (pRoot == 0)
         return 0;
-    NiAVObject* pResult;
     if (_stricmp((const char*)strName, "Scene Root") == 0)
-        pResult = (NiAVObject*)FUN_14098d8d0(&Unk_RenderObjectRTTI, pRoot);
-    else
-    {
-        NiObject* pNode = FUN_14107c930(pRoot, &strName);
-        if (pNode == 0)
-            pResult = 0;
-        else
-            pResult = (NiAVObject*)FUN_14098d8d0(&Unk_RenderObjectRTTI, pNode);
-    }
-    return pResult;
+        return (NiAVObject*)FUN_14098d8d0(&Unk_RenderObjectRTTI, pRoot);
+    NiObject* pNode = FUN_14107c930(pRoot, &strName);
+    if (pNode != 0)
+        return (NiAVObject*)FUN_14098d8d0(&Unk_RenderObjectRTTI, pNode);
+    return 0;
 }
 
 // @0x141849150

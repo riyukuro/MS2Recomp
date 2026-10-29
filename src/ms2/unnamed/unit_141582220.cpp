@@ -6,6 +6,7 @@
 #include "ms2/placeholder/nmstream.h"
 #include "ms2/placeholder/nmobjects.h"
 #include "ms2/placeholder/nmfunc.h"
+#include "ms2/placeholder/nmencoder.h"
 #include "ms2/ms2recover.h"
 
 extern void FUN_14156bcb0(void*, void*, void*);
@@ -17,7 +18,7 @@ extern void FUN_14156ae30(void*, const void*);
 extern void FUN_1415f9990(void*);
 extern int FUN_1415fb700(void*);
 extern int FUN_1415fb750(void*);
-extern int FUN_1415fb6d0(void*);
+extern int FUN_1415fb6d0(CNMSerializableDecoder*);
 
 // MS2-FUNCTIONAL 0x141582220: initializes the local-config request with an empty string.
 // @0x141582220
@@ -37,26 +38,17 @@ CNMGetLocalConfigFunc::CNMGetLocalConfigFunc(unsigned result)
 // @0x1415822f0
 unsigned int CNMGetLocalConfigFunc::EncodeFramed(CNMStream* pStream)
 {
-    unsigned char storage[0x18];
-    FUN_14156bcb0(storage, pStream, this);
-    void** vtable = *reinterpret_cast<void***>(this);
-    using Method = unsigned int(__fastcall*)(CNMGetLocalConfigFunc*, CNMEncoder*, CNMStream*);
-    const unsigned int encoded = reinterpret_cast<Method>(vtable[2])(this, reinterpret_cast<CNMEncoder*>(storage), pStream);
-    FUN_14156bd50(storage);
-    return encoded;
+    CNMSerializableEncoder encoder(pStream, this);
+    return CNMGetLocalConfigFunc::Encode(reinterpret_cast<CNMEncoder*>(&encoder), pStream);
 }
 
 // MS2-FUNCTIONAL 0x141582350: selects raw or framed encoding from the format flag.
 // @0x141582350
 unsigned int CNMGetLocalConfigFunc::EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream)
 {
-    void** vtable = *reinterpret_cast<void***>(this);
-    if (m_bFormat == 1) {
-        using Method = unsigned int(__fastcall*)(CNMGetLocalConfigFunc*, CNMEncoder*, CNMStream*);
-        return reinterpret_cast<Method>(vtable[2])(this, pEncoder, pStream);
-    }
-    using Framed = unsigned int(__fastcall*)(CNMGetLocalConfigFunc*, CNMStream*);
-    return reinterpret_cast<Framed>(vtable[3])(this, pStream);
+    if (m_bFormat == 1)
+        return CNMGetLocalConfigFunc::Encode(pEncoder, pStream);
+    return CNMGetLocalConfigFunc::EncodeFramed(pStream);
 }
 
 // MS2-FUNCTIONAL 0x1415823b0: serializes either the request result or local configuration text.
@@ -74,29 +66,19 @@ unsigned int CNMGetLocalConfigFunc::Encode(CNMEncoder* pEncoder, CNMStream* pStr
 // @0x141582430
 unsigned int CNMGetLocalConfigFunc::DecodeFramed(CNMStream* pStream)
 {
-    unsigned char storage[0x38];
-    FUN_14156be10(storage, pStream, this);
-    unsigned int result = 0;
-    if (FUN_1415fb750(storage)) {
-        void** vtable = *reinterpret_cast<void***>(this);
-        using Method = unsigned int(__fastcall*)(CNMGetLocalConfigFunc*, CNMSerializableDecoder*, CNMStream*);
-        result = reinterpret_cast<Method>(vtable[5])(this, reinterpret_cast<CNMSerializableDecoder*>(storage), pStream);
-    }
-    FUN_14156bf10(storage);
-    return result;
+    CNMSerializableDecoder decoder(pStream, this);
+    if (FUN_1415fb750(&decoder) == 0)
+        return 0;
+    return CNMGetLocalConfigFunc::Decode(&decoder, pStream);
 }
 
 // MS2-FUNCTIONAL 0x1415824c0: chooses framed decoding for wire format 2.
 // @0x1415824c0
 unsigned int CNMGetLocalConfigFunc::DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream)
 {
-    void** vtable = *reinterpret_cast<void***>(this);
-    if (FUN_1415fb6d0(pDecoder) == 2) {
-        using Framed = unsigned int(__fastcall*)(CNMGetLocalConfigFunc*, CNMStream*);
-        return reinterpret_cast<Framed>(vtable[6])(this, pStream);
-    }
-    using Method = unsigned int(__fastcall*)(CNMGetLocalConfigFunc*, CNMSerializableDecoder*, CNMStream*);
-    return reinterpret_cast<Method>(vtable[5])(this, pDecoder, pStream);
+    if (FUN_1415fb6d0(pDecoder) == 2)
+        return CNMGetLocalConfigFunc::DecodeFramed(pStream);
+    return CNMGetLocalConfigFunc::Decode(pDecoder, pStream);
 }
 
 // MS2-FUNCTIONAL 0x141582520: restores the reply result or local configuration buffer.

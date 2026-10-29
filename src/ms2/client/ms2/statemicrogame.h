@@ -43,7 +43,7 @@ public:
     bool FUN_140b87210(MS2Ptr<Unk_StateArg22> p);           // the request carries the same game
     int FUN_140b872c0();                                    // the partner's actor id
     void FUN_140b87310(int nMode, int nCard, int nPick);    // play a card (UI selection)
-    bool FUN_140b876a0();                                   // start the game: reset the payload
+    void FUN_140b876a0();                                   // start the game: reset the payload
     void FUN_140b877c0();                                   // show a random chat line of the event
     PCBase* FUN_140b879d0();                                // the partner actor
     void FUN_140b87a40(unsigned int nSeq);                  // play the default motion
@@ -78,17 +78,17 @@ public:
 
     bool FUN_140b89410(MS2Ptr<Unk_StateArg22> p);           // the request carries the same dance
     int FUN_140b894c0();                                    // the partner's actor id
-    bool FUN_140b89510(const std::vector<int>& aStages);    // start the dance with the event's stage list
-    bool FUN_140b89880(int nTime, bool bFlag, int nA, int nB);   // answer a dance request
+    void FUN_140b89510(const std::vector<int>& aStages);    // start the dance with the event's stage list
+    void FUN_140b89880(int nTime, bool bFlag, int nA, int nB);   // answer a dance request
     PCBase* FUN_140b89dd0();                                // the partner actor
     void FUN_140b89e40(unsigned int nSeq);                  // play the default motion
     void FUN_140b89ed0(double fTime);                       // leave when the partner left
     bool FUN_140b89f90();                                   // the last stage is reached
     void FUN_140b8a060();                                   // advance the dance by the clock
-    bool FUN_140b8a290();                                   // stage start
-    bool FUN_140b8a5f0();                                   // stage play
-    bool FUN_140b8a910();                                   // stage end
-    bool FUN_140b8acc0();                                   // dance finish
+    void FUN_140b8a290();                                   // stage start
+    void FUN_140b8a5f0();                                   // stage play
+    void FUN_140b8a910();                                   // stage end
+    void FUN_140b8acc0();                                   // dance finish
     void FUN_140b8b020(const std::vector<int>& aStages);    // take over the stage list
 
     CStringA m_strAnim;                                     // +0x40 the animation of the stage

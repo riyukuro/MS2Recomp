@@ -5,7 +5,7 @@
 namespace ItemUtilTransfer {
 struct TOutBindingParam : CPtred {
     TOutBindingParam();
-    virtual ~TOutBindingParam();
+    // implicit virtual ~TOutBindingParam (0x140a69eb0; the exe dtor never resets the vptr)
     int kind;
     CStringW name;
     __int64 characterId;

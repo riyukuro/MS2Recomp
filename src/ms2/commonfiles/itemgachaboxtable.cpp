@@ -38,17 +38,9 @@ static CString s_sortNames[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", 
 
 // @0x14059dcd0
 GachaBoxData::GachaBoxData()
+    : m_nRandomBoxID(0), m_nRandomBoxGroup(0), m_bSeasonNumberOnIcon(false), m_saleEndDate(0), m_nUi(0),
+      m_nIndividualDropBoxID(0), m_nShopID(0), m_nCoinItemID(0), m_nCoinItemAmount(1), m_nPaymentIconTag(0)
 {
-    m_nRandomBoxID = 0;
-    m_nRandomBoxGroup = 0;
-    m_bSeasonNumberOnIcon = false;
-    m_saleEndDate = CMsTime(0);
-    m_nUi = 0;
-    m_nIndividualDropBoxID = 0;
-    m_nShopID = 0;
-    m_nCoinItemID = 0;
-    m_nCoinItemAmount = 1;
-    m_nPaymentIconTag = 0;
     for (int i = 0; i < 4; i++)
         m_nSeason[i] = 0;
 }
@@ -81,16 +73,14 @@ ItemGachaBoxTable::~ItemGachaBoxTable()
 }
 
 // @0x14059dea0
-// MS2-FUNCTIONAL: EH-state/temp-CString layout of the XML loader differs from the exe (precedent banktable.cpp)
 void ItemGachaBoxTable::Load()
 {
     m_map.clear();
     CString strDir;
     strDir.Format("%s", "Table");
-    CString strPath = FUN_14071a5b0(strDir, CString("gacha_info.xml"));
+    CString strPath = FUN_14071a5b0(strDir, "gacha_info.xml");
     TiXmlDocument doc;
-    const char* pszPath = strPath;
-    if (FUN_140166420()->FUN_1403974b0(&doc, pszPath, 0, true, false) == 0)
+    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
@@ -136,7 +126,8 @@ GachaBoxDataPtr ItemGachaBoxTable::FUN_14059e340(int nRandomBoxID)
 // @0x14059e400
 int ItemGachaBoxTable::GetIndividualDropBoxID(int nRandomBoxID)
 {
-    std::map<int, GachaBoxDataPtr>::iterator it = m_map.find(nRandomBoxID);
+    int nKey = nRandomBoxID;
+    std::map<int, GachaBoxDataPtr>::iterator it = m_map.find(nKey);
     if (it == m_map.end())
         return 0;
     return it->second->m_nIndividualDropBoxID;
@@ -169,7 +160,8 @@ int ItemGachaBoxTable::FUN_14059e550(int nShopID)
 // @0x14059e610
 int ItemGachaBoxTable::GetCoinItemID(int nRandomBoxID)
 {
-    std::map<int, GachaBoxDataPtr>::iterator it = m_map.find(nRandomBoxID);
+    int nKey = nRandomBoxID;
+    std::map<int, GachaBoxDataPtr>::iterator it = m_map.find(nKey);
     if (it == m_map.end())
         return 0;
     return it->second->m_nCoinItemID;
@@ -185,12 +177,16 @@ int ItemGachaBoxTable::FUN_14059e6a0(int nItemID)
         return 0;
     int nBoxId = item->FUN_14053dec0();
     if (nBoxId != 0)
-        return GetCoinItemID(nBoxId);
+    {
+        int nCoin = GetCoinItemID(nBoxId);
+        return nCoin;
+    }
     std::vector<ItemDropResult> drops;
     ItemDropContext ctx;
     if (FUN_1403b3c40(item->function.name, L"OpenItemBox"))
     {
-        TSingleton<ItemDropTable>::GetInstance()->GetBoxItems(item->function.arg0, ctx, drops, true);
+        int nId = item->function.arg0;
+        TSingleton<ItemDropTable>::GetInstance()->GetBoxItems(nId, ctx, drops, true);
     }
     else if (FUN_1403b3c40(item->function.name, L"OpenItemBoxWithKey"))
     {
@@ -200,26 +196,30 @@ int ItemGachaBoxTable::FUN_14059e6a0(int nItemID)
     else
     {
         int nDefault0 = 0;
-        int nCommon = item->function.xml.GetInt(L"commonBoxId", nDefault0);
+        unsigned nCommon = item->function.xml.GetInt(L"commonBoxId", nDefault0);
         int nDefault1 = 0;
-        int nUnCommon = item->function.xml.GetInt(L"unCommonBoxId", nDefault1);
+        unsigned nUnCommon = item->function.xml.GetInt(L"unCommonBoxId", nDefault1);
         int nDefault2 = 0;
-        int nIndividual = item->function.xml.GetInt(L"individualDropBoxId", nDefault2);
-        if (nCommon != 0)
+        unsigned nIndividual = item->function.xml.GetInt(L"individualDropBoxId", nDefault2);
+        if (nCommon > 0)
             TSingleton<ItemDropTable>::GetInstance()->GetBoxItems(nCommon, ctx, drops, true);
-        if (nUnCommon != 0)
+        if (nUnCommon > 0)
             TSingleton<ItemDropTable>::GetInstance()->GetBoxItems(nUnCommon, ctx, drops, true);
-        if (nIndividual != 0)
+        if (nIndividual > 0)
             TSingleton<ItemDropTable>::GetInstance()->GetBoxItems(nIndividual, ctx, drops, true);
     }
     for (ItemDropResult r : drops)
     {
-        item = FUN_14053f870(r.vfunc_o18_0());
+        nItemID = r.vfunc_o18_0();
+        item = FUN_14053f870(nItemID);
         if (item == 0)
             return 0;
-        int nId = item->FUN_14053dec0();
-        if (nId != 0)
-            return GetCoinItemID(nId);
+        nBoxId = item->FUN_14053dec0();
+        if (nBoxId != 0)
+        {
+            int nCoin = GetCoinItemID(nBoxId);
+            return nCoin;
+        }
     }
     return 0;
 }
@@ -251,8 +251,12 @@ int ItemGachaBoxTable::FUN_14059ed00(int nId)
         GachaBoxDataPtr& sp = kv.second;
         if (sp.get() != 0)
         {
-            int nCoin = sp->m_nCoinItemID;
-            if (sp->m_nRandomBoxID == nId || nCoin == nId)
+            BOOL bFound = FALSE;
+            if (sp->m_nCoinItemID == nId)
+                bFound = TRUE;
+            if (sp->m_nRandomBoxID == nId)
+                bFound = TRUE;
+            if (bFound == TRUE)
                 return sp->GetSeason();
         }
     }
@@ -286,7 +290,8 @@ bool ItemGachaBoxTable::FUN_14059eec0(int nCoinItemID)
 // @0x14059ef70
 bool ItemGachaBoxTable::FUN_14059ef70(int nRandomBoxID)
 {
-    std::map<int, GachaBoxDataPtr>::iterator it = m_map.find(nRandomBoxID);
+    int nKey = nRandomBoxID;
+    std::map<int, GachaBoxDataPtr>::iterator it = m_map.find(nKey);
     if (it == m_map.end())
         return false;
     return it->second->m_bSeasonNumberOnIcon;

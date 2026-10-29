@@ -227,7 +227,7 @@ void UIGuildHouseUpgradeDialog::FUN_140e3a770()
     std::vector<std::pair<int, int> > list;
     FUN_1404f4530()->FUN_1404d7a90(list);
     for (size_t i = 0; i < list.size(); i++)
-        m_themes[list[i].first].push_back(static_cast<int&&>(list[i].second));
+        m_themes[list[i].first].push_back(list[i].second);
     static_cast<Unk_GpAS*>(m_30.operator->())->FUN_140c1c8c0("setTab", m_themes.size());
     m_tab->FUN_1422e31e0(FUN_1403ed290()->FUN_1404d1f90() - 1);
     m_themeList->FUN_1422dcca0(FUN_1403ed290()->FUN_1404d2030() - 1);

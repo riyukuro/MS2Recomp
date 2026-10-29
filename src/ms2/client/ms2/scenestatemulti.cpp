@@ -33,6 +33,7 @@
 #include "networkservice.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include <NiColor.h>
 #include "ms2/placeholder/cinpacket.h"
 #include "ms2/placeholder/delegate.h"
 #include "ms2/placeholder/mypc.h"
@@ -43,18 +44,15 @@
 #include <efd/SmartPointer.h>
 #include <efd/Helpers.h>
 #include <efd/MemHint.h>
+#include <efd/StdContainers.h>
 #include <vector>
 #include <new>
 
 // ---- externs -----------------------------------------------------------------------------------------------------
 class CMsgBoxData;
 class UIServerListDialog;
-class Unk_1401cd100 { public: Unk_1401cd100(void*); private: void* m_p[3]; };
-class Unk_143a09680 { public: void* m_a; void* m_b; };
-class Unk_1409879 : public Unk_143a09680 { };
-Unk_1409879 FUN_140987930(const void*);
-extern char DAT_143a09680[];
-void FUN_141489ff0(void*, Unk_143a09680);
+class Unk_1401cd100 { public: Unk_1401cd100(void*); Unk_1401cd100(const Unk_1401cd100&); private: void* m_p; };
+void FUN_141489ff0(void*, NiColorA);                    // the app's clear colour
 void* FUN_140aae430();
 void* FUN_140166410();
 bool FUN_14036e560(void*);
@@ -80,7 +78,7 @@ public:
     void FUN_141bbae40(IWorldServiceCallback* cb);          // register callback
     void FUN_141bbae80(IWorldServiceCallback* cb);          // unregister callback
     void FUN_141bbbe40(unsigned nMapId, int a, int b);           // move to a map
-    void FUN_141bbbc60(const Unk_1401cd100& id, int a);     // remove an actor
+    void FUN_141bbbc60(Unk_1401cd100 id, int a);              // remove an actor
     void FUN_141bdb690();
     void* FUN_141bd0cc0();                                  // the player actor
     void FUN_141bd0cf0(void* pActor);
@@ -116,6 +114,7 @@ extern unsigned char DAT_143ab284b;
 extern CString DAT_143ab2a48;
 extern unsigned short DAT_143ab2848;
 extern void (*DAT_143b03490)(short, unsigned char, const char*);
+extern unsigned char DAT_1430c3b20;
 extern unsigned char DAT_1430e3b20;
 
 // Reconnect (same as CSceneStateMove::OnUpdate)
@@ -147,7 +146,6 @@ struct Unk_AllocHint
 {
     Unk_AllocHint(const Unk_AllocHint&);                    // non-trivial: returned through a hidden pointer
     efd::MemHint m_hint;
-    int m_pad;
 };
 Unk_AllocHint FUN_140876480(int nCategory);
 unsigned FUN_14123c580(MyPC*);
@@ -207,13 +205,13 @@ Unk_MessageBoxPtr FUN_140d73d20(int, CStringW, void*, CStringW);
 void FUN_140d73c60(Unk_MessageBoxPtr);
 void* FUN_140534fc0(const Unk_MessageBoxPtr&);
 void* FUN_140534fe0(const Unk_MessageBoxPtr&);
-bool FUN_1403b3c40(const CStringW&, const wchar_t*);
+bool FUN_1403b3c40(const CStringW&, const wchar_t*) throw();
 bool FUN_140841300(const CStringW&, const char*);
 void FUN_14070f500(CInputStream&, unsigned long long*);
 
 class Unk_LobbyChar;
 void* FUN_14123c410(void*);
-void FUN_1413fb630(void*, std::vector<unsigned long long>&);
+void FUN_1413fb630(void*, efd::vector<unsigned long long>&);
 void* FUN_140a53610(void*);
 #include "ms2/placeholder/notifygameeventchanged.h"
 struct Unk_Settings { char m_pad[0xe258]; unsigned m_nLobbyMap; };
@@ -235,7 +233,7 @@ public:
     Unk_QueryList* FUN_140a17e00();
     void* m_p0;                                             // +0x00 the exe object is 8 bytes (FUN_140af0850 writes it through the sret slot)
 };
-struct Unk_140ae7ce0 { Unk_140ae7ce0(); void *m_p0, *m_p1, *m_p2, *m_p3, *m_p4, *m_p5; };
+struct Unk_140ae7ce0 { Unk_140ae7ce0(); float m_0, m_4, m_8, m_c, m_10, m_14, m_18, m_1c, m_20, m_24; };  // Unk_CameraSetting (cameramode.h): 0x28 bytes, 4-aligned; no array, so no /GS cookie
 class Unk_QueryMgr
 {
 public:
@@ -287,47 +285,42 @@ LobbyFieldTable::~LobbyFieldTable()
 }
 
 // @0x14174d4d0
-// MS2-FUNCTIONAL: temp/CString lifetime ordering differs from the exe
 int LobbyFieldTable::Load()
 {
     if (FUN_1401d1320(this))
         Clear();
-    if (!m_bLoaded)
+    if (m_bLoaded)
+        return 1;
+    m_bLoaded = true;
+    CString strPath = FUN_14071a5b0("Table", "lobbyField.xml");
+    CCacheData::FUN_1401d1160(strPath);
+    TiXmlDocument doc;
+    if (FUN_140166420()->FUN_1403974b0(doc, strPath, 0, true, false) != 0)
     {
-        m_bLoaded = true;
-        CString strPath = FUN_14071a5b0(CString("Table"), CString("lobbyField.xml"));
-        CCacheData::FUN_1401d1160(strPath);
-        TiXmlDocument doc;
-        const char* pszPath = strPath;
-        if (FUN_140166420()->FUN_1403974b0(doc, pszPath, 0, true, false) != 0)
+        Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+        if (pRoot == 0)
+            return 0;
+        CString strKey("key");
+        CString strJobCode("jobCode");
+        CString strSelectMap("selectMap");
+        CString strCreateMap("createMap");
+        for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0(strKey); pNode != 0;
+             pNode = reinterpret_cast<Unk_140165cf0*>(reinterpret_cast<Unk_140168650*>(pNode)->FUN_140168650(strKey)))
         {
-            Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
-            if (pRoot == 0)
-                return 0;
-            CString strKey("key");
-            CString strJobCode("jobCode");
-            CString strSelectMap("selectMap");
-            CString strCreateMap("createMap");
-            for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0(strKey); pNode != 0;
-                 pNode = reinterpret_cast<Unk_140165cf0*>(reinterpret_cast<Unk_140168650*>(pNode)->FUN_140168650(strKey)))
-            {
-                if (FUN_14028f710(pNode))
-                {
-                    int nJobCode = 0;
-                    FUN_140873890(pNode, strJobCode, nJobCode);
-                    if (nJobCode != 0)
-                    {
-                        int nSelectMap = 0;
-                        FUN_140873220(pNode, strSelectMap, nSelectMap);
-                        int nCreateMap = 0;
-                        FUN_140873220(pNode, strCreateMap, nCreateMap);
-                        m_selectMap.SetAt(nJobCode, nSelectMap);
-                        m_createMap.SetAt(nJobCode, nCreateMap);
-                        if (nCreateMap == 0)
-                            m_selectMaps.Add(nSelectMap);
-                    }
-                }
-            }
+            if (!FUN_14028f710(pNode))
+                continue;
+            int nJobCode = 0;
+            FUN_140873890(pNode, strJobCode, nJobCode);
+            if (nJobCode == 0)
+                continue;
+            int nSelectMap = 0;
+            FUN_140873220(pNode, strSelectMap, nSelectMap);
+            int nCreateMap = 0;
+            FUN_140873220(pNode, strCreateMap, nCreateMap);
+            m_selectMap.SetAt(nJobCode, nSelectMap);
+            m_createMap.SetAt(nJobCode, nCreateMap);
+            if (nCreateMap == 0)
+                m_selectMaps.Add(nSelectMap);
         }
     }
     return 1;
@@ -406,7 +399,6 @@ CSceneStateMulti::BackUpCharacterInfo::~BackUpCharacterInfo()
 }
 
 // @0x14174dd90
-// MS2-FUNCTIONAL: frame layout of the Delegate temporaries differs
 void CSceneStateMulti::OnEnter(int nPrevState)
 {
     CSceneStateBase::OnEnter(nPrevState);
@@ -415,7 +407,7 @@ void CSceneStateMulti::OnEnter(int nPrevState)
     m_lobbyField.Load();
     FUN_141275500();
     FUN_1403ed2d0()->FUN_141bbae40(this);
-    FUN_141489ff0(FUN_140aae430(), static_cast<const Unk_143a09680&>(FUN_140987930(DAT_143a09680)));
+    FUN_141489ff0(FUN_140aae430(), efd::ColorA::BLACK);
     if (nPrevState == 0x6200009)
         FUN_14174f4a0();
     m_timer.FUN_1408687f0();
@@ -446,11 +438,43 @@ void CSceneStateMulti::OnLeave(int nNextState)
 }
 
 // @0x14174e150
-// MS2-FUNCTIONAL: register/temporary placement differs
 void CSceneStateMulti::OnUpdate(double fTime)
 {
     CSceneStateBase::OnUpdate(fTime);
-    if (m_bReconnecting == 0)
+    if (m_bReconnecting)
+    {
+        if (m_nRetry < 5)
+        {
+            if (m_reconnectTimer.FUN_140868c00() != 0)
+            {
+                if (FUN_140714f90()->FUN_1415384e0() == 0)
+                {
+                    FUN_140714f90()->FUN_1415383a0(DAT_143ab2a48, DAT_143ab2848, 1, 1, 0);
+                    m_nRetry = m_nRetry + 1;
+                    CStringW text = FUN_14062b4f0(CStringW(L"s_reconnect_to_server"), m_nRetry);
+                    void* loading = FUN_141540270(0x3ed);
+                    if (loading)
+                        FUN_1419e0050(loading, text);
+                }
+                m_reconnectTimer.FUN_140868750(10000);
+            }
+        }
+        else if (m_nRetry == 5 && m_reconnectTimer.FUN_140868c00() != 0)
+        {
+            m_reconnectTimer.FUN_1408687f0();
+            m_nRetry = 6;
+            if (DAT_143b03490)
+                DAT_143b03490(1, DAT_1430c3b20, efd::LogHelper(FUN_14016a600(FUN_1408116a0(0x20f, 7), 0)));
+            FUN_140d86260()->vfunc_58(0x20f, 7);
+            FUN_140d86260()->vfunc_63(false, m_nRetry, 7);
+            {
+                CStringW title(L"MS2");
+                FUN_141b6fcf0(FUN_1408116a0(0x20f, 7), title, 0);
+            }
+            TerminateProcess(GetCurrentProcess(), 2);
+        }
+    }
+    else
     {
         if (DAT_143ab285c != 0 && m_timer.FUN_140868c00() != 0)
         {
@@ -467,49 +491,12 @@ void CSceneStateMulti::OnUpdate(double fTime)
                 if (pSelect != 0 && pSelect->FUN_1422dc2d0() != 0)
                     pSelect->FUN_1418f13f0();
             }
-            FUN_140d86260()->vfunc_63(1, m_nRetry, 0);
+            FUN_140d86260()->vfunc_63(true, m_nRetry, 0);
         }
-    }
-    else if (m_nRetry < 5)
-    {
-        if (m_reconnectTimer.FUN_140868c00() != 0)
-        {
-            if (FUN_140714f90()->FUN_1415384e0() == 0)
-            {
-                FUN_140714f90()->FUN_1415383a0(DAT_143ab2a48, DAT_143ab2848, 1, 1, 0);
-                m_nRetry = m_nRetry + 1;
-                CStringW text = FUN_14062b4f0(CStringW(L"s_reconnect_to_server"), m_nRetry);
-                void* loading = FUN_141540270(0x3ed);
-                if (loading)
-                    FUN_1419e0050(loading, text);
-            }
-            m_reconnectTimer.FUN_140868750(10000);
-        }
-    }
-    else if (m_nRetry == 5 && m_reconnectTimer.FUN_140868c00() != 0)
-    {
-        m_reconnectTimer.FUN_1408687f0();
-        m_nRetry = 6;
-        if (DAT_143b03490)
-        {
-            const CStringW& msg0 = FUN_1408116a0(0x20f, 7);
-            const CStringW& msg = msg0;
-            const CString& ansi0 = FUN_14016a600(msg, 0);
-            const CString& ansi = ansi0;
-            const efd::LogHelper& log0 = efd::LogHelper(ansi);
-            const efd::LogHelper& log = log0;
-            DAT_143b03490(1, 0, log);
-        }
-        FUN_140d86260()->vfunc_58(0x20f, 7);
-        FUN_140d86260()->vfunc_63(0, m_nRetry, 7);
-        CStringW title(L"MS2");
-        FUN_141b6fcf0(FUN_1408116a0(0x20f, 7), title, 0);
-        TerminateProcess(GetCurrentProcess(), 2);
     }
 }
 
 // @0x14174e6b0
-// MS2-FUNCTIONAL: switch case layout order differs from the exe jump table
 void CSceneStateMulti::OnPacket(CInPacket& packet)
 {
     CSceneStateBase::OnPacket(packet);
@@ -518,28 +505,27 @@ void CSceneStateMulti::OnPacket(CInPacket& packet)
     case static_cast<int>(RecvOp::Notice):
         FUN_14174f4c0(packet);
         break;
+    case static_cast<int>(RecvOp::WaitingTicketUpdate):
+        OnWaitingTicketUpdate(packet);
+        break;
     case static_cast<int>(RecvOp::GameEvent):
         FUN_140ceab50(FUN_14015a050(), packet);
         break;
-    case static_cast<int>(RecvOp::WaitingTicketUpdate):
-        OnWaitingTicketUpdate(packet);
+    case static_cast<int>(RecvOp::TermTag):
+        FUN_140ad5f00(FUN_1409eed70(), packet);
         break;
     case static_cast<int>(RecvOp::GameEventUserValue):
         FUN_140930fe0(packet);
         break;
-    case static_cast<int>(RecvOp::EventReward):
-        OnEventReward(packet);
-        break;
     case static_cast<int>(RecvOp::SyncWorld):
         FUN_14174fcc0(packet);
         break;
-    case static_cast<int>(RecvOp::TermTag):
-        FUN_140ad5f00(FUN_1409eed70(), packet);
+    case static_cast<int>(RecvOp::EventReward):
+        OnEventReward(packet);
     }
 }
 
 // @0x14174e880
-// MS2-FUNCTIONAL: temporary placement differs
 void CSceneStateMulti::vfunc_1(int)
 {
     FUN_1403ed2d0()->FUN_141bdb690();
@@ -582,16 +568,15 @@ void CSceneStateMulti::vfunc_4(int)
 }
 
 // @0x14174ea50
-// MS2-FUNCTIONAL: temporary placement differs
 int CSceneStateMulti::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
 {
     if (!pMsg->FUN_1422e4520())
     {
         if (dynamic_cast<UIMessageBox*>(pSender))
         {
-            pMsg->FUN_1422b8a10();
+            int nResult = pMsg->FUN_1422b8a10();
             CStringW strTag = pMsg->FUN_1422b8f40();
-            FUN_1403b3c40(strTag, L"waitingticketdialog");
+            if (FUN_1403b3c40(strTag, L"waitingticketdialog")) {}  // empty body: the exe tests the result and does nothing
         }
     }
     return 0;
@@ -638,14 +623,12 @@ void CSceneStateMulti::FUN_14174ebc0()
 }
 
 // @0x14174ec40
-// MS2-FUNCTIONAL: hidden-return temporary placement differs
 void CSceneStateMulti::FUN_14174ec40(int nGender, bool bFlag)
 {
     if (m_nMode != 2)
         return;
     FUN_14174fd00();
-    MyPC* pNew = new (FUN_140876480(0).m_hint) MyPC();
-    efd::SmartPointer<MyPC> spPC(pNew);
+    efd::SmartPointer<MyPC> spPC(new (FUN_140876480(0).m_hint) MyPC());
     if (spPC.data())
     {
         FUN_1416566d0(spPC.operator->(), 1);
@@ -662,14 +645,12 @@ void CSceneStateMulti::FUN_14174ec40(int nGender, bool bFlag)
 }
 
 // @0x14174ee00
-// MS2-FUNCTIONAL: hidden-return temporary placement differs
 void CSceneStateMulti::FUN_14174ee00(BackUpCharacterInfo* pInfo)
 {
     if (m_nMode != 2)
         return;
     FUN_14174fd00();
-    MyPC* pNew = new (FUN_140876480(0).m_hint) MyPC();
-    efd::SmartPointer<MyPC> spPC(pNew);
+    efd::SmartPointer<MyPC> spPC(new (FUN_140876480(0).m_hint) MyPC());
     if (spPC.data())
     {
         FUN_1416566d0(spPC.operator->(), 1);
@@ -682,24 +663,20 @@ void CSceneStateMulti::FUN_14174ee00(BackUpCharacterInfo* pInfo)
         {
             m_hPreviewPC = FUN_14123c500(spPC.operator->());
             ATL::CAtlList<MS2Ptr<Unk_BackUpItem> >& items = pInfo->m_items;
-            POSITION pos = items.GetHeadPosition();
-            while (pos != 0)
+            for (POSITION pos = items.GetHeadPosition(); pos != 0; items.GetNext(pos))
             {
                 MS2Ptr<Unk_ItemSub> sub = items.GetAt(pos)->FUN_1411dc7a0();
                 if (sub.get() != 0)
                 {
-                    unsigned nSlot = FUN_14123c580(spPC.operator->());
-                    sub->FUN_140526b30(nSlot);
+                    sub->FUN_140526b30(FUN_14123c580(spPC.operator->()));
                     FUN_141653d10(spPC.operator->(), sub);
                 }
-                items.GetNext(pos);
             }
         }
     }
 }
 
 // @0x14174f0f0
-// MS2-FUNCTIONAL: std::vector helpers are inlined here (the exe calls out-of-line ctor/size/dtor)
 Unk_LobbyChar* CSceneStateMulti::FUN_14174f0f0()
 {
     float fMapX, fMapY;
@@ -713,22 +690,19 @@ Unk_LobbyChar* CSceneStateMulti::FUN_14174f0f0()
     for (unsigned iRow = 0; iRow < result.FUN_140a16c30()->FUN_140a17e00()->FUN_140a17ea0(); iRow++)
     {
         Unk_QueryRow* pRow = static_cast<Unk_QueryRow*>(result.FUN_140a16c30()->FUN_140a17e00()->FUN_140a17d70(iRow));
-        POSITION pos = pMgr->m_actors.GetHeadPosition();
-        while (pos != 0)
+        for (POSITION pos = pMgr->m_actors.GetHeadPosition(); pos != 0; pMgr->m_actors.GetNext(pos))
         {
             Unk_LobbyActor* pActor = pMgr->m_actors.GetValueAt(pos);
             Unk_LobbyChar* pChar = static_cast<Unk_LobbyChar*>(FUN_140a53610(pActor));
-            if (pChar != 0)
+            if (pChar == 0)
+                continue;
+            efd::vector<unsigned long long> ids;
+            FUN_1413fb630(FUN_14123c410(pActor), ids);
+            for (unsigned iId = 0; iId < ids.size(); iId++)
             {
-                std::vector<unsigned long long> ids;
-                FUN_1413fb630(FUN_14123c410(pActor), ids);
-                for (unsigned iId = 0; iId < ids.size(); iId++)
-                {
-                    if ((long long)pRow->FUN_140a17cb0() == (long long)ids.at(iId))
-                        return pChar;
-                }
+                if ((long long)pRow->FUN_140a17cb0() == (long long)ids.at(iId))
+                    return pChar;
             }
-            pMgr->m_actors.GetNext(pos);
         }
     }
     return 0;
@@ -775,40 +749,34 @@ void CSceneStateMulti::FUN_14174f4a0()
 }
 
 // @0x14174f4c0
-// MS2-FUNCTIONAL: CString temporary and frame layout differ
 void CSceneStateMulti::FUN_14174f4c0(CInPacket& packet)
 {
     Unk_1407a7d20 info(packet);
-    unsigned nKind = info.m_kind;
+    int nKind = info.m_kind;
     if (nKind == 4)
     {
+        unsigned nFlags = info.m_flags;
         CStringW text(info.m_text);
         text = FUN_140a87690(FUN_140a87680())->FUN_14087ede0(text);
         int nValue = info.m_value;
         text = FUN_14083d340(CStringW(text));
-        if ((info.m_flags & 4) == 0 && (info.m_flags & 0x40) == 0)
-        {
-            if ((info.m_flags & 0x80) == 0)
-            {
-                if ((info.m_flags & 0x10) == 0)
-                {
-                    if ((info.m_flags & 0x200) != 0)
-                        FUN_141275400(text, packet.ReadInt32());
-                }
-                else
-                {
-                    FUN_1412753b0(text, 9, nValue);
-                }
-            }
-            else
-            {
-                FUN_140d73aa0(CStringW(text), 0, 0, CStringW(s_maintenanceExit));
-                FUN_140d86260()->vfunc_58(0x289, 0);
-            }
-        }
-        else
+        if ((nFlags & 4) != 0 || (nFlags & 0x40) != 0)
         {
             FUN_140d73aa0(CStringW(text), 0, 0, CStringW(L""));
+        }
+        else if ((nFlags & 0x80) != 0)
+        {
+            FUN_140d73aa0(CStringW(text), 0, 0, CStringW(s_maintenanceExit));
+            FUN_140d86260()->vfunc_58(0x289, 0);
+        }
+        else if ((nFlags & 0x10) != 0)
+        {
+            FUN_1412753b0(text, 9, nValue);
+        }
+        else if ((nFlags & 0x200) != 0)
+        {
+            int nRead = packet.ReadInt32();
+            FUN_141275400(text, nRead);
         }
     }
     else if (nKind == 5)
@@ -825,7 +793,6 @@ void CSceneStateMulti::FUN_14174f4c0(CInPacket& packet)
 }
 
 // @0x14174f8d0
-// MS2-FUNCTIONAL: temporary placement differs
 void CSceneStateMulti::OnWaitingTicketUpdate(CInPacket& packet)
 {
     if (FUN_1406516b0() == 3)
@@ -850,8 +817,8 @@ void CSceneStateMulti::OnWaitingTicketUpdate(CInPacket& packet)
         }
     }
     Unk_MessageBoxPtr box = FUN_140d73d20(0, CStringW(text), 0, CStringW(L""));
-    FUN_141a01690(FUN_140534fe0(box), GetStringCommon(0xac1), CStringW(L""), CStringW(L""));
-    FUN_141a01660(FUN_140534fe0(box), CStringW(L"waitingticketdialog"));
+    FUN_141a01690(FUN_140534fe0(box), GetStringCommon(0xac1), L"", L"");
+    FUN_141a01660(FUN_140534fe0(box), L"waitingticketdialog");
     UIServerListDialog* pList = FUN_14136f520(0x4ef0);
     if (pList != 0)
         FUN_141a027c0(FUN_140534fe0(box), Delegate<bool(int, const CMsgBoxData&)>(pList, &UIServerListDialog::FUN_141ad3260));
@@ -865,7 +832,6 @@ void CSceneStateMulti::FUN_14174fcc0(CInPacket& packet)
 }
 
 // @0x14174fd00
-// MS2-FUNCTIONAL: hidden-return temporary placement differs
 void CSceneStateMulti::FUN_14174fd00()
 {
     if (m_hPreviewPC != 0)

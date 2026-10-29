@@ -375,7 +375,8 @@ extern int DAT_1439f4840;                                                   // t
 // @0x140188f50
 inline CString FUN_140188f50(const char* psz, int nCodePage)
 {
-    return FUN_14016a5c0(psz, nCodePage == 0 ? DAT_1439f4840 : nCodePage);
+    int nCP = nCodePage == 0 ? DAT_1439f4840 : nCodePage;
+    return FUN_14016a5c0(psz, nCP);
 }
 
 // @0x140186320
@@ -386,7 +387,7 @@ inline Unk_AdditionalFlags* FUN_140186320()
 
 // fmt's ostream formatting of a custom argument (cppformat's format(BasicFormatter&, const Char*&, const T&)) with
 // the MS2 enum shortcut in front: enums are formatted as int, so the stream path is dead code that still instantiates
-// basic_ostringstream<wchar_t> (0x140182b70 ...). The shared generic in fmt/format.h is the MS2-FUNCTIONAL short form.
+// basic_ostringstream<wchar_t> (0x140182b70 ...). The shared generic in fmt/format.h is the short (functional-only) form.
 // @0x140180790
 template <> inline void fmt::format_arg(BasicFormatter<wchar_t>& f, const wchar_t*& format_str, const SAType& value)
 {
@@ -1481,7 +1482,7 @@ MS2_REPLACE_METHOD(0x140175300, AdditionalLevelData, IsVisibleItemOption, 18, 0x
 // @0x140175320
 void AdditionalLevelData::LoadOverlapKeepEffect(Unk_140165cf0* pElem)
 {
-    Unk_140165cf0* pOverlap = pElem->FUN_140165cf0("OverlapKeepEffect");
+    Unk_140165cf0* pOverlap = pElem->FUN_140165cf0("OverlapKeepEffectProperty");
     if (pOverlap)
     {
         Unk_140165cf0* pStart = pOverlap->FUN_140165cf0("start");
@@ -1904,10 +1905,10 @@ inline bool AdditionalLevelData::InvokeEffectProperty::IsDifferent(const InvokeE
 }
 
 // @0x140192ac0
-bool AdditionalLevelData::InvokeEffectProperty::FUN_140192ac0()
+int AdditionalLevelData::InvokeEffectProperty::FUN_140192ac0()
 {
     return (m_nSkillID != 0 || m_nEffectID != 0 || m_nSkillGroupID != 0 || m_nEffectGroupID != 0)
-        && m_vTypes.empty() && m_vValues.empty() && m_vRates.empty();
+        && !m_vTypes.empty() && !m_vValues.empty() && !m_vRates.empty();
 }
 
 // @0x140192b60
@@ -1933,15 +1934,16 @@ inline void AdditionalLevelData::SpecialEffectProperty::Clear()
 // @0x140192ce0
 inline void AdditionalLevelData::SpecialEffectProperty::Parse()
 {
-    if (!(m_xml == 0) && !m_strValues.IsEmpty())
-    {
-        m_xml->FUN_14092c590();
-        m_xml->FUN_14092c400(m_strValues);
-    }
+    if (m_xml == 0)
+        return;
+    if (m_strValues.IsEmpty())
+        return;
+    m_xml->FUN_14092c590();
+    m_xml->FUN_14092c400(m_strValues);
 }
 
 // @0x140192d70
-bool AdditionalLevelData::SpecialEffectProperty::FUN_140192d70()
+int AdditionalLevelData::SpecialEffectProperty::FUN_140192d70()
 {
     return m_eType != AdditionalSpecialEffectType_None;
 }

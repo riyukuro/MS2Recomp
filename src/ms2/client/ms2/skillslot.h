@@ -23,7 +23,7 @@ class SkillSlot : public MS2DragSlot
 {
 public:
     SkillSlot(const CString& strName, int nIndex, int nSkillId, int nItemId, __int64 nItemUid);   // 0x14175c840
-    virtual ~SkillSlot();                               // 0x1417623e0
+    // implicit virtual ~SkillSlot                    // 0x1417623e0
 
     // slots 2-4: GetClassDesc 0x141762740, TypeCast 0x141763350 / 0x1417633a0; ms_ClassInfo 0x143ae97f0,
     // SetupClassInfo 0x1417632f0 (parent MS2DragSlot, id 0x6200025).
@@ -61,7 +61,7 @@ public:
     void FUN_14175f280(unsigned nFlags);                // refresh the state, the count and the recharge
     void FUN_14175f510();                               // refresh the state and the icon
     CStringW FUN_14175fe60();                           // the text of the key binding
-    bool FUN_141760190();                               // the item is a skill scroll
+    int FUN_141760190();                                // the item is a skill scroll
     unsigned FUN_141760220(int n);                      // the item count
     int FUN_1417603f0();                                // the recharge count left
     int FUN_1417604f0();                                // the recharge max count
@@ -76,7 +76,7 @@ public:
     float FUN_141760b90();                              // the cooldown left
     int FUN_141760c00();                                // the slot is disabled
     int FUN_141761530(MS2Ptr<SkillData>* pOut);                      // the replacing skill (combo / change)
-    bool FUN_141761900();
+    int FUN_141761900();
     int FUN_141761990();                                // the slot is fixed or bound
     int FUN_1417619d0();                                // the slot index has a key binding
     int FUN_141761a10();                                // the skill (or item) is in the active set

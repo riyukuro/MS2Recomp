@@ -6,11 +6,13 @@
 #define MS2_THIS_FILE ""
 #include "ms2/placeholder/ms2stdafx.h"
 #include "ms2/placeholder/nmchatroomfunc.h"
+#include "ms2/placeholder/nmstream.h"
+#include "ms2/placeholder/nmencoder.h"
 #include "ms2/ms2recover.h"
 
 extern int FUN_1415fb700(const void*);
 extern int FUN_1415fb750(void*);
-extern int FUN_1415fb6d0(void*);
+extern int FUN_1415fb6d0(CNMSerializableDecoder*);
 extern void FUN_1415f9990(void*);
 extern void FUN_14156ae30(void*, const void*);
 extern void FUN_14156bcb0(void*, void*, void*);
@@ -45,11 +47,8 @@ CNMCRInviteUserFunc::CNMCRInviteUserFunc(unsigned uSerialKey, const char* szUser
 // @0x14159e780
 unsigned int CNMCRInviteUserFunc::EncodeFramed(CNMStream* pStream)
 {
-    alignas(8) unsigned char encoder[0x18];
-    FUN_14156bcb0(encoder, pStream, this);
-    const unsigned int result = Encode(reinterpret_cast<CNMEncoder*>(encoder), pStream);
-    FUN_14156bd50(encoder);
-    return result;
+    CNMSerializableEncoder encoder(pStream, this);
+    return CNMCRInviteUserFunc::Encode(reinterpret_cast<CNMEncoder*>(&encoder), pStream);
 }
 
 // MS2-FUNCTIONAL: recovered format branch; direct calls replace virtual dispatch.
@@ -57,10 +56,8 @@ unsigned int CNMCRInviteUserFunc::EncodeFramed(CNMStream* pStream)
 unsigned int CNMCRInviteUserFunc::EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream)
 {
     if (m_bFormat == 1)
-        Encode(pEncoder, pStream);
-    else
-        EncodeFramed(pStream);
-    return 0;
+        return CNMCRInviteUserFunc::Encode(pEncoder, pStream);
+    return CNMCRInviteUserFunc::EncodeFramed(pStream);
 }
 
 // MS2-FUNCTIONAL: request/reply string ordering and finish call match; direct dispatch replaces virtual calls.
@@ -81,13 +78,10 @@ unsigned int CNMCRInviteUserFunc::Encode(CNMEncoder* pEncoder, CNMStream* pStrea
 // @0x14159e8c0
 unsigned int CNMCRInviteUserFunc::DecodeFramed(CNMStream* pStream)
 {
-    alignas(8) unsigned char decoder[0x38];
-    FUN_14156bcb0(decoder, pStream, this);
-    unsigned int result = 0;
-    if (FUN_1415fb750(decoder) != 0)
-        result = Decode(reinterpret_cast<CNMSerializableDecoder*>(decoder), pStream);
-    FUN_14156bd50(decoder);
-    return result;
+    CNMSerializableDecoder decoder(pStream, this);
+    if (FUN_1415fb750(&decoder) == 0)
+        return 0;
+    return CNMCRInviteUserFunc::Decode(&decoder, pStream);
 }
 
 // MS2-FUNCTIONAL: recovered decoder format branch; direct calls replace virtual dispatch.
@@ -95,10 +89,8 @@ unsigned int CNMCRInviteUserFunc::DecodeFramed(CNMStream* pStream)
 unsigned int CNMCRInviteUserFunc::DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream)
 {
     if (FUN_1415fb6d0(pDecoder) == 2)
-        DecodeFramed(pStream);
-    else
-        Decode(pDecoder, pStream);
-    return 0;
+        return CNMCRInviteUserFunc::DecodeFramed(pStream);
+    return CNMCRInviteUserFunc::Decode(pDecoder, pStream);
 }
 
 // MS2-FUNCTIONAL: request/reply string fields and validity check match; direct dispatch replaces virtual calls.

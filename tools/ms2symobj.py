@@ -9,13 +9,13 @@ hand-written progress/symbols-manual.tsv (same format, for names no matched func
 Output: a COFF (bigobj) object with
   func  __ms2fn_<va>: a 14-byte thunk `jmp qword ptr [rip+0]; dq <va>` in its own COMDAT (unreferenced ones are
         dropped by /OPT:REF);
-  data  __ms2va_<va>: an absolute symbol whose value is the exe VA minus the DLL base (0x100000000): the linker
+  data  __ms2va_<va>: an absolute symbol whose value is the exe VA minus the DLL base (0x120000000): the linker
         treats absolute symbols as image-relative for REL32 (RIP-relative) fixups, so `mov eax, [g_x]` reaches the
-        exe's global (|distance| < 2 GB because the DLL is linked /FIXED at 0x100000000, the exe sits at 0x140000000);
+        exe's global (|distance| < 2 GB because the DLL is linked /FIXED at 0x120000000, the exe sits at 0x140000000);
   .drectve /alternatename:<symbol>=__ms2fn_<va> / __ms2va_<va> for every symbol: the alternate is used only when
         nothing else defines <symbol> (no object, no library member), so a recovered definition always wins.
 Limits (docs/RECOVERY.md): data may only be referenced RIP-relatively (no `&g_x` in a static initializer = ADDR64;
-the linker would store VA - 0x100000000; the post-link step `tools/ms2symobj.py --check <dll>` fails the build), and the exe's statically linked
+the linker would store VA - 0x120000000; the post-link step `tools/ms2symobj.py --check <dll>` fails the build), and the exe's statically linked
 runtime (CRT, import stubs; 0x1427485e6-0x1427b6c90) is never mapped: the DLL uses its own CRT/MFC.
 """
 import argparse
@@ -25,7 +25,7 @@ import struct
 import sys
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-DLL_BASE = 0x100000000
+DLL_BASE = 0x120000000
 # 0x14274d700-0x1427784c0 is not runtime: the MS2 material classes + node library (gb14, /O2 game code, mapped)
 RUNTIME_RANGES = [(0x1427485e6, 0x14274d700), (0x1427784c0, 0x1427b6c90)]  # below: Scaleform Sound code (SoundInfo 0x142748430..)
 # The CEF 3.3396 wrapper (libcef_dll_wrapper, 0x142778700-0x1427b6870) and its libcef.dll import thunks
@@ -321,6 +321,27 @@ def retarget_imgrel(syms, objs):
     return total
 
 
+def check_base_stamp(output, objs, rebind_log):
+    """retarget_imgrel bakes VA - DLL_BASE into the objects in place (compile mtime kept), so objects patched under another
+    DLL base stay wrong for good: they link, but reach exe globals 0x20000000 off. <output>.base records the base the
+    objects were patched for; when it differs, delete the game objects (the build recompiles them). An ms2sym.obj without
+    a stamp predates it, i.e. was built at the old base 0x100000000 (moved 2026-10-28: Wine 11 maps images there)."""
+    stamp = output + ".base"
+    if os.path.exists(stamp):
+        prev = int(open(stamp).read().strip(), 16)
+    else:
+        prev = 0x100000000 if os.path.exists(output) else DLL_BASE
+    open(stamp, "w").write(f"0x{DLL_BASE:x}\n")
+    if prev != DLL_BASE:
+        for path in objs:
+            if os.path.exists(path):
+                os.remove(path)
+        if rebind_log and os.path.exists(rebind_log):
+            os.remove(rebind_log)   # no object is rebound any more
+        sys.exit(f"ms2symobj: game objects were patched for DLL base 0x{prev:x}, now 0x{DLL_BASE:x}; "
+                 f"deleted the game objects, rerun the build")
+
+
 def build(syms):
     vas = {}
     for name, (va, kind) in syms.items():
@@ -446,6 +467,8 @@ def main():
     if a.check:
         return check(a.check, a.inputs)
     syms = load(a.inputs)
+    if a.objs:
+        check_base_stamp(a.output, a.objs, a.rebind_log)
     if a.objs and a.rebind:
         rb = rebind_objects(syms, a.objs, a.rebind_log)
         print(f"rebound {len(rb)} data definitions ({len(set(rb))} distinct symbols) to the exe")

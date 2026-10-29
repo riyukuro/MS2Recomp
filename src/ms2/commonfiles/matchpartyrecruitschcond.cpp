@@ -6,7 +6,7 @@
 // (FUN_1406943b0 / FUN_140694630 / FUN_140695080) plus the member set of CMatchPartyRecruit keep a FUN_ name.
 // MS2-UNIT: ?\matchpartyrecruitschcond.cpp
 // MS2-RANGE: 0x1406943b0-0x140695130 .text$mn
-// MS2-PIN: ??1CMatchPartyRecruitSchCond@@UEAA@XZ 0x140694410 ; compiler-generated (empty user body would match)
+// MS2-PIN: ??1CMatchPartyRecruitSchCond@@UEAA@XZ 0x140694410 ; empty user body
 // MS2-PIN: ??_GCMatchPartyRecruit@@UEAAPEAXI@Z 0x1406950b0 ; prop
 // MS2-PIN: ??_GCMatchPartyRecruitSchCond@@UEAAPEAXI@Z 0x1406950f0 ; prop
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\commonfiles\\matchpartyrecruitschcond.cpp"
@@ -19,14 +19,9 @@
 #include "ms2/ms2recover.h"
 
 // The exe reads and writes the placeholder's byte-typed members as 4-byte integers (its Reset stores a dword at +0x20
-// and IsEqual compares a dword), so the same offsets are accessed through int references here. __forceinline keeps the
-// access at the assignment itself: at /Od an ordinary inline helper is emitted as a call and spills the value.
-namespace
-{
-    __forceinline int& KindOf(CMatchPartyRecruitSchCond* p) { return *reinterpret_cast<int*>(&p->kind); }
-    __forceinline const int& KindOf(const CMatchPartyRecruitSchCond* p) { return *reinterpret_cast<const int*>(&p->kind); }
-    __forceinline const int& KindOf(const Unk_PartyRecruitRequest* p) { return *reinterpret_cast<const int*>(&p->kind); }
-}
+// and IsEqual compares a dword), so the same offsets are accessed as ints here. It is a macro because /Od emits even a
+// __forceinline helper as a call.
+#define KindOf(p) (*reinterpret_cast<int*>(const_cast<unsigned char*>(&(p)->kind)))
 
 // Defined further down, in exe order.
 void FUN_140694450(CMatchPartyRecruitSchCond* pThis);                                    // Reset
@@ -46,9 +41,12 @@ CMatchPartyRecruitSchCond::CMatchPartyRecruitSchCond()
     FUN_140694450(this);
 }
 
-// The exe's destructor at 0x140694410 stores the vftable before destroying the search text, so an empty user body
-// would be needed; the class declares no destructor of its own, so the compiler-generated one is pinned above.
-// MS2-FUNCTIONAL: 0x140694410, the implicit destructor has no vftable store
+// The exe's destructor stores the vftable before destroying the search text, so it is user-declared with an empty
+// body.
+// @0x140694410
+CMatchPartyRecruitSchCond::~CMatchPartyRecruitSchCond()
+{
+}
 
 // @0x140694450
 void FUN_140694450(CMatchPartyRecruitSchCond* pThis)
@@ -76,23 +74,23 @@ void FUN_1406944c0(CMatchPartyRecruitSchCond* pThis, const CMatchPartyRecruitSch
 }
 
 // @0x140694560  IsEqual
-bool FUN_140694560(const CMatchPartyRecruitSchCond* pThis, const CMatchPartyRecruitSchCond* pOther)
+int FUN_140694560(const CMatchPartyRecruitSchCond* pThis, const CMatchPartyRecruitSchCond* pOther)
 {
     if (pOther == 0)
-        return false;
+        return 0;
     if (pOther->fieldId != pThis->fieldId)
-        return false;
+        return 0;
     if (pOther->category != pThis->category)
-        return false;
+        return 0;
     if (KindOf(pOther) != KindOf(pThis))
-        return false;
+        return 0;
     if (pOther->text != pThis->text)
-        return false;
+        return 0;
     if (pOther->page != pThis->page)
-        return false;
+        return 0;
     if (pOther->pageSize != pThis->pageSize)
-        return false;
-    return true;
+        return 0;
+    return 1;
 }
 
 // @0x140694630  Write
@@ -149,8 +147,10 @@ int FUN_1406948b0(const CMatchPartyRecruitSchCond* pThis)
     int nBand = FUN_140694860(pThis);
     if (nBand == -1)
         return 0;
-    int nEntriesPerBand = 12 * 10;
-    return nBand * nEntriesPerBand + 1;
+    int nPerPage = 12;
+    int nPerBand = nPerPage * 10;
+    int nResult = nBand * nPerBand + 1;
+    return nResult;
 }
 
 // @0x140694910  GetBandMax
@@ -159,8 +159,10 @@ int FUN_140694910(const CMatchPartyRecruitSchCond* pThis)
     int nBand = FUN_140694860(pThis);
     if (nBand == -1)
         return 0;
-    int nEntriesPerBand = 12 * 10;
-    return (nBand + 1) * nEntriesPerBand;
+    int nPerPage = 12;
+    int nPerBand = nPerPage * 10;
+    int nResult = (nBand + 1) * nPerBand;
+    return nResult;
 }
 
 // @0x140694970  GetLimit
@@ -170,8 +172,10 @@ int FUN_140694970(const CMatchPartyRecruitSchCond* pThis)
         return -1;
     int nPage = pThis->page - 1;
     int nBlock = nPage / 30;
-    int nEntriesPerBlock = 12 * 30;
-    return (nBlock + 1) * nEntriesPerBlock;
+    int nPerPage = 12;
+    int nPerBlock = nPerPage * 30;
+    int nResult = (nBlock + 1) * nPerBlock;
+    return nResult;
 }
 
 // ---- CMatchPartyRecruit ---------------------------------------------------------------------------------------------
@@ -261,27 +265,25 @@ void FUN_140694dc0(CMatchPartyRecruit* pThis, CInputStream* in)
     pThis->flags = in->ReadInt64();
 }
 
-// The exe's body returns nothing (its `ret` exposes the last field copy's this pointer), but the caller ignores the
-// result, so the declared reference return keeps the caller's mangled name.
+// The exe's body returns nothing (its `ret` exposes the last field copy's this pointer) and the callers ignore the
+// result, so it is declared void.
 // @0x140694f70
-CMatchPartyRecruit& CMatchPartyRecruit::FUN_140694f70(const CMatchPartyRecruit& other)
+void CMatchPartyRecruit::FUN_140694f70(const CMatchPartyRecruit& other)
 {
-    if (&other != 0)
-    {
-        recruitId = other.recruitId;
-        fieldId = other.fieldId;
-        category = other.category;
-        kind = other.kind;
-        title = other.title;
-        minimumLevel = other.minimumLevel;
-        maximumLevel = other.maximumLevel;
-        members = other.members;
-        ownerId = other.ownerId;
-        created = other.created;
-        ownerName = other.ownerName;
-        flags = other.flags;
-    }
-    return *this;
+    if (&other == 0)
+        return;
+    recruitId = other.recruitId;
+    fieldId = other.fieldId;
+    category = other.category;
+    kind = other.kind;
+    title = other.title;
+    minimumLevel = other.minimumLevel;
+    maximumLevel = other.maximumLevel;
+    members = other.members;
+    ownerId = other.ownerId;
+    created = other.created;
+    ownerName = other.ownerName;
+    flags = other.flags;
 }
 
 // @0x140695080  IsEmpty: a recruit without an id is an empty slot.

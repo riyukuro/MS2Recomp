@@ -88,7 +88,7 @@ Unk_SrBuffs* FUN_1416749a0(Unk_SrEntity* pEntity);          // the buffs of an a
 
 // @0x141758d70
 bool SkillTargetRecord::FUN_141758d70(unsigned long long nTagId, unsigned long long nTagSub, int nOwnerId,
-    int nCasterId, int nSkillId, short nLevel, int nMotion, const Vector3& ptDir, int n80, int n84,
+    int nCasterId, int nSkillId, short nLevel, int nMotion, Vector3 ptDir, int n80, int n84,
     int nAttack, int n8c)
 {
     m_spSkill = FUN_1401958b0()->GetSkillData(nSkillId);

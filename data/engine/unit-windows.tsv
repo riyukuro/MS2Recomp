@@ -1,0 +1,31 @@
+# VA windows for engine-stage units (tools/gbprogress.py): <unit-name prefix> include|exclude <lo> <hi>
+# A unit may only pair with exe functions inside its include ranges (if any) and outside its exclude ranges.
+# Two Lua builds: Gamebryo's LNUM-patched 3rdParty/Lua (gb:Lua/, engine/units-gb.json) at 0x1421e2000-0x142260000
+# (with egfLua), and stock Lua 5.1.4 compiled as C (gb:Lua2/, engine/units-lib-lua.json) right after Crypto++ at
+# 0x1423915d0-0x1423ae7f0. Most functions are byte-identical but for relocations, so each pairs only with its own copy.
+gb:Lua/	exclude	1423915c0	1423ae840
+gb:Lua2/	include	1423915c0	1423ae840
+# CEF 3.3396.1786 libcef_dll_wrapper (engine/units-lib-cef.json, lb3): statically linked at 0x142778550-0x1427b6c90,
+# between the libcef.dll import thunks and the Gamebryo renderer tail.
+gb:cef/	include	142778550	1427b6c90
+# expat 2.0.1 (engine/units-lib-expat.json, lb2): after the second Lua copy
+gb:expat/	include	1423b24b0	1423c8a50
+# IJG jpeg-6b and libpng 1.6.17 (engine/units-lib-jpeg.json, units-lib-png.json, lb2): inside the Scaleform block
+gb:jpeg/	include	1426f42a0	142703d10
+gb:png/	include	142703d10	142723760
+# Crypto++ 5.6.2 (engine/units-lib-cryptopp.json, lb1): between the import thunks and the second Lua copy
+gb:CryptoPP/	include	142303bd0	1423915b0
+# its cryptlib.cpp AAD_CHANNEL static (/O2 di in the library .text$di run, atexit thunk in .text$yd; gap4)
+gb:CryptoPP/	include	14013b180	14013b1b0
+gb:CryptoPP/	include	142cc8bb0	142cc8c20
+# PCRE 8.21 (engine/units-lib-pcre.json, lb2): Scaleform pcre.lib between the import thunks and the Gamebryo tail
+gb:pcre/	include	1428d8f40	1428eb050
+# Crypto++ TUs the exe has no own code of (every pair is an ICF look-alike other TUs already match): compiled only so the
+# full-exe closure links their names (fipstest/rsa/zlib/ida/shark/square vtables), never paired (sfr36 2026-10-24)
+gb:CryptoPP/adler32	exclude	140000000	150000000
+gb:CryptoPP/channels	exclude	140000000	150000000
+gb:CryptoPP/fips140	exclude	140000000	150000000
+gb:CryptoPP/gf256	exclude	140000000	150000000
+gb:CryptoPP/gf2_32	exclude	140000000	150000000
+gb:CryptoPP/pkcspad	exclude	140000000	150000000
+gb:CryptoPP/skipjack	exclude	140000000	150000000

@@ -123,6 +123,17 @@ void FUN_14165f170(PCBase* p);
 class Unk_HmBuffMgr { public: Vector3 FUN_141683290(); };
 Unk_HmBuffMgr* FUN_14166d240(PCBase* p);
 bool FUN_1416749c0(PCBase* p);
+// vtable-slot view: slot 22 takes the point by value (the exe copies 12 bytes into an arg slot)
+class Unk_HmSlots
+{
+public:
+#define MS2_HM_SLOTS(a, b, c, d, e) virtual void vfunc_##a(); virtual void vfunc_##b(); virtual void vfunc_##c(); \
+    virtual void vfunc_##d(); virtual void vfunc_##e();
+    MS2_HM_SLOTS(0, 1, 2, 3, 4) MS2_HM_SLOTS(5, 6, 7, 8, 9) MS2_HM_SLOTS(10, 11, 12, 13, 14) MS2_HM_SLOTS(15, 16, 17, 18, 19)
+#undef MS2_HM_SLOTS
+    virtual void vfunc_20(); virtual void vfunc_21();
+    virtual void vfunc_22(Vector3 kPos);                                    // 22
+};
 int FUN_1408a1360(Vector3 a, Vector3 b);
 CStringW GetStringCommonByKey(const CStringW& str);
 CFunctionCubeService* FUN_1409670b0();
@@ -145,7 +156,6 @@ StateHomemade::StateHomemade(PCBase* pOwner) : State(pOwner), m_n48(0) {}
 StateHomemade::~StateHomemade() {}
 
 // @0x140ca4460
-// MS2-FUNCTIONAL: the exe's temporary lifetimes around the cast info and the animation name differ (3 more EH states, larger frame)
 void StateHomemade::vfunc_4(StateData* pData)
 {
     State::vfunc_4(pData);
@@ -170,20 +180,18 @@ void StateHomemade::vfunc_4(StateData* pData)
         FUN_1409670b0()->FUN_141232660(aCubes, FUN_141656ad0(pRider));
         for (size_t i = 0; i < aCubes.GetCount(); i++)
         {
-            if (aCubes[i]->FUN_141229000(0) != 0)
-            {
-                float fDist = reinterpret_cast<Unk_HmPos*>(m_pOwner)->vfunc_18().FUN_140965c40(aCubes[i]->FUN_141226d00()).FUN_140967ac0();
-                if (fDist <= *static_cast<Client::Constants*>(FUN_1401d3200())->MasteryObjectInteractionDistance.Get())
-                {
-                    Vector3 kCube = aCubes[i]->FUN_141226d00();
-                    Vector3 kRider = reinterpret_cast<Unk_HmPos*>(pRider)->vfunc_18();
-                    if (FUN_1408a1360(kRider, kCube) != 0)
-                        m_aCubes.push_back(aCubes[i]);
-                }
-            }
+            if (aCubes[i]->FUN_141229000(0) == 0)
+                continue;
+            float fDist = reinterpret_cast<Unk_HmPos*>(m_pOwner)->vfunc_18().FUN_140965c40(aCubes[i]->FUN_141226d00()).FUN_140967ac0();
+            if (fDist > *static_cast<Client::Constants*>(FUN_1401d3200())->MasteryObjectInteractionDistance.Get())
+                continue;
+            if (FUN_1408a1360(reinterpret_cast<Unk_HmPos*>(pRider)->vfunc_18(), aCubes[i]->FUN_141226d00()) == 0)
+                continue;
+            m_aCubes.push_back(aCubes[i]);
         }
-        if (m_aCubes.size() != 0)
-            SendFunctionCubeMode4();
+        if (m_aCubes.size() == 0)
+            return;
+        SendFunctionCubeMode4();
     }
 }
 MS2_REPLACE_METHOD(0x140CA4460, StateHomemade, vfunc_4, 1105, 0xF92EE577);
@@ -242,7 +250,6 @@ void StateHomemade::vfunc_3(double fTime)
 MS2_REPLACE_METHOD(0x140CA49D0, StateHomemade, vfunc_3, 245, 0x5E8FBA71);
 
 // @0x140ca4ad0
-// MS2-FUNCTIONAL: the exe holds the buffer manager's returned point in the upper frame slot and copies it down to the argument slot
 void StateHomemade::vfunc_8(double fTime)
 {
     State::vfunc_8(fTime);
@@ -255,9 +262,7 @@ void StateHomemade::vfunc_8(double fTime)
         pPC->vfunc_59(0x37, spData.get(), 0x8f, 0);
     }
     Unk_HmBuffMgr* pBuff = FUN_14166d240(pPC);
-    Vector3 kPos = pBuff->FUN_141683290();
-    Vector3 kArg = kPos;
-    pPC->vfunc_22(*reinterpret_cast<const efd::Point3*>(&kArg));
+    reinterpret_cast<Unk_HmSlots*>(pPC)->vfunc_22(pBuff->FUN_141683290());
     if (FUN_1416749c0(m_pOwner))
         pPC->vfunc_59(2, 0, 0, 0);
 }
@@ -318,7 +323,6 @@ void StateHomemade::FUN_140ca4f30(Unk_HmCastInfo* pInfo)
 MS2_REPLACE_METHOD(0x140CA4F30, StateHomemade, FUN_140ca4f30, 141, 0x30E1B0EA);
 
 // @0x140ca4fd0
-// MS2-FUNCTIONAL: the exe's cube loop carries more temporaries (26 vs 16 EH state transitions); layout and calls are equivalent
 int StateHomemade::FUN_140ca4fd0(int nMode)
 {
     MyPC* pRider = FUN_1417b84b0();
@@ -332,24 +336,19 @@ int StateHomemade::FUN_140ca4fd0(int nMode)
     for (size_t i = 0; i < aCubes.GetCount(); i++)
     {
         MS2Ptr<CHomemadeCubeObject> spCube = aCubes[i];
-        if (nMode == 0 || spCube->FUN_141229000(1) != 0)
-        {
-            float fDist = reinterpret_cast<Unk_HmPos*>(m_pOwner)->vfunc_18().FUN_140965c40(spCube->FUN_141226d00()).FUN_140967ac0();
-            if (fDist <= *static_cast<Client::Constants*>(FUN_1401d3200())->MasteryObjectInteractionDistance.Get())
-            {
-                Vector3 kCube = spCube->FUN_141226d00();
-                Vector3 kRider = reinterpret_cast<Unk_HmPos*>(pRider)->vfunc_18();
-                if (FUN_1408a1360(kRider, kCube) != 0)
-                {
-                    if (!static_cast<Unk_HmCube*>(spCube.get())->FUN_140ca6580())
-                    {
-                        int nKind = static_cast<Unk_HmCube*>(spCube.get())->FUN_140ca6580()->m_n100;
-                        if (FUN_1409670c0()->FUN_14066bc40(nKind) != 3)
-                            return 1;
-                    }
-                }
-            }
-        }
+        if (nMode != 0 && spCube->FUN_141229000(1) == 0)
+            continue;
+        float fDist = reinterpret_cast<Unk_HmPos*>(m_pOwner)->vfunc_18().FUN_140965c40(spCube->FUN_141226d00()).FUN_140967ac0();
+        if (fDist > *static_cast<Client::Constants*>(FUN_1401d3200())->MasteryObjectInteractionDistance.Get())
+            continue;
+        if (FUN_1408a1360(reinterpret_cast<Unk_HmPos*>(pRider)->vfunc_18(), spCube->FUN_141226d00()) == 0)
+            continue;
+        if (!static_cast<Unk_HmCube*>(spCube.get())->FUN_140ca6580())
+            continue;
+        int nKind = static_cast<Unk_HmCube*>(spCube.get())->FUN_140ca6580()->m_n100;
+        if (FUN_1409670c0()->FUN_14066bc40(nKind) == 3)
+            continue;
+        return 1;
     }
     return 0;
 }

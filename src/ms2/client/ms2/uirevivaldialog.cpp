@@ -549,7 +549,6 @@ bool UIRevivalDialog::SendRevivalMode0(int nResult, const CMsgBoxData& box)
 }
 
 // @0x141abae20
-// MS2-FUNCTIONAL: frame 0x60 larger (extra call-result temporaries); the || bool temp and the string assigns differ
 void UIRevivalDialog::FUN_141abae20()
 {
     Unk_RevPC* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
@@ -558,47 +557,47 @@ void UIRevivalDialog::FUN_141abae20()
     {
         CStringW strMsg;
         Unk_RevFieldRef spField = FUN_1403ed2d0()->FUN_141bd30a0();
-        if (pPc->FUN_1416546d0()->FUN_140639340() == 1 || (spField.FUN_1409657a0() != 0 && spField.FUN_140885340()->m_60 == 0))
+        if (pPc->FUN_1416546d0()->FUN_140639340() == 1 || ((spField.FUN_1409657a0() ? true : false) && spField.FUN_140885340()->m_60 == 0))
         {
             strMsg = GetStringCommon(0x27c);
         }
         else
         {
-            if (pPc->FUN_141661970() == 0)
+            if (pPc->FUN_141661970() != 0)
             {
                 if (m_1b4 == 2)
-                    strMsg = GetStringCommonByKey(L"s_msg_die_meso");
+                    strMsg = GetStringCommonByKey(L"s_msg_die_repeat_meso");
                 else if (m_1b4 == 1)
-                    strMsg = GetStringCommonByKey(L"s_msg_die_merat");
+                    strMsg = GetStringCommonByKey(L"s_msg_die_repeat_merat");
                 else
-                    strMsg = GetStringCommonByKey(L"s_msg_die_none");
+                    strMsg = GetStringCommonByKey(L"s_msg_die_repeat_none");
             }
             else if (m_1b4 == 2)
             {
-                strMsg = GetStringCommonByKey(L"s_msg_die_repeat_meso");
+                strMsg = GetStringCommonByKey(L"s_msg_die_meso");
             }
             else if (m_1b4 == 1)
             {
-                strMsg = GetStringCommonByKey(L"s_msg_die_repeat_merat");
+                strMsg = GetStringCommonByKey(L"s_msg_die_merat");
             }
             else
             {
-                strMsg = GetStringCommonByKey(L"s_msg_die_repeat_none");
+                strMsg = GetStringCommonByKey(L"s_msg_die_none");
             }
         }
-        if (spField.FUN_1409657a0() != 0)
+        if (spField.FUN_1409657a0() ? true : false)
         {
             Unk_RevFieldData* pData = spField.FUN_140885340();
             if (pData->m_38 != FUN_1403ed2d0()->FUN_141bd3060())
             {
                 Unk_RevFieldData* pTo = spField.FUN_140885340();
-                strMsg += FUN_1401d0160(L"\n", FUN_14052bd00(0x27d, TSingleton<CStringTable>::GetInstance()->FUN_141811980(3, pTo->m_38)));
+                CStringW strTo = FUN_14052bd00(0x27d, TSingleton<CStringTable>::GetInstance()->FUN_141811980(3, pTo->m_38));
+                strMsg += FUN_1401d0160(L"\n", strTo);
             }
         }
         if (m_30.get() != 0)
         {
-            int nRepeat = pPc->FUN_141661970();
-            static_cast<Unk_RevMovie*>(m_30.operator->())->FUN_140e0a8c0("setData", strMsg, nRepeat);
+            static_cast<Unk_RevMovie*>(m_30.operator->())->FUN_140e0a8c0("setData", strMsg, pPc->FUN_141661970());
         }
     }
 }
@@ -622,7 +621,6 @@ void UIRevivalDialog::FUN_141abb420()
 }
 
 // @0x141abb600
-// MS2-FUNCTIONAL: the exe keeps the dungeon-name temporary unchained (temp/slot order differs); source form unknown
 void UIRevivalDialog::FUN_141abb600()
 {
     if (m_1b0 != 0)
@@ -645,27 +643,24 @@ void UIRevivalDialog::FUN_141abb600()
         Unk_RevFieldRef spField = FUN_140a55460(nFieldId);
         if (spField.FUN_1408851f0() != 0)
             return;
-        int nTo = nFieldId;
-        if (spField.FUN_140885340()->m_38 != 0)
-            nTo = spField.FUN_140885340()->m_38;
-        if (nFieldId == nTo)
-        {
-            COutPacket packet(static_cast<int>(SendOp::Revival), 0);
-            packet.WriteUInt8(0);
-            FUN_140710590(packet);
-        }
-        else
+        int nTo = spField.FUN_140885340()->m_38 != 0 ? spField.FUN_140885340()->m_38 : nFieldId;
+        if (nFieldId != nTo)
         {
             MS2Ptr<CMsgBoxData> spBox = FUN_140d73f20(FUN_14052bd00(0x287, TSingleton<CStringTable>::GetInstance()->FUN_141811980(3, nTo)), 1);
             spBox->FUN_141a027c0(RevAnswerDelegate(this, &UIRevivalDialog::SendRevivalMode0));
             spBox->FUN_141a01800(2);
             FUN_140d73c60(spBox);
         }
+        else
+        {
+            COutPacket packet(static_cast<int>(SendOp::Revival), 0);
+            packet.WriteUInt8(0);
+            FUN_140710590(packet);
+        }
     }
 }
 
 // @0x141abbb20
-// MS2-FUNCTIONAL: frame 0x10 larger (call-result temporaries); source form unknown
 void UIRevivalDialog::FUN_141abbb20()
 {
     Unk_RevPC* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
@@ -678,51 +673,49 @@ void UIRevivalDialog::FUN_141abbb20()
         return;
     FUN_141abccb0();
     int bHasCoupon = 0;
-    unsigned nCanPay = FUN_141abcb10(m_190);
+    int nCanPay = FUN_141abcb10(m_190);
     int nCoupon = FUN_141abc9d0();
     if (nCoupon != 0)
     {
         Unk_RevItemHandle hItem = g_revInventory.FUN_140a5e040(4);
-        bHasCoupon = hItem.FUN_14052cd70() != 0;
+        if (hItem.FUN_14052cd70() != 0)
+            bHasCoupon = 1;
     }
-    if (bHasCoupon || nCanPay != 0)
+    if (bHasCoupon == 0 && nCanPay == 0)
     {
-        if (spField.FUN_140885340()->m_13c == 0)
+        TSingleton<CUIService>::GetInstance()->FUN_141add1f0();
+        return;
+    }
+    if (spField.FUN_140885340()->m_13c == 0)
+    {
+        if (pPc->FUN_1416749a0()->FUN_140970020(*FUN_1401d7c10(&FUN_1401d3200()->m_51d8), 0, 0, 1) != 0)
         {
-            if (pPc->FUN_1416749a0()->FUN_140970020(*FUN_1401d7c10(&FUN_1401d3200()->m_51d8), 0, 0, 1) != 0)
-            {
-                FUN_141275260(0x281, 1, 1);
-                return;
-            }
+            FUN_141275260(0x281, 1, 1);
+            return;
         }
-        if (nCoupon == 0)
-        {
-            CStringW strMsg;
-            if (FUN_141abc740() == 0)
-                strMsg = FUN_14086d060(0x283, m_190);
-            else
-                strMsg = FUN_140c160b0(CStringW(L"s_msg_revival_merat_msg_box_cn"), m_190);
-            m_180 = FUN_140d73f20(strMsg, 1);
-            m_180->FUN_141a01540(L"revival_merat");
-            m_180->FUN_141a027c0(RevAnswerDelegate(this, &UIRevivalDialog::SendRevivalMode1));
-            FUN_140d73c60(m_180);
-        }
-        else
-        {
-            COutPacket packet(static_cast<int>(SendOp::Revival), 0);
-            packet.WriteUInt8(1);
-            packet.WriteUInt8(nCoupon);
-            FUN_140710590(packet);
-        }
+    }
+    if (nCoupon != 0)
+    {
+        COutPacket packet(static_cast<int>(SendOp::Revival), 0);
+        packet.WriteUInt8(1);
+        packet.WriteUInt8(nCoupon);
+        FUN_140710590(packet);
     }
     else
     {
-        TSingleton<CUIService>::GetInstance()->FUN_141add1f0();
+        CStringW strMsg;
+        if (FUN_141abc740() != 0)
+            strMsg = FUN_140c160b0(L"s_msg_revival_merat_msg_box_cn", m_190);
+        else
+            strMsg = FUN_14086d060(0x283, m_190);
+        m_180 = FUN_140d73f20(strMsg, 1);
+        m_180->FUN_141a01540(L"revival_merat");
+        m_180->FUN_141a027c0(RevAnswerDelegate(this, &UIRevivalDialog::SendRevivalMode1));
+        FUN_140d73c60(m_180);
     }
 }
 
 // @0x141abc080
-// MS2-FUNCTIONAL: frame/temp order differs (call-result temporaries); source form unknown
 void UIRevivalDialog::FUN_141abc080()
 {
     Unk_RevPC* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
@@ -744,45 +737,39 @@ void UIRevivalDialog::FUN_141abc080()
     }
     if (bHasCoupon == 0 && FUN_141abcad0(m_198) == 0)
     {
-        short nJob = pPc->vfunc_78();
-        __int64 nCost = FUN_1401c0db0()->FUN_140676830(nJob, 0);
-        float fStat = pPc->FUN_1416561a0()->FUN_1411e1110(0x42);
-        float fRate = fStat <= *FUN_140298f40(&FUN_1401d3200()->m_8cc0) ? pPc->FUN_1416561a0()->FUN_1411e1110(0x42) : *FUN_140298f40(&FUN_1401d3200()->m_8cc0);
+        __int64 nCost = FUN_1401c0db0()->FUN_140676830(pPc->vfunc_78(), 0);
+        float fRate = *FUN_140298f40(&FUN_1401d3200()->m_8cc0) < pPc->FUN_1416561a0()->FUN_1411e1110(0x42)
+            ? *FUN_140298f40(&FUN_1401d3200()->m_8cc0) : pPc->FUN_1416561a0()->FUN_1411e1110(0x42);
         nCost = FUN_140632990(nCost, 1.0f - fRate);
-        if (nCost < 0)
-            nCost = 0;
+        nCost = nCost < 0 ? 0 : nCost;
         if (FUN_141abc930() == 0 || FUN_141abcb10(nCost) == 0)
         {
             FUN_141275260(0x34, 1, 1);
+            return;
         }
+        CStringW strMsg;
+        if (FUN_141abc740() != 0)
+            strMsg = FUN_140c160b0(L"s_msg_revival_meso_cannot_merat_msg_box_cn", nCost);
         else
-        {
-            CStringW strMsg;
-            if (FUN_141abc740() == 0)
-                strMsg = FUN_140c160b0(CStringW(L"s_msg_revival_meso_cannot_merat_msg_box"), nCost);
-            else
-                strMsg = FUN_140c160b0(CStringW(L"s_msg_revival_meso_cannot_merat_msg_box_cn"), nCost);
-            m_180 = FUN_140d73f20(strMsg, 1);
-            m_180->FUN_141a01540(L"revival_merat");
-            m_180->FUN_141a027c0(RevAnswerDelegate(this, &UIRevivalDialog::SendRevivalMode1));
-            FUN_140d73c60(m_180);
-        }
+            strMsg = FUN_140c160b0(L"s_msg_revival_meso_cannot_merat_msg_box", nCost);
+        m_180 = FUN_140d73f20(strMsg, 1);
+        m_180->FUN_141a01540(L"revival_merat");
+        m_180->FUN_141a027c0(RevAnswerDelegate(this, &UIRevivalDialog::SendRevivalMode1));
+        FUN_140d73c60(m_180);
+        return;
     }
-    else
+    if (spField.FUN_140885340()->m_13c == 0)
     {
-        if (spField.FUN_140885340()->m_13c == 0)
+        if (pPc->FUN_1416749a0()->FUN_140970020(*FUN_1401d7c10(&FUN_1401d3200()->m_51d8), 0, 0, 1) != 0)
         {
-            if (pPc->FUN_1416749a0()->FUN_140970020(*FUN_1401d7c10(&FUN_1401d3200()->m_51d8), 0, 0, 1) != 0)
-            {
-                FUN_141275260(0x281, 1, 1);
-                return;
-            }
+            FUN_141275260(0x281, 1, 1);
+            return;
         }
-        COutPacket packet(static_cast<int>(SendOp::Revival), 0);
-        packet.WriteUInt8(2);
-        packet.WriteUInt8(nCoupon);
-        FUN_140710590(packet);
     }
+    COutPacket packet(static_cast<int>(SendOp::Revival), 0);
+    packet.WriteUInt8(2);
+    packet.WriteUInt8(nCoupon);
+    FUN_140710590(packet);
 }
 
 // @0x141abc740
@@ -801,35 +788,33 @@ int UIRevivalDialog::FUN_141abc770()
 }
 
 // @0x141abc7f0
-// MS2-FUNCTIONAL: the level argument is copied through ecx into edx and the frame is 0x10 larger; source form unknown
 int UIRevivalDialog::FUN_141abc7f0()
 {
     Unk_RevPC* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pPc == 0)
         return 0;
     int nResult = 0;
-    int nLevel = pPc->FUN_141658f30();
-    if (FUN_1401c0d90()->FUN_140477d10(nLevel) == 1)
-    {
+    if (FUN_1401c0d90()->FUN_140477d10(pPc->FUN_141658f30()) == 1)
         nResult = 1;
-    }
-    else
+    else if (pPc->FUN_141528160() > 0)
+        nResult = 1;
+    if (nResult != 0)
     {
-        if (pPc->FUN_141528160() > 0)
-            nResult = 1;
+        do
+        {
+            if (FUN_140166410()->FUN_14036d570(0x5d) == 0)
+                break;
+            int nRoom = DAT_143ab2884;
+            if (nRoom == 0)
+                break;
+            Unk_RevDgRef spRoom = FUN_14031c2a0()->FUN_1403206b0(nRoom);
+            if (spRoom.FUN_140334010(0) != 0)
+                break;
+            if (spRoom.FUN_1403347d0()->m_109 == 0)
+                break;
+            nResult = 0;
+        } while (0);
     }
-    if (nResult == 0)
-        return nResult;
-    if (FUN_140166410()->FUN_14036d570(0x5d) == 0)
-        return nResult;
-    int nRoom = DAT_143ab2884;
-    if (nRoom == 0)
-        return nResult;
-    Unk_RevDgRef spRoom = FUN_14031c2a0()->FUN_1403206b0(nRoom);
-    if (spRoom.FUN_140334010(0) != 0)
-        return nResult;
-    if (spRoom.FUN_1403347d0()->m_109 != 0)
-        nResult = 0;
     return nResult;
 }
 
@@ -923,43 +908,41 @@ void UIRevivalDialog::FUN_141abcc50()
 }
 
 // @0x141abccb0
-// MS2-FUNCTIONAL: the exe spills the vftable pointer of the player before the slot 78 call; source form unknown
 void UIRevivalDialog::FUN_141abccb0()
 {
     Unk_RevPC* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pPc == 0)
         return;
-    int nFlag = pPc->FUN_1416749a0()->FUN_140970d90(*FUN_1401d7c10(&FUN_1401d3200()->m_51d8), 0);
-    __int64 nBase = FUN_1401c0db0()->FUN_140676830(pPc->vfunc_78(), nFlag);
-    float fStat = pPc->FUN_1416561a0()->FUN_1411e1110(0x42);
-    float fRate = fStat <= *FUN_140298f40(&FUN_1401d3200()->m_8cc0) ? pPc->FUN_1416561a0()->FUN_1411e1110(0x42) : *FUN_140298f40(&FUN_1401d3200()->m_8cc0);
-    __int64 nCost = FUN_140632990(nBase, 1.0f - fRate);
-    if (nCost < 0)
-        nCost = 0;
-    if (m_190 == nCost)
-        return;
-    FUN_141abae20();
-    CStringW strLabel;
-    if (FUN_141abc740() == 0)
-        strLabel = FUN_14052bd00(0x280, FUN_1409404f0(nCost));
-    else
-        strLabel = FUN_1405c2690(CStringW(L"s_msg_revival_merat_btn_cn"), FUN_1409404f0(nCost));
-    static_cast<Unk_RevMovie*>(m_30.operator->())->FUN_14129cce0("setButtonLabel", 2, strLabel);
-    m_190 = nCost;
-    if (m_180.get() != 0)
+    __int64 nCost = FUN_1401c0db0()->FUN_140676830(pPc->vfunc_78(),
+        pPc->FUN_1416749a0()->FUN_140970d90(*FUN_1401d7c10(&FUN_1401d3200()->m_51d8), 0));
+    float fRate = *FUN_140298f40(&FUN_1401d3200()->m_8cc0) < pPc->FUN_1416561a0()->FUN_1411e1110(0x42)
+        ? *FUN_140298f40(&FUN_1401d3200()->m_8cc0) : pPc->FUN_1416561a0()->FUN_1411e1110(0x42);
+    nCost = FUN_140632990(nCost, 1.0f - fRate);
+    nCost = nCost < 0 ? 0 : nCost;
+    if (m_190 != nCost)
     {
-        CStringW strMsg;
-        if (FUN_141abc740() == 0)
-            strMsg = FUN_14086d060(0x283, m_190);
+        FUN_141abae20();
+        CStringW strLabel;
+        if (FUN_141abc740() != 0)
+            strLabel = FUN_1405c2690(L"s_msg_revival_merat_btn_cn", FUN_1409404f0(nCost));
         else
-            strMsg = FUN_140c160b0(CStringW(L"s_msg_revival_merat_msg_box_cn"), m_190);
-        m_180->SetMsg(strMsg);
-        FUN_14151f4e0(m_180->FUN_141a02b90(), m_180);
+            strLabel = FUN_14052bd00(0x280, FUN_1409404f0(nCost));
+        static_cast<Unk_RevMovie*>(m_30.operator->())->FUN_14129cce0("setButtonLabel", 2, strLabel);
+        m_190 = nCost;
+        if (m_180.get() != 0)
+        {
+            CStringW strMsg;
+            if (FUN_141abc740() != 0)
+                strMsg = FUN_140c160b0(L"s_msg_revival_merat_msg_box_cn", m_190);
+            else
+                strMsg = FUN_14086d060(0x283, m_190);
+            m_180->SetMsg(strMsg);
+            FUN_14151f4e0(m_180->FUN_141a02b90(), m_180);
+        }
     }
 }
 
 // @0x141abd290
-// MS2-FUNCTIONAL: the exe spills the vftable pointer of the player before the slot 78 call; source form unknown
 void UIRevivalDialog::FUN_141abd290()
 {
     Unk_RevPC* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
@@ -967,24 +950,23 @@ void UIRevivalDialog::FUN_141abd290()
         return;
     int nA = pPc->FUN_141528160();
     int nB = FUN_1401c0d90()->FUN_140477d10(pPc->FUN_141658f30());
-    __int64 nBase = FUN_1401c0db0()->FUN_1406771e0(pPc->vfunc_78(), nA, nB);
-    float fStat = pPc->FUN_1416561a0()->FUN_1411e1110(0xa4);
-    float fRate = fStat <= FUN_1401d3200()->m_90f8 ? pPc->FUN_1416561a0()->FUN_1411e1110(0xa4) : FUN_1401d3200()->m_90f8;
-    __int64 nCost = FUN_140632990(nBase, 1.0f - fRate);
-    if (nCost < 0)
-        nCost = 0;
+    __int64 nCost = FUN_1401c0db0()->FUN_1406771e0(pPc->vfunc_78(), nA, nB);
+    float fRate = FUN_1401d3200()->m_90f8 < pPc->FUN_1416561a0()->FUN_1411e1110(0xa4)
+        ? FUN_1401d3200()->m_90f8 : pPc->FUN_1416561a0()->FUN_1411e1110(0xa4);
+    nCost = FUN_140632990(nCost, 1.0f - fRate);
+    nCost = nCost < 0 ? 0 : nCost;
     if (FUN_140374410(FUN_1403ed2d0()->FUN_141bd3060()) != 0)
         nCost = 0;
     FUN_141abae20();
     CStringW strLabel;
-    if (nB == 0)
+    if (nB != 0)
     {
-        int nKind = pPc->FUN_141528160();
-        strLabel = FUN_1412e7c20(0x285, FUN_1409404f0(nCost), nKind);
+        strLabel = FUN_14052bd00(0x286, FUN_1409404f0(nCost));
     }
     else
     {
-        strLabel = FUN_14052bd00(0x286, FUN_1409404f0(nCost));
+        int nKind = pPc->FUN_141528160();
+        strLabel = FUN_1412e7c20(0x285, FUN_1409404f0(nCost), nKind);
     }
     static_cast<Unk_RevMovie*>(m_30.operator->())->FUN_14129cce0("setButtonLabel", 2, strLabel);
     m_198 = nCost;
@@ -1017,7 +999,6 @@ void UIRevivalDialog::FUN_141abd640()
 }
 
 // @0x141abd790
-// MS2-FUNCTIONAL: extra named local and a different return-copy shape (frame/EH states differ); source form unknown
 CStringW UIRevivalDialog::FUN_141abd790()
 {
     m_1b0 = 0;
@@ -1029,22 +1010,20 @@ CStringW UIRevivalDialog::FUN_141abd790()
     if (nRoom == 0)
         return strLabel;
     Unk_RevDgRef spRoom = FUN_14031c2a0()->FUN_1403206b0(nRoom);
-    if (spRoom.FUN_140334010(0) == 0)
-    {
-        int nExit = spRoom.FUN_1403347d0()->m_140;
-        if (nExit == 0)
-            return strLabel;
-        int nLeft = nExit - DAT_143ab2950;
-        if (nLeft == 0)
-        {
-            strLabel = GetStringCommonByKey(L"s_room_exit_dungeon");
-            m_1b0 = 1;
-        }
-        else
-        {
-            strLabel = FUN_140938ae0(CStringW(L"s_msg_revival_count_btn"), nLeft);
-        }
+    if (spRoom.FUN_140334010(0) != 0)
         return strLabel;
+    unsigned int nExit = spRoom.FUN_1403347d0()->m_140;
+    if (nExit == 0)
+        return strLabel;
+    int nLeft = nExit - DAT_143ab2950 < 0 ? 0 : nExit - DAT_143ab2950;
+    if (nLeft == 0)
+    {
+        strLabel = GetStringCommonByKey(L"s_room_exit_dungeon");
+        m_1b0 = 1;
+    }
+    else
+    {
+        strLabel = FUN_140938ae0(CStringW(L"s_msg_revival_count_btn"), nLeft);
     }
     return strLabel;
 }

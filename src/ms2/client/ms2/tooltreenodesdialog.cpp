@@ -106,7 +106,6 @@ void CToolTreeNodesDialog::FUN_141858b50(Unk_TreeNode* pRoot)
     FUN_141858c00(hItem, pRoot);
 }
 
-// MS2-FUNCTIONAL: the exe reloads the child pointer through rcx (one byte of codegen differs)
 // @0x141858c00
 void CToolTreeNodesDialog::FUN_141858c00(HTREEITEM hParent, Unk_TreeNode* pNode)
 {
@@ -114,12 +113,11 @@ void CToolTreeNodesDialog::FUN_141858c00(HTREEITEM hParent, Unk_TreeNode* pNode)
         Unk_TreeNode* pEntry = pNode->FUN_14098db40(i);
         if (((Unk_NodeManager*)&DAT_143afa4d8)->FUN_14098d8d0(pEntry) != 0) {
             TVINSERTSTRUCT tvis;
+            tvis.hParent = hParent;
             tvis.hInsertAfter = TVI_LAST;
             tvis.item.mask = TVIF_TEXT;
-            tvis.hParent = hParent;
             tvis.item.pszText = (LPSTR)FUN_142087e50(FUN_1409a8b90(pEntry));
-            Unk_TreeNode* pChild = ((Unk_NodeManager*)&DAT_143afa4d8)->FUN_14098d8d0(pEntry);
-            FUN_141858c00(m_treeNodes.InsertItem(&tvis), pChild);
+            FUN_141858c00(m_treeNodes.InsertItem(&tvis), ((Unk_NodeManager*)&DAT_143afa4d8)->FUN_14098d8d0(pEntry));
         }
     }
 }

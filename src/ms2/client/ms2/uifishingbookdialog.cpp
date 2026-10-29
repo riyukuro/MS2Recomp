@@ -5,6 +5,8 @@
 // MS2-PIN: ??$max@H@std@@YAAEBHAEBH0@Z 0x140f43be0
 // MS2-PIN: ??1UIFishingBookDialog@@UEAA@XZ 0x140f43c90
 // MS2-PIN: ??_GUIFishingBookDialog@@UEAAPEAXI@Z 0x140f43d30
+// MS2-PIN: ??BUnk_FbListRef@@QEAAPEAVUnk_FbCtl@@XZ 0x140acd9d0
+// MS2-PIN: ??BUnk_FbTextRef@@QEAAPEAVASTextField@@XZ 0x140b9a800
 //
 // File name assumed (the class name; the exe has no assert path for it).
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uifishingbookdialog.cpp"    // assumed
@@ -41,7 +43,7 @@ WorldService* FUN_1403ed2d0();
 CStringW GetStringCommonByKey(const CStringW& strKey);                 // string table text
 CStringW FUN_141b720b0(int nId, __int64 nValue);
 CStringW FUN_1401d0160(const wchar_t* szFirst, const CStringW& strSecond);   // szFirst + strSecond
-CStringW FUN_1401ceea0(const wchar_t* szFmt, int n);
+CStringW FUN_1401ceea0(const wchar_t* szFmt, const int& n);
 CStringW FUN_14052bd00(int nStringId, const CStringW& strArg);
 CStringW FUN_1409e9bc0(int nId, const int& a, const int& b);
 CStringW FUN_1409e97f0(int nId, const unsigned& nArg);
@@ -132,7 +134,7 @@ public:
     virtual void vfunc_21();
     virtual void vfunc_22();
     virtual void vfunc_23();
-    virtual void vfunc_24(int n);
+    virtual void vfunc_24(bool b);
     void FUN_1422dcca0(int nIndex);                             // scroll to the entry
     void FUN_1422dd1d0();                                       // clear
     void FUN_1422dd230(const ASObj& obj);                       // add an entry
@@ -143,7 +145,7 @@ struct Unk_FbListRef
     void* m_p;
     Unk_FbListRef() : m_0(0), m_p(0) {}
     ~Unk_FbListRef() { FUN_140acd710(this); }
-    long FUN_140acd9d0();
+    operator Unk_FbCtl*();                                      // 0x140acd9d0
     Unk_FbCtl* FUN_140acd9f0();
 };
 struct Unk_FbTextRef
@@ -152,7 +154,7 @@ struct Unk_FbTextRef
     void* m_p;
     Unk_FbTextRef() : m_0(0), m_p(0) {}
     ~Unk_FbTextRef() { FUN_1409b4ac0(this); }
-    long FUN_140b9a800();
+    operator ASTextField*();                                    // 0x140b9a800
     ASTextField* FUN_1409b4c70();
 };
 
@@ -242,7 +244,6 @@ CString UIFishingBookDialog::GetTypeName()
 }
 
 // @0x140f41330
-// MS2-FUNCTIONAL: exe materialises bool temps / return slots in a branch layout the source form for which is not found
 void UIFishingBookDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
@@ -250,14 +251,12 @@ void UIFishingBookDialog::OnLoadComplete()
     m_nTab = 0;
     FUN_140f42790(m_nTab);
     FUN_140f41a10();
-    Unk_FbListRef spBag = FUN_140ba4b70("m_bag");
-    if (spBag.FUN_140acd9d0() != 0)
+    if (Unk_FbListRef spBag = FUN_140ba4b70("m_bag"))
         spBag.FUN_140acd9f0()->FUN_1422dcca0(0);
     FUN_141276180(s_strBookOpen, "");
 }
 
 // @0x140f41440
-// MS2-FUNCTIONAL: exe materialises bool temps / return slots in a branch layout the source form for which is not found
 int UIFishingBookDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs)
 {
     if (UIDialog::vfunc_28(szMethod, pArgs, nArgs) != 0)
@@ -266,7 +265,10 @@ int UIFishingBookDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
     {
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs) != 0)
-            FUN_140f42100(data.FUN_1422b8b10());
+        {
+            int nFishId = data.FUN_1422b8b10();
+            FUN_140f42100(nFishId);
+        }
     }
     else if (_stricmp(szMethod, "onTabChange") == 0)
     {
@@ -295,37 +297,34 @@ int UIFishingBookDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
 }
 
 // @0x140f416b0
-// MS2-FUNCTIONAL: exe materialises bool temps / return slots in a branch layout the source form for which is not found
 void UIFishingBookDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
 {
     UIObject::vfunc_49(pRetVal, pArgs);
     PC* pPC = static_cast<PC*>(FUN_1403ed2d0()->FUN_141bd0cc0());
-    if (pPC != 0)
+    if (pPC == 0)
+        return;
+    CStringW strText;
+    int nExp = pPC->FUN_141662750(1);
+    int nGrade = pPC->FUN_1416627d0(1);
+    if (nGrade == FUN_1409670c0()->FUN_14066b050(1))
     {
-        CStringW strText;
-        int nExp = pPC->FUN_141662750(1);
-        int nGrade = pPC->FUN_1416627d0(1);
-        if (nGrade == FUN_1409670c0()->FUN_14066b050(1))
-        {
-            strText = GetStringCommonByKey(CStringW(L"s_fishing_mastery_tooltip_level_max"));
-        }
-        else
-        {
-            int nBase = FUN_1409670c0()->FUN_14066b310(1, nGrade);
-            int nNextGrade = nGrade + 1;
-            int nNextBase = FUN_1409670c0()->FUN_14066b310(1, nNextGrade);
-            int nMax = nNextBase - nBase;
-            int nCur = nExp - nBase;
-            strText = FUN_1409e9bc0(0xbeb, nCur, nMax);
-        }
-        ASTooltip tooltip(1, 2);
-        tooltip.FUN_1409c6d70("export_common_tooltip_tooltipText");
-        tooltip.FUN_1409c6e00(300);
-        tooltip.FUN_1409c6e30(60000);
-        tooltip.FUN_1409c6dc0(1);
-        tooltip.FUN_1409c6cb0(strText);
-        FUN_1409b4bc0(pRetVal, tooltip.FUN_1422bb870());
+        strText = GetStringCommonByKey(L"s_fishing_mastery_tooltip_level_max");
     }
+    else
+    {
+        int nBase = FUN_1409670c0()->FUN_14066b310(1, nGrade);
+        int nNextBase = FUN_1409670c0()->FUN_14066b310(1, nGrade + 1);
+        int nMax = nNextBase - nBase;
+        int nCur = nExp - nBase;
+        strText = FUN_1409e9bc0(0xbeb, nCur, nMax);
+    }
+    ASTooltip tooltip(1, 2);
+    tooltip.FUN_1409c6d70("export_common_tooltip_tooltipText");
+    tooltip.FUN_1409c6e00(300);
+    tooltip.FUN_1409c6e30(60000);
+    tooltip.FUN_1409c6dc0(1);
+    tooltip.FUN_1409c6cb0(strText);
+    FUN_1409b4bc0(pRetVal, tooltip.FUN_1422bb870());
 }
 
 // @0x140f41940
@@ -345,34 +344,31 @@ void UIFishingBookDialog::FUN_140f419e0()
 }
 
 // @0x140f41a10
-// MS2-FUNCTIONAL: exe materialises bool temps / return slots in a branch layout the source form for which is not found
 void UIFishingBookDialog::FUN_140f41a10()
 {
     PC* pPC = static_cast<PC*>(FUN_1403ed2d0()->FUN_141bd0cc0());
-    if (pPC != 0)
-    {
-        int nExp = pPC->FUN_141662750(1);
-        int nGrade = pPC->FUN_1416627d0(1);
-        int nBase = FUN_1409670c0()->FUN_14066b310(1, nGrade);
-        int nNextBase = FUN_1409670c0()->FUN_14066b310(1, nGrade + 1);
-        int nTitle = FUN_140f42ed0();
-        CStringW strTitle = (nTitle != 0) ? FUN_141b720b0(nTitle, 0) : GetStringCommonByKey(CStringW(L"s_fishing_none_title"));
-        CStringW strGrade = FUN_140f432e0(nGrade);
-        if (nGrade == FUN_1409670c0()->FUN_14066b050(1))
-            strGrade += FUN_1401d0160(L" ", GetStringCommonByKey(CStringW(L"s_fishing_mastery_gauge_level_max")));
-        ASObj obj(2);
-        obj.FUN_1409c0d20("fisherTitleID", nTitle);
-        obj.FUN_1407cbb20("fisherTitle", CStringW(strTitle));
-        obj.FUN_1407cbb20("fisherGradeName", CStringW(strGrade));
-        obj.FUN_1409c0d20("curMastery", nExp - nBase);
-        obj.FUN_1409c0d20("maxMastery", nNextBase - nBase);
-        if (m_30.get() != 0)
-            m_30->FUN_140acd1f0("setFisher", AScript(obj));
-    }
+    if (pPC == 0)
+        return;
+    int nExp = pPC->FUN_141662750(1);
+    int nGrade = pPC->FUN_1416627d0(1);
+    int nBase = FUN_1409670c0()->FUN_14066b310(1, nGrade);
+    int nNextBase = FUN_1409670c0()->FUN_14066b310(1, nGrade + 1);
+    int nTitle = FUN_140f42ed0();
+    CStringW strTitle = (nTitle == 0) ? GetStringCommonByKey(L"s_fishing_none_title") : FUN_141b720b0(nTitle, 0);
+    CStringW strGrade = FUN_140f432e0(nGrade);
+    if (nGrade == FUN_1409670c0()->FUN_14066b050(1))
+        strGrade += FUN_1401d0160(L" ", GetStringCommonByKey(L"s_fishing_mastery_gauge_level_max"));
+    ASObj obj(2);
+    obj.FUN_1409c0d20("fisherTitleID", nTitle);
+    obj.FUN_1407cbb20("fisherTitle", CStringW(strTitle));
+    obj.FUN_1407cbb20("fisherGradeName", CStringW(strGrade));
+    obj.FUN_1409c0d20("curMastery", nExp - nBase);
+    obj.FUN_1409c0d20("maxMastery", nNextBase - nBase);
+    if (m_30.get() != 0)
+        m_30->FUN_140acd1f0("setFisher", AScript(obj));
 }
 
 // @0x140f41e90
-// MS2-FUNCTIONAL: exe materialises bool temps / return slots in a branch layout the source form for which is not found
 void UIFishingBookDialog::FUN_140f41e90()
 {
     if (m_30.get() != 0)
@@ -389,15 +385,21 @@ void UIFishingBookDialog::FUN_140f41e90()
             Unk_FbFishRef fish = FUN_1403b4740()->FUN_1403b2d30(pRec->m_18);
             if (fish.FUN_140cd8bd0() != 0)
                 continue;
-            int nTab = fish.FUN_1403b3c80()->m_20;
-            if (nTab == 0)
+            switch (fish.FUN_1403b3c80()->m_20)
+            {
+            case 0:
                 aNew[0] = 1;
-            else if (nTab == 1)
+                break;
+            case 1:
                 aNew[1] = 1;
-            else if (nTab == 7)
+                break;
+            case 7:
                 aNew[3] = 1;
-            else
+                break;
+            default:
                 aNew[2] = 1;
+                break;
+            }
         }
         for (unsigned __int64 j = 0; j < 4; j++)
             reinterpret_cast<Unk_FbAS*>(m_30.operator->())->FUN_140c19160("setTabNew", j, aNew[j]);
@@ -405,57 +407,47 @@ void UIFishingBookDialog::FUN_140f41e90()
 }
 
 // @0x140f42100
-// MS2-FUNCTIONAL: exe materialises bool temps / return slots in a branch layout the source form for which is not found
 void UIFishingBookDialog::FUN_140f42100(int nFishId)
 {
-    if (!FUN_140a467d0(&m_30))
+    if (FUN_140a467d0(&m_30))
+        return;
+    ASObj obj(2);
+    Unk_FbFishRef fish = FUN_1403b4740()->FUN_1403b2d30(nFishId);
+    if (fish.FUN_140cdf9b0() != 0)
     {
-        ASObj obj(2);
-        Unk_FbFishRef fish = FUN_1403b4740()->FUN_1403b2d30(nFishId);
-        if (fish.FUN_140cdf9b0() == 0)
+        Unk_FbItemRef item = FUN_140953f20()->FUN_140cdba00(nFishId);
+        Unk_FbFishRec* pRec = fish.FUN_1403b3c80();
+        int nArea = FUN_1409670c0()->FUN_14066af60(1, pRec->m_1c);
+        obj.FUN_1407cbb20("iconPath", fish.FUN_1403b3c80()->FUN_1403b1600());
+        obj.FUN_1407cbb20("fishName", fish.FUN_1403b3c80()->FUN_1403b1650());
+        obj.FUN_1407cbb20("fishingExp", fish.FUN_1403b3c80()->m_48 != 0 ? GetStringCommonByKey(L"s_fishing_all_spot") : FUN_140f432e0(nArea));
+        obj.FUN_1409adc90("fishRank", fish.FUN_1403b3c80()->m_24);
+        obj.FUN_1407cbb20("fishGradeName", FUN_14052bd00(0xbda, GetStringTable()->FUN_141813150(fish.FUN_1403b3c80()->m_24)));
+        obj.FUN_1407cbb20("desc", fish.FUN_1403b3c80()->FUN_1403b16b0(FUN_140f43330(fish.FUN_1403b3c80()->m_18)));
+        obj.FUN_1407cb9c0("acquire", FUN_140f43330(fish.FUN_1403b3c80()->m_18));
+        obj.FUN_140f43b40("medal", FUN_140f43540(nFishId));
+        if (FUN_140f43330(fish.FUN_1403b3c80()->m_18) != 0)
         {
-            obj.FUN_1407cb9c0("acquire", 0);
-            obj.FUN_1407cb9c0("medal", 0);
+            obj.FUN_1407cbb20("totalCatchCount", FUN_1409e97f0(0xbdb, FUN_140f43610(nFishId)));
+            obj.FUN_1407cbb20("bigSizeCatchCount", FUN_1409e97f0(0xbdb, FUN_140f436f0(nFishId)));
+            obj.FUN_1407cbb20("bestRecord", FUN_1409e97f0(0xbdc, FUN_140f437d0(nFishId)));
         }
-        else
-        {
-            Unk_FbItemRef item = FUN_140953f20()->FUN_140cdba00(nFishId);
-            Unk_FbFishRec* pRec = fish.FUN_1403b3c80();
-            int nArea = FUN_1409670c0()->FUN_14066af60(1, pRec->m_1c);
-            obj.FUN_1407cbb20("iconPath", fish.FUN_1403b3c80()->FUN_1403b1600());
-            obj.FUN_1407cbb20("fishName", fish.FUN_1403b3c80()->FUN_1403b1650());
-            bool bSingle = fish.FUN_1403b3c80()->m_48 == 0;
-            obj.FUN_1407cbb20("fishingExp", bSingle ? FUN_140f432e0(nArea) : GetStringCommonByKey(CStringW(L"s_fishing_all_spot")));
-            obj.FUN_1409adc90("fishRank", fish.FUN_1403b3c80()->m_24);
-            obj.FUN_1407cbb20("fishGradeName", FUN_14052bd00(0xbda, GetStringTable()->FUN_141813150(fish.FUN_1403b3c80()->m_24)));
-            int nKnown = FUN_140f43330(fish.FUN_1403b3c80()->m_18);
-            obj.FUN_1407cbb20("desc", fish.FUN_1403b3c80()->FUN_1403b16b0(nKnown));
-            obj.FUN_1407cb9c0("acquire", FUN_140f43330(fish.FUN_1403b3c80()->m_18));
-            obj.FUN_140f43b40("medal", FUN_140f43540(nFishId));
-            if (FUN_140f43330(fish.FUN_1403b3c80()->m_18) != 0)
-            {
-                unsigned nTotal = FUN_140f43610(nFishId);
-                obj.FUN_1407cbb20("totalCatchCount", FUN_1409e97f0(0xbdb, nTotal));
-                unsigned nBig = FUN_140f436f0(nFishId);
-                obj.FUN_1407cbb20("bigSizeCatchCount", FUN_1409e97f0(0xbdb, nBig));
-                unsigned nBest = FUN_140f437d0(nFishId);
-                obj.FUN_1407cbb20("bestRecord", FUN_1409e97f0(0xbdc, nBest));
-            }
-        }
-        m_30->FUN_140acd1f0("setFish", AScript(obj));
     }
+    else
+    {
+        obj.FUN_1407cb9c0("acquire", 0);
+        obj.FUN_1407cb9c0("medal", 0);
+    }
+    m_30->FUN_140acd1f0("setFish", AScript(obj));
 }
 
 // @0x140f42790
-// MS2-FUNCTIONAL: exe materialises bool temps / return slots in a branch layout the source form for which is not found
 void UIFishingBookDialog::FUN_140f42790(int nTab)
 {
     FbIdArray ids;
     FUN_140f42d90(ids);
-    size_t nCount = ids.GetCount();
-    qsort(ids.GetData(), nCount, 4, (int (*)(const void*, const void*))FUN_140f438b0);
-    Unk_FbListRef spBag = FUN_140ba4b70("m_bag");
-    if (spBag.FUN_140acd9d0() != 0)
+    qsort(ids.GetData(), ids.GetCount(), 4, (int (*)(const void*, const void*))FUN_140f438b0);
+    if (Unk_FbListRef spBag = FUN_140ba4b70("m_bag"))
     {
         spBag.FUN_140acd9f0()->FUN_1422dd1d0();
         for (unsigned __int64 i = 0; i < 0x14; i++)
@@ -463,8 +455,8 @@ void UIFishingBookDialog::FUN_140f42790(int nTab)
             ASObj obj(2);
             Unk_FbItemRef item(0);
             Unk_FbFishRef fish(0);
-            int nIndex = m_nPage * 0x14 + (int)i;
-            if (-1 < nIndex)
+            int nIndex = m_nPage * 0x14 + i;
+            if (nIndex >= 0)
             {
                 if (nIndex < (int)ids.GetCount())
                 {
@@ -484,10 +476,9 @@ void UIFishingBookDialog::FUN_140f42790(int nTab)
             }
             spBag.FUN_140acd9f0()->FUN_1422dd230(obj);
         }
-        spBag.FUN_140acd9f0()->vfunc_24(1);
+        spBag.FUN_140acd9f0()->vfunc_24(true);
     }
-    Unk_FbTextRef spPage = FUN_140bb4cf0("m_page");
-    if (spPage.FUN_140b9a800() != 0)
+    if (Unk_FbTextRef spPage = FUN_140bb4cf0("m_page"))
     {
         int nCur = m_nPage + 1;
         spPage.FUN_1409b4c70()->FUN_1422c4cd0(FUN_1401ceea0(L"{0}", nCur));
@@ -534,10 +525,10 @@ void UIFishingBookDialog::FUN_140f42d90(FbIdArray& rIds)
 }
 
 // @0x140f42ed0
-// MS2-FUNCTIONAL: exe materialises bool temps / return slots in a branch layout the source form for which is not found
 int UIFishingBookDialog::FUN_140f42ed0()
 {
-    if (FUN_1403ed2d0()->FUN_141bd0cc0() == 0)
+    void* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    if (pPlayer == 0)
         return 0;
     if (FUN_140931450("fisherChampion") != 0 || FUN_1406c7600()->FUN_1409365a0(0x1607bb8) != 0)
         return FUN_140933210()->FUN_14087a930("fisherChampion");
@@ -569,19 +560,15 @@ int UIFishingBookDialog::FUN_140f43330(int nFishId)
 }
 
 // @0x140f43380
-// MS2-FUNCTIONAL: exe materialises bool temps / return slots in a branch layout the source form for which is not found
 int UIFishingBookDialog::FUN_140f43380(int nFishId)
 {
     Unk_FbItemRef item = FUN_140953f20()->FUN_140cdba00(nFishId);
-    if (item.FUN_140cdf9a0() == 0 || item.FUN_140cdf9d0()->m_2c == 0)
-    {
-        int nParent = FUN_140f434b0(nFishId);
-        Unk_FbItemRef parent = FUN_140953f20()->FUN_140cdba00(nParent);
-        if (parent.FUN_140cdf9a0() == 0 || parent.FUN_140cdf9d0()->m_2c == 0)
-            return 0;
+    if ((item.FUN_140cdf9a0() ? true : false) && item.FUN_140cdf9d0()->m_2c != 0)
         return 1;
-    }
-    return 1;
+    Unk_FbItemRef parent = FUN_140953f20()->FUN_140cdba00(FUN_140f434b0(nFishId));
+    if ((parent.FUN_140cdf9a0() ? true : false) && parent.FUN_140cdf9d0()->m_2c != 0)
+        return 1;
+    return 0;
 }
 
 // @0x140f434b0
@@ -606,7 +593,6 @@ int UIFishingBookDialog::FUN_140f43540(int nFishId)
 }
 
 // @0x140f43610
-// MS2-FUNCTIONAL: exe materialises bool temps / return slots in a branch layout the source form for which is not found
 int UIFishingBookDialog::FUN_140f43610(int nFishId)
 {
     int nTotal = 0;
@@ -615,9 +601,8 @@ int UIFishingBookDialog::FUN_140f43610(int nFishId)
         if (item.FUN_140cdf9a0() != 0)
             nTotal += item.FUN_140cdf9d0()->m_1c;
     }
-    int nParent = FUN_140f434b0(nFishId);
     {
-        Unk_FbItemRef parent = FUN_140953f20()->FUN_140cdba00(nParent);
+        Unk_FbItemRef parent = FUN_140953f20()->FUN_140cdba00(FUN_140f434b0(nFishId));
         if (parent.FUN_140cdf9a0() != 0)
             nTotal += parent.FUN_140cdf9d0()->m_1c;
     }
@@ -625,7 +610,6 @@ int UIFishingBookDialog::FUN_140f43610(int nFishId)
 }
 
 // @0x140f436f0
-// MS2-FUNCTIONAL: exe materialises bool temps / return slots in a branch layout the source form for which is not found
 int UIFishingBookDialog::FUN_140f436f0(int nFishId)
 {
     int nTotal = 0;
@@ -634,9 +618,8 @@ int UIFishingBookDialog::FUN_140f436f0(int nFishId)
         if (item.FUN_140cdf9a0() != 0)
             nTotal += item.FUN_140cdf9d0()->m_20;
     }
-    int nParent = FUN_140f434b0(nFishId);
     {
-        Unk_FbItemRef parent = FUN_140953f20()->FUN_140cdba00(nParent);
+        Unk_FbItemRef parent = FUN_140953f20()->FUN_140cdba00(FUN_140f434b0(nFishId));
         if (parent.FUN_140cdf9a0() != 0)
             nTotal += parent.FUN_140cdf9d0()->m_20;
     }
@@ -644,7 +627,6 @@ int UIFishingBookDialog::FUN_140f436f0(int nFishId)
 }
 
 // @0x140f437d0
-// MS2-FUNCTIONAL: exe materialises bool temps / return slots in a branch layout the source form for which is not found
 int UIFishingBookDialog::FUN_140f437d0(int nFishId)
 {
     unsigned nBest = 0;
@@ -654,38 +636,38 @@ int UIFishingBookDialog::FUN_140f437d0(int nFishId)
         if (item.FUN_140cdf9a0() != 0)
             nBest = item.FUN_140cdf9d0()->m_24;
     }
-    int nParent = FUN_140f434b0(nFishId);
     {
-        Unk_FbItemRef parent = FUN_140953f20()->FUN_140cdba00(nParent);
+        Unk_FbItemRef parent = FUN_140953f20()->FUN_140cdba00(FUN_140f434b0(nFishId));
         if (parent.FUN_140cdf9a0() != 0)
             nParentBest = parent.FUN_140cdf9d0()->m_24;
     }
     return FUN_1402cf010(nBest, nParentBest);
 }
 
+// the exe calls the ucrt wcscmp through its import slot here
+extern "C" int(__cdecl* __imp_wcscmp)(const wchar_t* psz1, const wchar_t* psz2);
+
 // @0x140f438b0
-// MS2-FUNCTIONAL: exe materialises bool temps / return slots in a branch layout the source form for which is not found
 int FUN_140f438b0(const int* pA, const int* pB)
 {
-    Unk_FbFishRef fishA = FUN_1403b4740()->FUN_1403b2d30(*pA);
-    Unk_FbFishRef fishB = FUN_1403b4740()->FUN_1403b2d30(*pB);
+    const int& nA = *pA;
+    const int& nB = *pB;
+    Unk_FbFishRef fishA = FUN_1403b4740()->FUN_1403b2d30(nA);
+    Unk_FbFishRef fishB = FUN_1403b4740()->FUN_1403b2d30(nB);
     if (fishA.FUN_140cd8bd0() != 0 || fishB.FUN_140cd8bd0() != 0)
         return 1;
-    if (fishA.FUN_1403b3c80()->m_1c != fishB.FUN_1403b3c80()->m_1c)
+    if (fishA.FUN_1403b3c80()->m_1c == fishB.FUN_1403b3c80()->m_1c)
     {
-        if (fishB.FUN_1403b3c80()->m_1c < fishA.FUN_1403b3c80()->m_1c)
-            return 1;
-        return -1;
+        if (fishA.FUN_1403b3c80()->m_24 == fishB.FUN_1403b3c80()->m_24)
+        {
+            CStringW strA = GetStringTable()->FUN_141811980(0x1d, nA);
+            CStringW strB = GetStringTable()->FUN_141811980(0x1d, nB);
+            return __imp_wcscmp(strA.GetBuffer(0), strB.GetBuffer(0));
+        }
+        else
+            return fishA.FUN_1403b3c80()->m_24 > fishB.FUN_1403b3c80()->m_24 ? 1 : -1;
     }
-    if (fishA.FUN_1403b3c80()->m_24 == fishB.FUN_1403b3c80()->m_24)
-    {
-        CStringW strA = GetStringTable()->FUN_141811980(0x1d, *pA);
-        CStringW strB = GetStringTable()->FUN_141811980(0x1d, *pB);
-        return wcscmp(strA.GetBuffer(0), strB.GetBuffer(0));
-    }
-    if (fishB.FUN_1403b3c80()->m_24 < fishA.FUN_1403b3c80()->m_24)
-        return 1;
-    return -1;
+    return fishA.FUN_1403b3c80()->m_1c > fishB.FUN_1403b3c80()->m_1c ? 1 : -1;
 }
 
 // @0x140f43b40

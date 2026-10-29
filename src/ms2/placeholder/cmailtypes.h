@@ -69,7 +69,7 @@ MS2_CHECK_OFFSET(CMailAttachItem, m_item, 0x30);
 class CMailAdItem : public CPtred {
 public:
     CMailAdItem();                                            // 0x140692a20
-    virtual ~CMailAdItem();                                   // 0x140692c20
+    // virtual ~CMailAdItem();                                // 0x140692c20 (implicit: the exe dtor stores no vptr)
     void FUN_14068fb60(CInputStream* stream);                 // read from the packet stream
     MS2_LAYOUT_FRIEND;
     int m_n18; int m_n1c; int m_n20; int m_n24;                // +0x18

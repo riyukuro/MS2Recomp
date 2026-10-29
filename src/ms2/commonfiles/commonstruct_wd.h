@@ -5,6 +5,7 @@
 // Loose types (i64 / raw pointers): rx2 reconciles with the other slices' headers at integration.
 #pragma once
 #include "ms2/commonfiles/commonstruct.h"
+#include "ms2/commonfiles/commonstruct_backout.h"
 
 typedef __int64 i64;
 typedef unsigned __int64 u64;
@@ -21,8 +22,6 @@ struct Unk_TIter { Unk_TNode* node; };
 struct Unk_TIterBool { Unk_TNode* node; bool inserted; };
 // 16-byte vector element (intrusive smart pointer: unknown, pointer).
 struct Unk_E16 { i64 a, b; };
-// _Uninitialized_backout_al (_First,_Last,_Al): 0x28 bytes in the exe frame.
-struct Unk_Backout { i64 first, last, al, pad1, pad2; };
 
 // ---- tree helpers outside the slice ----
 Unk_TVal* FUN_140287eb0(void* tree); Unk_TVal* FUN_140287ee0(void* tree);
@@ -36,10 +35,10 @@ i64 FUN_14027c160(i64 v); i64 FUN_14027c1f0(i64 v); i64 FUN_14027c240(void* out,
 Unk_TNode* FUN_140276fe0(void* tree, Unk_TNode* node, i64 val);
 Unk_TIter* FUN_14027cff0(Unk_TIter*);
 Unk_TIter* FUN_14028a130(void* tree, Unk_TIter* out); Unk_TIter* FUN_14028a910(void* tree, Unk_TIter* out);
-unsigned char FUN_14027ee20(Unk_TIter* a, Unk_TIter* b);
+bool FUN_14027ee20(Unk_TIter* a, Unk_TIter* b);
 i64 FUN_1402885e0(void* tree, Unk_TNode* node); i64 FUN_140288610(void* tree, i64 val);
 i64 FUN_140288430(void* tree);
-unsigned char FUN_14027f870(i64 comp, i64 a, i64 b);
+bool FUN_14027f870(i64 comp, i64 a, i64 b);
 unsigned char FUN_1402874c0(void* tree, i64 a, i64 b);
 Unk_TIter* FUN_14027f720(Unk_TIter*); Unk_TIter* FUN_14027f600(Unk_TIter*); void FUN_14027f740(Unk_TIter*);
 Unk_TIter* FUN_14028af20(void* tree, Unk_TIter* out, i64 key);
@@ -66,20 +65,16 @@ void FUN_1402895c0(i64 it, i64 ptr);
 i64 FUN_140278710(i64); i64 FUN_140278720(i64); i64 FUN_140278730(i64); i64 FUN_140278740(i64); i64 FUN_140278750(i64);
 i64 FUN_140278780(i64, i64); i64 FUN_140278790(i64, i64); i64 FUN_1402787a0(i64, i64); i64 FUN_1402787b0(i64, i64); i64 FUN_1402787c0(i64, i64);
 i64 FUN_1402788c0(i64*, i64*); i64 FUN_1402788f0(i64*, i64*); i64 FUN_140278920(i64*, i64*); i64 FUN_140278950(i64*, i64*); i64 FUN_140278980(i64*, i64*);
-void FUN_14027d0e0(Unk_Backout*, i64, i64); void FUN_14027d120(Unk_Backout*, i64, i64); void FUN_14027d160(Unk_Backout*, i64, i64);
-void FUN_14027d1a0(Unk_Backout*, i64, i64); void FUN_14027d1e0(Unk_Backout*, i64, i64);
-void FUN_140277690(Unk_Backout*, i64); void FUN_1402776f0(Unk_Backout*, i64); void FUN_140277750(Unk_Backout*, i64);
-void FUN_1402777b0(Unk_Backout*, i64); void FUN_140277810(Unk_Backout*, i64);
-i64 FUN_140289090(Unk_Backout*); i64 FUN_1402890b0(Unk_Backout*); i64 FUN_1402890d0(Unk_Backout*);
-i64 FUN_1402890f0(Unk_Backout*); i64 FUN_140289110(Unk_Backout*);
-void FUN_14027e260(Unk_Backout*); void FUN_14027e2a0(Unk_Backout*); void FUN_14027e2e0(Unk_Backout*);
-void FUN_14027e320(Unk_Backout*); void FUN_14027e360(Unk_Backout*);
+void FUN_140277690(Unk_BackoutA*, i64); void FUN_1402776f0(Unk_BackoutB*, i64); void FUN_140277750(Unk_BackoutC*, i64);
+void FUN_1402777b0(Unk_BackoutD*, i64); void FUN_140277810(Unk_BackoutE*, i64);
+i64 FUN_140289090(Unk_BackoutA*); i64 FUN_1402890b0(Unk_BackoutB*); i64 FUN_1402890d0(Unk_BackoutC*);
+i64 FUN_1402890f0(Unk_BackoutD*); i64 FUN_140289110(Unk_BackoutE*);
 i64 FUN_14027b320(i64, i64, i64, i64, char, char);
 
 // ---- defined in this slice (declared for forward references) ----
 i64 FUN_140278a30(void* tree, Unk_TIter* out, unsigned char addleft, Unk_TNode* where, i64 val, Unk_TNode* newnode);
 Unk_TIter* FUN_140278d90(void* tree, Unk_TIter* out, Unk_TIter where, i64 val, Unk_TNode* newnode);
-Unk_TIterBool* FUN_1402799d0(void* tree, Unk_TIterBool* out, char leftish, i64 val, Unk_TNode* newnode);
+Unk_TIterBool* FUN_1402799d0(void* tree, Unk_TIterBool* out, bool leftish, i64 val, Unk_TNode* newnode);
 i64 FUN_14027a270(i64 p);
 Unk_TNode* FUN_14027a280(void* tree, i64 key);
 i64 FUN_14027a320(i64 first, i64 last, i64 dest, Unk_StlTag);

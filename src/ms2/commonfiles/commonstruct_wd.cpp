@@ -164,61 +164,68 @@ nohint:
     return out;
 }
 // @0x1402799d0
-// MS2-FUNCTIONAL: _Insert_nohint: exe has EH unwind state (node guard) and 1036 bytes; this version lacks the EH cleanup (915 bytes)
+// MS2-FUNCTIONAL: exe keeps the STL's _TRY_BEGIN/_CATCH_ALL(_Destroy_if_not_nil(newnode)) frame (EH -2 slot, return jumps through the try end); a real try/catch here spills every local differently, so the guard is left out
 // std::_Tree<map<int,int>>::_Insert_nohint(bool leftish, _Valty&& val, _Nodeptr newnode); 1036 bytes (Ghidra's 1024 is truncated)
-Unk_TIterBool* FUN_1402799d0(void* tree, Unk_TIterBool* out, char leftish, i64 val, Unk_TNode* newnode)
+Unk_TIterBool* FUN_1402799d0(void* tree, Unk_TIterBool* out, bool leftish, i64 val, Unk_TNode* newnode)
 {
     Unk_TVal* h = FUN_140287eb0(tree);
     Unk_TNode* where = h->head;
     Unk_TNode* trynode = where->parent;
     bool addleft = true;
-    while (trynode->isnil == 0) {
+    while (!trynode->isnil) {
         where = trynode;
-        if (leftish == 0) {
-            i64 k68 = FUN_1402885e0(tree, trynode);
-            i64 k60 = FUN_140288610(tree, val);
-            addleft = FUN_14027f870(FUN_140288430(tree), k60, k68) != 0;
+        if (leftish) {
+            i64 kv = FUN_140288610(tree, val);
+            i64 kt = FUN_1402885e0(tree, trynode);
+            bool lt = FUN_14027f870(FUN_140288430(tree), kt, kv);
+            addleft = !lt;
         } else {
-            i64 k78 = FUN_140288610(tree, val);
-            i64 k70 = FUN_1402885e0(tree, trynode);
-            char c = FUN_14027f870(FUN_140288430(tree), k70, k78);
-            addleft = c == 0;
+            i64 kt = FUN_1402885e0(tree, trynode);
+            i64 kv = FUN_140288610(tree, val);
+            bool lt = FUN_14027f870(FUN_140288430(tree), kv, kt);
+            addleft = lt;
         }
-        if (addleft == 0)
-            trynode = trynode->right;
-        else
-            trynode = trynode->left;
+        trynode = addleft ? trynode->left : trynode->right;
     }
-    Unk_TIter res;
-    FUN_14027d010(&res, where, FUN_14027b570(h));
-    if (addleft != 0) {
-        Unk_TIter t20;
-        char atbegin = FUN_14027ee20(&res, FUN_14028a130(tree, &t20));
-        if (atbegin != 0) {
+    if (0) {
+        bool yes = true;
+        Unk_TIter t;
+        i64 r = FUN_140278a30(tree, &t, addleft, where, FUN_14027c160(val), newnode);
+        FUN_140274d10(out, (Unk_TIter*)r, &yes);
+        return out;
+    } else {
+        Unk_TIter res;
+        FUN_14027d010(&res, where, FUN_14027b570(h));
+        if (!addleft)
+            ;
+        else {
+            Unk_TIter b;
+            bool atbegin = FUN_14027ee20(&res, FUN_14028a130(tree, &b));
+            if (atbegin) {
+                bool yes = true;
+                Unk_TIter t;
+                i64 r = FUN_140278a30(tree, &t, 1, where, FUN_14027c160(val), newnode);
+                FUN_140274d10(out, (Unk_TIter*)r, &yes);
+                return out;
+            } else
+                FUN_14027f740(&res);
+        }
+        i64 kv = FUN_140288610(tree, val);
+        i64 kw = FUN_1402885e0(tree, res.node);
+        bool lt = FUN_14027f870(FUN_140288430(tree), kw, kv);
+        if (lt) {
             bool yes = true;
-            Unk_TIter t18;
-            i64 v = FUN_14027c160(val);
-            i64 r = FUN_140278a30(tree, &t18, 1, where, v, newnode);
+            Unk_TIter t;
+            i64 r = FUN_140278a30(tree, &t, addleft, where, FUN_14027c160(val), newnode);
             FUN_140274d10(out, (Unk_TIter*)r, &yes);
             return out;
+        } else {
+            FUN_1402876f0(tree, newnode);
+            bool no = false;
+            FUN_140274b10(out, &res, &no);
+            return out;
         }
-        FUN_14027f740(&res);
     }
-    i64 k48 = FUN_140288610(tree, val);
-    i64 k40 = FUN_1402885e0(tree, res.node);
-    char lt = FUN_14027f870(FUN_140288430(tree), k40, k48);
-    if (lt == 0) {
-        FUN_1402876f0(tree, newnode);
-        bool no = false;
-        FUN_140274b10(out, &res, &no);
-    } else {
-        bool yes = true;
-        Unk_TIter t10;
-        i64 v = FUN_14027c160(val);
-        i64 r = FUN_140278a30(tree, &t10, addleft, where, v, newnode);
-        FUN_140274d10(out, (Unk_TIter*)r, &yes);
-    }
-    return out;
 }
 // @0x140279de0
 // MS2-FUNCTIONAL: vector::_Insert(range): exe carries EH state/_Reallocate guard layout (1158 bytes) that this straight version (1096) does not reproduce
@@ -368,7 +375,6 @@ void FUN_14027a720(i64* p, i64 v) { *p = v; }
 // @0x14027a740
 void FUN_14027a740(i64 it, i64* p) { FUN_1402895c0(it, *p); }
 // @0x14027a770
-// MS2-FUNCTIONAL: try_emplace: identical except 'mov rcx,[x]; mov r8,rcx' for the stored key pointer (unknown reference-arg shape)
 // std::map<int,int>::try_emplace(const int& key, ...)  [Ghidra's 0x147 is exact]
 Unk_TIterBool* FUN_14027a770(void* tree, Unk_TIterBool* out, i64 key)
 {
@@ -379,10 +385,9 @@ Unk_TIterBool* FUN_14027a770(void* tree, Unk_TIterBool* out, i64 key)
     bool ins;
     bool found;
     char pad;
-    i64 k;
     FUN_14028af20(tree, &lb, key);
     if (FUN_14027ee20(&lb, FUN_14028a910(tree, &end)) != 0 ||
-        (k = FUN_1402885e0(tree, lb.node), FUN_14027f870(FUN_140288430(tree), key, (i64)k) != 0)) {
+        FUN_14027f870(FUN_140288430(tree), key, FUN_1402885e0(tree, lb.node)) != 0) {
         ins = true;
         Unk_TNode* hint = lb.node;
         void* vt = FUN_140162f80(&pad);
@@ -392,8 +397,8 @@ Unk_TIterBool* FUN_14027a770(void* tree, Unk_TIterBool* out, i64 key)
     } else {
         found = false;
         FUN_140274b10(out, &lb, &found);
+        return out;
     }
-    return out;
 }
 // @0x14027a8c0
 void FUN_14027a8c0(void* vec, i64 first, i64 last, i64 dest) { FUN_14027a9d0(first, last, dest, FUN_1402882f0(vec)); }
@@ -510,71 +515,51 @@ i64 FUN_14027b0b0(i64 first, i64 last, i64 dest, i64 al)
 }
 
 // @0x14027ade0
-// MS2-FUNCTIONAL: _Uninitialized_copy_al_unchecked: exe uses an RAII _Uninitialized_backout (ctor FUN_14027d0xx/dtor FUN_14027e2xx outside this range, EH state); here the backout is a plain struct without unwind
 // std::_Uninitialized_copy_al_unchecked(first, last, dest, al, _Really_trivial..., _General_ptr_iterator_tag)
 i64 FUN_14027ade0(i64 first, i64 last, i64 dest, i64 al, char, char)
 {
-    Unk_Backout bo;
-    FUN_14027d0e0(&bo, dest, al);
-    for (i64 p = first; p != last; p += 0x8)
-        FUN_140277690(&bo, p);
-    i64 r = FUN_140289090(&bo);
-    FUN_14027e260(&bo);
-    return r;
+    Unk_BackoutA bo(dest, al);
+    for (; first != last; first += 0x8)
+        FUN_140277690(&bo, first);
+    return FUN_140289090(&bo);
 }
 
 // @0x14027ae70
-// MS2-FUNCTIONAL: _Uninitialized_copy_al_unchecked: exe uses an RAII _Uninitialized_backout (ctor FUN_14027d0xx/dtor FUN_14027e2xx outside this range, EH state); here the backout is a plain struct without unwind
 // std::_Uninitialized_copy_al_unchecked(first, last, dest, al, _Really_trivial..., _General_ptr_iterator_tag)
 i64 FUN_14027ae70(i64 first, i64 last, i64 dest, i64 al, char, char)
 {
-    Unk_Backout bo;
-    FUN_14027d120(&bo, dest, al);
-    for (i64 p = first; p != last; p += 0x30)
-        FUN_1402776f0(&bo, p);
-    i64 r = FUN_1402890b0(&bo);
-    FUN_14027e2a0(&bo);
-    return r;
+    Unk_BackoutB bo(dest, al);
+    for (; first != last; first += 0x30)
+        FUN_1402776f0(&bo, first);
+    return FUN_1402890b0(&bo);
 }
 
 // @0x14027af00
-// MS2-FUNCTIONAL: _Uninitialized_copy_al_unchecked: exe uses an RAII _Uninitialized_backout (ctor FUN_14027d0xx/dtor FUN_14027e2xx outside this range, EH state); here the backout is a plain struct without unwind
 // std::_Uninitialized_copy_al_unchecked(first, last, dest, al, _Really_trivial..., _General_ptr_iterator_tag)
 i64 FUN_14027af00(i64 first, i64 last, i64 dest, i64 al, char, char)
 {
-    Unk_Backout bo;
-    FUN_14027d160(&bo, dest, al);
-    for (i64 p = first; p != last; p += 0x8)
-        FUN_140277750(&bo, p);
-    i64 r = FUN_1402890d0(&bo);
-    FUN_14027e2e0(&bo);
-    return r;
+    Unk_BackoutC bo(dest, al);
+    for (; first != last; first += 0x8)
+        FUN_140277750(&bo, first);
+    return FUN_1402890d0(&bo);
 }
 
 // @0x14027af90
-// MS2-FUNCTIONAL: _Uninitialized_copy_al_unchecked: exe uses an RAII _Uninitialized_backout (ctor FUN_14027d0xx/dtor FUN_14027e2xx outside this range, EH state); here the backout is a plain struct without unwind
 // std::_Uninitialized_copy_al_unchecked(first, last, dest, al, _Really_trivial..., _General_ptr_iterator_tag)
 i64 FUN_14027af90(i64 first, i64 last, i64 dest, i64 al, char, char)
 {
-    Unk_Backout bo;
-    FUN_14027d1a0(&bo, dest, al);
-    for (i64 p = first; p != last; p += 0x10)
-        FUN_1402777b0(&bo, p);
-    i64 r = FUN_1402890f0(&bo);
-    FUN_14027e320(&bo);
-    return r;
+    Unk_BackoutD bo(dest, al);
+    for (; first != last; first += 0x10)
+        FUN_1402777b0(&bo, first);
+    return FUN_1402890f0(&bo);
 }
 
 // @0x14027b020
-// MS2-FUNCTIONAL: _Uninitialized_copy_al_unchecked: exe uses an RAII _Uninitialized_backout (ctor FUN_14027d0xx/dtor FUN_14027e2xx outside this range, EH state); here the backout is a plain struct without unwind
 // std::_Uninitialized_copy_al_unchecked(first, last, dest, al, _Really_trivial..., _General_ptr_iterator_tag)
 i64 FUN_14027b020(i64 first, i64 last, i64 dest, i64 al, char, char)
 {
-    Unk_Backout bo;
-    FUN_14027d1e0(&bo, dest, al);
-    for (i64 p = first; p != last; p += 0x10)
-        FUN_140277810(&bo, p);
-    i64 r = FUN_140289110(&bo);
-    FUN_14027e360(&bo);
-    return r;
+    Unk_BackoutE bo(dest, al);
+    for (; first != last; first += 0x10)
+        FUN_140277810(&bo, first);
+    return FUN_140289110(&bo);
 }

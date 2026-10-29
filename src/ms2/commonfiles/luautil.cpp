@@ -23,7 +23,7 @@
 #include "hook/ms2hook.h"
 
 // Unrecovered helpers.
-class Unk_LuaFileSystem { public: char FUN_140398190(); int FUN_1403972f0(const char* pszPath, void** ppBuffer, int* pnSize, int nFlags); };
+class Unk_LuaFileSystem { public: char FUN_140398190(); int FUN_1403972f0(const char* pszPath, void** ppBuffer, int* pnSize, std::string* pstrActualPath); };
 Unk_LuaFileSystem* FUN_140166420();
 void* FUN_140166440();                                                  // the log
 void FUN_1401859c0(void* pLog, int nLevel, int nCategory, const wchar_t* pszText);
@@ -36,6 +36,7 @@ class Unk_LuaSettings { public: CString FUN_14036d8e0(); };
 Unk_LuaSettings* FUN_140166410();
 double FUN_1405e6d60(int nBase, int nExp);
 int FUN_14088da20(int nPriceType);                                      // the blueprint cost type -> the runtime enum
+unsigned FUN_140557640(Unk_IngTable*, const CString& strName);          // CItemDataTable::GetTagByName
 
 // The ingredient's tag setter (an inline member of CIngredientInfo in the exe, first instantiated by itemgemstonedata.cpp).
 inline void Unk_GemIngredientTag(CIngredientInfo* pInfo, int nTag)
@@ -102,7 +103,7 @@ void CLua::CLuaContext::CLuaLock::vfunc_2()
 void CLua::CLuaContext::CLuaLock::SetParent(CLuaContext* pParent)
 {
     m_pParent = pParent;
-    MS2_ASSERT_AT(0x76, pParent);
+    MS2_ASSERT_MSG_AT(0x76, L"pParent", m_pParent);
 }
 
 // @0x140672ad0
@@ -148,8 +149,9 @@ bool CLua::CLuaContext::Call()
         if (lua_pcall(m_pState, m_nNumParam, LUA_MULTRET, 0))
             Error();
     }
-    catch (...)
+    catch (Exception& e)
     {
+        MessageBoxA(0, e.GetText(), "Lua Error", 0);
         return false;
     }
     return true;
@@ -378,7 +380,7 @@ bool CLua::LoadScripts(lua_State* pLuaState)
         CString strPath("./data/lua/Precompiled/luapack64.o");
         CString strName = FUN_14016a5c0(strPath, 0);
         void* pBuffer;
-        int nSize[2];
+        int nSize[2];                                   // the callee writes a 64-bit size; only the low DWORD is read back
         if (FUN_140166420()->FUN_1403972f0(strPath, &pBuffer, nSize, 0) == 0)
         {
             FUN_14015eb90(FUN_140166440(), 1, 0x12d, L"파일을 읽을 수 없습니다[{0}]", strPath);
@@ -1012,13 +1014,13 @@ void CLua::CalcMeratSkinItemBreakReward(unsigned short a, int b, long long c, in
         int nCount = (int)context->Integer(2);
         if (nCount > 0)
         {
-            int nEnd = nCount * 3 + 3;
-            for (int i = 3; i < nEnd; i += 3)
+            int nFirst = 3;
+            int nEnd = nFirst + nCount * 3;
+            for (int i = nFirst; i < nEnd; i += 3)
             {
                 int nItem = (int)context->Integer(i);
                 int nAmount = (int)context->Integer(i + 1);
-                CString strTag(context->String(i + 2));
-                int nTag = FUN_140557640(FUN_140281980(), &strTag);
+                int nTag = FUN_140557640(FUN_140281980(), CString(context->String(i + 2)));
                 Unk_IngRef info(new CIngredientInfo(nItem, nAmount, 0));
                 Unk_GemIngredientTag(info.operator->(), nTag);
                 rRewards.FUN_14026bca0(info);
@@ -1554,30 +1556,30 @@ unsigned int CLua::CalePcOffenseScore(const Unk_OffenseScore* score) {
         context->Push((long long)score->m_28);
         context->Push((long long)score->m_30);
         context->Push((long long)score->m_38);
-        context->Push(score->m_40 * 0.01);
-        context->Push(score->m_44 * 0.01);
-        context->Push(score->m_48 * 0.01);
+        context->Push(score->m_40 * 0.01f);
+        context->Push(score->m_44 * 0.01f);
+        context->Push(score->m_48 * 0.01f);
         context->Push((long long)score->m_50);
         context->Push((long long)score->m_58);
         context->Push((double)score->m_60);
-        context->Push(score->m_68 * 0.01);
-        context->Push(score->m_6c * 0.01);
-        context->Push(score->m_70 * 0.01);
-        context->Push(score->m_74 * 0.01);
-        context->Push(score->m_78 * 0.01);
-        context->Push(score->m_7c * 0.01);
-        context->Push(score->m_80 * 0.01);
-        context->Push(score->m_84 * 0.01);
-        context->Push(score->m_88 * 0.01);
-        context->Push(score->m_8c * 0.01);
-        context->Push(score->m_90 * 0.01);
+        context->Push(score->m_68 * 0.01f);
+        context->Push(score->m_6c * 0.01f);
+        context->Push(score->m_70 * 0.01f);
+        context->Push(score->m_74 * 0.01f);
+        context->Push(score->m_78 * 0.01f);
+        context->Push(score->m_7c * 0.01f);
+        context->Push(score->m_80 * 0.01f);
+        context->Push(score->m_84 * 0.01f);
+        context->Push(score->m_88 * 0.01f);
+        context->Push(score->m_8c * 0.01f);
+        context->Push(score->m_90 * 0.01f);
         context->Push((double)score->m_94);
-        context->Push(score->m_98 * 0.01);
+        context->Push(score->m_98 * 0.01f);
         context->Push((long long)score->m_a0);
         context->Push((long long)score->m_a8);
         context->Push((long long)score->m_b0);
-        context->Push(score->m_b8 * 0.01);
-        context->Push(score->m_bc * 0.01);
+        context->Push(score->m_b8 * 0.01f);
+        context->Push(score->m_bc * 0.01f);
         if(!context->Call()) return 0;
         return (int)context->Number(1);
     }
@@ -1597,15 +1599,15 @@ unsigned int CLua::CalePcDefenseScore(const Unk_DefenseScore* score) {
         context->Push((long long)score->m_20);
         context->Push((long long)score->m_28);
         context->Push((long long)score->m_30);
-        context->Push(score->m_38 * 0.01);
-        context->Push(score->m_3c * 0.01);
-        context->Push(score->m_40 * 0.01);
-        context->Push(score->m_44 * 0.01);
-        context->Push(score->m_48 * 0.01);
-        context->Push(score->m_4c * 0.01);
-        context->Push(score->m_50 * 0.01);
-        context->Push(score->m_54 * 0.01);
-        context->Push(score->m_58 * 0.01);
+        context->Push(score->m_38 * 0.01f);
+        context->Push(score->m_3c * 0.01f);
+        context->Push(score->m_40 * 0.01f);
+        context->Push(score->m_44 * 0.01f);
+        context->Push(score->m_48 * 0.01f);
+        context->Push(score->m_4c * 0.01f);
+        context->Push(score->m_50 * 0.01f);
+        context->Push(score->m_54 * 0.01f);
+        context->Push(score->m_58 * 0.01f);
         context->Push((double)score->m_60);
         context->Push((double)score->m_64);
         context->Push((long long)score->m_68);
@@ -1675,6 +1677,11 @@ void LuaPrint(lua_State* pState, int nLevel)
     CStringW strText(L"Lua:");
     strText += strMessage;
     FUN_1401859c0(FUN_140166440(), nLevel, 0xd, strText);
-    if (!FUN_1401c0db0()->IsClient())
-    FUN_1412751b0(strText, 0x14);
+    if (FUN_1401c0db0()->IsClient())
+    {
+    }
+    else
+    {
+        FUN_1412751b0(strText, 0x14);
+    }
 }

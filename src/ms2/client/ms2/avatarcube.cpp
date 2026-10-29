@@ -14,7 +14,6 @@
 // MS2-PIN: ?TypeCast@ClassInfo@efd@@QEBAPEAXIPEBX@Z 0x1409f31d0
 // MS2-PIN: ??_7AvatarCube@@6BIBase@efd@@@ 0x142dbfd68
 // MS2-PIN: ??_7AvatarCube@@6BCallbackObject@NiActorManager@@@ 0x142dbff60
-// MS2-FUNCTIONAL: the UGC cube manager / CUgcItemCube / attend-avatar manager are opaque FUN_ externs.
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\avatarcube.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
 #include "avatarcube.h"
@@ -23,6 +22,7 @@
 #include <egf/EntityID.h>
 #include "ms2/placeholder/citem.h"
 #include "ms2/placeholder/citemdata.h"
+#include "ms2/commonfiles/ugcdef.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 
@@ -43,20 +43,14 @@ public:
 Unk_AcAnimSvc* FUN_141b6f910();
 CString FUN_1409a2360(const char* psz, int n);
 
-// CUgcItemCube (RTTI, unit not recovered): a UGC cube build request. ctor 0x14088fb30, dtor 0x14088fbb0.
-struct Unk_UgcItemCube { char m_pad[0x58]; };
-MS2_CHECK_SIZE(Unk_UgcItemCube, 0x58);
-void FUN_14088fb30(Unk_UgcItemCube* pCube, CItem* pItem, Unk_GoModelKey& kKey);
-void FUN_14088fbb0(Unk_UgcItemCube* pCube);
-
 // The UGC cube manager (singleton behind FUN_14052d220).
 class Unk_UgcCubeMgr
 {
 public:
     // Starts loading the cube from the cached file strFile; 0 on success.
-    int FUN_141886cc0(Unk_UgcItemCube* pCube, CString strFile, unsigned __int64 nUgcUid);
+    int FUN_141886cc0(CUgcItemCube* pCube, CString strFile, unsigned __int64 nUgcUid);
     // Requests the cube download; spItem by value (callee-destroyed).
-    void FUN_141883df0(MS2Ptr<CItem> spItem, Unk_GoModelKey& kKey);
+    void FUN_141883df0(MS2Ptr<CItem> spItem, egf::EntityID id);
 };
 Unk_UgcCubeMgr* FUN_14052d220();
 CString FUN_1410280d0(int nKind, CString strName);
@@ -82,26 +76,18 @@ static CString s_strStun = "stun";
 AvatarCube* FUN_1409f2670(CItemData* pData)
 {
     AvatarCube* pCube = new (efd::MemHint(efd::MemHint::NONE)) AvatarCube(pData);
-    if (pCube == 0)
-    {
-        pCube = 0;
-    }
-    else
+    if (pCube)
     {
         int nId = FUN_1409f2cd0();
         if (nId == 0)
-        {
-            pCube = 0;
-        }
-        else
-        {
-            pCube->vfunc_57();
-            pCube->FUN_14123c5a0(nId);
-            pCube->vfunc_19(NiPoint3::ZERO);
-            pCube->vfunc_21(NiPoint3(0.0f, 0.0f, 90.0f));
-        }
+            return 0;
+        pCube->vfunc_57();
+        pCube->FUN_14123c5a0(nId);
+        pCube->vfunc_19(NiPoint3::ZERO);
+        pCube->vfunc_21(NiPoint3(0.0f, 0.0f, 90.0f));
+        return pCube;
     }
-    return pCube;
+    return 0;
 }
 
 // @0x1409f27e0
@@ -117,12 +103,10 @@ void AvatarCube::vfunc_12()
     {
         efd::utf8string kIdle((const char*)FUN_1409a2360("Idle_A", 0));
         Unk_AcKey kId1;
-        Unk_GoModelKey& rId1 = FUN_14123c460(AC_KEY(kId1));
-        if (FUN_141b6f910()->FUN_140999490(rId1, kIdle) != -2)
+        if (FUN_141b6f910()->FUN_140999490(FUN_14123c460(AC_KEY(kId1)), kIdle) != NiActorManager::INVALID_SEQUENCE_ID)
         {
             Unk_AcKey kId2;
-            Unk_GoModelKey& rId2 = FUN_14123c460(AC_KEY(kId2));
-            FUN_141b6f910()->FUN_1409a1fc0(rId2, kIdle, 1.0f, true);
+            FUN_141b6f910()->FUN_1409a1fc0(FUN_14123c460(AC_KEY(kId2)), kIdle, 1.0f, true);
         }
     }
 }
@@ -136,27 +120,23 @@ AvatarCube::AvatarCube(CItemData* pData)
 // @0x1409f2a00
 void AvatarCube::vfunc_59(MS2Ptr<CItem> spItem)
 {
-    if (spItem.get() && spItem->FUN_1405278d0())
+    if (spItem.get() ? true : false)
     {
-        CString strFile = FUN_1410280d0(2, spItem->FUN_1405278d0()->m_strName);
-        if (_access(strFile, 0) == 0)
+        if (spItem->FUN_1405278d0())
         {
-            Unk_AcKey kKey1;
-            Unk_UgcItemCube kCube;
-            FUN_14088fb30(&kCube, spItem.get(), FUN_14123c460(AC_KEY(kKey1)));
-            if (FUN_14052d220()->FUN_141886cc0(&kCube, CString(strFile), spItem->FUN_1405283d0()) == 0)
+            CString strFile = FUN_1410280d0(2, spItem->FUN_1405278d0()->m_strName);
+            if (_access(strFile, 0))
             {
-                Unk_AcKey kKey2;
-                Unk_GoModelKey& rKey2 = FUN_14123c460(AC_KEY(kKey2));
-                FUN_14052d220()->FUN_141883df0(MS2Ptr<CItem>(spItem), rKey2);
+                FUN_14052d220()->FUN_141883df0(spItem, FUN_14123c460());
             }
-            FUN_14088fbb0(&kCube);
-        }
-        else
-        {
-            Unk_AcKey kKey3;
-            Unk_GoModelKey& rKey3 = FUN_14123c460(AC_KEY(kKey3));
-            FUN_14052d220()->FUN_141883df0(MS2Ptr<CItem>(spItem), rKey3);
+            else
+            {
+                CUgcItemCube kCube(spItem.get(), FUN_14123c460());
+                if (FUN_14052d220()->FUN_141886cc0(&kCube, CString(strFile), spItem->FUN_1405283d0()) == 0)
+                {
+                    FUN_14052d220()->FUN_141883df0(spItem, FUN_14123c460());
+                }
+            }
         }
     }
 }
@@ -165,7 +145,7 @@ void AvatarCube::vfunc_59(MS2Ptr<CItem> spItem)
 // @0x1409f2cd0
 unsigned int FUN_1409f2cd0()
 {
-    for (unsigned int nId = 0x410; nId <= 0x419; nId++)
+    for (unsigned int nId = 0x410; nId < 0x41a; nId++)
     {
         if (FUN_1403ed2d0()->FUN_141bd1180(nId) == 0)
             return nId;

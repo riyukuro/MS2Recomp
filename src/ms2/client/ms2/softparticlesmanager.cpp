@@ -46,9 +46,9 @@ public:
     ~Unk_SceneWalker();                         // 0x14098cf00
     NiAVObject* Next(bool bDescend);            // 0x14098e0d0
 private:
-    void* m_pad[7];
+    void* m_pad[6];
 };
-MS2_CHECK_SIZE(Unk_SceneWalker, 0x38);
+MS2_CHECK_SIZE(Unk_SceneWalker, 0x30);
 
 void* FUN_140876480(void* pOut, int nCat);      // category hint
 void* FUN_14208a860(size_t cb, int nCat);       // the engine allocator
@@ -73,10 +73,11 @@ bool FUN_141774080(NiRenderClick* pkClick, void* pvData);
 // @0x141773630
 void FUN_141773630(void* viewSystem)
 {
-    NiViewRenderClick* pkClick = new (efd::MemHint(efd::MemHint::NONE)) NiViewRenderClick();
-
-    ((SoftParticlesManager*)viewSystem)->m_spClick = pkClick;
-    ((SoftParticlesManager*)viewSystem)->m_spClick->SetName(NiFixedString("SoftParticleClick"));
+    ((SoftParticlesManager*)viewSystem)->m_spClick = new (efd::MemHint(efd::MemHint::NONE)) NiViewRenderClick();
+    {
+        NiFixedString kName("SoftParticleClick");
+        ((SoftParticlesManager*)viewSystem)->m_spClick->SetName(kName);
+    }
     ((SoftParticlesManager*)viewSystem)->m_spClick->SetClearAllBuffers(false);
 
     NiDefaultClickRenderStep* pkStep =
@@ -84,10 +85,8 @@ void FUN_141773630(void* viewSystem)
     pkStep->AppendRenderClick(((SoftParticlesManager*)viewSystem)->m_spClick);
 
     Ni3DRenderView* pkMainView = FUN_1413f9a70();
-    Ni3DRenderView* pkView = new (efd::MemHint(efd::MemHint::NONE)) Ni3DRenderView(pkMainView->GetCamera(), pkMainView->GetCullingProcess(),
-                                                  pkMainView->GetAlwaysUseCameraViewport());
-
-    ((SoftParticlesManager*)viewSystem)->m_spView = pkView;
+    ((SoftParticlesManager*)viewSystem)->m_spView = new (efd::MemHint(efd::MemHint::NONE)) Ni3DRenderView(pkMainView->GetCamera(),
+        pkMainView->GetCullingProcess(), pkMainView->GetAlwaysUseCameraViewport());
     ((SoftParticlesManager*)viewSystem)->m_spClick->AppendRenderView(((SoftParticlesManager*)viewSystem)->m_spView);
     ((SoftParticlesManager*)viewSystem)->m_spClick->SetPreProcessingCallbackFunc(FUN_141774040, viewSystem);
     ((SoftParticlesManager*)viewSystem)->m_spClick->SetPostProcessingCallbackFunc(FUN_141774080, viewSystem);
@@ -98,14 +97,12 @@ void FUN_141773630(void* viewSystem)
 // @0x141773940
 void FUN_141773940(void* viewSystem, bool bEnable)
 {
-    SoftParticlesManager* pThis = (SoftParticlesManager*)viewSystem;
-
-    pThis->m_spClick->SetActive(bEnable);
+    ((SoftParticlesManager*)viewSystem)->m_spClick->SetActive(bEnable);
     FUN_1409a8b20()->FUN_1416aa6a0((Unk_PPTexture)1, bEnable);
 
     if (bEnable)
     {
-        pThis->m_spView->RemoveAllScenes();
+        ((SoftParticlesManager*)viewSystem)->m_spView->RemoveAllScenes();
 
         Ni3DRenderView* pkMainView = FUN_1413f9a70();
         NiTPointerList<NiAVObjectPtr>& kScenes = pkMainView->GetScenes();
@@ -113,21 +110,19 @@ void FUN_141773940(void* viewSystem, bool bEnable)
         while (kPos != 0)
         {
             const NiAVObjectPtr& spScene = kScenes.GetNext(kPos);
-            NiAVObject* pkScene = spScene;
-            FUN_141773a90(pThis, pkScene);
+            FUN_141773a90(viewSystem, (NiAVObject*)spScene);
         }
     }
     else
     {
-        NiTPointerList<NiAVObjectPtr>& kScenes = pThis->m_spView->GetScenes();
+        NiTPointerList<NiAVObjectPtr>& kScenes = ((SoftParticlesManager*)viewSystem)->m_spView->GetScenes();
         NiTListIterator kPos = kScenes.GetHeadPos();
         while (kPos != 0)
         {
             const NiAVObjectPtr& spScene = kScenes.GetNext(kPos);
-            NiAVObject* pkScene = spScene;
-            pkScene->SetAppCulled(false);
+            spScene->SetAppCulled(false);
         }
-        pThis->m_spView->RemoveAllScenes();
+        ((SoftParticlesManager*)viewSystem)->m_spView->RemoveAllScenes();
     }
 }
 
@@ -135,8 +130,6 @@ void FUN_141773940(void* viewSystem, bool bEnable)
 // @0x141773a90
 void FUN_141773a90(void* pRegistry, void* pNode)
 {
-    SoftParticlesManager* pThis = (SoftParticlesManager*)pRegistry;
-
     Unk_SceneWalker kWalker((NiObject*)pNode);
     NiAVObject* pkNext;
     while ((pkNext = kWalker.Next(true)) != 0)
@@ -145,23 +138,22 @@ void FUN_141773a90(void* pRegistry, void* pNode)
         if (pkObject == 0)
             continue;
 
-        const NiMaterial* pkMaterial = FUN_140a17cd0((NiMesh*)pkObject);
-        if (!FUN_1417741e0(&DAT_143d691b8, pkMaterial))
+        if (!FUN_1417741e0(&DAT_143d691b8, FUN_140a17cd0((NiMesh*)pkObject)))
             continue;
 
         pkObject->SetAppCulled(true);
-        pThis->m_spView->AppendScene(pkObject);
+        ((SoftParticlesManager*)pRegistry)->m_spView->AppendScene(pkObject);
 
         NiTexturingProperty* pkTexturing = (NiTexturingProperty*)pkObject->GetProperty(NiProperty::TEXTURING);
         if (pkTexturing == 0)
         {
-            NiTexturingProperty* pkNew = new (efd::MemHint(efd::MemHint::NONE)) NiTexturingProperty();
-            pkTexturing = pkNew;
+            pkTexturing = new (efd::MemHint(efd::MemHint::NONE)) NiTexturingProperty();
             pkObject->AttachProperty(pkTexturing);
         }
 
         NiRenderedTexture* pkTexture = FUN_1409a8b20()->FUN_1416a23f0(1);
-        NiTexturingProperty::ShaderMap* pkMap = new (efd::MemHint(efd::MemHint::NONE)) NiTexturingProperty::ShaderMap(pkTexture, 0);
+        NiTexturingProperty::ShaderMap* pkMap = new (efd::MemHint(efd::MemHint::NONE)) NiTexturingProperty::ShaderMap(pkTexture, 0,
+            NiTexturingProperty::CLAMP_S_CLAMP_T, NiTexturingProperty::FILTER_NEAREST);
         pkTexturing->SetShaderMap(0, pkMap);
         pkObject->UpdateProperties();
     }
@@ -171,8 +163,6 @@ void FUN_141773a90(void* pRegistry, void* pNode)
 // @0x141773cc0
 void FUN_141773cc0(void* pRegistry, void* pNode)
 {
-    SoftParticlesManager* pThis = (SoftParticlesManager*)pRegistry;
-
     Unk_SceneWalker kWalker((NiObject*)pNode);
     NiAVObject* pkNext;
     while ((pkNext = kWalker.Next(true)) != 0)
@@ -181,12 +171,11 @@ void FUN_141773cc0(void* pRegistry, void* pNode)
         if (pkObject == 0)
             continue;
 
-        const NiMaterial* pkMaterial = FUN_140a17cd0((NiMesh*)pkObject);
-        if (!FUN_1417741e0(&DAT_143d691b8, pkMaterial))
+        if (!FUN_1417741e0(&DAT_143d691b8, FUN_140a17cd0((NiMesh*)pkObject)))
             continue;
 
         pkObject->SetAppCulled(false);
-        pThis->m_spView->RemoveScene(pkObject);
+        ((SoftParticlesManager*)pRegistry)->m_spView->RemoveScene(pkObject);
     }
 }
 
@@ -225,9 +214,8 @@ void FUN_141773ed0(Unk_PPSecondView* pkSoftParticles)
     while (kPos != 0)
     {
         const NiAVObjectPtr& spScene = kScenes.GetNext(kPos);
-        NiAVObject* pkScene = spScene;
 
-        Unk_SceneWalker kWalker(pkScene);
+        Unk_SceneWalker kWalker((NiAVObject*)spScene);
         NiAVObject* pkNext;
         while ((pkNext = kWalker.Next(true)) != 0)
         {
@@ -270,15 +258,12 @@ bool FUN_141774080(NiRenderClick* pkClick, void* pvData)
 // @0x1417740c0
 void FUN_1417740c0(void* viewSystem, bool bCulled)
 {
-    SoftParticlesManager* pThis = (SoftParticlesManager*)viewSystem;
-
-    NiTPointerList<NiAVObjectPtr>& kScenes = pThis->m_spView->GetScenes();
+    NiTPointerList<NiAVObjectPtr>& kScenes = ((SoftParticlesManager*)viewSystem)->m_spView->GetScenes();
     NiTListIterator kPos = kScenes.GetHeadPos();
     while (kPos != 0)
     {
         const NiAVObjectPtr& spScene = kScenes.GetNext(kPos);
-        NiAVObject* pkScene = spScene;
-        pkScene->SetAppCulled(bCulled);
+        spScene->SetAppCulled(bCulled);
     }
 }
 

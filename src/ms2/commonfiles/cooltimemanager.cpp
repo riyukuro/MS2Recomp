@@ -136,7 +136,7 @@ void CooltimeManager::Load()
     if (pRoot == 0)
         return;
     std::vector<Unk_140165cf0*> nodes;
-    FUN_14028faa0(pRoot, "cooltime", "cooltimeID", &nodes);
+    FUN_14028faa0(pRoot, "v", "cooltimeID", &nodes);
     for (size_t i = 0; i < nodes.size(); ++i)
     {
         Unk_140165cf0* pNode = nodes[i];

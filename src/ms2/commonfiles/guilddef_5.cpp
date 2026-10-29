@@ -241,171 +241,120 @@ void Unk_GuildDriveRB5(MemberRBMap& m,AtlLocalMap& l){
 // Scalar deleting destructors (vftable slot 0) of the guild classes. The vftables are emitted by the other guilddef.cpp parts,
 // so these COMDATs have no producer in this unit; each is spelled out as the compiler generates it.
 // @0x1404f2510
-// MS2-FUNCTIONAL: compiler-generated scalar deleting destructor; the vftable lives in another guilddef.cpp part
 void* Unk_Sdd_2510(CValidData<CGuildXmlData>* self, unsigned int flags) { self->CValidData<CGuildXmlData>::~CValidData(); if (flags & 1) operator delete(self, 8); return self; }
 // @0x1404f2650
-// MS2-FUNCTIONAL: compiler-generated scalar deleting destructor; the vftable lives in another guilddef.cpp part
 void* Unk_Sdd_2650(TSingleton<CGuildXmlData>* self, unsigned int flags) { self->TSingleton<CGuildXmlData>::~TSingleton(); if (flags & 1) operator delete(self, 8); return self; }
 // @0x1404f2910
-// MS2-FUNCTIONAL: compiler-generated scalar deleting destructor; the vftable lives in another guilddef.cpp part
 void* Unk_Sdd_2910(CGuildCustomEvent* self, unsigned int flags) { self->CGuildCustomEvent::~CGuildCustomEvent(); if (flags & 1) operator delete(self, 40); return self; }
 // @0x1404f2950
-// MS2-FUNCTIONAL: compiler-generated scalar deleting destructor; the vftable lives in another guilddef.cpp part
 void* Unk_Sdd_2950(CGuildGrade* self, unsigned int flags) { self->CGuildGrade::~CGuildGrade(); if (flags & 1) operator delete(self, 48); return self; }
 // @0x1404f2990
-// MS2-FUNCTIONAL: compiler-generated scalar deleting destructor; the vftable lives in another guilddef.cpp part
 void* Unk_Sdd_2990(CGuildInviteInfo* self, unsigned int flags) { self->CGuildInviteInfo::~CGuildInviteInfo(); if (flags & 1) operator delete(self, 64); return self; }
 // @0x1404f29d0
-// MS2-FUNCTIONAL: compiler-generated scalar deleting destructor; the vftable lives in another guilddef.cpp part
 void* Unk_Sdd_29d0(CGuildJoinRequestForChar* self, unsigned int flags) { self->CGuildJoinRequestForChar::~CGuildJoinRequestForChar(); if (flags & 1) operator delete(self, 120); return self; }
 // @0x1404f2a10
-// MS2-FUNCTIONAL: compiler-generated scalar deleting destructor; the vftable lives in another guilddef.cpp part
 void* Unk_Sdd_2a10(CGuildJoinRequestForGuild* self, unsigned int flags) { self->CGuildJoinRequestForGuild::~CGuildJoinRequestForGuild(); if (flags & 1) operator delete(self, 104); return self; }
 // @0x1404f2a50
-// MS2-FUNCTIONAL: compiler-generated scalar deleting destructor; the vftable lives in another guilddef.cpp part
 void* Unk_Sdd_2a50(CGuildJoinRequestSchCond* self, unsigned int flags) { self->CGuildJoinRequestSchCond::~CGuildJoinRequestSchCond(); if (flags & 1) operator delete(self, 32); return self; }
 // @0x1404f2a90
-// MS2-FUNCTIONAL: compiler-generated scalar deleting destructor; the vftable lives in another guilddef.cpp part
 void* Unk_Sdd_2a90(CGuildMember* self, unsigned int flags) { self->CGuildMember::~CGuildMember(); if (flags & 1) operator delete(self, 352); return self; }
 // @0x1404f2ad0
-// MS2-FUNCTIONAL: compiler-generated scalar deleting destructor; the vftable lives in another guilddef.cpp part
 void* Unk_Sdd_2ad0(CGuildMemberRaid* self, unsigned int flags) { self->CGuildMemberRaid::~CGuildMemberRaid(); if (flags & 1) operator delete(self, 88); return self; }
 // @0x1404f2b10
-// MS2-FUNCTIONAL: compiler-generated scalar deleting destructor; the vftable lives in another guilddef.cpp part
 void* Unk_Sdd_2b10(CGuildNameInfo* self, unsigned int flags) { self->CGuildNameInfo::~CGuildNameInfo(); if (flags & 1) operator delete(self, 48); return self; }
 // @0x1404f2b50
-// MS2-FUNCTIONAL: compiler-generated scalar deleting destructor; the vftable lives in another guilddef.cpp part
 void* Unk_Sdd_2b50(CGuildNpc* self, unsigned int flags) { self->CGuildNpc::~CGuildNpc(); if (flags & 1) operator delete(self, 32); return self; }
 // @0x1404f2b90
-// MS2-FUNCTIONAL: compiler-generated scalar deleting destructor; the vftable lives in another guilddef.cpp part
 void* Unk_Sdd_2b90(CGuildNpcShop* self, unsigned int flags) { self->CGuildNpcShop::~CGuildNpcShop(); if (flags & 1) operator delete(self, 72); return self; }
 // @0x1404f2bd0
-// MS2-FUNCTIONAL: compiler-generated scalar deleting destructor; the vftable lives in another guilddef.cpp part
 void* Unk_Sdd_2bd0(CGuildNpcShopMgr* self, unsigned int flags) { self->CGuildNpcShopMgr::~CGuildNpcShopMgr(); if (flags & 1) operator delete(self, 40); return self; }
 // @0x1404f2c10
-// MS2-FUNCTIONAL: compiler-generated scalar deleting destructor; the vftable lives in another guilddef.cpp part
 void* Unk_Sdd_2c10(CGuildPVPHistoryData* self, unsigned int flags) { self->CGuildPVPHistoryData::~CGuildPVPHistoryData(); if (flags & 1) operator delete(self, 192); return self; }
 // @0x1404f2c50
-// MS2-FUNCTIONAL: compiler-generated scalar deleting destructor; the vftable lives in another guilddef.cpp part
 void* Unk_Sdd_2c50(CGuildPVPSeasonHistoryData* self, unsigned int flags) { self->CGuildPVPSeasonHistoryData::~CGuildPVPSeasonHistoryData(); if (flags & 1) operator delete(self, 112); return self; }
 // @0x1404f2c90
-// MS2-FUNCTIONAL: compiler-generated scalar deleting destructor; the vftable lives in another guilddef.cpp part
 void* Unk_Sdd_2c90(CGuildSkill* self, unsigned int flags) { self->CGuildSkill::~CGuildSkill(); if (flags & 1) operator delete(self, 40); return self; }
 // @0x1404f2cd0
-// MS2-FUNCTIONAL: compiler-generated scalar deleting destructor; the vftable lives in another guilddef.cpp part
 void* Unk_Sdd_2cd0(CGuildStorage* self, unsigned int flags) { self->CGuildStorage::~CGuildStorage(); if (flags & 1) operator delete(self, 128); return self; }
 // @0x1404f2d10
-// MS2-FUNCTIONAL: compiler-generated scalar deleting destructor; the vftable lives in another guilddef.cpp part
 void* Unk_Sdd_2d10(CGuildStorage::CGuildStroageHistory* self, unsigned int flags) { self->CGuildStorage::CGuildStroageHistory::~CGuildStroageHistory(); if (flags & 1) operator delete(self, 128); return self; }
 // @0x1404f2d50
-// MS2-FUNCTIONAL: compiler-generated scalar deleting destructor; the vftable lives in another guilddef.cpp part
 void* Unk_Sdd_2d50(CGuildXmlData* self, unsigned int flags) { self->CGuildXmlData::~CGuildXmlData(); if (flags & 1) operator delete(self, 6168); return self; }
 // @0x1404f2ed0
-// MS2-FUNCTIONAL: compiler-generated scalar deleting destructor; the vftable lives in another guilddef.cpp part
 void* Unk_Sdd_2ed0(CNpcShopProductProxy* self, unsigned int flags) { self->CNpcShopProductProxy::~CNpcShopProductProxy(); if (flags & 1) operator delete(self, 40); return self; }
 // @0x1404f2f10
-// MS2-FUNCTIONAL: compiler-generated scalar deleting destructor; the vftable lives in another guilddef.cpp part
 void* Unk_Sdd_2f10(CSearchGuildJoin* self, unsigned int flags) { self->CSearchGuildJoin::~CSearchGuildJoin(); if (flags & 1) operator delete(self, 96); return self; }
 // @0x1404f2f50
-// MS2-FUNCTIONAL: compiler-generated scalar deleting destructor; the vftable lives in another guilddef.cpp part
 void* Unk_Sdd_2f50(CGuildXmlData::GuildEvent* self, unsigned int flags) { self->CGuildXmlData::GuildEvent::~GuildEvent(); if (flags & 1) operator delete(self, 40); return self; }
 // @0x1404f2f90
-// MS2-FUNCTIONAL: compiler-generated scalar deleting destructor; the vftable lives in another guilddef.cpp part
 void* Unk_Sdd_2f90(CGuildXmlData::GuildHouse* self, unsigned int flags) { self->CGuildXmlData::GuildHouse::~GuildHouse(); if (flags & 1) operator delete(self, 104); return self; }
 // @0x1404f2fd0
-// MS2-FUNCTIONAL: compiler-generated scalar deleting destructor; the vftable lives in another guilddef.cpp part
 void* Unk_Sdd_2fd0(CGuildXmlData::GuildNpc* self, unsigned int flags) { self->CGuildXmlData::GuildNpc::~GuildNpc(); if (flags & 1) operator delete(self, 56); return self; }
 // @0x1404f3010
-// MS2-FUNCTIONAL: compiler-generated scalar deleting destructor; the vftable lives in another guilddef.cpp part
 void* Unk_Sdd_3010(CGuildXmlData::GuildProperty* self, unsigned int flags) { self->CGuildXmlData::GuildProperty::~GuildProperty(); if (flags & 1) operator delete(self, 112); return self; }
 // @0x1404f3050
-// MS2-FUNCTIONAL: compiler-generated scalar deleting destructor; the vftable lives in another guilddef.cpp part
 void* Unk_Sdd_3050(CGuildXmlData::GuildRaid* self, unsigned int flags) { self->CGuildXmlData::GuildRaid::~GuildRaid(); if (flags & 1) operator delete(self, 40); return self; }
 // @0x1404f3090
-// MS2-FUNCTIONAL: compiler-generated scalar deleting destructor; the vftable lives in another guilddef.cpp part
 void* Unk_Sdd_3090(CGuildXmlData::GuildRaidReward* self, unsigned int flags) { self->CGuildXmlData::GuildRaidReward::~GuildRaidReward(); if (flags & 1) operator delete(self, 64); return self; }
 // @0x1404f30d0
-// MS2-FUNCTIONAL: compiler-generated scalar deleting destructor; the vftable lives in another guilddef.cpp part
 void* Unk_Sdd_30d0(CGuildXmlData::GuildSkill* self, unsigned int flags) { self->CGuildXmlData::GuildSkill::~GuildSkill(); if (flags & 1) operator delete(self, 72); return self; }
 
 // Leaf container accessors (GetCount of the CAtlArray/CAtlMap/CRBMap instances the other guilddef.cpp parts use). Their
 // element types are not recoverable from this range, so each is a plain read of the count field of an opaque container.
 struct Unk_CountedContainer { void* data; unsigned __int64 count; };
 // @0x1404f0aa0
-// MS2-FUNCTIONAL: GetCount-style accessor of a container instance whose element type is not recoverable
 unsigned __int64 Unk_GetCount_0aa0(const Unk_CountedContainer* container) { return container->count; }
 // @0x1404f0ab0
-// MS2-FUNCTIONAL: GetCount-style accessor of a container instance whose element type is not recoverable
 unsigned __int64 Unk_GetCount_0ab0(const Unk_CountedContainer* container) { return container->count; }
 // @0x1404f0ac0
-// MS2-FUNCTIONAL: GetCount-style accessor of a container instance whose element type is not recoverable
 unsigned __int64 Unk_GetCount_0ac0(const Unk_CountedContainer* container) { return container->count; }
 // @0x1404f0ad0
-// MS2-FUNCTIONAL: GetCount-style accessor of a container instance whose element type is not recoverable
 unsigned __int64 Unk_GetCount_0ad0(const Unk_CountedContainer* container) { return container->count; }
 // @0x1404f0ae0
-// MS2-FUNCTIONAL: GetCount-style accessor of a container instance whose element type is not recoverable
 unsigned __int64 Unk_GetCount_0ae0(const Unk_CountedContainer* container) { return container->count; }
 // @0x1404f0af0
-// MS2-FUNCTIONAL: GetCount-style accessor of a container instance whose element type is not recoverable
 unsigned __int64 Unk_GetCount_0af0(const Unk_CountedContainer* container) { return container->count; }
 // @0x1404f0b00
-// MS2-FUNCTIONAL: GetCount-style accessor of a container instance whose element type is not recoverable
 unsigned __int64 Unk_GetCount_0b00(const Unk_CountedContainer* container) { return container->count; }
 // @0x1404f0b10
-// MS2-FUNCTIONAL: GetCount-style accessor of a container instance whose element type is not recoverable
 unsigned __int64 Unk_GetCount_0b10(const Unk_CountedContainer* container) { return container->count; }
 // @0x1404f0b20
-// MS2-FUNCTIONAL: GetCount-style accessor of a container instance whose element type is not recoverable
 unsigned __int64 Unk_GetCount_0b20(const Unk_CountedContainer* container) { return container->count; }
 // @0x1404f0b30
-// MS2-FUNCTIONAL: GetCount-style accessor of a container instance whose element type is not recoverable
 unsigned __int64 Unk_GetCount_0b30(const Unk_CountedContainer* container) { return container->count; }
 // @0x1404f0b40
-// MS2-FUNCTIONAL: GetCount-style accessor of a container instance whose element type is not recoverable
 unsigned __int64 Unk_GetCount_0b40(const Unk_CountedContainer* container) { return container->count; }
 // @0x1404f0b50
-// MS2-FUNCTIONAL: GetCount-style accessor of a container instance whose element type is not recoverable
 unsigned __int64 Unk_GetCount_0b50(const Unk_CountedContainer* container) { return container->count; }
 // @0x1404f0b60
-// MS2-FUNCTIONAL: GetCount-style accessor of a container instance whose element type is not recoverable
 unsigned __int64 Unk_GetCount_0b60(const Unk_CountedContainer* container) { return container->count; }
 // @0x1404f0b70
-// MS2-FUNCTIONAL: GetCount-style accessor of a container instance whose element type is not recoverable
 unsigned __int64 Unk_GetCount_0b70(const Unk_CountedContainer* container) { return container->count; }
 // @0x1404f0b80
-// MS2-FUNCTIONAL: GetCount-style accessor of a container instance whose element type is not recoverable
 unsigned __int64 Unk_GetCount_0b80(const Unk_CountedContainer* container) { return container->count; }
 // @0x1404f0b90
-// MS2-FUNCTIONAL: GetCount-style accessor of a container instance whose element type is not recoverable
 unsigned __int64 Unk_GetCount_0b90(const Unk_CountedContainer* container) { return container->count; }
 // @0x1404f0ba0
-// MS2-FUNCTIONAL: GetCount-style accessor of a container instance whose element type is not recoverable
 unsigned __int64 Unk_GetCount_0ba0(const Unk_CountedContainer* container) { return container->count; }
 // @0x1404f0bb0
-// MS2-FUNCTIONAL: GetCount-style accessor of a container instance whose element type is not recoverable
 unsigned __int64 Unk_GetCount_0bb0(const Unk_CountedContainer* container) { return container->count; }
 // @0x1404f0bc0
-// MS2-FUNCTIONAL: GetCount-style accessor of a container instance whose element type is not recoverable
 unsigned __int64 Unk_GetCount_0bc0(const Unk_CountedContainer* container) { return container->count; }
 // @0x1404f0bd0
-// MS2-FUNCTIONAL: GetCount-style accessor of a container instance whose element type is not recoverable
 unsigned __int64 Unk_GetCount_0bd0(const Unk_CountedContainer* container) { return container->count; }
 // @0x1404f0be0
-// MS2-FUNCTIONAL: GetCount-style accessor of a container instance whose element type is not recoverable
 unsigned __int64 Unk_GetCount_0be0(const Unk_CountedContainer* container) { return container->count; }
 // @0x1404f0bf0
-// MS2-FUNCTIONAL: GetCount-style accessor of a container instance whose element type is not recoverable
 unsigned __int64 Unk_GetCount_0bf0(const Unk_CountedContainer* container) { return container->count; }
 
 // @0x1404f4540
-// MS2-FUNCTIONAL: accessor of the singleton instance at 0x143aaef68; the class is not recovered
+// Accessor of the singleton instance at 0x143aaef68; the class is not recovered
 class Unk_SingletonObj;
 extern Unk_SingletonObj* DAT_143aaef68;
 Unk_SingletonObj* Unk_GetSingleton_4540() { return DAT_143aaef68; }
 MS2_REPLACE(0x1404F4540, Unk_GetSingleton_4540, 8, 0x384AE20B);
 // @0x1404fa010
-// MS2-FUNCTIONAL: setter of the flag byte at 0x143aaef5f next to the CGuildXmlData singleton pointer
+// Setter of the flag byte at 0x143aaef5f next to the CGuildXmlData singleton pointer
 extern bool DAT_143aaef5f;
 void Unk_SetGuildFlag_a010(bool value) { DAT_143aaef5f = value; }
 MS2_REPLACE(0x1404FA010, Unk_SetGuildFlag_a010, 16, 0x6EF0073A);

@@ -29,7 +29,7 @@ bool FUN_140998dc0(const NiFixedString& kStr, const char* psz);                 
 bool FUN_14028d470(float a, float b);                                                      // approx equal
 float FUN_14059d930(float f);                                                              // fabsf
 egf::Entity* FUN_141659b80(PCBase* pPC, int nSide, unsigned int nKey, float fRange);       // the ladder next to the actor
-bool FUN_1412410c0(Unk_PCBaseBody* pBody, efd::Point3 kPos, float fHeight);                // blocked test of the body
+bool FUN_1412410c0(Unk_PCBaseBody* pBody, const efd::Point3& kPos, float fHeight);                // blocked test of the body
 void FUN_141240730(Unk_PCBaseBody* pBody);
 void* FUN_141240f20(Unk_PCBaseBody* pBody);
 void FUN_140cfaf30(void* p);
@@ -56,7 +56,7 @@ class CPhysXHelper
 {
 public:
     bool CastRay(Unk_RayCastInfo* pInfo, const NxGroupsMask* pMask);
-    int FUN_14168a450(efd::Point3 kPos, float* pfDist, float fMaxDist);     // ground below kPos
+    int FUN_14168a450(const efd::Point3& kPos, float* pfDist, float fMaxDist);     // ground below kPos
 };
 CPhysXHelper* FUN_1409f7ca0();
 int FUN_140961880(egf::Entity* pEntity, unsigned int nHash, float* pOut);                 // property read (float)
@@ -66,17 +66,34 @@ void FUN_14165f170(PCBase* p);                                                  
 egf::Entity* FUN_141659af0(PCBase* pPC, int nSide);                                        // the ladder to get on / off at
 extern efd::Point3 DAT_143a08cf8;                                                          // the up axis
 
+// The owner seen through its vftable: the exe returns slot 18's point straight into an efd::Point3 local, and slot 22
+// takes the point by value (gameobject.h declares it by reference; the caller copies it into an argument temp).
+class Unk_LadderOwnerSlots
+{
+public:
+#define MS2_LADDER_SLOTS(a, b, c, d, e, f, g, h, i, j, k) virtual void vfunc_##a(); virtual void vfunc_##b(); \
+    virtual void vfunc_##c(); virtual void vfunc_##d(); virtual void vfunc_##e(); virtual void vfunc_##f(); \
+    virtual void vfunc_##g(); virtual void vfunc_##h(); virtual void vfunc_##i(); virtual void vfunc_##j(); \
+    virtual void vfunc_##k();
+    MS2_LADDER_SLOTS(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
+#undef MS2_LADDER_SLOTS
+    virtual void vfunc_11(); virtual void vfunc_12(); virtual void vfunc_13(); virtual void vfunc_14();
+    virtual void vfunc_15(); virtual void vfunc_16(); virtual void vfunc_17();
+    virtual efd::Point3 vfunc_18();                                         // 18 0x14123c120 (returned into the local)
+    virtual void vfunc_19(); virtual void vfunc_20(); virtual void vfunc_21();
+    virtual void vfunc_22(efd::Point3 kDir);                                // 22 0x14123c3a0
+};
 // The actor's move-key state (PCBase::FUN_14166d240).
 class Unk_LadderMove
 {
 public:
     bool FUN_141682fe0(int nKey);
     bool FUN_141683100(int nKey);
-    efd::Point3* FUN_141683290(efd::Point3* pOut);                                         // the move direction of the keys
+    efd::Point3 FUN_141683290();                                                           // the move direction of the keys
 };
 
 // @0x1417d79e0
-void Unk_LadderStep::FUN_1417d79e0(const efd::Point3& kA, const efd::Point3& kB, const efd::Point3& kC)
+void Unk_LadderStep::FUN_1417d79e0(efd::Point3 kA, efd::Point3 kB, efd::Point3 kC)
 {
     m_timer.FUN_1408687f0();
     m_a = kA;
@@ -120,7 +137,6 @@ StateLadder::~StateLadder()
 }
 
 // @0x1417d7ce0
-// MS2-FUNCTIONAL: efd::Point3 arithmetic is inline here (the exe calls the out-of-line operators), stack temps differ
 void StateLadder::vfunc_4(StateData* pData)
 {
     State::vfunc_4(pData);
@@ -149,11 +165,7 @@ void StateLadder::vfunc_4(StateData* pData)
     }
     PCBase* pPC = FUN_1417b8370();
     egf::Entity* pLadder = FUN_141659af0(pPC, nSide);
-    if (pLadder == 0 || pPC == 0)
-    {
-        m_pOwner->vfunc_59(1, 0, 0, 0);
-    }
-    else
+    if (pLadder != 0 && pPC != 0)
     {
         efd::Point3 kRot;
         efd::Point3 kBase;
@@ -168,10 +180,10 @@ void StateLadder::vfunc_4(StateData* pData)
         kBase.z = FUN_1417d9880(pLadder);
         NiPoint3 kPos = pPC->vfunc_18();
         efd::Point3 kMid(kBase.x, kBase.y, kPos.z);
-        m_step0.FUN_1417d79e0(kPos, efd::Point3::ZERO, kBase);
-        m_step3.FUN_1417d79e0(kPos, kMid, kBase);
-        m_step1.FUN_1417d79e0(kPos, kMid, kBase);
-        m_step2.FUN_1417d79e0(kPos, efd::Point3::ZERO, kBase);
+        m_step0.FUN_1417d79e0(reinterpret_cast<const efd::Point3&>(kPos), efd::Point3::ZERO, kBase);
+        m_step3.FUN_1417d79e0(reinterpret_cast<const efd::Point3&>(kPos), kMid, kBase);
+        m_step1.FUN_1417d79e0(reinterpret_cast<const efd::Point3&>(kPos), kMid, kBase);
+        m_step2.FUN_1417d79e0(reinterpret_cast<const efd::Point3&>(kPos), efd::Point3::ZERO, kBase);
         if (m_n10 == 0x2f)
             m_step0.FUN_1417d7ad0(0x96);
         else if (m_n10 == 0x30)
@@ -183,6 +195,10 @@ void StateLadder::vfunc_4(StateData* pData)
         }
         m_pLadder = pLadder;
     }
+    else
+    {
+        m_pOwner->vfunc_59(1, 0, 0, 0);
+    }
     m_pOwner->FUN_14123cb20(false);
 }
 
@@ -190,8 +206,7 @@ void StateLadder::vfunc_4(StateData* pData)
 void StateLadder::vfunc_5(int n)
 {
     State::vfunc_5(n);
-    NiPoint3 kDir = m_pOwner->vfunc_20();
-    m_pOwner->FUN_14166d8b0(kDir.z);
+    m_pOwner->FUN_14166d8b0(m_pOwner->vfunc_20().z);
     FUN_141240730(m_pOwner->FUN_14166d220());
     m_pOwner->FUN_14123cb20(true);
     m_n10 = 0x2a;
@@ -203,64 +218,46 @@ void StateLadder::vfunc_5(int n)
 // @0x1417d8370
 void StateLadder::vfunc_3(double fTime)
 {
-    if (m_pLadder != 0)
+    if (m_pLadder == 0)
+        return;
+    if (m_n10 == 0x2b && m_timerUp.FUN_140868ba0() == 0)
     {
-        if (m_n10 == 0x2b && m_timerUp.FUN_140868ba0() == 0)
-        {
-            FUN_1417d9240(0);
-            m_n10 = 0x2a;
-        }
-        if (m_n10 == 0x2c && m_timerDown.FUN_140868ba0() == 0)
-        {
-            FUN_1417d9240(0);
-            m_n10 = 0x2a;
-        }
-        if (m_n10 == 0x2a)
-        {
-            NiPoint3 kVel = m_pOwner->FUN_14123c360();
-            if (kVel.y <= 0.0f)
-            {
-                if (kVel.y < 0.0f)
-                    m_n10 = 0x2c;
-            }
-            else
-                m_n10 = 0x2b;
-        }
-        float fDist = FUN_1417d8c00();
-        FUN_1417d9240(fDist);
+        FUN_1417d9240(0);
+        m_n10 = 0x2a;
     }
+    if (m_n10 == 0x2c && m_timerDown.FUN_140868ba0() == 0)
+    {
+        FUN_1417d9240(0);
+        m_n10 = 0x2a;
+    }
+    if (m_n10 == 0x2a)
+    {
+        NiPoint3 kVel = m_pOwner->FUN_14123c360();
+        if (kVel.y > 0.0f)
+            m_n10 = 0x2b;
+        else if (kVel.y < 0.0f)
+            m_n10 = 0x2c;
+    }
+    float fDist = FUN_1417d8c00();
+    FUN_1417d9240(fDist);
 }
 
 // @0x1417d8490
-// MS2-FUNCTIONAL: efd::Point3 copies are inline here, the exe calls operator= and copies through stack temps
 void StateLadder::vfunc_8(double fTime)
 {
     State::vfunc_8(fTime);
     Unk_LadderMove* pMove = (Unk_LadderMove*)m_pOwner->FUN_14166d240();
     efd::Point3 kDir = efd::Point3::ZERO;
-    efd::Point3 kKeys;
     if (m_timerPos.FUN_140868c00() != 0)
-        kDir = *pMove->FUN_141683290(&kKeys);
-    m_pOwner->vfunc_22(kDir);
+        kDir = pMove->FUN_141683290();
+    reinterpret_cast<Unk_LadderOwnerSlots*>(m_pOwner)->vfunc_22(kDir);
     if (pMove->FUN_141683100(0x493e1) || m_n28 != 0)
     {
         m_n28 = 0;
-        kDir = *pMove->FUN_141683290(&kKeys);
-        m_pOwner->vfunc_22(kDir);
-        if (m_pOwner->FUN_1416749c0() != 0)
-        {
-            if (pMove->FUN_141682fe0(0x30d43) == 0)
-            {
-                if (pMove->FUN_141682fe0(0x30d44) == 0)
-                {
-                    if (pMove->FUN_141682fe0(0x30d41) != 0)
-                    {
-                        efd::Point3 kZero = efd::Point3::ZERO;
-                        m_pOwner->vfunc_22(kZero);
-                    }
-                }
-            }
-        }
+        reinterpret_cast<Unk_LadderOwnerSlots*>(m_pOwner)->vfunc_22(pMove->FUN_141683290());
+        if (m_pOwner->FUN_1416749c0() && !pMove->FUN_141682fe0(0x30d43) && !pMove->FUN_141682fe0(0x30d44)
+            && pMove->FUN_141682fe0(0x30d41))
+            reinterpret_cast<Unk_LadderOwnerSlots*>(m_pOwner)->vfunc_22(efd::Point3::ZERO);
         m_pOwner->vfunc_59(6, 0, 0, 0);
     }
 }
@@ -279,20 +276,20 @@ void StateLadder::vfunc_9(double fTime)
     case 0x2b:
     {
         int nAnim;
-        if (m_bUpFlip == false)
-            nAnim = 0xe;
-        else
+        if (m_bUpFlip)
             nAnim = 0xd;
+        else
+            nAnim = 0xe;
         m_pOwner->FUN_14166dda0(nAnim);
         break;
     }
     case 0x2c:
     {
         int nAnim;
-        if (m_bDownFlip == false)
-            nAnim = 9;
-        else
+        if (m_bDownFlip)
             nAnim = 8;
+        else
+            nAnim = 9;
         m_pOwner->FUN_14166dda0(nAnim);
         break;
     }
@@ -302,11 +299,11 @@ void StateLadder::vfunc_9(double fTime)
     case 0x2e:
         m_pOwner->FUN_14166dda0(10);
         break;
-    case 0x2f:
-        m_pOwner->FUN_14166dda0(0x10);
-        break;
     case 0x30:
         m_pOwner->FUN_14166dda0(0xb);
+        break;
+    case 0x2f:
+        m_pOwner->FUN_14166dda0(0x10);
     }
 }
 
@@ -314,22 +311,15 @@ void StateLadder::vfunc_9(double fTime)
 void StateLadder::TextKeyEvent(NiActorManager* pkManager, unsigned int eSequenceID, const NiFixedString& kTextKey,
     const NiTextKeyMatch* pkMatchObject, NiControllerSequence* pkSeq, float fEventTime)
 {
-    if (m_pOwner->FUN_14166de90(0xd, eSequenceID) == 0 && m_pOwner->FUN_14166de90(0xe, eSequenceID) == 0)
-    {
-        if ((m_pOwner->FUN_14166de90(8, eSequenceID) != 0 || m_pOwner->FUN_14166de90(9, eSequenceID) != 0)
-            && FUN_140998dc0(kTextKey, "begin") != 0)
-        {
-            float fSpeed = m_pOwner->FUN_1416713c0();
-            m_timerDown.FUN_140868750((int)(200.0f / fSpeed));
-        }
-    }
-    else
+    if (m_pOwner->FUN_14166de90(0xd, eSequenceID) || m_pOwner->FUN_14166de90(0xe, eSequenceID))
     {
         if (FUN_140998dc0(kTextKey, "begin") != 0)
-        {
-            float fSpeed = m_pOwner->FUN_1416713c0();
-            m_timerUp.FUN_140868750((int)(200.0f / fSpeed));
-        }
+            m_timerUp.FUN_140868750((int)(200.0f / m_pOwner->FUN_1416713c0()));
+    }
+    else if (m_pOwner->FUN_14166de90(8, eSequenceID) || m_pOwner->FUN_14166de90(9, eSequenceID))
+    {
+        if (FUN_140998dc0(kTextKey, "begin") != 0)
+            m_timerDown.FUN_140868750((int)(200.0f / m_pOwner->FUN_1416713c0()));
     }
 }
 
@@ -337,53 +327,46 @@ void StateLadder::TextKeyEvent(NiActorManager* pkManager, unsigned int eSequence
 void StateLadder::EndOfSequence(NiActorManager* pkManager, unsigned int eSequenceID, NiControllerSequence* pkSeq,
     float fEventTime)
 {
-    if (m_pOwner->FUN_14166de90(0xd, eSequenceID) == 0 && m_pOwner->FUN_14166de90(0xe, eSequenceID) == 0)
+    if (m_pOwner->FUN_14166de90(0xd, eSequenceID) || m_pOwner->FUN_14166de90(0xe, eSequenceID))
     {
-        if (m_pOwner->FUN_14166de90(8, eSequenceID) == 0 && m_pOwner->FUN_14166de90(9, eSequenceID) == 0)
-        {
-            if (m_pOwner->FUN_14166de90(10, eSequenceID) != 0)
-                m_pOwner->vfunc_59(1, 0, 0, 0);
-        }
-        else
-        {
-            NiPoint3 kVel = m_pOwner->FUN_14123c360();
-            if (kVel.y != 0.0f)
-                m_pOwner->FUN_14166e0a0();
-            m_bDownFlip = m_bDownFlip == false;
-        }
-    }
-    else
-    {
-        NiPoint3 kVel = m_pOwner->FUN_14123c360();
-        if (kVel.y != 0.0f)
+        if (m_pOwner->FUN_14123c360().y != 0.0f)
             m_pOwner->FUN_14166e0a0();
-        m_bUpFlip = m_bUpFlip == false;
+        m_bUpFlip = !m_bUpFlip;
     }
+    else if (m_pOwner->FUN_14166de90(8, eSequenceID) || m_pOwner->FUN_14166de90(9, eSequenceID))
+    {
+        if (m_pOwner->FUN_14123c360().y != 0.0f)
+            m_pOwner->FUN_14166e0a0();
+        m_bDownFlip = !m_bDownFlip;
+    }
+    else if (m_pOwner->FUN_14166de90(10, eSequenceID))
+        m_pOwner->vfunc_59(1, 0, 0, 0);
 }
 
 // @0x1417d8b20
 egf::Entity* StateLadder::FUN_1417d8b20(int nSide, unsigned int nKey)
 {
     PCBase* pPC = FUN_1417b8370();
-    if (pPC == 0)
-        return 0;
-    egf::Entity* pFound = FUN_141659b80(pPC, nSide, nKey, 90.0f);
-    if (pFound == 0)
-        return 0;
-    if (pFound != m_pLadder)
+    if (pPC != 0)
     {
-        efd::Point3 kNew;
-        FUN_1409618c0(pFound, 0x68c7c29d, &kNew);
-        efd::Point3 kOld;
-        FUN_1409618c0(m_pLadder, 0x68c7c29d, &kOld);
-        if (kNew != kOld)
+        egf::Entity* pFound = FUN_141659b80(pPC, nSide, nKey, 90.0f);
+        if (pFound == 0)
             return 0;
+        if (pFound != m_pLadder)
+        {
+            efd::Point3 kNew;
+            FUN_1409618c0(pFound, 0x68c7c29d, &kNew);
+            efd::Point3 kOld;
+            FUN_1409618c0(m_pLadder, 0x68c7c29d, &kOld);
+            if (kNew != kOld)
+                return 0;
+        }
+        return pFound;
     }
-    return pFound;
+    return 0;
 }
 
 // @0x1417d8c00
-// MS2-FUNCTIONAL: efd::Point3 arithmetic is inline here (the exe calls the out-of-line operators), stack temps differ
 float StateLadder::FUN_1417d8c00()
 {
     bool bFlag = false;
@@ -407,39 +390,34 @@ float StateLadder::FUN_1417d8c00()
         PCBase* pPC = FUN_1417b8370();
         if (pPC != 0)
         {
-            fMove = m_timerUp.FUN_140868b20();
-            fMove = fMove * 75.0f;
+            fMove = 75.0f * m_timerUp.FUN_140868b20();
             egf::Entity* pFound = FUN_1417d8b20(1, 0xbadf0a13);
             if (pFound == 0)
             {
                 efd::Point3 kTop = FUN_1417d99e0();
                 if (kTop == efd::Point3::ZERO)
-                {
-                    fMove = 0.0f;
-                }
-                else
+                    return 0.0f;
                 {
                     kTop.z = kTop.z + 5.0f;
                     NiPoint3 kPos = m_pOwner->vfunc_18();
                     kPos.z = kPos.z + fMove;
-                    float fLen = (kPos - kTop).Length();
-                    if (fLen <= 150.0f)
+                    if ((kPos - kTop).Length() > 150.0f)
+                        m_n10 = 0x2a;
+                    else
                     {
+                        efd::Point3 kAt = kTop;                     // unused copy (the exe makes it)
                         efd::Point2 kSize = m_pOwner->FUN_141671390();
-                        float fHalf = kSize.y * 0.5f;
-                        if (FUN_1412410c0(m_pOwner->FUN_14166d220(), kTop, fHalf) == 0)
+                        if (FUN_1412410c0(m_pOwner->FUN_14166d220(), kTop, kSize.y * 0.5f) == 0)
                         {
                             efd::Point3 kMid = kPos;
                             kMid.z = kTop.z;
-                            m_step3.FUN_1417d79e0(kPos, kMid, kTop);
+                            m_step3.FUN_1417d79e0(reinterpret_cast<const efd::Point3&>(kPos), kMid, kTop);
                             m_step3.FUN_1417d7ad0(200);
                             m_n10 = 0x2d;
                         }
                         else
                             m_n10 = 0x2a;
                     }
-                    else
-                        m_n10 = 0x2a;
                 }
             }
             else if (m_pLadder != pFound)
@@ -451,38 +429,37 @@ float StateLadder::FUN_1417d8c00()
         PCBase* pPC = FUN_1417b8370();
         if (pPC != 0)
         {
-            fMove = m_timerDown.FUN_140868b20();
-            fMove = fMove * 75.0f;
+            fMove = 75.0f * m_timerDown.FUN_140868b20();
             egf::Entity* pFound = FUN_1417d8b20(2, 0xbadf0a13);
             if (pFound == 0 && m_pLadder != 0)
             {
                 NiPoint3 kPos = pPC->vfunc_18();
                 efd::Point3 kProp = efd::Point3::ZERO;
                 float fGround = 0.0f;
-                if (FUN_1409f7ca0()->FUN_14168a450(kPos, &fGround, 0.0f) == 0)
-                {
-                    FUN_1409618c0(m_pLadder, 0xfd95ca52, &kProp);
-                    if (FUN_14028d470(kPos.z, kProp.z) != 0)
-                        m_n10 = 0x2e;
-                }
-                else
+                if (FUN_1409f7ca0()->FUN_14168a450(kPos, &fGround, 0.0f) != 0)
                 {
                     float fHit = kPos.z - fGround;
                     FUN_1409618c0(m_pLadder, 0xfd95ca52, &kProp);
-                    if (fHit < kPos.z - fMove || fGround == FLT_MAX)
-                    {
-                        if (kPos.z - fMove <= kProp.z)
-                            pPC->vfunc_59(5, 0, 0, 0);
-                    }
-                    else
+                    if (kPos.z - fMove <= fHit && fGround != FLT_MAX)
                     {
                         m_n10 = 0x2e;
                         if (kPos.z < fHit)
                         {
                             kPos.z = fHit + 1.0f;
-                            pPC->vfunc_19(kPos);
+                            pPC->vfunc_19(reinterpret_cast<const efd::Point3&>(kPos));
                         }
                     }
+                    else
+                    {
+                        if (kPos.z - fMove <= kProp.z)
+                            pPC->vfunc_59(5, 0, 0, 0);
+                    }
+                }
+                else
+                {
+                    FUN_1409618c0(m_pLadder, 0xfd95ca52, &kProp);
+                    if (FUN_14028d470(kPos.z, kProp.z) != 0)
+                        m_n10 = 0x2e;
                 }
             }
             else if (m_pLadder != pFound)
@@ -493,10 +470,9 @@ float StateLadder::FUN_1417d8c00()
 }
 
 // @0x1417d9240
-// MS2-FUNCTIONAL: efd::Point3 arithmetic is inline here (the exe calls the out-of-line operators), stack temps differ
 void StateLadder::FUN_1417d9240(float fDist)
 {
-    NiPoint3 kPos = m_pOwner->vfunc_18();
+    efd::Point3 kPos = reinterpret_cast<Unk_LadderOwnerSlots*>(m_pOwner)->vfunc_18();
     if (m_n10 == 0x2b)
         kPos.z = kPos.z + fDist;
     else if (m_n10 == 0x2c)
@@ -509,28 +485,22 @@ void StateLadder::FUN_1417d9240(float fDist)
     else if (m_n10 == 0x2d)
     {
         float fRatio = m_step3.FUN_1417d7b00();
-        if (0.5f < fRatio)
-        {
-            if (1.0f <= fRatio)
-            {
-                if (fRatio == 1.0f)
-                {
-                    kPos = m_step3.m_c;
-                    m_pOwner->vfunc_59(1, 0, 0, 0);
-                }
-            }
-            else
-            {
-                efd::Point3 kStep = m_step3.m_c - m_step3.m_b;
-                kStep *= (fRatio - 0.5f) * 2.0f;
-                kPos = m_step3.m_b + kStep;
-            }
-        }
-        else
+        if (fRatio <= 0.5f)
         {
             efd::Point3 kStep = m_step3.m_b - m_step3.m_a;
             kStep *= fRatio * 2.0f;
             kPos = m_step3.m_a + kStep;
+        }
+        else if (fRatio < 1.0f)
+        {
+            efd::Point3 kStep = m_step3.m_c - m_step3.m_b;
+            kStep *= (fRatio - 0.5f) * 2.0f;
+            kPos = m_step3.m_b + kStep;
+        }
+        else if (fRatio == 1.0f)
+        {
+            kPos = m_step3.m_c;
+            m_pOwner->vfunc_59(1, 0, 0, 0);
         }
     }
     else if (m_n10 == 0x2f)
@@ -551,34 +521,26 @@ void StateLadder::FUN_1417d9240(float fDist)
     else if (m_n10 == 0x30)
     {
         float fRatio = m_step1.FUN_1417d7b00();
-        if (0.5f < fRatio)
-        {
-            if (1.0f <= fRatio)
-            {
-                if (fRatio == 1.0f)
-                {
-                    kPos = m_step1.m_c;
-                    m_n10 = 0x2a;
-                }
-            }
-            else
-            {
-                efd::Point3 kStep = m_step1.m_c - m_step1.m_b;
-                kStep *= (fRatio - 0.5f) * 2.0f;
-                kPos = m_step1.m_b + kStep;
-            }
-        }
-        else
+        if (fRatio <= 0.5f)
         {
             efd::Point3 kStep = m_step1.m_b - m_step1.m_a;
             kStep *= fRatio * 2.0f;
             kPos = m_step1.m_a + kStep;
         }
+        else if (fRatio < 1.0f)
+        {
+            efd::Point3 kStep = m_step1.m_c - m_step1.m_b;
+            kStep *= (fRatio - 0.5f) * 2.0f;
+            kPos = m_step1.m_b + kStep;
+        }
+        else if (fRatio == 1.0f)
+        {
+            kPos = m_step1.m_c;
+            m_n10 = 0x2a;
+        }
     }
-    else
+    else if (m_n10 == 0x31)
     {
-        if (m_n10 != 0x31)
-            return;
         float fRatio = m_step2.FUN_1417d7b00();
         if (fRatio == 1.0f)
         {
@@ -592,6 +554,8 @@ void StateLadder::FUN_1417d9240(float fDist)
             kPos = m_step2.m_a + kStep;
         }
     }
+    else
+        return;
     m_pOwner->vfunc_19(kPos);
 }
 
@@ -600,8 +564,7 @@ float StateLadder::FUN_1417d9880(egf::Entity* pLadder)
 {
     const float fDrop = 5.0f;
     efd::Point3 kProp = efd::Point3::ZERO;
-    NiPoint3 kPos = m_pOwner->vfunc_18();
-    efd::Point3 kAbove = kPos + efd::Point3(0.0f, 0.0f, 90.0f);
+    efd::Point3 kAbove = m_pOwner->vfunc_18() + efd::Point3(0.0f, 0.0f, 90.0f);
     FUN_1409618c0(pLadder, 0xfd95ca52, &kProp);
     float fNear = FUN_14059d930((kAbove.z - kProp.z) + 56.0f);
     float fFar = FUN_14059d930((kAbove.z - kProp.z) + 131.0f);
@@ -627,17 +590,16 @@ efd::Point3 StateLadder::FUN_1417d99e0()
     kInfo.m_groups = 0x201;
     kInfo.m_20 = m_pOwner->FUN_14123c410();
     kInfo.m_28 = 0;
-    if (FUN_1409f7ca0()->CastRay(&kInfo, 0) == 0)
-        return efd::Point3::ZERO;
-    return kInfo.m_hitPoint;
+    efd::Point3 kUnused;                                    // the exe constructs a Point3 it never uses
+    if (FUN_1409f7ca0()->CastRay(&kInfo, 0))
+        return kInfo.m_hitPoint;
+    return efd::Point3::ZERO;
 }
 
 // @0x1417d9b50
 Unk_LadderStep::Unk_LadderStep()
+    : m_a(efd::Point3::ZERO), m_b(efd::Point3::ZERO), m_c(efd::Point3::ZERO)
 {
-    m_a = efd::Point3::ZERO;
-    m_b = efd::Point3::ZERO;
-    m_c = efd::Point3::ZERO;
 }
 
 // @0x1417d9bd0

@@ -269,12 +269,12 @@ void CItemLockManager::FUN_1406132f0()
 MS2_REPLACE_METHOD(0x1406132F0, CItemLockManager, FUN_1406132f0, 305, 0x72FF89B5);
 
 // @0x140613430
-// MS2-FUNCTIONAL: the exe routes the mode through an extra int temp and a different case-body layout (not reproduced)
 int CItemLockManager::FUN_140613430(MS2Ptr<CItem> item)
 {
     if (item == 0)
         return 0;
-    switch (GetMode())
+    int nMode = GetMode();
+    switch (nMode)
     {
     case LOCKMODE_LOCK:
         if (item->FUN_140528cc0() == false)
@@ -286,10 +286,9 @@ int CItemLockManager::FUN_140613430(MS2Ptr<CItem> item)
         break;
     }
     unsigned __int64 nItemUid = item->FUN_140526a50();
-    if (FUN_140534480(m_locked, nItemUid) == -1)
-        return 1;
-    else
+    if (FUN_140534480(m_locked, nItemUid) != -1)
         return 0;
+    return 1;
 }
 
 // @0x140613810

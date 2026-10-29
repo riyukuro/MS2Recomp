@@ -5,7 +5,7 @@
 // MS2-PIN: ??A?$CAtlArray@PEAVNiRenderObject@@V?$CElementTraits@PEAVNiRenderObject@@@ATL@@@ATL@@QEAAAEAPEAVNiRenderObject@@_K@Z 0x141480830 ; unique
 // MS2-PIN: ??1?$SmartPointer@VNiDynamicEffectState@@@efd@@QEAA@XZ 0x141480240
 // MS2-PIN: ??4?$SmartPointer@VNiMaterial@@@efd@@QEAAAEAV01@PEAVNiMaterial@@@Z 0x1414802a0
-// MS2-PIN: ??0Unk_UVTexPtr@@QEAA@XZ 0x141480480
+// MS2-PIN: ??_FUnk_PPSmartA@@QEAAXXZ 0x141480480
 // MS2-PIN: ??B?$SmartPointer@VNiRenderTargetGroup@@@efd@@QEBAPEAVNiRenderTargetGroup@@XZ 0x141480470
 // MS2-PIN: ??_GCMeshUVPicker@@UEAAPEAXI@Z 0x1414804a0
 // MS2-PIN: ?BeginOffScreenFrame@NiRenderer@@QEAA_NXZ 0x141480500
@@ -21,6 +21,8 @@
 
 #include "meshuvpicker.h"
 
+#include <efd/Helpers.h>
+#include <NiColor.h>
 #include <NiDX9Renderer.h>
 #include <NiDX9TextureData.h>
 #include <NiColorExtraData.h>
@@ -50,18 +52,15 @@ NiMaterial* FUN_141d284a0(const NiFixedString* pName);          // NiMaterialLib
 
 extern unsigned DAT_1439f7cb4;                                  // picker width (pixels)
 extern unsigned DAT_1439f7cb8;                                  // picker height (pixels)
-extern NiColorA DAT_143a09680;                                  // render target clear colour
 extern NiFixedString DAT_143ae5280;                             // material name (bSecond)
 extern NiFixedString DAT_143ae5288;                             // material name (first pass)
 extern NiFixedString DAT_143ae50f0;                             // extra data key of the clear colour
 extern NiFixedString DAT_143ae5210;                             // material name of the extra meshes
 
-// efd::Point3(x, y, z) shared constructor (0x14097f250), converted to the Unk_NiPoint3 the assign takes.
-struct Unk_DummyVec3
+// efd::Point3(x, y, z) shared constructor (0x14097f250); the result binds straight to the assign's Unk_NiPoint3.
+struct Unk_DummyVec3 : public Unk_NiPoint3
 {
     Unk_DummyVec3(float x, float y, float z);                   // 0x14097f250
-    operator const Unk_NiPoint3&() const { return *reinterpret_cast<const Unk_NiPoint3*>(this); }
-    float x, y, z;
 };
 
 // Two helpers that sit between the picker functions (their owners are not recovered).
@@ -105,7 +104,6 @@ int CMeshUVPicker::FUN_14147e900()
 MS2_REPLACE_METHOD(0x14147E900, CMeshUVPicker, FUN_14147e900, 50, 0xB8E8B77C);
 
 // @0x14147e940
-// MS2-FUNCTIONAL: local frame is 8 bytes larger in the exe (texel temporary)
 bool CMeshUVPicker::FUN_14147e940(NiRenderObject* pMesh, NiCamera* pCamera, float fX, float fY, float* pU, float* pV,
                                   CAtlArray<NiRenderObject*>* pExtras)
 {
@@ -114,20 +112,18 @@ bool CMeshUVPicker::FUN_14147e940(NiRenderObject* pMesh, NiCamera* pCamera, floa
     FUN_14147ec90(pMesh, pExtras, pCamera, fX, fY, true);
     Unk_UVTexel kTexel;
     FUN_14147fde0(2, &kTexel);
-    float fU = kTexel.FUN_14135dd50(0);
-    *pU = fU;
-    float fV = kTexel.FUN_14135dd50(1);
-    *pV = fV;
-    if (0.001f < *pU || *pU == 0.001f || 0.001f < *pV || *pV == 0.001f)
-        return true;
-    return false;
+    *pU = kTexel.FUN_14135dd50(0);
+    *pV = kTexel.FUN_14135dd50(1);
+    const float kEpsilon = 0.001f;
+    if (*pU < kEpsilon && *pV < kEpsilon)
+        return false;
+    return true;
 }
 MS2_REPLACE_METHOD(0x14147E940, CMeshUVPicker, FUN_14147e940, 259, 0x6D4483DA);
 
 // @0x14147ea50
-// MS2-FUNCTIONAL: local frame layout of the texel temporaries differs
 bool CMeshUVPicker::FUN_14147ea50(NiRenderObject* pMesh, NiCamera* pCamera, float fX, float fY, Unk_FcPoint3* pPos0,
-                                  Unk_FcPoint3* pPos1, NiPoint2* pUV, unsigned* pIndex,
+                                  Unk_FcPoint3* pPos1, NiPoint2* pUV, float* pIndex,
                                   CAtlArray<NiRenderObject*>* pExtras)
 {
     if (!m_14)
@@ -140,15 +136,15 @@ bool CMeshUVPicker::FUN_14147ea50(NiRenderObject* pMesh, NiCamera* pCamera, floa
     *pPos1 = Unk_DummyVec3(kTexel.FUN_14135dd50(0), kTexel.FUN_14135dd50(1), kTexel.FUN_14135dd50(2));
     FUN_14147fde0(2, &kTexel);
     *pUV = NiPoint2(kTexel.FUN_14135dd50(0), kTexel.FUN_14135dd50(1));
-    *pIndex = (unsigned)kTexel.FUN_14135dd50(2);
-    if (0.001f < pUV->x || pUV->x == 0.001f || 0.001f < pUV->y || pUV->y == 0.001f)
-        return true;
-    return false;
+    *pIndex = kTexel.FUN_14135dd50(2);
+    const float kEpsilon = 0.001f;
+    if (pUV->x < kEpsilon && pUV->y < kEpsilon)
+        return false;
+    return true;
 }
 MS2_REPLACE_METHOD(0x14147EA50, CMeshUVPicker, FUN_14147ea50, 568, 0x8684E60C);
 
 // @0x14147ec90
-// MS2-FUNCTIONAL: large Gamebryo render sequence; the inlined smart pointer and NiRenderer glue is laid out differently
 void CMeshUVPicker::FUN_14147ec90(NiRenderObject* pMesh, CAtlArray<NiRenderObject*>* pExtras, NiCamera* pCamera,
                                   float fX, float fY, bool bSecond)
 {
@@ -186,7 +182,7 @@ void CMeshUVPicker::FUN_14147ec90(NiRenderObject* pMesh, CAtlArray<NiRenderObjec
     NiRenderTargetGroup* pBackTarget = pRenderer->GetDefaultRenderTargetGroup();
     NiColorA kSavedColor;
     pRenderer->GetBackgroundColor(kSavedColor);
-    NiColorA kClearColor = DAT_143a09680;
+    NiColorA kClearColor = efd::ColorA::BLACK;
     pRenderer->SetBackgroundColor(kClearColor);
 
     NiFrustum kOrig = pCamera->GetViewFrustum();
@@ -195,11 +191,13 @@ void CMeshUVPicker::FUN_14147ec90(NiRenderObject* pMesh, CAtlArray<NiRenderObjec
     float fPixelH = (kOrig.m_fTop - kOrig.m_fBottom) / (float)pBackTarget->GetHeight(0);
     kPick.m_fNear = kOrig.m_fNear;
     kPick.m_fFar = kOrig.m_fFar;
+    float fPosX = fPixelW * fX;
+    float fPosY = fPixelH * fY;
     float fHalfW = fPixelW * (float)(DAT_1439f7cb4 / 2);
     float fHalfH = fPixelH * (float)(DAT_1439f7cb8 / 2);
-    kPick.m_fLeft = kOrig.m_fLeft + (fPixelW * fX - fHalfW);
+    kPick.m_fLeft = kOrig.m_fLeft + (fPosX - fHalfW);
     kPick.m_fRight = kPick.m_fLeft + fHalfW * 2.0f;
-    kPick.m_fTop = kOrig.m_fTop - (fPixelH * fY - fHalfH);
+    kPick.m_fTop = kOrig.m_fTop - (fPosY - fHalfH);
     kPick.m_fBottom = kPick.m_fTop - fHalfH * 2.0f;
     pCamera->SetViewFrustum(kPick);
     pCamera->Update(0.0f, true);
@@ -216,7 +214,7 @@ void CMeshUVPicker::FUN_14147ec90(NiRenderObject* pMesh, CAtlArray<NiRenderObjec
         {
             NiRenderObject* pExtra = (*pExtras)[i];
             const NiMaterial* pExtraMaterial = pExtra->GetActiveMaterial();
-            NiColorA kColor = DAT_143a09680;
+            NiColorA kColor = efd::ColorA::BLACK;
             FUN_141480710(pExtra, DAT_143ae50f0, kColor);
             NiMaterial* pExtraUV = FUN_141d284a0(&DAT_143ae5210);
             pExtra->ApplyAndSetActiveMaterial(pExtraUV, 0xffffffff);
@@ -251,7 +249,6 @@ void CMeshUVPicker::FUN_14147ec90(NiRenderObject* pMesh, CAtlArray<NiRenderObjec
 MS2_REPLACE_METHOD(0x14147EC90, CMeshUVPicker, FUN_14147ec90, 2260, 0x30E905BA);
 
 // @0x14147f570
-// MS2-FUNCTIONAL: stack cookie and the inlined smart pointer / D3D call sequence are laid out differently
 bool CMeshUVPicker::FUN_14147f570()
 {
     NiRenderer* pRenderer = GetNiRenderer();
@@ -276,7 +273,7 @@ bool CMeshUVPicker::FUN_14147f570()
     }
 
     m_38 = NiRenderTargetGroup::Create(3, pRenderer);
-    if (m_38 == NULL)
+    if (!m_38)
     {
         FUN_14147fbb0();
         return false;
@@ -284,8 +281,7 @@ bool CMeshUVPicker::FUN_14147f570()
     for (int i = 0; i < 3; i++)
     {
         NiRenderedTexture* pTexture = FUN_14127c9b0(&m_50[i]);
-        NiRenderTargetGroup* pGroup = m_38;
-        pGroup->AttachBuffer(pTexture->GetBuffer(), i);
+        m_38->AttachBuffer(pTexture->GetBuffer(), i);
     }
 
     NiDepthStencilBuffer* pDepth = NiDepthStencilBuffer::CreateCompatible(FUN_14127c9b0(&m_50[0])->GetBuffer(), pRenderer);
@@ -294,11 +290,10 @@ bool CMeshUVPicker::FUN_14147f570()
         FUN_14147fbb0();
         return false;
     }
-    NiRenderTargetGroup* pGroup = m_38;
-    pGroup->AttachDepthStencilBuffer(pDepth);
+    m_38->AttachDepthStencilBuffer(pDepth);
 
     m_40 = NiRenderTargetGroup::Create(FUN_14127c9b0(&m_50[2])->GetBuffer(), pRenderer, true, true);
-    if (m_40 == NULL)
+    if (!m_40)
     {
         FUN_14147fbb0();
         return false;
@@ -384,7 +379,6 @@ bool CMeshUVPicker::FUN_14147fd50(bool bBeforeReset)
 MS2_REPLACE_METHOD(0x14147FD50, CMeshUVPicker, FUN_14147fd50, 132, 0xF8961D27);
 
 // @0x14147fde0
-// MS2-FUNCTIONAL: local variable order of the rect and the null-initialised surface pointer differ
 bool CMeshUVPicker::FUN_14147fde0(int nTarget, Unk_ShaderVec4* pTexel)
 {
     if (!m_14)
@@ -405,17 +399,17 @@ bool CMeshUVPicker::FUN_14147fde0(int nTarget, Unk_ShaderVec4* pTexel)
     m_68[nTarget]->GetSurfaceLevel(0, &pSource);
     IDirect3DSurface9* pDest;
     m_80[nTarget]->GetSurfaceLevel(0, &pDest);
+    IDirect3DTexture9* pReadBack = NULL;
     m_48->GetRenderTargetData(pSource, pDest);
     pSource->Release();
     pDest->Release();
 
-    IDirect3DTexture9* pReadBack = m_80[nTarget];
+    pReadBack = m_80[nTarget];
     D3DLOCKED_RECT kLocked;
     if (pReadBack->LockRect(0, &kLocked, &kRect, D3DLOCK_READONLY) >= 0)
     {
-        D3DXFLOAT16* pHalf = (D3DXFLOAT16*)kLocked.pBits;
         float afValue[4];
-        D3DXFloat16To32Array(afValue, pHalf, 4);
+        D3DXFloat16To32Array(afValue, (D3DXFLOAT16*)kLocked.pBits, 4);
         pReadBack->UnlockRect(0);
         pTexel->Assign(afValue[0], afValue[1], afValue[2], afValue[3]);
     }

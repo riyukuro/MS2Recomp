@@ -22,20 +22,26 @@ class Unk_SkillMagicInfo;    // skill-magic row held at CSkillMagicControlGuide 
 class Unk_MagicTarget;       // element of Unk_SkillMagicInfo's target list (+0x38)
 class Unk_GuideEntity;       // the egf entity of a model (property setter 0x14098c6e0)
 
-// The base of every actor state controller (vftable of one slot). Ctor 0x1417b73c0.
+// The base of every actor state controller (vftable of one slot). Ctor 0x1417b73c0 builds the record list, the
+// current record and the owner; its implicit dtor's exe copy is 0x1410a6dc0 (cubecraft.cpp#1).
 class StateLocalController
 {
 public:
     StateLocalController();                                 // 0x1417b73c0
     virtual void vfunc_0();                                 // 0 base body
+
+    ATL::CAtlList<MS2Ptr<Unk_GuideRecord> > m_records;      // +0x08 (0x30)
+    MS2Ptr<Unk_GuideRecord> m_spCurrent;                    // +0x38
+    PCBase* m_pOwner;                                       // +0x48
 };
+MS2_CHECK_SIZE(StateLocalController, 0x50);
 
 // 0x58 bytes, vftable 0x142eaa1a8 (one slot: 0x1417b7a00). Created by CGuideObject at +0xd48.
 class StatePcGuideObjectController : public StateLocalController
 {
 public:
     StatePcGuideObjectController();                         // 0x1410a6bb0
-    ~StatePcGuideObjectController();                        // 0x1410a6df0 (member cleanup body 0x1410a6dc0)
+    // ~StatePcGuideObjectController() is implicit: 0x1410a6df0 only calls the base dtor 0x1410a6dc0
     virtual void vfunc_0() override;                        // 0 0x1417b7a00
 
     void SetOwner(PCBase* pOwner);                     // init with the owning guide object
@@ -49,11 +55,6 @@ public:
     int FUN_1417b7540();                                    // total queued time (ms)
     void FUN_1417b7720();                                   // queue the current record
 
-    void FUN_1410a6dc0();                                   // 0x1410a6dc0 member destruction body
-
-    ATL::CAtlList<MS2Ptr<Unk_GuideRecord> > m_records;      // +0x08 (0x30)
-    MS2Ptr<Unk_GuideRecord> m_spCurrent;                    // +0x38
-    PCBase* m_pOwner;                                       // +0x48
     int m_nKind;                                            // +0x50 (3: never sent)
     int m_pad_54;
 };
@@ -146,9 +147,9 @@ MS2_CHECK_OFFSET(CConstructionGuideObject, m_spBirdHead, 0xdf0);
 class Unk_FishLine
 {
 public:
+    ~Unk_FishLine();                                        // 0x140cd7e40
     void FUN_140cd7d80();                                   // ctor
-    void FUN_140cd7e40();                                   // dtor
-    void FUN_140cd7eb0(int nHandle, const efd::Point3& kPos);   // start
+    void FUN_140cd7eb0(int nHandle, NiPoint3 kPos);         // start
     void FUN_140cd8080();                                   // stop
     void FUN_140cd80d0();                                   // update
     void* m_pOwner;                                         // +0 (0x1410a77c0)
@@ -207,7 +208,7 @@ public:
     int FUN_1410a5ea0(int nOwnerId, efd::Point3 kPos, efd::Point3 kDir, PCBase* pOwner,
         MS2Ptr<Unk_SkillMagicInfo> spInfo);                 // init (the info is by value: the callee destroys it)
     void FUN_1410a6520();                                   // release the control
-    bool FUN_1410a65f0(int nSkill);                         // true when the target is out of range
+    int FUN_1410a65f0(int nSkill);                          // true when the target is out of range
     bool IsReleased();                                   // +0xdd0 released
     efd::Point3 FUN_1410a6750();                            // 12 bytes at +0xdb8
     float FUN_1410a6790();                                  // +0xdc8 (0 once released)

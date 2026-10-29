@@ -47,7 +47,6 @@ NiObject* FUN_14098d8d0(const NiRTTI* pRTTI, NiObject* pObject);    // dynamic c
 NiNode* FUN_141d15010(NiAVObject* pkObject);                // topmost ancestor of the object
 
 // @0x1414d2460
-// MS2-FUNCTIONAL: exe frame is 0x20 larger (extra EH temporaries in the classify loop); behaviour-equivalent
 void MS2OuterGlowMaterialSwapProcessor::PreRenderProcessList(const NiVisibleArray* pkInput, NiVisibleArray& kOutput, void* pvExtraData)
 {
     NiVisibleArray kRest;
@@ -58,52 +57,53 @@ void MS2OuterGlowMaterialSwapProcessor::PreRenderProcessList(const NiVisibleArra
     {
         NiRenderObject* pkObject = &pkInput->GetAt(ui);
         Unk_OgMaterialEntry* pkEntry = FUN_140a17af0(&DAT_143d69198, pkObject->GetActiveMaterial());
-        if (pkEntry == 0 || !pkEntry->IsActive())
+        if (pkEntry != 0 && pkEntry->IsActive())
         {
-            if (FUN_14098d8d0(&DAT_143afbfd0, pkObject) == 0)
-            {
-                pkEntry = FUN_140a17af0(&DAT_143d69198, pkObject->GetActiveMaterial());
-                if (pkEntry == 0 || pkEntry->IsActive())
-                {
-                    std::map<NiNodePtr, int>::iterator it = FUN_1409a8b20()->m_kRootModes.find(FUN_141d15010(pkObject));
-                    if (!(it == FUN_1409a8b20()->m_kRootModes.end()))
-                    {
-                        int iMode = it->second;
-                        if (iMode < 0 || 6 < iMode)
-                            kRest.Add(*pkObject);
-                        else
-                        {
-                            if (iMode == 4)
-                            {
-                                if (FUN_14098d8d0(&DAT_143afa620, pkObject->GetExtraData(DAT_143ae5130)) == 0)
-                                    pkObject->AddExtraData(DAT_143ae5130, NiNew NiFloatExtraData(0.3f));
-                                if (FUN_14098d8d0(&DAT_143afa620, pkObject->GetExtraData(DAT_143ae5138)) == 0)
-                                    pkObject->AddExtraData(DAT_143ae5138, NiNew NiFloatExtraData(0.7f));
-                                pkEntry = FUN_140a17af0(&DAT_143d69198, pkObject->GetActiveMaterial());
-                                if (pkEntry != 0)
-                                    FUN_140ef4dd0(pkEntry);
-                            }
-                            kGlow.Add(*pkObject);
-                        }
-                    }
-                    else
-                        kRest.Add(*pkObject);
-                }
-                else
-                    kRest.Add(*pkObject);
-            }
-            else
-                kRest.Add(*pkObject);
-        }
-        else
             kGlow.Add(*pkObject);
+            continue;
+        }
+        if (FUN_14098d8d0(&DAT_143afbfd0, pkObject) != 0)
+        {
+            kRest.Add(*pkObject);
+            continue;
+        }
+        Unk_OgMaterialEntry* pkEntry2 = FUN_140a17af0(&DAT_143d69198, pkObject->GetActiveMaterial());
+        if (pkEntry2 != 0 && !pkEntry2->IsActive())
+        {
+            kRest.Add(*pkObject);
+            continue;
+        }
+        std::map<NiNodePtr, int>::const_iterator it = FUN_1409a8b20()->m_kRootModes.find(FUN_141d15010(pkObject));
+        if (it == FUN_1409a8b20()->m_kRootModes.end())
+        {
+            kRest.Add(*pkObject);
+            continue;
+        }
+        int iMode = it->second;
+        if (0 <= iMode && iMode < 7)
+        {
+            if (iMode == 4)
+            {
+                if (FUN_14098d8d0(&DAT_143afa620, pkObject->GetExtraData(DAT_143ae5130)) == 0)
+                    pkObject->AddExtraData(DAT_143ae5130, NiNew NiFloatExtraData(0.3f));
+                if (FUN_14098d8d0(&DAT_143afa620, pkObject->GetExtraData(DAT_143ae5138)) == 0)
+                    pkObject->AddExtraData(DAT_143ae5138, NiNew NiFloatExtraData(0.7f));
+                Unk_OgMaterialEntry* pkEntry3 = FUN_140a17af0(&DAT_143d69198, pkObject->GetActiveMaterial());
+                if (pkEntry3 != 0 && FUN_140ef4dd0(pkEntry3) == 2)
+                    iMode = 5;
+            }
+            kGlow.Add(*pkObject);
+            continue;
+        }
+        kRest.Add(*pkObject);
     }
     MS2RenderListProcessor::PreRenderProcessList(&kRest, kOutput, pvExtraData);
     for (unsigned int uj = 0; uj < kGlow.GetCount(); uj++)
     {
         NiRenderObject* pkObject = &kGlow.GetAt(uj);
         const NiMaterial* pkOriginal = pkObject->GetActiveMaterial();
-        NiZBufferProperty* pkZBuffer = pkObject->GetPropertyState()->GetZBuffer();
+        NiPropertyState* pkState = pkObject->GetPropertyState();
+        NiZBufferProperty* pkZBuffer = pkState->GetZBuffer();
         bool bZWrite = pkZBuffer->GetZBufferWrite();
         pkZBuffer->SetZBufferWrite(false);
         pkObject->ApplyAndSetActiveMaterial(m_spGlowMaterial);

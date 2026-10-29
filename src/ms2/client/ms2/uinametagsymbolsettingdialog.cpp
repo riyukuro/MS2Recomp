@@ -65,7 +65,7 @@ struct Unk_NtInfoRef
 };
 
 struct Unk_NtPlayer;
-short FUN_141661e00(Unk_NtPlayer* pPlayer);                         // the symbol the player wears
+unsigned short FUN_141661e00(Unk_NtPlayer* pPlayer);                // the symbol the player wears
 
 // The name tag symbol manager (global at 0x143ab05b8): its list of symbol ids is at +0x40.
 class Unk_NtMgr
@@ -84,7 +84,7 @@ extern Unk_SingletonObj* DAT_143ab05b8;                             // the manag
 Unk_NtMgr* FUN_14131e120();                                         // 0x14131e120 the manager
 char* FUN_14131e130(Unk_NtMgr* p);                                  // 0x14131e130 &m_ids
 size_t FUN_140186250(char* pIds);                                   // count
-short* FUN_140184490(char* pIds, size_t nIndex);                    // element
+unsigned short* FUN_140184490(char* pIds, size_t nIndex);           // element
 
 void* FUN_1403ed2d0();
 Unk_NtPlayer* FUN_141bd0cc0(void* p);                               // the local player
@@ -93,7 +93,7 @@ void FUN_1422ba6e0();
 class Unk_NtStrings
 {
 public:
-    CStringW FUN_141811980(int nId, short nArg);                    // string of (id, symbol)
+    CStringW FUN_141811980(int nId, int nArg);                      // string of (id, symbol)
     CStringW FUN_141812290(int nId, short nArg, CString strKey);    // tooltip string
 };
 Unk_NtStrings* FUN_1401a9d70();
@@ -131,44 +131,40 @@ void UINameTagSymbolSettingDialog::vfunc_67()
 }
 MS2_REPLACE_METHOD(0x14131DA10, UINameTagSymbolSettingDialog, vfunc_67, 24, 0x6C682280);
 
-// MS2-FUNCTIONAL: OnLoadComplete: the exe keeps extra pointer temps around the list and string helper results (stack frame)
 // @0x14131da30
 void UINameTagSymbolSettingDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
     Unk_NtPlayer* pPlayer = FUN_141bd0cc0(FUN_1403ed2d0());
-    unsigned int nSelected = 0;
-    MS2Ptr<Unk_NtList> spList = FUN_140c02900(CString("m_list"));
-    if (spList.get() != 0)
+    size_t nSelected = 0;
+    if (MS2Ptr<Unk_NtList> spList = FUN_140c02900("m_list"))
     {
         char* pIds = FUN_14131e130(FUN_14131e120());
         int nRow = 0;
         for (size_t i = 0; i < FUN_140186250(pIds); ++i)
         {
-            short nId = *FUN_140184490(pIds, i);
+            unsigned short nId = *FUN_140184490(pIds, i);
             Unk_NtInfoRef info = FUN_14131e120()->FUN_1406c58c0(nId);
-            if (!FUN_14131e0b0(&info))
+            if (FUN_14131e0b0(&info))
+                continue;
+            if (FUN_14131e120()->FUN_1406c5c80(nId) != 0)
+                continue;
+            ASObj row(2);
+            row.FUN_1409c48f0("id", nId);
+            row.FUN_1407cbb20("icon", FUN_14131e120()->FUN_1406c61a0(nId, pPlayer));
+            row.FUN_1407cbbe0("disabled", FUN_14131e120()->FUN_1406c5d60(nId) == 0);
+            row.FUN_1407cbb20("title", FUN_1401a9d70()->FUN_141811980(0x27, nId));
+            row.FUN_1407cbb20("desc", FUN_1401a9d70()->FUN_141811980(0x28, nId));
+            if (info.operator->()->m_34 != 0)
             {
-                if (FUN_14131e120()->FUN_1406c5c80(nId) == 0)
-                {
-                    ASObj row(2);
-                    row.FUN_1409c48f0("id", nId);
-                    row.FUN_1407cbb20("icon", FUN_14131e120()->FUN_1406c61a0(nId, pPlayer));
-                    row.FUN_1407cbbe0("disabled", FUN_14131e120()->FUN_1406c5d60(nId) == 0);
-                    row.FUN_1407cbb20("title", FUN_1401a9d70()->FUN_141811980(0x27, nId));
-                    row.FUN_1407cbb20("desc", FUN_1401a9d70()->FUN_141811980(0x28, nId));
-                    if (info.operator->()->m_34 != 0)
-                    {
-                        row.FUN_1407cbb20("info", FUN_1401a9d70()->FUN_141812290(info.operator->()->m_34,
-                                                                               info.operator->()->m_38,
-                                                                               CString("tooltipDescription")));
-                    }
-                    spList.operator->()->FUN_1422dd230(row);
-                    if (nId == FUN_141661e00(pPlayer))
-                        nSelected = nRow;
-                    ++nRow;
-                }
+                row.FUN_1407cbb20("info", FUN_1401a9d70()->FUN_141812290(info.operator->()->m_34,
+                                                                       info.operator->()->m_38,
+                                                                       CString("tooltipDescription")));
             }
+            spList.operator->()->FUN_1422dd230(row);
+            if (nId == FUN_141661e00(pPlayer))
+                nSelected = nRow;
+            ++nRow;
         }
         spList.operator->()->vfunc_24(true);
         spList.operator->()->FUN_1422dcca0(nSelected);

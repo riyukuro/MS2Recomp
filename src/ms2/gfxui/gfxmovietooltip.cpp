@@ -8,6 +8,8 @@
 // Value::operator== / VisitMembers / VisitElements, the CAtlList<Value>::Find/RemoveAt instances, the Ptr<Movie> copy and
 // the three-value AScript::Invoke.
 #include "ms2/placeholder/ms2stdafx.h"
+// The GFx UI library is built with /fp:precise (IEEE-ordered float compares); the per-unit build uses the game's /fp:fast.
+#pragma float_control(precise, on)
 #include <windowsx.h>
 #include <shlwapi.h>
 
@@ -289,6 +291,4 @@ inline Scaleform::GFx::Value AScript::Invoke(const char* szMethod, Scaleform::GF
 
 // MS2-PIN: ??_GGFxMovieTooltip@@UEAAPEAXI@Z 0x1422f2260
 // MS2-PIN: ??_GGFxArrayAdapter@@UEAAPEAXI@Z 0x1422f2220
-// MS2-FUNCTIONAL: SDK Value::operator== (inline): the GFx UI library was built with /fp:precise (ucomisd + jp on the
-// VT_Number case), the per-unit build uses the game's /fp:fast; otherwise identical.
 // MS2-PIN: ??8Value@GFx@Scaleform@@QEBA_NAEBV012@@Z 0x1422f1f80

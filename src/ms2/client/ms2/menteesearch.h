@@ -50,7 +50,7 @@ class ResponseMenteeList : public CPtred
 {
 public:
     ResponseMenteeList();                           // 0x140b6df50
-    int FUN_140b6dfb0(CByteBuffer& buffer);         // parses the answer (always 1)
+    int FUN_140b6dfb0(CByteBuffer& buffer);         // parses the answer (0 if a read throws)
 
     int m_nResult;                                  // +0x18
     ATL::CRBMap<unsigned __int64, CMentorPtr> m_map;         // +0x20 id -> mentor

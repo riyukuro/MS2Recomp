@@ -63,16 +63,8 @@ extern const NiRTTI Unk_RenderObjectRTTI;                       // 0x143afa7d0
 void FUN_141422660(MS2Ptr<CEquipItem> spItem, int nIndex, float fValue);   // stores value nIndex
 void FUN_140980460(void* p);                                    // NiRefObject::IncRefCount
 
-// The loaded meshes of a part model: std::set<NiAVObjectPtr> at +0xf8 (equipmodel.h), iterated by the shared
-// iterator wrappers (the iterator is 8 bytes; begin/end return it through a hidden pointer).
-struct Unk_MeshSet;
-struct Unk_MeshIter { void* m_pNode; };
-Unk_MeshSet* FUN_141201c90(Unk_PickTarget* pPart);
-void* FUN_140b02fe0(Unk_MeshSet* pSet, Unk_MeshIter* pOut);     // end
-void* FUN_140b02f70(Unk_MeshSet* pSet, Unk_MeshIter* pOut);     // begin
-bool FUN_140b029f0(Unk_MeshIter* pIt, Unk_MeshIter* pEnd);      // !=
-efd::SmartPointer<NiAVObject>* FUN_140b02a60(Unk_MeshIter* pIt);   // *it
-void* FUN_140b02a80(Unk_MeshIter* pIt);                         // ++it
+// The loaded meshes of a part model: std::set<NiAVObjectPtr> at +0xf8 (equipmodel.h).
+std::set<NiAVObjectPtr>* FUN_141201c90(Unk_PickTarget* pPart);
 
 // Listener at +0xa0: slot 2 is called when a value changed (the base class only knows slot 0).
 class Unk_MorphListener
@@ -244,20 +236,19 @@ int CItemMorphController::vfunc_29()
 }
 
 // @0x141417470
-// MS2-FUNCTIONAL: CString temp lifetimes around Add(CString(...)) differ
 void CItemMorphController::vfunc_28()
 {
     m_aPartNames.RemoveAll();
     if (m_nSlot == 1)
     {
-        m_aPartNames.Add(CString("HR:0"));
-        m_aPartNames.Add(CString("HR0:0"));
-        m_aPartNames.Add(CString("HR1:1"));
+        m_aPartNames.Add("HR:0");
+        m_aPartNames.Add("HR0:0");
+        m_aPartNames.Add("HR1:1");
     }
     else
     {
-        m_aPartNames.Add(CString("Editable Mesh"));
-        m_aPartNames.Add(CString("Editable Poly"));
+        m_aPartNames.Add("Editable Mesh");
+        m_aPartNames.Add("Editable Poly");
     }
 }
 
@@ -279,14 +270,13 @@ int CItemMorphController::vfunc_41()
 }
 
 // @0x141417660
-// MS2-FUNCTIONAL: temp/branch layout differs
 void CItemMorphController::vfunc_42(int nIndex, float fValue, NiInterpController* pCtrl)
 {
-    if (pCtrl == 0)
-        return;
-    m_n98 = 1;
-    if (vfunc_22(nIndex) != fValue)
+    if (pCtrl != 0)
     {
+        m_n98 = 1;
+        if (vfunc_22(nIndex) == fValue)
+            return;
         const Unk_CustomizeRange* pRange = vfunc_24(nIndex);
         m_afValue[nIndex] = FUN_140a17940(fValue, pRange->m_fMin, pRange->m_fMax);
         float fNow = vfunc_22(nIndex);
@@ -305,71 +295,60 @@ int CItemMorphController::HasMorphController()
 }
 
 // @0x141417870
-// MS2-FUNCTIONAL: exe keeps FindMorphNode result in extra temp slot (frame 0x58)
 int CItemMorphController::vfunc_38(int bActive, const efd::Point3& kPos)
 {
     if (m_n98 != 0)
     {
-        efd::SmartPointer<NiAVObject> spNode = FindMorphNode(m_nCurIndex);
-        m_spPicker->m_spMesh.FUN_141418a00((NiAVObject*)FUN_14098d8d0(&Unk_RenderObjectRTTI, (NiAVObject*)spNode));
+        m_spPicker->m_spMesh.FUN_141418a00((NiAVObject*)FUN_14098d8d0(&Unk_RenderObjectRTTI, (NiAVObject*)FindMorphNode(m_nCurIndex)));
     }
     return CItemCustomizeController::vfunc_38(bActive, kPos);
 }
 
 // @0x141417930
-// MS2-FUNCTIONAL: iterator/temp layout differs
 void CItemMorphController::ResetMeshHighlight()
 {
     CAtlArray<CString> aParts;
     m_spEquipItem->FUN_1411dca30(m_nSlot, aParts);
-    if (aParts.GetCount() == 0)
-        return;
-    MS2Ptr<Unk_PickTarget> spPart = m_spEquipItem->FUN_1411dc950(aParts.GetAt(0));
-    Unk_MeshSet* pSet = FUN_141201c90(spPart.operator->());
-    Unk_MeshIter itEnd;
-    FUN_140b02fe0(pSet, &itEnd);
-    Unk_MeshIter it;
-    FUN_140b02f70(pSet, &it);
-    while (FUN_140b029f0(&it, &itEnd))
+    if (aParts.GetCount() > 0)
     {
-        efd::SmartPointer<NiAVObject> spMesh(*FUN_140b02a60(&it));
-        NiAVObject* pFound = 0;
-        for (size_t i = 0; i < m_aPartNames.GetCount(); i++)
+        MS2Ptr<Unk_PickTarget> spPart = m_spEquipItem->FUN_1411dc950(aParts.GetAt(0));
+        std::set<NiAVObjectPtr>* pSet = FUN_141201c90(spPart.operator->());
+        std::set<NiAVObjectPtr>& kSet = *pSet;
+        std::set<NiAVObjectPtr>::iterator itEnd = kSet.end();
+        for (std::set<NiAVObjectPtr>::iterator it = kSet.begin(); it != itEnd; ++it)
         {
-            pFound = spMesh->GetObjectByName(NiFixedString((const char*)m_aPartNames[i]));
-            if (pFound != 0)
-                break;
-        }
-        if (pFound != 0)
-        {
-            for (NiTimeController* pTime = pFound->GetControllers(); pTime != 0; pTime = pTime->GetNext())
+            efd::SmartPointer<NiAVObject> spMesh = *it;
+            NiAVObject* pFound = 0;
+            for (unsigned int i = 0; i < m_aPartNames.GetCount(); i++)
             {
-                if (FUN_14098d8d0(&NiInterpController::ms_RTTI, pTime) != 0)
+                pFound = spMesh->GetObjectByName((const char*)m_aPartNames[i]);
+                if (pFound != 0)
+                    break;
+            }
+            if (pFound != 0)
+            {
+                NiTimeController* pTime = pFound->GetControllers();
+                while (pTime != 0)
                 {
-                    if (FUN_14098d8d0(&Unk_RenderObjectRTTI, pFound) != 0)
-                        spPart.get()->FUN_1411679d0(0, 0, 0);
-                    return;
+                    NiObject* pCtrl = FUN_14098d8d0(&NiInterpController::ms_RTTI, pTime);
+                    if (pCtrl != 0)
+                    {
+                        NiObject* pRender = FUN_14098d8d0(&Unk_RenderObjectRTTI, pFound);
+                        if (pRender != 0)
+                            spPart.get()->FUN_1411679d0(0, 0, 0);
+                        return;
+                    }
+                    pTime = pTime->GetNext();
                 }
             }
         }
-        FUN_140b02a80(&it);
     }
 }
 
 // @0x141417c10
-// MS2-FUNCTIONAL: temp layout differs
 void CItemMorphController::ApplyMorph()
 {
-    if (vfunc_27() < 2)
-    {
-        NiInterpController* pCtrl = FindMorphController(0);
-        if (pCtrl != 0)
-        {
-            for (unsigned short us = 0; us < pCtrl->GetInterpolatorCount(); us++)
-                pCtrl->UpdateValue(FUN_14086d260()->FUN_141473230(), vfunc_21(), us);
-        }
-    }
-    else
+    if (vfunc_27() > 1)
     {
         NiInterpController* pCtrl0 = SelectMorphController(0);
         if (pCtrl0 != 0)
@@ -384,13 +363,22 @@ void CItemMorphController::ApplyMorph()
                 pCtrl1->UpdateValue(FUN_14086d260()->FUN_141473230(), vfunc_22(1), us);
         }
     }
+    else
+    {
+        NiInterpController* pCtrl = FindMorphController(0);
+        if (pCtrl != 0)
+        {
+            for (unsigned short us = 0; us < pCtrl->GetInterpolatorCount(); us++)
+                pCtrl->UpdateValue(FUN_14086d260()->FUN_141473230(), vfunc_21(), us);
+        }
+    }
 }
 
 // @0x141417ea0
-// MS2-FUNCTIONAL: large body; temp layout differs
 NiInterpController* CItemMorphController::FindMorphController(int bTrack)
 {
-    if (FUN_1403ed2d0()->FUN_141bd0cc0() == 0)
+    void* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    if (pPlayer == 0)
         return 0;
     if (bTrack != 0)
         m_nCurIndex = 0;
@@ -398,21 +386,19 @@ NiInterpController* CItemMorphController::FindMorphController(int bTrack)
     m_spEquipItem->FUN_1411dca30(m_nSlot, aParts);
     if (m_nSlot == 1)
     {
-        if (aParts.GetCount() != 0)
+        if (aParts.GetCount() > 0)
         {
             MS2Ptr<Unk_PickTarget> spPart = m_spEquipItem->FUN_1411dc950(aParts.GetAt(0));
-            Unk_MeshSet* pSet = FUN_141201c90(spPart.operator->());
-            Unk_MeshIter itEnd;
-            FUN_140b02fe0(pSet, &itEnd);
-            Unk_MeshIter it;
-            FUN_140b02f70(pSet, &it);
-            while (FUN_140b029f0(&it, &itEnd))
+            std::set<NiAVObjectPtr>* pSet = FUN_141201c90(spPart.operator->());
+            std::set<NiAVObjectPtr>& kSet = *pSet;
+            std::set<NiAVObjectPtr>::iterator itEnd = kSet.end();
+            for (std::set<NiAVObjectPtr>::iterator it = kSet.begin(); it != itEnd; ++it)
             {
-                efd::SmartPointer<NiAVObject> spMesh(*FUN_140b02a60(&it));
-                NiAVObject* pFound = spMesh->GetObjectByName(NiFixedString("HR:0"));
+                efd::SmartPointer<NiAVObject> spMesh = *it;
+                NiAVObject* pFound = spMesh->GetObjectByName("HR:0");
                 if (pFound == 0)
                 {
-                    pFound = spMesh->GetObjectByName(NiFixedString("HR0:0"));
+                    pFound = spMesh->GetObjectByName("HR0:0");
                     if (bTrack != 0)
                     {
                         if (m_spPicker->m_spMesh.FUN_141412c90() != pFound)
@@ -421,57 +407,56 @@ NiInterpController* CItemMorphController::FindMorphController(int bTrack)
                 }
                 if (pFound == 0)
                 {
-                    pFound = spMesh->GetObjectByName(NiFixedString("HR1:1"));
+                    pFound = spMesh->GetObjectByName("HR1:1");
                     if (bTrack != 0)
                     {
-                        if (m_spPicker->m_spMesh.FUN_141412c90() == pFound)
-                            m_nCurIndex = 1;
-                        else
+                        if (m_spPicker->m_spMesh.FUN_141412c90() != pFound)
                             pFound = 0;
+                        else
+                            m_nCurIndex = 1;
                     }
                 }
                 if (pFound != 0)
                 {
-                    if (bTrack == 0 || m_spPicker->m_spMesh.FUN_141412c90() == pFound)
+                    if (bTrack != 0 && m_spPicker->m_spMesh.FUN_141412c90() != pFound)
+                        continue;
+                    NiTimeController* pTime = pFound->GetControllers();
+                    while (pTime != 0)
                     {
-                        for (NiTimeController* pTime = pFound->GetControllers(); pTime != 0; pTime = pTime->GetNext())
-                        {
-                            NiInterpController* pCtrl = (NiInterpController*)FUN_14098d8d0(&NiInterpController::ms_RTTI, pTime);
-                            if (pCtrl != 0)
-                                return pCtrl;
-                        }
+                        NiObject* pCtrl = FUN_14098d8d0(&NiInterpController::ms_RTTI, pTime);
+                        if (pCtrl != 0)
+                            return (NiInterpController*)pCtrl;
+                        pTime = pTime->GetNext();
                     }
                 }
-                FUN_140b02a80(&it);
             }
         }
     }
     else
     {
-        if (aParts.GetCount() != 0)
+        if (aParts.GetCount() > 0)
         {
             MS2Ptr<Unk_PickTarget> spPart = m_spEquipItem->FUN_1411dc950(aParts.GetAt(0));
-            Unk_MeshSet* pSet = FUN_141201c90(spPart.operator->());
-            Unk_MeshIter itEnd;
-            FUN_140b02fe0(pSet, &itEnd);
-            Unk_MeshIter it;
-            FUN_140b02f70(pSet, &it);
-            while (FUN_140b029f0(&it, &itEnd))
+            std::set<NiAVObjectPtr>* pSet = FUN_141201c90(spPart.operator->());
+            std::set<NiAVObjectPtr>& kSet = *pSet;
+            std::set<NiAVObjectPtr>::iterator itEnd = kSet.end();
+            for (std::set<NiAVObjectPtr>::iterator it = kSet.begin(); it != itEnd; ++it)
             {
-                efd::SmartPointer<NiAVObject> spMesh(*FUN_140b02a60(&it));
-                NiAVObject* pFound = spMesh->GetObjectByName(NiFixedString("Editable Mesh"));
+                efd::SmartPointer<NiAVObject> spMesh = *it;
+                NiAVObject* pFound = spMesh->GetObjectByName("Editable Mesh");
                 if (pFound == 0)
-                    pFound = spMesh->GetObjectByName(NiFixedString("Editable Poly"));
+                    pFound = spMesh->GetObjectByName("Editable Poly");
                 if (pFound != 0)
                 {
-                    for (NiTimeController* pTime = pFound->GetControllers(); pTime != 0; pTime = pTime->GetNext())
+                    NiTimeController* pTime = pFound->GetControllers();
+                    while (pTime != 0)
                     {
-                        NiInterpController* pCtrl = (NiInterpController*)FUN_14098d8d0(&NiInterpController::ms_RTTI, pTime);
+                        NiObject* pCtrl = FUN_14098d8d0(&NiInterpController::ms_RTTI, pTime);
                         if (pCtrl != 0)
-                            return pCtrl;
+                            return (NiInterpController*)pCtrl;
+                        pTime = pTime->GetNext();
                     }
                 }
-                FUN_140b02a80(&it);
             }
         }
     }
@@ -479,63 +464,63 @@ NiInterpController* CItemMorphController::FindMorphController(int bTrack)
 }
 
 // @0x141418550
-// MS2-FUNCTIONAL: temp layout differs
 NiInterpController* CItemMorphController::SelectMorphController(int nIndex)
 {
     m_nCurIndex = nIndex;
-    efd::SmartPointer<NiAVObject> spNode = FindMorphNode(nIndex);
-    if ((NiAVObject*)spNode != 0)
     {
-        for (NiTimeController* pTime = spNode->GetControllers(); pTime != 0; pTime = pTime->GetNext())
+        efd::SmartPointer<NiAVObject> spNode = FindMorphNode(nIndex);
+        if ((NiAVObject*)spNode != 0)
         {
-            NiInterpController* pCtrl = (NiInterpController*)FUN_14098d8d0(&NiInterpController::ms_RTTI, pTime);
-            if (pCtrl != 0)
-                return pCtrl;
+            NiTimeController* pTime = spNode->GetControllers();
+            while (pTime != 0)
+            {
+                NiInterpController* pCtrl = (NiInterpController*)FUN_14098d8d0(&NiInterpController::ms_RTTI, pTime);
+                if (pCtrl != 0)
+                    return pCtrl;
+                pTime = pTime->GetNext();
+            }
         }
     }
     return 0;
 }
 
 // @0x141418620
-// MS2-FUNCTIONAL: temp layout differs
 efd::SmartPointer<NiAVObject> CItemMorphController::FindMorphNode(int nIndex)
 {
-    if (FUN_1403ed2d0()->FUN_141bd0cc0() != 0)
+    void* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    if (pPlayer != 0)
     {
         CAtlArray<CString> aParts;
         m_spEquipItem->FUN_1411dca30(m_nSlot, aParts);
-        if (aParts.GetCount() != 0)
+        if (aParts.GetCount() > 0)
         {
             MS2Ptr<Unk_PickTarget> spPart = m_spEquipItem->FUN_1411dc950(aParts.GetAt(0));
-            Unk_MeshSet* pSet = FUN_141201c90(spPart.operator->());
-            Unk_MeshIter itEnd;
-            FUN_140b02fe0(pSet, &itEnd);
-            Unk_MeshIter it;
-            FUN_140b02f70(pSet, &it);
-            while (FUN_140b029f0(&it, &itEnd))
+            NiAVObject* pFound = 0;
+            std::set<NiAVObjectPtr>* pSet = FUN_141201c90(spPart.operator->());
+            std::set<NiAVObjectPtr>& kSet = *pSet;
+            std::set<NiAVObjectPtr>::iterator itEnd = kSet.end();
+            for (std::set<NiAVObjectPtr>::iterator it = kSet.begin(); it != itEnd; ++it)
             {
-                efd::SmartPointer<NiAVObject> spMesh(*FUN_140b02a60(&it));
-                NiAVObject* pFound;
+                efd::SmartPointer<NiAVObject> spMesh = *it;
                 if (m_nSlot == 1)
                 {
-                    pFound = spMesh->GetObjectByName(NiFixedString("HR:0"));
+                    pFound = spMesh->GetObjectByName("HR:0");
                     if (pFound == 0)
                     {
                         if (nIndex == 0)
-                            pFound = spMesh->GetObjectByName(NiFixedString("HR0:0"));
+                            pFound = spMesh->GetObjectByName("HR0:0");
                         else
-                            pFound = spMesh->GetObjectByName(NiFixedString("HR1:1"));
+                            pFound = spMesh->GetObjectByName("HR1:1");
                     }
                 }
                 else
                 {
-                    pFound = spMesh->GetObjectByName(NiFixedString("Editable Mesh"));
+                    pFound = spMesh->GetObjectByName("Editable Mesh");
                     if (pFound == 0)
-                        pFound = spMesh->GetObjectByName(NiFixedString("Editable Poly"));
+                        pFound = spMesh->GetObjectByName("Editable Poly");
                 }
                 if (pFound != 0)
                     return efd::SmartPointer<NiAVObject>(pFound);
-                FUN_140b02a80(&it);
             }
         }
     }

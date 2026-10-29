@@ -32,7 +32,7 @@ public:
     {
     public:
         CreateParam();                                  // 0x141415390
-        virtual ~CreateParam() {}                       // inline, COMDAT 0x140ba4e80 (deleting dtor 0x141416ae0)
+        virtual ~CreateParam() = default;               // implicit (no vptr store), COMDAT 0x140ba4e80 (deleting dtor 0x141416ae0)
 
         MS2Ptr<CItem> m_spItem;                         // +0x18
         int m_nIndex;                                   // +0x28 slot index

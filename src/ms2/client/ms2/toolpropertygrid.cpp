@@ -151,7 +151,6 @@ void CMS2VectorProperty::OnDrawValue(CDC* pDC, CRect rect)
 }
 
 // @0x141855eb0
-// MS2-FUNCTIONAL: the exe's loop / static-flag blocks differ by 12 bytes (nLen compare operand order, block layout); not reproduced
 BOOL CMS2VectorProperty::UpdateColor()
 {
     MS2_ASSERT_AT(180, ::IsWindow(m_pWndInPlace->GetSafeHwnd()));
@@ -163,8 +162,7 @@ BOOL CMS2VectorProperty::UpdateColor()
         for (int nIndex = 0; !strText.IsEmpty() && nIndex < GetSubItemsCount(); ++nIndex)
         {
             CString strToken = strText.SpanExcluding(strDelim);
-            int nLen = strToken.GetLength() + 1;
-            if (strText.GetLength() < nLen)
+            if (strToken.GetLength() + 1 > strText.GetLength())
                 strText.Empty();
             else
                 strText = strText.Mid(strToken.GetLength() + 1);
@@ -183,7 +181,7 @@ BOOL CMS2VectorProperty::UpdateColor()
                 s_bShowingR = FALSE;
                 return FALSE;
             }
-            if (nIndex == 1 && (nValue < 0 || nValue > 255))
+            else if (nIndex == 1 && (nValue < 0 || nValue > 255))
             {
                 static BOOL s_bShowingG = FALSE;
                 if (s_bShowingG)
@@ -195,7 +193,7 @@ BOOL CMS2VectorProperty::UpdateColor()
                 s_bShowingG = FALSE;
                 return FALSE;
             }
-            if (nIndex == 2 && (nValue < 0 || nValue > 255))
+            else if (nIndex == 2 && (nValue < 0 || nValue > 255))
             {
                 static BOOL s_bShowingB = FALSE;
                 if (s_bShowingB)

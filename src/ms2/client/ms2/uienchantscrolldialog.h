@@ -45,13 +45,13 @@ private:
     MS2_LAYOUT_FRIEND;
     int m_nType;                                                    // +0x178 1 = enchant, 2 = restore, 3 = random, 5 = repair
     int m_nTargetLevel;                                             // +0x17c
-    int m_nFailRate;                                                // +0x180 (percent)
+    unsigned m_nFailRate;                                           // +0x180 (percent)
     unsigned __int64 m_nScrollUid;                                  // +0x188
     unsigned __int64 m_nItemUid;                                    // +0x190
     bool m_bDisableBreak;                                           // +0x198
-    short m_nLevelMin;                                              // +0x19a
-    short m_nLevelMax;                                              // +0x19c
-    ATL::CAtlArray<unsigned> m_equipTypes;                          // +0x1a0
+    unsigned short m_nLevelMin;                                     // +0x19a
+    unsigned short m_nLevelMax;                                     // +0x19c
+    ATL::CAtlArray<unsigned, ATL::CDefaultElementTraits<unsigned> > m_equipTypes; // +0x1a0
     ATL::CAtlArray<Unk_EsRank> m_ranks;                               // +0x1c0
     unsigned m_nRandomMin;                                          // +0x1e0
     unsigned m_nRandomMax;                                          // +0x1e4

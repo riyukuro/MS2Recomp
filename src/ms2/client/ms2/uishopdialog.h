@@ -152,7 +152,7 @@ public:
     void PreviewProduct(int nSerial, int nKind, int bForce);        // 0x141afee80
     void ResetAllProducts();                                        // 0x141afeed0
     void ResetProducts(int nGroup);                                 // 0x141afef10
-    void SelectTab(int nGroup, unsigned char bNew);                 // 0x141afef80
+    void SelectTab(int nGroup, bool bNew);                          // 0x141afef80
     void CloseShop();                                               // 0x141aff000
     bool HasStarEvent();                                            // 0x141aff180
     void RefreshCategories();                                       // 0x141aff1c0
@@ -174,7 +174,7 @@ public:
     CStringW ProductPriceText(__int64 nPrice, MS2Ptr<CNpcShopProductCli> spProduct);     // 0x141b02640
     void ShowPurchaseBill(MS2Ptr<CNpcShopProductCli> spProduct, unsigned nQuantity);     // 0x141b02770
     bool HasShop();                                                 // 0x141b031c0
-    int ConfirmPurchase(int nButton, const CMsgBoxData& data);      // 0x141b03200
+    bool ConfirmPurchase(int nButton, const CMsgBoxData& data);      // 0x141b03200
     void OnPriceChanged(const Scaleform::GFx::FunctionHandler::Params& params);   // 0x141b03240
     CStringW GetTalk(int nShop, bool bWelcome);                     // 0x141b03470
     void SetTalk(const CStringW& strText);                          // 0x141b035c0

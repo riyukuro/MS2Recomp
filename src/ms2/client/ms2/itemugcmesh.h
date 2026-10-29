@@ -22,7 +22,7 @@ class CItemUgcMesh : public CPtred
 {
 public:
     CItemUgcMesh();                                         // 0x141427500
-    virtual ~CItemUgcMesh();                                // ??_G 0x141427800
+    // implicit virtual ~CItemUgcMesh()                     // 0x141427620 (??_G 0x141427800)
 
     MS2_LAYOUT_FRIEND;
     CString m_str18;                                        // +0x18

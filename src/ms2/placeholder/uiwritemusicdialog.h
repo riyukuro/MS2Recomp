@@ -15,5 +15,5 @@ class UIWriteMusicDialog : public UIDialog
 public:
     void FUN_140fefd00(MS2Ptr<CItem> spScore);                      // the composed score item was updated
     void FUN_140ff0260(__int64 nItemUid, const CString& strScore);   // the score text of an item
-    void FUN_140ff0090(unsigned char nResult);                      // the compose result
+    void FUN_140ff0090(int nResult);                                // the compose result
 };

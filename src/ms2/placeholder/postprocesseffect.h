@@ -29,7 +29,7 @@ MS2_CHECK_SIZE(NiString, 8);
 // Smart-pointer-like helper objects (8 bytes) used as render-step members; real template types unknown.
 class Unk_PPSmartA {
 public:
-    Unk_PPSmartA(void* p);          // 0x14127c2a0
+    Unk_PPSmartA(void* p = 0);      // 0x14127c2a0 (default arg: arrays get a ctor closure)
     ~Unk_PPSmartA();                // 0x14127c650
     void Assign(void* p);           // 0x14127c7f0
 private:
@@ -85,7 +85,7 @@ MS2_CHECK_SIZE(PostProcessEffect, 0xa0);
 class ReloadablePostProcess : public PostProcessEffect {
 public:
     ReloadablePostProcess(unsigned __int64 a, const NiFixedString& name, unsigned char flag, unsigned int b);   // 0x1416a2bb0
-    virtual ~ReloadablePostProcess();                          // 0x141626a00
+    // implicit: virtual ~ReloadablePostProcess();                        // 0x141626a00
     virtual const NiRTTI* GetRTTI() const;
     virtual bool vfunc_13();                                   // 0x141626ab0
     virtual bool vfunc_14();                                   // 0x141626aa0

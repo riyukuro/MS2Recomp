@@ -183,7 +183,7 @@ class Unk_MergeFeature
 public:
     bool FUN_14116dd30(int nKey, int a, int b);
     bool FUN_14116d840();
-    unsigned char FUN_14116d720();
+    bool FUN_14116d720();
 };
 Unk_MergeFeature* FUN_14025e7c0();
 
@@ -240,7 +240,7 @@ public:
     MS2Ptr<Unk_MergeEquipItem>& FUN_140885600(POSITION pos);   // 0x140885600 returns &node->data (pos+0x10) in rax, no hidden slot
     void FUN_140885680(POSITION& pos);                      // next
 private:
-    void* m_pad[8];
+    void* m_pad[6];                                         // CAtlList: 0x30
 };
 class Unk_MergeEquipment { public: void FUN_1411e1ce0(Unk_MergeEquipList& list, int n); };
 Unk_MergeEquipment* FUN_1416561a0(Unk_MergeSelf* pSelf);
@@ -302,11 +302,10 @@ Unk_SaRow* FUN_140184750(Unk_SaTable* pTable, __int64 nIndex);
 
 // The proxy handle: allocate and reset (the definitions are at the end of the unit).
 CPtred* FUN_1401ba820(CPtred* p);                           // sets the count to 1
-void* FUN_1401b7b90(void* pOut, int n);                     // new-tag construct
 static CItemMergeOptionProxy* FUN_1419d36b0(void* pUnused);
 int& FUN_1411f61b0(int& r);                                  // std::move (folded copy)
 static CItemMergeOptionProxy* FUN_1419d7750(void* pUnused);
-static MS2Ptr<CItemMergeOptionProxy>& FUN_1419d7530(MS2Ptr<CItemMergeOptionProxy>& sp, void* pTag);
+static MS2Ptr<CItemMergeOptionProxy>& FUN_1419d7530(MS2Ptr<CItemMergeOptionProxy>& sp, const MS2SvrNewTag& tag);
 void* FUN_1405c5c30(Unk_MergeSpecialMap* pMap, const int& key, unsigned& nHash, unsigned& nBin, void*& pPrev);
 void* FUN_1405c5d20(Unk_MergeNormalMap* pMap, const int& key, unsigned& nHash, unsigned& nBin, void*& pPrev);
 bool FUN_1409c1720(const Scaleform::GFx::Value& value);           // the value as a bool
@@ -335,8 +334,7 @@ UIItemMergeOptionDialog::UIItemMergeOptionDialog()
     : m_nItemUid(0), m_nMaterialUid(0), m_nPhase(0), m_bSpecial(false)
 {
     m_2c = 0x1b;
-    int nTag;
-    FUN_1419d7530(m_spProxy, FUN_1401b7b90(&nTag, 0));
+    FUN_1419d7530(m_spProxy, MS2SvrNewTag(0));
     m_optionOrder[std::make_pair(4, 0)] = (int)m_optionOrder.size();
     m_optionOrder[std::make_pair(7, 0)] = (int)m_optionOrder.size();
     m_optionOrder[std::make_pair(10, 0)] = (int)m_optionOrder.size();
@@ -429,7 +427,7 @@ void UIItemMergeOptionDialog::OnLoadComplete()
     ResetMergeItems();
     ShowMergePrice(MS2Ptr<CItem>(0));
     if (m_30.get() != 0)
-        static_cast<ASObj*>(m_30.operator->())->FUN_1407cbbe0("m_useDebug", FUN_14025e7c0()->FUN_14116d720() != 0);
+        static_cast<ASObj*>(m_30.operator->())->FUN_1407cbbe0("m_useDebug", FUN_14025e7c0()->FUN_14116d720());
     FUN_1403ed2b0()->FUN_141adc190();
     RequestInfo();
 }
@@ -478,8 +476,7 @@ void UIItemMergeOptionDialog::vfunc_45(Scaleform::GFx::Value* pRetVal, const CSt
     {
         unsigned __int64 nUid = FUN_141b71960(pArgs->FUN_1422b8d30());
         ASTooltip tooltip(FUN_1403ed2d0()->FUN_141bd0cc0(), 0x20, 2);
-        MS2Ptr<CItem> spItem = FindMergeItem(nUid);
-        if (tooltip.FUN_1409e0d40(spItem.get()))
+        if (tooltip.FUN_1409e0d40(FindMergeItem(nUid).get()))
             FUN_1409b4bc0(pRetVal, tooltip.FUN_1422bb870());
     }
     else if (_stricmp("getTooltipByID", strMethod) == 0)
@@ -495,38 +492,33 @@ void UIItemMergeOptionDialog::vfunc_45(Scaleform::GFx::Value* pRetVal, const CSt
 // @0x1419cec20
 void UIItemMergeOptionDialog::vfunc_43()
 {
-    ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30);
-    Unk_MergeNpcDialog* pNpc;
-    if (pDialog == 0 || (pNpc = FUN_140a7b2b0(0x4e40)) == 0)
+    if (ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30))
     {
-        ASDialog* pFallback = dynamic_cast<ASDialog*>((AScript*)m_30);
-        if (pFallback != 0)
-            pFallback->vfunc_2(1, 0, 0);
-    }
-    else
-    {
-        int nY = pNpc->FUN_141b1d3d0() + 12;
-        int nX = pNpc->FUN_141b1d460() - 80;
-        if (nY != -1 && nX != -1)
+        if (Unk_MergeNpcDialog* pNpc = FUN_140a7b2b0(0x4e40))
         {
-            int nHeight = pDialog->FUN_1422c13b0();
-            pDialog->vfunc_2(5, nX, nY - nHeight);
-            double dX = 0;
-            double dY = 0.0;
-            if (pDialog->FUN_1422c2510(&dX, &dY) && dY < 0.0)
+            int nY = pNpc->FUN_141b1d3d0() + 12;
+            int nX = pNpc->FUN_141b1d460() - 80;
+            if (nY != -1 && nX != -1)
             {
-                nHeight = pDialog->FUN_1422c13b0();
-                if (!FUN_14028d470((float)nHeight / 100.0, 0))
+                pDialog->vfunc_2(5, nX, nY - pDialog->FUN_1422c13b0());
+                double dX = 0;
+                double dY = 0.0;
+                if (pDialog->FUN_1422c2510(&dX, &dY) && dY < 0.0)
                 {
-                    double dScale = dY / (double)((float)nHeight / 100.0);
-                    float fScale = (float)(dScale + (double)pDialog->FUN_1422c11f0());
-                    nHeight = pDialog->FUN_1422c13b0();
+                    float fHeight = (float)pDialog->FUN_1422c13b0() / 100.0f;
+                    if (FUN_14028d470(fHeight, 0))
+                        return;
+                    float fScale = (float)(dY / fHeight + pDialog->FUN_1422c11f0());
+                    int nOffset = (int)((float)pDialog->FUN_1422c13b0() * fScale / 100.0f);
                     pDialog->FUN_1422c0290(fScale, fScale);
-                    pDialog->vfunc_2(5, nX, nY - (int)(((float)nHeight * fScale) / 100.0));
+                    pDialog->vfunc_2(5, nX, nY - nOffset);
                 }
             }
+            return;
         }
     }
+    if (ASDialog* pFallback = dynamic_cast<ASDialog*>((AScript*)m_30))
+        pFallback->vfunc_2(1, 0, 0);
 }
 
 // @0x1419ceea0
@@ -550,72 +542,66 @@ int UIItemMergeOptionDialog::vfunc_28(const char* szMethod, const Scaleform::GFx
         }
         return 1;
     }
-    else
+    else if (_stricmp(szMethod, "onMaterialItemSelect") == 0)
     {
-        if (_stricmp(szMethod, "onMaterialItemSelect") == 0)
+        ASData data;
+        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
         {
-            ASData data;
-            if (data.FUN_1422b9620(pArgs, nArgs) != 0)
-            {
-                m_nMaterialUid = FUN_141b71960(data.FUN_1422b8d30());
-                SetPhase(3);
-                RequestPreview();
-            }
+            m_nMaterialUid = FUN_141b71960(data.FUN_1422b8d30());
+            SetPhase(3);
+            RequestPreview();
         }
-        if (_stricmp(szMethod, "onMerge") == 0)
-        {
-            int nError = CheckMerge();
-            if (nError == 0)
-            {
-                MS2Ptr<CItem> spItem = FindMergeItem(m_nItemUid);
-                if (!reinterpret_cast<CItemStatus*>(spItem->FUN_1405278a0())->FUN_140630810())
-                {
-                    RequestMerge();
-                    SetPhase(5);
-                }
-                else
-                {
-                    MS2Ptr<CMsgBoxData> spBox = FUN_140d73f20(GetStringCommonByKey(CStringW(L"s_item_merge_option_warn")), 1);
-                    spBox->FUN_141a024a0(0);
-                    spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIItemMergeOptionDialog::ConfirmMerge));
-                    FUN_140d73c60(spBox);
-                    SetPhase(4);
-                }
-                return 1;
-            }
-            else
-            {
-                FUN_1419d1d20(nError);
-                return 1;
-            }
-        }
-        else if (_stricmp(szMethod, "onShowResult") == 0)
-        {
-            RequestResultTalk();
-            return 1;
-        }
-        else if (_stricmp(szMethod, "onResetDialog") == 0)
-        {
-            ResetMergeItems();
-            ShowMergePrice(MS2Ptr<CItem>(0));
-            SetPhase(1);
-            return 1;
-        }
-        else if (_stricmp(szMethod, "onDebug") == 0)
-        {
-            if (DAT_143ab2914 > 0x31)
-                RequestMaterial();
-            return 1;
-        }
-        else if (_stricmp(szMethod, "onMergeSelectOption") == 0)
-        {
-            ASData data;
-            if (data.FUN_1422b9620(pArgs, nArgs) != 0)
-                RequestChoice(data.FUN_1422b8a90());
-            return 1;
-        }
-        return 0;
     }
+    if (_stricmp(szMethod, "onMerge") == 0)
+    {
+        int nError = CheckMerge();
+        if (nError != 0)
+        {
+            FUN_1419d1d20(nError);
+            return 1;
+        }
+        MS2Ptr<CItem> spItem = FindMergeItem(m_nItemUid);
+        if (reinterpret_cast<CItemStatus*>(spItem->FUN_1405278a0())->FUN_140630810())
+        {
+            MS2Ptr<CMsgBoxData> spBox = FUN_140d73f20(GetStringCommonByKey(L"s_item_merge_option_warn"), 1);
+            spBox->FUN_141a024a0(0);
+            spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIItemMergeOptionDialog::ConfirmMerge));
+            FUN_140d73c60(spBox);
+            SetPhase(4);
+        }
+        else
+        {
+            RequestMerge();
+            SetPhase(5);
+        }
+        return 1;
+    }
+    else if (_stricmp(szMethod, "onShowResult") == 0)
+    {
+        RequestResultTalk();
+        return 1;
+    }
+    else if (_stricmp(szMethod, "onResetDialog") == 0)
+    {
+        ResetMergeItems();
+        ShowMergePrice(MS2Ptr<CItem>(0));
+        SetPhase(1);
+        return 1;
+    }
+    else if (_stricmp(szMethod, "onDebug") == 0)
+    {
+        if (DAT_143ab2914 >= 50)
+            RequestMaterial();
+        return 1;
+    }
+    else if (_stricmp(szMethod, "onMergeSelectOption") == 0)
+    {
+        ASData data;
+        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+            RequestChoice(data.FUN_1422b8a90());
+        return 1;
+    }
+    return 0;
 }
 
 // @0x1419cf520
@@ -651,38 +637,36 @@ void UIItemMergeOptionDialog::ResetMergeItems()
             MS2Ptr<CItem> spItem = spEquip->FUN_1411dc7a0();
             if (!spItem)
                 continue;
-            CItemData* pData = reinterpret_cast<CItemData*>(spItem->FUN_140527840());
-            if (pData == 0)
+            if (spItem->FUN_140527840() == 0)
                 continue;
-            if (pData->fusion.fusionable != 0)
+            if (reinterpret_cast<CItemData*>(spItem->FUN_140527840())->fusion.fusionable != 0)
                 guids.Add(reinterpret_cast<void*>(spItem->FUN_140526a50()));
         }
     }
-    size_t nCount = guids.GetCount();
-    qsort(guids.GetData(), nCount, 8, FUN_1419d2fa0);
+    qsort(guids.GetData(), guids.GetCount(), 8, FUN_1419d2fa0);
     CString strBag = FUN_14038f6d0(GetTypeName(), "_MergeSlotBag");
     FUN_14123a190(strBag);
     FUN_14123a080(strBag, guids);
-    MS2Ptr<ASMovieClip> spClip = FUN_140ba7930("m_itemBag");
-    if (spClip.get() != 0)
+    if (MS2Ptr<ASMovieClip> spClip = FUN_140ba7930("m_itemBag"))
     {
-        MS2Ptr<Unk_MergeBag> spBag = spClip->FUN_140accef0<Unk_MergeBag>("bag");
-        if (spBag.get() != 0)
+        if (MS2Ptr<Unk_MergeBag> spBag = spClip->FUN_140accef0<Unk_MergeBag>("bag"))
             spBag->FUN_1407cba60("bagId", CString(strBag));
     }
 }
+
+CItem* FUN_14052cd70(MS2Ptr<CItem>* pItem);                 // 0x14052cd70 the item of a handle
 
 // @0x1419cfa10
 void UIItemMergeOptionDialog::RefreshSelectedIngredient()
 {
     MS2Ptr<CItem> spMaterial = DAT_143ab2a90.FUN_140a5d680(m_nMaterialUid);
     MS2Ptr<CItem> spItem = FindMergeItem(m_nItemUid);
-    if (spMaterial.get() != 0 && spItem.get() != 0)
+    if ((FUN_14052cd70(&spMaterial) ? true : false) && (FUN_14052cd70(&spItem) ? true : false))
     {
-        MS2Ptr<CItemData> spData(reinterpret_cast<CItemData*>(spItem->FUN_140527840()));
+        MS2Ptr<CItemData> spData(reinterpret_cast<CItemData*>(((CItem*)spItem)->FUN_140527840()));
         if (!spData)
             return;
-        MS2Ptr<CItemData> spMaterialData(reinterpret_cast<CItemData*>(spMaterial->FUN_140527840()));
+        MS2Ptr<CItemData> spMaterialData(reinterpret_cast<CItemData*>(((CItem*)spMaterial)->FUN_140527840()));
         if (!spMaterialData)
             return;
         ASObj obj(2);
@@ -706,10 +690,10 @@ void UIItemMergeOptionDialog::ApplyMergeItem(MS2Ptr<CItem> spItem)
         if (!spData)
             continue;
         unsigned nHave = 0;
-        if (ref->m_b == 0)
-            nHave = DAT_143ab2a90.FUN_140a5f180(ref->FUN_14026b500(), 0);
-        else
+        if (ref->m_b != 0)
             nHave = FUN_140a5f780_1(&DAT_143ab2a90, ref->m_b, 0);
+        else
+            nHave = DAT_143ab2a90.FUN_140a5f180(ref->FUN_14026b500(), 0);
         CStringW strKey(L"s_item_merge_option_material_count_enable");
         if (nHave < (unsigned)ref->m_c)
         {
@@ -749,7 +733,33 @@ void UIItemMergeOptionDialog::ShowOptionPreview(MS2Ptr<CItem> spItem)
     {
         int nNormal = options[i].first;
         int nSpecial = options[i].second;
-        if (nNormal == -1)
+        if (nNormal != -1)
+        {
+            if (void* pNode = m_spProxy->m_normal.Lookup(nNormal))
+            {
+                CItemMergeOptionVariation* pRange = reinterpret_cast<CItemMergeOptionVariation*>(reinterpret_cast<char*>(pNode) + 8);
+                CStringW strText;
+                if (FUN_14082f1d0(nNormal))
+                {
+                    CStringW strMin = FUN_1409e0900(pRange->FUN_1405beac0());
+                    CStringW strMax = FUN_1409e0900(pRange->FUN_1405beae0());
+                    strText = StringFormat(L"{0} {1}~{2}", FUN_14082f000(nNormal), strMin, strMax);
+                }
+                else
+                {
+                    CStringW strMin = FUN_1409e0a90(pRange->FUN_1405beb00());
+                    CStringW strMax = FUN_1409e0a90(pRange->FUN_1405beb20());
+                    strText = StringFormat(L"{0} {1}~{2}", FUN_14082f000(nNormal), strMin, strMax);
+                }
+                if (strText.GetLength() != 0)
+                {
+                    if (strResult.GetLength() != 0)
+                        strResult += L"\n";
+                    strResult += FUN_1405c2690(CStringW(L"s_item_merge_option_current"), strText);
+                }
+            }
+        }
+        else
         {
             if (nSpecial != 0)
             {
@@ -757,16 +767,16 @@ void UIItemMergeOptionDialog::ShowOptionPreview(MS2Ptr<CItem> spItem)
                 {
                     CItemMergeOptionVariation* pRange = reinterpret_cast<CItemMergeOptionVariation*>(reinterpret_cast<char*>(pNode) + 8);
                     CStringW strText;
-                    if (!FUN_14081dc50(nSpecial))
+                    if (FUN_14081dc50(nSpecial))
                     {
-                        CStringW strMin = FUN_1409e0a90(pRange->FUN_1405beb00());
-                        CStringW strMax = FUN_1409e0a90(pRange->FUN_1405beb20());
+                        CStringW strMin = FUN_1409e0900(pRange->FUN_1405beac0());
+                        CStringW strMax = FUN_1409e0900(pRange->FUN_1405beae0());
                         strText = StringFormat(L"{0} {1}~{2}", FUN_140630e10(nSpecial), strMin, strMax);
                     }
                     else
                     {
-                        CStringW strMin = FUN_1409e0900(pRange->FUN_1405beac0());
-                        CStringW strMax = FUN_1409e0900(pRange->FUN_1405beae0());
+                        CStringW strMin = FUN_1409e0a90(pRange->FUN_1405beb00());
+                        CStringW strMax = FUN_1409e0a90(pRange->FUN_1405beb20());
                         strText = StringFormat(L"{0} {1}~{2}", FUN_140630e10(nSpecial), strMin, strMax);
                     }
                     if (strText.GetLength() != 0)
@@ -775,32 +785,6 @@ void UIItemMergeOptionDialog::ShowOptionPreview(MS2Ptr<CItem> spItem)
                             strResult += L"\n";
                         strResult += FUN_1405c2690(CStringW(L"s_item_merge_option_current"), strText);
                     }
-                }
-            }
-        }
-        else
-        {
-            if (void* pNode = m_spProxy->m_normal.Lookup(nNormal))
-            {
-                CItemMergeOptionVariation* pRange = reinterpret_cast<CItemMergeOptionVariation*>(reinterpret_cast<char*>(pNode) + 8);
-                CStringW strText;
-                if (!FUN_14082f1d0(nNormal))
-                {
-                    CStringW strMin = FUN_1409e0a90(pRange->FUN_1405beb00());
-                    CStringW strMax = FUN_1409e0a90(pRange->FUN_1405beb20());
-                    strText = StringFormat(L"{0} {1}~{2}", FUN_14082f000(nNormal), strMin, strMax);
-                }
-                else
-                {
-                    CStringW strMin = FUN_1409e0900(pRange->FUN_1405beac0());
-                    CStringW strMax = FUN_1409e0900(pRange->FUN_1405beae0());
-                    strText = StringFormat(L"{0} {1}~{2}", FUN_14082f000(nNormal), strMin, strMax);
-                }
-                if (strText.GetLength() != 0)
-                {
-                    if (strResult.GetLength() != 0)
-                        strResult += L"\n";
-                    strResult += FUN_1405c2690(CStringW(L"s_item_merge_option_current"), strText);
                 }
             }
         }
@@ -817,11 +801,9 @@ void UIItemMergeOptionDialog::RefreshMaterialBag()
     CString strBag = FUN_14038f6d0(GetTypeName(), "_MaterialSlotBag");
     FUN_14123a190(strBag);
     FUN_14123a080(strBag, m_items190);
-    MS2Ptr<ASMovieClip> spClip = FUN_140ba7930("m_ingredientBag");
-    if (spClip.get() != 0)
+    if (MS2Ptr<ASMovieClip> spClip = FUN_140ba7930("m_ingredientBag"))
     {
-        MS2Ptr<Unk_MergeBag> spBag = spClip->FUN_140accef0<Unk_MergeBag>("bag");
-        if (spBag.get() != 0)
+        if (MS2Ptr<Unk_MergeBag> spBag = spClip->FUN_140accef0<Unk_MergeBag>("bag"))
             spBag->FUN_1407cba60("bagId", CString(strBag));
     }
 }
@@ -829,8 +811,7 @@ void UIItemMergeOptionDialog::RefreshMaterialBag()
 // @0x1419d0d90
 void UIItemMergeOptionDialog::ShowMergePrice(MS2Ptr<CItem> spItem)
 {
-    MS2Ptr<Unk_MergeButton> spButton = FUN_140bb4b10("m_merge");
-    if (spButton.get() != 0)
+    if (MS2Ptr<Unk_MergeButton> spButton = FUN_140bb4b10("m_merge"))
         spButton->FUN_1422cdfb0(FUN_1405c2690(CStringW(L"s_item_merge_option_consume_meso"), FUN_1409404f0(m_spProxy->m_nMeso)));
 }
 
@@ -844,10 +825,10 @@ void UIItemMergeOptionDialog::FUN_1419d0ef0(CInPacket& packet)
     }
     else
     {
-        int nId = packet.ReadInt32();
+        unsigned __int64 nId = (unsigned)packet.ReadInt32();
         if (nMode == 2)
         {
-            ShowMissingItem(nId);
+            ShowMissingItem((int)nId);
             SetPhase(1);
         }
         else
@@ -859,7 +840,7 @@ void UIItemMergeOptionDialog::FUN_1419d0ef0(CInPacket& packet)
             MS2Ptr<CItem> spItem = FindMergeItem(nUid);
             if (spItem == (CItem*)0)
             {
-                ShowMissingItem(nId);
+                ShowMissingItem((int)nId);
                 SetPhase(1);
                 return;
             }
@@ -907,41 +888,32 @@ void UIItemMergeOptionDialog::FUN_1419d1490(int nNormal, int nSpecial, int nValu
         return;
     CStringW strOld = GetCurrentOption(spItem);
     CStringW strNew(L"");
-    if (nNormal == -1)
+    if (nNormal != -1)
     {
-        if (nSpecial != 0)
-        {
-            if (FUN_14081d9e0(nSpecial) == 0)
-            {
-                if (FUN_14081d9e0(nSpecial) == 0)
-                {
-                    if (!FUN_14081dcd0(nSpecial))
-                    {
-                        strNew = StringFormat(FUN_140184750(&DAT_143ab1a40, nSpecial)->m_strFormat, nValue);
-                    }
-                    else
-                    {
-                        float fValue = (float)nValue / 10.0;
-                        strNew = StringFormat(FUN_140184750(&DAT_143ab1a40, nSpecial)->m_strFormat, fValue);
-                    }
-                }
-                else
-                {
-                    strNew = FUN_140630e10(nSpecial);
-                }
-            }
-            else
-            {
-                strNew = FUN_140630e10(nSpecial);
-            }
-        }
-    }
-    else
-    {
-        if (!FUN_14082f250(nNormal))
-            strNew = FUN_1409e0970(nNormal, nValue);
-        else
+        if (FUN_14082f250(nNormal))
             strNew = FUN_1409e0bf0(nNormal, nValue);
+        else
+            strNew = FUN_1409e0970(nNormal, nValue);
+    }
+    else if (nSpecial != 0)
+    {
+        if (FUN_14081d9e0(nSpecial) != 0)
+        {
+            strNew = FUN_140630e10(nSpecial);
+        }
+        else if (FUN_14081d9e0(nSpecial) != 0)
+        {
+            strNew = FUN_140630e10(nSpecial);
+        }
+        else if (FUN_14081dcd0(nSpecial))
+        {
+            float fValue = nValue / 10.0f;
+            strNew = StringFormat(FUN_140184750(&DAT_143ab1a40, nSpecial)->m_strFormat, fValue);
+        }
+        else
+        {
+            strNew = StringFormat(FUN_140184750(&DAT_143ab1a40, nSpecial)->m_strFormat, nValue);
+        }
     }
     if (m_30.get() != 0)
     {
@@ -980,29 +952,29 @@ void UIItemMergeOptionDialog::FUN_1419d1d20(int nError)
 {
     switch (nError)
     {
-    case 1:
-        FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_item_merge_option_error_lack_material")), 1, 1);
-        break;
-    case 2:
-        FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_item_merge_option_error_lack_meso")), 1, 1);
-        break;
     case 3:
-        FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_item_merge_option_error_invalid_mergeitem")), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(L"s_item_merge_option_error_invalid_mergeitem"), 1, 1);
         break;
     case 4:
-        FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_item_merge_option_error_invalid_material")), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(L"s_item_merge_option_error_invalid_material"), 1, 1);
         break;
-    case 5:
-        FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_item_merge_option_error_invalid_merge_scroll")), 1, 1);
-        break;
-    case 6:
-        FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_item_merge_option_error_invalid_revert_rank")), 1, 1);
-        break;
-    case 7:
-        FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_item_merge_option_error_invalid_revert_option")), 1, 1);
+    case 1:
+        FUN_1412751f0(GetStringCommonByKey(L"s_item_merge_option_error_lack_material"), 1, 1);
         break;
     case 9:
-        FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_item_merge_option_error_unknown")), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(L"s_item_merge_option_error_unknown"), 1, 1);
+        break;
+    case 5:
+        FUN_1412751f0(GetStringCommonByKey(L"s_item_merge_option_error_invalid_merge_scroll"), 1, 1);
+        break;
+    case 6:
+        FUN_1412751f0(GetStringCommonByKey(L"s_item_merge_option_error_invalid_revert_rank"), 1, 1);
+        break;
+    case 7:
+        FUN_1412751f0(GetStringCommonByKey(L"s_item_merge_option_error_invalid_revert_option"), 1, 1);
+        break;
+    case 2:
+        FUN_1412751f0(GetStringCommonByKey(L"s_item_merge_option_error_lack_meso"), 1, 1);
         break;
     }
 }
@@ -1076,18 +1048,18 @@ void UIItemMergeOptionDialog::RequestMaterial()
 void UIItemMergeOptionDialog::RequestResultTalk()
 {
     COutPacket packet(static_cast<int>(SendOp::NpcTalk), 0);
-    if (FUN_140967100()->FUN_141b213c0() == 0)
-    {
-        packet.WriteUInt8(4);
-        packet.WriteInt16(0xca);
-        packet.WriteInt16((short)m_nTalkId);
-    }
-    else
+    if (FUN_140967100()->FUN_141b213c0() != 0)
     {
         int nTalkId = FUN_140967100()->FUN_141b212f0();
         packet.WriteUInt8(6);
         packet.WriteInt32(nTalkId);
         packet.WriteInt32(FUN_1401d3200()->m_talk.FUN_1402056b0());
+        packet.WriteInt16(0xca);
+        packet.WriteInt16((short)m_nTalkId);
+    }
+    else
+    {
+        packet.WriteUInt8(4);
         packet.WriteInt16(0xca);
         packet.WriteInt16((short)m_nTalkId);
     }
@@ -1108,16 +1080,14 @@ int UIItemMergeOptionDialog::CheckMerge()
     for (size_t i = 0; i < m_spProxy->m_ingredients.FUN_14026bee0(); ++i)
     {
         Unk_IngRef ref = m_spProxy->m_ingredients.FUN_14026bdc0(i);
-        if (ref->m_b == 0)
+        if (ref->m_b != 0)
         {
-            int nHave = DAT_143ab2a90.FUN_140a5f180(ref->FUN_14026b500(), 0);
-            if (nHave < ref->m_c)
+            if ((int)FUN_140a5f780_1(&DAT_143ab2a90, ref->m_b, 0) < ref->m_c)
                 return 1;
         }
         else
         {
-            int nHave = FUN_140a5f780_1(&DAT_143ab2a90, ref->m_b, 0);
-            if (nHave < ref->m_c)
+            if (DAT_143ab2a90.FUN_140a5f180(ref->FUN_14026b500(), 0) < ref->m_c)
                 return 1;
         }
     }
@@ -1137,22 +1107,23 @@ CStringW UIItemMergeOptionDialog::GetCurrentOption(MS2Ptr<CItem> spItem)
 {
     if (spItem.get() != 0)
     {
-        CItemStatus* pStatus = reinterpret_cast<CItemStatus*>(spItem->FUN_1405278a0());
-        if (!pStatus->FUN_140630810())
+        if (!reinterpret_cast<CItemStatus*>(spItem->FUN_1405278a0())->FUN_140630810())
         {
             MS2_ASSERT_AT(0x3fb, FALSE);
             return CStringW(L"");
         }
-        Unk_EnchantMap& stats = pStatus->m_spOption->FUN_1405cb8a0(4);
-        Unk_SocketSpecialMap& specials = pStatus->m_spOption->FUN_1405cb8d0(4);
+        int nType = 4;
+        Unk_EnchantMap& stats = reinterpret_cast<CItemStatus*>(spItem->FUN_1405278a0())->m_spOption->FUN_1405cb8a0(nType);
+        Unk_SocketSpecialMap& specials = reinterpret_cast<CItemStatus*>(spItem->FUN_1405278a0())->m_spOption->FUN_1405cb8d0(nType);
         for (POSITION pos = stats.GetStartPosition(); pos != 0; stats.GetNext(pos))
         {
             int nStat = stats.GetKeyAt(pos);
             Unk_EnchantPtr<BaseOption> spOption(stats.GetValueAt(pos));
             if (!spOption)
                 continue;
-            if (spOption->HasValue())
-                return FUN_140631600(nStat, spOption.get());
+            if (!spOption->HasValue())
+                continue;
+            return FUN_140631600(nStat, spOption.get());
         }
         for (POSITION pos = specials.GetStartPosition(); pos != 0; specials.GetNext(pos))
         {
@@ -1160,12 +1131,12 @@ CStringW UIItemMergeOptionDialog::GetCurrentOption(MS2Ptr<CItem> spItem)
             Unk_EnchantPtr<BaseOption> spOption(specials.GetValueAt(pos));
             if (!spOption)
                 continue;
-            if (spOption->HasValue())
-            {
-                if (FUN_14081d9e0(nSpecial) != 0)
-                    return FUN_140630e10(nSpecial);
+            if (!spOption->HasValue())
+                continue;
+            if (FUN_14081d9e0(nSpecial) != 0)
+                return FUN_140630e10(nSpecial);
+            else
                 return FUN_140631830(nSpecial, spOption->GetValue(), 0);
-            }
         }
     }
     return CStringW(L"");
@@ -1191,7 +1162,7 @@ static int FUN_1419d2df0(MS2Ptr<CItem> spItem)
 
 // The sort rank: equipped items (bit 4), merged items (bit 3), then the item rank.
 // @0x1419d2eb0
-static unsigned FUN_1419d2eb0(MS2Ptr<CItem> spItem)
+static int FUN_1419d2eb0(MS2Ptr<CItem> spItem)
 {
     unsigned nEquipped = FUN_1419d2df0(spItem) == 0;
     unsigned nMerged = reinterpret_cast<CItemStatus*>(spItem->FUN_1405278a0())->FUN_140630810();
@@ -1206,13 +1177,11 @@ static unsigned FUN_1419d2eb0(MS2Ptr<CItem> spItem)
 // @0x1419d2fa0
 static int FUN_1419d2fa0(const void* pLeft, const void* pRight)
 {
-    MS2Ptr<CItem> spLeft = FUN_1419be700(*(const unsigned __int64*)pLeft);
-    MS2Ptr<CItem> spRight = FUN_1419be700(*(const unsigned __int64*)pRight);
-    int nLeft = FUN_1419d2eb0(spLeft);
-    int nRight = FUN_1419d2eb0(spRight);
-    if (nRight < nLeft)
-        return -1;
-    return 1;
+    const unsigned __int64* pLeftUid = (const unsigned __int64*)pLeft;
+    const unsigned __int64* pRightUid = (const unsigned __int64*)pRight;
+    MS2Ptr<CItem> spLeft = FUN_1419be700(*pLeftUid);
+    MS2Ptr<CItem> spRight = FUN_1419be700(*pRightUid);
+    return FUN_1419d2eb0(spLeft) > FUN_1419d2eb0(spRight) ? -1 : 1;
 }
 
 // @0x1419d36b0
@@ -1271,7 +1240,7 @@ struct Unk_TePtrAccess
 };
 
 // @0x1419d7530
-static MS2Ptr<CItemMergeOptionProxy>& FUN_1419d7530(MS2Ptr<CItemMergeOptionProxy>& sp, void* pTag)
+static MS2Ptr<CItemMergeOptionProxy>& FUN_1419d7530(MS2Ptr<CItemMergeOptionProxy>& sp, const MS2SvrNewTag& tag)
 {
     Unk_TePtrAccess::ResetNew(sp);
     return sp;

@@ -441,7 +441,6 @@ int CGameOptionSoundDefault::vfunc_5(const char* pszName, void* pArg, int nArg)
 }
 MS2_REPLACE_METHOD(0x141256E70, CGameOptionSoundDefault, vfunc_5, 23, 0x192A1B0B);
 
-// MS2-FUNCTIONAL: the two child lookups keep their MS2Ptr temps in other frame slots; same calls and arguments
 // @0x141256e90
 void CGameOptionSoundDefault::vfunc_6()
 {
@@ -512,11 +511,9 @@ void CGameOptionSoundDefault::vfunc_6()
             if (TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(10))
             {
                 spClip->vfunc_3(1);
-                MS2Ptr<ASSlider> spSlider = spClip->FUN_140fafed0<ASSlider>(CString("m_slider"));
-                if (static_cast<ASSlider*>(spSlider) != 0)
+                if (MS2Ptr<ASSlider> spSlider = spClip->FUN_140fafed0<ASSlider>("m_slider"))
                     spSlider->FUN_1422ce5f0((float)m_state.m_n2c);
-                MS2Ptr<ASButton> spOff = spClip->FUN_140c11f50<ASButton>(CString("m_isOffBgm"));
-                if (static_cast<ASButton*>(spOff) != 0)
+                if (MS2Ptr<ASButton> spOff = spClip->FUN_140c11f50<ASButton>("m_isOffBgm"))
                     spOff->FUN_1422ce090(m_state.m_b30);
             }
             else
@@ -533,7 +530,6 @@ void CGameOptionSoundDefault::vfunc_6()
 }
 MS2_REPLACE_METHOD(0x141256E90, CGameOptionSoundDefault, vfunc_6, 3054, 0x71243925);
 
-// MS2-FUNCTIONAL: the two child lookups keep their MS2Ptr temps in other frame slots; same calls and arguments
 // @0x141257a90
 void CGameOptionSoundDefault::vfunc_7()
 {
@@ -602,11 +598,9 @@ void CGameOptionSoundDefault::vfunc_7()
         MS2Ptr<ASMovieClip> spClip = ((Unk_GsDialog*)GetOptionDialog())->FUN_1412587a0(CString("m_playInstrumentStep"), -1);
         if (static_cast<ASMovieClip*>(spClip) != 0)
         {
-            MS2Ptr<ASSlider> spSlider = spClip->FUN_140fafed0<ASSlider>(CString("m_slider"));
-            if (static_cast<ASSlider*>(spSlider) != 0)
+            if (MS2Ptr<ASSlider> spSlider = spClip->FUN_140fafed0<ASSlider>("m_slider"))
                 m_state.m_n2c = (int)spSlider->FUN_1422ce630();
-            MS2Ptr<ASButton> spOff = spClip->FUN_140c11f50<ASButton>(CString("m_isOffBgm"));
-            if (static_cast<ASButton*>(spOff) != 0)
+            if (MS2Ptr<ASButton> spOff = spClip->FUN_140c11f50<ASButton>("m_isOffBgm"))
                 m_state.m_b30 = spOff->FUN_1422ce0e0() ? true : false;
         }
     }
@@ -1078,7 +1072,7 @@ class Unk_GsMyPC
 public:
     __int64 FUN_141658eb0();                                    // the character creation time (+0xfe8)
     int FUN_141527e00();                                        // no house
-    void FUN_141530720(int nVisit, CStringW strPassword, bool bNotify);   // set the house visit permission
+    void FUN_141530720(unsigned char nVisit, CStringW strPassword, bool bNotify);   // set the house visit permission
 };
 MS2Ptr<CNpcData> FUN_1406cd330(int nNpcId);                         // the npc table row
 char* FUN_1401d3200();                                              // the game constants
@@ -1427,7 +1421,6 @@ void FUN_14125c5a0(Unk_StatusState* pDst, const Unk_StatusState* pSrc)
 MS2_REPLACE(0x14125C5A0, FUN_14125c5a0, 32, 0xE7104ED8);
 
 // Whether the boss-monster notice of an npc is shown, and how (*pnType 0 = by level, 1 = by quest, 2 = none).
-// MS2-FUNCTIONAL: temp layout of the boss-notice branch differs; same calls and stores
 // @0x14125c5d0
 int FUN_14125c5d0(Unk_StatusState* p, int nNpcId, int* pnType, int* pnValue)
 {
@@ -1453,17 +1446,19 @@ int FUN_14125c5d0(Unk_StatusState* p, int nNpcId, int* pnType, int* pnValue)
         MS2Ptr<CNpcData> spNpc = FUN_1406cd330(nNpcId);
         if (spNpc.IsNull())
             return 0;
-        if (spNpc->GetLevel() < 50)
+        if (spNpc->GetLevel() >= 50)
+        {
+            if ((unsigned short)pPlayer->vfunc_78() >= 50)
+            {
+                *pnType = 0;
+                return 1;
+            }
+        }
+        else
         {
             int nLevel = (unsigned short)pPlayer->vfunc_78();
-            int nDiff = abs(nLevel - spNpc->GetLevel());
-            if (*FUN_1402056b0(FUN_1401d3200() + 0xcf88) < nDiff)
+            if (abs(nLevel - spNpc->GetLevel()) > *FUN_1402056b0(FUN_1401d3200() + 0xcf88))
                 return 0;
-            *pnType = 0;
-            return 1;
-        }
-        if ((unsigned short)pPlayer->vfunc_78() >= 50)
-        {
             *pnType = 0;
             return 1;
         }
@@ -1572,7 +1567,6 @@ void FUN_14125cab0(Unk_BattleState* p)
 MS2_REPLACE(0x14125CAB0, FUN_14125cab0, 95, 0x347A1EFF);
 
 // The damage forms come from the "damage" section; older files only have the battle switches.
-// MS2-FUNCTIONAL: temp layout differs; same reads and clamps
 // @0x14125cb20
 int FUN_14125cb20(Unk_BattleState* p, TiXmlDocument* pDoc)
 {
@@ -1583,10 +1577,24 @@ int FUN_14125cb20(Unk_BattleState* p, TiXmlDocument* pDoc)
     ReadGameOptionBool(pDoc, "battle", "DisplayMyTakeRecovery", &p->m_bDisplayMyTakeRecovery);
     ReadGameOptionBool(pDoc, "battle", "DisplayPartyRecovery", &p->m_bDisplayPartyRecovery);
     CString strGive;
-    if (ReadGameOptionString(pDoc, "damage", "giveDamage", &strGive) == 0)
+    if (ReadGameOptionString(pDoc, "damage", "giveDamage", &strGive) != 0)
+    {
+        p->m_n08 = FUN_140219900(strGive);
+        CString strTake;
+        ReadGameOptionString(pDoc, "damage", "takeDamage", &strTake);
+        p->m_n0c = FUN_140219900(strTake);
+        CString strOther;
+        ReadGameOptionString(pDoc, "damage", "otherDamageform", &strOther);
+        p->m_n10 = FUN_140219960(strOther);
+    }
+    else
     {
         bool bAll = TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0x66);
-        if (!bAll)
+        if (bAll)
+        {
+            p->m_n08 = 7;
+        }
+        else
         {
             bool bMine = true;
             bool bParty = false;
@@ -1597,10 +1605,6 @@ int FUN_14125cb20(Unk_BattleState* p, TiXmlDocument* pDoc)
             else
                 p->m_n08 = 3;
         }
-        else
-        {
-            p->m_n08 = 7;
-        }
         bool bMineTake = true;
         bool bPartyTake = false;
         ReadGameOptionBool(pDoc, "battle", "DisplayMyTakeDamage", &bMineTake);
@@ -1610,16 +1614,6 @@ int FUN_14125cb20(Unk_BattleState* p, TiXmlDocument* pDoc)
         else
             p->m_n0c = 3;
         p->m_n10 = 3;
-    }
-    else
-    {
-        p->m_n08 = FUN_140219900(strGive);
-        CString strTake;
-        ReadGameOptionString(pDoc, "damage", "takeDamage", &strTake);
-        p->m_n0c = FUN_140219900(strTake);
-        CString strOther;
-        ReadGameOptionString(pDoc, "damage", "otherDamageform", &strOther);
-        p->m_n10 = FUN_140219960(strOther);
     }
     return 1;
 }
@@ -2362,7 +2356,6 @@ void FUN_14125ef60(Unk_GraphicState2* pDst, const Unk_GraphicState2* pSrc)
 MS2_REPLACE(0x14125EF60, FUN_14125ef60, 32, 0xF011C8B0);
 
 // Apply the hide-others setting to the optimizer and the network service.
-// MS2-FUNCTIONAL: the exe copies the hide-level compare into a second temp before the call; same arguments
 // @0x14125ef90
 void FUN_14125ef90(Unk_GraphicState2* p)
 {
@@ -2381,7 +2374,8 @@ void FUN_14125ef90(Unk_GraphicState2* p)
     {
         nFlags = 0;
     }
-    FUN_1409f7c90()->FUN_14161cc80(nFlags, p->m_nCustomInput, p->m_bHideBossBattle, p->m_nOptimalHide == 1 ? 1 : 0);
+    int nMode = p->m_nOptimalHide == 1 ? 1 : 0;
+    FUN_1409f7c90()->FUN_14161cc80(nFlags, p->m_nCustomInput, p->m_bHideBossBattle, nMode);
     FUN_140d86260()->vfunc_65(p->m_nOptimalHide);
 }
 MS2_REPLACE(0x14125EF90, FUN_14125ef90, 248, 0xD4DDBD27);
@@ -3531,7 +3525,6 @@ void CPersonalInfoAgreement::FUN_141262090()
 MS2_REPLACE_METHOD(0x141262090, CPersonalInfoAgreement, FUN_141262090, 229, 0xC7403854);
 
 // In my own house without a house visit agreement: ask who may visit it.
-// MS2-FUNCTIONAL: message box temps / frame slots differ; same calls, texts and callback
 // @0x141262180
 void CPersonalInfoAgreement::FUN_141262180()
 {
@@ -3542,13 +3535,13 @@ void CPersonalInfoAgreement::FUN_141262180()
     Unk_GsMyPC* pPC = (Unk_GsMyPC*)WorldService::GetInstance()->FUN_141bd0cc0();
     if (pPC == 0)
         return;
-    bool bAgreed = FUN_141261f00(1);
-    int nNoHouse = pPC->FUN_141527e00();
-    bool bShow = nNoHouse == 0 && !bAgreed;
+    bool bShow = !FUN_141261f00(1);
+    if (pPC->FUN_141527e00() != 0)
+        bShow = false;
     Unk_GsUiAgreeIcon* pIcon = FUN_140938b90(0x4e28);
     if (pIcon != 0)
         pIcon->FUN_141939320(bShow);
-    if (nNoHouse != 0 || bAgreed)
+    if (!bShow)
         return;
     Unk_HoServicePtr spService(FUN_1401cd040(&DAT_143b059e8));
     if (spService.FUN_140c2b790(0))
@@ -3559,10 +3552,10 @@ void CPersonalInfoAgreement::FUN_141262180()
             MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(4, FUN_140298ea0(CStringW(L"s_personal_infomaion_agreement_visit_myhome_content")), 0, CStringW(L""));
             if (spBox.get())
             {
-                CStringW strPublic = GetStringCommonByKey(CStringW(L"s_personal_infomaion_agreement_visit_myhome_btn_public"));
-                CStringW strPassword = GetStringCommonByKey(CStringW(L"s_personal_infomaion_agreement_visit_myhome_btn_password"));
-                CStringW strPrivate = GetStringCommonByKey(CStringW(L"s_personal_infomaion_agreement_visit_myhome_btn_private"));
-                spBox->SetTitle(GetStringCommonByKey(CStringW(L"s_personal_infomaion_agreement_title")));
+                CStringW strPublic = GetStringCommonByKey(L"s_personal_infomaion_agreement_visit_myhome_btn_public");
+                CStringW strPassword = GetStringCommonByKey(L"s_personal_infomaion_agreement_visit_myhome_btn_password");
+                CStringW strPrivate = GetStringCommonByKey(L"s_personal_infomaion_agreement_visit_myhome_btn_private");
+                spBox->SetTitle(GetStringCommonByKey(L"s_personal_infomaion_agreement_title"));
                 spBox->FUN_141a024a0(0);
                 spBox->FUN_141a024c0();
                 spBox->SetAlign(0);
@@ -3616,7 +3609,6 @@ void CPersonalInfoAgreement::FUN_1412627c0(CString strUrl)
 MS2_REPLACE_METHOD(0x1412627C0, CPersonalInfoAgreement, FUN_1412627c0, 94, 0xA1CF5C66);
 
 // The house visit question: 0 public, 1 password (asks for it), 2 private.
-// MS2-FUNCTIONAL: message box temps / frame slots differ; same calls, texts and callback
 // @0x141262830
 bool CPersonalInfoAgreement::FUN_141262830(int nResult, const CMsgBoxData& data)
 {
@@ -3633,10 +3625,9 @@ bool CPersonalInfoAgreement::FUN_141262830(int nResult, const CMsgBoxData& data)
     }
     else if (nResult == 1)
     {
-        MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(10, GetStringCommonByKey(CStringW(L"s_personal_infomaion_agreement_visit_myhome_input_password")), 0, CStringW(L""));
-        if (spBox.get())
+        if (MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(10, GetStringCommonByKey(L"s_personal_infomaion_agreement_visit_myhome_input_password"), 0, CStringW(L"")))
         {
-            spBox->FUN_141a01d30(2, CStringW(L""), 6, 0, 0);
+            spBox->FUN_141a01d30(2, L"", 6, 0, 0);
             spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &CPersonalInfoAgreement::FUN_141262b70));
             FUN_140d73c60(spBox);
         }
@@ -3654,7 +3645,6 @@ bool CPersonalInfoAgreement::FUN_141262830(int nResult, const CMsgBoxData& data)
 MS2_REPLACE_METHOD(0x141262830, CPersonalInfoAgreement, FUN_141262830, 824, 0x6C3EC8FF);
 
 // The house password: six digits.
-// MS2-FUNCTIONAL: message box temps / frame slots differ; same checks, calls and callback
 // @0x141262b70
 bool CPersonalInfoAgreement::FUN_141262b70(int nResult, const CMsgBoxData& data)
 {
@@ -3663,8 +3653,7 @@ bool CPersonalInfoAgreement::FUN_141262b70(int nResult, const CMsgBoxData& data)
         CStringW strPassword = data.FUN_141a02d50().Trim(L',');
         if (strPassword.GetLength() != 6)
         {
-            MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0, GetStringCommonByKey(CStringW(L"s_home_password_string_error")), 0, CStringW(L""));
-            if (spBox.get())
+            if (MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0, GetStringCommonByKey(L"s_home_password_string_error"), 0, CStringW(L"")))
             {
                 spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &CPersonalInfoAgreement::FUN_141262f10));
                 FUN_140d73c60(spBox);
@@ -4069,14 +4058,19 @@ void Unk_GsApp::FUN_1412642e0(bool b)
 MS2_REPLACE_METHOD(0x1412642E0, Unk_GsApp, FUN_1412642e0, 26, 0x269BA765);
 
 // The UCRT's `static __inline memcpy_s` of this TU (unreferenced copy, kept alive by the pointer below).
+#pragma function(memcpy, memset)
 // @0x141264430
-// MS2-FUNCTIONAL: unreferenced CRT memcpy_s copy: source spelling differs
 static __inline errno_t ms2_gs_memcpy_s(void* const d, size_t const dsz, void const* const s, size_t const ssz)
 {
     if (ssz == 0) { return 0; }
     { int e = !!(d != NULL); if (!e) { errno = EINVAL; _invalid_parameter_noinfo(); return EINVAL; } }
-    { int e = !!(s != NULL); if (!e) { errno = EINVAL; _invalid_parameter_noinfo(); return EINVAL; } }
-    { int e = !!(dsz >= ssz); if (!e) { errno = ERANGE; _invalid_parameter_noinfo(); return ERANGE; } }
+    if (s == NULL || dsz < ssz)
+    {
+        memset(d, 0, dsz);
+        { int e = !!(s != NULL); if (!e) { errno = EINVAL; _invalid_parameter_noinfo(); return EINVAL; } }
+        { int e = !!(dsz >= ssz); if (!e) { errno = ERANGE; _invalid_parameter_noinfo(); return ERANGE; } }
+        return EINVAL;
+    }
     memcpy(d, s, ssz);
     return 0;
 }

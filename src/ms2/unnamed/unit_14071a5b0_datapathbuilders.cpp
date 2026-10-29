@@ -60,10 +60,9 @@ CStringA GetItemPresetPath(const CStringA& dir, const CStringA& name)
 }
 
 // @0x14071a940
-// MS2-FUNCTIONAL: temp/destructor order of the ItemModel path build (extra copy vs the exe) not matched after 3 attempts
 CStringA GetItemModelPath(unsigned int id)
 {
-    CStringA r = FUN_14071a5b0(CStringA("ItemModel"), FUN_140513200("{0:03d}.xml", id));
+    CStringA r = FUN_14071a5b0("ItemModel", FUN_140513200("{0:03d}.xml", id));
     return r;
 }
 

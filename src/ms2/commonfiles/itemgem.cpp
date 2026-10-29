@@ -129,7 +129,7 @@ Unk_UiManager* FUN_1403ed2b0();                                     // 0x1403ed2
 class Unk_StringTable
 {
 public:
-    CStringW FUN_141811980(int nTable, int nId, int nFlags);        // 0x141811980
+    CStringW FUN_141811980(int nTable, int nId);                    // 0x141811980
 };
 Unk_StringTable* FUN_1401a9d70();                                   // 0x1401a9d70
 
@@ -609,11 +609,10 @@ CGemEffect::CGemEffect(int nType, int nGemId) : CGemBase(nType, nGemId)
 }
 
 // @0x1405a64e0
-// MS2-FUNCTIONAL: equivalent typed body; cl orders the returned-temp / stack-slot handling differently (extra temp or frame size); no source form found
+// The exe does not copy m_spData: the clone starts with a null data pointer.
 CGemEffect::CGemEffect(const CGemEffect& o) : CGemBase(o.m_nType, o.m_nGemId)
 {
     m_nDataId = o.m_nDataId;
-    m_spData = o.m_spData;
 }
 
 // @0x1405a6560
@@ -943,10 +942,9 @@ CString CGemPetSkin::vfunc_10()
 MS2_REPLACE_METHOD(0x1405A6C10, CGemPetSkin, vfunc_10, 306, 0x1CD343BD);
 
 // @0x1405a6d50
-// MS2-FUNCTIONAL: equivalent typed body; cl orders the returned-temp / stack-slot handling differently (extra temp or frame size); no source form found
 CStringW CGemPetSkin::vfunc_11()
 {
-    return FUN_1401a9d70()->FUN_141811980(0x3b, m_nPetId, 0);
+    return FUN_1401a9d70()->FUN_141811980(0x3b, m_nPetId);
 }
 MS2_REPLACE_METHOD(0x1405A6D50, CGemPetSkin, vfunc_11, 76, 0x48325474);
 

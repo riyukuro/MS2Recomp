@@ -103,7 +103,7 @@ public:
     virtual void vfunc_21();
     virtual void vfunc_22();
     virtual void vfunc_23();
-    virtual void vfunc_24(int nEnable);                         // 24
+    virtual void vfunc_24(bool bEnable);                        // 24
     void FUN_1422dfc10();                                       // clear the items
     void FUN_1422dfc70(const ASObj& item);                      // add an item
     void FUN_1422df690(unsigned int nSelected);                 // select
@@ -174,7 +174,6 @@ UIUGCPortalDialog::~UIUGCPortalDialog()
 }
 
 // @0x140fb0290
-// MS2-FUNCTIONAL: the exe keeps extra call-result temporaries (frame / EH layout differs); source form unknown
 void UIUGCPortalDialog::FUN_140fb0290(CInPacket& packet)
 {
     m_178 = packet.ReadInt32();
@@ -186,7 +185,7 @@ void UIUGCPortalDialog::FUN_140fb0290(CInPacket& packet)
     int nCount = packet.ReadInt32();
     for (int i = 0; i < nCount; i++)
     {
-        m_198.push_back(std::wstring(packet.ReadUnicodeString()));
+        m_198.push_back((const wchar_t*)packet.ReadUnicodeString());
     }
     std::sort(m_198.begin(), m_198.end(), Unk_UgcpStrLess());
     FUN_141924680();
@@ -209,90 +208,73 @@ void UIUGCPortalDialog::OnLoadComplete()
 }
 
 // @0x140fb07d0
-// MS2-FUNCTIONAL: the exe keeps extra call-result temporaries (frame / EH layout differs); source form unknown
 int UIUGCPortalDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs)
 {
-    if (UIDialog::vfunc_28(szMethod, pArgs, nArgs) == 0)
+    if (UIDialog::vfunc_28(szMethod, pArgs, nArgs))
+        return 1;
+    if (_stricmp("OnApply", szMethod) == 0)
     {
-        if (_stricmp("OnApply", szMethod) == 0)
-        {
-            OnApply();
-            return 1;
-        }
-        else
-        {
-            if (_stricmp("onChangeTrigger", szMethod) == 0)
-            {
-                ASData data;
-                if (data.FUN_1422b9620(pArgs, nArgs))
-                {
-                    m_188 = atoi(data.FUN_1422b8d30());
-                }
-            }
-            else if (_stricmp("onChangeTargetType", szMethod) == 0)
-            {
-                ASData data;
-                if (data.FUN_1422b9620(pArgs, nArgs))
-                {
-                    m_18c = atoi(data.FUN_1422b8d30());
-                    if (m_18c == 0)
-                    {
-                        FUN_140fb0e30();
-                    }
-                    else if (m_18c == 1)
-                    {
-                        FUN_140fb1040();
-                    }
-                    else if (m_18c == 2)
-                    {
-                        FUN_140fb15a0();
-                    }
-                    m_30.operator->()->Invoke("updateTarget", m_190);
-                }
-            }
-            return 0;
-        }
-    }
-    else
-    {
+        OnApply();
         return 1;
     }
+    else if (_stricmp("onChangeTrigger", szMethod) == 0)
+    {
+        ASData data;
+        if (data.FUN_1422b9620(pArgs, nArgs))
+        {
+            m_188 = atoi(data.FUN_1422b8d30());
+        }
+    }
+    else if (_stricmp("onChangeTargetType", szMethod) == 0)
+    {
+        ASData data;
+        if (data.FUN_1422b9620(pArgs, nArgs))
+        {
+            m_18c = atoi(data.FUN_1422b8d30());
+            switch (m_18c)
+            {
+            case 0:
+                FUN_140fb0e30();
+                break;
+            case 1:
+                FUN_140fb1040();
+                break;
+            case 2:
+                FUN_140fb15a0();
+                break;
+            }
+            m_30.operator->()->Invoke("updateTarget", m_190);
+        }
+    }
+    return 0;
 }
 
 // The element of the data provider at an index, read as a string member (name -> out).
 // @0x140fb1930
-// MS2-FUNCTIONAL: the exe keeps extra call-result temporaries (frame / EH layout differs); source form unknown
 static void FUN_140fb1930(Unk_UgcpArray* pArray, unsigned int nIndex, const CString& strName, CStringW& strOut)
 {
     ASObj item = pArray->FUN_1422df140(nIndex);
-    if (item.FUN_1422ba9a0() == false)
-    {
-        item.FUN_1422baad0(strName, strOut);
-    }
+    if (item.FUN_1422ba9a0())
+        return;
+    item.FUN_1422baad0(strName, strOut);
 }
 
 // The selected row's member `strName` of a drop down.
 // @0x140fb19c0
-// MS2-FUNCTIONAL: the exe keeps extra call-result temporaries (frame / EH layout differs); source form unknown
 static void FUN_140fb19c0(Unk_UgcpCombo* pCombo, const CString& strName, CStringW& strOut)
 {
     unsigned int nSel = pCombo->FUN_1422df6c0();
-    if (-1 < (int)nSel)
-    {
-        MS2Ptr<ASArray> spData = pCombo->FUN_1422df770();
-        if (!(spData == 0))
-        {
-            Unk_UgcpArray* pArray = static_cast<Unk_UgcpArray*>(spData.operator->());
-            if (nSel < pArray->FUN_1422bc5d0())
-            {
-                FUN_140fb1930(static_cast<Unk_UgcpArray*>(spData.operator->()), nSel, strName, strOut);
-            }
-        }
-    }
+    if ((int)nSel < 0)
+        return;
+    MS2Ptr<ASArray> spData = pCombo->FUN_1422df770();
+    if (spData == 0)
+        return;
+    if (nSel >= spData.operator->()->FUN_1422bc5d0())
+        return;
+    FUN_140fb1930(static_cast<Unk_UgcpArray*>(spData.operator->()), nSel, strName, strOut);
 }
 
 // @0x140fb0a70
-// MS2-FUNCTIONAL: the exe keeps extra call-result temporaries (frame / EH layout differs); source form unknown
 void UIUGCPortalDialog::OnApply()
 {
     MS2Ptr<Unk_UgcpText> spName;
@@ -307,10 +289,9 @@ void UIUGCPortalDialog::OnApply()
         }
     }
     CStringW strId(L"");
-    MS2Ptr<Unk_UgcpCombo> spCombo = FUN_140c28560<Unk_UgcpCombo>("m_dropDownTarget");
-    if (spCombo.get() != 0)
+    if (MS2Ptr<Unk_UgcpCombo> spCombo = FUN_140c28560<Unk_UgcpCombo>("m_dropDownTarget"))
     {
-        FUN_140fb19c0(spCombo.operator->(), CString("id"), strId);
+        FUN_140fb19c0(spCombo.operator->(), "id", strId);
     }
     COutPacket packet(static_cast<int>(SendOp::HomeAction), 0);
     packet.WriteUInt8(6);
@@ -325,171 +306,148 @@ void UIUGCPortalDialog::OnApply()
 }
 
 // @0x140fb0da0
-// MS2-FUNCTIONAL: the exe keeps extra call-result temporaries (frame / EH layout differs); source form unknown
 bool UIUGCPortalDialog::FUN_140fb0da0(CStringW& strName)
 {
     int nId = CStringTable::GetInstance()->FUN_141812c40(3, strName);
-    bool bFound = -1 < nId;
-    if (bFound)
-    {
-        strName = StringFormat(L"{0}", nId);
-    }
-    return bFound;
+    if (nId < 0)
+        return false;
+    strName = StringFormat(L"{0}", nId);
+    return true;
 }
 
 // @0x140fb0e30
-// MS2-FUNCTIONAL: the exe keeps extra call-result temporaries (frame / EH layout differs); source form unknown
 void UIUGCPortalDialog::FUN_140fb0e30()
 {
     MS2Ptr<Unk_UgcpCombo> spCombo = FUN_140c28560<Unk_UgcpCombo>("m_dropDownTarget");
-    if (!(spCombo == 0))
+    if (spCombo == 0)
+        return;
+    spCombo.operator->()->FUN_1422dfc10();
     {
-        spCombo.operator->()->FUN_1422dfc10();
-        {
-            ASObj none(2);
-            none.FUN_1409c0dc0("label", "$s_ugcportal_label_target_list_none");
-            spCombo.operator->()->FUN_1422dfc70(none);
-        }
-        for (size_t i = 0; i < m_198.size(); i++)
-        {
-            ASObj item(2);
-            item.FUN_1409c0e60("id", m_198[i].c_str());
-            item.FUN_1409c0e60("label", m_198[i].c_str());
-            spCombo.operator->()->FUN_1422dfc70(item);
-        }
-        spCombo.operator->()->FUN_1422df690(0);
-        Unk_UgcpCombo* pCombo = spCombo.operator->();
-        pCombo->vfunc_24(1);
+        ASObj none(2);
+        none.FUN_1409c0dc0("label", "$s_ugcportal_label_target_list_none");
+        spCombo.operator->()->FUN_1422dfc70(none);
     }
+    for (size_t i = 0; i < m_198.size(); i++)
+    {
+        ASObj item(2);
+        item.FUN_1409c0e60("id", m_198[i].c_str());
+        item.FUN_1409c0e60("label", m_198[i].c_str());
+        spCombo.operator->()->FUN_1422dfc70(item);
+    }
+    spCombo.operator->()->FUN_1422df690(0);
+    Unk_UgcpCombo* pCombo = spCombo.operator->();
+    pCombo->vfunc_24(true);
 }
 
 // @0x140fb1040
-// MS2-FUNCTIONAL: the exe keeps extra call-result temporaries (frame / EH layout differs); source form unknown
 void UIUGCPortalDialog::FUN_140fb1040()
 {
     MS2Ptr<Unk_UgcpCombo> spCombo = FUN_140c28560<Unk_UgcpCombo>("m_dropDownTarget");
-    if (!(spCombo == 0))
+    if (spCombo == 0)
+        return;
+    spCombo.operator->()->FUN_1422dfc10();
     {
-        spCombo.operator->()->FUN_1422dfc10();
-        {
-            ASObj none(2);
-            none.FUN_1409c0dc0("label", "$s_ugcportal_label_target_list_none");
-            spCombo.operator->()->FUN_1422dfc70(none);
-        }
-        std::set<int>* pRemembered = FUN_140cb17d0()->FUN_141b979b0();
-        Unk_UgcpEntryMap* pEntries = FUN_140cb17d0()->FUN_141b978c0();
-        std::vector<int> ids;
-        Unk_UgcpEntryMap::iterator it;
-        for (it = pEntries->begin(); it != pEntries->end(); it++)
-        {
-            if (FUN_140fb1860(it->first))
-            {
-                Unk_UgcpEntryList& list = it->second;
-                Unk_UgcpEntryList::iterator jEnd = list.end();
-                for (Unk_UgcpEntryList::iterator j = list.begin(); j != jEnd; ++j)
-                {
-                    MS2Ptr<Unk_UgcpEntry> spEntry = *j;
-                    if (spEntry.operator->()->m_18 == 0)
-                    {
-                        if (FUN_140408410(&DAT_143ab3058, &spEntry.operator->()->m_34) != -1)
-                        {
-                            ids.push_back(spEntry.operator->()->m_34);
-                        }
-                    }
-                }
-            }
-        }
-        for (std::set<int>::iterator k = pRemembered->begin(); k != pRemembered->end(); ++k)
-        {
-            int nId = *k;
-            if (FUN_140408410(&DAT_143ab3058, &nId) != -1)
-            {
-                ids.push_back(nId);
-            }
-        }
-        std::sort(ids.begin(), ids.end(), Unk_UgcpNameLess());
-        for (std::vector<int>::iterator m = ids.begin(); m != ids.end(); ++m)
-        {
-            int nId = *m;
-            ASObj item(2);
-            item.FUN_1407cbb20("id", StringFormat(L"{0}", nId));
-            item.FUN_1407cbb20("label", CStringTable::GetInstance()->FUN_141811980(3, nId));
-            spCombo.operator->()->FUN_1422dfc70(item);
-        }
-        spCombo.operator->()->FUN_1422df690(0);
-        Unk_UgcpCombo* pCombo = spCombo.operator->();
-        pCombo->vfunc_24(1);
+        ASObj none(2);
+        none.FUN_1409c0dc0("label", "$s_ugcportal_label_target_list_none");
+        spCombo.operator->()->FUN_1422dfc70(none);
     }
+    std::set<int>* pRemembered = FUN_140cb17d0()->FUN_141b979b0();
+    Unk_UgcpEntryMap* pEntries = FUN_140cb17d0()->FUN_141b978c0();
+    Unk_UgcpEntryMap::iterator it;
+    std::vector<int> ids;
+    for (it = pEntries->begin(); it != pEntries->end(); it++)
+    {
+        if (!FUN_140fb1860(it->first))
+            continue;
+        Unk_UgcpEntryList& list = it->second;
+        Unk_UgcpEntryList::const_iterator jEnd = list.end();
+        for (Unk_UgcpEntryList::const_iterator j = list.begin(); j != jEnd; ++j)
+        {
+            MS2Ptr<Unk_UgcpEntry> spEntry = *j;
+            if (spEntry.operator->()->m_18 != 0)
+                continue;
+            if (FUN_140408410(&DAT_143ab3058, &spEntry.operator->()->m_34) == -1)
+                continue;
+            ids.push_back(spEntry.operator->()->m_34);
+        }
+    }
+    std::set<int>& remembered = *pRemembered;
+    std::set<int>::iterator kEnd = remembered.end();
+    for (std::set<int>::iterator k = remembered.begin(); k != kEnd; ++k)
+    {
+        int nId = *k;
+        if (FUN_140408410(&DAT_143ab3058, &nId) == -1)
+            continue;
+        ids.push_back(nId);
+    }
+    std::sort(ids.begin(), ids.end(), Unk_UgcpNameLess());
+    std::vector<int>& sorted = ids;
+    std::vector<int>::const_iterator mEnd = sorted.end();
+    for (std::vector<int>::const_iterator m = sorted.begin(); m != mEnd; ++m)
+    {
+        unsigned int nId = *m;
+        ASObj item(2);
+        item.FUN_1407cbb20("id", StringFormat(L"{0}", nId));
+        item.FUN_1407cbb20("label", CStringTable::GetInstance()->FUN_141811980(3, nId));
+        spCombo.operator->()->FUN_1422dfc70(item);
+    }
+    spCombo.operator->()->FUN_1422df690(0);
+    Unk_UgcpCombo* pCombo = spCombo.operator->();
+    pCombo->vfunc_24(true);
 }
 
 // @0x140fb15a0
-// MS2-FUNCTIONAL: the exe keeps extra call-result temporaries (frame / EH layout differs); source form unknown
 void UIUGCPortalDialog::FUN_140fb15a0()
 {
     MS2Ptr<Unk_UgcpCombo> spCombo = FUN_140c28560<Unk_UgcpCombo>("m_dropDownTarget");
-    if (!(spCombo == 0))
+    if (spCombo == 0)
+        return;
+    spCombo.operator->()->FUN_1422dfc10();
     {
-        spCombo.operator->()->FUN_1422dfc10();
-        {
-            ASObj none(2);
-            none.FUN_1409c0dc0("label", "$s_ugcportal_label_target_list_none");
-            spCombo.operator->()->FUN_1422dfc70(none);
-        }
-        ATL::CAtlArray<CBuddyManager::Ptr> buddies;
-        CBuddyManager::GetInstance()->FUN_140ae4df0(buddies);
-        for (size_t i = 0; i < buddies.GetCount(); i++)
-        {
-            if (buddies[i].get()->FUN_1401cc5f0() != 0)
-            {
-                CStringW strId = StringFormat(L"{0}", buddies[i].get()->FUN_1401cc250());
-                ASObj item(2);
-                item.FUN_1407cbb20("id", strId);
-                item.FUN_1407cbb20("label", buddies[i].get()->FUN_1401cc1c0());
-                spCombo.operator->()->FUN_1422dfc70(item);
-            }
-        }
-        spCombo.operator->()->FUN_1422df690(0);
-        Unk_UgcpCombo* pCombo = spCombo.operator->();
-        pCombo->vfunc_24(1);
+        ASObj none(2);
+        none.FUN_1409c0dc0("label", "$s_ugcportal_label_target_list_none");
+        spCombo.operator->()->FUN_1422dfc70(none);
     }
+    ATL::CAtlArray<CBuddyManager::Ptr> buddies;
+    CBuddyManager::GetInstance()->FUN_140ae4df0(buddies);
+    for (size_t i = 0; i < buddies.GetCount(); i++)
+    {
+        if (buddies[i].get()->FUN_1401cc5f0() == 0)
+            continue;
+        CStringW strId = StringFormat(L"{0}", (unsigned __int64)buddies[i].get()->FUN_1401cc250());
+        ASObj item(2);
+        item.FUN_1407cbb20("id", strId);
+        item.FUN_1407cbb20("label", buddies[i].get()->FUN_1401cc1c0());
+        spCombo.operator->()->FUN_1422dfc70(item);
+    }
+    spCombo.operator->()->FUN_1422df690(0);
+    Unk_UgcpCombo* pCombo = spCombo.operator->();
+    pCombo->vfunc_24(true);
 }
 
 // @0x140fb1860
-// MS2-FUNCTIONAL: the exe keeps extra call-result temporaries (frame / EH layout differs); source form unknown
 bool UIUGCPortalDialog::FUN_140fb1860(int nType)
 {
     if (nType == 0x66)
-    {
         return true;
-    }
-    else if (nType == 0x67)
-    {
+    if (nType == 0x67)
         return true;
-    }
-    else if (nType == 0x69)
-    {
+    if (nType == 0x69)
         return true;
-    }
-    else if (nType == 0xca)
-    {
+    if (nType == 0xca)
         return true;
-    }
-    else
-    {
-        return false;
-    }
+    return false;
 }
 
 // @0x140fb1a80
-// MS2-FUNCTIONAL: the exe keeps extra call-result temporaries (frame / EH layout differs); source form unknown
 inline Scaleform::GFx::Value AScript::Invoke(const char* szMethod, CStringW a1, int a2, int a3, CStringW a4)
 {
     ASArgList args;
     args.FUN_1409b2800(4);
-    FUN_1422bcea0(args.FUN_1409b1f70(0), a1.GetString());
+    FUN_1422bcea0(args.FUN_1409b1f70(0), a1);
     FUN_1422bccb0(args.FUN_1409b1f70(1), a2);
     FUN_1422bccb0(args.FUN_1409b1f70(2), a3);
-    FUN_1422bcea0(args.FUN_1409b1f70(3), a4.GetString());
+    FUN_1422bcea0(args.FUN_1409b1f70(3), a4);
     return FUN_1422bb8f0(szMethod, args);
 }
 

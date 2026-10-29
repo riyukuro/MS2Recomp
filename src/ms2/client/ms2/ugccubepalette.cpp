@@ -847,7 +847,6 @@ void FUN_140df2210(unsigned nBox)                                               
 
 // ---- the palette ----
 
-// MS2-FUNCTIONAL: the exe routes the ingredient-lookup argument through ecx (r8d <- ecx); not reproduced
 void UGCCubePalette::FUN_140df2250()                                                           // @0x140df2250
 {
     mapItems.RemoveAll();
@@ -860,14 +859,13 @@ void UGCCubePalette::FUN_140df2250()                                            
             continue;
         if (!spData->FUN_14053cb80())
             continue;
-        int nItemId = spData->FUN_14053c510();
-        if (FUN_140281980()->FUN_1405566e0(nItemId) == 0)
+        if (FUN_140281980()->FUN_1405566e0(spData->FUN_14053c510()) == 0)
             continue;
         mapItems.SetAt(spData->FUN_14053c510(), spData);
     }
 }
 
-// MS2-FUNCTIONAL: stock-branch temp lifetime around Add differs from the exe; behaviour equivalent
+// MS2-FUNCTIONAL: the exe CAtlArray::Add takes the stock-branch CubePtr temporary by const&; ours copies it by value (shared header)
 void UGCCubePalette::FUN_140df23f0(CubeArray& out, Unk_CubePaletteFilter* pFilter)             // @0x140df23f0
 {
     MS2Ptr<CFieldDataCli> spField = FUN_1403ed2d0()->FUN_141bd30a0();
@@ -911,8 +909,7 @@ void UGCCubePalette::FUN_140df23f0(CubeArray& out, Unk_CubePaletteFilter* pFilte
                 continue;
             if (usage.FUN_140df1680(spStock, pFilter))
             {
-                CubePtr spNew(new UGCCube(nItemId, spStock->FUN_140dfc390(), spStock->FUN_140dfc3b0(), spStock->FUN_140dfc3d0().get()));
-                out.Add(spNew);
+                out.Add(CubePtr(new UGCCube(nItemId, spStock->FUN_140dfc390(), spStock->FUN_140dfc3b0(), spStock->FUN_140dfc3d0().get())));
             }
         }
     }
@@ -935,7 +932,7 @@ void UGCCubePalette::FUN_140df23f0(CubeArray& out, Unk_CubePaletteFilter* pFilte
     }
 }
 
-// MS2-FUNCTIONAL: temp/stack ordering differs from the exe; behaviour equivalent
+// MS2-FUNCTIONAL: the exe CAtlArray::Add takes the stock-branch CubePtr temporary by const&; ours copies it by value (shared header)
 void UGCCubePalette::FUN_140df2bc0(CubeArray& out, Unk_CubePaletteFilter* pFilter)             // @0x140df2bc0
 {
     MS2Ptr<CFieldDataCli> spField = FUN_1403ed2d0()->FUN_141bd30a0();
@@ -953,26 +950,21 @@ void UGCCubePalette::FUN_140df2bc0(CubeArray& out, Unk_CubePaletteFilter* pFilte
         if (FUN_140df3100(spField, spData, pFilter))
             continue;
         MS2Ptr<CItem> spItem = DAT_143ab2e20.FUN_1408fbe90(nItemId);
-        if (spItem.get() == 0)
-        {
-            MS2Ptr<Unk_UgcStock> spStock = DAT_143ab2e50.FUN_140dfc800(nItemId);
-            if (spStock.get() == 0)
-            {
-                if (!pFilter->flag1)
-                {
-                    CubePtr spNew(new UGCCube(nItemId));
-                    out.Add(spNew);
-                }
-            }
-            else
-            {
-                CubePtr spNew(new UGCCube(nItemId, spStock->FUN_140dfc390(), spStock->FUN_140dfc3b0(), spStock->FUN_140dfc3d0().get()));
-                out.Add(spNew);
-            }
-        }
-        else
+        if (spItem.get() != 0)
         {
             CubePtr spNew(new UGCCube(nItemId, spItem->FUN_140526a50(), spItem->FUN_140528910(), spItem->FUN_140528380()));
+            out.Add(spNew);
+            continue;
+        }
+        MS2Ptr<Unk_UgcStock> spStock = DAT_143ab2e50.FUN_140dfc800(nItemId);
+        if (spStock.get() != 0)
+        {
+            out.Add(CubePtr(new UGCCube(nItemId, spStock->FUN_140dfc390(), spStock->FUN_140dfc3b0(), spStock->FUN_140dfc3d0().get())));
+            continue;
+        }
+        if (!pFilter->flag1)
+        {
+            CubePtr spNew(new UGCCube(nItemId));
             out.Add(spNew);
         }
     }

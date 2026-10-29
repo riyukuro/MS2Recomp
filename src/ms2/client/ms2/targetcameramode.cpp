@@ -16,6 +16,8 @@
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
 
+extern "C" float (__cdecl* __imp_tanf)(float);      // the exe calls tanf through its import
+
 // ---- unit-local placeholders ----
 
 extern const Vector3 g_143a08cf8;   // NiPoint3::UNIT_Z
@@ -366,8 +368,7 @@ MS2_REPLACE_METHOD(0x14183b270, CTargetCameraMode, vfunc_9, 758, 0x07F55314);
 void CTargetCameraMode::vfunc_10()
 {
     m_f0 = 0;
-    Unk_CameraTargetEntity* pTarget = Unk_CameraManager::FUN_1409478c0()->FUN_140a38d60();
-    Unk_CameraManager::FUN_1409478c0()->FUN_140aeaf40(pTarget, 1);  // MS2-FUNCTIONAL: the exe moves pTarget through rcx first (mov rcx,[rsp+20h]; mov rdx,rcx)
+    Unk_CameraManager::FUN_1409478c0()->FUN_140aeaf40(Unk_CameraManager::FUN_1409478c0()->FUN_140a38d60(), 1);
 }
 MS2_REPLACE_METHOD(0x14183b570, CTargetCameraMode, vfunc_10, 74, 0x9E7A33EE);
 
@@ -764,7 +765,7 @@ BOOL CTargetCameraMode::vfunc_38(Vector3 ptPos, Vector3 ptRot)
             float fNear = pFrustum->m_10;
             float fFov = FUN_140ad4b30();
             float fAspect = (pFrustum->m_4 - pFrustum->m_0) / (pFrustum->m_8 - pFrustum->m_c);
-            float fTan = tanf(fFov * 3.14159265f / 180.0f);  // MS2-FUNCTIONAL: /Oi makes this a direct call to tanf; the exe calls the import (6-byte call)
+            float fTan = __imp_tanf(fFov * 3.14159265f / 180.0f);
             float fTanAspect = fTan * fAspect;
             Vector3 aptCorner[9];
             aptCorner[0] = ptPos.FUN_14097fd50(kDir.FUN_14097fc90(fNear))

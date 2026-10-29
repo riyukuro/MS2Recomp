@@ -83,7 +83,7 @@ public:
     virtual void vfunc_1();                         // 0x140a0db00 scan: pick the objects hiding the players
     virtual void vfunc_3(int);                      // 0x140a0d230 (IWorldServiceCallback slot 3: world torn down)
 
-    int Init();                                     // 0x140a0cee0 register with the world, grab the services
+    bool Init();                                    // 0x140a0cee0 register with the world, grab the services
     void Shutdown();                                // 0x140a0cf90
     void Tick();                                    // 0x140a0d000 per frame: fade, rescan every 300 ms
     void SetUserFlags(int nFlags);                  // 0x140a0d0c0

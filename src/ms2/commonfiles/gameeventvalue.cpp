@@ -657,9 +657,7 @@ void Unk_GameEventValueIdLists::Add(unsigned key, unsigned id)
     if (Unk_LockGuard guard = m_lock) {} else
     {
         if (!m_lists.Lookup(key, spList)) {
-            // MS2-FUNCTIONAL: the exe assigns a fresh box temp through operator=(const Unk_FieldPtr&) without the
-            // temp spill /Od emits for the functional cast here; the implicit form picks operator=(Unk_FieldNewTag)
-            spList = Unk_FieldIdListPtr(Unk_FieldNewTag(0));
+            spList = static_cast<const Unk_FieldIdListPtr&>(Unk_FieldNewTag(0));
             m_lists.SetAt(key, spList);
         }
         if (spList.get() != NULL)
@@ -1365,13 +1363,13 @@ void Unk_GameEventValueDayItem::Remove(unsigned id)
 }
 MS2_REPLACE_METHOD(0x140427BE0, Unk_GameEventValueDayItem, Remove, 73, 0x2F736E1C);
 // @0x140427c30
-void Unk_GameEventValueDayItem::GetContexts(ATL::CAtlArray<MS2Ptr<Unk_DayItemContext> >& contexts, bool bAll)
+void Unk_GameEventValueDayItem::GetContexts(ATL::CAtlList<MS2Ptr<Unk_DayItemContext> >& contexts, bool bAll)
 {
     Unk_CriticalSectionLock lock(m_lock, 1);
     for (POSITION pos = m_contexts.GetStartPosition(); pos != NULL; m_contexts.GetNext(pos)) {
         Unk_DayItemContext* pContext = m_contexts.GetValueAt(pos);
         if (pContext->IsActive() || bAll)
-            contexts.Add(pContext);
+            contexts.AddTail(pContext);
     }
 }
 MS2_REPLACE_METHOD(0x140427C30, Unk_GameEventValueDayItem, GetContexts, 230, 0x7C1988D0);
@@ -1394,12 +1392,12 @@ void Unk_GameEventValueFieldObjectDrop::Remove(unsigned id)
 }
 MS2_REPLACE_METHOD(0x140427E10, Unk_GameEventValueFieldObjectDrop, Remove, 73, 0xB04BE897);
 // @0x140427e60
-void Unk_GameEventValueFieldObjectDrop::GetContexts(ATL::CAtlArray<MS2Ptr<Unk_FieldObjectDropContext> >& contexts)
+void Unk_GameEventValueFieldObjectDrop::GetContexts(ATL::CAtlList<MS2Ptr<Unk_FieldObjectDropContext> >& contexts)
 {
     Unk_CriticalSectionLock lock(m_lock, 1);
     for (POSITION pos = m_contexts.GetStartPosition(); pos != NULL; m_contexts.GetNext(pos)) {
         Unk_FieldObjectDropContext* pContext = m_contexts.GetValueAt(pos);
-        contexts.Add(pContext);
+        contexts.AddTail(pContext);
     }
 }
 MS2_REPLACE_METHOD(0x140427E60, Unk_GameEventValueFieldObjectDrop, GetContexts, 196, 0x862D4890);
@@ -1422,12 +1420,12 @@ void Unk_GameEventValueFieldObjectDropList::Remove(unsigned id)
 }
 MS2_REPLACE_METHOD(0x140428020, Unk_GameEventValueFieldObjectDropList, Remove, 73, 0xB0A511DA);
 // @0x140428070
-void Unk_GameEventValueFieldObjectDropList::GetContexts(ATL::CAtlArray<MS2Ptr<Unk_FieldObjectDropListContext> >& contexts)
+void Unk_GameEventValueFieldObjectDropList::GetContexts(ATL::CAtlList<MS2Ptr<Unk_FieldObjectDropListContext> >& contexts)
 {
     Unk_CriticalSectionLock lock(m_lock, 1);
     for (POSITION pos = m_contexts.GetStartPosition(); pos != NULL; m_contexts.GetNext(pos)) {
         Unk_FieldObjectDropListContext* pContext = m_contexts.GetValueAt(pos);
-        contexts.Add(pContext);
+        contexts.AddTail(pContext);
     }
 }
 MS2_REPLACE_METHOD(0x140428070, Unk_GameEventValueFieldObjectDropList, GetContexts, 196, 0x26A036DA);
@@ -1884,9 +1882,8 @@ MS2_REPLACE_METHOD(0x14042A3C0, CGameEventValueEventShopNpc, Add, 479, 0xBA05DEF
 // @0x14042a5b0
 void CGameEventValueEventShopNpc::Remove(int id)
 {
-    // MS2-FUNCTIONAL: the exe frame has two more EH states and a different temp layout in the list walk
     Unk_CriticalSectionLock lock(m_lock, 1);
-    std::map<unsigned, MS2Ptr<EventShopNpcContext> >::iterator it = m_contexts.find(id);
+    std::map<unsigned, MS2Ptr<EventShopNpcContext> >::iterator it = m_contexts.find(reinterpret_cast<const unsigned&>(id));
     if (it == m_contexts.end())
         return;
     unsigned long group = it->second->Get20();
@@ -1894,14 +1891,14 @@ void CGameEventValueEventShopNpc::Remove(int id)
     std::map<unsigned long, Contexts>::iterator itGroup = m_groups.find(group);
     if (itGroup == m_groups.end()) {
         MS2_ASSERT_AT(0x889, FALSE);
-    } else {
-        Contexts& contexts = itGroup->second;
-        for (Contexts::iterator itList = contexts.begin(); itList != contexts.end();) {
-            if ((*itList)->Get18() == id)
-                contexts.erase(itList++);
-            else
-                ++itList;
-        }
+        return;
+    }
+    Contexts& contexts = itGroup->second;
+    for (Contexts::iterator itList = contexts.begin(); itList != contexts.end();) {
+        if ((*itList)->Get18() == id)
+            contexts.erase(itList++);
+        else
+            ++itList;
     }
 }
 MS2_REPLACE_METHOD(0x14042A5B0, CGameEventValueEventShopNpc, Remove, 525, 0x531C9D95);

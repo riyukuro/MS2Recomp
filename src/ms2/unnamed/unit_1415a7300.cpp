@@ -6,6 +6,8 @@
 #define MS2_THIS_FILE ""
 #include "ms2/placeholder/ms2stdafx.h"
 #include "ms2/placeholder/nmobjects.h"
+#include "ms2/placeholder/nmstream.h"
+#include "ms2/placeholder/nmencoder.h"
 #include "ms2/ms2recover.h"
 
 extern void FUN_14156bcb0(void*, void*, void*);
@@ -14,7 +16,7 @@ extern void FUN_14156be10(void*, void*, void*);
 extern void FUN_14156bf10(void*);
 extern int FUN_1415fb700(void*);
 extern int FUN_1415fb750(void*);
-extern int FUN_1415fb6d0(void*);
+extern int FUN_1415fb6d0(CNMSerializableDecoder*);
 extern void FUN_14156b020(void*, unsigned long long);
 
 // @0x1415a7300
@@ -35,11 +37,8 @@ CNMSetAuthClosedCallbackFunc::CNMSetAuthClosedCallbackFunc(long long callback)
 // MS2-FUNCTIONAL: initializes a framed encoder then delegates to Encode.
 unsigned int CNMSetAuthClosedCallbackFunc::EncodeFramed(CNMStream* pStream)
 {
-    alignas(8) unsigned char encoder[0x18];
-    FUN_14156bcb0(encoder, pStream, this);
-    const unsigned int result = Encode(reinterpret_cast<CNMEncoder*>(encoder), pStream);
-    FUN_14156bd50(encoder);
-    return result;
+    CNMSerializableEncoder encoder(pStream, this);
+    return CNMSetAuthClosedCallbackFunc::Encode(reinterpret_cast<CNMEncoder*>(&encoder), pStream);
 }
 
 // @0x1415a7420
@@ -47,10 +46,8 @@ unsigned int CNMSetAuthClosedCallbackFunc::EncodeFramed(CNMStream* pStream)
 unsigned int CNMSetAuthClosedCallbackFunc::EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream)
 {
     if (m_bFormat == 1)
-        Encode(pEncoder, pStream);
-    else
-        EncodeFramed(pStream);
-    return 0;
+        return CNMSetAuthClosedCallbackFunc::Encode(pEncoder, pStream);
+    return CNMSetAuthClosedCallbackFunc::EncodeFramed(pStream);
 }
 
 // @0x1415a7480
@@ -67,13 +64,10 @@ unsigned int CNMSetAuthClosedCallbackFunc::Encode(CNMEncoder* pEncoder, CNMStrea
 // MS2-FUNCTIONAL: initializes a framed decoder, validates it, then decodes the response.
 unsigned int CNMSetAuthClosedCallbackFunc::DecodeFramed(CNMStream* pStream)
 {
-    alignas(8) unsigned char decoder[0x38];
-    FUN_14156be10(decoder, pStream, this);
-    unsigned int result = 0;
-    if (FUN_1415fb750(decoder) != 0)
-        result = Decode(reinterpret_cast<CNMSerializableDecoder*>(decoder), pStream);
-    FUN_14156bf10(decoder);
-    return result;
+    CNMSerializableDecoder decoder(pStream, this);
+    if (FUN_1415fb750(&decoder) == 0)
+        return 0;
+    return CNMSetAuthClosedCallbackFunc::Decode(&decoder, pStream);
 }
 
 // @0x1415a7580
@@ -81,10 +75,8 @@ unsigned int CNMSetAuthClosedCallbackFunc::DecodeFramed(CNMStream* pStream)
 unsigned int CNMSetAuthClosedCallbackFunc::DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream)
 {
     if (FUN_1415fb6d0(pDecoder) == 2)
-        DecodeFramed(pStream);
-    else
-        Decode(pDecoder, pStream);
-    return 0;
+        return CNMSetAuthClosedCallbackFunc::DecodeFramed(pStream);
+    return CNMSetAuthClosedCallbackFunc::Decode(pDecoder, pStream);
 }
 
 // @0x1415a75e0

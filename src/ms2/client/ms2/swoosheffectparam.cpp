@@ -122,6 +122,7 @@ const char* FUN_14086f4b0(Unk_140165cf0* pNode, const char* pszName);
 int FUN_140ad02f0(int nValue, int nLimit);                          // upper clamp
 bool FUN_14028d470(float a, float b);                               // nearly equal
 const int& FUN_1404eb7e0(const int& a, const int& b);               // max
+unsigned FUN_14181fd60(unsigned nA, unsigned nB);                     // max by value
 class Unk_GameClock { public: double FUN_141473280(); float FUN_141473210(); };
 Unk_GameClock* FUN_14086d260();
 void* FUN_1409849b0(void* pHandle);                                 // handle -> node pointer
@@ -266,28 +267,22 @@ void CSwooshEffectParam::vfunc_1(Unk_140165cf0* pNode)
     }
 }
 
-// MS2-FUNCTIONAL: the exe computes the CString temp pointer before constructing the "Effect" literal; frame differs.
 // @0x14181d1e0
 bool CSwooshEffectParam::vfunc_3()
 {
     if (m_strNifPath.IsEmpty())
         return true;
-    CString strDir("Effect");
-    return FUN_140a0afd0()->FUN_141551db0(FUN_140cc2ba0(strDir, m_strNifPath));
+    return FUN_140a0afd0()->FUN_141551db0(FUN_140cc2ba0("Effect", m_strNifPath));
 }
 
-// MS2-FUNCTIONAL: same CString temporary ordering as vfunc_3; frame differs.
 // @0x14181d290
 void CSwooshEffectParam::vfunc_4()
 {
-    if (!m_strNifPath.IsEmpty())
-    {
-        CString strDir("Effect");
-        FUN_140ab7a10()->FUN_141210ac0(FUN_140cc2ba0(strDir, m_strNifPath));
-    }
+    if (m_strNifPath.IsEmpty())
+        return;
+    FUN_140ab7a10()->FUN_141210ac0(FUN_140cc2ba0("Effect", m_strNifPath));
 }
 
-// MS2-FUNCTIONAL: same CString temporary ordering as vfunc_3; frame differs.
 // @0x14181d330
 bool CSwooshEffectParam::vfunc_5(int n)
 {
@@ -295,8 +290,7 @@ bool CSwooshEffectParam::vfunc_5(int n)
     {
         if (FUN_140a0afd0() != 0)
         {
-            CString strDir("Effect");
-            FUN_140a0afd0()->FUN_1415525d0(FUN_140cc2ba0(strDir, m_strNifPath), 0, n);
+            FUN_140a0afd0()->FUN_1415525d0(FUN_140cc2ba0("Effect", m_strNifPath), 0, n);
         }
     }
     return true;
@@ -312,7 +306,7 @@ CEffectPtr CSwooshEffectParam::vfunc_6()
 // @0x14181d490
 CSwooshEffect::CSwooshEffect()
     : m_spRoot(0), m_spUnused38(0), m_spMesh(0), m_spTrail1(0), m_spTrail2(0), m_spTarget(0), m_nUVSets(1),
-      m_dLastSample(0), m_fInterval(0.016666668f)
+      m_dLastSample(0), m_fInterval(0.06666f)
 {
     m_kPointsA.reserve(0x28);
     m_kPointsB.reserve(0x28);
@@ -326,7 +320,7 @@ CSwooshEffect::~CSwooshEffect()
 {
 }
 
-// MS2-FUNCTIONAL: 6 KB function: exe is 526 bytes smaller (property setup / temporaries differ).
+// MS2-FUNCTIONAL: code shape matches through the sample-rate setup; the exe frame is 0x60 smaller with 8 fewer EH states (temporary slots of the property allocations differ).
 // @0x14181d760
 // Builds the ribbon: an EffectNode root holding a SeparateNode that holds the CMesh strip. The mesh is either a plain
 // textured strip (param texturePath) or a copy of the first mesh of the param's nif (its properties, controllers and
@@ -346,43 +340,40 @@ bool CSwooshEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTarge
     {
         float fFps = FUN_14086d260()->FUN_141473210();
         int nPenalty = 0;
-        if (m_unk_18 == 3 || m_unk_18 == 5)
+        switch (m_unk_18)
         {
-            if (50.0f < fFps)
-            {
-                if (55.0f < fFps)
-                {
-                    if (fFps <= 60.0f)
-                        nPenalty = 1;
-                }
-                else
-                {
-                    nPenalty = 2;
-                }
-            }
-            else
-            {
+            break;
+        case 3:
+        case 5:
+        {
+            if (fFps <= 50.0f)
                 nPenalty = 3;
-            }
-            int nReduced = nLevel - nPenalty;
-            int nZero = 0;
-            nLevel = FUN_1404eb7e0(nZero, nReduced);
+            else if (fFps <= 55.0f)
+                nPenalty = 2;
+            else if (fFps <= 60.0f)
+                nPenalty = 1;
+            nLevel = FUN_1404eb7e0(0, nLevel - nPenalty);
+        }
+            break;
         }
     }
-    unsigned nRate;
     if (nLevel == 3)
     {
-        nRate = std::max(nSampling >> 1, 5u);
+        nSampling = nSampling >> 1;
+        nSampling = FUN_14181fd60(nSampling, 5);
+    }
+    else if (nLevel == 2)
+    {
+        nSampling = nSampling >> 2;
+        nSampling = FUN_14181fd60(nSampling, 5);
     }
     else
     {
-        if (nLevel != 2)
-            return false;
-        nRate = std::max(nSampling >> 2, 5u);
+        return false;
     }
-    m_nSegments = std::max(1u, (unsigned)(__int64)(pSwoosh->m_fLength * (float)nRate));
+    m_nSegments = FUN_14181fd60(1, (unsigned)(__int64)(pSwoosh->m_fLength * (float)nSampling));
     m_nCurveSamples = m_nSegments * pSwoosh->m_nQuality;
-    m_fInterval = 1.0f / (float)nRate;
+    m_fInterval = 1.0f / (float)nSampling;
 
     NiPointer<Unk_EffectNode> spRoot = new (efd::MemHint(efd::MemHint::NONE)) Unk_EffectNode(0, 0);
     spRoot->SetName("Effect Root");
@@ -391,79 +382,18 @@ bool CSwooshEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTarge
     FUN_1409f76f0(&m_spTarget, pNode);
     m_strNode1 = pSwoosh->m_strNode1;
     m_strNode2 = pSwoosh->m_strNode2;
-    m_spTrail1 = static_cast<NiNode*>(FUN_14098d8d0(&NiNode::ms_RTTI, pNode->GetObjectByName(NiFixedString((const char*)pSwoosh->m_strNode1))));
-    m_spTrail2 = static_cast<NiNode*>(FUN_14098d8d0(&NiNode::ms_RTTI, pNode->GetObjectByName(NiFixedString((const char*)pSwoosh->m_strNode2))));
+    m_spTrail1 = static_cast<NiNode*>(FUN_14098d8d0(&NiNode::ms_RTTI, pNode->GetObjectByName((const char*)pSwoosh->m_strNode1)));
+    m_spTrail2 = static_cast<NiNode*>(FUN_14098d8d0(&NiNode::ms_RTTI, pNode->GetObjectByName((const char*)pSwoosh->m_strNode2)));
 
-    if (pSwoosh->m_strNifPath.GetLength() < 1)
+    if (pSwoosh->m_strNifPath.GetLength() > 0)
     {
-        int nVerts = m_nCurveSamples << 1;
-        int nTris = m_nCurveSamples * 2 + 2;
-        m_spMesh = new (efd::MemHint(efd::MemHint::NONE)) CMesh(false, true, m_nUVSets, nTris, nVerts, 0x15);
-        m_spMesh->GetMesh()->SetName("SwooshEffect");
-        NiPointer<NiTexturingProperty> spTexture = new (efd::MemHint(efd::MemHint::NONE)) NiTexturingProperty;
-        FUN_1409807b0(spTexture.operator->(), 0);
-        FUN_1409805c0(spTexture.operator->(), 1);
-        FUN_1409806e0(spTexture.operator->(), 0);
-        {
-            CString strDir("Effect/Textures");
-            Unk_PPSmartC spImage = FUN_140a0afd0()->FUN_141552f90(CString((const char*)FUN_140cc2ba0(strDir, pSwoosh->m_strTexturePath)), 5);
-            FUN_140980880(spTexture.operator->(), spImage.Get());
-        }
-        FUN_140980200(m_spMesh->GetMesh(), spTexture);
-
-        NiPointer<NiVertexColorProperty> spVertexColor = new (efd::MemHint(efd::MemHint::NONE)) NiVertexColorProperty;
-        spVertexColor->SetSourceMode(NiVertexColorProperty::SOURCE_EMISSIVE);
-        spVertexColor->SetLightingMode(NiVertexColorProperty::LIGHTING_E);
-        FUN_140980200(m_spMesh->GetMesh(), spVertexColor);
-
-        NiPointer<NiAlphaProperty> spAlpha = new (efd::MemHint(efd::MemHint::NONE)) NiAlphaProperty;
-        FUN_140980560(spAlpha.operator->(), true);
-        int nAlphaMode = pSwoosh->m_nAlphaMode;
-        if (nAlphaMode == 0)
-        {
-            FUN_140980f60(spAlpha.operator->(), 6);
-            FUN_140980af0(spAlpha.operator->(), 0);
-        }
-        else if (nAlphaMode == 1)
-        {
-            FUN_140980f60(spAlpha.operator->(), 6);
-            FUN_140980af0(spAlpha.operator->(), 7);
-        }
-        else if (nAlphaMode == 2)
-        {
-            FUN_140980f60(spAlpha.operator->(), 0);
-            FUN_140980af0(spAlpha.operator->(), 0);
-        }
-        FUN_140980200(m_spMesh->GetMesh(), spAlpha);
-
-        NiPointer<NiFogProperty> spFog = new (efd::MemHint(efd::MemHint::NONE)) NiFogProperty;
-        spFog->SetFog(false);
-        FUN_140980200(m_spMesh->GetMesh(), spFog);
-
-        NiPointer<NiWireframeProperty> spWireframe = new (efd::MemHint(efd::MemHint::NONE)) NiWireframeProperty;
-        FUN_140a0b6c0(spWireframe.operator->(), false);
-        FUN_140980200(m_spMesh->GetMesh(), spWireframe);
-
-        NiPointer<NiStencilProperty> spStencil = new (efd::MemHint(efd::MemHint::NONE)) NiStencilProperty;
-        spStencil->SetDrawMode(NiStencilProperty::DRAW_BOTH);
-        FUN_140980200(m_spMesh->GetMesh(), spStencil);
-
-        NiPointer<NiZBufferProperty> spZBuffer = new (efd::MemHint(efd::MemHint::NONE)) NiZBufferProperty;
-        spZBuffer->SetZBufferWrite(false);
-        FUN_140980200(m_spMesh->GetMesh(), spZBuffer);
-    }
-    else
-    {
-        CString strDir("Effect");
-        NiAVObjectPtr spModel = FUN_140a0afd0()->FUN_141551ea0(FUN_140cc2ba0(strDir, pSwoosh->m_strNifPath), false, 5, 0, 0);
+        NiAVObjectPtr spModel = FUN_140a0afd0()->FUN_141551ea0(FUN_140cc2ba0("Effect", pSwoosh->m_strNifPath), false, 5, 0, 0);
         NiMesh* pFound = 0;
         {
             Unk_SceneWalker kWalker(static_cast<NiObject*>(FUN_1409849b0(&spModel)));
-            for (;;)
+            NiAVObject* pObj;
+            while ((pObj = kWalker.Next(true)) != 0)
             {
-                NiAVObject* pObj = kWalker.Next(true);
-                if (pObj == 0)
-                    break;
                 if (FUN_14109a9a0(&NiMesh::ms_RTTI, pObj))
                 {
                     pFound = static_cast<NiMesh*>(pObj);
@@ -486,24 +416,26 @@ bool CSwooshEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTarge
                 bool bMaterial = FUN_14109a9a0(&NiMaterialProperty::ms_RTTI, pProp);
                 if (bMaterial || FUN_14109a9a0(&NiTexturingProperty::ms_RTTI, pProp))
                 {
-                    for (NiTimeController* pCtrl = FUN_14098dc80(pProp); pCtrl != 0; pCtrl = FUN_14098de40(pCtrl))
+                    NiTimeController* pCtrl = FUN_14098dc80(pProp);
+                    while (pCtrl != 0)
                     {
                         if (!bMaterial)
                             FUN_1416f18b0(pCtrl, 0);
                         pCtrl->Update(FUN_1415467d0(pCtrl));
+                        pCtrl = FUN_14098de40(pCtrl);
                     }
                 }
                 FUN_140980200(pMeshObj, pProp);
             }
             if (pMeshObj->GetProperty(7) == 0)
             {
-                NiPointer<NiStencilProperty> spStencil = new (efd::MemHint(efd::MemHint::NONE)) NiStencilProperty;
+                NiStencilProperty* spStencil = new (efd::MemHint(efd::MemHint::NONE)) NiStencilProperty;
                 spStencil->SetDrawMode(NiStencilProperty::DRAW_BOTH);
                 FUN_140980200(pMeshObj, spStencil);
             }
             if (pMeshObj->GetProperty(0xb) == 0)
             {
-                NiPointer<NiZBufferProperty> spZBuffer = new (efd::MemHint(efd::MemHint::NONE)) NiZBufferProperty;
+                NiZBufferProperty* spZBuffer = new (efd::MemHint(efd::MemHint::NONE)) NiZBufferProperty;
                 spZBuffer->SetZBufferWrite(false);
                 FUN_140980200(pMeshObj, spZBuffer);
             }
@@ -513,8 +445,62 @@ bool CSwooshEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTarge
                 NiExtraData* pExtra = FUN_14106bc30(pFound, i);
                 m_spMesh->GetMesh()->AddExtraData(pExtra);
             }
-            FUN_141d18aa0(m_spMesh->GetMesh(), FUN_14098dc80(pFound));
+            NiTimeController* pCtrls = FUN_14098dc80(pFound);
+            FUN_141d18aa0(m_spMesh->GetMesh(), pCtrls);
         }
+    }
+    else
+    {
+        int nVerts = m_nCurveSamples << 1;
+        int nTris = m_nCurveSamples * 2 + 2;
+        m_spMesh = new (efd::MemHint(efd::MemHint::NONE)) CMesh(false, true, m_nUVSets, nTris, nVerts, 0x15);
+        m_spMesh->GetMesh()->SetName("SwooshEffect");
+        NiPointer<NiTexturingProperty> spTexture = new (efd::MemHint(efd::MemHint::NONE)) NiTexturingProperty;
+        FUN_1409807b0(spTexture.operator->(), 0);
+        FUN_1409805c0(spTexture.operator->(), 1);
+        FUN_1409806e0(spTexture.operator->(), 0);
+        FUN_140980880(spTexture.operator->(), FUN_140a0afd0()->FUN_141552f90(CString((const char*)FUN_140cc2ba0("Effect/Textures", pSwoosh->m_strTexturePath)), 5).Get());
+        FUN_140980200(m_spMesh->GetMesh(), spTexture);
+
+        NiVertexColorProperty* spVertexColor = new (efd::MemHint(efd::MemHint::NONE)) NiVertexColorProperty;
+        spVertexColor->SetSourceMode(NiVertexColorProperty::SOURCE_EMISSIVE);
+        spVertexColor->SetLightingMode(NiVertexColorProperty::LIGHTING_E);
+        FUN_140980200(m_spMesh->GetMesh(), spVertexColor);
+
+        NiAlphaProperty* spAlpha = new (efd::MemHint(efd::MemHint::NONE)) NiAlphaProperty;
+        FUN_140980560(spAlpha, true);
+        switch (pSwoosh->m_nAlphaMode)
+        {
+        case 0:
+            FUN_140980f60(spAlpha, 6);
+            FUN_140980af0(spAlpha, 0);
+            break;
+        case 1:
+            FUN_140980f60(spAlpha, 6);
+            FUN_140980af0(spAlpha, 7);
+            break;
+        case 2:
+            FUN_140980f60(spAlpha, 0);
+            FUN_140980af0(spAlpha, 0);
+            break;
+        }
+        FUN_140980200(m_spMesh->GetMesh(), spAlpha);
+
+        NiFogProperty* spFog = new (efd::MemHint(efd::MemHint::NONE)) NiFogProperty;
+        spFog->SetFog(false);
+        FUN_140980200(m_spMesh->GetMesh(), spFog);
+
+        NiWireframeProperty* spWireframe = new (efd::MemHint(efd::MemHint::NONE)) NiWireframeProperty;
+        FUN_140a0b6c0(spWireframe, false);
+        FUN_140980200(m_spMesh->GetMesh(), spWireframe);
+
+        NiStencilProperty* spStencil = new (efd::MemHint(efd::MemHint::NONE)) NiStencilProperty;
+        spStencil->SetDrawMode(NiStencilProperty::DRAW_BOTH);
+        FUN_140980200(m_spMesh->GetMesh(), spStencil);
+
+        NiZBufferProperty* spZBuffer = new (efd::MemHint(efd::MemHint::NONE)) NiZBufferProperty;
+        spZBuffer->SetZBufferWrite(false);
+        FUN_140980200(m_spMesh->GetMesh(), spZBuffer);
     }
     m_spMesh->UpdateBound();
     FUN_1415672e0(m_spMesh->GetMesh(), 0);
@@ -603,7 +589,6 @@ int CSwooshEffect::vfunc_8(void* p)
     return 1;
 }
 
-// MS2-FUNCTIONAL: exe spills the trail positions through extra temporaries; frame differs by 16 bytes.
 #ifndef MS2_HOOK_DLL
 // @0x14181f1d0
 // Appends the current positions of the two trail nodes, smooths the control points into curve samples, writes the
@@ -616,8 +601,10 @@ void CSwooshEffect::UpdateTrail()
     if (dElapsed >= (double)m_fInterval)
     {
         m_dLastSample = m_dLastSample + dElapsed;
-        m_kPointsA.push_back(FUN_140947900(FUN_14098d0f0(&m_spTrail1)));
-        m_kPointsB.push_back(FUN_140947900(FUN_14098d0f0(&m_spTrail2)));
+        const Vector3& kHeadA = FUN_140947900(FUN_14098d0f0(&m_spTrail1));
+        m_kPointsA.push_back(kHeadA);
+        const Vector3& kHeadB = FUN_140947900(FUN_14098d0f0(&m_spTrail2));
+        m_kPointsB.push_back(kHeadB);
         unsigned short nPoints = (unsigned short)m_kPointsA.size();
         if (nPoints < 4)
             return;
@@ -678,16 +665,16 @@ void CSwooshEffect::UpdateTrail()
                     pIdx[nBase] = i;
                     pIdx[nBase + 1] = i + nCurve;
                     pIdx[nBase + 2] = i + 1;
-                    nBase = ((unsigned int)i + (unsigned int)nQuads) * 3;
-                    pIdx[nBase] = i + 1;
-                    pIdx[nBase + 1] = i + nCurve;
-                    pIdx[nBase + 2] = i + 1 + nCurve;
+                    unsigned int nBase2 = ((unsigned int)i + (unsigned int)nQuads) * 3;
+                    pIdx[nBase2] = i + 1;
+                    pIdx[nBase2 + 1] = i + nCurve;
+                    pIdx[nBase2 + 2] = i + 1 + nCurve;
                 }
                 m_spMesh->Unlock(NiCommonSemantics::INDEX(), 0, 2);
                 m_spMesh->SetTriangleCount((unsigned int)nQuads * 6);
             }
             m_spMesh->UpdateBound();
-            if (m_nSegments + 3 <= m_kPointsA.size())
+            if (m_kPointsA.size() >= (unsigned)(m_nSegments + 3))
             {
                 m_kPointsA.erase(m_kPointsA.begin());
                 m_kPointsB.erase(m_kPointsB.begin());
@@ -726,14 +713,11 @@ typedef std::vector<Vector3, efd::CustomAllocator<Vector3> > Unk_PointVec;
 // @0x14181fd60 max by value
 unsigned FUN_14181fd60(unsigned nA, unsigned nB)
 {
-    unsigned nResult = nB;
-    if (nB < nA)
-        nResult = nA;
-    return nResult;
+    return (nA > nB) ? nA : nB;
 }
 
-// @0x1418205a0 identity (pointer unwrap)
-Vector3* FUN_1418205a0(Vector3* pPoint)
+// @0x1418205a0 identity (pointer unwrap; the second argument is unused)
+Vector3* FUN_1418205a0(Vector3* pPoint, void* /*pUnused*/)
 {
     return pPoint;
 }
@@ -745,14 +729,14 @@ void FUN_141820700(Vector3** ppDst, Vector3* pPoint)
 }
 
 // @0x141820bf0 empty
-void FUN_141820bf0()
+void FUN_141820bf0(void* /*pObj*/)
 {
 }
 
 // @0x141820c00
 void FUN_141820c00(void* pObj)
 {
-    FUN_141820bf0();
+    FUN_141820bf0(pObj);
 }
 
 // @0x141820ca0
@@ -772,12 +756,11 @@ void* FUN_141821210(void* p)
 // @0x1418217d0 allocator construct (placement copy)
 void FUN_1418217d0(void* pAlloc, Vector3* pDst, const Vector3* pSrc)
 {
-    if (pDst != 0)
-        new (pDst) Vector3(*pSrc);
+    new (pDst) Vector3(*pSrc);
 }
 
 // @0x141821880 empty
-void FUN_141821880()
+void FUN_141821880(void* /*pA*/, void* /*pB*/)
 {
 }
 

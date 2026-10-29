@@ -67,7 +67,7 @@ public:
     void FUN_140cdadb0(MS2Ptr<CItem> rod);                  // use a rod
     void FUN_140cdae30(MS2Ptr<CItem> rod);                  // start fishing with a rod
     void SendFishingMode1();                                   // leaves the casting
-    int FUN_140cdb110(const efd::Point3& kPos);                 // a fishing spot is in front of the point
+    int FUN_140cdb110(efd::Point3 kPos);                        // a fishing spot is in front of the point
     void SendFishingMode9();                                   // leave the fishing spot (packet 0x73 mode 9)
     int FUN_140cdb250();                                    // start fishing at the current spot
     void FUN_140cdb450();                                   // per frame

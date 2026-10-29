@@ -17,7 +17,7 @@ class GameEventShutdown : public GameEvent
 {
 public:
     GameEventShutdown(int nId);                 // 0x14041d4c0
-    virtual ~GameEventShutdown();               // 0x14041e430
+    // ~GameEventShutdown() implicit (0x14041e430: no vftable store)
 
     virtual CStringW GetTypeName();                 // 0x14041d470: "GameEventShutdown"
     virtual void vfunc_2();                     // 0x14041d540: parse m_items out of m_68
@@ -35,7 +35,7 @@ class GameEventShutdownNoParam : public GameEvent
 {
 public:
     GameEventShutdownNoParam(int nId);          // 0x14041d700
-    virtual ~GameEventShutdownNoParam();        // 0x14041e560
+    // ~GameEventShutdownNoParam() implicit (0x14041e560: no vftable store)
 
     virtual CStringW GetTypeName();                 // 0x14041d6b0: "GameEventShutdownNoParam"
     virtual void vfunc_2();                     // 0x14041d780 (empty)

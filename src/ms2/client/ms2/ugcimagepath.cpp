@@ -421,7 +421,6 @@ CString FUN_141028a90(CString strId, int bDefault)
 }
 
 // @0x141028be0
-// MS2-FUNCTIONAL: exe forwards strUrl by move into FUN_141884e30 (no copy/dtor on that path); not expressible with the by-value callee signature
 CString FUN_141028be0(__int64 nId, const CString& strName, int bNoDownload, CString strUrl)
 {
     {
@@ -447,10 +446,7 @@ CString FUN_141028be0(__int64 nId, const CString& strName, int bNoDownload, CStr
         }
         return CString(strResult);
     }
-    else
-    {
-        return CString(FUN_1401d31f0()->m_strNoProfile);
-    }
+    return CString(FUN_1401d31f0()->m_strNoProfile);
 }
 
 // @0x141029090
@@ -495,7 +491,6 @@ CString FUN_141029440(CString strId, int bDefault)
 }
 
 // @0x141029590
-// MS2-FUNCTIONAL: exe block layout of the empty-name path differs by one jmp
 CString FUN_141029590(unsigned __int64 nGuildId, const CString& strName, const CString& strUrl, CString strDefault)
 {
     if (!strName.IsEmpty())
@@ -515,12 +510,9 @@ CString FUN_141029590(unsigned __int64 nGuildId, const CString& strName, const C
         }
         return CString(strFile);
     }
-    else
-    {
-        if (strDefault.GetLength() > 0)
-            return CString(strDefault);
-        return CString(FUN_1401d31f0()->m_strNoGuild);
-    }
+    if (strDefault.GetLength() > 0)
+        return CString(strDefault);
+    return CString(FUN_1401d31f0()->m_strNoGuild);
 }
 
 // @0x1410298b0
@@ -534,23 +526,24 @@ CString FUN_1410298b0(CString strId)
 }
 
 // @0x1410299f0
-// MS2-FUNCTIONAL: exe materializes the access() result in a bool local and nests the download branch differently
 CString FUN_1410299f0(unsigned __int64 nGuildId, const CString& strName, int nIndex, const CString& strUrl, bool bDownload)
 {
-    if (strName.IsEmpty())
-        return CString(FUN_1401d31f0()->m_strNoGuild);
-    CString strFile = FUN_1410280d0(8, strName);
-    if (_waccess(FUN_14016a730(strFile, 0), 0) == 0)
+    if (!strName.IsEmpty())
     {
-        strFile = FUN_1410298b0(strName);
+        CString strFile = FUN_1410280d0(8, strName);
+        if (_waccess(FUN_14016a730(strFile, 0), 0) != 0)
+        {
+            if (bDownload)
+                FUN_14052d220()->FUN_1418851e0(nGuildId, strName, nIndex, strUrl);
+            strFile = FUN_1401d31f0()->m_strNoGuild;
+        }
+        else
+        {
+            strFile = FUN_1410298b0(strName);
+        }
+        return CString(strFile);
     }
-    else
-    {
-        if (bDownload)
-            FUN_14052d220()->FUN_1418851e0(nGuildId, strName, nIndex, strUrl);
-        strFile = FUN_1401d31f0()->m_strNoGuild;
-    }
-    return CString(strFile);
+    return CString(FUN_1401d31f0()->m_strNoGuild);
 }
 
 // @0x141029ca0

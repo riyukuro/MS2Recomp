@@ -53,7 +53,7 @@ class SkillTargetRecord : public CPtred
 {
 public:
     bool FUN_141758d70(unsigned long long nTagId, unsigned long long nTagSub, int nOwnerId, int nCasterId, int nSkillId,
-        short nLevel, int nMotion, const Vector3& ptDir, int n80, int n84, int nAttack, int n8c);   // fill in
+        short nLevel, int nMotion, Vector3 ptDir, int n80, int n84, int nAttack, int n8c);   // fill in
     SkillMotionData* FUN_141759010();                       // the motion
     SkillAttackData* FUN_141759050();                       // the attack
     int FUN_141759090();                                    // whether the attack exists
@@ -153,7 +153,7 @@ public:
     CString m_strB8;                                        // +0xb8
     ATL::CAtlMap<int, int> m_mapC0;                         // +0xc0
     ATL::CAtlList<Unk_SocketPtr<CMagicModel> > m_magics;    // +0x108
-    ATL::CRBMap<CString, int> m_map138;                     // +0x138
+    ATL::CRBMap<CString, unsigned int> m_map138;            // +0x138
     ATL::CAtlMap<unsigned, TargetSetPtr> m_targets;         // +0x168
     bool m_bEnd;                                            // +0x1b0
     __int64 m_n1b8;                                         // +0x1b8

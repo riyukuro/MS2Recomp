@@ -89,26 +89,30 @@ public:
     float m_fFieldFogFar;                                   // +0x218
     float m_fFieldFogDensity;                               // +0x21c
     unsigned char m_pad_220[4];
-    float m_fSoftParticle[5];                               // +0x224
+    float m_fSoftParticle0;                                 // +0x224
+    float m_fSoftParticle1;                                 // +0x228
+    float m_fSoftParticle2;                                 // +0x22c
+    float m_fSoftParticle3;                                 // +0x230
+    float m_fSoftParticle4;                                 // +0x234
 };
-MS2_CHECK_OFFSET(Unk_AeFieldInfo, m_fSoftParticle, 0x224);
+MS2_CHECK_OFFSET(Unk_AeFieldInfo, m_fSoftParticle0, 0x224);
 
-// The current field handle (0x20 bytes, returned through a hidden pointer by the world singleton).
+// The current field handle: an MS2Ptr<CFieldDataCli> (0x10 bytes) returned through a hidden pointer by the world singleton.
 struct Unk_AeMapRef;
 void FUN_1408850f0(Unk_AeMapRef* pRef);                     // dtor
 struct Unk_AeMapRef
 {
     ~Unk_AeMapRef() { FUN_1408850f0(this); }
-    void* m_p0; void* m_p1; void* m_p2; void* m_p3;
+    void* m_p0; void* m_p1;
 };
-MS2_CHECK_SIZE(Unk_AeMapRef, 0x20);
+MS2_CHECK_SIZE(Unk_AeMapRef, 0x10);
 class Unk_AeWorld
 {
 public:
     Unk_AeMapRef FUN_141bd30a0();                           // the current field
 };
 Unk_AeWorld* FUN_1403ed2d0();
-long long FUN_1409657a0(Unk_AeMapRef* pRef);                // non-null test
+Unk_AeFieldInfo* FUN_1409657a0(const Unk_AeMapRef& ref);    // get
 Unk_AeFieldInfo* FUN_140885340(Unk_AeMapRef* pRef);         // operator->
 void FUN_1414d0180(bool bFlag);
 void FUN_14150ccc0(int nValue);
@@ -245,13 +249,14 @@ bool ApplyEffect::FUN_1409a4020(int nId, CScreenEffectBase* pEffect)
 }
 
 // @0x1409a3b60
-void ApplyEffect::FUN_1409a3b60(bool bEnable)
+bool ApplyEffect::FUN_1409a3b60(bool bEnable)
 {
     for (EffectMap::iterator it = m_effects.begin(); it != m_effects.end(); ++it) {
         if (it->second.get() != 0) {
             it->second->vfunc_6(bEnable);
         }
     }
+    return true;
 }
 
 // @0x1409a4090
@@ -394,7 +399,7 @@ bool FUN_1409a5850(NiFixedString& kKey, const bool* pbData, unsigned int uiSize)
 void ApplyEffect::ApplyOuterGlowColor()
 {
     Unk_AeMapRef field = FUN_1403ed2d0()->FUN_141bd30a0();
-    if (FUN_1409657a0(&field) != 0) {
+    if (FUN_1409657a0(field) != 0) {
         if (Unk_AeGameOption::FUN_1409a8b10()->FUN_1409a8ac0()->FUN_14125e160()) {
             FUN_1409a5810(DAT_143ae5348, &FUN_140885340(&field)->m_vOuterGlow, 1);
         }
@@ -406,18 +411,17 @@ void ApplyEffect::ApplyOuterGlowColor()
 void ApplyEffect::ApplyFieldRenderInfo()
 {
     Unk_AeMapRef field = FUN_1403ed2d0()->FUN_141bd30a0();
-    if (FUN_1409657a0(&field) != 0) {
+    if (FUN_1409657a0(field) != 0) {
         FUN_1414d0180(FUN_140885340(&field)->m_bRenderFlag);
         FUN_14150ccc0(FUN_140885340(&field)->m_nRenderValue);
     }
 }
 
-// MS2-FUNCTIONAL: body byte-identical, but the frame is 0x10 larger (the /Od local area places the field ref one slot higher)
 // @0x1409a43a0
 void ApplyEffect::ApplyFieldFogRange(bool bEnabled)
 {
     Unk_AeMapRef field = FUN_1403ed2d0()->FUN_141bd30a0();
-    if (FUN_1409657a0(&field) != 0) {
+    if (FUN_1409657a0(field) != 0) {
         SetFogRange(bEnabled, FUN_140885340(&field)->m_fFogNear, FUN_140885340(&field)->m_fFogFar,
             FUN_140885340(&field)->m_uiFogColor);
     }
@@ -473,18 +477,17 @@ void ApplyEffect::SetScreenRatio(float fScale)
 bool ApplyEffect::SetSoftParticlesOption(bool bEnabled, Unk_AeFieldInfo* pField)
 {
     if (pField == 0) {
-        Unk_AeMapRef field = FUN_1403ed2d0()->FUN_141bd30a0();
-        pField = FUN_140885340(&field);
+        pField = FUN_1409657a0(FUN_1403ed2d0()->FUN_141bd30a0());
     }
     if (pField != 0) {
         Unk_AeFeatureState* pState = Unk_AeFeatureMgr::FUN_1409a8b20()->FUN_1416a3a90(3);
         if (pState != 0) {
             if (bEnabled) {
-                FUN_1409a5770(DAT_143ae5358, &pField->m_fSoftParticle[0], 1);
-                FUN_1409a5770(DAT_143ae5360, &pField->m_fSoftParticle[1], 1);
-                FUN_1409a5770(DAT_143ae5368, &pField->m_fSoftParticle[2], 1);
-                FUN_1409a5770(DAT_143ae5370, &pField->m_fSoftParticle[3], 1);
-                FUN_1409a5770(DAT_143ae5378, &pField->m_fSoftParticle[4], 1);
+                FUN_1409a5770(DAT_143ae5358, &pField->m_fSoftParticle0, 1);
+                FUN_1409a5770(DAT_143ae5360, &pField->m_fSoftParticle1, 1);
+                FUN_1409a5770(DAT_143ae5368, &pField->m_fSoftParticle2, 1);
+                FUN_1409a5770(DAT_143ae5370, &pField->m_fSoftParticle3, 1);
+                FUN_1409a5770(DAT_143ae5378, &pField->m_fSoftParticle4, 1);
             }
             Unk_AeFeatureMgr::FUN_1409a8b20()->FUN_1416a3920(3, bEnabled);
             bEnabled = (bEnabled && pState->FUN_1409a8f00()) ? 1 : 0;
@@ -494,7 +497,6 @@ bool ApplyEffect::SetSoftParticlesOption(bool bEnabled, Unk_AeFieldInfo* pField)
     return bEnabled;
 }
 
-// MS2-FUNCTIONAL: body byte-identical, but the frame is 0x10 larger (the /Od local area places the field ref one slot higher)
 // @0x1409a49b0
 void ApplyEffect::ApplyFieldFog()
 {
@@ -503,7 +505,7 @@ void ApplyEffect::ApplyFieldFog()
         ApplyFieldFogRange(pOption->FUN_14125e020());
     }
     Unk_AeMapRef field = FUN_1403ed2d0()->FUN_141bd30a0();
-    if (FUN_1409657a0(&field) != 0) {
+    if (FUN_1409657a0(field) != 0) {
         bool bFog;
         if (pOption->FUN_1409a8fd0() && FUN_140885340(&field)->m_bFieldFog != 0) {
             bFog = true;
@@ -524,7 +526,7 @@ void ApplyEffect::ApplyFieldFogEnabled(bool bEnabled)
         return;
     }
     Unk_AeMapRef field = FUN_1403ed2d0()->FUN_141bd30a0();
-    if (FUN_1409657a0(&field) != 0) {
+    if (FUN_1409657a0(field) != 0) {
         bool bFog;
         if (bEnabled && pOption->FUN_1409a8fd0() && FUN_140885340(&field)->m_bFieldFog != 0) {
             bFog = true;
@@ -565,10 +567,11 @@ inline NiFogProperty* GetNiFogProperty() { return DAT_143afa7f0; }
 // The scene graph service lookup (global service manager reference).
 efd::ServiceManager* FUN_1401cd190(void* pHolder);
 extern unsigned char DAT_143b059e8;
+struct Unk_AeServiceCell { void* m_spManager; };              // SmartPointer<ServiceManager>
 // @0x1409a5700
-inline MS2SceneGraphService* FUN_1409a5700(void* pHolder)
+inline MS2SceneGraphService* FUN_1409a5700(Unk_AeServiceCell* pCell)
 {
-    return FUN_1401cd190(pHolder)->GetSystemServiceAs<MS2SceneGraphService>();
+    return FUN_1401cd190(&pCell->m_spManager)->GetSystemServiceAs<MS2SceneGraphService>();
 }
 
 // The functor that refreshes the effects of every scene graph.
@@ -615,7 +618,7 @@ void ApplyEffect::SetFogRange(bool bEnabled, float fNear, float fFar, unsigned i
     pFog->SetFog(bEnabled);
     pFog->SetFogColor(FUN_141b6dea0(uiColor));
     pFog->SetDepth(fDepth);
-    MS2SceneGraphService* pService = FUN_1409a5700(&DAT_143b059e8);
+    MS2SceneGraphService* pService = FUN_1409a5700(reinterpret_cast<Unk_AeServiceCell*>(&DAT_143b059e8));
     if (pService) {
         UpdateAffectsFunctor kFunctor;
         pService->ForEachEntitySceneGraph(kFunctor);
@@ -696,7 +699,7 @@ void ApplyEffect::SwapClickProcessor(NiRenderListProcessor* pProcessor)
     }
     RestoreClickProcessors();
     Unk_AeMapRef field = FUN_1403ed2d0()->FUN_141bd30a0();
-    if (FUN_1409657a0(&field) != 0) {
+    if (FUN_1409657a0(field) != 0) {
         NiDefaultClickRenderStep* pStep = NiDynamicCast(NiDefaultClickRenderStep, FUN_1413f98d0()->GetRenderStep());
         if (pStep) {
             NiViewRenderClick* pClick;
@@ -789,9 +792,10 @@ void FUN_1409a5320(NiAVObject* pRoot, float fValueA, float fValueB, const char* 
     while ((pObject = it.FUN_14098e0d0(true)) != 0) {
         NiRenderObject* pRenderObject = NiDynamicCast(NiRenderObject, pObject);
         if (pRenderObject != 0) {
-            if (pcName == 0 || pRenderObject->GetName().Equals(pcName)) {
-                FUN_141b70c50(pRenderObject, fValueB, fValueA);
+            if (pcName != 0 && !pRenderObject->GetName().Equals(pcName)) {
+                continue;
             }
+            FUN_141b70c50(pRenderObject, fValueB, fValueA);
         }
     }
     pRoot->UpdateProperties();
@@ -800,20 +804,23 @@ void FUN_1409a5320(NiAVObject* pRoot, float fValueA, float fValueB, const char* 
 // @0x1409a51d0
 void FUN_1409a51d0(void* pOwner, float fValueA, float fValueB, const char* pcName)
 {
-    if (pOwner != 0) {
-        efd::SmartPointer<NiAVObject> spRoot(FUN_141b6efc0(pOwner));
-        if (!(spRoot == 0)) {
-            Unk_AeSceneIter it(spRoot);
-            NiAVObject* pObject;
-            while ((pObject = it.FUN_14098e0d0(true)) != 0) {
-                NiRenderObject* pRenderObject = NiDynamicCast(NiRenderObject, pObject);
-                if (pRenderObject != 0) {
-                    if (pcName == 0 || pRenderObject->GetName().Equals(pcName)) {
-                        FUN_141b70c50(pRenderObject, fValueB, fValueA);
-                    }
-                }
+    if (pOwner == 0) {
+        return;
+    }
+    efd::SmartPointer<NiAVObject> spRoot(FUN_141b6efc0(pOwner));
+    if (spRoot == 0) {
+        return;
+    }
+    Unk_AeSceneIter it(spRoot);
+    NiAVObject* pObject;
+    while ((pObject = it.FUN_14098e0d0(true)) != 0) {
+        NiRenderObject* pRenderObject = NiDynamicCast(NiRenderObject, pObject);
+        if (pRenderObject != 0) {
+            if (pcName != 0 && !pRenderObject->GetName().Equals(pcName)) {
+                continue;
             }
-            spRoot->UpdateProperties();
+            FUN_141b70c50(pRenderObject, fValueB, fValueA);
         }
     }
+    spRoot->UpdateProperties();
 }

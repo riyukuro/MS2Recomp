@@ -222,7 +222,7 @@ CStringW GetStringCommonByKey(const CStringW&);
 void FUN_1412751f0(const CStringW&,int,int);
 CStringW FUN_140938ae0(CStringW,const int&);
 CStringW FUN_1408f71a0(CStringW,const CStringW&,const CStringW&);
-CStringW FUN_14083bdc0(const CMsTime& t,int n,CStringW strSep,CStringW strSep2);
+CStringW FUN_14083bdc0(const CMsTime& t,bool b,CStringW strSep,CStringW strSep2);
 void FUN_140cfee80(const Scaleform::GFx::Value&,CString,CStringW);
 void FUN_140cff840(const Scaleform::GFx::Value&,CString,int);
 void FUN_140d01780(const Scaleform::GFx::Value&,bool);
@@ -287,7 +287,9 @@ UICashAttendGifList::UICashAttendGifList(UICashAttendDialog* pDialog,MS2Ptr<Unk_
         throw new GfxExceptionSwfLoad(StringFormat("GfxError:{0} {1}({2}) function:{3}","SwfLoadError",MS2_THIS_FILE,MS2_LINE(34),__FUNCTION__));
     if(!FUN_140bc7a40((*m_clip).FUN_1422bb890(),"m_check",5,m_checks,0))
         throw new GfxExceptionSwfLoad(StringFormat("GfxError:{0} {1}({2}) function:{3}","SwfLoadError",MS2_THIS_FILE,MS2_LINE(37),__FUNCTION__));
-    for(std::vector<MS2Ptr<Unk_CadCheck> >::const_iterator it=m_checks.begin();it!=m_checks.end();++it) {
+    std::vector<MS2Ptr<Unk_CadCheck> >& vChecks=m_checks;
+    std::vector<MS2Ptr<Unk_CadCheck> >::const_iterator itEnd=vChecks.end();
+    for(std::vector<MS2Ptr<Unk_CadCheck> >::const_iterator it=vChecks.begin();it!=itEnd;++it) {
         MS2Ptr<Unk_CadCheck> spCheck=*it;
         FUN_1422deb40(spCheck.operator->(),false);
     }
@@ -296,7 +298,6 @@ UICashAttendGifList::UICashAttendGifList(UICashAttendDialog* pDialog,MS2Ptr<Unk_
 }
 
 // @0x140bc2620
-// MS2-FUNCTIONAL: stack-slot assignment of the day/flag temporaries differs; calls and logic identical.
 void UICashAttendGifList::FUN_140bc2620(const Scaleform::GFx::FunctionHandler::Params& params)
 {
     MS2Ptr<GameEventCashAttendCli> spEvent=m_pDialog->GetSelected();
@@ -306,22 +307,20 @@ void UICashAttendGifList::FUN_140bc2620(const Scaleform::GFx::FunctionHandler::P
     m_bg2->vfunc_4(nDay%2==1);
     MS2Ptr<Unk_CadDay> spDay=spEvent->FUN_140ce3fc0(nDay);
     if(spDay==NULL) { FUN_140bc2b10(); return; }
-    unsigned nAttended=spEvent->FUN_140ce3e90();
-    bool bPassed=nDay<nAttended;
+    bool bPassed=nDay<spEvent->FUN_140ce3e90();
     FUN_1422c6640(m_clip.operator->(),true);
     m_disabled->vfunc_4(bPassed);
     FUN_140cfee80((*m_clip).FUN_1422bb890(),"m_title",FUN_140938ae0(L"s_cashAttend_day_index",nDay+1));
     for(unsigned i=0;i<5;i++) {
-        if(i<spDay->m_items.size()) {
-            ItemAble& item=*spDay->m_items[i].operator->();
-            m_rewardItems[i]->FUN_1409ba630(reinterpret_cast<const Unk_ItemSlotSource&>(item));
-            m_rewardItems[i]->FUN_1409ba6d0();
-            m_rewardItems[i]->vfunc_4(true);
-            m_checks[i]->vfunc_4(nDay<nAttended);
-        } else {
+        if(i>=spDay->m_items.size()) {
             m_rewardItems[i]->vfunc_4(false);
             m_checks[i]->vfunc_4(false);
+            continue;
         }
+        m_rewardItems[i]->FUN_1409ba630(reinterpret_cast<const Unk_ItemSlotSource&>(static_cast<ItemAble&>(*spDay->m_items[i].operator->())));
+        m_rewardItems[i]->FUN_1409ba6d0();
+        m_rewardItems[i]->vfunc_4(true);
+        m_checks[i]->vfunc_4(bPassed);
     }
 }
 
@@ -335,10 +334,6 @@ void UICashAttendGifList::FUN_140bc2b10()
         m_checks[i]->vfunc_4(false);
     }
 }
-
-// @0x140bcbe30
-// MS2-FUNCTIONAL: exe ~UICashAttendGifList stores no vftable before the member dtors; ours does. Member order identical.
-UICashAttendGifList::~UICashAttendGifList() {}
 
 // ---- UICashAttendDialog ----
 
@@ -362,7 +357,6 @@ UICashAttendDialog::~UICashAttendDialog()
 CString UICashAttendDialog::GetTypeName() { return "CashAttendGiftDialog"; }
 
 // @0x140bc32a0
-// MS2-FUNCTIONAL: bind and row-construction temporaries laid out differently (23 bytes); calls and logic identical.
 void UICashAttendDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
@@ -376,10 +370,10 @@ void UICashAttendDialog::OnLoadComplete()
     if(m_giftList==0) throw new GfxExceptionSwfLoad(StringFormat("GfxError:{0} {1}({2}) function:{3}","SwfLoadError",MS2_THIS_FILE,MS2_LINE(137),__FUNCTION__)); } while(0);
     do { static_cast<Unk_CadScript*>(m_30.operator->())->FUN_140bc6e60("m_progressGauge",m_progressGauge);
     if(m_progressGauge==0) throw new GfxExceptionSwfLoad(StringFormat("GfxError:{0} {1}({2}) function:{3}","SwfLoadError",MS2_THIS_FILE,MS2_LINE(138),__FUNCTION__)); } while(0);
-    for(int i=1;i<6;i++) {
+    for(unsigned int i=1;i<=5;i++) {
         MS2Ptr<Unk_CadGiftClip> spClip;
         if(FUN_140bc7070(StringFormat("m_giftList{0}",i),spClip).get()) {
-            m_rows.push_back(MS2Ptr<UICashAttendGifList>(new UICashAttendGifList(this,spClip)));
+            m_rows.push_back(new UICashAttendGifList(this,spClip));
         }
     }
     m_eventButtons.RemoveAll();
@@ -490,7 +484,6 @@ void UICashAttendDialog::FUN_140bc4460()
 }
 
 // @0x140bc44b0
-// MS2-FUNCTIONAL: event-array temporary and button loop shape differ by 12 bytes; calls and logic identical.
 void UICashAttendDialog::FUN_140bc44b0()
 {
     ATL::CAtlArray<MS2Ptr<GameEventCashAttendCli> > events;
@@ -503,8 +496,7 @@ void UICashAttendDialog::FUN_140bc44b0()
         }
         m_eventButtons[i]->vfunc_3(1);
         m_eventButtons[i]->FUN_1422cdfb0(events[i]->FUN_140ce3f10());
-        bool bOpened=FUN_140931510()->FUN_140d9f530(events[i]->FUN_1402e1d00());
-        FUN_140cff840((*m_eventButtons[i]).FUN_1422bb890(),"m_lock",!bOpened);
+        FUN_140cff840((*m_eventButtons[i]).FUN_1422bb890(),"m_lock",!FUN_140931510()->FUN_140d9f530(events[i]->FUN_1402e1d00()));
         m_eventButtons[i]->FUN_1422c7b40(events[i]->GetDesc());
         m_eventButtons[i]->FUN_1422ce090(events[i]==m_selected.get());
         MS2Ptr<ASItemSlot> spSlot;
@@ -516,20 +508,21 @@ void UICashAttendDialog::FUN_140bc44b0()
 }
 
 // @0x140bc4980
-// MS2-FUNCTIONAL: one temporary is placed differently (1 byte); calls and logic identical.
 void UICashAttendDialog::FUN_140bc4980()
 {
-    if(!FUN_1422dc2d0() || m_selected==NULL) return;
-    m_progressGauge->FUN_1409b9f60(m_selected->FUN_140ce3e90(),m_selected->FUN_140ce3e40());
+    if(!FUN_1422dc2d0()) return;
+    if(m_selected==NULL) return;
+    unsigned nAttended=m_selected->FUN_140ce3e90();
+    unsigned nDays=m_selected->FUN_140ce3e40();
+    m_progressGauge->FUN_1409b9f60(nAttended,nDays);
     m_giftList->FUN_1422dcf40(m_selected->FUN_140ce3e40());
     CStringW strPeriod=FUN_1408f71a0(L"s_attendGift_event_period",
-        FUN_14083bdc0(m_selected->FUN_140ce4050(),1,L"/",L":"),
-        FUN_14083bdc0(m_selected->FUN_140ce4090(),1,L"/",L":"));
+        FUN_14083bdc0(m_selected->FUN_140ce4050(),true,L"/",L":"),
+        FUN_14083bdc0(m_selected->FUN_140ce4090(),true,L"/",L":"));
     FUN_140cfee80(FUN_1422dbb40(),"m_eventPeriod",strPeriod);
 }
 
 // @0x140bc4d40
-// MS2-FUNCTIONAL: register/temporary order differs at the same length; calls and logic identical.
 void UICashAttendDialog::FUN_140bc4d40()
 {
     if(m_usePointButton==NULL) return;
@@ -539,7 +532,7 @@ void UICashAttendDialog::FUN_140bc4d40()
     int nPoints=g_attendTable.FUN_1409617d0(0x69,m_selected->FUN_1402e1d00(),nDefault);
     m_usePointButton->vfunc_4(true);
     m_usePointButton->FUN_1422cdfb0(FUN_140938ae0(L"s_attendGift_usePoint_button",nPoints));
-    m_usePointButton->FUN_1422c1fe0(nPoints!=0);
+    m_usePointButton->FUN_1422c1fe0((unsigned)nPoints>0);
 }
 
 // @0x140bc4f00

@@ -144,10 +144,8 @@ CInPacket::CInPacket(CInPacket& iPacket)
 }
 // @0x14070fe80
 int CInPacket::FUN_14070fe80() { FUN_140715280(6); return (unsigned short)FUN_1407140a0(); }
-// MS2-FUNCTIONAL: bool temp slot differs
 // @0x14070feb0
-bool CInPacket::ReadBool() { return ReadUInt8() != 0; }
-// MS2-FUNCTIONAL: receive state machine: local layout / temp order differs
+bool CInPacket::ReadBool() { return ReadUInt8() ? true : false; }
 // @0x14070ff00
 int CInPacket::FUN_14070ff00(Unk_SocketPtr<CPacketBuffer>* buffer, int* stateBefore, int hasSequence)
 {
@@ -156,18 +154,18 @@ int CInPacket::FUN_14070ff00(Unk_SocketPtr<CPacketBuffer>* buffer, int* stateBef
     int remaining = (**buffer).GetSize();
     if (m_nState == RS_HEADER) {
         unsigned headerLen = 6;
-        if (hasSequence != 0) headerLen = 10;
+        if (hasSequence != 0) headerLen += sizeof(int);
         MS2_PK_ASSERT(0x105, "headerLen > m_uLength", headerLen > (unsigned)m_length);
         unsigned count = pkmin<unsigned>(remaining, headerLen - m_length);
         FUN_140715120(data, count);
-        if (headerLen <= (unsigned)m_length) {
+        if ((unsigned)m_length >= headerLen) {
             m_nState = RS_DATA;
             m_opcode = ReadInt16();
             m_packetLength = ReadInt32();
             if (hasSequence != 0) {
                 m_40 = ReadInt32();
-                m_length -= 4;
-                m_offset -= 4;
+                m_length -= sizeof(int);
+                m_offset -= sizeof(int);
             }
         }
         remaining -= count;
@@ -180,16 +178,13 @@ int CInPacket::FUN_14070ff00(Unk_SocketPtr<CPacketBuffer>* buffer, int* stateBef
     MS2_PK_ASSERT(0x11c, "m_nState == RS_DATA", m_nState == RS_DATA);
     int count = pkmin<unsigned>(remaining, (m_packetLength + 6) - m_length);
     FUN_140715120(data, count);
-    if (m_packetLength + 6U <= (unsigned)m_length) m_nState = RS_COMPLETED;
+    if ((unsigned)m_length >= m_packetLength + 6U) m_nState = RS_COMPLETED;
     remaining -= count;
     CPacketBuffer* rest;
     if (remaining == 0) {
         rest = 0;
     } else {
-        Unk_SocketNew unused(0);
-        int offset = (**buffer).GetSize();
-        offset -= remaining;
-        rest = (**buffer).FUN_140715390(offset, remaining, unused);
+        rest = (**buffer).FUN_140715390((**buffer).GetSize() - remaining, remaining, Unk_SocketNew(0));
     }
     *buffer = rest;
     return m_nState;
@@ -211,17 +206,17 @@ CString CInPacket::FUN_140710300() const
     }
     return result;
 }
-// MS2-FUNCTIONAL: temp order differs
 // @0x1407103f0
 void FUN_1407103f0(CInPacket* packet)
 {
     Unk_CompressedStream stream(true, 0x28);
-    CByteBuffer& decoded = stream.Decode(*static_cast<CInputStream*>(packet));
+    CByteBuffer& decoded = stream.Decode(static_cast<CInputStream&>(*packet));
+    unsigned header = 8;
     unsigned length = decoded.GetLength();
-    packet->m_data.SetCount(length + 8, -1);
-    memcpy(&packet->m_data[0] + 8, decoded.FUN_140204eb0(), length);
-    packet->m_length = length + 8;
-    packet->m_offset = 8;
+    packet->m_data.SetCount(length + header, -1);
+    memcpy(&packet->m_data[0] + header, decoded.FUN_140204eb0(), length);
+    packet->m_length = header + length;
+    packet->m_offset = header;
 }
 
 // ---- COutPacket -------------------------------------------------------------------------------------------------------
@@ -239,16 +234,17 @@ void FUN_140710590(COutPacket& packet)
 {
     if (FUN_140714f90() != 0) FUN_140714f90()->FUN_14153a020(packet);
 }
-// MS2-FUNCTIONAL: temp order differs
 // @0x1407105c0
 bool FUN_1407105c0(COutPacket* packet, int key, int delay)
 {
     if (packet->m_aBuffer.GetCount() < 2) return false;
     unsigned now = FUN_140869420();
-    int type = *(unsigned short*)&packet->m_aBuffer[0];
+    const unsigned short* typeField = (const unsigned short*)&packet->m_aBuffer[0];
+    int type = *typeField;
     std::pair<int, int> id(type, key);
+    unsigned last = 0;
     std::map<std::pair<int, int>, unsigned>::iterator it = g_packetThrottle.find(id);
-    if (it != g_packetThrottle.end() && now < it->second) return false;
+    if (it != g_packetThrottle.end() && it->second > now) return false;
     unsigned next = now + delay;
     g_packetThrottle[id] = next;
     FUN_140710590(*packet);
@@ -284,57 +280,53 @@ void FUN_1407107e0(COutPacket* packet, int type, int unk, const void* data, int 
     packet->WriteBytes(data, count);
 }
 MS2_REPLACE(0x1407107E0, FUN_1407107e0, 124, 0x76F804E3);
-// MS2-FUNCTIONAL: send path: local layout / temp order differs
 // @0x140710870
 void FUN_140710870(COutPacket* packet, ATL::CAtlList<Unk_SocketPtr<CPacketBuffer> >* list, unsigned sequence, unsigned* key, int hasSequence)
 {
-    int total = packet->m_nLength + 6;
-    if (hasSequence != 0) total = packet->m_nLength + 10;
-    const Unk_PodArray<char>& constBuffer = packet->m_aBuffer;
-    const unsigned char* source = (const unsigned char*)&constBuffer[0];
+    unsigned total = packet->m_nLength + 6;
+    if (hasSequence != 0) total += sizeof(int);
+    const char* source = &static_cast<const Unk_PodArray<char>&>(packet->m_aBuffer)[0];
     unsigned chunk = pkmin<unsigned>(total, 0x5b4);
     Unk_SocketPtr<CPacketBuffer> buffer(FUN_1407138b0(chunk, Unk_SocketNew(0)));
     if (packet->FUN_14020bc40() != 0) (*buffer).FUN_140715360(buffer.operator->());
-    unsigned short* header = (unsigned short*)buffer.get()->FUN_140713530();
-    unsigned char* end = (unsigned char*)header + chunk;
+    char* cursor = buffer.get()->FUN_140713530();
+    char* end = cursor + chunk;
     unsigned type;
-    if (key == NULL) type = sequence & 0xffff;
-    else type = sequence & 0xffff ^ *key >> 16;
-    *header = (unsigned short)type;
-    *(unsigned*)(header + 1) = packet->m_nLength;
-    unsigned* cursor = (unsigned*)(header + 3);
+    if (key != NULL) type = (unsigned short)sequence ^ (unsigned short)(*key >> 16 & 0xffff);
+    else type = (unsigned short)sequence;
+    *(unsigned short*)cursor = (unsigned short)type;
+    cursor += sizeof(unsigned short);
+    *(unsigned*)cursor = packet->m_nLength;
+    cursor += sizeof(unsigned);
     if (hasSequence != 0) {
-        *cursor = sequence;
-        cursor = (unsigned*)(header + 5);
+        *(unsigned*)cursor = sequence;
+        cursor += sizeof(unsigned);
     }
-    memcpy(cursor, source, end - (unsigned char*)cursor);
-    source += end - (unsigned char*)cursor;
+    memcpy(cursor, source, end - cursor);
+    source += end - cursor;
     list->AddTail(buffer);
-    while ((total -= chunk) != 0) {
+    while ((total -= chunk) > 0) {
         chunk = pkmin<unsigned>(total, 0x5b4);
         buffer = FUN_1407138b0(chunk, Unk_SocketNew(0));
         if (packet->FUN_14020bc40() != 0) (*buffer).FUN_140715360(buffer.operator->());
-        unsigned char* part = (unsigned char*)buffer.get()->FUN_140713530();
-        end = part + chunk;
-        memcpy(part, source, end - part);
-        source += end - part;
+        cursor = buffer.get()->FUN_140713530();
+        end = cursor + chunk;
+        memcpy(cursor, source, end - cursor);
+        source += end - cursor;
         list->AddTail(buffer);
     }
 }
-// MS2-FUNCTIONAL: temp order differs
 // @0x140710b90
-COutPacket* FUN_140710b90(COutPacket* packet, int state, unsigned* key)
+void FUN_140710b90(COutPacket* packet, int state, unsigned* key)
 {
-    if (packet->m_n14 != state) {
-        if (packet->m_n14 == 0 || packet->m_n14 == state) {
-            FUN_1401cddd0(GetBufferCryptManager(), (unsigned char*)&packet->m_aBuffer[0], packet->m_nLength, state, key);
-            packet->m_n14 = state;
-        } else {
-            MS2_ASSERT_AT(0x1a5, FALSE);
-            packet = 0;
-        }
+    if (packet->m_n14 == state) return;
+    if (packet->m_n14 != 0 && packet->m_n14 != state) {
+        MS2_ASSERT_AT(0x1a5, FALSE);
+        return;
     }
-    return packet;
+    unsigned char* pData = (unsigned char*)&packet->m_aBuffer[0];
+    FUN_1401cddd0(GetBufferCryptManager(), pData, packet->m_nLength, state, key);
+    packet->m_n14 = state;
 }
 // @0x140710c50
 CString COutPacket::FUN_140710c50() const
@@ -465,27 +457,27 @@ int CIOBuffer::Decodef(float& value, const unsigned char* data, unsigned size)
     value = *(const float*)data;
     return 4;
 }
-// MS2-FUNCTIONAL: throw path: 0x10 more stack than the exe
 // @0x140714210
 int CIOBuffer::DecodeStrA(CString& value, const unsigned char* data, unsigned size)
 {
-    if (size < 2) MS2_PK_DECODE_FAIL("DecodeStrA", 0x26);
+    if (size < sizeof(unsigned short)) MS2_PK_DECODE_FAIL("DecodeStrA", 0x26);
     unsigned short length = *(const unsigned short*)data;
-    if (size < length + 2u) MS2_PK_DECODE_FAIL("DecodeStrA", 0x26);
-    value = CString((const char*)(data + 2), length);
-    if (length != 0 && CString::StringLength(value.GetBuffer()) != length) MS2_PK_DECODE_FAIL("DecodeStrA", 0x18);
-    return length + 2;
+    if (size < length + sizeof(unsigned short)) MS2_PK_DECODE_FAIL("DecodeStrA", 0x26);
+    const char* pText = (const char*)(data + sizeof(unsigned short));
+    value = CString(pText, length);
+    if (length > 0 && CString::StringLength(value.GetBuffer()) != length) MS2_PK_DECODE_FAIL("DecodeStrA", 0x18);
+    return length + sizeof(unsigned short);
 }
-// MS2-FUNCTIONAL: throw path: 0x10 more stack than the exe
 // @0x1407145e0
 int CIOBuffer::DecodeStr(CStringW& value, const unsigned char* data, unsigned size)
 {
-    if (size < 2) MS2_PK_DECODE_FAIL("DecodeStr", 0x26);
+    if (size < sizeof(unsigned short)) MS2_PK_DECODE_FAIL("DecodeStr", 0x26);
     unsigned short length = *(const unsigned short*)data;
-    if (size < length * 2u + 2) MS2_PK_DECODE_FAIL("DecodeStr", 0x26);
-    value = CStringW((const wchar_t*)(data + 2), length);
-    if (length != 0 && CStringW::StringLength(value.GetBuffer()) != length) MS2_PK_DECODE_FAIL("DecodeStr", 0x18);
-    return length * 2 + 2;
+    if (size < length * sizeof(wchar_t) + sizeof(unsigned short)) MS2_PK_DECODE_FAIL("DecodeStr", 0x26);
+    const wchar_t* pText = (const wchar_t*)(data + sizeof(unsigned short));
+    value = CStringW(pText, length);
+    if (length > 0 && CStringW::StringLength(value.GetBuffer()) != length) MS2_PK_DECODE_FAIL("DecodeStr", 0x18);
+    return length * sizeof(wchar_t) + sizeof(unsigned short);
 }
 
 // ---- CInPacket accessors and decoders ----------------------------------------------------------------------------------------
@@ -589,13 +581,12 @@ float CInPacket::ReadShortScaled(int scale) { float r = (float)ReadInt16() * (fl
 float CInPacket::ReadShortDiv10() { float r = (float)ReadInt16() / 10.0f; return r; }
 // @0x140714d60
 float CInPacket::ReadShortDivScaled(int scale) { float r = (float)ReadInt16() / (float)scale; return r; }
-// MS2-FUNCTIONAL: append: temp order differs
 // @0x140715120
 void CInPacket::FUN_140715120(const char* data, unsigned count)
 {
-    if (m_data.GetCount() < m_length + count) {
+    if (m_length + count > m_data.GetCount()) {
         size_t newSize = m_data.GetCount();
-        do { newSize <<= 1; } while (newSize < m_length + count);
+        do { newSize <<= 1; } while (m_length + count > newSize);
         m_data.SetCount(newSize, -1);
     }
     memcpy(&m_data[0] + m_length, data, count);

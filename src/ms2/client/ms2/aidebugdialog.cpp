@@ -223,32 +223,30 @@ BEGIN_MESSAGE_MAP(AiDebugDialog, CDialog)
     ON_WM_DESTROY()
 END_MESSAGE_MAP()
 
-// MS2-FUNCTIONAL: local int slot order differs (same code, permuted stack slots)
 // @0x140988690
 void AiDebugDialog::Resize()
 {
     CRect rcClient;
     GetClientRect(rcClient);
-    int nLogWidth, nListTop, nListHeight, nTimeWidth, nColumn, nLeft, nTop, nXmlHeight, nWidth;
-    nLeft = m_nMarginLeft;
-    nTop = m_nMarginTop;
-    nWidth = (rcClient.Width() - m_nMarginLeft) - m_nMarginRight;
-    nXmlHeight = (int)((float)(((rcClient.Height() - m_nMarginTop) - m_nGap) - m_nMarginBottom) * 0.7f);
-    nListHeight = (int)((float)(((rcClient.Height() - m_nMarginTop) - m_nGap) - m_nMarginBottom) * 0.3f);
-    nListTop = (nTop + nXmlHeight) + m_nGap;
+    int nLeft = m_nMarginLeft;
+    int nTop = m_nMarginTop;
+    int nWidth = (rcClient.Width() - m_nMarginLeft) - m_nMarginRight;
+    int nXmlHeight = (int)((float)(((rcClient.Height() - m_nMarginTop) - m_nGap) - m_nMarginBottom) * 0.7f);
+    int nListHeight = (int)((float)(((rcClient.Height() - m_nMarginTop) - m_nGap) - m_nMarginBottom) * 0.3f);
+    int nListTop = (nTop + nXmlHeight) + m_nGap;
     m_editXml.SetWindowPos(0, nLeft, nTop, nWidth, nXmlHeight, SWP_NOZORDER | SWP_SHOWWINDOW);
     m_listTrace.SetWindowPos(0, nLeft, nListTop, nWidth, nListHeight, SWP_NOZORDER | SWP_SHOWWINDOW);
+    int nColumn;
     if ((int)((float)nWidth * 0.1f) < 100)
         nColumn = (int)((float)nWidth * 0.1f);
     else
         nColumn = 100;
-    nTimeWidth = nColumn;
-    nLogWidth = (nWidth - nColumn) - 5;
+    int nTimeWidth = nColumn;
+    int nLogWidth = (nWidth - nTimeWidth) - 5;
     m_listTrace.SetColumnWidth(0, nTimeWidth);
     m_listTrace.SetColumnWidth(1, nLogWidth);
 }
 
-// MS2-FUNCTIONAL: frame is 8 bytes larger than the exe (one extra temp slot; unwind-help slot 0xc8 vs 0xc0)
 // @0x1409888f0
 int AiDebugDialog::LoadXml()
 {

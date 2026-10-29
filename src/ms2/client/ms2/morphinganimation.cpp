@@ -150,8 +150,7 @@ MS2_REPLACE_METHOD(0x141487c50, CMorphingAnimation, FUN_141487c50, 295, 0x516868
 NiAVObject* CMorphingAnimation::FUN_141487d80(const CString& strNodeName)
 {
     Unk_ModelKey kKey;
-    Unk_ModelKey* pKey = &m_pOwner->FUN_14123c460(kKey);
-    Unk_ModelEntry* pEntry = FUN_141b6f910()->FUN_140999440(*pKey);
+    Unk_ModelEntry* pEntry = FUN_141b6f910()->FUN_140999440(m_pOwner->FUN_14123c460(kKey));
     if (pEntry != NULL) {
         NiNode* pRoot = pEntry->FUN_1409f7cb0();
         if (pRoot == NULL)

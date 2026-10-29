@@ -40,7 +40,6 @@ TransparencyMaterial::~TransparencyMaterial()
     m_spZBuffer = 0;
 }
 
-// MS2-FUNCTIONAL: stack-slot order of the property temporaries differs from the exe; behaviour equivalent
 // @0x141860140
 void TransparencyMaterial::FUN_141860140()
 {
@@ -92,7 +91,8 @@ void TransparencyMaterial::FUN_141860140()
     {
         m_pGeometry->DetachProperty(spOldColor);
         m_spVertexColor = spOldColor;
-        m_pGeometry->AttachProperty(NiNew NiVertexColorProperty);
+        NiVertexColorProperty* pColor = NiNew NiVertexColorProperty;
+        m_pGeometry->AttachProperty(pColor);
     }
 
     m_spZBuffer = (NiZBufferProperty*)m_pGeometry->GetProperty(11);

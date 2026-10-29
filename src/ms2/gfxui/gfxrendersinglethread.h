@@ -9,7 +9,7 @@
 #include <NiRenderedTexture.h>
 #include <NiDefaultClickRenderStep.h>
 
-#include "Kernel/SF_RefCount.h"
+#include "ms2/placeholder/gfxvalue.h"                         // Scaleform::Ptr (SDK or recovered tree)
 
 #include "ms2/ms2layout.h"
 #include "ms2/gfxui/nigfxoverlayclick.h"

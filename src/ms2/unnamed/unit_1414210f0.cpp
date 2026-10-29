@@ -46,48 +46,34 @@ MS2Ptr<CEquipItem> FUN_1414211a0(int nSlot, AvatarPC* pAvatar)
 }
 
 // @0x141421230
-// MS2-FUNCTIONAL: first-pass source; the exe's per-exit release order / temp frame not byte-compared.
 int FUN_141421230(MS2Ptr<CItem> spFirst, MS2Ptr<CItem> spSecond, MS2Ptr<PCInfo> spPc)
 {
-    if (!(spFirst == 0))
+    if (spFirst == 0)
+        return 0;
+    if (!reinterpret_cast<CItemData*>(spFirst->FUN_140527840())->FUN_14053d510())
+        return 0;
+    MS2Ptr<CItem> spHead = spPc->FUN_140dba790(static_cast<Unk_InventoryEquipSlot>(4));
+    MS2Ptr<CItem> spBody = spPc->FUN_140dba790(static_cast<Unk_InventoryEquipSlot>(5));
+    if ((spHead.get() ? true : false) && (spBody.get() ? true : false))
     {
-        CItemData* pData = reinterpret_cast<CItemData*>(spFirst->FUN_140527840());
-        if (!pData->FUN_14053d510())
+        if (!reinterpret_cast<CItemData*>(spHead->FUN_140527840())->FUN_14053d510())
             return 0;
-        MS2Ptr<CItem> spHead = spPc->FUN_140dba790(static_cast<Unk_InventoryEquipSlot>(4));
-        MS2Ptr<CItem> spBody = spPc->FUN_140dba790(static_cast<Unk_InventoryEquipSlot>(5));
-        if (spHead.get() == 0 || spBody.get() == 0)
-        {
-            if (!(spHead == 0) || !(spBody == 0))
-            {
-                FUN_140d73bc0(0xd5, 0, 0, CStringW(L""));
-                return 0;
-            }
-            if (!(spSecond == 0))
-            {
-                CItemData* pOther = reinterpret_cast<CItemData*>(spSecond->FUN_140527840());
-                if (!pOther->FUN_14053d510())
-                    return 0;
-            }
-        }
-        else
-        {
-            CItemData* pHeadData = reinterpret_cast<CItemData*>(spHead->FUN_140527840());
-            if (!pHeadData->FUN_14053d510())
-                return 0;
-            CItemData* pBodyData = reinterpret_cast<CItemData*>(spBody->FUN_140527840());
-            if (!pBodyData->FUN_14053d510())
-                return 0;
-            if (!(spSecond == 0))
-            {
-                CItemData* pOther = reinterpret_cast<CItemData*>(spSecond->FUN_140527840());
-                if (!pOther->FUN_14053d510())
-                    return 0;
-            }
-        }
-        return 1;
+        if (!reinterpret_cast<CItemData*>(spBody->FUN_140527840())->FUN_14053d510())
+            return 0;
+        if (spSecond.get() && !reinterpret_cast<CItemData*>(spSecond->FUN_140527840())->FUN_14053d510())
+            return 0;
     }
-    return 0;
+    else if (!spHead && !spBody)
+    {
+        if (spSecond.get() && !reinterpret_cast<CItemData*>(spSecond->FUN_140527840())->FUN_14053d510())
+            return 0;
+    }
+    else
+    {
+        FUN_140d73bc0(0xd5, 0, 0, CStringW(L""));
+        return 0;
+    }
+    return 1;
 }
 
 // @0x141421690

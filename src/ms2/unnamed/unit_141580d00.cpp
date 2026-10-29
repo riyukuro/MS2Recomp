@@ -8,6 +8,7 @@
 #include "ms2/placeholder/nmstream.h"
 #include "ms2/placeholder/nmobjects.h"
 #include "ms2/placeholder/nmfunc.h"
+#include "ms2/placeholder/nmencoder.h"
 #include "ms2/ms2recover.h"
 
 extern void FUN_14156bcb0(void*, void*, void*);
@@ -19,7 +20,7 @@ extern void FUN_14156af60(void*, const void*, unsigned int);
 extern void FUN_1415f9990(void*);
 extern int FUN_1415fb700(void*);
 extern int FUN_1415fb750(void*);
-extern int FUN_1415fb6d0(void*);
+extern int FUN_1415fb6d0(CNMSerializableDecoder*);
 
 // MS2-FUNCTIONAL 0x141580d00: initializes request and data-size fields.
 // @0x141580d00
@@ -32,26 +33,17 @@ CNMGetUserDataListFunc::CNMGetUserDataListFunc()
 // @0x141580d70
 unsigned int CNMGetUserDataListFunc::EncodeFramed(CNMStream* pStream)
 {
-    unsigned char storage[0x18];
-    FUN_14156bcb0(storage, pStream, this);
-    void** vtable = *reinterpret_cast<void***>(this);
-    using Method = unsigned int(__fastcall*)(CNMGetUserDataListFunc*, CNMEncoder*, CNMStream*);
-    const unsigned int result = reinterpret_cast<Method>(vtable[2])(this, reinterpret_cast<CNMEncoder*>(storage), pStream);
-    FUN_14156bd50(storage);
-    return result;
+    CNMSerializableEncoder encoder(pStream, this);
+    return CNMGetUserDataListFunc::Encode(reinterpret_cast<CNMEncoder*>(&encoder), pStream);
 }
 
 // MS2-FUNCTIONAL 0x141580dd0: selects raw or framed encoding by format.
 // @0x141580dd0
 unsigned int CNMGetUserDataListFunc::EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream)
 {
-    void** vtable = *reinterpret_cast<void***>(this);
-    if (m_bFormat == 1) {
-        using Method = unsigned int(__fastcall*)(CNMGetUserDataListFunc*, CNMEncoder*, CNMStream*);
-        return reinterpret_cast<Method>(vtable[2])(this, pEncoder, pStream);
-    }
-    using Framed = unsigned int(__fastcall*)(CNMGetUserDataListFunc*, CNMStream*);
-    return reinterpret_cast<Framed>(vtable[3])(this, pStream);
+    if (m_bFormat == 1)
+        return CNMGetUserDataListFunc::Encode(pEncoder, pStream);
+    return CNMGetUserDataListFunc::EncodeFramed(pStream);
 }
 
 // MS2-FUNCTIONAL 0x141580e30: encodes request count/data or the reply result.
@@ -73,29 +65,19 @@ unsigned int CNMGetUserDataListFunc::Encode(CNMEncoder* pEncoder, CNMStream* pSt
 // @0x141580ed0
 unsigned int CNMGetUserDataListFunc::DecodeFramed(CNMStream* pStream)
 {
-    unsigned char storage[0x38];
-    FUN_14156be10(storage, pStream, this);
-    unsigned int result = 0;
-    if (FUN_1415fb750(storage)) {
-        void** vtable = *reinterpret_cast<void***>(this);
-        using Method = unsigned int(__fastcall*)(CNMGetUserDataListFunc*, CNMSerializableDecoder*, CNMStream*);
-        result = reinterpret_cast<Method>(vtable[5])(this, reinterpret_cast<CNMSerializableDecoder*>(storage), pStream);
-    }
-    FUN_14156bf10(storage);
-    return result;
+    CNMSerializableDecoder decoder(pStream, this);
+    if (FUN_1415fb750(&decoder) == 0)
+        return 0;
+    return CNMGetUserDataListFunc::Decode(&decoder, pStream);
 }
 
 // MS2-FUNCTIONAL 0x141580f60: chooses framed decoding for wire format 2.
 // @0x141580f60
 unsigned int CNMGetUserDataListFunc::DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream)
 {
-    void** vtable = *reinterpret_cast<void***>(this);
-    if (FUN_1415fb6d0(pDecoder) == 2) {
-        using Framed = unsigned int(__fastcall*)(CNMGetUserDataListFunc*, CNMStream*);
-        return reinterpret_cast<Framed>(vtable[6])(this, pStream);
-    }
-    using Method = unsigned int(__fastcall*)(CNMGetUserDataListFunc*, CNMSerializableDecoder*, CNMStream*);
-    return reinterpret_cast<Method>(vtable[5])(this, pDecoder, pStream);
+    if (FUN_1415fb6d0(pDecoder) == 2)
+        return CNMGetUserDataListFunc::DecodeFramed(pStream);
+    return CNMGetUserDataListFunc::Decode(pDecoder, pStream);
 }
 
 // MS2-FUNCTIONAL 0x141580fc0: restores request data or the reply result.

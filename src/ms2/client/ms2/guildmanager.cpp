@@ -209,11 +209,8 @@ CStringW FUN_140763e10(int value);                   // the number with digit gr
 CStringW FUN_1408f71a0(CStringW key, const CStringW& arg0, const CStringW& arg1);
 CStringW FUN_141081c60(CStringW key, const CStringW& arg0, const CStringW& arg1, const int* arg2);
 CStringW FUN_140d26d90(CStringW key, const CStringW& arg0, const int* arg1, const CStringW& arg2);
-void FUN_1404ec690(Unk_GuildRef* out, const Unk_PayloadPtr<CGuildNpc>& npc);   // Unk_PayloadPtr<CGuildNpc> copy into raw storage
 bool FUN_14028d780(char c);
 void FUN_1404ec5b0(Unk_GuildRef* out, const MS2Ptr<CGuildMember>& member);   // MS2Ptr<CGuildMember> copy into raw storage
-__int64 FUN_1404f0aa0(Unk_GuildRef* grade);          // the grade reference's get() (guilddef_1.cpp)
-CGuildGrade* FUN_1404f0b70(Unk_GuildRef* grade);     // the grade reference's operator->
 // The buddy list entry of a character (see buddymanager.cpp).
 class Unk_GuildBuddyRef {
 public:
@@ -227,7 +224,6 @@ MS2_CHECK_SIZE(Unk_GuildBuddyRef, 0x10);
 class Unk_GuildBuddyMgr { public: Unk_GuildBuddyRef FUN_140ae4950(const CStringW& name); };
 Unk_GuildBuddyMgr* FUN_14097a780();
 void FUN_1404ef970(Unk_GuildRef* dst, const MS2Ptr<CGuildMember>& src);   // MS2Ptr<CGuildMember> assignment into raw storage
-bool FUN_1404effe0(Unk_GuildRef* grade, int null);   // the grade reference's operator==
 int FUN_140267ef0(const Unk_GuildTriple* left, const Unk_GuildTriple* right);   // all three components equal
 // An achievement (trophy) table row reference (see uimainplayerinfo.cpp).
 class Unk_GuildAchieveRow { public: char m_pad_00[0x38]; int m_category; };
@@ -498,7 +494,7 @@ void CGuildManager::FUN_1413b6370(CInPacket& packet)
 }
 MS2_REPLACE_METHOD(0x1413B6370, CGuildManager, FUN_1413b6370, 1949, 0xBACC3F7D);
 
-// MS2-FUNCTIONAL: pc->vfunc_78() returns the level as unsigned short in the exe (movzx); pcbase.h declares int.
+// pc->vfunc_78() returns the level as unsigned short in the exe (movzx); pcbase.h declares int, hence the cast.
 // @0x1413b6d10
 bool CGuildManager::FUN_1413b6d10(CStringW name)
 {
@@ -518,8 +514,7 @@ bool CGuildManager::FUN_1413b6d10(CStringW name)
     }
     PCBase* pc = (PCBase*)FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pc == 0) return false;
-    int level = pc->vfunc_78();
-    if (level <= *FUN_1402056b0(&FUN_1401d3200()->m_guildCreateMinLevel)) {
+    if ((unsigned short)pc->vfunc_78() <= *FUN_1402056b0(&FUN_1401d3200()->m_guildCreateMinLevel)) {
         FUN_1413c66f0(1, 0x13, 0);
         return false;
     }
@@ -1937,8 +1932,6 @@ void CGuildManager::FUN_1413bf050(CInPacket& packet)
 }
 MS2_REPLACE_METHOD(0x1413BF050, CGuildManager, FUN_1413bf050, 216, 0x7E8A5D03);
 
-// MS2-FUNCTIONAL: the grade reference is guilddef_1's POD Unk_GuildRef with an explicit ~Unk_PayloadPtr<CGuildGrade> call, so the
-// exe's extra EH state for its destructible type is missing.
 // @0x1413bf130
 void CGuildManager::FUN_1413bf130(CInPacket& packet)
 {
@@ -1947,10 +1940,8 @@ void CGuildManager::FUN_1413bf130(CInPacket& packet)
     int index = packet.ReadUInt8();
     CGuildGrade grade;
     grade.FUN_1404c71d0(packet);
-    Unk_GuildRef current;
-    FUN_1404d0860(&current, index);
+    Unk_PayloadPtr<CGuildGrade> current = FUN_1404d0860(index);
     FUN_140d73aa0(FUN_14052bd00(0x398, FUN_1404d0af0(index)), 0, 0, CStringW(L""));
-    reinterpret_cast<Unk_PayloadPtr<CGuildGrade>*>(&current)->~Unk_PayloadPtr();
 }
 MS2_REPLACE_METHOD(0x1413BF130, CGuildManager, FUN_1413bf130, 358, 0x5D4FD5ED);
 
@@ -2023,8 +2014,8 @@ void CGuildManager::FUN_1413bf9a0(CInPacket& packet)
 }
 MS2_REPLACE_METHOD(0x1413BF9A0, CGuildManager, FUN_1413bf9a0, 328, 0xA408E437);
 
-// MS2-FUNCTIONAL: CGuildInfo::vfunc_0 is declared over guilddef_1's POD Unk_GuildRef, so the by-value member copy is
-// built in a named Unk_GuildRef instead of the exe's argument temporary.
+// MS2-FUNCTIONAL: the member is an MS2Ptr<CGuildMember> here, so the by-value Unk_PayloadPtr<CGuildMember> argument
+// of CGuildInfo::vfunc_0 is built from the raw pointer instead of the exe's copy ctor.
 // @0x1413bfaf0
 void CGuildManager::FUN_1413bfaf0(CInPacket& packet)
 {
@@ -2034,14 +2025,12 @@ void CGuildManager::FUN_1413bfaf0(CInPacket& packet)
     CStringW name = packet.ReadUnicodeString();
     bool notify = FUN_14028d780(packet.ReadUInt8());
     MS2Ptr<CGuildMember> member = FUN_1404cf9f0(name);
-    if (member.get() == 0) {
+    if (member.get() != 0) {
+        member->FUN_1404cb450(&packet);
+    } else {
         member.AssignRaw(new CGuildMember());
         member->FUN_1404cb450(&packet);
-        Unk_GuildRef copy;
-        FUN_1404ec5b0(&copy, member);
-        vfunc_0(&copy);
-    } else {
-        member->FUN_1404cb450(&packet);
+        vfunc_0(reinterpret_cast<Unk_PayloadPtr<CGuildMember>&>(member));
     }
     FUN_1409f7c90()->FUN_14161cd60(member->data.f08);
     if (member->fb0 == 3) {
@@ -2161,8 +2150,6 @@ void CGuildManager::FUN_1413c0630(CInPacket& packet)
 }
 MS2_REPLACE_METHOD(0x1413C0630, CGuildManager, FUN_1413c0630, 579, 0x092A4272);
 
-// MS2-FUNCTIONAL: the grade reference is guilddef_1's POD Unk_GuildRef with an explicit ~Unk_PayloadPtr<CGuildGrade> call, so the
-// exe's EH state for its destructible type is missing.
 // @0x1413c0880
 void CGuildManager::FUN_1413c0880(CInPacket& packet)
 {
@@ -2174,19 +2161,17 @@ void CGuildManager::FUN_1413c0880(CInPacket& packet)
     MS2Ptr<CGuildMember> member = FUN_1404cf9f0(name);
     if (member.get() != 0) {
         member->fb4 = gradeIndex;
-        Unk_GuildRef grade;
-        FUN_1404d0860(&grade, gradeIndex);
-        if (FUN_1404f0aa0(&grade) != 0) {
+        Unk_PayloadPtr<CGuildGrade> grade = FUN_1404d0860(gradeIndex);
+        if (grade.get() != 0) {
             bool isMe = FUN_141b70f50(name, FUN_1413c7c20());
             if (isMe) {
-                FUN_1412751b0(FUN_14052bd00(0x3af, FUN_1404f0b70(&grade)->name), 0xd);
+                FUN_1412751b0(FUN_14052bd00(0x3af, grade->name), 0xd);
                 if (FUN_1404d0600(FUN_1413c7c20(), 2) && m_joinRequestsForGuild.IsEmpty())
                     SendGuildMode85();
             } else {
-                FUN_1412751b0(FUN_140632a60(0x3ae, name, FUN_1404f0b70(&grade)->name), 0xd);
+                FUN_1412751b0(FUN_140632a60(0x3ae, name, grade->name), 0xd);
             }
         }
-        reinterpret_cast<Unk_PayloadPtr<CGuildGrade>*>(&grade)->~Unk_PayloadPtr();
     }
     if (UIGuildDialog* dialog = FUN_14136f480(0x4e4f))
         dialog->FUN_141973b20(name);
@@ -2257,7 +2242,7 @@ void CGuildManager::FUN_1413c0fe0(CInPacket& packet)
     oldMaster->fb4 = 1;
     newMaster->fb4 = 0;
     FUN_1404cd310(newMaster->data.f00, newMaster->data.f08, newMaster->data.FUN_1404ca890(), 1);
-    FUN_1404ef970(&f310, newMaster);
+    FUN_1404ef970((Unk_GuildRef*)&f310, newMaster);
     bool isMe = FUN_141b70f50(newName, FUN_1413c7c20());
     if (isMe)
         FUN_1412751b0(BlockFormat(0x3b1), 0xd);
@@ -2337,8 +2322,6 @@ void CGuildManager::FUN_1413c1840(CInPacket& packet)
 }
 MS2_REPLACE_METHOD(0x1413C1840, CGuildManager, FUN_1413c1840, 281, 0xD98EC819);
 
-// MS2-FUNCTIONAL: the grade reference is guilddef_1's POD Unk_GuildRef with an explicit ~Unk_PayloadPtr<CGuildGrade> call, so the
-// exe's EH state for its destructible type is missing.
 // @0x1413c1960
 void CGuildManager::FUN_1413c1960(CInPacket& packet)
 {
@@ -2348,19 +2331,15 @@ void CGuildManager::FUN_1413c1960(CInPacket& packet)
     int index = packet.ReadUInt8();
     CGuildGrade grade;
     grade.FUN_1404c71d0(packet);
-    Unk_GuildRef current;
-    FUN_1404d0860(&current, index);
-    if (FUN_1404effe0(&current, 0)) {
-        reinterpret_cast<Unk_PayloadPtr<CGuildGrade>*>(&current)->~Unk_PayloadPtr();
+    Unk_PayloadPtr<CGuildGrade> current = FUN_1404d0860(index);
+    if (current == 0)
         return;
-    }
-    FUN_1404f0b70(&current)->FUN_1404c70f0(grade.grade, grade.name, grade.permissions);
+    current->FUN_1404c70f0(grade.grade, grade.name, grade.permissions);
     if (UIGuildDialog* dialog = FUN_14136f480(0x4e4f))
         dialog->FUN_141973fd0(index);
     MS2Ptr<CGuildMember> me = FUN_1404cf9f0(FUN_1413c7c20());
     if (me.get() != 0 && me->fb4 == index)
         FUN_1412751b0(FUN_14052bd00(0x3a7, FUN_1413c7c20()), 0xd);
-    reinterpret_cast<Unk_PayloadPtr<CGuildGrade>*>(&current)->~Unk_PayloadPtr();
 }
 MS2_REPLACE_METHOD(0x1413C1960, CGuildManager, FUN_1413c1960, 741, 0xB97EA301);
 
@@ -2377,8 +2356,6 @@ void CGuildManager::FUN_1413c1c50(CInPacket& packet)
 MS2_REPLACE_METHOD(0x1413C1C50, CGuildManager, FUN_1413c1c50, 204, 0x8C4BE824);
 
 // A member's character data changed.
-// MS2-FUNCTIONAL: the exe frame carries a /GS cookie (its Unk_GuildTriple is an int[3] array in the original, see the
-// FUN_140267ef0 loop); the shared header models it as three ints, so no cookie is emitted here.
 // @0x1413c1d30
 void CGuildManager::FUN_1413c1d30(CInPacket& packet)
 {
@@ -2390,7 +2367,7 @@ void CGuildManager::FUN_1413c1d30(CInPacket& packet)
     MS2Ptr<CGuildMember> member = FUN_1404cf9f0(name);
     if (member == 0)
         return;
-    bool changed = FUN_140267ef0(&member->data.f2c, &data.f2c) == 0;
+    bool changed = FUN_140267ef0(&member->data.f2c, &data.f2c) ? false : true;
     member->data.FUN_1404ca1a0(data);
     if (UIGuildDialog* dialog = FUN_14136f480(0x4e4f)) {
         if (changed)
@@ -2716,17 +2693,13 @@ void CGuildManager::FUN_1413c3e50(CInPacket& packet)
 MS2_REPLACE_METHOD(0x1413C3E50, CGuildManager, FUN_1413c3e50, 139, 0xF70246D1);
 
 // A guild npc was upgraded.
-// MS2-FUNCTIONAL: CGuildInfo::FUN_1404d2860 is declared over guilddef_1's POD Unk_GuildRef, so its by-value
-// Unk_PayloadPtr<CGuildNpc> argument is built in a named Unk_GuildRef instead of the exe's argument temporary.
 // @0x1413c3ef0
 void CGuildManager::FUN_1413c3ef0(CInPacket& packet)
 {
     CStringW user = packet.ReadUnicodeString();
     Unk_PayloadPtr<CGuildNpc> npc(new CGuildNpc());
     npc->FUN_1404cc440(packet);
-    Unk_GuildRef copy;
-    FUN_1404ec690(&copy, npc);
-    FUN_1404d2860(&copy);
+    FUN_1404d2860(npc);
     if (UIGuildDialog* dialog = FUN_14136f480(0x4e4f))
         dialog->FUN_141971ac0();
     Unk_PayloadPtr<CGuildXmlData::GuildNpc> npcData = FUN_1404f4530()->FUN_1404d7b40((Unk_GuildNpcKind)npc->f18, npc->f1c);
@@ -2797,16 +2770,13 @@ MS2_REPLACE_METHOD(0x1413C4580, CGuildManager, FUN_1413c4580, 86, 0xC7BF073C);
 
 // The guild vs-game opened: ask whether to enter.
 // @0x1413c45e0
-// MS2-FUNCTIONAL: the exe frame is 0x20 larger with one more EH state around the message-box result (an extra
-// pointer copy of the returned box); same calls and arguments.
 void CGuildManager::FUN_1413c45e0(CInPacket& packet)
 {
     f350 = packet.ReadInt32();
     f354 = 0;
     if (f350 == 0)
         return;
-    MS2Ptr<CMsgBoxData> box = FUN_140d73f20(GetStringCommonByKey(L"s_guild_notify_vsGame_open"), 1);
-    if (box.get()) {
+    if (MS2Ptr<CMsgBoxData> box = FUN_140d73f20(GetStringCommonByKey(L"s_guild_notify_vsGame_open"), 1)) {
         box->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &CGuildManager::SendGuildMode120));
         box->FUN_141a01ca0(0x1e, 1, GetStringCommon(0x2b8));
         box->FUN_141a02460(1);
@@ -3264,8 +3234,8 @@ CStringW CGuildManager::FUN_1413c7c20()
 MS2_REPLACE_METHOD(0x1413C7C20, CGuildManager, FUN_1413c7c20, 129, 0x9BBE6FF2);
 
 // Adds members read from the packet (under the guild lock).
-// MS2-FUNCTIONAL: the member handed to CGuildInfo::vfunc_0 is guilddef_1's POD Unk_GuildRef (the original passes
-// the pointer by value), and the new member's pointer is the 16-byte payload pointer in the original (frame 0x10
+// MS2-FUNCTIONAL: the member handed to CGuildInfo::vfunc_0 is built from the raw pointer (the original copies the
+// MS2Ptr by value), and the new member's pointer is the 16-byte payload pointer in the original (frame 0x10
 // smaller here); same calls in the same order.
 // @0x1413c7900
 void CGuildManager::FUN_1413c7900(CInPacket& packet)
@@ -3278,9 +3248,7 @@ void CGuildManager::FUN_1413c7900(CInPacket& packet)
         for (int i = 0; i < count; i++) {
             MS2Ptr<CGuildMember> member(new CGuildMember());
             member->FUN_1404cb450(&packet);
-            Unk_GuildRef copy;
-            FUN_1404ec5b0(&copy, member);
-            vfunc_0(&copy);
+            vfunc_0(Unk_PayloadPtr<CGuildMember>(member.get()));
             FUN_1409f7c90()->FUN_14161cd60(member->data.f08);
         }
     }

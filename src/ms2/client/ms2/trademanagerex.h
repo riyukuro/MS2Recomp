@@ -47,7 +47,7 @@ public:
     // Incoming packet (opcode 0x82): OnTrade switches on the sub-code.
     void OnTrade(CInPacket& packet);
     void FUN_14185bec0(CInPacket& packet);          // 0  trade request from a player
-    void FUN_14185c230();                           // 2  request sent
+    void FUN_14185c230(CInPacket& packet);          // 2  request sent
     void FUN_14185c2a0(CInPacket& packet);          // 1  request failed (reason code)
     void FUN_14185cc60(CInPacket& packet);          // 4  request declined
     void FUN_14185cd10(CInPacket& packet);          // 5  trade started
@@ -57,12 +57,12 @@ public:
     void FUN_14185d4f0(CInPacket& packet);          // 10
     void FUN_14185d590(CInPacket& packet);          // 11 confirm
     void FUN_14185d610(CInPacket& packet);          // 12
-    void FUN_14185d720();                           // 13
-    void FUN_14185d750();                           // 14
+    void FUN_14185d720(CInPacket& packet);          // 13
+    void FUN_14185d750(CInPacket& packet);          // 14
 
     void FUN_14185d7b0();                           // reset the trade state
     void FUN_14185d820(__int64 uid, CStringW strName, CString strChar); // begin a trade with uid
-    bool FUN_14185d8b0();                           // can a new trade start?
+    int  FUN_14185d8b0();                           // can a new trade start?
     __int64 GetUidLastSent();                        // m_uidLastSent
     void FUN_14185dc90();                           // m_bConfirmed = false
     // Inline accessors (COMDATs first emitted in uitradedialogex.cpp).

@@ -23,9 +23,9 @@
 #include "ms2/placeholder/singletonclass.h"
 #include "ms2/placeholder/tfunctor_small.h"
 
-#include "Kernel/SF_Atomic.h"
-#include "Kernel/SF_File.h"
-#include "Kernel/SF_String.h"
+#include "ms2/scaleform/include/kernel/sf_lock.h"
+#include "ms2/scaleform/include/kernel/sf_file.h"
+#include "ms2/scaleform/include/kernel/sf_string.h"
 
 class ASMovieClipLoader;
 class ASMouseCursor;

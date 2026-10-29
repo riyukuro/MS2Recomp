@@ -30,7 +30,7 @@ class TriggerActionCli : public ClassObject
 {
 public:
     TriggerActionCli();                                         // 0x140de5190
-    virtual ~TriggerActionCli();                                // 0x140de5210 (slot 0: ??_G 0x140de5260)
+    virtual ~TriggerActionCli() = default;                          // 0x140de5210 (slot 0: ??_G 0x140de5260)
     virtual CStringW GetTypeName();                                 // 0x140de4d10 L"TriggerActionCli"
     virtual void vfunc_2(void* pNode);                          // 0x140de5010 loads name and arg1..arg6
 
@@ -39,7 +39,7 @@ public:
     void SetArgs(const ATL::CAtlArray<CStringW>& rArgs);        // 0x140de4e80
     CStringW GetName();                                         // 0x140de4eb0
     CStringW GetArg(int n);                                     // 0x140de4f00
-    unsigned __int64 GetArgCount();                             // 0x140de4f60
+    unsigned int GetArgCount();                                 // 0x140de4f60
     int GetIntArg0();                                           // 0x140de4f90 (0 unless two or more arguments)
     ATL::CAtlArray<CStringW>* GetArgs();                        // 0x140de4ff0
 
@@ -55,7 +55,7 @@ class TriggerConditionCli : public ClassObject
 {
 public:
     TriggerConditionCli();                                      // 0x140de5620
-    virtual ~TriggerConditionCli();                             // 0x140de5c30 (slot 0: ??_G 0x140de5c80)
+    virtual ~TriggerConditionCli() = default;                       // 0x140de5c30 (slot 0: ??_G 0x140de5c80)
     virtual CStringW GetTypeName();                                 // 0x140de55d0 L"TriggerConditionCli"
     virtual void vfunc_2(void* pNode);                          // 0x140de5aa0 loads arg1..arg6
 
@@ -66,7 +66,7 @@ public:
     CStringW GetName();                                         // 0x140de5920
     CStringW GetArg(int n) const;                               // 0x140de5970
     int GetIntArg0();                                           // 0x140de59d0
-    unsigned __int64 GetArgCount();                             // 0x140de5a30
+    unsigned int GetArgCount();                                 // 0x140de5a30
     ATL::CAtlArray<CStringW>* GetArgs();                        // 0x140de5a60
     int GetNot();                                               // 0x140de5a80
 
@@ -85,7 +85,7 @@ class TriggerTransitionCli : public CPtred
 public:
     TriggerTransitionCli(const MS2Ptr<TriggerConditionCli>& spCond, const ATL::CAtlArray<MS2Ptr<TriggerActionCli> >& rActions,
                          CStringW strTarget);                   // 0x140dec890
-    virtual ~TriggerTransitionCli();                            // 0x140dec9a0 (slot 0: ??_G 0x140deca30)
+    virtual ~TriggerTransitionCli() = default;                      // 0x140dec9a0 (slot 0: ??_G 0x140deca30)
 
     MS2Ptr<TriggerConditionCli> m_spCond;                       // +0x18
     ATL::CAtlArray<MS2Ptr<TriggerActionCli> > m_actions;        // +0x28 run when the transition fires
@@ -104,11 +104,11 @@ public:
     typedef MS2Ptr<TriggerTransitionCli> TransitionPtr;
 
     explicit TriggerStateCli(void* pOwner);                     // 0x140de93d0
-    virtual ~TriggerStateCli();                                 // 0x140deb6d0 (slot 0: ??_G 0x140deb930)
+    virtual ~TriggerStateCli() = default;                           // 0x140deb6d0 (slot 0: ??_G 0x140deb930)
 
     void Load(void* pNode);                                     // 0x140de9490
     void Save(void* pNode);                                     // 0x140de9600
-    bool Validate(int* pnReason);                               // 0x140de9d40 (limits from the config table)
+    int Validate(int* pnReason);                                // 0x140de9d40 (limits from the config table)
     void CollectIds(std::vector<std::pair<CStringW, int> >& rOut);   // 0x140dea020 (name, id of every action / condition)
     int GetPosX();                                              // 0x140dea360
     int GetPosY();                                              // 0x140dea380
@@ -119,10 +119,10 @@ public:
     void AddTransition(TransitionPtr spTrans);                  // 0x140dea4c0
     ActionPtr GetOnEnter(int n);                                // 0x140dea510
     TransitionPtr GetTransition(int n);                         // 0x140dea570
-    unsigned __int64 GetOnEnterCount();                         // 0x140dea5d0
-    unsigned __int64 GetTransitionCount();                      // 0x140dea600
+    unsigned int GetOnEnterCount();                             // 0x140dea5d0
+    unsigned int GetTransitionCount();                          // 0x140dea600
     void AddTransition(void* pNode);                            // 0x140dea630 <condition>
-    bool LoadActions(void* pNode, ATL::CAtlArray<ActionPtr>& rOut);   // 0x140dea7f0
+    int LoadActions(void* pNode, ATL::CAtlArray<ActionPtr>& rOut);    // 0x140dea7f0
     void SaveArgs(void* pElem, const ATL::CAtlArray<CStringW>& rArgs);   // 0x140dea8b0
 
     int m_nPosX;                                                // +0x18 (-1)
@@ -144,24 +144,26 @@ MS2_CHECK_OFFSET(TriggerStateCli, m_onExit, 0x90);
 // ---- trigger world objects ----
 
 // The event handed to TriggerObject::vfunc_2: a pointer-sized field and, at +8, an argument block with virtual getters
-// (slot 0 and 1 booleans, slot 3 fade in tenths of a second, slot 5 a count, slot 6 a string).
+// (slot 0 and 1 booleans, slot 3 fade in tenths of a second, slot 5 a float, slot 6 a string).
+// The virtuals are declared but not pure, so the block can be a by-value member; it is never constructed here.
+// Calls go through `(&pEvent->m_arg)->`: clang-cl devirtualizes a call on the embedded member itself.
 class Unk_TrigArg
 {
 public:
-    virtual char vfunc_0() = 0;
-    virtual unsigned char vfunc_1() = 0;
-    virtual int vfunc_2() = 0;
-    virtual int vfunc_3() = 0;
-    virtual int vfunc_4() = 0;
-    virtual int vfunc_5() = 0;
-    virtual CStringA vfunc_6() = 0;
+    virtual bool vfunc_0();
+    virtual unsigned char vfunc_1();
+    virtual int vfunc_2();
+    virtual int vfunc_3();
+    virtual int vfunc_4();
+    virtual float vfunc_5();
+    virtual CStringA vfunc_6();
 };
 struct Unk_TriggerEvent
 {
     void* m_00;
-    // the argument block is the polymorphic sub-object at +8
-    Unk_TrigArg* Arg() { return reinterpret_cast<Unk_TrigArg*>(reinterpret_cast<char*>(this) + 8); }
+    Unk_TrigArg m_arg;      // +8
 };
+MS2_CHECK_OFFSET(Unk_TriggerEvent, m_arg, 8);
 
 // A world object driven by a trigger (vftable 0x142e3d650, 5 slots, size 0x28, CPtred-derived).
 class TriggerObject : public CPtred
@@ -176,7 +178,7 @@ public:
 
     bool HasModel(const unsigned& rModelId);                    // 0x140de5e70
     void Init(int nId, Unk_EntRef ent);                         // 0x140de5ef0
-    bool Contains(Vector3 pt);                          // 0x140de5f60 point inside the trigger box
+    bool Contains(const Vector3& pt);                   // 0x140de5f60 point inside the trigger box
     static MS2Ptr<TriggerObject> Create(egf::Entity* pEntity);  // 0x140de6260 (by FlatModel id)
 
     int m_nId;                                                  // +0x18

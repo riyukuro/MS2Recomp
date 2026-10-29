@@ -60,9 +60,17 @@ public:
         int m_n0c;
         CString m_strAsset;
         ATL::CAtlArray<unsigned> m_defaultItems;
-        int m_nSkinColor0;
-        int m_nSkinColor1;
-        int m_nSkinColor2;
+        // The loader stores the skin colours by index; fittingdollslot reads them by name.
+        union
+        {
+            int m_anSkinColor[3];
+            struct
+            {
+                int m_nSkinColor0;
+                int m_nSkinColor1;
+                int m_nSkinColor2;
+            };
+        };
         int m_n44;
     };
 

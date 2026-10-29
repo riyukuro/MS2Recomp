@@ -25,14 +25,14 @@ Merged totals by area (functions in the original executable; regenerated on each
 <!-- progress:start -->
 | Area | Functions | Matched | Equivalent | Done |
 |---|---:|---:|---:|---:|
-| Game · ms2 | 178,216 | 169,155 (94.9%) | 9,037 (5.1%) | 100.0% |
-| Runtime & middleware | 21,901 | 17,033 (77.8%) | 4,702 (21.5%) | 99.2% |
-| Gamebryo engine | 16,762 | 16,533 (98.6%) | 186 (1.1%) | 99.7% |
-| Game framework · egf | 12,761 | 12,560 (98.4%) | 175 (1.4%) | 99.8% |
-| Libraries | 6,719 | 6,263 (93.2%) | 107 (1.6%) | 94.8% |
-| Foundation | 11,642 | 11,303 (97.1%) | 296 (2.5%) | 99.6% |
+| Game · ms2 | 178,830 | 176,463 (98.7%) | 2,345 (1.3%) | 100.0% |
+| Runtime & middleware | 21,899 | 17,068 (77.9%) | 4,665 (21.3%) | 99.2% |
+| Gamebryo engine | 16,755 | 16,576 (98.9%) | 145 (0.9%) | 99.8% |
+| Game framework · egf | 12,567 | 12,421 (98.8%) | 122 (1.0%) | 99.8% |
+| Libraries | 6,719 | 6,318 (94.0%) | 52 (0.8%) | 94.8% |
+| Foundation | 11,231 | 11,043 (98.3%) | 153 (1.4%) | 99.7% |
 | Imports | 782 | 697 (89.1%) | 0 (0.0%) | 89.1% |
-| **Total** | **248,783** | 233,544 (93.9%) | 14,503 (5.8%) | 99.7% |
+| **Total** | **248,783** | 240,586 (96.7%) | 7,482 (3.0%) | 99.7% |
 
 Not counted: 5,863 Nexon Messenger functions, which are stubbed out of the rebuild.
 <!-- progress:end -->
@@ -65,7 +65,8 @@ Not counted: 5,863 Nexon Messenger functions, which are stubbed out of the rebui
 - clang-cl and the LLVM tools (`llvm-nm`, `llvm-undname`), for the faster non-matching build and the gates
 - Stock Gamebryo LightSpeed 3.2.0.661 source (not included), patched with `engine-patches/` into `engine/gamebryo/`
 - DirectX SDK (June 2010) in `third_party/dxsdk/` and the NVIDIA PhysX SDK 2.8.4 in `third_party/physx284/`
-- Optional: the Scaleform GFx 4.1 SDK. Without it, the build uses the placeholder types in `src/ms2/placeholder/`.
+- The Scaleform GFx 4.1.x SDK headers (4.1.18 or 4.1.19), for now: about 1080 game units still include 188 of them
+  (listed in `cmake/sdk-manifest.txt`), and they do not compile without them
 - The unpacked KMS2_DEV x64 `MapleStory2.exe` (TimeDateStamp `0x62568c46`) to run the DLL against
 
 ## Build
@@ -97,6 +98,11 @@ ninja -C build\hook-msvc
 ```
 
 The per-unit gate does these builds for you (`python tools\unit_check.py`). Both builds produce `dinput8.dll`. `-DMS2HOOK_WITH_GAME=OFF` builds the bare proxy with no hooks.
+
+## Full executable
+
+[`BUILDING.md`](BUILDING.md) builds a complete `MapleStory2.exe` replacement from this checkout plus your own SDKs, with
+one CMake command (`cmake --preset fullexe && cmake --build build/fullexe`).
 
 ## Running
 

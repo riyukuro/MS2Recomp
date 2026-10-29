@@ -26,7 +26,7 @@ class UIMinimapEditDialog : public UIDialog
 {
 public:
     UIMinimapEditDialog();                                          // 0x141a51f00
-    virtual ~UIMinimapEditDialog();                                 //  0 0x141a54c20 (??_G 0x141a54ce0)
+    // implicit virtual dtor                                       //  0 0x141a54c20 (??_G 0x141a54ce0)
 
     virtual CString GetTypeName();                                      //  1 0x141a52020 "MinimapEditDialog"
     virtual void OnLoadComplete();                                  // 22 0x141a522a0 bind the sliders, labels and the image area

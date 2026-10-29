@@ -150,7 +150,7 @@ public:
   MS2Ptr<CItem> FUN_140524250();          // 0x140524250 copy
   bool FUN_1405277e0(int);
   bool FUN_140528e20();
-  int FUN_140528f90(int);
+  int FUN_140528f90();
   CStringW FUN_140528160();               // 0x140528160 item name
   int FUN_140526c50();                    // 0x140526c50 count
   int FUN_1405258b0();                    // 0x1405258b0 nonzero: no sell confirm by price (uimessagebox.cpp)
@@ -170,7 +170,7 @@ public:
   int FUN_140526010();
   int FUN_140526100();
   int FUN_1405262c0();
-  bool FUN_140526320();
+  int FUN_140526320();
   int FUN_140526790(int);
   int FUN_1405267d0(int);
   int FUN_140526810(unsigned short);

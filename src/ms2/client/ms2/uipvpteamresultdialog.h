@@ -30,7 +30,7 @@ public:
     void FUN_1413456a0();                                       // push the scores
     void FUN_141345740(int nTeam, int nCount);                  // set the result: winning team, reward count
     void FUN_1413457f0();                                       // push the last result
-    int FUN_141345c60(ASObj& obj, int nIndex, Unk_PtMember* pMember);   // one member row
+    bool FUN_141345c60(ASObj& obj, int nIndex, Unk_PtMember* pMember);   // one member row
     void FUN_141345de0();                                       // push everything
     void FUN_141345e40();                                       // push the own team
     CString FUN_141345eb0(unsigned int nItemId, int nAmount);   // bind the reward item, returns its slot name

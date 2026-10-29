@@ -112,19 +112,14 @@ GemStoneSlot::GemStoneSlot(const CString& strName, MS2Ptr<CGemStoneItem> spGem, 
     SetGem(spGem);
 }
 
-// @0x140cfe8b0
-GemStoneSlot::~GemStoneSlot()
-{
-}
-
 // @0x140cfd950
 void GemStoneSlot::SetGem(MS2Ptr<CGemStoneItem> spGem)
 {
     m_spGem = spGem;
-    if (m_spGem.get() == 0)
-        SetItem(MS2Ptr<CItem>(0));
-    else
+    if (m_spGem.get() != 0)
         SetItem(MS2Ptr<CItem>(m_spGem->m_gemstone));
+    else
+        SetItem(MS2Ptr<CItem>(0));
 }
 
 // @0x140cfda30
@@ -151,13 +146,12 @@ int GemStoneSlot::vfunc_8(void* p)
 // @0x140cfdbe0
 int GemStoneSlot::vfunc_18(void* pv)
 {
-    DragSlot* p = static_cast<DragSlot*>(pv);
-    if (p == 0)
+    if (pv == 0)
         return 1;
-    ItemInfoSlot* pSrc = FUN_140cfe6c0(p);
+    ItemInfoSlot* pSrc = FUN_140cfe6c0(static_cast<DragSlot*>(pv));
     if (pSrc != 0)
         FUN_140cfddf0(pSrc->vfunc_25());
-    return p->vfunc_10();
+    return static_cast<DragSlot*>(pv)->vfunc_10();
 }
 
 // @0x140cfdc70
@@ -170,17 +164,10 @@ void GemStoneSlot::FUN_140cfdc70(ASSlot* pSlot, bool bLocked)
 void GemStoneSlot::FUN_140cfdcb0(ASSlot* pSlot, MS2Ptr<CItem> spItem, bool bLocked)
 {
     CStringW strText;
-    if (spItem.get() == 0)
-    {
-        if (!bLocked)
-            strText = L"$s_itemsocketsystem_gemstonemanage_msg_socket_empty";
-        else
-            strText = L"$s_itemsocketsystem_gemstonemanage_msg_socket_lock";
-    }
-    else
-    {
+    if (spItem.get() != 0)
         strText = FUN_14062ad80(spItem);
-    }
+    else
+        strText = bLocked ? L"$s_itemsocketsystem_gemstonemanage_msg_socket_lock" : L"$s_itemsocketsystem_gemstonemanage_msg_socket_empty";
     pSlot->FUN_1407cbb20("text", strText);
 }
 
@@ -189,9 +176,7 @@ void GemStoneSlot::FUN_140cfddf0(MS2Ptr<CItem> spGemItem)
 {
     if (spGemItem == 0)
         return;
-    if (m_spGem == 0)
-        return;
-    if (m_spGem->m_equipment == 0)
+    if (m_spGem == 0 || m_spGem->m_equipment == 0)
         return;
     MS2Ptr<CItem> spEquip = m_spGem->m_equipment;
     FUN_14062a3d0(spEquip, GetIndex(), spGemItem,
@@ -201,13 +186,12 @@ void GemStoneSlot::FUN_140cfddf0(MS2Ptr<CItem> spGemItem)
 // @0x140cfdfe0
 bool GemStoneSlot::FUN_140cfdfe0(int nButton, const CMsgBoxData& box)
 {
-    if (m_spGem != 0 && m_spGem->m_equipment != 0)
+    if (m_spGem == 0 || m_spGem->m_equipment == 0)
+        return true;
+    if (nButton == 0)
     {
-        if (nButton == 0)
-        {
-            MS2Ptr<CItem> spEquip = m_spGem->m_equipment;
-            SendItemSocketSystem(spEquip, box);
-        }
+        MS2Ptr<CItem> spEquip = m_spGem->m_equipment;
+        SendItemSocketSystem(spEquip, box);
     }
     return true;
 }
@@ -258,9 +242,9 @@ DragSlot* GemStoneSlotBag::vfunc_16(int nIndex)
 // @0x140cfe450
 MS2Ptr<CGemStoneItem> FUN_140cfe450(void* pSockets, int nIndex)
 {
-    ATL::CAtlArray<MS2Ptr<CGemStoneItem> >* pArray = static_cast<ATL::CAtlArray<MS2Ptr<CGemStoneItem> >*>(pSockets);
-    if (!pArray->IsEmpty() && nIndex < (int)pArray->GetCount())
-        return pArray->GetAt(nIndex);
+    typedef ATL::CAtlArray<MS2Ptr<CGemStoneItem> > GemArray;
+    if (!static_cast<GemArray*>(pSockets)->IsEmpty() && nIndex < (int)static_cast<GemArray*>(pSockets)->GetCount())
+        return static_cast<GemArray*>(pSockets)->GetAt(nIndex);
     return MS2Ptr<CGemStoneItem>(0);
 }
 

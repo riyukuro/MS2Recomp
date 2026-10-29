@@ -73,7 +73,7 @@ CStringW FUN_14102a870(const CStringW& strOrgFile);        // upload.m2u
 CStringW FUN_14102a920(const CStringW& strZipFile);        // <name>.dds for a downloaded package
 int FUN_14102ac40(const CStringW& strPath, CAtlArray<CStringW>& parts);   // drive/dir/name/ext of an existing file
 CStringW FUN_141026920(int nKind);                          // a UGC directory
-bool FUN_141027420(CString strName);
+int FUN_141027420(CString strName);
 CString FUN_141027200(CString strName);
 void FUN_140841420(CStringW& str);
 bool FUN_1403b3c40(const CStringW& str, const wchar_t* psz);
@@ -333,7 +333,6 @@ int CUgcCompress::DoCompress()
 MS2_REPLACE_METHOD(0x141869e90, CUgcCompress, DoCompress, 538, 0xCBB46787);
 
 // zlib's zpipe inf(): zip file -> m_pBuffer (doubling from 1 MB).
-// MS2-FUNCTIONAL: same zlib calls, buffer growth and results; locals are laid out differently.
 // @0x14186a0b0
 int CUgcCompress::DoDecompress()
 {
@@ -362,7 +361,6 @@ int CUgcCompress::DoDecompress()
     m_nBufferSize = 0x100000;
     m_pBuffer = EE_ALLOC(BYTE, m_nBufferSize);
     int nTotal = 0;
-    int status = 0;
     do
     {
         strm.avail_in = (uInt)fread(in, 1, 0x10000, m_pZipFile);
@@ -378,17 +376,17 @@ int CUgcCompress::DoDecompress()
         {
             strm.avail_out = 0x18000;
             strm.next_out = out;
-            status = inflate(&strm, Z_NO_FLUSH);
-            if (status == Z_STREAM_ERROR)
-                return Z_STREAM_ERROR;
-            switch (status)
+            ret = inflate(&strm, Z_NO_FLUSH);
+            if (ret == Z_STREAM_ERROR)
+                return ret;
+            switch (ret)
             {
             case Z_NEED_DICT:
-                status = Z_DATA_ERROR;
+                ret = Z_DATA_ERROR;
             case Z_DATA_ERROR:
             case Z_MEM_ERROR:
                 (void)inflateEnd(&strm);
-                return status;
+                return ret;
             }
             have = 0x18000 - strm.avail_out;
             if (m_nBufferSize <= (int)(nTotal + have))
@@ -402,14 +400,11 @@ int CUgcCompress::DoDecompress()
             memcpy(m_pBuffer + nTotal, out, have);
             nTotal += have;
         } while (strm.avail_out == 0);
-    } while (status != Z_STREAM_END);
+    } while (ret != Z_STREAM_END);
     (void)inflateEnd(&strm);
-    if (status == Z_STREAM_END)
-    {
+    if (ret == Z_STREAM_END)
         m_nDataSize = nTotal;
-        return Z_OK;
-    }
-    return Z_DATA_ERROR;
+    return ret == Z_STREAM_END ? Z_OK : Z_DATA_ERROR;
 }
 MS2_REPLACE_METHOD(0x14186a0b0, CUgcCompress, DoDecompress, 849, 0x80556A4D);
 
@@ -567,7 +562,6 @@ int CUgcImageConverter::ConvertMemory(const CStringW& strSrc, const void* pData,
 MS2_REPLACE_METHOD(0x14186aaa0, CUgcImageConverter, ConvertMemory, 420, 0xEE2E9C1A);
 
 // A banner png that fits in 384x240.
-// MS2-FUNCTIONAL: same scale-to-384x240 maths, calls and results; one extra double temporary shifts the frame.
 // @0x14186ac50
 int CUgcImageConverter::ConvertBanner(const CStringW& strSrc)
 {
@@ -594,12 +588,14 @@ int CUgcImageConverter::ConvertBanner(const CStringW& strSrc)
         nWidth = (int)(m_nWidth * dScale);
         nHeight = (int)(m_nHeight * dScale);
     }
-    int nConvert = Convert(D3DFMT_A8R8G8B8, min(nWidth, 384), min(nHeight, 240), 0);
-    if (nConvert != 0)
-        return nConvert;
-    int nSave = Save(D3DXIFF_PNG);
-    if (nSave != 0)
-        return nSave;
+    nWidth = nWidth > 384 ? 384 : nWidth;
+    nHeight = nHeight > 240 ? 240 : nHeight;
+    nResult = Convert(D3DFMT_A8R8G8B8, nWidth, nHeight, 0);
+    if (nResult != 0)
+        return nResult;
+    nResult = Save(D3DXIFF_PNG);
+    if (nResult != 0)
+        return nResult;
     return 0;
 }
 MS2_REPLACE_METHOD(0x14186ac50, CUgcImageConverter, ConvertBanner, 729, 0xB46317E2);
@@ -693,17 +689,16 @@ int CUgcImageConverter::LoadMemory(const void* pData, int nSize)
 MS2_REPLACE_METHOD(0x14186b210, CUgcImageConverter, LoadMemory, 524, 0x14839640);
 
 // Creates m_pDstTexture (eFormat, nWidth x nHeight) from the source texture.
-// MS2-FUNCTIONAL: same D3D calls, checks and error codes; the device pointer goes through an extra temporary.
 // @0x14186b430
 int CUgcImageConverter::Convert(D3DFORMAT eFormat, int nWidth, int nHeight, int nMipSize)
 {
     HRESULT hr;
     int nResult = 0;
+    LPDIRECT3DDEVICE9 pDevice = FUN_1422cf0d0();
+    IDirect3DTexture9* pSrc = m_pSrcTexture;
+    IDirect3DTexture9* pDst = NULL;
     try
     {
-        LPDIRECT3DDEVICE9 pDevice = FUN_1422cf0d0();
-        IDirect3DTexture9* pSrc = m_pSrcTexture;
-        IDirect3DTexture9* pDst = NULL;
         D3DSURFACE_DESC kDesc;
         pSrc->GetLevelDesc(0, &kDesc);
         D3DFORMAT eSrcFormat = kDesc.Format;
@@ -732,6 +727,7 @@ int CUgcImageConverter::Convert(D3DFORMAT eFormat, int nWidth, int nHeight, int 
             m_pDstTexture = NULL;
         }
         m_pDstTexture = pDst;
+        nResult = 0;
     }
     catch (Exception& e)
     {
@@ -842,30 +838,32 @@ Unk_UgcFileResult ChangeFormat(int nType, MS2Ptr<CUploadFile> pUploadFile, int n
 MS2_REPLACE(0x14186b9c0, ChangeFormat, 866, 0x95460236);
 
 // A texture from an image file; a .jpg goes through the converter first.
-// MS2-FUNCTIONAL: same cache lookups, conversions and texture creation; temporaries are ordered differently.
 // @0x14186bd30
 NiTexturePtr LoadUgcTexture(const CStringW& strPath, int nSize, bool bPng)
 {
+    int nResult;
     CAtlArray<CStringW> parts;
-    if (FUN_14102ac40(strPath, parts) != 0)
+    nResult = FUN_14102ac40(strPath, parts);
+    if (nResult != 0)
         return NULL;
     CStringW strExt = parts.GetAt(3);
     FUN_140841420(strExt);
     CStringW strConverted;
-    bool bConverted = false;
+    BOOL bConverted = FALSE;
     if (FUN_1403b3c40(strExt, L".jpg"))
     {
         CUgcImageConverter converter;
-        if (converter.ConvertTexture(strPath, nSize, bPng) != 0)
+        nResult = converter.ConvertTexture(strPath, nSize, bPng);
+        if (nResult != 0)
             return NULL;
-        bConverted = true;
+        bConverted = TRUE;
         strConverted = converter.GetDstFile();
     }
-    CStringW strFile = bConverted ? strConverted : strPath;
+    CStringW strFile = bConverted == TRUE ? strConverted : strPath;
     NiImageConverter* pkConverter = NiDynamicCast(NiImageConverter, FUN_141851720());
     NiPixelDataPtr spPixelData = pkConverter->ReadImageFile((const wchar_t*)strFile, NULL);
     NiTexturePtr spTexture = NiSourceTexture::Create(spPixelData, DAT_1439fc800, true);
-    if (bConverted)
+    if (bConverted == TRUE)
         DeleteFileW(strConverted);
     return spTexture;
 }
@@ -1119,7 +1117,6 @@ CUgcDownloadLoad::~CUgcDownloadLoad()
 }
 
 // The worker: takes up to 10 queued files at a time, turns each into a cached texture and reports the names back.
-// MS2-FUNCTIONAL: same queue/batch logic, loaders and callbacks; the frame layout and some temporaries differ.
 // @0x14186d350
 unsigned int CUgcDownloadLoad::vfunc_1(void* pParam, Unk_140659080& start)
 {
@@ -1130,8 +1127,11 @@ unsigned int CUgcDownloadLoad::vfunc_1(void* pParam, Unk_140659080& start)
         return -1;
     }
     start.FUN_1401d42d0();
-    while (WaitForSingleObject(m_hSemaphore, INFINITE), m_bStop == 0)
+    while (TRUE)
     {
+        WaitForSingleObject(m_hSemaphore, INFINITE);
+        if (m_bStop != 0)
+            break;
         CAtlList<MS2Ptr<CUgcLoadData> > batch(10);
         if (Unk_LockGuard guard = m_lock)
         {
@@ -1142,87 +1142,87 @@ unsigned int CUgcDownloadLoad::vfunc_1(void* pParam, Unk_140659080& start)
                 continue;
             int nCount = 0;
             POSITION pos = m_list.GetHeadPosition();
-            do
+            while (pos != NULL)
             {
-                if (pos == NULL)
-                    break;
                 POSITION posCur = pos;
                 m_list.GetNext(pos);
                 batch.AddTail(m_list.GetAt(posCur));
                 m_list.RemoveAt(posCur);
                 nCount++;
-            } while (nCount < 10);
-        }
-        if (batch.GetCount() == 0)
-            continue;
-        CAtlList<CString> loaded(10);
-        CAtlList<CString> failed(10);
-        for (POSITION pos = batch.GetHeadPosition(); pos != NULL; batch.GetNext(pos))
-        {
-            MS2Ptr<CUgcLoadData> pData = batch.GetAt(pos);
-            if (pData == NULL)
-                continue;
-            if (pData->m_bPackage == 0)
-                continue;
-            CUgcCompress compress;
-            int nDecompress = compress.Decompress(FUN_14016a730(pData->m_strPath, 0), pData->m_userData);
-            if (nDecompress != 0)
-                continue;
-            NiTexturePtr spTexture = 0;
-            CStringW strOrgFile = compress.GetOrgFile();
-            if (strOrgFile.GetLength() == 0)
-                continue;
-            efd::File* pFile = compress.CreateMemFile();
-            NiDDSReader kReader;
-            NiPixelDataPtr spPixelData = kReader.ReadFile(*pFile, NULL);
-            if (spPixelData != NULL)
-            {
-                if (FUN_140a0afd0())
-                    spTexture = FUN_140a0afd0()->FUN_1415534d0(FUN_14016a5c0(pData->m_strName, 0), spPixelData, 5);
+                if (nCount >= 10)
+                    break;
             }
-            else
+        }
+        if (batch.GetCount() > 0)
+        {
+            CAtlList<CString> loaded(10);
+            CAtlList<CString> failed(10);
+            for (POSITION pos = batch.GetHeadPosition(); pos != NULL; batch.GetNext(pos))
             {
-                CUgcImageConverter converter;
-                int nConvert = 1;
-                int nSize = compress.GetDataSize();
-                BYTE* pBuffer = compress.GetBuffer();
-                nConvert = converter.ConvertMemory(FUN_14016a730(pData->m_strName, 0), pBuffer, nSize);
-                if (nConvert == 0)
+                MS2Ptr<CUgcLoadData> pData = batch.GetAt(pos);
+                if (pData == NULL)
+                    continue;
+                if (pData->m_bPackage == 0)
+                    continue;
+                CUgcCompress compress;
+                int nDecompress = compress.Decompress(FUN_14016a730(pData->m_strPath, 0), pData->m_userData);
+                if (nDecompress != 0)
+                    continue;
+                NiTexturePtr spTexture = 0;
+                CStringW strOrgFile = compress.GetOrgFile();
+                if (strOrgFile.GetLength() == 0)
+                    continue;
+                efd::File* pFile = compress.CreateMemFile();
+                NiDDSReader kReader;
+                NiPixelDataPtr spPixelData = kReader.ReadFile(*pFile, NULL);
+                if (spPixelData != NULL)
                 {
-                    CStringW strDstFile = converter.GetDstFile();
                     if (FUN_140a0afd0())
-                        spTexture = FUN_140a0afd0()->FUN_141553910(FUN_14016a5c0(pData->m_strName, 0),
-                                                                   FUN_14016a600(strDstFile, 0), 5);
-                    if (_waccess(strDstFile, 0) == 0)
-                        DeleteFileW(strDstFile);
+                        spTexture = FUN_140a0afd0()->FUN_1415534d0(FUN_14016a5c0(pData->m_strPath, 0), spPixelData, 5);
                 }
+                else
+                {
+                    CUgcImageConverter converter;
+                    int nConvert = 1;
+                    nConvert = converter.ConvertMemory(FUN_14016a730(pData->m_strPath, 0), compress.GetBuffer(),
+                                                       compress.GetDataSize());
+                    if (nConvert == 0)
+                    {
+                        CStringW strDstFile = converter.GetDstFile();
+                        if (FUN_140a0afd0())
+                            spTexture = FUN_140a0afd0()->FUN_141553910(FUN_14016a5c0(pData->m_strPath, 0),
+                                                                       FUN_14016a600(strDstFile, 0), 5);
+                        if (_waccess(strDstFile, 0) == 0)
+                            DeleteFileW(strDstFile);
+                    }
+                }
+                if (spTexture != NULL)
+                    loaded.AddTail(pData->m_strName);
+                else
+                    failed.AddTail(pData->m_strName);
+                if (pFile)
+                    EE_DELETE pFile;
             }
-            if (spTexture != NULL)
-                loaded.AddTail(pData->m_strName);
-            else
-                failed.AddTail(pData->m_strName);
-            if (pFile)
-                EE_DELETE pFile;
+            for (POSITION pos = loaded.GetHeadPosition(); pos != NULL; loaded.GetNext(pos))
+            {
+                CString strName = loaded.GetAt(pos);
+                if (!FUN_141027420(strName))
+                    strName = FUN_141027200(strName);
+                if (FUN_1414a57f0())
+                    FUN_1414a57f0()->Finish(strName, 0);
+            }
+            for (POSITION pos = failed.GetHeadPosition(); pos != NULL; failed.GetNext(pos))
+            {
+                CString strName = failed.GetAt(pos);
+                if (!FUN_141027420(strName))
+                    strName = FUN_141027200(strName);
+                if (FUN_1414a57f0())
+                    FUN_1414a57f0()->Finish(strName, 0x20);
+            }
+            batch.RemoveAll();
+            loaded.RemoveAll();
+            failed.RemoveAll();
         }
-        for (POSITION pos = loaded.GetHeadPosition(); pos != NULL; loaded.GetNext(pos))
-        {
-            CString strName = loaded.GetAt(pos);
-            if (!FUN_141027420(strName))
-                strName = FUN_141027200(strName);
-            if (FUN_1414a57f0())
-                FUN_1414a57f0()->Finish(strName, 0);
-        }
-        for (POSITION pos = failed.GetHeadPosition(); pos != NULL; failed.GetNext(pos))
-        {
-            CString strName = failed.GetAt(pos);
-            if (!FUN_141027420(strName))
-                strName = FUN_141027200(strName);
-            if (FUN_1414a57f0())
-                FUN_1414a57f0()->Finish(strName, 0x20);
-        }
-        batch.RemoveAll();
-        loaded.RemoveAll();
-        failed.RemoveAll();
     }
     return 0;
 }

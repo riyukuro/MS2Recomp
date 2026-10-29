@@ -25,7 +25,7 @@ public:
 
     void FUN_141352530(NotifyObject* pNotify);                  // "NotifyChangedTokenMoney" handler
     void FUN_141352560();                                       // refresh the amount texts
-    MS2Ptr<ASUIComponent> FUN_141352cf0(int nTokenKind, CStringW strTooltip);   // add one token slot
+    MS2Ptr<ASUIComponent> FUN_141352cf0(int nTokenKind, const CStringW& strTooltip);   // add one token slot
     MS2Ptr<ASMovieClip> FUN_140ba7930(const CString& strName);  // 0x140ba7930 bind a movie clip child (a UIDialog member)
 
 private:

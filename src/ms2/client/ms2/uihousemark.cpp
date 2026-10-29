@@ -315,7 +315,6 @@ void UIHouseMarkEntity::FUN_14198b340()
 }
 MS2_REPLACE_METHOD(0x14198B340, UIHouseMarkEntity, FUN_14198b340, 608, 0x1077E103);
 
-// MS2-FUNCTIONAL: behaviour-equivalent; the exe copies the map id through ecx before the FUN_1410c8470 call
 // @0x14198b5b0
 void UIHouseMarkEntity::FUN_14198b5b0()
 {
@@ -335,10 +334,9 @@ void UIHouseMarkEntity::FUN_14198b5b0()
     }
     if (nState == 1)
     {
-        int nMapId = FUN_1403ed2d0()->FUN_141bd3060();
         int nStatus;
         __int64 nStartTime;
-        if (spService->FUN_1410c8470(m_nId, nMapId, &nStatus, &nStartTime) != 0 && nStatus == 4)
+        if (spService->FUN_1410c8470(m_nId, FUN_1403ed2d0()->FUN_141bd3060(), &nStatus, &nStartTime) != 0 && nStatus == 4)
         {
             __int64 nNow = GetServerTime();
             int nWaitTime = FUN_1401d3200()->m_4180.FUN_14025a620();
@@ -378,7 +376,6 @@ void UIHouseMarkEntity::FUN_14198b7b0()
 }
 MS2_REPLACE_METHOD(0x14198B7B0, UIHouseMarkEntity, FUN_14198b7b0, 427, 0x14FE07E2);
 
-// MS2-FUNCTIONAL: behaviour-equivalent; temporary and stack-slot order of the CStringW building differs
 // @0x14198b970
 void UIHouseMarkEntity::FUN_14198b970()
 {
@@ -403,18 +400,19 @@ void UIHouseMarkEntity::FUN_14198b970()
     int nState = 3;
     CStringW strOwner;
     {
-        Unk_CubeOwnerPtr spOwner = FUN_1408a0fa0(*spService->FUN_1410d3360(), nGroup, nBlock);
-        if (spOwner.get() == NULL)
-        {
-            nState = 0;
-        }
-        else
+        Unk_CubeOwners* pOwners = spService->FUN_1410d3360();
+        Unk_CubeOwnerPtr spOwner = FUN_1408a0fa0(*pOwners, nGroup, nBlock);
+        if (spOwner.get() != NULL)
         {
             strOwner = spOwner->ownerName;
             if (spOwner->ownerID == FUN_141656ad0(pPc))
                 nState = 1;
             else if (FUN_14097a780()->FUN_140ae52d0(nMapId, nGroup) != 0)
                 nState = 2;
+        }
+        else
+        {
+            nState = 0;
         }
     }
     CStringW strMap = FUN_140979570(nMapId);
@@ -512,7 +510,6 @@ bool UIHouseMarkEntity::IsPopup()
 }
 MS2_REPLACE_METHOD(0x14198C3F0, UIHouseMarkEntity, IsPopup, 15, 0x52CC66EC);
 
-// MS2-FUNCTIONAL: behaviour-equivalent; the Delegate/CStringW temporaries get different stack slots
 // @0x14198c410
 void UIHouseMarkEntity::FUN_14198c410()
 {
@@ -525,7 +522,7 @@ void UIHouseMarkEntity::FUN_14198c410()
                                                     Delegate<bool(int, const CMsgBoxData&)>(this, &UIHouseMarkEntity::FUN_14198c700));
             if (box.get() != NULL)
             {
-                FUN_141a015d0(box.operator->(), CStringW(L"$s_msgbox_ugc_turms_title"));
+                FUN_141a015d0(box.operator->(), L"$s_msgbox_ugc_turms_title");
                 FUN_140d73c60(box);
             }
             return;
@@ -618,7 +615,6 @@ void UIHouseMark::vfunc_3()
 }
 MS2_REPLACE_METHOD(0x14198C8B0, UIHouseMark, vfunc_3, 60, 0xC8038567);
 
-// MS2-FUNCTIONAL: behaviour-equivalent; the exe copies the begin() iterator into the loop variable and tests the entity with the inverse branch
 // @0x14198c900
 void UIHouseMark::vfunc_15()
 {
@@ -627,16 +623,18 @@ void UIHouseMark::vfunc_15()
         return;
     if (!m_entities.empty())
     {
-        for (std::map<int, MS2Ptr<UIHouseMarkEntity> >::iterator it = m_entities.begin(); it != m_entities.end(); ++it)
+        for (std::map<int, MS2Ptr<UIHouseMarkEntity> >::const_iterator it = m_entities.begin(); it != m_entities.end(); ++it)
         {
             MS2Ptr<UIHouseMarkEntity> spEntity = it->second;
-            if (!(spEntity == NULL))
-                spEntity->FUN_14198b100();
+            if (spEntity == NULL)
+                continue;
+            spEntity->FUN_14198b100();
         }
     }
     if (!m_pending.empty())
     {
-        FUN_14198cc20(*m_pending.begin());
+        std::deque<MS2Ptr<UIHouseMarkEntity> >::iterator it = m_pending.begin();
+        FUN_14198cc20(*it);
         m_pending.pop_front();
     }
 }
@@ -650,17 +648,18 @@ void UIHouseMark::OnLoadComplete()
 }
 MS2_REPLACE_METHOD(0x14198CAC0, UIHouseMark, OnLoadComplete, 45, 0x863BF3A1);
 
-// MS2-FUNCTIONAL: behaviour-equivalent; temporary order of the new entity MS2Ptr differs
 // @0x14198cb00
 void UIHouseMark::FUN_14198cb00(const Unk_HouseMarkInfo& info)
 {
     MS2Ptr<UIHouseMarkEntity> spEntity(new UIHouseMarkEntity(info));
     if (spEntity == NULL)
         return;
-    if (!(m_30 == NULL))
-        FUN_14198cc20(spEntity);
-    else
+    if (m_30 == NULL)
+    {
         m_pending.push_back(spEntity);
+        return;
+    }
+    FUN_14198cc20(spEntity);
 }
 // Not hooked: constructs UIHouseMarkEntity with the DLL's vftable.
 

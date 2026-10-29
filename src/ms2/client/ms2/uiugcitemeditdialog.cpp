@@ -75,6 +75,7 @@ static CString s_tabIndex2 = "tabIndex";
 #include "uimodelview.h"
 #include "networkservice.h"
 #include "gameobject.h"
+#include "ms2/unnamed/unit_140b0e5f0.h"            // Unk_CoupleVec (out-of-line NiPoint3 copy 0x14027dcf0)
 #include "ms2/placeholder/astextinput.h"
 #include "ms2/placeholder/notifygameeventchanged.h"
 #include "ms2/placeholder/cguidemanager.h"
@@ -155,7 +156,7 @@ CGameRule* FUN_1401c0d90();
 __int64 FUN_14088df20(unsigned int nA, unsigned int nB, __int64 nC);
 CStringW FUN_1409404f0(__int64 n);
 CStringW FUN_1418fec00(int nPriceType, __int64 nPrice, int nFlags);    // the price text of a currency
-bool FUN_1418ff110(int nPriceType, __int64 nPrice, int nFlags);        // the player can pay the price
+bool FUN_1418ff110(int nPriceType, __int64 nPrice, bool bFlag);        // the player can pay the price
 void FUN_14134a320(ASObj& obj, const int& nPriceType, const __int64& nPrice, const __int64& nSalePrice);
 int FUN_140222b30(int nA, int nB);
 __int64 FUN_14028d0e0();
@@ -204,7 +205,7 @@ Unk_FeatureSettings* FUN_140166410();
 NotifySystem* FUN_140939a10();
 void FUN_1418ffec0(int* pnFlags, int nBit);                     // nFlags |= nBit
 bool FUN_140ebcc20(ATL::CAtlArray<int>& arrItemIds);            // the items may be used
-CStringW FUN_1405c2690(CStringW strKey, CStringW strArg);       // a table string with an argument
+CStringW FUN_1405c2690(CStringW strKey, const CStringW& strArg);       // a table string with an argument
 CStringW FUN_14052bd00(int nStringId, const CStringW& strArg);
 MS2Ptr<CMsgBoxData> FUN_140d748b0(int nBit, const CStringW& strA, const CStringW& strB, Delegate<bool(int, const CMsgBoxData&)> cb);
 MS2Ptr<CMsgBoxData> FUN_140d74b20(int nBit, const CStringW& strA, const CStringW& strB, const CStringW& strText, Delegate<bool(int, const CMsgBoxData&)> cb);
@@ -212,7 +213,11 @@ bool FUN_140841300(const CStringW& str, const char* psz);       // str == psz
 MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW strText, void* pOwner, CStringW strTag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> spBox);                  // show a message box
 void FUN_140d74e50(int nBit);                                   // close the message boxes of a kind
-bool FUN_140d74f70(const CStringW& strTag);                          // the "terms" tag asks for merets
+int FUN_140d74f70(CStringW& strTag);                                // the "terms" tag asks for merets
+#ifdef __clang__
+// the exe binds the returned temp to the non-const CStringW& (an MSVC extension)
+inline int FUN_140d74f70(CStringW&& strTag) { return FUN_140d74f70(strTag); }
+#endif
 void FUN_141276180(const CString& strSound, const CString& strArg);    // play a UI sound
 void FUN_1407cd930(Scaleform::GFx::Value* pObject, const char* szName, const Scaleform::GFx::Value& v);   // set a member
 Unk_NetworkCallbacks* FUN_140d86260();
@@ -315,9 +320,11 @@ void UIUGCItemEditDialog::OnLoadComplete()
     FUN_1418bee30(&obj, 10000);
     obj.FUN_1407cba60("slotBindID", m_strSlotBindId);
     FUN_141b41090(obj);
-    obj.FUN_141b46a40("setDesignDataImpl",
-        ASFunction(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIUGCItemEditDialog::FUN_141b44e80), 0,
-                   FUN_1422db730()));
+    {
+        // The exe builds the delegate before it reads the movie id, so it is a named local in its own scope.
+        Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)> cb(this, &UIUGCItemEditDialog::FUN_141b44e80);
+        obj.FUN_141b46a40("setDesignDataImpl", ASFunction(cb, 0, FUN_1422db730()));
+    }
     int nDefaultSize = 0xb0;
     if (FUN_140166410()->FUN_14036e510())
         nDefaultSize = 0x168;
@@ -333,8 +340,8 @@ void UIUGCItemEditDialog::OnLoadComplete()
         m_nImagesPerPage = FUN_1409c17e0(root.FUN_1422baa20("imageListCountPerPage"));
     }
     FUN_141b40c30();
-    FUN_14052d220()->m_str1b0 = L"";
-    FUN_14052d220()->m_str1b8 = L"";
+    FUN_14052d220()->m_str1b0 = "";
+    FUN_14052d220()->m_str1b8 = "";
     FUN_140aa6d40()->FUN_141b0cd00(static_cast<UIStatusEventListener*>(this));
     UIUGCEventDispatcher::GetInstance()->FUN_141b38be0(static_cast<UIUGCEventListener*>(this));
     FUN_140939a10()->RegisterNotify(L"NotifyGameEventChanged", Delegate<void(NotifyObject*)>(this, &UIUGCItemEditDialog::FUN_141b44d50));
@@ -347,11 +354,8 @@ int UIUGCItemEditDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
 {
     if (UIDialog::vfunc_28(szMethod, pArgs, nArgs) != 0)
         return 1;
-    if (m_spAvatar.get() != 0)
-    {
-        if (m_spAvatar->vfunc_27(szMethod, pArgs, nArgs) != 0)
-            return 1;
-    }
+    if ((m_spAvatar.get() != 0 ? true : false) && m_spAvatar->vfunc_27(szMethod, pArgs, nArgs) != 0)
+        return 1;
     if (_stricmp("onChangeModel", szMethod) == 0)
     {
         ASData args;
@@ -359,19 +363,19 @@ int UIUGCItemEditDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
             FUN_141b434c0(args);
         return 1;
     }
-    if (_stricmp("onClickOpenFolder", szMethod) == 0)
+    else if (_stricmp("onClickOpenFolder", szMethod) == 0)
     {
         FUN_14052d220()->FUN_1418829b0(m_nKind);
         return 1;
     }
-    if (_stricmp("onChangeIndexDesign", szMethod) == 0)
+    else if (_stricmp("onChangeIndexDesign", szMethod) == 0)
     {
         ASData args;
         if (args.FUN_1422b9620(pArgs, nArgs))
             FUN_141b437c0(args);
         return 1;
     }
-    if (_stricmp("onChangeIndexImage", szMethod) == 0)
+    else if (_stricmp("onChangeIndexImage", szMethod) == 0)
     {
         ASData args;
         if (args.FUN_1422b9620(pArgs, nArgs))
@@ -381,7 +385,7 @@ int UIUGCItemEditDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
         }
         return 1;
     }
-    if (_stricmp("onDoubleClickImage", szMethod) == 0)
+    else if (_stricmp("onDoubleClickImage", szMethod) == 0)
     {
         ASData args;
         if (args.FUN_1422b9620(pArgs, nArgs))
@@ -391,55 +395,61 @@ int UIUGCItemEditDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
         }
         return 1;
     }
-    if (_stricmp("onClickMake", szMethod) == 0)
+    else if (_stricmp("onClickMake", szMethod) == 0)
     {
         ASData args;
         if (args.FUN_1422b9620(pArgs, nArgs))
-            FUN_141b43c60(args.FUN_1422b8a10());
+        {
+            int nIndex = args.FUN_1422b8a10();
+            FUN_141b43c60(nIndex);
+        }
         return 1;
     }
-    if (_stricmp("onImageScrollPosition", szMethod) == 0)
+    else if (_stricmp("onImageScrollPosition", szMethod) == 0)
     {
         ASData args;
         if (args.FUN_1422b9620(pArgs, nArgs))
-            FUN_141b44b30(args.FUN_1422b8a10());
+        {
+            int nIndex = args.FUN_1422b8a10();
+            FUN_141b44b30(nIndex);
+        }
         return 1;
     }
-    if (_stricmp("onClickInitialize", szMethod) == 0)
+    else if (_stricmp("onClickInitialize", szMethod) == 0)
     {
         OnClickInitialize();
         return 1;
     }
-    if (_stricmp("onClickCancle", szMethod) == 0)
+    else if (_stricmp("onClickCancle", szMethod) == 0)
     {
         FUN_1403ed2b0()->FUN_141adc5d0((eUIClassID)vfunc_48());
         return 1;
     }
-    if (_stricmp("onClickNewDraw", szMethod) == 0)
+    else if (_stricmp("onClickNewDraw", szMethod) == 0)
     {
         OnClickNewDraw();
         return 1;
     }
-    if (_stricmp("onStartCapture", szMethod) == 0)
+    else if (_stricmp("onStartCapture", szMethod) == 0)
     {
         ASData args;
         if (args.FUN_1422b9620(pArgs, nArgs))
             FUN_141b44a60(args);
         return 1;
     }
-    if (_stricmp("onClickAddImage", szMethod) == 0)
+    else if (_stricmp("onClickAddImage", szMethod) == 0)
     {
         OnClickAddImage();
         return 1;
     }
-    if (_stricmp("onChangeIndexDropDownCategory", szMethod) == 0)
+    else if (_stricmp("onChangeIndexDropDownCategory", szMethod) == 0)
     {
         ASData args;
         if (args.FUN_1422b9620(pArgs, nArgs))
             FUN_141b44b90(args);
         return 1;
     }
-    if (_stricmp("onChangeIndexDropDownGender", szMethod) == 0)
+    else if (_stricmp("onChangeIndexDropDownGender", szMethod) == 0)
     {
         ASData args;
         if (args.FUN_1422b9620(pArgs, nArgs))
@@ -614,7 +624,12 @@ void UIUGCItemEditDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs
     }
     else if (FUN_140184310(strType, "image"))
     {
+#ifdef __clang__
         AScript data(root.FUN_1422baa20("data"), 2);
+#else
+        // the exe binds the returned temp to the non-const Value& ctor (an MSVC extension)
+        AScript data((Scaleform::GFx::Value&)root.FUN_1422baa20("data"), 2);
+#endif
         if (!data.FUN_1422ba9a0())
         {
             ASTooltip tip(1, 2);
@@ -700,7 +715,8 @@ void UIUGCItemEditDialog::FUN_141b3da90(int nModel)
         PC* pPC = static_cast<PC*>(WorldService::GetInstance()->FUN_141bd0cc0());
         if (pPC == 0)
             return;
-        MS2Ptr<UIAvatarPC> spAvatar(new UIAvatarPC(pPC->FUN_141658e60(), true));
+        int nGender = pPC->FUN_141658e60();
+        MS2Ptr<UIAvatarPC> spAvatar(new UIAvatarPC(nGender, true));
         if (spAvatar.get() != 0)
         {
             spAvatar->vfunc_1(static_cast<IUIAvatarEventListener*>(this));
@@ -714,7 +730,8 @@ void UIUGCItemEditDialog::FUN_141b3da90(int nModel)
         if (pPC == 0)
             return;
         int nGender = pPC->FUN_141658e60();
-        MS2Ptr<UIAvatarPC> spAvatar(new UIAvatarPC(nGender != 1, true));
+        int nOpposite = nGender == 1 ? 0 : 1;
+        MS2Ptr<UIAvatarPC> spAvatar(new UIAvatarPC(nOpposite, true));
         if (spAvatar.get() != 0)
         {
             spAvatar->vfunc_1(static_cast<IUIAvatarEventListener*>(this));
@@ -801,7 +818,7 @@ void UIUGCItemEditDialog::FUN_141b3e780(MS2Ptr<UIAvatarBase> spAvatar, bool bUse
     if (spAvatar == 0)
         return;
     float fAngle = 0;
-    if (bUseItem && m_spItem.get() != 0)
+    if (bUseItem && (m_spItem.get() != 0 ? true : false))
     {
         MS2Ptr<CItemData> spData(FUN_140527840(m_spItem));
         if (spData == 0)
@@ -816,7 +833,9 @@ void UIUGCItemEditDialog::FUN_141b3e780(MS2Ptr<UIAvatarBase> spAvatar, bool bUse
     }
     else
     {
-        fAngle = FUN_141b48480(FUN_141b48430(spAvatar->GetKind()), 0);
+        int nKind = spAvatar->GetKind();
+        int nView = FUN_141b48430(nKind);
+        fAngle = FUN_141b48480(nView, 0);
     }
     spAvatar->vfunc_19(fAngle, 0);
 }
@@ -836,7 +855,6 @@ void UIUGCItemEditDialog::FUN_141b3e990()
 MS2_REPLACE_METHOD(0x141B3E990, UIUGCItemEditDialog, FUN_141b3e990, 215, 0x89959B6F);
 
 // @0x141b3ea70
-// MS2-FUNCTIONAL: from the decompile (the conditional temporaries of the worn item lookup)
 bool UIUGCItemEditDialog::FUN_141b3ea70(int* pnY, int* pnZoom)
 {
     if (m_spItem == 0)
@@ -852,71 +870,71 @@ bool UIUGCItemEditDialog::FUN_141b3ea70(int* pnY, int* pnZoom)
     {
         *pnY = 0x91;
         *pnZoom = 0x10e;
-        return true;
     }
-    if (nKind == 3)
+    else if (nKind == 3)
     {
         *pnY = 0x91;
         *pnZoom = 0x10e;
-        return true;
-    }
-    MS2Ptr<UIAvatarPC> spPC(dynamic_cast<UIAvatarPC*>((UIAvatarBase*)spAvatar));
-    if (spPC == 0)
-        return false;
-    bool bMyModel = m_nModel == 0 || m_nModel == 2;
-    bool bFemale = spPC->FUN_1418bc740() != 0;
-    int nSlot = spData->FUN_14053eba0()->FUN_14054b400();
-    __int64 nItemUid = m_spItem->FUN_140526a50();
-    MS2Ptr<CEquipItem> spEquip = spPC->FUN_1418bd1d0()->FUN_141655c30(nItemUid);
-    if (spEquip.get() != 0 && spEquip->GetItem().get() != 0)
-        nSlot = spEquip->GetItem()->FUN_140526c30();
-    if (nSlot == 8)
-    {
-        *pnY = bFemale ? 0x96 : 0x8c;
-        *pnZoom = 300;
-    }
-    else if (nSlot == 6)
-    {
-        *pnY = bFemale ? 0x8e : 0x89;
-        *pnZoom = bFemale ? 0xb4 : 0xa5;
-    }
-    else if (nSlot == 9)
-    {
-        *pnY = bFemale ? 0x9b : 0x91;
-        *pnZoom = 0x177;
-    }
-    else if (nSlot == 0xb)
-    {
-        *pnY = bFemale ? 0xa0 : 0x91;
-        *pnZoom = 0x1b8;
-    }
-    else if (nSlot == 0xc)
-    {
-        *pnY = bFemale ? 0x8e : 0x89;
-        *pnZoom = bFemale ? 0xb4 : 0xa5;
-    }
-    else if (nSlot == 10 || nSlot == 4 || nSlot == 5)
-    {
-        if (!spData->FUN_14053d460())
-        {
-            *pnY = (bFemale || !bMyModel) ? 0x73 : 0x5f;
-            *pnZoom = 0x17c;
-        }
-        else
-        {
-            *pnY = bFemale ? 0x96 : 0x8c;
-            *pnZoom = 300;
-        }
-    }
-    else if (nSlot == 7)
-    {
-        *pnY = (bFemale || !bMyModel) ? 0x8c : 0x73;
-        *pnZoom = 0x14f;
     }
     else
     {
-        *pnY = 0x96;
-        *pnZoom = 0xe6;
+        MS2Ptr<UIAvatarPC> spPC(dynamic_cast<UIAvatarPC*>((UIAvatarBase*)spAvatar));
+        if (spPC == 0)
+            return false;
+        bool bMyModel = m_nModel == 0 || m_nModel == 2;
+        bool bMale = spPC->FUN_1418bc740() == 0;
+        int nSlot = spData->FUN_14053eba0()->FUN_14054b400();
+        MS2Ptr<CEquipItem> spEquip = spPC->FUN_1418bd1d0()->FUN_141655c30(m_spItem->FUN_140526a50());
+        if ((spEquip.get() ? true : false) && (spEquip->GetItem().get() ? true : false))
+            nSlot = spEquip->GetItem()->FUN_140526c30();
+        if (nSlot == 8)
+        {
+            *pnY = bMale ? 0x8c : 0x96;
+            *pnZoom = 300;
+        }
+        else if (nSlot == 6)
+        {
+            *pnY = bMale ? 0x89 : 0x8e;
+            *pnZoom = bMale ? 0xa5 : 0xb4;
+        }
+        else if (nSlot == 9)
+        {
+            *pnY = bMale ? 0x91 : 0x9b;
+            *pnZoom = 0x177;
+        }
+        else if (nSlot == 0xb)
+        {
+            *pnY = bMale ? 0x91 : 0xa0;
+            *pnZoom = 0x1b8;
+        }
+        else if (nSlot == 0xc)
+        {
+            *pnY = bMale ? 0x89 : 0x8e;
+            *pnZoom = bMale ? 0xa5 : 0xb4;
+        }
+        else if (nSlot == 10 || nSlot == 4 || nSlot == 5)
+        {
+            if (!spData->FUN_14053d460())
+            {
+                *pnY = (bMale && bMyModel) ? 0x5f : 0x73;
+                *pnZoom = 0x17c;
+            }
+            else
+            {
+                *pnY = bMale ? 0x8c : 0x96;
+                *pnZoom = 300;
+            }
+        }
+        else if (nSlot == 7)
+        {
+            *pnY = (bMale && bMyModel) ? 0x73 : 0x8c;
+            *pnZoom = 0x14f;
+        }
+        else
+        {
+            *pnY = 0x96;
+            *pnZoom = 0xe6;
+        }
     }
     return true;
 }
@@ -932,7 +950,7 @@ void UIUGCItemEditDialog::FUN_141b3f180(MS2Ptr<UIAvatarBase> spAvatar)
         return;
     Unk_ModelViewCamera kCamera;
     UIRenderView* pView = m_spView;
-    NiPoint3 kPos = pObj->vfunc_18();
+    Unk_CoupleVec kPos(reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(pObj->vfunc_18())));
     int nKind = spAvatar->GetKind();
     if (nKind == 1)
     {
@@ -949,11 +967,12 @@ void UIUGCItemEditDialog::FUN_141b3f180(MS2Ptr<UIAvatarBase> spAvatar)
         kCamera.FUN_141b48670();
         kCamera.m_kPosition += NiPoint3(225.0f, 0, 80.0f);
     }
-    if (pView == 0)
-        return;
-    kCamera.m_kTarget += kPos;
-    kCamera.m_kPosition += kCamera.m_kTarget;
-    pView->vfunc_13(kCamera);
+    if (pView != 0)
+    {
+        kCamera.m_kTarget += reinterpret_cast<const NiPoint3&>(kPos);
+        kCamera.m_kPosition += kCamera.m_kTarget;
+        pView->vfunc_13(kCamera);
+    }
 }
 
 // @0x141b3f3a0
@@ -1043,21 +1062,7 @@ void UIUGCItemEditDialog::FUN_141b3fb60(MS2Ptr<CItem> spItem, bool* pbModelChang
         }
     }
     int nKind = m_spAvatar.get() != 0 ? m_spAvatar->GetKind() : 0;
-    if (spItem.get() == 0)
-    {
-        if (m_spAvatar.get() != 0 && nKind == 1)
-        {
-            MS2Ptr<UIAvatarPC> spPC(dynamic_cast<UIAvatarPC*>((UIAvatarBase*)m_spAvatar));
-            if (spPC.get() != 0)
-                spPC->vfunc_2();
-        }
-        if (m_nModel != 1)
-        {
-            FUN_141b41e80(1);
-            *pbModelChanged = true;
-        }
-    }
-    else
+    if (spItem.get() != 0)
     {
         MS2Ptr<CItemData> spData(FUN_140527840(spItem));
         int nModel = FUN_141b42b20(spData, m_spAvatar);
@@ -1067,18 +1072,12 @@ void UIUGCItemEditDialog::FUN_141b3fb60(MS2Ptr<CItem> spItem, bool* pbModelChang
             *pbModelChanged = true;
             return;
         }
-        if (m_spAvatar.get() == 0 || nKind != 1)
-        {
-            if (m_spAvatar.get() != 0)
-                m_spAvatar->vfunc_21(0);
-            FUN_141b3da90(m_nModel);
-        }
-        else
+        if ((m_spAvatar.get() != 0 ? true : false) && nKind == 1)
         {
             MS2Ptr<UIAvatarPC> spPC(dynamic_cast<UIAvatarPC*>((UIAvatarBase*)m_spAvatar));
-            if (spPC.get() != 0)
+            if (spPC.get() != 0 ? true : false)
             {
-                if (spPC->FUN_1418bd1d0() != 0 && (CItemData*)spData != 0)
+                if (spPC->FUN_1418bd1d0() != 0 && ((CItemData*)spData != 0 ? true : false))
                 {
                     if (spData->FUN_14053c940(spPC->FUN_1418bc740()))
                     {
@@ -1089,6 +1088,26 @@ void UIUGCItemEditDialog::FUN_141b3fb60(MS2Ptr<CItem> spItem, bool* pbModelChang
                     }
                 }
             }
+        }
+        else
+        {
+            if (m_spAvatar.get() != 0)
+                m_spAvatar->vfunc_21(0);
+            FUN_141b3da90(m_nModel);
+        }
+    }
+    else
+    {
+        if ((m_spAvatar.get() != 0 ? true : false) && nKind == 1)
+        {
+            MS2Ptr<UIAvatarPC> spPC(dynamic_cast<UIAvatarPC*>((UIAvatarBase*)m_spAvatar));
+            if (spPC.get() != 0)
+                spPC->vfunc_2();
+        }
+        if (m_nModel != 1)
+        {
+            FUN_141b41e80(1);
+            *pbModelChanged = true;
         }
     }
 }
@@ -1124,45 +1143,43 @@ bool UIUGCItemEditDialog::FUN_141b40300(__int64 nPrice, int nMeret)
 {
     if (m_spItem == 0)
     {
-        FUN_140d73aa0(GetStringCommonByKey(CStringW(L"s_ugc_itemedit_error_invalid_selected_design")), 0, 0, CStringW(L""));
+        FUN_140d73aa0(GetStringCommonByKey(L"s_ugc_itemedit_error_invalid_selected_design"), 0, 0, CStringW(L""));
         return false;
     }
-    int nItemId = m_spItem->FUN_1405276c0();
-    MS2Ptr<CUGCDesignData> spDesign = CUGCDesignTable::GetInstance()->GetData(nItemId);
+    MS2Ptr<CUGCDesignData> spDesign = CUGCDesignTable::GetInstance()->GetData(m_spItem->FUN_1405276c0());
     if (spDesign == 0)
     {
-        FUN_140d73aa0(GetStringCommonByKey(CStringW(L"s_ugc_itemedit_error_invalid_design")), 0, 0, CStringW(L""));
+        FUN_140d73aa0(GetStringCommonByKey(L"s_ugc_itemedit_error_invalid_design"), 0, 0, CStringW(L""));
         return false;
     }
     int nCount = FUN_141b430b0();
     __int64 nTotal = m_spEditItem == 0 ? FUN_141b43240(spDesign, nCount) : 0;
     if (nPrice != nTotal)
     {
-        FUN_140d73aa0(GetStringCommonByKey(CStringW(L"s_ugc_itemedit_error_change_price")), 0, 0, CStringW(L""));
+        FUN_140d73aa0(GetStringCommonByKey(L"s_ugc_itemedit_error_change_price"), 0, 0, CStringW(L""));
         return false;
     }
-    if (nMeret == 0)
-    {
-        int nPriceType = spDesign->FUN_14089e200();
-        if (!FUN_1418ff110(nPriceType, nTotal, 1))
-            return false;
-    }
-    else
+    if (nMeret != 0)
     {
         unsigned int nVouchers = DAT_143ab2a90.FUN_140a5f780(5, 0);
         if (nVouchers == 0)
             return false;
         if (nVouchers < (unsigned int)nCount)
         {
-            int nRest = nCount - nVouchers;
-            __int64 nRestPrice = FUN_141b43240(spDesign, nRest);
-            if (!FUN_1418ff110(spDesign->FUN_14089e200(), nRestPrice, 1))
+            __int64 nRestPrice = FUN_141b43240(spDesign, nCount - nVouchers);
+            if (!FUN_1418ff110(spDesign->FUN_14089e200(), nRestPrice, true))
                 return false;
         }
     }
+    else
+    {
+        int nPriceType = spDesign->FUN_14089e200();
+        if (!FUN_1418ff110(nPriceType, nTotal, true))
+            return false;
+    }
     CStringW strName = FUN_141b43140();
-    bool bSent = FUN_14052d220()->FUN_141881b90(m_nKind, nCount, strName, nTotal, nMeret) == 1;
-    return bSent;
+    int nRet = FUN_14052d220()->FUN_141881b90(m_nKind, nCount, strName, nTotal, nMeret);
+    return nRet == 1 ? true : false;
 }
 MS2_REPLACE_METHOD(0x141B40300, UIUGCItemEditDialog, FUN_141b40300, 1394, 0x1A13C54A);
 
@@ -1216,36 +1233,7 @@ void UIUGCItemEditDialog::FUN_141b40c30()
 {
     if (m_30 == 0)
         return;
-    if (m_spEditItem.get() == 0)
-    {
-        ATL::CAtlMap<unsigned int, CUGCDesignDataPtr>& map = CUGCDesignTable::GetInstance()->GetMap();
-        if (!map.IsEmpty())
-        {
-            m_bEventSale = FUN_1401c0d90()->FUN_14047bab0() != 0;
-            ASDataProvider items(2);
-            POSITION pos = map.GetStartPosition();
-            while (pos != 0)
-            {
-                unsigned int nId = map.GetKeyAt(pos);
-                if (nId != 0)
-                {
-                    MS2Ptr<CUGCDesignData> spDesign = map.GetValueAt(pos);
-                    if (spDesign == 0)
-                    {
-                    }
-                    else if (spDesign->m_bVisible)
-                    {
-                        ASObj obj(2);
-                        if (FUN_141b3f3a0(obj, spDesign))
-                            items.FUN_1422bc050(FUN_1406146a0(obj.FUN_1422bb870()));
-                    }
-                }
-                map.GetNext(pos);
-            }
-            m_30->Invoke("buildDesignItems", FUN_1406146a0(items.FUN_1422bb870()));
-        }
-    }
-    else
+    if (m_spEditItem.get() != 0)
     {
         ASDataProvider items(2);
         int nSelected = -1;
@@ -1259,6 +1247,29 @@ void UIUGCItemEditDialog::FUN_141b40c30()
         }
         m_30->Invoke("buildDesignItems", FUN_1406146a0(items.FUN_1422bb870()), -1, false);
     }
+    else
+    {
+        ATL::CAtlMap<unsigned int, CUGCDesignDataPtr>& map = CUGCDesignTable::GetInstance()->GetMap();
+        if (map.IsEmpty())
+            return;
+        m_bEventSale = (unsigned)FUN_1401c0d90()->FUN_14047bab0() > 0;
+        ASDataProvider items(2);
+        for (POSITION pos = map.GetStartPosition(); pos != 0; map.GetNext(pos))
+        {
+            unsigned int nId = map.GetKeyAt(pos);
+            if (nId == 0)
+                continue;
+            MS2Ptr<CUGCDesignData> spDesign = map.GetValueAt(pos);
+            if (spDesign == 0)
+                continue;
+            if (!spDesign->m_bVisible)
+                continue;
+            ASObj obj(2);
+            if (FUN_141b3f3a0(obj, spDesign))
+                items.FUN_1422bc050(FUN_1406146a0(obj.FUN_1422bb870()));
+        }
+        m_30->Invoke("buildDesignItems", FUN_1406146a0(items.FUN_1422bb870()));
+    }
 }
 MS2_REPLACE_METHOD(0x141B40C30, UIUGCItemEditDialog, FUN_141b40c30, 1100, 0x115F73D0);
 
@@ -1270,9 +1281,7 @@ void UIUGCItemEditDialog::FUN_141b41090(ASObj& obj)
     for (size_t i = 0; i < nCount; i++)
     {
         MS2Ptr<ShopTabInfo> spTab = m_tabs[i];
-        if (spTab == 0)
-            continue;
-        if (spTab->m_spTab == 0)
+        if (spTab == 0 || spTab->m_spTab == 0)
             continue;
         MS2Ptr<CShopCategoryTable::SortTabInfo> spSort(
             dynamic_cast<CShopCategoryTable::SortTabInfo*>((CShopCategoryTable::TabInfo*)spTab->m_spTab));
@@ -1342,7 +1351,7 @@ bool UIUGCItemEditDialog::FUN_141b417e0()
     MS2Ptr<IUgcViewer> spViewer = spUpload->m_spViewer;
     if (spViewer == 0)
         return false;
-    if (m_spAvatar.get() != 0 && m_spAvatar->GetKind() == 1)
+    if ((m_spAvatar.get() != 0 ? true : false) && m_spAvatar->GetKind() == 1)
     {
         MS2Ptr<CUgcViewerEquip> spEquip(dynamic_cast<CUgcViewerEquip*>((IUgcViewer*)spViewer));
         if (spEquip.get() != 0)
@@ -1541,18 +1550,20 @@ void UIUGCItemEditDialog::FUN_141b428d0(int nKind)
 {
     unsigned int nError = 0;
     CStringW strDir = GetScreenshotDirectory(0, &nError);
-    if (nError != 0)
-        return;
-#ifdef __clang__
-    // clang emits an unavailable MFC CopyChars import for operator+; bind the exe's concatenation helper.
-    CStringW strPath = FUN_1401d0080(strDir, GetTimestampFileName(1));
-#else
-    CStringW strPath = strDir + GetTimestampFileName(1);
-#endif
-    if (m_spView->FUN_141ab7870(strPath, 1) == true)
+    if (nError == 0)
     {
-        FUN_14052d220()->m_str1b0 = FUN_141b43140();
-        FUN_14052d220()->m_str1b8 = strPath;
+#ifdef __clang__
+        // clang emits an unavailable MFC CopyChars import for operator+; bind the exe's concatenation helper.
+        CStringW strPath = FUN_1401d0080(strDir, GetTimestampFileName(1));
+#else
+        CStringW strPath = strDir + GetTimestampFileName(1);
+#endif
+        if (m_spView->FUN_141ab7870(strPath, 1) == true)
+        {
+            FUN_14052d220()->m_str1b0 = FUN_141b43140();
+            FUN_14052d220()->m_str1b8 = strPath;
+            return;
+        }
     }
 }
 MS2_REPLACE_METHOD(0x141B428D0, UIUGCItemEditDialog, FUN_141b428d0, 373, 0xA796E1E4);
@@ -1569,45 +1580,48 @@ int UIUGCItemEditDialog::FUN_141b42a50(MS2Ptr<UIAvatarPC> spAvatar, int nGender)
 }
 
 // @0x141b42b20
-// MS2-FUNCTIONAL: from the disassembly (the conditional avatar temporary)
 int UIUGCItemEditDialog::FUN_141b42b20(MS2Ptr<CItemData> spData, MS2Ptr<UIAvatarBase> spAvatar)
 {
     if (spData == 0)
         return 2;
-    if (!spData->FUN_14053cbc0())
+    if (spData->FUN_14053cbc0())
+    {
+        PC* pPC = static_cast<PC*>(WorldService::GetInstance()->FUN_141bd0cc0());
+        if (pPC == 0)
+            return 2;
+        bool bJob = true;
+        if (spData->FUN_14053d2f0())
+            bJob = spData->limit.FUN_140545da0(pPC->FUN_141654700());
+        int nGender = pPC->FUN_141658e60();
+        if ((spAvatar.get() ? true : false) && spAvatar->GetKind() == 1)
+        {
+            MS2Ptr<UIAvatarPC> spPC(dynamic_cast<UIAvatarPC*>((UIAvatarBase*)spAvatar));
+            if ((spPC.get() ? true : false) && FUN_141b433f0(1).get() != spAvatar.get())
+            {
+                int nPCGender = spPC->FUN_1418bc740();
+                if (nPCGender == nGender)
+                {
+                    if (!spData->FUN_14053c940(nGender))
+                        return 2;
+                    return bJob ? 0 : 2;
+                }
+                if (!spData->FUN_14053c940(nGender))
+                    return 2;
+                return bJob ? 1 : 2;
+            }
+        }
+        if (!spData->FUN_14053c940(nGender))
+            return 2;
+        return bJob ? 1 : 2;
+    }
+    else
     {
         if (spData->FUN_14053cb80())
             return 3;
-        if (spData->FUN_14053cc80())
+        else if (spData->FUN_14053cc80())
             return 4;
-        return 2;
     }
-    PC* pPC = static_cast<PC*>(WorldService::GetInstance()->FUN_141bd0cc0());
-    if (pPC == 0)
-        return 2;
-    bool bJob = true;
-    if (spData->FUN_14053d2f0())
-        bJob = spData->limit.FUN_140545da0(pPC->FUN_141654700());
-    int nGender = pPC->FUN_141658e60();
-    if (spAvatar.get() != 0 && spAvatar->GetKind() == 1)
-    {
-        MS2Ptr<UIAvatarPC> spPC(dynamic_cast<UIAvatarPC*>((UIAvatarBase*)spAvatar));
-        if (spPC.get() != 0 && FUN_141b433f0(1).get() != spAvatar.get())
-        {
-            if (spPC->FUN_1418bc740() == nGender)
-            {
-                if (!spData->FUN_14053c940(nGender))
-                    return 2;
-                return bJob ? 0 : 2;
-            }
-            if (!spData->FUN_14053c940(nGender))
-                return 2;
-            return bJob ? 1 : 2;
-        }
-    }
-    if (!spData->FUN_14053c940(nGender))
-        return 2;
-    return bJob ? 1 : 2;
+    return 2;
 }
 MS2_REPLACE_METHOD(0x141B42B20, UIUGCItemEditDialog, FUN_141b42b20, 1397, 0x18B9029F);
 
@@ -1764,7 +1778,7 @@ bool UIUGCItemEditDialog::FUN_141b43c60(int nImage)
     int nCount = FUN_141b430b0();
     if (nCount == 0)
     {
-        FUN_140d73aa0(GetStringCommonByKey(CStringW(L"s_ugc_itemedit_error_check_make_count")), 0, 0, CStringW(L""));
+        FUN_140d73aa0(GetStringCommonByKey(L"s_ugc_itemedit_error_check_make_count"), 0, 0, CStringW(L""));
         return false;
     }
     CStringW strName = FUN_141b43140();
@@ -1783,7 +1797,7 @@ bool UIUGCItemEditDialog::FUN_141b43c60(int nImage)
     MS2Ptr<CItemData> spData = FUN_14053f870(nItemId);
     if (spDesign == 0 || spData == 0)
     {
-        FUN_140d73aa0(GetStringCommonByKey(CStringW(L"s_ugc_itemedit_error_invalid_design")), 0, 0, CStringW(L""));
+        FUN_140d73aa0(GetStringCommonByKey(L"s_ugc_itemedit_error_invalid_design"), 0, 0, CStringW(L""));
         return false;
     }
     int nPriceType = spDesign->FUN_14089e200();
@@ -1799,7 +1813,8 @@ bool UIUGCItemEditDialog::FUN_141b43c60(int nImage)
                 return false;
         }
     }
-    if (FUN_14052d220()->FUN_141881890(nImage) == 0)
+    int nUpload = FUN_14052d220()->FUN_141881890(nImage);
+    if (nUpload == 0)
     {
         FUN_140d74390(GetStringCommon(0x2e2), 0,
             Delegate<bool(int, const CMsgBoxData&)>(this, &UIUGCItemEditDialog::FUN_141b45980));
@@ -1820,15 +1835,15 @@ bool UIUGCItemEditDialog::FUN_141b43c60(int nImage)
         ? FUN_1405c2690(CStringW(L"s_ugc_item_edit_terms_price"), FUN_1418fec00(nPriceType, nPrice, 0))
         : CStringW(L"");
     MS2Ptr<CMsgBoxData> spBox(0);
-    if (bVoucher == 0)
-    {
-        spBox = FUN_140d748b0(0, FUN_14052bd00(0x9d3, strPrice), GetStringCommon(0x9cf),
-            Delegate<bool(int, const CMsgBoxData&)>(this, &UIUGCItemEditDialog::FUN_141b459d0));
-    }
-    else
+    if (bVoucher != 0)
     {
         spBox = FUN_140d74b20(0, FUN_14052bd00(0x9d3, strPrice), strVoucher, GetStringCommon(0x9cf),
             Delegate<bool(int, const CMsgBoxData&)>(this, &UIUGCItemEditDialog::FUN_141b45cc0));
+    }
+    else
+    {
+        spBox = FUN_140d748b0(0, FUN_14052bd00(0x9d3, strPrice), GetStringCommon(0x9cf),
+            Delegate<bool(int, const CMsgBoxData&)>(this, &UIUGCItemEditDialog::FUN_141b459d0));
     }
     if (spBox.get() != 0)
         spBox->FUN_140e01830(nPrice);
@@ -1996,7 +2011,6 @@ void UIUGCItemEditDialog::FUN_141b450d0(int nResult)
 MS2_REPLACE_METHOD(0x141B450D0, UIUGCItemEditDialog, FUN_141b450d0, 158, 0x4B5EF885);
 
 // @0x141b45180
-// MS2-FUNCTIONAL: from the decompile (the conditional message text)
 void UIUGCItemEditDialog::FUN_141b45180(MS2Ptr<CItem> spItem)
 {
     if (spItem == 0)
@@ -2004,24 +2018,23 @@ void UIUGCItemEditDialog::FUN_141b45180(MS2Ptr<CItem> spItem)
     MS2Ptr<CUgcUploadCtrl> spUpload = FUN_14052d220()->FUN_141882610();
     if (spUpload == 0)
         return;
-    if (spUpload->m_nKind == 1 || spUpload->m_nKind == 2 || spUpload->m_nKind == 7)
-    {
-        MS2Ptr<CUgcUploadCtrl> spNext = spUpload->GetImage();
-        if (spNext == 0)
-            return;
-        m_spMadeItem = spItem;
-        CString strDir = FUN_1401d31f0()->m_strUploadDir;
-        m_spMadeItem->SetName(strDir);
-        CStringW strText = spUpload->m_nKind != 2 ? GetStringCommon(0x2ee)
-                                                  : GetStringCommonByKey(CStringW(L"s_msg_ugc_item_edit_complete_cube"));
-        MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x11, strText, 0, CStringW(L""));
-        if (spBox == 0)
-            return;
-        CStringW strName = FUN_141b43140();
-        spBox->FUN_141a01ee0(m_spMadeItem, strName, 1, 0, -1, -1, 1);
-        spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIUGCItemEditDialog::FUN_141b46070));
-        FUN_140d73c60(spBox);
-    }
+    if (spUpload->m_nKind != 1 && spUpload->m_nKind != 2 && spUpload->m_nKind != 7)
+        return;
+    MS2Ptr<CUgcUploadCtrl> spNext = spUpload->GetImage();
+    if (spNext == 0)
+        return;
+    m_spMadeItem = spItem;
+    CString strDir = FUN_1401d31f0()->m_strUploadDir;
+    m_spMadeItem->SetName(strDir);
+    CStringW strText = spUpload->m_nKind == 2 ? GetStringCommonByKey(L"s_msg_ugc_item_edit_complete_cube")
+                                              : GetStringCommon(0x2ee);
+    MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x11, strText, 0, CStringW(L""));
+    if (spBox == 0)
+        return;
+    CStringW strName = FUN_141b43140();
+    spBox->FUN_141a01ee0(m_spMadeItem, strName, 1, 0, -1, -1, 1);
+    spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIUGCItemEditDialog::FUN_141b46070));
+    FUN_140d73c60(spBox);
 }
 MS2_REPLACE_METHOD(0x141B45180, UIUGCItemEditDialog, FUN_141b45180, 1507, 0xE3AB170F);
 
@@ -2063,14 +2076,12 @@ bool UIUGCItemEditDialog::FUN_141b459d0(int nResult, const CMsgBoxData& box)
     {
         if (FUN_140d86260()->vfunc_2() == 1)
         {
-            MS2Ptr<CMsgBoxData> spBox =
-                FUN_140d73d20(1, GetStringCommonByKey(CStringW(L"s_msg_ugc_item_upload_screenshot")), 0, CStringW(L""));
-            if (spBox.get() != 0)
+            if (MS2Ptr<CMsgBoxData> spBox =
+                    FUN_140d73d20(1, GetStringCommonByKey(L"s_msg_ugc_item_upload_screenshot"), 0, L""))
             {
                 spBox->FUN_141a024a0(0);
                 spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIUGCItemEditDialog::FUN_141b461b0));
-                __int64 nPrice = box.FUN_141a02ed0(0, 0);
-                spBox->FUN_140e01830(nPrice);
+                spBox->FUN_140e01830(box.FUN_141a02ed0(0, 0));
                 FUN_140d73c60(spBox);
             }
         }
@@ -2080,7 +2091,7 @@ bool UIUGCItemEditDialog::FUN_141b459d0(int nResult, const CMsgBoxData& box)
             __int64 nPrice = box.FUN_141a02ed0(0, 0);
             if (FUN_141b40300(nPrice, 0))
             {
-                FUN_141276180(s_strPCMakeUgcItem, CString(""));
+                FUN_141276180(s_strPCMakeUgcItem, "");
                 CGuideManager::GetInstance()->AddTrigger((CGuideManager::TriggerType)11, 0, 0);
             }
         }
@@ -2096,27 +2107,25 @@ bool UIUGCItemEditDialog::FUN_141b45cc0(int nResult, const CMsgBoxData& box)
     {
         if (FUN_140d86260()->vfunc_2() == 1)
         {
-            MS2Ptr<CMsgBoxData> spBox =
-                FUN_140d73d20(1, GetStringCommonByKey(CStringW(L"s_msg_ugc_item_upload_screenshot")), 0, CStringW(L""));
-            if (spBox.get() != 0)
+            if (MS2Ptr<CMsgBoxData> spBox =
+                    FUN_140d73d20(1, GetStringCommonByKey(L"s_msg_ugc_item_upload_screenshot"), 0, L""))
             {
                 spBox->FUN_141a024a0(0);
                 spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIUGCItemEditDialog::FUN_141b462a0));
-                __int64 nPrice = box.FUN_141a02ed0(0, 0);
-                spBox->FUN_140e01830(nPrice);
-                bool bTerms = FUN_140d74f70(box.FUN_141a02d50());
-                spBox->FUN_140533ff0(bTerms);
+                spBox->FUN_140e01830(box.FUN_141a02ed0(0, 0));
+                int nTerms = FUN_140d74f70(box.FUN_141a02d50());
+                spBox->FUN_140533ff0(nTerms);
                 FUN_140d73c60(spBox);
             }
         }
         else
         {
             FUN_140d74e50(0);
-            bool bTerms = FUN_140d74f70(box.FUN_141a02d50());
+            int nTerms = FUN_140d74f70(box.FUN_141a02d50());
             __int64 nPrice = box.FUN_141a02ed0(0, 0);
-            if (FUN_141b40300(nPrice, bTerms))
+            if (FUN_141b40300(nPrice, nTerms))
             {
-                FUN_141276180(s_strPCMakeUgcItem, CString(""));
+                FUN_141276180(s_strPCMakeUgcItem, "");
                 CGuideManager::GetInstance()->AddTrigger((CGuideManager::TriggerType)11, 0, 0);
             }
         }
@@ -2362,7 +2371,6 @@ bool FUN_141b48950(MS2Ptr<CItem> spItem)
 MS2_REPLACE_OVERLOAD(0x141B48950, bool(MS2Ptr<CItem>), FUN_141b48950, 187, 0x5E7FFF7D);
 
 // @0x141b48a20
-// MS2-FUNCTIONAL: from the decompile (the gender pick of a package's items)
 void FUN_141b48a20(PC* pPC, MS2Ptr<CItemData> spData, Unk_PackageItems& items, Unk_PackageItems& matched,
     Unk_PackageItems& others, MS2Ptr<WeaponType> spFilter)
 {
@@ -2375,31 +2383,28 @@ void FUN_141b48a20(PC* pPC, MS2Ptr<CItemData> spData, Unk_PackageItems& items, U
     int nResult = 2;
     bool bFound = false;
     bool bMatch = false;
-    if (spData.get() != 0)
+    if (spData.get())
     {
         unsigned int nDataGender = spData->limit.genderLimit;
-        if (spData->limit.FUN_140545e40() != true)
+        if (spData->limit.FUN_140545e40() == true)
         {
-            if (nDataGender != 2)
-            {
-                bMatch = nDataGender == (unsigned int)nGender;
-                bFound = true;
-                nResult = nDataGender;
-            }
-        }
-        else
-        {
-            if (spFilter.get() != 0 && spFilter->FUN_140ebb780(nGender, nJob, spData))
+            if ((spFilter.get() ? true : false) && spFilter->FUN_140ebb780(nGender, nJob, spData))
                 nResult = nGender;
             else
                 nResult = nOther;
             bMatch = nResult == nGender;
             bFound = true;
         }
+        else if (nDataGender != 2)
+        {
+            nResult = nDataGender;
+            bMatch = nResult == nGender;
+            bFound = true;
+        }
     }
     if (!bFound)
     {
-        bFound = true;
+        bool bAllAny = true;
         for (size_t i = 0; i < nCount; i++)
         {
             MS2Ptr<CItemData> spItem = items[i];
@@ -2407,10 +2412,10 @@ void FUN_141b48a20(PC* pPC, MS2Ptr<CItemData> spData, Unk_PackageItems& items, U
                 continue;
             unsigned int nItemGender = spItem->limit.genderLimit;
             if (nItemGender != 2)
-                bFound = false;
-            if (spFilter.get() != 0 && spFilter->FUN_140ebb780(nGender, nJob, spItem))
+                bAllAny = false;
+            if ((spFilter.get() ? true : false) && spFilter->FUN_140ebb780(nGender, nJob, spItem))
             {
-                if ((unsigned int)nGender == nItemGender)
+                if (nGender == nItemGender)
                 {
                     nResult = nGender;
                     break;
@@ -2421,8 +2426,9 @@ void FUN_141b48a20(PC* pPC, MS2Ptr<CItemData> spData, Unk_PackageItems& items, U
                 nResult = nOther;
             }
         }
-        bMatch = nResult != nOther;
-        if (!bMatch && bFound)
+        bool bDiff = nResult != nOther;
+        bMatch = bDiff;
+        if (!bDiff && bAllAny == true)
             bMatch = true;
     }
     for (size_t i = 0; i < nCount; i++)
@@ -2430,9 +2436,9 @@ void FUN_141b48a20(PC* pPC, MS2Ptr<CItemData> spData, Unk_PackageItems& items, U
         MS2Ptr<CItemData> spItem = items[i];
         if (spItem == 0)
             continue;
-        if (spFilter.get() != 0 && spFilter->FUN_140ebb780(nGender, nJob, spItem))
+        if ((spFilter.get() ? true : false) && spFilter->FUN_140ebb780(nGender, nJob, spItem))
         {
-            if ((unsigned int)nGender == spItem->limit.genderLimit)
+            if (nGender == spItem->limit.genderLimit)
                 matched.Add(spItem);
             else if (bMatch)
                 matched.Add(spItem);
@@ -2448,7 +2454,6 @@ void FUN_141b48a20(PC* pPC, MS2Ptr<CItemData> spData, Unk_PackageItems& items, U
 MS2_REPLACE_OVERLOAD(0x141B48A20, void(PC*, MS2Ptr<CItemData>, Unk_PackageItems&, Unk_PackageItems&, Unk_PackageItems&, MS2Ptr<WeaponType>), FUN_141b48a20, 1378, 0xAFDB8677);
 
 // @0x141b48f90
-// MS2-FUNCTIONAL: from the decompile (the package items, the preview row and the default flag)
 bool FUN_141b48f90(PC* pPC, MS2Ptr<CItemData> spData, MS2Ptr<WeaponType> spFilter, Unk_PackageItems* pItems,
     MS2Ptr<CItemData>* pspData, MS2Ptr<CItemData>* pspPackageData, bool* pbDefault)
 {
@@ -2467,18 +2472,18 @@ bool FUN_141b48f90(PC* pPC, MS2Ptr<CItemData> spData, MS2Ptr<WeaponType> spFilte
     Unk_PackageItems others;
     MS2Ptr<WeaponType> spWeapon(spFilter);
     if (spWeapon == 0)
-        spWeapon = new WeaponType(pPC);
+        spWeapon.AssignRaw(new WeaponType(pPC));
     FUN_141b48a20(pPC, spData, items, matched, others, spWeapon);
     MS2Ptr<CItemData> spSource(spData);
     if (!matched.IsEmpty() || !others.IsEmpty())
     {
-        *pbDefault = matched.IsEmpty() != 0;
-        bool bDefault = *pbDefault;
-        Unk_PackageItems* pSelected = bDefault == false ? &matched : &others;
-        pItems->Copy(*pSelected);
-        if (!pSelected->IsEmpty())
-            *pspData = (*pSelected)[0];
-        if (!packages.IsEmpty() && !bDefault)
+        *pbDefault = matched.IsEmpty() ? true : false;
+        bool bMatched = !*pbDefault;
+        Unk_PackageItems& selected = bMatched == true ? matched : others;
+        pItems->Copy(selected);
+        if (!selected.IsEmpty())
+            *pspData = selected[0];
+        if (!packages.IsEmpty() && bMatched == true)
         {
             MS2Ptr<CItemData> spPackage = FUN_141b49860(packages, true);
             if (spPackage.get() != 0)
@@ -2503,7 +2508,6 @@ bool FUN_141b48f90(PC* pPC, MS2Ptr<CItemData> spData, MS2Ptr<WeaponType> spFilte
 MS2_REPLACE_OVERLOAD(0x141B48F90, bool(PC*, MS2Ptr<CItemData>, MS2Ptr<WeaponType>, Unk_PackageItems*, MS2Ptr<CItemData>*, MS2Ptr<CItemData>*, bool*), FUN_141b48f90, 1366, 0x1CDBE3F4);
 
 // @0x141b494f0
-// MS2-FUNCTIONAL: from the decompile (the pet skin gem's item row)
 MS2Ptr<CItemData> FUN_141b494f0(MS2Ptr<CItem> spItem)
 {
     if (!spItem)
@@ -2524,7 +2528,8 @@ MS2Ptr<CItemData> FUN_141b494f0(MS2Ptr<CItem> spItem)
     CPetDataTable::PetPtr spPet = CPetDataTable::GetInstance()->Find(pSkin->m_nPetId);
     if (spPet.IsNull())
         return MS2Ptr<CItemData>(0);
-    MS2Ptr<CItemData> spData = FUN_14053f870(spPet->GetItemId(1));
+    int nItemId = spPet->GetItemId(1);
+    MS2Ptr<CItemData> spData = FUN_14053f870(nItemId);
     if (!spData)
         return MS2Ptr<CItemData>(0);
     return spData;
@@ -2532,30 +2537,28 @@ MS2Ptr<CItemData> FUN_141b494f0(MS2Ptr<CItem> spItem)
 MS2_REPLACE_OVERLOAD(0x141B494F0, MS2Ptr<CItemData>(MS2Ptr<CItem>), FUN_141b494f0, 869, 0xF47C509B);
 
 // @0x141b49860
-// MS2-FUNCTIONAL: from the decompile (the first previewable outfit of the packages)
 MS2Ptr<CItemData> FUN_141b49860(const Unk_PackageItems& packages, bool bSkipAccessory)
 {
-    if (!packages.IsEmpty())
+    if (packages.IsEmpty())
+        return MS2Ptr<CItemData>(0);
+    size_t nCount = packages.GetCount();
+    for (size_t i = 0; i < nCount; i++)
     {
-        size_t nCount = packages.GetCount();
-        for (size_t i = 0; i < nCount; i++)
-        {
-            MS2Ptr<CItemData> spData = packages[i];
-            if (spData == 0)
-                continue;
-            if (!FUN_141b488c0(spData))
-                continue;
-            if (spData->FUN_14053ce40())
-                return spData;
-            if (spData->FUN_14053cc80())
-                return spData;
-            if (spData->FUN_14053cd50())
-                return spData;
-            if (spData->FUN_14053cb40())
-                return spData;
-            if (!bSkipAccessory && spData->FUN_14053cc40())
-                return spData;
-        }
+        MS2Ptr<CItemData> spData = packages[i];
+        if (spData == 0)
+            continue;
+        if (!FUN_141b488c0(spData))
+            continue;
+        if (spData->FUN_14053ce40())
+            return spData;
+        else if (spData->FUN_14053cc80())
+            return spData;
+        else if (spData->FUN_14053cd50())
+            return spData;
+        else if (spData->FUN_14053cb40())
+            return spData;
+        if (!bSkipAccessory && spData->FUN_14053cc40())
+            return spData;
     }
     return MS2Ptr<CItemData>(0);
 }

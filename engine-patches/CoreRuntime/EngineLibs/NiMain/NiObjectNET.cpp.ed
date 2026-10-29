@@ -1,3 +1,23 @@
+434c
+        else if ((const char*)kKey > (const char*)m_ppkExtra[sMiddle]->GetName())  // Search key is > "middle" key.
+.
+428c
+
+        if ((const char*)kKey == (const char*)m_ppkExtra[sMiddle]->GetName())  // Equal keys.  Return found extra data.
+.
+425,426c
+        // MS2: game 0x141d18870 compares the name pointers (==, then >) instead of subtracting them
+.
+387c
+        else if ((const char*)kKey > (const char*)m_ppkExtra[sMiddle]->GetName())  // Search key is > "middle" key.
+.
+383c
+
+        if ((const char*)kKey == (const char*)m_ppkExtra[sMiddle]->GetName())  // Equal keys.  Return found extra data.
+.
+380,381c
+        // MS2: game 0x141d17b40 compares the name pointers (==, then >) instead of subtracting them
+.
 212c
         else if ((const char*)m_ppkExtra[i - 1]->GetName() > (const char*)m_ppkExtra[i]->GetName())  // MS2
 .

@@ -263,8 +263,8 @@ public:
     virtual void vfunc_72();                                    // 72 0x141a36650 per frame
     virtual void vfunc_79(void* p);                             // 79 0x141a37080
     // UIEntityEventListener (+0x178): the actor arrives by value (MS2Ptr<CProxyGameObject>, the callee destroys it)
-    virtual void vfunc_3(void* pActor);                         // 3 0x141a38b90
-    virtual void vfunc_4(void* pActor);                         // 4 0x141a38c20
+    virtual void vfunc_3(ProxyPtr spActor);                     // 3 0x141a38b90
+    virtual void vfunc_4(ProxyPtr spActor);                     // 4 0x141a38c20
     // UIStatusEventListener (+0x180)
     virtual int vfunc_oa0_1();                                  //  1 0x141a38b10
     virtual void vfunc_oa0_7(int a1, CStringW s);               //  7 0x141a38a70

@@ -45,7 +45,7 @@ public:
     CString FUN_140710300() const;                                 // hex dump "%02x " of the buffer, @0x140710300
     short FUN_1407140a0();                                         // Decode2 through the secondary vtable
     Vector3 FUN_1407140d0();                               // three int reads -> point
-    unsigned FUN_141269940(unsigned key) { return m_opcode ^ (unsigned short)((key >> 16) & 0xffff); }
+    unsigned short FUN_141269940(unsigned key) { return m_opcode ^ (unsigned short)((key >> 16) & 0xffff); }
     void FUN_14126c7b0(int n) { m_sequence=n; }
     int m_flags,m_nState;
     ATL::CAtlArray<unsigned char> m_data;

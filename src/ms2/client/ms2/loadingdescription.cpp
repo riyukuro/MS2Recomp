@@ -15,6 +15,8 @@
 // MS2-PIN: ?ReleaseImpl@?$Unk_LdRowPtr@VCLoadingDescription@@@@AEAAXPEAX@Z 0x14144fc90 ; prop
 // MS2-PIN: ?ReleaseImpl@?$MS2Ptr@VCLoadingDescriptionCache@@@@AEAAXPEAX@Z 0x14144fce0 ; prop
 // MS2-PINS-END tplpin
+// MS2-PIN: ??1CLoadingDescription@@UEAA@XZ 0x14144f220
+// MS2-PIN: ??1CLoadingDescriptionCache@@UEAA@XZ 0x14144f280
 // MS2-GUESS-LOOKALIKES
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\loadingdescription.cpp"    // assumed
 #include "ms2/placeholder/ms2stdafx.h"
@@ -55,15 +57,20 @@ bool CLoadingDescriptionTable::s_bInit;
 // @0x14144fa40
 static CMsTime FUN_14144fa40(ATL::CAtlArray<int>& aTime)
 {
-    return CMsTime(aTime[0], aTime[1], aTime[2], aTime[3], aTime[4], aTime[5]);
+    int nYear = aTime[0];
+    int nMonth = aTime[1];
+    int nDay = aTime[2];
+    int nHour = aTime[3];
+    int nMin = aTime[4];
+    int nSec = aTime[5];
+    return CMsTime(nYear, nMonth, nDay, nHour, nMin, nSec);
 }
 
 // @0x14144e400
 int CLoadingDescriptionTable::LoadLoadingDescription()
 {
     m_spData.AssignRaw(new CLoadingDescriptionCache);
-    CString strFile("loadingDescription.xml");
-    CString strPath = FUN_14071ae20(strFile);
+    CString strPath = FUN_14071ae20("loadingDescription.xml");
     int bOk = LoadXml(CString(strPath));
     if (bOk != 0)
         SetInit(true);
@@ -80,7 +87,10 @@ int CLoadingDescriptionTable::FUN_14144e500(CString strUnused)
 void CLoadingDescriptionTable::Clear()
 {
     Unk_LockGuard guard(m_spData->m_lock);
-    if (guard == 0)
+    if (guard != 0)
+    {
+    }
+    else
         m_spData->m_descs.RemoveAll();
 }
 
@@ -88,7 +98,10 @@ void CLoadingDescriptionTable::Clear()
 void CLoadingDescriptionTable::Add(CLoadingDescriptionCache::DescPtr spDesc)
 {
     Unk_LockGuard guard(m_spData->m_lock);
-    if (guard == 0)
+    if (guard != 0)
+    {
+    }
+    else
         m_spData->m_descs.Add(spDesc);
 }
 
@@ -96,8 +109,12 @@ void CLoadingDescriptionTable::Add(CLoadingDescriptionCache::DescPtr spDesc)
 CStringW CLoadingDescriptionTable::GetRandomTip()
 {
     CheckInit();
+    {
     Unk_LockGuard guard(m_spData->m_lock);
-    if (guard == 0)
+    if (guard != 0)
+    {
+    }
+    else
     {
         if (FUN_1401d1320(m_spData) != 0)
         {
@@ -105,7 +122,7 @@ CStringW CLoadingDescriptionTable::GetRandomTip()
                 return CStringW(L"");
         }
         CMsTime now(_time64(0));
-        ATL::CAtlArray<CStringW*> aTexts;
+        ATL::CAtlArray<CStringW> aTexts;
         for (unsigned i = 0; i < m_spData->m_descs.GetCount(); i++)
         {
             CLoadingDescriptionCache::DescPtr spDesc(m_spData->m_descs.GetAt(i));
@@ -113,22 +130,19 @@ CStringW CLoadingDescriptionTable::GetRandomTip()
             FUN_140177e10(spDesc->m_strStart, aStart, "-");
             ATL::CAtlArray<int> aEnd;
             FUN_140177e10(spDesc->m_strEnd, aEnd, "-");
-            if (aStart.GetCount() == 6 && aEnd.GetCount() == 6)
-            {
-                CMsTime tStart = FUN_14144fa40(aStart);
-                CMsTime tEnd = FUN_14144fa40(aEnd);
-                if (tStart.GetTime() == 0 || !(now < tStart))
-                {
-                    if (tEnd.GetTime() == 0 || !(now > tEnd))
-                        aTexts.Add(&spDesc->m_strText);
-                }
-            }
+            if (aStart.GetCount() != 6 || aEnd.GetCount() != 6)
+                continue;
+            CMsTime tStart = FUN_14144fa40(aStart);
+            CMsTime tEnd = FUN_14144fa40(aEnd);
+            if (tStart.Get() != 0 && now < tStart)
+                continue;
+            if (tEnd.Get() != 0 && now > tEnd)
+                continue;
+            aTexts.Add(spDesc->m_strText);
         }
         if (aTexts.GetCount() != 0)
-        {
-            size_t nIndex = (size_t)rand() % aTexts.GetCount();
-            return CStringW(*aTexts.GetAt(nIndex));
-        }
+            return CStringW(aTexts.GetAt(rand() % aTexts.GetCount()));
+    }
     }
     return CStringW(L"");
 }
@@ -138,33 +152,38 @@ int CLoadingDescriptionTable::LoadXml(CString strPath)
 {
     Unk_LockGuard guard(m_spData->m_lock);
     if (guard != 0)
-        return 0;
-    m_spData->m_descs.RemoveAll();
-    TiXmlDocument doc;
-    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
-        return 0;
-    m_spData->FUN_1401d1160(CString(strPath));
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
-    if (pRoot == 0)
     {
-        FUN_14015eb90(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
-        return 0;
     }
-    std::vector<Unk_140165cf0*> nodes;
-    FUN_14028faa0(pRoot, "tip", "id", &nodes);
-    for (size_t i = 0; i < nodes.size(); i++)
+    else
     {
-        Unk_140165cf0* pNode = nodes[i];
-        CLoadingDescriptionCache::DescPtr spDesc(new CLoadingDescription);
-        spDesc->m_strId = FUN_14086f4b0(pNode, "id");
-        spDesc->m_strStart = FUN_14086f4b0(pNode, "startTime");
-        spDesc->m_strEnd = FUN_14086f4b0(pNode, "endTime");
-        spDesc->m_strText = FUN_1401bf530(pNode, "text", CStringW(L""));
-        spDesc->m_strText.Replace(L"\\n", L"\n");
-        FUN_1403b4750()->FUN_1416fb380(spDesc->m_strText);
-        m_spData->m_descs.Add(spDesc);
+        m_spData->m_descs.RemoveAll();
+        TiXmlDocument doc;
+        if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+            return 0;
+        m_spData->FUN_1401d1160(CString(strPath));
+        Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+        if (pRoot == 0)
+        {
+            FUN_14015eb90(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
+            return 0;
+        }
+        std::vector<Unk_140165cf0*> nodes;
+        FUN_14028faa0(pRoot, "tip", "id", &nodes);
+        for (size_t i = 0; i < nodes.size(); i++)
+        {
+            Unk_140165cf0* pNode = nodes[i];
+            CLoadingDescriptionCache::DescPtr spDesc(new CLoadingDescription);
+            spDesc->m_strId = FUN_14086f4b0(pNode, "id");
+            spDesc->m_strStart = FUN_14086f4b0(pNode, "startTime");
+            spDesc->m_strEnd = FUN_14086f4b0(pNode, "endTime");
+            spDesc->m_strText = FUN_1401bf530(pNode, "text", CStringW(L""));
+            spDesc->m_strText.Replace(L"\\n", L"\n");
+            FUN_1403b4750()->FUN_1416fb380(spDesc->m_strText);
+            m_spData->m_descs.Add(spDesc);
+        }
+        return 1;
     }
-    return 1;
+    // the exe falls off the end here with eax unset (no return statement)
 }
 
 // @0x14144f0a0
@@ -174,16 +193,6 @@ CLoadingDescription::CLoadingDescription()
 
 // @0x14144f120
 CLoadingDescriptionCache::CLoadingDescriptionCache()
-{
-}
-
-// @0x14144f220
-CLoadingDescription::~CLoadingDescription()
-{
-}
-
-// @0x14144f280
-CLoadingDescriptionCache::~CLoadingDescriptionCache()
 {
 }
 

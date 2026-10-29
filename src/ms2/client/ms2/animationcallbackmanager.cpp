@@ -54,7 +54,7 @@
 // MS2-PIN: ?get@?$MS2Ptr@VCAnimationCallbackItem@@@@QEBAPEAVCAnimationCallbackItem@@XZ 0x140998ed0 ; hand
 // MS2-PIN: ??0?$MS2Ptr@VCAnimationCallbackItem@@@@QEAA@AEBV0@@Z 0x1409986c0 ; hand
 // MS2-PIN: ??C?$SmartPointer@VNiControllerManager@@@efd@@QEBAPEAVNiControllerManager@@XZ 0x140998ef0 ; hand
-// MS2-FUNCTIONAL: opaque FUN_ callees (effect request, logger, locator service), ATL/STL glue not yet byte-paired.
+// MS2-FUNCTIONAL: CAnimationCallbackItem dtor is explicit in the shared header (the exe one is implicit).
 #include "ms2/placeholder/ms2stdafx.h"
 #include "animationcallbackmanager.h"
 #include "gameobject.h"
@@ -126,23 +126,16 @@ bool Unk_AnimTable::FUN_140996bc0(GameObject* pObj)
     egmAnimation::AnimationService* pService = g_143b059e8.GetSystemServiceAs<egmAnimation::AnimationService>();
     if (pService == 0)
         return false;
-    egf::EntityID kId;
-    NiActorManager* pMgr = pService->GetActorManager(pObj->FUN_14123c460(kId));
+    NiActorManager* pMgr = pService->GetActorManager(pObj->FUN_14123c460());
     if (pMgr == 0)
         return false;
     if (m_pActor == pMgr)
         return true;
     m_pActor = pMgr;
-    if (DAT_143ae2b30 == 0)
-    {
-        NiActorManager::CallbackObject* pCb = (pObj == 0) ? 0 : static_cast<NiActorManager::CallbackObject*>(pObj);
-        m_pActor->SetCallbackObject(pCb);
-    }
+    if (DAT_143ae2b30 != 0)
+        AnimationCallbackManager::GetInstance()->FUN_14099bb80(pMgr, pObj);
     else
-    {
-        NiActorManager::CallbackObject* pCb = (pObj == 0) ? 0 : static_cast<NiActorManager::CallbackObject*>(pObj);
-        AnimationCallbackManager::GetInstance()->FUN_14099bb80(pMgr, pCb);
-    }
+        m_pActor->SetCallbackObject(pObj);
     NiKFMTool* pKfm = m_pActor->GetKFMTool();
     unsigned int* pIds = 0;
     unsigned int nIds;
@@ -151,26 +144,29 @@ bool Unk_AnimTable::FUN_140996bc0(GameObject* pObj)
     {
         unsigned int uiSeq = pIds[i];
         NiSequenceData* pSeqData = static_cast<Unk_CbActorMgr*>(m_pActor)->FUN_140999740(uiSeq);
-        if (pSeqData != 0)
+        if (pSeqData == 0)
+            continue;
+        NiTextKeyExtraData* pTextKeys = pSeqData->GetTextKeys();
+        unsigned int nKeys = 0;
+        NiTextKey* pKeys = pTextKeys->GetKeys(nKeys);
+        const char* pszName = pSeqData->GetName();
+        FUN_140997710(CString(pszName));
+        ItemPtr spItem;
+        if (m_items.Lookup(pszName, spItem))
         {
-            NiTextKeyExtraData* pTextKeys = pSeqData->GetTextKeys();
-            unsigned int nKeys = 0;
-            NiTextKey* pKeys = pTextKeys->GetKeys(nKeys);
-            const char* pszName = pSeqData->GetName();
-            FUN_140997710(CString(pszName));
-            ItemPtr spItem;
-            if (m_items.Lookup(pszName, spItem))
+            for (unsigned int k = 0; k < nKeys; k++)
             {
-                for (unsigned int k = 0; k < nKeys; k++)
-                {
-                    const NiFixedString& kText = pKeys[k].GetText();
-                    if (!(kText == "start") && !(kText == "end"))
-                        FUN_140997990(ItemPtr(spItem), CString((const char*)kText));
-                }
-                pMgr->RegisterCallback(NiActorManager::ANIM_ACTIVATED, uiSeq, 0);
-                pMgr->RegisterCallback(NiActorManager::END_OF_SEQUENCE, uiSeq);
-                for (int t = 0; t < (int)spItem->m_texts.GetCount(); t++)
-                    pMgr->RegisterCallback(NiActorManager::TEXT_KEY_EVENT, uiSeq, NiFixedString((const char*)spItem->m_texts[t]));
+                const NiFixedString& kText = pKeys[k].GetText();
+                if (kText == "start" || kText == "end")
+                    continue;
+                FUN_140997990(ItemPtr(spItem), CString((const char*)kText));
+            }
+            pMgr->RegisterCallback(NiActorManager::ANIM_ACTIVATED, uiSeq);
+            pMgr->RegisterCallback(NiActorManager::END_OF_SEQUENCE, uiSeq);
+            for (int t = 0; t < (int)spItem->m_texts.GetCount(); t++)
+            {
+                NiFixedString kText((const char*)spItem->m_texts[t]);
+                pMgr->RegisterCallback(NiActorManager::TEXT_KEY_EVENT, uiSeq, kText);
             }
         }
     }
@@ -189,27 +185,22 @@ bool Unk_AnimTable::FUN_140997070(GameObject* pObj, CString strName)
     egmAnimation::AnimationService* pService = g_143b059e8.GetSystemServiceAs<egmAnimation::AnimationService>();
     if (pService == 0)
         return false;
-    egf::EntityID kId;
-    NiActorManager* pMgr = pService->GetActorManager(pObj->FUN_14123c460(kId));
+    NiActorManager* pMgr = pService->GetActorManager(pObj->FUN_14123c460());
     if (pMgr == 0)
         return false;
     if (m_pActor != pMgr)
     {
         m_pActor = pMgr;
-        if (DAT_143ae2b30 == 0)
-        {
-            NiActorManager::CallbackObject* pCb = (pObj == 0) ? 0 : static_cast<NiActorManager::CallbackObject*>(pObj);
-            m_pActor->SetCallbackObject(pCb);
-        }
+        if (DAT_143ae2b30 != 0)
+            AnimationCallbackManager::GetInstance()->FUN_14099bb80(pMgr, pObj);
         else
-        {
-            NiActorManager::CallbackObject* pCb = (pObj == 0) ? 0 : static_cast<NiActorManager::CallbackObject*>(pObj);
-            AnimationCallbackManager::GetInstance()->FUN_14099bb80(pMgr, pCb);
-        }
+            m_pActor->SetCallbackObject(pObj);
     }
-    efd::utf8string kName((const char*)strName);
-    egf::EntityID kId2;
-    NiActorManager::SequenceID uiSeq = pService->GetAnimationIdFromName(pObj->FUN_14123c460(kId2), kName);
+    NiActorManager::SequenceID uiSeq;
+    {
+        efd::utf8string kName((const char*)strName);
+        uiSeq = pService->GetAnimationIdFromName(pObj->FUN_14123c460(), kName);
+    }
     NiSequenceData* pSeqData = static_cast<Unk_CbActorMgr*>(m_pActor)->FUN_140999740(uiSeq);
     if (pSeqData == 0)
         return false;
@@ -223,13 +214,17 @@ bool Unk_AnimTable::FUN_140997070(GameObject* pObj, CString strName)
         for (unsigned int k = 0; k < nKeys; k++)
         {
             const NiFixedString& kText = pKeys[k].GetText();
-            if (!(kText == "start") && !(kText == "end"))
-                FUN_140997990(ItemPtr(spItem), CString((const char*)kText));
+            if (kText == "start" || kText == "end")
+                continue;
+            FUN_140997990(ItemPtr(spItem), CString((const char*)kText));
         }
-        pMgr->RegisterCallback(NiActorManager::ANIM_ACTIVATED, uiSeq, 0);
-        pMgr->RegisterCallback(NiActorManager::END_OF_SEQUENCE, uiSeq, 0);
+        pMgr->RegisterCallback(NiActorManager::ANIM_ACTIVATED, uiSeq);
+        pMgr->RegisterCallback(NiActorManager::END_OF_SEQUENCE, uiSeq);
         for (int t = 0; t < (int)spItem->m_texts.GetCount(); t++)
-            pMgr->RegisterCallback(NiActorManager::TEXT_KEY_EVENT, uiSeq, NiFixedString((const char*)spItem->m_texts[t]));
+        {
+            NiFixedString kText((const char*)spItem->m_texts[t]);
+            pMgr->RegisterCallback(NiActorManager::TEXT_KEY_EVENT, uiSeq, kText);
+        }
     }
     return true;
 }
@@ -238,23 +233,20 @@ bool Unk_AnimTable::FUN_140997070(GameObject* pObj, CString strName)
 void Unk_AnimTable::FUN_1409975a0(GameObject* pObj)
 {
     egmAnimation::AnimationService* pService = g_143b059e8.GetSystemServiceAs<egmAnimation::AnimationService>();
-    if (pService != 0)
+    if (pService == 0)
+        return;
+    NiActorManager* pMgr = pService->GetActorManager(pObj->FUN_14123c460());
+    if (pMgr == 0)
+        return;
+    m_items.RemoveAll();
+    if (DAT_143ae2b30 != 0)
     {
-        egf::EntityID kId;
-        NiActorManager* pMgr = pService->GetActorManager(pObj->FUN_14123c460(kId));
-        if (pMgr != 0)
-        {
-            m_items.RemoveAll();
-            if (DAT_143ae2b30 == 0)
-            {
-                pMgr->SetCallbackObject(0);
-                pMgr->ClearAllRegisteredCallbacks();
-            }
-            else
-            {
-                AnimationCallbackManager::GetInstance()->FUN_14099bb80(pMgr, 0);
-            }
-        }
+        AnimationCallbackManager::GetInstance()->FUN_14099bb80(pMgr, 0);
+    }
+    else
+    {
+        pMgr->SetCallbackObject(0);
+        pMgr->ClearAllRegisteredCallbacks();
     }
 }
 
@@ -263,9 +255,9 @@ float Unk_AnimTable::FUN_140997650(CString strName)
 {
     ItemPtr spItem;
     m_items.Lookup((const char*)strName, spItem);
-    if (spItem.get() == 0)
-        return 0.0f;
-    return spItem->m_fHeight;
+    if (spItem.get() != 0)
+        return spItem->m_fHeight;
+    return 0.0f;
 }
 
 // @0x140997710
@@ -452,9 +444,9 @@ NiSequenceData* Unk_CbActorMgr::FUN_140999740(SequenceID eSequenceID)
         m_kMS2PendingSeqDataMap.RemoveAt(eSequenceID);
         return spSeqData;
     }
-    if (!m_kSeqDataMap.GetAt(eSequenceID, spSeqData))
-        return 0;
-    return spSeqData;
+    if (m_kSeqDataMap.GetAt(eSequenceID, spSeqData))
+        return spSeqData;
+    return 0;
 }
 
 // ---- AniCallbackBridge ----
@@ -467,7 +459,6 @@ AniCallbackBridge::AniCallbackBridge(NiActorManager::CallbackObject* pTarget)
 // @0x14099b2f0
 AniCallbackBridge::~AniCallbackBridge()
 {
-    m_queue.RemoveAll();
 }
 
 // @0x14099b330
@@ -563,13 +554,11 @@ AnimationCallbackManager::AnimationCallbackManager()
 // @0x14099ba80
 AnimationCallbackManager::~AnimationCallbackManager()
 {
-    POSITION pos = m_bridges.GetStartPosition();
-    while (pos != 0)
+    for (POSITION pos = m_bridges.GetStartPosition(); pos != 0; m_bridges.GetNext(pos))
     {
         AniCallbackBridge* pBridge = m_bridges.GetValueAt(pos);
         if (pBridge != 0)
             delete pBridge;
-        m_bridges.GetNext(pos);
     }
     m_bridges.RemoveAll();
 }
@@ -579,24 +568,7 @@ void AnimationCallbackManager::FUN_14099bb80(NiActorManager* pMgr, NiActorManage
 {
     if (pMgr != 0)
     {
-        if (pCb == 0)
-        {
-            AniCallbackBridge* pBridge = 0;
-            if (!m_bridges.Lookup(pMgr, pBridge))
-            {
-                pMgr->SetCallbackObject(0);
-                pMgr->ClearAllRegisteredCallbacks();
-            }
-            else
-            {
-                pMgr->SetCallbackObject(0);
-                pMgr->ClearAllRegisteredCallbacks();
-                m_bridges.RemoveKey(pMgr);
-                if (pBridge != 0)
-                    delete pBridge;
-            }
-        }
-        else
+        if (pCb != 0)
         {
             AniCallbackBridge* pBridge = 0;
             if (!m_bridges.Lookup(pMgr, pBridge))
@@ -609,57 +581,76 @@ void AnimationCallbackManager::FUN_14099bb80(NiActorManager* pMgr, NiActorManage
             pMgr->ClearAllRegisteredCallbacks();
             pMgr->SetCallbackObject(pBridge);
         }
+        else
+        {
+            AniCallbackBridge* pBridge = 0;
+            if (m_bridges.Lookup(pMgr, pBridge))
+            {
+                pMgr->SetCallbackObject(0);
+                pMgr->ClearAllRegisteredCallbacks();
+                m_bridges.RemoveKey(pMgr);
+                delete pBridge;
+                pBridge = 0;
+            }
+            else
+            {
+                pMgr->SetCallbackObject(0);
+                pMgr->ClearAllRegisteredCallbacks();
+            }
+        }
     }
 }
 
 // @0x14099bd80
 void AnimationCallbackManager::FUN_14099bd80()
 {
-    POSITION pos = m_bridges.GetStartPosition();
-    while (pos != 0)
+    for (POSITION pos = m_bridges.GetStartPosition(); pos != 0; m_bridges.GetNext(pos))
     {
         AniCallbackBridge* pBridge = m_bridges.GetValueAt(pos);
         if (pBridge != 0)
         {
             NiActorManager::CallbackObject* pTarget = pBridge->m_pTarget;
-            POSITION posEvent = pBridge->m_queue.GetHeadPosition();
-            while (posEvent != 0)
+            for (POSITION posEvent = pBridge->m_queue.GetHeadPosition(); posEvent != 0;
+                 pBridge->m_queue.GetNext(posEvent))
             {
                 Unk_BridgeEvent& kEvent = pBridge->m_queue.GetAt(posEvent);
-                int eKind = kEvent.m_eKind;
-                if (eKind == 0)
+                switch (kEvent.m_eKind)
+                {
+                case 0:
                     pTarget->AnimActivated(kEvent.m_pManager, kEvent.m_eSequenceID, kEvent.m_pSequence,
                                            kEvent.m_fEventTime);
-                else if (eKind == 1)
+                    break;
+                case 1:
                     pTarget->AnimDeactivated(kEvent.m_pManager, kEvent.m_eSequenceID, kEvent.m_pSequence,
                                              kEvent.m_fEventTime);
-                else if (eKind == 2)
+                    break;
+                case 2:
                     pTarget->AnimCompleted(kEvent.m_pManager, kEvent.m_eSequenceID, kEvent.m_pSequence,
                                            kEvent.m_fEventTime);
-                else if (eKind == 3)
+                    break;
+                case 3:
                     pTarget->TextKeyEvent(kEvent.m_pManager, kEvent.m_eSequenceID, kEvent.m_kTextKey,
                                           kEvent.m_pMatch, kEvent.m_pSequence, kEvent.m_fEventTime);
-                else if (eKind == 4)
+                    break;
+                case 4:
                     pTarget->EndOfSequence(kEvent.m_pManager, kEvent.m_eSequenceID, kEvent.m_pSequence,
                                            kEvent.m_fEventTime);
-                pBridge->m_queue.GetNext(posEvent);
+                    break;
+                }
             }
             pBridge->m_queue.RemoveAll();
         }
-        m_bridges.GetNext(pos);
     }
 }
 
 // @0x14099c030
 void AnimationCallbackManager::FUN_14099c030()
 {
-    POSITION pos = m_bridges.GetStartPosition();
-    while (pos != 0)
+    for (POSITION pos = m_bridges.GetStartPosition(); pos != 0; m_bridges.GetNext(pos))
     {
         AniCallbackBridge* pBridge = m_bridges.GetValueAt(pos);
         if (pBridge != 0)
             delete pBridge;
-        m_bridges.GetNext(pos);
     }
     m_bridges.RemoveAll();
 }

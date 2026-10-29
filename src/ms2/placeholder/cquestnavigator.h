@@ -40,9 +40,9 @@ public:
     QuestNavigation::TraceResult* Result();                 // 0x140c9ac60
     void FUN_140c9ac80();                                   // rebuild m_70 from the tracked quests
     QuestNavigation::TraceContext* Context();               // 0x140c9adf0
-    int HasMap(int nMapId);                                // 0x140c9ae10
+    int HasMap(unsigned nMapId);                           // 0x140c9ae10
     int HasNpc(int nNpcId);                                // 0x140c9ae80
-    int HasInteractObject(int nObjectId);                  // 0x140c9aef0
+    int HasInteractObject(unsigned nObjectId);             // 0x140c9aef0
     bool FUN_140c9af60();                                   // the beam may be shown
     Vector3 FUN_140c9b0a0(const Vector3& pos);   // the beam's end point towards pos
     CStringW FUN_140c9b150(const Vector3& pos);     // the distance text to pos

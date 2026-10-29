@@ -1,0 +1,15 @@
+{
+  "version": 6,
+  "cmakeMinimumRequired": { "major": 3, "minor": 25, "patch": 0 },
+  "configurePresets": [
+    {
+      "name": "fullexe",
+      "displayName": "Full-exe build (bring your own SDKs)",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build/fullexe"
+    }
+  ],
+  "buildPresets": [
+    { "name": "fullexe", "configurePreset": "fullexe", "targets": ["fullexe"] }
+  ]
+}

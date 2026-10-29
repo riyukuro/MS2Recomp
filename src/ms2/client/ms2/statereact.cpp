@@ -97,7 +97,25 @@ void* FUN_14165f100(PCBase* p);
 void FUN_14165f170(PCBase* p);
 class Unk_ReactBuffMgr { public: Vector3 FUN_141683290(); };
 Unk_ReactBuffMgr* FUN_14166d240(PCBase* p);
+// PCBase vtable view: slots 22 and 68 take the point by value (the exe copies it to a 16-aligned temp)
+class Unk_ReactSlots
+{
+public:
+#define MS2_SR_SLOTS(a, b, c, d, e) virtual void vfunc_##a(); virtual void vfunc_##b(); virtual void vfunc_##c(); \
+    virtual void vfunc_##d(); virtual void vfunc_##e();
+    MS2_SR_SLOTS(0, 1, 2, 3, 4) MS2_SR_SLOTS(5, 6, 7, 8, 9) MS2_SR_SLOTS(10, 11, 12, 13, 14) MS2_SR_SLOTS(15, 16, 17, 18, 19)
+    virtual void vfunc_20(); virtual void vfunc_21();
+    virtual void vfunc_22(efd::Point3 kPos);                                // 22 0x14123c3a0
+    virtual void vfunc_23(); virtual void vfunc_24();
+    MS2_SR_SLOTS(25, 26, 27, 28, 29) MS2_SR_SLOTS(30, 31, 32, 33, 34) MS2_SR_SLOTS(35, 36, 37, 38, 39)
+    MS2_SR_SLOTS(40, 41, 42, 43, 44) MS2_SR_SLOTS(45, 46, 47, 48, 49) MS2_SR_SLOTS(50, 51, 52, 53, 54)
+    MS2_SR_SLOTS(55, 56, 57, 58, 59) MS2_SR_SLOTS(60, 61, 62, 63, 64)
+#undef MS2_SR_SLOTS
+    virtual void vfunc_65(); virtual void vfunc_66(); virtual void vfunc_67();
+    virtual bool vfunc_68(efd::Point3 kMove, double fTime, int b, unsigned c, int d);   // 68 0x14166e100
+};
 bool FUN_1416749c0(PCBase* p);
+CString FUN_1409a2360(const char* psz, int nCodePage);          // 0x1409a2360
 void FUN_140b78d90(PCBase* pActor, Unk_CastInfo* pInfo);           // fill the casting request from the actor
 void FUN_140b799a0(PCBase* pActor);                                // the actor reacts
 class Unk_ReactClips : public CPtred                                             // the animation table row of a reaction
@@ -149,7 +167,6 @@ StateReact::~StateReact()
 {
 }
 
-// MS2-FUNCTIONAL: the exe keeps the reference/temporaries in different stack slots and branches (625 vs 569 bytes)
 // @0x140b8d680
 void StateReact::vfunc_4(StateData* pData)
 {
@@ -165,6 +182,7 @@ void StateReact::vfunc_4(StateData* pData)
     {
         switch (m_n10)
         {
+            break;
         case 0x9f:
             {
                 MyPC* pRider = FUN_1417b84b0();
@@ -173,36 +191,32 @@ void StateReact::vfunc_4(StateData* pData)
                 if (FUN_14165f100(pRider) != 0)
                     FUN_14165f170(pRider);
                 Unk_CastInfo kInfo;
-                CString* pName = &m_spData->m_strTarget;
-                Unk_ReactRef kRef = FUN_1403ed2d0()->FUN_141bc6eb0(*pName);
+                Unk_ReactRef kRef = FUN_1403ed2d0()->FUN_141bc6eb0(m_spData->m_strTarget);
                 if (kRef == 0)
                 {
                     m_pOwner->vfunc_59(1, 0, 0, 0);
+                    return;
                 }
-                else
-                {
-                    FUN_140b78d90(kRef.FUN_1409658b0(), &kInfo);
-                    UICastingBar* pBar = FUN_140ac2270(0x4e72);
-                    if (pBar != 0)
-                        pBar->FUN_1418e12b0(this, kInfo);
-                }
+                FUN_140b78d90(kRef.FUN_1409658b0(), &kInfo);
+                UICastingBar* pBar = FUN_140ac2270(0x4e72);
+                if (pBar == 0)
+                    return;
+                pBar->FUN_1418e12b0(this, kInfo);
             }
-            break;
         }
     }
 }
 
-// MS2-FUNCTIONAL: the single-case switch lays out two bytes differently (extra jump)
 // @0x140b8d900
 void StateReact::vfunc_3(double fTime)
 {
     State::vfunc_3(fTime);
-    Vector3 kZero = DAT_143b01a60;
-    m_pOwner->vfunc_68(&kZero, fTime, 0, 0, 0);
+    reinterpret_cast<Unk_ReactSlots*>(m_pOwner)->vfunc_68(reinterpret_cast<const efd::Point3&>(DAT_143b01a60), fTime, 0, 0, 0);
     if (FUN_1417b8560() == 0)
         return;
     switch (m_n10)
     {
+        break;
     case 0x9f:
         FUN_140b8ded0();
         break;
@@ -211,7 +225,6 @@ void StateReact::vfunc_3(double fTime)
     }
 }
 
-// MS2-FUNCTIONAL: the single-case switch / null-test jump layout differs by two bytes
 // @0x140b8d9c0
 void StateReact::vfunc_5(int n)
 {
@@ -220,6 +233,7 @@ void StateReact::vfunc_5(int n)
         return;
     switch (m_n10)
     {
+        break;
     case 0x9f:
         {
             UICastingBar* pBar = FUN_140ac2270(0x4e72);
@@ -233,7 +247,6 @@ void StateReact::vfunc_5(int n)
     }
 }
 
-// MS2-FUNCTIONAL: the exe orders the reference, restart pointer and point temporaries differently (916 vs 970 bytes)
 // @0x140b8da40
 void StateReact::vfunc_8(double fTime)
 {
@@ -243,25 +256,22 @@ void StateReact::vfunc_8(double fTime)
         return;
     if ((StateReactData*)m_spData != 0)
     {
-        CString* pName = &m_spData->m_strTarget;
-        Unk_ReactRef kRef = FUN_1403ed2d0()->FUN_141bc6eb0(*pName);
+        Unk_ReactRef kRef = FUN_1403ed2d0()->FUN_141bc6eb0(m_spData->m_strTarget);
         if (kRef.FUN_140965770() != 0)
         {
-            if (m_n48 == 0)
+            if (m_n48 != 0)
             {
-                Unk_ReactActor* pActor = static_cast<Unk_ReactActor*>(kRef.FUN_1409658b0());
-                float fReach = pActor->FUN_140966e50().get() != 0 ? pActor->FUN_140966e50()->m_fReach : 0.0f;
+                FUN_140b8dfd0(kRef);
+            }
+            else
+            {
+                float fReach = static_cast<Unk_ReactActor*>(kRef.FUN_1409658b0())->FUN_140966e50().get() != 0 ? static_cast<Unk_ReactActor*>(kRef.FUN_1409658b0())->FUN_140966e50()->m_fReach : 0.0f;
                 PCBase* pTarget = kRef.FUN_1409658b0();
-                Vector3 kDelta = reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(pTarget->vfunc_18())).FUN_140965c40(reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(pRider->vfunc_18())));
-                if (fReach < kDelta.FUN_140967ac0())
+                if (reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(pTarget->vfunc_18())).FUN_140965c40(reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(pRider->vfunc_18()))).FUN_140967ac0() > fReach)
                 {
                     pRider->vfunc_59(1, 0, 0, 0);
                     return;
                 }
-            }
-            else
-            {
-                FUN_140b8dfd0(kRef);
             }
         }
         if (m_n48 != 0)
@@ -270,10 +280,8 @@ void StateReact::vfunc_8(double fTime)
             return;
         }
     }
-    const Vector3& kPos = FUN_14166d240(pRider)->FUN_141683290();
-    char kArg[16];
-    memcpy(kArg, &kPos, 12);
-    pRider->vfunc_22(*reinterpret_cast<const efd::Point3*>(kArg));
+    Unk_ReactBuffMgr* pMgr = FUN_14166d240(pRider);
+    reinterpret_cast<Unk_ReactSlots*>(pRider)->vfunc_22(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(pMgr->FUN_141683290())));
     if (FUN_1416749c0(m_pOwner) != 0)
         pRider->vfunc_59(2, 0, 0, 0);
     else
@@ -307,21 +315,22 @@ bool StateReact::vfunc_25(int n, void* p)
     return false;
 }
 
-// MS2-FUNCTIONAL: the exe tests the payload and world pointers with a different branch layout
 // @0x140b8ded0
 void StateReact::FUN_140b8ded0()
 {
     MyPC* pRider = FUN_1417b84b0();
-    if (pRider != 0 && !m_spData == false)
+    if (pRider == 0)
+        return;
+    if (!m_spData)
+        return;
+    Unk_ReactWorld* pWorld = FUN_1403ed2d0();
+    if (pWorld == 0)
+        return;
+    Unk_ReactRef kRef = pWorld->FUN_141bc6eb0(m_spData->m_strTarget);
+    if (kRef.FUN_140965770() == 0)
     {
-        Unk_ReactWorld* pWorld = FUN_1403ed2d0();
-        if (pWorld != 0)
-        {
-            CString* pName = &m_spData->m_strTarget;
-            Unk_ReactRef kRef = pWorld->FUN_141bc6eb0(*pName);
-            if (kRef.FUN_140965770() == 0)
-                pRider->vfunc_59(1, 0, 0, 0);
-        }
+        pRider->vfunc_59(1, 0, 0, 0);
+        return;
     }
 }
 
@@ -331,15 +340,18 @@ void StateReact::OnCastingFinished()
     m_n48 = 1;
 }
 
-// MS2-FUNCTIONAL: the by-value reference parameter is destroyed with a different epilogue layout
 // @0x140b8dfd0
 void StateReact::FUN_140b8dfd0(Unk_ReactRef kRef)
 {
-    if (m_n10 == 0x9f)
+    switch (m_n10)
+    {
+        break;
+    case 0x9f:
         FUN_140b799a0(kRef.FUN_1409658b0());
+        break;
+    }
 }
 
-// MS2-FUNCTIONAL: the exe keeps extra string temporaries and a security cookie frame (908 vs 748 bytes)
 // @0x140b8e030
 bool StateReact::FUN_140b8e030()
 {
@@ -352,24 +364,29 @@ bool StateReact::FUN_140b8e030()
         return false;
     }
     efd::utf8string kName("");
-    if (m_spData->m_strAnim.GetLength() < 1)
+    if (m_spData->m_strAnim.GetLength() > 0)
     {
-        CString strAnim("");
-        if (m_n10 == 0x9e)
-            strAnim = spClips->FUN_14076b060();
-        else if (m_n10 == 0x9f)
-            strAnim = spClips->FUN_14076b110();
-        if (strAnim.GetLength() > 0)
-        {
-            kName = (const char*)strAnim;
-            m_spData->m_strAnim = strAnim;
-            m_pOwner->FUN_14166dd20(kName, 1.0f, false, false);
-        }
+        kName = (const char*)FUN_1409a2360(m_spData->m_strAnim, 0);
+        m_pOwner->FUN_14166dd20(kName, 1.0f, false, false);
     }
     else
     {
-        kName = (const char*)m_spData->m_strAnim;
-        m_pOwner->FUN_14166dd20(kName, 1.0f, false, false);
+        CString strAnim("");
+        switch (m_n10)
+        {
+        case 0x9e:
+            strAnim = spClips->FUN_14076b060();
+            break;
+        case 0x9f:
+            strAnim = spClips->FUN_14076b110();
+            break;
+        }
+        if (strAnim.GetLength() > 0)
+        {
+            kName = (const char*)FUN_1409a2360(strAnim, 0);
+            m_spData->m_strAnim = strAnim;
+            m_pOwner->FUN_14166dd20(kName, 1.0f, false, false);
+        }
     }
     return true;
 }

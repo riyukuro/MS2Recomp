@@ -226,7 +226,6 @@ void UITriggerEditorDialog::vfunc_26()
 }
 MS2_REPLACE_METHOD(0x141B2A180, UITriggerEditorDialog, vfunc_26, 87, 0x55CD6C86);
 
-// MS2-FUNCTIONAL: method dispatch from the decompile
 // @0x141b2a1e0
 int UITriggerEditorDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs)
 {
@@ -247,7 +246,7 @@ int UITriggerEditorDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
     }
     else if (_stricmp("OnSaveFile", szMethod) == 0)
     {
-        if (nArgs != 0)
+        if (nArgs >= 1)
         {
             Scaleform::GFx::Value states(pArgs[0]);
             m_strFileName = "";
@@ -285,19 +284,17 @@ int UITriggerEditorDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
     }
     else if (_stricmp("OnRemoveState", szMethod) == 0)
     {
-        if (nArgs == 2)
-        {
-            Unk_TeBoxDelegate cb(this, &UITriggerEditorDialog::FUN_141b2b2b0);
-            CStringW strText = FUN_14028dfa0(CStringW(L"s_user_trigger_ask_msg_remove_state"), FUN_1422b9490(pArgs[0]));
-            FUN_141a879a0(strText, 1, cb, FUN_1422b9490(pArgs[1]));
-        }
+        if (nArgs != 2)
+            return 1;
+        Unk_TeBoxDelegate cb(this, &UITriggerEditorDialog::FUN_141b2b2b0);
+        CStringW strText = FUN_14028dfa0(CStringW(L"s_user_trigger_ask_msg_remove_state"), FUN_1422b9490(pArgs[0]));
+        FUN_141a879a0(strText, 1, cb, FUN_1422b9490(pArgs[1]));
         return 1;
     }
     return 0;
 }
 MS2_REPLACE_METHOD(0x141B2A1E0, UITriggerEditorDialog, vfunc_28, 2043, 0x281D4036);
 
-// MS2-FUNCTIONAL: from the decompile
 // @0x141b2aa10
 void UITriggerEditorDialog::OnLoadComplete()
 {
@@ -396,7 +393,6 @@ void UITriggerEditorDialog::vfunc_43()
 }
 MS2_REPLACE_METHOD(0x141B2B3A0, UITriggerEditorDialog, vfunc_43, 39, 0x6156B88B);
 
-// MS2-FUNCTIONAL: key handling from the decompile
 // @0x141b2b3d0
 int UITriggerEditorDialog::vfunc_13()
 {
@@ -409,16 +405,17 @@ int UITriggerEditorDialog::vfunc_13()
         return 1;
     if (vfunc_55() != 0 || FUN_140a467d0(&m_30))
         return 0;
-    if (m_bFolded == 0 || g_bAppActive != 0)
+    if (m_bFolded != 0 && g_bAppActive == 0)
+    {
+        if (m_bFolded != 0 && m_30)
+            FUN_141b2b6e0();
+    }
+    else
     {
         if (CInputKeyHandler::GetInstance()->FUN_14116d9c0(0xf, 0, 0))
             FUN_141b2b600();
         else if (CInputKeyHandler::GetInstance()->FUN_14116da30(0xf, 0, 0))
             FUN_141b2b6e0();
-    }
-    else if (m_bFolded != 0 && m_30.get() != 0)
-    {
-        FUN_141b2b6e0();
     }
     return 0;
 }
@@ -456,7 +453,6 @@ void UITriggerEditorDialog::FUN_141b2b6e0()
 }
 MS2_REPLACE_METHOD(0x141B2B6E0, UITriggerEditorDialog, FUN_141b2b6e0, 242, 0x11538C2C);
 
-// MS2-FUNCTIONAL: from the decompile
 // @0x141b2b7e0
 int UITriggerEditorDialog::FUN_141b2b7e0(CFileSystem::BufferPtr spBuffer)
 {
@@ -511,11 +507,10 @@ void UITriggerEditorDialog::FUN_141b2bb10(const Scaleform::GFx::FunctionHandler:
 }
 MS2_REPLACE_METHOD(0x141B2BB10, UITriggerEditorDialog, FUN_141b2bb10, 211, 0x1ED019CA);
 
-// MS2-FUNCTIONAL: from the decompile
 // @0x141b2bbf0
 int UITriggerEditorDialog::OpenTriggerFile()
 {
-    CString strPath = FUN_141b6e500(CString("./Data/Xml/Trigger/"), "xml\0*.xml", CString(""));
+    CString strPath = FUN_141b6e500("./Data/Xml/Trigger/", "xml\0*.xml", "");
     if (strPath.IsEmpty())
         return 1;
     FUN_1401d3700(strPath);
@@ -541,7 +536,6 @@ MS2_REPLACE_METHOD(0x141B2BBF0, UITriggerEditorDialog, OpenTriggerFile, 648, 0x1
 // pulls in the dllimport CSimpleStringT<char,1>::CopyChars, which the hook DLL cannot resolve.
 CString FUN_14038f6d0(const CString& str, const char* sz);
 
-// MS2-FUNCTIONAL: from the decompile
 // @0x141b2be80
 void UITriggerEditorDialog::FUN_141b2be80(Scaleform::GFx::Value& state)
 {
@@ -564,7 +558,8 @@ void UITriggerEditorDialog::FUN_141b2be80(Scaleform::GFx::Value& state)
         {
             Scaleform::GFx::Value v;
             vNames.GetElement(i, &v);
-            names.Add(FUN_1408767c0(v.GetString()));
+            CStringW str = FUN_1408767c0(v.GetString());
+            names.Add(str);
         }
         ATL::CAtlArray<CStringW> args1;
         Scaleform::GFx::Value vArgs1;
@@ -573,7 +568,8 @@ void UITriggerEditorDialog::FUN_141b2be80(Scaleform::GFx::Value& state)
         {
             Scaleform::GFx::Value v;
             vArgs1.GetElement(i, &v);
-            args1.Add(FUN_1408767c0(v.GetString()));
+            CStringW str = FUN_1408767c0(v.GetString());
+            args1.Add(str);
         }
         ATL::CAtlArray<CStringW> args2;
         Scaleform::GFx::Value vArgs2;
@@ -582,10 +578,13 @@ void UITriggerEditorDialog::FUN_141b2be80(Scaleform::GFx::Value& state)
         {
             Scaleform::GFx::Value v;
             vArgs2.GetElement(i, &v);
-            args2.Add(FUN_1408767c0(v.GetString()));
+            CStringW str = FUN_1408767c0(v.GetString());
+            args2.Add(str);
         }
-        for (size_t i = 0; i < names.GetCount() && i < args1.GetCount() && i < args2.GetCount(); i++)
+        for (size_t i = 0; i < names.GetCount(); i++)
         {
+            if (args1.GetCount() <= i || args2.GetCount() <= i)
+                break;
             ATL::CAtlArray<CStringW> args;
             args.Add(args1[i]);
             args.Add(args2[i]);
@@ -621,7 +620,8 @@ void UITriggerEditorDialog::FUN_141b2be80(Scaleform::GFx::Value& state)
         {
             Scaleform::GFx::Value v;
             vNames.GetElement(j, &v);
-            names.Add(FUN_1408767c0(v.GetString()));
+            CStringW str = FUN_1408767c0(v.GetString());
+            names.Add(str);
         }
         ATL::CAtlArray<CStringW> args1;
         Scaleform::GFx::Value vArgs1;
@@ -630,7 +630,8 @@ void UITriggerEditorDialog::FUN_141b2be80(Scaleform::GFx::Value& state)
         {
             Scaleform::GFx::Value v;
             vArgs1.GetElement(j, &v);
-            args1.Add(FUN_1408767c0(v.GetString()));
+            CStringW str = FUN_1408767c0(v.GetString());
+            args1.Add(str);
         }
         ATL::CAtlArray<CStringW> args2;
         Scaleform::GFx::Value vArgs2;
@@ -639,11 +640,14 @@ void UITriggerEditorDialog::FUN_141b2be80(Scaleform::GFx::Value& state)
         {
             Scaleform::GFx::Value v;
             vArgs2.GetElement(j, &v);
-            args2.Add(FUN_1408767c0(v.GetString()));
+            CStringW str = FUN_1408767c0(v.GetString());
+            args2.Add(str);
         }
         ATL::CAtlArray<MS2Ptr<TriggerActionCli> > actions;
-        for (size_t j = 0; j < names.GetCount() && j < args1.GetCount() && j < args2.GetCount(); j++)
+        for (size_t j = 0; j < names.GetCount(); j++)
         {
+            if (args1.GetCount() <= j || args2.GetCount() <= j)
+                break;
             ATL::CAtlArray<CStringW> args;
             args.Add(args1[j]);
             args.Add(args2[j]);
@@ -668,11 +672,10 @@ void UITriggerEditorDialog::FUN_141b2be80(Scaleform::GFx::Value& state)
 }
 MS2_REPLACE_METHOD(0x141B2BE80, UITriggerEditorDialog, FUN_141b2be80, 4676, 0xC5F16193);
 
-// MS2-FUNCTIONAL: from the decompile
 // @0x141b2d0d0
 int UITriggerEditorDialog::SaveTriggerFile()
 {
-    CString strPath = FUN_141b6e880(CString("./Data/Xml/Trigger/"), "xml\0*.xml", m_strFileName);
+    CString strPath = FUN_141b6e880("./Data/Xml/Trigger/", "xml\0*.xml", m_strFileName);
     if (strPath.IsEmpty())
         return 0;
     FUN_1401d3700(strPath);
@@ -693,11 +696,10 @@ int UITriggerEditorDialog::SaveTriggerFile()
 }
 MS2_REPLACE_METHOD(0x141B2D0D0, UITriggerEditorDialog, SaveTriggerFile, 618, 0x67870D93);
 
-// MS2-FUNCTIONAL: from the decompile
 // @0x141b2d340
 void UITriggerEditorDialog::SendTriggerMode13()
 {
-    if ((unsigned int)(FUN_140869420() - m_nLastSend) <= 1099)
+    if ((unsigned int)(FUN_140869420() - m_nLastSend) < 1100)
         return;
     m_nLastSend = FUN_140869420();
     TiXmlDocument doc;
@@ -707,34 +709,34 @@ void UITriggerEditorDialog::SendTriggerMode13()
     if (!doc.Accept(&printer))
         return;
     CStringW strXml = FUN_1408767c0(printer.CStr());
-    if (strXml.GetAllocLength() < 10000)
-    {
-        COutPacket packet(static_cast<int>(SendOp::Trigger), 0);
-        packet.WriteUInt8(0xd);
-        packet.WriteInt32(m_nCubeId);
-        packet.WriteString(FUN_140390ea0((const wchar_t*)strXml, 0));
-        FUN_140710590(packet);
-    }
-    else
+    if (strXml.GetAllocLength() >= 10000)
     {
         FUN_140d73bc0(0xaf4, 0, 0, L"");
+        return;
     }
+    COutPacket packet(static_cast<int>(SendOp::Trigger), 0);
+    packet.WriteUInt8(0xd);
+    packet.WriteInt32(m_nCubeId);
+    packet.WriteString(FUN_140390ea0((const wchar_t*)strXml, 0));
+    FUN_140710590(packet);
 }
 MS2_REPLACE_METHOD(0x141B2D340, UITriggerEditorDialog, SendTriggerMode13, 546, 0x538DEAC4);
 
-// MS2-FUNCTIONAL: from the decompile
 // @0x141b2d570
 void UITriggerEditorDialog::FUN_141b2d570()
 {
+    int bOk = 1;
     std::vector<Message> messages;
     CStringW strError;
-    bool bOk = m_spTrigger->GetFirstError(strError);
-    if (!bOk)
+    if (m_spTrigger->GetFirstError(strError) == 0)
+    {
+        bOk = 0;
         messages.push_back(Message(L"SystemError", strError, 4));
+    }
     std::vector<CStringW> errors;
     if (m_spTrigger->CheckObjects(errors) == 0)
     {
-        bOk = false;
+        bOk = 0;
         for (size_t i = 0; i < errors.size(); i++)
             messages.push_back(Message(L"SystemError", errors[i], 4));
     }
@@ -746,12 +748,13 @@ void UITriggerEditorDialog::FUN_141b2d570()
 }
 MS2_REPLACE_METHOD(0x141B2D570, UITriggerEditorDialog, FUN_141b2d570, 747, 0xC7E0F5F8);
 
-// MS2-FUNCTIONAL: from the decompile
 // @0x141b2d870
 void UITriggerEditorDialog::FUN_141b2d870()
 {
     PCBase* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
-    if (pPlayer == 0 || m_30 == 0)
+    if (pPlayer == 0)
+        return;
+    if (m_30 == 0)
         return;
     std::vector<Cube*> cubes;
     efd::SmartPointer<Unk_TeCubeService> spService(FUN_1401cd040(&DAT_143b059e8));
@@ -767,7 +770,9 @@ void UITriggerEditorDialog::FUN_141b2d870()
     for (size_t i = 0; i < cubes.size(); i++)
     {
         Cube* pCube = cubes[i];
-        if (pCube == 0 || pCube->item.IsNull())
+        if (pCube == 0)
+            continue;
+        if (pCube->item.IsNull())
             continue;
         ASObj obj(2);
         obj.FUN_1407cb9c0("id", nIndex);
@@ -778,9 +783,10 @@ void UITriggerEditorDialog::FUN_141b2d870()
         obj.FUN_141b2ffc0("type", 1);
         obj.FUN_1407cbb20("label", StringFormat((const wchar_t*)strFormat, strText, nHash));
         CObjectDataPtr spData = FUN_140704ec0(pCube->fieldB4);
-        if ((CObjectData*)spData == 0)
+        if ((CObjectData*)spData != 0)
+            obj.FUN_1407cb9c0("functionType", spData->m_cube.m_nControlType);
+        else
             continue;
-        obj.FUN_1407cb9c0("functionType", spData->m_cube.m_nControlType);
         spList->FUN_1422dd230(obj);
         nIndex++;
     }
@@ -789,11 +795,12 @@ void UITriggerEditorDialog::FUN_141b2d870()
 }
 MS2_REPLACE_METHOD(0x141B2D870, UITriggerEditorDialog, FUN_141b2d870, 1287, 0x915E55A8);
 
-// MS2-FUNCTIONAL: from the decompile
 // @0x141b2dd80
 void UITriggerEditorDialog::FUN_141b2dd80()
 {
-    if (m_spTrigger.IsNull() || FUN_140a467d0(&m_30))
+    if (m_spTrigger.IsNull())
+        return;
+    if (FUN_140a467d0(&m_30))
         return;
     efd::SmartPointer<Unk_TeCubeService> spService(FUN_1401cd040(&DAT_143b059e8));
     m_30->Invoke("removeAllState");
@@ -817,21 +824,21 @@ void UITriggerEditorDialog::FUN_141b2dd80()
         {
             MS2Ptr<TriggerActionCli> spAction = states[i]->GetOnEnter((int)j);
             enterNames.PushBack(Scaleform::GFx::Value((const wchar_t*)spAction->GetName()));
-            if (spAction->GetArgCount() < 2)
-            {
-                enterArgs1.PushBack(Scaleform::GFx::Value(L"0"));
-                enterArgs2.PushBack(Scaleform::GFx::Value(L"0"));
-            }
-            else
+            if (spAction->GetArgCount() >= 2)
             {
                 enterArgs1.PushBack(Scaleform::GFx::Value((const wchar_t*)spAction->GetArg(0)));
                 enterArgs2.PushBack(Scaleform::GFx::Value((const wchar_t*)spAction->GetArg(1)));
+            }
+            else
+            {
+                enterArgs1.PushBack(Scaleform::GFx::Value(L"0"));
+                enterArgs2.PushBack(Scaleform::GFx::Value(L"0"));
             }
         }
         obj.FUN_1409adbe0("EnterActionName", enterNames);
         obj.FUN_1409adbe0("EnterActionArg1", enterArgs1);
         obj.FUN_1409adbe0("EnterActionArg2", enterArgs2);
-        obj.FUN_1409c0d20("ConditionCount", (unsigned int)states[i]->GetTransitionCount());
+        obj.FUN_1409c0d20("ConditionCount", states[i]->GetTransitionCount());
         for (size_t j = 0; j < states[i]->GetTransitionCount(); j++)
         {
             Scaleform::GFx::Value cond;
@@ -851,36 +858,33 @@ void UITriggerEditorDialog::FUN_141b2dd80()
                 continue;
             CStringW strCond = spTrans->m_spCond->GetName();
             cond.PushBack(Scaleform::GFx::Value((const wchar_t*)strCond));
-            if (spTrans->m_spCond->GetArgCount() < 2)
-            {
-                if (spTrans->m_spCond->GetArgCount() == 0)
-                {
-                    condArgs1.PushBack(Scaleform::GFx::Value(L"0"));
-                    condArgs2.PushBack(Scaleform::GFx::Value(L"0"));
-                }
-                else
-                {
-                    condArgs1.PushBack(Scaleform::GFx::Value((const wchar_t*)spTrans->m_spCond->GetArg(0)));
-                    condArgs2.PushBack(Scaleform::GFx::Value(L"0"));
-                }
-            }
-            else
+            if (spTrans->m_spCond->GetArgCount() >= 2)
             {
                 condArgs1.PushBack(Scaleform::GFx::Value((const wchar_t*)spTrans->m_spCond->GetArg(0)));
                 condArgs2.PushBack(Scaleform::GFx::Value((const wchar_t*)spTrans->m_spCond->GetArg(1)));
             }
+            else if (spTrans->m_spCond->GetArgCount() >= 1)
+            {
+                condArgs1.PushBack(Scaleform::GFx::Value((const wchar_t*)spTrans->m_spCond->GetArg(0)));
+                condArgs2.PushBack(Scaleform::GFx::Value(L"0"));
+            }
+            else
+            {
+                condArgs1.PushBack(Scaleform::GFx::Value(L"0"));
+                condArgs2.PushBack(Scaleform::GFx::Value(L"0"));
+            }
             for (size_t k = 0; k < spTrans->m_actions.GetCount(); k++)
             {
                 actNames.PushBack(Scaleform::GFx::Value((const wchar_t*)spTrans->m_actions[k]->GetName()));
-                if (spTrans->m_actions[k]->GetArgCount() < 2)
-                {
-                    actArgs1.PushBack(Scaleform::GFx::Value(L"0"));
-                    actArgs2.PushBack(Scaleform::GFx::Value(L"0"));
-                }
-                else
+                if (spTrans->m_actions[k]->GetArgCount() >= 2)
                 {
                     actArgs1.PushBack(Scaleform::GFx::Value((const wchar_t*)spTrans->m_actions[k]->GetArg(0)));
                     actArgs2.PushBack(Scaleform::GFx::Value((const wchar_t*)spTrans->m_actions[k]->GetArg(1)));
+                }
+                else
+                {
+                    actArgs1.PushBack(Scaleform::GFx::Value(L"0"));
+                    actArgs2.PushBack(Scaleform::GFx::Value(L"0"));
                 }
             }
             CString strKey;
@@ -905,12 +909,13 @@ void UITriggerEditorDialog::FUN_141b2dd80()
 }
 MS2_REPLACE_METHOD(0x141B2DD80, UITriggerEditorDialog, FUN_141b2dd80, 5046, 0xB0B4B67B);
 
-// MS2-FUNCTIONAL: from the decompile
 // @0x141b2f140
 void UITriggerEditorDialog::FUN_141b2f140(const std::vector<Message>& messages)
 {
     PCBase* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
-    if (pPlayer == 0 || m_30 == 0)
+    if (pPlayer == 0)
+        return;
+    if (m_30 == 0)
         return;
     MS2Ptr<Unk_TeList> spList = GetChild<Unk_TeList>("m_defaultScrollingList");
     if (spList == 0)
@@ -951,7 +956,6 @@ POINT UITriggerEditorDialog::FUN_141b2f430(int nX, int nY)
 }
 MS2_REPLACE_METHOD(0x141B2F430, UITriggerEditorDialog, FUN_141b2f430, 215, 0xC406528F);
 
-// MS2-FUNCTIONAL: from the decompile
 // @0x141b2f510
 void UITriggerEditorDialog::FUN_141b2f510()
 {
@@ -983,16 +987,15 @@ void UITriggerEditorDialog::FUN_141b2f510()
     {
         nX = (int)state.FUN_1422c10a0() + 50;
         nY = (int)state.FUN_1422c1110() + 50;
-        if (nX + state.FUN_1422c1340() > 1499)
+        if (nX + state.FUN_1422c1340() >= 1500)
             nX = m_30->Invoke("screenCanvasPosX").GetInt();
-        if (nY + state.FUN_1422c13b0() > 1499)
+        if (nY + state.FUN_1422c13b0() >= 1500)
             nY = m_30->Invoke("screenCanvasPosY").GetInt();
     }
     static_cast<Unk_TeScript*>(m_30.operator->())->FUN_1412c4930("newState", strName, nX, nY);
 }
 MS2_REPLACE_METHOD(0x141B2F510, UITriggerEditorDialog, FUN_141b2f510, 1279, 0xE813195F);
 
-// MS2-FUNCTIONAL: from the decompile
 // @0x141b2fa20
 bool FUN_141b2fa20(Cube* pLeft, Cube* pRight)
 {
@@ -1035,7 +1038,6 @@ inline void ASObj::FUN_141b2ffc0(const char* szName, int n)
     FUN_1407cd930(&m_value, szName, data.FUN_1422b9260());
 }
 
-// MS2-FUNCTIONAL: from the decompile
 // @0x141b30060
 inline MS2Ptr<CMsgBoxData> FUN_141b30060(CStringW strText, int nType, Unk_TeBoxDelegate cb, const wchar_t* pszTag)
 {

@@ -91,14 +91,12 @@ CItemGemStoneUpgradeTable::~CItemGemStoneUpgradeTable()
 }
 
 // @0x1405b0dc0
-// MS2-FUNCTIONAL: the exe passes the path pointer through rcx -> r8 (+3 bytes, as banktable/pricetable loaders); the rest of the frame matches
 int CItemGemStoneUpgradeTable::Load()
 {
     CString strPath = FUN_14071a5b0("Table", "itemGemstoneUpgrade.xml");
     FUN_1401d1160(strPath);
     TiXmlDocument doc;
-    const char* pszPath = strPath;
-    if (FUN_140166420()->FUN_1403974b0(&doc, pszPath, 0, true, false) == 0)
+    if (FUN_140166420()->FUN_1403974b0(&doc, (const char*)strPath, 0, true, false) == 0)
         return 1;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
@@ -161,12 +159,14 @@ int CItemGemStoneUpgradeTable::Load()
                 {
                     int nId = 0;
                     int nTag = 0;
-                    Unk_StrVec tokens;
-                    FUN_140275080(strValue, &tokens, ":");
-                    if (tokens.FUN_14028b4c0() != 0)
-                        nId = FUN_1407181d0(tokens.FUN_14027f1c0(0));
-                    if (tokens.FUN_14028b4c0() > 1)
-                        nTag = FUN_140557640(FUN_140281980(), tokens.FUN_14027f1c0(1));
+                    {
+                        Unk_StrVec tokens;
+                        FUN_140275080(strValue, &tokens, ":");
+                        if (tokens.FUN_14028b4c0() > 0)
+                            nId = FUN_1407181d0(tokens.FUN_14027f1c0(0));
+                        if (tokens.FUN_14028b4c0() > 1)
+                            nTag = FUN_140557640(FUN_140281980(), tokens.FUN_14027f1c0(1));
+                    }
                     Unk_IngRef info(new CIngredientInfo(nId, nAmount, 0));
                     Unk_GemIngredientTag(info.operator->(), nTag);
                     pIngredients->FUN_14026bca0(info);
@@ -176,11 +176,7 @@ int CItemGemStoneUpgradeTable::Load()
         CStringA strParts;
         FUN_1408733e0(pNode, strPart, strParts);
         strParts.Trim();
-        if (strParts.IsEmpty())
-        {
-            data->m_nMask = 7;
-        }
-        else
+        if (!strParts.IsEmpty())
         {
             ATL::CAtlArray<unsigned> list;
             FUN_140177f30(strParts, list, ",");
@@ -196,13 +192,16 @@ int CItemGemStoneUpgradeTable::Load()
                         nMask = 7;
                         break;
                     }
-                    int nBit = 1;
-                    nMask |= nBit << nPart;
+                    nMask |= 1 << nPart;
                 }
                 data->m_nMask = nMask;
             }
         }
-        if ((data->m_nMask & 8) != 0 && data->m_nMask != 8)
+        else
+        {
+            data->m_nMask = 7;
+        }
+        if ((data->m_nMask & 8) > 0 && data->m_nMask != 8)
         {
             Unk_GemLog(CLogString::GetInstance(), 2, 0x13, L"equipPart itemID: {0}, equipPart:{1}, [{2}]", nItemId, strParts, strPath);
             return 0;

@@ -50,12 +50,6 @@ bool CFishingTable::s_bInit;
 
 // ---- CFishSimulteData ----
 
-// @0x1403b39f0
-// MS2-FUNCTIONAL: not byte-exact yet (register allocation / block order differ)
-CFishSimulteData::~CFishSimulteData()
-{
-}
-
 // @0x1403b0e30
 CFishSimulteData::CFishSimulteData()
     : m_n18(0), m_n1c(0), m_n20(0)
@@ -85,12 +79,6 @@ void CFishSimulteData::Read(CByteBuffer& in)
 
 // ---- CFishData ----
 
-// @0x1403b39d0
-// MS2-FUNCTIONAL: not byte-exact yet (register allocation / block order differ)
-CFishData::~CFishData()
-{
-}
-
 // @0x1403b1040
 CFishData::CFishData()
     : m_nId(0), m_nMastery(0), m_nHabitat(8), m_nRank(0), m_nIgnoreSpotMastery(0), m_nFishingBook(1), m_nCompanion(0)
@@ -98,7 +86,6 @@ CFishData::CFishData()
 }
 
 // @0x1403b1100
-// MS2-FUNCTIONAL: not byte-exact yet (register allocation / block order differ)
 int CFishData::Load(Unk_140165cf0* pNode)
 {
     FUN_140873220(pNode, "id", m_nId);
@@ -116,7 +103,10 @@ int CFishData::Load(Unk_140165cf0* pNode)
     FUN_140177e10(strSmall, arr, L"-");
     if (arr.GetCount() != 2)
         return 0;
-    int nSmallMax = arr[1];
+    int nSmallMax = 0;
+    int nMidMax = 0;
+    int nBigMax = 0;
+    nSmallMax = arr[1];
     m_aSize[0].FUN_140303060(arr[0], arr[1] - 1);
     arr.RemoveAll();
     CString strBig;
@@ -124,43 +114,40 @@ int CFishData::Load(Unk_140165cf0* pNode)
     FUN_140177e10(strBig, arr, L"-");
     if (arr.GetCount() != 2)
         return 0;
-    int nBigMin = arr[0];
-    int nBigMax = arr[1];
+    nMidMax = arr[0] - 1;
+    nBigMax = arr[1];
     m_aSize[2].FUN_140303060(arr[0], arr[1] - 1);
-    m_aSize[1].FUN_140303060(nSmallMax, nBigMin - 1);
+    m_aSize[1].FUN_140303060(nSmallMax, nMidMax);
     m_aSize[3].FUN_140303060(nBigMax, nBigMax * 10);
     return 1;
 }
 
 // @0x1403b14d0
-// MS2-FUNCTIONAL: not byte-exact yet (register allocation / block order differ)
-bool CFishData::FUN_1403b14d0(unsigned nSize) const
+int CFishData::FUN_1403b14d0(unsigned nSize) const
 {
     return m_aSize[3].m_nMin <= nSize;
 }
 
 // @0x1403b1520
-// MS2-FUNCTIONAL: not byte-exact yet (register allocation / block order differ)
-unsigned __int64 CFishData::FUN_1403b1520(unsigned nSize) const
+int CFishData::FUN_1403b1520(unsigned nSize) const
 {
-    for (unsigned __int64 i = 0; i <= 3; i++)
+    for (unsigned __int64 i = 0; i < 4; i++)
     {
         if (m_aSize[i].FUN_1403b4ef0(nSize))
-            return i;
+            return (int)i;
     }
     return 4;
 }
 
 // @0x1403b1590
-// MS2-FUNCTIONAL: not byte-exact yet (register allocation / block order differ)
 int CFishData::FUN_1403b1590(unsigned nSize) const
 {
-    int nClass = (int)FUN_1403b1520(nSize);
+    int nClass = FUN_1403b1520(nSize);
     if (nClass == 0)
         return 1;
-    if (nClass == 1)
+    else if (nClass == 1)
         return 2;
-    if (nClass == 2 || nClass == 3)
+    else if (nClass == 2 || nClass == 3)
         return 3;
     return 0;
 }
@@ -178,37 +165,30 @@ CStringW CFishData::FUN_1403b1650() const
 }
 
 // @0x1403b16b0
-// MS2-FUNCTIONAL: not byte-exact yet (register allocation / block order differ)
 CStringW CFishData::FUN_1403b16b0(int bDetail) const
 {
     CStringW str;
     if (m_nHabitat != 7)
     {
-        str = GetStringCommonByKey(CStringW(L"s_fishing_fish_habitat"));
+        str = GetStringCommonByKey(L"s_fishing_fish_habitat");
         CStringW strMaps = CFishingTable::GetInstance()->FUN_1403b2ee0(m_nId);
-        if (strMaps.GetLength() == 0)
-            str += GetStringCommonByKey(CStringW(L"s_fishing_fish_habitat_unknown"));
-        else
+        if (strMaps.GetLength() != 0)
         {
             str += strMaps;
-            str += GetStringCommonByKey(CStringW(L"s_fishing_fish_habitat_more"));
+            str += GetStringCommonByKey(L"s_fishing_fish_habitat_more");
         }
+        else
+            str += GetStringCommonByKey(L"s_fishing_fish_habitat_unknown");
     }
-    if (bDetail == 0)
-        str += GetStringTable()->FUN_141811980(0x1e, m_nId);
-    else
+    if (bDetail != 0)
         str += GetStringTable()->FUN_141811980(0x1f, m_nId);
+    else
+        str += GetStringTable()->FUN_141811980(0x1e, m_nId);
     FUN_1416fbf20(CFishingTable::GetTextFilter(), str);
     return str;
 }
 
 // ---- CFishingRodData ----
-
-// @0x1403b3a10
-// MS2-FUNCTIONAL: not byte-exact yet (register allocation / block order differ)
-CFishingRodData::~CFishingRodData()
-{
-}
 
 // @0x1403b1980
 CFishingRodData::CFishingRodData()
@@ -232,12 +212,6 @@ int CFishingRodData::Load(Unk_140165cf0* pNode)
 }
 
 // ---- CFishingSpotData ----
-
-// @0x1403b3a60
-// MS2-FUNCTIONAL: not byte-exact yet (register allocation / block order differ)
-CFishingSpotData::~CFishingSpotData()
-{
-}
 
 // @0x1403b1b20
 CFishingSpotData::CFishingSpotData()
@@ -295,7 +269,6 @@ int CFishingTable::Load()
 }
 
 // @0x1403b1f70
-// MS2-FUNCTIONAL: not byte-exact yet (register allocation / block order differ)
 int CFishingTable::FUN_1403b1f70(const CStringW& strHabitat)
 {
     if (strHabitat == L"water")
@@ -314,8 +287,7 @@ int CFishingTable::FUN_1403b1f70(const CStringW& strHabitat)
         return 6;
     else if (strHabitat == L"all")
         return 7;
-    else
-        return 8;
+    return 8;
 }
 
 // @0x1403b20b0
@@ -343,17 +315,16 @@ CStringW CFishingTable::FUN_1403b20b0(int nHabitat)
 }
 
 // @0x1403b2240
-// MS2-FUNCTIONAL: not byte-exact yet (register allocation / block order differ)
 CStringW CFishingTable::FUN_1403b2240(int n)
 {
-    return GetStringCommon(n + 0xbba);
+    int nId = n + 0xbba;
+    return GetStringCommon(nId);
 }
 
 // @0x1403b22a0
-// MS2-FUNCTIONAL: not byte-exact yet (register allocation / block order differ)
 int CFishingTable::LoadSpots()
 {
-    CString strPath = FUN_14071a5b0(CString("Table"), CString("fishingSpot.xml"));
+    CString strPath = FUN_14071a5b0("Table", "fishingSpot.xml");
     TiXmlDocument doc;
     if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return 0;
@@ -377,10 +348,9 @@ int CFishingTable::LoadSpots()
 }
 
 // @0x1403b2540
-// MS2-FUNCTIONAL: not byte-exact yet (register allocation / block order differ)
 int CFishingTable::LoadFish()
 {
-    CString strPath = FUN_14071a5b0(CString("Table"), CString("fish.xml"));
+    CString strPath = FUN_14071a5b0("Table", "fish.xml");
     TiXmlDocument doc;
     if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return 0;
@@ -404,10 +374,9 @@ int CFishingTable::LoadFish()
 }
 
 // @0x1403b27e0
-// MS2-FUNCTIONAL: not byte-exact yet (register allocation / block order differ)
 int CFishingTable::LoadRods()
 {
-    CString strPath = FUN_14071a5b0(CString("Table"), CString("fishingRod.xml"));
+    CString strPath = FUN_14071a5b0("Table", "fishingRod.xml");
     TiXmlDocument doc;
     if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return 0;
@@ -431,10 +400,9 @@ int CFishingTable::LoadRods()
 }
 
 // @0x1403b2a80
-// MS2-FUNCTIONAL: not byte-exact yet (register allocation / block order differ)
 int CFishingTable::LoadHabitats()
 {
-    CString strPath = FUN_14071a5b0(CString("Table"), CString("fishHabitat.xml"));
+    CString strPath = FUN_14071a5b0("Table", "fishHabitat.xml");
     TiXmlDocument doc;
     if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return 0;
@@ -489,7 +457,6 @@ CFishingSpotDataPtr CFishingTable::GetSpot(int nId)
 }
 
 // @0x1403b2ee0
-// MS2-FUNCTIONAL: not byte-exact yet (register allocation / block order differ)
 CStringW CFishingTable::FUN_1403b2ee0(unsigned nFishId)
 {
     CheckInit();
@@ -502,15 +469,14 @@ CStringW CFishingTable::FUN_1403b2ee0(unsigned nFishId)
         {
             unsigned nMapId = (*spMaps)[i];
             MS2Ptr<CFieldData> spMap = CFieldData::FUN_140374140(nMapId);
-            if (!!spMap)
-            {
-                if (str.GetLength() != 0)
-                    str += L", ";
-                str += StringFormat(L"$map:{0}$", nMapId);
-                nCount++;
-                if (nCount > 2)
-                    break;
-            }
+            if (!spMap)
+                continue;
+            if (str.GetLength() != 0)
+                str += L", ";
+            str += StringFormat(L"$map:{0}$", nMapId);
+            nCount++;
+            if (nCount >= 3)
+                break;
         }
     }
     return str;
@@ -543,10 +509,9 @@ void CFishingTable::CheckInit()
 }
 
 // @0x1403b4ef0
-// MS2-FUNCTIONAL: not byte-exact yet (register allocation / block order differ)
 bool Unk_FishRange::FUN_1403b4ef0(unsigned n) const
 {
-    if (n < m_nMin)
+    if (m_nMin > n)
         return false;
     if (m_nMax < n)
         return false;

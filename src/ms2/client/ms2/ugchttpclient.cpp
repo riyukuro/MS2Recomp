@@ -64,24 +64,34 @@ CUgcHttpClient::~CUgcHttpClient()
 }
 
 // @0x140dfa290
-int CUgcHttpClient::Connect(const char* pszHost, const char* pszUserAgent, unsigned short nPort, const char* pszUser,
+int CUgcHttpClient::Connect(const char* pszHost, const char* pszUserAgent, int nPort, const char* pszUser,
                              const char* pszPass)
 {
-    m_hInternet = InternetOpenA(pszUserAgent, 0, "", "", 0);
-    if (m_hInternet == 0) {
-        CString strError("Connect : InternetOpen");
-        throw Exception(strError, GetLastError());
+    int bOk = 1;
+    try {
+        m_hInternet = InternetOpenA(pszUserAgent, 0, "", "", 0);
+        if (m_hInternet == 0) {
+            throw Exception(CString("Connect : InternetOpen"), GetLastError());
+        }
+        m_hConnect = InternetConnectA(m_hInternet, pszHost, nPort, pszUser, pszPass, 3, 0x4400000, 0);
+        if (m_hConnect == 0) {
+            throw Exception(CString("Connect : InternetConnect"), GetLastError());
+        }
+        if (InternetAttemptConnect(0) != 0) {
+            throw Exception(CString("Connect : InternetAttemptConnect"), GetLastError());
+        }
+    } catch (Exception& e) {
+        m_nStatus = e.GetCode();
+        m_strError = e.GetText();
+        if (m_hInternet != 0) {
+            InternetCloseHandle(m_hInternet);
+        }
+        if (m_hConnect != 0) {
+            InternetCloseHandle(m_hConnect);
+        }
+        bOk = 0;
     }
-    m_hConnect = InternetConnectA(m_hInternet, pszHost, nPort, pszUser, pszPass, 3, 0x4400000, 0);
-    if (m_hConnect == 0) {
-        CString strError("Connect : InternetConnect");
-        throw Exception(strError, GetLastError());
-    }
-    if (InternetAttemptConnect(0) != 0) {
-        CString strError("Connect : InternetAttemptConnect");
-        throw Exception(strError, GetLastError());
-    }
-    return true;
+    return bOk;
 }
 
 // @0x140dfa490
@@ -102,28 +112,28 @@ int CUgcHttpClient::Disconnect()
 // @0x140dfa500
 int CUgcHttpClient::Request(const char* pszUrl)
 {
-    bool bOk = true;
-    char szProtocol[1024] = {0};
-    char szHost[1024] = {0};
-    char szPath[1024] = {0};
+    int bOk = 1;
     long nPort = 0;
+    char szProtocol[1024] = "";
+    char szHost[1024] = "";
+    char szPath[1024] = "";
     unsigned nRead = 0;
 
     FUN_140dfaf10(pszUrl, szProtocol, szHost, &nPort, szPath);
-    if (!Connect(szHost, "UgcHttp", (unsigned short)nPort, 0, 0)) {
-        bOk = false;
-    } else {
+    if (Connect(szHost, "UgcHttp", nPort, 0, 0)) {
         if (!RequestEx(szPath)) {
-            bOk = false;
+            bOk = 0;
         } else {
             m_nResult = 0;
             if (!Response(m_szHeader, 100000, m_szBody, 100000, &nRead)) {
-                bOk = false;
+                bOk = 0;
             } else {
                 m_nResult = nRead;
             }
         }
         Disconnect();
+    } else {
+        bOk = 0;
     }
     return bOk;
 }
@@ -131,43 +141,49 @@ int CUgcHttpClient::Request(const char* pszUrl)
 // @0x140dfa6e0
 int CUgcHttpClient::RequestEx(const char* pszUrl)
 {
-    bool bOk = true;
-    (void)bOk;
-    return RequestPost(pszUrl);
+    int bOk = 1;
+    try {
+        bOk = RequestPost(pszUrl);
+    } catch (CException* e) {
+        char szError[1024];
+        e->GetErrorMessage(szError, 1024, 0);
+        m_strError = szError;
+    }
+    return bOk;
 }
 
 // @0x140dfa760
-bool CUgcHttpClient::Response(char* pszHeader, unsigned nHeaderSize, char* pszBody, unsigned nBodySize,
-                              unsigned* pnRead)
+int CUgcHttpClient::Response(char* pszHeader, unsigned nHeaderSize, char* pszBody, unsigned nBodySize,
+                             unsigned* pnRead)
 {
-    bool bOk = true;
+    int bOk = 1;
+    char szChunk[1024] = "";
     unsigned nChunk = 0;
-    char szChunk[1024] = {0};
-    DWORD nQuerySize = nHeaderSize;
-
-    if (m_hRequest == 0) {
-        CString strError("Response : handle request is null");
-        throw Exception(strError, GetLastError());
-    }
-    for (unsigned i = 0; i < nBodySize; ++i) {
-        pszBody[i] = 0;
-    }
-    *pnRead = 0;
-    while ((nChunk = ResponseOfBytes(szChunk, 0x400)) != 0 && *pnRead < nBodySize) {
-        char* pDst = pszBody + *pnRead;
-        for (unsigned i = 0; i < nChunk; ++i) {
-            pDst[i] = szChunk[i];
+    try {
+        if (m_hRequest == 0) {
+            throw Exception(CString("Response : handle request is null"), GetLastError());
         }
-        *pnRead += nChunk;
+        memset(pszBody, 0, nBodySize);
+        *pnRead = 0;
+        while ((nChunk = ResponseOfBytes(szChunk, 0x400)) != 0 && *pnRead < nBodySize) {
+            memcpy(pszBody + *pnRead, szChunk, nChunk);
+            *pnRead += nChunk;
+        }
+        memset(pszHeader, 0, nHeaderSize);
+        if (HttpQueryInfoA(m_hRequest, 0x16, pszHeader, (DWORD*)&nHeaderSize, 0) == 0) {
+            throw Exception(CString("Response : HttpQueryInfo"), GetLastError());
+        }
+    } catch (Exception& e) {
+        m_nStatus = e.GetCode();
+        m_strError = e.GetText();
+        if (m_hRequest != 0) {
+            InternetCloseHandle(m_hRequest);
+        }
+        bOk = 0;
     }
-    for (unsigned i = 0; i < nHeaderSize; ++i) {
-        pszHeader[i] = 0;
+    if (!bOk) {
+        return 0;
     }
-    if (HttpQueryInfoA(m_hRequest, 0x16, pszHeader, &nQuerySize, 0) == 0) {
-        CString strError("Response : HttpQueryInfo");
-        throw Exception(strError, GetLastError());
-    }
-    (void)bOk;
     return *pnRead != 0;
 }
 
@@ -192,37 +208,36 @@ int CUgcHttpClient::Result()
 // @0x140dfaa40
 int CUgcHttpClient::RequestPost(const char* pszUrl)
 {
-    bool bOk = true;
-
+    int bOk = 1;
     if (m_buffer.GetLength() == 0) {
         m_nStatus = 0;
         m_strError = "RequestPost : UgcDataEmpty";
-        bOk = false;
-    } else {
-        const char* pszContentType = "Content-Type: application/octet-stream\r\n";
-        const char* pszConnection = "Connection: close\r\n";
-        CString strLength = FUN_140513200("Content-Length: {0}\r\n", m_buffer.GetLength());
-        CString strHeaders = Unk_SocketFormat("{0}{1}{2}", pszContentType, strLength, pszConnection);
-        const char* aszAccept[2] = {"*/*", 0};
-
+        return 0;
+    }
+    const char* pszContentType = "Content-Type: application/octet-stream\r\n";
+    const char* pszConnection = "Connection: close\r\n";
+    CString strLength = FUN_140513200("Content-Length: {0}\r\n", m_buffer.GetLength());
+    CString strHeaders = Unk_SocketFormat("{0}{1}{2}", pszContentType, strLength, pszConnection);
+    const char* aszAccept[2] = {"*/*", 0};
+    try {
         m_hRequest = HttpOpenRequestA(m_hConnect, "POST", pszUrl, "HTTP/1.0", "", aszAccept, 0x4400040, 0);
         if (m_hRequest == 0) {
-            CString strError("RequestPost : HttpOpenRequest");
-            throw Exception(strError, GetLastError());
+            throw Exception(CString("RequestPost : HttpOpenRequest"), GetLastError());
         }
         if (HttpAddRequestHeadersA(m_hRequest, "Accept: */*\r\n", 0xd, 0x80000000) == 0) {
-            CString strError("RequestPost : HttpAddRequestHeaders");
-            throw Exception(strError, GetLastError());
+            throw Exception(CString("RequestPost : HttpAddRequestHeaders"), GetLastError());
         }
-        unsigned nLength = m_buffer.GetLength();
-        unsigned char* pData = m_buffer.FUN_140204eb0();
-        LPCSTR pszHeaderBlock = strHeaders;
-        DWORD dwHeaderLength = (DWORD)strlen(pszHeaderBlock);
-        if (HttpSendRequestA(m_hRequest, pszHeaderBlock, dwHeaderLength, pData, nLength) == 0) {
-            CString strError("RequestPost : HttpSendRequest");
-            throw Exception(strError, GetLastError());
+        if (HttpSendRequestA(m_hRequest, strHeaders, (DWORD)strlen(strHeaders), m_buffer.FUN_140204eb0(),
+                             m_buffer.GetLength()) == 0) {
+            throw Exception(CString("RequestPost : HttpSendRequest"), GetLastError());
         }
-        bOk = true;
+    } catch (Exception& e) {
+        m_nStatus = e.GetCode();
+        m_strError = e.GetText();
+        if (m_hRequest != 0) {
+            InternetCloseHandle(m_hRequest);
+        }
+        bOk = 0;
     }
     return bOk;
 }
@@ -231,15 +246,11 @@ int CUgcHttpClient::RequestPost(const char* pszUrl)
 int CUgcHttpClient::ResponseOfBytes(void* pData, unsigned nSize)
 {
     if (m_hRequest == 0) {
-        DWORD dwError = GetLastError();
-        throw Exception(CString("ResponseOfBytes : handle request is null"), dwError);
+        throw Exception(CString("ResponseOfBytes : handle request is null"), GetLastError());
     }
-    for (unsigned i = 0; i < nSize; ++i) {
-        static_cast<char*>(pData)[i] = 0;
-    }
+    memset(pData, 0, nSize);
     if (InternetReadFile(m_hRequest, pData, nSize, &s_nBytesRead) == 0) {
-        DWORD dwError = GetLastError();
-        throw Exception(CString("ResponseOfBytes : InternetReadFile"), dwError);
+        throw Exception(CString("ResponseOfBytes : InternetReadFile"), GetLastError());
     }
     return s_nBytesRead;
 }
@@ -248,8 +259,7 @@ int CUgcHttpClient::ResponseOfBytes(void* pData, unsigned nSize)
 void CUgcHttpClient::Append(CByteBuffer& buffer)
 {
     unsigned nSize = buffer.GetLength();
-    unsigned char* pData = buffer.FUN_140204eb0();
-    m_buffer.WriteBytes(pData, nSize);
+    m_buffer.WriteBytes(buffer.FUN_140204eb0(), nSize);
 }
 
 // @0x140dfb480
@@ -268,83 +278,67 @@ CString CUgcHttpClient::ErrorText()
 // COMDATs
 
 // @0x140dfaf10
-void FUN_140dfaf10(const char* pszUrl, char* pszProtocol, char* pszHost, long* pnPort, char* pszPath)
+void CUgcHttpClient::FUN_140dfaf10(const char* pszUrl, char* pszProtocol, char* pszHost, long* pnPort, char* pszPath)
 {
-    int nSchemeEnd = 0;
-    bool bHasScheme = false;
+    int nPos = 0;
+    int bFound = 0;
     int nHostStart;
-    int nSlash;
-    int nColon = -1;
+    int nColon;
 
-    while (true) {
-        if (strlen(pszUrl) == 0) {
-            break;
-        }
-        if ((int)strlen(pszUrl) <= nSchemeEnd) {
-            break;
-        }
-        if (strncmp(pszUrl + nSchemeEnd, ":", 1) == 0) {
-            break;
-        }
-        ++nSchemeEnd;
+    while (strlen(pszUrl) > 0 && nPos < (int)strlen(pszUrl) && strncmp(pszUrl + nPos, ":", 1) != 0) {
+        ++nPos;
     }
-    if (strncmp(pszUrl + (__int64)nSchemeEnd + 1, "/", 1) == 0) {
+    if (strncmp(pszUrl + nPos + 1, "/", 1) == 0) {
         if (pszProtocol != 0) {
-            strncpy(pszProtocol, pszUrl, (__int64)nSchemeEnd);
-            pszProtocol[nSchemeEnd] = 0;
+            strncpy(pszProtocol, pszUrl, nPos);
+            pszProtocol[nPos] = 0;
         }
-        bHasScheme = true;
+        bFound = 1;
     } else if (pszProtocol != 0) {
         strncpy(pszProtocol, "http", 4);
         pszProtocol[5] = 0;
     }
-    nHostStart = bHasScheme ? nSchemeEnd + 3 : 0;
-    nSlash = nHostStart;
-    while (true) {
-        if (strlen(pszUrl) == 0) {
-            break;
-        }
-        if ((int)strlen(pszUrl) <= nSlash) {
-            break;
-        }
-        if (strncmp(pszUrl + nSlash, "/", 1) == 0) {
-            break;
-        }
-        ++nSlash;
-    }
-    for (int i = nHostStart; i <= nSlash; ++i) {
-        if (strncmp(pszUrl + i, ":", 1) == 0) {
-            nColon = i;
-            break;
-        }
-    }
-    if (nColon == -1) {
-        if (strcmp(pszProtocol, "https") == 0) {
-            *pnPort = 0x1bb;
-        } else {
-            *pnPort = 0x50;
-        }
-        strncpy(pszHost, pszUrl + nHostStart, (__int64)(nSlash - nHostStart));
+    nHostStart = 0;
+    if (bFound) {
+        nPos += 3;
+        nHostStart = nPos;
     } else {
-        char szPortBuf[1024] = {0};
-        strncpy(szPortBuf, pszUrl + (__int64)nColon + 1, (__int64)(nSlash - nColon));
+        nPos = 0;
+        nHostStart = nPos;
+    }
+    bFound = 0;
+    while (strlen(pszUrl) > 0 && nPos < (int)strlen(pszUrl) && strncmp(pszUrl + nPos, "/", 1) != 0) {
+        ++nPos;
+    }
+    for (nColon = nHostStart; nColon <= nPos; ++nColon) {
+        if (strncmp(pszUrl + nColon, ":", 1) == 0) {
+            bFound = 1;
+            break;
+        }
+    }
+    if (bFound) {
+        char szPortBuf[1024] = "";
+        strncpy(szPortBuf, pszUrl + nColon + 1, nPos - nColon);
         *pnPort = atol(szPortBuf);
-        strncpy(pszHost, pszUrl + nHostStart, (__int64)(nColon - nHostStart));
-    }
-    if (nSlash < (int)strlen(pszUrl)) {
-        strncpy(pszPath, pszUrl + nSlash, (__int64)strlen(pszUrl) - nSlash);
+        strncpy(pszHost, pszUrl + nHostStart, nColon - nHostStart);
+    } else if (strcmp(pszProtocol, "https") == 0) {
+        *pnPort = 0x1bb;
+        strncpy(pszHost, pszUrl + nHostStart, nPos - nHostStart);
     } else {
-        *pszPath = 0;
+        *pnPort = 0x50;
+        strncpy(pszHost, pszUrl + nHostStart, nPos - nHostStart);
+    }
+    if (nPos < (int)strlen(pszUrl)) {
+        strncpy(pszPath, pszUrl + nPos, strlen(pszUrl) - nPos);
+    } else {
+        pszPath[0] = 0;
     }
 }
 
 // @0x140dfb4f0
-static char FUN_140dfb4f0(unsigned char ch)
+static bool FUN_140dfb4f0(unsigned char ch)
 {
-    if (!isalnum(ch) && ch != 0x2b && ch != 0x2f) {
-        return 0;
-    }
-    return 1;
+    return isalnum(ch) || ch == 0x2b || ch == 0x2f;
 }
 
 // @0x140dfb540
@@ -450,28 +444,6 @@ char FUN_140dfc030(std::string& strAlphabet, char ch, unsigned nPos)
 }
 
 // @0x140dfc090
-int FUN_140dfc090(void* pDst, unsigned __int64 nDstSize, const void* pSrc, unsigned __int64 nCount)
-{
-    if (nCount == 0) {
-        return 0;
-    }
-    if (pDst == 0) {
-        *_errno() = 0x16;
-        _invalid_parameter_noinfo();
-        return 0x16;
-    }
-    if (pSrc == 0) {
-        *_errno() = 0x16;
-        _invalid_parameter_noinfo();
-        return 0x16;
-    }
-    if (nDstSize < nCount) {
-        *_errno() = 0x22;
-        _invalid_parameter_noinfo();
-        return 0x22;
-    }
-    memmove(pDst, pSrc, nCount);
-    return 0;
-}
+MS2_EMIT_CRT_MEMMOVE_S();
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142ca6070-0x142ca60f0 .text$yd

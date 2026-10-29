@@ -22,19 +22,18 @@ __int64 FUN_140869440();                                                       /
 MS2Ptr<Unk_MailTpl> FUN_140851e50(int id);                                     // mail template by id
 CStringW FUN_14083d340(CStringW);
 CStringW FUN_14083bdc0(const CMsTime& t, bool n, CStringW strSep, CStringW strSep2);
-bool FUN_14025cd60(const CStringW&, const CStringW&);
 class Unk_MailTextFilter { public: void FUN_1416fb300(CStringW& str); void FUN_1416fb340(CStringW& str); };
 Unk_MailTextFilter* FUN_1403b4750();
 
-class Unk_ReplMap { char m_pad[0x18]; };
-class Unk_ReplList { char m_pad[0x20]; };
-void FUN_140660c40(Unk_ReplList*);
-void FUN_140660c80(Unk_ReplMap*);
+class Unk_ReplMap { void* m_p[3]; };
+class Unk_ReplList { void* m_p[4]; };
+void FUN_140660c40(Unk_ReplList*) noexcept;
+void FUN_140660c80(Unk_ReplMap*) noexcept;
 // Placeholder substitution builder: feed (key, value) pairs, then read the result.
 class Unk_StrRepl {
 public:
     Unk_StrRepl(int mode);                                                     // 0x14065cfa0
-    // @0x140692c60 MS2-FUNCTIONAL: inline dtor body order differs
+    // @0x140692c60
     ~Unk_StrRepl() { FUN_140660c40(&m_list); FUN_140660c80(&m_map); }          // 0x140692c60
     void FUN_14065d590(const CStringW& key, const CStringW& value);
     CStringW FUN_14065d9d0();
@@ -167,9 +166,7 @@ CMailAdItem::CMailAdItem()
     m_n38 = 0;
 }
 
-// @0x140692c20
-// MS2-FUNCTIONAL: exe dtor stores no vptr
-CMailAdItem::~CMailAdItem() {}
+// ~CMailAdItem (0x140692c20) is implicit.
 
 // ---- CMailSendKeep --------------------------------------------------------------------------------------------------
 
@@ -607,7 +604,6 @@ __int64 CMailInfo::FUN_140692760() const
 }
 
 // @0x1406913e0
-// MS2-FUNCTIONAL: 3.8 KB packet reader; local layout differs
 void CMailInfo::FUN_1406913e0(CInPacket& packet)
 {
     m_nKind = packet.ReadUInt8();
@@ -624,7 +620,7 @@ void CMailInfo::FUN_1406913e0(CInPacket& packet)
         for (int i = 0; i < nAds; i++)
         {
             MS2Ptr<CMailAdItem> spAd(new CMailAdItem);
-            spAd->FUN_14068fb60(&packet);
+            spAd->FUN_14068fb60(&static_cast<CInputStream&>(packet));
             FUN_1406923a0(i, spAd);
         }
         m_str120 = packet.ReadUnicodeString();
@@ -640,10 +636,10 @@ void CMailInfo::FUN_1406913e0(CInPacket& packet)
             FUN_140690650(spAttach->FUN_14068fb10(), spAttach);
         }
     }
-    m_rangeB0.FUN_140693300(&packet);
-    m_rangeC0.FUN_140693300(&packet);
-    m_rangeD0.FUN_140693300(&packet);
-    m_benefits.FUN_14026a3d0(&packet);
+    m_rangeB0.FUN_140693300(&static_cast<CInputStream&>(packet));
+    m_rangeC0.FUN_140693300(&static_cast<CInputStream&>(packet));
+    m_rangeD0.FUN_140693300(&static_cast<CInputStream&>(packet));
+    m_benefits.FUN_14026a3d0(&static_cast<CInputStream&>(packet));
     m_n100 = packet.ReadInt64();
     m_n108 = packet.ReadInt64();
     m_n118 = packet.ReadInt64();
@@ -651,22 +647,20 @@ void CMailInfo::FUN_1406913e0(CInPacket& packet)
     if (FUN_140692690(m_nKind))
     {
         MS2Ptr<Unk_MailTpl> spTpl(0);
-        if (FUN_14025cd60(m_str50.SpanIncluding(L"0123456789"), m_str50))
+        if (m_str50.SpanIncluding(L"0123456789") == m_str50)
         {
             int nTplId = _wtoi(m_str50);
             spTpl = FUN_140851e50(nTplId);
-            if (spTpl.get())
-            {
-                if (m_str30.IsEmpty())
-                {
-                    m_str30 = spTpl->m_str38;
-                    m_str48 = spTpl->m_str40;
-                    m_str50 = spTpl->m_str48;
-                }
-                FUN_1403b4750()->FUN_1416fb340(m_str30);
-                FUN_1403b4750()->FUN_1416fb340(m_str48);
-                FUN_1403b4750()->FUN_1416fb340(m_str50);
-            }
+        }
+        if (spTpl.get())
+        {
+            if (m_str30.IsEmpty())
+                m_str30 = spTpl->m_str38;
+            m_str48 = spTpl->m_str40;
+            m_str50 = spTpl->m_str48;
+            FUN_1403b4750()->FUN_1416fb340(m_str30);
+            FUN_1403b4750()->FUN_1416fb340(m_str48);
+            FUN_1403b4750()->FUN_1416fb340(m_str50);
         }
         else
         {
@@ -679,7 +673,7 @@ void CMailInfo::FUN_1406913e0(CInPacket& packet)
         m_str48 = FUN_14083d340(m_str48);
         m_str50 = FUN_14083d340(m_str50);
         Unk_StrRepl repl0(0);
-        repl0.FUN_14065d590(m_str30, CStringW(L""));
+        repl0.FUN_14065d590(m_str30, L"");
         Unk_StrRepl repl1(1);
         repl1.FUN_14065d590(m_str48, m_str58);
         Unk_StrRepl repl2(2);

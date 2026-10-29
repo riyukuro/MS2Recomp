@@ -11,9 +11,9 @@
 #include <windows.h>
 #include <afx.h>
 
-#include "../../../third_party/razer/CSDK_SampleApp/Razer/RzChromaSDKDefines.h"
-#include "../../../third_party/razer/CSDK_SampleApp/Razer/RzChromaSDKTypes.h"
-#include "../../../third_party/razer/CSDK_SampleApp/Razer/RzErrors.h"
+#include "razer/CSDK_SampleApp/Razer/RzChromaSDKDefines.h"
+#include "razer/CSDK_SampleApp/Razer/RzChromaSDKTypes.h"
+#include "razer/CSDK_SampleApp/Razer/RzErrors.h"
 
 #include "ms2/ms2layout.h"
 

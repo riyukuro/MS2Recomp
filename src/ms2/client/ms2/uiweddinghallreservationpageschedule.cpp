@@ -47,10 +47,15 @@ Unk_SchedTarget* FUN_140d295d0(void* pCharacter);
 class Unk_SchedHallTable { public: bool FUN_140909870(unsigned nType, const CMsTime& time); };
 Unk_SchedHallTable* FUN_1409023c0();
 
-// The public/private radio group and the prev/next buttons (AS wrappers of the page movie).
-class Unk_SchedGroup : public ASDisplayObject { public: void FUN_1422e8ce0(int nValue, int nFlag); };
-Unk_SchedGroup* FUN_1422e8920(void* pMem, const Scaleform::GFx::Value& v, int nMovieId);   // ctor
-class Unk_SchedButton : public ASDisplayObject { public: void FUN_1422c1fe0(bool bEnable); };
+// The public/private radio group (a view of ASButtonGroup, asbuttongroup.h) and the prev/next buttons (AS wrappers
+// of the page movie).
+class Unk_SchedGroup : public ASDisplayObject
+{
+public:
+    Unk_SchedGroup(const Scaleform::GFx::Value& v, int nMovieId);   // 0x1422e8920
+    void FUN_1422e8ce0(int nValue, bool bFlag);
+};
+class Unk_SchedButton : public ASDisplayObject { public: void FUN_1422c1fe0(int bEnable); };
 
 void FUN_14015b020(CPtred*);
 int FUN_140159bc0(CPtred*);
@@ -122,7 +127,6 @@ UIWeddingHallReservationPageSchedule::~UIWeddingHallReservationPageSchedule()
 {
 }
 
-// MS2-FUNCTIONAL: frame 0x30 larger: temp slots of the two child handles/CMsTime differ
 // @0x140fe3440
 bool UIWeddingHallReservationPageSchedule::vfunc_1()
 {
@@ -134,19 +138,15 @@ bool UIWeddingHallReservationPageSchedule::vfunc_1()
         TruncateToDay(m_date);
     }
     FUN_140fe3c40(this);
-    {
-        Unk_WedPtr<Unk_SchedGroup> spPublic = static_cast<Unk_SchedScript*>(m_pScript.operator->())->FUN_140fe4370<Unk_SchedGroup>("m_publicGroup");
-        if (spPublic)
-            spPublic.get()->FUN_1422e8ce0(m_bPrivate == 0, 1);
-    }
+    if (Unk_WedPtr<Unk_SchedGroup> spPublic = static_cast<Unk_SchedScript*>(m_pScript.operator->())->FUN_140fe4370<Unk_SchedGroup>("m_publicGroup"))
+        spPublic.get()->FUN_1422e8ce0(m_bPrivate ? 0 : 1, true);
     if (m_nTime != 0)
     {
-        Unk_WedPtr<Unk_SchedGroup> spTime = static_cast<Unk_SchedScript*>(m_pScript.operator->())->FUN_140fe4370<Unk_SchedGroup>("m_timeGroup");
-        if (spTime)
+        if (Unk_WedPtr<Unk_SchedGroup> spTime = static_cast<Unk_SchedScript*>(m_pScript.operator->())->FUN_140fe4370<Unk_SchedGroup>("m_timeGroup"))
         {
             CMsTime tTime(m_nTime);
             int nHour = tTime.GetHour();
-            spTime.get()->FUN_1422e8ce0(nHour, 1);
+            spTime.get()->FUN_1422e8ce0(nHour, true);
         }
     }
     return true;
@@ -158,7 +158,6 @@ void UIWeddingHallReservationPageSchedule::vfunc_2()
     UIWeddingHallReservationPage::vfunc_2();
 }
 
-// MS2-FUNCTIONAL: else-chain / ASData slot layout differs
 // @0x140fe3690
 bool UIWeddingHallReservationPageSchedule::vfunc_4(__int64 a1, __int64 a2, int a3)
 {
@@ -170,13 +169,13 @@ bool UIWeddingHallReservationPageSchedule::vfunc_4(__int64 a1, __int64 a2, int a
         FUN_140fe3c40(this);
         return true;
     }
-    if (_stricmp((const char*)a1, "onNextDay") == 0)
+    else if (_stricmp((const char*)a1, "onNextDay") == 0)
     {
         AddDays(m_date, 1);
         FUN_140fe3c40(this);
         return true;
     }
-    if (_stricmp((const char*)a1, "onSelectTime") == 0)
+    else if (_stricmp((const char*)a1, "onSelectTime") == 0)
     {
         ASData data;
         if (data.FUN_1422b9620((const Scaleform::GFx::Value*)a2, a3))
@@ -195,13 +194,12 @@ bool UIWeddingHallReservationPageSchedule::vfunc_4(__int64 a1, __int64 a2, int a
         }
         return true;
     }
-    if (_stricmp((const char*)a1, "onSelectPublic") == 0)
+    else if (_stricmp((const char*)a1, "onSelectPublic") == 0)
     {
         ASData data;
         if (data.FUN_1422b9620((const Scaleform::GFx::Value*)a2, a3))
         {
-            int nValue = data.FUN_1422b8a10();
-            m_bPrivate = nValue == 0;
+            m_bPrivate = data.FUN_1422b8a10() == 0 ? true : false;
             FUN_140fdc160(m_pDialog, m_bPrivate);
         }
     }
@@ -251,29 +249,26 @@ CStringW UIWeddingHallReservationPageSchedule::vfunc_9()
     return GetStringCommonByKey(strKey);
 }
 
-// MS2-FUNCTIONAL: one byte of the branch layout differs
 // @0x140fe3b50
 CStringW UIWeddingHallReservationPageSchedule::vfunc_10(bool bStart)
 {
-    if (bStart == 0)
+    if (bStart)
     {
-        CStringW strNext(L"s_wedding_reservation_next");
-        return GetStringCommonByKey(strNext);
+        CStringW strPrev(L"s_wedding_reservation_prev");
+        return GetStringCommonByKey(strPrev);
     }
-    CStringW strPrev(L"s_wedding_reservation_prev");
-    return GetStringCommonByKey(strPrev);
+    CStringW strNext(L"s_wedding_reservation_next");
+    return GetStringCommonByKey(strNext);
 }
 
-// MS2-FUNCTIONAL: branch layout of the bool result differs
 // @0x140fe3c10
 bool UIWeddingHallReservationPageSchedule::vfunc_12()
 {
-    if (FUN_140fdca20(m_pDialog) != 0)
-        return true;
-    return false;
+    if (FUN_140fdca20(m_pDialog) == 0)
+        return false;
+    return true;
 }
 
-// MS2-FUNCTIONAL: CMsTime temp slots differ (frame 0x40 larger in the exe)
 // @0x140fe3c40 (refreshes the selectable hours, the day arrows and the date text)
 void FUN_140fe3c40(UIWeddingHallReservationPageSchedule* pPage)
 {
@@ -310,32 +305,21 @@ void FUN_140fe3c40(UIWeddingHallReservationPageSchedule* pPage)
         if (FUN_1409023c0()->FUN_140909870(DAT_143ab2830, tHour) == 1)
             pPage->m_pScript->Invoke("setDisabledTime", i);
     }
-    {
-        MS2Ptr<Unk_SchedButton> spPrev = pPage->m_pScript->FUN_140acce30<Unk_SchedButton>("m_prev");
-        if (spPrev.get())
-            spPrev->FUN_1422c1fe0(nFrom == 0);
-    }
-    {
-        MS2Ptr<Unk_SchedButton> spNext = pPage->m_pScript->FUN_140acce30<Unk_SchedButton>("m_next");
-        if (spNext.get())
-            spNext->FUN_1422c1fe0(nTo == 0x18);
-    }
-    MS2Ptr<ASTextField> spDate = pPage->m_pScript->FUN_1409b4620("m_date");
-    if (spDate.get())
+    if (MS2Ptr<Unk_SchedButton> spPrev = pPage->m_pScript->FUN_140acce30<Unk_SchedButton>("m_prev"))
+        spPrev->FUN_1422c1fe0(nFrom == 0);
+    if (MS2Ptr<Unk_SchedButton> spNext = pPage->m_pScript->FUN_140acce30<Unk_SchedButton>("m_next"))
+        spNext->FUN_1422c1fe0(nTo == 0x18);
+    if (MS2Ptr<ASTextField> spDate = pPage->m_pScript->FUN_1409b4620("m_date"))
         spDate->FUN_1422c4cd0(FUN_140b8e910(pPage->m_date));
 }
 
-// MS2-FUNCTIONAL: temp slot layout of the allocation differs
 // @0x140fe42c0
 template <class T> Unk_WedPtr<T> FUN_140fe42c0(int nMovieId, const Scaleform::GFx::Value& v)
 {
-    void* pMem = operator new(0x80);
-    T* pNew = pMem ? FUN_1422e8920(pMem, v, nMovieId) : 0;
-    Unk_WedPtr<T> sp(pNew);
+    Unk_WedPtr<T> sp(new T(v, nMovieId));
     return sp;
 }
 
-// MS2-FUNCTIONAL: temp slot layout differs
 // @0x140fe4370
 template <class T> Unk_WedPtr<T> Unk_SchedScript::FUN_140fe4370(const CString& strName)
 {

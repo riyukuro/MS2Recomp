@@ -6,6 +6,7 @@
 #include "ms2/placeholder/nmstream.h"
 #include "ms2/placeholder/nmobjects.h"
 #include "ms2/placeholder/nmfunc.h"
+#include "ms2/placeholder/nmencoder.h"
 #include "ms2/ms2recover.h"
 
 extern void FUN_14156bcb0(void*, void*, void*);
@@ -17,7 +18,7 @@ extern void FUN_14156ac20(void*, unsigned int);
 extern void FUN_1415f9990(void*);
 extern int FUN_1415fb700(void*);
 extern int FUN_1415fb750(void*);
-extern int FUN_1415fb6d0(void*);
+extern int FUN_1415fb6d0(CNMSerializableDecoder*);
 
 // MS2-FUNCTIONAL 0x14158cf10: initializes the monitor request fields to zero.
 // @0x14158cf10
@@ -36,28 +37,19 @@ CNMMonitorGuildOnlineInfoFunc::CNMMonitorGuildOnlineInfoFunc(int type, int enabl
 
 // MS2-FUNCTIONAL 0x14158d080: frames the monitor-guild-online-info request.
 // @0x14158d080
-unsigned int CNMMonitorGuildOnlineInfoFunc::EncodeFramed(CNMStream* stream)
+unsigned int CNMMonitorGuildOnlineInfoFunc::EncodeFramed(CNMStream* pStream)
 {
-    unsigned char storage[0x18];
-    FUN_14156bcb0(storage, stream, this);
-    void** vtable = *reinterpret_cast<void***>(this);
-    using Method = unsigned int(__fastcall*)(CNMMonitorGuildOnlineInfoFunc*, CNMEncoder*, CNMStream*);
-    const unsigned int result = reinterpret_cast<Method>(vtable[2])(this, reinterpret_cast<CNMEncoder*>(storage), stream);
-    FUN_14156bd50(storage);
-    return result;
+    CNMSerializableEncoder encoder(pStream, this);
+    return CNMMonitorGuildOnlineInfoFunc::Encode(reinterpret_cast<CNMEncoder*>(&encoder), pStream);
 }
 
 // MS2-FUNCTIONAL 0x14158d0e0: selects the encoder by wire format.
 // @0x14158d0e0
-unsigned int CNMMonitorGuildOnlineInfoFunc::EncodeDispatch(CNMEncoder* encoder, CNMStream* stream)
+unsigned int CNMMonitorGuildOnlineInfoFunc::EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream)
 {
-    void** vtable = *reinterpret_cast<void***>(this);
-    if (m_bFormat == 1) {
-        using Method = unsigned int(__fastcall*)(CNMMonitorGuildOnlineInfoFunc*, CNMEncoder*, CNMStream*);
-        return reinterpret_cast<Method>(vtable[2])(this, encoder, stream);
-    }
-    using Method = unsigned int(__fastcall*)(CNMMonitorGuildOnlineInfoFunc*, CNMStream*);
-    return reinterpret_cast<Method>(vtable[3])(this, stream);
+    if (m_bFormat == 1)
+        return CNMMonitorGuildOnlineInfoFunc::Encode(pEncoder, pStream);
+    return CNMMonitorGuildOnlineInfoFunc::EncodeFramed(pStream);
 }
 
 // MS2-FUNCTIONAL 0x14158d140: encodes monitor type, enabled state, and result status.
@@ -76,31 +68,21 @@ unsigned int CNMMonitorGuildOnlineInfoFunc::Encode(CNMEncoder* encoder, CNMStrea
 
 // MS2-FUNCTIONAL 0x14158d1d0: decodes a framed monitor response.
 // @0x14158d1d0
-unsigned int CNMMonitorGuildOnlineInfoFunc::DecodeFramed(CNMStream* stream)
+unsigned int CNMMonitorGuildOnlineInfoFunc::DecodeFramed(CNMStream* pStream)
 {
-    unsigned char storage[0x38];
-    FUN_14156be10(storage, stream, this);
-    unsigned int result = 0;
-    if (FUN_1415fb750(storage)) {
-        void** vtable = *reinterpret_cast<void***>(this);
-        using Method = unsigned int(__fastcall*)(CNMMonitorGuildOnlineInfoFunc*, CNMSerializableDecoder*, CNMStream*);
-        result = reinterpret_cast<Method>(vtable[5])(this, reinterpret_cast<CNMSerializableDecoder*>(storage), stream);
-    }
-    FUN_14156bf10(storage);
-    return result;
+    CNMSerializableDecoder decoder(pStream, this);
+    if (FUN_1415fb750(&decoder) == 0)
+        return 0;
+    return CNMMonitorGuildOnlineInfoFunc::Decode(&decoder, pStream);
 }
 
 // MS2-FUNCTIONAL 0x14158d260: selects the decoder by wire format.
 // @0x14158d260
-unsigned int CNMMonitorGuildOnlineInfoFunc::DecodeDispatch(CNMSerializableDecoder* decoder, CNMStream* stream)
+unsigned int CNMMonitorGuildOnlineInfoFunc::DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream)
 {
-    void** vtable = *reinterpret_cast<void***>(this);
-    if (FUN_1415fb6d0(decoder) == 2) {
-        using Method = unsigned int(__fastcall*)(CNMMonitorGuildOnlineInfoFunc*, CNMStream*);
-        return reinterpret_cast<Method>(vtable[6])(this, stream);
-    }
-    using Method = unsigned int(__fastcall*)(CNMMonitorGuildOnlineInfoFunc*, CNMSerializableDecoder*, CNMStream*);
-    return reinterpret_cast<Method>(vtable[5])(this, decoder, stream);
+    if (FUN_1415fb6d0(pDecoder) == 2)
+        return CNMMonitorGuildOnlineInfoFunc::DecodeFramed(pStream);
+    return CNMMonitorGuildOnlineInfoFunc::Decode(pDecoder, pStream);
 }
 
 // MS2-FUNCTIONAL 0x14158d2c0: restores monitor type, enabled state, and response status.

@@ -94,8 +94,7 @@ int CSkillCompactControlTable::Load()
     CString strPath;
     strPath.Format("./data/xml/table/SkillCompactControl.xml");
     TiXmlDocument doc;
-    const char* pszPath = strPath;
-    if (FUN_140166420()->FUN_1403974b0(&doc, pszPath, 0, true, false) == 0)
+    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
     {
         FUN_14015eb90(FUN_140166440(), 1, 0x13, L"파일을 읽을 수 없습니다[{0}]", strPath);
         return 0;
@@ -109,7 +108,7 @@ int CSkillCompactControlTable::Load()
     }
     for (Unk_140165cf0* pJob = pRoot->FUN_140165cf0("job"); pJob != 0; pJob = pJob->FUN_140168650("job"))
     {
-        Unk_CcSkillListPtr spList(0);
+        Unk_CcSkillListPtr spList;
         spList = Unk_SocketNew(0);
         Unk_CcJob nCode = Unk_CcJob_None;
         FUN_1406363a0(pJob, "code", nCode);
@@ -117,16 +116,15 @@ int CSkillCompactControlTable::Load()
         FUN_1408732e0(pJob, "baseSP", nBaseSP);
         for (Unk_140165cf0* pSkill = pJob->FUN_140165cf0("skill"); pSkill != 0; pSkill = pSkill->FUN_140168650("skill"))
         {
-            if (FUN_14028f710(pSkill))
+            if (!FUN_14028f710(pSkill))
+                continue;
+            Unk_CcSkillPtr spSkill(new CCompactControlSkill);
+            FUN_140873220(pSkill, "id", spSkill->m_nSkillId);
+            FUN_140873220(pSkill, "repeatCount", spSkill->m_nRepeatCount);
+            spList->AddTail(spSkill);
+            if (Unk_LockGuard guard = s_lock) { __assume(0); } else
             {
-                Unk_CcSkillPtr spSkill(new CCompactControlSkill);
-                FUN_140873220(pSkill, "id", spSkill->m_nSkillId);
-                FUN_140873220(pSkill, "repeatCount", spSkill->m_nRepeatCount);
-                spList->AddTail(spSkill);
-                if (Unk_LockGuard guard = s_lock) { __assume(0); } else
-                {
-                    s_skills.SetAt(spSkill->m_nSkillId, spSkill);
-                }
+                s_skills.SetAt(spSkill->m_nSkillId, spSkill);
             }
         }
         if (Unk_LockGuard guard = s_lock) { __assume(0); } else
@@ -171,15 +169,14 @@ Unk_CcSkillListPtr CSkillCompactControlTable::GetJobSkills(Unk_CcJob nJob)
 __int64 CSkillCompactControlTable::GetBaseSP(Unk_CcJob nJob)
 {
     CheckInit();
-    __int64 nBaseSP;
     if (Unk_LockGuard guard = s_lock) { __assume(0); } else
     {
         if (FUN_1401d1320(&s_cache))
             Load();
-        nBaseSP = 50;
+        __int64 nBaseSP = 50;
         s_baseSP.Lookup(nJob, nBaseSP);
+        return nBaseSP;
     }
-    return nBaseSP;
 }
 
 // @0x140dcb4a0
@@ -188,10 +185,7 @@ CCompactControlSkill::CCompactControlSkill()
 {
 }
 
-// @0x140dcb800
-CCompactControlSkill::~CCompactControlSkill()
-{
-}
+// MS2-PIN: ??1CCompactControlSkill@@UEAA@XZ 0x140dcb800 ; implicit dtor (no vftable store)
 
 // @0x140dcbc60
 void CSkillCompactControlTable::CheckInit()

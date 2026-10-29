@@ -27,7 +27,7 @@ class Unk_GoCombo : public ASDisplayObject { public: int FUN_1422df6c0(); void F
 class Unk_GoEntity : public UIDialog
 {
 public:
-    MS2Ptr<Unk_GoCheck> FUN_140e52670(CString strName);
+    MS2Ptr<Unk_GoCheck> FUN_140e52670(const CString& strName);
     MS2Ptr<Unk_GoCombo> FUN_140c28560(const CString& strName);   // exe: no callee dtor, by reference
 };
 
@@ -113,40 +113,29 @@ void UIItemGetOptionDialog::vfunc_67()
     UIModalDialog::vfunc_67();
 }
 
-// MS2-FUNCTIONAL: the exe copies each child-lookup handle pointer through two extra temps (inlined wrapper) that the source form does not reproduce
 // @0x1419d9720
 void UIItemGetOptionDialog::OnLoadComplete()
 {
     UIModalDialog::OnLoadComplete();
-    MS2Ptr<Unk_GoCheck> hEquip = ((Unk_GoEntity*)this)->FUN_140e52670(CString("m_equip"));
-    if (hEquip.get() != 0)
+    if (MS2Ptr<Unk_GoCheck> hEquip = ((Unk_GoEntity*)this)->FUN_140e52670("m_equip"))
         hEquip.get()->FUN_1422ce090(m_opt.FUN_1419dae70());
-    MS2Ptr<Unk_GoCheck> hConsume = ((Unk_GoEntity*)this)->FUN_140e52670(CString("m_consume"));
-    if (hConsume.get() != 0)
+    if (MS2Ptr<Unk_GoCheck> hConsume = ((Unk_GoEntity*)this)->FUN_140e52670("m_consume"))
         hConsume.get()->FUN_1422ce090(m_opt.FUN_1419dae50());
-    MS2Ptr<Unk_GoCheck> hEtc = ((Unk_GoEntity*)this)->FUN_140e52670(CString("m_etc"));
-    if (hEtc.get() != 0)
+    if (MS2Ptr<Unk_GoCheck> hEtc = ((Unk_GoEntity*)this)->FUN_140e52670("m_etc"))
         hEtc.get()->FUN_1422ce090(m_opt.FUN_1419dae60());
-    MS2Ptr<Unk_GoCheck> hMeso = ((Unk_GoEntity*)this)->FUN_140e52670(CString("m_meso"));
-    if (hMeso.get() != 0)
+    if (MS2Ptr<Unk_GoCheck> hMeso = ((Unk_GoEntity*)this)->FUN_140e52670("m_meso"))
         hMeso.get()->FUN_1422ce090(m_opt.FUN_1419daea0());
-    MS2Ptr<Unk_GoCheck> hMerat = ((Unk_GoEntity*)this)->FUN_140e52670(CString("m_merat"));
-    if (hMerat.get() != 0)
+    if (MS2Ptr<Unk_GoCheck> hMerat = ((Unk_GoEntity*)this)->FUN_140e52670("m_merat"))
         hMerat.get()->FUN_1422ce090(m_opt.FUN_1419dae90());
-    MS2Ptr<Unk_GoCheck> hToken = ((Unk_GoEntity*)this)->FUN_140e52670(CString("m_token"));
-    if (hToken.get() != 0)
+    if (MS2Ptr<Unk_GoCheck> hToken = ((Unk_GoEntity*)this)->FUN_140e52670("m_token"))
         hToken.get()->FUN_1422ce090(m_opt.FUN_1419daed0());
-    MS2Ptr<Unk_GoCheck> hOther = ((Unk_GoEntity*)this)->FUN_140e52670(CString("m_other"));
-    if (hOther.get() != 0)
+    if (MS2Ptr<Unk_GoCheck> hOther = ((Unk_GoEntity*)this)->FUN_140e52670("m_other"))
         hOther.get()->FUN_1422ce090(m_opt.FUN_1419daeb0());
-    MS2Ptr<Unk_GoCheck> hGem = ((Unk_GoEntity*)this)->FUN_140e52670(CString("m_gemstone"));
-    if (hGem.get() != 0)
+    if (MS2Ptr<Unk_GoCheck> hGem = ((Unk_GoEntity*)this)->FUN_140e52670("m_gemstone"))
         hGem.get()->FUN_1422ce090(m_opt.FUN_1419dae80());
-    MS2Ptr<Unk_GoCheck> hPet = ((Unk_GoEntity*)this)->FUN_140e52670(CString("m_pet"));
-    if (hPet.get() != 0)
+    if (MS2Ptr<Unk_GoCheck> hPet = ((Unk_GoEntity*)this)->FUN_140e52670("m_pet"))
         hPet.get()->FUN_1422ce090(m_opt.FUN_1419daec0());
-    MS2Ptr<Unk_GoCombo> hRank = ((Unk_GoEntity*)this)->FUN_140c28560(CString("m_equipRank"));
-    if (hRank.get() != 0)
+    if (MS2Ptr<Unk_GoCombo> hRank = ((Unk_GoEntity*)this)->FUN_140c28560("m_equipRank"))
     {
         int nSel = 0;
         int nGrade = m_opt.FUN_1419dae30();
@@ -300,14 +289,12 @@ void UIItemGetOptionDialog::SetMode(int nMode)
     m_nMode = nMode;
 }
 
-// MS2-FUNCTIONAL: same child-lookup handle temps as OnLoadComplete
 // @0x1419da640
 int UIItemGetOptionDialog::vfunc_46()
 {
     if (!FUN_14036d570(FUN_140166410(), 0x8d))
     {
-        MS2Ptr<Unk_GoCheck> hPet = ((Unk_GoEntity*)this)->FUN_140e52670(CString("m_pet"));
-        if (hPet.get() != 0)
+        if (MS2Ptr<Unk_GoCheck> hPet = ((Unk_GoEntity*)this)->FUN_140e52670("m_pet"))
         {
             Unk_GoCheck* pCheck = hPet.get();
             pCheck->vfunc_4(false);
@@ -316,8 +303,7 @@ int UIItemGetOptionDialog::vfunc_46()
     }
     if (!FUN_14036d570(FUN_140166410(), 0x2e))
     {
-        MS2Ptr<Unk_GoCheck> hGem = ((Unk_GoEntity*)this)->FUN_140e52670(CString("m_gemstone"));
-        if (hGem.get() != 0)
+        if (MS2Ptr<Unk_GoCheck> hGem = ((Unk_GoEntity*)this)->FUN_140e52670("m_gemstone"))
         {
             Unk_GoCheck* pCheck = hGem.get();
             pCheck->vfunc_3(0);
@@ -325,8 +311,7 @@ int UIItemGetOptionDialog::vfunc_46()
     }
     if (FUN_14036e510(FUN_140166410()) == true)
     {
-        MS2Ptr<Unk_GoCheck> hMerat = ((Unk_GoEntity*)this)->FUN_140e52670(CString("m_merat"));
-        if (hMerat.get() != 0)
+        if (MS2Ptr<Unk_GoCheck> hMerat = ((Unk_GoEntity*)this)->FUN_140e52670("m_merat"))
         {
             Unk_GoCheck* pCheck = hMerat.get();
             pCheck->vfunc_3(0);
@@ -363,14 +348,12 @@ void UIItemGetOptionDialog::FUN_1419da8f0()
     }
 }
 
-// MS2-FUNCTIONAL: the exe loads the options reference through an extra register move (rcx -> rdx) for FUN_141261310
 // @0x1419dabc0
 void UIItemGetOptionDialog::FUN_1419dabc0()
 {
     if (m_nMode != 0)
     {
-        Unk_GoOpt& rOpt = m_opt;
-        FUN_1409a8b10()->FUN_141533e20()->FUN_141261310(rOpt);
+        FUN_1409a8b10()->FUN_141533e20()->FUN_141261310(m_opt);
         FUN_1409a8b10()->FUN_141243540();
     }
     else

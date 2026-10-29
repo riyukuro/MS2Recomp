@@ -1,7 +1,6 @@
 // Recovered from MapleStory2.exe KMS2_DEV x64 (2022-04-13). The client side of the UGC OX quiz event ("ugcox"):
 // the server's event packet handler (opcode 0x90's reply, FUN_140dff600) and the message boxes / packets the quiz
 // dialogs send (create, enter, leave, finish, the host's chat commands), plus the dialog finders and the text builders.
-// MS2-FUNCTIONAL: the MS2Ptr<CMsgBoxData> / CStringW template glue is not pinned (tplpin) and the EH tables differ by one byte in the box builders
 // MS2-UNIT: unit_140dfef30
 // MS2-RANGE: 0x1400d6d00-0x1400d6db0 .text$di
 // MS2-RANGE: 0x140dfef30-0x140e01f50 .text$mn
@@ -21,6 +20,7 @@
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/placeholder/astooltip.h"
 #include "ms2/placeholder/asdisplayobject.h"
+#include "ms2/placeholder/asbutton.h"
 #include "ms2/placeholder/chomeprivilege.h"
 #include "ms2/placeholder/cinpacket.h"
 #include "ms2/placeholder/cptred.h"
@@ -48,19 +48,10 @@ public:
     void FUN_1422c1fe0(int bEnabled);
     void FUN_1422c7cd0(const Scaleform::GFx::Value& tooltip);
 };
-class Unk_OxHandle
-{
-public:
-    Unk_OxButton* FUN_140acd9c0();
-    Unk_OxButton* FUN_140acd9e0();
-    void FUN_140acd6e0();
-    // 0x10 bytes in the exe (MS2Ptr-like; FUN_140bb4b10 returns it by sret through ctor 0x140acd3b0, +8 = the pointer)
-    void* m_pad[2];
-};
 class Unk_OxMovieEntity : public UIDialog
 {
 public:
-    Unk_OxHandle FUN_140bb4b10(const CString& strName);         // child lookup
+    MS2Ptr<ASButton> FUN_140bb4b10(const CString& strName);     // child lookup (GetChild<ASButton>)
 };
 
 // The UI manager (singleton 0x1403ed2b0).
@@ -536,21 +527,19 @@ void FUN_140e00690(CInPacket& packet)
         MyPC* pMyPC = static_cast<MyPC*>(FUN_1403ed2d0()->FUN_141bd0cc0());
         if (pMyPC != 0)
             pMyPC->SendRequestMoveFieldMode0(nMapId, nPortalId, 0, 0, CStringW(L""), CStringW(L""));
+        return;
     }
-    else
-    {
-        CStringW strMsg;
-        FUN_140e011c0(strMsg, strName, nFee, nMax, nShareRate);
-        MS2Ptr<CMsgBoxData> spBox(new CMsgBoxData(0x27));
-        spBox->SetMsg(strMsg);
-        spBox->FUN_141a01800(1);
-        spBox->SetTitle(GetStringCommonByKey(CStringW(L"s_ugcox_move_eventmap_confirm")));
-        spBox->FUN_141a027c0(FUN_140b76b10(FUN_140dff700));
-        spBox->FUN_140534050(nMapId);
-        spBox->FUN_140534050(nPortalId);
-        spBox->FUN_140e01830(nFee);
-        FUN_140d73c60(spBox);
-    }
+    CStringW strMsg;
+    FUN_140e011c0(strMsg, strName, nFee, nMax, nShareRate);
+    MS2Ptr<CMsgBoxData> spBox(new CMsgBoxData(0x27));
+    spBox->SetMsg(strMsg);
+    spBox->FUN_141a01800(1);
+    spBox->SetTitle(GetStringCommonByKey(L"s_ugcox_move_eventmap_confirm"));
+    spBox->FUN_141a027c0(FUN_140b76b10(FUN_140dff700));
+    spBox->FUN_140534050(nMapId);
+    spBox->FUN_140534050(nPortalId);
+    spBox->FUN_140e01830(nFee);
+    FUN_140d73c60(spBox);
 }
 
 // Subs 0xd..0xf: the quiz state (0xd start, 0xe running, 0xf end).
@@ -750,22 +739,19 @@ void FUN_140e013e0(CStringW& strOut, const CStringW& strName)
 // @0x140e01480
 void FUN_140e01480(int nPromoted, unsigned nCooltime, int nTotal, unsigned nCooltime2)
 {
+    s_nPromoteCount = nPromoted;
     s_nPromoteTotal = nTotal;
     s_nPromoteCooltime = nCooltime2;
-    s_nPromoteCount = nPromoted;
-    int nTotalCount = nTotal;
-    unsigned nCooltimeMs = nCooltime2;
     UIOxQuizDialog* pQuiz = FUN_140e01930(0x4f7d);
     if (pQuiz != 0)
     {
-        Unk_OxHandle hButton = static_cast<Unk_OxMovieEntity*>(static_cast<UIDialog*>(pQuiz))->FUN_140bb4b10("m_quiz_promote");
-        if (hButton.FUN_140acd9c0() != 0)
+        if (MS2Ptr<ASButton> hButton = static_cast<Unk_OxMovieEntity*>(static_cast<UIDialog*>(pQuiz))->FUN_140bb4b10("m_quiz_promote"))
         {
-            CStringW strTip = GetStringCommonByKey(CStringW(L"s_ugcox_btn_quiz_promote_tooltip"));
-            strTip.Replace(L"{totalPromoteCount}", (LPCWSTR)FUN_1401ceea0(L"{0}", nTotalCount));
-            int nLeft = nTotalCount - nPromoted;
+            CStringW strTip = GetStringCommonByKey(L"s_ugcox_btn_quiz_promote_tooltip");
+            strTip.Replace(L"{totalPromoteCount}", (LPCWSTR)FUN_1401ceea0(L"{0}", nTotal));
+            int nLeft = nTotal - nPromoted;
             strTip.Replace(L"{promoteCount}", (LPCWSTR)FUN_1401ceea0(L"{0}", nLeft));
-            unsigned nSeconds = nCooltimeMs / 1000;
+            unsigned nSeconds = nCooltime2 / 1000;
             strTip.Replace(L"{promoteCooltime}", (LPCWSTR)FUN_140560c00(L"{0}", nSeconds));
             ASTooltip tip(2);
             tip.FUN_1409c6d70("export_common_tooltip_tooltipText");
@@ -773,13 +759,11 @@ void FUN_140e01480(int nPromoted, unsigned nCooltime, int nTotal, unsigned nCool
             tip.FUN_1409c6e00(300);
             tip.FUN_1409c6e30(5000);
             tip.FUN_1409c6dc0(5);
-            hButton.FUN_140acd9e0()->FUN_1422c7cd0(tip.FUN_1422bb890());
-            bool bEnabled = nPromoted < nTotalCount;
-            hButton.FUN_140acd9e0()->FUN_1422c1fe0(bEnabled);
-            if (nPromoted < nTotalCount)
+            reinterpret_cast<Unk_OxButton*>(hButton.operator->())->FUN_1422c7cd0(tip.FUN_1422bb890());
+            reinterpret_cast<Unk_OxButton*>(hButton.operator->())->FUN_1422c1fe0(nPromoted < nTotal);
+            if (nPromoted < nTotal)
                 FUN_140e6e6c0(pQuiz, (float)nCooltime / 1000.0f, (float)s_nPromoteCooltime / 1000.0f);
         }
-        hButton.FUN_140acd6e0();
     }
 }
 

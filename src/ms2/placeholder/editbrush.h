@@ -21,7 +21,7 @@ typedef efd::SmartPointer<NiMesh> NiMeshPtr;
 // A 2D range / vector (the noise brush keeps a scale range and a rotation range in degrees).
 struct Unk_BrushVec2
 {
-    Unk_BrushVec2* FUN_140a0a600(float x, float y);                 // 0x140a0a600 (same as the Point2 ctor of the dialog)
+    Unk_BrushVec2(float x, float y);                                // 0x140a0a600 (same as the Point2 ctor of the dialog)
     float m_x;
     float m_y;
 };

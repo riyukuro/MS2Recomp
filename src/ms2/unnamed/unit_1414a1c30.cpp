@@ -28,8 +28,11 @@ MS2_CHECK_OFFSET(Unk_ShutdownNode20, m_next, 0x20);
 class Unk_SingletonObj { public: virtual ~Unk_SingletonObj(); };                                // deleted via slot 0
 class Unk_SingletonObj1 { public: virtual void vfunc_0(); virtual ~Unk_SingletonObj1(); };      // deleted via slot 1 (0x1414a3df0)
 class Unk_SubObj { public: virtual ~Unk_SubObj(); };
-class Unk_SingletonObj140 { public: char m_pad[0x140]; Unk_SubObj m_sub; };
-class Unk_SingletonObj80 { public: char m_pad[0x80]; Unk_SubObj m_sub; };
+// Primary base has a vfptr but no virtual dtor, so delete dispatches through the Unk_SubObj vfptr at +0x140 (+0x80).
+class Unk_Pad140 { public: virtual void Unk_V0(); char m_pad[0x138]; };
+class Unk_SingletonObj140 : public Unk_Pad140, public Unk_SubObj { };
+class Unk_Pad80 { public: virtual void Unk_V0(); char m_pad[0x78]; };
+class Unk_SingletonObj80 : public Unk_Pad80, public Unk_SubObj { };
 
 // ---- exe globals (the singleton pointers) and getters of other units ----------------------------------------------------------
 extern Unk_SingletonObj* DAT_143aab380;
@@ -1500,11 +1503,10 @@ void FUN_1414a4a50()
 }
 MS2_REPLACE(0x1414A4A50, FUN_1414a4a50, 94, 0xD90BC029);
 // @0x1414a4ab0
-// MS2-FUNCTIONAL: exe takes the null check before adjusting to the sub-object and loads the vtable from the unadjusted pointer; no source form found (118 vs 117 bytes)
 void FUN_1414a4ab0()
 {
     if (DAT_143aac288 != 0) {
-        delete &FUN_1401958b0()->m_sub;
+        delete FUN_1401958b0();
         DAT_143aac288 = 0;
     }
 }
@@ -1681,11 +1683,10 @@ void FUN_1414a51f0()
 }
 MS2_REPLACE(0x1414A51F0, FUN_1414a51f0, 94, 0x993BA5D3);
 // @0x1414a5250
-// MS2-FUNCTIONAL: exe takes the null check before adjusting to the sub-object and loads the vtable from the unadjusted pointer; no source form found (118 vs 117 bytes)
 void FUN_1414a5250()
 {
     if (DAT_143ae07a8 != 0) {
-        delete &FUN_1414a5880()->m_sub;
+        delete FUN_1414a5880();
         DAT_143ae07a8 = 0;
     }
 }

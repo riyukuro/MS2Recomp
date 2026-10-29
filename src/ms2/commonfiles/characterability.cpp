@@ -117,7 +117,6 @@ int CCharacterAbilityTable::FUN_1401df7b0()
 }
 
 // @0x1401df860
-// MS2-FUNCTIONAL: loop-body branch layout (skip jumps of the region/locale checks) differs
 int CCharacterAbilityTable::LoadCharacterAbilityCategory()
 {
     m_categories.RemoveAll();
@@ -135,28 +134,26 @@ int CCharacterAbilityTable::LoadCharacterAbilityCategory()
     }
     for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("category"); pNode != 0; pNode = pNode->FUN_140168650("category"))
     {
-        if (FUN_14028f710(pNode))
+        if (!FUN_14028f710(pNode))
+            continue;
+        CStringW strLocale;
+        FUN_140873420(pNode, "locale", strLocale);
+        if (!FUN_140166410()->FUN_14036d750(strLocale))
+            continue;
         {
-            CStringW strLocale;
-            FUN_140873420(pNode, "locale", strLocale);
-            if (!FUN_140166410()->FUN_14036d750(strLocale))
-                continue;
-            {
-                MS2Ptr<CCharacterAbilityCategory> spCategory(new CCharacterAbilityCategory);
-                FUN_140873220(pNode, "id", spCategory->m_nId);
-                FUN_140873420(pNode, "name", spCategory->m_strName);
-                FUN_140873420(pNode, "tooltip", spCategory->m_strTooltip);
-                spCategory->m_strName = GetStringCommonByKey(spCategory->m_strName);
-                spCategory->m_strTooltip = GetStringCommonByKey(spCategory->m_strTooltip);
-                m_categories.SetAt(spCategory->m_nId, spCategory);
-            }
+            MS2Ptr<CCharacterAbilityCategory> spCategory(new CCharacterAbilityCategory);
+            FUN_140873220(pNode, "id", spCategory->m_nId);
+            FUN_140873420(pNode, "name", spCategory->m_strName);
+            FUN_140873420(pNode, "tooltip", spCategory->m_strTooltip);
+            spCategory->m_strName = GetStringCommonByKey(spCategory->m_strName);
+            spCategory->m_strTooltip = GetStringCommonByKey(spCategory->m_strTooltip);
+            m_categories.SetAt(spCategory->m_nId, spCategory);
         }
     }
     return 1;
 }
 
 // @0x1401dfd40
-// MS2-FUNCTIONAL: loop-body branch layout (skip jumps of the region/locale checks) differs
 int CCharacterAbilityTable::LoadCharacterAbility()
 {
     m_abilities.RemoveAll();
@@ -179,28 +176,27 @@ int CCharacterAbilityTable::LoadCharacterAbility()
     }
     for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("ability"); pNode != 0; pNode = pNode->FUN_140168650("ability"))
     {
-        if (FUN_14028f710(pNode))
+        if (!FUN_14028f710(pNode))
+            continue;
+        CStringW strLocale;
+        FUN_140873420(pNode, "locale", strLocale);
+        if (!FUN_140166410()->FUN_14036d750(strLocale))
+            continue;
         {
-            CStringW strLocale;
-            FUN_140873420(pNode, "locale", strLocale);
-            if (!FUN_140166410()->FUN_14036d750(strLocale))
-                continue;
+            MS2Ptr<CCharacterAbility> spAbility(new CCharacterAbility);
+            FUN_140873220(pNode, "id", spAbility->m_nId);
+            FUN_140873220(pNode, "categoryID", spAbility->m_nCategoryId);
+            FUN_1408731a0(pNode, "requireLevel", spAbility->m_nRequireLevel);
+            FUN_140873220(pNode, "additionalEffectID", spAbility->m_nAdditionalEffectId);
+            FUN_1408731a0(pNode, "additionalEffectLevel", spAbility->m_nAdditionalEffectLevel);
+            MS2Ptr<CCharacterAbilityCategory> spCategory(0);
+            if (!m_categories.Lookup(spAbility->m_nCategoryId, spCategory))
             {
-                MS2Ptr<CCharacterAbility> spAbility(new CCharacterAbility);
-                FUN_140873220(pNode, "id", spAbility->m_nId);
-                FUN_140873220(pNode, "categoryID", spAbility->m_nCategoryId);
-                FUN_1408731a0(pNode, "requireLevel", spAbility->m_nRequireLevel);
-                FUN_140873220(pNode, "additionalEffectID", spAbility->m_nAdditionalEffectId);
-                FUN_1408731a0(pNode, "additionalEffectLevel", spAbility->m_nAdditionalEffectLevel);
-                MS2Ptr<CCharacterAbilityCategory> spCategory(0);
-                if (!m_categories.Lookup(spAbility->m_nCategoryId, spCategory))
-                {
-                    FUN_1401e0850(GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}] Not Found CategoryID {1}", strPath, spAbility->m_nCategoryId);
-                    return 0;
-                }
-                spCategory->m_abilities.SetAt(spAbility->m_nId, spAbility);
-                m_abilities.SetAt(spAbility->m_nId, spAbility);
+                FUN_1401e0850(GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}] Not Found CategoryID {1}", strPath, spAbility->m_nCategoryId);
+                return 0;
             }
+            spCategory->m_abilities.SetAt(spAbility->m_nId, spAbility);
+            m_abilities.SetAt(spAbility->m_nId, spAbility);
         }
     }
     return 1;

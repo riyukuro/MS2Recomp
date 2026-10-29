@@ -19,14 +19,14 @@ class StateCashCallData : public StateData
 public:
     StateCashCallData();                                    // 0x1410229d0
     StateCashCallData(int nCallType, __int64 nItemUid, int nPrice);   // 0x141022a30
-    virtual ~StateCashCallData();                           // 0  0x141023f00 (??_G 0x141024060)
+    // 0  ~StateCashCallData 0x141023f00 (??_G 0x141024060) is implicit
     virtual void vfunc_1(Unk_StateDataArg* p);              // 1  0x141022aa0 (writes the call type as text)
     virtual void vfunc_2(Unk_StateDataArg* p);              // 2  0x141022b20 (reads it back)
 
     int m_nCallType;                                        // +0x18 1 meso air taxi, 2/3 cash air taxi, 4/5/6 helicopters, bank
     int m_pad_1c;
     __int64 m_nItemUid;                                     // +0x20 the cash item (0: none)
-    int m_nPrice;                                           // +0x28
+    unsigned int m_nPrice;                                  // +0x28 (formatted as unsigned)
     int m_pad_2c;
 };
 MS2_CHECK_SIZE(StateCashCallData, 0x30);

@@ -16,7 +16,7 @@ public:
 
 public:
     MS2OverdrawProcessor();                                 // 0x1414d4e20
-    virtual ~MS2OverdrawProcessor();                        // 0x1414d61d0, ??_G 0x1414d6360
+    // ~MS2OverdrawProcessor() is implicit (0x1414d61d0, ??_G 0x1414d6360): the exe dtor has no vftable store.
     virtual void PreRenderProcessList(const NiVisibleArray* pkInput, NiVisibleArray& kOutput, void* pvExtraData);   // 0x1414d5070
 
 public:

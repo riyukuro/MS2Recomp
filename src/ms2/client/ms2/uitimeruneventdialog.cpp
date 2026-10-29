@@ -241,27 +241,23 @@ int UITimeRunEventDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
     return 0;
 }
 
-// MS2-FUNCTIONAL: behaviour-equivalent; temp/frame layout differs from the exe (not byte-exact)
 // @0x140ee2f20
 void UITimeRunEventDialog::vfunc_o178_10(void* pQuest)
 {
     if (m_30.IsNull()) return;
-    if (static_cast<CQuest*>(pQuest)->GetData()->m_350.m_value == 3) {
-        MS2Ptr<TimeRunEventContext> spContext = FUN_1401c0d90()->FUN_14047d6c0();
-        if (!spContext.IsNull()) {
-            MS2Ptr<TimeRunEventContext::QuestContext> spQuest(0);
-            unsigned nQuest = static_cast<CQuest*>(pQuest)->FUN_140bfc580();
-            if (spContext->m_quests.Lookup(nQuest, spQuest)) {
-                if (spQuest->m_20 == FUN_140ee4b00())
-                    FUN_140ee3c00(spQuest->m_20);
-            }
-            FUN_140ee3580();
-            FUN_140ee4ca0();
-        }
+    bool bSkip = static_cast<CQuest*>(pQuest)->GetData()->m_350.m_value != 3;
+    if (bSkip) return;
+    MS2Ptr<TimeRunEventContext> spContext = FUN_1401c0d90()->FUN_14047d6c0();
+    if (spContext.IsNull()) return;
+    MS2Ptr<TimeRunEventContext::QuestContext> spQuest(0);
+    if (spContext->m_quests.Lookup(static_cast<CQuest*>(pQuest)->FUN_140bfc580(), spQuest)) {
+        if (spQuest->m_20 == FUN_140ee4b00())
+            FUN_140ee3c00(spQuest->m_20);
     }
+    FUN_140ee3580();
+    FUN_140ee4ca0();
 }
 
-// MS2-FUNCTIONAL: behaviour-equivalent; temp/frame layout differs from the exe (not byte-exact)
 // @0x140ee3100
 void UITimeRunEventDialog::vfunc_15()
 {
@@ -270,16 +266,16 @@ void UITimeRunEventDialog::vfunc_15()
         MS2Ptr<TimeRunEventContext> spContext = FUN_1401c0d90()->FUN_14047d6c0();
         if (spContext.IsNull()) {
             vfunc_67();
-        } else {
-            if (MS2Ptr<ASTextField> spText = FUN_140bb4cf0("m_remainTime"))
-                spText->FUN_1422c4cd0(FUN_140ee4380(spContext));
+            return;
         }
+        if (MS2Ptr<ASTextField> spText = FUN_140bb4cf0("m_remainTime"))
+            spText->FUN_1422c4cd0(FUN_140ee4380(spContext));
     }
 }
 
 // MS2-FUNCTIONAL: behaviour-equivalent; temp/frame layout differs from the exe (not byte-exact)
 // @0x140ee3290
-int FUN_140ee3290()
+int UITimeRunEventDialog::FUN_140ee3290()
 {
     MS2Ptr<TimeRunEventContext> spContext = FUN_1401c0d90()->FUN_14047d6c0();
     if (spContext.IsNull()) return 0;
@@ -483,11 +479,11 @@ int UITimeRunEventDialog::FUN_140ee4b00()
     return -1;
 }
 
-// MS2-FUNCTIONAL: behaviour-equivalent; temp/frame layout differs from the exe (not byte-exact)
 // @0x140ee4bb0
 int UITimeRunEventDialog::FUN_140ee4bb0(MS2Ptr<TimeRunEventContext> spContext)
 {
-    ATL::CTimeSpan span = CMsTime(FUN_140869440()) - CMsTime(FUN_140ee4990(spContext));
+    __int64 tStart = FUN_140ee4990(spContext);
+    ATL::CTimeSpan span = CMsTime(FUN_140869440()) - CMsTime(tStart);
     int nDays = (int)span.GetDays();
     int nMax = 6;
     int nResult = (std::min)(nMax, nDays);

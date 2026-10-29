@@ -68,7 +68,7 @@ public:
 
     CSkillSystem();                                         // 0x1417646d0
     virtual ~CSkillSystem();                                // 0x141764900
-    bool FUN_141764a80(MyPC* pOwner);                       // init with the owner
+    int FUN_141764a80(MyPC* pOwner);                        // init with the owner
     void FUN_141766af0(float fDelta);                       // per-frame update
     MS2Ptr<CSkillRecord> FUN_141765570(Unk_InventorySkillRequest& kReq);   // build the record of a request
     void FUN_141767f80(int nSkillId);                       // add a temporary skill
@@ -109,7 +109,7 @@ public:
     void FUN_141767d90(ATL::CAtlList<MS2Ptr<CSkillCompactControlConfig> >* pList);   // replace the compact control configs
     void FUN_141767df0(int bOn);                            // enable or disable the skill use
     CStringW FUN_141767e60(unsigned __int64 nKey);          // the name of the compact control config of a key
-    void FUN_141768530(int nSkillId, int nUses, int);       // set the use count of a skill
+    void FUN_141768530(int nSkillId, int nUses);            // set the use count of a skill
     void FUN_1417685c0(SkillData* pData, int nUses);        // set the use count of a recharge id
     int FUN_141768610(int nSkillId);                        // the use count of a skill
     int FUN_141768680(SkillData* pData);                    // the use count of a recharge id
@@ -123,10 +123,10 @@ public:
     void FUN_141769250();                                   // forget the emotions
     void FUN_141769280();                                   // the emotions are not new
     static void FUN_141769440(int nError);                  // tell why a skill cannot be cast (static: the exe passes ecx only)
-    int FUN_141769410(SkillData* pData);                    // the jump skill of a skill
+    int FUN_141769410(SkillData* pData, int nSkillId);      // the jump skill of a skill
     int FUN_141769b70(MS2Ptr<SkillLevelData> spLevel, Unk_InventorySkillRequest* pReq);   // why a skill cannot be cast (0: it can)
     int FUN_14176a380(MS2Ptr<SkillLevelData> spLevel, Unk_InventorySkillRequest* pReq);
-    int FUN_14176a530(MS2Ptr<SkillLevelData> spLevel);      // the costs of the skill
+    int FUN_14176a530(MS2Ptr<SkillLevelData> spLevel, Unk_InventorySkillRequest* pReq); // the costs of the skill (pReq unused)
     int FUN_14176a8c0(SkillData* pData, Unk_InventorySkillRequest* pReq);   // the conditions of the skill
     __int64 FUN_14176b960(int nSkillId, __int64 nBase);     // the cost after the reductions
     MS2Ptr<SkillLevelData> FUN_14176b7c0(int nSkillId, unsigned short nLevel);   // the highest learned level not above nLevel

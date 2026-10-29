@@ -54,7 +54,7 @@ MS2_CHECK_SIZE(Unk_HlBits, 1);
 class UIHighlightGameMenu : public UIDialog, public UIItemEventListener
 {
 public:
-    typedef bool (UIHighlightGameMenu::*Action)();
+    typedef int (UIHighlightGameMenu::*Action)();
 
     UIHighlightGameMenu();                              // 0x140c220d0
     virtual ~UIHighlightGameMenu();                     //  0 0x140c22550 (??_G 0x140c24b90)
@@ -76,12 +76,12 @@ public:
     bool IsActive();                               // 0x140c22ce0 the icon count is non-zero
     void FUN_140c244b0(int* pPos, bool bSet);           // 0x140c244b0 set a socket bit
     void FUN_140c22f50();                               // ask every action, send the "setMenu" list
-    bool FUN_140c231b0();                               // "inven": a better piece of equipment is in the bag
-    bool FUN_140c234d0();                               // "skillbook": a skill point can be spent
-    bool FUN_140c235d0();                               // class 6: a gem stone page is open
-    bool FUN_140c236f0();                               // "characterinfo": the stat window has a point to spend
-    bool FUN_140c237a0();                               // "enchantscroll": a scroll and an item that can use it
-    bool FUN_140c23f10();                               // "gemstone": a socket and a gem stone for it
+    int  FUN_140c231b0();                               // "inven": a better piece of equipment is in the bag
+    int  FUN_140c234d0();                               // "skillbook": a skill point can be spent
+    int  FUN_140c235d0();                               // class 6: a gem stone page is open
+    int  FUN_140c236f0();                               // "characterinfo": the stat window has a point to spend
+    int  FUN_140c237a0();                               // "enchantscroll": a scroll and an item that can use it
+    int  FUN_140c23f10();                               // "gemstone": a socket and a gem stone for it
     void FUN_140c24470(NotifyObject* pObj);             // "NotifyGameStart": reset the gem stone bits
 
 private:

@@ -6,6 +6,7 @@
 #include "ms2/placeholder/nmstream.h"
 #include "ms2/placeholder/nmobjects.h"
 #include "ms2/placeholder/nmfunc.h"
+#include "ms2/placeholder/nmencoder.h"
 #include "ms2/ms2recover.h"
 
 extern void FUN_14156bcb0(void*, void*, void*);
@@ -19,48 +20,50 @@ extern void FUN_1415f9990(void*);
 extern int FUN_1415fb700(void*);
 extern int FUN_1415fb750(void*);
 extern int FUN_1415fb6d0(void*);
+extern int FUN_1415fb6d0(CNMSerializableDecoder*);
 
 // MS2-FUNCTIONAL 0x14158e360: initializes all fixed buffers and default result fields.
 CNMExecuteNGMPatcherFunc::CNMExecuteNGMPatcherFunc()
     : CNMFunc(0x8015, 1, 0, 0), m_nGameCode(0), m_sz2{}, m_sz3{}, m_sz4{}, m_pad8537(0),
       m_n5(1), m_n6(0), m_n7(0), m_sz8{}, m_n9(0), m_sz10{}, m_n11(0) {}
 
-// MS2-FUNCTIONAL 0x14158e470: copies bounded patch parameters and stores numeric options.
+// @0x14158e470
 CNMExecuteNGMPatcherFunc::CNMExecuteNGMPatcherFunc(int gameCode, const char* sz2, const char* sz3, const char* sz4,
                                                    int n5, int n6, int n7, const char* sz8, int n9,
                                                    const char* sz10, int n11)
-    : CNMFunc(0x8015, 1, 0, 0), m_nGameCode(gameCode), m_sz2{}, m_sz3{}, m_sz4{}, m_pad8537(0),
-      m_n5(n5), m_n6(n6), m_n7(n7), m_sz8{}, m_n9(n9), m_sz10{}, m_n11(n11)
+    : CNMFunc(0x8015, 1, 0, 0)
 {
+    m_nGameCode = gameCode;
     if (sz2) FUN_1415fbe70(m_sz2, 0x7fff, sz2);
+    else m_sz2[0] = 0;
     if (sz3) FUN_1415fbe70(m_sz3, 0x104, sz3);
+    else m_sz3[0] = 0;
     if (sz4) FUN_1415fbe70(m_sz4, 0x400, sz4);
+    else m_sz4[0] = 0;
+    m_n5 = n5;
+    m_n6 = n6;
+    m_n7 = n7;
     if (sz8) FUN_1415fbe70(m_sz8, 0x20, sz8);
+    else m_sz8[0] = 0;
+    m_n9 = n9;
     if (sz10) FUN_1415fbe70(m_sz10, 0x80, sz10);
+    else m_sz10[0] = 0;
+    m_n11 = n11;
 }
 
 // MS2-FUNCTIONAL 0x14158e670: frames a serialized NGM patcher request.
-unsigned int CNMExecuteNGMPatcherFunc::EncodeFramed(CNMStream* stream)
+unsigned int CNMExecuteNGMPatcherFunc::EncodeFramed(CNMStream* pStream)
 {
-    unsigned char storage[0x18];
-    FUN_14156bcb0(storage, stream, this);
-    void** vt = *reinterpret_cast<void***>(this);
-    using Method = unsigned int(__fastcall*)(CNMExecuteNGMPatcherFunc*, CNMEncoder*, CNMStream*);
-    auto result = reinterpret_cast<Method>(vt[2])(this, reinterpret_cast<CNMEncoder*>(storage), stream);
-    FUN_14156bd50(storage);
-    return result;
+    CNMSerializableEncoder encoder(pStream, this);
+    return CNMExecuteNGMPatcherFunc::Encode(reinterpret_cast<CNMEncoder*>(&encoder), pStream);
 }
 
 // MS2-FUNCTIONAL 0x14158e6d0: dispatches encoding based on the message format.
-unsigned int CNMExecuteNGMPatcherFunc::EncodeDispatch(CNMEncoder* encoder, CNMStream* stream)
+unsigned int CNMExecuteNGMPatcherFunc::EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream)
 {
-    void** vt = *reinterpret_cast<void***>(this);
-    if (m_bFormat == 1) {
-        using Method = unsigned int(__fastcall*)(CNMExecuteNGMPatcherFunc*, CNMEncoder*, CNMStream*);
-        return reinterpret_cast<Method>(vt[2])(this, encoder, stream);
-    }
-    using Method = unsigned int(__fastcall*)(CNMExecuteNGMPatcherFunc*, CNMStream*);
-    return reinterpret_cast<Method>(vt[3])(this, stream);
+    if (m_bFormat == 1)
+        return CNMExecuteNGMPatcherFunc::Encode(pEncoder, pStream);
+    return CNMExecuteNGMPatcherFunc::EncodeFramed(pStream);
 }
 
 // MS2-FUNCTIONAL 0x14158e730: serializes patch paths, options, and output settings.
@@ -85,51 +88,38 @@ unsigned int CNMExecuteNGMPatcherFunc::Encode(CNMEncoder* encoder, CNMStream* st
 }
 
 // MS2-FUNCTIONAL 0x14158e880: decodes a framed NGM patcher response.
-unsigned int CNMExecuteNGMPatcherFunc::DecodeFramed(CNMStream* stream)
+unsigned int CNMExecuteNGMPatcherFunc::DecodeFramed(CNMStream* pStream)
 {
-    unsigned char storage[0x38];
-    FUN_14156be10(storage, stream, this);
-    unsigned int result = 0;
-    if (FUN_1415fb750(storage)) {
-        void** vt = *reinterpret_cast<void***>(this);
-        using Method = unsigned int(__fastcall*)(CNMExecuteNGMPatcherFunc*, CNMSerializableDecoder*, CNMStream*);
-        result = reinterpret_cast<Method>(vt[5])(this, reinterpret_cast<CNMSerializableDecoder*>(storage), stream);
-    }
-    FUN_14156bf10(storage);
-    return result;
+    CNMSerializableDecoder decoder(pStream, this);
+    if (FUN_1415fb750(&decoder) == 0)
+        return 0;
+    return CNMExecuteNGMPatcherFunc::Decode(&decoder, pStream);
 }
 
 // MS2-FUNCTIONAL 0x14158e910: dispatches decoding by response format.
-unsigned int CNMExecuteNGMPatcherFunc::DecodeDispatch(CNMSerializableDecoder* decoder, CNMStream* stream)
+unsigned int CNMExecuteNGMPatcherFunc::DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream)
 {
-    void** vt = *reinterpret_cast<void***>(this);
-    if (FUN_1415fb6d0(decoder) == 2) {
-        using Method = unsigned int(__fastcall*)(CNMExecuteNGMPatcherFunc*, CNMStream*);
-        return reinterpret_cast<Method>(vt[6])(this, stream);
-    }
-    using Method = unsigned int(__fastcall*)(CNMExecuteNGMPatcherFunc*, CNMSerializableDecoder*, CNMStream*);
-    return reinterpret_cast<Method>(vt[5])(this, decoder, stream);
+    if (FUN_1415fb6d0(pDecoder) == 2)
+        return CNMExecuteNGMPatcherFunc::DecodeFramed(pStream);
+    return CNMExecuteNGMPatcherFunc::Decode(pDecoder, pStream);
 }
 
-// MS2-FUNCTIONAL 0x14158e970: restores patch paths, options, and output settings from the reply.
+// @0x14158e970
 unsigned int CNMExecuteNGMPatcherFunc::Decode(CNMSerializableDecoder* decoder, CNMStream* stream)
 {
     CNMFunc::DecodeDispatch(decoder, stream);
     if (FUN_1415fb700(this)) {
-        void** vt = *reinterpret_cast<void***>(decoder);
-        using ReadBytes = void(__fastcall*)(void*, void*, unsigned int);
-        using ReadU32 = unsigned int(__fastcall*)(void*);
-        m_nGameCode = static_cast<int>(reinterpret_cast<ReadU32>(vt[3])(decoder));
-        reinterpret_cast<ReadBytes>(vt[9])(decoder, m_sz2, 0x7fff);
-        reinterpret_cast<ReadBytes>(vt[9])(decoder, m_sz3, 0x104);
-        reinterpret_cast<ReadBytes>(vt[9])(decoder, m_sz4, 0x400);
-        m_n5 = static_cast<int>(reinterpret_cast<ReadU32>(vt[3])(decoder));
-        m_n6 = static_cast<int>(reinterpret_cast<ReadU32>(vt[3])(decoder));
-        m_n7 = static_cast<int>(reinterpret_cast<ReadU32>(vt[3])(decoder));
-        reinterpret_cast<ReadBytes>(vt[9])(decoder, m_sz8, 0x20);
-        m_n9 = static_cast<int>(reinterpret_cast<ReadU32>(vt[3])(decoder));
-        reinterpret_cast<ReadBytes>(vt[9])(decoder, m_sz10, 0x80);
-        m_n11 = static_cast<int>(reinterpret_cast<ReadU32>(vt[3])(decoder));
+        m_nGameCode = decoder->ReadU32();
+        decoder->ReadStringBufAlias(m_sz2, 0x7fff);
+        decoder->ReadStringBufAlias(m_sz3, 0x104);
+        decoder->ReadStringBufAlias(m_sz4, 0x400);
+        m_n5 = decoder->ReadU32();
+        m_n6 = decoder->ReadU32();
+        m_n7 = decoder->ReadU32();
+        decoder->ReadStringBufAlias(m_sz8, 0x20);
+        m_n9 = decoder->ReadU32();
+        decoder->ReadStringBufAlias(m_sz10, 0x80);
+        m_n11 = decoder->ReadU32();
     }
     return static_cast<unsigned int>(FUN_1415fb750(decoder));
 }

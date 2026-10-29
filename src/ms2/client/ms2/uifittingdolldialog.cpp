@@ -40,7 +40,7 @@ class ASDialog : public ASDisplayObject
 {
 public:
     void FUN_1407cba60(const char* szName, CString str);    // set a string member
-    void FUN_1407cb9c0(const char* szName, bool b);         // set a bool member
+    void FUN_1407cb9c0(const char* szName, int n);          // set an int member
 };
 
 // The inventory dialog (UI id 0x4e2d).
@@ -112,8 +112,9 @@ public:
 class Unk_FdPlotMgr {};
 extern char DAT_143b059e8;
 Unk_FdPlotMgr* FUN_1401cd040(void* pRegistry);
-void* FUN_14123c460(FittingDollPC* pDoll, void* pOut);
-Unk_FdPlot* FUN_1410b8c90(Unk_FdPlotMgr* pMgr, void* pKey);
+struct Unk_FdKey { int a, b; Unk_FdKey(const Unk_FdKey&); Unk_FdKey& operator=(const Unk_FdKey&); };   // the doll's plot key (8 bytes, returned by value)
+struct Unk_FdDollView { Unk_FdKey FUN_14123c460(); };       // FittingDollPC: the plot key of the doll
+Unk_FdPlot* FUN_1410b8c90(Unk_FdPlotMgr* pMgr, Unk_FdKey key);   // by value (the exe builds the key in an argument temp)
 __int64 FUN_1410c8030(Unk_FdPlotMgr* pMgr, int nA, int nB);
 
 // The doll / player helpers.
@@ -186,11 +187,6 @@ UIFittingDollDialog::UIFittingDollDialog()
     m_164 = 1;
 }
 
-// @0x141934eb0
-UIFittingDollDialog::~UIFittingDollDialog()
-{
-}
-
 // @0x141933340
 CString UIFittingDollDialog::GetTypeName()
 {
@@ -200,18 +196,17 @@ CString UIFittingDollDialog::GetTypeName()
 // @0x141933390
 void UIFittingDollDialog::SendFittingDoll()
 {
-    if (FUN_1403ed2d0()->FUN_141bd0cc0() != 0)
+    PC* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    if (pPlayer == 0)
+        return;
+    COutPacket packet(static_cast<int>(SendOp::FittingDoll), 0);
+    packet.WriteUInt8(3);
+    packet.WriteInt64(DAT_143af25f0);
+    FUN_140710590(packet);
+    if (MS2Ptr<Unk_LdButton> spButton = GetChild<Unk_LdButton>("m_transform"))
     {
-        COutPacket packet(static_cast<int>(SendOp::FittingDoll), 0);
-        packet.WriteUInt8(3);
-        packet.WriteInt64(DAT_143af25f0);
-        FUN_140710590(packet);
-        MS2Ptr<Unk_LdButton> spButton = GetChild<Unk_LdButton>("m_transform");
-        if (spButton.get() != 0)
-        {
-            m_nTransforming = 1;
-            spButton->FUN_1422c1fe0(0);
-        }
+        m_nTransforming = 1;
+        spButton->FUN_1422c1fe0(0);
     }
 }
 
@@ -271,11 +266,7 @@ void UIFittingDollDialog::vfunc_66()
     Unk_FdInventory* pInv = FUN_1405344f0(0x4e2d);
     if (pInv != 0)
     {
-        if (pInv->vfunc_55() == 0)
-        {
-            FUN_141275c30(this, pInv, DAT_143b02320, DAT_143b02320);
-        }
-        else
+        if (pInv->vfunc_55() != 0)
         {
             ASDialog* pDlg = dynamic_cast<ASDialog*>((AScript*)m_30);
             if (pDlg != 0)
@@ -285,6 +276,10 @@ void UIFittingDollDialog::vfunc_66()
                 msg.FUN_1422b7f70(vfunc_48());
                 pInv->OnMessage(this, &msg);
             }
+        }
+        else
+        {
+            FUN_141275c30(this, pInv, DAT_143b02320, DAT_143b02320);
         }
     }
 }
@@ -296,15 +291,15 @@ void UIFittingDollDialog::OnLoadComplete()
     FUN_1419cae20(FUN_140a6a840(), static_cast<UIItemEventListener*>(this));
     FUN_141933b00();
     FUN_141934070();
-    if (FUN_1403ed2b0()->FUN_141adc940(0x4e2d) == 0)
+    if (FUN_1403ed2b0()->FUN_141adc940(0x4e2d) != 0)
+    {
+        FUN_1403ed2b0()->FUN_141adc530(0x4e2d);
+    }
+    else
     {
         Unk_FdInventory* pInv = FUN_1405344f0(0x4e2d);
         if (pInv != 0)
             pInv->FUN_1422dc450();
-    }
-    else
-    {
-        FUN_1403ed2b0()->FUN_141adc530(0x4e2d);
     }
 }
 
@@ -315,7 +310,8 @@ int UIFittingDollDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
         return 1;
     if (_stricmp("OnTransform", szMethod) == 0)
     {
-        if (FUN_1403ed2d0()->FUN_141bd0cc0() == 0)
+        PC* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+        if (pPlayer == 0)
             return 0;
         int nResult = FUN_141934430();
         if (nResult == 0)
@@ -346,7 +342,6 @@ void UIFittingDollDialog::vfunc_33(int nClassId, int n)
 }
 
 // @0x141933b00
-// MS2-FUNCTIONAL: the exe copies each child lookup result through extra frame slots
 void UIFittingDollDialog::FUN_141933b00()
 {
     FittingDollPC* pDoll = FUN_140884db0(FUN_1403ed2d0()->FUN_141bd1530(DAT_143af25f0));
@@ -354,33 +349,27 @@ void UIFittingDollDialog::FUN_141933b00()
         return;
     int nItemId = FUN_140967160(pDoll);
 
-    MS2Ptr<ASTextField> spName = GetChild<ASTextField>("m_name");
-    if (spName.get() != 0)
+    if (MS2Ptr<ASTextField> spName = GetChild<ASTextField>("m_name"))
         spName->FUN_1422c4cd0(GetStringTable()->FUN_141811980(1, nItemId));
 
-    MS2Ptr<ASTextField> spDesc = GetChild<ASTextField>("m_desc");
-    if (spDesc.get() != 0)
+    if (MS2Ptr<ASTextField> spDesc = GetChild<ASTextField>("m_desc"))
         spDesc->FUN_1422c4cd0(GetStringTable()->GetItemDescription(nItemId, CString("functionDescription")));
 
-    MS2Ptr<ASMovieClip> spCharacter = GetChild<ASMovieClip>("m_character");
-    if (spCharacter.get() != 0)
+    if (MS2Ptr<ASMovieClip> spCharacter = GetChild<ASMovieClip>("m_character"))
     {
         CString strFrame;
-        const char* szKind = pDoll->FUN_14121c710() == 0 ? "game" : "skin";
-        strFrame.AppendFormat("%s_%d", szKind, (unsigned)FUN_141658e60(pDoll));
+        strFrame.AppendFormat("%s_%d", pDoll->FUN_14121c710() != 0 ? "skin" : "game", (unsigned)FUN_141658e60(pDoll));
         spCharacter->vfunc_13(strFrame);
     }
 
-    MS2Ptr<ASMovieClip> spEquip = GetChild<ASMovieClip>("m_equip");
-    if (spEquip.get() != 0)
+    if (MS2Ptr<ASMovieClip> spEquip = GetChild<ASMovieClip>("m_equip"))
     {
         CString strFrame;
         strFrame.AppendFormat("_%d", (unsigned)(pDoll->FUN_14121c710() != 0));
         spEquip->vfunc_13(strFrame);
     }
 
-    MS2Ptr<ASMovieClip> spEmblem = GetChild<ASMovieClip>("m_emblem");
-    if (spEmblem.get() != 0)
+    if (MS2Ptr<ASMovieClip> spEmblem = GetChild<ASMovieClip>("m_emblem"))
     {
         CString strFrame;
         strFrame.AppendFormat("_%d", (unsigned)FUN_141658e60(pDoll));
@@ -389,6 +378,7 @@ void UIFittingDollDialog::FUN_141933b00()
 }
 
 // @0x141934070
+// MS2-FUNCTIONAL: the exe passes the equip flag through an int 1/0 temp read back as a byte
 void UIFittingDollDialog::FUN_141934070()
 {
     PC* pMe = FUN_1403ed2d0()->FUN_141bd0cc0();
@@ -397,14 +387,12 @@ void UIFittingDollDialog::FUN_141934070()
     FittingDollPC* pDoll = FUN_140884db0(FUN_1403ed2d0()->FUN_141bd1530(DAT_143af25f0));
     if (pDoll == 0)
         return;
-    bool bOwner = false;
+    int bOwner = 0;
     Unk_FdPlotMgr* pMgr = FUN_1401cd040(&DAT_143b059e8);
-    char key[8];
-    Unk_FdPlot* pPlot = FUN_1410b8c90(pMgr, FUN_14123c460(pDoll, key));
+    Unk_FdPlot* pPlot = FUN_1410b8c90(pMgr, reinterpret_cast<Unk_FdDollView*>(pDoll)->FUN_14123c460());
     if (pPlot != 0)
         bOwner = FUN_1410c8030(pMgr, pPlot->m_nKeyA, pPlot->m_nKeyB) == FUN_141656ad0(pMe);
-    int nType = pDoll->FUN_14121c710();
-    FUN_14121e670(GetTypeName(), FUN_14123c580(pMe), DAT_143af25f0, nType == 1);
+    FUN_14121e670(GetTypeName(), FUN_14123c580(pMe), DAT_143af25f0, pDoll->FUN_14121c710() == 1);
     ASDialog* pDlg = dynamic_cast<ASDialog*>((AScript*)m_30);
     if (pDlg != 0)
     {
@@ -422,23 +410,21 @@ void UIFittingDollDialog::FUN_1419342e0()
 // @0x141934340
 void UIFittingDollDialog::FUN_141934340()
 {
-    if (m_nTransforming != 0)
+    if (m_nTransforming == 0)
+        return;
+    PC* pMe = FUN_1403ed2d0()->FUN_141bd0cc0();
+    if (pMe == 0)
+        return;
+    if (FUN_14166c930(pMe) == 0x22)
+        return;
+    if (MS2Ptr<Unk_LdButton> spButton = GetChild<Unk_LdButton>("m_transform"))
     {
-        PC* pMe = FUN_1403ed2d0()->FUN_141bd0cc0();
-        if (pMe != 0 && FUN_14166c930(pMe) != 0x22)
-        {
-            MS2Ptr<Unk_LdButton> spButton = GetChild<Unk_LdButton>("m_transform");
-            if (spButton.get() != 0)
-            {
-                m_nTransforming = 0;
-                spButton->FUN_1422c1fe0(1);
-            }
-        }
+        m_nTransforming = 0;
+        spButton->FUN_1422c1fe0(1);
     }
 }
 
 // @0x141934430
-// MS2-FUNCTIONAL: the exe keeps the equipment handles and the item copies in separate frame slots
 int UIFittingDollDialog::FUN_141934430()
 {
     FittingDollPC* pDoll = FUN_140884db0(FUN_1403ed2d0()->FUN_141bd1530(DAT_143af25f0));
@@ -448,8 +434,7 @@ int UIFittingDollDialog::FUN_141934430()
     if (pMe == 0)
         return 0xd;
     Unk_FdPlotMgr* pMgr = FUN_1401cd040(&DAT_143b059e8);
-    char key[8];
-    Unk_FdPlot* pPlot = FUN_1410b8c90(pMgr, FUN_14123c460(pDoll, key));
+    Unk_FdPlot* pPlot = FUN_1410b8c90(pMgr, reinterpret_cast<Unk_FdDollView*>(pDoll)->FUN_14123c460());
     if (pPlot == 0)
         return 0xd;
     if (FUN_1410c8030(pMgr, pPlot->m_nKeyA, pPlot->m_nKeyB) != FUN_141656ad0(pMe))
@@ -461,22 +446,14 @@ int UIFittingDollDialog::FUN_141934430()
     for (POSITION pos = list.GetHeadPosition(); pos != 0; list.GetNext(pos))
     {
         MS2Ptr<CEquipItem> spEquip = list.GetAt(pos);
-        bool bSkip = false;
-        {
-            MS2Ptr<CItem> spItem = spEquip->GetItem();
-            if (spItem.get() != 0)
-            {
-                MS2Ptr<CItem> spItemAgain = spEquip->GetItem();
-                bSkip = reinterpret_cast<CItemData*>(spItemAgain->FUN_140527840())->FUN_14053d550();
-            }
-        }
+        bool bSkip = static_cast<bool>(spEquip->GetItem().get()) && reinterpret_cast<CItemData*>(spEquip->GetItem()->FUN_140527840())->FUN_14053d550();
         if (bSkip)
             continue;
-        int nResult = pDoll->FUN_14121c870(spEquip->GetItem().get());
+        int nResult = pDoll->FUN_14121c870(list.GetAt(pos)->GetItem().get());
         if (nResult != 0)
             return nResult;
-        MS2Ptr<CItem> spBound = spEquip->GetItem();
-        void* pTransfer = spBound->FUN_140527930();
+        void* pTransfer;
+        void* pDead = pTransfer = spEquip->GetItem()->FUN_140527930();
         if (pTransfer != 0 && FUN_140635100(pTransfer) != 0 && FUN_140635120(pTransfer) == 0)
             bBound = true;
     }
@@ -487,32 +464,26 @@ int UIFittingDollDialog::FUN_141934430()
     for (POSITION pos = list.GetHeadPosition(); pos != 0; list.GetNext(pos))
     {
         MS2Ptr<CItem> spItem = list.GetAt(pos)->GetItem();
-        CItemData* pData = reinterpret_cast<CItemData*>(spItem->FUN_140527840());
-        if (nType == 0)
-        {
-            if (!pData->FUN_14053c870())
-                continue;
-        }
-        else
-        {
-            if (!pData->FUN_14053c810())
-                continue;
-        }
-        if (spItem->FUN_1405258b0() == nType)
-        {
-            int nResult = pDoll->FUN_14121c910(list.GetAt(pos)->GetItem().get());
-            if (nResult != 0)
-                return nResult;
-        }
+        if (nType != 0 && !reinterpret_cast<CItemData*>(spItem->FUN_140527840())->FUN_14053c810())
+            continue;
+        if (nType == 0 && !reinterpret_cast<CItemData*>(spItem->FUN_140527840())->FUN_14053c870())
+            continue;
+        if (spItem->FUN_1405258b0() != nType)
+            continue;
+        int nResult = pDoll->FUN_14121c910(list.GetAt(pos)->GetItem().get());
+        if (nResult != 0)
+            return nResult;
     }
 
     if (bBound)
     {
-        MS2Ptr<CMsgBoxData> spBox = FUN_140d73e40(1, 0x303, 0, CStringW(L""));
-        if (spBox.get() != 0)
         {
-            spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIFittingDollDialog::FUN_141934c10));
-            FUN_140d73c60(spBox);
+            MS2Ptr<CMsgBoxData> spBox = FUN_140d73e40(1, 0x303, 0, CStringW(L""));
+            if (spBox.get() != 0)
+            {
+                spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIFittingDollDialog::FUN_141934c10));
+                FUN_140d73c60(spBox);
+            }
         }
         return 0x16;
     }

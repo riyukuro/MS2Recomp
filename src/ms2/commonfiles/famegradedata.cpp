@@ -119,10 +119,10 @@
 // MS2-PIN: ?begin@?$_Tree@V?$_Tset_traits@HU?$less@H@std@@V?$allocator@H@2@$0A@@std@@@std@@QEAA?AV?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@H@std@@@std@@@2@XZ 0x140367e30 ; unique: single byte-identical candidate
 // MS2-PIN: ?clear@?$_Tree@V?$_Tset_traits@HU?$less@H@std@@V?$allocator@H@2@$0A@@std@@@std@@QEAAXXZ 0x140367f10 ; unique: single byte-identical candidate
 // MS2-PIN: ?deallocate@?$_Default_allocator_traits@V?$allocator@U?$_Tree_node@HPEAX@std@@@std@@@std@@SAXAEAV?$allocator@U?$_Tree_node@HPEAX@std@@@2@QEAU?$_Tree_node@HPEAX@2@_K@Z 0x140368050 ; prop: caller ??$_Freenode0@V?$allocator@U?$_Tree_node@HPEAX@std@@@std@@@?$_Tree...
-// MS2-PIN: ?end@?$_Tree@V?$_Tset_traits@HU?$less@H@std@@V?$allocator@H@2@$0A@@std@@@std@@QEAA?AV?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@H@std@@@std@@@2@XZ 0x140368110 ; unique: caller ?IsNotOfficerNpc@CFameTable@@QEAAHH@Z
+// MS2-PIN: ?end@?$_Tree@V?$_Tset_traits@HU?$less@H@std@@V?$allocator@H@2@$0A@@std@@@std@@QEAA?AV?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@H@std@@@std@@@2@XZ 0x140368110 ; unique: caller ?IsOfficerNpc@CFameTable@@QEAAHH@Z
 // MS2-PIN: ?erase@?$_Tree@V?$_Tset_traits@HU?$less@H@std@@V?$allocator@H@2@$0A@@std@@@std@@QEAA?AV?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@H@std@@@std@@@2@V32@0@Z 0x1403681d0 ; unique: single byte-identical candidate
 // MS2-PIN: ?erase@?$_Tree@V?$_Tset_traits@HU?$less@H@std@@V?$allocator@H@2@$0A@@std@@@std@@QEAA?AV?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@H@std@@@std@@@2@V32@@Z 0x1403682c0 ; unique: single byte-identical candidate
-// MS2-PIN: ?find@?$_Tree@V?$_Tset_traits@HU?$less@H@std@@V?$allocator@H@2@$0A@@std@@@std@@QEAA?AV?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@H@std@@@std@@@2@AEBH@Z 0x140368510 ; unique: caller ?IsNotOfficerNpc@CFameTable@@QEAAHH@Z
+// MS2-PIN: ?find@?$_Tree@V?$_Tset_traits@HU?$less@H@std@@V?$allocator@H@2@$0A@@std@@@std@@QEAA?AV?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@H@std@@@std@@@2@AEBH@Z 0x140368510 ; unique: caller ?IsOfficerNpc@CFameTable@@QEAAHH@Z
 // MS2-PIN: ?lower_bound@?$_Tree@V?$_Tset_traits@HU?$less@H@std@@V?$allocator@H@2@$0A@@std@@@std@@QEAA?AV?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@H@std@@@std@@@2@AEBH@Z 0x1403686d0 ; unique: single byte-identical candidate
 // MS2-PIN: ?max_size@?$_Default_allocator_traits@V?$allocator@U?$_Tree_node@HPEAX@std@@@std@@@std@@SA_KAEBV?$allocator@U?$_Tree_node@HPEAX@std@@@2@@Z 0x140368790 ; unique: single byte-identical candidate
 // MS2-PIN: ?max_size@?$_Tree@V?$_Tset_traits@HU?$less@H@std@@V?$allocator@H@2@$0A@@std@@@std@@QEBA_KXZ 0x1403687b0 ; unique: single byte-identical candidate
@@ -216,20 +216,34 @@ int FUN_14035ba10(Unk_140165cf0* pElem, const char* pszName, int* pOut)
 // @0x14035baa0
 int FUN_14035baa0(Unk_140165cf0* pElem, const char* pszName, int* pOut)
 {
+    if (0)
+    {
+        (void)((!!(FALSE)) || (_wassert(L"FALSE", L"e:\\build\\kr\\22_04\\ms2code\\commonfiles\\tinyxmlhelper.h", 250), 0));
+        return 2;
+    }
+    int nRet;
     CStringA str;
-    int nRet = FUN_1408733e0(pElem, pszName, str);
-    if (nRet == 0)
-        *pOut = FUN_14035b710(str);
+    nRet = FUN_1408733e0(pElem, pszName, str);
+    if (nRet != 0)
+        return nRet;
+    *pOut = FUN_14035b710(str);
     return nRet;
 }
 
 // @0x14035bb60
 int FUN_14035bb60(Unk_140165cf0* pElem, const char* pszName, Unk_FameSeason* pOut)
 {
+    if (0)
+    {
+        (void)((!!(FALSE)) || (_wassert(L"FALSE", L"e:\\build\\kr\\22_04\\ms2code\\commonfiles\\tinyxmlhelper.h", 250), 0));
+        return 2;
+    }
+    int nRet;
     CStringA str;
-    int nRet = FUN_1408733e0(pElem, pszName, str);
-    if (nRet == 0)
-        *pOut = FUN_14021a480(str);
+    nRet = FUN_1408733e0(pElem, pszName, str);
+    if (nRet != 0)
+        return nRet;
+    *pOut = FUN_14021a480(str);
     return nRet;
 }
 
@@ -479,204 +493,149 @@ int CFameTable::Load()
 }
 
 // @0x1403598c0
-// MS2-FUNCTIONAL: first-pass source; frame layout and temp order not byte-compared
 int CFameTable::LoadFame()
 {
-    CString strPath = FUN_14071a5b0(CString("Table"), CString("fame.xml"));
+    CString strPath = FUN_14071a5b0("Table", "fame.xml");
     TiXmlDocument doc;
-    const char* pszPath = strPath;
-    if (FUN_140166420()->FUN_1403974b0(&doc, pszPath, 0, true, false) == 0)
+    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+        return 0;
+    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+    if (pRoot == 0)
     {
+        FUN_14015eb90(FUN_140166440(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return 0;
     }
-    else
+    for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("fame"); pNode != 0; pNode = pNode->FUN_140168650("fame"))
     {
-        Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
-        if (pRoot == 0)
-        {
-            FUN_14015eb90(FUN_140166440(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
-            return 0;
-        }
-        else
-        {
-            for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("fame"); pNode != 0; pNode = pNode->FUN_140168650("fame"))
-            {
-                if (!FUN_14028f710(pNode))
-                    continue;
-                GradePtr spGrade(new CFameGradeData);
-                if (spGrade->Read(pNode) != 0)
-                {
-                    m_aGrades[spGrade->m_nAlliance].SetAt(spGrade->m_nGrade, spGrade);
-                    if (FUN_14035b9a0(&m_aAllianceId, &spGrade->m_nAlliance) == -1)
-                        m_aAllianceId.Add(spGrade->m_nAlliance);
-                }
-            }
-            return 1;
-        }
+        if (!FUN_14028f710(pNode))
+            continue;
+        GradePtr spGrade(new CFameGradeData);
+        if (spGrade->Read(pNode) == 0)
+            continue;
+        m_aGrades[spGrade->m_nAlliance].SetAt(spGrade->m_nGrade, spGrade);
+        if (FUN_14035b9a0(&m_aAllianceId, &spGrade->m_nAlliance) == -1)
+            m_aAllianceId.Add(spGrade->m_nAlliance);
     }
+    return 1;
 }
 
 // @0x140359bd0
-// MS2-FUNCTIONAL: first-pass source; frame layout and temp order not byte-compared
 int CFameTable::LoadFameLog()
 {
-    CString strPath = FUN_14071a5b0(CString("Table"), CString("fameLog.xml"));
+    CString strPath = FUN_14071a5b0("Table", "fameLog.xml");
     TiXmlDocument doc;
-    const char* pszPath = strPath;
-    if (FUN_140166420()->FUN_1403974b0(&doc, pszPath, 0, true, false) == 0)
+    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+        return 0;
+    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+    if (pRoot == 0)
     {
+        FUN_14015eb90(FUN_140166440(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return 0;
     }
-    else
+    for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("fame"); pNode != 0; pNode = pNode->FUN_140168650("fame"))
     {
-        Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
-        if (pRoot == 0)
-        {
-            FUN_14015eb90(FUN_140166440(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
-            return 0;
-        }
-        else
-        {
-            for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("fame"); pNode != 0; pNode = pNode->FUN_140168650("fame"))
-            {
-                if (!FUN_14028f710(pNode))
-                    continue;
-                LogPtr spLog(new CFameLogData);
-                if (spLog->Read(pNode) != 0)
-                    m_mapLog.SetAt(spLog->m_nId, spLog);
-            }
-            return 1;
-        }
+        if (!FUN_14028f710(pNode))
+            continue;
+        LogPtr spLog(new CFameLogData);
+        if (spLog->Read(pNode) == 0)
+            continue;
+        m_mapLog.SetAt(spLog->m_nId, spLog);
     }
+    return 1;
 }
 
 // @0x140359e60
-// MS2-FUNCTIONAL: first-pass source; frame layout and temp order not byte-compared
 int CFameTable::LoadFameLimit()
 {
-    CString strPath = FUN_14071a5b0(CString("Table"), CString("fameLimit.xml"));
+    CString strPath = FUN_14071a5b0("Table", "fameLimit.xml");
     TiXmlDocument doc;
-    const char* pszPath = strPath;
-    if (FUN_140166420()->FUN_1403974b0(&doc, pszPath, 0, true, false) == 0)
+    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+        return 0;
+    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+    if (pRoot == 0)
     {
+        FUN_14015eb90(FUN_140166440(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return 0;
     }
-    else
+    for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("condition"); pNode != 0; pNode = pNode->FUN_140168650("condition"))
     {
-        Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
-        if (pRoot == 0)
-        {
-            FUN_14015eb90(FUN_140166440(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
-            return 0;
-        }
-        else
-        {
-            for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("condition"); pNode != 0; pNode = pNode->FUN_140168650("condition"))
-            {
-                if (!FUN_14028f710(pNode))
-                    continue;
-                LimitPtr spLimit(new CFameLimitData);
-                if (spLimit->Read(pNode) != 0)
-                    m_mapLimit.SetAt(spLimit->m_nAlliance, spLimit);
-            }
-            return 1;
-        }
+        if (!FUN_14028f710(pNode))
+            continue;
+        LimitPtr spLimit(new CFameLimitData);
+        if (spLimit->Read(pNode) == 0)
+            continue;
+        m_mapLimit.SetAt(spLimit->m_nAlliance, spLimit);
     }
+    return 1;
 }
 
 // @0x14035a0f0
-// MS2-FUNCTIONAL: first-pass source; frame layout and temp order not byte-compared
 int CFameTable::LoadPickMethod()
 {
-    CString strPath = FUN_14071a5b0(CString("Table"), CString("famePickMethod.xml"));
+    CString strPath = FUN_14071a5b0("Table", "famePickMethod.xml");
     TiXmlDocument doc;
-    const char* pszPath = strPath;
-    if (FUN_140166420()->FUN_1403974b0(&doc, pszPath, 0, true, false) == 0)
+    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+        return 0;
+    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+    if (pRoot == 0)
     {
+        FUN_14015eb90(FUN_140166440(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return 0;
     }
-    else
+    Unk_140165cf0* pEnv = FUN_14028f8d0(pRoot);
+    if (pEnv == 0)
     {
-        Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
-        if (pRoot == 0)
-        {
-            FUN_14015eb90(FUN_140166440(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
-            return 0;
-        }
-        else
-        {
-            Unk_140165cf0* pEnv = FUN_14028f8d0(pRoot);
-            if (pEnv == 0)
-            {
-                FUN_14015eb90(FUN_140166440(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<environment> {0}]", strPath);
-                return 0;
-            }
-            else
-            {
-                for (Unk_140165cf0* pNode = pEnv->FUN_140165cf0("method"); pNode != 0; pNode = pNode->FUN_140168650("method"))
-                {
-                    if (!FUN_14028f710(pNode))
-                        continue;
-                    PickPtr spMethod(new CFamePickMethod);
-                    if (spMethod->Read(pNode) != 0)
-                    {
-                        m_aPick.Add(spMethod);
-                        if (spMethod->m_nReloadOnAccept != 0)
-                            m_mapReload.SetAt(spMethod->m_nReloadOnAccept, 1);
-                        if (spMethod->m_nReloadOnComplete != 0)
-                            m_mapReload.SetAt(spMethod->m_nReloadOnComplete, 0);
-                    }
-                }
-                return 1;
-            }
-        }
+        FUN_14015eb90(FUN_140166440(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<environment> {0}]", strPath);
+        return 0;
     }
+    for (Unk_140165cf0* pNode = pEnv->FUN_140165cf0("method"); pNode != 0; pNode = pNode->FUN_140168650("method"))
+    {
+        if (!FUN_14028f710(pNode))
+            continue;
+        PickPtr spMethod(new CFamePickMethod);
+        if (spMethod->Read(pNode) == 0)
+            continue;
+        m_aPick.Add(spMethod);
+        if (spMethod->m_nReloadOnAccept != 0)
+            m_mapReload.SetAt(spMethod->m_nReloadOnAccept, 1);
+        if (spMethod->m_nReloadOnComplete != 0)
+            m_mapReload.SetAt(spMethod->m_nReloadOnComplete, 0);
+    }
+    return 1;
 }
 
 // @0x14035a460
-// MS2-FUNCTIONAL: first-pass source; frame layout and temp order not byte-compared
 int CFameTable::LoadFameDef()
 {
-    CString strPath = FUN_14071a5b0(CString("Table"), CString("fameDef.xml"));
+    CString strPath = FUN_14071a5b0("Table", "fameDef.xml");
     TiXmlDocument doc;
-    const char* pszPath = strPath;
-    if (FUN_140166420()->FUN_1403974b0(&doc, pszPath, 0, true, false) == 0)
+    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+        return 0;
+    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+    if (pRoot == 0)
     {
+        FUN_14015eb90(FUN_140166440(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return 0;
     }
-    else
+    for (Unk_140165cf0* pSeason = pRoot->FUN_140165cf0("season"); pSeason != 0; pSeason = pSeason->FUN_140168650("season"))
     {
-        Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
-        if (pRoot == 0)
+        if (!FUN_14028f710(pSeason))
+            continue;
+        SeasonPtr spSeason(new CFameSeasonDef);
+        if (spSeason->Read(pSeason) == 0)
+            continue;
+        m_mapSeason.SetAt(spSeason->m_nSeason, spSeason);
+        for (Unk_140165cf0* pNode = pSeason->FUN_140165cf0("fame"); pNode != 0; pNode = pNode->FUN_140168650("fame"))
         {
-            FUN_14015eb90(FUN_140166440(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
-            return 0;
-        }
-        else
-        {
-            for (Unk_140165cf0* pSeason = pRoot->FUN_140165cf0("season"); pSeason != 0; pSeason = pSeason->FUN_140168650("season"))
-            {
-                if (!FUN_14028f710(pSeason))
-                    continue;
-                SeasonPtr spSeason(new CFameSeasonDef);
-                if (spSeason->Read(pSeason) != 0)
-                {
-                    m_mapSeason.SetAt(spSeason->m_nSeason, spSeason);
-                    for (Unk_140165cf0* pNode = pSeason->FUN_140165cf0("fame"); pNode != 0; pNode = pNode->FUN_140168650("fame"))
-                    {
-                        DefPtr spDef(new CFameDef);
-                        if (spDef->Read(pNode) != 0)
-                        {
-                            spDef->m_nSeason = spSeason->m_nSeason;
-                            m_mapDef.SetAt(spDef->m_nAlliance, spDef);
-                            m_setOfficerNpc.insert(spDef->m_nOfficerNpcKind);
-                        }
-                    }
-                }
-            }
-            return 1;
+            DefPtr spDef(new CFameDef);
+            if (spDef->Read(pNode) == 0)
+                continue;
+            spDef->m_nSeason = spSeason->m_nSeason;
+            m_mapDef.SetAt(spDef->m_nAlliance, spDef);
+            m_setOfficerNpc.insert(spDef->m_nOfficerNpcKind);
         }
     }
+    return 1;
 }
 
 // @0x14035a870
@@ -755,7 +714,6 @@ int CFameTable::GetGradePoint(Unk_FameAlliance nAlliance, int nGrade)
     return 0x7fffffff;
 }
 
-// MS2-FUNCTIONAL: 64-bit modulo operand load order (mov rcx/rax/rcx before div) differs
 // @0x14035ac50
 unsigned CFameTable::PickRandomLog(Unk_FameAlliance nAlliance, int nGrade, Unk_FameLogFilter* pOwned)
 {
@@ -774,9 +732,7 @@ unsigned CFameTable::PickRandomLog(Unk_FameAlliance nAlliance, int nGrade, Unk_F
     }
     if (FUN_140186260(aCandidates) == 0)
         return 0;
-    unsigned long long nRandom = FUN_140767ff0();
-    unsigned long long nCount = FUN_140186260(aCandidates);
-    int nIndex = (int)(nRandom % nCount);
+    int nIndex = (int)(FUN_140767ff0() % FUN_140186260(aCandidates));
     if (nIndex >= (int)FUN_140186260(aCandidates))
         return 0;
     return *FUN_1401844d0(aCandidates, nIndex);
@@ -825,9 +781,9 @@ int CFameTable::IsExped(Unk_FameAlliance nAlliance)
 }
 
 // @0x14035b0a0
-int CFameTable::IsNotOfficerNpc(int nKind)
+int CFameTable::IsOfficerNpc(int nKind)
 {
-    return m_setOfficerNpc.find(nKind) == m_setOfficerNpc.end();
+    return m_setOfficerNpc.find(nKind) != m_setOfficerNpc.end();
 }
 
 // @0x14035b110
@@ -938,7 +894,7 @@ void CFameTable::SetInit(bool b)
     s_bInit = b;
 }
 
-// ---- the typed entry points uiemoticon.cpp / unit_14108e1e0 declare for IsNotOfficerNpc ----
+// ---- the typed entry points uiemoticon.cpp / unit_14108e1e0 declare for IsOfficerNpc ----
 class Unk_EmoNpcTable
 {
 public:
@@ -946,14 +902,14 @@ public:
     int FUN_14035b0a0(unsigned int nId);
 };
 
-// MS2-FUNCTIONAL: forwards to CFameTable::IsNotOfficerNpc
+// MS2-FUNCTIONAL: forwards to CFameTable::IsOfficerNpc
 int Unk_EmoNpcTable::FUN_14035b0a0(int nNpcType)
 {
-    return ((CFameTable*)this)->IsNotOfficerNpc(nNpcType);
+    return ((CFameTable*)this)->IsOfficerNpc(nNpcType);
 }
 
-// MS2-FUNCTIONAL: forwards to CFameTable::IsNotOfficerNpc
+// MS2-FUNCTIONAL: forwards to CFameTable::IsOfficerNpc
 int Unk_EmoNpcTable::FUN_14035b0a0(unsigned int nId)
 {
-    return ((CFameTable*)this)->IsNotOfficerNpc((int)nId);
+    return ((CFameTable*)this)->IsOfficerNpc((int)nId);
 }

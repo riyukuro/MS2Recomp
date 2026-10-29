@@ -12,10 +12,10 @@
 // MS2-PINS-END tplpin
 // MS2-PIN: ??_7CItemGemPropertyTable@@6B?$TSingleton@VCItemGemPropertyTable@@@@@ 0x142d63510
 // MS2-PIN: ??_7CItemGemPropertyTable@@6B?$CValidData@VCItemGemPropertyTable@@@@@ 0x142d63520
-// MS2-PIN: ??$LoadGems@VCGemCharEffectData@@@CItemGemPropertyTable@@AEAAHAEBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@0@Z 0x1405adec0
-// MS2-PIN: ??$LoadGems@VCGemEffectData@@@CItemGemPropertyTable@@AEAAHAEBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@0@Z 0x1405ae300
-// MS2-PIN: ??$LoadGems@VCGemSwimData@@@CItemGemPropertyTable@@AEAAHAEBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@0@Z 0x1405ae740
-// MS2-PIN: ??$LoadGems@VCGemTombStoneData@@@CItemGemPropertyTable@@AEAAHAEBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@0@Z 0x1405aeb80
+// MS2-PIN: ??$LoadGems@VCGemCharEffectData@@@CItemGemPropertyTable@@AEAA_NAEBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@0@Z 0x1405adec0
+// MS2-PIN: ??$LoadGems@VCGemEffectData@@@CItemGemPropertyTable@@AEAA_NAEBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@0@Z 0x1405ae300
+// MS2-PIN: ??$LoadGems@VCGemSwimData@@@CItemGemPropertyTable@@AEAA_NAEBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@0@Z 0x1405ae740
+// MS2-PIN: ??$LoadGems@VCGemTombStoneData@@@CItemGemPropertyTable@@AEAA_NAEBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@0@Z 0x1405aeb80
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\commonfiles\\itemgempropertytable.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
 #include "ms2/placeholder/citemgempropertytable.h"
@@ -59,51 +59,53 @@ CItemGemPropertyTable::~CItemGemPropertyTable()
 }
 
 // @0x1405abe50
-// MS2-FUNCTIONAL: the exe keeps the three-string temporaries of each call alive in a different frame layout
-int CItemGemPropertyTable::Load()
+bool CItemGemPropertyTable::Load()
 {
-    LoadGems<CGemTombStoneData>(FUN_14071a5b0(CString("Table"), CString("ItemGemProperty_tomb.xml")), CString("tomb"));
-    LoadGems<CGemSwimData>(FUN_14071a5b0(CString("Table"), CString("ItemGemProperty_swim.xml")), CString("swim"));
-    LoadGems<CGemCharEffectData>(FUN_14071a5b0(CString("Table"), CString("ItemGemProperty_charEffect.xml")), CString("charEffect"));
-    LoadGems<CGemEffectData>(FUN_14071a5b0(CString("Table"), CString("ItemGemProperty_effect.xml")), CString("effect"));
+    LoadGems<CGemTombStoneData>(FUN_14071a5b0("Table", "ItemGemProperty_tomb.xml"), "tomb");
+    LoadGems<CGemSwimData>(FUN_14071a5b0("Table", "ItemGemProperty_swim.xml"), "swim");
+    LoadGems<CGemCharEffectData>(FUN_14071a5b0("Table", "ItemGemProperty_charEffect.xml"), "charEffect");
+    LoadGems<CGemEffectData>(FUN_14071a5b0("Table", "ItemGemProperty_effect.xml"), "effect");
     SetInit(true);
-    return 1;
+    return true;
 }
 
 // @0x1405ac160
-// MS2-FUNCTIONAL: frame/temporary order differs from the exe
 MS2Ptr<CGemDataBase> CItemGemPropertyTable::FUN_1405ac160(int nGemId)
 {
-    MS2Ptr<CGemDataBase> spData(0);
     FUN_1405a96f0()->FUN_1405ac260();
     CheckInit();
     if (m_gems.IsEmpty())
-        return spData;
-    Unk_LockGuard guard(m_lock);
-    if (guard)
+        return MS2Ptr<CGemDataBase>(0);
+    MS2Ptr<CGemDataBase> spData(0);
     {
+        Unk_LockGuard guard(m_lock);
+        if (guard)
+        {
+        }
+        else
+            m_gems.Lookup(nGemId, spData);
     }
-    else
-        m_gems.Lookup(nGemId, spData);
     return spData;
 }
 
 // @0x1405ac260
-// MS2-FUNCTIONAL: frame/temporary order differs from the exe
 bool CItemGemPropertyTable::FUN_1405ac260()
 {
-    bool bResult;
+    bool bResult = false;
     bool bChanged = false;
     for (size_t i = 0; i < m_caches.GetCount(); ++i)
     {
         MS2Ptr<CCacheData> spCache = m_caches[i];
-        if (spCache.get() && FUN_1401d1320(spCache.get()))
+        if (spCache == 0)
+            continue;
+        if (FUN_1401d1320(spCache.operator->()))
         {
             bChanged = true;
             break;
         }
     }
-    if (bChanged)
+    if (!bChanged)
+        return true;
     {
         Unk_LockGuard guard(m_lock);
         if (guard)
@@ -113,29 +115,27 @@ bool CItemGemPropertyTable::FUN_1405ac260()
         {
             m_caches.RemoveAll();
             m_gems.RemoveAll();
-            bResult = Load() != 0;
+            bResult = Load();
         }
     }
-    else
-        bResult = true;
     return bResult;
 }
 
 // @0x1405ac3b0
-// MS2-FUNCTIONAL: the exe builds the five format temporaries in a different frame layout
-void CGemTombStoneData::TModelAttr::FUN_1405ac3b0(Unk_140165cf0* pElem, const CString& strPrefix)
+bool CGemTombStoneData::TModelAttr::FUN_1405ac3b0(Unk_140165cf0* pElem, const CString& strPrefix)
 {
-    CString strFmt("{0}{1}");
-    CString strKfm = StringFormat(strFmt, strPrefix, "kfm");
-    CString strRegen = StringFormat(strFmt, strPrefix, "regenEffect");
-    CString strIdle = StringFormat(strFmt, strPrefix, "idleEffect");
-    CString strDmg = StringFormat(strFmt, strPrefix, "dmgEffect");
-    CString strRevive = StringFormat(strFmt, strPrefix, "reviveEffect");
+    const CString& strFmt = "{0}{1}";
+    const CString& strKfm = StringFormat(strFmt, strPrefix, "kfm");
+    const CString& strRegen = StringFormat(strFmt, strPrefix, "regenEffect");
+    const CString& strIdle = StringFormat(strFmt, strPrefix, "idleEffect");
+    const CString& strDmg = StringFormat(strFmt, strPrefix, "dmgEffect");
+    const CString& strRevive = StringFormat(strFmt, strPrefix, "reviveEffect");
     FUN_140873ad0(pElem, strKfm, m_strKfm);
     FUN_140873ad0(pElem, strRegen, m_strRegenEffect);
     FUN_140873ad0(pElem, strIdle, m_strIdleEffect);
     FUN_140873ad0(pElem, strDmg, m_strDmgEffect);
     FUN_140873ad0(pElem, strRevive, m_strReviveEffect);
+    return true;
 }
 
 // @0x1405ac670
@@ -164,13 +164,12 @@ void CGemTombStoneData::TModelAttr::FUN_1405ac670()
 }
 
 // @0x1405ac760
-// MS2-FUNCTIONAL: frame layout differs (bool return via mov al,1 vs int eax)
 bool CGemTombStoneData::vfunc_1(Unk_140165cf0* pElem)
 {
-    CString strRotation("rotation");
+    const CString& strRotation = "rotation";
     FUN_140874670(pElem, strRotation, m_ptRotation);
-    m_attrA.FUN_1405ac3b0(pElem, CString(""));
-    m_attrB.FUN_1405ac3b0(pElem, CString("dark_"));
+    m_attrA.FUN_1405ac3b0(pElem, "");
+    m_attrB.FUN_1405ac3b0(pElem, "dark_");
     return true;
 }
 
@@ -290,61 +289,30 @@ CGemTombStoneData::TModelAttr::TModelAttr()
 {
 }
 
-// @0x1405af4f0
-// MS2-FUNCTIONAL: the exe dtor does not store the class vptr before destroying the members (no source form found)
-CGemCharEffectData::~CGemCharEffectData()
-{
-}
-
 // @0x1405af570
 CGemDataBase::~CGemDataBase()
 {
 }
 
-// @0x1405af5a0
-// MS2-FUNCTIONAL: the exe dtor does not store the class vptr before destroying the members (no source form found)
-CGemEffectData::~CGemEffectData()
-{
-}
-
-// @0x1405af5d0
-// MS2-FUNCTIONAL: the exe dtor does not store the class vptr before destroying the members (no source form found)
-CGemSwimData::~CGemSwimData()
-{
-}
-
-// @0x1405af630
-// MS2-FUNCTIONAL: the exe dtor does not store the class vptr before destroying the members (no source form found)
-CGemTombStoneData::~CGemTombStoneData()
-{
-}
-
-// @0x1405af6b0
-// MS2-FUNCTIONAL: the exe dtor does not store the class vptr before destroying the members (no source form found)
-CGemTombStoneData::TModelAttr::~TModelAttr()
-{
-}
-
 // 0x1405adec0 (CGemCharEffectData), 0x1405ae300 (CGemEffectData), 0x1405ae740 (CGemSwimData), 0x1405aeb80 (CGemTombStoneData)
-// MS2-FUNCTIONAL: frame layout of the temporaries differs from the exe (1081 vs 1075 bytes)
 template <class T>
-int CItemGemPropertyTable::LoadGems(const CString& strFile, const CString& strTag)
+bool CItemGemPropertyTable::LoadGems(const CString& strFile, const CString& strTag)
 {
     MS2Ptr<CCacheData> spCache(new CCacheData);
-    if (spCache.IsNull())
-        return 0;
+    if (spCache == 0)
+        return false;
     spCache->FUN_1401d1160(CString(strFile));
     m_caches.Add(spCache);
     TiXmlDocument doc;
     if (FUN_140166420()->FUN_1403974b0(&doc, strFile, 0, true, false) == 0)
-        return 0;
+        return false;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
     {
         FUN_14015eb90(FUN_140166440(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strFile);
-        return 0;
+        return false;
     }
-    CString strId("id");
+    const CString& strId = "id";
     for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0(strTag); pNode != 0; pNode = pNode->FUN_140168650(strTag))
     {
         if (!FUN_14028f710(pNode))
@@ -354,7 +322,7 @@ int CItemGemPropertyTable::LoadGems(const CString& strFile, const CString& strTa
         if (nId == 0)
             continue;
         MS2Ptr<T> spData(new T);
-        if (spData.IsNull())
+        if (spData == 0)
             continue;
         spData->m_nGemId = nId;
         spData->vfunc_1(pNode);
@@ -366,7 +334,7 @@ int CItemGemPropertyTable::LoadGems(const CString& strFile, const CString& strTa
         else
             m_gems.SetAt(nId, spBase);
     }
-    return 1;
+    return true;
 }
 
 MS2_EMIT_CRT_MEMMOVE_S();

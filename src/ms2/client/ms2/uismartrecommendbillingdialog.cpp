@@ -188,7 +188,6 @@ int UISmartRecommendBillingDialog::vfunc_13()
 }
 
 // @0x14134cd00
-// MS2-FUNCTIONAL: frame 0x10 larger in the exe, no source form found
 int UISmartRecommendBillingDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs)
 {
     if (UIDialog::vfunc_28(szMethod, pArgs, nArgs) != 0)
@@ -222,7 +221,7 @@ int UISmartRecommendBillingDialog::vfunc_28(const char* szMethod, const Scalefor
         FUN_140710590(packet);
         return 1;
     }
-    if (_stricmp(szMethod, "OnCancel") == 0)
+    else if (_stricmp(szMethod, "OnCancel") == 0)
     {
         UIDialog::vfunc_67();
         return 1;
@@ -237,7 +236,6 @@ void UISmartRecommendBillingDialog::SetItem(Unk_RecommendPtr item)
 }
 
 // @0x14134cfa0
-// MS2-FUNCTIONAL: extra temps / frame size differ from the exe
 void UISmartRecommendBillingDialog::FUN_14134cfa0()
 {
     if (m_item.FUN_14134d6f0())
@@ -252,11 +250,7 @@ void UISmartRecommendBillingDialog::FUN_14134cfa0()
                 spItem->FUN_140526c70(m_item->m_nAmount);
                 m_strBagKey = GetTypeName();
                 FUN_141415450(m_strBagKey, spItem, 0, 0x415, 0);
-                int nMode;
-                if (m_item->m_nPrice == 0)
-                    nMode = 2;
-                else
-                    nMode = 1;
+                int nMode = m_item->m_nPrice != 0 ? 1 : 2;
                 CStringW strText;
                 if (nMode == 1)
                 {
@@ -264,8 +258,7 @@ void UISmartRecommendBillingDialog::FUN_14134cfa0()
                 }
                 else if (nMode == 2)
                 {
-                    CStringW strPay = TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, m_item->m_nPayItemId);
-                    strText.Format(L"%s x%d", (const wchar_t*)strPay, m_item->m_nPayCount);
+                    strText.Format(L"%s x%d", (const wchar_t*)TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, m_item->m_nPayItemId), m_item->m_nPayCount);
                 }
                 pDialog->FUN_14134d4d0("Open", nMode, m_strBagKey, spItem->FUN_140527b10(), m_item->m_strName, strText);
             }
@@ -354,7 +347,6 @@ static UISmartRecommendBillingDialog* FUN_14134e160(int nUiId)
 }
 
 // @0x14134d9d0
-// MS2-FUNCTIONAL: frame 0x10 smaller in the exe
 int UISmartRecommendNotifyDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs)
 {
     if (UIDialog::vfunc_28(szMethod, pArgs, nArgs) != 0)
@@ -370,11 +362,11 @@ int UISmartRecommendNotifyDialog::vfunc_28(const char* szMethod, const Scaleform
         if (m_item.get() != 0)
         {
             CString strValue = FUN_140513200("{0}", m_item->m_nId);
-            TSingleton<CBigDataLogSystem>::GetInstance()->SendLog(CString("smart_recommend_try"), strValue);
+            TSingleton<CBigDataLogSystem>::GetInstance()->SendLog("smart_recommend_try", strValue);
         }
         return 1;
     }
-    if (_stricmp(szMethod, "OnCloseComplete") == 0)
+    else if (_stricmp(szMethod, "OnCloseComplete") == 0)
     {
         vfunc_67();
         return 1;
@@ -405,7 +397,6 @@ void UISmartRecommendNotifyDialog::FUN_14134dc50(int nRecommendId)
 }
 
 // @0x14134dcc0
-// MS2-FUNCTIONAL: extra temps / frame size differ from the exe
 void UISmartRecommendNotifyDialog::FUN_14134dcc0()
 {
     if (m_item.FUN_14134d6f0())
@@ -421,12 +412,12 @@ void UISmartRecommendNotifyDialog::FUN_14134dcc0()
                 m_strBagKey = GetTypeName();
                 FUN_141415450(m_strBagKey, spItem, 0, 0x415, 0);
                 pDialog->FUN_14134e200("Open", m_strBagKey, m_item->m_strDesc, m_item->m_strTitle, m_item->m_nTime);
-                FUN_141276180(s_strOpenSound, CString(""));
+                FUN_141276180(s_strOpenSound, "");
                 m_nCloseTick = FUN_141473390(FUN_14086d260()) + *FUN_1401d7c10(&FUN_1401d3200()->m_closeDelay);
                 if (m_item.get() != 0)
                 {
                     CString strValue = FUN_140513200("{0}", m_item->m_nId);
-                    TSingleton<CBigDataLogSystem>::GetInstance()->SendLog(CString("smart_recommend_open"), strValue);
+                    TSingleton<CBigDataLogSystem>::GetInstance()->SendLog("smart_recommend_open", strValue);
                 }
             }
         }

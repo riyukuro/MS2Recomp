@@ -9,7 +9,6 @@ public:
     class ChangeColorItem:public CPtred {
     public:
         ChangeColorItem();
-        ~ChangeColorItem();
         void FUN_1402000a0(COutputStream&);
         void FUN_1402001b0(void*);
         void FUN_140200480(COutputStream&);

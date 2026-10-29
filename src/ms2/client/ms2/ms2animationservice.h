@@ -23,9 +23,9 @@ public:
     void ReloadFemaleKF();                                                  // 0x1414a8980 (FUN_1414a8980)
     void ReloadMaleKF();                                                    // 0x1414a8c40 (FUN_1414a8c40)
     void UnCacheNpcAssets();                                                // 0x1414a8f60 (FUN_1414a8f60)
-    size_t GetAssetCount();                                               // 0x1414a9940 (FUN_1414a9940), m_assetsByPhysicalID.size()
-    size_t GetActorCount();                                               // 0x1414a9970 (FUN_1414a9970), m_entityData.size()
-    size_t GetKFMCacheCount();                                            // 0x1414a99a0 (FUN_1414a99a0), cached KFM files
+    efd::UInt32 GetAssetCount();                                             // 0x1414a9940 (FUN_1414a9940), m_assetsByPhysicalID.size()
+    efd::UInt32 GetActorCount();                                             // 0x1414a9970 (FUN_1414a9970), m_entityData.size()
+    efd::UInt32 GetKFMCacheCount();                                          // 0x1414a99a0 (FUN_1414a99a0), cached KFM files
     bool RemoveUnusedAsset(efd::utf8string kPhysicalID);                    // 0x1414a9a80 (FUN_1414a9a80)
 
     egmAnimation::KFMCache* GetKFMCache();                                // 0x1414ac8a0, the KFM cache service

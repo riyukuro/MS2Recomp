@@ -1,4 +1,4 @@
-// uitencentaas2dialog.h - UITencentAas2Dialog (RTTI .?AVUITencentAas2Dialog@@, 0x1d0 bytes, UI type 0x4f32?): the Tencent
+// uitencentaas2dialog.h - UITencentAas2Dialog (RTTI .?AVUITencentAas2Dialog@@, 0x1d0 bytes, UI type 0x4f8a): the Tencent
 // anti-addiction (AAS) notice page, a UIWebBrowserBase (uiupperhuddialog.h) that renders a web page into an image of its swf
 // (a sibling of UITencentCashChargeDialog). Header name assumed from the unit path (?\uitencentaas2dialog.cpp,
 // 0x140e988a0-0x140e99b90). Names invented from the callers: FUN_<va> are non-virtual members. w276.
@@ -22,6 +22,7 @@ public:
     ~Unk_AasImagePtr();                         // 0x140d030a0 (earlier unit)
     Unk_AasImagePtr& operator=(int nNull);      // 0x140e999d0
     Unk_AasImagePtr& AssignRaw(Unk_AasImage* p);   // 0x140e99a00
+    bool operator==(Unk_AasImage* p) const;     // 0x140d031b0 (unit_140cff310)
     Unk_AasImage* get() const;                  // 0x140e99a70
     Unk_AasImage* operator->() const;           // 0x140e99a80
 private:
@@ -45,7 +46,7 @@ public:
     virtual void vfunc_26();                                        // 26 0x140e98f20
     virtual void vfunc_43();                                        // 43 0x140e99500
     virtual void vfunc_47(int n);                                   // 47 0x140e98ae0
-    virtual int vfunc_48() { return 0x4f32; }                       // 48 (COMDAT 0x140e99ae0)
+    virtual int vfunc_48() { return 0x4f8a; }                       // 48 (COMDAT 0x140e99ae0)
     virtual int vfunc_65();                                         // 65 0x140e99570
     virtual void vfunc_67();                                        // 67 0x140e98c40
     virtual void vfunc_68();                                        // 68 0x140e98ca0

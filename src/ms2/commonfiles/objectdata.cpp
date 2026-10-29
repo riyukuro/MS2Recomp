@@ -79,7 +79,6 @@ CObjectData::~CObjectData()
 {
 }
 
-// MS2-FUNCTIONAL: frame/temp layout differs by 28 bytes; behaviour equivalent
 // @0x140704ec0
 CObjectDataPtr FUN_140704ec0(unsigned nId)
 {
@@ -244,11 +243,11 @@ CObjectDataPtr FUN_140704ec0(unsigned nId)
             FUN_140177e10(strItems, spData->m_cube.m_fittingDoll.m_defaultItems, L",");
             CString strColor;
             strColor = FUN_14015f710(pDoll, "fittingdollSkinColor0", CString(""));
-            spData->m_cube.m_fittingDoll.m_nSkinColor0 = FUN_14028c0d0(strColor);
+            spData->m_cube.m_fittingDoll.m_anSkinColor[0] = FUN_14028c0d0(strColor);
             strColor = FUN_14015f710(pDoll, "fittingdollSkinColor1", CString(""));
-            spData->m_cube.m_fittingDoll.m_nSkinColor1 = FUN_14028c0d0(strColor);
+            spData->m_cube.m_fittingDoll.m_anSkinColor[1] = FUN_14028c0d0(strColor);
             strColor = FUN_14015f710(pDoll, "fittingdollSkinColor2", CString(""));
-            spData->m_cube.m_fittingDoll.m_nSkinColor2 = FUN_14028c0d0(strColor);
+            spData->m_cube.m_fittingDoll.m_anSkinColor[2] = FUN_14028c0d0(strColor);
         }
         Unk_140165cf0* pSkill = pFunc->FUN_140165cf0("skillobject");
         if (pSkill != 0)
@@ -320,7 +319,7 @@ CObjectDataPtr FUN_140704ec0(unsigned nId)
             {
                 for (unsigned i = 0; i < list.GetCount(); i++)
                 {
-                    short nKey = (short)i + 1;
+                    short nKey = i + 1;
                     int nNpc = list[i];
                     spData->m_cube.m_nurturing.m_pluralNpcIds.SetAt(nKey, nNpc);
                 }
@@ -351,7 +350,7 @@ CObjectDataPtr FUN_140704ec0(unsigned nId)
             {
                 for (unsigned i = 0; i < list.GetCount(); i++)
                 {
-                    short nKey = (short)i + 1;
+                    short nKey = i + 1;
                     unsigned __int64 nGrowth = list[i];
                     spData->m_cube.m_nurturing.m_requiredGrowth.SetAt(nKey, nGrowth);
                 }

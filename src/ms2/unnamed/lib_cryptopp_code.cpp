@@ -432,7 +432,7 @@ std::ostream& FUN_14235c730(std::ostream& out, const CppInteger& a)
     if (a.sign == 1)
     {
         out << '-';
-        if (CppIntegerWords(temp1) != 0)
+        if (temp1.sign == 1 || CppIntegerWords(temp1) != 0)    // temp1.Negate(): flips unless !temp1
             temp1.sign = 1 - temp1.sign;
     }
     if (a.sign != 1 && CppIntegerWords(a) == 0)

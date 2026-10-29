@@ -27,10 +27,10 @@ class Unk_ColInfo
 public:
     int m_nShape;                       // +0x00
     int m_pad_04[3];
-    int m_n10;                          // +0x10
-    int m_n14;                          // +0x14
-    int m_n18;                          // +0x18
-    int m_n1c;                          // +0x1c
+    float m_f10;                        // +0x10
+    float m_f14;                        // +0x14
+    float m_f18;                        // +0x18
+    float m_f1c;                        // +0x1c
     Vector3 m_ptOffset;         // +0x20
 };
 MS2_CHECK_OFFSET(Unk_ColInfo, m_ptOffset, 0x20);
@@ -78,9 +78,9 @@ public:
     virtual void vfunc_5();
     virtual float vfunc_6();
     char m_pad_78[0xb0 - 0x78];
-    int m_nRadius;                                      // +0xb0
+    float m_fRadius;                                    // +0xb0
     char m_pad_b4[0xc0 - 0xb4];
-    int m_nHeight;                                      // +0xc0
+    float m_fHeight;                                    // +0xc0
     char m_pad_c4[0xc8 - 0xc4];
 };
 MS2_CHECK_SIZE(CCylinderCollision, 0xc8);
@@ -92,10 +92,10 @@ public:
     virtual void vfunc_5();
     virtual float vfunc_6();
     char m_pad_78[0xd0 - 0x78];
-    int m_nInner;                                       // +0xd0
-    int m_nOuter;                                       // +0xd4
+    float m_fInner;                                    // +0xd0
+    float m_fOuter;                                    // +0xd4
     char m_pad_d8[0xe4 - 0xd8];
-    int m_nHeight;                                      // +0xe4
+    float m_fHeight;                                    // +0xe4
 };
 MS2_CHECK_SIZE(CHoleCylinderCollision, 0xe8);
 
@@ -104,8 +104,8 @@ class Unk_1403ed2d0;
 
 // ---- unrecovered neighbours ----
 extern unsigned DAT_1439f862c;          // display time of a shape (ms)
-extern char DAT_143ae95e0;
-extern char DAT_143ae95e1;
+extern unsigned char DAT_143ae95e0;
+extern unsigned char DAT_143ae95e1;
 unsigned FUN_140869420();               // tick count
 __int64 FUN_14028d0e0();                // next shape handle
 Unk_EmoPlayer* FUN_14096e110(PCBase* p);
@@ -130,7 +130,6 @@ CSkillCollisionManager::~CSkillCollisionManager()
 }
 
 // @0x141754580
-// MS2-FUNCTIONAL: the shape factory keeps extra pointer copies in locals and the exe interleaves the SetAt temporaries differently
 CollisionPtr CSkillCollisionManager::GetCached(Unk_SkillSrc* pSrc, int nLevel, int nIndex, void* pUnused,
     float fZOffset)
 {
@@ -141,79 +140,79 @@ CollisionPtr CSkillCollisionManager::GetCached(Unk_SkillSrc* pSrc, int nLevel, i
         return CollisionPtr(0);
     CollisionPtr spShape(0);
     CStringA strKey;
-    unsigned nId = pSrc->FUN_140803dc0();
-    unsigned nLv = pSrc->FUN_140803df0();
-    strKey.Format("%x,%d,%d,%d,%d", pSrc, (unsigned __int64)nId, nLv, nLevel, nIndex);
+    strKey.Format("%x,%d,%d,%d,%d", pSrc, pSrc->FUN_140803dc0(), pSrc->FUN_140803df0(), nLevel, nIndex);
+    const int& nShape = pInfo->m_nShape;
     if (m_mapCache.Lookup(strKey, spShape))
     {
-        if (spShape->m_nShape == 3 && pInfo->m_nShape == 3)
+        if (spShape->m_nShape == 3 && nShape == 3)
         {
             CFrustumCollision* pF = static_cast<CFrustumCollision*>(spShape.get());
-            pF->m_fNearHalfWidth = (float)pInfo->m_n18 * 0.5f;
-            pF->m_fHeight = (float)pInfo->m_n14 * 0.5f;
-            pF->m_fFarHalfWidth = (float)pInfo->m_n1c * 0.5f;
-            pF->m_fDepth = (float)pInfo->m_n10 + fZOffset;
+            pF->m_fNearHalfWidth = pInfo->m_f18 * 0.5f;
+            pF->m_fHeight = pInfo->m_f14 * 0.5f;
+            pF->m_fFarHalfWidth = pInfo->m_f1c * 0.5f;
+            pF->m_fDepth = pInfo->m_f10 + fZOffset;
             spShape->vfunc_4();
             return spShape;
         }
-        if (spShape->m_nShape == 1 && pInfo->m_nShape == 1)
+        else if (spShape->m_nShape == 1 && nShape == 1)
         {
             CBoxCollision* pB = static_cast<CBoxCollision*>(spShape.get());
-            pB->m_ptBox = Vector3((float)pInfo->m_n18, (float)pInfo->m_n10 + fZOffset, (float)pInfo->m_n14);
+            pB->m_ptBox = Vector3(pInfo->m_f18, pInfo->m_f10 + fZOffset, pInfo->m_f14);
             spShape->vfunc_4();
             return spShape;
         }
-        if (spShape->m_nShape == 2 && pInfo->m_nShape == 2)
+        else if (spShape->m_nShape == 2 && nShape == 2)
         {
             CCylinderCollision* pC = static_cast<CCylinderCollision*>(spShape.get());
-            pC->m_nRadius = pInfo->m_n10;
-            pC->m_nHeight = pInfo->m_n14;
+            pC->m_fRadius = pInfo->m_f10;
+            pC->m_fHeight = pInfo->m_f14;
             spShape->vfunc_4();
             return spShape;
         }
-        if (spShape->m_nShape == 4 && pInfo->m_nShape == 4)
+        else if (spShape->m_nShape == 4 && nShape == 4)
         {
             CHoleCylinderCollision* pH = static_cast<CHoleCylinderCollision*>(spShape.get());
-            pH->m_nInner = pInfo->m_n18;
-            pH->m_nOuter = pInfo->m_n1c;
-            pH->m_nHeight = pInfo->m_n14;
+            pH->m_fInner = pInfo->m_f18;
+            pH->m_fOuter = pInfo->m_f1c;
+            pH->m_fHeight = pInfo->m_f14;
             spShape->vfunc_4();
             return spShape;
         }
-        m_mapCache.RemoveKey(strKey);
+        else
+            m_mapCache.RemoveKey(strKey);
     }
-    if (pInfo->m_nShape == 3)
+    if (nShape == 3)
     {
         CFrustumCollision* pF = new CFrustumCollision();
-        pF->m_fNearHalfWidth = (float)pInfo->m_n18 * 0.5f;
-        pF->m_fHeight = (float)pInfo->m_n14 * 0.5f;
-        pF->m_fFarHalfWidth = (float)pInfo->m_n1c * 0.5f;
-        pF->m_fDepth = (float)pInfo->m_n10 + fZOffset;
-        m_mapCache.SetAt(strKey, CollisionPtr(pF));
+        pF->m_fNearHalfWidth = pInfo->m_f18 * 0.5f;
+        pF->m_fHeight = pInfo->m_f14 * 0.5f;
+        pF->m_fFarHalfWidth = pInfo->m_f1c * 0.5f;
+        pF->m_fDepth = pInfo->m_f10 + fZOffset;
+        m_mapCache.SetAt(strKey, pF);
         spShape.AssignRaw(pF);
     }
-    else if (pInfo->m_nShape == 1)
+    else if (nShape == 1)
     {
         CBoxCollision* pB = new CBoxCollision();
-        pB->m_ptBox = Vector3((float)pInfo->m_n18, (float)pInfo->m_n10 + fZOffset, (float)pInfo->m_n14);
-        m_mapCache.SetAt(strKey, CollisionPtr(pB));
+        pB->m_ptBox = Vector3(pInfo->m_f18, pInfo->m_f10 + fZOffset, pInfo->m_f14);
+        m_mapCache.SetAt(strKey, pB);
         spShape.AssignRaw(pB);
     }
-    else if (pInfo->m_nShape == 2)
+    else if (nShape == 2)
     {
         CCylinderCollision* pC = new CCylinderCollision();
-        pC->m_nRadius = pInfo->m_n10;
-        pC->m_nHeight = pInfo->m_n14;
-        m_mapCache.SetAt(strKey, CollisionPtr(pC));
+        pC->m_fRadius = pInfo->m_f10;
+        pC->m_fHeight = pInfo->m_f14;
+        m_mapCache.SetAt(strKey, pC);
         spShape.AssignRaw(pC);
     }
-    else if (pInfo->m_nShape == 4)
+    else if (nShape == 4)
     {
         CHoleCylinderCollision* pH = new CHoleCylinderCollision();
-        pH->m_nInner = pInfo->m_n18;
-        pH->m_nOuter = pInfo->m_n1c;
-        pH->m_nHeight = pInfo->m_n14;
-        m_mapCache.SetAt(strKey, CollisionPtr(pH));
+        pH->m_fInner = pInfo->m_f18;
+        pH->m_fOuter = pInfo->m_f1c;
+        pH->m_fHeight = pInfo->m_f14;
+        m_mapCache.SetAt(strKey, pH);
         spShape.AssignRaw(pH);
     }
     if (spShape.get() != 0)
@@ -227,36 +226,28 @@ CollisionPtr CSkillCollisionManager::GetCached(Unk_SkillSrc* pSrc, int nLevel, i
 }
 
 // @0x141755010
-// MS2-FUNCTIONAL: iteration / list temporaries differ in order
 void CSkillCollisionManager::Tick()
 {
     ATL::CAtlList<__int64> aExpired(10);
-    POSITION pos = m_mapActive.GetStartPosition();
-    while (pos != 0)
+    for (POSITION pos = m_mapActive.GetStartPosition(); pos != 0; m_mapActive.GetNext(pos))
     {
         CollisionPtr spShape = m_mapActive.GetValueAt(pos);
         spShape->vfunc_1();
         if (spShape->m_n58 != 0)
         {
-            unsigned nEnd = spShape->m_n58 + DAT_1439f862c;
-            unsigned nNow = FUN_140869420();
-            if (nEnd < nNow)
+            if (spShape->m_n58 + DAT_1439f862c < FUN_140869420())
                 aExpired.AddTail(m_mapActive.GetKeyAt(pos));
         }
-        m_mapActive.GetNext(pos);
     }
-    POSITION posExpired = aExpired.GetHeadPosition();
-    while (posExpired != 0)
+    for (POSITION posExpired = aExpired.GetHeadPosition(); posExpired != 0; aExpired.GetNext(posExpired))
     {
         Remove(aExpired.GetAt(posExpired));
-        aExpired.GetNext(posExpired);
     }
     if (DAT_143ae95e0 != 0 || DAT_143ae95e1 != 0)
         FUN_141bc49c0(FUN_1403ed2d0());
 }
 
 // @0x1417551b0
-// MS2-FUNCTIONAL: same shape factory layout difference as GetCached
 CollisionPtr CSkillCollisionManager::Create(Unk_SkillSrc* pSrc, int nLevel, int nIndex, void* pUnused,
     float fZOffset)
 {
@@ -266,34 +257,35 @@ CollisionPtr CSkillCollisionManager::Create(Unk_SkillSrc* pSrc, int nLevel, int 
     if (pInfo == 0)
         return CollisionPtr(0);
     CollisionPtr spShape(0);
-    if (pInfo->m_nShape == 3)
+    const int& nShape = pInfo->m_nShape;
+    if (nShape == 3)
     {
         CFrustumCollision* pF = new CFrustumCollision();
-        pF->m_fNearHalfWidth = (float)pInfo->m_n18 * 0.5f;
-        pF->m_fHeight = (float)pInfo->m_n14 * 0.5f;
-        pF->m_fFarHalfWidth = (float)pInfo->m_n1c * 0.5f;
-        pF->m_fDepth = (float)pInfo->m_n10 + fZOffset;
+        pF->m_fNearHalfWidth = pInfo->m_f18 * 0.5f;
+        pF->m_fHeight = pInfo->m_f14 * 0.5f;
+        pF->m_fFarHalfWidth = pInfo->m_f1c * 0.5f;
+        pF->m_fDepth = pInfo->m_f10 + fZOffset;
         spShape.AssignRaw(pF);
     }
-    else if (pInfo->m_nShape == 1)
+    else if (nShape == 1)
     {
         CBoxCollision* pB = new CBoxCollision();
-        pB->m_ptBox = Vector3((float)pInfo->m_n18, (float)pInfo->m_n10 + fZOffset, (float)pInfo->m_n14);
+        pB->m_ptBox = Vector3(pInfo->m_f18, pInfo->m_f10 + fZOffset, pInfo->m_f14);
         spShape.AssignRaw(pB);
     }
-    else if (pInfo->m_nShape == 2)
+    else if (nShape == 2)
     {
         CCylinderCollision* pC = new CCylinderCollision();
-        pC->m_nRadius = pInfo->m_n10;
-        pC->m_nHeight = pInfo->m_n14;
+        pC->m_fRadius = pInfo->m_f10;
+        pC->m_fHeight = pInfo->m_f14;
         spShape.AssignRaw(pC);
     }
-    else if (pInfo->m_nShape == 4)
+    else if (nShape == 4)
     {
         CHoleCylinderCollision* pH = new CHoleCylinderCollision();
-        pH->m_nInner = pInfo->m_n18;
-        pH->m_nOuter = pInfo->m_n1c;
-        pH->m_nHeight = pInfo->m_n14;
+        pH->m_fInner = pInfo->m_f18;
+        pH->m_fOuter = pInfo->m_f1c;
+        pH->m_fHeight = pInfo->m_f14;
         spShape.AssignRaw(pH);
     }
     if (spShape.get() != 0)
@@ -307,40 +299,40 @@ CollisionPtr CSkillCollisionManager::Create(Unk_SkillSrc* pSrc, int nLevel, int 
 }
 
 // @0x141755670
-// MS2-FUNCTIONAL: same shape factory layout difference as GetCached
 CollisionPtr CSkillCollisionManager::CreateFromInfo(Unk_ColInfo* pInfo, float fZOffset)
 {
     if (pInfo == 0)
         return CollisionPtr(0);
     CollisionPtr spShape(0);
-    if (pInfo->m_nShape == 3)
+    const int& nShape = pInfo->m_nShape;
+    if (nShape == 3)
     {
         CFrustumCollision* pF = new CFrustumCollision();
-        pF->m_fNearHalfWidth = (float)pInfo->m_n18 * 0.5f;
-        pF->m_fHeight = (float)pInfo->m_n14 * 0.5f;
-        pF->m_fFarHalfWidth = (float)pInfo->m_n1c * 0.5f;
-        pF->m_fDepth = (float)pInfo->m_n10 + fZOffset;
+        pF->m_fNearHalfWidth = pInfo->m_f18 * 0.5f;
+        pF->m_fHeight = pInfo->m_f14 * 0.5f;
+        pF->m_fFarHalfWidth = pInfo->m_f1c * 0.5f;
+        pF->m_fDepth = pInfo->m_f10 + fZOffset;
         spShape.AssignRaw(pF);
     }
-    else if (pInfo->m_nShape == 1)
+    else if (nShape == 1)
     {
         CBoxCollision* pB = new CBoxCollision();
-        pB->m_ptBox = Vector3((float)pInfo->m_n18, (float)pInfo->m_n10 + fZOffset, (float)pInfo->m_n14);
+        pB->m_ptBox = Vector3(pInfo->m_f18, pInfo->m_f10 + fZOffset, pInfo->m_f14);
         spShape.AssignRaw(pB);
     }
-    else if (pInfo->m_nShape == 2)
+    else if (nShape == 2)
     {
         CCylinderCollision* pC = new CCylinderCollision();
-        pC->m_nRadius = pInfo->m_n10;
-        pC->m_nHeight = pInfo->m_n14;
+        pC->m_fRadius = pInfo->m_f10;
+        pC->m_fHeight = pInfo->m_f14;
         spShape.AssignRaw(pC);
     }
-    else if (pInfo->m_nShape == 4)
+    else if (nShape == 4)
     {
         CHoleCylinderCollision* pH = new CHoleCylinderCollision();
-        pH->m_nInner = pInfo->m_n18;
-        pH->m_nOuter = pInfo->m_n1c;
-        pH->m_nHeight = pInfo->m_n14;
+        pH->m_fInner = pInfo->m_f18;
+        pH->m_fOuter = pInfo->m_f1c;
+        pH->m_fHeight = pInfo->m_f14;
         spShape.AssignRaw(pH);
     }
     if (spShape.get() != 0)

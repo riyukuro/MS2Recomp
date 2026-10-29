@@ -14,20 +14,14 @@
 
 class GameObject;
 
-// A node pointer whose ctor defaults to NULL (so that value-initialising the owner zero-fills it first).
-struct Unk_TailNodePtr : public Unk_NodePtr
-{
-    Unk_TailNodePtr() : Unk_NodePtr(0) {}
-};
-
 class CTailEffectObject : public CPtred
 {
 public:
     // One spawned effect (0x28 bytes, vftable: deleting dtor only; RTTI CTailEffectObject::TailEffectInfo).
     struct TailEffectInfo : public CPtred
     {
-        TailEffectInfo();                   // 0x140ad08b0
-        Unk_TailNodePtr m_spNode;           // +0x18 the scene node the effect is attached to
+        // implicit ctor (0x140ad08b0): `new TailEffectInfo()` zero-fills before it runs
+        Unk_NodePtr m_spNode;               // +0x18 the scene node the effect is attached to
         int m_nEffectId;                    // +0x20 effect-manager handle
     };
 

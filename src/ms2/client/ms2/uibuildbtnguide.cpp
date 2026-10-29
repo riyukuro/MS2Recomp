@@ -55,11 +55,12 @@ void UIBuildBtnGuide::vfunc_43()
         static_cast<Unk_BuildBtnEntity*>(pEntity.operator->())->vfunc_25();
 }
 
-// MS2-FUNCTIONAL: the exe returns a bool from this slot (setne only); the int slot signature adds a movzx
 // @0x1418dcd60
 int UIBuildBtnGuide::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs)
 {
-    return UISwfEntity::vfunc_28(szMethod, pArgs, nArgs) != 0;
+    if (UISwfEntity::vfunc_28(szMethod, pArgs, nArgs))
+        return 1;
+    return 0;
 }
 
 // @0x1418dcdb0
@@ -68,15 +69,16 @@ void UIBuildBtnGuide::vfunc_8(int nVisible)
     UISwfEntity::vfunc_8(nVisible);
 }
 
-// MS2-FUNCTIONAL: temporaries of the two Invoke calls are laid out 4 bytes differently
 // @0x1418dcde0
 void UIBuildBtnGuide::FUN_1418dcde0(int nGuide)
 {
-    int nKey;
-    if (FUN_141986d30() != 0 && !FUN_140a467d0(m_30) && (nKey = vfunc_9(), m_70 != nGuide))
-    {
-        m_30->Invoke("setKey", FUN_1409331f0()->FUN_14142d760(0x493ed, nKey));
-        m_30->Invoke("showGuide", nGuide);
-        m_70 = nGuide;
-    }
+    if (FUN_141986d30() == 0 || FUN_140a467d0(m_30))
+        return;
+    // The exe reads the key but looks the text up with 0, not with it.
+    int nKey = vfunc_9();
+    if (m_70 == nGuide)
+        return;
+    m_30->Invoke("setKey", FUN_1409331f0()->FUN_14142d760(0x493ed, 0));
+    m_30->Invoke("showGuide", nGuide);
+    m_70 = nGuide;
 }

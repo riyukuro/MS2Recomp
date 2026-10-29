@@ -79,7 +79,7 @@ public:
     int FUN_141b11190(const __int64& nAmount);                  // deposit mesos
     int FUN_141b11350(const __int64& nAmount);                  // withdraw mesos
     int FUN_141b11490();                                        // can deposit / withdraw
-    bool FUN_141b114f0();                                       // can expand the slots
+    int FUN_141b114f0();                                        // can expand the slots
     void FUN_141b11520();                                       // expand the slots (or tell why not)
     void FUN_141b11590();                                       // refresh the "m_expand" text
     void FUN_141b116d0(CStringW strText);                       // scroll to / mark the item matching the text

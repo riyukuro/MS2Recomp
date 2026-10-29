@@ -158,6 +158,7 @@ Unk_SmNotices* FUN_140939a10();
 class Unk_SmChat { public: void FUN_141a25770(CStringW strCmd, int n); };   // the chat window: run a command
 Unk_SmChat* FUN_140a3ab70(int nUiType);
 class Unk_SmPlayer { public: int FUN_141654700(); };                        // the job of the player
+ASMovieClip* FUN_140bcc460(const MS2Ptr<ASMovieClip>& p);                   // folded MS2Ptr<ASMovieClip>::operator-> copy
 class Unk_SmPlayers { public: Unk_SmPlayer* FUN_141bd0cc0(); };
 Unk_SmPlayers* FUN_1403ed2d0();
 class Unk_SmTexts { public: CStringW FUN_140478020(int nTextId); };      // text of a string id
@@ -341,7 +342,6 @@ void UISystemMailNotifyDialog::FUN_1412a53e0(CInPacket& packet)
 }
 
 // @0x1412a5570
-// MS2-FUNCTIONAL: the exe passes the job id to Unk_SmBody::FUN_1412a7050 through ecx->edx (2 extra bytes, no source form found)
 void UISystemMailNotifyDialog::FUN_1412a5570(int nMailId)
 {
     Unk_SmHandle rec(nMailId);
@@ -356,8 +356,7 @@ void UISystemMailNotifyDialog::FUN_1412a5570(int nMailId)
         return;
     m_strUrl = FUN_1401c0d90()->FUN_140478020(rec->m_nUrlTextId);
     ATL::CAtlArray<Unk_SmReward> rewards;
-    int nJob = pPlayer->FUN_141654700();
-    rec->m_body.FUN_1412a7050(nJob, rewards);
+    rec->m_body.FUN_1412a7050(pPlayer->FUN_141654700(), rewards);
     if (rewards.GetCount() > 0)
     {
         FUN_1412a5eb0(&rewards[0]);
@@ -365,14 +364,14 @@ void UISystemMailNotifyDialog::FUN_1412a5570(int nMailId)
         Unk_SmSlot* pSlotClip = static_cast<Unk_SmNode*>(static_cast<ASDisplayObjectContainer*>(m_event.operator->()))->GetChild<Unk_SmSlot>("m_slot", spSlot).get();
         if (pSlotClip != 0)
             spSlot->FUN_1422e4840(m_strSlot);
-        FUN_140cfefe0(m_event->FUN_1422bb890(), "content", "m_title", FUN_1401a9d70()->FUN_141811980(1, rewards[0].m_nItemId));
+        FUN_140cfefe0(FUN_140bcc460(m_event)->FUN_1422bb890(), "content", "m_title", FUN_1401a9d70()->FUN_141811980(1, rewards[0].m_nItemId));
         CStringW strAttach;
         if (FUN_140184310(rec->m_body.m_strAttach, "attachment"))
             strAttach = FUN_1401a9d70()->FUN_141811980(1, rewards[0].m_nItemId);
         else
             strAttach = (const char*)rec->m_body.m_strAttach;
         CStringW strDesc = FUN_1401e8510(GetStringCommonByKey(FUN_14016a730(rec->m_body.m_strKey, 0)), strAttach);
-        FUN_140cfefe0(m_event->FUN_1422bb890(), "content", "m_desc", strDesc);
+        FUN_140cfefe0(FUN_140bcc460(m_event)->FUN_1422bb890(), "content", "m_desc", strDesc);
     }
     FUN_141276180(s_strPopUp, "");
     FUN_1412a60d0();

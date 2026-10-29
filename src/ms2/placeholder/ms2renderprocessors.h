@@ -61,12 +61,11 @@ class OutlineRenderClick : public NiViewRenderClick
 {
 public:
     // implicit default ctor 0x1416ae980 (NiNew OutlineRenderClick() zero-fills first)
-    virtual ~OutlineRenderClick()       // 0x1416af150, ??_G 0x1416b02d0
-    {
-    }
+    // implicit virtual dtor 0x1416af150, ??_G 0x1416b02d0 (the exe dtor stores no vftable)
     virtual unsigned int GetNumObjectsDrawn() const     // 0x1416b0df0
     {
-        return FUN_1414d3780((MS2OutlinePreProcessor*)GetProcessor());
+        MS2OutlinePreProcessor* pProcessor = (MS2OutlinePreProcessor*)GetProcessor();
+        return FUN_1414d3780(pProcessor);
     }
 };
 MS2_CHECK_SIZE(OutlineRenderClick, 0xd0);

@@ -116,8 +116,7 @@ void GameEventShutdown::vfunc_6()
         FUN_1407d1160(FUN_14046d0d0(FUN_140302b00(), m_nId), m_items[i]);
 }
 
-// @0x14041e430
-GameEventShutdown::~GameEventShutdown() {}
+// MS2-PIN: ??1GameEventShutdown@@UEAA@XZ 0x14041e430 ; implicit dtor (no vftable store)
 
 // ---- GameEventShutdownNoParam ---------------------------------------------------------------------------------------
 
@@ -148,8 +147,7 @@ void GameEventShutdownNoParam::vfunc_6()
     FUN_1407d1160(FUN_14046d0d0(FUN_140302b00(), m_nId), m_id);
 }
 
-// @0x14041e560
-GameEventShutdownNoParam::~GameEventShutdownNoParam() {}
+// MS2-PIN: ??1GameEventShutdownNoParam@@UEAA@XZ 0x14041e560 ; implicit dtor (no vftable store)
 
 // ---- GameEventShutdownShop ------------------------------------------------------------------------------------------
 
@@ -179,10 +177,11 @@ void GameEventShutdownDungeonMatch::vfunc_2()
     ATL::CAtlArray<CStringW> tokens;
 
     FUN_14025a680(m_68, tokens, L",");
-    for (size_t i = 0; i < tokens.GetCount(); i++) {
+    for (unsigned i = 0; i < tokens.GetCount(); i++) {
         int nId = FUN_140218e60(tokens[i]);
-        if (nId != 0)
-            m_items.Add((unsigned)nId);
+        if (nId == 0)
+            continue;
+        m_items.Add((unsigned)nId);
     }
 }
 
@@ -305,10 +304,9 @@ void GameEventShutdownUGCDownload::vfunc_4(Unk_GEIn* in)
     // clang-cl devirtualizes the embedded-reader call into a direct call to an undefined function; go through an opaque
     // pointer there (the byte-matched cl build keeps the member call).
 #ifdef __clang__
-    CStringW strName = reinterpret_cast<Unk_GEReader*>(reinterpret_cast<char*>(in) + 8)->ReadStringW();
+    m_68 = reinterpret_cast<Unk_GEReader*>(reinterpret_cast<char*>(in) + 8)->ReadStringW();
 #else
-    CStringW strName = in->reader.ReadStringW();
+    m_68 = in->reader.ReadStringW();
 #endif
-    m_68 = strName;
     vfunc_2();
 }

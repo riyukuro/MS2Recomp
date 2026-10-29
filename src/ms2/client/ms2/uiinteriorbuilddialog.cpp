@@ -47,7 +47,6 @@ class ASDialog : public ASDisplayObject
 
 class Unk_ItemEquipData : public CItemData { };                         // CItem::FUN_140527840's record
 struct Unk_IbArgs { CStringW FUN_1408d21c0(int nIndex, CStringW strDefault); };   // the nIndex-th function argument
-inline Unk_IbArgs& IbArgs(CItemData* p) { return reinterpret_cast<Unk_IbArgs&>(p->function.parameter); }
 
 extern Unk_Inventory DAT_143ab2a90;                                     // the own inventory
 extern __int64 DAT_143ab2820;                                           // the own home owner id
@@ -134,7 +133,6 @@ int UIInteriorBuildDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
     return 0;
 }
 
-// MS2-FUNCTIONAL: OnMessage: temp / scope layout of the tag string and item handle differs (20 bytes longer)
 // @0x140f4b5f0
 int UIInteriorBuildDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
 {
@@ -151,7 +149,7 @@ int UIInteriorBuildDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
                 MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(m_178);
                 if (spItem == 0)
                     return 0;
-                DAT_143ab2a90.FUN_140a63880(spItem.get(), CStringW(L"true"));
+                DAT_143ab2a90.FUN_140a63880(spItem.get(), L"true");
             }
         }
         FUN_14151f200();
@@ -160,7 +158,6 @@ int UIInteriorBuildDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
     return 0;
 }
 
-// MS2-FUNCTIONAL: FUN_140f4b7d0: handle / temp layout of the item data and package pointers differs (frame size)
 // @0x140f4b7d0
 void UIInteriorBuildDialog::FUN_140f4b7d0()
 {
@@ -168,9 +165,9 @@ void UIInteriorBuildDialog::FUN_140f4b7d0()
     if (spItem == 0)
         return;
     MS2SvrPtr<CItemData> spData(spItem->FUN_140527840());
-    if (spData.get() == 0)
+    if (spData == 0)
         return;
-    CString strPackage = FUN_14016a600(IbArgs(spData.get()).FUN_1408d21c0(0, L""), 0);
+    CString strPackage = FUN_14016a600(reinterpret_cast<Unk_IbArgs&>(spData->function.parameter).FUN_1408d21c0(0, L""), 0);
     UGCMapPackageDataPtr spPackage = FUN_1408b9b90(strPackage);
     if (spPackage == 0)
         return;
@@ -187,7 +184,6 @@ void UIInteriorBuildDialog::FUN_140f4b7d0()
     }
 }
 
-// MS2-FUNCTIONAL: OnUseItem: the exe's cleanup of the package / map / array handles is repeated before every exit (frame size)
 // @0x140f4bc40
 void UIInteriorBuildDialog::OnUseItem()
 {
@@ -199,13 +195,12 @@ void UIInteriorBuildDialog::OnUseItem()
         FUN_140d73bc0(0xb8e, 0, 0, CStringW(L""));
         return;
     }
-    Unk_ItemEquipData* pData = spItem->FUN_140527840();
-    if (pData->function.parameter.FUN_1408d2380() == 0)
+    if (spItem->FUN_140527840()->function.parameter.FUN_1408d2380() < 1)
     {
         FUN_140d73bc0(0xb8f, 0, 0, CStringW(L""));
         return;
     }
-    CString strPackage = FUN_14016a600(IbArgs(pData).FUN_1408d21c0(0, L""), 0);
+    CString strPackage = FUN_14016a600(reinterpret_cast<Unk_IbArgs&>(spItem->FUN_140527840()->function.parameter).FUN_1408d21c0(0, L""), 0);
     if (strPackage.IsEmpty())
     {
         FUN_140d73bc0(0xb8f, 0, 0, CStringW(L""));
@@ -228,13 +223,13 @@ void UIInteriorBuildDialog::OnUseItem()
         FUN_140d73bc0(0xb92, 0, 0, CStringW(L""));
         return;
     }
-    std::map<int, Unk_UGCGroup>& groups = spMap->groups;
-    if (groups.find(1) == groups.end())
+    if (spMap->groups.find(1) == spMap->groups.end())
     {
         FUN_140d73bc0(0xb92, 0, 0, CStringW(L""));
         return;
     }
-    if (groups[1].indoorSizeType.IsEmpty())
+    Unk_UGCGroup& group = spMap->groups[1];
+    if (group.indoorSizeType.IsEmpty())
     {
         FUN_140d73bc0(0xb93, 0, 0, CStringW(L""));
         return;
@@ -248,18 +243,18 @@ void UIInteriorBuildDialog::OnUseItem()
         FUN_140d73bc0(0xb9d, 1, static_cast<IMessageListener*>(this), CStringW(L"indoorSizeDifferent"));
         return;
     }
-    if (*FUN_1401844d0(aSize, 0) <= (int)nWidth && *FUN_1401844d0(aSize, 2) <= (int)nLength)
+    if (nWidth < *FUN_1401844d0(aSize, 0) || nLength < *FUN_1401844d0(aSize, 2))
     {
-        if (FUN_1409670e0()->FUN_1410d2ee0() == 0)
-        {
-            FUN_140d73bc0(0xb9e, 1, static_cast<IMessageListener*>(this), CStringW(L"indoorEmpty"));
-            return;
-        }
-        DAT_143ab2a90.FUN_140a63880(spItem.get(), CStringW(L"false"));
-        vfunc_67();
+        FUN_140d73bc0(0xb9d, 1, static_cast<IMessageListener*>(this), CStringW(L"indoorSizeDifferent"));
         return;
     }
-    FUN_140d73bc0(0xb9d, 1, static_cast<IMessageListener*>(this), CStringW(L"indoorSizeDifferent"));
+    if (FUN_1409670e0()->FUN_1410d2ee0() == 0)
+    {
+        FUN_140d73bc0(0xb9e, 1, static_cast<IMessageListener*>(this), CStringW(L"indoorEmpty"));
+        return;
+    }
+    DAT_143ab2a90.FUN_140a63880(spItem.get(), L"false");
+    vfunc_67();
 }
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142ca9890-0x142ca9920 .text$yd

@@ -44,3 +44,9 @@ static void MS2ExcludeFromShadows(NiNode* pkNode)
 155c
 struct Unk_RsSceneRoot; extern Unk_RsSceneRoot* DAT_143afa980; extern void (*DAT_143afbfc8)(NiAVObject*); static void MS2ExcludeFromShadows(NiNode* pkNode); // MS2: see MS2ExcludeFromShadows
 .
+128a
+    MS2ExcludeFromShadows(m_spParticleContainer); // MS2 (exe 0x141e9d039)
+.
+91a
+static void MS2ExcludeFromShadows(NiNode* pkNode); // MS2: see MS2ExcludeFromShadows
+.

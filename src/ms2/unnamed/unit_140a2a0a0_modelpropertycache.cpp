@@ -41,6 +41,7 @@ typedef ATL::CAtlMap<CStringA, Unk_MixinSet*, ATL::CStringElementTraits<CStringA
 typedef ATL::CAtlMap<CStringA, Unk_PropMap*, ATL::CStringElementTraits<CStringA>, ATL::CElementTraits<Unk_PropMap*> > Unk_ModelMap;
 
 class Unk_CommonVec3;
+struct Unk_MpVec3 { float x, y, z; };   // field view of Unk_CommonVec3
 class TiXmlElement;
 TiXmlElement* FUN_140165cf0(TiXmlDocument* pDoc, const char* pszName);
 const char* FUN_14086f4b0(Unk_140165cf0* pElem, const char* pszName);
@@ -50,8 +51,10 @@ void FUN_140399100(CStringA strExt, CStringA strDir, ATL::CAtlArray<CStringA, AT
 void FUN_14015f050(CStringA& str, ATL::CAtlArray<CStringA, ATL::CElementTraits<CStringA> >& arrOut, const char* pszDelim);
 void FUN_14028c2d0(CStringA str, Unk_CommonVec3* pOut);
 int FUN_14028d260(float f);
-bool FUN_140184310(const CStringA& str, const char* psz);
+bool FUN_140184310(const CStringA& str, const char* psz) throw();   // strcmp only: no unwind state for the caller's string
 CStringA FUN_140188f50(const char* psz, int nCodePage);
+// The exe's CAtlArray<CStringA>::operator[] COMDAT copy used by the int/float property readers (same body as 0x140164930).
+CStringA& FUN_1401c0cc0(Unk_ValueList* pArr, size_t i);
 
 class Unk_ModelMgr
 {
@@ -61,13 +64,13 @@ public:
     int FUN_140a2a180();                   // load every .flat file
     int FUN_140a2a920(const CStringA& strModel, CStringA strMixin);                // model is, or inherits, strMixin
     Unk_ValueList* FUN_140a2a9f0(CStringA strModel, const CStringA& strProp);       // cached values of a property
-    int FUN_140a2aab0(Unk_140165cf0* pElem, CStringA strModel, const char* pszProp, ATL::CAtlArray<TPtr<CNpcSpawnData>, ATL::CElementTraits<TPtr<CNpcSpawnData> > >* pOut);
-    int FUN_140a2afd0(Unk_140165cf0* pElem, CStringA strModel, const char* pszProp, Unk_CommonVec3* pOut);
-    int FUN_140a2b270(Unk_140165cf0* pElem, CStringA strModel, const char* pszProp, int* pOut);
-    int FUN_140a2b550(Unk_140165cf0* pElem, CStringA strModel, const char* pszProp, int* pOut);
-    int FUN_140a2b790(Unk_140165cf0* pElem, CStringA strModel, const char* pszProp, float* pOut);
-    int FUN_140a2b9d0(Unk_140165cf0* pElem, CStringA strModel, const char* pszProp, bool* pOut);
-    int FUN_140a2bc30(Unk_140165cf0* pElem, CStringA strModel, const char* pszProp, CStringA* pOut);
+    int FUN_140a2aab0(Unk_140165cf0* pElem, const CStringA& strModel, const char* pszProp, ATL::CAtlArray<TPtr<CNpcSpawnData>, ATL::CElementTraits<TPtr<CNpcSpawnData> > >* pOut);
+    int FUN_140a2afd0(Unk_140165cf0* pElem, const CStringA& strModel, const char* pszProp, Unk_CommonVec3* pOut);
+    int FUN_140a2b270(Unk_140165cf0* pElem, const CStringA& strModel, const char* pszProp, int* pOut);
+    int FUN_140a2b550(Unk_140165cf0* pElem, const CStringA& strModel, const char* pszProp, int* pOut);
+    int FUN_140a2b790(Unk_140165cf0* pElem, const CStringA& strModel, const char* pszProp, float* pOut);
+    int FUN_140a2b9d0(Unk_140165cf0* pElem, const CStringA& strModel, const char* pszProp, bool* pOut);
+    int FUN_140a2bc30(Unk_140165cf0* pElem, const CStringA& strModel, const char* pszProp, CStringA* pOut);
 
     Unk_MixinMap m_mixins;      // +0x00
     Unk_ModelMap m_props;       // +0x48
@@ -106,38 +109,40 @@ int Unk_ModelMgr::FUN_140a2a180()
             pMixins = new Unk_MixinSet;
             m_mixins.SetAt(strModel, pMixins);
         }
-        for (Unk_140165cf0* pMixin = pModel->FUN_140165cf0("mixin"); pMixin != 0; pMixin = pMixin->FUN_140168650("mixin")) {
+        Unk_140165cf0* pMixin = 0;
+        for (pMixin = pModel->FUN_140165cf0("mixin"); pMixin != 0; pMixin = pMixin->FUN_140168650("mixin")) {
             const char* pszMixin = FUN_14086f4b0(pMixin, "name");
-            if (pszMixin != 0) {
-                CStringA strMixin(pszMixin);
-                int nDummy;
-                if (!pMixins->Lookup(strMixin, nDummy))
-                    pMixins->SetAt(strMixin, 0);
-            }
+            if (pszMixin == 0)
+                continue;
+            CStringA strMixin(pszMixin);
+            int nDummy;
+            if (!pMixins->Lookup(strMixin, nDummy))
+                pMixins->SetAt(strMixin, 0);
         }
         Unk_PropMap* pProps = 0;
         if (!m_props.Lookup(strModel, pProps)) {
             pProps = new Unk_PropMap;
             m_props.SetAt(strModel, pProps);
         }
-        for (Unk_140165cf0* pProp = pModel->FUN_140165cf0("property"); pProp != 0; pProp = pProp->FUN_140168650("property")) {
+        Unk_140165cf0* pProp = 0;
+        for (pProp = pModel->FUN_140165cf0("property"); pProp != 0; pProp = pProp->FUN_140168650("property")) {
             const char* pszProp = FUN_14086f4b0(pProp, "name");
-            if (pszProp != 0) {
-                CStringA strProp(pszProp);
-                Unk_ValueList* pValues = 0;
-                if (!pProps->Lookup(strProp, pValues)) {
-                    pValues = new Unk_ValueList;
-                    pProps->SetAt(strProp, pValues);
+            if (pszProp == 0)
+                continue;
+            CStringA strProp(pszProp);
+            Unk_ValueList* pValues = 0;
+            if (!pProps->Lookup(strProp, pValues)) {
+                pValues = new Unk_ValueList;
+                pProps->SetAt(strProp, pValues);
+            }
+            for (Unk_140165cf0* pSet = pProp->FUN_140165cf0("set"); pSet != 0; pSet = pSet->FUN_140168650("set")) {
+                const char* pszIndex = FUN_14086f4b0(pSet, "index");
+                if (pszIndex != 0) {
+                    CStringA strIndex(pszIndex);
+                    pValues->Add(strIndex);
                 }
-                for (Unk_140165cf0* pSet = pProp->FUN_140165cf0("set"); pSet != 0; pSet = pSet->FUN_140168650("set")) {
-                    const char* pszIndex = FUN_14086f4b0(pSet, "index");
-                    if (pszIndex != 0) {
-                        CStringA strIndex(pszIndex);
-                        pValues->Add(strIndex);
-                    }
-                    CStringA strValue = FUN_140188f50(FUN_14086f4b0(pSet, "value"), 0);
-                    pValues->Add(strValue);
-                }
+                CStringA strValue = FUN_140188f50(FUN_14086f4b0(pSet, "value"), 0);
+                pValues->Add(strValue);
             }
         }
     }
@@ -170,7 +175,7 @@ Unk_ValueList* Unk_ModelMgr::FUN_140a2a9f0(CStringA strModel, const CStringA& st
 }
 
 // @0x140a2aab0
-int Unk_ModelMgr::FUN_140a2aab0(Unk_140165cf0* pElem, CStringA strModel, const char* pszProp, ATL::CAtlArray<TPtr<CNpcSpawnData>, ATL::CElementTraits<TPtr<CNpcSpawnData> > >* pOut)
+int Unk_ModelMgr::FUN_140a2aab0(Unk_140165cf0* pElem, const CStringA& strModel, const char* pszProp, ATL::CAtlArray<TPtr<CNpcSpawnData>, ATL::CElementTraits<TPtr<CNpcSpawnData> > >* pOut)
 {
     for (Unk_140165cf0* pProp = pElem->FUN_140165cf0("property"); pProp != 0; pProp = pProp->FUN_140168650("property")) {
         CStringA strName = FUN_140188f50(FUN_14086f4b0(pProp, "name"), 0);
@@ -204,9 +209,11 @@ int Unk_ModelMgr::FUN_140a2aab0(Unk_140165cf0* pElem, CStringA strModel, const c
 }
 
 // @0x140a2afd0
-int Unk_ModelMgr::FUN_140a2afd0(Unk_140165cf0* pElem, CStringA strModel, const char* pszProp, Unk_CommonVec3* pOut)
+int Unk_ModelMgr::FUN_140a2afd0(Unk_140165cf0* pElem, const CStringA& strModel, const char* pszProp, Unk_CommonVec3* pOut)
 {
-    memset(pOut, 0, 12);
+    reinterpret_cast<Unk_MpVec3*>(pOut)->x = 0.0f;
+    reinterpret_cast<Unk_MpVec3*>(pOut)->y = 0.0f;
+    reinterpret_cast<Unk_MpVec3*>(pOut)->z = 0.0f;
     for (Unk_140165cf0* pProp = pElem->FUN_140165cf0("property"); pProp != 0; pProp = pProp->FUN_140168650("property")) {
         CStringA strName = FUN_140188f50(FUN_14086f4b0(pProp, "name"), 0);
         Unk_140165cf0* pSet;
@@ -216,9 +223,10 @@ int Unk_ModelMgr::FUN_140a2afd0(Unk_140165cf0* pElem, CStringA strModel, const c
             return 1;
         }
     }
-    Unk_ValueList* pValues = FUN_140a2a9f0(strModel, CStringA(pszProp));
-    if (pValues != 0 && pValues->GetCount() != 0) {
-        CStringA strValue = (*pValues)[0];
+    CStringA strProp = pszProp;
+    Unk_ValueList* pValues = FUN_140a2a9f0(strModel, strProp);
+    if (pValues != 0 && pValues->GetCount() > 0) {
+        CStringA strValue = FUN_1401c0cc0(pValues, 0);
         FUN_14028c2d0(strValue, pOut);
         return 1;
     }
@@ -226,7 +234,7 @@ int Unk_ModelMgr::FUN_140a2afd0(Unk_140165cf0* pElem, CStringA strModel, const c
 }
 
 // @0x140a2b270
-int Unk_ModelMgr::FUN_140a2b270(Unk_140165cf0* pElem, CStringA strModel, const char* pszProp, int* pOut)
+int Unk_ModelMgr::FUN_140a2b270(Unk_140165cf0* pElem, const CStringA& strModel, const char* pszProp, int* pOut)
 {
     *pOut = 0;
     for (Unk_140165cf0* pProp = pElem->FUN_140165cf0("property"); pProp != 0; pProp = pProp->FUN_140168650("property")) {
@@ -243,8 +251,9 @@ int Unk_ModelMgr::FUN_140a2b270(Unk_140165cf0* pElem, CStringA strModel, const c
             return 1;
         }
     }
-    Unk_ValueList* pValues = FUN_140a2a9f0(strModel, CStringA(pszProp));
-    if (pValues != 0 && pValues->GetCount() != 0) {
+    CStringA strProp = pszProp;
+    Unk_ValueList* pValues = FUN_140a2a9f0(strModel, strProp);
+    if (pValues != 0 && pValues->GetCount() > 0) {
         CStringA strValue = (*pValues)[0];
         if (FUN_140184310(strValue, "False"))
             *pOut = 0;
@@ -258,7 +267,7 @@ int Unk_ModelMgr::FUN_140a2b270(Unk_140165cf0* pElem, CStringA strModel, const c
 }
 
 // @0x140a2b550
-int Unk_ModelMgr::FUN_140a2b550(Unk_140165cf0* pElem, CStringA strModel, const char* pszProp, int* pOut)
+int Unk_ModelMgr::FUN_140a2b550(Unk_140165cf0* pElem, const CStringA& strModel, const char* pszProp, int* pOut)
 {
     *pOut = 0;
     for (Unk_140165cf0* pProp = pElem->FUN_140165cf0("property"); pProp != 0; pProp = pProp->FUN_140168650("property")) {
@@ -270,8 +279,9 @@ int Unk_ModelMgr::FUN_140a2b550(Unk_140165cf0* pElem, CStringA strModel, const c
             return 1;
         }
     }
-    Unk_ValueList* pValues = FUN_140a2a9f0(strModel, CStringA(pszProp));
-    if (pValues != 0 && pValues->GetCount() != 0) {
+    CStringA strProp = pszProp;
+    Unk_ValueList* pValues = FUN_140a2a9f0(strModel, strProp);
+    if (pValues != 0 && pValues->GetCount() > 0) {
         CStringA strValue = (*pValues)[0];
         *pOut = atoi(strValue);
         return 1;
@@ -280,7 +290,7 @@ int Unk_ModelMgr::FUN_140a2b550(Unk_140165cf0* pElem, CStringA strModel, const c
 }
 
 // @0x140a2b790
-int Unk_ModelMgr::FUN_140a2b790(Unk_140165cf0* pElem, CStringA strModel, const char* pszProp, float* pOut)
+int Unk_ModelMgr::FUN_140a2b790(Unk_140165cf0* pElem, const CStringA& strModel, const char* pszProp, float* pOut)
 {
     *pOut = 0.0f;
     for (Unk_140165cf0* pProp = pElem->FUN_140165cf0("property"); pProp != 0; pProp = pProp->FUN_140168650("property")) {
@@ -292,8 +302,9 @@ int Unk_ModelMgr::FUN_140a2b790(Unk_140165cf0* pElem, CStringA strModel, const c
             return 1;
         }
     }
-    Unk_ValueList* pValues = FUN_140a2a9f0(strModel, CStringA(pszProp));
-    if (pValues != 0 && pValues->GetCount() != 0) {
+    CStringA strProp = pszProp;
+    Unk_ValueList* pValues = FUN_140a2a9f0(strModel, strProp);
+    if (pValues != 0 && pValues->GetCount() > 0) {
         CStringA strValue = (*pValues)[0];
         *pOut = (float)atof(strValue);
         return 1;
@@ -302,7 +313,7 @@ int Unk_ModelMgr::FUN_140a2b790(Unk_140165cf0* pElem, CStringA strModel, const c
 }
 
 // @0x140a2b9d0
-int Unk_ModelMgr::FUN_140a2b9d0(Unk_140165cf0* pElem, CStringA strModel, const char* pszProp, bool* pOut)
+int Unk_ModelMgr::FUN_140a2b9d0(Unk_140165cf0* pElem, const CStringA& strModel, const char* pszProp, bool* pOut)
 {
     *pOut = false;
     for (Unk_140165cf0* pProp = pElem->FUN_140165cf0("property"); pProp != 0; pProp = pProp->FUN_140168650("property")) {
@@ -310,21 +321,28 @@ int Unk_ModelMgr::FUN_140a2b9d0(Unk_140165cf0* pElem, CStringA strModel, const c
         Unk_140165cf0* pSet;
         if (FUN_140184310(strName, pszProp) && (pSet = pProp->FUN_140165cf0("set")) != 0) {
             CStringA strValue = FUN_140188f50(FUN_14086f4b0(pSet, "value"), 0);
-            *pOut = FUN_140184310(strValue, "True");
+            if (FUN_140184310(strValue, "True"))
+                *pOut = true;
+            else
+                *pOut = false;
             return 1;
         }
     }
-    Unk_ValueList* pValues = FUN_140a2a9f0(strModel, CStringA(pszProp));
-    if (pValues != 0 && pValues->GetCount() != 0) {
-        CStringA strValue = (*pValues)[0];
-        *pOut = FUN_140184310(strValue, "True");
+    CStringA strProp = pszProp;
+    Unk_ValueList* pValues = FUN_140a2a9f0(strModel, strProp);
+    if (pValues != 0 && pValues->GetCount() > 0) {
+        CStringA strValue = FUN_1401c0cc0(pValues, 0);
+        if (FUN_140184310(strValue, "True"))
+            *pOut = true;
+        else
+            *pOut = false;
         return 1;
     }
     return 0;
 }
 
 // @0x140a2bc30
-int Unk_ModelMgr::FUN_140a2bc30(Unk_140165cf0* pElem, CStringA strModel, const char* pszProp, CStringA* pOut)
+int Unk_ModelMgr::FUN_140a2bc30(Unk_140165cf0* pElem, const CStringA& strModel, const char* pszProp, CStringA* pOut)
 {
     *pOut = "";
     for (Unk_140165cf0* pProp = pElem->FUN_140165cf0("property"); pProp != 0; pProp = pProp->FUN_140168650("property")) {
@@ -335,8 +353,9 @@ int Unk_ModelMgr::FUN_140a2bc30(Unk_140165cf0* pElem, CStringA strModel, const c
             return 1;
         }
     }
-    Unk_ValueList* pValues = FUN_140a2a9f0(strModel, CStringA(pszProp));
-    if (pValues != 0 && pValues->GetCount() != 0) {
+    CStringA strProp = pszProp;
+    Unk_ValueList* pValues = FUN_140a2a9f0(strModel, strProp);
+    if (pValues != 0 && pValues->GetCount() > 0) {
         *pOut = (*pValues)[0];
         return 1;
     }

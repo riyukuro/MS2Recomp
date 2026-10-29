@@ -33,7 +33,7 @@ class UgcHomeBgData : public CPtred
 {
 public:
     UgcHomeBgData(CStringW strName, CString strPath);       // 0x140b67d70
-    virtual ~UgcHomeBgData();                               // 0x140b69780
+    // ~UgcHomeBgData is implicit (0x140b69780): the exe dtor stores no vftable.
 
     CStringW m_strName;                                     // +0x18 display name (string table 0x33)
     CString m_strPath;                                      // +0x20 "path"
@@ -45,7 +45,7 @@ class UgcHomeLightData : public CPtred
 {
 public:
     UgcHomeLightData(CStringW strName, Unk_UhPoint3 color);   // 0x140b67e00
-    virtual ~UgcHomeLightData();                            // 0x140b697f0
+    // ~UgcHomeLightData is implicit (0x140b697f0): the exe dtor stores no vftable.
 
     CStringW m_strName;                                     // +0x18
     Unk_UhPoint3 m_color;                                   // +0x20 "ambientcolor" / 255
@@ -57,7 +57,7 @@ class UgcHomeCameraData : public CPtred
 {
 public:
     UgcHomeCameraData(CStringW strName);                    // 0x140b67e90
-    virtual ~UgcHomeCameraData();                           // 0x140b697c0
+    // ~UgcHomeCameraData is implicit (0x140b697c0): the exe dtor stores no vftable.
 
     CStringW m_strName;                                     // +0x18
     Unk_UhPoint3 m_offset;                                  // +0x20 "offset"
@@ -83,7 +83,7 @@ class UgcHomeOptionData : public TSingleton<UgcHomeOptionData>
 {
 public:
     UgcHomeOptionData();                                    // 0x140b67f20
-    virtual ~UgcHomeOptionData();                           // 0x140b69820 (??_G 0x140b69b20)
+    // ~UgcHomeOptionData is implicit (0x140b69820 (??_G 0x140b69b20)): the exe dtor stores no vftable.
 
     void Load();                                            // 0x140b67fa0 the three tables
     CString GetBgPath(unsigned char nType);                 // 0x140b67fe0 "" when missing

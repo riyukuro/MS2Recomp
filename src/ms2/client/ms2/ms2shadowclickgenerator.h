@@ -49,7 +49,7 @@ class MS2ShadowClickValidator : public NiTerrainShadowClickValidator
 
 public:
     // implicit default ctor (0x14150b160): NiNew T() value-initializes (zero-fills 0x38 bytes) before calling it
-    virtual ~MS2ShadowClickValidator();                                                     // 0x14150b1c0, ??_G 0x14150b270
+    // implicit virtual dtor 0x14150b1c0, ??_G 0x14150b270
     virtual bool ValidateClick(NiRenderClick* pkRenderClick, unsigned int uiFrameID);       // 0x14150adb0
 
     static NiShadowClickValidator* CreateMS2ShadowClickValidator();                         // 0x14150b0e0
@@ -62,8 +62,8 @@ class MS2ShadowClickGenerator : public NiDefaultShadowClickGenerator
 
 public:
     MS2ShadowClickGenerator();                                                              // 0x141508390
-    MS2ShadowClickGenerator(NiFixedString kName);                                           // 0x141508430
-    virtual ~MS2ShadowClickGenerator();                                                     // 0x14150a5b0, ??_G 0x14150a5f0
+    MS2ShadowClickGenerator(const NiFixedString& kName);                                    // 0x141508430
+    // implicit virtual dtor 0x14150a5b0, ??_G 0x14150a5f0
 
 protected:
     virtual bool HandleSpotLight(NiShadowGenerator* pkGenerator, NiSpotLight* pkSpotLight,

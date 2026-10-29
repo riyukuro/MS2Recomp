@@ -37,8 +37,7 @@ void FUN_14121e670(const CString& strName, int nPcId, unsigned __int64 nDollId, 
     FittingDollSlotBag* pBag = new (efd::MemHint(efd::MemHint::NONE)) FittingDollSlotBag(strName, nPcId, nDollId, bCodi);
     if (pBag)
     {
-        int nCount = pBag->FUN_14121eee0();
-        static_cast<DragSlotBag*>(pBag)->vfunc_10(nCount);
+        static_cast<DragSlotBag*>(pBag)->vfunc_10(pBag->FUN_14121eee0());
         FUN_1422c8f10(strName, pBag);
     }
 }
@@ -58,12 +57,12 @@ void FUN_14121e760(const CString& strName)
 FittingDollSlotBag::FittingDollSlotBag(const CString& strName, int nPcId, unsigned __int64 nDollId, bool bCodi)
     : DragSlotBag(strName), m_nPcId(nPcId), m_nDollId(nDollId)
 {
-    if (!bCodi)
+    if (bCodi)
     {
         m_mapSlot.SetAt(0, (Unk_InventoryEquipSlot)6);
         m_mapSlot.SetAt(1, (Unk_InventoryEquipSlot)0xe);
-        m_mapSlot.SetAt(2, (Unk_InventoryEquipSlot)0xf);
-        m_mapSlot.SetAt(3, (Unk_InventoryEquipSlot)0x11);
+        m_mapSlot.SetAt(2, (Unk_InventoryEquipSlot)0xd);
+        m_mapSlot.SetAt(3, (Unk_InventoryEquipSlot)0xc);
         m_mapSlot.SetAt(4, (Unk_InventoryEquipSlot)8);
         m_mapSlot.SetAt(5, (Unk_InventoryEquipSlot)10);
         m_mapSlot.SetAt(6, (Unk_InventoryEquipSlot)9);
@@ -77,8 +76,8 @@ FittingDollSlotBag::FittingDollSlotBag(const CString& strName, int nPcId, unsign
     {
         m_mapSlot.SetAt(0, (Unk_InventoryEquipSlot)6);
         m_mapSlot.SetAt(1, (Unk_InventoryEquipSlot)0xe);
-        m_mapSlot.SetAt(2, (Unk_InventoryEquipSlot)0xd);
-        m_mapSlot.SetAt(3, (Unk_InventoryEquipSlot)0xc);
+        m_mapSlot.SetAt(2, (Unk_InventoryEquipSlot)0xf);
+        m_mapSlot.SetAt(3, (Unk_InventoryEquipSlot)0x11);
         m_mapSlot.SetAt(4, (Unk_InventoryEquipSlot)8);
         m_mapSlot.SetAt(5, (Unk_InventoryEquipSlot)10);
         m_mapSlot.SetAt(6, (Unk_InventoryEquipSlot)9);
@@ -107,6 +106,7 @@ MS2_REPLACE_METHOD(0x14121ecb0, FittingDollSlotBag, vfunc_15, 171, 0xE8D6C8AA);
 // @0x14121ed70
 DragSlot* FittingDollSlotBag::vfunc_16(int nIndex)
 {
+    MS2Ptr<CItem> spItem(0);    // unused in the exe too (built and destroyed around the new)
     return new (efd::MemHint(efd::MemHint::NONE)) FittingDollSlot(vfunc_15(nIndex), nIndex, m_nPcId, m_nDollId, FUN_14121ef10(nIndex));
 }
 

@@ -20,7 +20,7 @@ public:
     bool Load();                                            // 0x14069bd90
     void LoadConfig(Unk_140165cf0* pConfig);                // 0x14069bf00
     unsigned int GetAttendRewardCoin(short nDay);           // 0x14069bff0
-    void SwapAttendRewardCoins(std::vector<unsigned int>& rOut);     // 0x14069c070
+    void GetAttendRewardCoins(std::vector<unsigned int>& rOut);      // 0x14069c070 (appends)
     unsigned int GetRewardableCoin(unsigned int nCoin, unsigned int nTodayCoin, bool bMentee);   // 0x14069c0a0
     unsigned int GetMaxMenteeDailyRewardCoin();             // 0x14069c120
     unsigned int GetMaxMentorDailyRewardCoin();             // 0x14069c140

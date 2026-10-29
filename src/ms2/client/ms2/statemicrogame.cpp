@@ -134,7 +134,7 @@ public:
     int m_nMinScore;                                     // +0x30 the score needed for the good result
     int m_nStages;                                       // +0x34 the number of stages
     char m_pad_38[0x80 - 0x38];
-    ATL::CAtlArray<CStringW> m_aDances;                  // +0x80
+    std::vector<CStringW> m_aDances;                     // +0x80
 };
 MS2_CHECK_OFFSET(Unk_MgDanceEvent, m_nMinScore, 0x30);
 MS2_CHECK_OFFSET(Unk_MgDanceEvent, m_aDances, 0x80);
@@ -143,12 +143,12 @@ class Unk_MgGameService { public: Unk_MgEventHolder* FUN_1403ed140(); };
 Unk_MgGameService* FUN_140302b00();
 
 // Actor helpers (the bodies are in the earlier objs).
-class Unk_MgBuffMgr { public: Vector3 FUN_141683290(); };
+class Unk_MgBuffMgr { public: efd::Point3 FUN_141683290(); };
 Unk_MgBuffMgr* FUN_14166d240(PCBase* p);                 // 0x14166d240
 bool FUN_1416749c0(PCBase* p);                           // 0x1416749c0
 Vector3 FUN_140a0b080(const Vector3& kEnd, const Vector3& kStart, const Vector3& kUp);   // 0x140a0b080 look-at euler
 unsigned FUN_140869420();                                // 0x140869420 the clock
-bool FUN_1401647e0(const CString& strA, const CString& strB);   // 0x1401647e0 the strings are equal
+bool FUN_1401647e0(const CString& strA, const CString& strB) noexcept;   // 0x1401647e0 the strings are equal
 CString FUN_1401d4330(const wchar_t* psz, int nCodePage);       // 0x1401d4330 wide to ansi
 CString FUN_1409a2360(const char* psz, int nCodePage);          // 0x1409a2360
 CStringW FUN_140298ea0(CStringW str);                    // 0x140298ea0 string-table lookup of a key
@@ -164,13 +164,30 @@ void* FUN_140b769d0(int nId);                            // 0x140b769d0 the dock
 class Unk_MgPhysics
 {
 public:
-    int FUN_14168a450(efd::Point3 ptFrom, float* pDist, float fLen);
+    int FUN_14168a450(const efd::Point3& ptFrom, float* pDist, float fLen);
     bool FUN_14168a770(const efd::Point3* pPoint);
-    int FUN_14168a310(const efd::Point3& ptFrom, efd::Point3& ptHit, void* pInfo, float fLen, int nMask, int nA);
+    int FUN_14168a310(const efd::Point3& ptFrom, efd::Point3& ptHit, void* pInfo, float fLen, Vector3* pNormal, int nA);
 };
 Unk_MgPhysics* FUN_1409f7ca0();
 class Unk_MgEntity { public: egf::FlatModel* FUN_1408a9bd0(); void FUN_1408a2060(unsigned nProp, efd::utf8string& s); };
-struct Unk_MgRayHit { char m_pad[0x30]; Unk_MgEntity* m_pObject; };
+// The ray cast record FUN_14168a310 fills (0x68, ctor 0x140ad4440; as in state.cpp, physxhelper.h needs NOMINMAX).
+struct Unk_RayCastInfo
+{
+    Unk_RayCastInfo();                                  // 0x140ad4440
+    efd::Point3 m_origin;                               // +0x00
+    efd::Point3 m_dir;                                  // +0x0c
+    float m_maxDist;                                    // +0x18
+    int m_groups;                                       // +0x1c
+    void* m_20;
+    void* m_28;
+    void* m_hitEntity;                                  // +0x30
+    void* m_hitActor;
+    void* m_hitShape;
+    float m_hitDist;                                    // +0x48
+    efd::Point3 m_hitPoint;                             // +0x4c
+    efd::Point3 m_hitNormal;                            // +0x58
+};
+MS2_CHECK_SIZE(Unk_RayCastInfo, 0x68);
 const char* FUN_1408ac310(const efd::utf8string& s);
 int FUN_1408a01e0(CStringA s);
 class Unk_MgWorldQuery { public: int FUN_141bcafa0(egf::Entity* pEntity); };
@@ -251,42 +268,37 @@ int StateMicroGameRps::vfunc_22(MS2Ptr<Unk_StateArg22> p)
 void StateMicroGameRps::EndOfSequence(NiActorManager*, unsigned int, NiControllerSequence*, float)
 {
     MyPC* pRider = FUN_1417b84b0();
-    if (pRider != 0)
+    if (pRider == 0)
+        return;
+    PCBase* pPartner = FUN_140b879d0();
+    if (pPartner == 0)
+        return;
+    if (m_spRps == 0)
+        return;
+    if (m_spRps->m_str.IsEmpty())
+        return;
+    CString strKey = FUN_1401d4330(m_spRps->m_str, 0);
+    CString strAnim;
+    if (!pRider->FUN_14166f790(&strKey, strAnim, 0))
+        return;
+    if (FUN_1401647e0(pRider->FUN_14166dc50(), strAnim))
+        return;
+    MS2Ptr<RpsContext> spEvent = FUN_1401c0d90()->FUN_14047d140();
+    if (spEvent == 0)
     {
-        PCBase* pPartner = FUN_140b879d0();
-        if (pPartner != 0 && !(m_spRps == 0))
-        {
-            if (!m_spRps->m_str.IsEmpty())
-            {
-                CString strKey = FUN_1401d4330(m_spRps->m_str, 0);
-                CString strAnim;
-                if (pRider->FUN_14166f790(&strKey, strAnim, 0))
-                {
-                    if (!FUN_1401647e0(pRider->FUN_14166dc50(), strAnim))
-                    {
-                        MS2Ptr<RpsContext> spEvent = FUN_1401c0d90()->FUN_14047d140();
-                        if (spEvent == 0)
-                        {
-                            pRider->vfunc_59(1, 0, 0, 0);
-                        }
-                        else
-                        {
-                            int nKind = FUN_1417b7e40();
-                            if (nKind == 0x9b)
-                            {
-                                FUN_140b87e00();
-                                pRider->FUN_14166cc40(0x9c);
-                            }
-                            else if (nKind == 0x9c)
-                            {
-                                pRider->FUN_14166cc40(0x9d);
-                                pRider->vfunc_59(1, 0, 0, 0);
-                            }
-                        }
-                    }
-                }
-            }
-        }
+        pRider->vfunc_59(1, 0, 0, 0);
+        return;
+    }
+    switch (FUN_1417b7e40())
+    {
+    case 0x9b:
+        FUN_140b87e00();
+        pRider->FUN_14166cc40(0x9c);
+        break;
+    case 0x9c:
+        pRider->FUN_14166cc40(0x9d);
+        pRider->vfunc_59(1, 0, 0, 0);
+        break;
     }
 }
 
@@ -299,8 +311,7 @@ void StateMicroGameRps::vfunc_8(double fTime)
     if (FUN_1417b8560() == 0)
         return;
     Unk_MgBuffMgr* pBuff = FUN_14166d240(m_pOwner);
-    efd::Point3 kArg = reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(pBuff->FUN_141683290()));
-    m_pOwner->vfunc_22(kArg);
+    m_pOwner->vfunc_22(pBuff->FUN_141683290());
     if (FUN_1416749c0(m_pOwner))
         m_pOwner->vfunc_59(2, 0, 0, 0);
     else
@@ -308,31 +319,27 @@ void StateMicroGameRps::vfunc_8(double fTime)
 }
 
 // @0x140b86ea0
-// MS2-FUNCTIONAL: the animation-name temporaries differ from the exe
 void StateMicroGameRps::vfunc_9(double fTime)
 {
     State::vfunc_9(fTime);
-    int nKind = FUN_1417b7e40();
-    if (nKind < 0x99 || nKind > 0x9a)
+    switch (FUN_1417b7e40())
     {
-        if (m_spRps == 0)
-            return;
-        if (!m_spRps->m_str.IsEmpty())
-        {
-            CString strKey = FUN_1401d4330(m_spRps->m_str, 0);
-            CString strAnim;
-            if (m_pOwner->FUN_14166f790(&strKey, strAnim, 0))
-            {
-                efd::utf8string kAnim((const char*)strAnim);
-                m_pOwner->FUN_14166dd20(kAnim, 1.0f, false, false);
-            }
-        }
-    }
-    else
+    case 0x99:
+    case 0x9a:
     {
-        egf::EntityID kId;
-        FUN_140b87a40(FUN_141b6f910()->FUN_140b7f6a0(m_pOwner->FUN_14123c460(kId)));
+        unsigned int nSeq = FUN_141b6f910()->FUN_140b7f6a0(m_pOwner->FUN_14123c460());
+        FUN_140b87a40(nSeq);
+        return;
     }
+    }
+    if (m_spRps == 0 || m_spRps->m_str.IsEmpty())
+        return;
+    CString strKey = FUN_1401d4330(m_spRps->m_str, 0);
+    CString strAnim;
+    if (!m_pOwner->FUN_14166f790(&strKey, strAnim, 0))
+        return;
+    efd::utf8string kAnim((const char*)strAnim);
+    m_pOwner->FUN_14166dd20(kAnim, 1.0f, false, false);
 }
 
 // @0x140b870a0
@@ -347,14 +354,11 @@ void StateMicroGameRps::vfunc_6()
 // @0x140b87100
 bool StateMicroGameRps::vfunc_28(MS2Ptr<Unk_StateArg22> p)
 {
-    int nKind = FUN_1417b7e40();
-    if (nKind == p->m_nSub)
-    {
-        if (!FUN_140b87210(p))
-            return true;
-        return false;
-    }
-    return true;
+    if (FUN_1417b7e40() != p->m_nSub)
+        return true;
+    if (!FUN_140b87210(p))
+        return true;
+    return false;
 }
 
 // @0x140b871c0
@@ -433,61 +437,53 @@ void StateMicroGameRps::FUN_140b87310(int nMode, int nCard, int nPick)
         return;
     m_spRps->m_n1c = nCard;
     m_spRps->m_n20 = nMode;
-    CStringW& rName = spGame->m_actionNames[nCard];
-    m_spRps->m_str = rName;
+    m_spRps->m_str = spGame->m_actionNames[nCard];
     pRider->FUN_14166cc40(0x9b);
 }
 
 // @0x140b876a0
-bool StateMicroGameRps::FUN_140b876a0()
+void StateMicroGameRps::FUN_140b876a0()
 {
     MyPC* pRider = FUN_1417b84b0();
     if (pRider == 0)
     {
         MS2_ASSERT_AT(0x77, 0);
-        return false;
+        return;
     }
-    bool bNull = (m_spRps == 0);
-    if (!bNull)
+    if (m_spRps == 0)
+        return;
+    UIMicroGameRps* pUI = Unk_MgGetDialog<UIMicroGameRps>(0x4f60);
+    if (pUI == 0)
     {
-        UIMicroGameRps* pUI = Unk_MgGetDialog<UIMicroGameRps>(0x4f60);
-        if (pUI == 0)
-        {
-            MS2_ASSERT_AT(0x81, 0);
-            return false;
-        }
-        pUI->FUN_140e66330();
-        m_spRps->m_n1c = -1;
-        m_spRps->m_n20 = -1;
-        m_spRps->m_str.Empty();
-        pRider->FUN_14166cc40(0x9a);
+        MS2_ASSERT_AT(0x81, 0);
+        return;
     }
-    return bNull;
+    pUI->FUN_140e66330();
+    m_spRps->m_n1c = -1;
+    m_spRps->m_n20 = -1;
+    m_spRps->m_str.Empty();
+    pRider->FUN_14166cc40(0x9a);
 }
 
 // @0x140b877c0
 void StateMicroGameRps::FUN_140b877c0()
 {
-    if (FUN_1417b8560() != 0)
-    {
-        MS2Ptr<RpsContext> spEvent = FUN_1401c0d90()->FUN_14047d140();
-        if (!(spEvent == 0))
-        {
-            MS2Ptr<RpsGameData> spGame = spEvent->m_spGameData;
-            if (!(spGame == 0))
-            {
-                if (!spGame->m_messages.IsEmpty())
-                {
-                    int nIndex = FUN_140768010(spGame->m_messages.GetCount(), 0);
-                    CStringW strText = spGame->m_messages.GetAt(nIndex);
-                    Unk_CommandChat chat;
-                    chat.kind = 0x17;
-                    chat.message = FUN_140298ea0(strText);
-                    FUN_141276f80(chat);
-                }
-            }
-        }
-    }
+    if (FUN_1417b8560() == 0)
+        return;
+    MS2Ptr<RpsContext> spEvent = FUN_1401c0d90()->FUN_14047d140();
+    if (spEvent == 0)
+        return;
+    MS2Ptr<RpsGameData> spGame = spEvent->m_spGameData;
+    if (spGame == 0)
+        return;
+    if (spGame->m_messages.IsEmpty() == true)
+        return;
+    int nIndex = FUN_140768010(spGame->m_messages.GetCount(), 0);
+    CStringW strText = spGame->m_messages.GetAt(nIndex);
+    Unk_CommandChat chat;
+    chat.kind = 0x17;
+    chat.message = FUN_140298ea0(strText);
+    FUN_141276f80(chat);
 }
 
 // @0x140b879d0
@@ -518,27 +514,25 @@ void StateMicroGameRps::FUN_140b87a40(unsigned int nSeq)
 void StateMicroGameRps::FUN_140b87ad0()
 {
     MyPC* pRider = FUN_1417b84b0();
-    if (pRider != 0)
-    {
-        PCBase* pPartner = FUN_140b879d0();
-        if (pPartner != 0)
-        {
-            int nResult = FUN_140b8b540(pRider);
-            int nPartnerResult = FUN_140b8b540(pPartner);
-            CString strEffect = FUN_140b8b470(nResult);
-            CString strPartnerEffect = FUN_140b8b470(nPartnerResult);
-            MS2Ptr<Unk_PCBaseComp_a88> spShow = pRider->vfunc_83();
-            MS2Ptr<Unk_PCBaseComp_a88> spPartnerShow = pPartner->vfunc_83();
-            if (spShow == 0 || spPartnerShow == 0)
-                return;
-            spShow->FUN_14192f8b0(3);
-            spShow->FUN_14192f8d0(strEffect);
-            spShow->vfunc_2();
-            spPartnerShow->FUN_14192f8b0(3);
-            spPartnerShow->FUN_14192f8d0(strPartnerEffect);
-            spPartnerShow->vfunc_2();
-        }
-    }
+    if (pRider == 0)
+        return;
+    PCBase* pPartner = FUN_140b879d0();
+    if (pPartner == 0)
+        return;
+    int nResult = FUN_140b8b540(pRider);
+    int nPartnerResult = FUN_140b8b540(pPartner);
+    CString strEffect = FUN_140b8b470(nResult);
+    CString strPartnerEffect = FUN_140b8b470(nPartnerResult);
+    MS2Ptr<Unk_PCBaseComp_a88> spShow = pRider->vfunc_83();
+    MS2Ptr<Unk_PCBaseComp_a88> spPartnerShow = pPartner->vfunc_83();
+    if (spShow == 0 || spPartnerShow == 0)
+        return;
+    spShow->FUN_14192f8b0(3);
+    spShow->FUN_14192f8d0(strEffect);
+    spShow->vfunc_2();
+    spPartnerShow->FUN_14192f8b0(3);
+    spPartnerShow->FUN_14192f8d0(strPartnerEffect);
+    spPartnerShow->vfunc_2();
 }
 
 // @0x140b87cc0
@@ -560,7 +554,6 @@ void StateMicroGameRps::FUN_140b87cc0()
 }
 
 // @0x140b87e00
-// MS2-FUNCTIONAL: the string temporaries of the notice chain differ from the exe
 bool StateMicroGameRps::FUN_140b87e00()
 {
     MyPC* pRider = FUN_1417b84b0();
@@ -580,7 +573,7 @@ bool StateMicroGameRps::FUN_140b87e00()
         MS2_ASSERT_AT(0x1b7, 0);
         return false;
     }
-    if (m_spRps->m_n20 < 0 || m_spRps->m_n20 > 3)
+    if ((m_spRps->m_n20 >= 0 && m_spRps->m_n20 <= 3) == false)
     {
         MS2_ASSERT_AT(0x1bd, 0);
         return false;
@@ -664,33 +657,34 @@ bool FUN_140b88470(const Vector3& kA, const Vector3& kB)
 
 // Is the point a legal spot to stand: ground below, not blocked, and no solid / forbidden object on it?
 // @0x140b884e0
-// MS2-FUNCTIONAL: written from the call sequence.
 bool FUN_140b884e0(Vector3& kPoint)
 {
     kPoint.z += 5.0f;
     float fDist = 0.0f;
-    if (FUN_1409f7ca0()->FUN_14168a450(efd::Point3(kPoint.x, kPoint.y, kPoint.z), &fDist, 10.0f) == 0)
+    if (FUN_1409f7ca0()->FUN_14168a450((const efd::Point3&)kPoint, &fDist, 10.0f) == 0)
         return false;
     if (FUN_1409f7ca0()->FUN_14168a770((const efd::Point3*)&kPoint))
         return false;
     Vector3 kDown = DAT_143b01a60;
-    Unk_MgRayHit kHit;
-    if (FUN_1409f7ca0()->FUN_14168a310(efd::Point3(kPoint.x, kPoint.y, kPoint.z), (efd::Point3&)kDown, &kHit, 0.0f, 0, 0) == 0)
+    Unk_RayCastInfo kHit;           // 0x68: FUN_14168a310 fills it up to the hit normal (+0x64)
+    if (FUN_1409f7ca0()->FUN_14168a310((const efd::Point3&)kPoint, (efd::Point3&)kDown, &kHit, 0.0f, 0, 0) == 0)
         return false;
-    if (kHit.m_pObject == 0)
+    if (kHit.m_hitEntity == 0)
         return false;
     efd::utf8string strTag("None");
-    kHit.m_pObject->FUN_1408a2060(0x15014205, strTag);
-    CStringA strValue((const char*)FUN_1408ac310(strTag));
-    if (FUN_1408a01e0(strValue) == 0x40)
+    ((Unk_MgEntity*)kHit.m_hitEntity)->FUN_1408a2060(0x15014205, strTag);
+    int nType = FUN_1408a01e0((const char*)FUN_1408ac310(strTag));
+    if (nType == 0x40)
         return false;
-    if (kHit.m_pObject->FUN_1408a9bd0()->ContainsModel(0xd3b04f05))
+    if (((Unk_MgEntity*)kHit.m_hitEntity)->FUN_1408a9bd0()->ContainsModel(0xd3b04f05))
         return false;
-    if (kHit.m_pObject->FUN_1408a9bd0()->ContainsModel(0x032767dd))
+    if (((Unk_MgEntity*)kHit.m_hitEntity)->FUN_1408a9bd0()->ContainsModel(0x032767dd))
         return false;
-    if (kHit.m_pObject->FUN_1408a9bd0()->ContainsModel(0x72f49865))
+    if (((Unk_MgEntity*)kHit.m_hitEntity)->FUN_1408a9bd0()->ContainsModel(0x72f49865))
         return false;
-    return reinterpret_cast<Unk_MgWorldQuery*>(FUN_1403ed2d0())->FUN_141bcafa0((egf::Entity*)kHit.m_pObject) == 0;
+    if (reinterpret_cast<Unk_MgWorldQuery*>(FUN_1403ed2d0())->FUN_141bcafa0((egf::Entity*)kHit.m_hitEntity))
+        return false;
+    return true;
 }
 
 // The player can take part in the micro game (the check of the banner listener).
@@ -705,20 +699,32 @@ bool FUN_140b887b0(Unk_141bd0cc0* pPlayer)
 CStringW FUN_140b887d0(__int64 nActorId, int nWhy)
 {
     CStringW strPartner(L"");
-    PCBase* pPartner = FUN_1403ed2d0()->FUN_141bd1530(nActorId);
-    if (pPartner != 0)
+    do
+    {
+        PCBase* pPartner = FUN_1403ed2d0()->FUN_141bd1530(nActorId);
+        if (pPartner == 0)
+            break;
         strPartner = pPartner->vfunc_77();
+    } while (0);
     CStringW strMessage(L"");
-    if (nWhy == 0)
+    switch (nWhy)
+    {
+    case 0:
         strMessage = FUN_14052bd00(0xd0a, strPartner);
-    else if (nWhy == 1)
+        break;
+    case 1:
         strMessage = FUN_14052bd00(0xd07, strPartner);
-    else if (nWhy == 2)
+        break;
+    case 2:
         strMessage = FUN_14052bd00(0xd0b, strPartner);
-    else if (nWhy == 3)
+        break;
+    case 3:
         strMessage = FUN_14052bd00(0xd06, strPartner);
-    else
+        break;
+    default:
         strMessage = FUN_14052bd00(0xd11, strPartner);
+        break;
+    }
     return strMessage;
 }
 
@@ -792,14 +798,15 @@ int StateMicroGameCoupleDance::vfunc_22(MS2Ptr<Unk_StateArg22> p)
 void StateMicroGameCoupleDance::EndOfSequence(NiActorManager*, unsigned int, NiControllerSequence*, float)
 {
     MyPC* pRider = FUN_1417b84b0();
-    if (pRider != 0 && !(m_spDance == 0))
-    {
-        if (!m_spDance->m_str.IsEmpty())
-        {
-            if (!FUN_1401647e0(pRider->FUN_14166dc50(), m_spDance->m_str) && FUN_1417b7e40() != 0xad)
-                m_spDance->m_str.Empty();
-        }
-    }
+    if (pRider == 0)
+        return;
+    if (m_spDance == 0 || m_spDance->m_str.IsEmpty())
+        return;
+    if (FUN_1401647e0(pRider->FUN_14166dc50(), m_spDance->m_str))
+        return;
+    if (FUN_1417b7e40() == 0xad)
+        return;
+    m_spDance->m_str.Empty();
 }
 
 // @0x140b89040
@@ -811,8 +818,7 @@ void StateMicroGameCoupleDance::vfunc_8(double fTime)
     if (FUN_1417b8560() == 0)
         return;
     Unk_MgBuffMgr* pBuff = FUN_14166d240(m_pOwner);
-    efd::Point3 kArg = reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(pBuff->FUN_141683290()));
-    m_pOwner->vfunc_22(kArg);
+    m_pOwner->vfunc_22(pBuff->FUN_141683290());
     if (FUN_1416749c0(m_pOwner))
         m_pOwner->vfunc_59(2, 0, 0, 0);
     else
@@ -820,21 +826,16 @@ void StateMicroGameCoupleDance::vfunc_8(double fTime)
 }
 
 // @0x140b89160
-// MS2-FUNCTIONAL: the animation-name temporaries differ from the exe
 void StateMicroGameCoupleDance::vfunc_9(double fTime)
 {
     State::vfunc_9(fTime);
-    if (m_spDance != 0)
+    if (m_spDance == 0 || m_spDance->m_str.IsEmpty())
     {
-        if (!m_spDance->m_str.IsEmpty())
-        {
-            efd::utf8string kAnim((const char*)FUN_1409a2360(m_spDance->m_str, 0));
-            m_pOwner->FUN_14166dd20(kAnim, 1.0f, false, false);
-            return;
-        }
+        unsigned int nSeq = FUN_141b6f910()->FUN_140b7f6a0(m_pOwner->FUN_14123c460());
+        FUN_140b89e40(nSeq);
+        return;
     }
-    egf::EntityID kId;
-    FUN_140b89e40(FUN_141b6f910()->FUN_140b7f6a0(m_pOwner->FUN_14123c460(kId)));
+    m_pOwner->FUN_14166dd20((const char*)FUN_1409a2360(m_spDance->m_str, 0), 1.0f, false, false);
 }
 
 // @0x140b892f0
@@ -849,14 +850,11 @@ void StateMicroGameCoupleDance::vfunc_6()
 // @0x140b89350
 bool StateMicroGameCoupleDance::vfunc_28(MS2Ptr<Unk_StateArg22> p)
 {
-    int nKind = FUN_1417b7e40();
-    if (nKind == p->m_nSub)
-    {
-        if (!FUN_140b89410(p))
-            return true;
-        return false;
-    }
-    return true;
+    if (FUN_1417b7e40() != p->m_nSub)
+        return true;
+    if (!FUN_140b89410(p))
+        return true;
+    return false;
 }
 
 // @0x140b89410
@@ -876,104 +874,98 @@ int StateMicroGameCoupleDance::FUN_140b894c0()
 }
 
 // @0x140b89510
-// MS2-FUNCTIONAL: the string temporaries of the message chain differ from the exe
-bool StateMicroGameCoupleDance::FUN_140b89510(const std::vector<int>& aStages)
+void StateMicroGameCoupleDance::FUN_140b89510(const std::vector<int>& aStages)
 {
     MyPC* pRider = FUN_1417b84b0();
     if (pRider == 0)
     {
         MS2_ASSERT_AT(0x3af, 0);
-        return false;
+        return;
     }
     FUN_140b8b020(aStages);
     MS2Ptr<Unk_MgDanceEvent> spEvent = FUN_140302b00()->FUN_1403ed140()->FUN_140428700();
     if (spEvent == 0)
     {
         pRider->vfunc_59(1, 0, 0, 0);
-        return false;
+        return;
     }
-    if (spEvent->m_nStages == 0)
+    // The exe tests the stage count unsigned.
+    if (!((unsigned int)spEvent->m_nStages > 0))
     {
         MS2_ASSERT_AT(0x3bd, 0);
         pRider->vfunc_59(1, 0, 0, 0);
-        return false;
+        return;
     }
-    if (!(m_spDance == 0))
-    {
-        m_spDance->m_b1c = false;
-        pRider->FUN_14166cc40(0xaa);
-        Unk_MgDanceText* pText = spEvent->FUN_140402080(0);
-        UIMicroGameCoupleDanceMessage* pMessage = Unk_MgGetDialog<UIMicroGameCoupleDanceMessage>(0x4f72);
-        if (pMessage != 0)
-            pMessage->FUN_140e65c00(FUN_140298ea0(CStringW(pText->m_strMessage)), 3000);
-        m_spDance->m_str = (const wchar_t*)pText->m_strAnim;
-        efd::utf8string kAnim((const char*)FUN_1409a2360(m_spDance->m_str, 0));
-        m_pOwner->FUN_14166dd20(kAnim, 1.0f, false, false);
-        m_nDeadline = FUN_140869420() + 3000;
-    }
-    return true;
+    if (m_spDance == 0)
+        return;
+    m_spDance->m_b1c = false;
+    pRider->FUN_14166cc40(0xaa);
+    Unk_MgDanceText* pText = spEvent->FUN_140402080(0);
+    UIMicroGameCoupleDanceMessage* pMessage = Unk_MgGetDialog<UIMicroGameCoupleDanceMessage>(0x4f72);
+    if (pMessage != 0)
+        pMessage->FUN_140e65c00(FUN_140298ea0(CStringW(pText->m_strMessage)), 3000);
+    m_spDance->m_str = (const wchar_t*)pText->m_strAnim;
+    m_pOwner->FUN_14166dd20((const char*)FUN_1409a2360(m_spDance->m_str, 0), 1.0f, false, false);
+    m_nDeadline = FUN_140869420() + 3000;
 }
 
 // @0x140b89880
-// MS2-FUNCTIONAL: the string temporaries of the message chain differ from the exe
-bool StateMicroGameCoupleDance::FUN_140b89880(int nStage, bool bGood, int nDance, int nPartnerDance)
+void StateMicroGameCoupleDance::FUN_140b89880(int nStage, bool bGood, int nDance, int nPartnerDance)
 {
     MyPC* pRider = FUN_1417b84b0();
     if (pRider == 0)
     {
         MS2_ASSERT_AT(0x42e, 0);
-        return false;
+        return;
     }
     if (FUN_1417b7e40() != 0xac)
     {
         pRider->vfunc_59(1, 0, 0, 0);
-        return false;
+        return;
     }
     MS2Ptr<Unk_MgDanceEvent> spEvent = FUN_140302b00()->FUN_1403ed140()->FUN_140428700();
     if (spEvent == 0)
     {
         pRider->vfunc_59(1, 0, 0, 0);
-        return false;
+        return;
     }
     if (m_spDance == 0)
     {
         pRider->vfunc_59(1, 0, 0, 0);
-        return false;
+        return;
     }
     UIMicroGameCoupleDance* pUI = Unk_MgGetDialog<UIMicroGameCoupleDance>(0x4f70);
     if (pUI == 0)
     {
         MS2_ASSERT_AT(0x448, 0);
         pRider->vfunc_59(1, 0, 0, 0);
-        return false;
+        return;
     }
     pUI->FUN_140e646e0();
     m_nStage = nStage;
-    if (nDance >= 0 && nDance < (int)spEvent->m_aDances.GetCount())
+    if (nDance < 0 || nDance >= (int)spEvent->m_aDances.size())
     {
-        if (nPartnerDance >= 0 && nPartnerDance < (int)spEvent->m_aDances.GetCount())
-        {
-            m_spDance->m_b1c = bGood;
-            if (bGood)
-                m_nScore = m_nScore + 1;
-            Unk_MgDanceText* pText = spEvent->FUN_140402080(3);
-            UIMicroGameCoupleDanceMessage* pMessage = Unk_MgGetDialog<UIMicroGameCoupleDanceMessage>(0x4f72);
-            if (pMessage != 0)
-                pMessage->FUN_140e65c00(FUN_140298ea0(CStringW(pText->m_strMessage)), 3000);
-            m_spDance->m_str = (const wchar_t*)spEvent->m_aDances.GetAt(nDance);
-            efd::utf8string kAnim((const char*)FUN_1409a2360(m_spDance->m_str, 0));
-            m_pOwner->FUN_14166dd20(kAnim, 1.0f, false, false);
-            m_nDeadline = FUN_140869420() + 3000;
-            pRider->FUN_14166cc40(0xad);
-            return true;
-        }
+        MS2_ASSERT_AT(0x451, 0);
+        pRider->vfunc_59(1, 0, 0, 0);
+        return;
+    }
+    if (nPartnerDance < 0 || nPartnerDance >= (int)spEvent->m_aDances.size())
+    {
         MS2_ASSERT_AT(0x458, 0);
         pRider->vfunc_59(1, 0, 0, 0);
-        return false;
+        return;
     }
-    MS2_ASSERT_AT(0x451, 0);
-    pRider->vfunc_59(1, 0, 0, 0);
-    return false;
+    m_spDance->m_b1c = bGood;
+    if (bGood)
+        m_nScore = m_nScore + 1;
+    Unk_MgDanceText* pText = spEvent->FUN_140402080(3);
+    UIMicroGameCoupleDanceMessage* pMessage = Unk_MgGetDialog<UIMicroGameCoupleDanceMessage>(0x4f72);
+    if (pMessage != 0)
+        pMessage->FUN_140e65c00(FUN_140298ea0(CStringW(pText->m_strMessage)), 3000);
+    m_spDance->m_str = (const wchar_t*)spEvent->m_aDances[nDance];
+    m_pOwner->FUN_14166dd20((const char*)FUN_1409a2360(m_spDance->m_str, 0), 1.0f, false, false);
+    m_nDeadline = FUN_140869420() + 3000;
+    pRider->FUN_14166cc40(0xad);
 }
 
 // @0x140b89dd0
@@ -1001,22 +993,19 @@ void StateMicroGameCoupleDance::FUN_140b89e40(unsigned int nSeq)
 }
 
 // @0x140b89ed0
-// MS2-FUNCTIONAL: branch layout of the null guards differs from the exe
 void StateMicroGameCoupleDance::FUN_140b89ed0(double)
 {
     MyPC* pRider = FUN_1417b84b0();
-    if (pRider)
+    if (pRider == 0)
+        return;
+    PCBase* pPartner = FUN_140b89dd0();
+    if (pPartner == 0)
     {
-        PCBase* pPartner = FUN_140b89dd0();
-        if (pPartner == 0)
-        {
-            pRider->vfunc_59(1, 0, 0, 0);
-        }
-        else if (pPartner->FUN_14166c930() != 0x45 && pPartner->FUN_14166c930() != 0x3b)
-        {
-            pRider->vfunc_59(1, 0, 0, 0);
-        }
+        pRider->vfunc_59(1, 0, 0, 0);
+        return;
     }
+    if (pPartner->FUN_14166c930() != 0x45 && pPartner->FUN_14166c930() != 0x3b)
+        pRider->vfunc_59(1, 0, 0, 0);
 }
 
 // @0x140b89f90
@@ -1035,213 +1024,192 @@ bool StateMicroGameCoupleDance::FUN_140b89f90()
 void StateMicroGameCoupleDance::FUN_140b8a060()
 {
     MyPC* pRider = FUN_1417b84b0();
-    if (pRider != 0)
+    if (pRider == 0)
+        return;
+    MS2Ptr<Unk_MgDanceEvent> spEvent = FUN_140302b00()->FUN_1403ed140()->FUN_140428700();
+    if (spEvent == 0)
     {
-        MS2Ptr<Unk_MgDanceEvent> spEvent = FUN_140302b00()->FUN_1403ed140()->FUN_140428700();
-        if (spEvent == 0)
+        pRider->vfunc_59(1, 0, 0, 0);
+        return;
+    }
+    switch (FUN_1417b7e40())
+    {
+    case 0xaa:
+        FUN_140b8a290();
+        pRider->FUN_14166cc40(0xab);
+        break;
+    case 0xab:
+        FUN_140b8a5f0();
+        pRider->FUN_14166cc40(0xac);
+        break;
+    case 0xad:
+        pRider->FUN_14166cc40(0xae);
+        break;
+    case 0xae:
+        FUN_140b8a910();
+        pRider->FUN_14166cc40(0xaf);
+        break;
+    case 0xaf:
+        if (FUN_140b89f90() == false)
         {
-            pRider->vfunc_59(1, 0, 0, 0);
+            m_nStage = m_nStage + 1;
+            FUN_140b8a290();
+            pRider->FUN_14166cc40(0xab);
         }
         else
         {
-            switch (FUN_1417b7e40())
-            {
-            case 0xaa:
-                FUN_140b8a290();
-                pRider->FUN_14166cc40(0xab);
-                break;
-            case 0xab:
-                FUN_140b8a5f0();
-                pRider->FUN_14166cc40(0xac);
-                break;
-            case 0xad:
-                pRider->FUN_14166cc40(0xae);
-                break;
-            case 0xae:
-                FUN_140b8a910();
-                pRider->FUN_14166cc40(0xaf);
-                break;
-            case 0xaf:
-                if (FUN_140b89f90() == false)
-                {
-                    m_nStage = m_nStage + 1;
-                    FUN_140b8a290();
-                    pRider->FUN_14166cc40(0xab);
-                }
-                else
-                {
-                    FUN_140b8acc0();
-                    pRider->FUN_14166cc40(0xb0);
-                }
-                break;
-            case 0xb0:
-                {
-                    UIDialog* pPane = (UIDialog*)FUN_140b769d0(0x4f71);
-                    if (pPane != 0 && pPane->FUN_141924630() == 0)
-                        FUN_141924680(pPane);
-                    pRider->FUN_14166cc40(0xb1);
-                    pRider->vfunc_59(1, 0, 0, 0);
-                }
-            }
+            FUN_140b8acc0();
+            pRider->FUN_14166cc40(0xb0);
+        }
+        break;
+    case 0xb0:
+        {
+            UIDialog* pPane = (UIDialog*)FUN_140b769d0(0x4f71);
+            if (pPane != 0 && pPane->FUN_141924630() == 0)
+                FUN_141924680(pPane);
+            pRider->FUN_14166cc40(0xb1);
+            pRider->vfunc_59(1, 0, 0, 0);
         }
     }
 }
 
 // @0x140b8a290
-// MS2-FUNCTIONAL: the string temporaries of the message chain differ from the exe
-bool StateMicroGameCoupleDance::FUN_140b8a290()
+void StateMicroGameCoupleDance::FUN_140b8a290()
 {
     MyPC* pRider = FUN_1417b84b0();
     if (pRider == 0)
     {
         MS2_ASSERT_AT(0x3db, 0);
-        return false;
+        return;
     }
     if (FUN_1417b7e40() != 0xaa && FUN_1417b7e40() != 0xaf)
     {
         MS2_ASSERT_AT(0x3e1, 0);
         pRider->vfunc_59(1, 0, 0, 0);
-        return false;
+        return;
     }
     MS2Ptr<Unk_MgDanceEvent> spEvent = FUN_140302b00()->FUN_1403ed140()->FUN_140428700();
     if (spEvent == 0)
     {
         pRider->vfunc_59(1, 0, 0, 0);
-        return false;
+        return;
     }
-    if (!(m_spDance == 0))
-    {
-        m_spDance->m_b1c = false;
-        Unk_MgDanceText* pText = spEvent->FUN_140402080(1);
-        UIMicroGameCoupleDanceMessage* pMessage = Unk_MgGetDialog<UIMicroGameCoupleDanceMessage>(0x4f72);
-        if (pMessage != 0)
-            pMessage->FUN_140e65ce0(m_nStage + 1, FUN_140298ea0(CStringW(pText->m_strMessage)), 3000);
-        m_spDance->m_str = (const wchar_t*)pText->m_strAnim;
-        efd::utf8string kAnim((const char*)FUN_1409a2360(m_spDance->m_str, 0));
-        m_pOwner->FUN_14166dd20(kAnim, 1.0f, false, false);
-        m_nDeadline = FUN_140869420() + 3000;
-    }
-    return true;
+    if (m_spDance == 0)
+        return;
+    m_spDance->m_b1c = false;
+    Unk_MgDanceText* pText = spEvent->FUN_140402080(1);
+    UIMicroGameCoupleDanceMessage* pMessage = Unk_MgGetDialog<UIMicroGameCoupleDanceMessage>(0x4f72);
+    if (pMessage != 0)
+        pMessage->FUN_140e65ce0(m_nStage + 1, FUN_140298ea0(CStringW(pText->m_strMessage)), 3000);
+    m_spDance->m_str = (const wchar_t*)pText->m_strAnim;
+    m_pOwner->FUN_14166dd20((const char*)FUN_1409a2360(m_spDance->m_str, 0), 1.0f, false, false);
+    m_nDeadline = FUN_140869420() + 3000;
 }
 
 // @0x140b8a5f0
-// MS2-FUNCTIONAL: the string temporaries of the animation call differ from the exe
-bool StateMicroGameCoupleDance::FUN_140b8a5f0()
+void StateMicroGameCoupleDance::FUN_140b8a5f0()
 {
     MyPC* pRider = FUN_1417b84b0();
     if (pRider == 0)
     {
         MS2_ASSERT_AT(0x403, 0);
-        return false;
+        return;
     }
     if (FUN_1417b7e40() != 0xab)
     {
         MS2_ASSERT_AT(0x409, 0);
         pRider->vfunc_59(1, 0, 0, 0);
-        return false;
+        return;
     }
     MS2Ptr<Unk_MgDanceEvent> spEvent = FUN_140302b00()->FUN_1403ed140()->FUN_140428700();
     if (spEvent == 0)
     {
         pRider->vfunc_59(1, 0, 0, 0);
-        return false;
+        return;
     }
-    if (!(m_spDance == 0))
+    if (m_spDance == 0)
+        return;
+    Unk_MgDanceText* pText = spEvent->FUN_140402080(2);
+    m_spDance->m_str = (const wchar_t*)pText->m_strAnim;
+    m_pOwner->FUN_14166dd20((const char*)FUN_1409a2360(m_spDance->m_str, 0), 1.0f, false, false);
+    UIMicroGameCoupleDance* pUI = Unk_MgGetDialog<UIMicroGameCoupleDance>(0x4f70);
+    if (pUI == 0)
     {
-        Unk_MgDanceText* pText = spEvent->FUN_140402080(2);
-        m_spDance->m_str = (const wchar_t*)pText->m_strAnim;
-        efd::utf8string kAnim((const char*)FUN_1409a2360(m_spDance->m_str, 0));
-        m_pOwner->FUN_14166dd20(kAnim, 1.0f, false, false);
-        UIMicroGameCoupleDance* pUI = Unk_MgGetDialog<UIMicroGameCoupleDance>(0x4f70);
-        if (pUI == 0)
-        {
-            MS2_ASSERT_AT(0x420, 0);
-            pRider->vfunc_59(1, 0, 0, 0);
-            return false;
-        }
-        pUI->FUN_140b8be30(m_aStages[m_nStage]);
-        pUI->FUN_140e641d0(0, 0);
+        MS2_ASSERT_AT(0x420, 0);
+        pRider->vfunc_59(1, 0, 0, 0);
+        return;
     }
-    return true;
+    pUI->FUN_140b8be30(m_aStages[m_nStage]);
+    pUI->FUN_140e641d0(0, 0);
 }
 
 // @0x140b8a910
-// MS2-FUNCTIONAL: the string temporaries of the message chain differ from the exe
-bool StateMicroGameCoupleDance::FUN_140b8a910()
+void StateMicroGameCoupleDance::FUN_140b8a910()
 {
     MyPC* pRider = FUN_1417b84b0();
     if (pRider == 0)
     {
         MS2_ASSERT_AT(0x478, 0);
-        return false;
+        return;
     }
     if (FUN_1417b7e40() != 0xae)
     {
         MS2_ASSERT_AT(0x47e, 0);
         pRider->vfunc_59(1, 0, 0, 0);
-        return false;
+        return;
     }
     MS2Ptr<Unk_MgDanceEvent> spEvent = FUN_140302b00()->FUN_1403ed140()->FUN_140428700();
     if (spEvent == 0)
     {
         pRider->vfunc_59(1, 0, 0, 0);
-        return false;
+        return;
     }
     if (m_spDance == 0)
     {
         pRider->vfunc_59(1, 0, 0, 0);
-        return false;
+        return;
     }
-    Unk_MgDanceText* pText;
-    if (m_spDance->m_b1c == 0)
-        pText = spEvent->FUN_140402080(5);
-    else
-        pText = spEvent->FUN_140402080(4);
+    // The exe copies the picked text once more before using it.
+    Unk_MgDanceText* pPick = m_spDance->m_b1c ? spEvent->FUN_140402080(4) : spEvent->FUN_140402080(5);
+    Unk_MgDanceText* pText = pPick;
     UIMicroGameCoupleDanceMessage* pMessage = Unk_MgGetDialog<UIMicroGameCoupleDanceMessage>(0x4f72);
     if (pMessage != 0)
         pMessage->FUN_140e65c00(FUN_140298ea0(CStringW(pText->m_strMessage)), 3000);
     m_spDance->m_str = (const wchar_t*)pText->m_strAnim;
-    efd::utf8string kAnim((const char*)FUN_1409a2360(m_spDance->m_str, 0));
-    m_pOwner->FUN_14166dd20(kAnim, 1.0f, false, false);
+    m_pOwner->FUN_14166dd20((const char*)FUN_1409a2360(m_spDance->m_str, 0), 1.0f, false, false);
     m_nDeadline = FUN_140869420() + 3000;
-    return true;
 }
 
 // @0x140b8acc0
-// MS2-FUNCTIONAL: the string temporaries of the message chain differ from the exe
-bool StateMicroGameCoupleDance::FUN_140b8acc0()
+void StateMicroGameCoupleDance::FUN_140b8acc0()
 {
     MyPC* pRider = FUN_1417b84b0();
     if (pRider == 0)
     {
         MS2_ASSERT_AT(0x4a1, 0);
-        return false;
+        return;
     }
     if (FUN_1417b7e40() != 0xaf)
     {
         MS2_ASSERT_AT(0x4a7, 0);
         pRider->vfunc_59(1, 0, 0, 0);
-        return false;
+        return;
     }
     MS2Ptr<Unk_MgDanceEvent> spEvent = FUN_140302b00()->FUN_1403ed140()->FUN_140428700();
     if (spEvent == 0)
     {
         pRider->vfunc_59(1, 0, 0, 0);
-        return false;
+        return;
     }
-    Unk_MgDanceText* pText;
-    if (m_nScore < spEvent->m_nMinScore)
-        pText = spEvent->FUN_140402080(6);
-    else
-        pText = spEvent->FUN_140402080(7);
+    // The exe copies the picked text once more before using it.
+    Unk_MgDanceText* pPick = m_nScore >= spEvent->m_nMinScore ? spEvent->FUN_140402080(7) : spEvent->FUN_140402080(6);
+    Unk_MgDanceText* pText = pPick;
     UIMicroGameCoupleDanceMessage* pMessage = Unk_MgGetDialog<UIMicroGameCoupleDanceMessage>(0x4f72);
     if (pMessage != 0)
         pMessage->FUN_140e65c00(FUN_140298ea0(CStringW(pText->m_strMessage)), 3000);
     m_spDance->m_str = (const wchar_t*)pText->m_strAnim;
-    efd::utf8string kAnim((const char*)FUN_1409a2360(m_spDance->m_str, 0));
-    m_pOwner->FUN_14166dd20(kAnim, 1.0f, false, false);
+    m_pOwner->FUN_14166dd20((const char*)FUN_1409a2360(m_spDance->m_str, 0), 1.0f, false, false);
     m_nDeadline = FUN_140869420() + 3000;
-    return true;
 }
 
 // @0x140b8b020
@@ -1263,16 +1231,24 @@ CStringW FUN_140b8b0b0(__int64 nActorId, int nWhy)
     if (pPartner != 0)
         strPartner = pPartner->vfunc_77();
     CStringW strMessage(L"");
-    if (nWhy == 0)
+    switch (nWhy)
+    {
+    case 0:
         strMessage = FUN_1405c2690(CStringW(L"s_microgame_couple_dance_request_failed_peer_wrong_state"), strPartner);
-    else if (nWhy == 1)
+        break;
+    case 1:
         strMessage = FUN_1405c2690(CStringW(L"s_microgame_couple_dance_request_failed_blocked_in_this_field"), strPartner);
-    else if (nWhy == 2)
+        break;
+    case 2:
         strMessage = FUN_1405c2690(CStringW(L"s_microgame_couple_dance_accept_failed_peer_wrong_state"), strPartner);
-    else if (nWhy == 3)
+        break;
+    case 3:
         strMessage = FUN_1405c2690(CStringW(L"s_microgame_couple_dance_banner_failed_blocked_in_this_field"), strPartner);
-    else
+        break;
+    default:
         strMessage = FUN_1405c2690(CStringW(L"s_microgame_couple_dance_failed"), strPartner);
+        break;
+    }
     return strMessage;
 }
 
@@ -1282,34 +1258,34 @@ CStringW FUN_140b8b0b0(__int64 nActorId, int nWhy)
 // @0x140b8b470
 CString FUN_140b8b470(int nResult)
 {
-    if (nResult == 0)
+    switch (nResult)
+    {
+    case 0:
         return CString("Emo_rpsgame_rock.swf");
-    else if (nResult == 1)
+    case 1:
         return CString("Emo_rpsgame_paper.swf");
-    else if (nResult == 2)
+    case 2:
         return CString("Emo_rpsgame_scissors.swf");
-    else
+    default:
         return CString("");
+    }
 }
 
 // The card an actor played (-1: none / not in the rps state).
 // @0x140b8b540
-// MS2-FUNCTIONAL: branch layout of the null guards differs from the exe
 int FUN_140b8b540(PCBase* pActor)
 {
     if (pActor == 0)
         return -1;
-    if (pActor->FUN_14166c930() == 0x3c)
+    if (pActor->FUN_14166c930() != 0x3c)
+        return -1;
+    StateMicroGameRps* pState = static_cast<StateMicroGameRps*>(pActor->FUN_14166ccb0());
+    if (pState == 0)
     {
-        StateMicroGameRps* pState = static_cast<StateMicroGameRps*>(pActor->FUN_14166ccb0());
-        if (pState == 0)
-        {
-            MS2_ASSERT_AT(0x2c, 0);
-            return -1;
-        }
-        return pState->FUN_140b871c0();
+        MS2_ASSERT_AT(0x2c, 0);
+        return -1;
     }
-    return -1;
+    return pState->FUN_140b871c0();
 }
 
 // @0x140b8be10

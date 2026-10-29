@@ -156,7 +156,7 @@ public:
     void FUN_141951bf0(int nGroupId, const CStringW& strName, const CStringW& strMsg);    // a notice line
     void FUN_141951c50(int nGroupId, const CStringW& strName, const CStringW& strMsg);    // queues a member's line
     void FUN_141951d80(int nGroupId, const CStringW& strName, CInPacket* pPacket);       // the item links of a line
-    void FUN_141951f70(CStringW strText);                                   // shares a text with a chat
+    void FUN_141951f70(const CStringW& strText);                           // shares a text with a chat
     void FUN_1419524e0();                                                   // forgets everything
     void FUN_141952530();                                                   // refreshes the tray
     int FUN_141952780();                                                    // minimizes every window

@@ -7,161 +7,274 @@
 // MS2-UNIT: unit_14044a880
 // MS2-RANGE: 0x14044a880-0x14045b2c0 .text$mn
 // MS2-PINS-BEGIN tplpin
-// MS2-PIN: ??_GCNode@?$CAtlMap@IV?$Unk_FieldPtr@V?$CAtlList@IV?$CElementTraits@I@ATL@@@ATL@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$Unk_FieldPtr@V?$CAtlList@IV?$CElementTraits@I@ATL@@@ATL@@@@@3@@ATL@@QEAAPEAXI@Z 0x14044a8c0 ; prop
-// MS2-PIN: ??_GCNode@?$CAtlMap@IV?$MS2Ptr@VUnk_FieldObjectDropListContext@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VUnk_FieldObjectDropListContext@@@@@3@@ATL@@QEAAPEAXI@Z 0x14044a940 ; prop
-// MS2-PIN: ??_GCNode@?$CAtlMap@IV?$MS2Ptr@VIDIPEventContext@CGameEventValueIDIPEvent@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VIDIPEventContext@CGameEventValueIDIPEvent@@@@@3@@ATL@@QEAAPEAXI@Z 0x14044a9c0 ; prop
 // MS2-PIN: ?AddTail@?$CAtlList@V?$MS2Ptr@VUnk_DayItemContext@@@@V?$CElementTraits@V?$MS2Ptr@VUnk_DayItemContext@@@@@ATL@@@ATL@@QEAAPEAU__POSITION@@AEBV?$MS2Ptr@VUnk_DayItemContext@@@@@Z 0x14044acb0 ; prop
 // MS2-PIN: ?AddTail@?$CAtlList@V?$MS2Ptr@VUnk_FieldObjectDropContext@@@@V?$CElementTraits@V?$MS2Ptr@VUnk_FieldObjectDropContext@@@@@ATL@@@ATL@@QEAAPEAU__POSITION@@AEBV?$MS2Ptr@VUnk_FieldObjectDropContext@@@@@Z 0x14044ad30 ; prop
 // MS2-PIN: ?AddTail@?$CAtlList@V?$MS2Ptr@VUnk_FieldObjectDropListContext@@@@V?$CElementTraits@V?$MS2Ptr@VUnk_FieldObjectDropListContext@@@@@ATL@@@ATL@@QEAAPEAU__POSITION@@AEBV?$MS2Ptr@VUnk_FieldObjectDropListContext@@@@@Z 0x14044adb0 ; prop
 // MS2-PIN: ?CreateNode@?$CAtlMap@IGV?$CElementTraits@I@ATL@@V?$CElementTraits@G@2@@ATL@@AEAAPEAVCNode@12@III@Z 0x14044af20 ; unique
-// MS2-PIN: ?CreateNode@?$CAtlMap@IV?$Unk_FieldPtr@V?$CAtlList@IV?$CElementTraits@I@ATL@@@ATL@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$Unk_FieldPtr@V?$CAtlList@IV?$CElementTraits@I@ATL@@@ATL@@@@@3@@ATL@@AEAAPEAVCNode@12@III@Z 0x14044b0a0 ; prop
-// MS2-PIN: ?CreateNode@?$CAtlMap@IV?$MS2Ptr@VFestivalContext@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VFestivalContext@@@@@3@@ATL@@AEAAPEAVCNode@12@III@Z 0x14044b120 ; prop
-// MS2-PIN: ?CreateNode@?$CAtlMap@IV?$MS2Ptr@VSpawnContext@CGameEventValueBattlePetSpawn@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VSpawnContext@CGameEventValueBattlePetSpawn@@@@@3@@ATL@@AEAAPEAVCNode@12@III@Z 0x14044b1a0 ; prop
-// MS2-PIN: ?CreateNode@?$CAtlMap@IV?$MS2Ptr@VIDIPEventContext@CGameEventValueIDIPEvent@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VIDIPEventContext@CGameEventValueIDIPEvent@@@@@3@@ATL@@AEAAPEAVCNode@12@III@Z 0x14044b2a0 ; prop
 // MS2-PIN: ?DisableAutoRehash@?$CAtlMap@IGV?$CElementTraits@I@ATL@@V?$CElementTraits@G@2@@ATL@@QEAAXXZ 0x14044b5a0 ; prop
-// MS2-PIN: ?DisableAutoRehash@?$CAtlMap@IV?$Unk_FieldPtr@V?$CAtlList@IV?$CElementTraits@I@ATL@@@ATL@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$Unk_FieldPtr@V?$CAtlList@IV?$CElementTraits@I@ATL@@@ATL@@@@@3@@ATL@@QEAAXXZ 0x14044b5c0 ; prop
 // MS2-PIN: ?DisableAutoRehash@?$CAtlMap@IIV?$CElementTraits@I@ATL@@V12@@ATL@@QEAAXXZ 0x14044b600 ; prop
 // MS2-PIN: ?EnableAutoRehash@?$CAtlMap@IGV?$CElementTraits@I@ATL@@V?$CElementTraits@G@2@@ATL@@QEAAXXZ 0x14044b620 ; prop
-// MS2-PIN: ?EnableAutoRehash@?$CAtlMap@IV?$Unk_FieldPtr@V?$CAtlList@IV?$CElementTraits@I@ATL@@@ATL@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$Unk_FieldPtr@V?$CAtlList@IV?$CElementTraits@I@ATL@@@ATL@@@@@3@@ATL@@QEAAXXZ 0x14044b640 ; prop
 // MS2-PIN: ?Find@?$CRBTree@IIV?$CElementTraits@I@ATL@@V12@@ATL@@IEBAPEAVCNode@12@I@Z 0x14044b6a0 ; unique
-// MS2-PIN: ?FindNextNode@?$CAtlMap@IV?$MS2Ptr@VUnk_FieldObjectDropListContext@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VUnk_FieldObjectDropListContext@@@@@3@@ATL@@AEBAPEAVCNode@12@PEAV312@@Z 0x14044b960 ; prop
-// MS2-PIN: ?FreeNode@?$CAtlMap@KHV?$CElementTraits@K@ATL@@V?$CElementTraits@H@2@@ATL@@AEAAXPEAVCNode@12@@Z 0x14044bc60 ; prop
 // MS2-PIN: ?FreeNode@?$CAtlMap@IGV?$CElementTraits@I@ATL@@V?$CElementTraits@G@2@@ATL@@AEAAXPEAVCNode@12@@Z 0x14044bd50 ; prop
 // MS2-PIN: ?FreeNode@?$CAtlMap@IU?$pair@II@std@@V?$CElementTraits@I@ATL@@V?$CElementTraits@U?$pair@II@std@@@4@@ATL@@AEAAXPEAVCNode@12@@Z 0x14044be40 ; prop
-// MS2-PIN: ?FreeNode@?$CAtlMap@IV?$Unk_FieldPtr@V?$CAtlList@IV?$CElementTraits@I@ATL@@@ATL@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$Unk_FieldPtr@V?$CAtlList@IV?$CElementTraits@I@ATL@@@ATL@@@@@3@@ATL@@AEAAXPEAVCNode@12@@Z 0x14044c030 ; prop
-// MS2-PIN: ?FreeNode@?$CAtlMap@IV?$MS2Ptr@VIDIPEventContext@CGameEventValueIDIPEvent@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VIDIPEventContext@CGameEventValueIDIPEvent@@@@@3@@ATL@@AEAAXPEAVCNode@12@@Z 0x14044c430 ; prop
 // MS2-PIN: ?FreeNode@?$CAtlMap@I_JV?$CElementTraits@I@ATL@@V?$CElementTraits@_J@2@@ATL@@AEAAXPEAVCNode@12@@Z 0x14044c730 ; prop
+// MS2-PIN: ?FreeNode@?$CAtlMap@KHV?$CElementTraits@K@ATL@@V?$CElementTraits@H@2@@ATL@@AEAAXPEAVCNode@12@@Z 0x14044bc60 ; prop
 // MS2-PIN: ?FreeNode@?$CAtlMap@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@UUnk_FieldTimeSpan@@V?$CStringElementTraits@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@2@V?$CElementTraits@UUnk_FieldTimeSpan@@@2@@ATL@@AEAAXPEAVCNode@12@@Z 0x14044c910 ; unique
 // MS2-PIN: ?FreeNode@?$CRBTree@IIV?$CElementTraits@I@ATL@@V12@@ATL@@AEAAXPEAVCNode@12@@Z 0x14044ca10 ; unique
-// MS2-PIN: ?FreePlexes@?$CAtlMap@KHV?$CElementTraits@K@ATL@@V?$CElementTraits@H@2@@ATL@@AEAAXXZ 0x14044cb50 ; prop
 // MS2-PIN: ?FreePlexes@?$CAtlMap@IGV?$CElementTraits@I@ATL@@V?$CElementTraits@G@2@@ATL@@AEAAXXZ 0x14044cba0 ; prop
 // MS2-PIN: ?FreePlexes@?$CAtlMap@IU?$pair@II@std@@V?$CElementTraits@I@ATL@@V?$CElementTraits@U?$pair@II@std@@@4@@ATL@@AEAAXXZ 0x14044cbf0 ; prop
-// MS2-PIN: ?FreePlexes@?$CAtlMap@IV?$Unk_FieldPtr@V?$CAtlList@IV?$CElementTraits@I@ATL@@@ATL@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$Unk_FieldPtr@V?$CAtlList@IV?$CElementTraits@I@ATL@@@ATL@@@@@3@@ATL@@AEAAXXZ 0x14044cc90 ; prop
-// MS2-PIN: ?FreePlexes@?$CAtlMap@IV?$MS2Ptr@VIDIPEventContext@CGameEventValueIDIPEvent@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VIDIPEventContext@CGameEventValueIDIPEvent@@@@@3@@ATL@@AEAAXXZ 0x14044cdd0 ; prop
 // MS2-PIN: ?FreePlexes@?$CAtlMap@I_JV?$CElementTraits@I@ATL@@V?$CElementTraits@_J@2@@ATL@@AEAAXXZ 0x14044cec0 ; prop
+// MS2-PIN: ?FreePlexes@?$CAtlMap@KHV?$CElementTraits@K@ATL@@V?$CElementTraits@H@2@@ATL@@AEAAXXZ 0x14044cb50 ; prop
 // MS2-PIN: ?FreePlexes@?$CAtlMap@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@UUnk_FieldTimeSpan@@V?$CStringElementTraits@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@2@V?$CElementTraits@UUnk_FieldTimeSpan@@@2@@ATL@@AEAAXXZ 0x14044cf60 ; prop
-// MS2-PIN: ?GetHash@CNode@?$CAtlMap@IV?$MS2Ptr@VIDIPEventContext@CGameEventValueIDIPEvent@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VIDIPEventContext@CGameEventValueIDIPEvent@@@@@3@@ATL@@QEBAIXZ 0x14044d320 ; prop
-// MS2-PIN: ?GetNext@?$CAtlMap@IV?$MS2Ptr@VUnk_FieldObjectDropListContext@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VUnk_FieldObjectDropListContext@@@@@3@@ATL@@QEAAPEAVCPair@12@AEAPEAU__POSITION@@@Z 0x14044d3d0 ; prop
-// MS2-PIN: ?GetNode@?$CAtlMap@IV?$Unk_FieldPtr@V?$CAtlList@IV?$CElementTraits@I@ATL@@@ATL@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$Unk_FieldPtr@V?$CAtlList@IV?$CElementTraits@I@ATL@@@ATL@@@@@3@@ATL@@AEBAPEAVCNode@12@IAEAI0AEAPEAV312@@Z 0x14044d980 ; prop
-// MS2-PIN: ?GetNode@?$CAtlMap@IV?$MS2Ptr@VIDIPEventContext@CGameEventValueIDIPEvent@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VIDIPEventContext@CGameEventValueIDIPEvent@@@@@3@@ATL@@AEBAPEAVCNode@12@IAEAI0AEAPEAV312@@Z 0x14044dd40 ; prop
+// MS2-PIN: ?GetNext@?$CAtlMap@IV?$MS2Ptr@VIDIPEventContext@CGameEventValueIDIPEvent@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VIDIPEventContext@CGameEventValueIDIPEvent@@@@@3@@ATL@@QEBAPEBVCPair@12@AEAPEAU__POSITION@@@Z 0x14044d380 ; prop: symbol ?FindNextNode@?$CAtlMap@IV?$MS2Ptr@VIDIPEventContext@CGameEventVal...
+// MS2-PIN: ?GetNext@?$CAtlMap@IV?$MS2Ptr@VUnk_DayItemContext@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VUnk_DayItemContext@@@@@3@@ATL@@QEAAPEAVCPair@12@AEAPEAU__POSITION@@@Z 0x14044d420 ; prop: symbol ?FindNextNode@?$CAtlMap@IV?$MS2Ptr@VUnk_DayItemContext@@@@V?$CElem...
+// MS2-PIN: ?GetNext@?$CAtlMap@IV?$MS2Ptr@VUnk_FieldObjectDropContext@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VUnk_FieldObjectDropContext@@@@@3@@ATL@@QEAAPEAVCPair@12@AEAPEAU__POSITION@@@Z 0x14044d4c0 ; prop: symbol ?FindNextNode@?$CAtlMap@IV?$MS2Ptr@VUnk_FieldObjectDropContext@@@@...
+// MS2-PIN: ?GetNext@?$CAtlMap@IV?$MS2Ptr@VUnk_FieldObjectDropListContext@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VUnk_FieldObjectDropListContext@@@@@3@@ATL@@QEAAPEAVCPair@12@AEAPEAU__POSITION@@@Z 0x14044d470 ; prop: symbol ?FindNextNode@?$CAtlMap@IV?$MS2Ptr@VUnk_FieldObjectDropListContext...
 // MS2-PIN: ?GetPrev@?$CRBTree@IV?$MS2Ptr@VRestrictionData@CGameEventValueItemTradeRestriction@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VRestrictionData@CGameEventValueItemTradeRestriction@@@@@3@@ATL@@QEAAPEAVCPair@12@AEAPEAU__POSITION@@@Z 0x14044e2f0 ; prop
-// MS2-PIN: ?InitHashTable@?$CAtlMap@KHV?$CElementTraits@K@ATL@@V?$CElementTraits@H@2@@ATL@@QEAA_NI_N@Z 0x14044ea10 ; unique
+// MS2-PIN: ?GetStartPosition@?$CAtlMap@IU?$pair@II@std@@V?$CElementTraits@I@ATL@@V?$CElementTraits@U?$pair@II@std@@@4@@ATL@@QEBAPEAU__POSITION@@XZ 0x14044e330 ; prop: callee ?IsEmpty@?$CAtlMap@IU?$pair@II@std@@V?$CElementTraits@I@ATL@@V?$CE...
 // MS2-PIN: ?InitHashTable@?$CAtlMap@IGV?$CElementTraits@I@ATL@@V?$CElementTraits@G@2@@ATL@@QEAA_NI_N@Z 0x14044eb30 ; prop
 // MS2-PIN: ?InitHashTable@?$CAtlMap@IU?$pair@II@std@@V?$CElementTraits@I@ATL@@V?$CElementTraits@U?$pair@II@std@@@4@@ATL@@QEAA_NI_N@Z 0x14044ec50 ; unique
-// MS2-PIN: ?InitHashTable@?$CAtlMap@IV?$Unk_FieldPtr@V?$CAtlList@IV?$CElementTraits@I@ATL@@@ATL@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$Unk_FieldPtr@V?$CAtlList@IV?$CElementTraits@I@ATL@@@ATL@@@@@3@@ATL@@QEAA_NI_N@Z 0x14044ee90 ; prop
-// MS2-PIN: ?InitHashTable@?$CAtlMap@IV?$MS2Ptr@VIDIPEventContext@CGameEventValueIDIPEvent@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VIDIPEventContext@CGameEventValueIDIPEvent@@@@@3@@ATL@@QEAA_NI_N@Z 0x14044f310 ; prop
 // MS2-PIN: ?InitHashTable@?$CAtlMap@I_JV?$CElementTraits@I@ATL@@V?$CElementTraits@_J@2@@ATL@@QEAA_NI_N@Z 0x14044f670 ; unique
+// MS2-PIN: ?InitHashTable@?$CAtlMap@KHV?$CElementTraits@K@ATL@@V?$CElementTraits@H@2@@ATL@@QEAA_NI_N@Z 0x14044ea10 ; unique
 // MS2-PIN: ?Insert@?$CRBMultiMap@IIV?$CElementTraits@I@ATL@@V12@@ATL@@QEAAPEAU__POSITION@@II@Z 0x14044f9d0 ; unique
 // MS2-PIN: ?InsertImpl@?$CRBTree@IIV?$CElementTraits@I@ATL@@V12@@ATL@@AEAAPEAVCNode@12@II@Z 0x14044fa00 ; unique
+// MS2-PIN: ?IsEmpty@?$CAtlArray@V?$MS2Ptr@VFestivalContext@@@@V?$CElementTraits@V?$MS2Ptr@VFestivalContext@@@@@ATL@@@ATL@@QEBA_NXZ 0x14044fc60 ; prop: symbols.tsv
+// MS2-PIN: ?IsEmpty@?$CAtlArray@V?$MS2Ptr@VUnk_DayItemContext@@@@V?$CElementTraits@V?$MS2Ptr@VUnk_DayItemContext@@@@@ATL@@@ATL@@QEBA_NXZ 0x14044fc90 ; prop: symbols.tsv
+// MS2-PIN: ?IsEmpty@?$CAtlArray@V?$MS2Ptr@VUnk_FieldObjectDropContext@@@@V?$CElementTraits@V?$MS2Ptr@VUnk_FieldObjectDropContext@@@@@ATL@@@ATL@@QEBA_NXZ 0x14044fcc0 ; prop: symbols.tsv
+// MS2-PIN: ?IsEmpty@?$CAtlArray@V?$MS2Ptr@VUnk_FieldObjectDropListContext@@@@V?$CElementTraits@V?$MS2Ptr@VUnk_FieldObjectDropListContext@@@@@ATL@@@ATL@@QEBA_NXZ 0x14044fcf0 ; prop: symbols.tsv
 // MS2-PIN: ?IsLocked@?$CAtlMap@IGV?$CElementTraits@I@ATL@@V?$CElementTraits@G@2@@ATL@@AEBA_NXZ 0x14044fd80 ; prop
-// MS2-PIN: ?IsLocked@?$CAtlMap@IU?$pair@II@std@@V?$CElementTraits@I@ATL@@V?$CElementTraits@U?$pair@II@std@@@4@@ATL@@AEBA_NXZ 0x14044fdb0 ; prop
-// MS2-PIN: ?IsLocked@?$CAtlMap@IV?$Unk_FieldPtr@V?$CAtlList@IV?$CElementTraits@I@ATL@@@ATL@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$Unk_FieldPtr@V?$CAtlList@IV?$CElementTraits@I@ATL@@@ATL@@@@@3@@ATL@@AEBA_NXZ 0x14044fe10 ; prop
-// MS2-PIN: ?IsLocked@?$CAtlMap@IV?$MS2Ptr@VIDIPEventContext@CGameEventValueIDIPEvent@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VIDIPEventContext@CGameEventValueIDIPEvent@@@@@3@@ATL@@AEBA_NXZ 0x14044fed0 ; prop
-// MS2-PIN: ?IsLocked@?$CAtlMap@I_JV?$CElementTraits@I@ATL@@V?$CElementTraits@_J@2@@ATL@@AEBA_NXZ 0x14044ff60 ; prop
 // MS2-PIN: ?IsLocked@?$CAtlMap@IIV?$CElementTraits@I@ATL@@V12@@ATL@@AEBA_NXZ 0x14044ff90 ; prop
+// MS2-PIN: ?IsLocked@?$CAtlMap@IU?$pair@II@std@@V?$CElementTraits@I@ATL@@V?$CElementTraits@U?$pair@II@std@@@4@@ATL@@AEBA_NXZ 0x14044fdb0 ; prop
+// MS2-PIN: ?IsLocked@?$CAtlMap@I_JV?$CElementTraits@I@ATL@@V?$CElementTraits@_J@2@@ATL@@AEBA_NXZ 0x14044ff60 ; prop
 // MS2-PIN: ?IsNil@?$CRBTree@IIV?$CElementTraits@I@ATL@@V12@@ATL@@AEBA_NPEAVCNode@12@@Z 0x14044fff0 ; unique
 // MS2-PIN: ?LeftRotate@?$CRBTree@IIV?$CElementTraits@I@ATL@@V12@@ATL@@AEAAPEAVCNode@12@PEAV312@@Z 0x140450070 ; unique
-// MS2-PIN: ?Lookup@?$CAtlMap@IV?$Unk_FieldPtr@V?$CAtlList@IV?$CElementTraits@I@ATL@@@ATL@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$Unk_FieldPtr@V?$CAtlList@IV?$CElementTraits@I@ATL@@@ATL@@@@@3@@ATL@@QEBA_NIAEAV?$Unk_FieldPtr@V?$CAtlList@IV?$CElementTraits@I@ATL@@@ATL@@@@@Z 0x140450420 ; prop
-// MS2-PIN: ?Lookup@?$CAtlMap@IV?$MS2Ptr@VSpawnContext@CGameEventValueBattlePetSpawn@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VSpawnContext@CGameEventValueBattlePetSpawn@@@@@3@@ATL@@QEBA_NIAEAV?$MS2Ptr@VSpawnContext@CGameEventValueBattlePetSpawn@@@@@Z 0x140450490 ; prop
-// MS2-PIN: ?Lookup@?$CAtlMap@IV?$MS2Ptr@VIDIPEventContext@CGameEventValueIDIPEvent@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VIDIPEventContext@CGameEventValueIDIPEvent@@@@@3@@ATL@@QEAAPEAVCPair@12@I@Z 0x140450500 ; prop
 // MS2-PIN: ?Maximum@?$CRBTree@IIV?$CElementTraits@I@ATL@@V12@@ATL@@IEBAPEAVCNode@12@PEAV312@@Z 0x140450720 ; unique
 // MS2-PIN: ?Minimum@?$CRBTree@IIV?$CElementTraits@I@ATL@@V12@@ATL@@IEBAPEAVCNode@12@PEAV312@@Z 0x140450800 ; unique
 // MS2-PIN: ?NewNode@?$CAtlList@V?$MS2Ptr@VUnk_DayItemContext@@@@V?$CElementTraits@V?$MS2Ptr@VUnk_DayItemContext@@@@@ATL@@@ATL@@AEAAPEAVCNode@12@AEBV?$MS2Ptr@VUnk_DayItemContext@@@@PEAV312@1@Z 0x1404508e0 ; prop
 // MS2-PIN: ?NewNode@?$CAtlList@V?$MS2Ptr@VUnk_FieldObjectDropContext@@@@V?$CElementTraits@V?$MS2Ptr@VUnk_FieldObjectDropContext@@@@@ATL@@@ATL@@AEAAPEAVCNode@12@AEBV?$MS2Ptr@VUnk_FieldObjectDropContext@@@@PEAV312@1@Z 0x1404509a0 ; prop
 // MS2-PIN: ?NewNode@?$CAtlList@V?$MS2Ptr@VUnk_FieldObjectDropListContext@@@@V?$CElementTraits@V?$MS2Ptr@VUnk_FieldObjectDropListContext@@@@@ATL@@@ATL@@AEAAPEAVCNode@12@AEBV?$MS2Ptr@VUnk_FieldObjectDropListContext@@@@PEAV312@1@Z 0x140450a60 ; prop
-// MS2-PIN: ?NewNode@?$CAtlMap@KHV?$CElementTraits@K@ATL@@V?$CElementTraits@H@2@@ATL@@AEAAPEAVCNode@12@KII@Z 0x140450b20 ; unique
 // MS2-PIN: ?NewNode@?$CAtlMap@IGV?$CElementTraits@I@ATL@@V?$CElementTraits@G@2@@ATL@@AEAAPEAVCNode@12@III@Z 0x140450d30 ; prop
+// MS2-PIN: ?NewNode@?$CAtlMap@IIV?$CElementTraits@I@ATL@@V12@@ATL@@AEAAPEAVCNode@12@III@Z 0x1404523e0 ; prop: callee ?IsLocked@?$CAtlMap@IIV?$CElementTraits@I@ATL@@V12@@ATL@@AEBA_NXZ
 // MS2-PIN: ?NewNode@?$CAtlMap@IU?$pair@II@std@@V?$CElementTraits@I@ATL@@V?$CElementTraits@U?$pair@II@std@@@4@@ATL@@AEAAPEAVCNode@12@III@Z 0x140450f40 ; unique
-// MS2-PIN: ?NewNode@?$CAtlMap@IV?$Unk_FieldPtr@V?$CAtlList@IV?$CElementTraits@I@ATL@@@ATL@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$Unk_FieldPtr@V?$CAtlList@IV?$CElementTraits@I@ATL@@@ATL@@@@@3@@ATL@@AEAAPEAVCNode@12@III@Z 0x140451360 ; prop
-// MS2-PIN: ?NewNode@?$CAtlMap@IV?$MS2Ptr@VSpawnContext@CGameEventValueBattlePetSpawn@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VSpawnContext@CGameEventValueBattlePetSpawn@@@@@3@@ATL@@AEAAPEAVCNode@12@III@Z 0x140451780 ; prop
-// MS2-PIN: ?NewNode@?$CAtlMap@IV?$MS2Ptr@VIDIPEventContext@CGameEventValueIDIPEvent@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VIDIPEventContext@CGameEventValueIDIPEvent@@@@@3@@ATL@@AEAAPEAVCNode@12@III@Z 0x140451ba0 ; prop
+// MS2-PIN: ?NewNode@?$CAtlMap@IV?$MS2Ptr@VCNpcShopGivePointContextBase@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VCNpcShopGivePointContextBase@@@@@3@@ATL@@AEAAPEAVCNode@12@III@Z 0x140451570 ; unique: caller ?CreateNode@?$CAtlMap@IV?$MS2Ptr@VCNpcShopGivePointContextBase@@@@...
+// MS2-PIN: ?NewNode@?$CAtlMap@IV?$MS2Ptr@VFestivalContext@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VFestivalContext@@@@@3@@ATL@@AEAAPEAVCNode@12@III@Z 0x140451780 ; unique: caller ?CreateNode@?$CAtlMap@IV?$MS2Ptr@VFestivalContext@@@@V?$CElementTr...
+// MS2-PIN: ?NewNode@?$CAtlMap@IV?$MS2Ptr@VSpawnContext@CGameEventValueBattlePetSpawn@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VSpawnContext@CGameEventValueBattlePetSpawn@@@@@3@@ATL@@AEAAPEAVCNode@12@III@Z 0x140451ba0 ; unique: caller ?CreateNode@?$CAtlMap@IV?$MS2Ptr@VSpawnContext@CGameEventValueBatt...
+// MS2-PIN: ?NewNode@?$CAtlMap@IV?$MS2Ptr@VUnk_FieldObjectDropContext@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VUnk_FieldObjectDropContext@@@@@3@@ATL@@AEAAPEAVCNode@12@III@Z 0x140451fc0 ; unique: caller ?CreateNode@?$CAtlMap@IV?$MS2Ptr@VUnk_FieldObjectDropContext@@@@V?...
 // MS2-PIN: ?NewNode@?$CAtlMap@I_JV?$CElementTraits@I@ATL@@V?$CElementTraits@_J@2@@ATL@@AEAAPEAVCNode@12@III@Z 0x1404521d0 ; unique
+// MS2-PIN: ?NewNode@?$CAtlMap@KHV?$CElementTraits@K@ATL@@V?$CElementTraits@H@2@@ATL@@AEAAPEAVCNode@12@KII@Z 0x140450b20 ; unique
 // MS2-PIN: ?NewNode@?$CRBTree@IIV?$CElementTraits@I@ATL@@V12@@ATL@@AEAAPEAVCNode@12@II@Z 0x140452800 ; unique
-// MS2-PIN: ?PickSize@?$CAtlMap@KHV?$CElementTraits@K@ATL@@V?$CElementTraits@H@2@@ATL@@AEBAI_K@Z 0x140452cc0 ; prop
+// MS2-PIN: ?Owner@?$Unk_FieldPtr@V?$CAtlList@IV?$CElementTraits@I@ATL@@@ATL@@@@CAPEAV?$TPtredDummy@V?$CAtlList@IV?$CElementTraits@I@ATL@@@ATL@@@@PEAV?$CAtlList@IV?$CElementTraits@I@ATL@@@ATL@@@Z 0x14044cfb0 ; unique: single byte-identical candidate
 // MS2-PIN: ?PickSize@?$CAtlMap@IGV?$CElementTraits@I@ATL@@V?$CElementTraits@G@2@@ATL@@AEBAI_K@Z 0x140452db0 ; prop
 // MS2-PIN: ?PickSize@?$CAtlMap@IU?$pair@II@std@@V?$CElementTraits@I@ATL@@V?$CElementTraits@U?$pair@II@std@@@4@@ATL@@AEBAI_K@Z 0x140452ea0 ; prop
-// MS2-PIN: ?PickSize@?$CAtlMap@IV?$Unk_FieldPtr@V?$CAtlList@IV?$CElementTraits@I@ATL@@@ATL@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$Unk_FieldPtr@V?$CAtlList@IV?$CElementTraits@I@ATL@@@ATL@@@@@3@@ATL@@AEBAI_K@Z 0x140453080 ; prop
-// MS2-PIN: ?PickSize@?$CAtlMap@IV?$MS2Ptr@VIDIPEventContext@CGameEventValueIDIPEvent@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VIDIPEventContext@CGameEventValueIDIPEvent@@@@@3@@ATL@@AEBAI_K@Z 0x140453440 ; prop
 // MS2-PIN: ?PickSize@?$CAtlMap@I_JV?$CElementTraits@I@ATL@@V?$CElementTraits@_J@2@@ATL@@AEBAI_K@Z 0x140453710 ; prop
+// MS2-PIN: ?PickSize@?$CAtlMap@KHV?$CElementTraits@K@ATL@@V?$CElementTraits@H@2@@ATL@@AEBAI_K@Z 0x140452cc0 ; prop
 // MS2-PIN: ?Predecessor@?$CRBTree@IIV?$CElementTraits@I@ATL@@V12@@ATL@@IEBAPEAVCNode@12@PEAV312@@Z 0x1404539e0 ; unique
 // MS2-PIN: ?RBDelete@?$CRBTree@IIV?$CElementTraits@I@ATL@@V12@@ATL@@AEAA_NPEAVCNode@12@@Z 0x140453b80 ; unique
 // MS2-PIN: ?RBDeleteFixup@?$CRBTree@IIV?$CElementTraits@I@ATL@@V12@@ATL@@AEAAXPEAVCNode@12@@Z 0x140453ee0 ; unique
 // MS2-PIN: ?RBInsert@?$CRBTree@IIV?$CElementTraits@I@ATL@@V12@@ATL@@IEAAPEAVCNode@12@II@Z 0x140454540 ; unique
-// MS2-PIN: ?Rehash@?$CAtlMap@KHV?$CElementTraits@K@ATL@@V?$CElementTraits@H@2@@ATL@@QEAAXI@Z 0x140454a40 ; prop
 // MS2-PIN: ?Rehash@?$CAtlMap@IU?$pair@II@std@@V?$CElementTraits@I@ATL@@V?$CElementTraits@U?$pair@II@std@@@4@@ATL@@QEAAXI@Z 0x140454ea0 ; prop
-// MS2-PIN: ?Rehash@?$CAtlMap@IV?$Unk_FieldPtr@V?$CAtlList@IV?$CElementTraits@I@ATL@@@ATL@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$Unk_FieldPtr@V?$CAtlList@IV?$CElementTraits@I@ATL@@@ATL@@@@@3@@ATL@@QEAAXI@Z 0x140455300 ; prop
-// MS2-PIN: ?Rehash@?$CAtlMap@IV?$MS2Ptr@VCNpcShopGivePointContextBase@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VCNpcShopGivePointContextBase@@@@@3@@ATL@@QEAAXI@Z 0x140455760 ; prop
-// MS2-PIN: ?Rehash@?$CAtlMap@IV?$MS2Ptr@VIDIPEventContext@CGameEventValueIDIPEvent@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VIDIPEventContext@CGameEventValueIDIPEvent@@@@@3@@ATL@@QEAAXI@Z 0x140455bc0 ; prop
 // MS2-PIN: ?Rehash@?$CAtlMap@I_JV?$CElementTraits@I@ATL@@V?$CElementTraits@_J@2@@ATL@@QEAAXI@Z 0x140456250 ; prop
 // MS2-PIN: ?Rehash@?$CAtlMap@I_NV?$CElementTraits@I@ATL@@V?$CElementTraits@_N@2@@ATL@@QEAAXI@Z 0x140456480 ; prop
+// MS2-PIN: ?Rehash@?$CAtlMap@KHV?$CElementTraits@K@ATL@@V?$CElementTraits@H@2@@ATL@@QEAAXI@Z 0x140454a40 ; prop
 // MS2-PIN: ?RemoveAll@?$CAtlMap@IGV?$CElementTraits@I@ATL@@V?$CElementTraits@G@2@@ATL@@QEAAXXZ 0x140456920 ; prop
-// MS2-PIN: ?RemoveAll@?$CAtlMap@IV?$Unk_FieldPtr@V?$CAtlList@IV?$CElementTraits@I@ATL@@@ATL@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$Unk_FieldPtr@V?$CAtlList@IV?$CElementTraits@I@ATL@@@ATL@@@@@3@@ATL@@QEAAXXZ 0x140456a30 ; prop
 // MS2-PIN: ?RemoveAt@?$CRBTree@IIV?$CElementTraits@I@ATL@@V12@@ATL@@QEAAXPEAU__POSITION@@@Z 0x140456e40 ; unique
 // MS2-PIN: ?RemoveAtPos@?$CAtlMap@IGV?$CElementTraits@I@ATL@@V?$CElementTraits@G@2@@ATL@@QEAAXPEAU__POSITION@@@Z 0x140456f90 ; prop
 // MS2-PIN: ?RemoveAtPos@?$CAtlMap@IU?$pair@II@std@@V?$CElementTraits@I@ATL@@V?$CElementTraits@U?$pair@II@std@@@4@@ATL@@QEAAXPEAU__POSITION@@@Z 0x140457080 ; prop
-// MS2-PIN: ?RemoveAtPos@?$CAtlMap@IV?$Unk_FieldPtr@V?$CAtlList@IV?$CElementTraits@I@ATL@@@ATL@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$Unk_FieldPtr@V?$CAtlList@IV?$CElementTraits@I@ATL@@@ATL@@@@@3@@ATL@@QEAAXPEAU__POSITION@@@Z 0x140457260 ; prop
-// MS2-PIN: ?RemoveAtPos@?$CAtlMap@IV?$MS2Ptr@VUnk_FieldObjectDropListContext@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VUnk_FieldObjectDropListContext@@@@@3@@ATL@@QEAAXPEAU__POSITION@@@Z 0x140457440 ; prop
-// MS2-PIN: ?RemoveAtPos@?$CAtlMap@IV?$MS2Ptr@VIDIPEventContext@CGameEventValueIDIPEvent@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VIDIPEventContext@CGameEventValueIDIPEvent@@@@@3@@ATL@@QEAAXPEAU__POSITION@@@Z 0x140457620 ; prop
 // MS2-PIN: ?RemoveAtPos@?$CAtlMap@I_JV?$CElementTraits@I@ATL@@V?$CElementTraits@_J@2@@ATL@@QEAAXPEAU__POSITION@@@Z 0x1404578f0 ; prop
 // MS2-PIN: ?RemoveAtPos@?$CAtlMap@I_NV?$CElementTraits@I@ATL@@V?$CElementTraits@_N@2@@ATL@@QEAAXPEAU__POSITION@@@Z 0x1404579e0 ; prop
 // MS2-PIN: ?RemoveAtPos@?$CAtlMap@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@UUnk_FieldTimeSpan@@V?$CStringElementTraits@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@2@V?$CElementTraits@UUnk_FieldTimeSpan@@@2@@ATL@@QEAAXPEAU__POSITION@@@Z 0x140457ad0 ; prop
-// MS2-PIN: ?RemoveKey@?$CAtlMap@KHV?$CElementTraits@K@ATL@@V?$CElementTraits@H@2@@ATL@@QEAA_NK@Z 0x140457bc0 ; prop
 // MS2-PIN: ?RemoveKey@?$CAtlMap@IU?$pair@II@std@@V?$CElementTraits@I@ATL@@V?$CElementTraits@U?$pair@II@std@@@4@@ATL@@QEAA_NI@Z 0x140457ca0 ; prop
-// MS2-PIN: ?RemoveKey@?$CAtlMap@IV?$Unk_FieldPtr@V?$CAtlList@IV?$CElementTraits@I@ATL@@@ATL@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$Unk_FieldPtr@V?$CAtlList@IV?$CElementTraits@I@ATL@@@ATL@@@@@3@@ATL@@QEAA_NI@Z 0x140457d80 ; prop
-// MS2-PIN: ?RemoveKey@?$CAtlMap@IV?$MS2Ptr@VFestivalContext@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VFestivalContext@@@@@3@@ATL@@QEAA_NI@Z 0x140457df0 ; prop
-// MS2-PIN: ?RemoveKey@?$CAtlMap@IV?$MS2Ptr@VIDIPEventContext@CGameEventValueIDIPEvent@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VIDIPEventContext@CGameEventValueIDIPEvent@@@@@3@@ATL@@QEAA_NI@Z 0x140457f40 ; prop
-// MS2-PIN: ?RemoveNode@?$CAtlMap@KHV?$CElementTraits@K@ATL@@V?$CElementTraits@H@2@@ATL@@AEAAXPEAVCNode@12@0@Z 0x140458150 ; prop
+// MS2-PIN: ?RemoveKey@?$CAtlMap@KHV?$CElementTraits@K@ATL@@V?$CElementTraits@H@2@@ATL@@QEAA_NK@Z 0x140457bc0 ; prop
 // MS2-PIN: ?RemoveNode@?$CAtlMap@IU?$pair@II@std@@V?$CElementTraits@I@ATL@@V?$CElementTraits@U?$pair@II@std@@@4@@ATL@@AEAAXPEAVCNode@12@0@Z 0x1404582d0 ; prop
-// MS2-PIN: ?RemoveNode@?$CAtlMap@IV?$Unk_FieldPtr@V?$CAtlList@IV?$CElementTraits@I@ATL@@@ATL@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$Unk_FieldPtr@V?$CAtlList@IV?$CElementTraits@I@ATL@@@ATL@@@@@3@@ATL@@AEAAXPEAVCNode@12@0@Z 0x140458450 ; prop
-// MS2-PIN: ?RemoveNode@?$CAtlMap@IV?$MS2Ptr@VFestivalContext@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VFestivalContext@@@@@3@@ATL@@AEAAXPEAVCNode@12@0@Z 0x140458510 ; prop
-// MS2-PIN: ?RemoveNode@?$CAtlMap@IV?$MS2Ptr@VUnk_FieldObjectDropListContext@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VUnk_FieldObjectDropListContext@@@@@3@@ATL@@AEAAXPEAVCNode@12@0@Z 0x1404585d0 ; prop
-// MS2-PIN: ?RemoveNode@?$CAtlMap@IV?$MS2Ptr@VIDIPEventContext@CGameEventValueIDIPEvent@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VIDIPEventContext@CGameEventValueIDIPEvent@@@@@3@@ATL@@AEAAXPEAVCNode@12@0@Z 0x140458750 ; prop
 // MS2-PIN: ?RemoveNode@?$CAtlMap@I_JV?$CElementTraits@I@ATL@@V?$CElementTraits@_J@2@@ATL@@AEAAXPEAVCNode@12@0@Z 0x140458990 ; prop
 // MS2-PIN: ?RemoveNode@?$CAtlMap@I_NV?$CElementTraits@I@ATL@@V?$CElementTraits@_N@2@@ATL@@AEAAXPEAVCNode@12@0@Z 0x140458a50 ; prop
+// MS2-PIN: ?RemoveNode@?$CAtlMap@KHV?$CElementTraits@K@ATL@@V?$CElementTraits@H@2@@ATL@@AEAAXPEAVCNode@12@0@Z 0x140458150 ; prop
 // MS2-PIN: ?RightRotate@?$CRBTree@IIV?$CElementTraits@I@ATL@@V12@@ATL@@AEAAPEAVCNode@12@PEAV312@@Z 0x140458bd0 ; unique
-// MS2-PIN: ?SetAt@?$CAtlMap@IV?$Unk_FieldPtr@V?$CAtlList@IV?$CElementTraits@I@ATL@@@ATL@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$Unk_FieldPtr@V?$CAtlList@IV?$CElementTraits@I@ATL@@@ATL@@@@@3@@ATL@@QEAAPEAU__POSITION@@IAEBV?$Unk_FieldPtr@V?$CAtlList@IV?$CElementTraits@I@ATL@@@ATL@@@@@Z 0x140459080 ; prop
-// MS2-PIN: ?SetAt@?$CAtlMap@IV?$MS2Ptr@VFestivalContext@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VFestivalContext@@@@@3@@ATL@@QEAAPEAU__POSITION@@IAEBV?$MS2Ptr@VFestivalContext@@@@@Z 0x140459130 ; prop
-// MS2-PIN: ?SetAt@?$CAtlMap@IV?$MS2Ptr@VSpawnContext@CGameEventValueBattlePetSpawn@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VSpawnContext@CGameEventValueBattlePetSpawn@@@@@3@@ATL@@QEAAPEAU__POSITION@@IAEBV?$MS2Ptr@VSpawnContext@CGameEventValueBattlePetSpawn@@@@@Z 0x1404591e0 ; prop
-// MS2-PIN: ?SetAt@?$CAtlMap@IV?$MS2Ptr@VIDIPEventContext@CGameEventValueIDIPEvent@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VIDIPEventContext@CGameEventValueIDIPEvent@@@@@3@@ATL@@QEAAPEAU__POSITION@@IAEBV?$MS2Ptr@VIDIPEventContext@CGameEventValueIDIPEvent@@@@@Z 0x140459340 ; prop
+// MS2-PIN: ?SetAt@?$CAtlMap@I_NV?$CElementTraits@I@ATL@@V?$CElementTraits@_N@2@@ATL@@QEAAPEAU__POSITION@@I_N@Z 0x1404595f0 ; unique: single byte-identical candidate
 // MS2-PIN: ?SetNil@?$CRBTree@IIV?$CElementTraits@I@ATL@@V12@@ATL@@AEAAXPEAPEAVCNode@12@@Z 0x1404597a0 ; unique
-// MS2-PIN: ?SetOptimalLoad@?$CAtlMap@KHV?$CElementTraits@K@ATL@@V?$CElementTraits@H@2@@ATL@@QEAAXMMM_N@Z 0x140459880 ; prop
 // MS2-PIN: ?SetOptimalLoad@?$CAtlMap@IGV?$CElementTraits@I@ATL@@V?$CElementTraits@G@2@@ATL@@QEAAXMMM_N@Z 0x140459930 ; prop
 // MS2-PIN: ?SetOptimalLoad@?$CAtlMap@IU?$pair@II@std@@V?$CElementTraits@I@ATL@@V?$CElementTraits@U?$pair@II@std@@@4@@ATL@@QEAAXMMM_N@Z 0x1404599e0 ; prop
-// MS2-PIN: ?SetOptimalLoad@?$CAtlMap@IV?$Unk_FieldPtr@V?$CAtlList@IV?$CElementTraits@I@ATL@@@ATL@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$Unk_FieldPtr@V?$CAtlList@IV?$CElementTraits@I@ATL@@@ATL@@@@@3@@ATL@@QEAAXMMM_N@Z 0x140459b40 ; prop
-// MS2-PIN: ?SetOptimalLoad@?$CAtlMap@IV?$MS2Ptr@VCNpcShopGivePointContextBase@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VCNpcShopGivePointContextBase@@@@@3@@ATL@@QEAAXMMM_N@Z 0x140459ca0 ; prop
-// MS2-PIN: ?SetOptimalLoad@?$CAtlMap@IV?$MS2Ptr@VIDIPEventContext@CGameEventValueIDIPEvent@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VIDIPEventContext@CGameEventValueIDIPEvent@@@@@3@@ATL@@QEAAXMMM_N@Z 0x140459e00 ; prop
 // MS2-PIN: ?SetOptimalLoad@?$CAtlMap@I_JV?$CElementTraits@I@ATL@@V?$CElementTraits@_J@2@@ATL@@QEAAXMMM_N@Z 0x14045a010 ; prop
 // MS2-PIN: ?SetOptimalLoad@?$CAtlMap@I_NV?$CElementTraits@I@ATL@@V?$CElementTraits@_N@2@@ATL@@QEAAXMMM_N@Z 0x14045a0c0 ; prop
+// MS2-PIN: ?SetOptimalLoad@?$CAtlMap@KHV?$CElementTraits@K@ATL@@V?$CElementTraits@H@2@@ATL@@QEAAXMMM_N@Z 0x140459880 ; prop
 // MS2-PIN: ?SetOptimalLoad@?$CAtlMap@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@UUnk_FieldTimeSpan@@V?$CStringElementTraits@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@2@V?$CElementTraits@UUnk_FieldTimeSpan@@@2@@ATL@@QEAAXMMM_N@Z 0x14045a170 ; prop
 // MS2-PIN: ?Successor@?$CRBTree@IIV?$CElementTraits@I@ATL@@V12@@ATL@@IEBAPEAVCNode@12@PEAV312@@Z 0x14045a220 ; unique
 // MS2-PIN: ?SwapNode@?$CRBTree@IIV?$CElementTraits@I@ATL@@V12@@ATL@@AEAAXPEAVCNode@12@0@Z 0x14045a3c0 ; unique
-// MS2-PIN: ?UpdateRehashThresholds@?$CAtlMap@KHV?$CElementTraits@K@ATL@@V?$CElementTraits@H@2@@ATL@@AEAAXXZ 0x14045a680 ; prop
 // MS2-PIN: ?UpdateRehashThresholds@?$CAtlMap@IGV?$CElementTraits@I@ATL@@V?$CElementTraits@G@2@@ATL@@AEAAXXZ 0x14045a760 ; prop
 // MS2-PIN: ?UpdateRehashThresholds@?$CAtlMap@IU?$pair@II@std@@V?$CElementTraits@I@ATL@@V?$CElementTraits@U?$pair@II@std@@@4@@ATL@@AEAAXXZ 0x14045a840 ; prop
-// MS2-PIN: ?UpdateRehashThresholds@?$CAtlMap@IV?$Unk_FieldPtr@V?$CAtlList@IV?$CElementTraits@I@ATL@@@ATL@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$Unk_FieldPtr@V?$CAtlList@IV?$CElementTraits@I@ATL@@@ATL@@@@@3@@ATL@@AEAAXXZ 0x14045aa00 ; prop
-// MS2-PIN: ?UpdateRehashThresholds@?$CAtlMap@IV?$MS2Ptr@VIDIPEventContext@CGameEventValueIDIPEvent@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VIDIPEventContext@CGameEventValueIDIPEvent@@@@@3@@ATL@@AEAAXXZ 0x14045ad80 ; prop
 // MS2-PIN: ?UpdateRehashThresholds@?$CAtlMap@I_JV?$CElementTraits@I@ATL@@V?$CElementTraits@_J@2@@ATL@@AEAAXXZ 0x14045b020 ; prop
+// MS2-PIN: ?UpdateRehashThresholds@?$CAtlMap@KHV?$CElementTraits@K@ATL@@V?$CElementTraits@H@2@@ATL@@AEAAXXZ 0x14045a680 ; prop
 // MS2-PIN: ?UpdateRehashThresholds@?$CAtlMap@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@UUnk_FieldTimeSpan@@V?$CStringElementTraits@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@2@V?$CElementTraits@UUnk_FieldTimeSpan@@@2@@ATL@@AEAAXXZ 0x14045b1e0 ; unique
 // MS2-PINS-END tplpin
-// MS2-PIN: ??_GCNode@?$CAtlMap@IV?$MS2Ptr@VSpawnContext@CGameEventValueBattlePetSpawn@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VSpawnContext@CGameEventValueBattlePetSpawn@@@@@3@@ATL@@QEAAPEAXI@Z 0x14044a980
-// MS2-PIN: ?CreateNode@?$CAtlMap@IV?$MS2Ptr@VUnk_DayItemContext@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VUnk_DayItemContext@@@@@3@@ATL@@AEAAPEAVCNode@12@III@Z 0x14044b220
-// MS2-PIN: ?FreeNode@?$CAtlMap@IV?$MS2Ptr@VSpawnContext@CGameEventValueBattlePetSpawn@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VSpawnContext@CGameEventValueBattlePetSpawn@@@@@3@@ATL@@AEAAXPEAVCNode@12@@Z 0x14044c330
-// MS2-PIN: ?GetHash@CNode@?$CAtlMap@IV?$MS2Ptr@VSpawnContext@CGameEventValueBattlePetSpawn@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VSpawnContext@CGameEventValueBattlePetSpawn@@@@@3@@ATL@@QEBAIXZ 0x14044d310
+// sfr34: the eight CAtlMap<unsigned, MS2Ptr<...>/Unk_FieldPtr<...>> families, anchored by their SetOptimalLoad: each
+// event value ctor in gameeventvalue.cpp (matched) calls its own map ctor, which calls a distinct SetOptimalLoad copy,
+// which calls that family's UpdateRehashThresholds / PickSize / Rehash. The old tplpin block had IDIP<-Spawn,
+// Spawn<-IDIP and CNpcShop<-Festival swapped and left FieldObjectDropList's SetOptimalLoad 0x140459eb0 a stub.
+// MS2-PIN: ?SetOptimalLoad@?$CAtlMap@IV?$MS2Ptr@VIDIPEventContext@CGameEventValueIDIPEvent@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VIDIPEventContext@CGameEventValueIDIPEvent@@@@@3@@ATL@@QEAAXMMM_N@Z 0x140459a90
+// MS2-PIN: ?UpdateRehashThresholds@?$CAtlMap@IV?$MS2Ptr@VIDIPEventContext@CGameEventValueIDIPEvent@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VIDIPEventContext@CGameEventValueIDIPEvent@@@@@3@@ATL@@AEAAXXZ 0x14045a920
+// MS2-PIN: ?PickSize@?$CAtlMap@IV?$MS2Ptr@VIDIPEventContext@CGameEventValueIDIPEvent@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VIDIPEventContext@CGameEventValueIDIPEvent@@@@@3@@ATL@@AEBAI_K@Z 0x140452f90
+// MS2-PIN: ?Rehash@?$CAtlMap@IV?$MS2Ptr@VIDIPEventContext@CGameEventValueIDIPEvent@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VIDIPEventContext@CGameEventValueIDIPEvent@@@@@3@@ATL@@QEAAXI@Z 0x1404550d0
+// MS2-PIN: ?SetOptimalLoad@?$CAtlMap@IV?$Unk_FieldPtr@V?$CAtlList@IV?$CElementTraits@I@ATL@@@ATL@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$Unk_FieldPtr@V?$CAtlList@IV?$CElementTraits@I@ATL@@@ATL@@@@@3@@ATL@@QEAAXMMM_N@Z 0x140459b40
+// MS2-PIN: ?UpdateRehashThresholds@?$CAtlMap@IV?$Unk_FieldPtr@V?$CAtlList@IV?$CElementTraits@I@ATL@@@ATL@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$Unk_FieldPtr@V?$CAtlList@IV?$CElementTraits@I@ATL@@@ATL@@@@@3@@ATL@@AEAAXXZ 0x14045aa00
+// MS2-PIN: ?PickSize@?$CAtlMap@IV?$Unk_FieldPtr@V?$CAtlList@IV?$CElementTraits@I@ATL@@@ATL@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$Unk_FieldPtr@V?$CAtlList@IV?$CElementTraits@I@ATL@@@ATL@@@@@3@@ATL@@AEBAI_K@Z 0x140453080
+// MS2-PIN: ?Rehash@?$CAtlMap@IV?$Unk_FieldPtr@V?$CAtlList@IV?$CElementTraits@I@ATL@@@ATL@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$Unk_FieldPtr@V?$CAtlList@IV?$CElementTraits@I@ATL@@@ATL@@@@@3@@ATL@@QEAAXI@Z 0x140455300
+// MS2-PIN: ?SetOptimalLoad@?$CAtlMap@IV?$MS2Ptr@VCNpcShopGivePointContextBase@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VCNpcShopGivePointContextBase@@@@@3@@ATL@@QEAAXMMM_N@Z 0x140459bf0
+// MS2-PIN: ?UpdateRehashThresholds@?$CAtlMap@IV?$MS2Ptr@VCNpcShopGivePointContextBase@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VCNpcShopGivePointContextBase@@@@@3@@ATL@@AEAAXXZ 0x14045aae0
+// MS2-PIN: ?PickSize@?$CAtlMap@IV?$MS2Ptr@VCNpcShopGivePointContextBase@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VCNpcShopGivePointContextBase@@@@@3@@ATL@@AEBAI_K@Z 0x140453170
+// MS2-PIN: ?Rehash@?$CAtlMap@IV?$MS2Ptr@VCNpcShopGivePointContextBase@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VCNpcShopGivePointContextBase@@@@@3@@ATL@@QEAAXI@Z 0x140455530
+// MS2-PIN: ?SetOptimalLoad@?$CAtlMap@IV?$MS2Ptr@VFestivalContext@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VFestivalContext@@@@@3@@ATL@@QEAAXMMM_N@Z 0x140459ca0
+// MS2-PIN: ?UpdateRehashThresholds@?$CAtlMap@IV?$MS2Ptr@VFestivalContext@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VFestivalContext@@@@@3@@ATL@@AEAAXXZ 0x14045abc0
+// MS2-PIN: ?PickSize@?$CAtlMap@IV?$MS2Ptr@VFestivalContext@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VFestivalContext@@@@@3@@ATL@@AEBAI_K@Z 0x140453260
+// MS2-PIN: ?Rehash@?$CAtlMap@IV?$MS2Ptr@VFestivalContext@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VFestivalContext@@@@@3@@ATL@@QEAAXI@Z 0x140455760
+// MS2-PIN: ?SetOptimalLoad@?$CAtlMap@IV?$MS2Ptr@VUnk_DayItemContext@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VUnk_DayItemContext@@@@@3@@ATL@@QEAAXMMM_N@Z 0x140459d50
+// MS2-PIN: ?UpdateRehashThresholds@?$CAtlMap@IV?$MS2Ptr@VUnk_DayItemContext@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VUnk_DayItemContext@@@@@3@@ATL@@AEAAXXZ 0x14045aca0
+// MS2-PIN: ?PickSize@?$CAtlMap@IV?$MS2Ptr@VUnk_DayItemContext@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VUnk_DayItemContext@@@@@3@@ATL@@AEBAI_K@Z 0x140453350
 // MS2-PIN: ?Rehash@?$CAtlMap@IV?$MS2Ptr@VUnk_DayItemContext@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VUnk_DayItemContext@@@@@3@@ATL@@QEAAXI@Z 0x140455990
-// MS2-PIN: ?RemoveAtPos@?$CAtlMap@IV?$MS2Ptr@VCNpcShopGivePointContextBase@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VCNpcShopGivePointContextBase@@@@@3@@ATL@@QEAAXPEAU__POSITION@@@Z 0x140457530
-// MS2-PIN: ?RemoveKey@?$CAtlMap@IV?$MS2Ptr@VSpawnContext@CGameEventValueBattlePetSpawn@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VSpawnContext@CGameEventValueBattlePetSpawn@@@@@3@@ATL@@QEAA_NI@Z 0x140457ed0
-// MS2-PIN: ?RemoveNode@?$CAtlMap@IV?$MS2Ptr@VCNpcShopGivePointContextBase@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VCNpcShopGivePointContextBase@@@@@3@@ATL@@AEAAXPEAVCNode@12@0@Z 0x140458690
-// MS2-PIN: ?SetAt@?$CAtlMap@IV?$MS2Ptr@VUnk_DayItemContext@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VUnk_DayItemContext@@@@@3@@ATL@@QEAAPEAU__POSITION@@IAEBV?$MS2Ptr@VUnk_DayItemContext@@@@@Z 0x140459290
+// MS2-PIN: ?SetOptimalLoad@?$CAtlMap@IV?$MS2Ptr@VSpawnContext@CGameEventValueBattlePetSpawn@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VSpawnContext@CGameEventValueBattlePetSpawn@@@@@3@@ATL@@QEAAXMMM_N@Z 0x140459e00
+// MS2-PIN: ?UpdateRehashThresholds@?$CAtlMap@IV?$MS2Ptr@VSpawnContext@CGameEventValueBattlePetSpawn@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VSpawnContext@CGameEventValueBattlePetSpawn@@@@@3@@ATL@@AEAAXXZ 0x14045ad80
+// MS2-PIN: ?PickSize@?$CAtlMap@IV?$MS2Ptr@VSpawnContext@CGameEventValueBattlePetSpawn@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VSpawnContext@CGameEventValueBattlePetSpawn@@@@@3@@ATL@@AEBAI_K@Z 0x140453440
+// MS2-PIN: ?Rehash@?$CAtlMap@IV?$MS2Ptr@VSpawnContext@CGameEventValueBattlePetSpawn@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VSpawnContext@CGameEventValueBattlePetSpawn@@@@@3@@ATL@@QEAAXI@Z 0x140455bc0
+// MS2-PIN: ?SetOptimalLoad@?$CAtlMap@IV?$MS2Ptr@VUnk_FieldObjectDropListContext@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VUnk_FieldObjectDropListContext@@@@@3@@ATL@@QEAAXMMM_N@Z 0x140459eb0
+// MS2-PIN: ?UpdateRehashThresholds@?$CAtlMap@IV?$MS2Ptr@VUnk_FieldObjectDropListContext@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VUnk_FieldObjectDropListContext@@@@@3@@ATL@@AEAAXXZ 0x14045ae60
+// MS2-PIN: ?PickSize@?$CAtlMap@IV?$MS2Ptr@VUnk_FieldObjectDropListContext@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VUnk_FieldObjectDropListContext@@@@@3@@ATL@@AEBAI_K@Z 0x140453530
+// MS2-PIN: ?Rehash@?$CAtlMap@IV?$MS2Ptr@VUnk_FieldObjectDropListContext@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VUnk_FieldObjectDropListContext@@@@@3@@ATL@@QEAAXI@Z 0x140455df0
+// MS2-PIN: ?SetOptimalLoad@?$CAtlMap@IV?$MS2Ptr@VUnk_FieldObjectDropContext@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VUnk_FieldObjectDropContext@@@@@3@@ATL@@QEAAXMMM_N@Z 0x140459f60
+// MS2-PIN: ?UpdateRehashThresholds@?$CAtlMap@IV?$MS2Ptr@VUnk_FieldObjectDropContext@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VUnk_FieldObjectDropContext@@@@@3@@ATL@@AEAAXXZ 0x14045af40
+// MS2-PIN: ?PickSize@?$CAtlMap@IV?$MS2Ptr@VUnk_FieldObjectDropContext@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VUnk_FieldObjectDropContext@@@@@3@@ATL@@AEBAI_K@Z 0x140453620
+// MS2-PIN: ?Rehash@?$CAtlMap@IV?$MS2Ptr@VUnk_FieldObjectDropContext@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VUnk_FieldObjectDropContext@@@@@3@@ATL@@QEAAXI@Z 0x140456020
 // MS2-PIN: ??_GSpawnContext@CGameEventValueBattlePetSpawn@@UEAAPEAXI@Z 0x14044abc0
 // MS2-PIN: ??_GRestrictionData@CGameEventValueItemTradeRestriction@@UEAAPEAXI@Z 0x14044ab80
-// MS2-PIN: ?RemoveKey@?$CAtlMap@IV?$MS2Ptr@VUnk_DayItemContext@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VUnk_DayItemContext@@@@@3@@ATL@@QEAA_NI@Z 0x140457fb0
-// MS2-PIN: ?RemoveKey@?$CAtlMap@IV?$MS2Ptr@VUnk_FieldObjectDropContext@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VUnk_FieldObjectDropContext@@@@@3@@ATL@@QEAA_NI@Z 0x140458020
-// MS2-PIN: ?GetNode@?$CAtlMap@IV?$MS2Ptr@VUnk_DayItemContext@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VUnk_DayItemContext@@@@@3@@ATL@@AEBAPEAVCNode@12@IAEAI0AEAPEAV312@@Z 0x14044de30
-// MS2-PIN: ?NewNode@?$CAtlMap@IV?$MS2Ptr@VUnk_FieldObjectDropContext@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VUnk_FieldObjectDropContext@@@@@3@@ATL@@AEAAPEAVCNode@12@III@Z 0x140451fc0
-// MS2-PIN: ?NewNode@?$CAtlMap@IV?$MS2Ptr@VUnk_FieldObjectDropListContext@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VUnk_FieldObjectDropListContext@@@@@3@@ATL@@AEAAPEAVCNode@12@III@Z 0x140451db0
-// MS2-PIN: ?Rehash@?$CAtlMap@IV?$MS2Ptr@VUnk_FieldObjectDropListContext@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VUnk_FieldObjectDropListContext@@@@@3@@ATL@@QEAAXI@Z 0x140455df0
-// MS2-PIN: ?Rehash@?$CAtlMap@IV?$MS2Ptr@VUnk_FieldObjectDropContext@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VUnk_FieldObjectDropContext@@@@@3@@ATL@@QEAAXI@Z 0x140456020
 // MS2-PIN: ??_GIDIPEventContext@CGameEventValueIDIPEvent@@UEAAPEAXI@Z 0x14044ab40
+// sfr34: the remaining members of the eight families, typed by exe call edges from the SetOptimalLoad anchors above
+// (each member only calls its own family; the leaf GetStartPosition/GetValueAt by their gameeventvalue.cpp caller).
+// MS2-PIN: ??_GCNode@?$CAtlMap@IV?$MS2Ptr@VIDIPEventContext@CGameEventValueIDIPEvent@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VIDIPEventContext@CGameEventValueIDIPEvent@@@@@3@@ATL@@QEAAPEAXI@Z 0x14044a880
+// MS2-PIN: ??_GCNode@?$CAtlMap@IV?$Unk_FieldPtr@V?$CAtlList@IV?$CElementTraits@I@ATL@@@ATL@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$Unk_FieldPtr@V?$CAtlList@IV?$CElementTraits@I@ATL@@@ATL@@@@@3@@ATL@@QEAAPEAXI@Z 0x14044a8c0
+// MS2-PIN: ??_GCNode@?$CAtlMap@IV?$MS2Ptr@VCNpcShopGivePointContextBase@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VCNpcShopGivePointContextBase@@@@@3@@ATL@@QEAAPEAXI@Z 0x14044a900
+// MS2-PIN: ??_GCNode@?$CAtlMap@IV?$MS2Ptr@VFestivalContext@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VFestivalContext@@@@@3@@ATL@@QEAAPEAXI@Z 0x14044a940
+// MS2-PIN: ??_GCNode@?$CAtlMap@IV?$MS2Ptr@VUnk_DayItemContext@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VUnk_DayItemContext@@@@@3@@ATL@@QEAAPEAXI@Z 0x14044a980
+// MS2-PIN: ??_GCNode@?$CAtlMap@IV?$MS2Ptr@VSpawnContext@CGameEventValueBattlePetSpawn@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VSpawnContext@CGameEventValueBattlePetSpawn@@@@@3@@ATL@@QEAAPEAXI@Z 0x14044a9c0
+// MS2-PIN: ??_GCNode@?$CAtlMap@IV?$MS2Ptr@VUnk_FieldObjectDropListContext@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VUnk_FieldObjectDropListContext@@@@@3@@ATL@@QEAAPEAXI@Z 0x14044aa00
+// MS2-PIN: ??_GCNode@?$CAtlMap@IV?$MS2Ptr@VUnk_FieldObjectDropContext@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VUnk_FieldObjectDropContext@@@@@3@@ATL@@QEAAPEAXI@Z 0x14044aa40
+// MS2-PIN: ?CreateNode@?$CAtlMap@IV?$MS2Ptr@VIDIPEventContext@CGameEventValueIDIPEvent@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VIDIPEventContext@CGameEventValueIDIPEvent@@@@@3@@ATL@@AEAAPEAVCNode@12@III@Z 0x14044b020
+// MS2-PIN: ?CreateNode@?$CAtlMap@IV?$Unk_FieldPtr@V?$CAtlList@IV?$CElementTraits@I@ATL@@@ATL@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$Unk_FieldPtr@V?$CAtlList@IV?$CElementTraits@I@ATL@@@ATL@@@@@3@@ATL@@AEAAPEAVCNode@12@III@Z 0x14044b0a0
+// MS2-PIN: ?CreateNode@?$CAtlMap@IV?$MS2Ptr@VCNpcShopGivePointContextBase@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VCNpcShopGivePointContextBase@@@@@3@@ATL@@AEAAPEAVCNode@12@III@Z 0x14044b120
+// MS2-PIN: ?CreateNode@?$CAtlMap@IV?$MS2Ptr@VFestivalContext@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VFestivalContext@@@@@3@@ATL@@AEAAPEAVCNode@12@III@Z 0x14044b1a0
+// MS2-PIN: ?CreateNode@?$CAtlMap@IV?$MS2Ptr@VUnk_DayItemContext@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VUnk_DayItemContext@@@@@3@@ATL@@AEAAPEAVCNode@12@III@Z 0x14044b220
+// MS2-PIN: ?CreateNode@?$CAtlMap@IV?$MS2Ptr@VSpawnContext@CGameEventValueBattlePetSpawn@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VSpawnContext@CGameEventValueBattlePetSpawn@@@@@3@@ATL@@AEAAPEAVCNode@12@III@Z 0x14044b2a0
+// MS2-PIN: ?CreateNode@?$CAtlMap@IV?$MS2Ptr@VUnk_FieldObjectDropListContext@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VUnk_FieldObjectDropListContext@@@@@3@@ATL@@AEAAPEAVCNode@12@III@Z 0x14044b320
+// MS2-PIN: ?CreateNode@?$CAtlMap@IV?$MS2Ptr@VUnk_FieldObjectDropContext@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VUnk_FieldObjectDropContext@@@@@3@@ATL@@AEAAPEAVCNode@12@III@Z 0x14044b3a0
+// MS2-PIN: ?DisableAutoRehash@?$CAtlMap@IV?$Unk_FieldPtr@V?$CAtlList@IV?$CElementTraits@I@ATL@@@ATL@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$Unk_FieldPtr@V?$CAtlList@IV?$CElementTraits@I@ATL@@@ATL@@@@@3@@ATL@@QEAAXXZ 0x14044b5c0
+// MS2-PIN: ?DisableAutoRehash@?$CAtlMap@IV?$MS2Ptr@VFestivalContext@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VFestivalContext@@@@@3@@ATL@@QEAAXXZ 0x14044b5e0
+// MS2-PIN: ?EnableAutoRehash@?$CAtlMap@IV?$Unk_FieldPtr@V?$CAtlList@IV?$CElementTraits@I@ATL@@@ATL@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$Unk_FieldPtr@V?$CAtlList@IV?$CElementTraits@I@ATL@@@ATL@@@@@3@@ATL@@QEAAXXZ 0x14044b640
+// MS2-PIN: ?EnableAutoRehash@?$CAtlMap@IV?$MS2Ptr@VFestivalContext@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VFestivalContext@@@@@3@@ATL@@QEAAXXZ 0x14044b660
+// MS2-PIN: ?FindNextNode@?$CAtlMap@IV?$MS2Ptr@VIDIPEventContext@CGameEventValueIDIPEvent@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VIDIPEventContext@CGameEventValueIDIPEvent@@@@@3@@ATL@@AEBAPEAVCNode@12@PEAV312@@Z 0x14044b8a0
+// MS2-PIN: ?FindNextNode@?$CAtlMap@IV?$MS2Ptr@VFestivalContext@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VFestivalContext@@@@@3@@ATL@@AEBAPEAVCNode@12@PEAV312@@Z 0x14044b960
+// MS2-PIN: ?FindNextNode@?$CAtlMap@IV?$MS2Ptr@VUnk_DayItemContext@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VUnk_DayItemContext@@@@@3@@ATL@@AEBAPEAVCNode@12@PEAV312@@Z 0x14044ba20
+// MS2-PIN: ?FindNextNode@?$CAtlMap@IV?$MS2Ptr@VUnk_FieldObjectDropListContext@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VUnk_FieldObjectDropListContext@@@@@3@@ATL@@AEBAPEAVCNode@12@PEAV312@@Z 0x14044bae0
+// MS2-PIN: ?FindNextNode@?$CAtlMap@IV?$MS2Ptr@VUnk_FieldObjectDropContext@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VUnk_FieldObjectDropContext@@@@@3@@ATL@@AEBAPEAVCNode@12@PEAV312@@Z 0x14044bba0
+// MS2-PIN: ?FreeNode@?$CAtlMap@IV?$MS2Ptr@VIDIPEventContext@CGameEventValueIDIPEvent@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VIDIPEventContext@CGameEventValueIDIPEvent@@@@@3@@ATL@@AEAAXPEAVCNode@12@@Z 0x14044bf30
+// MS2-PIN: ?FreeNode@?$CAtlMap@IV?$Unk_FieldPtr@V?$CAtlList@IV?$CElementTraits@I@ATL@@@ATL@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$Unk_FieldPtr@V?$CAtlList@IV?$CElementTraits@I@ATL@@@ATL@@@@@3@@ATL@@AEAAXPEAVCNode@12@@Z 0x14044c030
+// MS2-PIN: ?FreeNode@?$CAtlMap@IV?$MS2Ptr@VCNpcShopGivePointContextBase@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VCNpcShopGivePointContextBase@@@@@3@@ATL@@AEAAXPEAVCNode@12@@Z 0x14044c130
+// MS2-PIN: ?FreeNode@?$CAtlMap@IV?$MS2Ptr@VFestivalContext@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VFestivalContext@@@@@3@@ATL@@AEAAXPEAVCNode@12@@Z 0x14044c230
+// MS2-PIN: ?FreeNode@?$CAtlMap@IV?$MS2Ptr@VUnk_DayItemContext@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VUnk_DayItemContext@@@@@3@@ATL@@AEAAXPEAVCNode@12@@Z 0x14044c330
+// MS2-PIN: ?FreeNode@?$CAtlMap@IV?$MS2Ptr@VSpawnContext@CGameEventValueBattlePetSpawn@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VSpawnContext@CGameEventValueBattlePetSpawn@@@@@3@@ATL@@AEAAXPEAVCNode@12@@Z 0x14044c430
+// MS2-PIN: ?FreeNode@?$CAtlMap@IV?$MS2Ptr@VUnk_FieldObjectDropListContext@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VUnk_FieldObjectDropListContext@@@@@3@@ATL@@AEAAXPEAVCNode@12@@Z 0x14044c530
+// MS2-PIN: ?FreeNode@?$CAtlMap@IV?$MS2Ptr@VUnk_FieldObjectDropContext@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VUnk_FieldObjectDropContext@@@@@3@@ATL@@AEAAXPEAVCNode@12@@Z 0x14044c630
+// MS2-PIN: ?FreePlexes@?$CAtlMap@IV?$MS2Ptr@VIDIPEventContext@CGameEventValueIDIPEvent@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VIDIPEventContext@CGameEventValueIDIPEvent@@@@@3@@ATL@@AEAAXXZ 0x14044cc40
+// MS2-PIN: ?FreePlexes@?$CAtlMap@IV?$Unk_FieldPtr@V?$CAtlList@IV?$CElementTraits@I@ATL@@@ATL@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$Unk_FieldPtr@V?$CAtlList@IV?$CElementTraits@I@ATL@@@ATL@@@@@3@@ATL@@AEAAXXZ 0x14044cc90
+// MS2-PIN: ?FreePlexes@?$CAtlMap@IV?$MS2Ptr@VCNpcShopGivePointContextBase@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VCNpcShopGivePointContextBase@@@@@3@@ATL@@AEAAXXZ 0x14044cce0
+// MS2-PIN: ?FreePlexes@?$CAtlMap@IV?$MS2Ptr@VFestivalContext@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VFestivalContext@@@@@3@@ATL@@AEAAXXZ 0x14044cd30
+// MS2-PIN: ?FreePlexes@?$CAtlMap@IV?$MS2Ptr@VUnk_DayItemContext@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VUnk_DayItemContext@@@@@3@@ATL@@AEAAXXZ 0x14044cd80
+// MS2-PIN: ?FreePlexes@?$CAtlMap@IV?$MS2Ptr@VSpawnContext@CGameEventValueBattlePetSpawn@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VSpawnContext@CGameEventValueBattlePetSpawn@@@@@3@@ATL@@AEAAXXZ 0x14044cdd0
+// MS2-PIN: ?FreePlexes@?$CAtlMap@IV?$MS2Ptr@VUnk_FieldObjectDropListContext@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VUnk_FieldObjectDropListContext@@@@@3@@ATL@@AEAAXXZ 0x14044ce20
+// MS2-PIN: ?FreePlexes@?$CAtlMap@IV?$MS2Ptr@VUnk_FieldObjectDropContext@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VUnk_FieldObjectDropContext@@@@@3@@ATL@@AEAAXXZ 0x14044ce70
+// MS2-PIN: ?GetHash@CNode@?$CAtlMap@IV?$MS2Ptr@VIDIPEventContext@CGameEventValueIDIPEvent@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VIDIPEventContext@CGameEventValueIDIPEvent@@@@@3@@ATL@@QEBAIXZ 0x14044d2d0
+// MS2-PIN: ?GetHash@CNode@?$CAtlMap@IV?$Unk_FieldPtr@V?$CAtlList@IV?$CElementTraits@I@ATL@@@ATL@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$Unk_FieldPtr@V?$CAtlList@IV?$CElementTraits@I@ATL@@@ATL@@@@@3@@ATL@@QEBAIXZ 0x14044d2e0
+// MS2-PIN: ?GetHash@CNode@?$CAtlMap@IV?$MS2Ptr@VCNpcShopGivePointContextBase@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VCNpcShopGivePointContextBase@@@@@3@@ATL@@QEBAIXZ 0x14044d2f0
+// MS2-PIN: ?GetHash@CNode@?$CAtlMap@IV?$MS2Ptr@VFestivalContext@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VFestivalContext@@@@@3@@ATL@@QEBAIXZ 0x14044d300
+// MS2-PIN: ?GetHash@CNode@?$CAtlMap@IV?$MS2Ptr@VUnk_DayItemContext@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VUnk_DayItemContext@@@@@3@@ATL@@QEBAIXZ 0x14044d310
+// MS2-PIN: ?GetHash@CNode@?$CAtlMap@IV?$MS2Ptr@VSpawnContext@CGameEventValueBattlePetSpawn@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VSpawnContext@CGameEventValueBattlePetSpawn@@@@@3@@ATL@@QEBAIXZ 0x14044d320
+// MS2-PIN: ?GetHash@CNode@?$CAtlMap@IV?$MS2Ptr@VUnk_FieldObjectDropListContext@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VUnk_FieldObjectDropListContext@@@@@3@@ATL@@QEBAIXZ 0x14044d330
+// MS2-PIN: ?GetHash@CNode@?$CAtlMap@IV?$MS2Ptr@VUnk_FieldObjectDropContext@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VUnk_FieldObjectDropContext@@@@@3@@ATL@@QEBAIXZ 0x14044d340
+// MS2-PIN: ?GetNode@?$CAtlMap@IV?$MS2Ptr@VIDIPEventContext@CGameEventValueIDIPEvent@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VIDIPEventContext@CGameEventValueIDIPEvent@@@@@3@@ATL@@AEBAPEAVCNode@12@IAEAI0AEAPEAV312@@Z 0x14044d890
+// MS2-PIN: ?GetNode@?$CAtlMap@IV?$Unk_FieldPtr@V?$CAtlList@IV?$CElementTraits@I@ATL@@@ATL@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$Unk_FieldPtr@V?$CAtlList@IV?$CElementTraits@I@ATL@@@ATL@@@@@3@@ATL@@AEBAPEAVCNode@12@IAEAI0AEAPEAV312@@Z 0x14044d980
+// MS2-PIN: ?GetNode@?$CAtlMap@IV?$MS2Ptr@VCNpcShopGivePointContextBase@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VCNpcShopGivePointContextBase@@@@@3@@ATL@@AEBAPEAVCNode@12@IAEAI0AEAPEAV312@@Z 0x14044da70
+// MS2-PIN: ?GetNode@?$CAtlMap@IV?$MS2Ptr@VFestivalContext@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VFestivalContext@@@@@3@@ATL@@AEBAPEAVCNode@12@IAEAI0AEAPEAV312@@Z 0x14044db60
+// MS2-PIN: ?GetNode@?$CAtlMap@IV?$MS2Ptr@VUnk_DayItemContext@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VUnk_DayItemContext@@@@@3@@ATL@@AEBAPEAVCNode@12@IAEAI0AEAPEAV312@@Z 0x14044dc50
+// MS2-PIN: ?GetNode@?$CAtlMap@IV?$MS2Ptr@VSpawnContext@CGameEventValueBattlePetSpawn@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VSpawnContext@CGameEventValueBattlePetSpawn@@@@@3@@ATL@@AEBAPEAVCNode@12@IAEAI0AEAPEAV312@@Z 0x14044dd40
+// MS2-PIN: ?GetNode@?$CAtlMap@IV?$MS2Ptr@VUnk_FieldObjectDropListContext@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VUnk_FieldObjectDropListContext@@@@@3@@ATL@@AEBAPEAVCNode@12@IAEAI0AEAPEAV312@@Z 0x14044de30
+// MS2-PIN: ?GetNode@?$CAtlMap@IV?$MS2Ptr@VUnk_FieldObjectDropContext@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VUnk_FieldObjectDropContext@@@@@3@@ATL@@AEBAPEAVCNode@12@IAEAI0AEAPEAV312@@Z 0x14044df20
+// MS2-PIN: ?GetStartPosition@?$CAtlMap@IV?$MS2Ptr@VFestivalContext@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VFestivalContext@@@@@3@@ATL@@QEBAPEAU__POSITION@@XZ 0x14044e3a0
+// MS2-PIN: ?GetStartPosition@?$CAtlMap@IV?$MS2Ptr@VUnk_DayItemContext@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VUnk_DayItemContext@@@@@3@@ATL@@QEBAPEAU__POSITION@@XZ 0x14044e410
+// MS2-PIN: ?GetStartPosition@?$CAtlMap@IV?$MS2Ptr@VUnk_FieldObjectDropListContext@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VUnk_FieldObjectDropListContext@@@@@3@@ATL@@QEBAPEAU__POSITION@@XZ 0x14044e480
+// MS2-PIN: ?GetStartPosition@?$CAtlMap@IV?$MS2Ptr@VUnk_FieldObjectDropContext@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VUnk_FieldObjectDropContext@@@@@3@@ATL@@QEBAPEAU__POSITION@@XZ 0x14044e4f0
+// MS2-PIN: ?GetValueAt@?$CAtlMap@IV?$MS2Ptr@VIDIPEventContext@CGameEventValueIDIPEvent@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VIDIPEventContext@CGameEventValueIDIPEvent@@@@@3@@ATL@@QEAAAEAV?$MS2Ptr@VIDIPEventContext@CGameEventValueIDIPEvent@@@@PEAU__POSITION@@@Z 0x14044e580
+// MS2-PIN: ?GetValueAt@?$CAtlMap@IV?$MS2Ptr@VFestivalContext@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VFestivalContext@@@@@3@@ATL@@QEAAAEAV?$MS2Ptr@VFestivalContext@@@@PEAU__POSITION@@@Z 0x14044e5f0
+// MS2-PIN: ?GetValueAt@?$CAtlMap@IV?$MS2Ptr@VUnk_DayItemContext@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VUnk_DayItemContext@@@@@3@@ATL@@QEAAAEAV?$MS2Ptr@VUnk_DayItemContext@@@@PEAU__POSITION@@@Z 0x14044e660
+// MS2-PIN: ?GetValueAt@?$CAtlMap@IV?$MS2Ptr@VUnk_FieldObjectDropListContext@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VUnk_FieldObjectDropListContext@@@@@3@@ATL@@QEAAAEAV?$MS2Ptr@VUnk_FieldObjectDropListContext@@@@PEAU__POSITION@@@Z 0x14044e6d0
+// MS2-PIN: ?GetValueAt@?$CAtlMap@IV?$MS2Ptr@VUnk_FieldObjectDropContext@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VUnk_FieldObjectDropContext@@@@@3@@ATL@@QEAAAEAV?$MS2Ptr@VUnk_FieldObjectDropContext@@@@PEAU__POSITION@@@Z 0x14044e740
+// MS2-PIN: ?InitHashTable@?$CAtlMap@IV?$MS2Ptr@VIDIPEventContext@CGameEventValueIDIPEvent@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VIDIPEventContext@CGameEventValueIDIPEvent@@@@@3@@ATL@@QEAA_NI_N@Z 0x14044ed70
+// MS2-PIN: ?InitHashTable@?$CAtlMap@IV?$Unk_FieldPtr@V?$CAtlList@IV?$CElementTraits@I@ATL@@@ATL@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$Unk_FieldPtr@V?$CAtlList@IV?$CElementTraits@I@ATL@@@ATL@@@@@3@@ATL@@QEAA_NI_N@Z 0x14044ee90
+// MS2-PIN: ?InitHashTable@?$CAtlMap@IV?$MS2Ptr@VCNpcShopGivePointContextBase@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VCNpcShopGivePointContextBase@@@@@3@@ATL@@QEAA_NI_N@Z 0x14044efb0
+// MS2-PIN: ?InitHashTable@?$CAtlMap@IV?$MS2Ptr@VFestivalContext@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VFestivalContext@@@@@3@@ATL@@QEAA_NI_N@Z 0x14044f0d0
+// MS2-PIN: ?InitHashTable@?$CAtlMap@IV?$MS2Ptr@VUnk_DayItemContext@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VUnk_DayItemContext@@@@@3@@ATL@@QEAA_NI_N@Z 0x14044f1f0
+// MS2-PIN: ?InitHashTable@?$CAtlMap@IV?$MS2Ptr@VSpawnContext@CGameEventValueBattlePetSpawn@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VSpawnContext@CGameEventValueBattlePetSpawn@@@@@3@@ATL@@QEAA_NI_N@Z 0x14044f310
+// MS2-PIN: ?InitHashTable@?$CAtlMap@IV?$MS2Ptr@VUnk_FieldObjectDropListContext@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VUnk_FieldObjectDropListContext@@@@@3@@ATL@@QEAA_NI_N@Z 0x14044f430
+// MS2-PIN: ?InitHashTable@?$CAtlMap@IV?$MS2Ptr@VUnk_FieldObjectDropContext@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VUnk_FieldObjectDropContext@@@@@3@@ATL@@QEAA_NI_N@Z 0x14044f550
+// MS2-PIN: ?IsLocked@?$CAtlMap@IV?$MS2Ptr@VIDIPEventContext@CGameEventValueIDIPEvent@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VIDIPEventContext@CGameEventValueIDIPEvent@@@@@3@@ATL@@AEBA_NXZ 0x14044fde0
+// MS2-PIN: ?IsLocked@?$CAtlMap@IV?$Unk_FieldPtr@V?$CAtlList@IV?$CElementTraits@I@ATL@@@ATL@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$Unk_FieldPtr@V?$CAtlList@IV?$CElementTraits@I@ATL@@@ATL@@@@@3@@ATL@@AEBA_NXZ 0x14044fe10
+// MS2-PIN: ?IsLocked@?$CAtlMap@IV?$MS2Ptr@VCNpcShopGivePointContextBase@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VCNpcShopGivePointContextBase@@@@@3@@ATL@@AEBA_NXZ 0x14044fe40
+// MS2-PIN: ?IsLocked@?$CAtlMap@IV?$MS2Ptr@VFestivalContext@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VFestivalContext@@@@@3@@ATL@@AEBA_NXZ 0x14044fe70
+// MS2-PIN: ?IsLocked@?$CAtlMap@IV?$MS2Ptr@VUnk_DayItemContext@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VUnk_DayItemContext@@@@@3@@ATL@@AEBA_NXZ 0x14044fea0
+// MS2-PIN: ?IsLocked@?$CAtlMap@IV?$MS2Ptr@VSpawnContext@CGameEventValueBattlePetSpawn@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VSpawnContext@CGameEventValueBattlePetSpawn@@@@@3@@ATL@@AEBA_NXZ 0x14044fed0
+// MS2-PIN: ?IsLocked@?$CAtlMap@IV?$MS2Ptr@VUnk_FieldObjectDropListContext@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VUnk_FieldObjectDropListContext@@@@@3@@ATL@@AEBA_NXZ 0x14044ff00
+// MS2-PIN: ?IsLocked@?$CAtlMap@IV?$MS2Ptr@VUnk_FieldObjectDropContext@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VUnk_FieldObjectDropContext@@@@@3@@ATL@@AEBA_NXZ 0x14044ff30
+// MS2-PIN: ?Lookup@?$CAtlMap@IV?$Unk_FieldPtr@V?$CAtlList@IV?$CElementTraits@I@ATL@@@ATL@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$Unk_FieldPtr@V?$CAtlList@IV?$CElementTraits@I@ATL@@@ATL@@@@@3@@ATL@@QEBA_NIAEAV?$Unk_FieldPtr@V?$CAtlList@IV?$CElementTraits@I@ATL@@@ATL@@@@@Z 0x140450420
+// MS2-PIN: ?Lookup@?$CAtlMap@IV?$MS2Ptr@VCNpcShopGivePointContextBase@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VCNpcShopGivePointContextBase@@@@@3@@ATL@@QEBA_NIAEAV?$MS2Ptr@VCNpcShopGivePointContextBase@@@@@Z 0x140450490
+// MS2-PIN: ?NewNode@?$CAtlMap@IV?$MS2Ptr@VIDIPEventContext@CGameEventValueIDIPEvent@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VIDIPEventContext@CGameEventValueIDIPEvent@@@@@3@@ATL@@AEAAPEAVCNode@12@III@Z 0x140451150
+// MS2-PIN: ?NewNode@?$CAtlMap@IV?$Unk_FieldPtr@V?$CAtlList@IV?$CElementTraits@I@ATL@@@ATL@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$Unk_FieldPtr@V?$CAtlList@IV?$CElementTraits@I@ATL@@@ATL@@@@@3@@ATL@@AEAAPEAVCNode@12@III@Z 0x140451360
+// MS2-PIN: ?NewNode@?$CAtlMap@IV?$MS2Ptr@VUnk_DayItemContext@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VUnk_DayItemContext@@@@@3@@ATL@@AEAAPEAVCNode@12@III@Z 0x140451990
+// MS2-PIN: ?NewNode@?$CAtlMap@IV?$MS2Ptr@VUnk_FieldObjectDropListContext@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VUnk_FieldObjectDropListContext@@@@@3@@ATL@@AEAAPEAVCNode@12@III@Z 0x140451db0
+// MS2-PIN: ?RemoveAll@?$CAtlMap@IV?$Unk_FieldPtr@V?$CAtlList@IV?$CElementTraits@I@ATL@@@ATL@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$Unk_FieldPtr@V?$CAtlList@IV?$CElementTraits@I@ATL@@@ATL@@@@@3@@ATL@@QEAAXXZ 0x140456a30
+// MS2-PIN: ?RemoveAll@?$CAtlMap@IV?$MS2Ptr@VFestivalContext@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VFestivalContext@@@@@3@@ATL@@QEAAXXZ 0x140456b40
+// MS2-PIN: ?RemoveAtPos@?$CAtlMap@IV?$MS2Ptr@VIDIPEventContext@CGameEventValueIDIPEvent@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VIDIPEventContext@CGameEventValueIDIPEvent@@@@@3@@ATL@@QEAAXPEAU__POSITION@@@Z 0x140457170
+// MS2-PIN: ?RemoveAtPos@?$CAtlMap@IV?$Unk_FieldPtr@V?$CAtlList@IV?$CElementTraits@I@ATL@@@ATL@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$Unk_FieldPtr@V?$CAtlList@IV?$CElementTraits@I@ATL@@@ATL@@@@@3@@ATL@@QEAAXPEAU__POSITION@@@Z 0x140457260
+// MS2-PIN: ?RemoveAtPos@?$CAtlMap@IV?$MS2Ptr@VCNpcShopGivePointContextBase@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VCNpcShopGivePointContextBase@@@@@3@@ATL@@QEAAXPEAU__POSITION@@@Z 0x140457350
+// MS2-PIN: ?RemoveAtPos@?$CAtlMap@IV?$MS2Ptr@VFestivalContext@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VFestivalContext@@@@@3@@ATL@@QEAAXPEAU__POSITION@@@Z 0x140457440
+// MS2-PIN: ?RemoveAtPos@?$CAtlMap@IV?$MS2Ptr@VUnk_DayItemContext@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VUnk_DayItemContext@@@@@3@@ATL@@QEAAXPEAU__POSITION@@@Z 0x140457530
+// MS2-PIN: ?RemoveAtPos@?$CAtlMap@IV?$MS2Ptr@VSpawnContext@CGameEventValueBattlePetSpawn@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VSpawnContext@CGameEventValueBattlePetSpawn@@@@@3@@ATL@@QEAAXPEAU__POSITION@@@Z 0x140457620
+// MS2-PIN: ?RemoveAtPos@?$CAtlMap@IV?$MS2Ptr@VUnk_FieldObjectDropListContext@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VUnk_FieldObjectDropListContext@@@@@3@@ATL@@QEAAXPEAU__POSITION@@@Z 0x140457710
+// MS2-PIN: ?RemoveAtPos@?$CAtlMap@IV?$MS2Ptr@VUnk_FieldObjectDropContext@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VUnk_FieldObjectDropContext@@@@@3@@ATL@@QEAAXPEAU__POSITION@@@Z 0x140457800
+// MS2-PIN: ?RemoveKey@?$CAtlMap@IV?$MS2Ptr@VIDIPEventContext@CGameEventValueIDIPEvent@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VIDIPEventContext@CGameEventValueIDIPEvent@@@@@3@@ATL@@QEAA_NI@Z 0x140457d10
+// MS2-PIN: ?RemoveKey@?$CAtlMap@IV?$Unk_FieldPtr@V?$CAtlList@IV?$CElementTraits@I@ATL@@@ATL@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$Unk_FieldPtr@V?$CAtlList@IV?$CElementTraits@I@ATL@@@ATL@@@@@3@@ATL@@QEAA_NI@Z 0x140457d80
+// MS2-PIN: ?RemoveKey@?$CAtlMap@IV?$MS2Ptr@VCNpcShopGivePointContextBase@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VCNpcShopGivePointContextBase@@@@@3@@ATL@@QEAA_NI@Z 0x140457df0
+// MS2-PIN: ?RemoveKey@?$CAtlMap@IV?$MS2Ptr@VFestivalContext@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VFestivalContext@@@@@3@@ATL@@QEAA_NI@Z 0x140457e60
+// MS2-PIN: ?RemoveKey@?$CAtlMap@IV?$MS2Ptr@VUnk_DayItemContext@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VUnk_DayItemContext@@@@@3@@ATL@@QEAA_NI@Z 0x140457ed0
+// MS2-PIN: ?RemoveKey@?$CAtlMap@IV?$MS2Ptr@VSpawnContext@CGameEventValueBattlePetSpawn@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VSpawnContext@CGameEventValueBattlePetSpawn@@@@@3@@ATL@@QEAA_NI@Z 0x140457f40
+// MS2-PIN: ?RemoveKey@?$CAtlMap@IV?$MS2Ptr@VUnk_FieldObjectDropListContext@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VUnk_FieldObjectDropListContext@@@@@3@@ATL@@QEAA_NI@Z 0x140457fb0
+// MS2-PIN: ?RemoveKey@?$CAtlMap@IV?$MS2Ptr@VUnk_FieldObjectDropContext@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VUnk_FieldObjectDropContext@@@@@3@@ATL@@QEAA_NI@Z 0x140458020
+// MS2-PIN: ?RemoveNode@?$CAtlMap@IV?$MS2Ptr@VIDIPEventContext@CGameEventValueIDIPEvent@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VIDIPEventContext@CGameEventValueIDIPEvent@@@@@3@@ATL@@AEAAXPEAVCNode@12@0@Z 0x140458390
+// MS2-PIN: ?RemoveNode@?$CAtlMap@IV?$Unk_FieldPtr@V?$CAtlList@IV?$CElementTraits@I@ATL@@@ATL@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$Unk_FieldPtr@V?$CAtlList@IV?$CElementTraits@I@ATL@@@ATL@@@@@3@@ATL@@AEAAXPEAVCNode@12@0@Z 0x140458450
+// MS2-PIN: ?RemoveNode@?$CAtlMap@IV?$MS2Ptr@VCNpcShopGivePointContextBase@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VCNpcShopGivePointContextBase@@@@@3@@ATL@@AEAAXPEAVCNode@12@0@Z 0x140458510
+// MS2-PIN: ?RemoveNode@?$CAtlMap@IV?$MS2Ptr@VFestivalContext@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VFestivalContext@@@@@3@@ATL@@AEAAXPEAVCNode@12@0@Z 0x1404585d0
+// MS2-PIN: ?RemoveNode@?$CAtlMap@IV?$MS2Ptr@VUnk_DayItemContext@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VUnk_DayItemContext@@@@@3@@ATL@@AEAAXPEAVCNode@12@0@Z 0x140458690
+// MS2-PIN: ?RemoveNode@?$CAtlMap@IV?$MS2Ptr@VSpawnContext@CGameEventValueBattlePetSpawn@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VSpawnContext@CGameEventValueBattlePetSpawn@@@@@3@@ATL@@AEAAXPEAVCNode@12@0@Z 0x140458750
+// MS2-PIN: ?RemoveNode@?$CAtlMap@IV?$MS2Ptr@VUnk_FieldObjectDropListContext@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VUnk_FieldObjectDropListContext@@@@@3@@ATL@@AEAAXPEAVCNode@12@0@Z 0x140458810
+// MS2-PIN: ?RemoveNode@?$CAtlMap@IV?$MS2Ptr@VUnk_FieldObjectDropContext@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VUnk_FieldObjectDropContext@@@@@3@@ATL@@AEAAXPEAVCNode@12@0@Z 0x1404588d0
+// MS2-PIN: ?SetAt@?$CAtlMap@IV?$MS2Ptr@VIDIPEventContext@CGameEventValueIDIPEvent@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VIDIPEventContext@CGameEventValueIDIPEvent@@@@@3@@ATL@@QEAAPEAU__POSITION@@IAEBV?$MS2Ptr@VIDIPEventContext@CGameEventValueIDIPEvent@@@@@Z 0x140458fd0
+// MS2-PIN: ?SetAt@?$CAtlMap@IV?$Unk_FieldPtr@V?$CAtlList@IV?$CElementTraits@I@ATL@@@ATL@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$Unk_FieldPtr@V?$CAtlList@IV?$CElementTraits@I@ATL@@@ATL@@@@@3@@ATL@@QEAAPEAU__POSITION@@IAEBV?$Unk_FieldPtr@V?$CAtlList@IV?$CElementTraits@I@ATL@@@ATL@@@@@Z 0x140459080
+// MS2-PIN: ?SetAt@?$CAtlMap@IV?$MS2Ptr@VCNpcShopGivePointContextBase@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VCNpcShopGivePointContextBase@@@@@3@@ATL@@QEAAPEAU__POSITION@@IAEBV?$MS2Ptr@VCNpcShopGivePointContextBase@@@@@Z 0x140459130
+// MS2-PIN: ?SetAt@?$CAtlMap@IV?$MS2Ptr@VFestivalContext@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VFestivalContext@@@@@3@@ATL@@QEAAPEAU__POSITION@@IAEBV?$MS2Ptr@VFestivalContext@@@@@Z 0x1404591e0
+// MS2-PIN: ?SetAt@?$CAtlMap@IV?$MS2Ptr@VUnk_DayItemContext@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VUnk_DayItemContext@@@@@3@@ATL@@QEAAPEAU__POSITION@@IAEBV?$MS2Ptr@VUnk_DayItemContext@@@@@Z 0x140459290
+// MS2-PIN: ?SetAt@?$CAtlMap@IV?$MS2Ptr@VSpawnContext@CGameEventValueBattlePetSpawn@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VSpawnContext@CGameEventValueBattlePetSpawn@@@@@3@@ATL@@QEAAPEAU__POSITION@@IAEBV?$MS2Ptr@VSpawnContext@CGameEventValueBattlePetSpawn@@@@@Z 0x140459340
+// MS2-PIN: ?SetAt@?$CAtlMap@IV?$MS2Ptr@VUnk_FieldObjectDropListContext@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VUnk_FieldObjectDropListContext@@@@@3@@ATL@@QEAAPEAU__POSITION@@IAEBV?$MS2Ptr@VUnk_FieldObjectDropListContext@@@@@Z 0x1404593f0
+// MS2-PIN: ?SetAt@?$CAtlMap@IV?$MS2Ptr@VUnk_FieldObjectDropContext@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VUnk_FieldObjectDropContext@@@@@3@@ATL@@QEAAPEAU__POSITION@@IAEBV?$MS2Ptr@VUnk_FieldObjectDropContext@@@@@Z 0x1404594a0
+// sfr34: CAtlMap<unsigned, bool>: RemoveAll 0x140456c50 calls EnableAutoRehash 0x14044b680 (the four Disable/Enable
+// copies 0x14044b5a0..680 are shared look-alikes, so the guess is ambiguous without a pin); Lookup 0x140450610 calls its GetNode.
+// MS2-PIN: ?EnableAutoRehash@?$CAtlMap@I_NV?$CElementTraits@I@ATL@@V?$CElementTraits@_N@2@@ATL@@QEAAXXZ 0x14044b680
+// MS2-PIN: ?Lookup@?$CAtlMap@I_NV?$CElementTraits@I@ATL@@V?$CElementTraits@_N@2@@ATL@@QEAAPEAVCPair@12@I@Z 0x140450610
+// MS2-PIN: ?Lookup@?$CAtlMap@I_NV?$CElementTraits@I@ATL@@V?$CElementTraits@_N@2@@ATL@@QEBAPEBVCPair@12@I@Z 0x140450610
+// MS2-PIN: ?RemoveAll@?$CAtlMap@I_NV?$CElementTraits@I@ATL@@V?$CElementTraits@_N@2@@ATL@@QEAAXXZ 0x140456c50
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\commonfiles\\gameeventvalue.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
 #include <afx.h>

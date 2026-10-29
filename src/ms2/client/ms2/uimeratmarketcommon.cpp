@@ -61,7 +61,7 @@ CStringW FUN_14083dc40(const wchar_t* szFormat, const int& a, const int& b);
 CStringW FUN_14093bd40(int nAchieve, int nGrade, CStringW strDefault);
 CStringW FUN_1405c2690(CStringW strFormat, const CStringW& strArg);
 void FUN_140d73aa0(CStringW strText, int nType, void* p, CStringW strTag);
-bool FUN_1418ff110(int nType, __int64 nValue, int n);
+bool FUN_1418ff110(int nType, __int64 nValue, bool bFlag);
 void FUN_1418ff710(int nCurrency, __int64 nAmount, int nItemId, int nOpt);
 int FUN_1406a6140();
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
@@ -75,10 +75,7 @@ UIMeratMarketCommon::WeaponType::WeaponType(PC* pOwner)
     FUN_140ebb730(pOwner);
 }
 
-// @0x140ec3500
-UIMeratMarketCommon::WeaponType::~WeaponType()
-{
-}
+// ~WeaponType (0x140ec3500) is implicit: an explicit empty body keeps a dead vptr store the exe does not have.
 
 // @0x140ebb730
 bool UIMeratMarketCommon::WeaponType::FUN_140ebb730(PC* pOwner)
@@ -98,16 +95,17 @@ bool UIMeratMarketCommon::WeaponType::FUN_140ebb780(int nGender, int nJob, MS2Pt
 {
     if (spData == 0)
         return false;
-    if (m_n18 != 0 || m_n1c != 0)
+    if (m_n18 == 0 && m_n1c == 0)
     {
-        bool bRet = false;
-        if (0 < m_n18)
-            bRet = spData->FUN_14053cae0(nGender, m_n18) == 1;
-        if (0 < m_n1c)
-            bRet = bRet | (spData->FUN_14053cae0(nGender, m_n1c) == 1);
-        return bRet;
+        bool bResult = spData->limit.FUN_140545da0(nJob) && spData->FUN_14053c940(nGender);
+        return bResult;
     }
-    return spData->limit.FUN_140545da0(nJob) && spData->FUN_14053c940(nGender);
+    bool bRet = false;
+    if (0 < m_n18)
+        bRet = bRet | (spData->FUN_14053cae0(nGender, m_n18) == 1);
+    if (0 < m_n1c)
+        bRet = bRet | (spData->FUN_14053cae0(nGender, m_n1c) == 1);
+    return bRet;
 }
 
 // ---- more unit-local declarations ----
@@ -149,11 +147,11 @@ MS2Ptr<CItem> FUN_140ebc360(int nItemId, int nGrade);
 CStringW FUN_14093fa20(int nStringId, const CStringW& strName, const int& nCount);
 int FUN_1409c17e0(const Scaleform::GFx::Value& v);
 CStringW FUN_141277dd0(const Scaleform::GFx::Value* pValue);
-int FUN_140718200(CStringW* text);
+int FUN_140718200(const CStringW& str);
 bool FUN_140ec3b90(const Scaleform::GFx::Value* pValue);
 void FUN_140ebaf70(Scaleform::GFx::Value& arr, unsigned nIndex, Scaleform::GFx::Value& out);
 void FUN_141349210(MS2Ptr<CItem> spItem, Scaleform::GFx::Value& root, bool b, ASTooltip* pLhs, ASTooltip* pRhs);
-void FUN_140ec3560(AScript* pDst, ASTooltip* pSrc);
+AScript* FUN_140ec3560(AScript* pDst, ASTooltip* pSrc);
 void FUN_1409de020(AScript* pTip, CMeratMarketPremiumProduct* pProduct);
 void FUN_1409ddc40(AScript* pTip, CMeratMarketProduct* pProduct);
 CStringW FUN_140ebd020(bool bDay, CDBPremiumProduct* pProduct);
@@ -163,33 +161,43 @@ bool FUN_140ebb920(ASObj* pRow, MS2Ptr<CMeratMarketProduct> spProduct)
 {
     if (spProduct == 0)
         return false;
-    if (FUN_141bd0cc0(FUN_1403ed2d0()) == 0)
+    PCBase* pPlayer = FUN_141bd0cc0(FUN_1403ed2d0());
+    if (pPlayer == 0)
         return false;
     pRow->FUN_1407cbb20("productOID", ((Unk_McOid*)&spProduct->m_key)->FUN_1409b0470());
     bool bSoldOut = false;
-    if (spProduct->IsUgc() == 0)
+    if (spProduct->IsUgc() != 0)
     {
-        bSoldOut = spProduct->m_premium.IsBuyLimitReached();
-    }
-    else
-    {
-        pRow->FUN_1407cb9c0("saleState", spProduct->m_ugc.m_n28);
+        int nSaleState = spProduct->m_ugc.m_n28;
+        pRow->FUN_1407cb9c0("saleState", nSaleState);
         pRow->FUN_1407cbb20("tooltipSellcount", FUN_1408116a0(0x9dc, spProduct->m_ugc.m_n44));
         if (FUN_1409c1730()->FUN_140a259b0(3, spProduct->m_ugc.m_n20))
             pRow->FUN_1407cbbe0("isBlind", true);
+    }
+    else
+    {
+        bSoldOut = spProduct->m_premium.IsBuyLimitReached();
     }
     pRow->FUN_1407cbbe0("soldOut", bSoldOut);
     return true;
 }
 
 // The product tooltip: the item tooltip (or, in the second mode, the plain item tooltip) and the right hand side line.
-// MS2-FUNCTIONAL: not byte-matched (temporaries / EH state layout)
 // @0x140ebbb30
 int FUN_140ebbb30(ASTooltip* pTip, MS2Ptr<CItem> spItem, MS2Ptr<CMeratMarketProduct> spProduct, bool bPlain, bool bNoCompare)
 {
     if (spItem == 0)
         return 0;
-    if (!bPlain)
+    if (bPlain)
+    {
+        ASTooltip tip(FUN_141bd0cc0(FUN_1403ed2d0()), FUN_140ec2ab0(), 2);
+        if (tip.FUN_1409e0d40(spItem.get()) != 0)
+        {
+            ASTooltip tipCopy(tip.FUN_1422bb870(), 2);
+            FUN_140ec3560(pTip, &tipCopy);
+        }
+    }
+    else
     {
         PCBase* pPlayer = FUN_141bd0cc0(FUN_1403ed2d0());
         int nType = FUN_140ec2ab0();
@@ -206,17 +214,18 @@ int FUN_140ebbb30(ASTooltip* pTip, MS2Ptr<CItem> spItem, MS2Ptr<CMeratMarketProd
         }
         FUN_141349210(spItem, pTip->FUN_1422bb870(), !bNoCompare, &tipLhs, &tipRhs);
     }
-    else
+    if (spProduct->IsUgc() != 0)
     {
-        int nType = FUN_140ec2ab0();
-        ASTooltip tip(FUN_141bd0cc0(FUN_1403ed2d0()), nType, 2);
-        if (tip.FUN_1409e0d40(spItem.get()) != 0)
+        Scaleform::GFx::Value vRhs = pTip->FUN_1422baa20("rhsTooltip");
+        if (FUN_1409b0390(&vRhs) == 0)
         {
-            ASTooltip tipCopy(tip.FUN_1422bb870(), 2);
-            FUN_140ec3560(pTip, &tipCopy);
+            ASTooltip tip(vRhs, 2);
+            FUN_1409ddc40(&tip, spProduct.get());
         }
+        else
+            FUN_1409ddc40(pTip, spProduct.get());
     }
-    if (spProduct->IsUgc() == 0)
+    else
     {
         if (spProduct->HasLimit() != 0)
         {
@@ -231,17 +240,6 @@ int FUN_140ebbb30(ASTooltip* pTip, MS2Ptr<CItem> spItem, MS2Ptr<CMeratMarketProd
                 FUN_1409de020(pTip, pPremium);
         }
     }
-    else
-    {
-        Scaleform::GFx::Value vRhs = pTip->FUN_1422baa20("rhsTooltip");
-        if (FUN_1409b0390(&vRhs) == 0)
-        {
-            ASTooltip tip(vRhs, 2);
-            FUN_1409ddc40(&tip, spProduct.operator->());
-        }
-        else
-            FUN_1409ddc40(pTip, spProduct.operator->());
-    }
     return 1;
 }
 
@@ -251,31 +249,35 @@ MS2Ptr<CItem> FUN_140ebc070(CMeratMarketProduct* pProduct)
 {
     if (pProduct->m_nKind == 1)
     {
-        int nItemId = pProduct->m_ugc.m_n2c;
-        if (pProduct->m_ugc.FUN_140896310() != 0)
+        auto& ugc = pProduct->m_ugc;
+        int nItemId = ugc.m_n2c;
+        if (ugc.FUN_140896310() != 0)
             nItemId = FUN_140ec2b60((char*)FUN_1401d3200() + 0x8ff0);
-        MS2Ptr<CItem> spItem = FUN_140ebc360(nItemId, pProduct->m_ugc.m_n1f8);
+        MS2Ptr<CItem> spItem = FUN_140ebc360(nItemId, ugc.m_n1f8);
         if (spItem.get() != 0)
         {
             if (pProduct->m_ugc.FUN_140896310() != 0)
             {
                 CItemCustomMusicScore* pScore = spItem->FUN_140527990();
                 if (pScore != 0)
-                    FUN_1406327c0(pScore, &pProduct->m_ugc.m_music);
+                    FUN_1406327c0(pScore, &ugc.m_music);
             }
             Unk_ItemUgcInfo* pUgc = spItem->FUN_1405278d0();
             if (pUgc != 0)
             {
-                FUN_140892da0((CUgcItemLook*)((char*)pUgc + 0x18), &pProduct->m_ugc.m_look);
+                FUN_140892da0((CUgcItemLook*)((char*)pUgc + 0x18), &ugc.m_look);
                 if (spItem->FUN_140526010() != 0)
-                    ((CBlueprintItemData*)((char*)pUgc + 0x80))->CopyFrom(pProduct->m_ugc.m_blueprint);
+                    ((CBlueprintItemData*)((char*)pUgc + 0x80))->CopyFrom(ugc.m_blueprint);
             }
             return spItem;
         }
     }
     else if (pProduct->m_nKind == 0)
     {
-        return FUN_140ebc360(pProduct->m_premium.m_nItemId, pProduct->m_premium.GetGrade());
+        auto& premium = pProduct->m_premium;
+        int nPremiumItemId = premium.m_nItemId;
+        int nGrade = premium.GetGrade();
+        return FUN_140ebc360(nPremiumItemId, nGrade);
     }
     return MS2Ptr<CItem>(0);
 }
@@ -291,12 +293,14 @@ MS2Ptr<CItem> FUN_140ebc2b0(MS2Ptr<CItemData> spData, unsigned __int64 nGrade)
 // @0x140ebc360
 MS2Ptr<CItem> FUN_140ebc360(int nItemId, int nGrade)
 {
-    MS2Ptr<CItem> spItem(new CItem);
-    if (spItem.get() != 0 && spItem->FUN_14052b130(nItemId, nGrade, 0) != 0)
     {
-        spItem->FUN_14052b420(0);
-        spItem->FUN_140526a70(FUN_14028d0e0());
-        return spItem;
+        MS2Ptr<CItem> spItem(new CItem);
+        if (spItem.get() != 0 && spItem->FUN_14052b130(nItemId, nGrade, 0) != 0)
+        {
+            spItem->FUN_14052b420(0);
+            spItem->FUN_140526a70(FUN_14028d0e0());
+            return spItem;
+        }
     }
     return MS2Ptr<CItem>(0);
 }
@@ -305,13 +309,12 @@ MS2Ptr<CItem> FUN_140ebc360(int nItemId, int nGrade)
 // @0x140ebc4a0
 int FUN_140ebc4a0()
 {
-    int nCount = FUN_140939a00()->FUN_140d56160();
-    if (nCount >= 100)
+    if (FUN_140939a00()->FUN_140d56160() >= 100)
     {
-        int nMax = 100;
-        FUN_140d73aa0(FUN_1408116a0(0xa29, nMax), 0, 0, CStringW(L""));
+        FUN_140d73aa0(FUN_1408116a0(0xa29, 100), 0, 0, CStringW(L""));
+        return 0;
     }
-    return nCount < 100;
+    return 1;
 }
 
 // @0x140ebc540
@@ -342,17 +345,14 @@ int FUN_140ec3900(TMeratMarketBillDataParam* pParam);
 // @0x140ebc590
 bool FUN_140ebc590(const TMarketBillDataParam::PaymentMap& mapPay)
 {
-    POSITION pos = mapPay.GetStartPosition();
-    while (pos != NULL)
+    for (POSITION pos = mapPay.GetStartPosition(); pos != NULL; mapPay.GetNext(pos))
     {
         __int64 nAmount = mapPay.GetValueAt(pos);
-        if (nAmount != 0)
-        {
-            int nType = mapPay.GetKeyAt(pos);
-            if (!FUN_1418ff110(nType, nAmount, 1))
-                return false;
-        }
-        mapPay.GetNext(pos);
+        if (nAmount == 0)
+            continue;
+        int nType = mapPay.GetKeyAt(pos);
+        if (!FUN_1418ff110(nType, nAmount, true))
+            return false;
     }
     return true;
 }
@@ -364,26 +364,25 @@ bool FUN_140ebc630(MS2Ptr<CMeratMarketProduct> spProduct, int nPayType)
     if (spProduct->IsUgc() != 0 && spProduct->m_ugc.FUN_140896310() != 0)
     {
         int nGrade = FUN_1406a6140();
-        IClientPlatform* pPlatform = FUN_140d86260();
-        if (pPlatform->vfunc_39(nPrice, nGrade) == 0)
+        if (FUN_140d86260()->vfunc_39(nPrice, nGrade) == 0)
         {
-            pPlatform = FUN_140d86260();
-            if (pPlatform->vfunc_39(nPrice, -1) == 1)
-                FUN_140d73aa0(GetStringCommonByKey(CStringW(L"s_meratmarket_buy_fail_music_score_by_merat_grade")), 0, 0, CStringW(L""));
+            int nAnyGrade = -1;
+            if (FUN_140d86260()->vfunc_39(nPrice, nAnyGrade) == 1)
+                FUN_140d73aa0(GetStringCommonByKey(L"s_meratmarket_buy_fail_music_score_by_merat_grade"), 0, 0, CStringW(L""));
             else
                 FUN_1418ff710(FUN_14069c3e0(nPayType), nPrice, 0, 1);
             return false;
         }
         return true;
     }
-    if (FUN_1418ff110(FUN_14069c3e0(nPayType), nPrice, 1) != 0)
-        return true;
-    return false;
+    if (FUN_1418ff110(FUN_14069c3e0(nPayType), nPrice, true) == 0)
+        return false;
+    return true;
 }
 
 // The bag space the items of the bill need (per inventory tab).
 // @0x140ebc850
-bool FUN_140ebc850(MS2Ptr<ASArray> spItems)
+int FUN_140ebc850(MS2Ptr<ASArray> spItems)
 {
     ATL::CAtlArray<int> counts;
     for (int i = 0; i < 15; ++i)
@@ -396,19 +395,16 @@ bool FUN_140ebc850(MS2Ptr<ASArray> spItems)
         FUN_140ebaf70(vItems, i, vElem);
         ASObj row(vElem, 2);
         Scaleform::GFx::Value vId = row.FUN_1422baa20("itemID");
-        int nItemId;
+        int nItemId = 0;
         if (FUN_140ec3b90(&vId) == 0)
-        {
-            CStringW strId = FUN_141277dd0(&vId);
-            nItemId = FUN_140718200(&strId);
-        }
+            nItemId = FUN_140718200(FUN_141277dd0(&vId));
         else
             nItemId = FUN_1409c17e0(vId);
         if (nItemId == 0)
             continue;
         int nTab = FUN_140ec2ac0(FUN_14053f870(nItemId));
-        if (-1 < nTab && nTab < 15)
-            counts[nTab] = counts[nTab] + 1;
+        if (nTab >= 0 && nTab < 15)
+            counts.SetAt(nTab, counts[nTab] + 1);
     }
     for (int nTab = 0; nTab < 15; ++nTab)
     {
@@ -416,10 +412,10 @@ bool FUN_140ebc850(MS2Ptr<ASArray> spItems)
         if (0 < nNeed && DAT_143ab2a90.FUN_140a615d0(nTab) < nNeed)
         {
             FUN_140d73aa0(FUN_14093fa20(0xa01, GetStringTable()->FUN_141813300(nTab), nNeed), 0, 0, CStringW(L""));
-            return false;
+            return 0;
         }
     }
-    return true;
+    return 1;
 }
 
 // @0x140ebcc20
@@ -461,27 +457,20 @@ CStringW FUN_140ebd020(bool bDay, CDBPremiumProduct* pProduct)
 {
     CStringW strFormat;
     int nBonus = pProduct->m_nb8;
-    if (!bDay)
-    {
-        if (nBonus == 0)
-            strFormat = GetStringCommonByKey(CStringW(L"s_common_count"));
-        else
-            strFormat = GetStringCommonByKey(CStringW(L"s_common_count_bonus"));
-    }
+    if (bDay)
+        strFormat = nBonus == 0 ? GetStringCommonByKey(L"s_common_day") : GetStringCommonByKey(L"s_common_day_bonus");
     else
-    {
-        if (nBonus == 0)
-            strFormat = GetStringCommonByKey(CStringW(L"s_common_day"));
-        else
-            strFormat = GetStringCommonByKey(CStringW(L"s_common_day_bonus"));
-    }
+        strFormat = nBonus == 0 ? GetStringCommonByKey(L"s_common_count") : GetStringCommonByKey(L"s_common_count_bonus");
     CStringW strResult;
-    if (!bDay)
-        strResult = FUN_14083dc40(strFormat, pProduct->m_nb0, nBonus);
-    else if (pProduct->m_nb4 == 0)
-        strResult = GetStringCommonByKey(CStringW(L"s_common_day_limitless"));
+    if (bDay)
+    {
+        if (pProduct->m_nb4 == 0)
+            strResult = GetStringCommonByKey(L"s_common_day_limitless");
+        else
+            strResult = FUN_14083dc40(strFormat, pProduct->m_nb4, nBonus);
+    }
     else
-        strResult = FUN_14083dc40(strFormat, pProduct->m_nb4, nBonus);
+        strResult = FUN_14083dc40(strFormat, pProduct->m_nb0, nBonus);
     return strResult;
 }
 
@@ -512,7 +501,7 @@ CStringW FUN_140ebd520(CMeratMarketPremiumProduct* pProduct, int nSubId)
         if (spData == 0 || !(1 < *(unsigned*)((char*)spData.operator->() + 0x88)))
             return strResult;
         int nBonus = pProduct->GetB8(0);
-        CStringW strFormat = nBonus == 0 ? GetStringCommonByKey(CStringW(L"s_common_count")) : GetStringCommonByKey(CStringW(L"s_common_count_bonus"));
+        CStringW strFormat = nBonus == 0 ? GetStringCommonByKey(L"s_common_count") : GetStringCommonByKey(L"s_common_count_bonus");
         int nCount = pProduct->GetB0(0);
         strResult = FUN_14083dc40(strFormat, nCount, nBonus);
     }
@@ -523,12 +512,14 @@ CStringW FUN_140ebd520(CMeratMarketPremiumProduct* pProduct, int nSubId)
 CStringW FUN_140ebd870(CMeratMarketPremiumProduct* pProduct)
 {
     CStringW strResult;
-    MS2Ptr<CItemData> spData = FUN_14053f870(pProduct->m_nItemId);
+    unsigned nItemId = pProduct->m_nItemId;
+    MS2Ptr<CItemData> spData = FUN_14053f870(nItemId);
     if (spData == 0)
         return strResult;
-    if (*(unsigned*)((char*)spData.get() + 0x88) < 2 && pProduct->m_nb4 == 0)
+    if (*(unsigned*)((char*)spData.get() + 0x88) <= 1 && pProduct->m_nb4 == 0)
         return strResult;
-    return FUN_140ebd020(0 < pProduct->m_nb4, pProduct);
+    bool bSub = pProduct->m_nb4 > 0 ? 1 : 0;
+    return FUN_140ebd020(bSub, pProduct);
 }
 
 // ---- the buy / tooltip callbacks of the bill dialog ----
@@ -538,7 +529,6 @@ public:
     void FUN_140d59810(MS2Ptr<CPendingBuyBase> spBuy, int nSourceKind);
     void FUN_140d58650(int nSourceKind);
 };
-bool FUN_140d5b1f0(Unk_McMan* pMan, MS2Ptr<CMeratMarketProduct> spProduct, int n);
 void FUN_140d60dd0(CMeratMarketBuy* pBuy, const CStringW& strA, const CStringW& strB);   // the strings by reference
 int FUN_140ec3950(ASMeratMarketBuyBillData* pBill);
 void FUN_1409e3190(AScript* pTip, CMeratMarketPremiumProduct* pProduct, int n);
@@ -546,12 +536,11 @@ void FUN_1409b4bc0(Scaleform::GFx::Value* pOut, Scaleform::GFx::Value& v);
 int FUN_1409c1750(const Scaleform::GFx::Value& v);
 int FUN_14069c3e0(int nPayType);
 void* FUN_140b09580(int nId);
-void FUN_140899a40(MS2Ptr<CPtred>* pDst, MS2Ptr<CMeratMarketProduct> spProduct);
+void FUN_140899a40(MS2Ptr<CPtred>* pDst, const MS2Ptr<CMeratMarketProduct>& spProduct);
 void FUN_1409ab990(ASMeratMarketBuyBillData* pBill, MS2Ptr<CItemData> spData, int nGrade);
 void FUN_1409aca00(ASMeratMarketBuyBillData* pBill, const void* pKey, MS2Ptr<CMeratMarketProduct> spProduct);
 const void* FUN_1409b0140(MS2Ptr<CDBPremiumProduct>& spSub);
 bool FUN_1406a5930();
-void FUN_140e6ff60(ATL::CAtlArray<MS2Ptr<ASBillData> >& arr, MS2Ptr<ASBillData> sp);
 void FUN_140ea7770(void* pDialog, MS2Ptr<TMarketBillDataParam> spParam);
 
 // The buy callback of the merat market bill dialog: one buy request per bill row, answered by the server.
@@ -609,7 +598,17 @@ bool FUN_140ebded0(MS2Ptr<TMarketBillDataParam> spBase, const TMarketBillDataPar
     int nSrc = FUN_140ec3900(pParam);
     int nShop = pParam->m_nShopId;
     Unk_McMan* pMan = (Unk_McMan*)FUN_140939a00();
-    if (!spBase->FUN_140eacfc0())
+    if (spBase->FUN_140eacfc0())
+    {
+        MS2Ptr<CMeratMarketBuy> spBuy = new CMeratMarketBuy();
+        if (spBuy == 0 || spBuy->m_spPacket == 0)
+            return false;
+        FUN_140d60a80(spBuy.get(), *(MS2Ptr<CMeratMarketProduct>*)&pParam->m_spE8, nSrc, pParam->m_nCurrency, 1);
+        spBuy->FUN_140d60d60(0, 1);
+        FUN_140d60ea0(spBuy.get(), &nShop);
+        pMan->FUN_140d59810(MS2Ptr<CPendingBuyBase>(spBuy.get()), nSrc);
+    }
+    else
     {
         size_t nCount = pParam->m_bills.GetCount();
         for (size_t i = 0; i < nCount; ++i)
@@ -618,19 +617,13 @@ bool FUN_140ebded0(MS2Ptr<TMarketBillDataParam> spBase, const TMarketBillDataPar
             if (spBill == 0)
                 continue;
             MS2Ptr<CMeratMarketBuy> spBuy = new CMeratMarketBuy();
+            if (spBuy == 0 || spBuy->m_spPacket == 0)
+                continue;
             FUN_140d604c0(spBuy.get(), spBill, nSrc, 1);
             spBuy->FUN_140d60d60((int)i, (int)nCount);
             FUN_140d60ea0(spBuy.get(), &nShop);
             pMan->FUN_140d59810(MS2Ptr<CPendingBuyBase>(spBuy.get()), nSrc);
         }
-    }
-    else
-    {
-        MS2Ptr<CMeratMarketBuy> spBuy = new CMeratMarketBuy();
-        FUN_140d60a80(spBuy.get(), *(MS2Ptr<CMeratMarketProduct>*)&pParam->m_spE8, nSrc, pParam->m_nCurrency, 1);
-        spBuy->FUN_140d60d60(0, 1);
-        FUN_140d60ea0(spBuy.get(), &nShop);
-        pMan->FUN_140d59810(MS2Ptr<CPendingBuyBase>(spBuy.get()), nSrc);
     }
     pMan->FUN_140d58650(nSrc);
     return true;
@@ -745,18 +738,17 @@ int FUN_140ebf520(MS2Ptr<CMeratMarketProduct> spProduct, AScript* pRow)
 }
 
 // Open the bill dialog for a limited product.
-// MS2-FUNCTIONAL: not byte-matched (unrecovered callee signatures, temporaries)
 // @0x140ebf610
 void FUN_140ebf610(const CStringA& /*strMovie*/, MS2Ptr<CMeratMarketProduct> spProduct, MS2Ptr<TMeratMarketBillDataParam> spParam, int nPayType)
 {
     if (spProduct == 0 || spParam == 0)
         return;
-    if (!FUN_140d5b1f0((Unk_McMan*)FUN_140939a00(), spProduct, 1))
+    if (!((CMeratMarketMan*)FUN_140939a00())->FUN_140d5b1f0(spProduct, true))
         return;
     CMeratMarketPremiumProduct* pPrem = &spProduct->m_premium;
     int nCur = FUN_14069c3e0(nPayType);
     __int64 nPrice = spProduct->GetSalePrice();
-    if (!FUN_1418ff110(nCur, nPrice, 1))
+    if (!FUN_1418ff110(nCur, nPrice, true))
         return;
     void* pDialog = FUN_140b09580(0x4f17);
     if (pDialog == 0)
@@ -767,9 +759,11 @@ void FUN_140ebf610(const CStringA& /*strMovie*/, MS2Ptr<CMeratMarketProduct> spP
         spParam->FUN_140eab9d0(0xf, spProduct->GetPoint());
     spParam->m_nCurrency = nCur;
     FUN_140899a40(&spParam->m_spE8, spProduct);
-    for (POSITION pos = pPrem->m_mapSub.GetHeadPosition(); pos != 0; )
+    ATL::CAtlArray<MS2Ptr<ASBillData> >& bills = spParam->m_bills;
+    CRBMap<int, MS2Ptr<CDBPremiumProduct> >& mapLimit = pPrem->m_mapLimit;
+    for (POSITION pos = mapLimit.GetHeadPosition(); pos != 0; mapLimit.GetNext(pos))
     {
-        MS2Ptr<CDBPremiumProduct> spSub = pPrem->m_mapSub.GetNextValue(pos);
+        MS2Ptr<CDBPremiumProduct> spSub = mapLimit.GetValueAt(pos);
         if (spSub == 0)
             continue;
         MS2Ptr<ASMeratMarketBuyBillData> spBill = new ASMeratMarketBuyBillData();
@@ -777,10 +771,11 @@ void FUN_140ebf610(const CStringA& /*strMovie*/, MS2Ptr<CMeratMarketProduct> spP
             return;
         FUN_1409ab990(spBill.get(), FUN_14053f870(spSub->m_nItemId), spSub->m_nGrade);
         FUN_1409aca00(spBill.get(), FUN_1409b0140(spSub), spProduct);
-        FUN_140e6ff60(spParam->m_bills, MS2Ptr<ASBillData>(spBill.get()));
+        MS2Ptr<ASBillData> spBase(spBill);
+        bills.Add(spBase);
     }
-    MS2Ptr<TMeratMarketBillDataParam> spShow(spParam);
-    FUN_140ea7770(pDialog, MS2Ptr<TMarketBillDataParam>(spShow));
+    MS2Ptr<TMarketBillDataParam> spShow(spParam);
+    FUN_140ea7770(pDialog, spShow);
     ((Unk_McUi*)FUN_1403ed2b0())->FUN_141adc530(0x4f17);
 }
 
@@ -793,19 +788,17 @@ CStringW FUN_1418fec00(int nType, __int64 nAmount, int n);
 CStringW FUN_140bfa7f0(CStringW strKey, const CStringW& strArg, const int& nArg);   // FUN_14028dfa0<CStringW, int>
 int FUN_1407cccd0(const Scaleform::GFx::Value* pValue);
 bool FUN_140ebb1e0(const Scaleform::GFx::Value* pValue);
-class Unk_McAchieveMgr;
+class Unk_McAchieve : public CPtred { public: __int64 FUN_140159040(int nGrade); };
+class Unk_McAchieveMgr { public: MS2Ptr<Unk_McAchieve> FUN_140935e60(int nId); };
 Unk_McAchieveMgr* FUN_1406c7600();
 int FUN_140936900(Unk_McAchieveMgr* pMgr, int nAchieve, int nGrade);
-class Unk_McAchieve : public CPtred { public: void* FUN_1409393c0(); };
-void FUN_140935e60(Unk_McAchieveMgr* pMgr, MS2Ptr<Unk_McAchieve>* pOut, int nId);
-__int64 FUN_140159040(void* pTable, int nGrade);
 CStringW FUN_14093b9c0(int nAchieve, int nGrade);
 CStringW FUN_14052bd00(int nStringId, const CStringW& strArg);
 __int64 FUN_140166410();
 unsigned short FUN_14036db20(__int64 p);
 CStringW FUN_140ec01e0(CDBPremiumProduct* pProduct, const CStringW& strKey);
 CStringW FUN_14061ad70(const CStringW& strKey, const wchar_t* szSuffix);
-CStringW FUN_1409e8820(CStringW strFormat, const short& n);
+CStringW FUN_1409e8820(CStringW strFormat, const unsigned short& n);   // FUN_14028dfa0<unsigned short>
 CStringW FUN_14028dfa0(const CStringW& key, const fmt::ArgList& args);
 FMT_VARIADIC_W(CStringW, FUN_14028dfa0, CStringW)
 unsigned char FUN_141658f10(PCBase* pPlayer);
@@ -827,7 +820,10 @@ bool FUN_140ebfb90(CDBPremiumProduct* pProduct, bool bShowError)
     if (FUN_140936900(FUN_1406c7600(), nAchieve, nGrade) != 0)
         return true;
     if (bShowError)
-        FUN_1412751f0(FUN_14052bd00(0x5c, FUN_14093b9c0(nAchieve, nGrade)), 1, 1);
+    {
+        CStringW strMsg = FUN_14052bd00(0x5c, FUN_14093b9c0(nAchieve, nGrade));
+        FUN_1412751f0(strMsg, 1, 1);
+    }
     return false;
 }
 
@@ -837,18 +833,20 @@ bool FUN_140ebfc70(unsigned short nLevel, CDBPremiumProduct* pProduct, bool bSho
 {
     if (nLevel == 0)
         return true;
-    if (pProduct->m_n94 == 0 && pProduct->m_n96 == 0)
+    // The exe reads the level limits unsigned.
+    if ((unsigned short)pProduct->m_n94 == 0 && (unsigned short)pProduct->m_n96 == 0)
         return true;
     unsigned short nMin = pProduct->m_n94;
     unsigned short nMax = pProduct->m_n96;
-    if (nMin == 0)
-        nMin = 1;
-    if (nMax == 0)
-        nMax = FUN_14036db20(FUN_140166410());
+    nMin = nMin == 0 ? 1 : nMin;
+    nMax = nMax == 0 ? FUN_14036db20(FUN_140166410()) : nMax;
     if (nLevel < nMin || nMax < nLevel)
     {
         if (bShowError)
-            FUN_1412751f0(FUN_140ec01e0(pProduct, CStringW(L"s_meratmarket_error_buy_limit_")), 1, 1);
+        {
+            CStringW strMsg = FUN_140ec01e0(pProduct, L"s_meratmarket_error_buy_limit_");
+            FUN_1412751f0(strMsg, 1, 1);
+        }
         return false;
     }
     return true;
@@ -859,10 +857,9 @@ bool FUN_140ebfc70(unsigned short nLevel, CDBPremiumProduct* pProduct, bool bSho
 bool FUN_140ebfdd0(CDBPremiumProduct* pProduct, bool bShowError)
 {
     PCBase* pPlayer = FUN_141bd0cc0(FUN_1403ed2d0());
-    if (pPlayer == 0)
-        return true;
-    unsigned short nLevel = (unsigned short)pPlayer->vfunc_78();
-    return FUN_140ebfc70(nLevel, pProduct, bShowError);
+    if (pPlayer != 0)
+        return FUN_140ebfc70((unsigned short)pPlayer->vfunc_78(), pProduct, bShowError);
+    return true;
 }
 
 // The PC bang level of the product.
@@ -874,17 +871,24 @@ bool FUN_140ebfe30(CDBPremiumProduct* pProduct, bool bShowError)
     PCBase* pPlayer = FUN_141bd0cc0(FUN_1403ed2d0());
     if (pPlayer != 0)
     {
-        unsigned char nLevel = FUN_141658f10(pPlayer);
+        int nLevel = FUN_141658f10(pPlayer);
         if (nLevel == 0)
         {
             if (bShowError)
-                FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_meratmarket_error_buy_not_pcbang")), 1, 1);
+            {
+                CStringW strMsg = GetStringCommonByKey(L"s_meratmarket_error_buy_not_pcbang");
+                FUN_1412751f0(strMsg, 1, 1);
+            }
             return false;
         }
-        if ((int)nLevel < pProduct->FUN_14069fee0())
+        int nRequired = pProduct->FUN_14069fee0();
+        if (nRequired > nLevel)
         {
             if (bShowError)
-                FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_meratmarket_error_buy_low_pcbang_level")), 1, 1);
+            {
+                CStringW strMsg = GetStringCommonByKey(L"s_meratmarket_error_buy_low_pcbang_level");
+                FUN_1412751f0(strMsg, 1, 1);
+            }
             return false;
         }
     }
@@ -892,7 +896,6 @@ bool FUN_140ebfe30(CDBPremiumProduct* pProduct, bool bShowError)
 }
 
 // The job limit of the product.
-// MS2-FUNCTIONAL: not byte-matched (temporaries / EH state layout)
 // @0x140ebff70
 bool FUN_140ebff70(CDBPremiumProduct* pProduct, bool bShowError)
 {
@@ -900,68 +903,70 @@ bool FUN_140ebff70(CDBPremiumProduct* pProduct, bool bShowError)
     if (pPlayer == 0)
         return false;
     int nResult = FUN_1406a59f0(pProduct, FUN_141654700(pPlayer));
-    if (!bShowError || nResult != 0xb5)
-        return nResult == 0;
-    CStringW strSep(L", ");
+    if (bShowError && nResult == 0xb5)
+    {
+    const CStringW& strSep = L", ";
     CStringW strJobs;
     ATL::CAtlArray<int> arrJobs;
     FUN_140222a70(pProduct->m_n98, arrJobs);
     for (size_t i = 0; i < arrJobs.GetCount(); ++i)
     {
-        int nName = FUN_140644bb0(FUN_1401d7a50(), arrJobs[i]);
-        CStringW strName = GetStringTable()->FUN_141811980(6, nName);
+        CStringW strName = GetStringTable()->FUN_141811980(6, FUN_140644bb0(FUN_1401d7a50(), arrJobs[i]));
         if (strName.IsEmpty())
             continue;
         if (!strJobs.IsEmpty())
             strJobs.Append(strSep);
         strJobs.Append(strName);
     }
-    FUN_1412751f0(FUN_1405c2690(CStringW(L"s_meratmarket_error_buy_limit_job_detail"), strJobs), 1, 1);
+    CStringW strMsg = FUN_1405c2690(CStringW(L"s_meratmarket_error_buy_limit_job_detail"), strJobs);
+    FUN_1412751f0(strMsg, 1, 1);
     return false;
+    }
+    return nResult == 0;
 }
 
 // The level limit text of a product.
-// MS2-FUNCTIONAL: not byte-matched (temporaries / EH state layout)
 // @0x140ec01e0
 CStringW FUN_140ec01e0(CDBPremiumProduct* pProduct, const CStringW& strKey)
 {
     CStringW strResult;
-    short nMin = pProduct->m_n94;
-    short nMax = pProduct->m_n96;
-    if (nMin == 0 || nMax == 0)
+    unsigned short nMin = pProduct->m_n94;
+    unsigned short nMax = pProduct->m_n96;
+    if (nMin > 0 && nMax > 0)
     {
-        if (nMin == 0)
-            strResult = FUN_1409e8820(FUN_14061ad70(strKey, L"level_max"), nMax);
+        if (nMin == nMax)
+            strResult = FUN_1409e8820(FUN_14061ad70(strKey, L"level_only"), nMin);
         else
-            strResult = FUN_1409e8820(FUN_14061ad70(strKey, L"level_min"), nMin);
+            strResult = FUN_14028dfa0(FUN_14061ad70(strKey, L"level_range"), nMin, nMax);
     }
-    else if (nMin == nMax)
-        strResult = FUN_1409e8820(FUN_14061ad70(strKey, L"level_only"), nMin);
+    else if (nMin > 0)
+        strResult = FUN_1409e8820(FUN_14061ad70(strKey, L"level_min"), nMin);
     else
-        strResult = FUN_14028dfa0(FUN_14061ad70(strKey, L"level_range"), (unsigned short)nMin, (unsigned short)nMax);
+        strResult = FUN_1409e8820(FUN_14061ad70(strKey, L"level_max"), nMax);
     return strResult;
 }
 
 // The achievement requirement state: 0 ok, 0xb0 no achievement, 0xb1 not achieved, 0xb2 expired.
-// MS2-FUNCTIONAL: not byte-matched (unrecovered callee signatures)
 // @0x140ec04b0
 int FUN_140ec04b0(CMeratMarketPremiumProduct* pProduct)
 {
-    if (pProduct->m_nf8 == 0)
-        return 0;
-    int nAchieve = pProduct->m_nf8;
-    int nGrade = pProduct->m_nfc;
-    MS2Ptr<Unk_McAchieve> spAchieve;
-    FUN_140935e60(FUN_1406c7600(), &spAchieve, nAchieve);
-    if (spAchieve == 0)
-        return 0xb0;
-    __int64 nTime = FUN_140159040(spAchieve->FUN_1409393c0(), nGrade);
-    if (nTime == 0)
-        return 0xb1;
-    if (0 < pProduct->m_n100)
+    // The exe tests the achieve id unsigned.
+    if ((unsigned int)pProduct->m_nf8 > 0)
     {
-        if (nTime + pProduct->m_n100 < FUN_140869440())
-            return 0xb2;
+        int nAchieve = pProduct->m_nf8;
+        int nGrade = pProduct->m_nfc;
+        MS2Ptr<Unk_McAchieve> spAchieve = FUN_1406c7600()->FUN_140935e60(nAchieve);
+        if (spAchieve == 0)
+            return 0xb0;
+        if (spAchieve->FUN_140159040(nGrade) == 0)
+            return 0xb1;
+        if (pProduct->m_n100 > 0)
+        {
+            __int64 nNow = FUN_140869440();
+            __int64 nExpire = spAchieve->FUN_140159040(nGrade) + pProduct->m_n100;
+            if (nNow > nExpire)
+                return 0xb2;
+        }
     }
     return 0;
 }
@@ -973,8 +978,19 @@ void FUN_140d73bc0(int nId, int a, int b, CStringW strTag);
 void FUN_141275260(int nStringId, int a, int b);
 int FUN_140896350(CUgcMarketProduct* pUgc);
 void SendRequestCubeMode66(void* pBlueprint);
-struct Unk_McTimeKey { __int64 a; __int64 b; __int64 c; __int64 d; };
-extern int DAT_143ab2820;
+// The owner key of the local player (account id, kind, character id); the exe builds it field by field.
+struct Unk_McTimeKey
+{
+    void FUN_1409aff60();
+    __int64 a;
+    int b;
+    __int64 c;
+    __int64 d;
+};
+extern __int64 DAT_143ab2820;
+extern int DAT_143ab2830;
+extern __int64 DAT_143ab2838;
+extern int DAT_143ab2834;
 bool FUN_140896230(CUgcMarketProduct* pUgc, Unk_McTimeKey* pKey);
 class Unk_McBlindMan { public: bool FUN_140a8bcc0(MS2Ptr<CMeratMarketProduct> spProduct); };
 Unk_McBlindMan* FUN_1409c1740();
@@ -990,7 +1006,6 @@ int FUN_1406a4370(CMeratMarketProduct* pProduct);
 bool FUN_1406a0cc0(CMeratMarketPremiumProduct* pProduct);
 
 // The payback table text of the tooltip: one row per charge step, the step holding the current amount is marked.
-// MS2-FUNCTIONAL: not byte-matched (temporaries / EH state layout)
 // @0x140ebd9d0
 CStringW FUN_140ebd9d0(bool bSelect, __int64 nCur)
 {
@@ -1012,21 +1027,27 @@ CStringW FUN_140ebd9d0(bool bSelect, __int64 nCur)
         if (pos == mapPayback.GetTailPosition())
         {
             CStringW strRow = FUN_140bfa7f0(CStringW(L"s_meratmarket_tooltip_table_charge_row_max"), FUN_1418fec00(3, nStep, 0), nPercent);
-            if (!bSelect || nCur < nStep)
-                strResult.Append(strRow);
+            if (bSelect && nStep <= nCur)
+            {
+                CStringW strSelect = FUN_1405c2690(CStringW(L"s_meratmarket_tooltip_table_charge_select"), strRow);
+                strResult.Append(strSelect);
+            }
             else
-                strResult.Append(FUN_1405c2690(CStringW(L"s_meratmarket_tooltip_table_charge_select"), strRow));
+                strResult.Append(strRow);
         }
         else
         {
             if (strRowFormat.IsEmpty())
-                strRowFormat = GetStringCommonByKey(CStringW(L"s_meratmarket_tooltip_table_charge_row"));
+                strRowFormat = GetStringCommonByKey(L"s_meratmarket_tooltip_table_charge_row");
             __int64 nNextStep = mapPayback.GetKeyAt(posNext);
             CStringW strRow = StringFormat((const wchar_t*)strRowFormat, FUN_1409404f0(nStep), FUN_1418fec00(3, nNextStep, 0), nPercent);
-            if (!bSelect || nCur < nStep || nNextStep <= nCur)
-                strResult.Append(strRow);
+            if (bSelect && nCur >= nStep && nCur < nNextStep)
+            {
+                CStringW strSelect = FUN_1405c2690(CStringW(L"s_meratmarket_tooltip_table_charge_select"), strRow);
+                strResult.Append(strSelect);
+            }
             else
-                strResult.Append(FUN_1405c2690(CStringW(L"s_meratmarket_tooltip_table_charge_select"), strRow));
+                strResult.Append(strRow);
         }
     }
     return strResult;
@@ -1099,16 +1120,16 @@ void FUN_140ec0990(ASArray* pArr, int nTab)
 {
     if (nTab == 0)
     {
-        FUN_140ec07b0(pArr, CStringW(L"$s_meratmarket_dropdown_premium_sort_chartorder"), 5, false);
-        FUN_140ec07b0(pArr, CStringW(L"$s_meratmarket_dropdown_premium_sort_price_low"), 2, false);
-        FUN_140ec07b0(pArr, CStringW(L"$s_meratmarket_dropdown_premium_sort_price_high"), 3, false);
-        FUN_140ec07b0(pArr, CStringW(L"$s_meratmarket_dropdown_premium_sort_create"), 4, false);
+        FUN_140ec07b0(pArr, L"$s_meratmarket_dropdown_premium_sort_chartorder", 5, false);
+        FUN_140ec07b0(pArr, L"$s_meratmarket_dropdown_premium_sort_price_low", 2, false);
+        FUN_140ec07b0(pArr, L"$s_meratmarket_dropdown_premium_sort_price_high", 3, false);
+        FUN_140ec07b0(pArr, L"$s_meratmarket_dropdown_premium_sort_create", 4, false);
     }
     else if (nTab == 1)
     {
-        FUN_140ec07b0(pArr, CStringW(L"$s_meratmarket_dropdown_ugc_sort_create"), 4, true);
-        FUN_140ec07b0(pArr, CStringW(L"$s_meratmarket_dropdown_ugc_sort_buy"), 1, true);
-        FUN_140ec07b0(pArr, CStringW(L"$s_meratmarket_dropdown_ugc_sort_buy_total"), 6, true);
+        FUN_140ec07b0(pArr, L"$s_meratmarket_dropdown_ugc_sort_create", 4, true);
+        FUN_140ec07b0(pArr, L"$s_meratmarket_dropdown_ugc_sort_buy", 1, true);
+        FUN_140ec07b0(pArr, L"$s_meratmarket_dropdown_ugc_sort_buy_total", 6, true);
     }
 }
 
@@ -1139,15 +1160,7 @@ void FUN_140ec0c70(const CStringA& strMovie, MS2Ptr<CMeratMarketProduct> spProdu
 {
     if (spProduct == 0)
         return;
-    if (FUN_1406ab1d0(spProduct.get()) == 0)
-    {
-        if (FUN_1406a4370(spProduct.get()) != 0 && FUN_1406a0cc0(&spProduct->m_premium))
-        {
-            FUN_141275260(0xa17, 1, 1);
-            return;
-        }
-    }
-    else
+    if (FUN_1406ab1d0(spProduct.operator->()))
     {
         if (spProduct->m_ugc.m_n28 == 4)
         {
@@ -1159,14 +1172,27 @@ void FUN_140ec0c70(const CStringA& strMovie, MS2Ptr<CMeratMarketProduct> spProdu
             FUN_140d73bc0(0xa0e, 0, 0, CStringW(L""));
             return;
         }
-        Unk_McTimeKey key = *(Unk_McTimeKey*)&DAT_143ab2820;
+        Unk_McTimeKey key;
+        key.FUN_1409aff60();
+        key.a = DAT_143ab2820;
+        key.b = DAT_143ab2830;
+        key.c = DAT_143ab2838;
+        key.d = DAT_143ab2834;
         if (FUN_140896230(&spProduct->m_ugc, &key))
         {
             FUN_140d73bc0(0xa14, 0, 0, CStringW(L""));
             return;
         }
     }
-    if (!FUN_140d5b1f0((Unk_McMan*)FUN_140939a00(), spProduct, 1))
+    else
+    {
+        if (FUN_1406a4370(spProduct.operator->()) != 0 && FUN_1406a0cc0(&spProduct->m_premium))
+        {
+            FUN_141275260(0xa17, 1, 1);
+            return;
+        }
+    }
+    if (!((CMeratMarketMan*)FUN_140939a00())->FUN_140d5b1f0(spProduct, true))
         return;
     if (!FUN_140ebc630(spProduct, nPayType))
         return;
@@ -1178,16 +1204,20 @@ void FUN_140ec0c70(const CStringA& strMovie, MS2Ptr<CMeratMarketProduct> spProdu
     if (spParam == 0)
         return;
     int nCur = FUN_14069c3e0(nPayType);
-    int bUgc = FUN_1406ab1d0(spProduct.get());
-    MS2Ptr<ASMeratMarketBuyBillData> spBill = new ASMeratMarketBuyBillData();
-    FUN_1409ab940(spBill.get(), n4);
-    FUN_1409b03d0(spBill.get(), n5);
-    FUN_1409ac360(spBill.get(), spProduct, 0, nCur);
-    FUN_140e6ff60(spParam->m_bills, MS2Ptr<ASBillData>(spBill.get()));
-    spParam->FUN_140eab940(spBill->FUN_140eacf60());
+    int bUgc = FUN_1406ab1d0(spProduct.operator->());
+    ATL::CAtlArray<MS2Ptr<ASBillData> >& arrBills = spParam->m_bills;
+    {
+        MS2Ptr<ASMeratMarketBuyBillData> spBill = new ASMeratMarketBuyBillData();
+        FUN_1409ab940(spBill.get(), n4);
+        FUN_1409b03d0(spBill.get(), n5);
+        FUN_1409ac360(spBill.get(), spProduct, 0, nCur);
+        MS2Ptr<ASBillData> spRow(spBill);
+        arrBills.Add(spRow);
+        spParam->FUN_140eab940(spBill->FUN_140eacf60());
+    }
     spParam->SetGift(bUgc != 0);
-    MS2Ptr<TMeratMarketBillDataParam> spShow(spParam);
-    FUN_140ea7770(pDialog, MS2Ptr<TMarketBillDataParam>(spShow));
+    MS2Ptr<TMarketBillDataParam> spShow(spParam);
+    FUN_140ea7770(pDialog, spShow);
     ((Unk_McUi*)FUN_1403ed2b0())->FUN_141adc530(0x4f17);
 }
 
@@ -1207,8 +1237,8 @@ void FUN_141b70f90(const CMsTime& tm, const CStringW& strFormat, CStringW& strOu
 CString FUN_140719210(int n);
 void FUN_1409c23e0(ASObj* pRow, int n);
 void FUN_1409c2750(ASObj* pRow, const CString& str);
-void FUN_1409c3860(ASObj* pRow, CItem* pItem, int n, int nId);
-void FUN_140692c90(MS2Ptr<CItem>& sp, MS2Ptr<CItem> spNew);
+int FUN_1409c3860(ASObj* pRow, CItem* pItem, PC* pPlayer, int nId);
+void FUN_140692c90(MS2Ptr<CItem>& sp, const MS2Ptr<CItem>& spNew);
 Unk_McMarket* FUN_140939a00();
 class Unk_McCategoryTable
 {
@@ -1269,19 +1299,19 @@ int FUN_140ec1950(MS2Ptr<CItem> spItem)
         return 0;
     if (FUN_141b49b50(spData))
         return 0x79;
-    if (spData->FUN_14053ce40())
+    else if (spData->FUN_14053ce40())
         return 0x7b;
-    if (spData->FUN_14053cb40())
+    else if (spData->FUN_14053cb40())
         return 0x7b;
-    if (spData->FUN_14053cd50())
+    else if (spData->FUN_14053cd50())
         return 0x7b;
-    if (spData->FUN_14053cb80())
+    else if (spData->FUN_14053cb80())
         return 0x7f;
-    if (spData->FUN_14053cc80())
+    else if (spData->FUN_14053cc80())
         return 0x7b;
-    if (spData->FUN_14053cd10())
+    else if (spData->FUN_14053cd10())
         return 0x7c;
-    if (spData->FUN_14053d900())
+    else if (spData->FUN_14053d900())
         return 0x7d;
     return 0;
 }
@@ -1316,7 +1346,9 @@ void FUN_140ec1da0(int nCategory, int nTab, bool* pbSortA, bool* pbSortB)
     MS2Ptr<CPtred> spTab = FUN_1406aa4b0()->FUN_1407cb520(nCategory, nTab);
     if (spTab == 0)
         return;
-    MS2Ptr<Unk_McSortTabInfo> spSort(dynamic_cast<Unk_McSortTabInfo*>(spTab.operator->()));
+    // The cast must name the exe's classes: a dynamic_cast to Unk_McSortTabInfo found no TypeDescriptor and was always NULL.
+    MS2Ptr<Unk_McSortTabInfo> spSort(reinterpret_cast<Unk_McSortTabInfo*>(dynamic_cast<CShopCategoryTable::SortTabInfo*>(
+        reinterpret_cast<CShopCategoryTable::TabInfo*>(spTab.operator->()))));
     if (spSort == 0)
         return;
     *pbSortA = spSort->m_b78;
@@ -1350,42 +1382,46 @@ CStringW FUN_140ec1f20()
 // @0x140ec2010
 CStringW FUN_140ec2010()
 {
-    if (FUN_140d5a2e0(FUN_140939a00()) == 0)
-        return CStringW(L"");
-    return FUN_14052bd00(0xa25, FUN_1409404f0(FUN_140d5a1d0(FUN_140939a00())));
+    if (FUN_140d5a2e0(FUN_140939a00()) != 0)
+    {
+        __int64 nArg = FUN_140d5a1d0(FUN_140939a00());
+        return FUN_14052bd00(0xa25, FUN_1409404f0(nArg));
+    }
+    return CStringW(L"");
 }
 
 // The product row of the click out data: icon, name and ids.
-// MS2-FUNCTIONAL: not byte-matched (unrecovered callee signatures, temporaries)
 // @0x140ec20d0
-bool FUN_140ec20d0(ASObj* pRow, MS2Ptr<CMeratMarketProduct> spProduct, MS2Ptr<CItem> spItem, int nParam)
+int FUN_140ec20d0(ASObj* pRow, MS2Ptr<CMeratMarketProduct> spProduct, MS2Ptr<CItem> spItem, PC* pPlayer)
 {
-    if (spProduct == 0)
-        return false;
-    if (spProduct->GetType() == 3)
+    if (spProduct.get())
     {
-        CStringA strIcon = spProduct->m_premium.GetIconPath();
-        FUN_1409c23e0(pRow, spProduct->m_premium.GetGrade());
-        FUN_1409c2750(pRow, strIcon);
+        if (spProduct->GetType() == 3)
+        {
+            auto& premium = spProduct->m_premium;
+            CStringA strIcon = premium.GetIconPath();
+            FUN_1409c23e0(pRow, premium.GetGrade());
+            FUN_1409c2750(pRow, strIcon);
+        }
+        else
+        {
+            if (spItem.IsNull())
+                FUN_140692c90(spItem, FUN_140ebc070(spProduct));
+            FUN_1409c3860(pRow, spItem.get(), pPlayer, 0xd01);
+        }
+        pRow->FUN_1407cba60("itemID", FUN_140719210(spProduct->GetItemId()));
+        pRow->FUN_1407cbb20("productOID", ((Unk_McOid*)&spProduct->m_key)->FUN_1409b0470());
+        return true;
     }
-    else
-    {
-        if (spItem == 0)
-            FUN_140692c90(spItem, FUN_140ebc070(spProduct.get()));
-        FUN_1409c3860(pRow, spItem.get(), nParam, 0xd01);
-    }
-    pRow->FUN_1407cba60("itemID", FUN_140719210(spProduct->GetItemId()));
-    pRow->FUN_1407cbb20("productOID", ((Unk_McOid*)&spProduct->m_key)->FUN_1409b0470());
-    return true;
+    return false;
 }
 
 // Find a product by the key kind: 1 = by id, 2, 3 and 4 = the other lookups, else the generic lookup.
 // @0x140ec2300
-MS2Ptr<CMeratMarketProduct> FUN_140ec2300(const Unk_MeratProductKey& key, int* pnKind, int nParam)
+MS2Ptr<CMeratMarketProduct> FUN_140ec2300(const Unk_MeratProductKey& key, const int& nKind, __int64 nId)
 {
     MS2Ptr<CMeratMarketProduct> spProduct(0);
-    CMeratMarketMan* pMan;
-    switch (*pnKind)
+    switch (nKind)
     {
     case 1:
         spProduct = ((CMeratMarketMan*)FUN_140939a00())->FUN_140d57d80(key);
@@ -1400,9 +1436,8 @@ MS2Ptr<CMeratMarketProduct> FUN_140ec2300(const Unk_MeratProductKey& key, int* p
         spProduct = ((CMeratMarketMan*)FUN_140939a00())->FUN_140d576a0(key);
         break;
     }
-    pMan = (CMeratMarketMan*)FUN_140939a00();
     if (spProduct == 0)
-        spProduct = pMan->FUN_140d57150(key, nParam);
+        spProduct = ((CMeratMarketMan*)FUN_140939a00())->FUN_140d57150(key, nId);
     return spProduct;
 }
 
@@ -1421,12 +1456,14 @@ CStringW FUN_140ec25e0(__int64 nTime)
 UIMeratMarketDialogUtil::ASOutData::ASOutData(Scaleform::GFx::Value& v, int nMovieId)
     : AScript(v, nMovieId)
 {
-    {
-        Scaleform::GFx::Value valData = FUN_1422baa20("data");
-        m_spProduct = ASMeratMarketProductBase::FUN_1409bbc30(valData, nMovieId);
-    }
-    Scaleform::GFx::Value valRenderer = FUN_1422baa20("renderer");
-    m_spRenderer.AssignRaw(new AScript(valRenderer, nMovieId));
+#ifdef __clang__
+    // clang-cl will not bind the temporary to Value& (a cl extension); same call through a named copy.
+    Scaleform::GFx::Value valData = FUN_1422baa20("data");
+    m_spProduct = ASMeratMarketProductBase::FUN_1409bbc30(valData, nMovieId);
+#else
+    m_spProduct = ASMeratMarketProductBase::FUN_1409bbc30(FUN_1422baa20("data"), nMovieId);
+#endif
+    m_spRenderer.AssignRaw(new AScript(FUN_1422baa20("renderer"), nMovieId));
 }
 
 // @0x140ec2860
@@ -1450,9 +1487,7 @@ MS2Ptr<AScript> UIMeratMarketDialogUtil::ASOutData::FUN_140ec2900()
 UIMeratMarketDialogUtil::ASClickOutData::ASClickOutData(Scaleform::GFx::Value& v, int nMovieId)
     : ASOutData(v, nMovieId), m_buyBtnData(2)
 {
-    Scaleform::GFx::Value valBtn = FUN_1422baa20("buyBtnData");
-    AScript tmp(valBtn, nMovieId);
-    FUN_1409edaf0(m_buyBtnData, tmp);
+    FUN_1409edaf0(m_buyBtnData, AScript(FUN_1422baa20("buyBtnData"), nMovieId));
 }
 
 // @0x140ec2a50
@@ -1493,9 +1528,7 @@ bool FUN_140ec3bf0(const Scaleform::GFx::Value* pValue)
 // @0x140ec3b90
 bool FUN_140ec3b90(const Scaleform::GFx::Value* pValue)
 {
-    if (!FUN_140ebb1e0(pValue) && !FUN_140ec3bf0(pValue) && !FUN_140ec3b50(pValue))
-        return false;
-    return true;
+    return FUN_140ebb1e0(pValue) || FUN_140ec3bf0(pValue) || FUN_140ec3b50(pValue);
 }
 
 // The inventory tab of an item.
@@ -1520,12 +1553,13 @@ void ASObj::FUN_140ec3230(const char* szName, int n)
 }
 
 // @0x140ec3560
-void FUN_140ec3560(AScript* pDst, ASTooltip* pSrc)
+AScript* FUN_140ec3560(AScript* pDst, ASTooltip* pSrc)
 {
     FUN_1409edaf0(*pDst, *pSrc);
     *(__int64*)((char*)pDst + 0x40) = *(__int64*)((char*)pSrc + 0x40);
     *(int*)((char*)pDst + 0x48) = *(int*)((char*)pSrc + 0x48);
     *(CStringW*)((char*)pDst + 0x50) = *(CStringW*)((char*)pSrc + 0x50);
+    return pDst;
 }
 
 // @0x140ec3900

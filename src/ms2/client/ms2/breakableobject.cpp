@@ -79,6 +79,7 @@ class Unk_BoEffectService
 {
 public:
     void FUN_1411a6f00(egf::EntityID id);                           // drop the kept object of an entity
+    unsigned FUN_1411a5580(int nA, int nB, int nKind, efd::Point3 kPos, float fVolume);    // play a hit sound (the point by value)
 };
 bool FUN_140a33ff0(const efd::Point3& pt);                          // all three coordinates are finite
 
@@ -215,16 +216,24 @@ int CBreakableObject::FUN_140addea0()
 }
 MS2_REPLACE_METHOD(0x140addea0, CBreakableObject, FUN_140addea0, 0, 0);
 
-// MS2-FUNCTIONAL: the exe tests m_spBox through MS2Ptr::get (0x140a006f0) and builds both point temps up front; same calls
+// The box placement as the exe calls it: vfunc_3 takes the two points as NiPoint3 by value, converted implicitly
+// from the efd::Point3 members. The pointer test is the folded get copy 0x140a006f0.
+class Unk_BoBoxSlots
+{
+public:
+    virtual void vfunc_0(); virtual void vfunc_1(); virtual void vfunc_2();
+    virtual void vfunc_3(NiPoint3 ptPos, NiPoint3 ptDir, float fScale);
+};
+CBoxCollision* FUN_140a006f0(const MS2Ptr<CBoxCollision>& sp);
+
 // @0x140addf10
 MS2Ptr<CBoxCollision> CBreakableObject::FUN_140addf10()
 {
-    if (m_spBox.get())
-        m_spBox->vfunc_3(Vector3(m_ptPos), Vector3(m_ptRot), 1.0f);
+    if (FUN_140a006f0(m_spBox))
+        reinterpret_cast<Unk_BoBoxSlots*>(m_spBox.operator->())->vfunc_3(m_ptPos, m_ptRot, 1.0f);
     return m_spBox;
 }
 
-// MS2-FUNCTIONAL: the exe's point copy sits 8 bytes higher in the frame (one more 8-byte temp); same calls
 // @0x140ade030
 void CBreakableObject::FUN_140ade030(int nHitter, int nKind)
 {
@@ -232,8 +241,7 @@ void CBreakableObject::FUN_140ade030(int nHitter, int nKind)
         ? &static_cast<Client::Constants*>(FUN_1401d3200())->VolumeMyPcToBreakableObject
         : &static_cast<Client::Constants*>(FUN_1401d3200())->VolumePcToBreakableObject;
     float fVolume = pVolume->Read();
-    efd::Point3 kPos = m_ptPos;
-    FUN_1403ed280()->FUN_1411a5580(nHitter, m_nHitSound, nKind, static_cast<const NiPoint3&>(kPos), fVolume);
+    reinterpret_cast<Unk_BoEffectService*>(FUN_1403ed280())->FUN_1411a5580(nHitter, m_nHitSound, nKind, m_ptPos, fVolume);
     m_kHitTimer.FUN_140868750(1000);
 }
 
@@ -353,7 +361,6 @@ MS2_REPLACE_METHOD(0x140adeaa0, CBreakableObject, FUN_140adeaa0, 0, 0);
 
 // The moving object runs a cycle: wait, go (m_fMoveTime), wait, come back; the position is the base plus the move
 // direction times the speed times the time on the way. A synced object derives its cycle time from the server tick.
-// MS2-FUNCTIONAL: per-frame movement update: same calls and math, different temp / branch layout
 // @0x140adeaf0
 void CBreakableObject::FUN_140adeaf0(int nNow)
 {
@@ -377,8 +384,7 @@ void CBreakableObject::FUN_140adeaf0(int nNow)
             m_nPhaseTime = FUN_14086d260()->FUN_141473410(nNow);
             m_nPhaseStart = nNow;
         }
-        int nElapsed = m_nPhaseTime + (nNow - m_nPhaseStart);
-        unsigned int nTime = nElapsed + FUN_14028d260(m_fMoveDelay) + m_nSyncB;
+        unsigned int nTime = m_nPhaseTime + (nNow - m_nPhaseStart) + FUN_14028d260(m_fMoveDelay) + m_nSyncB;
         unsigned int nWait0 = FUN_14028d260(m_afWait[0]);
         unsigned int nGo = nWait0 + FUN_14028d260(m_fMoveTime);
         unsigned int nWait1 = nGo + FUN_14028d260(m_afWait[1]);
@@ -389,42 +395,39 @@ void CBreakableObject::FUN_140adeaf0(int nNow)
         unsigned int nPos = nTime % nCycle;
         if (m_nSyncA == 0 && m_nSyncC < nTime)
             nPos = m_nSyncC % nCycle;
-        if (nWait0 < nPos)
-        {
-            if (nWait0 < nPos && nPos <= nGo)
-            {
-                nPos = nPos - nWait0;
-                FUN_140adf830(m_ptRotBase);
-                if (m_nPhase != 2)
-                    FUN_140ae06a0(2, nNow);
-            }
-            else if (nGo < nPos && nPos <= nWait1)
-            {
-                nPos = FUN_14028d260(m_fMoveTime);
-                if (m_nMoveMode == 2)
-                    FUN_140adf830(m_ptRotBase + efd::Point3(0.0f, 0.0f, 180.0f));
-                if (m_nPhase != 3)
-                    FUN_140ae06a0(3, nNow);
-            }
-            else
-            {
-                nPos = nCycle - nPos;
-                if (m_nMoveMode == 2)
-                    FUN_140adf830(m_ptRotBase + efd::Point3(0.0f, 0.0f, 180.0f));
-                if (m_nPhase != 3)
-                    FUN_140ae06a0(4, nNow);
-            }
-        }
-        else
+        if (nPos <= nWait0)
         {
             nPos = 0;
             FUN_140adf830(m_ptRotBase);
             if (m_nPhase != 1)
                 FUN_140ae06a0(1, nNow);
         }
+        else if (nPos > nWait0 && nPos <= nGo)
+        {
+            nPos = nPos - nWait0;
+            FUN_140adf830(m_ptRotBase);
+            if (m_nPhase != 2)
+                FUN_140ae06a0(2, nNow);
+        }
+        else if (nPos > nGo && nPos <= nWait1)
+        {
+            nPos = FUN_14028d260(m_fMoveTime);
+            if (m_nMoveMode == 2)
+                FUN_140adf830(m_ptRotBase + efd::Point3(0.0f, 0.0f, 180.0f));
+            if (m_nPhase != 3)
+                FUN_140ae06a0(3, nNow);
+        }
+        else
+        {
+            nPos = nCycle - nPos;
+            if (m_nMoveMode == 2)
+                FUN_140adf830(m_ptRotBase + efd::Point3(0.0f, 0.0f, 180.0f));
+            if (m_nPhase != 3)
+                FUN_140ae06a0(4, nNow);
+        }
         efd::Point3 ptOld = GetPtPos();
-        float fTime = FUN_14028d280(nPos);
-        FUN_140adf770(m_ptPosBase + m_ptMoveDir * m_fSpeed * fTime);
+        efd::Point3 ptOffset = m_ptMoveDir * m_fSpeed * FUN_14028d280(nPos);
+        FUN_140adf770(m_ptPosBase + ptOffset);
         m_ptVelocity = GetPtPos() - ptOld;
         m_ptVelocity.Unitize();
     }
@@ -468,7 +471,6 @@ int CBreakableObject::FUN_140adf350()
 MS2_REPLACE_METHOD(0x140adf350, CBreakableObject, FUN_140adf350, 0, 0);
 
 // A tomb stone: the model ids decide the variant, the gem data gives the four effects.
-// MS2-FUNCTIONAL: tomb stone bind: same calls, the exe's CString temp and ContainsModel order differ
 // @0x140adf370
 void CBreakableObject::FUN_140adf370(egf::Entity* pEntity, int nArg, MS2Ptr<CGemTombStone> spTomb)
 {
@@ -490,17 +492,12 @@ void CBreakableObject::FUN_140adf370(egf::Entity* pEntity, int nArg, MS2Ptr<CGem
     m_aRegenAnims.RemoveAll();
     m_aDamageAnims.RemoveAll();
     m_aReviveAnims.RemoveAll();
-    if (spTomb.get() == 0)
-    {
-        m_bTombEffects = false;
-        FUN_140ae0c20(pEntity);
-    }
-    else
+    if (spTomb.get() != 0)
     {
         m_strIdleAnim = "Idle_A";
-        m_aRegenAnims.Add(CString("Regen_A"));
-        m_aDamageAnims.Add(CString("Damg_A"));
-        m_aReviveAnims.Add(CString("Revive_A"));
+        m_aRegenAnims.Add("Regen_A");
+        m_aDamageAnims.Add("Damg_A");
+        m_aReviveAnims.Add("Revive_A");
         MS2Ptr<CGemTombStoneData> spData = spTomb->FUN_1405a53c0();
         if (spData.get())
         {
@@ -512,6 +509,11 @@ void CBreakableObject::FUN_140adf370(egf::Entity* pEntity, int nArg, MS2Ptr<CGem
             m_strDeadEffect = m_strReviveEffect;
         }
         m_bTombEffects = true;
+    }
+    else
+    {
+        m_bTombEffects = false;
+        FUN_140ae0c20(pEntity);
     }
 }
 
@@ -583,7 +585,6 @@ egf::EntityPtr CBreakableObject::GetEntity()
     return m_spEntity;
 }
 
-// MS2-FUNCTIONAL: property read + box build: same calls, Vector3 temp order differs
 // @0x140adf9d0
 void CBreakableObject::FUN_140adf9d0(egf::Entity* pEntity)
 {
@@ -632,7 +633,7 @@ void CBreakableObject::FUN_140adf9d0(egf::Entity* pEntity)
     m_spBox->m_ptSize = kOffset;
     m_spBox->m_kColor = NiColorA(1.0f, 1.0f, 1.0f, 1.0f);
     m_spBox->vfunc_4();
-    m_spBox->vfunc_3(Vector3(m_ptPos), Vector3(m_ptRot), 1.0f);
+    reinterpret_cast<Unk_BoBoxSlots*>(m_spBox.operator->())->vfunc_3(m_ptPos, m_ptRot, 1.0f);
     pEntity->GetPropertyValue(0xa34897b1, m_spBox->m_b54);
     pEntity->GetPropertyValue(0x8843d885, m_nHitSound);
     m_bHasAnim = pEntity->GetModel()->ContainsModel(0x48ccc02d);
@@ -778,7 +779,6 @@ void CBreakableObject::FUN_140ae07d0(int bShow)
     FUN_140ae0990(bShow);
 }
 
-// MS2-FUNCTIONAL: the exe materialises the shadow compare as an int temp (jl, 1/0) before narrowing to bool; same calls
 // @0x140ae0990
 void CBreakableObject::FUN_140ae0990(int bShow)
 {
@@ -787,8 +787,8 @@ void CBreakableObject::FUN_140ae0990(int bShow)
         NiAVObject* pRoot = FUN_141b6efc0(m_spEntity);
         if (pRoot != 0 && m_bShadow && (IsTombStone() == 0 || m_nState != 5))
         {
-            int nQuality = FUN_140ae1c10();
-            FUN_141567330(pRoot, nQuality >= TSingleton<CGraphicOptionTable>::GetInstance()->GetShadowOption(5) ? true : false);
+            bool bShadow = FUN_140ae1c10() >= TSingleton<CGraphicOptionTable>::GetInstance()->GetShadowOption(5);
+            FUN_141567330(pRoot, bShadow);
         }
     }
     else

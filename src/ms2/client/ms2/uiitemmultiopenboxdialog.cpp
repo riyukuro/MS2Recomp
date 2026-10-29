@@ -161,7 +161,6 @@ void UIItemMultiOpenBoxDialog::FUN_140c3f9d0(int nBoxId, int nSlot, CStringW str
 }
 
 // @0x140c3fa80
-// MS2-FUNCTIONAL: the exe stores the two message-box temporaries' addresses before it builds the string-table key (no source form found)
 void UIItemMultiOpenBoxDialog::FUN_140c3fa80(int nOpened, int nResult)
 {
     if (vfunc_55() != 0)
@@ -180,17 +179,11 @@ void UIItemMultiOpenBoxDialog::FUN_140c3fa80(int nOpened, int nResult)
         switch (nResult)
         {
         case 3:
-        {
-            CStringW strKey(L"s_err_cannot_open_multi_itembox_inventory_fail");
-            FUN_140d73aa0(GetStringCommonByKey(strKey), 0, 0, CStringW(L""));
+            FUN_140d73aa0(GetStringCommonByKey(L"s_err_cannot_open_multi_itembox_inventory_fail"), 0, 0, CStringW(L""));
             break;
-        }
         case 4:
-        {
-            CStringW strKey(L"s_err_cannot_open_multi_itembox_inventory");
-            FUN_140d73aa0(GetStringCommonByKey(strKey), 0, 0, CStringW(L""));
+            FUN_140d73aa0(GetStringCommonByKey(L"s_err_cannot_open_multi_itembox_inventory"), 0, 0, CStringW(L""));
             break;
-        }
         }
         vfunc_67();
     }
@@ -198,11 +191,9 @@ void UIItemMultiOpenBoxDialog::FUN_140c3fa80(int nOpened, int nResult)
 MS2_REPLACE_METHOD(0x140C3FA80, UIItemMultiOpenBoxDialog, FUN_140c3fa80, 536, 0x96E33585);
 
 // @0x140c3fca0
-// MS2-FUNCTIONAL: the exe copies the returned text-field handle through one more pointer temp than the source form gives
 void UIItemMultiOpenBoxDialog::FUN_140c3fca0()
 {
-    MS2Ptr<ASTextField> spCount = FUN_140bb4cf0(CString("m_count"));
-    if (spCount.get() != 0)
+    if (MS2Ptr<ASTextField> spCount = FUN_140bb4cf0("m_count"))
     {
         int nUsed = m_190 - m_194;
         spCount.operator->()->FUN_1422c4cd0(FUN_1409e8970(CStringW(L"s_item_multi_open_box_count"), nUsed, m_190));

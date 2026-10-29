@@ -306,12 +306,10 @@ Vector3 CTarget2DCameraMode::vfunc_26()
 MS2_REPLACE_METHOD(0x141838D70, CTarget2DCameraMode, vfunc_26, 112, 0x085F33EE);
 
 // @0x141838df0
-// MS2-FUNCTIONAL: the exe moves pTarget through rcx first (mov rcx,[rsp+20h]; mov rdx,rcx)
 void CTarget2DCameraMode::vfunc_10()
 {
     m_d8 = 0;
-    Unk_CameraTargetEntity* pTarget = Unk_CameraManager::FUN_1409478c0()->FUN_140a38d60();
-    Unk_CameraManager::FUN_1409478c0()->FUN_140aeaf40(pTarget, 1);
+    Unk_CameraManager::FUN_1409478c0()->FUN_140aeaf40(Unk_CameraManager::FUN_1409478c0()->FUN_140a38d60(), 1);
 }
 MS2_REPLACE_METHOD(0x141838DF0, CTarget2DCameraMode, vfunc_10, 74, 0x6F58486D);
 

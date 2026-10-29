@@ -248,7 +248,6 @@ void UICharacterCreateSelectDialog::TJobData::FUN_140f2ee10(ASObj* pObj)
 }
 MS2_REPLACE_METHOD(0x140F2EE10, Unk_CsJobData, FUN_140f2ee10, 249, 0xD9C56FCA);
 
-// MS2-FUNCTIONAL: LoadTable: locals / branch layout of the long XML walk differ from the exe
 // @0x140f2ef10
 void UICharacterCreateSelectDialog::LoadCharacterCreateSelect()
 {
@@ -287,13 +286,12 @@ void UICharacterCreateSelectDialog::LoadCharacterCreateSelect()
             {
                 CStringW strLocale;
                 FUN_140873b30(pGroup, "locale", strLocale);
-                if (FUN_140166410()->FUN_14036d750(strLocale))
-                {
-                    if (strLocale.IsEmpty())
-                        pDisplayAny = pGroup;
-                    else
-                        pDisplay = pGroup;
-                }
+                if (!FUN_140166410()->FUN_14036d750(strLocale))
+                    continue;
+                if (strLocale.IsEmpty())
+                    pDisplayAny = pGroup;
+                else
+                    pDisplay = pGroup;
             }
         }
     }
@@ -306,13 +304,13 @@ void UICharacterCreateSelectDialog::LoadCharacterCreateSelect()
         {
             CStringW strFeature;
             FUN_140873420(pRow, "feature", strFeature);
-            if (FUN_140166410()->FUN_14036d4b0(strFeature))
+            if (!FUN_140166410()->FUN_14036d4b0(strFeature))
+                continue;
+            CStringW strMax = FUN_140166410()->FUN_14036de20(strBest, strFeature);
+            if (FUN_14025cd60(strMax, strFeature))
             {
-                if (FUN_14025cd60(FUN_140166410()->FUN_14036de20(strBest, strFeature), strFeature))
-                {
-                    pSelected = pRow;
-                    strBest = strFeature;
-                }
+                pSelected = pRow;
+                strBest = strFeature;
             }
         }
     }
@@ -320,30 +318,24 @@ void UICharacterCreateSelectDialog::LoadCharacterCreateSelect()
     {
         for (Unk_140165cf0* pRow = pData; pRow != 0; pRow = pRow->FUN_140168650("list"))
         {
-            if (FUN_14028f710(pRow))
-            {
-                int nJobCode = 0;
-                FUN_1408731e0(pRow, "jobCode", nJobCode);
-                if (nJobCode != 0)
-                {
-                    JobPtr spJob(new TJobData);
-                    if (spJob == 0)
-                    {
-                    }
-                    else
-                    {
-                        spJob.operator->()->m_nJobCode = nJobCode;
-                        spJob.operator->()->m_strName = GetStringTable()->FUN_141811980(
-                            6, JobTable::GetInstance()->GetSubJob1(nJobCode));
-                        FUN_140873ad0(pRow, "movie", spJob.operator->()->m_strMovie);
-                        int nDescKey = 0;
-                        FUN_1408731e0(pRow, "descKey", nDescKey);
-                        if (nDescKey != 0)
-                            spJob.operator->()->m_strDesc = GetStringTable()->FUN_141811980(0x1c, nDescKey);
-                        mapJobs.SetAt(nJobCode, spJob);
-                    }
-                }
-            }
+            if (!FUN_14028f710(pRow))
+                continue;
+            int nJobCode = 0;
+            FUN_1408731e0(pRow, "jobCode", nJobCode);
+            if (nJobCode == 0)
+                continue;
+            JobPtr spJob(new TJobData);
+            if (spJob == 0)
+                continue;
+            spJob.operator->()->m_nJobCode = nJobCode;
+            spJob.operator->()->m_strName = GetStringTable()->FUN_141811980(
+                6, JobTable::GetInstance()->GetSubJob1(nJobCode));
+            FUN_140873ad0(pRow, "movie", spJob.operator->()->m_strMovie);
+            int nDescKey = 0;
+            FUN_1408731e0(pRow, "descKey", nDescKey);
+            if (nDescKey != 0)
+                spJob.operator->()->m_strDesc = GetStringTable()->FUN_141811980(0x1c, nDescKey);
+            mapJobs.SetAt(nJobCode, spJob);
         }
     }
     if (pSelected != 0)
@@ -359,23 +351,20 @@ void UICharacterCreateSelectDialog::LoadCharacterCreateSelect()
         XmlSplit(strRandom, m_randomJobs, ",");
         ATL::CAtlArray<int> arrEvent;
         XmlTokenList(pSelected, "eventJobCode", arrEvent);
-        for (size_t i = 0; i < arrOrder.GetCount(); ++i)
+        size_t nCount = arrOrder.GetCount();
+        for (size_t i = 0; i < nCount; ++i)
         {
             int nJobCode = arrOrder.GetAt(i);
             JobPtr spJob(0);
             if (!mapJobs.Lookup(nJobCode, spJob))
-            {
-            }
-            else
-            {
-                if (Contains(arrEvent, nJobCode))
-                    spJob.operator->()->m_bEvent = true;
-                if (Contains(arrDisable, nJobCode))
-                    spJob.operator->()->m_bEnabled = false;
-                if (nJobCode == nSelectJob)
-                    m_nSelectJob = spJob.operator->()->m_nJobCode;
-                m_jobs.Add(spJob);
-            }
+                continue;
+            if (Contains(arrEvent, nJobCode))
+                spJob.operator->()->m_bEvent = true;
+            if (Contains(arrDisable, nJobCode))
+                spJob.operator->()->m_bEnabled = false;
+            if (nJobCode == nSelectJob)
+                m_nSelectJob = spJob.operator->()->m_nJobCode;
+            m_jobs.Add(spJob);
         }
     }
 }
@@ -389,7 +378,6 @@ void UICharacterCreateSelectDialog::FUN_140f2f9c0(int nJobCode)
 }
 MS2_REPLACE_METHOD(0x140F2F9C0, UICharacterCreateSelectDialog, FUN_140f2f9c0, 58, 0x88D4E6CA);
 
-// MS2-FUNCTIONAL: FUN_140f2fa00: the delegate / member-pointer temporaries of the exe are laid out differently (frame 0xc8 vs 0xd8)
 // @0x140f2fa00
 void UICharacterCreateSelectDialog::FUN_140f2fa00(int nJobCode)
 {
@@ -399,7 +387,7 @@ void UICharacterCreateSelectDialog::FUN_140f2fa00(int nJobCode)
             Delegate<bool(int, const CMsgBoxData&)>(this, &UICharacterCreateSelectDialog::FUN_140f301d0));
         if (box.get() != 0)
         {
-            box.operator->()->SetTitle(CStringW(L"$s_msgbox_ugc_turms_title"));
+            box.operator->()->SetTitle(L"$s_msgbox_ugc_turms_title");
             box.operator->()->FUN_140533ff0(nJobCode);
             FUN_140d73c60(MS2Ptr<CMsgBoxData>(box));
         }

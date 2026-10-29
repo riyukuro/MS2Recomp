@@ -31,11 +31,11 @@ public:
     virtual int vfunc_15();                                 // 15 0x1417cb950: 1
     virtual bool vfunc_32();                                // 32 0x1417cb980
     virtual void vfunc_33(bool b);                          // 33 0x1417cb9a0
-    virtual bool vfunc_36();                                // 36 0x1417cb120: the hit timer ran out
+    virtual int vfunc_36();                                 // 36 0x1417cb120: the hit timer ran out
 
-    bool FUN_1417cb160();                                   // the hit is still running
+    int FUN_1417cb160();                                    // the hit is still running
     void FUN_1417cb1d0();                                   // clear the hit record
-    bool FUN_1417cb2a0();                                   // the hit has a duration
+    int FUN_1417cb2a0();                                    // the hit has a duration
     int FUN_1417cb2f0();                                    // m_nBc
 
     Timer m_timer;                      // +0x40

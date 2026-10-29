@@ -25,7 +25,7 @@ public:
     ASTooltip(class Unk_TooltipOwner* pOwner, int a1, int a2);       // 0x1409c64c0 (same body as the void* form; the owner's real type is unknown)
     ASTooltip(const Scaleform::GFx::Value& root, int nMovieId);     // 0x1409c6350 (uiadventureleveldialog.cpp)
     ASTooltip(const ASTooltip& o);                                  // 0x140f47c60 (inline COMDAT, uigamedictionarydialog.cpp)
-    virtual ~ASTooltip();
+    // ~ASTooltip is implicit (0x1409b4af0): the exe dtor stores no vftable.
     void FUN_1409c7b10(CItem* pItem);                                    // itemDamage (sum of the damage lines)
     void FUN_1409c7c10(CItem* pItem);
     void FUN_1409c7c70(CItem* pItem);
@@ -88,7 +88,7 @@ public:
     void FUN_1409c6640(const CStringW& strLhs, const CStringW& strRhs);   // enableUseDbClick on both comparison tooltips
     void FUN_1409c6ef0(const CStringW& strText);                        // append to textBgArr
     int FUN_1409e13a0(CItem* pCompare, CItem* pItem);                   // item tooltip with the default flags
-    bool FUN_1409e25e0(CItem* pItem, unsigned n);
+    int FUN_1409e25e0(CItem* pItem, unsigned n);
     void FUN_1409cf010(CItem* pItem, unsigned n);
     int FUN_1409e13f0(CItem* pCompare, CItem* pItem, int a1, int a2);   // item tooltip with a comparison item (ItemInfoSlot)
     int FUN_1409e15a0(CItem* pEquipped, CItem* pItem, ASTooltip* pLhs, ASTooltip* pRhs);   // item tooltip compared with the equipped item (unit_141347b10)

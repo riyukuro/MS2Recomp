@@ -12,6 +12,7 @@
 #include "ms2/placeholder/asdata.h"
 #include "ms2/placeholder/itemslotbinder.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
+#include "ms2/placeholder/weddingpackage.h"     // WeddingRewardItem
 #include "hook/ms2hook.h"
 
 // ---- handles: a smart reference whose destructor is the exe function REL ----
@@ -32,13 +33,10 @@ void FUN_140902250(void*);
 
 typedef Unk_Ref<FUN_140901e60> RHall;          // reservation hall table row
 typedef Unk_Ref<FUN_140901e30> RSlot;          // hall slot (a time slot / package)
-typedef Unk_Ref<FUN_140916440> RReward;        // reward item
 typedef Unk_Ref<FUN_140bcbb50> RList;          // the swf list control
 
 // ---- records behind the handles ----
-struct Unk_RewardEntry { void* m_0; void* m_8; };
 class Unk_RewardArray;
-struct Unk_RewardInfo { char m_pad_00[0x30]; char m_item; };    // m_item: the item part at +0x30
 
 struct Unk_SlotRec
 {
@@ -133,9 +131,7 @@ CStringW FUN_1409404f0(__int64 n);                                          // n
 CStringW FUN_14052bd00(int nId, const CStringW& strArg);                    // string with one argument
 CString FUN_1401d9af0(const char* szFormat, __int64* pArg);                 // "reward{0}"
 size_t FUN_1409203a0(void* pArray);
-__int64* FUN_14091cea0(void* pArray);
-void FUN_140915430(RReward* pDst, Unk_RewardEntry* pElem);
-Unk_RewardInfo* FUN_140917000(RReward* p);
+MS2Ptr<WeddingRewardItem>** FUN_14091cea0(void* pArray);
 struct Unk_WhGetChild { RList FUN_140bc7280(const CString& strName); }; // GetChild (member of AScript)
 
 class UIWeddingHallReservationPageSelect : public UIWeddingHallReservationPage
@@ -164,7 +160,7 @@ MS2_CHECK_SIZE(UIWeddingHallReservationPageSelect, 0x78);
 
 __int64 FUN_140fe5520(UIWeddingHallReservationPageSelect* pPage, int nHallId, int nSlot);
 void FUN_140fe4fb0(UIWeddingHallReservationPageSelect* pPage, int nSlotId);
-Unk_RewardEntry* FUN_140fe55d0(void* pArray, __int64 nIndex);
+MS2Ptr<WeddingRewardItem>* FUN_140fe55d0(void* pArray, __int64 nIndex);
 int FUN_140fe5640(UIDialog* pDialog);
 struct Unk_ReservationDialogView2 : UIDialog
 {
@@ -247,14 +243,12 @@ void UIWeddingHallReservationPageSelect::vfunc_2()
     m_binder.FUN_140d43990();
 }
 
-// MS2-FUNCTIONAL: early-return/jump layout differs
 // @0x140fe4b90
 bool UIWeddingHallReservationPageSelect::vfunc_4(__int64 a1, __int64 a2, int a3)
 {
     if (UIWeddingHallReservationPage::vfunc_4(a1, a2, a3) == 1)
         return true;
-    int n = _stricmp((const char*)a1, "onSelectWeddingHall");
-    if (n == 0)
+    if (_stricmp((const char*)a1, "onSelectWeddingHall") == 0)
     {
         ASData data;
         if (data.FUN_1422b9620((const Scaleform::GFx::Value*)a2, a3))
@@ -335,7 +329,6 @@ bool UIWeddingHallReservationPageSelect::vfunc_12()
     return true;
 }
 
-// MS2-FUNCTIONAL: handle/temporary layout differs
 // @0x140fe4fb0
 void FUN_140fe4fb0(UIWeddingHallReservationPageSelect* pPage, int nSlotId)
 {
@@ -354,8 +347,7 @@ void FUN_140fe4fb0(UIWeddingHallReservationPageSelect* pPage, int nSlotId)
     if (pTarget != 0)
         bFlag = FUN_140900f30(pTarget);
     ASObj data(2);
-    int nNameId = FUN_1409023c0()->FUN_140908d50(FUN_1409020f0(&hall)->m_nId, FUN_1409020e0(&slot)->m_nId, bFlag);
-    data.FUN_1407cbb20("name", FUN_1401a9d70()->FUN_141811980(3, nNameId));
+    data.FUN_1407cbb20("name", FUN_1401a9d70()->FUN_141811980(3, FUN_1409023c0()->FUN_140908d50(FUN_1409020f0(&hall)->m_nId, FUN_1409020e0(&slot)->m_nId, bFlag)));
     data.FUN_1407cba60("video", CString(FUN_1409020e0(&slot)->m_strVideo));
     data.FUN_1407cbb20("desc", GetStringCommonByKey(FUN_1409020e0(&slot)->m_strDesc));
     data.FUN_1407cb9c0("grade", FUN_1409020e0(&slot)->m_nGrade);
@@ -365,41 +357,34 @@ void FUN_140fe4fb0(UIWeddingHallReservationPageSelect* pPage, int nSlotId)
     __int64 nReward = 0;
     for (size_t i = 0; i < FUN_1409203a0(&FUN_1409020e0(&slot)->m_rewards); i++)
     {
-        RReward reward;
-        FUN_140915430(&reward, FUN_140fe55d0(&FUN_1409020e0(&slot)->m_rewards, i));
-        Unk_RewardInfo* pInfo = FUN_140917000(&reward);
-        void* pItem = pInfo ? &pInfo->m_item : 0;
-        item.FUN_1407cba60(FUN_1401d9af0("reward{0}", &nReward), pPage->m_binder.FUN_140d43510(pItem));
+        MS2Ptr<WeddingRewardItem> spReward = *FUN_140fe55d0(&FUN_1409020e0(&slot)->m_rewards, i);
+        item.FUN_1407cba60(FUN_1401d9af0("reward{0}", &nReward), pPage->m_binder.FUN_140d43510(static_cast<ItemAble*>(&spReward->m_item)));
         nReward++;
     }
     data.FUN_1409eb270("item", item);
     pPage->m_pScript->Invoke("setData", data);
 }
 
-// MS2-FUNCTIONAL: single-return temp layout differs
 // @0x140fe5520
 __int64 FUN_140fe5520(UIWeddingHallReservationPageSelect* pPage, int nHallId, int nSlot)
 {
-    __int64 nPrice;
     if (FUN_140fdca80(pPage->m_pDialog) == 0)
     {
-        nPrice = FUN_1409023c0()->FUN_140909220(nHallId, nSlot);
+        return FUN_1409023c0()->FUN_140909220(nHallId, nSlot);
     }
     else
     {
         Unk_WeddingTicketView* pTicket = FUN_141b87160(FUN_1409eed90());
         __int64 nOld = FUN_1409023c0()->FUN_140909220(pTicket->m_nHallId, pTicket->m_nSlot);
-        nPrice = FUN_1409023c0()->FUN_140909220(nHallId, nSlot);
-        nPrice = nPrice - nOld;
+        __int64 nNew = FUN_1409023c0()->FUN_140909220(nHallId, nSlot);
+        return nNew - nOld;
     }
-    return nPrice;
 }
 
-// MS2-FUNCTIONAL: address temp differs
 // @0x140fe55d0
-Unk_RewardEntry* FUN_140fe55d0(void* pArray, __int64 nIndex)
+MS2Ptr<WeddingRewardItem>* FUN_140fe55d0(void* pArray, __int64 nIndex)
 {
-    return (Unk_RewardEntry*)(nIndex * 0x10 + *FUN_14091cea0(pArray));
+    return &(*FUN_14091cea0(pArray))[nIndex];
 }
 
 // @0x140fe5640

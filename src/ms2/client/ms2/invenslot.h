@@ -53,7 +53,7 @@ public:
     int FUN_141405980();                                // the item id
     __int64 GetItemUid();                            // return m_nItemUid
     void SetItemUid(__int64 nItemUid);               // m_nItemUid = nItemUid
-    bool FUN_141405a60(CItem* pItem, int nSlot);        // put the item on the fitting doll
+    int FUN_141405a60(CItem* pItem, int nSlot);         // put the item on the fitting doll
     float FUN_141409060();                              // the cooldown left of the item's skill
     int FUN_1414090c0();                                // may the item be registered on the black market
     int FUN_141409150(CItem* pItem);

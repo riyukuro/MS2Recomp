@@ -227,15 +227,14 @@ bool UIRenderView::FUN_141ab76b0(const efd::Point3& kWorld, Unk_ScreenPoint* pSc
     NiPoint3 kPoint(kWorld);
     if (!m_spCamera->WorldPtToScreenPt(kPoint, pScreen->x, pScreen->y, 1e-05f))
         return false;
-    m_spClick->GetViewport().GetWidth();
-    m_spClick->GetViewport().GetHeight();
+    float fViewWidth = m_spClick->GetViewport().GetWidth();
+    float fViewHeight = m_spClick->GetViewport().GetHeight();
     pScreen->x = pScreen->x * (float)m_spClick->GetWidth();
     pScreen->y = (1.0f - pScreen->y) * (float)m_spClick->GetHeight();
     return true;
 }
 
 // @0x141ab7870
-// MS2-FUNCTIONAL: D3DX save path; the exe keeps an HRESULT local and a different unwind layout
 bool UIRenderView::FUN_141ab7870(CStringW strPath, int nFormat)
 {
     if (m_uiWidth == 0 || m_uiHeight == 0)
@@ -249,8 +248,9 @@ bool UIRenderView::FUN_141ab7870(CStringW strPath, int nFormat)
             NiDX92DBufferData* pData = FUN_1414dbd20(&DAT_143d6eed8, pBuffer->GetRendererData());
             if (pData != 0)
             {
+                HRESULT hr = E_FAIL;
                 RECT kRect = { 0, 0, (LONG)m_uiWidth, (LONG)m_uiHeight };
-                HRESULT hr = D3DXSaveSurfaceToFileW(strPath, (D3DXIMAGE_FILEFORMAT)nFormat, pData->GetSurface(), 0, &kRect);
+                hr = D3DXSaveSurfaceToFileW(strPath, (D3DXIMAGE_FILEFORMAT)nFormat, pData->GetSurface(), 0, &kRect);
                 if (hr >= 0)
                     return true;
             }
@@ -287,7 +287,6 @@ int UIRenderView::vfunc_15()
 }
 
 // @0x141ab7bd0
-// MS2-FUNCTIONAL: the exe zero-fills the processor before its ctor and re-fetches the click through operator-> per call
 int UIRenderView::vfunc_16()
 {
     m_spClick = EE_NEW RenderedTextureRenderClick();
@@ -311,7 +310,10 @@ int UIRenderView::vfunc_16()
     if (pSceneGraph != 0)
     {
         efd::vector<NiObjectPtr> kObjects;
-        kObjects.push_back(NiObjectPtr(m_spEffectRoot));
+        {
+            NiObjectPtr spRoot(m_spEffectRoot);
+            kObjects.push_back(spRoot);
+        }
         m_uiSceneHandle = pSceneGraph->AddSceneGraph(kObjects, true, true);
     }
     return 1;
@@ -352,22 +354,16 @@ bool FUN_141ab80b0(NiRenderClick*, void* pView)
 // @0x141ab80f0
 bool FUN_141ab80f0(NiFixedString* pName, void* pData, int nCount)
 {
-    bool bResult = NiShaderFactory::UpdateGlobalShaderConstant(*pName, nCount * sizeof(float), pData);
-    return bResult;
+    if (NiShaderFactory::UpdateGlobalShaderConstant(*pName, nCount * sizeof(float), pData))
+        return true;
+    return false;
 }
 
 // @0x141ab82e0 ecr::IRenderServiceDelegate::IRenderServiceDelegate is an implicit COMDAT.
 
-// @0x141ab8300
-MS2RenderViewRenderListProcessor::MS2RenderViewRenderListProcessor()
-{
-}
+// @0x141ab8300 MS2RenderViewRenderListProcessor::MS2RenderViewRenderListProcessor is implicit (new T() zero-fills first).
 
-// @0x141ab83a0
-// MS2-FUNCTIONAL: the exe's dtor omits the vfptr store
-MS2RenderViewRenderListProcessor::~MS2RenderViewRenderListProcessor()
-{
-}
+// @0x141ab83a0 MS2RenderViewRenderListProcessor::~MS2RenderViewRenderListProcessor is implicit (no vfptr store).
 
 // the UCRT memmove_s this TU emits
 // @0x141ab8800

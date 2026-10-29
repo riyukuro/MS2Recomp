@@ -110,17 +110,15 @@ int CSkillTierOptionManager::Update()
                 bTierChanged = 1;
             m_tierLevels.SetAt(nTier, nLevel);
         }
-        if (bTierChanged)
+        if (!bTierChanged)
+            continue;
+        bChanged = 1;
+        ATL::CAtlArray<unsigned int> aSkills;
+        FUN_14080c370(FUN_14081da20(nTier), (eJobCode)FUN_141654700(m_pOwner), &aSkills);
+        for (unsigned j = 0; j < aSkills.GetCount(); j++)
         {
-            bChanged = 1;
-            ATL::CAtlArray<unsigned int> aSkills;
-            eJobCode eJob = (eJobCode)FUN_141654700(m_pOwner);
-            FUN_14080c370(FUN_14081da20(nTier), eJob, &aSkills);
-            for (unsigned j = 0; j < aSkills.GetCount(); j++)
-            {
-                if (Unk_LockGuard guard = m_lock) { __assume(0); } else
-                    m_skillLevels.SetAt(aSkills[j], nLevel);
-            }
+            if (Unk_LockGuard guard = m_lock) { __assume(0); } else
+                m_skillLevels.SetAt(aSkills[j], nLevel);
         }
     }
     return bChanged;
@@ -150,7 +148,7 @@ void CSkillTierOptionManager::Clear()
 // @0x14080bc00
 int LoadItemOptionSkillTier()
 {
-    CString strPath = FUN_14071a5b0(CString("Table"), CString("itemOptionSkillTier.xml"));
+    CString strPath = FUN_14071a5b0("Table", "itemOptionSkillTier.xml");
     TiXmlDocument doc;
     if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return 0;
@@ -163,8 +161,9 @@ int LoadItemOptionSkillTier()
         {
             for (unsigned nTier = 0; nTier < 0xcf; nTier++)
             {
-                if (FUN_14081d9e0(nTier) != 0)
-                    s_tierIds.Add((CSkillTierOptionManager::TierId)nTier);
+                if (FUN_14081d9e0(nTier) == 0)
+                    continue;
+                s_tierIds.Add((CSkillTierOptionManager::TierId)nTier);
             }
         }
     }
@@ -215,12 +214,8 @@ int FUN_14080c1c0(unsigned nTier, ATL::CAtlArray<unsigned int>* pOut)
     }
     if (spMap == 0)
         return 0;
-    POSITION pos = spMap->GetHeadPosition();
-    while (pos != 0)
-    {
+    for (POSITION pos = spMap->GetHeadPosition(); pos != 0; spMap->GetNext(pos))
         pOut->Add(spMap->GetValueAt(pos));
-        spMap->GetNext(pos);
-    }
     return 1;
 }
 
@@ -239,12 +234,8 @@ int FUN_14080c370(unsigned nTier, eJobCode eJob, ATL::CAtlArray<unsigned int>* p
     }
     if (spMap == 0)
         return 0;
-    POSITION pos = spMap->FindFirstWithKey(eJob);
-    while (pos != 0)
-    {
+    for (POSITION pos = spMap->FindFirstWithKey(eJob); pos != 0; spMap->GetNextWithKey(pos, eJob))
         pOut->Add(spMap->GetValueAt(pos));
-        spMap->GetNextWithKey(pos, eJob);
-    }
     return 1;
 }
 
@@ -260,27 +251,19 @@ unsigned FUN_14080c5a0(unsigned nIndex)
 {
     if (Unk_LockGuard guard = s_lock) { __assume(0); } else
     {
-        if (nIndex < s_tierIds.GetCount())
-            return s_tierIds[nIndex];
-        return 0;
+        if (s_tierIds.GetCount() <= nIndex)
+            return 0;
+        return s_tierIds[nIndex];
     }
 }
 
 // @0x14080cbf0
 CSkillTierOption::CSkillTierOption()
-    : m_18(0)
 {
 }
 
-// @0x14080ce40
-CSkillTierOption::~CSkillTierOption()
-{
-}
-
-// @0x14080ce70
-CSkillTierOptionManager::~CSkillTierOptionManager()
-{
-}
+// MS2-PIN: ??1CSkillTierOption@@UEAA@XZ 0x14080ce40 ; implicit virtual dtor (no vptr reset, like the exe)
+// MS2-PIN: ??1CSkillTierOptionManager@@UEAA@XZ 0x14080ce70 ; implicit virtual dtor (no vptr reset, like the exe)
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142c9c200-0x142c9c2f0 .text$yd
 // Atexit thunks of this unit's statics (gap2 yd sweep, yd2).

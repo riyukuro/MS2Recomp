@@ -4,7 +4,7 @@
 // that pad (PKCS#7) and a string front end that encrypts "<channel><nxid><date-hash>" style tokens with a fixed key/IV
 // from the exe's data. The tail builds "https://nxpay.nexon.com/cash/pay.aspx?id=..&channel=..&type=.." through the
 // game's fmt StringFormat; its fmt instances (0x140c854a0, 0x140c85470, 0x140c85860, 0x140c85c20, 0x140c85fe0) are
-// emitted by the calls below. The exe unrolls the rounds; the source uses loops (functional).
+// emitted by the calls below. The key schedule and block functions are the KISA reference macros, unrolled as in the exe.
 // MS2-UNIT: unit_140c7fc20
 // MS2-RANGE: 0x140c7fc20-0x140c86000 .text$mn
 #define MS2_THIS_FILE ""
@@ -47,19 +47,14 @@ struct Unk_SeedCbc {
 };
 MS2_CHECK_SIZE(Unk_SeedCbc, 0xbc);
 
-static unsigned Unk_SeedG(unsigned x)
-{
-    return DAT_142e12690[x & 0xff] ^ DAT_142e12a90[(x >> 8) & 0xff] ^ DAT_142e12e90[(x >> 16) & 0xff] ^ DAT_142e13290[x >> 24];
-}
-
 // @0x140c7fc20 - copy n bytes into a fresh word buffer (rounded up to words)
 void* FUN_140c7fc20(const unsigned* pSrc, int n)
 {
     int nWords;
-    if (n % 4 == 0)
-        nWords = n / 4;
-    else
+    if (n % 4 != 0)
         nWords = n / 4 + 1;
+    else
+        nWords = n / 4;
     unsigned* pDst = (unsigned*)malloc((__int64)nWords << 2);
     for (int i = 0; i < nWords; i++)
         pDst[i] = pSrc[i];
@@ -75,72 +70,100 @@ void* FUN_140c7fcd0(const unsigned* pSrc, int n)
     return pDst;
 }
 
-// @0x140c7fd70 - init the context and expand the 128-bit key
+// The KISA reference macros: byte-order swap, the four SS-box bytes and one Feistel half-round (L ^= F(R, K)).
+#define Unk_SeedEndian(x) ((((x) << 8 | (x) >> 24) & 0x00ff00ff) | (((x) << 24 | (x) >> 8) & 0xff00ff00))
+#define Unk_SeedB0(x) ((unsigned char)(x))
+#define Unk_SeedB1(x) ((unsigned char)((x) >> 8))
+#define Unk_SeedB2(x) ((unsigned char)((x) >> 16))
+#define Unk_SeedB3(x) ((unsigned char)((x) >> 24))
+#define Unk_SeedF(x) (DAT_142e12690[Unk_SeedB0(x)] ^ DAT_142e12a90[Unk_SeedB1(x)] ^ DAT_142e12e90[Unk_SeedB2(x)] ^ DAT_142e13290[Unk_SeedB3(x)])
+#define Unk_SeedRound(L0, L1, R0, R1, K) { \
+        T0 = R0 ^ (K)[0];                   \
+        T1 = R1 ^ (K)[1];                   \
+        T1 ^= T0;                           \
+        T1 = Unk_SeedF(T1);                 \
+        T0 += T1;                           \
+        T0 = Unk_SeedF(T0);                 \
+        T1 += T0;                           \
+        T1 = Unk_SeedF(T1);                 \
+        T0 += T1;                           \
+        L0 ^= T0; L1 ^= T1;                 \
+    }
+
+// The two halves of the key schedule step: rotate A:B right (or C:D left) by 8, then K[0..1] = G(A + C - KC), G(B + KC - D).
+#define Unk_SeedKeyUpdate0(K, A, B, C, D, KC) { \
+        T0 = A;                                 \
+        A = (A >> 8) ^ (B << 24);               \
+        B = (B >> 8) ^ (T0 << 24);              \
+        T0 = A + C - KC;                        \
+        T1 = B + KC - D;                        \
+        (K)[0] = Unk_SeedF(T0);                 \
+        (K)[1] = Unk_SeedF(T1);                 \
+    }
+#define Unk_SeedKeyUpdate1(K, A, B, C, D, KC) { \
+        T0 = C;                                 \
+        C = (C << 8) ^ (D >> 24);               \
+        D = (D << 8) ^ (T0 >> 24);              \
+        T0 = A + C - KC;                        \
+        T1 = B + KC - D;                        \
+        (K)[0] = Unk_SeedF(T0);                 \
+        (K)[1] = Unk_SeedF(T1);                 \
+    }
+
+#pragma function(memset, memcpy)   // the exe calls memset / memcpy here
+// @0x140c7fd70 - init the context and expand the 128-bit key (the KISA SeedRoundKey, unrolled)
 int FUN_140c7fd70(Unk_SeedCbc* pCtx, int nMode, const unsigned* pKey, const void* pIv)
 {
+    unsigned T0, T1, A, B, C, D;
+    unsigned* K;
     if (pCtx == 0 || pKey == 0 || pIv == 0)
         return 0;
     memset(pCtx, 0, 0xbc);
+    K = pCtx->m_aKey;
     pCtx->m_nMode = nMode;
     memcpy(pCtx->m_aIv, pIv, 0x10);
     pCtx->m_nBuf = 0;
     pCtx->m_nPad = 0;
-
-    unsigned A = _byteswap_ulong(pKey[0]);
-    unsigned B = _byteswap_ulong(pKey[1]);
-    unsigned C = _byteswap_ulong(pKey[2]);
-    unsigned D = _byteswap_ulong(pKey[3]);
-    for (int i = 0; i < 16; i++) {
-        unsigned kc = _rotl(0x9e3779b9u, i);
-        unsigned t0 = A + C - kc;
-        unsigned t1 = B - D + kc;
-        pCtx->m_aKey[2 * i] = Unk_SeedG(t0);
-        pCtx->m_aKey[2 * i + 1] = Unk_SeedG(t1);
-        if ((i & 1) == 0) {
-            unsigned t = A;
-            A = (A >> 8) ^ (B << 24);
-            B = (B >> 8) ^ (t << 24);
-        } else {
-            unsigned t = C;
-            C = (C << 8) ^ (D >> 24);
-            D = (D << 8) ^ (t >> 24);
-        }
-    }
+    A = pKey[0];
+    B = pKey[1];
+    C = pKey[2];
+    D = pKey[3];
+    A = Unk_SeedEndian(A);
+    B = Unk_SeedEndian(B);
+    C = Unk_SeedEndian(C);
+    D = Unk_SeedEndian(D);
+    T0 = A + C - 0x9e3779b9;
+    T1 = B + 0x9e3779b9 - D;
+    K[0] = Unk_SeedF(T0);
+    K[1] = Unk_SeedF(T1);
+    Unk_SeedKeyUpdate0(K +  2, A, B, C, D, 0x3c6ef373);
+    Unk_SeedKeyUpdate1(K +  4, A, B, C, D, 0x78dde6e6);
+    Unk_SeedKeyUpdate0(K +  6, A, B, C, D, 0xf1bbcdcc);
+    Unk_SeedKeyUpdate1(K +  8, A, B, C, D, 0xe3779b99);
+    Unk_SeedKeyUpdate0(K + 10, A, B, C, D, 0xc6ef3733);
+    Unk_SeedKeyUpdate1(K + 12, A, B, C, D, 0x8dde6e67);
+    Unk_SeedKeyUpdate0(K + 14, A, B, C, D, 0x1bbcdccf);
+    Unk_SeedKeyUpdate1(K + 16, A, B, C, D, 0x3779b99e);
+    Unk_SeedKeyUpdate0(K + 18, A, B, C, D, 0x6ef3733c);
+    Unk_SeedKeyUpdate1(K + 20, A, B, C, D, 0xdde6e678);
+    Unk_SeedKeyUpdate0(K + 22, A, B, C, D, 0xbbcdccf1);
+    Unk_SeedKeyUpdate1(K + 24, A, B, C, D, 0x779b99e3);
+    Unk_SeedKeyUpdate0(K + 26, A, B, C, D, 0xef3733c6);
+    Unk_SeedKeyUpdate1(K + 28, A, B, C, D, 0xde6e678d);
+    T0 = A;
+    A = (A >> 8) ^ (B << 24);
+    B = (B >> 8) ^ (T0 << 24);
+    T0 = A + C - 0xbcdccf1b;
+    T1 = B - D + 0xbcdccf1b;
+    K[30] = Unk_SeedF(T0);
+    K[31] = Unk_SeedF(T1);
     return 1;
 }
+#pragma intrinsic(memset, memcpy)
 
-// One Feistel half-round: L ^= F(R, k0, k1).
-static void Unk_SeedRound(unsigned& l0, unsigned& l1, unsigned r0, unsigned r1, unsigned k0, unsigned k1)
-{
-    unsigned t0 = r0 ^ k0;
-    unsigned t1 = r1 ^ k1 ^ t0;
-    t1 = Unk_SeedG(t1);
-    t0 = t0 + t1;
-    t0 = Unk_SeedG(t0);
-    t1 = t1 + t0;
-    t1 = Unk_SeedG(t1);
-    t0 = t0 + t1;
-    l0 ^= t0;
-    l1 ^= t1;
-}
-
-static void Unk_SeedBlock(const unsigned* pIn, unsigned* pOut, const unsigned* pKey, bool bDecrypt)
-{
-    unsigned l0 = _byteswap_ulong(pIn[0]);
-    unsigned l1 = _byteswap_ulong(pIn[1]);
-    unsigned r0 = _byteswap_ulong(pIn[2]);
-    unsigned r1 = _byteswap_ulong(pIn[3]);
-    for (int i = 0; i < 16; i += 2) {
-        int ka = bDecrypt ? 30 - 2 * i : 2 * i;
-        int kb = bDecrypt ? 30 - 2 * (i + 1) : 2 * (i + 1);
-        Unk_SeedRound(l0, l1, r0, r1, pKey[ka], pKey[ka + 1]);
-        Unk_SeedRound(r0, r1, l0, l1, pKey[kb], pKey[kb + 1]);
-    }
-    pOut[0] = _byteswap_ulong(r0);
-    pOut[1] = _byteswap_ulong(r1);
-    pOut[2] = _byteswap_ulong(l0);
-    pOut[3] = _byteswap_ulong(l1);
-}
+#pragma function(memcpy)   // the exe calls memcpy for the CBC copies
+void FUN_140c81ae0(const unsigned* pIn, unsigned* pOut, const unsigned* pKey);
+void FUN_140c83540(const unsigned* pIn, unsigned* pOut, const unsigned* pKey);
 
 // @0x140c810a0 - CBC update: process whole blocks of pIn, keep the rest pending
 int FUN_140c810a0(Unk_SeedCbc* pCtx, const unsigned* pIn, int nLen, unsigned* pOut, int* pnOut)
@@ -148,16 +171,18 @@ int FUN_140c810a0(Unk_SeedCbc* pCtx, const unsigned* pIn, int nLen, unsigned* pO
     int n = 0x10;
     if (pCtx == 0 || pIn == 0 || pOut == 0 || nLen < 0)
         return 0;
-    pCtx->m_nBuf = nLen - 0x10;
+    pCtx->m_nBuf = nLen - n;
+    const unsigned* pPrev;
     if (pCtx->m_nMode == 1) {
-        const unsigned* pPrev = (const unsigned*)pCtx->m_aIv;
-        for (; n <= nLen; n += 0x10) {
+        pPrev = (const unsigned*)pCtx->m_aIv;
+        while (n <= nLen) {
             pOut[0] = pIn[0] ^ pPrev[0];
             pOut[1] = pIn[1] ^ pPrev[1];
             pOut[2] = pIn[2] ^ pPrev[2];
             pOut[3] = pIn[3] ^ pPrev[3];
-            Unk_SeedBlock(pOut, pOut, pCtx->m_aKey, false);
+            FUN_140c81ae0(pOut, pOut, pCtx->m_aKey);
             pPrev = pOut;
+            n += 0x10;
             pIn += 4;
             pOut += 4;
         }
@@ -166,14 +191,15 @@ int FUN_140c810a0(Unk_SeedCbc* pCtx, const unsigned* pIn, int nLen, unsigned* pO
         memcpy(pCtx->m_aIv, pPrev, 0x10);
         memcpy(pCtx->m_aBuf, pIn, pCtx->m_nBuf);
     } else {
-        const unsigned* pPrev = (const unsigned*)pCtx->m_aIv;
-        for (; n <= nLen; n += 0x10) {
-            Unk_SeedBlock(pIn, pOut, pCtx->m_aKey, true);
+        pPrev = (const unsigned*)pCtx->m_aIv;
+        while (n <= nLen) {
+            FUN_140c83540(pIn, pOut, pCtx->m_aKey);
             pOut[0] = pOut[0] ^ pPrev[0];
             pOut[1] = pOut[1] ^ pPrev[1];
             pOut[2] = pOut[2] ^ pPrev[2];
             pOut[3] = pOut[3] ^ pPrev[3];
             pPrev = pIn;
+            n += 0x10;
             pIn += 4;
             pOut += 4;
         }
@@ -187,29 +213,32 @@ int FUN_140c810a0(Unk_SeedCbc* pCtx, const unsigned* pIn, int nLen, unsigned* pO
 // @0x140c81460 - finish: pad and encrypt the last block, or report the padding length of the decrypted stream
 int FUN_140c81460(Unk_SeedCbc* pCtx, unsigned char* pOut, unsigned* pnOut)
 {
+    unsigned char* pEnd = pOut;
     *pnOut = 0;
     if (pOut == 0)
         return 0;
+    unsigned nPad;
+    int i;
     if (pCtx->m_nMode == 1) {
-        char cPad = (char)(0x10 - pCtx->m_nBuf);
-        for (int i = pCtx->m_nBuf; i < 0x10; i++)
-            pCtx->m_aBuf[i] = cPad;
-        unsigned* pBuf = (unsigned*)pCtx->m_aBuf;
-        const unsigned* pIv = (const unsigned*)pCtx->m_aIv;
-        pBuf[0] ^= pIv[0];
-        pBuf[1] ^= pIv[1];
-        pBuf[2] ^= pIv[2];
-        pBuf[3] ^= pIv[3];
-        Unk_SeedBlock(pBuf, (unsigned*)pOut, pCtx->m_aKey, false);
+        nPad = 0x10 - pCtx->m_nBuf;
+        for (i = pCtx->m_nBuf; i < 0x10; i++)
+            pCtx->m_aBuf[i] = (unsigned char)nPad;
+        ((unsigned*)pCtx->m_aBuf)[0] = ((unsigned*)pCtx->m_aBuf)[0] ^ ((unsigned*)pCtx->m_aIv)[0];
+        ((unsigned*)pCtx->m_aBuf)[1] = ((unsigned*)pCtx->m_aBuf)[1] ^ ((unsigned*)pCtx->m_aIv)[1];
+        ((unsigned*)pCtx->m_aBuf)[2] = ((unsigned*)pCtx->m_aBuf)[2] ^ ((unsigned*)pCtx->m_aIv)[2];
+        ((unsigned*)pCtx->m_aBuf)[3] = ((unsigned*)pCtx->m_aBuf)[3] ^ ((unsigned*)pCtx->m_aIv)[3];
+        FUN_140c81ae0((const unsigned*)pCtx->m_aBuf, (unsigned*)pOut, pCtx->m_aKey);
+        pOut += 0x10;
         *pnOut = 0x10;
     } else {
-        unsigned nPad = pCtx->m_aLast[15];
-        if (nPad == 0 || nPad > 0x10)
+        nPad = pCtx->m_aLast[15];
+        if (nPad > 0 && nPad <= 0x10) {
+            for (i = nPad; i > 0; i--)
+                *(pEnd - i) = 0;
+            *pnOut = nPad;
+        } else {
             return 0;
-        int n = (int)nPad;
-        for (; n > 0; n--)
-            pOut[-n] = 0;
-        *pnOut = nPad;
+        }
     }
     return 1;
 }
@@ -218,21 +247,20 @@ int FUN_140c81460(Unk_SeedCbc* pCtx, unsigned char* pOut, unsigned* pnOut)
 int FUN_140c816b0(const unsigned* pKey, const void* pIv, const void* pIn, int nLen, void* pOut)
 {
     Unk_SeedCbc ctx;
+    int nWords = 0;
     int nOut = 0;
     int nTail = 0;
     int nPad = 0x10 - nLen % 16;
-    int nCopy = nLen + nPad;
-    void* pCopy = malloc((__int64)nCopy);
+    void* pCopy = malloc((size_t)(nLen + nPad));
     memcpy(pCopy, pIn, (__int64)nLen);
     FUN_140c7fd70(&ctx, 1, pKey, pIv);
-    int nWords = nLen / 16 * 4 + 4;
+    nWords = nLen / 16 * 4 + 4;
     unsigned* pCipher = (unsigned*)malloc((__int64)nWords << 2);
     unsigned* pWords = (unsigned*)FUN_140c7fc20((const unsigned*)pCopy, nLen);
     FUN_140c810a0(&ctx, pWords, nLen, pCipher, &nOut);
     FUN_140c81460(&ctx, (unsigned char*)(pCipher + nOut / 4), (unsigned*)&nTail);
     void* pBytes = FUN_140c7fcd0(pCipher, nOut + nTail);
-    int nTotal = nOut + nTail;
-    memcpy(pOut, pBytes, (__int64)nTotal);
+    memcpy(pOut, pBytes, (size_t)(nOut + nTail));
     free(pWords);
     free(pBytes);
     free(pCipher);
@@ -244,54 +272,119 @@ int FUN_140c816b0(const unsigned* pKey, const void* pIv, const void* pIn, int nL
 int FUN_140c818a0(const unsigned* pKey, const void* pIv, const void* pIn, int nLen, void* pOut)
 {
     Unk_SeedCbc ctx;
+    int nWords = 0;
     int nOut = 0;
     int nTail = 0;
     int nResult = 0;
-    if (nLen % 16 < 1) {
-        void* pCopy = malloc((__int64)nLen);
-        memcpy(pCopy, pIn, (__int64)nLen);
-        void* pPlain = malloc((__int64)nLen);
-        FUN_140c7fd70(&ctx, 0, pKey, pIv);
-        int nWords = nLen / 16 << 2;
-        unsigned* pCipher = (unsigned*)malloc((__int64)nWords << 2);
-        unsigned* pWords = (unsigned*)FUN_140c7fc20((const unsigned*)pCopy, nLen);
-        FUN_140c810a0(&ctx, pWords, nLen, pCipher, &nOut);
-        int bOk = FUN_140c81460(&ctx, (unsigned char*)(pCipher + nOut / 4), (unsigned*)&nTail);
-        if (bOk < 1) {
-            free(pPlain);
+    if (nLen % 16 > 0)
+        return 0;
+    void* pCopy = malloc((__int64)nLen);
+    memcpy(pCopy, pIn, (__int64)nLen);
+    void* pPlain = malloc((__int64)nLen);
+    FUN_140c7fd70(&ctx, 0, pKey, pIv);
+    nWords = nLen / 16 << 2;
+    unsigned* pCipher = (unsigned*)malloc((__int64)nWords << 2);
+    unsigned* pWords = (unsigned*)FUN_140c7fc20((const unsigned*)pCopy, nLen);
+    FUN_140c810a0(&ctx, pWords, nLen, pCipher, &nOut);
+    if (FUN_140c81460(&ctx, (unsigned char*)(pCipher + nOut / 4), (unsigned*)&nTail) > 0) {
+        void* pBytes = FUN_140c7fcd0(pCipher, nOut - nTail);
+        memcpy(pPlain, pBytes, (__int64)(nOut - nTail));
+        nResult = nOut - nTail;
+        if (nResult < 0)
             nResult = 0;
-        } else {
-            void* pBytes = FUN_140c7fcd0(pCipher, nOut - nTail);
-            nResult = nOut - nTail;
-            memcpy(pPlain, pBytes, (__int64)nResult);
-            if (nResult < 0)
-                nResult = 0;
-            memcpy(pOut, pPlain, (__int64)nResult);
-            free(pWords);
-            free(pBytes);
-            free(pCipher);
-            free(pPlain);
-        }
-    } else {
-        nResult = 0;
+        memcpy(pOut, pPlain, (__int64)nResult);
+        free(pWords);
+        free(pBytes);
+        free(pCipher);
+        free(pPlain);
+        return nResult;
     }
-    return nResult;
+    free(pPlain);
+    return 0;
 }
+
+#pragma intrinsic(memcpy)
 
 // @0x140c81ae0 - encrypt one 16-byte block
 void FUN_140c81ae0(const unsigned* pIn, unsigned* pOut, const unsigned* pKey)
 {
-    Unk_SeedBlock(pIn, pOut, pKey, false);
+    unsigned L0, L1, R0, R1, T0, T1;
+    const unsigned* K = pKey;
+    L0 = pIn[0];
+    L1 = pIn[1];
+    R0 = pIn[2];
+    R1 = pIn[3];
+    L0 = Unk_SeedEndian(L0);
+    L1 = Unk_SeedEndian(L1);
+    R0 = Unk_SeedEndian(R0);
+    R1 = Unk_SeedEndian(R1);
+    Unk_SeedRound(L0, L1, R0, R1, K +  0);
+    Unk_SeedRound(R0, R1, L0, L1, K +  2);
+    Unk_SeedRound(L0, L1, R0, R1, K +  4);
+    Unk_SeedRound(R0, R1, L0, L1, K +  6);
+    Unk_SeedRound(L0, L1, R0, R1, K +  8);
+    Unk_SeedRound(R0, R1, L0, L1, K + 10);
+    Unk_SeedRound(L0, L1, R0, R1, K + 12);
+    Unk_SeedRound(R0, R1, L0, L1, K + 14);
+    Unk_SeedRound(L0, L1, R0, R1, K + 16);
+    Unk_SeedRound(R0, R1, L0, L1, K + 18);
+    Unk_SeedRound(L0, L1, R0, R1, K + 20);
+    Unk_SeedRound(R0, R1, L0, L1, K + 22);
+    Unk_SeedRound(L0, L1, R0, R1, K + 24);
+    Unk_SeedRound(R0, R1, L0, L1, K + 26);
+    Unk_SeedRound(L0, L1, R0, R1, K + 28);
+    Unk_SeedRound(R0, R1, L0, L1, K + 30);
+    L0 = Unk_SeedEndian(L0);
+    L1 = Unk_SeedEndian(L1);
+    R0 = Unk_SeedEndian(R0);
+    R1 = Unk_SeedEndian(R1);
+    pOut[0] = R0;
+    pOut[1] = R1;
+    pOut[2] = L0;
+    pOut[3] = L1;
 }
 
 // @0x140c83540 - decrypt one 16-byte block
 void FUN_140c83540(const unsigned* pIn, unsigned* pOut, const unsigned* pKey)
 {
-    Unk_SeedBlock(pIn, pOut, pKey, true);
+    unsigned L0, L1, R0, R1, T0, T1;
+    const unsigned* K = pKey;
+    L0 = pIn[0];
+    L1 = pIn[1];
+    R0 = pIn[2];
+    R1 = pIn[3];
+    L0 = Unk_SeedEndian(L0);
+    L1 = Unk_SeedEndian(L1);
+    R0 = Unk_SeedEndian(R0);
+    R1 = Unk_SeedEndian(R1);
+    Unk_SeedRound(L0, L1, R0, R1, K + 30);
+    Unk_SeedRound(R0, R1, L0, L1, K + 28);
+    Unk_SeedRound(L0, L1, R0, R1, K + 26);
+    Unk_SeedRound(R0, R1, L0, L1, K + 24);
+    Unk_SeedRound(L0, L1, R0, R1, K + 22);
+    Unk_SeedRound(R0, R1, L0, L1, K + 20);
+    Unk_SeedRound(L0, L1, R0, R1, K + 18);
+    Unk_SeedRound(R0, R1, L0, L1, K + 16);
+    Unk_SeedRound(L0, L1, R0, R1, K + 14);
+    Unk_SeedRound(R0, R1, L0, L1, K + 12);
+    Unk_SeedRound(L0, L1, R0, R1, K + 10);
+    Unk_SeedRound(R0, R1, L0, L1, K +  8);
+    Unk_SeedRound(L0, L1, R0, R1, K +  6);
+    Unk_SeedRound(R0, R1, L0, L1, K +  4);
+    Unk_SeedRound(L0, L1, R0, R1, K +  2);
+    Unk_SeedRound(R0, R1, L0, L1, K +  0);
+    L0 = Unk_SeedEndian(L0);
+    L1 = Unk_SeedEndian(L1);
+    R0 = Unk_SeedEndian(R0);
+    R1 = Unk_SeedEndian(R1);
+    pOut[0] = R0;
+    pOut[1] = R1;
+    pOut[2] = L0;
+    pOut[3] = L1;
 }
 
 // @0x140c84fb0
-void FUN_140c84fb0()
+void FUN_140c84fb0(void* p)
 {
 }
 
@@ -316,8 +409,7 @@ int FUN_140c851a0()
 // @0x140c851b0 - hkey: hash of channel + nxid + "yyyyMMddhh" (12-hour clock) of the server time
 CString FUN_140c851b0(const CString& strChannel, const CString& strNxId, CMsTime& time)
 {
-    int nHour = time.GetHour();
-    nHour = nHour % 12;
+    int nHour = time.GetHour() % 12;
     if (nHour == 0)
         nHour = 12;
     int nDay = time.GetDay();
@@ -347,14 +439,11 @@ CString FUN_140c84fc0(u64 nNxId)
 // @0x140c85310 - hex token of the SEED-encrypted string
 CString FUN_140c85310(const CString& strPlain)
 {
-    CString strAnsi = FUN_1409a2360((const char*)strPlain, 0);
-    std::string str((const char*)strAnsi);
-    strAnsi.Empty();
+    std::string str((const char*)FUN_1409a2360((const char*)strPlain, 0));
     const char* pszPlain = str.c_str();
     unsigned char aBuf[0x400];
     memset(aBuf, 0, sizeof(aBuf));
-    int nLen = (int)str.size();
-    int nOut = FUN_140c816b0((const unsigned*)DAT_1439f5448, DAT_1439f5458, pszPlain, nLen, aBuf);
+    int nOut = FUN_140c816b0((const unsigned*)DAT_1439f5448, DAT_1439f5458, pszPlain, (int)str.size(), aBuf);
     std::string strHex = FUN_14083fa60((const char*)aBuf, nOut);
     return CString(strHex.c_str());
 }

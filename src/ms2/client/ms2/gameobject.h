@@ -96,7 +96,7 @@ public:
     virtual void vfunc_19(efd::Point3 kPos);                // 19 0x14123c150 (by value)
     virtual NiPoint3 vfunc_20();                            // 20 0x14123c1c0 returns m_pos34
     virtual void vfunc_21(efd::Point3 kDir);                // 21 0x14123c1f0 (by value)
-    virtual void vfunc_22(const efd::Point3& kPos);         // 22 0x14123c3a0 m_pos98 = kPos
+    virtual void vfunc_22(efd::Point3 kPos);                // 22 0x14123c3a0 m_pos98 = kPos (by value)
     virtual void vfunc_23(int n);                           // 23 0x14123c5c0
     virtual void vfunc_24(int) {}                           // 24 0x1409f3020 (inline, COMDAT in avatarcube)
     virtual int vfunc_25() { return m_unk_40; }             // 25 0x1409f2fb0 (inline)
@@ -110,7 +110,7 @@ public:
     virtual void vfunc_33(void* a, void* b);                // 33 0x14123cf10
     virtual void vfunc_34(void* p);                         // 34 0x14123cfb0
     virtual void vfunc_35(void* p);                         // 35 0x14123d040
-    virtual int vfunc_36(void* pStr, void* b);              // 36 0x14123d0e0 (a = CString*)
+    virtual int vfunc_36(CString str, efd::Point3* pOut);   // 36 0x14123d0e0 (by-value CString)
     virtual NiPoint3 vfunc_37();                            // 37 0x14123d220
     virtual NiPoint3 vfunc_38(const efd::Point3& kDir, const efd::Point3& kPos, float fRange);   // 38 0x14123d250 pick
     virtual void vfunc_39();                                // 39 0x14123d640
@@ -153,7 +153,7 @@ public:
     float FUN_14123c260();                                  // 0x14123c260 m_fScaleA4
     float GetScaleAC();                                  // 0x14123c2e0 m_fScaleAC
     void FUN_14123c330(float f);                            // 0x14123c330 m_fScaleA8 = f
-    NiPoint3 FUN_14123c360();                               // 0x14123c360 m_pos98
+    efd::Point3 FUN_14123c360();                            // 0x14123c360 m_pos98 (trivial copy)
     void SetKEntityID(const egf::EntityID& kId);           // 0x14123c3e0 m_kEntityID = kId
     void FUN_14123c430(void* pEntity);                      // 0x14123c430 m_unk_80 = pEntity
     unsigned __int64 FUN_14123c500();                       // 0x14123c500 entity id value

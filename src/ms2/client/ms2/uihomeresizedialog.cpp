@@ -128,7 +128,6 @@ void UIHomeResizeDialog::FUN_140c2bf40() { vfunc_84(); }
 void UIHomeResizeDialog::FUN_140c2bf70() { vfunc_84(); }
 
 // @0x140c2bfa0
-// MS2-FUNCTIONAL: frame slot order of the MS2Ptr/CStringW temporaries differs from the exe
 void UIHomeResizeDialog::OnShrinkArea()
 {
     if (FUN_14025e7b0()->m_flags.FUN_1402c4c90(99) != 0) {
@@ -140,21 +139,20 @@ void UIHomeResizeDialog::OnShrinkArea()
             if (spPrev == 0) {
                 CStringW strKey(L"s_ugcmap_cant_shrink_area_level_anymore");
                 FUN_1412751f0(GetStringCommonByKey(strKey), 1, 1);
-            } else {
-                CStringW strMsg = FUN_1409e8970(CStringW(L"s_home_shrink_area_messagebox"), nArea, spPrev->m_nArea);
-                MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, CStringW(strMsg), 0, CStringW(L""));
-                if (spBox.get() != 0) {
-                    spBox->FUN_141a01800(1);
-                    spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIHomeResizeDialog::SendRequestCubeMode38));
-                    FUN_140d73c60(spBox);
-                }
+                return;
+            }
+            CStringW strMsg = FUN_1409e8970(CStringW(L"s_home_shrink_area_messagebox"), nArea, spPrev->m_nArea);
+            MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, CStringW(strMsg), 0, CStringW(L""));
+            if (spBox.get() != 0) {
+                spBox->FUN_141a01800(1);
+                spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIHomeResizeDialog::SendRequestCubeMode38));
+                FUN_140d73c60(spBox);
             }
         }
     }
 }
 
 // @0x140c2c2f0
-// MS2-FUNCTIONAL: frame slot order of the MS2Ptr/CStringW temporaries differs from the exe
 void UIHomeResizeDialog::OnShrinkHeight()
 {
     if (FUN_14025e7b0()->m_flags.FUN_1402c4c90(99) != 0) {
@@ -166,14 +164,14 @@ void UIHomeResizeDialog::OnShrinkHeight()
             if (spPrev == 0) {
                 CStringW strKey(L"s_ugcmap_cant_shrink_height_level_anymore");
                 FUN_1412751f0(GetStringCommonByKey(strKey), 1, 1);
-            } else {
-                CStringW strMsg = FUN_1409e8970(CStringW(L"s_home_shrink_height_messagebox"), nHeight, spPrev->m_nHeight);
-                MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, CStringW(strMsg), 0, CStringW(L""));
-                if (spBox.get() != 0) {
-                    spBox->FUN_141a01800(1);
-                    spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIHomeResizeDialog::SendRequestCubeMode45));
-                    FUN_140d73c60(spBox);
-                }
+                return;
+            }
+            CStringW strMsg = FUN_1409e8970(CStringW(L"s_home_shrink_height_messagebox"), nHeight, spPrev->m_nHeight);
+            MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, CStringW(strMsg), 0, CStringW(L""));
+            if (spBox.get() != 0) {
+                spBox->FUN_141a01800(1);
+                spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIHomeResizeDialog::SendRequestCubeMode45));
+                FUN_140d73c60(spBox);
             }
         }
     }

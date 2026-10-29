@@ -10,6 +10,7 @@
 
 #include "uiweddinghallreservationpage.h"
 #include "ms2/placeholder/asobj.h"
+#include "ms2/placeholder/asuicomponent.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "hook/ms2hook.h"
 
@@ -19,7 +20,7 @@ Unk_WeddingTicketView* FUN_141b87160(void* pCharacter);                     // t
 void FUN_140fdac50(int nHallId, int nSlot, __int64 nTime, unsigned char bPrivate, ASObj* pData);   // fills the page data object
 bool FUN_140a467d0(const MS2Ptr<AScript>& kScript);                         // has the AS object been released
 unsigned char FUN_1409b0350(Scaleform::GFx::Value* pValue);                 // Value::IsNull
-MS2Ptr<AScript> FUN_140acca70(int nMovieId, const Scaleform::GFx::Value& v);
+MS2Ptr<ASUIComponent> FUN_140acca70(int nMovieId, const Scaleform::GFx::Value& v);
 void FUN_140fdc9f0(UIDialog* pDialog);                                      // reservation dialog: go back to the list
 void* FUN_140967100();
 void FUN_141b1feb0(void* pSingleton);
@@ -36,19 +37,16 @@ UIWeddingHallReservationPage::~UIWeddingHallReservationPage()
 {
 }
 
-// MS2-FUNCTIONAL: EH state layout and bool branch codegen differ
 // @0x140fe2200
 bool UIWeddingHallReservationPage::vfunc_1()
 {
     if (FUN_140a467d0(m_pDialog->FUN_1422dba00()))
         return false;
     Scaleform::GFx::Value kPage = m_pDialog->FUN_1422dba00()->FUN_1422baa20("m_currentPage");
-    if (FUN_1409b0350(&kPage) == 0)
-    {
-        m_pScript = FUN_140acca70(m_pDialog->FUN_1422db730(), kPage);
-        return true;
-    }
-    return false;
+    if (FUN_1409b0350(&kPage) != 0)
+        return false;
+    m_pScript = FUN_140acca70(m_pDialog->FUN_1422db730(), kPage);
+    return true;
 }
 
 // @0x140fe2360
@@ -180,15 +178,14 @@ CStringW UIWeddingHallReservationPageCancel::vfunc_9()
     return GetStringCommonByKey(strKey);
 }
 
-// MS2-FUNCTIONAL: one byte differs in else-less/else branch layout
 // @0x140fe2790
 CStringW UIWeddingHallReservationPageCancel::vfunc_10(bool bStart)
 {
-    if (bStart == 0)
+    if (bStart != 0)
     {
-        CStringW strEnd(L"s_wedding_reservation_cancel_end");
-        return GetStringCommonByKey(strEnd);
+        CStringW strStart(L"s_wedding_reservation_cancel");
+        return GetStringCommonByKey(strStart);
     }
-    CStringW strStart(L"s_wedding_reservation_cancel");
-    return GetStringCommonByKey(strStart);
+    CStringW strEnd(L"s_wedding_reservation_cancel_end");
+    return GetStringCommonByKey(strEnd);
 }

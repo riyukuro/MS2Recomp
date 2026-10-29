@@ -27,7 +27,7 @@ class UIStatControlDialog : public UIDialog, public UIStatusEventListener, publi
 {
 public:
     UIStatControlDialog();                                              // 0x14134e450 (open tween 1)
-    virtual ~UIStatControlDialog();                                     //  0 0x14134fbe0 (??_G 0x14134fc40)
+    // ~UIStatControlDialog() is implicit                              //  0 0x14134fbe0 (??_G 0x14134fc40; no vptr reset)
     virtual CString GetTypeName();                                          //  1 0x14134e510 "StatControlDialog"
     virtual int vfunc_13();                                             // 13 0x14134e730 escape key closes
     virtual void OnLoadInit();                                          // 20 0x14134e690 register the listeners, fill the list

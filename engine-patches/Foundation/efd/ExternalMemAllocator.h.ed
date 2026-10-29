@@ -1,0 +1,3 @@
+19a
+#include <new>  // MS2: std::bad_alloc
+.

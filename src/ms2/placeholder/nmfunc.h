@@ -42,7 +42,7 @@ class CNMFunc : public CNMSerializable
 {
 public:
     virtual char* vfunc_8();
-    CNMFunc(int nFuncId, int nDirection, int n18, int n1c);       // 0x14157d4c0
+    CNMFunc(int nFuncId, unsigned char bFormat, int n18, int n1c); // 0x14157d4c0
     virtual ~CNMFunc() = default;                                         // 0x1415ed640
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override; // 0x14157d630
     unsigned int EncodeFramed(CNMStream* pStream) override;                // 0x14157d570
@@ -69,6 +69,7 @@ class CNMStr
 {
 public:
     CNMStr();
+    CNMStr(const char* s); // out of line per N (0x1000: 0x1415e58e0, 0x400: 0x1415e5b20); units pin what they use
     CNMStr(const CNMStr& r);
     ~CNMStr() { Free(); }
     CNMStr& operator=(const CNMStr& r);

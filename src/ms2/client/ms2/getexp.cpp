@@ -28,7 +28,8 @@
 // ---- the unit's own statics: two offsets of the orb's launch spread, and the dummy node name ----
 static Vector3 s_ptSpreadMin(-0.5f, 0.0f, 0.25f);       // @0x1400eb710
 static Vector3 s_ptSpreadMax(0.5f, 0.0f, 0.5f);         // @0x1400eb740
-static CString s_strEffDummy = "Eff_Dummy";                      // @0x1400eb770 (reassigned from the constants)
+CString s_strEffDummy = "Eff_Dummy";                             // @0x1400eb770 (reassigned from the constants);
+                                                                 // also the GetExpTargetPCDummyName default (constantsblocks)
 
 // ---- the shared header statics, once more (this unit includes the header twice) ----
 #include "ms2/placeholder/header_statics_a.h"       // names @0x1400eb7a0, skill @0x1400eb860, stun @0x1400eb890, condition @0x1400eb8c0
@@ -72,7 +73,7 @@ public:
     virtual void vfunc_7(); virtual void vfunc_8(); virtual void vfunc_9(); virtual void vfunc_10();
     virtual void vfunc_11(); virtual void vfunc_12(); virtual void vfunc_13(); virtual void vfunc_14();
     virtual void vfunc_15(); virtual void vfunc_16(); virtual void vfunc_17();
-    virtual Vector3* GetPosition(Vector3* pOut);    // slot 18 (+0x90)
+    virtual Vector3 GetPosition();                  // slot 18 (+0x90)
 };
 float FUN_14123c260(Unk_ExpActor* p);                               // radius scale
 int FUN_14123c580(Unk_ExpActor* p);                                 // object id
@@ -153,9 +154,9 @@ void FUN_1402b7560(void* pObj, const char* pszMessage);
 void FUN_140194470(void* pDst, void* pSrc);
 const float* FUN_140805fc0(const float* pA, const float* pB);                        // min / max of two floats
 Vector3 FUN_141b71390(Vector3 a, Vector3 b, Vector3 c, float t);   // curve point
-char FUN_14147aa60(const Unk_NiPoint3& kOrigin, const Unk_NiPoint3& kDir, const Unk_NiPoint3& kCenter,
+bool FUN_14147aa60(const Unk_NiPoint3& kOrigin, const Unk_NiPoint3& kDir, const Unk_NiPoint3& kCenter,
                    float fRadius, Unk_GVec3* pHit);                                  // ray / sphere hit
-void FUN_140981070(void* pNode, const void* pPoint);                                 // SetTranslate
+void FUN_140981070(void* pNode, const Unk_NiPoint3& kPoint);                                 // SetTranslate
 void FUN_140ddcca0(void* pNode, const void* pMatrix);                                // SetRotate
 void FUN_140a0b2a0(NiAVObject* pNode);                                               // detach from the parent
 class Unk_Clock;
@@ -230,8 +231,7 @@ void CExpEffectInfo::UpdateOrientation()
     kMat.FUN_14109aa30(2, vSide);
     m_rot = kMat;
     FUN_140ddcca0(FUN_1409475f0(&m_spNode), &kMat);
-    float fTime = (float)FUN_141473280(FUN_14086d260());
-    ((NiAVObject*)FUN_1409475f0(&m_spNode))->Update(fTime, false);
+    ((NiAVObject*)FUN_1409475f0(&m_spNode))->Update((float)FUN_141473280(FUN_14086d260()), false);
 }
 
 static int s_nConstInit = 0;                                        // @0x143ad6000
@@ -277,44 +277,48 @@ void CExpEffectInfo::Update(float fElapsed)
 void CExpEffectInfo::UpdateMove(float fElapsed)
 {
     Unk_ExpActor* pPlayer = (Unk_ExpActor*)FUN_1403ed2d0()->FUN_141bd0cc0();
-    if (pPlayer != 0)
+    if (pPlayer == 0)
+        return;
+    GetTargetPos(pPlayer, &m_ptTarget);
+    float fDist = m_ptSource.FUN_140965c40(m_ptTarget).FUN_140967ac0();
+    m_fProgress = fDist / m_fTotal;
+    UpdateOrientation();
+    bool bDone = m_fElapsed >= m_fProgress;
+    if (bDone)
     {
-        GetTargetPos(pPlayer, &m_ptTarget);
-        m_fProgress = m_ptSource.FUN_140965c40(m_ptTarget).FUN_140967ac0() / m_fTotal;
-        UpdateOrientation();
-        if (m_fElapsed < m_fProgress)
-        {
-            m_fElapsed = m_fElapsed + fElapsed;
-            m_fElapsed = m_fElapsed * DAT_1439f7348;
-            if (m_fElapsed < m_fProgress)
-                SetPosition(FUN_141b71390(m_ptSource, m_ptPos, m_ptTarget, m_fElapsed / m_fProgress));
-            else
-                Finish();
-        }
+        Finish();
+    }
+    else
+    {
+        m_fElapsed = m_fElapsed + fElapsed;
+        m_fElapsed = m_fElapsed * DAT_1439f7348;
+        bDone = m_fElapsed >= m_fProgress;
+        if (bDone)
+            Finish();
         else
         {
-            Finish();
+            float fT = m_fElapsed / m_fProgress;
+            Vector3 ptNew = FUN_141b71390(m_ptSource, m_ptPos, m_ptTarget, fT);
+            SetPosition(ptNew);
         }
     }
 }
 
 // @0x141272f20
-bool CExpEffectInfo::Create(int nObjectId, void* pOwner)
+int CExpEffectInfo::Create(int nObjectId, void* pOwner)
 {
     Unk_ExpActor* pPlayer = (Unk_ExpActor*)FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pPlayer == 0)
-        return false;
+        return 0;
     Unk_ExpActor* pObj = FUN_1403ed2d0()->FUN_141bd1200(nObjectId);
     if (pObj == 0)
-        return false;
-    NiNode* pNode = new (efd::MemHint(efd::MemHint::NONE)) NiNode(0);
-    FUN_1409f76f0(&m_spNode, pNode);
+        return 0;
+    FUN_1409f76f0(&m_spNode, new (efd::MemHint(efd::MemHint::NONE)) NiNode(0));
     if (FUN_1409475d0(&m_spNode) == 0)
-        return false;
+        return 0;
     m_pOwner = pOwner;
     m_fElapsed = 0;
-    Unk_PosBuf kBuf;
-    FUN_140194470(&m_ptSource, pObj->GetPosition(reinterpret_cast<Vector3*>(&kBuf)));
+    m_ptSource = pObj->GetPosition();
     GetTargetPos(pPlayer, &m_ptTarget);
     Vector3 vDir = m_ptTarget.FUN_140965c40(m_ptSource);
     float fLen = vDir.FUN_140968990();
@@ -322,23 +326,23 @@ bool CExpEffectInfo::Create(int nObjectId, void* pOwner)
     m_fTotal = *FUN_140805fc0(&DAT_1439f733c, &fScaled);
     m_fProgress = fLen / m_fTotal;
     UpdateOrientation();
-    int nSeedA = FUN_14028d0e0();
-    int nSeedB = FUN_14123cec0(pPlayer);
-    int nSeedC = (nSeedA + nObjectId) * (nSeedB + nObjectId) * nObjectId;
-    Unk_ExpRandom kRandom(nSeedA + nObjectId, nSeedB + nObjectId, nSeedC);
+    int nSeedA = FUN_14028d0e0() + nObjectId;
+    int nSeedB = FUN_14123cec0(pPlayer) + nObjectId;
+    int nSeedC = nSeedA * nSeedB * nObjectId;
+    Unk_ExpRandom kRandom(nSeedA, nSeedB, nSeedC);
     float fRandX = kRandom.FUN_1407680d0();
     float fRandY = kRandom.FUN_1407680d0();
     float fRandZ = kRandom.FUN_1407680d0();
-    Vector3 ptMin = s_ptSpreadMin.FUN_14097fc90(fLen);
-    Vector3 ptMax = s_ptSpreadMax.FUN_14097fc90(fLen);
-    ptMin.y = ptMin.y / m_fTotal;
-    ptMax.y = ptMax.y / m_fTotal;
-    Vector3 ptRange = ptMax.FUN_140965c40(ptMin);
-    Vector3 ptOffset(ptMin.x + ptRange.x * fRandX, ptMin.y + ptRange.y * fRandY, ptMin.z + ptRange.z * fRandZ);
-    Vector3 ptNew = m_ptSource.FUN_14097fd50(vDir.FUN_14097fc90(ptOffset.y).FUN_14097fc90(fLen))
-                                  .FUN_14097fd50(GetAxis2().FUN_14097fc90(ptOffset.z))
-                                  .FUN_14097fd50(GetAxis0().FUN_14097fc90(ptOffset.x));
-    FUN_140194470(&m_ptPos, &ptNew);
+    // [0] = spread min, [1] = spread max, both scaled by the distance
+    Vector3 aSpread[2] = { s_ptSpreadMin.FUN_14097fc90(fLen), s_ptSpreadMax.FUN_14097fc90(fLen) };
+    aSpread[0].y = aSpread[0].y / m_fTotal;
+    aSpread[1].y = aSpread[1].y / m_fTotal;
+    Vector3 ptRange = aSpread[1].FUN_140965c40(aSpread[0]);
+    Vector3 ptOffset(aSpread[0].x + ptRange.x * fRandX, aSpread[0].y + ptRange.y * fRandY, aSpread[0].z + ptRange.z * fRandZ);
+    FUN_140194470(&m_ptPos, (void*)&static_cast<const Vector3&>(
+                                m_ptSource.FUN_14097fd50(vDir.FUN_14097fc90(ptOffset.y).FUN_14097fc90(fLen))
+                                    .FUN_14097fd50(GetAxis2().FUN_14097fc90(ptOffset.z))
+                                    .FUN_14097fd50(GetAxis0().FUN_14097fc90(ptOffset.x))));
     SetPosition(m_ptSource);
     NiNode* pRoot = (NiNode*)FUN_1403ed280()->FUN_1411a6b10();
     pRoot->AttachChild((NiAVObject*)FUN_1409475d0(&m_spNode), true);
@@ -348,7 +352,7 @@ bool CExpEffectInfo::Create(int nObjectId, void* pOwner)
     kRequest.m_nOwnerId = FUN_1403ed2d0()->FUN_141bd1a10(pObj);
     kRequest.FUN_140a53190(FUN_14123c580(pObj));
     m_hEffect = FUN_1403ed280()->FUN_1411a49c0(&kRequest);
-    return true;
+    return 1;
 }
 
 // @0x141273570
@@ -362,10 +366,8 @@ void CExpEffectInfo::SetPosition(const Vector3& pt)
 {
     if (FUN_1409475d0(&m_spNode) != 0)
     {
-        Unk_NiPoint3 kPos(pt);
-        FUN_140981070(FUN_1409475f0(&m_spNode), &kPos);
-        float fTime = (float)FUN_141473280(FUN_14086d260());
-        ((NiAVObject*)FUN_1409475f0(&m_spNode))->Update(fTime, false);
+        FUN_140981070(FUN_1409475f0(&m_spNode), pt);
+        ((NiAVObject*)FUN_1409475f0(&m_spNode))->Update((float)FUN_141473280(FUN_14086d260()), false);
     }
 }
 
@@ -379,24 +381,22 @@ void CExpEffectInfo::SetVisible(int nHide)
 void CExpEffectInfo::Finish()
 {
     Unk_ExpActor* pPlayer = (Unk_ExpActor*)FUN_1403ed2d0()->FUN_141bd0cc0();
-    if (pPlayer != 0)
-    {
-        float fRadius = DAT_1439f7344 * FUN_14123c260(pPlayer);
-        Vector3 ptCur = *(const Vector3*)&((NiAVObject*)FUN_1409475f0(&m_spNode))->GetTranslate();
-        Unk_GVec3 ptHit;
-        if (!FUN_14147aa60(Unk_NiPoint3(ptCur), Unk_NiPoint3(ptCur.FUN_140965c40(m_ptTarget)), Unk_NiPoint3(m_ptTarget),
-                           fRadius, &ptHit))
-            ptHit = Unk_NiPoint3(ptCur);
-        FUN_141673f70(pPlayer, DAT_1439f734c, DAT_1439f7350, DAT_1439f7354);
-        SetPosition(ptHit);
-        StopEffect();
-        Unk_ExpTarget kRequest;
-        kRequest.m_strName = *reinterpret_cast<CString*>((char*)FUN_1401d31f0() + 0x340);
-        kRequest.m_nOwnerId = 1;
-        kRequest.FUN_140a53190(FUN_14123c580(pPlayer));
-        FUN_1403ed280()->FUN_1411a4a00(&kRequest);
-        m_nState = 1;
-    }
+    if (pPlayer == 0)
+        return;
+    float fRadius = DAT_1439f7344 * FUN_14123c260(pPlayer);
+    Vector3 ptCur = *(const Vector3*)&((NiAVObject*)FUN_1409475f0(&m_spNode))->GetTranslate();
+    Unk_GVec3 ptHit;
+    if (!FUN_14147aa60(ptCur, ptCur.FUN_140965c40(m_ptTarget), m_ptTarget, fRadius, &ptHit))
+        ptHit = ptCur;
+    FUN_141673f70(pPlayer, DAT_1439f734c, DAT_1439f7350, DAT_1439f7354);
+    SetPosition(ptHit);
+    StopEffect();
+    Unk_ExpTarget kRequest;
+    kRequest.m_strName = *reinterpret_cast<CString*>((char*)FUN_1401d31f0() + 0x340);
+    kRequest.m_nOwnerId = 1;
+    kRequest.FUN_140a53190(FUN_14123c580(pPlayer));
+    FUN_1403ed280()->FUN_1411a4a00(&kRequest);
+    m_nState = 1;
 }
 
 // @0x141273890
@@ -411,8 +411,7 @@ void CExpEffectInfo::GetTargetPos(Unk_ExpActor* pActor, Vector3* pOut)
     }
     else
     {
-        Unk_PosBuf kBuf;
-        FUN_140194470(pOut, pActor->GetPosition(reinterpret_cast<Vector3*>(&kBuf)));
+        *pOut = pActor->GetPosition();
     }
 }
 
@@ -442,18 +441,17 @@ void CGetExp::Update(float fElapsed)
         CExpEffectInfo* pInfo = m_list.GetAt(pos).get();
         if (pInfo != 0)
         {
-            if (pInfo->GetState() == 0)
-                pInfo->Update(fElapsed);
-            else
+            if (pInfo->GetState() != 0)
                 aDone.Add(pos);
+            else
+                pInfo->Update(fElapsed);
         }
     }
-    if (!aDone.IsEmpty())
-    {
-        size_t nCount = aDone.GetCount();
-        for (size_t i = 0; i < nCount; i++)
-            m_list.RemoveAt(aDone[i]);
-    }
+    if (aDone.IsEmpty())
+        return;
+    size_t nCount = aDone.GetCount();
+    for (size_t i = 0; i < nCount; i++)
+        m_list.RemoveAt(aDone[i]);
 }
 
 // @0x141273b40
@@ -465,14 +463,15 @@ int CGetExp::FUN_141273b40()
 // @0x141273b60
 void CGetExp::AddEffect(int nObjectId, void* pOwner)
 {
-    if (nObjectId != 0 && pOwner != 0 && m_bEnabled != 0)
+    if (nObjectId == 0 || pOwner == 0)
+        return;
+    if (m_bEnabled == 0)
+        return;
+    MS2Ptr<CExpEffectInfo> spInfo(new CExpEffectInfo);
+    if (spInfo.get() != 0)
     {
-        MS2Ptr<CExpEffectInfo> spInfo(new CExpEffectInfo);
-        if (spInfo.get() != 0)
-        {
-            spInfo->Create(nObjectId, pOwner);
-            m_list.AddTail(spInfo);
-        }
+        spInfo->Create(nObjectId, pOwner);
+        m_list.AddTail(spInfo);
     }
 }
 

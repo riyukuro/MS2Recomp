@@ -75,7 +75,6 @@ void Unk_PvpEntryBlock::FUN_14101b7f0()
     m_b.FUN_14101ef40();
 }
 
-// MS2-FUNCTIONAL: behaviour-equivalent (frame layout / temp slots differ)
 // @0x14101b830
 void Unk_PvpEntryBlock::FUN_14101b830(int nMessage, CInPacket& packet)
 {
@@ -99,6 +98,7 @@ void Unk_PvpEntryBlock::FUN_14101b830(int nMessage, CInPacket& packet)
         UIPvPTeamResultDialog* pResult = FUN_14101c850(0x4ed2);
         if (pResult != 0)
             pResult->FUN_1413456a0();
+        return;
     }
     else if (nMessage == 0x6e)
     {
@@ -119,15 +119,15 @@ void Unk_PvpEntryBlock::FUN_14101b830(int nMessage, CInPacket& packet)
         if (pPlayer != 0)
         {
             Unk_PvInfoPtr info = ((Unk_PvActor*)pPlayer)->FUN_140967420();
-            if (!info.FUN_14101ec80(0))
-            {
-                info.FUN_140965970()->FUN_140743b20(packet);
-                FUN_14101c220(info.FUN_140965970()->m_nPoint, nCharId, info.FUN_140965970()->m_nWin,
-                              info.FUN_140965970()->m_nLose, info.FUN_140965970()->m_nKill);
-                UIPvPTeamResultDialog* pResult = FUN_14101c850(0x4ed2);
-                if (pResult != 0)
-                    pResult->FUN_1413454b0();
-            }
+            if (info.FUN_14101ec80(0))
+                return;
+            info.FUN_140965970()->FUN_140743b20(packet);
+            FUN_14101c220(info.FUN_140965970()->m_nPoint, nCharId, info.FUN_140965970()->m_nWin,
+                          info.FUN_140965970()->m_nLose, info.FUN_140965970()->m_nKill);
+            UIPvPTeamResultDialog* pResult = FUN_14101c850(0x4ed2);
+            if (pResult != 0)
+                pResult->FUN_1413454b0();
+            return;
         }
     }
     else if (nMessage == 0x70)
@@ -150,26 +150,35 @@ void Unk_PvpEntryBlock::FUN_14101b830(int nMessage, CInPacket& packet)
             strOutcome = GetStringCommon(0xb19);
         else
             return;
-        FUN_1412751f0(FUN_140632a60(0xb1a, strKind, strOutcome), 4, 1);
+        CStringW strMsg = FUN_140632a60(0xb1a, strKind, strOutcome);
+        FUN_1412751f0(strMsg, 4, 1);
+        return;
     }
     else if (nMessage == 0x6f)
     {
-        packet.ReadInt32();
+        int nUnused = packet.ReadInt32();
         int nValue = packet.ReadInt32();
+        nValue /= 10;
         if (FUN_1403ed2b0()->FUN_141adc940(0x4ed4) != 0)
             FUN_1403ed2b0()->FUN_141adc530(0x4ed4);
         UIPvPTeamFlagGagueDialog* pGauge = FUN_14101c7b0(0x4ed4);
         if (pGauge != 0)
-            pGauge->FUN_141344d50(nValue / 10);
+            pGauge->FUN_141344d50(nValue);
     }
     else if (nMessage == 0x71)
     {
         CStringW strName = packet.ReadUnicodeString();
         int nKind = packet.ReadUInt8();
         if (nKind == 1)
-            FUN_1412751f0(FUN_14052bd00(0xb1b, strName), 4, 1);
+        {
+            CStringW strMsg = FUN_14052bd00(0xb1b, strName);
+            FUN_1412751f0(strMsg, 4, 1);
+        }
         else if (nKind == 2)
-            FUN_1412751f0(FUN_14052bd00(0xb1c, strName), 4, 1);
+        {
+            CStringW strMsg = FUN_14052bd00(0xb1c, strName);
+            FUN_1412751f0(strMsg, 4, 1);
+        }
     }
 }
 

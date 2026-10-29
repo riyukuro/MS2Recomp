@@ -224,7 +224,7 @@ public:
     bool SelectGroup(int nGroup, unsigned nRoomId);                 // 0x1412ba3a0
     void RefreshGroupList();                                        // 0x1412ba490
     void SelectComboGroup(int nGroup);                              // 0x1412ba7a0
-    void ShowGroup(int nGroup, int nRoomId);                        // 0x1412ba830
+    void ShowGroup(int nGroup, unsigned nRoomId);                   // 0x1412ba830
     void GetPartyLevel(unsigned short& nLevel, unsigned& nGearScore);   // 0x1412bab90 the player's or the party's
     void SetRoom(MS2Ptr<DungeonRoom> spRoom);                       // 0x1412bac40
     int TypeOfGroup(int nGroup);                                    // 0x1412bacf0 combo group -> DungeonGroupType

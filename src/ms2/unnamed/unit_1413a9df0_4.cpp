@@ -73,30 +73,22 @@ void* Unk_GcSmartRef::FUN_1413b4130() const
 // @0x1413b4140
 const Vector3& Unk_GcOptVec3::GetValue() const
 {
-    if (!m_bSet)
-        _wassert(L"m_isValueSet", L"e:\\build\\kr\\22_04\\ms2code\\commonfiles\\nullable.h", 0x6a);
+    (void)((!!(m_bSet)) || (_wassert(L"m_isValueSet", L"e:\\build\\kr\\22_04\\ms2code\\commonfiles\\nullable.h", 0x6a), 0));
     return reinterpret_cast<const Vector3&>(m_x);
 }
 
 // @0x1413b4180
 Vector3& Unk_GcOptVec3::GetValue()
 {
-    if (!m_bSet)
-        _wassert(L"m_isValueSet", L"e:\\build\\kr\\22_04\\ms2code\\commonfiles\\nullable.h", 0x5c);
+    (void)((!!(m_bSet)) || (_wassert(L"m_isValueSet", L"e:\\build\\kr\\22_04\\ms2code\\commonfiles\\nullable.h", 0x5c), 0));
     return reinterpret_cast<Vector3&>(m_x);
 }
 
 // @0x1413b41c0
 bool& Unk_GcOptBool::GetValue()
 {
-    if (!m_bSet)
-        _wassert(L"m_isValueSet", L"e:\\build\\kr\\22_04\\ms2code\\commonfiles\\nullable.h", 0x5c);
+    (void)((!!(m_bSet)) || (_wassert(L"m_isValueSet", L"e:\\build\\kr\\22_04\\ms2code\\commonfiles\\nullable.h", 0x5c), 0));
     return m_bValue;
-}
-
-// @0x1413b38a0
-CGuideConditionDialog::~CGuideConditionDialog()
-{
 }
 
 // Anchors: the destructors and the array accessor are COMDATs of this range; the destructors are implicit.
@@ -122,6 +114,7 @@ template void Unk_GcDtorAnchor<CGuideConditionCountInDoorInstallItem>(CGuideCond
 template void Unk_GcDtorAnchor<CGuideConditionCountItem>(CGuideConditionCountItem*);
 template void Unk_GcDtorAnchor<CGuideConditionCubeHolderSelectItem>(CGuideConditionCubeHolderSelectItem*);
 template void Unk_GcDtorAnchor<CGuideConditionDead>(CGuideConditionDead*);
+template void Unk_GcDtorAnchor<CGuideConditionDialog>(CGuideConditionDialog*);
 template void Unk_GcDtorAnchor<CGuideConditionDesignItem>(CGuideConditionDesignItem*);
 template void Unk_GcDtorAnchor<CGuideConditionEnterDungeon>(CGuideConditionEnterDungeon*);
 template void Unk_GcDtorAnchor<CGuideConditionEquipItem>(CGuideConditionEquipItem*);

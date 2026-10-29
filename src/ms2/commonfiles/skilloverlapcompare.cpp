@@ -224,47 +224,45 @@ int FUN_1407e5f60(Unk_CompareStat* pStat, void* pElem)
 MS2_REPLACE(0x1407e5f60, FUN_1407e5f60, 16, 0x32804D89);
 
 // @0x1407e5f80
-// MS2-FUNCTIONAL: the original has five named int fields; additionalactionadditional.h (another unit) declares int m_n4[5], and /Od indexes the array
 Unk_SkillOverlapCondition::Unk_SkillOverlapCondition()
 {
     m_b0 = false;
-    m_n4[0] = 0;
-    m_n4[1] = 0;
-    m_n4[2] = 0;
-    m_n4[3] = 0;
-    m_n4[4] = 0;
+    m_nTargetCheckRange = 0;
+    m_nTargetCheckMinRange = 0;
+    m_nTargetInRangeCount = 0;
+    m_nTargetFriendly = 0;
+    m_nTargetCountSign = 0;
 }
 
 // @0x1407e5fe0
-// MS2-FUNCTIONAL: the original has five named int fields; additionalactionadditional.h (another unit) declares int m_n4[5], and /Od indexes the array
 bool Unk_SkillOverlapCondition::FUN_1407e5fe0(const Unk_SkillOverlapCondition& o)
 {
     if (m_b0 != o.m_b0)
         return true;
-    if (m_n4[0] != o.m_n4[0])
+    if (m_nTargetCheckRange != o.m_nTargetCheckRange)
         return true;
-    if (m_n4[1] != o.m_n4[1])
+    if (m_nTargetCheckMinRange != o.m_nTargetCheckMinRange)
         return true;
-    if (m_n4[2] != o.m_n4[2])
+    if (m_nTargetInRangeCount != o.m_nTargetInRangeCount)
         return true;
-    if (m_n4[3] != o.m_n4[3])
+    if (m_nTargetFriendly != o.m_nTargetFriendly)
         return true;
-    if (m_n4[4] != o.m_n4[4])
+    if (m_nTargetCountSign != o.m_nTargetCountSign)
         return true;
     return false;
 }
 
 // @0x1407e6080
-// MS2-FUNCTIONAL: m_n4[5] array (see the ctor), and the original returns int 1 where the shared header declares void
-void Unk_SkillOverlapCondition::Load(Unk_140165cf0* pElem)
+int Unk_SkillOverlapCondition::Load(Unk_140165cf0* pElem)
 {
-    FUN_140873220(pElem, "targetCheckRange", (unsigned&)m_n4[0]);
-    FUN_140873220(pElem, "targetCheckMinRange", (unsigned&)m_n4[1]);
-    FUN_140873220(pElem, "targetInRangeCount", (unsigned&)m_n4[2]);
-    FUN_140873220(pElem, "targetFriendly", (unsigned&)m_n4[3]);
-    XmlEnumName<SkillCompareSign, ParseCompareSign>(pElem, "targetCountSign", (SkillCompareSign&)m_n4[4]);
-    if (m_n4[0] != 0 && m_n4[4] != 0)
+    FUN_140873220(pElem, "targetCheckRange", m_nTargetCheckRange);
+    FUN_140873220(pElem, "targetCheckMinRange", m_nTargetCheckMinRange);
+    FUN_140873220(pElem, "targetInRangeCount", m_nTargetInRangeCount);
+    FUN_140873220(pElem, "targetFriendly", m_nTargetFriendly);
+    XmlEnumName<SkillCompareSign, ParseCompareSign>(pElem, "targetCountSign", (SkillCompareSign&)m_nTargetCountSign);
+    if (m_nTargetCheckRange != 0 && m_nTargetCountSign != 0)
         m_b0 = true;
+    return 1;
 }
 
 // The writer of an overlap condition (writes nothing).

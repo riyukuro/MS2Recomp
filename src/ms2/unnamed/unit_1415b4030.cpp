@@ -7,6 +7,7 @@
 #include "ms2/placeholder/nmstream.h"
 #include "ms2/placeholder/nmobjects.h"
 #include "ms2/placeholder/nmfunc.h"
+#include "ms2/placeholder/nmencoder.h"
 #include "ms2/ms2recover.h"
 
 extern void FUN_14156bcb0(void*, void*, void*);
@@ -15,7 +16,7 @@ extern void FUN_14156be10(void*, void*, void*);
 extern void FUN_14156bf10(void*);
 extern void FUN_14156ac20(void*, unsigned int);
 extern unsigned int FUN_1415f9990(void*);
-extern int FUN_1415fb6d0(void*);
+extern int FUN_1415fb6d0(CNMSerializableDecoder*);
 extern int FUN_1415fb750(void*);
 
 // MS2-FUNCTIONAL 0x1415b4030: initializes an empty find-user reply event.
@@ -30,20 +31,19 @@ CNMFindUserReplyEvent::CNMFindUserReplyEvent(int result)
 
 // MS2-FUNCTIONAL 0x1415b40f0: frames event encoding.
 // @0x1415b40f0
-unsigned int CNMFindUserReplyEvent::EncodeFramed(CNMStream* stream)
+unsigned int CNMFindUserReplyEvent::EncodeFramed(CNMStream* pStream)
 {
-    unsigned char storage[0x18];
-    FUN_14156bcb0(storage, stream, this);
-    auto result = Encode(reinterpret_cast<CNMEncoder*>(storage), stream);
-    FUN_14156bd50(storage);
-    return result;
+    CNMSerializableEncoder encoder(pStream, this);
+    return CNMFindUserReplyEvent::Encode(reinterpret_cast<CNMEncoder*>(&encoder), pStream);
 }
 
 // MS2-FUNCTIONAL 0x1415b4150: dispatches encoding by event format.
 // @0x1415b4150
-unsigned int CNMFindUserReplyEvent::EncodeDispatch(CNMEncoder* encoder, CNMStream* stream)
+unsigned int CNMFindUserReplyEvent::EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream)
 {
-    return m_bFormat == 1 ? Encode(encoder, stream) : EncodeFramed(stream);
+    if (m_bFormat == 1)
+        return CNMFindUserReplyEvent::Encode(pEncoder, pStream);
+    return CNMFindUserReplyEvent::EncodeFramed(pStream);
 }
 
 // MS2-FUNCTIONAL 0x1415b41b0: serializes the find-user result code.
@@ -58,22 +58,21 @@ unsigned int CNMFindUserReplyEvent::Encode(CNMEncoder* encoder, CNMStream* strea
 
 // MS2-FUNCTIONAL 0x1415b4210: decodes a framed event.
 // @0x1415b4210
-unsigned int CNMFindUserReplyEvent::DecodeFramed(CNMStream* stream)
+unsigned int CNMFindUserReplyEvent::DecodeFramed(CNMStream* pStream)
 {
-    unsigned char storage[0x38];
-    FUN_14156be10(storage, stream, this);
-    unsigned int result = 0;
-    if (FUN_1415fb750(storage))
-        result = Decode(reinterpret_cast<CNMSerializableDecoder*>(storage), stream);
-    FUN_14156bf10(storage);
-    return result;
+    CNMSerializableDecoder decoder(pStream, this);
+    if (FUN_1415fb750(&decoder) == 0)
+        return 0;
+    return CNMFindUserReplyEvent::Decode(&decoder, pStream);
 }
 
 // MS2-FUNCTIONAL 0x1415b42a0: dispatches decoding by event format.
 // @0x1415b42a0
-unsigned int CNMFindUserReplyEvent::DecodeDispatch(CNMSerializableDecoder* decoder, CNMStream* stream)
+unsigned int CNMFindUserReplyEvent::DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream)
 {
-    return FUN_1415fb6d0(decoder) == 2 ? DecodeFramed(stream) : Decode(decoder, stream);
+    if (FUN_1415fb6d0(pDecoder) == 2)
+        return CNMFindUserReplyEvent::DecodeFramed(pStream);
+    return CNMFindUserReplyEvent::Decode(pDecoder, pStream);
 }
 
 // MS2-FUNCTIONAL 0x1415b4300: restores the find-user result code.

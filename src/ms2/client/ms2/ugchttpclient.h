@@ -17,12 +17,12 @@ public:
     CUgcHttpClient();                                                               // 0x140dfa160
     virtual ~CUgcHttpClient();                                                      // 0x140dfa200
 
-    int  Connect(const char* pszHost, const char* pszUserAgent, unsigned short nPort, const char* pszUser,
+    int  Connect(const char* pszHost, const char* pszUserAgent, int nPort, const char* pszUser,
                  const char* pszPass);                                              // 0x140dfa290
     int  Disconnect();                                                              // 0x140dfa490
     int  Request(const char* pszUrl);                                               // 0x140dfa500
     int  RequestEx(const char* pszUrl);                                             // 0x140dfa6e0
-    bool Response(char* pszHeader, unsigned nHeaderSize, char* pszBody, unsigned nBodySize,
+    int  Response(char* pszHeader, unsigned nHeaderSize, char* pszBody, unsigned nBodySize,
                   unsigned* pnRead);                                                // 0x140dfa760
 
     char* Body();                                                                   // 0x140dfa9e0: m_szBody
@@ -36,6 +36,10 @@ public:
     int  StatusCode();                                                              // 0x140dfb480: m_nStatus
     CString ErrorText();                                                            // 0x140dfb4a0: m_strError
 
+    // The URL splitter: scheme into pszProtocol, host into pszHost, port into pnPort, path into pszPath. A member in
+    // the exe (rcx is the client, unused); Request passes this.
+    void FUN_140dfaf10(const char* pszUrl, char* pszProtocol, char* pszHost, long* pnPort, char* pszPath); // 0x140dfaf10
+
     void*      m_hInternet;         // +0x08 InternetOpenA handle
     void*      m_hConnect;          // +0x10 InternetConnectA handle
     void*      m_hRequest;          // +0x18 HttpOpenRequestA handle
@@ -47,9 +51,6 @@ public:
     CString    m_strError;          // +0x30dd8 the last error text
 };
 MS2_CHECK_SIZE(CUgcHttpClient, 0x30de0);
-
-// The URL splitter (0x140dfaf10): scheme into pszProtocol, host into pszHost, port into pnPort, path into pszPath.
-void FUN_140dfaf10(const char* pszUrl, char* pszProtocol, char* pszHost, long* pnPort, char* pszPath);
 
 // The base64 codec of the signed requests (the alphabet 0x143ac5488 and its initialiser are this unit's).
 std::string FUN_140dfb540(const unsigned char* pData, int nLength);          // 0x140dfb540 encode

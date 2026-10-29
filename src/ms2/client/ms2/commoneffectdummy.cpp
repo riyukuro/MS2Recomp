@@ -16,7 +16,7 @@ class Unk_140166420 { public: int FUN_1403974b0(TiXmlDocument* doc, const char* 
 Unk_140166420* FUN_140166420();
 CString FUN_14016a5c0(const char* psz, int n);
 void* FUN_140166440();
-void FUN_1403a1280(void*, int, int, const char*, const char**);
+void FUN_1403a1280(void*, int, int, const wchar_t*, const char**);
 
 #ifndef MS2_HOOK_DLL   // the hook DLL binds the exe's flag (symbols.tsv); a local copy stays false -> "is not initialized" box
 bool CommonEffectDummy::s_bInit;
@@ -65,7 +65,7 @@ bool CommonEffectDummy::LoadFile(const char* path)
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
     {
-        FUN_1403a1280(FUN_140166440(), 1, 0x13, "xml", &path);
+        FUN_1403a1280(FUN_140166440(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", &path);
         return false;
     }
     m_pGroup = new EffectDummyGroup;

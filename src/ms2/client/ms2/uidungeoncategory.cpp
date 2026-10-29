@@ -156,7 +156,7 @@ public:
 private:
     unsigned char m_pad_1b2[0x3a];
 public:
-    int m_nGroupId;                                             // +0x1ec
+    DWORD m_nGroupId;                                           // +0x1ec
 };
 MS2_CHECK_OFFSET(Unk_DcRoom, m_nMinLevel, 0x104);
 MS2_CHECK_OFFSET(Unk_DcRoom, m_strBanner, 0x148);
@@ -522,8 +522,6 @@ void UIDungeonControlCenter::FUN_140c0ba70(std::set<unsigned int>& ids)
 MS2_REPLACE_METHOD(0x140C0BA70, UIDungeonControlCenter, FUN_140c0ba70, 43, 0x24B189AA);
 
 // @0x140c0bab0
-// MS2-FUNCTIONAL: the by-value MS2Ptr returns spill their address through two stack temps (0x30 more frame) - same
-//   unsolved shape as the other GetChild/chained-pointer sites; code and calls are otherwise identical
 void UIDungeonControlCenter::FUN_140c0bab0()
 {
     Unk_DcPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
@@ -532,16 +530,13 @@ void UIDungeonControlCenter::FUN_140c0bab0()
     ASObj obj(2);
     int nWeekly = 0;
     int nWeeklyMax = 0;
-    {
-        MS2Ptr<Unk_DcMission> pMission = FUN_140931510()->FUN_140d9f2c0()->FUN_140b22160(0x3ee);
-        if (pMission.get()) {
-            nWeekly = pMission->FUN_140b20750();
-            nWeeklyMax = pMission->FUN_140b20780();
-            obj.FUN_1407cbb20("weekly", FUN_1409e9890(L"s_dungeon_control_center_reward_weekly", nWeekly, nWeeklyMax));
-            int nDaily = pMission->FUN_14031b9d0(FUN_140869440());
-            int nDailyMax = pMission->FUN_14031ba10();
-            obj.FUN_1407cbb20("daily", FUN_1409e9890(L"s_dungeon_control_center_reward_daily", nDaily, nDailyMax));
-        }
+    if (MS2Ptr<Unk_DcMission> pMission = FUN_140931510()->FUN_140d9f2c0()->FUN_140b22160(0x3ee)) {
+        nWeekly = pMission->FUN_140b20750();
+        nWeeklyMax = pMission->FUN_140b20780();
+        obj.FUN_1407cbb20("weekly", FUN_1409e9890(L"s_dungeon_control_center_reward_weekly", nWeekly, nWeeklyMax));
+        int nDaily = pMission->FUN_14031b9d0(FUN_140869440());
+        int nDailyMax = pMission->FUN_14031ba10();
+        obj.FUN_1407cbb20("daily", FUN_1409e9890(L"s_dungeon_control_center_reward_daily", nDaily, nDailyMax));
     }
     int nNext = 0;
     size_t nCount = FUN_14031c2a0()->FUN_140321bc0();
@@ -574,31 +569,27 @@ void UIDungeonControlCenter::FUN_140c0bab0()
         __int64 nExp = rewards.m_nExp;
         if (FUN_14036d570(FUN_140166410(), 0xb9)) {
             if (FUN_140931510()->FUN_140d9f2c0()->FUN_140b22530()) {
-                nMeso = (__int64)((float)nMeso * FUN_140931510()->FUN_140d9f2c0()->FUN_140b22640());
-                nExp = (__int64)((float)nExp * FUN_140931510()->FUN_140d9f2c0()->FUN_140b22620());
+                nMeso *= FUN_140931510()->FUN_140d9f2c0()->FUN_140b22640();
+                nExp *= FUN_140931510()->FUN_140d9f2c0()->FUN_140b22620();
             }
         }
         obj.FUN_1407cbb20("meso", FUN_1409404f0(nMeso));
         obj.FUN_1407cbb20("exp", FUN_1405c2690(L"s_number_string_exp", FUN_1409404f0(nExp)));
     }
-    MS2Ptr<ASUIComponent> pComponent = GetChild<ASUIComponent>("m_dungeonRewardComponent");
-    if (pComponent.get())
+    if (MS2Ptr<ASUIComponent> pComponent = GetChild<ASUIComponent>("m_dungeonRewardComponent"))
         pComponent->Invoke("setData", obj);
 }
 MS2_REPLACE_METHOD(0x140C0BAB0, UIDungeonControlCenter, FUN_140c0bab0, 2415, 0xF7AC412D);
 
 // @0x140c0c430
-// MS2-FUNCTIONAL: same by-value MS2Ptr return spill as FUN_140c0bab0 (GetChild / FUN_140acce30 with a CString temp)
 void UIDungeonControlCenter::FUN_140c0c430()
 {
     int nMatch = FUN_1409670d0()->FUN_14162ac00(1);
     int bEnabled = FUN_140e146a0();
-    MS2Ptr<ASUIComponent> pComponent = GetChild<ASUIComponent>("m_dungeonFindComponent");
-    if (pComponent.get()) {
+    if (MS2Ptr<ASUIComponent> pComponent = GetChild<ASUIComponent>("m_dungeonFindComponent")) {
         pComponent->Invoke("setMatch", nMatch);
         pComponent->Invoke("setEnabled", bEnabled);
-        MS2Ptr<Unk_140acd6e0> pButton = pComponent->FUN_140acce30<Unk_140acd6e0>("m_partySearch");
-        if (pButton.get())
+        if (MS2Ptr<Unk_140acd6e0> pButton = pComponent->FUN_140acce30<Unk_140acd6e0>("m_partySearch"))
             pButton->FUN_1422c1fe0(DAT_143ab2878 != 2);
     }
 }
@@ -882,7 +873,7 @@ void UIDungeonControlCenter::FUN_140c0d800(RoomVec& out)
     }
     RoomVec rooms;
     FUN_14031c2a0()->FUN_140320c30(nLevel, nJob, rooms);
-    std::map<int, bool> groups;
+    std::map<DWORD, bool> groups;
     unsigned int nAdded = 0;
     for (unsigned int i = 0; i < rooms.size(); i++) {
         MS2Ptr<Unk_DcRoom> pRoom = rooms[i];

@@ -100,8 +100,9 @@ CBuddyManager* FUN_14097a780();
 // The animation service of an entity: plays an animation on an entity id.
 class Unk_PiAnimSvc { public: };
 Unk_PiAnimSvc* FUN_141b6f910();
-void FUN_1409a1fc0(Unk_PiAnimSvc* pSvc, const egf::EntityID* pEntityId, const efd::utf8string* pAnim, float fSpeed, int bFlag);
+void FUN_1409a1fc0(Unk_PiAnimSvc* pSvc, const egf::EntityID* pEntityId, const efd::utf8string* pAnim, float fSpeed, bool bFlag);
 const egf::EntityID* FUN_1408b76f0(egf::Entity* pEntity);
+egf::Entity* FUN_1408a9280(const efd::SmartPointer<egf::Entity>* p);   // folded copy of operator Entity*
 
 // The model loader (singleton): loads a nif by path.
 class Unk_PiResourceMgr
@@ -113,6 +114,7 @@ Unk_PiResourceMgr* FUN_140a0afd0();
 CString FUN_140cc2ba0(const CString& strDir, const CString& strFile);   // dir + "/" + file
 void* FUN_1409849b0(void* pHandle);                          // handle -> node pointer
 NiNode* FUN_140a0b000(NiAVObject* pObject);                  // GetParent
+NiNode* FUN_1409475f0(efd::SmartPointer<NiNode>* p);         // folded copy of operator NiNode*
 EntityWorldManager* FUN_1409670f0();
 
 // The UI root of the client: whether the local player is hidden.
@@ -153,18 +155,17 @@ static inline Vector3 PiPoint(const NiPoint3& k) { return *reinterpret_cast<cons
 static inline efd::Point3 PiEfd(const NiPoint3& k) { return efd::Point3(k.x, k.y, k.z); }
 
 // @0x140de0900
-// MS2-FUNCTIONAL: the exe calls out-of-line smart pointer / string accessors that the source spells inline
 // The owner as an AvatarPC (class id 0x6200044), NULL when it is none.
 static AvatarPC* FUN_140de0900(GameObject* pObject)
 {
     void* pValue = 0;
-    if (pObject == 0 || !pObject->TypeCast(0x6200044, &pValue))
-        pValue = 0;
-    return (AvatarPC*)pValue;
+    if (pObject && pObject->TypeCast(0x6200044, &pValue))
+        return (AvatarPC*)pValue;
+    else
+        return 0;
 }
 
 // @0x140de0cb0
-// MS2-FUNCTIONAL: the exe calls out-of-line smart pointer / string accessors that the source spells inline
 // The asset url of an animation; a url that ends in ':' (nothing after the scheme) is not stored.
 void FUN_140de0cb0(efd::AssetID* pAsset, const efd::utf8string& strUrn)
 {
@@ -174,7 +175,8 @@ void FUN_140de0cb0(efd::AssetID* pAsset, const efd::utf8string& strUrn)
         if (strUrn[nLen - 1] == ':')
             return;
     }
-    pAsset->SetURN(strUrn);
+    // m_urn (+0x8) is private; the exe assigns it directly (SetURN inlined).
+    *reinterpret_cast<efd::utf8string*>(reinterpret_cast<char*>(pAsset) + 0x8) = strUrn;
 }
 
 // ---- StatePlayInstrumentData ----
@@ -243,11 +245,11 @@ void StatePlayInstrument::vfunc_4(StateData* pData)
         return;
     }
     MS2Ptr<CItemData> spItemData = m_spInstrumentData->m_spItem;
-    if (spItemData.IsNull())
+    if (spItemData == 0)
         return;
     int nInstrument = m_spInstrumentData->FUN_140dde200();
     m_spInstrument = CInstrumentDataTable::GetInstance()->GetInstrument(nInstrument);
-    if (m_spInstrument.IsNull())
+    if (m_spInstrument == 0)
         return;
     if (m_pOwner->vfunc_65() != 0)
         m_pOwner->FUN_14166ce70(0);
@@ -255,42 +257,28 @@ void StatePlayInstrument::vfunc_4(StateData* pData)
     m_bB4 = false;
     if (m_spInstrument->m_strAsset.GetLength() > 0)
     {
-        if (m_spInstrument->m_strAsset.Find(".kfm", 0) == -1)
-        {
-            // an effect model: attached under the owner's scene root
-            NiAVObjectPtr spModel = FUN_140a0afd0()->FUN_141551ea0(
-                FUN_140cc2ba0(CString("Effect"), m_spInstrument->m_strAsset), false, 5, 0, 0);
-            m_spEffect = static_cast<NiNode*>(FUN_14098d8d0(&DAT_143afa4d8, static_cast<NiObject*>(FUN_1409849b0(&spModel))));
-            if (m_spEffect != 0)
-            {
-                NiNode* pRoot = static_cast<NiNode*>(FUN_14098d8d0(&DAT_143afa4d8, FUN_141b6efc0(m_pOwner->FUN_14123c410())));
-                if (pRoot != 0)
-                {
-                    pRoot->AttachChild(m_spEffect, true);
-                    m_spEffect->UpdateEffects();
-                    m_spEffect->UpdateProperties();
-                    m_spEffect->Update(0.0f, true);
-                    if (m_nB0 != 0 && FUN_1409f7c90()->FUN_140ddcc90() == 0)
-                        FUN_140a0b300(m_spEffect, 1);
-                }
-            }
-        }
-        else
+        if (m_spInstrument->m_strAsset.Find(".kfm", 0) != -1)
         {
             // a kfm: the instrument is an entity of its own
             egf::EntityIDFactory::GetNextID();
             efd::AssetID kAsset;
-            CString strUrn = FUN_140298360("urn:gamebryo-animation:", FUN_141b6ed00(m_spInstrument->m_strAsset));
+            CString strName = FUN_141b6ed00(m_spInstrument->m_strAsset);
+            CString strUrn = FUN_140298360("urn:gamebryo-animation:", strName);
             FUN_140de0cb0(&kAsset, efd::utf8string((const char*)FUN_1409a2360(strUrn, 0)));
             NiPoint3 kDir = m_pOwner->vfunc_20();
             NiPoint3 kPos = m_pOwner->vfunc_18();
             m_spEntity = FUN_1409670f0()->FUN_1411ce7c0(efd::utf8string(kAsset.GetURN()), efd::utf8string("MS2Actor"),
                 PiEfd(kPos), PiEfd(kDir), 1.0f, 0, 0);
-            if (m_spEntity != 0)
+            if ((egf::Entity*)m_spEntity)
             {
                 efd::utf8string kAnim((const char*)FUN_1409a2360(m_spInstrument->m_strAnimationReady, 0));
                 FUN_140ae1240(m_spEntity, 0x3ff293c8, &kAnim);
-                if (FUN_140de0900(m_pOwner) == 0)
+                if (FUN_140de0900(m_pOwner) != 0)
+                {
+                    bool bHide = false;
+                    FUN_14098c6e0(m_spEntity, 0xa0b6b179, &bHide);
+                }
+                else
                 {
                     m_bB4 = true;
                     bool bShow = true;
@@ -301,10 +289,28 @@ void StatePlayInstrument::vfunc_4(StateData* pData)
                         FUN_14098c6e0(m_spEntity, 0xa0b6b179, &bHide);
                     }
                 }
-                else
+            }
+        }
+        else
+        {
+            // an effect model: attached under the owner's scene root
+            {
+                CString strEffect("Effect");
+                NiAVObjectPtr spModel = FUN_140a0afd0()->FUN_141551ea0(
+                    FUN_140cc2ba0(strEffect, m_spInstrument->m_strAsset), false, 5, 0, 0);
+                m_spEffect = static_cast<NiNode*>(FUN_14098d8d0(&DAT_143afa4d8, static_cast<NiObject*>(FUN_1409849b0(&spModel))));
+            }
+            if ((NiNode*)m_spEffect)
+            {
+                NiNode* pRoot = static_cast<NiNode*>(FUN_14098d8d0(&DAT_143afa4d8, FUN_141b6efc0(m_pOwner->FUN_14123c410())));
+                if (pRoot != 0)
                 {
-                    bool bHide = false;
-                    FUN_14098c6e0(m_spEntity, 0xa0b6b179, &bHide);
+                    pRoot->AttachChild(m_spEffect, true);
+                    m_spEffect->UpdateEffects();
+                    m_spEffect->UpdateProperties();
+                    m_spEffect->Update(0.0f, true);
+                    if (m_nB0 != 0 && FUN_1409f7c90()->FUN_140ddcc90() == 0)
+                        FUN_140a0b300(m_spEffect, 1);
                 }
             }
         }
@@ -340,7 +346,6 @@ void StatePlayInstrument::vfunc_4(StateData* pData)
 }
 
 // @0x140ddf110
-// MS2-FUNCTIONAL: the exe calls out-of-line smart pointer / string accessors that the source spells inline
 void StatePlayInstrument::vfunc_5(int n)
 {
     State::vfunc_5(n);
@@ -348,23 +353,23 @@ void StatePlayInstrument::vfunc_5(int n)
     if (pAvatar != 0)
         pAvatar->FUN_1409f5830();
     m_spInstrument = 0;
-    if (m_spEffect != 0)
+    if (m_spEffect)
     {
-        NiNode* pParent = FUN_140a0b000(m_spEffect);
+        NiNode* pParent = FUN_140a0b000(FUN_1409475f0(&m_spEffect));
         if (pParent != 0)
         {
             pParent->DetachChild(m_spEffect);
             m_spEffect = 0;
         }
     }
-    if (!m_spItem.IsNull())
+    if (m_spItem.get())
     {
         Unk_PiPC* pPC = static_cast<Unk_PiPC*>(FUN_1417b8370());
         if (pPC != 0)
             pPC->vfunc_128(m_spItem.get(), 0);
         m_spItem = 0;
     }
-    if (m_spEntity != 0)
+    if (m_spEntity)
     {
         if (m_bB4)
         {
@@ -385,7 +390,7 @@ void StatePlayInstrument::vfunc_5(int n)
     m_nEffect6c = 0;
     Unk_EffectQuery kQuery;
     kQuery.m_strName = FUN_1401d31f0()->m_str590;
-    kQuery.m_nObject = (FUN_1417b8560() == 0) ? 3 : 1;
+    kQuery.m_nObject = (FUN_1417b8560() != 0) ? 1 : 3;
     kQuery.SetActor(m_pOwner->FUN_14123c580());
     FUN_1403ed280()->FUN_1411a4a00(&kQuery);
     if (FUN_1417b8560() != 0)
@@ -402,16 +407,16 @@ void StatePlayInstrument::vfunc_3(double fTime)
         m_nB0 = m_pOwner->vfunc_25();
         if (!FUN_14087ddc0(m_pOwner ? m_pOwner->GetClassDesc() : 0, 0x6200044))
         {
-            if (m_spEffect != 0 && FUN_1409f7c90()->FUN_140ddcc90() == 0)
-                FUN_140a0b300(m_spEffect, m_nB0 != 0);
-            if (m_spEntity != 0 && FUN_1409f7c90()->FUN_140ddcc90() == 0)
+            if (((NiNode*)m_spEffect ? true : false) && FUN_1409f7c90()->FUN_140ddcc90() == 0)
+                FUN_140a0b300(m_spEffect, m_nB0 != 0 ? true : false);
+            if (((egf::Entity*)m_spEntity ? true : false) && FUN_1409f7c90()->FUN_140ddcc90() == 0)
             {
-                bool bShow = (m_nB0 == 0);
+                bool bShow = m_nB0 != 0 ? false : true;
                 FUN_14098c6e0(m_spEntity, 0xa0b6b179, &bShow);
             }
         }
     }
-    if (!m_bB4 && m_spEntity != 0 && FUN_14212c720(m_spEntity))
+    if (!m_bB4 && ((egf::Entity*)m_spEntity ? true : false) && FUN_14212c720(m_spEntity))
     {
         AvatarPC* pAvatar = FUN_140de0900(m_pOwner);
         if (pAvatar != 0)
@@ -432,38 +437,38 @@ void StatePlayInstrument::vfunc_3(double fTime)
     m_pOwner->vfunc_68(&kZero, fTime, 0, 0, 0);
     if (FUN_1417b8560() != 0)
     {
-        if (m_pOwner->vfunc_99(0) == 0)
+        if (m_pOwner->vfunc_99(0) != 0)
+        {
+            m_pOwner->vfunc_59(5, 0, 0, 0);
+        }
+        else
         {
             Vector3 kPos = PiPoint(m_pOwner->vfunc_18());
             if (50.0f < kPos.FUN_140965c40(m_vPos).FUN_140967ac0())
                 m_pOwner->vfunc_59(1, 0, 0, 0);
         }
-        else
-        {
-            m_pOwner->vfunc_59(5, 0, 0, 0);
-        }
     }
 }
 
 // @0x140ddf9e0
-// MS2-FUNCTIONAL: the exe calls out-of-line smart pointer / string accessors that the source spells inline
 void StatePlayInstrument::vfunc_2(int n)
 {
     int nOld = m_n10;
     State::vfunc_2(n);
-    if (nOld != n)
-    {
-        m_bA0 = false;
-        FUN_140ddfc00();
-        if (FUN_1417b8370() != 0 && !m_spInstrument.IsNull())
-        {
-            m_strLastAnim = m_spInstrument->m_strAnimationPlayIdle;   // exe: row +0x50
-            if (m_n10 == 0x7e || m_n10 == 0x7f || m_n10 == 0x81)
-                FUN_140de0780(m_strLastAnim);
-            else
-                FUN_140de04a0();
-        }
-    }
+    if (nOld == n)
+        return;
+    m_bA0 = false;
+    FUN_140ddfc00();
+    PCBase* pPC = FUN_1417b8370();
+    if (pPC == 0)
+        return;
+    if (m_spInstrument.IsNull())
+        return;
+    m_strLastAnim = m_spInstrument->m_strAnimationPlayIdle;   // exe: row +0x50
+    if (m_n10 == 0x7e || m_n10 == 0x7f || m_n10 == 0x81)
+        FUN_140de0780(m_strLastAnim);
+    else
+        FUN_140de04a0();
 }
 
 // @0x140ddfae0
@@ -484,12 +489,11 @@ int StatePlayInstrument::vfunc_22(MS2Ptr<Unk_StateArg22> p)
 }
 
 // @0x140ddfbb0
-// MS2-FUNCTIONAL: the exe calls out-of-line smart pointer / string accessors that the source spells inline
 int StatePlayInstrument::FUN_140ddfbb0()
 {
-    if (m_spInstrumentData.get() == 0)
-        return 0;
-    return m_spInstrumentData->FUN_140dde200();
+    if (m_spInstrumentData.get())
+        return m_spInstrumentData->FUN_140dde200();
+    return 0;
 }
 
 // @0x140ddfc00
@@ -500,45 +504,83 @@ void StatePlayInstrument::FUN_140ddfc00()
         return;
     FUN_1411a6060(FUN_1403ed280(), m_nEffect68);
     m_nEffect68 = 0;
-    bool bExpensive = m_spInstrument->m_bExpensive != 0;
-    if (m_n10 != 0x7d)
+    bool bExpensive = m_spInstrument->m_bExpensive;
+    if (m_n10 == 0x7d)
     {
-        Unk_PiStrings* pStr = FUN_1401d31f0();
-        const CString* pPlain = 0;
-        const CString* pGroup = 0;
-        if (m_n10 == 0x7e)
+    }
+    else if (m_n10 == 0x7e)
+    {
+        Unk_EffectQuery kQuery;
+        if (bExpensive)
+            kQuery.m_strName = FUN_1401d31f0()->m_str550;
+        else
+            kQuery.m_strName = FUN_1401d31f0()->m_str518;
+        kQuery.m_nObject = FUN_1417b8560() != 0 ? 1 : 3;
+        kQuery.SetActor(FUN_1417b8370()->FUN_14123c580());
         {
-            pPlain = bExpensive ? &pStr->m_str550 : &pStr->m_str518;
-            pGroup = bExpensive ? &pStr->m_str570 : &pStr->m_str538;
-        }
-        else if (m_n10 == 0x7f)
-        {
-            pPlain = bExpensive ? &pStr->m_str558 : &pStr->m_str520;
-            pGroup = bExpensive ? &pStr->m_str578 : &pStr->m_str540;
-        }
-        else if (m_n10 == 0x80)
-        {
-            pPlain = bExpensive ? &pStr->m_str560 : &pStr->m_str528;
-        }
-        else if (m_n10 == 0x81)
-        {
-            pPlain = bExpensive ? &pStr->m_str568 : &pStr->m_str530;
-            pGroup = bExpensive ? &pStr->m_str580 : &pStr->m_str548;
-        }
-        if (pPlain != 0)
-        {
-            Unk_EffectQuery kQuery;
-            kQuery.m_strName = *pPlain;
-            kQuery.m_nObject = (FUN_1417b8560() == 0) ? 3 : 1;
-            kQuery.SetActor(FUN_1417b8370()->FUN_14123c580());
-            if (pGroup != 0)
+            CBuddyManager::Ptr spBuddy = FUN_14097a780()->FUN_140ae4880(FUN_1417b8370()->FUN_141656a80());
+            if (spBuddy.get() != 0 && spBuddy->FUN_1401cc5b0() != 0)
             {
-                CBuddyManager::Ptr spBuddy = FUN_14097a780()->FUN_140ae4880(FUN_1417b8370()->FUN_141656a80());
-                if (spBuddy.get() != 0 && spBuddy->FUN_1401cc5b0() != 0)
-                    kQuery.m_strName = *pGroup;
+                if (bExpensive)
+                    kQuery.m_strName = FUN_1401d31f0()->m_str570;
+                else
+                    kQuery.m_strName = FUN_1401d31f0()->m_str538;
             }
-            m_nEffect68 = FUN_1403ed280()->FUN_1411a49c0(&kQuery);
         }
+        m_nEffect68 = FUN_1403ed280()->FUN_1411a49c0(&kQuery);
+    }
+    else if (m_n10 == 0x7f)
+    {
+        Unk_EffectQuery kQuery;
+        if (bExpensive)
+            kQuery.m_strName = FUN_1401d31f0()->m_str558;
+        else
+            kQuery.m_strName = FUN_1401d31f0()->m_str520;
+        kQuery.m_nObject = FUN_1417b8560() != 0 ? 1 : 3;
+        kQuery.SetActor(FUN_1417b8370()->FUN_14123c580());
+        {
+            CBuddyManager::Ptr spBuddy = FUN_14097a780()->FUN_140ae4880(FUN_1417b8370()->FUN_141656a80());
+            if (spBuddy.get() != 0 && spBuddy->FUN_1401cc5b0() != 0)
+            {
+                if (bExpensive)
+                    kQuery.m_strName = FUN_1401d31f0()->m_str578;
+                else
+                    kQuery.m_strName = FUN_1401d31f0()->m_str540;
+            }
+        }
+        m_nEffect68 = FUN_1403ed280()->FUN_1411a49c0(&kQuery);
+    }
+    else if (m_n10 == 0x80)
+    {
+        Unk_EffectQuery kQuery;
+        if (bExpensive)
+            kQuery.m_strName = FUN_1401d31f0()->m_str560;
+        else
+            kQuery.m_strName = FUN_1401d31f0()->m_str528;
+        kQuery.m_nObject = FUN_1417b8560() != 0 ? 1 : 3;
+        kQuery.SetActor(FUN_1417b8370()->FUN_14123c580());
+        m_nEffect68 = FUN_1403ed280()->FUN_1411a49c0(&kQuery);
+    }
+    else if (m_n10 == 0x81)
+    {
+        Unk_EffectQuery kQuery;
+        if (bExpensive)
+            kQuery.m_strName = FUN_1401d31f0()->m_str568;
+        else
+            kQuery.m_strName = FUN_1401d31f0()->m_str530;
+        kQuery.m_nObject = FUN_1417b8560() != 0 ? 1 : 3;
+        kQuery.SetActor(FUN_1417b8370()->FUN_14123c580());
+        {
+            CBuddyManager::Ptr spBuddy = FUN_14097a780()->FUN_140ae4880(FUN_1417b8370()->FUN_141656a80());
+            if (spBuddy.get() != 0 && spBuddy->FUN_1401cc5b0() != 0)
+            {
+                if (bExpensive)
+                    kQuery.m_strName = FUN_1401d31f0()->m_str580;
+                else
+                    kQuery.m_strName = FUN_1401d31f0()->m_str548;
+            }
+        }
+        m_nEffect68 = FUN_1403ed280()->FUN_1411a49c0(&kQuery);
     }
     FUN_1411a6060(FUN_1403ed280(), m_nEffect6c);
     m_nEffect6c = 0;
@@ -557,22 +599,24 @@ void StatePlayInstrument::FUN_140ddfc00()
     {
         Unk_EffectQuery kQuery;
         kQuery.m_strName = strEffect;
-        kQuery.m_nObject = (FUN_1417b8560() == 0) ? 3 : 1;
+        kQuery.m_nObject = FUN_1417b8560() != 0 ? 1 : 3;
         kQuery.SetActor(FUN_1417b8370()->FUN_14123c580());
         m_nEffect6c = FUN_1403ed280()->FUN_1411a49c0(&kQuery);
     }
 }
 
 // @0x140de0410
-// MS2-FUNCTIONAL: the exe calls out-of-line smart pointer / string accessors that the source spells inline
 void StatePlayInstrument::FUN_140de0410(int nLevel)
 {
-    if (!m_spInstrument.IsNull() && FUN_1417b8370() != 0)
-    {
-        m_bA0 = true;
-        if (m_n10 == 0x7e || m_n10 == 0x7f || m_n10 == 0x81)
-            FUN_140de05a0(nLevel);
-    }
+    if (m_spInstrument.IsNull())
+        return;
+    PCBase* pPC = FUN_1417b8370();
+    if (pPC == 0)
+        return;
+    m_bA0 = true;
+    if (!(m_n10 == 0x7e || m_n10 == 0x7f || m_n10 == 0x81))
+        return;
+    FUN_140de05a0(nLevel);
 }
 
 // @0x140de04a0
@@ -581,7 +625,8 @@ void StatePlayInstrument::FUN_140de04a0()
 {
     if (m_spInstrument.IsNull())
         return;
-    if (FUN_1417b8370() == 0)
+    PCBase* pPC = FUN_1417b8370();
+    if (pPC == 0)
         return;
     if (m_n10 == 0x7d || m_n10 == 0x80)
     {
@@ -597,7 +642,6 @@ void StatePlayInstrument::FUN_140de04a0()
 }
 
 // @0x140de05a0
-// MS2-FUNCTIONAL: the exe calls out-of-line smart pointer / string accessors that the source spells inline
 void StatePlayInstrument::FUN_140de05a0(int nLevel)
 {
     if (m_spInstrument.IsNull())
@@ -612,21 +656,20 @@ void StatePlayInstrument::FUN_140de05a0(int nLevel)
         FUN_140de0780(m_spInstrument->m_strAnimationReady);
         return;
     }
-    if (nLevel == 1)
+    else if (nLevel == 1)
         strAnim = m_spInstrument->m_strAnimationPlayIdle;
     else if (nLevel == 2)
         strAnim = m_spInstrument->m_strAnimationPlayLevel1;
-    else if (nLevel == 3 && 1 < nPeers)
+    else if (nLevel == 3 && nPeers >= 2)
         strAnim = m_spInstrument->m_strAnimationPlayLevel2;
-    else if (nLevel == 4 && 2 < nPeers)
+    else if (nLevel == 4 && nPeers >= 3)
         strAnim = m_spInstrument->m_strAnimationPlayLevel3;
-    else if (nLevel == 5 && 3 < nPeers)
+    else if (nLevel == 5 && nPeers >= 4)
         strAnim = m_spInstrument->m_strAnimationPlayLevel4;
     FUN_140de0780(strAnim);
 }
 
 // @0x140de0780
-// MS2-FUNCTIONAL: the exe calls out-of-line smart pointer / string accessors that the source spells inline
 void StatePlayInstrument::FUN_140de0780(const CString& strAnim)
 {
     PCBase* pPC = FUN_1417b8370();
@@ -635,8 +678,8 @@ void StatePlayInstrument::FUN_140de0780(const CString& strAnim)
     efd::utf8string kAnim((const char*)FUN_1409a2360(strAnim, 0));
     m_pOwner->FUN_14166dd20(kAnim, FUN_14165eb80(pPC), false, false);
     m_strLastAnim = strAnim;
-    if (m_spEntity != 0)
-        FUN_1409a1fc0(FUN_141b6f910(), FUN_1408b76f0(m_spEntity), &kAnim, FUN_14165eb80(pPC), 0);
+    if (m_spEntity)
+        FUN_1409a1fc0(FUN_141b6f910(), FUN_1408b76f0(FUN_1408a9280(&m_spEntity)), &kAnim, FUN_14165eb80(pPC), false);
 }
 
 // @0x140de0c00

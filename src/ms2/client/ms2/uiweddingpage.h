@@ -42,7 +42,7 @@ class UIWeddingPageMessage : public UIWeddingPage
 {
 public:
     UIWeddingPageMessage(UIWeddingDialog* pDialog);             // 0x140fe7690
-    virtual ~UIWeddingPageMessage();
+    // ~UIWeddingPageMessage is implicit (0x140fe9790): the exe dtor stores no vftable.
     virtual bool vfunc_1();
     virtual bool vfunc_3(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);
     virtual CString vfunc_6();
@@ -56,7 +56,7 @@ class UIWeddingPageSkill : public UIWeddingPage
 {
 public:
     UIWeddingPageSkill(UIWeddingDialog* pDialog);               // 0x140fe7d30
-    virtual ~UIWeddingPageSkill();
+    // ~UIWeddingPageSkill is implicit (0x140fe97f0): the exe dtor stores no vftable.
     virtual bool vfunc_1();
     virtual bool vfunc_3(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);
     virtual void vfunc_5(Scaleform::GFx::Value* pRetVal, ASData* pArgs);
@@ -71,7 +71,7 @@ class UIWeddingPageMission : public UIWeddingPage, public UIQuestEventListener
 {
 public:
     UIWeddingPageMission(UIWeddingDialog* pDialog);             // 0x140fe8950
-    virtual ~UIWeddingPageMission();
+    // ~UIWeddingPageMission is implicit (0x140fe97b0): the exe dtor stores no vftable.
     virtual bool vfunc_1();
     virtual void vfunc_2();
     virtual bool vfunc_3(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);

@@ -33,7 +33,7 @@ int FUN_140291d90(float);                         // float -> int
 struct Unk_MeshVec3 { float x, y, z; Unk_MeshVec3(); };   // ctor 0x140a003a0
 struct Unk_MeshAux { int i0, i1, i2, i3, i4, i5, i6; };
 void FUN_140adbea0(Unk_MeshAux*, float);   // ctor of the aux part
-struct Unk_MeshXform { int i0, i1, i2, i3, i4, i5, i6, i7, i8, j0, j1, j2, j3, j4, j5, j6; ~Unk_MeshXform(); };   // dtor 0x140adbb80
+struct Unk_MeshXform { int i0, i1, i2, i3, i4, i5, i6, i7, i8, j0, j1, j2, j3, j4, j5, j6; ~Unk_MeshXform(); };   // aux part at j0   // dtor 0x140adbb80
 void FUN_141639400(Unk_MeshXform*, float);
 void FUN_140adcef0(Unk_MeshXform*, const void* src, Unk_MeshVec3* out);
 
@@ -70,7 +70,7 @@ struct Unk_MeshSource {
     virtual void v13();
     virtual void v14();
     virtual void v15();
-    virtual void GetXform(Unk_MeshXform*);   // slot 16
+    virtual Unk_MeshXform GetXform();   // slot 16
     virtual void v17();
     virtual void v18();
     virtual void v19();
@@ -103,7 +103,6 @@ struct Unk_Tri32 { unsigned v[3]; };
 class cPhysXTriangleMeshWrapper : public iFaceVertexMesh {
 public:
     cPhysXTriangleMeshWrapper(Unk_MeshSource* src, int* axisMap, float scale);
-    virtual ~cPhysXTriangleMeshWrapper();
     virtual unsigned __int64 vfunc_1();
     virtual unsigned __int64 vfunc_2();
     virtual int vfunc_3(int tri, int k);
@@ -121,10 +120,9 @@ MS2_CHECK_SIZE(cPhysXTriangleMeshWrapper, 0x40);
 // MS2-FUNCTIONAL: stack layout differs (the exe keeps the 0x24-byte transform and its 0x1c-byte aux at 0xe8/0x10c; MSVC aligns our copies differently, +0x10 frame)
 // @0x14164c5a0
 cPhysXTriangleMeshWrapper::cPhysXTriangleMeshWrapper(Unk_MeshSource* src, int* axisMap, float scale) {
-    Unk_MeshXform xf;
-    src->GetXform(&xf);
+    Unk_MeshXform xf = src->GetXform();
     FUN_141639400(&xf, scale);
-    FUN_140adbea0((Unk_MeshAux*)((char*)&xf + 0x24), scale);
+    FUN_140adbea0(reinterpret_cast<Unk_MeshAux*>(&xf.j0), scale);
     Unk_MeshData* mesh = src->GetMesh();
     Unk_MeshDesc d;
     mesh->Fill(&d);
@@ -147,9 +145,9 @@ cPhysXTriangleMeshWrapper::cPhysXTriangleMeshWrapper(Unk_MeshSource* src, int* a
         FUN_14164c0a0(axisMap, FUN_1416393a0(&verts, (__int64)(i * 3)));
     FUN_14164c450(&tris, (unsigned)(d.nTris * 3));
     p = d.tris;
-    if ((d.flags & 2) == 0) {
+    if ((d.flags & 2) != 0) {
         for (i = 0; i != d.nTris; ++i) {
-            const Unk_Tri32* t = (const Unk_Tri32*)p;
+            const Unk_Tri16* t = (const Unk_Tri16*)p;
             int a = t->v[0];
             FUN_14164c370(&tris, &a);
             int b = t->v[2];
@@ -160,7 +158,7 @@ cPhysXTriangleMeshWrapper::cPhysXTriangleMeshWrapper(Unk_MeshSource* src, int* a
         }
     } else {
         for (i = 0; i != d.nTris; ++i) {
-            const Unk_Tri16* t = (const Unk_Tri16*)p;
+            const Unk_Tri32* t = (const Unk_Tri32*)p;
             int a = t->v[0];
             FUN_14164c370(&tris, &a);
             int b = t->v[2];
@@ -192,6 +190,4 @@ int cPhysXTriangleMeshWrapper::vfunc_7(int, int what) {
 }
 // @0x14164cbd0
 void cPhysXTriangleMeshWrapper::SetFlag(bool f) { flag = f; }
-// @0x14164cbf0
-cPhysXTriangleMeshWrapper::~cPhysXTriangleMeshWrapper() {
-}
+// @0x14164cbf0 implicit ~cPhysXTriangleMeshWrapper

@@ -13,6 +13,7 @@
 #include "ms2/commonfiles/commonstringtable.h"
 #include "ms2/commonfiles/packet.h"
 #include "ms2/placeholder/asdisplayobject.h"
+#include "ms2/placeholder/astextinput.h"
 #include "ms2/placeholder/cinpacket.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/placeholder/uiswfentitymanager.h"
@@ -21,18 +22,6 @@
 #include <string.h>
 
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
-
-// The message input ("m_textMessage"); its handle is a 16-byte MS2Ptr whose get / -> / release live in the unit that owns
-// the shared instance.
-class Unk_NcInput : public ASDisplayObject
-{
-public:
-    CStringW FUN_1422e0b00();                                       // the text
-};
-struct Unk_NcInputRef { void* m_0; void* m_8; };                    // the layout of an MS2Ptr
-int FUN_140bc0500(Unk_NcInputRef* p);                               // not null
-Unk_NcInput* FUN_140bc0550(Unk_NcInputRef* p);                      // operator->
-void FUN_140bbfdd0(Unk_NcInputRef* p);                              // release
 
 // The distance slider ("m_sliderDistance"; uiupperhuddialog.cpp's Unk_HudSlider - this unit owns its GetChild
 // instance); the value is a float.
@@ -108,19 +97,14 @@ int UIUGCCubeNoticeDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
 MS2_REPLACE_METHOD(0x140FAFB60, UIUGCCubeNoticeDialog, vfunc_28, 105, 0xA27700CA);
 
 // @0x140fafbd0
-// MS2-FUNCTIONAL: the exe keeps extra pointer temps around each GetChild result (stack frame +0x10), as in uihomeinfoeditdialog.cpp
 void UIUGCCubeNoticeDialog::OnApply()
 {
-    Unk_NcInputRef spText = FUN_140e35bd0(CString("m_textMessage"));
-    if (FUN_140bc0500(&spText) != 0)
-        m_strMessage = FUN_140bc0550(&spText)->FUN_1422e0b00();
-    FUN_140bbfdd0(&spText);
-    {
-        MS2Ptr<Unk_HudSlider> spSlider(GetChild<Unk_HudSlider>(CString("m_sliderDistance")));
-        if (static_cast<Unk_HudSlider*>(spSlider) != 0)
-            m_nDistance = (int)spSlider.operator->()->FUN_1422ce630();
-    }
-    CBanTextChecker* pChecker = FUN_14025e7d0()->GetChecker().get();
+    if (MS2Ptr<ASTextInput> spText = GetChild<ASTextInput>("m_textMessage"))
+        m_strMessage = spText->FUN_1422e0b00();
+    if (MS2Ptr<Unk_HudSlider> spSlider = GetChild<Unk_HudSlider>("m_sliderDistance"))
+        m_nDistance = (int)spSlider->FUN_1422ce630();
+    CBanTextChecker* pChecker;
+    CBanTextChecker* pDead = pChecker = FUN_14025e7d0()->GetChecker();
     if (pChecker != 0)
     {
         CStringW strMessage;

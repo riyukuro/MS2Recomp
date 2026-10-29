@@ -166,10 +166,10 @@ extern Vector3 DAT_143b01a60;                           // zero point
 // A scene-graph walk over a model: the exe's iterator helpers (construct 0x14098cb80, next 0x14098e0d0, destroy 0x14098cf00).
 struct Unk_CmWalker
 {
-    void* m_p0; void* m_p1; void* m_p2; void* m_p3; void* m_p4; void* m_p5; void* m_p6; void* m_p7;
+    void* m_p0; void* m_p1; void* m_p2; void* m_p3; void* m_p4; void* m_p5; void* m_p6;    // 0x38 (the exe frames leave 0x38 bytes for it)
     Unk_CmWalker(NiObject* pRoot);                    // 0x14098cb80
     ~Unk_CmWalker();                                  // 0x14098cf00
-    NiAVObject* FUN_14098e0d0(int bDescend);
+    NiAVObject* FUN_14098e0d0(bool bDescend);
 };
 
 // @0x140a15390
@@ -187,8 +187,7 @@ inline Vector3 CameraMgr::FUN_140a17e10()
 {
     if (m_spMode.get() != 0)
         return m_spMode->FUN_1409f2540();
-    else
-        return DAT_143b01a60;
+    return DAT_143b01a60;
 }
 
 // @0x140a18070
@@ -206,25 +205,23 @@ BGTransparencyMgr::BGTransparencyMgr()
 BGTransparencyMgr::~BGTransparencyMgr() {}
 
 // @0x140a0cee0
-// MS2-FUNCTIONAL: first-pass source; instruction order / temporaries differ from the exe, behaviour follows the decompile
-int BGTransparencyMgr::Init()
+bool BGTransparencyMgr::Init()
 {
-    FUN_1403ed2d0()->FUN_141bbae40(this ? static_cast<IWorldServiceCallback*>(this) : 0);
+    FUN_1403ed2d0()->FUN_141bbae40((IWorldServiceCallback*)this);
     m_map30.clear();
     m_map40.clear();
     m_timer.FUN_140868750(300);
     m_spService = FUN_1413f98f0();
     m_spSceneGraph = FUN_1413f98b0();
-    return 1;
+    return true;
 }
 
 // @0x140a0cf90
-// MS2-FUNCTIONAL: first-pass source; instruction order / temporaries differ from the exe, behaviour follows the decompile
 void BGTransparencyMgr::Shutdown()
 {
     m_spSceneGraph = 0;
     m_spService = 0;
-    FUN_1403ed2d0()->FUN_141bbae80(this ? static_cast<IWorldServiceCallback*>(this) : 0);
+    FUN_1403ed2d0()->FUN_141bbae80((IWorldServiceCallback*)this);
 }
 
 // @0x140a0d000
@@ -251,138 +248,124 @@ void BGTransparencyMgr::SetUserFlags(int nFlags)
 MS2_REPLACE_METHOD(0x140A0D0C0, BGTransparencyMgr, SetUserFlags, 92, 0x9BBA1288);
 
 // @0x140a0d130
-// MS2-FUNCTIONAL: first-pass source; instruction order / temporaries differ from the exe, behaviour follows the decompile
 void BGTransparencyMgr::AddObject(GameObject* pObject)
 {
-    m_set20.insert(efd::SmartPointer<GameObject>(pObject));
+    m_set20.insert(pObject);
 }
 
 // @0x140a0d190
-// MS2-FUNCTIONAL: first-pass source; instruction order / temporaries differ from the exe, behaviour follows the decompile
 void BGTransparencyMgr::RemoveObject(GameObject* pObject)
 {
-    std::set<efd::SmartPointer<GameObject> >::iterator it = m_set20.find(efd::SmartPointer<GameObject>(pObject));
+    std::set<efd::SmartPointer<GameObject> >::iterator it = m_set20.find(pObject);
     if (it != m_set20.end())
         m_set20.erase(it);
 }
 
 // @0x140a0d230
-// MS2-FUNCTIONAL: first-pass source; instruction order / temporaries differ from the exe, behaviour follows the decompile
 void BGTransparencyMgr::vfunc_3(int)
 {
     m_set20.clear();
     for (Unk_BGTElementMap::iterator it = m_map30.begin(); it != m_map30.end(); ++it)
     {
         ReleaseMaterials(it->first, it->second);
-        TransparencyElement* pElement = it->second;
-        delete pElement;
+        delete it->second;
     }
     m_map30.clear();
     for (Unk_BGTElementMap::iterator it = m_map40.begin(); it != m_map40.end(); ++it)
     {
         ReleaseMaterials(it->first, it->second);
-        TransparencyElement* pElement = it->second;
-        delete pElement;
+        delete it->second;
     }
     m_map40.clear();
 }
 
 // @0x140a0d450
-// MS2-FUNCTIONAL: first-pass source; instruction order / temporaries differ from the exe, behaviour follows the decompile
 void BGTransparencyMgr::EraseEntity(egf::Entity* pEntity)
 {
-    Unk_BGTElementMap::iterator it = m_map30.find(Unk_BGTEntityPtr(pEntity));
+    Unk_BGTElementMap::iterator it = m_map30.find(pEntity);
     if (it != m_map30.end())
     {
         DeleteMaterials(it->second);
-        TransparencyElement* pElement = it->second;
-        delete pElement;
+        delete it->second;
         m_map30.erase(it);
     }
-    it = m_map40.find(Unk_BGTEntityPtr(pEntity));
+    it = m_map40.find(pEntity);
     if (it != m_map40.end())
     {
         DeleteMaterials(it->second);
-        TransparencyElement* pElement = it->second;
-        delete pElement;
+        delete it->second;
         m_map40.erase(it);
     }
 }
 
 // @0x140a0d670
-// MS2-FUNCTIONAL: first-pass source; instruction order / temporaries differ from the exe, behaviour follows the decompile
 bool BGTransparencyMgr::IsTarget(egf::Entity* pEntity)
 {
-    if (pEntity != 0)
+    egf::Entity* pTarget = pEntity;
+    if (pTarget == 0)
+        return false;
+    for (std::set<efd::SmartPointer<GameObject> >::iterator it = m_set20.begin(); it != m_set20.end(); ++it)
     {
-        for (std::set<efd::SmartPointer<GameObject> >::iterator it = m_set20.begin(); it != m_set20.end(); ++it)
-        {
-            GameObject* pObject = *it;
-            if (pObject->FUN_14123c410() == pEntity)
-                return false;
-        }
-        if (FUN_1408a9bd0(pEntity) != 0)
-        {
-            egf::FlatModel* pModel = FUN_1408a9bd0(pEntity);
-            if (pModel->ContainsModel(0x2ea80520))
-            {
-                bool bValue = false;
-                FUN_1408a20a0(pEntity, 0x9004569a, &bValue);
-                if (!bValue && m_nWorldFlags != 0)
-                    FUN_1408a20a0(pEntity, 0x619a775d, &bValue);
-                if (bValue)
-                    return true;
-                return false;
-            }
-        }
+        if ((*it)->FUN_14123c410() == pTarget)
+            return false;
     }
-    return false;
+    if (FUN_1408a9bd0(pTarget) != 0 && FUN_1408a9bd0(pTarget)->ContainsModel(0x2ea80520))
+    {
+        bool bValue = false;
+        FUN_1408a20a0(pTarget, 0x9004569a, &bValue);
+        if (!bValue && m_nWorldFlags != 0)
+            FUN_1408a20a0(pTarget, 0x619a775d, &bValue);
+        if (!bValue)
+            return false;
+    }
+    else
+        return false;
+    return true;
 }
 
 // @0x140a0d7a0
-// MS2-FUNCTIONAL: first-pass source; instruction order / temporaries differ from the exe, behaviour follows the decompile
 bool BGTransparencyMgr::RayHits(efd::Point3 ptOrigin, efd::Point3 ptDir, NiAVObject* pNode)
 {
-    if (m_spService != 0)
+    if (m_spService)
     {
         efd::SmartPointer<ecr::PickService::PickRecord> spRecord(
             m_spService->PerformPick(ptOrigin, ptDir, pNode, false, true, false));
-        if (spRecord != 0)
+        if (spRecord)
             return true;
-        return false;
     }
     return false;
 }
 
 // @0x140a0d880
-// MS2-FUNCTIONAL: first-pass source; instruction order / temporaries differ from the exe, behaviour follows the decompile
 bool BGTransparencyMgr::PickEntities(efd::Point3 ptOrigin, efd::Point3 ptDir, Unk_BGTEntityList& kOut,
     egf::Entity* pSkip)
 {
-    if (m_spService != 0)
+    if (m_spService ? true : false)
     {
-        if (m_spSceneGraph != 0)
+        if (m_spSceneGraph ? true : false)
         {
             efd::SmartPointer<ecr::PickService::PickRecord> spRecord(
                 m_spService->PerformPick(ptOrigin, ptDir, false, true, false));
-            if (spRecord != 0)
+            if (spRecord)
             {
                 egf::Entity* pEntity = 0;
                 ATL::CRBMap<egf::Entity*, NiAVObject*> kSeen(10);
-                const NiPick::Results* pResults = spRecord->GetPickResult();
-                unsigned nCount = pResults->GetSize();
+                unsigned nCount = spRecord->GetPickResult()->GetSize();
                 for (unsigned i = 0; i < nCount; i++)
                 {
-                    NiAVObject* pNode = pResults->GetAt(i)->GetAVObject();
+                    NiPick::Record* pPick = spRecord->GetPickResult()->GetAt(i);
+                    NiAVObject* pNode = pPick->GetAVObject();
                     pEntity = m_spSceneGraph->GetEntityFromSceneGraphNode(pNode);
+                    if (pEntity == pSkip)
+                        continue;
                     NiAVObject* pFound = 0;
-                    if (pEntity != pSkip && pEntity != 0 && !kSeen.Lookup(pEntity, pFound) && IsTarget(pEntity))
+                    if (pEntity != 0 && !kSeen.Lookup(pEntity, pFound) && IsTarget(pEntity))
                     {
                         kSeen.SetAt(pEntity, pNode);
                         kOut.push_back(pEntity);
                     }
                 }
-                if (kOut.size() != 0)
+                if (kOut.size() > 0)
                     return true;
             }
         }
@@ -391,62 +374,61 @@ bool BGTransparencyMgr::PickEntities(efd::Point3 ptOrigin, efd::Point3 ptDir, Un
 }
 
 // @0x140a0db00
-// MS2-FUNCTIONAL: first-pass source; frame layout and temporary order not byte-compared
 void BGTransparencyMgr::vfunc_1()
 {
-    CameraMgr* pCamera = FUN_1409478c0();
-    if (pCamera->FUN_140a18070() != 0 && m_nFlags != 0 && !m_set20.empty())
+    if (FUN_1409478c0()->FUN_140a18070() == 0 || m_nFlags == 0)
+        return;
+    if (!m_set20.empty())
     {
-        std::set<Unk_BGTRegion> kVisible;
-        Unk_BGTEntitySet kHit;
-        Vector3 pc = pCamera->FUN_140a17e10();
-    efd::Point3 ptCamera(pc.x, pc.y, pc.z);
-        FUN_1403ed2d0()->FUN_141bc7920(reinterpret_cast<std::set<void*>&>(kVisible));
-        for (std::set<efd::SmartPointer<GameObject> >::iterator it = m_set20.begin(); it != m_set20.end(); ++it)
+    std::set<Unk_BGTRegion> kVisible;
+    Unk_BGTEntitySet kHit;
+    Vector3 kCamera = FUN_1409478c0()->FUN_140a17e10();
+    FUN_1403ed2d0()->FUN_141bc7920(reinterpret_cast<std::set<void*>&>(kVisible));
+    for (std::set<efd::SmartPointer<GameObject> >::iterator it = m_set20.begin(); it != m_set20.end(); ++it)
+    {
+        if ((*it)->FUN_14123c660() == 0 || (*it)->GetClassID() == 0x6200004)
         {
-            if ((*it)->FUN_14123c660() == 0 || (*it)->GetClassID() == 0x6200004)
+            NiPoint3 ptPos = (*it)->vfunc_18();
+            efd::Point3 ptDirA = (const efd::Point3&)kCamera - (ptPos + efd::Point3::UNIT_Z * (*it)->FUN_140a17da0());
+            ptDirA.Unitize();
+            efd::Point3 ptDirB = (const efd::Point3&)kCamera - (ptPos + efd::Point3::UNIT_Z * (*it)->FUN_140a17dc0());
+            ptDirB.Unitize();
+            egf::Entity* pEntityA = 0;
+            egf::Entity* pEntityB = 0;
+            for (std::set<Unk_BGTRegion>::iterator itRegion = kVisible.begin(); itRegion != kVisible.end(); ++itRegion)
             {
-                efd::Point3 ptPos = (*it)->vfunc_18();
-                efd::Point3 ptDirA = ptCamera - (ptPos + efd::Point3::UNIT_Z * (*it)->FUN_140a17da0());
-                ptDirA.Unitize();
-                efd::Point3 ptDirB = ptCamera - (ptPos + efd::Point3::UNIT_Z * (*it)->FUN_140a17dc0());
-                ptDirB.Unitize();
-                egf::Entity* pEntityA = 0;
-                egf::Entity* pEntityB = 0;
-                for (std::set<Unk_BGTRegion>::iterator itRegion = kVisible.begin(); itRegion != kVisible.end();
-                    ++itRegion)
-                {
                 if (RayHits(ptPos + efd::Point3::UNIT_Z * (*it)->FUN_140a17da0(), ptDirA, itRegion->m_pNode))
                 {
                     pEntityA = FUN_1409670f0()->FUN_1411cf440(itRegion->m_id);
                     if (pEntityA != 0)
                     {
                         bool bAdded = false;
-                        int nKind = itRegion->m_nKind;
-                        if (nKind == 0)
+                        switch (itRegion->m_nKind)
                         {
+                        case 0:
                             kHit.insert(pEntityA);
                             bAdded = true;
-                        }
-                        else if (nKind == 1 && m_nWorldFlags != 0)
-                        {
-                            kHit.insert(pEntityA);
-                            bAdded = true;
+                            break;
+                        case 1:
+                            if (m_nWorldFlags != 0)
+                            {
+                                kHit.insert(pEntityA);
+                                bAdded = true;
+                            }
+                            break;
                         }
                         if (bAdded && itRegion->m_nGroup > 0)
                         {
                             std::set<egf::EntityID> kGroup;
                             FUN_1403ed2d0()->FUN_141bc7aa0(itRegion->m_nGroup,
                                 reinterpret_cast<std::set<unsigned __int64>&>(kGroup));
-                            std::set<egf::EntityID>::iterator itEnd = kGroup.end();
-                            std::set<egf::EntityID>::iterator itId = kGroup.begin();
-                            while (itId != itEnd)
+                            std::set<egf::EntityID>& rGroup = kGroup;
+                            for (std::set<egf::EntityID>::iterator itEnd = rGroup.end(), itId = rGroup.begin(); itId != itEnd; ++itId)
                             {
                                 egf::EntityID id(*itId);
                                 pEntityA = FUN_1409670f0()->FUN_1411cf440(id);
                                 if (pEntityA != 0)
                                     kHit.insert(pEntityA);
-                                ++itId;
                             }
                         }
                     }
@@ -457,147 +439,143 @@ void BGTransparencyMgr::vfunc_1()
                     if (pEntityB != 0 && pEntityA != pEntityB)
                     {
                         bool bAdded = false;
-                        int nKind = itRegion->m_nKind;
-                        if (nKind == 0)
+                        switch (itRegion->m_nKind)
                         {
+                        case 0:
                             kHit.insert(pEntityB);
                             bAdded = true;
-                        }
-                        else if (nKind == 1 && m_nWorldFlags != 0)
-                        {
-                            kHit.insert(pEntityB);
-                            bAdded = true;
+                            break;
+                        case 1:
+                            if (m_nWorldFlags != 0)
+                            {
+                                kHit.insert(pEntityB);
+                                bAdded = true;
+                            }
+                            break;
                         }
                         if (bAdded && itRegion->m_nGroup > 0)
                         {
                             std::set<egf::EntityID> kGroup;
                             FUN_1403ed2d0()->FUN_141bc7aa0(itRegion->m_nGroup,
                                 reinterpret_cast<std::set<unsigned __int64>&>(kGroup));
-                            std::set<egf::EntityID>::iterator itEnd = kGroup.end();
-                            std::set<egf::EntityID>::iterator itId = kGroup.begin();
-                            while (itId != itEnd)
+                            std::set<egf::EntityID>& rGroup = kGroup;
+                            for (std::set<egf::EntityID>::iterator itEnd = rGroup.end(), itId = rGroup.begin(); itId != itEnd; ++itId)
                             {
                                 egf::EntityID id(*itId);
                                 pEntityB = FUN_1409670f0()->FUN_1411cf440(id);
                                 if (pEntityB != 0)
                                     kHit.insert(pEntityB);
-                                ++itId;
                             }
                         }
                     }
                 }
-                }
             }
         }
-        Apply(kHit);
+    }
+    Apply(kHit);
     }
 }
 
 // @0x140a0e330
-// MS2-FUNCTIONAL: first-pass source; frame layout and temporary order not byte-compared
+// MS2-FUNCTIONAL: instructions match; our frame is 0x10 larger (one local in a different slot)
 void BGTransparencyMgr::Apply(Unk_BGTEntitySet& kHit)
 {
-    if (kHit.empty())
+    if (!kHit.empty())
     {
-        MoveAllToFadeIn();
-        return;
-    }
-    MoveMissingToFadeIn(kHit);
-    for (Unk_BGTEntitySet::iterator it = kHit.begin(); it != kHit.end(); ++it)
-    {
-        egf::Entity* pEntity = *it;
-        if (pEntity == 0)
-            continue;
-        if (m_map30.find(Unk_BGTEntityPtr(pEntity)) != m_map30.end())
-            continue;
-        if (m_map40.find(Unk_BGTEntityPtr(pEntity)) != m_map40.end())
-            continue;
-        bool bFlag = false;
-        int nResult = FUN_1408a20a0(pEntity, 0x9004569a, &bFlag);
-        if (nResult == 0 && !bFlag)
-            continue;
-        TransparencyElement* pElement = new (efd::MemHint(efd::MemHint::NONE)) TransparencyElement;
-        m_map30[Unk_BGTEntityPtr(pEntity)] = pElement;
-        float fAlpha = 0.3f;
-        FUN_140961880(pEntity, 0x188f01c1, &fAlpha);
-        pElement->m_fAlpha = fAlpha;
-        NiNode* pRoot = FUN_1413fa030(pEntity);
-        if (pRoot == 0)
-            continue;
-        FUN_14098f4d0(pRoot, false);
-        NiBound kBound = *FUN_140994490(pRoot);
-        Unk_CmWalker kWalker(pRoot);
-        while (NiAVObject* pObject = kWalker.FUN_14098e0d0(1))
+        MoveMissingToFadeIn(kHit);
+        for (Unk_BGTEntitySet::iterator it = kHit.begin(); it != kHit.end(); ++it)
         {
-            NiRenderObject* pMesh = NiDynamicCast(NiRenderObject, pObject);
-            if (pMesh == 0)
-                continue;
-            TransparencyStandardMaterial* pMaterial = 0;
-            const NiMaterial* pActive = pMesh->GetActiveMaterial();
-            if (pActive != 0 && NiMaterial::DynamicCast((const NiRTTI*)&DAT_143d69198, pActive) != 0)
-                pMaterial = new (efd::MemHint(efd::MemHint::NONE)) TransparencyStandardMaterial(pMesh);
-            if (pMaterial == 0)
-                continue;
-            efd::SmartPointer<HardwareInstancingService> spInstancing(FUN_14098c5b0(&DAT_143b059e8));
-            if (spInstancing != 0)
+            egf::Entity* pEntity = *it;
+            if (pEntity != 0)
             {
-                if (spInstancing->FUN_1413d6f40(pEntity) != 0)
+                Unk_BGTElementMap::const_iterator itElement = m_map30.find(pEntity);
+                if (itElement != m_map30.end())
+                    continue;
+                itElement = m_map40.find(pEntity);
+                if (itElement != m_map40.end())
+                    continue;
+                bool bFlag = false;
+                if (FUN_1408a20a0(pEntity, 0x9004569a, &bFlag) == 0 && !bFlag)
+                    continue;
+                TransparencyElement* pElement = new (efd::MemHint(efd::MemHint::NONE)) TransparencyElement;
+                m_map30[pEntity] = pElement;
+                float fAlpha = 0.3f;
+                FUN_140961880(pEntity, 0x188f01c1, &fAlpha);
+                pElement->m_fAlpha = fAlpha;
+                NiNode* pRoot = FUN_1413fa030(pEntity);
+                if (pRoot != 0)
                 {
-                    bool bTrue = true;
-                    FUN_14098c6e0(pEntity, 0xa0b6b179, &bTrue);
+                    FUN_14098f4d0(pRoot, false);
+                    NiBound kBound = *FUN_140994490(pRoot);
+                    Unk_CmWalker kWalker(pRoot);
+                    while (NiAVObject* pObject = kWalker.FUN_14098e0d0(true))
+                    {
+                        NiRenderObject* pMesh = NiDynamicCast(NiRenderObject, pObject);
+                        if (pMesh != 0)
+                        {
+                            TransparencyStandardMaterial* pMaterial = 0;
+                            const NiMaterial* pActive = pMesh->GetActiveMaterial();
+                            if (pActive != 0 && NiMaterial::DynamicCast((const NiRTTI*)&DAT_143d69198, pActive))
+                                pMaterial = new (efd::MemHint(efd::MemHint::NONE)) TransparencyStandardMaterial(pMesh);
+                            if (pMaterial != 0)
+                            {
+                                efd::SmartPointer<HardwareInstancingService> spInstancing(FUN_14098c5b0(&DAT_143b059e8));
+                                if (spInstancing)
+                                {
+                                    if (spInstancing->FUN_1413d6f40(pEntity) != 0)
+                                    {
+                                        bool bTrue = true;
+                                        FUN_14098c6e0(pEntity, 0xa0b6b179, &bTrue);
+                                    }
+                                }
+                                pMaterial->vfunc_2(kBound);
+                                pElement->m_materials.push_back(pMaterial);
+                                pElement->m_timer.FUN_140868750(300);
+                            }
+                        }
+                    }
+                    pRoot->UpdateProperties();
                 }
             }
-            pMaterial->vfunc_2(kBound);
-            pElement->m_materials.push_back(pMaterial);
-            pElement->m_timer.FUN_140868750(300);
         }
-        pRoot->UpdateProperties();
     }
+    else
+        MoveAllToFadeIn();
 }
 
 // @0x140a0e860
-// MS2-FUNCTIONAL: first-pass source; frame layout and temporary order not byte-compared
 void BGTransparencyMgr::SortEntities()
 {
     Unk_BGTEntityList kList;
     Unk_BGTElementMap::const_iterator it = m_map30.begin();
     Unk_BGTElementMap::const_iterator itEnd = m_map30.end();
-    while (it != itEnd)
-    {
+    for (; it != itEnd; ++it)
         kList.push_back(it->first);
-        ++it;
-    }
-    it = m_map40.begin();
-    itEnd = m_map40.end();
-    while (it != itEnd)
-    {
+    for (it = m_map40.begin(), itEnd = m_map40.end(); it != itEnd; ++it)
         kList.push_back(it->first);
-        ++it;
-    }
-    if (kList.size() != 0)
+    if (kList.size() == 0)
+        return;
+    std::sort(kList.begin(), kList.end(), CompareDistance);
+    size_t nCount = kList.size();
+    for (size_t i = 0; i < nCount; i++)
     {
-        std::sort(kList.begin(), kList.end(), CompareDistance);
-        size_t nCount = kList.size();
-        for (size_t i = 0; i < nCount; i++)
+        egf::Entity* pEntity = kList[i];
+        NiNode* pRoot = FUN_1413fa030(pEntity);
+        if (pRoot != 0)
         {
-            egf::Entity* pEntity = kList[i];
-            NiNode* pRoot = FUN_1413fa030(pEntity);
-            if (pRoot != 0)
+            Unk_CmWalker kWalker(pRoot);
+            while (NiAVObject* pObject = kWalker.FUN_14098e0d0(true))
             {
-                Unk_CmWalker kWalker(pRoot);
-                while (NiAVObject* pObject = kWalker.FUN_14098e0d0(1))
+                NiRenderObject* pNet = NiDynamicCast(NiRenderObject, pObject);
+                if (pNet != 0)
                 {
-                    NiRenderObject* pNet = NiDynamicCast(NiRenderObject, pObject);
-                    if (pNet != 0)
+                    NiFloatExtraData* pData = NiDynamicCast(NiFloatExtraData, pNet->GetExtraData(DAT_143ae5188));
+                    if (pData == 0)
                     {
-                        NiFloatExtraData* pData = NiDynamicCast(NiFloatExtraData, pNet->GetExtraData(DAT_143ae5188));
-                        if (pData == 0)
-                        {
-                            pData = new (efd::MemHint(efd::MemHint::NONE)) NiFloatExtraData(0.0f);
-                            pNet->AddExtraData(DAT_143ae5188, pData);
-                        }
-                        pData->SetValue((float)i);
+                        pData = new (efd::MemHint(efd::MemHint::NONE)) NiFloatExtraData(0.0f);
+                        pNet->AddExtraData(DAT_143ae5188, pData);
                     }
+                    pData->SetValue((float)i);
                 }
             }
         }
@@ -607,23 +585,18 @@ void BGTransparencyMgr::SortEntities()
 // @0x140a0ebf0
 void BGTransparencyMgr::UpdateFadeOut()
 {
-    if (!m_map30.empty())
+    if (m_map30.empty())
+        return;
+    for (Unk_BGTElementMap::const_iterator it = m_map30.begin(), itEnd = m_map30.end(); it != itEnd; ++it)
     {
-        Unk_BGTElementMap::const_iterator it = m_map30.begin();
-        Unk_BGTElementMap::const_iterator itEnd = m_map30.end();
-        while (it != itEnd)
+        TransparencyElement* pElement = it->second;
+        if (pElement->m_timer.FUN_140868ba0() == 0)
+            continue;
+        for (std::list<TransparencyStandardMaterial*>::iterator
+            itMat = pElement->m_materials.begin(); itMat != pElement->m_materials.end(); ++itMat)
         {
-            TransparencyElement* pElement = it->second;
-            if (pElement->m_timer.FUN_140868ba0() != 0)
-            {
-                for (std::list<TransparencyStandardMaterial*>::iterator
-                    itMat = pElement->m_materials.begin(); itMat != pElement->m_materials.end(); ++itMat)
-                {
-                    float fRatio = pElement->m_timer.FUN_140868940();
-                    (*itMat)->vfunc_4(efd::Clamp(1.0f - fRatio, pElement->m_fAlpha, 1.0f));
-                }
-            }
-            ++it;
+            float fRatio = 1.0f - pElement->m_timer.FUN_140868940();
+            (*itMat)->vfunc_4(efd::Clamp(fRatio, pElement->m_fAlpha, 1.0f));
         }
     }
 }
@@ -631,40 +604,37 @@ void BGTransparencyMgr::UpdateFadeOut()
 // @0x140a0ed80
 void BGTransparencyMgr::UpdateFadeIn()
 {
-    if (!m_map40.empty())
+    if (m_map40.empty())
+        return;
+    Unk_BGTElementMap::iterator it = m_map40.begin();
+    Unk_BGTElementMap::const_iterator itEnd = m_map40.end();
+    while (it != itEnd)
     {
-        Unk_BGTElementMap::iterator it = m_map40.begin();
-        Unk_BGTElementMap::iterator itEnd = m_map40.end();
-        while (it != itEnd)
+        egf::Entity* pEntity = it->first;
+        TransparencyElement* pElement = it->second;
+        if (pElement->m_timer.FUN_140868ba0() == 0)
         {
-            egf::Entity* pEntity = it->first;
-            TransparencyElement* pElement = it->second;
-            if (pElement->m_timer.FUN_140868ba0() == 0)
+            efd::SmartPointer<HardwareInstancingService> spInstancing(FUN_14098c5b0(&DAT_143b059e8));
+            if (spInstancing)
             {
-                efd::SmartPointer<HardwareInstancingService> spInstancing(FUN_14098c5b0(&DAT_143b059e8));
-                if (spInstancing != 0)
+                if (spInstancing->FUN_1413d6fc0(pEntity) != 0)
                 {
-                    if (spInstancing->FUN_1413d6fc0(pEntity) != 0)
-                    {
-                        bool bFalse = false;
-                        FUN_14098c6e0(pEntity, 0xa0b6b179, &bFalse);
-                    }
+                    bool bFalse = false;
+                    FUN_14098c6e0(pEntity, 0xa0b6b179, &bFalse);
                 }
-                ReleaseMaterials(pEntity, pElement);
-                delete pElement;
-                m_map40.erase(it++);
             }
-            else
-            {
-                for (std::list<TransparencyStandardMaterial*>::iterator
-                    itMat = pElement->m_materials.begin(); itMat != pElement->m_materials.end(); ++itMat)
-                {
-                    float fRatio = pElement->m_timer.FUN_140868940();
-                    (*itMat)->vfunc_4(efd::Clamp(fRatio, pElement->m_fAlpha, 1.0f));
-                }
-                ++it;
-            }
+            ReleaseMaterials(pEntity, pElement);
+            delete pElement;
+            m_map40.erase(it++);
+            continue;
         }
+        for (std::list<TransparencyStandardMaterial*>::iterator
+            itMat = pElement->m_materials.begin(); itMat != pElement->m_materials.end(); ++itMat)
+        {
+            float fRatio = pElement->m_timer.FUN_140868940();
+            (*itMat)->vfunc_4(efd::Clamp(fRatio, pElement->m_fAlpha, 1.0f));
+        }
+        ++it;
     }
 }
 
@@ -675,8 +645,7 @@ void BGTransparencyMgr::ReleaseMaterials(egf::Entity* pEntity, TransparencyEleme
         it = pElement->m_materials.begin(); it != pElement->m_materials.end(); ++it)
     {
         (*it)->vfunc_3();
-        TransparencyStandardMaterial* pMaterial = *it;
-        delete pMaterial;
+        delete *it;
     }
     pElement->m_materials.clear();
     NiNode* pRoot = FUN_1413fa030(pEntity);
@@ -690,8 +659,7 @@ void BGTransparencyMgr::DeleteMaterials(TransparencyElement* pElement)
     for (std::list<TransparencyStandardMaterial*>::iterator
         it = pElement->m_materials.begin(); it != pElement->m_materials.end(); ++it)
     {
-        TransparencyStandardMaterial* pMaterial = *it;
-        delete pMaterial;
+        delete *it;
     }
     pElement->m_materials.clear();
 }
@@ -711,23 +679,23 @@ MS2_REPLACE_METHOD(0x140A0F200, BGTransparencyMgr, MoveAllToFadeIn, 197, 0xE7C47
 // @0x140a0f2d0
 void BGTransparencyMgr::MoveMissingToFadeIn(Unk_BGTEntitySet& kHit)
 {
-    if (!m_map30.empty())
+    if (m_map30.empty())
+        return;
+    Unk_BGTElementMap::iterator it = m_map30.begin();
+    Unk_BGTElementMap::iterator itEnd = m_map30.end();
+    while (it != itEnd)
     {
-        Unk_BGTElementMap::iterator it = m_map30.begin();
-        Unk_BGTElementMap::iterator itEnd = m_map30.end();
-        while (it != itEnd)
+        egf::Entity* pEntity = it->first;
+        TransparencyElement* pElement = it->second;
+        Unk_BGTEntitySet::iterator itHit = kHit.find(pEntity);
+        if (itHit != kHit.end())
         {
-            egf::Entity* pEntity = it->first;
-            TransparencyElement* pElement = it->second;
-            if (kHit.find(pEntity) == kHit.end())
-            {
-                m_map40[Unk_BGTEntityPtr(pEntity)] = pElement;
-                pElement->m_timer.FUN_140868750(300);
-                m_map30.erase(it++);
-            }
-            else
-                ++it;
+            ++it;
+            continue;
         }
+        m_map40[pEntity] = pElement;
+        pElement->m_timer.FUN_140868750(300);
+        m_map30.erase(it++);
     }
 }
 
@@ -737,14 +705,12 @@ bool BGTransparencyMgr::CompareDistance(egf::Entity* pA, egf::Entity* pB)
     efd::Point3 ptA, ptB;
     FUN_1409618c0(pA, 0xfd95ca52, &ptA);
     FUN_1409618c0(pB, 0xfd95ca52, &ptB);
-    CameraMgr* pCamera = FUN_1409478c0();
-    if (pCamera->FUN_140a18070() == 0)
+    if (FUN_1409478c0()->FUN_140a18070() == 0)
         return false;
-    Vector3 pc = pCamera->FUN_140a17e10();
-    efd::Point3 ptCamera(pc.x, pc.y, pc.z);
-    float fA = (ptA - ptCamera).Length();
-    float fB = (ptB - ptCamera).Length();
-    return fB < fA;
+    Vector3 kCamera = FUN_1409478c0()->FUN_140a17e10();
+    float fA = (ptA - (const efd::Point3&)kCamera).Length();
+    float fB = (ptB - (const efd::Point3&)kCamera).Length();
+    return fA > fB;
 }
 
 // @0x140a15fe0
@@ -777,7 +743,7 @@ MS2_REPLACE_METHOD(0x140a0f2d0, BGTransparencyMgr, MoveMissingToFadeIn, 383, 0x9
 MS2_REPLACE(0x140a0f460, BGTransparencyMgr::CompareDistance, 234, 0x97E118CA);
 
 // Full-executable aliases for existing BGTransparencyMgr and tree-iterator entries.
-// MS2-PIN: ?Init@BGTransparencyMgr@@QEAAHXZ 0x140a0cee0
+// MS2-PIN: ?Init@BGTransparencyMgr@@QEAA_NXZ 0x140a0cee0
 // MS2-PIN: ?Shutdown@BGTransparencyMgr@@QEAAXXZ 0x140a0cf90
 // MS2-PIN: ?AddObject@BGTransparencyMgr@@QEAAXPEAVGameObject@@@Z 0x140a0d130
 // MS2-PIN: ?RemoveObject@BGTransparencyMgr@@QEAAXPEAVGameObject@@@Z 0x140a0d190

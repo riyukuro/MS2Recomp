@@ -20,7 +20,7 @@ public:
     class UgcAddProduct:public UgcAddProductBase {
     public:
         UgcAddProduct();                    // 0x14131cfb0
-        virtual ~UgcAddProduct();
+        // implicit virtual ~UgcAddProduct     0x14131d100
         void vfunc_1(COutputStream&)override;
         void vfunc_2(void*)override;
         __int64 product;
@@ -28,7 +28,7 @@ public:
     class UgcResaleProduct:public UgcAddProductBase {
     public:
         UgcResaleProduct();                 // 0x14131d070
-        virtual ~UgcResaleProduct();
+        // implicit virtual ~UgcResaleProduct  0x14131d170
         void vfunc_1(COutputStream&)override;
         void vfunc_2(void*)override;
         __int64 product;

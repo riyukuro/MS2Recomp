@@ -11,6 +11,9 @@
 // MS2-PIN: memcpy_s 0x140ae98a0
 // MS2-PIN: memmove_s 0x140ae99f0
 // MS2-PIN: ?GetWorldRightVector@NiCamera@@QEBA?AVNiPoint3@@XZ 0x140af83f0
+// MS2-PIN: ??0Unk_CamNiPoint3@@QEAA@AEBUVector3@@@Z 0x14027dcf0
+// MS2-PIN: ??4Unk_CamPoint3@@QEAAAEAU0@AEBVNiPoint3@@@Z 0x140194470
+// MS2-PIN: ??4Unk_CamNiPoint3@@QEAAAEAU0@$$QEAU0@@Z 0x14097faa0
 // MS2-PIN: ?GetWorldUpVector@NiCamera@@QEBA?AVNiPoint3@@XZ 0x140af8450
 // MS2-PINS-BEGIN tplpin
 // MS2-PIN: ?TypeCast@Camera@@UEBA_NIPEAPEAX@Z 0x140ae7c40 ; unique
@@ -303,6 +306,19 @@ struct Unk_CameraPathRow
     int m_c;                                                            // +0x0c
 };
 MS2_CHECK_SIZE(Unk_CameraPathRow, 0x10);
+// NiPoint3 with the out-of-line conversion / move-assign of the exe.
+struct Unk_CamNiPoint3
+{
+    Unk_CamNiPoint3(const Vector3& pt);                                 // 0x14027dcf0
+    Unk_CamNiPoint3& operator=(Unk_CamNiPoint3&& pt);                   // 0x14097faa0
+    float x, y, z;
+};
+// efd::Point3 with the out-of-line assignment from a NiPoint3 of the exe.
+struct Unk_CamPoint3
+{
+    Unk_CamPoint3& operator=(const NiPoint3& pt);                       // 0x140194470
+    float x, y, z;
+};
 CString FUN_140298360(const char* psz, const CString& str);              // ATL operator+(const char*, const CString&) (another obj)
 class Unk_CamEffectMgr
 {
@@ -836,7 +852,6 @@ void CameraMgr::FUN_140ae9ed0(egf::Entity* pEntity, const Vector3* pLook, const 
 }
 
 // @0x140aea4c0
-// MS2-FUNCTIONAL: NiFrustumPlanes::Set argument registers are loaded in a different order.
 void CameraMgr::FUN_140aea4c0(float fTime)
 {
     if (m_spMode.IsNull())
@@ -873,8 +888,7 @@ void CameraMgr::FUN_140aea4c0(float fTime)
         NiCamera* pCamera;
         if (pData && (pCamera = pData->GetCamera()) != 0)
         {
-            const NiTransform* pTransform = &pCamera->GetWorldTransform();
-            m_frustumPlanes.Set(pCamera->GetViewFrustum(), *pTransform);
+            m_frustumPlanes.Set(pCamera->GetViewFrustum(), pCamera->GetWorldTransform());
             m_frustumPlanes.EnableAllPlanes();
         }
     }
@@ -1169,7 +1183,6 @@ void CameraMgr::FUN_140aec8a0(bool bKeep)
 MS2_REPLACE_METHOD(0x140AEC8A0, CameraMgr, FUN_140aec8a0, 764, 0xB83CC38A);
 
 // @0x140aecbb0
-// MS2-FUNCTIONAL: one byte differs that the instruction diff does not show (same instruction stream).
 void CameraMgr::FUN_140aecbb0(int nId, int nTargetId, bool bEnter)
 {
     if (!nId)
@@ -1204,16 +1217,18 @@ void CameraMgr::FUN_140aecbb0(int nId, int nTargetId, bool bEnter)
                         FUN_141bd9e60(FUN_1403ed2d0(), 1.0f, 0, setup.m_3c, nTargetId);
                         m_27c = true;
                     }
-                    return;
                 }
-                m_27c = false;
-                FUN_140aeb920();
-                FUN_140aed260();
-                FUN_140aeaf40(FUN_141bd0cc0(FUN_1403ed2d0()), 1);
-                FUN_141bdb5a0(FUN_1403ed2d0(), 0);
-                if (pTarget)
-                    pTarget->FUN_14183cc80(0);
-                FUN_141bda050(FUN_1403ed2d0(), 1.0f, nTargetId);
+                else
+                {
+                    m_27c = false;
+                    FUN_140aeb920();
+                    FUN_140aed260();
+                    FUN_140aeaf40(FUN_141bd0cc0(FUN_1403ed2d0()), 1);
+                    FUN_141bdb5a0(FUN_1403ed2d0(), 0);
+                    if (pTarget)
+                        pTarget->FUN_14183cc80(0);
+                    FUN_141bda050(FUN_1403ed2d0(), 1.0f, nTargetId);
+                }
                 return;
             }
         }
@@ -1598,7 +1613,6 @@ bool CameraMgr::FUN_140af0700(const efd::Point3& kWorld, NiPoint3& kScreen)
 MS2_REPLACE_METHOD(0x140AF0700, CameraMgr, FUN_140af0700, 326, 0xB52FC068);
 
 // @0x140af0aa0
-// MS2-FUNCTIONAL: the NiPoint3 local sits at +0x30 instead of +0x2c.
 bool CameraMgr::FUN_140af0aa0(const efd::Point3& kPos, float fRadius)
 {
     unsigned int i;
@@ -1606,8 +1620,7 @@ bool CameraMgr::FUN_140af0aa0(const efd::Point3& kPos, float fRadius)
     {
         if (m_frustumPlanes.IsPlaneActive(i))
         {
-            NiPoint3 kPt(kPos);
-            float fDist = m_frustumPlanes.GetPlane(i).Distance(kPt);
+            float fDist = m_frustumPlanes.GetPlane(i).Distance(kPos);
             if (fDist <= -fRadius)
                 break;
         }
@@ -1687,8 +1700,6 @@ void CameraMgr::FUN_140af0de0(MS2Ptr<CCameraEffect> spEffect)
 MS2_REPLACE_METHOD(0x140AF0DE0, CameraMgr, FUN_140af0de0, 77, 0x76D3945A);
 
 // @0x140af1a90
-// MS2-FUNCTIONAL: the exe materializes `m_248 && m_spMode.get()` straight into a byte temp; this build goes through
-// a dword temp first.
 void CameraMgr::FUN_140af1a90()
 {
     m_effect.m_pCamera = 0;
@@ -1705,8 +1716,7 @@ void CameraMgr::FUN_140af1a90()
     for (std::list<MS2Ptr<CCameraEffect>>::iterator it = m_effect.m_effects.begin(); it != m_effect.m_effects.end(); ++it)
         it->Reset();
     m_effect.m_effects.clear();
-    bool bRestore = m_248 && m_spMode.get();
-    if (bRestore)
+    if (m_248 && (m_spMode.get() ? true : false))
     {
         m_spMode->vfunc_11(m_savedSetting.m_0);
         m_spMode->FUN_140af99d0(m_savedSetting.m_4);
@@ -1857,7 +1867,6 @@ CString CameraMgr::FUN_140af80c0()
 MS2_REPLACE_METHOD(0x140AF80C0, CameraMgr, FUN_140af80c0, 53, 0xA77BD198);
 
 // @0x140aec4c0
-// MS2-FUNCTIONAL: the exe stages the entity argument of FUN_1411cf2d0 through rcx (mov rcx,[x]; mov rdx,rcx), we load rdx directly.
 void CameraMgr::FUN_140aec4c0()
 {
     if (FUN_140af7f70() == 0)
@@ -1880,8 +1889,7 @@ void CameraMgr::FUN_140aec4c0()
             ptEye.z = fDistance * FUN_1409f2310(fVAngle) + ptAt.z;
             Vector3 ptRot = CCameraMode::FUN_140afdd40(ptAt, ptEye, g_143a08cf8);
             FUN_140ae9ed0(FUN_1408a9090(&spEntity), &ptEye, &ptRot);
-            egf::Entity* pEntity = FUN_1408a9090(&spEntity);
-            FUN_1409670f0()->FUN_1411cf2d0(pEntity, 0);
+            FUN_1409670f0()->FUN_1411cf2d0(FUN_1408a9090(&spEntity), 0);
         }
         float fSpeed = (float)FUN_1409a8b10()->FUN_140af7de0()->m_4 / 100.0f;
         float f1 = FUN_1401d3200()->m_kCameraSpeed1.FUN_140298f40() * fSpeed;
@@ -2228,7 +2236,8 @@ void CameraMgr::FUN_140aed750(int nMode, int bKeep)
 MS2_REPLACE_METHOD(0x140AED750, CameraMgr, FUN_140aed750, 8833, 0x311FE950);
 
 // @0x140af0e40
-// MS2-FUNCTIONAL: the translate goes through NiPoint3(x, y, z) instead of the exe's point copy helpers.
+// MS2-FUNCTIONAL: the code is identical but the frame is 0x10 larger (an unused slot from the FOV
+// controller loop).
 // Plays the param's camera nif: "Camera01" of the scene animates a "Camera Effect Root" node attached to the effect
 // scene root (or to the parent node of the camera target).
 void CameraMgr::FUN_140af0e40(const CCameraMoveEffectParam* pParam)
@@ -2257,7 +2266,7 @@ void CameraMgr::FUN_140af0e40(const CCameraMoveEffectParam* pParam)
     spRoot->SetName("Camera Effect Root");
     m_effect.m_spCameraNode = spRoot;
     NiTransform kTransform;
-    kTransform.m_Translate = NiPoint3(pParam->m_kTranslate.x, pParam->m_kTranslate.y, pParam->m_kTranslate.z);
+    reinterpret_cast<Unk_CamNiPoint3&>(kTransform.m_Translate) = pParam->m_kTranslate;
     kTransform.m_Rotate.FromEulerAnglesXYZ((pParam->m_kRotation.x * 3.1415927f) / 180.0f,
         (pParam->m_kRotation.y * 3.1415927f) / 180.0f, (pParam->m_kRotation.z * 3.1415927f) / 180.0f);
     kTransform.m_fScale = 1.0f;
@@ -2275,16 +2284,12 @@ void CameraMgr::FUN_140af0e40(const CCameraMoveEffectParam* pParam)
             pSeparate->AttachChild(spRoot, false);
             m_effect.m_spCameraNode = pSeparate;
         }
-        if (!pParam->m_bApplyNodeTransform)
+        if (!pParam->m_bApplyNodeTransform && (spParent ? true : false))
         {
-            bool bParent = spParent ? true : false;
-            if (bParent)
-            {
-                NiTransform kInverse;
-                spParent->GetWorldTransform().Invert(kInverse);
-                NiTransform kLocal = spRoot->GetLocalTransform();
-                m_effect.m_spCameraNode->SetLocalTransform(kInverse * kLocal);
-            }
+            NiTransform kInverse;
+            spParent->GetWorldTransform().Invert(kInverse);
+            NiTransform kLocal = spRoot->GetLocalTransform();
+            m_effect.m_spCameraNode->SetLocalTransform(kInverse * kLocal);
         }
     }
     else
@@ -2352,7 +2357,6 @@ void CameraMgr::FUN_140af0e40(const CCameraMoveEffectParam* pParam)
 MS2_REPLACE_METHOD(0x140AF0E40, CameraMgr, FUN_140af0e40, 3131, 0xFC2F851F);
 
 // @0x140af1f70
-// MS2-FUNCTIONAL: the mode position goes through NiPoint3(x, y, z) instead of the exe's point copy helpers.
 // Advances the camera effect nif and drives the active camera from its "Camera01"; stops the effect at its end (or
 // when its node was detached) and restores the field of view.
 void CameraMgr::FUN_140af1f70()
@@ -2387,8 +2391,7 @@ void CameraMgr::FUN_140af1f70()
                 else
                 {
                     NiTransform kCamera = pCamera->GetLocalTransform();
-                    Vector3 ptPos = FUN_140a17e10();
-                    kCamera.m_Translate = NiPoint3(ptPos.x, ptPos.y, ptPos.z);
+                    reinterpret_cast<Unk_CamNiPoint3&>(kCamera.m_Translate) = FUN_140a17e10();
                     Vector3 ptRot = FUN_140af8290();
                     kCamera.m_Rotate.FromEulerAnglesXYZ((-ptRot.x * 3.1415927f) / 180.0f,
                         (-ptRot.y * 3.1415927f) / 180.0f, (-ptRot.z * 3.1415927f) / 180.0f);
@@ -2397,7 +2400,8 @@ void CameraMgr::FUN_140af1f70()
                     NiTransform kEffect = m_effect.m_pCamera->GetWorldTransform();
                     NiTransform kAxis;
                     kAxis.m_Rotate.MakeYRotation(1.5707964f);
-                    kEffect.m_Rotate = NiMatrix3(kAxis.m_Rotate * kEffect.m_Rotate);
+                    NiMatrix3 kRot(kAxis.m_Rotate * kEffect.m_Rotate);
+                    kEffect.m_Rotate = kRot;
                     float fX = kEffect.m_Translate.x;
                     kEffect.m_Translate.x = -kEffect.m_Translate.z;
                     kEffect.m_Translate.z = fX;
@@ -2418,8 +2422,8 @@ void CameraMgr::FUN_140af1f70()
 MS2_REPLACE_METHOD(0x140AF1F70, CameraMgr, FUN_140af1f70, 1388, 0x45606797);
 
 // @0x140aefb20
-// MS2-FUNCTIONAL: the node translation is copied through Vector3(x, y, z) instead of the exe's point
-// assignment straight from the NiPoint3.
+// MS2-FUNCTIONAL: the code is identical but the frame is 0x10 larger (an unused slot from the FOV
+// controller loop).
 // Plays a camera path nif: its "Camera01" drives the camera directly (no effect root).
 void CameraMgr::FUN_140aefb20(const Unk_CameraPathRow* pRow)
 {
@@ -2464,8 +2468,7 @@ void CameraMgr::FUN_140aefb20(const Unk_CameraPathRow* pRow)
             m_effect.m_24 = pRow->m_c;
             m_effect.m_fStart = 0;
             m_effect.m_20 = pRow->m_f8;
-            const NiPoint3& kTranslate = m_effect.m_spCameraNode->GetLocalTransform().m_Translate;
-            m_effect.m_ptOffset = Vector3(kTranslate.x, kTranslate.y, kTranslate.z);
+            reinterpret_cast<Unk_CamPoint3&>(m_effect.m_ptOffset) = m_effect.m_spCameraNode->GetLocalTransform().m_Translate;
             m_effect.m_fMaxTime = 0;
             NiTimeController* pTime = m_effect.m_spCameraNode->GetControllers();
             while (pTime)

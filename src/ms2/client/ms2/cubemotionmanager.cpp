@@ -79,10 +79,10 @@ public:
 // A scene-graph walk over a model: the exe's iterator helpers (construct 0x14098cb80, next 0x14098e0d0, destroy 0x14098cf00).
 struct Unk_CmWalker
 {
-    void* m_p0; void* m_p1; void* m_p2; void* m_p3; void* m_p4; void* m_p5; void* m_p6; void* m_p7;
+    void* m_p0; void* m_p1; void* m_p2; void* m_p3; void* m_p4; void* m_p5;     // 0x30 bytes (a CAtlList of nodes)
     Unk_CmWalker(NiObject* pRoot);                    // 0x14098cb80
     ~Unk_CmWalker();                                  // 0x14098cf00
-    NiAVObject* FUN_14098e0d0(int bDescend);
+    NiAVObject* FUN_14098e0d0(bool bDescend);
 };
 NiObject* FUN_14098d8d0(const void* pRTTI, NiObject* pObject);    // dynamic cast through an NiRTTI
 extern char DAT_143afa7d0;                                         // NiRTTI of the mesh type
@@ -126,8 +126,8 @@ Unk_CmFade::~Unk_CmFade()
 }
 
 // The UCRT's `static __inline memcpy_s` of this TU (unreferenced copy).
+#pragma function(memcpy, memset)
 // @0x141165db0
-// MS2-FUNCTIONAL: unreferenced CRT memcpy_s copy: frame saves rsi/rdi, source spelling differs
 static __inline errno_t ms2_cm_memcpy_s(void* const d, size_t const dsz, void const* const s, size_t const ssz)
 {
     if (ssz == 0) { return 0; }
@@ -143,6 +143,7 @@ static __inline errno_t ms2_cm_memcpy_s(void* const d, size_t const dsz, void co
     return 0;
 }
 __declspec(selectany) extern errno_t(__cdecl* const ms2_pfnCmMemcpyS)(void*, size_t, const void*, size_t) = &ms2_cm_memcpy_s;
+#pragma intrinsic(memcpy, memset)
 
 // @0x14115e0e0
 Unk_CmFade::Unk_CmFade()
@@ -150,7 +151,6 @@ Unk_CmFade::Unk_CmFade()
 }
 
 // @0x14115dd90
-// MS2-FUNCTIONAL: stack-slot assignment of the category/EntityID temporaries differs (frame 0xe8 vs 0xd8)
 Unk_CmFade::Unk_CmFade(egf::EntityID id, float fFrom, float fTo, unsigned nMs, bool bHide)
 {
     m_fFrom = fFrom;
@@ -170,18 +170,18 @@ Unk_CmFade::Unk_CmFade(egf::EntityID id, float fFrom, float fTo, unsigned nMs, b
             pNode->UpdateProperties();
             pNode->Update(0.0, true);
         }
-        efd::SmartPointer<NiNode> spRoot(FUN_1413fa070(m_id));
+        efd::SmartPointer<NiNode> spRoot(FUN_1413fa070(id));
         if (spRoot != 0)
         {
             Unk_CmWalker walker(spRoot);
-            while (NiAVObject* pObject = walker.FUN_14098e0d0(1))
+            while (NiAVObject* pObject = walker.FUN_14098e0d0(true))
             {
                 NiObject* pMesh = FUN_14098d8d0(&DAT_143afa7d0, pObject);
                 void* pMat;
                 if (pMesh != 0 && (pMat = FUN_140a17cd0(pMesh)) != 0 && FUN_140a17af0(&DAT_143d69198, pMat) != 0)
                 {
-                    int nCat[2];
-                    int* pCat = FUN_140876480(nCat, 0);
+                    int nCat;
+                    int* pCat = FUN_140876480(&nCat, 0);
                     TransparencyStandardMaterial* pMaterial = new (*pCat) TransparencyStandardMaterial(pMesh);
                     pMaterial->vfunc_2(0);
                     pMaterial->vfunc_4(m_fFrom);
@@ -295,7 +295,6 @@ bool CCubeMotionManager::FUN_14115b500(const egf::EntityID& id, Unk_CmRotate& ou
 MS2_REPLACE_METHOD(0x14115B500, CCubeMotionManager, FUN_14115b500, 51, 0x29320C83);
 
 // @0x14115b540
-// MS2-FUNCTIONAL: 3.5 KB with four near-identical loops; stack-slot assignment (frame 0x1e8 vs 0x218) and temporaries differ
 void CCubeMotionManager::Update()
 {
     ATL::CAtlList<egf::EntityID> finished(10);
@@ -354,11 +353,18 @@ void CCubeMotionManager::Update()
         }
         if (bounce.m_timer.FUN_140868ba0() != 0 || bounce.m_timer.FUN_140868c00() != 0)
         {
-            float fT = bounce.m_timer.FUN_140868940();
-            if (0.5f < fT)
+            if (bounce.m_timer.FUN_140868940() <= 0.5f)
             {
-                fT = bounce.m_timer.FUN_140868940();
-                float fRatio = Unk_CmEaseIn().FUN_1410af700((fT - 0.5f) * 2.0f);
+                float fRatio = Unk_CmEaseOut().FUN_140cd8c20(bounce.m_timer.FUN_140868940() * 2.0f);
+                float fValue = bounce.m_fFrom + (bounce.m_fTo - bounce.m_fFrom) * fRatio;
+                Vector3 pt;
+                ((Unk_CmEntity*)spEntity.operator->())->FUN_1409618c0(0xfd95ca52, &pt);
+                pt.z = fValue;
+                ((Unk_CmEntity*)spEntity.operator->())->FUN_140a38a50(0xfd95ca52, &pt);
+            }
+            else
+            {
+                float fRatio = Unk_CmEaseIn().FUN_1410af700((bounce.m_timer.FUN_140868940() - 0.5f) * 2.0f);
                 float fValue = bounce.m_fTo + (bounce.m_fFrom - bounce.m_fTo) * fRatio;
                 Vector3 pt;
                 ((Unk_CmEntity*)spEntity.operator->())->FUN_1409618c0(0xfd95ca52, &pt);
@@ -369,16 +375,6 @@ void CCubeMotionManager::Update()
                     bounce.m_timer.FUN_1408687f0();
                     finished.AddTail(id);
                 }
-            }
-            else
-            {
-                fT = bounce.m_timer.FUN_140868940();
-                float fRatio = Unk_CmEaseOut().FUN_140cd8c20(fT * 2.0f);
-                float fValue = bounce.m_fFrom + (bounce.m_fTo - bounce.m_fFrom) * fRatio;
-                Vector3 pt;
-                ((Unk_CmEntity*)spEntity.operator->())->FUN_1409618c0(0xfd95ca52, &pt);
-                pt.z = fValue;
-                ((Unk_CmEntity*)spEntity.operator->())->FUN_140a38a50(0xfd95ca52, &pt);
             }
             if (spInstancing)
                 FUN_1413d78e0(spInstancing.operator->(), spEntity);
@@ -438,22 +434,22 @@ void CCubeMotionManager::Update()
         {
             float fRatio = Unk_CmEaseOut().FUN_140cd8c20(fade.m_timer.FUN_140868940());
             float fAlpha = fade.m_fFrom + (fade.m_fTo - fade.m_fFrom) * fRatio;
-            Unk_CmMaterialList::iterator itEnd = fade.m_materials.end();
-            Unk_CmMaterialList::iterator it = fade.m_materials.begin();
-            while (it != itEnd)
+            Unk_CmMaterialList& rMaterials = fade.m_materials;
+            Unk_CmMaterialList::const_iterator itEnd = rMaterials.end();
+            for (Unk_CmMaterialList::const_iterator it = rMaterials.begin(); it != itEnd; ++it)
             {
-                (*it)->vfunc_4(fAlpha);
-                ++it;
+                TransparencyStandardMaterial* pMaterial = *it;
+                pMaterial->vfunc_4(fAlpha);
             }
         }
         if (fade.m_timer.FUN_140868c00() != 0)
         {
-            Unk_CmMaterialList::iterator itEnd = fade.m_materials.end();
-            Unk_CmMaterialList::iterator it = fade.m_materials.begin();
-            while (it != itEnd)
+            Unk_CmMaterialList& rMaterials = fade.m_materials;
+            Unk_CmMaterialList::const_iterator itEnd = rMaterials.end();
+            for (Unk_CmMaterialList::const_iterator it = rMaterials.begin(); it != itEnd; ++it)
             {
-                (*it)->vfunc_4(fade.m_fTo);
-                ++it;
+                TransparencyStandardMaterial* pMaterial = *it;
+                pMaterial->vfunc_4(fade.m_fTo);
             }
             fade.m_timer.FUN_1408687f0();
             ((Unk_CmEntity*)spEntity.operator->())->FUN_14098c6e0(0xa0b6b179, (const bool*)&fade.m_bHide);

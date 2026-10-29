@@ -35,12 +35,9 @@ void FUN_1412751b0(const CStringW& text, int a);                        // the d
 unsigned FUN_140869420();                                               // millisecond clock
 CStringW FUN_14083dc40(const wchar_t* szFormat, const int& a1, const int& a2);   // StringFormat<int, int>
 
-// The [min, max] pair of the trigger range: valid when max >= min and not both 0.
-struct Unk_GeRange { int m_nMin; int m_nMax; };
-Unk_GeRange* FUN_1405c38a0(Unk_GeRange* pRange);                        // zero
 char FUN_1405c7ba0(const Unk_GeRange* pRange);                          // is set
 int FUN_1413b1d60(Unk_140165cf0* pElem, const char* pszName, Unk_GeRange* pOut);
-char FUN_140d1a9d0(const Unk_GcOptInt* pOpt);                           // Nullable<int>::HasValue
+bool FUN_140d1a9d0(const Unk_GcOptInt* pOpt);                           // Nullable<int>::HasValue
 const int* FUN_1413989f0(const Unk_GcOptInt* pOpt);                     // Nullable<int>::GetValue
 Unk_GcOptInt* FUN_140d11940(Unk_GcOptInt* pOpt);                        // Nullable<int>()
 
@@ -61,7 +58,7 @@ class Unk_GeMgr
 public:
     void FUN_14138d7e0(int nId, int nValue);
     char FUN_14138c0d0(int nTrigger, Unk_GcOptInt oValue, Unk_GcOptInt oSubValue);
-    char FUN_14138c210(int nTrigger, Unk_GeRange range);
+    char FUN_14138c210(int nTrigger, const Unk_GeRange& range);
 };
 Unk_GeMgr* FUN_1409331e0();
 
@@ -86,8 +83,6 @@ void FUN_14139eff0(Unk_GeTreeHead* pHead, Unk_GeNode* pNode);           // rotat
 void FUN_14139faa0(Unk_GeTreeHead* pHead, Unk_GeNode* pNode);           // rotate right
 void FUN_1413a4e30(void* pMap, Unk_GeNode* pNode);                      // frees a node
 void* FUN_141398a90(void* pIter);
-// sfr36: full-exe link: the const operator* above is the std comdat guideentity_5 defines
-#pragma comment(linker, "/alternatename:?FUN_141398a90@@YAPEAXPEAX@Z=??D?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBW4Occurrence@CGuideManager@@H@std@@@std@@@std@@@std@@QEBAAEBU?$pair@$$CBW4Occurrence@CGuideManager@@H@1@XZ")
 void* FUN_1413a4830(void* pIter);                                       // map<int,int> iterator operator* (out of line, calls the const one)
 void FUN_141389060(Unk_GcCondRef* pRef);
 unsigned __int64 FUN_1413a5140(void* pMap);
@@ -101,86 +96,98 @@ std::pair<int, int>* FUN_1413a3d00(std::pair<int, int>* pDst, const std::pair<in
     return pDst;
 }
 
+// @0x1413a3d50
+Unk_GeNode* FUN_1413a3d50(void* pMap, Unk_GeNode* pNode, const int& rKey)  // _Buynode_if_nil: a ready node is used as is
+{
+    return pNode;
+}
+
+// @0x1413a46e0
+const int& FUN_1413a46e0(const int& rKey)                                 // std::forward
+{
+    return rKey;
+}
+
 // @0x1413a3e00
-Unk_GeIter* FUN_1413a3e00(void* pMap, Unk_GeIter* pOut, char bLeft, Unk_GeNode* pWhere, const int& rKey, Unk_GeNode* pNode)
+Unk_GeIter* FUN_1413a3e00(void* pMap, Unk_GeIter* pOut, bool bLeft, Unk_GeNode* pWhere, const int& rKey, Unk_GeNode* pNode)
 {
     Unk_GeTreeHead* pHead = FUN_14139e490(pMap);
-    if (pHead->m_nSize < FUN_1413a5140(pMap) - 1)
+    if (FUN_1413a5140(pMap) - 1 <= pHead->m_nSize)
     {
-        pHead->m_nSize = pHead->m_nSize + 1;
-        pNode->m_pParent = pWhere;
-        Unk_GeNode* pCur = pNode;
-        if (pWhere == pHead->m_pHead)
+        FUN_1413a4e30(pMap, pNode);
+        std::_Xlength_error("map/set<T> too long");
+    }
+    Unk_GeNode* pNew = FUN_1413a3d50(pMap, pNode, FUN_1413a46e0(rKey));
+    pHead->m_nSize = pHead->m_nSize + 1;
+    pNew->m_pParent = pWhere;
+    if (pWhere == pHead->m_pHead)
+    {
+        *FUN_14139f960(pHead) = pNew;
+        *FUN_14139eee0(pHead) = pNew;
+        *FUN_14139f8e0(pHead) = pNew;
+    }
+    else if (bLeft)
+    {
+        pWhere->m_pLeft = pNew;
+        if (pWhere == *FUN_14139eee0(pHead))
+            *FUN_14139eee0(pHead) = pNew;
+    }
+    else
+    {
+        pWhere->m_pRight = pNew;
+        if (pWhere == *FUN_14139f8e0(pHead))
+            *FUN_14139f8e0(pHead) = pNew;
+    }
+    for (Unk_GeNode* pCur = pNew; pCur->m_pParent->m_cColor == 0; )
+    {
+        if (pCur->m_pParent == pCur->m_pParent->m_pParent->m_pLeft)
         {
-            *FUN_14139f960(pHead) = pNode;
-            *FUN_14139eee0(pHead) = pNode;
-            *FUN_14139f8e0(pHead) = pNode;
-        }
-        else if (bLeft == 0)
-        {
-            pWhere->m_pRight = pNode;
-            if (pWhere == *FUN_14139f8e0(pHead))
-                *FUN_14139f8e0(pHead) = pNode;
-        }
-        else
-        {
-            pWhere->m_pLeft = pNode;
-            if (pWhere == *FUN_14139eee0(pHead))
-                *FUN_14139eee0(pHead) = pNode;
-        }
-        while (pCur->m_pParent->m_cColor == 0)
-        {
-            if (pCur->m_pParent == pCur->m_pParent->m_pParent->m_pLeft)
+            pWhere = pCur->m_pParent->m_pParent->m_pRight;
+            if (pWhere->m_cColor == 0)
             {
-                Unk_GeNode* pUncle = pCur->m_pParent->m_pParent->m_pRight;
-                if (pUncle->m_cColor == 0)
-                {
-                    pCur->m_pParent->m_cColor = 1;
-                    pUncle->m_cColor = 1;
-                    pCur->m_pParent->m_pParent->m_cColor = 0;
-                    pCur = pCur->m_pParent->m_pParent;
-                }
-                else
-                {
-                    if (pCur == pCur->m_pParent->m_pRight)
-                    {
-                        pCur = pCur->m_pParent;
-                        FUN_14139eff0(pHead, pCur);
-                    }
-                    pCur->m_pParent->m_cColor = 1;
-                    pCur->m_pParent->m_pParent->m_cColor = 0;
-                    FUN_14139faa0(pHead, pCur->m_pParent->m_pParent);
-                }
+                pCur->m_pParent->m_cColor = 1;
+                pWhere->m_cColor = 1;
+                pCur->m_pParent->m_pParent->m_cColor = 0;
+                pCur = pCur->m_pParent->m_pParent;
             }
             else
             {
-                Unk_GeNode* pUncle = pCur->m_pParent->m_pParent->m_pLeft;
-                if (pUncle->m_cColor == 0)
+                if (pCur == pCur->m_pParent->m_pRight)
                 {
-                    pCur->m_pParent->m_cColor = 1;
-                    pUncle->m_cColor = 1;
-                    pCur->m_pParent->m_pParent->m_cColor = 0;
-                    pCur = pCur->m_pParent->m_pParent;
+                    pCur = pCur->m_pParent;
+                    FUN_14139eff0(pHead, pCur);
                 }
-                else
-                {
-                    if (pCur == pCur->m_pParent->m_pLeft)
-                    {
-                        pCur = pCur->m_pParent;
-                        FUN_14139faa0(pHead, pCur);
-                    }
-                    pCur->m_pParent->m_cColor = 1;
-                    pCur->m_pParent->m_pParent->m_cColor = 0;
-                    FUN_14139eff0(pHead, pCur->m_pParent->m_pParent);
-                }
+                pCur->m_pParent->m_cColor = 1;
+                pCur->m_pParent->m_pParent->m_cColor = 0;
+                FUN_14139faa0(pHead, pCur->m_pParent->m_pParent);
             }
         }
-        (*FUN_14139f960(pHead))->m_cColor = 1;
-        FUN_141397130(pOut, pNode, FUN_141395550(pHead));
-        return pOut;
+        else
+        {
+            pWhere = pCur->m_pParent->m_pParent->m_pLeft;
+            if (pWhere->m_cColor == 0)
+            {
+                pCur->m_pParent->m_cColor = 1;
+                pWhere->m_cColor = 1;
+                pCur->m_pParent->m_pParent->m_cColor = 0;
+                pCur = pCur->m_pParent->m_pParent;
+            }
+            else
+            {
+                if (pCur == pCur->m_pParent->m_pLeft)
+                {
+                    pCur = pCur->m_pParent;
+                    FUN_14139faa0(pHead, pCur);
+                }
+                pCur->m_pParent->m_cColor = 1;
+                pCur->m_pParent->m_pParent->m_cColor = 0;
+                FUN_14139eff0(pHead, pCur->m_pParent->m_pParent);
+            }
+        }
     }
-    FUN_1413a4e30(pMap, pNode);
-    std::_Xlength_error("map/set<T> too long");
+    (*FUN_14139f960(pHead))->m_cColor = 1;
+    FUN_141397130(pOut, pNew, FUN_141395550(pHead));
+    return pOut;
 }
 
 // @0x1413a4620
@@ -445,8 +452,8 @@ CStringW CGuideConditionTrigger::GetTypeName()
 
 // @0x1413a5a50
 CGuideConditionTrigger::CGuideConditionTrigger()
+    : m_n28(0)
 {
-    m_n28 = 0;
 }
 
 // @0x1413a5ad0
@@ -457,7 +464,7 @@ void CGuideConditionTrigger::vfunc_2(Unk_140165cf0* pElem)
     FUN_1413b1d00(pElem, "value", m_a);
     FUN_1413b1d00(pElem, "subValue", m_b);
     if (FUN_14086f4b0(pElem, "range") != 0)
-        FUN_1413b1d60(pElem, "range", reinterpret_cast<Unk_GeRange*>(&m_n3c));
+        FUN_1413b1d60(pElem, "range", &m_range);
     if (m_n28 == 0)
         throw std::exception("Unknown Guide Trigger Tag");
 }
@@ -465,9 +472,9 @@ void CGuideConditionTrigger::vfunc_2(Unk_140165cf0* pElem)
 // @0x1413a5bb0
 int CGuideConditionTrigger::vfunc_3()
 {
-    if (FUN_1405c7ba0(reinterpret_cast<Unk_GeRange*>(&m_n3c)) == 0)
+    if (FUN_1405c7ba0(&m_range) == 0)
         return FUN_1413a55a0(FUN_1409331e0()->FUN_14138c0d0(m_n28, m_a, m_b) != 0);
-    return FUN_1413a55a0(FUN_1409331e0()->FUN_14138c210(m_n28, *reinterpret_cast<Unk_GeRange*>(&m_n3c)) != 0);
+    return FUN_1413a55a0(FUN_1409331e0()->FUN_14138c210(m_n28, m_range) != 0);
 }
 
 // @0x1413a5c80
@@ -479,7 +486,7 @@ CStringW CGuideConditionTrigger::vfunc_7()
         str.Append(StringFormat(L" ,value({0})", *FUN_1413989f0(&m_a)));
     if (FUN_140d1a9d0(&m_b))
         str.Append(StringFormat(L" ,subValue({0})", *FUN_1413989f0(&m_b)));
-    str.Append(FUN_14083dc40(L" ,range({0}-{1})", m_n3c, m_n40));
+    str.Append(FUN_14083dc40(L" ,range({0}-{1})", m_range.m_nMin, m_range.m_nMax));
     return str;
 }
 

@@ -16,6 +16,7 @@
 #include "ms2/placeholder/asslot.h"
 #include "ms2/placeholder/astooltip.h"
 #include "ms2/placeholder/citem.h"
+#include "ms2/placeholder/citemdata.h"
 #include "ms2/placeholder/cinpacket.h"
 #include "ms2/placeholder/coutpacket.h"
 #include "ms2/placeholder/delegate.h"
@@ -65,7 +66,7 @@ class Unk_ExProxyData : public Unk_UserProxyItemData
 {
 public:
     virtual void vfunc_7();
-    virtual void vfunc_8(CInputStream* pStream);        // 8 (+0x40) read from the packet
+    virtual void vfunc_8(CInputStream& stream);         // 8 (+0x40) read from the packet
 };
 
 // The inventory dialog (UI id 0x4e2d).
@@ -213,7 +214,7 @@ DragSlot* UIItemExtractionScrollDialog::SlotBag::vfunc_16(int nIndex)
 {
     CString strName = vfunc_15(nIndex);
     MS2Ptr<CItem> spItem(0);
-    if (nIndex >= 0 && nIndex < (int)m_items.GetCount())
+    if (nIndex > -1 && nIndex < (int)m_items.GetCount())
         spItem = m_items.GetAt(nIndex);
     return new (efd::MemHint(efd::MemHint::NONE)) Slot(strName, nIndex, spItem);
 }
@@ -241,60 +242,57 @@ void UIItemExtractionScrollDialog::vfunc_67()
 }
 
 // @0x140e4a010
-// MS2-FUNCTIONAL: written from the decompile; temporaries / frame slots not tuned
 void UIItemExtractionScrollDialog::vfunc_79(void* pPacket)
 {
     UIDialog::vfunc_79(pPacket);
     if (!FUN_140166410()->FUN_14036d570(0x8f))
         return;
-    CInPacket* pIn = static_cast<CInPacket*>(pPacket);
-    if (pIn->FUN_14070fe80() != 0x107)
-        return;
-    CInputStream* pStream = static_cast<CInputStream*>(pIn);
-    unsigned char nResult = pStream->ReadUInt8();
-    if (nResult == 0)
+    if (static_cast<CInPacket*>(pPacket)->FUN_14070fe80() == 0x107)
     {
-        __int64 nUidItem = pStream->ReadInt64();
-        __int64 nUidResult = pStream->ReadInt64();
-        unsigned nCount = (unsigned short)pStream->ReadInt16();
-        MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(nUidItem);
-        if (spItem.IsNull())
-            return;
-        MS2Ptr<CItem> spResult = DAT_143ab2a90.FUN_140a5d680(nUidResult);
-        if (spResult.IsNull())
-            return;
-        Unk_ExProxyData* pProxy = static_cast<Unk_ExProxyData*>(spResult->FUN_140527870());
-        if (pProxy == 0)
-            return;
-        CItemTransfer* pTransfer = reinterpret_cast<CItemTransfer*>(spResult->FUN_140527930());
-        if (pTransfer == 0)
-            return;
-        pProxy->vfunc_8(pStream);                       // MS2: slot 8
-        pTransfer->vfunc_2(*pStream);
-        spItem->FUN_140529280(nCount);
-        FUN_1412751f0(FUN_1405c2690(CStringW(L"s_itemextraction_success"), spResult->FUN_140527b10()), 1, 0);
+        int nResult = static_cast<CInPacket*>(pPacket)->ReadUInt8();
+        if (nResult == 0)
+        {
+            __int64 nUidItem = static_cast<CInPacket*>(pPacket)->ReadInt64();
+            __int64 nUidResult = static_cast<CInPacket*>(pPacket)->ReadInt64();
+            unsigned nCount = (unsigned short)static_cast<CInPacket*>(pPacket)->ReadInt16();
+            MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(nUidItem);
+            if (spItem == 0)
+                return;
+            MS2Ptr<CItem> spResult = DAT_143ab2a90.FUN_140a5d680(nUidResult);
+            if (spResult == 0)
+                return;
+            Unk_ExProxyData* pProxy = static_cast<Unk_ExProxyData*>(spResult->FUN_140527870());
+            if (pProxy == 0)
+                return;
+            CItemTransfer* pTransfer = reinterpret_cast<CItemTransfer*>(spResult->FUN_140527930());
+            if (pTransfer == 0)
+                return;
+            pProxy->vfunc_8(*static_cast<CInPacket*>(pPacket));                      // MS2: slot 8
+            pTransfer->vfunc_2(*static_cast<CInPacket*>(pPacket));
+            spItem->FUN_140529280(nCount);
+            FUN_1412751f0(FUN_1405c2690(CStringW(L"s_itemextraction_success"), spResult->FUN_140527b10()), 1, 0);
+        }
+        else if (nResult == 1)
+        {
+            FUN_1412751f0(GetStringCommonByKey(L"s_itemextraction_inventoryfull"), 1, 1);
+        }
+        else if (nResult == 2)
+        {
+            FUN_1412751f0(GetStringCommonByKey(L"s_itemextraction_lack_scroll"), 1, 1);
+        }
+        vfunc_67();
     }
-    else if (nResult == 1)
-    {
-        FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_itemextraction_inventoryfull")), 1, 1);
-    }
-    else if (nResult == 2)
-    {
-        FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_itemextraction_lack_scroll")), 1, 1);
-    }
-    vfunc_67();
 }
 
 // @0x140e4a4b0
 bool UIItemExtractionScrollDialog::SendItemExtractionScroll(int nResult, const CMsgBoxData& box)
 {
-    if (nResult == 0)
-    {
-        COutPacket packet(static_cast<int>(SendOp::ItemExtractionScroll), 0);
-        packet.WriteInt64(m_nScrollUid);
-        packet.WriteInt64(m_nTargetUid);
-        FUN_140710590(packet);
-    }
+    if (nResult != 0)
+        return true;
+    COutPacket packet(static_cast<int>(SendOp::ItemExtractionScroll), 0);
+    packet.WriteInt64(m_nScrollUid);
+    packet.WriteInt64(m_nTargetUid);
+    FUN_140710590(packet);
     return true;
 }
 
@@ -306,7 +304,6 @@ void UIItemExtractionScrollDialog::vfunc_26()
 }
 
 // @0x140e4a580
-// MS2-FUNCTIONAL: AS object temporaries / frame slots not tuned
 void UIItemExtractionScrollDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
@@ -339,30 +336,30 @@ int UIItemExtractionScrollDialog::vfunc_28(const char* szMethod, const Scaleform
 }
 
 // @0x140e4a920
-// MS2-FUNCTIONAL: written from the decompile; temporaries / frame slots not tuned
 void UIItemExtractionScrollDialog::FUN_140e4a920(__int64 nItemUid)
 {
     if (vfunc_55() != 0)
         return;
     MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(nItemUid);
-    if (spItem.IsNull())
+    if (spItem == 0)
         return;
-    if (spItem->FUN_1405292a0() == 0)
+    if (spItem->FUN_1405292a0() < 1u)
     {
-        FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_itemextraction_cannot")), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(L"s_itemextraction_cannot"), 1, 1);
         return;
     }
     MS2Ptr<Unk_ExtractionRow> spRow = FUN_14052d1f0()->FUN_140597580(spItem->FUN_1405276c0());
-    if (!(spRow == 0))
+    if (spRow == 0)
     {
-        FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_itemextraction_cannot")), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(L"s_itemextraction_cannot"), 1, 1);
         return;
     }
     MS2Ptr<CItem> spScroll(new CItem);
-    int nRarity = FUN_14053feb0(spRow->m_nScrollId);
-    if (!spScroll->FUN_140523c40(spRow->m_nScrollId, nRarity, 0))
+    if (!spScroll->FUN_140523c40(spRow->m_nScrollId, FUN_14053feb0(spRow->m_nScrollId), 0))
         return;
-    MS2Ptr<Unk_UserProxyItemData> spData(spScroll->FUN_140527840() ? 0 : 0);
+    MS2Ptr<CItemData> spData(reinterpret_cast<CItemData*>(spScroll->FUN_140527840()));
+    if (spData == 0)
+        return;
     if (spScroll->FUN_140527870() != 0)
         spScroll->FUN_140527870()->vfunc_3(spItem->FUN_140527870());
     spScroll->FUN_14052b370();
@@ -414,11 +411,10 @@ void UIItemExtractionScrollDialog::FUN_140e4b340()
 }
 
 // @0x140e4b380
-// MS2-FUNCTIONAL: written from the decompile; temporaries / frame slots not tuned
 void UIItemExtractionScrollDialog::OnOk()
 {
     MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(m_nTargetUid);
-    if (spItem.IsNull())
+    if (spItem == 0)
         return;
     MS2Ptr<Unk_ExtractionRow> spRow = FUN_14052d1f0()->FUN_140597580(spItem->FUN_1405276c0());
     if (spRow == 0)

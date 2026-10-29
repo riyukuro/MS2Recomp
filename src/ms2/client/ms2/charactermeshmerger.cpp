@@ -454,8 +454,8 @@
 // MS2-PIN: ??_G?$vector@PEAVNiMesh@@@efd@@QEAAPEAXI@Z 0x14106a800 ; prop
 // MS2-PIN: ?CreateInstance@CCustomizedTextureManager@@SAPEAV1@XZ 0x14106b3d0 ; w200 hand
 // MS2-PIN: ?GetDataStream@NiDataStreamRef@@QEAAPEAVNiDataStream@@XZ 0x14106bb40 ; unique
-// MS2-PIN: ?GetMaterial@NiPropertyState@@QEBAPEAVNiMaterialProperty@@XZ 0x14106bd60 ; w200 hand
-// MS2-PIN: ?IsEqualFast@NiMaterialProperty@@QEBA_NAEBV1@@Z 0x14106c850 ; w200 hand
+// MS2-PIN: ?GetRendererSpecific@NiPropertyState@@QEBAPEAVNiRendererSpecificProperty@@XZ 0x14106bd60 ; gb19 slot 4
+// MS2-PIN: ?IsEqualFast@NiRendererSpecificProperty@@QEBA_NAEBV1@@Z 0x14106c850 ; gb19 this == &kProp
 // MS2-PIN: ?_Buyheadnode@?$_Tree_comp_alloc@V?$_Tmap_traits@EEU?$less@E@std@@V?$CustomAllocator@U?$pair@$$CBEE@std@@@efd@@$0A@@std@@@std@@QEAAPEAU?$_Tree_node@U?$pair@$$CBEE@std@@PEAX@2@XZ 0x14106d320 ; unique
 // MS2-PIN: ?_Buyheadnode@?$_Tree_comp_alloc@V?$_Tmap_traits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@PEAVTexNode@CCharacterMeshMerger@@U?$less@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@V?$CustomAllocator@U?$pair@$$CBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@PEAVTexNode@CCharacterMeshMerger@@@std@@@efd@@$0A@@std@@@std@@QEAAPEAU?$_Tree_node@U?$pair@$$CBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@PEAVTexNode@CCharacterMeshMerger@@@std@@PEAX@2@XZ 0x14106d560 ; prop
 // MS2-PIN: ?_Buyheadnode@?$_Tree_comp_alloc@V?$_Tset_traits@EU?$less@E@std@@V?$CustomAllocator@E@efd@@$0A@@std@@@std@@QEAAPEAU?$_Tree_node@EPEAX@2@XZ 0x14106d6e0 ; prop
@@ -624,6 +624,7 @@
 #include <NiSourceTexture.h>
 #include <NiPixelData.h>
 #include <NiMaterialProperty.h>
+#include <NiRendererSpecificProperty.h>
 #include <NiAlphaProperty.h>
 #include <NiDitherProperty.h>
 #include <NiFogProperty.h>
@@ -648,7 +649,7 @@
 static CString s_strSortTypeNames[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
 static CString s_strSkill = "skill";
 static CString s_strStun = "stun";
-static NiColor s_kAtlasDivisor(0.70710677f, 0.70710677f, 0.70710677f);   // 1/sqrt(2) grey, the atlas alpha divisor
+static NiColor s_kAtlasDivisor(0.70588237f, 0.70588237f, 0.70588237f);   // 180/255 grey, the atlas alpha divisor
 static Unk_1402a9d70 s_unk1402a9d70(17, 0.75f, 0.25f, 2.25f, 10);
 static int s_iAtlasFileCount;                                            // number of atlases dumped so far
 
@@ -761,7 +762,7 @@ template<class T> inline void Unk_SortPair(T a, T b, T* pMin, T* pMax)
         *pMax = a;
     }
 }
-CString FUN_140db9aa0(const NiColorA& kColor);
+CString FUN_140db9aa0(NiColorA kColor);
 
 // Compositing manager of the customised (dyed) character textures.
 class CCustomizedTexInfo : public NiRefObject
@@ -771,10 +772,11 @@ public:
 
     efd::SmartPointer<NiTexture> m_spBase;                  // +0x10
     efd::SmartPointer<NiTexture> m_spDecal;                 // +0x18
-    NiColorA m_kColor0;                                     // +0x20
-    NiColorA m_kColor1;                                     // +0x30
-    NiColorA m_kColor2;                                     // +0x40
-    float m_afParams[4];                                    // +0x50
+    NiColorA m_akColor[3];                                  // +0x20
+    float m_fParam0;                                        // +0x50
+    float m_fParam1;                                        // +0x54
+    float m_fParam2;                                        // +0x58
+    float m_fParam3;                                        // +0x5c
 };
 MS2_CHECK_SIZE(CCustomizedTexInfo, 0x60);
 // Composes the customized character textures (header-inline singleton, 8 bytes: the vptr only; TSingleton vftable 0x142ea5e00,
@@ -783,7 +785,7 @@ class CCustomizedTextureManager : public TSingleton<CCustomizedTextureManager>
 {
 public:
     CCustomizedTextureManager() {}
-    static CCustomizedTextureManager* CreateInstance() { return GetInstance() != 0 ? GetInstance() : new CCustomizedTextureManager; }
+    static CCustomizedTextureManager* CreateInstance() { return s_instance != 0 ? GetInstance() : new CCustomizedTextureManager; }
 };
 MS2_CHECK_SIZE(CCustomizedTextureManager, 0x8);
 CCustomizedTexInfo* FUN_1411660b0(CCustomizedTextureManager* pManager, CCustomizedTexInfo* pInfoA, CCustomizedTexInfo* pInfoB);
@@ -813,7 +815,7 @@ inline CString Unk_Lower(const CString& str)
 {
     return Unk_LowerCopy(str);
 }
-efd::SmartPointer<NiSourceTexture> FUN_141051560(NiAVObject* pMesh);
+efd::SmartPointer<NiTexture> FUN_141051560(NiAVObject* pMesh);
 void FUN_141051f90(NiAVObject* pMesh, NiPixelData* pShaderMap, const NiRect<unsigned int>& kRect);
 NiTexturingProperty* FUN_141050fd0(NiPixelData* pAlbedo, NiPixelData* pShader);
 
@@ -885,35 +887,34 @@ void FUN_141049240(NiAVObject* pRoot, MeshArray& kSource, MeshArray& kMerged)
 // @0x1410497c0
 void FUN_1410497c0(NiAVObject* pRoot, MeshArray& kSource, MeshArray& kMerged)
 {
-    if (pRoot != 0)
+    if (pRoot == 0)
+        return;
+    MeshGroups kGroups;
+    FUN_14104d450(pRoot, kGroups);
+    for (unsigned int i = 0; i < kGroups.size(); i++)
     {
-        MeshGroups kGroups;
-        FUN_14104d450(pRoot, kGroups);
-        for (unsigned int i = 0; i < kGroups.size(); i++)
+        for (unsigned int j = 0; j < kGroups[i].size(); j++)
         {
-            for (unsigned int j = 0; j < kGroups[i].size(); j++)
-            {
-                kSource.Add(efd::SmartPointer<NiMesh>(kGroups[i][j]));
-                OutputDebugStringA((const char*)kGroups[i][j]->GetName());
-                OutputDebugStringA(",");
-            }
-            OutputDebugStringA("\n");
+            kSource.Add(kGroups[i][j]);
+            OutputDebugStringA(kGroups[i][j]->GetName());
+            OutputDebugStringA(",");
         }
-        if (kSource.GetCount() == 0)
-            return;
-        NiAVObject* pParent = kSource[0]->GetParent();
-        for (unsigned int i = 0; i < kGroups.size(); i++)
-        {
-            MeshGroups kBuckets;
-            MergeInfo kInfo;
-            FUN_14104e800(kGroups[i], kBuckets, kInfo);
-            efd::SmartPointer<NiMesh> spMerged(FUN_14104f460(kBuckets, kInfo, pParent));
-            kMerged.Add(spMerged);
-            NiStream kStream;
-            kStream.InsertObject(spMerged);
-            kStream.InsertObject(kInfo.m_spSkin);
-            kStream.Save("MergedMesh.nif");
-        }
+        OutputDebugStringA("\n");
+    }
+    if (kSource.GetCount() == 0)
+        return;
+    NiNode* pParent = kSource[0]->GetParent();
+    for (unsigned int k = 0; k < kGroups.size(); k++)
+    {
+        MeshGroups kBuckets;
+        MergeInfo kInfo;
+        FUN_14104e800(kGroups[k], kBuckets, kInfo);
+        efd::SmartPointer<NiMesh> spMerged(FUN_14104f460(kBuckets, kInfo, pParent));
+        kMerged.Add(spMerged);
+        NiStream kStream;
+        kStream.InsertObject(spMerged);
+        kStream.InsertObject(kInfo.m_spSkin);
+        kStream.Save("MergedMesh.nif");
     }
 }
 
@@ -1011,11 +1012,11 @@ int FUN_141049fa0(NiMesh* pMesh, const MeshGroups& kGroups)
     for (size_t i = 0; i < kGroups.size(); i++)
     {
         NiMesh* pFirst = kGroups[i][0];
-        if (FUN_140a0b000(pFirst) == FUN_140a0b000(pMesh))
-        {
-            if (FUN_141052aa0(pFirst->GetPropertyState(), pMesh->GetPropertyState()))
-                return (int)i;
-        }
+        if (FUN_140a0b000(pFirst) != FUN_140a0b000(pMesh))
+            continue;
+        if (!FUN_141052aa0(pFirst->GetPropertyState(), pMesh->GetPropertyState()))
+            continue;
+        return (int)i;
     }
     return -1;
 }
@@ -1060,12 +1061,11 @@ void FUN_14104a1c0(const MeshList& kGroup, MeshGroups& kBuckets, MergeInfo& kInf
         pMesh->CompleteModifiers(&kArgs);
         if (pFirstSkin == 0)
             pFirstSkin = pSkin;
-        unsigned int uiBucket = 0;
-        while (uiBucket < kBucketBones.size())
+        unsigned int uiBucket;
+        for (uiBucket = 0; uiBucket < kBucketBones.size(); uiBucket++)
         {
-            if (FUN_141051ee0(kBucketBones[uiBucket], ppBones, uiBoneCount) < 0x3d)
+            if ((unsigned int)FUN_141051ee0(kBucketBones[uiBucket], ppBones, uiBoneCount) <= 0x3c)
                 break;
-            uiBucket++;
         }
         if (uiBucket == kBucketBones.size())
         {
@@ -1078,25 +1078,25 @@ void FUN_14104a1c0(const MeshList& kGroup, MeshGroups& kBuckets, MergeInfo& kInf
         for (unsigned char ucBone = 0; ucBone < uiBoneCount; ucBone++)
         {
             NiAVObject* pBone = ppBones[ucBone];
-            unsigned char ucFound = 0;
-            while (ucFound < kBones.GetCount())
+            unsigned char ucFound;
+            for (ucFound = 0; ucFound < kBones.GetCount(); ucFound++)
             {
                 if (pBone == kBones[ucFound])
                 {
-                    if (!(pTransforms[ucBone].m_Translate == kTransforms[ucFound]->m_Translate))
+                    if (pTransforms[ucBone].m_Translate == kTransforms[ucFound]->m_Translate)
+                    {
+                        kRemap[ucBone] = ucFound;
+                        break;
+                    }
+                    else
                     {
                         NiPoint3 kDiff = pTransforms[ucBone].m_Translate - kTransforms[ucFound]->m_Translate;
                         Unk_MeshLog(GetLogString(), 2, 0x13, L"[MeshOptimizer] Bone {0}의 SkinToBoneTransform이 앞에 설정된 것과 다릅니다 Diff :({1},{2},{3})",
                                     (const char*)pBone->GetName(), kDiff.x, kDiff.y, kDiff.z);
                         kRemap[ucBone] = ucFound;
+                        break;
                     }
-                    else
-                    {
-                        kRemap[ucBone] = ucFound;
-                    }
-                    break;
                 }
-                ucFound++;
             }
             if (ucFound == kBones.GetCount())
             {
@@ -1168,12 +1168,11 @@ void FUN_14104e800(const MeshList& kGroup, MeshGroups& kBuckets, MergeInfo& kInf
         pMesh->CompleteModifiers(&kArgs);
         if (pFirstSkin == 0)
             pFirstSkin = pSkin;
-        unsigned int uiBucket = 0;
-        while (uiBucket < kBucketBones.size())
+        unsigned int uiBucket;
+        for (uiBucket = 0; uiBucket < kBucketBones.size(); uiBucket++)
         {
-            if (FUN_141051ee0(kBucketBones[uiBucket], ppBones, uiBoneCount) < 0x3d)
+            if ((unsigned int)FUN_141051ee0(kBucketBones[uiBucket], ppBones, uiBoneCount) <= 0x3c)
                 break;
-            uiBucket++;
         }
         if (uiBucket == kBucketBones.size())
         {
@@ -1186,25 +1185,25 @@ void FUN_14104e800(const MeshList& kGroup, MeshGroups& kBuckets, MergeInfo& kInf
         for (unsigned char ucBone = 0; ucBone < uiBoneCount; ucBone++)
         {
             NiAVObject* pBone = ppBones[ucBone];
-            unsigned char ucFound = 0;
-            while (ucFound < kBones.GetCount())
+            unsigned char ucFound;
+            for (ucFound = 0; ucFound < kBones.GetCount(); ucFound++)
             {
                 if (pBone == kBones[ucFound])
                 {
-                    if (!(pTransforms[ucBone].m_Translate == kTransforms[ucFound]->m_Translate))
+                    if (pTransforms[ucBone].m_Translate == kTransforms[ucFound]->m_Translate)
+                    {
+                        kRemap[ucBone] = ucFound;
+                        break;
+                    }
+                    else
                     {
                         NiPoint3 kDiff = pTransforms[ucBone].m_Translate - kTransforms[ucFound]->m_Translate;
                         Unk_MeshLog(GetLogString(), 2, 0x13, L"[MeshOptimizer] Bone {0}의 SkinToBoneTransform이 앞에 설정된 것과 다릅니다 Diff :({1},{2},{3})",
                                     (const char*)pBone->GetName(), kDiff.x, kDiff.y, kDiff.z);
                         kRemap[ucBone] = ucFound;
+                        break;
                     }
-                    else
-                    {
-                        kRemap[ucBone] = ucFound;
-                    }
-                    break;
                 }
-                ucFound++;
             }
             if (ucFound == kBones.GetCount())
             {
@@ -1250,7 +1249,6 @@ void FUN_14104e800(const MeshList& kGroup, MeshGroups& kBuckets, MergeInfo& kInf
     }
 }
 
-
 // Size the bone set would have after adding the bones (0x141051ee0).
 // @0x141051ee0
 int FUN_141051ee0(efd::set<NiAVObject*>& kBones, NiAVObject** ppBones, unsigned int uiCount)
@@ -1259,7 +1257,8 @@ int FUN_141051ee0(efd::set<NiAVObject*>& kBones, NiAVObject** ppBones, unsigned 
     for (unsigned char uc = 0; uc < uiCount; uc++)
     {
         NiAVObject* pBone = ppBones[uc];
-        if (kBones.find(pBone) == kBones.end())
+        efd::set<NiAVObject*>::const_iterator it = kBones.find(pBone);
+        if (it == kBones.end())
             iSize++;
     }
     return iSize;
@@ -1357,31 +1356,30 @@ NiMesh* FUN_14104ae20(const MeshGroups& kBuckets, MergeInfo& kInfo, NiAVObject* 
 // @0x14104ba70
 void FUN_14104ba70(unsigned int** ppDst, NiDataStreamRef* pRef, unsigned int uiCount, int iVertexOffset, bool b32)
 {
-    if (pRef != 0 && uiCount != 0)
+    if (pRef == 0 || uiCount == 0)
+        return;
+    void* pLocked = pRef->GetDataStream()->Lock(5);
+    if (b32)
     {
-        NiDataStream* pStream = pRef->GetDataStream();
-        unsigned short* pSrc = (unsigned short*)pStream->Lock(5);
-        if (!b32)
+        unsigned int* pIn = (unsigned int*)pLocked;
+        for (unsigned int i = 0; i < uiCount; i++)
         {
-            unsigned short* pIn = pSrc;
-            for (unsigned int i = 0; i < uiCount; i++)
-            {
-                **ppDst = *pIn + iVertexOffset;
-                (*ppDst)++;
-                pIn++;
-            }
+            **ppDst = *pIn + iVertexOffset;
+            (*ppDst)++;
+            pIn++;
         }
-        else
-        {
-            for (unsigned int i = 0; i < uiCount; i++)
-            {
-                **ppDst = *(int*)pSrc + iVertexOffset;
-                (*ppDst)++;
-                pSrc += 2;
-            }
-        }
-        pRef->GetDataStream()->Unlock(5);
     }
+    else
+    {
+        unsigned short* pIn = (unsigned short*)pLocked;
+        for (unsigned int i = 0; i < uiCount; i++)
+        {
+            **ppDst = *pIn + iVertexOffset;
+            (*ppDst)++;
+            pIn++;
+        }
+    }
+    pRef->GetDataStream()->Unlock(5);
 }
 
 // Concatenates the index streams of all groups into one 32-bit stream with a region per group (0x14104b530).
@@ -1396,15 +1394,17 @@ void FUN_14104b530(NiMesh* pMerged, const MeshGroups& kBuckets)
     NiDataStreamRef* pRef = pMerged->AddStream(NiCommonSemantics::INDEX(), 0, NiDataStreamElement::F_UINT32_1, uiTotal, 0x12,
                                                NiDataStream::USAGE_VERTEX_INDEX, 0, false, true);
     unsigned int* pDst = (unsigned int*)pRef->GetDataStream()->LockWrite();
-    int iVertexOffset = 0;
     CMM_FOR_EACH(const MeshList& kList, kBuckets)
     {
+        int iVertexOffset = 0;
         CMM_FOR_EACH(NiMesh* pMesh, kList)
         {
             unsigned int uiCount = pMesh->GetCount(0, NiCommonSemantics::INDEX(), 0);
             unsigned int uiVertices = pMesh->GetVertexCount();
-            FUN_14104ba70(&pDst, pMesh->FindStreamRef(NiCommonSemantics::INDEX(), 0, NiDataStreamElement::F_UINT16_1), uiCount, iVertexOffset, false);
-            FUN_14104ba70(&pDst, pMesh->FindStreamRef(NiCommonSemantics::INDEX(), 0, NiDataStreamElement::F_UINT32_1), uiCount, iVertexOffset, true);
+            NiDataStreamRef* pRef16 = pMesh->FindStreamRef(NiCommonSemantics::INDEX(), 0, NiDataStreamElement::F_UINT16_1);
+            FUN_14104ba70(&pDst, pRef16, uiCount, iVertexOffset, false);
+            NiDataStreamRef* pRef32 = pMesh->FindStreamRef(NiCommonSemantics::INDEX(), 0, NiDataStreamElement::F_UINT32_1);
+            FUN_14104ba70(&pDst, pRef32, uiCount, iVertexOffset, true);
             iVertexOffset += uiVertices;
         }
     }
@@ -1417,7 +1417,10 @@ void FUN_14104b530(NiMesh* pMerged, const MeshGroups& kBuckets)
     {
         int iCount = 0;
         CMM_FOR_EACH(NiMesh* pMesh, kBuckets[i])
-            iCount += pMesh->GetCount(0, NiCommonSemantics::INDEX(), 0);
+        {
+            unsigned int uiCount = pMesh->GetCount(0, NiCommonSemantics::INDEX(), 0);
+            iCount += uiCount;
+        }
         NiDataStream::Region kRegion(iStart, iCount);
         if (i == 0)
             pRef->GetDataStream()->SetRegion(kRegion, 0);
@@ -1469,17 +1472,23 @@ NiDataStreamRef* FUN_14104cc20(NiMesh* pMesh)
 NiDataStreamRef* FUN_14104c9e0(const std::vector<Unk_StreamElementDesc>& kLayout, unsigned int uiVertexCount)
 {
     NiDataStreamElementSet kElements;
-    for (std::vector<Unk_StreamElementDesc>::const_iterator it = kLayout.begin(), itEnd = kLayout.end(); it != itEnd; ++it)
-        kElements.AddElement((*it).m_eFormat);
-    NiDataStream* pStream = NiDataStream::CreateDataStream(kElements, uiVertexCount, 0x13, NiDataStream::USAGE_VERTEX, false);
+    const std::vector<Unk_StreamElementDesc>& rLayout = kLayout;
+    std::vector<Unk_StreamElementDesc>::const_iterator itEnd = rLayout.end();
+    for (std::vector<Unk_StreamElementDesc>::const_iterator it = rLayout.begin(); it != itEnd; ++it)
+    {
+        const Unk_StreamElementDesc& kDesc = *it;
+        kElements.AddElement(kDesc.m_eFormat);
+    }
+    NiUInt8 uiAccess = 0x13;
+    NiDataStream* pStream = NiDataStream::CreateDataStream(kElements, uiVertexCount, uiAccess, NiDataStream::USAGE_VERTEX, false);
     NiDataStream::Region kRegion(0, uiVertexCount);
     pStream->AddRegion(kRegion);
     NiDataStreamRef* pRef = NiNew NiDataStreamRef;
     pRef->SetPerInstance(true);
     pRef->SetSubmeshCount(1, 0xffff);
     pRef->SetDataStream(pStream);
-    for (unsigned int i = 0; i < kLayout.size(); i++)
-        pRef->BindSemanticToElementDescAt(i, kLayout[i].m_kSemantic, kLayout[i].m_uiIndex);
+    for (size_t i = 0; i < kLayout.size(); i++)
+        pRef->BindSemanticToElementDescAt((unsigned int)i, kLayout[i].m_kSemantic, kLayout[i].m_uiIndex);
     return pRef;
 }
 
@@ -1636,173 +1645,168 @@ void FUN_14104bbb0(NiMesh* pMerged, MergeInfo& kInfo, const MeshGroups& kBuckets
 // @0x14104cdc0
 CCharacterMeshMerger::TexNode* CCharacterMeshMerger::TexNode::Insert(NiTexture* pTexture)
 {
-    if (m_spChild[0] != 0)
+    TexNode* pResult = 0;
+    if (m_spChild[0])
     {
-        TexNode* pResult = m_spChild[0]->Insert(pTexture);
-        if (pResult == 0)
-            pResult = m_spChild[1]->Insert(pTexture);
-        return pResult;
-    }
-    if (m_spTexture != 0)
-        return 0;
-    if (pTexture->GetWidth() > m_kRect.GetWidth())
-        return 0;
-    if (pTexture->GetHeight() > m_kRect.GetHeight())
-        return 0;
-    if (m_kRect.GetWidth() == pTexture->GetWidth() && m_kRect.GetHeight() == pTexture->GetHeight())
-    {
-        m_spTexture = pTexture;
-        return this;
-    }
-    if (m_kRect.GetHeight() - pTexture->GetHeight() < m_kRect.GetWidth() - pTexture->GetWidth())
-    {
-        m_spChild[0] = NiNew TexNode(m_kRect.m_left, m_kRect.m_top, m_kRect.m_left + pTexture->GetWidth(), m_kRect.m_bottom);
-        m_spChild[1] = NiNew TexNode(m_kRect.m_left + pTexture->GetWidth(), m_kRect.m_top, m_kRect.m_right, m_kRect.m_bottom);
+        pResult = m_spChild[0]->Insert(pTexture);
+        if (pResult != 0)
+            return pResult;
+        return m_spChild[1]->Insert(pTexture);
     }
     else
     {
-        m_spChild[0] = NiNew TexNode(m_kRect.m_left, m_kRect.m_top, m_kRect.m_right, m_kRect.m_top + pTexture->GetHeight());
-        m_spChild[1] = NiNew TexNode(m_kRect.m_left, m_kRect.m_top + pTexture->GetHeight(), m_kRect.m_right, m_kRect.m_bottom);
+        if (m_spTexture)
+            return 0;
+        if (m_kRect.GetWidth() < pTexture->GetWidth() || m_kRect.GetHeight() < pTexture->GetHeight())
+            return 0;
+        if (m_kRect.GetWidth() == pTexture->GetWidth() && m_kRect.GetHeight() == pTexture->GetHeight())
+        {
+            m_spTexture = pTexture;
+            return this;
+        }
+        unsigned int uiDW = m_kRect.GetWidth() - pTexture->GetWidth();
+        unsigned int uiDH = m_kRect.GetHeight() - pTexture->GetHeight();
+        if (uiDW > uiDH)
+        {
+            m_spChild[0] = NiNew TexNode(m_kRect.m_left, m_kRect.m_top, m_kRect.m_left + pTexture->GetWidth(), m_kRect.m_bottom);
+            m_spChild[1] = NiNew TexNode(m_kRect.m_left + pTexture->GetWidth(), m_kRect.m_top, m_kRect.m_right, m_kRect.m_bottom);
+        }
+        else
+        {
+            m_spChild[0] = NiNew TexNode(m_kRect.m_left, m_kRect.m_top, m_kRect.m_right, m_kRect.m_top + pTexture->GetHeight());
+            m_spChild[1] = NiNew TexNode(m_kRect.m_left, m_kRect.m_top + pTexture->GetHeight(), m_kRect.m_right, m_kRect.m_bottom);
+        }
+        return m_spChild[0]->Insert(pTexture);
     }
-    return m_spChild[0]->Insert(pTexture);
 }
 
 
-// Same property state on both sides: every optional property is either absent from both or equal (0x141052aa0). Texturing is
-// compared separately by the callers.
+// Same property state on both sides: every optional property is either absent from both or equal (0x141052aa0). Material
+// is not compared (the renderer-specific property, slot 4, is compared by identity); texturing is compared separately by
+// the callers.
 // @0x141052aa0
 bool FUN_141052aa0(const NiPropertyState* pA, const NiPropertyState* pB)
 {
-    NiAlphaProperty* pAlphaA = pA->GetAlpha();
-    if (pAlphaA == 0)
+    if (pA->GetAlpha())
     {
-        if (pB->GetAlpha() != 0)
+        if (pB->GetAlpha())
+        {
+            if (!pA->GetAlpha()->IsEqualFast(*pB->GetAlpha()))
+                return false;
+        }
+        else
             return false;
     }
-    else
+    else if (pB->GetAlpha())
+        return false;
+    if (pA->GetDither())
     {
-        if (pB->GetAlpha() == 0)
-            return false;
-        if (!pAlphaA->IsEqualFast(*pB->GetAlpha()))
+        if (pB->GetDither())
+        {
+            if (!pA->GetDither()->IsEqualFast(*pB->GetDither()))
+                return false;
+        }
+        else
             return false;
     }
-    NiDitherProperty* pDitherA = pA->GetDither();
-    if (pDitherA == 0)
+    else if (pB->GetDither())
+        return false;
+    if (pA->GetFog())
     {
-        if (pB->GetDither() != 0)
+        if (pB->GetFog())
+        {
+            if (!pA->GetFog()->IsEqualFast(*pB->GetFog()))
+                return false;
+        }
+        else
             return false;
     }
-    else
+    else if (pB->GetFog())
+        return false;
+    if (pA->GetRendererSpecific())
     {
-        if (pB->GetDither() == 0)
-            return false;
-        if (!pDitherA->IsEqualFast(*pB->GetDither()))
+        if (pB->GetRendererSpecific())
+        {
+            if (!pA->GetRendererSpecific()->IsEqualFast(*pB->GetRendererSpecific()))
+                return false;
+        }
+        else
             return false;
     }
-    NiFogProperty* pFogA = pA->GetFog();
-    if (pFogA == 0)
+    else if (pB->GetRendererSpecific())
+        return false;
+    if (pA->GetShade())
     {
-        if (pB->GetFog() != 0)
+        if (pB->GetShade())
+        {
+            if (!pA->GetShade()->IsEqualFast(*pB->GetShade()))
+                return false;
+        }
+        else
             return false;
     }
-    else
+    else if (pB->GetShade())
+        return false;
+    if (pA->GetSpecular())
     {
-        if (pB->GetFog() == 0)
-            return false;
-        if (!pFogA->IsEqualFast(*pB->GetFog()))
+        if (pB->GetSpecular())
+        {
+            if (!pA->GetSpecular()->IsEqualFast(*pB->GetSpecular()))
+                return false;
+        }
+        else
             return false;
     }
-    NiMaterialProperty* pMaterialA = pA->GetMaterial();
-    if (pMaterialA == 0)
+    else if (pB->GetSpecular())
+        return false;
+    if (pA->GetStencil())
     {
-        if (pB->GetMaterial() != 0)
+        if (pB->GetStencil())
+        {
+            if (!pA->GetStencil()->IsEqualFast(*pB->GetStencil()))
+                return false;
+        }
+        else
             return false;
     }
-    else
+    else if (pB->GetStencil())
+        return false;
+    if (pA->GetVertexColor())
     {
-        if (pB->GetMaterial() == 0)
-            return false;
-        if (!pMaterialA->IsEqualFast(*pB->GetMaterial()))
+        if (pB->GetVertexColor())
+        {
+            if (!pA->GetVertexColor()->IsEqualFast(*pB->GetVertexColor()))
+                return false;
+        }
+        else
             return false;
     }
-    NiShadeProperty* pShadeA = pA->GetShade();
-    if (pShadeA == 0)
+    else if (pB->GetVertexColor())
+        return false;
+    if (pA->GetWireframe())
     {
-        if (pB->GetShade() != 0)
+        if (pB->GetWireframe())
+        {
+            if (!pA->GetWireframe()->IsEqualFast(*pB->GetWireframe()))
+                return false;
+        }
+        else
             return false;
     }
-    else
+    else if (pB->GetWireframe())
+        return false;
+    if (pA->GetZBuffer())
     {
-        if (pB->GetShade() == 0)
-            return false;
-        if (!pShadeA->IsEqualFast(*pB->GetShade()))
+        if (pB->GetZBuffer())
+        {
+            if (!pA->GetZBuffer()->IsEqualFast(*pB->GetZBuffer()))
+                return false;
+        }
+        else
             return false;
     }
-    NiSpecularProperty* pSpecularA = pA->GetSpecular();
-    if (pSpecularA == 0)
-    {
-        if (pB->GetSpecular() != 0)
-            return false;
-    }
-    else
-    {
-        if (pB->GetSpecular() == 0)
-            return false;
-        if (!pSpecularA->IsEqualFast(*pB->GetSpecular()))
-            return false;
-    }
-    NiStencilProperty* pStencilA = pA->GetStencil();
-    if (pStencilA == 0)
-    {
-        if (pB->GetStencil() != 0)
-            return false;
-    }
-    else
-    {
-        if (pB->GetStencil() == 0)
-            return false;
-        if (!pStencilA->IsEqualFast(*pB->GetStencil()))
-            return false;
-    }
-    NiVertexColorProperty* pVertexColorA = pA->GetVertexColor();
-    if (pVertexColorA == 0)
-    {
-        if (pB->GetVertexColor() != 0)
-            return false;
-    }
-    else
-    {
-        if (pB->GetVertexColor() == 0)
-            return false;
-        if (!pVertexColorA->IsEqualFast(*pB->GetVertexColor()))
-            return false;
-    }
-    NiWireframeProperty* pWireframeA = pA->GetWireframe();
-    if (pWireframeA == 0)
-    {
-        if (pB->GetWireframe() != 0)
-            return false;
-    }
-    else
-    {
-        if (pB->GetWireframe() == 0)
-            return false;
-        if (!pWireframeA->IsEqualFast(*pB->GetWireframe()))
-            return false;
-    }
-    NiZBufferProperty* pZBufferA = pA->GetZBuffer();
-    if (pZBufferA == 0)
-    {
-        if (pB->GetZBuffer() != 0)
-            return false;
-    }
-    else
-    {
-        if (pB->GetZBuffer() == 0)
-            return false;
-        if (!pZBufferA->IsEqualFast(*pB->GetZBuffer()))
-            return false;
-    }
+    else if (pB->GetZBuffer())
+        return false;
     return true;
 }
 
@@ -1827,7 +1831,8 @@ void FUN_1410528f0(const MeshList& kMeshes, MeshGroups& kGroups)
 }
 
 
-// Collects the mergeable meshes of the character per world transform, then per property state (0x14104d450).
+// Collects the mergeable meshes of the character into one list (keyed by the first mesh's world transform), then splits it per
+// property state (0x14104d450).
 // @0x14104d450
 void FUN_14104d450(NiAVObject* pRoot, MeshGroups& kGroups)
 {
@@ -1891,19 +1896,27 @@ void FUN_14104d450(NiAVObject* pRoot, MeshGroups& kGroups)
             if (kAmbient.g != kAmbient.r || kAmbient.b != kAmbient.r || kDiffuse.g != kDiffuse.r || kDiffuse.b != kDiffuse.r)
                 EE_LOG_AT(1, 1, ("Mesh %s's material color is not grayscale color!", (const char*)pMesh->GetName()), MS2_THIS_FILE, 0x159);
 
-            efd::map<NiTransform, MeshList, Unk_TransformLess>::iterator it = kByTransform.find(pMesh->GetWorldTransform());
-            if (it == kByTransform.end())
-                it = kByTransform.insert(std::make_pair(pMesh->GetWorldTransform(), MeshList())).first;
-            it->second.push_back(pMesh);
+            // The exe takes begin(), not find(): every mergeable mesh joins the first transform's list.
+            efd::map<NiTransform, MeshList, Unk_TransformLess>::iterator it = kByTransform.begin();
+            if (it != kByTransform.end())
+                it->second.push_back(pMesh);
+            else
+                kByTransform.insert(std::make_pair(pMesh->GetWorldTransform(), MeshList())).first->second.push_back(pMesh);
         }
     }
 
-    for (efd::map<NiTransform, MeshList, Unk_TransformLess>::iterator it = kByTransform.begin(); it != kByTransform.end(); ++it)
+    efd::map<NiTransform, MeshList, Unk_TransformLess>& rByTransform = kByTransform;
+    efd::map<NiTransform, MeshList, Unk_TransformLess>::const_iterator itEnd = rByTransform.end();
+    for (efd::map<NiTransform, MeshList, Unk_TransformLess>::const_iterator it = rByTransform.begin(); it != itEnd; ++it)
     {
+        const efd::map<NiTransform, MeshList, Unk_TransformLess>::value_type& kEntry = *it;
         MeshGroups kSplit;
-        FUN_1410528f0(it->second, kSplit);
-        for (MeshList& kList : kSplit)
+        FUN_1410528f0(kEntry.second, kSplit);
+        MeshGroups& rSplit = kSplit;
+        MeshGroups::const_iterator itListEnd = rSplit.end();
+        for (MeshGroups::const_iterator itList = rSplit.begin(); itList != itListEnd; ++itList)
         {
+            const MeshList& kList = *itList;
             if (kList.size() > 1)
                 kGroups.push_back(kList);
         }
@@ -1928,10 +1941,15 @@ void FUN_14104ddc0(efd::vector<NiAVObject*>& kMeshes, MeshGroupVector& kOutGroup
     {
         NiMesh* pMesh = (NiMesh*)kMeshes[i];
         CCharacterMeshMerger::TexNode* pNode = 0;
-        efd::SmartPointer<NiSourceTexture> spTexture;
+        efd::SmartPointer<NiTexture> spTexture;
         CString strKey = FUN_1410521a0(pMesh);
-        efd::map<CString, CCharacterMeshMerger::TexNode*>::iterator itCached = kCache.find(strKey);
-        if (itCached == kCache.end())
+        efd::map<CString, CCharacterMeshMerger::TexNode*>::const_iterator itCached = kCache.find(strKey);
+        if (itCached != kCache.end())
+        {
+            pNode = itCached->second;
+            spTexture = pNode->m_spTexture;
+        }
+        else
         {
             spTexture = FUN_141051560(pMesh);
             pNode = spRoot->Insert(spTexture);
@@ -1952,12 +1970,7 @@ void FUN_14104ddc0(efd::vector<NiAVObject*>& kMeshes, MeshGroupVector& kOutGroup
                 kCache.insert(std::make_pair(strKey, pNode));
             NiMaterialProperty* pMaterial = NiDynamicCast(NiMaterialProperty, pMesh->GetProperty(3));
             float fAlpha = pMaterial->GetDiffuseColor().r / s_kAtlasDivisor.r;
-            BlitTexturePixels(spTexture, spAlbedo, pNode->m_kRect, fAlpha);
-        }
-        else
-        {
-            pNode = itCached->second;
-            spTexture = (NiSourceTexture*)(NiTexture*)pNode->m_spTexture;
+            BlitTexturePixels((NiSourceTexture*)(NiTexture*)spTexture, spAlbedo, pNode->m_kRect, fAlpha);
         }
         if (pNode->m_kRect.GetWidth() < uiMinCell)
             uiMinCell = pNode->m_kRect.GetWidth();
@@ -1992,20 +2005,22 @@ void FUN_141050920(Unk_AtlasResult* pResult, NiPixelData* pAlbedo, NiPixelData* 
 {
     unsigned int uiWidth = pAlbedo->GetWidth(0, 0);
     unsigned int uiHeight = pAlbedo->GetHeight(0, 0);
+    const float fEpsilon = 0.001f;
+    unsigned int uiMinCell = 0xffffffff;
     unsigned int uiUsedWidth = 0;
     unsigned int uiUsedHeight = 0;
-    unsigned int uiMinCell = 0xffffffff;
-    for (efd::map<NiMesh*, Unk_UVRect>::iterator it = pResult->m_kPlacement.begin(); it != pResult->m_kPlacement.end(); ++it)
+    efd::map<NiMesh*, Unk_UVRect>::iterator it = pResult->m_kPlacement.begin();
+    for (; it != pResult->m_kPlacement.end(); ++it)
     {
         const Unk_UVRect& kRect = it->second;
-        int iLeft = (int)(kRect.m_kOffset.x * (float)uiWidth + 0.001);
-        int iTop = (int)(kRect.m_kOffset.y * (float)uiHeight + 0.001);
-        unsigned int uiRectWidth = (unsigned int)(kRect.m_kScale.x * (float)uiWidth + 0.001);
-        unsigned int uiRectHeight = (unsigned int)(kRect.m_kScale.y * (float)uiHeight + 0.001);
-        if (uiUsedWidth < iLeft + uiRectWidth)
-            uiUsedWidth = iLeft + uiRectWidth;
-        if (uiUsedHeight < iTop + uiRectHeight)
-            uiUsedHeight = iTop + uiRectHeight;
+        unsigned int uiLeft = (unsigned int)(kRect.m_kOffset.x * (float)uiWidth + fEpsilon);
+        unsigned int uiTop = (unsigned int)(kRect.m_kOffset.y * (float)uiHeight + fEpsilon);
+        unsigned int uiRectWidth = (unsigned int)(kRect.m_kScale.x * (float)uiWidth + fEpsilon);
+        unsigned int uiRectHeight = (unsigned int)(kRect.m_kScale.y * (float)uiHeight + fEpsilon);
+        if (uiLeft + uiRectWidth > uiUsedWidth)
+            uiUsedWidth = uiLeft + uiRectWidth;
+        if (uiTop + uiRectHeight > uiUsedHeight)
+            uiUsedHeight = uiTop + uiRectHeight;
         if (uiRectWidth < uiMinCell)
             uiMinCell = uiRectWidth;
         if (uiRectHeight < uiMinCell)
@@ -2014,11 +2029,19 @@ void FUN_141050920(Unk_AtlasResult* pResult, NiPixelData* pAlbedo, NiPixelData* 
     efd::SmartPointer<NiPixelData> spShader = DownsamplePixels(pShader, uiMinCell);
     unsigned int uiShrinkU = 1;
     unsigned int uiShrinkV = 1;
-    for (; uiUsedWidth <= uiWidth / 2; uiWidth = uiWidth / 2)
-        uiShrinkU = uiShrinkU << 1;
-    for (; uiUsedHeight <= uiHeight / 2; uiHeight = uiHeight / 2)
-        uiShrinkV = uiShrinkV << 1;
-    for (efd::map<NiMesh*, Unk_UVRect>::iterator it = pResult->m_kPlacement.begin(); it != pResult->m_kPlacement.end(); ++it)
+    unsigned int uiAtlasWidth = uiWidth;
+    unsigned int uiAtlasHeight = uiHeight;
+    while (uiUsedWidth <= uiAtlasWidth / 2)
+    {
+        uiShrinkU <<= 1;
+        uiAtlasWidth /= 2;
+    }
+    while (uiUsedHeight <= uiAtlasHeight / 2)
+    {
+        uiShrinkV <<= 1;
+        uiAtlasHeight /= 2;
+    }
+    for (it = pResult->m_kPlacement.begin(); it != pResult->m_kPlacement.end(); ++it)
     {
         Unk_UVRect& kRect = it->second;
         kRect.m_kScale.x = kRect.m_kScale.x * (float)uiShrinkU;
@@ -2027,14 +2050,12 @@ void FUN_141050920(Unk_AtlasResult* pResult, NiPixelData* pAlbedo, NiPixelData* 
         kRect.m_kOffset.y = kRect.m_kOffset.y * (float)uiShrinkV;
     }
 
-    efd::SmartPointer<NiPixelData> spAtlas = NiNew NiPixelData(uiWidth, uiHeight, DAT_1439fb040, 1, 1);
-    NiRect<unsigned int> kAtlasRect(0, uiWidth, 0, uiHeight);
+    efd::SmartPointer<NiPixelData> spAtlas = NiNew NiPixelData(uiAtlasWidth, uiAtlasHeight, DAT_1439fb040, 1, 1);
+    NiRect<unsigned int> kAtlasRect(0, uiAtlasWidth, 0, uiAtlasHeight);
     CopyPixelRect(pAlbedo, kAtlasRect, spAtlas, kAtlasRect);
 
-    unsigned int uiShaderHeight = spShader->GetHeight(0, 0) / uiShrinkV;
-    efd::SmartPointer<NiPixelData> spShaderAtlas = NiNew NiPixelData(spShader->GetWidth(0, 0) / uiShrinkU, uiShaderHeight, DAT_1439fb040, 1, 1);
-    unsigned int uiShaderHeight2 = spShaderAtlas->GetHeight(0, 0);
-    NiRect<unsigned int> kShaderRect(0, spShaderAtlas->GetWidth(0, 0), 0, uiShaderHeight2);
+    efd::SmartPointer<NiPixelData> spShaderAtlas = NiNew NiPixelData(spShader->GetWidth(0, 0) / uiShrinkU, spShader->GetHeight(0, 0) / uiShrinkV, DAT_1439fb040, 1, 1);
+    NiRect<unsigned int> kShaderRect(0, spShaderAtlas->GetWidth(0, 0), 0, spShaderAtlas->GetHeight(0, 0));
     CopyPixelRect(spShader, kShaderRect, spShaderAtlas, kShaderRect);
     pResult->m_spTexturing = FUN_141050fd0(spAtlas, spShaderAtlas);
 }
@@ -2068,7 +2089,7 @@ NiDataStreamRef* FUN_141051210(NiDataStreamRef* pRef, unsigned int uiCount)
     NiDataStreamElementSet kElements;
     for (unsigned int i = 0; i < pRef->GetDataStream()->GetElementDescCount(); i++)
         kElements.Add(pRef->GetElementDescAt(i));
-    unsigned int uiStride = pRef->GetStride();
+    kElements.m_uiStride = pRef->GetStride();
     NiDataStream* pStream = NiDataStream::CreateDataStream(kElements, uiCount, pRef->GetAccessMask(), pRef->GetUsage(), false);
     NiDataStream::Region kRegion(0, uiCount);
     pStream->AddRegion(kRegion);
@@ -2111,59 +2132,56 @@ bool FUN_1410513b0(NiDataStreamRef* pA, NiDataStreamRef* pB)
 
 // The base texture of the mesh, or the composited customised texture when the texturing property has shader maps (0x141051560).
 // @0x141051560
-efd::SmartPointer<NiSourceTexture> FUN_141051560(NiAVObject* pMesh)
+efd::SmartPointer<NiTexture> FUN_141051560(NiAVObject* pMesh)
 {
-    efd::SmartPointer<NiSourceTexture> spResult;
     NiTexturingProperty* pTexturing = NiDynamicCast(NiTexturingProperty, pMesh->GetProperty(8));
     if (pTexturing == 0)
-        return spResult;
+        return 0;
     if (pTexturing->GetShaderMapCount() == 0)
-    {
-        spResult = NiDynamicCast(NiSourceTexture, pTexturing->GetBaseTexture());
-        return spResult;
-    }
+        return NiDynamicCast(NiSourceTexture, pTexturing->GetBaseTexture());
 
     efd::SmartPointer<CCustomizedTexInfo> spInfoA = NiNew CCustomizedTexInfo;
     spInfoA->m_spBase = pTexturing->GetBaseTexture();
     if (pTexturing->GetShaderMap(0) != 0)
     {
+        NiColorExtraData* pColor = 0;
         spInfoA->m_spDecal = pTexturing->GetShaderMap(0)->GetTexture();
-        NiColorExtraData* pColor = NiDynamicCast(NiColorExtraData, pMesh->GetExtraData(DAT_143ae50c8));
-        spInfoA->m_kColor0 = pColor == 0 ? NiColorA(1.0f, 1.0f, 1.0f, 1.0f) : pColor->GetValue();
+        pColor = NiDynamicCast(NiColorExtraData, pMesh->GetExtraData(DAT_143ae50c8));
+        spInfoA->m_akColor[0] = pColor != 0 ? pColor->GetValue() : NiColorA(1.0f, 1.0f, 1.0f, 1.0f);
         pColor = NiDynamicCast(NiColorExtraData, pMesh->GetExtraData(DAT_143ae50d0));
-        spInfoA->m_kColor1 = pColor == 0 ? NiColorA(1.0f, 1.0f, 1.0f, 1.0f) : pColor->GetValue();
+        spInfoA->m_akColor[1] = pColor != 0 ? pColor->GetValue() : NiColorA(1.0f, 1.0f, 1.0f, 1.0f);
         pColor = NiDynamicCast(NiColorExtraData, pMesh->GetExtraData(DAT_143ae50d8));
-        spInfoA->m_kColor2 = pColor == 0 ? NiColorA(1.0f, 1.0f, 1.0f, 1.0f) : pColor->GetValue();
+        spInfoA->m_akColor[2] = pColor != 0 ? pColor->GetValue() : NiColorA(1.0f, 1.0f, 1.0f, 1.0f);
     }
 
     efd::SmartPointer<CCustomizedTexInfo> spInfoB = NiNew CCustomizedTexInfo;
-    NiTexture* pTextureB = pTexturing->GetShaderMap(1) == 0 ? 0 : pTexturing->GetShaderMap(1)->GetTexture();
-    NiTexture* pTextureC = pTexturing->GetShaderMap(2) == 0 ? 0 : pTexturing->GetShaderMap(2)->GetTexture();
+    NiTexture* pTextureB = pTexturing->GetShaderMap(1) != 0 ? pTexturing->GetShaderMap(1)->GetTexture() : 0;
+    NiTexture* pTextureC = pTexturing->GetShaderMap(2) != 0 ? pTexturing->GetShaderMap(2)->GetTexture() : 0;
     spInfoB->m_spBase = pTextureB;
     NiFloatsExtraData* pParams = NiDynamicCast(NiFloatsExtraData, pMesh->GetExtraData(DAT_143ae50f8));
     if (pParams != 0)
     {
-        spInfoB->m_afParams[0] = pParams->GetValue(0);
-        spInfoB->m_afParams[1] = pParams->GetValue(1);
-        spInfoB->m_afParams[2] = pParams->GetValue(2);
-        spInfoB->m_afParams[3] = pParams->GetValue(3);
+        spInfoB->m_fParam0 = pParams->GetValue(0);
+        spInfoB->m_fParam1 = pParams->GetValue(1);
+        spInfoB->m_fParam2 = pParams->GetValue(2);
+        spInfoB->m_fParam3 = pParams->GetValue(3);
     }
     if (pTextureC != 0)
     {
         spInfoB->m_spDecal = pTextureC;
-        NiColorExtraData* pColor = NiDynamicCast(NiColorExtraData, pMesh->GetExtraData(DAT_143ae5100));
-        spInfoB->m_kColor0 = pColor == 0 ? NiColorA(1.0f, 1.0f, 1.0f, 1.0f) : pColor->GetValue();
+        NiColorExtraData* pColor = 0;
+        pColor = NiDynamicCast(NiColorExtraData, pMesh->GetExtraData(DAT_143ae5100));
+        spInfoB->m_akColor[0] = pColor != 0 ? pColor->GetValue() : NiColorA(1.0f, 1.0f, 1.0f, 1.0f);
         pColor = NiDynamicCast(NiColorExtraData, pMesh->GetExtraData(DAT_143ae5108));
-        spInfoB->m_kColor1 = pColor == 0 ? NiColorA(1.0f, 1.0f, 1.0f, 1.0f) : pColor->GetValue();
+        spInfoB->m_akColor[1] = pColor != 0 ? pColor->GetValue() : NiColorA(1.0f, 1.0f, 1.0f, 1.0f);
         pColor = NiDynamicCast(NiColorExtraData, pMesh->GetExtraData(DAT_143ae5110));
-        spInfoB->m_kColor2 = pColor == 0 ? NiColorA(1.0f, 1.0f, 1.0f, 1.0f) : pColor->GetValue();
+        spInfoB->m_akColor[2] = pColor != 0 ? pColor->GetValue() : NiColorA(1.0f, 1.0f, 1.0f, 1.0f);
     }
 
     if (CCustomizedTextureManager::GetInstance() == 0)
         CCustomizedTextureManager::CreateInstance();
     efd::SmartPointer<CCustomizedTexInfo> spComposed = FUN_1411660b0(CCustomizedTextureManager::GetInstance(), spInfoA, spInfoB);
-    spResult = NiDynamicCast(NiSourceTexture, (NiTexture*)spComposed->m_spBase);
-    return spResult;
+    return NiDynamicCast(NiSourceTexture, (NiTexture*)spComposed->m_spBase);
 }
 
 // Fills the mesh's cell of the shader map: material flag, two extra-data parameters and whether a decal map exists (0x141051f90).
@@ -2172,6 +2190,7 @@ void FUN_141051f90(NiAVObject* pMesh, NiPixelData* pShaderMap, const NiRect<unsi
 {
     float fParam0 = 5.0f;
     float fParam1 = 4.0f;
+    bool bMaterial = false;
     bool bDecal = false;
     NiFloatExtraData* pData = NiDynamicCast(NiFloatExtraData, pMesh->GetExtraData(DAT_143ae5148));
     if (pData != 0)
@@ -2179,13 +2198,20 @@ void FUN_141051f90(NiAVObject* pMesh, NiPixelData* pShaderMap, const NiRect<unsi
     pData = NiDynamicCast(NiFloatExtraData, pMesh->GetExtraData(DAT_143ae5150));
     if (pData != 0)
         fParam1 = pData->GetValue();
-    bool bMaterial = FUN_140a17cd0((NiMesh*)pMesh)->GetName() == DAT_143ae5200;
+    if (FUN_140a17cd0((NiMesh*)pMesh)->GetName() == DAT_143ae5200)
+        bMaterial = true;
     NiTexturingProperty* pTexturing = NiDynamicCast(NiTexturingProperty, pMesh->GetProperty(8));
-    if (pTexturing != 0 && pTexturing->GetShaderMap(0) != 0)
-        bDecal = true;
-    int iRed = bMaterial ? 0xff : 0;
-    int iAlpha = bDecal ? 0xff : 0;
-    unsigned int uiColor = iAlpha << 24 | iRed << 16 | ((int)((fParam1 / 10.0) * 255.0) & 0xffU) << 8 | (int)((fParam0 / 10.0) * 255.0) & 0xffU;
+    if (pTexturing != 0)
+    {
+        NiTexturingProperty::ShaderMap* pMap = pTexturing->GetShaderMap(0);
+        if (pMap != 0)
+            bDecal = true;
+    }
+    unsigned char ucB = (unsigned char)(fParam0 / 10.0f * 255.0f);
+    unsigned char ucG = (unsigned char)(fParam1 / 10.0f * 255.0f);
+    unsigned char ucR = (unsigned char)(bMaterial ? 0xff : 0);
+    unsigned char ucA = (unsigned char)(bDecal ? 0xff : 0);
+    unsigned int uiColor = ((ucA & 0xff) << 24) | ((ucR & 0xff) << 16) | ((ucG & 0xff) << 8) | (ucB & 0xff);
     FillPixelRect((const unsigned char*)&uiColor, pShaderMap, kRect);
 }
 
@@ -2201,18 +2227,22 @@ CString FUN_1410521a0(NiAVObject* pMesh)
         NiSourceTexture* pBase = NiDynamicCast(NiSourceTexture, pTexturing->GetBaseTexture());
         if (pBase != 0)
         {
-            NiFixedString kBaseFile = pBase == 0 ? NiFixedString("") : pBase->GetFilename();
+            NiFixedString kBaseFile = pBase != 0 ? pBase->GetFilename() : NiFixedString("");
             CString strBase;
             strBase.Format("%s;", (const char*)kBaseFile);
             strKey += Unk_Lower(strBase);
-            NiSourceTexture* pDecal = pTexturing->GetShaderMap(0) == 0 ? 0 : NiDynamicCast(NiSourceTexture, pTexturing->GetShaderMap(0)->GetTexture());
+            NiSourceTexture* pDecal = pTexturing->GetShaderMap(0) != 0 ? NiDynamicCast(NiSourceTexture, pTexturing->GetShaderMap(0)->GetTexture()) : 0;
             if (pDecal != 0)
             {
-                NiFixedString kDecalFile = pDecal == 0 ? NiFixedString("") : pDecal->GetFilename();
+                NiFixedString kDecalFile = pDecal != 0 ? pDecal->GetFilename() : NiFixedString("");
                 CString astrColors[3];
-                astrColors[0] = FUN_140db9aa0(NiDynamicCast(NiColorExtraData, pMesh->GetExtraData(DAT_143ae50c8))->GetValue());
-                astrColors[1] = FUN_140db9aa0(NiDynamicCast(NiColorExtraData, pMesh->GetExtraData(DAT_143ae50d0))->GetValue());
-                astrColors[2] = FUN_140db9aa0(NiDynamicCast(NiColorExtraData, pMesh->GetExtraData(DAT_143ae50d8))->GetValue());
+                NiColorExtraData* pColor = 0;
+                pColor = NiDynamicCast(NiColorExtraData, pMesh->GetExtraData(DAT_143ae50c8));
+                astrColors[0] = FUN_140db9aa0(pColor->GetValue());
+                pColor = NiDynamicCast(NiColorExtraData, pMesh->GetExtraData(DAT_143ae50d0));
+                astrColors[1] = FUN_140db9aa0(pColor->GetValue());
+                pColor = NiDynamicCast(NiColorExtraData, pMesh->GetExtraData(DAT_143ae50d8));
+                astrColors[2] = FUN_140db9aa0(pColor->GetValue());
                 CString strDecal;
                 strDecal.Format("%s;%s;%s;%s", (const char*)kDecalFile, (const char*)astrColors[0], (const char*)astrColors[1], (const char*)astrColors[2]);
                 strKey += Unk_Lower(strDecal);
@@ -2236,21 +2266,23 @@ bool FUN_141052ff0(NiAVObject* pA, NiAVObject* pB)
     unsigned int uiLongB;
     Unk_SortPair(pBaseA->GetWidth(), pBaseA->GetHeight(), &uiShortA, &uiLongA);
     Unk_SortPair(pBaseB->GetWidth(), pBaseB->GetHeight(), &uiShortB, &uiLongB);
-    if (pTexturingA->GetShaderMap(0) != 0)
+    NiTexturingProperty::ShaderMap* pMapA = pTexturingA->GetShaderMap(0);
+    if (pMapA != 0)
     {
-        NiTexture* pDecal = pTexturingA->GetShaderMap(0)->GetTexture();
-        if (!(pDecal->GetWidth() <= uiLongA && pDecal->GetHeight() <= uiLongA))
+        NiTexture* pDecal = pMapA->GetTexture();
+        if (pDecal->GetWidth() > uiLongA || pDecal->GetHeight() > uiLongA)
             Unk_SortPair(pDecal->GetWidth(), pDecal->GetHeight(), &uiShortA, &uiLongA);
     }
-    if (pTexturingB->GetShaderMap(0) != 0)
+    NiTexturingProperty::ShaderMap* pMapB = pTexturingB->GetShaderMap(0);
+    if (pMapB != 0)
     {
-        NiTexture* pDecal = pTexturingB->GetShaderMap(0)->GetTexture();
-        if (!(pDecal->GetWidth() <= uiLongB && pDecal->GetHeight() <= uiLongB))
+        NiTexture* pDecal = pMapB->GetTexture();
+        if (pDecal->GetWidth() > uiLongB || pDecal->GetHeight() > uiLongB)
             Unk_SortPair(pDecal->GetWidth(), pDecal->GetHeight(), &uiShortB, &uiLongB);
     }
-    if (uiLongB < uiLongA)
+    if (uiLongA > uiLongB)
         return true;
-    if (uiLongA == uiLongB && uiShortB < uiShortA)
+    else if (uiLongA == uiLongB && uiShortA > uiShortB)
         return true;
     return false;
 }

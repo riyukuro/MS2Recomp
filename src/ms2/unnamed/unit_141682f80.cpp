@@ -9,11 +9,13 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 
-// The exe stores the unit components as IEEE bit patterns (mov dword, 0x3f800000), so the fields are plain dwords here.
-#pragma pack(push, 1)
-struct Vector3 { unsigned x, y, z; };
-#pragma pack(pop)
-enum { UNK_ONE = 0x3f800000, UNK_MINUS_ONE = 0xbf800000 };
+// NiPoint3-shaped: the declared (never called) default constructor keeps /GS from treating the locals as buffers, and the
+// by-value FUN_140d8c2f0 result is built in place.
+struct Vector3
+{
+    float x, y, z;
+    Vector3();
+};
 
 // The controlled actor (PCBase); only the virtuals this unit calls matter.
 class Unk_PCActor
@@ -87,7 +89,12 @@ public:
 
 class Unk_PCTimer;      // the 0x38-byte key repeat timer at +8
 class Unk_PCBuffTable;  // FUN_1409331e0 / FUN_1409331f0 singletons (buff block / buff lookup tables)
-class Unk_PCClimb;
+// the climb state; FUN_140ad22a0 returns its direction by value
+class Unk_PCClimb
+{
+public:
+    Vector3 FUN_140ad22a0();
+};
 struct Unk_PCBuffKey { int m_nId; int m_nExtra; };
 class Unk_PCServices;
 
@@ -127,7 +134,7 @@ extern Vector3 DAT_143b01a60;       // the zero point
 
 // Out-of-unit callees.
 Unk_PCServices* FUN_14025e7c0();
-bool FUN_14116dbf0(Unk_PCServices* p, char* pOut16, char* pOut4, int* pValue, int a, int b);
+bool FUN_14116dbf0(Unk_PCServices* p, int* pnX, int* pnY, int* pnZ, bool bDebugOnly, int nLevel);   // CInputKeyHandler
 bool FUN_14116d7a0(Unk_PCServices* p, int n);
 Unk_PCBuffTable* FUN_1409331e0();
 Unk_PCBuffTable* FUN_1409331f0();
@@ -147,7 +154,8 @@ bool FUN_140d8ac50(void* p, int n, int m);
 bool FUN_140d8ad60(void* p, int n);
 bool FUN_140d8af70(void* p, int n);
 bool FUN_140d8c550(void* p);
-void FUN_140d8c2f0(void* p, Vector3* pOut);
+// the input controller FUN_140a58540 returns
+struct Unk_PcmInput { Vector3 FUN_140d8c2f0(); };
 void* FUN_140a58500(void* p);
 int FUN_140a58520(void* p);
 Unk_PCActor* FUN_141468360(Unk_PCActor* p);
@@ -157,8 +165,7 @@ int FUN_140970a40(void* p);
 Unk_PCClimb* FUN_140953f30();
 int FUN_140ad21f0(Unk_PCClimb* p);
 void FUN_140ad2070(Unk_PCClimb* p);
-void* FUN_140ad22a0(Unk_PCClimb* p, char* pBuf32);
-void FUN_140194470(Vector3* pDst, void* pSrc);
+void FUN_140194470(Vector3* pDst, const Vector3& kSrc);
 bool FUN_140552690(Vector3* a, Vector3* b);
 bool FUN_140552700(Vector3* a, Vector3* b);
 void FUN_140ad0c10(Vector3* p, float f);
@@ -188,27 +195,27 @@ bool Unk_PCMove::FUN_141682f80(int nKey)
 }
 
 // @0x141682fe0
-// MS2-FUNCTIONAL: extra EH-free temporaries in the exe (stack frame differs); logic identical
 bool Unk_PCMove::FUN_141682fe0(int nKey)
 {
     if (DAT_143af7d40 == 0)
         return false;
-    char abyPos[16];
-    char abyDir[4];
-    int nValue;
-    if (FUN_14116dbf0(FUN_14025e7c0(), abyPos, abyDir, &nValue, 0, 0)) {
-        if (nKey == 0x493e8 && 0 < nValue)
+    int nX;
+    int nY;
+    int nZ;
+    if (FUN_14116dbf0(FUN_14025e7c0(), &nX, &nY, &nZ, false, 0)) {
+        if (nKey == 0x493e8 && 0 < nZ)
             return true;
-        if (nKey == 0x493e9 && nValue < 0)
+        else if (nKey == 0x493e9 && nZ < 0)
             return true;
     }
     if (!FUN_1416840c0(nKey))
         return false;
-    if (FUN_14142c270(FUN_1409331f0(), nKey) == 0)
-        return false;
-    if (FUN_1403ed2d0() != 0)
-        FUN_141bca010(FUN_1403ed2d0());
-    return true;
+    if (FUN_14142c270(FUN_1409331f0(), nKey) != 0) {
+        if (FUN_1403ed2d0() != 0)
+            FUN_141bca010(FUN_1403ed2d0());
+        return true;
+    }
+    return false;
 }
 
 // @0x1416830b0
@@ -233,15 +240,13 @@ bool Unk_PCMove::FUN_141683100(int nKey)
 MS2_REPLACE_METHOD(0x141683100, Unk_PCMove, FUN_141683100, 70, 0x1110430A);
 
 // @0x141683150
-// MS2-FUNCTIONAL: exe routes the key id through a by-value 4-byte temp before FUN_14138c930; logic identical
 bool Unk_PCMove::FUN_141683150(int nKey)
 {
     if (DAT_143af7d40 == 0)
         return false;
     if (!FUN_141683ef0())
         return true;
-    int nId = FUN_141684060(nKey);
-    if (FUN_14138c930(FUN_1409331e0(), nId) != 0)
+    if (FUN_14138c930(FUN_1409331e0(), FUN_141684060(nKey)) != 0)
         return false;
     if (FUN_141684060(nKey) == 0x493e1) {
         if (FUN_141bdb5e0(FUN_1403ed2d0()) != 0)
@@ -269,42 +274,37 @@ bool Unk_PCMove::FUN_141683200(int nKey)
 }
 
 // @0x141683290
-// MS2-FUNCTIONAL: exe has no /GS cookie on the 12-byte direction local and different branch layout; logic identical
 Vector3* Unk_PCMove::FUN_141683290(Vector3* pOut)
 {
     Vector3 kDir = DAT_143b01a60;
-    if (FUN_14138c900(FUN_1409331e0(), 0x15) != 0) {
-        *pOut = kDir;
-        return pOut;
-    }
-    if (FUN_14138c900(FUN_1409331e0(), 0x14) != 0) {
+    if (FUN_14138c900(FUN_1409331e0(), 0x15) != 0 || FUN_14138c900(FUN_1409331e0(), 0x14) != 0) {
         *pOut = kDir;
         return pOut;
     }
     if (FUN_141682fe0(0x30d43)) {
-        kDir.x = UNK_ONE;
+        kDir.x = 1.0f;
     } else if (FUN_141682fe0(0x30d44)) {
-        kDir.x = UNK_MINUS_ONE;
+        kDir.x = -1.0f;
     }
     if (FUN_141682fe0(0x30d41)) {
-        kDir.y = UNK_ONE;
+        kDir.y = 1.0f;
     } else if (FUN_141682fe0(0x30d42)) {
-        kDir.y = UNK_MINUS_ONE;
+        kDir.y = -1.0f;
     }
     if (FUN_141682fe0(0x30d45)) {
-        kDir.x = UNK_ONE;
-        kDir.y = UNK_ONE;
+        kDir.x = 1.0f;
+        kDir.y = 1.0f;
     } else if (FUN_141682fe0(0x30d46)) {
-        kDir.x = UNK_MINUS_ONE;
-        kDir.y = UNK_ONE;
+        kDir.x = -1.0f;
+        kDir.y = 1.0f;
     } else if (FUN_141682fe0(0x30d47)) {
-        kDir.x = UNK_ONE;
-        kDir.y = UNK_MINUS_ONE;
+        kDir.x = 1.0f;
+        kDir.y = -1.0f;
     } else if (FUN_141682fe0(0x30d48)) {
-        kDir.x = UNK_MINUS_ONE;
-        kDir.y = UNK_MINUS_ONE;
+        kDir.x = -1.0f;
+        kDir.y = -1.0f;
     }
-    bool bFlipped = false;
+    int bFlipped = 0;
     if (m_pOwner != 0) {
         Unk_PCActor* pActor = m_pOwner;
         Unk_PCActor* pBase = FUN_141468360(m_pOwner);
@@ -312,20 +312,19 @@ Vector3* Unk_PCMove::FUN_141683290(Vector3* pOut)
             pActor = FUN_141706540(pBase);
         if (pActor != 0) {
             if (FUN_140970a40(FUN_1416749a0(pActor)) != 0)
-                bFlipped = true;
+                bFlipped = 1;
         }
     }
     if (FUN_140953f30() != 0) {
-        if (FUN_140ad21f0(FUN_140953f30()) == 0) {
+        if (FUN_140ad21f0(FUN_140953f30()) != 0) {
+            if (FUN_140552690(&kDir, &DAT_143b01a60))
+                FUN_140194470(&kDir, FUN_140953f30()->FUN_140ad22a0());
+        } else {
             FUN_140ad2070(FUN_140953f30());
-        } else if (FUN_140552690(&kDir, &DAT_143b01a60)) {
-            char abyBuf[32];
-            FUN_140194470(&kDir, FUN_140ad22a0(FUN_140953f30(), abyBuf));
         }
     }
     if (FUN_14036d570(FUN_140166410(), 0xb5)) {
-        char* pFlag = static_cast<char*>(FUN_140a58500(FUN_1409a8b10()));
-        if (*pFlag != 0) {
+        if (*static_cast<bool*>(FUN_140a58500(FUN_1409a8b10())) != 0) {
             if (!FUN_141683ef0()) {
                 *pOut = DAT_143b01a60;
                 return pOut;
@@ -334,14 +333,15 @@ Vector3* Unk_PCMove::FUN_141683290(Vector3* pOut)
                 *pOut = DAT_143b01a60;
                 return pOut;
             }
-            if (FUN_140a58520(FUN_140a58540()) == 0) {
-                Vector3 kCur;
-                FUN_140d8c2f0(FUN_140a58540(), &kCur);
+            if (FUN_140a58520(FUN_140a58540()) != 0) {
+                if (FUN_1416839b0()) {
+                    *pOut = DAT_143b01a60;
+                    return pOut;
+                }
+            } else {
+                Vector3 kCur = static_cast<Unk_PcmInput*>(FUN_140a58540())->FUN_140d8c2f0();
                 if (FUN_140552700(&kCur, &DAT_143b01a60))
-                    FUN_140194470(&kDir, &kCur);
-            } else if (FUN_1416839b0()) {
-                *pOut = DAT_143b01a60;
-                return pOut;
+                    FUN_140194470(&kDir, kCur);
             }
         }
     }
@@ -352,32 +352,31 @@ Vector3* Unk_PCMove::FUN_141683290(Vector3* pOut)
 }
 
 // @0x1416836d0
-// MS2-FUNCTIONAL: exe has no /GS cookie on the 12-byte direction local; logic identical
 Vector3* Unk_PCMove::FUN_1416836d0(Vector3* pOut)
 {
     Vector3 kDir = DAT_143b01a60;
     if (FUN_141683100(0x30d43)) {
-        kDir.x = UNK_ONE;
+        kDir.x = 1.0f;
     } else if (FUN_141683100(0x30d44)) {
-        kDir.x = UNK_MINUS_ONE;
+        kDir.x = -1.0f;
     }
     if (FUN_141683100(0x30d41)) {
-        kDir.y = UNK_ONE;
+        kDir.y = 1.0f;
     } else if (FUN_141683100(0x30d42)) {
-        kDir.y = UNK_MINUS_ONE;
+        kDir.y = -1.0f;
     }
     if (FUN_141683100(0x30d45)) {
-        kDir.x = UNK_ONE;
-        kDir.y = UNK_ONE;
+        kDir.x = 1.0f;
+        kDir.y = 1.0f;
     } else if (FUN_141683100(0x30d46)) {
-        kDir.x = UNK_MINUS_ONE;
-        kDir.y = UNK_ONE;
+        kDir.x = -1.0f;
+        kDir.y = 1.0f;
     } else if (FUN_141683100(0x30d47)) {
-        kDir.x = UNK_ONE;
-        kDir.y = UNK_MINUS_ONE;
+        kDir.x = 1.0f;
+        kDir.y = -1.0f;
     } else if (FUN_141683100(0x30d48)) {
-        kDir.x = UNK_MINUS_ONE;
-        kDir.y = UNK_MINUS_ONE;
+        kDir.x = -1.0f;
+        kDir.y = -1.0f;
     }
     if (m_pOwner != 0) {
         Unk_PCActor* pActor = m_pOwner;
@@ -425,41 +424,33 @@ bool Unk_PCMove::FUN_1416839b0()
 MS2_REPLACE_METHOD(0x1416839B0, Unk_PCMove, FUN_1416839b0, 207, 0x4ABC09D2);
 
 // @0x141683a90
-// MS2-FUNCTIONAL: exe lays the key-pair chain out with gotos and shared tails; logic identical
 void Unk_PCMove::FUN_141683a90()
 {
+    int nDelay = 0x32;
     m_moving = 0;
     if ((FUN_141683200(0x30d43) && FUN_141682fe0(0x30d41)) || (FUN_141683200(0x30d41) && FUN_141682fe0(0x30d43))) {
-        m_dir.x = UNK_ONE;
-        m_dir.y = UNK_ONE;
-        FUN_140868750(m_timer, 0x32);
+        m_dir.x = 1.0f;
+        m_dir.y = 1.0f;
+        FUN_140868750(m_timer, nDelay);
     } else if ((FUN_141683200(0x30d43) && FUN_141682fe0(0x30d42)) || (FUN_141683200(0x30d42) && FUN_141682fe0(0x30d43))) {
-        m_dir.x = UNK_ONE;
-        m_dir.y = UNK_MINUS_ONE;
-        FUN_140868750(m_timer, 0x32);
+        m_dir.x = 1.0f;
+        m_dir.y = -1.0f;
+        FUN_140868750(m_timer, nDelay);
     } else if ((FUN_141683200(0x30d44) && FUN_141682fe0(0x30d41)) || (FUN_141683200(0x30d41) && FUN_141682fe0(0x30d44))) {
-        m_dir.x = UNK_MINUS_ONE;
-        m_dir.y = UNK_ONE;
-        FUN_140868750(m_timer, 0x32);
+        m_dir.x = -1.0f;
+        m_dir.y = 1.0f;
+        FUN_140868750(m_timer, nDelay);
     } else if ((FUN_141683200(0x30d44) && FUN_141682fe0(0x30d42)) || (FUN_141683200(0x30d42) && FUN_141682fe0(0x30d44))) {
-        m_dir.x = UNK_MINUS_ONE;
-        m_dir.y = UNK_MINUS_ONE;
-        FUN_140868750(m_timer, 0x32);
-    } else {
-        bool bHeld = FUN_141683200(0x30d43) || FUN_141683200(0x30d44) || FUN_141683200(0x30d41) || FUN_141683200(0x30d42);
-        if (bHeld && FUN_140868ba0(m_timer) != 0) {
-            FUN_1408687f0(m_timer);
-            m_moving = 1;
-        } else {
-            bool bReset;
-            if ((FUN_141683200(0x30d43) || FUN_141683200(0x30d44)) && (FUN_141683200(0x30d41) || FUN_141683200(0x30d42))) {
-                bReset = true;
-            } else {
-                bReset = FUN_141683100(0x30d43) || FUN_141683100(0x30d44) || FUN_141683100(0x30d41) || FUN_141683100(0x30d42);
-            }
-            if (bReset)
-                FUN_1408687f0(m_timer);
-        }
+        m_dir.x = -1.0f;
+        m_dir.y = -1.0f;
+        FUN_140868750(m_timer, nDelay);
+    } else if ((FUN_141683200(0x30d43) || FUN_141683200(0x30d44) || FUN_141683200(0x30d41) || FUN_141683200(0x30d42)) && FUN_140868ba0(m_timer) != 0) {
+        FUN_1408687f0(m_timer);
+        m_moving = 1;
+    } else if ((FUN_141683200(0x30d43) || FUN_141683200(0x30d44)) && (FUN_141683200(0x30d41) || FUN_141683200(0x30d42))) {
+        FUN_1408687f0(m_timer);
+    } else if (FUN_141683100(0x30d43) || FUN_141683100(0x30d44) || FUN_141683100(0x30d41) || FUN_141683100(0x30d42)) {
+        FUN_1408687f0(m_timer);
     }
     if (m_pOwner != 0) {
         Unk_PCActor* pActor = m_pOwner;

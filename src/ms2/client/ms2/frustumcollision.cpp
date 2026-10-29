@@ -27,16 +27,12 @@ struct Unk_FcPoint2 : public NiPoint2
 
 void FUN_140a01250(Vector3 ptRot, Vector3* pForward, Vector3* pRight);   // basis from a z rotation (degrees)
 void FUN_140adc650(const void* pBox, Unk_FcNxVec3* pCorners);   // NxUtilLib::NxComputeBoxPoints
+struct Unk_FcRawPoint2 { float x, y; };                           // NiPoint2 storage, built in place below
+void FUN_140db9c80(Unk_FcRawPoint2* pDst, const Unk_FcPoint2& pt);   // NiPoint2::NiPoint2(const efd::Point2&)
 
-static const Unk_FcPoint2& AsPoint2(const NiPoint2& pt)
-{
-    return reinterpret_cast<const Unk_FcPoint2&>(pt);
-}
-
-static const Vector3& AsPoint3(const Unk_FcPoint3& pt)
-{
-    return reinterpret_cast<const Vector3&>(pt);
-}
+// Free reinterpretations: the exe calls the efd::Point2 / NiPoint3 helpers on the members directly.
+#define AsPoint2(pt) reinterpret_cast<const Unk_FcPoint2&>(pt)
+#define AsPoint3(pt) reinterpret_cast<const Vector3&>(pt)
 
 // @0x141222df0
 CFrustumCollision::CFrustumCollision()
@@ -50,34 +46,34 @@ CFrustumCollision::~CFrustumCollision()
 }
 
 // @0x141222f50
-// MS2-FUNCTIONAL: the exe expands the corner arithmetic with one set of Point3 temporaries per term
 void CFrustumCollision::vfunc_3(Vector3 ptPos, Vector3 ptDir, float fScale)
 {
-    FUN_140a01250(ptDir, &m_ptForward, &m_ptRight);
+    Vector3 ptRot = ptDir;
+    FUN_140a01250(ptRot, &m_ptForward, &m_ptRight);
     m_ptForward.FUN_140968990();
     m_ptRight.FUN_140968990();
 
     m_ptOrigin = ptPos.FUN_14097fd50(m_ptForward.FUN_14097fc90(-m_ptSize.y)).FUN_14097fd50(Vector3(0.0f, 0.0f, -m_ptSize.z));
     m_ptApex = m_ptOrigin.FUN_14097fd50(m_ptForward.FUN_14097fc90(-m_fApexDist));
 
-    float fTwiceH = m_fHeight * 2.0f;
-    m_aCorners[0] = m_ptOrigin.FUN_14097fd50(m_ptRight.FUN_14097fc90(-m_fNearHalfWidth)).FUN_14097fd50(Vector3(0.0f, 0.0f, fTwiceH));
+    m_spMesh->SetPrimitiveType(NiPrimitiveType::PRIMITIVE_LINESTRIPS);
+    m_spMesh->RemoveAllStreamRefs();
+    m_aCorners[0] = m_ptOrigin.FUN_14097fd50(m_ptRight.FUN_14097fc90(-m_fNearHalfWidth)).FUN_14097fd50(Vector3(0.0f, 0.0f, m_fHeight * 2.0f));
     m_aCorners[1] = m_ptOrigin.FUN_14097fd50(m_ptRight.FUN_14097fc90(-m_fNearHalfWidth)).FUN_14097fd50(Vector3(0.0f, 0.0f, 0.0f));
     m_aCorners[2] = m_ptOrigin.FUN_14097fd50(m_ptRight.FUN_14097fc90(m_fNearHalfWidth)).FUN_14097fd50(Vector3(0.0f, 0.0f, 0.0f));
-    m_aCorners[3] = m_ptOrigin.FUN_14097fd50(m_ptRight.FUN_14097fc90(m_fNearHalfWidth)).FUN_14097fd50(Vector3(0.0f, 0.0f, fTwiceH));
+    m_aCorners[3] = m_ptOrigin.FUN_14097fd50(m_ptRight.FUN_14097fc90(m_fNearHalfWidth)).FUN_14097fd50(Vector3(0.0f, 0.0f, m_fHeight * 2.0f));
 
-    Vector3 ptFar = m_ptOrigin.FUN_14097fd50(m_ptForward.FUN_14097fc90(m_fDepth));
-    m_aCorners[4] = ptFar.FUN_14097fd50(m_ptRight.FUN_14097fc90(-m_fFarHalfWidth)).FUN_14097fd50(Vector3(0.0f, 0.0f, fTwiceH));
-    m_aCorners[5] = ptFar.FUN_14097fd50(m_ptRight.FUN_14097fc90(-m_fFarHalfWidth)).FUN_14097fd50(Vector3(0.0f, 0.0f, 0.0f));
-    m_aCorners[6] = ptFar.FUN_14097fd50(m_ptRight.FUN_14097fc90(m_fFarHalfWidth)).FUN_14097fd50(Vector3(0.0f, 0.0f, 0.0f));
-    m_aCorners[7] = ptFar.FUN_14097fd50(m_ptRight.FUN_14097fc90(m_fFarHalfWidth)).FUN_14097fd50(Vector3(0.0f, 0.0f, fTwiceH));
+    m_aCorners[4] = m_ptOrigin.FUN_14097fd50(m_ptForward.FUN_14097fc90(m_fDepth)).FUN_14097fd50(m_ptRight.FUN_14097fc90(-m_fFarHalfWidth)).FUN_14097fd50(Vector3(0.0f, 0.0f, m_fHeight * 2.0f));
+    m_aCorners[5] = m_ptOrigin.FUN_14097fd50(m_ptForward.FUN_14097fc90(m_fDepth)).FUN_14097fd50(m_ptRight.FUN_14097fc90(-m_fFarHalfWidth)).FUN_14097fd50(Vector3(0.0f, 0.0f, 0.0f));
+    m_aCorners[6] = m_ptOrigin.FUN_14097fd50(m_ptForward.FUN_14097fc90(m_fDepth)).FUN_14097fd50(m_ptRight.FUN_14097fc90(m_fFarHalfWidth)).FUN_14097fd50(Vector3(0.0f, 0.0f, 0.0f));
+    m_aCorners[7] = m_ptOrigin.FUN_14097fd50(m_ptForward.FUN_14097fc90(m_fDepth)).FUN_14097fd50(m_ptRight.FUN_14097fc90(m_fFarHalfWidth)).FUN_14097fd50(Vector3(0.0f, 0.0f, m_fHeight * 2.0f));
 
-    m_aEdgeA[0] = Unk_NiPoint3(m_ptApex);
-    m_aEdgeA[1] = Unk_NiPoint3(m_aCorners[4]);
-    m_aEdgeA[2] = Unk_NiPoint3(m_aCorners[7]);
-    m_aEdgeB[0] = Unk_NiPoint3(m_ptApex);
-    m_aEdgeB[1] = Unk_NiPoint3(m_aCorners[5]);
-    m_aEdgeB[2] = Unk_NiPoint3(m_aCorners[6]);
+    m_aEdgeA[0] = m_ptApex;
+    m_aEdgeA[1] = m_aCorners[4];
+    m_aEdgeA[2] = m_aCorners[7];
+    m_aEdgeB[0] = m_ptApex;
+    m_aEdgeB[1] = m_aCorners[5];
+    m_aEdgeB[2] = m_aCorners[6];
 
     m_akEdge2[0] = Unk_FcPoint2(m_aEdgeA[0].x, m_aEdgeA[0].y);
     m_akEdge2[1] = Unk_FcPoint2(m_aEdgeA[1].x, m_aEdgeA[1].y);
@@ -121,7 +117,6 @@ int CFrustumCollision::ContainsPoint(const Vector3& pt) const
 }
 
 // @0x141223e70
-// MS2-FUNCTIONAL: tests the box's four ground-plane edges against the two side edges of the frustum
 int CFrustumCollision::IntersectsBox(const void* pBox) const
 {
     Unk_FcNxVec3 aBoxCorners[8];
@@ -139,30 +134,33 @@ int CFrustumCollision::IntersectsBox(const void* pBox) const
 
     NiPoint2 kHit;
     Unk_FcPoint3 kDirA, kDirB, kPtA, kPtB;
-    kDirA = Unk_NiPoint3(AsPoint3(m_aEdgeA[1]).FUN_140965c40(AsPoint3(m_aEdgeA[0])));
+    kDirA = AsPoint3(m_aEdgeA[1]).FUN_140965c40(AsPoint3(m_aEdgeA[0]));
     float fLenA = kDirA.FUN_140968990();
-    kDirB = Unk_NiPoint3(AsPoint3(m_aEdgeB[1]).FUN_140965c40(AsPoint3(m_aEdgeB[0])));
+    kDirB = AsPoint3(m_aEdgeB[1]).FUN_140965c40(AsPoint3(m_aEdgeB[0]));
     float fLenB = kDirB.FUN_140968990();
 
-    for (int nSide = 0; nSide < 2; nSide++)
+    for (unsigned nSide = 0; nSide < 2; nSide++)
     {
-        int nFirst = nSide * 2;
+        unsigned nFirst = nSide * 2;
         float fSideLen = AsPoint2(m_akEdge2[nFirst + 1]).FUN_140a4e500(AsPoint2(m_akEdge2[nFirst])).FUN_140affe70();
-        for (int nEdge = 0; nEdge < 4; nEdge++)
+        for (unsigned nEdge = 0; nEdge < 4; nEdge++)
         {
-            int nBox = nEdge * 2;
-            if (!SegmentIntersect(&m_akEdge2[nFirst], &m_akEdge2[nFirst + 1], &akBoxEdge[nBox], &akBoxEdge[nBox + 1], &kHit))
-                continue;
-            float fHitLen = AsPoint2(kHit).FUN_140a4e500(AsPoint2(m_akEdge2[nFirst])).FUN_140affe70();
-            if (m_fApexDist < fHitLen)
+            unsigned nBox = nEdge * 2;
+            Unk_FcRawPoint2 kSideDir;   // computed and never read
+            FUN_140db9c80(&kSideDir, AsPoint2(m_akEdge2[nFirst + 1]).FUN_140a4e500(AsPoint2(m_akEdge2[nFirst])));
+            if (SegmentIntersect(&m_akEdge2[nFirst], &m_akEdge2[nFirst + 1], &akBoxEdge[nBox], &akBoxEdge[nBox + 1], &kHit))
             {
-                float fT = fHitLen / fSideLen;
-                kPtA = Unk_NiPoint3(AsPoint3(m_aEdgeA[0]).FUN_14097fd50(AsPoint3(kDirA).FUN_14097fc90(fLenA * fT)));
-                kPtB = Unk_NiPoint3(AsPoint3(m_aEdgeB[0]).FUN_14097fd50(AsPoint3(kDirB).FUN_14097fc90(fLenB * fT)));
-                bool bBelow = kPtA.z < aBoxCorners[0].z;
-                bool bAbove = aBoxCorners[4].z < kPtB.z;
-                if (!bBelow && !bAbove)
-                    return 1;
+                float fHitLen = AsPoint2(kHit).FUN_140a4e500(AsPoint2(m_akEdge2[nFirst])).FUN_140affe70();
+                if (fHitLen > m_fApexDist)
+                {
+                    float fT = fHitLen / fSideLen;
+                    kPtA = AsPoint3(m_aEdgeA[0]).FUN_14097fd50(AsPoint3(kDirA).FUN_14097fc90(fLenA * fT));
+                    kPtB = AsPoint3(m_aEdgeB[0]).FUN_14097fd50(AsPoint3(kDirB).FUN_14097fc90(fLenB * fT));
+                    BOOL bBelow = kPtA.z < aBoxCorners[0].z;
+                    BOOL bAbove = kPtB.z > aBoxCorners[4].z;
+                    if (!bBelow && !bAbove)
+                        return 1;
+                }
             }
         }
     }

@@ -97,7 +97,6 @@ void UIMusicConcertDialog::vfunc_72()
 }
 
 // @0x140e69760
-// MS2-FUNCTIONAL: exe temporary / frame-slot order differs (source form for the call-result temps not found)
 void UIMusicConcertDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
@@ -108,12 +107,12 @@ void UIMusicConcertDialog::OnLoadComplete()
         int nIndex = i + 1;
         CString strName = FUN_1402bad60("m_actionButton{0}", &nIndex);
         m_clips[i] = FUN_140ba7930(strName);
-        if (!(m_clips[i] == 0))
-        {
-            m_buttons[i] = m_clips[i]->FUN_140acce30<Unk_MusicButton>("m_button");
-            if (!(m_buttons[i] == 0))
-                m_buttons[i]->FUN_1422ce240(McClickDelegate(this, &UIMusicConcertDialog::FUN_140e6a0d0), FUN_140bb9630(i));
-        }
+        if (m_clips[i] == 0)
+            continue;
+        m_buttons[i] = m_clips[i]->FUN_140acce30<Unk_MusicButton>("m_button");
+        if (m_buttons[i] == 0)
+            continue;
+        m_buttons[i]->FUN_1422ce240(McClickDelegate(this, &UIMusicConcertDialog::FUN_140e6a0d0), FUN_140bb9630(i));
     }
     m_foldButton = FUN_140bb4b10("m_foldButton");
     m_foldButton->FUN_1422ce240(McClickDelegate(this, &UIMusicConcertDialog::FUN_140e6a1b0), 0);
@@ -148,7 +147,6 @@ void UIMusicConcertDialog::OnLoadComplete()
         CString strIcon("./Data/Resource/Image/skill/icon/Clap.png");
         FUN_140e6a5d0(5, strIcon, GetStringCommonByKey(strKey));
     }
-    FUN_140e6a290();
 }
 
 // @0x140e6a000
@@ -206,7 +204,6 @@ void UIMusicConcertDialog::FUN_140e6a1b0(const Scaleform::GFx::FunctionHandler::
 }
 
 // @0x140e6a290
-// MS2-FUNCTIONAL: exe temporary / frame-slot order differs (source form for the call-result temps not found)
 void UIMusicConcertDialog::FUN_140e6a290()
 {
     if (m_topText == 0)
@@ -214,22 +211,23 @@ void UIMusicConcertDialog::FUN_140e6a290()
     PC* pPC = static_cast<PC*>(FUN_1403ed2d0()->FUN_141bd0cc0());
     if (pPC == 0)
         return;
-    CStringW strAction = GetStringCommonByKey(CStringW(L"s_music_concert_can_play"));
+    CStringW strAction = GetStringCommonByKey(L"s_music_concert_can_play");
     unsigned nStart = FUN_1403ed2d0()->FUN_141bcaf60();
     unsigned nNow = FUN_141472bc0();
-    if (nStart < nNow)
+    if (nNow > nStart)
     {
-        m_topText->FUN_1422c4cd0(GetStringCommonByKey(CStringW(L"s_music_concert_can_register_text")));
+        m_topText->FUN_1422c4cd0(GetStringCommonByKey(L"s_music_concert_can_register_text"));
     }
     else
     {
-        unsigned nSec = (nStart - nNow) / 1000;
-        unsigned nMin = nSec / 0x3c;
-        nSec = nSec % 0x3c;
+        unsigned nRemain = nStart - nNow;
+        nRemain = nRemain / 1000;
+        unsigned nMin = nRemain / 0x3c;
+        unsigned nSec = nRemain % 0x3c;
         m_topText->FUN_1422c4cd0(FUN_1409e8970(CStringW(L"s_music_concert_playing_text"), nMin, nSec));
         __int64 nOwner = (__int64)FUN_1403ed2d0()->FUN_141bcaf80();
         if (pPC->FUN_141656a80() == nOwner)
-            strAction = GetStringCommonByKey(CStringW(L"s_music_concert_abort_play"));
+            strAction = GetStringCommonByKey(L"s_music_concert_abort_play");
     }
     MS2Ptr<ASTextField> spName = m_clips[0]->FUN_1409b4620("m_actionName");
     if (spName.get() != 0)
@@ -252,7 +250,6 @@ void UIMusicConcertDialog::FUN_140e6a5d0(int nIndex, const CString& strIcon, con
 }
 
 // @0x140e6a780
-// MS2-FUNCTIONAL: exe temporary / frame-slot order differs (source form for the call-result temps not found)
 void UIMusicConcertDialog::FUN_140e6a780()
 {
     PC* pPC = static_cast<PC*>(FUN_1403ed2d0()->FUN_141bd0cc0());
@@ -260,9 +257,9 @@ void UIMusicConcertDialog::FUN_140e6a780()
         return;
     unsigned nStart = FUN_1403ed2d0()->FUN_141bcaf60();
     unsigned nNow = FUN_141472bc0();
-    if (nStart < nNow)
+    if (nNow > nStart)
     {
-        MS2Ptr<CMsgBoxData> box = FUN_140d73f20(GetStringCommonByKey(CStringW(L"s_music_concert_msg_confirm_register")), 1);
+        MS2Ptr<CMsgBoxData> box = FUN_140d73f20(GetStringCommonByKey(L"s_music_concert_msg_confirm_register"), 1);
         box->FUN_141a027c0(McBoxDelegate(this, &UIMusicConcertDialog::SendPlayInstrumentMode11));
         FUN_140d73c60(box);
     }
@@ -270,66 +267,63 @@ void UIMusicConcertDialog::FUN_140e6a780()
     {
         __int64 nOwner = (__int64)FUN_1403ed2d0()->FUN_141bcaf80();
         if (nOwner == pPC->FUN_141656a80())
+        {
             FUN_140e6a9d0();
+            return;
+        }
         else
-            FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_music_concert_msg_cant_register")), 1, 1);
+            FUN_1412751f0(GetStringCommonByKey(L"s_music_concert_msg_cant_register"), 1, 1);
     }
 }
 
 // @0x140e6a9d0
-// MS2-FUNCTIONAL: exe temporary / frame-slot order differs (source form for the call-result temps not found)
 void UIMusicConcertDialog::FUN_140e6a9d0()
 {
-    MS2Ptr<CMsgBoxData> box = FUN_140d73f20(GetStringCommonByKey(CStringW(L"s_music_concert_msg_confirm_unregister")), 1);
+    MS2Ptr<CMsgBoxData> box = FUN_140d73f20(GetStringCommonByKey(L"s_music_concert_msg_confirm_unregister"), 1);
     box->FUN_141a027c0(McBoxDelegate(this, &UIMusicConcertDialog::SendPlayInstrumentMode12));
     FUN_140d73c60(box);
 }
 
 // @0x140e6ab10
-// MS2-FUNCTIONAL: exe temporary / frame-slot order differs (source form for the call-result temps not found)
 void UIMusicConcertDialog::SendPlayInstrumentMode13()
 {
     PC* pPC = static_cast<PC*>(FUN_1403ed2d0()->FUN_141bd0cc0());
-    if (pPC != 0)
-    {
-        COutPacket packet(static_cast<int>(SendOp::PlayInstrument), 0);
-        packet.WriteUInt8(0xd);
-        FUN_1407105c0(&packet, 0xd, 1000);
-    }
+    if (pPC == 0)
+        return;
+    COutPacket packet(static_cast<int>(SendOp::PlayInstrument), 0);
+    packet.WriteUInt8(0xd);
+    FUN_1407105c0(&packet, 0xd, 1000);
 }
 
 // @0x140e6ab90
-// MS2-FUNCTIONAL: exe temporary / frame-slot order differs (source form for the call-result temps not found)
 void UIMusicConcertDialog::FUN_140e6ab90()
 {
     CCameraMode* pMode = FUN_1409478c0()->FUN_140af2520();
-    if (pMode == 0 || pMode->vfunc_1() != 0x10)
+    if (pMode != 0 && pMode->vfunc_1() == 0x10)
     {
-        FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_music_concert_msg_cant_change_camera")), 1, 1);
+        CLocalTargetCameraMode* pLocal = static_cast<CLocalTargetCameraMode*>(pMode);
+        int nTarget = pLocal->FUN_140af7e10();
+        if (nTarget != 0 && pLocal->FUN_140af8600())
+            FUN_1409478c0()->FUN_140aeb950(pLocal);
     }
     else
     {
-        CLocalTargetCameraMode* pLocal = static_cast<CLocalTargetCameraMode*>(pMode);
-        if (pLocal->FUN_140af7e10() != 0 && pLocal->FUN_140af8600())
-            FUN_1409478c0()->FUN_140aeb950(pLocal);
+        FUN_1412751f0(GetStringCommonByKey(L"s_music_concert_msg_cant_change_camera"), 1, 1);
     }
 }
 
 // @0x140e6ac80
-// MS2-FUNCTIONAL: exe temporary / frame-slot order differs (source form for the call-result temps not found)
 void UIMusicConcertDialog::SendPlayInstrumentMode14()
 {
     PC* pPC = static_cast<PC*>(FUN_1403ed2d0()->FUN_141bd0cc0());
-    if (pPC != 0)
-    {
-        COutPacket packet(static_cast<int>(SendOp::PlayInstrument), 0);
-        packet.WriteUInt8(0xe);
-        FUN_1407105c0(&packet, 0xe, 2000);
-    }
+    if (pPC == 0)
+        return;
+    COutPacket packet(static_cast<int>(SendOp::PlayInstrument), 0);
+    packet.WriteUInt8(0xe);
+    FUN_1407105c0(&packet, 0xe, 2000);
 }
 
 // @0x140e6ad00
-// MS2-FUNCTIONAL: exe temporary / frame-slot order differs (source form for the call-result temps not found)
 void UIMusicConcertDialog::SendPlayInstrumentMode15(int nEmotion)
 {
     PC* pPC = static_cast<PC*>(FUN_1403ed2d0()->FUN_141bd0cc0());
@@ -337,9 +331,17 @@ void UIMusicConcertDialog::SendPlayInstrumentMode15(int nEmotion)
         return;
     if (pPC->FUN_141675ed0() == 1)
         return;
-    int nState = pPC->FUN_14166c930();
-    if (!(nState == 1 || nState == 0xb || nState == 0xf))
+    switch (pPC->FUN_14166c930())
+    {
+    case 1:
+        break;
+    case 0xb:
+        break;
+    case 0xf:
+        break;
+    default:
         return;
+    }
     pPC->FUN_14166ed70(nEmotion);
     COutPacket packet(static_cast<int>(SendOp::PlayInstrument), 0);
     packet.WriteUInt8(0xf);

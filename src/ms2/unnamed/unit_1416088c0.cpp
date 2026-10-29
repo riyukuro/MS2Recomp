@@ -618,256 +618,207 @@ void* FUN_1416099b0(void* a, void* b) noexcept
 }
 
 // @0x141609a10
-// MS2-FUNCTIONAL: exe passes the third iterator argument through rcx (by-value iterator copy); the real template types are not recovered.
 void* FUN_141609a10(void* a, void* b) noexcept
 {
-    void* t = FUN_1415e1760(FUN_141600e70(a));
-    FUN_1415e6db0(b, *FUN_141603980(a), t);
+    FUN_1415e6db0(b, *FUN_141603980(a), FUN_1415e1760(FUN_141600e70(a)));
     return b;
 }
 
 // @0x141609a70
-// MS2-FUNCTIONAL: exe passes the third iterator argument through rcx (by-value iterator copy); the real template types are not recovered.
 void* FUN_141609a70(void* a, void* b) noexcept
 {
-    void* t = FUN_1415e1770(FUN_141600eb0(a));
-    FUN_1415e6df0(b, *FUN_1416039c0(a), t);
+    FUN_1415e6df0(b, *FUN_1416039c0(a), FUN_1415e1770(FUN_141600eb0(a)));
     return b;
 }
 
 // @0x141609ad0
-// MS2-FUNCTIONAL: exe passes the third iterator argument through rcx (by-value iterator copy); the real template types are not recovered.
 void* FUN_141609ad0(void* a, void* b) noexcept
 {
-    void* t = FUN_1415e1780(FUN_14029b840(a));
-    FUN_1415e6e30(b, *FUN_14029c010(a), t);
+    FUN_1415e6e30(b, *FUN_14029c010(a), FUN_1415e1780(FUN_14029b840(a)));
     return b;
 }
 
 // @0x141609b30
-// MS2-FUNCTIONAL: exe passes the third iterator argument through rcx (by-value iterator copy); the real template types are not recovered.
 void* FUN_141609b30(void* a, void* b) noexcept
 {
-    void* t = FUN_1415e1790(FUN_141600ef0(a));
-    FUN_1415e6e70(b, *FUN_141603a00(a), t);
+    FUN_1415e6e70(b, *FUN_141603a00(a), FUN_1415e1790(FUN_141600ef0(a)));
     return b;
 }
 
 // @0x141609b90
-// MS2-FUNCTIONAL: exe passes the third iterator argument through rcx (by-value iterator copy); the real template types are not recovered.
 void* FUN_141609b90(void* a, void* b) noexcept
 {
-    void* t = FUN_1415e17a0(FUN_141600f30(a));
-    FUN_1415e6eb0(b, *FUN_141603a40(a), t);
+    FUN_1415e6eb0(b, *FUN_141603a40(a), FUN_1415e17a0(FUN_141600f30(a)));
     return b;
 }
 
 // @0x141609bf0
-// MS2-FUNCTIONAL: exe passes the third iterator argument through rcx (by-value iterator copy); the real template types are not recovered.
 void* FUN_141609bf0(void* a, void* b) noexcept
 {
-    void* t = FUN_1415e1600(FUN_141600f50(a));
-    FUN_1415e6870(b, *FUN_141603a60(a), t);
+    FUN_1415e6870(b, *FUN_141603a60(a), FUN_1415e1600(FUN_141600f50(a)));
     return b;
 }
 
 // @0x141609c50
-// MS2-FUNCTIONAL: exe passes the third iterator argument through rcx (by-value iterator copy); the real template types are not recovered.
 void* FUN_141609c50(void* a, void* b) noexcept
 {
-    void* t = FUN_1415e17b0(FUN_141600f70(a));
-    FUN_1415e6ef0(b, *FUN_141603a80(a), t);
+    FUN_1415e6ef0(b, *FUN_141603a80(a), FUN_1415e17b0(FUN_141600f70(a)));
     return b;
 }
 
 // @0x141609cb0
-// MS2-FUNCTIONAL: exe passes the third iterator argument through rcx (by-value iterator copy); the real template types are not recovered.
 void* FUN_141609cb0(void* a, void* b) noexcept
 {
-    void* t = FUN_1415e1610(FUN_141600f90(a));
-    FUN_1415e68b0(b, *FUN_141603aa0(a), t);
+    FUN_1415e68b0(b, *FUN_141603aa0(a), FUN_1415e1610(FUN_141600f90(a)));
     return b;
 }
 
 // @0x141609d10
-// MS2-FUNCTIONAL: exe passes the third iterator argument through rcx (by-value iterator copy); the real template types are not recovered.
 void* FUN_141609d10(void* a, void* b) noexcept
 {
-    void* t = FUN_1415e17c0(FUN_141600fb0(a));
-    FUN_1415e6f30(b, *FUN_141603ac0(a), t);
+    FUN_1415e6f30(b, *FUN_141603ac0(a), FUN_1415e17c0(FUN_141600fb0(a)));
     return b;
 }
 
 // @0x141609d70
-// MS2-FUNCTIONAL: exe passes the third iterator argument through rcx (by-value iterator copy); the real template types are not recovered.
 void* FUN_141609d70(void* a, void* b) noexcept
 {
-    void* t = FUN_1415e17d0(FUN_141600ff0(a));
-    FUN_1415e6f70(b, *FUN_141603b00(a), t);
+    FUN_1415e6f70(b, *FUN_141603b00(a), FUN_1415e17d0(FUN_141600ff0(a)));
     return b;
 }
 
 // @0x141609dd0
-// MS2-FUNCTIONAL: exe passes the third iterator argument through rcx (by-value iterator copy); the real template types are not recovered.
 void* FUN_141609dd0(void* a, void* b) noexcept
 {
-    void* t = FUN_1415e17e0(FUN_141601030(a));
-    FUN_1415e6fb0(b, *FUN_141603b40(a), t);
+    FUN_1415e6fb0(b, *FUN_141603b40(a), FUN_1415e17e0(FUN_141601030(a)));
     return b;
 }
 
 // @0x141609e30
-// MS2-FUNCTIONAL: exe passes the third iterator argument through rcx (by-value iterator copy); the real template types are not recovered.
 void* FUN_141609e30(void* a, void* b) noexcept
 {
-    void* t = FUN_1415e17f0(FUN_141601070(a));
-    FUN_1415e6ff0(b, *FUN_141603b80(a), t);
+    FUN_1415e6ff0(b, *FUN_141603b80(a), FUN_1415e17f0(FUN_141601070(a)));
     return b;
 }
 
 // @0x141609e90
-// MS2-FUNCTIONAL: exe passes the third iterator argument through rcx (by-value iterator copy); the real template types are not recovered.
 void* FUN_141609e90(void* a, void* b) noexcept
 {
-    void* t = FUN_1415e1800(FUN_1416010b0(a));
-    FUN_1415e7030(b, *FUN_141603bc0(a), t);
+    FUN_1415e7030(b, *FUN_141603bc0(a), FUN_1415e1800(FUN_1416010b0(a)));
     return b;
 }
 
 // @0x141609ef0
-// MS2-FUNCTIONAL: exe passes the third iterator argument through rcx (by-value iterator copy); the real template types are not recovered.
 void* FUN_141609ef0(void* a, void* b) noexcept
 {
-    void* t = FUN_1415e1810(FUN_1416010f0(a));
-    FUN_1415e7070(b, *FUN_141603c00(a), t);
+    FUN_1415e7070(b, *FUN_141603c00(a), FUN_1415e1810(FUN_1416010f0(a)));
     return b;
 }
 
 // @0x141609f50
-// MS2-FUNCTIONAL: exe passes the third iterator argument through rcx (by-value iterator copy); the real template types are not recovered.
 void* FUN_141609f50(void* a, void* b) noexcept
 {
-    void* t = FUN_1415e1820(FUN_141601130(a));
-    FUN_1415e70b0(b, *FUN_141603c40(a), t);
+    FUN_1415e70b0(b, *FUN_141603c40(a), FUN_1415e1820(FUN_141601130(a)));
     return b;
 }
 
 // @0x141609fb0
-// MS2-FUNCTIONAL: exe passes the third iterator argument through rcx (by-value iterator copy); the real template types are not recovered.
 void* FUN_141609fb0(void* a, void* b) noexcept
 {
-    void* t = FUN_1415e1830(FUN_141601170(a));
-    FUN_1415e70f0(b, *FUN_141603c80(a), t);
+    FUN_1415e70f0(b, *FUN_141603c80(a), FUN_1415e1830(FUN_141601170(a)));
     return b;
 }
 
 // @0x14160a010
-// MS2-FUNCTIONAL: exe passes the third iterator argument through rcx (by-value iterator copy); the real template types are not recovered.
 void* FUN_14160a010(void* a, void* b) noexcept
 {
-    void* t = FUN_1415e1840(FUN_1416011b0(a));
-    FUN_1415e7130(b, *FUN_141603cc0(a), t);
+    FUN_1415e7130(b, *FUN_141603cc0(a), FUN_1415e1840(FUN_1416011b0(a)));
     return b;
 }
 
 // @0x14160a070
-// MS2-FUNCTIONAL: exe passes the third iterator argument through rcx (by-value iterator copy); the real template types are not recovered.
 void* FUN_14160a070(void* a, void* b) noexcept
 {
-    void* t = FUN_1415e1850(FUN_1416011f0(a));
-    FUN_1415e7170(b, *FUN_141603d00(a), t);
+    FUN_1415e7170(b, *FUN_141603d00(a), FUN_1415e1850(FUN_1416011f0(a)));
     return b;
 }
 
 // @0x14160a0d0
-// MS2-FUNCTIONAL: exe passes the third iterator argument through rcx (by-value iterator copy); the real template types are not recovered.
 void* FUN_14160a0d0(void* a, void* b) noexcept
 {
-    void* t = FUN_1415e1860(FUN_141601230(a));
-    FUN_1415e71d0(b, *FUN_141603d40(a), t);
+    FUN_1415e71d0(b, *FUN_141603d40(a), FUN_1415e1860(FUN_141601230(a)));
     return b;
 }
 
 // @0x14160a130
-// MS2-FUNCTIONAL: exe passes the third iterator argument through rcx (by-value iterator copy); the real template types are not recovered.
 void* FUN_14160a130(void* a, void* b) noexcept
 {
-    void* t = FUN_1415e1870(FUN_141601270(a));
-    FUN_1415e7210(b, *FUN_141603d80(a), t);
+    FUN_1415e7210(b, *FUN_141603d80(a), FUN_1415e1870(FUN_141601270(a)));
     return b;
 }
 
 // @0x14160a190
-// MS2-FUNCTIONAL: exe passes the third iterator argument through rcx (by-value iterator copy); the real template types are not recovered.
 void* FUN_14160a190(void* a, void* b) noexcept
 {
-    void* t = FUN_1415e1880(FUN_1416012b0(a));
-    FUN_1415e7270(b, *FUN_141603dc0(a), t);
+    FUN_1415e7270(b, *FUN_141603dc0(a), FUN_1415e1880(FUN_1416012b0(a)));
     return b;
 }
 
 // @0x14160a1f0
-// MS2-FUNCTIONAL: exe passes the third iterator argument through rcx (by-value iterator copy); the real template types are not recovered.
 void* FUN_14160a1f0(void* a, void* b) noexcept
 {
-    void* t = FUN_1415e1890(FUN_1416012f0(a));
-    FUN_1415e72b0(b, *FUN_141603e00(a), t);
+    FUN_1415e72b0(b, *FUN_141603e00(a), FUN_1415e1890(FUN_1416012f0(a)));
     return b;
 }
 
 // @0x14160a250
-// MS2-FUNCTIONAL: exe passes the third iterator argument through rcx (by-value iterator copy); the real template types are not recovered.
 void* FUN_14160a250(void* a, void* b) noexcept
 {
-    void* t = FUN_1415e18a0(FUN_141601330(a));
-    FUN_1415e72f0(b, *FUN_141603e40(a), t);
+    FUN_1415e72f0(b, *FUN_141603e40(a), FUN_1415e18a0(FUN_141601330(a)));
     return b;
 }
 
 // @0x14160a2b0
-// MS2-FUNCTIONAL: exe passes the third iterator argument through rcx (by-value iterator copy); the real template types are not recovered.
 void* FUN_14160a2b0(void* a, void* b) noexcept
 {
-    void* t = FUN_1415e18b0(FUN_141601370(a));
-    FUN_1415e7330(b, *FUN_141603e80(a), t);
+    FUN_1415e7330(b, *FUN_141603e80(a), FUN_1415e18b0(FUN_141601370(a)));
     return b;
 }
 
 // @0x14160a310
-// MS2-FUNCTIONAL: exe passes the third iterator argument through rcx (by-value iterator copy); the real template types are not recovered.
 void* FUN_14160a310(void* a, void* b) noexcept
 {
-    void* t = FUN_1415e18c0(FUN_1416013b0(a));
-    FUN_1415e7370(b, *FUN_141603ec0(a), t);
+    FUN_1415e7370(b, *FUN_141603ec0(a), FUN_1415e18c0(FUN_1416013b0(a)));
     return b;
 }
 
 // @0x14160a370
-// MS2-FUNCTIONAL: exe passes the third iterator argument through rcx (by-value iterator copy); the real template types are not recovered.
 void* FUN_14160a370(void* a, void* b) noexcept
 {
-    void* t = FUN_1415e18d0(FUN_1416013f0(a));
-    FUN_1415e73b0(b, *FUN_141603f00(a), t);
+    FUN_1415e73b0(b, *FUN_141603f00(a), FUN_1415e18d0(FUN_1416013f0(a)));
     return b;
 }
 
 // @0x14160a3d0
 void* FUN_14160a3d0(void* a, void* b, void* c, void* d)
 {
-    char l20[8], l28[8], l30[8], l38[8];
-    if (FUN_1415f2a60(&c, FUN_141607780(a, l20)))
+    void* l20;
+    void* l28;
+    void* l30;
+    void* l38;
+    if (FUN_1415f2a60(&c, FUN_141607780(a, &l20)) && FUN_1415f2a60(&d, FUN_1416099b0(a, &l28)))
     {
-        if (FUN_1415f2a60(&d, FUN_1416099b0(a, l28)))
-        {
-            FUN_1416088c0(a);
-            FUN_141607780(a, b);
-            return b;
-        }
+        FUN_1416088c0(a);
+        FUN_141607780(a, b);
+        return b;
     }
-    while (FUN_1415f3280(&c, &d))
-        FUN_14160a4c0(a, l38, *FUN_1415f3ec0(&c, l30, 0));
-    FUN_1415e5cf0(b, c, FUN_1415e1750(FUN_141600e10(a)));
-    return b;
+    else
+    {
+        while (FUN_1415f3280(&c, &d))
+            FUN_14160a4c0(a, &l38, *FUN_1415f3ec0(&c, &l30, 0));
+        FUN_1415e5cf0(b, c, FUN_1415e1750(FUN_141600e10(a)));
+        return b;
+    }
 }
 
 // @0x14160a4c0

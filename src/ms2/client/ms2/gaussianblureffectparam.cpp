@@ -87,6 +87,7 @@ void GaussianBlurEffect::vfunc_7(int nState, float fAlpha)
     float fT = fAlpha;
     switch (nState)
     {
+        break;
     case 1:
         fT = 1.0f - fAlpha;
         break;

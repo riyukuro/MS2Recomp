@@ -1,0 +1,6 @@
+4846c
+        }  // MS2: the exe returns FLOAT, not POINT4 (mov eax,4 at 0x1427f0db2)
+.
+4845@59s "4" ""
+4845@56s "IN" "A"
+4845@54s "P" "FL"

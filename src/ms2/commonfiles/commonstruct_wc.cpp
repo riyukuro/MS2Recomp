@@ -28,13 +28,13 @@ struct Unk_140277000 {
     i64 m_next;
     i64 m_prev;
     char m_10[8];
+    char m_color;
     char m_isNil;
-    char m_19;
     char m_1a[2];
-    char m_value[1];
+    Unk_TreeValue m_value;
 };
-MS2_CHECK_OFFSET(Unk_140277000, m_isNil, 0x18);
-MS2_CHECK_OFFSET(Unk_140277000, m_19, 0x19);
+MS2_CHECK_OFFSET(Unk_140277000, m_color, 0x18);
+MS2_CHECK_OFFSET(Unk_140277000, m_isNil, 0x19);
 MS2_CHECK_OFFSET(Unk_140277000, m_value, 0x1c);
 
 // Same wide log helper as commonstruct.cpp (unit-local there); this slice holds the const wchar_t* instance at 0x140274ea0.
@@ -46,6 +46,8 @@ public:
     }
 };
 
+// _Compressed_pair(_One_then_variadic_args_t) view: the allocator base is initialized first, then _Myval2 at offset 0.
+struct Unk_WcSelf { i64 m_0; };
 // @0x140274970
 void FUN_140274970(Unk_CwObj* owner)
 {
@@ -53,51 +55,54 @@ void FUN_140274970(Unk_CwObj* owner)
     FUN_1412751b0(text, 0x14);
 }
 // @0x1402749c0
-i64 FUN_1402749c0(i64 p) { FUN_14027d550(p); FUN_14027cf10(p); return p; }
+i64 FUN_1402749c0(i64 p, Unk_StlTag) { FUN_14027d550(p); FUN_14027cf10((i64)&((Unk_WcSelf*)p)->m_0); return p; }
 // @0x1402749f0
-i64 FUN_1402749f0(i64 p, char) { FUN_14027d560(p); FUN_14027d0b0(p); return p; }
+i64 FUN_1402749f0(i64 p, char) { FUN_14027d560(p); FUN_14027d0b0((i64)&((Unk_WcSelf*)p)->m_0); return p; }
 // @0x140274a20
-i64 FUN_140274a20(i64 p) { FUN_14027d570(p); FUN_14027d410(p); return p; }
+i64 FUN_140274a20(i64 p, Unk_StlTag) { FUN_14027d570(p); FUN_14027d410((i64)&((Unk_WcSelf*)p)->m_0); return p; }
 // @0x140274a50
-i64 FUN_140274a50(i64 p) { FUN_14027d580(p); FUN_14027d450(p); return p; }
+i64 FUN_140274a50(i64 p, Unk_StlTag) { FUN_14027d580(p); FUN_14027d450((i64)&((Unk_WcSelf*)p)->m_0); return p; }
 // @0x140274a80
-i64 FUN_140274a80(i64 p) { FUN_14027d590(p); FUN_14027d490(p); return p; }
+i64 FUN_140274a80(i64 p, Unk_StlTag) { FUN_14027d590(p); FUN_14027d490((i64)&((Unk_WcSelf*)p)->m_0); return p; }
 // @0x140274ab0
-i64 FUN_140274ab0(i64 p) { FUN_14027d5a0(p); FUN_14027d4d0(p); return p; }
+i64 FUN_140274ab0(i64 p, Unk_StlTag) { FUN_14027d5a0(p); FUN_14027d4d0((i64)&((Unk_WcSelf*)p)->m_0); return p; }
 // @0x140274ae0
-i64 FUN_140274ae0(i64 p) { FUN_14027d5b0(p); FUN_14027d510(p); return p; }
+i64 FUN_140274ae0(i64 p, Unk_StlTag) { FUN_14027d5b0(p); FUN_14027d510((i64)&((Unk_WcSelf*)p)->m_0); return p; }
+// pair<unsigned,unsigned> built piecewise (key from the tuple, value zero-initialized).
+struct Unk_PairU32 { unsigned first; unsigned second; };
+// pair<iterator, bool>: the iterator is a one-pointer struct, copied whole.
+struct Unk_WcIt { i64 node; };
+struct Unk_PairI64B { Unk_WcIt first; char second; };
 // @0x140274b10
 i64* FUN_140274b10(i64* out, i64 a, i64 b)
 {
-    i64* first = FUN_14027c1b0(a);
-    *out = *first;
-    char* second = FUN_140162f70(b);
-    *(char*)(out + 1) = *second;
+    ((Unk_PairI64B*)out)->first = *(Unk_WcIt*)FUN_14027c1b0(a);
+    ((Unk_PairI64B*)out)->second = *FUN_140162f70(b);
     return out;
 }
 // @0x140274b60
-i64 FUN_140274b60(i64 out, i64 unused, i64 a, i64 b)
+i64 FUN_140274b60(i64 out, Unk_StlTag, i64 a, i64 b)
 {
     FUN_14027c1c0(a);
-    char* flag = FUN_140162f10(b);
-    FUN_1402749f0(out, *flag);
+    FUN_1402749f0((i64)&((Unk_WcSelf*)out)->m_0, *FUN_140162f10(b));
     return out;
 }
 // @0x140274bb0
-i64 FUN_140274bb0(i64 out, i64 unused, i64 a, i64 b)
+i64 FUN_140274bb0(i64 out, Unk_StlTag, i64 a, i64 b)
 {
-    FUN_140274d60((i64*)out, a);
+    Unk_StlTag seq1, seq2;
+    FUN_140274d60((i64*)out, a, b, seq2, seq1);
     return out;
 }
 // @0x140274c00
-i64 FUN_140274c00(i64 out, i64 a)
+i64 FUN_140274c00(i64 out, i64 a) noexcept
 {
     Unk_StlTag tag = {};
     FUN_140274cb0(out, tag, a);
     return out;
 }
 // @0x140274c50
-i64* FUN_140274c50(i64* out, i64 a) { *out = FUN_14027c1f0(a); return out; }
+Unk_WcPtrPair* Unk_WcPtrPair::FUN_140274c50(i64 a) { m_0 = FUN_14027c1f0(a); return this; }
 // @0x140274c80
 i64* FUN_140274c80(i64* out, i64 a) { *out = FUN_14027c360(a); return out; }
 // @0x140274cb0
@@ -105,33 +110,30 @@ i64 FUN_140274cb0(i64 out, Unk_StlTag, i64 a)
 {
     Unk_StlTag tag = {};
     FUN_14015e600(out, tag);
-    u64 v = FUN_14027c1f0(a);
-    FUN_140274c50((i64*)out, v);
+    ((Unk_WcPtrPair*)&((Unk_WcSelf*)out)->m_0)->FUN_140274c50(FUN_14027c1f0(a));
     return out;
 }
 // @0x140274d10
 i64* FUN_140274d10(i64* out, i64 a, i64 b)
 {
-    i64* first = FUN_14027c220(a);
-    *out = *first;
-    char* second = FUN_140162f70(b);
-    *(char*)(out + 1) = *second;
+    ((Unk_PairI64B*)out)->first = *(Unk_WcIt*)FUN_14027c220(a);
+    ((Unk_PairI64B*)out)->second = *FUN_140162f70(b);
     return out;
 }
 // @0x140274d60
-i64* FUN_140274d60(i64* out, i64 a)
+i64* FUN_140274d60(i64* out, i64 a, i64, Unk_StlTag, Unk_StlTag)
 {
-    i64 ref = FUN_14027c410(a);
-    unsigned* value = FUN_14027c270(ref);
-    *(unsigned*)out = *value;
-    ((unsigned*)out)[1] = 0;
+    ((Unk_PairU32*)out)->first = *FUN_14027c270(FUN_14027c410(a));
+    ((Unk_PairU32*)out)->second = 0;
     return out;
 }
+// pointer + function pointer pair (the second half is the deleter/compare callback).
+struct Unk_WcPtrFn { void* ptr; void* fn; };
 // @0x140274db0
 void** FUN_140274db0(void** out, void* value)
 {
-    out[0] = value;
-    out[1] = (void*)&FUN_14027c110;
+    ((Unk_WcPtrFn*)out)->ptr = value;
+    ((Unk_WcPtrFn*)out)->fn = (void*)&FUN_14027c110;
     return out;
 }
 // @0x140274de0
@@ -143,8 +145,8 @@ i64* FUN_140274e40(i64* out, i64 a) { *out = FUN_14027c3c0(a); return out; }
 // @0x140274e70
 unsigned* FUN_140274e70(unsigned* out, unsigned* src)
 {
-    out[0] = src[0];
-    out[1] = src[1];
+    ((Unk_PairU32*)out)->first = ((Unk_PairU32*)src)->first;
+    ((Unk_PairU32*)out)->second = ((Unk_PairU32*)src)->second;
     return out;
 }
 // @0x140274ea0
@@ -258,144 +260,110 @@ void FUN_140276a40(i64 it, i64 n, Unk_StlTag)
     for (; n < 0; n = n + 1)
         FUN_14027f700(it);
 }
+// vector::_Assign_range(first, last, forward_iterator_tag) for 8- and 16-byte elements.
 // @0x140276aa0
-void FUN_140276aa0(i64 vec, i64 first, i64 last)
+void FUN_140276aa0(i64 vec, i64 first, i64 last, Unk_StlTag)
 {
-    i64 range = FUN_14027bc40(first, last);
-    u64 count = FUN_1401a4580(range);
+    u64 newsize = FUN_1401a4580(FUN_14027bc40(first, last));
     FUN_140288c60(vec);
-    u64 size = FUN_14028b430(vec);
-    u64 capacity = FUN_14028a2c0(vec);
-    if (capacity < count) {
-        size = FUN_14028b090(vec);
-        if (size < count)
+    u64 oldsize = FUN_14028b430(vec);
+    u64 oldcapacity = FUN_14028a2c0(vec);
+    if (newsize > oldcapacity) {
+        if (newsize > FUN_14028b090(vec))
             FUN_140289ea0();
-        i64 grown = FUN_140286ec0(vec, count);
-        i64* myfirst = FUN_140288980(vec);
-        if (*myfirst != 0) {
-            i64* mylast = FUN_140288ae0(vec);
-            i64* myfirst2 = FUN_140288980(vec);
-            FUN_1402875b0(vec, *myfirst2, *mylast);
-            i64* myfirst3 = FUN_140288980(vec);
-            i64 al = FUN_1402882f0(vec);
-            FUN_14028a7d0(al, *myfirst3, capacity);
+        u64 newcapacity = FUN_140286ec0(vec, newsize);
+        if (*FUN_140288980(vec) != 0) {
+            FUN_1402875b0(vec, *FUN_140288980(vec), *FUN_140288ae0(vec));
+            FUN_14028a7d0(FUN_1402882f0(vec), *FUN_140288980(vec), oldcapacity);
         }
-        FUN_140286a60(vec, grown);
-        i64* myfirst4 = FUN_140288980(vec);
-        i64 end = FUN_14027a8c0(vec, first, last, *myfirst4);
-        i64* mylast2 = FUN_140288ae0(vec);
-        *mylast2 = end;
-    } else if (size < count) {
-        i64 mid = FUN_14027c420(first, size);
-        i64* myfirst5 = FUN_140288980(vec);
-        FUN_140277230(first, mid, *myfirst5);
-        i64* mylast3 = FUN_140288ae0(vec);
-        i64 end = FUN_14027a8c0(vec, mid, last, *mylast3);
-        i64* mylast4 = FUN_140288ae0(vec);
-        *mylast4 = end;
+        FUN_140286a60(vec, newcapacity);
+        *FUN_140288ae0(vec) = FUN_14027a8c0(vec, first, last, *FUN_140288980(vec));
+    } else if (newsize > oldsize) {
+        i64 mid = FUN_14027c420(first, oldsize);
+        FUN_140277230(first, mid, *FUN_140288980(vec));
+        *FUN_140288ae0(vec) = FUN_14027a8c0(vec, mid, last, *FUN_140288ae0(vec));
     } else {
-        i64* myfirst6 = FUN_140288980(vec);
-        i64 newlast = *myfirst6 + count * 8;
-        i64* myfirst7 = FUN_140288980(vec);
-        FUN_140277230(first, last, *myfirst7);
-        i64* mylast5 = FUN_140288ae0(vec);
-        FUN_1402875b0(vec, newlast, *mylast5);
-        i64* mylast6 = FUN_140288ae0(vec);
-        *mylast6 = newlast;
+        i64 newlast = *FUN_140288980(vec) + newsize * 8;
+        FUN_140277230(first, last, *FUN_140288980(vec));
+        FUN_1402875b0(vec, newlast, *FUN_140288ae0(vec));
+        *FUN_140288ae0(vec) = newlast;
     }
 }
 // @0x140276d40
-void FUN_140276d40(i64 vec, i64 first, i64 last)
+void FUN_140276d40(i64 vec, i64 first, i64 last, Unk_StlTag)
 {
-    i64 range = FUN_14027bca0(first, last);
-    u64 count = FUN_1401a4580(range);
+    u64 newsize = FUN_1401a4580(FUN_14027bca0(first, last));
     FUN_140288ce0(vec);
-    u64 size = FUN_14028b540(vec);
-    u64 capacity = FUN_14028a3d0(vec);
-    if (capacity < count) {
-        size = FUN_14028b1d0(vec);
-        if (size < count)
+    u64 oldsize = FUN_14028b540(vec);
+    u64 oldcapacity = FUN_14028a3d0(vec);
+    if (newsize > oldcapacity) {
+        if (newsize > FUN_14028b1d0(vec))
             FUN_140289f20();
-        i64 grown = FUN_140287100(vec, count);
-        i64* myfirst = FUN_140288a80(vec);
-        if (*myfirst != 0) {
-            i64* mylast = FUN_140288be0(vec);
-            i64* myfirst2 = FUN_140288a80(vec);
-            FUN_1402876b0(vec, *myfirst2, *mylast);
-            i64* myfirst3 = FUN_140288a80(vec);
-            i64 al = FUN_1402883f0(vec);
-            FUN_14028a890(al, *myfirst3, capacity);
+        u64 newcapacity = FUN_140287100(vec, newsize);
+        if (*FUN_140288a80(vec) != 0) {
+            FUN_1402876b0(vec, *FUN_140288a80(vec), *FUN_140288be0(vec));
+            FUN_14028a890(FUN_1402883f0(vec), *FUN_140288a80(vec), oldcapacity);
         }
-        FUN_140286b50(vec, grown);
-        i64* myfirst4 = FUN_140288a80(vec);
-        i64 end = FUN_14027a940(vec, first, last, *myfirst4);
-        i64* mylast2 = FUN_140288be0(vec);
-        *mylast2 = end;
-    } else if (size < count) {
-        i64 mid = FUN_14027c450(first, size);
-        i64* myfirst5 = FUN_140288a80(vec);
-        FUN_140277280(first, mid, *myfirst5);
-        i64* mylast3 = FUN_140288be0(vec);
-        i64 end = FUN_14027a940(vec, mid, last, *mylast3);
-        i64* mylast4 = FUN_140288be0(vec);
-        *mylast4 = end;
+        FUN_140286b50(vec, newcapacity);
+        *FUN_140288be0(vec) = FUN_14027a940(vec, first, last, *FUN_140288a80(vec));
+    } else if (newsize > oldsize) {
+        i64 mid = FUN_14027c450(first, oldsize);
+        FUN_140277280(first, mid, *FUN_140288a80(vec));
+        *FUN_140288be0(vec) = FUN_14027a940(vec, mid, last, *FUN_140288be0(vec));
     } else {
-        i64* myfirst6 = FUN_140288a80(vec);
-        i64 newlast = count * 0x10 + *myfirst6;
-        i64* myfirst7 = FUN_140288a80(vec);
-        FUN_140277280(first, last, *myfirst7);
-        i64* mylast5 = FUN_140288be0(vec);
-        FUN_1402876b0(vec, newlast, *mylast5);
-        i64* mylast6 = FUN_140288be0(vec);
-        *mylast6 = newlast;
+        i64 newlast = *FUN_140288a80(vec) + newsize * 0x10;
+        FUN_140277280(first, last, *FUN_140288a80(vec));
+        FUN_1402876b0(vec, newlast, *FUN_140288be0(vec));
+        *FUN_140288be0(vec) = newlast;
     }
 }
 // @0x140276fe0
 i64 FUN_140276fe0(i64, i64 b, i64) { return b; }
-// MS2-FUNCTIONAL: std::_Tree::_Buynode written over raw i64 node handles (element type unrecovered); the exe EH try/catch frame and temps differ
+// MS2-FUNCTIONAL: _Buynode with try/catch(...) cleanup as in the exe; inside the try body our cl spills every call result to a temp where the exe keeps the last one in a register
 // @0x140277000
 i64 FUN_140277000(i64 list, i64 a, i64 b, i64 c)
 {
-    i64 node = FUN_140286de0(list);
-    Unk_140277000* n = (Unk_140277000*)node;
-    n->m_isNil = 0;
-    n->m_19 = 0;
-    i64 c2 = FUN_140162f40(c);
-    i64 b2 = FUN_14027c230(b);
-    i64 a2 = FUN_140162ef0(a);
-    i64 dest = FUN_14027b540((i64)n->m_value);
-    i64 al = FUN_140288290(list);
-    FUN_14027b790(al, dest, a2, b2, c2);
-    return node;
+    Unk_140277000* node = (Unk_140277000*)FUN_140286de0(list);
+    node->m_color = 0;
+    node->m_isNil = 0;
+    try {
+        FUN_14027b790(FUN_140288290(list), FUN_14027b540(node->m_value), FUN_140162ef0(a), FUN_14027c230(b), FUN_140162f40(c));
+    } catch (...) {
+        FUN_140287df0(list, (i64)node);
+        throw;
+    }
+    return (i64)node;
 }
+// std::_List_node: next, prev, value.
+struct Unk_ListNode { i64 m_next; i64 m_prev; i64 m_value; };
+// MS2-FUNCTIONAL: _Buynode with try/catch(...) cleanup as in the exe; inside the try body our cl spills every call result to a temp where the exe keeps the last one in a register
 // @0x1402770d0
 i64 FUN_1402770d0(i64 list, i64 a, i64 b, i64 c)
 {
-    i64 node = FUN_140286d20(list, a, b);
+    Unk_ListNode* node = (Unk_ListNode*)FUN_140286d20(list, a, b);
     i64 al = FUN_140288250(list);
-    i64 v = FUN_14027c1e0(c);
-    i64 dest = FUN_14027b550(node + 0x10);
-    FUN_14027bac0(al, dest, v);
-    return node;
+    try {
+        FUN_14027bac0(al, FUN_14027b550(node->m_value), FUN_14027c1e0(c));
+    } catch (...) {
+        FUN_14028a770(al, (i64)node, 1);
+        throw;
+    }
+    return (i64)node;
 }
 // @0x140277160
 i64 FUN_140277160(i64 p) { return p; }
 // @0x140277170
 i64 FUN_140277170(i64 first, i64 last, i64 dest, Unk_StlTag)
 {
-    for (; first != last; first += 8) {
+    for (; first != last; dest += 8, first += 8)
         FUN_140274e70((unsigned*)dest, (unsigned*)first);
-        dest += 8;
-    }
     return dest;
 }
 // @0x1402771d0
 i64 FUN_1402771d0(i64 first, i64 last, i64 dest, Unk_StlTag)
 {
-    for (; first != last; first += 0x10) {
+    for (; first != last; dest += 0x10, first += 0x10)
         FUN_14027eaf0(dest, first);
-        dest += 0x10;
-    }
     return dest;
 }
 // @0x140277230
@@ -416,32 +384,28 @@ void FUN_1402772d0(i64, i64, i64, Unk_StlTag) {}
 void FUN_1402772f0(i64 first, i64 last, i64 al, Unk_StlTag)
 {
     for (; first != last; first += 0x30) {
-        i64 p = FUN_14027a990(first);
-        FUN_14027bb90(al, p);
+        FUN_14027bb90(al, FUN_14027a990(first));
     }
 }
 // @0x140277350
 void FUN_140277350(i64 first, i64 last, i64 al, Unk_StlTag)
 {
     for (; first != last; first += 8) {
-        i64 p = FUN_14027a9a0(first);
-        FUN_14027bbc0(al, p);
+        FUN_14027bbc0(al, FUN_14027a9a0(first));
     }
 }
 // @0x1402773b0
 void FUN_1402773b0(i64 first, i64 last, i64 al, Unk_StlTag)
 {
     for (; first != last; first += 0x10) {
-        i64 p = FUN_14027a9b0(first);
-        FUN_14027bbe0(al, p);
+        FUN_14027bbe0(al, FUN_14027a9b0(first));
     }
 }
 // @0x140277410
 void FUN_140277410(i64 first, i64 last, i64 al, Unk_StlTag)
 {
     for (; first != last; first += 0x10) {
-        i64 p = FUN_14027a9c0(first);
-        FUN_14027bc20(al, p);
+        FUN_14027bc20(al, FUN_14027a9c0(first));
     }
 }
 // @0x140277470
@@ -464,293 +428,233 @@ i64 FUN_140277660(i64 a, i64 b, Unk_StlTag) { return (b - a) >> 4; }
 // @0x140277690
 void FUN_140277690(i64 self, i64 v)
 {
-    Unk_140277690* c = (Unk_140277690*)self;
-    i64 a = FUN_14027c170(v);
-    i64 p = FUN_14027a980(c->m_cursor);
-    FUN_14027b840(c->m_alloc, p, a);
-    c->m_cursor = c->m_cursor + 8;
+    FUN_14027b840(((Unk_140277690*)self)->m_alloc, FUN_14027a980(((Unk_140277690*)self)->m_cursor), FUN_14027c170(v));
+    ((Unk_140277690*)self)->m_cursor = ((Unk_140277690*)self)->m_cursor + 8;
 }
 // @0x1402776f0
 void FUN_1402776f0(i64 self, i64 v)
 {
-    Unk_140277690* c = (Unk_140277690*)self;
-    i64 a = FUN_14027c180(v);
-    i64 p = FUN_14027a990(c->m_cursor);
-    FUN_14027b890(c->m_alloc, p, a);
-    c->m_cursor = c->m_cursor + 0x30;
+    FUN_14027b890(((Unk_140277690*)self)->m_alloc, FUN_14027a990(((Unk_140277690*)self)->m_cursor), FUN_14027c180(v));
+    ((Unk_140277690*)self)->m_cursor = ((Unk_140277690*)self)->m_cursor + 0x30;
 }
 // @0x140277750
 void FUN_140277750(i64 self, i64 v)
 {
-    Unk_140277690* c = (Unk_140277690*)self;
-    i64 a = FUN_140180940(v);
-    i64 p = FUN_14027a9a0(c->m_cursor);
-    FUN_14027b930(c->m_alloc, p, a);
-    c->m_cursor = c->m_cursor + 8;
+    FUN_14027b930(((Unk_140277690*)self)->m_alloc, FUN_14027a9a0(((Unk_140277690*)self)->m_cursor), FUN_140180940(v));
+    ((Unk_140277690*)self)->m_cursor = ((Unk_140277690*)self)->m_cursor + 8;
 }
 // @0x1402777b0
 void FUN_1402777b0(i64 self, i64 v)
 {
-    Unk_140277690* c = (Unk_140277690*)self;
-    i64 a = FUN_14027c190(v);
-    i64 p = FUN_14027a9b0(c->m_cursor);
-    FUN_14027b9d0(c->m_alloc, p, a);
-    c->m_cursor = c->m_cursor + 0x10;
+    FUN_14027b9d0(((Unk_140277690*)self)->m_alloc, FUN_14027a9b0(((Unk_140277690*)self)->m_cursor), FUN_14027c190(v));
+    ((Unk_140277690*)self)->m_cursor = ((Unk_140277690*)self)->m_cursor + 0x10;
 }
 // @0x140277810
 void FUN_140277810(i64 self, i64 v)
 {
-    Unk_140277690* c = (Unk_140277690*)self;
-    i64 a = FUN_14027c1a0(v);
-    i64 p = FUN_14027a9c0(c->m_cursor);
-    FUN_14027bb10(c->m_alloc, p, a);
-    c->m_cursor = c->m_cursor + 0x10;
+    FUN_14027bb10(((Unk_140277690*)self)->m_alloc, FUN_14027a9c0(((Unk_140277690*)self)->m_cursor), FUN_14027c1a0(v));
+    ((Unk_140277690*)self)->m_cursor = ((Unk_140277690*)self)->m_cursor + 0x10;
 }
 // @0x140277870
 void FUN_140277870(i64 self, i64 v)
 {
-    Unk_140277690* c = (Unk_140277690*)self;
-    i64 a = FUN_14027c200(v);
-    i64 p = FUN_14027a990(c->m_cursor);
-    FUN_14027b8e0(c->m_alloc, p, a);
-    c->m_cursor = c->m_cursor + 0x30;
+    FUN_14027b8e0(((Unk_140277690*)self)->m_alloc, FUN_14027a990(((Unk_140277690*)self)->m_cursor), FUN_14027c200(v));
+    ((Unk_140277690*)self)->m_cursor = ((Unk_140277690*)self)->m_cursor + 0x30;
 }
 // @0x1402778d0
 void FUN_1402778d0(i64 self, i64 v)
 {
-    Unk_140277690* c = (Unk_140277690*)self;
-    i64 a = FUN_140180c50(v);
-    i64 p = FUN_14027a9a0(c->m_cursor);
-    FUN_14027b980(c->m_alloc, p, a);
-    c->m_cursor = c->m_cursor + 8;
+    FUN_14027b980(((Unk_140277690*)self)->m_alloc, FUN_14027a9a0(((Unk_140277690*)self)->m_cursor), FUN_140180c50(v));
+    ((Unk_140277690*)self)->m_cursor = ((Unk_140277690*)self)->m_cursor + 8;
 }
 // @0x140277930
 void FUN_140277930(i64 self, i64 v)
 {
-    Unk_140277690* c = (Unk_140277690*)self;
-    i64 a = FUN_14027c210(v);
-    i64 p = FUN_14027a9b0(c->m_cursor);
-    FUN_14027ba70(c->m_alloc, p, a);
-    c->m_cursor = c->m_cursor + 0x10;
+    FUN_14027ba70(((Unk_140277690*)self)->m_alloc, FUN_14027a9b0(((Unk_140277690*)self)->m_cursor), FUN_14027c210(v));
+    ((Unk_140277690*)self)->m_cursor = ((Unk_140277690*)self)->m_cursor + 0x10;
 }
 // emplace_back with the capacity checks done: construct at _Mylast and bump it
 // @0x140277990
 void FUN_140277990(i64 vec, i64 v)
 {
-    i64 a = FUN_14027c1d0(v);
-    i64* mylast = FUN_140288ba0(vec);
-    i64 p = FUN_14027a9b0(*mylast);
-    i64 al = FUN_1402883b0(vec);
-    FUN_14027ba20(al, p, a);
-    i64* mylast2 = FUN_140288ba0(vec);
-    i64* mylast3 = FUN_140288ba0(vec);
-    FUN_140288d20(vec, *mylast3, *mylast2);
-    FUN_140288ba0(vec);
-    i64* mylast4 = FUN_140288ba0(vec);
-    *mylast4 = *mylast4 + 0x10;
+    FUN_14027ba20(FUN_1402883b0(vec), FUN_14027a9b0(*FUN_140288ba0(vec)), FUN_14027c1d0(v));
+    FUN_140288d20(vec, *FUN_140288ba0(vec), *FUN_140288ba0(vec));
+    i64 result = *FUN_140288ba0(vec);
+    *FUN_140288ba0(vec) += 0x10;
 }
 // @0x140277a50
 void FUN_140277a50(i64 vec, i64 v)
 {
-    i64 a = FUN_14027c200(v);
-    i64* mylast = FUN_140288b20(vec);
-    i64 p = FUN_14027a990(*mylast);
-    i64 al = FUN_140288330(vec);
-    FUN_14027b8e0(al, p, a);
-    i64* mylast2 = FUN_140288b20(vec);
-    i64* mylast3 = FUN_140288b20(vec);
-    FUN_140288d00(vec, *mylast3, *mylast2);
-    FUN_140288b20(vec);
-    i64* mylast4 = FUN_140288b20(vec);
-    *mylast4 = *mylast4 + 0x30;
+    FUN_14027b8e0(FUN_140288330(vec), FUN_14027a990(*FUN_140288b20(vec)), FUN_14027c200(v));
+    FUN_140288d00(vec, *FUN_140288b20(vec), *FUN_140288b20(vec));
+    i64 result = *FUN_140288b20(vec);
+    *FUN_140288b20(vec) += 0x30;
 }
 // @0x140277b10
 void FUN_140277b10(i64 vec, i64 v)
 {
-    i64 a = FUN_140180c50(v);
-    i64* mylast = FUN_140288b60(vec);
-    i64 p = FUN_14027a9a0(*mylast);
-    i64 al = FUN_140288370(vec);
-    FUN_14027b980(al, p, a);
-    i64* mylast2 = FUN_140288b60(vec);
-    i64* mylast3 = FUN_140288b60(vec);
-    FUN_140288d10(vec, *mylast3, *mylast2);
-    FUN_140288b60(vec);
-    i64* mylast4 = FUN_140288b60(vec);
-    *mylast4 = *mylast4 + 8;
+    FUN_14027b980(FUN_140288370(vec), FUN_14027a9a0(*FUN_140288b60(vec)), FUN_140180c50(v));
+    FUN_140288d10(vec, *FUN_140288b60(vec), *FUN_140288b60(vec));
+    i64 result = *FUN_140288b60(vec);
+    *FUN_140288b60(vec) += 8;
 }
 // @0x140277bd0
 void FUN_140277bd0(i64 vec, i64 v)
 {
-    i64 a = FUN_14027c210(v);
-    i64* mylast = FUN_140288ba0(vec);
-    i64 p = FUN_14027a9b0(*mylast);
-    i64 al = FUN_1402883b0(vec);
-    FUN_14027ba70(al, p, a);
-    i64* mylast2 = FUN_140288ba0(vec);
-    i64* mylast3 = FUN_140288ba0(vec);
-    FUN_140288d20(vec, *mylast3, *mylast2);
-    FUN_140288ba0(vec);
-    i64* mylast4 = FUN_140288ba0(vec);
-    *mylast4 = *mylast4 + 0x10;
+    FUN_14027ba70(FUN_1402883b0(vec), FUN_14027a9b0(*FUN_140288ba0(vec)), FUN_14027c210(v));
+    FUN_140288d20(vec, *FUN_140288ba0(vec), *FUN_140288ba0(vec));
+    i64 result = *FUN_140288ba0(vec);
+    *FUN_140288ba0(vec) += 0x10;
 }
 // _Emplace_reallocate: grow, construct the new element at the insertion point, move the two halves, swap buffers
-// MS2-FUNCTIONAL: vector::_Emplace_reallocate (16-byte elements) over raw i64 handles; the exe try/catch frame differs (element type unrecovered)
+// MS2-FUNCTIONAL: vector::_Emplace_reallocate (VS2017 15.8 shape, try/catch(...) cleanup as in the exe); inside the try body our cl spills every call result to a temp where the exe keeps the last one in a register
 // @0x140277c90
 i64 FUN_140277c90(i64 vec, i64 where, i64 v)
 {
-    i64* myfirst = FUN_140288a40(vec);
-    i64 off = (where - *myfirst) >> 4;
+    i64 off = (where - *FUN_140288a40(vec)) >> 4;
     i64 al = FUN_1402883b0(vec);
-    i64 size = FUN_14028b500(vec);
-    i64 maxsize = FUN_14028b180(vec);
-    if (size == maxsize)
+    i64 oldsize = FUN_14028b500(vec);
+    if (oldsize == FUN_14028b180(vec))
         FUN_140289f00();
-    u64 newcap = FUN_140287070(vec, size + 1);
+    i64 newsize = oldsize + 1;
+    u64 newcap = FUN_140287070(vec, newsize);
     i64 newvec = FUN_14028a050(al, newcap);
-    i64 slot = FUN_14027a9b0(newvec + off * 0x10);
-    i64 a = FUN_14027c1d0(v);
-    FUN_14027ba20(al, slot, a);
-    i64 slotp = newvec + off * 0x10;
-    i64* mylast = FUN_140288ba0(vec);
-    if (where == *mylast) {
-        i64* mylast2 = FUN_140288ba0(vec);
-        i64* myfirst2 = FUN_140288a40(vec);
-        FUN_140289cc0(vec, *myfirst2, *mylast2, newvec);
-    } else {
-        i64* myfirst3 = FUN_140288a40(vec);
-        FUN_140289b00((void*)vec, *myfirst3, where, newvec);
-        slotp = newvec + off * 0x10 + 0x10;
-        i64* mylast3 = FUN_140288ba0(vec);
-        FUN_140289b00((void*)vec, where, *mylast3, slotp);
+    i64 constructed_last = newvec + off * 0x10 + 0x10;
+    i64 constructed_first = constructed_last;
+    try {
+        i64 slot = FUN_14027a9b0(newvec + off * 0x10);
+        FUN_14027ba20(al, slot, FUN_14027c1d0(v));
+        constructed_first = newvec + off * 0x10;
+        if (where == *FUN_140288ba0(vec)) {
+            FUN_140289cc0(vec, *FUN_140288a40(vec), *FUN_140288ba0(vec), newvec);
+        } else {
+            FUN_140289b00((void*)vec, *FUN_140288a40(vec), where, newvec);
+            constructed_first = newvec;
+            FUN_140289b00((void*)vec, where, *FUN_140288ba0(vec), newvec + off * 0x10 + 0x10);
+        }
+    } catch (...) {
+        FUN_140287670(vec, constructed_first, constructed_last);
+        FUN_14028a860(al, newvec, newcap);
+        throw;
     }
-    FUN_1402873b0(vec, newvec, size + 1, newcap);
-    i64* myfirst4 = FUN_140288a40(vec);
-    return off * 0x10 + *myfirst4;
+    FUN_1402873b0(vec, newvec, newsize, newcap);
+    return off * 0x10 + *FUN_140288a40(vec);
 }
-// MS2-FUNCTIONAL: vector::_Emplace_reallocate (0x30-byte elements) over raw i64 handles; the exe try/catch frame differs (element type unrecovered)
+// MS2-FUNCTIONAL: vector::_Emplace_reallocate (VS2017 15.8 shape, try/catch(...) cleanup as in the exe); inside the try body our cl spills every call result to a temp where the exe keeps the last one in a register
 // @0x140277ee0
 i64 FUN_140277ee0(i64 vec, i64 where, i64 v)
 {
-    i64* myfirst = FUN_1402889c0(vec);
-    i64 off = (where - *myfirst) / 0x30;
+    i64 off = (where - *FUN_1402889c0(vec)) / 0x30;
     i64 al = FUN_140288330(vec);
-    i64 size = FUN_14028b470(vec);
-    i64 maxsize = FUN_14028b0e0(vec);
-    if (size == maxsize)
+    i64 oldsize = FUN_14028b470(vec);
+    if (oldsize == FUN_14028b0e0(vec))
         FUN_140289ec0();
-    u64 newcap = FUN_140286f50(vec, size + 1);
+    i64 newsize = oldsize + 1;
+    u64 newcap = FUN_140286f50(vec, newsize);
     i64 newvec = FUN_140289ff0(al, newcap);
-    i64 slot = FUN_14027a990(newvec + off * 0x30);
-    i64 a = FUN_14027c200(v);
-    FUN_14027b8e0(al, slot, a);
-    i64 slotp = newvec + off * 0x30;
-    i64* mylast = FUN_140288b20(vec);
-    if (where == *mylast) {
-        i64* mylast2 = FUN_140288b20(vec);
-        i64* myfirst2 = FUN_1402889c0(vec);
-        FUN_140289c00(vec, *myfirst2, *mylast2, newvec);
-    } else {
-        i64* myfirst3 = FUN_1402889c0(vec);
-        FUN_140289a80(vec, *myfirst3, where, newvec, newvec, off, slotp);
-        slotp = newvec + off * 0x30 + 0x30;
-        i64 base = newvec;
-        i64* mylast3 = FUN_140288b20(vec);
-        FUN_140289a80(vec, where, *mylast3, slotp, newvec, off, base);
+    i64 constructed_last = newvec + off * 0x30 + 0x30;
+    i64 constructed_first = constructed_last;
+    try {
+        i64 slot = FUN_14027a990(newvec + off * 0x30);
+        FUN_14027b8e0(al, slot, FUN_14027c200(v));
+        constructed_first = newvec + off * 0x30;
+        if (where == *FUN_140288b20(vec)) {
+            FUN_140289c00(vec, *FUN_1402889c0(vec), *FUN_140288b20(vec), newvec);
+        } else {
+            FUN_140289a80(vec, *FUN_1402889c0(vec), where, newvec);
+            constructed_first = newvec;
+            FUN_140289a80(vec, where, *FUN_140288b20(vec), newvec + off * 0x30 + 0x30);
+        }
+    } catch (...) {
+        FUN_1402875f0(vec, constructed_first, constructed_last);
+        FUN_14028a800(al, newvec, newcap);
+        throw;
     }
-    FUN_140287190(vec, newvec, size + 1, newcap);
-    i64* myfirst4 = FUN_1402889c0(vec);
-    return off * 0x30 + *myfirst4;
+    FUN_140287190(vec, newvec, newsize, newcap);
+    return off * 0x30 + *FUN_1402889c0(vec);
 }
-// MS2-FUNCTIONAL: vector::_Emplace_reallocate (8-byte elements) over raw i64 handles; the exe try/catch frame differs (element type unrecovered)
+// MS2-FUNCTIONAL: vector::_Emplace_reallocate (VS2017 15.8 shape, try/catch(...) cleanup as in the exe); inside the try body our cl spills every call result to a temp where the exe keeps the last one in a register
 // @0x140278130
 i64 FUN_140278130(i64 vec, i64 where, i64 v)
 {
-    i64* myfirst = FUN_140288a00(vec);
-    i64 off = (where - *myfirst) >> 3;
+    i64 off = (where - *FUN_140288a00(vec)) >> 3;
     i64 al = FUN_140288370(vec);
-    i64 size = FUN_14028b4c0(vec);
-    i64 maxsize = FUN_14028b130(vec);
-    if (size == maxsize)
+    i64 oldsize = FUN_14028b4c0(vec);
+    if (oldsize == FUN_14028b130(vec))
         FUN_140289ee0();
-    u64 newcap = FUN_140286fe0(vec, size + 1);
+    i64 newsize = oldsize + 1;
+    u64 newcap = FUN_140286fe0(vec, newsize);
     i64 newvec = FUN_14028a020(al, newcap);
-    i64 slot = FUN_14027a9a0(newvec + off * 8);
-    i64 a = FUN_140180c50(v);
-    FUN_14027b980(al, slot, a);
-    i64 slotp = newvec + off * 8;
-    i64* mylast = FUN_140288b60(vec);
-    if (where == *mylast) {
-        i64* mylast2 = FUN_140288b60(vec);
-        i64* myfirst2 = FUN_140288a00(vec);
-        FUN_140289c60(vec, *myfirst2, *mylast2, newvec);
-    } else {
-        i64* myfirst3 = FUN_140288a00(vec);
-        FUN_140289ac0(vec, *myfirst3, where, newvec, newvec, off, slotp);
-        slotp = newvec + 8;
-        i64 offbytes = off * 8;
-        i64 base = newvec;
-        i64* mylast3 = FUN_140288b60(vec);
-        FUN_140289ac0(vec, where, *mylast3, slotp + offbytes, newvec, off, base);
+    i64 constructed_last = newvec + off * 8 + 8;
+    i64 constructed_first = constructed_last;
+    try {
+        i64 slot = FUN_14027a9a0(newvec + off * 8);
+        FUN_14027b980(al, slot, FUN_140180c50(v));
+        constructed_first = newvec + off * 8;
+        if (where == *FUN_140288b60(vec)) {
+            FUN_140289c60(vec, *FUN_140288a00(vec), *FUN_140288b60(vec), newvec);
+        } else {
+            FUN_140289ac0(vec, *FUN_140288a00(vec), where, newvec);
+            constructed_first = newvec;
+            FUN_140289ac0(vec, where, *FUN_140288b60(vec), newvec + off * 8 + 8);
+        }
+    } catch (...) {
+        FUN_140287630(vec, constructed_first, constructed_last);
+        FUN_14028a830(al, newvec, newcap);
+        throw;
     }
-    FUN_1402872a0(vec, newvec, size + 1, newcap);
-    i64* myfirst4 = FUN_140288a00(vec);
-    return *myfirst4 + off * 8;
+    FUN_1402872a0(vec, newvec, newsize, newcap);
+    return *FUN_140288a00(vec) + off * 8;
 }
-// MS2-FUNCTIONAL: vector::_Emplace_reallocate (16-byte elements) over raw i64 handles; the exe try/catch frame differs (element type unrecovered)
+// MS2-FUNCTIONAL: vector::_Emplace_reallocate (VS2017 15.8 shape, try/catch(...) cleanup as in the exe); inside the try body our cl spills every call result to a temp where the exe keeps the last one in a register
 // @0x140278370
 i64 FUN_140278370(i64 vec, i64 where, i64 v)
 {
-    i64* myfirst = FUN_140288a40(vec);
-    i64 off = (where - *myfirst) >> 4;
+    i64 off = (where - *FUN_140288a40(vec)) >> 4;
     i64 al = FUN_1402883b0(vec);
-    i64 size = FUN_14028b500(vec);
-    i64 maxsize = FUN_14028b180(vec);
-    if (size == maxsize)
+    i64 oldsize = FUN_14028b500(vec);
+    if (oldsize == FUN_14028b180(vec))
         FUN_140289f00();
-    u64 newcap = FUN_140287070(vec, size + 1);
+    i64 newsize = oldsize + 1;
+    u64 newcap = FUN_140287070(vec, newsize);
     i64 newvec = FUN_14028a050(al, newcap);
-    i64 slot = FUN_14027a9b0(newvec + off * 0x10);
-    i64 a = FUN_14027c210(v);
-    FUN_14027ba70(al, slot, a);
-    i64 slotp = newvec + off * 0x10;
-    i64* mylast = FUN_140288ba0(vec);
-    if (where == *mylast) {
-        i64* mylast2 = FUN_140288ba0(vec);
-        i64* myfirst2 = FUN_140288a40(vec);
-        FUN_140289cc0(vec, *myfirst2, *mylast2, newvec);
-    } else {
-        i64* myfirst3 = FUN_140288a40(vec);
-        FUN_140289b00((void*)vec, *myfirst3, where, newvec);
-        slotp = newvec + off * 0x10 + 0x10;
-        i64* mylast3 = FUN_140288ba0(vec);
-        FUN_140289b00((void*)vec, where, *mylast3, slotp);
+    i64 constructed_last = newvec + off * 0x10 + 0x10;
+    i64 constructed_first = constructed_last;
+    try {
+        i64 slot = FUN_14027a9b0(newvec + off * 0x10);
+        FUN_14027ba70(al, slot, FUN_14027c210(v));
+        constructed_first = newvec + off * 0x10;
+        if (where == *FUN_140288ba0(vec)) {
+            FUN_140289cc0(vec, *FUN_140288a40(vec), *FUN_140288ba0(vec), newvec);
+        } else {
+            FUN_140289b00((void*)vec, *FUN_140288a40(vec), where, newvec);
+            constructed_first = newvec;
+            FUN_140289b00((void*)vec, where, *FUN_140288ba0(vec), newvec + off * 0x10 + 0x10);
+        }
+    } catch (...) {
+        FUN_140287670(vec, constructed_first, constructed_last);
+        FUN_14028a860(al, newvec, newcap);
+        throw;
     }
-    FUN_1402873b0(vec, newvec, size + 1, newcap);
-    i64* myfirst4 = FUN_140288a40(vec);
-    return off * 0x10 + *myfirst4;
+    FUN_1402873b0(vec, newvec, newsize, newcap);
+    return off * 0x10 + *FUN_140288a40(vec);
 }
 // node free: destroy the two (three) pointer members, then deallocate the node
 // @0x1402785c0
-void FUN_1402785c0(i64, i64 node)
+void FUN_1402785c0(i64, i64 node) noexcept
 {
     i64 al;
-    i64 p = FUN_14027b520(node);
-    FUN_14027bb60(&al, p);
-    p = FUN_14027b520(node + 8);
-    FUN_14027bb60(&al, p);
+    FUN_14027bb60(&al, FUN_14027b520((i64)&((Unk_WcSelf*)node)->m_0));
+    FUN_14027bb60(&al, FUN_14027b520(node + 8));
     FUN_14028a710(&al, node, 1);
 }
 // @0x140278630
-void FUN_140278630(i64, i64 node)
+void FUN_140278630(i64, i64 node) noexcept
 {
     i64 al;
-    i64 p = FUN_14027b530(node);
-    FUN_14027bb70(&al, p);
-    p = FUN_14027b530(node + 8);
-    FUN_14027bb70(&al, p);
-    p = FUN_14027b530(node + 0x10);
-    FUN_14027bb70(&al, p);
+    FUN_14027bb70(&al, FUN_14027b530((i64)&((Unk_WcSelf*)node)->m_0));
+    FUN_14027bb70(&al, FUN_14027b530(node + 8));
+    FUN_14027bb70(&al, FUN_14027b530(node + 0x10));
     FUN_14028a740(&al, node, 1);
 }
 // @0x1402786c0
@@ -807,10 +711,10 @@ i64 FUN_140278980(i64* a, i64* b) { Unk_StlTag tag; return FUN_140278890(a, b, t
 // @0x1402789b0
 void FUN_1402789b0(i64 al, i64 list, i64 v)
 {
-    i64* where = *(i64**)(list + 8);
-    i64 a = FUN_14027c1e0(v);
-    i64 node = FUN_1402770d0(al, list, (i64)where, a);
+    i64 head = list;
+    i64* where = *(i64**)(head + 8);
+    i64 node = FUN_1402770d0(al, head, (i64)where, FUN_14027c1e0(v));
     FUN_140288560(al, 1);
-    *(i64*)(list + 8) = node;
+    *(i64*)(head + 8) = node;
     *where = node;
 }

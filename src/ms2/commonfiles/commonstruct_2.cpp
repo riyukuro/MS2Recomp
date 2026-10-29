@@ -8,6 +8,7 @@
 #include "ms2/commonfiles/stream.h"
 #include "ms2/commonfiles/commonstruct_wa.h"
 #include "ms2/commonfiles/commonstruct_wb.h"
+#include "ms2/commonfiles/commonstruct_backout.h"
 #include "ms2/placeholder/billboardinfo.h"
 #include "ms2/placeholder/cclienthardwareinfo.h"
 #include <new>
@@ -34,22 +35,6 @@ i64 FUN_1402890b0(void*); i64 FUN_1402890d0(void*); i64 FUN_1402890f0(void*);
 void FUN_1402774c0(i64, i64, i64); void FUN_140277470(i64, i64, i64);
 void FUN_140277510(i64, i64, i64); void FUN_140277560(i64, i64, i64); void FUN_1402775b0(i64, i64, i64);
 
-// std::_Uninitialized_backout_al of one element type: {_First, _Last, _Al}; the ctor/dtor are the exe's COMDATs.
-struct Unk_BackoutB {
-    i64 first, last, al;
-    Unk_BackoutB(i64 dest, i64 a);
-    ~Unk_BackoutB();
-};
-struct Unk_BackoutC {
-    i64 first, last, al;
-    Unk_BackoutC(i64 dest, i64 a);
-    ~Unk_BackoutC();
-};
-struct Unk_BackoutD {
-    i64 first, last, al;
-    Unk_BackoutD(i64 dest, i64 a);
-    ~Unk_BackoutD();
-};
 i64 FUN_14027c3e0(i64); i64 FUN_14027c3f0(i64); i64 FUN_14027c400(i64);
 i64 FUN_14027b440(i64, i64, i64, i64, char, char);
 i64 FUN_14027b3b0(i64, i64, i64, i64, char, char);
@@ -184,17 +169,16 @@ Unk_Ref16* FUN_14027cc30(Unk_Ref16*, Unk_Ref16*);
 void FUN_14027b6f0(i64 al, i64 where, i64 src) { ::new((void*)where) i64(*(i64*)FUN_14027c140(src)); }
 // @0x14027b740
 void FUN_14027b740(i64 al, i64 where, i64 src) { ::new((void*)where) i64(*(i64*)FUN_14027c150(src)); }
+// MS2-FUNCTIONAL: pair<const unsigned,int> piecewise construct; the exe is one new-expression calling the pair ctor 0x140274bb0 with by-value tuple temporaries (frame slots differ; 0x140274bb0 is a free function in commonstruct_wc)
 // @0x14027b790
-// MS2-FUNCTIONAL: std::pair<const unsigned,int> piecewise construct; the exe keeps the two tuple temporaries in frame slots a plain C++ source cannot name
 void FUN_14027b790(i64 al, i64 where, i64 a2, i64 b2, i64 c2)
 {
-    Unk_P8* mem = ::new((void*)where) Unk_P8;
+    Unk_P8* mem = (Unk_P8*)operator new(8, (void*)where);
     Unk_Q8 first, second;
     Unk_Q8* p28 = &first;
     Unk_Q8* p30 = &second;
-    i64 t38 = (i64)FUN_140163dc0(p28, (Unk_Q8*)FUN_140162f40(c2));
-    i64 t40 = (i64)FUN_14027d650(p30, (Unk_Q8*)FUN_14027c230(b2));
-    FUN_140274bb0(mem, *(char*)FUN_140162ef0(a2), t40, t38);
+    FUN_140274bb0(mem, *(char*)FUN_140162ef0(a2), (i64)FUN_14027d650(p30, (Unk_Q8*)FUN_14027c230(b2)),
+                  (i64)FUN_140163dc0(p28, (Unk_Q8*)FUN_140162f40(c2)));
 }
 // @0x14027b840
 void FUN_14027b840(i64 al, i64 where, i64 src) { ::new((void*)where) Unk_P8(*(Unk_P8*)FUN_14027c170(src)); }
@@ -329,7 +313,7 @@ void FUN_14027bff0(i64 ctx, i64* out, int* value)
 {
     Unk_FmtVal v;
     Unk_FmtVal* pv = &v;
-    if (0 != 1) {
+    if (0 == 1) {
         std::wostringstream oss;
         oss << *value;
         std::wstring text = oss.str();
@@ -501,8 +485,9 @@ Unk_Ref16* FUN_14027ca40(Unk_Ref16* t, Unk_Ref16* o) { t->m_p = o->m_p; FUN_1402
 Unk_Ref16* FUN_14027ca80(Unk_Ref16* t, int) { t->m_p = 0; return t; }
 // @0x14027caa0
 Unk_Ref16* FUN_14027caa0(Unk_Ref16* t, Unk_Ref16* o) { t->m_p = o->m_p; FUN_140286520(t); return t; }
+struct Unk_RefT : Unk_Ref16 { Unk_RefT(void* p); ~Unk_RefT(); };
 // @0x14027cae0
-Unk_Ref16* FUN_14027cae0(Unk_Ref16* t, void* p) { t->m_p = p; FUN_140286550(t); return t; }
+Unk_RefT::Unk_RefT(void* p) { m_p = p; FUN_140286550(this); }
 // @0x14027cb10
 Unk_Ref16* FUN_14027cb10(Unk_Ref16* t) { t->m_p = 0; return t; }
 // @0x14027cb30
@@ -592,7 +577,7 @@ void* FUN_14027d090(void* t) { *(i64*)t = 0; return t; }
 // @0x14027d0b0
 Unk_Z16* FUN_14027d0b0(Unk_Z16* t) { t->a = 0; t->b = 0; return t; }
 // @0x14027d0e0
-Unk_BackoutB* FUN_14027d0e0(Unk_BackoutB* t, i64 d, i64 a) { t->first = d; t->last = d; t->al = a; return t; }
+Unk_BackoutA::Unk_BackoutA(i64 d, i64 a) { first = d; last = d; al = a; }
 // @0x14027d120
 Unk_BackoutB::Unk_BackoutB(i64 d, i64 a) { first = d; last = d; al = a; }
 // @0x14027d160
@@ -600,7 +585,7 @@ Unk_BackoutC::Unk_BackoutC(i64 d, i64 a) { first = d; last = d; al = a; }
 // @0x14027d1a0
 Unk_BackoutD::Unk_BackoutD(i64 d, i64 a) { first = d; last = d; al = a; }
 // @0x14027d1e0
-Unk_BackoutB* FUN_14027d1e0(Unk_BackoutB* t, i64 d, i64 a) { t->first = d; t->last = d; t->al = a; return t; }
+Unk_BackoutE::Unk_BackoutE(i64 d, i64 a) { first = d; last = d; al = a; }
 
 void FUN_140274a20(Unk_PairMember*, Unk_StlTag); void FUN_140274a50(Unk_PairMember*, Unk_StlTag); void FUN_140274a80(Unk_PairMember*, Unk_StlTag);
 void FUN_140274ab0(Unk_PairMember*, Unk_StlTag); void FUN_140274ae0(Unk_PairMember*, Unk_StlTag);
@@ -657,17 +642,16 @@ Unk_PairHolder* FUN_14027d600(Unk_PairHolder* t) { char loc; FUN_14027cf40(t, (i
 i64* FUN_14027d630(i64* t, i64 v) { *t = v; return t; }
 // @0x14027d650
 Unk_Q8* FUN_14027d650(Unk_Q8* t, Unk_Q8* p) { FUN_140163dc0(t, p); *t = *p; return t; }
-// FUNCTIONAL: the exe's ctor has an EH state slot (mov [rsp+20h],-2) around the single call; no source form found.
 // @0x14027d690
-Unk_PairHolder* FUN_14027d690(Unk_PairHolder* t) { FUN_14027d220(t); return t; } // MS2-FUNCTIONAL: unwind-state slot
+Unk_PairHolder* FUN_14027d690(Unk_PairHolder* t) noexcept { FUN_14027d220(t); return t; }
 // @0x14027d6c0
-Unk_PairHolder* FUN_14027d6c0(Unk_PairHolder* t) { FUN_14027d250(t); return t; } // MS2-FUNCTIONAL: unwind-state slot
+Unk_PairHolder* FUN_14027d6c0(Unk_PairHolder* t) noexcept { FUN_14027d250(t); return t; }
 // @0x14027d6f0
-Unk_PairHolder* FUN_14027d6f0(Unk_PairHolder* t) { FUN_14027d280(t); return t; } // MS2-FUNCTIONAL: unwind-state slot
+Unk_PairHolder* FUN_14027d6f0(Unk_PairHolder* t) noexcept { FUN_14027d280(t); return t; }
 // @0x14027d720
-Unk_PairHolder* FUN_14027d720(Unk_PairHolder* t) { FUN_14027d2b0(t); return t; } // MS2-FUNCTIONAL: unwind-state slot
+Unk_PairHolder* FUN_14027d720(Unk_PairHolder* t) noexcept { FUN_14027d2b0(t); return t; }
 // @0x14027d750
-Unk_PairHolder* FUN_14027d750(Unk_PairHolder* t) { FUN_14027d2e0(t); return t; } // MS2-FUNCTIONAL: unwind-state slot
+Unk_PairHolder* FUN_14027d750(Unk_PairHolder* t) noexcept { FUN_14027d2e0(t); return t; }
 
 // ---- small value types: ctors / copy ctors (all inline COMDATs of the element types in the exe) ----
 struct CAdditionalEvent;
@@ -794,7 +778,6 @@ Unk_ShopLifeRef::~Unk_ShopLifeRef() { FUN_140289050(this); }
 void FUN_14027dfa0(void* t) noexcept { FUN_140288e10(t); }
 // @0x14027dfd0
 void FUN_14027dfd0(void* t) noexcept { FUN_140288e50(t); }
-struct Unk_RefT : Unk_Ref16 { ~Unk_RefT(); };
 // @0x14027e000
 Unk_RefT::~Unk_RefT() { FUN_140288e90(this); }
 // @0x14027e030
@@ -810,9 +793,9 @@ void FUN_14027e3f0(void* t) noexcept { FUN_140289670(t); }
 // @0x14027e4b0
 void FUN_14027e4b0(void* t) noexcept { FUN_1402899b0(t); }
 // @0x14027deb0
-void FUN_14027deb0(void* t) noexcept { FUN_140284cf0(t); } // MS2-FUNCTIONAL: the exe has a `jmp $+2` after the nop that no source form reproduced
+void FUN_14027deb0(void* t) { try { FUN_140284cf0(t); } catch (...) {} }
 // @0x14027dee0
-void FUN_14027dee0(void* t) noexcept { FUN_140284e00(t); } // MS2-FUNCTIONAL: same
+void FUN_14027dee0(void* t) { try { FUN_140284e00(t); } catch (...) {} }
 // @0x14027e420
 Unk_ItemVec::~Unk_ItemVec() noexcept { FUN_140289740(this); }
 // @0x14027e450
@@ -836,7 +819,7 @@ Unk_RewardMap::~Unk_RewardMap() { FUN_14027e200(this); }
 
 // std::_Uninitialized_backout dtors: destroy [first,last)
 // @0x14027e260
-void FUN_14027e260(Unk_BackoutB* t) noexcept { FUN_140277470(t->first, t->last, t->al); }
+Unk_BackoutA::~Unk_BackoutA() { FUN_140277470(first, last, al); }
 // @0x14027e2a0
 Unk_BackoutB::~Unk_BackoutB() { FUN_1402774c0(first, last, al); }
 // @0x14027e2e0
@@ -844,7 +827,7 @@ Unk_BackoutC::~Unk_BackoutC() { FUN_140277510(first, last, al); }
 // @0x14027e320
 Unk_BackoutD::~Unk_BackoutD() { FUN_140277560(first, last, al); }
 // @0x14027e360
-void FUN_14027e360(Unk_BackoutB* t) noexcept { FUN_1402775b0(t->first, t->last, t->al); }
+Unk_BackoutE::~Unk_BackoutE() { FUN_1402775b0(first, last, al); }
 
 // ---- refcounted-pointer assignment: AddRef(src), Release(this), copy ----
 void FUN_140286580(Unk_Ref16*);
@@ -861,12 +844,10 @@ Unk_Ref16* FUN_14027eab0(Unk_Ref16* t, Unk_Ref16* o) { FUN_1402865e0(o); FUN_140
 // @0x14027eaf0
 Unk_Ref16* FUN_14027eaf0(Unk_Ref16* t, Unk_Ref16* o) { FUN_140286640(o); FUN_140289010(t); t->m_p = o->m_p; return t; }
 // operator=(T*): swap with a temporary
-// MS2-FUNCTIONAL: exe assigns an unwind slot to the temporary; not reproducible from source
 // @0x14027e9d0
 Unk_Ref16* FUN_14027e9d0(Unk_Ref16* t, void* p)
 {
-    Unk_RefT tmp;
-    FUN_14027cae0(&tmp, p);
+    Unk_RefT tmp(p);
     void* old = t->m_p;
     t->m_p = tmp.m_p;
     tmp.m_p = old;
@@ -904,18 +885,21 @@ void FUN_14027e670(CPtred* t) { t->CPtred::~CPtred(); }
 void FUN_14027e800(CPtred* t) { t->CPtred::~CPtred(); }
 // @0x14027e870
 void FUN_14027e870(CPtred* t) { t->CPtred::~CPtred(); }
-// @0x14027e620
-CIngredientInfo::~CIngredientInfo() {} // MS2-FUNCTIONAL: exe's dtor omits the vptr store (implicit-dtor shape); header declares it user-provided
-// @0x14027e7a0
-CUserChangeableItemHistory::~CUserChangeableItemHistory() {} // MS2-FUNCTIONAL: exe's dtor omits the vptr store (implicit-dtor shape); header declares it user-provided
-// @0x14027e7e0
-ChangeableProductInfo::~ChangeableProductInfo() {} // MS2-FUNCTIONAL: exe's dtor omits the vptr store (implicit-dtor shape); header declares it user-provided
-// @0x14027e8c0
-ItemDropItemLife::~ItemDropItemLife() {} // MS2-FUNCTIONAL: exe's dtor omits the vptr store (implicit-dtor shape); header declares it user-provided
-// @0x14027e8e0
-NpcShopItemLife::~NpcShopItemLife() {} // MS2-FUNCTIONAL: exe's dtor omits the vptr store (implicit-dtor shape); header declares it user-provided
-// @0x14027e820
-HomeBlockInfo::~HomeBlockInfo() {}
+// The CPtred-derived dtors below are implicit (the exe stores no vptr). This slice owns their VAs but not the
+// ctors, so odr-use them here to make cl emit the COMDATs; the helper itself is never called.
+void MS2_EmitImplicitDtors_commonstruct2(CUserChangeableItemHistory* p0, ChangeableProductInfo* p1, HomeBlockInfo* p2, ItemDropItemLife* p3, NpcShopItemLife* p4)
+{
+    p0->CUserChangeableItemHistory::~CUserChangeableItemHistory();
+    p1->ChangeableProductInfo::~ChangeableProductInfo();
+    p2->HomeBlockInfo::~HomeBlockInfo();
+    p3->ItemDropItemLife::~ItemDropItemLife();
+    p4->NpcShopItemLife::~NpcShopItemLife();
+}
+// MS2-PIN: ??1CUserChangeableItemHistory@@UEAA@XZ 0x14027e7a0
+// MS2-PIN: ??1ChangeableProductInfo@@UEAA@XZ 0x14027e7e0
+// MS2-PIN: ??1HomeBlockInfo@@UEAA@XZ 0x14027e820
+// MS2-PIN: ??1ItemDropItemLife@@UEAA@XZ 0x14027e8c0
+// MS2-PIN: ??1NpcShopItemLife@@UEAA@XZ 0x14027e8e0
 struct Unk_DtArr38 : CPtred { i64 pad[4]; i64 arr[1]; };
 void FUN_1401b7d00(void*);
 // @0x14027e640

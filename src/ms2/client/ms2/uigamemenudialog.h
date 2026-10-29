@@ -88,10 +88,10 @@ public:
     virtual void vfunc_oa0_29();                                                                    // o198 29 0x141937ca0
 
     // ---- non-virtual members, sorted by address ----
-    void FUN_141937e00();
-    void FUN_141937e40();
-    void FUN_141937e70();
-    void FUN_141937ea0();
+    void FUN_141937e00(int nMode);
+    void FUN_141937e40(int nMode);
+    void FUN_141937e70(int nResponse);
+    void FUN_141937ea0(void* pAchieve, int bCleared);
     void FUN_141937ed0();
     void FUN_141938100();
     void FUN_141938190();
@@ -126,7 +126,7 @@ public:
     void FUN_14193ac40(int nEnable, int nId);
     CString FUN_14193ae90(int nId);
     CString FUN_14193afc0(int nId);
-    MS2Ptr<Unk_GmItem> FUN_14193b0f0(int nId, void*);
+    MS2Ptr<Unk_GmItem> FUN_14193b0f0(int nId);
     MS2Ptr<Unk_GmItem> FUN_14193b180(const CString& strName);
     // game menu button handlers bound by CGameMenuTable::RegisterDefs (0x140cf1110)
     void FUN_14193b5b0();
@@ -148,6 +148,7 @@ public:
     void FUN_14193d320();
     void FUN_14193d3d0();
     void FUN_14193d400();
+    void FUN_14193d450();
     void FUN_14193d520();
     void FUN_14193d560();
     void FUN_14193d590();
@@ -179,8 +180,11 @@ public:
     void FUN_14193df10(Scaleform::GFx::Value* pOut);
     void FUN_14193e0e0(Scaleform::GFx::Value* pOut);
     void FUN_14193e2e0(int nMapType);
+    void FUN_14193e760();
+    void FUN_14193e790();
     void OnPetAttack();
     int FUN_14193e940(int nField);
+    bool FUN_14193e9c0();
 
     // The menu strip is a movie clip child ("m_menus"); 0x140ba7930 binds it by name.
     MS2Ptr<Unk_GmClip> FUN_140ba7930(const CString& strName);
@@ -191,7 +195,7 @@ private:
     int m_nDirty;                                       // +0x1a0 a menu table change is pending (rebuilt by the next refresh)
     bool m_bPetUpdate;                                  // +0x1a4
     ATL::CAtlMap<EMenuKey, CStringW> m_menuText;             // +0x1a8 menu id -> event popup text
-    ATL::CAtlArray<int> m_order;                        // +0x1f0 the menu ids of the last build (the "new" badge)
+    ATL::CAtlArray<EMenuKey> m_order;                        // +0x1f0 the menu ids of the last build (the "new" badge)
     ATL::CAtlMap<EMenuKey, int> m_enabled;              // +0x210 menu id -> enabled (key by reference: SetAt 0x140c1e090)
     bool m_bFlag258;                                    // +0x258 UGC terms accepted
     bool m_bFlag259;                                    // +0x259 red circle of the UGC entry (id 0x16)

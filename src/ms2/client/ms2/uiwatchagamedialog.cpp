@@ -118,7 +118,6 @@ void UIWatchAGameDialog::FUN_140fc0b60(bool bFlag)
 }
 
 // @0x140fc0bf0
-// MS2-FUNCTIONAL: the exe's frame is 0x10 bytes larger (extra call-result temporaries of the binder chain); the source form that makes them is unknown
 void UIWatchAGameDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
@@ -129,12 +128,12 @@ void UIWatchAGameDialog::OnLoadComplete()
         int nIndex = i + 1;
         CString strName = FUN_1402bad60("m_actionButton{0}", &nIndex);
         m_clips[i] = FUN_140ba7930(strName);
-        if (!(m_clips[i] == 0))
-        {
-            m_buttons[i] = m_clips[i]->FUN_140acce30<Unk_140acd6e0>("m_button");
-            if (!(m_buttons[i] == 0))
-                m_buttons[i]->FUN_1422ce240(WagClickDelegate(this, &UIWatchAGameDialog::FUN_140fc1380), FUN_140bb9630(i));
-        }
+        if (m_clips[i] == 0)
+            continue;
+        m_buttons[i] = m_clips[i]->FUN_140acce30<Unk_140acd6e0>("m_button");
+        if (m_buttons[i] == 0)
+            continue;
+        m_buttons[i]->FUN_1422ce240(WagClickDelegate(this, &UIWatchAGameDialog::FUN_140fc1380), FUN_140bb9630(i));
     }
     m_foldButton = FUN_140bb4b10("m_foldButton");
     m_foldButton->FUN_1422ce240(WagClickDelegate(this, &UIWatchAGameDialog::FUN_140fc1440), 0);
@@ -251,7 +250,6 @@ void UIWatchAGameDialog::FUN_140fc17d0()
 }
 
 // @0x140fc1850
-// MS2-FUNCTIONAL: the exe's three-way state test jumps through per-condition stubs (je -> jmp body); the source form that emits them is unknown
 void UIWatchAGameDialog::FUN_140fc1850(int nEmotion)
 {
     PC* pPC = static_cast<PC*>(FUN_1403ed2d0()->FUN_141bd0cc0());
@@ -259,9 +257,17 @@ void UIWatchAGameDialog::FUN_140fc1850(int nEmotion)
         return;
     if (pPC->FUN_141675ed0() == 1)
         return;
-    int nState = pPC->FUN_14166c930();
-    if (!(nState == 1 || nState == 0xb || nState == 0xf))
+    switch (pPC->FUN_14166c930())
+    {
+    case 1:
+        break;
+    case 0xb:
+        break;
+    case 0xf:
+        break;
+    default:
         return;
+    }
     MS2Ptr<Unk_HsInfo> spInfo = pPC->FUN_141664200();
     if (spInfo == 0)
         return;

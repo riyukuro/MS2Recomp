@@ -139,13 +139,16 @@ public: int FUN_140c39820() { return m_type; }
 static int FUN_140c39850() { return 0x4e56; }
 private: void* p178; void* p180; int m_type;
 };
+// The dynamic_cast view: the exe casts to UIUGCImageUploadDialog (RTTI names are compared, so casting to
+// Unk_BpImageDialog always gave NULL).
+class UIUGCImageUploadDialog { public: virtual ~UIUGCImageUploadDialog(); };
 // @0x140c38e50
 Unk_BpImageDialog* FUN_140c38e50() {
     Unk_BpUIManager* mgr = FUN_1403ed2b0();
     if (!mgr) return NULL;
     MS2Ptr<UIObject> obj = mgr->FUN_141adcea0(Unk_BpImageDialog::FUN_140c39850());
     if (obj.IsNull()) return NULL;
-    return dynamic_cast<Unk_BpImageDialog*>((UIObject*)obj);
+    return reinterpret_cast<Unk_BpImageDialog*>(dynamic_cast<UIUGCImageUploadDialog*>((UIObject*)obj));
 }
 MS2_REPLACE(0x140C38E50, FUN_140c38e50, 172, 0x589591CB);
 bool FUN_1418ffe80(int, int);

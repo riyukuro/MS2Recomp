@@ -154,14 +154,18 @@ inline int FUN_140a8ac50() { return 0x4e45; }
 PartyVoteCli::PartyVoteCli() : id(0), kind(0), owner(0), expires(0) {}
 
 // @0x140a89240
-// MS2-FUNCTIONAL: MSVC emits a switch for the kind if/else-if chain; no spelling found that keeps the compare chain
 MS2Ptr<PartyVoteCli> FUN_140a89240(int kind)
 {
     MS2Ptr<PartyVoteCli> vote;
-    if (kind == 1)
+    switch (kind)
+    {
+    case 1:
         vote.AssignRaw(new PartyVoteKickUserCli);
-    else if (kind == 2)
+        break;
+    case 2:
         vote.AssignRaw(new PartyVoteReadyCli);
+        break;
+    }
     if (vote.get() != 0)
         vote->kind = kind;
     return vote;
@@ -278,11 +282,9 @@ void PartyVoteKickUserCli::vfunc_2()
 }
 
 // @0x140a89a00
-// MS2-FUNCTIONAL: formatter by-value temp layout differs (extra 16-byte local), behaviour identical
 CStringW PartyVoteKickUserCli::vfunc_4()
 {
-    CStringW strRemain = FUN_140a89720();
-    return FUN_14028dfa0(L"s_party_vote_title_kick_user", name, reason, strRemain);
+    return FUN_14028dfa0(L"s_party_vote_title_kick_user", name, reason, FUN_140a89720());
 }
 
 // @0x140a89ae0

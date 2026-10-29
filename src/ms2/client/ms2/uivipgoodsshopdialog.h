@@ -18,7 +18,7 @@ class TVIPGoodsBillDataParam : public TMarketBillDataParam
 {
 public:
     TVIPGoodsBillDataParam();                                       // 0x140fbf740
-    virtual ~TVIPGoodsBillDataParam();                              //  0 0x140fbf860 (??_G 0x140fbfa60)
+    // ~TVIPGoodsBillDataParam is implicit (virtual via the base): 0x140fbf860 (??_G 0x140fbfa60), no vptr store.
 
     int m_nGoodsId;                                                 // +0xe0
 };

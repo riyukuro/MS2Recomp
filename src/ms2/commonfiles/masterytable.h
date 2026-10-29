@@ -22,7 +22,7 @@ class CMasteryReceipe : public CPtred
 {
 public:
     CMasteryReceipe();                                  // 0x14066d000
-    virtual ~CMasteryReceipe();                         // 0x14066d630
+    // ~CMasteryReceipe() implicit (virtual through CPtred), 0x14066d630
     int Load(Unk_140165cf0* pNode);                     // 0x1406694a0
     CStringA IconPath();                                // 0x140669980
 
@@ -56,7 +56,7 @@ public:
     {
     public:
         DifferentialFactor();                           // 0x14066d320
-        virtual ~DifferentialFactor();                  // 0x14066d7a0
+        // ~DifferentialFactor() implicit, 0x14066d7a0
         unsigned m_nFactor;                             // +0x18 "factor"
         CStringA m_strIcon;                             // +0x20 "icon"
     };
@@ -65,7 +65,7 @@ public:
     {
     public:
         Mastery();                                      // 0x14066d370
-        virtual ~Mastery();                             // 0x14066d7d0
+        // ~Mastery() implicit, 0x14066d7d0
         int m_nGrade;                                   // +0x18 "grade"
         unsigned m_nValue;                              // +0x1c "value" (mastery value needed for the grade)
         ATL::CAtlArray<MS2Ptr<ItemEntity> > m_rewards;  // +0x20 "rewardJobItemID/Rank/Count"

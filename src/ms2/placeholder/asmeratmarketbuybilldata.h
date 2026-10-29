@@ -32,7 +32,7 @@ public:
     MS2Ptr<CMeratMarketPremiumProduct> FUN_140d66da0() { return m_spPremium; }
     int FUN_1409acb50();                                            // 0x1409acb50 m_n78 (under the bill lock)
     // @0x140d66e60
-    char FUN_140d66e60() { return m_b70; }
+    bool FUN_140d66e60() { return m_b70; }
     int FUN_1409acbe0(int nCurrency);                               // 0x1409acbe0 the pay type of a currency
 
     // ?\asbilldata.cpp: fill the row from a product / basket line / UGC option (names invented).
@@ -50,7 +50,7 @@ public:
     int m_n50;                                                      // +0x50
     unsigned __int64 m_n58;                                         // +0x58
     MS2Ptr<CMeratMarketProduct> m_spProduct;                        // +0x60 what the row was built from
-    char m_b70;                                                     // +0x70
+    bool m_b70;                                                     // +0x70
     int m_n74;                                                      // +0x74
     int m_n78;                                                      // +0x78
     MS2Ptr<CMeratMarketPremiumProduct> m_spPremium;                 // +0x80

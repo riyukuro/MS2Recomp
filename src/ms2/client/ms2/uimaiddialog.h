@@ -26,7 +26,7 @@ public:
     Unk_MaidProfile() { FUN_14067e520(this); }
     ~Unk_MaidProfile() { FUN_14067e650(this); }
     Unk_MaidProfile& operator=(const Unk_MaidProfile& o) { FUN_14067e750(this, &o); return *this; }
-    unsigned char m_raw[0x68];
+    void* m_raw[13];                                                        // void* pads: a char buffer would draw a /GS cookie the exe lacks
 };
 MS2_CHECK_SIZE(Unk_MaidProfile, 0x68);
 

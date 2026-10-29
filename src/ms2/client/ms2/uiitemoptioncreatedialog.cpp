@@ -162,31 +162,28 @@ CString UIItemOptionCreateDialog::GetTypeName()
 void UIItemOptionCreateDialog::OnLoadInit()
 {
     UIObject::OnLoadInit();
-    if (m_ids.empty()) {
-        FUN_140281980()->FUN_1405594b0(m_ids);
-        m_nItemId = 0;
-        m_nRank = 1;
-    }
+    if (!m_ids.empty())
+        return;
+    FUN_140281980()->FUN_1405594b0(m_ids);
+    m_nItemId = 0;
+    m_nRank = 1;
 }
 
 // @0x1412d27d0
 int UIItemOptionCreateDialog::vfunc_13()
 {
-    if (UIDialog::vfunc_13() == 0) {
-        if (FUN_14025e7c0()->FUN_14116d9c0(0x1c, 0, 0) == 0) {
-            if (FUN_14025e7c0()->FUN_14116d9c0(0xf, 0, 0) == 0)
-                return 0;
-            if (m_30.get() != 0)
-                m_30->Invoke("onTabKey");
-            return 1;
-        }
-        MS2Ptr<Unk_CoupleInput> input = FUN_140e35bd0("m_searchInput");
-        if (input) {
+    if (UIDialog::vfunc_13() != 0)
+        return 1;
+    if (FUN_14025e7c0()->FUN_14116d9c0(0x1c, 0, 0) != 0) {
+        if (MS2Ptr<Unk_CoupleInput> input = FUN_140e35bd0("m_searchInput"))
             FUN_1412d3c10("", input->FUN_1422e0b00());
-        }
+        return 1;
+    } else if (FUN_14025e7c0()->FUN_14116d9c0(0xf, 0, 0) != 0) {
+        if (m_30.get() != 0)
+            m_30->Invoke("onTabKey");
         return 1;
     }
-    return 1;
+    return 0;
 }
 
 // @0x1412d2980
@@ -222,7 +219,8 @@ int UIItemOptionCreateDialog::vfunc_28(const char* szMethod, const Scaleform::GF
             int b = data.FUN_1422b8b10();
             int c = data.FUN_1422b8b10();
             int d = data.FUN_1422b8b10();
-            FUN_1412d2e50(a, b, c, d, data.FUN_1422b9260());
+            Scaleform::GFx::Value options = data.FUN_1422b9260();
+            FUN_1412d2e50(a, b, c, d, options);
         }
         return 1;
     } else if (_stricmp("OnSearchItem", szMethod) == 0) {
@@ -253,34 +251,32 @@ void UIItemOptionCreateDialog::FUN_1412d2e50(unsigned nItemId, unsigned nCount, 
         nWanted = 1;
     CCCreateItemPacket packet;
     packet.a = nItemId;
-    packet.b = nWanted < 2 ? 1 : nWanted;
+    packet.b = nWanted > 1 ? nWanted : 1;
     packet.c = nParam;
     packet.d = 0;
     packet.e = nParam2;
     for (unsigned i = 0; i < options.GetArraySize(); ++i) {
         Scaleform::GFx::Value elem;
-        if (options.GetElement(i, &elem) == 0)
-            continue;
-        ASObj row(elem, 2);
-        Scaleform::GFx::Value vKinds = row.FUN_1422baa20("kinds");
-        Scaleform::GFx::Value vType = row.FUN_1422baa20("type");
-        Scaleform::GFx::Value vIndex = row.FUN_1422baa20("index");
-        Scaleform::GFx::Value vValue = row.FUN_1422baa20("value");
-        int nKind = FUN_1409c17e0(vKinds);
-        if (nKind < 0)
-            continue;
-        if (nKind < 5) {
+        if (options.GetElement(i, &elem) != 0) {
+            ASObj row(elem, 2);
+            Scaleform::GFx::Value vKinds = row.FUN_1422baa20("kinds");
+            Scaleform::GFx::Value vType = row.FUN_1422baa20("type");
+            Scaleform::GFx::Value vIndex = row.FUN_1422baa20("index");
+            Scaleform::GFx::Value vValue = row.FUN_1422baa20("value");
+            int nKind = FUN_1409c17e0(vKinds);
+            if (nKind < 0)
+                continue;
+            if (nKind >= 5)
+                continue;
             if (_stricmp("stat", FUN_140b63540(vType)) == 0) {
                 Unk_PacketOptionA key = (Unk_PacketOptionA)FUN_1409c17e0(vIndex);
                 Unk_PayloadPtr<BaseOption> option = new BaseOption;
-                int nValue = FUN_1409c1750(vValue);
-                option->SetValue(nValue);
+                option->SetValue(FUN_1409c1750(vValue));
                 packet.optionsA[nKind].SetAt(key, option);
             } else if (_stricmp("specialAbility", FUN_140b63540(vType)) == 0) {
                 Unk_PacketOptionB key = (Unk_PacketOptionB)FUN_1409c17e0(vIndex);
                 Unk_PayloadPtr<BaseOption> option = new BaseOption;
-                int nValue = FUN_1409c1750(vValue);
-                option->SetValue(nValue);
+                option->SetValue(FUN_1409c1750(vValue));
                 packet.optionsB[nKind].SetAt(key, option);
             }
         }
@@ -294,37 +290,40 @@ void UIItemOptionCreateDialog::FUN_1412d2e50(unsigned nItemId, unsigned nCount, 
 // @0x1412d33b0
 void UIItemOptionCreateDialog::FUN_1412d33b0()
 {
-    MS2Ptr<Unk_PsCombo> combo = FUN_140c28560("m_itemGrade");
-    if (combo.get() == 0)
-        return;
-    combo->FUN_1422dfc10();
-    MS2Ptr<CItemData> item = FUN_14053f870(m_nItemId);
-    if (item == 0)
-        return;
-    int nSelected = 0;
-    if (item->FUN_14053c5a0() == 0) {
-        for (int nRank = 1; nRank < 7; ++nRank) {
+    if (MS2Ptr<Unk_PsCombo> combo = FUN_140c28560("m_itemGrade")) {
+        combo->FUN_1422dfc10();
+        MS2Ptr<CItemData> item = FUN_14053f870(m_nItemId);
+        if (item == 0)
+            return;
+        int nSelected = 0;
+        if (item->FUN_14053c5a0() != 0) {
             ASObj row(2);
-            row.FUN_1407cbb20("label", FUN_1401a9d70()->FUN_141813150(nRank));
-            row.FUN_1407cb9c0("itemRank", nRank);
-            if (nRank == m_nRank)
-                nSelected = combo->FUN_1422dfb90();
+            row.FUN_1407cbb20("label", FUN_1401a9d70()->FUN_141813150(item->FUN_14053c5a0()));
+            row.FUN_1409adc90("itemRank", item->FUN_14053c5a0());
             combo->FUN_1422dfc70(row);
+            nSelected = 0;
+            m_nRank = item->FUN_14053c5a0();
+        } else {
+            for (int nRank = 1; nRank < 7; ++nRank) {
+                int nItemRank = nRank;
+                ASObj row(2);
+                row.FUN_1407cbb20("label", FUN_1401a9d70()->FUN_141813150(nItemRank));
+                row.FUN_1407cb9c0("itemRank", nRank);
+                if (nItemRank == m_nRank)
+                    nSelected = combo->FUN_1422dfb90();
+                combo->FUN_1422dfc70(row);
+            }
         }
-    } else {
-        ASObj row(2);
-        row.FUN_1407cbb20("label", FUN_1401a9d70()->FUN_141813150(item->FUN_14053c5a0()));
-        row.FUN_1409adc90("itemRank", item->FUN_14053c5a0());
-        combo->FUN_1422dfc70(row);
-        nSelected = 0;
-        m_nRank = item->FUN_14053c5a0();
+        unsigned nCount = combo->FUN_1422dfb90();
+        unsigned nRows;
+        if (nCount > 1)
+            nRows = nCount;
+        else
+            nRows = 1;
+        combo->FUN_1422df5f0(nRows);
+        combo->FUN_1422df690(nSelected);
+        combo->vfunc_24(true);
     }
-    unsigned nRows = combo->FUN_1422dfb90();
-    if (nRows < 2)
-        nRows = 1;
-    combo->FUN_1422df5f0(nRows);
-    combo->FUN_1422df690(nSelected);
-    combo->vfunc_24(true);
 }
 
 // The unit's two row builders and the AS member setters used by the callbacks below.
@@ -359,16 +358,18 @@ void UIItemOptionCreateDialog::FUN_1412d3740()
     if (sheet == 0)
         return;
     sheet->Invoke("resetTable");
-    MS2Ptr<ASUIComponent> table = sheet->FUN_140accfb0<ASUIComponent>("m_tableRandom");
-    if (table == 0)
-        return;
-    MS2Ptr<ItemOptionRandom> random = FUN_140166430()->FUN_1405f6010(item->FUN_14053eff0(m_nRank));
-    if (random == 0)
-        return;
-    int nRows = random->FUN_1405d5fe0(m_nRank);
-    table->Invoke("initTable", nRows, nRows, "Random", 2);
-    if (nRows != 0) {
-        std::function<void(ItemOptionValueRandom*)> fn = [this, &table](ItemOptionValueRandom* pValue) {
+    do {
+        MS2Ptr<ASUIComponent> table = sheet->FUN_140accfb0<ASUIComponent>("m_tableRandom");
+        if (table == 0)
+            break;
+        MS2Ptr<ItemOptionRandom> random = FUN_140166430()->FUN_1405f6010(item->FUN_14053eff0(m_nRank));
+        if (random == 0)
+            break;
+        int nRows = random->FUN_1405d5fe0(m_nRank);
+        table->Invoke("initTable", nRows, nRows, "Random", 2);
+        if (nRows == 0)
+            break;
+        random->FUN_1405d75d0([this, &table](ItemOptionValueRandom* pValue) {
             ASObj column(2);
             ASObj label(2);
             if (pValue->FUN_1405d2790() == 0) {
@@ -386,9 +387,8 @@ void UIItemOptionCreateDialog::FUN_1412d3740()
             }
             column.FUN_1409adbe0("optionName", label.FUN_1422bb870());
             table->Invoke("createOptionColumn", column.FUN_1422bb870());
-        };
-        random->FUN_1405d75d0(fn);
-    }
+        });
+    } while (0);
 }
 
 // Fill the constant option result of the picked item / rank.
@@ -403,7 +403,7 @@ void UIItemOptionCreateDialog::FUN_1412d3a60()
         return;
     MS2Ptr<ItemOptionConstant> constant = FUN_140166430()->FUN_1405f5ee0(item->FUN_14053efd0(), m_nRank);
     if (constant.get() != 0) {
-        std::function<void(ItemOptionValue*)> fn = [this, &result](ItemOptionValue* pValue) {
+        constant->FUN_1405d33e0([this, &result](ItemOptionValue* pValue) {
             ASObj row(2);
             row.FUN_1412d4860("kinds", 0);
             if (pValue->FUN_1405ce470() == 0) {
@@ -416,8 +416,7 @@ void UIItemOptionCreateDialog::FUN_1412d3a60()
                 return;
             row.FUN_1407cb9c0("value", nValue);
             result->Invoke("appendOption", row.FUN_1422bb870());
-        };
-        constant->FUN_1405d33e0(fn);
+        });
     }
 }
 
@@ -440,14 +439,12 @@ void UIItemOptionCreateDialog::FUN_1412d3c10(const CString& strGroup, const CStr
         CStringW strLabel;
         int nLevel = item->limit.levelLimit;
         CStringW strFormat(L"[%ld] [%s] [Lv.%d] %s");
-        if (item->FUN_14053e130() == 0) {
-            if (item->FUN_14053cf90() == 0) {
-                strLabel.Format(strFormat, (unsigned __int64)nId, L"GAME", nLevel, (LPCWSTR)FUN_1401a9d70()->FUN_141811980(1, nId));
-            } else {
-                strLabel.Format(strFormat, (unsigned __int64)nId, L"SKIN", nLevel, (LPCWSTR)FUN_1401a9d70()->FUN_141811980(1, nId));
-            }
+        if (item->FUN_14053e130() != 0) {
+            strLabel.Format(strFormat, nId, L"CASH", nLevel, (LPCWSTR)FUN_1401a9d70()->FUN_141811980(1, nId));
+        } else if (item->FUN_14053cf90() != 0) {
+            strLabel.Format(strFormat, nId, L"SKIN", nLevel, (LPCWSTR)FUN_1401a9d70()->FUN_141811980(1, nId));
         } else {
-            strLabel.Format(strFormat, (unsigned __int64)nId, L"CASH", nLevel, (LPCWSTR)FUN_1401a9d70()->FUN_141811980(1, nId));
+            strLabel.Format(strFormat, nId, L"GAME", nLevel, (LPCWSTR)FUN_1401a9d70()->FUN_141811980(1, nId));
         }
         ASObj row(2);
         row.FUN_1407cbb20("label", strLabel);
@@ -476,8 +473,7 @@ void UIItemOptionCreateDialog::FUN_1412d3c10(const CString& strGroup, const CStr
                     list->FUN_1422dd230(row);
             } else {
                 if (item->FUN_14053eba0()->FUN_14054b3d0() < 2) {
-                    int nGroup = FUN_1405451c0(strGroup);
-                    if (item->FUN_14053eba0()->FUN_14054b450(nGroup))
+                    if (item->FUN_14053eba0()->FUN_14054b450(FUN_1405451c0(strGroup)))
                         list->FUN_1422dd230(row);
                 }
             }

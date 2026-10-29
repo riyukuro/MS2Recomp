@@ -222,16 +222,12 @@ Vector3 FUN_140a0adf0(const Vector3& p0, const Vector3& p1, const Vector3& p2, c
 }
 
 // @0x140a0b080 look-at euler angles (degrees; z + 90)
-// MS2-FUNCTIONAL: local temporaries (the three NiPoint3 conversions) are laid out 4 bytes apart in the exe; frame differs.
 Vector3 FUN_140a0b080(const Vector3& kEnd, const Vector3& kStart, const Vector3& kUp)
 {
     Vector3 kForward = kEnd.FUN_140965c40(kStart);
     Vector3 kSide = kForward.FUN_140a00e10(kUp);
     Vector3 kEuler;
-    Unk_NiPoint3 kCol2(kUp);
-    Unk_NiPoint3 kCol1(kSide);
-    Unk_NiPoint3 kCol0(kForward);
-    Unk_NiMatrix3 kMatrix(kCol0, kCol1, kCol2);
+    Unk_NiMatrix3 kMatrix(kForward, kSide, kUp);
     kMatrix.FUN_142085840(kEuler.x, kEuler.y, kEuler.z);
     kEuler.x = (kEuler.x * 180.0f) / 3.1415927f;
     kEuler.y = (kEuler.y * 180.0f) / 3.1415927f;
@@ -294,86 +290,82 @@ CBeamEffect::~CBeamEffect()
 }
 
 // @0x140a07320
-// MS2-FUNCTIONAL: frame differs from the exe (temporaries of the eight new-expressions are laid out differently).
 bool CBeamEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTarget)
 {
     if (!CEffect::vfunc_3(pParam, pTarget))
         return false;
-    const CBeamEffectParam* pBeam = static_cast<const CBeamEffectParam*>(pParam);
-    const Unk_BeamTarget* pBeamTarget = reinterpret_cast<const Unk_BeamTarget*>(pTarget);
-    m_spParam.AssignRaw(const_cast<CBeamEffectParam*>(pBeam));
-    m_pPoints = pBeamTarget->m_pPoints;
-    FUN_1409f76f0(&m_spTarget, FUN_14098d8d0(&NiNode::ms_RTTI, FUN_1409849b0(const_cast<void**>(&pBeamTarget->m_hNode))));
+    m_spParam.AssignRaw(const_cast<CBeamEffectParam*>(static_cast<const CBeamEffectParam*>(pParam)));
+    m_pPoints = reinterpret_cast<const Unk_BeamTarget*>(pTarget)->m_pPoints;
+    FUN_1409f76f0(&m_spTarget, FUN_14098d8d0(&NiNode::ms_RTTI, FUN_1409849b0(const_cast<void**>(&reinterpret_cast<const Unk_BeamTarget*>(pTarget)->m_hNode))));
     if (m_spTarget.FUN_1409f77a0(0) || m_pPoints == 0)
         return false;
 
-    m_fHalfWidth = m_spParam->m_fWidth * 0.5f;
+    m_fHalfWidth = 0.5f * m_spParam->m_fWidth;
     m_nQuality = m_spParam->m_nQuality;
 
     NiPointer<Unk_EffectNode> spRoot = new (efd::MemHint(efd::MemHint::NONE)) Unk_EffectNode(0, 0);
     spRoot->SetName("Effect Root");
     FUN_1409f76f0(&m_spRoot, spRoot);
 
-    m_spMesh = new (efd::MemHint(efd::MemHint::NONE)) CMesh(false, true, m_nUVSets, 0x1f42, 8000, 0x15);
+    const unsigned char ucPrimitive = 0x15;
+    m_spMesh = new (efd::MemHint(efd::MemHint::NONE)) CMesh(false, true, m_nUVSets, 0x1f42, 8000, ucPrimitive);
     m_spMesh->GetMesh()->SetName("BeamEffect");
-    if (!m_spParam->m_arrTexturePath.IsEmpty())
+    if (m_spParam->m_arrTexturePath.IsEmpty())
+        return false;
+
+    NiPointer<NiTexturingProperty> spTexture = new (efd::MemHint(efd::MemHint::NONE)) NiTexturingProperty;
+    FUN_1409807b0(spTexture.operator->(), 0);
+    FUN_1409805c0(spTexture.operator->(), 1);
+    FUN_1409806e0(spTexture.operator->(), 0);
+    FUN_140980200(m_spMesh->GetMesh(), spTexture);
+    m_spTexProp = spTexture;
+
+    NiPointer<NiVertexColorProperty> spVertexColor = new (efd::MemHint(efd::MemHint::NONE)) NiVertexColorProperty;
+    spVertexColor->SetSourceMode(NiVertexColorProperty::SOURCE_EMISSIVE);
+    spVertexColor->SetLightingMode(NiVertexColorProperty::LIGHTING_E);
+    FUN_140980200(m_spMesh->GetMesh(), spVertexColor);
+
+    NiPointer<NiAlphaProperty> spAlpha = new (efd::MemHint(efd::MemHint::NONE)) NiAlphaProperty;
+    FUN_140980560(spAlpha.operator->(), true);
+    switch (m_spParam->m_nAlphaMode)
     {
-        NiPointer<NiTexturingProperty> spTexture = new (efd::MemHint(efd::MemHint::NONE)) NiTexturingProperty;
-        FUN_1409807b0(spTexture.operator->(), 0);
-        FUN_1409805c0(spTexture.operator->(), 1);
-        FUN_1409806e0(spTexture.operator->(), 0);
-        FUN_140980200(m_spMesh->GetMesh(), spTexture);
-        m_spTexProp = spTexture;
-
-        NiPointer<NiVertexColorProperty> spVertexColor = new (efd::MemHint(efd::MemHint::NONE)) NiVertexColorProperty;
-        spVertexColor->SetSourceMode(NiVertexColorProperty::SOURCE_EMISSIVE);
-        spVertexColor->SetLightingMode(NiVertexColorProperty::LIGHTING_E);
-        FUN_140980200(m_spMesh->GetMesh(), spVertexColor);
-
-        NiPointer<NiAlphaProperty> spAlpha = new (efd::MemHint(efd::MemHint::NONE)) NiAlphaProperty;
-        FUN_140980560(spAlpha.operator->(), true);
-        int nAlphaMode = m_spParam->m_nAlphaMode;
-        if (nAlphaMode == 0)
-        {
-            FUN_140980f60(spAlpha.operator->(), 6);
-            FUN_140980af0(spAlpha.operator->(), 0);
-        }
-        else if (nAlphaMode == 1)
-        {
-            FUN_140980f60(spAlpha.operator->(), 6);
-            FUN_140980af0(spAlpha.operator->(), 7);
-        }
-        else if (nAlphaMode == 2)
-        {
-            FUN_140980f60(spAlpha.operator->(), 0);
-            FUN_140980af0(spAlpha.operator->(), 0);
-        }
-        FUN_140980200(m_spMesh->GetMesh(), spAlpha);
-
-        NiPointer<NiFogProperty> spFog = new (efd::MemHint(efd::MemHint::NONE)) NiFogProperty;
-        spFog->SetFog(false);
-        FUN_140980200(m_spMesh->GetMesh(), spFog);
-
-        NiPointer<NiWireframeProperty> spWireframe = new (efd::MemHint(efd::MemHint::NONE)) NiWireframeProperty;
-        spWireframe->SetWireframe(false);
-        FUN_140980200(m_spMesh->GetMesh(), spWireframe);
-
-        NiPointer<NiStencilProperty> spStencil = new (efd::MemHint(efd::MemHint::NONE)) NiStencilProperty;
-        spStencil->SetDrawMode(NiStencilProperty::DRAW_BOTH);
-        FUN_140980200(m_spMesh->GetMesh(), spStencil);
-
-        NiPointer<NiZBufferProperty> spZBuffer = new (efd::MemHint(efd::MemHint::NONE)) NiZBufferProperty;
-        spZBuffer->SetZBufferWrite(false);
-        FUN_140980200(m_spMesh->GetMesh(), spZBuffer);
-
-        m_spMesh->UpdateBound();
-        FUN_1415672e0(m_spMesh->GetMesh(), 0);
-        static_cast<NiNode*>(FUN_1409475f0(&m_spRoot))->AttachChild(m_spMesh->GetMesh(), false);
-        if (FUN_14028d470(pBeam->m_fStartDelay, 0.0f))
-            vfunc_4();
-        return true;
+    case 0:
+        FUN_140980f60(spAlpha.operator->(), 6);
+        FUN_140980af0(spAlpha.operator->(), 0);
+        break;
+    case 1:
+        FUN_140980f60(spAlpha.operator->(), 6);
+        FUN_140980af0(spAlpha.operator->(), 7);
+        break;
+    case 2:
+        FUN_140980f60(spAlpha.operator->(), 0);
+        FUN_140980af0(spAlpha.operator->(), 0);
+        break;
     }
-    return false;
+    FUN_140980200(m_spMesh->GetMesh(), spAlpha);
+
+    NiPointer<NiFogProperty> spFog = new (efd::MemHint(efd::MemHint::NONE)) NiFogProperty;
+    spFog->SetFog(false);
+    FUN_140980200(m_spMesh->GetMesh(), spFog);
+
+    NiPointer<NiWireframeProperty> spWireframe = new (efd::MemHint(efd::MemHint::NONE)) NiWireframeProperty;
+    spWireframe->SetWireframe(false);
+    FUN_140980200(m_spMesh->GetMesh(), spWireframe);
+
+    NiPointer<NiStencilProperty> spStencil = new (efd::MemHint(efd::MemHint::NONE)) NiStencilProperty;
+    spStencil->SetDrawMode(NiStencilProperty::DRAW_BOTH);
+    FUN_140980200(m_spMesh->GetMesh(), spStencil);
+
+    NiPointer<NiZBufferProperty> spZBuffer = new (efd::MemHint(efd::MemHint::NONE)) NiZBufferProperty;
+    spZBuffer->SetZBufferWrite(false);
+    FUN_140980200(m_spMesh->GetMesh(), spZBuffer);
+
+    m_spMesh->UpdateBound();
+    FUN_1415672e0(m_spMesh->GetMesh(), 0);
+    static_cast<NiNode*>(FUN_1409475f0(&m_spRoot))->AttachChild(m_spMesh->GetMesh(), false);
+    if (FUN_14028d470(m_spParam->m_fStartDelay, 0.0f))
+        vfunc_4();
+    return true;
 }
 
 // @0x140a07ef0
@@ -439,6 +431,24 @@ int CBeamEffect::vfunc_8(void* p)
 }
 MS2_REPLACE_METHOD(0x140A08150, CBeamEffect, vfunc_8, 122, 0x9C3991E3);
 
+// The camera manager's position getter returns the NiPoint3 that UpdateMesh slices into its efd::Point3 local.
+struct Unk_BmNiPoint3 : Vector3 {};
+class Unk_BmCameraMgr { public: Unk_BmNiPoint3 FUN_140af0250(); };
+// A locked vertex position as UpdateMesh writes it: NiPoint3 built from an efd::Point3, then assigned.
+struct Unk_BmPoint3
+{
+    float x, y, z;
+    explicit Unk_BmPoint3(const void* efdPoint);                    // 0x14027dcf0
+    Unk_BmPoint3& operator=(const Unk_BmPoint3& pt);                // 0x14097faa0
+};
+
+// The param's texture path list as UpdateMesh indexes it: the exe's CAtlArray<CString>::operator[] copy.
+class Unk_BmStrArray : public ATL::CAtlArray<CString>
+{
+public:
+    CString& FUN_1401c0cc0(size_t nIndex);
+};
+
 // @0x140a081d0
 // MS2-FUNCTIONAL: frame and temporaries differ from the exe.
 // Picks a random texture of the param, builds the curve and rewrites the strip: two vertex rows (left / right edge of
@@ -450,24 +460,20 @@ void CBeamEffect::UpdateMesh()
         return;
 
     int nTextures = (int)m_spParam->m_arrTexturePath.GetCount();
-    int nPick = rand();
-    nPick = nPick % nTextures;
-    CString strName = m_spParam->m_arrTexturePath[(size_t)nPick];
-    {
-        CString strDir("Effect/Textures");
-        Unk_PPSmartC spTexture = FUN_140a0afd0()->FUN_141552f90(FUN_140cc2ba0(strDir, strName), 5);
-        FUN_140980880(m_spTexProp, spTexture.Get());
-    }
+    int nPick = rand() % nTextures;
+    CString strName = static_cast<Unk_BmStrArray&>(m_spParam->m_arrTexturePath).FUN_1401c0cc0((size_t)nPick);
+    FUN_140980880(m_spTexProp.operator->(),
+                  FUN_140a0afd0()->FUN_141552f90(FUN_140cc2ba0("Effect/Textures", strName), 5).Get());
     m_spMesh->GetMesh()->UpdateProperties();
 
-    Vector3 kCamera = Unk_CameraManager::FUN_1409478c0()->FUN_140af0250();
+    Vector3 kCamera = ((Unk_BmCameraMgr*)Unk_CameraManager::FUN_1409478c0())->FUN_140af0250();
     efd::vector<Vector3> kLeft;
     efd::vector<Vector3> kRight;
     for (unsigned int i = 0; i < kCurve.size(); ++i)
     {
         Vector3 kDir;
         if (i == 0)
-            kDir = kCurve[1].FUN_140965c40(kCurve[0]);
+            kDir = kCurve[i + 1].FUN_140965c40(kCurve[i]);
         else if (i == kCurve.size() - 1)
             kDir = kCurve[i].FUN_140965c40(kCurve[i - 1]);
         else
@@ -479,14 +485,14 @@ void CBeamEffect::UpdateMesh()
     }
 
     unsigned short nCount = (unsigned short)kLeft.size();
-    NiPoint3* pPos = (NiPoint3*)m_spMesh->Lock(NiCommonSemantics::POSITION(), 0, 2);
+    Unk_BmPoint3* pPos = (Unk_BmPoint3*)m_spMesh->Lock(NiCommonSemantics::POSITION(), 0, 2);
     NiColorA* pCol = (NiColorA*)m_spMesh->Lock(NiCommonSemantics::COLOR(), 0, 2);
     for (int i = 0; i < (int)nCount; ++i)
     {
         NiColorA kWhite(1.0f, 1.0f, 1.0f, 1.0f);
-        pPos[i] = NiPoint3(kLeft[i].x, kLeft[i].y, kLeft[i].z);
+        pPos[i] = Unk_BmPoint3(&kLeft[i]);
         pCol[i] = kWhite;
-        pPos[i + nCount] = NiPoint3(kRight[i].x, kRight[i].y, kRight[i].z);
+        pPos[i + nCount] = Unk_BmPoint3(&kRight[i]);
         pCol[i + nCount] = kWhite;
     }
     m_spMesh->Unlock(NiCommonSemantics::POSITION(), 0, 2);
@@ -541,12 +547,12 @@ bool CBeamEffect::BuildCurve(efd::vector<Vector3>& kOut)
     Vector3 kEnd = (*m_pPoints)[nPoints - 1];
     if (FUN_14028d530(kStart, kEnd))
         return false;
-    int nType = spInfo->m_nType;
-    if (nType == 1)
+    switch (spInfo->m_nType)
+    {
+    case 1:
     {
         BeamPointCurveInfo* pInfo = static_cast<BeamPointCurveInfo*>(spInfo.get());
-        Vector3 kEuler = FUN_140a0b080(kEnd, kStart, DAT_143a08cf8);
-        Unk_NiPoint3 kEulerNi(kEuler);
+        Unk_NiPoint3 kEulerNi(FUN_140a0b080(kEnd, kStart, DAT_143a08cf8));
         Unk_NiMatrix3 kRot;
         kRot.FUN_142083d40((-kEulerNi.x * 3.1415927f) / 180.0f, (-kEulerNi.y * 3.1415927f) / 180.0f,
             (-kEulerNi.z * 3.1415927f) / 180.0f);
@@ -569,13 +575,9 @@ bool CBeamEffect::BuildCurve(efd::vector<Vector3>& kOut)
             }
         }
     }
-    else
+        break;
+    case 2:
     {
-        if (nType != 2)
-        {
-            MS2_ASSERT_AT(0x122, 0);
-            return false;
-        }
         BeamDirectionCurveInfo* pInfo = static_cast<BeamDirectionCurveInfo*>(spInfo.get());
         Vector3 kDelta = kEnd.FUN_140965c40(kStart);
         float fLength = kDelta.FUN_140968990();
@@ -583,8 +585,7 @@ bool CBeamEffect::BuildCurve(efd::vector<Vector3>& kOut)
         FUN_140a0b1f0(FUN_1409478e0(FUN_1409475f0(&m_spTarget)), &kEuler);
         Vector3 kAxisA;
         Vector3 kAxisB;
-        Vector3 kEulerArg = kEuler;
-        FUN_140a01250(kEulerArg, &kAxisA, &kAxisB);
+        FUN_140a01250(kEuler, &kAxisA, &kAxisB);
         kAxisA.FUN_140968990();
         Vector3 kBend = kAxisA.FUN_14097fd50(kDelta.FUN_14097fc90(pInfo->m_fDirectionRate));
         kBend.FUN_140968990();
@@ -607,6 +608,11 @@ bool CBeamEffect::BuildCurve(efd::vector<Vector3>& kOut)
                 kOut.push_back(FUN_140a0adf0(kControl[i], kControl[i + 1], kControl[i + 2], kControl[i + 3], fT));
             }
         }
+    }
+        break;
+    default:
+        MS2_ASSERT_AT(0x122, 0);
+        return false;
     }
     return true;
 }

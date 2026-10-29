@@ -13,7 +13,7 @@ class Unk_DhRewardAmount;
 class ASWeeklyRewardItemSlot : public ASItemSlot {
 public:
     ASWeeklyRewardItemSlot(const Scaleform::GFx::Value& v, int nMovieId);
-    virtual ~ASWeeklyRewardItemSlot();
+    // ~ASWeeklyRewardItemSlot() is implicit (@0x140e16980)
     virtual void vfunc_25(Scaleform::GFx::Value** ppOut);
     void FUN_140e12780(__int64 nMeso, __int64 nExp);
     void FUN_140e12bf0();
@@ -28,7 +28,7 @@ MS2_CHECK_OFFSET(ASWeeklyRewardItemSlot, m_nMeso, 0x98);
 class UIDungeonSearchUnitedReward : public CPtred {
 public:
     UIDungeonSearchUnitedReward();
-    virtual ~UIDungeonSearchUnitedReward();
+    // ~UIDungeonSearchUnitedReward() is implicit (@0x140e169a0)
     bool Init(MS2Ptr<ASMovieClip> root);
     void FUN_140e13c00();
     void FUN_140e142f0();

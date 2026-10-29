@@ -74,6 +74,7 @@ extern NiFixedString DAT_143ae50a0;
 void FUN_140a0b300(NiAVObject*, bool);
 bool FUN_14098dad0(NiAVObject*);
 float FUN_140a38cd0(float);
+struct Unk_NiPt3 { float x, y, z; Unk_NiPt3(const void* efdPoint); };   // NiPoint3(const efd::Point3&) 0x14027dcf0
 void* FUN_140a44830();
 void FUN_1401ce2f0(void*, const char*, const char*);
 MS2Ptr<CItemData> FUN_14053f870(int);
@@ -81,13 +82,8 @@ CString FUN_1410280d0(int, CString);
 NiPointer<NiAVObject> FUN_141423480(NiPointer<NiAVObject>, const CString&);
 int FUN_1414232f0(NiPointer<NiAVObject>, NiPointer<NiSourceTexture>);
 void* FUN_14052d220();
-class Unk_CubeDownloadId {
-public:
-    Unk_CubeDownloadId(unsigned __int64);
-    unsigned __int64 value;
-};
-MS2_CHECK_SIZE(Unk_CubeDownloadId, 8);
-void FUN_1418845a0(void*, CubeItemInfo*, const Unk_CubeDownloadId&);
+// CUgcManager::FUN_1418845a0 (ugcmanager_4.cpp): the entity id goes by value.
+void FUN_1418845a0(void*, CubeItemInfo*, egf::EntityID id);
 FittingDollPC* FUN_14121b590(int, int, int);
 void FUN_140a0b1f0(const NiMatrix3&, NiPoint3&);
 void FUN_140b86230(const NiPoint3&, NiMatrix3&);
@@ -98,10 +94,12 @@ void* FUN_1403ed2d0();
 void FUN_141bbb7f0(void*, GameObject*, int);
 void* FUN_1409670f0();
 bool FUN_1411cf0b0(void*, efd::utf8string, efd::AssetID*, bool*);
+struct Vector3 { float x, y, z; };
+extern const Vector3 DAT_143b01a60;     // efd::Point3::ZERO
 class Unk_CubeEntityService {
 public:
     efd::SmartPointer<egf::Entity> FUN_1411ce7c0(efd::utf8string, efd::utf8string,
-                                              NiPoint3, NiPoint3, float, int, int);
+                                              Vector3, Vector3, float, int, int);
 };
 NiAVObject* FUN_141b6efc0(egf::Entity*);
 void FUN_140a38a50(egf::Entity*, unsigned, const NiPoint3&);
@@ -139,17 +137,20 @@ void CNifCubeGuide::vfunc_1() {
     if ((NiNode*)node != NULL && pendingTexture != 0) pendingTexture = FUN_1410b0680();
 }
 MS2_REPLACE_METHOD(0x1410afbc0, CNifCubeGuide, vfunc_1, 65, 0x6D059F2B);
-// MS2-FUNCTIONAL: resource temporary cleanup and CString argument copies differ; load flags remain 0,5,0,0.
 // @0x1410afc10
-bool CNifCubeGuide::FUN_1410afc10(CString assetName) {
+int CNifCubeGuide::FUN_1410afc10(CString assetName) {
     asset = assetName;
     node = NiDynamicCast(NiNode, (NiAVObject*)FUN_140a0afd0()->FUN_141551ea0(assetName, 0, 5, 0, 0));
-    return node != NULL;
+    if (node != NULL)
+        return 1;
+    return 0;
 }
 MS2_REPLACE_METHOD(0x1410afc10, CNifCubeGuide, FUN_1410afc10, 315, 0xC8D83785);
-// MS2-FUNCTIONAL: engine Point3 copy constructor differs; all three position components are preserved.
 // @0x1410afd60
-void CNifCubeGuide::vfunc_2(const NiPoint3& position) { node->SetTranslate(NiPoint3(position)); }
+void CNifCubeGuide::vfunc_2(const NiPoint3& position) {
+    Unk_NiPt3 kPos(&position);
+    node->SetTranslate(reinterpret_cast<const NiPoint3&>(kPos));
+}
 MS2_REPLACE_METHOD(0x1410afd60, CNifCubeGuide, vfunc_2, 64, 0xDF1C7335);
 // @0x1410afdb0
 NiPoint3 CNifCubeGuide::vfunc_3() { return node->GetTranslate(); }
@@ -195,14 +196,10 @@ MS2_REPLACE_METHOD(0x1410b0200, CNifCubeGuide, vfunc_6, 67, 0xFA29BA64);
 // @0x1410b0250
 int CNifCubeGuide::vfunc_7() { return FUN_14098dad0(node.operator->()); }
 MS2_REPLACE_METHOD(0x1410b0250, CNifCubeGuide, vfunc_7, 42, 0xA9AF37C9);
-// MS2-FUNCTIONAL: real engine SetScale applies the same absolute-value operation again.
-// @0x1410b2450
-inline void FUN_1410b2450(NiAVObject* object, float scale) { object->SetScale(FUN_140a38cd0(scale)); }
 // @0x1410b0280
-void CNifCubeGuide::vfunc_9(float scale) { FUN_1410b2450(node.operator->(), scale); }
+void CNifCubeGuide::vfunc_9(float scale) { node->SetScale(scale); }   // NiAVObject::SetScale 0x1410b2450
 MS2_REPLACE_METHOD(0x1410b0280, CNifCubeGuide, vfunc_9, 51, 0x7BBA15A8);
 // No hook: NiIntegerExtraData has an inline constructor and DLL-local vftable.
-// MS2-FUNCTIONAL: unused inherited attachment flag is retained in the ABI; integer extra data stays zero.
 // @0x1410b02c0
 void CNifCubeGuide::vfunc_10(NiNode* parent, int) {
     parent->AttachChild(node, true);
@@ -211,19 +208,21 @@ void CNifCubeGuide::vfunc_10(NiNode* parent, int) {
         NiRenderObject* mesh = NiDynamicCast(NiRenderObject, object);
         if (mesh != NULL) {
             NiIntegerExtraData* data = NiDynamicCast(NiIntegerExtraData, mesh->GetExtraData(DAT_143ae50a0));
-            if (data == NULL) mesh->AddExtraData(DAT_143ae50a0, NiNew NiIntegerExtraData(0));
+            if (data == NULL) {
+                data = NiNew NiIntegerExtraData(0);
+                mesh->AddExtraData(DAT_143ae50a0, data);
+            }
         }
     }
     node->UpdateEffects();
 }
-// MS2-FUNCTIONAL: equivalent null comparison and logging argument evaluation.
 // @0x1410b0460
 void CNifCubeGuide::vfunc_11() {
-    if (node != NULL) {
+    if (node == NULL) {
+        FUN_1401ce2f0(FUN_140a44830(), "CNifCubeGuide NULL Node Error. Asset Name : %s", (const char*)asset);
+    } else {
         NiNode* parent = node->GetParent();
         if (parent != NULL) parent->DetachChild(node);
-    } else {
-        FUN_1401ce2f0(FUN_140a44830(), "CNifCubeGuide NULL Node Error. Asset Name : %s", (const char*)asset);
     }
 }
 MS2_REPLACE_METHOD(0x1410b0460, CNifCubeGuide, vfunc_11, 195, 0xD6C61EF1);
@@ -240,7 +239,6 @@ MS2_REPLACE_METHOD(0x1410b05f0, CNifCubeGuide, vfunc_14, 49, 0x4E58C2F2);
 void CNifCubeGuide::vfunc_15(const CubeItemInfo* info) { item->FUN_1408b3700(info); pendingTexture = 1; }
 MS2_REPLACE_METHOD(0x1410b0630, CNifCubeGuide, vfunc_15, 61, 0xD5D7119D);
 // @0x1410b0680
-// MS2-FUNCTIONAL: equivalent early returns with typed RAII temporaries.
 int CNifCubeGuide::FUN_1410b0680() {
     if (item == NULL) return 0;
     if (item->FUN_1408b3860() == 0) return 0;
@@ -249,18 +247,15 @@ int CNifCubeGuide::FUN_1410b0680() {
     CString textureName(data->cubeTextureName.mesh);
     if (textureName.GetLength() == 0) return 0;
     CString path = FUN_1410280d0(2, item->look->m_strUrl);
-    if (_access(path, 4) == 0) {
-        NiPointer<NiSourceTexture> texture = FUN_140a0afd0()->FUN_141553eb0(path, NULL);
-        if (!(texture == NULL)) {
-            NiPointer<NiAVObject> target = FUN_141423480(NiDynamicCast(NiAVObject, (NiNode*)node), textureName);
-            if (target != NULL) {
-                if (FUN_1414232f0(target, texture) != 0) return 0;
-            }
-            return 1;
-        } else {
-            FUN_1418845a0(FUN_14052d220(), item.get(), Unk_CubeDownloadId(0));
-            return 1;
-        }
+    if (_access(path, 4) != 0) return 1;
+    NiPointer<NiSourceTexture> texture = FUN_140a0afd0()->FUN_141553eb0(path, NULL);
+    if (texture == NULL) {
+        FUN_1418845a0(FUN_14052d220(), item.get(), 0);
+        return 1;
+    }
+    NiPointer<NiAVObject> target = FUN_141423480(NiDynamicCast(NiAVObject, (NiNode*)node), textureName);
+    if (target) {
+        if (FUN_1414232f0(target, texture) != 0) return 0;
     }
     return 1;
 }
@@ -276,19 +271,17 @@ int CFittingDollCubeGuide::FUN_1410b0ba0(int type, int index, int itemId) {
     return doll != NULL;
 }
 MS2_REPLACE_METHOD(0x1410b0ba0, CFittingDollCubeGuide, FUN_1410b0ba0, 85, 0x86AA16EF);
-// MS2-FUNCTIONAL: copying NiPoint3 into the inherited efd::Point3 value parameter emits extra copy code.
 // @0x1410b0c00
-void CFittingDollCubeGuide::vfunc_2(const NiPoint3& position) { doll->vfunc_19(position); }
+void CFittingDollCubeGuide::vfunc_2(const NiPoint3& position) { doll->vfunc_19(reinterpret_cast<const efd::Point3&>(position)); }
 MS2_REPLACE_METHOD(0x1410b0c00, CFittingDollCubeGuide, vfunc_2, 89, 0x5A33550F);
 // @0x1410b0c60
 NiPoint3 CFittingDollCubeGuide::vfunc_3() { return doll->vfunc_18(); }
 MS2_REPLACE_METHOD(0x1410b0c60, CFittingDollCubeGuide, vfunc_3, 70, 0xEEBA0580);
-// MS2-FUNCTIONAL: NiPoint3-to-efd::Point3 argument copy differs; Euler conversion and virtual slot are preserved.
 // @0x1410b0cb0
 void CFittingDollCubeGuide::vfunc_4(const NiMatrix3& rotation) {
     NiPoint3 angles;
     FUN_140a0b1f0(rotation, angles);
-    doll->vfunc_21(angles);
+    doll->vfunc_21(reinterpret_cast<const efd::Point3&>(angles));
 }
 MS2_REPLACE_METHOD(0x1410b0cb0, CFittingDollCubeGuide, vfunc_4, 117, 0xCB7A88BE);
 // @0x1410b0d30
@@ -326,7 +319,6 @@ CKfmCubeGuide::CKfmCubeGuide() : entity(NULL) {
 }
 // @0x1410b10b0
 CKfmCubeGuide::~CKfmCubeGuide() { entity = NULL; parent = NULL; }
-// MS2-FUNCTIONAL: real engine string/point constructors emit different temporaries; member hidden-return ABI is preserved.
 // @0x1410b1120
 int CKfmCubeGuide::FUN_1410b1120(CString assetName) {
     bool isActor = false;
@@ -335,13 +327,12 @@ int CKfmCubeGuide::FUN_1410b1120(CString assetName) {
     efd::utf8string model("MS2MeshNoPhysX");
     if (isActor) model = "MS2Actor";
     entity = static_cast<Unk_CubeEntityService*>(FUN_1409670f0())->FUN_1411ce7c0(
-        model, id.GetURN(), NiPoint3::ZERO, NiPoint3::ZERO, 1.0f, 0, 1);
+        model, id.GetURN(), DAT_143b01a60, DAT_143b01a60, 1.0f, 0, 1);
     if (entity != NULL) return 1;
     return 0;
 }
 MS2_REPLACE_METHOD(0x1410b1120, CKfmCubeGuide, FUN_1410b1120, 762, 0xBCF2509E);
 // No hook: NiIntegerExtraData has an inline constructor and DLL-local vftable.
-// MS2-FUNCTIONAL: typed engine temporaries and raw-pointer getter differ; property IDs and initialization order are preserved.
 // @0x1410b1420
 void CKfmCubeGuide::vfunc_1() {
     if (entity != NULL && parent != NULL) {
@@ -354,7 +345,7 @@ void CKfmCubeGuide::vfunc_1() {
     }
     if (rootReady == 0) {
         NiPointer<NiNode> root = NiDynamicCast(NiNode, FUN_141b6efc0(entity.data()));
-        if (root != NULL) {
+        if (root) {
             rootReady = 1;
             if (pendingAlpha != 0) vfunc_8(alpha);
             Unk_CubeSceneIterator iterator(root);
@@ -394,12 +385,10 @@ NiMatrix3 CKfmCubeGuide::vfunc_5() {
 }
 MS2_REPLACE_METHOD(0x1410b1820, CKfmCubeGuide, vfunc_5, 155, 0xFB41EE8F);
 // No hook: engine inline constructors produce DLL-local RTTI objects.
-// MS2-FUNCTIONAL: typed traversal temporaries differ; deferred alpha and all property flags are preserved.
 // @0x1410b18d0
 void CKfmCubeGuide::vfunc_8(float value) {
     NiPointer<NiNode> root = NiDynamicCast(NiNode, FUN_141b6efc0(entity.data()));
-    if (root == NULL) { pendingAlpha = 1; alpha = value; }
-    else {
+    if (root) {
         Unk_CubeSceneIterator iterator(root);
         while (NiAVObject* object = iterator.FUN_14098e0d0(true)) {
             NiRenderObject* mesh = NiDynamicCast(NiRenderObject, object);
@@ -420,44 +409,43 @@ void CKfmCubeGuide::vfunc_8(float value) {
         root->UpdateProperties();
         pendingAlpha = 0;
         alpha = value;
-    }
+    } else { pendingAlpha = 1; alpha = value; }
 }
-// MS2-FUNCTIONAL: bool temporary lowering differs; zero visibility still sets the hidden property.
 // @0x1410b1ce0
-void CKfmCubeGuide::vfunc_6(int visible) { bool hidden = visible == 0; FUN_14098c6e0(entity.operator->(), 0xa0b6b179, hidden); }
+void CKfmCubeGuide::vfunc_6(int visible) { bool hidden = visible ? false : true; FUN_14098c6e0(entity.operator->(), 0xa0b6b179, hidden); }
 MS2_REPLACE_METHOD(0x1410b1ce0, CKfmCubeGuide, vfunc_6, 81, 0x4D8BA781);
-// MS2-FUNCTIONAL: bool-to-int return lowering differs; the property output remains uninitialized before the engine call.
 // @0x1410b1d40
-int CKfmCubeGuide::vfunc_7() { bool hidden; FUN_1408a20a0(entity.operator->(), 0xa0b6b179, hidden); return !hidden; }
+int CKfmCubeGuide::vfunc_7() { bool hidden; FUN_1408a20a0(entity.operator->(), 0xa0b6b179, hidden); return hidden ? false : true; }
 MS2_REPLACE_METHOD(0x1410b1d40, CKfmCubeGuide, vfunc_7, 75, 0xED65222D);
 // @0x1410b1da0
 void CKfmCubeGuide::vfunc_9(float scale) { FUN_1409457c0(entity.operator->(), 0x2d7cad2d, scale); }
 MS2_REPLACE_METHOD(0x1410b1da0, CKfmCubeGuide, vfunc_9, 55, 0x6A503D0B);
-// MS2-FUNCTIONAL: unused inherited attachment argument and equivalent engine smart-pointer tests differ.
 // @0x1410b1de0
 void CKfmCubeGuide::vfunc_10(NiNode* node, int) {
     parent = node;
     NiPointer<NiNode> root = NiDynamicCast(NiNode, FUN_141b6efc0(entity.data()));
-    if (root != NULL) root->UpdateEffects();
+    if (root) root->UpdateEffects();
 }
 MS2_REPLACE_METHOD(0x1410b1de0, CKfmCubeGuide, vfunc_10, 145, 0xBA55F349);
-// MS2-FUNCTIONAL: named pointer temporary uses the bound engine getter before removal.
 // @0x1410b1e80
-void CKfmCubeGuide::vfunc_11() { egf::Entity* value = entity.data(); FUN_1411cf570(FUN_1409670f0(), value); parent = NULL; }
+void CKfmCubeGuide::vfunc_11() { FUN_1411cf570(FUN_1409670f0(), entity.data()); parent = NULL; }
 MS2_REPLACE_METHOD(0x1410b1e80, CKfmCubeGuide, vfunc_11, 70, 0x6286F1B9);
 
+class Unk_CubeDisplayMap {
+public:
+    bool FUN_1410b4ba0(const int&, int&);
+};
 class Unk_CubeDisplayLookup {
 public:
     int FUN_1410b24b0(unsigned, unsigned);
-    bool FUN_1410b4ba0(const int&, int&);
+    Unk_CubeDisplayMap m_map;               // +0x00
 };
 int FUN_1410b2790(unsigned, unsigned);
-// MS2-FUNCTIONAL: typed map lookup changes register scheduling; packed key and INT_MIN miss result are preserved.
 // @0x1410b24b0
 int Unk_CubeDisplayLookup::FUN_1410b24b0(unsigned a, unsigned b) {
     int value = INT_MIN;
     int key = FUN_1410b2790(a, b);
-    FUN_1410b4ba0(key, value);
+    m_map.FUN_1410b4ba0(key, value);
     return value;
 }
 MS2_REPLACE_METHOD(0x1410b24b0, Unk_CubeDisplayLookup, FUN_1410b24b0, 75, 0x218D804F);

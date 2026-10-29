@@ -146,11 +146,11 @@ int CEffectObject::FUN_140a53880(int nOwnerId, CString strModel, float fScale)
 MS2_REPLACE_METHOD(0x140a53880, CEffectObject, FUN_140a53880, 322, 0x61463D26);
 
 // @0x140a539d0
-// MS2-FUNCTIONAL: the exe frame is 0x10 smaller (no source form found); everything else matches
 void CEffectObject::FUN_140a539d0(const NiFixedString& kSeqName, float fSpeed, const NiFixedString& kTextKey)
 {
-    Unk_GoModelKey kKey;
-    NiActorManager* pMgr = FUN_140999440(FUN_141b6f910(), FUN_14123c460(kKey));
+    // 0x14123c460 writes an 8-byte entity id; the exe reserves only 8 bytes for it, not the 16 of Unk_GoModelKey.
+    struct { void* p; } kKey;
+    NiActorManager* pMgr = FUN_140999440(FUN_141b6f910(), FUN_14123c460(reinterpret_cast<Unk_GoModelKey&>(kKey)));
     if (pMgr != NULL)
     {
         unsigned int uiSeqId = pMgr->FindSequenceID(FUN_142087e50(kSeqName));

@@ -42,7 +42,7 @@
 // MS2-PIN: ??0?$tuple@AEBH@std@@QEAA@$$QEAV01@@Z 0x14094d980 ; unique
 // MS2-PIN: ??8?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$MS2Ptr@VPCActionList@@@@@std@@@std@@@std@@@std@@QEBA_NAEBV01@@Z 0x14094ded0 ; unique
 // MS2-PIN: ??9?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$MS2Ptr@VPCActionList@@@@@std@@@std@@@std@@@std@@QEBA_NAEBV01@@Z 0x14094df50 ; unique
-// MS2-PIN: ??C?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$MS2Ptr@VPCActionGroup@@@@@std@@@std@@@std@@@std@@QEBAPEBU?$pair@$$CBIV?$MS2Ptr@VPCActionGroup@@@@@1@XZ 0x14094e060 ; unique
+// MS2-PIN: ??C?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$MS2Ptr@VPCActionGroup@@@@@std@@@std@@@std@@@std@@QEBAPEAU?$pair@$$CBIV?$MS2Ptr@VPCActionGroup@@@@@1@XZ 0x14094e060 ; unique
 // MS2-PIN: ??D?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$MS2Ptr@VPCActionGroup@@@@@std@@@std@@@std@@@std@@QEBAAEBU?$pair@$$CBIV?$MS2Ptr@VPCActionGroup@@@@@1@XZ 0x14094e0c0 ; unique
 // MS2-PIN: ??E?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$MS2Ptr@VPCActionList@@@@@std@@@std@@@std@@@std@@QEAA?AV01@H@Z 0x14094e190 ; unique
 // MS2-PIN: ??E?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$MS2Ptr@VPCActionList@@@@@std@@@std@@@std@@@std@@QEAAAEAV01@XZ 0x14094e1e0 ; unique
@@ -78,7 +78,7 @@
 // MS2-PINS-END tplpin
 // MS2-PIN: ?_Freenode0@?$_Tree_comp_alloc@V?$_Tmap_traits@HV?$MS2Ptr@VPCActionList@@@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHV?$MS2Ptr@VPCActionList@@@@@std@@@3@$0A@@std@@@std@@QEAAXPEAU?$_Tree_node@U?$pair@$$CBHV?$MS2Ptr@VPCActionList@@@@@std@@PEAX@2@@Z 0x140950060 ; merge-bind
 // MS2-PIN: ??0?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$MS2Ptr@VPCActionList@@@@@std@@@std@@@std@@@std@@QEAA@PEAU?$_Tree_node@U?$pair@$$CBHV?$MS2Ptr@VPCActionList@@@@@std@@PEAX@1@PEBV?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$MS2Ptr@VPCActionList@@@@@std@@@std@@@1@@Z 0x14094d700 ; unique
-// MS2-PIN: ?lower_bound@?$_Tree@V?$_Tmap_traits@IV?$MS2Ptr@VPCActionGroup@@@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIV?$MS2Ptr@VPCActionGroup@@@@@std@@@3@$0A@@std@@@std@@QEBA?AV?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$MS2Ptr@VPCActionGroup@@@@@std@@@std@@@std@@@2@AEBI@Z 0x140951970 ; unique
+// MS2-PIN: ?lower_bound@?$_Tree@V?$_Tmap_traits@IV?$MS2Ptr@VPCActionGroup@@@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIV?$MS2Ptr@VPCActionGroup@@@@@std@@@3@$0A@@std@@@std@@QEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$MS2Ptr@VPCActionGroup@@@@@std@@@std@@@std@@@2@AEBI@Z 0x140951970 ; unique
 // MS2-PIN: ?end@?$_Tree@V?$_Tmap_traits@IV?$MS2Ptr@VPCActionGroup@@@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIV?$MS2Ptr@VPCActionGroup@@@@@std@@@3@$0A@@std@@@std@@QEBA?AV?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$MS2Ptr@VPCActionGroup@@@@@std@@@std@@@std@@@2@XZ 0x140951350 ; unique
 // MS2-PIN: ??0?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$MS2Ptr@VPCActionList@@@@@std@@@std@@@std@@@std@@QEAA@PEAU?$_Tree_node@U?$pair@$$CBHV?$MS2Ptr@VPCActionList@@@@@std@@PEAX@1@PEBV?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$MS2Ptr@VPCActionList@@@@@std@@@std@@@1@@Z 0x14094d660 ; unique
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\actioncontainer.cpp"
@@ -119,10 +119,12 @@ void FUN_1406cfaa0(Unk_140165cf0* pNode, const char* szName, std::vector<CString
 
 // MS2-PIN: ?end@?$_Tree@V?$_Tmap_traits@HV?$MS2Ptr@VPCActionList@@@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHV?$MS2Ptr@VPCActionList@@@@@std@@@3@$0A@@std@@@std@@QEBA?AV?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$MS2Ptr@VPCActionList@@@@@std@@@std@@@std@@@2@XZ 0x1409513b0
 
-// MS2-FUNCTIONAL: the exe's tree code also calls end() const of the group tree, nothing in the recovered code does.
+// The exe also has end() const of the group tree, which nothing in the recovered code calls, so it is instantiated explicitly.
 typedef std::_Tree<std::_Tmap_traits<unsigned, MS2Ptr<PCActionGroup>, std::less<unsigned>,
     std::allocator<std::pair<const unsigned, MS2Ptr<PCActionGroup> > >, false> > Unk_GroupTree;
 template Unk_GroupTree::const_iterator Unk_GroupTree::end() const noexcept;
+// addressof of the const group pair: emitted by the exe's const-iterator code, which Find no longer reaches.
+template const std::pair<const unsigned, MS2Ptr<PCActionGroup> >* std::addressof(const std::pair<const unsigned, MS2Ptr<PCActionGroup> >&) noexcept;
 
 // ---- PCActionList -----------------------------------------------------------------------------------------------------
 
@@ -395,9 +397,8 @@ MS2Ptr<PCActionGroup> PCActionDataTable::Find(unsigned nId)
 {
     if (nId == 0)
         return m_spDefault;
-    const std::map<unsigned, MS2Ptr<PCActionGroup> >& groups = m_groups;
-    std::map<unsigned, MS2Ptr<PCActionGroup> >::const_iterator it = groups.find(nId);
-    if (it == groups.end())
+    std::map<unsigned, MS2Ptr<PCActionGroup> >::iterator it = m_groups.find(nId);
+    if (it == m_groups.end())
     {
         MS2_ASSERT_AT(329, 0);
         return m_spDefault;

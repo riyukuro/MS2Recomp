@@ -47,8 +47,11 @@ i64 FUN_14027a8c0(i64, i64, i64, i64); i64 FUN_14027a940(i64, i64, i64, i64);
 i64 FUN_14027c420(i64, u64); i64 FUN_14027c450(i64, u64);
 i64 FUN_140286de0(i64); i64 FUN_140286d20(i64, i64, i64);
 i64 FUN_140162f40(i64); i64 FUN_14027c230(i64); i64 FUN_140162ef0(i64);
-i64 FUN_14027b540(i64); i64 FUN_140288290(i64); i64 FUN_14027b790(i64, i64, i64, i64, i64);
-i64 FUN_140288250(i64); i64 FUN_14027c1e0(i64); i64 FUN_14027b550(i64); i64 FUN_14027bac0(i64, i64, i64);
+// map<int,int> node value (pair<const int,int>); addressof() takes it by reference.
+struct Unk_TreeValue { int key; int value; };
+i64 FUN_14027b540(Unk_TreeValue&); i64 FUN_140288290(i64); i64 FUN_14027b790(i64, i64, i64, i64, i64);
+i64 FUN_140288250(i64); i64 FUN_14027c1e0(i64); i64 FUN_14027b550(i64&); i64 FUN_14027bac0(i64, i64, i64);
+void FUN_140287df0(i64, i64); void FUN_14028a770(i64, i64, i64);
 i64 FUN_14027eaf0(i64, i64);
 char FUN_14027a520(i64*, i64*); char FUN_14027a5e0(i64*, i64*);
 i64 FUN_14027a990(i64); i64 FUN_14027a9a0(i64); i64 FUN_14027a9b0(i64); i64 FUN_14027a9c0(i64); i64 FUN_14027a980(i64);
@@ -67,17 +70,20 @@ i64 FUN_14028b4c0(i64); i64 FUN_14028b130(i64);
 u64 FUN_140287070(i64, i64); u64 FUN_140286f50(i64, i64); u64 FUN_140286fe0(i64, i64);
 i64 FUN_14028a050(i64, u64); i64 FUN_140289ff0(i64, u64); i64 FUN_14028a020(i64, u64);
 i64 FUN_140289cc0(i64, i64, i64, i64); i64 FUN_140289c00(i64, i64, i64, i64); i64 FUN_140289c60(i64, i64, i64, i64);
-i64 FUN_140289b00(void* vec, i64 first, i64 last, i64 dest); i64 FUN_140289a80(i64, i64, i64, i64, i64, i64, i64);
-i64 FUN_140289ac0(i64, i64, i64, i64, i64, i64, i64);
+i64 FUN_140289b00(void* vec, i64 first, i64 last, i64 dest); i64 FUN_140289a80(i64, i64, i64, i64);
+i64 FUN_140289ac0(i64, i64, i64, i64);
 i64 FUN_1402873b0(i64, i64, i64, u64); i64 FUN_140287190(i64, i64, i64, u64); i64 FUN_1402872a0(i64, i64, i64, u64);
+void FUN_140287670(i64, i64, i64); void FUN_14028a860(i64, i64, u64);
+void FUN_1402875f0(i64, i64, i64); void FUN_14028a800(i64, i64, u64); void FUN_140287630(i64, i64, i64); void FUN_14028a830(i64, i64, u64);
 i64 FUN_14027b520(i64); i64 FUN_14027b530(i64); i64 FUN_14027bb60(i64*, i64); i64 FUN_14027bb70(i64*, i64);
 i64 FUN_14028a710(i64*, i64, i64); i64 FUN_14028a740(i64*, i64, i64);
 i64 FUN_140289e90(i64);
 i64 FUN_140288560(i64, i64);
 
 // ---- slice-C functions called before their definition ----
-i64* FUN_140274d60(i64*, i64);
-i64* FUN_140274c50(i64*, i64);
+i64* FUN_140274d60(i64*, i64, i64, Unk_StlTag, Unk_StlTag);
+// _Compressed_pair<_Empty, pointer> whose (_One_then_variadic_args_t) ctor stores the pointer at offset 0.
+struct Unk_WcPtrPair { i64 m_0; Unk_WcPtrPair* FUN_140274c50(i64); };
 i64 FUN_140274cb0(i64, Unk_StlTag, i64);
 int FUN_140274f40(CStringW&);
 CString FUN_140274f70(CStringW&);

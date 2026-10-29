@@ -97,7 +97,7 @@ public:
     void FUN_14133a210(CInPacket* pPacket);                         // read the two guilds
     void FUN_14133a4a0(const Unk_PvPGuildTeamInfo& info);           // show the guild names and marks (own guild left)
     void FUN_14133a7a0(const Unk_PvPGuildRoundInfo& info);          // show a round (kept for OnLoadComplete if not loaded)
-    void FUN_14133afb0(__int64 nCharId, __int64 nHp, __int64 nMaxHp);    // a player's hp bar
+    void FUN_14133afb0(unsigned __int64 nCharId, __int64 nHp, __int64 nMaxHp); // a player's hp bar
     void FUN_14133b0b0();                                           // forget the observed player
     void FUN_14133b0f0(__int64 nGuildId, const CStringW& strMark);  // a guild's mark
     bool FUN_14133b830(CStringW strGuildName);                      // the name is the own guild's

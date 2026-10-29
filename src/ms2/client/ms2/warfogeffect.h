@@ -32,21 +32,23 @@ struct Unk_WarFogParam
 };
 
 // The physics ray query (0x64 bytes, ctor 0x140ad4440) cast by the scene (0x1416892f0).
+#pragma pack(push, 4)
 struct Unk_WarFogRay
 {
     // @0x140ad4440 (inline COMDAT of another obj)
-    Unk_WarFogRay() : m_distance(0.0f), m_mask(0xffffffff), m_pad_20(0), m_pad_24(0), m_pad_28(0), m_pad_2c(0),
-        m_pad_30(0), m_pad_34(0), m_pad_38(0), m_pad_3c(0), m_pad_40(0), m_pad_44(0), m_flags(0) {}
+    Unk_WarFogRay() : m_distance(0.0f), m_mask(0xffffffff), m_pad_20(0), m_pad_28(0),
+        m_pad_30(0), m_pad_38(0), m_pad_40(0), m_flags(0) {}
     efd::Point3 m_origin;           // +0x00
     efd::Point3 m_dir;              // +0x0c
     float m_distance;               // +0x18
     unsigned int m_mask;            // +0x1c (ctor -1)
-    unsigned int m_pad_20, m_pad_24, m_pad_28, m_pad_2c;    // +0x20 (five zeroed qwords)
-    unsigned int m_pad_30, m_pad_34, m_pad_38, m_pad_3c, m_pad_40, m_pad_44;
+    unsigned __int64 m_pad_20, m_pad_28;                    // +0x20 (five zeroed qwords)
+    unsigned __int64 m_pad_30, m_pad_38, m_pad_40;
     int m_flags;                    // +0x48
     efd::Point3 m_hit;              // +0x4c
     efd::Point3 m_normal;           // +0x58
 };
+#pragma pack(pop)
 MS2_CHECK_SIZE(Unk_WarFogRay, 0x64);
 
 // 0x38 bytes. vftable 0x142ff44f0 (1 slot: the deleting destructor).

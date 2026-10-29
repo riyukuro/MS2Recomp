@@ -7,7 +7,7 @@
 // MS2-PIN: ??__Es_strSkill@@YAXXZ 0x1400df680 ; probe
 // MS2-PIN: ??__Es_strStun@@YAXXZ 0x1400df6b0 ; probe
 // MS2-PIN: ??0?$_List_const_iterator@V?$_List_val@U?$_List_simple_types@UEntry@UIGameDictionaryDialog@@@std@@@std@@@std@@QEAA@PEAU?$_List_node@UEntry@UIGameDictionaryDialog@@PEAX@1@PEBV?$_List_val@U?$_List_simple_types@UEntry@UIGameDictionaryDialog@@@std@@@1@@Z 0x140f47a80 ; prop
-// MS2-PIN: ??0?$_List_const_iterator@V?$_List_val@U?$_List_simple_types@V?$shared_ptr@UUnk_DictData@@@std@@@std@@@std@@@std@@QEAA@PEAU?$_List_node@V?$shared_ptr@UUnk_DictData@@@std@@PEAX@1@PEBV?$_List_val@U?$_List_simple_types@V?$shared_ptr@UUnk_DictData@@@std@@@std@@@1@@Z 0x140f47ac0 ; unique
+// MS2-PIN: ??0?$_List_const_iterator@V?$_List_val@U?$_List_simple_types@V?$TPtrValue@UGameDictionaryData@@@@@std@@@std@@@std@@QEAA@PEAU?$_List_node@V?$TPtrValue@UGameDictionaryData@@@@PEAX@1@PEBV?$_List_val@U?$_List_simple_types@V?$TPtrValue@UGameDictionaryData@@@@@std@@@1@@Z 0x140f47ac0 ; unique
 // MS2-PIN: ??0?$_List_iterator@V?$_List_val@U?$_List_simple_types@UEntry@UIGameDictionaryDialog@@@std@@@std@@@std@@QEAA@PEAU?$_List_node@UEntry@UIGameDictionaryDialog@@PEAX@1@PEBV?$_List_val@U?$_List_simple_types@UEntry@UIGameDictionaryDialog@@@std@@@1@@Z 0x140f47b00 ; unique
 // MS2-PIN: ?vfunc_48@UIGameDictionaryDialog@@UEAAHXZ 0x140f48280 ; unique
 // MS2-PINS-END tplpin
@@ -27,10 +27,10 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/commonfiles/npcdata.h"
 #include "ms2/commonfiles/fieldmetatable.h"
+#include "ms2/placeholder/gamedictionarymanager.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include <atlcoll.h>
-#include <memory>
 
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
 
@@ -71,17 +71,9 @@ public:
 int FUN_1422c76c0(Unk_DictInput* p);                        // the input has the focus
 class ASDialog : public ASDisplayObject {};
 
-// The dictionary data: three rows tables (npc / monster / item), each a list of shared rows.
-struct Unk_DictData
-{
-    int m_id;                                               // +0x00
-    int m_level;                                            // +0x04 monster level
-    int m_grade;                                            // +0x08 item grade
-    int m_invisibleLevel;                                   // +0x0c
-    unsigned m_fieldId;                                     // +0x10
-};
-class Unk_DictManager { public: std::list<std::shared_ptr<Unk_DictData> > FUN_1403b7af0(int nKind); };
-Unk_DictManager* FUN_140541580();
+// The dictionary data: GameDictionaryManager::GetAll (0x1403b7af0) returns a std::list of TPtrValue<GameDictionaryData>
+// (8-byte intrusive pointers); the exe copies / tests / derefs / releases them with 0x1403b8380 / 8910 / 8990 / 87a0.
+typedef GameDictionaryManager::DataPtr Unk_DictDataPtr;
 CStringW FUN_1401aa6a0(int nNpcId);                         // npc name
 
 // The platform: request answers.
@@ -151,25 +143,29 @@ CStringW FUN_14083dc40(const wchar_t* szFormat, const int& a, const int& b);
 MS2Ptr<CNpcData> FUN_1406cd330(int nNpcId);
 void FUN_1407cd930(Scaleform::GFx::Value* pObject, const char* szName, const Scaleform::GFx::Value& v);
 
+// The AS object with its value member visible (the helpers below read it inline).
+struct Unk_GdScript : AScript
+{
+    using AScript::m_value;
+};
+
 // ---- the unit's own helpers -----------------------------------------------------------------------------------------
 
 // @0x140f47270
-// MS2-FUNCTIONAL: the exe reads the AS value member inline (add 0x20), we call the accessor
 // By-value tooltip: the callee destroys it.
 void FUN_140f47270(AScript* pScript, const char* szName, ASTooltip tooltip)
 {
     ASData data;
     data.FUN_1422b83f0(tooltip.FUN_1422bb890());
-    FUN_1407cd930(&pScript->FUN_1422bb870(), szName, data.FUN_1422b9260());
+    FUN_1407cd930(&static_cast<Unk_GdScript*>(pScript)->m_value, szName, data.FUN_1422b9260());
 }
 
 // @0x140f47320
-// MS2-FUNCTIONAL: the exe reads the AS value member inline (add 0x20), we call the accessor
 void FUN_140f47320(AScript* pScript, const char* szName, int n)
 {
     ASData data;
     data.FUN_1422b7f70(n);
-    FUN_1407cd930(&pScript->FUN_1422bb870(), szName, data.FUN_1422b9260());
+    FUN_1407cd930(&static_cast<Unk_GdScript*>(pScript)->m_value, szName, data.FUN_1422b9260());
 }
 
 // @0x140f48210
@@ -338,30 +334,30 @@ void UIGameDictionaryDialog::vfunc_80(void* pRequest)
 }
 
 // @0x140f452e0
-// MS2-FUNCTIONAL: frame layout of the list temporaries differs
 void UIGameDictionaryDialog::FUN_140f452e0()
 {
     m_188.clear();
-    if (FUN_140541580() == 0)
+    if (GameDictionaryManager::GetInstance() == 0)
         return;
-    std::list<std::shared_ptr<Unk_DictData> > npcs = FUN_140541580()->FUN_1403b7af0(1);
-    for (std::list<std::shared_ptr<Unk_DictData> >::iterator it = npcs.begin(); it != npcs.end(); ++it)
+    std::list<Unk_DictDataPtr > npcs = GameDictionaryManager::GetInstance()->GetAll(1);
+    for (std::list<Unk_DictDataPtr >::iterator it = npcs.begin(); it != npcs.end(); ++it)
     {
-        std::shared_ptr<Unk_DictData> spData = *it;
-        if (spData == nullptr)
+        Unk_DictDataPtr spData = static_cast<const Unk_DictDataPtr&>(*it);
+        if (spData == 0)
             continue;
         Entry entry;
         entry.m_name = FUN_1401aa6a0(spData->m_id);
         entry.m_id = spData->m_id;
         entry.m_type = 1;
-        if (!entry.m_name.IsEmpty())
-            m_188.push_back(entry);
+        if (entry.m_name.IsEmpty())
+            continue;
+        m_188.push_back(entry);
     }
-    std::list<std::shared_ptr<Unk_DictData> > monsters = FUN_140541580()->FUN_1403b7af0(2);
-    for (std::list<std::shared_ptr<Unk_DictData> >::iterator it = monsters.begin(); it != monsters.end(); ++it)
+    std::list<Unk_DictDataPtr > monsters = GameDictionaryManager::GetInstance()->GetAll(2);
+    for (std::list<Unk_DictDataPtr >::iterator it = monsters.begin(); it != monsters.end(); ++it)
     {
-        std::shared_ptr<Unk_DictData> spData = *it;
-        if (spData == nullptr)
+        Unk_DictDataPtr spData = static_cast<const Unk_DictDataPtr&>(*it);
+        if (spData == 0)
             continue;
         Entry entry;
         entry.m_name = FUN_1401aa6a0(spData->m_id);
@@ -370,22 +366,24 @@ void UIGameDictionaryDialog::FUN_140f452e0()
         entry.m_levelOrGrade = spData->m_level;
         entry.m_invisibleLevel = spData->m_invisibleLevel;
         entry.m_fieldId = spData->m_fieldId;
-        if (!entry.m_name.IsEmpty())
-            m_188.push_back(entry);
+        if (entry.m_name.IsEmpty())
+            continue;
+        m_188.push_back(entry);
     }
-    std::list<std::shared_ptr<Unk_DictData> > items = FUN_140541580()->FUN_1403b7af0(3);
-    for (std::list<std::shared_ptr<Unk_DictData> >::iterator it = items.begin(); it != items.end(); ++it)
+    std::list<Unk_DictDataPtr > items = GameDictionaryManager::GetInstance()->GetAll(3);
+    for (std::list<Unk_DictDataPtr >::iterator it = items.begin(); it != items.end(); ++it)
     {
-        std::shared_ptr<Unk_DictData> spData = *it;
-        if (spData == nullptr)
+        Unk_DictDataPtr spData = static_cast<const Unk_DictDataPtr&>(*it);
+        if (spData == 0)
             continue;
         Entry entry;
         entry.m_name = FUN_1401a9d70()->FUN_141811980(1, spData->m_id);
         entry.m_id = spData->m_id;
         entry.m_type = 3;
         entry.m_levelOrGrade = spData->m_grade;
-        if (!entry.m_name.IsEmpty())
-            m_188.push_back(entry);
+        if (entry.m_name.IsEmpty())
+            continue;
+        m_188.push_back(entry);
     }
     m_188.sort();
 }
@@ -515,9 +513,11 @@ void UIGameDictionaryDialog::FUN_140f45c20(int nId, int nType, CStringW strName,
                 detail.FUN_1407cb9c0("id", entry.m_id);
                 detail.FUN_1407cb9c0("itemGrade", entry.m_levelOrGrade);
                 FUN_140f47320(&detail, "type", entry.m_type);
-                if (entry.m_type == 1)
+                switch (entry.m_type)
                 {
-                    CNpcData* pNpc = FUN_1406cd330(entry.m_id);
+                case 1:
+                {
+                    CNpcData* pNpc = FUN_1406cd330(entry.m_id).get();
                     if (pNpc != 0)
                     {
                         unsigned nField = 0;
@@ -525,10 +525,10 @@ void UIGameDictionaryDialog::FUN_140f45c20(int nId, int nType, CStringW strName,
                         CStringW strMaps;
                         CFieldMetaTable::GetInstance()->FUN_1406fb700(entry.m_id, &nField);
                         CFieldMetaTable::GetInstance()->FUN_1406fc110(nField, &nOutdoor);
-                        if (nOutdoor == 0)
-                            strMaps = FUN_140292a70(L"$map:{0}$", nField);
-                        else
+                        if (nOutdoor != 0)
                             strMaps = FUN_1406e7810(L"$map:{0}$ > $map:{1}$", nField, nOutdoor);
+                        else
+                            strMaps = FUN_140292a70(L"$map:{0}$", nField);
                         CStringW strContent = FUN_1408f71a0(CStringW(L"s_gamedictionary_npc_content"), strMaps, FUN_1406cd420(pNpc->GetKind()));
                         FUN_1403b4750()->FUN_1416fbf20(strContent);
                         strContent.Replace(L"#5c2b00", L"#a0a0a0");
@@ -536,9 +536,10 @@ void UIGameDictionaryDialog::FUN_140f45c20(int nId, int nType, CStringW strName,
                         detail.FUN_1407cba60("iconPath", CStringA(pNpc->m_strPortrait));
                     }
                 }
-                else if (entry.m_type == 2)
+                    break;
+                case 2:
                 {
-                    CNpcData* pNpc = FUN_1406cd330(entry.m_id);
+                    CNpcData* pNpc = FUN_1406cd330(entry.m_id).get();
                     if (pNpc != 0)
                     {
                         int aGradeNames[8] = { 0x573, 0xaf, 0xb0, 0xb1, 0xb3, 0xb5, 0xb4, 0xb2 };
@@ -546,19 +547,20 @@ void UIGameDictionaryDialog::FUN_140f45c20(int nId, int nType, CStringW strName,
                         memset(aUnused, 0, sizeof(aUnused));
                         unsigned short nLevel = pNpc->GetLevel();
                         CStringW strMini;
-                        if (entry.m_invisibleLevel == 0)
-                            strMini = FUN_14052b9d0(CStringW(L"s_gamedictionary_monster_mini_info"), nLevel, GetStringCommon(aGradeNames[nGrade]));
-                        else
+                        if (entry.m_invisibleLevel != 0)
                             strMini = FUN_1405c2690(CStringW(L"s_gamedictionary_monster_mini_info_invisible_level"), GetStringCommon(aGradeNames[nGrade]));
+                        else
+                            strMini = FUN_14052b9d0(CStringW(L"s_gamedictionary_monster_mini_info"), nLevel, GetStringCommon(aGradeNames[nGrade]));
                         detail.FUN_1407cbb20("npcInfo", CStringW(strMini));
                         CStringW strRace = FUN_1401a9d70()->FUN_141811980(0x11, pNpc->GetRace());
                         CStringW strMaps;
                         ATL::CAtlList<unsigned> fields(10);
                         CFieldMetaTable::GetInstance()->FUN_1406fb3a0(entry.m_id, fields);
-                        if (entry.m_fieldId == 0)
+                        if (entry.m_fieldId != 0)
+                            strMaps = FUN_140292a70(L"$map:{0}$", entry.m_fieldId);
+                        else
                         {
-                            POSITION pos = fields.GetHeadPosition();
-                            while (pos != 0)
+                            for (POSITION pos = fields.GetHeadPosition(); pos != 0; fields.GetNext(pos))
                             {
                                 unsigned nFieldId = fields.GetAt(pos);
                                 if (nFieldId != (unsigned)entry.m_id)
@@ -568,11 +570,8 @@ void UIGameDictionaryDialog::FUN_140f45c20(int nId, int nType, CStringW strName,
                                     else
                                         strMaps = FUN_1401d0080(strMaps, FUN_140292a70(L", $map:{0}$", nFieldId));
                                 }
-                                fields.GetNext(pos);
                             }
                         }
-                        else
-                            strMaps = FUN_140292a70(L"$map:{0}$", entry.m_fieldId);
                         if (pNpc->m_nClass == 4)
                         {
                             CMsTime time;
@@ -596,7 +595,8 @@ void UIGameDictionaryDialog::FUN_140f45c20(int nId, int nType, CStringW strName,
                         detail.FUN_1407cba60("iconPath", CStringA(pNpc->m_strPortrait));
                     }
                 }
-                else if (entry.m_type == 3)
+                    break;
+                case 3:
                 {
                     MS2Ptr<CItem> spItem(new CItem);
                     bool bValid = spItem.get() != 0;
@@ -614,7 +614,10 @@ void UIGameDictionaryDialog::FUN_140f45c20(int nId, int nType, CStringW strName,
                             }
                         }
                     }
+                    break;
                 }
+                }
+
                 pDlg->Invoke("setDetailInfo", detail);
                 return;
             }

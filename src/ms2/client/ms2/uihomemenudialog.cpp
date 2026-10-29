@@ -3,8 +3,6 @@
 // MS2-RANGE: 0x1400cc770-0x1400ccb40 .text$di
 // MS2-RANGE: 0x140c29160-0x140c2bc50 .text$mn
 // MS2-PINS-BEGIN tplpin
-// MS2-PIN: ?_Get_data@?$_Vector_alloc@U?$_Vec_base_types@PEAVUnk_HmTicker@@V?$allocator@PEAVUnk_HmTicker@@@std@@@std@@@std@@QEAAAEAV?$_Vector_val@U?$_Simple_types@PEAVUnk_HmTicker@@@std@@@2@XZ 0x140c2b8f0 ; unique
-// MS2-PIN: ?_Get_second@?$_Compressed_pair@V?$allocator@PEAVUnk_HmTicker@@@std@@V?$_Vector_val@U?$_Simple_types@PEAVUnk_HmTicker@@@std@@@2@$00@std@@QEBAAEBV?$_Vector_val@U?$_Simple_types@PEAVUnk_HmTicker@@@std@@@2@XZ 0x140c2b940 ; unique
 // MS2-PINS-END tplpin
 // MS2-PIN: ??__Es_keyInputA@@YAXXZ 0x1400cc9d0 ; guess
 // MS2-PIN: ??__Es_keyInputB@@YAXXZ 0x1400ccb10 ; guess
@@ -18,6 +16,7 @@
 #include <vector>
 #include <efd/ISystemService.h>
 #include <efd/ServiceManager.h>
+#include <efd/customalloc.h>
 #include "ms2/placeholder/delegate.h"
 #include "ms2/placeholder/asdisplayobject.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
@@ -61,12 +60,9 @@ class Unk_HmStateBytes
 {
 public:
     Unk_HmStateBytes();
-    unsigned char m_b[8];
+    unsigned char m_b0, m_b1, m_b2, m_b3, m_b4, m_b5, m_b6, m_b7;
 };
 
-// Two small records of the cube service (passed by value to the connection).
-class Unk_HmArgA { public: Unk_HmArgA(const Unk_HmArgA&); char m_pad[0x18]; };
-class Unk_HmArgB { public: Unk_HmArgB(const Unk_HmArgB&); char m_pad[0x10]; };
 
 class Unk_HmCubeSvc : public efd::ISystemService {
 public:
@@ -78,8 +74,8 @@ public:
     bool FUN_1410d56a0();                                               // the player may edit a home
     int FUN_1410ce310();                                                // the saved design slot (0: none)
     int FUN_1410b9a50();                                                // the blueprints of the player
-    Unk_HmArgA FUN_1410c31d0();                                         // the home id
-    Unk_HmArgB FUN_1410c3260();                                         // the owner id
+    CStringW FUN_1410c31d0();                                           // the home id
+    CStringW FUN_1410c3260();                                           // the owner id
     Unk_HmStateBytes FUN_1410c34f0();                                   // the camera / state bytes
 };
 Unk_HmCubeSvc* FUN_1401cd040(Unk_EntityAppFramework* framework);
@@ -177,46 +173,52 @@ public:
     virtual void vfunc_51() = 0;
     virtual void vfunc_52() = 0;
     virtual void vfunc_53() = 0;
-    virtual int vfunc_54(Unk_HmArgA a, Unk_HmArgB b, int nType, CStringW strUrl) = 0;
+    virtual int vfunc_54(CStringW strOwner, CStringW strName, int nType, CStringW strUrl) = 0;
 };
 Unk_HmNet* FUN_140d86260();
 
-// The scene updaters: the render service keeps a list of objects that get the frame time.
-class Unk_HmTicker {
-public:
-    virtual void vfunc_0() = 0;
-    virtual void vfunc_1(float fTime) = 0;
-};
-class Unk_HmRender {
-public:
-    unsigned int FUN_140c2b8c0() { return (unsigned int)m_list.size(); }
-    Unk_HmTicker* FUN_140c2b890(unsigned int nIndex);
-    char m_pad[0x30];
-    std::vector<Unk_HmTicker*> m_list;                                  // +0x30
-};
-// @0x140c2b890
-inline Unk_HmTicker* Unk_HmRender::FUN_140c2b890(unsigned int nIndex) { return m_list[nIndex]; }
-efd::ServiceManager* FUN_1413f9850();
-Unk_HmRender* FUN_1413f9890();
-
-// A child of the movie (a button or a check box): handle at +8, the dtor sits at 0x140acd6e0.
-class Unk_HmButton {
-public:
-    void FUN_1422c1fe0(int enabled);
-    void FUN_1422ce090(int checked);
-};
-class Unk_HmHandle
+// The render service: each of its render contexts is drawn once with the current time. Declared here rather than
+// through <ecr/RenderService.h>, whose NiAnimation/egf statics the exe unit does not have.
+namespace ecr {
+class RenderContext
 {
 public:
-    Unk_HmButton* FUN_140acd9c0();
-    Unk_HmButton* FUN_140acd9e0();
-    void FUN_140acd6e0();
-    // 0x10 bytes in the exe (MS2Ptr-like; FUN_140bb4b10 returns it by sret through ctor 0x140acd3b0, +8 = the pointer)
-    void* m_pad[2];
+    virtual ~RenderContext();
+    virtual void Draw(efd::Float32 currentTime);
+    void IncRefCount();
+    void DecRefCount();
+};
+typedef efd::SmartPointer<RenderContext> RenderContextPtr;
+class RenderService
+{
+public:
+    inline efd::UInt32 GetRenderContextCount() const;
+    inline RenderContext* GetRenderContextAt(const efd::UInt32 index);
+    char m_pad[0x30];
+    std::vector<RenderContextPtr, efd::CustomAllocator<RenderContextPtr> > m_renderContexts;   // +0x30
+};
+inline efd::UInt32 ecr::RenderService::GetRenderContextCount() const
+{
+    return (efd::UInt32)m_renderContexts.size();
+}
+// @0x140c2b890
+inline ecr::RenderContext* ecr::RenderService::GetRenderContextAt(const efd::UInt32 index)
+{
+    return m_renderContexts[index];
+}
+}
+efd::ServiceManager* FUN_1413f9850();
+ecr::RenderService* FUN_1413f9890();
+
+// A child of the movie (a button or a check box), held through MS2Ptr (dtor 0x140acd6e0).
+class Unk_140acd6e0 : public ASDisplayObject {
+public:
+    void FUN_1422c1fe0(unsigned enabled);
+    void FUN_1422ce090(int checked);
 };
 class Unk_HmMovieEntity : public UIDialog {
 public:
-    Unk_HmHandle FUN_140bb4b10(const CString& strName);
+    MS2Ptr<Unk_140acd6e0> FUN_140bb4b10(const CString& strName);
 };
 
 bool FUN_141902580(bool bMessage);
@@ -225,7 +227,7 @@ bool FUN_140930c50();
 int FUN_1418fd280();
 void FUN_141275260(int nId, int a, int b);
 void FUN_14151f200();
-CStringW FUN_141850100(int a, int b, bool c);
+CStringW FUN_141850100(int a, int b);
 void FUN_140710590(COutPacket& packet);
 
 MS2Ptr<CMsgBoxData> FUN_140d73f20(CStringW strText, int nType);
@@ -284,39 +286,79 @@ int UIHomeMenuDialog::vfunc_48()
 }
 
 // @0x140c29340
-// MS2-FUNCTIONAL: behaviour-equivalent; codegen (temporaries / branch layout) not byte-identical to the exe
 int UIHomeMenuDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs)
 {
-    if (UIDialog::vfunc_28(szMethod, pArgs, nArgs) == 0)
+    if (UIDialog::vfunc_28(szMethod, pArgs, nArgs) != 0)
+        return 1;
+    if (_stricmp("ToggleCraftMode", szMethod) == 0)
     {
-        if (_stricmp("ToggleCraftMode", szMethod) == 0)
-            ToggleCraftMode();
-        else if (_stricmp("ToggleDesignMode", szMethod) == 0)
-            FUN_140c29710();
-        else if (_stricmp("ToggleBlueprintMode", szMethod) == 0)
-            FUN_140c29980();
-        else if (_stricmp("OnScreenshot", szMethod) == 0)
-            OnScreenshot();
-        else if (_stricmp("OnFreeCamera", szMethod) == 0)
-            OnFreeCamera();
-        else if (_stricmp("OnDesignSave", szMethod) == 0)
-            OnDesignSave();
-        else if (_stricmp("OnDesignLoad", szMethod) == 0)
-            OnDesignLoad();
-        else if (_stricmp("OnBlueprintSave", szMethod) == 0)
-            OnBlueprintSave();
-        else if (_stricmp("OnHomePriority", szMethod) == 0)
-            OnHomePriority();
-        else if (_stricmp("OnHomeAttribute", szMethod) == 0)
-            OnHomeAttribute();
-        else if (_stricmp("OnHomeDemolish", szMethod) == 0)
-            OnHomeDemolish();
-        else if (_stricmp("OnBlueprintImport", szMethod) == 0)
-            OnBlueprintImport();
-        else if (_stricmp("OnBlueprintExport", szMethod) == 0)
-            OnBlueprintExport();
-        else if (_stricmp("OnBlueprintShop", szMethod) == 0)
-            OnBlueprintShop();
+        ToggleCraftMode();
+        return 1;
+    }
+    else if (_stricmp("ToggleDesignMode", szMethod) == 0)
+    {
+        FUN_140c29710();
+        return 1;
+    }
+    else if (_stricmp("ToggleBlueprintMode", szMethod) == 0)
+    {
+        FUN_140c29980();
+        return 1;
+    }
+    else if (_stricmp("OnScreenshot", szMethod) == 0)
+    {
+        OnScreenshot();
+        return 1;
+    }
+    else if (_stricmp("OnFreeCamera", szMethod) == 0)
+    {
+        OnFreeCamera();
+        return 1;
+    }
+    else if (_stricmp("OnDesignSave", szMethod) == 0)
+    {
+        OnDesignSave();
+        return 1;
+    }
+    else if (_stricmp("OnDesignLoad", szMethod) == 0)
+    {
+        OnDesignLoad();
+        return 1;
+    }
+    else if (_stricmp("OnBlueprintSave", szMethod) == 0)
+    {
+        OnBlueprintSave();
+        return 1;
+    }
+    else if (_stricmp("OnHomePriority", szMethod) == 0)
+    {
+        OnHomePriority();
+        return 1;
+    }
+    else if (_stricmp("OnHomeAttribute", szMethod) == 0)
+    {
+        OnHomeAttribute();
+        return 1;
+    }
+    else if (_stricmp("OnHomeDemolish", szMethod) == 0)
+    {
+        OnHomeDemolish();
+        return 1;
+    }
+    else if (_stricmp("OnBlueprintImport", szMethod) == 0)
+    {
+        OnBlueprintImport();
+        return 1;
+    }
+    else if (_stricmp("OnBlueprintExport", szMethod) == 0)
+    {
+        OnBlueprintExport();
+        return 1;
+    }
+    else if (_stricmp("OnBlueprintShop", szMethod) == 0)
+    {
+        OnBlueprintShop();
+        return 1;
     }
     return 1;
 }
@@ -425,13 +467,11 @@ void UIHomeMenuDialog::ToggleCraftMode()
 }
 
 // @0x140c29c70
-// MS2-FUNCTIONAL: behaviour-equivalent; codegen (temporaries / branch layout) not byte-identical to the exe
 void UIHomeMenuDialog::OnScreenshot()
 {
     if (FUN_140d86260()->vfunc_2() == 1)
     {
-        MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, GetStringCommonByKey(L"s_msg_ugc_home_upload_screenshot"), 0, CStringW(L""));
-        if (spBox.get() != 0)
+        if (MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, GetStringCommonByKey(L"s_msg_ugc_home_upload_screenshot"), 0, CStringW(L"")))
         {
             FUN_141a024a0(spBox.operator->(), 0);
             spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIHomeMenuDialog::FUN_140c2b180));
@@ -451,25 +491,23 @@ void UIHomeMenuDialog::OnFreeCamera()
 }
 
 // @0x140c29ef0
-// MS2-FUNCTIONAL: behaviour-equivalent; codegen (temporaries / branch layout) not byte-identical to the exe
 void UIHomeMenuDialog::OnDesignSave()
 {
     UIHomeSaveSlotDialog* pDialog = FUN_140c2b5c0(0x4f27);
-    if (pDialog != 0)
+    if (pDialog == 0)
+        return;
+    unsigned nCount = FUN_1409670e0()->FUN_1410ce310();
+    if (nCount > 0)
     {
-        if (FUN_1409670e0()->FUN_1410ce310() == 0)
-            pDialog->FUN_140faa6d0();
-        else
+        if (MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, GetStringCommon(0xbb1), 0, CStringW(L"")))
         {
-            MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, GetStringCommon(0xbb1), 0, CStringW(L""));
-            if (spBox.get() != 0)
-            {
-                FUN_141a024a0(spBox.operator->(), 0);
-                spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIHomeMenuDialog::FUN_140c2b0e0));
-                FUN_140d73c60(spBox);
-            }
+            FUN_141a024a0(spBox.operator->(), 0);
+            spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIHomeMenuDialog::FUN_140c2b0e0));
+            FUN_140d73c60(spBox);
         }
     }
+    else
+        pDialog->FUN_140faa6d0();
 }
 
 // @0x140c2a0e0
@@ -481,25 +519,25 @@ void UIHomeMenuDialog::OnDesignLoad()
 }
 
 // @0x140c2a120
-// MS2-FUNCTIONAL: behaviour-equivalent; codegen (temporaries / branch layout) not byte-identical to the exe
 void UIHomeMenuDialog::OnBlueprintSave()
 {
-    UIHomeSaveSlotDialog* pDialog;
-    if (FUN_141902580(1) && (pDialog = FUN_140c2b5c0(0x4f27)) != 0)
+    if (!FUN_141902580(1))
+        return;
+    UIHomeSaveSlotDialog* pDialog = FUN_140c2b5c0(0x4f27);
+    if (pDialog == 0)
+        return;
+    unsigned nCount = FUN_1409670e0()->FUN_1410ce310();
+    if (nCount > 0)
     {
-        if (FUN_1409670e0()->FUN_1410ce310() == 0)
-            pDialog->FUN_140faa6d0();
-        else
+        if (MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, GetStringCommon(0xbb1), 0, CStringW(L"")))
         {
-            MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, GetStringCommon(0xbb1), 0, CStringW(L""));
-            if (spBox.get() != 0)
-            {
-                FUN_141a024a0(spBox.operator->(), 0);
-                spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIHomeMenuDialog::FUN_140c2b130));
-                FUN_140d73c60(spBox);
-            }
+            FUN_141a024a0(spBox.operator->(), 0);
+            spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIHomeMenuDialog::FUN_140c2b130));
+            FUN_140d73c60(spBox);
         }
     }
+    else
+        pDialog->FUN_140faa6d0();
 }
 
 // @0x140c2a320
@@ -577,118 +615,66 @@ void UIHomeMenuDialog::OnBlueprintShop()
 }
 
 // @0x140c2a780
-// MS2-FUNCTIONAL: behaviour-equivalent; codegen (temporaries / branch layout) not byte-identical to the exe
 void UIHomeMenuDialog::FUN_140c2a780()
 {
-    bool bCraft = FUN_140c2af70();
-    bool bDesign = FUN_1409670e0()->FUN_1410c3600(1);
-    bool bBlueprint = FUN_1409670e0()->FUN_1410c3600(3);
-    Unk_HmMovieEntity* pThis = static_cast<Unk_HmMovieEntity*>(static_cast<UIDialog*>(this));
-    Unk_HmHandle hCraft = pThis->FUN_140bb4b10("m_craftMode");
-    if (hCraft.FUN_140acd9c0() != 0)
-        hCraft.FUN_140acd9e0()->FUN_1422ce090(bCraft);
-    hCraft.FUN_140acd6e0();
-    Unk_HmHandle hDesign = pThis->FUN_140bb4b10("m_designMode");
-    if (hDesign.FUN_140acd9c0() != 0)
+    int bCraft = FUN_140c2af70();
+    int bDesign = FUN_1409670e0()->FUN_1410c3600(1);
+    int bBlueprint = FUN_1409670e0()->FUN_1410c3600(3);
+    if (MS2Ptr<Unk_140acd6e0> sp = ((Unk_HmMovieEntity*)this)->FUN_140bb4b10("m_craftMode"))
     {
-        hDesign.FUN_140acd9e0()->FUN_1422ce090(bDesign);
+        sp->FUN_1422ce090(bCraft);
+    }
+    if (MS2Ptr<Unk_140acd6e0> sp = ((Unk_HmMovieEntity*)this)->FUN_140bb4b10("m_designMode"))
+    {
+        sp->FUN_1422ce090(bDesign);
         if (bBlueprint != 0)
-            hDesign.FUN_140acd9e0()->FUN_1422c1fe0(0);
+            sp->FUN_1422c1fe0(0);
     }
-    hDesign.FUN_140acd6e0();
-    Unk_HmHandle hBlueprint = pThis->FUN_140bb4b10("m_blueprintMode");
-    if (hBlueprint.FUN_140acd9c0() != 0)
+    if (MS2Ptr<Unk_140acd6e0> sp = ((Unk_HmMovieEntity*)this)->FUN_140bb4b10("m_blueprintMode"))
     {
-        hBlueprint.FUN_140acd9e0()->FUN_1422ce090(bBlueprint);
-        bool bEnabled = FUN_141902580(0);
-        hBlueprint.FUN_140acd9e0()->FUN_1422c1fe0(bEnabled);
+        sp->FUN_1422ce090(bBlueprint);
+        sp->FUN_1422c1fe0(FUN_141902580(0));
         if (bDesign != 0)
-            hBlueprint.FUN_140acd9e0()->FUN_1422c1fe0(0);
+            sp->FUN_1422c1fe0(0);
     }
-    hBlueprint.FUN_140acd6e0();
-    Unk_HmHandle hCamera = pThis->FUN_140bb4b10("m_freeCamera");
-    if (hCamera.FUN_140acd9c0() != 0)
+    if (MS2Ptr<Unk_140acd6e0> sp = ((Unk_HmMovieEntity*)this)->FUN_140bb4b10("m_freeCamera"))
     {
-        int nMode = FUN_1409478c0()->FUN_140af7e30();
-        hCamera.FUN_140acd9e0()->FUN_1422ce090(nMode == 1);
+        sp->FUN_1422ce090(FUN_1409478c0()->FUN_140af7e30() == 1);
     }
-    hCamera.FUN_140acd6e0();
-    Unk_HmHandle hSave = pThis->FUN_140bb4b10("m_blueprintSave");
-    if (hSave.FUN_140acd9c0() != 0)
+    if (MS2Ptr<Unk_140acd6e0> sp = ((Unk_HmMovieEntity*)this)->FUN_140bb4b10("m_blueprintSave"))
     {
-        bool bEnabled = FUN_141902580(0);
-        hSave.FUN_140acd9e0()->FUN_1422c1fe0(bEnabled);
+        sp->FUN_1422c1fe0(FUN_141902580(0));
     }
-    hSave.FUN_140acd6e0();
-    Unk_HmHandle hImport = pThis->FUN_140bb4b10("m_blueprintImport");
-    if (hImport.FUN_140acd9c0() != 0)
+    if (MS2Ptr<Unk_140acd6e0> sp = ((Unk_HmMovieEntity*)this)->FUN_140bb4b10("m_blueprintImport"))
     {
-        bool bEnabled = FUN_141902580(0);
-        hImport.FUN_140acd9e0()->FUN_1422c1fe0(bEnabled);
+        sp->FUN_1422c1fe0(FUN_141902580(0));
     }
-    hImport.FUN_140acd6e0();
-    Unk_HmHandle hExport = pThis->FUN_140bb4b10("m_blueprintExport");
-    if (hExport.FUN_140acd9c0() != 0)
+    if (MS2Ptr<Unk_140acd6e0> sp = ((Unk_HmMovieEntity*)this)->FUN_140bb4b10("m_blueprintExport"))
     {
-        bool bEnabled = FUN_141902580(0);
-        hExport.FUN_140acd9e0()->FUN_1422c1fe0(bEnabled);
+        sp->FUN_1422c1fe0(FUN_141902580(0));
     }
-    hExport.FUN_140acd6e0();
-    Unk_HmHandle hShop = pThis->FUN_140bb4b10("m_blueprintShop");
-    if (hShop.FUN_140acd9c0() != 0)
+    if (MS2Ptr<Unk_140acd6e0> sp = ((Unk_HmMovieEntity*)this)->FUN_140bb4b10("m_blueprintShop"))
     {
-        bool bEnabled = FUN_1419025f0(0);
-        hShop.FUN_140acd9e0()->FUN_1422c1fe0(bEnabled);
+        sp->FUN_1422c1fe0(FUN_1419025f0(0));
     }
-    hShop.FUN_140acd6e0();
 }
 
 // @0x140c2ad90
-// MS2-FUNCTIONAL: behaviour-equivalent; codegen (temporaries / branch layout) not byte-identical to the exe
 CString UIHomeMenuDialog::FUN_140c2ad90()
 {
     bool bCraft = FUN_140c2af70();
-    int nMode = FUN_1418fd280();
-    if (nMode == 0)
+    if (FUN_1418fd280() == 0)
+        return CString(bCraft ? "other_craft" : "other");
+    switch (FUN_1409670e0()->FUN_1410c3650())
     {
-        const char* sz;
-        if (bCraft == 0)
-            sz = "other";
-        else
-            sz = "other_craft";
-        return CString(sz);
-    }
-    int nState = FUN_1409670e0()->FUN_1410c3650();
-    if (nState == 0)
-    {
-        const char* sz;
-        if (bCraft == 0)
-            sz = "default";
-        else
-            sz = "default_craft";
-        return CString(sz);
-    }
-    else if (nState == 1)
-    {
-        const char* sz;
-        if (bCraft == 0)
-            sz = "design";
-        else
-            sz = "design_craft";
-        return CString(sz);
-    }
-    else if (nState == 2)
-    {
+    case 0:
+        return CString(bCraft ? "default_craft" : "default");
+    case 1:
+        return CString(bCraft ? "design_craft" : "design");
+    case 3:
+        return CString(bCraft ? "blueprint_craft" : "blueprint");
+    case 2:
         return CString("other");
-    }
-    else if (nState == 3)
-    {
-        const char* sz;
-        if (bCraft == 0)
-            sz = "blueprint";
-        else
-            sz = "blueprint_craft";
-        return CString(sz);
     }
     return CString("default");
 }
@@ -708,76 +694,79 @@ bool UIHomeMenuDialog::FUN_140c2af70()
 }
 
 // @0x140c2afd0
-// MS2-FUNCTIONAL: behaviour-equivalent; codegen (temporaries / branch layout) not byte-identical to the exe
 void UIHomeMenuDialog::FUN_140c2afd0(bool bFreeCamera)
 {
     m_bFreeCamera = bFreeCamera;
-    if (m_bFreeCamera == 0)
-    {
-        Unk_HmStateBytes state = FUN_1409670e0()->FUN_1410c34f0();
-        Unk_HmStateBytes* pState = &state;
-        FUN_140b6a040()->FUN_140b683f0(pState->m_b[2]);
-        FUN_1403ed2b0()->FUN_141adc5d0(0x4f3e);
-    }
-    else
+    if (m_bFreeCamera)
     {
         FUN_1409478c0()->FUN_140947980(6);
         FUN_1403ed2b0()->FUN_141adc530(0x4f3e);
     }
+    else
+    {
+        Unk_HmStateBytes state = FUN_1409670e0()->FUN_1410c34f0();
+        Unk_HmStateBytes* pState = &state;
+        FUN_140b6a040()->FUN_140b683f0(pState->m_b2);
+        FUN_1403ed2b0()->FUN_141adc5d0(0x4f3e);
+    }
 }
 
 // @0x140c2b080
-// MS2-FUNCTIONAL: behaviour-equivalent; codegen (temporaries / branch layout) not byte-identical to the exe
+// MS2-FUNCTIONAL: behaviour-equivalent; the exe keeps a dead movzx of the screenshot flag before the call
 CStringW UIHomeMenuDialog::FUN_140c2b080()
 {
-    return FUN_141850100(0, 1, m_screenshot.FUN_1405116c0());
+    return FUN_141850100(((int)m_screenshot.FUN_1405116c0(), 0), 1);
 }
 
 // @0x140c2b0e0
-// MS2-FUNCTIONAL: behaviour-equivalent; codegen (temporaries / branch layout) not byte-identical to the exe
 bool UIHomeMenuDialog::FUN_140c2b0e0(int nResult, const CMsgBoxData& data)
 {
     FUN_14151f200();
-    UIHomeSaveSlotDialog* pDialog;
-    if (nResult == 0 && (pDialog = FUN_140c2b5c0(0x4f27)) != 0)
-        pDialog->FUN_140faa6d0();
+    if (nResult == 0)
+    {
+        UIHomeSaveSlotDialog* pDialog = FUN_140c2b5c0(0x4f27);
+        if (pDialog != 0)
+            pDialog->FUN_140faa6d0();
+        return 1;
+    }
     return 1;
 }
 
 // @0x140c2b130
-// MS2-FUNCTIONAL: behaviour-equivalent; codegen (temporaries / branch layout) not byte-identical to the exe
 bool UIHomeMenuDialog::FUN_140c2b130(int nResult, const CMsgBoxData& data)
 {
     FUN_14151f200();
-    UIHomeSaveSlotDialog* pDialog;
-    if (nResult == 0 && (pDialog = FUN_140c2b5c0(0x4f27)) != 0)
-        pDialog->FUN_140faa6d0();
+    if (nResult == 0)
+    {
+        UIHomeSaveSlotDialog* pDialog = FUN_140c2b5c0(0x4f27);
+        if (pDialog != 0)
+            pDialog->FUN_140faa6d0();
+        return 1;
+    }
     return 1;
 }
 
 // @0x140c2b180
-// MS2-FUNCTIONAL: behaviour-equivalent; codegen (temporaries / branch layout) not byte-identical to the exe
 bool UIHomeMenuDialog::FUN_140c2b180(int nResult, const CMsgBoxData& data)
 {
     efd::ServiceManager* pServices = FUN_1413f9850();
     if (pServices == 0)
         return 0;
-    Unk_HmRender* pRender = FUN_1413f9890();
+    ecr::RenderService* pRender = FUN_1413f9890();
     if (pRender == 0)
         return 0;
-    double dTime = pServices->GetTime(0xe001001b);
-    for (unsigned int i = 0; i < pRender->FUN_140c2b8c0(); ++i)
+    float fTime = (float)pServices->GetTime(0xe001001b);
+    for (unsigned int i = 0; i < pRender->GetRenderContextCount(); ++i)
     {
-        Unk_HmTicker* pTicker = pRender->FUN_140c2b890(i);
-        if (pTicker != 0)
-            pTicker->vfunc_1((float)dTime);
+        ecr::RenderContext* pContext = pRender->GetRenderContextAt(i);
+        if (pContext == 0)
+            continue;
+        pContext->Draw(fTime);
     }
     CStringW strUrl = FUN_140c2b080();
     if (nResult == 0 && !strUrl.IsEmpty())
     {
-        Unk_HmNet* pNet = FUN_140d86260();
-        int nSent = pNet->vfunc_54(FUN_1409670e0()->FUN_1410c31d0(), FUN_1409670e0()->FUN_1410c3260(), 0xd0, CStringW(strUrl));
-        if (nSent == 1)
+        if (FUN_140d86260()->vfunc_54(FUN_1409670e0()->FUN_1410c31d0(), FUN_1409670e0()->FUN_1410c3260(), 0xd0, CStringW(strUrl)) == 1)
             FUN_141275260(0x466, 1, 1);
     }
     return 1;

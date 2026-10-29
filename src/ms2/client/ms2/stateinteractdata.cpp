@@ -39,6 +39,7 @@
 #include "ms2/placeholder/coutpacket.h"
 #include "ms2/placeholder/nipoint3.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
+#include "ms2/placeholder/effectquery.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 
@@ -102,6 +103,17 @@ void* FUN_14165f100(PCBase* p);
 void FUN_14165f170(PCBase* p);
 class Unk_SiBuffMgr { public: Vector3 FUN_141683290(); };
 Unk_SiBuffMgr* FUN_14166d240(PCBase* p);
+// PCBase vtable view: slot 22 takes the position by value (the exe copies it to a 16-aligned temp)
+class Unk_SiPointSlots
+{
+public:
+#define MS2_SI_SLOTS(a, b, c, d, e) virtual void vfunc_##a(); virtual void vfunc_##b(); virtual void vfunc_##c(); \
+    virtual void vfunc_##d(); virtual void vfunc_##e();
+    MS2_SI_SLOTS(0, 1, 2, 3, 4) MS2_SI_SLOTS(5, 6, 7, 8, 9) MS2_SI_SLOTS(10, 11, 12, 13, 14) MS2_SI_SLOTS(15, 16, 17, 18, 19)
+#undef MS2_SI_SLOTS
+    virtual void vfunc_20(); virtual void vfunc_21();
+    virtual void vfunc_22(efd::Point3 kPos);                                // 22 0x14123c3a0
+};
 bool FUN_1416749c0(PCBase* p);
 CStringW GetStringCommonByKey(const CStringW& str);
 CString FUN_1409a2360(const char* psz, int nCodePage);   // CString from a narrow string (0 = default code page)
@@ -126,35 +138,28 @@ public:
 };
 Unk_SiWorld* FUN_1403ed2d0();
 
-// The effect manager (a request is the exe's 0x78-byte record: name +0, owner +8, transform +0x18).
+// The effect manager (the request is a NoticeMessage, placeholder/effectquery.h: name +0, owner +8, transform +0x18).
+struct Unk_SiRot                                         // efd::Matrix3 without the empty ctor call (NiTransform's ctor builds it)
+{
+    void FUN_142083d40(float fX, float fY, float fZ);    // efd::Matrix3::FromEulerAnglesXYZ (radians)
+    float m_afEntry[3][3];
+};
 struct Unk_SiXform
 {
-    Unk_EfdMatrix3 m_rotate;
+    Unk_SiRot m_rotate;
     float m_afTranslate[3];
     float m_fScale;
 };
 MS2_CHECK_SIZE(Unk_SiXform, 0x34);
 void* FUN_140a332d0(Unk_SiXform* p);
 void FUN_14097faa0(float* pDst, const Unk_NiPoint3* pSrc);
-struct Unk_SiFxRequest
-{
-    CString m_strName;
-    int m_nOwnerId;
-    int m_pad_0c;
-    void* m_pSlot10;
-    Unk_SiXform* m_pXform;
-    char m_pad_20[0x58];
-};
-MS2_CHECK_SIZE(Unk_SiFxRequest, 0x78);
 class Unk_SiFxMgr
 {
 public:
-    int FUN_1411a49c0(Unk_SiFxRequest* pRequest);
+    int FUN_1411a49c0(NoticeMessage* pRequest);
     void FUN_1411a6060(int nHandle);
 };
 Unk_SiFxMgr* FUN_1403ed280();
-void FUN_140a52ef0(Unk_SiFxRequest* p);
-void FUN_1405a89e0(Unk_SiFxRequest* p);
 
 // The quest manager: does the quest state satisfy a mask.
 class Unk_SiQuestEval
@@ -172,7 +177,6 @@ struct Unk_SiQuestMgr
 {
     char m_pad_00[0x10];
     void* m_pEvalVptr;
-    Unk_SiQuestEval* Eval() { return reinterpret_cast<Unk_SiQuestEval*>(&m_pEvalVptr); }
 };
 Unk_SiQuestMgr* FUN_140764020();
 
@@ -262,7 +266,6 @@ StateInteraction::StateInteraction(PCBase* pOwner) : State(pOwner), m_n48(0) {}
 // @0x1417d0e10
 StateInteraction::~StateInteraction() {}
 
-// MS2-FUNCTIONAL: branch layout / stack-slot placement differs from the exe; calls and semantics are equivalent
 // @0x1417d0e70
 void StateInteraction::vfunc_4(StateData* pData)
 {
@@ -288,7 +291,7 @@ void StateInteraction::vfunc_4(StateData* pData)
                 FUN_14165f170(pPC);
             Unk_CastInfo kInfo;
             MS2Ptr<CInteractObject> spObject = FUN_1403ed2d0()->FUN_141bc6090(reinterpret_cast<Unk_SiPos*>(m_pOwner)->vfunc_18(), 1);
-            if (spObject.IsNull())
+            if (spObject == 0)
             {
                 m_pOwner->vfunc_59(1, 0, 0, 0);
                 return;
@@ -300,12 +303,12 @@ void StateInteraction::vfunc_4(StateData* pData)
                 FUN_1403ed2d0()->FUN_141bc5fb0(&aObjects, 6);
                 for (size_t i = 0; i < aObjects.GetCount(); i++)
                 {
-                    if (aObjects[i]->vfunc_4() != 0)
-                    {
-                        float fDist = aObjects[i]->GetPos().FUN_140965c40(reinterpret_cast<Unk_SiPos*>(pPC)->vfunc_18()).FUN_140967ac0();
-                        if (fDist <= *static_cast<Client::Constants*>(FUN_1401d3200())->MasteryObjectInteractionDistance.Get())
-                            m_aObjects.push_back(aObjects[i]);
-                    }
+                    if (aObjects[i]->vfunc_4() == 0)
+                        continue;
+                    float fDist = reinterpret_cast<Unk_SiPos*>(pPC)->vfunc_18().FUN_140965c40(aObjects[i]->GetPos()).FUN_140967ac0();
+                    if (fDist > *static_cast<Client::Constants*>(FUN_1401d3200())->MasteryObjectInteractionDistance.Get())
+                        continue;
+                    m_aObjects.push_back(aObjects[i]);
                 }
                 if (m_aObjects.size() == 0)
                     return;
@@ -324,7 +327,7 @@ void StateInteraction::vfunc_4(StateData* pData)
         efd::utf8string strAnim("");
         if (spRow.get())
         {
-            strAnim = (const char*)FUN_1409a2360(SiRowAnimA(spRow.get()), 0);
+            strAnim = (const char*)FUN_1409a2360(SiRowAnimA(spRow.operator->()), 0);
             if (strAnim.length() != 0)
                 m_pOwner->FUN_14166dd20(strAnim, 1.0f, false, false);
         }
@@ -334,7 +337,7 @@ void StateInteraction::vfunc_4(StateData* pData)
         efd::utf8string strAnim("");
         if (spRow.get())
         {
-            strAnim = (const char*)FUN_1409a2360(SiRowAnimB(spRow.get()), 0);
+            strAnim = (const char*)FUN_1409a2360(SiRowAnimB(spRow.operator->()), 0);
             if (strAnim.length() != 0)
                 m_pOwner->FUN_14166dd20(strAnim, 1.0f, false, false);
         }
@@ -372,61 +375,56 @@ void StateInteraction::vfunc_5(int n)
     }
 }
 
-// MS2-FUNCTIONAL: branch layout / stack-slot placement differs from the exe; calls and semantics are equivalent
 // @0x1417d18c0
 void StateInteraction::vfunc_8(double fTime)
 {
     State::vfunc_8(fTime);
     MyPC* pPC = FUN_1417b84b0();
-    if (pPC)
+    if (pPC == 0)
+        return;
+    if (m_n10 == 0x8d && m_spInteract.get())
     {
-        if (m_n10 == 0x8d && m_spInteract.get())
+        MS2Ptr<CInteractObject> spObject = FUN_1403ed2d0()->FUN_141bc66b0(m_spInteract->m_strObjectId);
+        if (spObject.get() ? true : false)
         {
-            MS2Ptr<CInteractObject> spObject = FUN_1403ed2d0()->FUN_141bc66b0(m_spInteract->m_strObjectId);
-            if (spObject.get())
+            if (spObject->vfunc_4() != 0)
             {
-                if (spObject->vfunc_4() != 0)
-                {
-                    MS2Ptr<StateInteractData> spNew(new StateInteractData);
-                    spNew->m_nObjectId = spObject->GetRowId();
-                    spNew->m_strObjectId = spObject->GetName();
-                    pPC->vfunc_59(0x19, spNew.get(), 0x8a, 0);
-                }
+                MS2Ptr<StateInteractData> spNew(new StateInteractData);
+                spNew->m_nObjectId = spObject->GetRowId();
+                spNew->m_strObjectId = spObject->GetName();
+                pPC->vfunc_59(0x19, spNew.get(), 0x8a, 0);
             }
         }
-        if (m_spInteract.get())
-        {
-            MS2Ptr<CInteractObject> spObject = FUN_1403ed2d0()->FUN_141bc66b0(m_spInteract->m_strObjectId);
-            if (spObject.get())
-            {
-                if (m_n48 == 0)
-                {
-                    float fRange = spObject->GetRow()->m_validate.m_fInteractionDistance;
-                    float fDist = spObject->GetPos().FUN_140965c40(reinterpret_cast<Unk_SiPos*>(pPC)->vfunc_18()).FUN_140967ac0();
-                    if (fRange < fDist)
-                    {
-                        pPC->vfunc_59(1, 0, 0, 0);
-                        return;
-                    }
-                }
-                else
-                    FUN_1417d2230(spObject.get());
-            }
-            if (m_n48 != 0)
-            {
-                pPC->vfunc_59(1, 0, 0, 0);
-                return;
-            }
-        }
-        Unk_SiBuffMgr* pBuff = FUN_14166d240(pPC);
-        Vector3 kPos = pBuff->FUN_141683290();
-        Vector3 kArg = kPos;
-        pPC->vfunc_22(*reinterpret_cast<const efd::Point3*>(&kArg));
-        if (FUN_1416749c0(m_pOwner))
-            pPC->vfunc_59(2, 0, 0, 0);
-        else
-            FUN_1417b9460();
     }
+    if (m_spInteract.get())
+    {
+        MS2Ptr<CInteractObject> spObject = FUN_1403ed2d0()->FUN_141bc66b0(m_spInteract->m_strObjectId);
+        if (spObject.get())
+        {
+            if (m_n48 != 0)
+                FUN_1417d2230(spObject.get());
+            else
+            {
+                float fRange = spObject->GetRow()->m_validate.m_fInteractionDistance;
+                if (spObject->GetPos().FUN_140965c40(reinterpret_cast<Unk_SiPos*>(pPC)->vfunc_18()).FUN_140967ac0() > fRange)
+                {
+                    pPC->vfunc_59(1, 0, 0, 0);
+                    return;
+                }
+            }
+        }
+        if (m_n48 != 0)
+        {
+            pPC->vfunc_59(1, 0, 0, 0);
+            return;
+        }
+    }
+    Unk_SiBuffMgr* pBuff = FUN_14166d240(pPC);
+    reinterpret_cast<Unk_SiPointSlots*>(pPC)->vfunc_22(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(pBuff->FUN_141683290())));
+    if (FUN_1416749c0(m_pOwner))
+        pPC->vfunc_59(2, 0, 0, 0);
+    else
+        FUN_1417b9460();
 }
 
 // @0x1417d1db0
@@ -436,21 +434,21 @@ void StateInteraction::vfunc_6()
         m_pOwner->vfunc_59(1, 0, 0, 0);
 }
 
-// MS2-FUNCTIONAL: branch layout / stack-slot placement differs from the exe; calls and semantics are equivalent
 // @0x1417d1e00
 void StateInteraction::EndOfSequence(NiActorManager*, unsigned int, NiControllerSequence*, float)
 {
     if (FUN_1417b8560() == 0)
         return;
-    if (m_n10 != 0x8b && m_n10 != 0x8c)
-        return;
-    if (FUN_1417d2880() != 0)
+    if (m_n10 == 0x8b || m_n10 == 0x8c)
     {
-        m_n10 = 0x8d;
-        m_pOwner->FUN_14166dda0(0);
+        if (FUN_1417d2880() != 0)
+        {
+            m_n10 = 0x8d;
+            m_pOwner->FUN_14166dda0(0);
+        }
+        else
+            m_pOwner->vfunc_59(1, 0, 0, 0);
     }
-    else
-        m_pOwner->vfunc_59(1, 0, 0, 0);
 }
 
 // @0x1417d1eb0
@@ -473,15 +471,15 @@ void StateInteraction::SendInteractObjectMode11()
     }
 }
 
-// MS2-FUNCTIONAL: branch layout / stack-slot placement differs from the exe; calls and semantics are equivalent
 // @0x1417d2070
 void StateInteraction::SendInteractObjectMode12()
 {
     std::vector<MS2Ptr<CInteractObject> > aUsable;
     for (size_t i = 0; i < m_aObjects.size(); i++)
     {
-        if (m_aObjects[i]->vfunc_4() != 0)
-            aUsable.push_back(m_aObjects[i]);
+        if (m_aObjects[i]->vfunc_4() == 0)
+            continue;
+        aUsable.push_back(m_aObjects[i]);
     }
     COutPacket kPacket(static_cast<int>(SendOp::InteractObject), 0);
     kPacket.WriteUInt8(0xc);
@@ -512,15 +510,15 @@ void StateInteraction::FUN_1417d2230(CInteractObject* pObject)
     FUN_14138bf00(FUN_1409331e0(), 9, pObject->GetRowId(), 0);
 }
 
-// MS2-FUNCTIONAL: branch layout / stack-slot placement differs from the exe; calls and semantics are equivalent
 // @0x1417d22f0
 void StateInteraction::FUN_1417d22f0(MS2Ptr<CInteractObjectData> spRow)
 {
-    if (!(spRow == 0))
+    if (spRow == 0)
+        return;
     {
         if (FUN_1417b8560() == 0)
             return;
-        if (FUN_140764020()->Eval()->CheckMask(SiRowMask(spRow.get())) != 0)
+        if (reinterpret_cast<Unk_SiQuestEval*>(&FUN_140764020()->m_pEvalVptr)->CheckMask(SiRowMask(spRow.operator->())) != 0)
         {
             MS2Ptr<CInteractObject> spObject = FUN_1403ed2d0()->FUN_141bc6090(reinterpret_cast<Unk_SiPos*>(m_pOwner)->vfunc_18(), 1);
             if (spObject.get())
@@ -528,45 +526,33 @@ void StateInteraction::FUN_1417d22f0(MS2Ptr<CInteractObjectData> spRow)
                 Vector3 kRot = spObject->GetRot();
                 Unk_SiXform kXform;
                 FUN_140a332d0(&kXform);
-                Vector3 kUp(0.0f, 0.0f, 1.0f);
-                Vector3 kPos = spObject->GetPos().FUN_14097fd50(kUp);
-                Unk_NiPoint3 kNiPos(kPos);
+                Unk_NiPoint3 kNiPos(spObject->GetPos().FUN_14097fd50(Vector3(0.0f, 0.0f, 1.0f)));
                 FUN_14097faa0(kXform.m_afTranslate, &kNiPos);
                 kXform.m_rotate.FUN_142083d40((kRot.x * 3.1415927f) / 180.0f, (kRot.y * 3.1415927f) / 180.0f,
                                               (kRot.z * 3.1415927f) / 180.0f);
                 kXform.m_fScale = 1.0f;
-                alignas(8) char kRequestBuf[sizeof(Unk_SiFxRequest)];   // FUN_140a52ef0 / FUN_1405a89e0 construct and destroy it: no implicit dtor
-                Unk_SiFxRequest& kRequest = *reinterpret_cast<Unk_SiFxRequest*>(kRequestBuf);
-                FUN_140a52ef0(&kRequest);
+                NoticeMessage kRequest;
                 kRequest.m_strName = SiRowEffect(spRow.get());
-                kRequest.m_nOwnerId = 0;
-                kRequest.m_pXform = &kXform;
+                kRequest.m_nObject = 0;
+                kRequest.m_p18 = &kXform;
                 m_nEffect = FUN_1403ed280()->FUN_1411a49c0(&kRequest);
-                FUN_1405a89e0(&kRequest);
             }
         }
     }
 }
 
-// MS2-FUNCTIONAL: branch layout / stack-slot placement differs from the exe; calls and semantics are equivalent
 // @0x1417d25e0
 void StateInteraction::FUN_1417d25e0(MS2Ptr<CInteractObjectData> spRow)
 {
     efd::utf8string strAnim("");
-    if (m_spInteract.get() && m_spInteract->m_strAnim.GetLength() > 0)
+    if ((m_spInteract.get() ? true : false) && m_spInteract->m_strAnim.GetLength() > 0)
     {
         strAnim = (const char*)FUN_1409a2360(m_spInteract->m_strAnim, 0);
         m_pOwner->FUN_14166dd20(strAnim, 1.0f, false, false);
-        return;
     }
-    if (spRow.get() == 0)
+    else if (spRow.get())
     {
-        efd::utf8string strReact("Object_React_A");
-        m_pOwner->FUN_14166dd20(strReact, 1.0f, false, false);
-    }
-    else
-    {
-        CString strName = SiRowNames(spRow.get())->FUN_14051c870();
+        CString strName = SiRowNames(spRow.operator->())->FUN_14051c870();
         if (strName.GetLength() > 0)
         {
             m_spInteract->m_strAnim = strName;
@@ -574,9 +560,13 @@ void StateInteraction::FUN_1417d25e0(MS2Ptr<CInteractObjectData> spRow)
             m_pOwner->FUN_14166dd20(strAnim, 1.0f, false, false);
         }
     }
+    else
+    {
+        efd::utf8string strReact("Object_React_A");
+        m_pOwner->FUN_14166dd20(strReact, 1.0f, false, false);
+    }
 }
 
-// MS2-FUNCTIONAL: branch layout / stack-slot placement differs from the exe; calls and semantics are equivalent
 // @0x1417d2880
 int StateInteraction::FUN_1417d2880()
 {
@@ -593,7 +583,9 @@ int StateInteraction::FUN_1417d2880()
     MS2Ptr<CInteractObject> spObject = FUN_1403ed2d0()->FUN_141bc66b0(m_spInteract->m_strObjectId);
     if (spObject.IsNull())
         return 0;
-    return spObject->vfunc_16() != 0;
+    if (spObject->vfunc_16() == 0)
+        return 0;
+    return 1;
 }
 
 // ---- StateInteractionNpc ----
@@ -607,17 +599,18 @@ StateInteractionNpc::StateInteractionNpc(PCBase* pOwner) : State(pOwner)
 // @0x1417d2ae0
 StateInteractionNpc::~StateInteractionNpc() {}
 
-// MS2-FUNCTIONAL: branch layout / stack-slot placement differs from the exe; calls and semantics are equivalent
 // @0x1417d2b30
 void StateInteractionNpc::vfunc_4(StateData* pData)
 {
     State::vfunc_4(pData);
     m_n48 = 0;
     efd::utf8string strAnim("Object_React_A");
+    int nNpc = 0;
     Unk_CastInfo kInfo;
     m_spNpc.AssignRaw(dynamic_cast<StateInteractNpcData*>(pData));
     if (m_spNpc.get())
     {
+        nNpc = m_spNpc->m_nNpc;
         Unk_SiNpc* pNpc = FUN_1403ed2d0()->FUN_141bd1320(m_spNpc->m_nNpc);
         if (pNpc)
         {
@@ -655,46 +648,42 @@ void StateInteractionNpc::vfunc_5(int n)
     }
 }
 
-// MS2-FUNCTIONAL: branch layout / stack-slot placement differs from the exe; calls and semantics are equivalent
 // @0x1417d2ed0
 void StateInteractionNpc::vfunc_8(double fTime)
 {
     State::vfunc_8(fTime);
     MyPC* pPC = FUN_1417b84b0();
-    if (pPC)
+    if (pPC == 0)
+        return;
+    if (m_spNpc.get())
     {
-        if (m_spNpc.get())
+        Unk_SiNpc* pNpc = FUN_1403ed2d0()->FUN_141bd1320(m_spNpc->m_nNpc);
+        if (pNpc)
         {
-            Unk_SiNpc* pNpc = FUN_1403ed2d0()->FUN_141bd1320(m_spNpc->m_nNpc);
-            if (pNpc)
-            {
-                if (m_n48 == 0)
-                {
-                    float fDist = pNpc->FUN_140f4a450();
-                    if (*static_cast<Client::Constants*>(FUN_1401d3200())->InteractionDistance.Get() < fDist)
-                    {
-                        pPC->vfunc_59(1, 0, 0, 0);
-                        return;
-                    }
-                }
-                else
-                    pNpc->FUN_141094730();
-            }
             if (m_n48 != 0)
+                pNpc->FUN_141094730();
+            else
             {
-                pPC->vfunc_59(2, 0, 0, 0);
-                return;
+                float fDist = pNpc->FUN_140f4a450();
+                if (*static_cast<Client::Constants*>(FUN_1401d3200())->InteractionDistance.Get() < fDist)
+                {
+                    pPC->vfunc_59(1, 0, 0, 0);
+                    return;
+                }
             }
         }
-        Unk_SiBuffMgr* pBuff = FUN_14166d240(pPC);
-        Vector3 kPos = pBuff->FUN_141683290();
-        Vector3 kArg = kPos;
-        pPC->vfunc_22(*reinterpret_cast<const efd::Point3*>(&kArg));
-        if (FUN_1416749c0(m_pOwner))
+        if (m_n48 != 0)
+        {
             pPC->vfunc_59(2, 0, 0, 0);
-        else
-            FUN_1417b9460();
+            return;
+        }
     }
+    Unk_SiBuffMgr* pBuff = FUN_14166d240(pPC);
+    reinterpret_cast<Unk_SiPointSlots*>(pPC)->vfunc_22(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(pBuff->FUN_141683290())));
+    if (FUN_1416749c0(m_pOwner))
+        pPC->vfunc_59(2, 0, 0, 0);
+    else
+        FUN_1417b9460();
 }
 
 // @0x1417d30d0
@@ -718,14 +707,12 @@ StateAutoInteraction::StateAutoInteraction(PCBase* pOwner) : State(pOwner)
 // @0x1417d31d0
 StateAutoInteraction::~StateAutoInteraction() {}
 
-// MS2-FUNCTIONAL: branch layout / stack-slot placement differs from the exe; calls and semantics are equivalent
 // @0x1417d3220
 void StateAutoInteraction::vfunc_4(StateData* pData)
 {
     State::vfunc_4(pData);
     m_n48 = 0;
-    efd::utf8string strAnim = FUN_1417d36b0();
-    m_pOwner->FUN_14166dd20(strAnim, 1.0f, false, false);
+    m_pOwner->FUN_14166dd20(FUN_1417d36b0(), 1.0f, false, false);
     m_spAuto.AssignRaw(dynamic_cast<StateAutoInteractionData*>(pData));
     PCBase* pPC = FUN_1417b8370();
     if (pPC)
@@ -782,7 +769,6 @@ void StateAutoInteraction::vfunc_3(double fTime)
     }
 }
 
-// MS2-FUNCTIONAL: branch layout / stack-slot placement differs from the exe; calls and semantics are equivalent
 // @0x1417d35b0
 void StateAutoInteraction::vfunc_8(double fTime)
 {
@@ -791,9 +777,7 @@ void StateAutoInteraction::vfunc_8(double fTime)
     if (pPC == 0)
         return;
     Unk_SiBuffMgr* pBuff = FUN_14166d240(pPC);
-    Vector3 kPos = pBuff->FUN_141683290();
-    Vector3 kArg = kPos;
-    pPC->vfunc_22(*reinterpret_cast<const efd::Point3*>(&kArg));
+    reinterpret_cast<Unk_SiPointSlots*>(pPC)->vfunc_22(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(pBuff->FUN_141683290())));
     if (FUN_1416749c0(m_pOwner))
         pPC->vfunc_59(2, 0, 0, 0);
 }
@@ -807,24 +791,44 @@ efd::utf8string StateAutoInteraction::FUN_1417d36b0()
     return efd::utf8string("Object_React_C");
 }
 
-// MS2-FUNCTIONAL: branch layout / stack-slot placement differs from the exe; calls and semantics are equivalent
 // @0x1417d3700
 void StateAutoInteraction::FUN_1417d3700(Unk_CastInfo* pInfo)
 {
     if (m_spAuto.get())
     {
-        CSmartPushTable::DataPtr spRow = CSmartPushTable::GetInstance()->GetData(m_spAuto->m_n18);
-        if (spRow.get())
+        int nId = m_spAuto->m_n18;
+        CSmartPushTable::DataPtr spRow = CSmartPushTable::GetInstance()->GetData(nId);
+        if (!spRow)
+            return;
+        int nAction = spRow->m_nActionValue;
+        switch (nAction)
         {
-            switch (spRow->m_nActionValue)
-            {
-            case 3: pInfo->m_str28 = GetStringCommonByKey(CStringW(L"s_mastery_automining_progress")); break;
-            case 4: pInfo->m_str28 = GetStringCommonByKey(CStringW(L"s_mastery_autogathering_progress")); break;
-            case 5: pInfo->m_str28 = GetStringCommonByKey(CStringW(L"s_mastery_autobreeding_progress")); break;
-            case 6: pInfo->m_str28 = GetStringCommonByKey(CStringW(L"s_mastery_autofarming_progress")); break;
-            }
-            pInfo->m_nDuration = 2000;
+        case 6:
+        {
+            CStringW strKey(L"s_mastery_autofarming_progress");
+            pInfo->m_str28 = GetStringCommonByKey(strKey);
         }
+        break;
+        case 5:
+        {
+            CStringW strKey(L"s_mastery_autobreeding_progress");
+            pInfo->m_str28 = GetStringCommonByKey(strKey);
+        }
+        break;
+        case 4:
+        {
+            CStringW strKey(L"s_mastery_autogathering_progress");
+            pInfo->m_str28 = GetStringCommonByKey(strKey);
+        }
+        break;
+        case 3:
+        {
+            CStringW strKey(L"s_mastery_automining_progress");
+            pInfo->m_str28 = GetStringCommonByKey(strKey);
+        }
+        break;
+        }
+        pInfo->m_nDuration = 2000;
     }
 }
 

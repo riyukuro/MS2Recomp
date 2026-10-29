@@ -77,7 +77,7 @@ public:
     void FUN_14162cc40(CInPacket&);
     void FUN_14162cea0(CInPacket&);
     void FUN_14162d070(CInPacket&);
-    void FUN_14162d220();
+    void FUN_14162d220(CInPacket& packet);
     void FUN_14162d2b0(CInPacket&);
     void FUN_14162d5b0(CInPacket&);
     void FUN_14162db10(CInPacket&);
@@ -92,7 +92,7 @@ public:
     void FUN_14162e820(CInPacket&);
     void FUN_14162e9d0(CInPacket&);
     void FUN_14162ea90(CInPacket&);
-    void FUN_14162ed60();
+    void FUN_14162ed60(CInPacket& packet);
     void FUN_14162ee10(CInPacket&);
     void FUN_14162ee70(CInPacket&);
     void FUN_14162f030(CInPacket&);
@@ -105,7 +105,7 @@ public:
     MS2Ptr<PartyVoteCli> FUN_14162c350();
     void FUN_141630550(CInPacket&);
     void FUN_141630670(CInPacket&);
-    void FUN_141630720();
+    void FUN_141630720(CInPacket& packet);
     bool FUN_141630c30(__int64);
     bool FUN_141630c70(int, const CMsgBoxData&);
     void FUN_141630cb0();

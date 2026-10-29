@@ -25,8 +25,8 @@ class Unk_MyPCSkillSlots;   // = CSkillSystem (scenestategame.cpp / placeholder 
 class Unk_MyPCStatPoints;
 class Unk_MyPCComp1618;     // MS2Ptr at +0x1618 (null ctor 0x1415324e0, dtor 0x14050de40)
 
-// The member at +0x12e8: a StateLocalController whose records live on the base (state.cpp declares them on the
-// PcGuide subclass). Ctor 0x1417b73c0, implicit dtor 0x1410a6dc0 (COMDAT in cubecraft_1).
+// The member at +0x12e8: a StateLocalController (the records live on the base).
+// Ctor 0x1417b73c0, implicit dtor 0x1410a6dc0 (COMDAT in cubecraft_1).
 class Unk_StateArg22;
 class Unk_MyPCStateCtl : public StateLocalController
 {
@@ -39,7 +39,6 @@ public:
     int FUN_1417b7490();                                    // a record is due
     MS2Ptr<Unk_StateArg22> FUN_1417b7620();                 // copy of the current record
     void FUN_1417b7670(Unk_StateArg22* pRec);               // set the current record
-    unsigned char m_body[0x48];                             // +0x08 records list, current record, owner
 };
 
 // The member at +0x1338: the action key table (ctor 0x140951c70 in ?\actionkeyobject.cpp, dtor 0x140952e70).
@@ -113,7 +112,7 @@ public:
 
     virtual int OnMessage(UISwfEntity* pSender, UIMsg* pMsg);   // IMessageListener 0x141520cc0
 
-    virtual void vfunc_22(const efd::Point3& kPos);         // 22 0x1415213b0
+    virtual void vfunc_22(efd::Point3 kPos);                // 22 0x1415213b0
     virtual int vfunc_10();                                 // 10 0x141521430
     virtual void vfunc_12();                                // 12 0x141521560
     virtual void vfunc_14();                                // 14 0x141521630

@@ -413,14 +413,18 @@ efd::AssetID FUN_1413fa0d0(egf::Entity* pEntity)
 MS2_REPLACE(0x1413FA0D0, FUN_1413fa0d0, 207, 0x9C2AC7F3);
 
 // Detaches every mesh of an entity from its parent.
-// MS2-FUNCTIONAL: efd::vector iterator copies/temps differ from the exe's range loop (frame 0x78 vs 0x88)
 // @0x1413fa1b0
 void FUN_1413fa1b0(egf::Entity* pEntity)
 {
     efd::vector<NiMesh*> kMeshes;
     FUN_1413fb630(pEntity, &kMeshes);
-    for (NiMesh* pkMesh : kMeshes)
+    efd::vector<NiMesh*>& rMeshes = kMeshes;
+    efd::vector<NiMesh*>::const_iterator itEnd = rMeshes.end();
+    for (efd::vector<NiMesh*>::const_iterator it = rMeshes.begin(); it != itEnd; ++it)
+    {
+        NiMesh* pkMesh = *it;
         pkMesh->GetParent()->DetachChild(pkMesh);
+    }
 }
 MS2_REPLACE(0x1413FA1B0, FUN_1413fa1b0, 232, 0xC57CBF3D);
 
@@ -592,19 +596,17 @@ int FUN_1413fab50(wchar_t wc)
 MS2_REPLACE(0x1413FAB50, FUN_1413fab50, 169, 0x98F7441E);
 
 // Resolves a "$a, b$" josa placeholder in kText by the last character of kWord.
-// MS2-FUNCTIONAL: frame slot order of the hidden iSecond/retval flag differs (iSecond lands at +0x38 not +0x28)
 // @0x1413fac10
 CStringW FUN_1413fac10(CStringW kText, CStringW kWord)
 {
     int iFirst = 0;
-    int iSecond;
     CStringW kResult(kText);
     iFirst = kText.Find(L"$", iFirst);
     if (iFirst != -1) {
-        iSecond = kText.Find(L"$", iFirst + 1);
+        int iSecond = kText.Find(L"$", iFirst + 1);
         if (iSecond == -1)
             return CStringW(L"");
-        CStringW kToken = kText.Mid(iFirst);
+        CStringW kToken = kText.Mid(iFirst, (iSecond - iFirst) + 1);
         kToken.Remove(L'$');
         ATL::CAtlArray<CStringW> kParts;
         FUN_14025a680(kToken, kParts, L", ");
@@ -612,14 +614,8 @@ CStringW FUN_1413fac10(CStringW kText, CStringW kWord)
             return CStringW(L"");
         if (kWord.GetLength() == 0)
             return CStringW(L"");
-        wchar_t wcLast = kWord.GetAt(kWord.GetLength() - 1);
-        int iType = FUN_1413faab0(wcLast);
-        CStringW* pJosa;
-        if (iType == 1)
-            pJosa = &FUN_140159a00(kParts, 1);
-        else
-            pJosa = &FUN_140159a00(kParts, 0);
-        CStringW kJosa(*pJosa);
+        int iType = FUN_1413faab0(kWord.GetAt(kWord.GetLength() - 1));
+        CStringW kJosa((iType != 1) ? FUN_140159a00(kParts, 0) : FUN_140159a00(kParts, 1));
         kResult.Delete(iFirst, (iSecond - iFirst) + 1);
         kResult.Insert(iFirst, (const wchar_t*)kJosa);
     }

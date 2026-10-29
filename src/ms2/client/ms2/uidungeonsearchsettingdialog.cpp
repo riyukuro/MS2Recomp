@@ -126,7 +126,7 @@ void UIDungeonSearchSettingDialog::OnLoadComplete()
     m_checks.resize(m_rows.size(), MS2Ptr<ASCheckBox>(0));
     for (unsigned i = 0; i < m_rows.size(); ++i) {
         m_rows[i]->FUN_1422e1f50(ParamsDelegate(this, &UIDungeonSearchSettingDialog::FUN_140c11420), FUN_140bd09d0(i));
-        if (m_rows[i]->FUN_140c12010<ASCheckBox>("m_checkBox", m_checks[i]).get() != 0)
+        if (m_rows[i]->FUN_140c12010<ASCheckBox>("m_checkBox", m_checks[i]))
             m_checks[i]->FUN_1422ce320(ParamsDelegate(this, &UIDungeonSearchSettingDialog::FUN_140c11840), FUN_140bd09d0(i));
     }
     FUN_140c11190(m_nGroup);
@@ -211,7 +211,6 @@ void UIDungeonSearchSettingDialog::FUN_140c113c0(const Scaleform::GFx::FunctionH
 }
 MS2_REPLACE_METHOD(0x140C113C0, UIDungeonSearchSettingDialog, FUN_140c113c0, 85, 0xAFBE2F18);
 
-// MS2-FUNCTIONAL: the dungeon id argument of FUN_14162ac70 is reloaded through ecx in the exe (mov ecx,[x]; mov edx,ecx)
 // @0x140c11420
 void UIDungeonSearchSettingDialog::FUN_140c11420(const Scaleform::GFx::FunctionHandler::Params& params)
 {
@@ -231,8 +230,7 @@ void UIDungeonSearchSettingDialog::FUN_140c11420(const Scaleform::GFx::FunctionH
             row->vfunc_3(0);
             return;
         }
-        int nDungeonId = m_rooms[nRoom]->GetDungeonRoomID();
-        bool bOk = FUN_14162ac70(FUN_1409670d0(), nDungeonId);
+        bool bOk = FUN_14162ac70(FUN_1409670d0(), m_rooms[nRoom]->GetDungeonRoomID());
         CStringW strName = FUN_140e14bd0(m_rooms[nRoom], true);
         int nColor;
         if (bOk)
@@ -246,8 +244,7 @@ void UIDungeonSearchSettingDialog::FUN_140c11420(const Scaleform::GFx::FunctionH
         check->FUN_1422cdf20(true);
         check->FUN_1422cdfb0(strName);
         unsigned nDungeon = m_rooms[nRoom]->GetDungeonRoomID();
-        unsigned nChecked = m_selected.find(nDungeon) != m_selected.end();
-        check->FUN_1422ce090(nChecked);
+        check->FUN_1422ce090(m_selected.find(nDungeon) != m_selected.end());
     }
 }
 MS2_REPLACE_METHOD(0x140C11420, UIDungeonSearchSettingDialog, FUN_140c11420, 1039, 0xF3C3DE4F);

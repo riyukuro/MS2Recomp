@@ -131,23 +131,21 @@ struct Unk_EntityAppFramework { efd::ServiceManagerPtr manager; };
 extern Unk_EntityAppFramework DAT_143b059e8;
 HardwareInstancingService* FUN_14098c5b0(Unk_EntityAppFramework*);
 
-// A typed member pointer exposes the SDK's protected set without a downcast
-// or an offset-based object view. This bridge is never instantiated.
+// A using-declaration makes the SDK's protected dirty set public, so FUN_1414b91b0 reads it as a plain
+// member (entity+0x20) the way the exe does. This bridge is never instantiated.
 struct Unk_EntityDirtyAccess : egf::Entity {
-    static __forceinline size_t Count(const egf::Entity& entity) {
-        return (entity.*&Unk_EntityDirtyAccess::m_dirtyPropertySet).size();
-    }
+    using egf::Entity::m_dirtyPropertySet;
 };
 bool FUN_1414b91b0(const egf::Entity*);
+// EntityWorldManager::FUN_1411cf5a0 as this call site sees it: the exe copies the EntityID into a by-value argument.
+class Unk_EntityWorldByValue { public: void FUN_1411cf5a0(egf::EntityID id, egf::Entity* entity); };
 // @0x1414b4a90
 MS2EntityManagerService::MS2EntityManagerService() {}
 // @0x1414b4ad0
 MS2EntityManagerService::~MS2EntityManagerService() {}
 MS2_CHECK_SIZE(egf::EntityFactoryRequest,0x80);
-// MS2-FUNCTIONAL: typed synchronous/background creation; mutable warning state and RTTI factories exclude hooks.
 // @0x1414b4b00
  egf::EntityID MS2EntityManagerService::FUN_1414b4b00(const efd::utf8string& model,efd::AssetID& asset,bool addToWorld) {
-    int unused=0;
     const efd::Category& callback=g_entityCallback;
     efd::ParameterList* creationArgs=0;
     efd::ParameterList* initialProps=0;
@@ -165,10 +163,10 @@ MS2_CHECK_SIZE(egf::EntityFactoryRequest,0x80);
         m_entityIdToPendingDataMap[id]=data;
         egf::EntityPtr entity=FUN_1409670f0()->FactoryEntity(model,id,isMaster);
         if(initialProps)entity->ApplyProperties(initialProps);
-        FUN_140de8bd0(entity,0x770e5fc6,&asset);
+        FUN_140de8bd0(entity.operator->(),0x770e5fc6,&asset);   // through operator-> (0x1408a9280)
         efd::SmartPointer<HardwareInstancingService> instancing(FUN_14098c5b0(&DAT_143b059e8));
         if(instancing)instancing->FUN_1413d7d10(id);
-        if(addToWorld)FUN_1409670f0()->FUN_1411cf5a0(id,entity);
+        if(addToWorld)((Unk_EntityWorldByValue*)FUN_1409670f0())->FUN_1411cf5a0(id,entity);
         AddEntity(entity,creationArgs);
         return id;
     }
@@ -195,13 +193,13 @@ bool MS2EntityManagerService::FUN_1414b54f0(const egf::Entity* source) {
     egf::EntityPtr entity(0);
     return m_entityDirtyMap.find(source->GetEntityID(),entity);
 }
-// MS2-FUNCTIONAL: typed access to the existing SDK dirty set; property membership logic is exact.
 // @0x1414b91b0
 bool FUN_1414b91b0(const egf::Entity* entity) {
-    unsigned count=static_cast<unsigned>(entity->IsDirty(0xfd95ca52)!=false);
+    unsigned count=0;
+    if(entity->IsDirty(0xfd95ca52))++count;
     if(entity->IsDirty(0x68c7c29d))++count;
     if(entity->IsDirty(0x2d7cad2d))++count;
-    return Unk_EntityDirtyAccess::Count(*entity)==count;
+    return ((const Unk_EntityDirtyAccess*)entity)->m_dirtyPropertySet.size()==count;
 }
 
 MS2_CHECK_SIZE(egf::EntityFactoryResponse,0xc0);

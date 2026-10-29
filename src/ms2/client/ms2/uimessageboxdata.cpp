@@ -58,7 +58,7 @@ public:
 class Unk_MsgCheck : public ASDisplayObject
 {
 public:
-    unsigned char FUN_1422ce0e0();                                  // checked
+    bool FUN_1422ce0e0();                                           // checked
 };
 class Unk_MsgInput : public ASDisplayObject
 {
@@ -155,7 +155,6 @@ CString FUN_1407186a0(const CStringW& str);
 bool FUN_1407183f0(const CStringW& str);
 
 // @0x141a034d0
-// MS2-FUNCTIONAL: large ASObj filler; temporaries and sequencing differ from the exe (70 bytes longer)
 int CMsgBoxData::FUN_141a034d0(ASObj& obj)
 {
     obj.FUN_1407cba60("boxType", FUN_14016a5c0(FUN_141a066e0(m_nType), 0));
@@ -167,9 +166,7 @@ int CMsgBoxData::FUN_141a034d0(ASObj& obj)
     obj.FUN_1407cbb20("btnLabel2", m_strBtn2);
     obj.FUN_1407cbb20("title", m_strTitle);
     obj.FUN_1407cbbe0("modaless", m_bModaless);
-    int nShowModaless = 1;
-    if (FUN_14151f9c0() == 0 || !m_bModaless)
-        nShowModaless = 0;
+    int nShowModaless = (FUN_14151f9c0() && m_bModaless) ? 1 : 0;
     obj.FUN_1407cb9c0("showModaless", nShowModaless);
     obj.FUN_1407cbb20("strikeStr", m_strStrike);
     if (m_nAlign != 4)
@@ -189,8 +186,7 @@ int CMsgBoxData::FUN_141a034d0(ASObj& obj)
     {
         if (m_timer.m_nArmed != -1)
         {
-            int nRemain = m_timer.m_timer.FUN_140868ab0();
-            m_timer.m_nSec = nRemain / 1000;
+            m_timer.m_nSec = m_timer.m_timer.FUN_140868ab0() / 1000;
             m_timer.m_nArmed = -1;
             m_timer.m_timer.FUN_140868820();
         }
@@ -211,7 +207,7 @@ int CMsgBoxData::FUN_141a034d0(ASObj& obj)
         obj.FUN_1407cbb20("maxLineMsg", m_input.m_strMaxLineMsg);
         obj.FUN_1407cbb20("textCountMsg", m_input.m_strCountMsg);
     }
-    if ((m_nFlags & 1) != 0 && m_spItem.get() != 0)
+    if ((m_nFlags & 1) != 0 && (m_spItem.get() != 0 ? true : false))
     {
         CString strBagId("MsgBoxData");
         strBagId.Format("MsgBoxData_%d", m_nId);
@@ -227,12 +223,13 @@ int CMsgBoxData::FUN_141a034d0(ASObj& obj)
             obj.FUN_1407cb9c0("itemUnitCount", m_spItem->m_nUnitCount);
             if (m_spItem->m_nPrice != -1)
             {
-                obj.FUN_1409c1180("itemTotalPrice", (__int64)(m_spItem->m_nPrice * m_spItem->m_nCount));
+                __int64 nTotal = m_spItem->m_nPrice * m_spItem->m_nCount;
+                obj.FUN_1409c1180("itemTotalPrice", nTotal);
                 obj.FUN_1407cb9c0("itemPrice", m_spItem->m_nPrice);
             }
         }
     }
-    if ((m_nFlags & 0x20) != 0 && m_spItem2.get() != 0)
+    if ((m_nFlags & 0x20) != 0 && (m_spItem2.get() != 0 ? true : false))
     {
         CString strBagId("MsgBoxData2");
         strBagId.Format("MsgBoxData2_%d", m_nId);
@@ -248,7 +245,8 @@ int CMsgBoxData::FUN_141a034d0(ASObj& obj)
             obj.FUN_1407cb9c0("itemUnitCount2", m_spItem2->m_nUnitCount);
             if (m_spItem2->m_nPrice != -1)
             {
-                obj.FUN_1409c1180("itemTotalPrice2", (__int64)(m_spItem2->m_nPrice * m_spItem2->m_nCount));
+                __int64 nTotal = m_spItem2->m_nPrice * m_spItem2->m_nCount;
+                obj.FUN_1409c1180("itemTotalPrice2", nTotal);
                 obj.FUN_1407cb9c0("itemPrice2", m_spItem2->m_nPrice);
             }
         }
@@ -326,10 +324,9 @@ int CMsgBoxData::FUN_141a049d0() const
 }
 
 // @0x141a04a30
-// MS2-FUNCTIONAL: return-value handling differs (exe returns the first callee byte)
 #pragma warning(push)
 #pragma warning(disable : 4715)   // the false path returns the first call's (zero) result
-bool CMsgBoxData::FUN_141a04a30()
+int CMsgBoxData::FUN_141a04a30()
 {
     if (FUN_141a01480())
         return FUN_141a014d0(1, &m_movie);
@@ -343,7 +340,6 @@ const Unk_MsgBoxTimer& CMsgBoxData::GetTimer() const
 }
 
 // @0x141a04aa0
-// MS2-FUNCTIONAL: cl adds a /GS cookie (frame 0x138 vs 0x128) that the exe lacks; same call sequence
 bool CMsgBoxData::FUN_141a04aa0()
 {
     if (FUN_1409b0390(&m_movie))
@@ -353,13 +349,13 @@ bool CMsgBoxData::FUN_141a04aa0()
     }
     ASMovieClip root(m_movie, 2);
     MS2Ptr<Unk_MsgCheck> check;
-    if (root.FUN_140c12010("m_checkbox0", check).get() == 0)
-        return false;
-    return check->FUN_1422ce0e0();
+    Unk_MsgCheck* pCheck = root.FUN_140c12010("m_checkbox0", check).get();
+    if (pCheck != 0)
+        return check->FUN_1422ce0e0();
+    return false;
 }
 
 // @0x141a04c20
-// MS2-FUNCTIONAL: cl adds a /GS cookie (frame 0x138 vs 0x128) that the exe lacks; same call sequence
 bool CMsgBoxData::FUN_141a04c20()
 {
     if (FUN_1409b0390(&m_movie))
@@ -369,13 +365,13 @@ bool CMsgBoxData::FUN_141a04c20()
     }
     ASMovieClip root(m_movie, 2);
     MS2Ptr<Unk_MsgCheck> check;
-    if (root.FUN_140c12010("m_checkbox1", check).get() == 0)
-        return false;
-    return check->FUN_1422ce0e0();
+    Unk_MsgCheck* pCheck = root.FUN_140c12010("m_checkbox1", check).get();
+    if (pCheck != 0)
+        return check->FUN_1422ce0e0();
+    return false;
 }
 
 // @0x141a04da0
-// MS2-FUNCTIONAL: cl adds a /GS cookie that the exe lacks; same call sequence
 CStringW CMsgBoxData::FUN_141a04da0()
 {
     if (FUN_1409b0390(&m_movie))
@@ -385,51 +381,48 @@ CStringW CMsgBoxData::FUN_141a04da0()
     }
     ASMovieClip root(m_movie, 2);
     MS2Ptr<Unk_MsgInput> input;
-    if (root.FUN_140bbe940("m_textInput", input).get() == 0)
-        return CStringW(L"");
-    return input->FUN_1422e0b00();
+    Unk_MsgInput* pInput = root.FUN_140bbe940("m_textInput", input).get();
+    if (pInput != 0)
+        return input->FUN_1422e0b00();
+    return CStringW(L"");
 }
 
 // @0x141a04f80
-// MS2-FUNCTIONAL: MS2Ptr by-value argument temp layout differs
 void FUN_141a04f80(MS2Ptr<Unk_MsgDisplay> spBox)
 {
     if (FUN_1409b0350(&spBox->FUN_1422bb870()) == 0)
     {
-        g_messageBoxState.m_stage.x = (float)spBox->FUN_1422c1500();
-        g_messageBoxState.m_stage.y = (float)spBox->FUN_1422c1530();
-        spBox->FUN_1422c0f60(&g_messageBoxState.m_pos.x, &g_messageBoxState.m_pos.y);
+        Unk_MsgPoint2& stage = g_messageBoxState.m_stage;
+        stage.x = (float)spBox->FUN_1422c1500();
+        stage.y = (float)spBox->FUN_1422c1530();
+        Unk_MsgPoint2& pos = g_messageBoxState.m_pos;
+        spBox->FUN_1422c0f60(&pos.x, &pos.y);
         g_messageBoxState.m_bSaved = 1;
     }
 }
 
 // @0x141a05070
-// MS2-FUNCTIONAL: call sequence differs slightly
-int FUN_141a05070()
+int FUN_141a05070(CMsgBoxData* pBox)
 {
     Unk_MsgPopup* pPopup = FUN_14151fcb0(0x4e48);
-    if (pPopup == 0)
-        return 2;
-    return pPopup->FUN_1422db730();
+    if (pPopup != 0)
+        return pPopup->FUN_1422db730();
+    return 2;
 }
 
 // @0x141a050b0
-// MS2-FUNCTIONAL: temporary layout differs
 void CMsgBoxData::FUN_141a050b0()
 {
     int nSound = 3;
     switch (m_nType)
     {
-    case 0:
-        nSound = 2;
-        FUN_141a01800(3);
-        break;
     case 1:
     case 0x14:
     case 0x18:
         FUN_141a01800(1);
         break;
-    default:
+    case 0:
+        nSound = 2;
         FUN_141a01800(3);
         break;
     case 5:
@@ -451,22 +444,19 @@ void CMsgBoxData::FUN_141a050b0()
         break;
     case 0x17:
         FUN_141a01800(5);
+        break;
+    default:
+        FUN_141a01800(3);
+        break;
     }
     m_strSound = FUN_141a06ff0(nSound);
 }
 
 // @0x141a051e0
-// MS2-FUNCTIONAL: temporary layout differs
 void CMsgBoxData::FUN_141a051e0(ASObj& obj)
 {
     switch (m_nType)
     {
-    case 6:
-        FUN_141a06250(obj);
-        break;
-    case 0xf:
-        FUN_141a063e0(obj);
-        break;
     case 0x14:
         FUN_141a05380(obj);
         break;
@@ -484,13 +474,13 @@ void CMsgBoxData::FUN_141a051e0(ASObj& obj)
     case 0x1d:
         FUN_141a05730(obj);
         break;
-    case 0x1e:
-        FUN_141a058c0(obj);
-        break;
     case 0x20:
     case 0x24:
     case 0x26:
         FUN_141a05770(obj);
+        break;
+    case 0x1e:
+        FUN_141a058c0(obj);
         break;
     case 0x21:
         FUN_141a05930(obj);
@@ -501,6 +491,13 @@ void CMsgBoxData::FUN_141a051e0(ASObj& obj)
     case 0x25:
         FUN_141a05f30(obj);
         FUN_141a05770(obj);
+        break;
+    case 6:
+        FUN_141a06250(obj);
+        break;
+    case 0xf:
+        FUN_141a063e0(obj);
+        break;
     }
 }
 
@@ -513,28 +510,25 @@ void CMsgBoxData::FUN_141a05380(ASObj& obj)
 }
 
 // @0x141a05470
-// MS2-FUNCTIONAL: temporary layout differs
 void CMsgBoxData::FUN_141a05470(ASObj& obj)
 {
     CStringW strGroupName = FUN_141a02fd0(0, CStringW());
-    obj.FUN_1407cb9c0("alpha", FUN_141a02e50(1, 0));
+    int nAlpha = FUN_141a02e50(1, 0);
+    obj.FUN_1407cb9c0("alpha", nAlpha);
     obj.FUN_1407cbb20("groupName", strGroupName);
 }
 
 // @0x141a05540
-// MS2-FUNCTIONAL: temporary layout differs
 void CMsgBoxData::FUN_141a05540(ASObj& obj)
 {
     if (!m_choices.m_list.IsEmpty())
     {
         ASArray list(2);
-        POSITION pos = m_choices.m_list.GetHeadPosition();
-        while (pos != 0)
+        for (POSITION pos = m_choices.m_list.GetHeadPosition(); pos != 0; m_choices.m_list.GetNext(pos))
         {
             ASObj row(2);
             row.FUN_1407cbb20(DAT_143af3e28, m_choices.m_list.GetAt(pos));
             list.FUN_1422bc050(row.FUN_1422bb870());
-            m_choices.m_list.GetNext(pos);
         }
         obj.FUN_1409adbe0("dropdownList", list.FUN_1422bb870());
     }
@@ -586,7 +580,6 @@ void CMsgBoxData::FUN_141a05930(ASObj& obj)
 }
 
 // @0x141a05bd0
-// MS2-FUNCTIONAL: temporary layout differs
 void CMsgBoxData::FUN_141a05bd0(ASObj& obj)
 {
     ATL::CAtlArray<ItemEntity>& items = m_reqItems.m_items;
@@ -594,8 +587,7 @@ void CMsgBoxData::FUN_141a05bd0(ASObj& obj)
     for (size_t i = 0; i < items.GetCount(); i++)
     {
         MS2Ptr<CItem> spItem(new CItem);
-        int nRank = items[i].vfunc_o18_1();
-        if (spItem->FUN_140523c40(items[i].m_itemId, nRank, 0))
+        if (spItem->FUN_140523c40(items[i].m_itemId, items[i].vfunc_o18_1(), 0))
         {
             spItem->FUN_140526c70(items[i].m_count);
             CString strBind;
@@ -607,7 +599,7 @@ void CMsgBoxData::FUN_141a05bd0(ASObj& obj)
             FUN_141415560(strBind, &param);
             ASObj entry(2);
             entry.FUN_1407cba60("binding", strBind);
-            entry.FUN_1409c0d20("itemCount", items[i].m_count);
+            entry.FUN_1409c0d20("itemCount", m_reqItems.m_items[i].m_count);
             ((Unk_MsgASArray&)list).FUN_1422bbf00(entry);
             m_reqItems.m_binds.Add(strBind);
         }
@@ -670,14 +662,9 @@ void CMsgBoxData::FUN_141a063e0(ASObj& obj)
 }
 
 // @0x141a064e0
-// MS2-FUNCTIONAL: member init / temporaries differ
 CMsgBoxDataItem::CMsgBoxDataItem()
+    : m_nCount(-1), m_nMax(-1), m_nPrice(-1), m_nUnitCount(1), m_48(0)
 {
-    m_nCount = -1;
-    m_nMax = -1;
-    m_nPrice = -1;
-    m_nUnitCount = 1;
-    m_48 = 0;
 }
 
 // @0x141a06590
@@ -688,16 +675,17 @@ CMsgBoxDataItem::~CMsgBoxDataItem()
 }
 
 // @0x141a06630
-// MS2-FUNCTIONAL: temporary layout differs
 void CMsgBoxDataItem::FUN_141a06630(const CStringW& strName, bool bColor, int nColor)
 {
     m_strName = strName;
     if (bColor)
-        m_strName = FUN_14183e930(strName, FUN_140281980()->FUN_1405569f0(nColor));
+    {
+        int nRgb = FUN_140281980()->FUN_1405569f0(nColor);
+        m_strName = FUN_14183e930(strName, nRgb);
+    }
 }
 
 // @0x141a066e0
-// MS2-FUNCTIONAL: large string builder; temporaries differ
 CString FUN_141a066e0(int nType)
 {
     switch (nType)
@@ -705,8 +693,6 @@ CString FUN_141a066e0(int nType)
     case 0: return CString("ok");
     case 1: return CString("ok");
     case 2: return CString("ok_title");
-    case 3: return CString("three_button");
-    case 4: return CString("three_button_title");
     case 5: return CString("input");
     case 6: return CString("input_reset");
     case 7: return CString("input_meso");
@@ -735,10 +721,12 @@ CString FUN_141a066e0(int nType)
     case 0x1e: return CString("ugcterms");
     case 0x1f: return CString("simple_terms");
     case 0x20: return CString("buffNotify");
+    case 0x24: return CString("buffNotify_autoAction");
     case 0x21: return CString("itemlock_confirm");
     case 0x22: return CString("itemlock_notify");
+    case 3: return CString("three_button");
+    case 4: return CString("three_button_title");
     case 0x23: return CString("itemCrafting");
-    case 0x24: return CString("buffNotify_autoAction");
     case 0x25: return CString("clubbuff");
     case 0x26: return CString("buffNotify_inputBox");
     case 0x27: return CString("ugcevent");
@@ -766,37 +754,37 @@ CString FUN_141a06e80(int nTextType)
 
 #ifndef MS2_HOOK_DLL
 // @0x141a06ff0
-// MS2-FUNCTIONAL: temporary layout differs
 CString FUN_141a06ff0(int nSound)
 {
-    if (nSound == 1)
+    switch (nSound)
+    {
+    case 1:
         return s_strDialogOpen;
-    if (nSound == 2)
+    case 2:
         return s_strSystemNoticeError;
-    if (nSound == 3)
+    case 3:
         return s_strSystemNoticeConfirm;
-    return CString((const wchar_t*)L"");
+    }
+    return CString("");
 }
 #endif
 
 // @0x141a07140
-// MS2-FUNCTIONAL: temporary layout differs
 bool CMsgBoxData::FUN_141a07140(unsigned int nIndex, CString& strOut) const
 {
-    size_t nCount = m_args.GetCount();
-    if (nIndex < nCount)
-        strOut = FUN_1407186a0(m_args[nIndex]);
-    return nIndex < nCount;
+    if (nIndex >= m_args.GetCount())
+        return false;
+    strOut = FUN_1407186a0(m_args[nIndex]);
+    return true;
 }
 
 // @0x141a071e0
-// MS2-FUNCTIONAL: temporary layout differs
 bool CMsgBoxData::FUN_141a071e0(unsigned int nIndex, bool& bOut) const
 {
-    size_t nCount = m_args.GetCount();
-    if (nIndex < nCount)
-        bOut = FUN_1407183f0(m_args[nIndex]);
-    return nIndex < nCount;
+    if (nIndex >= m_args.GetCount())
+        return false;
+    bOut = FUN_1407183f0(m_args[nIndex]);
+    return true;
 }
 
 // @0x141a07250
@@ -825,15 +813,14 @@ Unk_MsgBoxChoices::Unk_MsgBoxChoices()
 }
 
 // @0x141a074d0
-// MS2-FUNCTIONAL: EH state layout differs
 Unk_MsgBoxInput::Unk_MsgBoxInput()
-    : m_strMaxLineMsg(L"")
-    , m_strCountMsg(L"")
+    : m_nType(0)
+    , m_nMaxChars(0x14)
+    , m_nMaxLine(0)
+    , m_nShowLimit(0)
+    , m_strMaxLineMsg("")
+    , m_strCountMsg("")
 {
-    m_nType = 0;
-    m_nMaxChars = 0x14;
-    m_nMaxLine = 0;
-    m_nShowLimit = 0;
 }
 
 // @0x141a07570
@@ -850,14 +837,13 @@ Unk_MsgBoxItems::Unk_MsgBoxItems()
 }
 
 // @0x141a075f0
-// MS2-FUNCTIONAL: EH state layout differs
 Unk_MsgBoxTimer::Unk_MsgBoxTimer()
+    : m_nSec(-1)
+    , m_nMs(0)
+    , m_nShowFormat(0)
+    , m_nButton(0)
+    , m_nArmed(m_nSec)
 {
-    m_nSec = -1;
-    m_nMs = 0;
-    m_nShowFormat = 0;
-    m_nButton = 0;
-    m_nArmed = m_nSec;
 }
 
 // @0x141a07730

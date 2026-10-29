@@ -910,8 +910,6 @@ bool MS2SceneGraphService::FUN_1414f36b0(void* pvData)
 MS2_REPLACE(0x1414F36B0, MS2SceneGraphService::FUN_1414f36b0, 64, 0xDE91E682);
 
 // @0x1414f3700
-// MS2-FUNCTIONAL: the exe passes the MS2AnimationService counts as 32-bit temps (its getters return a 32-bit count; the
-// shared ms2animationservice.h declares size_t), so the three count arguments compile with a different temp width.
 void MS2SceneGraphService::FUN_1414f3700()
 {
     FUN_140a44830()->FUN_1401ce2b0("\n--- SceneGraphService Log---");
@@ -925,9 +923,9 @@ void MS2SceneGraphService::FUN_1414f3700()
     pAnimation = FUN_1413f9b10();
     if (pAnimation)
     {
-        FUN_140a44830()->FUN_1401ce2f0("Asset count: %d", (efd::UInt32)pAnimation->GetAssetCount());
-        FUN_140a44830()->FUN_1401ce2f0("Actor count: %d", (efd::UInt32)pAnimation->GetActorCount());
-        FUN_140a44830()->FUN_1401ce2f0("KFMCached count: %d", (efd::UInt32)pAnimation->GetKFMCacheCount());
+        FUN_140a44830()->FUN_1401ce2f0("Asset count: %d", pAnimation->GetAssetCount());
+        FUN_140a44830()->FUN_1401ce2f0("Actor count: %d", pAnimation->GetActorCount());
+        FUN_140a44830()->FUN_1401ce2f0("KFMCached count: %d", pAnimation->GetKFMCacheCount());
     }
 }
 MS2_REPLACE_METHOD(0x1414F3700, MS2SceneGraphService, FUN_1414f3700, 292, 0xF2EAAB3D);

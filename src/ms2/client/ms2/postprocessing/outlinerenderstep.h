@@ -18,7 +18,7 @@ void FUN_141626ac0(void* p);
 class OutlineRenderStep : public ReloadablePostProcess {
 public:
     OutlineRenderStep(unsigned __int64 a, unsigned int b);      // 0x1416263e0
-    virtual ~OutlineRenderStep();                               // 0x1416269c0
+    // implicit: virtual ~OutlineRenderStep();                             // 0x1416269c0
     virtual const NiRTTI* GetRTTI() const;                      // 0x141626a90
     virtual bool vfunc_15(unsigned int a, void* b);             // 0x1416264b0
     virtual void vfunc_16();                                    // 0x141626970

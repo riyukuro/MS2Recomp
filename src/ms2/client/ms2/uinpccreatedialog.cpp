@@ -119,10 +119,9 @@ private:
     void* m_0; void* m_8;
 };
 MS2_CHECK_SIZE(Unk_NcHandle, 0x10);
-struct Unk_NcRef { void* m_0; void* m_8; };
 class Unk_NcMgr { public: Unk_NcHandle FUN_140a7cab0(unsigned nNpc); };
 Unk_NcMgr* FUN_1406d6e90();
-Unk_NcRef FUN_1406cd330(unsigned nNpc);
+MS2Ptr<CNpcData> FUN_1406cd330(unsigned nNpc);   // the npc row; FUN_141a6b800 discards it
 
 class Unk_NcWalk { public: int FUN_1406fb700(int nNpc, int* pField); };
 Unk_NcWalk* FUN_140700390();
@@ -301,11 +300,11 @@ int UINpcCreateDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
 // @0x141a6b030
 void UINpcCreateDialog::vfunc_1(void* pEvt)
 {
-    Unk_UpperEvt evt(*(const Unk_UpperEvt*)pEvt);
-    Unk_NcActor* pActor = FUN_1403ed2d0()->FUN_141bd0fa0(evt);
+    Unk_NcActor* pActor = FUN_1403ed2d0()->FUN_141bd0fa0(*(const Unk_UpperEvt*)pEvt);
     if (pActor != 0) {
-        void* pKind = pActor->vfunc_6();
-        if (FUN_14087ddc0(pKind, 0x6200004) && m_nPendingNpc != 0) {
+        if (FUN_14087ddc0(pActor != 0 ? pActor->vfunc_6() : 0, 0x6200004)) {
+            if (m_nPendingNpc == 0)
+                return;
             MS2Ptr<CProxyGameObject> spObj = FUN_1403ed2d0()->FUN_141bc9e70(m_nPendingNpc);
             if (spObj.get() != 0) {
                 COutPacket pkt(static_cast<int>(SendOp::SetDebugMode), 0);
@@ -319,29 +318,27 @@ void UINpcCreateDialog::vfunc_1(void* pEvt)
 }
 
 // @0x141a6b1a0
-void UINpcCreateDialog::vfunc_3(void* pActor)
+void UINpcCreateDialog::vfunc_3(MS2Ptr<CProxyGameObject> spActor)
 {
-    const MS2Ptr<CProxyGameObject>& spActor = *(const MS2Ptr<CProxyGameObject>*)pActor;
     if (FUN_140ac5aa0(spActor)) {
-        FUN_1406c70a0(pActor);
         return;
     }
     if (m_nPendingNpc == 0) {
-        FUN_1406c70a0(pActor);
         return;
     }
     if (spActor->FUN_1416c2090() == 0) {
-        FUN_1406c70a0(pActor);
         return;
     }
-    if (spActor->FUN_1416c2350() == m_nPendingNpc) {
+    if (spActor->FUN_1416c2350() != m_nPendingNpc) {
+        return;
+    }
+    {
         COutPacket pkt(static_cast<int>(SendOp::SetDebugMode), 0);
         pkt.WriteUInt8(2);
         pkt.WriteVector3Short(spActor->FUN_1416c2270());
         FUN_140710590(pkt);
         m_nPendingNpc = 0;
     }
-    FUN_1406c70a0(pActor);
 }
 
 // @0x141a6b2e0
@@ -381,10 +378,10 @@ CStringW UINpcCreateDialog::FUN_141a6b6a0(int nType, int bFriendly)
         switch (nType) {
         case 1: strKind = L"Mob"; break;
         case 3: strKind = L"Elite"; break;
-        case 4: strKind = L"Boss"; break;
-        case 5: strKind = L"Friendly"; break;
-        case 6: strKind = L"Dun_Boss"; break;
         case 7: strKind = L"Dun_Elite"; break;
+        case 4: strKind = L"Boss"; break;
+        case 6: strKind = L"Dun_Boss"; break;
+        case 5: strKind = L"Friendly"; break;
         }
     }
     return strKind;
@@ -396,8 +393,8 @@ void UINpcCreateDialog::FUN_141a6b800()
     FUN_1401859c0(FUN_140166440(), 0xc, 0x13, L"ReadNpcAll");
     for (unsigned __int64 i = 0; i < m_files.FUN_14041af10(); i++) {
         CStringW strId = m_files.FUN_1405e99b0(i);
-        Unk_NcRef npcRow = FUN_1406cd330(FUN_140718200(strId));
-        reinterpret_cast<MS2Ptr<CNpcData>*>(&npcRow)->~MS2Ptr<CNpcData>();
+        unsigned nNpc = FUN_140718200(strId);
+        FUN_1406cd330(nNpc);
     }
     FUN_1401859c0(FUN_140166440(), 0xc, 0x13, L"End ReadNpcAll");
 }
@@ -439,9 +436,8 @@ void UINpcCreateDialog::FUN_141a6b8f0()
 }
 
 // @0x141a6be40
-void UINpcCreateDialog::FUN_141a6be40(const CStringW& strFilterIn)
+void UINpcCreateDialog::FUN_141a6be40(CStringW& strFilter)
 {
-    CStringW& strFilter = const_cast<CStringW&>(strFilterIn);
     if (!m_bEntriesBuilt)
         FUN_141a6b8f0();
     FUN_140841420(strFilter);
@@ -449,15 +445,18 @@ void UINpcCreateDialog::FUN_141a6be40(const CStringW& strFilterIn)
     MS2Ptr<Unk_NpcList> list = FUN_140c02900("m_npcList");
     if (list == 0)
         return;
-    bool bFilter = !strFilter.IsEmpty();
-    for (std::vector<Unk_NpcEntry>::iterator it = m_entries.begin(); it != m_entries.end(); ++it) {
-        if (it->m_strId.IsEmpty())
+    bool bEmpty = strFilter.IsEmpty();
+    std::vector<Unk_NpcEntry>& rEntries = m_entries;
+    std::vector<Unk_NpcEntry>::const_iterator itEnd = rEntries.end();
+    for (std::vector<Unk_NpcEntry>::const_iterator it = rEntries.begin(); it != itEnd; ++it) {
+        const Unk_NpcEntry& e = *it;
+        if (e.m_strId.IsEmpty())
             continue;
-        if (bFilter && it->m_strSearch.Find(strFilter, 0) == -1 && it->m_strId.Find(strFilter, 0) == -1)
+        if (!bEmpty && e.m_strSearch.Find(strFilter, 0) == -1 && e.m_strId.Find(strFilter, 0) == -1)
             continue;
         ASObj row(2);
-        row.FUN_1407cbb20("code", it->m_strId);
-        row.FUN_1407cbb20("field", it->m_strLine);
+        row.FUN_1407cbb20("code", e.m_strId);
+        row.FUN_1407cbb20("field", e.m_strLine);
         ((Unk_NpcList*)list)->FUN_1422dd230(row);
     }
     ((Unk_NpcList*)list)->vfunc_24(true);

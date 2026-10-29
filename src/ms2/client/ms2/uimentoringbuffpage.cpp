@@ -21,32 +21,26 @@ UIMentoringBuffPage::UIMentoringBuffPage(UIMentoringDialog* p) : UIMentoringPage
 // @0x140c6e3e0
 UIMentoringBuffPage::~UIMentoringBuffPage() {}
 
+CString FUN_140c43630(const char* pszFormat, const unsigned __int64& nArg);   // StringFormat<unsigned __int64> copy
+
 // @0x140c6e410
-// MS2-FUNCTIONAL: frame 8 bytes smaller / 21 bytes shorter than the exe (extra stored temp pointers around the MS2Ptr<ASTextField> result)
 int UIMentoringBuffPage::vfunc_1()
 {
-    int bBase = UIMentoringPage::vfunc_1();
-    if (bBase == 0)
-    {
+    if (UIMentoringPage::vfunc_1() == 0)
         return 0;
-    }
-    else
+    int nBuffId = 0x55d4d2d;
+    CStringW strDesc = GetStringTable()->FUN_141812290(nBuffId, 1, CString("tooltipDescription"));
+    ATL::CAtlArray<CStringW> lines;
+    FUN_14025a680(strDesc, lines, L"\n");
+    for (size_t i = 0; i < 7; i++)
     {
-        int nBuffId = 0x55d4d2d;
-        CStringW strDesc = GetStringTable()->FUN_141812290(nBuffId, 1, CString("tooltipDescription"));
-        ATL::CAtlArray<CStringW> lines;
-        FUN_14025a680(strDesc, lines, L"\n");
-        for (size_t i = 0; i < 7; i++)
-        {
-            CStringW strLine;
-            if (i < lines.GetCount())
-                strLine = lines[i];
-            MS2Ptr<ASTextField> text = m_script->FUN_1409b4620(StringFormat("m_benefitDesc{0}", i));
-            if (text.get() != 0)
-                text->FUN_1422c4cd0(strLine);
-        }
-        return 1;
+        CStringW strLine;
+        if (i < lines.GetCount())
+            strLine = lines[i];
+        if (MS2Ptr<ASTextField> text = m_script->FUN_1409b4620(FUN_140c43630("m_benefitDesc{0}", i)))
+            text->FUN_1422c4cd0(strLine);
     }
+    return 1;
 }
 
 // @0x140c6e630

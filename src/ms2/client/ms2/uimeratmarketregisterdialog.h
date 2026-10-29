@@ -47,14 +47,14 @@ public:
     void FUN_141319920(ItemArray& arrItems);                            // collect the items that can be listed
     bool FUN_141319f10(MS2Ptr<CItem> spItem);                           // the item is already listed
     bool FUN_14131a100(Unk_MeratProductKey key);                        // open the list-again form of a sold product
-    bool FUN_14131a880(CString& strItems, int nColumns, int nRows);     // build the item grid
+    bool FUN_14131a880(CString& strItems, unsigned int nColumns, unsigned int nRows);     // build the item grid
     void FUN_14131aa90(MS2Ptr<CMeratMarketPacket::UgcAddProductBase> spProduct);   // send the request
     __int64 FUN_14131ac50();                                            // the base register fee
-    __int64 FUN_14131ac80(char bAddBase, MS2Ptr<CItem> spItem, char bRecalc);   // the register fee of an item
-    bool FUN_14131ae60(unsigned char bAddBase, bool bCheckStale, __int64* pFee);   // the fee, checked against the stock
+    __int64 FUN_14131ac80(bool bAddBase, MS2Ptr<CItem> spItem, bool bRecalc);   // the register fee of an item
+    bool FUN_14131ae60(bool bAddBase, bool bCheckStale, __int64* pFee);   // the fee, checked against the stock
     bool FUN_14131b0e0(const CStringW& strDescription, const CStringW& strName);   // validate the texts
     CStringW FUN_14131b420(__int64 nMin, __int64 nMax);                 // "price must be between"
-    void FUN_14131b4e0(ASObj& obj, unsigned char bAddBase);             // put the fee texts into obj
+    void FUN_14131b4e0(ASObj& obj, bool bAddBase);             // put the fee texts into obj
     void FUN_14131b7e0();                                               // forget the selected item
     void FUN_14131b810(ASData& data);                                   // "OnClickRegister"
     void FUN_14131c010(ASData& data);                                   // "OnClickReRegister"

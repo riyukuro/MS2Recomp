@@ -55,7 +55,7 @@ public:
     virtual int vfunc_2(void* p, float fValue, int nIndex);
     virtual int vfunc_3(void* p, float fValue);
 
-    int FUN_1418c6580(ASArray& out, int* pnItemId, int* pnIndex);      // the current item row
+    bool FUN_1418c6580(ASArray& out, int* pnItemId, int* pnIndex);      // the current item row
     bool FUN_1418c6870(ASObj& row, MS2Ptr<Unk_BSPriceRow> spRow, class Unk_BSPlayer* pPc, bool bFirst);
     int FUN_1418c6af0();
     void FUN_1418c6bc0(int nValue);
@@ -123,7 +123,7 @@ private:
     Unk_BSCamera* m_1c8;                                // +0x1c8 the camera
     CBeautyShopDataCli m_1d0;                           // +0x1d0 the shop
     MS2Ptr<Unk_BSPriceRow> m_278;                       // +0x278 the selected row
-    std::pair<int, int> m_288;                          // +0x288 (palette id, colour index)
+    std::pair<unsigned, unsigned> m_288;                // +0x288 (palette id, colour index)
     int m_290;                                          // +0x290 mode (0 none, 1 hair, 2 style save, 3, 4 skin)
     unsigned m_294;                                     // +0x294 owned style slots
     unsigned m_298;                                     // +0x298 used style slots
@@ -136,7 +136,7 @@ private:
     MS2Ptr<CItem> m_2b8;
     MS2Ptr<CItem> m_2c8;
     char m_2d8;                                         // +0x2d8 an apply is pending
-    int m_2dc;                                          // +0x2dc palette id
+    unsigned int m_2dc;                                 // +0x2dc palette id (the exe compares it unsigned: jbe)
     int m_2e0;
     int m_2e4;                                          // +0x2e4 -1
     MS2Ptr<Unk_140acd6e0> m_2e8;                        // +0x2e8 "m_probInfo"

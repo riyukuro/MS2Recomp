@@ -66,6 +66,7 @@ public:
     int AddMood(int nDelta);                    // 0x14067de50 clamps to 0..100; true when changed
     void SetMode(int nMode);              // 0x14067def0 sets the maid's mode
     CStringW FUN_1409eeda0() { return m_profile.name; }   // inline COMDAT 0x1409eeda0 (astooltip.cpp): the maid's name
+    CStringW FUN_141700510() { return m_profile.ownerName; }   // inline COMDAT 0x141700510 (reservedwordtable.cpp): the owner's name
 
     MS2_LAYOUT_FRIEND;
     __int64 m_n18;                              // +0x18

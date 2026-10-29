@@ -5,7 +5,6 @@
 // MS2-RANGE: 0x142c9cad0-0x142c9cb06 .text$yd
 // MS2-PIN: ??4Unk_MailAttachPtr@@QEAAAEAV0@PEAVCMailAttachItem@@@Z 0x1408e4f40
 // MS2-PIN: ?get@?$Unk_MailPtr@VCMailSendKeep@@@@QEBAPEAVCMailSendKeep@@XZ 0x1408e5170
-// MS2-FUNCTIONAL: 19 functions differ from the exe only in local-temporary slot order / EH state layout (behaviour-equivalent).
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\commonfiles\\usermail.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
 #include "usermail.h"
@@ -44,7 +43,8 @@ MS2_REPLACE_METHOD(0x1408E3030, CUserMail, FUN_1408e3030, 24, 0x68831EA6);
 // @0x1408e3050
 int CUserMail::FUN_1408e3050() {
     MS2_ASSERT_AT(0x1e, 0);
-    return 1;
+    int nResult = 1;
+    return nResult;
 }
 
 // @0x1408e30a0
@@ -57,15 +57,15 @@ CUserMail::MailPtr CUserMail::FUN_1408e30a0(__int64 a, CStringW b, __int64 c, CS
     mail->FUN_140690d20(FUN_1408e44e0(), 0);
     for (int i = 0; i < 5; ++i) {
         KeepPtr keep = FUN_1408e43c0(i);
-        if (!(keep == 0)) {
-            Unk_MailAttachPtr attach(0);
-            if (keep->m_kind == 0) {
-                attach = keep->m_attach;
-            } else {
-                attach = new CMailAttachItem(i, keep->m_item);
-            }
-            mail->FUN_140690650(i, attach);
+        if (keep == 0)
+            continue;
+        Unk_MailAttachPtr attach(0);
+        if (keep->m_kind != 0) {
+            attach = new CMailAttachItem(i, keep->m_item);
+        } else {
+            attach = keep->m_attach;
         }
+        mail->FUN_140690650(i, attach);
     }
     return mail;
 }
@@ -112,9 +112,9 @@ MS2_REPLACE_METHOD(0x1408E3540, CUserMail, FUN_1408e3540, 103, 0x4560EA11);
 void CUserMail::FUN_1408e35b0(MailArray& out, int kind) {
     for (size_t i = 0; i < m_mails.GetCount(); ++i) {
         MailPtr mail = m_mails[i];
-        if (mail->FUN_140690370() == kind) {
-            out.Add(mail);
-        }
+        if (mail->FUN_140690370() != kind)
+            continue;
+        out.Add(mail);
     }
 }
 
@@ -137,9 +137,11 @@ MS2_REPLACE_METHOD(0x1408E3700, CUserMail, FUN_1408e3700, 17, 0xF6474C33);
 // @0x1408e3720
 CUserMail::MailPtr CUserMail::FUN_1408e3720(__int64 key) {
     MailPtr found(0);
-    Unk_LockGuard guard(m_lock);
-    if (guard != 0) {} else {
-        m_map.Lookup(key, found);
+    {
+        Unk_LockGuard guard(m_lock);
+        if (guard != 0) {} else {
+            m_map.Lookup(key, found);
+        }
     }
     return found;
 }
@@ -147,12 +149,14 @@ CUserMail::MailPtr CUserMail::FUN_1408e3720(__int64 key) {
 // @0x1408e37e0
 CUserMail::MailPtr CUserMail::FUN_1408e37e0(int index) {
     MailPtr found(0);
-    Unk_LockGuard guard(m_lock);
-    if (guard != 0) {} else {
-        if (index < 0 || (int)m_mails.GetCount() <= index) {
-            return MailPtr(0);
+    {
+        Unk_LockGuard guard(m_lock);
+        if (guard != 0) {} else {
+            if (index < 0 || index >= (int)m_mails.GetCount()) {
+                return MailPtr(0);
+            }
+            found = m_mails[index];
         }
-        found = m_mails[index];
     }
     return found;
 }
@@ -166,10 +170,12 @@ MS2_REPLACE_METHOD(0x1408E38F0, CUserMail, FUN_1408e38f0, 83, 0xC2E6188C);
 // @0x1408e3950
 unsigned CUserMail::FUN_1408e3950(__int64 id) {
     unsigned result = 0xffffffff;
-    Unk_LockGuard guard(m_lock);
-    if (guard != 0) {} else {
-        for (unsigned i = 0; i < m_mails.GetCount(); ++i) {
-            if (!(m_mails[i] == 0)) {
+    {
+        Unk_LockGuard guard(m_lock);
+        if (guard != 0) {} else {
+            for (unsigned i = 0; i < m_mails.GetCount(); ++i) {
+                if (m_mails[i] == 0)
+                    continue;
                 if (m_mails[i]->FUN_140690350() == id) {
                     result = i;
                     break;
@@ -197,22 +203,24 @@ void CUserMail::FUN_1408e3a60(MailPtr mail) {
 // @0x1408e3b70
 int CUserMail::FUN_1408e3b70(__int64 id, int force, int reason) {
     MailPtr mail(0);
-    Unk_LockGuard guard(m_lock);
-    if (guard != 0) {} else {
-        mail = FUN_1408e3720(id);
-        if (mail == 0) {
-            return 0;
-        }
-        if (force == 0) {
-            if (mail->FUN_140691220() == 1) {
+    {
+        Unk_LockGuard guard(m_lock);
+        if (guard != 0) {} else {
+            mail = FUN_1408e3720(id);
+            if (mail == 0) {
                 return 0;
             }
-        }
-        m_map.RemoveKey(id);
-        for (unsigned i = 0; i < m_mails.GetCount(); ++i) {
-            if (m_mails[i]->FUN_140690350() == id) {
-                m_mails.RemoveAt(i, 1);
-                break;
+            if (force == 0) {
+                if (mail->FUN_140691220() == 1) {
+                    return 0;
+                }
+            }
+            m_map.RemoveKey(id);
+            for (unsigned i = 0; i < m_mails.GetCount(); ++i) {
+                if (m_mails[i]->FUN_140690350() == id) {
+                    m_mails.RemoveAt(i, 1);
+                    break;
+                }
             }
         }
     }
@@ -272,53 +280,59 @@ void CUserMail::FUN_1408e3ff0(int skipTotal) {
     for (int i = 0; i < 5; ++i) {
         m_keeps[i] = 0;
     }
-    if (skipTotal == 0) {
-        FUN_1408e45e0();
-    } else {
+    if (skipTotal != 0) {
         m_30 = 0;
+    } else {
+        FUN_1408e45e0();
     }
 }
 
 // @0x1408e4090
 void CUserMail::FUN_1408e4090(int index) {
-    if (-1 < index && index < 5) {
+    if (index < 0 || index >= 5)
+        return;
+    {
         Unk_LockGuard guard(m_lock);
         if (guard != 0) {} else {
             m_keeps[index] = 0;
         }
-        FUN_1408e45e0();
     }
+    FUN_1408e45e0();
 }
 
 // @0x1408e4120
 void CUserMail::FUN_1408e4120(int index, Unk_MailAttachPtr attach) {
-    if (index < 0 || 4 < index) {
+    if (index < 0 || index >= 5) {
         return;
     }
-    Unk_LockGuard guard(m_lock);
-    if (guard != 0) {} else {
-        KeepPtr keep(new CMailSendKeep(attach));
-        m_keeps[index] = keep;
+    {
+        Unk_LockGuard guard(m_lock);
+        if (guard != 0) {} else {
+            KeepPtr keep(new CMailSendKeep(attach));
+            m_keeps[index] = keep;
+        }
     }
     FUN_1408e45e0();
 }
 
 // @0x1408e4270
 void CUserMail::FUN_1408e4270(int index, MS2Ptr<CItem> item) {
-    if (index < 0 || 4 < index) {
+    if (index < 0 || index >= 5) {
         return;
     }
-    Unk_LockGuard guard(m_lock);
-    if (guard != 0) {} else {
-        KeepPtr keep(new CMailSendKeep(item));
-        m_keeps[index] = keep;
+    {
+        Unk_LockGuard guard(m_lock);
+        if (guard != 0) {} else {
+            KeepPtr keep(new CMailSendKeep(item));
+            m_keeps[index] = keep;
+        }
     }
     FUN_1408e45e0();
 }
 
 // @0x1408e43c0
 CUserMail::KeepPtr CUserMail::FUN_1408e43c0(int index) {
-    if (index < 0 || 4 < index) {
+    if (index < 0 || index >= 5) {
         return KeepPtr(0);
     }
     KeepPtr keep = m_keeps[index];
@@ -327,9 +341,11 @@ CUserMail::KeepPtr CUserMail::FUN_1408e43c0(int index) {
 
 // @0x1408e4470
 void CUserMail::FUN_1408e4470(__int64 value) {
-    Unk_LockGuard guard(m_lock);
-    if (guard != 0) {} else {
-        m_08 = value;
+    {
+        Unk_LockGuard guard(m_lock);
+        if (guard != 0) {} else {
+            m_08 = value;
+        }
     }
     FUN_1408e45e0();
 }
@@ -342,12 +358,14 @@ MS2_REPLACE_METHOD(0x1408E44E0, CUserMail, FUN_1408e44e0, 15, 0x5B8A7339);
 
 // @0x1408e4500
 int CUserMail::FUN_1408e4500() {
-    Unk_LockGuard guard(m_lock);
-    if (guard != 0) {} else {
-        for (int i = 0; i < 5; ++i) {
-            KeepPtr keep = m_keeps[i];
-            if (keep == 0) {
-                return i;
+    {
+        Unk_LockGuard guard(m_lock);
+        if (guard != 0) {} else {
+            for (int i = 0; i < 5; ++i) {
+                KeepPtr keep = m_keeps[i];
+                if (keep == 0) {
+                    return i;
+                }
             }
         }
     }
@@ -368,7 +386,8 @@ void CUserMail::FUN_1408e45e0() {
             sum6 += keep->FUN_14068fe20(6);
         }
     }
-    m_30 = FUN_1401c0db0()->FUN_140676020(m_08, sum1, sum2, sum3, sum4, sum5, sum6);
+    __int64 total = FUN_1401c0db0()->FUN_140676020(m_08, sum1, sum2, sum3, sum4, sum5, sum6);
+    m_30 = total;
 }
 
 // @0x1408e4810
@@ -409,12 +428,12 @@ void CUserMail::FUN_1408e48f0() {
         }
         m_d8 = 0;
         if (FUN_1422b9ea0(FUN_1408e57f0()) == 0) {
-            FUN_141276180(s_143ab25d8, CString(""));
+            FUN_141276180(s_143ab25d8, "");
         }
     }
     if (m_dc != 0) {
         m_dc = 0;
-        FUN_141276180(s_143ab25e0, CString(""));
+        FUN_141276180(s_143ab25e0, "");
     }
 }
 

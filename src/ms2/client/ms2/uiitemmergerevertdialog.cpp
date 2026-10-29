@@ -183,7 +183,6 @@ void UIItemMergeRevertDialog::FUN_140e4c7a0(CItem* pItem)
 }
 
 // @0x140e4c7d0
-// MS2-FUNCTIONAL: call-result temporaries / frame-slot order differ (source form not found)
 void UIItemMergeRevertDialog::FUN_140e4c7d0(CItem* pItem)
 {
     FUN_140d42630(GetTypeName());
@@ -194,9 +193,8 @@ void UIItemMergeRevertDialog::FUN_140e4c7d0(CItem* pItem)
         FUN_140d42b70(pSlot, Unk_MrDropFn(this, &UIItemMergeRevertDialog::FUN_140e4cea0));
     }
     CStringW strOption = TSingleton<CItemMergeOptionTable>::GetInstance()->FUN_1405c1090(MS2Ptr<CItem>(pItem), 1);
-    CStringW strText = FUN_140656190(L"{0}{1}", GetStringCommonByKey(CStringW(L"s_tooltip_itemoption_kinds_merge")), strOption);
-    CItemData* pData = reinterpret_cast<CItemData*>(pItem->FUN_140527840());
-    int nType = pData->FUN_14053c620();
+    CStringW strText = FUN_140656190(L"{0}{1}", GetStringCommonByKey(L"s_tooltip_itemoption_kinds_merge"), strOption);
+    int nType = reinterpret_cast<CItemData*>(pItem->FUN_140527840())->FUN_14053c620();
     FUN_14083d2b0(strText);
     ASObj obj(2);
     obj.FUN_1407cb9c0("isReady", 0);
@@ -223,57 +221,56 @@ void UIItemMergeRevertDialog::FUN_140e4ce70(ItemScrollSlot& slot)
 }
 
 // @0x140e4cea0
-// MS2-FUNCTIONAL: exe nests the item test differently (frame and block order differ)
 void UIItemMergeRevertDialog::FUN_140e4cea0(ItemScrollSlot& slot, DragSlot* pDrag)
 {
-    Unk_MrInvenSlot* pInven;
-    if (!(m_30 == 0) && (pInven = FUN_140a50b50(pDrag)) != 0)
+    if (m_30 == 0)
+        return;
+    Unk_MrInvenSlot* pInven = FUN_140a50b50(pDrag);
+    if (pInven != 0)
     {
         MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(pInven->FUN_141405a10());
-        if (!spItem.IsNull())
+        if (spItem.IsNull())
         {
-            int nError = FUN_140e4d330(spItem.get());
-            if (nError == 0)
-                FUN_140e4c7d0(spItem.get());
-            else
-                FUN_140e4d010(nError);
+            FUN_1412751f0(GetStringCommonByKey(L"s_item_merge_option_error_invalid_mergeitem"), 1, 1);
+            return;
         }
-        else
+        int nError = FUN_140e4d330(spItem.get());
+        if (nError != 0)
         {
-            FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_item_merge_option_error_invalid_mergeitem")), 1, 1);
+            FUN_140e4d010(nError);
+            return;
         }
+        FUN_140e4c7d0(spItem.get());
     }
 }
 
 // @0x140e4d010
-// MS2-FUNCTIONAL: message CStringW temporaries: the exe keeps extra pointer copies per case
 void UIItemMergeRevertDialog::FUN_140e4d010(int nError)
 {
     switch (nError)
     {
-    case 3:
-        FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_item_merge_option_error_invalid_mergeitem")), 1, 1);
-        break;
-    case 4:
-        FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_item_merge_option_error_invalid_material")), 1, 1);
-        break;
     case 5:
-        FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_item_merge_option_error_invalid_merge_scroll")), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(L"s_item_merge_option_error_invalid_merge_scroll"), 1, 1);
         break;
     case 6:
-        FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_item_merge_option_error_invalid_revert_rank")), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(L"s_item_merge_option_error_invalid_revert_rank"), 1, 1);
         break;
     case 7:
-        FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_item_merge_option_error_invalid_revert_option")), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(L"s_item_merge_option_error_invalid_revert_option"), 1, 1);
+        break;
+    case 4:
+        FUN_1412751f0(GetStringCommonByKey(L"s_item_merge_option_error_invalid_material"), 1, 1);
         break;
     case 8:
-        FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_item_merge_option_error_invalid_revert_slot")), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(L"s_item_merge_option_error_invalid_revert_slot"), 1, 1);
+        break;
+    case 3:
+        FUN_1412751f0(GetStringCommonByKey(L"s_item_merge_option_error_invalid_mergeitem"), 1, 1);
         break;
     }
 }
 
 // @0x140e4d330
-// MS2-FUNCTIONAL: exe is nested if/else with return-value temporaries per branch; mine is linear
 int UIItemMergeRevertDialog::FUN_140e4d330(CItem* pItem)
 {
     if (pItem == 0)
@@ -285,20 +282,18 @@ int UIItemMergeRevertDialog::FUN_140e4d330(CItem* pItem)
     MS2Ptr<CItem> spBase = DAT_143ab2a90.FUN_140a5d680(m_nItemUid);
     if (spBase.IsNull())
         return 5;
-    int nBaseId = spBase->FUN_140526bd0();
-    if (nBaseId != pItem->FUN_140526bd0())
+    if (spBase->FUN_140526bd0() != pItem->FUN_140526bd0())
         return 6;
     if (!FUN_140630810(pItem->FUN_1405278a0()))
         return 7;
-    CItemData* pBaseData = reinterpret_cast<CItemData*>(spBase->FUN_140527840());
-    if (pBaseData == 0)
+    if (spBase->FUN_140527840() == 0)
         return 5;
-    int nBaseOption = pBaseData->function.parameter.FUN_1408d1f60(0, 0);
+    int nBaseOption = reinterpret_cast<CItemData*>(spBase->FUN_140527840())->function.parameter.FUN_1408d1f60(0, 0);
     if (nBaseOption == 0)
         return 5;
-    if (nBaseOption == reinterpret_cast<CItemData*>(pItem->FUN_140527840())->FUN_14053e410())
-        return 0;
-    return 8;
+    if (nBaseOption != reinterpret_cast<CItemData*>(pItem->FUN_140527840())->FUN_14053e410())
+        return 8;
+    return 0;
 }
 
 // @0x140e4d9b0

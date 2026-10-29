@@ -150,7 +150,7 @@ public:
     AU_V(6) AU_V(7) AU_V(8) AU_V(9) AU_V(10) AU_V(11) AU_V(12) AU_V(13) AU_V(14) AU_V(15) AU_V(16) AU_V(17) AU_V(18)
     AU_V(19) AU_V(20) AU_V(21) AU_V(22) AU_V(23)
 #undef AU_V
-    virtual void vfunc_24(int nShow);                     // 24 (+0xc0) refresh
+    virtual void vfunc_24(bool bShow);                    // 24 (+0xc0) refresh
     void FUN_1422c1fe0(int bEnabled);                     // enable / disable
     int FUN_1422df6c0();                                  // the selected index
     void FUN_1422df690(int nIndex);                       // select
@@ -175,13 +175,9 @@ public:
 };
 Unk_AuStatusMgr* FUN_140aa6d40();
 
-// A function object of the movie (the call is made by the destructor-like FUN_140614800).
-class Unk_AuFn { public: char m_pad_00[40]; };
-MS2_CHECK_SIZE(Unk_AuFn, 40);
-class Unk_AuAS : public AScript { public: Unk_AuFn FUN_1422bb330(const char* szName); };
-void FUN_140614800(const Unk_AuFn& fn);
 
 CString FUN_140513200(const char* szFormat, const int& n);          // format one number
+CString FUN_1402bad60(const char* szFormat, const int* pn);        // the same format, a second copy
 CStringW GetStringCommon(int nStringId);                              // string table text
 CStringW GetStringCommonByKey(const CStringW& strKey);                     // string table text by key
 CStringW FUN_1409e97f0(int nId, const int& nArg);                   // string table entry, one argument
@@ -237,20 +233,16 @@ float UIItemAutoUseOptionDialog::Slot::FUN_140f4e080()
     Unk_AuPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pPlayer == 0)
         return 0;
-    int nType = FUN_140f4e0e0();
-    return pPlayer->FUN_141523bc0()->FUN_141765fe0(nType, 0);
+    return pPlayer->FUN_141523bc0()->FUN_141765fe0(FUN_140f4e0e0(), 0);
 }
 
 // @0x140f4e0e0
 int UIItemAutoUseOptionDialog::Slot::FUN_140f4e0e0()
 {
     MS2Ptr<CItem> spItem = FUN_140535320()->FUN_140c8b430()->FUN_140c892c0(FUN_140f4e180());
-    int nType;
-    if (spItem.get() == 0)
-        nType = 0;
-    else
-        nType = spItem->FUN_140527840()->FUN_14053dc20();
-    return nType;
+    if (spItem.get() != 0)
+        return spItem->FUN_140527840()->FUN_14053dc20();
+    return 0;
 }
 
 // @0x140f4e180
@@ -278,7 +270,7 @@ int UIItemAutoUseOptionDialog::Slot::FUN_140f4e1c0(int nItemId)
 void UIItemAutoUseOptionDialog::Slot::vfunc_6(void* p)
 {
     CString str;
-    str.Format("%d", (unsigned __int64)(unsigned)FUN_140f4e180());
+    str.Format("%d", FUN_140f4e180());
     FUN_140165270(p, str);
 }
 
@@ -320,59 +312,13 @@ int UIItemAutoUseOptionDialog::Slot::vfunc_17()
 }
 
 // @0x140f4e410
-// MS2-FUNCTIONAL: the exe has the pet-slot and the item-slot case as two copies of the same checks
 int UIItemAutoUseOptionDialog::Slot::vfunc_18(void* p)
 {
-    DragSlot* pDrag = static_cast<DragSlot*>(p);
     Unk_AuPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pPlayer == 0)
-        return pDrag->vfunc_10();
-    Slot* pFrom = FUN_140f507b0(pDrag);
-    if (pFrom == 0)
-    {
-        int nDropId = 0;
-        bool bHave = false;
-        PetSlot* pPet = FUN_140dbc0d0(pDrag);
-        if (pPet != 0)
-        {
-            nDropId = pPet->FUN_140dbafc0();
-            bHave = true;
-        }
-        else
-        {
-            void* pItemSlot = FUN_140a50b50(pDrag);
-            if (pItemSlot != 0)
-            {
-                nDropId = FUN_141405980(pItemSlot);
-                bHave = true;
-            }
-        }
-        if (bHave)
-        {
-            MS2Ptr<CItem> spItem = FUN_140535320()->FUN_140c8b430()->FUN_140c892c0(nDropId);
-            if (FUN_140534e50(&spItem) != 0)
-                return pDrag->vfunc_10();
-            if (FUN_140f4e1c0(spItem->FUN_1405276c0()) != 0)
-            {
-                FUN_140d73bc0(0xc1d, 0, 0, CStringW(L""));
-                return pDrag->vfunc_10();
-            }
-            if (!spItem->FUN_140527840()->FUN_14053d270())
-            {
-                FUN_140d73bc0(0xc1c, 0, 0, CStringW(L""));
-                return pDrag->vfunc_10();
-            }
-            if (FUN_140526810(spItem.get(), AU_PLAYER_LEVEL(pPlayer)) == 0)
-            {
-                FUN_140d73aa0(GetStringCommonByKey(CStringW(L"s_err_not_enough_level")), 0, 0, CStringW(L""));
-                return 1;
-            }
-            m_nItemId = nDropId;
-            FUN_1414048f0(m_nItemId);
-            vfunc_10();
-        }
-    }
-    else
+        return static_cast<DragSlot*>(p)->vfunc_10();
+    Slot* pFrom = FUN_140f507b0(static_cast<DragSlot*>(p));
+    if (pFrom != 0)
     {
         int nOld = pFrom->FUN_140f4e180();
         pFrom->FUN_140f4e1a0(m_nItemId);
@@ -380,7 +326,55 @@ int UIItemAutoUseOptionDialog::Slot::vfunc_18(void* p)
         FUN_140f4f030(pFrom->GetIndex());
         vfunc_10();
     }
-    return pDrag->vfunc_10();
+    else if (PetSlot* pPet = FUN_140dbc0d0(static_cast<DragSlot*>(p)))
+    {
+        MS2Ptr<CItem> spItem = FUN_140535320()->FUN_140c8b430()->FUN_140c892c0(pPet->FUN_140dbafc0());
+        if (FUN_140534e50(&spItem) != 0)
+            return static_cast<DragSlot*>(p)->vfunc_10();
+        if (FUN_140f4e1c0(spItem->FUN_1405276c0()) != 0)
+        {
+            FUN_140d73bc0(0xc1d, 0, 0, CStringW(L""));
+            return static_cast<DragSlot*>(p)->vfunc_10();
+        }
+        if (!spItem->FUN_140527840()->FUN_14053d270())
+        {
+            FUN_140d73bc0(0xc1c, 0, 0, CStringW(L""));
+            return static_cast<DragSlot*>(p)->vfunc_10();
+        }
+        if (FUN_140526810(spItem.get(), AU_PLAYER_LEVEL(pPlayer)) == 0)
+        {
+            FUN_140d73aa0(GetStringCommonByKey(L"s_err_not_enough_level"), 0, 0, CStringW(L""));
+            return 1;
+        }
+        m_nItemId = pPet->FUN_140dbafc0();
+        FUN_1414048f0(m_nItemId);
+        vfunc_10();
+    }
+    else if (void* pItemSlot = FUN_140a50b50(static_cast<DragSlot*>(p)))
+    {
+        MS2Ptr<CItem> spItem = FUN_140535320()->FUN_140c8b430()->FUN_140c892c0(FUN_141405980(pItemSlot));
+        if (FUN_140534e50(&spItem) != 0)
+            return static_cast<DragSlot*>(p)->vfunc_10();
+        if (FUN_140f4e1c0(spItem->FUN_1405276c0()) != 0)
+        {
+            FUN_140d73bc0(0xc1d, 0, 0, CStringW(L""));
+            return static_cast<DragSlot*>(p)->vfunc_10();
+        }
+        if (!spItem->FUN_140527840()->FUN_14053d270())
+        {
+            FUN_140d73bc0(0xc1c, 0, 0, CStringW(L""));
+            return static_cast<DragSlot*>(p)->vfunc_10();
+        }
+        if (FUN_140526810(spItem.get(), AU_PLAYER_LEVEL(pPlayer)) == 0)
+        {
+            FUN_140d73aa0(GetStringCommonByKey(L"s_err_not_enough_level"), 0, 0, CStringW(L""));
+            return 1;
+        }
+        m_nItemId = FUN_141405980(pItemSlot);
+        FUN_1414048f0(m_nItemId);
+        vfunc_10();
+    }
+    return static_cast<DragSlot*>(p)->vfunc_10();
 }
 
 // @0x140f4eb30
@@ -395,7 +389,6 @@ void UIItemAutoUseOptionDialog::Slot::vfunc_24(void* p)
     FUN_1414050c0(FUN_140f4e0e0(), p, &m_value18);
 }
 
-// MS2-FUNCTIONAL: the frame layout of the many temporaries differs
 // @0x140f4ebd0 (ITooltip::vfunc_0)
 int UIItemAutoUseOptionDialog::Slot::vfunc_0(void* p)
 {
@@ -406,27 +399,38 @@ int UIItemAutoUseOptionDialog::Slot::vfunc_0(void* p)
     if (FUN_140534e50(&spItem) != 0)
         return 0;
     MS2Ptr<CItem> spWorn = pPlayer->FUN_14152e2f0(spItem);
-    if (spWorn.get() != 0)
+    if (spWorn.get() != 0 ? true : false)
     {
         if (spWorn->FUN_140526a50() == spItem->FUN_140526a50())
             return 0;
     }
     ASTooltip tip(pPlayer, 0x80, 2);
-    if (tip.FUN_1409e13a0(spWorn.get(), spItem.get()) == 0)
-        return 0;
-    *static_cast<Scaleform::GFx::Value*>(p) = tip.FUN_1422bb870();
-    return 1;
+    if (tip.FUN_1409e13a0(spWorn.get(), spItem.get()) != 0)
+    {
+        *static_cast<Scaleform::GFx::Value*>(p) = tip.FUN_1422bb870();
+        return 1;
+    }
+    return 0;
 }
 
 // @0x140f4ee10
-// MS2-FUNCTIONAL: the frame layout of the many temporaries differs
 int UIItemAutoUseOptionDialog::Slot::vfunc_8(void* p)
 {
     Unk_AuPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pPlayer == 0)
         return 0;
     MS2Ptr<CItem> spItem = FUN_140535320()->FUN_140c8b430()->FUN_140c892c0(FUN_140f4e180());
-    if (spItem.get() == 0)
+    if (spItem.get() != 0)
+    {
+        FUN_140f4f100(1);
+        ASSlot slot(2);
+        if (slot.FUN_1409c3860(spItem.get(), pPlayer, 0x1c01f) != 0)
+        {
+            slot.FUN_1409c2190(FUN_140535320()->FUN_140c8b430()->FUN_140c89440(spItem->FUN_1405276c0(), 0));
+            *static_cast<Scaleform::GFx::Value*>(p) = slot.FUN_1422bb870();
+        }
+    }
+    else
     {
         FUN_140f4f100(0);
         Unk_PetOption opt;
@@ -438,17 +442,6 @@ int UIItemAutoUseOptionDialog::Slot::vfunc_8(void* p)
                 slot.FUN_1409c1e80(1);
                 *static_cast<Scaleform::GFx::Value*>(p) = slot.FUN_1422bb870();
             }
-        }
-    }
-    else
-    {
-        FUN_140f4f100(1);
-        ASSlot slot(2);
-        if (slot.FUN_1409c3860(spItem.get(), pPlayer, 0x1c01f) != 0)
-        {
-            int nCount = FUN_140535320()->FUN_140c8b430()->FUN_140c89440(spItem->FUN_1405276c0(), 0);
-            slot.FUN_1409c2190(nCount);
-            *static_cast<Scaleform::GFx::Value*>(p) = slot.FUN_1422bb870();
         }
     }
     return 1;
@@ -515,9 +508,9 @@ DragSlot* UIItemAutoUseOptionDialog::SlotBag::vfunc_16(int nIndex)
 {
     CString strName = vfunc_15(nIndex);
     Unk_PetOption opt;
-    if (!FUN_140535320()->FUN_140c8b450()->options.map.Lookup(nIndex, opt))
-        return new (efd::MemHint(efd::MemHint::NONE)) Slot(strName, nIndex, 0);
-    return new (efd::MemHint(efd::MemHint::NONE)) Slot(strName, nIndex, opt.enabled);
+    if (FUN_140535320()->FUN_140c8b450()->options.map.Lookup(nIndex, opt))
+        return new (efd::MemHint(efd::MemHint::NONE)) Slot(strName, nIndex, opt.enabled);
+    return new (efd::MemHint(efd::MemHint::NONE)) Slot(strName, nIndex, 0);
 }
 
 // @0x140f4f460
@@ -544,8 +537,9 @@ CString UIItemAutoUseOptionDialog::GetTypeName()
 // @0x140f4f640
 int UIItemAutoUseOptionDialog::vfunc_65()
 {
-    if (UIDialog::vfunc_65() != 0)
-        FUN_140aa6d40()->FUN_141b0cd00(static_cast<UIStatusEventListener*>(this));
+    if (UIDialog::vfunc_65() == 0)
+        return 0;
+    FUN_140aa6d40()->FUN_141b0cd00(static_cast<UIStatusEventListener*>(this));
     return 0;
 }
 
@@ -558,21 +552,18 @@ void UIItemAutoUseOptionDialog::vfunc_67()
 }
 
 // @0x140f4f710
-// MS2-FUNCTIONAL: child handle temporaries not tuned
 void UIItemAutoUseOptionDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    MS2Ptr<ASTextField> spText1 = ((Unk_AuEntity*)this)->FUN_140bb4cf0(CString("m_textFieldItem1"));
-    if (spText1.get() != 0)
+    if (MS2Ptr<ASTextField> spText1 = ((Unk_AuEntity*)this)->FUN_140bb4cf0("m_textFieldItem1"))
         spText1->FUN_1422c4cd0(GetStringCommon(0xc08));
-    MS2Ptr<ASTextField> spText2 = ((Unk_AuEntity*)this)->FUN_140bb4cf0(CString("m_textFieldItem2"));
-    if (spText2.get() != 0)
+    if (MS2Ptr<ASTextField> spText2 = ((Unk_AuEntity*)this)->FUN_140bb4cf0("m_textFieldItem2"))
         spText2->FUN_1422c4cd0(GetStringCommon(0xc08));
     for (unsigned i = 0; i < DAT_1439ed000; i++)
     {
         int nNumber = i + 1;
-        MS2Ptr<Unk_AuCombo> spCombo = ((Unk_AuEntity*)this)->FUN_140c28560(FUN_140513200("m_dropdownItem{0}", nNumber));
-        FUN_140f50230(spCombo.get(), i);
+        CString strName = FUN_140513200("m_dropdownItem{0}", nNumber);
+        FUN_140f50230(((Unk_AuEntity*)this)->FUN_140c28560(strName).get(), i);
     }
     FUN_140f50190();
 }
@@ -616,31 +607,28 @@ void UIItemAutoUseOptionDialog::vfunc_oa0_26(void* p)
 // @0x140f4faf0
 int UIItemAutoUseOptionDialog::FUN_140f4faf0(int nItemId)
 {
-    if (FUN_1403ed2d0()->FUN_141bd0cc0() != 0)
+    Unk_AuPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    if (pPlayer == 0)
+        return 0;
+    SlotBag* pBag = FUN_140f50800(FUN_1422c8e90(m_strBag));
+    if (pBag != 0)
     {
-        SlotBag* pBag = FUN_140f50800(FUN_1422c8e90(m_strBag));
-        if (pBag != 0)
+        for (unsigned i = 0; i < FUN_1422ccd20(pBag); i++)
         {
-            for (unsigned i = 0; i < FUN_1422ccd20(pBag); i++)
-            {
-                Slot* pSlot = FUN_140f507b0(FUN_1422cd070(pBag, i));
-                if (pSlot != 0)
-                {
-                    MS2Ptr<CItem> spItem = FUN_140535320()->FUN_140c8b430()->FUN_140c892c0(pSlot->FUN_140f4e180());
-                    if (!(spItem == 0))
-                    {
-                        if (spItem->FUN_1405276c0() == nItemId)
-                            return 1;
-                    }
-                }
-            }
+            Slot* pSlot = FUN_140f507b0(FUN_1422cd070(pBag, i));
+            if (pSlot == 0)
+                continue;
+            MS2Ptr<CItem> spItem = FUN_140535320()->FUN_140c8b430()->FUN_140c892c0(pSlot->FUN_140f4e180());
+            if (spItem == 0)
+                continue;
+            if (spItem->FUN_1405276c0() == nItemId)
+                return 1;
         }
     }
     return 0;
 }
 
 // @0x140f4fc40
-// MS2-FUNCTIONAL: the exe's frame / temporaries differ
 void UIItemAutoUseOptionDialog::FUN_140f4fc40(int nItemId)
 {
     Unk_AuPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
@@ -661,7 +649,7 @@ void UIItemAutoUseOptionDialog::FUN_140f4fc40(int nItemId)
     }
     if (FUN_140526810(spItem.get(), AU_PLAYER_LEVEL(pPlayer)) == 0)
     {
-        FUN_140d73aa0(GetStringCommonByKey(CStringW(L"s_err_not_enough_level")), 0, 0, CStringW(L""));
+        FUN_140d73aa0(GetStringCommonByKey(L"s_err_not_enough_level"), 0, 0, CStringW(L""));
         return;
     }
     SlotBag* pBag = FUN_140f50800(FUN_1422c8e90(m_strBag));
@@ -671,7 +659,9 @@ void UIItemAutoUseOptionDialog::FUN_140f4fc40(int nItemId)
         for (unsigned i = 0; i < nCount; i++)
         {
             Slot* pSlot = FUN_140f507b0(FUN_1422cd070(pBag, i));
-            if (pSlot != 0 && pSlot->FUN_140f4e180() == 0)
+            if (pSlot == 0)
+                continue;
+            if (pSlot->FUN_140f4e180() == 0)
             {
                 pSlot->FUN_140f4e1a0(nItemId);
                 pSlot->vfunc_10();
@@ -681,15 +671,14 @@ void UIItemAutoUseOptionDialog::FUN_140f4fc40(int nItemId)
         for (unsigned i = 0; i < nCount; i++)
         {
             Slot* pSlot = FUN_140f507b0(FUN_1422cd070(pBag, i));
-            if (pSlot != 0)
+            if (pSlot == 0)
+                continue;
+            MS2Ptr<CItem> spOld = FUN_140535320()->FUN_140c8b430()->FUN_140c892c0(pSlot->FUN_140f4e180());
+            if (spOld == 0)
             {
-                MS2Ptr<CItem> spOld = FUN_140535320()->FUN_140c8b430()->FUN_140c892c0(pSlot->FUN_140f4e180());
-                if (spOld == 0)
-                {
-                    pSlot->FUN_140f4e1a0(nItemId);
-                    pSlot->vfunc_10();
-                    return;
-                }
+                pSlot->FUN_140f4e1a0(nItemId);
+                pSlot->vfunc_10();
+                return;
             }
         }
         Slot* pFirst = FUN_140f507b0(FUN_1422cd070(pBag, 0));
@@ -705,8 +694,9 @@ void UIItemAutoUseOptionDialog::FUN_140f4fc40(int nItemId)
 void UIItemAutoUseOptionDialog::FUN_140f50090(int nState, int nIndex)
 {
     int nNumber = nIndex + 1;
-    MS2Ptr<Unk_AuCombo> spCombo = ((Unk_AuEntity*)this)->FUN_140c28560(FUN_140513200("m_dropdownItem{0}", nNumber));
-    if (spCombo.get() != 0)
+    CString strName = FUN_1402bad60("m_dropdownItem{0}", &nNumber);
+    MS2Ptr<Unk_AuCombo> spCombo = ((Unk_AuEntity*)this)->FUN_140c28560(strName);
+    if (spCombo)
     {
         if (nState == 0)
             spCombo.get()->FUN_1422c1fe0(0);
@@ -727,92 +717,94 @@ void UIItemAutoUseOptionDialog::FUN_140f50190()
     FUN_140f4f160(m_strBag, DAT_1439ed000);
     ASDialog* pDlg = dynamic_cast<ASDialog*>((AScript*)m_30);
     if (pDlg != 0)
-        FUN_140614800(((Unk_AuAS*)pDlg)->FUN_1422bb330("createSlotBag"));
+        pDlg->Invoke("createSlotBag");
 }
 
 // @0x140f50230
-// MS2-FUNCTIONAL: AS object temporaries / frame slots not tuned
 void UIItemAutoUseOptionDialog::FUN_140f50230(void* pCombo, int nIndex)
 {
-    Unk_AuCombo* pBox = static_cast<Unk_AuCombo*>(pCombo);
-    if (pBox != 0)
+    if (pCombo == 0)
+        return;
+    ((Unk_AuCombo*)pCombo)->FUN_1422dfc10();
+    for (unsigned i = 0; i < m_thresholds.GetCount(); i++)
     {
-        pBox->FUN_1422dfc10();
-        for (unsigned i = 0; i < m_thresholds.GetCount(); i++)
+        int nCond = m_thresholds[i];
+        if (nCond == 0)
         {
-            int nCond = m_thresholds[i];
-            if (nCond == 0)
-            {
-                ASObj entry(2);
-                entry.FUN_1409c0d20("condition", nCond);
-                entry.FUN_1407cbb20("label", GetStringCommon(0x576));
-                pBox->FUN_1422dfc70(entry);
-            }
-            else
-            {
-                ASObj entry(2);
-                entry.FUN_1409c0d20("condition", nCond);
-                entry.FUN_1407cbb20("label", FUN_1409e97f0(0xc09, nCond));
-                pBox->FUN_1422dfc70(entry);
-            }
+            ASObj entry(2);
+            entry.FUN_1409c0d20("condition", nCond);
+            entry.FUN_1407cbb20("label", GetStringCommon(0x576));
+            ((Unk_AuCombo*)pCombo)->FUN_1422dfc70(entry);
         }
-        pBox->vfunc_24(1);
-        Unk_PetOption opt;
-        if (!FUN_140535320()->FUN_140c8b450()->options.map.Lookup(nIndex, opt))
-            pBox->FUN_1422df690(DAT_1439ed004 - 1);
         else
-            pBox->FUN_1422df690(opt.type);
+        {
+            ASObj entry(2);
+            entry.FUN_1409c0d20("condition", nCond);
+            entry.FUN_1407cbb20("label", FUN_1409e97f0(0xc09, nCond));
+            ((Unk_AuCombo*)pCombo)->FUN_1422dfc70(entry);
+        }
     }
+    ((Unk_AuCombo*)pCombo)->vfunc_24(true);
+    Unk_PetOption opt;
+    if (FUN_140535320()->FUN_140c8b450()->options.map.Lookup(nIndex, opt))
+        ((Unk_AuCombo*)pCombo)->FUN_1422df690(opt.type);
+    else
+        ((Unk_AuCombo*)pCombo)->FUN_1422df690(DAT_1439ed004 - 1);
 }
 
 // @0x140f50480
-// MS2-FUNCTIONAL: the exe's frame / temporaries differ
 void UIItemAutoUseOptionDialog::OnClickOk()
 {
     Unk_AuPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
-    if (pPlayer == 0 || FUN_141676a10(pPlayer) == 0)
+    if (pPlayer == 0)
+        return;
+    void* pPet = FUN_141676a10(pPlayer);
+    if (pPet == 0)
         return;
     SlotBag* pBag = FUN_140f50800(FUN_1422c8e90(m_strBag));
     if (pBag == 0)
         return;
-    bool bBlocked = false;
+    int bBlocked = 0;
     Unk_PetOptions kOptions;
     for (unsigned i = 0; i < DAT_1439ed000; i++)
     {
         int nNumber = i + 1;
-        MS2Ptr<Unk_AuCombo> spCombo = ((Unk_AuEntity*)this)->FUN_140c28560(FUN_140513200("m_dropdownItem{0}", nNumber));
-        if (spCombo.get() != 0)
+        CString strName = FUN_140513200("m_dropdownItem{0}", nNumber);
+        MS2Ptr<Unk_AuCombo> spCombo = ((Unk_AuEntity*)this)->FUN_140c28560(strName);
+        if (spCombo)
         {
-            int nSel = spCombo.get()->FUN_1422df6c0();
-            Slot* pSlot = FUN_140f507b0(FUN_1422cd070(pBag, i));
+            int nIdx = i;
+            int nSel = spCombo->FUN_1422df6c0();
+            Slot* pSlot = FUN_140f507b0(FUN_1422cd070(pBag, nIdx));
             if (pSlot != 0)
             {
                 int nItemId = pSlot->FUN_140f4e180();
-                if (nSel < 0 || (int)m_thresholds.GetCount() <= nSel)
-                {
-                    if (nItemId != 0)
-                        bBlocked = true;
-                }
-                else
+                if (nSel > -1 && nSel < (int)m_thresholds.GetCount())
                 {
                     float fValue = (float)m_thresholds[nSel];
-                    kOptions.map.SetAt(i, Unk_PetOption(nSel, fValue, nItemId));
+                    Unk_PetOption opt(nSel, fValue, nItemId);
+                    kOptions.map.SetAt(nIdx, opt);
                 }
+                else if (nItemId != 0)
+                    bBlocked = 1;
             }
         }
     }
-    if (kOptions.FUN_1401ff680() == 0)
-        FUN_140d73bc0(0xc1e, 0, 0, CStringW(L""));
-    else if (bBlocked)
-        FUN_140d73bc0(0xc1f, 0, 0, CStringW(L""));
-    else
+    if (kOptions.FUN_1401ff680() != 0)
     {
-        COutPacket packet(static_cast<int>(SendOp::RequestPet), 0);
-        packet.WriteUInt8(5);
-        kOptions.FUN_1401ff3f0(packet);
-        FUN_140710590(packet);
-        vfunc_67();
+        if (bBlocked != 0)
+            FUN_140d73bc0(0xc1f, 0, 0, CStringW(L""));
+        else
+        {
+            COutPacket packet(static_cast<int>(SendOp::RequestPet), 0);
+            packet.WriteUInt8(5);
+            kOptions.FUN_1401ff3f0(packet);
+            FUN_140710590(packet);
+            vfunc_67();
+        }
     }
+    else
+        FUN_140d73bc0(0xc1e, 0, 0, CStringW(L""));
 }
 
 // @0x140f507b0

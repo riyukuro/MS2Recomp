@@ -43,7 +43,7 @@ extern Unk_Inventory DAT_143ab2a90;
 void FUN_140710590(COutPacket& packet);                 // send
 CStringW FUN_140938ae0(CStringW strFormat, const int& nArg);    // string table text with one argument
 CStringW FUN_1418fe5d0(int nPayType);                   // pay type name
-CStringW FUN_1418fec00(int nType, __int64 nValue, int);     // money text by pay type
+CStringW FUN_1418fec00(int nType, __int64 nValue, bool);   // money text by pay type
 void FUN_140930590(__int64 nId, std::vector<std::pair<int, __int64> >& vecOut);     // the pay type rows of a pool
 unsigned char FUN_140930200(int nKind);
 
@@ -83,7 +83,6 @@ void UIUGCCubeBillDialog::vfunc_67()
     s_cost.Cost::Reset();
 }
 
-// MS2-FUNCTIONAL: written from the decompile; the child-name CString temporaries are bound through extra pointer slots (frame 0x388 against 0x378)
 // @0x140ee7760
 void UIUGCCubeBillDialog::OnLoadComplete()
 {
@@ -94,10 +93,10 @@ void UIUGCCubeBillDialog::OnLoadComplete()
     {
         MS2Ptr<Unk_UcbButton> spBuy = FUN_140bb4b10("m_buy");
         if (spBuy.get() != 0)
-            spBuy->FUN_1422cdfb0(CStringW(L"$s_common_confirm"));
+            spBuy->FUN_1422cdfb0(L"$s_common_confirm");
         MS2Ptr<ASTextField> spTitle = FUN_140bb4cf0("m_title");
         if (spTitle.get() != 0)
-            spTitle->FUN_1422c4cd0(CStringW(L"$s_ugc_cube_bill_title_calculate"));
+            spTitle->FUN_1422c4cd0(L"$s_ugc_cube_bill_title_calculate");
         if (s_cost.m_nKind == 3)
             strDesc = FUN_140938ae0(CStringW(L"s_home_bill_description_blueprint_preview"), s_cost.m_nArg);
     }
@@ -107,12 +106,12 @@ void UIUGCCubeBillDialog::OnLoadComplete()
     if (spDesc.get() != 0)
         spDesc->FUN_1422c4f00(strDesc);
     ASObj obj(2);
-    POSITION pos = s_cost.m_map.GetHeadPosition();
-    while (pos != 0)
+    for (POSITION pos = s_cost.m_map.GetHeadPosition(); pos != 0; s_cost.m_map.GetNext(pos))
     {
         int nPayType = s_cost.m_map.GetKeyAt(pos);
         __int64 nAmount = s_cost.m_map.GetValueAt(pos);
-        CStringW strAmount = FUN_1418fec00(nPayType, nAmount, 1);
+        bool bAlt = true;
+        CStringW strAmount = FUN_1418fec00(nPayType, nAmount, bAlt);
         if (nPayType == 1)
         {
             obj.FUN_1407cbb20("meso", CStringW(strAmount));
@@ -121,18 +120,15 @@ void UIUGCCubeBillDialog::OnLoadComplete()
         {
             obj.FUN_1407cbb20("bluemerat", CStringW(strAmount));
             bool bList = false;
-            if (!FUN_140166410()->FUN_14036d710(0x61))
+            if (!FUN_140166410()->FUN_14036d710(0x61) || !bAlt)
             {
                 std::vector<std::pair<int, __int64> > vecRows;
                 FUN_140930590(nAmount, vecRows);
                 if (!vecRows.empty())
                 {
-                    if (vecRows.size() < 2)
-                    {
-                        if (!FUN_140930200(vecRows[0].first))
-                            bList = true;
-                    }
-                    else
+                    if (vecRows.size() > 1)
+                        bList = true;
+                    else if (!FUN_140930200(vecRows[0].first))
                         bList = true;
                 }
                 if (bList)
@@ -140,9 +136,12 @@ void UIUGCCubeBillDialog::OnLoadComplete()
                     ASArray arrMerats(2);
                     for (size_t i = 0; i < vecRows.size(); ++i)
                     {
+                        std::pair<int, __int64>& kRow = vecRows[i];
+                        int nType = kRow.first;
+                        __int64 nMoney = kRow.second;
                         ASObj objRow(2);
-                        objRow.FUN_1407cbb20("name", FUN_1418fe5d0(vecRows[i].first));
-                        objRow.FUN_1407cbb20("money", FUN_1418fec00(3, vecRows[i].second, 1));
+                        objRow.FUN_1407cbb20("name", FUN_1418fe5d0(nType));
+                        objRow.FUN_1407cbb20("money", FUN_1418fec00(3, nMoney, bAlt));
                         arrMerats.FUN_1422bc050(objRow.FUN_1422bb870());
                     }
                     obj.FUN_140c16160("merats", ASArray(arrMerats));
@@ -153,7 +152,6 @@ void UIUGCCubeBillDialog::OnLoadComplete()
         {
             obj.FUN_1407cbb20("redmerat", CStringW(strAmount));
         }
-        s_cost.m_map.GetNext(pos);
     }
     m_30->FUN_140acd1f0("setData", AScript(obj));
 }
@@ -181,13 +179,12 @@ int UIUGCCubeBillDialog::vfunc_48()
 // ---- the message box answer, the packets and the purchase requests ----
 
 // The pending item the bill is for (the answer of a message box).
-// MS2-FUNCTIONAL: the empty-name temporary is bound through an extra pointer slot (frame 0x58 against 0x48)
 // @0x140ee8610
 void FUN_140ee8610(MS2Ptr<CItem> spItem)
 {
     if (spItem == 0)
         return;
-    int nResult = DAT_143ab2a90.FUN_140a63880(spItem.get(), CStringW(L""));
+    int nResult = DAT_143ab2a90.FUN_140a63880(spItem.get(), L"");
     if (nResult != 0)
     {
         FUN_1403ed2b0()->FUN_141adc690((eUIClassID)0x4f29);

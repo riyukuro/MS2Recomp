@@ -91,12 +91,24 @@ public:
 };
 
 // The animation service: an animation name resolves to the model's sequence id (the config's sentinel without one).
+// The owner's model key (returned by value: no ctor, the exe leaves the slot unset before the call).
+struct Unk_TalkModelKey
+{
+    unsigned __int64 m_n;
+};
 class Unk_TalkAnimSvc
 {
 public:
-    int FUN_140999490(const egf::EntityID& kId, const efd::utf8string& strName);
+    int FUN_140999490(const Unk_TalkModelKey& kKey, const Unk_TalkString& strName);
 };
 Unk_TalkAnimSvc* FUN_1413f9b10();
+// The owner as vfunc_4 calls it: the key by value and the animation name as the out-of-line string.
+class Unk_TalkActor
+{
+public:
+    Unk_TalkModelKey FUN_14123c460();                      // 0x14123c460 the model key
+    bool FUN_14166dd20(const Unk_TalkString& strAnim, float fSpeed, bool bA, bool bB);   // 0x14166dd20 play animation
+};
 unsigned int FUN_1409a1a00(NiActorManager* pActor);        // 0x1409a1a00 the actor's playing sequence id
 
 // The owner's play-actor component (pcbase.cpp owns the full one) and its flag.
@@ -110,16 +122,16 @@ extern Vector3 DAT_143b01a60;                      // 0x143b01a60 the zero point
 // The effect-spawn request (0x70 bytes; ctor 0x140a52ef0, dtor 0x1405a89e0) and the manager that takes it.
 struct Unk_TalkEffectReq
 {
+    Unk_TalkEffectReq();                                   // 0x140a52ef0
+    ~Unk_TalkEffectReq();                                  // 0x1405a89e0
     CString m_strName;                                     // +0x00
     int m_nObject;                                         // +0x08
     int m_pad_0c;
     void* m_pSlot10;                                       // +0x10
-    char m_pad_18[0x58];
+    void* m_pad_18[11];
 };
 MS2_CHECK_SIZE(Unk_TalkEffectReq, 0x70);
 MS2_CHECK_OFFSET(Unk_TalkEffectReq, m_nObject, 0x08);
-void FUN_140a52ef0(Unk_TalkEffectReq* p);                  // construct
-void FUN_1405a89e0(Unk_TalkEffectReq* p);                  // destroy
 void FUN_140a53190(Unk_TalkEffectReq* p, int nObject);     // bind the object
 class Unk_TalkEffectMgr
 {
@@ -152,23 +164,18 @@ void StateTalk::vfunc_4(StateData* pData)
     Unk_CinNpc* pNpc = FUN_140967100()->FUN_141b21350();
     int bFirst = 0;
     int bSecond = 0;
-    bool bTalk = false;
-    if (pNpc != 0)
-    {
-        Unk_TalkNpcDataPtr kData = pNpc->FUN_141093270();
-        bTalk = kData.FUN_140965990()->m_bTalkable != 0;
-    }
+    bool bTalk = pNpc != 0 && pNpc->FUN_141093270().FUN_140965990()->m_bTalkable != 0;
     if (FUN_1417b8560())
     {
         {
-            egf::EntityID kId;
             Unk_TalkString strFirst(m_pOwner->vfunc_123(0x2d));
-            bFirst = pAnim->FUN_140999490(m_pOwner->FUN_14123c460(kId), strFirst) != (int)NiActorManager::INVALID_SEQUENCE_ID;
+            bFirst = pAnim->FUN_140999490(reinterpret_cast<Unk_TalkActor*>(m_pOwner)->FUN_14123c460(), strFirst)
+                != (int)NiActorManager::INVALID_SEQUENCE_ID;
         }
         {
-            egf::EntityID kId;
             Unk_TalkString strSecond(m_pOwner->vfunc_123(0x2e));
-            bSecond = pAnim->FUN_140999490(m_pOwner->FUN_14123c460(kId), strSecond) != (int)NiActorManager::INVALID_SEQUENCE_ID;
+            bSecond = pAnim->FUN_140999490(reinterpret_cast<Unk_TalkActor*>(m_pOwner)->FUN_14123c460(), strSecond)
+                != (int)NiActorManager::INVALID_SEQUENCE_ID;
         }
         MyPC* pPlayer = FUN_1417b84b0();
         if (pPlayer != 0 && FUN_14165f100(pPlayer) != 0)
@@ -178,13 +185,13 @@ void StateTalk::vfunc_4(StateData* pData)
     {
         m_n10 = 0x47;
         Unk_TalkString strPlay(m_pOwner->vfunc_123(0x2d));
-        m_pOwner->FUN_14166dd20(strPlay, 1.0f, true, false);
+        reinterpret_cast<Unk_TalkActor*>(m_pOwner)->FUN_14166dd20(strPlay, 1.0f, true, false);
     }
     else
     {
         m_n10 = 0x49;
         Unk_TalkString strPlay(m_pOwner->vfunc_123(0));
-        m_pOwner->FUN_14166dd20(strPlay, 1.0f, false, false);
+        reinterpret_cast<Unk_TalkActor*>(m_pOwner)->FUN_14166dd20(strPlay, 1.0f, false, false);
     }
     m_n40 = m_n10;
 }
@@ -216,15 +223,15 @@ void StateTalk::vfunc_9(double fTime)
     State::vfunc_9(fTime);
     if (FUN_1417b8560() && FUN_1417fca20())
     {
-        if (m_pOwner->vfunc_85().get() != 0 && FUN_140f48d40(m_pOwner->vfunc_85().operator->()) != 0)
+        if ((m_pOwner->vfunc_85().get() ? true : false) && FUN_140f48d40(m_pOwner->vfunc_85().operator->()) != 0)
         {
             Unk_TalkString strAnim(m_pOwner->vfunc_123(0x2e));
-            m_pOwner->FUN_14166dd20(strAnim, 1.0f, false, false);
+            m_pOwner->FUN_14166dd20(*(const efd::utf8string*)strAnim.m_buf, 1.0f, false, false);
         }
         else
         {
             Unk_TalkString strAnim(m_pOwner->vfunc_123(0x2f));
-            m_pOwner->FUN_14166dd20(strAnim, 1.0f, false, false);
+            m_pOwner->FUN_14166dd20(*(const efd::utf8string*)strAnim.m_buf, 1.0f, false, false);
         }
     }
     if (m_n40 != m_n10)
@@ -232,25 +239,19 @@ void StateTalk::vfunc_9(double fTime)
         FUN_1403ed280()->FUN_1411a6060(m_n44);
         if (m_n10 == 0x4a)
         {
-            alignas(8) char kReqBuf[sizeof(Unk_TalkEffectReq)];   // FUN_140a52ef0 / FUN_1405a89e0 construct and destroy it: no implicit dtor
-            Unk_TalkEffectReq& kReq = *reinterpret_cast<Unk_TalkEffectReq*>(kReqBuf);
-            FUN_140a52ef0(&kReq);
+            Unk_TalkEffectReq kReq;
             kReq.m_strName = *(const CString*)((const char*)FUN_1401d31f0() + 0x290);
             kReq.m_nObject = 0;
             FUN_140a53190(&kReq, m_pOwner->FUN_14123c580());
             m_n44 = FUN_1403ed280()->FUN_1411a49c0(&kReq);
-            FUN_1405a89e0(&kReq);
         }
         else if (m_n10 == 0x4b)
         {
-            alignas(8) char kReqBuf[sizeof(Unk_TalkEffectReq)];   // FUN_140a52ef0 / FUN_1405a89e0 construct and destroy it: no implicit dtor
-            Unk_TalkEffectReq& kReq = *reinterpret_cast<Unk_TalkEffectReq*>(kReqBuf);
-            FUN_140a52ef0(&kReq);
+            Unk_TalkEffectReq kReq;
             kReq.m_strName = *(const CString*)((const char*)FUN_1401d31f0() + 0x298);
             kReq.m_nObject = 0;
             FUN_140a53190(&kReq, m_pOwner->FUN_14123c580());
             m_n44 = FUN_1403ed280()->FUN_1411a49c0(&kReq);
-            FUN_1405a89e0(&kReq);
         }
         m_n40 = m_n10;
     }
@@ -281,7 +282,7 @@ void StateTalk::EndOfSequence(NiActorManager* pkManager, unsigned int eSequenceI
 
 // The phase is neither "wait for a talkable npc" (0x47) nor "nothing to talk to" (0x49).
 // @0x1417fca20
-bool StateTalk::FUN_1417fca20()
+int StateTalk::FUN_1417fca20()
 {
     return m_n10 != 0x47 && m_n10 != 0x49;
 }
@@ -327,15 +328,15 @@ void StateTalkNpc::vfunc_4(StateData* pData)
     {
         m_n10 = 0x48;
         Unk_TalkString strAnim(m_pOwner->vfunc_123(0x2e));
-        if (FUN_14096ad40(strAnim) || !m_pOwner->FUN_141679220(FUN_1408ac310(strAnim)))
+        if (FUN_14096ad40(*(const efd::utf8string*)strAnim.m_buf) || !m_pOwner->FUN_141679220(FUN_1408ac310(*(const efd::utf8string*)strAnim.m_buf)))
             strAnim = m_pOwner->vfunc_123(0);
-        m_pOwner->FUN_14166dd20(strAnim, 1.0f, false, false);
+        m_pOwner->FUN_14166dd20(*(const efd::utf8string*)strAnim.m_buf, 1.0f, false, false);
     }
     else
     {
         m_n10 = 0x49;
         Unk_TalkString strAnim(m_pOwner->vfunc_123(0));
-        m_pOwner->FUN_14166dd20(strAnim, 1.0f, false, false);
+        m_pOwner->FUN_14166dd20(*(const efd::utf8string*)strAnim.m_buf, 1.0f, false, false);
     }
 }
 

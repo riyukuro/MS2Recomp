@@ -129,7 +129,7 @@ public:
         void RestoreUid(__int64 nUid);                          // 0x140ccfba0
         void CommitSlot(Unk_InventoryEquipSlot eSlot);          // 0x140ccfc90
         void RestoreSlot(Unk_InventoryEquipSlot eSlot);         // 0x140ccfee0
-        void GetModified(__int64 nUid, MS2Ptr<CItem>& spOut);   // 0x140ccffd0
+        bool GetModified(__int64 nUid, MS2Ptr<CItem>& spOut);   // 0x140ccffd0
         void Apply(MS2Ptr<CItem> spItem, Unk_InventoryEquipSlot eSlot);     // 0x140cd0270
         void Equip(CItem* pItem);                               // 0x140cd03d0
         void EquipId(int nItemId);                              // 0x140cd04f0

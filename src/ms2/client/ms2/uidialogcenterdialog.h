@@ -42,7 +42,7 @@ public:
     void SendSetDebugModeMode9(CString strPath);                // close the trigger debug window of a path
     MS2Ptr<Unk_140acd6e0> FUN_141296150(int nRow, int nColumn, CStringW strLabel);   // create the button of a grid cell
     void FUN_141296370(int nRow, int nColumn, CString strKey, int nDialogId);        // a button that opens a dialog
-    void FUN_141296500(int nRow, int nColumn, CString strKey, Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)> cb);   // a button with a callback
+    void FUN_141296500(int nRow, int nColumn, CString strKey, const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb);   // a button with a callback
 
 private:
     MS2_LAYOUT_FRIEND;

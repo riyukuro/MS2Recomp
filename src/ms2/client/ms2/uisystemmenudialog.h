@@ -33,7 +33,7 @@ public:
     void FUN_141b13880(const Scaleform::GFx::FunctionHandler::Params& params);   // the leave click of a normal field
     void FUN_141b13b00(const Scaleform::GFx::FunctionHandler::Params& params);   // the leave click of a home (forwards)
     void FUN_141b13b30();                               // leave the home: ask first when the build is not saved
-    void FUN_141b144f0(char b);                         // set the red circle flag
+    void FUN_141b144f0(bool b);                         // set the red circle flag
     bool FUN_141b14510(int nResult, const CMsgBoxData& data);   // answer of the leave box
     void FUN_141b14560(int nPage);                      // open the option dialog at a page
     void FUN_141b145c0();
@@ -47,7 +47,7 @@ private:
     MS2_LAYOUT_FRIEND;
     int m_180;                                          // +0x180 the selected channel
     MS2Ptr<Unk_140acd6e0> m_188;                        // +0x188 "m_exitRoom"
-    char m_198;                                         // +0x198 the system option notify red circle
+    bool m_198;                                         // +0x198 the system option notify red circle
 };
 MS2_CHECK_SIZE(UISystemMenuDialog, 0x1a0);
 MS2_CHECK_OFFSET(UISystemMenuDialog, m_180, 0x180);

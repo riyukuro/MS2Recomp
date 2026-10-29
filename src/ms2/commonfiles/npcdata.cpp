@@ -108,7 +108,6 @@ Unk_NpcModel::Unk_NpcModel() : m_fScale(1.0f), m_fAniSpeed(1.0f), m_nSpawnAlphaA
 }
 
 // @0x1406c8990
-// MS2-FUNCTIONAL: frame is 2 bytes larger in the exe (the zero Vector3 temp / Unk_NpcPoint3 temp placement)
 void Unk_NpcModel::WriteXml(Unk_140165cf0* pParent) const
 {
     static Unk_NpcModel s_default;
@@ -124,7 +123,7 @@ void Unk_NpcModel::WriteXml(Unk_140165cf0* pParent) const
         if (m_nSpawnAlphaAnimation != 1)
             FUN_140873ca0(&elem, "spawnAlphaAnimation", m_nSpawnAlphaAnimation);
         if (m_vOffset.FUN_140552700(Vector3(0.0f, 0.0f, 0.0f)))
-            FUN_140874ad0(&elem, "offset", Unk_NpcPoint3(m_vOffset));
+            FUN_140874ad0(&elem, "offset", m_vOffset);
         FUN_14086e000(pParent, &elem);
     }
 }
@@ -1216,7 +1215,6 @@ void CNpcDataTable::IndexRegionSpawn(Unk_BmPtr<CNpcRegionSpawnData> pData)
 }
 
 // @0x1406ce4a0
-// MS2-FUNCTIONAL: frame order of the CCacheData temps; map ICF copies resolve to other VAs
 void CNpcDataTable::LoadNpcCache()
 {
     std::vector<CString> aFiles;
@@ -1225,9 +1223,8 @@ void CNpcDataTable::LoadNpcCache()
     for (CString& strFile : aFiles)
     {
         int nNpcId = GetIdFromPath(strFile);
-        m_mapLoaded[nNpcId] = false;
-        CCacheData* pCache = new CCacheData(CString(strFile));
-        m_mapCache[nNpcId].AssignRaw(pCache);
+        m_mapLoaded[reinterpret_cast<const unsigned long&>(nNpcId)] = false;
+        m_mapCache[reinterpret_cast<const unsigned&>(nNpcId)].AssignRaw(new CCacheData(CString(strFile)));
     }
 }
 
@@ -1291,11 +1288,10 @@ int CNpcDataTable::GetIdFromPath(const CStringA& strPath)
 MS2_REPLACE_METHOD(0x1406CED30, CNpcDataTable, GetIdFromPath, 112, 0x47CCD196);
 
 // @0x1406cedb0
-// MS2-FUNCTIONAL: frame/temp order of the lock and MS2Ptr; map<unsigned,...> find ICF copies resolve to other VAs
 bool CNpcDataTable::NeedsLoad(int nNpcId)
 {
     Unk_CriticalSectionLock lock(m_lock, 1);
-    std::map<unsigned, MS2Ptr<CCacheData> >::iterator it = m_mapCache.find(nNpcId);
+    std::map<unsigned, MS2Ptr<CCacheData> >::iterator it = m_mapCache.find(reinterpret_cast<const unsigned&>(nNpcId));
     if (it == m_mapCache.end())
         return false;
     MS2Ptr<CCacheData> pCache = it->second;
@@ -1303,10 +1299,12 @@ bool CNpcDataTable::NeedsLoad(int nNpcId)
         return false;
     if (FUN_1401d1320(pCache.get()) != 0)
         return true;
-    std::map<unsigned long, bool>::iterator itLoaded = m_mapLoaded.find(nNpcId);
+    std::map<unsigned long, bool>::iterator itLoaded = m_mapLoaded.find(reinterpret_cast<const unsigned long&>(nNpcId));
     if (itLoaded == m_mapLoaded.end())
         return false;
-    return itLoaded->second != true;
+    if (itLoaded->second == true)
+        return false;
+    return true;
 }
 
 // @0x1406cefb0
@@ -1401,7 +1399,7 @@ void FUN_14015f050(const CString& str, ATL::CAtlArray<CString>& arr, const char*
 
 // The boss notify table (the pc bang style handle table): a handle lookup by (mode, npc id), then a per-node test.
 struct Unk_BossNotifyHandle { ~Unk_BossNotifyHandle(); unsigned long long m_a, m_b; };    // dtor 0x1403b87a0
-struct Unk_BossNotifyNode { char FUN_1403b8910(int n); };
+struct Unk_BossNotifyNode { bool FUN_1403b8910(int n); };
 class Unk_BossNotifyMgr
 {
 public:
@@ -1469,21 +1467,26 @@ bool CNpcData::LoadXml(Unk_140165cf0* pElem)
     FUN_140873360(pElem, "bossSoundEndDistance", m_fBossSoundEndDistance);
     if (FUN_14036d570(FUN_140166410(), 0x2f))
     {
-        if (FUN_140541580() == 0)
-            m_bBossNotifyDefault = 0;
-        else if (GetFriendly() < 1)
+        if (FUN_140541580() != 0)
         {
-            Unk_BossNotifyHandle handle;
-            Unk_BossNotifyNode* pNode = FUN_140541580()->FUN_1403b7c40(&handle, 2, GetId());
-            m_bBossNotifyDefault = pNode->FUN_1403b8910(0);
-            FUN_140541580()->FUN_1403b7d30(GetId(), m_nClass);
+            if (GetFriendly() > 0)
+            {
+                Unk_BossNotifyHandle handle;
+                Unk_BossNotifyNode* pNode = FUN_140541580()->FUN_1403b7c40(&handle, 1, GetId());
+                m_bBossNotifyDefault = pNode->FUN_1403b8910(0);
+            }
+            else
+            {
+                {
+                    Unk_BossNotifyHandle handle;
+                    Unk_BossNotifyNode* pNode = FUN_140541580()->FUN_1403b7c40(&handle, 2, GetId());
+                    m_bBossNotifyDefault = pNode->FUN_1403b8910(0);
+                }
+                FUN_140541580()->FUN_1403b7d30(GetId(), m_nClass);
+            }
         }
         else
-        {
-            Unk_BossNotifyHandle handle;
-            Unk_BossNotifyNode* pNode = FUN_140541580()->FUN_1403b7c40(&handle, 1, GetId());
-            m_bBossNotifyDefault = pNode->FUN_1403b8910(0);
-        }
+            m_bBossNotifyDefault = 0;
     }
     FUN_1408730a0(pElem, "bossNotify", m_bBossNotify);
     FUN_140873220(pElem, "emotionID", m_nEmotionId);
@@ -1495,7 +1498,7 @@ bool CNpcData::LoadXml(Unk_140165cf0* pElem)
 
     std::vector<CString> propertyTags;
     FUN_1406cfaa0(pElem, "propertyTags", propertyTags);
-    MS2_FOR_EACH(CStringA strTag, propertyTags)
+    for (CStringA strTag : propertyTags)
     {
         int nTag = Unk_ParsePropertyTag(strTag);
         if (nTag != 0)
@@ -1503,7 +1506,7 @@ bool CNpcData::LoadXml(Unk_140165cf0* pElem)
     }
     std::vector<CString> eventTags;
     FUN_1406cfaa0(pElem, "eventTags", eventTags);
-    MS2_FOR_EACH(CStringA strTag, eventTags)
+    for (CStringA strTag : eventTags)
     {
         int nTag = FUN_14021bc30(strTag);
         if (nTag != 0)
@@ -1568,8 +1571,10 @@ bool CNpcData::LoadXml(Unk_140165cf0* pElem)
     pChild = pElem->FUN_140165cf0("additionalEffect");
     if (pChild)
     {
-        FUN_140177e10(FUN_14015f710(pChild, "codes", CString("")), m_effect.m_aCodes, ",");
-        FUN_140177db0(FUN_14015f710(pChild, "levels", CString("")), m_effect.m_aLevels, ",");
+        CString strCodes = FUN_14015f710(pChild, "codes", CString(""));
+        FUN_140177e10(strCodes, m_effect.m_aCodes, ",");
+        CString strLevels = FUN_14015f710(pChild, "levels", CString(""));
+        FUN_140177db0(strLevels, m_effect.m_aLevels, ",");
         CString strGroup = FUN_14015f710(pChild, "group", CString(""));
         std::vector<CString> groups;
         FUN_1402c8940(strGroup, groups, ":");
@@ -1577,11 +1582,15 @@ bool CNpcData::LoadXml(Unk_140165cf0* pElem)
         {
             std::vector<int> pair;
             FUN_140178270(groups[i], pair, ",");
-            if (pair.size() == 2)
-                m_effect.m_aGroups.push_back(std::pair<int, int>(pair[0], pair[1]));
+            if (pair.size() != 2)
+                continue;
+            std::pair<int, int> group(pair[0], pair[1]);
+            m_effect.m_aGroups.push_back(group);
         }
-        FUN_140177e10(FUN_14015f710(pChild, "rewardCodes", CString("")), m_effect.m_aRewardCodes, ",");
-        FUN_140177db0(FUN_14015f710(pChild, "rewardLevels", CString("")), m_effect.m_aRewardLevels, ",");
+        CString strRewardCodes = FUN_14015f710(pChild, "rewardCodes", CString(""));
+        FUN_140177e10(strRewardCodes, m_effect.m_aRewardCodes, ",");
+        CString strRewardLevels = FUN_14015f710(pChild, "rewardLevels", CString(""));
+        FUN_140177db0(strRewardLevels, m_effect.m_aRewardLevels, ",");
     }
     pChild = pElem->FUN_140165cf0("interact");
     if (pChild)
@@ -1606,10 +1615,8 @@ bool CNpcData::LoadXml(Unk_140165cf0* pElem)
     pChild = pElem->FUN_140165cf0("nodeCollisions");
     if (pChild)
     {
-        Unk_140165cf0* nodes = pChild->FUN_140165cf0("collision");
-        for (Unk_XmlElementIterator it = begin(nodes), itEnd = end(nodes); it != itEnd; ++it)
+        for (Unk_140165cf0* pNode : pChild->FUN_140165cf0("collision"))
         {
-            Unk_140165cf0* pNode = *it;
             MS2Ptr<NodeCollision> spNode(new NodeCollision);
             FUN_1408733e0(pNode, "targetNode", spNode->m_strTargetNode);
             FUN_140874670(pNode, "volume", spNode->m_vVolume);
@@ -1620,10 +1627,8 @@ bool CNpcData::LoadXml(Unk_140165cf0* pElem)
     pChild = pElem->FUN_140165cf0("nodeServerCollisions");
     if (pChild)
     {
-        Unk_140165cf0* nodes = pChild->FUN_140165cf0("collision");
-        for (Unk_XmlElementIterator it = begin(nodes), itEnd = end(nodes); it != itEnd; ++it)
+        for (Unk_140165cf0* pNode : pChild->FUN_140165cf0("collision"))
         {
-            Unk_140165cf0* pNode = *it;
             MS2Ptr<NodeCollision> spNode(new NodeCollision);
             FUN_140874670(pNode, "volume", spNode->m_vVolume);
             FUN_140874670(pNode, "offset", spNode->m_vOffset);
@@ -1661,13 +1666,7 @@ bool CNpcData::LoadXml(Unk_140165cf0* pElem)
         FUN_140873360(pChild, "knockback", m_push.m_fKnockback);
     }
     pChild = pElem->FUN_140165cf0("normal");
-    if (pChild == 0)
-    {
-        int nProb = 1;
-        m_normal.m_aActions.Add(std::make_pair("Idle_A", nProb));
-        m_normal.m_nMoveArea = 200;
-    }
-    else
+    if (pChild != 0)
     {
         CString strAction = FUN_14015f710(pChild, "action", CString(""));
         CString strProb = FUN_14015f710(pChild, "prob", CString(""));
@@ -1685,6 +1684,12 @@ bool CNpcData::LoadXml(Unk_140165cf0* pElem)
             m_normal.m_aActions.Add(std::make_pair(CStringA(FUN_14016a5c0(actions[i], 0)), (int)probs[i]));
         if (FUN_1408731e0(pChild, "movearea", m_normal.m_nMoveArea) != 0)
             m_normal.m_nMoveArea = 200;
+    }
+    else
+    {
+        int nProb = 1;
+        m_normal.m_aActions.Add(std::make_pair("Idle_A", nProb));
+        m_normal.m_nMoveArea = 200;
     }
     pChild = pElem->FUN_140165cf0("dropiteminfo");
     if (pChild)

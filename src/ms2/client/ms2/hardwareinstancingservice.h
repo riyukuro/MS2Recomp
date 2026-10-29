@@ -143,7 +143,7 @@ public:
     MeshInstancing* FUN_1413d6770(const Unk_MeshInstancingConfig& rConfig);
     NiNode* FUN_1413d6840(egf::Entity* pEntity);
     int FUN_1413d6890(egf::Entity* pEntity);                       // is the entity excluded
-    bool FUN_1413d68d0(egf::Entity* pEntity);
+    int FUN_1413d68d0(egf::Entity* pEntity);
     bool FUN_1413d6920();
     void FUN_1413d69b0(const egf::EntityID& id);
     void FUN_1413d6ab0(bool bShow);

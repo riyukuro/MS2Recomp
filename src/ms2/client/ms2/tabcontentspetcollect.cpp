@@ -5,7 +5,6 @@
 // MS2-GUESS-LOOKALIKES
 // MS2-PINS-BEGIN tplpin
 // MS2-PIN: ??C?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$vector@IV?$allocator@I@std@@@std@@@std@@@std@@@std@@@std@@QEBAPEAU?$pair@$$CBHV?$vector@IV?$allocator@I@std@@@std@@@1@XZ 0x140cb1710
-// MS2-PIN: ??C?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBII@std@@@std@@@std@@@std@@QEBAPEAU?$pair@$$CBII@1@XZ 0x140cb1730
 // MS2-PIN: ??$?RAEAIAEAI@?$less@X@std@@QEBA_NAEAI0@Z 0x140caef70 ; prop
 // MS2-PIN: ??$?RAEAIAEBI@?$less@X@std@@QEBA_NAEAIAEBI@Z 0x140caefb0 ; prop
 // MS2-PIN: ??$?RAEBIAEAI@?$less@X@std@@QEBA_NAEBIAEAI@Z 0x140caeff0 ; prop
@@ -143,6 +142,7 @@ CFieldMetaTable* FUN_140700390();
 struct Unk_PetBoxVector
 {
     Unk_PetBoxVector(const Vector3& pt);                        // 0x14027dcf0
+    Unk_PetBoxVector& operator+=(const Unk_PetBoxVector&);      // 0x140a4e560
     float x, y, z;
 };
 struct Unk_PetBoxCameraData
@@ -151,7 +151,8 @@ struct Unk_PetBoxCameraData
     void FUN_141b48670();
     Unk_PetBoxVector eye, target;
     float f18, f1c, f20;
-    int n24, n28, n2c;
+    float f24;
+    int n28, n2c;
 };
 MS2_CHECK_SIZE(Unk_PetBoxCameraData, 0x30);
 float FUN_141b48480(int a, int b);
@@ -171,6 +172,29 @@ public:
     virtual void vfunc_5(); virtual void vfunc_6(); virtual void vfunc_7(); virtual void vfunc_8(); virtual void vfunc_9();
     virtual void vfunc_10(); virtual void vfunc_11(); virtual void vfunc_12();
     virtual void vfunc_13(const Unk_PetBoxCameraData&);
+};
+// Camera smart pointer returned by value from the avatar (dtor and operator-> are exe COMDATs).
+class Unk_PcCameraPtr
+{
+public:
+    ~Unk_PcCameraPtr();                                                 // 0x140cb1460
+    Unk_PcCamera* operator->() const;                                   // 0x1409f7910
+private:
+    Unk_PcCamera* m_p;
+};
+MS2_CHECK_SIZE(Unk_PcCameraPtr, 8);
+// Vtable view of the pet avatar for the four-argument load (slot 28) and the camera accessor.
+class Unk_PcAvatarView
+{
+public:
+    virtual void vfunc_0(); virtual void vfunc_1(); virtual void vfunc_2(); virtual void vfunc_3(); virtual void vfunc_4();
+    virtual void vfunc_5(); virtual void vfunc_6(); virtual void vfunc_7(); virtual void vfunc_8(); virtual void vfunc_9();
+    virtual void vfunc_10(); virtual void vfunc_11(); virtual void vfunc_12(); virtual void vfunc_13(); virtual void vfunc_14();
+    virtual void vfunc_15(); virtual void vfunc_16(); virtual void vfunc_17(); virtual void vfunc_18(); virtual void vfunc_19();
+    virtual void vfunc_20(); virtual void vfunc_21(); virtual void vfunc_22(); virtual void vfunc_23(); virtual void vfunc_24();
+    virtual void vfunc_25(); virtual void vfunc_26(); virtual void vfunc_27();
+    virtual void vfunc_28(void*, TPtr<Unk_UISwfEntity_25>, void*, void*);
+    Unk_PcCameraPtr FUN_1418b9bc0();
 };
 
 extern Vector3 DAT_143b01a60;
@@ -205,22 +229,19 @@ void TabContentsPetCollect::vfunc_1()
 MS2_REPLACE_METHOD(0x140cac660, TabContentsPetCollect, vfunc_1, 45, 0x6E5BA69C);
 
 // @0x140cac6a0
-// MS2-FUNCTIONAL: frame/temporary layout and std-glue ordering differ from the exe (semantics recovered, bytes not identical)
 void TabContentsPetCollect::FUN_140cac6a0()
 {
     if (m_ui == 0)
         return;
     {
-        std::map<unsigned, unsigned>& rPets = FUN_14052d210()->GetCollect()->PetGroups();
+        std::map<DWORD, int>& rPets = FUN_14052d210()->GetCollect()->PetGroups();
         int nCount = 0;
-        std::map<unsigned, unsigned>::iterator it = rPets.begin();
-        std::map<unsigned, unsigned>::iterator itEnd = rPets.end();
-        while (it != itEnd)
+        for (std::map<DWORD, int>::iterator it = rPets.begin(), itEnd = rPets.end(); it != itEnd; ++it)
         {
             int nGrade = FUN_140535320()->FUN_140c8b220(it->first);
-            if (nGrade != 0)
-                nCount = nCount + 1;
-            ++it;
+            if (nGrade == 0)
+                continue;
+            nCount = nCount + 1;
         }
         CStringW strTotal = FUN_14062b4f0(CStringW(L"s_pet_collect_collect_total_cout"), nCount);
         ASObj obj(2);
@@ -231,7 +252,6 @@ void TabContentsPetCollect::FUN_140cac6a0()
 MS2_REPLACE_METHOD(0x140cac6a0, TabContentsPetCollect, FUN_140cac6a0, 499, 0x720B4B54);
 
 // @0x140cac8a0
-// MS2-FUNCTIONAL: frame/temporary layout and std-glue ordering differ from the exe (semantics recovered, bytes not identical)
 void TabContentsPetCollect::FUN_140cac8a0()
 {
     if (m_ui == 0)
@@ -239,23 +259,20 @@ void TabContentsPetCollect::FUN_140cac8a0()
     {
         ASArray arrTabs(2);
         ASObj objAll(2);
-        objAll.FUN_1407cbb20("tabName", GetStringCommonByKey(CStringW(L"s_pet_collect_total_category")));
+        objAll.FUN_1407cbb20("tabName", GetStringCommonByKey(L"s_pet_collect_total_category"));
         objAll.FUN_1407cb9c0("groupId", 0);
         arrTabs.FUN_1422bc050(Scaleform::GFx::Value(objAll.FUN_1422bb870()));
         std::map<int, std::vector<unsigned> >& rGroups = FUN_14052d210()->GetCollect()->GroupPets();
-        std::map<int, std::vector<unsigned> >::iterator it = rGroups.begin();
-        std::map<int, std::vector<unsigned> >::iterator itEnd = rGroups.end();
-        while (it != itEnd)
+        for (std::map<int, std::vector<unsigned> >::iterator it = rGroups.begin(), itEnd = rGroups.end(); it != itEnd; ++it)
         {
             PetGroupInfoPtr spInfo = FUN_14052d210()->GetCollect()->Find(it->first);
-            if (!(spInfo == 0))
-            {
-                ASObj objTab(2);
-                objTab.FUN_1407cbb20("tabName", GetStringTable()->FUN_141811980(0x41, it->first));
-                objTab.FUN_1407cb9c0("groupId", it->first);
-                arrTabs.FUN_1422bc050(Scaleform::GFx::Value(objTab.FUN_1422bb870()));
-            }
-            ++it;
+            if (spInfo == 0)
+                continue;
+            ASObj objTab(2);
+            CStringW strName = GetStringTable()->FUN_141811980(0x41, it->first);
+            objTab.FUN_1407cbb20("tabName", strName);
+            objTab.FUN_1407cb9c0("groupId", it->first);
+            arrTabs.FUN_1422bc050(Scaleform::GFx::Value(objTab.FUN_1422bb870()));
         }
         PC(m_ui)->FUN_140caf140("setupGroup", ASArray(arrTabs));
     }
@@ -263,7 +280,6 @@ void TabContentsPetCollect::FUN_140cac8a0()
 MS2_REPLACE_METHOD(0x140cac8a0, TabContentsPetCollect, FUN_140cac8a0, 900, 0x331C65CF);
 
 // @0x140cacc30
-// MS2-FUNCTIONAL: frame/temporary layout and std-glue ordering differ from the exe (semantics recovered, bytes not identical)
 void TabContentsPetCollect::FUN_140cacc30()
 {
     if (m_ui == 0)
@@ -271,12 +287,9 @@ void TabContentsPetCollect::FUN_140cacc30()
     {
         FUN_140cacce0();
         std::map<int, std::vector<unsigned> >& rGroups = FUN_14052d210()->GetCollect()->GroupPets();
-        std::map<int, std::vector<unsigned> >::iterator it = rGroups.begin();
-        std::map<int, std::vector<unsigned> >::iterator itEnd = rGroups.end();
-        while (it != itEnd)
+        for (std::map<int, std::vector<unsigned> >::iterator it = rGroups.begin(), itEnd = rGroups.end(); it != itEnd; ++it)
         {
             FUN_140cad2b0(it->first);
-            ++it;
         }
     }
 }
@@ -288,99 +301,85 @@ MS2_REPLACE_METHOD(0x140cacc30, TabContentsPetCollect, FUN_140cacc30, 166, 0xC8B
         ASObj objPet(2); \
         const unsigned* pPet = &(vec)[i]; \
         MS2Ptr<CPetData> spPet = FUN_14052d210()->Find(*pPet); \
-        if (!(spPet == 0)) \
-        { \
-            MS2Ptr<Unk_PcNpcData> spNpc = FUN_1406cd330(spPet->GetId()); \
-            if (!(spNpc == 0)) \
-            { \
-                int nGrade = FUN_140535320()->FUN_140c8b220(*pPet); \
-                if (nGrade < 1 && !spPet->m_bCollectPreview) \
-                { \
-                } \
-                else \
-                { \
-                    CString strIcon; \
-                    MS2Ptr<CItemData> spData = FUN_14053f870(spPet->GetItemId(1)); \
-                    if (spData.get() != 0) \
-                        strIcon = spData->FUN_14053fdd0(); \
-                    objPet.FUN_1407cba60("iconPath", strIcon); \
-                    objPet.FUN_1409c0d20("petID", *pPet); \
-                    objPet.FUN_1407cb9c0("grade", nGrade); \
-                    arrPets.FUN_1422bc050(Scaleform::GFx::Value(objPet.FUN_1422bb870())); \
-                } \
-            } \
-        }
+        if (spPet == 0) \
+            continue; \
+        MS2Ptr<Unk_PcNpcData> spNpc = FUN_1406cd330(spPet->GetId()); \
+        if (spNpc == 0) \
+            continue; \
+        int nGrade = FUN_140535320()->FUN_140c8b220(*pPet); \
+        if (nGrade <= 0 && !spPet->m_bCollectPreview) \
+            continue; \
+        CString strIcon; \
+        MS2Ptr<CItemData> spData = FUN_14053f870(spPet->GetItemId(1)); \
+        if (spData.get() != 0) \
+            strIcon = spData->FUN_14053fdd0(); \
+        objPet.FUN_1407cba60("iconPath", strIcon); \
+        objPet.FUN_1409c0d20("petID", *pPet); \
+        objPet.FUN_1407cb9c0("grade", nGrade); \
+        arrPets.FUN_1422bc050(Scaleform::GFx::Value(objPet.FUN_1422bb870()));
 
 // @0x140cacce0
-// MS2-FUNCTIONAL: frame/temporary layout and std-glue ordering differ from the exe (semantics recovered, bytes not identical)
 void TabContentsPetCollect::FUN_140cacce0()
 {
     if (m_ui == 0)
         return;
+    std::map<int, std::vector<unsigned> >& rGroups = FUN_14052d210()->GetCollect()->GroupPets();
+    std::map<int, std::vector<unsigned> >::iterator it = rGroups.begin();
+    std::map<int, std::vector<unsigned> >::iterator itEnd = rGroups.end();
+    if (it == itEnd)
+        return;
+    ASObj objData(2);
+    objData.FUN_1407cb9c0("groupId", 0);
+    objData.FUN_1407cbb20("name", GetStringCommonByKey(L"s_pet_collect_total_category"));
+    ASArray arrPets(2);
+    for (; it != itEnd; ++it)
     {
-        std::map<int, std::vector<unsigned> >& rGroups = FUN_14052d210()->GetCollect()->GroupPets();
-        std::map<int, std::vector<unsigned> >::iterator it = rGroups.begin();
-        std::map<int, std::vector<unsigned> >::iterator itEnd = rGroups.end();
-        if (it == itEnd)
-            return;
+        std::vector<unsigned> vecPets(it->second);
+        std::stable_sort(vecPets.begin(), vecPets.end());
+        for (size_t i = 0; i < vecPets.size(); i++)
         {
-            ASObj objData(2);
-            objData.FUN_1407cb9c0("groupId", 0);
-            objData.FUN_1407cbb20("name", GetStringCommonByKey(CStringW(L"s_pet_collect_total_category")));
-            ASArray arrPets(2);
-            while (it != itEnd)
-            {
-                std::vector<unsigned> vecPets(it->second);
-                std::stable_sort(vecPets.begin(), vecPets.end());
-                for (size_t i = 0; i < vecPets.size(); i++)
-                {
-                    PC_PET_ROW(vecPets, i, arrPets)
-                }
-                ++it;
-            }
-            objData.FUN_140c16160("petArray", ASArray(arrPets));
-            PC(m_ui)->FUN_140caf030("setGroupData", 0, AScript(objData));
+            PC_PET_ROW(vecPets, i, arrPets)
         }
     }
+    objData.FUN_140c16160("petArray", ASArray(arrPets));
+    PC(m_ui)->FUN_140caf030("setGroupData", 0, AScript(objData));
 }
 MS2_REPLACE_METHOD(0x140cacce0, TabContentsPetCollect, FUN_140cacce0, 1482, 0xE2EFEB51);
 
 // @0x140cad2b0
-// MS2-FUNCTIONAL: frame/temporary layout and std-glue ordering differ from the exe (semantics recovered, bytes not identical)
 void TabContentsPetCollect::FUN_140cad2b0(int nGroup)
 {
-    if (m_ui == 0 || nGroup == 0)
+    if (m_ui == 0)
         return;
+    if (nGroup == 0)
+        return;
+    std::map<int, std::vector<unsigned> >& rGroups = FUN_14052d210()->GetCollect()->GroupPets();
+    std::map<int, std::vector<unsigned> >::iterator it = rGroups.find(nGroup);
+    if (it == rGroups.end())
+        return;
+    std::vector<unsigned> vecPets(it->second);
+    std::stable_sort(vecPets.begin(), vecPets.end());
+    ASObj objData(2);
+    objData.FUN_1407cb9c0("groupId", nGroup);
+    CStringW strName = GetStringTable()->FUN_141811980(0x41, it->first);
+    objData.FUN_1407cbb20("name", strName);
+    ASArray arrPets(2);
+    for (size_t i = 0; i < vecPets.size(); i++)
     {
-        std::map<int, std::vector<unsigned> >& rGroups = FUN_14052d210()->GetCollect()->GroupPets();
-        std::map<int, std::vector<unsigned> >::iterator it = rGroups.find(nGroup);
-        if (!(it == rGroups.end()))
-        {
-            std::vector<unsigned> vecPets(it->second);
-            std::stable_sort(vecPets.begin(), vecPets.end());
-            ASObj objData(2);
-            objData.FUN_1407cb9c0("groupId", nGroup);
-            objData.FUN_1407cbb20("name", GetStringTable()->FUN_141811980(0x41, it->first));
-            ASArray arrPets(2);
-            for (size_t i = 0; i < vecPets.size(); i++)
-            {
-                PC_PET_ROW(vecPets, i, arrPets)
-            }
-            objData.FUN_140c16160("petArray", ASArray(arrPets));
-            PC(m_ui)->FUN_140caf030("setGroupData", nGroup, AScript(objData));
-        }
+        PC_PET_ROW(vecPets, i, arrPets)
     }
+    objData.FUN_140c16160("petArray", ASArray(arrPets));
+    PC(m_ui)->FUN_140caf030("setGroupData", nGroup, AScript(objData));
 }
 MS2_REPLACE_METHOD(0x140cad2b0, TabContentsPetCollect, FUN_140cad2b0, 1499, 0x426002DC);
 
 // @0x140cad8a0
-// MS2-FUNCTIONAL: frame/temporary layout and std-glue ordering differ from the exe (semantics recovered, bytes not identical)
 void TabContentsPetCollect::FUN_140cad8a0(int nGroup)
 {
-    if (m_ui.get() == 0)
-        m_nGroup = nGroup;
-    else
+    if (m_ui.get() != 0)
         m_ui->Invoke("gotoIndexFromGroupId", nGroup);
+    else
+        m_nGroup = nGroup;
 }
 MS2_REPLACE_METHOD(0x140cad8a0, TabContentsPetCollect, FUN_140cad8a0, 106, 0x791F2E75);
 
@@ -397,16 +396,14 @@ MS2_REPLACE_METHOD(0x140cad910, TabContentsPetCollect, vfunc_4, 131, 0xAF0C3814)
 
 // @0x140cad9a0
 // The pet tooltip: name and grade, kind, level limit, where the pet is caught and its bag size.
-// MS2-FUNCTIONAL: frame/temporary layout and std-glue ordering differ from the exe (semantics recovered, bytes not identical)
 void TabContentsPetCollect::vfunc_5(void* pOut, void* pName, void* pData)
 {
-    if (!FUN_140184310(*static_cast<const CString*>(pName), "getTooltip"))
-        return;
-    ASData* pArgs = static_cast<ASData*>(pData);
-    CString strType = pArgs->FUN_1422b8d30();
+    if (FUN_140184310(*static_cast<const CString*>(pName), "getTooltip"))
+    {
+    CString strType = static_cast<ASData*>(pData)->FUN_1422b8d30();
     if (FUN_140184310(strType, "collect_pet"))
     {
-        int nPet = pArgs->FUN_1422b8a10();
+        int nPet = static_cast<ASData*>(pData)->FUN_1422b8a10();
         MS2Ptr<CPetData> spPet = FUN_14052d210()->Find(nPet);
         if (spPet == 0)
             return;
@@ -415,14 +412,14 @@ void TabContentsPetCollect::vfunc_5(void* pOut, void* pName, void* pData)
             return;
         int nGrade = FUN_140535320()->FUN_140c8b220(nPet);
         int nShown = nGrade;
-        if (nGrade == 0)
+        if (nShown == 0)
             nShown = 1;
         CStringW strTip = FUN_14183e9c0(FUN_1405c2690(CStringW(L"s_pet_collect_pet_tooltip_pet_name"),
             GetStringTable()->FUN_141811980(0x3b, spPet->GetId())), nShown);
         if (spPet->m_nType == 1)
-            strTip += GetStringCommonByKey(CStringW(L"s_pet_collect_pet_tooltip_battle_pet"));
+            strTip += GetStringCommonByKey(L"s_pet_collect_pet_tooltip_battle_pet");
         else if (spPet->m_nType == 0)
-            strTip += GetStringCommonByKey(CStringW(L"s_pet_collect_pet_tooltip_default_pet"));
+            strTip += GetStringCommonByKey(L"s_pet_collect_pet_tooltip_default_pet");
         if (0 < nGrade)
             strTip += FUN_1405c2690(CStringW(L"s_pet_collect_pet_tooltip_my_grade"), GetStringTable()->FUN_141813150(nGrade));
         strTip += FUN_140938ae0(CStringW(L"s_pet_collect_pet_tooltip_limit_level"), spData->limit.levelLimit);
@@ -434,23 +431,20 @@ void TabContentsPetCollect::vfunc_5(void* pOut, void* pName, void* pData)
             {
                 const unsigned* pField = &arrFields[i];
                 Unk_PcMapPtr spMap = FUN_140a55460(*pField);
-                if (!spMap.FUN_140965240(0))
-                {
-                    if (spMap.FUN_140885340()->m_b9c != 0)
-                    {
-                        unsigned nOut = 0;
-                        unsigned nKey = *pField;
-                        if (FUN_140700390()->FUN_1406fc110(*pField, &nOut) != 0)
-                            nKey = nOut;
-                        MS2Ptr<Unk_PcFieldInfo> spField = FUN_140cb17d0()->FUN_141b978e0(nKey);
-                        if (!(spField == 0))
-                        {
-                            if (!strPlace.IsEmpty())
-                                strPlace += ", ";
-                            strPlace += GetStringTable()->FUN_141811980(3, *pField);
-                        }
-                    }
-                }
+                if (spMap.FUN_140965240(0))
+                    continue;
+                if (spMap.FUN_140885340()->m_b9c == 0)
+                    continue;
+                unsigned nOut = 0;
+                unsigned nKey = *pField;
+                if (FUN_140700390()->FUN_1406fc110(*pField, &nOut) != 0)
+                    nKey = nOut;
+                MS2Ptr<Unk_PcFieldInfo> spField = FUN_140cb17d0()->FUN_141b978e0(nKey);
+                if (spField == 0)
+                    continue;
+                if (!strPlace.IsEmpty())
+                    strPlace += ", ";
+                strPlace += GetStringTable()->FUN_141811980(3, *pField);
             }
             if (0 < strPlace.GetLength())
                 strTip += FUN_1405c2690(CStringW(L"s_pet_collect_pet_tooltip_capture_place"), strPlace);
@@ -463,28 +457,25 @@ void TabContentsPetCollect::vfunc_5(void* pOut, void* pName, void* pData)
             {
                 const unsigned* pField = &arrFields[i];
                 Unk_PcMapPtr spMap = FUN_140a55460(*pField);
-                if (!spMap.FUN_140965240(0))
-                {
-                    if (spMap.FUN_140885340()->m_b9c != 0)
-                    {
-                        unsigned nOut = 0;
-                        unsigned nKey = *pField;
-                        if (FUN_140700390()->FUN_1406fc110(*pField, &nOut) != 0)
-                            nKey = nOut;
-                        MS2Ptr<Unk_PcFieldInfo> spField = FUN_140cb17d0()->FUN_141b978e0(nKey);
-                        if (!(spField == 0))
-                        {
-                            if (!strPlace.IsEmpty())
-                                strPlace += ", ";
-                            strPlace += GetStringTable()->FUN_141811980(3, *pField);
-                        }
-                    }
-                }
+                if (spMap.FUN_140965240(0))
+                    continue;
+                if (spMap.FUN_140885340()->m_b9c == 0)
+                    continue;
+                unsigned nOut = 0;
+                unsigned nKey = *pField;
+                if (FUN_140700390()->FUN_1406fc110(*pField, &nOut) != 0)
+                    nKey = nOut;
+                MS2Ptr<Unk_PcFieldInfo> spField = FUN_140cb17d0()->FUN_141b978e0(nKey);
+                if (spField == 0)
+                    continue;
+                if (!strPlace.IsEmpty())
+                    strPlace += ", ";
+                strPlace += GetStringTable()->FUN_141811980(3, *pField);
             }
             if (0 < strPlace.GetLength())
                 strTip += FUN_1405c2690(CStringW(L"s_pet_collect_pet_tooltip_event_capture_place"), strPlace);
         }
-        if (spPet->m_nSlotNum != 0)
+        if (spPet->m_nSlotNum > 0)
             strTip += FUN_140938ae0(CStringW(L"s_pet_collect_pet_tooltip_bag_size"), spPet->m_nSlotNum);
         ASTooltip tip(1, 2);
         tip.FUN_1409c6dc0(5);
@@ -492,10 +483,10 @@ void TabContentsPetCollect::vfunc_5(void* pOut, void* pName, void* pData)
             FUN_1409b4bc0(static_cast<Scaleform::GFx::Value*>(pOut), tip.FUN_1422bb870());
     }
 }
+}
 MS2_REPLACE_METHOD(0x140cad9a0, TabContentsPetCollect, vfunc_5, 3002, 0x2BD75153);
 
 // @0x140cae560
-// MS2-FUNCTIONAL: frame/temporary layout and std-glue ordering differ from the exe (semantics recovered, bytes not identical)
 int TabContentsPetCollect::vfunc_6(const char* szEvent, const Scaleform::GFx::Value* pArgs, unsigned nArgs)
 {
     ASData data;
@@ -514,15 +505,15 @@ int TabContentsPetCollect::vfunc_6(const char* szEvent, const Scaleform::GFx::Va
                 {
                     if (m_avatar == 0)
                     {
-                        UIAvatarPet* pAvatar = new UIAvatarPet(spData.get());
-                        m_avatar.AssignRaw(pAvatar);
+                        m_avatar.AssignRaw(new UIAvatarPet(spData.get()));
                         m_avatar->vfunc_1(static_cast<IUIAvatarEventListener*>(this));
                     }
                     else
                     {
                         m_avatar->FUN_1418bebd0(spData.get());
                     }
-                    PC(m_ui)->FUN_140caf230("setAvatarGrade", FUN_140535320()->FUN_140c8b220(nPet));
+                    int nGrade = FUN_140535320()->FUN_140c8b220(nPet);
+                    PC(m_ui)->FUN_140caf230("setAvatarGrade", nGrade);
                 }
             }
             return 1;
@@ -531,9 +522,12 @@ int TabContentsPetCollect::vfunc_6(const char* szEvent, const Scaleform::GFx::Va
     else
     {
         if (_stricmp("onGotoCollect", szEvent) == 0 && data.FUN_1422b9620(pArgs, nArgs) != 0)
-            m_ui->Invoke("gotoIndexFromGroupId", data.FUN_1422b8b10());
+        {
+            int nGroup = data.FUN_1422b8b10();
+            m_ui->Invoke("gotoIndexFromGroupId", nGroup);
+        }
     }
-    if (m_avatar.get() != 0)
+    if (m_avatar.get() ? true : false)
     {
         if (m_avatar->vfunc_27(szEvent, pArgs, nArgs) != 0)
             return 1;
@@ -543,7 +537,6 @@ int TabContentsPetCollect::vfunc_6(const char* szEvent, const Scaleform::GFx::Va
 MS2_REPLACE_METHOD(0x140cae560, TabContentsPetCollect, vfunc_6, 1032, 0x1B875610);
 
 // @0x140cae970
-// MS2-FUNCTIONAL: frame/temporary layout and std-glue ordering differ from the exe (semantics recovered, bytes not identical)
 void TabContentsPetCollect::vfunc_7(void* a1, TPtr<Unk_UISwfEntity_25> a2, void* a3, void* a4)
 {
     if (a2.get() == 0 || a3 == 0)
@@ -553,15 +546,17 @@ void TabContentsPetCollect::vfunc_7(void* a1, TPtr<Unk_UISwfEntity_25> a2, void*
     Unk_PcActor* pActor = reinterpret_cast<Unk_PcActor*>(m_avatar->vfunc_24());
     if (pActor == 0)
         return;
-    m_avatar->vfunc_28(a1, a2, a3);
+    reinterpret_cast<Unk_PcAvatarView*>(m_avatar.operator->())->vfunc_28(a1, a2, a3, a4);
     Unk_PetBoxCameraData kCamera;
     kCamera.FUN_141b48670();
     kCamera.n28 = 5;
     kCamera.f20 = 100.0f;
     kCamera.f1c = 500.0f;
-    kCamera.eye = pActor->vfunc_18();
-    reinterpret_cast<Unk_PcCamera*>(m_avatar->m_spView.operator->())->vfunc_13(kCamera);
-    m_avatar->vfunc_19(FUN_141b48480(0xb, 0), 0);
+    kCamera.target += pActor->vfunc_18();
+    kCamera.eye += kCamera.target;
+    reinterpret_cast<Unk_PcAvatarView*>(m_avatar.operator->())->FUN_1418b9bc0()->vfunc_13(kCamera);
+    float fScale = FUN_141b48480(0xb, 0);
+    m_avatar->vfunc_19(fScale, 0);
 }
 MS2_REPLACE_METHOD(0x140cae970, TabContentsPetCollect, vfunc_7, 654, 0x0C22A2BD);
 
@@ -644,7 +639,6 @@ inline Scaleform::GFx::Value Unk_PcComp::FUN_140caf230(const char* szMethod, int
 // ---- smaller COMDATs ----
 
 // @0x140cb13b0
-// MS2-FUNCTIONAL: frame/temporary layout and std-glue ordering differ from the exe (semantics recovered, bytes not identical)
 Unk_PetBoxCameraData::Unk_PetBoxCameraData()
     : eye(DAT_143b01a60)
     , target(DAT_143b01a60)
@@ -652,7 +646,7 @@ Unk_PetBoxCameraData::Unk_PetBoxCameraData()
     f18 = 0.0f;
     f1c = 0.0f;
     f20 = 0.0f;
-    n24 = 0;
+    f24 = 0.0f;
     n28 = 1;
     n2c = 0;
 }

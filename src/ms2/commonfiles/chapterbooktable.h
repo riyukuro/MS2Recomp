@@ -38,8 +38,8 @@ public:
     int Read(Unk_140165cf0* pElem);     // 0x1401d8bc0 attributes of one <chapterbook>
 
     int m_nId;                          // +0x18 "id"
-    int m_nPrologue;                    // +0x1c "prologue"
-    int m_nEpilogue;                    // +0x20 "epilogue"
+    unsigned m_nPrologue;               // +0x1c "prologue"
+    unsigned m_nEpilogue;               // +0x20 "epilogue"
     CStringA m_strUnused;               // +0x28
     ATL::CAtlArray<Unk_ChapterReward> m_rewards;     // +0x30
 };

@@ -672,7 +672,7 @@ class Constants : public Common::Constants, public TSingleton<Constants> {
 public:
     Constants();
     virtual void vfunc_0();
-    virtual ~Constants();
+    // ~Constants is implicit (0x1402bd680): the exe dtor stores no vptrs.
     static Client::Constants* GetInstance() { return s_instance; }
 
     Value<Unk_ConstColor> NameTagColorFriendly;            // +0xae70

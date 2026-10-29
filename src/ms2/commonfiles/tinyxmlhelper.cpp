@@ -543,11 +543,10 @@ void XmlWrite(TiXmlElement* pElem, const char* pszName, const NiFixedString& val
     XmlSetAttr(pElem, pszName, strValue);
 }
 
-// MS2-FUNCTIONAL: the exe loads &value.x straight into r8 after the y/z argument stores (one register move differs).
 // @0x140874bf0
 void XmlWrite(TiXmlElement* pElem, const char* pszName, const efd::Point3& value)
 {
-    CString str = StringFormat("{0},{1},{2}", value.x, value.y, value.z);
+    CString str = StringFormat("{0},{1},{2}", *(const float*)&value, value.y, value.z);
     XmlSetAttr(pElem, pszName, str);
 }
 

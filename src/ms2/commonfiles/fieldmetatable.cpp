@@ -185,44 +185,41 @@ void CFieldMetaTable::LoadFieldMetaData()
     {
         unsigned nNpcId;
         FUN_140873220(pNpc, "id", nNpcId);
-        if (!(FUN_1406cd330(nNpcId) == 0))
+        if (FUN_1406cd330(nNpcId) == 0)
+            continue;
+        for (Unk_140165cf0* pField = pNpc->FUN_140165cf0("field"); pField != 0; pField = pField->FUN_140168650("field"))
         {
-            for (Unk_140165cf0* pField = pNpc->FUN_140165cf0("field"); pField != 0; pField = pField->FUN_140168650("field"))
+            unsigned nFieldId = 0;
+            FUN_140873220(pField, "id", nFieldId);
+            Unk_FieldIdListPtr pFields;
+            if (!m_npcFields.Lookup(nNpcId, pFields))
             {
-                unsigned nFieldId = 0;
-                FUN_140873220(pField, "id", nFieldId);
-                Unk_FieldIdListPtr pFields;
-                if (!m_npcFields.Lookup(nNpcId, pFields))
-                {
-                    pFields = Unk_FieldNewTag(0);
-                    m_npcFields.SetAt(nNpcId, pFields);
-                }
-                pFields.get()->AddTail(nFieldId);
-                Unk_FieldIdListPtr pNpcs(0);
-                if (!m_fieldNpcs.Lookup(nFieldId, pNpcs))
-                {
-                    pNpcs = Unk_FieldNewTag(0);
-                    m_fieldNpcs.SetAt(nFieldId, pNpcs);
-                }
-                pNpcs.get()->AddTail(nNpcId);
-                if (FUN_14086f4b0(pField, "startTime") != 0 && FUN_14086f4b0(pField, "endTime") != 0)
-                {
-                    CString strStart;
-                    CString strEnd;
-                    FUN_1408733e0(pField, "startTime", strStart);
-                    FUN_1408733e0(pField, "endTime", strEnd);
-                    __int64 nEnd = 0;
-                    __int64 nStart = 0;
-                    if (FUN_1406fc8a0(CString(strStart), &nStart))
-                    {
-                        if (FUN_1406fc8a0(CString(strEnd), &nEnd))
-                        {
-                            Unk_FieldTimeSpan span;
-                            span.Set(nStart, nEnd);
-                            m_activeTimes[std::make_pair(nNpcId, nFieldId)] = span;
-                        }
-                    }
-                }
+                pFields = Unk_FieldNewTag(0);
+                m_npcFields.SetAt(nNpcId, pFields);
+            }
+            pFields.get()->AddTail(nFieldId);
+            Unk_FieldIdListPtr pNpcs(0);
+            if (!m_fieldNpcs.Lookup(nFieldId, pNpcs))
+            {
+                pNpcs = Unk_FieldNewTag(0);
+                m_fieldNpcs.SetAt(nFieldId, pNpcs);
+            }
+            pNpcs.get()->AddTail(nNpcId);
+            if (FUN_14086f4b0(pField, "startTime") != 0 && FUN_14086f4b0(pField, "endTime") != 0)
+            {
+                CString strStart;
+                CString strEnd;
+                FUN_1408733e0(pField, "startTime", strStart);
+                FUN_1408733e0(pField, "endTime", strEnd);
+                __int64 nEnd = 0;
+                __int64 nStart = 0;
+                if (!FUN_1406fc8a0(CString(strStart), &nStart))
+                    continue;
+                if (!FUN_1406fc8a0(CString(strEnd), &nEnd))
+                    continue;
+                Unk_FieldTimeSpan span;
+                span.Set(nStart, nEnd);
+                m_activeTimes[std::make_pair(nNpcId, nFieldId)] = span;
             }
         }
     }
@@ -248,57 +245,57 @@ void CFieldMetaTable::LoadFieldMetaData()
         int nIndoor = 0;
         FUN_1408731e0(pPortal, "indoor", nIndoor);
         FUN_140873220(pPortal, "field", nField);
-        if (FUN_1406fc870(nField) != 0)
+        if (FUN_1406fc870(nField) == 0)
+            continue;
+        Unk_FieldIdListPtr pTargets;
+        pTargets = Unk_FieldNewTag(0);
+        m_portalTargets.SetAt(nField, pTargets);
+        Unk_FieldIdListPtr pTargets2;
+        pTargets2 = Unk_FieldNewTag(0);
+        m_portalTargets2.SetAt(nField, pTargets2);
+        unsigned nTarget = 0;
+        for (Unk_140165cf0* pTo = pPortal->FUN_140165cf0("portal"); pTo != 0; pTo = pTo->FUN_140168650("portal"))
         {
-            Unk_FieldIdListPtr pTargets;
-            pTargets = Unk_FieldNewTag(0);
-            m_portalTargets.SetAt(nField, pTargets);
-            Unk_FieldIdListPtr pTargets2;
-            pTargets2 = Unk_FieldNewTag(0);
-            m_portalTargets2.SetAt(nField, pTargets2);
-            unsigned nTarget = 0;
-            for (Unk_140165cf0* pTo = pPortal->FUN_140165cf0("portal"); pTo != 0; pTo = pTo->FUN_140168650("portal"))
+            FUN_140873220(pTo, "targetField", nTarget);
+            if (FUN_1406fc870(nTarget) == 0)
+                continue;
+            pTargets.get()->AddTail(nTarget);
+            int nPortalType = 0;
+            FUN_1408731e0(pTo, "portalType", nPortalType);
+            if (nPortalType == 8)
             {
-                FUN_140873220(pTo, "targetField", nTarget);
-                if (FUN_1406fc870(nTarget) != 0)
+                unsigned nPortalId;
+                FUN_140873220(pTo, "id", nPortalId);
+                Unk_FieldIdListPtr pType8(0);
+                if (!m_portalType8.Lookup(nField, pType8))
                 {
-                    pTargets.get()->AddTail(nTarget);
-                    int nPortalType = 0;
-                    FUN_1408731e0(pTo, "portalType", nPortalType);
-                    if (nPortalType == 8)
-                    {
-                        unsigned nPortalId;
-                        FUN_140873220(pTo, "id", nPortalId);
-                        Unk_FieldIdListPtr pType8(0);
-                        if (!m_portalType8.Lookup(nField, pType8))
-                        {
-                            pType8 = Unk_FieldNewTag(0);
-                            m_portalType8.SetAt(nField, pType8);
-                        }
-                        if (pType8.get()->Find(nPortalId, 0) == 0)
-                            pType8.get()->AddTail(nPortalId);
-                    }
-                    else if (nPortalType == 0)
-                    {
-                        pTargets2.get()->AddTail(nTarget);
-                    }
+                    pType8 = Unk_FieldNewTag(0);
+                    m_portalType8.SetAt(nField, pType8);
                 }
+                if (pType8.get()->Find(nPortalId, 0) == 0)
+                    pType8.get()->AddTail(nPortalId);
             }
-            outdoor[nField] = (nIndoor == 0);
-            Unk_FieldIdListPtr pIndoor;
-            pIndoor = Unk_FieldNewTag(0);
-            m_indoorPortals.SetAt(nField, pIndoor);
-            unsigned nIndoorTarget = 0;
-            for (Unk_140165cf0* pTo = pPortal->FUN_140165cf0("portal"); pTo != 0; pTo = pTo->FUN_140168650("portal"))
+            else if (nPortalType == 0)
             {
-                int nPortalIndoor = 0;
-                FUN_1408731e0(pTo, "portalIndoor", nPortalIndoor);
-                FUN_140873220(pTo, "targetField", nIndoorTarget);
-                if (FUN_1406fc870(nIndoorTarget) != 0 && nPortalIndoor != 0)
-                {
-                    if (pIndoor.get()->Find(nIndoorTarget, 0) == 0)
-                        pIndoor.get()->AddTail(nIndoorTarget);
-                }
+                pTargets2.get()->AddTail(nTarget);
+            }
+        }
+        outdoor[nField] = (nIndoor == 0);
+        Unk_FieldIdListPtr pIndoor;
+        pIndoor = Unk_FieldNewTag(0);
+        m_indoorPortals.SetAt(nField, pIndoor);
+        unsigned nIndoorTarget = 0;
+        for (Unk_140165cf0* pTo = pPortal->FUN_140165cf0("portal"); pTo != 0; pTo = pTo->FUN_140168650("portal"))
+        {
+            int nPortalIndoor = 0;
+            FUN_1408731e0(pTo, "portalIndoor", nPortalIndoor);
+            FUN_140873220(pTo, "targetField", nIndoorTarget);
+            if (FUN_1406fc870(nIndoorTarget) == 0)
+                continue;
+            if (nPortalIndoor != 0)
+            {
+                if (pIndoor.get()->Find(nIndoorTarget, 0) == 0)
+                    pIndoor.get()->AddTail(nIndoorTarget);
             }
         }
     }
@@ -365,21 +362,20 @@ void CFieldMetaTable::LoadFieldMetaData()
     for (POSITION posField = m_indoorPortals.GetStartPosition(); posField != 0; m_indoorPortals.GetNext(posField))
     {
         unsigned nField = m_indoorPortals.GetKeyAt(posField);
-        if (outdoor[nField] != 0)
+        if (outdoor[nField] == 0)
+            continue;
+        Unk_FieldIdListPtr pSeed(Unk_FieldNewTag(0));
+        Unk_FieldIdListPtr pDone(Unk_FieldNewTag(0));
+        pSeed.get()->AddTail(nField);
+        FUN_1406fbdf0(const_cast<const Unk_FieldIdListPtr&>(pSeed), const_cast<const Unk_FieldIdListPtr&>(pDone));
+        if (pDone.get()->GetCount() != 0)
         {
-            Unk_FieldIdListPtr pSeed(Unk_FieldNewTag(0));
-            Unk_FieldIdListPtr pDone(Unk_FieldNewTag(0));
-            pSeed.get()->AddTail(nField);
-            FUN_1406fbdf0(const_cast<const Unk_FieldIdListPtr&>(pSeed), const_cast<const Unk_FieldIdListPtr&>(pDone));
-            if (pDone.get()->GetCount() != 0)
+            m_indoorClosure.SetAt(nField, pDone);
+            POSITION pos = pDone.get()->GetHeadPosition();
+            while (pos != 0)
             {
-                m_indoorClosure.SetAt(nField, pDone);
-                POSITION pos = pDone.get()->GetHeadPosition();
-                while (pos != 0)
-                {
-                    m_reverse.SetAt(pDone.get()->GetAt(pos), nField);
-                    pDone.get()->GetNext(pos);
-                }
+                m_reverse.SetAt(pDone.get()->GetAt(pos), nField);
+                pDone.get()->GetNext(pos);
             }
         }
     }
@@ -453,7 +449,8 @@ void CFieldMetaTable::FUN_1406fb3a0(unsigned nId, Unk_FieldIdList& out)
         for (POSITION pos = pFields.get()->GetHeadPosition(); pos != 0; pFields.get()->GetNext(pos))
         {
             unsigned nField = pFields.get()->GetAt(pos);
-            if (out.Find(nField, 0) != 0)
+            POSITION found = out.Find(nField, 0);
+            if (found != 0)
                 continue;
             if (!FUN_1406fbb50(nId, nField))
                 continue;
@@ -529,7 +526,8 @@ void CFieldMetaTable::FUN_1406fb810(unsigned nFieldId, Unk_FieldIdList& out)
     {
         for (POSITION pos = pIndoor.get()->GetHeadPosition(); pos != 0; pIndoor.get()->GetNext(pos))
         {
-            FUN_1406fb610(pIndoor.get()->GetAt(pos), out);
+            unsigned nId = pIndoor.get()->GetAt(pos);
+            FUN_1406fb610(nId, out);
         }
     }
 }
@@ -581,9 +579,7 @@ bool CFieldMetaTable::FUN_1406fbb50(unsigned nNpc, unsigned nField)
     std::map<NpcFieldKey, Unk_FieldTimeSpan>::iterator it = m_activeTimes.find(std::make_pair(nNpc, nField));
     if (it == m_activeTimes.end())
         return true;
-    if (it->second.Contains(FUN_140869440()))
-        return true;
-    return false;
+    return it->second.Contains(FUN_140869440()) ? true : false;
 }
 
 // @0x1406fbc10
@@ -606,8 +602,7 @@ unsigned CFieldMetaTable::FUN_1406fbc50(unsigned nField)
 Unk_FieldIdListPtr CFieldMetaTable::FUN_1406fbca0(unsigned nField)
 {
     Unk_FieldIdListPtr pTargets(0);
-    bool bFound = m_portalTargets.Lookup(nField, pTargets);
-    return bFound ? Unk_FieldIdListPtr(pTargets) : Unk_FieldIdListPtr(0);
+    return m_portalTargets.Lookup(nField, pTargets) ? Unk_FieldIdListPtr(pTargets) : Unk_FieldIdListPtr(0);
 }
 
 // @0x1406fbdf0
@@ -623,34 +618,29 @@ void CFieldMetaTable::FUN_1406fbdf0(Unk_FieldIdListPtr pFrom, Unk_FieldIdListPtr
         Unk_FieldIdListPtr pIndoor;
         if (m_indoorPortals.Lookup(nFrom, pIndoor))
         {
-            if (!(pIndoor == 0))
+            if (pIndoor == 0)
+                continue;
+            for (POSITION posIndoor = pIndoor.get()->GetHeadPosition(); posIndoor != 0; pIndoor.get()->GetNext(posIndoor))
             {
-                POSITION posIndoor = pIndoor.get()->GetHeadPosition();
-                while (posIndoor != 0)
+                int nIndoor = pIndoor.get()->GetAt(posIndoor);
+                bool bFound = false;
+                for (POSITION posTo = pTo.get()->GetHeadPosition(); posTo != 0; pTo.get()->GetNext(posTo))
                 {
-                    int nIndoor = pIndoor.get()->GetAt(posIndoor);
-                    bool bFound = false;
-                    POSITION posTo = pTo.get()->GetHeadPosition();
-                    while (posTo != 0)
+                    if (pTo.get()->GetAt(posTo) == nIndoor)
                     {
-                        if (pTo.get()->GetAt(posTo) == nIndoor)
-                        {
-                            bFound = true;
-                            break;
-                        }
-                        pTo.get()->GetNext(posTo);
+                        bFound = true;
+                        break;
                     }
-                    if (!bFound)
-                    {
-                        pMerged.get()->AddTail(nIndoor);
-                        pTo.get()->AddTail(nIndoor);
-                    }
-                    pIndoor.get()->GetNext(posIndoor);
+                }
+                if (!bFound)
+                {
+                    pMerged.get()->AddTail(nIndoor);
+                    pTo.get()->AddTail(nIndoor);
                 }
             }
         }
     }
-    if (pMerged.get()->GetCount() != 0)
+    if (pMerged.get()->GetCount() > 0)
     {
         FUN_1406fbdf0(const_cast<const Unk_FieldIdListPtr&>(pMerged), const_cast<const Unk_FieldIdListPtr&>(pTo));
     }
@@ -698,11 +688,9 @@ void CFieldMetaTable::FUN_1406fc2f0(unsigned nField, Unk_FieldIdList& out)
     std::set<unsigned> seen;
     seen.insert(nField);
     FUN_1406fc1b0(seen, nField);
-    std::set<unsigned>::iterator it = seen.begin();
-    while (it != seen.end())
+    for (std::set<unsigned>::iterator it = seen.begin(); it != seen.end(); it++)
     {
         out.AddTail(*it);
-        it++;
     }
 }
 
@@ -779,9 +767,9 @@ int CFieldMetaTable::FUN_1406fc6d0(int nNpcId, ATL::CAtlArray<CMsTime>& out)
 bool CFieldMetaTable::FUN_1406fc7b0(unsigned nField, unsigned nId)
 {
     Unk_FieldIdListPtr pTargets(0);
-    if (!m_portalTargets2.Lookup(nField, pTargets))
-        return false;
-    return pTargets.get()->Find(nId, 0) != 0;
+    if (m_portalTargets2.Lookup(nField, pTargets))
+        return pTargets->Find(nId, 0) != 0;
+    return false;
 }
 
 // @0x1406fc870
@@ -801,11 +789,13 @@ bool CFieldMetaTable::FUN_1406fc8a0(CString str, __int64* pTime)
     int nMinute = 0;
     int nSecond = 0;
     sscanf(str, "%d-%d-%d-%d-%d-%d", &nYear, &nMonth, &nDay, &nHour, &nMinute, &nSecond);
-    if (nYear < 1900 || nMonth < 1 || nMonth > 12 || nDay < 1 || nDay > 31 || nHour < 0 || nHour > 23 ||
-        nMinute < 0 || nMinute > 59 || nSecond < 0 || nSecond > 59)
-        return false;
-    *pTime = FUN_14086b2a0(nYear, nMonth, nDay, nHour, nMinute, nSecond);
-    return true;
+    if (nYear >= 1900 && nMonth >= 1 && nMonth <= 12 && nDay >= 1 && nDay <= 31 && nHour >= 0 && nHour <= 23 &&
+        nMinute >= 0 && nMinute <= 59 && nSecond >= 0 && nSecond <= 59)
+    {
+        *pTime = FUN_14086b2a0(nYear, nMonth, nDay, nHour, nMinute, nSecond);
+        return true;
+    }
+    return false;
 }
 
 // @0x1406ff040

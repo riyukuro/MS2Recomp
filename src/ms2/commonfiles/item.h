@@ -28,7 +28,7 @@ class CItemStatus : public CPtred
 public:
     CItemStatus(unsigned, unsigned, unsigned);   // 0x14062fa00
     CItemStatus(CItemOption* pOption, CItemEnchantInfo* pEnchant, UnlimitedEnchantInfo* pUnlimited);   // 0x140631ce0
-    virtual ~CItemStatus();                      // 0x140633280 (??_G 0x140633450)
+    // ~CItemStatus() is implicit: the exe dtor 0x140633280 (??_G 0x140633450) stores no vptr.
     CItemEnchantInfo* GetEnchant();           // the enchant record (null when absent)
     Unk_ItemPlusInfo* FUN_140630d90();           // the unlimited-enchant record
     CItemOption* GetOption();                // the option record
@@ -47,7 +47,7 @@ public:
     bool FUN_140630dc0(int nType);
     bool FUN_140630810();
     void FUN_140630840();
-    bool FUN_1406308a0(MS2Ptr<CItemStatus> spOther);   // 0x1406308a0 take over the options of another status
+    int FUN_1406308a0(MS2Ptr<CItemStatus> spOther);    // 0x1406308a0 take over the options of another status
 
     MS2Ptr<CItemOption> m_spOption;             // +0x18
     Unk_EnchantPtr<CItemEnchantInfo> m_spEnchant;   // +0x28
@@ -107,7 +107,7 @@ class CItemTransfer::CItemBinding : public CPtred
 {
 public:
     CItemBinding();                         // 0x14052c0f0
-    virtual ~CItemBinding();                // 0x14052c4e0 (??_G 0x14052cf40)
+    // implicit virtual ~CItemBinding()     // 0x14052c4e0 (??_G 0x14052cf40)
 
     __int64 m_n18;                          // +0x18
     CStringW m_str20;                       // +0x20
@@ -126,7 +126,7 @@ class CItemCoupleInfo : public CPtred
 {
 public:
     CItemCoupleInfo();                      // 0x14052c140
-    virtual ~CItemCoupleInfo();             // 0x14052c510 (??_G 0x14052cf80)
+    // implicit virtual ~CItemCoupleInfo()  // 0x14052c510 (??_G 0x14052cf80)
     void FUN_14052d000();                   // reset
     void FUN_14052d090(CInputStream&);      // read from a stream
     void FUN_14052d130(COutputStream&);     // write to a stream

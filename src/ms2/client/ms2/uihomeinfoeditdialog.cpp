@@ -4,7 +4,7 @@
 // MS2-PINS-BEGIN tplpin
 // MS2-PIN: ?vfunc_48@UIHomeInfoEditDialog@@UEAAHXZ 0x140c27100 ; unique
 // MS2-PINS-END tplpin
-// MS2-PIN: ?get@?$MS2Ptr@VUnk_HmInput@@@@QEBAPEAVUnk_HmInput@@XZ 0x140c270a0
+// MS2-PIN: ??B?$MS2Ptr@VUnk_HmInput@@@@QEBAPEAVUnk_HmInput@@XZ 0x140c270a0
 // MS2-PIN: ??C?$MS2Ptr@VUnk_HmInput@@@@QEBAPEAVUnk_HmInput@@XZ 0x140c270b0
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uihomeinfoeditdialog.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
@@ -45,12 +45,12 @@ struct Unk_HmNameRef
         m_8 = reinterpret_cast<Unk_HmPtrView&>(o).m_8;
         reinterpret_cast<Unk_HmPtrView&>(o).m_8 = 0;
     }
+    ~Unk_HmNameRef();                                               // 0x140bbfdd0 release
+    operator Unk_HmInput*() const;                                  // 0x140bc0500
+    Unk_HmInput* operator->() const;                                // 0x140bc0550
     void* m_0;
     void* m_8;
 };
-int FUN_140bc0500(Unk_HmNameRef* p);                                // not null
-Unk_HmInput* FUN_140bc0550(Unk_HmNameRef* p);                       // operator->
-void FUN_140bbfdd0(Unk_HmNameRef* p);                               // release
 
 // ---- out-of-unit callees ----
 UIHomeInfoDialog* FUN_140bbea00(int nId);                           // dialog by its ui id
@@ -116,20 +116,21 @@ CStringW UIHomeInfoEditDialog::FUN_140c268d0()
 }
 MS2_REPLACE_METHOD(0x140C268D0, UIHomeInfoEditDialog, FUN_140c268d0, 61, 0xA1A1AAFA);
 
-// MS2-FUNCTIONAL: FUN_140c26920: 2 bytes shorter than the exe (range-check branch layout)
 // @0x140c26920
 int UIHomeInfoEditDialog::FUN_140c26920()
 {
-    int n = FUN_1406516a0();
-    if (n >= 0)
+    switch (FUN_1406516a0())
     {
-        if (n <= 1)
-            return 8;
-        if (n > 1)
-        {
-            if (n <= 7)
-                return 0x10;
-        }
+    case 0:
+    case 1:
+        return 8;
+    case 2:
+    case 3:
+    case 4:
+    case 5:
+    case 6:
+    case 7:
+        return 0x10;
     }
     return 0x10;
 }
@@ -154,22 +155,16 @@ CString UIHomeInfoEditDialog::GetTypeName()
 }
 MS2_REPLACE_METHOD(0x140C264F0, UIHomeInfoEditDialog, GetTypeName, 61, 0x94107E3F);
 
-// MS2-FUNCTIONAL: OnLoadComplete: the exe keeps extra pointer temps around each GetChild result (stack frame +0x30, extra stores)
 // @0x140c26540
 void UIHomeInfoEditDialog::OnLoadComplete()
 {
     UIModalDialog::OnLoadComplete();
+    if (Unk_HmNameRef spName = GetChild<Unk_HmInput>("m_homeName"))
     {
-        Unk_HmNameRef spName = Unk_HmNameRef(GetChild<Unk_HmInput>("m_homeName"));
-        if (FUN_140bc0500(&spName) != 0)
-        {
-            FUN_140bc0550(&spName)->FUN_1422e0d60(FUN_140c26920());
-            FUN_140bc0550(&spName)->FUN_1422e0ab0(FUN_140c268d0());
-        }
-        FUN_140bbfdd0(&spName);
+        spName->FUN_1422e0d60(FUN_140c26920());
+        spName->FUN_1422e0ab0(FUN_140c268d0());
     }
-    MS2Ptr<Unk_HmInput> spNotice = GetChild<Unk_HmInput>("m_homeNotice");
-    if (spNotice.get() != 0)
+    if (MS2Ptr<Unk_HmInput> spNotice = GetChild<Unk_HmInput>("m_homeNotice"))
     {
         spNotice.operator->()->FUN_1422e0d60(100);
         spNotice.operator->()->FUN_1422e0ab0(FUN_140c26850());
@@ -199,40 +194,35 @@ int UIHomeInfoEditDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
 }
 MS2_REPLACE_METHOD(0x140C267E0, UIHomeInfoEditDialog, vfunc_28, 94, 0xE55289F9);
 
-// MS2-FUNCTIONAL: OnConfirm: the exe keeps extra pointer temps around each GetChild result (stack frame +0x50)
 // @0x140c26970
 void UIHomeInfoEditDialog::OnConfirm()
 {
-    if (FUN_140bbea00(0x4ed8) != 0)
+    if (UIHomeInfoDialog* pInfo = FUN_140bbea00(0x4ed8))
     {
+        if (Unk_HmNameRef spName = GetChild<Unk_HmInput>("m_homeName"))
         {
-            Unk_HmNameRef spName = Unk_HmNameRef(GetChild<Unk_HmInput>("m_homeName"));
-            if (FUN_140bc0500(&spName) != 0)
+            if (CBanTextChecker* pChecker = FUN_14025e7d0()->GetChecker().get())
             {
-                CBanTextChecker* pChecker = FUN_14025e7d0()->GetChecker().get();
-                if (pChecker != 0)
+                CStringW strMessage;
+                CStringW strName = spName->FUN_1422e0b00();
+                strName.Trim(L",");
+                if (pChecker->FUN_1402252f0(strName, strMessage) == 0)
                 {
-                    CStringW strMessage;
-                    CStringW strName = FUN_140bc0550(&spName)->FUN_1422e0b00();
-                    strName.Trim(L",");
-                    if (pChecker->FUN_1402252f0(strName, strMessage) != 0)
-                    {
-                        Unk_MsgBoxPtr box = FUN_140d73d20(0, CStringW(strMessage), 0, CStringW(L""));
-                        if (box.get() != 0)
-                            FUN_14151f150(box);
-                        FUN_140bbfdd0(&spName);
-                        return;
-                    }
                     COutPacket packet(static_cast<int>(SendOp::RequestCube), 0);
                     packet.WriteUInt8(0x15);
                     packet.WriteUnicodeString(strName);
                     FUN_140710590(packet);
                 }
+                else
+                {
+                    Unk_MsgBoxPtr box = FUN_140d73d20(0, CStringW(strMessage), 0, CStringW(L""));
+                    if (box.get() != 0)
+                        FUN_14151f150(box);
+                    return;
+                }
             }
-            FUN_140bbfdd0(&spName);
         }
-        MS2Ptr<Unk_HmInput> spNotice = GetChild<Unk_HmInput>("m_homeNotice");
-        if (spNotice.get() != 0)
+        if (MS2Ptr<Unk_HmInput> spNotice = GetChild<Unk_HmInput>("m_homeNotice"))
         {
             COutPacket packet(static_cast<int>(SendOp::RequestCube), 0);
             packet.WriteUInt8(0x1d);

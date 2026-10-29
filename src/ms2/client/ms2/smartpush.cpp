@@ -145,8 +145,6 @@ void FUN_140d73aa0(CStringW strText, int nType, void* p, CStringW strTag);   // 
 void FUN_140d73bc0(int nStrId, int nType, void* p, CStringW strTag);   // notice box of a system string
 void FUN_1412751f0(const CStringW& str, int nType, int nFlag);          // chat / center notice
 
-// CMsgBoxData::FUN_141a02880 (the buff description of the box; not in the shared header).
-void FUN_141a02880(CMsgBoxData* pBox, int nBuffId, unsigned short nLevel, CStringW strName);
 
 // The local player's buffs (PCBase +0x748).
 class Unk_PCBaseBuffs { public: int FUN_1409701d0(int nKind); MS2Ptr<AdditionalCli> FUN_14096fd30(int nKind); };   // AdditionalCliList
@@ -186,6 +184,16 @@ public:
 MS2_CHECK_OFFSET(Unk_SpRecipe, m_nMastery, 0x1c);
 MS2_CHECK_OFFSET(Unk_SpRecipe, m_nCountA, 0x88);
 class Unk_SpMastery { public: MS2Ptr<Unk_SpRecipe> FUN_14066aa00(int nId); };
+// The local player as a game object: only slot 18 (the position, efd::Point3 by value) is used.
+class Unk_SpGameObj
+{
+public:
+    virtual void vfunc_0(); virtual void vfunc_1(); virtual void vfunc_2(); virtual void vfunc_3(); virtual void vfunc_4();
+    virtual void vfunc_5(); virtual void vfunc_6(); virtual void vfunc_7(); virtual void vfunc_8(); virtual void vfunc_9();
+    virtual void vfunc_10(); virtual void vfunc_11(); virtual void vfunc_12(); virtual void vfunc_13(); virtual void vfunc_14();
+    virtual void vfunc_15(); virtual void vfunc_16(); virtual void vfunc_17();
+    virtual Vector3 vfunc_18();                                         // 18 0x14166bbe0
+};
 Unk_SpMastery* FUN_1409670c0();
 class Unk_SpHome { public: bool FUN_1410d5640(); };                    // the home of the map is the player's
 Unk_SpHome* FUN_1409670e0();
@@ -227,7 +235,7 @@ struct Unk_SpSkillLevel { char m_pad_00[0x98]; Unk_SpSkillEffects m_effects; };
 class Unk_SpSkillLevelPtr { public: ~Unk_SpSkillLevelPtr() { FUN_1407eb950(this); } Unk_SpSkillLevel* FUN_140932d90(); Unk_SpSkillLevel* FUN_1407ebbf0();
     void* m_p0; void* m_p8; };
 class Unk_SpSkillTable { public: Unk_SpBuffLevelPtr FUN_140aafef0(int nId, unsigned short nLevel);
-    Unk_SpSkillLevelPtr FUN_1407ee2f0(int nSkillId, unsigned short nLevel); };
+    Unk_SpSkillLevelPtr FUN_1407ee2f0(int nSkillId, short nLevel); };
 Unk_SpSkillTable* FUN_1401958b0();
 
 // CMsgBoxData::SetValue<T> (the COMDATs 0x140dd6030..0x140dd63d0): a named GFx value of the box.
@@ -291,7 +299,6 @@ static ClassObjectRegistrar s_regSafeWaterRidingToggle(L"CSmartPushSafeWaterRidi
 
 // ---- CSmartPush ---------------------------------------------------------------------------------------------------------
 
-// MS2-FUNCTIONAL: logic follows the exe; /Od temporaries and register allocation differ
 // @0x140dcf0c0
 CSmartPush::CSmartPush()
     : m_nId(0), m_n1c(0), m_nState(0), m_data(0)
@@ -304,40 +311,40 @@ CSmartPush::~CSmartPush()
     m_data = 0;
 }
 
-// MS2-FUNCTIONAL: logic follows the exe; /Od temporaries and register allocation differ
 // @0x140dcf1a0
 void CSmartPush::vfunc_3()
 {
-    if (!(m_data == 0))
+    if (m_data == 0)
+        return;
+    if (m_data->m_nRequireMerat == 0)
     {
-        if (m_data->m_nRequireMerat == 0)
+        vfunc_5(false);
+    }
+    else
+    {
+        CStringW strText = vfunc_9();
+        MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x20, strText, 0, CStringW(L""));
+        if (spBox)
         {
-            vfunc_5(false);
-        }
-        else
-        {
-            CStringW strText = vfunc_9();
-            MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x20, strText, 0, CStringW(L""));
-            if (spBox.get())
-            {
-                spBox->FUN_141a01800(1);
-                spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &CSmartPush::FUN_140dcf800));
-                FUN_141a02880(spBox.get(), m_data->m_nActionValue, 1, CStringW(L""));
-                spBox->FUN_141a024a0(0);
-                FUN_140d73c60(spBox);
-            }
+            spBox->FUN_141a01800(1);
+            spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &CSmartPush::FUN_140dcf800));
+            spBox->FUN_141a02880(m_data->m_nActionValue, 1, CStringW(L""));
+            spBox->FUN_141a024a0(0);
+            FUN_140d73c60(spBox);
         }
     }
 }
 
-// MS2-FUNCTIONAL: logic follows the exe; /Od temporaries and register allocation differ
 // @0x140dcf440
 void CSmartPush::vfunc_4(int nValue)
 {
-    if (!!m_data && m_data->m_nActionType == 1)
+    if (!m_data)
+        return;
+    if (m_data->m_nActionType == 1)
     {
-        CStringW strName = CStringTable::GetInstance()->FUN_141812290(m_data->m_nActionValue, 1, CString("name"));
-        FUN_1412751f0(FUN_1405c2690(CStringW(L"s_smartpush_active"), strName), 1, 1);
+        CStringW strMsg = FUN_1405c2690(CStringW(L"s_smartpush_active"),
+                                        CStringTable::GetInstance()->FUN_141812290(m_data->m_nActionValue, 1, CString("name")));
+        FUN_1412751f0(strMsg, 1, 1);
     }
 }
 
@@ -432,7 +439,6 @@ CSmartPushAutoFishing::~CSmartPushAutoFishing()
 {
 }
 
-// MS2-FUNCTIONAL: logic follows the exe; /Od temporaries and register allocation differ
 // @0x140dcf960
 void CSmartPushAutoFishing::vfunc_2()
 {
@@ -452,11 +458,19 @@ void CSmartPushAutoFishing::vfunc_2()
             if (!pkg)
             {
                 CFishingManager::GetInstance()->FUN_140cdbdf0(0);
-                CStringW strKey(L"s_msg_autofishing_extend_merat_warn");
-                FUN_140d73aa0(GetStringCommonByKey(strKey), 0, 0, CStringW(L""));
+                FUN_140d73aa0(GetStringCommonByKey(L"s_msg_autofishing_extend_merat_warn"), 0, 0, L"");
                 return;
             }
-            if (!FUN_140dd07b0())
+            if (FUN_140dd07b0())
+            {
+                --nCount;
+                CFishingManager::GetInstance()->FUN_140cdbdf0(nCount);
+                vfunc_5(true);
+                CStringW strTime = CSmartPushTable::GetInstance()->GetPackageDurationText(
+                    CGameRule::GetInstance()->FUN_140479970(), m_n1c);
+                FUN_1412751f0(FUN_1405c2690(CStringW(L"s_msg_autofishing_extend_complete"), strTime), 1, 1);
+            }
+            else
             {
                 CFishingManager::GetInstance()->FUN_140cdbdf0(0);
                 if (FUN_140dd06b0() == 2)
@@ -464,65 +478,53 @@ void CSmartPushAutoFishing::vfunc_2()
                 else
                     FUN_140d73bc0(0x34, 0, 0, CStringW(L""));
             }
-            else
-            {
-                CFishingManager::GetInstance()->FUN_140cdbdf0(nCount - 1);
-                vfunc_5(true);
-                CStringW strTime = CSmartPushTable::GetInstance()->GetPackageDurationText(
-                    CGameRule::GetInstance()->FUN_140479970(), m_n1c);
-                FUN_1412751f0(FUN_1405c2690(CStringW(L"s_msg_autofishing_extend_complete"), strTime), 1, 1);
-            }
         }
     }
-    m_bActive = spBuff.get() != 0;
+    m_bActive = spBuff != 0;
 }
 
-// MS2-FUNCTIONAL: logic follows the exe; /Od temporaries and register allocation differ
 // @0x140dcfd40
 void CSmartPushAutoFishing::vfunc_3()
 {
-    if (!(m_data == 0))
+    if (m_data == 0)
+        return;
+    unsigned nSale = CGameRule::GetInstance()->FUN_140479900();
+    CStringW strText;
+    CStringW strTitle;
+    MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x24, strText, 0, CStringW(L""));
+    if (spBox)
     {
-        unsigned nSale = CGameRule::GetInstance()->FUN_140479900();
-        CStringW strText;
-        CStringW strTitle;
-        MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x24, strText, 0, CStringW(L""));
-        if (spBox.get())
+        spBox->FUN_141a01800(1);
+        spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &CSmartPushAutoFishing::FUN_140dd0a00));
+        spBox->FUN_141a02880(m_data->m_nActionValue, 1,
+            FUN_1409e97f0(0xc66, *Client::Constants::GetInstance()->extendAutoFishMaxCount.Get()));
+        spBox->FUN_141a024a0(0);
+        spBox->FUN_141a024e0(GetStringCommon(0xc68), 0);
+        spBox->SetStrike(strTitle);
+        int nCount = CSmartPushTable::GetInstance()->GetPackageCount(CGameRule::GetInstance()->FUN_140479970());
+        for (int i = 0; i < nCount; i++)
         {
-            spBox->FUN_141a01800(1);
-            spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &CSmartPushAutoFishing::FUN_140dd0a00));
-            FUN_141a02880(spBox.get(), m_data->m_nActionValue, 1,
-                FUN_1409e97f0(0xc66, *Client::Constants::GetInstance()->extendAutoFishMaxCount.Get()));
-            spBox->FUN_141a024a0(0);
-            spBox->FUN_141a024e0(GetStringCommon(0xc68), 0);
-            spBox->SetStrike(strTitle);
-            int nCount = CSmartPushTable::GetInstance()->GetPackageCount(CGameRule::GetInstance()->FUN_140479970());
-            for (int i = 0; i < nCount; i++)
-            {
-                CSmartPushTable::PackagePtr pkg =
-                    CSmartPushTable::GetInstance()->GetPackage(CGameRule::GetInstance()->FUN_140479970(), i);
-                Unk_SetBoxUInt(spBox.get(), FUN_1402bb1c0("autoActionMinute{0}", i), pkg->m_nDuration);
-                Unk_SetBoxInt64(spBox.get(), FUN_1402bb1c0("autoActionMerat{0}", i), pkg->m_nMerat);
-                Unk_SetBoxInt64(spBox.get(), FUN_1402bb1c0("autoActionMeso{0}", i), pkg->m_nMeso);
-            }
-            Unk_SetBoxBool(spBox.get(), "firstUseRedMerat", FUN_140811640(1));
-            CStringW strKey(L"s_auto_action_fishing");
-            Unk_SetBoxString(spBox.get(), "actionName", GetStringCommonByKey(strKey));
-            Unk_SetBoxUInt(spBox.get(), "saleRate", nSale);
-            Unk_SetBoxInt(spBox.get(), "packageCount", nCount);
-            FUN_140d73c60(spBox);
+            CSmartPushTable::PackagePtr pkg =
+                CSmartPushTable::GetInstance()->GetPackage(CGameRule::GetInstance()->FUN_140479970(), i);
+            Unk_SetBoxUInt(spBox.operator->(), FUN_1402bb1c0("autoActionMinute{0}", i), pkg->m_nDuration);
+            Unk_SetBoxInt64(spBox.operator->(), FUN_1402bb1c0("autoActionMerat{0}", i), pkg->m_nMerat);
+            Unk_SetBoxInt64(spBox.operator->(), FUN_1402bb1c0("autoActionMeso{0}", i), pkg->m_nMeso);
         }
+        Unk_SetBoxBool(spBox.operator->(), "firstUseRedMerat", FUN_140811640(1));
+        Unk_SetBoxString(spBox.operator->(), "actionName", GetStringCommonByKey(L"s_auto_action_fishing"));
+        Unk_SetBoxUInt(spBox.operator->(), "saleRate", nSale);
+        Unk_SetBoxInt(spBox.operator->(), "packageCount", nCount);
+        FUN_140d73c60(spBox);
     }
 }
 
-// MS2-FUNCTIONAL: logic follows the exe; /Od temporaries and register allocation differ
 // @0x140dd03e0
 void CSmartPushAutoFishing::vfunc_4(int nValue)
 {
     CSmartPush::vfunc_4(nValue);
     if (CFishingManager::GetInstance()->FUN_140954150() != 0 && CFishingManager::GetInstance()->FUN_140cdbb90() != 0)
         CFishingManager::GetInstance()->SendFishingMode9();
-    CGameOption::GetInstance()->FUN_140c9b8b0()->m_n20[3] = FUN_140dd06b0();
+    CGameOption::GetInstance()->FUN_140c9b8b0()->m_n2c = FUN_140dd06b0();
     CGameOption::GetInstance()->FUN_141243540();
 }
 
@@ -569,7 +571,6 @@ CStringW CSmartPushAutoFishing::vfunc_10()
     return CStringW(L"");
 }
 
-// MS2-FUNCTIONAL: logic follows the exe; /Od temporaries and register allocation differ
 // @0x140dd06b0
 int CSmartPushAutoFishing::FUN_140dd06b0()
 {
@@ -579,12 +580,11 @@ int CSmartPushAutoFishing::FUN_140dd06b0()
         return 2;
     if (pkg->m_nMerat != 0)
         return 2;
-    if (pkg->m_nMeso == 0)
-        return 2;
-    return 0;
+    if (pkg->m_nMeso != 0)
+        return 0;
+    return 2;
 }
 
-// MS2-FUNCTIONAL: logic follows the exe; /Od temporaries and register allocation differ
 // @0x140dd07b0
 bool CSmartPushAutoFishing::FUN_140dd07b0()
 {
@@ -592,38 +592,40 @@ bool CSmartPushAutoFishing::FUN_140dd07b0()
         CSmartPushTable::GetInstance()->GetPackage(CGameRule::GetInstance()->FUN_140479970(), m_n1c);
     if (!pkg)
         return false;
+    __int64 nPrice = 0;
     unsigned nSale = CGameRule::GetInstance()->FUN_140479900();
-    if (pkg->m_nMerat == 0)
+    if (pkg->m_nMerat != 0)
     {
-        if (pkg->m_nMeso == 0)
-            return true;
-        __int64 nPrice = pkg->m_nMeso;
+        nPrice = pkg->m_nMerat;
         if (nSale != 0)
             nPrice -= (__int64)(nPrice * (unsigned __int64)nSale) / 10000;
-        return nPrice <= DAT_143ab2898;
+        if (FUN_140811640(m_nId) && FUN_140d86260()->vfunc_41(nPrice) == true)
+            return true;
+        return FUN_140d86260()->vfunc_40(nPrice);
     }
-    __int64 nPrice = pkg->m_nMerat;
-    if (nSale != 0)
-        nPrice -= (__int64)(nPrice * (unsigned __int64)nSale) / 10000;
-    if (FUN_140811640(m_nId) && FUN_140d86260()->vfunc_41(nPrice) == true)
-        return true;
-    return FUN_140d86260()->vfunc_40(nPrice);
+    else if (pkg->m_nMeso != 0)
+    {
+        nPrice = pkg->m_nMeso;
+        if (nSale != 0)
+            nPrice -= (__int64)(nPrice * (unsigned __int64)nSale) / 10000;
+        return DAT_143ab2898 >= nPrice;
+    }
+    return true;
 }
 
-// MS2-FUNCTIONAL: logic follows the exe; /Od temporaries and register allocation differ
 // @0x140dd0a00
 bool CSmartPushAutoFishing::FUN_140dd0a00(int nResult, const CMsgBoxData& data)
 {
     if (nResult == 0)
     {
-        CStringW strResult = data.FUN_141a02d50();
         int nPos = 0;
-        int nRedMerat = strResult.Tokenize(L",", nPos).CompareNoCase(L"true");
+        CStringW strResult = data.FUN_141a02d50();
+        bool bRedMerat = strResult.Tokenize(L",", nPos).CompareNoCase(L"true") == 0;
         m_n1c = _wtoi(strResult.Tokenize(L",", nPos)) - 1;
-        CGameOption::GetInstance()->FUN_140c9b8b0()->m_n20[1] = m_n1c;
+        CGameOption::GetInstance()->FUN_140c9b8b0()->m_n24 = m_n1c;
         CGameOption::GetInstance()->FUN_141243540();
-        bool bOk = FUN_140dd07b0();
-        if (!bOk)
+        int nOk = FUN_140dd07b0();
+        if (nOk == 0)
         {
             if (FUN_140dd06b0() == 2)
                 CUIService::GetInstance()->FUN_141add1f0();
@@ -634,10 +636,14 @@ bool CSmartPushAutoFishing::FUN_140dd0a00(int nResult, const CMsgBoxData& data)
         {
             vfunc_5(false);
         }
-        if (nRedMerat == 0 && bOk)
+        if (bRedMerat && nOk != 0)
             CFishingManager::GetInstance()->FUN_140cdbdf0(*Client::Constants::GetInstance()->extendAutoFishMaxCount.Get());
         else
             CFishingManager::GetInstance()->FUN_140cdbdf0(0);
+    }
+    else if (nResult == 1)
+    {
+        return true;
     }
     return true;
 }
@@ -667,20 +673,30 @@ CSmartPushAutoPlayInstrument::~CSmartPushAutoPlayInstrument()
 {
 }
 
-// MS2-FUNCTIONAL: logic follows the exe; /Od temporaries and register allocation differ
 // @0x140dd0d50
 void CSmartPushAutoPlayInstrument::vfunc_2()
 {
     MyPC* pMy = static_cast<MyPC*>(FUN_1403ed2d0()->FUN_141bd0cc0());
-    if (pMy == 0 || pMy->FUN_14166c930() != 0x2f)
+    if (pMy == 0)
         return;
+    if (pMy->FUN_14166c930() != 0x2f)
+        return;
+    unsigned nCount;
     int nBlocked = FUN_140c8dac0()->FUN_140d071b0();
     if (m_bPlaying != 0 && nBlocked == 0)
     {
-        int nCount = FUN_140c8dac0()->FUN_140d0b0c0();
-        if (nCount != 0)
+        nCount = FUN_140c8dac0()->FUN_140d0b0c0();
+        if (nCount > 0)
         {
-            if (!FUN_140dd1ba0())
+            if (FUN_140dd1ba0())
+            {
+                --nCount;
+                FUN_140c8dac0()->FUN_140d0b0e0(nCount);
+                vfunc_5(true);
+                CStringW strTime = CSmartPushTable::GetInstance()->GetPackageDurationText(m_data->m_strContent, m_n1c);
+                FUN_1412751f0(FUN_1405c2690(CStringW(L"s_msg_auto_play_instrument_extend_complete"), strTime), 1, 1);
+            }
+            else
             {
                 if (FUN_140dd1aa0() == 2)
                 {
@@ -691,13 +707,6 @@ void CSmartPushAutoPlayInstrument::vfunc_2()
                 {
                     FUN_140d73bc0(0x34, 0, 0, CStringW(L""));
                 }
-            }
-            else
-            {
-                FUN_140c8dac0()->FUN_140d0b0e0(nCount - 1);
-                vfunc_5(true);
-                CStringW strTime = CSmartPushTable::GetInstance()->GetPackageDurationText(m_data->m_strContent, m_n1c);
-                FUN_1412751f0(FUN_1405c2690(CStringW(L"s_msg_auto_play_instrument_extend_complete"), strTime), 1, 1);
             }
         }
     }
@@ -726,43 +735,39 @@ void CSmartPushAutoPlayInstrument::vfunc_2()
     m_bPlaying = nBlocked;
 }
 
-// MS2-FUNCTIONAL: logic follows the exe; /Od temporaries and register allocation differ
 // @0x140dd1100
 void CSmartPushAutoPlayInstrument::vfunc_3()
 {
-    if (!(m_data == 0))
+    if (m_data == 0)
+        return;
+    unsigned nSale = CGameRule::GetInstance()->FUN_140479a20();
+    CStringW strText;
+    CStringW strTitle;
+    MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x24, strText, 0, CStringW(L""));
+    if (spBox)
     {
-        unsigned nSale = CGameRule::GetInstance()->FUN_140479a20();
-        CStringW strText;
-        CStringW strTitle;
-        MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x24, strText, 0, CStringW(L""));
-        if (spBox.get())
+        spBox->FUN_141a01800(1);
+        spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &CSmartPushAutoPlayInstrument::FUN_140dd1df0));
+        spBox->FUN_141a02880(m_data->m_nActionValue, 1,
+            FUN_140938ae0(CStringW(L"s_msg_auto_play_instrument_extend_desc"),
+                *Client::Constants::GetInstance()->extendAutoPlayInstrumentMaxCount.Get()));
+        spBox->FUN_141a024a0(0);
+        spBox->FUN_141a024e0(GetStringCommonByKey(L"s_system_auto_play_instrument_extend"), 0);
+        spBox->SetStrike(strTitle);
+        int nCount = CSmartPushTable::GetInstance()->GetPackageCount(CGameRule::GetInstance()->FUN_140479a90());
+        for (int i = 0; i < nCount; i++)
         {
-            spBox->FUN_141a01800(1);
-            spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &CSmartPushAutoPlayInstrument::FUN_140dd1df0));
-            FUN_141a02880(spBox.get(), m_data->m_nActionValue, 1,
-                FUN_140938ae0(CStringW(L"s_msg_auto_play_instrument_extend_desc"),
-                    *Client::Constants::GetInstance()->extendAutoPlayInstrumentMaxCount.Get()));
-            spBox->FUN_141a024a0(0);
-            CStringW strKey(L"s_system_auto_play_instrument_extend");
-            spBox->FUN_141a024e0(GetStringCommonByKey(strKey), 0);
-            spBox->SetStrike(strTitle);
-            int nCount = CSmartPushTable::GetInstance()->GetPackageCount(CGameRule::GetInstance()->FUN_140479a90());
-            for (int i = 0; i < nCount; i++)
-            {
-                CSmartPushTable::PackagePtr pkg =
-                    CSmartPushTable::GetInstance()->GetPackage(CGameRule::GetInstance()->FUN_140479a90(), i);
-                Unk_SetBoxUInt(spBox.get(), FUN_1402bb1c0("autoActionMinute{0}", i), pkg->m_nDuration);
-                Unk_SetBoxInt64(spBox.get(), FUN_1402bb1c0("autoActionMerat{0}", i), pkg->m_nMerat);
-                Unk_SetBoxInt64(spBox.get(), FUN_1402bb1c0("autoActionMeso{0}", i), pkg->m_nMeso);
-            }
-            Unk_SetBoxBool(spBox.get(), "firstUseRedMerat", FUN_140811640(4));
-            CStringW strName(L"s_auto_action_play_instrument");
-            Unk_SetBoxString(spBox.get(), "actionName", GetStringCommonByKey(strName));
-            Unk_SetBoxUInt(spBox.get(), "saleRate", nSale);
-            Unk_SetBoxInt(spBox.get(), "packageCount", nCount);
-            FUN_140d73c60(spBox);
+            CSmartPushTable::PackagePtr pkg =
+                CSmartPushTable::GetInstance()->GetPackage(CGameRule::GetInstance()->FUN_140479a90(), i);
+            Unk_SetBoxUInt(spBox.operator->(), FUN_1402bb1c0("autoActionMinute{0}", i), pkg->m_nDuration);
+            Unk_SetBoxInt64(spBox.operator->(), FUN_1402bb1c0("autoActionMerat{0}", i), pkg->m_nMerat);
+            Unk_SetBoxInt64(spBox.operator->(), FUN_1402bb1c0("autoActionMeso{0}", i), pkg->m_nMeso);
         }
+        Unk_SetBoxBool(spBox.operator->(), "firstUseRedMerat", FUN_140811640(4));
+        Unk_SetBoxString(spBox.operator->(), "actionName", GetStringCommonByKey(L"s_auto_action_play_instrument"));
+        Unk_SetBoxUInt(spBox.operator->(), "saleRate", nSale);
+        Unk_SetBoxInt(spBox.operator->(), "packageCount", nCount);
+        FUN_140d73c60(spBox);
     }
 }
 
@@ -819,7 +824,6 @@ CStringW CSmartPushAutoPlayInstrument::vfunc_10()
     return CStringW(L"");
 }
 
-// MS2-FUNCTIONAL: logic follows the exe; /Od temporaries and register allocation differ
 // @0x140dd1aa0
 int CSmartPushAutoPlayInstrument::FUN_140dd1aa0()
 {
@@ -829,12 +833,11 @@ int CSmartPushAutoPlayInstrument::FUN_140dd1aa0()
         return 2;
     if (pkg->m_nMerat != 0)
         return 2;
-    if (pkg->m_nMeso == 0)
-        return 2;
-    return 0;
+    if (pkg->m_nMeso != 0)
+        return 0;
+    return 2;
 }
 
-// MS2-FUNCTIONAL: logic follows the exe; /Od temporaries and register allocation differ
 // @0x140dd1ba0
 bool CSmartPushAutoPlayInstrument::FUN_140dd1ba0()
 {
@@ -842,38 +845,40 @@ bool CSmartPushAutoPlayInstrument::FUN_140dd1ba0()
         CSmartPushTable::GetInstance()->GetPackage(CGameRule::GetInstance()->FUN_140479a90(), m_n1c);
     if (!pkg)
         return false;
+    __int64 nPrice = 0;
     unsigned nSale = CGameRule::GetInstance()->FUN_140479a20();
-    if (pkg->m_nMerat == 0)
+    if (pkg->m_nMerat != 0)
     {
-        if (pkg->m_nMeso == 0)
-            return true;
-        __int64 nPrice = pkg->m_nMeso;
+        nPrice = pkg->m_nMerat;
         if (nSale != 0)
             nPrice -= (__int64)(nPrice * (unsigned __int64)nSale) / 10000;
-        return nPrice <= DAT_143ab2898;
+        if (FUN_140811640(m_nId) && FUN_140d86260()->vfunc_41(nPrice) == true)
+            return true;
+        return FUN_140d86260()->vfunc_40(nPrice);
     }
-    __int64 nPrice = pkg->m_nMerat;
-    if (nSale != 0)
-        nPrice -= (__int64)(nPrice * (unsigned __int64)nSale) / 10000;
-    if (FUN_140811640(m_nId) && FUN_140d86260()->vfunc_41(nPrice) == true)
-        return true;
-    return FUN_140d86260()->vfunc_40(nPrice);
+    else if (pkg->m_nMeso != 0)
+    {
+        nPrice = pkg->m_nMeso;
+        if (nSale != 0)
+            nPrice -= (__int64)(nPrice * (unsigned __int64)nSale) / 10000;
+        return DAT_143ab2898 >= nPrice;
+    }
+    return true;
 }
 
-// MS2-FUNCTIONAL: logic follows the exe; /Od temporaries and register allocation differ
 // @0x140dd1df0
 bool CSmartPushAutoPlayInstrument::FUN_140dd1df0(int nResult, const CMsgBoxData& data)
 {
     if (nResult == 0)
     {
-        CStringW strResult = data.FUN_141a02d50();
         int nPos = 0;
-        int nRedMerat = strResult.Tokenize(L",", nPos).CompareNoCase(L"true");
+        CStringW strResult = data.FUN_141a02d50();
+        bool bRedMerat = strResult.Tokenize(L",", nPos).CompareNoCase(L"true") == 0;
         m_n1c = _wtoi(strResult.Tokenize(L",", nPos)) - 1;
-        CGameOption::GetInstance()->FUN_140c9b8b0()->m_n20[2] = m_n1c;
+        CGameOption::GetInstance()->FUN_140c9b8b0()->m_n28 = m_n1c;
         CGameOption::GetInstance()->FUN_141243540();
-        bool bOk = FUN_140dd1ba0();
-        if (!bOk)
+        int nOk = FUN_140dd1ba0();
+        if (nOk == 0)
         {
             if (FUN_140dd1aa0() == 2)
                 CUIService::GetInstance()->FUN_141add1f0();
@@ -884,10 +889,14 @@ bool CSmartPushAutoPlayInstrument::FUN_140dd1df0(int nResult, const CMsgBoxData&
         {
             vfunc_5(false);
         }
-        if (nRedMerat == 0 && bOk)
+        if (bRedMerat && nOk != 0)
             FUN_140c8dac0()->FUN_140d0b0e0(*Client::Constants::GetInstance()->extendAutoPlayInstrumentMaxCount.Get());
         else
             FUN_140c8dac0()->FUN_140d0b0e0(0);
+    }
+    else if (nResult == 1)
+    {
+        return true;
     }
     return true;
 }
@@ -916,7 +925,6 @@ CSmartPushSafeRiding::~CSmartPushSafeRiding()
 {
 }
 
-// MS2-FUNCTIONAL: logic follows the exe; /Od temporaries and register allocation differ
 // @0x140dd2140
 int CSmartPushSafeRiding::vfunc_6()
 {
@@ -929,7 +937,9 @@ int CSmartPushSafeRiding::vfunc_6()
         return 0;
     if (pMy->FUN_1416764a0()->GetData()->m_nType == 2)
         return 0;
-    return pMy->FUN_1416749a0()->FUN_1409701d0(2) == 0 ? 1 : 2;
+    if (pMy->FUN_1416749a0()->FUN_1409701d0(2))
+        return 2;
+    return 1;
 }
 
 // @0x140dd22a0
@@ -944,13 +954,12 @@ CStringW CSmartPushSafeRiding::vfunc_7()
     return GetStringCommonByKey(strKey);
 }
 
-// MS2-FUNCTIONAL: logic follows the exe; /Od temporaries and register allocation differ
 // @0x140dd2360
 CStringW CSmartPushSafeRiding::vfunc_9()
 {
-    if (!FUN_140811640(2))
-        return FUN_140c160b0(CStringW(L"s_smartpush_saferiding_desc"), m_data->m_nRequireMerat);
-    return FUN_140c160b0(CStringW(L"s_smartpush_saferiding_rbmerat_desc"), m_data->m_nRequireMerat);
+    if (FUN_140811640(2))
+        return FUN_140c160b0(CStringW(L"s_smartpush_saferiding_rbmerat_desc"), m_data->m_nRequireMerat);
+    return FUN_140c160b0(CStringW(L"s_smartpush_saferiding_desc"), m_data->m_nRequireMerat);
 }
 
 // @0x140dd2470
@@ -988,7 +997,6 @@ CSmartPushSafeWaterRiding::~CSmartPushSafeWaterRiding()
 {
 }
 
-// MS2-FUNCTIONAL: logic follows the exe; /Od temporaries and register allocation differ
 // @0x140dd2600
 int CSmartPushSafeWaterRiding::vfunc_6()
 {
@@ -1003,7 +1011,9 @@ int CSmartPushSafeWaterRiding::vfunc_6()
         return 0;
     if (FUN_140ba4fa0()->FUN_1401955f0(pMy->vfunc_141()))
         return 0;
-    return pMy->FUN_1416749a0()->FUN_1409701d0(3) == 0 ? 1 : 2;
+    if (pMy->FUN_1416749a0()->FUN_1409701d0(3))
+        return 2;
+    return 1;
 }
 
 // @0x140dd2790
@@ -1018,13 +1028,12 @@ CStringW CSmartPushSafeWaterRiding::vfunc_7()
     return GetStringCommonByKey(strKey);
 }
 
-// MS2-FUNCTIONAL: logic follows the exe; /Od temporaries and register allocation differ
 // @0x140dd2850
 CStringW CSmartPushSafeWaterRiding::vfunc_9()
 {
-    if (!FUN_140811640(3))
-        return FUN_140c160b0(CStringW(L"s_smartpush_saferiding_water_desc"), m_data->m_nRequireMerat);
-    return FUN_140c160b0(CStringW(L"s_smartpush_saferiding_water_rbmerat_desc"), m_data->m_nRequireMerat);
+    if (FUN_140811640(3))
+        return FUN_140c160b0(CStringW(L"s_smartpush_saferiding_water_rbmerat_desc"), m_data->m_nRequireMerat);
+    return FUN_140c160b0(CStringW(L"s_smartpush_saferiding_water_desc"), m_data->m_nRequireMerat);
 }
 
 // ---- CSmartPushSafeWaterRidingToggle ------------------------------------------------------------------------------------
@@ -1069,7 +1078,6 @@ void CSmartPushSafeWaterRidingToggle::vfunc_13()
 {
 }
 
-// MS2-FUNCTIONAL: logic follows the exe; /Od temporaries and register allocation differ
 // @0x140dd2b30
 int CSmartPushSafeWaterRidingToggle::vfunc_6()
 {
@@ -1084,7 +1092,9 @@ int CSmartPushSafeWaterRidingToggle::vfunc_6()
         return 0;
     if (!FUN_140ba4fa0()->FUN_1401955f0(pMy->vfunc_141()))
         return 0;
-    return pMy->FUN_1416749a0()->FUN_1409701d0(3) == 0 ? 1 : 2;
+    if (pMy->FUN_1416749a0()->FUN_1409701d0(3))
+        return 2;
+    return 1;
 }
 
 // @0x140dd2cc0
@@ -1134,7 +1144,7 @@ CStringW CSmartPushAutoInteraction::vfunc_7()
     return GetStringCommonByKey(strKey);
 }
 
-// MS2-FUNCTIONAL: logic follows the exe; /Od temporaries and register allocation differ
+// MS2-FUNCTIONAL: the exe spills the gathering max count to a temp before subtracting the used count (5 instructions); the rest matches
 // @0x140dd2fc0
 void CSmartPushAutoInteraction::vfunc_3()
 {
@@ -1153,38 +1163,38 @@ void CSmartPushAutoInteraction::vfunc_3()
         return;
     int nUsed = 0;
     FUN_140450290(&DAT_143ab3150, nId, &nUsed);
-    unsigned nAvail = FUN_1401c0db0()->CalcGatheringObjectgMaxCount(spRecipe->m_nCountA, spRecipe->m_nCountB) - nUsed;
+    int nMax = FUN_1401c0db0()->CalcGatheringObjectgMaxCount(spRecipe->m_nCountA, spRecipe->m_nCountB);
+    int nAvail = nMax - nUsed;
     if (nAvail == 0)
     {
-        FUN_1412751f0(FUN_140298ea0(CStringW(L"s_mastery_autointeraction_none_available_count")), 1, 1);
+        FUN_1412751f0(FUN_140298ea0(L"s_mastery_autointeraction_none_available_count"), 1, 1);
         return;
     }
-    unsigned nHave = 0;
-    if (m_data->m_requireItem.m_b == 0)
-        nHave = DAT_143ab2a90.FUN_140a5f180(m_data->m_requireItem.FUN_14026b500(), 0);
-    else
+    int nHave = 0;
+    if (m_data->m_requireItem.m_b != 0)
         nHave = DAT_143ab2a90.FUN_140a5f780(m_data->m_requireItem.m_b, 0);
+    else
+        nHave = DAT_143ab2a90.FUN_140a5f180(m_data->m_requireItem.FUN_14026b500(), 0);
     if (nHave == 0)
     {
-        CStringW strItem = CStringTable::GetInstance()->FUN_141811980(1, m_data->m_requireItem.FUN_14026b500());
-        FUN_1412751f0(FUN_1405c2690(CStringW(L"s_mastery_autointeraction_lack_item"), strItem), 1, 1);
+        FUN_1412751f0(FUN_1405c2690(L"s_mastery_autointeraction_lack_item",
+            CStringTable::GetInstance()->FUN_141811980(1, m_data->m_requireItem.FUN_14026b500())), 1, 1);
         return;
     }
-    unsigned nUse = 0;
+    int nUse = 0;
     nUse = std::min(nHave, nAvail);
-    MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x26, strText, 0, CStringW(L""));
-    if (spBox.get())
+    MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x26, strText, 0, L"");
+    if (spBox)
     {
         MS2Ptr<CItem> spItem(new CItem);
         int nItem = m_data->m_requireItem.FUN_14026b500();
-        int nRank = FUN_14053feb0(nItem);
-        if (spItem->FUN_140523c40(nItem, nRank, 0))
+        if (static_cast<CItem*>(spItem)->FUN_140523c40(nItem, FUN_14053feb0(nItem), 0))
         {
-            spItem->FUN_140526c70(m_data->m_requireItem.m_c);
-            Unk_SetBoxString(spBox.get(), "buffIcon", m_data->m_strImgPath);
-            Unk_SetBoxString(spBox.get(), "buffDesc", strDesc);
+            static_cast<CItem*>(spItem)->FUN_140526c70(m_data->m_requireItem.m_c);
+            Unk_SetBoxString(spBox.operator->(), "buffIcon", m_data->m_strImgPath);
+            Unk_SetBoxString(spBox.operator->(), "buffDesc", strDesc);
             spBox->FUN_141a01800(1);
-            spBox->FUN_141a01ee0(spItem, spItem->FUN_140527b10(), 1, m_data->m_requireItem.m_c, nUse, -1, 1);
+            spBox->FUN_141a01ee0(spItem, static_cast<CItem*>(spItem)->FUN_140527b10(), 1, m_data->m_requireItem.m_c, nUse, -1, 1);
             spBox->FUN_141a024a0(0);
             spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &CSmartPushAutoInteraction::FUN_140dd3a70));
         }
@@ -1192,50 +1202,46 @@ void CSmartPushAutoInteraction::vfunc_3()
     }
 }
 
-// MS2-FUNCTIONAL: logic follows the exe; /Od temporaries and register allocation differ
 // @0x140dd3a70
 bool CSmartPushAutoInteraction::FUN_140dd3a70(int nResult, const CMsgBoxData& data)
 {
-    if (nResult == 0)
+    if (nResult != 0)
+        return true;
+    MyPC* pMy = static_cast<MyPC*>(FUN_1403ed2d0()->FUN_141bd0cc0());
+    if (pMy == 0)
+        return true;
+    CStringW strCount = data.FUN_141a02d50();
+    strCount.Remove(L',');
+    int nRecipe = vfunc_14();
+    int nCount = FUN_1407181a0(strCount);
+    if (pMy->FUN_1416764d0())
     {
-        MyPC* pMy = static_cast<MyPC*>(FUN_1403ed2d0()->FUN_141bd0cc0());
-        if (pMy != 0)
-        {
-            CStringW strCount = data.FUN_141a02d50();
-            strCount.Remove(L',');
-            int nRecipe = vfunc_14();
-            int nCount = FUN_1407181a0(strCount);
-            if (pMy->FUN_1416764d0() == 0)
-            {
-                pMy->vfunc_59(0x39, new StateAutoInteractionData(m_data->m_nId, nCount, nRecipe), 0, 0);
-            }
-            else
-            {
-                MS2Ptr<RideOffActionAutoInteraction> spAction(new RideOffActionAutoInteraction(0));
-                spAction->m_n28 = m_data->m_nId;
-                spAction->m_n2c = nCount;
-                spAction->m_n30 = nRecipe;
-                pMy->SendRequestRideMode1(spAction.get());
-            }
-        }
+        MS2Ptr<RideOffActionAutoInteraction> spAction(new RideOffActionAutoInteraction(0));
+        spAction->m_n28 = m_data->m_nId;
+        spAction->m_n2c = nCount;
+        spAction->m_n30 = nRecipe;
+        pMy->SendRequestRideMode1(spAction.get());
+    }
+    else
+    {
+        StateData* pData = new StateAutoInteractionData(m_data->m_nId, nCount, nRecipe);
+        pMy->vfunc_59(0x39, pData, 0, 0);
     }
     return true;
 }
 
 // ---- CSmartPushAutoInteractObject ---------------------------------------------------------------------------------------
 
-// MS2-FUNCTIONAL: logic follows the exe; /Od temporaries and register allocation differ
 // @0x140dd3cb0
 int CSmartPushAutoInteractObject::vfunc_6()
 {
-    if (static_cast<MyPC*>(FUN_1403ed2d0()->FUN_141bd0cc0()) == 0)
+    MyPC* pMy = static_cast<MyPC*>(FUN_1403ed2d0()->FUN_141bd0cc0());
+    if (pMy == 0)
         return 0;
     CInteractGatheringObject* pObj = FUN_140dd3dd0();
-    if (pObj == 0)
-        return 0;
-    if (!pObj->FUN_141402c90())
-        return 0;
-    return 1;
+    if (pObj != 0 && pObj->FUN_141402c90())
+        return 1;
+    return 0;
 }
 
 // @0x140dd3d10
@@ -1253,11 +1259,10 @@ int CSmartPushAutoInteractObject::vfunc_14()
     return pObj->GetRow()->m_gathering.m_nReceipeId;
 }
 
-// MS2-FUNCTIONAL: logic follows the exe; /Od temporaries and register allocation differ
 // @0x140dd3dd0
 CInteractGatheringObject* CSmartPushAutoInteractObject::FUN_140dd3dd0()
 {
-    MyPC* pMy = static_cast<MyPC*>(FUN_1403ed2d0()->FUN_141bd0cc0());
+    Unk_SpGameObj* pMy = static_cast<Unk_SpGameObj*>(FUN_1403ed2d0()->FUN_141bd0cc0());
     if (pMy == 0)
         return 0;
     int nKind = m_data->m_nActionValue;
@@ -1265,18 +1270,17 @@ CInteractGatheringObject* CSmartPushAutoInteractObject::FUN_140dd3dd0()
     FUN_1403ed2d0()->FUN_141bc5fb0(&objects, 6);
     for (size_t i = 0; i < objects.GetCount(); i++)
     {
-        CInteractObject* pObj = objects[i].get();
+        CInteractObject* pObj = objects[i];
         MS2Ptr<Unk_SpRecipe> spRecipe = FUN_1409670c0()->FUN_14066aa00(pObj->GetRow()->m_gathering.m_nReceipeId);
         if (!spRecipe)
             continue;
         if (spRecipe->m_nMastery != nKind)
             continue;
         float fRange = pObj->GetRow()->m_validate.m_fInteractionDistance;
-        Vector3 ptObj = pObj->GetPos();
-        NiPoint3 pt = pMy->vfunc_18();
-        Vector3 ptMy(pt.x, pt.y, pt.z);
-        if (ptMy.FUN_140965c40(ptObj).FUN_140967ac0() <= fRange)
-            return dynamic_cast<CInteractGatheringObject*>(pObj);
+        float fDist = pMy->vfunc_18().FUN_140965c40(pObj->GetPos()).FUN_140967ac0();
+        if (fDist > fRange)
+            continue;
+        return dynamic_cast<CInteractGatheringObject*>(pObj);
     }
     return 0;
 }
@@ -1299,18 +1303,15 @@ int CSmartPushAutoFunctionCubeObject::vfunc_6()
     return 0;
 }
 
-// MS2-FUNCTIONAL: logic follows the exe; /Od temporaries and register allocation differ
 // @0x140dd4130
 int CSmartPushAutoFunctionCubeObject::vfunc_13()
 {
     MyPC* pMy = static_cast<MyPC*>(FUN_1403ed2d0()->FUN_141bd0cc0());
     if (pMy == 0)
         return 0;
-    __int64 nOwner = FUN_141656ad0(pMy);
-    return FUN_1409670b0()->FUN_141232430(vfunc_14(), nOwner);
+    return FUN_1409670b0()->FUN_141232430(vfunc_14(), FUN_141656ad0(pMy));
 }
 
-// MS2-FUNCTIONAL: logic follows the exe; /Od temporaries and register allocation differ
 // The homemade cube seen through the data copy (statehomemade.cpp owns the COMDAT at 0x140ca6580).
 class Unk_HmCube : public CHomemadeCubeObject
 {
@@ -1328,7 +1329,6 @@ int CSmartPushAutoFunctionCubeObject::vfunc_14()
     return static_cast<Unk_HmCube*>(pCube)->FUN_140ca6580()->m_n100;
 }
 
-// MS2-FUNCTIONAL: logic follows the exe; /Od temporaries and register allocation differ
 // @0x140dd4230
 CHomemadeCubeObject* CSmartPushAutoFunctionCubeObject::FUN_140dd4230()
 {
@@ -1337,31 +1337,24 @@ CHomemadeCubeObject* CSmartPushAutoFunctionCubeObject::FUN_140dd4230()
         return 0;
     int nKind = m_data->m_nActionValue;
     MS2Ptr<CFunctionCubeObject> spCube(0);
-    if (nKind == 5)
+    switch (nKind)
     {
-        __int64 nOwner = FUN_141656ad0(pMy);
-        float fRange = Client::Constants::GetInstance()->FunctionCubeDistance.Read();
-        NiPoint3 pt = pMy->vfunc_18();
-        Vector3 ptMy;
-        ptMy.x = pt.x;
-        ptMy.y = pt.y;
-        ptMy.z = pt.z;
-        spCube = FUN_1409670b0()->FUN_141231200(ptMy, fRange, nOwner, 7);
-    }
-    else if (nKind == 6)
+    case 6:
     {
-        __int64 nOwner = FUN_141656ad0(pMy);
-        float fRange = Client::Constants::GetInstance()->FunctionCubeDistance.Read();
-        NiPoint3 pt = pMy->vfunc_18();
-        Vector3 ptMy;
-        ptMy.x = pt.x;
-        ptMy.y = pt.y;
-        ptMy.z = pt.z;
-        spCube = FUN_1409670b0()->FUN_141231200(ptMy, fRange, nOwner, 8);
+        spCube = FUN_1409670b0()->FUN_141231200(reinterpret_cast<Unk_SpGameObj*>(pMy)->vfunc_18(),
+            Client::Constants::GetInstance()->FunctionCubeDistance.Read(), FUN_141656ad0(pMy), 8);
+        break;
     }
-    if (spCube.get() == 0)
-        return 0;
-    return dynamic_cast<CHomemadeCubeObject*>(spCube.operator->());
+    case 5:
+    {
+        spCube = FUN_1409670b0()->FUN_141231200(reinterpret_cast<Unk_SpGameObj*>(pMy)->vfunc_18(),
+            Client::Constants::GetInstance()->FunctionCubeDistance.Read(), FUN_141656ad0(pMy), 7);
+        break;
+    }
+    }
+    if (spCube.operator->())
+        return dynamic_cast<CHomemadeCubeObject*>(spCube.get());
+    return 0;
 }
 
 // ---- The concrete auto interactions -------------------------------------------------------------------------------------
@@ -1548,7 +1541,6 @@ CStringW CSmartPushAutoFarmingBuff::GetTypeName()
     return CStringW(L"CSmartPushAutoFarmingBuff");
 }
 
-// MS2-FUNCTIONAL: logic follows the exe; /Od temporaries and register allocation differ
 // @0x140dd5340
 int FUN_140dd5340(int nAbility)
 {
@@ -1559,30 +1551,26 @@ int FUN_140dd5340(int nAbility)
     for (size_t i = 0; i < items.GetCount(); i++)
     {
         MS2Ptr<CItem> spItem = items[i];
-        if (spItem.get() == 0)
+        if (spItem == 0 || FUN_140527840(spItem) == 0)
             continue;
-        if (FUN_140527840(spItem.get()) == 0)
+        if (FUN_140527840(spItem)->FUN_14053dc20() == 0)
             continue;
-        if (FUN_140527840(spItem.get())->FUN_14053dc20() == 0)
-            continue;
-        unsigned short nLevel = FUN_140527840(spItem.get())->FUN_14053dc40();
-        int nSkill = FUN_140527840(spItem.get())->FUN_14053dc20();
-        Unk_SpSkillLevelPtr spSkill = FUN_1401958b0()->FUN_1407ee2f0(nSkill, nLevel);
-        if (spSkill.FUN_140932d90() == 0)
-            continue;
-        Unk_SpSkillEffects* pEffects = &spSkill.FUN_1407ebbf0()->m_effects;
-        char* pEnd = pEffects->FUN_140aba7f0();
-        for (char* p = pEffects->FUN_140aba700(); p != pEnd; p += 0x10)
+        Unk_SpSkillLevelPtr spSkill = FUN_1401958b0()->FUN_1407ee2f0(FUN_140527840(spItem)->FUN_14053dc20(), FUN_140527840(spItem)->FUN_14053dc40());
+        if (spSkill.FUN_140932d90())
         {
-            Unk_SpSkillEffect* pEffect = FUN_1407e4770(p);
-            Unk_SpBuffLevelPtr spBuff = FUN_1401958b0()->FUN_140aafef0(pEffect->m_nId, pEffect->m_nLevel);
-            if (spBuff.FUN_14096e7e0(0))
-                continue;
-            if (spBuff.FUN_140184880()->FUN_140175790(nAbility) && nBest < spBuff.FUN_140184880()->m_nValue)
+            Unk_SpSkillEffects& effects = spSkill.FUN_1407ebbf0()->m_effects;
+            for (char *p = effects.FUN_140aba700(), *pEnd = effects.FUN_140aba7f0(); p != pEnd; p += 0x10)
             {
-                nItemId = spItem->FUN_1405276c0();
-                nBest = spBuff.FUN_140184880()->m_nValue;
-                break;
+                char& effect = *p;
+                Unk_SpBuffLevelPtr spBuff = FUN_1401958b0()->FUN_140aafef0(FUN_1407e4770(&effect)->m_nId, FUN_1407e4770(&effect)->m_nLevel);
+                if (spBuff.FUN_14096e7e0(0))
+                    continue;
+                if (spBuff.FUN_140184880()->FUN_140175790(nAbility) && nBest < spBuff.FUN_140184880()->m_nValue)
+                {
+                    nItemId = static_cast<CItem*>(spItem)->FUN_1405276c0();
+                    nBest = spBuff.FUN_140184880()->m_nValue;
+                    break;
+                }
             }
         }
     }

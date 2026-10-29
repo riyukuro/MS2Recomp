@@ -201,7 +201,6 @@ void CDrawDebugString::FUN_14118c0d0()
     m_pText->SetString(m_acName);
 }
 
-// MS2-FUNCTIONAL: loop temp layout differs (3 bytes)
 // @0x14118c120
 std::string CDrawDebugString::FUN_14118c120(unsigned nValue)
 {
@@ -213,7 +212,7 @@ std::string CDrawDebugString::FUN_14118c120(unsigned nValue)
     {
         strOut = Unk_DbgPrepend(strNum[i - 1], strOut);
         ++nDigits;
-        if (i != 1 && nDigits == 3)
+        if (i - 1 != 0 && nDigits == 3)
         {
             strOut = FUN_140298360(",", strOut);
             nDigits = 0;
@@ -229,8 +228,8 @@ const char* CDrawDebugString::GetText()
 }
 
 // The UCRT's `static __inline memcpy_s` of this TU (unreferenced copy, like memmove_s).
+#pragma function(memcpy, memset)
 // @0x14118c4c0
-// MS2-FUNCTIONAL: unreferenced CRT memcpy_s copy: frame saves rsi/rdi, source spelling differs
 static __inline errno_t ms2_memcpy_s_copy(void* const d, size_t const dsz, void const* const s, size_t const ssz)
 {
     if (ssz == 0) { return 0; }
@@ -246,5 +245,6 @@ static __inline errno_t ms2_memcpy_s_copy(void* const d, size_t const dsz, void 
     return 0;
 }
 __declspec(selectany) extern errno_t(__cdecl* const ms2_pfnMemcpySCopy)(void*, size_t, const void*, size_t) = &ms2_memcpy_s_copy;
+#pragma intrinsic(memcpy, memset)
 
 MS2_EMIT_CRT_MEMMOVE_S();

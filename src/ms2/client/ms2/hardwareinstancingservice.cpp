@@ -807,8 +807,6 @@ MS2_REPLACE_METHOD(0x1413D5660, HardwareInstancingService, FUN_1413d5660, 158, 0
 // EntityInstancing objects (sharing one when the configuration matches), keep the groups of two or more and tell
 // the nearby entities which instancing covers them.
 // @0x1413d5710
-// MS2-FUNCTIONAL: the exe stages the EntityInstancing count through ecx before passing it to FUN_1411c5880
-// (mov ecx,[n]; mov r8d,ecx); no int/unsigned spelling reproduced it, everything else matches
 void HardwareInstancingService::FUN_1413d5710()
 {
     char szKey[0x100];
@@ -896,8 +894,7 @@ void HardwareInstancingService::FUN_1413d5710()
     {
         if (itCreated->m_pInstancing->FUN_1413ebb30() > 1)
         {
-            int nCount = itCreated->m_pInstancing->FUN_1413ebb30();
-            itCreated->m_pInstancing->FUN_1411c5880(itCreated->m_pEntity, nCount);
+            itCreated->m_pInstancing->FUN_1411c5880(itCreated->m_pEntity, itCreated->m_pInstancing->FUN_1413ebb30());
             itCreated->m_pInstancing->FUN_1411c58d0(itCreated->m_pEntity);
             m_maps[m_nMap].m_mapByValue.insert(
                 std::make_pair(itCreated->m_pEntity->GetEntityIDValue(), itCreated->m_pInstancing));
@@ -1028,13 +1025,12 @@ int HardwareInstancingService::FUN_1413d6890(egf::Entity* pEntity)
 MS2_REPLACE_METHOD(0x1413D6890, HardwareInstancingService, FUN_1413d6890, 54, 0x153775AB);
 
 // @0x1413d68d0
-// MS2-FUNCTIONAL: the exe returns FUN_14147d010's result as an int (eax); meshinstancing.h declares that callee bool
-bool HardwareInstancingService::FUN_1413d68d0(egf::Entity* pEntity)
+int HardwareInstancingService::FUN_1413d68d0(egf::Entity* pEntity)
 {
     MeshInstancing* pInstancing = FUN_1413d66b0(pEntity);
     if (pInstancing != NULL)
         return pInstancing->FUN_14147d010(pEntity);
-    return false;
+    return 0;
 }
 
 // @0x1413d6920

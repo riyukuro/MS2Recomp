@@ -59,7 +59,6 @@ void UIQuizOXSelectDialog::vfunc_72()
 {
 }
 
-// MS2-FUNCTIONAL: one byte shorter in the exe (answer/result temporaries of the single-exit form)
 // @0x140e7ec80
 int UIQuizOXSelectDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs)
 {
@@ -75,9 +74,8 @@ int UIQuizOXSelectDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
     return 0;
 }
 
-// MS2-FUNCTIONAL: one byte differs in the answer parameter spill/conversion
 // @0x140e7ed60
-void FUN_140e7ed60(UIQuizOXSelectDialog* pDialog, char nAnswer)
+void FUN_140e7ed60(UIQuizOXSelectDialog* pDialog, int nAnswer)
 {
     COutPacket packet(static_cast<int>(SendOp::HomeAction), 0);
     packet.WriteUInt8(10);

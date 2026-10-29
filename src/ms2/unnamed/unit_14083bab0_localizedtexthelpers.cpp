@@ -34,7 +34,7 @@ CStringW FUN_140719a00(long long n);                                    // integ
 CStringW FUN_1405dbf60(const wchar_t* pszFormat, const double& d);      // one double argument
 CStringW FUN_1401ceea0(const wchar_t* pszFormat, const int& n);        // one int argument
 #include "ms2/commonfiles/commonutil.h"
-CStringW FUN_1405c2690(CStringW strKey, CStringW strArg);               // localized string with an argument
+CStringW FUN_1405c2690(CStringW strKey, const CStringW& strArg);               // localized string with an argument
 
 extern int DAT_143ab0240;                                               // client language
 extern int DAT_143ab0248;                                               // client country
@@ -54,35 +54,43 @@ CStringW FUN_14083bab0(const CMsTime& time, CStringW strSep)
     CStringW strOut;
     if (FUN_1403b3c40(strSep, L"/"))
         strSep = FUN_14083da90(nLang);
-    if (nLang == 2)
+    switch (nLang)
+    {
+    case 2:
     {
         int nYear = time.GetYear();
         int nDay = time.GetDay();
         int nMonth = time.GetMonth();
         strOut = StringFormat(L"{1:02d}{0}{2:02d}{0}{3:04d}", strSep, nMonth, nDay, nYear);
     }
-    else if (nLang < 4 || nLang > 7)
-    {
-        int nDay = time.GetDay();
-        int nMonth = time.GetMonth();
-        int nYear = time.GetYear();
-        strOut = StringFormat(L"{1:04d}{0}{2:02d}{0}{3:02d}", strSep, nYear, nMonth, nDay);
-    }
-    else
+        break;
+    case 4:
+    case 5:
+    case 6:
+    case 7:
     {
         int nYear = time.GetYear();
         int nMonth = time.GetMonth();
         int nDay = time.GetDay();
         strOut = StringFormat(L"{1:02d}{0}{2:02d}{0}{3:04d}", strSep, nDay, nMonth, nYear);
     }
+        break;
+    default:
+    {
+        int nDay = time.GetDay();
+        int nMonth = time.GetMonth();
+        int nYear = time.GetYear();
+        strOut = StringFormat(L"{1:04d}{0}{2:02d}{0}{3:02d}", strSep, nYear, nMonth, nDay);
+    }
+        break;
+    }
     return strOut;
 }
 
 // @0x14083bdc0
 // Date and time text; bShort24 selects the 24-hour clock (no AM/PM suffix).
-CStringW FUN_14083bdc0(const CMsTime& time, char bShort24, CStringW strDateSep, CStringW strTimeSep)
+CStringW FUN_14083bdc0(const CMsTime& time, bool bShort24, CStringW strDateSep, CStringW strTimeSep)
 {
-    unsigned nUnused = 0;
     int nLang = FUN_1406516a0();
     CStringW strOut;
     int nHour = 0;
@@ -90,23 +98,24 @@ CStringW FUN_14083bdc0(const CMsTime& time, char bShort24, CStringW strDateSep, 
     strDateSep = FUN_14083da90(nLang);
     if (bShort24 == 0)
     {
-        if (time.GetHour() < 13)
+        if (time.GetHour() > 12)
         {
-            nHour = time.GetHour();
-            strAmPm = L"AM";
+            nHour = time.GetHour() - 12;
+            strAmPm = L"PM";
         }
         else
         {
             nHour = time.GetHour();
-            nHour = nHour - 12;
-            strAmPm = L"PM";
+            strAmPm = L"AM";
         }
     }
     else
     {
         nHour = time.GetHour();
     }
-    if (nLang == 2)
+    switch (nLang)
+    {
+    case 2:
     {
         int nSecond = time.GetSecond();
         int nMinute = time.GetMinute();
@@ -114,18 +123,9 @@ CStringW FUN_14083bdc0(const CMsTime& time, char bShort24, CStringW strDateSep, 
         int nDay = time.GetDay();
         int nMonth = time.GetMonth();
         strOut = StringFormat(L"{2:02d}{0}{3:02d}{0}{4:04d} {5:02d}{1}{6:02d}{1}{7:02d} {8}", strDateSep, strTimeSep, nMonth, nDay, nYear, nHour, nMinute, nSecond, strAmPm);
+        break;
     }
-    else if (nLang > 3 && nLang < 7)
-    {
-        int nSecond = time.GetSecond();
-        int nMinute = time.GetMinute();
-        int nHour24 = time.GetHour();
-        int nYear = time.GetYear();
-        int nMonth = time.GetMonth();
-        int nDay = time.GetDay();
-        strOut = StringFormat(L"{2:02d}{0}{3:02d}{0}{4:04d} {5:02d}{1}{6:02d}{1}{7:02d}", strDateSep, strTimeSep, nDay, nMonth, nYear, nHour24, nMinute, nSecond);
-    }
-    else if (nLang == 7)
+    case 7:
     {
         int nSecond = time.GetSecond();
         int nMinute = time.GetMinute();
@@ -133,54 +133,11 @@ CStringW FUN_14083bdc0(const CMsTime& time, char bShort24, CStringW strDateSep, 
         int nMonth = time.GetMonth();
         int nDay = time.GetDay();
         strOut = StringFormat(L"{2:02d}{0}{3:02d}{0}{4:04d} {5:02d}{1}{6:02d}{1}{7:02d} {8}", strDateSep, strTimeSep, nDay, nMonth, nYear, nHour, nMinute, nSecond, strAmPm);
+        break;
     }
-    else
-    {
-        int nSecond = time.GetSecond();
-        int nMinute = time.GetMinute();
-        int nHour24 = time.GetHour();
-        int nDay = time.GetDay();
-        int nMonth = time.GetMonth();
-        int nYear = time.GetYear();
-        strOut = StringFormat(L"{2:04d}{0}{3:02d}{0}{4:02d} {5:02d}{1}{6:02d}{1}{7:02d}", strDateSep, strTimeSep, nYear, nMonth, nDay, nHour24, nMinute, nSecond);
-    }
-    nUnused |= 1;
-    return strOut;
-}
-
-// @0x14083c410
-// Date and time text with a 12-hour clock whose hour is formatted separately.
-CStringW FUN_14083c410(const CMsTime& time, CStringW strDateSep, CStringW strTimeSep)
-{
-    unsigned nUnused = 0;
-    int nLang = FUN_1406516a0();
-    CStringW strOut;
-    CStringW strHour;
-    CStringW strAmPm;
-    strDateSep = FUN_14083da90(nLang);
-    if (time.GetHour() < 13)
-    {
-        int nHour = time.GetHour();
-        strHour = FUN_1401ceea0(L"{0}", nHour);
-        strAmPm = L"AM";
-    }
-    else
-    {
-        int nHour = time.GetHour();
-        nHour = nHour - 12;
-        strHour = FUN_1401ceea0(L"{0}", nHour);
-        strAmPm = L"PM";
-    }
-    if (nLang == 2)
-    {
-        int nSecond = time.GetSecond();
-        int nMinute = time.GetMinute();
-        int nYear = time.GetYear();
-        int nDay = time.GetDay();
-        int nMonth = time.GetMonth();
-        strOut = StringFormat(L"{2:02d}{0}{3:02d}{0}{4:04d} {5:02d}{1}{6:02d}{1}{7:02d} {8}", strDateSep, strTimeSep, nMonth, nDay, nYear, strHour, nMinute, nSecond, strAmPm);
-    }
-    else if (nLang > 3 && nLang < 7)
+    case 4:
+    case 5:
+    case 6:
     {
         int nSecond = time.GetSecond();
         int nMinute = time.GetMinute();
@@ -189,17 +146,9 @@ CStringW FUN_14083c410(const CMsTime& time, CStringW strDateSep, CStringW strTim
         int nMonth = time.GetMonth();
         int nDay = time.GetDay();
         strOut = StringFormat(L"{2:02d}{0}{3:02d}{0}{4:04d} {5:02d}{1}{6:02d}{1}{7:02d}", strDateSep, strTimeSep, nDay, nMonth, nYear, nHour24, nMinute, nSecond);
+        break;
     }
-    else if (nLang == 7)
-    {
-        int nSecond = time.GetSecond();
-        int nMinute = time.GetMinute();
-        int nYear = time.GetYear();
-        int nMonth = time.GetMonth();
-        int nDay = time.GetDay();
-        strOut = StringFormat(L"{2:02d}{0}{3:02d}{0}{4:04d} {5:02d}{1}{6:02d}{1}{7:02d} {8}", strDateSep, strTimeSep, nDay, nMonth, nYear, strHour, nMinute, nSecond, strAmPm);
-    }
-    else
+    default:
     {
         int nSecond = time.GetSecond();
         int nMinute = time.GetMinute();
@@ -209,7 +158,79 @@ CStringW FUN_14083c410(const CMsTime& time, CStringW strDateSep, CStringW strTim
         int nYear = time.GetYear();
         strOut = StringFormat(L"{2:04d}{0}{3:02d}{0}{4:02d} {5:02d}{1}{6:02d}{1}{7:02d}", strDateSep, strTimeSep, nYear, nMonth, nDay, nHour24, nMinute, nSecond);
     }
-    nUnused |= 1;
+    }
+    return strOut;
+}
+
+// @0x14083c410
+// Date and time text with a 12-hour clock whose hour is formatted separately.
+CStringW FUN_14083c410(const CMsTime& time, CStringW strDateSep, CStringW strTimeSep)
+{
+    bool b24 = false;
+    int nLang = FUN_1406516a0();
+    CStringW strOut;
+    CStringW strHour;
+    CStringW strAmPm;
+    strDateSep = FUN_14083da90(nLang);
+    if (!b24)
+    {
+        if (time.GetHour() > 12)
+        {
+            strHour = FUN_1401ceea0(L"{0}", time.GetHour() - 12);
+            strAmPm = L"PM";
+        }
+        else
+        {
+            strHour = FUN_1401ceea0(L"{0}", time.GetHour());
+            strAmPm = L"AM";
+        }
+    }
+    switch (nLang)
+    {
+    case 2:
+    {
+        int nSecond = time.GetSecond();
+        int nMinute = time.GetMinute();
+        int nYear = time.GetYear();
+        int nDay = time.GetDay();
+        int nMonth = time.GetMonth();
+        strOut = StringFormat(L"{2:02d}{0}{3:02d}{0}{4:04d} {5:02d}{1}{6:02d}{1}{7:02d} {8}", strDateSep, strTimeSep, nMonth, nDay, nYear, strHour, nMinute, nSecond, strAmPm);
+        break;
+    }
+    case 7:
+    {
+        int nSecond = time.GetSecond();
+        int nMinute = time.GetMinute();
+        int nYear = time.GetYear();
+        int nMonth = time.GetMonth();
+        int nDay = time.GetDay();
+        strOut = StringFormat(L"{2:02d}{0}{3:02d}{0}{4:04d} {5:02d}{1}{6:02d}{1}{7:02d} {8}", strDateSep, strTimeSep, nDay, nMonth, nYear, strHour, nMinute, nSecond, strAmPm);
+        break;
+    }
+    case 4:
+    case 5:
+    case 6:
+    {
+        int nSecond = time.GetSecond();
+        int nMinute = time.GetMinute();
+        int nHour24 = time.GetHour();
+        int nYear = time.GetYear();
+        int nMonth = time.GetMonth();
+        int nDay = time.GetDay();
+        strOut = StringFormat(L"{2:02d}{0}{3:02d}{0}{4:04d} {5:02d}{1}{6:02d}{1}{7:02d}", strDateSep, strTimeSep, nDay, nMonth, nYear, nHour24, nMinute, nSecond);
+        break;
+    }
+    default:
+    {
+        int nSecond = time.GetSecond();
+        int nMinute = time.GetMinute();
+        int nHour24 = time.GetHour();
+        int nDay = time.GetDay();
+        int nMonth = time.GetMonth();
+        int nYear = time.GetYear();
+        strOut = StringFormat(L"{2:04d}{0}{3:02d}{0}{4:02d} {5:02d}{1}{6:02d}{1}{7:02d}", strDateSep, strTimeSep, nYear, nMonth, nDay, nHour24, nMinute, nSecond);
+    }
+    }
     return strOut;
 }
 
@@ -218,23 +239,17 @@ CStringW FUN_14083c410(const CMsTime& time, CStringW strDateSep, CStringW strTim
 CStringW FUN_14083cb20(const CStringW& str)
 {
     int nLen = str.GetLength();
-    int nDot = str.Find(L".", 0);
-    int nInt = nLen;
-    if (nDot > -1)
-        nInt = nDot;
-    if (nInt < 4 && nLen == nInt)
+    int nInt = str.Find(L".", 0);
+    nInt = (nInt >= 0) ? nInt : nLen;
+    if (nInt <= 3 && nLen == nInt)
         return str;
     CStringW strOut(str);
     if (nInt < nLen)
         strOut.SetAt(nInt, FUN_14083dbc0(DAT_143ab0240)[0]);
     strOut.Preallocate(nLen + nLen / 3);
     CStringW strSep = FUN_14083db10(DAT_143ab0240);
-    int nPos;
-    while ((nPos = nInt - 3) > 0)
-    {
+    for (int nPos = nInt - 3; nPos > 0; nPos -= 3)
         strOut.Insert(nPos, strSep.GetString());
-        nInt = nPos;
-    }
     return strOut;
 }
 
@@ -242,37 +257,35 @@ CStringW FUN_14083cb20(const CStringW& str)
 // Re-renders a typed number text: strips the thousands separators and formats it again.
 CStringW FUN_14083ccf0(const CStringW& str)
 {
-    unsigned nUnused = 0;
     CStringW strDigits;
     CStringW strSep = FUN_14083dbc0(DAT_143ab0240);
     bool bFraction = false;
     for (int i = 0; i < str.GetLength(); ++i)
     {
-        wchar_t ch = str.GetAt(i);
-        if ((char)ch < '0' || '9' < (char)ch)
+        char ch = (char)str.GetAt(i);
+        if (ch < '0' || '9' < ch)
         {
-            if ((char)ch == '-' && i == 0)
-                strDigits.AppendChar(L'-');
+            if (ch == '-' && i == 0)
+                strDigits.AppendChar(ch);
             else if (FUN_14083f280(strSep, ch))
             {
                 strDigits.AppendChar(ch);
                 bFraction = true;
             }
+            continue;
         }
-        else
-            strDigits.AppendChar(ch);
+        strDigits.AppendChar(ch);
     }
     CStringW strOut;
-    if (bFraction)
+    if (!bFraction)
+    {
+        strOut = FUN_140719a00(FUN_140718320(strDigits));
+    }
+    else
     {
         double d = FUN_1407184e0(strDigits);
         strOut = FUN_1405dbf60(L"{0}", d);
     }
-    else
-    {
-        strOut = FUN_140719a00(FUN_140718320(strDigits));
-    }
-    nUnused |= 1;
     return strOut;
 }
 
@@ -284,37 +297,40 @@ CStringW FUN_14083cf10(const CStringW& str)
 
 // @0x14083cf50
 // Percent text of a value in hundredths ("12.5%"); bLocalized wraps it in the s_common_percent string.
-CStringW FUN_14083cf50(int nValue, char bLocalized)
+CStringW FUN_14083cf50(int nValue, bool bLocalized)
 {
     int nFrac = nValue % 100;
     int nInt = nValue / 100;
-    if (nFrac < 1)
+    if (nFrac > 0)
     {
-        CStringW strFormat = bLocalized == 0 ? CStringW(L"{0}") : GetStringCommonByKey(CStringW(L"s_common_percent"));
-        return FUN_1401ceea0(strFormat, nInt);
+        CStringW strNumber = StringFormat(L"{0}.{1}", nInt, nFrac);
+        double d = FUN_1407184e0(strNumber);
+        CStringW strFixed = FUN_1405dbf60(L"{0:.2f}", d);
+        return bLocalized ? FUN_1405c2690(L"s_common_percent", strFixed) : CStringW(strFixed);
     }
-    CStringW strNumber = StringFormat(L"{0}.{1}", nInt, nFrac);
-    double d = FUN_1407184e0(strNumber);
-    CStringW strFixed = FUN_1405dbf60(L"{0:.2f}", d);
-    CStringW strOut = bLocalized == 0 ? CStringW(strFixed) : FUN_1405c2690(CStringW(L"s_common_percent"), strFixed);
-    return strOut;
+    CStringW strFormat = bLocalized ? GetStringCommonByKey(L"s_common_percent") : CStringW(L"{0}");
+    return FUN_1401ceea0(strFormat, nInt);
 }
 
 // @0x14083d2b0
 // Removes every <...> tag from the text.
 void FUN_14083d2b0(CStringW& str)
 {
-    int nOpen;
-    int nClose;
-    while ((nOpen = str.Find(L"<", 0)) != -1 && (nClose = str.Find(L">", nOpen + 1)) != -1)
+    int nOpen = 0;
+    while ((nOpen = str.Find(L"<", 0)) != -1)
+    {
+        int nClose = str.Find(L">", nOpen + 1);
+        if (nClose == -1)
+            break;
         str.Delete(nOpen, nClose - nOpen + 1);
+    }
 }
 
 // @0x14083d340
 // For "<ms2>" xml text: the first child element's localized attribute (the client language, then its fallbacks).
 CStringW FUN_14083d340(CStringW str)
 {
-    if (!FUN_14083d7e0(str, CStringW(L"<ms2>")))
+    if (!FUN_14083d7e0(str, L"<ms2>"))
         return str;
     TiXmlDocument doc;
     if (FUN_140166420()->FUN_140397ab0(&doc, str) == 0)
@@ -363,8 +379,10 @@ bool FUN_14083d890(CStringW str)
         return false;
     if (!EmptyClipboard())
         return false;
-    HGLOBAL hMem = GlobalAlloc(0, (SIZE_T)(str.GetLength() + 1) << 1);
-    lstrcpyW((LPWSTR)hMem, str.GetString());
+    SIZE_T nSize = (SIZE_T)(str.GetLength() + 1) << 1;
+    HGLOBAL hMem = GlobalAlloc(0, nSize);
+    LPCWSTR psz = str.GetString();
+    lstrcpyW((LPWSTR)hMem, psz);
     if (SetClipboardData(CF_UNICODETEXT, hMem) == NULL)
     {
         CloseClipboard();
@@ -382,8 +400,10 @@ bool FUN_14083d990(CStringA str)
         return false;
     if (!EmptyClipboard())
         return false;
-    HGLOBAL hMem = GlobalAlloc(0, (SIZE_T)(str.GetLength() + 1));
-    lstrcpyA((LPSTR)hMem, str.GetString());
+    SIZE_T nSize = (SIZE_T)(str.GetLength() + 1);
+    HGLOBAL hMem = GlobalAlloc(0, nSize);
+    LPCSTR psz = str.GetString();
+    lstrcpyA((LPSTR)hMem, psz);
     if (SetClipboardData(CF_TEXT, hMem) == NULL)
     {
         CloseClipboard();
@@ -398,29 +418,43 @@ bool FUN_14083d990(CStringA str)
 // Date separator of a language.
 CStringW FUN_14083da90(int nLang)
 {
-    if (nLang == 5)
+    switch (nLang)
+    {
+    case 5:
         return CStringW(L".");
-    return CStringW(L"/");
+    default:
+        return CStringW(L"/");
+    }
 }
 
 // @0x14083db10
 // Thousands separator of a language.
 CStringW FUN_14083db10(int nLang)
 {
-    if (nLang == 4)
+    switch (nLang)
+    {
+    case 5:
+    case 6:
+        return CStringW(L".");
+    case 4:
         return CStringW(L" ");
-    if (nLang < 5 || nLang > 6)
+    default:
         return CStringW(L",");
-    return CStringW(L".");
+    }
 }
 
 // @0x14083dbc0
 // Decimal separator of a language.
 CStringW FUN_14083dbc0(int nLang)
 {
-    if (nLang < 5 || nLang > 6)
+    switch (nLang)
+    {
+    case 5:
+    case 6:
+        return CStringW(L",");
+    default:
         return CStringW(L".");
-    return CStringW(L",");
+    }
 }
 
 // @0x14083f280

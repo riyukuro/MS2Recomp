@@ -1,3 +1,6 @@
+269c
+            "mesh (pointer: 0x%X, name: %s).",   // MS2: game 0x1427e4680 passes __FUNCTION__ for the %s (stock lacks the comma)
+.
 153@12s "" "(const char*)"
 152@12s "" "(const char*)"
 99@16s "" "(const char*)"

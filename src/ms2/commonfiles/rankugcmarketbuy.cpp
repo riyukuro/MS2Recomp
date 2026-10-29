@@ -165,7 +165,6 @@ RankingArenaData* CRankingArenaDataTable::GetGrade(int nGrade)
 }
 
 // @0x140769000
-// MS2-FUNCTIONAL: loop exit jump layout differs
 RankingArenaData* CRankingArenaDataTable::GetGradeOfRating(int nRating)
 {
     CheckInit();
@@ -180,7 +179,8 @@ RankingArenaData* CRankingArenaDataTable::GetGradeOfRating(int nRating)
     }
     if (nFound == 1)
         return &m_aGrades[1];
-    return &m_aGrades[nFound - 1];
+    else
+        return &m_aGrades[nFound - 1];
 }
 
 // @0x1407692e0

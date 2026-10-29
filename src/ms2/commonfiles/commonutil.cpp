@@ -61,6 +61,8 @@
 #include <atlfile.h>
 #include <stdarg.h>
 #include <time.h>
+#include <comdef.h>
+#pragma comment(lib, "comsuppw.lib")   // _com_issue_error (0x14274be80): the _bstr_t stand-ins below throw _com_error
 #include <string>
 #include <vector>
 #include <math.h>
@@ -72,7 +74,7 @@
 
 int FUN_14028c3e0(const CString& strText, CAtlArray<CString>& arrOut, const char* pszDelim, int nMax);
 
-struct Unk_CommonVec3 { float x, y, z; };
+struct Unk_CommonVec3 { Unk_CommonVec3() {} float x, y, z; };
 
 struct Unk_CommonVec2
 {
@@ -275,18 +277,16 @@ CString FUN_14028bbc0()
 }
 
 // Dotted text of a packed IPv4 address.
-// MS2-FUNCTIONAL: exe frame carries a /GS cookie for an unrecovered local (in_addr copy); ours does not
 // @0x14028bd10
 CString FUN_14028bd10(int nAddr)
 {
-    in_addr kAddr;
-    kAddr.s_addr = nAddr;
-    CString strAddr = FUN_140188f50(inet_ntoa(kAddr), 0);
+    sockaddr_in kAddr;
+    kAddr.sin_addr.s_addr = nAddr;
+    CString strAddr = FUN_140188f50(inet_ntoa(kAddr.sin_addr), 0);
     return strAddr;
 }
 
 // Resolves a host name and picks one of its addresses at random (empty when it does not resolve).
-// MS2-FUNCTIONAL: exe frame is 0x10 larger (stack slot order of the pick locals not recovered)
 // @0x14028bdb0
 CString FUN_14028bdb0(const CString& strHost)
 {
@@ -294,25 +294,21 @@ CString FUN_14028bdb0(const CString& strHost)
     if (pHost == 0)
         return "";
     CAtlArray<CString> arrAddr;
-    int i = 0;
-    while (pHost->h_addr_list[i] != 0)
+    for (int i = 0; pHost->h_addr_list[i] != 0; i++)
     {
         CString strAddr = FUN_140188f50(inet_ntoa(*(in_addr*)pHost->h_addr_list[i]), 0);
         if (!strAddr.IsEmpty())
             arrAddr.Add(strAddr);
-        i++;
     }
     if (FUN_140299100(arrAddr))
         return "";
-    unsigned long long ullRand = rand();
-    unsigned long long ullCount = arrAddr.GetCount();
-    return arrAddr.GetAt((int)(ullRand % ullCount));
+    int nIndex = (int)(rand() % arrAddr.GetCount());
+    return arrAddr.GetAt(nIndex);
 }
 
 // ---- string splitting and parsing helpers ----
 
 // "r,g,b" -> 0xffRRGGBB.
-// MS2-FUNCTIONAL: stack slot order of return temp vs r/g/b locals differs
 // @0x14028c0d0
 unsigned FUN_14028c0d0(const char* pszText)
 {
@@ -320,11 +316,10 @@ unsigned FUN_14028c0d0(const char* pszText)
     CAtlArray<CString> arrParts;
     if (FUN_14028c3e0(strText, arrParts, ",", 3) == 0)
         return 0;
-    unsigned uRed = atoi(arrParts[0]);
-    unsigned uGreen = atoi(arrParts[1]);
-    unsigned uBlue = atoi(arrParts[2]);
-    uRed = (uRed & 0xff) << 16 | 0xff000000 | (uGreen & 0xff) << 8 | uBlue & 0xff;
-    return uRed;
+    unsigned uRed = (atoi(arrParts[0]) & 0xff) << 16 | 0xff000000;
+    unsigned uRedGreen = uRed | (atoi(arrParts[1]) & 0xff) << 8;
+    unsigned uColor = uRedGreen | atoi(arrParts[2]) & 0xff;
+    return uColor;
 }
 
 // 0xffRRGGBB -> "r,g,b".
@@ -352,7 +347,6 @@ void FUN_14028c2d0(CString strText, Unk_CommonVec3* pOut)
 }
 
 // Tokenizes by any character of pszDelim, at most nMax parts (the last one keeps the remaining text).
-// MS2-FUNCTIONAL: stack-slot layout of the compiler temps differs from the exe
 // @0x14028c3e0
 int FUN_14028c3e0(const CString& strText, CAtlArray<CString>& arrOut, const char* pszDelim, int nMax)
 {
@@ -366,7 +360,7 @@ int FUN_14028c3e0(const CString& strText, CAtlArray<CString>& arrOut, const char
     while (!strToken.IsEmpty())
     {
         arrOut.Add(strToken);
-        if ((size_t)(nMax - 1) < arrOut.GetCount())
+        if (arrOut.GetCount() > (size_t)(nMax - 1))
         {
             arrOut.Add(strText.Mid(nPos));
             return 1;
@@ -377,45 +371,53 @@ int FUN_14028c3e0(const CString& strText, CAtlArray<CString>& arrOut, const char
 }
 
 // Splits on pszSep, returns whether exactly nExpected parts came out.
-// MS2-FUNCTIONAL: stack-slot layout of the compiler temps differs from the exe
 // @0x14028c570
 int FUN_14028c570(const CString& strText, CAtlArray<CString>& arrOut, const char* pszSep, int nExpected)
 {
     CString strPart;
     int nPos = 0;
-    int nFound;
-    while ((nFound = strText.Find(pszSep, nPos)) != -1)
+    int nFound = 0;
+    while (true)
     {
-        strPart = strText.Mid(nPos);
+        nFound = strText.Find(pszSep, nPos);
+        if (nFound == -1)
+        {
+            strPart = strText.Mid(nPos);
+            arrOut.Add(strPart);
+            break;
+        }
+        strPart = strText.Mid(nPos, nFound - nPos);
         arrOut.Add(strPart);
         nPos = nFound + 1;
     }
-    strPart = strText.Mid(nPos);
-    arrOut.Add(strPart);
-    if (arrOut.GetCount() == nExpected)
-        return 1;
-    return 0;
+    if (arrOut.GetCount() != nExpected)
+        return 0;
+    return 1;
 }
 
-// MS2-FUNCTIONAL: stack-slot layout of the compiler temps differs from the exe
+// Splits on pszSep.
 // @0x14028c700
 void FUN_14028c700(const CString& strText, CAtlArray<CString>& arrOut, const char* pszSep)
 {
     CString strPart;
     int nPos = 0;
-    int nFound;
-    while ((nFound = strText.Find(pszSep, nPos)) != -1)
+    int nFound = 0;
+    while (true)
     {
-        strPart = strText.Mid(nPos);
+        nFound = strText.Find(pszSep, nPos);
+        if (nFound == -1)
+        {
+            strPart = strText.Mid(nPos);
+            arrOut.Add(strPart);
+            break;
+        }
+        strPart = strText.Mid(nPos, nFound - nPos);
         arrOut.Add(strPart);
         nPos = nFound + 1;
     }
-    strPart = strText.Mid(nPos);
-    arrOut.Add(strPart);
 }
 
 // Splits on pszSep into at most nMax parts (the last one keeps the remaining text).
-// MS2-FUNCTIONAL: stack-slot layout of the compiler temps differs from the exe
 // @0x14028c850
 void FUN_14028c850(const CString& strText, CAtlArray<CString>& arrOut, const char* pszSep, int nMax)
 {
@@ -427,71 +429,80 @@ void FUN_14028c850(const CString& strText, CAtlArray<CString>& arrOut, const cha
     {
         CString strPart;
         int nPos = 0;
+        int nFound = 0;
         for (int i = 0; i < nMax; ++i)
         {
-            int nFound = strText.Find(pszSep, nPos);
+            nFound = strText.Find(pszSep, nPos);
             if (nFound == -1)
             {
                 strPart = strText.Mid(nPos);
                 arrOut.Add(strPart);
                 break;
             }
-            if (nMax - 1 <= i)
+            if (i >= nMax - 1)
             {
                 arrOut.Add(strText.Mid(nPos));
                 return;
             }
-            strPart = strText.Mid(nPos);
-            arrOut.Add(strPart);
-            nPos = nFound + 1;
+            else
+            {
+                strPart = strText.Mid(nPos, nFound - nPos);   // just this field
+                arrOut.Add(strPart);
+                nPos = nFound + 1;
+            }
         }
     }
 }
 
-// Collects the text between each pair of strOpen/strClose markers.
-// MS2-FUNCTIONAL: stack-slot layout of the compiler temps differs from the exe
+// Collects each strOpen...strClose span (markers included).
 // @0x14028ca50
 void FUN_14028ca50(const CString& strText, CAtlArray<CString>& arrOut, const CString& strOpen, const CString& strClose)
 {
     if (strText.IsEmpty())
         return;
     int nPos = 0;
+    int nOpen = 0;
+    int nClose = 0;
     while (true)
     {
-        int nOpen = strText.Find(strOpen, nPos);
+        nOpen = strText.Find(strOpen, nPos);
         if (nOpen == -1)
-            break;
-        nPos = strText.Find(strClose, nPos);
-        if (nPos == -1)
             return;
-        CString strInner = strText.Mid(nOpen);
-        if (0 < strInner.GetLength())
+        nClose = strText.Find(strClose, nPos);
+        if (nClose == -1)
+            return;
+        CString strInner = strText.Mid(nOpen, nClose - nOpen + 1);
+        if (strInner.GetLength() > 0)
             arrOut.Add(strInner);
-        nPos = nPos + 1;
+        nPos = nClose + 1;
     }
 }
 
-// MS2-FUNCTIONAL: not yet byte-matched (std::string glue pairing / frame layout)
+// Splits on pszSep, returns whether exactly nExpected parts came out.
 // @0x14028cb70
 int FUN_14028cb70(const CStringW& strText, CAtlArray<CStringW>& arrOut, const wchar_t* pszSep, int nExpected)
 {
     CStringW strPart;
     int nPos = 0;
-    int nFound;
-    while ((nFound = strText.Find(pszSep, nPos)) != -1)
+    int nFound = 0;
+    while (true)
     {
-        strPart = strText.Mid(nPos);
+        nFound = strText.Find(pszSep, nPos);
+        if (nFound == -1)
+        {
+            strPart = strText.Mid(nPos);
+            arrOut.Add(strPart);
+            break;
+        }
+        strPart = strText.Mid(nPos, nFound - nPos);
         arrOut.Add(strPart);
         nPos = nFound + 1;
     }
-    strPart = strText.Mid(nPos);
-    arrOut.Add(strPart);
-    if (arrOut.GetCount() == nExpected)
-        return 1;
-    return 0;
+    if (arrOut.GetCount() != nExpected)
+        return 0;
+    return 1;
 }
 
-// MS2-FUNCTIONAL: not yet byte-matched (std::string glue pairing / frame layout)
 // @0x14028cd00
 void FUN_14028cd00(const CStringW& strText, CAtlArray<CStringW>& arrOut, const wchar_t* pszSep, int nMax)
 {
@@ -503,23 +514,27 @@ void FUN_14028cd00(const CStringW& strText, CAtlArray<CStringW>& arrOut, const w
     {
         CStringW strPart;
         int nPos = 0;
+        int nFound = 0;
         for (int i = 0; i < nMax; ++i)
         {
-            int nFound = strText.Find(pszSep, nPos);
+            nFound = strText.Find(pszSep, nPos);
             if (nFound == -1)
             {
                 strPart = strText.Mid(nPos);
                 arrOut.Add(strPart);
                 break;
             }
-            if (nMax - 1 <= i)
+            if (i >= nMax - 1)
             {
                 arrOut.Add(strText.Mid(nPos));
                 return;
             }
-            strPart = strText.Mid(nPos);
-            arrOut.Add(strPart);
-            nPos = nFound + 1;
+            else
+            {
+                strPart = strText.Mid(nPos, nFound - nPos);   // just this field
+                arrOut.Add(strPart);
+                nPos = nFound + 1;
+            }
         }
     }
 }
@@ -531,18 +546,20 @@ void FUN_14028cf00(const CStringW& strText, CAtlArray<CStringW>& arrOut, const C
     if (strText.IsEmpty())
         return;
     int nPos = 0;
+    int nOpen = 0;
+    int nClose = 0;
     while (true)
     {
-        int nOpen = strText.Find(strOpen, nPos);
+        nOpen = strText.Find(strOpen, nPos);
         if (nOpen == -1)
             break;
-        nPos = strText.Find(strClose, nPos);
-        if (nPos == -1)
-            return;
-        CStringW strInner = strText.Mid(nOpen);
+        nClose = strText.Find(strClose, nPos);
+        if (nClose == -1)
+            break;
+        CStringW strInner = strText.Mid(nOpen, nClose - nOpen + 1);
         if (0 < strInner.GetLength())
             arrOut.Add(strInner);
-        nPos = nPos + 1;
+        nPos = nClose + 1;
     }
 }
 
@@ -656,22 +673,20 @@ bool FUN_14028d470(float fA, float fB)
     return false;
 }
 
-// MS2-FUNCTIONAL: bool/branch lowering and stack slots differ from the exe
 // @0x14028d4b0
-int FUN_14028d4b0(const Unk_CommonVec3* pA, const Unk_CommonVec3* pB)
+bool FUN_14028d4b0(const Unk_CommonVec3* pA, const Unk_CommonVec3* pB)
 {
     if (FUN_14028d470(pA->x, pB->x) && FUN_14028d470(pA->y, pB->y) && FUN_14028d470(pA->z, pB->z))
-        return 1;
-    return 0;
+        return true;
+    return false;
 }
 
-// MS2-FUNCTIONAL: bool/branch lowering and stack slots differ from the exe
 // @0x14028d530
-int FUN_14028d530(const Unk_CommonVec3* pA, const Unk_CommonVec3* pB)
+bool FUN_14028d530(const Unk_CommonVec3* pA, const Unk_CommonVec3* pB)
 {
     if (FUN_14028d470(pA->x, pB->x) && FUN_14028d470(pA->y, pB->y) && FUN_14028d470(pA->z, pB->z))
-        return 1;
-    return 0;
+        return true;
+    return false;
 }
 
 // Wraps an angle in degrees into [-180, 180].
@@ -698,28 +713,33 @@ Unk_CommonVec2 FUN_14028d630(float fScale)
 }
 
 // Appends the first nCount (or nLen when nCount is 0) bytes as upper-case hex.
-// MS2-FUNCTIONAL: bool/branch lowering and stack slots differ from the exe
 // @0x14028d6d0
 void FUN_14028d6d0(const unsigned char* pData, int nLen, CString& strOut, int nCount)
 {
     if (nCount == 0)
         nCount = nLen;
     for (int i = 0; i < nLen && i < nCount; ++i)
-        strOut.AppendFormat("%02X", pData[i]);
+    {
+        unsigned char nByte = pData[i];
+        strOut.AppendFormat("%02X", nByte);
+    }
 }
 
-// MS2-FUNCTIONAL: bool/branch lowering and stack slots differ from the exe
 // @0x14028d760
-bool FUN_14028d760(char c)
+bool FUN_14028d760(bool b)
 {
-    return c ? true : false;
+    if (b)
+        return true;
+    return false;
 }
 
-// MS2-FUNCTIONAL: bool/branch lowering and stack slots differ from the exe
+// The exe takes an unsigned byte (movzx); callers declare it with char/bool, which binds by name and passes the same byte.
 // @0x14028d780
-bool FUN_14028d780(char c)
+bool FUN_14028d780(unsigned char c)
 {
-    return c ? true : false;
+    if (c)
+        return true;
+    return false;
 }
 
 // ---- file/path name helpers and localized text ----
@@ -907,7 +927,7 @@ int FUN_14028e280(CMsTime& kOut, const CString& strFormat, const CString& strTex
     int nHour = 0;
     int nMinute = 0;
     int nSecond = 0;
-    FUN_14029dd60((LPCSTR)CString(strText), (LPCSTR)CString(strFormat), &nYear, &nMonth, &nDay, &nHour, &nMinute, &nSecond);
+    FUN_14029dd60(CString(strText).GetString(), (LPCSTR)CString(strFormat), &nYear, &nMonth, &nDay, &nHour, &nMinute, &nSecond);
     if (!(nYear < 1900 || nMonth < 1 || nMonth > 12 || nDay < 1 || nDay > 31 || nHour < 0 || nHour > 23 || nMinute < 0
           || nMinute > 59 || nSecond < 0 || nSecond > 59))
     {
@@ -1022,12 +1042,11 @@ bool FUN_14028f650(Unk_XmlElement* pElem)
 }
 
 // True when the element's "locale" matches the current locale and its "feature" is enabled.
-// MS2-FUNCTIONAL: wide default-string temp and EH cookie slot placement differ
 // @0x14028f710
 bool FUN_14028f710(Unk_XmlElement* pElem)
 {
     CString strLocale = FUN_14015f710(pElem, "locale", CString(""));
-    bool bMatch = !strLocale.IsEmpty() && FUN_1401647e0(strLocale, static_cast<Unk_CuFeatureView*>(FUN_140166410())->FUN_14036d8e0());
+    bool bMatch = !strLocale.IsEmpty() && strLocale != static_cast<Unk_CuFeatureView*>(FUN_140166410())->FUN_14036d8e0();
     if (bMatch)
         return false;
     CStringW strFeature = FUN_1401bf530(pElem, "feature", CStringW(L""));
@@ -1040,7 +1059,6 @@ bool FUN_14028f710(Unk_XmlElement* pElem)
 }
 
 // Collects the <environment> children whose locale/feature conditions pass.
-// MS2-FUNCTIONAL: not yet byte-matched (temp lifetime flags)
 // @0x14028f8d0
 Unk_XmlElementList* FUN_14028f8d0(Unk_XmlElement* pParent)
 {
@@ -1051,27 +1069,24 @@ Unk_XmlElementList* FUN_14028f8d0(Unk_XmlElement* pParent)
         CString strLocale;
         FUN_140873420(pElem, "feature", strFeature);
         FUN_1408733e0(pElem, "locale", strLocale);
-        bool bLocale = !strLocale.IsEmpty() && FUN_1401647e0(strLocale, static_cast<Unk_CuFeatureView*>(FUN_140166410())->FUN_14036d8e0());
-        if (!bLocale)
-        {
-            if (!FUN_14036d4b0(FUN_140166410(), strFeature))
-                continue;
-            pResult = FUN_14036e160(FUN_140166410(), pResult, pElem);
-        }
+        bool bLocale = !strLocale.IsEmpty() && strLocale != static_cast<Unk_CuFeatureView*>(FUN_140166410())->FUN_14036d8e0();
+        if (bLocale)
+            continue;
+        if (!FUN_14036d4b0(FUN_140166410(), strFeature))
+            continue;
+        pResult = FUN_14036e160(FUN_140166410(), pResult, pElem);
     }
     return pResult;
 }
 
 // Shows a modal error box: caption + Format(fmt, nCode) + the suffix text.
-// MS2-FUNCTIONAL: not yet byte-matched (by-value CString params destroyed by callee)
 // @0x14028bfb0
 void FUN_14028bfb0(CString strCaption, CString strFormat, unsigned int nCode, CString strSuffix)
 {
     CString strText;
     strText.Format((const char*)strFormat, nCode);
     strText += FUN_140298360(" ", strSuffix);
-    const char* pszCaption = strCaption;
-    MessageBoxA(0, (const char*)strText, pszCaption, MB_ICONERROR);
+    MessageBoxA(0, strText, strCaption, MB_ICONERROR);
 }
 
 // @0x14028c0b0
@@ -1168,12 +1183,11 @@ Unk_CommonVec3 FUN_14028f060(CString strText)
     Unk_CommonVec3 vResult = g_vCommonZero;
     CAtlArray<float> arrParts;
     FUN_1401780b0(strText, arrParts, ",");
-    if (arrParts.GetCount() == 3)
-    {
-        vResult.x = arrParts[0];
-        vResult.y = arrParts[1];
-        vResult.z = arrParts[2];
-    }
+    if (arrParts.GetCount() != 3)
+        return vResult;
+    vResult.x = arrParts[0];
+    vResult.y = arrParts[1];
+    vResult.z = arrParts[2];
     return vResult;
 }
 
@@ -1184,12 +1198,11 @@ Unk_CommonVec3 FUN_14028f190(CStringW strText)
     Unk_CommonVec3 vResult = g_vCommonZero;
     CAtlArray<float> arrParts;
     FUN_1402928e0(strText, arrParts, L",");
-    if (arrParts.GetCount() == 3)
-    {
-        vResult.x = arrParts[0];
-        vResult.y = arrParts[1];
-        vResult.z = arrParts[2];
-    }
+    if (arrParts.GetCount() != 3)
+        return vResult;
+    vResult.x = arrParts[0];
+    vResult.y = arrParts[1];
+    vResult.z = arrParts[2];
     return vResult;
 }
 
@@ -1249,6 +1262,7 @@ class CItemTabNameTable
 {
 public:
     CItemTabNameTable();                                        // 0x140290460
+    ~CItemTabNameTable();                                       // 0x1402979b0
     void Init();                                                // 0x1402906b0
     int FindIndex(std::string strName);                         // 0x1402904d0
     const std::string& GetTabName(int nTab);                    // 0x1402905e0
@@ -1268,56 +1282,53 @@ CItemTabNameTable::CItemTabNameTable()
 }
 
 // Fills the table. The localized names are CP949 text.
-// MS2-FUNCTIONAL: not yet byte-matched (string temp slots)
 // @0x1402906b0
 void CItemTabNameTable::Init()
 {
-    Unk_LockGuard guard(m_lock);
-    m_arrNames[0].push_back(std::string("game"));
-    m_arrNames[1].push_back(std::string("skin"));
-    m_arrNames[2].push_back(std::string("summon"));
-    m_arrNames[3].push_back(std::string("material"));
-    m_arrNames[4].push_back(std::string("life"));
-    m_arrNames[5].push_back(std::string("quest"));
-    m_arrNames[6].push_back(std::string("gem"));
-    m_arrNames[7].push_back(std::string("misc"));
-    m_arrNames[8].push_back(std::string("mastery"));
-    m_arrNames[9].push_back(std::string("pet"));
-    m_arrNames[13].push_back(std::string("lapenshard"));
-    m_arrNames[10].push_back(std::string("activeskill"));
-    m_arrNames[11].push_back(std::string("coin"));
-    m_arrNames[12].push_back(std::string("badge"));
-    m_arrNames[14].push_back(std::string("piece"));
+    Unk_CriticalSectionLock guard(m_lock, 1);
+    m_arrNames[0].push_back("game");
+    m_arrNames[1].push_back("skin");
+    m_arrNames[2].push_back("summon");
+    m_arrNames[3].push_back("material");
+    m_arrNames[4].push_back("life");
+    m_arrNames[5].push_back("quest");
+    m_arrNames[6].push_back("gem");
+    m_arrNames[7].push_back("misc");
+    m_arrNames[8].push_back("mastery");
+    m_arrNames[9].push_back("pet");
+    m_arrNames[13].push_back("lapenshard");
+    m_arrNames[10].push_back("activeskill");
+    m_arrNames[11].push_back("coin");
+    m_arrNames[12].push_back("badge");
+    m_arrNames[14].push_back("piece");
     for (unsigned int nTab = 0; nTab < 15; ++nTab)
     {
         for (unsigned int nSub = 0; nSub < m_arrNames[nTab].size(); ++nSub)
         {
-            if (m_arrNames[nTab][nSub].size() == 0)
-                _wassert(L"vTabNames[tabIndex][subIndex].size()", L"e:\\build\\kr\\22_04\\ms2code\\commonfiles\\commonutil.cpp", 0x811);
+            (void)((!!(m_arrNames[nTab][nSub].size())) || (_wassert(L"vTabNames[tabIndex][subIndex].size()", L"e:\\build\\kr\\22_04\\ms2code\\commonfiles\\commonutil.cpp", 0x811), 0));
         }
     }
-    m_arrNames[0].push_back(std::string("equip"));
-    m_arrNames[0].push_back(std::string("\xc0\xe5\xba\xf1"));
-    m_arrNames[1].push_back(std::string("\xbd\xba\xc5\xb2"));
-    m_arrNames[2].push_back(std::string("\xbc\xd2\xc8\xaf"));
-    m_arrNames[3].push_back(std::string("\xc0\xe7\xb7\xe1"));
-    m_arrNames[4].push_back(std::string("\xbb\xfd\xc8\xb0"));
-    m_arrNames[5].push_back(std::string("\xc4\xf9\xbd\xba\xc6\xae"));
-    m_arrNames[6].push_back(std::string("gemstone"));
-    m_arrNames[6].push_back(std::string("\xc1\xaa\xbd\xba\xc5\xe6"));
-    m_arrNames[7].push_back(std::string("etc"));
-    m_arrNames[7].push_back(std::string("\xb1\xe2\xc5\xb8"));
-    m_arrNames[8].push_back(std::string("\xbb\xfd\xc8\xb0\xb1\xe2\xbc\xfa"));
-    m_arrNames[9].push_back(std::string("\xc6\xea"));
-    m_arrNames[13].push_back(std::string("\xb6\xf3\xc6\xe6\xbb\xfe\xb5\xe5"));
-    m_arrNames[10].push_back(std::string("\xbc\xd2\xba\xf1"));
-    m_arrNames[11].push_back(std::string("\xc8\xad\xc6\xf3"));
-    m_arrNames[12].push_back(std::string("\xb9\xe8\xc1\xf6"));
-    m_arrNames[14].push_back(std::string("\xc1\xb6\xb0\xa2"));
+    m_arrNames[0].push_back("equip");
+    m_arrNames[0].push_back("\xc0\xe5\xba\xf1");
+    m_arrNames[1].push_back("\xbd\xba\xc5\xb2");
+    m_arrNames[2].push_back("\xbc\xd2\xc8\xaf");
+    m_arrNames[3].push_back("\xc0\xe7\xb7\xe1");
+    m_arrNames[4].push_back("\xbb\xfd\xc8\xb0");
+    m_arrNames[5].push_back("\xc4\xf9\xbd\xba\xc6\xae");
+    m_arrNames[6].push_back("gemstone");
+    m_arrNames[6].push_back("\xc1\xaa\xbd\xba\xc5\xe6");
+    m_arrNames[7].push_back("etc");
+    m_arrNames[7].push_back("\xb1\xe2\xc5\xb8");
+    m_arrNames[8].push_back("\xbb\xfd\xc8\xb0\xb1\xe2\xbc\xfa");
+    m_arrNames[9].push_back("\xc6\xea");
+    m_arrNames[13].push_back("\xb6\xf3\xc6\xe6\xbb\xfe\xb5\xe5");
+    m_arrNames[10].push_back("\xbc\xd2\xba\xf1");
+    m_arrNames[11].push_back("\xc8\xad\xc6\xf3");
+    m_arrNames[12].push_back("\xb9\xe8\xc1\xf6");
+    m_arrNames[14].push_back("\xc1\xb6\xb0\xa2");
 }
 
 // Tab index that knows the name, or -1.
-// MS2-FUNCTIONAL: not yet byte-matched
 // @0x1402904d0
 int CItemTabNameTable::FindIndex(std::string strName)
 {
@@ -1329,12 +1340,12 @@ int CItemTabNameTable::FindIndex(std::string strName)
                 return nTab;
         }
     }
-    _wassert(L"0", L"e:\\build\\kr\\22_04\\ms2code\\commonfiles\\commonutil.cpp", 0x841);
+    (void)((!!(0)) || (_wassert(L"0", L"e:\\build\\kr\\22_04\\ms2code\\commonfiles\\commonutil.cpp", 0x841), 0));
     return -1;
 }
 
 // @0x140291150
-char FUN_140291150(int nTab)
+unsigned char FUN_140291150(int nTab)
 {
     int bValid;
     if (nTab > -1 && nTab < 15)
@@ -1345,32 +1356,32 @@ char FUN_140291150(int nTab)
 }
 
 // First name of the tab.
-// MS2-FUNCTIONAL: not yet byte-matched
 // @0x1402905e0
 const std::string& CItemTabNameTable::GetTabName(int nTab)
 {
     static std::string s_strEmpty;
     if (!FUN_140291150(nTab))
     {
-        _wassert(L"0", L"e:\\build\\kr\\22_04\\ms2code\\commonfiles\\commonutil.cpp", 0x82f);
+        (void)((!!(0)) || (_wassert(L"0", L"e:\\build\\kr\\22_04\\ms2code\\commonfiles\\commonutil.cpp", 0x82f), 0));
         return s_strEmpty;
     }
     return m_arrNames[nTab][0];
 }
 
-// MS2-FUNCTIONAL: not yet byte-matched (std::string glue pairing / frame layout)
 // @0x140291190
 int FUN_140291190(std::string strName)
 {
-    return g_ItemTabNames.FindIndex(strName);
+    CItemTabNameTable& table = g_ItemTabNames;
+    return table.FindIndex(strName);
 }
 
-// MS2-FUNCTIONAL: not yet byte-matched (std::string glue pairing / frame layout)
 // @0x140291200
 int FUN_140291200(CString strName)
 {
-    std::string strText((const char*)strName);
-    return g_ItemTabNames.FindIndex(strText);
+    const char* pszName = strName;
+    std::string strText(pszName);
+    CItemTabNameTable& table = g_ItemTabNames;
+    return table.FindIndex(strText);
 }
 
 // @0x1402912d0
@@ -1379,11 +1390,11 @@ int FUN_1402912d0(CStringW strName)
     return FUN_140291200(CString((const wchar_t*)strName));
 }
 
-// MS2-FUNCTIONAL: not yet byte-matched (std::string glue pairing / frame layout)
 // @0x140291340
 bool FUN_140291340(int nTab, std::string& strOut)
 {
-    strOut = g_ItemTabNames.GetTabName(nTab);
+    CItemTabNameTable& table = g_ItemTabNames;
+    strOut = table.GetTabName(nTab);
     return strOut.size() != 0;
 }
 
@@ -1413,9 +1424,8 @@ struct Unk_StringOptionEntry
 };
 
 // Item tab key of a tab string (empty string = "all"); the tab key is also written to strTabOut.
-// MS2-FUNCTIONAL: not yet byte-matched
 // @0x1402913b0
-int FUN_1402913b0(CString strTab, CString& strTabOut)
+int FUN_1402913b0(const CString& strTab, CString& strTabOut)
 {
     int nTab = -1;
     strTabOut = "";
@@ -1440,8 +1450,7 @@ int FUN_1402913b0(CString strTab, CString& strTabOut)
         strTabOut = "gemstone";
     else if (nTab == 7)
         strTabOut = "etc";
-    if (strTabOut.IsEmpty())
-        _wassert(L"!outTabStr.IsEmpty()", L"e:\\build\\kr\\22_04\\ms2code\\commonfiles\\commonutil.cpp", 0x883);
+    (void)((!!(!strTabOut.IsEmpty())) || (_wassert(L"!outTabStr.IsEmpty()", L"e:\\build\\kr\\22_04\\ms2code\\commonfiles\\commonutil.cpp", 0x883), 0));
     return nTab;
 }
 
@@ -1481,8 +1490,8 @@ int FUN_140291620(const std::string& strKey)
 // @0x1402916a0
 __int64 FUN_1402916a0(__int64 nTime, int nMode)
 {
+    __int64 nResult = 0;
     CMsTime timeNow(nTime);
-    __int64 nResult;
     if (nMode == 1)
     {
         CMsTime timeDay(timeNow.GetYear(), timeNow.GetMonth(), timeNow.GetDay(), 0, 0, 0);
@@ -1497,8 +1506,7 @@ __int64 FUN_1402916a0(__int64 nTime, int nMode)
     else if (nMode == 3)
     {
         int nYear = timeNow.GetYear();
-        int nMonth = timeNow.GetMonth();
-        nMonth = nMonth + 1;
+        int nMonth = timeNow.GetMonth() + 1;
         if (nMonth > 12)
         {
             nMonth = 1;
@@ -1550,7 +1558,6 @@ CString FUN_140291c10(int nKind)
     }
 }
 
-// MS2-FUNCTIONAL: not yet byte-matched (std::string glue pairing / frame layout)
 // @0x140291d10
 float FUN_140291d10(int nKind)
 {
@@ -1612,17 +1619,16 @@ CString FUN_140291f40(int nId, const fmt::ArgList& args)
 }
 
 // Text before ('/' first token) or after the first '/' of the token.
-// MS2-FUNCTIONAL: not yet byte-matched
 // @0x140291f90
 std::wstring FUN_140291f90(const std::wstring& strToken, int nWhich)
 {
     size_t nPos = strToken.find(L"/", 0);
     if (nPos == std::wstring::npos)
-        return std::wstring(L"");
-    else if (nWhich == 0)
-        return std::wstring(strToken, 0, nPos);
+        return L"";
+    if (nWhich == 0)
+        return strToken.substr(0, nPos).c_str();
     else
-        return std::wstring(strToken, nPos + 1, std::wstring::npos);
+        return strToken.substr(nPos + 1, std::wstring::npos).c_str();
 }
 
 // @0x140292110
@@ -1631,17 +1637,23 @@ float LinearCalculator::vfunc_0(float fDelta, float fTime, float fDuration, floa
     return fDistance * (fDelta / fDuration);
 }
 
+// the exe calls these CRT math functions through its imports
+extern "C" float (__cdecl* __imp_sinf)(float);
+extern "C" float (__cdecl* __imp_cosf)(float);
+extern "C" float (__cdecl* __imp_fmodf)(float, float);
+extern "C" float (__cdecl* __imp_powf)(float, float);
+extern "C" float (__cdecl* __imp_sqrtf)(float);
+
 // @0x140292150
 float EaseOutCalculator::vfunc_0(float fDelta, float fTime, float fDuration, float fDistance)
 {
     return Calc(fTime, fDuration, fDistance) - Calc(fTime - fDelta, fDuration, fDistance);
 }
 
-// MS2-FUNCTIONAL: exe imports powf/sqrtf from the CRT DLL (indirect calls); this build links them statically
 // @0x1402921d0
 float EaseOutCalculator::Calc(float fTime, float fDuration, float fDistance)
 {
-    return fDistance * sqrtf(fabsf(1.0f - powf((fTime - fDuration) / fDuration, 2.0f)));
+    return fDistance * __imp_sqrtf(FUN_14029d220(1.0f - __imp_powf((fTime - fDuration) / fDuration, 2.0f)));
 }
 
 // @0x140292240
@@ -1650,11 +1662,10 @@ float EaseInCalculator::vfunc_0(float fDelta, float fTime, float fDuration, floa
     return Calc(fTime, fDuration, fDistance) - Calc(fTime - fDelta, fDuration, fDistance);
 }
 
-// MS2-FUNCTIONAL: exe imports powf/sqrtf from the CRT DLL (indirect calls); this build links them statically
 // @0x1402922c0
 float EaseInCalculator::Calc(float fTime, float fDuration, float fDistance)
 {
-    return fDistance * (1.0f - sqrtf(fabsf(1.0f - powf(fTime / fDuration, 2.0f))));
+    return fDistance * (1.0f - __imp_sqrtf(FUN_14029d220(1.0f - __imp_powf(fTime / fDuration, 2.0f))));
 }
 
 // @0x140292820
@@ -1720,16 +1731,16 @@ CStringW FUN_1402918a0(int nKind, unsigned nItemId)
         return CStringW(L"export_common_icon_habi");
     case 8:
         return CStringW(L"");
-    case 9:
-        return CStringW(L"icon_redmerat");
-    case 10:
-        return CStringW(L"icon_rbmerat");
     case 12:
         return CStringW(L"export_common_icon_reverse_coin");
     case 13:
         return CStringW(L"export_common_icon_mentor_token");
     case 14:
         return CStringW(L"export_common_icon_mentee_token");
+    case 9:
+        return CStringW(L"icon_redmerat");
+    case 10:
+        return CStringW(L"icon_rbmerat");
     default:
         return CStringW(L"");
     }
@@ -1886,37 +1897,35 @@ long FUN_140298fd0(long* plValue)
     return InterlockedIncrement(plValue);
 }
 
-// MS2-FUNCTIONAL: not yet byte-matched (CRT import / inline layout)
+// CAtlArray's data pointer and count, read directly as the exe does
+struct Unk_CuArrayView { void* m_pData; size_t m_nSize; };
+
 // @0x140299100
 bool FUN_140299100(const CAtlArray<CString>& arr)
 {
-    return arr.GetCount() == 0;
+    return reinterpret_cast<const Unk_CuArrayView&>(arr).m_nSize == 0;
 }
 
-// MS2-FUNCTIONAL: not yet byte-matched (CRT import / inline layout)
 // @0x14029dba0
 float FUN_14029dba0(float fAngle)
 {
-    return sinf(fAngle);
+    return __imp_sinf(fAngle);
 }
 
-// MS2-FUNCTIONAL: not yet byte-matched (CRT import / inline layout)
 // @0x14029cc60
 float FUN_14029cc60(float fAngle)
 {
-    return cosf(fAngle);
+    return __imp_cosf(fAngle);
 }
 
-// MS2-FUNCTIONAL: not yet byte-matched (CRT import / inline layout)
 // @0x14029d430
 float FUN_14029d430(float fX, float fY)
 {
-    return fmodf(fX, fY);
+    return __imp_fmodf(fX, fY);
 }
 
 // the exe calls fabs out of line through the ucrt import (not the /Oi intrinsic)
 #pragma function(fabs)
-// MS2-FUNCTIONAL: not yet byte-matched (CRT import / inline layout)
 // @0x14029dd40
 float FUN_14029dd40(float fValue)
 {
@@ -1993,6 +2002,10 @@ struct Unk_BindHost
 struct Unk_BindHostPtr
 {
     Unk_BindHost* m_pHost;
+    Unk_BindHostPtr(const wchar_t* pszText);                    // 0x140297620
+    Unk_BindHostPtr(const Unk_BindHostPtr& other);              // 0x140297550
+    ~Unk_BindHostPtr() noexcept(false);                         // 0x140297a20
+    Unk_BindHostPtr& operator+=(const Unk_BindHostPtr& other);  // 0x140298560
     void FUN_140299e30();                                       // 0x140299e30
 };
 
@@ -2033,18 +2046,19 @@ struct Unk_BstrBlock
     void* m_pData;
     void* m_unk08;
     int m_nRefs;
+    Unk_BstrBlock(void* pArg);                                  // 0x1402973e0
+    Unk_BstrBlock(const wchar_t* pszText);                      // 0x140297430
+    Unk_BstrBlock(Unk_BstrHolderRef* pA, Unk_BstrHolderRef* pB);    // 0x140297250
+    static void* operator new(size_t nBytes);                   // 0x140297a40
 };
 
 extern void FUN_14016ad80(void* pThis, void* pArg);
-void* FUN_140297a40(size_t nBytes);
 extern void FUN_140297790(void* p);
 extern void** FUN_140298fc0(void* pHolder);
 extern void* FUN_140183290(void* pOut);
 extern unsigned long long* FUN_14029dcd0();
 extern void FUN_14029b680(void** pp);
-extern void FUN_140297a20(void** pp);
-extern void* FUN_140297620(void** pp, void* pArg);
-extern void* FUN_140298560(void** pp, void* pArg);
+void* FUN_140297d20(Unk_BstrHolderRef* p);
 
 // @0x1402969f0
 void** FUN_1402969f0(void** p, void* pVtbl, void* pArg)
@@ -2071,110 +2085,104 @@ void** FUN_140296c90(void** p, void* pVtbl, void* pArg)
 }
 
 // @0x140297a40
-void* FUN_140297a40(size_t nBytes)
+void* Unk_BstrBlock::operator new(size_t nBytes)
 {
-    return operator new(nBytes);
+    return ::operator new(nBytes);
 }
 
 // @0x1402973e0
-Unk_BstrBlock* FUN_1402973e0(Unk_BstrBlock* p, void* pArg)
+Unk_BstrBlock::Unk_BstrBlock(void* pArg)
 {
-    p->m_unk08 = NULL;
-    p->m_nRefs = 1;
-    p->m_pData = SysAllocString((BSTR)pArg);   // 0x14274c0f0 is an import thunk
-    return p;
+    m_unk08 = NULL;
+    m_nRefs = 1;
+    m_pData = SysAllocString((BSTR)pArg);   // 0x14274c0f0 is an import thunk
 }
 
 // @0x140297430
-Unk_BstrBlock* FUN_140297430(Unk_BstrBlock* p, const wchar_t* pszText)
+Unk_BstrBlock::Unk_BstrBlock(const wchar_t* pszText)
 {
-    p->m_unk08 = NULL;
-    p->m_nRefs = 1;
-    p->m_pData = SysAllocString(pszText);
-    if (p->m_pData == NULL && pszText != NULL)
-        AtlThrow(E_OUTOFMEMORY);
-    return p;
+    m_unk08 = NULL;
+    m_nRefs = 1;
+    m_pData = SysAllocString(pszText);
+    if (m_pData == NULL && pszText != NULL)
+        _com_issue_error(E_OUTOFMEMORY);
 }
 
 // @0x140297250
-Unk_BstrBlock* FUN_140297250(Unk_BstrBlock* p, Unk_BstrHolderRef* pA, Unk_BstrHolderRef* pB)
+Unk_BstrBlock::Unk_BstrBlock(Unk_BstrHolderRef* pA, Unk_BstrHolderRef* pB)
 {
-    p->m_unk08 = NULL;
-    p->m_nRefs = 1;
-    unsigned nLenA = pA->FUN_14029d4b0();
-    unsigned nLenB = pB->FUN_14029d4b0();
-    int nTotal;
-    unsigned nBytes;
-    if (FUN_14028b840(nLenA, nLenB, &nTotal) < 0 || FUN_14028b890(nTotal, 2, &nBytes) < 0)
-        AtlThrow(E_OUTOFMEMORY);
-    BSTR bstr = SysAllocStringLen(NULL, nLenA + nLenB);
-    p->m_pData = bstr;
-    if (bstr == NULL)
+    m_unk08 = NULL;
+    m_nRefs = 1;
+    const unsigned nLenA = pA->FUN_14029d4b0();
+    const unsigned nLenB = pB->FUN_14029d4b0();
+    int nNewLen;
+    if (FUN_14028b840(nLenA, nLenB, &nNewLen) < 0 || FUN_14028b890(nNewLen, 2, (unsigned*)&nNewLen) < 0)
     {
-        if (nLenA + nLenB != 0)
-            AtlThrow(E_OUTOFMEMORY);
+        _com_issue_error(E_OUTOFMEMORY);
+        return;
     }
-    else
+    m_pData = SysAllocStringByteLen(NULL, (nLenA + nLenB) * sizeof(wchar_t));
+    if (m_pData == NULL)
     {
-        const void* pSrcA = pA->m_pHolder ? *FUN_140298fc0(pA->m_pHolder) : NULL;
-        if (pSrcA)
-            memcpy_s(bstr, (unsigned long long)(nLenA + 1 + nLenB) << 1, pSrcA, (unsigned long long)(nLenA + 1) << 1);
-        const void* pSrcB = pB->m_pHolder ? *FUN_140298fc0(pB->m_pHolder) : NULL;
-        if (pSrcB)
-            memcpy_s(bstr + nLenA, (unsigned long long)(nLenB + 1) << 1, pSrcB, (unsigned long long)(nLenB + 1) << 1);
+        if (nLenA + nLenB == 0)
+            return;
+        _com_issue_error(E_OUTOFMEMORY);
+        return;
     }
-    return p;
+    const wchar_t* pszA = (const wchar_t*)FUN_140297d20(pA);
+    if (pszA != NULL)
+        memcpy_s(m_pData, (nLenA + nLenB + 1) * sizeof(wchar_t), pszA, (nLenA + 1) * sizeof(wchar_t));
+    const wchar_t* pszB = (const wchar_t*)FUN_140297d20(pB);
+    if (pszB != NULL)
+        memcpy_s((wchar_t*)m_pData + nLenA, (nLenB + 1) * sizeof(wchar_t), pszB, (nLenB + 1) * sizeof(wchar_t));
 }
 
 // @0x140297550
-Unk_BindHostPtr* FUN_140297550(Unk_BindHostPtr* pThis, const Unk_BindHostPtr* pOther)
+Unk_BindHostPtr::Unk_BindHostPtr(const Unk_BindHostPtr& other)
 {
-    pThis->m_pHost = pOther->m_pHost;
-    pThis->FUN_140299e30();
-    return pThis;
+    m_pHost = other.m_pHost;
+    FUN_140299e30();
 }
 
 // @0x140297590
 Unk_BstrBlock** FUN_140297590(Unk_BstrBlock** pp, void* pArg)
 {
-    void* pMem = FUN_140297a40(0x18);
-    *pp = pMem ? FUN_1402973e0((Unk_BstrBlock*)pMem, pArg) : NULL;
+    *pp = new Unk_BstrBlock(pArg);
     if (*pp == NULL)
-        AtlThrow(E_OUTOFMEMORY);
+        _com_issue_error(E_OUTOFMEMORY);
     return pp;
 }
 
 // @0x140297620
-void* FUN_140297620(void** pp, void* pArg)
+Unk_BindHostPtr::Unk_BindHostPtr(const wchar_t* pszText)
 {
-    void* pMem = FUN_140297a40(0x18);
-    *pp = pMem ? FUN_140297430((Unk_BstrBlock*)pMem, (const wchar_t*)pArg) : NULL;
-    if (*pp == NULL)
-        AtlThrow(E_OUTOFMEMORY);
-    return pp;
+    m_pHost = (Unk_BindHost*)new Unk_BstrBlock(pszText);
+    if (m_pHost == NULL)
+        _com_issue_error(E_OUTOFMEMORY);
 }
 
 // @0x140298560
-void* FUN_140298560(void** pp, void* pArg)
+Unk_BindHostPtr& Unk_BindHostPtr::operator+=(const Unk_BindHostPtr& other)
 {
-    void* pMem = FUN_140297a40(0x18);
-    void* pNew = pMem ? FUN_140297250((Unk_BstrBlock*)pMem, (Unk_BstrHolderRef*)pp, (Unk_BstrHolderRef*)pArg) : NULL;
+    Unk_BstrBlock* pNew = new Unk_BstrBlock((Unk_BstrHolderRef*)this, (Unk_BstrHolderRef*)&other);
     if (pNew == NULL)
-        AtlThrow(E_OUTOFMEMORY);
-    FUN_14029b680(pp);
-    *pp = pNew;
-    return pp;
+    {
+        _com_issue_error(E_OUTOFMEMORY);
+    }
+    else
+    {
+        FUN_14029b680((void**)this);
+        m_pHost = (Unk_BindHost*)pNew;
+    }
+    return *this;
 }
 
 // @0x1402982e0
-Unk_BindHostPtr* FUN_1402982e0(Unk_BindHostPtr* pOut, void* pA, void* pB, void* pC)
+Unk_BindHostPtr FUN_1402982e0(const wchar_t* pszA, const Unk_BindHostPtr& b)
 {
-    void* pTmp[1];
-    FUN_140297620(pTmp, pA);
-    FUN_140298560(pTmp, pB);
-    FUN_140297550(pOut, (Unk_BindHostPtr*)pTmp);
-    FUN_140297a20(pTmp);
-    return pOut;
+    Unk_BindHostPtr str(pszA);
+    str += b;
+    return str;
 }
 
 // @0x1402978a0
@@ -2184,9 +2192,9 @@ void FUN_1402978a0(void* p)
 }
 
 // @0x140297a20
-void FUN_140297a20(void** pp)
+Unk_BindHostPtr::~Unk_BindHostPtr() noexcept(false)
 {
-    FUN_14029b680(pp);
+    FUN_14029b680((void**)this);
 }
 
 // @0x140297d20
@@ -2196,19 +2204,20 @@ void* FUN_140297d20(Unk_BstrHolderRef* p)
 }
 
 // @0x1402979b0
-void FUN_1402979b0(void* p)
+CItemTabNameTable::~CItemTabNameTable()
 {
-    ((CLockCriticalSection*)((char*)p + 0x168))->~CLockCriticalSection();
-    for (int i = 14; i >= 0; --i)
-        static_cast<CItemTabNameTable*>(p)->m_arrNames[i].~vector();
 }
 
 // @0x1402999c0
 unsigned long FUN_1402999c0(Unk_BindHost* p)
 {
     long nRefs = InterlockedDecrement(&p->m_nRefs);
-    if (nRefs == 0 && p)
-        FUN_1402986c0(p, 1);
+    if (nRefs == 0)
+    {
+        Unk_BindHost* pHost = p;
+        Unk_BindHost* pDel = pHost;
+        pDel ? FUN_1402986c0(pDel, 1) : NULL;
+    }
     return nRefs;
 }
 

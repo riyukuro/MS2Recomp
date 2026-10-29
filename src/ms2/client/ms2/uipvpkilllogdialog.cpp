@@ -89,7 +89,7 @@ void UIPvPKillLogDialog::vfunc_79(void* p)
 }
 
 // @0x141342880
-// MS2-FUNCTIONAL: exe call-result temporaries / frame-slot order differ (source form not found)
+// MS2-FUNCTIONAL: the exe binds three of the four vfunc_77 results without the extra temp copy (source form not found)
 void UIPvPKillLogDialog::FUN_141342880(CStringW strAttacker, CStringW strTarget)
 {
     if (m_30.IsNull())
@@ -102,13 +102,13 @@ void UIPvPKillLogDialog::FUN_141342880(CStringW strAttacker, CStringW strTarget)
     if (pMe == 0)
         return;
     ASObj obj(2);
-    obj.FUN_1407cbb20("attackerName", CStringW(strAttacker));
-    obj.FUN_1407cbb20("targetName", CStringW(strTarget));
+    obj.FUN_1407cbb20("attackerName", strAttacker);
+    obj.FUN_1407cbb20("targetName", strTarget);
     obj.FUN_1407cbb20("myName", pMe->vfunc_77());
     m_30->Invoke("addKill", Scaleform::GFx::Value(obj.FUN_1422bb870()));
     if (FUN_14025cd60(strAttacker, pMe->vfunc_77()))
     {
-        FUN_141276180(s_strBattleFieldKill, CString(""));
+        FUN_141276180(s_strBattleFieldKill, "");
         if (!strTarget.IsEmpty())
         {
             CStringW strMsg = FUN_14052bd00(0x973, strTarget);
@@ -116,15 +116,18 @@ void UIPvPKillLogDialog::FUN_141342880(CStringW strAttacker, CStringW strTarget)
             FUN_1412751b0(strMsg, 0x14);
         }
     }
-    if (FUN_14025cd60(strTarget, pMe->vfunc_77()) && !strAttacker.IsEmpty())
+    if (FUN_14025cd60(strTarget, pMe->vfunc_77()))
     {
-        CStringW strMsg = FUN_14052bd00(0x972, strAttacker);
-        FUN_1403b4750()->FUN_1416fb340(strMsg);
-        FUN_1412751b0(strMsg, 0x14);
+        if (!strAttacker.IsEmpty())
+        {
+            CStringW strMsg = FUN_14052bd00(0x972, strAttacker);
+            FUN_1403b4750()->FUN_1416fb340(strMsg);
+            FUN_1412751b0(strMsg, 0x14);
+        }
     }
     bool bInvolved = FUN_14025cd60(strAttacker, pMe->vfunc_77()) || FUN_14025cd60(strTarget, pMe->vfunc_77());
     if (bInvolved)
-        FUN_141276180(s_strSystemKillPlayer, CString(""));
+        FUN_141276180(s_strSystemKillPlayer, "");
 }
 
 // @0x141342dc0

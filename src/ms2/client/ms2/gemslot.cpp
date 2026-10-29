@@ -5,31 +5,31 @@
 // MS2-PINS-BEGIN tplpin
 // MS2-PIN: ??__Es_strSkill@@YAXXZ 0x1400eafb0 ; probe
 // MS2-PIN: ??__Es_strStun@@YAXXZ 0x1400eafe0 ; probe
-// MS2-PIN: ??0?$CAtlMap@HHV?$CElementTraits@H@ATL@@V12@@ATL@@QEAA@IMMMI@Z 0x14126e9f0 ; unique
-// MS2-PIN: ??0CNode@?$CAtlMap@HHV?$CElementTraits@H@ATL@@V12@@ATL@@QEAA@HI@Z 0x14126eae0 ; unique
-// MS2-PIN: ??1?$CAtlMap@HHV?$CElementTraits@H@ATL@@V12@@ATL@@QEAA@XZ 0x14126eb40 ; unique
+// MS2-PIN: ??0?$CAtlMap@HW4GemType@@V?$CElementTraits@H@ATL@@V?$CElementTraits@W4GemType@@@3@@ATL@@QEAA@IMMMI@Z 0x14126e9f0 ; unique
+// MS2-PIN: ??0CNode@?$CAtlMap@HW4GemType@@V?$CElementTraits@H@ATL@@V?$CElementTraits@W4GemType@@@3@@ATL@@QEAA@HI@Z 0x14126eae0 ; unique
+// MS2-PIN: ??1?$CAtlMap@HW4GemType@@V?$CElementTraits@H@ATL@@V?$CElementTraits@W4GemType@@@3@@ATL@@QEAA@XZ 0x14126eb40 ; unique
 // MS2-PIN: ??_GGemSlotBag@@UEAAPEAXI@Z 0x14126eb70 ; unique
-// MS2-PIN: ?CreateNode@?$CAtlMap@HHV?$CElementTraits@H@ATL@@V12@@ATL@@AEAAPEAVCNode@12@HII@Z 0x14126ebd0 ; unique
-// MS2-PIN: ?DisableAutoRehash@?$CAtlMap@HHV?$CElementTraits@H@ATL@@V12@@ATL@@QEAAXXZ 0x14126ec50 ; unique
-// MS2-PIN: ?EnableAutoRehash@?$CAtlMap@HHV?$CElementTraits@H@ATL@@V12@@ATL@@QEAAXXZ 0x14126ec70 ; unique
-// MS2-PIN: ?FreeNode@?$CAtlMap@HHV?$CElementTraits@H@ATL@@V12@@ATL@@AEAAXPEAVCNode@12@@Z 0x14126ec90 ; unique
-// MS2-PIN: ?FreePlexes@?$CAtlMap@HHV?$CElementTraits@H@ATL@@V12@@ATL@@AEAAXXZ 0x14126ed80 ; unique
-// MS2-PIN: ?GetHash@CNode@?$CAtlMap@HHV?$CElementTraits@H@ATL@@V12@@ATL@@QEBAIXZ 0x14126edf0 ; unique
-// MS2-PIN: ?GetNode@?$CAtlMap@HHV?$CElementTraits@H@ATL@@V12@@ATL@@AEBAPEAVCNode@12@HAEAI0AEAPEAV312@@Z 0x14126ee00 ; unique
-// MS2-PIN: ?InitHashTable@?$CAtlMap@HHV?$CElementTraits@H@ATL@@V12@@ATL@@QEAA_NI_N@Z 0x14126eef0 ; unique
-// MS2-PIN: ?IsLocked@?$CAtlMap@HHV?$CElementTraits@H@ATL@@V12@@ATL@@AEBA_NXZ 0x14126f010 ; unique
-// MS2-PIN: ?Lookup@?$CAtlMap@HHV?$CElementTraits@H@ATL@@V12@@ATL@@QEBA_NHAEAH@Z 0x14126f040 ; unique
-// MS2-PIN: ?NewNode@?$CAtlMap@HHV?$CElementTraits@H@ATL@@V12@@ATL@@AEAAPEAVCNode@12@HII@Z 0x14126f0a0 ; unique
-// MS2-PIN: ?PickSize@?$CAtlMap@HHV?$CElementTraits@H@ATL@@V12@@ATL@@AEBAI_K@Z 0x14126f2b0 ; unique
-// MS2-PIN: ?Rehash@?$CAtlMap@HHV?$CElementTraits@H@ATL@@V12@@ATL@@QEAAXI@Z 0x14126f3a0 ; unique
-// MS2-PIN: ?RemoveAll@?$CAtlMap@HHV?$CElementTraits@H@ATL@@V12@@ATL@@QEAAXXZ 0x14126f5d0 ; unique
-// MS2-PIN: ?RemoveAtPos@?$CAtlMap@HHV?$CElementTraits@H@ATL@@V12@@ATL@@QEAAXPEAU__POSITION@@@Z 0x14126f6e0 ; unique
-// MS2-PIN: ?RemoveNode@?$CAtlMap@HHV?$CElementTraits@H@ATL@@V12@@ATL@@AEAAXPEAVCNode@12@0@Z 0x14126f7d0 ; unique
-// MS2-PIN: ?SetOptimalLoad@?$CAtlMap@HHV?$CElementTraits@H@ATL@@V12@@ATL@@QEAAXMMM_N@Z 0x14126f930 ; unique
-// MS2-PIN: ?UpdateRehashThresholds@?$CAtlMap@HHV?$CElementTraits@H@ATL@@V12@@ATL@@AEAAXXZ 0x14126fae0 ; unique
-// MS2-PIN: ??0CPair@?$CAtlMap@HHV?$CElementTraits@H@ATL@@V12@@ATL@@IEAA@H@Z 0x14126eb20 ; hand
-// MS2-PIN: ?GetCount@?$CAtlMap@HHV?$CElementTraits@H@ATL@@V12@@ATL@@QEBA_KXZ 0x14126ede0 ; hand
-// MS2-PIN: ?SetAt@?$CAtlMap@HHV?$CElementTraits@H@ATL@@V12@@ATL@@QEAAPEAU__POSITION@@HH@Z 0x14126f890 ; hand
+// MS2-PIN: ?CreateNode@?$CAtlMap@HW4GemType@@V?$CElementTraits@H@ATL@@V?$CElementTraits@W4GemType@@@3@@ATL@@AEAAPEAVCNode@12@HII@Z 0x14126ebd0 ; unique
+// MS2-PIN: ?DisableAutoRehash@?$CAtlMap@HW4GemType@@V?$CElementTraits@H@ATL@@V?$CElementTraits@W4GemType@@@3@@ATL@@QEAAXXZ 0x14126ec50 ; unique
+// MS2-PIN: ?EnableAutoRehash@?$CAtlMap@HW4GemType@@V?$CElementTraits@H@ATL@@V?$CElementTraits@W4GemType@@@3@@ATL@@QEAAXXZ 0x14126ec70 ; unique
+// MS2-PIN: ?FreeNode@?$CAtlMap@HW4GemType@@V?$CElementTraits@H@ATL@@V?$CElementTraits@W4GemType@@@3@@ATL@@AEAAXPEAVCNode@12@@Z 0x14126ec90 ; unique
+// MS2-PIN: ?FreePlexes@?$CAtlMap@HW4GemType@@V?$CElementTraits@H@ATL@@V?$CElementTraits@W4GemType@@@3@@ATL@@AEAAXXZ 0x14126ed80 ; unique
+// MS2-PIN: ?GetHash@CNode@?$CAtlMap@HW4GemType@@V?$CElementTraits@H@ATL@@V?$CElementTraits@W4GemType@@@3@@ATL@@QEBAIXZ 0x14126edf0 ; unique
+// MS2-PIN: ?GetNode@?$CAtlMap@HW4GemType@@V?$CElementTraits@H@ATL@@V?$CElementTraits@W4GemType@@@3@@ATL@@AEBAPEAVCNode@12@HAEAI0AEAPEAV312@@Z 0x14126ee00 ; unique
+// MS2-PIN: ?InitHashTable@?$CAtlMap@HW4GemType@@V?$CElementTraits@H@ATL@@V?$CElementTraits@W4GemType@@@3@@ATL@@QEAA_NI_N@Z 0x14126eef0 ; unique
+// MS2-PIN: ?IsLocked@?$CAtlMap@HW4GemType@@V?$CElementTraits@H@ATL@@V?$CElementTraits@W4GemType@@@3@@ATL@@AEBA_NXZ 0x14126f010 ; unique
+// MS2-PIN: ?Lookup@?$CAtlMap@HW4GemType@@V?$CElementTraits@H@ATL@@V?$CElementTraits@W4GemType@@@3@@ATL@@QEBA_NHAEAW4GemType@@@Z 0x14126f040 ; unique
+// MS2-PIN: ?NewNode@?$CAtlMap@HW4GemType@@V?$CElementTraits@H@ATL@@V?$CElementTraits@W4GemType@@@3@@ATL@@AEAAPEAVCNode@12@HII@Z 0x14126f0a0 ; unique
+// MS2-PIN: ?PickSize@?$CAtlMap@HW4GemType@@V?$CElementTraits@H@ATL@@V?$CElementTraits@W4GemType@@@3@@ATL@@AEBAI_K@Z 0x14126f2b0 ; unique
+// MS2-PIN: ?Rehash@?$CAtlMap@HW4GemType@@V?$CElementTraits@H@ATL@@V?$CElementTraits@W4GemType@@@3@@ATL@@QEAAXI@Z 0x14126f3a0 ; unique
+// MS2-PIN: ?RemoveAll@?$CAtlMap@HW4GemType@@V?$CElementTraits@H@ATL@@V?$CElementTraits@W4GemType@@@3@@ATL@@QEAAXXZ 0x14126f5d0 ; unique
+// MS2-PIN: ?RemoveAtPos@?$CAtlMap@HW4GemType@@V?$CElementTraits@H@ATL@@V?$CElementTraits@W4GemType@@@3@@ATL@@QEAAXPEAU__POSITION@@@Z 0x14126f6e0 ; unique
+// MS2-PIN: ?RemoveNode@?$CAtlMap@HW4GemType@@V?$CElementTraits@H@ATL@@V?$CElementTraits@W4GemType@@@3@@ATL@@AEAAXPEAVCNode@12@0@Z 0x14126f7d0 ; unique
+// MS2-PIN: ?SetOptimalLoad@?$CAtlMap@HW4GemType@@V?$CElementTraits@H@ATL@@V?$CElementTraits@W4GemType@@@3@@ATL@@QEAAXMMM_N@Z 0x14126f930 ; unique
+// MS2-PIN: ?UpdateRehashThresholds@?$CAtlMap@HW4GemType@@V?$CElementTraits@H@ATL@@V?$CElementTraits@W4GemType@@@3@@ATL@@AEAAXXZ 0x14126fae0 ; unique
+// MS2-PIN: ??0CPair@?$CAtlMap@HW4GemType@@V?$CElementTraits@H@ATL@@V?$CElementTraits@W4GemType@@@3@@ATL@@IEAA@H@Z 0x14126eb20 ; hand
+// MS2-PIN: ?GetCount@?$CAtlMap@HW4GemType@@V?$CElementTraits@H@ATL@@V?$CElementTraits@W4GemType@@@3@@ATL@@QEBA_KXZ 0x14126ede0 ; hand
+// MS2-PIN: ?SetAt@?$CAtlMap@HW4GemType@@V?$CElementTraits@H@ATL@@V?$CElementTraits@W4GemType@@@3@@ATL@@QEAAPEAU__POSITION@@HAEBW4GemType@@@Z 0x14126f890 ; hand
 // MS2-PINS-END tplpin
 // MS2-PIN: ??_7GemSlot@@6BBindData@NotifyContext@@@ 0x142ecd568 ; hand: primary vftable
 // MS2-PIN: ?GetClassDesc@GemSlot@@UEBAPEBVClassInfo@efd@@XZ 0x14126e1e0 ; hand
@@ -223,7 +223,6 @@ int GemSlot::FUN_14126d950()
     return 0;
 }
 
-// MS2-FUNCTIONAL: the exe keeps two more ASTooltip/MS2Ptr temps alive (EH maxState 8 vs 6, frame 0xb8)
 // @0x14126d9b0 (ITooltip::vfunc_0)
 int GemSlot::vfunc_0(void* p)
 {
@@ -232,29 +231,35 @@ int GemSlot::vfunc_0(void* p)
     Unk_GmActor* pActor = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pActor == 0)
         return 0;
-    if (FUN_140222e10(m_nGemType) == false)
+    bool bInvalid = FUN_140222e10(m_nGemType) == false;
+    if (bInvalid)
         return 0;
     MS2Ptr<CItem> spItem = vfunc_25();
-    if (spItem.get() == 0)
+    if (spItem)
+    {
+        int nFlags = 0x100;
+        if (m_spPC->FUN_140dba1c0() != 0)
+            nFlags = 0x200;
+        ASTooltip tip(pActor, nFlags, 2);
+        if (tip.FUN_1409e0d40(vfunc_25()))
+        {
+            tip.FUN_1409c69b0(vfunc_22());
+            *static_cast<Scaleform::GFx::Value*>(p) = tip.FUN_1422bb870();
+            return 1;
+        }
+    }
+    else
     {
         ASTooltip tip(2);
-        tip.FUN_1409e26b0(StringFormat(L"$s_tooltip_myinfo_gem_{0}", FUN_140219b10(m_nGemType)));
+        CStringW strTitle = StringFormat(L"$s_tooltip_myinfo_gem_{0}", FUN_140219b10(m_nGemType));
+        tip.FUN_1409e26b0(strTitle);
         tip.FUN_1409c6dc0(3);
         *static_cast<Scaleform::GFx::Value*>(p) = tip.FUN_1422bb870();
         return 1;
     }
-    int nFlags = 0x100;
-    if (m_spPC->FUN_140dba1c0() != 0)
-        nFlags = 0x200;
-    ASTooltip tip(pActor, nFlags, 2);
-    if (tip.FUN_1409e0d40(spItem.get()) == 0)
-        return 0;
-    tip.FUN_1409c69b0(vfunc_22());
-    *static_cast<Scaleform::GFx::Value*>(p) = tip.FUN_1422bb870();
-    return 1;
+    return 0;
 }
 
-// MS2-FUNCTIONAL: the exe keeps different MS2Ptr temps for the item tests; frame and EH states differ
 // @0x14126dd30
 int GemSlot::vfunc_8(void* p)
 {
@@ -264,25 +269,26 @@ int GemSlot::vfunc_8(void* p)
     if (pActor == 0)
         return 0;
     MS2Ptr<CItem> spItem = vfunc_25();
-    bool bValid = FUN_140222e10(m_nGemType);
-    if (bValid != false && spItem.get() != 0)
+    bool bLock = FUN_140222e10(m_nGemType) == false;
+    if (bLock == false && spItem == 0)
         return 0;
     int nFlags = 0x49;
     if (FUN_14126d950() != 0)
-        nFlags = 0x4d;
+        nFlags |= 4;
     ASSlot slot(2);
-    slot.FUN_1407cbbe0("lock", bValid == false);
-    if (spItem.get() != 0)
+    slot.FUN_1407cbbe0("lock", bLock);
+    if (spItem ? true : false)
     {
         if (spItem->FUN_140527900() != 0)
         {
-            if (slot.FUN_1409c3860(vfunc_25().get(), pActor, nFlags) != 0)
+            if (slot.FUN_1409c3860(vfunc_25(), pActor, nFlags))
             {
-                if (m_spPC->FUN_140dba1c0() == 0)
-                    slot.FUN_1407cbbe0("config", false);
+                if (m_spPC->FUN_140dba1c0() != 0)
+                    slot.FUN_1407cbbe0("config", vfunc_25()->FUN_140527840()->FUN_14053c5e0() == 1);
                 else
-                    slot.FUN_1407cbbe0("config", ((CItem*)vfunc_25())->FUN_140527840()->FUN_14053c5e0() == 1);
-                slot.FUN_1407cb9c0("gemSystem", spItem->FUN_140527900()->vfunc_1());
+                    slot.FUN_1407cbbe0("config", false);
+                int nGemSystem = spItem->FUN_140527900()->vfunc_1();
+                slot.FUN_1407cb9c0("gemSystem", nGemSystem);
             }
         }
     }
@@ -324,23 +330,22 @@ void FUN_14126e3f0(const CString& strName)
     }
 }
 
-// MS2-FUNCTIONAL: SetAt call order/temps differ from the exe frame
 // @0x14126e440
 GemSlotBag::GemSlotBag(const CString& strName, MS2Ptr<PCInfo> spPC)
     : DragSlotBag(strName), m_spPC(spPC)
 {
-    m_mapSlot.SetAt(0, 1);
-    m_mapSlot.SetAt(1, 5);
-    m_mapSlot.SetAt(2, 3);
-    m_mapSlot.SetAt(3, 2);
-    m_mapSlot.SetAt(4, 4);
-    m_mapSlot.SetAt(5, 6);
-    m_mapSlot.SetAt(6, 9);
-    m_mapSlot.SetAt(7, 8);
-    m_mapSlot.SetAt(8, 7);
-    m_mapSlot.SetAt(9, 10);
-    m_mapSlot.SetAt(10, 11);
-    m_mapSlot.SetAt(11, 12);
+    m_mapSlot.SetAt(0, GEM_TRANSPARENCY);
+    m_mapSlot.SetAt(1, GEM_TOMBSTONE);
+    m_mapSlot.SetAt(2, GEM_CHATBALLOON);
+    m_mapSlot.SetAt(3, GEM_DAMAGEFONT);
+    m_mapSlot.SetAt(4, GEM_NAMETAG);
+    m_mapSlot.SetAt(5, GEM_SWIM);
+    m_mapSlot.SetAt(6, GEM_AUTOMASTERY);
+    m_mapSlot.SetAt(7, GEM_FISHING);
+    m_mapSlot.SetAt(8, GEM_CHAREFFECT);
+    m_mapSlot.SetAt(9, GEM_EFFECT);
+    m_mapSlot.SetAt(10, GEM_PETSKIN);
+    m_mapSlot.SetAt(11, GEM_META);
 }
 
 // @0x14126e6f0
@@ -372,7 +377,7 @@ int GemSlotBag::FUN_14126e930()
 // @0x14126e960
 int GemSlotBag::FUN_14126e960(int nIndex)
 {
-    int nType;
+    GemType nType;
     if (m_mapSlot.Lookup(nIndex, nType))
         return nType;
     return 0;

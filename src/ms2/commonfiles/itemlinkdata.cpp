@@ -77,14 +77,15 @@ CItemLinkData::CItemLinkData(long nType, __int64 nOwnerId) : CHyperLinkData(nTyp
     m_nOwnerId = nOwnerId;
 }
 
-// MS2-FUNCTIONAL: frame/temporary slot order of the CString delimiters and the AssignRaw chain differs
 // @0x1405bd720
 void FUN_1405bd720(const CStringW& strText, ATL::CAtlArray<MS2Ptr<CHyperLinkData> >& arrOut)
 {
     ATL::CAtlArray<CStringW> arrTags;
-    CStringW strClose(L">");
-    CStringW strOpen(L"<");
-    FUN_14028cf00(strText, arrTags, strOpen, strClose);
+    {
+        CStringW strClose(L">");
+        CStringW strOpen(L"<");
+        FUN_14028cf00(strText, arrTags, strOpen, strClose);
+    }
     for (unsigned i = 0; i < arrTags.GetCount(); i++)
     {
         CString strTag = FUN_14016a600(arrTags[i], 0);
@@ -231,7 +232,6 @@ CLinkMeratMarketProduct::CLinkMeratMarketProduct(__int64 nOwnerId, const CString
     m_nCount = nCount;
 }
 
-// MS2-FUNCTIONAL: frame 0x10 larger (bool temp slots)
 // @0x1405bdfb0
 CHyperLinkData* FUN_1405bdfb0(ATL::CAtlArray<__int64>& arrValues)
 {
@@ -239,7 +239,7 @@ CHyperLinkData* FUN_1405bdfb0(ATL::CAtlArray<__int64>& arrValues)
         return 0;
     __int64 nOwner = arrValues[1];
     CString strName = FUN_1407194b0(arrValues[3]);
-    bool bFlag = arrValues[4] == 1;
+    bool bFlag = (arrValues[4] == 1) ? true : false;
     int nCount = (int)arrValues[7];
     return new CLinkMeratMarketProduct(nOwner, strName, bFlag, nCount);
 }

@@ -220,17 +220,21 @@ bool FUN_140d2a7e0(CStringW strText, ATL::CAtlArray<CStringW>& arrLinks)
 }
 
 // @0x140d2aa60
-int FUN_140d2aa60(CStringW& strLink)
+bool FUN_140d2aa60(CStringW& strLink)
 {
-    if (strLink.Find(L"event:itemTooltip", 0) > 0)
-        return 1;
-    if (strLink.Find(L"event:achieveTooltip", 0) > 0)
-        return 1;
-    if (strLink.Find(L"event:billDialog", 0) > 0)
-        return 1;
-    if (strLink.Find(L"event:searchFromMeratmarket", 0) > 0)
-        return 1;
-    return 0;
+    int nPos = strLink.Find(L"event:itemTooltip", 0);
+    if (nPos > 0)
+        return true;
+    nPos = strLink.Find(L"event:achieveTooltip", 0);
+    if (nPos > 0)
+        return true;
+    nPos = strLink.Find(L"event:billDialog", 0);
+    if (nPos > 0)
+        return true;
+    nPos = strLink.Find(L"event:searchFromMeratmarket", 0);
+    if (nPos > 0)
+        return true;
+    return false;
 }
 
 // Replaces a link's text with the announcement the link kind stands for (the chat line "kind:id:..:text"). false: unusable.
@@ -253,36 +257,34 @@ bool FUN_140d2ab10(CStringW& strLine)
 
     if (nSource == 2)
     {
-        if (!FUN_14053f8c0((unsigned)nUid) && !FUN_14053f940((unsigned)nUid))
+        if (FUN_14053f8c0((unsigned)nUid) || FUN_14053f940((unsigned)nUid))
+        {
+            if (nKind == 3)
+            {
+                ATL::CAtlArray<CStringW> fields;
+                FUN_14025a680(strArgs, fields, L":");
+                if (fields.GetCount() != 3)
+                    return true;
+                CStringW& strName = fields[0];
+                int nItemId = FUN_140718200(fields[1]);
+                int nCount = FUN_1407181a0(fields[2]);
+                CStringW strCount = FUN_140763e10(nCount);
+                if (FUN_14053f8c0((unsigned)nUid))
+                    strLine = FUN_1409eaa20(CStringW(L"s_msg_item_open_item_announce_to_world_meso"), strName, FUN_141425950(nItemId), strCount);
+                else if (FUN_14053f940((unsigned)nUid))
+                    strLine = FUN_1409eaa20(CStringW(L"s_msg_item_open_item_announce_to_world_merat"), strName, FUN_141425950(nItemId), strCount);
+            }
+        }
+        else
         {
             MS2Ptr<CItem> spItem = pBrowser->FUN_141a263d0(nUid);
             if (spItem.IsNull())
                 return false;
             strLine = FUN_140d2b190(strArgs, spItem, nKind);
         }
-        else if (nKind == 3)
-        {
-            ATL::CAtlArray<CStringW> fields;
-            FUN_14025a680(strArgs, fields, L":");
-            if (fields.GetCount() != 3)
-                return true;
-            CStringW& strName = fields[0];
-            int nItemId = FUN_140718200(fields[1]);
-            int nCount = FUN_1407181a0(fields[2]);
-            CStringW strCount = FUN_140763e10(nCount);
-            if (!FUN_14053f8c0((unsigned)nUid))
-            {
-                if (FUN_14053f940((unsigned)nUid))
-                    strLine = FUN_1409eaa20(CStringW(L"s_msg_item_open_item_announce_to_world_merat"), strName, FUN_141425950(nItemId), strCount);
-            }
-            else
-            {
-                strLine = FUN_1409eaa20(CStringW(L"s_msg_item_open_item_announce_to_world_meso"), strName, FUN_141425950(nItemId), strCount);
-            }
-        }
         return true;
     }
-    if (nSource == 3)
+    else if (nSource == 3)
     {
         MS2Ptr<CItem> spItem = pBrowser->FUN_141a263d0(nUid);
         if (spItem.IsNull())
@@ -298,11 +300,9 @@ bool FUN_140d2ab10(CStringW& strLine)
 CStringW FUN_140d2b190(const CStringW& strArgs, MS2Ptr<CItem> spItem, int nKind)
 {
     CStringW strLink = FUN_140d2e6f0(spItem);
-    switch (nKind)
-    {
-    case 1:
+    if (nKind == 1)
         return FUN_140632a60(0x960, strArgs, strLink);
-    case 2:
+    else if (nKind == 2)
     {
         ATL::CAtlArray<CStringW> fields;
         FUN_14025a680(strArgs, fields, L":");
@@ -316,34 +316,29 @@ CStringW FUN_140d2b190(const CStringW& strArgs, MS2Ptr<CItem> spItem, int nKind)
         }
         return FUN_1409eadb0(0x962, strFirst, strLink, FUN_140d2b8f0(spItem, strSecond));
     }
-    case 3:
+    else if (nKind == 3)
     {
         ATL::CAtlArray<CStringW> fields;
         FUN_14025a680(strArgs, fields, L":");
-        if (fields.GetCount() == 2)
-        {
-            CStringW& strName = fields[0];
-            int nItemId = FUN_140718200(fields[1]);
-            return FUN_1409eaa20(CStringW(L"s_msg_item_open_item_announce_to_world"), strName, FUN_141425950(nItemId), strLink);
-        }
-        return CStringW(L"");
+        if (fields.GetCount() != 2)
+            return CStringW(L"");
+        CStringW& strName = fields[0];
+        int nItemId = FUN_140718200(fields[1]);
+        return FUN_1409eaa20(CStringW(L"s_msg_item_open_item_announce_to_world"), strName, FUN_141425950(nItemId), strLink);
     }
-    case 4:
+    else if (nKind == 4)
         return FUN_140632a60(0xc42, strArgs, strLink);
-    case 5:
+    else if (nKind == 5)
         return FUN_1409eaa20(CStringW(L"s_item_merge_chat_maxoption"), strArgs, strLink, FUN_140d2bff0(spItem));
-    case 6:
+    else if (nKind == 6)
     {
         ATL::CAtlArray<CStringW> fields;
         FUN_14025a680(strArgs, fields, L":");
-        if (fields.GetCount() == 2)
-        {
-            CStringW& strName = fields[0];
-            int nItemId = FUN_140718200(fields[1]);
-            return FUN_1409eaa20(CStringW(L"s_msg_item_identified_item_announce_to_world"), strName, FUN_141425950(nItemId), strLink);
-        }
-        return CStringW(L"");
-    }
+        if (fields.GetCount() != 2)
+            return CStringW(L"");
+        CStringW& strName = fields[0];
+        int nItemId = FUN_140718200(fields[1]);
+        return FUN_1409eaa20(CStringW(L"s_msg_item_identified_item_announce_to_world"), strName, FUN_141425950(nItemId), strLink);
     }
     return CStringW(L"");
 }
@@ -352,7 +347,7 @@ CStringW FUN_140d2b190(const CStringW& strArgs, MS2Ptr<CItem> spItem, int nKind)
 // @0x140d2b8f0
 CStringW FUN_140d2b8f0(MS2Ptr<CItem> spItem, const CStringW& strFilter)
 {
-    CStringW strLabel = GetStringCommonByKey(CStringW(L"s_word_stat_max"));
+    CStringW strLabel = GetStringCommonByKey(L"s_word_stat_max");
     CStringW strLines;
     CStringW strSeparator(L", ");
     ATL::CAtlArray<MS2Ptr<Unk_StatRow> > rows;
@@ -364,7 +359,8 @@ CStringW FUN_140d2b8f0(MS2Ptr<CItem> spItem, const CStringW& strFilter)
         {
             ATL::CAtlArray<CStringW> entries;
             FUN_14025a680(strFilter, entries, L"|");
-            for (size_t i = 0; i < entries.GetCount(); ++i)
+            size_t nEntries = entries.GetCount();
+            for (size_t i = 0; i < nEntries; ++i)
             {
                 CStringW strEntry(entries.GetAt(i));
                 ATL::CAtlArray<CStringW> ids;
@@ -378,14 +374,16 @@ CStringW FUN_140d2b8f0(MS2Ptr<CItem> spItem, const CStringW& strFilter)
             }
         }
         int nRemaining = (int)wanted.size();
-        for (size_t i = 0; i < rows.GetCount() && nRemaining > 0; ++i)
+        size_t nRows = rows.GetCount();
+        for (size_t i = 0; i < nRows; ++i)
         {
+            if (nRemaining <= 0)
+                break;
             MS2Ptr<Unk_StatRow> spRow(rows[i]);
             if (spRow == NULL)
                 continue;
-            int nKind = spRow->m_nKind;
-            std::pair<int, int> key(nKind, spRow->m_nId);
-            if (std::find(wanted.begin(), wanted.end(), key) == wanted.end())
+            unsigned int nKind = spRow->m_nKind;
+            if (std::find(wanted.begin(), wanted.end(), std::pair<int, int>(nKind, spRow->m_nId)) == wanted.end())
                 continue;
             --nRemaining;
             if (!strLines.IsEmpty())
@@ -398,7 +396,7 @@ CStringW FUN_140d2b8f0(MS2Ptr<CItem> spItem, const CStringW& strFilter)
             strLines.Append(strText);
         }
     }
-    return StringFormat(GetStringCommonByKey(CStringW(L"s_word_stat_max_color")), strLines);
+    return StringFormat(GetStringCommonByKey(L"s_word_stat_max_color"), strLines);
 }
 
 // The merge option description of an item (the max-option announcement).
@@ -596,10 +594,7 @@ void FUN_140d2cfc0(MS2Ptr<CItem> spItem)
 {
     if (spItem == NULL)
         return;
-    __int64 nUid = spItem->FUN_140526a50();
-    int nGrade = spItem->FUN_140526bd0();
-    int nItemId = spItem->FUN_1405276c0();
-    FUN_140d2d060(nItemId, nGrade, nUid);
+    FUN_140d2d060(spItem->FUN_1405276c0(), spItem->FUN_140526bd0(), spItem->FUN_140526a50());
 }
 
 // @0x140d2d060
@@ -651,29 +646,27 @@ CStringW FUN_140d2d440(unsigned nId, int nGrade)
     if (spAchieve.IsNull())
         return CStringW(L"");
 
-    CStringW strGrade;
-    CStringW strUser;
+    CStringW strDate;
+    CStringW strText;
     PCBase* pPC = static_cast<PCBase*>(FUN_1403ed2d0()->FUN_141bd0cc0());
     if (pPC != NULL)
     {
         int nKind = 2;
-        int nState = spAchieve->GetState();
-        if (nState == 2)
+        switch (spAchieve->GetState())
         {
-            if (nGrade < spAchieve->GetCurGrade())
-                nKind = 3;
-            else
-                nKind = 2;
-        }
-        else if (nState == 3)
-        {
+        case 3:
             nKind = 3;
+            break;
+        case 2:
+            nKind = spAchieve->GetCurGrade() > nGrade ? 3 : 2;
+            break;
         }
-        CStringW strTitle(nKind != 3 ? GetStringCommon(0x77f) : GetStringCommon(0x780));
-        strGrade = FUN_14093e330(spAchieve.get(), nGrade);
-        strUser = StringFormat(GetStringCommonByKey(CStringW(L"s_achieve_tooltip_user_info")), pPC->vfunc_77(), strTitle);
+        CStringW strTitle(nKind == 3 ? GetStringCommon(0x780) : GetStringCommon(0x77f));
+        strDate = FUN_14093e330(spAchieve.get(), nGrade);
+        CStringW strKey(L"s_achieve_tooltip_user_info");
+        strText = StringFormat(GetStringCommonByKey(strKey), pPC->vfunc_77(), strTitle);
     }
-    return FUN_140d2d8a0(nId, nGrade, CStringW(strGrade), CStringW(strUser));
+    return FUN_140d2d8a0(nId, nGrade, CStringW(strText), CStringW(strDate));
 }
 
 // @0x140d2d8a0
@@ -737,8 +730,9 @@ CStringW FUN_140d2e090(unsigned __int64 nUid, MS2Ptr<CItem> spItem)
 // @0x140d2e2b0
 CStringW FUN_140d2e2b0(int nItemId, int nGrade, __int64 nUid)
 {
+    unsigned __int64 nLinkId = nUid;
     Unk_ChatLinkKind eKind = CHATLINK_ITEM_UID;
-    CStringW strLink = StringFormat(L"'event:itemTooltip,{0},{1},{2},{3},{4}'", (unsigned __int64)nUid, eKind, (unsigned __int64)nUid, (unsigned)nItemId, (ItemGradeKey)nGrade);
+    CStringW strLink = StringFormat(L"'event:itemTooltip,{0},{1},{2},{3},{4}'", nLinkId, eKind, nUid, nItemId, nGrade);
     CStringW strColor = TSingleton<CItemDataTable>::GetInstance()->GetTextColorString((ItemGradeKey)nGrade);
     MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(nUid);
     if (spItem == NULL)
@@ -755,7 +749,7 @@ CStringW FUN_140d2e2b0(int nItemId, int nGrade, __int64 nUid)
                 spItem = MS2_STORE_TABLE.Find(nUid);
         }
     }
-    CStringW strName(spItem.get() == NULL ? FUN_141425950(nItemId) : spItem->FUN_140527b10());
+    CStringW strName(spItem.get() != NULL ? spItem->FUN_140527b10() : FUN_141425950(nItemId));
     return FUN_140d2ef00(CStringW(strLink), CStringW(strColor), CStringW(strName));
 }
 

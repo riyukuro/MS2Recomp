@@ -6,6 +6,8 @@
 #define MS2_THIS_FILE ""
 #include "ms2/placeholder/ms2stdafx.h"
 #include "ms2/placeholder/nmobjects.h"
+#include "ms2/placeholder/nmstream.h"
+#include "ms2/placeholder/nmencoder.h"
 #include "ms2/ms2recover.h"
 
 extern int FUN_1415fbe70(void*, long long, void*);
@@ -15,33 +17,12 @@ extern void FUN_14156be10(void*, void*, void*);
 extern void FUN_14156bf10(void*);
 extern int FUN_1415fb700(void*);
 extern int FUN_1415fb750(void*);
-extern int FUN_1415fb6d0(void*);
+extern int FUN_1415fb6d0(CNMSerializableDecoder*);
 extern void FUN_14156ae30(void*, void*);
 extern void FUN_14156ac20(void*, unsigned int);
 extern void FUN_14156acb0(void*, unsigned long long);
 extern void FUN_14156af60(void*, void*, unsigned int);
 extern void FUN_1415f9990(void*);
-
-static void copyPassportText(char* dest, const char* text)
-{
-    if (text == nullptr)
-        *reinterpret_cast<unsigned int*>(dest) = 0;
-    else
-        FUN_1415fbe70(dest, 0x40, const_cast<char*>(text));
-}
-
-static int clampPassportPayload(int size)
-{
-    return size < 0x1000 ? size : 0x1000;
-}
-
-static void copyPassportPayload(unsigned char* dest, const unsigned char* data, int size)
-{
-    for (int i = 0; i < 0x1000; ++i)
-        dest[i] = 0;
-    for (int i = 0; i < size; ++i)
-        dest[i] = data[i];
-}
 
 // @0x1415a42e0
 // MS2-FUNCTIONAL: initializes the recovered 0x110a request fields and payload defaults.
@@ -52,42 +33,51 @@ CNMLoginPassportFunc::CNMLoginPassportFunc()
 }
 
 // @0x1415a43c0
-// MS2-FUNCTIONAL: copies both strings and bounded payload; preserves token and trailing flags.
 CNMLoginPassportFunc::CNMLoginPassportFunc(const char* account, const char* passport,
                                            unsigned long long token, const unsigned char* payload,
                                            int payloadSize, unsigned int flags, unsigned int result)
-    : CNMFunc(0x110a, 1, 0, 0), m_30{}, m_70{}, m_b0(0), m_b8(token), m_c0{},
-      m_80c0(clampPassportPayload(payloadSize)), m_80c4(static_cast<int>(flags)),
-      m_80c8(static_cast<int>(0x80000000u)), m_80cc(static_cast<int>(result))
+    : CNMFunc(0x110a, 1, 0, 0)
 {
-    copyPassportText(m_30, account);
-    copyPassportText(m_70, passport);
-    copyPassportPayload(m_c0, payload, m_80c0);
+    if (account) FUN_1415fbe70(m_30, 0x40, const_cast<char*>(account));
+    else m_30[0] = 0;
+    if (passport) FUN_1415fbe70(m_70, 0x40, const_cast<char*>(passport));
+    else m_70[0] = 0;
+    m_b0 = 0;
+    m_b8 = token;
+    m_80c0 = payloadSize < 0x1000 ? payloadSize : 0x1000;
+    memset(m_c0, 0, 0x1000);
+    memcpy(m_c0, payload, m_80c0);
+    m_80c4 = flags;
+    m_80c8 = 0x80000000;
+    m_80cc = result;
 }
 
 // @0x1415a4560
-// MS2-FUNCTIONAL: copies bounded payload and strings; token remains zero as recovered.
 CNMLoginPassportFunc::CNMLoginPassportFunc(const char* account, const char* passport,
                                            const unsigned char* payload, int payloadSize,
                                            unsigned int flags, unsigned int result)
-    : CNMFunc(0x110a, 1, 0, 0), m_30{}, m_70{}, m_b0(0), m_b8(0), m_c0{},
-      m_80c0(clampPassportPayload(payloadSize)), m_80c8(static_cast<int>(flags)),
-      m_80cc(static_cast<int>(result))
+    : CNMFunc(0x110a, 1, 0, 0)
 {
-    copyPassportText(m_30, account);
-    copyPassportText(m_70, passport);
-    copyPassportPayload(m_c0, payload, m_80c0);
+    if (account) FUN_1415fbe70(m_30, 0x40, const_cast<char*>(account));
+    else m_30[0] = 0;
+    if (passport) FUN_1415fbe70(m_70, 0x40, const_cast<char*>(passport));
+    else m_70[0] = 0;
+    m_b0 = 0;
+    m_b8 = 0;
+    m_80c0 = payloadSize < 0x1000 ? payloadSize : 0x1000;
+    memset(m_c0, 0, 0x1000);
+    memcpy(m_c0, payload, m_80c0);
+    m_80c4 = m_80c4;
+    m_80c8 = flags;
+    m_80cc = result;
 }
 
 // @0x1415a4700
 // MS2-FUNCTIONAL: framed encoder setup and cleanup match; local encoder storage differs.
 unsigned int CNMLoginPassportFunc::EncodeFramed(CNMStream* pStream)
 {
-    alignas(8) unsigned char encoder[0x18];
-    FUN_14156bcb0(encoder, pStream, this);
-    const unsigned int result = Encode(reinterpret_cast<CNMEncoder*>(encoder), pStream);
-    FUN_14156bd50(encoder);
-    return result;
+    CNMSerializableEncoder encoder(pStream, this);
+    return CNMLoginPassportFunc::Encode(reinterpret_cast<CNMEncoder*>(&encoder), pStream);
 }
 
 // @0x1415a4760
@@ -95,10 +85,8 @@ unsigned int CNMLoginPassportFunc::EncodeFramed(CNMStream* pStream)
 unsigned int CNMLoginPassportFunc::EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream)
 {
     if (m_bFormat == 1)
-        Encode(pEncoder, pStream);
-    else
-        EncodeFramed(pStream);
-    return 0;
+        return CNMLoginPassportFunc::Encode(pEncoder, pStream);
+    return CNMLoginPassportFunc::EncodeFramed(pStream);
 }
 
 // @0x1415a47c0
@@ -125,13 +113,10 @@ unsigned int CNMLoginPassportFunc::Encode(CNMEncoder* pEncoder, CNMStream* pStre
 // MS2-FUNCTIONAL: framed decoder setup, validity check, and cleanup match; local decoder storage differs.
 unsigned int CNMLoginPassportFunc::DecodeFramed(CNMStream* pStream)
 {
-    alignas(8) unsigned char decoder[0x38];
-    FUN_14156be10(decoder, pStream, this);
-    unsigned int result = 0;
-    if (FUN_1415fb750(decoder) != 0)
-        result = Decode(reinterpret_cast<CNMSerializableDecoder*>(decoder), pStream);
-    FUN_14156bf10(decoder);
-    return result;
+    CNMSerializableDecoder decoder(pStream, this);
+    if (FUN_1415fb750(&decoder) == 0)
+        return 0;
+    return CNMLoginPassportFunc::Decode(&decoder, pStream);
 }
 
 // @0x1415a4960
@@ -139,32 +124,24 @@ unsigned int CNMLoginPassportFunc::DecodeFramed(CNMStream* pStream)
 unsigned int CNMLoginPassportFunc::DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream)
 {
     if (FUN_1415fb6d0(pDecoder) == 2)
-        DecodeFramed(pStream);
-    else
-        Decode(pDecoder, pStream);
-    return 0;
+        return CNMLoginPassportFunc::DecodeFramed(pStream);
+    return CNMLoginPassportFunc::Decode(pDecoder, pStream);
 }
 
 // @0x1415a49c0
-// MS2-FUNCTIONAL: restores all fields and the payload bounded at 0x1000 bytes.
 unsigned int CNMLoginPassportFunc::Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream)
 {
     CNMFunc::DecodeDispatch(pDecoder, pStream);
     if (FUN_1415fb700(this) != 0)
     {
-        void** vftable = *reinterpret_cast<void***>(pDecoder);
-        using ReadU32 = unsigned int(__fastcall*)(void*);
-        using ReadU64 = unsigned long long(__fastcall*)(void*);
-        using ReadString = void(__fastcall*)(void*, void*, unsigned int);
-        using ReadBytes = unsigned int(__fastcall*)(void*, void*, unsigned int);
-        reinterpret_cast<ReadString>(vftable[9])(pDecoder, m_30, 0x40);
-        reinterpret_cast<ReadString>(vftable[9])(pDecoder, m_70, 0x40);
-        m_b0 = static_cast<int>(reinterpret_cast<ReadU32>(vftable[3])(pDecoder));
-        m_b8 = reinterpret_cast<ReadU64>(vftable[4])(pDecoder);
-        m_80c0 = static_cast<int>(reinterpret_cast<ReadBytes>(vftable[11])(pDecoder, m_c0, 0x1000));
-        m_80c4 = static_cast<int>(reinterpret_cast<ReadU32>(vftable[3])(pDecoder));
-        m_80c8 = static_cast<int>(reinterpret_cast<ReadU32>(vftable[3])(pDecoder));
-        m_80cc = static_cast<int>(reinterpret_cast<ReadU32>(vftable[3])(pDecoder));
+        pDecoder->ReadStringBufAlias(m_30, 0x40);
+        pDecoder->ReadStringBufAlias(m_70, 0x40);
+        m_b0 = pDecoder->ReadU32();
+        m_b8 = pDecoder->ReadU64();
+        m_80c0 = pDecoder->ReadBytes(m_c0, 0x1000);
+        m_80c4 = pDecoder->ReadU32();
+        m_80c8 = pDecoder->ReadU32();
+        m_80cc = pDecoder->ReadU32();
     }
     return static_cast<unsigned int>(FUN_1415fb750(pDecoder));
 }

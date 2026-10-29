@@ -73,11 +73,17 @@ public:
 
 // Image holder of the web page (0x90 bytes) and its source object / handle.
 class Unk_AasImage : public AScript {};
-class Unk_AasSource : public CPtred {};
+class Unk_AasSource : public CPtred
+{
+public:
+    Unk_AasSource(CStringW strUrl, int nMovieId);       // 0x1422e5a70 (by value: the exe callee destroys strUrl)
+    char m_pad[0x40 - sizeof(CPtred)];
+};
 class Unk_AasSourcePtr
 {
 public:
     Unk_AasSourcePtr(Unk_AasSource* p);
+    Unk_AasSourcePtr(const Unk_AasSourcePtr&);         // never called: keeps the by-value argument built in place
     ~Unk_AasSourcePtr();
     Unk_AasSource* get() const;
     Unk_AasSource* operator->() const;
@@ -95,7 +101,7 @@ private:
 class Unk_TextFieldEx : public AScript
 {
 public:
-    Unk_TextFieldEx(const Scaleform::GFx::Value& v, int nMovieId);
+    Unk_TextFieldEx(Scaleform::GFx::Value v, int nMovieId);   // 0x1422e4fd0 (by value: the exe callee destroys v)
 };
 class Unk_TextFieldExPtr
 {
@@ -189,10 +195,8 @@ double FUN_1422c5970(ASTextField* p);
 void FUN_1422e55c0(Unk_AasImage* p, bool b);
 void FUN_1422e5530(Unk_AasImage* p, Unk_AasSourcePtr sp);   // by value: the exe callee destroys sp
 CStringW FUN_1422e5b80(CStringW str);
-void* FUN_1422e5a70(void* pMem, CStringW strUrl, int nMovieId);
 void FUN_1422e5060(Unk_TextFieldEx* p, const Scaleform::GFx::Value& v, unsigned n);
 void FUN_1422e5110(Unk_TextFieldEx* p, const Scaleform::GFx::Value& v, const CString& strMode);
-Unk_TextFieldEx* FUN_1422e4fd0(void* pMem, Scaleform::GFx::Value v, int nMovieId);   // by value: the exe callee destroys v
 
 class Unk_UiMgr
 {
@@ -352,25 +356,23 @@ void FUN_140cffef0(const Scaleform::GFx::Value& root, CString strName, CString s
 }
 
 // @0x140d00050
-// MS2-FUNCTIONAL: written against the exe callees
 void FUN_140d00050(const Scaleform::GFx::Value* pRoot, CString strLabel)
 {
     if (!FUN_1407cce10(pRoot))
         return;
-    Scaleform::GFx::Value copy(*pRoot);
-    ASMovieClip clip(copy, 2);
+    ASMovieClip clip(*pRoot, 2);
     if (static_cast<Unk_NamedClip&>(clip).FUN_1422ba8c0().IsEmpty())
         return;
     clip.vfunc_13(strLabel);
-    if (clip.FUN_1422ba9f0("numChildren") && clip.FUN_1422ba9f0("getChildAt"))
+    if (!clip.FUN_1422ba9f0("numChildren") || !clip.FUN_1422ba9f0("getChildAt"))
+        return;
+    int nCount = clip.FUN_1422c6670();
+    for (int i = 0; i < nCount; i++)
     {
-        int nCount = clip.FUN_1422c6670();
-        for (int i = 0; i < nCount; i++)
-        {
-            Scaleform::GFx::Value child = clip.FUN_1422c6aa0(i);
-            if (FUN_1407cce10(&child))
-                FUN_140d00050(&child, CString(strLabel));
-        }
+        Scaleform::GFx::Value child = clip.FUN_1422c6aa0(i);
+        if (!FUN_1407cce10(&child))
+            continue;
+        FUN_140d00050(&child, CString(strLabel));
     }
 }
 
@@ -379,14 +381,10 @@ void FUN_140d00360(const Scaleform::GFx::Value& root, CString strName, unsigned 
 // @0x140d00270
 void FUN_140d00270(const Scaleform::GFx::Value& root, CString strName, Unk_SlotSource* pSource)
 {
-    unsigned c = pSource->vfunc_2();
-    unsigned b = pSource->vfunc_1();
-    unsigned a = pSource->vfunc_0();
-    FUN_140d00360(root, CString(strName), a, b, c);
+    FUN_140d00360(root, CString(strName), pSource->vfunc_0(), pSource->vfunc_1(), pSource->vfunc_2());
 }
 
 // @0x140d00360
-// MS2-FUNCTIONAL: written against the exe callees
 void FUN_140d00360(const Scaleform::GFx::Value& root, CString strName, unsigned a, unsigned b, unsigned c)
 {
     if (!FUN_1409b4d40(root))
@@ -401,7 +399,6 @@ void FUN_140d00360(const Scaleform::GFx::Value& root, CString strName, unsigned 
 }
 
 // @0x140d004f0
-// MS2-FUNCTIONAL: written against the exe callees
 void FUN_140d004f0(const Scaleform::GFx::Value& root, CString strName, ASSlot* pSlot)
 {
     if (!FUN_1409b4d40(root))
@@ -585,15 +582,12 @@ int FUN_140d01040(CString& strAlign)
 // ---- the web image holder ----
 
 // @0x140d011c0
-// MS2-FUNCTIONAL: written against the exe callees
 void FUN_140d011c0(Unk_AasImagePtr spImage, CStringW strUrl, bool bFlag)
 {
-    if (spImage.get() == 0)
+    if (spImage == 0)
         return;
     FUN_1422e55c0(spImage.operator->(), bFlag);
-    void* pMem = operator new(0x40);
-    Unk_AasSource* pSource = pMem ? (Unk_AasSource*)FUN_1422e5a70(pMem, FUN_1422e5b80(CStringW(strUrl)), 2) : 0;
-    FUN_1422e5530(spImage.operator->(), Unk_AasSourcePtr(pSource));
+    FUN_1422e5530(spImage.operator->(), Unk_AasSourcePtr(new Unk_AasSource(FUN_1422e5b80(CStringW(strUrl)), 2)));
 }
 
 extern CString DAT_143b0d350;                                   // "shrink"
@@ -601,7 +595,6 @@ extern CString DAT_143b0d350;                                   // "shrink"
 Unk_TextFieldExPtr FUN_140d01530(int nMovieId);
 
 // @0x140d01340
-// MS2-FUNCTIONAL: written against the exe callees
 void FUN_140d01340(const Scaleform::GFx::Value& target, unsigned nParam, int nMovieId)
 {
     Unk_TextFieldExPtr sp = FUN_140d01530(nMovieId);
@@ -610,7 +603,6 @@ void FUN_140d01340(const Scaleform::GFx::Value& target, unsigned nParam, int nMo
 }
 
 // @0x140d013b0
-// MS2-FUNCTIONAL: written against the exe callees
 void FUN_140d013b0(const Scaleform::GFx::Value& target, int nMovieId)
 {
     Unk_TextFieldExPtr sp = FUN_140d01530(nMovieId);
@@ -631,18 +623,12 @@ void FUN_140d01420(const Scaleform::GFx::Value& root, CString strName, int nMovi
 }
 
 // @0x140d01530
-// MS2-FUNCTIONAL: written against the exe callees
 Unk_TextFieldExPtr FUN_140d01530(int nMovieId)
 {
-    unsigned nDummy = 0;
     GFxMovie* pMovie = FUN_14025e7a0()->FUN_1422b01a0(nMovieId);
-    if (pMovie == 0)
-        return Unk_TextFieldExPtr(0);
-    void* pMem = operator new(0x40);
-    Unk_TextFieldEx* p = 0;
-    if (pMem)
-        p = FUN_1422e4fd0(pMem, ((Unk_GfxMovie*)pMovie)->FUN_1422bd120(CString("scaleform.gfx.TextFieldEx")), nMovieId);
-    return Unk_TextFieldExPtr(p);
+    if (pMovie != 0)
+        return Unk_TextFieldExPtr(new Unk_TextFieldEx(((Unk_GfxMovie*)pMovie)->FUN_1422bd120(CString("scaleform.gfx.TextFieldEx")), nMovieId));
+    return Unk_TextFieldExPtr(0);
 }
 
 void FUN_140d01780(const Scaleform::GFx::Value& target, bool bDisable);
@@ -660,19 +646,16 @@ void FUN_140d01670(const Scaleform::GFx::Value& root, CString strName, bool bDis
 }
 
 // @0x140d01780
-// MS2-FUNCTIONAL: written against the exe callees
 void FUN_140d01780(const Scaleform::GFx::Value& target, bool bDisable)
 {
     GFxMovie* pMovie = FUN_14025e7a0()->FUN_1422b01a0(2);
-    if (pMovie == 0)
-        return;
-    void* pMem = operator new(0x40);
-    AScript* p = 0;
-    if (pMem)
-        p = new (pMem) AScript(((Unk_GfxMovie*)pMovie)->FUN_1422bd120(CString("scaleform.gfx.InteractiveObjectEx")), 2);
-    MS2Ptr<AScript> sp(p);
-    if (!sp->FUN_1422ba9a0())
+    if (pMovie != 0)
+    {
+        MS2Ptr<AScript> sp(new AScript(((Unk_GfxMovie*)pMovie)->FUN_1422bd120(CString("scaleform.gfx.InteractiveObjectEx")), 2));
+        if (sp->FUN_1422ba9a0())
+            return;
         ((Unk_AsEx*)sp.operator->())->FUN_140ba9570("setHitTestDisable", Scaleform::GFx::Value(target), bDisable);
+    }
 }
 
 // @0x140d01960
@@ -684,23 +667,16 @@ void FUN_140d01960(CString strKey)
 }
 
 // @0x140d019b0
-// MS2-FUNCTIONAL: written against the exe callees
 MS2Ptr<AScript> FUN_140d019b0(MS2Ptr<AScript> spObj, const CString& strName)
 {
     if (spObj == 0)
         return MS2Ptr<AScript>(0);
-    if (strName.IsEmpty())
+    if (strName.IsEmpty() == true)
         return MS2Ptr<AScript>(0);
-    void* pMem = operator new(0x40);
-    AScript* p = 0;
-    if (pMem)
-        p = new (pMem) AScript(spObj.operator->()->FUN_1422baa20(strName), 2);
-    MS2Ptr<AScript> sp(p);
-    if (sp == 0)
+    MS2Ptr<AScript> sp(new AScript(spObj.operator->()->FUN_1422baa20(strName), 2));
+    if (sp == 0 || sp->FUN_1422ba9a0() == true)
         return MS2Ptr<AScript>(0);
-    if (!sp->FUN_1422ba9a0())
-        return sp;
-    return MS2Ptr<AScript>(0);
+    return sp;
 }
 
 // @0x140d01be0
@@ -816,6 +792,7 @@ void Unk_AasImagePtrView::Release()
     }
 }
 Unk_AasImagePtr::~Unk_AasImagePtr() { ((Unk_AasImagePtrView*)this)->Release(); }
+bool Unk_AasImagePtr::operator==(Unk_AasImage* p) const { return m_p == p; }
 void FUN_140d03450(Unk_AasImagePtr* p) { ((Unk_AasImagePtrView*)p)->Release(); }
 void FUN_140d03320(Unk_AasImage* p) { Unk_AasImagePtrView::Reference(p); }
 

@@ -244,16 +244,12 @@ void UIUGCHousingPointDialog::FUN_140fae0d0()
 MS2_REPLACE_METHOD(0x140FAE0D0, UIUGCHousingPointDialog, FUN_140fae0d0, 24, 0xB49D2BEF);
 
 // @0x140fae0f0
-// MS2-FUNCTIONAL: the exe copies the GetChild result pointer through three dead stack slots (unknown source form)
 int UIUGCHousingPointDialog::RefreshFoldButton()
 {
     if (FUN_1418fd280() == 0)
         return 0;
-    {
-        MS2Ptr<ASButton> spFold = GetChild<ASButton>("m_fold");
-        if (spFold != 0)
-            spFold->FUN_1422ce090(IsInMyHome() ? false : true);
-    }
+    if (MS2Ptr<ASButton> spFold = GetChild<ASButton>("m_fold"))
+        spFold->FUN_1422ce090(IsInMyHome() ? false : true);
     return 0;
 }
 MS2_REPLACE_METHOD(0x140FAE0F0, UIUGCHousingPointDialog, RefreshFoldButton, 204, 0xC53870EE);

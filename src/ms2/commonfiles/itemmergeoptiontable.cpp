@@ -125,7 +125,7 @@ CStringW FUN_1401d0080(const CStringW& a, const CStringW& b);           // a + b
 CStringW FUN_14052bd00(int nStringId, const CStringW& str);             // the highlighted text
 bool FUN_1409c5210(CStringW& strOut, MS2Ptr<CItem> spItem, int nStat, int nGroup, Unk_EnchantPtr<BaseOption> spOption, const CStringW& strText);
 bool FUN_1409c56f0(CStringW& strOut, MS2Ptr<CItem> spItem, int nStat, int nGroup, Unk_EnchantPtr<BaseOption> spOption, const CStringW& strText);
-int FUN_140408410(const ATL::CAtlArray<unsigned>* pArray, const int* pValue);   // the index of a value, -1 when absent
+int FUN_140408410(const ATL::CAtlArray<unsigned>& arr, const unsigned& nValue);   // the index of a value, -1 when absent
 bool FUN_1405c7ba0(const Unk_MergeRange* pRange);
 bool FUN_1403ef200(const Unk_MergeRange* pRange, int nValue);                    // the value lies in the range
 
@@ -164,9 +164,6 @@ CItemMergeOptionVariation::CItemMergeOptionVariation() : m_nIndex(0)
 {
 }
 
-// @0x1405c4590
-CItemMergeOptionVariation::~CItemMergeOptionVariation() = default;
-
 // @0x1405beaa0
 int CItemMergeOptionVariation::FUN_1405beaa0()
 {
@@ -202,9 +199,6 @@ CItemMergeOptionProxy::CItemMergeOptionProxy() : m_nMeso(0)
 {
 }
 
-// @0x1405c4530
-CItemMergeOptionProxy::~CItemMergeOptionProxy() = default;
-
 // @0x1405bec30
 void CItemMergeOptionProxy::FUN_1405bec30(COutputStream& stream)
 {
@@ -238,23 +232,26 @@ void CItemMergeOptionProxy::FUN_1405bef60(CInPacket& packet)
 {
     m_nMeso = packet.ReadInt64();
     m_ingredients.FUN_14026c0b0(packet);
-    unsigned nValues = packet.ReadInt32();
-    for (unsigned __int64 i = 0; i < nValues; i++)
-        m_values.Add(packet.ReadInt32());
-    unsigned nNormal = packet.ReadInt32();
-    for (unsigned __int64 i = 0; i < nNormal; i++)
+    unsigned __int64 nCount = (unsigned)packet.ReadInt32();
+    for (unsigned __int64 i = 0; i < nCount; i++)
+    {
+        int nValue = packet.ReadInt32();
+        m_values.Add(nValue);
+    }
+    nCount = (unsigned)packet.ReadInt32();
+    for (unsigned __int64 i = 0; i < nCount; i++)
     {
         CItemMergeOptionVariation range;
-        MergeNormalOption key = (MergeNormalOption)packet.ReadInt16();
+        MergeNormalOption key = (MergeNormalOption)(unsigned short)packet.ReadInt16();
         range.m_range.m_nMin = packet.ReadInt32();
         range.m_range.m_nMax = packet.ReadInt32();
         m_normal.SetAt(key, range);
     }
-    unsigned nSpecial = packet.ReadInt32();
-    for (unsigned __int64 i = 0; i < nSpecial; i++)
+    nCount = (unsigned)packet.ReadInt32();
+    for (unsigned __int64 i = 0; i < nCount; i++)
     {
         CItemMergeOptionVariation range;
-        MergeSpecialOption key = (MergeSpecialOption)packet.ReadInt16();
+        MergeSpecialOption key = (MergeSpecialOption)(unsigned short)packet.ReadInt16();
         range.m_range.m_nMin = packet.ReadInt32();
         range.m_range.m_nMax = packet.ReadInt32();
         m_special.SetAt(key, range);
@@ -265,9 +262,6 @@ void CItemMergeOptionProxy::FUN_1405bef60(CInPacket& packet)
 CItemMergeOption::CItemMergeOption() : m_nNormal(-1), m_nSpecial(0)
 {
 }
-
-// @0x1405c44d0
-CItemMergeOption::~CItemMergeOption() = default;
 
 // @0x1405bf380
 CItemMergeOptionData::CItemMergeOptionData() : m_nId(0), m_nProbVer(1)
@@ -281,7 +275,7 @@ CItemMergeOptionData::~CItemMergeOptionData()
 
 // @0x1405bf470
 // The <slot> element: its options and, per option, the steps idx0_max..idx9_max the value range is cut into.
-int CItemMergeOptionData::Load(Unk_140165cf0* pSlot)
+bool CItemMergeOptionData::Load(Unk_140165cf0* pSlot)
 {
     FUN_140873220(pSlot, "probVer", (unsigned&)m_nProbVer);
     FUN_1408731e0(pSlot, "part", m_nId);
@@ -295,19 +289,19 @@ int CItemMergeOptionData::Load(Unk_140165cf0* pSlot)
         FUN_1408733e0(pElem, "optionName", strName);
         FUN_140873220(pElem, "min", nPrev);
         int nNormal = FUN_14082ee80(strName);
-        if (nNormal == -1)
+        if (nNormal != -1)
+        {
+            spOption->m_nNormal = nNormal;
+            nCategory = FUN_14082f2d0(nNormal);
+        }
+        else
         {
             int nSpecial = FUN_14081d2f0(strName);
             spOption->m_nSpecial = nSpecial;
             nCategory = FUN_14081dd50(nSpecial);
         }
-        else
-        {
-            spOption->m_nNormal = nNormal;
-            nCategory = FUN_14082f2d0(nNormal);
-        }
         if (spOption->m_nNormal == -1 && spOption->m_nSpecial == 0)
-            return 0;
+            return false;
         ATL::CAtlArray<MS2Ptr<CItemMergeOptionVariation> > aSteps;
         for (unsigned __int64 i = 0; i < 10; i++)
         {
@@ -317,7 +311,7 @@ int CItemMergeOptionData::Load(Unk_140165cf0* pSlot)
             FUN_140873220(pElem, FUN_1401d9af0("idx{0}_max", i), nMax);
             if (nMax == 0)
                 break;
-            if (nMax <= nPrev)
+            if (nPrev >= nMax)
             {
                 (void)((!!(0)) || (_wassert(L"0", L"e:\\build\\kr\\22_04\\ms2code\\commonfiles\\itemmergeoptiontable.cpp", 0xcf), 0));
                 FUN_1403d7960(FUN_140166440(), 1, 0x13, L"ItemMergeError {0} {1}", nPrev, nMax);
@@ -326,31 +320,31 @@ int CItemMergeOptionData::Load(Unk_140165cf0* pSlot)
             aSteps.Add(spStep);
             nPrev = nMax;
         }
-        if (aSteps.GetCount() != 0)
+        if (aSteps.GetCount() > 0)
         {
             spOption->m_kFirst.m_range.m_nMin = aSteps[0]->m_range.m_nMin;
             spOption->m_kFirst.m_range.m_nMax = aSteps[aSteps.GetCount() - 1]->m_range.m_nMax;
             size_t nPick = 0;
-            switch (aSteps.GetCount() - 1)
+            switch (aSteps.GetCount())
             {
-            case 0:
             case 1:
             case 2:
             case 3:
+            case 4:
                 nPick = aSteps.GetCount() - 1;
                 break;
-            case 4:
             case 5:
+            case 6:
                 nPick = aSteps.GetCount() - 2;
                 break;
-            case 6:
             case 7:
+            case 8:
                 nPick = aSteps.GetCount() - 3;
                 break;
-            case 8:
+            case 9:
                 nPick = aSteps.GetCount() - 4;
                 break;
-            case 9:
+            case 10:
                 nPick = aSteps.GetCount() - 5;
             }
             spOption->m_kSecond.m_range.m_nMin = aSteps[nPick]->m_range.m_nMin;
@@ -364,7 +358,7 @@ int CItemMergeOptionData::Load(Unk_140165cf0* pSlot)
         }
         m_aOptions.Add(spOption);
     }
-    return 1;
+    return true;
 }
 
 // @0x1405bfb80
@@ -416,7 +410,7 @@ void CItemMergeOptionTable::LoadItemMergeOptionBase()
                 Unk_MergeLog(CLogString::GetInstance(), 0, 0, 0x72, L"Invalid Item merge option [ID:{0}, Part:{1}]", nItemType, spData->m_nId);
                 continue;
             }
-            m_data.insert(std::make_pair(std::make_pair(nItemType, spData->m_nId), spData));
+            m_data.insert(std::make_pair(std::pair<int, int>(nItemType, spData->m_nId), spData));
         }
     }
     SetInit(true);
@@ -428,7 +422,7 @@ CItemMergeOptionTable::DataPtr CItemMergeOptionTable::FUN_1405c00e0(int nItemId,
     CheckInit();
     MS2Ptr<CItemData> spItem = FUN_14053f870(nItemId);
     MS2Ptr<CItemData> spMaterial = FUN_14053f870(nMaterialId);
-    if (spItem.get() == 0 || spMaterial.get() == 0)
+    if (spItem == 0 || spMaterial == 0)
         return DataPtr(0);
     DataPtr spData = FUN_1405c1d20(nItemId, nMaterialId);
     if (spData.IsNull())
@@ -436,13 +430,14 @@ CItemMergeOptionTable::DataPtr CItemMergeOptionTable::FUN_1405c00e0(int nItemId,
     int nPart = spItem->FUN_14053c620();
     if (spData->m_aPartLimit.GetCount() != 0)
     {
-        if (FUN_140408410(&spData->m_aPartLimit, &nPart) == -1)
+        if (FUN_140408410(spData->m_aPartLimit, nPart) == -1)
             return DataPtr(0);
     }
     unsigned short nItemLevel = (unsigned short)spItem->limit.levelLimit;
+    unsigned short nMaterialLevel = (unsigned short)spMaterial->limit.levelLimit;
     if (nItemLevel < 0x32)
         return DataPtr(0);
-    if ((unsigned short)spMaterial->limit.levelLimit < nItemLevel)
+    if (nItemLevel > nMaterialLevel)
         return DataPtr(0);
     return spData;
 }
@@ -515,90 +510,87 @@ CItemMergeOptionVariation* CItemMergeOptionTable::FUN_1405c0740(int nCategory, i
 
 // @0x1405c0870
 // The value of the normal option lies inside the rolled range of the slot's option.
-bool CItemMergeOptionTable::FUN_1405c0870(int nItemId, int nMaterialId, bool bSpecial, int nOption, Unk_EnchantPtr<BaseOption> spValue)
+int CItemMergeOptionTable::FUN_1405c0870(int nItemId, int nMaterialId, int nFlag, int nOption, Unk_EnchantPtr<BaseOption> spValue)
 {
-    if (spValue.get() != 0)
+    if (!spValue)
+        return 0;
+    DataPtr spData = FUN_1405c1d20(nItemId, nMaterialId);
+    if (spData.IsNull())
+        return 0;
+    for (size_t i = 0; i < spData->m_aOptions.GetCount(); i++)
     {
-        DataPtr spData = FUN_1405c1d20(nItemId, nMaterialId);
-        if (!spData.IsNull())
+        if (spData->m_aOptions[i]->m_nNormal == nOption)
         {
-            for (size_t i = 0; i < spData->m_aOptions.GetCount(); i++)
-            {
-                if (spData->m_aOptions[i]->m_nNormal == nOption && FUN_1405c7ba0(&spData->m_aOptions[i]->m_kSecond.m_range))
-                    return FUN_1403ef200(&spData->m_aOptions[i]->m_kSecond.m_range, spValue->GetValue());
-            }
+            if (!FUN_1405c7ba0(&spData->m_aOptions[i]->m_kSecond.m_range))
+                continue;
+            return FUN_1403ef200(&spData->m_aOptions[i]->m_kSecond.m_range, spValue->GetValue());
         }
     }
-    return false;
+    return 0;
 }
 
 // @0x1405c0a70
-bool CItemMergeOptionTable::FUN_1405c0a70(int nItemId, int nMaterialId, bool bSpecial, int nOption, Unk_EnchantPtr<BaseOption> spValue)
+int CItemMergeOptionTable::FUN_1405c0a70(int nItemId, int nMaterialId, int nFlag, int nOption, Unk_EnchantPtr<BaseOption> spValue)
 {
-    if (spValue.get() != 0)
+    if (!spValue)
+        return 0;
+    DataPtr spData = FUN_1405c1d20(nItemId, nMaterialId);
+    if (spData.IsNull())
+        return 0;
+    for (size_t i = 0; i < spData->m_aOptions.GetCount(); i++)
     {
-        DataPtr spData = FUN_1405c1d20(nItemId, nMaterialId);
-        if (!spData.IsNull())
+        if (spData->m_aOptions[i]->m_nSpecial == nOption)
         {
-            for (size_t i = 0; i < spData->m_aOptions.GetCount(); i++)
-            {
-                if (spData->m_aOptions[i]->m_nSpecial == nOption && FUN_1405c7ba0(&spData->m_aOptions[i]->m_kSecond.m_range))
-                    return FUN_1403ef200(&spData->m_aOptions[i]->m_kSecond.m_range, spValue->GetValue());
-            }
+            if (!FUN_1405c7ba0(&spData->m_aOptions[i]->m_kSecond.m_range))
+                continue;
+            return FUN_1403ef200(&spData->m_aOptions[i]->m_kSecond.m_range, spValue->GetValue());
         }
     }
-    return false;
+    return 0;
 }
 
 // @0x1405c0c70
 // The value of the normal option reaches the maximum of the slot's option.
-bool CItemMergeOptionTable::FUN_1405c0c70(int nItemId, int nMaterialId, bool bSpecial, int nOption, Unk_EnchantPtr<BaseOption> spValue)
+int CItemMergeOptionTable::FUN_1405c0c70(int nItemId, int nMaterialId, int nFlag, int nOption, Unk_EnchantPtr<BaseOption> spValue)
 {
-    if (spValue.get() != 0)
+    if (!spValue)
+        return 0;
+    DataPtr spData = FUN_1405c1d20(nItemId, nMaterialId);
+    if (spData.IsNull())
+        return 0;
+    for (size_t i = 0; i < spData->m_aOptions.GetCount(); i++)
     {
-        DataPtr spData = FUN_1405c1d20(nItemId, nMaterialId);
-        if (!spData.IsNull())
+        if (spData->m_aOptions[i]->m_nNormal == nOption)
         {
-            for (size_t i = 0; i < spData->m_aOptions.GetCount(); i++)
-            {
-                if (spData->m_aOptions[i]->m_nNormal == nOption && FUN_1405c7ba0(&spData->m_aOptions[i]->m_kFirst.m_range))
-                {
-                    CItemMergeOption* pOption = spData->m_aOptions[i].get();
-                    return pOption->m_kFirst.m_range.m_nMax == spValue->GetValue();
-                }
-            }
-            return false;
+            if (!FUN_1405c7ba0(&spData->m_aOptions[i]->m_kFirst.m_range))
+                continue;
+            return spData->m_aOptions[i]->m_kFirst.m_range.m_nMax == spValue->GetValue();
         }
-        return false;
     }
-    return false;
+    return 0;
 }
 
 // @0x1405c0e80
-bool CItemMergeOptionTable::FUN_1405c0e80(int nItemId, int nMaterialId, bool bSpecial, int nOption, Unk_EnchantPtr<BaseOption> spValue)
+int CItemMergeOptionTable::FUN_1405c0e80(int nItemId, int nMaterialId, int nFlag, int nOption, Unk_EnchantPtr<BaseOption> spValue)
 {
-    if (spValue.get() != 0)
+    if (!spValue)
+        return 0;
+    DataPtr spData = FUN_1405c1d20(nItemId, nMaterialId);
+    if (spData.IsNull())
+        return 0;
+    for (size_t i = 0; i < spData->m_aOptions.GetCount(); i++)
     {
-        DataPtr spData = FUN_1405c1d20(nItemId, nMaterialId);
-        if (!spData.IsNull())
+        if (spData->m_aOptions[i]->m_nSpecial == nOption)
         {
-            for (size_t i = 0; i < spData->m_aOptions.GetCount(); i++)
-            {
-                if (spData->m_aOptions[i]->m_nSpecial == nOption && FUN_1405c7ba0(&spData->m_aOptions[i]->m_kFirst.m_range))
-                {
-                    CItemMergeOption* pOption = spData->m_aOptions[i].get();
-                    return pOption->m_kFirst.m_range.m_nMax == spValue->GetValue();
-                }
-            }
-            return false;
+            if (!FUN_1405c7ba0(&spData->m_aOptions[i]->m_kFirst.m_range))
+                continue;
+            return spData->m_aOptions[i]->m_kFirst.m_range.m_nMax == spValue->GetValue();
         }
-        return false;
     }
-    return false;
+    return 0;
 }
 
 // @0x1405c1090
-// MS2-FUNCTIONAL: the string temporaries of the two option loops differ from the exe
 CStringW CItemMergeOptionTable::FUN_1405c1090(MS2Ptr<CItem> spItem, int nFlag)
 {
     if (spItem.IsNull())
@@ -609,55 +601,57 @@ CStringW CItemMergeOptionTable::FUN_1405c1090(MS2Ptr<CItem> spItem, int nFlag)
     MS2Ptr<CItemOption> spOption = pStatus->m_spOption;
     if (spOption.IsNull())
         return CStringW(L"");
-    bool bSpecial = pStatus->FUN_140630810();
+    int bSpecial = pStatus->FUN_140630810();
     CStringW strResult;
-    CStringW strLines;
-    int nMergeId = spOption->FUN_1405cb380();
-    CStringW strTag;
-    if (FUN_14116d720(FUN_14025e7c0()) && nMergeId != 0)
-        strTag = StringFormat(L"[{0}]", GetStringTable()->FUN_141811980(1, nMergeId));
-    Unk_EnchantMap& rNormal = spOption->FUN_1405cb8a0(4);
-    Unk_SocketSpecialMap& rSpecial = spOption->FUN_1405cb8d0(4);
-    for (POSITION pos = rNormal.GetStartPosition(); pos != 0; rNormal.GetNext(pos))
     {
-        int nStat = rNormal.GetKeyAt(pos);
-        Unk_EnchantPtr<BaseOption> spValue = rNormal.GetValueAt(pos);
-        if (spValue.get() == 0)
-            continue;
-        CStringW strLine;
-        CStringW strExtra;
-        strLine = FUN_1401d0080(FUN_140631600(nStat, spValue.get()), strTag);
-        if (FUN_1405c0870(spItem->FUN_1405276c0(), nMergeId, bSpecial, nStat, spValue))
+        CStringW strLines;
+        int nMergeId = spOption->FUN_1405cb380();
+        CStringW strTag;
+        if (FUN_14116d720(FUN_14025e7c0()) && nMergeId != 0)
+            strTag = StringFormat(L"[{0}]", GetStringTable()->FUN_141811980(1, nMergeId));
+        Unk_EnchantMap& rNormal = spOption->FUN_1405cb8a0(4);
+        Unk_SocketSpecialMap& rSpecial = spOption->FUN_1405cb8d0(4);
+        for (POSITION pos = rNormal.GetStartPosition(); pos != 0; rNormal.GetNext(pos))
         {
-            if (FUN_1405c0c70(spItem->FUN_1405276c0(), nMergeId, bSpecial, nStat, spValue))
-                strLine = FUN_14052bd00(0x48d, strLine);
-            strLine = FUN_14028dfa0(CStringW(L"s_word_stat_max_color"), strLine);
+            int nStat = rNormal.GetKeyAt(pos);
+            Unk_EnchantPtr<BaseOption> spValue = rNormal.GetValueAt(pos);
+            if (!spValue)
+                continue;
+            CStringW strLine;
+            CStringW strExtra;
+            strLine = FUN_1401d0080(FUN_140631600(nStat, spValue.get()), strTag);
+            if (FUN_1405c0870(spItem->FUN_1405276c0(), nMergeId, bSpecial, nStat, spValue))
+            {
+                if (FUN_1405c0c70(spItem->FUN_1405276c0(), nMergeId, bSpecial, nStat, spValue))
+                    strLine = FUN_14052bd00(0x48d, strLine);
+                strLine = FUN_14028dfa0(CStringW(L"s_word_stat_max_color"), strLine);
+            }
+            if (nFlag == 0)
+                return strLine;
+            if (FUN_1409c5210(strExtra, spItem, nStat, 4, spValue, strLine))
+                strLines.Append(strExtra);
         }
-        if (nFlag == 0)
-            return strLine;
-        if (FUN_1409c5210(strExtra, spItem, nStat, 4, spValue, strLine))
-            strLines.Append(strExtra);
-    }
-    for (POSITION pos = rSpecial.GetStartPosition(); pos != 0; rSpecial.GetNext(pos))
-    {
-        int nStat = rSpecial.GetKeyAt(pos);
-        Unk_EnchantPtr<BaseOption> spValue = rSpecial.GetValueAt(pos);
-        if (spValue.get() == 0)
-            continue;
-        CStringW strLine = FUN_1401d0080(FUN_140631830(nStat, spValue->GetValue(), spItem->FUN_140527840()), strTag);
-        CStringW strExtra;
-        if (FUN_1405c0a70(spItem->FUN_1405276c0(), nMergeId, bSpecial, nStat, spValue))
+        for (POSITION pos = rSpecial.GetStartPosition(); pos != 0; rSpecial.GetNext(pos))
         {
-            if (FUN_1405c0e80(spItem->FUN_1405276c0(), nMergeId, bSpecial, nStat, spValue))
-                strLine = FUN_14052bd00(0x48d, strLine);
-            strLine = FUN_14028dfa0(CStringW(L"s_word_stat_max_color"), strLine);
+            int nStat = rSpecial.GetKeyAt(pos);
+            Unk_EnchantPtr<BaseOption> spValue = rSpecial.GetValueAt(pos);
+            if (!spValue)
+                continue;
+            CStringW strLine = FUN_1401d0080(FUN_140631830(nStat, spValue->GetValue(), spItem->FUN_140527840()), strTag);
+            CStringW strExtra;
+            if (FUN_1405c0a70(spItem->FUN_1405276c0(), nMergeId, bSpecial, nStat, spValue))
+            {
+                if (FUN_1405c0e80(spItem->FUN_1405276c0(), nMergeId, bSpecial, nStat, spValue))
+                    strLine = FUN_14052bd00(0x48d, strLine);
+                strLine = FUN_14028dfa0(CStringW(L"s_word_stat_max_color"), strLine);
+            }
+            if (nFlag == 0)
+                return strLine;
+            if (FUN_1409c56f0(strExtra, spItem, nStat, 4, spValue, strLine))
+                strLines.Append(strExtra);
         }
-        if (nFlag == 0)
-            return strLine;
-        if (FUN_1409c56f0(strExtra, spItem, nStat, 4, spValue, strLine))
-            strLines.Append(strExtra);
+        strResult.Append(strLines);
     }
-    strResult.Append(strLines);
     strResult.TrimRight();
     return strResult;
 }
@@ -667,24 +661,19 @@ CItemMergeOptionTable::DataPtr CItemMergeOptionTable::FUN_1405c1d20(int nItemId,
 {
     CheckInit();
     MS2Ptr<CItemData> spMaterial = FUN_14053f870(nMaterialId);
-    if (spMaterial.get() != 0)
+    if (spMaterial == 0 || spMaterial->FUN_14053c5c0() != 0x13)
+        return DataPtr(nullptr);
+    int nPart = 0;
+    if (spMaterial->FUN_14053c5e0() == 1)
     {
-        if (spMaterial->FUN_14053c5c0() == 0x13)
-        {
-            int nPart = 0;
-            if (spMaterial->FUN_14053c5e0() == 1)
-            {
-                MS2Ptr<CItemData> spItem = FUN_14053f870(nItemId);
-                if (!spItem)
-                    return DataPtr(nullptr);
-                nPart = spItem->FUN_14053c620();
-            }
-            std::map<std::pair<int, int>, DataPtr>::iterator it = m_data.find(std::make_pair(spMaterial->FUN_14053de10(), nPart));
-            if (it != m_data.end())
-                return it->second;
+        MS2Ptr<CItemData> spItem = FUN_14053f870(nItemId);
+        if (!spItem)
             return DataPtr(nullptr);
-        }
+        nPart = spItem->FUN_14053c620();
     }
+    std::map<std::pair<int, int>, DataPtr>::iterator it = m_data.find(std::pair<int, int>(spMaterial->FUN_14053de10(), nPart));
+    if (it != m_data.end())
+        return it->second;
     return DataPtr(nullptr);
 }
 
@@ -700,7 +689,7 @@ CItemMergeOptionTable::DataPtr CItemMergeOptionTable::FUN_1405c1f40(int nCategor
 // @0x1405c7ba0
 bool FUN_1405c7ba0(const Unk_MergeRange* pRange)
 {
-    if (pRange->m_nMax < pRange->m_nMin)
+    if (pRange->m_nMin > pRange->m_nMax)
         return false;
     if (pRange->m_nMin == 0 && pRange->m_nMax == 0)
         return false;

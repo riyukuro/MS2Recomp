@@ -1,23 +1,23 @@
 // uiworldshareinfoeventlistener.cpp - UIWorldShareInfoEventListener (the 8-byte interface the world-share widgets
 // implement) and the UIWorldShareInfoEventDispatcher singleton that fans the events out to the registered listeners
-// (CAtlArray<void*> at +8). The rest of the range is the CAtlArray<void*> block the link took from this file and the
-// "you got N experience / tokens" chat-message builders (named by VA) that follow it.
+// (CAtlArray<UIWorldShareInfoEventListener*> at +8). The rest of the range is that CAtlArray block the link took from
+// this file and the "you got N experience / tokens" chat-message builders (named by VA) that follow it.
 // MS2-UNIT: ?\uiworldshareinfoeventlistener.cpp
 // MS2-RANGE: 0x14135fc40-0x141361c50 .text$mn
 // MS2-PINS-BEGIN tplpin
-// MS2-PIN: ??0?$CAtlArray@PEAXV?$CElementTraits@PEAX@ATL@@@ATL@@QEAA@XZ 0x14135fee0 ; unique
-// MS2-PIN: ??1?$CAtlArray@PEAXV?$CElementTraits@PEAX@ATL@@@ATL@@QEAA@XZ 0x14135ff50 ; unique
-// MS2-PIN: ?CallConstructors@?$CAtlArray@PEAXV?$CElementTraits@PEAX@ATL@@@ATL@@CAXPEAPEAX_K@Z 0x141360120 ; unique
-// MS2-PIN: ?CallDestructors@?$CAtlArray@PEAXV?$CElementTraits@PEAX@ATL@@@ATL@@CAXPEAPEAX_K@Z 0x141360190 ; unique
-// MS2-PIN: ??A?$CAtlArray@PEAXV?$CElementTraits@PEAX@ATL@@@ATL@@QEAAAEAPEAX_K@Z 0x1413601d0 ; unique
-// MS2-PIN: ?GrowBuffer@?$CAtlArray@PEAXV?$CElementTraits@PEAX@ATL@@@ATL@@AEAA_N_K@Z 0x141360220 ; unique
-// MS2-PIN: ?RelocateElements@?$CElementTraitsBase@PEAX@ATL@@SAXPEAPEAX0_K@Z 0x1413603e0 ; unique
-// MS2-PIN: ?RemoveAll@?$CAtlArray@PEAXV?$CElementTraits@PEAX@ATL@@@ATL@@QEAAXXZ 0x141360420 ; unique
-// MS2-PIN: ?RemoveAt@?$CAtlArray@PEAXV?$CElementTraits@PEAX@ATL@@@ATL@@QEAAX_K0@Z 0x141360440 ; unique
-// MS2-PIN: ?SetCount@?$CAtlArray@PEAXV?$CElementTraits@PEAX@ATL@@@ATL@@QEAA_N_KH@Z 0x141360530 ; unique
+// MS2-PIN: ??0?$CAtlArray@PEAVUIWorldShareInfoEventListener@@V?$CElementTraits@PEAVUIWorldShareInfoEventListener@@@ATL@@@ATL@@QEAA@XZ 0x14135fee0 ; unique
+// MS2-PIN: ??1?$CAtlArray@PEAVUIWorldShareInfoEventListener@@V?$CElementTraits@PEAVUIWorldShareInfoEventListener@@@ATL@@@ATL@@QEAA@XZ 0x14135ff50 ; unique
+// MS2-PIN: ?CallConstructors@?$CAtlArray@PEAVUIWorldShareInfoEventListener@@V?$CElementTraits@PEAVUIWorldShareInfoEventListener@@@ATL@@@ATL@@CAXPEAPEAVUIWorldShareInfoEventListener@@_K@Z 0x141360120 ; unique
+// MS2-PIN: ?CallDestructors@?$CAtlArray@PEAVUIWorldShareInfoEventListener@@V?$CElementTraits@PEAVUIWorldShareInfoEventListener@@@ATL@@@ATL@@CAXPEAPEAVUIWorldShareInfoEventListener@@_K@Z 0x141360190 ; unique
+// MS2-PIN: ??A?$CAtlArray@PEAVUIWorldShareInfoEventListener@@V?$CElementTraits@PEAVUIWorldShareInfoEventListener@@@ATL@@@ATL@@QEAAAEAPEAVUIWorldShareInfoEventListener@@_K@Z 0x1413601d0 ; unique
+// MS2-PIN: ?GrowBuffer@?$CAtlArray@PEAVUIWorldShareInfoEventListener@@V?$CElementTraits@PEAVUIWorldShareInfoEventListener@@@ATL@@@ATL@@AEAA_N_K@Z 0x141360220 ; unique
+// MS2-PIN: ?RelocateElements@?$CElementTraitsBase@PEAVUIWorldShareInfoEventListener@@@ATL@@SAXPEAPEAVUIWorldShareInfoEventListener@@0_K@Z 0x1413603e0 ; unique
+// MS2-PIN: ?RemoveAll@?$CAtlArray@PEAVUIWorldShareInfoEventListener@@V?$CElementTraits@PEAVUIWorldShareInfoEventListener@@@ATL@@@ATL@@QEAAXXZ 0x141360420 ; unique
+// MS2-PIN: ?RemoveAt@?$CAtlArray@PEAVUIWorldShareInfoEventListener@@V?$CElementTraits@PEAVUIWorldShareInfoEventListener@@@ATL@@@ATL@@QEAAX_K0@Z 0x141360440 ; unique
+// MS2-PIN: ?SetCount@?$CAtlArray@PEAVUIWorldShareInfoEventListener@@V?$CElementTraits@PEAVUIWorldShareInfoEventListener@@@ATL@@@ATL@@QEAA_N_KH@Z 0x141360530 ; unique
 // MS2-PINS-END tplpin
-// MS2-PIN: ?GetCount@?$CAtlArray@PEAXV?$CElementTraits@PEAX@ATL@@@ATL@@QEBA_KXZ 0x141360210
-// MS2-PIN: ?Add@?$CAtlArray@PEAXV?$CElementTraits@PEAX@ATL@@@ATL@@QEAA_KPEAX@Z 0x141360070
+// MS2-PIN: ?GetCount@?$CAtlArray@PEAVUIWorldShareInfoEventListener@@V?$CElementTraits@PEAVUIWorldShareInfoEventListener@@@ATL@@@ATL@@QEBA_KXZ 0x141360210
+// MS2-PIN: ?Add@?$CAtlArray@PEAVUIWorldShareInfoEventListener@@V?$CElementTraits@PEAVUIWorldShareInfoEventListener@@@ATL@@@ATL@@QEAA_KAEBQEAVUIWorldShareInfoEventListener@@@Z 0x141360070
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uiworldshareinfoeventlistener.cpp"    // assumed
 #include "ms2/placeholder/ms2stdafx.h"
 #include "ms2/placeholder/uiworldshareinfoeventdispatcher.h"
@@ -84,7 +84,6 @@ UIWorldShareInfoEventDispatcher::~UIWorldShareInfoEventDispatcher()
     m_listeners.RemoveAll();
 }
 
-// MS2-FUNCTIONAL: the exe's CAtlArray<void*>::Add takes the element by reference (older ATL); ours takes it by value
 // @0x14135fd20
 void UIWorldShareInfoEventDispatcher::FUN_14135fd20(UIWorldShareInfoEventListener* pListener)
 {
@@ -114,7 +113,7 @@ void UIWorldShareInfoEventDispatcher::vfunc_1(__int64 n, int a, int b)
 {
     for (size_t i = 0; i < m_listeners.GetCount(); i++)
     {
-        UIWorldShareInfoEventListener* p = reinterpret_cast<UIWorldShareInfoEventListener*>(m_listeners[i]);
+        UIWorldShareInfoEventListener* p = m_listeners[i];
         if (p != 0)
             p->vfunc_1(n, a, b);
     }
@@ -285,20 +284,21 @@ void FUN_141361460(unsigned nType, __int64 nAmount, int)
     }
 }
 
-// MS2-FUNCTIONAL: the exe's stack-temporary layout differs (its frame is 0x20 smaller)
 // @0x141361990
-void FUN_141361990(__int64 nAmount)
+void FUN_141361990(__int64 nAmount, int nUnused)
 {
     if (nAmount == 0 || !FUN_1406a5720())
         return;
     CStringW strText;
     if (nAmount > 0)
     {
-        strText = FUN_14052bd00(0x2c8, FUN_1409404f0(nAmount));
+        CStringW strNum = FUN_1409404f0(nAmount);
+        strText = FUN_14052bd00(0x2c8, strNum);
     }
     else if (nAmount < 0)
     {
-        strText = FUN_14052bd00(0x2da, FUN_1409404f0(-nAmount));
+        CStringW strNum = FUN_1409404f0(-nAmount);
+        strText = FUN_14052bd00(0x2da, strNum);
         if (FUN_14036d570(FUN_140166410(), 0xba) != 0)
             FUN_1412751b0(FUN_1409eec40(0x2db), 6);
     }

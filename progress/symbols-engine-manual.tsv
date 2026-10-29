@@ -1,0 +1,517 @@
+#symbol	va	kind
+# engine-only name rows for gbprogress (gb6, 2026-10-20): unnamed engine stubs identified by work/gb6/ident.py (unique
+# best unpaired obj function of the same TU by shared resolved call/data targets, >= 3 shared or a full match of
+# near-equal size; no templates/lambdas). They pair by name -> "functional" (the obj implements the exe function;
+# codegen differs, e.g. inlining). Read only by tools/gbprogress.py, after the other tables.
+??$ParseAliasHelper@D@DDEParser@efd@@IEAAXAEBVTiXmlAttributeSet@1@@Z	1420f38d0	func
+??$ParseAliasHelper@E@DDEParser@efd@@IEAAXAEBVTiXmlAttributeSet@1@@Z	1420f4290	func
+??$ParseAliasHelper@F@DDEParser@efd@@IEAAXAEBVTiXmlAttributeSet@1@@Z	1420f4c50	func
+??$ParseAliasHelper@G@DDEParser@efd@@IEAAXAEBVTiXmlAttributeSet@1@@Z	1420f5610	func
+??$ParseAliasHelper@H@DDEParser@efd@@IEAAXAEBVTiXmlAttributeSet@1@@Z	1420f5fd0	func
+??$ParseAliasHelper@I@DDEParser@efd@@IEAAXAEBVTiXmlAttributeSet@1@@Z	1420f6980	func
+??$ParseAliasHelper@_J@DDEParser@efd@@IEAAXAEBVTiXmlAttributeSet@1@@Z	1420f7330	func
+??$ParseAliasHelper@_K@DDEParser@efd@@IEAAXAEBVTiXmlAttributeSet@1@@Z	1420f7ce0	func
+??0NiDX9AdapterDesc@@QEAA@PEAUIDirect3D9@@IAEAV?$NiTPointerList@I@@@Z	1427f63b0	func
+??0NiPhysXKinematicSrc@@QEAA@PEAVNiAVObject@@PEAVNxActor@@@Z	141ef98c0	func
+??0NiTerrainSectorFileVersion5@@IEAA@PEBDW4OpenMode@File@efd@@@Z	141fb7500	func
+??1NiPhysXMeshDesc@@UEAA@XZ	141f09fa0	func
+??1ServiceManager@efd@@UEAA@XZ	142078d70	func
+??_GNiPhysXMeshDesc@@UEAAPEAXI@Z	141f0a0a0	func
+?AddPackage@NiTerrainSurfaceLibrary@@QEAAXPEAVNiSurfacePackage@@@Z	141f81b60	func
+?AddProp@NiPhysXScene@@QEAAIPEAVNiPhysXProp@@IM@Z	141f00a20	func
+?AddScene@SceneService@egfPhysX@@UEAA_NAEBVutf8string@efd@@PEAVPhysXSceneData@2@@Z	142261660	func
+?AddSectionLink@Section@efd@@UEAA_NAEBVutf8string@2@PEAVISection@2@PEAVIConfigSource@2@@Z	1420eaaf0	func
+?Allocate@MemTracker@efd@@UEAAPEAXAEA_K0VMemHint@2@W4MemEventType@2@PEBDH3@Z	1420883c0	func
+?AllocateClothData@NiPhysXClothModifier@@AEAAXPEBGPEAVNiMesh@@@Z	141f19f90	func
+?ComputeDependencyOrder@ServiceManager@efd@@IEAAXXZ	14207ae80	func
+?Connect@NetTransportTCP@efd@@UEAA?AVConnectionID@2@AEBVutf8string@2@GPEAVINetCallback@2@@Z	1428c22c0	func
+?ConvertListName@Section@efd@@MEAAXAEAVutf8string@2@@Z	1420eb660	func
+?ConvertSectionListName@Section@efd@@MEAAXAEAVutf8string@2@@Z	1420eb950	func
+?CopyMembers@NiPhysXActorDesc@@IEAAXPEAV1@AEAVNiCloningProcess@@@Z	141eef260	func
+?CopyMembers@NiPhysXClothDesc@@IEAAXPEAV1@AEAVNiCloningProcess@@@Z	141f0d960	func
+?CopyMembers@NiPhysXJointDesc@@IEAAXPEAV1@AEAVNiCloningProcess@@@Z	141ef3130	func
+?Create@NiDX9MeshMaterialBinding@@SA?AV?$SmartPointer@VNiDX9MeshMaterialBinding@@@efd@@PEAVNiMesh@@AEBVNiSemanticAdapterTable@@_N@Z	1427e4680	func
+?CreateIndexStream@NiTerrainSector@@AEAA_NXZ	141f6b8b0	func
+?CreateMesh@NiPhysXScene@@IEAAPEAVNiMesh@@W4Type@NiPrimitiveType@@IAEBVNiDataStreamElementSet@@AEBV?$NiTObjectArray@VNiFixedString@@@@@Z	141f01ed0	func
+?CreatePixelShaderFromD3DXBuffer@NiD3DShaderProgramCreatorHLSL@@UEAAPEAVNiD3DPixelShader@@PEAUID3DXBuffer@@IPEBD11_N@Z	1428093d0	func
+?CreateVertexShaderFromD3DXBuffer@NiD3DShaderProgramCreatorHLSL@@UEAAPEAVNiD3DVertexShader@@PEAUID3DXBuffer@@IPEBD11PEAUIDirect3DVertexDeclaration9@@I_N@Z	142809a30	func
+?DX9Allocate@NiDX9DataStream@@IEAAXXZ	1427f9e60	func
+?Deallocate@MemTracker@efd@@UEAAXPEAXW4MemEventType@2@_K@Z	142088820	func
+?DoEntityUpdated@EntityActorData@egfPhysX@@QEAA_NXZ	14225f510	func
+?Do_RenderMesh@NiDX9Renderer@@MEAAXPEAVNiMesh@@@Z	1427cd840	func
+?Do_RenderMeshes@NiD3DShader@@MEAAXPEAVNiVisibleArray@@@Z	1427e01c0	func
+?EnableStackTracing@StackUtils@efd@@YA_N_N@Z	1420cb2b0	func
+?FgConstructor@AssetFactoryManager@efd@@IEAAX_K@Z	1420a18c0	func
+?GetAccumTransforms@NiPhysXAccumRigidBodyDest@@IEAAXMAEAVNiQuaternion@@AEAVNiPoint3@@01AEBVNiTransform@@@Z	141f243e0	func
+?GetDynamicEffectData@NiD3DShaderConstantMap@@SA_NPEAXIW4ObjectMappings@NiShaderConstantMap@@PEAVNiDynamicEffect@@AEBVNiRenderCallContext@@@Z	1427eabf0	func
+?GetGroupCollisionFlag@egfPhysXBindings@@YA_NPEBDGGAEA_N@Z	142263f80	func
+?GetLevelMaskByName@Logger@efd@@UEAAEAEBVutf8string@2@@Z	14206ed60	func
+?GetStreamData@NiTerrainSectorFileVersion3@@UEAAPEAXW4StreamType@NiTerrainSectorFileVersion5@@AEAI@Z	141fbac00	func
+?GetTransforms@NiPhysXRigidBodyDest@@IEAAXMAEAVNiMatrix3@@AEAVNiPoint3@@AEBVNiTransform@@@Z	141ef7b00	func
+?GetViewerStrings@NiD3D10PersistentSrcTextureRendererData@@UEAAXPEAV?$NiTPrimitiveArray@PEAD@@@Z	14285c960	func
+?GetViewerStrings@D3D11PersistentSrcTextureRendererData@ecr@@UEAAXPEAV?$NiTPrimitiveArray@PEAD@@@Z	1428292b0	func
+?HandleAssetLocatorResponse@ReloadManager@efd@@QEAAXPEBVAssetLocatorResponse@2@VCategory@2@@Z	1420c5290	func
+?HandleEntityRemovedMessage@PropService@ecrPhysX@@QEAAXPEBVEntityChangeMessage@egf@@VCategory@efd@@@Z	142061390	func
+?HandleEntityUpdatedMessage@PropService@ecrPhysX@@QEAAXPEBVEntityChangeMessage@egf@@VCategory@efd@@@Z	142061590	func
+?HandleInitialSpecAmbDiffEmissiveColor@NiFragmentLighting@@QEAA_NAEAVContext@NiFragmentMaterial@@_NW4AmbDiffEmissiveEnum@NiStandardMaterial@@W4LightingModeEnum@5@AEAPEAVNiMaterialResource@@44444@Z	141f946c0	func
+?HandleSceneAddedMessage@PropService@ecrPhysX@@QEAAXPEBVSceneMessage@egfPhysX@@VCategory@efd@@@Z	1420621b0	func
+?HandleSceneGraphAddedMessage@PropService@ecrPhysX@@QEAAXPEBVSceneGraphMessage@ecr@@VCategory@efd@@@Z	142062560	func
+?HandleSceneGraphRemovedMessage@PropService@ecrPhysX@@QEAAXPEBVSceneGraphMessage@ecr@@VCategory@efd@@@Z	1420627b0	func
+?HandleVertexLightingAndMaterials@NiFragmentLighting@@QEAA_NAEAVContext@NiFragmentMaterial@@AEAUVertexDescriptor@1@PEAVNiMaterialResource@@22@Z	141f97070	func
+?IsPackageLoading@NiTerrainSurfaceLibrary@@IEAA_NAEBVutf8string@efd@@@Z	141f82c10	func
+?LoadBuffers@NiTerrainStreamingTask@@QEAAXXZ	141fc3830	func
+?LoadFile@EnumManager@efd@@QEAAPEAVDataDrivenEnumBase@2@AEBVutf8string@2@@Z	1420cf9d0	func
+?LoadGPUProgram@NiD3DGPUProgramCache@@MEAA_NAEAVBinaryStream@efd@@AEBVNiFixedString@@AEAV?$SmartPointer@VNiGPUProgram@@@3@_N@Z	142803960	func
+?LogMessage@NetMetricsDestination@efd@@EEAAX_NPEBDN111H1@Z	1420cc9a0	func
+?ObtainDefinedConstantValue@D3D11ShaderConstantMap@ecr@@IEAAPEBXPEAVNiShaderConstantMapEntry@@AEBVNiRenderCallContext@@AEAI2AEAU_XMMATRIX@@@Z	14283ac30	func
+?OnShutdown@NetService@efd@@MEAA?AW4AsyncResult@2@XZ	1428a2240	func
+?OnTick@NetService@efd@@MEAA?AW4AsyncResult@2@XZ	1428a2460	func
+?PerformOperatorDivide@D3D11ShaderConstantMap@ecr@@KAPEBXPEBXW4AttributeType@NiShaderAttributeDesc@@01_N2AEAI3AEAU_XMMATRIX@@@Z	14283cff0	func
+?PostLinkObject@NiPhysXScene@@UEAAXAEAVNiStream@@@Z	141f03c20	func
+?PrepareTextureStage@NiDX9FragmentShader@@MEAAXPEAVNiD3DTextureStage@@AEBVNiRenderCallContext@@@Z	1427e2d60	func
+?ProcessBasicTearing@NiPhysXClothModifier@@AEAAXPEAVNiMesh@@@Z	141f1b2f0	func
+?ProcessLOD@NiTerrainSector@@QEAA_NAEAVNiCullingProcess@@@Z	141f6fa20	func
+?PullMessagesFromBackground@AssetFactoryManager@efd@@IEAAXXZ	1420a27e0	func
+?PullMessagesFromForeground@AssetFactoryManager@efd@@IEAAXXZ	1420a2da0	func
+?PushMessagesToBackground@AssetFactoryManager@efd@@IEAAXXZ	1420a3160	func
+?ReadCompiledTextures@NiTerrainSurfacePackageFileVersion1@@IEAA_NXZ	141f8db70	func
+?ReadSurfaceCompiledTextures@NiTerrainSurfacePackageFileVersion1@@UEAA_NVutf8string@efd@@PEAV?$SmartPointer@VNiTexture@@@3@I@Z	141f8eaa0	func
+?Reallocate@MemTracker@efd@@UEAAPEAXPEAXAEA_K1VMemHint@2@W4MemEventType@2@_KPEBDH5@Z	1420895e0	func
+?Receive@TCPSocket@efd@@UEAAHAEAVSmartBuffer@2@@Z	1428c9ce0	func
+?Recreate@NiDX9DataStream@@QEAAXXZ	1427fae90	func
+?RegisterIDs@EnumManager@efd@@IEAAXXZ	1420cfc70	func
+?RegisterReference_Internal@NiTerrainSurfaceLibrary@@IEAAXAEBVNiTerrainAssetReference@@PEAV?$NiTerrainEventHandlerBase@VNiSurfacePackage@@AEBVutf8string@efd@@@@@Z	141f83e40	func
+?ResolveNameOrIP@HostInfo@efd@@SAIAEBVutf8string@2@@Z	1428c3410	func
+?RetrieveShader@NiD3DShaderFactory@@UEAAPEAVNiShader@@PEBDI_N@Z	142805db0	func
+?RunInitingServices@ServiceManager@efd@@IEAA_NXZ	14207e150	func
+?RunOnce@ServiceManager@efd@@UEAAXXZ	14207e420	func
+?RunPreInitServices@ServiceManager@efd@@IEAA_NXZ	14207e6a0	func
+?RunShuttingDownServices@ServiceManager@efd@@IEAA_NXZ	14207e970	func
+?RunTickingServices@ServiceManager@efd@@IEAA_NXZ	14207eee0	func
+?SendResponseMessages@AssetFactoryManager@efd@@IEAAX_N@Z	1420a38a0	func
+?SetDebugLineGeometry@NiPhysXScene@@IEAAXPEBVNxDebugRenderable@@@Z	141f05af0	func
+?SetDebugPointGeometry@NiPhysXScene@@IEAAXPEBVNxDebugRenderable@@@Z	141f06450	func
+?SetGroupCollisionFlag@egfPhysXBindings@@YA_NPEBDGG_N@Z	1422641a0	func
+?SetTagInfo@AssetBrowseInfoResponse@efd@@UEAAXAEBW4AWebTagType@2@AEBVutf8string@2@I@Z	1420c7500	func
+?SetupDefinedConstantValue@NiD3DShaderConstantMap@@IEAAIAEBVNiRenderCallContext@@IPEAVNiShaderConstantMapEntry@@@Z	1427f02b0	func
+?TakeScreenShot@D3D11Renderer@ecr@@UEAAPEAVNiPixelData@@PEBV?$NiRect@I@@PEBVNiRenderTargetGroup@@@Z	142817050	func
+?TickServices@ServiceManager@efd@@MEAAXXZ	14207f760	func
+?TrackAllocate@MemTracker@efd@@UEAA_NQEBX_KVMemHint@2@W4MemEventType@2@PEBDH4@Z	142089dc0	func
+?TrackDeallocate@MemTracker@efd@@UEAA_NQEBXW4MemEventType@2@@Z	14208a050	func
+?UpdateConstantBufferPacking@D3D11ShaderConstantMap@ecr@@QEAA_NPEBVConstantBufferDesc@2@AEAVNiDataStreamElementSet@@@Z	14283df40	func
+?WriteCompiledTextures@NiTerrainSurfacePackageFileVersion1@@IEAA_NXZ	141f8f680	func
+?WriteConfiguration@ConfigManager@efd@@UEAAXAEBVutf8string@2@_N@Z	1420b4ff0	func
+?getErrorMessage@Socket@efd@@QEAA?AVutf8string@2@I@Z	1428caa20	func
+?getErrorMessage@Socket@efd@@QEAA?AVutf8string@2@XZ	1428cb9e0	func
+?load@Graph@efd@@QEAA_NAEBVutf8string@2@@Z	142113e70	func
+?openWeb@AssetWeb@efd@@QEAA_NAEBVutf8string@2@W4AWebAccessMode@12@@Z	1420e2230	func
+?save@Graph@efd@@QEAA?AW4GraphSaveResult@2@_N@Z	142115070	func
+?unique_values@Graph@efd@@SAXAEAV?$vector@VTriple@efd@@@2@AEBV32@@Z	142115ab0	func
+# gb9 (2026-10-20): MS2's wide-path efd file API (File::*(const wchar_t*), Win32FileW, PathUtils::Standardize(wchar_t*)) and the narrow
+# originals. Thunks/setters/twins are byte-identical with masked relocs, so they pair by name: VAs from the targets (globals,
+# default funcs, SetEndianSwap's stream pointers) and the exe's name-sorted COMDAT order.
+??0Win32File@efd@@QEAA@PEBDW4OpenMode@File@1@I_N@Z	1420e6d20	func
+??1Win32File@efd@@UEAA@XZ	1420e7020	func
+??_GWin32File@efd@@UEAAPEAXI@Z	1420e7160	func
+?FileRead@Win32File@efd@@MEAAIPEAXI@Z	1420e73a0	func
+?FileWrite@Win32File@efd@@MEAAIPEBXI@Z	1420e7620	func
+?Flush@Win32File@efd@@UEAA_NXZ	1420e7860	func
+?GetFileSize@Win32File@efd@@UEBAIXZ	1420e7940	func
+?ReadAndSwap@Win32File@efd@@KAIPEAVBinaryStream@2@PEAXIPEAII@Z	1420e7a40	func
+?ReadNoSwap@Win32File@efd@@KAIPEAVBinaryStream@2@PEAXIPEAII@Z	1420e7b20	func
+?Seek@Win32File@efd@@UEAA_NHW4SeekOrigin@File@2@@Z	1420e7b40	func
+?SetEndianSwap@Win32File@efd@@UEAAX_N@Z	1420e7ca0	func
+?WriteAndSwap@Win32File@efd@@KAIPEAVBinaryStream@2@PEBXIPEAII@Z	1420e7d00	func
+?WriteNoSwap@Win32File@efd@@KAIPEAVBinaryStream@2@PEBXIPEAII@Z	1420e7f20	func
+??0Win32FileW@efd@@QEAA@PEB_WW4OpenMode@File@1@I_N@Z	1420e6ea0	func
+??1Win32FileW@efd@@UEAA@XZ	1420e70c0	func
+??_GWin32FileW@efd@@UEAAPEAXI@Z	1420e7240	func
+?FileRead@Win32FileW@efd@@MEAAIPEAXI@Z	1420e74e0	func
+?FileWrite@Win32FileW@efd@@MEAAIPEBXI@Z	1420e7740	func
+?Flush@Win32FileW@efd@@UEAA_NXZ	1420e78d0	func
+?GetFileSize@Win32FileW@efd@@UEBAIXZ	1420e79c0	func
+?ReadAndSwap@Win32FileW@efd@@KAIPEAVBinaryStream@2@PEAXIPEAII@Z	1420e7ab0	func
+?ReadNoSwap@Win32FileW@efd@@KAIPEAVBinaryStream@2@PEAXIPEAII@Z	1420e7b30	func
+?Seek@Win32FileW@efd@@UEAA_NHW4SeekOrigin@File@2@@Z	1420e7bf0	func
+?SetEndianSwap@Win32FileW@efd@@UEAAX_N@Z	1420e7cd0	func
+?WriteAndSwap@Win32FileW@efd@@KAIPEAVBinaryStream@2@PEBXIPEAII@Z	1420e7e10	func
+?WriteNoSwap@Win32FileW@efd@@KAIPEAVBinaryStream@2@PEBXIPEAII@Z	1420e7f30	func
+?Access@File@efd@@SA_NPEBDW4OpenMode@12@@Z	1420b1540	func
+?Access@File@efd@@SA_NPEB_WW4OpenMode@12@@Z	1420b1550	func
+?CreateDirectoryA@File@efd@@SA_NPEBD@Z	1420b1560	func
+?CreateDirectoryRecursive@File@efd@@SA_NPEBD@Z	1420b1570	func
+?CreateDirectoryRecursive@File@efd@@SA_NPEB_W@Z	1420b1700	func
+?CreateDirectoryW@File@efd@@SA_NPEB_W@Z	1420b1890	func
+?DirectoryExists@File@efd@@SA_NPEB_W@Z	1420b18b0	func
+?GetFile@File@efd@@SAPEAV12@PEBDW4OpenMode@12@I_N@Z	1420b18d0	func
+?GetFile@File@efd@@SAPEAV12@PEB_WW4OpenMode@12@I_N@Z	1420b18e0	func
+?SetCreateDirectoryFunc@File@efd@@SAXP6A_NPEBD@Z@Z	1420b1900	func
+?SetCreateDirectoryFunc@File@efd@@SAXP6A_NPEB_W@Z@Z	1420b1920	func
+?SetDirectoryExistsFunc@File@efd@@SAXP6A_NPEBD@Z@Z	1420b1940	func
+?SetDirectoryExistsFunc@File@efd@@SAXP6A_NPEB_W@Z@Z	1420b1960	func
+?SetFileAccessFunc@File@efd@@SAXP6A_NPEBDW4OpenMode@12@@Z@Z	1420b19a0	func
+?SetFileAccessFunc@File@efd@@SAXP6A_NPEB_WW4OpenMode@12@@Z@Z	1420b19c0	func
+?SetFileCreateFunc@File@efd@@SAXP6APEAV12@PEBDW4OpenMode@12@I_N@Z@Z	1420b19e0	func
+?SetFileCreateFunc@File@efd@@SAXP6APEAV12@PEB_WW4OpenMode@12@I_N@Z@Z	1420b1a00	func
+?DefaultCreateDirectoryFunc@File@efd@@SA_NPEBD@Z	1420b1aa0	func
+?DefaultCreateDirectoryFunc@File@efd@@SA_NPEB_W@Z	1420b1ac0	func
+?DefaultDirectoryExistsFunc@File@efd@@SA_NPEB_W@Z	1420b1b00	func
+?DefaultFileAccessFunc@File@efd@@SA_NPEBDW4OpenMode@12@@Z	1420b1b20	func
+?DefaultFileAccessFunc@File@efd@@SA_NPEB_WW4OpenMode@12@@Z	1420b1c10	func
+?DefaultFileCreateFunc@File@efd@@SAPEAV12@PEBDW4OpenMode@12@I_N@Z	1420b1d10	func
+?DefaultFileCreateFunc@File@efd@@SAPEAV12@PEB_WW4OpenMode@12@I_N@Z	1420b1dc0	func
+?Standardize@PathUtils@efd@@YA_NPEA_W@Z	1420b41e0	func
+?HasAsset@AssetLocatorService@efd@@UEAA_NAEBVutf8string@2@@Z	142097790	func
+?GetRTTI@NiD3D10PersistentSrcTextureRendererData@@UEBAPEBVNiRTTI@@XZ	14285c940	func
+?LoadBinary@NiD3D10PersistentSrcTextureRendererData@@UEAAXAEAVNiStream@@@Z	14285ca20	func
+?LinkObject@NiD3D10PersistentSrcTextureRendererData@@UEAAXAEAVNiStream@@@Z	14285ca10	func
+?RegisterStreamables@NiD3D10PersistentSrcTextureRendererData@@UEAA_NAEAVNiStream@@@Z	14285ced0	func
+?SaveBinary@NiD3D10PersistentSrcTextureRendererData@@UEAAXAEAVNiStream@@@Z	14285cef0	func
+?GetRTTI@D3D11PersistentSrcTextureRendererData@ecr@@UEBAPEBVNiRTTI@@XZ	142829290	func
+?LoadBinary@D3D11PersistentSrcTextureRendererData@ecr@@UEAAXAEAVNiStream@@@Z	142829370	func
+?LinkObject@D3D11PersistentSrcTextureRendererData@ecr@@UEAAXAEAVNiStream@@@Z	142829360	func
+?RegisterStreamables@D3D11PersistentSrcTextureRendererData@ecr@@UEAA_NAEAVNiStream@@@Z	142829830	func
+?SaveBinary@D3D11PersistentSrcTextureRendererData@ecr@@UEAAXAEAVNiStream@@@Z	142829850	func
+# gb10 (2026-10-20): MS2's prop scale (NiPhysXScene::AddProp -> NiPhysXPropDesc::CreateInScene -> NiPhysXActorDesc::CreateActor
+# gained a trailing float fScale; CreateActor scales primitive shapes and re-cooks convex/triangle meshes).
+?CreateActor@NiPhysXActorDesc@@UEAAPEAVNxActor@@PEAVNxScene@@PEAVNxCompartment@@IAEBVNxMat34@@_NM@Z	141eef6d0	func
+?CreateInScene@NiPhysXPropDesc@@UEAA_NPEAVNxScene@@AEBVNxMat34@@PEAVNxCompartment@@22_NIM@Z	141f14d00	func
+?CreateSceneFromProp@NiPhysXScene@@IEAA_NPEAVNiPhysXProp@@PEAVNxScene@@I@Z	141f02520	func
+# gb12 (2026-10-20): more work/gb12/ident.py unique OK picks in the egf/egfLua/efd/NiTerrain/VisualTracker/ecrPhysX lane
+# (game-side function templates kept; std container COMDATs and lambdas left out, as above)
+?CreateStream@NiTerrainStandardResourceManager@@UEAAPEAVNiDataStream@@W4Value@StreamType@NiTerrainResourceManager@@I@Z	141f56630	func
+??0LegendEntry@NiVisualTracker@@QEAA@PEBDAEBVNiColor@@IAEAI2AEAV?$NiTObjectArray@V?$SmartPointer@VNiMeshScreenElements@@@efd@@@@@Z	141fcd7a0	func
+??0PropData@PropService@ecrPhysX@@QEAA@PEAVEntity@egf@@@Z	14205ea10	func
+?getAssetId@URIReader@efd@@QEAAXAEAVutf8string@2@@Z	1420d2510	func
+?write_node@NTripleFormat@efd@@AEAAXAEBVutf8string@2@W4NodeDescription@2@PEAVFile@2@@Z	142115e70	func
+?AddPendingBehavior@Entity@egf@@QEAA_NAEBVutf8string@efd@@0PEAVParameterList@4@NVEventID@2@VEntityID@2@@Z	142127610	func
+?FindBehaviors@FlatModelFactory@egf@@AEAAXV?$SmartPointer@VResponseData@FlatModelFactory@egf@@@efd@@PEBVFlatModel@2@_N@Z	142144020	func
+?InitScriptingRuntimes@Scheduler@egf@@AEAAXXZ	14214ab80	func
+??$ConvertingAssignment@Vutf8string@efd@@VAssetID@2@@efd@@YAXAEAVAssetID@0@AEBVutf8string@0@@Z	142150c20	func
+?GetParameter@?$ParameterConverter@Vutf8string@efd@@VAssetID@2@@efd@@UEBA?AW4ParameterResult@2@AEBVParameterList@2@IPEAX@Z	142157780	func
+?HandleReloads@RapidIterationSystemService@egf@@AEAA_NAEAV?$list@UAssetLocation@RapidIterationSystemService@egf@@@efd@@@Z	14216e2e0	func
+?ParseMixin@SAXModelParser@egf@@IEAAXAEBVTiXmlAttributeSet@efd@@@Z	1421af810	func
+?LoadEntity@EntityFactory@egf@@AEAA?AW4LoadStatus@IAssetFactory@efd@@PEBVEntityFactoryRequest@2@PEAVFlatModelFactoryResponse@2@AEAV?$SmartPointer@VAssetLoadResponse@efd@@@5@@Z	1421b5fb0	func
+??0EntitySetLoadState@egf@@QEAA@PEBVEntityLoadRequest@1@PEAVServiceManager@efd@@@Z	1421b8880	func
+?HandleAssetLoadMsg@EntitySetLoadState@egf@@QEAAXPEBVAssetLoadResponse@efd@@VCategory@4@@Z	1421b92f0	func
+??$CachePropertyValue@VAssetID@efd@@@Entity@egf@@IEAAXIAEBVutf8string@efd@@AEBVAssetID@3@@Z	1421ca230	func
+?AppendLuaPath@SchedulerLua@egf@@QEAA_NPEBVISection@efd@@PEBD@Z	1421d23a0	func
+?InterpretLuaData@LuaBehaviorDebugger@egf@@AEAAXPEAUlua_State@@AEAVutf8string@efd@@1I@Z	1421eade0	func
+?SendCallStack@LuaBehaviorDebugger@egf@@AEAAXPEAUlua_State@@@Z	1421ec160	func
+??$lua_ParameterList_GetAtPosition@VPoint4@efd@@@@YAHPEAUlua_State@@H@Z	1421fb0b0	func
+?CalculateDependencies@LuaScriptFactory@egf@@AEAAXAEBUScriptInfo@12@AEAV?$list@Vutf8string@efd@@@efd@@@Z	1421feb10	func
+_wrap_FindEntityByDataID	142204c20	func
+_wrap_new_Point4__SWIG_1	14221e180	func
+_wrap_new_Point4__SWIG_2	14221e3a0	func
+_wrap_new_Point4__SWIG_3	14221e680	func
+?lua_DumpProperties@egf@@YAHPEAUlua_State@@@Z	14224e2a0	func
+?CreateVisualTrackers@VisualTrackerService@egmVisualTracker@@MEAA_NXZ	1422a6060	func
+?HandleEntityMessage@VisualTrackerService@egmVisualTracker@@QEAAXPEBVEntityChangeMessage@egf@@VCategory@efd@@@Z	1422a6f40	func
+?OnInit@VisualTrackerService@egmVisualTracker@@MEAA?AW4AsyncResult@efd@@XZ	1422a77c0	func
+?TakeSample@EntityLocationTracker@@UEAA_NMAEAVPoint2@efd@@AEAI@Z	1422a8b40	func
+?UnregisterFactoryMethod@?$GenericFactory@V?$SmartPointer@VINetLib@efd@@@efd@@Vutf8string@2@@efd@@UEAAXVutf8string@2@@Z	1428a3cb0	func
+?CallBehavior@BehaviorAPI@@YA_NVEntityID@egf@@AEBVutf8string@efd@@PEAVParameterList@5@@Z	1428cd420	func
+?GetEnumValue@BehaviorAPI@@YAIPEBD0@Z	1428cdb80	func
+?SwapProperty@BehaviorAPI@@YAIVEntityID@egf@@AEBVutf8string@efd@@I@Z	1428d2190	func
+?LoadBlockFile@BehaviorAPI@@YA_NPEAD0I_N@Z	1428d2fd0	func
+?UnloadBlockFile@BehaviorAPI@@YA_NPEAD0I@Z	1428d3560	func
+?erase@?$_Tree@V?$_Tmap_traits@Vutf8string@efd@@V12@U?$less@Vutf8string@efd@@@std@@V?$CustomAllocator@U?$pair@$$CBVutf8string@efd@@V12@@std@@@2@$0A@@std@@@std@@QEAA_KAEBVutf8string@efd@@@Z	1421c1750	func
+?checkValid@NxClothDesc@@QEBAIXZ	141f11c00	func
+?Listen@NetLib@efd@@UEAA?AVConnectionID@2@GIPEAVINetCallback@2@@Z	1428b6490	func
+?ClearBackCompatable@NiPhysXSceneDesc@@QEAAXXZ	141f014f0	func
+# gb11 gapfill (work/gb8/gapfill.py on gb11 rows-m2): stub runs whose obj COMDAT is defined by this one obj only (no identical
+# sibling in another TU shares the name), paired in mangled-name order with size equality.
+?math_atan2@@YAHPEAUlua_State@@@Z	14225a800	func
+?DeleteItem@?$NiTPointerMap@PEBDPEAVNiD3DXEffectFile@@VNiStringHashFunctor@@VNiStringEqualsFunctor@@@@UEAAXPEAV?$NiTMapItem@PEBDPEAVNiD3DXEffectFile@@@@@Z	1427b9020	func
+?NewItem@?$NiTPointerMap@PEBDPEAVNiD3DXEffectFile@@VNiStringHashFunctor@@VNiStringEqualsFunctor@@@@UEAAPEAV?$NiTMapItem@PEBDPEAVNiD3DXEffectFile@@@@XZ	1427b9ab0	func
+??_GNiDitherProperty@@UEAAPEAXI@Z	141dc0ce0	func
+?CopyMembers@NiDitherProperty@@IEAAXPEAV1@AEAVNiCloningProcess@@@Z	141dc0d30	func
+?CopyMembers@NiSpecularProperty@@IEAAXPEAV1@AEAVNiCloningProcess@@@Z	141dc19a0	func
+?GetViewerStrings@NiPSEmitterFloatCtlr@@UEAAXPEAV?$NiTPrimitiveArray@PEAD@@@Z	141eead60	func
+??_GNiPSForceCtlr@@UEAAPEAXI@Z	141eea5d0	func
+# gb12: the two FloatCtlr viewer-string twins load their own ms_RTTI name (exe init thunks: 0x143afc7c8 "NiPSForceFloatCtlr",
+# 0x143afc7e8 "NiPSEmitterFloatCtlr"); the mangled-name order above had them swapped.
+?GetViewerStrings@NiPSForceFloatCtlr@@UEAAXPEAV?$NiTPrimitiveArray@PEAD@@@Z	141eea2f0	func
+??_GNiPSysRadialFieldModifier@@UEAAPEAXI@Z	141eddd50	func
+??_GNiPSysTurbulenceFieldModifier@@UEAAPEAXI@Z	141edf290	func
+??$_Copy_nodes@U_Copy_tag@?$_Tree@V?$_Tmap_traits@Vutf8string@efd@@VAttachNifData@ecr@@U?$less@Vutf8string@efd@@@std@@V?$CustomAllocator@U?$pair@$$CBVutf8string@efd@@VAttachNifData@ecr@@@std@@@2@$0A@@std@@@std@@@?$_Tree@V?$_Tmap_traits@Vutf8string@efd@@VAttachNifData@ecr@@U?$less@Vutf8string@efd@@@std@@V?$CustomAllocator@U?$pair@$$CBVutf8string@efd@@VAttachNifData@ecr@@@std@@@2@$0A@@std@@@std@@IEAAPEAU?$_Tree_node@U?$pair@$$CBVutf8string@efd@@VAttachNifData@ecr@@@std@@PEAX@1@PEAU21@0U_Copy_tag@01@@Z	142031d50	func
+?SetAssetDataFromKFMCache@AnimationService@egmAnimation@@IEAAPEAVAssetData@12@V?$SmartPointer@VAssetData@AnimationService@egmAnimation@@@efd@@V?$SmartPointer@VKFMCacheData@KFMCache@egmAnimation@@@5@_N@Z	14227f8c0	func
+??9NiOutputStreamDescriptor@@QEBA_NAEBV0@@Z	141d77150	func
+??_GNiSpecularProperty@@UEAAPEAXI@Z	141dc1950	func
+# gb11 egmAnimationBindings (EE_MS2_ANIMSVC_NAME_CALL): the by-name Get/Set bindings are masked-identical twins (they differ
+# only in the AnimationService *ById callee); the exe orders them by mangled name.
+?GetSequenceDuration@egmAnimationBindings@@YA_NVEntityID@egf@@PEBDAEAM@Z	1428d49e0	func
+?GetSequenceFrequency@egmAnimationBindings@@YA_NVEntityID@egf@@PEBDAEAM@Z	1428d4b80	func
+?GetSequenceWeight@egmAnimationBindings@@YA_NVEntityID@egf@@PEBDAEAM@Z	1428d4db0	func
+?SetSequenceFrequency@egmAnimationBindings@@YA_NVEntityID@egf@@PEBDM@Z	1428d5580	func
+?SetSequenceWeight@egmAnimationBindings@@YA_NVEntityID@egf@@PEBDM@Z	1428d57d0	func
+# gb11 static switch/table functions (functions.tsv sizes exclude the trailing jump table, so the length search misses them; exe-EXACT)
+?GetParameterName@NSBPackingDef@@SAPEBDW4ShaderParameter@NiShaderDeclaration@@@Z	141fe3b90	func
+?GetTypeName@NSBPackingDef@@SAPEBDW4NSBPackingDefEnum@1@@Z	141fe3fa0	func
+?GetDataPointer@NiPoseBuffer@@QEBAPEAMVNiPoseBufferHandle@@@Z	141c72850	func
+?SetValid@NiPoseBuffer@@QEAAXVNiPoseBufferHandle@@_N@Z	141c72ca0	func
+?GetD3D9FormatString@NiDX9SystemDesc@@SAPEADW4_D3DFORMAT@@@Z	1427f7b30	func
+?FindClosestPixelFormat@NiDX9TextureData@@SAPEBVNiPixelFormat@@AEBVFormatPrefs@NiTexture@@PEBQEAV2@@Z	1428005f0	func
+?SemanticToDeviceControl@NiAction@@SAII@Z	141d09bc0	func
+?GetObjectTypeAsString@NiShaderAttributeDesc@@SAPEBDW4ObjectType@1@@Z	141d80410	func
+?IsObjectMappingValidForType@NiShaderConstantMap@@SA_NW4ObjectMappings@1@W4ObjectType@NiShaderAttributeDesc@@@Z	141d4e3b0	func
+?PrepareShadowGenerator@NiShadowClickGenerator@@QEAAXPEAVNiShadowGenerator@@@Z	141db7540	func
+?GetTextureUsage@NiStandardMaterialDescriptor@@QEAAXIAEAIAEAW4TexGenOutput@NiStandardMaterial@@@Z	141de3340	func
+?GetInputUVCount@NiStandardPixelProgramDescriptor@@QEAAIXZ	141de6fb0	func
+?GetUVSetForMap@NiStandardPixelProgramDescriptor@@QEAAII@Z	141de7200	func
+?SetUVSetForMap@NiStandardPixelProgramDescriptor@@QEAAXII@Z	141de72f0	func
+?GetOutputUVUsage@NiStandardVertexProgramDescriptor@@QEAAXIAEAIAEAW4TexGenOutput@NiStandardMaterial@@@Z	141de92f0	func
+?SetOutputUVUsage@NiStandardVertexProgramDescriptor@@QEAAXIIW4TexGenOutput@NiStandardMaterial@@@Z	141de94c0	func
+?GetTextureUsage@NiVSMBlurMaterialDescriptor@@QEAAXIAEAIAEAW4TexGenOutput@NiVSMBlurMaterial@@@Z	141dfae70	func
+?SetTextureUsage@NiVSMBlurMaterialDescriptor@@QEAAXIIW4TexGenOutput@NiVSMBlurMaterial@@@Z	141dfb050	func
+?GetPredefinedFormat@NiDataStreamElement@@SA?AW4Format@1@W4Type@1@E_N@Z	141e0bc50	func
+?GetTypeString@NiDataStreamElement@@SAPEBDW4Type@1@@Z	141e0c040	func
+?LookUpPredefinedMappingType@NiShaderConstantMap@@SA?AW4AttributeType@NiShaderAttributeDesc@@II@Z	141d4e6b0	func
+?LookUpPredefinedMappingType@NiShaderConstantMap@@SA?AW4AttributeType@NiShaderAttributeDesc@@PEBD@Z	141d4e7a0	func
+??0NiVSMBlurPixelProgramDescriptor@@QEAA@XZ	141dfb270	func
+??0NiVSMBlurVertexProgramDescriptor@@QEAA@XZ	141dfb520	func
+# gb11 ICF-folded representatives (byte-identical, the name is credited nowhere else; own-type names map to game copies in symbols.tsv)
+?Allocate@?$NiTNewInterface@V?$SmartPointer@VNiSPTask@@@efd@@@@SAPEAV?$SmartPointer@VNiSPTask@@@efd@@I@Z	141cfdb70	func
+?DeleteItem@?$NiTPointerMap@PEBDPEAVNiAVObject@@VNiStringHashFunctor@@VNiStringEqualsFunctor@@@@UEAAXPEAV?$NiTMapItem@PEBDPEAVNiAVObject@@@@@Z	141d0bb00	func
+??_E?$SmartPointer@VNiGeometry@@@efd@@QEAAPEAXI@Z	141d400d0	func
+??$BinaryStreamLoad@W4NxFilterOp@@@efd@@YA_NAEAVBinaryStream@0@PEAW4NxFilterOp@@I@Z	141c30c70	func
+?SetUVSetForMap@NiVSMBlurPixelProgramDescriptor@@QEAAXII@Z	141dfb3e0	func
+# gap4 2026-10-20: engine .text$di/.text$yd static ctor/dtor pairs that no name pinned (identical-shape critical-section
+# initialisers; the waffle counted them as game). NiTexture's follows its ms_aspReplacementData di (0x1401235d0); NiLogger's
+# critical section 0x143afd570 is used by the NiLogger ctors (0x141f43890/0x141f439e0).
+??__E?ms_kTextureListCriticalSection@NiTexture@@1VCriticalSection@efd@@A@@YAXXZ	140123620	func
+??__F?ms_kTextureListCriticalSection@NiTexture@@1VCriticalSection@efd@@A@@YAXXZ	142cc4830	func
+??__E?ms_kCriticalSection@NiLogger@@1VFastCriticalSection@efd@@A@@YAXXZ	140127a10	func
+??__F?ms_kCriticalSection@NiLogger@@1VFastCriticalSection@efd@@A@@YAXXZ	142cc4c80	func
+??__EAAD_CHANNEL@CryptoPP@@YAXXZ	14013b180	func
+??__FAAD_CHANNEL@CryptoPP@@YAXXZ	142cc8bb0	func
+# gb15: engine copy of a name the game's TinyXML (commonfiles\tinyxmlhelper.cpp, 0x1408720d0) also defines
+?TiXmlFOpen@@YAPEAU_iobuf@@PEBD0@Z	1420bf550	func
+# gb16: empty _SDMInit (ret 0) sits between the TU's _Rrotate and _SDMShutdown; unpinned it took a byte-identical $yd ret-0 slot
+?_SDMInit@BehaviorDescriptor@egf@@SAXXZ	14217b2c0	func
+# gb16: MS2 utf8string sprintf/vsprintf rewrites (alloca buffer); the sprintf pair is byte-identical apart from its callee
+?sprintf@utf8string@efd@@QEAAHAEBV12@ZZ	14208db70	func
+?sprintf_append@utf8string@efd@@QEAAHAEBV12@ZZ	14208dbd0	func
+?vsprintf@utf8string@efd@@QEAAHPEBDPEAD@Z	14208e2d0	func
+?vsprintf_append@utf8string@efd@@QEAAHPEBDPEAD@Z	14208e3e0	func
+# gb16: MS2 efd::Getcwd is sprintf_s(buffer, maxlen, ".\\") (inlined into both PathUtils::GetWorkingDirectory overloads)
+?GetWorkingDirectory@PathUtils@efd@@YA_NPEAD_K@Z	1420ba7c0	func
+?GetWorkingDirectory@PathUtils@efd@@YA?AVutf8string@2@XZ	1420ba650	func
+# gb16: MS2 NiDevImageConverter: the ctor adds NiNIFImageReader only while ms_bMS2NIFImageReader (0x1439fc80c, =1) is set
+??0NiDevImageConverter@@QEAA@XZ	141d34210	func
+?MS2DisableNIFImageReader@NiDevImageConverter@@SAXXZ	141d38fa0	func
+# gb16: MS2 NiTextKeyExtraData::LoadBinary appends the text keys of the .kf's xml (or the game's reader, set via 0x141c51dd0)
+?LoadBinary@NiTextKeyExtraData@@UEAAXAEAVNiStream@@@Z	141c517f0	func
+?MS2SetTextKeyReader@NiTextKeyExtraData@@SAXP6AHVNiString@@0PEAPEAVNiTextKey@@@Z@Z	141c51dd0	func
+?MS2GetFileName@NiStream@@QEBAPEBDXZ	141d470d0	func
+# gb16: inline NiTextKey ctor emitted out of line in the game band (game src calls it Unk_PreloadEntry); reloc target of LoadBinary's NiNew NiTextKey[]
+??0NiTextKey@@QEAA@XZ	1414aba40	func
+# gb16: NiTStringTemplateMap::SetValue copies (byte-identical across element types, so the name table could not pick them)
+?SetValue@?$NiTStringTemplateMap@V?$NiTPointerMap@PEBDPEAVNiD3DPixelShader@@VNiStringHashFunctor@@VNiStringEqualsFunctor@@@@PEAVNiD3DPixelShader@@VNiStringHashFunctor@@VNiStringEqualsFunctor@@@@MEAAXPEAV?$NiTMapItem@PEBDPEAVNiD3DPixelShader@@@@PEBDPEAVNiD3DPixelShader@@@Z	1427f5170	func
+?SetValue@?$NiTStringTemplateMap@V?$NiTPointerMap@PEBDPEAVNiD3DShaderProgramCreator@@VNiStringHashFunctor@@VNiStringEqualsFunctor@@@@PEAVNiD3DShaderProgramCreator@@VNiStringHashFunctor@@VNiStringEqualsFunctor@@@@MEAAXPEAV?$NiTMapItem@PEBDPEAVNiD3DShaderProgramCreator@@@@PEBDPEAVNiD3DShaderProgramCreator@@@Z	1427f5290	func
+?SetValue@?$NiTStringTemplateMap@V?$NiTPointerMap@PEBDPEAVNiD3DXEffectFile@@VNiStringHashFunctor@@VNiStringEqualsFunctor@@@@PEAVNiD3DXEffectFile@@VNiStringHashFunctor@@VNiStringEqualsFunctor@@@@MEAAXPEAV?$NiTMapItem@PEBDPEAVNiD3DXEffectFile@@@@PEBDPEAVNiD3DXEffectFile@@@Z	1427ba0b0	func
+?SetValue@?$NiTStringTemplateMap@V?$NiTPointerMap@PEBDPEAVNiD3DVertexShader@@VNiStringHashFunctor@@VNiStringEqualsFunctor@@@@PEAVNiD3DVertexShader@@VNiStringHashFunctor@@VNiStringEqualsFunctor@@@@MEAAXPEAV?$NiTMapItem@PEBDPEAVNiD3DVertexShader@@@@PEBDPEAVNiD3DVertexShader@@@Z	1427f5200	func
+?SetValue@?$NiTStringTemplateMap@V?$NiTPointerMap@PEBDPEAVNiShader@@VNiStringHashFunctor@@VNiStringEqualsFunctor@@@@PEAVNiShader@@VNiStringHashFunctor@@VNiStringEqualsFunctor@@@@MEAAXPEAV?$NiTMapItem@PEBDPEAVNiShader@@@@PEBDPEAVNiShader@@@Z	142806630	func
+# gb16: RenderableModel IsVisible GetAsString (exe calls utf8string::operator= out of line with a cmov; ours inlines both branches)
+?GetAsString@?$PropertyFetch_ReadOnlyAccessor@VRenderableModel@ecr@@_NV12@$H?GetIsVisible@12@QEBA_NXZA@@BuiltinHelper@egf@@UEBA?AW4PropertyResult@3@PEBVIBuiltinModel@3@AEAVutf8string@efd@@@Z	142030dd0	func
+?DIEnumFFDriverCallback@NiDI8InputSystem@@SAHPEBUDIDEVICEINSTANCEA@@PEAX@Z	141d10170	func
+# gb18: AnimationService (hit stubs). Exe inlines Quaternion::ToRotation (UpdateTransform) and the map<utf8string,..> find /
+# operator[] / clear chains with memcmp compares (SetActorManager, CacheSequenceNames); ours calls them out of line (inliner)
+?UpdateTransform@AnimationService@egmAnimation@@IEAAXPEAVActorEntry@12@@Z	142280490	func
+?SetActorManager@AnimationService@egmAnimation@@IEAAXPEAVAssetData@12@PEAVActorEntry@12@@Z	14227f380	func
+?CacheSequenceNames@AnimationService@egmAnimation@@IEAAXPEAVAssetData@12@@Z	14227ae20	func
+# gb18: unassigned hit functions (stub-hit run), named from the stock obj by call shape + alphabetical neighbours
+?Wait@NiStreamProcessor@@QEAA_NPEBVNiSPWorkflow@@I@Z	141d00bb0	func
+?UpdateD3DBuffers@NiDX9DataStream@@QEAAX_N@Z	1427fb780	func
+??0NiSPStream@@QEAA@PEAXII_N@Z	141d05d50	func
+??0?$NiTArray@PEAVNiSPTask@@V?$NiTMallocInterface@PEAVNiSPTask@@@@@@QEAA@II@Z	141d05c90	func
+??$CreateBinding@UDX9CreateBindingContext@@@NiMeshMaterialBinding@@SA_NAEAUDX9CreateBindingContext@@AEBVNiSemanticAdapterTable@@@Z	1427e35a0	func
+?FillPredefinedConstantValue@NiD3DXEffectParameter@@IEAA_NAEBVNiRenderCallContext@@PEAUID3DXEffect@@_N@Z	1427bf250	func
+# gb18: hit stubs with the stock logic where only the inliner differs: CreateInstanceTransformStream (exe calls
+# NiDataStreamElementSet::AddElement out of line, ours inlines it), NiPSSimulator::Attach (register allocation / block order)
+?CreateInstanceTransformStream@NiInstancingUtilities@@KA_NPEAVNiMesh@@IIIPEAVNiTransform@@_N2@Z	141e088c0	func
+?Attach@NiPSSimulator@@UEAA_NPEAVNiMesh@@@Z	141eae190	func
+# gb18: efd hit stubs named: LockFreeQueue<IMessageConstPtr>::Produce, AssetLocatorRequest deleting dtor (exe inlines the dtor)
+?Produce@?$LockFreeQueue@V?$SmartPointer@$$CBVIMessage@efd@@@efd@@@efd@@QEAAXAEBV?$SmartPointer@$$CBVIMessage@efd@@@2@@Z	1420a2710	func
+??_GAssetLocatorRequest@efd@@UEAAPEAXI@Z	1420d0f20	func
+# gb18: D3D10/D3D11 (0 hits, DX9 client): exe inlines NiTSet<NiDataStreamElement>::Add and calls AddElement out of line (ICF to the client copy 0x14106add0); ??_G inlines the dtor + Deallocate -- inliner heuristics, not source; functional
+?InsertPadding@NiD3D10ShaderConstantMap@@IEAAXIAEAVNiDataStreamElementSet@@@Z	14286aec0	func
+?InsertPadding@D3D11ShaderConstantMap@ecr@@IEAAXIAEAVNiDataStreamElementSet@@@Z	142838f70	func
+?UpdateConstantBufferPacking@NiD3D10ShaderConstantMap@@QEAA_NPEAUID3D10ShaderReflectionConstantBuffer@@AEAVNiDataStreamElementSet@@@Z	14286eec0	func
+??_GNiD3D10DataStream@@MEAAPEAXI@Z	142852d30	func
+# gb18: NiRenderObject material-update traversals (37k hits): MS2 functors test the display-object flag
+??$DepthFirst_AllObjects@VRecursiveSetMaterialNeedsUpdateFunctor@@@NiTNodeTraversal@@SAXPEAVNiAVObject@@AEAVRecursiveSetMaterialNeedsUpdateFunctor@@@Z	141d2b6f0	func
+??$DepthFirst_AllObjects@VRecursiveSetMaterialNeedsUpdateDefaultFunctor@@@NiTNodeTraversal@@SAXPEAVNiAVObject@@AEAVRecursiveSetMaterialNeedsUpdateDefaultFunctor@@@Z	141d2b640	func
+# gb18: NiTexture dtor (2.8k hits, header inline NiTexture.inl; exe inlines RemoveTextureFromList): functional
+??1NiTexture@@UEAA@XZ	141d233c0	func
+# gb18: D3D10 ObtainDefinedConstantValue (0 hits, 3437 vs 3792 B: exe inlines/folds the light/matrix helpers differently; the MS2 inline NiDynamicCast is in): functional
+?ObtainDefinedConstantValue@NiD3D10ShaderConstantMap@@IEAAPEBXPEAVNiShaderConstantMapEntry@@AEBVNiRenderCallContext@@AEAU_D3DXMATRIXA16@@@Z	14286ca90	func
+# gb18: NiDataStreamRef::BindRegionToSubmesh (hit stub): exe inlines NiTSet growth differently: functional
+?BindRegionToSubmesh@NiDataStreamRef@@QEAAXIAEBVRegion@NiDataStream@@@Z	141e0e520	func
+??0NiD3DGPUProgramCache@@QEAA@IPEBDW4ProgramType@NiGPUProgram@@AEBVNiFixedString@@0_N333@Z	142802690	func
+?LoadShaderCodeFromBuffer@NiD3DShaderProgramCreatorHLSL@@IEAA_NPEBXIPEBD1AEAPEAXAEAIAEAPEAUID3DXConstantTable@@_N@Z	14280a000	func
+?LoadShaderCodeFromFile@NiD3DShaderProgramCreatorHLSL@@IEAA_NPEBD00AEAPEAXAEAIAEAPEAUID3DXConstantTable@@_N@Z	14280a2c0	func
+?RecreatePixelShader@NiD3DShaderProgramCreatorHLSL@@UEAA_NPEAVNiD3DPixelShader@@@Z	14280a6a0	func
+?RecreateVertexShader@NiD3DShaderProgramCreatorHLSL@@UEAA_NPEAVNiD3DVertexShader@@@Z	14280a750	func
+?CreatePixelShaderFromBuffer@NiD3DShaderProgramCreatorObj@@UEAAPEAVNiD3DPixelShader@@PEBXIPEBD11_N@Z	14280b9f0	func
+?CreatePixelShaderFromFile@NiD3DShaderProgramCreatorObj@@UEAAPEAVNiD3DPixelShader@@PEBD000_N@Z	14280bbc0	func
+?CreateVertexShaderFromBuffer@NiD3DShaderProgramCreatorObj@@UEAAPEAVNiD3DVertexShader@@PEBXIPEBD11PEAUIDirect3DVertexDeclaration9@@I_N@Z	14280bda0	func
+?CreateVertexShaderFromFile@NiD3DShaderProgramCreatorObj@@UEAAPEAVNiD3DVertexShader@@PEBD000PEAUIDirect3DVertexDeclaration9@@I_N@Z	14280bfc0	func
+?UpdateToActors@NiPhysXDynamicSrc@@UEAAXMM@Z	141ef9070	func
+?ToConvexDesc@NiPhysXMeshDesc@@UEAAXAEAVNxConvexShapeDesc@@_N1@Z	141f0ae20	func
+?ToTriMeshDesc@NiPhysXMeshDesc@@UEAAXAEAVNxTriangleMeshShapeDesc@@_N1@Z	141f0b240	func
+??0NiD3DXEffectAttributeTable@@QEAA@XZ	1427c3b80	func
+??0NiShadowTechnique@@QEAA@AEBVNiFixedString@@V1@11111_N2@Z	141db6770	func
+?SetEnvMapDescriptor@NiStandardMaterialDescriptor@@QEAA_NPEBVNiRenderObject@@PEBVNiDynamicEffectState@@@Z	141de36f0	func
+??0NiInputSystem@@IEAA@XZ	141d0be00	func
+?CanReadImageFile@NiDevImageConverter@@UEBA_NPEB_W@Z	141d34fd0	func
+?ReadImageFileInfo@NiDevImageConverter@@UEAA_NPEB_WAEAVNiPixelFormat@@AEA_NAEAI33@Z	141d3b840	func
+?ReadImageFile@NiDevImageConverter@@UEAAPEAVNiPixelData@@PEB_WPEAV2@@Z	141d3bd70	func
+?FindValue@ConfigManager@efd@@UEBA?AVutf8string@2@AEBV32@@Z	1420b4b20	func
+??0InstructionSet_Internal@InstructionSet@@QEAA@XZ	1420bac30	func
+??0?$NiTPrimitiveArray@PEAX@@QEAA@II@Z	1427c8a10	func
+??0NiDX9SystemDesc@@QEAA@PEAUIDirect3D9@@AEAV?$NiTPointerList@I@@@Z	1427f6a30	func
+?StopAnimations@NiTimeController@@SAXPEAVNiObjectNET@@@Z	141d24c70	func
+# gb18: luaopen_debug of both Lua copies (the game unit lib_small_tail held them; the engine ldblib objs define them)
+?luaopen_debug@@YAHPEAUlua_State@@@Z	14225bf20	func
+luaopen_debug	1423a7330	func
+??0NiTexturingProperty@@QEAA@PEBD@Z	141d1d160	func
+?CreateStreamOutputStreamsForActiveMaterial@NiMesh@@IEAA_NXZ	141e04ac0	func
+?ConvertAGDs@NiGeometryConverter@@AEAA_NXZ	141e32f70	func
+?FindIntersections@NiOBBLeaf@@UEAAHAEBVNiPoint3@@0AEAVNiPick@@AEA_NPEAVNiAVObject@@I@Z	141cf2880	func
+?ParseAllActionMaps@InputService@ecrInput@@IEAA_NPEBD0@Z	14203cb10	func
+?LoadBinary@NiDX9PersistentSrcTextureRendererData@@UEAAXAEAVNiStream@@@Z	142801520	func
+# gb18: exe calls NiDataStreamElementSet::AddElement out of line (client copy 0x14106add0) where clang/msvc here inline it -- inliner heuristic; equivalent
+?CreateCollectorDataStream@NiInstancingUtilities@@SAPEAVNiDataStreamRef@@PEAVNiMesh@@I@Z	141e08470	func
+# gb18: exe calls NiTArray::SetAtGrow out of line (ICF copy) inside NiPick::Add/Results::AddNew -- inliner heuristic; equivalent
+?Add@NiPick@@QEAAPEAVRecord@1@PEAVNiAVObject@@@Z	141cb4420	func
+# gb18: exe inlines the efd::map dtor (_Erase + node _Free) into DeleteParentClassMap -- inliner heuristic; equivalent
+?DeleteParentClassMap@IMessage@efd@@SAXXZ	1420b1100	func
+# gb18: exe inlines the utf8string(const char*) ctor (memcpy of the constant 10 bytes) -- inliner heuristic; equivalent
+?CreateDefaultDebugOutDestination@NiLogger@@SAXXZ	141f43d00	func
+?ms_RTTI@DI8CreateParams@NiDI8InputSystem@@2VNiRTTI@@B	143afa410	data
+?UNKNOWN@FLF@efd@@2V12@B	143a09648	data
+# gb18: engine stubs (m15) identified by decompiled strings/offsets/switch tables against the obj; name-pinned so they pair
+?DecodeColorBlock@NiTextureCodec@@IEAAXPEAE@Z	141db3cc0	func
+?DecodeColorAlphaBlock@NiTextureCodec@@IEAAXPEAE@Z	141db3a00	func
+?IsEqual@NiShadowGenerator@@UEAA_NPEAVNiObject@@@Z	141d5a8b0	func
+?GetSizeOfAttributeType@NiShaderAttributeDesc@@SA_KW4AttributeType@1@@Z	141d806d0	func
+?SetRequestedURN@InputActionMapsLoaded@ecrInput@@QEAAXAEBVutf8string@efd@@@Z	14204ced0	func
+?SetModelName@BehaviorDescriptor@egf@@QEAAXAEBVutf8string@efd@@@Z	14217ab40	func
+?GrowReservoir@MemTracker@efd@@IEAAXXZ	142088c80	func
+?InitDialog@NiRendererTabController@@UEAAPEAUHWND__@@PEAVNiRendererSettings@@PEAU2@@Z	141f41de0	func
+?FromString@AttachNifData@ecr@@UEAA_NAEBVutf8string@efd@@@Z	14202dca0	func
+??0AttachNifData@ecr@@QEAA@AEBV01@@Z	142032910	func
+?ReadFlagsFromAttribute@ecrInput@@YA_NPEAVTiXmlElement@efd@@PEBDAEBV?$map@Vutf8string@efd@@IU?$less@Vutf8string@efd@@@std@@@3@AEAI@Z	1420403b0	func
+?LoadKFMTool@ResponseData@KFMFactory@egmAnimation@@QEAAXPEAVNiKFMTool@@PEBVKFMFactoryRequest@3@@Z	142274c90	func
+?ToLuaObject@?$LuaTraits@VPoint4@efd@@@bapiLua@@SAHPEAUlua_State@@AEBVPoint4@efd@@@Z	14221cab0	func
+_wrap_AttachedNifAsset_GetNifAsset	142055f50	func
+_wrap_AttachedNifAsset_NifAsset_get	142057cc0	func
+_wrap_AttachedNifAsset_Clone	142058bb0	func
+_wrap_AttachedNifAsset___tostring	142058e90	func
+??0DivideByZero@PolynomialMod2@CryptoPP@@QEAA@XZ	14237b650	func
+??0OpenPGPDecodeErr@Integer@CryptoPP@@QEAA@XZ	14235bce0	func
+?GetBestImplementation@NiBinaryShaderLibrary@@KAPEAVNSBImplementation@@PEAVNSBShader@@@Z	141ca9af0	func
+??0AuthenticatedDecryptionFilter@CryptoPP@@QEAA@AEAVAuthenticatedSymmetricCipher@1@PEAVBufferedTransformation@1@IHW4BlockPaddingScheme@BlockPaddingSchemeDef@1@@Z	14230fce0	func
+??6CryptoPP@@YAAEAV?$basic_ostream@DU?$char_traits@D@std@@@std@@AEAV12@AEBVPolynomialMod2@0@@Z	14237bef0	func
+??$ws@DU?$char_traits@D@std@@@std@@YAAEAV?$basic_istream@DU?$char_traits@D@std@@@0@AEAV10@@Z	14235a130	func
+?StaticAlgorithmName@?$HMAC@VSHA1@CryptoPP@@@CryptoPP@@SA?AV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@XZ	1423798d0	func
+??0?$GetValueHelperClass@V?$DL_PrivateKeyImpl@VDL_GroupParameters_GFP_DefaultSafePrime@CryptoPP@@@CryptoPP@@V?$DL_PrivateKey@VInteger@CryptoPP@@@2@@CryptoPP@@QEAA@PEBV?$DL_PrivateKeyImpl@VDL_GroupParameters_GFP_DefaultSafePrime@CryptoPP@@@1@PEBDAEBVtype_info@@PEAXPEBVNameValuePairs@1@@Z	1423729e0	func
+??0AuthenticatedEncryptionFilter@CryptoPP@@QEAA@AEAVAuthenticatedSymmetricCipher@1@PEAVBufferedTransformation@1@_NHAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@W4BlockPaddingScheme@BlockPaddingSchemeDef@1@@Z	14230ff90	func
+?CanReadImageFile@NiImageConverter@@UEBA_NPEB_W@Z	141d6ed20	func
+?ReadImageFileInfo@NiImageConverter@@UEAA_NPEB_WAEAVNiPixelFormat@@AEA_NAEAI33@Z	141d6f590	func
+?ReadImageFile@NiImageConverter@@UEAAPEAVNiPixelData@@PEB_WPEAV2@@Z	141d6f800	func
+?GetCurrentPhysXTime@egfPhysXBindings@@YANPEBD@Z	142263d60	func
+?StartSimulating@egfPhysXBindings@@YA_NPEBDAEBN@Z	142264360	func
+?SetEntityVisibility@VisualizerVisibilityTracker@egmVisualizers@@QEAAXVEntityID@egf@@AEBVutf8string@efd@@I_N@Z	142290580	func
+??$_Eqrange@Vutf8string@efd@@@?$_Tree@V?$_Tmap_traits@Vutf8string@efd@@IU?$less@Vutf8string@efd@@@std@@V?$CustomAllocator@U?$pair@$$CBVutf8string@efd@@I@std@@@2@$0A@@std@@@std@@IEAA?AU?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBVutf8string@efd@@I@std@@@std@@@std@@@std@@V12@@1@AEBVutf8string@efd@@@Z	14228fc50	func
+?FromLuaObject@?$LuaTraits@VAssetID@efd@@@bapiLua@@SA_NPEAUlua_State@@HAEAVAssetID@efd@@@Z	1420593a0	func
+??$SetPropertyValue@I@Entity@egf@@QEAA?AW4PropertyResult@1@AEBVutf8string@efd@@AEBI@Z	1428d03a0	func
+?InitializeParticle@NiPhysXPSMeshParticleSystem@@UEAAXI@Z	141f2a2a0	func
+?InitializeParticle@NiPhysXPSParticleSystem@@UEAAXI@Z	141f2e650	func
+# gb18: alias rows (name, further copy, "alias", obj file-name substring): the exe keeps a second copy the name map cannot hold
+?SWIG_Lua_GetModule@@YAPEAUswig_module_info@@PEAUlua_State@@@Z	1420595c0	alias	attachednifasset_luawrap
+?SWIG_Lua_InstallConstants@@YAXPEAUlua_State@@QEAUswig_lua_const_info@@@Z	142059630	alias	attachednifasset_luawrap
+?_SWIG_Lua_AddMetatable@@YAXPEAUlua_State@@PEAUswig_type_info@@@Z	14205a320	alias	attachednifasset_luawrap
+SWIG_TypeQueryModule	14205a8e0	alias	attachednifasset_luawrap
+??_G?$MessageHandlerImpl@VScheduler@egf@@VEntityFactoryResponse@2@@efd@@UEAAPEAXI@Z	142146e80	alias	egf__scheduler.
+?AlgorithmName@BitBucket@CryptoPP@@UEBA?AV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@XZ	1423056e0	alias	cryptlib
+?AlgorithmName@ClassNullRNG@CryptoPP@@UEBA?AV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@XZ	142305710	alias	cryptlib
+??1EntityFactoryRequest@egf@@UEAA@XZ	142171100	func
+??$_Buynode@AEAU?$pair@$$CBVutf8string@efd@@V?$SmartPointer@VFlatModel@egf@@@2@@std@@@?$_Tree_comp_alloc@V?$_Tmap_traits@Vutf8string@efd@@V?$SmartPointer@VFlatModel@egf@@@2@U?$less@Vutf8string@efd@@@std@@V?$CustomAllocator@U?$pair@$$CBVutf8string@efd@@V?$SmartPointer@VFlatModel@egf@@@2@@std@@@2@$0A@@std@@@std@@QEAAPEAU?$_Tree_node@U?$pair@$$CBVutf8string@efd@@V?$SmartPointer@VFlatModel@egf@@@2@@std@@PEAX@1@AEAU?$pair@$$CBVutf8string@efd@@V?$SmartPointer@VFlatModel@egf@@@2@@1@@Z	142170810	func
+# gb19: alias rows for initializers/templates/second copies the name map cannot hold (verified per obj; work/gb19/notes.md)
+??__E?ms_kNullSemanticName@NiSemanticAdapterTable@@1VNiFixedString@@B@@YAXXZ	140122c30	alias	__nisemanticadaptertable.cpp
+??__E?ms_kMapName@NiShadowCubeMap@@1VNiFixedString@@A@@YAXXZ	140123260	alias	__nishadowcubemap.cpp
+??__E?ms_ClassInfo@CameraService@ecr@@2VClassInfo@efd@@B@@YAXXZ	140128b30	alias	__cameraservice.cpp
+??__E?ms_ClassInfo@PickService@ecr@@2VClassInfo@efd@@B@@YAXXZ	14012a010	alias	__pickservice.cpp
+??__E?ms_ClassInfo@LightService@ecr@@2VClassInfo@efd@@B@@YAXXZ	14012a620	alias	__lightservice
+??__E?ms_ClassInfo@NIFFactory@ecr@@2VClassInfo@efd@@B@@YAXXZ	14012b710	alias	__niffactory
+??__ENiAnimationSDMObject@@YAXXZ	14012c4c0	alias	__propservice
+??__E?ms_ClassInfo@Win32PlatformService@efd@@2VClassInfo@2@B@@YAXXZ	14012cf40	alias	__win32platformservice.cpp
+??__E?ms_ClassInfo@AssetLoadResponse@efd@@2VClassInfo@2@B@@YAXXZ	14012d510	alias	__assetloadresponse.cpp
+??__E?ms_ClassInfo@AssetLocatorResponse@efd@@2VClassInfo@2@B@@YAXXZ	14012da80	alias	__assetlocatorresponse.cpp
+??__E?ms_ClassInfo@FlatModelFactoryResponse@egf@@2VClassInfo@efd@@B@@YAXXZ	14012f090	alias	__flatmodelfactoryresponse.cpp
+??__E?ms_ClassInfo@FlatModelFactoryRequest@egf@@2VClassInfo@efd@@B@@YAXXZ	14012f100	alias	__flatmodelfactoryrequest.cpp
+??__E?ms_ClassInfo@GenericAssetLoadResponse@efd@@2VClassInfo@2@B@@YAXXZ	14012f760	alias	__genericassetloadresponse.cpp
+??__EInvalidEntity@egfLua@@YAXXZ	1401305f0	alias	__luadatastream.cpp
+??__EInvalidEntity@egfLua@@YAXXZ	140130610	alias	__luaresumecoroutinetask
+??__EInvalidEntity@egfLua@@YAXXZ	140130720	alias	__luaresumeentitycreatetask.cpp
+??__EInvalidEntity@egfLua@@YAXXZ	140130740	alias	__luaresumewaitertask.cpp
+??__ENiAnimationSDMObject@@YAXXZ	140133860	alias	__ecrphysxbindings.cpp
+??__ENiAnimationSDMObject@@YAXXZ	1401342e0	alias	__egmanimationbindings.cpp
+??__ENiAnimationSDMObject@@YAXXZ	140134580	alias	__egmanimationpch.cpp
+??__ENiAnimationSDMObject@@YAXXZ	140134820	alias	__actormessages.cpp
+??__ENiAnimationSDMObject@@YAXXZ	140134ac0	alias	__kfmfactoryrequest.cpp
+??__ENiAnimationSDMObject@@YAXXZ	140134d60	alias	__kfmfactory.cpp
+??__E?ms_ClassInfo@VisualTrackerService@egmVisualTracker@@2VClassInfo@efd@@B@@YAXXZ	140135000	alias	__visualtrackerservice
+??__FkCAT_INVALID@efd@@YAXXZ	142cc58c0	alias	__parameterlist.cpp
+??__FkCAT_NetSystem@efd@@YAXXZ	142cc5910	alias	__parameterlist.cpp
+??__FkCAT_NetEvent@efd@@YAXXZ	142cc5960	alias	__parameterlist.cpp
+??__FkCAT_INVALID@efd@@YAXXZ	142cc6300	alias	__placeablemodel.cpp
+??__F?ms_kNxMat34Identity@PhysXTypes@efdPhysX@@2VNxMat34@@B@@YAXXZ	142cc6610	alias	__physxtypes.cpp
+??__FkCAT_INVALID@efd@@YAXXZ	142cc6640	alias	__saxblockparser
+?Update@NiLookAtInterpolator@@UEAA_NMPEAVNiObjectNET@@AEAVNiQuatTransform@@@Z	141c955e0	alias	__nilookatinterpolator.cpp
+?Create@NiRenderedTexture@@SAPEAV1@PEAVNi2DBuffer@@PEAVNiRenderer@@@Z	141d61be0	alias	__nirenderedtexture.cpp
+?RemoveBeforeStreaming@NiShaderTimeController@@SAXPEAVNiObjectNET@@@Z	141d84c90	alias	__nishadertimecontroller.cpp
+?GetOutputUVUsage@NiVSMBlurVertexProgramDescriptor@@QEAAXIAEAIAEAW4TexGenOutput@NiVSMBlurMaterial@@@Z	141dfb5a0	alias	__nivsmblurvertexprogramdescriptor.cpp
+?SetOutputUVUsage@NiVSMBlurVertexProgramDescriptor@@QEAAXIIW4TexGenOutput@NiVSMBlurMaterial@@@Z	141dfb770	alias	__nivsmblurvertexprogramdescriptor.cpp
+??0NiPSMeshParticleSystem@@IEAA@PEAVNiPSSimulator@@IW4AlignMethod@NiPSParticleSystem@@AEBVNiPoint3@@12_N3333PEAVNiPSBoundUpdater@@GI3@Z	141e9ce60	alias	__nipsmeshparticlesystem.cpp
+??$BinaryStreamLoadEnum@W4NxJointType@@@efd@@YA_NAEAVBinaryStream@0@PEAW4NxJointType@@@Z	141ef2c90	alias	__niphysxjointdesc.cpp
+??$BinaryStreamLoadEnum@W4NxD6JointMotion@@@efd@@YA_NAEAVBinaryStream@0@PEAW4NxD6JointMotion@@@Z	141ef4c00	alias	__niphysxd6jointdesc.cpp
+?SetDebugTriangleGeometry@NiPhysXScene@@IEAAXPEBVNxDebugRenderable@@@Z	141f06dc0	alias	__niphysxscene.cpp
+?UpdateSceneGraph@NiPhysXAccumPoseBufferDest@@UEAAXMAEBVNiTransform@@M_N@Z	141f18db0	alias	__niphysxaccumposebufferdest.cpp
+?Execute@NiPhysXPSSimulatorInitialKernel@@UEAAXAEAVNiSPWorkload@@@Z	141f3ce10	alias	__niphysxpssimulatorinitialkernel.cpp
+?lower_bound@?$_Tree@V?$_Tmap_traits@UCellID@NiTerrainSector@@PEAVCellSnapshot@NiTerrainDataSnapshot@@U?$less@UCellID@NiTerrainSector@@@std@@V?$CustomAllocator@U?$pair@$$CBUCellID@NiTerrainSector@@PEAVCellSnapshot@NiTerrainDataSnapshot@@@std@@@efd@@$0A@@std@@@std@@QEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBUCellID@NiTerrainSector@@PEAVCellSnapshot@NiTerrainDataSnapshot@@@std@@@std@@@std@@@2@AEBUCellID@NiTerrainSector@@@Z	141f51620	alias	__niterraindatasnapshot.cpp
+??$_Insert_nohint@AEBVutf8string@efd@@U_Not_a_node_tag@std@@@?$_Tree@V?$_Tset_traits@Vutf8string@efd@@U?$less@Vutf8string@efd@@@std@@V?$CustomAllocator@Vutf8string@efd@@@2@$0A@@std@@@std@@IEAA?AU?$pair@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@Vutf8string@efd@@@std@@@std@@@std@@_N@1@_NAEBVutf8string@efd@@U_Not_a_node_tag@1@@Z	141f8b9d0	alias	__niterrainsurfacepackagefileversion0.cpp
+memcpy_s	141fb6940	alias	__niterrainsectorfileversion5.cpp
+??$_Insert_nohint@Vutf8string@efd@@U_Not_a_node_tag@std@@@?$_Tree@V?$_Tset_traits@Vutf8string@efd@@U?$less@Vutf8string@efd@@@std@@V?$CustomAllocator@Vutf8string@efd@@@2@$0A@@std@@@std@@IEAA?AU?$pair@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@Vutf8string@efd@@@std@@@std@@@std@@_N@1@_N$$QEAVutf8string@efd@@U_Not_a_node_tag@1@@Z	141fb7270	alias	__niterrainsectorfileversion5.cpp
+?erase@?$_Tree@V?$_Tmap_traits@IVNiIndex@@U?$less@I@std@@V?$CustomAllocator@U?$pair@$$CBIVNiIndex@@@std@@@efd@@$0A@@std@@@std@@QEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIVNiIndex@@@std@@@std@@@std@@@2@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIVNiIndex@@@std@@@std@@@std@@@2@0@Z	141fb8350	alias	__niterrainsectorfileversion5.cpp
+?erase@?$_Tree@V?$_Tmap_traits@Vutf8string@efd@@V?$SmartPointer@VAssetData@AnimationService@egmAnimation@@@2@U?$less@Vutf8string@efd@@@std@@V?$CustomAllocator@U?$pair@$$CBVutf8string@efd@@V?$SmartPointer@VAssetData@AnimationService@egmAnimation@@@2@@std@@@2@$0A@@std@@@std@@QEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBVutf8string@efd@@V?$SmartPointer@VAssetData@AnimationService@egmAnimation@@@2@@std@@@std@@@std@@@2@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBVutf8string@efd@@V?$SmartPointer@VAssetData@AnimationService@egmAnimation@@@2@@std@@@std@@@std@@@2@@Z	142282130	alias	__animationservice.cpp
+??$DumpProperty@M@@YAXPEAVEntity@egf@@AEBVutf8string@efd@@AEAV23@@Z	14224a5c0	alias	__entitylua
+??$DumpProperty@VAssetID@efd@@@@YAXPEAVEntity@egf@@AEBVutf8string@efd@@AEAV23@@Z	14224aec0	alias	__entitylua
+??$DumpProperty@VColor@efd@@@@YAXPEAVEntity@egf@@AEBVutf8string@efd@@AEAV23@@Z	14224b240	alias	__entitylua
+??$DumpProperty@VColorA@efd@@@@YAXPEAVEntity@egf@@AEBVutf8string@efd@@AEAV23@@Z	14224b580	alias	__entitylua
+??$DumpProperty@VMatrix3@efd@@@@YAXPEAVEntity@egf@@AEBVutf8string@efd@@AEAV23@@Z	14224bbd0	alias	__entitylua
+??$DumpProperty@VPoint2@efd@@@@YAXPEAVEntity@egf@@AEBVutf8string@efd@@AEAV23@@Z	14224bff0	alias	__entitylua
+??$DumpProperty@VPoint3@efd@@@@YAXPEAVEntity@egf@@AEBVutf8string@efd@@AEAV23@@Z	14224c300	alias	__entitylua
+??$DumpProperty@Vutf8string@efd@@@@YAXPEAVEntity@egf@@AEBVutf8string@efd@@AEAV23@@Z	14224c630	alias	__entitylua
+XML_ErrorString	1423b24b0	alias	__xmlparse.c
+??0ModeDesc@NiDX9AdapterDesc@@QEAA@AEAU_D3DDISPLAYMODE@@@Z	1427f6300	alias	__nidx9systemdesc.cpp
+?LoadShaderCodeFromFile@NiD3DShaderProgramCreatorAsm@@MEAA_NPEBDAEAPEAXAEAI_N@Z	14280b6b0	alias	__nid3dshaderprogramcreatorasm_dx9.cpp
+??$CreateBinding@UD3D11CreateBindingContext@@@NiMeshMaterialBinding@@SA_NAEAUD3D11CreateBindingContext@@AEBVNiSemanticAdapterTable@@@Z	14281c730	alias	__d3d11meshmaterialbinding.cpp
+??0D3D11GPUProgramCache@ecr@@QEAA@IPEBDW4ProgramType@NiGPUProgram@@AEBVFixedString@efd@@0_N333@Z	142827d70	alias	__d3d11gpuprogramcache
+??0NiD3D10GPUProgramCache@@QEAA@IPEBDW4ProgramType@NiGPUProgram@@AEBVNiFixedString@@0_N333@Z	14285a510	alias	__nid3d10gpuprogramcache
+??$CreateBinding@UD3D10CreateBindingContext@@@NiMeshMaterialBinding@@SA_NAEAUD3D10CreateBindingContext@@AEBVNiSemanticAdapterTable@@@Z	14285b560	alias	__nid3d10meshmaterialbinding.cpp
+?ObtainFromDXGIFormat@NiD3D10PixelFormat@@SAPEBVNiPixelFormat@@W4DXGI_FORMAT@@@Z	14285e0f0	alias	__nid3d10pixelformat.cpp
+??1NiD3D10ShaderInterface@@UEAA@XZ	142869390	alias	__nid3d10shaderinterface.cpp
+??_GNiD3D10ShaderInterface@@UEAAPEAXI@Z	1428694a0	alias	__nid3d10shaderinterface.cpp
+?GetStringFromType@NiPrimitiveType@@SAPEBDW4Type@1@@Z	1428792e0	alias	__niprimitivetype.cpp
+?GetSyncPointName@NiSyncArgs@@SAPEBDG@Z	142879360	alias	__nisyncargs.cpp
+??$NiStreamSaveBinary@E@@YA_NAEAVBinaryStream@efd@@AEAE@Z	142879ce0	alias	__nistreamoutsettings.cpp
+?Serialize@Point4@efd@@QEAAXAEAVArchive@2@@Z	1428864d0	alias	__point4.cpp
+?Serialize@NetVersion@efd@@UEAAXAEAVArchive@2@@Z	1428cb000	alias	__netversion.cpp
+?setKeepAlive@Socket@efd@@UEAAXH@Z	1428ccac0	alias	__socket_win32
+?GetConfigValue@BehaviorAPI@@YA?AVutf8string@efd@@AEBV23@@Z	1428d2780	alias	__bapiconfig.cpp
+?SetTargetAnimationByName@egmAnimationBindings@@YAXVEntityID@egf@@PEBD@Z	1428d5af0	alias	__egmanimationbindings.cpp
+??__E?ms_ClassInfo@PhysXPropMessage@ecrPhysX@@2VClassInfo@efd@@B@@YAXXZ	14012c830	func
+??__E?ms_ClassInfo@NiPhysXSceneAdded@ecrPhysX@@2VClassInfo@efd@@B@@YAXXZ	14012c840	func

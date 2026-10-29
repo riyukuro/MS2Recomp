@@ -21,7 +21,7 @@ struct QuestMask : public CPtred
 {
 public:
     QuestMask();                                        // 0x140266860
-    bool FUN_140266970() const;                         // every range is satisfied (and there is one)
+    int FUN_140266970() const;                          // every range is satisfied (and there is one)
 
     int m_nEnable;                                      // +0x18 the "enableInMask" flag
     int m_pad_1c;
@@ -82,14 +82,14 @@ public:
     CQuestMaskTable();                                  // 0x1407648d0
     virtual ~CQuestMaskTable();                         // 0x140764980
 
-    bool Load();                                        // 0x1407649d0
-    bool LoadFile(const CStringA& strFile, Unk_QmFieldMap& rMap);           // 0x140765080
+    int Load();                                         // 0x1407649d0
+    int LoadFile(CStringA strFile, Unk_QmFieldMap& rMap);           // 0x140765080
     Unk_QmMaskPtr GetPortalMask(unsigned nField, int nKey);                 // 0x140764a90
     Unk_QmMaskPtr GetNpcMask(unsigned nField, int nKey);                    // 0x140764b90
-    bool HasNpcMask(void* pNpc);                        // 0x140764c90
-    bool HasNpcMaskHere(int nKey);                      // 0x140764cd0 in the current field
-    bool HasPortalMask(Unk_QmPortal* pPortal);          // 0x140764d50
-    void CheckNpcHere(int nKey);                        // 0x140764e00
+    int HasNpcMask(void* pNpc);                         // 0x140764c90
+    int HasNpcMaskHere(int nKey);                       // 0x140764cd0 in the current field
+    int HasPortalMask(Unk_QmPortal* pPortal);           // 0x140764d50
+    int CheckNpcHere(int nKey);                         // 0x140764e00
     int CheckNpc(unsigned nField, int nKey);            // 0x140764e40
     int CheckNpcObject(void* pNpc);                     // 0x140764ef0
     int CheckPortal(Unk_QmPortal* pPortal);             // 0x140764f30

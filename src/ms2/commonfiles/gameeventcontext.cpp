@@ -1536,8 +1536,9 @@ const CoupleDanceContext::Step& CoupleDanceContext::GetStep(int index) const
 }
 MS2_REPLACE_METHOD(0x140402080, CoupleDanceContext, GetStep, 40, 0xEE1EF5A5);
 
+extern "C" double (__cdecl* __imp_ceil)(double);              // the exe imports ceil from the UCRT
+
 // @0x1404020b0
-// MS2-FUNCTIONAL: ceil is the CRT import call in the exe, a direct call here (as in uinametag.cpp)
 __int64 CNpcShopGivePointContextCNSpring::GetGivePoint(__int64 price, int currencyType, int label)
 {
     if (price == 0)
@@ -1548,7 +1549,7 @@ __int64 CNpcShopGivePointContextCNSpring::GetGivePoint(__int64 price, int curren
     if (label == 3)
         percent = m_specialPercent;
     double point = price * percent / 10000.0;
-    return (__int64)ceil(point);
+    return (__int64)__imp_ceil(point);
 }
 MS2_REPLACE_METHOD(0x1404020b0, CNpcShopGivePointContextCNSpring, GetGivePoint, 142, 0x7525554E);
 

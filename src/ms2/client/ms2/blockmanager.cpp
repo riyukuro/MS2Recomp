@@ -8,8 +8,8 @@
 // MS2-PIN: ??_G?$TSingleton@VCBlockManager@@@@UEAAPEAXI@Z 0x140a31960
 // MS2-PIN: ??_GCBlockManager@@UEAAPEAXI@Z 0x140a319a0
 // MS2-PIN: ??$BlockFormat@HHHHHHHHHHHHV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@@YA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@HAEBH00000000000AEBV01@@Z 0x140a311c0
-// MS2-FUNCTIONAL: the notice/dialog helpers (message boxes, string table) are opaque FUN_ externs; the 12/13-argument fmt
-// instances are the natural StringFormat/BlockFormat calls.
+// The notice/dialog helpers (message boxes, string table) are opaque FUN_ externs; the 12/13-argument fmt instances are
+// the natural StringFormat/BlockFormat calls.
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\blockmanager.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
 #include "blockmanager.h"
@@ -48,8 +48,9 @@ void FUN_140165320(void* dst, const CStringW& s);
 void FUN_142c9ef00();
 
 // Stream embedded at packet+8; slots: 1 = byte, 3 = int, 4 = int64.
+#define BM_STREAM(p) reinterpret_cast<Unk_BlockStream*>((char*)(p) + 8)
 struct Unk_BlockStream {
-    virtual void v0(); virtual char ReadByte(); virtual void v2(); virtual int ReadInt(); virtual __int64 ReadLong();
+    virtual void v0(); virtual unsigned char ReadByte(); virtual void v2(); virtual int ReadInt(); virtual __int64 ReadLong();
 };
 
 // DAT_143ab5cc0 (dynamic initializer 0x1400c2fc0), DAT_143ab5cc8 = TSingleton<CBlockManager>::s_instance
@@ -84,46 +85,65 @@ void CBlockManager::ClearBlocks()
 // @0x140a2f730
 void CBlockManager::OnBlockPacket(void* packet)
 {
-    Unk_BlockStream* s = (Unk_BlockStream*)((char*)packet + 8);
-    char op = s->ReadByte();
-    if (op == 0) {
-        int n = s->ReadInt();
-        for (int i = 0; i < n; ++i) {
-            AccountBlockInfo* info = new AccountBlockInfo;
-            BlockPtr bp(info);
-            FUN_140268750(bp.get() ? (AccountBlockInfo*)bp.get() : 0, s);
+    int op = BM_STREAM(packet)->ReadByte();
+    switch (op)
+    {
+    case 0:
+    {
+        int n = BM_STREAM(packet)->ReadInt();
+        for (int i = 0; i < n; ++i)
+        {
+            BlockPtr bp(new AccountBlockInfo);
+            FUN_140268750((AccountBlockInfo*)bp.operator->(), BM_STREAM(packet));
             m_checker.get()->Set(bp);
-            int kind = bp->kind;
-            if (kind == 2) {
+            switch (bp->kind)
+            {
+            case 2:
                 FUN_1412751b0(GetStringCommon(0x434), 0x14);
-            } else if (kind == 4) {
+                break;
+            case 4:
                 FUN_1412751b0(GetStringCommon(0x439), 0x14);
-            } else if (kind == 10) {
+                break;
+            case 10:
+            {
                 CMsTime t(bp->expiry);
                 AddDays(t, 1);
                 int day = t.GetDay();
                 int month = t.GetMonth();
-                FUN_1412751b0(FUN_1409e8970(CStringW(L"s_admin_block_cash_out"), month, day), 0x14);
+                FUN_1412751b0(FUN_1409e8970(L"s_admin_block_cash_out", month, day), 0x14);
+                break;
+            }
             }
         }
-    } else if (op == 1) {
-        __int64 id = s->ReadLong();
-        BlockPtr removed = m_checker.get()->Remove(id);
-    } else if (op == 2) {
-        int a = (int)s->ReadLong();
-        int type = s->ReadInt();
-        __int64 expiry = s->ReadLong();
-        int delta = s->ReadInt();
-        BlockPtr r = m_checker.get()->SetExpiry((__int64)a, expiry);
-        if (delta < 0) {
-            if (type == 2) {
-                int v = -delta;
-                FUN_1412751b0(FUN_1408116a0(0x435, v), 0x14);
-            } else if (type == 4) {
-                int v = -delta;
-                FUN_1412751b0(FUN_1408116a0(0x43a, v), 0x14);
+        break;
+    }
+    case 1:
+    {
+        __int64 id = BM_STREAM(packet)->ReadLong();
+        m_checker.get()->Remove(id);
+        break;
+    }
+    case 2:
+    {
+        int a = (int)BM_STREAM(packet)->ReadLong();
+        int type = BM_STREAM(packet)->ReadInt();
+        __int64 expiry = BM_STREAM(packet)->ReadLong();
+        int delta = BM_STREAM(packet)->ReadInt();
+        m_checker.get()->SetExpiry((__int64)a, expiry);
+        if (delta < 0)
+        {
+            switch (type)
+            {
+            case 2:
+                FUN_1412751b0(FUN_1408116a0(0x435, -delta), 0x14);
+                break;
+            case 4:
+                FUN_1412751b0(FUN_1408116a0(0x43a, -delta), 0x14);
+                break;
             }
         }
+        break;
+    }
     }
 }
 

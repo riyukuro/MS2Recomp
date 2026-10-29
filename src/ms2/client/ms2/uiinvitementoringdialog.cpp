@@ -110,9 +110,9 @@ public:
     Unk_InvUIMsg();                                                 // 0x1422e4490
     ~Unk_InvUIMsg() { reinterpret_cast<ASData*>(this)->ASData::~ASData(); }   // @0x140c30570
 private:
-    unsigned char m_data[0x50];
+    void* m_data[10];
 };
-static __forceinline ASData& Unk_InvArgs(Unk_InvUIMsg& msg) { return *reinterpret_cast<ASData*>(&msg); }
+#define Unk_InvArgs(msg) (*reinterpret_cast<ASData*>(&(msg)))      // the message args (no call at /Od)
 
 void FUN_140d73bc0(int nStrId, int nType, void* p, CStringW tag);
 void FUN_140710590(COutPacket& packet);
@@ -161,6 +161,9 @@ private:
     Unk_PmB m_infoB;
 };
 class Unk_PopupMenu { public: void FUN_141a7f090(const Unk_PopupMenuInfo& info, const CStringW& strName, unsigned __int64 nSerial, void* p, int b, int c); };
+// The cast target only: the exe casts to .?AVUIPopUpMenu@@ (0x143a71720). Casting to Unk_PopupMenu emitted a type
+// descriptor no object carries, so the right click menu lookup always returned NULL.
+class UIPopUpMenu { public: virtual ~UIPopUpMenu(); };
 
 template CStringW FUN_14028dfa0<int, int, int, CStringW>(CStringW, const int&, const int&, const int&, const CStringW&);   // @0x140c2fcc0
 
@@ -222,7 +225,7 @@ Unk_PopupMenu* FUN_140c30140(int nId)
     {
         MS2Ptr<UIObject> spObj = FUN_1403ed2b0()->FUN_141adcea0(nId);
         if (spObj.get() != 0)
-            return dynamic_cast<Unk_PopupMenu*>(spObj.operator->());
+            return reinterpret_cast<Unk_PopupMenu*>(dynamic_cast<UIPopUpMenu*>(spObj.operator->()));
     }
     return 0;
 }
@@ -255,7 +258,6 @@ void UIInviteMentoringDialog::vfunc_66()
 }
 
 // @0x140c2e340
-// MS2-FUNCTIONAL: behaviour-equivalent; temp slots / MS2Ptr glue pairing and EH unwind map differ from the exe
 int UIInviteMentoringDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs)
 {
     if (UIDialog::vfunc_28(szMethod, pArgs, nArgs) != 0)
@@ -265,24 +267,27 @@ int UIInviteMentoringDialog::vfunc_28(const char* szMethod, const Scaleform::GFx
         vfunc_67();
         return 1;
     }
-    if (_stricmp(szMethod, "onInviteMenteeBySN") == 0)
+    else if (_stricmp(szMethod, "onInviteMenteeBySN") == 0)
     {
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs))
         {
             unsigned __int64 nSerial = FUN_140718350(data.FUN_1422b8d30());
-            FUN_140c2f860(nSerial, data.FUN_1422b8f40());
+            CStringW strName = data.FUN_1422b8f40();
+            FUN_140c2f860(nSerial, strName);
         }
-        return 1;
     }
-    if (_stricmp(szMethod, "onInviteMentee") == 0)
+    else if (_stricmp(szMethod, "onInviteMentee") == 0)
     {
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs))
-            FUN_140c2f860(0, data.FUN_1422b8f40());
+        {
+            CStringW strName = data.FUN_1422b8f40();
+            FUN_140c2f860(0, strName);
+        }
         return 1;
     }
-    if (_stricmp(szMethod, "OnAcceptMentoring") == 0)
+    else if (_stricmp(szMethod, "OnAcceptMentoring") == 0)
     {
         if (FUN_14025e7b0()->flags.FUN_1402c4c90(0x42) != 0)
         {
@@ -311,7 +316,7 @@ int UIInviteMentoringDialog::vfunc_28(const char* szMethod, const Scaleform::GFx
         }
         return 1;
     }
-    if (_stricmp(szMethod, "OnRejectMentoring") == 0)
+    else if (_stricmp(szMethod, "OnRejectMentoring") == 0)
     {
         if (FUN_14025e7b0()->flags.FUN_1402c4c90(0x42) != 0)
         {
@@ -330,7 +335,7 @@ int UIInviteMentoringDialog::vfunc_28(const char* szMethod, const Scaleform::GFx
         }
         return 1;
     }
-    if (_stricmp(szMethod, "onBuddy") == 0)
+    else if (_stricmp(szMethod, "onBuddy") == 0)
     {
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs))
@@ -359,7 +364,7 @@ int UIInviteMentoringDialog::vfunc_28(const char* szMethod, const Scaleform::GFx
         }
         return 1;
     }
-    if (_stricmp(szMethod, "onWhisper") == 0)
+    else if (_stricmp(szMethod, "onWhisper") == 0)
     {
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs))
@@ -370,7 +375,7 @@ int UIInviteMentoringDialog::vfunc_28(const char* szMethod, const Scaleform::GFx
         }
         return 1;
     }
-    if (_stricmp(szMethod, "OnPopupMenu") == 0)
+    else if (_stricmp(szMethod, "OnPopupMenu") == 0)
     {
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs))
@@ -406,29 +411,28 @@ void UIInviteMentoringDialog::FUN_140c2f040()
 }
 
 // @0x140c2f070
-// MS2-FUNCTIONAL: behaviour-equivalent; frame slots / EH unwind map differ from the exe
 void UIInviteMentoringDialog::FUN_140c2f070(const ATL::CAtlArray<Unk_MentorPtr<CMentor> >& arrMentors)
 {
-    if (m_bMentorPage != true && !(m_spPage == 0))
+    if (m_bMentorPage == true)
+        return;
+    if (m_spPage == 0)
+        return;
+    ASArray rows(2);
+    for (unsigned i = 0; i < arrMentors.GetCount(); i++)
     {
-        ASArray rows(2);
-        for (unsigned i = 0; i < arrMentors.GetCount(); i++)
-        {
-            Unk_MentorPtr<CMentor> spMentor = arrMentors[i];
-            if (!(spMentor == 0))
-            {
-                CStringW strInfo = FUN_1409e9ed0(CStringW(L"s_mentoring_invite_info"), FUN_1401a9d70()->FUN_141811980(6, spMentor->y), spMentor->level);
-                ASObj row(2);
-                row.FUN_1407cbbe0("isOnline", spMentor->online);
-                row.FUN_1407cbb20("charName", CStringW(spMentor->name));
-                row.FUN_1407cba60("mentorSN", FUN_140719530(spMentor->a));
-                row.FUN_1407cba60("charSN", FUN_140719530(spMentor->c));
-                row.FUN_1407cbb20("charInfo", CStringW(strInfo));
-                rows.FUN_1422bc050(Scaleform::GFx::Value(row.FUN_1422bb870()));
-            }
-        }
-        m_spPage->FUN_140bd2cb0("buildCandidate", rows);
+        Unk_MentorPtr<CMentor> spMentor = arrMentors[i];
+        if (spMentor == 0)
+            continue;
+        CStringW strInfo = FUN_1409e9ed0(CStringW(L"s_mentoring_invite_info"), FUN_1401a9d70()->FUN_141811980(6, spMentor->y), spMentor->level);
+        ASObj row(2);
+        row.FUN_1407cbbe0("isOnline", spMentor->online);
+        row.FUN_1407cbb20("charName", CStringW(spMentor->name));
+        row.FUN_1407cba60("mentorSN", FUN_140719530(spMentor->a));
+        row.FUN_1407cba60("charSN", FUN_140719530(spMentor->c));
+        row.FUN_1407cbb20("charInfo", CStringW(strInfo));
+        rows.FUN_1422bc050(Scaleform::GFx::Value(row.FUN_1422bb870()));
     }
+    m_spPage->FUN_140bd2cb0("buildCandidate", rows);
 }
 
 // @0x140c2f440
@@ -440,74 +444,68 @@ void UIInviteMentoringDialog::FUN_140c2f440(const ATL::CAtlArray<Unk_MentorPtr<C
 }
 
 // @0x140c2f490
-// MS2-FUNCTIONAL: behaviour-equivalent; frame slots / EH unwind map differ from the exe
 void UIInviteMentoringDialog::FUN_140c2f490()
 {
-    if (m_bMentorPage != false && !(m_spPage == 0))
+    if (m_bMentorPage == false)
+        return;
+    if (m_spPage == 0)
+        return;
+    ASArray rows(2);
+    for (unsigned i = 0; i < m_mentors.GetCount(); i++)
     {
-        ASArray rows(2);
-        for (unsigned i = 0; i < m_mentors.GetCount(); i++)
-        {
-            Unk_MentorPtr<CMentor> spMentor = m_mentors[i];
-            if (!(spMentor == 0))
-            {
-                CStringW strInfo = FUN_1409e9ed0(CStringW(L"s_mentoring_invite_info"), FUN_1401a9d70()->FUN_141811980(6, spMentor->y), spMentor->level);
-                ASObj row(2);
-                row.FUN_1407cbbe0("isOnline", spMentor->online);
-                row.FUN_1407cbb20("charName", CStringW(spMentor->name));
-                row.FUN_1407cba60("mentorSN", FUN_140719530(spMentor->a));
-                row.FUN_1407cba60("charSN", FUN_140719530(spMentor->c));
-                row.FUN_1407cbb20("charInfo", CStringW(strInfo));
-                rows.FUN_1422bc050(Scaleform::GFx::Value(row.FUN_1422bb870()));
-            }
-        }
-        m_spPage->FUN_140bd2cb0("buildCandidate", rows);
+        Unk_MentorPtr<CMentor> spMentor = m_mentors[i];
+        if (spMentor == 0)
+            continue;
+        CStringW strInfo = FUN_1409e9ed0(CStringW(L"s_mentoring_invite_info"), FUN_1401a9d70()->FUN_141811980(6, spMentor->y), spMentor->level);
+        ASObj row(2);
+        row.FUN_1407cbbe0("isOnline", spMentor->online);
+        row.FUN_1407cbb20("charName", CStringW(spMentor->name));
+        row.FUN_1407cba60("mentorSN", FUN_140719530(spMentor->a));
+        row.FUN_1407cba60("charSN", FUN_140719530(spMentor->c));
+        row.FUN_1407cbb20("charInfo", CStringW(strInfo));
+        rows.FUN_1422bc050(Scaleform::GFx::Value(row.FUN_1422bb870()));
     }
+    m_spPage->FUN_140bd2cb0("buildCandidate", rows);
 }
 
 // @0x140c2f860
-// MS2-FUNCTIONAL: behaviour-equivalent; frame slots / EH unwind map differ from the exe
 void UIInviteMentoringDialog::FUN_140c2f860(__int64 nMentor, const CStringW& strName)
 {
-    if (FUN_14025e7b0()->flags.FUN_1402c4c90(0x41) == 0)
+    if (FUN_14025e7b0()->flags.FUN_1402c4c90(0x41) != 0)
     {
+        FUN_141275260(0x2f7, 1, 1);
+        return;
+    }
+    if (Unk_TextFilter* pFilter = FUN_14025e7d0()->FUN_140229a50().FUN_14025cea0())
+    {
+        CStringW strBad;
+        if (FUN_140225210(pFilter, strName, strBad, 0) != 0)
         {
-            Unk_TextFilterPtr filter = FUN_14025e7d0()->FUN_140229a50();
-            Unk_TextFilter* pFilter = filter.FUN_14025cea0();
-            if (pFilter != 0)
-            {
-                CStringW strBad;
-                if (FUN_140225210(pFilter, strName, strBad, 0) != 0)
-                {
-                    FUN_1412751f0(strBad, 1, 1);
-                    return;
-                }
-            }
-        }
-        COutPacket pkt(static_cast<int>(SendOp::Mentor), 0);
-        Unk_MMNamePacket5 req;
-        req.name = strName;
-        req.id = nMentor;
-        req.FUN_14069a540(pkt);
-        FUN_140710590(pkt);
-        if (nMentor != 0)
-        {
-            for (unsigned i = 0; i < m_mentors.GetCount(); i++)
-            {
-                Unk_MentorPtr<CMentor> spMentor = m_mentors[i];
-                if (spMentor == 0)
-                    continue;
-                if (spMentor->a == nMentor)
-                {
-                    m_mentors.RemoveAt(i, 1);
-                    break;
-                }
-            }
-            FUN_140c2f490();
+            FUN_1412751f0(strBad, 1, 1);
+            return;
         }
     }
-    else
-        FUN_141275260(0x2f7, 1, 1);
+    COutPacket pkt(static_cast<int>(SendOp::Mentor), 0);
+    Unk_MMNamePacket5 req;
+    req.name = strName;
+    req.id = nMentor;
+    req.FUN_14069a540(pkt);
+    FUN_140710590(pkt);
+    if (nMentor != 0)
+    {
+        for (unsigned i = 0; i < m_mentors.GetCount(); i++)
+        {
+            Unk_MentorPtr<CMentor> spMentor = m_mentors[i];
+            if (spMentor == 0)
+                continue;
+            if (spMentor->a == nMentor)
+            {
+                m_mentors.RemoveAt(i, 1);
+                break;
+            }
+        }
+        FUN_140c2f490();
+    }
 }
 
 // @0x140c2fae0

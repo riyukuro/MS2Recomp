@@ -143,12 +143,11 @@ CostumeSetPtr CostumeSetTable::GetSet(unsigned nSetId, int nGender)
 
 #ifndef MS2_HOOK_DLL
 // @0x1405361e0
-// MS2-FUNCTIONAL: EH-state/temp-CString layout of the XML loader differs from the exe (precedent vipgoods.cpp, banktable.cpp)
 int CostumeSetTable::LoadXml()
 {
     for (unsigned i = 0; i < 2; i++)
         m_sets[i].RemoveAll();
-    CString strPath = FUN_14071a5b0(CString("Table"), CString("CostumeSet.xml"));
+    CString strPath = FUN_14071a5b0("Table", "CostumeSet.xml");
     m_cache.AssignRaw(new CCacheData);
     m_cache.get()->FUN_1401d1160(CString(strPath));
     TiXmlDocument doc;
@@ -181,41 +180,39 @@ int CostumeSetTable::LoadXml()
             for (unsigned i = 0; i < arrSlots.GetCount(); i++)
             {
                 int nSlot = FUN_1405451c0(arrSlots[i]);
-                if (nSlot != 0)
-                {
-                    int nValue = 0;
-                    if (s_mapSlotType.Lookup(nSlot, nValue))
-                        spSet->m_mapTransparency.SetAt(nSlot, nValue);
-                }
+                if (nSlot == 0)
+                    continue;
+                int nValue = 0;
+                if (!s_mapSlotType.Lookup(nSlot, nValue))
+                    continue;
+                spSet->m_mapTransparency.SetAt(nSlot, nValue);
             }
             for (unsigned nIndex = 0; nIndex < 0x14; nIndex++)
             {
-                unsigned nKey = nIndex;
-                if (spSet->m_mapTransparency.Lookup(nKey) == 0)
+                int nKey = nIndex;
+                if (spSet->m_mapTransparency.Lookup(nKey) != 0)
+                    continue;
+                CString strNumber = FUN_1405451e0(nKey);
+                CString strAttr = Unk_SocketFormat("slot_{0}", strNumber);
+                unsigned nItemId = 0;
+                FUN_140873220(pNode, strAttr, nItemId);
+                if (nItemId == 0)
+                    continue;
+                if (!FUN_1406af060(FUN_1406aeee0()))
                 {
-                    CString strNumber = FUN_1405451e0(nKey);
-                    CString strAttr = Unk_SocketFormat("slot_{0}", strNumber);
-                    unsigned nItemId = 0;
-                    FUN_140873220(pNode, strAttr, nItemId);
-                    if (nItemId != 0)
+                    MS2Ptr<CItemData> item = FUN_14053f870(nItemId);
+                    if (item == 0)
                     {
-                        if (!FUN_1406af060(FUN_1406aeee0()))
-                        {
-                            MS2Ptr<CItemData> item = FUN_14053f870(nItemId);
-                            if (item == 0)
-                            {
-                                FUN_14015eb90(FUN_140166440(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
-                                return 0;
-                            }
-                            if (FUN_14054b400(item->FUN_14053eba0()) != nKey)
-                            {
-                                FUN_14015eb90(FUN_140166440(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
-                                return 0;
-                            }
-                        }
-                        spSet->m_mapSlotItems.SetAt(nKey, nItemId);
+                        FUN_14015eb90(FUN_140166440(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
+                        return 0;
+                    }
+                    if (FUN_14054b400(item->FUN_14053eba0()) != nKey)
+                    {
+                        FUN_14015eb90(FUN_140166440(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
+                        return 0;
                     }
                 }
+                spSet->m_mapSlotItems.SetAt(nKey, nItemId);
             }
             m_sets[nGender].SetAt(spSet->m_nSetId, spSet);
         }

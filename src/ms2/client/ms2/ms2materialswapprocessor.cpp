@@ -213,17 +213,5 @@ void FUN_1414d0180(bool bValue)
     DAT_143ae0ac0 = bValue;
 }
 
-// @0x1414d14b0
-// MS2-FUNCTIONAL: the exe dtor does not store the class vftable before destroying members; cl always does here
-MS2MaterialSwapProcessor::~MS2MaterialSwapProcessor()
-{
-}
-
-// @0x1414d14e0
-// MS2-FUNCTIONAL: the exe dtor does not store the class vftable before destroying members; cl always does here
-MaterialSwapper::~MaterialSwapper()
-{
-}
-
 // @0x1414d19a0
 const NiRTTI* MS2MaterialSwapProcessor::GetRTTI() const { return &ms_RTTI; }

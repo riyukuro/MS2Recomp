@@ -7,12 +7,14 @@
 #include "ms2/placeholder/ms2stdafx.h"
 #include <vector>
 #include "ms2/placeholder/nmobjects.h"
+#include "ms2/placeholder/nmstream.h"
+#include "ms2/placeholder/nmencoder.h"
 #include "ms2/ms2recover.h"
 
 extern int FUN_1415fb700(const void*);
 extern int FUN_1415fb720(const void*);
 extern int FUN_1415fb750(void*);
-extern int FUN_1415fb6d0(void*);
+extern int FUN_1415fb6d0(CNMSerializableDecoder*);
 extern void FUN_1415f9990(void*);
 extern void FUN_14156ac20(void*, unsigned int);
 extern void FUN_14156acb0(void*, unsigned __int64);
@@ -42,11 +44,8 @@ CNMRequestFileUploadSessionExFunc::CNMRequestFileUploadSessionExFunc(
 // @0x141598fe0
 unsigned int CNMRequestFileUploadSessionExFunc::EncodeFramed(CNMStream* pStream)
 {
-    alignas(8) unsigned char encoder[0x18];
-    FUN_14156bcb0(encoder, pStream, this);
-    const unsigned int result = Encode(reinterpret_cast<CNMEncoder*>(encoder), pStream);
-    FUN_14156bd50(encoder);
-    return result;
+    CNMSerializableEncoder encoder(pStream, this);
+    return CNMRequestFileUploadSessionExFunc::Encode(reinterpret_cast<CNMEncoder*>(&encoder), pStream);
 }
 
 // MS2-FUNCTIONAL: recovered format branch; direct calls replace indirect virtual dispatch.
@@ -54,10 +53,8 @@ unsigned int CNMRequestFileUploadSessionExFunc::EncodeFramed(CNMStream* pStream)
 unsigned int CNMRequestFileUploadSessionExFunc::EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream)
 {
     if (m_bFormat == 1)
-        Encode(pEncoder, pStream);
-    else
-        EncodeFramed(pStream);
-    return 0;
+        return CNMRequestFileUploadSessionExFunc::Encode(pEncoder, pStream);
+    return CNMRequestFileUploadSessionExFunc::EncodeFramed(pStream);
 }
 
 // MS2-FUNCTIONAL: request/reply field order and path serialization match; STL traversal codegen differs.
@@ -93,13 +90,10 @@ unsigned int CNMRequestFileUploadSessionExFunc::Encode(CNMEncoder* pEncoder, CNM
 // @0x141599230
 unsigned int CNMRequestFileUploadSessionExFunc::DecodeFramed(CNMStream* pStream)
 {
-    alignas(8) unsigned char decoder[0x38];
-    FUN_14156bcb0(decoder, pStream, this);
-    unsigned int result = 0;
-    if (FUN_1415fb750(decoder) != 0)
-        result = Decode(reinterpret_cast<CNMSerializableDecoder*>(decoder), pStream);
-    FUN_14156bd50(decoder);
-    return result;
+    CNMSerializableDecoder decoder(pStream, this);
+    if (FUN_1415fb750(&decoder) == 0)
+        return 0;
+    return CNMRequestFileUploadSessionExFunc::Decode(&decoder, pStream);
 }
 
 // MS2-FUNCTIONAL: framed decoder selection matches; direct dispatch replaces the indirect virtual call.
@@ -107,46 +101,35 @@ unsigned int CNMRequestFileUploadSessionExFunc::DecodeFramed(CNMStream* pStream)
 unsigned int CNMRequestFileUploadSessionExFunc::DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream)
 {
     if (FUN_1415fb6d0(pDecoder) == 2)
-        DecodeFramed(pStream);
-    else
-        Decode(pDecoder, pStream);
-    return 0;
+        return CNMRequestFileUploadSessionExFunc::DecodeFramed(pStream);
+    return CNMRequestFileUploadSessionExFunc::Decode(pDecoder, pStream);
 }
 
-// MS2-FUNCTIONAL: field order, vector clear and file path decoding match; STL growth codegen differs.
 // @0x141599320
 unsigned int CNMRequestFileUploadSessionExFunc::Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream)
 {
     CNMFunc::DecodeDispatch(pDecoder, pStream);
-    if (FUN_1415fb700(this) == 0)
+    if (FUN_1415fb700(this) != 0)
     {
-        if (FUN_1415fb720(this) != 0)
-        {
-            using ReadU32 = unsigned int(__fastcall*)(void*);
-            void** vftable = *reinterpret_cast<void***>(pDecoder);
-            m_68 = reinterpret_cast<ReadU32>(vftable[3])(pDecoder);
-            m_6c = reinterpret_cast<ReadU32>(vftable[3])(pDecoder);
-        }
-    }
-    else
-    {
-        using ReadU32 = unsigned int(__fastcall*)(void*);
-        using ReadU64 = unsigned __int64(__fastcall*)(void*);
-        void** vftable = *reinterpret_cast<void***>(pDecoder);
-        m_30 = reinterpret_cast<ReadU64>(vftable[4])(pDecoder);
-        m_38 = reinterpret_cast<ReadU32>(vftable[3])(pDecoder);
-        m_3c = reinterpret_cast<ReadU32>(vftable[3])(pDecoder);
-        m_40 = reinterpret_cast<ReadU32>(vftable[3])(pDecoder);
-        m_44 = reinterpret_cast<ReadU32>(vftable[3])(pDecoder);
-        m_48 = reinterpret_cast<ReadU32>(vftable[3])(pDecoder);
-        const unsigned int count = reinterpret_cast<ReadU32>(vftable[3])(pDecoder);
+        m_30 = pDecoder->ReadU64();
+        m_38 = pDecoder->ReadU32();
+        m_3c = pDecoder->ReadU32();
+        m_40 = pDecoder->ReadU32();
+        m_44 = pDecoder->ReadU32();
+        m_48 = pDecoder->ReadU32();
+        CNMFilePath file;
+        const unsigned int count = pDecoder->ReadU32();
         m_files.clear();
-        for (unsigned int i = 0; i != count; ++i)
+        for (unsigned int i = 0; i < count; ++i)
         {
-            CNMFilePath file;
             file.DecodeFramed(pStream);
             m_files.push_back(file);
         }
+    }
+    else if (FUN_1415fb720(this) != 0)
+    {
+        m_68 = pDecoder->ReadU32();
+        m_6c = pDecoder->ReadU32();
     }
     return FUN_1415fb750(pDecoder);
 }

@@ -22,13 +22,22 @@
 
 // ---- libpng 1.6.17 (statically linked, bound to the exe by FUN_<va>) ----
 struct Unk_PngStruct;                                       // png_struct, opaque
+// png_color.
+struct Unk_PngColor
+{
+    unsigned char m_ucRed;
+    unsigned char m_ucGreen;
+    unsigned char m_ucBlue;
+};
+MS2_CHECK_SIZE(Unk_PngColor, 3);
+
 struct Unk_PngInfo                                          // the png_info fields this unit reads
 {
     unsigned int m_uiWidth;                                 // +0x00
     unsigned int m_uiHeight;                                // +0x04
     unsigned int m_uiValid;                                 // +0x08
     unsigned __int64 m_nRowBytes;                           // +0x10
-    unsigned char* m_pPalette;                              // +0x18 png_color[3 bytes each]
+    Unk_PngColor* m_pPalette;                               // +0x18
     unsigned short m_usNumPalette;                          // +0x20
     unsigned short m_usNumTrans;                            // +0x22
     char m_pad24[0xb8 - 0x24];
@@ -119,7 +128,7 @@ public:
     unsigned char m_ucConverterKind;                        // +0xd3
     unsigned char m_ucD4;                                   // +0xd4
     unsigned char m_ucColorType;                            // +0xd5
-    unsigned char m_bHasAlpha;                              // +0xd6
+    bool m_bHasAlpha;                                       // +0xd6
     unsigned char m_bPalettized;                            // +0xd7
     unsigned char m_bFlipVertical;                          // +0xd8
 };
@@ -184,7 +193,6 @@ NiPixelData* MS2PNGReader::ReadFile(efd::File& kIst, NiPixelData* pkOptDest)
     return ReadImage(kIst, pkOptDest);
 }
 
-// MS2-FUNCTIONAL: frame 0x10 smaller: the exe materialises the member-function-pointer assignments through stack temps
 // @0x140d9aec0
 bool MS2PNGReader::ReadHeader(efd::File& kIst, unsigned int& uiWidth, unsigned int& uiHeight, NiPixelFormat& kFormat,
     bool& bMipmap, unsigned int& uiFaces)
@@ -193,8 +201,7 @@ bool MS2PNGReader::ReadHeader(efd::File& kIst, unsigned int& uiWidth, unsigned i
     char cInterlace;
     char cFilter;
     char cCompression;
-    unsigned char ucColorType;
-    char cBitDepth;
+    unsigned char cBitDepth;
     uiFaces = 1;
     NiStreamLoadBinary(kIst, m_aucSignature[0]);
     NiStreamLoadBinary(kIst, m_aucSignature[1]);
@@ -222,62 +229,63 @@ bool MS2PNGReader::ReadHeader(efd::File& kIst, unsigned int& uiWidth, unsigned i
         NiStreamLoadBinary(kIst, cInterlace);
         NiStreamLoadBinary(kIst, uiCrc);
     }
-    ucColorType = m_ucColorType;
-    if (ucColorType == 0 || ucColorType == 2)
+    switch (m_ucColorType)
     {
+    case 0:
+    case 2:
         m_ucBitsPerPixel = cBitDepth * 3;
         m_bPalettized = 0;
-    }
-    else if (ucColorType == 3)
-    {
+        break;
+    case 3:
         m_ucBitsPerPixel = cBitDepth;
         m_bPalettized = 1;
-    }
-    else if (ucColorType == 4)
-    {
+        break;
+    case 4:
         m_ucBitsPerPixel = cBitDepth << 2;
         m_bPalettized = 0;
-    }
-    else if (ucColorType == 6)
-    {
+        break;
+    case 6:
         m_ucBitsPerPixel = cBitDepth << 2;
         m_bHasAlpha = 1;
         m_bPalettized = 0;
+        break;
     }
-    if (m_ucBitsPerPixel == 4)
+    switch (m_ucBitsPerPixel)
     {
+    case 4:
         m_ucConverterKind = 0;
         m_pfnConvert = &MS2PNGReader::Convert4;
-    }
-    else if (m_ucBitsPerPixel == 8)
-    {
+        break;
+    case 8:
         m_ucConverterKind = 1;
         m_pfnConvert = &MS2PNGReader::Convert8;
-    }
-    else if (m_ucBitsPerPixel == 0xf || m_ucBitsPerPixel == 0x10)
-    {
+        break;
+    case 0xf:
+    case 0x10:
         m_ucConverterKind = 2;
-    }
-    else if (m_ucBitsPerPixel == 0x18)
-    {
+        break;
+    case 0x18:
         m_ucConverterKind = 3;
         if (m_ucColorType == 0 && cBitDepth == 8)
             m_pfnConvert = &MS2PNGReader::ConvertGray32;
         else
             m_pfnConvert = &MS2PNGReader::ConvertRGB32;
-    }
-    else if (m_ucBitsPerPixel == 0x20)
-    {
+        break;
+    case 0x20:
         m_ucConverterKind = 4;
         m_pfnConvert = &MS2PNGReader::ConvertRGBA32;
+        break;
     }
     m_bHasAlpha = 1;
-    if (m_bPalettized == 0)
-        m_kFormat = DAT_1439fb040;
-    else if (cBitDepth == 4)
-        m_kFormat = DAT_1439faf00;
+    if (m_bPalettized != 0)
+    {
+        if (cBitDepth == 4)
+            m_kFormat = DAT_1439faf00;
+        else
+            m_kFormat = DAT_1439fafa0;
+    }
     else
-        m_kFormat = DAT_1439fafa0;
+        m_kFormat = DAT_1439fb040;
     m_usWidth = (unsigned short)uiWidth;
     m_usHeight = (unsigned short)uiHeight;
     kFormat = m_kFormat;
@@ -285,7 +293,6 @@ bool MS2PNGReader::ReadHeader(efd::File& kIst, unsigned int& uiWidth, unsigned i
     return true;
 }
 
-// MS2-FUNCTIONAL: not byte-matched (libpng setjmp frame / NiNew shapes)
 // @0x140d9b630
 NiPixelData* MS2PNGReader::ReadImage(efd::File& kIst, NiPixelData* pkOptDest)
 {
@@ -323,9 +330,9 @@ NiPixelData* MS2PNGReader::ReadImage(efd::File& kIst, NiPixelData* pkOptDest)
         NiPalette::PaletteEntry* pkEntry = m_pkPalette;
         for (unsigned int ui = 0; ui < m_usNumPalette; ui++)
         {
-            pkEntry->m_ucBlue = pInfo->m_pPalette[ui * 3 + 2];
-            pkEntry->m_ucGreen = pInfo->m_pPalette[ui * 3 + 1];
-            pkEntry->m_ucRed = pInfo->m_pPalette[ui * 3];
+            pkEntry->m_ucBlue = pInfo->m_pPalette[ui].m_ucBlue;
+            pkEntry->m_ucGreen = pInfo->m_pPalette[ui].m_ucGreen;
+            pkEntry->m_ucRed = pInfo->m_pPalette[ui].m_ucRed;
             pkEntry->m_ucAlpha = 0xff;
             pkEntry++;
         }
@@ -351,16 +358,14 @@ NiPixelData* MS2PNGReader::ReadImage(efd::File& kIst, NiPixelData* pkOptDest)
     }
     if (m_bPalettized != 0)
     {
-        NiPalette* pkPalette = NiNew NiPalette(m_bHasAlpha != 0, m_usNumPalette, m_pkPalette);
-        pkPixels->SetPalette(pkPalette);
+        pkPixels->SetPalette(NiNew NiPalette(m_bHasAlpha, m_usNumPalette, m_pkPalette));
     }
     unsigned char* pucDst = pkPixels->GetPixels(0, 0);
     unsigned int uiWidth = pkPixels->GetWidth(0, 0);
     unsigned int uiPitch = uiWidth * pkPixels->GetPixelStride();
     if (uiPitch == 0)
     {
-        uiPitch = pkPixels->GetWidth(0, 0);
-        uiPitch = uiPitch >> 1;
+        uiPitch = pkPixels->GetWidth(0, 0) >> 1;
     }
     if (m_bFlipVertical != 0)
     {
@@ -505,7 +510,6 @@ void MS2PNGReader::ConvertRGBA32(const unsigned char* pucSrc, unsigned char* puc
     }
 }
 
-// MS2-FUNCTIONAL: not byte-matched (raw palette row reader, unreferenced)
 // @0x140d9c590
 void MS2PNGReader::ReadRawRow(efd::File& kIst)
 {
@@ -522,8 +526,9 @@ void MS2PNGReader::ReadRawRow(efd::File& kIst)
         m_pucRow = NiAlloc(unsigned char, m_uiBufferSize);
     }
     NiPalette::PaletteEntry* pkEntry = m_pkPalette;
-    unsigned char ucBits = m_ucRawBits;
-    if (ucBits == 8)
+    switch (m_ucRawBits)
+    {
+    case 8:
     {
         unsigned char* pucSrc = m_pucRow;
         NiStreamLoadBinary(kIst, m_pucRow, m_usNumPalette);
@@ -536,51 +541,52 @@ void MS2PNGReader::ReadRawRow(efd::File& kIst)
             pkEntry++;
             pucSrc++;
         }
+        break;
     }
-    else if (ucBits > 0xe)
+    case 0xf:
+    case 0x10:
     {
-        if (ucBits < 0x11)
+        unsigned char* pucSrc = m_pucRow;
+        NiStreamLoadBinary(kIst, m_pucRow, (unsigned int)m_usNumPalette << 1);
+        for (unsigned int ui = 0; ui < m_usNumPalette; ui++)
         {
-            unsigned char* pucSrc = m_pucRow;
-            NiStreamLoadBinary(kIst, m_pucRow, (unsigned int)m_usNumPalette << 1);
-            for (unsigned int ui = 0; ui < m_usNumPalette; ui++)
-            {
-                pkEntry->m_ucRed = (pucSrc[1] & 0x7c) << 1;
-                pkEntry->m_ucGreen = pucSrc[1] * 64 + ((pucSrc[0] & 0xe0) >> 2);
-                pkEntry->m_ucBlue = pucSrc[0] << 3;
-                pkEntry->m_ucAlpha = 0xff;
-                pkEntry++;
-                pucSrc += 2;
-            }
+            pkEntry->m_ucRed = (pucSrc[1] & 0x7c) << 1;
+            pkEntry->m_ucGreen = ((pucSrc[1] & 3) << 6) + ((pucSrc[0] & 0xe0) >> 2);
+            pkEntry->m_ucBlue = (pucSrc[0] & 0x1f) << 3;
+            pkEntry->m_ucAlpha = 0xff;
+            pkEntry++;
+            pucSrc += 2;
         }
-        else if (ucBits == 0x18)
+        break;
+    }
+    case 0x18:
+    {
+        unsigned char* pucSrc = m_pucRow;
+        NiStreamLoadBinary(kIst, m_pucRow, m_usNumPalette * 3);
+        for (unsigned int ui = 0; ui < m_usNumPalette; ui++)
         {
-            unsigned char* pucSrc = m_pucRow;
-            NiStreamLoadBinary(kIst, m_pucRow, m_usNumPalette * 3);
-            for (unsigned int ui = 0; ui < m_usNumPalette; ui++)
-            {
-                pkEntry->m_ucBlue = pucSrc[0];
-                pkEntry->m_ucGreen = pucSrc[1];
-                pkEntry->m_ucRed = pucSrc[2];
-                pucSrc += 3;
-                pkEntry->m_ucAlpha = 0xff;
-                pkEntry++;
-            }
+            pkEntry->m_ucBlue = *pucSrc++;
+            pkEntry->m_ucGreen = *pucSrc++;
+            pkEntry->m_ucRed = *pucSrc++;
+            pkEntry->m_ucAlpha = 0xff;
+            pkEntry++;
         }
-        else if (ucBits == 0x20)
+        break;
+    }
+    case 0x20:
+    {
+        unsigned char* pucSrc = m_pucRow;
+        NiStreamLoadBinary(kIst, m_pucRow, (unsigned int)m_usNumPalette << 2);
+        for (unsigned int ui = 0; ui < m_usNumPalette; ui++)
         {
-            unsigned char* pucSrc = m_pucRow;
-            NiStreamLoadBinary(kIst, m_pucRow, (unsigned int)m_usNumPalette << 2);
-            for (unsigned int ui = 0; ui < m_usNumPalette; ui++)
-            {
-                pkEntry->m_ucBlue = pucSrc[0];
-                pkEntry->m_ucGreen = pucSrc[1];
-                pkEntry->m_ucRed = pucSrc[2];
-                pkEntry->m_ucAlpha = pucSrc[3];
-                pucSrc += 4;
-                pkEntry++;
-            }
+            pkEntry->m_ucBlue = *pucSrc++;
+            pkEntry->m_ucGreen = *pucSrc++;
+            pkEntry->m_ucRed = *pucSrc++;
+            pkEntry->m_ucAlpha = *pucSrc++;
+            pkEntry++;
         }
+        break;
+    }
     }
 }
 

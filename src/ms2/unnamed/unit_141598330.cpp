@@ -6,12 +6,14 @@
 #define MS2_THIS_FILE ""
 #include "ms2/placeholder/ms2stdafx.h"
 #include "ms2/placeholder/nmobjects.h"
+#include "ms2/placeholder/nmstream.h"
+#include "ms2/placeholder/nmencoder.h"
 #include "ms2/ms2recover.h"
 
 extern int FUN_1415fb700(const void*);
 extern int FUN_1415fb720(const void*);
 extern int FUN_1415fb750(void*);
-extern int FUN_1415fb6d0(void*);
+extern int FUN_1415fb6d0(CNMSerializableDecoder*);
 extern void FUN_1415f9990(void*);
 extern void FUN_14156ac20(void*, unsigned int);
 extern void FUN_14156acb0(void*, unsigned __int64);
@@ -40,11 +42,8 @@ CNMRequestChatSessionExFunc::CNMRequestChatSessionExFunc(const unsigned char* pT
 // @0x141598460
 unsigned int CNMRequestChatSessionExFunc::EncodeFramed(CNMStream* pStream)
 {
-    alignas(8) unsigned char encoder[0x18];
-    FUN_14156bcb0(encoder, pStream, this);
-    const unsigned int result = Encode(reinterpret_cast<CNMEncoder*>(encoder), pStream);
-    FUN_14156bd50(encoder);
-    return result;
+    CNMSerializableEncoder encoder(pStream, this);
+    return CNMRequestChatSessionExFunc::Encode(reinterpret_cast<CNMEncoder*>(&encoder), pStream);
 }
 
 // MS2-FUNCTIONAL: recovered format branch; direct calls replace indirect virtual dispatch.
@@ -52,26 +51,15 @@ unsigned int CNMRequestChatSessionExFunc::EncodeFramed(CNMStream* pStream)
 unsigned int CNMRequestChatSessionExFunc::EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream)
 {
     if (m_bFormat == 1)
-        Encode(pEncoder, pStream);
-    else
-        EncodeFramed(pStream);
-    return 0;
+        return CNMRequestChatSessionExFunc::Encode(pEncoder, pStream);
+    return CNMRequestChatSessionExFunc::EncodeFramed(pStream);
 }
 
-// MS2-FUNCTIONAL: request and reply fields are serialized in recovered order; direct calls differ in codegen.
 // @0x141598520
 unsigned int CNMRequestChatSessionExFunc::Encode(CNMEncoder* pEncoder, CNMStream* pStream)
 {
     CNMFunc::EncodeDispatch(pEncoder, pStream);
-    if (FUN_1415fb700(this) == 0)
-    {
-        if (FUN_1415fb720(this) != 0)
-        {
-            FUN_14156ac20(pEncoder, static_cast<unsigned int>(m_4c));
-            FUN_14156ac20(pEncoder, static_cast<unsigned int>(m_50));
-        }
-    }
-    else
+    if (FUN_1415fb700(this) != 0)
     {
         FUN_14156acb0(pEncoder, m_30);
         FUN_14156ac20(pEncoder, static_cast<unsigned int>(m_38));
@@ -79,6 +67,11 @@ unsigned int CNMRequestChatSessionExFunc::Encode(CNMEncoder* pEncoder, CNMStream
         FUN_14156ac20(pEncoder, static_cast<unsigned int>(m_40));
         FUN_14156ac20(pEncoder, static_cast<unsigned int>(m_44));
         FUN_14156ac20(pEncoder, static_cast<unsigned int>(m_48));
+    }
+    else if (FUN_1415fb720(this) != 0)
+    {
+        FUN_14156ac20(pEncoder, static_cast<unsigned int>(m_4c));
+        FUN_14156ac20(pEncoder, static_cast<unsigned int>(m_50));
     }
     FUN_1415f9990(pEncoder);
     return 1;
@@ -88,13 +81,10 @@ unsigned int CNMRequestChatSessionExFunc::Encode(CNMEncoder* pEncoder, CNMStream
 // @0x141598610
 unsigned int CNMRequestChatSessionExFunc::DecodeFramed(CNMStream* pStream)
 {
-    alignas(8) unsigned char decoder[0x38];
-    FUN_14156bcb0(decoder, pStream, this);
-    unsigned int result = 0;
-    if (FUN_1415fb750(decoder) != 0)
-        result = Decode(reinterpret_cast<CNMSerializableDecoder*>(decoder), pStream);
-    FUN_14156bd50(decoder);
-    return result;
+    CNMSerializableDecoder decoder(pStream, this);
+    if (FUN_1415fb750(&decoder) == 0)
+        return 0;
+    return CNMRequestChatSessionExFunc::Decode(&decoder, pStream);
 }
 
 // MS2-FUNCTIONAL: framed decoder selection matches; direct dispatch replaces the indirect virtual call.
@@ -102,36 +92,27 @@ unsigned int CNMRequestChatSessionExFunc::DecodeFramed(CNMStream* pStream)
 unsigned int CNMRequestChatSessionExFunc::DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream)
 {
     if (FUN_1415fb6d0(pDecoder) == 2)
-        DecodeFramed(pStream);
-    else
-        Decode(pDecoder, pStream);
-    return 0;
+        return CNMRequestChatSessionExFunc::DecodeFramed(pStream);
+    return CNMRequestChatSessionExFunc::Decode(pDecoder, pStream);
 }
 
-// MS2-FUNCTIONAL: request and reply fields are read in recovered order; virtual reader dispatch is preserved.
 // @0x141598700
 unsigned int CNMRequestChatSessionExFunc::Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream)
 {
     CNMFunc::DecodeDispatch(pDecoder, pStream);
-    using ReadU32 = unsigned int(__fastcall*)(void*);
-    using ReadU64 = unsigned __int64(__fastcall*)(void*);
-    void** vftable = *reinterpret_cast<void***>(pDecoder);
-    if (FUN_1415fb700(this) == 0)
+    if (FUN_1415fb700(this) != 0)
     {
-        if (FUN_1415fb720(this) != 0)
-        {
-            m_4c = static_cast<int>(reinterpret_cast<ReadU32>(vftable[3])(pDecoder));
-            m_50 = static_cast<int>(reinterpret_cast<ReadU32>(vftable[3])(pDecoder));
-        }
+        m_30 = pDecoder->ReadU64();
+        m_38 = pDecoder->ReadU32();
+        m_3c = pDecoder->ReadU32();
+        m_40 = pDecoder->ReadU32();
+        m_44 = pDecoder->ReadU32();
+        m_48 = pDecoder->ReadU32();
     }
-    else
+    else if (FUN_1415fb720(this) != 0)
     {
-        m_30 = reinterpret_cast<ReadU64>(vftable[4])(pDecoder);
-        m_38 = static_cast<int>(reinterpret_cast<ReadU32>(vftable[3])(pDecoder));
-        m_3c = static_cast<int>(reinterpret_cast<ReadU32>(vftable[3])(pDecoder));
-        m_40 = static_cast<int>(reinterpret_cast<ReadU32>(vftable[3])(pDecoder));
-        m_44 = static_cast<int>(reinterpret_cast<ReadU32>(vftable[3])(pDecoder));
-        m_48 = static_cast<int>(reinterpret_cast<ReadU32>(vftable[3])(pDecoder));
+        m_4c = pDecoder->ReadU32();
+        m_50 = pDecoder->ReadU32();
     }
     return FUN_1415fb750(pDecoder);
 }

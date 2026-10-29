@@ -77,27 +77,26 @@ void UIWeddingHallReservationPageChange::vfunc_2()
     UIWeddingHallReservationPage::vfunc_2();
 }
 
-// MS2-FUNCTIONAL: epilogue/branch layout of the early returns is 3 bytes longer
 // @0x140fe29f0
 void UIWeddingHallReservationPageChange::vfunc_5()
 {
-    Unk_WeddingTicketView* pTicket = FUN_141b87160(FUN_1409eed90());
-    int nId = FUN_140fe2d20(m_pDialog);
-    if (!FUN_140900f90(nId, pTicket))
+    if (!FUN_140900f90(FUN_140fe2d20(m_pDialog), FUN_141b87160(FUN_1409eed90())))
     {
         CStringW strKey(L"s_wedding_hall_reservation_paclkage_err");
         FUN_1412751f0(GetStringCommonByKey(strKey), 1, 1);
         return;
     }
     int n = FUN_1409008e0(FUN_140d295d0(FUN_1409eed90()), FUN_141b87160(FUN_1409eed90()), DAT_143ab2828);
-    if (n == 0)
+    if (n != 0)
+    {
+        FUN_141b87760(FUN_1409eed90(), n);
+        m_pDialog->vfunc_67();
+        FUN_141b1feb0(FUN_140967100());
+    }
+    else
     {
         FUN_140fdc030(m_pDialog);
-        return;
     }
-    FUN_141b87760(FUN_1409eed90(), n);
-    m_pDialog->vfunc_67();
-    FUN_141b1feb0(FUN_140967100());
 }
 
 // @0x140fe2b30
@@ -120,17 +119,16 @@ CStringW UIWeddingHallReservationPageChange::vfunc_9()
     return GetStringCommonByKey(strKey);
 }
 
-// MS2-FUNCTIONAL: one byte differs in else-less/else branch layout
 // @0x140fe2c30
 CStringW UIWeddingHallReservationPageChange::vfunc_10(bool bStart)
 {
-    if (bStart == 0)
+    if (bStart != 0)
     {
-        CStringW strEnd(L"s_wedding_reservation_change_end");
-        return GetStringCommonByKey(strEnd);
+        CStringW strStart(L"s_wedding_reservation_change_start");
+        return GetStringCommonByKey(strStart);
     }
-    CStringW strStart(L"s_wedding_reservation_change_start");
-    return GetStringCommonByKey(strStart);
+    CStringW strEnd(L"s_wedding_reservation_change_end");
+    return GetStringCommonByKey(strEnd);
 }
 
 // @0x140fe2d20

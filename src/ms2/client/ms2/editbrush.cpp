@@ -32,16 +32,19 @@ NiNode* FUN_140a0b000(NiAVObject* pkObject);                        // parent of
 void FUN_1405a85c0(void* pHandle);                                  // release the handle returned by a detach
 void FUN_140adc7f0(NiMesh* pkMesh, int nType);                      // NiMesh::SetPrimitiveType
 void FUN_140adc720(NiMesh* pkMesh);
-void FUN_140adc810(NiMesh* pkMesh, int n);                          // NiMesh::SetSelectiveUpdate-like flag
+void FUN_140adc810(NiMesh* pkMesh, bool b);                         // NiMesh::SetSelectiveUpdate-like flag
 float FUN_14028aed0(float f);                                       // floorf
-Vector3 FUN_141198410(Vector3 ptCenter, float fRadius);
+NiPoint3 FUN_141198410(NiPoint3 ptCenter, float fRadius);
+extern "C" float (__cdecl* __imp_sinf)(float);                      // the exe calls the CRT import
+extern "C" float (__cdecl* __imp_cosf)(float);
+extern Vector3 DAT_143b01a60;                                       // the zero point
 
 // The detach answered by the parent of an instance (slot 37 of the parent, as in cubecraft_2.cpp).
-struct Unk_BrushHandle { void* m_pA; void* m_pB; };
+struct Unk_BrushHandle { void* m_p; };
 class Unk_BrushParent { public: virtual void s0(); virtual void s1(); virtual void s2(); virtual void s3(); virtual void s4(); virtual void s5(); virtual void s6(); virtual void s7(); virtual void s8(); virtual void s9();
     virtual void s10(); virtual void s11(); virtual void s12(); virtual void s13(); virtual void s14(); virtual void s15(); virtual void s16(); virtual void s17(); virtual void s18(); virtual void s19();
     virtual void s20(); virtual void s21(); virtual void s22(); virtual void s23(); virtual void s24(); virtual void s25(); virtual void s26(); virtual void s27(); virtual void s28(); virtual void s29();
-    virtual void s30(); virtual void s31(); virtual void s32(); virtual void s33(); virtual void s34(); virtual void s35(); virtual void s36(); virtual void s37(); virtual void s38(); virtual void s39();
+    virtual void s30(); virtual void s31(); virtual void s32(); virtual void s33(); virtual void s34(); virtual void s35(); virtual void s36(); virtual Unk_BrushHandle* s37(Unk_BrushHandle* pOut, NiMeshHWInstance* pInstance); virtual void s38(); virtual void s39();
     virtual void s40(); virtual void s41(); virtual void s42(); virtual void s43(); virtual void s44(); virtual void s45(); virtual void s46(); virtual void s47(); virtual void s48(); virtual void s49();
     virtual void s50(); virtual void s51(); virtual void s52(); virtual void s53(); virtual void s54(); virtual void s55(); virtual void s56(); virtual void s57(); virtual void s58(); virtual void s59();
     virtual void s60(); virtual void s61(); virtual void s62(); virtual void s63(); virtual void s64(); virtual void s65(); virtual void s66(); virtual void s67(); virtual void s68(); virtual void s69();
@@ -56,9 +59,8 @@ class Unk_BrushParent { public: virtual void s0(); virtual void s1(); virtual vo
 
 // @0x141197280
 EditBrush::EditBrush()
-    : m_kColor(1.0f, 0.0f, 0.0f, 1.0f), m_ptPos(0.0f, 0.0f, 0.0f)
+    : m_kColor(1.0f, 0.0f, 0.0f, 1.0f), m_ptPos(0.0f, 0.0f, 0.0f), m_vUnused(0.0f, 0.0f)
 {
-    m_vUnused.FUN_140a0a600(0.0f, 0.0f);
 }
 
 // @0x141197330
@@ -86,19 +88,18 @@ void EditBrush::vfunc_8(Unk_BrushVec2) {}
 // @0x141197370
 void EditBrush::vfunc_2()
 {
-    if (m_timer.FUN_140868ba0() == 0)
+    if (m_timer.FUN_140868ba0() != 0)
+        return;
+    if (FUN_14025e7c0()->FUN_14116d950(0x2a, false, 0) && FUN_14025e7c0()->FUN_14116daa0(0, false, 0))
     {
-        if (FUN_14025e7c0()->FUN_14116d950(0x2a, false, 0) && FUN_14025e7c0()->FUN_14116daa0(0, false, 0))
-        {
-            vfunc_4();
-            m_timer.FUN_140868750(100);
-            return;
-        }
-        if (FUN_14025e7c0()->FUN_14116d950(0x2a, false, 0) && FUN_14025e7c0()->FUN_14116daa0(1, false, 0))
-        {
-            vfunc_5();
-            m_timer.FUN_140868750(100);
-        }
+        vfunc_4();
+        m_timer.FUN_140868750(100);
+        return;
+    }
+    if (FUN_14025e7c0()->FUN_14116d950(0x2a, false, 0) && FUN_14025e7c0()->FUN_14116daa0(1, false, 0))
+    {
+        vfunc_5();
+        m_timer.FUN_140868750(100);
     }
 }
 
@@ -134,9 +135,8 @@ PaintBrush::~PaintBrush()
 // @0x1411975c0
 void PaintBrush::vfunc_1()
 {
-    NiColorA kColor = m_kColor;
     extern NiMesh* FUN_141197f80(float fRadius, NiColorA kColor);
-    m_spMesh = FUN_141197f80(1.0f, kColor);
+    m_spMesh = FUN_141197f80(1.0f, m_kColor);
 }
 
 // @0x141197620
@@ -165,24 +165,22 @@ DecoEditService* BrushService()
 }
 
 // @0x141197750
-// MS2-FUNCTIONAL: random stamp loop; temporaries of the transform differ vs exe
+// Stamps random instances inside the circle.
 void PaintBrush::vfunc_4()
 {
     for (int i = 0; (float)i < FUN_14028aed0(m_fDensity); ++i)
     {
         NiTransform xf;
-        xf.MakeIdentity();
         xf.m_fScale = 1.0f;
-        Vector3 ptHit = FUN_141198410(m_ptPos, m_fRadius);
-        xf.m_Translate = *(NiPoint3*)&ptHit;
-        if (ptHit.FUN_140552700(Vector3(0.0f, 0.0f, 0.0f)))
+        xf.m_Rotate.MakeIdentity();
+        xf.m_Translate = FUN_141198410(reinterpret_cast<const efd::Point3&>(m_ptPos), m_fRadius);
+        if (xf.m_Translate != reinterpret_cast<const efd::Point3&>(DAT_143b01a60))
             BrushService()->AddTransform(xf);
     }
     BrushService()->RefreshLayers();
 }
 
 // @0x1411978a0
-// MS2-FUNCTIONAL: detach loop; the handle temporaries differ vs exe
 void PaintBrush::vfunc_5()
 {
     ATL::CAtlArray<NiMeshHWInstance*> aInstances;
@@ -196,7 +194,7 @@ void PaintBrush::vfunc_5()
             if (pParent != 0)
             {
                 Unk_BrushHandle hOut;
-                ((void (*)(Unk_BrushParent*, Unk_BrushHandle*, NiMeshHWInstance*))(*(void***)pParent)[37])(pParent, &hOut, pInstance);
+                pParent->s37(&hOut, pInstance);
                 FUN_1405a85c0(&hOut);
             }
         }
@@ -219,10 +217,8 @@ void PaintBrush::vfunc_7(float fDensity)
 
 // @0x141197a50
 NoiseBrush::NoiseBrush()
-    : m_fRadius(100.0f), m_spMesh(0)
+    : m_fRadius(100.0f), m_vScale(1.0f, 1.0f), m_vRotation(0.0f, 360.0f), m_spMesh(0)
 {
-    m_vScale.FUN_140a0a600(1.0f, 1.0f);
-    m_vRotation.FUN_140a0a600(0.0f, 360.0f);
 }
 
 // @0x141197b00
@@ -233,9 +229,8 @@ NoiseBrush::~NoiseBrush()
 // @0x141197b40
 void NoiseBrush::vfunc_1()
 {
-    NiColorA kColor = m_kColor;
     extern NiMesh* FUN_141197f80(float fRadius, NiColorA kColor);
-    m_spMesh = FUN_141197f80(1.0f, kColor);
+    m_spMesh = FUN_141197f80(1.0f, m_kColor);
 }
 
 // @0x141197ba0
@@ -282,7 +277,7 @@ static float NoiseAngle(NoiseBrush* pBrush)
 }
 
 // @0x141197cd0
-// MS2-FUNCTIONAL: randomises rotation and scale of every instance in the circle
+// randomises rotation and scale of every instance in the circle
 void NoiseBrush::vfunc_4()
 {
     ATL::CAtlArray<NiMeshHWInstance*> aInstances;
@@ -326,16 +321,14 @@ void NoiseBrush::vfunc_9(Unk_BrushVec2 v)
 }
 
 // @0x141197f80
-// MS2-FUNCTIONAL: Gamebryo circle-mesh builder; the exe's inline stream/lock temporaries are laid out differently
+// Builds the Gamebryo circle mesh.
 NiMesh* FUN_141197f80(float fRadius, NiColorA kColor)
 {
-    NiPoint3 aPoints[360];
-    for (int i = 0; i < 360; ++i)
-    {
-        float fSin = sinf((float)i * 3.1415927f / 180.0f);
-        float fCos = cosf((float)i * 3.1415927f / 180.0f);
-        aPoints[i] = NiPoint3(fCos * fRadius, fSin * fRadius, 0.0f);
-    }
+    const int kNumPoints = 360;
+    Vector3 aPoints[kNumPoints];
+    for (int i = 0; i < kNumPoints; ++i)
+        aPoints[i] = Vector3(__imp_cosf((float)i * 3.1415927f / 180.0f) * fRadius,
+                             __imp_sinf((float)i * 3.1415927f / 180.0f) * fRadius, 0.0f);
     NiVertexColorProperty* pkVC = new (efd::MemHint(efd::MemHint::NONE)) NiVertexColorProperty;
     pkVC->SetSourceMode(NiVertexColorProperty::SOURCE_EMISSIVE);
     pkVC->SetLightingMode(NiVertexColorProperty::LIGHTING_E);
@@ -359,22 +352,20 @@ NiMesh* FUN_141197f80(float fRadius, NiColorA kColor)
     pkMesh->UpdateProperties();
     pkMesh->UpdateEffects();
     pkMesh->UpdateNodeBound();
-    FUN_140adc810(pkMesh, 1);
+    FUN_140adc810(pkMesh, true);
     return pkMesh;
 }
 
 // @0x141198410
-// MS2-FUNCTIONAL: a random point inside the circle dropped onto the ground
-Vector3 FUN_141198410(Vector3 ptCenter, float fRadius)
+// A random point inside the circle dropped onto the ground.
+NiPoint3 FUN_141198410(NiPoint3 ptCenter, float fRadius)
 {
-    int nAngle = FUN_14109a9e0();
-    int nDist = FUN_14109a9e0();
-    float fSin = sinf((float)(nAngle % 360) * 3.1415927f / 180.0f);
-    float fCos = cosf((float)(nAngle % 360) * 3.1415927f / 180.0f);
-    Vector3 ptOff(fCos * (float)(nDist % (int)fRadius), fSin * (float)(nDist % (int)fRadius), 100.0f);
+    int nAngle = FUN_14109a9e0() % 360;
+    int nDist = FUN_14109a9e0() % (int)fRadius;
+    Vector3 ptOff(__imp_cosf((float)nAngle * 3.1415927f / 180.0f) * (float)nDist,
+                  __imp_sinf((float)nAngle * 3.1415927f / 180.0f) * (float)nDist, 100.0f);
     Unk_RayCastInfo info;
     Vector3 ptHit(0.0f, 0.0f, 0.0f);
-    Vector3 ptFrom = ptCenter.FUN_14097fd50(ptOff);
-    FUN_1409f7ca0()->FUN_14168a310(ptFrom, ptHit, &info, 200.0f, 0, 0x201);
-    return ptHit;
+    FUN_1409f7ca0()->FUN_14168a310(reinterpret_cast<Vector3&>(ptCenter).FUN_14097fd50(ptOff), ptHit, &info, 200.0f, 0, 0x201);
+    return reinterpret_cast<const efd::Point3&>(ptHit);
 }

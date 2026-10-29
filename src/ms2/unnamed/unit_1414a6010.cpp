@@ -91,14 +91,10 @@ namespace efd { class ServiceManager; class IBase; }
 class Unk_RefObj { public: virtual ~Unk_RefObj(); };
 
 // @0x1414a6110
-// MS2-FUNCTIONAL: the delete-through-vftable-with-flag-1 expression is written as `delete p`; the exe's temporary holding
-// the deleting destructor's result is laid out differently.
 void FUN_1414a6110(Unk_RefObj** ppObj)
 {
     if (*ppObj != 0) {
-        Unk_RefObj* p = *ppObj;
-        if (p != 0)
-            delete p;      // scalar deleting destructor (vftable slot 0), delete flag 1
+        delete *ppObj;      // scalar deleting destructor (vftable slot 0), delete flag 1
         *ppObj = 0;
     }
 }

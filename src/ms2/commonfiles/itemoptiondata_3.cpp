@@ -195,7 +195,6 @@ bool CItemOptionTable::FUN_1405f4720()
 }
 
 // @0x1405f47a0
-// MS2-FUNCTIONAL: exe 18 bytes longer (the (std::max)<unsigned> temporaries are laid out differently)
 // The remake cost of an item (the stone by slot, meso and the second stone, scaled by item level, remake count and rank).
 void CItemOptionTable::FUN_1405f47a0(int nItemId, int nLevel, int nRank, unsigned short nItemLevel,
                                      const CItemRemakeOptionIngredient& kIngredient)
@@ -208,7 +207,7 @@ void CItemOptionTable::FUN_1405f47a0(int nItemId, int nLevel, int nRank, unsigne
         nStat = 0x5f;
     else if (FUN_14053fd50(nItemId))
         nStat = 0x5e;
-    int nRate = FUN_14052d1e0()->FUN_140594810(nItemId);
+    unsigned nRate = FUN_14052d1e0()->FUN_140594810(nItemId);
     unsigned nStone = FUN_14053fd50(nItemId) ? 5 : 1;
     unsigned nMeso = 1;
     unsigned nSecond = 1;
@@ -222,14 +221,15 @@ void CItemOptionTable::FUN_1405f47a0(int nItemId, int nLevel, int nRank, unsigne
     nLevel = (std::min)(nLevel, 14);
     if (nLevel < 10)
         fBase = 1.25f;
-    nStone = (unsigned)(nStone * ((nLv - 50.0) / 10.0 + 1.0)) * nRate;
+    nStone = (unsigned)(nStone * (1.0 + (nLv - 50.0) / 10.0));
+    nStone *= nRate;
     nMeso = (unsigned)(FUN_14028aed0((Ms2PowFI(fBase, nLevel) + fEpsilon) * 200.0f) * (float)nRate);
     nSecond = (nLevel + 11 + (std::max)(0u, nLv - 50)) * nRate;
     if (nRegion == 0)
     {
         if (nItemLevel < 60)
         {
-            if (nRank > 4)
+            if (nRank >= 5)
             {
                 nStone *= 5;
                 nMeso *= 2;
@@ -242,20 +242,20 @@ void CItemOptionTable::FUN_1405f47a0(int nItemId, int nLevel, int nRank, unsigne
             nMeso *= 10;
             nSecond *= 15;
         }
-        else if (nRank > 5)
+        else if (nRank >= 6)
         {
             nStone *= 5;
             nMeso *= 12;
             nSecond *= 15;
         }
     }
-    else if (nRank > 4)
+    else if (nRank >= 5)
     {
         nStone *= 5;
-        if (nRank < 6)
-            nMeso *= 10;
-        else
+        if (nRank >= 6)
             nMeso *= 12;
+        else
+            nMeso *= 10;
         nSecond *= 15;
     }
     nStone = (std::max)(1u, nStone);
@@ -559,10 +559,9 @@ int CItemOptionTable::FUN_1405f6350(unsigned nStatId)
 }
 
 // @0x1405f63e0
-// MS2-FUNCTIONAL: the exe stores the pair(0, 0) argument temporaries left to right (first at +0x24 before +0x20)
 std::pair<int, int> CItemOptionTable::FUN_1405f63e0(unsigned nStatId)
 {
-    std::pair<int, int> kResult(0, 0);
+    std::pair<int, int> kResult = { 0, 0 };
     CheckInit();
     auto it = m_variations.find(nStatId);
     if (it == m_variations.end())
@@ -573,10 +572,9 @@ std::pair<int, int> CItemOptionTable::FUN_1405f63e0(unsigned nStatId)
 }
 
 // @0x1405f64e0
-// MS2-FUNCTIONAL: the exe stores the pair(0, 0) argument temporaries left to right (first at +0x24 before +0x20)
 std::pair<int, int> CItemOptionTable::FUN_1405f64e0(int nItemId, int nRank, int nStat)
 {
-    std::pair<int, int> kResult(0, 0);
+    std::pair<int, int> kResult = { 0, 0 };
     CheckInit();
     MS2Ptr<CItemData> spItem = FUN_14053f870(nItemId);
     if (spItem == 0)
@@ -589,16 +587,14 @@ std::pair<int, int> CItemOptionTable::FUN_1405f64e0(int nItemId, int nRank, int 
 }
 
 // @0x1405f6650
-// MS2-FUNCTIONAL: the exe stores the pair(0, 0) argument temporaries left to right; 2 bytes longer
 std::pair<int, int> CItemOptionTable::FUN_1405f6650(int nItemId, int nRank, unsigned nSpecial)
 {
-    std::pair<int, int> kResult(0, 0);
+    std::pair<int, int> kResult = { 0, 0 };
     CheckInit();
     MS2Ptr<CItemData> spItem = FUN_14053f870(nItemId);
     if (spItem == 0)
         return kResult;
-    unsigned nId = spItem->FUN_14053eff0(nRank);
-    MS2Ptr<ItemOptionRandom> spRandom = FUN_140166430()->FUN_1405f6010(nId);
+    MS2Ptr<ItemOptionRandom> spRandom = FUN_140166430()->FUN_1405f6010(spItem->FUN_14053eff0(nRank));
     if (spRandom == 0)
         return kResult;
     kResult = FUN_1405f63e0(spRandom->FUN_1405d7710(nSpecial));
@@ -606,7 +602,6 @@ std::pair<int, int> CItemOptionTable::FUN_1405f6650(int nItemId, int nRank, unsi
 }
 
 // @0x1405f67e0
-// MS2-FUNCTIONAL: exe 4 bytes longer (one wider stack displacement: a temporary slot not reproduced)
 // The stat value is in the top band of its variation row (the item must be level 50+).
 bool CItemOptionTable::FUN_1405f67e0(MS2Ptr<CItem> spItem, int nStat, int nUnused, int nValue)
 {
@@ -616,9 +611,7 @@ bool CItemOptionTable::FUN_1405f67e0(MS2Ptr<CItem> spItem, int nStat, int nUnuse
     MS2Ptr<CItemData> spData = FUN_14053f870(spItem->FUN_1405276c0());
     if (spData == 0)
         return false;
-    unsigned nRank = spItem->FUN_140526bd0();
-    unsigned nRandomId = spData->FUN_14053eff0(nRank);
-    MS2Ptr<ItemOptionRandom> spRandom = FUN_140166430()->FUN_1405f6010(nRandomId);
+    MS2Ptr<ItemOptionRandom> spRandom = FUN_140166430()->FUN_1405f6010(spData->FUN_14053eff0(spItem->FUN_140526bd0()));
     if (spRandom == 0)
         return false;
     int nId = spRandom->FUN_1405d7680(nStat);
@@ -628,13 +621,12 @@ bool CItemOptionTable::FUN_1405f67e0(MS2Ptr<CItem> spItem, int nStat, int nUnuse
     std::pair<int, int> kRange = FUN_1405f63e0(nId);
     if (kRange.first == kRange.second)
         return true;
-    if (kRange.first < nValue)
-        return nHigh <= nValue;
-    return false;
+    if (kRange.first >= nValue)
+        return false;
+    return nValue >= nHigh;
 }
 
 // @0x1405f6a90
-// MS2-FUNCTIONAL: exe 4 bytes longer (one wider stack displacement: a temporary slot not reproduced)
 // The special stat value is in the top band of its variation row (the item must be level 50+).
 bool CItemOptionTable::FUN_1405f6a90(MS2Ptr<CItem> spItem, unsigned nSpecial, int nUnused, int nValue)
 {
@@ -644,9 +636,7 @@ bool CItemOptionTable::FUN_1405f6a90(MS2Ptr<CItem> spItem, unsigned nSpecial, in
     MS2Ptr<CItemData> spData = FUN_14053f870(spItem->FUN_1405276c0());
     if (spData == 0)
         return false;
-    unsigned nRank = spItem->FUN_140526bd0();
-    unsigned nRandomId = spData->FUN_14053eff0(nRank);
-    MS2Ptr<ItemOptionRandom> spRandom = FUN_140166430()->FUN_1405f6010(nRandomId);
+    MS2Ptr<ItemOptionRandom> spRandom = FUN_140166430()->FUN_1405f6010(spData->FUN_14053eff0(spItem->FUN_140526bd0()));
     if (spRandom == 0)
         return false;
     int nId = spRandom->FUN_1405d7710(nSpecial);
@@ -656,9 +646,9 @@ bool CItemOptionTable::FUN_1405f6a90(MS2Ptr<CItem> spItem, unsigned nSpecial, in
     std::pair<int, int> kRange = FUN_1405f63e0(nId);
     if (kRange.first == kRange.second)
         return true;
-    if (kRange.first < nValue)
-        return nHigh <= nValue;
-    return false;
+    if (kRange.first >= nValue)
+        return false;
+    return nValue >= nHigh;
 }
 
 // @0x1405f6d40
@@ -721,7 +711,6 @@ void CItemOptionTable::FUN_1405f70f0(MS2Ptr<CItemData> spItem, int nRank, unsign
     std::map<CString, std::map<unsigned long, unsigned long> > mapCounts;
     std::vector<unsigned char> vTrials(nTrials);
     // @0x140606450 (the lambda body)
-    // MS2-FUNCTIONAL: lambda body frame 0x10 smaller in the exe (0x3a8 vs 0x3b8: one temporary fewer), slots shifted
     Concurrency::parallel_for_each(std::begin(vTrials), std::end(vTrials),
         [&spItem, &spRandom, &nRank, &vLocked, &nPickCount, &lock, &vLogs, &nIndex, &mapCounts, &nTotal](unsigned char)
         {
@@ -735,64 +724,58 @@ void CItemOptionTable::FUN_1405f70f0(MS2Ptr<CItemData> spItem, int nRank, unsign
             vLogs.insert(vLogs.end(), vLocal.begin(), vLocal.end());
             if (nIndex == 0)
             {
-                POSITION pos = kStats.GetStartPosition();
-                while (pos != NULL)
+                for (POSITION pos = kStats.GetStartPosition(); pos != NULL; kStats.GetNext(pos))
                 {
                     int nKey = kStats.GetKeyAt(pos);
                     int nValue = kStats.GetValueAt(pos)->GetValue();
                     CString strName = FUN_14082efb0(nKey);
-                    if (mapCounts.find(strName) == mapCounts.end())
+                    auto it = mapCounts.find(strName);
+                    if (it == mapCounts.end())
                         mapCounts.insert(std::make_pair(strName, std::map<unsigned long, unsigned long>()));
                     mapCounts[strName][nValue]++;
                     nTotal++;
-                    kStats.GetNext(pos);
                 }
-                pos = kSpecials.GetStartPosition();
-                while (pos != NULL)
+                for (POSITION pos = kSpecials.GetStartPosition(); pos != NULL; kSpecials.GetNext(pos))
                 {
                     int nKey = kSpecials.GetKeyAt(pos);
                     int nValue = kSpecials.GetValueAt(pos)->GetValue();
                     CString strName = FUN_14081d380(nKey);
-                    if (mapCounts.find(strName) == mapCounts.end())
+                    auto it = mapCounts.find(strName);
+                    if (it == mapCounts.end())
                         mapCounts.insert(std::make_pair(strName, std::map<unsigned long, unsigned long>()));
                     mapCounts[strName][nValue]++;
                     nTotal++;
-                    kSpecials.GetNext(pos);
                 }
             }
             else
             {
-                POSITION pos = kStats.GetStartPosition();
-                while (pos != NULL)
+                for (POSITION pos = kStats.GetStartPosition(); pos != NULL; kStats.GetNext(pos))
                 {
                     Unk_EnchantPtr<BaseOption> spBase = kStats.GetValueAt(pos);
-                    if (spBase->m_nIndex == nIndex - 1)
-                    {
-                        int nKey = kStats.GetKeyAt(pos);
-                        int nValue = spBase->GetValue();
-                        CString strName = FUN_14082efb0(nKey);
-                        if (mapCounts.find(strName) == mapCounts.end())
-                            mapCounts.insert(std::make_pair(strName, std::map<unsigned long, unsigned long>()));
-                        mapCounts[strName][nValue]++;
-                        nTotal++;
-                    }
-                    kStats.GetNext(pos);
+                    if (spBase->m_nIndex != nIndex - 1)
+                        continue;
+                    int nKey = kStats.GetKeyAt(pos);
+                    int nValue = spBase->GetValue();
+                    CString strName = FUN_14082efb0(nKey);
+                    auto it = mapCounts.find(strName);
+                    if (it == mapCounts.end())
+                        mapCounts.insert(std::make_pair(strName, std::map<unsigned long, unsigned long>()));
+                    mapCounts[strName][nValue]++;
+                    nTotal++;
                 }
-                pos = kSpecials.GetStartPosition();
-                while (pos != NULL)
+                for (POSITION pos = kSpecials.GetStartPosition(); pos != NULL; kSpecials.GetNext(pos))
                 {
                     Unk_EnchantPtr<BaseOption> spBase = kSpecials.GetValueAt(pos);
-                    if (spBase->m_nIndex == nIndex - 1)
-                    {
-                        int nKey = kSpecials.GetKeyAt(pos);
-                        int nValue = spBase->GetValue();
-                        CString strName = FUN_14081d380(nKey);
-                        if (mapCounts.find(strName) == mapCounts.end())
-                            mapCounts.insert(std::make_pair(strName, std::map<unsigned long, unsigned long>()));
-                        mapCounts[strName][nValue]++;
-                        nTotal++;
-                    }
-                    kSpecials.GetNext(pos);
+                    if (spBase->m_nIndex != nIndex - 1)
+                        continue;
+                    int nKey = kSpecials.GetKeyAt(pos);
+                    int nValue = spBase->GetValue();
+                    CString strName = FUN_14081d380(nKey);
+                    auto it = mapCounts.find(strName);
+                    if (it == mapCounts.end())
+                        mapCounts.insert(std::make_pair(strName, std::map<unsigned long, unsigned long>()));
+                    mapCounts[strName][nValue]++;
+                    nTotal++;
                 }
             }
         });
@@ -902,23 +885,21 @@ bool CItemOptionTable::LoadItemOptionConstant()
     std::vector<Unk_140165cf0*> elems;
     FUN_14028f5d0(pRoot, "option", elems);
     // @0x140606110 (the lambda body)
-    // MS2-FUNCTIONAL: lambda body 1 byte longer in the exe (temporary slot order differs)
     Concurrency::parallel_for_each(std::begin(elems), std::end(elems), [&lock, this](Unk_140165cf0* pElem) {
         int nCode = 0;
         FUN_140873220(pElem, "code", nCode);
-        if (nCode != 0)
+        if (nCode == 0)
+            return;
+        std::vector<Unk_140165cf0*> children;
+        FUN_14028f5d0(pElem, "rank", children);
+        for (auto& pChild : children)
         {
-            std::vector<Unk_140165cf0*> children;
-            FUN_14028f5d0(pElem, "rank", children);
-            for (auto& pChild : children)
-            {
-                MS2Ptr<ItemOptionConstant> spConstant(new ItemOptionConstant);
-                spConstant->FUN_1405d2a50(nCode);
-                if (!spConstant->FUN_1405d2a90(pChild))
-                    continue;
-                Unk_CriticalSectionLock guard(lock, 1);
-                m_constants.insert(std::make_pair(nCode, spConstant));
-            }
+            MS2Ptr<ItemOptionConstant> spConstant(new ItemOptionConstant);
+            spConstant->FUN_1405d2a50(nCode);
+            if (!spConstant->FUN_1405d2a90(pChild))
+                continue;
+            Unk_CriticalSectionLock guard(lock, 1);
+            m_constants.insert(std::make_pair(nCode, spConstant));
         }
     });
     return true;

@@ -3,7 +3,7 @@
 // ?\gfxvideo.cpp (src/ms2/gfxui/gfxvideo.cpp).
 //
 // The game's Scaleform video state: a VideoPC with the game's DirectSound video sound system, set on a GFx loader.
-// Include it after `#define GFX_USE_VIDEO_WIN32` (see sfvideo.h).
+// The Scaleform Video classes come from sfvideo.h (the recovered include/video headers).
 #pragma once
 
 #include "ms2/ms2layout.h"

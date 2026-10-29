@@ -24,7 +24,7 @@
 
 // ---- unit-local helpers ----
 
-int FUN_14092c040(wchar_t* pBuffer, size_t cchBuffer, const wchar_t* pszFormat, ...);   // wide "sprintf_s" helper
+extern "C" int FUN_14092c040(wchar_t* pBuffer, size_t cchBuffer, const wchar_t* pszFormat, ...);   // wide "sprintf_s" helper (C linkage: no unwind state)
 int FUN_140392040(char* pBuffer, size_t nSize, const char* pszFormat, ...);              // narrow "sprintf_s" helper
 
 // The two CRT callback stubs at 0x141485570 (spills its arguments and breaks) and 0x141485590 (nop/int3/ret),
@@ -158,109 +158,81 @@ bool FUN_141484ac0(LPCSTR pszPath, LPEXCEPTION_POINTERS pExceptionPointers)
 }
 
 // @0x141484c70
-// MS2-FUNCTIONAL: the report text and the printf argument lists are reproduced from the exe, but the frame does not
-// come out byte-identical (MSVC picks a different local layout for the 0x4e0-byte frame).
 void FUN_141484c70(const char* pszGraphicInfo, const char* pszAdditionalInfo, wchar_t* pwszDetail, size_t nDetailSize)
 {
     std::string strDetail;   // constructed and destroyed by the exe, never touched in between
 
-    wchar_t* pwszWrite = pwszDetail;
     wchar_t* pwszEnd = pwszDetail + nDetailSize;
+    wchar_t* pwszWrite = pwszDetail;
 
     SYSTEM_INFO sysInfo;
     GetSystemInfo(&sysInfo);
-    int cchWritten = FUN_14092c040(pwszWrite, pwszEnd - pwszWrite, L"OEM ID: %d, Number of processors: %d\n", sysInfo.dwOemId, sysInfo.dwNumberOfProcessors);
-    pwszWrite += cchWritten;
-    cchWritten = FUN_14092c040(pwszWrite, pwszEnd - pwszWrite, L"Processor type: %d, Processor level: %d, Processor revision: %d\n", sysInfo.dwProcessorType, sysInfo.wProcessorLevel, sysInfo.wProcessorRevision);
-    pwszWrite += cchWritten;
+    pwszWrite += FUN_14092c040(pwszWrite, pwszEnd - pwszWrite, L"OEM ID: %d, Number of processors: %d\n", sysInfo.dwOemId, sysInfo.dwNumberOfProcessors);
+    pwszWrite += FUN_14092c040(pwszWrite, pwszEnd - pwszWrite, L"Processor type: %d, Processor level: %d, Processor revision: %d\n", sysInfo.dwProcessorType, sysInfo.wProcessorLevel, sysInfo.wProcessorRevision);
 
     HKEY hKey;
-    if (RegOpenKeyExW(HKEY_LOCAL_MACHINE, L"Hardware/Description/System/CentralProcessor/0", 0, KEY_QUERY_VALUE, &hKey) == ERROR_SUCCESS)
+    LONG lResult = RegOpenKeyExW(HKEY_LOCAL_MACHINE, L"Hardware/Description/System/CentralProcessor/0", 0, KEY_QUERY_VALUE, &hKey);
+    if (lResult == ERROR_SUCCESS)
     {
         DWORD dwType = 4;
-        DWORD adwSize[3] = { 4, 1, 0 };
-        DWORD dwSpeed = 0;
-        if (RegQueryValueExW(hKey, L"~MHz", NULL, &dwType, (LPBYTE)&dwSpeed, adwSize) == ERROR_SUCCESS)
-        {
-            cchWritten = FUN_14092c040(pwszWrite, pwszEnd - pwszWrite, L"CPU speed: %d MHz\n", dwSpeed);
-            pwszWrite += cchWritten;
-        }
+        DWORD dwStrType = 1;
+        DWORD dwSize = 4;
+        DWORD dwSpeed;
+        lResult = RegQueryValueExW(hKey, L"~MHz", NULL, &dwType, (LPBYTE)&dwSpeed, &dwSize);
+        if (lResult == ERROR_SUCCESS)
+            pwszWrite += FUN_14092c040(pwszWrite, pwszEnd - pwszWrite, L"CPU speed: %d MHz\n", dwSpeed);
 
         char szProcessor[512];
-        adwSize[0] = 0x1fe;
-        if (RegQueryValueExW(hKey, L"ProcessorNameString", NULL, &adwSize[1], (LPBYTE)szProcessor, adwSize) == ERROR_SUCCESS)
-        {
-            cchWritten = FUN_14092c040(pwszWrite, pwszEnd - pwszWrite, L"Processor name: %s\n", szProcessor);
-            pwszWrite += cchWritten;
-        }
-        adwSize[0] = 0x1fe;
-        if (RegQueryValueExW(hKey, L"Identifier", NULL, &adwSize[1], (LPBYTE)szProcessor, adwSize) == ERROR_SUCCESS)
-        {
-            cchWritten = FUN_14092c040(pwszWrite, pwszEnd - pwszWrite, L"Processor identifier: %s\n", szProcessor);
-            pwszWrite += cchWritten;
-        }
+        dwSize = 0x1fe;
+        lResult = RegQueryValueExW(hKey, L"ProcessorNameString", NULL, &dwStrType, (LPBYTE)szProcessor, &dwSize);
+        if (lResult == ERROR_SUCCESS)
+            pwszWrite += FUN_14092c040(pwszWrite, pwszEnd - pwszWrite, L"Processor name: %s\n", szProcessor);
+        dwSize = 0x1fe;
+        lResult = RegQueryValueExW(hKey, L"Identifier", NULL, &dwStrType, (LPBYTE)szProcessor, &dwSize);
+        if (lResult == ERROR_SUCCESS)
+            pwszWrite += FUN_14092c040(pwszWrite, pwszEnd - pwszWrite, L"Processor identifier: %s\n", szProcessor);
         RegCloseKey(hKey);
     }
 
-    OSVERSIONINFOEXW osvi;
-    memset(&osvi, 0, sizeof(osvi));
+    OSVERSIONINFOEXW osvi = {};
     osvi.dwOSVersionInfoSize = sizeof(osvi);
     if (GetVersionExW((LPOSVERSIONINFOW)&osvi))
     {
-        cchWritten = FUN_14092c040(pwszWrite, pwszEnd - pwszWrite,
+        pwszWrite += FUN_14092c040(pwszWrite, pwszEnd - pwszWrite,
                                    L"dwMajorVersion: %ld; dwMinorVersion: %ld; dwBuildNumber: %ld; wServicePackMajor: %d; wServicePackMinor: %d\n",
                                    osvi.dwMajorVersion, osvi.dwMinorVersion, osvi.dwBuildNumber, osvi.wServicePackMajor, osvi.wServicePackMinor);
-        pwszWrite += cchWritten;
     }
 
     MEMORYSTATUS ms;
     GlobalMemoryStatus(&ms);
-    size_t nAvailVirtual = (size_t)ms.dwAvailVirtual / 0x400;
-    size_t nTotalVirtual = (size_t)ms.dwTotalVirtual / 0x400;
-    size_t nAvailPageFile = (size_t)ms.dwAvailPageFile / 0x400;
-    size_t nTotalPageFile = (size_t)ms.dwTotalPageFile / 0x400;
-    size_t nAvailPhys = (size_t)ms.dwAvailPhys / 0x400;
-    cchWritten = FUN_14092c040(pwszWrite, pwszEnd - pwszWrite,
+    pwszWrite += FUN_14092c040(pwszWrite, pwszEnd - pwszWrite,
                                L"TotalPhys     : %8zuk, AvailPhys     : %8zuk, TotalPagefile : %8zuk, AvailPageFile : %8zuk, TotalVirtual  : %8zuk, AvailVirtual  : %8zuk\n",
-                               (size_t)ms.dwTotalPhys / 0x400, nAvailPhys, nTotalPageFile, nAvailPageFile, nTotalVirtual, nAvailVirtual);
-    pwszWrite += cchWritten;
+                               (size_t)ms.dwTotalPhys / 0x400, (size_t)ms.dwAvailPhys / 0x400, (size_t)ms.dwTotalPageFile / 0x400,
+                               (size_t)ms.dwAvailPageFile / 0x400, (size_t)ms.dwTotalVirtual / 0x400, (size_t)ms.dwAvailVirtual / 0x400);
 
     PROCESS_MEMORY_COUNTERS_EX pmc;
     pmc.cb = sizeof(pmc);
-    if (!GetProcessMemoryInfo(GetCurrentProcess(), (PROCESS_MEMORY_COUNTERS*)&pmc, sizeof(pmc)))
+    if (GetProcessMemoryInfo(GetCurrentProcess(), (PROCESS_MEMORY_COUNTERS*)&pmc, sizeof(pmc)))
     {
-        cchWritten = FUN_14092c040(pwszWrite, pwszEnd - pwszWrite, L"Process memory information unavailable.\n");
-        pwszWrite += cchWritten;
+        pwszWrite += FUN_14092c040(pwszWrite, pwszEnd - pwszWrite, L" Process memory information ===\n");
+        pwszWrite += FUN_14092c040(pwszWrite, pwszEnd - pwszWrite, L"Page fault count           : %12ld, \n", pmc.PageFaultCount);
+        pwszWrite += FUN_14092c040(pwszWrite, pwszEnd - pwszWrite, L"PeakWorkingSetSize         : %12zdk, WorkingSetSize         : %12zdk\n",
+                                   (size_t)pmc.PeakWorkingSetSize / 0x400, (size_t)pmc.WorkingSetSize / 0x400);
+        pwszWrite += FUN_14092c040(pwszWrite, pwszEnd - pwszWrite, L"QuotaPeakPagedPoolUsage    : %12zdk, QuotaPagedPoolUsage    : %12zdk\n",
+                                   (size_t)pmc.QuotaPeakPagedPoolUsage / 0x400, (size_t)pmc.QuotaPagedPoolUsage / 0x400);
+        pwszWrite += FUN_14092c040(pwszWrite, pwszEnd - pwszWrite, L"QuotaPeakNonPagedPoolUsage : %12zdk, QuotaNonPagedPoolUsage : %12zdk\n",
+                                   (size_t)pmc.QuotaPeakNonPagedPoolUsage / 0x400, (size_t)pmc.QuotaNonPagedPoolUsage / 0x400);
+        pwszWrite += FUN_14092c040(pwszWrite, pwszEnd - pwszWrite, L"PeakPagefileUsage          : %12zdk, PagefileUsage          : %12zdk\n",
+                                   (size_t)pmc.PeakPagefileUsage / 0x400, (size_t)pmc.PagefileUsage / 0x400);
+        pwszWrite += FUN_14092c040(pwszWrite, pwszEnd - pwszWrite, L"PrivateUsage               : %12zdk\n", (size_t)pmc.PrivateUsage / 0x400);
     }
     else
     {
-        cchWritten = FUN_14092c040(pwszWrite, pwszEnd - pwszWrite, L" Process memory information ===\n");
-        pwszWrite += cchWritten;
-        cchWritten = FUN_14092c040(pwszWrite, pwszEnd - pwszWrite, L"Page fault count           : %12ld, \n", pmc.PageFaultCount);
-        pwszWrite += cchWritten;
-        size_t nWorkingSet = (size_t)pmc.WorkingSetSize / 0x400;
-        cchWritten = FUN_14092c040(pwszWrite, pwszEnd - pwszWrite, L"PeakWorkingSetSize         : %12zdk, WorkingSetSize         : %12zdk\n",
-                                   (size_t)pmc.PeakWorkingSetSize / 0x400, nWorkingSet);
-        pwszWrite += cchWritten;
-        size_t nQuotaPagedPool = (size_t)pmc.QuotaPagedPoolUsage / 0x400;
-        cchWritten = FUN_14092c040(pwszWrite, pwszEnd - pwszWrite, L"QuotaPeakPagedPoolUsage    : %12zdk, QuotaPagedPoolUsage    : %12zdk\n",
-                                   (size_t)pmc.QuotaPeakPagedPoolUsage / 0x400, nQuotaPagedPool);
-        pwszWrite += cchWritten;
-        size_t nQuotaNonPagedPool = (size_t)pmc.QuotaNonPagedPoolUsage / 0x400;
-        cchWritten = FUN_14092c040(pwszWrite, pwszEnd - pwszWrite, L"QuotaPeakNonPagedPoolUsage : %12zdk, QuotaNonPagedPoolUsage : %12zdk\n",
-                                   (size_t)pmc.QuotaPeakNonPagedPoolUsage / 0x400, nQuotaNonPagedPool);
-        pwszWrite += cchWritten;
-        size_t nPagefileUsage = (size_t)pmc.PagefileUsage / 0x400;
-        cchWritten = FUN_14092c040(pwszWrite, pwszEnd - pwszWrite, L"PeakPagefileUsage          : %12zdk, PagefileUsage          : %12zdk\n",
-                                   (size_t)pmc.PeakPagefileUsage / 0x400, nPagefileUsage);
-        pwszWrite += cchWritten;
-        cchWritten = FUN_14092c040(pwszWrite, pwszEnd - pwszWrite, L"PrivateUsage               : %12zdk\n", (size_t)pmc.PrivateUsage / 0x400);
-        pwszWrite += cchWritten;
+        pwszWrite += FUN_14092c040(pwszWrite, pwszEnd - pwszWrite, L"Process memory information unavailable.\n");
     }
 
-    cchWritten = FUN_14092c040(pwszWrite, pwszEnd - pwszWrite, L"\n Graphic Information ===\n%s\n", pszGraphicInfo);
-    pwszWrite += cchWritten;
-    FUN_14092c040(pwszWrite, pwszEnd - pwszWrite, L"\n Additional Information ===\n%s\n", pszAdditionalInfo);
+    pwszWrite += FUN_14092c040(pwszWrite, pwszEnd - pwszWrite, L"\n Graphic Information ===\n%s\n", pszGraphicInfo);
+    pwszWrite += FUN_14092c040(pwszWrite, pwszEnd - pwszWrite, L"\n Additional Information ===\n%s\n", pszAdditionalInfo);
 }
 
 // @0x1414854b0
@@ -271,7 +243,7 @@ LONG WINAPI FUN_1414854b0(LPEXCEPTION_POINTERS pExceptionInfo)
     FUN_1414855a0(szPath, pExceptionInfo->ExceptionRecord->ExceptionAddress);
     FUN_141484ac0(szPath, pExceptionInfo);
     // "프로그램이 죽었습니다.\n\n개발팀에 문의해주세요." in the exe's MBCS (CP949) encoding
-    MessageBoxA(NULL, "\xc7\xc1\xb7\xce\xb1\xd7\xb7\xa5\xc0\xcc \xc1\xd7\xbe\xfa\xbd\xc0\xb4\xcf\xb4\xd9.\n\n\xb0\xeb\xb9\xdf\xc6\xf7\xbf\xa1 \xb9\xae\xc0\xc7\xc7\xd8\xc1\xd6\xbc\xbc\xbf\xe4.", "MapleStory2", 0);
+    MessageBoxA(NULL, "\xc7\xc1\xb7\xce\xb1\xd7\xb7\xa5\xc0\xcc \xc1\xd7\xbe\xfa\xbd\xc0\xb4\xcf\xb4\xd9.\n\n\xb0\xb3\xb9\xdf\xc6\xc0\xbf\xa1 \xb9\xae\xc0\xc7\xc7\xd8\xc1\xd6\xbc\xbc\xbf\xe4.", "MapleStory2", 0);
     TerminateProcess(GetCurrentProcess(), 2);
     return 1;
 }

@@ -195,19 +195,24 @@ void UICutSceneCinematic::vfunc_3()
 }
 MS2_REPLACE_METHOD(0x141907630, UICutSceneCinematic, vfunc_3, 219, 0x828082D7);
 
-// MS2-FUNCTIONAL: the exe's bind-and-throw keeps two more pointer temps (8 more bytes of frame); behaviour equivalent
 // @0x141907720
 void UICutSceneCinematic::OnLoadComplete()
 {
     UIObject::OnLoadComplete();
     do{m_30->FUN_140bc71c0("m_skip",m_spSkip);if(m_spSkip==0)throw new GfxExceptionSwfLoad(StringFormat("GfxError:{0} {1}({2}) function:{3}","SwfLoadError",MS2_THIS_FILE,MS2_LINE(90),__FUNCTION__));}while(0);
     m_spSkip->FUN_1422c2a70(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UICutSceneCinematic::FUN_141909460), 0);
-    if (m_nMode == 1)
+    switch (m_nMode)
+    {
+    case 1:
         FUN_141909490();
-    else if (m_nMode == 2)
+        break;
+    case 2:
         FUN_141909550();
-    else if (m_nMode == 3)
+        break;
+    case 3:
         FUN_141909610();
+        break;
+    }
     CStringW strKey(L"$s_cutscene_skip_key");
     if (*FUN_1409a8b10()->FUN_140a58500())
         strKey = FUN_1409331f0()->FUN_14142d760(0x49409, 2);
@@ -623,7 +628,6 @@ void UICutSceneCinematic::FUN_141909780(CInPacket& packet)
 }
 MS2_REPLACE_METHOD(0x141909780, UICutSceneCinematic, FUN_141909780, 241, 0x184D9336);
 
-// MS2-FUNCTIONAL: the exe passes job/gender through ecx (mov ecx,[x]; mov r8d,ecx), the source type behind it is not recovered
 // @0x141909880
 void UICutSceneCinematic::FUN_141909880(CInPacket& packet)
 {
@@ -646,9 +650,7 @@ void UICutSceneCinematic::FUN_141909880(CInPacket& packet)
         if (pPC)
         {
             CString strEvent;
-            int nJob = FUN_141654700(pPC);
-            int nGender = FUN_141658e60(pPC);
-            spVoice->FUN_141791400(nGender, nJob, strEvent);
+            spVoice->FUN_141791400(FUN_141658e60(pPC), FUN_141654700(pPC), strEvent);
             if (!strEvent.IsEmpty())
             {
                 size_t nBank = 0;
@@ -664,7 +666,7 @@ void UICutSceneCinematic::FUN_141909880(CInPacket& packet)
     spTalk->m_strText = strText;
     spTalk->m_nDuration = nSound > nDuration ? nSound : nDuration;
     spTalk->m_nFlag = nFlag;
-    spTalk->m_strSound = nSound == 0 ? CString("") : CString(strSound);
+    spTalk->m_strSound = nSound != 0 ? CString(strSound) : CString("");
     m_talks.AddTail(spTalk);
 }
 

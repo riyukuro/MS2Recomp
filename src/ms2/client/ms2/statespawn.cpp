@@ -16,6 +16,7 @@
 #include "ms2/client/ms2/randomeffectparam.h"       // Unk_Random
 #include "ms2/placeholder/nipoint3.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
+#include "ms2/placeholder/effectquery.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 
@@ -25,47 +26,44 @@ float FUN_14099eb30(const egf::EntityID& kKey, CString strAnim);           // 0x
 bool FUN_14028d470(float a, float b);                                      // approx equal
 int FUN_140b10150(PCBase* pMount);                                         // 0x140b10150 the mount's id
 
-// The mount's proxy handle (PCBase +0xd50) and the entry it resolves to (the spawn effect path at +0x550).
-struct Unk_SpawnProxy { char m_pad[0x10]; };
+// The mount's proxy handle (PCBase +0xd50, returned by value) and the entry it resolves to (the spawn effect path at +0x550).
 struct Unk_SpawnEntry
 {
     char m_pad_00[0x550];
     CString m_strEffect;                                                   // +0x550
 };
-void FUN_141093270(PCBase* pMount, Unk_SpawnProxy* pOut);                  // 0x141093270 the mount's proxy handle
-Unk_SpawnEntry* FUN_140965990(Unk_SpawnProxy* pProxy);                     // 0x140965990 operator->
-void FUN_1406d5390(Unk_SpawnProxy* pProxy);                                // 0x1406d5390 dtor
+class Unk_SpawnProxy
+{
+public:
+    ~Unk_SpawnProxy();                                                     // 0x1406d5390
+    Unk_SpawnEntry* operator->() const;                                    // 0x140965990
+    void* m_pad_00;
+    void* m_p;
+};
+class Unk_SpawnMount : public PCBase
+{
+public:
+    Unk_SpawnProxy FUN_141093270();                                        // 0x141093270 the mount's proxy handle
+};
 
-// The effect manager and the request it takes (constructed / destroyed out of line).
+// The effect request (NoticeMessage) and its transform.
 struct Unk_SpawnRot { float m_af[9]; };
 struct Unk_SpawnXform
 {
     Unk_SpawnRot m_rotate;
-    Vector3 m_translate;
+    float m_translate[3];                                                  // NiPoint3 (no ctor: NiTransform's ctor 0x140a332d0 builds it)
     float m_fScale;
 };
 MS2_CHECK_SIZE(Unk_SpawnXform, 0x34);
-struct Unk_SpawnRequest
-{
-    CString m_strName;                                                     // +0
-    int m_nOwnerId;                                                        // +8
-    int m_pad_0c;
-    void* m_pSlot10;
-    Unk_SpawnXform* m_pXform;                                              // +0x18
-    char m_pad_20[0x58];
-};
-MS2_CHECK_SIZE(Unk_SpawnRequest, 0x78);
-class Unk_SpawnEffectMgr { public: void FUN_1411a4a00(Unk_SpawnRequest* pRequest); };
+class Unk_SpawnEffectMgr { public: void FUN_1411a4a00(NoticeMessage* pRequest); };
 Unk_SpawnEffectMgr* FUN_1403ed280();
-void FUN_140a52ef0(Unk_SpawnRequest* p);                                   // construct
-void FUN_1405a89e0(Unk_SpawnRequest* p);                                   // destroy
 void* FUN_140a332d0(Unk_SpawnXform* p);                                    // NiTransform default ctor
 void FUN_1420849a0(Unk_SpawnRot* p);                                       // efd::Matrix3::MakeIdentity
 struct Unk_SpawnNiPoint3 : public Vector3
 {
     Unk_SpawnNiPoint3(const NiPoint3& pt);                          // 0x14027dcf0
 };
-void FUN_14097faa0(Vector3* pDst, const Unk_SpawnNiPoint3* pSrc);  // NiPoint3::operator=
+void FUN_14097faa0(float* pDst, const Unk_SpawnNiPoint3* pSrc);  // NiPoint3::operator=
 
 // @0x1417f6050
 StateSpawn::StateSpawn(PCBase* pOwner) : State(pOwner)
@@ -110,7 +108,6 @@ void StateSpawn::vfunc_5(int n)
 MS2_REPLACE_METHOD(0x1417F6260, StateSpawn, vfunc_5, 138, 0xE3F2D2EC);
 
 // @0x1417f62f0
-// MS2-FUNCTIONAL: the mount effect request is written against unit-local stand-ins
 void StateSpawn::vfunc_3(double fTime)
 {
     State::vfunc_3(fTime);
@@ -124,9 +121,8 @@ void StateSpawn::vfunc_3(double fTime)
         {
             if (!m_spSpawn->m_str.IsEmpty())
             {
-                m_pOwner->FUN_14166dd20(efd::utf8string((const char*)m_spSpawn->m_str), 1.0f, true, false);
-                egf::EntityID kKey;
-                m_fDuration = FUN_14099eb30(m_pOwner->FUN_14123c460(kKey), CString(m_spSpawn->m_str));
+                m_pOwner->FUN_14166dd20((const char*)m_spSpawn->m_str, 1.0f, true, false);
+                m_fDuration = FUN_14099eb30(m_pOwner->FUN_14123c460(), CString(m_spSpawn->m_str));
             }
         }
         PCBase* pMount = FUN_1417b8480();
@@ -137,22 +133,16 @@ void StateSpawn::vfunc_3(double fTime)
             FUN_1420849a0(&xf.m_rotate);
             xf.m_fScale = 1.0f;
             Unk_SpawnNiPoint3 niPt(m_pOwner->vfunc_18());
-            FUN_14097faa0(&xf.m_translate, &niPt);
-            alignas(8) char requestBuf[sizeof(Unk_SpawnRequest)];   // FUN_140a52ef0 / FUN_1405a89e0 construct and destroy it: no implicit dtor
-            Unk_SpawnRequest& request = *reinterpret_cast<Unk_SpawnRequest*>(requestBuf);
-            FUN_140a52ef0(&request);
-            Unk_SpawnProxy kProxy;
-            FUN_141093270(pMount, &kProxy);
-            request.m_strName = FUN_140965990(&kProxy)->m_strEffect;
-            FUN_1406d5390(&kProxy);
-            request.m_nOwnerId = 0;
-            request.m_pXform = &xf;
+            FUN_14097faa0(xf.m_translate, &niPt);
+            NoticeMessage request;
+            request.m_strName = ((Unk_SpawnMount*)pMount)->FUN_141093270()->m_strEffect;
+            request.m_nObject = 0;
+            request.m_p18 = &xf;
             FUN_1403ed280()->FUN_1411a4a00(&request);
-            FUN_1405a89e0(&request);
         }
     }
     m_fElapsed += (float)fTime;
-    if (m_fDuration <= m_fElapsed)
+    if (m_fElapsed >= m_fDuration)
         m_pOwner->vfunc_59(1, 0, 0, 0);
 }
 MS2_REPLACE_METHOD(0x1417F62F0, StateSpawn, vfunc_3, 897, 0xEC49E718);

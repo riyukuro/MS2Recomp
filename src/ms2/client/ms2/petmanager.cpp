@@ -61,7 +61,7 @@ struct Unk_InventorySkillRequest
     unsigned short level;
     unsigned __int64 tick;
     unsigned serial, unknown14;
-    float origin[3], direction[3];
+    struct Point { Point(); float x, y, z; } origin, direction;
     unsigned unknown30, unknown34;
     bool remap, suppressDispatch, itemUse;
     __int64 item;
@@ -241,37 +241,49 @@ CPetInventory::ItemPtr CPetInventory::FUN_140c86d90(int nItemId)
     }
     return ItemPtr(0);
 }
-// MS2-FUNCTIONAL: typed list / array accessors; the bubble sort keeps the exe's repeated passes.
 // @0x140c86f20
-void CPetInventory::FUN_140c86f20(int nItemId, ATL::CAtlList<ItemPtr>& result, int nMode)
+size_t CPetInventory::FUN_140c86f20(int nItemId, ATL::CAtlList<ItemPtr>& result, int nMode)
 {
     {
         Unk_CriticalSectionLock guard(m_lock, 1);
         for (unsigned i = 0; i < m_slots.GetCount(); ++i)
         {
             ItemPtr spItem = m_slots[i];
-            if (spItem.get() == 0 || spItem->FUN_1405276c0() != nItemId)
-                continue;
-            if (nMode == 2)
-                result.AddTail(spItem);
-            else if (spItem->FUN_140526c50() < spItem->FUN_1405281e0())
-                result.AddTail(spItem);
+            if (spItem.get() != 0 && spItem->FUN_1405276c0() == nItemId)
+            {
+                if (nMode == 2)
+                    result.AddTail(spItem);
+                else if (spItem->FUN_140526c50() < spItem->FUN_1405281e0())
+                    result.AddTail(spItem);
+            }
         }
     }
     if (result.GetCount() > 1)
     {
         int nCount = (int)result.GetCount();
+        int nLast = nCount - 1;
+        int nFirst = 0;
+        int nSecond = 0;
         for (int i = 0; i < nCount; ++i)
         {
-            for (int j = 0; j < nCount - 1; ++j)
+            for (int j = 0; j < nLast; ++j)
             {
-                int nFirst = result.GetAt(result.FindIndex(j))->FUN_140526c50();
-                int nSecond = result.GetAt(result.FindIndex(j + 1))->FUN_140526c50();
-                if ((nMode == 2 && nSecond < nFirst) || (nMode == 1 && nFirst < nSecond))
-                    result.SwapElements(result.FindIndex(j), result.FindIndex(j + 1));
+                nFirst = result.GetAt(result.FindIndex(j))->FUN_140526c50();
+                nSecond = result.GetAt(result.FindIndex(j + 1))->FUN_140526c50();
+                if (nMode == 2)
+                {
+                    if (nFirst > nSecond)
+                        result.SwapElements(result.FindIndex(j), result.FindIndex(j + 1));
+                }
+                else if (nMode == 1)
+                {
+                    if (nFirst < nSecond)
+                        result.SwapElements(result.FindIndex(j), result.FindIndex(j + 1));
+                }
             }
         }
     }
+    return result.GetCount();
 }
 // @0x140c87250
 CPetInventory::ItemPtr CPetInventory::FUN_140c87250(unsigned __int64 nUid)
@@ -405,17 +417,18 @@ unsigned CPetInventory::FUN_140c87b90()
 // @0x140c87c80
 int CPetInventory::FUN_140c87c80(ItemPtr spItem, int nNeed)
 {
-    if (spItem.get() != 0 && spItem->FUN_1405281e0() > 1)
+    if ((spItem.get() ? true : false) && spItem->FUN_1405281e0() > 1)
     {
-        if (FUN_140c87a00(spItem->FUN_1405276c0()) < nNeed)
+        int nStock = FUN_140c87a00(spItem->FUN_1405276c0());
+        if (nStock < nNeed)
             return -1;
         int nCount = (int)m_slots.GetCount();
         for (int i = 0; i < nCount; ++i)
         {
             ItemPtr spSlot = m_slots[i];
-            if (spSlot.get() != 0 && spSlot->FUN_1405276c0() == spItem->FUN_1405276c0())
+            if ((spSlot.get() ? true : false) && spSlot->FUN_1405276c0() == spItem->FUN_1405276c0())
             {
-                int nRoom = (int)spSlot->FUN_1405281e0() - spSlot->FUN_140526c50();
+                int nRoom = (spSlot->FUN_1405281e0() - spSlot->FUN_140526c50() < 0) ? 0 : spSlot->FUN_1405281e0() - spSlot->FUN_140526c50();
                 if (0 < nRoom)
                     return spSlot->FUN_140526b50();
             }
@@ -470,49 +483,46 @@ void CPetInventory::SendRequestPetInventoryMode3(__int64 nUid, int nSlot)
 // @0x140c88200
 void CPetInventory::FUN_140c88200(__int64 nUid, int nSlot, int nCount)
 {
-    if (0 < nCount)
+    if (nCount < 1)
+        return;
+    if (FUN_140535320()->GetSummonUid() == nUid)
+        return;
+    ItemPtr spItem = DAT_143ab2a90.FUN_140a5d680(nUid);
+    if (spItem == 0)
+        return;
+    if (spItem->FUN_140525640() != 0)
     {
-        if (FUN_140535320()->GetSummonUid() != nUid)
+        FUN_140d73bc0(0xc16, 0, 0, L"");
+        return;
+    }
+    if (FUN_14053cd10(reinterpret_cast<CItemData*>(spItem->FUN_140527840())))
+    {
+        if (FUN_140c8dab0(FUN_140c8dac0()) == spItem->FUN_140526a50())
         {
-            ItemPtr spItem = DAT_143ab2a90.FUN_140a5d680(nUid);
-            if (spItem.get() != 0)
-            {
-                if (spItem->FUN_140525640() == 0)
-                {
-                    if (FUN_14053cd10(reinterpret_cast<CItemData*>(spItem->FUN_140527840())))
-                    {
-                        if (FUN_140c8dab0(FUN_140c8dac0()) == spItem->FUN_140526a50())
-                        {
-                            FUN_140d73aa0(GetStringCommonByKey(L"s_item_err_binditem_by_playing_score"), 0, 0, CStringW(L""));
-                            return;
-                        }
-                    }
-                    int nTarget = nSlot;
-                    if (nSlot == -1)
-                    {
-                        nTarget = FUN_140c87c80(spItem, nCount);
-                        if (nTarget == -1)
-                        {
-                            FUN_141275260(0xf2, 1, 1);
-                            return;
-                        }
-                    }
-                    ItemPtr spPet = DAT_143ab2a90.FUN_140a5d680(FUN_140535320()->GetSummonUid());
-                    if (spPet.get() != 0 && !spPet->FUN_140528930())
-                    {
-                        COutPacket packet(static_cast<int>(SendOp::RequestPetInventory), 0);
-                        packet.Encode1(0);
-                        packet.Encode8(nUid);
-                        packet.Encode2((short)nTarget);
-                        packet.Encode4(nCount);
-                        FUN_140710590(packet);
-                    }
-                }
-                else
-                    FUN_140d73bc0(0xc16, 0, 0, CStringW(L""));
-            }
+            FUN_140d73aa0(GetStringCommonByKey(L"s_item_err_binditem_by_playing_score"), 0, 0, CStringW(L""));
+            return;
         }
     }
+    if (nSlot == -1)
+    {
+        nSlot = FUN_140c87c80(spItem, nCount);
+        if (nSlot == -1)
+        {
+            FUN_141275260(0xf2, 1, 1);
+            return;
+        }
+    }
+    ItemPtr spPet = DAT_143ab2a90.FUN_140a5d680(FUN_140535320()->GetSummonUid());
+    if (spPet == 0)
+        return;
+    if (spPet->FUN_140528930())
+        return;
+    COutPacket packet(static_cast<int>(SendOp::RequestPetInventory), 0);
+    packet.Encode1(0);
+    packet.Encode8(nUid);
+    packet.Encode2((short)nSlot);
+    packet.Encode4(nCount);
+    FUN_140710590(packet);
 }
 // @0x140c88590
 void CPetInventory::SendRequestPetInventoryMode1(__int64 nUid, int nSlot, int nCount)
@@ -548,11 +558,10 @@ bool CPetInventory::FUN_140c88700(int nButton, const CMsgBoxData& box)
     }
     return true;
 }
-// MS2-FUNCTIONAL: message box temporaries; same calls and arguments.
 // @0x140c887b0
 void CPetInventory::FUN_140c887b0(ItemPtr spItem, int nSlot)
 {
-    if (spItem.get() == 0)
+    if (spItem == 0)
         return;
     Unk_PmPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pPlayer == 0)
@@ -565,7 +574,7 @@ void CPetInventory::FUN_140c887b0(ItemPtr spItem, int nSlot)
     if (DAT_143ab2a90.FUN_140a661e0(spItem.get()) == 0)
         return;
     ItemPtr spPet = DAT_143ab2a90.FUN_140a5d680(pPlayer->FUN_1416769f0());
-    if (spPet.get() != 0 && spPet->FUN_140528930())
+    if ((spPet.get() ? true : false) && spPet->FUN_140528930())
     {
         FUN_140d73bc0(0xc15, 0, 0, CStringW(L""));
         return;
@@ -573,24 +582,25 @@ void CPetInventory::FUN_140c887b0(ItemPtr spItem, int nSlot)
     if (!spItem->FUN_140526850())
     {
         FUN_140535320()->FUN_140c8b410()->FUN_140c88200(spItem->FUN_140526a50(), nSlot, spItem->FUN_140526c50());
-        return;
     }
-    MS2Ptr<CMsgBoxData> spBox = FUN_140d73e40(5, 0xc0f, 0, CStringW(L""));
-    if (spBox.get() != 0)
+    else
     {
-        CStringW strCount = StringFormat(L"{0}", spItem->FUN_140526c50());
-        spBox->FUN_141a01620(nSlot);
-        spBox->FUN_141a01600(spItem->FUN_140526a50());
-        spBox->FUN_141a01d30(1, strCount, FUN_1412773a0(spItem->FUN_1405281e0()), 0, 0);
-        spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(FUN_140535320()->FUN_140c8b410(), &CPetInventory::FUN_140c88650));
-        FUN_140d73c60(spBox);
+        MS2Ptr<CMsgBoxData> spBox = FUN_140d73e40(5, 0xc0f, 0, CStringW(L""));
+        if (spBox.get() != 0)
+        {
+            CStringW strCount = StringFormat<unsigned>(L"{0}", spItem->FUN_140526c50());
+            spBox->FUN_141a01620(nSlot);
+            spBox->FUN_141a01600(spItem->FUN_140526a50());
+            spBox->FUN_141a01d30(1, strCount, FUN_1412773a0(spItem->FUN_1405281e0()), 0, 0);
+            spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(FUN_140535320()->FUN_140c8b410(), &CPetInventory::FUN_140c88650));
+            FUN_140d73c60(spBox);
+        }
     }
 }
-// MS2-FUNCTIONAL: message box temporaries; same calls and arguments.
 // @0x140c88c30
 void CPetInventory::FUN_140c88c30(ItemPtr spItem, int nSlot)
 {
-    if (spItem.get() == 0)
+    if (spItem == 0)
         return;
     Unk_PmPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pPlayer == 0)
@@ -600,20 +610,21 @@ void CPetInventory::FUN_140c88c30(ItemPtr spItem, int nSlot)
     if (!spItem->FUN_140526850())
     {
         FUN_140535320()->FUN_140c8b410()->SendRequestPetInventoryMode1(spItem->FUN_140526a50(), nSlot, spItem->FUN_140526c50());
-        return;
     }
-    MS2Ptr<CMsgBoxData> spBox = FUN_140d73e40(5, 0xc10, 0, CStringW(L""));
-    if (spBox.get() != 0)
+    else
     {
-        CStringW strCount = StringFormat(L"{0}", spItem->FUN_140526c50());
-        spBox->FUN_141a01620(nSlot);
-        spBox->FUN_141a01600(spItem->FUN_140526a50());
-        spBox->FUN_141a01d30(1, strCount, FUN_1412773a0(spItem->FUN_1405281e0()), 0, 0);
-        spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(FUN_140535320()->FUN_140c8b410(), &CPetInventory::FUN_140c88700));
-        FUN_140d73c60(spBox);
+        MS2Ptr<CMsgBoxData> spBox = FUN_140d73e40(5, 0xc10, 0, CStringW(L""));
+        if (spBox.get() != 0)
+        {
+            CStringW strCount = StringFormat<unsigned>(L"{0}", spItem->FUN_140526c50());
+            spBox->FUN_141a01620(nSlot);
+            spBox->FUN_141a01600(spItem->FUN_140526a50());
+            spBox->FUN_141a01d30(1, strCount, FUN_1412773a0(spItem->FUN_1405281e0()), 0, 0);
+            spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(FUN_140535320()->FUN_140c8b410(), &CPetInventory::FUN_140c88700));
+            FUN_140d73c60(spBox);
+        }
     }
 }
-// MS2-FUNCTIONAL: typed skill request; equivalent early returns (same shape as Unk_Inventory::FUN_140a63000).
 // @0x140c88f70
 bool CPetInventory::FUN_140c88f70(ItemPtr spItem)
 {
@@ -627,16 +638,15 @@ bool CPetInventory::FUN_140c88f70(ItemPtr spItem)
     }
     if (!FUN_14053d270(reinterpret_cast<CItemData*>(spItem->FUN_140527840())))
         return false;
-    int nSkill = FUN_14053dc20(reinterpret_cast<CItemData*>(spItem->FUN_140527840()));
-    MS2Ptr<Unk_PmSkillLevel> spLevel = FUN_1401958b0()->FUN_1407ee2f0(nSkill, 1);
-    if (spLevel.get() != 0)
+    MS2Ptr<Unk_PmSkillLevel> spLevel = FUN_1401958b0()->FUN_1407ee2f0(FUN_14053dc20(reinterpret_cast<CItemData*>(spItem->FUN_140527840())), 1);
+    if (spLevel == 0)
         return false;
-    Unk_InventorySkillRequest request(nSkill, 1);
-    request.remap = FUN_140804450(spLevel.get());
+    Unk_InventorySkillRequest request(FUN_14053dc20(reinterpret_cast<CItemData*>(spItem->FUN_140527840())), 1);
+    request.remap = FUN_140804450(spLevel.operator->());
     request.itemUse = true;
     request.item = spItem->FUN_140526a50();
     MS2Ptr<CSkillRecord> spRecord = pPlayer->FUN_141523bc0()->FUN_141765570(request);
-    if (spRecord.get() == 0)
+    if (spRecord == 0)
         return false;
     return pPlayer->vfunc_102(spRecord);
 }
@@ -814,25 +824,27 @@ void CPetManager::FUN_140c89d00(CInPacket& in)
         FUN_141275260(0xc0c, 1, 1);
     }
 }
+extern const efd::Matrix3 DAT_143a09600;                // efd::Matrix3::IDENTITY
+
 // @0x140c89ea0
 void CPetManager::FUN_140c89ea0(CInPacket& in)
 {
     int nObjectId = in.ReadInt32();
     CPet* pPet = static_cast<CPet*>(FUN_140c8b5c0(nObjectId));
-    if (pPet != 0)
+    if (pPet == 0)
+        return;
+    Unk_PmPlayer* pLocal = FUN_1403ed2d0()->FUN_141bd0cc0();
+    PCBase* pOwner = pPet->FUN_140b10320();
+    if (pLocal != 0 && pLocal == pOwner && pPet->vfunc_127() != 0)
     {
-        Unk_PmPlayer* pLocal = FUN_1403ed2d0()->FUN_141bd0cc0();
-        PCBase* pOwner = pPet->FUN_140b10320();
-        if (pLocal != 0 && pLocal == pOwner && pPet->vfunc_127() != 0)
+        PCBase* pOwner2 = pPet->FUN_140b10320();
+        if (pOwner2 != 0)
         {
-            PCBase* pOwner2 = pPet->FUN_140b10320();
-            if (pOwner2 != 0)
-            {
-                NiTransform xf;
-                xf.MakeIdentity();
-                xf.m_Translate = pOwner2->vfunc_18();
-                FUN_1403ed280()->FUN_1411a5110(CString("ms2sound/sound/system"), s_strPetSummonSound, CString(""), 1, &xf, 1.0f, 0);
-            }
+            NiTransform xf;
+            xf.m_fScale = 1.0f;
+            xf.m_Translate = static_cast<const efd::Point3&>(pOwner2->vfunc_18());
+            xf.m_Rotate = DAT_143a09600;
+            FUN_1403ed280()->FUN_1411a5110(CString("ms2sound/sound/system"), s_strPetSummonSound, CString(""), 1, &xf, 1.0f, 0);
         }
     }
 }

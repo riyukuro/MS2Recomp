@@ -220,44 +220,46 @@ void UIItemGachaBoxDialog::vfunc_26()
     FUN_1403ed280()->FUN_1411a6060(m_sndRolling);
 }
 
-// MS2-FUNCTIONAL: behaviour-equivalent; codegen (temporaries / branch layout) not byte-identical to the exe
 // @0x140c403e0
 void UIItemGachaBoxDialog::vfunc_79(void* p)
 {
 #define GACHA_PKT static_cast<CInPacket*>(p)
     UIDialog::vfunc_79(p);
-    if (GACHA_PKT->FUN_14070fe80() == 0xf5 && !(m_30 == 0)) {
+    if (GACHA_PKT->FUN_14070fe80() == 0xf5) {
+        if (m_30 == 0)
+            return;
         m_sent = false;
-        unsigned char reset = GACHA_PKT->ReadUInt8();
+        int reset = GACHA_PKT->ReadUInt8();
         if (reset == 5) {
             GACHA_ITEMS.FUN_14028a590();
             m_special.clear();
             int n = GACHA_PKT->ReadInt32();
             bool hasSpecial = false;
+            bool isMulti = n > 1 ? true : false;
             reinterpret_cast<std::vector<ItemEntity>&>(GACHA_ITEMS).resize(n);
             for (int i = 0; i < n; ++i) {
                 GACHA_ITEMS.FUN_140be9400(i).m_itemId = GACHA_PKT->ReadInt32();
                 GACHA_ITEMS.FUN_140be9400(i).m_count = GACHA_PKT->ReadInt32();
                 GACHA_ITEMS.FUN_140be9400(i).SetRank(GACHA_PKT->ReadInt32());
-                if (GACHA_PKT->ReadBool()) {
+                bool special = GACHA_PKT->ReadBool();
+                if (special) {
                     hasSpecial = true;
                     m_special.insert(GACHA_ITEMS.FUN_140be9400(i));
                 }
             }
             FUN_140c42160();
             FUN_141276180(s_sndNormal, "");
-            if (m_special.size() != 0)
+            if (m_special.size() > 0)
                 FUN_141276180(s_sndSpecial, "");
             ASObj obj(2);
             obj.FUN_1407cbbe0("showEffect", hasSpecial);
-            obj.FUN_1407cbbe0("isMulti", 1 < n);
+            obj.FUN_1407cbbe0("isMulti", isMulti);
             m_30->Invoke("onResult", obj.FUN_1422bb870());
         }
     }
 #undef GACHA_PKT
 }
 
-// MS2-FUNCTIONAL: behaviour-equivalent; codegen (temporaries / branch layout) not byte-identical to the exe
 // @0x140c40860
 int UIItemGachaBoxDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs)
 {
@@ -279,7 +281,8 @@ int UIItemGachaBoxDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
         }
     } else if (_stricmp(szMethod, "onOpenCoinShop") == 0) {
         OnOpenCoinShop();
-    } else if (_stricmp(szMethod, "onOpenProbability") != 0 && _stricmp(szMethod, "onChangeState") == 0) {
+    } else if (_stricmp(szMethod, "onOpenProbability") == 0) {
+    } else if (_stricmp(szMethod, "onChangeState") == 0) {
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs) != 0)
             FUN_140c42ee0(CString(pArgs->GetString()));
@@ -287,7 +290,6 @@ int UIItemGachaBoxDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
     return 0;
 }
 
-// MS2-FUNCTIONAL: behaviour-equivalent; codegen (temporaries / branch layout) not byte-identical to the exe
 // @0x140c40ad0
 void UIItemGachaBoxDialog::FUN_140c40ad0()
 {
@@ -304,33 +306,41 @@ void UIItemGachaBoxDialog::FUN_140c40ad0()
     obj.FUN_140c43830("uiType", m_uiType);
     obj.FUN_1407cbb20("title", m_title);
     CStringW sellingTime = L"";
-    if (gacha->m_saleEndDate != CMsTime(0))
+    CMsTime noEnd(0);
+    if (gacha->m_saleEndDate != noEnd)
         FUN_141b70f90(gacha->m_saleEndDate, GetStringCommonByKey(L"s_itemgacha_dialog_gacha_endtime"), sellingTime);
     obj.FUN_1407cbb20("sellingTime", sellingTime);
-    obj.FUN_1407cbbe0("coinshop", gacha->m_nCoinItemID != 0);
+    bool coinshop = gacha->m_nCoinItemID > 0u ? true : false;
+    obj.FUN_1407cbbe0("coinshop", coinshop);
+    const size_t nSlots = 0x23;
+    const size_t nBags = 3;
     std::vector<Unk_GachaDrop> drops;
     FUN_1405a1fd0()->FUN_1402ea4c0(gacha->m_nIndividualDropBoxID, drops);
     std::vector<MS2Ptr<CItem> > items;
     ATL::CAtlArray<MS2Ptr<CItem> > bags[3];
     std::vector<Unk_GachaDrop> filtered;
     filtered.reserve(drops.size());
-    for (Unk_GachaDrop& d : drops) {
-        if (d.m_bShow) {
-            MS2Ptr<CItemData> data = FUN_14053f870(d.vfunc_0());
-            if (data.get() != 0) {
-                Unk_GachaJobSet* jobs = reinterpret_cast<Unk_GachaJobSet*>(reinterpret_cast<char*>(data.operator->()) + 0x138);
-                if (jobs->FUN_140545da0(self->FUN_141654700())) {
-                    if (static_cast<Unk_GachaData*>(data.operator->())->FUN_14053c940(self->FUN_141658e60()) != 0)
-                        filtered.push_back(d);
-                }
-            }
-        }
+    std::vector<Unk_GachaDrop>& rDrops = drops;
+    std::vector<Unk_GachaDrop>::const_iterator itEnd = rDrops.end();
+    for (std::vector<Unk_GachaDrop>::const_iterator it = rDrops.begin(); it != itEnd; ++it) {
+        Unk_GachaDrop& d = const_cast<Unk_GachaDrop&>(*it);
+        if (!d.m_bShow)
+            continue;
+        MS2Ptr<CItemData> data = FUN_14053f870(d.vfunc_0());
+        if (data == 0)
+            continue;
+        if (!reinterpret_cast<Unk_GachaJobSet*>(reinterpret_cast<char*>(data.operator->()) + 0x138)->FUN_140545da0(self->FUN_141654700()))
+            continue;
+        if (static_cast<Unk_GachaData*>(data.operator->())->FUN_14053c940(self->FUN_141658e60()) == 0)
+            continue;
+        filtered.push_back(d);
     }
     if (filtered.empty())
         return;
     std::sort(filtered.begin(), filtered.end(), FUN_140c43260);
-    for (size_t k = 0; k < 0x23; ++k) {
-        Unk_GachaDrop& d = filtered[k % filtered.size()];
+    for (size_t k = 0; k < nSlots; ++k) {
+        size_t idx = k % filtered.size();
+        Unk_GachaDrop& d = filtered[idx];
         MS2Ptr<CItem> item(new CItem);
         if (item->FUN_14052b130(d.vfunc_0(), d.vfunc_1(), 0) != 0) {
             item->FUN_140526c70(d.vfunc_2());
@@ -342,9 +352,9 @@ void UIItemGachaBoxDialog::FUN_140c40ad0()
         if (i < 7)
             bags[2].Add(items[i]);
     }
-    for (int i = 0x1b; i > 0xd; --i)
+    for (int i = 0x1b; i >= 0xe; --i)
         bags[1].Add(items[i]);
-    for (int i = 0x22; i > 0x1b; --i)
+    for (int i = 0x22; i >= 0x1c; --i)
         bags[2].Add(items[i]);
     FUN_140c43090();
     MS2Ptr<ItemSlotBag::CreateParam> param(new ItemSlotBag::CreateParam);
@@ -352,7 +362,7 @@ void UIItemGachaBoxDialog::FUN_140c40ad0()
     param->m_nIconType = 0x415;
     param->m_nFlags = 0x800;
     param->m_bEnabled = true;
-    for (size_t k = 0; k < 3; ++k) {
+    for (size_t k = 0; k < nBags; ++k) {
         CString bagName = Unk_SocketFormat("ItemGachaBoxBag{0}", k);
         FUN_14141f860(bagName, (int)bags[k].GetCount(), &bags[k], param);
         obj.FUN_1407cba60(Unk_SocketFormat("bagId{0}", k), bagName);
@@ -361,7 +371,6 @@ void UIItemGachaBoxDialog::FUN_140c40ad0()
     m_30->Invoke("initData", obj.FUN_1422bb870());
 }
 
-// MS2-FUNCTIONAL: behaviour-equivalent; codegen (temporaries / branch layout) not byte-identical to the exe
 // @0x140c41700
 int UIItemGachaBoxDialog::FUN_140c41700()
 {
@@ -369,25 +378,36 @@ int UIItemGachaBoxDialog::FUN_140c41700()
     int need = 1;
     if (m_multi)
         need = 10;
-    MS2Ptr<CItem> box = DAT_143ab2a90.FUN_140a5e2e0(m_boxItemId);
-    if (box == 0)
-        return 1;
-    MS2Ptr<CItemData> data(reinterpret_cast<CItemData*>(box->FUN_140527840()));
-    if (data == 0)
-        return 3;
-    if (!static_cast<Unk_GachaData*>(data.operator->())->FUN_14053da20())
-        return 3;
-    if (DAT_143ab2a90.FUN_140a5f180(m_boxItemId, 0) < need)
-        return 1;
-    if (FUN_140166410()->FUN_14036d570(0x10a) == true) {
-        int machine = static_cast<Unk_GachaData*>(data.operator->())->FUN_14053df20();
-        if (machine != 0 && DAT_143ab2a90.FUN_140a5f180(machine, 0) < need)
-            return 2;
-    }
+    do {
+        MS2Ptr<CItem> box = DAT_143ab2a90.FUN_140a5e2e0(m_boxItemId);
+        if (box == 0) {
+            result = 1;
+            break;
+        }
+        MS2Ptr<CItemData> data(reinterpret_cast<CItemData*>(box->FUN_140527840()));
+        if (data == 0) {
+            result = 3;
+            break;
+        }
+        if (!static_cast<Unk_GachaData*>(data.operator->())->FUN_14053da20()) {
+            result = 3;
+            break;
+        }
+        if (need > DAT_143ab2a90.FUN_140a5f180(m_boxItemId, 0)) {
+            result = 1;
+            break;
+        }
+        if (FUN_140166410()->FUN_14036d570(0x10a) == true) {
+            int machine = static_cast<Unk_GachaData*>(data.operator->())->FUN_14053df20();
+            if (machine != 0 && need > DAT_143ab2a90.FUN_140a5f180(machine, 0)) {
+                result = 2;
+                break;
+            }
+        }
+    } while (0);
     return result;
 }
 
-// MS2-FUNCTIONAL: behaviour-equivalent; codegen (temporaries / branch layout) not byte-identical to the exe
 // @0x140c41900
 void UIItemGachaBoxDialog::FUN_140c41900(int error)
 {
@@ -399,36 +419,31 @@ void UIItemGachaBoxDialog::FUN_140c41900(int error)
             FUN_140d73c60(box);
         }
     } else if (error == 2) {
-        CStringW text = FUN_1405c2690(L"s_itemgacha_dialog_not_enough_capsulemachine", FUN_1401a9d70()->FUN_141811980(1, m_machineId));
-        FUN_1412751f0(text, 1, 1);
+        FUN_1412751f0(FUN_1405c2690(L"s_itemgacha_dialog_not_enough_capsulemachine", FUN_1401a9d70()->FUN_141811980(1, m_machineId)), 1, 1);
     } else if (error == 3) {
-        CStringW text = GetStringCommonByKey(L"s_itemgacha_dialog_err_unknown");
-        FUN_1412751f0(text, 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(L"s_itemgacha_dialog_err_unknown"), 1, 1);
     }
 }
 
-// MS2-FUNCTIONAL: behaviour-equivalent; codegen (temporaries / branch layout) not byte-identical to the exe
 // @0x140c41c30
 void UIItemGachaBoxDialog::FUN_140c41c30(int itemId)
 {
     MS2Ptr<CItem> box = DAT_143ab2a90.FUN_140a5e2e0(itemId);
     if (box == 0)
         return;
-    CItemData* data = reinterpret_cast<CItemData*>(box->FUN_140527840());
-    if (data == 0)
+    if (box->FUN_140527840() == 0)
         return;
-    int gachaId = GACHA_PARAMS(MS2Ptr<CItemData>(data))->FUN_1408d1f60(0, 0);
+    int gachaId = reinterpret_cast<Unk_GachaFuncParams*>(reinterpret_cast<char*>(box->FUN_140527840()) + 0x2b0)->FUN_1408d1f60(0, 0);
     GachaBoxDataPtr gacha = FUN_14052d230()->FUN_14059e340(gachaId);
     if (gacha == 0)
         return;
     m_boxItemId = itemId;
-    m_machineId = GACHA_PARAMS(MS2Ptr<CItemData>(data))->FUN_1408d1f60(1, 0);
+    m_machineId = reinterpret_cast<Unk_GachaFuncParams*>(reinterpret_cast<char*>(box->FUN_140527840()) + 0x2b0)->FUN_1408d1f60(1, 0);
     m_uiType = gacha->m_nUi;
     m_season = gacha->GetSeason();
     m_title = box->FUN_140527b10();
 }
 
-// MS2-FUNCTIONAL: behaviour-equivalent; codegen (temporaries / branch layout) not byte-identical to the exe
 // @0x140c41e10
 void UIItemGachaBoxDialog::FUN_140c41e10()
 {
@@ -438,7 +453,8 @@ void UIItemGachaBoxDialog::FUN_140c41e10()
     MS2Ptr<CItem> box = DAT_143ab2a90.FUN_140a5e2e0(m_boxItemId);
     if (box == 0)
         return;
-    if (FUN_140c41700() == 0) {
+    int err = FUN_140c41700();
+    if (err == 0) {
         if (DAT_143ab2a90.FUN_140a63880(box.operator->(), mode) == 0)
             vfunc_67();
         else
@@ -446,14 +462,14 @@ void UIItemGachaBoxDialog::FUN_140c41e10()
     }
 }
 
-// MS2-FUNCTIONAL: behaviour-equivalent; codegen (temporaries / branch layout) not byte-identical to the exe
 // @0x140c41f20
 void UIItemGachaBoxDialog::OnOpenCoinShop()
 {
     MS2Ptr<CItemData> data = FUN_14053f870(m_boxItemId);
     if (data == 0)
         return;
-    GachaBoxDataPtr gacha = FUN_14052d230()->FUN_14059e340(static_cast<Unk_GachaData*>(data.operator->())->FUN_14053dec0());
+    int gachaId = static_cast<Unk_GachaData*>(data.operator->())->FUN_14053dec0();
+    GachaBoxDataPtr gacha = FUN_14052d230()->FUN_14059e340(gachaId);
     if (gacha == 0)
         return;
     COutPacket pkt(static_cast<int>(SendOp::SystemShop), 0);
@@ -463,9 +479,8 @@ void UIItemGachaBoxDialog::OnOpenCoinShop()
     FUN_140710590(pkt);
 }
 
-// MS2-FUNCTIONAL: behaviour-equivalent; codegen (temporaries / branch layout) not byte-identical to the exe
 // @0x140c42050
-void FUN_140c42050()
+void UIItemGachaBoxDialog::FUN_140c42050()
 {
     UIWebBrowser* browser = FUN_140c43790(0x4e6a);
     if (browser != 0) {
@@ -527,15 +542,13 @@ void UIItemGachaBoxDialog::FUN_140c43090()
     GACHA_BAGS.FUN_140905dd0();
 }
 
-// MS2-FUNCTIONAL: behaviour-equivalent; codegen (temporaries / branch layout) not byte-identical to the exe
 // @0x140c43110
 GachaBoxDataPtr UIItemGachaBoxDialog::FUN_140c43110()
 {
     MS2Ptr<CItem> box = DAT_143ab2a90.FUN_140a5e2e0(m_boxItemId);
     if (box == 0)
         return GachaBoxDataPtr(0);
-    CItemData* data = reinterpret_cast<CItemData*>(box->FUN_140527840());
-    int gachaId = GACHA_PARAMS(MS2Ptr<CItemData>(data))->FUN_1408d1f60(0, 0);
+    int gachaId = reinterpret_cast<Unk_GachaFuncParams*>(reinterpret_cast<char*>(box->FUN_140527840()) + 0x2b0)->FUN_1408d1f60(0, 0);
     GachaBoxDataPtr gacha = FUN_14052d230()->FUN_14059e340(gachaId);
     if (gacha == 0)
         return GachaBoxDataPtr(0);
@@ -577,7 +590,6 @@ UIWebBrowser* FUN_140c43790(int nUiId)
     return 0;
 }
 
-// MS2-FUNCTIONAL: behaviour-equivalent; codegen (temporaries / branch layout) not byte-identical to the exe
 // @0x140c42160
 void UIItemGachaBoxDialog::FUN_140c42160()
 {
@@ -615,7 +627,7 @@ void UIItemGachaBoxDialog::FUN_140c42160()
         static_cast<Unk_GachaItem*>(item.operator->())->FUN_140529660(gachaId);
         CString bagKey;
         bagKey.Format("ItemGacha_%s_%d", (const char*)GetTypeName(), 1);
-        int count = item->FUN_140526c50();
+        unsigned int count = item->FUN_140526c50();
         CStringW txt = StringFormat(L"{0} X {1}", item->FUN_140527b10(), count);
         FUN_141415450(bagKey, MS2Ptr<CItem>(item), 0, 0x415, 0x800);
         static_cast<Unk_GachaClip*>(slot.operator->())->FUN_1407cba60("binding", bagKey);
@@ -624,7 +636,7 @@ void UIItemGachaBoxDialog::FUN_140c42160()
     } else {
         for (size_t i = 0; i < 10; ++i) {
             size_t k = i + 1;
-            CString nm = Unk_SocketFormat("m_multi{0}", k);
+            CString nm = StringFormat("m_multi{0}", k);
             MS2Ptr<ASMovieClip> multi = m_resultItem->FUN_1409b4560(nm);
             if (multi == 0)
                 continue;
@@ -639,7 +651,7 @@ void UIItemGachaBoxDialog::FUN_140c42160()
                     continue;
                 item->FUN_140526c70(e.vfunc_o18_2());
                 static_cast<Unk_GachaItem*>(item.operator->())->FUN_140529660(gachaId);
-                bagKey.Format("ItemGacha_%s_%d", (const char*)GetTypeName(), (int)(i + 1));
+                bagKey.Format("ItemGacha_%s_%d", (const char*)GetTypeName(), i + 1);
                 FUN_141415450(bagKey, MS2Ptr<CItem>(item), (int)i, 0x415, 0x800);
                 GACHA_BINDS.FUN_1403b0310(bagKey);
                 MS2Ptr<ASMovieClip> unc = multi->FUN_1409b4560("m_uncommonEffect");

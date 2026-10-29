@@ -113,7 +113,7 @@ public:
     typedef ATL::CAtlList<CachePtr> CacheList;
 
     CReactorDataTable();
-    virtual ~CReactorDataTable();
+    // implicit dtor @0x1414974d0 (?\ms2.cpp; the exe's stores no vftable pointers)
 
     bool Reload();                          // 0x14076b7d0 (always true)
     bool Load();                            // 0x14076b7f0 reactor.xml + reactorState.xml

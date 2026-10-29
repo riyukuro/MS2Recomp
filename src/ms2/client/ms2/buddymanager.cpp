@@ -84,7 +84,7 @@ void FUN_140d73aa0(CStringW,int,__int64,CStringW);
 #include "ms2/placeholder/uidialog.h"
 class UICommunityDialog : public UIDialog { public: int FUN_1418d6960(); void FUN_1418d6430(int); };
 class UICommunityQueryDialog : public UIDialog {};
-class Unk_BuddyPopup : public UIDialog { public: void FUN_141937e70(unsigned char); };
+class Unk_BuddyPopup : public UIDialog { public: void FUN_141937e70(int); };
 Unk_BuddyPopup* FUN_140938b90(int);
 UICommunityDialog* FUN_140ae5990(int);
 UICommunityQueryDialog* FUN_140ae5a30(int);
@@ -94,10 +94,14 @@ void CBuddyManager::FUN_140ae2e90(Unk_BuddyInput& input) {
     Unk_BuddyResponse response; response.FUN_1407a3cc0(input); input.FUN_140715280(position);
     Ptr buddy(0); int field=0; int channel=0;
     (&input.stream)->vfunc_1();
-    if(response.protocol==1) {
+    switch(response.protocol) {
+    case 15: FUN_140ae5190(); break;
+    case 1: {
         unsigned count=(&input.stream)->vfunc_3();
         for(unsigned i=0;i<count;++i) { buddy=new CBuddy; if(buddy.get()) { buddy->FUN_1401cc7c0(input); FUN_140ae5630(buddy); } }
-    } else if(response.protocol==8 || response.protocol==9) {
+        break;
+    }
+    case 8: case 9: {
         unsigned position=input.vfunc_0(); __int64 id=(&input.stream)->vfunc_4(); input.FUN_140715280(position);
         buddy=FUN_140ae4b70(id);
         if(buddy==0) {
@@ -110,9 +114,32 @@ void CBuddyManager::FUN_140ae2e90(Unk_BuddyInput& input) {
                 FUN_140ae5630(buddy); buddy->FUN_1401cc4b0(1);
             }
         } else { field=buddy->FUN_1401cc3e0(); channel=buddy->FUN_1401cc3a0(); buddy->FUN_1401cc7c0(input); }
-    } else if(response.protocol==15) FUN_140ae5190();
+        break;
+    }
+    }
     switch(response.protocol) {
     case 2: if(response.result==0) FUN_140961010(0x600,1,1,response.name); break;
+    case 9:
+        if(response.result==0) {
+            if((buddy->flags>>1)&1) { Unk_BuddyNotifications* events=FUN_140a4a7b0(); events->vfunc_3(buddy->id); }
+            else if(buddy->flags&1) { FUN_141276180(s_buddyRequest,""); FUN_1412751b0(GetStringCommon(0x607),12); Unk_BuddyNotifications* events=FUN_140a4a7b0(); events->vfunc_1(buddy->id); }
+            else if((buddy->flags>>2)&1) { Unk_BuddyNotifications* events=FUN_140a4a7b0(); events->vfunc_4(buddy->id,0); }
+        } break;
+    case 8:
+        if(buddy.get()) { Unk_BuddyNotifications* events=FUN_140a4a7b0(); events->vfunc_9(buddy->FUN_1401cc2f0()); }
+        if(buddy->FUN_1401cc5f0() && (field!=buddy->FUN_1401cc3e0() || channel!=buddy->FUN_1401cc3a0())) { Unk_BuddyNotifications* events=FUN_140a4a7b0(); events->vfunc_10(buddy->FUN_1401cc2f0(),field); } break;
+    case 7:
+        if(response.result==0) { buddy=FUN_140ae4b70(response.id); if(buddy.get()) {
+            if(buddy->FUN_1401cc660()) FUN_140961010(0x602,1,1,buddy->name);
+            else { CStringW message(L""); if(buddy->FUN_1401cc5d0()) message=FUN_14052bd00(0x603,buddy->name); else message=FUN_14052bd00(0x605,buddy->name); FUN_1412751b0(message,12); }
+            Unk_BuddyNotifications* events=FUN_140a4a7b0(); events->vfunc_5(buddy->id); FUN_140ae5850(buddy);
+        }} break;
+    case 6:
+        if(response.result==0) { buddy=FUN_140ae4b70(response.id); if(buddy.get()) {
+            CStringW message=FUN_14052bd00(0x606,buddy->name); FUN_1412751b0(message,12);
+            Unk_BuddyNotifications* events=FUN_140a4a7b0(); events->vfunc_6(buddy->id);
+            __int64 id=buddy->FUN_1401cc230(); FUN_140ae5850(buddy); Unk_BuddyNotifications* next=FUN_140a4a7b0(); next->vfunc_7(id);
+        }} break;
     case 3:
         if(response.result==0) { buddy=FUN_140ae4b70(response.id); if(buddy.get()) {
             buddy->flags&=~1u; buddy->FUN_1401cc4b0(1); FUN_141276180(s_buddyAgree,"");
@@ -129,29 +156,6 @@ void CBuddyManager::FUN_140ae2e90(Unk_BuddyInput& input) {
             buddy->flags|=4; buddy->FUN_1401cc4b0(1); CStringW message=FUN_14052bd00(0x5fe,buddy->name); FUN_1412751b0(message,12);
             Unk_BuddyNotifications* events=FUN_140a4a7b0(); events->vfunc_4(buddy->id,1);
         }} break;
-    case 6:
-        if(response.result==0) { buddy=FUN_140ae4b70(response.id); if(buddy.get()) {
-            CStringW message=FUN_14052bd00(0x606,buddy->name); FUN_1412751b0(message,12);
-            Unk_BuddyNotifications* events=FUN_140a4a7b0(); events->vfunc_6(buddy->id);
-            __int64 id=buddy->FUN_1401cc230(); FUN_140ae5850(buddy); Unk_BuddyNotifications* next=FUN_140a4a7b0(); next->vfunc_7(id);
-        }} break;
-    case 7:
-        if(response.result==0) { buddy=FUN_140ae4b70(response.id); if(buddy.get()) {
-            if(buddy->FUN_1401cc660()) FUN_140961010(0x602,1,1,buddy->name);
-            else { CStringW message(L""); if(buddy->FUN_1401cc5d0()) message=FUN_14052bd00(0x603,buddy->name); else message=FUN_14052bd00(0x605,buddy->name); FUN_1412751b0(message,12); }
-            Unk_BuddyNotifications* events=FUN_140a4a7b0(); events->vfunc_5(buddy->id); FUN_140ae5850(buddy);
-        }} break;
-    case 8:
-        if(buddy.get()) { Unk_BuddyNotifications* events=FUN_140a4a7b0(); events->vfunc_9(buddy->FUN_1401cc2f0()); }
-        if(buddy->FUN_1401cc5f0() && (field!=buddy->FUN_1401cc3e0() || channel!=buddy->FUN_1401cc3a0())) { Unk_BuddyNotifications* events=FUN_140a4a7b0(); events->vfunc_10(buddy->FUN_1401cc2f0(),field); } break;
-    case 9:
-        if(response.result==0) {
-            if((buddy->flags>>1)&1) { Unk_BuddyNotifications* events=FUN_140a4a7b0(); events->vfunc_3(buddy->id); }
-            else if(buddy->flags&1) { FUN_141276180(s_buddyRequest,""); FUN_1412751b0(GetStringCommon(0x607),12); Unk_BuddyNotifications* events=FUN_140a4a7b0(); events->vfunc_1(buddy->id); }
-            else if((buddy->flags>>2)&1) { Unk_BuddyNotifications* events=FUN_140a4a7b0(); events->vfunc_4(buddy->id,0); }
-        } break;
-    case 10:
-        buddy=FUN_140ae4b70(response.id); if(response.result==0) { FUN_140961010(0x5ff,1,1,response.name); if(buddy.get()) { buddy->memo=response.memo; Unk_BuddyNotifications* events=FUN_140a4a7b0(); events->vfunc_11(buddy->id); } } break;
     case 11:
         buddy=FUN_140ae4b70(response.id); if(buddy.get()) { buddy->flags&=~2u; buddy->FUN_1401cc4b0(1); CStringW message=FUN_14052bd00(0x5fd,buddy->name); FUN_1412751b0(message,12); Unk_BuddyNotifications* events=FUN_140a4a7b0(); events->vfunc_3(buddy->id); } break;
     case 12:
@@ -165,7 +169,9 @@ void CBuddyManager::FUN_140ae2e90(Unk_BuddyInput& input) {
             FUN_1412751b0(message,12);
         } break;
     }
-    case 14: { CStringW message; switch(response.flag) { case 0:message=FUN_14052bd00(0x608,response.name);break; case 1:message=FUN_14052bd00(0x609,response.name);break; } FUN_1412751b0(message,12); break; }
+    case 14: { CStringW message; switch(response.flag) { case 0:message=FUN_14052bd00(0x608,response.name);break; case 1:message=FUN_14052bd00(0x609,response.name);break; } FUN_1412751b0(message,12); } break;
+    case 10:
+        buddy=FUN_140ae4b70(response.id); if(response.result==0) { FUN_140961010(0x5ff,1,1,response.name); if(buddy.get()) { buddy->memo=response.memo; Unk_BuddyNotifications* events=FUN_140a4a7b0(); events->vfunc_11(buddy->id); } } break;
     case 17:
         if(response.result==0) { buddy=FUN_140ae4b70(response.id); if(buddy.get()) { CStringW message=FUN_14052bd00(0x604,buddy->name); FUN_1412751b0(message,12); Unk_BuddyNotifications* events=FUN_140a4a7b0(); events->vfunc_8(buddy->id); FUN_140ae5850(buddy); } } break;
     case 18: {
@@ -182,18 +188,18 @@ void CBuddyManager::FUN_140ae2e90(Unk_BuddyInput& input) {
 void CBuddyManager::FUN_140ae4820(Unk_BuddyRequest& request) { COutPacket packet(static_cast<int>(SendOp::Buddy),0); request.FUN_1401fc790(packet); FUN_140710590(packet); }
 MS2_REPLACE_METHOD(0x140AE4820, CBuddyManager, FUN_140ae4820, 83, 0x6E66E430);
 // @0x140ae4880
-CBuddyManager::Ptr CBuddyManager::FUN_140ae4880(__int64 key) {{ if(Unk_BuddyGuard guard=lock) {} else { Ptr p; accounts.Lookup(key,p); return p; } }}
+CBuddyManager::Ptr CBuddyManager::FUN_140ae4880(__int64 key) { if(Unk_BuddyGuard guard=lock) { __assume(0); } else { Ptr p; accounts.Lookup(key,p); return p; } }
 // @0x140ae4950
 CBuddyManager::Ptr CBuddyManager::FUN_140ae4950(const CStringW& name) {{
-    if(Unk_BuddyGuard guard=lock) {} else { Ptr p;
+    if(Unk_BuddyGuard guard=lock) { __assume(0); } else { Ptr p;
         for(POSITION pos=list.GetHeadPosition();pos;list.GetNext(pos)) { p=list.GetAt(pos); if(p->name.CompareNoCase(name)==0) return p; }
         return Ptr(0);
     }
 }}
 // @0x140ae4ad0
-CBuddyManager::Ptr CBuddyManager::FUN_140ae4ad0() {{ if(Unk_BuddyGuard guard=lock) {} else { return list.GetTail();} }}
+CBuddyManager::Ptr CBuddyManager::FUN_140ae4ad0() { if(Unk_BuddyGuard guard=lock) { __assume(0); } else { return list.GetTail();} }
 // @0x140ae4b70
-CBuddyManager::Ptr CBuddyManager::FUN_140ae4b70(__int64 key) {{ if(Unk_BuddyGuard guard=lock) {} else { Ptr p; ids.Lookup(key,p); return p; } }}
+CBuddyManager::Ptr CBuddyManager::FUN_140ae4b70(__int64 key) { if(Unk_BuddyGuard guard=lock) { __assume(0); } else { Ptr p; ids.Lookup(key,p); return p; } }
 // @0x140ae4c30
 CBuddyManager::Ptr CBuddyManager::FUN_140ae4c30(__int64 id,__int64 account,const CStringW& name) {
     Ptr p=FUN_140ae4b70(id); if(p==0) { p=FUN_140ae4880(account); if(p==0) p=FUN_140ae4950(name); } return p;
@@ -208,7 +214,7 @@ void CBuddyManager::FUN_140ae4df0(ATL::CAtlArray<Ptr>& out) {
 }
 MS2_REPLACE_METHOD(0x140AE4DF0, CBuddyManager, FUN_140ae4df0, 210, 0xDAE8B35A);
 // @0x140ae4ed0
-unsigned CBuddyManager::FUN_140ae4ed0() {{ if(Unk_BuddyGuard guard=lock) {} else { return static_cast<unsigned>(list.GetCount());} }}
+unsigned CBuddyManager::FUN_140ae4ed0() { if(Unk_BuddyGuard guard=lock) { __assume(0); } else { return static_cast<unsigned>(list.GetCount());} }
 // @0x140ae4f50
 int CBuddyManager::FUN_140ae4f50() { int count=0; { if(Unk_BuddyGuard guard=lock) {} else { Ptr p; for(POSITION pos=list.GetHeadPosition();pos;list.GetNext(pos)) { p=list.GetAt(pos); if((p.get()?true:false) && p->FUN_1401cc680()) ++count; } } } return count; }
 MS2_REPLACE_METHOD(0x140AE4F50, CBuddyManager, FUN_140ae4f50, 273, 0xD93331C5);

@@ -92,7 +92,7 @@ public:
     bool FUN_140a8e270(int n);
     Unk_CashBillOwner* FUN_140a8e380();
 private:
-    char m_pad[0x20];
+    void* m_pad[2];
 };
 class UIMarketBillDialog : public UIDialog
 {
@@ -107,7 +107,7 @@ Unk_CashUIManager* FUN_1403ed2b0();
 // Item data of an item id (only the item class test is used).
 class Unk_CashItemData : public CPtred { public: char m_pad[8]; };
 MS2Ptr<Unk_CashItemData> FUN_14053f870(int nItemId);
-char FUN_14053c6b0(Unk_CashItemData* pData, int nFlag);
+bool FUN_14053c6b0(Unk_CashItemData* pData, int nFlag);
 void* FUN_1401d3200();
 void* FUN_140298f80(void* p);
 void FUN_1418fe1c0(void* p);
@@ -255,7 +255,7 @@ DragSlot* CashInventoryBag::vfunc_16(int nIndex)
 {
     MS2Ptr<CItem> spUnused(0);
     const ATL::CAtlArray<MS2Ptr<CCashInventoryProduct> >& aInv = CCashMarketMan::GetInstance()->FUN_140b05c00();
-    if ((size_t)nIndex < aInv.GetCount())
+    if (aInv.GetCount() > (size_t)nIndex)
     {
         if (aInv[nIndex].get() != 0)
         {
@@ -264,13 +264,11 @@ DragSlot* CashInventoryBag::vfunc_16(int nIndex)
             {
                 int nProductId = aInv[nIndex]->m_n1c;
                 int nType = FUN_141034dc0(ref.FUN_140b051d0(), nProductId);
-                CashInventorySlot* pSlot = new (efd::MemHint(efd::MemHint::NONE)) CashInventorySlot(vfunc_15(nIndex), nProductId, nType, nIndex);
-                return pSlot;
+                return new (efd::MemHint(efd::MemHint::NONE)) CashInventorySlot(vfunc_15(nIndex), nProductId, nType, nIndex);
             }
         }
     }
-    CashInventorySlot* pSlot = new (efd::MemHint(efd::MemHint::NONE)) CashInventorySlot(vfunc_15(nIndex), 0, 0, nIndex);
-    return pSlot;
+    return new (efd::MemHint(efd::MemHint::NONE)) CashInventorySlot(vfunc_15(nIndex), 0, 0, nIndex);
 }
 
 // @0x140b05ac0
@@ -308,28 +306,28 @@ bool CCashMarketMan::GetFlag() const
 // @0x140b06020
 void CCashMarketMan::OnCash(CInPacket& packet)
 {
-    char cSub = packet.ReadUInt8();
-    if (cSub == 0)
+    int nSub = packet.ReadUInt8();
+    if (nSub == 0)
         FUN_140b07120(packet);
-    else if (cSub == 1)
+    else if (nSub == 1)
         FUN_140b072d0(packet);
-    else if (cSub == 2)
+    else if (nSub == 2)
         FUN_140b07490(packet);
-    else if (cSub == 3)
+    else if (nSub == 3)
         FUN_140b07cb0(packet);
-    else if (cSub == 5)
+    else if (nSub == 5)
         FUN_140b08760(packet);
-    else if (cSub == 7)
+    else if (nSub == 7)
         FUN_140b08ab0(packet);
-    else if (cSub == 4)
+    else if (nSub == 4)
         FUN_140b084f0(packet);
-    else if (cSub == 9)
+    else if (nSub == 9)
         FUN_140b08ee0(packet);
-    else if (cSub == 8)
+    else if (nSub == 8)
         FUN_140b08f50(packet);
-    else if (cSub == -0x37)
+    else if (nSub == 0xc9)
         FUN_140b06bd0(packet);
-    else if (cSub == -0x36)
+    else if (nSub == 0xca)
         FUN_140b06d70(packet);
 }
 
@@ -362,30 +360,28 @@ void CCashMarketMan::SendCashMode2(int a, int b)
 // @0x140b062c0
 void CCashMarketMan::SendCashMode3(int a, int b, CString s1, CString s2)
 {
-    if (CashRegionSelectA() != 0)
-    {
-        COutPacket packet(static_cast<int>(SendOp::Cash), 0);
-        packet.WriteUInt8(3);
-        packet.WriteInt32(a);
-        packet.WriteInt32(b);
-        packet.WriteUnicodeStringA(s1);
-        packet.WriteUnicodeStringA(s2);
-        FUN_140710590(packet);
-    }
+    if (CashRegionSelectA() == 0)
+        return;
+    COutPacket packet(static_cast<int>(SendOp::Cash), 0);
+    packet.WriteUInt8(3);
+    packet.WriteInt32(a);
+    packet.WriteInt32(b);
+    packet.WriteUnicodeStringA(s1);
+    packet.WriteUnicodeStringA(s2);
+    FUN_140710590(packet);
 }
 
 // @0x140b063b0
 void CCashMarketMan::SendCashMode4(int a, int b, int c)
 {
-    if (CashRegionSelectB() != 0)
-    {
-        COutPacket packet(static_cast<int>(SendOp::Cash), 0);
-        packet.WriteUInt8(4);
-        packet.WriteInt32(a);
-        packet.WriteInt32(b);
-        packet.WriteInt32(c);
-        FUN_140710590(packet);
-    }
+    if (CashRegionSelectB() == 0)
+        return;
+    COutPacket packet(static_cast<int>(SendOp::Cash), 0);
+    packet.WriteUInt8(4);
+    packet.WriteInt32(a);
+    packet.WriteInt32(b);
+    packet.WriteInt32(c);
+    FUN_140710590(packet);
 }
 
 // @0x140b06450
@@ -400,16 +396,15 @@ void CCashMarketMan::SendCashMode5(int a)
 // @0x140b064c0
 void CCashMarketMan::SendCashMode7(int a, int b, int c, int nFlag)
 {
-    if (nFlag != 1 || CashRegionSelectC() != 0)
-    {
-        COutPacket packet(static_cast<int>(SendOp::Cash), 0);
-        packet.WriteUInt8(7);
-        packet.WriteInt32(a);
-        packet.WriteInt32(b);
-        packet.WriteInt32(c);
-        packet.WriteUInt8((unsigned char)nFlag);
-        FUN_140710590(packet);
-    }
+    if (nFlag == 1 && CashRegionSelectC() == 0)
+        return;
+    COutPacket packet(static_cast<int>(SendOp::Cash), 0);
+    packet.WriteUInt8(7);
+    packet.WriteInt32(a);
+    packet.WriteInt32(b);
+    packet.WriteInt32(c);
+    packet.WriteUInt8((unsigned char)nFlag);
+    FUN_140710590(packet);
 }
 
 // @0x140b06580
@@ -453,9 +448,9 @@ MS2Ptr<CCashSaleProduct> CCashMarketMan::FUN_140b06750(int nId)
 // @0x140b067d0
 MS2Ptr<CCashInventoryProduct> CCashMarketMan::FUN_140b067d0(int nIndex)
 {
-    if (-1 < nIndex && nIndex < (int)m_aInv.GetCount())
-        return m_aInv[nIndex];
-    return MS2Ptr<CCashInventoryProduct>(0);
+    if (nIndex < 0 || nIndex >= (int)m_aInv.GetCount())
+        return MS2Ptr<CCashInventoryProduct>(0);
+    return m_aInv[nIndex];
 }
 
 // @0x140b06870
@@ -486,6 +481,12 @@ void CCashMarketMan::FUN_140b06980(int nByte, int nResult)
     case 0x67:
         nId = 0xa6d;
         break;
+    case 0x74:
+        nId = 0xa48;
+        break;
+    case 0x73:
+        nId = 0xa48;
+        break;
     case 0x68:
         nId = 0xa6e;
         break;
@@ -513,20 +514,14 @@ void CCashMarketMan::FUN_140b06980(int nByte, int nResult)
     case 0x70:
         nId = 0xa7d;
         break;
-    case 0x73:
-        nId = 0xa48;
-        break;
-    case 0x74:
-        nId = 0xa48;
+    case 0x76:
+        nId = 0xa70;
         break;
     case 0x75:
         nId = 0xd56;
-        break;
-    case 0x76:
-        nId = 0xa70;
     }
     if (nId == 0)
-        Unk_CashMessage(0xa68, 1, 1, nByte, (Unk_CashResult)nResult);
+        Unk_CashMessage(0xa68, 1, 1, nByte, reinterpret_cast<const Unk_CashResult&>(nResult));
     else if (nId == 0xa6b)
         FUN_141275260(0xa6b, 1, 1);
     else
@@ -536,14 +531,13 @@ void CCashMarketMan::FUN_140b06980(int nByte, int nResult)
 // @0x140b06bd0
 void CCashMarketMan::FUN_140b06bd0(CInPacket& packet)
 {
-    Unk_LockGuard guard(m_lock);
-    if ((int)guard == 0)
-    {
+    if (Unk_LockGuard guard = m_lock) {} else {
         m_mapLimit.RemoveAll();
         int nCount = packet.ReadInt32();
         for (int i = 0; i < nCount; ++i)
         {
-            if (packet.ReadUInt8() != 0)
+            int nHas = packet.ReadUInt8();
+            if (nHas != 0)
             {
                 MS2Ptr<CMarketBuyLimitHistory> sp(new CMarketBuyLimitHistory);
                 sp->Read(packet);
@@ -580,9 +574,7 @@ int CCashMarketMan::FUN_140b06ed0(int nProductId)
 {
     MS2Ptr<CMarketBuyLimitHistory> sp(0);
     int nCount = 0;
-    Unk_LockGuard guard(m_lock);
-    if ((int)guard == 0)
-    {
+    if (Unk_LockGuard guard = m_lock) {} else {
         m_mapLimit.Lookup(nProductId, sp);
         if (sp.get() != 0)
             nCount = sp->m_n30;
@@ -641,14 +633,24 @@ void CCashMarketMan::FUN_140b072d0(CInPacket& packet)
                 FUN_141034e00(ref.FUN_140b051d0(), nArg);
         }
     }
-    else if (nCode == 0xff)
-        FUN_141275260(0xa7a, 1, 1);
-    else if (nCode == 0x2ee1)
-        FUN_140d73bc0(0xa79, 0, 0, CStringW(L""));
-    else if (nCode == 0x2ee2)
-        FUN_140d73bc0(0xa7b, 0, 0, CStringW(L""));
     else
-        Unk_CashMessage(0xa78, 1, 1, nCode);
+    {
+        switch (nCode)
+        {
+        case 0x2ee1:
+            FUN_140d73bc0(0xa79, 0, 0, CStringW(L""));
+            break;
+        case 0x2ee2:
+            FUN_140d73bc0(0xa7b, 0, 0, CStringW(L""));
+            break;
+        case 0xff:
+            FUN_141275260(0xa7a, 1, 1);
+            break;
+        default:
+            Unk_CashMessage(0xa78, 1, 1, nCode);
+            break;
+        }
+    }
 }
 
 // @0x140b07490
@@ -658,29 +660,27 @@ void CCashMarketMan::FUN_140b07490(CInPacket& packet)
     if (nCode == 1)
     {
         int nArg = packet.ReadInt32();
-        MS2Ptr<CMsgBoxData> spBox = FUN_140d73e40(0, 0x9e0, 0, CStringW(L""));
-        if (spBox.get() != 0)
-            FUN_141a01c30(spBox.operator->(), s_strCashBuy);
-        spBox = 0;
-        if (!FUN_140166410()->FUN_14036e4c0())
-            return;
-        Unk_CashShopRef ref(FUN_140b04f80(0x4ebc));
-        if (ref.FUN_140b051c0() != 0)
         {
-            if (FUN_1410356a0(ref.FUN_140b051d0()) == 0)
-                FUN_140d73bc0(0xa60, 0, 0, CStringW(L""));
-            FUN_141034ef0(ref.FUN_140b051d0(), nArg, packet);
+            MS2Ptr<CMsgBoxData> spBox = FUN_140d73e40(0, 0x9e0, 0, CStringW(L""));
+            if (spBox.get() != 0)
+                FUN_141a01c30(spBox.operator->(), s_strCashBuy);
         }
-        FUN_141276180(s_strCashBuy, CString(""));
-        return;
+        if (FUN_140166410()->FUN_14036e4c0())
+        {
+            {
+                Unk_CashShopRef ref(FUN_140b04f80(0x4ebc));
+                if (ref.FUN_140b051c0() != 0)
+                {
+                    if (FUN_1410356a0(ref.FUN_140b051d0()) == 0)
+                        FUN_140d73bc0(0xa60, 0, 0, CStringW(L""));
+                    FUN_141034ef0(ref.FUN_140b051d0(), nArg, packet);
+                }
+            }
+            FUN_141276180(s_strCashBuy, "");
+        }
     }
-    if (nCode < 0x2afa)
+    else
     {
-        if (nCode == 0x2af9)
-        {
-            FUN_140d73bc0(0xa84, 0, 0, CStringW(L""));
-            return;
-        }
         switch (nCode)
         {
         case 3:
@@ -689,8 +689,6 @@ void CCashMarketMan::FUN_140b07490(CInPacket& packet)
         case 4:
             FUN_140d73bc0(0xa7e, 0, 0, CStringW(L""));
             break;
-        default:
-            goto defaultMessage;
         case 0x16:
             FUN_140d73bc0(0xa7f, 0, 0, CStringW(L""));
             break;
@@ -703,55 +701,36 @@ void CCashMarketMan::FUN_140b07490(CInPacket& packet)
         case 0x1f:
             FUN_140d73bc0(0xa82, 0, 0, CStringW(L""));
             break;
+        case 0x2afa:
+            FUN_140d73bc0(0xa85, 1, 0, CStringW(s_strUnlockCash));
+            break;
+        case 0x2ee1:
+            FUN_140d73bc0(0xa86, 0, 0, CStringW(L""));
+            break;
+        case 0x2ee2:
+            FUN_140d73bc0(0xa87, 0, 0, CStringW(L""));
+            break;
+        case 0x2f08:
+            FUN_140d73bc0(0xa88, 0, 0, CStringW(L""));
+            break;
+        case 0x2f0c:
+            FUN_140d73bc0(0xa89, 0, 0, CStringW(L""));
+            break;
+        case 0x1d4eb:
+            FUN_140d73bc0(0xa8a, 0, 0, CStringW(L""));
+            break;
+        case 0x1d4fe:
+            FUN_140d73bc0(0xa8b, 0, 0, CStringW(L""));
+            break;
+        case 0x2af9:
+            FUN_140d73bc0(0xa84, 0, 0, CStringW(L""));
+            break;
         case 0xff:
             FUN_141275260(0xa83, 1, 1);
+            break;
+        default:
+            Unk_CashMessage(0xa7c, 1, 1, nCode);
         }
-    }
-    else
-    {
-        if (nCode < 0x2f09)
-        {
-            if (nCode == 0x2f08)
-            {
-                FUN_140d73bc0(0xa88, 0, 0, CStringW(L""));
-                return;
-            }
-            if (nCode == 0x2afa)
-            {
-                FUN_140d73bc0(0xa85, 1, 0, CStringW(s_strUnlockCash));
-                return;
-            }
-            if (nCode == 0x2ee1)
-            {
-                FUN_140d73bc0(0xa86, 0, 0, CStringW(L""));
-                return;
-            }
-            if (nCode == 0x2ee2)
-            {
-                FUN_140d73bc0(0xa87, 0, 0, CStringW(L""));
-                return;
-            }
-        }
-        else
-        {
-            if (nCode == 0x2f0c)
-            {
-                FUN_140d73bc0(0xa89, 0, 0, CStringW(L""));
-                return;
-            }
-            if (nCode == 0x1d4eb)
-            {
-                FUN_140d73bc0(0xa8a, 0, 0, CStringW(L""));
-                return;
-            }
-            if (nCode == 0x1d4fe)
-            {
-                FUN_140d73bc0(0xa8b, 0, 0, CStringW(L""));
-                return;
-            }
-        }
-defaultMessage:
-        Unk_CashMessage(0xa7c, 1, 1, nCode);
     }
 }
 
@@ -769,114 +748,69 @@ void CCashMarketMan::FUN_140b07cb0(CInPacket& packet)
             spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &CCashMarketMan::FUN_140b08fe0));
             FUN_140d73c60(spBox);
         }
-        return;
-    }
-    if (nCode < 0x3eb)
-    {
-        if (nCode == 0x3ea)
-        {
-            FUN_140d73bc0(0xa99, 0, 0, CStringW(L""));
-            return;
-        }
-        if (nCode < 0x1f)
-        {
-            if (nCode == 0x1e)
-            {
-                FUN_140d73bc0(0xa81, 0, 0, CStringW(L""));
-                return;
-            }
-            if (nCode == 3)
-            {
-                FUN_140d73bc0(0xa7d, 0, 0, CStringW(L""));
-                return;
-            }
-            if (nCode == 4)
-            {
-                FUN_140d73bc0(0xa9c, 0, 0, CStringW(L""));
-                return;
-            }
-            if (nCode == 0x16)
-            {
-                FUN_140d73bc0(0xa7f, 0, 0, CStringW(L""));
-                return;
-            }
-            if (nCode == 0x1a)
-            {
-                FUN_140d73bc0(0xa80, 0, 0, CStringW(L""));
-                return;
-            }
-        }
-        else
-        {
-            if (nCode == 0x1f)
-            {
-                FUN_140d73bc0(0xa82, 0, 0, CStringW(L""));
-                return;
-            }
-            if (nCode == 0xff)
-            {
-                FUN_141275260(0xa83, 1, 1);
-                return;
-            }
-            if (nCode == 1000)
-            {
-                FUN_140d73bc0(0xa97, 0, 0, CStringW(L""));
-                return;
-            }
-            if (nCode == 0x3e9)
-            {
-                FUN_140d73bc0(0xa98, 0, 0, CStringW(L""));
-                return;
-            }
-        }
-    }
-    else if (nCode < 0x2f09)
-    {
-        if (nCode == 0x2f08)
-        {
-            FUN_140d73bc0(0xa88, 0, 0, CStringW(L""));
-            return;
-        }
-        if (nCode == 0x3eb)
-        {
-            FUN_140d73bc0(0xa9a, 0, 0, CStringW(L""));
-            return;
-        }
-        if (nCode == 0x2afa)
-        {
-            FUN_140d73bc0(0xa85, 1, 0, CStringW(s_strUnlockCash));
-            return;
-        }
-        if (nCode == 0x2ee1)
-        {
-            FUN_140d73bc0(0xa86, 0, 0, CStringW(L""));
-            return;
-        }
-        if (nCode == 0x2ee2)
-        {
-            FUN_140d73bc0(0xa87, 0, 0, CStringW(L""));
-            return;
-        }
     }
     else
     {
-        if (nCode == 0x2f0c)
+        switch (nCode)
         {
-            FUN_140d73bc0(0xa89, 0, 0, CStringW(L""));
-            return;
-        }
-        if (nCode == 0x1d4eb)
-        {
+        case 1000:
+            FUN_140d73bc0(0xa97, 0, 0, CStringW(L""));
+            break;
+        case 0x3e9:
+            FUN_140d73bc0(0xa98, 0, 0, CStringW(L""));
+            break;
+        case 0x3ea:
+            FUN_140d73bc0(0xa99, 0, 0, CStringW(L""));
+            break;
+        case 0x3eb:
+            FUN_140d73bc0(0xa9a, 0, 0, CStringW(L""));
+            break;
+        case 3:
+            FUN_140d73bc0(0xa7d, 0, 0, CStringW(L""));
+            break;
+        case 4:
+            FUN_140d73bc0(0xa9c, 0, 0, CStringW(L""));
+            break;
+        case 0x16:
+            FUN_140d73bc0(0xa7f, 0, 0, CStringW(L""));
+            break;
+        case 0x1a:
+            FUN_140d73bc0(0xa80, 0, 0, CStringW(L""));
+            break;
+        case 0x1e:
+            FUN_140d73bc0(0xa81, 0, 0, CStringW(L""));
+            break;
+        case 0x1f:
+            FUN_140d73bc0(0xa82, 0, 0, CStringW(L""));
+            break;
+        case 0x2afa:
+            FUN_140d73bc0(0xa85, 1, 0, CStringW(s_strUnlockCash));
+            break;
+        case 0x1d4eb:
             FUN_140d73bc0(0xa8a, 0, 0, CStringW(L""));
-            return;
-        }
-        if (nCode == 0x1d4fe)
-        {
+            break;
+        case 0x2ee1:
+            FUN_140d73bc0(0xa86, 0, 0, CStringW(L""));
+            break;
+        case 0x2ee2:
+            FUN_140d73bc0(0xa87, 0, 0, CStringW(L""));
+            break;
+        case 0x2f08:
+            FUN_140d73bc0(0xa88, 0, 0, CStringW(L""));
+            break;
+        case 0x2f0c:
+            FUN_140d73bc0(0xa89, 0, 0, CStringW(L""));
+            break;
+        case 0x1d4fe:
             FUN_140d73bc0(0xa8b, 0, 0, CStringW(L""));
-            return;
+            break;
+        case 0xff:
+            FUN_141275260(0xa83, 1, 1);
+            break;
+        default:
+            Unk_CashMessage(0xa9b, 1, 1, nCode);
         }
     }
-    Unk_CashMessage(0xa9b, 1, 1, nCode);
 }
 
 // @0x140b084f0
@@ -890,16 +824,27 @@ void CCashMarketMan::FUN_140b084f0(CInPacket& packet)
         int n3 = packet.ReadInt32();
         FUN_140d73bc0(0xa64, 0, 0, CStringW(L""));
     }
-    else if (nCode == 2)
-        FUN_140d73bc0(0xa93, 0, 0, CStringW(L""));
-    else if (nCode == 4)
-        FUN_140d73bc0(0xa94, 0, 0, CStringW(L""));
-    else if (nCode == 7)
-        FUN_140d73bc0(0xa95, 0, 0, CStringW(L""));
-    else if (nCode == 8)
-        FUN_140d73bc0(0xa96, 0, 0, CStringW(L""));
     else
-        Unk_CashMessage(0xa92, 1, 1, nCode);
+    {
+        switch (nCode)
+        {
+        case 2:
+            FUN_140d73bc0(0xa93, 0, 0, CStringW(L""));
+            break;
+        case 4:
+            FUN_140d73bc0(0xa94, 0, 0, CStringW(L""));
+            break;
+        case 7:
+            FUN_140d73bc0(0xa95, 0, 0, CStringW(L""));
+            break;
+        case 8:
+            FUN_140d73bc0(0xa96, 0, 0, CStringW(L""));
+            break;
+        default:
+            Unk_CashMessage(0xa92, 1, 1, nCode);
+            break;
+        }
+    }
 }
 
 // @0x140b08760
@@ -957,21 +902,18 @@ void CCashMarketMan::FUN_140b08ab0(CInPacket& packet)
         int nB = packet.ReadInt32();
         int nC = packet.ReadInt32();
         unsigned nD = packet.ReadInt32();
-        if (!FUN_140166410()->FUN_14036e4c0())
-        {
-            if (FUN_140166410()->FUN_14036e5b0())
-            {
-                if (nD < 900000 || 999999 < nD)
-                    FUN_140d73bc0(0xa60, 0, 0, CStringW(L""));
-                else
-                    FUN_140d73bc0(0xa61, 0, 0, CStringW(L""));
-                FUN_141276180(s_strCashBuy, CString(""));
-            }
-        }
-        else
+        if (FUN_140166410()->FUN_14036e4c0())
         {
             FUN_140d73bc0(0xa65, 0, 0, CStringW(L""));
-            FUN_141276180(s_strCashInventoryToBag, CString(""));
+            FUN_141276180(s_strCashInventoryToBag, "");
+        }
+        else if (FUN_140166410()->FUN_14036e5b0())
+        {
+            if (nD >= 900000 && nD < 1000000)
+                FUN_140d73bc0(0xa61, 0, 0, CStringW(L""));
+            else
+                FUN_140d73bc0(0xa60, 0, 0, CStringW(L""));
+            FUN_141276180(s_strCashBuy, "");
         }
         MS2Ptr<CCashInventoryProduct> spProd = GetInstance()->FUN_140b06870(nA, nB);
         if (spProd.get() != 0)
@@ -980,25 +922,35 @@ void CCashMarketMan::FUN_140b08ab0(CInPacket& packet)
             MS2Ptr<Unk_CashItemData> spData = FUN_14053f870(nItemId);
             if (spData.get() != 0)
             {
-                if (FUN_14053c6b0(spData.get(), 0x13))
+                if (FUN_14053c6b0(spData.operator->(), 0x13))
                     FUN_1418fe1c0(FUN_140298f80((char*)FUN_1401d3200() + 0xdaa0));
             }
         }
     }
-    else if (nCode == 2)
-        FUN_140d73bc0(0xa8f, 0, 0, CStringW(L""));
-    else if (nCode == 3)
-        FUN_140d73bc0(0xa90, 0, 0, CStringW(L""));
-    else if (nCode == 0xff)
-        FUN_141275260(0xa91, 1, 1);
     else
-        Unk_CashMessage(0xa8e, 1, 1, nCode);
+    {
+        switch (nCode)
+        {
+        case 2:
+            FUN_140d73bc0(0xa8f, 0, 0, CStringW(L""));
+            break;
+        case 3:
+            FUN_140d73bc0(0xa90, 0, 0, CStringW(L""));
+            break;
+        case 0xff:
+            FUN_141275260(0xa91, 1, 1);
+            break;
+        default:
+            Unk_CashMessage(0xa8e, 1, 1, nCode);
+        }
+    }
 }
 
 // @0x140b08ee0
 void CCashMarketMan::FUN_140b08ee0(CInPacket& packet)
 {
-    m_bFlag = packet.ReadUInt8() == 1;
+    bool bFlag = packet.ReadUInt8() == 1;
+    m_bFlag = bFlag;
 }
 
 // @0x140b08f50
@@ -1015,15 +967,13 @@ void CCashMarketMan::FUN_140b08f50(CInPacket& packet)
 bool CCashMarketMan::FUN_140b08fe0(int, const CMsgBoxData&)
 {
     UIMarketBillDialog* pBill = FUN_140b09580(0x4f17);
-    if (pBill != 0)
-    {
-        Unk_CashBillRef ref = pBill->FUN_140ea8da0();
-        if (!ref.FUN_140a8e270(0))
-        {
-            if (ref.FUN_140a8e380()->m_nId == 0x4ebc)
-                FUN_1403ed2b0()->FUN_141adc5d0(0x4f17);
-        }
-    }
+    if (pBill == 0)
+        return true;
+    Unk_CashBillRef ref = pBill->FUN_140ea8da0();
+    if (ref.FUN_140a8e270(0))
+        return true;
+    if (ref.FUN_140a8e380()->m_nId == 0x4ebc)
+        FUN_1403ed2b0()->FUN_141adc5d0(0x4f17);
     return true;
 }
 
@@ -1116,22 +1066,23 @@ MS2Ptr<CItem> CashInventorySlot::vfunc_25()
 // @0x140b0d440
 void CashInventorySlot::FUN_140b0d440()
 {
-    if (m_spItem.get() == 0)
-        return;
-    MS2Ptr<CCashInventoryProduct> spProd = CCashMarketMan::GetInstance()->FUN_140b067d0(GetIndex());
-    if (!spProd)
-        return;
-    int nMsg = spProd->m_data.m_n50 == 0 ? 0xa56 : 0xa57;
-    UICashShopDialog* pShop = FUN_140b04f80(0x4ebc);
-    CStringW strPickup = StringFormat(L"pickup:{0},{1}", spProd->m_n1c, (const unsigned&)spProd->m_n18);
-    MS2Ptr<CMsgBoxData> spBox = FUN_140d73e40(0x1d, nMsg, pShop == 0 ? 0 : (void*)((char*)pShop + 0x18), CStringW(strPickup));
-    if (spBox.get() != 0)
+    if (m_spItem.get() != 0)
     {
-        int bFlag = spProd->m_data.m_n50 != 0 && spProd->m_strA8.GetLength() == 0;
-        FUN_141a02750(spBox.operator->(), bFlag);
-        spBox->FUN_141a01ee0(m_spItem, m_spItem.get()->FUN_140527b10(), 1, 0, -1, -1, 1);
-        spBox->FUN_141a01800(1);
-        FUN_140d73c60(spBox);
+        MS2Ptr<CCashInventoryProduct> spProd = CCashMarketMan::GetInstance()->FUN_140b067d0(GetIndex());
+        if (!spProd)
+            return;
+        int nMsg = spProd->m_data.m_n50 != 0 ? 0xa57 : 0xa56;
+        UICashShopDialog* pShop = FUN_140b04f80(0x4ebc);
+        CStringW strPickup = StringFormat(L"pickup:{0},{1}", spProd->m_n1c, reinterpret_cast<const unsigned&>(spProd->m_n18));
+        MS2Ptr<CMsgBoxData> spBox = FUN_140d73e40(0x1d, nMsg, pShop != 0 ? (void*)((char*)pShop + 0x18) : 0, CStringW(strPickup));
+        if (spBox.get() != 0)
+        {
+            int bFlag = spProd->m_data.m_n50 != 0 && spProd->m_strA8.GetLength() == 0;
+            FUN_141a02750(spBox.operator->(), bFlag);
+            spBox->FUN_141a01ee0(m_spItem, m_spItem->FUN_140527b10(), 1, 0, -1, -1, 1);
+            spBox->FUN_141a01800(1);
+            FUN_140d73c60(spBox);
+        }
     }
 }
 

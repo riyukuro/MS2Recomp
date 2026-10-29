@@ -52,12 +52,16 @@ static CString s_sortNames[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", 
 // @0x1400bc8f0
 static CString s_premiumSortNames[] = {"None", "Buy", "PriceLow", "PriceHigh", "Create", "ChartOrder", "BuyTotal", "EnumEnd"};
 
-// The UCRT's `static __inline memcpy_s` copy of this TU (kept alive by the pointer below).
+// The UCRT's `static __inline memcpy_s` copy of this TU (kept alive by the pointer below), compiled with memcpy as a
+// call.
+#pragma function(memcpy, memset)
 // @0x1407c9e20
-// MS2-FUNCTIONAL: CRT memcpy_s copy: source spelling differs
 static __inline errno_t ms2_sit_memcpy_s(void* const d, size_t const dsz, void const* const s, size_t const ssz)
 {
-    if (ssz == 0) { return 0; }
+    if (ssz == 0)
+    {
+        return 0;
+    }
     { int e = !!(d != NULL); if (!e) { errno = EINVAL; _invalid_parameter_noinfo(); return EINVAL; } }
     { int e = !!(s != NULL); if (!e) { errno = EINVAL; _invalid_parameter_noinfo(); return EINVAL; } }
     { int e = !!(dsz >= ssz); if (!e) { errno = ERANGE; _invalid_parameter_noinfo(); return ERANGE; } }
@@ -65,6 +69,7 @@ static __inline errno_t ms2_sit_memcpy_s(void* const d, size_t const dsz, void c
     return 0;
 }
 __declspec(selectany) extern errno_t(__cdecl* const ms2_pfnSitMemcpyS)(void*, size_t, const void*, size_t) = &ms2_sit_memcpy_s;
+#pragma intrinsic(memcpy, memset)
 
 // @0x1407c4980
 SetItemTable::SetItemTable()
@@ -89,11 +94,10 @@ int SetItemTable::Load()
 }
 
 // @0x1407c4b30
-// MS2-FUNCTIONAL: temporaries/EH state layout differs (46 bytes larger)
 int SetItemTable::LoadSets()
 {
     m_map.RemoveAll();
-    CString strPath = FUN_14071a5b0(CString("Table"), CString("SetItemInfo.xml"));
+    CString strPath = FUN_14071a5b0("Table", "SetItemInfo.xml");
     TiXmlDocument doc;
     if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return 0;
@@ -130,11 +134,10 @@ int SetItemTable::LoadSets()
 }
 
 // @0x1407c5020
-// MS2-FUNCTIONAL: prologue/temporary layout differs by a byte
-bool FUN_1407c5020()
+// An unused pointer argument (rcx is spilled); no caller is recovered.
+int FUN_1407c5020(void* pUnused)
 {
-    void* p = FUN_1406aeee0();
-    return FUN_1406af060(p);
+    return FUN_1406af060(FUN_1406aeee0());
 }
 
 // @0x1407c5050
@@ -156,33 +159,28 @@ void SetItemTable::FUN_1407c50e0(int nSetId, void* pOut)
 }
 
 // @0x1407c5160
-// MS2-FUNCTIONAL: temporary/EH layout differs
 bool SetItemTable::FUN_1407c5160(int nSetId)
 {
     SetItemInfoPtr spInfo;
-    if (m_map.Lookup(nSetId, spInfo) == 0)
-        return false;
-    return spInfo->IsShowEffect();
+    if (m_map.Lookup(nSetId, spInfo) != 0)
+        return spInfo->IsShowEffect();
+    return false;
 }
 
 // @0x1407c51f0
-// MS2-FUNCTIONAL: iterator temporaries differ (84 vs 90 bytes)
 bool SetItemTable::HasSetItem(unsigned nItemId) const
 {
-    std::multimap<unsigned, SetItemInfoPtr>::const_iterator itEnd = m_byItem.end();
-    return m_byItem.find(nItemId) != itEnd;
+    return m_byItem.find(nItemId) != m_byItem.end();
 }
 
 // @0x1407c5250
-// MS2-FUNCTIONAL: iterator temporaries differ (118 vs 120 bytes)
 void SetItemTable::GetSetItemInfos(unsigned nItemId, std::vector<SetItemInfoPtr>& sets)
 {
     CheckInit();
     std::pair<std::multimap<unsigned, SetItemInfoPtr>::iterator, std::multimap<unsigned, SetItemInfoPtr>::iterator> range = m_byItem.equal_range(nItemId);
-    while (range.first != range.second)
+    for (; range.first != range.second; ++range.first)
     {
         sets.push_back(range.first->second);
-        ++range.first;
     }
 }
 

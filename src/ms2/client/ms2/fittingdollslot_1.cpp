@@ -86,7 +86,7 @@ Unk_FdTexConfig* FUN_1401d31f0();
 class Unk_FdTexMgr
 {
 public:
-    NiSourceTexturePtr FUN_141552f90(CString strPath, int nFlags);    // loads (and caches) a texture file
+    NiTexturePtr FUN_141552f90(CString strPath, int nFlags);          // loads (and caches) a texture file
 };
 Unk_FdTexMgr* FUN_140a0afd0();
 
@@ -116,7 +116,7 @@ bool FUN_141068d50(const NiFixedString& kName, const char* psz);   // operator!=
 void FUN_1410479a0(NiAVObject* pObject, const NiFixedString& kName, const NiColor& kColor);   // set a colour extra data
 
 NiAVObject* FUN_141b6efc0(egf::Entity* pEntity);            // the entity's scene graph
-void FUN_140a0b1f0(const NiMatrix3& kRot, NiPoint3& kEuler);   // rotation matrix to euler angles
+void FUN_140a0b1f0(const NiMatrix3& kRot, efd::Point3& kEuler);   // rotation matrix to euler angles
 NiColor FUN_141b6dea0(unsigned nIndex);                     // a skin colour of the colour table
 void FUN_141662da0(PC* pPC, int n);
 void FUN_14123fbf0(Unk_PCBaseBody* pBody, unsigned short n);
@@ -190,14 +190,13 @@ FittingDollPC* FUN_14121b590(int nType, int nSourceId, int nItemId)
         MS2SvrPtr<CObjectData> spData = FUN_140704ec0(spItem->m_nObjectId);
         if (!spData)
             return 0;
-        FittingDollPC* pDoll = new (efd::MemHint(efd::MemHint::NONE)) FittingDollPC();
-        pObject = pDoll;
-        pDoll->FUN_14123c5a0(nObjectId);
-        if (pDoll->FUN_14121bab0(nItemId) == 0)
+        pObject = new (efd::MemHint(efd::MemHint::NONE)) FittingDollPC();
+        ((FittingDollPC*)pObject)->FUN_14123c5a0(nObjectId);
+        if (((FittingDollPC*)pObject)->FUN_14121bab0(nItemId) == 0)
             return 0;
-        pDoll->type = nType;
-        pDoll->index = nSourceId;
-        if (FUN_1403ed2d0()->FUN_141bbb1e0(pDoll, 0, 1) == 0)
+        ((FittingDollPC*)pObject)->type = nType;
+        ((FittingDollPC*)pObject)->index = nSourceId;
+        if (FUN_1403ed2d0()->FUN_141bbb1e0(pObject, 0, 1) == 0)
             return 0;
     }
     return (FittingDollPC*)pObject;
@@ -209,8 +208,8 @@ void FUN_14121b840(int nResult)
 {
     switch (nResult)
     {
-    case 1:
-        FUN_141275260(0x85d, 1, 1);
+    case 0xc:
+        FUN_141275260(0x863, 1, 1);
         break;
     case 2:
         FUN_141275260(0x85c, 1, 1);
@@ -220,6 +219,9 @@ void FUN_14121b840(int nResult)
         break;
     case 4:
         FUN_141275260(0x860, 1, 1);
+        break;
+    case 1:
+        FUN_141275260(0x85d, 1, 1);
         break;
     case 5:
         FUN_141275260(0x864, 1, 1);
@@ -233,15 +235,6 @@ void FUN_14121b840(int nResult)
     case 8:
         FUN_141275260(0x867, 1, 1);
         break;
-    default:
-        Unk_FdMessage(0x85e, 1, 1, (Unk_FdResult)nResult);
-        break;
-    case 0xc:
-        FUN_141275260(0x863, 1, 1);
-        break;
-    case 0xd:
-        FUN_141275260(0x86a, 1, 1);
-        break;
     case 0x10:
         FUN_141275260(0x868, 1, 1);
         break;
@@ -249,13 +242,20 @@ void FUN_14121b840(int nResult)
         FUN_141275260(0x869, 1, 1);
         break;
     case 0x13:
-        FUN_1412752d0(CStringW(L"s_item_err_binditem_by_gemstone"), 1);
+        FUN_1412752d0(L"s_item_err_binditem_by_gemstone", 1);
+        break;
+    case 0xd:
+        FUN_141275260(0x86a, 1, 1);
         break;
     case 0x14:
-        FUN_1412752d0(CStringW(L"s_fittingdoll_failswap"), 1);
+        FUN_1412752d0(L"s_fittingdoll_failswap", 1);
         break;
     case 0x15:
         FUN_141275260(0x86b, 1, 1);
+        break;
+    default:
+        Unk_FdMessage(0x85e, 1, 1, reinterpret_cast<const Unk_FdResult&>(nResult));
+        break;
     }
 }
 
@@ -338,7 +338,7 @@ void FittingDollPC::vfunc_53(float f)
             if (pNode != 0)
             {
                 vfunc_19(pNode->GetWorldTranslate());
-                NiPoint3 kEuler;
+                efd::Point3 kEuler;
                 NiMatrix3 kRot = pNode->GetWorldRotate();
                 FUN_140a0b1f0(kRot, kEuler);
                 vfunc_21(kEuler);
@@ -390,46 +390,53 @@ void FittingDollPC::vfunc_138(NiAVObject* pRoot, int nSlot, const Unk_CharEquip*
     while (NiAVObject* pNode = kWalker.Next(true))
     {
         NiRenderObject* pRender = NiDynamicCast(NiRenderObject, pNode);
-        if (pRender == 0)
-            continue;
-        Unk_FdMaterialEntry* pInfo = FUN_140a17af0(&DAT_143d69198, FUN_140a17cd0(pRender));
-        if (pInfo == 0 || FUN_140ef4dd0(pInfo) != 2)
-            continue;
-        NiTexturingProperty* pTexturing = (NiTexturingProperty*)pRender->GetProperty(NiProperty::TEXTURING);
-        if (pTexturing == 0)
-            continue;
-        NiTexturingProperty::Map* pBase = pTexturing->GetBaseMap();
-        if (pBase != 0)
+        if (pRender != 0)
         {
-            NiSourceTexture* pSource = NiDynamicCast(NiSourceTexture, pBase->GetTexture());
-            if (pSource != 0 && FUN_141068d50(pSource->GetFilename(), FUN_1401d31f0()->m_strBaseFrom))
+            Unk_FdMaterialEntry* pInfo = FUN_140a17af0(&DAT_143d69198, FUN_140a17cd0(pRender));
+            if (pInfo != 0 && FUN_140ef4dd0(pInfo) == 2)
             {
-                NiSourceTexturePtr spTexture = FUN_140a0afd0()->FUN_141552f90(CString(FUN_1401d31f0()->m_strBaseTo), 1);
-                pBase->SetTexture(spTexture);
+                NiTexturingProperty* pTexturing = (NiTexturingProperty*)pRender->GetProperty(NiProperty::TEXTURING);
+                if (pTexturing != 0)
+                {
+                    NiTexturingProperty::Map* pBase = pTexturing->GetBaseMap();
+                    if (pBase != 0)
+                    {
+                        NiSourceTexture* pSource = NiDynamicCast(NiSourceTexture, pBase->GetTexture());
+                        if (pSource != 0 && FUN_141068d50(pSource->GetFilename(), FUN_1401d31f0()->m_strBaseFrom))
+                        {
+                            pBase->SetTexture(FUN_140a0afd0()->FUN_141552f90(CString(FUN_1401d31f0()->m_strBaseTo), 1));
+                        }
+                    }
+                    NiTexturingProperty::Map* pGloss = pTexturing->GetGlossMap();
+                    if (pGloss != 0)
+                    {
+                        NiSourceTexture* pSource = NiDynamicCast(NiSourceTexture, pGloss->GetTexture());
+                        if (pSource != 0 && FUN_141068d50(pSource->GetFilename(), FUN_1401d31f0()->m_strGlossFrom))
+                        {
+                            pGloss->SetTexture(FUN_140a0afd0()->FUN_141552f90(CString(FUN_1401d31f0()->m_strGlossTo), 1));
+                        }
+                    }
+                    if (FUN_1409f7c90()->FUN_14109a9d0() != 0)
+                    {
+                        switch (nSlot)
+                        {
+                        case 0:
+                            FUN_1410479a0(pRender, DAT_143ae50c8, *reinterpret_cast<const NiColor*>(pColor));
+                            break;
+                        case 1:
+                            FUN_1410479a0(pRender, DAT_143ae50d0, *reinterpret_cast<const NiColor*>(pColor));
+                            break;
+                        default:
+                            FUN_1410479a0(pRender, DAT_143ae50d8, *reinterpret_cast<const NiColor*>(pColor));
+                        }
+                    }
+                    else
+                        FUN_1410479a0(pRender, NiFixedString(pszKey), *reinterpret_cast<const NiColor*>(pColor));
+                }
             }
         }
-        NiTexturingProperty::Map* pGloss = pTexturing->GetGlossMap();
-        if (pGloss != 0)
-        {
-            NiSourceTexture* pSource = NiDynamicCast(NiSourceTexture, pGloss->GetTexture());
-            if (pSource != 0 && FUN_141068d50(pSource->GetFilename(), FUN_1401d31f0()->m_strGlossFrom))
-            {
-                NiSourceTexturePtr spTexture = FUN_140a0afd0()->FUN_141552f90(CString(FUN_1401d31f0()->m_strGlossTo), 1);
-                pGloss->SetTexture(spTexture);
-            }
-        }
-        const NiColor& kColor = *reinterpret_cast<const NiColor*>(pColor);
-        if (FUN_1409f7c90()->FUN_14109a9d0() == 0)
-        {
-            FUN_1410479a0(pRender, NiFixedString(pszKey), kColor);
-        }
-        else if (nSlot == 0)
-            FUN_1410479a0(pRender, DAT_143ae50c8, kColor);
-        else if (nSlot == 1)
-            FUN_1410479a0(pRender, DAT_143ae50d0, kColor);
-        else
-            FUN_1410479a0(pRender, DAT_143ae50d8, kColor);
     }
+    pRoot->UpdateProperties();
 }
 
 // @0x14121c6c0
@@ -493,17 +500,9 @@ int FittingDollPC::FUN_14121c910(CItem* pItem)
     if (pItem == 0)
         return 0xc;
     if (pItem->FUN_1405258b0() != FUN_14121c710())
-    {
-        if (FUN_14121c710() == 0)
-            return 3;
-        return 4;
-    }
+        return FUN_14121c710() ? 4 : 3;
     if (::FUN_1405267d0(pItem, ::FUN_141658e60(this)) == 0)
-    {
-        if (::FUN_141658e60(this) == 0)
-            return 7;
-        return 8;
-    }
+        return ::FUN_141658e60(this) == 0 ? 7 : 8;
     return 0;
 }
 

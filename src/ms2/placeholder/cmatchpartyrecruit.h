@@ -9,7 +9,7 @@ public:
     virtual ~CMatchPartyRecruit();
     void FUN_140694ab0();
     void FUN_140694c10(CInPacket&);
-    CMatchPartyRecruit& FUN_140694f70(const CMatchPartyRecruit&);
+    void FUN_140694f70(const CMatchPartyRecruit&);
     __int64 recruitId;
     int fieldId, category, kind;
     CStringW title;
@@ -33,6 +33,7 @@ MS2_CHECK_SIZE(Unk_PartyRecruitRequest, 0x10);
 class CMatchPartyRecruitSchCond : public CPtred {
 public:
     CMatchPartyRecruitSchCond();                                // 0x1406943b0 (calls Reset)
+    virtual ~CMatchPartyRecruitSchCond();                       // 0x140694410
     int fieldId, category;
     unsigned char kind;
     CStringW text;

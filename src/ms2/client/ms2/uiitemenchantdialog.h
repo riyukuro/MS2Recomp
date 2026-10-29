@@ -90,7 +90,7 @@ public:
     void FUN_1419c3950(CInPacket& pkt);                                 // 0x1419c3950
     void FUN_1419c3b90(CInPacket& pkt);                                 // 0x1419c3b90
     void FUN_1419c3e70(CInPacket& pkt);                                 // 0x1419c3e70
-    void SendRequestItemEnchantMode1(void*, void*, void*);                                 // 0x1419c3fd0
+    void SendRequestItemEnchantMode1();                                                    // 0x1419c3fd0
     void FUN_1419c4050();                                 // 0x1419c4050
     void FUN_1419c41b0();                                 // 0x1419c41b0
     void FUN_1419c4360(unsigned __int64 uid);                                 // 0x1419c4360
@@ -135,7 +135,7 @@ public:
     void FUN_1419c90b0(unsigned int itemId, int count, __int64 arg);                                 // 0x1419c90b0
     int FUN_1419c9260(CItem* base, CItem* other);                                 // 0x1419c9260
     int FUN_1419c93a0(CItem* base, CItem* other);                                 // 0x1419c93a0
-    bool FUN_1419c9490(CItem* base, CItem* other);                                 // 0x1419c9490
+    int FUN_1419c9490(CItem* base, CItem* other);                                  // 0x1419c9490
     int FUN_1419c9530(CItem* base);                                 // 0x1419c9530
     int FUN_1419c9630(CItem* base, CItem* other);                                 // 0x1419c9630
 private:

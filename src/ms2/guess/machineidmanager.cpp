@@ -14,16 +14,16 @@
 // The 40-byte working buffer the id builder passes to the (unrecovered) id helpers.
 struct Unk_MachineIDLocal
 {
+    Unk_MachineIDLocal();                                   // 0x1423ae7f0
+    ~Unk_MachineIDLocal();                                  // 0x1423ae800
     unsigned char m_data[0x28];
 };
 MS2_CHECK_SIZE(Unk_MachineIDLocal, 0x28);
 
 void* FUN_14067c020(void* pId);                             // zero-inits the 16-byte id
-void FUN_1423ae7f0(Unk_MachineIDLocal* pLocal);
 void FUN_1423b10a0(Unk_MachineIDLocal* pLocal);
 void* FUN_1423b1080(Unk_MachineIDLocal* pLocal);            // the id buffer inside the working object
 unsigned int FUN_1423ae960(Unk_MachineIDLocal* pLocal);
-void FUN_1423ae800(Unk_MachineIDLocal* pLocal);
 
 #ifndef MS2_HOOK_DLL
 // TODO(fullexe): stand-ins for the unrecovered machine-id gatherer, so a full relink boots (the hook DLL binds the
@@ -50,8 +50,7 @@ unsigned int FUN_1423ae960(Unk_MachineIDLocal* pLocal)
     return h;
 }
 
-// BuildID's gate pairing is only functional (the exe's frame has an EH unwind), so the alias pass does not bind the free
-// declaration ms2.cpp calls it through (FUN_140d4fd50); define that name here so the relinked exe resolves it.
+// ms2.cpp calls BuildID through a free declaration (FUN_140d4fd50); define that name here so the relinked exe resolves it.
 void FUN_140d4fd50(CMachineIDManager* pManager)
 {
     pManager->BuildID();
@@ -72,23 +71,12 @@ CMachineIDManager::~CMachineIDManager()
 }
 
 // @0x140d4fd50
-// MS2-FUNCTIONAL: the exe's frame carries an EH unwind (__GSHandlerCheck_EH) and the helper VAs are unmapped in the
-// symbol map, so the prologue/GS record differ; the id-gathering call sequence and the 16-byte copy are equivalent.
 void CMachineIDManager::BuildID()
 {
     Unk_MachineIDLocal local;
-    FUN_1423ae7f0(&local);
     FUN_1423b10a0(&local);
-    unsigned char* pSrc = static_cast<unsigned char*>(FUN_1423b1080(&local));
-    unsigned char* pDst = reinterpret_cast<unsigned char*>(&m_id);
-    for (__int64 n = 0x10; n != 0; --n)
-    {
-        *pDst = *pSrc;
-        ++pSrc;
-        ++pDst;
-    }
+    m_id = *static_cast<Unk_MachineID*>(FUN_1423b1080(&local));
     m_n18 = FUN_1423ae960(&local);
-    FUN_1423ae800(&local);
 }
 MS2_REPLACE_METHOD(0x140D4FD50, CMachineIDManager, BuildID, 139, 0xC65EBD09);
 

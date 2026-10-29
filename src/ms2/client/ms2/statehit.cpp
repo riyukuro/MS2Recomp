@@ -44,7 +44,21 @@ class Unk_HitBuff
 public:
     efd::Point3 FUN_1416836d0();                                        // 0x1416836d0 the knock-back direction (variant 1)
     efd::Point3 FUN_141683290();                                        // 0x141683290 the knock-back direction (variant 2)
-    char FUN_141683100(int nBuff);                                      // 0x141683100 the actor has the buff
+    bool FUN_141683100(int nBuff);                                      // 0x141683100 the actor has the buff
+};
+
+// The owner's vtable up to slot 22: slot 18 returns the position as an efd::Point3 straight into the local, slot 22
+// takes the direction by value.
+class Unk_ShOwnerSlots
+{
+public:
+#define MS2_SH_SLOTS(a, b, c, d, e, f) virtual void vfunc_##a(); virtual void vfunc_##b(); virtual void vfunc_##c(); \
+    virtual void vfunc_##d(); virtual void vfunc_##e(); virtual void vfunc_##f();
+    MS2_SH_SLOTS(0, 1, 2, 3, 4, 5) MS2_SH_SLOTS(6, 7, 8, 9, 10, 11) MS2_SH_SLOTS(12, 13, 14, 15, 16, 17)
+#undef MS2_SH_SLOTS
+    virtual efd::Point3 vfunc_18();                                                  // 18 0x14166bbe0
+    virtual void vfunc_19(); virtual void vfunc_20(); virtual void vfunc_21();
+    virtual void vfunc_22(efd::Point3 kDir);                                         // 22
 };
 
 // @0x1417ca270
@@ -59,7 +73,6 @@ StateHit::~StateHit()
 }
 
 // @0x1417ca370
-// MS2-FUNCTIONAL: first-pass source, temporaries / frame layout not yet compared
 void StateHit::vfunc_4(StateData* pData)
 {
     State::vfunc_4(pData);
@@ -99,38 +112,32 @@ void StateHit::vfunc_4(StateData* pData)
         if (m_pOwner->FUN_141679220(kName.c_str()))
             m_strAnim = kName;
     }
-    if (!m_pOwner->FUN_141679220(m_strAnim.c_str()))
-    {
-        FUN_140de91f0(&m_strAnim);
-    }
-    else
+    if (m_pOwner->FUN_141679220(m_strAnim.c_str()))
     {
         m_pOwner->FUN_14166dd20(m_strAnim, fSpeed, true, false);
         float fLength = FUN_14099eb30(m_pOwner->FUN_14123c460(), CString(m_strAnim.c_str()));
         m_timer.FUN_140868750((int)(fLength * 1000.0f * 0.7f));
     }
+    else
+    {
+        FUN_140de91f0(&m_strAnim);
+    }
     m_bC8 = false;
 }
 
 // @0x1417ca8a0
-// MS2-FUNCTIONAL: first-pass source, temporaries / frame layout not yet compared
 void StateHit::vfunc_3(double fTime)
 {
     efd::Point3 kDir = efd::Point3::ZERO;
     m_pOwner->vfunc_68(&kDir, fTime, 0, 0, 0);
     if (0.0f < m_fEndTime)
     {
-        if ((double)m_fEndTime <= FUN_141473280(FUN_14086d260()))
+        if (FUN_141473280(FUN_14086d260()) >= m_fEndTime)
         {
-            if (m_nB4 == 0)
-            {
-                m_pOwner->vfunc_59(1, 0, 0, 0);
-            }
+            if (m_nB4 != 0)
+                m_pOwner->FUN_14166dd20("Damg_C", 1.0f, false, false);
             else
-            {
-                efd::utf8string kName("Damg_C");
-                m_pOwner->FUN_14166dd20(kName, 1.0f, false, false);
-            }
+                m_pOwner->vfunc_59(1, 0, 0, 0);
         }
     }
 }
@@ -157,30 +164,28 @@ void StateHit::vfunc_9(double fTime)
 }
 
 // @0x1417caaf0
-// MS2-FUNCTIONAL: first-pass source, temporaries / frame layout not yet compared
 void StateHit::EndOfSequence(NiActorManager* pkManager, unsigned int eSequenceID, NiControllerSequence* pkSeq,
     float fEventTime)
 {
-    if (eSequenceID != FUN_1409a1a00(pkManager))
-        return;
-    Unk_FallAnimSvc* pSvc = FUN_1410a68d0();
-    int nDamg = pSvc->FUN_140999490(m_pOwner->FUN_14123c460(), efd::utf8string("Damg_C"));
-    int nFly = pSvc->FUN_140999490(m_pOwner->FUN_14123c460(), efd::utf8string("Jump_FlyDamg_A"));
-    if ((!FUN_14028d470(m_fA4, 0) || !FUN_14028d470(m_f9c, 0)) && (int)eSequenceID != nDamg)
+    if (eSequenceID == FUN_1409a1a00(pkManager))
     {
-        if (nFly == (int)eSequenceID)
+        Unk_FallAnimSvc* pSvc = FUN_1410a68d0();
+        int nDamg = pSvc->FUN_140999490(m_pOwner->FUN_14123c460(), "Damg_C");
+        int nFly = pSvc->FUN_140999490(m_pOwner->FUN_14123c460(), "Jump_FlyDamg_A");
+        if ((FUN_14028d470(m_fA4, 0) && FUN_14028d470(m_f9c, 0)) || (int)eSequenceID == nDamg)
         {
-            efd::utf8string kName("Jump_FlyDamg_A");
-            m_pOwner->FUN_14166dd20(kName, 1.0f, true, false);
+            m_pOwner->vfunc_59(1, 0, 0, 0);
         }
-        m_fEndTime = m_fA0 + m_f9c;
-        return;
+        else
+        {
+            if (nFly == (int)eSequenceID)
+                m_pOwner->FUN_14166dd20("Jump_FlyDamg_A", 1.0f, true, false);
+            m_fEndTime = m_fA0 + m_f9c;
+        }
     }
-    m_pOwner->vfunc_59(1, 0, 0, 0);
 }
 
 // @0x1417cad10
-// MS2-FUNCTIONAL: first-pass source, temporaries / frame layout not yet compared
 void StateHit::vfunc_8(double fTime)
 {
     Unk_PCBaseBody* pBody = m_pOwner->FUN_14166d220();
@@ -194,49 +199,35 @@ void StateHit::vfunc_8(double fTime)
     if (m_pOwner->vfunc_63() == 0)
         return;
     Unk_HitBuff* pBuff = (Unk_HitBuff*)m_pOwner->FUN_14166d240();
-    if (s_nKeyIsDown == 0)
-    {
-        efd::Point3 kDir = pBuff->FUN_1416836d0();
-        m_pOwner->vfunc_22(kDir);
-    }
+    if (s_nKeyIsDown != 0)
+        reinterpret_cast<Unk_ShOwnerSlots*>(m_pOwner)->vfunc_22(pBuff->FUN_141683290());
     else
-    {
-        efd::Point3 kDir = pBuff->FUN_141683290();
-        m_pOwner->vfunc_22(kDir);
-    }
-    if (s_nMove == 0 || !m_pOwner->FUN_1416749c0())
-    {
-        if (s_nJump == 0 || m_pOwner->vfunc_99(0) != 0 || !pBuff->FUN_141683100(0x493e1))
-        {
-            if (s_nSkill != 0)
-                FUN_1417b9460();
-        }
-        else
-        {
-            m_pOwner->vfunc_59(6, 0, 0, 0);
-        }
-    }
-    else
-    {
+        reinterpret_cast<Unk_ShOwnerSlots*>(m_pOwner)->vfunc_22(pBuff->FUN_1416836d0());
+    if (s_nMove != 0 && m_pOwner->FUN_1416749c0())
         m_pOwner->vfunc_59(2, 0, 0, 0);
-    }
-    efd::Point3 kZero = efd::Point3::ZERO;
-    m_pOwner->vfunc_22(kZero);
+    else if (s_nJump != 0 && m_pOwner->vfunc_99(0) == 0 && pBuff->FUN_141683100(0x493e1))
+        m_pOwner->vfunc_59(6, 0, 0, 0);
+    else if (s_nSkill != 0)
+        FUN_1417b9460();
+    reinterpret_cast<Unk_ShOwnerSlots*>(m_pOwner)->vfunc_22(efd::Point3::ZERO);
 }
 
 // @0x1417cb120
-bool StateHit::vfunc_36()
+int StateHit::vfunc_36()
 {
-    return m_timer.FUN_140868ba0() == 0;
+    if (m_timer.FUN_140868ba0() != 0)
+        return 0;
+    else
+        return 1;
 }
 
 // @0x1417cb160
-bool StateHit::FUN_1417cb160()
+int StateHit::FUN_1417cb160()
 {
     float fNow = (float)FUN_141473280(FUN_14086d260());
     if (fNow < m_fA0 && !FUN_14028d470(m_fB0, 0))
-        return false;
-    return true;
+        return 0;
+    return 1;
 }
 
 // @0x1417cb1d0
@@ -256,7 +247,7 @@ void StateHit::FUN_1417cb1d0()
 }
 
 // @0x1417cb2a0
-bool StateHit::FUN_1417cb2a0()
+int StateHit::FUN_1417cb2a0()
 {
     return !FUN_14028d470(m_fA4, 0);
 }
@@ -279,7 +270,6 @@ StateHitNPC::~StateHitNPC()
 }
 
 // @0x1417cb3a0
-// MS2-FUNCTIONAL: first-pass source, temporaries / frame layout not yet compared
 void StateHitNPC::vfunc_4(StateData* pData)
 {
     State::vfunc_4(pData);
@@ -298,14 +288,13 @@ void StateHitNPC::vfunc_4(StateData* pData)
 }
 
 // @0x1417cb4c0
-// MS2-FUNCTIONAL: first-pass source, temporaries / frame layout not yet compared
 void StateHitNPC::vfunc_3(double fTime)
 {
     State::vfunc_3(fTime);
     FUN_1417cb7b0();
     if (0.0f < m_fEndTime)
     {
-        if ((double)m_fEndTime <= FUN_141473280(FUN_14086d260()))
+        if (FUN_141473280(FUN_14086d260()) >= m_fEndTime)
         {
             if (m_n5c == 0)
             {
@@ -321,20 +310,18 @@ void StateHitNPC::vfunc_3(double fTime)
 }
 
 // @0x1417cb5d0
-// MS2-FUNCTIONAL: first-pass source, temporaries / frame layout not yet compared
 void StateHitNPC::EndOfSequence(NiActorManager* pkManager, unsigned int eSequenceID, NiControllerSequence* pkSeq,
     float fEventTime)
 {
-    if (eSequenceID != FUN_1409a1a00(pkManager))
-        return;
-    Unk_FallAnimSvc* pSvc = FUN_1410a68d0();
-    int nDamg = pSvc->FUN_140999490(m_pOwner->FUN_14123c460(), efd::utf8string("Damg_C"));
-    if ((!FUN_14028d470(m_f4c, 0) || !FUN_14028d470(m_f44, 0)) && (int)eSequenceID != nDamg)
+    if (eSequenceID == FUN_1409a1a00(pkManager))
     {
-        m_fEndTime = m_f4c + m_f44;
-        return;
+        Unk_FallAnimSvc* pSvc = FUN_1410a68d0();
+        int nDamg = pSvc->FUN_140999490(m_pOwner->FUN_14123c460(), "Damg_C");
+        if ((FUN_14028d470(m_f4c, 0) && FUN_14028d470(m_f44, 0)) || (int)eSequenceID == nDamg)
+            m_pOwner->vfunc_59(1, 0, 0, 0);
+        else
+            m_fEndTime = m_f4c + m_f44;
     }
-    m_pOwner->vfunc_59(1, 0, 0, 0);
 }
 
 // @0x1417cb730
@@ -351,7 +338,6 @@ void StateHitNPC::FUN_1417cb730()
 }
 
 // @0x1417cb7b0
-// MS2-FUNCTIONAL: first-pass source, temporaries / frame layout not yet compared
 void StateHitNPC::FUN_1417cb7b0()
 {
     float fNow = (float)FUN_141473280(FUN_14086d260());
@@ -359,9 +345,9 @@ void StateHitNPC::FUN_1417cb7b0()
     if (fNow < m_f4c)
     {
         float f = 1.0f - (m_f4c - fNow) / m_f50;
-        fZ = fZ - m_f58 * 4.0f * f * (f - 1.0f);
+        fZ = fZ - 4.0f * m_f58 * f * (f - 1.0f);
     }
-    efd::Point3 kPos = m_pOwner->vfunc_18();
+    efd::Point3 kPos = reinterpret_cast<Unk_ShOwnerSlots*>(m_pOwner)->vfunc_18();
     kPos.z = fZ;
     m_pOwner->vfunc_19(kPos);
 }

@@ -9,11 +9,15 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "hook/ms2hook.h"
 #include "guilddef_2.h"
+#include "seasondatatable.h"
+#include "fielddata.h"
+#include "commonstringtable.h"
+#include <algorithm>
 #define MS2_ASSERT_MSG_AT(line, msg, cond) (void)((!!(cond)) || (_wassert(msg, _CRT_WIDE(MS2_THIS_FILE), (unsigned)(line)), 0))
 __time64_t FUN_140869440();
 int FUN_14086ace0(__int64);
 // ---- helpers of the guild containers/smart pointers: defined in neighbouring chunks, reached by address ----
-void* FUN_1404f4530();   // CGuildXmlData::GetInstance
+CGuildXmlData* FUN_1404f4530();   // CGuildXmlData::GetInstance
 void* FUN_1404f4540();
 // CGuildMember map (CGuildInfo+0x320, key = name)
 void* FUN_1404f4510(void* map); Unk_GuildRef* FUN_1404f4f70(void* map,void* pos); void FUN_1404f4700(void* map,void** pos);
@@ -30,7 +34,7 @@ void FUN_1404ec5f0(Unk_GuildRef*,int);
 void FUN_1404ec610(Unk_GuildRef*,CGuildMember*);
 void FUN_1404eead0(Unk_GuildRef*);
 CGuildMember* FUN_1404f0b80(Unk_GuildRef*);
-char FUN_1404f0020(Unk_GuildRef*,int);
+bool FUN_1404f0020(Unk_GuildRef*,int);
 __int64 FUN_1404f0ab0(Unk_GuildRef*);
 void FUN_1404ef970(Unk_GuildRef* dst,Unk_GuildRef* src);
 // CGuildGrade array (CGuildInfo+0xa0)
@@ -54,6 +58,10 @@ unsigned char FUN_1404f4490(void* map); void* FUN_1404f4d40(void* map); Unk_Guil
 void FUN_1404f8a30(void* map); void FUN_1404f9990(void* map,int* key,Unk_GuildRef* v); char FUN_1404f5fd0(void* map,int* key,Unk_GuildRef* out);
 void FUN_1404ec6f0(Unk_GuildRef*,CGuildNpc*); void FUN_1404ec6d0(Unk_GuildRef*,int); void FUN_1404ec690(Unk_GuildRef*,Unk_GuildRef*); void FUN_1404ec660(Unk_GuildRef*,Unk_GuildRef*);
 void FUN_1404eeb00(Unk_GuildRef*); CGuildNpc* FUN_1404f0b90(Unk_GuildRef*); char FUN_1404f0060(Unk_GuildRef*,int);
+// Unk_GuildRef wrappers as the exe uses them: real smart-pointer locals (ctor call, EH state, dtor at scope end).
+// Member ref: copy ctor 0x1404ec5b0, dtor 0x1404eead0. Npc ref: ctor 0x1404ec6f0, dtor 0x1404eeb00.
+struct Unk_GuildMemberRef : Unk_GuildRef { Unk_GuildMemberRef(const Unk_GuildRef& src) { FUN_1404ec5b0(this,&src); } ~Unk_GuildMemberRef() { FUN_1404eead0(this); } };
+struct Unk_GuildNpcRef : Unk_GuildRef { Unk_GuildNpcRef(CGuildNpc* p) { FUN_1404ec6f0(this,p); } ~Unk_GuildNpcRef() { FUN_1404eeb00(this); } };
 // Unk_GuildStrRec map (+0x170, key = int)
 unsigned FUN_1404f4460(void* map); void* FUN_1404f4bf0(void* map); int* FUN_1404f4550(void* map,void* pos); Unk_GuildStrRec* FUN_1404f4db0(void* map,void* pos); void FUN_1404f45c0(void* map,void** pos);
 void FUN_1404f8700(void* map); void FUN_1404f9780(void* map,int key,Unk_GuildStrRec* v); char FUN_1404f5e80(void* map,int key,Unk_GuildStrRec* out); Unk_GuildStrRec* FUN_1404f07a0(void* map,int key);
@@ -80,7 +88,7 @@ void FUN_1404ee7e0(void*); void FUN_1404ee810(void*); void FUN_1404ee840(void*);
 void FUN_1404eeb60(void*); void FUN_1404eebc0(Unk_GuildRef*); void FUN_1404eec20(Unk_GuildRef*);
 void FUN_1404ef9b0(void*,int); void FUN_1404efb00(void*,int); void FUN_1404efd50(void*,void*); void FUN_1404efd90(void*,const void*);
 void* FUN_1404efe60(void*,const void*); char FUN_1404f01a0(Unk_GuildRef*,int); char FUN_1404f03a0(void*,void*);
-char FUN_1404f0660(void*,void*); Unk_GuildRef* FUN_1404f0760(void*,__int64); void* FUN_1404f0990(void*,void*);
+bool FUN_1404f0660(void*,void*); Unk_GuildRef* FUN_1404f0760(void*,__int64); void* FUN_1404f0990(void*,void*);
 void* FUN_1404f0ae0(Unk_GuildRef*); CGuildStorage::CGuildStroageHistory* FUN_1404f0bd0(Unk_GuildRef*); char* FUN_1404f0bf0(Unk_GuildRef*);
 void* FUN_1404f0ce0(void*); void FUN_1404f14c0(void*); void FUN_1404f31c0(void*,Unk_GuildRef*); void FUN_1404f3270(void*,Unk_GuildRef*);
 unsigned FUN_1404f4450(void*); size_t FUN_1404f44a0(void*); void FUN_1404f8b40(void*); void FUN_1404f8c50(void*);
@@ -88,7 +96,6 @@ void FUN_1404f9a40(void*,__int64,__int64); void FUN_1405063e0(void*,void*); void
 void* FUN_1405076d0(void*,void*); void FUN_1405085e0(void*,void*); void FUN_140508ed0(void*,void*,void*);
 void FUN_1405098f0(void*); void FUN_1405099e0(void*,Unk_GuildRef*); void FUN_140509c90(void*,Unk_GuildRef*);
 unsigned FUN_14050a000(void*); int FUN_14050a040(void*); void* FUN_14025e7d0(); CString* FUN_1402295b0(void*,CString*,int);
-#define GSTR(n,dst) { __int64 b_; CString* c_=FUN_1402295b0(FUN_14025e7d0(),(CString*)&b_,n); dst=(const char*)*c_; c_->~CString(); }
 void FUN_140791e40(void*,Unk_GuildRef*,int);
 // @0x1404c5c80
  Unk_GuildSeason::Unk_GuildSeason()
@@ -117,7 +124,7 @@ void Unk_GuildSeason::FUN_1404c5da0(COutputStream& out)
 // @0x1404c5ea0
 void Unk_GuildSeason::FUN_1404c5ea0(CInPacket& packet)
 {
-    CInputStream& in=packet; id=in.ReadInt32(); name=in.ReadUnicodeString(); begin=in.ReadInt64(); end=in.ReadInt64(); for(int i=1;i<8;++i) points[i]=in.ReadInt32();
+    id=packet.ReadInt32(); name=packet.ReadUnicodeString(); begin=packet.ReadInt64(); end=packet.ReadInt64(); for(int i=1;i<8;++i) points[i]=packet.ReadInt32();
 }
 
 // @0x1404c6030
@@ -141,9 +148,12 @@ int Unk_GuildSeason::FUN_1404c6110(int score)
 }
 
 // @0x1404c6160
-int Unk_GuildSeason::FUN_1404c6160()
+bool Unk_GuildSeason::FUN_1404c6160()
 {
-    CMsTime now(FUN_140869440()); return begin<now && end>now ? 1 : 0;
+    CMsTime now(FUN_140869440());
+    if (begin < now && end > now)
+        return true;
+    return false;
 }
 
 // @0x1404c61d0
@@ -660,14 +670,26 @@ void Unk_GuildMemberData::FUN_1404ca1a0(const Unk_GuildMemberData& other)
 // @0x1404ca3e0
 void Unk_GuildMemberData::FUN_1404ca3e0(Unk_GuildCharacter* other)
 {
-    CStringW n; CString c;
-    const char* raw=reinterpret_cast<const char*>(other);
-    f00=*reinterpret_cast<const __int64*>(raw); f08=*reinterpret_cast<const __int64*>(raw+8);
-    n=other->FUN_1408f19e0(); f10=*reinterpret_cast<const unsigned char*>(raw+0x14);
-    f14=*reinterpret_cast<const int*>(raw+0x3c); f18=*reinterpret_cast<const int*>(raw+0x40); f1c=*reinterpret_cast<const short*>(raw+0x34);
-    f20=*reinterpret_cast<const int*>(raw+0xd0); f24=*reinterpret_cast<const int*>(raw+0x2c); f28=*reinterpret_cast<const int*>(raw+0x38);
-    c=other->FUN_1408f1a60(); f38=*reinterpret_cast<const int*>(raw+0x98); f3c=*reinterpret_cast<const int*>(raw+0x9c); f40=*reinterpret_cast<const int*>(raw+0xa0); f48=*reinterpret_cast<const __int64*>(raw+0xa8);
-    f2c.FUN_140267ea0(*reinterpret_cast<const Unk_GuildTriple*>(raw+0xd4)); FUN_1404ca910(n); FUN_1404caa00(c);
+    CStringW n;
+    CString c;
+    f00=other->m_00;
+    f08=other->m_08;
+    n=other->FUN_1408f19e0();
+    f10=other->m_14;
+    f14=other->m_3c;
+    f18=other->m_40;
+    f1c=other->m_34;
+    f20=other->m_d0;
+    f24=other->m_2c;
+    f28=other->m_38;
+    c=other->FUN_1408f1a60();
+    f38=other->m_98;
+    f3c=other->m_9c;
+    f40=other->m_a0;
+    f48=other->m_a8;
+    f2c.FUN_140267ea0(other->m_d4);
+    FUN_1404ca910(n);
+    FUN_1404caa00(c);
 }
 
 // @0x1404ca680
@@ -868,31 +890,25 @@ void CGuildSkill::FUN_1404cba60(CInPacket& packet)
     f18=packet.ReadInt32(); f1c=packet.ReadInt32(); f20=packet.ReadInt64();
 }
 
-// MS2-FUNCTIONAL: the guild smart-pointer/record temporaries are raw Unk_Guild* structs driven by explicit FUN_ ctor/dtor calls; the exe objects have real dtors (EH states + dtor ordering) - frame differs
 // @0x1404cbb00
 int CGuildSkill::FUN_1404cbb00()
 {
     if(f20==0) return 0;
-    void* xml=FUN_1404f4530(); Unk_GuildRef ref; FUN_1404d74e0(xml,&ref,f18,f1c);
-    if(FUN_1404effa0(&ref,0)==0) {
-        __int64 now=FUN_140869440(); __int64 until=(__int64)*(int*)(FUN_1404f0b50(&ref)+0x2c)+f20;
-        if(until<now) { FUN_1404eea40(&ref); return 0; }
-        int left=(int)until-(int)now; FUN_1404eea40(&ref); return left;
-    }
-    FUN_1404eea40(&ref); return 0;
+    Unk_PayloadPtr<CGuildXmlData::GuildSkill> skill=FUN_1404f4530()->FUN_1404d74e0(f18,f1c);
+    if(skill==0) return 0;
+    __int64 now=FUN_140869440(); __int64 until=(__int64)skill->f2c+f20;
+    if(until<now) return 0;
+    return (int)(until-now);
 }
 
-// MS2-FUNCTIONAL: the guild smart-pointer/record temporaries are raw Unk_Guild* structs driven by explicit FUN_ ctor/dtor calls; the exe objects have real dtors (EH states + dtor ordering) - frame differs
 // @0x1404cbbf0
 int CGuildSkill::FUN_1404cbbf0()
 {
-    void* xml=FUN_1404f4530(); Unk_GuildRef ref; FUN_1404d74e0(xml,&ref,f18,f1c);
-    if(FUN_1404effa0(&ref,0)==0) {
-        __int64 now=FUN_140869440(); __int64 until=(__int64)*(int*)(FUN_1404f0b50(&ref)+0x30)+f20;
-        if(until<now) { FUN_1404eea40(&ref); return 0; }
-        int left=(int)until-(int)now; FUN_1404eea40(&ref); return left;
-    }
-    FUN_1404eea40(&ref); return 0x7fffffff;
+    Unk_PayloadPtr<CGuildXmlData::GuildSkill> skill=FUN_1404f4530()->FUN_1404d74e0(f18,f1c);
+    if(skill==0) return 0x7fffffff;
+    __int64 now=FUN_140869440(); __int64 until=(__int64)skill->f30+f20;
+    if(now>until) return 0;
+    return (int)(until-now);
 }
 
 // @0x1404cbcd0
@@ -972,28 +988,28 @@ CGuildStorage::~CGuildStorage()
 // @0x1404cc110
 void CGuildStorage::FUN_1404cc110(const CGuildStorage* other)
 {
-    FUN_140506ac0(&f18); FUN_1404efd50(&f18,(void*)&other->f18);
+    f18.clear();
+    f18=other->f18;
 }
 
 // @0x1404cc160
 void CGuildStorage::FUN_1404cc160(COutputStream& out)
 {
-    unsigned n=FUN_14050a000(&f18); out.WriteInt32(n);
-    void* it; void* endBuf[3]; FUN_1405063e0(&f18,&it);
-    while(FUN_1404f0660(&it,FUN_1405076d0(&f18,endBuf))!=0) {
-        char* pair=(char*)FUN_1404f0ce0(&it); ((ItemEntity*)(pair+8))->FUN_14026b030(*(Unk_GiftOutput*)&out); FUN_1404f14c0(&it);
+    out.WriteInt32(f18.size());
+    for(std::map<std::pair<unsigned,int>,ItemEntity>::iterator it=f18.begin();it!=f18.end();++it) {
+        it->second.FUN_14026b030(*(Unk_GiftOutput*)&out);
     }
 }
 
 // @0x1404cc210
 void CGuildStorage::FUN_1404cc210(CInPacket& packet)
 {
-    FUN_140506ac0(&f18);
-    CInputStream& in=packet; unsigned count=in.ReadInt32();
+    f18.clear();
+    unsigned __int64 count=(unsigned)packet.ReadInt32();
     for(unsigned __int64 i=0;i<count;++i) {
-        ItemEntity item; item.FUN_14026b100(*(Unk_GiftInput*)&in);
-        int rank=item.vfunc_o18_1(); int id=item.vfunc_o18_0(); Unk_GuildPair key; FUN_140407ed0(&key,&id,&rank);
-        FUN_1404efe60(FUN_1404f0990(&f18,&key),&item);
+        ItemEntity item; item.FUN_14026b100(*(Unk_GiftInput*)&static_cast<CInputStream&>(packet));
+        std::pair<unsigned,int> key(item.vfunc_o18_0(),item.vfunc_o18_1());
+        f18[key]=item;
     }
 }
 
@@ -1025,28 +1041,16 @@ void CGuildNpc::FUN_1404cc440(CInPacket& packet)
     f18=packet.ReadInt32(); f1c=packet.ReadInt32();
 }
 
-// MS2-FUNCTIONAL: CGuildInfo members are raw blobs constructed through explicit FUN_ ctor calls; the exe member ctors carry EH states and one fewer call (23 vs 22)
 // @0x1404cc4b0
 CGuildInfo::CGuildInfo()
 {
-    season.FUN_1404c5d20();
-    f150=1000;
-    FUN_1404ebaf0(&f170,0x11,0.75f,0.25f,2.25f,10);
-    FUN_1404ebcd0(&f238,0x11,0.75f,0.25f,2.25f,10);
-    FUN_1404ebbe0(&f280,0x11,0.75f,0.25f,2.25f,10);
-    FUN_1404ebdc0(&f2c8,0x11,0.75f,0.25f,2.25f,10);
-    FUN_1404ec640(&f310); FUN_1404ebeb0(&f320,10);
-    f358=0; FUN_1404ec890(&f360);
     FUN_1404cc900();
-    FUN_1404efb30(&f360,new CGuildNpcShopMgr);
+    f360=new CGuildNpcShopMgr;
 }
 
-// MS2-FUNCTIONAL: CGuildInfo members are raw blobs destroyed through explicit FUN_ dtor calls; the exe implicit member dtors form a different frame
 // @0x1404cc780
 CGuildInfo::~CGuildInfo()
 {
-    FUN_1404eeb60(&f360); FUN_1404ee8a0(&f320); FUN_1404eead0(&f310); FUN_1404ee870(&f2c8); FUN_1404ee810(&f280); FUN_1404ee840(&f238);
-    FUN_1404ee7e0(&f170);
 }
 
 // @0x1404cc900
@@ -1055,8 +1059,8 @@ void CGuildInfo::FUN_1404cc900()
     f38=0; f40=""; f48=""; f50=0; f58=""; f60=""; f68=0; f70=0; f78=0; f80=""; f88=0; f90=0; f98="";
     fc0=0; fc4=0; fd8.Empty(); fc8=0; fd0=0;
     f130=0; f134=f150; f138=0; f13c=0; f140=0; f144=0; f148=0; f14c=0; f154=1; f158=0; f15c=0; f160=0; f164=0; f168=1; f16c=1;
-    FUN_1404f8700(&f170); FUN_1404ef9b0(&f310,0); FUN_1404f8c50(&f320);
-    f358=0; f350=0; f354=0; FUN_1404efb00(&f360,0);
+    f170.RemoveAll(); f310=0; f320.RemoveAll();
+    f358=0; f350=0; f354=0; f360=0;
 }
 
 // @0x1404ccbd0
@@ -1135,11 +1139,9 @@ void CGuildInfo::FUN_1404cd140(CStringW v)
 int CGuildInfo::FUN_1404cd1c0()
 {
     Unk_GuildMapLock guard(lock,1);
-    int key=FUN_1404d1ad0(); void* xml=FUN_1404f4530(); Unk_GuildRef ref; FUN_1404d7410(xml,&ref,key);
-    if(FUN_1404eff60(&ref,0)==0) {
-        void* mapKey=&f50; int* p=FUN_1404eb7e0(FUN_1404f0b30(&ref)+0x20,mapKey); int v=*p; FUN_1404ee9b0(&ref); return v;
-    }
-    int v=f50; FUN_1404ee9b0(&ref); return v;
+    Unk_PayloadPtr<CGuildXmlData::GuildProperty> prop=FUN_1404f4530()->FUN_1404d7410(FUN_1404d1ad0());
+    if(prop==0) return f50;
+    return (std::max)(prop->f20,f50);
 }
 
 // @0x1404cd2b0
@@ -1221,7 +1223,7 @@ void CGuildInfo::FUN_1404cd7d0(COutputStream& out)
         out.WriteInt32(f144); out.WriteInt32(f148); out.WriteInt32(f14c); out.WriteInt32(f358);
         out.WriteUInt8((unsigned char)f154);
         out.WriteInt32(f158); out.WriteInt32(f15c); out.WriteInt32(f160); out.WriteInt32(f164);
-        out.WriteBool(f354 ? true : false);
+        out.WriteBool(reinterpret_cast<const bool&>(f354));
         out.WriteInt32(f350);
         FUN_1404ce690(out); FUN_1404ce8f0(out); FUN_1404ceb90(out); FUN_1404cee00(out);
         FUN_1404cf070(out); FUN_1404cf390(out); FUN_1404cf5f0(out);
@@ -1233,24 +1235,23 @@ void CGuildInfo::FUN_1404cd7d0(COutputStream& out)
 void CGuildInfo::FUN_1404cdda0(CInPacket& packet)
 {
     if(Unk_LockGuard guard=lock) { __assume(0); } else {
-        CInputStream& in=packet;
-        __int64 id=in.ReadInt64();
-        CStringW name=in.ReadUnicodeString();
-        CString code=in.ReadUnicodeStringA();
-        unsigned char b1=in.ReadUInt8();
-        CStringW s188=in.ReadUnicodeString();
-        CStringW s190=in.ReadUnicodeString();
-        __int64 l48=in.ReadInt64();
-        __int64 l50=in.ReadInt64();
-        CStringW s198=in.ReadUnicodeString();
-        __int64 l40=in.ReadInt64();
-        unsigned char b2=in.ReadUInt8();
-        int v6=in.ReadInt32(); int v7=in.ReadInt32(); int v8=in.ReadInt32(); int v9=in.ReadInt32();
-        int v10=in.ReadInt32(); int v11=in.ReadInt32(); int v12=in.ReadInt32(); int v13=in.ReadInt32();
-        unsigned char b3=in.ReadUInt8();
-        int v14=in.ReadInt32(); int v15=in.ReadInt32(); int v16=in.ReadInt32(); int v17=in.ReadInt32();
-        f354=in.ReadBool();
-        f350=in.ReadInt32();
+        __int64 id=packet.ReadInt64();
+        CStringW name=packet.ReadUnicodeString();
+        CString code=packet.ReadUnicodeStringA();
+        int b1=packet.ReadUInt8();
+        CStringW s188=packet.ReadUnicodeString();
+        CStringW s190=packet.ReadUnicodeString();
+        __int64 l48=packet.ReadInt64();
+        __int64 l50=packet.ReadInt64();
+        CStringW s198=packet.ReadUnicodeString();
+        __int64 l40=packet.ReadInt64();
+        int b2=packet.ReadUInt8();
+        int v6=packet.ReadInt32(); int v7=packet.ReadInt32(); int v8=packet.ReadInt32(); int v9=packet.ReadInt32();
+        int v10=packet.ReadInt32(); int v11=packet.ReadInt32(); int v12=packet.ReadInt32(); int v13=packet.ReadInt32();
+        int b3=packet.ReadUInt8();
+        int v14=packet.ReadInt32(); int v15=packet.ReadInt32(); int v16=packet.ReadInt32(); int v17=packet.ReadInt32();
+        f354=packet.ReadBool();
+        f350=packet.ReadInt32();
         FUN_1404ccc40(id);
         FUN_1404ccd40(name);
         FUN_1404cce40(code);
@@ -1264,8 +1265,8 @@ void CGuildInfo::FUN_1404cdda0(CInPacket& packet)
         FUN_1404d3600(v13);
         FUN_1404d17e0(b3,v14);
         FUN_1404d1940(v15);
-        FUN_1404d1b40(v16);
-        FUN_1404d1c90(v17);
+        FUN_1404d1b40(v16,false);
+        FUN_1404d1c90(v17,false);
         FUN_1404ce790(packet); FUN_1404cea10(packet); FUN_1404ceca0(packet); FUN_1404cef10(packet);
         FUN_1404cf1e0(packet); FUN_1404cf490(packet); FUN_1404cf6c0(packet);
         storage.FUN_1404cc210(packet);
@@ -1289,15 +1290,11 @@ void CGuildInfo::FUN_1404ce690(COutputStream& out)
 void CGuildInfo::FUN_1404ce790(CInPacket& packet)
 {
     if(Unk_LockGuard guard=lock) { __assume(0); } else {
-        CInputStream& in=packet;
-        unsigned char count=in.ReadUInt8();
-        for(int i=0;i<(int)count;++i) {
-            CGuildMember* member=new CGuildMember;
-            Unk_GuildRef ref; FUN_1404ec610(&ref,member);
-            FUN_1404f0b80(&ref)->FUN_1404cb450(&packet);
-            Unk_GuildRef copy; FUN_1404ec5b0(&copy,&ref);
-            vfunc_0(&copy);
-            FUN_1404eead0(&ref);
+        int count=packet.ReadUInt8();
+        for(int i=0;i<count;++i) {
+            Unk_PayloadPtr<CGuildMember> member(new CGuildMember);
+            member->FUN_1404cb450(&packet);
+            vfunc_0(member);
         }
     }
 }
@@ -1306,13 +1303,10 @@ void CGuildInfo::FUN_1404ce790(CInPacket& packet)
 void CGuildInfo::FUN_1404ce8f0(COutputStream& out)
 {
     if(Unk_LockGuard guard=lock) { __assume(0); } else {
-        out.WriteUInt8((unsigned char)FUN_1404f4440(&fa0));
-        for(int i=0;;++i) {
-            __int64 index=i;
-            if(FUN_1404f4440(&fa0)<=(unsigned __int64)index) break;
-            Unk_GuildRef ref; FUN_1404ec4d0(&ref,FUN_1404f0720(&fa0,i));
-            if(FUN_1404f0aa0(&ref)!=0) FUN_1404f0b70(&ref)->FUN_1404c7160(out);
-            reinterpret_cast<Unk_PayloadPtr<CGuildGrade>*>(&ref)->~Unk_PayloadPtr();
+        out.WriteUInt8((unsigned char)fa0.GetCount());
+        for(unsigned i=0;i<fa0.GetCount();++i) {
+            Unk_PayloadPtr<CGuildGrade> grade(fa0[i]);
+            if(grade.get()!=0) grade->FUN_1404c7160(out);
         }
     }
 }
@@ -1321,16 +1315,13 @@ void CGuildInfo::FUN_1404ce8f0(COutputStream& out)
 void CGuildInfo::FUN_1404cea10(CInPacket& packet)
 {
     if(Unk_LockGuard guard=lock) { __assume(0); } else {
-        FUN_1404f86e0(&fa0);
-        CInputStream& in=packet;
-        unsigned char count=in.ReadUInt8();
-        FUN_1404f9b50(&fa0,count,0xffffffff);
-        for(int i=0;i<(int)count;++i) {
-            CGuildGrade* grade=new CGuildGrade;
-            Unk_GuildRef ref; FUN_1404ec530(&ref,grade);
-            FUN_1404f0b70(&ref)->FUN_1404c71d0(packet);
-            FUN_1404f9730(&fa0,i,&ref);
-            reinterpret_cast<Unk_PayloadPtr<CGuildGrade>*>(&ref)->~Unk_PayloadPtr();
+        fa0.RemoveAll();
+        int count=packet.ReadUInt8();
+        fa0.SetCount(count);
+        for(int i=0;i<count;++i) {
+            Unk_PayloadPtr<CGuildGrade> grade(new CGuildGrade);
+            grade->FUN_1404c71d0(packet);
+            fa0.SetAt(i,grade);
         }
     }
 }
@@ -1351,15 +1342,12 @@ void CGuildInfo::FUN_1404ceb90(COutputStream& out)
 void CGuildInfo::FUN_1404ceca0(CInPacket& packet)
 {
     if(Unk_LockGuard guard=lock) { __assume(0); } else {
-        FUN_1404f8920(&f238);
-        CInputStream& in=packet;
-        unsigned char count=in.ReadUInt8();
-        for(int i=0;i<(int)count;++i) {
-            CGuildSkill* skill=new CGuildSkill;
-            Unk_GuildRef ref; FUN_1404ec940(&ref,skill);
-            FUN_1404f0bc0(&ref)->FUN_1404cba60(packet);
-            FUN_1404f98e0(&f238,FUN_1404f0bc0(&ref)->f18,&ref);
-            FUN_1404eeb90(&ref);
+        f238.RemoveAll();
+        int count=packet.ReadUInt8();
+        for(int i=0;i<count;++i) {
+            Unk_PayloadPtr<CGuildSkill> skill(new CGuildSkill);
+            skill->FUN_1404cba60(packet);
+            f238.SetAt(skill->f18,skill);
         }
     }
 }
@@ -1380,15 +1368,12 @@ void CGuildInfo::FUN_1404cee00(COutputStream& out)
 void CGuildInfo::FUN_1404cef10(CInPacket& packet)
 {
     if(Unk_LockGuard guard=lock) { __assume(0); } else {
-        FUN_1404f8810(&f280);
-        CInputStream& in=packet;
-        unsigned char count=in.ReadUInt8();
-        for(int i=0;i<(int)count;++i) {
-            CGuildCustomEvent* ev=new CGuildCustomEvent;
-            Unk_GuildRef ref; FUN_1404ec480(&ref,ev);
-            FUN_1404f0b60(&ref)->FUN_1404cbe70(packet);
-            FUN_1404f9830(&f280,FUN_1404f0b60(&ref)->f18,&ref);
-            FUN_1404eea70(&ref);
+        f280.RemoveAll();
+        int count=packet.ReadUInt8();
+        for(int i=0;i<count;++i) {
+            Unk_PayloadPtr<CGuildCustomEvent> ev(new CGuildCustomEvent);
+            ev->FUN_1404cbe70(packet);
+            f280.SetAt(ev->f18,ev);
         }
     }
 }
@@ -1398,14 +1383,12 @@ void CGuildInfo::FUN_1404cf070(COutputStream& out)
 {
     if(Unk_LockGuard guard=lock) { __assume(0); } else {
         out.WriteInt32(f168); out.WriteInt32(f16c);
-        out.WriteInt32(FUN_1404f4460(&f170));
-        void* pos=FUN_1404f4bf0(&f170);
-        while(pos!=0) {
-            out.WriteInt32(*FUN_1404f4550(&f170,pos));
-            Unk_GuildStrRec rec; FUN_1404ee640(&rec,FUN_1404f4db0(&f170,pos));
-            FUN_1404d3fe0(&rec,&out);
-            FUN_1404ef6e0(&rec);
-            FUN_1404f45c0(&f170,&pos);
+        out.WriteInt32((int)f170.GetCount());
+        for(POSITION pos=f170.GetStartPosition();pos!=0;f170.GetNext(pos)) {
+            int key=f170.GetKeyAt(pos);
+            out.WriteInt32(key);
+            Unk_GuildStrEntry rec(f170.GetValueAt(pos));
+            FUN_1404d3fe0((Unk_GuildStrRec*)&rec,&out);
         }
     }
 }
@@ -1414,16 +1397,14 @@ void CGuildInfo::FUN_1404cf070(COutputStream& out)
 void CGuildInfo::FUN_1404cf1e0(CInPacket& packet)
 {
     if(Unk_LockGuard guard=lock) { __assume(0); } else {
-        FUN_1404f8700(&f170);
-        CInputStream& in=packet;
-        f168=in.ReadInt32(); f16c=in.ReadInt32();
-        int count=in.ReadInt32();
+        f170.RemoveAll();
+        f168=packet.ReadInt32(); f16c=packet.ReadInt32();
+        int count=packet.ReadInt32();
         for(int i=0;i<count;++i) {
-            int key=in.ReadInt32();
-            Unk_GuildStrRec rec; FUN_1404ee6b0(&rec);
-            FUN_1404d4060(&rec,&packet);
-            FUN_1404f9780(&f170,key,&rec);
-            FUN_1404ef6e0(&rec);
+            int key=packet.ReadInt32();
+            Unk_GuildStrEntry rec;
+            FUN_1404d4060((Unk_GuildStrRec*)&rec,&packet);
+            f170.SetAt(key,rec);
         }
     }
 }
@@ -1444,14 +1425,11 @@ void CGuildInfo::FUN_1404cf490(CInPacket& packet)
 {
     Unk_GuildMapLock guard(lock,1);
     FUN_1404f8a30(&f2c8);
-    CInputStream& in=packet;
-    unsigned char count=in.ReadUInt8();
-    for(int i=0;i<(int)count;++i) {
-        CGuildNpc* npc=new CGuildNpc;
-        Unk_GuildRef ref; FUN_1404ec6f0(&ref,npc);
+    int count=packet.ReadUInt8();
+    for(int i=0;i<count;++i) {
+        Unk_GuildNpcRef ref(new CGuildNpc);
         FUN_1404f0b90(&ref)->FUN_1404cc440(packet);
         FUN_1404f9990(&f2c8,&FUN_1404f0b90(&ref)->f18,&ref);
-        FUN_1404eeb00(&ref);
     }
 }
 
@@ -1459,9 +1437,9 @@ void CGuildInfo::FUN_1404cf490(CInPacket& packet)
 void CGuildInfo::FUN_1404cf5f0(COutputStream& out)
 {
     Unk_GuildMapLock guard(lock,1);
-    __int64 has=FUN_1404f0ad0(&f360);
-    out.WriteBool(has!=0);
-    if(FUN_1404f0ad0(&f360)!=0) FUN_1404d8d50(FUN_1404f0bb0(&f360),&out);
+    bool has=f360?true:false;
+    out.WriteBool(has);
+    if(f360) f360->FUN_1404d8d50(out);
 }
 
 // @0x1404cf6c0
@@ -1470,36 +1448,23 @@ void CGuildInfo::FUN_1404cf6c0(CInPacket& packet)
     Unk_GuildMapLock guard(lock,1);
     bool has=packet.ReadBool();
     if(has) {
-        if(FUN_1404f00e0(&f360,0)!=0) {
-            FUN_1404efb30(&f360,new CGuildNpcShopMgr);
+        if(f360==0) {
+            f360=new CGuildNpcShopMgr;
         }
-        FUN_1404d8e80(FUN_1404f0bb0(&f360),&packet);
+        f360->FUN_1404d8e80(&packet);
     }
 }
 
-// MS2-FUNCTIONAL: the guild smart-pointer/record temporaries are raw Unk_Guild* structs driven by explicit FUN_ ctor/dtor calls; the exe objects have real dtors (EH states + dtor ordering) (18 vs exe 19 callees)
 // @0x1404cf7d0
-int CGuildInfo::vfunc_0(Unk_GuildRef* member)
+int CGuildInfo::vfunc_0(Unk_PayloadPtr<CGuildMember> member)
 {
-    if(FUN_1404f0020(member,0)==0) {
-        if(Unk_LockGuard guard=lock) {
-            FUN_1404eead0(member);
-            return 0;
-        }
-        if((int)FUN_1404f44b0(&f320)<f50) {
-            CStringW name=FUN_1404f0b80(member)->data.FUN_1404ca890();
-            FUN_1404f9ae0(&f320,name,member);
-            if(FUN_1404f0020(&f310,0)!=0) {
-                if(FUN_1404f0b80(member)->data.f08==f78) FUN_1404ef970(&f310,member);
-            }
-            FUN_1404eead0(member);
-            return 1;
-        }
-        FUN_1404eead0(member);
-        return 0;
+    if(member==0) return 0;
+    if(Unk_LockGuard guard=lock) { __assume(0); } else {
+        if((int)f320.GetCount()>=f50) return 0;
+        f320.SetAt(member->data.FUN_1404ca890(),member);
+        if(f310==0 && member->data.f08==f78) f310=member;
+        return 1;
     }
-    FUN_1404eead0(member);
-    return 0;
 }
 
 // @0x1404cf970
@@ -1570,17 +1535,16 @@ void CGuildInfo::FUN_1404cfe60(const CStringW& name,__int64 value)
 }
 
 // @0x1404cff20
-unsigned __int64 CGuildInfo::FUN_1404cff20()
+int CGuildInfo::FUN_1404cff20()
 {
     if(Unk_LockGuard guard=lock) { __assume(0); } else {
-        unsigned __int64 count=0;
-        for(void* pos=FUN_1404f4510(&f320);pos!=0;FUN_1404f4700(&f320,&pos)) {
-            MS2Ptr<CGuildMember> ref(reinterpret_cast<MS2Ptr<CGuildMember>&>(*FUN_1404f4f70(&f320,pos)));
-            if(ref->fb0==3) count=count+1;
+        int count=0;
+        for(POSITION pos=f320.GetHeadPosition();pos!=0;f320.GetNext(pos)) {
+            Unk_PayloadPtr<CGuildMember> member(f320.GetValueAt(pos));
+            if(member->fb0==3) ++count;
         }
         return count;
     }
-    return 0;
 }
 
 // @0x1404d0020
@@ -1590,16 +1554,15 @@ int CGuildInfo::FUN_1404d0020()
 }
 
 // @0x1404d00a0
-Unk_GuildRef* CGuildInfo::FUN_1404d00a0(Unk_GuildRef* ret)
+Unk_PayloadPtr<CGuildMember> CGuildInfo::FUN_1404d00a0()
 {
-    if(Unk_LockGuard guard=lock) { __assume(0); } else { FUN_1404ec5b0(ret,&f310); return ret; }
+    if(Unk_LockGuard guard=lock) { __assume(0); } else { return f310; }
 }
 
 // @0x1404d0130
-void CGuildInfo::FUN_1404d0130(Unk_GuildRef* v)
+void CGuildInfo::FUN_1404d0130(Unk_PayloadPtr<CGuildMember> v)
 {
-    if(Unk_LockGuard guard=lock) { __assume(0); } else { FUN_1404ef970(&f310,v); }
-    FUN_1404eead0(v);
+    if(Unk_LockGuard guard=lock) { __assume(0); } else { f310=v; }
 }
 
 // @0x1404d01b0
@@ -1661,67 +1624,52 @@ unsigned CGuildInfo::FUN_1404d06a0(CStringW name)
 {
     if(Unk_LockGuard guard=lock) { __assume(0); } else {
         MS2Ptr<CGuildMember> member=FUN_1404cf9f0(name);
-        if(!(member==0)) {
-            Unk_GuildRef grade; FUN_1404d0860(&grade,member->fb4);
-            if(FUN_1404f0aa0(&grade)==0) { reinterpret_cast<Unk_PayloadPtr<CGuildGrade>*>(&grade)->~Unk_PayloadPtr(); return 0; }
-            unsigned v=FUN_1404f0b70(&grade)->permissions;
-            reinterpret_cast<Unk_PayloadPtr<CGuildGrade>*>(&grade)->~Unk_PayloadPtr(); return v;
+        if(member==0) return 0;
+        Unk_PayloadPtr<CGuildGrade> grade=FUN_1404d0860(member->fb4);
+        if(grade.get()!=0) {
+            return grade->permissions;
+        } else {
+            return 0;
         }
-        return 0;
     }
-    return 0;
 }
 
-// MS2-FUNCTIONAL: the guild smart-pointer/record temporaries are raw Unk_Guild* structs driven by explicit FUN_ ctor/dtor calls; the exe objects have real dtors (EH states + dtor ordering) (10 vs exe 12 callees)
 // @0x1404d0860
-Unk_GuildRef* CGuildInfo::FUN_1404d0860(Unk_GuildRef* ret,int index)
+Unk_PayloadPtr<CGuildGrade> CGuildInfo::FUN_1404d0860(int index)
 {
     if(Unk_LockGuard guard=lock) { __assume(0); } else {
-        if(FUN_1404f4440(&fa0)==0) {
-            FUN_1404ec510(ret,0);
+        if(fa0.GetCount()==0) return 0;
+        if(index<0 || index>FUN_1404d0580()) {
+            return 0;
         } else {
-            if(-1<index && index<=FUN_1404d0580()) {
-                FUN_1404ec4d0(ret,FUN_1404f0720(&fa0,index));
-                return ret;
-            }
-            FUN_1404ec510(ret,0);
+            return fa0[index];
         }
     }
-    return ret;
 }
 
 // @0x1404d0990
-int CGuildInfo::FUN_1404d0990(int index,Unk_GuildRef* grade)
+int CGuildInfo::FUN_1404d0990(int index,Unk_PayloadPtr<CGuildGrade> grade)
 {
-    if(Unk_LockGuard guard=lock) {
-        reinterpret_cast<Unk_PayloadPtr<CGuildGrade>*>(grade)->~Unk_PayloadPtr();
-        return 0;
+    if(Unk_LockGuard guard=lock) { __assume(0); } else {
+        if(FUN_1404d0860(index)==0) {
+            if(index!=FUN_1404d0580()+1) return 0;
+            fa0.Add(grade);
+        } else {
+            fa0.SetAt(index,grade);
+        }
+        fc0=0;
+        return 1;
     }
-    Unk_GuildRef cur;
-    char isNull=FUN_1404effe0(FUN_1404d0860(&cur,index),0);
-    reinterpret_cast<Unk_PayloadPtr<CGuildGrade>*>(&cur)->~Unk_PayloadPtr();
-    if(isNull==0) {
-        FUN_1404f9730(&fa0,index,grade);
-    } else {
-        if(index!=FUN_1404d0580()+1) { reinterpret_cast<Unk_PayloadPtr<CGuildGrade>*>(grade)->~Unk_PayloadPtr(); return 0; }
-        FUN_1404f3110(&fa0,grade);
-    }
-    fc0=0;
-    reinterpret_cast<Unk_PayloadPtr<CGuildGrade>*>(grade)->~Unk_PayloadPtr();
-    return 1;
 }
 
-// MS2-FUNCTIONAL: the guild smart-pointer/record temporaries are raw Unk_Guild* structs driven by explicit FUN_ ctor/dtor calls; the exe objects have real dtors (EH states + dtor ordering) (16 vs exe 12 callees)
 // @0x1404d0af0
 CStringW CGuildInfo::FUN_1404d0af0(int index)
 {
-    { if(Unk_LockGuard guard=lock) { __assume(0); } else {
-        Unk_GuildRef grade; FUN_1404d0860(&grade,index);
-        if(FUN_1404f0aa0(&grade)==0) { CStringW empty(L""); reinterpret_cast<Unk_PayloadPtr<CGuildGrade>*>(&grade)->~Unk_PayloadPtr(); return empty; }
-        CStringW text(FUN_1404f0b70(&grade)->name);
-        reinterpret_cast<Unk_PayloadPtr<CGuildGrade>*>(&grade)->~Unk_PayloadPtr();
-        return text;
-    } }
+    if(Unk_LockGuard guard=lock) { __assume(0); } else {
+        Unk_PayloadPtr<CGuildGrade> grade=FUN_1404d0860(index);
+        if(grade.get()!=0) return grade->name;
+        return L"";
+    }
 }
 
 // @0x1404d0c00
@@ -1769,17 +1717,11 @@ int CGuildInfo::FUN_1404d0ee0()
 {
     int total=0;
     if(Unk_LockGuard guard=lock) { __assume(0); } else {
-        void* pos=FUN_1404f4510(&f320);
-        while(pos!=0) {
-            Unk_GuildRef ref; FUN_1404ec5b0(&ref,FUN_1404f4f70(&f320,pos));
-            if(FUN_1404f0020(&ref,0)==0) {
-                int v=FUN_1404f0b80(&ref)->raid.FUN_1404cadc0();
-                total=total+v;
-                FUN_1404eead0(&ref);
-            } else {
-                FUN_1404eead0(&ref);
-            }
-            FUN_1404f4700(&f320,&pos);
+        for(void* pos=FUN_1404f4510(&f320);pos!=0;FUN_1404f4700(&f320,&pos)) {
+            Unk_GuildMemberRef ref(*FUN_1404f4f70(&f320,pos));
+            if(FUN_1404f0020(&ref,0))
+                continue;
+            total+=FUN_1404f0b80(&ref)->raid.FUN_1404cadc0();
         }
     }
     return total;
@@ -1941,7 +1883,7 @@ int CGuildInfo::FUN_1404d1ad0()
 }
 
 // @0x1404d1b40
-void CGuildInfo::FUN_1404d1b40(int v)
+void CGuildInfo::FUN_1404d1b40(int v,bool bNotify)
 {
     Unk_GuildMapLock guard(lock,1);
     f160=v;
@@ -1961,13 +1903,12 @@ bool CGuildInfo::FUN_1404d1ba0(int delta)
 }
 
 // @0x1404d1c90
-void CGuildInfo::FUN_1404d1c90(int v)
+void CGuildInfo::FUN_1404d1c90(int v,bool bNotify)
 {
     Unk_GuildMapLock guard(lock,1);
-    if(f164==v) {
-    } else {
-        f164=v;
-    }
+    if(f164==v)
+        return;
+    f164=v;
 }
 
 // @0x1404d1d00
@@ -1997,19 +1938,13 @@ int CGuildInfo::FUN_1404d1e40()
     return f164;
 }
 
-// MS2-FUNCTIONAL: the guild smart-pointer/record temporaries are raw Unk_Guild* structs driven by explicit FUN_ ctor/dtor calls; the exe objects have real dtors (EH states + dtor ordering) - frame differs
 // @0x1404d1e90
 int CGuildInfo::FUN_1404d1e90()
 {
     int level=FUN_1404d1ad0();
-    Unk_GuildRef ref; FUN_1404d7410(FUN_1404f4530(),&ref,level);
-    if(FUN_1404eff60(&ref,0)==0) {
-        int v=*(int*)(FUN_1404f0b30(&ref)+0x28);
-        FUN_1404ee9b0(&ref);
-        return v;
-    }
-    FUN_1404ee9b0(&ref);
-    return 0;
+    Unk_PayloadPtr<CGuildXmlData::GuildProperty> prop=FUN_1404f4530()->FUN_1404d7410(level);
+    if(prop==0) return 0;
+    return (int)prop->f28;
 }
 
 // @0x1404d1f20
@@ -2050,99 +1985,72 @@ int CGuildInfo::FUN_1404d2030()
 int CGuildInfo::FUN_1404d2080()
 {
     Unk_GuildMapLock guard(lock,1);
-    Unk_GuildRef ref; FUN_1404d79b0(FUN_1404f4530(),&ref,f168,f16c);
-    if(FUN_1404eff20(&ref,0)==0) {
-        int v=*(int*)(FUN_1404f0b10(&ref)+0x50);
-        FUN_1404ee950(&ref);
-        return v;
-    }
-    FUN_1404ee950(&ref);
-    return 0;
+    Unk_PayloadPtr<CGuildXmlData::GuildHouse> house=FUN_1404f4530()->FUN_1404d79b0(f168,f16c);
+    if(house==0) return 0;
+    return house->f50;
 }
 
-// MS2-FUNCTIONAL: the {name,value,text} record (Unk_GuildStrRec) is a raw struct with explicit ctor 0x1404ee6b0/dtor 0x1404ef6e0 calls; the exe record object has EH states - frame differs
 // @0x1404d2150
 void CGuildInfo::vfunc_2(__int64 value,CStringW name,int key,const CStringW& text)
 {
     Unk_GuildMapLock guard(lock,1);
-    Unk_GuildStrRec rec; FUN_1404ee6b0(&rec);
-    rec.name()=text;
-    rec.q1=value;
-    rec.text()=name;
-    FUN_1404efdf0(FUN_1404f07a0(&f170,key),&rec);
-    FUN_1404ef6e0(&rec);
+    Unk_GuildStrEntry rec;
+    rec.name=text;
+    rec.value=value;
+    rec.text=name;
+    f170[key]=rec;
 }
 
-// MS2-FUNCTIONAL: Unk_GuildStrRec temporaries are raw structs with explicit ctor 0x1404ee6b0/dtor 0x1404ef6e0 calls; the exe has real record objects - frame differs
 // @0x1404d2220
 CStringW CGuildInfo::FUN_1404d2220(int key)
 {
     Unk_GuildMapLock guard(lock,1);
-    Unk_GuildStrRec rec; FUN_1404ee6b0(&rec);
-    if(FUN_1404f5e80(&f170,key,&rec)==1) {
-        CStringW r(rec.name());
-        FUN_1404ef6e0(&rec);
-        return r;
+    Unk_GuildStrEntry rec;
+    if(f170.Lookup(key,rec)==true) {
+        return rec.name;
+    } else {
+        return L"";
     }
-    CStringW r(L"");
-    FUN_1404ef6e0(&rec);
-    return r;
 }
 
-// MS2-FUNCTIONAL: Unk_GuildStrRec temporaries are raw structs with explicit ctor 0x1404ee6b0/dtor 0x1404ef6e0 calls; the exe has real record objects - frame differs
 // @0x1404d2330
 __int64 CGuildInfo::FUN_1404d2330(int key)
 {
     Unk_GuildMapLock guard(lock,1);
-    Unk_GuildStrRec rec; FUN_1404ee6b0(&rec);
-    if(FUN_1404f5e80(&f170,key,&rec)==1) {
-        __int64 v=rec.q1;
-        FUN_1404ef6e0(&rec);
-        return v;
+    Unk_GuildStrEntry rec;
+    if(f170.Lookup(key,rec)==true) {
+        return rec.value;
+    } else {
+        return 0;
     }
-    __int64 v=0;
-    FUN_1404ef6e0(&rec);
-    return v;
 }
 
-// MS2-FUNCTIONAL: Unk_GuildStrRec temporaries are raw structs with explicit ctor 0x1404ee6b0/dtor 0x1404ef6e0 calls; the exe has real record objects - frame differs
 // @0x1404d2400
 CStringW CGuildInfo::FUN_1404d2400(int key)
 {
     Unk_GuildMapLock guard(lock,1);
-    Unk_GuildStrRec rec; FUN_1404ee6b0(&rec);
-    if(FUN_1404f5e80(&f170,key,&rec)==1) {
-        CStringW r(rec.text());
-        FUN_1404ef6e0(&rec);
-        return r;
+    Unk_GuildStrEntry rec;
+    if(f170.Lookup(key,rec)==true) {
+        return rec.text;
+    } else {
+        return L"";
     }
-    CStringW r(L"");
-    FUN_1404ef6e0(&rec);
-    return r;
 }
 
-// MS2-FUNCTIONAL: the guild smart-pointer/record temporaries are raw Unk_Guild* structs driven by explicit FUN_ ctor/dtor calls; the exe objects have real dtors (EH states + dtor ordering) - frame differs
 // @0x1404d2510
 int CGuildInfo::FUN_1404d2510(int a,int b)
 {
-    Unk_GuildRef ref; FUN_1404d74e0(FUN_1404f4530(),&ref,a,b);
-    if(FUN_1404effa0(&ref,0)==0) {
-        int v=*(int*)(FUN_1404f0b50(&ref)+0x28);
-        FUN_1404eea40(&ref);
-        return v;
-    }
-    FUN_1404eea40(&ref);
-    return 0x7fffffff;
+    Unk_PayloadPtr<CGuildXmlData::GuildSkill> skill=FUN_1404f4530()->FUN_1404d74e0(a,b);
+    if(skill==0) return 0x7fffffff;
+    return skill->f28;
 }
 
 // @0x1404d25a0
-void CGuildInfo::FUN_1404d25a0(Unk_GuildRef* skill)
+void CGuildInfo::FUN_1404d25a0(Unk_PayloadPtr<CGuildSkill> skill)
 {
-    if(FUN_1404f0120(skill,0)==0) {
-        Unk_GuildMapLock guard(lock,1);
-        FUN_1404f98e0(&f238,FUN_1404f0bc0(skill)->f18,skill);
-    }
-    FUN_1404eeb90(skill);
+    if(skill==0) return;
+    Unk_GuildMapLock guard(lock,1);
+    f238.SetAt(skill->f18,skill);
 }
 
 // @0x1404d2640
@@ -2158,14 +2066,9 @@ MS2Ptr<CGuildSkill> CGuildInfo::FUN_1404d2640(int key)
 int CGuildInfo::FUN_1404d26f0(int key)
 {
     Unk_GuildMapLock guard(lock,1);
-    Unk_GuildRef tmp; FUN_1404ec920(&tmp,0);
-    if(FUN_1404f5f60(&f238,key,&tmp)==0) {
-        FUN_1404eeb90(&tmp);
-        return 0;
-    }
-    int v=FUN_1404f0bc0(&tmp)->f1c;
-    FUN_1404eeb90(&tmp);
-    return v;
+    Unk_PayloadPtr<CGuildSkill> skill(0);
+    if(f238.Lookup(key,skill)) return skill->f1c;
+    return 0;
 }
 
 // @0x1404d27b0
@@ -2178,64 +2081,53 @@ MS2Ptr<CGuildCustomEvent> CGuildInfo::FUN_1404d27b0(int key)
 }
 
 // @0x1404d2860
-void CGuildInfo::FUN_1404d2860(Unk_GuildRef* npc)
+void CGuildInfo::FUN_1404d2860(Unk_PayloadPtr<CGuildNpc> npc)
 {
     Unk_GuildMapLock guard(lock,1);
-    CGuildNpc* p=FUN_1404f0b90(npc);
-    FUN_1404f9990(&f2c8,&p->f18,npc);
-    FUN_1404eeb00(npc);
+    f2c8.SetAt((Unk_GuildNpcKind&)npc->f18,npc);
 }
 
 // @0x1404d28e0
-Unk_GuildRef* CGuildInfo::FUN_1404d28e0(Unk_GuildRef* ret,int key)
+Unk_PayloadPtr<CGuildNpc> CGuildInfo::FUN_1404d28e0(int key)
 {
-    int k=key;
     Unk_GuildMapLock guard(lock,1);
-    Unk_GuildRef tmp; FUN_1404ec6d0(&tmp,0);
-    FUN_1404f5fd0(&f2c8,&k,&tmp);
-    FUN_1404ec660(ret,&tmp);
-    FUN_1404eeb00(&tmp);
-    return ret;
+    Unk_PayloadPtr<CGuildNpc> npc(0);
+    f2c8.Lookup((Unk_GuildNpcKind&)key,npc);
+    return npc;
 }
 
-// MS2-FUNCTIONAL: Unk_GuildRef returned by FUN_1404d28e0 is a raw struct destroyed by an explicit FUN_1404eeb00 call; the exe temp is a real smart pointer with an EH state - frame differs
 // @0x1404d2990
 int CGuildInfo::FUN_1404d2990(int key)
 {
-    Unk_GuildRef tmp; FUN_1404d28e0(&tmp,key);
-    if(FUN_1404f0060(&tmp,0)==0) {
-        int v=FUN_1404f0b90(&tmp)->f1c;
-        FUN_1404eeb00(&tmp);
-        return v;
-    }
-    FUN_1404eeb00(&tmp);
-    return 0;
+    Unk_PayloadPtr<CGuildNpc> npc=FUN_1404d28e0(key);
+    if(npc==0) return 0;
+    return npc->f1c;
 }
 
 // @0x1404d2a10
 void CGuildInfo::FUN_1404d2a10(CInPacket* packet)
 {
     if(Unk_LockGuard guard=lock) { __assume(0); } else {
-        if(FUN_1404f00e0(&f360,0)!=0) {
-            FUN_1404efb30(&f360,new CGuildNpcShopMgr);
+        if(f360==0) {
+            f360=new CGuildNpcShopMgr;
         }
-        FUN_1404d8e80(FUN_1404f0bb0(&f360),packet);
+        f360->FUN_1404d8e80(packet);
     }
 }
 
 // @0x1404d2b00
 void CGuildInfo::FUN_1404d2b00(int a,void* b)
 {
-    if(Unk_LockGuard guard=lock) { __assume(0); } else if(FUN_1404f0ad0(&f360)!=0) {
-        FUN_1404d8ff0(FUN_1404f0bb0(&f360),a,b);
+    if(Unk_LockGuard guard=lock) { __assume(0); } else if(f360) {
+        f360->FUN_1404d8ff0(a,(CInPacket*)b);
     }
 }
 
 // @0x1404d2ba0
 void CGuildInfo::FUN_1404d2ba0(int a,void* b)
 {
-    if(Unk_LockGuard guard=lock) { __assume(0); } else if(FUN_1404f0ad0(&f360)!=0) {
-        FUN_1404d9060(FUN_1404f0bb0(&f360),a,b);
+    if(Unk_LockGuard guard=lock) { __assume(0); } else if(f360) {
+        f360->FUN_1404d9060(a,(CInPacket*)b);
     }
 }
 
@@ -2255,48 +2147,39 @@ int CGuildInfo::FUN_1404d2ca0()
 void CGuildInfo::FUN_1404d2cc0(ItemEntity* item)
 {
     Unk_GuildMapLock guard(lock,1);
-    ItemAble* able=item;
-    int rank=able->vfunc_o18_1();
-    int id=able->vfunc_o18_0();
-    Unk_GuildPair key; FUN_140407ed0(&key,&id,&rank);
-    void* map=(char*)&storage+0x18;
-    FUN_1404efe60(FUN_1404f0990(map,&key),item);
-    if(item->m_count==0) FUN_1405085e0(map,&key);
+    std::pair<unsigned,int> key(item->vfunc_o18_0(),item->vfunc_o18_1());
+    std::map<std::pair<unsigned,int>,ItemEntity>& items=storage.f18;
+    items[key]=*item;
+    if(item->m_count==0) items.erase(key);
 }
 
-// MS2-FUNCTIONAL: the guild smart-pointer/record temporaries are raw Unk_Guild* structs driven by explicit FUN_ ctor/dtor calls; the exe objects have real dtors (EH states + dtor ordering) - frame differs
 // @0x1404d2db0
-int CGuildInfo::FUN_1404d2db0(int a,int b)
+int CGuildInfo::FUN_1404d2db0(unsigned a,int b)
 {
     Unk_GuildMapLock guard(lock,1);
-    Unk_GuildPair key; FUN_1404d9660(&key,&a,&b);
-    void* it; void* endBuf[3]; void* map=(char*)&storage+0x18;
-    FUN_140508ed0(map,&it,&key);
-    if(FUN_1404f03a0(&it,FUN_1405076d0(map,endBuf))==0) {
-        int v=*(int*)((char*)FUN_1404f0ce0(&it)+0x2c);
-        return v;
-    }
-    return 0;
+    std::pair<unsigned,int> key(a,b);
+    std::map<std::pair<unsigned,int>,ItemEntity>& items=storage.f18;
+    std::map<std::pair<unsigned,int>,ItemEntity>::iterator it=items.find(key);
+    if(it==items.end()) return 0;
+    return it->second.m_count;
 }
 
 // @0x1404d2e90
 void CGuildInfo::FUN_1404d2e90(const Unk_GuildHist* a,const Unk_GuildHist* b,const ItemEntity* item,__int64 c)
 {
     Unk_GuildMapLock guard(lock,1);
-    CGuildStorage::CGuildStroageHistory* h=new CGuildStorage::CGuildStroageHistory;
-    Unk_GuildRef ref; FUN_1404ec9d0(&ref,h);
-    FUN_1404efd90(&FUN_1404f0bd0(&ref)->f18,a);
-    FUN_1404efd90(&FUN_1404f0bd0(&ref)->f30,b);
-    FUN_1404efe60(&FUN_1404f0bd0(&ref)->item,item);
-    FUN_1404f0bd0(&ref)->f78=c;
-    void* deque=(char*)&storage+0x38;
-    FUN_1405099e0(deque,&ref);
-    FUN_1404f3270(&storage.f60,&ref);
-    int n=FUN_14050a040(deque);
-    if(0x32<n) {
-        for(int i=0;i<n-0x32;++i) FUN_1405098f0(deque);
+    Unk_PayloadPtr<CGuildStorage::CGuildStroageHistory> history(new CGuildStorage::CGuildStroageHistory);
+    history->f18=*a;
+    history->f30=*b;
+    history->item=*item;
+    history->f78=c;
+    storage.f38.push_back(history);
+    storage.f60.Add(history);
+    int count=storage.f38.size();
+    if(count>0x32) {
+        int excess=count-0x32;
+        for(int i=0;i<excess;++i) storage.f38.pop_front();
     }
-    FUN_1404eebc0(&ref);
 }
 
 // @0x1404d3050
@@ -2325,83 +2208,46 @@ Unk_GuildSeason* CGuildInfo::FUN_1404d3180()
     return &season;
 }
 
-// Guild season table row as returned by FUN_1404f0bf0 (fields copied into CGuildInfo::season).
-struct Unk_GuildSeasonRow {
-    char m_0[0x1c];
-    int id;
-    CStringW name;
-    char m_28[8];
-    CMsTime begin;
-    CMsTime end;
-    int points[7];
-};
-MS2_CHECK_OFFSET(Unk_GuildSeasonRow, id, 0x1c);
-MS2_CHECK_OFFSET(Unk_GuildSeasonRow, name, 0x20);
-MS2_CHECK_OFFSET(Unk_GuildSeasonRow, begin, 0x30);
-MS2_CHECK_OFFSET(Unk_GuildSeasonRow, end, 0x40);
-MS2_CHECK_OFFSET(Unk_GuildSeasonRow, points, 0x50);
-
 // @0x1404d31b0
 void CGuildInfo::FUN_1404d31b0()
 {
-    Unk_GuildRef ref; FUN_140791e40(FUN_1404f4540(),&ref,2);
-    if(FUN_1404f01a0(&ref,0)==0) {
-        Unk_GuildSeasonRow* s=(Unk_GuildSeasonRow*)FUN_1404f0bf0(&ref);
-        if(season.id!=s->id) {
-            season.id=s->id;
-            season.name=s->name;
-            season.begin=s->begin;
-            season.end=s->end;
-            season.points[1]=s->points[0]; season.points[2]=s->points[1]; season.points[3]=s->points[2];
-            season.points[4]=s->points[3]; season.points[5]=s->points[4]; season.points[6]=s->points[5];
-            season.points[7]=s->points[6];
-        }
-        FUN_1404eec20(&ref);
-    } else {
+    MS2Ptr<CSeasonData> spData=CSeasonDataTable::GetInstance()->GetCurrent((SeasonRankType)2);
+    if(spData==NULL) {
         season.FUN_1404c5d20();
-        FUN_1404eec20(&ref);
+        return;
+    }
+    if(season.id!=spData->m_nSeasonID) {
+        season.id=spData->m_nSeasonID;
+        season.name=spData->m_strDisplayName;
+        season.begin=spData->m_start;
+        season.end=spData->m_end;
+        season.points[1]=spData->m_grades[0];
+        season.points[2]=spData->m_grades[1];
+        season.points[3]=spData->m_grades[2];
+        season.points[4]=spData->m_grades[3];
+        season.points[5]=spData->m_grades[4];
+        season.points[6]=spData->m_grades[5];
+        season.points[7]=spData->m_grades[6];
     }
 }
 
 // @0x1404d3400
-int CGuildInfo::FUN_1404d3400(void* out)
+int CGuildInfo::FUN_1404d3400(ATL::CAtlMap<__int64,__int64>* out)
 {
-    FUN_1404f8b40(out);
+    out->RemoveAll();
     if(Unk_LockGuard guard=lock) { __assume(0); } else {
-        void* pos=FUN_1404f4510(&f320);
-        while(pos!=0) {
-            Unk_GuildRef ref; FUN_1404ec5b0(&ref,FUN_1404f4f70(&f320,pos));
-            if(FUN_1404f0020(&ref,0)==0) {
-                if(FUN_1404f0b80(&ref)->f158==0) {
-                    if(FUN_1404f0b80(&ref)->fb0==3) {
-                        Unk_GuildRef q; FUN_140374140(&q,FUN_1404f0b80(&ref)->data.f24);
-                        if(FUN_1402ffdc0(&q,0)==0) {
-                            if(FUN_140375310(FUN_140300710(&q))==1) {
-                                FUN_1402fec60(&q);
-                                FUN_1404eead0(&ref);
-                            } else {
-                                CGuildMember* first=FUN_1404f0b80(&ref);
-                                FUN_1404f9a40(out,FUN_1404f0b80(&ref)->data.f08,first->data.f08);
-                                FUN_1402fec60(&q);
-                                FUN_1404eead0(&ref);
-                            }
-                        } else {
-                            FUN_1402fec60(&q);
-                            FUN_1404eead0(&ref);
-                        }
-                    } else {
-                        FUN_1404eead0(&ref);
-                    }
-                } else {
-                    FUN_1404eead0(&ref);
-                }
-            } else {
-                FUN_1404eead0(&ref);
-            }
-            FUN_1404f4700(&f320,&pos);
+        for(POSITION pos=f320.GetHeadPosition();pos!=NULL;f320.GetNext(pos)) {
+            Unk_PayloadPtr<CGuildMember> spMember=f320.GetValueAt(pos);
+            if(spMember==NULL) continue;
+            if(spMember->f158!=0) continue;
+            if(spMember->fb0!=3) continue;
+            MS2Ptr<CFieldData> spField=CFieldData::FUN_140374140(spMember->data.f24);
+            if(spField==NULL) continue;
+            if(spField->HasTutorialType()==1) continue;
+            out->SetAt(spMember->data.f08,spMember->data.f08);
         }
     }
-    return (int)FUN_1404f44a0(out);
+    return (int)out->GetCount();
 }
 
 // @0x1404d3600
@@ -2417,95 +2263,78 @@ int CGuildInfo::FUN_1404d3620()
 }
 
 // @0x1404d3640
-Unk_GuildRef* CGuildInfo::FUN_1404d3640(Unk_GuildRef* ret)
+Unk_PayloadPtr<CGuildNpcShopMgr> CGuildInfo::FUN_1404d3640()
 {
-    if(Unk_LockGuard guard=lock) { __assume(0); } else { FUN_1404ec820(ret,&f360); return ret; }
+    if(Unk_LockGuard guard=lock) { __assume(0); } else { return f360; }
 }
 
 // @0x1404d36d0
 void CGuildInfo::FUN_1404d36d0()
 {
     if(Unk_LockGuard guard=lock) { __assume(0); } else {
-        FUN_1404f86e0(&fa0);
+        fa0.RemoveAll();
         fc0=1;
         for(int i=0;i<6;++i) {
-            CGuildGrade* gradeObj=new CGuildGrade;
-            Unk_GuildRef ref; FUN_1404ec530(&ref,gradeObj);
+            Unk_PayloadPtr<CGuildGrade> spGrade(new CGuildGrade);
             if(i==0) {
-                FUN_1404f0b70(&ref)->grade=0;
-                GSTR(0x399,FUN_1404f0b70(&ref)->name);
-                FUN_1404f0b70(&ref)->permissions=0xfff;
+                spGrade->grade=0;
+                spGrade->name=CommonString::GetInstance()->GetNarrowDefault(0x399);
+                spGrade->permissions=0xfff;
             } else {
-                FUN_1404f0b70(&ref)->grade=i;
-                FUN_1404f0b70(&ref)->name=L"";
-                FUN_1404f0b70(&ref)->permissions=1;
-                if(FUN_1404f0b70(&ref)->grade==1) { GSTR(0x39a,FUN_1404f0b70(&ref)->name); }
-                else if(FUN_1404f0b70(&ref)->grade==2) { GSTR(0x39b,FUN_1404f0b70(&ref)->name); }
-                else if(FUN_1404f0b70(&ref)->grade==3) { GSTR(0x39c,FUN_1404f0b70(&ref)->name); }
-                else if(FUN_1404f0b70(&ref)->grade==4) { GSTR(0x39d,FUN_1404f0b70(&ref)->name); }
-                else if(FUN_1404f0b70(&ref)->grade==5) { GSTR(0x39e,FUN_1404f0b70(&ref)->name); }
+                spGrade->grade=i;
+                spGrade->name="";
+                spGrade->permissions=1;
+                if(spGrade->grade==1) { spGrade->name=CommonString::GetInstance()->GetNarrowDefault(0x39a); }
+                else if(spGrade->grade==2) { spGrade->name=CommonString::GetInstance()->GetNarrowDefault(0x39b); }
+                else if(spGrade->grade==3) { spGrade->name=CommonString::GetInstance()->GetNarrowDefault(0x39c); }
+                else if(spGrade->grade==4) { spGrade->name=CommonString::GetInstance()->GetNarrowDefault(0x39d); }
+                else if(spGrade->grade==5) { spGrade->name=CommonString::GetInstance()->GetNarrowDefault(0x39e); }
             }
-            FUN_1404f3110(&fa0,&ref);
-            reinterpret_cast<Unk_PayloadPtr<CGuildGrade>*>(&ref)->~Unk_PayloadPtr();
+            fa0.Add(spGrade);
         }
     }
 }
 
-// ---- local int-vector helpers (neighbouring chunks) ----
-struct Unk_GuildIntVec { __int64 q[3]; };
-void FUN_140182ea0(Unk_GuildIntVec*); unsigned __int64 FUN_1401910d0(Unk_GuildIntVec*); int* FUN_1404f0a10(Unk_GuildIntVec*,unsigned __int64);
-void FUN_140183b60(Unk_GuildIntVec*);
-void FUN_1404d7630(void* xml,Unk_GuildIntVec*); void FUN_1404d7730(void* xml,Unk_GuildIntVec*); void FUN_1404d7900(void* xml,Unk_GuildIntVec*);
 
 // @0x1404d3b80
 void CGuildInfo::FUN_1404d3b80()
 {
     Unk_GuildMapLock guard(lock,1);
-    FUN_1404f8920(&f238);
-    Unk_GuildIntVec v1; FUN_140182ea0(&v1);
-    FUN_1404d7630(FUN_1404f4530(),&v1);
-    for(unsigned __int64 i=0;i<FUN_1401910d0(&v1);++i) {
-        CGuildSkill* skill=new CGuildSkill;
-        Unk_GuildRef ref; FUN_1404ec940(&ref,skill);
-        int* id=FUN_1404f0a10(&v1,i);
-        FUN_1404f0bc0(&ref)->f18=*id;
-        FUN_1404f0bc0(&ref)->f1c=1;
-        Unk_GuildRef copy; ::new (&copy) Unk_PayloadPtr<CGuildSkill>(reinterpret_cast<const Unk_PayloadPtr<CGuildSkill>&>(ref));
-        FUN_1404d25a0(&copy);
-        FUN_1404eeb90(&ref);
+    f238.RemoveAll();
+    {
+        std::vector<int> v1;
+        FUN_1404f4530()->FUN_1404d7630(v1);
+        for(unsigned __int64 i=0;i<v1.size();++i) {
+            Unk_PayloadPtr<CGuildSkill> ref(new CGuildSkill);
+            ref->f18=v1[i];
+            ref->f1c=1;
+            FUN_1404d25a0(ref);
+        }
     }
-    FUN_140183b60(&v1);
-    Unk_GuildIntVec v2; FUN_140182ea0(&v2);
-    FUN_1404d7730(FUN_1404f4530(),&v2);
-    for(unsigned __int64 i=0;i<FUN_1401910d0(&v2);++i) {
-        CGuildSkill* skill=new CGuildSkill;
-        Unk_GuildRef ref; FUN_1404ec940(&ref,skill);
-        int* id=FUN_1404f0a10(&v2,i);
-        FUN_1404f0bc0(&ref)->f18=*id;
-        FUN_1404f0bc0(&ref)->f1c=1;
-        Unk_GuildRef copy; ::new (&copy) Unk_PayloadPtr<CGuildSkill>(reinterpret_cast<const Unk_PayloadPtr<CGuildSkill>&>(ref));
-        FUN_1404d25a0(&copy);
-        FUN_1404eeb90(&ref);
+    {
+        std::vector<int> v2;
+        FUN_1404f4530()->FUN_1404d7730(v2);
+        for(unsigned __int64 i=0;i<v2.size();++i) {
+            Unk_PayloadPtr<CGuildSkill> ref(new CGuildSkill);
+            ref->f18=v2[i];
+            ref->f1c=1;
+            FUN_1404d25a0(ref);
+        }
     }
-    FUN_140183b60(&v2);
 }
 
 // @0x1404d3e70
 void CGuildInfo::FUN_1404d3e70()
 {
     Unk_GuildMapLock guard(lock,1);
-    FUN_1404f8810(&f280);
-    Unk_GuildIntVec v; FUN_140182ea0(&v);
-    FUN_1404d7900(FUN_1404f4530(),&v);
-    for(unsigned __int64 i=0;i<FUN_1401910d0(&v);++i) {
-        CGuildCustomEvent* ev=new CGuildCustomEvent;
-        Unk_GuildRef ref; FUN_1404ec480(&ref,ev);
-        int* id=FUN_1404f0a10(&v,i);
-        FUN_1404f0b60(&ref)->f18=*id;
-        FUN_1404f9830(&f280,FUN_1404f0b60(&ref)->f18,&ref);
-        FUN_1404eea70(&ref);
+    f280.RemoveAll();
+    std::vector<int> v;
+    FUN_1404f4530()->FUN_1404d7900(v);
+    for(unsigned __int64 i=0;i<v.size();++i) {
+        Unk_PayloadPtr<CGuildCustomEvent> ref(new CGuildCustomEvent);
+        ref->f18=v[i];
+        f280.SetAt(ref->f18,ref);
     }
-    FUN_140183b60(&v);
 }
 
 // @0x1404d3fe0
@@ -2519,8 +2348,7 @@ void FUN_1404d3fe0(Unk_GuildStrRec* rec,COutputStream* out)
 // @0x1404d4060
 void FUN_1404d4060(Unk_GuildStrRec* rec,CInPacket* packet)
 {
-    CInputStream& in=*packet;
-    rec->name()=in.ReadUnicodeString();
-    rec->q1=in.ReadInt64();
-    rec->text()=in.ReadUnicodeString();
+    *(CStringW*)&rec->q0=packet->ReadUnicodeString();
+    rec->q1=packet->ReadInt64();
+    *(CStringW*)&rec->q2=packet->ReadUnicodeString();
 }

@@ -482,7 +482,6 @@ void UIBlueprintMarketDialog::SetSavedQuery(const __int64& nId, const CStringW& 
 MS2_REPLACE_METHOD(0x140bbbd70, UIBlueprintMarketDialog, SetSavedQuery, 0, 0);
 
 // One row of the list: a UGC blueprint with its calculate / model house buttons and its icon.
-// MS2-FUNCTIONAL: the exe copies the OnClickCalculate/OnClickModelHouse Delegate temp once more ([rsp+0x60] -> [rsp+0x68]) before ASFunction's ctor; not reproduced from source yet
 // @0x140bbbe00
 bool UIBlueprintMarketDialog::FillRow(ASMeratMarketProduct& row, MS2Ptr<CMeratMarketProduct> spProduct, Unk_MmViewScope* pScope)
 {
@@ -497,7 +496,8 @@ bool UIBlueprintMarketDialog::FillRow(ASMeratMarketProduct& row, MS2Ptr<CMeratMa
     row.FUN_1409adbe0("funcClickCalculate", Scaleform::GFx::Value(fnCalculate.FUN_1422bb870()));
     ASFunction fnModelHouse(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIBlueprintMarketDialog::OnClickModelHouse), 0, FUN_1422db730());
     row.FUN_1409adbe0("funcClickModelhouse", Scaleform::GFx::Value(fnModelHouse.FUN_1422bb870()));
-    if (FUN_14052d220()->FUN_141885d20(&spProduct->m_ugc.m_look, 3, MS2Ptr<CItem>(0), &callBack) == 1)
+    bool bIcon = FUN_14052d220()->FUN_141885d20(&spProduct->m_ugc.m_look, 3, MS2Ptr<CItem>(0), &callBack) == 1;
+    if (bIcon)
         row.FUN_1407cba60("iconPath", CStringA(FUN_1401d31f0()->m_strUgcIcon));
     return true;
 }

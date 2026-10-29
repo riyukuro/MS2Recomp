@@ -34,7 +34,6 @@ GFxMovieUgc::GFxMovieUgc(NiAVObject* pObject, CString strName)
     : m_strName(strName), m_spObject(pObject), m_spComponent(0), m_spRenderTexture(0), m_spRenderTarget(0)
 {
 }
-// MS2-FUNCTIONAL: smart-pointer release sequence differs
 // @0x14127d360
 GFxMovieUgc::~GFxMovieUgc()
 {
@@ -43,7 +42,7 @@ GFxMovieUgc::~GFxMovieUgc()
         m_spRenderTarget->vfunc_2();
         m_spRenderTarget = 0;
     }
-    if (m_spObject != 0)
+    if (m_spObject)
         m_spObject = 0;
     m_spRenderTexture = 0;
     m_spComponent = 0;
@@ -54,32 +53,32 @@ void* GFxMovieUgc::vfunc_2() { return (void*)&ms_RTTI; }
 void GFxMovieUgc::vfunc_4(void* pUnused, const char* szEvent, const Scaleform::GFx::Value* pArgs, unsigned nArgs)
 {
 }
-// MS2-FUNCTIONAL: by-value CString/loader argument temps differ
 // @0x14127d4d0
 int GFxMovieUgc::vfunc_6(MS2_GFX_LOADER* pLoader, CString strPath, int nLoadFlags)
 {
-    if (GFxMovie::vfunc_6(pLoader, strPath, nLoadFlags) == 0)
-        return 0;
-    m_60->SetBackgroundAlpha(1.0f);
-    if (FUN_14127dd70() == 0)
-        return 0;
-    if (FUN_14127dc60() == 0)
-        return 0;
-    if (FUN_14127de50(m_spRenderTexture) == 0)
-        return 0;
-    return 1;
+    if (GFxMovie::vfunc_6(pLoader, strPath, nLoadFlags))
+    {
+        m_60->SetBackgroundAlpha(1.0f);
+        if (FUN_14127dd70() == 0)
+            return 0;
+        if (FUN_14127dc60() == 0)
+            return 0;
+        if (FUN_14127de50(m_spRenderTexture) == 0)
+            return 0;
+        return 1;
+    }
+    return 0;
 }
-// MS2-FUNCTIONAL: GFx event temp layout differs
 // @0x14127d640
 int GFxMovieUgc::vfunc_7(int x, int y)
 {
     m_60->SetBackgroundAlpha(1.0f);
     m_60->SetViewport(x, y, 0, 0, x, y, 1);
-    Scaleform::GFx::Event kEvent(Scaleform::GFx::Event::MouseMove);
+    Scaleform::GFx::Event kEvent(Scaleform::GFx::Event::SceneResize);
     m_60->HandleEvent(kEvent);
     return 1;
 }
-// MS2-FUNCTIONAL: by-value Ptr arguments and display handle temps differ
+// MS2-FUNCTIONAL: code identical; the exe types spHandle as Ptr<Unk_GFxUIRenderer2D> (separate operator->/dtor COMDATs 0x14127c980/0x14127c5c0), but gfxmovie.h spells both vfunc_9 arguments Ptr<Unk_GFxHandleObj>
 // @0x14127d720
 void GFxMovieUgc::vfunc_9(MS2_GFX_PTR(Unk_GFxHandleObj) spObj, MS2_GFX_PTR(Unk_GFxHandleObj) spHandle)
 {
@@ -88,14 +87,13 @@ void GFxMovieUgc::vfunc_9(MS2_GFX_PTR(Unk_GFxHandleObj) spObj, MS2_GFX_PTR(Unk_G
     Unk_BgComPtr<Unk_BgTarget> spTarget(spObj->vfunc_14());
     if (spTarget != 0)
     {
-        spObj->vfunc_17(m_spRenderTarget, 1);
+        spObj->vfunc_17(m_spRenderTarget, true);
         Unk_BgDispHandle kHandle(reinterpret_cast<const Unk_BgDispHandle&>(m_60->GetDisplayHandle()));
         if (kHandle.FUN_1425805a0(spHandle->FUN_142582270()))
             spHandle->Assign(kHandle);
-        spObj->vfunc_17(spTarget, 1);
+        spObj->vfunc_17(spTarget, true);
     }
 }
-// MS2-FUNCTIONAL: smart-pointer release sequence differs
 // @0x14127d900
 void GFxMovieUgc::vfunc_11()
 {
@@ -104,7 +102,7 @@ void GFxMovieUgc::vfunc_11()
         m_spRenderTarget->vfunc_2();
         m_spRenderTarget = 0;
     }
-    if (m_spObject != 0)
+    if (m_spObject)
         m_spObject = 0;
     m_spRenderTexture = 0;
     m_spComponent = 0;
@@ -155,60 +153,61 @@ void GFxMovieUgc::vfunc_39(int a, int b, int c, bool d, bool e)
 {
     GFxMovieEventHandler::vfunc_39(a, b, c, d, e);
 }
-// MS2-FUNCTIONAL: COM surface temporaries differ
 // @0x14127dc60
 int GFxMovieUgc::FUN_14127dc60()
 {
-    if (m_spRenderTexture != 0)
+    if (!m_spRenderTexture)
+        return 0;
+    NiDX9TextureData* pData = (NiDX9TextureData*)m_spRenderTexture->GetRendererData();
+    if (pData != 0)
     {
-        NiDX9TextureData* pData = (NiDX9TextureData*)m_spRenderTexture->GetRendererData();
-        if (pData != 0)
+        IDirect3DTexture9* pTexture = (IDirect3DTexture9*)pData->GetD3DTexture();
+        if (pTexture != 0)
         {
-            IDirect3DTexture9* pTexture = (IDirect3DTexture9*)pData->GetD3DTexture();
-            if (pTexture != 0)
-            {
-                IDirect3DSurface9* pSurface = 0;
-                pTexture->GetSurfaceLevel(0, &pSurface);
-                m_spRenderTarget = FUN_1422cf060()->vfunc_67(pSurface, 0);
-                if (pSurface != 0)
-                    pSurface->Release();
-                if (m_spRenderTarget != 0)
-                    return 1;
-            }
-        }
-    }
-    return 0;
-}
-// MS2-FUNCTIONAL: FormatPrefs/render texture temporaries differ
-// @0x14127dd70
-int GFxMovieUgc::FUN_14127dd70()
-{
-    ecr::RenderService* pRender;
-    if (m_spObject != 0 && (pRender = FUN_14127bf80(&DAT_143b059e8)) != 0)
-    {
-        if (pRender->GetActiveRenderSurface()->GetRenderTargetGroup() != 0)
-        {
-            NiTexture::FormatPrefs kPrefs;
-            kPrefs.m_eAlphaFmt = NiTexture::FormatPrefs::ALPHA_DEFAULT;
-            m_spRenderTexture = NiRenderedTexture::Create(DAT_1439f7358, DAT_1439f7358, NiRenderer::GetRenderer(), kPrefs, Ni2DBuffer::MULTISAMPLE_NONE);
-            if (m_spRenderTexture != 0)
+            IDirect3DSurface9* pSurface = 0;
+            pTexture->GetSurfaceLevel(0, &pSurface);
+            m_spRenderTarget = FUN_1422cf060()->vfunc_67(pSurface, 0);
+            if (pSurface != 0)
+                pSurface->Release();
+            if (m_spRenderTarget)
                 return 1;
         }
     }
     return 0;
 }
-// MS2-FUNCTIONAL: Map allocation temporaries differ
+// @0x14127dd70
+int GFxMovieUgc::FUN_14127dd70()
+{
+    if (!m_spObject)
+        return 0;
+    ecr::RenderService* pRender = FUN_14127bf80(&DAT_143b059e8);
+    if (pRender != 0)
+    {
+        NiRenderTargetGroup* pGroup = pRender->GetActiveRenderSurface()->GetRenderTargetGroup();
+        if (pGroup != 0)
+        {
+            NiTexture::FormatPrefs kPrefs;
+            kPrefs.m_eAlphaFmt = NiTexture::FormatPrefs::ALPHA_DEFAULT;
+            m_spRenderTexture = NiRenderedTexture::Create(DAT_1439f7358, DAT_1439f7358, NiRenderer::GetRenderer(), kPrefs, Ni2DBuffer::MULTISAMPLE_NONE);
+            if (m_spRenderTexture)
+                return 1;
+        }
+    }
+    return 0;
+}
 // @0x14127de50
 int GFxMovieUgc::FUN_14127de50(NiRenderedTexture* pTexture)
 {
     NiTexturingProperty* pTexturing = NiDynamicCast(NiTexturingProperty, m_spObject->GetProperty(NiProperty::TEXTURING));
-    if (pTexturing == 0)
-        return 0;
-    pTexturing->SetBaseTexture(pTexture);
-    pTexturing->SetDecalMap(0, NiNew NiTexturingProperty::Map());
-    if (m_spObject != 0)
-        m_spObject->UpdateProperties();
-    return 1;
+    if (pTexturing)
+    {
+        pTexturing->SetBaseTexture(pTexture);
+        pTexturing->SetDecalMap(0, NiNew NiTexturingProperty::Map());
+        if (m_spObject)
+            m_spObject->UpdateProperties();
+        return 1;
+    }
+    return 0;
 }
 
 MS2_EMIT_CRT_MEMMOVE_S();

@@ -29,6 +29,13 @@ template <> void MS2Ptr<Unk_WsK_Rank>::ReleaseImpl(void*)
         CPtred::DeletePtred(p);
     }
 }
+// Same for the add-ref (exe 0x140b314c0, the rank pointer's shared COMDAT): the generic one added a reference to the
+// CPtred at m_p itself, so each copy bumped a field of the record while each release dropped the real count, and the
+// record was freed under the m_a18 queue (garbage CStringW at +0x78 in CInteractDisplayImage::FUN_141401380).
+template <> void MS2Ptr<Unk_WsK_Rank>::AddRefImpl(void*) const
+{
+    FUN_141bb1410(FUN_141bb0630(m_p));
+}
 
 // Not WorldService::m_980's map: this copy is unsigned-keyed (find 0x141bb8e00 / lower_bound 0x141bb91a0 call
 // less<unsigned> 0x140185090) and its erase (0x141bb8750) destroys a non-trivial value (0x141babd70), while m_980's own

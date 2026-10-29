@@ -111,7 +111,7 @@ Unk_ObjectCreateStrings* FUN_1401a9d70();
 void FUN_14051f800(ATL::CAtlArray<MS2Ptr<CInteractObjectData> >& aData);            // every row of the interact-object table
 MS2Ptr<CInteractObjectData> FUN_14051f670(int nIndex);                              // a row by index
 int FUN_1407181d0(const CString& str);                                              // text to number
-void FUN_14020af60(COutPacket* pPacket, const Vector3* pPoint);             // encode a point
+void FUN_14020af60_ref(COutPacket* pPacket, const Vector3& pt);             // FUN_14020af60: encode a point
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -152,7 +152,6 @@ int UIObjectCreateDialog::vfunc_13()
 }
 
 // @0x14131f800
-// MS2-FUNCTIONAL: same calls and branches as the exe; named locals/temps sit at other frame slots (frame 0x2a8 vs 0x298)
 int UIObjectCreateDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs)
 {
     UIDialog::vfunc_28(szMethod, pArgs, nArgs);
@@ -178,77 +177,63 @@ int UIObjectCreateDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
             packet.WriteUnicodeStringA(str3);
             packet.WriteUnicodeStringA(str4);
             packet.Encode4(nCount);
-            NiPoint3 kPos = pPlayer->vfunc_18();
-            FUN_14020af60(&packet, reinterpret_cast<const Vector3*>(&kPos));
-            NiPoint3 kRot = pPlayer->vfunc_20();
-            FUN_14020af60(&packet, reinterpret_cast<const Vector3*>(&kRot));
+            FUN_14020af60_ref(&packet, reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(pPlayer->vfunc_18())));
+            FUN_14020af60_ref(&packet, reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(pPlayer->vfunc_20())));
             FUN_140710590(packet);
         }
         return 1;
     }
-    else
+    else if (_stricmp("onIndexChange", szMethod) == 0)
     {
-        if (_stricmp("onIndexChange", szMethod) == 0)
+        if (data.FUN_1422b9620(pArgs, nArgs) != 0)
         {
-            if (data.FUN_1422b9620(pArgs, nArgs) != 0)
+            int nIndex = data.FUN_1422b8a10();
+            if (FUN_14051f670(nIndex).IsNull())
+                return 0;
+            if (MS2Ptr<Unk_ObjectCreateList> list = FUN_140c02900("m_position"))
             {
-                int nIndex = data.FUN_1422b8a10();
-                if (FUN_14051f670(nIndex).IsNull())
-                    return 0;
-                MS2Ptr<Unk_ObjectCreateList> list = FUN_140c02900(CString("m_position"));
-                if (list != 0)
+                list->FUN_1422dd1d0();
+                ATL::CAtlArray<MS2Ptr<CInteractObject> > aObjects;
+                FUN_1403ed2d0()->FUN_141bc5f10(aObjects);
+                for (size_t i = 0; i < aObjects.GetCount(); i++)
                 {
-                    list->FUN_1422dd1d0();
-                    ATL::CAtlArray<MS2Ptr<CInteractObject> > aObjects;
-                    FUN_1403ed2d0()->FUN_141bc5f10(aObjects);
-                    for (size_t i = 0; i < aObjects.GetCount(); i++)
+                    MS2Ptr<CInteractObject> obj = aObjects[i];
+                    if (obj->GetRowId() == nIndex)
                     {
-                        MS2Ptr<CInteractObject> obj = aObjects[i];
-                        if (obj->GetRowId() == nIndex)
-                        {
-                            Vector3 kPoint = obj->GetPos();
-                            ASObj row(2);
-                            row.FUN_1409c4a30("xpos", kPoint.x);
-                            row.FUN_1409c4a30("ypos", kPoint.y);
-                            row.FUN_1409c4a30("zpos", kPoint.z);
-                            int nZ = (int)kPoint.z;
-                            int nY = (int)kPoint.y;
-                            int nX = (int)kPoint.x;
-                            row.FUN_1407cbb20("label", StringFormat(L"{0}, {1}, {2}", nX, nY, nZ));
-                            list->FUN_1422dd230(row);
-                        }
+                        Vector3 kPoint = obj->GetPos();
+                        ASObj row(2);
+                        row.FUN_1409c4a30("xpos", kPoint.x);
+                        row.FUN_1409c4a30("ypos", kPoint.y);
+                        row.FUN_1409c4a30("zpos", kPoint.z);
+                        row.FUN_1407cbb20("label", StringFormat(L"{0}, {1}, {2}", (int)kPoint.x, (int)kPoint.y, (int)kPoint.z));
+                        list->FUN_1422dd230(row);
                     }
-                    list->vfunc_24(true);
                 }
+                list->vfunc_24(true);
             }
         }
-        else if (_stricmp("OnMove", szMethod) == 0 && data.FUN_1422b9620(pArgs, nArgs) != 0)
-        {
-            Vector3 kPoint;
-            kPoint.x = data.FUN_1422b8c10();
-            kPoint.y = data.FUN_1422b8c10();
-            kPoint.z = data.FUN_1422b8c10();
-            COutPacket packet(static_cast<int>(SendOp::SetDebugMode), 0);
-            packet.Encode1(2);
-            packet.WriteVector3Short(kPoint);
-            FUN_140710590(packet);
-        }
-        return 0;
     }
+    else if (_stricmp("OnMove", szMethod) == 0 && data.FUN_1422b9620(pArgs, nArgs) != 0)
+    {
+        Vector3 kPoint;
+        kPoint.x = data.FUN_1422b8c10();
+        kPoint.y = data.FUN_1422b8c10();
+        kPoint.z = data.FUN_1422b8c10();
+        COutPacket packet(static_cast<int>(SendOp::SetDebugMode), 0);
+        packet.Encode1(2);
+        packet.WriteVector3Short(kPoint);
+        FUN_140710590(packet);
+    }
+    return 0;
 }
 
 // @0x14131ff70
-// MS2-FUNCTIONAL: same calls and branches as the exe; the exe keeps extra pointer copies of the bound child (temp slot order)
 void UIObjectCreateDialog::FUN_14131ff70()
 {
     CStringW strSearch;
-    {
-        MS2Ptr<Unk_ObjectCreateInput> input = FUN_140e35bd0(CString("m_search"));
-        if (input != 0)
-            strSearch = input->FUN_1422e0b00();
-    }
-    MS2Ptr<Unk_ObjectCreateList> list = FUN_140c02900(CString("m_objects"));
-    if (list != 0)
+    if (MS2Ptr<Unk_ObjectCreateInput> input = FUN_140e35bd0("m_search"))
+        strSearch = input->FUN_1422e0b00();
+    if (MS2Ptr<Unk_ObjectCreateList> list = FUN_140c02900("m_objects"))
     {
         list->FUN_1422dd1d0();
         ATL::CAtlArray<MS2Ptr<CInteractObjectData> > aData;
@@ -257,22 +242,16 @@ void UIObjectCreateDialog::FUN_14131ff70()
         {
             MS2Ptr<CInteractObjectData> data = aData[i];
             CStringW strName = FUN_1401a9d70()->FUN_141811980(11, data->m_nId);
-            bool bAdd = strSearch.GetLength() == 0;
-            if (!bAdd)
+            if (strSearch.GetLength() != 0)
             {
-                unsigned nId = data->m_nId;
-                CStringW strId = StringFormat(L"{0}", nId);
-                if (strName.Find(strSearch, 0) != -1 || strId.Find(strSearch, 0) != -1)
-                    bAdd = true;
+                CStringW strId = StringFormat(L"{0}", data->m_nId);
+                if (strName.Find(strSearch, 0) == -1 && strId.Find(strSearch, 0) == -1)
+                    continue;
             }
-            if (bAdd)
-            {
-                ASObj row(2);
-                unsigned nId = data->m_nId;
-                row.FUN_1407cbb20("label", StringFormat(L"{0} \t{1}", nId, strName));
-                row.FUN_1409c0d20("code", data->m_nId);
-                list->FUN_1422dd230(row);
-            }
+            ASObj row(2);
+            row.FUN_1407cbb20("label", StringFormat(L"{0} \t{1}", data->m_nId, strName));
+            row.FUN_1409c0d20("code", data->m_nId);
+            list->FUN_1422dd230(row);
         }
         list->vfunc_24(true);
     }

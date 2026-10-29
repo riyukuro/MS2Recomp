@@ -79,44 +79,24 @@ bool CGloabalFactor::FUN_1404c1370()
 }
 
 // @0x1404c1a50
-// MS2-FUNCTIONAL: the exe emits an extra jmp after each else-if arm (194 vs 204 bytes); no source form found
 static int ReadMultiType(CString& str)
 {
     if (str.IsEmpty())
         return 0;
-    else
-    {
-        if (str.CompareNoCase("enchantScrollReceipe") == 0)
-            return CGloabalFactor::MULTI_ENCHANT_SCROLL_RECIPE;
-        else
-        {
-            if (str.CompareNoCase("globalDropItemCount") == 0)
-                return CGloabalFactor::MULTI_GLOBAL_DROP_ITEM_COUNT;
-            else
-            {
-                if (str.CompareNoCase("equipmentSellPrice") == 0)
-                    return CGloabalFactor::MULTI_EQUIPMENT_SELL_PRICE;
-                else
-                {
-                    if (str.CompareNoCase("dungeonClearMeso") == 0)
-                        return CGloabalFactor::MULTI_DUNGEON_CLEAR_MESO;
-                    else
-                    {
-                        if (str.CompareNoCase("questRewardMeso") == 0)
-                            return CGloabalFactor::MULTI_QUEST_REWARD_MESO;
-                        else
-                        {
-                            return 0;
-                        }
-                    }
-                }
-            }
-        }
-    }
+    if (str.CompareNoCase("enchantScrollReceipe") == 0)
+        return CGloabalFactor::MULTI_ENCHANT_SCROLL_RECIPE;
+    else if (str.CompareNoCase("globalDropItemCount") == 0)
+        return CGloabalFactor::MULTI_GLOBAL_DROP_ITEM_COUNT;
+    else if (str.CompareNoCase("equipmentSellPrice") == 0)
+        return CGloabalFactor::MULTI_EQUIPMENT_SELL_PRICE;
+    else if (str.CompareNoCase("dungeonClearMeso") == 0)
+        return CGloabalFactor::MULTI_DUNGEON_CLEAR_MESO;
+    else if (str.CompareNoCase("questRewardMeso") == 0)
+        return CGloabalFactor::MULTI_QUEST_REWARD_MESO;
+    return 0;
 }
 
 // @0x1404c1e80 (tinyxmlhelper.h line 250)
-// MS2-FUNCTIONAL: the exe frame holds the assert-macro temporaries (188 vs 163 bytes)
 #undef MS2_THIS_FILE
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\commonfiles\\tinyxmlhelper.h"
 static int FUN_1404c1e80(Unk_140165cf0* pElem, const char* pszName, int* pnOut)
@@ -128,25 +108,24 @@ static int FUN_1404c1e80(Unk_140165cf0* pElem, const char* pszName, int* pnOut)
     }
     CString str;
     int nRead = FUN_1408733e0(pElem, pszName, str);
-    if (nRead == 0)
-        *pnOut = ReadMultiType(str);
+    if (nRead != 0)
+        return nRead;
+    *pnOut = ReadMultiType(str);
     return nRead;
 }
 #undef MS2_THIS_FILE
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\commonfiles\\gloabalfactor.cpp"
 
 // @0x1404c1400
-// MS2-FUNCTIONAL: the exe keeps the narrowed path pointer and the 0x10-byte xml/path temporaries in a different frame layout (814 vs 796 bytes)
 bool CGloabalFactor::LoadMultiControl()
 {
     m_multi.clear();
     m_multi.resize(6);
     CString strDir;
     strDir.Format("%s", "Table");
-    CString strPath = FUN_14071a5b0(strDir, CString("multicontrol.xml"));
+    CString strPath = FUN_14071a5b0(strDir, "multicontrol.xml");
     TiXmlDocument doc;
-    const char* pszPath = strPath;
-    if (FUN_140166420()->FUN_1403974b0(&doc, pszPath, 0, true, false) == 0)
+    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return false;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
@@ -171,8 +150,9 @@ bool CGloabalFactor::LoadMultiControl()
             FUN_1408731e0(pNode, "key", nKey);
         }
         FUN_140873360(pNode, "value", fValue);
-        if (nType != 0 && nType < 6)
-            m_multi[nType].insert(std::make_pair(nKey, fValue));
+        if (nType == 0 || nType >= 6)
+            continue;
+        m_multi[nType].insert(std::make_pair(nKey, fValue));
     }
     SetInit(true);
     return true;

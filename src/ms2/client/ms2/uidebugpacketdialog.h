@@ -35,7 +35,7 @@ class UIDebugPacketDialog : public UIDialog
 {
 public:
     UIDebugPacketDialog();                                      // 0x14128f8f0
-    virtual ~UIDebugPacketDialog();                             //  0 0x141291cd0 (??_G 0x141291ee0)
+    // implicit virtual dtor 0x141291cd0 (??_G 0x141291ee0)
     virtual CString GetTypeName();                                  //  1 0x14128fb80
     virtual void OnLoadInit();                                  // 20 0x14128fbd0
     virtual void vfunc_26();                                    // 26 0x141290c90
@@ -48,7 +48,7 @@ public:
     void OnPacketCount(const Scaleform::GFx::FunctionHandler::Params& rParams);     // 0x141291240
     void OnCloseFromPacket(const Scaleform::GFx::FunctionHandler::Params& rParams); // 0x141291340
     void OnDoubleClick(const Scaleform::GFx::FunctionHandler::Params& rParams);     // 0x141291440
-    int FUN_141291470();                                        // 0x141291470 read the fixed packet and arm the loop
+    bool FUN_141291470();                                       // 0x141291470 read the fixed packet and arm the loop
     bool FUN_141291850();                                       // 0x141291850 read the random mode and arm it
     MS2Ptr<Unk_DpButton> FUN_140bb4b10(const CString& strName);     // 0x140bb4b10 bind a button child (a UIDialog member)
     MS2Ptr<Unk_DpInput> FUN_140e35bd0(const CString& strName);      // 0x140e35bd0 text input child lookup

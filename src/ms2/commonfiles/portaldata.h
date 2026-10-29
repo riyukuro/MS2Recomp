@@ -23,7 +23,7 @@ MS2_CHECK_SIZE(QuestMask, 0x40);
 class CPortalData : public CPtred {
 public:
     CPortalData();
-    virtual ~CPortalData();
+    // virtual ~CPortalData();   // 0x14072ffe0 (??_G 0x1407300a0) implicit: the exe dtor stores no vptr
     int FUN_14072ff60();
     Unk_PDVec3 m_18, m_24;
     int m_30, m_34, m_38, m_3c, m_40, m_44, m_48, m_4c;
@@ -44,7 +44,7 @@ MS2_CHECK_SIZE(CPortalData, 0x120);
 class CPortalHistoryData : public CPtred {
 public:
     CPortalHistoryData();
-    virtual ~CPortalHistoryData();
+    // virtual ~CPortalHistoryData();   // 0x140730070 (??_G 0x1407300e0) implicit: the exe dtor stores no vptr
     CPortalData m_data;     // +0x18
     __int64 m_138;
 };

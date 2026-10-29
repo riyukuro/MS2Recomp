@@ -9,20 +9,17 @@
 // restore a lost primary buffer (FUN_1422fea10), and the sound thread first calls a game hook (DAT_143b15f88). The video
 // library was built with GFX_ENABLE_SOUND: CreateOutput ends with SetVolume(pChannel->GetVolume()).
 
-// The Scaleform video declarations need GFX_ENABLE_VIDEO (GFxConfig.h): the exe is built with video support.
-#define GFX_USE_VIDEO_WIN32
-
 #include "ms2/placeholder/ms2stdafx.h"
 
 #include <cmath>
 #include <process.h>
 #include <mmsystem.h>
+#pragma comment(lib, "winmm.lib")     // timeSetEvent, timeKillEvent
 #include <dsound.h>
 #include <ks.h>
 #include <ksmedia.h>
 
 #include "ms2/placeholder/sfvideo.h"
-#include "Kernel/SF_HeapNew.h"
 
 #include "hook/ms2hook.h"
 
@@ -613,4 +610,6 @@ UInt32 MS2VideoSoundDX8::GetSoundData(UInt32 nch, float* sample[], UInt32 nsmpl)
 
 // MS2-PIN: ?PcmfToPcm16@MS2VideoSoundDX8@Video@GFx@Scaleform@@IEAAFM@Z 0x142300760
 // MS2-PIN: ?log10@@YAMM@Z 0x142300860
+// MS2-PIN: ??C?$Ptr@VSoundChannel@Sound@Scaleform@@@Scaleform@@QEBAPEAVSoundChannel@Sound@1@XZ 0x1423000e0
+// MS2-PIN: ?SetSpatialInfo@VideoSoundStream@Video@GFx@Scaleform@@UEAAXQEBV?$Array@UVector@SoundChannel@Sound@Scaleform@@$01UArrayDefaultPolicy@4@@4@@Z 0x142300840
 // MS2-FUNCTIONAL ?log10@@YAMM@Z: CRT header inline; it calls log10f directly here, through the ucrtbase IAT in the exe

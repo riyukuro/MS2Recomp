@@ -79,11 +79,7 @@ FieldWarGroup::FieldWarGroup(unsigned nGroupID)
 {
 }
 
-// @0x140387c80
-// MS2-FUNCTIONAL: member vector teardown order/shape differs slightly from the exe
-FieldWarGroup::~FieldWarGroup()
-{
-}
+// @0x140387c80 ~FieldWarGroup is implicit, so cl emits it without a vftable store
 
 // @0x140382370
 void FieldWarGroup::AddData(MS2Ptr<FieldWarData> spData)

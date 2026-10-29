@@ -268,6 +268,8 @@ public:
     // protected in the original; public here so the hooks can bind them
     virtual bool GenerateVertexShadeTree(Context& kContext, NiGPUProgramDescriptor* pkDesc);
     virtual bool GeneratePixelShadeTree(Context& kContext, NiGPUProgramDescriptor* pkDesc);
+    virtual bool HandleApplyFog(Context& kContext, NiStandardPixelProgramDescriptor* pkPixDesc,
+        NiMaterialResource* pkUnfoggedColor, NiMaterialResource*& pkFogOutput);
 };
 
 //--------------------------------------------------------------------------------------------------

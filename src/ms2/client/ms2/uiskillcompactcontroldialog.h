@@ -34,7 +34,7 @@ class UISkillCompactControlDialog : public UIDialog
 {
 public:
     UISkillCompactControlDialog();                      // 0x140f9e200
-    virtual ~UISkillCompactControlDialog();             // 0x140fa2f80 (??_G 0x140fa3160)
+    // implicit destructor (the exe body stores no vftable pointer) 0x140fa2f80 (??_G 0x140fa3160)
     virtual CString GetTypeName();
     virtual int vfunc_13();
     virtual void OnLoadInit();

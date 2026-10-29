@@ -17,8 +17,6 @@
 #include "ms2/placeholder/cdebughelper.h"
 
 NiNode* FUN_1413f9f90();                                            // the node named "Scene Root"
-void FUN_140ddcca0(void* obj, const void* m);                       // NiAVObject::SetRotate(NiMatrix3)
-void FUN_140a33240(void* dst, const void* src);                     // NiMatrix3(efd::Matrix3)
 
 // @0x14116bdc0
 CDebugHelper::CDebugHelper() : m_pRoot(0), m_meshes(10)
@@ -37,27 +35,7 @@ void CDebugHelper::FUN_14116be80()
     m_pRoot = FUN_1413f9f90();
 }
 
-// The properties every debug mesh gets: vertex colours as emissive, a white material, no z test / write, wireframe.
-static void AttachDebugProperties(NiMesh* pkMesh)
-{
-    NiMaterialProperty* pkMat = new (efd::MemHint(efd::MemHint::NONE)) NiMaterialProperty;
-    pkMat->SetEmittance(NiColor(1.0f, 1.0f, 1.0f));
-    NiVertexColorProperty* pkVC = new (efd::MemHint(efd::MemHint::NONE)) NiVertexColorProperty;
-    pkVC->SetSourceMode(NiVertexColorProperty::SOURCE_EMISSIVE);
-    pkVC->SetLightingMode(NiVertexColorProperty::LIGHTING_E);
-    pkMesh->AttachProperty(pkVC);
-    pkMesh->AttachProperty(pkMat);
-    NiZBufferProperty* pkZ = new (efd::MemHint(efd::MemHint::NONE)) NiZBufferProperty;
-    pkZ->SetZBufferTest(false);
-    pkZ->SetZBufferWrite(false);
-    pkMesh->AttachProperty(pkZ);
-    NiWireframeProperty* pkWire = new (efd::MemHint(efd::MemHint::NONE)) NiWireframeProperty;
-    pkWire->SetWireframe(true);
-    pkMesh->AttachProperty(pkWire);
-}
-
 // @0x14116beb0
-// MS2-FUNCTIONAL: Gamebryo debug-mesh builder; the exe's inline stream/lock temporaries are laid out differently
 void CDebugHelper::FUN_14116beb0(const NiPoint3* pPos, const NiColorA* pColor)
 {
     if (m_pRoot == 0)
@@ -68,12 +46,30 @@ void CDebugHelper::FUN_14116beb0(const NiPoint3* pPos, const NiColorA* pColor)
         NiDataStreamElement::F_FLOAT32_3, 1, 0x12, NiDataStream::USAGE_VERTEX, false, true, 2);
     NiDataStreamElementLock kColor = spMesh->AddStreamGetLock(NiCommonSemantics::COLOR(), 0,
         NiDataStreamElement::F_FLOAT32_4, 1, 0x12, NiDataStream::USAGE_VERTEX, false, true, 2);
-    kColor.begin<NiColorA>(0)[0] = *pColor;
-    kPos.begin<NiPoint3>(0)[0] = NiPoint3(0.0f, 0.0f, 0.0f);
+    NiTStridedRandomAccessIterator<NiPoint3> kPts = kPos.begin<NiPoint3>(0);
+    NiTStridedRandomAccessIterator<NiColorA> kColors = kColor.begin<NiColorA>(0);
+    kColors[0] = *pColor;
+    kPts[0] = NiPoint3(0.0f, 0.0f, 0.0f);
     kPos.Unlock();
     kColor.Unlock();
-    AttachDebugProperties(spMesh);
-    spMesh->SetTranslate(*pPos);
+
+    // Vertex colours as emissive, a white material, no z test / write, wireframe.
+    NiMaterialProperty* pkMat = new (efd::MemHint(efd::MemHint::NONE)) NiMaterialProperty;
+    pkMat->SetEmittance(NiColor(1.0f, 1.0f, 1.0f));
+    NiVertexColorProperty* pkVC = new (efd::MemHint(efd::MemHint::NONE)) NiVertexColorProperty;
+    pkVC->SetSourceMode(NiVertexColorProperty::SOURCE_EMISSIVE);
+    pkVC->SetLightingMode(NiVertexColorProperty::LIGHTING_E);
+    spMesh->AttachProperty(pkVC);
+    spMesh->AttachProperty(pkMat);
+    NiZBufferProperty* pkZ = new (efd::MemHint(efd::MemHint::NONE)) NiZBufferProperty;
+    pkZ->SetZBufferTest(false);
+    pkZ->SetZBufferWrite(false);
+    spMesh->AttachProperty(pkZ);
+    NiWireframeProperty* pkWire = new (efd::MemHint(efd::MemHint::NONE)) NiWireframeProperty;
+    pkWire->SetWireframe(true);
+    spMesh->AttachProperty(pkWire);
+
+    spMesh->SetTranslate(static_cast<const efd::Point3&>(*pPos));
     spMesh->SetScale(100.0f);
     spMesh->Update(0.0f, true);
     spMesh->UpdateProperties();
@@ -90,7 +86,6 @@ void CDebugHelper::FUN_14116beb0(const NiPoint3* pPos, const NiColorA* pColor)
 }
 
 // @0x14116c580
-// MS2-FUNCTIONAL: Gamebryo debug-mesh builder; the exe's inline stream/lock temporaries are laid out differently
 void CDebugHelper::FUN_14116c580(const NiPoint3* pPos, const NiPoint3* pTarget, const void* pRot, const NiColorA* pColor)
 {
     if (m_pRoot == 0)
@@ -101,21 +96,35 @@ void CDebugHelper::FUN_14116c580(const NiPoint3* pPos, const NiPoint3* pTarget, 
         NiDataStreamElement::F_FLOAT32_3, 2, 0x12, NiDataStream::USAGE_VERTEX, false, true, 2);
     NiDataStreamElementLock kColor = spMesh->AddStreamGetLock(NiCommonSemantics::COLOR(), 0,
         NiDataStreamElement::F_FLOAT32_4, 2, 0x12, NiDataStream::USAGE_VERTEX, false, true, 2);
+    NiTStridedRandomAccessIterator<NiPoint3> kPts = kPos.begin<NiPoint3>(0);
     NiTStridedRandomAccessIterator<NiColorA> kColors = kColor.begin<NiColorA>(0);
     kColors[0] = *pColor;
     kColors[1] = *pColor;
     Vector3 kDir = ((const Vector3*)pTarget)->FUN_140965c40(*(const Vector3*)pPos);
     kDir.FUN_140968990();
-    NiTStridedRandomAccessIterator<NiPoint3> kPts = kPos.begin<NiPoint3>(0);
     kPts[0] = NiPoint3(0.0f, 0.0f, 0.0f);
-    kPts[1] = NiPoint3(kDir.x, kDir.y, kDir.z);
+    kPts[1] = reinterpret_cast<const efd::Point3&>(kDir);
     kPos.Unlock();
     kColor.Unlock();
-    AttachDebugProperties(spMesh);
-    spMesh->SetTranslate(*pPos);
-    NiMatrix3 kRot;
-    FUN_140a33240(&kRot, pRot);
-    FUN_140ddcca0(spMesh, &kRot);
+
+    // Vertex colours as emissive, a white material, no z test / write, wireframe.
+    NiMaterialProperty* pkMat = new (efd::MemHint(efd::MemHint::NONE)) NiMaterialProperty;
+    pkMat->SetEmittance(NiColor(1.0f, 1.0f, 1.0f));
+    NiVertexColorProperty* pkVC = new (efd::MemHint(efd::MemHint::NONE)) NiVertexColorProperty;
+    pkVC->SetSourceMode(NiVertexColorProperty::SOURCE_EMISSIVE);
+    pkVC->SetLightingMode(NiVertexColorProperty::LIGHTING_E);
+    spMesh->AttachProperty(pkVC);
+    spMesh->AttachProperty(pkMat);
+    NiZBufferProperty* pkZ = new (efd::MemHint(efd::MemHint::NONE)) NiZBufferProperty;
+    pkZ->SetZBufferTest(false);
+    pkZ->SetZBufferWrite(false);
+    spMesh->AttachProperty(pkZ);
+    NiWireframeProperty* pkWire = new (efd::MemHint(efd::MemHint::NONE)) NiWireframeProperty;
+    pkWire->SetWireframe(true);
+    spMesh->AttachProperty(pkWire);
+
+    spMesh->SetTranslate(static_cast<const efd::Point3&>(*pPos));
+    spMesh->SetRotate(*(const efd::Matrix3*)pRot);
     spMesh->SetScale(100.0f);
     spMesh->Update(0.0f, true);
     spMesh->UpdateProperties();

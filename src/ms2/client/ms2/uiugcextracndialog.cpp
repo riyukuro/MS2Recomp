@@ -24,7 +24,7 @@ MS2_EMIT_CRT_MEMMOVE_S();
 class Unk_UgcCameraButton : public ASDisplayObject
 {
 public:
-    void FUN_1422c1fe0(bool bEnable);                           // enable / disable
+    void FUN_1422c1fe0(int bEnable);                           // enable / disable
     void FUN_1422cdf50(const CString& strLabel);                // set the label
 };
 // The screenshot service: slot 2 says whether a screenshot can be taken, slot 54 takes it and returns 1 when it was sent.
@@ -85,17 +85,15 @@ public:
     virtual void vfunc_51();
     virtual void vfunc_52();
     virtual void vfunc_53();
-    virtual int vfunc_54(const struct Unk_UgcPos& pos, const struct Unk_UgcId& id, int nMode, CStringW strPath);   // MS2: slot 54 (+0x1b0)
+    virtual int vfunc_54(CStringW strA, CStringW strB, int nMode, CStringW strPath);   // MS2: slot 54 (+0x1b0)
 };
 Unk_UgcShot* FUN_140d86260();
-struct Unk_UgcPos { void* m_0; void* m_8; void* m_10; };
-struct Unk_UgcId { void* m_0; };
-struct Unk_UgcMode { unsigned char m_0; unsigned char m_1; unsigned char m_2; unsigned char m_3; void* m_pad; };
+struct Unk_UgcMode { unsigned char m_0; unsigned char m_1; unsigned char m_2; };   // 3 bytes, so returned in memory
 class Unk_UgcPlace
 {
 public:
-    Unk_UgcPos FUN_1410c31d0();
-    Unk_UgcId FUN_1410c3260();
+    CStringW FUN_1410c31d0();                                   // copy of the string at +0x1c8
+    CStringW FUN_1410c3260();                                   // copy of the string at +0x1d0
     Unk_UgcMode FUN_1410c34f0();
 };
 Unk_UgcPlace* FUN_1409670e0();
@@ -156,7 +154,6 @@ void UIUGCExtraCNDialog::vfunc_67()
     m_bCameraMode = false;
 }
 
-// MS2-FUNCTIONAL: call-result temporaries / frame slots differ from the exe
 // @0x140faccb0
 int UIUGCExtraCNDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs)
 {
@@ -171,8 +168,7 @@ int UIUGCExtraCNDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
         Unk_UgcShot* pShot = FUN_140d86260();
         if (pShot->vfunc_2() == 1)
         {
-            MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, GetStringCommonByKey(CStringW(L"s_msg_ugc_home_upload_screenshot")), 0, CStringW(L""));
-            if (spBox.get() != 0)
+            if (MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, GetStringCommonByKey(L"s_msg_ugc_home_upload_screenshot"), 0, L""))
             {
                 FUN_141a024a0(spBox.get(), false);
                 spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIUGCExtraCNDialog::FUN_140fad0a0));
@@ -188,14 +184,12 @@ int UIUGCExtraCNDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
     return 0;
 }
 
-// MS2-FUNCTIONAL: exe keeps extra call-result temporaries
 // @0x140facfa0
 void UIUGCExtraCNDialog::FUN_140facfa0(bool bCameraMode)
 {
     if (bCameraMode)
         FUN_140fad4f0(false);
-    MS2Ptr<Unk_UgcCameraButton> spButton = FUN_140bb4b10(CString("m_cameraMode"));
-    if (spButton.get() != 0)
+    if (MS2Ptr<Unk_UgcCameraButton> spButton = FUN_140bb4b10("m_cameraMode"))
         spButton.operator->()->FUN_1422c1fe0(bCameraMode == 0);
 }
 
@@ -205,7 +199,6 @@ void UIUGCExtraCNDialog::FUN_140fad070(bool bCameraMode)
     FUN_140facfa0(bCameraMode);
 }
 
-// MS2-FUNCTIONAL: exe keeps extra call-result temporaries (frame 0x18 larger)
 // @0x140fad0a0
 bool UIUGCExtraCNDialog::FUN_140fad0a0(int nResult, const CMsgBoxData& box)
 {
@@ -215,60 +208,56 @@ bool UIUGCExtraCNDialog::FUN_140fad0a0(int nResult, const CMsgBoxData& box)
     Unk_UgcUpdateList* pList = FUN_1413f9890();
     if (pList == 0)
         return false;
-    double dTime = pManager->GetTime(0xe001001b);
+    float fTime = (float)pManager->GetTime(0xe001001b);
     for (unsigned i = 0; i < pList->FUN_140c2b8c0(); i++)
     {
         Unk_UgcUpdatable* pItem = pList->FUN_140c2b890(i);
-        if (pItem != 0)
-            pItem->vfunc_1((float)dTime);
+        if (pItem == 0)
+            continue;
+        pItem->vfunc_1(fTime);
     }
     CStringW strPath = FUN_141850100(0, 1);
     if (nResult == 0 && !strPath.IsEmpty())
     {
-        Unk_UgcShot* pShot = FUN_140d86260();
-        if (pShot->vfunc_54(FUN_1409670e0()->FUN_1410c31d0(), FUN_1409670e0()->FUN_1410c3260(), 0xd0, CStringW(strPath)) == 1)
+        if (FUN_140d86260()->vfunc_54(FUN_1409670e0()->FUN_1410c31d0(), FUN_1409670e0()->FUN_1410c3260(), 0xd0, strPath) == 1)
             FUN_141275260(0x466, 1, 1);
     }
     return true;
 }
 
-// MS2-FUNCTIONAL: exe keeps extra call-result temporaries (CString/handle slots)
 // @0x140fad2b0
 void UIUGCExtraCNDialog::FUN_140fad2b0()
 {
-    MS2Ptr<Unk_UgcCameraButton> spButton = FUN_140bb4b10(CString("m_cameraMode"));
-    if (spButton.get() != 0)
+    if (MS2Ptr<Unk_UgcCameraButton> spButton = FUN_140bb4b10("m_cameraMode"))
     {
-        if (m_bCameraMode == 0)
-            spButton.operator->()->FUN_1422cdf50("$s_camera_free");
-        else
+        if (m_bCameraMode)
             spButton.operator->()->FUN_1422cdf50("$s_camera_default");
-        MS2Ptr<ASMovieClip> spIcon = spButton.operator->()->FUN_1409b4560("m_icon");
-        if (spIcon.get() != 0)
+        else
+            spButton.operator->()->FUN_1422cdf50("$s_camera_free");
+        if (MS2Ptr<ASMovieClip> spIcon = spButton.operator->()->FUN_1409b4560("m_icon"))
         {
-            if (m_bCameraMode == 0)
-                spIcon.operator->()->vfunc_15("free");
-            else
+            if (m_bCameraMode)
                 spIcon.operator->()->vfunc_15("default");
+            else
+                spIcon.operator->()->vfunc_15("free");
         }
     }
 }
 
-// MS2-FUNCTIONAL: exe keeps extra call-result temporaries
 // @0x140fad4f0
 void UIUGCExtraCNDialog::FUN_140fad4f0(bool bCameraMode)
 {
     m_bCameraMode = bCameraMode;
-    if (m_bCameraMode == 0)
-    {
-        Unk_UgcMode mode = FUN_1409670e0()->FUN_1410c34f0();
-        FUN_140b6a040()->FUN_140b683f0(mode.m_2);
-        FUN_1403ed2b0()->FUN_141adc5d0(0x4f3e);
-    }
-    else
+    if (m_bCameraMode)
     {
         FUN_1409478c0()->FUN_140947980(6);
         FUN_1403ed2b0()->FUN_141adc530(0x4f3e);
+    }
+    else
+    {
+        const Unk_UgcMode& mode = FUN_1409670e0()->FUN_1410c34f0();
+        FUN_140b6a040()->FUN_140b683f0(mode.m_2);
+        FUN_1403ed2b0()->FUN_141adc5d0(0x4f3e);
     }
     FUN_140fad2b0();
 }

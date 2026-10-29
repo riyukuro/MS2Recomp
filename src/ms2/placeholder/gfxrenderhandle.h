@@ -107,7 +107,7 @@ public:
     virtual Unk_BgTarget* vfunc_14();
     virtual void vfunc_15();
     virtual void vfunc_16();
-    virtual void vfunc_17(Unk_BgTarget* pTarget, int nFlags);
+    virtual void vfunc_17(Unk_BgTarget* pTarget, bool bFlag);
     void* FUN_142582270();
     void FUN_142582230(void* p);
     void Assign(Unk_BgDispHandle& kHandle);                                 // 0x14127cb10
@@ -129,7 +129,7 @@ class Unk_BgDispHandle : public Unk_BgDispBase
 public:
     Unk_BgDispHandle(const Unk_BgDispHandle& r);                            // 0x14127c130
     ~Unk_BgDispHandle();                                                    // 0x14127c530
-    int FUN_1425805a0(void* p);
+    bool FUN_1425805a0(void* p);
     void* FUN_142580250();
     void* GetObj();                                                         // 0x14127cc80
 };

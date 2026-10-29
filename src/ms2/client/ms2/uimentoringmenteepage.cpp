@@ -7,6 +7,7 @@
 #include "ms2/placeholder/header_statics_a.h"
 #include "ms2/placeholder/asdata.h"
 #include "ms2/placeholder/asobj.h"
+#include "ms2/placeholder/asuicomponent.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/placeholder/gfxexception.h"
 #include "ms2/ms2format.h"
@@ -70,10 +71,10 @@ class Unk_MentorScript : public AScript
 {
 public:
     MS2Ptr<ASMovieClip> FUN_1409b4560(const CString& strName);          // bind a movie clip child
-    MS2Ptr<ASMovieClip> FUN_140accfb0(const CString& strName);          // bind a movie clip child (list clip)
+    MS2Ptr<ASUIComponent> FUN_140accfb0(const CString& strName);          // bind a movie clip child (list clip)
 };
 void FUN_140bf2260(Scaleform::GFx::Value& v);                            // clear an AS object
-CString FUN_141028be0(unsigned __int64 nSerial, CString strPath, int n, CString strExtra);   // profile image url
+CString FUN_141028be0(unsigned __int64 nSerial, const CString& strPath, int n, CString strExtra);   // profile image url
 CString FUN_14016a600(const wchar_t* sz, int n);                         // wide to narrow
 CString FUN_140719530(unsigned __int64 n);                               // number to string
 class Unk_Localizer
@@ -204,65 +205,46 @@ int UIMentoringMenteePage::vfunc_8() { return FUN_140c70240()->FUN_140b71750(); 
 MS2_REPLACE_METHOD(0x140C6F160, UIMentoringMenteePage, vfunc_8, 27, 0x39E6850C);
 
 // @0x140c6f190
-// MS2-FUNCTIONAL: temp-spill/unwind layout of MS2Ptr<ASMovieClip> chain differs (frame 0x1a8 vs 0x208)
 void UIMentoringPage::FUN_140c6f190()
 {
     FUN_140c6f7a0("m_mentor", FUN_140c70240()->FUN_140b71680(0));
-    Unk_MentorScript* pScript = reinterpret_cast<Unk_MentorScript*>(m_script.operator->());
-    MS2Ptr<ASMovieClip> pSearchMovie = pScript->FUN_1409b4560("m_searchMovie");
-    if (pSearchMovie.get())
+    if (MS2Ptr<ASMovieClip> pSearchMovie = reinterpret_cast<Unk_MentorScript*>(m_script.operator->())->FUN_1409b4560("m_searchMovie"))
     {
-        int nHidden = FUN_140c70240()->FUN_140b71720();
-        pSearchMovie->vfunc_4(nHidden == 0);
+        pSearchMovie->vfunc_4(FUN_140c70240()->FUN_140b71720() == 0);
         FUN_140cfee80((*pSearchMovie).FUN_1422bb890(), "m_desc", GetStringCommonByKey(L"s_mentoring_tab_mentee_search_desc"));
     }
-    MS2Ptr<ASMovieClip> pSearch = pScript->FUN_1409b4560("m_search");
-    if (pSearch.get())
+    if (MS2Ptr<ASMovieClip> pSearch = reinterpret_cast<Unk_MentorScript*>(m_script.operator->())->FUN_1409b4560("m_search"))
     {
-        int nHidden = FUN_140c70240()->FUN_140b71720();
-        pSearch->vfunc_4(nHidden == 0);
+        pSearch->vfunc_4(FUN_140c70240()->FUN_140b71720() == 0);
     }
-    MS2Ptr<ASMovieClip> pNotify = pScript->FUN_1409b4560("m_notifyMovie");
-    if (pNotify.get())
+    if (MS2Ptr<ASMovieClip> pNotify = reinterpret_cast<Unk_MentorScript*>(m_script.operator->())->FUN_1409b4560("m_notifyMovie"))
     {
-        int nShown = FUN_140c70240()->FUN_140b71720();
-        pNotify->vfunc_4(nShown != 0);
+        pNotify->vfunc_4(FUN_140c70240()->FUN_140b71720() != 0);
     }
-    MS2Ptr<ASMovieClip> pMentor = pScript->FUN_140accfb0("m_mentor");
-    if (pMentor.get())
+    if (MS2Ptr<ASUIComponent> pMentor = reinterpret_cast<Unk_MentorScript*>(m_script.operator->())->FUN_140accfb0("m_mentor"))
     {
-        int nShown = FUN_140c70240()->FUN_140b71720();
-        pMentor->vfunc_4(nShown != 0);
+        pMentor->vfunc_4(FUN_140c70240()->FUN_140b71720() != 0);
     }
-    MS2Ptr<ASMovieClip> pEffect = pScript->FUN_1409b4560("m_effect");
-    if (pEffect.get())
+    if (MS2Ptr<ASMovieClip> pEffect = reinterpret_cast<Unk_MentorScript*>(m_script.operator->())->FUN_1409b4560("m_effect"))
     {
-        int nCount = FUN_140c70240()->FUN_140b71750();
-        pEffect->vfunc_4(nCount != 0);
+        pEffect->vfunc_4(FUN_140c70240()->FUN_140b71750() != 0);
     }
     if (m_script.get())
     {
-        int nCount = FUN_140c70240()->FUN_140b71750();
-        m_script->Invoke("setCount", nCount);
+        m_script->Invoke("setCount", FUN_140c70240()->FUN_140b71750());
     }
 }
 MS2_REPLACE_METHOD(0x140C6F190, UIMentoringPage, FUN_140c6f190, 1536, 0xA2D1B5E6);
 
 // @0x140c6f7a0
-// MS2-FUNCTIONAL: ASObj/CString temp layout differs from exe
 void UIMentoringPage::FUN_140c6f7a0(CString strName, MS2Ptr<Unk_MentorEntry> pEntry)
 {
-    Unk_MentorScript* pScript = reinterpret_cast<Unk_MentorScript*>(m_script.operator->());
-    MS2Ptr<ASMovieClip> pClip = pScript->FUN_140accfb0(strName);
+    MS2Ptr<ASUIComponent> pClip = reinterpret_cast<Unk_MentorScript*>(m_script.operator->())->FUN_140accfb0(strName);
     if (pClip.get())
     {
         ASObj obj(2);
         pEntry = FUN_140c70240()->FUN_140b71680(0);
-        if (pEntry.IsNull())
-        {
-            FUN_140bf2260(obj.FUN_1422bb870());
-        }
-        else
+        if (pEntry.get())
         {
             obj.FUN_1407cba60("iconPath", FUN_141028be0(pEntry->m_30, FUN_14016a600(pEntry->m_48, 0), 1, ""));
             obj.FUN_1407cbbe0("isOnline", pEntry->m_58);
@@ -270,6 +252,10 @@ void UIMentoringPage::FUN_140c6f7a0(CString strName, MS2Ptr<Unk_MentorEntry> pEn
             obj.FUN_1407cbb20("extra", FUN_14052b9d0(L"s_mentoring_user_info", pEntry->m_40, FUN_1401a9d70()->FUN_141811980(6, pEntry->m_54)));
             obj.FUN_1407cbb20("charName", pEntry->m_38);
             obj.FUN_1407cba60("charSN", FUN_140719530(pEntry->m_30));
+        }
+        else
+        {
+            FUN_140bf2260(obj.FUN_1422bb870());
         }
         pClip->Invoke("setData", obj);
     }

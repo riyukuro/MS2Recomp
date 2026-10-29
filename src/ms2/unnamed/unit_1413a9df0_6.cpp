@@ -105,43 +105,31 @@ struct Unk_GcUiMgrId { Unk_GcUIRef FUN_141adcea0(int nUIId); };
 struct Unk_GcUiMgrName { Unk_GcUIRef FUN_141adcf50(const CString& strName); };
 UIObject* FUN_1403ed9e0(Unk_GcUIRef& ref);
 
-// A parsed dialog tree node (40 bytes; the destructor is 0x140614800).
+// A GFx value for a dialog tree node (0x20 bytes; the destructor is 0x140614800).
 class Unk_GcNode
 {
 public:
     ~Unk_GcNode();
-    char m_buf[40];
+    bool FUN_1409b4d40();
+    void* m_p[4];
 };
-MS2_CHECK_SIZE(Unk_GcNode, 0x28);
-void FUN_1422baa20(void* pInner, Unk_GcNode* pOut, const char* pszName);
-char FUN_1409b4d40(Unk_GcNode* pNode);
-void FUN_140d02f80(Unk_G9Val* pOut, int nNull);
-void FUN_140d01be0(Unk_G9Val* pOut, int nIdx, Unk_GcNode* pNode);
-char FUN_140ba28d0(void* pList, void* pNull);
-void* FUN_1409ee290(void* pList);
+MS2_CHECK_SIZE(Unk_GcNode, 0x20);
 
-// MS2-FUNCTIONAL: the exe returns the value handle by value (hidden-return construction flag, EH frame) and its GFx node is
-//   a temporary with dtor 0x140614800; Unk_G9Val / Unk_GcNode are POD scratch types shared across this unit's six parts
 // @0x1413b19d0
-Unk_G9Val* FUN_1413b19d0(void* pInner, Unk_G9Val* pOut, const CString* pName)
+Unk_G9Val Unk_G9Inner::FUN_1413b19d0(const CStringA& strName)
 {
-    Unk_GcNode node;
-    FUN_1422baa20(pInner, &node, *pName);
-    if (!FUN_1409b4d40(&node))
-        FUN_140d02f80(pOut, 0);
-    else
-        FUN_140d01be0(pOut, *(int*)((char*)pInner + 0x18), &node);
-    return pOut;
+    Unk_GcNode node = FUN_1422baa20(strName);
+    if (node.FUN_1409b4d40())
+        return Unk_G9Val(m_n18, node);
+    return Unk_G9Val(0);
 }
 
 // @0x1413b1a90
-void FUN_1413b1a90(void* pDialog, Unk_G9Val* pOut, const CString* pChild)
+Unk_G9Val Unk_G9TreeDlg::FUN_1413b1a90(const CStringA& strChild)
 {
-    void* pList = (char*)pDialog + 0x30;
-    if (!FUN_140ba28d0(pList, 0))
-        FUN_1413b19d0(FUN_1409ee290(pList), pOut, pChild);
-    else
-        FUN_140d02f80(pOut, 0);
+    if (m_list.FUN_140ba28d0(0))
+        return Unk_G9Val(0);
+    return m_list.FUN_1409ee290()->FUN_1413b19d0(strChild);
 }
 
 // @0x1413b1b20
@@ -218,9 +206,7 @@ int FUN_1413b1d60(Unk_140165cf0* pElem, const char* pszName, void* pOut)
         FUN_140177de0(str, arr, &DAT_142f01338);
         if (FUN_140186260(arr) != 2)
             return 2;
-        int* pSecond = FUN_1401844d0(arr, 1);
-        int* pFirst = FUN_1401844d0(arr, 0);
-        FUN_1405c6380(pOut, *pFirst, *pSecond);
+        FUN_1405c6380(pOut, *FUN_1401844d0(arr, 0), *FUN_1401844d0(arr, 1));
     }
     return nResult;
 }

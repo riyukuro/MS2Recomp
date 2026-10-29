@@ -43,6 +43,9 @@ public:
     int FUN_141ab7660();                                    // 0x141ab7660 the view is still loading
 };
 
+// The equipment FUN_14165f460 hands out: a PCGemEquip.
+class Unk_MyPCEquip : public PCGemEquip {};
+
 // The list of worn items a PC mirrors at +0xd48 (CAtlArray of MS2Ptr<CEquipItem>).
 class Unk_PtItemList
 {
@@ -113,7 +116,6 @@ PortraitPC::~PortraitPC()
 }
 
 // @0x141699a20
-// MS2-FUNCTIONAL: the portrait factory; temporaries of the point copies differ
 PortraitPC* FUN_141699a20(PC* pSource);
 PortraitPC* FUN_141699a20(PC* pSource)
 {
@@ -123,29 +125,27 @@ PortraitPC* FUN_141699a20(PC* pSource)
     if (pPortrait != 0)
         return pPortrait;
     pPortrait = new (efd::MemHint(efd::MemHint::NONE)) PortraitPC(pSource);
-    PC* pPC = pPortrait;
-    pPC->FUN_14123c5a0(2);
-    pPC->FUN_141656a50(pSource->FUN_141656a80());
-    pPC->FUN_14123bb80(pSource->FUN_14123bbd0());
-    pPC->vfunc_19(pSource->vfunc_18());
-    Unk_PtVec3 kDir = FUN_14169a860();
-    pPC->vfunc_21(efd::Point3(kDir.x, kDir.y, kDir.z));
-    pPC->vfunc_131((short)pSource->vfunc_78());
-    pPC->vfunc_76(CStringW(L""));
-    pPC->FUN_141658e40(FUN_141658e60(pSource));
-    pPC->vfunc_59(1, 0, 0, 0);
-    pPC->FUN_14166cce0(4);
-    pPC->FUN_1416591e0(0, pSource->FUN_141659220(0));
-    pPC->FUN_1416591e0(1, pSource->FUN_141659220(1));
-    pPC->FUN_141658ed0(FUN_141658f10(pSource));
-    pPC->FUN_141662d60(FUN_141662e90(pSource));
-    if (FUN_1403ed2d0()->FUN_141bbb1e0(pPortrait, 0, 1) == 0)
-        return 0;
-    return pPortrait;
+    pPortrait->FUN_14123c5a0(2);
+    pPortrait->FUN_141656a50(pSource->FUN_141656a80());
+    pPortrait->FUN_14123bb80(pSource->FUN_14123bbd0());
+    static_cast<PC*>(pPortrait)->vfunc_19(*reinterpret_cast<const efd::Point3*>(&static_cast<const NiPoint3&>(pSource->vfunc_18())));
+    efd::Point3 kDir = *reinterpret_cast<const efd::Point3*>(&static_cast<const Unk_PtVec3&>(FUN_14169a860()));
+    static_cast<PC*>(pPortrait)->vfunc_21(kDir);
+    pPortrait->vfunc_131((short)pSource->vfunc_78());
+    pPortrait->vfunc_76(CStringW(L""));
+    pPortrait->FUN_141658e40(FUN_141658e60(pSource));
+    pPortrait->vfunc_59(1, 0, 0, 0);
+    pPortrait->FUN_14166cce0(4);
+    pPortrait->FUN_1416591e0(0, pSource->FUN_141659220(0));
+    pPortrait->FUN_1416591e0(1, pSource->FUN_141659220(1));
+    pPortrait->FUN_141658ed0(FUN_141658f10(pSource));
+    pPortrait->FUN_141662d60(FUN_141662e90(pSource));
+    if (FUN_1403ed2d0()->FUN_141bbb1e0(pPortrait, 0, 1) != 0)
+        return pPortrait;
+    return 0;
 }
 
 // @0x141699d60
-// MS2-FUNCTIONAL: item copy temporaries differ
 void PortraitPC::vfunc_149()
 {
     reinterpret_cast<Unk_PtItemList&>(m_kListD48).FUN_1408f3a80();
@@ -170,7 +170,8 @@ void PortraitPC::vfunc_149()
             }
         }
         vfunc_143();
-        reinterpret_cast<PCGemEquip*>(FUN_14165f460())->FUN_141270e00(*reinterpret_cast<PCGemEquip*>(m_pSourcePC->FUN_14165f460()));
+        Unk_MyPCEquip* pSrcEquip = m_pSourcePC->FUN_14165f460();
+        FUN_14165f460()->FUN_141270e00(*pSrcEquip);
     }
     FUN_141087390();
     m_b12f8 = false;
@@ -240,14 +241,13 @@ void PortraitPC::vfunc_143()
 }
 
 // @0x14169a4f0
-// MS2-FUNCTIONAL: the refresh condition is materialised as a bool in the exe
 void PortraitPC::vfunc_53(float f)
 {
     PC::vfunc_53(f);
     if (m_b12f8)
         vfunc_149();
     FUN_141087770();
-    if (m_b12f9 && static_cast<UIModelView*>(m_spModelView) != 0)
+    if (m_b12f9 && (static_cast<UIModelView*>(m_spModelView) ? true : false))
     {
         if (m_spModelView->FUN_141ab7660() == 0 || m_unk_1318.FUN_140268870(500) != 0)
             FUN_14169a5e0();

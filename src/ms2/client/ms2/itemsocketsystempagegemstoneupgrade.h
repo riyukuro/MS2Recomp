@@ -16,7 +16,7 @@ class ItemInfoSlot;
 class TGemStoneInEquip : public CPtred {
 public:
     TGemStoneInEquip(MS2Ptr<CItem> gem, MS2Ptr<CItem> equipment, int slot);   // 0x140f744f0
-    virtual ~TGemStoneInEquip() {}                                              // 0x140f7b4e0
+    // ~TGemStoneInEquip is implicit (0x140f7b4e0): the exe dtor stores no vftable
     bool FUN_140f74590();               // 0x140f74590 incomplete: no gemstone, no equipment or no slot
     MS2Ptr<CItem> m_gem;                // +0x18
     MS2Ptr<CItem> m_equipment;          // +0x28

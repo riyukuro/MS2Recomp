@@ -43,7 +43,7 @@ public:
     void FUN_140f5ab10(CInPacket& packet);                      // 0x140f5ab10 packet type 4: error code
     void FUN_140f5acf0(ASData& data);                           // 0x140f5acf0 onClickConfirm by state
     void FUN_140f5adb0();                                       // 0x140f5adb0 state 1: go to the lock option choice
-    void FUN_140f5ae60();                                       // 0x140f5ae60 state 2: ask for the lock option
+    void FUN_140f5ae60(ASData& data);                           // 0x140f5ae60 state 2: ask for the lock option
     void FUN_140f5b670(ASData& data);                           // 0x140f5b670 state 3: apply the selected option
     void FUN_140f5bb20();                                       // 0x140f5bb20 state 4: open the dialog again
     void FUN_140f5bb60();                                       // 0x140f5bb60 state 4: restart

@@ -163,19 +163,18 @@ bool CImageHttpClient::BeginImage()
     return false;
 }
 
-// MS2-FUNCTIONAL: EH unwind/string temporaries differ from exe
 // @0x1405118f0
 unsigned CImageHttpClient::SendWebScreenshot()
 {
     TPtrValue<CWinHttpClient> request = GetRequest();
-    if (request.get() != 0 && request->FUN_140920cf0(L"POST", false))
+    if ((request.get() ? true : false) && request->FUN_140920cf0(L"POST", false))
     {
         if (request->FUN_140922f20() != 0)
             return 0;
         std::string strKey = ParseTemporaryKey(request->GetResponseContent());
         COutPacket packet(static_cast<int>(SendOp::WebScreenshot), 0);
         packet.WriteUInt8((unsigned char)m_nMode);
-        packet.WriteString(CString(strKey.c_str()));
+        packet.WriteString(strKey.c_str());
         FUN_140710590(packet);
     }
     ClearRequest();
@@ -217,14 +216,13 @@ void CImageHttpClient::ClearRequest()
     }
 }
 
-// MS2-FUNCTIONAL: JSON writer temporaries ordering differs from exe
 // @0x140511cf0
 bool CImageHttpClient::BuildImage(CByteBuffer& data)
 {
-    std::string strImage = CaptureImage();
+    const std::string& strImage = CaptureImage();
     if (strImage.empty())
         return false;
-    std::string strType = GetImageType();
+    const std::string& strType = GetImageType();
     ImageJsonBuffer buffer(0, 0x100);
     {
         ImageJsonDocument document(0, 0x400);
@@ -290,7 +288,6 @@ std::string CImageHttpClient::CaptureImage()
     return CaptureClientAreaJpg();
 }
 
-// MS2-FUNCTIONAL: JSON parse temporaries ordering differs from exe
 // @0x1405123a0
 std::string CImageHttpClient::ParseTemporaryKey(const std::wstring& strResponse)
 {
@@ -301,10 +298,12 @@ std::string CImageHttpClient::ParseTemporaryKey(const std::wstring& strResponse)
         return std::string("");
     if (!document.HasMember("temporaryKey"))
         return std::string("");
-    if (!document["temporaryKey"].IsString())
-        return std::string("");
-    std::string strKey(document["temporaryKey"].GetString());
-    return strKey;
+    if (document["temporaryKey"].IsString())
+    {
+        std::string strKey(document["temporaryKey"].GetString());
+        return strKey;
+    }
+    return std::string("");
 }
 
 // @0x1405125f0

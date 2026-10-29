@@ -4,11 +4,8 @@
 // MS2-RANGE: 0x1422ec360-0x1422ece40 .text$mn
 //
 // The unit name and directory are assumed (the GFx UI library 0x1422b0000-0x142304000 has no __FILE__ strings). The
-// classes are declared in src/ms2/placeholder/gfxvideo.h, sfvideo.h (the Scaleform Video SDK part) and gfxclipboard.h.
+// classes are declared in src/ms2/placeholder/gfxvideo.h, sfvideo.h (include/video/video_*.h) and gfxclipboard.h.
 // The queue range ran to 0x1422ed8c0; 0x1422ece40.. is GFxImageLoader::Protocol (?\gfximageloader.cpp).
-
-// The Scaleform video declarations need GFX_ENABLE_VIDEO (GFxConfig.h): the exe is built with video support.
-#define GFX_USE_VIDEO_WIN32
 
 #include "ms2/placeholder/ms2stdafx.h"
 

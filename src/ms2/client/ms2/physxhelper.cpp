@@ -167,7 +167,6 @@ Unk_PhysXSceneHandle* CPhysXHelper::FUN_1416892a0(int nScene)
     return m_apScene[nScene];
 }
 // @0x1416892f0
-// MS2-FUNCTIONAL: call-order/spill shape differs from exe
 bool CPhysXHelper::CastRay(Unk_RayCastInfo* pInfo, const NxGroupsMask* pMask)
 {
     NxScene* pScene = FUN_14168a1c0();
@@ -176,15 +175,15 @@ bool CPhysXHelper::CastRay(Unk_RayCastInfo* pInfo, const NxGroupsMask* pMask)
     NxRay ray;
     if (FUN_1409a8f90(&pInfo->m_maxDist) == 0)
     {
-        EE_LOG_AT(0x12, 1, ("CPhysXHelper::CastRay::m_maxDist"), PHYSX_FILE, 0x32);
+        EE_LOG_AT(0x12, efd::ILogger::kERR1, ("CPhysXHelper::CastRay::m_maxDist"), PHYSX_FILE, 0x32);
         throw 13;
     }
     float fMaxDist = pInfo->m_maxDist;
     float fScale = FUN_14168a210();
-    if (FUN_14028d470(fMaxDist, 0) == 0)
-        fMaxDist = fMaxDist * (1.0f / fScale);
-    else
+    if (FUN_14028d470(fMaxDist, 0))
         fMaxDist = FLT_MAX;
+    else
+        fMaxDist = fMaxDist * (1.0f / fScale);
     efdPhysX::PhysXTypes::Point3ToNxVec3(reinterpret_cast<const efd::Point3&>(pInfo->m_origin), ray.orig);
     efdPhysX::PhysXTypes::Point3ToNxVec3(reinterpret_cast<const efd::Point3&>(pInfo->m_dir), ray.dir);
     ray.orig *= 1.0f / fScale;
@@ -204,8 +203,9 @@ bool CPhysXHelper::CastRay(Unk_RayCastInfo* pInfo, const NxGroupsMask* pMask)
     if (pHit != 0)
     {
         NxActor* pActor = &pHit->shape->getActor();
-        pInfo->m_hitEntity = FUN_141689970(pActor);
+        egf::Entity* pEntity = FUN_141689970(pActor);
         pInfo->m_hitActor = pActor;
+        pInfo->m_hitEntity = pEntity;
         pInfo->m_hitShape = pHit->shape;
         pInfo->m_hitDist = pHit->distance * fScale;
         NxVec3 vPoint = pHit->worldImpact * fScale;
@@ -213,7 +213,7 @@ bool CPhysXHelper::CastRay(Unk_RayCastInfo* pInfo, const NxGroupsMask* pMask)
         NiPhysXTypes::NxVec3ToNiPoint3(pHit->worldNormal, reinterpret_cast<NiPoint3&>(pInfo->m_hitNormal));
     }
     FUN_1409f7ca0()->FUN_14168a570();
-    return pHit != 0;
+    return pHit ? true : false;
 }
 #ifndef MS2_HOOK_DLL
 // @0x1416897d0
@@ -246,23 +246,18 @@ NxActor* CPhysXHelper::FUN_1416897d0(void* pObj)
 }
 #endif
 // @0x141689970
-// MS2-FUNCTIONAL: EH unwind shape differs from exe
 egf::Entity* CPhysXHelper::FUN_141689970(NxActor* pActor)
 {
     if (pActor == 0)
         return 0;
-    else if (pActor->userData == 0)
+    if (pActor->userData == 0)
         return 0;
-    else
-    {
-        Unk_PhysPropObj* pObj = static_cast<Unk_PhysPropObj*>(pActor->userData);
-        if (pObj == 0)
-            return 0;
-        return pObj->FUN_14163b4e0().data();
-    }
+    Unk_PhysPropObj* pObj = static_cast<Unk_PhysPropObj*>(pActor->userData);
+    if (pObj == 0)
+        return 0;
+    return pObj->FUN_14163b4e0();
 }
 // @0x141689a10
-// MS2-FUNCTIONAL: EH unwind shape differs from exe
 bool CPhysXHelper::FUN_141689a10(egf::Entity* pEntity)
 {
     if (pEntity == 0)
@@ -271,48 +266,44 @@ bool CPhysXHelper::FUN_141689a10(egf::Entity* pEntity)
     FUN_1408a20a0(pEntity, 0x38141815, &bCube);
     if (bCube)
         return true;
-    ecrPhysX::PropService* pProps = FUN_14120a240(FUN_140af8310(FUN_14086d260()->m_manager));
-    if (pProps == 0)
-        return false;
-    return pProps->GetNumProps(pEntity->GetEntityID()) != 0;
+    efd::ServiceManager* pServices = FUN_140af8310(FUN_14086d260()->m_manager);
+    ecrPhysX::PropService* pProps = FUN_14120a240(pServices);
+    if (pProps != 0)
+        return pProps->GetNumProps(pEntity->GetEntityID()) > 0 ? true : false;
+    return false;
 }
 // @0x141689ac0
-// MS2-FUNCTIONAL: temporary lifetime shape differs from exe
 void CPhysXHelper::FUN_141689ac0(Unk_PhysPropPtr pProp)
 {
-    ecrPhysX::PropService* pProps = FUN_14120a240(FUN_140af8310(FUN_14086d260()->m_manager));
+    efd::ServiceManager* pServices = FUN_140af8310(FUN_14086d260()->m_manager);
+    ecrPhysX::PropService* pProps = FUN_14120a240(pServices);
     if (pProps != 0)
     {
         unsigned uiProps = pProps->GetNumProps(pProp.FUN_14168afe0()->FUN_14163b4e0()->GetEntityID());
         for (unsigned i = 0; i < uiProps; i++)
         {
             NiPhysXProp* pPhysXProp = pProps->GetPropAt(pProp.FUN_14168afe0()->FUN_14163b4e0()->GetEntityID(), i);
-            if (pPhysXProp != 0)
+            if (pPhysXProp == 0)
+                continue;
+            NiPhysXPropDesc* pSnapshot = pPhysXProp->GetSnapshot();
+            if (pSnapshot == 0)
+                continue;
+            unsigned uiActors = pSnapshot->GetActorCount();
+            if (uiActors == 0)
+                continue;
+            for (unsigned a = 0; a < uiActors; a++)
             {
-                NiPhysXPropDesc* pSnapshot = pPhysXProp->GetSnapshot();
-                if (pSnapshot != 0)
-                {
-                    unsigned uiActors = pSnapshot->GetActorCount();
-                    if (uiActors != 0)
-                    {
-                        for (unsigned a = 0; a < uiActors; a++)
-                        {
-                            NiPhysXActorDesc* pDesc = pSnapshot->GetActorAt(a);
-                            if (pDesc != 0)
-                            {
-                                NxActor* pActor = pDesc->GetActor();
-                                if (pActor != 0)
-                                    pActor->userData = pProp.FUN_140ae1920();
-                            }
-                        }
-                    }
-                }
+                NiPhysXActorDesc* pDesc = pSnapshot->GetActorAt(a);
+                if (pDesc == 0)
+                    continue;
+                NxActor* pActor = pDesc->GetActor();
+                if (pActor != 0)
+                    pActor->userData = pProp.FUN_140ae1920();
             }
         }
     }
 }
 // @0x141689d00
-// MS2-FUNCTIONAL: codegen shape differs from exe
 void CPhysXHelper::FUN_141689d00(NxActor* pActor, unsigned short nGroup, const NxGroupsMask* pMask)
 {
     if (pActor != 0)
@@ -330,71 +321,77 @@ void CPhysXHelper::FUN_141689d00(NxActor* pActor, unsigned short nGroup, const N
                 if (pMask == 0)
                     kMask.bits0 = 0xffffffff;
                 else
-                    kMask = *pMask;
+                {
+                    kMask.bits0 = pMask->bits0;
+                    kMask.bits1 = pMask->bits1;
+                    kMask.bits2 = pMask->bits2;
+                    kMask.bits3 = pMask->bits3;
+                }
             }
             else if (nGroup == 1)
             {
                 if (pMask == 0)
                     kMask.bits0 = 4;
                 else
-                    kMask = *pMask;
+                {
+                    kMask.bits0 = pMask->bits0;
+                    kMask.bits1 = pMask->bits1;
+                    kMask.bits2 = pMask->bits2;
+                    kMask.bits3 = pMask->bits3;
+                }
             }
             pShape->setGroupsMask(kMask);
         }
     }
 }
 // @0x141689ec0
-// MS2-FUNCTIONAL: codegen shape differs from exe
 void CPhysXHelper::FUN_141689ec0(egf::Entity* pEntity, unsigned short nGroup, const NxGroupsMask* pMask, int bRefresh)
 {
     if (pEntity == 0)
         return;
     bool bCube = false;
     FUN_1408a20a0(pEntity, 0x38141815, &bCube);
-    if (!bCube)
+    if (bCube)
     {
-        ecrPhysX::PropService* pProps = FUN_14120a240(FUN_140af8310(FUN_14086d260()->m_manager));
+        efd::SmartPointer<efd::ISystemService> spService(FUN_1401cd040(&DAT_143b059e8));
+        NxActor* pActor = FUN_1410c5420(spService.operator->(), pEntity->GetEntityID());
+        if (pActor != 0)
+        {
+            FUN_14168a540(0);
+            FUN_141689d00(pActor, nGroup, pMask);
+            FUN_14168a570();
+        }
+    }
+    else
+    {
+        efd::ServiceManager* pServices = FUN_140af8310(FUN_14086d260()->m_manager);
+        ecrPhysX::PropService* pProps = FUN_14120a240(pServices);
         if (pProps != 0)
         {
             unsigned uiProps = pProps->GetNumProps(pEntity->GetEntityID());
             for (unsigned i = 0; i < uiProps; i++)
             {
                 NiPhysXProp* pPhysXProp = pProps->GetPropAt(pEntity->GetEntityID(), i);
-                if (pPhysXProp != 0)
+                if (pPhysXProp == 0)
+                    continue;
+                NiPhysXPropDesc* pSnapshot = pPhysXProp->GetSnapshot();
+                if (pSnapshot == 0)
+                    continue;
+                unsigned uiActors = pSnapshot->GetActorCount();
+                if (uiActors == 0)
+                    continue;
+                FUN_14168a540(0);
+                for (unsigned a = 0; a < uiActors; a++)
                 {
-                    NiPhysXPropDesc* pSnapshot = pPhysXProp->GetSnapshot();
-                    if (pSnapshot != 0)
-                    {
-                        unsigned uiActors = pSnapshot->GetActorCount();
-                        if (uiActors != 0)
-                        {
-                            FUN_14168a540(0);
-                            for (unsigned a = 0; a < uiActors; a++)
-                            {
-                                NiPhysXActorDesc* pDesc = pSnapshot->GetActorAt(a);
-                                if (pDesc != 0)
-                                {
-                                    NxActor* pActor = pDesc->GetActor();
-                                    if (pActor != 0)
-                                        FUN_141689d00(pActor, nGroup, pMask);
-                                }
-                            }
-                            FUN_14168a570();
-                        }
-                    }
+                    NiPhysXActorDesc* pDesc = pSnapshot->GetActorAt(a);
+                    if (pDesc == 0)
+                        continue;
+                    NxActor* pActor = pDesc->GetActor();
+                    if (pActor != 0)
+                        FUN_141689d00(pActor, nGroup, pMask);
                 }
+                FUN_14168a570();
             }
-        }
-    }
-    else
-    {
-        efd::SmartPointer<efd::ISystemService> spService(FUN_1401cd040(&DAT_143b059e8));
-        NxActor* pActor = FUN_1410c5420(spService, pEntity->GetEntityID());
-        if (pActor != 0)
-        {
-            FUN_14168a540(0);
-            FUN_141689d00(pActor, nGroup, pMask);
-            FUN_14168a570();
         }
     }
     if (bRefresh != 0)
@@ -413,8 +410,7 @@ float CPhysXHelper::FUN_14168a210()
     return 100.0f;
 }
 // @0x14168a230
-// MS2-FUNCTIONAL: minor codegen shape differs from exe
-bool CPhysXHelper::FUN_14168a230(Vector3 ptFrom, Vector3& ptHit, Vector3 ptDir, float fLen, int nMask)
+int CPhysXHelper::FUN_14168a230(Vector3 ptFrom, Vector3& ptHit, Vector3 ptDir, float fLen, int nMask)
 {
     int nDefaultGroups = 0x389;
     Unk_RayCastInfo kInfo;
@@ -424,10 +420,12 @@ bool CPhysXHelper::FUN_14168a230(Vector3 ptFrom, Vector3& ptHit, Vector3 ptDir, 
     kInfo.m_groups = nMask != 0 ? nMask : nDefaultGroups;
     kInfo.m_20 = 0;
     kInfo.m_28 = 0;
-    bool bHit = FUN_1409f7ca0()->CastRay(&kInfo, 0);
-    if (bHit)
+    if (FUN_1409f7ca0()->CastRay(&kInfo, 0))
+    {
         ptHit = kInfo.m_hitPoint;
-    return bHit;
+        return 1;
+    }
+    return 0;
 }
 // @0x14168a310
 int CPhysXHelper::FUN_14168a310(const Vector3& ptFrom, Vector3& ptHit, Unk_RayCastInfo* pInfo, float fLen,
@@ -508,41 +506,49 @@ void* CPhysXHelper::FUN_14168a750()
     return m_pControllerMgr;
 }
 // @0x14168a770
-// MS2-FUNCTIONAL: codegen shape differs from exe
 bool CPhysXHelper::FUN_14168a770(const Vector3* pPoint)
 {
-    if (FUN_14168a1c0() == 0)
+    if (FUN_14168a1c0() != 0)
+    {
+        float fFootOffset = 52.5f;
+        float fHeight = 55.0f;
+        if (fHeight <= 0.0f)
+            fHeight = 10.0f;
+        fHeight = FUN_14028d3a0(fHeight);
+        float fRadius = FUN_14028d3a0(25.0f);
+        FUN_1409f7ca0()->FUN_14168a540(0);
+        NxVec3 vCenter;
+        vCenter.x = FUN_14028d3a0(pPoint->x);
+        vCenter.y = FUN_14028d3a0(pPoint->y);
+        vCenter.z = FUN_14028d3a0(pPoint->z + fFootOffset);
+        NxCapsule kCapsule;
+        kCapsule.p1.x = vCenter.x;
+        kCapsule.p0.x = vCenter.x;
+        kCapsule.p1.y = vCenter.y;
+        kCapsule.p0.y = vCenter.y;
+        kCapsule.p1.z = vCenter.z;
+        kCapsule.p0.z = vCenter.z;
+        kCapsule.p0.z = kCapsule.p0.z - fHeight * 0.5f;
+        kCapsule.p1.z = kCapsule.p1.z + fHeight * 0.5f;
+        kCapsule.radius = fRadius;
+        bool bOverlap = FUN_14168a1c0()->checkOverlapCapsule(kCapsule, NX_ALL_SHAPES, 0x289, 0);
+        FUN_1409f7ca0()->FUN_14168a570();
+        return bOverlap;
+    }
+    else
     {
         MS2_ASSERT_AT(499, 0);
-        return false;
     }
-    float fFootOffset = 52.5f;
-    float fHeight = FUN_14028d3a0(55.0f);
-    float fRadius = FUN_14028d3a0(25.0f);
-    FUN_1409f7ca0()->FUN_14168a540(0);
-    NxVec3 vCenter;
-    vCenter.x = FUN_14028d3a0(pPoint->x);
-    vCenter.y = FUN_14028d3a0(pPoint->y);
-    vCenter.z = FUN_14028d3a0(pPoint->z + fFootOffset);
-    NxCapsule kCapsule;
-    kCapsule.p0.x = vCenter.x;
-    kCapsule.p1.x = vCenter.x;
-    kCapsule.p0.y = vCenter.y;
-    kCapsule.p1.y = vCenter.y;
-    kCapsule.p0.z = vCenter.z - fHeight * 0.5f;
-    kCapsule.p1.z = vCenter.z + fHeight * 0.5f;
-    kCapsule.radius = fRadius;
-    bool bOverlap = FUN_14168a1c0()->checkOverlapCapsule(kCapsule, NX_ALL_SHAPES, 0x289, 0);
-    FUN_1409f7ca0()->FUN_14168a570();
-    return bOverlap;
+    return false;
 }
 // @0x14168a9b0
-// MS2-FUNCTIONAL: codegen shape differs from exe
 int CPhysXHelper::FUN_14168a9b0(void* pEntity, const Vector3& ptFrom)
 {
     Unk_RayCastInfo kInfo;
     Vector3 ptHit = g_143b01a60;
-    return FUN_1409f7ca0()->FUN_14168a310(ptFrom, ptHit, &kInfo, 0, 0, 0) != 0 && kInfo.m_hitEntity == pEntity;
+    if (FUN_1409f7ca0()->FUN_14168a310(ptFrom, ptHit, &kInfo, 0, 0, 0))
+        return kInfo.m_hitEntity == pEntity;
+    return 0;
 }
 // @0x14168aa60
 Unk_PhysXApp* FUN_14168aa60(efd::ISystemService* pService)
@@ -595,7 +601,6 @@ const NxRaycastHit* ClosestHitReport::FUN_14168b0f0() const
     return &m_hit;
 }
 // @0x14168b120
-// MS2-FUNCTIONAL: SmartPointer temporary shape differs from exe
 bool ClosestHitReport::FUN_14168b120(NxActor* pA, NxActor* pB)
 {
     if (pA == 0 || pB == 0)
@@ -604,9 +609,9 @@ bool ClosestHitReport::FUN_14168b120(NxActor* pA, NxActor* pB)
         return true;
     if (pA->userData != 0 && pB->userData != 0)
     {
-        efd::SmartPointer<egf::Entity> spB = static_cast<Unk_PhysPropObj*>(pB->userData)->FUN_14163b4e0();
-        efd::SmartPointer<egf::Entity> spA = static_cast<Unk_PhysPropObj*>(pA->userData)->FUN_14163b4e0();
-        if (spA == spB)
+        Unk_PhysPropObj* pObjA = static_cast<Unk_PhysPropObj*>(pA->userData);
+        Unk_PhysPropObj* pObjB = static_cast<Unk_PhysPropObj*>(pB->userData);
+        if (pObjA->FUN_14163b4e0() == pObjB->FUN_14163b4e0())
             return true;
     }
     return false;
@@ -616,15 +621,20 @@ void Unk_PhysXLockOwner::FUN_14168b240() { FUN_140d86210(m_lock); }
 // @0x14168b270
 void Unk_PhysXLockOwner::FUN_14168b270() { FUN_140d852c0(m_lock); }
 // @0x14168b3a0
-// MS2-FUNCTIONAL: codegen shape differs from exe
 bool ClosestHitReport::onHit(const NxRaycastHit& kHit)
 {
-    if (kHit.shape != 0 && (m_hit.distance < 0.0f || kHit.distance < m_hit.distance))
-    {
-        NxActor* pActor = &kHit.shape->getActor();
-        if (pActor != 0 && !FUN_14168b120(pActor, m_pIgnoreA) && !FUN_14168b120(pActor, m_pIgnoreB))
-            m_hit = kHit;
-    }
+    if (kHit.shape == 0)
+        return true;
+    if (!(m_hit.distance < 0.0f || kHit.distance < m_hit.distance))
+        return true;
+    NxActor* pActor = &kHit.shape->getActor();
+    if (pActor == 0)
+        return true;
+    if (FUN_14168b120(pActor, m_pIgnoreA))
+        return true;
+    if (FUN_14168b120(pActor, m_pIgnoreB))
+        return true;
+    m_hit = kHit;
     return true;
 }
 MS2_REPLACE_METHOD(0x1416892A0, CPhysXHelper, FUN_1416892a0, 61, 0x19AF2D89);

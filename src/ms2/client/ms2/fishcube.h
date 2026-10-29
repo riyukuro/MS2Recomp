@@ -12,7 +12,7 @@ class CFishCube : public CPtred
 {
 public:
     CFishCube();                                        // 0x1403b08b0
-    virtual ~CFishCube();                               // 0x1403b0cb0
+    // ~CFishCube() is implicit (0x1403b0cb0): the exe dtor stores no vftable pointer
 
     void FUN_1403b0910(COutputStream* pStream);         // writes m_id, the constant 10000001, 25, m_b, 1 (short)
     void FUN_1403b09a0(COutputStream* pStream);         // writes m_id, m_a, m_b, m_c, m_d (short)

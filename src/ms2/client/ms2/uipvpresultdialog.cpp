@@ -151,23 +151,21 @@ void UIPvPResultDialog::OnLoadComplete()
     FUN_141344780(m_180);
 }
 
-// MS2-FUNCTIONAL: the exe override returns the callee's bool (movzx) from a void slot
 // @0x141343bb0
 void UIPvPResultDialog::vfunc_79(void* pData)
 {
     UIDialog::vfunc_79(pData);
-    if (vfunc_55() == 0)
-        FUN_140a467d0(&m_30);
+    vfunc_55() || FUN_140a467d0(&m_30);
 }
 
-// MS2-FUNCTIONAL: behaviour-equivalent (frame / temporaries differ)
 // @0x141343c10
 void UIPvPResultDialog::FUN_141343c10(int nFrom, int nTo)
 {
     if (FUN_140a467d0(&m_30))
         return;
+    int nFirst = *FUN_1402fbd20(&nFrom, &nTo);
     int nLast = *FUN_1404eb7e0(&nFrom, &nTo);
-    for (int nRank = *FUN_1402fbd20(&nFrom, &nTo); nRank <= nLast; nRank++)
+    for (int nRank = nFirst; nRank <= nLast; nRank++)
     {
         Unk_PrEntry* pEntry = (Unk_PrEntry*)FUN_140f97ef0()->FUN_141343810(nRank);
         if (pEntry == 0)
@@ -197,20 +195,18 @@ void UIPvPResultDialog::FUN_141343da0(int nRank)
     static_cast<Unk_PrScript*>(m_30.operator->())->FUN_14129cce0("showLastResult", m_180, strText);
 }
 
-// MS2-FUNCTIONAL: behaviour-equivalent (the exe keeps two flag locals)
 // @0x1413440a0
 void UIPvPResultDialog::FUN_1413440a0()
 {
     Unk_PrActor* pPC = (Unk_PrActor*)FUN_1403ed2d0()->FUN_141bd0cc0();
-    if (pPC == 0)
-        return;
-    if (pPC->FUN_140967420().FUN_140965810() == 0)
-        return;
-    m_178 = pPC->FUN_140967420().FUN_140965970()->m_nMode;
-    m_17c = pPC->FUN_140967420().FUN_140965970()->FUN_140743940();
+    bool bInPvP = pPC && (pPC->FUN_140967420().FUN_140965810() ? true : false);
+    if (bInPvP)
+    {
+        m_178 = pPC->FUN_140967420().FUN_140965970()->m_nMode;
+        m_17c = pPC->FUN_140967420().FUN_140965970()->FUN_140743940();
+    }
 }
 
-// MS2-FUNCTIONAL: behaviour-equivalent (frame / temporaries differ)
 // @0x141344210
 bool UIPvPResultDialog::FUN_141344210(ASObj* pObj, int nRank, Unk_PrEntry* pEntry)
 {
@@ -225,47 +221,52 @@ bool UIPvPResultDialog::FUN_141344210(ASObj* pObj, int nRank, Unk_PrEntry* pEntr
     if (spItem.FUN_140203c60() != 0)
         strIcon = spItem.FUN_1401b52a0()->FUN_14053fdd0();
     pObj->FUN_1407cb9c0("rank", nRank);
-    CStringW strRank(L"-");
-    if (pEntry->FUN_141343860() && pEntry->m_bOnline)
-        strRank = FUN_1401ceea0(L"{0}", nRank);
-    pObj->FUN_1407cbb20("charName", pEntry->m_strName);
-    pObj->FUN_1407cbb20("rankText", strRank);
-    pObj->FUN_1407cb9c0("score", pEntry->m_nScore);
-    pObj->FUN_1407cb9c0("kill", pEntry->m_nKill);
-    pObj->FUN_1407cb9c0("death", pEntry->m_nDeath);
-    pObj->FUN_1409c1180("damage", pEntry->m_nDamage);
-    pObj->FUN_1407cbbe0("isOffline", pEntry->m_bOnline == 0);
-    pObj->FUN_1407cbbe0("isMe", FUN_141656a80(pPC) == pEntry->m_nCharId);
-    if (pOther == 0)
-        pObj->FUN_1407cb9c0("job", 0);
-    else
-        pObj->FUN_140bd0d90("job", FUN_141654730(pOther));
-    int nCount = 0;
-    if (pEntry->m_bOnline == 0)
     {
-        nCount = 0;
-    }
-    else if (!pEntry->FUN_141343860())
-    {
-        if (m_178 == 2)
-            nCount = *Client::Constants::GetInstance()->PvpFFARewardCount[9].Get();
-        else if (m_178 == 5)
-            nCount = *Client::Constants::GetInstance()->PvpOnePunchRewardCount[9].Get();
-    }
-    else if (0 < nRank && nRank < 11)
-    {
-        if (m_178 == 2)
+        CStringW strRank(L"-");
+        if (pEntry->FUN_141343860() && pEntry->m_bOnline)
+            strRank = FUN_1401ceea0(L"{0}", nRank);
+        pObj->FUN_1407cbb20("charName", pEntry->m_strName);
+        pObj->FUN_1407cbb20("rankText", strRank);
+        pObj->FUN_1407cb9c0("score", pEntry->m_nScore);
+        pObj->FUN_1407cb9c0("kill", pEntry->m_nKill);
+        pObj->FUN_1407cb9c0("death", pEntry->m_nDeath);
+        pObj->FUN_1409c1180("damage", pEntry->m_nDamage);
+        pObj->FUN_1407cbbe0("isOffline", pEntry->m_bOnline == 0);
+        pObj->FUN_1407cbbe0("isMe", FUN_141656a80(pPC) == pEntry->m_nCharId);
+        if (pOther)
+            pObj->FUN_140bd0d90("job", FUN_141654730(pOther));
+        else
+            pObj->FUN_1407cb9c0("job", 0);
+        int nCount = 0;
+        if (pEntry->m_bOnline == 0)
         {
-            nCount = *Client::Constants::GetInstance()->PvpFFARewardCount[nRank - 1].Get();
-            nCount = nCount + *Client::Constants::GetInstance()->PvpFFAAdditionRewardRate.Get() * pEntry->m_nKill;
+            nCount = 0;
         }
-        else if (m_178 == 5)
+        else if (pEntry->FUN_141343860())
         {
-            nCount = *Client::Constants::GetInstance()->PvpOnePunchRewardCount[nRank - 1].Get();
+            if (0 < nRank && nRank < 11)
+            {
+                if (m_178 == 2)
+                {
+                    nCount = *Client::Constants::GetInstance()->PvpFFARewardCount[nRank - 1].Get();
+                    nCount = nCount + *Client::Constants::GetInstance()->PvpFFAAdditionRewardRate.Get() * pEntry->m_nKill;
+                }
+                else if (m_178 == 5)
+                {
+                    nCount = *Client::Constants::GetInstance()->PvpOnePunchRewardCount[nRank - 1].Get();
+                }
+            }
         }
+        else
+        {
+            if (m_178 == 2)
+                nCount = *Client::Constants::GetInstance()->PvpFFARewardCount[9].Get();
+            else if (m_178 == 5)
+                nCount = *Client::Constants::GetInstance()->PvpOnePunchRewardCount[9].Get();
+        }
+        pObj->FUN_1407cba60("rewardIcon", strIcon);
+        pObj->FUN_1407cb9c0("rewardCount", nCount);
     }
-    pObj->FUN_1407cba60("rewardIcon", strIcon);
-    pObj->FUN_1407cb9c0("rewardCount", nCount);
     return true;
 }
 

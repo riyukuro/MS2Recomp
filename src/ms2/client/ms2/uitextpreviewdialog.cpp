@@ -46,21 +46,13 @@ public:
 };
 Unk_TpFilter* FUN_1403b4750();
 
-// A vector of unsigned ids (24 bytes; ctor 0x140182ed0, dtor 0x140183b90).
-struct Unk_TpIds { void* m_begin; void* m_end; void* m_cap; };
-void FUN_140182ed0(Unk_TpIds* p);
-void FUN_140183b90(Unk_TpIds* p);
-size_t FUN_140191110(Unk_TpIds* p);                             // size
-unsigned int* FUN_140297cb0(Unk_TpIds* p, size_t n);            // operator[]
 void* FUN_140281980();                                          // the table singleton
-void FUN_1405594b0(void* pTable, Unk_TpIds* pOut);              // collect the ids
+void FUN_1405594b0(void* pTable, std::vector<unsigned int>* pOut);   // collect the ids
 
 CStringTable* GetStringTable();
 void* FUN_1422bb8b0(int nMovieId);                              // the movie of a UI layer
 // A GFx::Value that the string-value builder constructs itself (no ctor call); the dtor is Value's (0x140614800).
-struct Unk_TpValue { ~Unk_TpValue(); long long m_a, m_b, m_c, m_d; };
-void FUN_142575b00(void* pMovie, const Unk_TpValue& v);   // hand a value to the movie
-Unk_TpValue* FUN_1412dd680(Unk_TpValue* pOut, const wchar_t* sz);   // string value
+void FUN_142575b00(void* pMovie, const Scaleform::GFx::Value& v);   // hand a value to the movie
 void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);
 void FUN_1422bcd10(Scaleform::GFx::Value* pValue, unsigned int n);
 void FUN_1422bcea0(Scaleform::GFx::Value* pValue, const wchar_t* psz);
@@ -144,7 +136,6 @@ void UITextPreviewDialog::vfunc_67()
     UIDialog::vfunc_67();
 }
 
-// MS2-FUNCTIONAL: the exe spills the string Value's address through an extra stack temp (+9 bytes); not reproducible
 // @0x1413511b0
 int UITextPreviewDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs)
 {
@@ -157,9 +148,7 @@ int UITextPreviewDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
             FUN_1403b4750()->FUN_1416fb3c0(strText);
             FUN_1403b4750()->FUN_1416fb380(strText);
             FUN_1403b4750()->FUN_1416fb340(strText);
-            Unk_TpValue v;
-            const Unk_TpValue& rv = *FUN_1412dd680(&v, (const wchar_t*)strText);
-            FUN_142575b00(FUN_1422bb8b0(m_28), rv);
+            FUN_142575b00(FUN_1422bb8b0(m_28), Scaleform::GFx::Value((const wchar_t*)strText));
         }
     }
     else if (_stricmp("OnDescriptionCheck", szMethod) == 0) {
@@ -168,24 +157,21 @@ int UITextPreviewDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
     return 0;
 }
 
-// MS2-FUNCTIONAL: the exe has an extra EH state/nop around the id vector setup (6 states vs 5)
 // @0x141351340
 void UITextPreviewDialog::OnDescriptionCheck()
 {
     ASDialog* pDlg = dynamic_cast<ASDialog*>((AScript*)m_30);
     if (pDlg != 0) {
-        Unk_TpIds ids;
-        FUN_140182ed0(&ids);
+        std::vector<unsigned int> ids;
         FUN_1405594b0(FUN_140281980(), &ids);
-        for (size_t i = 0; i < FUN_140191110(&ids); i++) {
-            unsigned int nId = *FUN_140297cb0(&ids, i);
+        for (size_t i = 0; i < ids.size(); i++) {
+            unsigned int nId = ids[i];
             CStringW strMain = GetStringTable()->GetItemDescription(nId, CString("mainDescription"));
             CStringW strTooltip = GetStringTable()->GetItemDescription(nId, CString("tooltipDescription"));
             if (strMain.IsEmpty() && strTooltip.IsEmpty())
                 continue;
             pDlg->Invoke("descriptionCheck", 0, nId, strMain, strTooltip);
         }
-        FUN_140183b90(&ids);
     }
 }
 
@@ -202,11 +188,7 @@ Scaleform::GFx::Value AScript::Invoke(const char* szMethod, int a1, unsigned int
     return FUN_1422bb8f0(szMethod, args);
 }
 
-// MS2-FUNCTIONAL: the exe has no vtable stores and an out-of-line MS2Ptr<Input> dtor (other obj)
-// @0x141351740
-UITextPreviewDialog::~UITextPreviewDialog()
-{
-}
+// @0x141351740 ~UITextPreviewDialog: implicit (no vftable stores in the exe)
 
 // @0x141351890
 int UITextPreviewDialog::vfunc_48()

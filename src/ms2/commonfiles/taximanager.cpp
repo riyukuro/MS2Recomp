@@ -132,21 +132,19 @@ static Unk_TaxiKey FUN_14085fcb0(unsigned int nA, unsigned int nB)
 MS2_REPLACE(0x14085fcb0, FUN_14085fcb0, 85, 0xD0072D33);
 
 // @0x14085f780
-// MS2-FUNCTIONAL: BFS over the field links; same behaviour, but the Unk_TaxiNodePtr temporaries and frame layout (0x1b8 vs 0x188) are not reproduced
 long long CTaxiManager::FUN_14085f780(int nFrom, int nTo, short sOption)
 {
     if (nFrom == nTo)
         return 0;
     Unk_TaxiKey kKey = FUN_14085fcb0(nFrom, nTo);
-    std::map<Unk_TaxiKey, int>::iterator itCached = m_mapRouteLength.find(kKey);
+    std::map<Unk_TaxiKey, int>::const_iterator itCached = m_mapRouteLength.find(kKey);
     if (itCached != m_mapRouteLength.end())
         return FUN_1401c0db0()->FUN_1406764e0(itCached->second, sOption);
 
     int nBest = -1;
     std::queue<Unk_TaxiNodePtr> aOpen;
     std::map<unsigned int, Unk_TaxiNodePtr> mapSeen;
-    _CTaxiPathInfo* pStart = new _CTaxiPathInfo(nFrom, 0);
-    aOpen.push(Unk_TaxiNodePtr(pStart));
+    aOpen.push(new _CTaxiPathInfo(nFrom, 0));
     while (aOpen.size() > 0)
     {
         Unk_TaxiNodePtr spCur = aOpen.front();
@@ -161,25 +159,24 @@ long long CTaxiManager::FUN_14085f780(int nFrom, int nTo, short sOption)
         while (pos != 0)
         {
             unsigned int nNext = spLinks->GetNext(pos);
-            if (nNext != 0 && spCur->m_nStation != nNext)
+            if (nNext == 0 || spCur->m_nStation == nNext)
+                continue;
+            if (nNext == nTo && (nBest > nHops || nBest == -1))
             {
-                if (nNext == nTo && (nHops < nBest || nBest == -1))
-                    nBest = nHops;
-                else
-                {
-                    std::map<unsigned int, Unk_TaxiNodePtr>::iterator itSeen = mapSeen.find(nNext);
-                    if (itSeen == mapSeen.end())
-                    {
-                        _CTaxiPathInfo* pNew = new _CTaxiPathInfo(nNext, nHops);
-                        aOpen.push(Unk_TaxiNodePtr(pNew));
-                        mapSeen.insert(std::make_pair(nNext, pNew));
-                    }
-                    else if (nHops < itSeen->second->m_nHops)
-                    {
-                        itSeen->second->m_nHops = nHops;
-                        aOpen.push(itSeen->second);
-                    }
-                }
+                nBest = nHops;
+                continue;
+            }
+            std::map<unsigned int, Unk_TaxiNodePtr>::iterator itSeen = mapSeen.find(nNext);
+            if (itSeen == mapSeen.end())
+            {
+                _CTaxiPathInfo* pNew = new _CTaxiPathInfo(nNext, nHops);
+                aOpen.push(pNew);
+                mapSeen.insert(std::make_pair(nNext, pNew));
+            }
+            else if (itSeen->second->m_nHops > nHops)
+            {
+                itSeen->second->m_nHops = nHops;
+                aOpen.push(itSeen->second);
             }
         }
     }

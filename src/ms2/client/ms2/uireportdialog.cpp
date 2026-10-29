@@ -92,37 +92,35 @@ MS2_REPLACE_METHOD(0x141AB8B40, UIReportDialog, GetTypeName, 61, 0x659308F6);
 
 // Tells the swf which kind of target is reported ("OnSelectCharacter", ...) and the names to show.
 // @0x141ab8b90
-// MS2-FUNCTIONAL: temp/string copy order differs from the exe (693 vs 696 bytes)
 void UIReportDialog::OnLoadInit()
 {
     UIObject::OnLoadInit();
-    if (FUN_140ba28d0(&m_30, 0) == 0)
+    if (FUN_140ba28d0(&m_30, 0) != 0)
+        return;
+    CStringW strMode;
+    CStringW strExtra;
+    if (m_nKind == 1)
+        strMode = L"OnSelectCharacter";
+    else if (m_nKind == 2)
+        strMode = L"OnSelectChatting";
+    else if (m_nKind == 3)
+        strMode = L"OnSelectWallPoster";
+    else if (m_nKind == 4)
     {
-        CStringW strMode;
-        CStringW strExtra;
-        if (m_nKind == 1)
-            strMode = L"OnSelectCharacter";
-        else if (m_nKind == 2)
-            strMode = L"OnSelectChatting";
-        else if (m_nKind == 3)
-            strMode = L"OnSelectWallPoster";
-        else if (m_nKind == 4)
-        {
-            strMode = L"OnSelectDesignItem";
-            strExtra = m_strItem;
-        }
-        else if (m_nKind == 5)
-            strMode = L"OnSelectRealStatePage";
-        else
-        {
-            if (m_nKind != 6)
-                return;
-            strMode = L"OnSelectPet";
-            strExtra = m_strPet;
-        }
-        m_30->FUN_1412e80d0("SetMode", strMode, m_strTarget, strExtra);
-        m_178 = GetServerTime();
+        strMode = L"OnSelectDesignItem";
+        strExtra = m_strItem;
     }
+    else if (m_nKind == 5)
+        strMode = L"OnSelectRealStatePage";
+    else if (m_nKind == 6)
+    {
+        strMode = L"OnSelectPet";
+        strExtra = m_strPet;
+    }
+    else
+        return;
+    m_30->FUN_1412e80d0("SetMode", strMode, m_strTarget, strExtra);
+    m_178 = GetServerTime();
 }
 
 // @0x141ab8e50
@@ -150,27 +148,31 @@ MS2_REPLACE_METHOD(0x141AB8E90, UIReportDialog, vfunc_13, 37, 0xD3DCAA5D);
 
 // The confirmation box answers "report" / "reportAndBan" with "<tag>,..." as its tag.
 // @0x141ab8ec0
-// MS2-FUNCTIONAL: temp/frame layout differs from the exe
 int UIReportDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
 {
     if (UIDialog::OnMessage(pSender, pMsg) != 0)
         return 1;
-    if (pMsg->FUN_1422e4520() != 0)
-        return 0;
-    if (dynamic_cast<UIMessageBox*>(pSender) != 0)
+    if (pMsg->FUN_1422e4520() == 0)
     {
-        FUN_14151f200();
-        int nResult = pMsg->FUN_1422b8a10();
-        CStringW strTag = pMsg->FUN_1422b8f40();
-        if (nResult == 0)
+        if (dynamic_cast<UIMessageBox*>(pSender) != 0)
         {
-            CAtlArray<CStringW> arrTag;
-            FUN_14028cd00(strTag, arrTag, L",", 2);
-            if (FUN_14015a000(arrTag) == 1)
+            FUN_14151f200();
+            int nResult = pMsg->FUN_1422b8a10();
+            CStringW strTag = pMsg->FUN_1422b8f40();
+            if (nResult == 0)
             {
-                if (FUN_1403b3c40(strTag, L"report") == 0)
+                CAtlArray<CStringW> arrTag;
+                FUN_14028cd00(strTag, arrTag, L",", 2);
+                if (FUN_14015a000(arrTag) == 1)
                 {
-                    if (FUN_1403b3c40(strTag, L"reportAndBan") != 0)
+                    if (FUN_1403b3c40(strTag, L"report"))
+                    {
+                        if (FUN_141ab9d70(m_strMethod, m_nFlags, m_strText) == true)
+                            vfunc_67();
+                        else
+                            FUN_140d73aa0(GetStringCommon(0x8ac), 0, 0, CStringW(L""));
+                    }
+                    else if (FUN_1403b3c40(strTag, L"reportAndBan"))
                     {
                         if (FUN_141ab9d70(m_strMethod, m_nFlags, m_strText) == true)
                         {
@@ -183,21 +185,14 @@ int UIReportDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
                         }
                     }
                 }
-                else
-                {
-                    if (FUN_141ab9d70(m_strMethod, m_nFlags, m_strText) == true)
-                        vfunc_67();
-                    else
-                        FUN_140d73aa0(GetStringCommon(0x8ac), 0, 0, CStringW(L""));
-                }
             }
         }
+        return 1;
     }
-    return 1;
+    return 0;
 }
 
 // @0x141ab9350
-// MS2-FUNCTIONAL: temp/frame layout differs from the exe
 int UIReportDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs)
 {
     if (UIDialog::vfunc_28(szMethod, pArgs, nArgs) != 0)
@@ -215,7 +210,9 @@ int UIReportDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* 
             bool bCategory3 = data.FUN_1422b8a90();
             bool bCategory4 = data.FUN_1422b8a90();
             bool bCategory5 = data.FUN_1422b8a90();
-            unsigned int nFlags = bCategory1 != false;
+            unsigned int nFlags = 0;
+            if (bCategory1)
+                nFlags = nFlags | 1;
             if (bCategory2 != false)
                 nFlags = nFlags | 2;
             if (bCategory3 != false)
@@ -255,15 +252,12 @@ int UIReportDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* 
         }
         return 1;
     }
-    else
+    else if (_stricmp("OnCancel", szMethod) == 0)
     {
-        if (_stricmp("OnCancel", szMethod) == 0)
-        {
-            vfunc_67();
-            return 1;
-        }
-        return 0;
+        vfunc_67();
+        return 1;
     }
+    return 0;
 }
 
 // @0x141ab9890
@@ -357,66 +351,62 @@ void UIReportDialog::FUN_141ab9ce0(CStringW strTarget, CStringW strPet)
 
 // Sends the report (packet 0x52): the target name, the text, then the kind-specific target.
 // @0x141ab9d70
-// MS2-FUNCTIONAL: temp/frame layout differs from the exe
 bool UIReportDialog::FUN_141ab9d70(CString strMethod, unsigned int nFlags, CStringW strText)
 {
     int nLength = strText.GetLength();
-    if (nLength < 0xfa1 && 0 < nLength)
+    if (nLength > 0xfa0 || nLength < 1)
+        return false;
+    if (FUN_141aba4b0(strMethod) == false)
+        return false;
+    COutPacket packet(static_cast<int>(SendOp::RequestReport), 0);
+    packet.WriteUnicodeString(m_strTarget);
+    packet.WriteUnicodeString(strText);
+    if (strMethod.CompareNoCase("OnSelectCharacter") == 0)
     {
-        if (FUN_141aba4b0(strMethod) == false)
-            return false;
-        COutPacket packet(static_cast<int>(SendOp::RequestReport), 0);
-        packet.WriteUnicodeString(m_strTarget);
-        packet.WriteUnicodeString(strText);
-        if (strMethod.CompareNoCase("OnSelectCharacter") == 0)
-        {
-            packet.WriteUInt8(0);
-            packet.WriteInt32(nFlags);
-        }
-        else if (strMethod.CompareNoCase("OnSelectChatting") == 0)
-        {
-            packet.WriteUInt8(1);
-            packet.WriteInt32(nFlags);
-            packet.WriteUnicodeString(m_strChat);
-        }
-        else if (strMethod.CompareNoCase("OnSelectWallPoster") == 0)
-        {
-            packet.WriteUInt8(2);
-            packet.WriteInt32(nFlags);
-            packet.WriteInt64(m_nPosterId);
-            packet.WriteUnicodeStringA(m_strPosterUrl);
-        }
-        else if (strMethod.CompareNoCase("OnSelectDesignItem") == 0)
-        {
-            packet.WriteUInt8(3);
-            packet.WriteInt32(nFlags);
-            packet.WriteInt64(m_nItemId);
-        }
-        else if (strMethod.CompareNoCase("OnSelectRealStateItem") == 0)
-        {
-            packet.WriteUInt8(4);
-            packet.WriteInt32(nFlags);
-            packet.WriteInt64(m_nPageId);
-            packet.WriteInt32(m_nPageArg1);
-            packet.WriteInt32(m_nPageArg2);
-        }
-        else
-        {
-            if (strMethod.CompareNoCase("OnSelectPet") != 0)
-                return false;
-            packet.WriteUInt8(7);
-            packet.WriteInt32(nFlags);
-            packet.WriteUnicodeString(m_strPet);
-        }
-        FUN_140710590(packet);
-        return true;
+        packet.WriteUInt8(0);
+        packet.WriteInt32(nFlags);
     }
-    return false;
+    else if (strMethod.CompareNoCase("OnSelectChatting") == 0)
+    {
+        packet.WriteUInt8(1);
+        packet.WriteInt32(nFlags);
+        packet.WriteUnicodeString(m_strChat);
+    }
+    else if (strMethod.CompareNoCase("OnSelectWallPoster") == 0)
+    {
+        packet.WriteUInt8(2);
+        packet.WriteInt32(nFlags);
+        packet.WriteInt64(m_nPosterId);
+        packet.WriteUnicodeStringA(m_strPosterUrl);
+    }
+    else if (strMethod.CompareNoCase("OnSelectDesignItem") == 0)
+    {
+        packet.WriteUInt8(3);
+        packet.WriteInt32(nFlags);
+        packet.WriteInt64(m_nItemId);
+    }
+    else if (strMethod.CompareNoCase("OnSelectRealStateItem") == 0)
+    {
+        packet.WriteUInt8(4);
+        packet.WriteInt32(nFlags);
+        packet.WriteInt64(m_nPageId);
+        packet.WriteInt32(m_nPageArg1);
+        packet.WriteInt32(m_nPageArg2);
+    }
+    else if (strMethod.CompareNoCase("OnSelectPet") == 0)
+    {
+        packet.WriteUInt8(7);
+        packet.WriteInt32(nFlags);
+        packet.WriteUnicodeString(m_strPet);
+    }
+    else
+        return false;
+    FUN_140710590(packet);
+    return true;
 }
 
 // After a report went out: block the reported target (friend list entry, blind list, banner, notification).
 // @0x141aba110
-// MS2-FUNCTIONAL: temp/frame layout differs from the exe
 void UIReportDialog::FUN_141aba110(CString strMethod, unsigned int nFlags)
 {
     if (FUN_141aba4b0(strMethod) == false)
@@ -427,14 +417,15 @@ void UIReportDialog::FUN_141aba110(CString strMethod, unsigned int nFlags)
     {
         __int64 nBuddyId = 0;
         bool bRequest = true;
-        CBuddyManager::Ptr spBuddy = TSingleton<CBuddyManager>::GetInstance()->FUN_140ae4880(m_nCharacterId);
-        if (spBuddy.get() != 0)
         {
-            nBuddyId = spBuddy->FUN_1401cc2f0();
-            if (spBuddy->FUN_1401cc5b0() != 0)
-                bRequest = false;
+            CBuddyManager::Ptr spBuddy = TSingleton<CBuddyManager>::GetInstance()->FUN_140ae4880(m_nCharacterId);
+            if (spBuddy.get() != 0)
+            {
+                nBuddyId = spBuddy->FUN_1401cc2f0();
+                if (spBuddy->FUN_1401cc5b0() != 0)
+                    bRequest = false;
+            }
         }
-        spBuddy = 0;
         if (bRequest)
         {
             Unk_BuddyRequest request;
@@ -453,8 +444,7 @@ void UIReportDialog::FUN_141aba110(CString strMethod, unsigned int nFlags)
     else if (strMethod.CompareNoCase("OnSelectDesignItem") == 0)
     {
         FUN_1409c1730()->FUN_140a25950(3, m_nItemId);
-        int nKind = 3;
-        FUN_140939a10()->Post(MS2Ptr<NotifyObject>(new NotifyBlindTarget(nKind, reinterpret_cast<const Unk_ReportTarget&>(m_key))));
+        FUN_140939a10()->Post(MS2Ptr<NotifyObject>(new NotifyBlindTarget(3, reinterpret_cast<const Unk_ReportTarget&>(m_key))));
     }
     else if (strMethod.CompareNoCase("OnSelectRealStatePage") == 0)
     {
@@ -464,18 +454,14 @@ void UIReportDialog::FUN_141aba110(CString strMethod, unsigned int nFlags)
 
 // The target name must be 1..24 characters (16 for a real estate page).
 // @0x141aba4b0
-// MS2-FUNCTIONAL: return-value branch layout differs from the exe
 bool UIReportDialog::FUN_141aba4b0(const CString& strMethod)
 {
     int nMax = 0x18;
     if (strMethod.CompareNoCase("OnSelectRealStatePage") == 0)
         nMax = 0x10;
-    if (m_strTarget.GetLength() != 0)
-    {
-        if (m_strTarget.GetLength() <= nMax)
-            return true;
-    }
-    return false;
+    if (m_strTarget.GetLength() == 0 || m_strTarget.GetLength() > nMax)
+        return false;
+    return true;
 }
 
 MS2_EMIT_CRT_MEMMOVE_S();

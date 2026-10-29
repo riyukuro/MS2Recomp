@@ -4,13 +4,14 @@
 // MS2-RANGE: 0x1415964b0-0x141596980 .text$mn
 #define MS2_THIS_FILE ""
 #include "ms2/placeholder/ms2stdafx.h"
-#include <utility>
 #include "ms2/placeholder/nmobjects.h"
+#include "ms2/placeholder/nmstream.h"
+#include "ms2/placeholder/nmencoder.h"
 #include "ms2/ms2recover.h"
 
 extern int FUN_1415fb700(const void*);
 extern int FUN_1415fb750(void*);
-extern int FUN_1415fb6d0(void*);
+extern int FUN_1415fb6d0(CNMSerializableDecoder*);
 extern void FUN_14156ac20(void*, unsigned int);
 extern void FUN_1415f9990(void*);
 extern void* FUN_14156bcb0(void*, void*, void*);
@@ -31,11 +32,8 @@ CNMGetFindUserResultFunc::CNMGetFindUserResultFunc(int nResult)
 // @0x141596590
 unsigned int CNMGetFindUserResultFunc::EncodeFramed(CNMStream* pStream)
 {
-    alignas(8) unsigned char encoder[0x18];
-    FUN_14156bcb0(encoder, pStream, this);
-    const auto result = Encode(reinterpret_cast<CNMEncoder*>(encoder), pStream);
-    FUN_14156bd50(encoder);
-    return result;
+    CNMSerializableEncoder encoder(pStream, this);
+    return CNMGetFindUserResultFunc::Encode(reinterpret_cast<CNMEncoder*>(&encoder), pStream);
 }
 
 // MS2-FUNCTIONAL: same format selection and serializer slots; direct calls replace indirect dispatch.
@@ -43,26 +41,24 @@ unsigned int CNMGetFindUserResultFunc::EncodeFramed(CNMStream* pStream)
 unsigned int CNMGetFindUserResultFunc::EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream)
 {
     if (m_bFormat == 1)
-        Encode(pEncoder, pStream);
-    else
-        EncodeFramed(pStream);
-    return 0;
+        return CNMGetFindUserResultFunc::Encode(pEncoder, pStream);
+    return CNMGetFindUserResultFunc::EncodeFramed(pStream);
 }
 
-// MS2-FUNCTIONAL: reply list count/records, request scalar, and encoder finish behavior are recovered.
+// MS2-FUNCTIONAL: the exe walks the records through folded iterator COMDATs. Each record is written framed.
 // @0x141596650
 unsigned int CNMGetFindUserResultFunc::Encode(CNMEncoder* pEncoder, CNMStream* pStream)
 {
     CNMFunc::EncodeDispatch(pEncoder, pStream);
-    if (FUN_1415fb700(this) == 0)
+    if (FUN_1415fb700(this) != 0)
     {
-        FUN_14156ac20(pEncoder, static_cast<unsigned int>(m_38.size()));
-        for (auto& info : m_38)
-            info.Encode(pEncoder, pStream);
+        FUN_14156ac20(pEncoder, static_cast<unsigned int>(m_30));
     }
     else
     {
-        FUN_14156ac20(pEncoder, static_cast<unsigned int>(m_30));
+        FUN_14156ac20(pEncoder, static_cast<unsigned int>(m_38.size()));
+        for (auto& info : m_38)
+            info.EncodeFramed(pStream);
     }
     FUN_1415f9990(pEncoder);
     return 1;
@@ -72,13 +68,10 @@ unsigned int CNMGetFindUserResultFunc::Encode(CNMEncoder* pEncoder, CNMStream* p
 // @0x141596750
 unsigned int CNMGetFindUserResultFunc::DecodeFramed(CNMStream* pStream)
 {
-    alignas(8) unsigned char decoder[0x38];
-    FUN_14156bcb0(decoder, pStream, this);
-    unsigned int result = 0;
-    if (FUN_1415fb750(decoder))
-        result = Decode(reinterpret_cast<CNMSerializableDecoder*>(decoder), pStream);
-    FUN_14156bd50(decoder);
-    return result;
+    CNMSerializableDecoder decoder(pStream, this);
+    if (FUN_1415fb750(&decoder) == 0)
+        return 0;
+    return CNMGetFindUserResultFunc::Decode(&decoder, pStream);
 }
 
 // MS2-FUNCTIONAL: the decoder format discriminator routes through the same direct/framed slots.
@@ -86,35 +79,29 @@ unsigned int CNMGetFindUserResultFunc::DecodeFramed(CNMStream* pStream)
 unsigned int CNMGetFindUserResultFunc::DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream)
 {
     if (FUN_1415fb6d0(pDecoder) == 2)
-        DecodeFramed(pStream);
-    else
-        Decode(pDecoder, pStream);
-    return 0;
+        return CNMGetFindUserResultFunc::DecodeFramed(pStream);
+    return CNMGetFindUserResultFunc::Decode(pDecoder, pStream);
 }
 
-// MS2-FUNCTIONAL: reply count/records, request scalar, and decoder validation behavior are recovered.
+// One record local is made before the count read, reused for every entry and a copy is pushed.
 // @0x141596840
 unsigned int CNMGetFindUserResultFunc::Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream)
 {
     CNMFunc::DecodeDispatch(pDecoder, pStream);
-    if (FUN_1415fb700(this) == 0)
+    if (FUN_1415fb700(this) != 0)
     {
-        using ReadU32 = unsigned int(__fastcall*)(void*);
-        void** vftable = *reinterpret_cast<void***>(pDecoder);
-        const unsigned int count = reinterpret_cast<ReadU32>(vftable[3])(pDecoder);
-        m_38.clear();
-        for (unsigned int i = 0; i < count; ++i)
-        {
-            CNMFindUserInfo info;
-            info.DecodeFramed(pStream);
-            m_38.push_back(std::move(info));
-        }
+        m_30 = static_cast<int>(pDecoder->ReadU32());
     }
     else
     {
-        using ReadU32 = unsigned int(__fastcall*)(void*);
-        void** vftable = *reinterpret_cast<void***>(pDecoder);
-        m_30 = static_cast<int>(reinterpret_cast<ReadU32>(vftable[3])(pDecoder));
+        CNMFindUserInfo info;
+        unsigned int nCount = pDecoder->ReadU32();
+        m_38.clear();
+        for (unsigned int i = 0; i < nCount; ++i)
+        {
+            info.DecodeFramed(pStream);
+            m_38.push_back(info);
+        }
     }
     return FUN_1415fb750(pDecoder);
 }

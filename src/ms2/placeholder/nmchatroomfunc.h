@@ -48,6 +48,7 @@ public:
     CNMCRRegisterCallbackFunc(); // 0x14159c950
     CNMCRRegisterCallbackFunc(unsigned uSerialKey, HWND hWnd, unsigned uMsg); // 0x14159c9b0
     virtual ~CNMCRRegisterCallbackFunc() = default;                       // 0x1415ec860
+    char* vfunc_8() override;
 
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
@@ -69,6 +70,7 @@ public:
     CNMCRCloseFunc(); // 0x14159ccd0
     explicit CNMCRCloseFunc(unsigned uSerialKey);               // 0x14159cd20
     virtual ~CNMCRCloseFunc() = default;                                  // 0x1415ec760
+    char* vfunc_8() override;
 
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
@@ -88,6 +90,7 @@ public:
     CNMCRChangeRoomInfoFunc(unsigned uSerialKey, const char* szTitle, const unsigned* pU434, const unsigned* pU438,
         const unsigned* pU43c, const char* sz448, const unsigned __int64* pU440);   // 0x14159d790
     virtual ~CNMCRChangeRoomInfoFunc() = default;                         // 0x1415ec520
+    char* vfunc_8() override;
 
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
@@ -113,6 +116,7 @@ public:
     CNMCRGetMemberListFunc(); // 0x14159e1b0
     explicit CNMCRGetMemberListFunc(unsigned uSerialKey);       // 0x14159e210
     virtual ~CNMCRGetMemberListFunc() = default;                          // 0x1415ec7b0
+    char* vfunc_8() override;
 
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
@@ -132,6 +136,7 @@ public:
     CNMCRInviteUserFunc(); // 0x14159e630
     CNMCRInviteUserFunc(unsigned uSerialKey, const char* szUser, const char* szMessage); // 0x14159e6a0
     virtual ~CNMCRInviteUserFunc() = default;                             // 0x1415ec840
+    char* vfunc_8() override;
 
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
@@ -152,6 +157,7 @@ public:
     CNMCRBanUserFunc(); // 0x14159ea60
     CNMCRBanUserFunc(unsigned uSerialKey, unsigned __int64 uUserKey); // 0x14159eac0
     virtual ~CNMCRBanUserFunc() = default;                                // 0x1415ec4d0
+    char* vfunc_8() override;
 
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
@@ -172,6 +178,7 @@ public:
     CNMCRSendChatMessageFunc(); // 0x14159edb0
     CNMCRSendChatMessageFunc(unsigned uSerialKey, const unsigned __int64* pKeys, const CNMChatMessage& msg); // 0x14159ee30
     virtual ~CNMCRSendChatMessageFunc() = default;                        // 0x1415ec880
+    char* vfunc_8() override;
 
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
@@ -192,6 +199,7 @@ public:
     CNMCRGetMemberInfoFunc(); // 0x14159f220
     CNMCRGetMemberInfoFunc(unsigned uSerialKey, unsigned uWhich); // 0x14159f290
     virtual ~CNMCRGetMemberInfoFunc() = default;                          // 0x1415ec780
+    char* vfunc_8() override;
 
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;
@@ -213,6 +221,7 @@ public:
     CNMCRGetRoomInfoExFunc(); // 0x14159d340
     explicit CNMCRGetRoomInfoExFunc(unsigned uSerialKey);       // 0x14159d3b0
     virtual ~CNMCRGetRoomInfoExFunc() = default;                          // 0x1415ec7e0
+    char* vfunc_8() override;
 
     unsigned int Encode(CNMEncoder* pEncoder, CNMStream* pStream) override;
     unsigned int EncodeFramed(CNMStream* pStream) override;

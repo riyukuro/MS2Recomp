@@ -41,14 +41,13 @@
 // MS2-PIN: ??0?$SmartPointer@VNiPSParticleSystem@@@efd@@QEAA@PEAVNiPSParticleSystem@@@Z 0x1416efa80
 // MS2-PIN: ??1?$list@UUnk_RainDrop@@V?$CustomAllocator@UUnk_RainDrop@@@efd@@@std@@QEAA@XZ 0x1416f04e0
 // MS2-PIN: ??0?$_List_val@U?$_List_simple_types@U?$pair@$$CBII@std@@@std@@@std@@QEAA@XZ 0x1416eff10
-// MS2-PIN: ??0?$CAtlArray@UUnk_Int3@@V?$CElementTraits@UUnk_Int3@@@ATL@@@ATL@@QEAA@XZ 0x1416ef9c0
+// MS2-PIN: ??0?$CAtlArray@UUnk_Int3@@V?$CElementTraits@UUnk_Int3@@@ATL@@@ATL@@QEAA@XZ 0x1416ef980
 // MS2-PIN: ??0ColumnMap@@QEAA@XZ 0x1416effe0
 // MS2-PIN: ??$destroy@U?$pair@$$CBII@std@@@?$_Normal_allocator_traits@V?$CustomAllocator@U?$_List_node@U?$pair@$$CBII@std@@PEAX@std@@@efd@@@std@@SAXAEAV?$CustomAllocator@U?$_List_node@U?$pair@$$CBII@std@@PEAX@std@@@efd@@PEAU?$pair@$$CBII@1@@Z 0x1416ef660
 // MS2-PIN: ??$destroy@UUnk_RainDrop@@@?$_Normal_allocator_traits@V?$CustomAllocator@U?$_List_node@UUnk_RainDrop@@PEAX@std@@@efd@@@std@@SAXAEAV?$CustomAllocator@U?$_List_node@UUnk_RainDrop@@PEAX@std@@@efd@@PEAUUnk_RainDrop@@@Z 0x1416ef600
 // MS2-PIN: ??$construct@U?$pair@$$CBII@std@@U?$pair@II@2@@?$_Normal_allocator_traits@V?$CustomAllocator@U?$_List_node@U?$pair@$$CBII@std@@PEAX@std@@@efd@@@std@@SAXAEAV?$CustomAllocator@U?$_List_node@U?$pair@$$CBII@std@@PEAX@std@@@efd@@PEAU?$pair@$$CBII@1@$$QEAU?$pair@II@1@@Z 0x1416ef460
 // MS2-PIN: ??$_Construct1@V?$_List_unchecked_iterator@V?$_List_val@U?$_List_simple_types@U?$pair@$$CBII@std@@@std@@@std@@@std@@V12@@?$_Normal_allocator_traits@V?$CustomAllocator@V?$_List_unchecked_iterator@V?$_List_val@U?$_List_simple_types@U?$pair@$$CBII@std@@@std@@@std@@@std@@@efd@@@std@@SAXU?$integral_constant@_N$0A@@1@AEAV?$CustomAllocator@V?$_List_unchecked_iterator@V?$_List_val@U?$_List_simple_types@U?$pair@$$CBII@std@@@std@@@std@@@std@@@efd@@PEAV?$_List_unchecked_iterator@V?$_List_val@U?$_List_simple_types@U?$pair@$$CBII@std@@@std@@@std@@@1@$$QEAV51@@Z 0x1416ee700
 // MS2-PIN: ??$?0U?$integral_constant@_N$0A@@std@@@_Unused_parameter@std@@QEAA@$$QEAU?$integral_constant@_N$0A@@1@@Z 0x1416ee2a0
-// MS2-PIN: ??0?$CAtlArray@IV?$CElementTraits@I@ATL@@@ATL@@QEAA@XZ 0x1416ef980
 // MS2-PIN: ??0?$SmartPointer@VNiAlphaProperty@@@efd@@QEAA@PEAVNiAlphaProperty@@@Z 0x1416efa40
 // MS2-PIN: ??1?$SmartPointer@VNiAlphaProperty@@@efd@@QEAA@XZ 0x1416f01d0
 // MS2-PIN: ??1?$SmartPointer@VNiAVObject@@@efd@@QEAA@XZ 0x1416f0230
@@ -80,14 +79,20 @@
 #include <NiPSAlignedQuadGenerator.h>
 #include <NiFloatInterpolator.h>
 #include <NiBoolInterpolator.h>
+#include <ecr/SceneGraphService.h>
+
+// kInvalidHandle: Gamebryo's SceneGraphService.cpp defines it in the full-exe link; only the hook DLL needs this copy.
+#ifdef MS2_HOOK_DLL
+__declspec(selectany) const ecr::SceneGraphService::SceneGraphHandle ecr::SceneGraphService::kInvalidHandle = 0;
+#endif
 
 // ---- unit-local placeholders ----
 
 extern const Vector3 g_143a08cf8;   // NiPoint3::UNIT_Z
 extern const Vector3 g_143a08ce8;   // NiPoint3::ZERO
 extern const Vector3 g_143b01a60;   // the zero point
-extern const NiColor g_143a09660;
-extern const NiColor g_143b01ef0;
+extern const efd::Color g_143a09660; // white
+extern const efd::Color g_143b01ef0; // efd::Color::BLACK
 
 // The local player, as far as this unit reads it.
 class Unk_RainActor
@@ -153,7 +158,7 @@ public:
     Unk_RainNodeList();                                             // 0x1411af860
     ~Unk_RainNodeList();                                            // 0x1411b00f0
     void FUN_1411b83f0(Unk_RainAVPtr& spNode);
-    char m_pad_00[0x18];
+    void* m_pad_00[3];
 };
 class Unk_RainScene
 {
@@ -200,7 +205,6 @@ Unk_RainDrop::Unk_RainDrop(double dTime, const Unk_Int3& kPos)
 
 // Fills the columns around a position (a 20 x 20 window) that have a surface.
 // @0x1416edfd0
-// MS2-FUNCTIONAL: cube column walk: register allocation / loop layout differs
 static void FillColumns(const Vector3& kPos, ATL::CAtlArray<Unk_Int3>& arrCube)
 {
     const int nSpan = 20;
@@ -231,17 +235,14 @@ static float Fmod(float fX, float fY)
 }
 
 // @0x1416ee350
-// MS2-FUNCTIONAL: swap helper inlining and loop layout differ
 static void ShuffleColumns(ATL::CAtlArray<Unk_Int3>& arrCube)
 {
     int n = (int)arrCube.GetCount();
-    int i;
-    while (i = n - 1, 0 < i)
+    for (int i = n - 1; i >= 1; i--)
     {
-        int r = rand() % n;
-        n = i;
+        int r = rand() % (i + 1);
         if (i != r)
-            std::swap(arrCube[r], arrCube[i]);
+            std::swap(arrCube[i], arrCube[r]);
     }
 }
 
@@ -260,11 +261,10 @@ static bool FindColumn(const Map& map, const typename Map::key_type& kKey, typen
 }
 
 // @0x1416ec650
-// MS2-FUNCTIONAL: ctor: member init order and frame slots differ
 RainDropOnCubeEmitter::RainDropOnCubeEmitter(const NiFixedString& kName, NiAVObject* pkEmitterObj, float fSize,
                                              float fSizeVar, float fLifeSpan, float fLifeSpanVar)
     : NiPSVolumeEmitter(kName, pkEmitterObj, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, fSize, fSizeVar, fLifeSpan,
-                        fLifeSpanVar, 0.0f, 6.2831855f, 0.0f, 0.0f, false, NiPoint3(AsPoint(g_143a08cf8)), false)
+                        fLifeSpanVar, 0.0f, 6.2831855f, 0.0f, 0.0f, false, AsPoint(g_143a08cf8), false)
 {
     m_fCooldown = fLifeSpan;
     Vector3 kPos = g_143b01a60;
@@ -281,7 +281,7 @@ RainDropOnCubeEmitter::RainDropOnCubeEmitter(const NiFixedString& kName, NiAVObj
     {
         const Unk_Int3& kCube = static_cast<const ATL::CAtlArray<Unk_Int3>&>(arrCube)[i];
         m_lstDrops.push_front(Unk_RainDrop(dNow, kCube));
-        const unsigned int nKey = FUN_1408a03c0(kCube);
+        unsigned int nKey = FUN_1408a03c0(kCube);
         m_mapColumns.insert(std::make_pair(nKey, nKey));
     }
     m_bDirty = false;
@@ -294,49 +294,48 @@ void RainDropOnCubeEmitter::MarkDirty()
 }
 
 // @0x1416eca00
-// MS2-FUNCTIONAL: temporaries of the column walk are laid out differently
 void RainDropOnCubeEmitter::Refresh()
 {
     Unk_RainActor* pActor = FUN_1403ed2d0()->FUN_141bd0cc0();
-    if (pActor)
-    {
-        Vector3 kPos = pActor->GetPosition();
-        int nKey = FUN_1408a13d0(kPos);
-        if (!m_bDirty)
-        {
-            if ((int)m_nCenterKey == nKey)
-                return;
-        }
-        else
-        {
-            m_bDirty = false;
-        }
-        m_nCenterKey = nKey;
+    if (!pActor)
+        return;
 
-        ATL::CAtlArray<Unk_Int3> arrCube;
-        FillColumns(kPos, arrCube);
-        ShuffleColumns(arrCube);
-        double dNow = FUN_141473280(FUN_14086d260());
-        ATL::CAtlArray<unsigned int> arrKey;
-        for (unsigned int i = 0; i < arrCube.GetCount(); i++)
-        {
-            const Unk_Int3& kCube = static_cast<const ATL::CAtlArray<Unk_Int3>&>(arrCube)[i];
-            unsigned int nColumn = FUN_1408a03c0(kCube);
-            arrKey.Add(nColumn);
-            if (!FindColumn(m_mapColumns, nColumn, nColumn))
-                m_lstDrops.push_front(Unk_RainDrop(dNow, kCube));
-        }
-        m_mapColumns.clear();
-        for (unsigned int i = 0; i < arrKey.GetCount(); i++)
-        {
-            const unsigned int nColumn = arrKey[i];
-            m_mapColumns.insert(std::make_pair(nColumn, nColumn));
-        }
+    Vector3 kPos = pActor->GetPosition();
+    int nKey = FUN_1408a13d0(kPos);
+    if (!m_bDirty)
+    {
+        if ((int)m_nCenterKey == nKey)
+            return;
+    }
+    else
+    {
+        m_bDirty = false;
+    }
+    m_nCenterKey = nKey;
+
+    ATL::CAtlArray<Unk_Int3> arrCube;
+    FillColumns(kPos, arrCube);
+    ShuffleColumns(arrCube);
+    double dNow = FUN_141473280(FUN_14086d260());
+    ATL::CAtlArray<unsigned int> arrKey;
+    for (unsigned int i = 0; i < arrCube.GetCount(); i++)
+    {
+        const Unk_Int3& kCube = static_cast<const ATL::CAtlArray<Unk_Int3>&>(arrCube)[i];
+        unsigned int nColumn = FUN_1408a03c0(kCube);
+        arrKey.Add(nColumn);
+        if (FindColumn(m_mapColumns, nColumn, nColumn))
+            continue;
+        m_lstDrops.push_front(Unk_RainDrop(dNow, kCube));
+    }
+    m_mapColumns.clear();
+    for (unsigned int i = 0; i < arrKey.GetCount(); i++)
+    {
+        const unsigned int& nColumn = arrKey[i];
+        m_mapColumns.insert(std::make_pair(nColumn, nColumn));
     }
 }
 
 // @0x1416eccc0
-// MS2-FUNCTIONAL: list/double temporaries differ in frame order
 bool RainDropOnCubeEmitter::ComputeVolumeInitialPositionAndVelocity(NiQuatTransform& kEmitterToPSys,
                                                                     NiPoint3& kPosition, NiPoint3& kVelocity)
 {
@@ -351,8 +350,8 @@ bool RainDropOnCubeEmitter::ComputeVolumeInitialPositionAndVelocity(NiQuatTransf
     Vector3 kLocal;
     FUN_1408a15b0(kDrop.GetPos(), &kLocal);
     kLocal.z = kLocal.z + 3.0f;
-    kPosition = kEmitterToPSys * NiPoint3(AsPoint(kLocal));
-    kVelocity = NiPoint3(AsPoint(g_143b01a60));
+    kPosition = kEmitterToPSys * AsPoint(kLocal);
+    kVelocity = AsPoint(g_143b01a60);
     unsigned int nKey = FUN_1408a03c0(kDrop.GetPos());
     if (FindColumn(m_mapColumns, nKey, nKey))
     {
@@ -363,28 +362,20 @@ bool RainDropOnCubeEmitter::ComputeVolumeInitialPositionAndVelocity(NiQuatTransf
     return true;
 }
 
-// @0x1416f05b0
-// MS2-FUNCTIONAL: dtor: exe has no vptr store before the member dtors
-RainDropOnCubeEmitter::~RainDropOnCubeEmitter()
-{
-}
-
 // @0x1416eced0
-// MS2-FUNCTIONAL: ctor: member init order differs
 RainDropSystem::RainDropSystem()
     : m_spSystem(NULL), m_spNode(NULL), m_spEmitter(NULL), m_spCtlr(NULL)
 {
     m_spSystem = NULL;
     FUN_1409f76f0(&m_spNode, NULL);
-    m_nHandle = 0;
+    m_nHandle = ecr::SceneGraphService::kInvalidHandle;
     m_nTexture = 0;
 }
 
 // @0x1416ecfb0
-// MS2-FUNCTIONAL: dtor: frame slot order differs
 RainDropSystem::~RainDropSystem()
 {
-    if (m_nHandle != 0)
+    if (m_nHandle != ecr::SceneGraphService::kInvalidHandle)
     {
         Unk_RainScene* pScene = FUN_1413f98b0();
         if (pScene)
@@ -393,32 +384,26 @@ RainDropSystem::~RainDropSystem()
 }
 
 // @0x1416ed080
-// MS2-FUNCTIONAL: smart pointer temporaries are laid out differently
 void RainDropSystem::Create()
 {
     m_nTexture = 0;
     for (unsigned int i = 0; i < 16; i++)
     {
         CString strName;
-        strName.Format("%sRainDrop%d.dds", (const char*)FUN_1401d31f0()->m_strTexture, (unsigned __int64)i);
-        NiTexturePtr spTexture = FUN_140a0afd0()->FUN_141552f90(strName, 5);
-        m_arrTexture.Add(spTexture);
+        strName.Format("%sRainDrop%d.dds", (const char*)FUN_1401d31f0()->m_strTexture, i);
+        m_arrTexture.Add(FUN_140a0afd0()->FUN_141552f90(strName, 5));
     }
 
-    NiPoint3 kUp(AsPoint(g_143a08ce8));
-    NiPoint3 kAxis(AsPoint(g_143a08cf8));
-    m_spSystem = NiPSParticleSystem::Create(0x200, (NiPSParticleSystem::AlignMethod)2, kAxis,
-                                            (NiPSParticleSystem::AlignMethod)2, kUp, false, true, true, false, true,
-                                            false, false, true);
-    NiPSAlignedQuadGenerator* pGenerator = NiNew NiPSAlignedQuadGenerator;
-    m_spSystem->AddModifier(pGenerator, true);
-    m_spSystem->SetName(NiFixedString("RainDropParticle"));
-    NiNode* pNode = NiNew NiNode(0);
-    FUN_1409f76f0(&m_spNode, pNode);
+    m_spSystem = NiPSParticleSystem::Create(0x200, (NiPSParticleSystem::AlignMethod)2, AsPoint(g_143a08cf8),
+                                            (NiPSParticleSystem::AlignMethod)2, AsPoint(g_143a08ce8), false, true,
+                                            true, false, true, false, false, true);
+    m_spSystem->AddModifier(NiNew NiPSAlignedQuadGenerator, true);
+    m_spSystem->SetName("RainDropParticle");
+    FUN_1409f76f0(&m_spNode, NiNew NiNode(0));
     static_cast<NiNode*>(FUN_1409475f0(&m_spNode))->SetTranslate(0.0f, 0.0f, 0.0f);
     static_cast<NiNode*>(FUN_1409475f0(&m_spNode))->AttachChild(m_spSystem, false);
     NiBound kBound;
-    kBound.SetCenterAndRadius(NiPoint3(AsPoint(g_143b01a60)), 3000.0f);
+    kBound.SetCenterAndRadius(AsPoint(g_143b01a60), 3000.0f);
     m_spSystem->SetModelBound(kBound);
 
     Unk_RainNodeList kList;
@@ -460,27 +445,26 @@ void RainDropSystem::Destroy()
 }
 
 // @0x1416eda10
-// MS2-FUNCTIONAL: property smart pointer temporaries differ in frame order
 void RainDropSystem::SetupProperties()
 {
     NiVertexColorPropertyPtr spColor = NiNew NiVertexColorProperty;
-    spColor->SetSourceMode(NiVertexColorProperty::SOURCE_IGNORE);
-    spColor->SetLightingMode(NiVertexColorProperty::LIGHTING_E_A_D);
+    spColor->SetLightingMode(NiVertexColorProperty::LIGHTING_E);
+    spColor->SetSourceMode(NiVertexColorProperty::SOURCE_EMISSIVE);
     m_spSystem->AttachProperty(spColor);
 
     NiAlphaPropertyPtr spAlpha = NiNew NiAlphaProperty;
     spAlpha->SetAlphaBlending(true);
     spAlpha->SetAlphaTesting(true);
-    spAlpha->SetSrcBlendMode((NiAlphaProperty::AlphaFunction)4);
-    spAlpha->SetDestBlendMode((NiAlphaProperty::AlphaFunction)0);
+    spAlpha->SetTestMode(NiAlphaProperty::TEST_GREATER);
+    spAlpha->SetTestRef(0);
     m_spSystem->AttachProperty(spAlpha);
 
     NiTexturingPropertyPtr spTexturing = NiNew NiTexturingProperty;
     m_spSystem->AttachProperty(spTexturing);
 
     NiMaterialPropertyPtr spMaterial = NiNew NiMaterialProperty;
-    spMaterial->SetAmbientColor(NiColor(g_143a09660));
-    spMaterial->SetDiffuseColor(NiColor(g_143b01ef0));
+    spMaterial->SetAmbientColor(g_143a09660);
+    spMaterial->SetDiffuseColor(g_143b01ef0);
     m_spSystem->AttachProperty(spMaterial);
 
     NiZBufferPropertyPtr spZBuffer = NiNew NiZBufferProperty;
@@ -491,12 +475,14 @@ void RainDropSystem::SetupProperties()
 }
 
 // @0x1416eded0
-// MS2-FUNCTIONAL: texture array access differs in register choice
 void RainDropSystem::SelectTexture()
 {
-    float fRatio = Fmod((float)FUN_141473280(FUN_14086d260()), 1.0f);
+    const float fPeriod = 1.0f;
+    float fTime = (float)FUN_141473280(FUN_14086d260());
+    float fRatio = Fmod(fTime, fPeriod);
+    unsigned int nIndex = (unsigned int)((float)m_arrTexture.GetCount() * fRatio / fPeriod);
     NiTexturingProperty* pTexturing = (NiTexturingProperty*)m_spSystem->GetProperty(NiProperty::TEXTURING);
-    pTexturing->SetBaseTexture(m_arrTexture[(unsigned int)((float)m_arrTexture.GetCount() * fRatio / 1.0f)]);
+    pTexturing->SetBaseTexture(m_arrTexture[nIndex]);
     m_spSystem->UpdateProperties();
 }
 
@@ -507,4 +493,5 @@ MS2_REPLACE_METHOD(0x1416ED080, RainDropSystem, Create, 2289, 0xB9EA79DF);
 MS2_REPLACE_METHOD(0x1416EDA10, RainDropSystem, SetupProperties, 1205, 0xCE697E93);
 MS2_REPLACE_METHOD(0x1416EDED0, RainDropSystem, SelectTexture, 235, 0xF59B2BD0);
 
-// MS2-PIN: ??1?$CAtlArray@UUnk_Int3@@V?$CElementTraits@UUnk_Int3@@@ATL@@@ATL@@QEAA@XZ 0x1416f0160 ; look-alike of the NiTexture array dtor (FillColumns local order)
+// MS2-PIN: ??1?$CAtlArray@UUnk_Int3@@V?$CElementTraits@UUnk_Int3@@@ATL@@@ATL@@QEAA@XZ 0x1416f0120
+// MS2-PIN: ?CallDestructors@?$CAtlArray@UUnk_Int3@@V?$CElementTraits@UUnk_Int3@@@ATL@@@ATL@@CAXPEAUUnk_Int3@@_K@Z 0x1416f11e0

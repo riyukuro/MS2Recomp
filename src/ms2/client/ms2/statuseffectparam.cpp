@@ -19,6 +19,7 @@
 #include <stdlib.h>
 #include <atlcoll.h>
 #include <efd/MemoryDefines.h>
+#include <efd/StdContainers.h>
 #include <NiAVObject.h>
 #include <NiMesh.h>
 #include <NiFixedString.h>
@@ -66,7 +67,7 @@ extern NiFixedString DAT_143ae5138;
 extern unsigned DAT_1439f8244;                                      // blink interval (ms)
 
 // The post-process service singleton (0x1409a8b20): two node -> value maps at +0x68 (status kind) and +0x78 (count).
-typedef std::map<efd::SmartPointer<NiNode>, int> Unk_NodeIntMap;
+typedef efd::map<efd::SmartPointer<NiNode>, int> Unk_NodeIntMap;
 class Unk_PostProcessSvc
 {
 public:
@@ -273,100 +274,30 @@ int CStatusEffect::vfunc_12()
     return 8;
 }
 
-// ---- std::map<SmartPointer<NiNode>, int> instantiation glue (the exe's STL differs from the toolchain's) ----
-typedef std::pair<efd::SmartPointer<NiNode>, int> Unk_NodeIntPair;
-
-// A red-black tree node of Unk_NodeIntMap.
-struct Unk_NodeIntTreeNode
-{
-    Unk_NodeIntTreeNode* m_pLeft;
-    Unk_NodeIntTreeNode* m_pParent;
-    Unk_NodeIntTreeNode* m_pRight;
-    char m_cColor;
-    char m_cIsNil;
-    std::pair<const efd::SmartPointer<NiNode>, int> m_value;
-};
-
-void* FUN_1420b8410();                                              // default memory log handler factory
-
-// @0x141801ea0
-void FUN_141801ea0(char cTag, void* pHint, void* pWhere, Unk_NodeIntPair* pSrc)
-{
-    new (pWhere) std::pair<const efd::SmartPointer<NiNode>, int>(std::move(*pSrc));
-}
-
-// @0x1418029a0
-// MS2-FUNCTIONAL: allocator construct forwarder stand-in
-void FUN_1418029a0(char cTag, void* pHint, void* pWhere, Unk_NodeIntPair* pSrc)
-{
-    FUN_141801ea0(cTag, pHint, pWhere, pSrc);
-}
-
-// @0x141802dd0
-// MS2-FUNCTIONAL: _Buynode0 stand-in: head node with all links pointing at the given node
-Unk_NodeIntTreeNode* FUN_141802dd0(Unk_NodeIntTreeNode* pHead)
-{
-    Unk_NodeIntTreeNode* pNode = static_cast<Unk_NodeIntTreeNode*>(operator new(sizeof(Unk_NodeIntTreeNode)));
-    pNode->m_pLeft = pHead;
-    pNode->m_pParent = pHead;
-    pNode->m_pRight = pHead;
-    return pNode;
-}
-
-// @0x141803040
-// MS2-FUNCTIONAL: allocator max_size stand-in (0x1555555 nodes)
-size_t FUN_141803040()
-{
-    return 0x1555555;
-}
-
-// @0x141802f70
-// MS2-FUNCTIONAL: allocator max_size forwarder stand-in
-size_t FUN_141802f70(void* pAlloc, char cTag)
-{
-    return FUN_141803040();
-}
-
-// @0x141803050
-// MS2-FUNCTIONAL: _Default_allocator_traits::max_size stand-in
-size_t FUN_141803050(void* pAlloc)
-{
-    char cTag = 0;
-    return FUN_141802f70(pAlloc, cTag);
-}
-
+// The UCRT's `static __inline memcpy_s` of this TU (the efd::map node copy's), compiled with memset/memcpy as calls.
+#pragma function(memcpy, memset)
 // @0x1418030a0
-// MS2-FUNCTIONAL: CRT memcpy_s stand-in
-int FUN_1418030a0(void* pDst, size_t nDstSize, const void* pSrc, size_t nCount)
+static __inline errno_t ms2_sep_memcpy_s(void* const d, rsize_t const dsz, void const* const s, rsize_t const ssz)
 {
-    if (nCount == 0)
+    if (ssz == 0)
+    {
         return 0;
-    if (pDst == 0)
+    }
+    { int e = !!(d != NULL); if (!e) { errno = EINVAL; _invalid_parameter_noinfo(); return EINVAL; } }
+    if (s == NULL || dsz < ssz)
     {
-        errno = EINVAL;
-        _invalid_parameter_noinfo();
+        memset(d, 0, dsz);
+        { int e = !!(s != NULL); if (!e) { errno = EINVAL; _invalid_parameter_noinfo(); return EINVAL; } }
+        { int e = !!(dsz >= ssz); if (!e) { errno = ERANGE; _invalid_parameter_noinfo(); return ERANGE; } }
         return EINVAL;
     }
-    if (pSrc == 0 || nDstSize < nCount)
-    {
-        memset(pDst, 0, nDstSize);
-        if (pSrc == 0)
-        {
-            errno = EINVAL;
-            _invalid_parameter_noinfo();
-            return EINVAL;
-        }
-        if (nDstSize < nCount)
-        {
-            errno = ERANGE;
-            _invalid_parameter_noinfo();
-            return ERANGE;
-        }
-        return EINVAL;
-    }
-    memcpy(pDst, pSrc, nCount);
+    memcpy(d, s, ssz);
     return 0;
 }
+__declspec(selectany) extern errno_t(__cdecl* const ms2_pfnSepMemcpyS)(void*, rsize_t, const void*, rsize_t) = &ms2_sep_memcpy_s;
+#pragma intrinsic(memcpy, memset)
+
+void* FUN_1420b8410();                                              // default memory log handler factory
 
 // @0x1418031f0
 void FUN_1418031f0()

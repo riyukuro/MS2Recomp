@@ -11,7 +11,7 @@
 
 #include "gfxsoundfmod.h"
 #include "ms2/placeholder/fmodwrap.h"
-#include "../../../third_party/fmod44464/api/inc/fmod_errors.h"
+#include "fmod44464/api/inc/fmod_errors.h"
 
 #include "hook/ms2hook.h"
 

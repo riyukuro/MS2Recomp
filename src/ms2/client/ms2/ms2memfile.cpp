@@ -8,7 +8,6 @@
 // MS2-RANGE: 0x141626c30-0x14162a0d0 .text$mn
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\ms2memfile.cpp"   // guessed (no __FILE__ use)
 #include "ms2/placeholder/ms2stdafx.h"
-
 #include <stdlib.h>
 #include <string>
 
@@ -30,7 +29,7 @@
 #include "ms2/ms2format.h"
 #include "ms2/ms2recover.h"
 
-#include "Kernel/SF_File.h"
+#include "ms2/scaleform/include/kernel/sf_file.h"
 
 // ---- externs ----
 CFeatureManager* FUN_140166410();

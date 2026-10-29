@@ -63,7 +63,7 @@ public:
     virtual void vfunc_4();                                         //  4 0x140c5e8f0 (clear the section)
     virtual void vfunc_5(int nEvent);                               //  5 0x140c5ed60 (page notification)
     virtual void vfunc_6(MS2Ptr<CItem> spA, MS2Ptr<CItem> spB);     //  6 0x140c5ed00 (both by value: the callee destroys them)
-    virtual void vfunc_7();                                         //  7 0x140c5ec20
+    virtual void vfunc_7(int a1);                                   //  7 0x140c5ec20
     virtual int vfunc_8(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);   // 8 0x140c5ec70 returns 0
 
     void FUN_140c5ee50(MS2Ptr<ASUIComponent> ui);                   // 0x140c5ee50 attach the page's movie (by value: the callee destroys it)
@@ -78,7 +78,6 @@ class LapenshardItemSlotBagPanel : public LapenshardSystemTabPanelBase
 {
 public:
     LapenshardItemSlotBagPanel(UILapenshardEquipTab* pTab);         // 0x140c5d230
-    virtual ~LapenshardItemSlotBagPanel();                          //  0 0x140c5e5c0 (??_G 0x140c5e770)
     virtual void vfunc_1();                                         //  1 0x140c5d290 -> vfunc_4
     virtual void vfunc_2();                                         //  2 0x140c5d2c0 -> vfunc_4
     virtual void vfunc_3();                                         //  3 0x140c5d2f0
@@ -95,7 +94,6 @@ class LapenshardEquipSlotPanel : public LapenshardSystemTabPanelBase
 {
 public:
     LapenshardEquipSlotPanel(UILapenshardEquipTab* pTab);           // 0x140c5d5c0
-    virtual ~LapenshardEquipSlotPanel();                            //  0 0x140c5e590 (??_G 0x140c5e730)
     virtual void vfunc_1();                                         //  1 0x140c5d620 -> vfunc_4
     virtual void vfunc_2();                                         //  2 0x140c5d650 -> vfunc_4
     virtual void vfunc_3();                                         //  3 0x140c5d680
@@ -115,7 +113,7 @@ MS2_CHECK_SIZE(LapenshardEquipSlotPanel, 0x38);
 class LapenshardSystemTabContents : public CPtred
 {
 public:
-    LapenshardSystemTabContents();                                  // 0x140c5e4a0
+    // implicit ctor 0x140c5e4a0 (the pages value-initialize it: rep stosb before the call)
     virtual ~LapenshardSystemTabContents();                         //  0 0x140c5e5f0 (??_G 0x140c5e7b0)
     virtual void vfunc_1();                                         //  1 0x140c5ec30 (close)
     virtual void vfunc_2(int nEvent);                               //  2 0x140c5ed50 (notify the sections)
@@ -136,7 +134,6 @@ class UILapenshardEquipTab : public LapenshardSystemTabContents
 {
 public:
     UILapenshardEquipTab();                                         // 0x140c5dba0
-    virtual ~UILapenshardEquipTab();                                //  0 0x140c5e660 (??_G 0x140c5e830)
     virtual void vfunc_1();                                         //  1 0x140c5dd20 close the sections
     virtual void vfunc_2(int nEvent);                               //  2 0x140c5dee0
     virtual void vfunc_3(MS2Ptr<ASUIComponent> ui);                 //  3 0x140c5dfd0
@@ -162,7 +159,6 @@ class LapenshardSourceItemSlotBagPanel : public LapenshardSystemTabPanelBase
 {
 public:
     LapenshardSourceItemSlotBagPanel(UILapenshardUpgradeTab* pTab); // 0x140c63710
-    virtual ~LapenshardSourceItemSlotBagPanel();                    //  0 0x140c6a1c0 (??_G 0x140c6a4c0)
     virtual void vfunc_1();                                         //  1 0x140c63780 -> vfunc_4
     virtual void vfunc_2();                                         //  2 0x140c637b0 -> vfunc_4
     virtual void vfunc_3();                                         //  3 0x140c637e0
@@ -183,7 +179,6 @@ class LapenshardIngredientItemSlotBagPanel : public LapenshardSystemTabPanelBase
 {
 public:
     LapenshardIngredientItemSlotBagPanel(UILapenshardUpgradeTab* pTab);   // 0x140c63c70
-    virtual ~LapenshardIngredientItemSlotBagPanel();                //  0 0x140c6a180 (??_G 0x140c6a480)
     virtual void vfunc_1();                                         //  1 0x140c63ce0 -> vfunc_4
     virtual void vfunc_2();                                         //  2 0x140c63d10 -> vfunc_4
     virtual void vfunc_3();                                         //  3 0x140c63d40
@@ -207,7 +202,6 @@ class LapenshardUpgradeSlotPanel : public LapenshardSystemTabPanelBase
 {
 public:
     LapenshardUpgradeSlotPanel(UILapenshardUpgradeTab* pTab);       // 0x140c64d50
-    virtual ~LapenshardUpgradeSlotPanel();                          //  0 0x140c6a200 (??_G 0x140c6a500)
     virtual void vfunc_1();                                         //  1 0x140c64e50 -> vfunc_4
     virtual void vfunc_2();                                         //  2 0x140c64e80 -> vfunc_4
     virtual void vfunc_3();                                         //  3 0x140c64eb0
@@ -244,7 +238,6 @@ class UILapenshardUpgradeTab : public LapenshardSystemTabContents
 {
 public:
     UILapenshardUpgradeTab();                                       // 0x140c67de0
-    virtual ~UILapenshardUpgradeTab();                              //  0 0x140c6a2d0 (??_G 0x140c6a540)
     virtual void vfunc_1();                                         //  1 0x140c68090 close the sections
     virtual void vfunc_2(int nEvent);                               //  2 0x140c68260
     virtual void vfunc_3(MS2Ptr<ASUIComponent> ui);                 //  3 0x140c68390
@@ -296,7 +289,6 @@ public:
     {
     public:
         TabInfo(CString strName, CStringW strLabel, LapenshardTabPtr spPage);   // 0x140c61110 (all by value: the callee destroys them)
-        virtual ~TabInfo();                                         //  0 0x140c62b50 (??_G 0x140c62dd0)
 
         CString m_strName;                                          // +0x18
         CStringW m_strLabel;                                        // +0x20
@@ -305,7 +297,6 @@ public:
     typedef MS2Ptr<TabInfo> TabInfoPtr;
 
     UILapenshardSystemDialog();                                     // 0x140c611d0
-    virtual ~UILapenshardSystemDialog();                            //  0 0x140c62ba0 (??_G 0x140c62e10)
     virtual CString GetTypeName();                                      //  1 0x140c612a0 "LapenshardSystemDialog"
     virtual void vfunc_25(void* p1, TPtr<Unk_UISwfEntity_25> p2, void* p3, void* p4);   // 25 0x140c61de0
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);   // 28 0x140c61be0

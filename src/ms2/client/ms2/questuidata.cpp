@@ -170,7 +170,6 @@ void FUN_1416e43d0()
 }
 
 // Reads one quest description file: <ms2><quest questID name name desc complete descFameUI manual count/>.
-// MS2-FUNCTIONAL: ip2state/unwind offsets differ by 2 (temp lifetime of the xml attribute strings)
 // @0x1416e4590
 void FUN_1416e4590(CString strPath)
 {
@@ -187,32 +186,31 @@ void FUN_1416e4590(CString strPath)
     spCache->FUN_1401d1160(strPath);
     for (Unk_140165cf0* pQuest = pRoot->FUN_140165cf0("quest"); pQuest != 0; pQuest = pQuest->FUN_140168650("quest"))
     {
-        if (FUN_14028f650(pQuest))
+        if (!FUN_14028f650(pQuest))
+            continue;
+        MS2Ptr<CQuestUIData> spData(new CQuestUIData);
+        spData->m_nQuestId = atoi(FUN_14015f710(pQuest, "questID", CString("")));
+        spData->m_strName = FUN_1401bf530(pQuest, "name", CStringW(L""));
+        spData->m_strSummary = FUN_1401bf530(pQuest, "name", CStringW(L""));
+        spData->m_strDesc = FUN_1401bf530(pQuest, "desc", CStringW(L""));
+        spData->m_strComplete = FUN_1401bf530(pQuest, "complete", CStringW(L""));
+        spData->m_strDescFameUI = FUN_1401bf530(pQuest, "descFameUI", CStringW(L""));
+        spData->m_strDesc.Replace(L"\\n", L"\n");
+        spData->m_strComplete.Replace(L"\\n", L"\n");
+        spData->m_strDescFameUI.Replace(L"\\n", L"\n");
+        CStringW strManual = FUN_1401bf530(pQuest, "manual", CStringW(L""));
+        CStringW strCount = FUN_1401bf530(pQuest, "count", CStringW(L""));
+        FUN_14025a680(strManual, spData->m_manual, L"|");
+        FUN_1401d9a30(strCount, spData->m_counts, L"|");
+        for (size_t i = 0; i < spData->m_manual.GetCount(); i++)
+            spData->m_manual[i].TrimRight();
+        if (Unk_LockGuard guard = s_lock)
         {
-            MS2Ptr<CQuestUIData> spData(new CQuestUIData);
-            spData->m_nQuestId = atoi(FUN_14015f710(pQuest, "questID", CString("")));
-            spData->m_strName = FUN_1401bf530(pQuest, "name", CStringW(L""));
-            spData->m_strSummary = FUN_1401bf530(pQuest, "name", CStringW(L""));
-            spData->m_strDesc = FUN_1401bf530(pQuest, "desc", CStringW(L""));
-            spData->m_strComplete = FUN_1401bf530(pQuest, "complete", CStringW(L""));
-            spData->m_strDescFameUI = FUN_1401bf530(pQuest, "descFameUI", CStringW(L""));
-            spData->m_strDesc.Replace(L"\\n", L"\n");
-            spData->m_strComplete.Replace(L"\\n", L"\n");
-            spData->m_strDescFameUI.Replace(L"\\n", L"\n");
-            CStringW strManual = FUN_1401bf530(pQuest, "manual", CStringW(L""));
-            CStringW strCount = FUN_1401bf530(pQuest, "count", CStringW(L""));
-            FUN_14025a680(strManual, spData->m_manual, L"|");
-            FUN_1401d9a30(strCount, spData->m_counts, L"|");
-            for (size_t i = 0; i < spData->m_manual.GetCount(); i++)
-                spData->m_manual[i].TrimRight();
-            if (Unk_LockGuard guard = s_lock)
-            {
-            }
-            else
-            {
-                s_quests.SetAt(spData->m_nQuestId, spData);
-                s_caches.SetAt(spData->m_nQuestId, spCache);
-            }
+        }
+        else
+        {
+            s_quests.SetAt(spData->m_nQuestId, spData);
+            s_caches.SetAt(spData->m_nQuestId, spCache);
         }
     }
 }
@@ -338,7 +336,6 @@ void FUN_1416e5890(int nQuestId, ATL::CAtlArray<CStringW>& out)
 }
 
 // The quest title "[type] name" (bLevel: the name with the quest level).
-// MS2-FUNCTIONAL: switch temp spill order differs
 // @0x1416e5900
 CStringW FUN_1416e5900(int nQuestId, bool bLevel)
 {
@@ -356,6 +353,9 @@ CStringW FUN_1416e5900(int nQuestId, bool bLevel)
         case 2:
             strType = GetStringCommon(0x5df);
             break;
+        case 6:
+            strType = GetStringCommonByKey(L"s_quest_guild_quest");
+            break;
         case 3:
             strType = GetStringCommonByKey(L"s_quest_daily_mission");
             break;
@@ -364,9 +364,6 @@ CStringW FUN_1416e5900(int nQuestId, bool bLevel)
             break;
         case 5:
             strType = GetStringCommonByKey(L"s_quest_event_mission");
-            break;
-        case 6:
-            strType = GetStringCommonByKey(L"s_quest_guild_quest");
             break;
         case 8:
             strType = GetStringCommonByKey(L"s_quest_field_quest");
@@ -383,10 +380,10 @@ CStringW FUN_1416e5900(int nQuestId, bool bLevel)
             strType = L"\xad6c\xc5d0\xd53d";
     }
     CStringW strTitle;
-    if (!bLevel)
-        strTitle.Format(L"[%s] %s", (const wchar_t*)strType, (const wchar_t*)FUN_1416e4df0(nQuestId));
-    else
+    if (bLevel)
         strTitle.Format(L"[%s] %s", (const wchar_t*)strType, (const wchar_t*)FUN_1416e5210(nQuestId, CStringW(L"s_quest_name_with_level")));
+    else
+        strTitle.Format(L"[%s] %s", (const wchar_t*)strType, (const wchar_t*)FUN_1416e4df0(nQuestId));
     return strTitle;
 }
 
@@ -417,7 +414,6 @@ MS2Ptr<CQuestUIData> FUN_1416e5f60(int nQuestId)
 }
 
 // Whether the local player may accept / complete the quest: 0 = ok, else the common string id of the reason.
-// MS2-FUNCTIONAL: stack slot assignment of the MS2Ptr temps differs
 // @0x1416e6100
 int FUN_1416e6100(int nQuestId, int bIgnoreNpc)
 {
@@ -451,12 +447,15 @@ int FUN_1416e6100(int nQuestId, int bIgnoreNpc)
                 }
                 else
                 {
-                    if (bIgnoreNpc == 0)
-                        nNpcId = spData->m_2e8;
-                    if (FUN_140764020()->vfunc_1(nQuestId, nNpcId) == 0)
-                        return 0x5d8;
+                    int nEndNpc;
+                    if (bIgnoreNpc)
+                        nEndNpc = nNpcId;
                     else
+                        nEndNpc = spData->m_2e8;
+                    if (FUN_140764020()->vfunc_1(nQuestId, nEndNpc))
                         return 0x5d9;
+                    else
+                        return 0x5d8;
                 }
             }
         }
@@ -523,7 +522,6 @@ CStringW CQuestUIData::FUN_1416e6860(int nIndex)
 }
 MS2_REPLACE_METHOD(0x1416E6860, CQuestUIData, FUN_1416e6860, 143, 0x8292B47D);
 
-// MS2-FUNCTIONAL: frame 0x128 vs 0x118 (extra temps around the quest/condition reads)
 // @0x1416e6900
 CStringW CQuestUIData::FUN_1416e6900(int nIndex, const CStringW& strText)
 {
@@ -546,19 +544,22 @@ CStringW CQuestUIData::FUN_1416e6900(int nIndex, const CStringW& strText)
     if (pPlayer != 0)
     {
         Unk_PayloadPtr<CQuest> spQuest = FUN_140764020()->vfunc_o10_3(m_nQuestId);
-        if (spQuest.get() == 0)
+        if (spQuest.get() != 0)
+        {
+            __int64 nGoal = spData->m_conditions[nIndex]->m_nGoal;
+            __int64 nCurrent = spQuest->IsRewarded() ? nGoal : spQuest->GetProgress(nIndex);
+            if (nCurrent < 0)
+                nCurrent = 0;
+            if (nCurrent > nGoal)
+                nCurrent = nGoal;
+            return FUN_14028dfa0(CStringW(L"s_quest_desc_with_count"), str, nCurrent, nGoal);
+        }
+        else
         {
             __int64 nGoal = spData->m_conditions[nIndex]->m_nGoal;
             __int64 nCurrent = 0;
             return FUN_14028dfa0(CStringW(L"s_quest_desc_with_count"), str, nCurrent, nGoal);
         }
-        __int64 nGoal = spData->m_conditions[nIndex]->m_nGoal;
-        __int64 nCurrent = spQuest->IsRewarded() == 0 ? spQuest->GetProgress(nIndex) : nGoal;
-        if (nCurrent < 0)
-            nCurrent = 0;
-        if (nGoal < nCurrent)
-            nCurrent = nGoal;
-        return FUN_14028dfa0(CStringW(L"s_quest_desc_with_count"), str, nCurrent, nGoal);
     }
     return str;
 }
@@ -675,7 +676,6 @@ void LoadChapterDescriptions()
 }
 
 // Reads one chapter description file: <ms2><chapter id name desc isTutorial/>.
-// MS2-FUNCTIONAL: stack slot order of the xml attribute temps differs
 // @0x1416e7c00
 void FUN_1416e7c00(CString strPath)
 {
@@ -690,18 +690,17 @@ void FUN_1416e7c00(CString strPath)
     }
     for (Unk_140165cf0* pChapter = pRoot->FUN_140165cf0("chapter"); pChapter != 0; pChapter = pChapter->FUN_140168650("chapter"))
     {
-        if (FUN_14028f710(pChapter))
-        {
-            MS2Ptr<CChapterUIData> spChapter(new CChapterUIData);
-            spChapter->m_nId = FUN_140197350(pChapter, "id", 0);
-            CStringW strName = FUN_1401bf530(pChapter, "name", CStringW(L""));
-            CStringW strDesc = FUN_1401bf530(pChapter, "desc", CStringW(L""));
-            FUN_1403b4750()->FUN_1416fb380(strName);
-            FUN_1403b4750()->FUN_1416fb380(strDesc);
-            spChapter->m_strName = strName;
-            FUN_1408731e0(pChapter, "isTutorial", spChapter->m_bTutorial);
-            s_chapters.SetAt(spChapter->m_nId, spChapter);
-        }
+        if (!FUN_14028f710(pChapter))
+            continue;
+        MS2Ptr<CChapterUIData> spChapter(new CChapterUIData);
+        spChapter->m_nId = FUN_140197350(pChapter, "id", 0);
+        CStringW strName = FUN_1401bf530(pChapter, "name", CStringW(L""));
+        CStringW strDesc = FUN_1401bf530(pChapter, "desc", CStringW(L""));
+        FUN_1403b4750()->FUN_1416fb380(strName);
+        FUN_1403b4750()->FUN_1416fb380(strDesc);
+        spChapter->m_strName = strName;
+        FUN_1408731e0(pChapter, "isTutorial", spChapter->m_bTutorial);
+        s_chapters.SetAt(spChapter->m_nId, spChapter);
     }
 }
 

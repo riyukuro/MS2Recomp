@@ -63,7 +63,7 @@ CPVPCameraMode::CPVPCameraMode(Unk_CameraOwner* pOwner, MS2Ptr<CCameraMode> pPre
     : CTargetCameraMode(pOwner, pPrev),
       m_108(0),
       m_110(NULL),
-      m_118(0.02f),
+      m_118(0.005f),
       m_11c(500.0f),
       m_120(800.0f),
       m_124(2000.0f),

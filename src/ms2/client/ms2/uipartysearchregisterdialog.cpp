@@ -77,7 +77,7 @@ void FUN_14151f200();
 void FUN_140a30ad0(const BlockPtr& rec, int action, unsigned long long cb);
 CBlockManager* FUN_140a6a830();
 CPartyManager* FUN_1409670d0();
-bool FUN_140695080(CMatchPartyRecruit* pRecruit);   // recruitId == 0
+int FUN_140695080(CMatchPartyRecruit* pRecruit);   // recruitId == 0
 
 // Name filter (bad words) of the title.
 class Unk_PsFilter : public CPtred
@@ -132,16 +132,17 @@ class UIPartySearchDialog : public UIObject
 {
 };
 
-// The request sent to the server (Unk_PartyRecruitRequest) with its out-of-line constructor/destructor.
-struct Unk_PsRequest
+// The request sent to the server (Unk_PartyRecruitRequest) with its out-of-line constructor/destructor (same
+// layout as manufacture.cpp's Unk_140694210).
+struct Unk_140694210
 {
-    void* m_pszTitle;                   // CStringW
-    unsigned int m_kind;
-    int m_fieldId;
+    Unk_140694210();                    // 0x140694210
+    ~Unk_140694210();                   // 0x140694250
+    CStringW m_00;                      // title
+    unsigned m_08;                      // kind
+    int m_0c;                           // field id
 };
-MS2_CHECK_SIZE(Unk_PsRequest, 0x10);
-Unk_PsRequest* FUN_140694210(Unk_PsRequest* pRequest);
-void FUN_140694250(Unk_PsRequest* pRequest);
+MS2_CHECK_SIZE(Unk_140694210, 0x10);
 
 // @0x1413226d0
 UIPartySearchDialog* FUN_1413226d0(int nUiId)
@@ -226,54 +227,52 @@ void UIPartySearchRegisterDialog::OnLoadInit()
 }
 
 // @0x141320a10
-// MS2-FUNCTIONAL: OnLoadComplete: stack frame/temp ordering differs from the exe (large GFx bind sequence)
 void UIPartySearchRegisterDialog::OnLoadComplete()
 {
     UIModalDialog::OnLoadComplete();
     FUN_141925ec0("m_closeButton");
-    if (!(m_30 == 0))
+    if (m_30 == 0)
+        return;
+    UIPartySearchDialog* pSearch = FUN_1413226d0(0x4eda);
+    if (pSearch == 0)
     {
-        if (FUN_1413226d0(0x4eda) == 0)
+        vfunc_67();
+    }
+    else
+    {
+        do { m_30->FUN_140bbe7c0("m_maxUserCountCombo", m_1b0); if (m_1b0 == 0) throw new GfxExceptionSwfLoad(StringFormat("GfxError:{0} {1}({2}) function:{3}", "SwfLoadError", MS2_THIS_FILE, MS2_LINE(72), __FUNCTION__)); } while (0);
+        do { m_30->FUN_140bbe940("m_inputTitle", m_1c0); if (m_1c0 == 0) throw new GfxExceptionSwfLoad(StringFormat("GfxError:{0} {1}({2}) function:{3}", "SwfLoadError", MS2_THIS_FILE, MS2_LINE(73), __FUNCTION__)); } while (0);
+        do { m_30->FUN_140c12010("m_checkAllowAutoJoin", m_1d0); if (m_1d0 == 0) throw new GfxExceptionSwfLoad(StringFormat("GfxError:{0} {1}({2}) function:{3}", "SwfLoadError", MS2_THIS_FILE, MS2_LINE(74), __FUNCTION__)); } while (0);
+        do { m_30->FUN_140bbe640("m_btnRegister", m_1e0); if (m_1e0 == 0) throw new GfxExceptionSwfLoad(StringFormat("GfxError:{0} {1}({2}) function:{3}", "SwfLoadError", MS2_THIS_FILE, MS2_LINE(75), __FUNCTION__)); } while (0);
+        do { m_30->FUN_140bbe640("m_btnRemove", m_1f0); if (m_1f0 == 0) throw new GfxExceptionSwfLoad(StringFormat("GfxError:{0} {1}({2}) function:{3}", "SwfLoadError", MS2_THIS_FILE, MS2_LINE(76), __FUNCTION__)); } while (0);
+
+        m_1b0->FUN_1422dfc10();
+        m_1b0->FUN_1422df5f0((unsigned int)FUN_1401d3200()->m_e770.FUN_1401910d0());
+        m_1e0->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIPartySearchRegisterDialog::FUN_141322400), 0);
+        m_1f0->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIPartySearchRegisterDialog::FUN_141322520), 0);
+        for (unsigned int i = 0; i < (unsigned int)FUN_1401d3200()->m_e770.FUN_1401910d0(); ++i)
         {
-            vfunc_67();
+            m_1b0->FUN_1422dfce0(FUN_140719630(*FUN_1401d3200()->m_e770.FUN_1404f0a10(i)));
+        }
+        CMatchPartyRecruit* pRecruit = &FUN_1409670d0()->FUN_141631ce0();
+        if (FUN_140695080(pRecruit))
+        {
+            m_1c0->FUN_1422e0ab0(m_190.m_text);
+            m_1d0->FUN_1422ce090((unsigned int)m_190.m_flag);
+            m_1b0->FUN_1422df690((int)(FUN_1401d3200()->m_e770.FUN_1401910d0() - 1));
+            m_1e0->vfunc_4(1);
+            m_1f0->vfunc_4(0);
         }
         else
         {
-            do { m_30->FUN_140bbe7c0("m_maxUserCountCombo", m_1b0); if (m_1b0 == 0) throw new GfxExceptionSwfLoad(StringFormat("GfxError:{0} {1}({2}) function:{3}", "SwfLoadError", MS2_THIS_FILE, MS2_LINE(72), __FUNCTION__)); } while (0);
-            do { m_30->FUN_140bbe940("m_inputTitle", m_1c0); if (m_1c0 == 0) throw new GfxExceptionSwfLoad(StringFormat("GfxError:{0} {1}({2}) function:{3}", "SwfLoadError", MS2_THIS_FILE, MS2_LINE(73), __FUNCTION__)); } while (0);
-            do { m_30->FUN_140c12010("m_checkAllowAutoJoin", m_1d0); if (m_1d0 == 0) throw new GfxExceptionSwfLoad(StringFormat("GfxError:{0} {1}({2}) function:{3}", "SwfLoadError", MS2_THIS_FILE, MS2_LINE(74), __FUNCTION__)); } while (0);
-            do { m_30->FUN_140bbe640("m_btnRegister", m_1e0); if (m_1e0 == 0) throw new GfxExceptionSwfLoad(StringFormat("GfxError:{0} {1}({2}) function:{3}", "SwfLoadError", MS2_THIS_FILE, MS2_LINE(75), __FUNCTION__)); } while (0);
-            do { m_30->FUN_140bbe640("m_btnRemove", m_1f0); if (m_1f0 == 0) throw new GfxExceptionSwfLoad(StringFormat("GfxError:{0} {1}({2}) function:{3}", "SwfLoadError", MS2_THIS_FILE, MS2_LINE(76), __FUNCTION__)); } while (0);
-
-            m_1b0->FUN_1422dfc10();
-            unsigned long long nCount = FUN_1401d3200()->m_e770.FUN_1401910d0();
-            m_1b0->FUN_1422df5f0((unsigned int)nCount);
-            m_1e0->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIPartySearchRegisterDialog::FUN_141322400), 0);
-            m_1f0->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIPartySearchRegisterDialog::FUN_141322520), 0);
-            for (unsigned int i = 0; i < (unsigned int)FUN_1401d3200()->m_e770.FUN_1401910d0(); ++i)
-            {
-                m_1b0->FUN_1422dfce0(FUN_140719630(*FUN_1401d3200()->m_e770.FUN_1404f0a10(i)));
-            }
-            CMatchPartyRecruit* pRecruit = &FUN_1409670d0()->FUN_141631ce0();
-            if (!FUN_140695080(pRecruit))
-            {
-                m_1c0->FUN_1422c1fe0(0);
-                m_1d0->FUN_1422c1fe0(0);
-                m_1b0->FUN_1422c1fe0(0);
-                m_1c0->FUN_1422e0ab0(pRecruit->title);
-                m_1d0->FUN_1422ce090(pRecruit->minimumLevel);
-                m_1b0->FUN_1422df690(FUN_141322380(pRecruit->members));
-                m_1e0->vfunc_4(0);
-                m_1f0->vfunc_4(1);
-            }
-            else
-            {
-                m_1c0->FUN_1422e0ab0(m_190.m_text);
-                m_1d0->FUN_1422ce090((unsigned int)m_190.m_flag);
-                m_1b0->FUN_1422df690((int)(FUN_1401d3200()->m_e770.FUN_1401910d0() - 1));
-                m_1e0->vfunc_4(1);
-                m_1f0->vfunc_4(0);
-            }
+            m_1c0->FUN_1422c1fe0(0);
+            m_1d0->FUN_1422c1fe0(0);
+            m_1b0->FUN_1422c1fe0(0);
+            m_1c0->FUN_1422e0ab0(pRecruit->title);
+            m_1d0->FUN_1422ce090(pRecruit->minimumLevel);
+            m_1b0->FUN_1422df690(FUN_141322380(pRecruit->members));
+            m_1e0->vfunc_4(0);
+            m_1f0->vfunc_4(1);
         }
     }
 }
@@ -385,7 +384,6 @@ int UIPartySearchRegisterDialog::FUN_141322020()
 }
 
 // @0x1413220d0
-// MS2-FUNCTIONAL: FUN_1413220d0: one extra unwind state and +8 frame offsets (Unk_PsRequest temp placement)
 int UIPartySearchRegisterDialog::FUN_1413220d0(Unk_PsRegState* pState, int bSilent)
 {
     if (pState->m_text.GetLength() < 2)
@@ -404,15 +402,13 @@ int UIPartySearchRegisterDialog::FUN_1413220d0(Unk_PsRegState* pState, int bSile
     }
     unsigned char nAutoJoin = pState->m_flag;
     CStringW* pTitle = &pState->m_text;
-    Unk_PsRequest request;
-    FUN_140694210(&request);
-    *(CStringW*)&request.m_pszTitle = *pTitle;
-    request.m_kind = nAutoJoin;
-    request.m_fieldId = FUN_141322020();
+    Unk_140694210 request;
+    request.m_00 = *pTitle;
+    request.m_08 = nAutoJoin;
+    request.m_0c = FUN_141322020();
     if (bSilent == 0)
         FUN_1409670d0()->SendMatchPartyMode0(*(const Unk_PartyRecruitRequest*)&request);
     FUN_141321cc0(pTitle, nAutoJoin, &m_190);
-    FUN_140694250(&request);
     return 1;
 }
 

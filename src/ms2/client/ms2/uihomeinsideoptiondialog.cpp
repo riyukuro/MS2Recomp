@@ -55,7 +55,7 @@ public:
     virtual void vfunc_21();
     virtual void vfunc_22();
     virtual void vfunc_23();
-    virtual void vfunc_24(int nEnable);                         // 24
+    virtual void vfunc_24(bool bEnable);                        // 24
     void FUN_1422dfc10();                                       // clear the items
     void FUN_1422dfc70(const ASObj& item);                    // add an item
     void FUN_1422df690(unsigned int nSelected);                 // select
@@ -109,7 +109,6 @@ CString UIHomeInsideOptionDialog::GetTypeName()
 }
 
 // @0x140c27440
-// MS2-FUNCTIONAL: the exe keeps extra call-result temporaries (frame / slot order differs); source form unknown
 void UIHomeInsideOptionDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
@@ -118,76 +117,66 @@ void UIHomeInsideOptionDialog::OnLoadComplete()
     ATL::CRBMap<unsigned, MS2Ptr<UgcHomeBgData> >* pBgs = &UgcHomeOptionData::GetInstance()->m_mapBg;
     if (!pBgs->IsEmpty())
     {
-        MS2Ptr<Unk_HioCombo> spCombo = FUN_140c28560<Unk_HioCombo>("m_background");
-        if (spCombo.get() != 0)
+        if (MS2Ptr<Unk_HioCombo> spCombo = FUN_140c28560<Unk_HioCombo>("m_background"))
         {
             spCombo.operator->()->FUN_1422dfc10();
             for (POSITION pos = pBgs->GetHeadPosition(); pos != 0; pBgs->GetNext(pos))
             {
                 MS2Ptr<UgcHomeBgData> spRow = pBgs->GetValueAt(pos);
-                if (!(spRow == 0))
-                {
-                    ASObj item(2);
-                    item.FUN_1407cbb20("label", spRow->m_strName);
-                    spCombo.operator->()->FUN_1422dfc70(item);
-                }
+                if (spRow == 0)
+                    continue;
+                ASObj item(2);
+                item.FUN_1407cbb20("label", spRow->m_strName);
+                spCombo.operator->()->FUN_1422dfc70(item);
             }
-            unsigned int nSelected = setting.m_nBg;
-            spCombo.operator->()->FUN_1422df690(nSelected);
+            spCombo.operator->()->FUN_1422df690(static_cast<unsigned int>(setting.m_nBg));
             Unk_HioCombo* pCombo = spCombo.operator->();
-            pCombo->vfunc_24(1);
+            pCombo->vfunc_24(true);
         }
     }
     ATL::CRBMap<unsigned, MS2Ptr<UgcHomeLightData> >* pLights = &UgcHomeOptionData::GetInstance()->m_mapLight;
     if (!pLights->IsEmpty())
     {
-        MS2Ptr<Unk_HioCombo> spCombo = FUN_140c28560<Unk_HioCombo>("m_light");
-        if (spCombo.get() != 0)
+        if (MS2Ptr<Unk_HioCombo> spCombo = FUN_140c28560<Unk_HioCombo>("m_light"))
         {
             spCombo.operator->()->FUN_1422dfc10();
             for (POSITION pos = pLights->GetHeadPosition(); pos != 0; pLights->GetNext(pos))
             {
                 MS2Ptr<UgcHomeLightData> spRow = pLights->GetValueAt(pos);
-                if (!(spRow == 0))
-                {
-                    ASObj item(2);
-                    item.FUN_1407cbb20("label", spRow->m_strName);
-                    spCombo.operator->()->FUN_1422dfc70(item);
-                }
+                if (spRow == 0)
+                    continue;
+                ASObj item(2);
+                item.FUN_1407cbb20("label", spRow->m_strName);
+                spCombo.operator->()->FUN_1422dfc70(item);
             }
-            unsigned int nSelected = setting.m_nLight;
-            spCombo.operator->()->FUN_1422df690(nSelected);
+            spCombo.operator->()->FUN_1422df690(static_cast<unsigned int>(setting.m_nLight));
             Unk_HioCombo* pCombo = spCombo.operator->();
-            pCombo->vfunc_24(1);
+            pCombo->vfunc_24(true);
         }
     }
     ATL::CRBMap<unsigned, MS2Ptr<UgcHomeCameraData> >* pCameras = &UgcHomeOptionData::GetInstance()->m_mapCamera;
     if (!pCameras->IsEmpty())
     {
-        MS2Ptr<Unk_HioCombo> spCombo = FUN_140c28560<Unk_HioCombo>("m_camera");
-        if (spCombo.get() != 0)
+        if (MS2Ptr<Unk_HioCombo> spCombo = FUN_140c28560<Unk_HioCombo>("m_camera"))
         {
             spCombo.operator->()->FUN_1422dfc10();
             for (POSITION pos = pCameras->GetHeadPosition(); pos != 0; pCameras->GetNext(pos))
             {
                 MS2Ptr<UgcHomeCameraData> spRow = pCameras->GetValueAt(pos);
-                if (!(spRow == 0))
-                {
-                    ASObj item(2);
-                    item.FUN_1407cbb20("label", spRow->m_strName);
-                    spCombo.operator->()->FUN_1422dfc70(item);
-                }
+                if (spRow == 0)
+                    continue;
+                ASObj item(2);
+                item.FUN_1407cbb20("label", spRow->m_strName);
+                spCombo.operator->()->FUN_1422dfc70(item);
             }
-            unsigned int nSelected = setting.m_nCamera;
-            spCombo.operator->()->FUN_1422df690(nSelected);
+            spCombo.operator->()->FUN_1422df690(static_cast<unsigned int>(setting.m_nCamera));
             Unk_HioCombo* pCombo = spCombo.operator->();
-            pCombo->vfunc_24(1);
+            pCombo->vfunc_24(true);
         }
     }
 }
 
 // @0x140c27af0
-// MS2-FUNCTIONAL: the exe keeps extra call-result temporaries (frame / slot order differs); source form unknown
 int UIHomeInsideOptionDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs)
 {
     UIDialog::vfunc_28(szMethod, pArgs, nArgs);
@@ -202,14 +191,9 @@ int UIHomeInsideOptionDialog::vfunc_28(const char* szMethod, const Scaleform::GF
     }
     else if (_stricmp("OnConfirm", szMethod) == 0)
     {
-        MS2Ptr<Unk_HioButton> spApply = FUN_140bb4b10("m_apply");
-        if (spApply.get() != 0)
+        if (MS2Ptr<Unk_HioButton> spApply = FUN_140bb4b10("m_apply"))
         {
-            if (spApply.operator->()->FUN_1422c2030() == 0)
-            {
-                vfunc_67();
-            }
-            else
+            if (spApply.operator->()->FUN_1422c2030() != 0)
             {
                 MS2Ptr<CMsgBoxData> box = FUN_140d73d20(1, FUN_140298ea0(CStringW(L"s_home_option_msg_confirm")), 0, CStringW(L""));
                 if (box.get() != 0)
@@ -217,6 +201,10 @@ int UIHomeInsideOptionDialog::vfunc_28(const char* szMethod, const Scaleform::GF
                     box.operator->()->FUN_141a027c0(HioAnswerDelegate(this, &UIHomeInsideOptionDialog::FUN_140c28000));
                     FUN_140d73c60(box);
                 }
+            }
+            else
+            {
+                vfunc_67();
             }
         }
     }
@@ -232,13 +220,11 @@ bool UIHomeInsideOptionDialog::FUN_140c27fd0(int nResult, const CMsgBoxData& box
 }
 
 // @0x140c28000
-// MS2-FUNCTIONAL: the exe keeps three copies of the bind result pointer (frame 0x20 larger); source form unknown
 bool UIHomeInsideOptionDialog::FUN_140c28000(int nResult, const CMsgBoxData& box)
 {
     if (nResult == 0)
     {
-        MS2Ptr<Unk_HioButton> spApply = FUN_140bb4b10("m_apply");
-        if (spApply.get() != 0)
+        if (MS2Ptr<Unk_HioButton> spApply = FUN_140bb4b10("m_apply"))
         {
             if (spApply.operator->()->FUN_1422c2030() != 0)
                 FUN_140c280d0();
@@ -249,11 +235,9 @@ bool UIHomeInsideOptionDialog::FUN_140c28000(int nResult, const CMsgBoxData& box
 }
 
 // @0x140c280d0
-// MS2-FUNCTIONAL: the exe keeps extra call-result temporaries (frame / slot order differs); source form unknown
 void UIHomeInsideOptionDialog::FUN_140c280d0()
 {
-    MS2Ptr<Unk_HioCombo> spBg = FUN_140c28560<Unk_HioCombo>("m_background");
-    if (spBg.get() != 0)
+    if (MS2Ptr<Unk_HioCombo> spBg = FUN_140c28560<Unk_HioCombo>("m_background"))
     {
         unsigned char nSelected = spBg.operator->()->FUN_1422df6c0();
         COutPacket packet(static_cast<int>(SendOp::RequestCube), 0);
@@ -261,8 +245,7 @@ void UIHomeInsideOptionDialog::FUN_140c280d0()
         packet.WriteUInt8(nSelected);
         FUN_140710590(packet);
     }
-    MS2Ptr<Unk_HioCombo> spLight = FUN_140c28560<Unk_HioCombo>("m_light");
-    if (spLight.get() != 0)
+    if (MS2Ptr<Unk_HioCombo> spLight = FUN_140c28560<Unk_HioCombo>("m_light"))
     {
         unsigned char nSelected = spLight.operator->()->FUN_1422df6c0();
         COutPacket packet(static_cast<int>(SendOp::RequestCube), 0);
@@ -270,8 +253,7 @@ void UIHomeInsideOptionDialog::FUN_140c280d0()
         packet.WriteUInt8(nSelected);
         FUN_140710590(packet);
     }
-    MS2Ptr<Unk_HioCombo> spCamera = FUN_140c28560<Unk_HioCombo>("m_camera");
-    if (spCamera.get() != 0)
+    if (MS2Ptr<Unk_HioCombo> spCamera = FUN_140c28560<Unk_HioCombo>("m_camera"))
     {
         unsigned char nSelected = spCamera.operator->()->FUN_1422df6c0();
         COutPacket packet(static_cast<int>(SendOp::RequestCube), 0);
@@ -279,21 +261,16 @@ void UIHomeInsideOptionDialog::FUN_140c280d0()
         packet.WriteUInt8(nSelected);
         FUN_140710590(packet);
     }
-    MS2Ptr<Unk_HioButton> spApply = FUN_140bb4b10("m_apply");
-    if (spApply.get() != 0)
+    if (MS2Ptr<Unk_HioButton> spApply = FUN_140bb4b10("m_apply"))
         spApply.operator->()->FUN_1422c1fe0(0);
 }
 
 // @0x140c28560
-// MS2-FUNCTIONAL: branch layout of the return-by-value binder differs by two bytes; source form unknown
 template <class T> MS2Ptr<T> UIHomeInsideOptionDialog::FUN_140c28560(const CString& strName)
 {
     if (FUN_140ba28d0(&m_30, 0))
     {
         return MS2Ptr<T>(0);
     }
-    else
-    {
-        return static_cast<Unk_HioScript*>(m_30.operator->())->FUN_140bbe700<T>(strName);
-    }
+    return static_cast<Unk_HioScript*>(m_30.operator->())->FUN_140bbe700<T>(strName);
 }

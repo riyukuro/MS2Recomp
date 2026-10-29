@@ -51,6 +51,7 @@
 #include <efd/SmartPointer.h>
 #include <egf/EntityManager.h>
 #include <egf/Scheduler.h>
+#include <egf/EntityID.h>
 
 #include "ms2/ms2layout.h"
 #include "ms2/placeholder/ascript.h"                // MS2Ptr<T> (16-byte game smart pointer)
@@ -72,7 +73,7 @@ public:
 };
 
 namespace efd { class ServiceManager; class MessageService; class AssetLoadResponse; }
-namespace egf { class FlatModelFactoryResponse; class EntityLoadResult; class EntityChangeMessage; class Entity; }
+namespace egf { class FlatModelFactoryResponse; class EntityLoadResult; class EntityChangeMessage; class Entity; class EntityID; }
 class NiNode;
 namespace ecrPhysX { class PhysXPropMessage; }
 namespace egmAnimation { class ActorAddedMessage; class ActorRemovedMessage; }
@@ -175,9 +176,36 @@ struct Unk_WsV848 { void* p0; void* p1; };
 struct Unk_WsV930 { void* p0; void* p1; };
 struct Unk_WsV980 { void* p; };                                  // intrusive pointer to a ticking task (OnTick, G)
 struct Unk_WsV990 { void* p; };                                  // intrusive pointer to a ticking task (OnTick, G)
+// m_980 / m_990 values as FUN_141bd86e0 / FUN_141bd87a0 return them (by value); the ctors are exe COMDATs pinned in
+// worldservice_1.cpp, the dtors are defined there inline over the release COMDATs.
+struct Unk_WsR980 : Unk_WsP8
+{
+    Unk_WsR980(int zero);                   // 0x141bf0f50
+    Unk_WsR980(const Unk_WsV980& src);      // 0x141bf0f10
+    ~Unk_WsR980();                          // 0x141bf5440
+};
+struct Unk_WsR990 : Unk_WsP8
+{
+    Unk_WsR990(int zero);                   // 0x141bf0ed0
+    Unk_WsR990(const Unk_WsV990& src);      // 0x141bf0e90
+    ~Unk_WsR990();                          // 0x141bf5410
+};
+// The by-value m_3f0 value / key that FUN_141bc3470 takes (callee releases both); their == / get / dtor are the
+// exe COMDATs, defined inline in worldservice_1.cpp.
+struct Unk_WsR3f0Val : Unk_WsP16
+{
+    bool operator==(void* p) const;         // 0x1412350e0
+    ~Unk_WsR3f0Val();                       // 0x141234e70
+};
+struct Unk_WsR3f0Key : Unk_WsP16
+{
+    void* get() const;                      // 0x141235260
+    ~Unk_WsR3f0Key();                       // 0x1410a6d40
+};
 struct Unk_WsV9a0 { void* p0; void* p1; };                      // p1 = an actor-like object (OnTick, G)
 class Unk_WsK_Rank : public CPtred {};                          // rank record shown by the interact display image (refcounted)
 template <> void MS2Ptr<Unk_WsK_Rank>::ReleaseImpl(void*);   // explicit specialization lives in unit_141bb15d0
+template <> void MS2Ptr<Unk_WsK_Rank>::AddRefImpl(void*) const;   // ditto: the generic one would add-ref m_p, not m_p - 0x18
 // queued (name, text) / (name, rank) entries: the exe's vector elements are plain std::pair instantiations
 struct Unk_WsVa00 : std::pair<CStringA, CStringW> {};
 struct Unk_WsVa18 : std::pair<CStringA, MS2Ptr<Unk_WsK_Rank> > {};
@@ -290,13 +318,13 @@ public:
     void FUN_141bc6a20(int n);                          // each m_678 value: vfunc 3(n), FUN_141bc6af0
     void FUN_141bc6af0(Unk_WsP16& sp);                  // (unrecovered, #1)
     void FUN_141bca6d0(void* pMsg);                     // dispatch on pMsg+8 vfunc 1 (0/1/2)
-    void FUN_141bca770(void* pMsg);                     // (unrecovered, #1)
+    void FUN_141bca770(class Unk_WsB_Packet* pMsg);     // read the field properties of the message
     void FUN_141bca8c0(void* pMsg);                     // (unrecovered, #1)
     void FUN_141bca9b0(void* pMsg);                     // (unrecovered, #1)
     int FUN_141bcfbd0();                                // m_state == 4 && m_2b4 != 0
     // per-part member declaration files (ws4 workers; folded into this header when the unit is finished)
     // ---- helper A (0x141bbaf00 .. 0x141bc3fff) ----
-    int FUN_141bbaf00(GameObject* obj, const unsigned __int64& id, bool bNewlyAdded);   // register a created object's entity
+    int FUN_141bbaf00(GameObject* obj, egf::EntityID id, bool bNewlyAdded);   // register a created object's entity
     int FUN_141bbb1e0(GameObject* obj, int bFullInit, unsigned cameraArg);   // OnObjectCreated: register in the object maps
     void FUN_141bbb7f0(GameObject* obj, int bImmediate);                         // OnObjectDestroyed: unregister from the object maps
     void FUN_141bbbc60(const egf::EntityID& id, int bImmediate);                 // destroy the object registered under entity id
@@ -318,10 +346,10 @@ public:
     void FUN_141bc30a0(int id, int visible);                                           // set the field object's visible property
     void FUN_141bc3140(int id, int visible, int enabled, int hidden);                  // set the field object's visible / enabled / hidden properties
     void FUN_141bc31d0(int id, Vector3 pos, Vector3 scale);            // set the field object's position / scale
-    bool FUN_141bc32d0(void* obj);                                                     // register obj (id at +0x40) in m_3a0; true if it was new
+    int FUN_141bc32d0(void* obj);                                                      // register obj (id at +0x40) in m_3a0; 1 if it was new
     void* FUN_141bc3360(int id);                                                       // m_3a0 lookup, or null
     void FUN_141bc33d0(int id);                                                        // unregister id from m_3a0 after removing its effects / sounds
-    void FUN_141bc3470(const Unk_WsP16& value, const Unk_WsP16& key);                  // m_3f0.SetAt(key, value) when key is registrable (callee releases both)
+    void FUN_141bc3470(Unk_WsR3f0Val value, Unk_WsR3f0Key key);                  // m_3f0.SetAt(key, value) when key is registrable (callee releases both)
     void FUN_141bc2c90(Vector3 pt, void* outRefs);                             // field objects containing pt appended to the ref array, sorted nearest first
     // ws4 part B member declarations (0x141bc4000..0x141bcb2ff)
     void FUN_141bc49c0(); // 0x141bc49c0
@@ -353,8 +381,8 @@ public:
     efd::SmartPointer<class Unk_WsB_Spawn> FUN_141bc6eb0(const CString& name); // 0x141bc6eb0
     int FUN_141bc6fb0(int* a, int* b, int* c, int* flag) const;  // 0x141bc6fb0 (returns 0/1 in eax)
     class FieldProperty* FUN_141bcab60(unsigned type); // 0x141bcab60
-    bool FUN_141bc7920(std::set<void*>& visible); // 0x141bc7920
-    bool FUN_141bc7aa0(int id, std::set<unsigned __int64>& out); // 0x141bc7aa0
+    int FUN_141bc7920(std::set<void*>& visible); // 0x141bc7920 (returns 0/1 in eax)
+    int FUN_141bc7aa0(int id, std::set<unsigned __int64>& out);  // 0x141bc7aa0 (returns !out.empty() as an int)
     bool FUN_141bc7b20(const unsigned __int64& key); // 0x141bc7b20 (merge3: is `key` present in m_1d8; was mis-recovered as erase(iterator))
     void FUN_141bc7b80(int force); // 0x141bc7b80
     void FUN_141bc7d40(const unsigned __int64& key); // 0x141bc7d40
@@ -368,8 +396,8 @@ public:
     void FUN_141bc9020(CString name, class Unk_WsB_ShakeRef shake, CString shakeName, bool flag); // 0x141bc9020
     void FUN_141bc92e0(CString name); // 0x141bc92e0
     void FUN_141bc9480(CString name); // 0x141bc9480
-    void FUN_141bc9560(CString name, CString model, char mode); // 0x141bc9560
-    bool FUN_141bc9830(int* id, CString& name, float maxDist); // 0x141bc9830
+    void FUN_141bc9560(CString name, CString model, unsigned char mode); // 0x141bc9560
+    int  FUN_141bc9830(int* id, CString& name, float maxDist); // 0x141bc9830
     void FUN_141bc9aa0(MS2Ptr<class Unk_WsB_Notice> notice); // 0x141bc9aa0
     void FUN_141bc9b30(unsigned id); // 0x141bc9b30
     MS2Ptr<class Unk_WsB_Notice> FUN_141bc9be0(unsigned id); // 0x141bc9be0
@@ -381,7 +409,7 @@ public:
     int FUN_141bca4f0(float* z); // 0x141bca4f0
     void FUN_141bcaa80(); // 0x141bcaa80
     void FUN_141bcabf0(); // 0x141bcabf0
-    int FUN_141bcada0(__int64 id); // 0x141bcada0
+    bool FUN_141bcada0(__int64 id); // 0x141bcada0
     int FUN_141bcafa0(egf::Entity* entity); // 0x141bcafa0
     bool FUN_141bcb0a0(); // 0x141bcb0a0
     bool FUN_141bcb150(); // 0x141bcb150
@@ -446,13 +474,13 @@ public:
     CStringW* FUN_141bd3080();                          // &m_290
     MS2Ptr<Unk_WsPtred298> FUN_141bd30a0();             // copy of m_298
     void FUN_141bd30f0(char b);                         // set shadow flag on every m_2e8 entity's scene graph + hw instancing
-    Unk_WsP16* FUN_141bd3210(Unk_WsP16* out, Vector3 pt);   // field object containing pt, else the nearest (m_2f8)
-    Unk_WsP16* FUN_141bd3430(Unk_WsP16* out, unsigned __int64 key); // m_2f8 lookup
+    class Unk_WsA_GoFieldRef FUN_141bd3210(Vector3 pt);   // field object containing pt, else the nearest (m_2f8)
+    class Unk_WsA_GoFieldRef FUN_141bd3430(unsigned __int64 key); // m_2f8 lookup
     TextureLayerManager* GetTextureLayerManager();               // return m_spTextureLayerManager
     ChaosLightEffectLayerManager* GetChaosLightEffectLayerManager();      // return m_spChaosLightEffectLayerManager
     ATL::CRBMap<unsigned, Unk_WsV118>* FUN_141bd36b0(); // &m_118
     ATL::CRBMap<unsigned, Unk_WsV148>* FUN_141bd36d0(); // &m_148
-    bool FUN_141bd36f0(Vector3 pt, Vector3* pOut);   // offset of pt outside the world bounds into *pOut; true if inside
+    int FUN_141bd36f0(Vector3 pt, Vector3* pOut);    // offset of pt outside the world bounds into *pOut; nonzero if inside
     Vector3 GetBoundsMin();                    // m_boundsMin
     Vector3 GetBoundsMax();                    // m_boundsMax
     void FUN_141bd3860();                               // m_978 = 1
@@ -481,7 +509,7 @@ public:
     int FUN_141bd4ed0(const std::set<int>& ids, Vector3* pOutPos, float* pOutDist);                // nearest m_678 object in ids
     int FUN_141bd51a0(const std::set<unsigned>& ids, Vector3* pOutPos, float* pOutDist);           // nearest m_510 object in ids
     void FUN_141bd5460();                               // each m_208 value: FUN_141b948b0(list) (RemoveAll)
-    void FUN_141bd5500(unsigned modelId, Unk_WsP8* pEntity);   // drop the entity from m_208[modelId]'s list; destroys *pEntity
+    void FUN_141bd5500(unsigned modelId, efd::SmartPointer<egf::Entity> spEntity);   // drop the entity from m_208[modelId]'s list
     void FUN_141bd5650();                               // player->m_250 notification (1)
     void FUN_141bd5ff0();                               // deliver pending notifications (m_2b0/m_2ac) to the m_048 listeners
     void FUN_141bd6170(int n1, int n2);                 // process n1 entities of m_088 and n2 of m_098
@@ -501,11 +529,11 @@ public:
     void FUN_141bd8680(int v);                          // m_8f8 = v
     int FUN_141bd86a0();                                // m_8f4
     int FUN_141bd86c0();                                // m_8f8
-    Unk_WsP8* FUN_141bd86e0(Unk_WsP8* out, unsigned __int64 id);   // m_980 lookup
-    Unk_WsP8* FUN_141bd87a0(Unk_WsP8* out, unsigned __int64 id);   // m_990 lookup
+    Unk_WsR980 FUN_141bd86e0(egf::EntityID id);             // m_980 lookup
+    Unk_WsR990 FUN_141bd87a0(egf::EntityID id);             // m_990 lookup
     bool FUN_141bd8860(void* pNpc);                     // move a pending npc from m_990 to m_980
     bool FUN_141bd8ae0(void* pNpc);                     // move a pending npc from m_980 to m_990
-    bool FUN_141bd8e30(const unsigned __int64& entityId, char show, float fFade);   // fade an entity in or out over fFade seconds (id by reference: every exe caller passes &id)
+    bool FUN_141bd8e30(const unsigned __int64& entityId, bool show, float fFade);   // fade an entity in or out over fFade seconds (id by reference: every exe caller passes &id)
     void FUN_141bd92c0(float scale, float scale2, float duration, int mode);   // start the time-scale change
     void FUN_141bd9380();                               // end the time-scale change
     void FUN_141bd9410(MS2Ptr<class Unk_WsB_Prop> spObj); // show a debug tooltip over an interactive object (releases spObj)
@@ -531,7 +559,7 @@ public:
     void FUN_141bda9c0(int v);                          // m_890 operation
     void FUN_141bda9f0();                               // m_890 operation
     void FUN_141bdaa20();                               // m_890 operation
-    Unk_WsP8* FUN_141bdaa50(Unk_WsP8* out, Unk_WsP8* arg);   // m_890 operation (arg released)
+    efd::SmartPointer<egf::Entity> FUN_141bdaa50(efd::SmartPointer<egf::Entity> spEntity);   // m_890: the entity whose proxy shows spEntity
     void FUN_141bdaae0();                               // show the node viewer dialog
     void FUN_141bdabb0();                               // show the research and development dialog
     void FUN_141bdac80(CStringA text);                  // append a line to that dialog
@@ -631,7 +659,7 @@ public:
     Unk_WsNiPtr<ChaosLightEffectLayerManager> m_spChaosLightEffectLayerManager;   // +0x818 0x141bf1060 / 0x141bf5510
     Vector3 m_boundsMin;                           // +0x820 (FLT_MAX x3)
     Vector3 m_boundsMax;                           // +0x82c (-FLT_MAX x3)
-    std::set<unsigned __int64> m_838;                   // +0x838 0x140a15e30 / 0x140a16650 (shared)
+    std::set<egf::EntityID> m_838;                      // +0x838 0x140a15e30 / 0x140a16650 (shared)
     ATL::CAtlMap<unsigned, Unk_WsV848> m_848;            // +0x848 0x141bef440 / 0x141bf49e0
     ATL::CRBMap<unsigned, Unk_WsPod8> m_890;            // +0x890 with m_8c0: one 0x38-byte CRBTree-derived class (ctor 0x1416c3150 = base(10) + [+0x30]=0, dtor 0x1416c3190, other obj) TYPE?
     int m_8c0;                                          // +0x8c0 (part of the m_890 class)
@@ -642,7 +670,7 @@ public:
     bool m_8f0;                                         // +0x8f0 = true
     int m_8f4;                                          // +0x8f4
     int m_8f8;                                          // +0x8f8
-    std::map<unsigned __int64, Unk_WsPod8> m_900;       // +0x900 0x1413e86d0 / 0x1413e91c0 (shared)
+    std::map<unsigned __int64, int> m_900;              // +0x900 0x1413e86d0 / 0x1413e91c0 (shared); value = flag word (insert(make_pair(id, 0)))
     int m_910;                                          // +0x910
     bool m_914;                                         // +0x914
     bool m_915;                                         // +0x915

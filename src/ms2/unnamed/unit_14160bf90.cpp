@@ -35,7 +35,6 @@ float FUN_14160c230(const Vector3* p)
 MS2_REPLACE(0x14160C230, FUN_14160c230, 72, 0x8F023533);
 
 // @0x14160bf90
-// MS2-FUNCTIONAL: exe frame is 7 bytes larger (extra temporaries in the arc blend); behaviour-equivalent
 void Unk_ArcMover::FUN_14160bf90(float fDelta, Vector3* pPos, float* pAngle)
 {
     m_fElapsed = m_fElapsed + fDelta;
@@ -50,7 +49,7 @@ void Unk_ArcMover::FUN_14160bf90(float fDelta, Vector3* pPos, float* pAngle)
     pPos->z = pPos->z + m_fHeight * 4.0f * fT * (1.0f - fT);
     Vector3 vDir = m_vEnd.FUN_140965c40(m_vStart);
     if (FUN_14160c230(&vDir) > 0.0f)
-        *pAngle = FUN_140a4e660(vDir.y, vDir.x) * 180.0f / 3.1415927f + 90.0f;
+        *pAngle = 90.0f + FUN_140a4e660(vDir.y, vDir.x) * 180.0f / 3.1415927f;
 }
 
 // @0x14160c1c0

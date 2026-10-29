@@ -72,7 +72,7 @@ DecoEditService* FUN_1411987a0();                                       // the d
 AScript* FUN_140ba7c60(void* pRef);                                     // the movie root
 CString FUN_140188f50(const char* psz, int nCodePage);                  // narrow string from a char*
 CString FUN_1401d4330(const wchar_t* psz, int nCodePage);               // narrow string from a wide one
-bool FUN_1401647e0(const CString& a, const CString& b);                 // case-insensitive equal
+bool FUN_1401647e0(const CString& a, const CString& b) noexcept;               // case-insensitive equal
 CStringW FUN_141b6e360(const CStringW& strInitialDir, const wchar_t* pszFilter, const CStringW& strDefaultFile);   // open-file dialog
 void FUN_1422bcea0(Scaleform::GFx::Value* pValue, const wchar_t* psz);
 void FUN_14191c320(CStringW& strPath);                                 // drop the "Model" prefix of a path
@@ -90,14 +90,13 @@ CString UIDecoEditDialog::GetTypeName()
     return "DecoEditDialog";
 }
 
-// MS2-FUNCTIONAL: the vfunc call result is kept in a temp differently
 // @0x14191b420
 int UIDecoEditDialog::vfunc_65()
 {
-    int nResult = UIDialog::vfunc_65();
-    if (nResult != 0)
-        FUN_1411987a0()->SetBrush(0);
-    return nResult != 0;
+    if (UIDialog::vfunc_65() == 0)
+        return 0;
+    FUN_1411987a0()->SetBrush(0);
+    return 1;
 }
 
 // @0x14191b460
@@ -107,7 +106,6 @@ void UIDecoEditDialog::vfunc_67()
     FUN_1411987a0()->SetBrush(2);
 }
 
-// MS2-FUNCTIONAL: MS2Ptr/CAtlArray temporaries and the list calls are laid out differently
 // @0x14191b490
 void UIDecoEditDialog::OnLoadInit()
 {
@@ -115,8 +113,7 @@ void UIDecoEditDialog::OnLoadInit()
     ASDialog* pDialog = dynamic_cast<ASDialog*>(FUN_140ba7c60(&m_30));
     if (pDialog)
     {
-        MS2Ptr<Unk_DeList> spLayers = FUN_140c02900("m_layers");
-        if (spLayers.get() != 0)
+        if (MS2Ptr<Unk_DeList> spLayers = FUN_140c02900("m_layers"))
         {
             ATL::CAtlArray<MS2Ptr<DecoLayer> > aLayers;
             FUN_1411987a0()->CollectLayers(aLayers);
@@ -134,9 +131,7 @@ void UIDecoEditDialog::OnLoadInit()
             spLayers->vfunc_24(true);
             spLayers->FUN_1422dcca0(0);
         }
-        spLayers = 0;
-        MS2Ptr<Unk_DeList> spBrushes = FUN_140c02900("m_brushes");
-        if (spBrushes.get() != 0)
+        if (MS2Ptr<Unk_DeList> spBrushes = FUN_140c02900("m_brushes"))
         {
             spBrushes->FUN_1422dd2a0("PaintBrush");
             spBrushes->FUN_1422dd2a0("NoiseBrush");
@@ -215,14 +210,14 @@ int UIDecoEditDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
     return 0;
 }
 
-// MS2-FUNCTIONAL: path buffers, CStringW temps and the open-file dialog arguments are laid out differently (frame size)
+// MS2-FUNCTIONAL: op-identical; the exe puts the GetCurrentDirectoryW result slot at 0x58 (just above strPath), ours puts it on top of the frame
 // @0x14191bd30
 void UIDecoEditDialog::FUN_14191bd30(CString strFile)
 {
     WCHAR szCurrentDir[MAX_PATH] = {0};
     CString strName = FUN_140188f50(strFile, 0);
-    GetCurrentDirectoryW(MAX_PATH, szCurrentDir);
-    CStringW strPath = FUN_141b6e360(CStringW(L"./Data/Resource/Model/"), L"Asset Files (*.nif, *.kfm)\0*.nif;*.kfm;", CStringW(L""));
+    DWORD dwDirLen = GetCurrentDirectoryW(MAX_PATH, szCurrentDir);
+    CStringW strPath = FUN_141b6e360(L"./Data/Resource/Model/", L"Asset Files (*.nif, *.kfm)\0*.nif;*.kfm;", L"");
     if (!strPath.IsEmpty())
     {
         if (SetCurrentDirectoryW(szCurrentDir))
@@ -304,13 +299,15 @@ void UIDecoEditDialog::FUN_14191c2d0(Unk_DeVec2 vRotation)
         pBrush->vfunc_9(vRotation);
 }
 
-// MS2-FUNCTIONAL: CStringW temporaries of Mid/Format are laid out differently
 // @0x14191c320
 void FUN_14191c320(CStringW& strPath)
 {
     int nModel = strPath.Find(L"Model", 0);
     if (nModel != -1)
-        strPath.Format(L"%s", strPath.Mid(nModel + 6).GetString());
+    {
+        nModel += 6;
+        strPath.Format(L"%s", static_cast<const wchar_t*>(strPath.Mid(nModel, strPath.GetLength() - nModel)));
+    }
 }
 
 // @0x14191c3d0
@@ -322,7 +319,6 @@ Scaleform::GFx::Value Unk_DeScript::FUN_14191c3d0(const char* szMethod, const wc
     return FUN_1422bb8f0(szMethod, args);
 }
 
-// MS2-FUNCTIONAL: the exe has no EH state for the temporary CString (frame 0x38)
 // @0x14191c510
 bool FUN_14191c510(CString& strA, const wchar_t* pszB)
 {

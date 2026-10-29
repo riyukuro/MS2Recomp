@@ -35,7 +35,7 @@ class GameRankingCategory : public CPtred
 {
 public:
     GameRankingCategory();                                  // 0x140e366f0
-    virtual ~GameRankingCategory();                         //  0 0x140e36b30 (??_G 0x140e370a0)
+    // implicit ~GameRankingCategory();                     //  0 0x140e36b30 (??_G 0x140e370a0)
 
     int m_nId;                                              // +0x18 "categoryid" (sub categories: parent * 10 + n)
     int m_nParent;                                          // +0x1c parent category id (0 = top level)
@@ -52,7 +52,7 @@ class GameRankingTabData : public CPtred
 {
 public:
     GameRankingTabData();                                   // 0x140e367d0
-    virtual ~GameRankingTabData();                          //  0 0x140e36b80 (??_G 0x140e370e0)
+    // implicit ~GameRankingTabData();                      //  0 0x140e36b80 (??_G 0x140e370e0)
 
     CStringW m_strLabel;                                    // +0x18
     CStringW m_strTooltip;                                  // +0x20

@@ -30,7 +30,7 @@ class IUgcViewer : public CPtred
 {
 public:
     IUgcViewer();                                           // 0x1418a6c20
-    virtual ~IUgcViewer();                                  // 0 (0x1418a6c90, ??_G 0x1418a7060)
+    // slot 0: the implicit virtual destructor (0x1418a6c90, ??_G 0x1418a7060)
     virtual void vfunc_1();                                 // 1 (banner: show the banner object's decal)
     virtual int vfunc_2();                                  // 2 the viewer has content to upload (base: 0)
     virtual int vfunc_3(MS2Ptr<CUploadFile> spFile) = 0;    // 3 preview a local file
@@ -66,7 +66,7 @@ public:
 
     int FUN_14189f730();                                    // the wearer's object id
     void FUN_14189f750(int nObjectId);
-    MS2Ptr<IUgcProxy> FUN_14189f770(MS2Ptr<IUgcProxy> spOut);
+    efd::SmartPointer<NiSourceTexture> FUN_14189f770();     // the preview texture
 
     CUgcItemPC m_item;                                      // +0x18
     CUgcItemIconPC m_icon;                                  // +0x68

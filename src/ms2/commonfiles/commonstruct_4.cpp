@@ -116,7 +116,8 @@
 // MS2-PIN: ?capacity@?$vector@V?$MS2Ptr@VCPtred@@@@V?$allocator@V?$MS2Ptr@VCPtred@@@@@std@@@std@@QEBA_KXZ 0x14028a3d0 ; prop
 // MS2-PIN: ?clear@?$_Tree@V?$_Tmap_traits@HHU?$less@H@std@@V?$allocator@U?$pair@$$CBHH@std@@@2@$0A@@std@@@std@@QEAAXXZ 0x14028a410 ; unique
 // MS2-PIN: ?clear@?$vector@UItemEntity@@V?$allocator@UItemEntity@@@std@@@std@@QEAAXXZ 0x14028a590 ; prop
-// MS2-PIN: ?clear@?$vector@V?$MS2Ptr@VCPtred@@@@V?$allocator@V?$MS2Ptr@VCPtred@@@@@std@@@std@@QEAAXXZ 0x14028a610 ; prop
+// MS2-PIN: ?clear@?$vector@V?$MS2Ptr@VCIngredientInfo@@@@V?$allocator@V?$MS2Ptr@VCIngredientInfo@@@@@std@@@std@@QEAAXXZ 0x14028a610 ; hand: calls the CIngredientInfo _Destroy 0x140287670; CIngredientContainer::m_items
+// MS2-PIN: ?clear@?$vector@V?$MS2Ptr@VCPtred@@@@V?$allocator@V?$MS2Ptr@VCPtred@@@@@std@@@std@@QEAAXXZ 0x14028a690 ; hand: calls the CPtred _Destroy 0x1402876b0; RemakeOptionContext::m_list68
 // MS2-PIN: ?deallocate@?$_Default_allocator_traits@V?$allocator@U?$_List_node@V?$MS2Ptr@VCUserChangeableItemHistory@@@@PEAX@std@@@std@@@std@@SAXAEAV?$allocator@U?$_List_node@V?$MS2Ptr@VCUserChangeableItemHistory@@@@PEAX@std@@@2@QEAU?$_List_node@V?$MS2Ptr@VCUserChangeableItemHistory@@@@PEAX@2@_K@Z 0x14028a710 ; order
 // MS2-PIN: ?deallocate@?$_Default_allocator_traits@V?$allocator@U?$_Tree_node@U?$pair@$$CBHH@std@@PEAX@std@@@std@@@std@@SAXAEAV?$allocator@U?$_Tree_node@U?$pair@$$CBHH@std@@PEAX@std@@@2@QEAU?$_Tree_node@U?$pair@$$CBHH@std@@PEAX@2@_K@Z 0x14028a740 ; order
 // MS2-PIN: ?deallocate@?$allocator@U?$_List_node@V?$MS2Ptr@VCUserChangeableItemHistory@@@@PEAX@std@@@std@@QEAAXQEAU?$_List_node@V?$MS2Ptr@VCUserChangeableItemHistory@@@@PEAX@2@_K@Z 0x14028a770 ; order
@@ -150,6 +151,9 @@
 // MS2-PIN: ?size@?$vector@V?$MS2Ptr@VCPtred@@@@V?$allocator@V?$MS2Ptr@VCPtred@@@@@std@@@std@@QEBA_KXZ 0x14028b540 ; prop
 // MS2-PINS-END tplpin
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\commonfiles\\commonstruct.cpp"
+// The exe's memcpy_s copy calls memcpy/memset (no /Oi expansion): the pragma must precede the inline definitions.
+#include <vcruntime_string.h>
+#pragma function(memcpy, memset)
 #include "ms2/commonfiles/commonstruct_tail.inl"
 #include <cmath>
 #include <limits>
@@ -174,70 +178,84 @@ MS2_EMIT_CRT_MEMMOVE_S();
 typedef std::vector<MS2Ptr<CIngredientInfo> > Unk_CsIngVector;
 typedef std::list<MS2Ptr<CUserChangeableItemHistory> > Unk_CsHistList;
 
-// vector<MS2Ptr<CIngredientInfo>>::_Make_iterator_offset: an iterator `idx` elements past _Myfirst.
-// MS2-FUNCTIONAL: writes the 8-byte iterator directly; the exe goes through _Get_second / the iterator ctor
+// vector<MS2Ptr<CIngredientInfo>>::_Make_iterator_offset: auto& d = _Get_data(); return iterator(d._Myfirst + idx, addressof(d)).
+struct Unk_CsIngVal { Unk_IngRef* first; Unk_IngRef* last; Unk_IngRef* end; };   // _Vector_val
+struct Unk_CsVecAlloc { Unk_CsIngVal* FUN_140288210() const; };      // _Vector_alloc::_Get_data
+struct Unk_CsVecView : Unk_CsVecAlloc {};
+void* FUN_14027b590(void* p);                           // std::addressof
+void FUN_14027d3d0(__int64 it, Unk_IngRef* ptr, void* cont);  // iterator ctor
+// MS2-FUNCTIONAL: one instruction short: the exe loads this through rax (mov rax,[this]; mov rcx,rax) before _Get_data
 // @0x140288770
-void FUN_140288770(__int64 self, __int64 out, __int64 idx)
+__int64 FUN_140288770(__int64 self, __int64 out, __int64 idx) noexcept
 {
-    *(Unk_IngRef**)out = *(Unk_IngRef**)self + idx;
-}
-
-// vector<__int64>::_Tidy
-// MS2-FUNCTIONAL: frees through std::allocator directly; the exe calls the _Myfirst/_Mylast/_Myend accessors
-// @0x140289670
-__int64 FUN_140289670(void* t)
-{
-    __int64** v = (__int64**)t;
-    if (v[0]) {
-        std::allocator<__int64>().deallocate(v[0], v[2] - v[0]);
-        v[0] = 0;
-        v[1] = 0;
-        v[2] = 0;
-    }
-    return 0;
-}
-
-// list::_Unchecked_begin: the head's next node.
-// MS2-FUNCTIONAL: writes the iterator directly instead of calling its ctor
-// @0x140289d20
-void Unk_HistList::FUN_140289d20(Unk_It* out)
-{
-    out->p = *(void**)m_head;
-}
-
-// list::begin
-// MS2-FUNCTIONAL: writes the iterator directly instead of calling its ctor
-// @0x14028a1a0
-Unk_It* Unk_HistList::FUN_14028a1a0(Unk_It* out)
-{
-    out->p = *(void**)m_head;
+    Unk_CsIngVal* d = reinterpret_cast<Unk_CsVecView*>(self)->FUN_140288210();
+    FUN_14027d3d0(out, d->first + idx, FUN_14027b590(d));
     return out;
 }
 
-// std::list::front returns the value subobject in the node after the sentinel.
-// MS2-FUNCTIONAL: the target's list node stores next/prev links before the 16-byte smart-pointer value.
+// vector<__int64>::_Tidy, written over the exe's accessor instances (view structs; the callees auto-bind).
+struct Unk_CsI64Alloc { void FUN_14028a7d0(__int64* p, unsigned __int64 n); };   // allocator::deallocate
+struct Unk_CsI64Vec {
+    void FUN_140288c60();                       // _Orphan_all
+    __int64*& FUN_140288980();                  // _Myfirst
+    __int64*& FUN_140288ae0();                  // _Mylast
+    __int64*& FUN_140288840();                  // _Myend
+    void FUN_1402875b0(__int64* first, __int64* last);   // _Destroy
+    unsigned __int64 FUN_14028a2c0();           // capacity
+    Unk_CsI64Alloc& FUN_1402882f0();            // _Getal
+    void FUN_140289670();
+};
+// @0x140289670
+void Unk_CsI64Vec::FUN_140289670()
+{
+    FUN_140288c60();
+    if (FUN_140288980() != 0) {
+        FUN_1402875b0(FUN_140288980(), FUN_140288ae0());
+        FUN_1402882f0().FUN_14028a7d0(FUN_140288980(), FUN_14028a2c0());
+        FUN_140288980() = 0;
+        FUN_140288ae0() = 0;
+        FUN_140288840() = 0;
+    }
+}
+
+// The list/vector iterator helpers below go through the exe's accessor and iterator-ctor instances.
+void*& FUN_140288ac0(void* list);                       // list::_Myhead
+void* FUN_140287e70(void* list);                        // list::_Get_data
+void* FUN_14027b560(void* p);                           // std::addressof
+void FUN_14027ce50(Unk_It* it, void* node, void* cont); // list iterator ctor
+void FUN_14027ced0(Unk_It* it, void* node, void* cont); // list unchecked iterator ctor
+void FUN_14027d630(Unk_It* it, Unk_It base);            // reverse_iterator ctor
+
+// list::_Unchecked_begin: an unchecked iterator at the head's next node.
+// @0x140289d20
+Unk_It* Unk_HistList::FUN_140289d20(Unk_It* out)
+{
+    FUN_14027ced0(out, *(void**)FUN_140288ac0(this), 0);
+    return out;
+}
+
+// list::begin: iterator(_Myhead()->_Next, addressof(_Get_data())).
+// @0x14028a1a0
+Unk_It* Unk_HistList::FUN_14028a1a0(Unk_It* out) noexcept
+{
+    FUN_14027ce50(out, *(void**)FUN_140288ac0(this), FUN_14027b560(FUN_140287e70(this)));
+    return out;
+}
+
+// list::front: *begin().
 // @0x14028aef0
 Unk_HistRef* Unk_HistList::FUN_14028aef0()
 {
-    void* node = *reinterpret_cast<void**>(m_head);
-    return reinterpret_cast<Unk_HistRef*>(static_cast<char*>(node) + 0x10);
+    Unk_It it;
+    return FUN_14027f3b0(FUN_14028a1a0(&it));
 }
 
-// float floor(float)
-// MS2-FUNCTIONAL: calls the CRT floorf (the exe's import) through <cmath>
+// float floor(float): <cmath>'s inline, calling floorf through the exe's import slot.
+extern "C" float (__cdecl* __imp_floorf)(float);
 // @0x14028aed0
 float FUN_14028aed0(float f)
 {
-    return floorf(f);
-}
-
-// MS2-FUNCTIONAL: the helper copies a source half-open range into a bounded destination; derive the byte count from
-// its end pointer and preserve the secure CRT's bounds/error handling.
-// @0x14028b5b0
-void FUN_14028b5b0(void* dest, size_t destSize, const void* first, const void* last)
-{
-    const size_t count = static_cast<const char*>(last) - static_cast<const char*>(first);
-    (void)memcpy_s(dest, destSize, first, count);
+    return __imp_floorf(f);
 }
 
 // push_back(MS2Ptr&&)
@@ -256,12 +274,12 @@ void Unk_IngVec::FUN_14028b330(Unk_IngRef& r)
     reinterpret_cast<Unk_CsIngVector*>(this)->push_back(reinterpret_cast<const MS2Ptr<CIngredientInfo>&>(r));
 }
 
-// vector<ItemEntity>::rbegin: a reverse iterator over end().
-// MS2-FUNCTIONAL: writes the iterator directly instead of calling end() and the reverse_iterator ctor
+// vector<ItemEntity>::rbegin: reverse_iterator(end()).
 // @0x14028b360
-Unk_It* Unk_ItemVec::FUN_14028b360(Unk_It* out)
+Unk_It* Unk_ItemVec::FUN_14028b360(Unk_It* out) noexcept
 {
-    out->p = m_end;
+    Unk_It it;
+    FUN_14027d630(out, *FUN_14028aa30(&it));
     return out;
 }
 

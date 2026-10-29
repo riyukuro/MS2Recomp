@@ -3,7 +3,6 @@
 // MS2-RANGE: 0x1400cba40-0x1400cbbb0 .text$di
 // MS2-RANGE: 0x140bff060-0x140c032b0 .text$mn
 // MS2-GUESS-LOOKALIKES
-// MS2-FUNCTIONAL: written from the decompile; the quest/handle null-test forms, temporaries and EH unwind maps differ from the exe
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uidailymissiondialog.cpp"    // assumed
 #include "ms2/placeholder/ms2stdafx.h"
 #include "uidailymissiondialog.h"
@@ -13,6 +12,7 @@
 #include "ms2/placeholder/asdata.h"
 #include "ms2/placeholder/ascript.h"
 #include "ms2/placeholder/asdisplayobject.h"
+#include "ms2/placeholder/asbuttonbar.h"
 #include "ms2/placeholder/asobj.h"
 #include "ms2/placeholder/astextfield.h"
 #include "ms2/placeholder/astooltip.h"
@@ -39,19 +39,7 @@ MS2_EMIT_CRT_MEMMOVE_S();
 
 // ---- unit-local views of exe types ----
 
-// The group tab bar of the movie (add a tab / select a tab). ctor 0x1422e2cd0.
-class Unk_DmTabBar : public ASDisplayObject
-{
-public:
-    Unk_DmTabBar(const Scaleform::GFx::Value& v, int nMovieId);
-    virtual void vfunc_6(); virtual void vfunc_7(); virtual void vfunc_8(); virtual void vfunc_9(); virtual void vfunc_10();
-    virtual void vfunc_11(); virtual void vfunc_12(); virtual void vfunc_13(); virtual void vfunc_14(); virtual void vfunc_15();
-    virtual void vfunc_16(); virtual void vfunc_17(); virtual void vfunc_18(); virtual void vfunc_19(); virtual void vfunc_20();
-    virtual void vfunc_21(); virtual void vfunc_22(); virtual void vfunc_23();
-    virtual void vfunc_24(bool bVisible);
-    void FUN_1422e3460(const ASObj& row);                       // add a tab
-    void FUN_1422e31e0(int nIndex);                             // select a tab
-};
+// The group tab bar of the movie is an ASButtonBar (ctor 0x1422e2cd0, 0x88 bytes; asbuttonbar.h).
 
 // The recommended list of the movie (clear / append). ctor 0x1422e1720.
 class Unk_DmList : public AScript
@@ -192,7 +180,9 @@ void UIDailyMissionDialog::vfunc_67()
 // @0x140bff8c0
 void UIDailyMissionDialog::vfunc_72()
 {
-    if (vfunc_55() != 1 && DAT_143abdf50 != 0)
+    if (vfunc_55() == 1)
+        return;
+    if (DAT_143abdf50 != 0)
     {
         if (DAT_143abdf50 & 1)
             FUN_140c00500();
@@ -307,14 +297,16 @@ void UIDailyMissionDialog::vfunc_o178_8(void* pQuestPtr)
 // @0x140bffee0
 void UIDailyMissionDialog::FUN_140bffee0(NotifyObject* pNotify)
 {
-    if (!FUN_1403ed2d0()->FUN_141bcb0a0())
-    {
-        if (FUN_1422b9e00(FUN_1408e57f0()) == 0x620001d && FUN_140bffff0() && m_1a8 == 0)
-        {
-            FUN_1403ed2b0()->FUN_141adc530(0x4f53);
-            m_1a8 = 1;
-        }
-    }
+    if (FUN_1403ed2d0()->FUN_141bcb0a0())
+        return;
+    if (FUN_1422b9e00(FUN_1408e57f0()) != 0x620001d)
+        return;
+    if (!FUN_140bffff0())
+        return;
+    if (m_1a8 != 0)
+        return;
+    FUN_1403ed2b0()->FUN_141adc530(0x4f53);
+    m_1a8 = 1;
 }
 
 // "NotifyChangeMyPC": allow the auto open again.
@@ -328,7 +320,11 @@ void UIDailyMissionDialog::FUN_140bfff70(NotifyObject* pNotify)
 // @0x140bfff90
 void UIDailyMissionDialog::FUN_140bfff90(CInPacket& rPacket)
 {
-    if (!FUN_140930b40() && FUN_140bffff0() && vfunc_55())
+    if (FUN_140930b40())
+        return;
+    if (!FUN_140bffff0())
+        return;
+    if (vfunc_55())
         FUN_141924680();
 }
 
@@ -397,34 +393,34 @@ void UIDailyMissionDialog::FUN_140c00500()
 {
     if (m_30.IsNull())
         return;
-    MS2Ptr<Unk_DmGuideBar> spBar = FUN_140c02990("m_guideBar");
-    if (spBar.operator->() != 0)
+    if (MS2Ptr<Unk_DmGuideBar> spBar = FUN_140c02990("m_guideBar"))
         spBar->Invoke("removeAll");
     ATL::CAtlArray<MS2Ptr<CQuestData>> datas;
     TSingleton<QuestDataTable>::GetInstance()->FUN_14074cca0(datas, 5);
     for (size_t i = 0; i < datas.GetCount(); i++)
     {
         MS2Ptr<CQuestData> spData = datas[i];
-        if (spData->m_conditions.GetCount() != 0)
+        if (spData->m_conditions.GetCount() > 0)
         {
             ASObj row(2);
             if (FUN_140c012d0(row, FUN_14074b030(spData.operator->())) != 0)
                 FUN_1409ee290(&m_30)->Invoke("addLevelGuide", row);
         }
     }
-    if (FUN_1403ed2d0()->FUN_141bd0cc0() != 0)
+    void* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    if (pPlayer == 0)
+        return;
+    int nCur = FUN_140c01f50();
+    int nMax = FUN_140c020d0();
+    FUN_1409ee290(&m_30)->Invoke("setPC", nCur);
+    if (MS2Ptr<ASMovieClip> spPoint = FUN_140ba7930("m_missionPoint"))
     {
-        int nCur = FUN_140c01f50();
-        int nMax = FUN_140c020d0();
-        FUN_1409ee290(&m_30)->Invoke("setPC", nCur);
-        MS2Ptr<ASMovieClip> spPoint = FUN_140ba7930("m_missionPoint");
-        if (spPoint.operator->() != 0)
         {
-            spPoint->vfunc_13(CString(spPoint == 0 ? "off" : "on"));
-            MS2Ptr<ASTextField> spText = spPoint->FUN_1409b4620("textField");
-            if (spText.operator->() != 0)
-                spText->FUN_1422c4cd0(StringFormat(L"{0} / {1}", nCur, nMax));
+            CString strFrame(spPoint == 0 ? "off" : "on");
+            spPoint->vfunc_13(strFrame);
         }
+        if (MS2Ptr<ASTextField> spText = spPoint->FUN_1409b4620("textField"))
+            spText->FUN_1422c4cd0(StringFormat(L"{0} / {1}", nCur, nMax));
     }
 }
 
@@ -435,7 +431,7 @@ void UIDailyMissionDialog::FUN_140c009b0()
     void* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pPlayer == 0)
         return;
-    if (MS2Ptr<Unk_DmTabBar> spTab = FUN_140c02870("m_groupTab"))
+    if (MS2Ptr<ASButtonBar> spTab = FUN_140c02870("m_groupTab"))
     {
         for (size_t i = 0; i < 6; i++)
         {
@@ -528,7 +524,8 @@ int UIDailyMissionDialog::FUN_140c012d0(ASObj& rRow, unsigned nQuestId)
         return 0;
     if (m_30.IsNull())
         return 0;
-    if (FUN_1403ed2d0()->FUN_141bd0cc0() == 0)
+    void* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    if (pPlayer == 0)
         return 0;
     Unk_PayloadPtr<CQuest> spQuest = FUN_140764020()->vfunc_o10_3(nQuestId);
     if (spQuest.IsNull())
@@ -536,9 +533,9 @@ int UIDailyMissionDialog::FUN_140c012d0(ASObj& rRow, unsigned nQuestId)
     if (spQuest->GetState() == 3)
         return 0;
     CString strState;
-    if (spQuest.get() != 0 && spQuest->IsComplete() != 0)
+    if ((spQuest.get() ? true : false) && spQuest->IsComplete() != 0)
         strState = "active";
-    else if (spQuest.get() != 0 && spQuest->IsRewarded() != 0)
+    else if ((spQuest.get() ? true : false) && spQuest->IsRewarded() != 0)
         strState = "inactive";
     else
         strState = "lock";
@@ -708,11 +705,11 @@ int UIDailyMissionDialog::FUN_140c02320(int nGroup)
 
 // The group tab / list / guide bar child lookups (one COMDAT per wrapper class).
 // @0x140c02870
-MS2Ptr<Unk_DmTabBar> UIDailyMissionDialog::FUN_140c02870(const CString& strName)
+MS2Ptr<ASButtonBar> UIDailyMissionDialog::FUN_140c02870(const CString& strName)
 {
     if (FUN_140ba28d0(&m_30, 0))
-        return MS2Ptr<Unk_DmTabBar>(0);
-    return FUN_1409ee290(&m_30)->FUN_140be23c0<Unk_DmTabBar>(strName);
+        return MS2Ptr<ASButtonBar>(0);
+    return FUN_1409ee290(&m_30)->FUN_140be23c0<ASButtonBar>(strName);
 }
 
 // @0x140c02900

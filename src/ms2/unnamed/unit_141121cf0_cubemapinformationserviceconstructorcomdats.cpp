@@ -166,20 +166,29 @@ Unk_CMISCubeTimer::Unk_CMISCubeTimer()
     m_id = reinterpret_cast<const egf::EntityID&>(DAT_143acf820);
 }
 
-void FUN_1408a8700(void* pStr);                          // efd::utf8string()
+void FUN_141122050(void* p);                             // 0x141122050 the Unk_CMISTree<4097> ctor (the exe calls it, not efd::utf8string())
 void FUN_1408a8900(void* pStr);                          // ~efd::utf8string
 struct Unk_CMISDeadString
 {
-    Unk_CMISDeadString() { FUN_1408a8700(m_buf); }
+    Unk_CMISDeadString() { FUN_141122050(m_buf); }
     ~Unk_CMISDeadString() { FUN_1408a8900(m_buf); }
     char m_buf[0x20];
 };
 
-// @0x1411230b0 (the 56-byte cell value of the cell tree, tail.h's Unk_CMISCell with the exe's member types)
+void FUN_1408a8700(void* pStr);                          // efd::utf8string()
+struct Unk_CMISCellName
+{
+    Unk_CMISCellName() { FUN_1408a8700(m_buf); }
+    ~Unk_CMISCellName() { FUN_1408a8900(m_buf); }
+    char m_buf[0x20];
+};
+
+// @0x1411230b0 (the 56-byte cell value of the cell tree, tail.h's Unk_CMISCell with the exe's member types; the name is
+// built by efd::utf8string() 0x1408a8700, not the 0x141123030 tree ctor that Unk_CMISDeadString pairs with)
 struct Unk_CMISCellInit
 {
     Unk_CMISCellInit() : m_scale(0.0f, 0.0f, 0.0f) {}
-    Unk_CMISDeadString m_name;
+    Unk_CMISCellName m_name;
     Unk_InstancingScale m_scale;
     efd::Point3 m_pos;
 };
@@ -315,6 +324,7 @@ void Unk_CMISTreeAnchor(void* p)
     new (p) std::vector<egf::EntityPtr>;
     new (p) Unk_CMISAnchorMH;
     new (p) Unk_CMISAnchorSvc;
+    new (p) Unk_CMISDeadString;
     new (p) Unk_CMISCellInit;
     new (p) Unk_CMISCell56(*(const Unk_CMISCell56*)p);
     new (p) Unk_CMISIdPtr(*(const Unk_CMISIdPtr*)p);

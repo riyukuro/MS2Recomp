@@ -37,7 +37,7 @@ class PetComposePetCard : public PetComposeBase
 {
 public:
     PetComposePetCard(TabContentsPetCompose* pOwner);   // 0x140cb1dc0
-    virtual ~PetComposePetCard();                       //  0 0x140cb6df0 (??_G 0x140cb7030)
+    // implicit ~PetComposePetCard(): 0 0x140cb6df0 (??_G 0x140cb7030) (no vptr store)
     virtual void vfunc_2();                             //  2 0x140cb1e30
     virtual void vfunc_4();                             //  4 0x140cb1e60
     virtual void vfunc_5(int nTab);                     //  5 0x140cb2060
@@ -51,7 +51,7 @@ class PetComposePetIngredient : public PetComposeBase
 {
 public:
     PetComposePetIngredient(TabContentsPetCompose* pOwner);   // 0x140cb20b0
-    virtual ~PetComposePetIngredient();                 //  0 0x140cb6e60 (??_G 0x140cb70b0)
+    // implicit ~PetComposePetIngredient(): 0 0x140cb6e60 (??_G 0x140cb70b0) (no vptr store)
     virtual void vfunc_2();                             //  2 0x140cb2120
     virtual void vfunc_4();                             //  4 0x140cb2150
     virtual void vfunc_5(int nTab);                     //  5 0x140cb2350
@@ -65,7 +65,7 @@ class PetComposePetEnchant : public PetComposeBase
 {
 public:
     PetComposePetEnchant(TabContentsPetCompose* pOwner);          // 0x140cb23a0
-    virtual ~PetComposePetEnchant();                    //  0 0x140cb6e20 (??_G 0x140cb7070)
+    // implicit ~PetComposePetEnchant(): 0 0x140cb6e20 (??_G 0x140cb7070) (no vptr store)
     virtual void vfunc_2();                             //  2 0x140cb2430
     virtual void vfunc_3();                             //  3 0x140cb2470 submit button, point bar
     virtual void vfunc_4();                             //  4 0x140cb2b20
@@ -87,7 +87,7 @@ public:
     typedef std::pair<unsigned __int64, int> IdCount;   // item uid and how many of it are selected
 
     TabContentsPetCompose();                            // 0x140cb3db0
-    virtual ~TabContentsPetCompose();                   //  0 0x140cb6e90 (??_G 0x140cb70f0)
+    // implicit ~TabContentsPetCompose(): 0 0x140cb6e90 (??_G 0x140cb70f0) (no vptr store)
     virtual void vfunc_1();                             //  1 0x140cb4050 close the sections, drop the UI
     virtual void vfunc_2(int nTab);                     //  2 0x140cb4290
     virtual void vfunc_3(MS2Ptr<ASUIComponent> ui);     //  3 0x140cb43f0 attach the page's UI

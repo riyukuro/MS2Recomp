@@ -11,6 +11,7 @@
 // MS2-PIN: ??0CPair@?$CAtlMap@IV?$Unk_BmBoxPtr@V?$CAtlMap@IV?$TPtr@UQuestMask@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$TPtr@UQuestMask@@@@@3@@ATL@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$Unk_BmBoxPtr@V?$CAtlMap@IV?$TPtr@UQuestMask@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$TPtr@UQuestMask@@@@@3@@ATL@@@@@3@@ATL@@IEAA@I@Z 0x140765a00 ; prop
 // MS2-PIN: ??0CPair@?$CAtlMap@IV?$TPtr@UQuestMask@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$TPtr@UQuestMask@@@@@3@@ATL@@IEAA@I@Z 0x140765a40 ; prop
 // MS2-PIN: ?get@?$TPtr@UQuestMask@@@@QEBAPEAUQuestMask@@XZ 0x140765c90 ; unique
+// MS2-PIN: ??C?$TPtr@UQuestMask@@@@QEBAPEAUQuestMask@@XZ 0x140765d00 ; unique
 // MS2-PIN: ??4?$Unk_BmBoxPtr@V?$CAtlMap@IV?$TPtr@UQuestMask@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$TPtr@UQuestMask@@@@@3@@ATL@@@@QEAAAEAV0@AEBUUnk_BmNewTag@@@Z 0x140765f00 ; unique
 // MS2-PIN: ?NewNode@?$CAtlMap@IV?$TPtr@UQuestMask@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$TPtr@UQuestMask@@@@@3@@ATL@@AEAAPEAVCNode@12@III@Z 0x140766910 ; unique
 // MS2-PIN: ?NewNode@?$CAtlMap@IV?$Unk_BmBoxPtr@V?$CAtlMap@IV?$TPtr@UQuestMask@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$TPtr@UQuestMask@@@@@3@@ATL@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$Unk_BmBoxPtr@V?$CAtlMap@IV?$TPtr@UQuestMask@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$TPtr@UQuestMask@@@@@3@@ATL@@@@@3@@ATL@@AEAAPEAVCNode@12@III@Z 0x140766b20 ; unique
@@ -57,9 +58,11 @@ bool FUN_14028f710(Unk_140165cf0* pElem);                                   // t
 int FUN_140873220(Unk_140165cf0* pElem, const char* pszName, int* pOut);
 int FUN_1408731e0(Unk_140165cf0* pElem, const char* pszName, int* pOut);
 int FUN_140873890(Unk_140165cf0* pElem, const char* pszName, int* pOut);
+int FUN_140765520(Unk_140165cf0* pElem, const char* pszName, int* pnOut);    // reads an int attribute through a temp (tinyxmlhelper.h)
 void FUN_14015f050(const CStringA& str, ATL::CAtlArray<CStringA>* pOut, const char* pszSep);    // split
 void FUN_140177de0(const CStringA& str, ATL::CAtlArray<int>* pOut, const char* pszSep);          // split into numbers
-Unk_Z16i* FUN_14027dcb0(Unk_Z16i* t);
+// A quest range as a local: Unk_Z16i with its out-of-line zeroing constructor (0x14027dcb0).
+struct Unk_QmRange { int a, b, c, d; Unk_QmRange(); };
 unsigned FUN_141092fa0(void* pObject);                                      // the key of an npc object
 class Unk_QmWorld;
 Unk_QmWorld* FUN_1403ed2d0();                                               // the world (map manager)
@@ -133,7 +136,7 @@ int FUN_140764760(const CStringA& strStart, const CStringA& strEnd, Unk_Z16i* pR
     FUN_140177de0(strEnd, &aEnd, ",");
     if (aStart.GetCount() != aEnd.GetCount())
         return 0;
-    if (aStart.GetCount() != 0)
+    if (aStart.GetCount() > 0)
     {
         pRange->a = aStart[0];
         pRange->c = aEnd[0];
@@ -158,10 +161,9 @@ int FUN_140764310(const CStringA& strStarts, const CStringA& strEnds, QuestMask*
         return 0;
     for (size_t i = 0; i < aStarts.GetCount(); ++i)
     {
-        Unk_Z16i range;
-        FUN_14027dcb0(&range);
-        if (FUN_140764760(aStarts[i], aEnds[i], &range) != 0)
-            pMask->m_aRanges.Add(range);
+        Unk_QmRange range;
+        if (FUN_140764760(aStarts[i], aEnds[i], reinterpret_cast<Unk_Z16i*>(&range)) != 0)
+            pMask->m_aRanges.Add(reinterpret_cast<Unk_Z16i&>(range));
     }
     return 1;
 }
@@ -181,13 +183,13 @@ CQuestMaskTable::~CQuestMaskTable()
 }
 
 // @0x1407649d0
-bool CQuestMaskTable::Load()
+int CQuestMaskTable::Load()
 {
-    if (!LoadFile(CStringA("QuestMaskPortal.xml"), m_portalMasks))
-        return false;
-    if (!LoadFile(CStringA("QuestMaskNpc.xml"), m_npcMasks))
-        return false;
-    return true;
+    if (!LoadFile("QuestMaskPortal.xml", m_portalMasks))
+        return 0;
+    if (!LoadFile("QuestMaskNpc.xml", m_npcMasks))
+        return 0;
+    return 1;
 }
 
 // @0x140764a90
@@ -217,48 +219,54 @@ Unk_QmMaskPtr CQuestMaskTable::GetNpcMask(unsigned nField, int nKey)
 }
 
 // @0x140764c90
-bool CQuestMaskTable::HasNpcMask(void* pNpc)
+int CQuestMaskTable::HasNpcMask(void* pNpc)
 {
     if (pNpc == 0)
-        return false;
+        return 0;
     return HasNpcMaskHere(FUN_141092fa0(pNpc));
 }
 
 // @0x140764cd0
-bool CQuestMaskTable::HasNpcMaskHere(int nKey)
+int CQuestMaskTable::HasNpcMaskHere(int nKey)
 {
-    unsigned nField = FUN_141bd3060(FUN_1403ed2d0());
-    Unk_QmMaskPtr spMask = GetNpcMask(nField, nKey);
-    return spMask.get() != 0;
+    {
+        Unk_QmMaskPtr spMask = GetNpcMask(FUN_141bd3060(FUN_1403ed2d0()), nKey);
+        if (spMask.get() != 0)
+            return 1;
+    }
+    return 0;
 }
 
 // @0x140764d50
-bool CQuestMaskTable::HasPortalMask(Unk_QmPortal* pPortal)
+int CQuestMaskTable::HasPortalMask(Unk_QmPortal* pPortal)
 {
     if (pPortal == 0)
-        return false;
+        return 0;
     if (pPortal->m_mask.FUN_140266970())
-        return true;
-    unsigned nField = FUN_141bd3060(FUN_1403ed2d0());
-    Unk_QmMaskPtr spMask = GetPortalMask(nField, pPortal->m_nKey);
-    return spMask.get() != 0;
+        return 1;
+    {
+        Unk_QmMaskPtr spMask = GetPortalMask(FUN_141bd3060(FUN_1403ed2d0()), pPortal->m_nKey);
+        if (spMask.get() != 0)
+            return 1;
+    }
+    return 0;
 }
 
 // @0x140764e00
-void CQuestMaskTable::CheckNpcHere(int nKey)
+int CQuestMaskTable::CheckNpcHere(int nKey)
 {
-    unsigned nField = FUN_141bd3060(FUN_1403ed2d0());
-    CheckNpc(nField, nKey);
+    return CheckNpc(FUN_141bd3060(FUN_1403ed2d0()), nKey);
 }
 
 // @0x140764e40
 int CQuestMaskTable::CheckNpc(unsigned nField, int nKey)
 {
-    Unk_QmMaskPtr spMask = GetNpcMask(nField, nKey);
-    if (spMask.get() == 0)
-        return 1;
-    Unk_QmPlayerState* pState = (Unk_QmPlayerState*)FUN_140764020();
-    return (&pState->m_checker)->IsSatisfied(spMask.get());
+    {
+        Unk_QmMaskPtr spMask = GetNpcMask(nField, nKey);
+        if (spMask.get() != 0)
+            return (&((Unk_QmPlayerState*)FUN_140764020())->m_checker)->IsSatisfied(spMask.operator->());
+    }
+    return 1;
 }
 
 // @0x140764ef0
@@ -266,8 +274,7 @@ int CQuestMaskTable::CheckNpcObject(void* pNpc)
 {
     if (pNpc == 0)
         return 0;
-    CheckNpcHere(FUN_141092fa0(pNpc));
-    return 0;
+    return CheckNpcHere(FUN_141092fa0(pNpc));
 }
 
 // @0x140764f30
@@ -279,40 +286,39 @@ int CQuestMaskTable::CheckPortal(Unk_QmPortal* pPortal)
         return 1;
     if (pPortal->m_mask.FUN_140266970())
     {
-        Unk_QmPlayerState* pState = (Unk_QmPlayerState*)FUN_140764020();
-        if ((&pState->m_checker)->IsSatisfied((QuestMask*)&pPortal->m_mask) != 0)
+        if ((&((Unk_QmPlayerState*)FUN_140764020())->m_checker)->IsSatisfied((QuestMask*)&pPortal->m_mask) != 0)
             return 1;
     }
-    unsigned nField = FUN_141bd3060(FUN_1403ed2d0());
-    Unk_QmMaskPtr spMask = GetPortalMask(nField, pPortal->m_nKey);
-    if (spMask.get() != 0)
     {
-        Unk_QmPlayerState* pState = (Unk_QmPlayerState*)FUN_140764020();
-        if ((&pState->m_checker)->IsSatisfied(spMask.get()) != 0)
-            return 1;
+        Unk_QmMaskPtr spMask = GetPortalMask(FUN_141bd3060(FUN_1403ed2d0()), pPortal->m_nKey);
+        if (spMask.get() != 0)
+        {
+            if ((&((Unk_QmPlayerState*)FUN_140764020())->m_checker)->IsSatisfied(spMask.operator->()) != 0)
+                return 1;
+        }
     }
     return 0;
 }
 
 // @0x140765080
-// MS2-FUNCTIONAL: XML loader temp layout differs
-bool CQuestMaskTable::LoadFile(const CStringA& strFile, Unk_QmFieldMap& rMap)
+int CQuestMaskTable::LoadFile(CStringA strFile, Unk_QmFieldMap& rMap)
 {
-    CString strPath = FUN_14071a5b0(CString("Table"), CString(strFile));
+    CString strPath = FUN_14071a5b0("Table", strFile);
     TiXmlDocument doc;
     if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
-        return false;
+        return 0;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
     {
         FUN_14015eb90(CLogString::GetInstance(), 1, 0x13, MS2_QM_XML_ERR, strPath);
-        return false;
+        return 0;
     }
     for (Unk_140165cf0* pField = pRoot->FUN_140165cf0("field"); pField != 0; pField = pField->FUN_140168650("field"))
     {
         int nFieldId = 0;
         FUN_140873220(pField, "fieldID", &nFieldId);
-        if (nFieldId != 0)
+        if (nFieldId == 0)
+            continue;
         {
             Unk_QmFieldPtr spField(0);
             if (!rMap.Lookup(nFieldId, spField))
@@ -324,21 +330,22 @@ bool CQuestMaskTable::LoadFile(const CStringA& strFile, Unk_QmFieldMap& rMap)
             {
                 int nKey = 0;
                 FUN_140873220(pKey, "id", &nKey);
-                if (nKey != 0)
+                if (nKey == 0)
+                    continue;
                 {
                     Unk_QmMaskPtr spMask(new QuestMask);
                     FUN_1408731e0(pKey, "enableInMask", &spMask->m_nEnable);
                     for (Unk_140165cf0* pMask = pKey->FUN_140165cf0("mask"); pMask != 0; pMask = pMask->FUN_140168650("mask"))
                     {
-                        if (FUN_14028f710(pMask))
+                        if (!FUN_14028f710(pMask))
+                            continue;
                         {
-                            Unk_Z16i range;
-                            FUN_14027dcb0(&range);
+                            Unk_QmRange range;
                             FUN_140873220(pMask, "startQuestID", &range.a);
-                            FUN_140873890(pMask, "startQuestState", &range.c);
+                            FUN_140765520(pMask, "startQuestState", &range.c);
                             FUN_140873220(pMask, "endQuestID", &range.b);
-                            FUN_140873890(pMask, "endQuestState", &range.d);
-                            spMask->m_aRanges.Add(range);
+                            FUN_140765520(pMask, "endQuestState", &range.d);
+                            spMask->m_aRanges.Add(reinterpret_cast<Unk_Z16i&>(range));
                         }
                     }
                     if (spMask->FUN_140266970() != 0)
@@ -347,7 +354,7 @@ bool CQuestMaskTable::LoadFile(const CStringA& strFile, Unk_QmFieldMap& rMap)
             }
         }
     }
-    return true;
+    return 1;
 }
 
 // @0x140768600
@@ -431,18 +438,19 @@ void Unk_Random::SetRaw(unsigned s1, unsigned s2, unsigned s3)
 unsigned Unk_Random::FUN_1407684c0()
 {
     Unk_CriticalSectionLock lock(m_lock, 1);
-    m_s1 = (m_s1 & 0xfffffffe) << 12 ^ (m_s1 << 13 ^ m_s1) >> 19;
-    m_s2 = (m_s2 & 0xfffffff8) << 4 ^ (m_s2 << 2 ^ m_s2) >> 25;
-    m_s3 = (m_s3 & 0xfffffff0) << 17 ^ (m_s3 << 3 ^ m_s3) >> 11;
-    return m_s1 ^ m_s2 ^ m_s3;
+    unsigned s1 = (m_s1 & 0xfffffffe) << 12 ^ (m_s1 << 13 ^ m_s1) >> 19;
+    m_s1 = s1;
+    unsigned s2 = (m_s2 & 0xfffffff8) << 4 ^ (m_s2 << 2 ^ m_s2) >> 25;
+    m_s2 = s2;
+    unsigned s3 = (m_s3 & 0xfffffff0) << 17 ^ (m_s3 << 3 ^ m_s3) >> 11;
+    m_s3 = s3;
+    return s1 ^ s2 ^ s3;
 }
 
 // @0x1407685b0
 int Unk_Random::Range(unsigned nCount, int nBase)
 {
-    if (nCount != 0)
-        nBase += (int)((unsigned long long)FUN_1407684c0() % nCount);
-    return nBase;
+    return nCount != 0 ? nBase + FUN_1407684c0() % nCount : nBase;
 }
 
 #ifndef MS2_HOOK_DLL
@@ -455,8 +463,9 @@ int FUN_140768010(int nCount, int nBase)
 // @0x140768040
 bool FUN_140768040(unsigned nChance)
 {
-    bool bHit = (unsigned)FUN_140768010(10000, 0) < nChance;
-    return bHit;
+    const int nMax = 10000;
+    unsigned nRoll = FUN_140768010(nMax, 0);
+    return nRoll < nChance;
 }
 
 // @0x140768090
@@ -1230,13 +1239,13 @@ unsigned FUN_140767ff0()
 // MS2-RANGE: 0x142c9bd80-0x142c9be60 .text$yd
 
 // Full-executable aliases for QuestMaskTable methods already emitted by this unit.
-// MS2-PIN: ?Load@CQuestMaskTable@@QEAA_NXZ 0x1407649d0
+// MS2-PIN: ?Load@CQuestMaskTable@@QEAAHXZ 0x1407649d0
 // MS2-PIN: ?FUN_1407649d0@@YAXPEAVCQuestMaskTable@@@Z 0x1407649d0
-// MS2-PIN: ?HasNpcMask@CQuestMaskTable@@QEAA_NPEAX@Z 0x140764c90
+// MS2-PIN: ?HasNpcMask@CQuestMaskTable@@QEAAHPEAX@Z 0x140764c90
 // MS2-PIN: ?FUN_140764c90@Unk_PortalQuestTable@@QEAAHPEAVCNpc@@@Z 0x140764c90
-// MS2-PIN: ?HasNpcMaskHere@CQuestMaskTable@@QEAA_NH@Z 0x140764cd0
+// MS2-PIN: ?HasNpcMaskHere@CQuestMaskTable@@QEAAHH@Z 0x140764cd0
 // MS2-PIN: ?FUN_140764cd0@Unk_Svc109a710@@QEAAHH@Z 0x140764cd0
-// MS2-PIN: ?HasPortalMask@CQuestMaskTable@@QEAA_NPEAUUnk_QmPortal@@@Z 0x140764d50
+// MS2-PIN: ?HasPortalMask@CQuestMaskTable@@QEAAHPEAUUnk_QmPortal@@@Z 0x140764d50
 // MS2-PIN: ?FUN_140764d50@Unk_PortalQuestTable@@QEAAHPEAVCPortal@@@Z 0x140764d50
 // MS2-PIN: ?CheckNpc@CQuestMaskTable@@QEAAHIH@Z 0x140764e40
 // MS2-PIN: ?FUN_140764e40@Unk_QmNpcTable@@QEAAHHI@Z 0x140764e40

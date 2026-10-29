@@ -158,7 +158,6 @@ void JobSystem::SetJob(int nJobGroup, int nJobCode, unsigned short nLevel)
 }
 
 // @0x1406382e0
-// MS2-FUNCTIONAL: the exe frame is 0x10 larger (the lock at rsp+0x70 instead of 0x60; temporaries ordered differently)
 bool JobSystem::ChangeJob(int nJobGroup, int nRank, unsigned short nLevel)
 {
     Unk_CriticalSectionLock lock(m_lock, 1);
@@ -168,33 +167,30 @@ bool JobSystem::ChangeJob(int nJobGroup, int nRank, unsigned short nLevel)
     for (auto& kv : m_skills)
     {
         JobSkillPtr spSkill = kv.second;
-        if (spSkill->m_bLearned)
-        {
-            if (spSkill->m_nLevel > 1)
-                learned.SetAt(spSkill->GetID(), spSkill->m_nLevel);
-        }
+        if (!spSkill->m_bLearned)
+            continue;
+        if (spSkill->m_nLevel > 1)
+            learned.SetAt(spSkill->GetID(), spSkill->m_nLevel);
     }
     InitSkills(nJobGroup, nRank);
     for (auto& kv : m_skills)
     {
         JobSkillPtr spSkill = kv.second;
-        if (spSkill->m_bLearned)
-            spSkill->m_bChanged = true;
+        if (!spSkill->m_bLearned)
+            continue;
+        spSkill->m_bChanged = true;
     }
-    POSITION pos = learned.GetStartPosition();
-    while (pos != 0)
+    for (POSITION pos = learned.GetStartPosition(); pos != 0; learned.GetNext(pos))
     {
         unsigned nSkillId = learned.GetKeyAt(pos);
         if (vfunc_2(nSkillId))
             SetSkill(nSkillId, learned.GetValueAt(pos), true);
-        learned.GetNext(pos);
     }
     RecalcPoints();
     return true;
 }
 
 // @0x140638690
-// MS2-FUNCTIONAL: the exe frame has one more 4-byte slot below the locals (every local 4 bytes higher)
 MS2Ptr<SkillLevelData> JobSystem::vfunc_1(unsigned nSkillId)
 {
     unsigned short nBonus = vfunc_5(nSkillId);
@@ -210,7 +206,7 @@ MS2Ptr<SkillLevelData> JobSystem::vfunc_1(unsigned nSkillId)
         return spData->FUN_1407e90a0(nCur);
     }
     MS2Ptr<SkillData> spData = GetSkillData(nSkillId);
-    if (spData.get() != 0 && !spData->FUN_1407e9f30())
+    if ((spData.get() ? true : false) && !spData->FUN_1407e9f30())
         return spData->FUN_1407e90a0(1);
     return 0;
 }

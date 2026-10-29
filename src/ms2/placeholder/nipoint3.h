@@ -17,6 +17,9 @@ struct Vector3
     explicit Vector3(const efd::Point3& pt);                // 0x14027dcf0 (NiPoint3(const efd::Point3&))
     Vector3(float, float, float);                           // 0x14027dda0 (efd::Point3(x, y, z))
     Vector3& operator=(const Vector3&);             // 0x140194470
+    // efd::MemObject::operator new(size_t, void*) (0x140993c70, out of line). The placement new of efd::CustomAllocator
+    // construct finds it, so the result is null-checked as in the exe. A plain `new Vector3` must be written ::new.
+    static void* operator new(size_t cb, void* pWhere) throw();
     Vector3 FUN_140965c40(const Vector3& pt) const; // efd::Point3::operator-
     Vector3 FUN_14097fd50(const Vector3& pt) const; // efd::Point3::operator+
     Vector3 FUN_140a00e10(const Vector3& pt) const; // efd::Point3::Cross

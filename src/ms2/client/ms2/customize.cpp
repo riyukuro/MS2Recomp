@@ -94,6 +94,8 @@ __int64 FUN_14028d0e0();                                            // a new uid
 extern Vector3 DAT_143b01a60;                               // efd::Point3::ZERO
 
 // The part handle FUN_140cd1a30 returns (the callers declare their own view of it).
+CItem* FUN_14052cd70(MS2Ptr<CItem>* pItem);                 // 0x14052cd70 the item of a handle
+
 class Unk_BSPartHandle : public NiPointer<CItemCustomizeController>
 {
 public:
@@ -337,22 +339,23 @@ MS2_REPLACE_METHOD(0x140CCB1E0, Customize::EditItems, GetController, 65, 0x3E32A
 // MS2-FUNCTIONAL: written from the decompile; temp slots / branch layout differ (permuter lane)
 void Customize::EditItems::Update()
 {
-    if (!(FUN_1403ed2b0()->FUN_141adbd10() == 0 && m_spController))
+    if (FUN_1403ed2b0()->FUN_141adbd10() != 0)
         return;
-    int bDragging = 0;
-    UICameraEditDialog* pCamera = FUN_140cd47b0(eUI_4ef2);
-    if (pCamera)
-        bDragging = pCamera->IsDragging();
-    if (bDragging == 0) {
-        efd::Point3 kHit = reinterpret_cast<efd::Point3&>(DAT_143b01a60);
-        int bPick = m_spController->IsPickable(&kHit);
-        m_spController->vfunc_38(bPick, kHit);
+    if (m_spController) {
+        int bDragging = 0;
+        UICameraEditDialog* pCamera = FUN_140cd47b0(eUI_4ef2);
+        if (pCamera)
+            bDragging = pCamera->IsDragging();
+        if (bDragging == 0) {
+            efd::Point3 kHit = reinterpret_cast<efd::Point3&>(DAT_143b01a60);
+            int bPick = m_spController->IsPickable(&kHit);
+            m_spController->vfunc_38(bPick, kHit);
+        }
+        m_spController->vfunc_4();
     }
-    m_spController->vfunc_4();
 }
 
 // @0x140ccb340
-// MS2-FUNCTIONAL: written from the decompile; temp slots / branch layout differ (permuter lane)
 void Customize::EditItems::Select(MS2Ptr<CEquipItem> spEquip)
 {
     PC* pPc = GetPC();
@@ -362,9 +365,9 @@ void Customize::EditItems::Select(MS2Ptr<CEquipItem> spEquip)
         m_spController->Close();
         m_spController = 0;
     }
-    if (spEquip.get() && spEquip->GetItem().get()) {
+    if (((CEquipItem*)spEquip ? true : false) && (spEquip->GetItem() ? true : false)) {
         m_spItem = FUN_140cd4650(spEquip->GetItem());
-        m_spData = static_cast<CItemData*>(m_spItem->FUN_140527840());
+        m_spData.AssignRaw(static_cast<CItemData*>(m_spItem->FUN_140527840()));
         m_spController = FUN_1414131e0(spEquip, pPc, m_pListener);
     }
 }
@@ -399,7 +402,8 @@ void Customize::EditItems::SelectId(int nItemId)
         PC* pPc = GetPC();
         if (pPc == 0)
             return;
-        SelectSlot(static_cast<Unk_InventoryEquipSlot>(FUN_141420f10(spData.get(), pPc)));
+        Unk_InventoryEquipSlot eSlot = static_cast<Unk_InventoryEquipSlot>(FUN_141420f10((CItemData*)spData, pPc));
+        SelectSlot(eSlot);
     }
 }
 
@@ -418,7 +422,8 @@ MS2_REPLACE_METHOD(0x140CCB7D0, Customize::EditItems, SelectUid, 130, 0x43251E96
 // MS2-FUNCTIONAL: written from the decompile; temp slots / branch layout differ (permuter lane)
 int Customize::EditItems::GetDragging()
 {
-    if (GetPC() == 0)
+    PC* pPc = GetPC();
+    if (pPc == 0)
         return 0;
     if (m_spController)
         return m_spController->GetDragging();
@@ -455,9 +460,10 @@ int Customize::EditItems::ApplyPalette(int nPalette, int nIndex, int n)
     PC* pPc = GetPC();
     if (pPc == 0)
         return 0;
-    if (m_pOwner && m_pOwner->GetPalette() > 0 && nPalette != FUN_140f02bc0())
-        nPalette = m_pOwner->GetPalette();
-    MS2Ptr<ItemColorEx> spColor = FUN_140281980()->FUN_140558960(nPalette, nIndex);   // nIndex is the colour's serial number here (by-SN lookup, as in the exe)
+    int nUsePalette = nPalette;
+    if (m_pOwner && m_pOwner->GetPalette() > 0 && nUsePalette != FUN_140f02bc0())
+        nUsePalette = m_pOwner->GetPalette();
+    MS2Ptr<ItemColorEx> spColor = FUN_140281980()->FUN_140558960(nUsePalette, nIndex);   // nIndex is the colour's serial number here (by-SN lookup, as in the exe)
     if (spColor == 0)
         return 0;
     if (m_spData->FUN_14053cf00())
@@ -573,18 +579,24 @@ void Customize::CloneItems::RestoreUid(__int64 nUid)
     PC* pPc = GetPC();
     if (pPc == 0)
         return;
-    for (POSITION pos = m_mapItems.GetStartPosition(); pos != 0;) {
+    POSITION pos = m_mapItems.GetStartPosition();
+    while (pos != 0) {
         MS2Ptr<CItem> spItem = m_mapItems.GetNextValue(pos);
-        if (spItem.get() && spItem->FUN_140526a50() == nUid) {
-            pPc->vfunc_127(FUN_140cd4650(spItem).get(), 1);
+        if ((FUN_14052cd70(&spItem) ? true : false) && ((CItem*)spItem)->FUN_140526a50() == nUid) {
+            MS2Ptr<CItem> spClone = FUN_140cd4650(spItem);
+            pPc->vfunc_127(FUN_14052cd70(&spClone), 1);
             return;
         }
     }
-    MS2Ptr<CItem> spItem = pPc->FUN_141655b80(nUid);
-    if (!(spItem.get() && spItem->FUN_140527840()))
-        return;
-    if (!spItem->FUN_140527840()->FUN_14053cf00())
-        pPc->vfunc_128(spItem.get(), 1);
+    {
+        MS2Ptr<CItem> spItem = pPc->FUN_141655b80(nUid);
+        if ((FUN_14052cd70(&spItem) ? true : false) && ((CItem*)spItem)->FUN_140527840()) {
+            if (((CItem*)spItem)->FUN_140527840()->FUN_14053cf00()) {
+            } else {
+                pPc->vfunc_128(FUN_14052cd70(&spItem), 1);
+            }
+        }
+    }
 }
 
 // @0x140ccc470
@@ -596,7 +608,6 @@ void Customize::CloneItems::CollectSlot(Unk_InventoryEquipSlot eSlot, ItemMap& a
 MS2_REPLACE_METHOD(0x140CCC470, Customize::CloneItems, CollectSlot, 68, 0x3B299A96);
 
 // @0x140ccc4c0
-// MS2-FUNCTIONAL: written from the decompile; temp slots / branch layout differ (permuter lane)
 void Customize::CloneItems::RestoreSlot(Unk_InventoryEquipSlot eSlot)
 {
     PC* pPc = GetPC();
@@ -610,12 +621,14 @@ void Customize::CloneItems::RestoreSlot(Unk_InventoryEquipSlot eSlot)
     for (POSITION pos = m_mapItems.GetStartPosition(); pos != 0;) {
         MS2Ptr<CItem> spItem = m_mapItems.GetNextValue(pos);
         if (pPc->FUN_1416569b0(spItem.get()) == eSlot) {
-            pPc->vfunc_127(FUN_140cd4650(spItem).get(), 1);
+            MS2Ptr<CItem> spClone = FUN_140cd4650(spItem);
+            pPc->vfunc_127(spClone.get(), 1);
             return;
         }
     }
     MS2Ptr<CEquipItem> spEquip = pPc->FUN_141655e10(eSlot);
-    if (spEquip.get() && spEquip->GetItem().get() && spEquip->GetItem()->FUN_140527840())
+    bool bWorn = (spEquip.get() ? true : false) && (spEquip->GetItem().get() ? true : false) && spEquip->GetItem()->FUN_140527840();
+    if (bWorn)
         pPc->vfunc_128(spEquip->GetItem().get(), 1);
 }
 
@@ -628,9 +641,9 @@ void Customize::CloneItems::Apply(MS2Ptr<CItem> spItem, Unk_InventoryEquipSlot e
         return;
     Unk_InventoryEquipSlot eOrigSlot = eSlot;
     MS2Ptr<CItem> spOld(0);
-    bool bHasOld = m_mapSlots.Lookup(eOrigSlot, spOld);
+    m_mapSlots.Lookup(eOrigSlot, spOld);
     bool bNewTwoSlot = false;
-    if (spItem.get() && spItem->FUN_140527840()) {
+    if ((spItem.get() ? true : false) && spItem->FUN_140527840()) {
         MS2Ptr<CItemData> spData(spItem->FUN_140527840());
         bNewTwoSlot = spData->FUN_14053d2b0() || spData->FUN_14053d460();
     }
@@ -641,20 +654,27 @@ void Customize::CloneItems::Apply(MS2Ptr<CItem> spItem, Unk_InventoryEquipSlot e
     else if (eSlot == 4 || eSlot == 5)
         ePairSlot = static_cast<Unk_InventoryEquipSlot>(eSlot == 4 ? 5 : 4);
     ATL::CAtlArray<MS2Ptr<CItem> > aItems;
-    if (bNewTwoSlot && ePairSlot != 0) {
-        aItems.Add(MS2Ptr<CItem>(0));
-        bHasOld = m_mapSlots.Lookup(ePairSlot, spOld);
+    if (spOld == 0 && ePairSlot != 0) {
+        {
+            MS2Ptr<CItem> spNone(0);
+            aItems.Add(spNone);
+        }
+        m_mapSlots.Lookup(ePairSlot, spOld);
     }
-    if (bHasOld)
+    if (spOld.get())
         aItems.Add(spOld);
     bool bOldTwoSlot = false;
-    MS2Ptr<CItemData> spOldData(bHasOld ? static_cast<CItemData*>(spOld->FUN_140527840()) : 0);
-    if (bHasOld && (spOldData->FUN_14053d2b0() || spOldData->FUN_14053d460()))
-        bOldTwoSlot = true;
+    MS2Ptr<CItemData> spOldData(spOld.get() ? static_cast<CItemData*>(spOld->FUN_140527840()) : 0);
+    if (spOldData.get() ? true : false) {
+        if (spOldData->FUN_14053d2b0() || spOldData->FUN_14053d460())
+            bOldTwoSlot = true;
+    }
     if (!bOldTwoSlot && ePairSlot != 0 && eOrigSlot != ePairSlot && m_mapSlots.Lookup(ePairSlot, spPair)) {
         if (spOld.get() != spPair.get())
             aItems.Add(spPair);
     }
+    if (aItems.IsEmpty())
+        return;
     size_t nCount = aItems.GetCount();
     for (size_t i = 0; i < nCount; ++i) {
         MS2Ptr<CItem> spCur = aItems[i];
@@ -671,7 +691,7 @@ void Customize::CloneItems::Apply(MS2Ptr<CItem> spItem, Unk_InventoryEquipSlot e
             bEquip = bNewTwoSlot;
         if (eOther != 0) {
             MS2Ptr<CEquipItem> spEquip = pPc->FUN_141655e10(eOther);
-            bool bWorn = spEquip.get() && spEquip->GetItem().get();
+            bool bWorn = (spEquip.get() ? true : false) && (spEquip->GetItem().get() ? true : false);
             if (bWorn) {
                 MS2Ptr<CItem> spOther(0);
                 if (m_mapSlots.Lookup(eOther, spOther)) {
@@ -686,11 +706,13 @@ void Customize::CloneItems::Apply(MS2Ptr<CItem> spItem, Unk_InventoryEquipSlot e
             }
         } else {
             MS2Ptr<CEquipItem> spEquip = pPc->FUN_141655c30(spCur->FUN_140526a50());
-            if (spEquip.get() && spEquip->FUN_1411dc820() == spCur->FUN_1405276c0())
+            if ((spEquip.get() ? true : false) && spEquip->FUN_1411dc820() == spCur->FUN_1405276c0())
                 bEquip = false;
         }
-        if (bEquip)
-            pPc->vfunc_127(FUN_140cd4650(spCur).get(), 1);
+        if (bEquip) {
+            MS2Ptr<CItem> spClone = FUN_140cd4650(spCur);
+            pPc->vfunc_127(spClone.get(), 1);
+        }
     }
 }
 
@@ -771,14 +793,14 @@ bool Customize::CloneItems::IsSameUid(__int64 nUid, unsigned* pnFlags)
     if (pPc == 0)
         return false;
     MS2Ptr<CItem> spCur = pPc->FUN_141655b80(nUid);
-    if (spCur.get() && spCur->FUN_140527840()) {
+    if ((FUN_14052cd70(&spCur) ? true : false) && ((CItem*)spCur)->FUN_140527840()) {
         for (POSITION pos = m_mapItems.GetStartPosition(); pos != 0;) {
             MS2Ptr<CItem> spItem = m_mapItems.GetNextValue(pos);
             if (spItem == 0)
                 continue;
-            if (spCur->FUN_1405276c0() != spItem->FUN_1405276c0())
+            if (((CItem*)spCur)->FUN_1405276c0() != ((CItem*)spItem)->FUN_1405276c0())
                 continue;
-            if (spCur->FUN_140526c30() != spItem->FUN_140526c30())
+            if (((CItem*)spCur)->FUN_140526c30() != ((CItem*)spItem)->FUN_140526c30())
                 continue;
             if (FUN_140cd4560(spItem, spCur) == 0)
                 *pnFlags |= 1;
@@ -829,7 +851,6 @@ int Customize::CloneItems::IsModifiedSlot(Unk_InventoryEquipSlot eSlot)
 MS2_REPLACE_METHOD(0x140CCDB50, Customize::CloneItems, IsModifiedSlot, 299, 0x36CF6E36);
 
 // @0x140ccdc90 the worn items that are not in the clone
-// MS2-FUNCTIONAL: written from the decompile; temp slots / branch layout differ (permuter lane)
 int Customize::CloneItems::GetAdded(ItemMap& out)
 {
     PC* pPc = GetPC();
@@ -845,8 +866,10 @@ int Customize::CloneItems::GetAdded(ItemMap& out)
         if (spItem == 0)
             continue;
         MS2Ptr<CItem> spClone(0);
-        if (!m_mapItems.Lookup(spItem->FUN_140526a50(), spClone))
-            out.SetAt(spItem->FUN_140526a50(), FUN_140cd4650(spItem));
+        if (!m_mapItems.Lookup(spItem->FUN_140526a50(), spClone)) {
+            MS2Ptr<CItem> spNew = FUN_140cd4650(spItem);
+            out.SetAt(spItem->FUN_140526a50(), spNew);
+        }
     }
     return out.GetCount() > 0;
 }
@@ -976,7 +999,6 @@ int Customize::CloneItems::GetModifiedSlot(ItemMap& out, Unk_InventoryEquipSlot 
 MS2_REPLACE_METHOD(0x140CCE630, Customize::CloneItems, GetModifiedSlot, 405, 0xD6806D54);
 
 // @0x140cce7d0 a preview item of the id (a copy of the worn one when the player wears it)
-// MS2-FUNCTIONAL: written from the decompile; temp slots / branch layout differ (permuter lane)
 MS2Ptr<CItem> Customize::CloneItems::CreateItem(int nItemId)
 {
     PC* pPc = GetPC();
@@ -995,8 +1017,10 @@ MS2Ptr<CItem> Customize::CloneItems::CreateItem(int nItemId)
     }
     if (spItem == 0) {
         spItem.AssignRaw(new CItem());
-        if (spItem.get() && spItem->FUN_140523c40(nItemId, 1, 0))
-            spItem->FUN_140526c10(FUN_141420f10(spData.get(), pPc));
+        if ((spItem.get() ? true : false) && spItem->FUN_140523c40(nItemId, 1, 0)) {
+            int nGrade = FUN_141420f10(spData.get(), pPc);
+            spItem->FUN_140526c10(nGrade);
+        }
     }
     if (spItem.get()) {
         spItem->FUN_140526a70(FUN_14028d0e0());
@@ -1035,10 +1059,10 @@ MS2_REPLACE_METHOD(0x140CCEBC0, Customize::CloneItems, GetChangeFlags, 530, 0xEE
 // MS2-FUNCTIONAL: written from the decompile; temp slots / branch layout differ (permuter lane)
 void Customize::CloneItems::UpdateItem(MS2Ptr<CItem> spItem)
 {
-    if (spItem == 0 || spItem->FUN_140527870() == 0)
+    if (spItem == 0 || ((CItem*)spItem)->FUN_140527870() == 0)
         return;
     MS2Ptr<CItem> spClone(0);
-    if (m_mapItems.Lookup(spItem->FUN_140526a50(), spClone) && spClone.get() && spClone->FUN_140527870())
+    if (m_mapItems.Lookup(((CItem*)spItem)->FUN_140526a50(), spClone) && (FUN_14052cd70(&spClone) ? true : false) && ((CItem*)spClone)->FUN_140527870())
         static_cast<CItemExtraData*>(static_cast<CPtred*>(spClone->FUN_140527870()))->vfunc_3(
             static_cast<CItemExtraData*>(static_cast<CPtred*>(spItem->FUN_140527870())));
 }
@@ -1241,14 +1265,13 @@ void Customize::Equipment::RestoreSlot(Unk_InventoryEquipSlot eSlot)
 }
 
 // @0x140ccffd0 the modified (dyed) worn item of the uid
-// MS2-FUNCTIONAL: written from the decompile; temp slots / branch layout differ (permuter lane)
-void Customize::Equipment::GetModified(__int64 nUid, MS2Ptr<CItem>& spOut)
+bool Customize::Equipment::GetModified(__int64 nUid, MS2Ptr<CItem>& spOut)
 {
     if (m_spClone == 0)
-        return;
+        return false;
     PC* pPc = GetPC();
     if (pPc == 0)
-        return;
+        return false;
     ItemMap added;
     ItemMap modified;
     ItemMap removed;
@@ -1256,9 +1279,10 @@ void Customize::Equipment::GetModified(__int64 nUid, MS2Ptr<CItem>& spOut)
     int nObjectId = FUN_14123c580(pPc);
     m_spEdit.AssignRaw(new EditItems(nObjectId, m_pOwner));
     if (modified.IsEmpty())
-        return;
+        return false;
     spOut = 0;
     modified.Lookup(nUid, spOut);
+    return (CItem*)spOut != 0;
 }
 
 // @0x140cd0270
@@ -1328,12 +1352,13 @@ MS2_REPLACE_METHOD(0x140CD05F0, Customize::Equipment, Unequip, 74, 0x15D5B3E2);
 void Customize::Equipment::UnequipId(int nItemId)
 {
     MS2Ptr<CItemData> spData = FUN_14053f870(nItemId);
-    if (spData == 0)
+    if (!spData)
         return;
     PC* pPc = GetPC();
     if (pPc == 0)
         return;
-    MS2Ptr<CEquipItem> spEquip = FUN_1414211a0(FUN_141420f10(spData.get(), pPc), pPc);
+    int nSlot = FUN_141420f10((CItemData*)spData, pPc);
+    MS2Ptr<CEquipItem> spEquip = FUN_1414211a0(nSlot, pPc);
     if (spEquip == 0)
         return;
     MS2Ptr<CItem> spItem = spEquip->GetItem();
@@ -1550,8 +1575,8 @@ void Customize::Equipment::ResetCapPosition(MS2Ptr<CItem> spItem)
     CCapExtraData* pExtra = static_cast<CCapExtraData*>(static_cast<CPtred*>(spCap->GetItem()->FUN_140527870()));
     if (pExtra == 0)
         return;
-    pExtra->m_aPt[3] = DAT_143b01a60;
-    pExtra->m_aPt[2] = DAT_143b01a60;
+    pExtra->m_aPt3[0] = DAT_143b01a60;
+    pExtra->m_aPt2[0] = DAT_143b01a60;
     SendModified(spCap->GetItem());
 }
 
@@ -1822,7 +1847,7 @@ void Customize::FUN_140cd24a0(int nSlot)
     if (m_spEquipment == 0)
         return;
     m_spEquipment->ShowSlot(static_cast<Unk_InventoryEquipSlot>(nSlot));
-    POSITION pos = m_lstHiddenSlots.Find(static_cast<Unk_InventoryEquipSlot>(nSlot));
+    POSITION pos = m_lstHiddenSlots.Find(*reinterpret_cast<Unk_InventoryEquipSlot*>(&nSlot));
     if (pos)
         m_lstHiddenSlots.RemoveAt(pos);
 }
@@ -1834,9 +1859,9 @@ void Customize::FUN_140cd2530(int nSlot)
     if (m_spEquipment == 0)
         return;
     m_spEquipment->HideSlot(static_cast<Unk_InventoryEquipSlot>(nSlot));
-    POSITION pos = m_lstHiddenSlots.Find(static_cast<Unk_InventoryEquipSlot>(nSlot));
+    POSITION pos = m_lstHiddenSlots.Find(*reinterpret_cast<Unk_InventoryEquipSlot*>(&nSlot));
     if (pos == 0)
-        m_lstHiddenSlots.AddTail(static_cast<Unk_InventoryEquipSlot>(nSlot));
+        m_lstHiddenSlots.AddTail(*reinterpret_cast<Unk_InventoryEquipSlot*>(&nSlot));
 }
 
 // @0x140cd25c0
@@ -2050,20 +2075,14 @@ int Customize::FUN_140cd33c0(int* pnColor, int nSlot)
 MS2_REPLACE_METHOD(0x140CD33C0, Customize, FUN_140cd33c0, 183, 0x3E0EE1BE);
 
 // @0x140cd3480
-// MS2-FUNCTIONAL: written from the decompile; temp slots / branch layout differ (permuter lane)
 void Customize::FUN_140cd3480(int bApply, int nPalette)
 {
     PC* pPc = FUN_140cd3df0();
     if (pPc == 0)
         return;
-    if (bApply == 0) {
-        ItemMap items;
-        m_spEquipment->GetCloneItems()->GetAdded(items);
-        if (!items.IsEmpty()) {
-            for (POSITION pos = items.GetStartPosition(); pos != 0; items.GetNext(pos))
-                FUN_141424230(items.GetKeyAt(pos), pPc);
-        }
-    } else if (nPalette != 0) {
+    if (bApply != 0) {
+        if (nPalette == 0)
+            return;
         MS2Ptr<ItemColorEx> spColor = FUN_140281980()->FUN_1405587f0(nPalette, 0);
         if (spColor.get()) {
             ItemMap items;
@@ -2072,6 +2091,13 @@ void Customize::FUN_140cd3480(int bApply, int nPalette)
                 for (POSITION pos = items.GetStartPosition(); pos != 0; items.GetNext(pos))
                     FUN_141423cf0(items.GetKeyAt(pos), *spColor, pPc, 0);
             }
+        }
+    } else {
+        ItemMap items;
+        m_spEquipment->GetCloneItems()->GetAdded(items);
+        if (!items.IsEmpty()) {
+            for (POSITION pos = items.GetStartPosition(); pos != 0; items.GetNext(pos))
+                FUN_141424230(items.GetKeyAt(pos), pPc);
         }
     }
 }

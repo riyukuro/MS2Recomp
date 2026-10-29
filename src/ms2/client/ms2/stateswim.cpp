@@ -9,6 +9,7 @@
 #include <new>
 #include <egf/Entity.h>
 #include <efd/utf8string.h>
+#include <efd/SmartPointer.h>
 
 #include "stateswim.h"
 
@@ -26,10 +27,6 @@
 
 // ---- unit-local views of the exe objects and unrecovered callees --------------------------------------------------------
 
-void FUN_1408a8700(void* pStr);                            // 0x1408a8700 efd::utf8string()
-void FUN_1408a8900(void* pStr);                            // 0x1408a8900 ~efd::utf8string
-void FUN_140ae18f0(void* pStr, const char* psz);           // 0x140ae18f0 efd::utf8string::operator=(const char*)
-bool FUN_14096ad40(const efd::utf8string& str);            // 0x14096ad40 the string is empty
 void FUN_14165e2a0(PCBase* p, void* pStr, int nKey);       // 0x14165e2a0 the player's animation name of a key
 void FUN_14165f170(PCBase* p);                             // 0x14165f170
 int FUN_140b7f6a0(void* pSvc, const egf::EntityID& kId);   // 0x140b7f6a0 sequence id of the model
@@ -41,6 +38,24 @@ int FUN_1411a49c0(void* pEffectMgr, Unk_EffectQuery* pQuery);
 void FUN_1411a6060(void* pEffectMgr, int nId);
 class Unk_PCBaseBody;
 void FUN_141240700(Unk_PCBaseBody* pBody, efd::Point3 kVel);               // 0x141240700
+
+// The owner's vtable up to slot 68, which takes the move by value (the exe passes a pointer to a copy).
+class Unk_SwOwnerSlots
+{
+public:
+#define MS2_SW_SLOTS(a, b, c, d, e) virtual void vfunc_##a(); virtual void vfunc_##b(); virtual void vfunc_##c(); \
+    virtual void vfunc_##d(); virtual void vfunc_##e();
+    MS2_SW_SLOTS(0, 1, 2, 3, 4) MS2_SW_SLOTS(5, 6, 7, 8, 9) MS2_SW_SLOTS(10, 11, 12, 13, 14) MS2_SW_SLOTS(15, 16, 17, 18, 19)
+    virtual void vfunc_20(); virtual void vfunc_21();
+    virtual void vfunc_22(efd::Point3 kDir);                                        // 22 takes the direction by value
+    virtual void vfunc_23(); virtual void vfunc_24();
+    MS2_SW_SLOTS(25, 26, 27, 28, 29) MS2_SW_SLOTS(30, 31, 32, 33, 34)
+    MS2_SW_SLOTS(35, 36, 37, 38, 39) MS2_SW_SLOTS(40, 41, 42, 43, 44) MS2_SW_SLOTS(45, 46, 47, 48, 49)
+    MS2_SW_SLOTS(50, 51, 52, 53, 54) MS2_SW_SLOTS(55, 56, 57, 58, 59) MS2_SW_SLOTS(60, 61, 62, 63, 64)
+    virtual void vfunc_65(); virtual void vfunc_66(); virtual void vfunc_67();
+#undef MS2_SW_SLOTS
+    virtual bool vfunc_68(efd::Point3 kMove, double fTime, int b, unsigned c, int d);   // 68 0x14166e100
+};
 class Unk_SwimHitReport { public: void FUN_140cfaf30(); };   // the actor body's controller hit report
 Unk_SwimHitReport* FUN_141240f20(Unk_PCBaseBody* pBody);
 
@@ -50,16 +65,6 @@ int FUN_141473390(Unk_SwimApp* p);                         // 0x141473390 the cu
 bool FUN_1415337c0(int nLast, int nNow, int nMillis);      // 0x1415337c0 enough time passed since the last request
 int FUN_1416764d0(MyPC* p);                                // 0x1416764d0 is riding
 Ridee* FUN_141468360(PCBase* p);                           // 0x141468360 the ridee the actor sits on
-
-// The efd::utf8string the exe builds out of line (ctor 0x1408a8700, dtor 0x1408a8900; 0x20 bytes).
-struct Unk_SwimString
-{
-    Unk_SwimString() { FUN_1408a8700(m_buf); }
-    ~Unk_SwimString() { FUN_1408a8900(m_buf); }
-    Unk_SwimString& operator=(const char* psz) { FUN_140ae18f0(m_buf, psz); return *this; }
-    operator const efd::utf8string&() const { return *(const efd::utf8string*)m_buf; }
-    char m_buf[0x20];
-};
 
 // The config constants singleton: the swim speed at +0x56a8 is not read here; only the buff view below is.
 class Unk_SwimBuff
@@ -87,7 +92,6 @@ StateSwim::~StateSwim()
 }
 
 // @0x1417fa420
-// MS2-FUNCTIONAL: the exe holds the ridee in a CComPtr (temp + EH frame); a raw pointer is used here
 void StateSwim::vfunc_4(StateData* pData)
 {
     State::vfunc_4(pData);
@@ -98,178 +102,177 @@ void StateSwim::vfunc_4(StateData* pData)
         FUN_14165f170(pPC);
     if (m_pOwner->GetClassID() == 0x6200045)
         PCBase::FUN_141677f40(m_pOwner);
-    float* pSpeed = m_pOwner->FUN_141671920();
-    if (FUN_1417fb370() == 0)
+    Unk_Vec4* pSpeed = (Unk_Vec4*)m_pOwner->FUN_141671920();
+    if (FUN_1417fb370() != 0)
     {
-        m_n10 = 0x84;
-        m_pOwner->FUN_141671960(pSpeed[3]);
-    }
-    else if (m_pOwner->FUN_141676b70() == 0)
-    {
-        m_n10 = 0x84;
-        m_pOwner->FUN_141671960(pSpeed[2]);
-    }
-    else
-    {
-        m_n10 = 0x85;
-        if (m_pOwner->GetClassID() == 0x6200045)
+        if (m_pOwner->FUN_141676b70() != 0)
         {
-            Ridee* pRidee = FUN_141468360(m_pOwner);
-            if (pRidee == 0)
-                m_pOwner->FUN_141671960(pSpeed[3]);
+            m_n10 = 0x85;
+            if (m_pOwner->GetClassID() == 0x6200045)
+            {
+                efd::SmartPointer<Ridee> spRidee(FUN_141468360(m_pOwner));
+                if (spRidee)
+                    m_pOwner->FUN_141671960(spRidee->FUN_1417070a0());
+                else
+                    m_pOwner->FUN_141671960(pSpeed->m_w);
+            }
             else
-                m_pOwner->FUN_141671960(pRidee->FUN_1417070a0());
+            {
+                m_pOwner->FUN_141671960(pSpeed->m_w);
+            }
         }
         else
         {
-            m_pOwner->FUN_141671960(pSpeed[3]);
+            m_n10 = 0x84;
+            m_pOwner->FUN_141671960(pSpeed->m_z);
         }
+    }
+    else
+    {
+        m_n10 = 0x84;
+        m_pOwner->FUN_141671960(pSpeed->m_w);
     }
 }
 
 // @0x1417fa600
-// MS2-FUNCTIONAL: inlined array temporaries differ from the exe
 void StateSwim::vfunc_5(int n)
 {
     State::vfunc_5(n);
-    m_pOwner->FUN_141671960(m_pOwner->FUN_141671920()[2]);
+    Unk_Vec4* pSpeed = (Unk_Vec4*)m_pOwner->FUN_141671920();
+    m_pOwner->FUN_141671960(pSpeed->m_z);
     FUN_1417fb400();
 }
 
 // @0x1417fa660
-// MS2-FUNCTIONAL: the exe holds the ridee in a CComPtr and lays out the point temporaries differently
 void StateSwim::vfunc_3(double fTime)
 {
     State::vfunc_3(fTime);
     if (m_pOwner->vfunc_63() == 0)
         return;
-    float* pSpeed = m_pOwner->FUN_141671920();
+    Unk_Vec4* pSpeed = (Unk_Vec4*)m_pOwner->FUN_141671920();
     if (m_n10 == 0x84)
     {
-        if (FUN_1417fb370() == 0)
-            m_pOwner->FUN_141671960(pSpeed[3]);
+        if (FUN_1417fb370() != 0)
+            m_pOwner->FUN_141671960(pSpeed->m_z);
         else
-            m_pOwner->FUN_141671960(pSpeed[2]);
+            m_pOwner->FUN_141671960(pSpeed->m_w);
     }
     else if (m_n10 == 0x85)
     {
         if (m_pOwner->GetClassID() == 0x6200045)
         {
-            Ridee* pRidee = FUN_141468360(m_pOwner);
-            if (pRidee == 0)
-                m_pOwner->FUN_141671960(pSpeed[3]);
+            efd::SmartPointer<Ridee> spRidee(FUN_141468360(m_pOwner));
+            if (spRidee)
+                m_pOwner->FUN_141671960(spRidee->FUN_1417070a0());
             else
-                m_pOwner->FUN_141671960(pRidee->FUN_1417070a0());
+                m_pOwner->FUN_141671960(pSpeed->m_w);
         }
         else
         {
-            m_pOwner->FUN_141671960(pSpeed[3]);
+            m_pOwner->FUN_141671960(pSpeed->m_w);
         }
     }
     efd::Point3 kDir = m_pOwner->FUN_141674b60(m_pOwner->FUN_14123c360());
     efd::Point3 kVel = kDir * m_pOwner->vfunc_95();
     efd::Point3 kMove = kVel * (float)fTime;
     FUN_141240700(m_pOwner->FUN_14166d220(), kVel);
-    m_pOwner->vfunc_68(&kMove, fTime, 0, 0, 0);
+    reinterpret_cast<Unk_SwOwnerSlots*>(m_pOwner)->vfunc_68(kMove, fTime, 0, 0, 0);
 }
 
 // @0x1417fa950
-// MS2-FUNCTIONAL: call-site temporaries and branch layout differ from the exe
 void StateSwim::vfunc_8(double fTime)
 {
     State::vfunc_8(fTime);
     MyPC* pPC = FUN_1417b84b0();
-    if (pPC == 0 || m_pOwner->vfunc_63() == 0)
+    if (pPC == 0)
         return;
-    if (m_pOwner->FUN_141675ed0() == 0)
+    if (m_pOwner->vfunc_63() == 0)
+        return;
+    if (m_pOwner->FUN_141675ed0() != 0)
+    {
+        if (!FUN_1417b9460())
+        {
+            if (m_pOwner->vfunc_99(0) != 0)
+            {
+                FUN_141240f20(m_pOwner->FUN_14166d220())->FUN_140cfaf30();
+                m_pOwner->vfunc_59(1, 0, 0, 0);
+                return;
+            }
+            Unk_SwimBuff* pBuff = (Unk_SwimBuff*)m_pOwner->FUN_14166d240();
+            efd::Point3 kDir = pBuff->FUN_141683900();
+            reinterpret_cast<Unk_SwOwnerSlots*>(m_pOwner)->vfunc_22(kDir);
+            if (m_pOwner->FUN_141676b70() != 0 && FUN_1417fb370() != 0)
+                m_n10 = 0x85;
+            else
+                m_n10 = 0x84;
+            if (pBuff->FUN_141683100(0x30d41))
+            {
+                pPC->FUN_1415248d0(1, 0);
+            }
+            else if (pBuff->FUN_141683100(0x30d42))
+            {
+                pPC->FUN_1415248d0(2, 0);
+            }
+            else if (m_pOwner->FUN_141671a30() != 0 && (pBuff->FUN_141682fe0(0x493e1) || m_n28 != 0))
+            {
+                m_n28 = 0;
+                m_pOwner->vfunc_59(6, 0, 0x25, 0);
+            }
+            else if (!m_pOwner->FUN_1416749c0())
+            {
+                m_pOwner->vfunc_59(1, 0, 0, 0);
+            }
+        }
+    }
+    else
     {
         m_pOwner->vfunc_59(1, 0, 0, 0);
-        return;
-    }
-    if (FUN_1417b9460())
-        return;
-    if (m_pOwner->vfunc_99(0) != 0)
-    {
-        FUN_141240f20(m_pOwner->FUN_14166d220())->FUN_140cfaf30();
-        m_pOwner->vfunc_59(1, 0, 0, 0);
-        return;
-    }
-    Unk_SwimBuff* pBuff = (Unk_SwimBuff*)m_pOwner->FUN_14166d240();
-    efd::Point3 kDir = pBuff->FUN_141683900();
-    m_pOwner->vfunc_22(kDir);
-    if (m_pOwner->FUN_141676b70() == 0 || FUN_1417fb370() == 0)
-        m_n10 = 0x84;
-    else
-        m_n10 = 0x85;
-    if (pBuff->FUN_141683100(0x30d41))
-    {
-        pPC->FUN_1415248d0(1, 0);
-    }
-    else if (pBuff->FUN_141683100(0x30d42))
-    {
-        pPC->FUN_1415248d0(2, 0);
-    }
-    else if (m_pOwner->FUN_141671a30() == 0 || (!pBuff->FUN_141682fe0(0x493e1) && m_n28 == 0))
-    {
-        if (!m_pOwner->FUN_1416749c0())
-            m_pOwner->vfunc_59(1, 0, 0, 0);
-    }
-    else
-    {
-        m_n28 = 0;
-        m_pOwner->vfunc_59(6, 0, 0x25, 0);
     }
 }
 
 // @0x1417fac90
-// MS2-FUNCTIONAL: string wrapper and EH frame differ from the exe
 void StateSwim::vfunc_9(double fTime)
 {
     State::vfunc_9(fTime);
-    egf::EntityID kId;
-    int nSeq = FUN_140b7f6a0(FUN_141b6f910(), m_pOwner->FUN_14123c460(kId));
-    if (FUN_1417fb370() == 0)
+    int nSeq = FUN_140b7f6a0(FUN_141b6f910(), m_pOwner->FUN_14123c460());
+    if (FUN_1417fb370() != 0)
     {
-        Unk_SwimString strAnim;
+        int nKey = (m_n10 == 0x85) ? 0x1f : 0x1c;
+        if (!m_pOwner->FUN_14166de90(nKey, nSeq))
+        {
+            Unk_Vec4* pSpeed = (Unk_Vec4*)m_pOwner->FUN_141671920();
+            vfunc_10(m_pOwner->vfunc_95(), pSpeed->m_z, pSpeed->m_y, 1.0f, 0);
+            m_pOwner->FUN_14166dda0(nKey);
+        }
+    }
+    else
+    {
+        efd::utf8string strAnim;
         PCBase* pPC = FUN_1417b8370();
         if (pPC != 0)
             FUN_14165e2a0(pPC, &strAnim, 0x31);
-        if (FUN_14096ad40(strAnim))
+        if (strAnim.empty())
         {
             if (!m_pOwner->FUN_14166de90(0x31, nSeq))
                 strAnim = m_pOwner->vfunc_123(0x31);
         }
         bool bPlayed = false;
-        if (!FUN_14096ad40(strAnim))
+        if (!strAnim.empty())
         {
-            float* pSpeed = m_pOwner->FUN_141671920();
-            vfunc_10(m_pOwner->vfunc_95(), pSpeed[3], pSpeed[1], 1.0f, 0);
+            Unk_Vec4* pSpeed = (Unk_Vec4*)m_pOwner->FUN_141671920();
+            vfunc_10(m_pOwner->vfunc_95(), pSpeed->m_w, pSpeed->m_y, 1.0f, 0);
             bPlayed = m_pOwner->FUN_14166dd20(strAnim, m_pOwner->FUN_1416713c0(), false, false);
         }
         if (bPlayed)
             FUN_1417fb440();
     }
-    else
-    {
-        int nKey = 0x1c;
-        if (m_n10 == 0x85)
-            nKey = 0x1f;
-        if (!m_pOwner->FUN_14166de90(nKey, nSeq))
-        {
-            float* pSpeed = m_pOwner->FUN_141671920();
-            vfunc_10(m_pOwner->vfunc_95(), pSpeed[2], pSpeed[1], 1.0f, 0);
-            m_pOwner->FUN_14166dda0(nKey);
-        }
-    }
 }
 
 // @0x1417fafb0
-// MS2-FUNCTIONAL: frame/local layout differs from the exe
 void StateSwim::vfunc_10(float a, float b, float c, float d, int e)
 {
     int nOut = 0;
-    float fSpeed = m_pOwner->vfunc_115(a, b, c, d, e, &nOut);
-    m_pOwner->FUN_141670d80(fSpeed);
+    m_pOwner->FUN_141670d80(m_pOwner->vfunc_115(a, b, c, d, e, &nOut));
 }
 
 // @0x1417fb040
@@ -291,27 +294,25 @@ int StateSwim::vfunc_22(MS2Ptr<Unk_StateArg22> p)
 }
 
 // @0x1417fb160
-// MS2-FUNCTIONAL: the exe's smart-pointer temporaries and EH frame are not reproduced
 void StateSwim::vfunc_29(MS2Ptr<Unk_StateArg29> p)
 {
     State::vfunc_29(p);
-    CItemGem* pGem = p->FUN_140527900();
-    if (pGem != 0 && pGem->GetGem().get() != 0)
+    MS2Ptr<CItemGem> spGem(p->FUN_140527900());
+    if ((spGem ? true : false) && (spGem->GetGem().get() ? true : false))
     {
-        MS2Ptr<CGemSwim> spSwim(dynamic_cast<CGemSwim*>(pGem->GetGem().get()));
+        MS2Ptr<CGemSwim> spSwim(dynamic_cast<CGemSwim*>(spGem->GetGem().operator->()));
         if (spSwim.get() != 0)
             FUN_1417fb440();
     }
 }
 
 // @0x1417fb370
-// MS2-FUNCTIONAL: the exe holds the ridee in a CComPtr (temp + EH frame); a raw pointer is used here
 int StateSwim::FUN_1417fb370()
 {
-    Ridee* pRidee = FUN_141468360(m_pOwner);
-    if (pRidee == 0)
+    efd::SmartPointer<Ridee> spRidee(FUN_141468360(m_pOwner));
+    if (!spRidee)
         return 0;
-    return pRidee->FUN_1417075e0();
+    return spRidee->FUN_1417075e0();
 }
 
 // @0x1417fb400
@@ -325,7 +326,6 @@ void StateSwim::FUN_1417fb400()
 }
 
 // @0x1417fb440
-// MS2-FUNCTIONAL: CString temporaries differ from the exe
 void StateSwim::FUN_1417fb440()
 {
     FUN_1417fb400();

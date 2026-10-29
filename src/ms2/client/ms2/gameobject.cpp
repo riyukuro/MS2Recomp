@@ -172,7 +172,7 @@ public:
     ~Unk_GoPickListPtr();                   // 0x140a16120
     Unk_GoPickList* FUN_140a16c00() const;
     Unk_GoPickList* FUN_140a16c30() const;
-    void* m_pad[2];
+    Unk_GoPickList* m_p;                    // a one-pointer intrusive smart pointer
 };
 class Unk_GoPicker
 {
@@ -508,14 +508,14 @@ void GameObject::FUN_14123c330(float f)
 MS2_REPLACE_METHOD(0x14123c330, GameObject, FUN_14123c330, 31, 0xA37ED63C);
 
 // @0x14123c360
-NiPoint3 GameObject::FUN_14123c360()
+efd::Point3 GameObject::FUN_14123c360()
 {
     return m_pos98;
 }
 MS2_REPLACE_METHOD(0x14123c360, GameObject, FUN_14123c360, 44, 0x9A487272);
 
 // @0x14123c3a0
-void GameObject::vfunc_22(const efd::Point3& kPos)
+void GameObject::vfunc_22(efd::Point3 kPos)
 {
     static_cast<efd::Point3&>(m_pos98) = kPos;
 }
@@ -803,14 +803,10 @@ void GameObject::vfunc_35(void* p)
 }
 MS2_REPLACE_METHOD(0x14123d040, GameObject, vfunc_35, 148, 0xA2DEDA48);
 
-// World position of the node named *pStr (a by-value CString the callee destroys; cubecraft_1.cpp passes raw
-// storage), falling back to vfunc_18().
+// World position of the node named str, falling back to vfunc_18().
 // @0x14123d0e0
-// MS2-FUNCTIONAL: the by-value CString is a void* slot parameter (shared with cubecraft_1.cpp) destroyed by hand.
-int GameObject::vfunc_36(void* pStr, void* b)
+int GameObject::vfunc_36(CString str, efd::Point3* pOut)
 {
-    CString& str = *static_cast<CString*>(pStr);
-    efd::Point3* pOut = static_cast<efd::Point3*>(b);
     if (!str.IsEmpty())
     {
         NiAVObject* pRoot = FUN_141b6efc0(FUN_14123c410());
@@ -821,13 +817,11 @@ int GameObject::vfunc_36(void* pStr, void* b)
             if (pObject && (pNode = NiDynamicCast(NiNode, pObject)) != 0)
             {
                 *pOut = pNode->GetWorldTransform().m_Translate;
-                str.~CString();
                 return 1;
             }
         }
     }
     *pOut = vfunc_18();
-    str.~CString();
     return 0;
 }
 MS2_REPLACE_METHOD(0x14123d0e0, GameObject, vfunc_36, 310, 0x4308DCD8);
@@ -841,7 +835,6 @@ MS2_REPLACE_METHOD(0x14123d220, GameObject, vfunc_37, 42, 0x4A7F4E8E);
 
 // Picks the scene along -kDir from kPos: the hit within fRange nearest to kPos (kPos when nothing is hit).
 // @0x14123d250
-// MS2-FUNCTIONAL: stack slot order of the locals differs from the exe.
 NiPoint3 GameObject::vfunc_38(const efd::Point3& kDir, const efd::Point3& kPos, float fRange)
 {
     float fDistance = fRange;
@@ -866,14 +859,13 @@ NiPoint3 GameObject::vfunc_38(const efd::Point3& kDir, const efd::Point3& kPos, 
     {
         Unk_GoPickHit* pHit = pHits->FUN_140a17d70(i);
         efd::Point3* pPt = pHit->FUN_140ad4bd0();
-        if ((kStart - *pPt).Length() <= fDistance)
+        if ((kStart - *pPt).Length() > fDistance)
+            continue;
+        float fDist = (kPos - *pPt).Length();
+        if (fMin > fDist)
         {
-            float fDist = (kPos - *pPt).Length();
-            if (fDist < fMin)
-            {
-                static_cast<efd::Point3&>(kBest) = *pPt;
-                fMin = fDist;
-            }
+            static_cast<efd::Point3&>(kBest) = *pPt;
+            fMin = fDist;
         }
     }
     return kBest;

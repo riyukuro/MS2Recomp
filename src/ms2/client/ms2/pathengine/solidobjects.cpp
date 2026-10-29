@@ -11,7 +11,7 @@
 #include "ms2/placeholder/ms2stdafx.h"
 
 #define NDEBUG
-#include "../third_party/src/pathengine-sigmaco/samples/Code Snippets/Building from Physics Scene Data/SolidObjects.cpp"
+#include "pathengine-sigmaco/samples/Code Snippets/Building from Physics Scene Data/SolidObjects.cpp"
 #undef NDEBUG
 
 #include "ms2/ms2recover.h"

@@ -9,9 +9,9 @@
 // MS2-PIN: ??A?$map@IU?$Unk_Gev447V8@$02@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIU?$Unk_Gev447V8@$02@@@std@@@3@@std@@QEAAAEAU?$Unk_Gev447V8@$02@@AEBI@Z 0x140447fb0 ; prop
 // MS2-PIN: ??A?$map@IU?$Unk_Gev447V8@$03@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIU?$Unk_Gev447V8@$03@@@std@@@3@@std@@QEAAAEAU?$Unk_Gev447V8@$03@@AEBI@Z 0x140447ff0 ; prop
 // MS2-PIN: ??A?$map@IU?$Unk_Gev447V8@$04@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIU?$Unk_Gev447V8@$04@@@std@@@3@@std@@QEAAAEAU?$Unk_Gev447V8@$04@@AEBI@Z 0x140448030 ; prop
-// MS2-PIN: ??A?$map@IU?$Unk_Gev447V8@$07@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIU?$Unk_Gev447V8@$07@@@std@@@3@@std@@QEAAAEAU?$Unk_Gev447V8@$07@@AEBI@Z 0x140448070 ; prop
+// MS2-PIN: ??A?$map@U?$pair@IH@std@@U?$Unk_Gev447V4@$05@@U?$less@U?$pair@IH@std@@@2@V?$allocator@U?$pair@$$CBU?$pair@IH@std@@U?$Unk_Gev447V4@$05@@@std@@@2@@std@@QEAAAEAU?$Unk_Gev447V4@$05@@AEBU?$pair@IH@1@@Z 0x140448070 ; gb19: ??A's try_emplace/??C chain ends in pointer_to<pair<const pair<int,ulong>,int>> (0x1404483d0) vs <pair<const u64,uint>> (0x140448410)
 // MS2-PIN: ??A?$map@IU?$Unk_Gev447V4@$0A@@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIU?$Unk_Gev447V4@$0A@@@@std@@@3@@std@@QEAAAEAU?$Unk_Gev447V4@$0A@@@AEBI@Z 0x1404480b0 ; prop
-// MS2-PIN: ??A?$map@U?$pair@IH@std@@U?$Unk_Gev447V4@$05@@U?$less@U?$pair@IH@std@@@2@V?$allocator@U?$pair@$$CBU?$pair@IH@std@@U?$Unk_Gev447V4@$05@@@std@@@2@@std@@QEAAAEAU?$Unk_Gev447V4@$05@@AEBU?$pair@IH@1@@Z 0x1404480f0 ; prop
+// MS2-PIN: ??A?$map@IU?$Unk_Gev447V8@$07@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIU?$Unk_Gev447V8@$07@@@std@@@3@@std@@QEAAAEAU?$Unk_Gev447V8@$07@@AEBI@Z 0x1404480f0 ; gb19: ??A's try_emplace/??C chain ends in pointer_to<pair<const pair<int,ulong>,int>> (0x1404483d0) vs <pair<const u64,uint>> (0x140448410)
 // MS2-PIN: ??A?$vector@_KV?$allocator@_K@std@@@std@@QEAAAEA_K_K@Z 0x140448130 ; unique
 // MS2-PIN: ??B?$MS2Ptr@U?$Unk_Gev447P@$00@@@@QEBAPEAU?$Unk_Gev447P@$00@@XZ 0x140448160 ; probe
 // MS2-PIN: ?GetModuleInstance@CAtlBaseModule@ATL@@QEAAPEAUHINSTANCE__@@XZ 0x140448170 ; probe
@@ -29,7 +29,9 @@
 // MS2-PIN: ??C?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBU?$pair@IH@std@@U?$Unk_Gev447V4@$05@@@std@@@std@@@std@@@std@@QEBAPEBU?$pair@$$CBU?$pair@IH@std@@U?$Unk_Gev447V4@$05@@@1@XZ 0x140448290 ; prop
 // MS2-PIN: ??C?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIU?$Unk_Gev447V4@$06@@@std@@@std@@@std@@@std@@QEBAPEAU?$pair@$$CBIU?$Unk_Gev447V4@$06@@@1@XZ 0x1404482f0 ; prop
 // MS2-PIN: ??C?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIU?$Unk_Gev447V8@$08@@@std@@@std@@@std@@@std@@QEBAPEAU?$pair@$$CBIU?$Unk_Gev447V8@$08@@@1@XZ 0x140448370 ; prop
+// MS2-PIN: ??C?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBU?$pair@IH@std@@U?$Unk_Gev447V4@$05@@@std@@@std@@@std@@@std@@QEBAPEAU?$pair@$$CBU?$pair@IH@std@@U?$Unk_Gev447V4@$05@@@1@XZ 0x1404483d0 ; gb19: calls the V4<5> operator* 0x140448710, pointer_to<pair<const pair<int,ulong>,int>>
 // MS2-PIN: ??C?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIU?$Unk_Gev447V4@$0A@@@@std@@@std@@@std@@@std@@QEBAPEAU?$pair@$$CBIU?$Unk_Gev447V4@$0A@@@@1@XZ 0x1404483f0 ; prop
+// MS2-PIN: ??C?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIU?$Unk_Gev447V8@$07@@@std@@@std@@@std@@@std@@QEBAPEAU?$pair@$$CBIU?$Unk_Gev447V8@$07@@@1@XZ 0x140448410 ; gb19: calls the V8<7> operator* 0x140448750, pointer_to<pair<const u64,uint>>
 // MS2-PIN: ??D?$_List_const_iterator@V?$_List_val@U?$_List_simple_types@U?$Unk_Gev447V8@$0N@@@@std@@@std@@@std@@QEBAAEBU?$Unk_Gev447V8@$0N@@@XZ 0x140448430 ; prop
 // MS2-PIN: ??D?$_List_iterator@V?$_List_val@U?$_List_simple_types@U?$Unk_Gev447V8@$0N@@@@std@@@std@@@std@@QEBAAEAU?$Unk_Gev447V8@$0N@@@XZ 0x140448450 ; prop
 // MS2-PIN: ??D?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBU?$pair@IH@std@@U?$Unk_Gev447V4@$05@@@std@@@std@@@std@@@std@@QEBAAEBU?$pair@$$CBU?$pair@IH@std@@U?$Unk_Gev447V4@$05@@@1@XZ 0x1404484b0 ; prop
@@ -44,9 +46,9 @@
 // MS2-PIN: ??D?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIU?$Unk_Gev447V8@$08@@@std@@@std@@@std@@@std@@QEBAAEAU?$pair@$$CBIU?$Unk_Gev447V8@$08@@@1@XZ 0x1404486b0 ; prop
 // MS2-PIN: ??D?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIU?$Unk_Gev447V8@$03@@@std@@@std@@@std@@@std@@QEBAAEAU?$pair@$$CBIU?$Unk_Gev447V8@$03@@@1@XZ 0x1404486d0 ; unique
 // MS2-PIN: ??D?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIU?$Unk_Gev447V8@$04@@@std@@@std@@@std@@@std@@QEBAAEAU?$pair@$$CBIU?$Unk_Gev447V8@$04@@@1@XZ 0x1404486f0 ; unique
-// MS2-PIN: ??D?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIU?$Unk_Gev447V8@$07@@@std@@@std@@@std@@@std@@QEBAAEAU?$pair@$$CBIU?$Unk_Gev447V8@$07@@@1@XZ 0x140448750 ; la1: calls the V8<7> const operator* 140448610 (deepobj; 140448710 calls 1404485d0)
-// MS2-PIN: ??D?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIU?$Unk_Gev447V4@$0A@@@@std@@@std@@@std@@@std@@QEBAAEAU?$pair@$$CBIU?$Unk_Gev447V4@$0A@@@@1@XZ 0x140448730 ; prop
 // MS2-PIN: ??D?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBU?$pair@IH@std@@U?$Unk_Gev447V4@$05@@@std@@@std@@@std@@@std@@QEBAAEAU?$pair@$$CBU?$pair@IH@std@@U?$Unk_Gev447V4@$05@@@1@XZ 0x140448710 ; la1: deep-matches 140448710/140448630 (V4 node layout), not 140448750
+// MS2-PIN: ??D?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIU?$Unk_Gev447V4@$0A@@@@std@@@std@@@std@@@std@@QEBAAEAU?$pair@$$CBIU?$Unk_Gev447V4@$0A@@@@1@XZ 0x140448730 ; prop
+// MS2-PIN: ??D?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIU?$Unk_Gev447V8@$07@@@std@@@std@@@std@@@std@@QEBAAEAU?$pair@$$CBIU?$Unk_Gev447V8@$07@@@1@XZ 0x140448750 ; la1: calls the V8<7> const operator* 140448610 (deepobj; 140448710 calls 1404485d0)
 // MS2-PINS-END tplpin
 // MS2-GUESS-LOOKALIKES
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\unknown_140447ef0.cpp"

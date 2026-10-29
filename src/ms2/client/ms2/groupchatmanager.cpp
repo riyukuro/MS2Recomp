@@ -416,7 +416,6 @@ MS2_REPLACE_METHOD(0x14137E160, CGroupChatManager, FUN_14137e160, 31, 0xAFDDD77C
 void CGroupChatManager::FUN_14137e190() { m_chats.RemoveAll(); }
 MS2_REPLACE_METHOD(0x14137E190, CGroupChatManager, FUN_14137e190, 31, 0x8872628C);
 // @0x14137e1c0
-// MS2-FUNCTIONAL: third Format argument load order and one nop
 void CGroupChatManager::FUN_14137e1c0() {
     if (Unk_LockGuard guard = m_lock) {
         __assume(0);
@@ -438,8 +437,7 @@ void CGroupChatManager::FUN_14137e1c0() {
             }
             line.Format(L"oid = %d", chat->GetOid());
             FUN_1412751b0(line, 0x14);
-            unsigned joined = chat->FUN_14137bb00();
-            line.Format(L"member count = %d (%d)", chat->FUN_14137bad0(), joined);
+            line.Format(L"member count = %d (%d)", chat->FUN_14137bad0(), chat->FUN_14137bb00());
             FUN_1412751b0(line, 0x14);
         }
         CStringW rule(L"----------------------------------------");
@@ -513,58 +511,57 @@ int CGroupChatManager::FUN_14137e820() {
 }
 MS2_REPLACE_METHOD(0x14137E820, CGroupChatManager, FUN_14137e820, 110, 0x8ACB80F7);
 // @0x14137e8a0
-// MS2-FUNCTIONAL: temp reference copy and EH state layout around the message box temps
 void CGroupChatManager::Create(CStringW name) {
     if (FUN_14137e820() >= 3) {
-        Unk_MessageBoxPtr box = FUN_140d73d20(0, FUN_14052bd00(0x818, FUN_14137e410()), 0, CStringW(L""));
-        if (FUN_140534fc0(box) != 0)
+        if (Unk_MessageBoxPtr box = FUN_140d73d20(0, FUN_14052bd00(0x818, FUN_14137e410()), 0, CStringW(L"")))
             FUN_140d73c60(box);
-    } else {
-        if (name.GetLength() >= 0x19) {
-            MS2_ASSERT_AT(0x9a, FALSE);
-            FUN_140166440()->Log(1, 0x13, L"{0}. strTargetName={1}", "CGroupChatManager::Create", name);
-        } else {
-            COutPacket packet(static_cast<int>(SendOp::GroupChat), 0);
-            packet.WriteUInt8(1);
-            packet.WriteUnicodeString(name);
-            FUN_140710590(packet);
-        }
+        return;
     }
+    int nLen = name.GetLength();
+    if (nLen > 0x18) {
+        MS2_ASSERT_AT(0x9a, FALSE);
+        FUN_140166440()->Log(1, 0x13, L"{0}. strTargetName={1}", "CGroupChatManager::Create", name);
+        return;
+    }
+    COutPacket packet(static_cast<int>(SendOp::GroupChat), 0);
+    packet.WriteUInt8(1);
+    packet.WriteUnicodeString(name);
+    FUN_140710590(packet);
 }
 MS2_REPLACE_METHOD(0x14137E8A0, CGroupChatManager, Create, 596, 0xCDD6234E);
 // @0x14137eb00
-// MS2-FUNCTIONAL: by-value arg copy is ordered before operator-> in the exe; EH states differ
+// MS2-FUNCTIONAL: the by-value name copy and message box temps sit in different stack slots; EH states differ
 void CGroupChatManager::Invite(unsigned oid, CStringW name) {
     Unk_ChatPtrChat chat = FUN_14137e630(oid);
     if (chat == 0)
         return;
-    if (chat->FUN_14137b510(name) == 0) {
-        if (chat->FUN_14137bad0() >= 0x14) {
-            CStringW text = GetStringCommon(0x814);
-            Unk_MessageBoxPtr active = FUN_14151f820();
-            if (FUN_140534fc0(active) != 0) {
-                if (FUN_14025cd60(FUN_141a02ce0(FUN_140534fe0(active)), text))
-                    return;
-            }
-            Unk_MessageBoxPtr box = FUN_140d73d20(0, text, 0, text);
-            if (FUN_140534fc0(box) != 0)
-                FUN_140d73c60(box);
-        }
-        int len = name.GetLength();
-        if (len >= 0x19) {
-            MS2_ASSERT_AT(0xc9, FALSE);
-            FUN_140166440()->Log(1, 0x13, L"{0}. strTargetName={1}", "CGroupChatManager::Invite", name);
-        } else {
-            COutPacket packet(static_cast<int>(SendOp::GroupChat), 0);
-            packet.WriteUInt8(2);
-            packet.WriteUnicodeString(name);
-            packet.WriteInt32(oid);
-            FUN_140710590(packet);
-        }
-    } else {
+    if (chat->FUN_14137b510(name)) {
         Unk_MessageBoxPtr box = FUN_140d73d20(0, GetStringCommon(0x816), 0, CStringW(L""));
         if (FUN_140534fc0(box) != 0)
             FUN_140d73c60(box);
+        return;
+    }
+    if (chat->FUN_14137bad0() >= 0x14) {
+        CStringW text = GetStringCommon(0x814);
+        Unk_MessageBoxPtr active = FUN_14151f820();
+        if (FUN_140534fc0(active) != 0) {
+            if (FUN_14025cd60(FUN_141a02ce0(FUN_140534fe0(active)), text))
+                return;
+        }
+        Unk_MessageBoxPtr box = FUN_140d73d20(0, text, 0, text);
+        if (FUN_140534fc0(box) != 0)
+            FUN_140d73c60(box);
+    }
+    int len = name.GetLength();
+    if (len >= 0x19) {
+        MS2_ASSERT_AT(0xc9, FALSE);
+        FUN_140166440()->Log(1, 0x13, L"{0}. strTargetName={1}", "CGroupChatManager::Invite", name);
+    } else {
+        COutPacket packet(static_cast<int>(SendOp::GroupChat), 0);
+        packet.WriteUInt8(2);
+        packet.WriteUnicodeString(name);
+        packet.WriteInt32(oid);
+        FUN_140710590(packet);
     }
 }
 MS2_REPLACE_METHOD(0x14137EB00, CGroupChatManager, Invite, 1173, 0xCDB2E8FE);
@@ -580,11 +577,11 @@ void CGroupChatManager::SendGroupChatMode4(unsigned oid, int flag) {
 }
 MS2_REPLACE_METHOD(0x14137EFA0, CGroupChatManager, SendGroupChatMode4, 203, 0x55D554D6);
 // @0x14137f080
-// MS2-FUNCTIONAL: chat lookup temp copy and EH layout
 void CGroupChatManager::SendGroupChatMode10(unsigned oid, CStringW text) {
     if (FUN_14137e630(oid) == 0)
         return;
-    if (text.GetLength() >= 0x801)
+    int nLen = text.GetLength();
+    if (nLen > 0x800)
         return;
     {
         BlockPtr blocked = FUN_140a6a830()->FindBlockedAction(2);
@@ -595,19 +592,20 @@ void CGroupChatManager::SendGroupChatMode10(unsigned oid, CStringW text) {
             return;
         }
     }
-    if (FUN_1403ed2d0()->FUN_141bd30a0().FUN_140885340()->FUN_140375660(0x100) == 0) {
-        COutPacket packet(static_cast<int>(SendOp::GroupChat), 0);
-        packet.WriteUInt8(10);
-        packet.WriteUnicodeString(text);
-        packet.WriteInt32(oid);
-        FUN_140710590(packet);
-    }
+    int nRestricted = FUN_1403ed2d0()->FUN_141bd30a0().FUN_140885340()->FUN_140375660(0x100);
+    if (nRestricted != 0)
+        return;
+    COutPacket packet(static_cast<int>(SendOp::GroupChat), 0);
+    packet.WriteUInt8(10);
+    packet.WriteUnicodeString(text);
+    packet.WriteInt32(oid);
+    FUN_140710590(packet);
 }
 MS2_REPLACE_METHOD(0x14137F080, CGroupChatManager, SendGroupChatMode10, 615, 0x230F9B6B);
 // @0x14137f2f0
-// MS2-FUNCTIONAL: dispatcher stack layout differs by a few bytes
 void CGroupChatManager::OnGroupChat(CInPacket* packet) {
-    switch (packet->ReadUInt8()) {
+    int nMode = packet->ReadUInt8();
+    switch (nMode) {
     case 0:    FUN_14137f490(packet); break;
     case 1:    FUN_14137f590(packet); break;
     case 2:    FUN_14137f640(packet); break;
@@ -778,7 +776,6 @@ void CGroupChatManager::FUN_141380320(CInPacket* packet) {
 }
 MS2_REPLACE_METHOD(0x141380320, CGroupChatManager, FUN_141380320, 557, 0x5B7B0A0D);
 // @0x141380560
-// MS2-FUNCTIONAL: temp lifetime ordering differs by a few bytes
 void CGroupChatManager::FUN_141380560(CInPacket* packet) {
     unsigned oid = packet->ReadInt32();
     CStringW name = packet->ReadUnicodeString();
@@ -792,15 +789,13 @@ void CGroupChatManager::FUN_141380560(CInPacket* packet) {
     member->m_proxy.FUN_1408f0850(FUN_14016a600(picture, 0));
     CString cached = FUN_141028be0(member->m_proxy.m_8, FUN_14016a600(picture, 0), 0, CString(""));
     if (!cached.IsEmpty()) {
-        Unk_ChatPictureSink* sink = FUN_140bc09f0();
-        sink->vfunc_1(member->m_proxy.m_8, FUN_14016a600(picture, 0));
+        FUN_140bc09f0()->vfunc_1(member->m_proxy.m_8, FUN_14016a600(picture, 0));
     }
 }
 MS2_REPLACE_METHOD(0x141380560, CGroupChatManager, FUN_141380560, 921, 0x2E2E4F06);
 // @0x141380900
-// MS2-FUNCTIONAL: temp lifetime ordering differs by a few bytes
 void CGroupChatManager::FUN_141380900(CInPacket* packet) {
-    unsigned char flag = packet->ReadUInt8();
+    int flag = packet->ReadUInt8();
     int code = packet->ReadInt32();
     CStringW first = packet->ReadUnicodeString();
     CStringW second = packet->ReadUnicodeString();

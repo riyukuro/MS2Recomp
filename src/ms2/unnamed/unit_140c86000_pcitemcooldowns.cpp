@@ -42,7 +42,6 @@ void Unk_PCItemCooldowns::FUN_140c86060()
 MS2_REPLACE_METHOD(0x140C86060, Unk_PCItemCooldowns, FUN_140c86060, 73, 0xCCA14FC7);
 
 // @0x140c860b0
-// MS2-FUNCTIONAL: the slot index reaches CItem::FUN_140526b70 via ecx->edx and a trailing nop after the assign; no source form found
 void Unk_PCItemCooldowns::FUN_140c860b0(CInputStream& stream, int nObjId)
 {
     FUN_140c86060();
@@ -58,8 +57,7 @@ void Unk_PCItemCooldowns::FUN_140c860b0(CInputStream& stream, int nObjId)
         MS2Ptr<CItem> spItem(new CItem);
         if (!spItem->FUN_140523c40(nItemId, nRarity, 0))
             return;
-        int nSlotIdx = nSlot;
-        spItem->FUN_140526b70(nSlotIdx);
+        spItem->FUN_140526b70(nSlot);
         spItem->FUN_140526a70(nItemUid);
         spItem->FUN_140526b30(nObjId);
         spItem->FUN_140524eb0(stream);

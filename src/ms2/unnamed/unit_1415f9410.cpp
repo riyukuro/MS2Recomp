@@ -19,9 +19,19 @@ static void nm_free_string_storage(char*& p)
     }
 }
 
-static bool nm_ensure_string(void** slot, size_t bytes, size_t emptyRva)
+// The library's per-capacity CNMStr empty-string sentinels (data_bss_143ae0748; the hook DLL binds them to the exe's).
+extern char DAT_143ae2848;  // CNMStr<0x20>
+extern char DAT_143ae2849;  // CNMStr<0x800>
+extern char DAT_143ae28e8;  // CNMStr<0x400>
+extern char DAT_143ae28e9;  // CNMStr<0x40>
+extern char DAT_143ae28ea;  // CNMStr<0x1000>
+extern char DAT_143ae28eb;  // CNMStr<0x100>
+extern char DAT_143ae28ec;  // CNMStr<9>
+extern char DAT_143ae28ed;  // CNMStr<0x15e>
+
+static bool nm_ensure_string(void** slot, size_t bytes, char& emptyRef)
 {
-    void* empty = static_cast<unsigned char*>(reinterpret_cast<void*>(GetModuleHandleW(nullptr))) + emptyRva;
+    void* empty = &emptyRef;
     if (*slot == nullptr || *slot == empty) {
         *slot = ::operator new(bytes);
         *static_cast<char*>(*slot) = 0;
@@ -29,9 +39,9 @@ static bool nm_ensure_string(void** slot, size_t bytes, size_t emptyRva)
     return *slot != nullptr && *slot != empty;
 }
 
-static void nm_reset_string(void** slot, size_t emptyRva)
+static void nm_reset_string(void** slot, char& emptyRef)
 {
-    void* empty = static_cast<unsigned char*>(reinterpret_cast<void*>(GetModuleHandleW(nullptr))) + emptyRva;
+    void* empty = &emptyRef;
     if (*slot && *slot != empty) {
         MEMORY_BASIC_INFORMATION info{};
         if (VirtualQuery(*slot, &info, sizeof(info)) && info.Type == MEM_PRIVATE)
@@ -42,63 +52,63 @@ static void nm_reset_string(void** slot, size_t emptyRva)
 
 // MS2-FUNCTIONAL: lazily allocates and clears the session string buffer, preserving its recovered shared-empty sentinel.
 // @0x1415f9410
-bool FUN_1415f9410(void** slot) { return nm_ensure_string(slot, 9, 0x3ae28ec); }
+bool FUN_1415f9410(void** slot) { return nm_ensure_string(slot, 9, DAT_143ae28ec); }
 
 // MS2-FUNCTIONAL: lazily allocates and clears the session string buffer, preserving its recovered shared-empty sentinel.
 // @0x1415f94c0
-bool FUN_1415f94c0(void** slot) { return nm_ensure_string(slot, 0x100, 0x3ae28eb); }
+bool FUN_1415f94c0(void** slot) { return nm_ensure_string(slot, 0x100, DAT_143ae28eb); }
 
 // MS2-FUNCTIONAL: lazily allocates and clears the session string buffer, preserving its recovered shared-empty sentinel.
 // @0x1415f9570
-bool FUN_1415f9570(void** slot) { return nm_ensure_string(slot, 0x1000, 0x3ae28ea); }
+bool FUN_1415f9570(void** slot) { return nm_ensure_string(slot, 0x1000, DAT_143ae28ea); }
 
 // MS2-FUNCTIONAL: lazily allocates and clears the session string buffer, preserving its recovered shared-empty sentinel.
 // @0x1415f9620
-bool FUN_1415f9620(void** slot) { return nm_ensure_string(slot, 0x15e, 0x3ae28ed); }
+bool FUN_1415f9620(void** slot) { return nm_ensure_string(slot, 0x15e, DAT_143ae28ed); }
 
 // MS2-FUNCTIONAL: lazily allocates and clears the session string buffer, preserving its recovered shared-empty sentinel.
 // @0x1415f96d0
-bool FUN_1415f96d0(void** slot) { return nm_ensure_string(slot, 0x20, 0x3ae2848); }
+bool FUN_1415f96d0(void** slot) { return nm_ensure_string(slot, 0x20, DAT_143ae2848); }
 
 // MS2-FUNCTIONAL: lazily allocates and clears the session string buffer, preserving its recovered shared-empty sentinel.
 // @0x1415f9780
-bool FUN_1415f9780(void** slot) { return nm_ensure_string(slot, 0x40, 0x3ae28e9); }
+bool FUN_1415f9780(void** slot) { return nm_ensure_string(slot, 0x40, DAT_143ae28e9); }
 
 // MS2-FUNCTIONAL: lazily allocates and clears the session string buffer, preserving its recovered shared-empty sentinel.
 // @0x1415f9830
-bool FUN_1415f9830(void** slot) { return nm_ensure_string(slot, 0x400, 0x3ae28e8); }
+bool FUN_1415f9830(void** slot) { return nm_ensure_string(slot, 0x400, DAT_143ae28e8); }
 
 // MS2-FUNCTIONAL: lazily allocates and clears the session string buffer, preserving its recovered shared-empty sentinel.
 // @0x1415f98e0
-bool FUN_1415f98e0(void** slot) { return nm_ensure_string(slot, 0x800, 0x3ae2849); }
+bool FUN_1415f98e0(void** slot) { return nm_ensure_string(slot, 0x800, DAT_143ae2849); }
 
 // MS2-FUNCTIONAL: preserves the recovered null-free or allocate-and-copy behavior for this fixed-capacity string.
 // @0x1415f99a0
-void FUN_1415f99a0(void** slot, const char* value) { if (!value) { nm_reset_string(slot, 0x3ae28ec); return; } if (FUN_1415f9410(slot)) StringCchCopyA(static_cast<char*>(*slot), 9, value); }
+void FUN_1415f99a0(void** slot, const char* value) { if (!value) { nm_reset_string(slot, DAT_143ae28ec); return; } if (FUN_1415f9410(slot)) StringCchCopyA(static_cast<char*>(*slot), 9, value); }
 
 // MS2-FUNCTIONAL: preserves the recovered null-free or allocate-and-copy behavior for this fixed-capacity string.
 // @0x1415f99f0
-void FUN_1415f99f0(void** slot, const char* value) { if (!value) { nm_reset_string(slot, 0x3ae28ea); return; } if (FUN_1415f9570(slot)) StringCchCopyA(static_cast<char*>(*slot), 0x1000, value); }
+void FUN_1415f99f0(void** slot, const char* value) { if (!value) { nm_reset_string(slot, DAT_143ae28ea); return; } if (FUN_1415f9570(slot)) StringCchCopyA(static_cast<char*>(*slot), 0x1000, value); }
 
 // MS2-FUNCTIONAL: preserves the recovered null-free or allocate-and-copy behavior for this fixed-capacity string.
 // @0x1415f9a40
-void FUN_1415f9a40(void** slot, const char* value) { if (!value) { nm_reset_string(slot, 0x3ae28ed); return; } if (FUN_1415f9620(slot)) StringCchCopyA(static_cast<char*>(*slot), 0x15e, value); }
+void FUN_1415f9a40(void** slot, const char* value) { if (!value) { nm_reset_string(slot, DAT_143ae28ed); return; } if (FUN_1415f9620(slot)) StringCchCopyA(static_cast<char*>(*slot), 0x15e, value); }
 
 // MS2-FUNCTIONAL: preserves the recovered null-free or allocate-and-copy behavior for this fixed-capacity string.
 // @0x1415f9a90
-void FUN_1415f9a90(void** slot, const char* value) { if (!value) { nm_reset_string(slot, 0x3ae2848); return; } if (FUN_1415f96d0(slot)) StringCchCopyA(static_cast<char*>(*slot), 0x20, value); }
+void FUN_1415f9a90(void** slot, const char* value) { if (!value) { nm_reset_string(slot, DAT_143ae2848); return; } if (FUN_1415f96d0(slot)) StringCchCopyA(static_cast<char*>(*slot), 0x20, value); }
 
 // MS2-FUNCTIONAL: preserves the recovered null-free or allocate-and-copy behavior for this fixed-capacity string.
 // @0x1415f9ae0
-void FUN_1415f9ae0(void** slot, const char* value) { if (!value) { nm_reset_string(slot, 0x3ae28e9); return; } if (FUN_1415f9780(slot)) StringCchCopyA(static_cast<char*>(*slot), 0x40, value); }
+void FUN_1415f9ae0(void** slot, const char* value) { if (!value) { nm_reset_string(slot, DAT_143ae28e9); return; } if (FUN_1415f9780(slot)) StringCchCopyA(static_cast<char*>(*slot), 0x40, value); }
 
 // MS2-FUNCTIONAL: preserves the recovered null-free or allocate-and-copy behavior for this fixed-capacity string.
 // @0x1415f9b30
-void FUN_1415f9b30(void** slot, const char* value) { if (!value) { nm_reset_string(slot, 0x3ae28e8); return; } if (FUN_1415f9830(slot)) StringCchCopyA(static_cast<char*>(*slot), 0x400, value); }
+void FUN_1415f9b30(void** slot, const char* value) { if (!value) { nm_reset_string(slot, DAT_143ae28e8); return; } if (FUN_1415f9830(slot)) StringCchCopyA(static_cast<char*>(*slot), 0x400, value); }
 
 // MS2-FUNCTIONAL: preserves the recovered null-free or allocate-and-copy behavior for this fixed-capacity string.
 // @0x1415f9b80
-void FUN_1415f9b80(void** slot, const char* value) { if (!value) { nm_reset_string(slot, 0x3ae2849); return; } if (FUN_1415f98e0(slot)) StringCchCopyA(static_cast<char*>(*slot), 0x800, value); }
+void FUN_1415f9b80(void** slot, const char* value) { if (!value) { nm_reset_string(slot, DAT_143ae2849); return; } if (FUN_1415f98e0(slot)) StringCchCopyA(static_cast<char*>(*slot), 0x800, value); }
 
 // MS2-FUNCTIONAL: preserves the recovered lazy initialization and returns the slot's resulting buffer.
 // @0x1415f9f20
@@ -1080,7 +1090,9 @@ void FUN_1415f9990(void*) { }
 // MS2-FUNCTIONAL: the recovered helper is an empty body; pin the alternate unsigned return analysis too.
 // MS2-PIN: ?FUN_1415f9990@@YAXPEAX@Z 0x1415f9990
 // MS2-PIN: ?FUN_1415f9990@@YAIPEAX@Z 0x1415f9990
+#ifndef MS2_HOOK_DLL   // the hook DLL's ms2sym.obj already maps this name to the exe address (alternatename conflict)
 #pragma comment(linker, "/alternatename:?FUN_1415f9990@@YAIPEAX@Z=?FUN_1415f9990@@YAXPEAX@Z")
+#endif
 
 // @0x1415f9c30
 template<> void CNMStr<0x100>::Free() { nm_free_string_storage(m_p); }
@@ -1209,12 +1221,14 @@ bool CStreamCryptor_v1::vfunc_3() { return true; }
 // The executable's vftable refers to these slots with the recovered void() ABI.
 // The source-level return-value variants above share the same code and calling
 // convention for slots 3-5, so preserve those bodies under the vftable names.
+#ifndef MS2_HOOK_DLL   // the hook DLL's ms2sym.obj already maps these names to the exe address (alternatename conflict)
 #pragma comment(linker, "/alternatename:?vfunc_3@CStreamCryptor_v0@@UEAAXXZ=?vfunc_3@CStreamCryptor_v0@@UEAA_NXZ")
 #pragma comment(linker, "/alternatename:?vfunc_3@CStreamCryptor_v1@@UEAAXXZ=?vfunc_3@CStreamCryptor_v1@@UEAA_NXZ")
 #pragma comment(linker, "/alternatename:?vfunc_4@CStreamCryptor_v0@@UEAAXXZ=?vfunc_4@CStreamCryptor_v0@@UEAA_KXZ")
 #pragma comment(linker, "/alternatename:?vfunc_4@CStreamCryptor_v1@@UEAAXXZ=?vfunc_4@CStreamCryptor_v1@@UEAA_KXZ")
 #pragma comment(linker, "/alternatename:?vfunc_5@CStreamCryptor_v0@@UEAAXXZ=?vfunc_5@CStreamCryptor_v0@@UEAAIXZ")
 #pragma comment(linker, "/alternatename:?vfunc_5@CStreamCryptor_v1@@UEAAXXZ=?vfunc_5@CStreamCryptor_v1@@UEAAIXZ")
+#endif
 
 extern "C" void __fastcall nm_streamcryptor_v0_v6(void* self)
 {
@@ -1226,8 +1240,10 @@ extern "C" void __fastcall nm_streamcryptor_v1_v6(void* self)
     static_cast<CStreamCryptor_v1*>(self)->CStreamCryptor_v1::vfunc_6(0);
 }
 
+#ifndef MS2_HOOK_DLL   // the hook DLL's ms2sym.obj already maps these names to the exe address (alternatename conflict)
 #pragma comment(linker, "/alternatename:?vfunc_6@CStreamCryptor_v0@@UEAAXXZ=nm_streamcryptor_v0_v6")
 #pragma comment(linker, "/alternatename:?vfunc_6@CStreamCryptor_v1@@UEAAXXZ=nm_streamcryptor_v1_v6")
+#endif
 
 // @0x1415fb700
 int FUN_1415fb700(void* p) { return *reinterpret_cast<int*>(static_cast<char*>(p) + 0x14); }
@@ -1247,7 +1263,7 @@ unsigned int FUN_1415fb750(void* p) { return *reinterpret_cast<unsigned int*>(st
 
 // @0x1415f9bd0
 // MS2-FUNCTIONAL: resets the fixed string slot to the shared image-backed empty sentinel.
-void FUN_1415f9bd0(void** p) { nm_reset_string(p, 0x3ae28ec); }
+void FUN_1415f9bd0(void** p) { nm_reset_string(p, DAT_143ae28ec); }
 // MS2-PIN: ?FUN_1415f9bd0@@YAXPEAPEAX@Z 0x1415f9bd0
 // MS2-FUNCTIONAL: adapter for the capacity-specific free routine at this entry point.
 void FUN_1415f9c30(void* p) { reinterpret_cast<CNMStr<0x100>*>(p)->Free(); }
@@ -1296,25 +1312,26 @@ void* FUN_1415fa000(void* slot) { return FUN_1415fa000(reinterpret_cast<void**>(
 // MS2-PIN: ?FUN_1415fa000@@YAPEAXPEAX@Z 0x1415fa000
 
 // MS2-FUNCTIONAL: preserves the recovered capacity and null-free/allocate-copy behavior for this string slot.
-void FUN_1415f99f0(void* slot, void* value) { if (!value) { nm_reset_string(reinterpret_cast<void**>(slot), 0x3ae28ea); return; } if (FUN_1415f9570(reinterpret_cast<void**>(slot))) StringCchCopyA(static_cast<char*>(*reinterpret_cast<void**>(slot)), 0x1000, static_cast<const char*>(value)); }
+void FUN_1415f99f0(void* slot, void* value) { if (!value) { nm_reset_string(reinterpret_cast<void**>(slot), DAT_143ae28ea); return; } if (FUN_1415f9570(reinterpret_cast<void**>(slot))) StringCchCopyA(static_cast<char*>(*reinterpret_cast<void**>(slot)), 0x1000, static_cast<const char*>(value)); }
 // MS2-PIN: ?FUN_1415f99f0@@YAXPEAX0@Z 0x1415f99f0
 // MS2-FUNCTIONAL: preserves the recovered capacity and null-free/allocate-copy behavior for this string slot.
-void FUN_1415f9a90(void* slot, const char* value) { if (!value) { nm_reset_string(reinterpret_cast<void**>(slot), 0x3ae2848); return; } if (FUN_1415f96d0(reinterpret_cast<void**>(slot))) StringCchCopyA(static_cast<char*>(*reinterpret_cast<void**>(slot)), 0x20, value); }
+void FUN_1415f9a90(void* slot, const char* value) { if (!value) { nm_reset_string(reinterpret_cast<void**>(slot), DAT_143ae2848); return; } if (FUN_1415f96d0(reinterpret_cast<void**>(slot))) StringCchCopyA(static_cast<char*>(*reinterpret_cast<void**>(slot)), 0x20, value); }
 // MS2-PIN: ?FUN_1415f9a90@@YAXPEAXPEBD@Z 0x1415f9a90
 // MS2-FUNCTIONAL: preserves the recovered capacity and null-free/allocate-copy behavior for this string slot.
 void FUN_1415f9a90(void* slot, const void* value) { FUN_1415f9a90(slot, const_cast<char*>(static_cast<const char*>(value))); }
 // MS2-PIN: ?FUN_1415f9a90@@YAXPEAXPEBX@Z 0x1415f9a90
 // MS2-FUNCTIONAL: preserves the recovered capacity and null-free/allocate-copy behavior for this string slot.
-void FUN_1415f9ae0(void* slot, void* value) { if (!value) { nm_reset_string(reinterpret_cast<void**>(slot), 0x3ae28e9); return; } if (FUN_1415f9780(reinterpret_cast<void**>(slot))) StringCchCopyA(static_cast<char*>(*reinterpret_cast<void**>(slot)), 0x40, static_cast<const char*>(value)); }
+void FUN_1415f9ae0(void* slot, void* value) { if (!value) { nm_reset_string(reinterpret_cast<void**>(slot), DAT_143ae28e9); return; } if (FUN_1415f9780(reinterpret_cast<void**>(slot))) StringCchCopyA(static_cast<char*>(*reinterpret_cast<void**>(slot)), 0x40, static_cast<const char*>(value)); }
 // MS2-PIN: ?FUN_1415f9ae0@@YAXPEAX0@Z 0x1415f9ae0
 // MS2-FUNCTIONAL: preserves the recovered capacity and null-free/allocate-copy behavior for this string slot.
-void FUN_1415f9b30(void* slot, void* value) { if (!value) { nm_reset_string(reinterpret_cast<void**>(slot), 0x3ae28e8); return; } if (FUN_1415f9830(reinterpret_cast<void**>(slot))) StringCchCopyA(static_cast<char*>(*reinterpret_cast<void**>(slot)), 0x400, static_cast<const char*>(value)); }
+void FUN_1415f9b30(void* slot, void* value) { if (!value) { nm_reset_string(reinterpret_cast<void**>(slot), DAT_143ae28e8); return; } if (FUN_1415f9830(reinterpret_cast<void**>(slot))) StringCchCopyA(static_cast<char*>(*reinterpret_cast<void**>(slot)), 0x400, static_cast<const char*>(value)); }
 // MS2-PIN: ?FUN_1415f9b30@@YAXPEAX0@Z 0x1415f9b30
 // MS2-FUNCTIONAL: preserves the recovered capacity and null-free/allocate-copy behavior for this string slot.
-void FUN_1415f9b80(void* slot, const char* value) { if (!value) { nm_reset_string(reinterpret_cast<void**>(slot), 0x3ae2849); return; } if (FUN_1415f98e0(reinterpret_cast<void**>(slot))) StringCchCopyA(static_cast<char*>(*reinterpret_cast<void**>(slot)), 0x800, value); }
+void FUN_1415f9b80(void* slot, const char* value) { if (!value) { nm_reset_string(reinterpret_cast<void**>(slot), DAT_143ae2849); return; } if (FUN_1415f98e0(reinterpret_cast<void**>(slot))) StringCchCopyA(static_cast<char*>(*reinterpret_cast<void**>(slot)), 0x800, value); }
 // MS2-PIN: ?FUN_1415f9b80@@YAXPEAXPEBD@Z 0x1415f9b80
 
 // Return-only aliases share the recovered implementation at each original entry point.
+#ifndef MS2_HOOK_DLL   // the hook DLL's ms2sym.obj already maps these names to the exe address (alternatename conflict)
 #pragma comment(linker, "/alternatename:?FUN_1415fa120@@YAPEAXPEBX@Z=?FUN_1415fa120@@YAXPEBX@Z")
 #pragma comment(linker, "/alternatename:?FUN_1415fb290@@YAI_K@Z=?FUN_1415fb290@@YA_K_K@Z")
 #pragma comment(linker, "/alternatename:?FUN_1415fb5f0@@YAIPEB_K@Z=?FUN_1415fb5f0@@YA_KPEB_K@Z")
@@ -1322,6 +1339,7 @@ void FUN_1415f9b80(void* slot, const char* value) { if (!value) { nm_reset_strin
 #pragma comment(linker, "/alternatename:?FUN_1415fb750@@YAHPEAX@Z=?FUN_1415fb750@@YAIPEAX@Z")
 #pragma comment(linker, "/alternatename:?FUN_1415fb750@@YA_NPEAX@Z=?FUN_1415fb750@@YAIPEAX@Z")
 #pragma comment(linker, "/alternatename:?FUN_1415fa380@@YAXPEAX@Z=?FUN_1415fa380@@YAEPEBX@Z")
+#endif
 // MS2-PIN: ?FUN_1415fa120@@YAPEAXPEBX@Z 0x1415fa120
 // MS2-PIN: ?FUN_1415fb290@@YAI_K@Z 0x1415fb290
 // MS2-PIN: ?FUN_1415fb5f0@@YAIPEB_K@Z 0x1415fb5f0
@@ -1345,8 +1363,8 @@ void* FUN_1415fa310() { alignas(16) static unsigned char storage[0x18]{}; return
 // MS2-FUNCTIONAL: reads the recovered 32-bit field through the mutable-pointer ABI.
 unsigned char FUN_1415fb630(void* p) { return *(static_cast<unsigned char*>(p) + 0x1c); }
 // MS2-PIN: ?FUN_1415fb630@@YAEPEAX@Z 0x1415fb630
-// MS2-FUNCTIONAL: reads the recovered 32-bit field through the signed-int ABI.
-int FUN_1415fb6d0(void* p) { return *reinterpret_cast<int*>(static_cast<char*>(p) + 0x28); }
+// MS2-FUNCTIONAL: reads the decoder's version byte (+0x28, CNMSerializableDecoder::m_bVersion) through the signed-int ABI.
+int FUN_1415fb6d0(void* p) { return *(static_cast<unsigned char*>(p) + 0x28); }
 // MS2-PIN: ?FUN_1415fb6d0@@YAHPEAX@Z 0x1415fb6d0
 // MS2-FUNCTIONAL: reads the recovered 32-bit field through the const-pointer ABI.
 int FUN_1415fb720(const void* p) { return *reinterpret_cast<const int*>(static_cast<const char*>(p) + 0x14) == 0; }

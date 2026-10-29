@@ -36,7 +36,7 @@ extern void FUN_1415d4e90(Unk_StlBackout<Unk_StlElem<0xc8>>* pThis, Unk_StlElem<
 extern void FUN_1415d4f00(Unk_StlBackout<Unk_StlElem<0xf8>>* pThis, Unk_StlElem<0xf8>* pVal);
 extern void FUN_1415d4f70(Unk_StlBackout<Unk_StlElem<0x490>>* pThis, Unk_StlElem<0x490>* pVal);
 extern void FUN_1415d4fe0(Unk_StlBackout<Unk_StlElem<0x20>>* pThis, Unk_StlElem<0x20>* pVal);
-extern void FUN_1415d5040(Unk_StlBackout<Unk_StlElem<0x30>>* pThis, Unk_StlElem<0x30>* pVal);
+extern void FUN_1415d5040(Unk_StlBackout<Unk_StlElem<0xb8>>* pThis, Unk_StlElem<0xb8>* pVal);   // pVal is a 0x30 source (unit_1415d3570 types it 0xb8)
 extern void FUN_1415d50b0(Unk_StlBackout<Unk_StlElem<0x58>>* pThis, Unk_StlElem<0x58>* pVal);
 extern void FUN_1415d5110(Unk_StlBackout<Unk_StlElem<0x30>>* pThis, Unk_StlElem<0x30>* pVal);
 extern void FUN_1415d5170(Unk_StlBackout<Unk_StlElem<0x98>>* pThis, Unk_StlElem<0x98>* pVal);
@@ -461,7 +461,7 @@ Unk_StlElem<0xc8>* FUN_1415df340(Unk_StlElem<0xc8>* pFirst, Unk_StlElem<0xc8>* c
 Unk_StlElem<0xf8>* FUN_1415df3d0(Unk_StlElem<0xf8>* pFirst, Unk_StlElem<0xf8>* const pLast, Unk_StlElem<0xf8>* const pDest, void* pAl, std::_General_ptr_iterator_tag, std::_Any_tag);
 Unk_StlElem<0x490>* FUN_1415df460(Unk_StlElem<0x490>* pFirst, Unk_StlElem<0x490>* const pLast, Unk_StlElem<0x490>* const pDest, void* pAl, std::_General_ptr_iterator_tag, std::_Any_tag);
 Unk_StlElem<0x20>* FUN_1415df4f0(Unk_StlElem<0x20>* pFirst, Unk_StlElem<0x20>* const pLast, Unk_StlElem<0x20>* const pDest, void* pAl, std::_General_ptr_iterator_tag, std::_Any_tag);
-Unk_StlElem<0x30>* FUN_1415df580(Unk_StlElem<0x30>* pFirst, Unk_StlElem<0x30>* const pLast, Unk_StlElem<0x30>* const pDest, void* pAl, std::_General_ptr_iterator_tag, std::_Any_tag);
+Unk_StlElem<0xb8>* FUN_1415df580(Unk_StlElem<0x30>* pFirst, Unk_StlElem<0x30>* const pLast, Unk_StlElem<0xb8>* const pDest, void* pAl, std::_General_ptr_iterator_tag, std::_Any_tag);
 Unk_StlElem<0x10>* FUN_1415df610(Unk_StlElem<0x10>* const pFirst, Unk_StlElem<0x10>* const pLast, Unk_StlElem<0x10>* const pDest, void* pAl, std::_Really_trivial_ptr_iterator_tag, std::true_type);
 Unk_StlElem<0x18>* FUN_1415df650(Unk_StlElem<0x18>* const pFirst, Unk_StlElem<0x18>* const pLast, Unk_StlElem<0x18>* const pDest, void* pAl, std::_Really_trivial_ptr_iterator_tag, std::true_type);
 Unk_StlElem<0x10>* FUN_1415df690(Unk_StlElem<0x10>* const pFirst, Unk_StlElem<0x10>* const pLast, Unk_StlElem<0x10>* pDest, void* pAl);
@@ -2056,7 +2056,7 @@ Unk_StlElem<0x30>* FUN_1415dea00(Unk_StlElem<0x30>* const pFirst, Unk_StlElem<0x
     Unk_StlElem<0x30>* const pUFirst = FUN_1415da9e0(pFirst);
     Unk_StlElem<0x30>* const pULast = FUN_1415da9e0(pLast);
     Unk_StlElem<0x30>* const pUDest = static_cast<Unk_StlElem<0x30>*>(FUN_1415daca0(pDest, FUN_1415db600(pUFirst, pULast)));
-    FUN_1415dccb0(reinterpret_cast<Unk_StlElem<0xb8>*&>(pDest), reinterpret_cast<Unk_StlElem<0xb8>*>(FUN_1415df580(pUFirst, pULast, pUDest, pAl, FUN_1415dc290(pUFirst, pUDest), std::false_type())));   // folded with the Unk_StlElem<0xb8> instance
+    FUN_1415dccb0(reinterpret_cast<Unk_StlElem<0xb8>*&>(pDest), FUN_1415df580(pUFirst, pULast, reinterpret_cast<Unk_StlElem<0xb8>*>(pUDest), pAl, FUN_1415dc290(pUFirst, pUDest), std::false_type()));   // the destination is the Unk_StlElem<0xb8> type (0x30-byte sources)
     return pDest;
 }
 
@@ -2232,12 +2232,14 @@ Unk_StlElem<0x20>* FUN_1415df4f0(Unk_StlElem<0x20>* pFirst, Unk_StlElem<0x20>* c
 }
 
 // @0x1415df580
-Unk_StlElem<0x30>* FUN_1415df580(Unk_StlElem<0x30>* pFirst, Unk_StlElem<0x30>* const pLast, Unk_StlElem<0x30>* const pDest, void* pAl, std::_General_ptr_iterator_tag, std::_Any_tag)
+// Copies 0x30-byte sources into 0xb8-byte destinations: the backout is the Unk_StlElem<0xb8> one of FUN_1415df100 (FUN_1415d5040
+// advances the destination by 0xb8).
+Unk_StlElem<0xb8>* FUN_1415df580(Unk_StlElem<0x30>* pFirst, Unk_StlElem<0x30>* const pLast, Unk_StlElem<0xb8>* const pDest, void* pAl, std::_General_ptr_iterator_tag, std::_Any_tag)
 {
-    Unk_StlBackout<Unk_StlElem<0x30>> backout{pDest, pAl};   // ctor 0x1415e60e0, dtor 0x1415ebb40
+    Unk_StlBackout<Unk_StlElem<0xb8>> backout{pDest, pAl};   // ctor 0x1415e60e0, dtor 0x1415ebb40
     for (; pFirst != pLast; ++pFirst)
-        FUN_1415d5040(&backout, pFirst);
-    return static_cast<Unk_StlElem<0x30>*>(FUN_141604510(&backout));
+        FUN_1415d5040(&backout, reinterpret_cast<Unk_StlElem<0xb8>*>(pFirst));
+    return static_cast<Unk_StlElem<0xb8>*>(FUN_141604510(&backout));
 }
 
 // @0x1415df610

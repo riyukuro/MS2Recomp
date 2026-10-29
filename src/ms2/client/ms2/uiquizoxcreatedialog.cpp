@@ -61,8 +61,11 @@ public:
     void FUN_1422e0ab0(const CStringW& str);                    // set the text
 };
 
-void FUN_140c28560(void* pDlg, Unk_QoComboRef* pRet, const CString& strName);     // child lookup (this=rcx, hidden return=rdx)
-void FUN_140e35bd0(void* pDlg, Unk_QoTextRef* pRet, const CString& strName);      // child lookup (text field)
+struct Unk_QoDlgView                                            // the dialog's child lookups, returning the handle by value
+{
+    Unk_QoComboRef FUN_140c28560(const CString& strName);
+    Unk_QoTextRef FUN_140e35bd0(const CString& strName);        // text field
+};
 bool FUN_140bc03e0(Unk_QoComboRef* p, int n);                   // handle is empty
 Unk_QoCombo* FUN_140bc0530(Unk_QoComboRef* p);                  // the control
 void* FUN_140bc0500(Unk_QoTextRef* p);                          // handle is set
@@ -102,12 +105,10 @@ CString UIQuizOXCreateDialog::GetTypeName()
 MS2_REPLACE_METHOD(0x140E7E460, UIQuizOXCreateDialog, GetTypeName, 61, 0xD38B1E75);
 
 // @0x140e7e4b0
-// MS2-FUNCTIONAL: behaviour-equivalent; frame slot order of the control handles / iterators and EH state count differ
 void UIQuizOXCreateDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    Unk_QoComboRef spCombo;
-    FUN_140c28560(this, &spCombo, "m_dropdownEntryFee");
+    Unk_QoComboRef spCombo = reinterpret_cast<Unk_QoDlgView*>(this)->FUN_140c28560("m_dropdownEntryFee");
     if (FUN_140bc03e0(&spCombo, 0) != 0)
         return;
     {
@@ -123,8 +124,7 @@ void UIQuizOXCreateDialog::OnLoadComplete()
         }
         FUN_140bc0530(&spCombo)->FUN_1422df690(0);
         FUN_140bc0530(&spCombo)->vfunc_24(true);
-        Unk_QoTextRef spText;
-        FUN_140e35bd0(this, &spText, "m_textHostFee");
+        Unk_QoTextRef spText = reinterpret_cast<Unk_QoDlgView*>(this)->FUN_140e35bd0("m_textHostFee");
         if (FUN_140bc0500(&spText) != 0) {
             FUN_140bc0550(&spText)->FUN_1422e0ab0(FUN_140763e10(m_fees[0]));
         }

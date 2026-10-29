@@ -26,12 +26,12 @@
 class Unk_RsWorld { public: MyPC* FUN_141bd0cc0(); };               // the local player
 Unk_RsWorld* FUN_1403ed2d0();
 
-// The sellable-house record of a house (0xc8 bytes; ctor 0x1408ad110, dtor 0x14050de70).
+// The sellable-house record of a house (0xc0 bytes; ctor 0x1408ad110, dtor 0x14050de70).
 struct Unk_RsSalable
 {
     Unk_RsSalable();
     ~Unk_RsSalable();
-    void* m_pad[25];
+    void* m_pad[24];
 };
 void FUN_1408ad110(Unk_RsSalable* p);
 void FUN_14050de70(Unk_RsSalable* p);
@@ -149,7 +149,6 @@ void UIRealEstateSell::OnLoadInit()
     vfunc_47(0);
 }
 
-// MS2-FUNCTIONAL: small codegen diffs (temp spills / branch layout) vs exe
 // @0x141ab5fb0
 int UIRealEstateSell::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs)
 {
@@ -162,31 +161,39 @@ int UIRealEstateSell::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
         vfunc_67();
         return 1;
     }
-    if (_stricmp("OnConfirm", szMethod) == 0)
+    else if (_stricmp("OnConfirm", szMethod) == 0)
     {
         __int64 nOwner = FUN_1410c3180(FUN_1409670e0());
-        if (nOwner == 0 || nOwner != DAT_143ab2820)
+        if (nOwner != 0 && nOwner == DAT_143ab2820)
+        {
+            FUN_140d73bc0(0x7e6, 0, 0, CStringW(L""));
+            return 1;
+        }
         {
             MS2Ptr<CMsgBoxData> box = FUN_140d73e40(10, 0x7e4, static_cast<IMessageListener*>(this), CStringW(L"confirmName"));
             if (box.get() != 0)
             {
-                box->FUN_141a01d30(2, CStringW(L""), 0x18, 0, 0);
+                CStringW strDefault(L"");
+                box->FUN_141a01d30(2, strDefault, 0x18, 0, 0);
                 FUN_140d73c60(box);
             }
-            return 1;
         }
-        FUN_140d73bc0(0x7e6, 0, 0, CStringW(L""));
         return 1;
     }
     return 0;
 }
 
-// MS2-FUNCTIONAL: large body, temp spills / argument evaluation order differ vs exe
 // @0x141ab6230
 void UIRealEstateSell::FUN_141ab6230()
 {
     MyPC* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
-    if (pPC == 0 || pPC->FUN_141527e00() != 0 || pPC->FUN_141523c50() == 0 || m_30.IsNull())
+    if (pPC == 0)
+        return;
+    if (pPC->FUN_141527e00() != 0)
+        return;
+    if (pPC->FUN_141523c50() == 0)
+        return;
+    if (m_30.IsNull())
         return;
     ASObj obj(2);
     Unk_HoServicePtr spService(FUN_1401cd040(&DAT_143b059e8));
@@ -198,14 +205,11 @@ void UIRealEstateSell::FUN_141ab6230()
     obj.FUN_1407cbb20("houseName", strName);
     CStringW strAddress = FUN_140979570(target.FUN_14050dee0()->m_20);
     obj.FUN_1407cbb20("address", strAddress);
-    CMsTime tNow(GetServerTime());
-    CMsTime tEnd(pPC->FUN_141523c50()->m_n30);
-    ATL::CTimeSpan span = tEnd - tNow;
+    ATL::CTimeSpan span = CMsTime(pPC->FUN_141523c50()->m_n30) - CMsTime(GetServerTime());
     if (span.GetDays() >= 0)
     {
         CStringW strExpire;
-        __int64 nDays = span.GetDays();
-        strExpire = FUN_14086d060(0x7ce, nDays);
+        strExpire = FUN_14086d060(0x7ce, span.GetDays());
         obj.FUN_1407cbb20("expire", strExpire);
     }
     obj.FUN_1407cb9c0("priceType", 0);
@@ -246,14 +250,13 @@ void UIRealEstateSell::FUN_141ab6230()
     m_30->Invoke("initData", obj);
 }
 
-// MS2-FUNCTIONAL: temp spills / CStringW copy placement differ vs exe
 // @0x141ab6ad0
-int UIRealEstateSell::SendRequestCube(CStringW strName)
+int UIRealEstateSell::SendRequestCube(const CStringW& strName)
 {
     MyPC* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pPC == 0)
         return 0;
-    if (FUN_140164830(pPC->vfunc_77(), strName))
+    if (pPC->vfunc_77() != strName)
     {
         FUN_140d73bc0(0x7e5, 0, 0, CStringW(L""));
         return 0;
@@ -268,60 +271,65 @@ int UIRealEstateSell::SendRequestCube(CStringW strName)
     return 1;
 }
 
-// MS2-FUNCTIONAL: temp spills / token array element access differ vs exe
+// MS2-FUNCTIONAL: ops match except the exe emits dead strInput/aParts dtors after the confirm block's return 1 (source form not found)
 // @0x141ab6c50
 int UIRealEstateSell::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
 {
     if (UIDialog::OnMessage(pSender, pMsg) != 0)
         return 1;
-    if (pMsg->FUN_1422e4520() != 0 || dynamic_cast<UIMessageBox*>(pSender) == 0)
-        return 0;
-    int nAnswer = pMsg->FUN_1422b8a10();
-    CStringW strTag = pMsg->FUN_1422b8f40();
-    if (strTag.Find(L"confirmName", 0) == 0 && nAnswer == 0)
+    if (pMsg->FUN_1422e4520() == 0 && dynamic_cast<UIMessageBox*>(pSender) != 0)
     {
-        ATL::CAtlArray<CStringW> aParts;
-        if (FUN_14028cb70(strTag, aParts, L",", 2) == 0)
-            return 0;
-        CStringW strInput(aParts[1]);
-        if (SendRequestCube(strInput) != 0)
-            FUN_14151f200();
+        int nAnswer = pMsg->FUN_1422b8a10();
+        CStringW strTag = pMsg->FUN_1422b8f40();
+        if (strTag.Find(L"confirmName", 0) == 0 && nAnswer == 0)
+        {
+            ATL::CAtlArray<CStringW> aParts;
+            if (FUN_14028cb70(strTag, aParts, L",", 2) == 0)
+                return 0;
+            CStringW strInput(aParts[1]);
+            if (SendRequestCube(strInput) != 0)
+                FUN_14151f200();
+            return 1;
+        }
+        FUN_14151f200();
         return 1;
     }
-    FUN_14151f200();
-    return 1;
+    return 0;
 }
 
 extern int DAT_143ae2b34;                                           // 1: the markers are MS2 flag bits instead of extra data (instancing)
 extern NiFixedString DAT_143ae51c0;
-struct Unk_RsSceneIter { void* m_p[6]; };
-void FUN_14098cb80(Unk_RsSceneIter* pIter, NiAVObject* pRoot);
-NiAVObject* FUN_14098e0d0(Unk_RsSceneIter* pIter, int bDescend);
-void FUN_14098cf00(Unk_RsSceneIter* pIter);
+class Unk_SceneWalker
+{
+public:
+    Unk_SceneWalker(NiObject* pkRoot);              // 0x14098cb80
+    ~Unk_SceneWalker();                             // 0x14098cf00
+    NiAVObject* Next(bool bDescend);                // 0x14098e0d0
+private:
+    void* m_pad_00; void* m_pad_08; void* m_pad_10; void* m_pad_18; void* m_pad_20; void* m_pad_28; void* m_pad_30;
+};
 void FUN_1410865e0(NiAVObject* pkObject, const NiFixedString& kKey, bool bRecursive);
 void FUN_141568d80(NiAVObject* pkObject);
 
-// MS2-FUNCTIONAL: scene walker local layout differs vs exe
 // @0x141ab6e80
 void FUN_141ab6e80(NiAVObject* pRoot)
 {
-    if (pRoot == 0)
-        return;
-    if (DAT_143ae2b34 == 0)
+    if (pRoot != 0)
     {
-        Unk_RsSceneIter it;
-        FUN_14098cb80(&it, pRoot);
-        NiAVObject* pObject;
-        while ((pObject = FUN_14098e0d0(&it, 1)) != 0)
+        if (DAT_143ae2b34 != 0)
         {
-            NiMesh* pMesh = NiDynamicCast(NiMesh, pObject);
-            if (pMesh != 0 && pMesh->GetExtraData(DAT_143ae51c0) == 0)
-                FUN_1410865e0(pMesh, DAT_143ae51c0, true);
+            FUN_141568d80(pRoot);
         }
-        FUN_14098cf00(&it);
-    }
-    else
-    {
-        FUN_141568d80(pRoot);
+        else
+        {
+            Unk_SceneWalker it(pRoot);
+            NiAVObject* pObject;
+            while ((pObject = it.Next(true)) != 0)
+            {
+                NiMesh* pMesh = NiDynamicCast(NiMesh, pObject);
+                if (pMesh != 0 && pMesh->GetExtraData(DAT_143ae51c0) == 0)
+                    FUN_1410865e0(pMesh, DAT_143ae51c0, true);
+            }
+        }
     }
 }

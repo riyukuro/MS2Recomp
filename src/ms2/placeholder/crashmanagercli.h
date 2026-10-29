@@ -16,8 +16,7 @@ class CrashManagerCli : public CCrashManager, public TSingleton<CrashManagerCli>
 public:
     // @0x1414961b0
     CrashManagerCli() {}
-    // @0x141497620
-    virtual ~CrashManagerCli() {}
+    // implicit dtor @0x141497620 (the exe's stores no vftable pointers)
     void FUN_140a435a0();                                   // installs the crash handler (InitInstance)
     void FUN_140a43750(DWORD nId, CString strText);           // set the text of a crash-log entry
     void FUN_140a437d0(DWORD nId);                            // remove a crash-log entry

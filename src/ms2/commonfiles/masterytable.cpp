@@ -68,51 +68,18 @@ bool CMasteryTable::s_bInit;
 #endif
 
 // @0x14066d000
-// MS2-FUNCTIONAL: not byte-identical (local/temporary layout and member order differ from the exe build)
-CMasteryReceipe::CMasteryReceipe()
-{
-    m_nId = 0;
-    m_nType = 0;
-    m_nLevel = 0;
-    m_nRequireMastery = 0;
-    m_nRequireMeso = 0;
-    m_nRewardMastery = 0;
-    m_nGatheringTime = 0;
-    m_nHighPropLimit = 0;
-    m_nNormalPropLimit = 0;
-    m_nExceptRewardExp = 0;
-}
-
-// @0x14066d630
-// MS2-FUNCTIONAL: not byte-identical (local/temporary layout and member order differ from the exe build)
-CMasteryReceipe::~CMasteryReceipe()
+CMasteryReceipe::CMasteryReceipe() : m_nId(0), m_nType(0), m_nLevel(0), m_nRequireMastery(0), m_nRequireMeso(0),
+    m_nRewardMastery(0), m_nGatheringTime(0), m_nHighPropLimit(0), m_nNormalPropLimit(0), m_nExceptRewardExp(0)
 {
 }
 
 // @0x14066d320
-// MS2-FUNCTIONAL: not byte-identical (local/temporary layout and member order differ from the exe build)
-CMasteryTable::DifferentialFactor::DifferentialFactor()
-{
-    m_nFactor = 0;
-}
-
-// @0x14066d7a0
-// MS2-FUNCTIONAL: not byte-identical (local/temporary layout and member order differ from the exe build)
-CMasteryTable::DifferentialFactor::~DifferentialFactor()
+CMasteryTable::DifferentialFactor::DifferentialFactor() : m_nFactor(0)
 {
 }
 
 // @0x14066d370
-// MS2-FUNCTIONAL: not byte-identical (local/temporary layout and member order differ from the exe build)
-CMasteryTable::Mastery::Mastery()
-{
-    m_nGrade = 0;
-    m_nValue = 0;
-}
-
-// @0x14066d7d0
-// MS2-FUNCTIONAL: not byte-identical (local/temporary layout and member order differ from the exe build)
-CMasteryTable::Mastery::~Mastery()
+CMasteryTable::Mastery::Mastery() : m_nGrade(0), m_nValue(0)
 {
 }
 
@@ -162,11 +129,10 @@ int CMasteryReceipe::Load(Unk_140165cf0* pNode)
 }
 
 // @0x140669980
-// MS2-FUNCTIONAL: not byte-identical (local/temporary layout and member order differ from the exe build)
 CStringA CMasteryReceipe::IconPath()
 {
     CString strFile = StringFormat("{0}.png", m_nId);
-    return FUN_140cc2ad0(CString("MasteryReceipe"), strFile);
+    return FUN_140cc2ad0("MasteryReceipe", strFile);
 }
 
 // @0x140669a20
@@ -286,13 +252,11 @@ int CMasteryTable::LoadReceipes()
 }
 
 // @0x14066a740
-// MS2-FUNCTIONAL: exe builds the two literal CString temps and the path before the TiXmlDocument with a different EH state layout (precedent continentregiontable); not reproduced
 int CMasteryTable::LoadDifferentials()
 {
-    CString strPath = FUN_14071a5b0(CString("Table"), CString("masteryDifferentialFactor.xml"));
+    CString strPath = FUN_14071a5b0("Table", "masteryDifferentialFactor.xml");
     TiXmlDocument doc;
-    const char* pszPath = strPath;
-    if (FUN_140166420()->FUN_1403974b0(&doc, pszPath, 0, true, false) == 0)
+    if (FUN_140166420()->FUN_1403974b0(&doc, (const char*)strPath, 0, true, false) == 0)
         return 0;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
@@ -323,37 +287,29 @@ CMasteryTable::ReceipePtr CMasteryTable::Find(int nReceipeId)
 
 // qsort comparator of Receipes: by required mastery (descending order of the compare result), then by id.
 // @0x14066c7a0
-// MS2-FUNCTIONAL: not byte-identical (local/temporary layout and member order differ from the exe build)
 static int __cdecl CompareReceipes(const void* pA, const void* pB)
 {
     CMasteryTable::ReceipePtr spA(*static_cast<const CMasteryTable::ReceipePtr*>(pA));
     CMasteryTable::ReceipePtr spB(*static_cast<const CMasteryTable::ReceipePtr*>(pB));
     if (spA->m_nRequireMastery == spB->m_nRequireMastery)
-    {
-        if (spB->m_nId < spA->m_nId)
-            return 1;
-        return -1;
-    }
-    if (spB->m_nRequireMastery < spA->m_nRequireMastery)
-        return 1;
-    return -1;
+        return spA->m_nId > spB->m_nId ? 1 : -1;
+    return spA->m_nRequireMastery > spB->m_nRequireMastery ? 1 : -1;
 }
 
 // @0x14066aa90
-// MS2-FUNCTIONAL: not byte-identical (local/temporary layout and member order differ from the exe build)
 void CMasteryTable::Receipes(int nType, ATL::CAtlArray<ReceipePtr>& rOut)
 {
     for (POSITION pos = m_receipes.GetStartPosition(); pos != 0; m_receipes.GetNext(pos))
     {
         ReceipePtr sp(m_receipes.GetValueAt(pos));
-        if (sp->m_nType == nType)
-            rOut.Add(sp);
+        if (sp->m_nType != nType)
+            continue;
+        rOut.Add(sp);
     }
     qsort(rOut.GetData(), rOut.GetCount(), sizeof(ReceipePtr), CompareReceipes);
 }
 
 // @0x14066ab90
-// MS2-FUNCTIONAL: float rounding/temporaries of the factor product laid out differently
 int CMasteryTable::Factor(int nReceipeId, unsigned nValue)
 {
     CheckInit();
@@ -371,14 +327,13 @@ int CMasteryTable::Factor(int nReceipeId, unsigned nValue)
         if (m_differentials.Lookup(nDifference, spFactor))
         {
             float fReward = (float)(unsigned)(spReceipe->m_nRewardMastery * spFactor->m_nFactor) / 10000.0f;
-            return (int)(fReward + 0.5f);
+            return (unsigned)(fReward + 0.5f);
         }
     }
     return 0;
 }
 
 // @0x14066adb0
-// MS2-FUNCTIONAL: not byte-identical (local/temporary layout and member order differ from the exe build)
 CStringA CMasteryTable::DifferentialName(int nReceipeId, unsigned nValue)
 {
     CheckInit();
@@ -387,17 +342,17 @@ CStringA CMasteryTable::DifferentialName(int nReceipeId, unsigned nValue)
         return CStringA("");
     int nBase = Grade(spReceipe->m_nType, spReceipe->m_nRequireMastery);
     int nNow = Grade(spReceipe->m_nType, nValue);
-    if (nNow - nBase >= 0)
+    int nDifference = nNow - nBase;
+    if (nDifference >= 0)
     {
         DifferentialPtr spFactor(0);
-        if (m_differentials.Lookup(nNow - nBase, spFactor))
+        if (m_differentials.Lookup(nDifference, spFactor))
             return spFactor->m_strIcon;
     }
     return CStringA("");
 }
 
 // @0x14066af60
-// MS2-FUNCTIONAL: not byte-identical (local/temporary layout and member order differ from the exe build)
 int CMasteryTable::Grade(int nType, unsigned nValue)
 {
     CheckInit();
@@ -407,24 +362,25 @@ int CMasteryTable::Grade(int nType, unsigned nValue)
     for (POSITION pos = rMap.GetHeadPosition(); pos != 0; rMap.GetNext(pos))
     {
         MasteryPtr sp(rMap.GetValueAt(pos));
-        if (nValue < sp->m_nValue)
+        if (sp->m_nValue > nValue)
             return sp->m_nGrade - 1;
     }
     return MaxGrade(nType);
 }
 
 // @0x14066b050
-// MS2-FUNCTIONAL: not byte-identical (local/temporary layout and member order differ from the exe build)
 int CMasteryTable::MaxGrade(int nType)
 {
     if (nType < 0 || nType >= 12)
         return 0;
     ATL::CRBMap<int, MasteryPtr>& rMap = m_mastery[nType];
     POSITION pos = rMap.GetTailPosition();
-    if (pos == 0)
-        return 0;
-    MasteryPtr sp(rMap.GetValueAt(pos));
-    return sp->m_nGrade;
+    if (pos != 0)
+    {
+        MasteryPtr sp(rMap.GetValueAt(pos));
+        return sp->m_nGrade;
+    }
+    return 0;
 }
 
 // @0x14066b100
@@ -434,39 +390,43 @@ void CMasteryTable::Rewards(int nId, int nJob, ATL::CAtlArray<MS2Ptr<ItemEntity>
     CheckInit();
     int nGrade = GradeFromID(nId);
     int nType = TypeFromID(nId);
-    if (nType >= 0 && nType < 13 && nGrade > 0 && nGrade <= MaxGrade(nType))
+    if (nType < 0 || nType > 12)
+        return;
+    if (nGrade < 1)
+        return;
+    if (nGrade > MaxGrade(nType))
+        return;
+    MasteryPtr spMastery(0);
+    if (m_mastery[nType].Lookup(nGrade, spMastery))
     {
-        MasteryPtr spMastery(0);
-        if (m_mastery[nType].Lookup(nGrade, spMastery))
+        for (size_t i = 0; i < spMastery->m_rewards.GetCount(); i++)
         {
-            for (size_t i = 0; i < spMastery->m_rewards.GetCount(); i++)
+            MS2Ptr<ItemEntity> spItem(spMastery->m_rewards[i]);
+            if (spItem->m_itemId != 0)
             {
-                MS2Ptr<ItemEntity> spItem(spMastery->m_rewards[i]);
-                if (spItem->m_itemId == 0)
-                    continue;
                 MS2Ptr<CItemData> spData = FUN_14053f870(spItem->m_itemId);
-                if (spData == 0)
+                if (!spData)
                     continue;
-                if (spData->limit.FUN_140545da0(nJob))
-                    rOut.Add(spItem);
+                if (!spData->limit.FUN_140545da0(nJob))
+                    continue;
+                rOut.Add(spItem);
             }
         }
     }
 }
 
 // @0x14066b310
-// MS2-FUNCTIONAL: not byte-identical (local/temporary layout and member order differ from the exe build)
 unsigned CMasteryTable::Value(int nType, int nGrade)
 {
     CheckInit();
     if (nGrade < 1)
         return (unsigned)-1;
-    if (MaxGrade(nType) < nGrade)
+    if (nGrade > MaxGrade(nType))
         return (unsigned)-1;
     MasteryPtr spMastery(0);
-    if (!m_mastery[nType].Lookup(nGrade, spMastery))
-        return (unsigned)-1;
-    return spMastery->m_nValue;
+    if (m_mastery[nType].Lookup(nGrade, spMastery))
+        return spMastery->m_nValue;
+    return (unsigned)-1;
 }
 
 // @0x14066b3e0
@@ -576,20 +536,20 @@ int CMasteryTable::HasIngredient(int nReceipeId, int nItemId)
 }
 
 // @0x14066b910
-// MS2-FUNCTIONAL: not byte-identical (local/temporary layout and member order differ from the exe build)
 int CMasteryTable::HasTypeIngredient(int nType, int nItemId)
 {
     for (POSITION pos = m_receipes.GetStartPosition(); pos != 0; m_receipes.GetNext(pos))
     {
         ReceipePtr sp(m_receipes.GetValueAt(pos));
-        if (sp->m_nType == nType && HasIngredient(sp->m_nId, nItemId))
+        if (sp->m_nType != nType)
+            continue;
+        if (HasIngredient(sp->m_nId, nItemId))
             return 1;
     }
     return 0;
 }
 
 // @0x14066ba00
-// MS2-FUNCTIONAL: not byte-identical (local/temporary layout and member order differ from the exe build)
 int CMasteryTable::IsProductionType(int nType)
 {
     switch (nType)
@@ -603,6 +563,12 @@ int CMasteryTable::IsProductionType(int nType)
     case 5:
     case 6:
         return 1;
+    case 7:
+    case 8:
+    case 9:
+    case 10:
+    case 11:
+        return 0;
     default:
         return 0;
     }
@@ -636,7 +602,6 @@ int CMasteryTable::IsOther(ReceipePtr spReceipe)
 }
 
 // @0x14066bc40
-// MS2-FUNCTIONAL: not byte-identical (local/temporary layout and member order differ from the exe build)
 int CMasteryTable::LimitState(int nReceipeId)
 {
     ReceipePtr sp = Find(nReceipeId);
@@ -644,43 +609,42 @@ int CMasteryTable::LimitState(int nReceipeId)
         return 3;
     int nHeld = 0;
     g_143ab3150.Lookup(nReceipeId, nHeld);
-    unsigned nCount = nHeld;
-    double dLimit = FUN_1401c0db0()->CalcGatheringObjectgSuccessProp(nCount, sp->m_nHighPropLimit, sp->m_nNormalPropLimit);
+    double dLimit = FUN_1401c0db0()->CalcGatheringObjectgSuccessProp(nHeld, sp->m_nHighPropLimit, sp->m_nNormalPropLimit);
     if (FUN_14028d470((float)dLimit, 0.0f))
         return 3;
-    if (nCount < sp->m_nHighPropLimit)
+    if ((unsigned)nHeld < sp->m_nHighPropLimit)
         return 0;
-    if (nCount < sp->m_nNormalPropLimit)
+    else if ((unsigned)nHeld < sp->m_nNormalPropLimit)
         return 1;
-    return 2;
+    else
+        return 2;
 }
 
 // @0x14066bdd0
-// MS2-FUNCTIONAL: not byte-identical (local/temporary layout and member order differ from the exe build)
 CStringW CMasteryTable::TypeName(int nType)
 {
     switch (nType)
     {
     case 3:
-        return GetStringCommonByKey(CStringW(L"s_mastery_mining"));
+        return GetStringCommonByKey(L"s_mastery_mining");
     case 4:
-        return GetStringCommonByKey(CStringW(L"s_mastery_gathering"));
+        return GetStringCommonByKey(L"s_mastery_gathering");
     case 5:
-        return GetStringCommonByKey(CStringW(L"s_mastery_breeding"));
+        return GetStringCommonByKey(L"s_mastery_breeding");
     case 6:
-        return GetStringCommonByKey(CStringW(L"s_mastery_farming"));
+        return GetStringCommonByKey(L"s_mastery_farming");
     case 7:
-        return GetStringCommonByKey(CStringW(L"s_mastery_blacksmithing"));
+        return GetStringCommonByKey(L"s_mastery_blacksmithing");
     case 8:
-        return GetStringCommonByKey(CStringW(L"s_mastery_engraving"));
+        return GetStringCommonByKey(L"s_mastery_engraving");
     case 9:
-        return GetStringCommonByKey(CStringW(L"s_mastery_alchemist"));
+        return GetStringCommonByKey(L"s_mastery_alchemist");
     case 10:
-        return GetStringCommonByKey(CStringW(L"s_mastery_cooking"));
+        return GetStringCommonByKey(L"s_mastery_cooking");
     case 11:
-        return GetStringCommonByKey(CStringW(L"s_mastery_pettaming"));
+        return GetStringCommonByKey(L"s_mastery_pettaming");
     default:
-        return CStringW(L"");
+        return L"";
     }
 }
 
@@ -711,10 +675,10 @@ CStringW CMasteryTable::SuccessDescription(int nType, int nReceipeId, int nColor
 }
 
 // @0x14066c690
-// MS2-FUNCTIONAL: not byte-identical (local/temporary layout and member order differ from the exe build)
 CStringW CMasteryTable::GradeName(int nType, int nGrade)
 {
-    return GetStringCommonByKey(StringFormat(L"s_mastery_grade_{0}", nGrade));
+    CStringW strKey = StringFormat(L"s_mastery_grade_{0}", nGrade);
+    return GetStringCommonByKey(strKey);
 }
 
 // @0x14066c710
@@ -752,7 +716,7 @@ void CMasteryTable::SetInit(bool b)
 // MS2-PIN: ?GradeName@CMasteryTable@@QEAA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@HH@Z 0x14066c690
 // MS2-PIN: ?FUN_140669980@Unk_MRec@@QEAA?AV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@XZ 0x140669980
 // MS2-PIN: ?FUN_14066aa90@Unk_MData@@QEAAXHAEAV?$CAtlArray@V?$MS2Ptr@VUnk_MRec@@@@V?$CElementTraits@V?$MS2Ptr@VUnk_MRec@@@@@ATL@@@ATL@@@Z 0x14066aa90
-// MS2-PIN: ?FUN_14066b100@Unk_MData@@QEAAXHHAEAV?$CAtlArray@UItemEntity@@V?$CElementTraits@UItemEntity@@@ATL@@@ATL@@@Z 0x14066b100
+// MS2-PIN: ?FUN_14066b100@Unk_MData@@QEAAXHHAEAV?$CAtlArray@V?$MS2Ptr@UItemEntity@@@@V?$CElementTraits@V?$MS2Ptr@UItemEntity@@@@@ATL@@@ATL@@@Z 0x14066b100
 // MS2-PIN: ?FUN_14066b100@Unk_MmTable@@QEAAXHHAEAV?$CAtlArray@PEAXV?$CElementTraits@PEAX@ATL@@@ATL@@@Z 0x14066b100
 // MS2-PIN: ?FUN_14066b910@Unk_MData@@QEAAHHH@Z 0x14066b910
 // MS2-PIN: ?FUN_14066c110@Unk_MData@@QEAA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@HHH@Z 0x14066c110

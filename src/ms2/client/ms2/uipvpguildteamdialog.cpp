@@ -105,9 +105,9 @@ public:
     Unk_PopupMenuInfo(float x, float y, int a, int b, int c, CString str, void* p);
     ~Unk_PopupMenuInfo();
 private:
-    // 0x88 bytes as scalars (an array would add a /GS cookie the exe's frame lacks)
+    // 0x80 bytes as scalars (an array would add a /GS cookie the exe's frame lacks)
     void* m_00; void* m_08; void* m_10; void* m_18; void* m_20; void* m_28; void* m_30; void* m_38; void* m_40;
-    void* m_48; void* m_50; void* m_58; void* m_60; void* m_68; void* m_70; void* m_78; void* m_80;
+    void* m_48; void* m_50; void* m_58; void* m_60; void* m_68; void* m_70; void* m_78;
 };
 class Unk_PopupMenu
 {
@@ -313,7 +313,6 @@ void UIPvPGuildTeamDialog::FUN_14133a4a0(const Unk_PvPGuildTeamInfo& info)
 }
 MS2_REPLACE_METHOD(0x14133A4A0, UIPvPGuildTeamDialog, FUN_14133a4a0, 756, 0x0A595080);
 
-// MS2-FUNCTIONAL: same calls and control flow; cl lays the stack temps out one slot apart (frame 0x278 vs 0x288)
 // @0x14133a7a0
 void UIPvPGuildTeamDialog::FUN_14133a7a0(const Unk_PvPGuildRoundInfo& info)
 {
@@ -332,10 +331,7 @@ void UIPvPGuildTeamDialog::FUN_14133a7a0(const Unk_PvPGuildRoundInfo& info)
             m_spRightPlayers[i]->Invoke("hideInfo");
     }
     m_slots.clear();
-    if (m_nEndTime == 0) {
-        m_spComponent->Invoke("clearTime");
-    }
-    else {
+    if (m_nEndTime != 0) {
         int nLeft = 0;
         int nRight = 0;
         __int64 nMyCharId = 0;
@@ -343,40 +339,45 @@ void UIPvPGuildTeamDialog::FUN_14133a7a0(const Unk_PvPGuildRoundInfo& info)
         if (spPC.data() != 0)
             nMyCharId = FUN_141656a80(spPC.operator->());
         bool bPlaying = false;
-        for (unsigned i = 0; i < info.m_characters.size(); i++) {
+        for (size_t i = 0; i < info.m_characters.size(); i++) {
             if (info.m_characters[i] != 0 && info.m_characters[i] == nMyCharId)
                 bPlaying = true;
         }
-        for (unsigned i = 0; i < info.m_characters.size(); i++) {
+        for (size_t i = 0; i < info.m_characters.size(); i++) {
             const __int64& nCharId = info.m_characters[i];
             PCBase* pPC = FUN_1403ed2d0()->FUN_141bd1530(nCharId);
-            if (pPC != 0) {
-                if (!FUN_14133b830(*FUN_141656be0(pPC))) {
-                    if (nRight < 3) {
-                        FUN_14133bab0(m_spRightPlayers[nRight], pPC, bPlaying);
-                        nRight++;
-                    }
-                }
-                else if (nLeft < 3) {
-                    FUN_14133bab0(m_spLeftPlayers[nLeft], pPC, bPlaying);
-                    nLeft++;
-                }
+            if (pPC == 0)
+                continue;
+            if (FUN_14133b830(*FUN_141656be0(pPC))) {
+                if (nLeft >= 3)
+                    continue;
+                FUN_14133bab0(m_spLeftPlayers[nLeft], pPC, bPlaying);
+                nLeft++;
+            }
+            else {
+                if (nRight >= 3)
+                    continue;
+                FUN_14133bab0(m_spRightPlayers[nRight], pPC, bPlaying);
+                nRight++;
             }
         }
     }
-    if (!FUN_14133b8c0(info.m_scoreA.m_nGuildId)) {
-        FUN_140cfee80(FUN_1422dbc00(), "m_leftGuildScore", FUN_140719630(info.m_scoreB.m_nScore));
-        FUN_140cfee80(FUN_1422dbc00(), "m_rightGuildScore", FUN_140719630(info.m_scoreA.m_nScore));
-    }
     else {
+        m_spComponent->Invoke("clearTime");
+    }
+    if (FUN_14133b8c0(info.m_scoreA.m_nGuildId)) {
         FUN_140cfee80(FUN_1422dbc00(), "m_leftGuildScore", FUN_140719630(info.m_scoreA.m_nScore));
         FUN_140cfee80(FUN_1422dbc00(), "m_rightGuildScore", FUN_140719630(info.m_scoreB.m_nScore));
+    }
+    else {
+        FUN_140cfee80(FUN_1422dbc00(), "m_leftGuildScore", FUN_140719630(info.m_scoreB.m_nScore));
+        FUN_140cfee80(FUN_1422dbc00(), "m_rightGuildScore", FUN_140719630(info.m_scoreA.m_nScore));
     }
 }
 MS2_REPLACE_METHOD(0x14133A7A0, UIPvPGuildTeamDialog, FUN_14133a7a0, 2054, 0x9313CBEC);
 
 // @0x14133afb0
-void UIPvPGuildTeamDialog::FUN_14133afb0(__int64 nCharId, __int64 nHp, __int64 nMaxHp)
+void UIPvPGuildTeamDialog::FUN_14133afb0(unsigned __int64 nCharId, __int64 nHp, __int64 nMaxHp)
 {
     if (m_slots.find(nCharId) == m_slots.end())
         return;
@@ -411,7 +412,6 @@ void UIPvPGuildTeamDialog::FUN_14133b0f0(__int64 nGuildId, const CStringW& strMa
 }
 MS2_REPLACE_METHOD(0x14133B0F0, UIPvPGuildTeamDialog, FUN_14133b0f0, 755, 0x71123AE4);
 
-// MS2-FUNCTIONAL: byte-identical body; cl reserves 0x10 more frame (0x218 vs 0x208)
 // @0x14133b3f0
 int UIPvPGuildTeamDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs)
 {

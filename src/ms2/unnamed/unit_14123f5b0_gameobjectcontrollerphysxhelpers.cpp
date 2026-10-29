@@ -8,6 +8,7 @@
 #include "ms2/placeholder/ms2stdafx.h"
 #include "ms2/client/ms2/gameobjectcontroller.h"
 #include <math.h>
+extern "C" float (__cdecl* __imp_cosf)(float);                      // the exe calls the CRT import
 #include <NiPoint3.h>
 #include <efdPhysX/PhysXTypes.h>
 #include "ms2/client/ms2/physxhelper.h"
@@ -92,7 +93,7 @@ void GameObjectController::FUN_14123f5b0(PCBase* pOwner, egf::Entity* pEntity, e
     kDesc.radius = FUN_14028d3a0(fRadius);
     kDesc.height = FUN_14028d3a0(fCapsuleHeight);
     kDesc.skinWidth = 0.01f;
-    kDesc.slopeLimit = cosf(0.87266463f);
+    kDesc.slopeLimit = __imp_cosf(0.87266463f);
     kDesc.stepOffset = 0.3f;
     kDesc.upDirection = NX_Z;
     kDesc.climbingMode = CLIMB_EASY;
@@ -232,17 +233,12 @@ void GameObjectController::FUN_14123ff80(efd::Point3 kDisp, unsigned int nExclud
         if (m_nCollisionFlags == NXCC_COLLISION_DOWN && m_hitReport.GetOtherController() != 0)
             m_nIgnoreGroups = 0x10;
 
-        if ((m_nCollisionFlags & NXCC_COLLISION_DOWN) == 0)
+        if ((m_nCollisionFlags & NXCC_COLLISION_DOWN) != 0)
         {
-            if (m_kFallTimer.FUN_140868ba0() == 0)
-                m_kFallTimer.FUN_1408687c0();
-        }
-        else
-        {
-            bool bOnController = false;
+            int bOnController = 0;
             if ((m_nCollisionFlags & NXCC_COLLISION_SIDES) != 0 && m_hitReport.GetOtherController() != 0)
             {
-                bOnController = true;
+                bOnController = 1;
                 if (m_hitReport.GetHit() != 0)
                 {
                     FUN_141240730();
@@ -257,35 +253,39 @@ void GameObjectController::FUN_14123ff80(efd::Point3 kDisp, unsigned int nExclud
                 float fHeight = m_pController->getHeight();
                 float fRadius = m_pController->getRadius();
                 NxCapsule kCapsule;
-                kCapsule.p0.x = (float)kPos.x;
-                kCapsule.p0.y = (float)kPos.y;
-                kCapsule.p0.z = (float)kPos.z - fHeight * 0.5f;
-                kCapsule.p1.z = (float)kPos.z + fHeight * 0.5f;
-                kCapsule.p1.x = kCapsule.p0.x;
-                kCapsule.p1.y = kCapsule.p0.y;
+                kCapsule.p0.x = kCapsule.p1.x = (float)kPos.x;
+                kCapsule.p0.y = kCapsule.p1.y = (float)kPos.y;
+                kCapsule.p0.z = kCapsule.p1.z = (float)kPos.z;
+                kCapsule.p0.z -= fHeight * 0.5f;
+                kCapsule.p1.z += fHeight * 0.5f;
                 kCapsule.radius = fRadius;
                 m_pController->setCollision(false);
                 NxScene* pScene = FUN_1409f7ca0()->FUN_14168a1c0();
                 bool bOverlap = pScene->checkOverlapCapsule(kCapsule, NX_ALL_SHAPES, 0xffffffff, 0);
                 m_pController->setCollision(true);
-                if (!bOverlap)
-                {
-                    m_nIgnoreGroups = 0;
-                }
-                else
+                if (bOverlap)
                 {
                     FUN_141240730();
                     if (m_bLiftFalling != 0)
                         FUN_141240d70();
                 }
+                else
+                {
+                    m_nIgnoreGroups = 0;
+                }
                 FUN_1409f7ca0()->FUN_14168a570();
             }
-            if (m_nIgnoreGroups == 0 && !bOnController)
+            if (m_nIgnoreGroups == 0 && bOnController == 0)
             {
                 FUN_141240730();
                 if (m_bLiftFalling != 0)
                     FUN_141240d70();
             }
+        }
+        else
+        {
+            if (m_kFallTimer.FUN_140868ba0() == 0)
+                m_kFallTimer.FUN_1408687c0();
         }
         m_hitReport.ClearOtherController();
     }

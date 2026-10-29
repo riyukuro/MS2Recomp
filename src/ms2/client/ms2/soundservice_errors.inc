@@ -1,290 +1,194 @@
     case 0:
-        pszText = "No errors.";
-        break;
+        return "No errors.";
     case 1:
-        pszText = "Tried to call lock a second time before unlock was called. ";
-        break;
+        return "Tried to call lock a second time before unlock was called. ";
     case 2:
-        pszText = "Tried to call a function on a data type that does not allow this type of functionality (ie calling Sound::lock on a streaming sound). ";
-        break;
+        return "Tried to call a function on a data type that does not allow this type of functionality (ie calling Sound::lock on a streaming sound). ";
     case 3:
-        pszText = "Neither NTSCSI nor ASPI could be initialised. ";
-        break;
+        return "Neither NTSCSI nor ASPI could be initialised. ";
     case 4:
-        pszText = "An error occurred while initialising the CDDA subsystem. ";
-        break;
+        return "An error occurred while initialising the CDDA subsystem. ";
     case 5:
-        pszText = "Couldn't find the specified device. ";
-        break;
+        return "Couldn't find the specified device. ";
     case 6:
-        pszText = "No audio tracks on the specified disc. ";
-        break;
+        return "No audio tracks on the specified disc. ";
     case 7:
-        pszText = "No CD/DVD devices were found. ";
-        break;
+        return "No CD/DVD devices were found. ";
     case 8:
-        pszText = "No disc present in the specified drive. ";
-        break;
+        return "No disc present in the specified drive. ";
     case 9:
-        pszText = "A CDDA read error occurred. ";
-        break;
+        return "A CDDA read error occurred. ";
     case 10:
-        pszText = "Error trying to allocate a channel. ";
-        break;
+        return "Error trying to allocate a channel. ";
     case 11:
-        pszText = "The specified channel has been reused to play another sound. ";
-        break;
+        return "The specified channel has been reused to play another sound. ";
     case 12:
-        pszText = "A Win32 COM related error occured. COM failed to initialize or a QueryInterface failed meaning a Windows codec or driver was not installed properly. ";
-        break;
+        return "A Win32 COM related error occured. COM failed to initialize or a QueryInterface failed meaning a Windows codec or driver was not installed properly. ";
     case 13:
-        pszText = "DMA Failure.  See debug output for more information. ";
-        break;
+        return "DMA Failure.  See debug output for more information. ";
     case 14:
-        pszText = "DSP connection error.  Connection possibly caused a cyclic dependancy.  Or tried to connect a tree too many units deep (more than 128). ";
-        break;
+        return "DSP connection error.  Connection possibly caused a cyclic dependancy.  Or tried to connect a tree too many units deep (more than 128). ";
     case 15:
-        pszText = "DSP Format error.  A DSP unit may have attempted to connect to this network with the wrong format. ";
-        break;
+        return "DSP Format error.  A DSP unit may have attempted to connect to this network with the wrong format. ";
     case 16:
-        pszText = "DSP connection error.  Couldn't find the DSP unit specified. ";
-        break;
+        return "DSP connection error.  Couldn't find the DSP unit specified. ";
     case 17:
-        pszText = "DSP error.  Cannot perform this operation while the network is in the middle of running.  This will most likely happen if a connection or disconnection is attempted in a DSP callback. ";
-        break;
+        return "DSP error.  Cannot perform this operation while the network is in the middle of running.  This will most likely happen if a connection or disconnection is attempted in a DSP callback. ";
     case 18:
-        pszText = "DSP connection error.  The unit being connected to or disconnected should only have 1 input or output. ";
-        break;
+        return "DSP connection error.  The unit being connected to or disconnected should only have 1 input or output. ";
     case 19:
-        pszText = "Error loading file. ";
-        break;
+        return "Error loading file. ";
     case 20:
-        pszText = "Couldn't perform seek operation.  This is a limitation of the medium (ie netstreams) or the file format. ";
-        break;
+        return "Couldn't perform seek operation.  This is a limitation of the medium (ie netstreams) or the file format. ";
     case 21:
-        pszText = "Media was ejected while reading. ";
-        break;
+        return "Media was ejected while reading. ";
     case 22:
-        pszText = "End of file unexpectedly reached while trying to read essential data (truncated data?). ";
-        break;
+        return "End of file unexpectedly reached while trying to read essential data (truncated data?). ";
     case 23:
-        pszText = "File not found. ";
-        break;
+        return "File not found. ";
     case 24:
-        pszText = "Unwanted file access occured. ";
-        break;
+        return "Unwanted file access occured. ";
     case 25:
-        pszText = "Unsupported file or audio format. ";
-        break;
+        return "Unsupported file or audio format. ";
     case 26:
-        pszText = "A HTTP error occurred. This is a catch-all for HTTP errors not listed elsewhere. ";
-        break;
+        return "A HTTP error occurred. This is a catch-all for HTTP errors not listed elsewhere. ";
     case 27:
-        pszText = "The specified resource requires authentication or is forbidden. ";
-        break;
+        return "The specified resource requires authentication or is forbidden. ";
     case 28:
-        pszText = "Proxy authentication is required to access the specified resource. ";
-        break;
+        return "Proxy authentication is required to access the specified resource. ";
     case 29:
-        pszText = "A HTTP server error occurred. ";
-        break;
+        return "A HTTP server error occurred. ";
     case 30:
-        pszText = "The HTTP request timed out. ";
-        break;
+        return "The HTTP request timed out. ";
     case 31:
-        pszText = "FMOD was not initialized correctly to support this function. ";
-        break;
+        return "FMOD was not initialized correctly to support this function. ";
     case 32:
-        pszText = "Cannot call this command after System::init. ";
-        break;
+        return "Cannot call this command after System::init. ";
     case 33:
-        pszText = "An error occured that wasn't supposed to.  Contact support. ";
-        break;
+        return "An error occured that wasn't supposed to.  Contact support. ";
     case 34:
-        pszText = "On Xbox 360, this memory address passed to FMOD must be physical, (ie allocated with XPhysicalAlloc.) ";
-        break;
+        return "On Xbox 360, this memory address passed to FMOD must be physical, (ie allocated with XPhysicalAlloc.) ";
     case 35:
-        pszText = "Value passed in was a NaN, Inf or denormalized float. ";
-        break;
+        return "Value passed in was a NaN, Inf or denormalized float. ";
     case 36:
-        pszText = "An invalid object handle was used. ";
-        break;
+        return "An invalid object handle was used. ";
     case 37:
-        pszText = "An invalid parameter was passed to this function. ";
-        break;
+        return "An invalid parameter was passed to this function. ";
     case 38:
-        pszText = "An invalid seek position was passed to this function. ";
-        break;
+        return "An invalid seek position was passed to this function. ";
     case 39:
-        pszText = "An invalid speaker was passed to this function based on the current speaker mode. ";
-        break;
+        return "An invalid speaker was passed to this function based on the current speaker mode. ";
     case 40:
-        pszText = "The syncpoint did not come from this sound handle. ";
-        break;
+        return "The syncpoint did not come from this sound handle. ";
     case 41:
-        pszText = "The vectors passed in are not unit length, or perpendicular. ";
-        break;
+        return "The vectors passed in are not unit length, or perpendicular. ";
     case 42:
-        pszText = "Reached maximum audible playback count for this sound's soundgroup. ";
-        break;
+        return "Reached maximum audible playback count for this sound's soundgroup. ";
     case 43:
-        pszText = "Not enough memory or resources. ";
-        break;
+        return "Not enough memory or resources. ";
     case 44:
-        pszText = "Can't use FMOD_OPENMEMORY_POINT on non PCM source data, or non mp3/xma/adpcm data if FMOD_CREATECOMPRESSEDSAMPLE was used. ";
-        break;
+        return "Can't use FMOD_OPENMEMORY_POINT on non PCM source data, or non mp3/xma/adpcm data if FMOD_CREATECOMPRESSEDSAMPLE was used. ";
     case 45:
-        pszText = "Not enough memory or resources on console sound ram. ";
-        break;
+        return "Not enough memory or resources on console sound ram. ";
     case 46:
-        pszText = "Tried to call a command on a 3d sound when the command was meant for 2d sound. ";
-        break;
+        return "Tried to call a command on a 3d sound when the command was meant for 2d sound. ";
     case 47:
-        pszText = "Tried to call a command on a 2d sound when the command was meant for 3d sound. ";
-        break;
+        return "Tried to call a command on a 2d sound when the command was meant for 3d sound. ";
     case 48:
-        pszText = "Tried to use a feature that requires hardware support.  (ie trying to play a GCADPCM compressed sound in software on Wii). ";
-        break;
+        return "Tried to use a feature that requires hardware support.  (ie trying to play a GCADPCM compressed sound in software on Wii). ";
     case 49:
-        pszText = "Tried to use a feature that requires the software engine.  Software engine has either been turned off, or command was executed on a hardware channel which does not support this feature. ";
-        break;
+        return "Tried to use a feature that requires the software engine.  Software engine has either been turned off, or command was executed on a hardware channel which does not support this feature. ";
     case 50:
-        pszText = "Couldn't connect to the specified host. ";
-        break;
+        return "Couldn't connect to the specified host. ";
     case 51:
-        pszText = "A socket error occurred.  This is a catch-all for socket-related errors not listed elsewhere. ";
-        break;
+        return "A socket error occurred.  This is a catch-all for socket-related errors not listed elsewhere. ";
     case 52:
-        pszText = "The specified URL couldn't be resolved. ";
-        break;
+        return "The specified URL couldn't be resolved. ";
     case 53:
-        pszText = "Operation on a non-blocking socket could not complete immediately. ";
-        break;
+        return "Operation on a non-blocking socket could not complete immediately. ";
     case 54:
-        pszText = "Operation could not be performed because specified sound/DSP connection is not ready. ";
-        break;
+        return "Operation could not be performed because specified sound/DSP connection is not ready. ";
     case 55:
-        pszText = "Error initializing output device, but more specifically, the output device is already in use and cannot be reused. ";
-        break;
+        return "Error initializing output device, but more specifically, the output device is already in use and cannot be reused. ";
     case 56:
-        pszText = "Error creating hardware sound buffer. ";
-        break;
+        return "Error creating hardware sound buffer. ";
     case 57:
-        pszText = "A call to a standard soundcard driver failed, which could possibly mean a bug in the driver or resources were missing or exhausted. ";
-        break;
+        return "A call to a standard soundcard driver failed, which could possibly mean a bug in the driver or resources were missing or exhausted. ";
     case 58:
-        pszText = "Error enumerating the available driver list. List may be inconsistent due to a recent device addition or removal. ";
-        break;
+        return "Error enumerating the available driver list. List may be inconsistent due to a recent device addition or removal. ";
     case 59:
-        pszText = "Soundcard does not support the minimum features needed for this soundsystem (16bit stereo output). ";
-        break;
+        return "Soundcard does not support the minimum features needed for this soundsystem (16bit stereo output). ";
     case 60:
-        pszText = "Error initializing output device. ";
-        break;
+        return "Error initializing output device. ";
     case 61:
-        pszText = "FMOD_HARDWARE was specified but the sound card does not have the resources necessary to play it. ";
-        break;
+        return "FMOD_HARDWARE was specified but the sound card does not have the resources necessary to play it. ";
     case 62:
-        pszText = "Attempted to create a software sound but no software channels were specified in System::init. ";
-        break;
+        return "Attempted to create a software sound but no software channels were specified in System::init. ";
     case 63:
-        pszText = "Panning only works with mono or stereo sound sources. ";
-        break;
+        return "Panning only works with mono or stereo sound sources. ";
     case 64:
-        pszText = "An unspecified error has been returned from a 3rd party plugin. ";
-        break;
+        return "An unspecified error has been returned from a 3rd party plugin. ";
     case 65:
-        pszText = "The number of allowed instances of a plugin has been exceeded. ";
-        break;
+        return "The number of allowed instances of a plugin has been exceeded. ";
     case 66:
-        pszText = "A requested output, dsp unit type or codec was not available. ";
-        break;
+        return "A requested output, dsp unit type or codec was not available. ";
     case 67:
-        pszText = "A resource that the plugin requires cannot be found. (ie the DLS file for MIDI playback or other DLLs that it needs to load) ";
-        break;
+        return "A resource that the plugin requires cannot be found. (ie the DLS file for MIDI playback or other DLLs that it needs to load) ";
     case 68:
-        pszText = "The specified sound is still in use by the event system, call EventSystem::unloadFSB before trying to release it. ";
-        break;
+        return "The specified sound is still in use by the event system, call EventSystem::unloadFSB before trying to release it. ";
     case 69:
-        pszText = "The specified sound is still in use by the event system, wait for the event which is using it finish with it. ";
-        break;
+        return "The specified sound is still in use by the event system, wait for the event which is using it finish with it. ";
     case 70:
-        pszText = "An error occured trying to initialize the recording device. ";
-        break;
+        return "An error occured trying to initialize the recording device. ";
     case 71:
-        pszText = "Specified instance in FMOD_REVERB_PROPERTIES couldn't be set. Most likely because it is an invalid instance number or the reverb doesnt exist. ";
-        break;
+        return "Specified instance in FMOD_REVERB_PROPERTIES couldn't be set. Most likely because it is an invalid instance number or the reverb doesnt exist. ";
     case 72:
-        pszText = "This subsound is already being used by another sound, you cannot have more than one parent to a sound.  Null out the other parent's entry first. ";
-        break;
+        return "This subsound is already being used by another sound, you cannot have more than one parent to a sound.  Null out the other parent's entry first. ";
     case 73:
-        pszText = "Shared subsounds cannot be replaced or moved from their parent stream, such as when the parent stream is an FSB file. ";
-        break;
+        return "Shared subsounds cannot be replaced or moved from their parent stream, such as when the parent stream is an FSB file. ";
     case 74:
-        pszText = "The subsound's mode bits do not match with the parent sound's mode bits.  See documentation for function that it was called with. ";
-        break;
+        return "The subsound's mode bits do not match with the parent sound's mode bits.  See documentation for function that it was called with. ";
     case 75:
-        pszText = "The error occured because the sound referenced contains subsounds when it shouldn't have, or it doesn't contain subsounds when it should have.  The operation may also not be able to be performed on a parent sound, or a parent sound was played without setting up a sentence first. ";
-        break;
+        return "The error occured because the sound referenced contains subsounds when it shouldn't have, or it doesn't contain subsounds when it should have.  The operation may also not be able to be performed on a parent sound, or a parent sound was played without setting up a sentence first. ";
     case 76:
-        pszText = "The specified tag could not be found or there are no tags. ";
-        break;
+        return "The specified tag could not be found or there are no tags. ";
     case 77:
-        pszText = "The sound created exceeds the allowable input channel count.  This can be increased using the maxinputchannels parameter in System::setSoftwareFormat. ";
-        break;
+        return "The sound created exceeds the allowable input channel count.  This can be increased using the maxinputchannels parameter in System::setSoftwareFormat. ";
     case 78:
-        pszText = "Something in FMOD hasn't been implemented when it should be! contact support! ";
-        break;
+        return "Something in FMOD hasn't been implemented when it should be! contact support! ";
     case 79:
-        pszText = "This command failed because System::init or System::setDriver was not called. ";
-        break;
+        return "This command failed because System::init or System::setDriver was not called. ";
     case 80:
-        pszText = "A command issued was not supported by this object.  Possibly a plugin without certain callbacks specified. ";
-        break;
+        return "A command issued was not supported by this object.  Possibly a plugin without certain callbacks specified. ";
     case 81:
-        pszText = "An error caused by System::update occured. ";
-        break;
+        return "An error caused by System::update occured. ";
     case 82:
-        pszText = "The version number of this file format is not supported. ";
-        break;
+        return "The version number of this file format is not supported. ";
     case 83:
-        pszText = "An Event failed to be retrieved, most likely due to 'just fail' being specified as the max playbacks behavior. ";
-        break;
+        return "An Event failed to be retrieved, most likely due to 'just fail' being specified as the max playbacks behavior. ";
     case 84:
-        pszText = "Can't execute this command on an EVENT_INFOONLY event. ";
-        break;
+        return "Can't execute this command on an EVENT_INFOONLY event. ";
     case 85:
-        pszText = "An error occured that wasn't supposed to.  See debug log for reason. ";
-        break;
+        return "An error occured that wasn't supposed to.  See debug log for reason. ";
     case 86:
-        pszText = "Event failed because 'Max streams' was hit when FMOD_EVENT_INIT_FAIL_ON_MAXSTREAMS was specified. ";
-        break;
+        return "Event failed because 'Max streams' was hit when FMOD_EVENT_INIT_FAIL_ON_MAXSTREAMS was specified. ";
     case 87:
-        pszText = "FSB mismatches the FEV it was compiled with, the stream/sample mode it was meant to be created with was different, or the FEV was built for a different platform. ";
-        break;
+        return "FSB mismatches the FEV it was compiled with, the stream/sample mode it was meant to be created with was different, or the FEV was built for a different platform. ";
     case 88:
-        pszText = "A category with the same name already exists. ";
-        break;
+        return "A category with the same name already exists. ";
     case 89:
-        pszText = "The requested event, event group, event category or event property could not be found. ";
-        break;
+        return "The requested event, event group, event category or event property could not be found. ";
     case 90:
-        pszText = "Tried to call a function on a complex event that's only supported by simple events. ";
-        break;
+        return "Tried to call a function on a complex event that's only supported by simple events. ";
     case 91:
-        pszText = "An event with the same GUID already exists. ";
-        break;
+        return "An event with the same GUID already exists. ";
     case 92:
-        pszText = "The specified project or bank has already been loaded. Having multiple copies of the same project loaded simultaneously is forbidden. ";
-        break;
+        return "The specified project or bank has already been loaded. Having multiple copies of the same project loaded simultaneously is forbidden. ";
     case 93:
-        pszText = "Music system is not initialized probably because no music data is loaded. ";
-        break;
+        return "Music system is not initialized probably because no music data is loaded. ";
     case 94:
-        pszText = "The requested music entity could not be found. ";
-        break;
+        return "The requested music entity could not be found. ";
     case 95:
-        pszText = "The music callback is required, but it has not been set. ";
-        break;
+        return "The music callback is required, but it has not been set. ";
     default:
-        pszText = "Unknown error.";
+        return "Unknown error.";

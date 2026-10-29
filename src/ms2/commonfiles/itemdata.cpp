@@ -131,7 +131,7 @@ public:
     Unk_OptionKey(int nId);                                 // 0x140768210
     ~Unk_OptionKey();                                       // 0x1401cdc30
 private:
-    __int64 m_data[9];                                      // 0x48 bytes (no char array: the exe frame has no GS cookie)
+    void* m_data[8];                                        // 0x40 bytes (pointer elements: a non-pointer array is a GS buffer, and the exe frame has no cookie)
 };
 class Unk_OptionMgr
 {
@@ -150,8 +150,8 @@ int FUN_14053f990(int nId);
 int FUN_14053f9c0(int nItemId);
 int FUN_14053fa40(int nItemId);
 int FUN_14053fac0(int nItemId);
-bool FUN_14053fb40(int nItemId);
-bool FUN_14053fbc0(int nId);
+int FUN_14053fb40(int nItemId);
+int FUN_14053fbc0(int nId);
 int FUN_14053fc10(int nItemId);
 bool FUN_14053fc90(int nSub);
 bool FUN_14053fd10(int nSub);
@@ -208,10 +208,8 @@ bool CItemChangeBeautyTable::Load()
                 continue;
             int nItemId;
             FUN_140873220(pItem, "itemID", nItemId);
-            if (nItemId == 0)
-                continue;
-            MS2Ptr<CItemData> item = FUN_14053f870(nItemId);
-            item.IsNull();
+            // The exe looks up item (nItemId == 0), i.e. item 0, not nItemId, and drops the result.
+            bool bItem = nItemId == 0 || FUN_14053f870(nItemId == 0);
         }
         if (Unk_LockGuard guard = m_lock)
         {
@@ -372,9 +370,8 @@ bool CItemData::Load(Unk_140165cf0* pElem)
         }
     }
     if (FUN_14036d570(FUN_140166410(), 0x2f) == 1 && FUN_140541580()) {
-        int nItemId = FUN_14053c510();
         Unk_TableHandle handle;
-        Unk_HandleNode* pNode = FUN_140541580()->FUN_1403b7c40(&handle, 3, nItemId);
+        Unk_HandleNode* pNode = FUN_140541580()->FUN_1403b7c40(&handle, 3, FUN_14053c510());
         Unk_HandleNode* pRow = pNode;
         property.flag09 = reinterpret_cast<CItemChangeBeautyTable::DataPtr*>(pRow)->operator->() != 0;
     }
@@ -540,13 +537,13 @@ bool CItemData::FUN_14053c710()
 {
     if (!FUN_14053cbc0())
         return false;
-    ItemModelData* pModel = FUN_14053eba0();
-    size_t nGroups = pModel->FUN_14054b3d0();
+    size_t nGroups = FUN_14053eba0()->FUN_14054b3d0();
     if (nGroups == 0)
         return false;
     for (size_t i = 0; i < nGroups; ++i)
     {
-        if (FUN_14053eba0()->FUN_14054b2f0(i)->FUN_1405451a0() == 0)
+        const ModelGroup* pGroup = FUN_14053eba0()->FUN_14054b2f0(i);
+        if (pGroup->FUN_1405451a0() == 0)
             return false;
     }
     return true;
@@ -563,15 +560,13 @@ bool CItemData::FUN_14053c7c0()
 // @0x14053c810
 bool CItemData::FUN_14053c810()
 {
-    if (!FUN_14053d550())
-    {
-        if (FUN_14053c620() == 0x13)
-            return false;
-        if (FUN_14053c620() == 0x15)
-            return false;
-        return true;
-    }
-    return false;
+    if (FUN_14053d550())
+        return false;
+    if (FUN_14053c620() == 0x13)
+        return false;
+    if (FUN_14053c620() == 0x15)
+        return false;
+    return true;
 }
 
 // @0x14053c870
@@ -777,12 +772,16 @@ bool CItemData::FUN_14053d0c0()
 }
 
 // @0x14053d110
-int CItemData::FUN_14053d110()
+bool CItemData::FUN_14053d110()
 {
-    int nSub = FUN_14053c620();
-    if (nSub < 0xe || (0xf < nSub && nSub != 0x16))
-        return 0;
-    return 1;
+    switch (FUN_14053c620())
+    {
+    case 0xe:
+    case 0xf:
+    case 0x16:
+        return true;
+    }
+    return false;
 }
 
 // @0x14053d150
@@ -804,9 +803,10 @@ bool CItemData::FUN_14053d150()
     case 0x18:
     case 0x1b:
         return true;
-    default:
-        return FUN_14053cd90();
     }
+    if (FUN_14053cd90())
+        return true;
+    return false;
 }
 
 // @0x14053d1f0
@@ -850,28 +850,30 @@ bool CItemData::FUN_14053d340()
 {
     if (FUN_14053c5c0() == 1)
     {
-        int nSub = FUN_14053c620();
-        if (0x1d < nSub && (nSub < 0x23 || (0x27 < nSub && nSub < 0x2a)))
-            return true;
-    }
-    else
-    {
-        if (FUN_14053c5c0() == 8)
-            return true;
-        if (FUN_14053c5c0() == 0x17)
+        switch (FUN_14053c620())
         {
-            if (FUN_14053eba0()->FUN_14054b450(5))
-            {
-                if (FUN_14053eba0()->FUN_14054b450(4))
-                    return false;
-            }
-            if (!FUN_14053eba0()->FUN_14054b450(5))
-            {
-                if (!FUN_14053eba0()->FUN_14054b450(4))
-                    return false;
-            }
+        case 0x1e:
+        case 0x1f:
+        case 0x20:
+        case 0x21:
+        case 0x22:
+        case 0x28:
+        case 0x29:
             return true;
         }
+    }
+    else if (FUN_14053c5c0() == 8)
+    {
+        return true;
+    }
+    else if (FUN_14053c5c0() == 0x17)
+    {
+        if (FUN_14053eba0()->FUN_14054b450(5))
+        {
+            if (FUN_14053eba0()->FUN_14054b450(4))
+                return false;
+        }
+        return FUN_14053eba0()->FUN_14054b450(5) || FUN_14053eba0()->FUN_14054b450(4);
     }
     return false;
 }
@@ -881,9 +883,21 @@ bool CItemData::FUN_14053d460()
 {
     if (FUN_14053c5c0() == 1)
     {
-        int nSub = FUN_14053c620();
-        if (0x31 < nSub && (nSub < 0x39 || (0x4f < nSub && nSub < 0x54)))
+        switch (FUN_14053c620())
+        {
+        case 0x32:
+        case 0x33:
+        case 0x34:
+        case 0x35:
+        case 0x36:
+        case 0x37:
+        case 0x38:
+        case 0x50:
+        case 0x51:
+        case 0x52:
+        case 0x53:
             return true;
+        }
     }
     else if (FUN_14053c5c0() == 0x17)
     {
@@ -952,14 +966,10 @@ int CItemData::FUN_14053d640()
 }
 
 // @0x14053d660
-bool CItemData::FUN_14053d660()
+int CItemData::FUN_14053d660()
 {
-    if (period.usePeriod < 1)
-    {
-        if (!(period.expiration > CMsTime(0)) && period.expirationType == 0 && period.termTag.IsEmpty())
-            return false;
-    }
-    return true;
+    return period.usePeriod > 0 || period.expiration > 0 || period.expirationType != 0
+        || !period.termTag.IsEmpty();
 }
 
 // @0x14053d6f0
@@ -1050,14 +1060,11 @@ bool CItemData::FUN_14053d990()
 }
 
 // @0x14053d9d0
-int CItemData::FUN_14053d9d0()
+bool CItemData::FUN_14053d9d0()
 {
-    int nResult;
-    if (FUN_14052d230() == 0)
-        nResult = 0;
-    else
-        nResult = FUN_14059eec0(FUN_14052d230(), FUN_14053c510());
-    return nResult;
+    if (FUN_14052d230() != 0)
+        return FUN_14059eec0(FUN_14052d230(), FUN_14053c510());
+    return false;
 }
 
 // @0x14053da20
@@ -1232,25 +1239,27 @@ int CItemData::FUN_14053df80()
 // @0x14053dfd0
 bool CItemData::FUN_14053dfd0(const CStringW& strName)
 {
-    return !(function.name != strName);
+    if (function.name != strName)
+        return false;
+    return true;
 }
 
 // @0x14053e010
-bool CItemData::FUN_14053e010()
+int CItemData::FUN_14053e010()
 {
     CStringW strName(L"ExpandInven");
     return FUN_14053dfd0(strName);
 }
 
 // @0x14053e070
-bool CItemData::FUN_14053e070()
+int CItemData::FUN_14053e070()
 {
     CStringW strName(L"ExpendCharacterSlot");
     return FUN_14053dfd0(strName);
 }
 
 // @0x14053e0d0
-bool CItemData::FUN_14053e0d0()
+int CItemData::FUN_14053e0d0()
 {
     CStringW strName(L"UGCMapPackage");
     return FUN_14053dfd0(strName);
@@ -1277,10 +1286,10 @@ bool CItemData::FUN_14053e170()
 }
 
 // @0x14053e210
-int CItemData::FUN_14053e210()
+bool CItemData::FUN_14053e210()
 {
     if (model == 0)
-        return 0;
+        return false;
     return model->FUN_14054b550();
 }
 
@@ -1309,10 +1318,10 @@ int CItemData::FUN_14053e310(int nIndex)
 }
 
 // @0x14053e370
-int CItemData::FUN_14053e370()
+bool CItemData::FUN_14053e370()
 {
     if (model == 0)
-        return 0;
+        return false;
     return model->FUN_14054b640();
 }
 
@@ -1347,7 +1356,8 @@ bool CItemData::FUN_14053e460()
         return true;
     if (FUN_14053cd90())
     {
-        if (function.name == L"TreasureMap")
+        const CStringW& strName = function.name;
+        if (strName == L"TreasureMap")
             return false;
         return true;
     }
@@ -1359,58 +1369,44 @@ bool CItemData::FUN_14053e460()
 // @0x14053e530
 int CItemData::FUN_14053e530()
 {
-    int nResult;
     switch (FUN_14053c5c0())
     {
     case 1:
-        nResult = FUN_14053cf90() ? 1 : 0;
-        break;
-    case 2:
-        nResult = 10;
-        break;
-    case 3:
-        nResult = 5;
-        break;
-    default:
-        nResult = 7;
-        break;
-    case 5:
-    case 9:
-        nResult = 2;
-        break;
+        if (FUN_14053cf90())
+            return 1;
+        return 0;
     case 6:
     case 8:
     case 0xc:
     case 0x17:
-        nResult = 4;
-        break;
-    case 7:
-        nResult = 0xc;
-        break;
-    case 0xb:
-        nResult = 9;
-        break;
+        return 4;
+    case 5:
+    case 9:
+        return 2;
     case 0xd:
     case 0xe:
-        nResult = 6;
-        break;
+        return 6;
+    case 3:
+        return 5;
     case 0xf:
     case 0x13:
-        nResult = 3;
-        break;
+        return 3;
     case 0x10:
-        nResult = 8;
-        break;
+        return 8;
+    case 0xb:
+        return 9;
+    case 2:
+        return 10;
     case 0x14:
-        nResult = 0xb;
-        break;
+        return 0xb;
+    case 7:
+        return 0xc;
     case 0x15:
-        nResult = 0xd;
-        break;
+        return 0xd;
     case 0x1b:
-        nResult = 0xe;
+        return 0xe;
     }
-    return nResult;
+    return 7;
 }
 
 // @0x14053e670
@@ -1460,19 +1456,32 @@ int CItemData::FUN_14053e900()
 // @0x14053e940
 bool CItemData::FUN_14053e940()
 {
-    if (FUN_14053cbc0())
+    if (!FUN_14053cbc0())
+        return false;
+    if (FUN_14053cf90())
     {
-        if (!FUN_14053cf90())
+        switch (FUN_14053c620())
         {
-            int nSub = FUN_14053c620();
-            if (nSub == 0xc || (0x12 < nSub && nSub < 0x15))
-                return true;
+        case 0xc:
+        case 0xd:
+        case 0xe:
+        case 0xf:
+        case 0x10:
+        case 0x11:
+        case 0x12:
+        case 0x14:
+        case 0x16:
+            return true;
         }
-        else
+    }
+    else
+    {
+        switch (FUN_14053c620())
         {
-            int nSub = FUN_14053c620();
-            if (0xb < nSub && (nSub < 0x13 || nSub == 0x14 || nSub == 0x16))
-                return true;
+        case 0xc:
+        case 0x13:
+        case 0x14:
+            return true;
         }
     }
     return false;
@@ -1487,20 +1496,21 @@ int CItemData::FUN_14053e9e0()
 // @0x14053ea00
 unsigned long long CItemData::FUN_14053ea00(int nRank)
 {
-    unsigned long long nPrice = property.FUN_1405480f0(nRank);
+    long long nPrice = property.FUN_1405480f0(nRank);
     if (FUN_14053cbc0())
     {
         if (!FUN_14053cf90() && nPrice == 0)
         {
             unsigned short nLevel = (unsigned short)limit.levelLimit;
-            if (0x38 < nLevel)
+            if (nLevel >= 0x39)
             {
-                nPrice = *FUN_1401d3200()->prices[nRank]->FUN_1401d7c10();
+                unsigned int nSellPrice = *FUN_1401d3200()->prices[nRank]->FUN_1401d7c10();
+                nPrice = nSellPrice;
                 (void)(nPrice != 0 || (_wassert(L"sellPrice", L"e:\\build\\kr\\22_04\\ms2code\\commonfiles\\itemdata.cpp", 0x685), 0));
             }
         }
         float fRate = FUN_1404c1810(FUN_140302b10(), 3, nRank);
-        nPrice = (unsigned long long)((float)(long long)nPrice * fRate);
+        nPrice = (long long)((float)nPrice * fRate);
     }
     return nPrice;
 }
@@ -1544,7 +1554,6 @@ bool CItemData::FUN_14053ecf0()
     return true;
 }
 
-// MS2-FUNCTIONAL: the obj frame carries a GS cookie (0x128 vs exe 0x108 alloc) from a buffer-typed placeholder local in the option-registration loop (Unk_PayloadPtr<Unk_OptionData> return temps / MS2Ptr<CItemData>(this) args); same callees
 // @0x14053ed00
 void CItemData::FUN_14053ed00()
 {
@@ -1563,14 +1572,14 @@ void CItemData::FUN_14053ed00()
             FUN_140166430()->FUN_1405f4ff0(MS2Ptr<CItemData>(this), rank, key);
         }
     }
-    if (property.gearScore != 0)
+    if ((unsigned int)property.gearScore > 0)
     {
         if (rank == 0)
         {
             for (int nRank = 1; nRank < 7; ++nRank)
             {
                 int nBase = FUN_14053f0d0(nRank);
-                for (int nIdx = 0; nIdx < 0x10; ++nIdx)
+                for (int nIdx = 0; nIdx <= 0xf; ++nIdx)
                 {
                     FUN_14053f390(nBase, nIdx);
                 }
@@ -1579,7 +1588,7 @@ void CItemData::FUN_14053ed00()
         else
         {
             int nBase = FUN_14053f0d0(rank);
-            for (int nIdx = 0; nIdx < 0x10; ++nIdx)
+            for (int nIdx = 0; nIdx <= 0xf; ++nIdx)
             {
                 FUN_14053f390(nBase, nIdx);
             }
@@ -1588,22 +1597,19 @@ void CItemData::FUN_14053ed00()
 }
 
 // @0x14053ef40
-int CItemData::FUN_14053ef40()
+bool CItemData::FUN_14053ef40()
 {
-    int nResult;
     if (!property.flag09)
-        nResult = 0;
-    else
-        nResult = limit.FUN_140545f30();
-    return nResult;
+        return false;
+    return limit.FUN_140545f30();
 }
 
 // @0x14053ef80
-int CItemData::FUN_14053ef80()
+unsigned char CItemData::FUN_14053ef80()
 {
-    if (model.get() == 0)
-        return 0;
-    return FUN_1401d1320(model.operator->());
+    if (model.get() != 0)
+        return FUN_1401d1320(model.operator->());
+    return false;
 }
 
 // @0x14053efd0
@@ -1615,36 +1621,25 @@ int CItemData::FUN_14053efd0()
 // @0x14053eff0
 int CItemData::FUN_14053eff0(int nType)
 {
-    int nResult;
-    if (!FUN_14053cc40())
+    if (FUN_14053cc40())
     {
-        nResult = randomID;
+        if (FUN_14053efd0() == 0)
+            return 0;
+        switch (nType)
+        {
+        case 2:
+            return 0x3a2c941;
+        case 3:
+            return 0x3a2c942;
+        case 4:
+            return 0x3a2c943;
+        case 5:
+        case 6:
+            return 0x3a2c944;
+        }
+        return 0;
     }
-    else if (FUN_14053efd0() == 0)
-    {
-        nResult = 0;
-    }
-    else if (nType == 2)
-    {
-        nResult = 0x3a2c941;
-    }
-    else if (nType == 3)
-    {
-        nResult = 0x3a2c942;
-    }
-    else if (nType == 4)
-    {
-        nResult = 0x3a2c943;
-    }
-    else if (nType < 5 || 6 < nType)
-    {
-        nResult = 0;
-    }
-    else
-    {
-        nResult = 0x3a2c944;
-    }
-    return nResult;
+    return randomID;
 }
 
 // @0x14053f080
@@ -1665,28 +1660,27 @@ int CItemData::FUN_14053f0a0()
 int CItemData::FUN_14053f0d0(int nRank)
 {
     int nGear = property.gearScore;
-    int nGrade = nRank;
     if (rank != 0)
-        nGrade = rank;
+        nRank = rank;
     int nSub = FUN_14053c620();
+    int nGrade = nRank;
     double dResult = 0.0;
     if (0 < nGear)
     {
         if (nGear < 0x46)
         {
-            dResult = FUN_14053f430(nSub);
-            dResult = (double)(nGear * 10 + (nGrade - 1) * 5) * dResult;
-            if (3 < nGrade && 0x31 < nGear)
-            {
-                double dFactor = FUN_14053f430(nSub);
-                dResult = dResult * 2.0 * (double)(nGrade - 3) + (double)((nGear - 0x32) * 100) * dFactor;
-            }
+            dResult = (double)(nGear * 10 + (nGrade - 1) * 5) * FUN_14053f430(nSub);
+            if (nGrade >= 4 && nGear >= 0x32)
+                dResult = dResult * 2.0 * (double)(nGrade - 3) + (double)((nGear - 0x32) * 100) * FUN_14053f430(nSub);
         }
         else
         {
             double dBase = 0.0;
             switch (nGear)
             {
+            case 0x43:
+                dBase = 4.41;
+                break;
             case 0x46:
                 dBase = 5.2;
                 break;
@@ -1703,14 +1697,18 @@ int CItemData::FUN_14053f0d0(int nRank)
                 dBase = 61.35;
             }
             double dRate = 0.0;
-            if (nGrade == 4)
+            switch (nGrade)
+            {
+            case 4:
                 dRate = 0.558;
-            else if (nGrade == 5)
+                break;
+            case 5:
                 dRate = 1.2;
-            else if (nGrade == 6)
+                break;
+            case 6:
                 dRate = 1.9;
-            dResult = FUN_14053f430(nSub);
-            dResult = (dBase + 2.0) * 1030.0 * dRate * dResult;
+            }
+            dResult = (2.0 + dBase) * 1030.0 * dRate * FUN_14053f430(nSub);
         }
     }
     return (int)dResult;
@@ -1719,31 +1717,22 @@ int CItemData::FUN_14053f0d0(int nRank)
 // @0x14053f390
 int CItemData::FUN_14053f390(int nBase, int nIdx)
 {
-    int nResult;
+    double dBase = nBase;
     if (property.gearScore < 0x46)
     {
-        if (rank < 4)
-        {
-            nResult = 0;
-        }
-        else
-        {
-            double dRate = FUN_14053f4f0(nIdx);
-            nResult = (int)((double)nBase * dRate);
-        }
+        if (rank >= 4)
+            return (int)(dBase * FUN_14053f4f0(nIdx));
     }
     else
     {
-        double dRate = FUN_14053f620(nIdx);
-        nResult = (int)((double)(int)(double)nBase * dRate);
+        return (int)((double)(int)dBase * FUN_14053f620(nIdx));
     }
-    return nResult;
+    return 0;
 }
 
 // @0x14053f430
 double CItemData::FUN_14053f430(int nSub)
 {
-    double dRate;
     switch (nSub)
     {
     case 0xc:
@@ -1751,165 +1740,119 @@ double CItemData::FUN_14053f430(int nSub)
     case 0x13:
     case 0x14:
     case 0x15:
-        dRate = 0.2;
-        break;
+        return 0.2;
     case 0xd:
-        dRate = 0.21;
-        break;
+        return 0.21;
     case 0xe:
-        dRate = 0.32;
-        break;
+        return 0.32;
     case 0xf:
-        dRate = 0.3;
-        break;
+        return 0.3;
     case 0x10:
     case 0x11:
-        dRate = 0.06;
-        break;
+        return 0.06;
     case 0x16:
-        dRate = 0.62;
-        break;
-    default:
-        dRate = 1.0;
+        return 0.62;
     }
-    return dRate;
+    return 1.0;
 }
 
 // @0x14053f4f0
 double CItemData::FUN_14053f4f0(int nIdx)
 {
-    double dRate;
-    switch (nIdx)
+    switch ((unsigned)nIdx)
     {
     case 1:
-        dRate = 0.02;
-        break;
+        return 0.02;
     case 2:
-        dRate = 0.04;
-        break;
+        return 0.04;
     case 3:
-        dRate = 0.06;
-        break;
+        return 0.06;
     case 4:
-        dRate = 0.08;
-        break;
+        return 0.08;
     case 5:
-        dRate = 0.1;
-        break;
+        return 0.1;
     case 6:
-        dRate = 0.14;
-        break;
+        return 0.14;
     case 7:
-        dRate = 0.18;
-        break;
+        return 0.18;
     case 8:
-        dRate = 0.23;
-        break;
+        return 0.23;
     case 9:
-        dRate = 0.29;
-        break;
+        return 0.29;
     case 10:
-        dRate = 0.35;
-        break;
+        return 0.35;
     case 0xb:
-        dRate = 0.41;
-        break;
+        return 0.41;
     case 0xc:
-        dRate = 0.47;
-        break;
+        return 0.47;
     case 0xd:
-        dRate = 0.53;
-        break;
+        return 0.53;
     case 0xe:
-        dRate = 0.59;
-        break;
+        return 0.59;
     case 0xf:
-        dRate = 0.65;
-        break;
-    default:
-        dRate = 0.0;
+        return 0.65;
     }
-    return dRate;
+    return 0.0;
 }
 
 // @0x14053f620
 double CItemData::FUN_14053f620(int nIdx)
 {
-    double dRate;
-    switch (nIdx)
+    switch ((unsigned)nIdx)
     {
     case 1:
-        dRate = 0.02;
-        break;
+        return 0.02;
     case 2:
-        dRate = 0.04;
-        break;
+        return 0.04;
     case 3:
-        dRate = 0.07;
-        break;
+        return 0.07;
     case 4:
-        dRate = 0.1;
-        break;
+        return 0.1;
     case 5:
-        dRate = 0.14;
-        break;
+        return 0.14;
     case 6:
-        dRate = 0.19;
-        break;
+        return 0.19;
     case 7:
-        dRate = 0.25;
-        break;
+        return 0.25;
     case 8:
-        dRate = 0.32;
-        break;
+        return 0.32;
     case 9:
-        dRate = 0.4;
-        break;
+        return 0.4;
     case 10:
-        dRate = 0.5;
-        break;
+        return 0.5;
     case 0xb:
-        dRate = 0.64;
-        break;
+        return 0.64;
     case 0xc:
-        dRate = 0.84;
-        break;
+        return 0.84;
     case 0xd:
-        dRate = 1.12;
-        break;
+        return 1.12;
     case 0xe:
-        dRate = 1.5;
-        break;
+        return 1.5;
     case 0xf:
-        dRate = 2.0;
-        break;
-    default:
-        dRate = 0.0;
+        return 2.0;
     }
-    return dRate;
+    return 0.0;
 }
 
 // @0x14053f750
 bool CItemData::FUN_14053f750(long long nParam)
 {
-    bool bResult;
     if ((nParam == 0x1b || nParam == 0x1c) && FUN_14053d760())
-        bResult = true;
-    else
-        bResult = FUN_14053f7c0() == nParam;
-    return bResult;
+        return true;
+    return FUN_14053f7c0() == nParam;
 }
 
 // @0x14053f7c0
 int CItemData::FUN_14053f7c0()
 {
-    int nResult;
     switch (FUN_14053c620())
     {
     case 0xc:
     case 0x14:
-        nResult = 0x1a;
-        break;
+        return 0x1a;
+    case 0x12:
+    case 0x13:
+        return 0x19;
     case 0xd:
     case 0xe:
     case 0xf:
@@ -1918,19 +1861,11 @@ int CItemData::FUN_14053f7c0()
     case 0x15:
     case 0x16:
     case 0x29:
-        nResult = 0x14;
-        break;
-    case 0x12:
-    case 0x13:
-        nResult = 0x19;
-        break;
-    default:
-        nResult = -1;
-        break;
+        return 0x14;
     case 0x28:
-        nResult = 0x18;
+        return 0x18;
     }
-    return nResult;
+    return -1;
 }
 
 // @0x14053f870
@@ -2019,20 +1954,26 @@ int FUN_14053fac0(int nItemId)
 }
 
 // @0x14053fb40
-bool FUN_14053fb40(int nItemId)
+int FUN_14053fb40(int nItemId)
 {
     MS2Ptr<CItemData> pItem = FUN_14053f870(nItemId);
     if (pItem.IsNull())
-        return false;
+        return 0;
     return pItem->FUN_14053e670();
 }
 
 // @0x14053fbc0
-bool FUN_14053fbc0(int nId)
+int FUN_14053fbc0(int nId)
 {
-    if (nId < 0x82 || (0x83 < nId && nId != 0x3ed && nId != 0x3ef))
-        return false;
-    return true;
+    switch (nId)
+    {
+    case 0x82:
+    case 0x83:
+    case 0x3ed:
+    case 0x3ef:
+        return 1;
+    }
+    return 0;
 }
 
 // @0x14053fc10
@@ -2280,6 +2221,7 @@ ItemLimit::~ItemLimit()
 {
 }
 
+// MS2-FUNCTIONAL: the exe dtor has no vftable store (an implicit dtor), but the ctor lives in itemdatastruct.cpp, so an implicit dtor would not be emitted here; the member dtors run in the same order
 // @0x140540e20
 ItemModelData::~ItemModelData()
 {

@@ -4,11 +4,13 @@
 #define MS2_THIS_FILE ""
 #include "ms2/placeholder/ms2stdafx.h"
 #include "ms2/placeholder/nmobjects.h"
+#include "ms2/placeholder/nmstream.h"
+#include "ms2/placeholder/nmencoder.h"
 #include "ms2/ms2recover.h"
 
 extern int FUN_1415fb700(const void*);
 extern int FUN_1415fb750(void*);
-extern int FUN_1415fb6d0(void*);
+extern int FUN_1415fb6d0(CNMSerializableDecoder*);
 extern void FUN_1415f9990(void*);
 extern void* FUN_14156bcb0(void*, void*, void*);
 extern void FUN_14156bd50(void*);
@@ -22,11 +24,8 @@ CNMOpenGameSummaryFunc::CNMOpenGameSummaryFunc() : CNMFunc(0x8021, 1, 0, 0)
 // @0x141595ac0
 unsigned int CNMOpenGameSummaryFunc::EncodeFramed(CNMStream* pStream)
 {
-    alignas(8) unsigned char encoder[0x18];
-    FUN_14156bcb0(encoder, pStream, this);
-    const auto result = Encode(reinterpret_cast<CNMEncoder*>(encoder), pStream);
-    FUN_14156bd50(encoder);
-    return result;
+    CNMSerializableEncoder encoder(pStream, this);
+    return CNMOpenGameSummaryFunc::Encode(reinterpret_cast<CNMEncoder*>(&encoder), pStream);
 }
 
 // MS2-FUNCTIONAL: same format branch and serializer slots; direct calls replace the original indirect dispatch.
@@ -34,10 +33,8 @@ unsigned int CNMOpenGameSummaryFunc::EncodeFramed(CNMStream* pStream)
 unsigned int CNMOpenGameSummaryFunc::EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream)
 {
     if (m_bFormat == 1)
-        Encode(pEncoder, pStream);
-    else
-        EncodeFramed(pStream);
-    return 0;
+        return CNMOpenGameSummaryFunc::Encode(pEncoder, pStream);
+    return CNMOpenGameSummaryFunc::EncodeFramed(pStream);
 }
 
 // MS2-FUNCTIONAL: base fields and final encoder marker match; direct helper calls differ in callee sequence.
@@ -54,13 +51,10 @@ unsigned int CNMOpenGameSummaryFunc::Encode(CNMEncoder* pEncoder, CNMStream* pSt
 // @0x141595bd0
 unsigned int CNMOpenGameSummaryFunc::DecodeFramed(CNMStream* pStream)
 {
-    alignas(8) unsigned char decoder[0x38];
-    FUN_14156bcb0(decoder, pStream, this);
-    unsigned int result = 0;
-    if (FUN_1415fb750(decoder))
-        result = Decode(reinterpret_cast<CNMSerializableDecoder*>(decoder), pStream);
-    FUN_14156bd50(decoder);
-    return result;
+    CNMSerializableDecoder decoder(pStream, this);
+    if (FUN_1415fb750(&decoder) == 0)
+        return 0;
+    return CNMOpenGameSummaryFunc::Decode(&decoder, pStream);
 }
 
 // MS2-FUNCTIONAL: the format check chooses the same direct or framed decode path.
@@ -68,10 +62,8 @@ unsigned int CNMOpenGameSummaryFunc::DecodeFramed(CNMStream* pStream)
 unsigned int CNMOpenGameSummaryFunc::DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream)
 {
     if (FUN_1415fb6d0(pDecoder) == 2)
-        DecodeFramed(pStream);
-    else
-        Decode(pDecoder, pStream);
-    return 0;
+        return CNMOpenGameSummaryFunc::DecodeFramed(pStream);
+    return CNMOpenGameSummaryFunc::Decode(pDecoder, pStream);
 }
 
 // MS2-FUNCTIONAL: base decode, status read and helper side effects are recovered; the original method returns void.
@@ -81,7 +73,7 @@ unsigned int CNMOpenGameSummaryFunc::Decode(CNMSerializableDecoder* pDecoder, CN
     CNMFunc::DecodeDispatch(pDecoder, pStream);
     (void)FUN_1415fb700(this);
     (void)FUN_1415fb750(pDecoder);
-    return 0;
+    return FUN_1415fb750(pDecoder);
 }
 
 // MS2-PIN: ??0CNMOpenGameSummaryFunc@@QEAA@XZ 0x141595a70

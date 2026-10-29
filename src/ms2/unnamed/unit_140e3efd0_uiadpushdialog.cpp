@@ -95,7 +95,7 @@ class Unk_AdWorld {
 public:
     void FUN_140d543c0(int n);
     bool FUN_140d5b370(MS2Ptr<Unk_AdMarketItem> item);
-    MS2Ptr<Unk_AdMarketItem> FUN_140d578d0(const Unk_AdSn& id);
+    MS2Ptr<Unk_AdMarketItem> FUN_140d578d0(Unk_AdSn id);
 };
 UIAdPushDialog* FUN_140d61c00(eUIClassID nClass);
 void FUN_1409e3190(ASTooltip* p, Unk_AdItemInfo* pInfo, bool b);
@@ -115,6 +115,7 @@ Unk_AdPlayerMgr* FUN_1403ed2d0();
 Unk_AdActor* FUN_141bd0cc0(Unk_AdPlayerMgr* pMgr);
 void* FUN_14041beb0();
 int FUN_1408d7e60(void* p, unsigned short n);
+struct Unk_AdLevelView { virtual void Unk_Slot0(); virtual void Unk_Slot1(); virtual void Unk_Slot2(); virtual void Unk_Slot3(); virtual void Unk_Slot4(); virtual void Unk_Slot5(); virtual void Unk_Slot6(); virtual void Unk_Slot7(); virtual void Unk_Slot8(); virtual void Unk_Slot9(); virtual void Unk_Slot10(); virtual void Unk_Slot11(); virtual void Unk_Slot12(); virtual void Unk_Slot13(); virtual void Unk_Slot14(); virtual void Unk_Slot15(); virtual void Unk_Slot16(); virtual void Unk_Slot17(); virtual void Unk_Slot18(); virtual void Unk_Slot19(); virtual void Unk_Slot20(); virtual void Unk_Slot21(); virtual void Unk_Slot22(); virtual void Unk_Slot23(); virtual void Unk_Slot24(); virtual void Unk_Slot25(); virtual void Unk_Slot26(); virtual void Unk_Slot27(); virtual void Unk_Slot28(); virtual void Unk_Slot29(); virtual void Unk_Slot30(); virtual void Unk_Slot31(); virtual void Unk_Slot32(); virtual void Unk_Slot33(); virtual void Unk_Slot34(); virtual void Unk_Slot35(); virtual void Unk_Slot36(); virtual void Unk_Slot37(); virtual void Unk_Slot38(); virtual void Unk_Slot39(); virtual void Unk_Slot40(); virtual void Unk_Slot41(); virtual void Unk_Slot42(); virtual void Unk_Slot43(); virtual void Unk_Slot44(); virtual void Unk_Slot45(); virtual void Unk_Slot46(); virtual void Unk_Slot47(); virtual void Unk_Slot48(); virtual void Unk_Slot49(); virtual void Unk_Slot50(); virtual void Unk_Slot51(); virtual void Unk_Slot52(); virtual void Unk_Slot53(); virtual void Unk_Slot54(); virtual void Unk_Slot55(); virtual void Unk_Slot56(); virtual void Unk_Slot57(); virtual void Unk_Slot58(); virtual void Unk_Slot59(); virtual void Unk_Slot60(); virtual void Unk_Slot61(); virtual void Unk_Slot62(); virtual void Unk_Slot63(); virtual void Unk_Slot64(); virtual void Unk_Slot65(); virtual void Unk_Slot66(); virtual void Unk_Slot67(); virtual void Unk_Slot68(); virtual void Unk_Slot69(); virtual void Unk_Slot70(); virtual void Unk_Slot71(); virtual void Unk_Slot72(); virtual void Unk_Slot73(); virtual void Unk_Slot74(); virtual void Unk_Slot75(); virtual void Unk_Slot76(); virtual void Unk_Slot77(); virtual unsigned short vfunc_78(); };   // the local player: the level (slot 78, +0x270) returns a word
 class Unk_140e45740 { public: int FUN_1422e6bf0(UIDialog* p, int n); void FUN_1422e6d00(int n); };
 UIObject* FUN_140c9b540(int nClass);
 UIObject* FUN_140ce8270(int nClass);
@@ -128,7 +129,7 @@ CStringA FUN_1412755f0();
 CStringA FUN_141275640();
 CString FUN_14038f6d0(const CString&, const char*);
 CStringA FUN_140cc2a00(const CStringA& strRoot, const CStringA& strFile);   // path join
-bool FUN_140164830(const CStringW& a, const CStringW& b);
+bool FUN_140164830(const CStringW& a, const CStringW& b) throw();   // the exe caller keeps no unwind state
 bool FUN_140e45240(const CStringW& s, const char* c);
 extern Unk_140e45740* DAT_143ac5d88;
 bool FUN_1409c1720(const Scaleform::GFx::Value& v);
@@ -140,7 +141,7 @@ int FUN_1422e6310(ASDisplayObject* p);
 int FUN_1422e6270(ASDisplayObject* p);
 int FUN_1422c2510(ASMovieClip* p, double* pX, void* pY);
 void FUN_1422c8120(ASMovieClip* p, bool b);
-void FUN_1407cba60(AScript* p, const CString& szName, CStringA v);
+void FUN_1407cba60(AScript* p, const char* szName, CStringA v);
 void FUN_1407cbbe0(AScript* p, const char* szName, bool v);
 void FUN_1407cb9c0(AScript* p, const char* szName, int v);
 // Bit flags of the XML/refresh state (m_nFlags): 1 default loaded, 2 my-pc complete, 4 swf loaded.
@@ -186,7 +187,7 @@ bool FUN_140870fc0(TiXmlDocument* pDoc, const char* szFile, int n);     // LoadF
 void FUN_140870cf0(TiXmlDocument* pDst, TiXmlDocument* pSrc);           // copy
 int FUN_1408732e0(Unk_AdXmlNode* pNode, const char* szName, __int64& v);
 int FUN_1408730a0(Unk_AdXmlNode* pNode, const char* szName, bool& v);
-void FUN_1408744b0(Unk_AdXmlNode* pNode, const char* szGroup, const char* szName, float f, int bCreate);
+void FUN_1408744b0(Unk_AdXmlNode* pNode, const char* szGroup, const char* szName, float f, bool bCreate);
 void FUN_140874210(Unk_AdXmlNode* pNode, const char* szGroup, const char* szName, float* pf);
 void FUN_1408740a0(Unk_AdXmlNode* pNode, const char* szName, const CStringW& v);
 void FUN_140873bc0(Unk_AdXmlNode* pNode, const char* szName, bool v);
@@ -241,31 +242,29 @@ int UIAdPushDialog::vfunc_65()
 }
 
 // @0x140e3f450
-// MS2-FUNCTIONAL: behaviour-equivalent; branch/temporary layout differs from the exe
 void UIAdPushDialog::vfunc_72()
 {
     UIDialog::vfunc_72();
-    if (!(m_30 == 0) && !m_entities.IsEmpty())
+    if (m_30 == 0)
+        return;
+    if (m_entities.IsEmpty())
+        return;
+    if (FUN_1418ffe80(m_nShowState, 1))
+        FixPosition();
+    if (!m_tick.FUN_140268870(1000))
+        return;
+    POSITION pos = m_entities.GetHeadPosition();
+    while (pos)
     {
-        if (FUN_1418ffe80(m_nShowState, 1))
-            FixPosition();
-        if (m_tick.FUN_140268870(1000))
-        {
-            POSITION pos = m_entities.GetHeadPosition();
-            while (pos)
-            {
-                POSITION cur = pos;
-                m_entities.GetNext(pos);
-                AdPushEntityBase* p = m_entities.GetValueAt(cur);
-                if (p && p->FUN_140e42580())
-                    p->vfunc_9();
-            }
-        }
+        POSITION cur = pos;
+        m_entities.GetNext(pos);
+        AdPushEntityBase* p = m_entities.GetValueAt(cur);
+        if (p && p->FUN_140e42580())
+            p->vfunc_9();
     }
 }
 
 // @0x140e3f590
-// MS2-FUNCTIONAL: behaviour-equivalent; branch/temporary layout differs from the exe
 int UIAdPushDialog::vfunc_4()
 {
     bool bSaved = false;
@@ -280,18 +279,20 @@ int UIAdPushDialog::vfunc_4()
             float x = 0.0f, y = 0.0f;
             dlg->FUN_1422c0f60(&x, &y);
             CStringA strKey("limitedbundle");
-            FUN_1408744b0(pRoot, strKey, "rateX", x / (float)nWidth, 1);
-            FUN_1408744b0(pRoot, strKey, "rateY", y / (float)nHeight, 1);
-            bSaved = FUN_1408710c0(&m_xmlSave, GetStatePath());
+            const CStringA& rKey = strKey;
+            FUN_1408744b0(pRoot, rKey, "rateX", x / (float)nWidth, true);
+            FUN_1408744b0(pRoot, rKey, "rateY", y / (float)nHeight, true);
+            bool bOk = FUN_1408710c0(&m_xmlSave, GetStatePath());
+            bSaved = bSaved | bOk;
         }
     }
-    if (FUN_14081b310(&m_xmlAccountSave))
+    Unk_AdXmlNode* pAccountRoot = FUN_14081b310(&m_xmlAccountSave);
+    if (pAccountRoot)
     {
         Unk_AdXmlNode* pAccount = FUN_14081b310(&m_xmlAccountSave);
         if (pAccount)
         {
-            __int64 tNow = FUN_140869440();
-            CMsTime now(tNow);
+            CMsTime now(FUN_140869440());
             for (Unk_AdXmlNode* pNode = FUN_140345b40(pAccount); pNode;)
             {
                 Unk_AdXmlNode* pCur = pNode;
@@ -299,11 +300,14 @@ int UIAdPushDialog::vfunc_4()
                 __int64 nSaleEnd = 0;
                 FUN_1408732e0(pCur, "saleEndTime", nSaleEnd);
                 CMsTime saleEnd(nSaleEnd);
-                if (nSaleEnd != 0 && FUN_1406c4cc0(saleEnd, now))
+                if (nSaleEnd == 0)
+                    continue;
+                if (FUN_1406c4cc0(saleEnd, now))
                     FUN_14086e580(pAccount, pCur);
             }
         }
-        bSaved |= FUN_1408710c0(&m_xmlAccountSave, GetAccountStatePath());
+        bool bAccountOk = FUN_1408710c0(&m_xmlAccountSave, GetAccountStatePath());
+        bSaved = bSaved | bAccountOk;
     }
     FUN_14086ddc0(&m_xmlSave);
     FUN_14086ddc0(&m_xmlLoaded);
@@ -313,7 +317,6 @@ int UIAdPushDialog::vfunc_4()
 }
 
 // @0x140e3f9b0
-// MS2-FUNCTIONAL: behaviour-equivalent; branch/temporary layout differs from the exe
 int UIAdPushDialog::vfunc_5()
 {
     FUN_14086ddc0(&m_xmlLoaded);
@@ -328,39 +331,37 @@ int UIAdPushDialog::vfunc_5()
         {
             float rateX = 0.0f, rateY = 0.0f;
             CStringA strKey("limitedbundle");
-            FUN_140874210(pNode, strKey, "rateX", &rateX);
-            FUN_140874210(pNode, strKey, "rateY", &rateY);
+            const CStringA& rKey = strKey;
+            FUN_140874210(pNode, rKey, "rateX", &rateX);
+            FUN_140874210(pNode, rKey, "rateY", &rateY);
             unsigned nWidth = 0, nHeight = 0;
             FUN_14025e7a0()->FUN_1422b06e0(FUN_1422db730(), &nWidth, &nHeight);
-            dlg->FUN_1422c00f0((float)nWidth * rateX, (float)nHeight * rateY);
+            float fX = (float)nWidth * rateX;
+            float fY = (float)nHeight * rateY;
+            dlg->FUN_1422c00f0(fX, fY);
         }
         m_78 = 1;
     }
     if (FUN_14081b310(&m_xmlSave))
         FUN_14086ddc0(&m_xmlSave);
-    TiXmlElement* pElem = new TiXmlElement(GetTypeName());
-    FUN_14086e090(&m_xmlSave, pElem);
+    FUN_14086e090(&m_xmlSave, new TiXmlElement(GetTypeName()));
     FUN_140870fc0(&m_xmlAccountLoaded, GetAccountStatePath(), 0);
     if (FUN_14081b310(&m_xmlAccountSave))
         FUN_14086ddc0(&m_xmlAccountSave);
     if (FUN_14081b310(&m_xmlAccountLoaded))
         FUN_140870cf0(&m_xmlAccountSave, &m_xmlAccountLoaded);
     else
-    {
-        TiXmlElement* pAccountElem = new TiXmlElement(GetTypeName());
-        FUN_14086e090(&m_xmlAccountSave, pAccountElem);
-    }
+        FUN_14086e090(&m_xmlAccountSave, new TiXmlElement(GetTypeName()));
     return 1;
 }
 
 // @0x140e3ff00
-// MS2-FUNCTIONAL: behaviour-equivalent; branch/temporary layout differs from the exe
 void UIAdPushDialog::OnLoadComplete()
 {
     m_limitedBundle = m_30->FUN_140e159f0<ASDialog>("m_limitedBundle");
     UIDialog::OnLoadComplete();
     if (m_limitedBundle.get())
-        static_cast<ASEventDispatcher*>(m_limitedBundle.get())->FUN_1422c3600(CString("dirtyPos"), Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIAdPushDialog::OnDirtyPos), false, 0, 0, (void*)0);
+        m_limitedBundle->FUN_1422c3600("dirtyPos", Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIAdPushDialog::OnDirtyPos), false, 0, 0, (void*)0);
     Refresh(4);
     FUN_140939a10()->FUN_140da4e40(L"NotifyGameEventChanged", Delegate<void(NotifyObject*)>(this, &UIAdPushDialog::OnNotifyGameEventChanged));
 }
@@ -413,18 +414,20 @@ void UIAdPushDialog::vfunc_43()
 }
 
 // @0x140e40550
-// MS2-FUNCTIONAL: behaviour-equivalent; branch/temporary layout differs from the exe
 void UIAdPushDialog::vfunc_44(int a1, int a2, int a3, int* pWidth, int* pHeight)
 {
-    if (FUN_1422dc430() != 0 && !(m_limitedBundle == 0))
+    if (FUN_1422dc430() == 0)
+        return;
+    if (m_limitedBundle == 0)
+        return;
     {
         MS2Ptr<ASDisplayObject> root = FUN_1422dba50();
         if (root.get())
             root->vfunc_2(5, 0, 0);
-        m_limitedBundle->vfunc_2(a1, a2, a3);
-        *pWidth = FUN_1422e6310(m_limitedBundle.get());
-        *pHeight = FUN_1422e6270(m_limitedBundle.get());
     }
+    m_limitedBundle->vfunc_2(a1, a2, a3);
+    *pWidth = FUN_1422e6310(m_limitedBundle.get());
+    *pHeight = FUN_1422e6270(m_limitedBundle.get());
 }
 
 // @0x140e40690
@@ -435,10 +438,9 @@ void UIAdPushDialog::vfunc_67()
 }
 
 // @0x140e406c0
-// MS2-FUNCTIONAL: behaviour-equivalent; branch/temporary layout differs from the exe
 bool UIAdPushDialog::AddBundle(MS2Ptr<Unk_AdMarketItem> item, int n4c, int n50, bool bMinimized)
 {
-    if (item == 0 || item->m_nB8 != 3)
+    if (item == 0 || item->FUN_1406a46e0() != 3)
         return false;
     if (item->m_n124 == 0)
         return false;
@@ -453,7 +455,7 @@ bool UIAdPushDialog::AddBundle(MS2Ptr<Unk_AdMarketItem> item, int n4c, int n50, 
     bundle->m_n4c = n4c;
     bundle->m_bMinimized = bMinimized;
     m_sns.insert(item->m_nSn);
-    m_pending.SetAt(nId, MS2Ptr<AdPushEntityBase>(bundle.get()));
+    m_pending.SetAt(nId, bundle.get());
     return true;
 }
 
@@ -485,14 +487,12 @@ bool UIAdPushDialog::RemoveBundle(MS2Ptr<AdPushEntityLimitedBundle> bundle)
 }
 
 // @0x140e40b20
-// MS2-FUNCTIONAL: behaviour-equivalent; branch/temporary layout differs from the exe
 bool UIAdPushDialog::Refresh(unsigned nFlags)
 {
     m_nFlags |= nFlags;
     if ((m_nFlags & 2) == 0)
     {
-        Unk_AdPlayerMgr* pPlayer = FUN_1403ed2d0();
-        Unk_AdActor* pActor = FUN_141bd0cc0(pPlayer);
+        Unk_AdActor* pActor = FUN_141bd0cc0(FUN_1403ed2d0());
         if (pActor && pActor->FUN_14123bea0() == 1)
             m_nFlags |= 2;
     }
@@ -522,42 +522,43 @@ bool UIAdPushDialog::Refresh(unsigned nFlags)
 }
 
 // @0x140e40de0
-// MS2-FUNCTIONAL: behaviour-equivalent; branch/temporary layout differs from the exe
 void UIAdPushDialog::UpdateBundles(MS2Ptr<Unk_AdMarketItem> item)
 {
-    if (!(m_30 == 0) && !m_entities.IsEmpty() && !(item == 0))
+    if (m_30 == 0)
+        return;
+    if (m_entities.IsEmpty())
+        return;
+    if (item == 0)
+        return;
+    for (POSITION pos = m_entities.GetHeadPosition(); pos; m_entities.GetNext(pos))
     {
-        POSITION pos = m_entities.GetHeadPosition();
-        while (pos)
-        {
-            MS2Ptr<AdPushEntityBase> entity = m_entities.GetValueAt(pos);
-            if (!(entity == 0) && entity->FUN_140e42540() == 1)
-            {
-                MS2Ptr<AdPushEntityLimitedBundle> bundle(dynamic_cast<AdPushEntityLimitedBundle*>(m_entities.GetValueAt(pos).get()));
-                if (bundle.get())
-                    bundle->Update(item);
-            }
-            m_entities.GetNext(pos);
-        }
+        MS2Ptr<AdPushEntityBase> entity = m_entities.GetValueAt(pos);
+        if (entity == 0 || entity->FUN_140e42540() != 1)
+            continue;
+        MS2Ptr<AdPushEntityLimitedBundle> bundle(dynamic_cast<AdPushEntityLimitedBundle*>(m_entities.GetValueAt(pos).get()));
+        if (bundle.get())
+            bundle->Update(item);
     }
 }
 
 // @0x140e41000
-// MS2-FUNCTIONAL: behaviour-equivalent; branch/temporary layout differs from the exe
 void UIAdPushDialog::OnNotifyGameEventChanged(NotifyObject* pNotify)
 {
     if (m_limitedBundle == 0)
         return;
     NotifyGameEventChanged* pEvent = dynamic_cast<NotifyGameEventChanged*>(pNotify);
-    if (pEvent && !FUN_140e45240(pEvent->m_eventName, "DTReward"))
+    if (pEvent)
     {
-        if (pEvent->m_type == 0)
+        if (FUN_140e45240(pEvent->m_eventName, "DTReward"))
+            return;
+        int type = pEvent->m_type;
+        if (type == 0)
         {
             Unk_AdActor* pActor = FUN_141bd0cc0(FUN_1403ed2d0());
-            if (pActor && FUN_1408d7e60(FUN_14041beb0(), pActor->vfunc_78()))
+            if (pActor && FUN_1408d7e60(FUN_14041beb0(), reinterpret_cast<Unk_AdLevelView*>(pActor)->vfunc_78()))
                 ShowOrRetry();
         }
-        else if (pEvent->m_type == 1)
+        else if (type == 1)
             ShowOrRetry();
     }
 }
@@ -656,11 +657,9 @@ CStringA UIAdPushDialog::GetStatePath()
 }
 
 // @0x140e41610
-// MS2-FUNCTIONAL: behaviour-equivalent; branch/temporary layout differs from the exe
 CStringA UIAdPushDialog::GetAccountStatePath()
 {
-    CStringA strFile;
-    StringFormat(strFile, "{0}{1}", GetTypeName(), "Account.xml");
+    CStringA strFile = StringFormat("{0}{1}", GetTypeName(), "Account.xml");
     return FUN_140cc2a00(FUN_141275640(), strFile);
 }
 
@@ -674,14 +673,13 @@ void UIAdPushDialog::OnNotifyCompleteMyPC(NotifyObject*)
 // the exe calls fabs out of line through the ucrt import (not the /Oi intrinsic)
 #pragma function(fabs)
 // @0x140e41720
-// MS2-FUNCTIONAL: behaviour-equivalent; branch/temporary layout differs from the exe
 MS2Ptr<ASMovieClip> UIAdPushDialog::AddBadge(MS2Ptr<AScript> value)
 {
     if (m_30 == 0 || value == 0)
         return MS2Ptr<ASMovieClip>(0);
     Scaleform::GFx::Value v = m_30->Invoke("addLimitedBundle", value->FUN_1422bb870());
     MS2Ptr<ASMovieClip> clip(new ASUIComponent(v, 2));   // exe 0x1422c7100, 0x88 bytes
-    if (clip == 0 || value->FUN_1422ba9a0())
+    if (clip == 0 || clip->FUN_1422ba9a0())
         return MS2Ptr<ASMovieClip>(0);
     return clip;
 }
@@ -745,57 +743,58 @@ void UIAdPushDialog::CloseAll()
 }
 
 // @0x140e41d80
-// MS2-FUNCTIONAL: behaviour-equivalent; branch/temporary layout differs from the exe
 void UIAdPushDialog::FindDirtyPos(float* pX, float* pY)
 {
     UIObject* pObj = FUN_140c9b540(0x4e29);
-    if (pObj && pObj->FUN_1422dc430() != 0)
-    {
-        MS2Ptr<ASMovieClip> clip(dynamic_cast<ASMovieClip*>(pObj->FUN_1422dba00().get()));
-        if (!(clip == 0) && !(m_limitedBundle == 0))
-        {
-            double dX = 0.0;
-            __int64 n = 0;
-            if (FUN_1422c2510(clip.get(), &dX, &n))
-            {
-                *pX = (float)(dX - (double)m_limitedBundle->FUN_1422c1340());
-                *pY = 0.0f;
-            }
-        }
-    }
+    if (pObj == 0)
+        return;
+    if (pObj->FUN_1422dc430() == 0)
+        return;
+    MS2Ptr<ASMovieClip> clip(dynamic_cast<ASMovieClip*>(pObj->FUN_1422dba00().get()));
+    if (clip == 0)
+        return;
+    if (m_limitedBundle == 0)
+        return;
+    double dX = 0.0;
+    double dY = 0.0;
+    if (FUN_1422c2510(clip.get(), &dX, &dY) == 0)
+        return;
+    int width = m_limitedBundle->FUN_1422c1340();
+    *pX = (float)(dX - width);
+    *pY = 0.0f;
 }
 
 // @0x140e41f30
-// MS2-FUNCTIONAL: behaviour-equivalent; branch/temporary layout differs from the exe
-bool UIAdPushDialog::FindMinimizePos(float* pX)
+bool UIAdPushDialog::FindMinimizePos(float* pX, float* pY)
 {
     if (m_limitedBundle == 0)
         return false;
     UIObject* pObj = FUN_140ce8270(0x4f01);
-    if (!pObj)
-        return false;
-    bool bLoaded = false;
-    if (pObj->FUN_1422dc430() != 0 && pObj->FUN_1422dba00().get())
-        bLoaded = true;
-    if (bLoaded)
+    if (pObj)
     {
-        MS2Ptr<ASMovieClip> clip(dynamic_cast<ASMovieClip*>(pObj->FUN_1422dba00().get()));
-        if (clip.get() && clip->FUN_1422c1340() > 10)
+        bool bLoaded = (pObj->FUN_1422dc430() != 0 && (pObj->FUN_1422dba00().get() ? true : false)) ? 1 : 0;
+        if (bLoaded)
         {
-            double dX = 0.0;
-            __int64 n = 0;
-            FUN_1422c2510(clip.get(), &dX, &n);
-            if ((float)fabs(dX - (double)*pX) < (float)clip->FUN_1422c1340())
+            MS2Ptr<ASMovieClip> clip(dynamic_cast<ASMovieClip*>(static_cast<AScript*>(pObj->FUN_1422dba00())));
+            if ((clip ? true : false) && clip->FUN_1422c1340() > 10)
             {
-                *pX = (float)dX;
-                return true;
+                double dX = 0.0;
+                double dY = 0.0;
+                FUN_1422c2510(clip.get(), &dX, &dY);
+                if ((float)fabs(dX - (double)*pX) < (float)clip->FUN_1422c1340())
+                {
+                    *pX = (float)dX;
+                    return true;
+                }
             }
         }
-        return false;
+        else
+        {
+            Unk_AdActor* pActor = FUN_141bd0cc0(FUN_1403ed2d0());
+            if (pActor && FUN_1408d7e60(FUN_14041beb0(), reinterpret_cast<Unk_AdLevelView*>(pActor)->vfunc_78()))
+                ShowOrRetry();
+        }
     }
-    Unk_AdActor* pActor = FUN_141bd0cc0(FUN_1403ed2d0());
-    if (pActor && FUN_1408d7e60(FUN_14041beb0(), pActor->vfunc_78()))
-        ShowOrRetry();
     return false;
 }
 
@@ -810,7 +809,6 @@ void UIAdPushDialog::OnDirtyPos(const Scaleform::GFx::FunctionHandler::Params&)
 }
 
 // @0x140e42250
-// MS2-FUNCTIONAL: behaviour-equivalent; branch/temporary layout differs from the exe
 void UIAdPushDialog::FixPosition()
 {
     if (m_limitedBundle == 0)
@@ -820,29 +818,29 @@ void UIAdPushDialog::FixPosition()
     FUN_1418ffef0(&m_nShowState, 1);
     bool bReset = false;
     int bFixed = (m_60 == 0 && m_78 != 0) ? 1 : 0;
-    if (bFixed == 0)
-        bReset = true;
-    else
+    if (bFixed != 0)
     {
         float x = dlg->FUN_1422c10a0();
         float y = dlg->FUN_1422c1110();
         float fMargin = 100.0f;
-        if (!(x <= (float)dlg->FUN_1422c1500() + fMargin && y <= (float)dlg->FUN_1422c1530() && fMargin <= x && 0.0f <= y))
+        if ((float)dlg->FUN_1422c1500() + fMargin < x || (float)dlg->FUN_1422c1530() < y || x < fMargin || y < 0.0f)
             bReset = true;
     }
+    else
+        bReset = true;
     if (bReset)
     {
-        float x = (float)dlg->FUN_1422c1500() * 0.83f;
+        float x = (float)(dlg->FUN_1422c1500() * 0.83);
         float y = 28.0f;
         FindDirtyPos(&x, &y);
-        FindMinimizePos(&x);
+        FindMinimizePos(&x, &y);
         dlg->FUN_1422c00f0(x, y);
     }
     else if (bRetry)
     {
         float x = 0.0f, y = 0.0f;
         dlg->FUN_1422c0f60(&x, &y);
-        if (FindMinimizePos(&x))
+        if (FindMinimizePos(&x, &y))
             dlg->FUN_1422c00f0(x, y);
     }
 }
@@ -874,17 +872,15 @@ void AdPushEntityLimitedBundle::Reset()
 }
 
 // @0x140e42740
-// MS2-FUNCTIONAL: behaviour-equivalent; branch/temporary layout differs from the exe
 void AdPushEntityLimitedBundle::Update(MS2Ptr<Unk_AdMarketItem> item)
 {
     if (item == 0)
         return;
-    if (m_item->m_nSn == item->m_nSn)
-    {
-        SetMarketItem(item);
-        if (item->m_info.FUN_1406a0cc0())
-            vfunc_3();
-    }
+    if (m_item->m_nSn != item->m_nSn)
+        return;
+    SetMarketItem(item);
+    if (item->m_info.FUN_1406a0cc0())
+        vfunc_3();
 }
 
 // @0x140e42830
@@ -894,15 +890,13 @@ void AdPushEntityLimitedBundle::OnMaximize(const Scaleform::GFx::FunctionHandler
 }
 
 // @0x140e42860
-// MS2-FUNCTIONAL: behaviour-equivalent; branch/temporary layout differs from the exe
 void AdPushEntityLimitedBundle::SetBadge(MS2Ptr<ASMovieClip> badge)
 {
     m_badge = badge;
-    if (!(m_badge == 0))
-    {
-        m_remain = m_badge->FUN_1409b4620("m_remainTime");
-        static_cast<ASEventDispatcher*>(m_badge.get())->FUN_1422c3600(CString("clickMaximize"), Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &AdPushEntityLimitedBundle::OnMaximize), false, 0, 0, (void*)0);
-    }
+    if (m_badge == 0)
+        return;
+    m_remain = m_badge->FUN_1409b4620("m_remainTime");
+    static_cast<ASEventDispatcher*>(m_badge.get())->FUN_1422c3600("clickMaximize", Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &AdPushEntityLimitedBundle::OnMaximize), false, 0, 0, (void*)0);
 }
 
 // @0x140e42a20
@@ -913,7 +907,6 @@ void AdPushEntityLimitedBundle::SetMinimized(bool b)
 }
 
 // @0x140e42a60
-// MS2-FUNCTIONAL: behaviour-equivalent; branch/temporary layout differs from the exe
 bool AdPushEntityLimitedBundle::UpdateRemainTime()
 {
     if (m_remain == 0 || m_item == 0)
@@ -921,7 +914,7 @@ bool AdPushEntityLimitedBundle::UpdateRemainTime()
     if (!m_bShowRemain)
         return true;
     ATL::CTimeSpan left(m_endTime - FUN_140869440());
-    if (left < ATL::CTimeSpan(0))
+    if (left < 0)
         return vfunc_3(), false;
     int nSeconds = left.GetSeconds();
     __int64 nHours = left.GetTotalHours();
@@ -931,7 +924,8 @@ bool AdPushEntityLimitedBundle::UpdateRemainTime()
     else
         strHours = StringFormat(L"{0}", nHours);
     long nMinutes = left.GetMinutes();
-    m_remain->FUN_1422c4cd0(StringFormat(L"{0}:{1:02d}:{2:02d}", strHours, nMinutes, nSeconds));
+    CStringW text = StringFormat(L"{0}:{1:02d}:{2:02d}", strHours, nMinutes, nSeconds);
+    m_remain->FUN_1422c4cd0(text);
     return true;
 }
 
@@ -949,7 +943,6 @@ void AdPushEntityLimitedBundle::SetMarketItem(MS2Ptr<Unk_AdMarketItem> p)
 }
 
 // @0x140e42d40
-// MS2-FUNCTIONAL: behaviour-equivalent; branch/temporary layout differs from the exe
 bool AdPushEntityLimitedBundle::vfunc_1()
 {
     int nRemain = m_item->m_nRemain;
@@ -964,7 +957,31 @@ bool AdPushEntityLimitedBundle::vfunc_1()
     UIAdPushDialog* pDlg = FUN_140d61c00(eUI_4f34);
     if (!pDlg)
         return false;
-    if (!m_bMinimized)
+    if (m_bMinimized)
+    {
+        if (m_badge == 0)
+        {
+            MS2Ptr<AScript> script(new AScript(2));
+            if (script.get())
+            {
+                Unk_AdItemInfo& info = m_item->m_info;
+                CStringA strIcon = info.FUN_1406a0160();
+                FUN_1407cba60(script.operator->(), s_strIconPath, CStringA(strIcon));
+                FUN_1407cbbe0(script.operator->(), "visible", true);
+                FUN_1407cb9c0(script.operator->(), "id", m_nId);
+                FUN_1407cbbe0(script.operator->(), "showRemainTime", m_bShowRemain);
+                MS2Ptr<ASMovieClip> badge = pDlg->AddBadge(script);
+                SetBadge(badge);
+            }
+        }
+        UpdateRemainTime();
+        if (m_dlg.get())
+        {
+            m_dlg->vfunc_68();
+            m_dlg = 0;
+        }
+    }
+    else
     {
         if (m_dlg == 0)
             m_dlg.AssignRaw(new UIAdPushLimitedDialog());
@@ -981,32 +998,10 @@ bool AdPushEntityLimitedBundle::vfunc_1()
                 return false;
         }
     }
-    else
-    {
-        if (m_badge == 0)
-        {
-            MS2Ptr<AScript> script(new AScript(2));
-            if (script.get())
-            {
-                CStringA strIcon = m_item->m_info.FUN_1406a0160();
-                FUN_1407cba60(script.get(), s_strIconPath, CStringA(strIcon));
-                FUN_1407cbbe0(script.get(), "visible", true);
-                FUN_1407cb9c0(script.get(), "id", m_nId);
-                FUN_1407cbbe0(script.get(), "showRemainTime", m_bShowRemain);
-                SetBadge(pDlg->AddBadge(script));
-            }
-        }
-        UpdateRemainTime();
-        if (m_dlg.get())
-        {
-            m_dlg->vfunc_68();
-            m_dlg = 0;
-        }
-    }
     if (m_badge.get())
     {
         m_badge->vfunc_4(m_bMinimized);
-        FUN_1422c8120(m_badge.get(), m_bMinimized);
+        FUN_1422c8120(m_badge.operator->(), m_bMinimized);
     }
     return true;
 }
@@ -1046,46 +1041,42 @@ void AdPushEntityLimitedBundle::vfunc_3()
 }
 
 // @0x140e43590
-// MS2-FUNCTIONAL: behaviour-equivalent; branch/temporary layout differs from the exe
 void AdPushEntityLimitedBundle::vfunc_4(Unk_AdXmlNode* pRoot, Unk_AdXmlNode* pNode)
 {
-    if (pNode)
+    if (pNode == 0)
+        return;
+    if ((m_item.get() ? true : false) && m_item->m_info.FUN_1406a0cc0())
     {
-        if (m_item.get() && m_item->m_info.FUN_1406a0cc0())
-        {
-            if (pRoot)
-                FUN_14086e580(pRoot, pNode);
-            return;
-        }
-        FUN_1408740a0(pNode, "marketSN", m_item->m_id.FUN_1409b0470());
-        FUN_140873bc0(pNode, "minimize", m_bMinimized);
-        FUN_140873eb0(pNode, "endTime", m_endTime);
-        __int64 nSaleEnd = FUN_140282020(m_item->m_info.FUN_1406a1a70(0));
-        FUN_140873eb0(pNode, "saleEndTime", nSaleEnd);
-        unsigned nWidth = 0, nHeight = 0;
-        FUN_14025e7a0()->FUN_1422b06e0(2, &nWidth, &nHeight);
-        FUN_1408744b0(pNode, "transform", "rateX_maximize", m_max.x / (float)nWidth, 1);
-        FUN_1408744b0(pNode, "transform", "rateY_maximize", m_max.y / (float)nHeight, 1);
+        if (pRoot)
+            FUN_14086e580(pRoot, pNode);
+        return;
     }
+    FUN_1408740a0(pNode, "marketSN", m_item->m_id.FUN_1409b0470());
+    FUN_140873bc0(pNode, "minimize", m_bMinimized);
+    FUN_140873eb0(pNode, "endTime", m_endTime);
+    __int64 nSaleEnd = FUN_140282020(m_item->m_info.FUN_1406a1a70(0));
+    FUN_140873eb0(pNode, "saleEndTime", nSaleEnd);
+    unsigned nWidth = 0, nHeight = 0;
+    FUN_14025e7a0()->FUN_1422b06e0(2, &nWidth, &nHeight);
+    FUN_1408744b0(pNode, "transform", "rateX_maximize", m_max.x / (float)nWidth, true);
+    FUN_1408744b0(pNode, "transform", "rateY_maximize", m_max.y / (float)nHeight, true);
 }
 
 // @0x140e437f0
-// MS2-FUNCTIONAL: behaviour-equivalent; branch/temporary layout differs from the exe
 void AdPushEntityLimitedBundle::vfunc_5(Unk_AdXmlNode* pNode)
 {
-    if (pNode)
-    {
-        FUN_1408730a0(pNode, "minimize", m_bMinimized);
-        FUN_1408732e0(pNode, "endTime", m_endTime);
-        FUN_1408732e0(pNode, "saleEndTime", m_saleEndTime);
-        unsigned nWidth = 0, nHeight = 0;
-        FUN_14025e7a0()->FUN_1422b06e0(2, &nWidth, &nHeight);
-        NiPoint2 rate = NiPoint2(efd::Point2::ZERO);
-        FUN_140874210(pNode, "transform", "rateX_maximize", &rate.x);
-        FUN_140874210(pNode, "transform", "rateY_maximize", &rate.y);
-        m_max.x = rate.x * (float)nWidth;
-        m_max.y = rate.y * (float)nHeight;
-    }
+    if (pNode == 0)
+        return;
+    FUN_1408730a0(pNode, "minimize", m_bMinimized);
+    FUN_1408732e0(pNode, "endTime", m_endTime);
+    FUN_1408732e0(pNode, "saleEndTime", m_saleEndTime);
+    unsigned nWidth = 0, nHeight = 0;
+    FUN_14025e7a0()->FUN_1422b06e0(2, &nWidth, &nHeight);
+    efd::Point2 rate = efd::Point2::ZERO;
+    FUN_140874210(pNode, "transform", "rateX_maximize", &rate.x);
+    FUN_140874210(pNode, "transform", "rateY_maximize", &rate.y);
+    m_max.x = rate.x * (float)nWidth;
+    m_max.y = rate.y * (float)nHeight;
 }
 
 // @0x140e43930
@@ -1146,7 +1137,6 @@ NiPoint2* AdPushEntityLimitedBundle::GetMaximizePos()
 }
 
 // @0x140e45240
-// MS2-FUNCTIONAL: behaviour-equivalent; branch/temporary layout differs from the exe
 bool FUN_140e45240(const CStringW& s, const char* c)
 {
     CStringW t(c, s.GetManager());
@@ -1159,37 +1149,28 @@ Unk_140e45740* FUN_140e45740()
     return DAT_143ac5d88;
 }
 
-// @0x140e44fb0
-// MS2-FUNCTIONAL: behaviour-equivalent; branch/temporary layout differs from the exe
-AdPushEntityBase::~AdPushEntityBase()
-{
-}
-
-// @0x140e44fd0
-// MS2-FUNCTIONAL: behaviour-equivalent; branch/temporary layout differs from the exe
-AdPushEntityLimitedBundle::~AdPushEntityLimitedBundle()
-{
-}
-
 // @0x140e47420
-// MS2-FUNCTIONAL: the CRT inline memmove_s, emitted here as a COMDAT copy that nothing in this unit calls
 unsigned long long FUN_140e47420(void* pDst, unsigned long long nDstSize, void* pSrc, unsigned long long nCount)
 {
     if (nCount == 0)
         return 0;
-    if (pDst == 0)
+    // _VALIDATE_RETURN_ERRCODE: each check keeps the !!(expr) int.
+    int dstOk = !!(pDst != 0);
+    if (!dstOk)
     {
         *_errno() = 0x16;
         _invalid_parameter_noinfo();
         return 0x16;
     }
-    if (pSrc == 0)
+    int srcOk = !!(pSrc != 0);
+    if (!srcOk)
     {
         *_errno() = 0x16;
         _invalid_parameter_noinfo();
         return 0x16;
     }
-    if (nDstSize < nCount)
+    int sizeOk = !!(nDstSize >= nCount);
+    if (!sizeOk)
     {
         *_errno() = 0x22;
         _invalid_parameter_noinfo();

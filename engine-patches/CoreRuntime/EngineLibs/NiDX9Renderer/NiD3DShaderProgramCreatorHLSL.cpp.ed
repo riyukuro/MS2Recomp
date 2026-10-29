@@ -46,3 +46,15 @@
     HRESULT hr = D3DXGetShaderConstantTableEx((const DWORD*)pvCode,
         D3DXCONSTTABLE_LARGEADDRESSAWARE, &pkConstantTable);
 .
+342,343c
+    // MS2: large-address-aware constant table
+    if (FAILED(D3DXGetShaderConstantTableEx(
+        (const DWORD*)(pkBuffer->GetBufferPointer()), D3DXCONSTTABLE_LARGEADDRESSAWARE,
+        &pkConstantTable)))
+.
+167,168c
+    // MS2: large-address-aware constant table
+    if (FAILED(D3DXGetShaderConstantTableEx(
+        (const DWORD*)(pkBuffer->GetBufferPointer()), D3DXCONSTTABLE_LARGEADDRESSAWARE,
+        &pkConstantTable)))
+.

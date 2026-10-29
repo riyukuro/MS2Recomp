@@ -10,6 +10,7 @@
 #include "ms2/placeholder/header_statics_a.h"
 #include "ms2/placeholder/asdisplayobject.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
+#include "pcbase.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 
@@ -33,7 +34,7 @@ int FUN_140bd09c0(void* pButton);                                       // which
 class Unk_EsSound { public: void FUN_140a1f970(const CString& strEvent, const CString& strArg); };
 Unk_EsSound* FUN_140d8ee90();
 // The feature flag table (FUN_140166410).
-class Unk_EsFeature { public: unsigned char FUN_14036d570(int id); };
+class Unk_EsFeature { public: bool FUN_14036d570(int id); };
 Unk_EsFeature* FUN_140166410();
 
 // The npc talk machinery, as in mypc.cpp.
@@ -59,7 +60,7 @@ Unk_MyPCSurvival* FUN_140967100();
 // The world / local player (FUN_1403ed2d0 / FUN_141bd0cc0); vfunc 65 (0x208) is "talk state".
 class Unk_EsWorld;
 Unk_EsWorld* FUN_1403ed2d0();
-void* FUN_141bd0cc0(Unk_EsWorld* pWorld);
+PCBase* FUN_141bd0cc0(Unk_EsWorld* pWorld);
 char* FUN_1401d3200();                                                  // the constants table
 int* FUN_1402056b0(char* pEntry);
 CStringW GetStringCommonByKey(const CStringW& str);
@@ -98,19 +99,19 @@ void UIEnchantSelectDialog::vfunc_67()
     m_type2Button = 0;
 }
 
-// MS2-FUNCTIONAL: OnLoadComplete: the exe keeps the MS2Ptr temps and delegate copies of each button hook (frame 0x198 vs 0x138)
 // @0x140e29410
 void UIEnchantSelectDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
     FUN_141925ec0("m_close");
     FUN_1419260d0("m_webGuideButton", 0);
-    if (FUN_140bc6d10("m_type1Button", m_type1Button).get() != 0)
+    Unk_EsButton* pType1 = FUN_140bc6d10("m_type1Button", m_type1Button).get();
+    if (pType1 != 0)
         m_type1Button->FUN_1422ce240(EsClickDelegate(this, &UIEnchantSelectDialog::FUN_140e29860), 1);
-    if (FUN_140bc6d10("m_type2Button", m_type2Button).get() != 0)
+    Unk_EsButton* pType2 = FUN_140bc6d10("m_type2Button", m_type2Button).get();
+    if (pType2 != 0)
         m_type2Button->FUN_1422ce240(EsClickDelegate(this, &UIEnchantSelectDialog::FUN_140e29860), 2);
-    MS2Ptr<ASMovieClip> recommend = FUN_140ba7930("m_recommendType2");
-    if (recommend.get() != 0)
+    if (MS2Ptr<ASMovieClip> recommend = FUN_140ba7930("m_recommendType2"))
         recommend->vfunc_4(FUN_140166410()->FUN_14036d570(0xfc));
     {
         CString strArg("enchant");
@@ -119,13 +120,12 @@ void UIEnchantSelectDialog::OnLoadComplete()
     }
 }
 
-// MS2-FUNCTIONAL: FUN_140e29860: string/handle temps and the vfunc call shape differ
 // @0x140e29860
 void UIEnchantSelectDialog::FUN_140e29860(const Scaleform::GFx::FunctionHandler::Params& params)
 {
     int nButton = FUN_140bd09c0(((Unk_EsParams*)&params)->m_pButton);
     CString strMode;
-    int nNpcId = 0;
+    unsigned int nNpcId = 0;
     if (nButton == 1)
     {
         strMode = "lottery";
@@ -136,19 +136,18 @@ void UIEnchantSelectDialog::FUN_140e29860(const Scaleform::GFx::FunctionHandler:
         strMode = "expMode";
         nNpcId = 0xa7dabe;
     }
-    void* pPc = FUN_141bd0cc0(FUN_1403ed2d0());
-    if (pPc != 0 && ((int (*)(void*))(*(void***)pPc)[0x208 / 8])(pPc) == 1)
+    PCBase* pPc = FUN_141bd0cc0(FUN_1403ed2d0());
+    if (pPc != 0 && pPc->vfunc_65() == 1)
     {
         FUN_1412751f0(GetStringCommonByKey(L"s_error_talk_battle_state_force_talk"), 1, 1);
         return;
     }
-    if (nNpcId != 0)
+    if (nNpcId > 0)
     {
-        Unk_MyPCTalkScript* pScript = FUN_140856820(nNpcId, *FUN_1402056b0(FUN_1401d3200() + 0x69a0)).FUN_14078f3a0();
-        if (pScript != 0)
+        if (Unk_MyPCTalkScript* pScript = FUN_140856820(nNpcId, *FUN_1402056b0(FUN_1401d3200() + 0x69a0)).FUN_14078f3a0())
         {
             FUN_140967100()->FUN_141b213f0(Unk_MyPCTalkScriptPtr(pScript), nNpcId, 2, 0);
-            FUN_140967100()->FUN_141b1eb90(CStringA(strMode), CStringA("ItemEnchantDialog"));
+            FUN_140967100()->FUN_141b1eb90(CStringA("ItemEnchantDialog"), CStringA(strMode));
         }
     }
     vfunc_67();

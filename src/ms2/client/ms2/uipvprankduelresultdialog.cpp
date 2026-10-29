@@ -77,7 +77,7 @@ CStringW FUN_1408116a0(int nId, const int& nArg);
 CStringW FUN_14093fa20(int nStringId, const CStringW& strName, const int& nCount);   // formatted message
 __int64 FUN_141656a80(PCBase* pPC);                                 // the character id
 struct Unk_PrdProfile { CString FUN_1416612e0(); }; // the profile key of the player
-CString FUN_141028be0(unsigned __int64 nId, CString strKey, int n, CString strExtra);   // the profile picture url
+CString FUN_141028be0(unsigned __int64 nId, const CString& strKey, int n, CString strExtra);   // the profile picture url
 CStringW FUN_14016a730(const char* sz, int nCodePage);
 void FUN_141276180(const CString& strSound, const CString& strArg); // play a UI sound
 int FUN_1418fc760(const char* szEvent, void* a2, int a3, void* a4);
@@ -162,7 +162,6 @@ void UIPvPRankDuelResultDialog::vfunc_43()
 }
 
 // @0x140f90b10
-// MS2-FUNCTIONAL: the trailing branch shape (jne/jmp) differs
 void UIPvPRankDuelResultDialog::FUN_140f90b10(CInPacket* pIn)
 {
     m_result.m_nWinnerId = pIn->ReadInt64();
@@ -178,15 +177,17 @@ void UIPvPRankDuelResultDialog::FUN_140f90b10(CInPacket* pIn)
     m_result.m_nMinR = pIn->ReadInt32();
     m_result.m_nSecR = pIn->ReadInt32();
     m_result.m_nRewardR = pIn->ReadInt32();
-    if (FUN_140ba28d0(&m_30, 0) == 0)
-        FUN_140f91120(&m_result);
+    if (FUN_140ba28d0(&m_30, 0) != 0)
+        return;
+    FUN_140f91120(&m_result);
 }
 
 // @0x140f90ec0
-// MS2-FUNCTIONAL: behaviour-equivalent (call-temp layout of the by-value CStrings differs)
 void UIPvPRankDuelResultDialog::FUN_140f90ec0(__int64 nCharId, bool bLeft)
 {
-    if (FUN_140a467d0(&m_30) || nCharId == 0)
+    if (FUN_140a467d0(&m_30))
+        return;
+    if (nCharId == 0)
         return;
     PCBase* pPC = FUN_1403ed2d0()->FUN_141bd1530(nCharId);
     if (pPC == 0)
@@ -199,7 +200,6 @@ void UIPvPRankDuelResultDialog::FUN_140f90ec0(__int64 nCharId, bool bLeft)
 }
 
 // @0x140f91120
-// MS2-FUNCTIONAL: behaviour-equivalent (frame / temporaries differ)
 void UIPvPRankDuelResultDialog::FUN_140f91120(Unk_PrdResult* pResult)
 {
     if (pResult->m_nWinnerId == 0)
@@ -211,32 +211,36 @@ void UIPvPRankDuelResultDialog::FUN_140f91120(Unk_PrdResult* pResult)
         return;
     bool bLeftWins = pResult->m_nCharIdL == pResult->m_nWinnerId;
     bool bRightWins = pResult->m_nCharIdR == pResult->m_nWinnerId;
-    CStringW strTextL;
-    if (pResult->m_nSecL > 0)
     {
-        strTextL = FUN_140811740(0x3ff, pResult->m_nMinL, pResult->m_nSecL);
+        CStringW strTextL;
+        if (pResult->m_nSecL > 0)
+        {
+            strTextL = FUN_140811740(0x3ff, pResult->m_nMinL, pResult->m_nSecL);
+        }
+        else
+        {
+            strTextL = FUN_1401ceea0(L"{0}", pResult->m_nMinL);
+            if (pResult->m_nSecL < 0)
+                strTextL += FUN_1408116a0(0x400, pResult->m_nSecL);
+        }
+        static_cast<Unk_PrdScript*>(m_30.operator->())->FUN_140f919d0("setLeftData", bLeftWins,
+            FUN_141656a80(pMe) == pResult->m_nCharIdL, pResult->m_nScoreL, pResult->m_strNameL, strTextL);
     }
-    else
     {
-        strTextL = FUN_1401ceea0(L"{0}", pResult->m_nMinL);
-        if (pResult->m_nSecL < 0)
-            strTextL += FUN_1408116a0(0x400, pResult->m_nSecL);
+        CStringW strTextR;
+        if (pResult->m_nSecR > 0)
+        {
+            strTextR = FUN_140811740(0x3ff, pResult->m_nMinR, pResult->m_nSecR);
+        }
+        else
+        {
+            strTextR = FUN_1401ceea0(L"{0}", pResult->m_nMinR);
+            if (pResult->m_nSecR < 0)
+                strTextR += FUN_1408116a0(0x400, pResult->m_nSecR);
+        }
+        static_cast<Unk_PrdScript*>(m_30.operator->())->FUN_140f919d0("setRightData", bRightWins,
+            FUN_141656a80(pMe) == pResult->m_nCharIdR, pResult->m_nScoreR, pResult->m_strNameR, strTextR);
     }
-    static_cast<Unk_PrdScript*>(m_30.operator->())->FUN_140f919d0("setLeftData", bLeftWins,
-        FUN_141656a80(pMe) == pResult->m_nCharIdL, pResult->m_nScoreL, pResult->m_strNameL, strTextL);
-    CStringW strTextR;
-    if (pResult->m_nSecR > 0)
-    {
-        strTextR = FUN_140811740(0x3ff, pResult->m_nMinR, pResult->m_nSecR);
-    }
-    else
-    {
-        strTextR = FUN_1401ceea0(L"{0}", pResult->m_nMinR);
-        if (pResult->m_nSecR < 0)
-            strTextR += FUN_1408116a0(0x400, pResult->m_nSecR);
-    }
-    static_cast<Unk_PrdScript*>(m_30.operator->())->FUN_140f919d0("setRightData", bRightWins,
-        FUN_141656a80(pMe) == pResult->m_nCharIdR, pResult->m_nScoreR, pResult->m_strNameR, strTextR);
     FUN_140f90ec0(pResult->m_nCharIdL, true);
     FUN_140f90ec0(pResult->m_nCharIdR, false);
     int nReward = 0;
@@ -254,14 +258,12 @@ void UIPvPRankDuelResultDialog::FUN_140f91120(Unk_PrdResult* pResult)
         strReward = L"";
     m_30->Invoke("setRewardText", strReward);
     Unk_PrdItemPtr spItem = FUN_14053f870(0x55d4a86);
-    if (spItem.FUN_140203c60() == 0)
-    {
-        FUN_141276180(s_strGuildBattleReward, "");
-    }
-    else
+    if (spItem.FUN_140203c60() != 0)
     {
         m_30->Invoke("setRewardIcon", spItem.FUN_1401b52a0()->FUN_14053fdd0());
+        return;
     }
+    FUN_141276180(s_strGuildBattleReward, "");
 }
 
 // @0x140f919d0

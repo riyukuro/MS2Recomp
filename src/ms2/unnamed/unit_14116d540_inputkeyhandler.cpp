@@ -54,7 +54,7 @@ Unk_KhNotices* FUN_140939a10();
 MS2InputService* FUN_140a58540();                           // TSingleton<MS2InputService>::GetInstance
 void FUN_1412751b0(const CStringW& text, int nType);        // chat/system line
 
-class Unk_KhTextures { public: NiTexturePtr FUN_141552f90(CString strPath, char nFlags); };   // loads (and caches) a texture file
+class Unk_KhTextures { public: NiTexturePtr FUN_141552f90(CString strPath, int nFlags); };   // loads (and caches) a texture file
 Unk_KhTextures* FUN_140a0afd0();
 class Unk_KhSkinView { public: void FUN_141047900(); };
 Unk_KhSkinView* FUN_140d89420(NiAVObject* pObject);
@@ -347,7 +347,6 @@ CStringA FUN_14116e030(void* pUnused)
 }
 
 // @0x14116e080
-// MS2-FUNCTIONAL: the exe calls NiFixedString ctor/dtor, GetExtraData, DynamicCast out of line and keeps its own temporaries; ours inlines them
 // Reloads the original base / control textures that the skin replacement stored as string extra data on the object
 // (extra data "OriginalBaseTexturePath" / "OriginalControlTexturePath"), puts them back into the texturing property
 // and drops the extra data.
@@ -356,21 +355,23 @@ bool FUN_14116e080(NiAVObject* pObject)
     NiTexturingProperty* pTexturing = NiDynamicCast(NiTexturingProperty, pObject->GetProperty(NiProperty::TEXTURING));
     if (pTexturing == 0)
         return false;
-    NiStringExtraData* pBase = NiDynamicCast(NiStringExtraData, pObject->GetExtraData(NiFixedString("OriginalBaseTexturePath")));
+    NiStringExtraData* pBase;
+    NiStringExtraData* pBaseDead = pBase = NiDynamicCast(NiStringExtraData, pObject->GetExtraData("OriginalBaseTexturePath"));
     if (pBase != 0)
     {
         NiTexturePtr spBase = FUN_140a0afd0()->FUN_141552f90(CString((const char*)pBase->GetValue()), 5);
         pTexturing->SetBaseTexture(spBase);
-        pObject->RemoveExtraData(NiFixedString("OriginalBaseTexturePath"));
+        pObject->RemoveExtraData("OriginalBaseTexturePath");
     }
-    NiStringExtraData* pControl = NiDynamicCast(NiStringExtraData, pObject->GetExtraData(NiFixedString("OriginalControlTexturePath")));
+    NiStringExtraData* pControl;
+    NiStringExtraData* pControlDead = pControl = NiDynamicCast(NiStringExtraData, pObject->GetExtraData("OriginalControlTexturePath"));
     if (pControl != 0)
     {
         NiTexturePtr spControl = FUN_140a0afd0()->FUN_141552f90(CString((const char*)pControl->GetValue()), 5);
         NiTexturingProperty::ShaderMap* pMap = new (efd::MemHint(efd::MemHint::NONE))
             NiTexturingProperty::ShaderMap(spControl, 0, (NiTexturingProperty::ClampMode)3, (NiTexturingProperty::FilterMode)2, 0);
         pTexturing->SetShaderMap(0, pMap);
-        pObject->RemoveExtraData(NiFixedString("OriginalControlTexturePath"));
+        pObject->RemoveExtraData("OriginalControlTexturePath");
     }
     pTexturing->SetShaderMap(1, 0);
     pTexturing->SetShaderMap(2, 0);

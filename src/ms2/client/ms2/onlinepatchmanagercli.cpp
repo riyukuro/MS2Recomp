@@ -94,61 +94,57 @@ COnlinePatchManagerCli::~COnlinePatchManagerCli()
 {
 }
 
-// MS2-FUNCTIONAL: behaviour-equivalent; the exe re-reads the stream vptr into a temp per call and has a larger frame (0x1a8)
 // @0x140a84960
 void FUN_140a84960(void* pManager, CInPacket& packet)
 {
-    COnlinePatchManagerCli* self = static_cast<COnlinePatchManagerCli*>(pManager);
-    CInputStream& stream = packet;
-    unsigned char type = stream.ReadUInt8();
+    unsigned char type = packet.ReadUInt8();
     if (type == 1) {
-        self->DeletePatchFiles("./DataPatch/");
+        static_cast<COnlinePatchManagerCli*>(pManager)->DeletePatchFiles("./DataPatch/");
         FUN_140714f90()->FUN_141538cb0();
     } else if (type == 2) {
         GetFileSystem()->FUN_140396d00("./DataPatch/");
-        self->ReloadTables();
+        static_cast<COnlinePatchManagerCli*>(pManager)->ReloadTables();
         FUN_140714f90()->FUN_141538cb0();
     } else if (type == 3) {
-        self->DeletePatchFiles("./DataPatch/");
-        self->CreatePatchDirectory("./DataPatch/");
-        self->m_contexts.clear();
-        self->m_files.clear();
-        int nCount = stream.ReadInt32();
+        static_cast<COnlinePatchManagerCli*>(pManager)->DeletePatchFiles("./DataPatch/");
+        static_cast<COnlinePatchManagerCli*>(pManager)->CreatePatchDirectory("./DataPatch/");
+        static_cast<COnlinePatchManagerCli*>(pManager)->m_contexts.clear();
+        static_cast<COnlinePatchManagerCli*>(pManager)->m_files.clear();
+        int nCount = packet.ReadInt32();
         for (int i = 0; i < nCount; i = i + 1) {
             MS2Ptr<COnlinePatchFileContext> spFile(new COnlinePatchFileContext);
-            spFile->m_strPath = stream.ReadUnicodeStringA();
-            spFile->m_nSize = stream.ReadInt64();
-            spFile->m_strDigest = stream.ReadString();
+            spFile->m_strPath = packet.ReadUnicodeStringA();
+            spFile->m_nSize = packet.ReadInt64();
+            spFile->m_strDigest = packet.ReadString();
             spFile->m_pData = new char[spFile->m_nSize];
-            self->m_contexts.insert(std::make_pair(spFile->m_strPath, spFile));
-            self->m_files.push_back(spFile->m_strPath);
+            static_cast<COnlinePatchManagerCli*>(pManager)->m_contexts.insert(std::make_pair(spFile->m_strPath, spFile));
+            static_cast<COnlinePatchManagerCli*>(pManager)->m_files.push_back(spFile->m_strPath);
         }
-        if (self->RequestNextFile() != 1) {
+        if (static_cast<COnlinePatchManagerCli*>(pManager)->RequestNextFile() != 1) {
             FUN_140714f90()->FUN_141538cb0();
         }
     } else if (type == 5) {
-        CString strPath = stream.ReadUnicodeStringA();
-        __int64 nOffset = stream.ReadInt64();
-        int nSize = stream.ReadInt32();
-        unsigned char bLast = stream.ReadUInt8();
-        MS2Ptr<COnlinePatchFileContext> spFile = self->FindFile(strPath);
+        CString strPath = packet.ReadUnicodeStringA();
+        __int64 nOffset = packet.ReadInt64();
+        int nSize = packet.ReadInt32();
+        unsigned char bLast = packet.ReadUInt8();
+        MS2Ptr<COnlinePatchFileContext> spFile = static_cast<COnlinePatchManagerCli*>(pManager)->FindFile(strPath);
         if (spFile.get() != 0) {
-            stream.ReadBytes(spFile->m_pData + nOffset, nSize);
+            packet.ReadBytes(spFile->m_pData + nOffset, nSize);
             spFile->m_nReceived += nSize;
-            unsigned __int64 nEnd = nOffset + nSize;
-            if (nEnd < spFile->m_nSize && bLast != 1) {
-                self->RequestFile(spFile.get());
-            } else {
-                CString strDone(self->m_files.front());
-                self->m_files.pop_front();
-                self->SaveFile("./DataPatch/", spFile);
-                if (self->m_files.size() == 0) {
-                    GetFileSystem()->FUN_140396d00("./DataPatch/");
-                    self->ReloadTables();
-                    FUN_140714f90()->FUN_141538cb0();
+            if ((unsigned __int64)(nOffset + nSize) >= spFile->m_nSize || bLast == 1) {
+                CString strDone(static_cast<COnlinePatchManagerCli*>(pManager)->m_files.front());
+                static_cast<COnlinePatchManagerCli*>(pManager)->m_files.pop_front();
+                static_cast<COnlinePatchManagerCli*>(pManager)->SaveFile("./DataPatch/", spFile);
+                if (static_cast<COnlinePatchManagerCli*>(pManager)->m_files.size() > 0) {
+                    static_cast<COnlinePatchManagerCli*>(pManager)->RequestNextFile();
                 } else {
-                    self->RequestNextFile();
+                    GetFileSystem()->FUN_140396d00("./DataPatch/");
+                    static_cast<COnlinePatchManagerCli*>(pManager)->ReloadTables();
+                    FUN_140714f90()->FUN_141538cb0();
                 }
+            } else {
+                static_cast<COnlinePatchManagerCli*>(pManager)->RequestFile(spFile.get());
             }
         }
     } else {
@@ -235,27 +231,28 @@ int COnlinePatchManagerCli::RequestFile(COnlinePatchFileContext* pFile)
     return 1;
 }
 
-// MS2-FUNCTIONAL: behaviour-equivalent; frame 0x10 smaller than the exe, no source form found
 // @0x140a855f0
 int COnlinePatchManagerCli::CreateDirectories(const char* pszRoot, std::string strPath)
 {
     DWORD nAttr = GetFileAttributesA(strPath.c_str());
-    if (nAttr == INVALID_FILE_ATTRIBUTES || (nAttr & FILE_ATTRIBUTE_DIRECTORY) == 0) {
-        static const std::string strSeparators("\\/");
-        nAttr = GetFileAttributesA(strPath.c_str());
-        if (nAttr == INVALID_FILE_ATTRIBUTES) {
-            size_t nPos = strPath.find_last_of(strSeparators);
-            if (nPos != std::string::npos) {
-                CreateDirectories(pszRoot, strPath.substr(0, nPos));
-            }
-            if (!CreateDirectoryA(strPath.c_str(), 0)) {
-                return 0;
-            }
-        } else {
-            bool bDirectory = (nAttr & FILE_ATTRIBUTE_DIRECTORY) != 0 || (nAttr & FILE_ATTRIBUTE_REPARSE_POINT) != 0;
-            if (!bDirectory) {
-                return 0;
-            }
+    if (nAttr != INVALID_FILE_ATTRIBUTES && (nAttr & FILE_ATTRIBUTE_DIRECTORY) != 0) {
+        return 1;
+    }
+    static const std::string strSeparators("\\/");
+    DWORD nPathAttr = GetFileAttributesA(strPath.c_str());
+    if (nPathAttr == INVALID_FILE_ATTRIBUTES) {
+        size_t nPos = strPath.find_last_of(strSeparators);
+        if (nPos != std::string::npos) {
+            CreateDirectories(pszRoot, strPath.substr(0, nPos));
+        }
+        BOOL bCreated = CreateDirectoryA(strPath.c_str(), 0);
+        if (bCreated == 0) {
+            return 0;
+        }
+    } else {
+        bool bDirectory = (nPathAttr & FILE_ATTRIBUTE_DIRECTORY) != 0 || (nPathAttr & FILE_ATTRIBUTE_REPARSE_POINT) != 0;
+        if (!bDirectory) {
+            return 0;
         }
     }
     return 1;

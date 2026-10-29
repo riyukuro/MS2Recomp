@@ -112,6 +112,8 @@ private:
 };
 void FUN_141610410(int nFrameLimit);
 class Unk_MsWorld { public: int FUN_141bd1a10(GameObject* pObject); };
+// The scene graph service as these callers see it: the exe passes the entity id by value (ms2scenegraphservice.h has const&).
+class Unk_MsSceneGraph { public: void FUN_1414f1ef0(egf::EntityID entityID); };
 Unk_MsWorld* FUN_1403ed2d0();
 int FUN_14028d260(float fTime);
 CStringW FUN_14016a730(const char* psz, int nCodePage);
@@ -137,7 +139,7 @@ static const efd::Category s_catAnimationChannel(efd::UniversalID::ECU_Any, 0xff
 // @0x1400f7b20
 static Unk_1402a9d70 s_unk1402a9d70(17, 0.75f, 0.25f, 2.25f, 10);
 
-static int s_143add400[8] = {0x032fd758, 0x00263000, 0x00263104, 0x032fdb20, 0x00263110, 0x002631a6, 0x032fd370, 0x002631b0};
+extern int DAT_143add400[];   // data_bss_game; NetworkService fills the 8 entries from the server (0x14153c63a)
 
 // @0x141472bc0
 int FUN_141472bc0()
@@ -426,23 +428,21 @@ void CMainSystem::FUN_141473730(bool bDisable)
     }
 }
 
-// MS2-FUNCTIONAL: FUN_1414f1ef0 takes the id by value in the exe (declared const& by its owning unit)
 // @0x1414737d0
 void CMainSystem::FUN_1414737d0(egf::Entity* pEntity)
 {
     if (pEntity)
     {
-        static_cast<MS2SceneGraphService*>(GetSceneGraphService())->FUN_1414f1ef0(egf::EntityID(pEntity->GetEntityID()));
-        ((egf::Scheduler*)FUN_1413f9810())->DestroyEntity(egf::EntityID(pEntity->GetEntityID()));
+        ((Unk_MsSceneGraph*)GetSceneGraphService())->FUN_1414f1ef0(pEntity->GetEntityID());
+        ((egf::Scheduler*)FUN_1413f9810())->DestroyEntity(pEntity->GetEntityID());
     }
 }
 
-// MS2-FUNCTIONAL: FUN_1414f1ef0 takes the id by value in the exe (declared const& by its owning unit)
 // @0x141473870
 void CMainSystem::FUN_141473870(egf::EntityID id)
 {
-    static_cast<MS2SceneGraphService*>(GetSceneGraphService())->FUN_1414f1ef0(egf::EntityID(id));
-    ((egf::Scheduler*)FUN_1413f9810())->DestroyEntity(egf::EntityID(id));
+    ((Unk_MsSceneGraph*)GetSceneGraphService())->FUN_1414f1ef0(id);
+    ((egf::Scheduler*)FUN_1413f9810())->DestroyEntity(id);
 }
 
 // @0x1414738f0
@@ -450,7 +450,7 @@ int CMainSystem::FUN_1414738f0(int nIndex)
 {
     if (nIndex >= 8)
         return 0;
-    return s_143add400[nIndex];
+    return DAT_143add400[nIndex];
 }
 
 // @0x141473920

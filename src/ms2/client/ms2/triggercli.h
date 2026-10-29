@@ -87,7 +87,7 @@ public:
     CStringW GetArgTemplate(CStringW strKey);                           // 0x14119a6b0 "#n#" -> "[Argn]"
     void SaveFile(const CString& strPath);                              // 0x14119a850
     void SaveDocument(TiXmlDocument* pDoc);                             // 0x14119a8c0
-    bool GetFirstError(CStringW& rText);                                // 0x14119aa10
+    int GetFirstError(CStringW& rText);                                 // 0x14119aa10
     int CheckObjects(std::vector<CStringW>& rErrors);                  // 0x14119ab70
     CStringW GetErrorText(int nError);                                  // 0x14119ae90
     StatePtr GetState(const CStringW& strName);                         // 0x14119afc0 (creates it when missing)

@@ -19,7 +19,7 @@ class RankDuelStatisticalData : public CPtred
 {
 public:
     RankDuelStatisticalData();                                      // 0x140dc1390
-    virtual ~RankDuelStatisticalData();                             // 0x140dc1500 (??_G 0x140dc1970)
+    // implicit: virtual ~RankDuelStatisticalData();                           // 0x140dc1500 (??_G 0x140dc1970)
     void FUN_14026b250(CInPacket& packet);                          // read the record
 
     MS2_LAYOUT_FRIEND;

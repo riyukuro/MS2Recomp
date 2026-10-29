@@ -92,8 +92,8 @@ public:
     void AddConditions(int nQuestId, ASObj& rOut);              // 0x141a9fab0
     int AddChapterQuests(MS2Ptr<CQuestData> spData, ASArray& rNodes);   // 0x141a9fe50
     void AddButtons(Unk_PayloadPtr<CQuest> spQuest, ASObj& rOut);       // 0x141aa02b0
-    void GetChapterIDs(ATL::CAtlArray<unsigned>& rOut);         // 0x141aa06f0
-    void CollectEpisodes(ATL::CAtlArray<unsigned>& rOut);       // 0x141aa07f0
+    void GetChapterIDs(ATL::CAtlArray<int>& rOut);              // 0x141aa06f0
+    void CollectEpisodes(ATL::CAtlArray<int>& rOut);            // 0x141aa07f0
     void GroupChapters(QuestGroups& rOut);                      // 0x141aa0a00
     void CollectRecommended(ATL::CAtlArray<MS2Ptr<CQuestData> >& rOut);   // 0x141aa0f80
     int IsSubTabOne();                                          // 0x141aa17b0

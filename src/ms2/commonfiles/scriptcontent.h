@@ -22,6 +22,7 @@ public:
     Unk_ScriptPtr(int) : p(0) {}
     Unk_ScriptPtr(T* value) : p(value) { AddRef(); }
     Unk_ScriptPtr(const Unk_ScriptPtr& o) : p(o.p) { AddRef(); }
+    Unk_ScriptPtr(Unk_ScriptPtr&& o) : p(o.p) { o.p = 0; }    // `return local;` moves (0x140859b90 for CTalkScript)
     ~Unk_ScriptPtr() { Release(); }
     Unk_ScriptPtr& operator=(int) { Release(); return *this; }
     Unk_ScriptPtr& operator=(T* value) { Unk_ScriptPtr temp(value); T* old=p; p=temp.p; temp.p=old; return *this; }

@@ -299,13 +299,13 @@ const NiRTTI DuplicatedAlphaController::ms_RTTI("DuplicatedAlphaController", &Ni
 // Copies pkSource (exact copy; the clone map maps its target to itself so the copy keeps the same target).
 DuplicatedAlphaController::DuplicatedAlphaController(NiSingleInterpController* pkSource)
 {
-    NiCloningProcess kCloning(0x25);
     NiObject* pkTarget = pkSource->GetTarget();
+    NiCloningProcess kCloning(0x25);
     kCloning.m_pkCloneMap->SetAt(pkTarget, pkTarget);
     kCloning.m_eCopyType = NiObjectNET::COPY_EXACT;
     kCloning.m_eDynamicEffectRelationBehavior = NiCloningProcess::CLONE_RELATION_NONE;
     kCloning.m_eAffectedNodeRelationBehavior = NiCloningProcess::CLONE_RELATION_NONE;
-    static_cast<DuplicatedAlphaController*>(pkSource)->NiSingleInterpController::CopyMembers(this, kCloning);
+    static_cast<DuplicatedAlphaController*>(pkSource)->NiAlphaController::CopyMembers(this, kCloning);
     m_fScale = 1.0f;
 }
 
@@ -513,10 +513,10 @@ void FUN_140a0b330(void* pObj, bool bOn, short sFlags);
 void* FUN_140a33f90(void* pObj);                                    // local transform
 void* FUN_1409478e0(void* pObj);                                    // world transform
 void FUN_140aacb60(void* pObj, const void* pXform);                 // SetLocalTransform
-const Vector3& FUN_140947900(void* pNode);                  // world translate
+void FUN_140aacb60(void* pObj, const NiTransform& kXform);          // the same, from a temporary
+const efd::Point3& FUN_140947900(void* pNode);              // world translate
 void* FUN_141024c90(void* pNode);                                   // world rotation
-void FUN_140a0b1f0(void* pRotation, float* pDirection);             // rotation -> facing direction
-void FUN_1402bd040(float* p);                                       // NiPoint3()
+void FUN_140a0b1f0(NiMatrix3* pRotation, efd::Point3* pDirection); // rotation -> facing direction
 void FUN_140194470(void* pDst, const void* pSrc);                   // point assign
 
 // The effect manager (singleton 0x1403ed280) and the world.
@@ -543,14 +543,17 @@ void* FUN_1409a5160(void* p);
 void FUN_141773a90(void* pRegistry, void* pNode);                   // register a model
 void FUN_141773cc0(void* pRegistry, void* pNode);                   // unregister a model
 
+// A NiString holder: its out-of-line default ctor and dtor run on the offset-0 member (the exe's mov rax / mov rcx,rax).
+struct Unk_NifStrCell { NiString m_s; Unk_NifStrCell(); Unk_NifStrCell(const Unk_NifStrCell& o); ~Unk_NifStrCell(); };   // 0x14154efd0 / 0x14154ef70 / 0x14154f250
+
 // NiStudioShaderContext::AddNifPath (NiStudioShaderContext.h): nif loading records the path each loaded node came from
 #ifndef MS2_HOOK_DLL
 // @0x14154ff90
 void NiStudioShaderContext::AddNifPath(NiAVObject* pkObject, const char* pszPath)
 {
-    NiString kPath;
-    kPath = pszPath;
-    m_kNifPaths.insert(std::pair<NiAVObject* const, NiString>(pkObject, kPath));
+    Unk_NifStrCell kPath;
+    kPath.m_s = pszPath;
+    m_kNifPaths.insert(std::pair<NiAVObject* const, NiString>(pkObject, kPath.m_s));
 }
 #endif
 // remember the nif path of the node
@@ -825,57 +828,47 @@ MS2_REPLACE_METHOD(0x1415496F0, CNifEffect, vfunc_3, 4315, 0xB8D13721);
 bool CNifEffect::vfunc_9()
 {
     float fNow = (float)FUN_1413f9850()->GetTime(0xe001001b);
-    if (m_fFadeStart <= fNow && fNow != m_fFadeStart)
+    if (fNow > m_fFadeStart)
     {
         float fScale = 0.0f;
-        if (!FUN_14028d470(m_fFadeTime, 0.0f))
-            fScale = ((m_fFadeStart + m_fFadeTime) - fNow) / m_fFadeTime;
+        if (FUN_14028d470(m_fFadeTime, 0.0f))
+            fScale = 0.0f;
         else
+            fScale = ((m_fFadeStart + m_fFadeTime) - fNow) / m_fFadeTime;
+        bool bDone = false;
+        if (fScale <= 0.0f)
+        {
             fScale = 0.0f;
-        bool bDone = fScale <= 0.0f;
-        if (bDone)
-            fScale = 0.0f;
+            bDone = true;
+        }
         for (unsigned i = 0; i < m_aAlphaCtrls.GetCount(); ++i)
             m_aAlphaCtrls[i]->SetScale(fScale);
         if (bDone)
             m_b2d = true;
     }
-    if (m_b2e)
+    if (m_b2e && m_spParam->m_bBipedLoop && m_fStartTime != 0.0f)
     {
-        if (m_spParam->m_bBipedLoop && m_fStartTime != 0.0f)
+        double dNow = FUN_14086d260()->FUN_141473280();
+        float fElapsed = (float)(dNow - m_fStartTime);
+        if (fElapsed >= m_fDuration)
         {
-            double dNow = FUN_14086d260()->FUN_141473280();
-            float fElapsed = (float)(dNow - (double)m_fStartTime);
-            if (m_fDuration <= fElapsed)
-            {
-                for (; m_fDuration <= fElapsed; fElapsed = fElapsed - m_fDuration)
-                {
-                }
-                FUN_141851f90(FUN_1409475d0(&m_spRoot), fElapsed);
-                m_fStartTime = (float)(dNow - (double)fElapsed);
-            }
+            while (fElapsed >= m_fDuration)
+                fElapsed = fElapsed - m_fDuration;
+            FUN_141851f90(FUN_1409475d0(&m_spRoot), fElapsed);
+            m_fStartTime = (float)(dNow - fElapsed);
         }
     }
     if (FUN_1409849b0(&m_spModel) != 0)
+        FUN_140aacb60(FUN_1409475f0(&m_spRoot),
+                      *static_cast<NiTransform*>(FUN_140a33f90(FUN_14098d0f0(&m_spModel))) * m_kXform);
+    if (m_spEffectObject != 0 && FUN_140aac3e0(&m_spRoot, 0))
     {
-        NiTransform kModel = *static_cast<NiTransform*>(FUN_140a33f90(FUN_14098d0f0(&m_spModel)));
-        NiTransform kLocal = kModel * m_kXform;
-        FUN_140aacb60(FUN_1409475f0(&m_spRoot), &kLocal);
-    }
-    if (m_spEffectObject)
-    {
-        if (FUN_140aac3e0(&m_spRoot, 0))
-        {
-            const Vector3& rPos = FUN_140947900(FUN_1409475f0(&m_spRoot));
-            efd::Point3 kPos(rPos.x, rPos.y, rPos.z);
-            m_spEffectObject->vfunc_19(kPos);
-            float aDir[4];
-            FUN_1402bd040(aDir);
-            float aRot[9];
-            memcpy(aRot, FUN_141024c90(FUN_1409475f0(&m_spRoot)), sizeof(aRot));
-            FUN_140a0b1f0(aRot, aDir);
-            m_spEffectObject->vfunc_21(efd::Point3(aDir[0], aDir[1], aDir[2]));
-        }
+        efd::Point3 kPos = FUN_140947900(FUN_1409475f0(&m_spRoot));
+        m_spEffectObject->vfunc_19(kPos);
+        efd::Point3 kDir;
+        NiMatrix3 kRot = *static_cast<NiMatrix3*>(FUN_141024c90(FUN_1409475f0(&m_spRoot)));
+        FUN_140a0b1f0(&kRot, &kDir);
+        m_spEffectObject->vfunc_21(kDir);
     }
     if (!CEffect::vfunc_9())
         return false;
@@ -895,19 +888,17 @@ void CNifEffect::vfunc_4()
 {
     if (FUN_1409475d0(&m_spTarget) != 0)
     {
-        double dNow = FUN_14086d260()->FUN_141473280();
-        double dNowF = (double)(float)dNow;
-        double dStart = FUN_14119f3a0(this);
-        float fElapsed = (float)(dNowF - dStart);
-        if (!m_bSplit || FUN_1409475d0(&m_spSplit) == 0)
-            static_cast<NiNode*>(FUN_1409475f0(&m_spTarget))->AttachChild(static_cast<NiAVObject*>(FUN_1409475d0(&m_spRoot)), true);
-        else
+        double dNow = (float)FUN_14086d260()->FUN_141473280();
+        float fElapsed = (float)(dNow - FUN_14119f3a0(this));
+        if (m_bSplit && (FUN_1409475d0(&m_spSplit) ? true : false))
             static_cast<NiNode*>(FUN_1409475f0(&m_spSplit))->AttachChild(static_cast<NiAVObject*>(FUN_1409475d0(&m_spRoot)), true);
+        else
+            static_cast<NiNode*>(FUN_1409475f0(&m_spTarget))->AttachChild(static_cast<NiAVObject*>(FUN_1409475d0(&m_spRoot)), true);
         FUN_141851f90(FUN_1409475d0(&m_spRoot), fElapsed);
         static_cast<NiAVObject*>(FUN_1409475f0(&m_spRoot))->UpdateEffects();
         static_cast<NiAVObject*>(FUN_1409475f0(&m_spRoot))->UpdateProperties();
         static_cast<NiAVObject*>(FUN_1409475f0(&m_spRoot))->Update((float)dNow, true);
-        m_fStartTime = (float)(dNowF - (double)fElapsed);
+        m_fStartTime = (float)(dNow - fElapsed);
     }
     m_b2e = true;
 }
@@ -927,16 +918,20 @@ MS2_REPLACE_METHOD(0x14154AEF0, CNifEffect, vfunc_5, 63, 0x0B5C2734);
 // Fades the model out over fFadeTime: every material alpha gets a duplicated controller (or a new fade controller).
 void CNifEffect::vfunc_6(float fFadeTime)
 {
-    if (!m_spParam->m_bOffFadeOut)
+    if (m_spParam->m_bOffFadeOut)
+        return;
+    m_fFadeStart = (float)FUN_1413f9850()->GetTime(0xe001001b);
+    m_fFadeTime = fFadeTime;
+    m_aAlphaCtrls.RemoveAll();
+    Unk_SceneWalker kWalker(static_cast<NiObject*>(FUN_1409475d0(&m_spRoot)));
+    NiAVObject* pObj;
+    while ((pObj = kWalker.Next(true)) != 0)
     {
-        m_fFadeStart = (float)FUN_1413f9850()->GetTime(0xe001001b);
-        m_fFadeTime = fFadeTime;
-        m_aAlphaCtrls.RemoveAll();
-        Unk_SceneWalker kWalker(static_cast<NiObject*>(FUN_1409475d0(&m_spRoot)));
-        while (NiAVObject* pObj = kWalker.Next(true))
+        NiProperty* pProp = pObj->GetProperty(NiProperty::MATERIAL);
+        if (pProp != 0)
         {
-            NiProperty* pProp = pObj->GetProperty(NiProperty::MATERIAL);
-            if (pProp != 0 && !FUN_14154b4a0(pProp))
+            bool bDuplicated = FUN_14154b4a0(pProp);
+            if (!bDuplicated)
                 FUN_14154b630(pProp, fFadeTime);
         }
     }
@@ -973,23 +968,20 @@ int CNifEffect::vfunc_11()
 {
     if (m_b2c)
         return 0;
-    if (m_spParam->m_nAttachType == 1)
+    if (m_spParam->m_nAttachType != 1)
+        return 1;
+    if (m_bSplit)
+        return 1;
+    double dNow = FUN_14086d260()->FUN_141473280();
+    if (dNow < m_dStartTime + (double)m_fDuration)
     {
-        if (!m_bSplit)
-        {
-            double dNow = FUN_14086d260()->FUN_141473280();
-            if (dNow < m_dStartTime + (double)m_fDuration)
-            {
-                m_bSplit = true;
-                NiNode* pSplit = new (efd::MemHint(efd::MemHint::NONE)) NiNode(0);
-                FUN_1409f76f0(&m_spSplit, pSplit);
-                FUN_140aacb60(FUN_1409475f0(&m_spSplit), FUN_1409478e0(FUN_1409475f0(&m_spTarget)));
-                FUN_1409f76f0(&m_spTarget, FUN_1403ed280()->FUN_1411a6b10());
-                FUN_140a0b2a0(FUN_1409475d0(&m_spRoot));
-                static_cast<NiNode*>(FUN_1409475f0(&m_spSplit))->AttachChild(static_cast<NiAVObject*>(FUN_1409475d0(&m_spRoot)), false);
-                static_cast<NiNode*>(FUN_1409475f0(&m_spTarget))->AttachChild(static_cast<NiAVObject*>(FUN_1409475d0(&m_spSplit)), true);
-            }
-        }
+        m_bSplit = true;
+        FUN_1409f76f0(&m_spSplit, new (efd::MemHint(efd::MemHint::NONE)) NiNode(0));
+        FUN_140aacb60(FUN_1409475f0(&m_spSplit), FUN_1409478e0(FUN_1409475f0(&m_spTarget)));
+        FUN_1409f76f0(&m_spTarget, FUN_1403ed280()->FUN_1411a6b10());
+        FUN_140a0b2a0(FUN_1409475d0(&m_spRoot));
+        static_cast<NiNode*>(FUN_1409475f0(&m_spSplit))->AttachChild(static_cast<NiAVObject*>(FUN_1409475d0(&m_spRoot)), false);
+        static_cast<NiNode*>(FUN_1409475f0(&m_spTarget))->AttachChild(static_cast<NiAVObject*>(FUN_1409475d0(&m_spSplit)), true);
     }
     return 1;
 }
@@ -1063,7 +1055,7 @@ void CNifEffect::FUN_14154b630(NiObjectNET* pkNode, float fTime)
     spCtrl->SetInterpolator(spInterp, 0);
     spCtrl->SetTarget(pkNode);
     spCtrl->ResetTimeExtrema();
-    spCtrl->SetCycleType(NiTimeController::CLAMP);
+    spCtrl->SetAnimType(NiTimeController::APP_INIT);
     spCtrl->Start(0.0f);
 }
 MS2_REPLACE_METHOD(0x14154B630, CNifEffect, FUN_14154b630, 1031, 0x19B4F7C1);
@@ -1223,16 +1215,12 @@ void CNifEffect::FUN_14154c580()
         spSep->AttachChild(static_cast<NiAVObject*>(FUN_1409475d0(&m_spRoot)), false);
         FUN_1409f76f0(&m_spRoot, spSep);
     }
-    if (!m_spParam->m_bApplyNodeTransform)
+    if (!m_spParam->m_bApplyNodeTransform && (FUN_1409475d0(&m_spTarget) ? true : false))
     {
-        if (FUN_1409475d0(&m_spTarget) != 0)
-        {
-            NiTransform kInverse;
-            static_cast<NiTransform*>(FUN_1409478e0(FUN_1409475f0(&m_spTarget)))->Invert(kInverse);
-            NiTransform kLocal = *static_cast<NiTransform*>(FUN_140a33f90(FUN_1409475f0(&m_spRoot)));
-            NiTransform kResult = kInverse * kLocal;
-            FUN_140aacb60(FUN_1409475f0(&m_spRoot), &kResult);
-        }
+        NiTransform kInverse;
+        static_cast<NiTransform*>(FUN_1409478e0(FUN_1409475f0(&m_spTarget)))->Invert(kInverse);
+        NiTransform kLocal = *static_cast<NiTransform*>(FUN_140a33f90(FUN_1409475f0(&m_spRoot)));
+        FUN_140aacb60(FUN_1409475f0(&m_spRoot), kInverse * kLocal);
     }
 }
 MS2_REPLACE_METHOD(0x14154C580, CNifEffect, FUN_14154c580, 611, 0x338E1372);
@@ -1481,13 +1469,8 @@ CNiStreamLoadThread::~CNiStreamLoadThread()
     }
     else
     {
-        POSITION pos = m_mapDone.GetHeadPosition();
-        while (pos != 0)
-        {
-            NiStream* pStream = m_mapDone.GetValueAt(pos);
-            delete pStream;
-            m_mapDone.GetNext(pos);
-        }
+        for (POSITION pos = m_mapDone.GetHeadPosition(); pos != 0; m_mapDone.GetNext(pos))
+            delete m_mapDone.GetValueAt(pos);
         m_mapDone.RemoveAll();
     }
     if (m_hWork != 0)
@@ -1530,7 +1513,8 @@ unsigned CNiStreamLoadThread::vfunc_1(void* pParam, Unk_140659080& kStartup)
             }
             Load(CString(strPath), 1);
         }
-        if (WaitForSingleObject(m_hStop, 10) == 0)
+        DWORD dwWait = WaitForSingleObject(m_hStop, 10);
+        if (dwWait == 0)
             break;
     }
     return 0;
@@ -1727,11 +1711,8 @@ void FUN_140399100(CString strPattern, CString strDirectory, ATL::CAtlArray<CStr
 // Not in the hook DLL: MS2::RegisterServices (hooked) must build the exe object (exe vtable; unhooked virtuals stay exe).
 #ifndef MS2_HOOK_DLL
 // @0x141551810
-CNifLoadingService::CNifLoadingService() : m_mapNif(10), m_mapTex(10)
+CNifLoadingService::CNifLoadingService() : m_mapNif(10), m_mapTex(10), m_dLifetime(120.0), m_dConfigLifetime(0.0), m_bShutdown(0)
 {
-    m_dLifetime = 120.0;
-    m_dConfigLifetime = 0.0;
-    m_bShutdown = 0;
     m_kNifCount.nNotCache = 0;
     m_kNifCount.nForceKeep = 0;
     m_kNifCount.nMySkill = 0;
@@ -1817,9 +1798,14 @@ bool CNifLoadingService::IsCached(CString strPath)
     if (strPath == "")
         return false;
     FUN_14028e7c0(strPath);
-    Unk_LockGuard kGuard(DAT_143ae1f28);
-    if (kGuard == 0 && DAT_1439ed00c != 0 && m_mapNif.Lookup(strPath) != 0)
-        return true;
+    if (Unk_LockGuard kGuard = DAT_143ae1f28)
+    {
+    }
+    else
+    {
+        if (DAT_1439ed00c != 0 && m_mapNif.Lookup(strPath) != 0)
+            return true;
+    }
     return false;
 }
 MS2_REPLACE_METHOD(0x141551DB0, CNifLoadingService, IsCached, 223, 0xDEDF03BC);
@@ -2115,7 +2101,6 @@ void CNifLoadingService::Sweep()
 }
 MS2_REPLACE_METHOD(0x1415543E0, CNifLoadingService, Sweep, 2239, 0x928FF2A6);
 
-// MS2-FUNCTIONAL: bytes differ from the exe (operand order / temporaries / SEH state layout); behaviour equivalent
 // @0x141555600
 void CNifLoadingService::DumpNifs()
 {
@@ -2126,7 +2111,8 @@ void CNifLoadingService::DumpNifs()
     m_kNifCount.nNPC = 0;
     m_kNifCount.nDependTime = 0;
     FILE* pFile = fopen("LoadedNifs.txt", "w");
-    if (pFile != 0)
+    if (pFile == 0)
+        return;
     {
         CString strLine;
         unsigned nIndex = 0;
@@ -2140,15 +2126,15 @@ void CNifLoadingService::DumpNifs()
             {
                 POSITION posCur = pos;
                 m_mapNif.GetNext(pos);
-                ATL::CRBMap<CString, CCachedNifPtr>::CPair* pPair = m_mapNif.GetAt(posCur);
+                CCachedNifPtr& spNif = m_mapNif.GetValueAt(posCur);
                 CString strPath(m_mapNif.GetKeyAt(posCur));
-                if (FUN_1409849b0(&pPair->m_value->m_spData) == 0)
+                if (FUN_1409849b0(&spNif->m_spData) == 0)
                 {
                     m_mapNif.RemoveAt(posCur);
+                    continue;
                 }
-                else
                 {
-                    switch (pPair->m_value->m_nClass)
+                    switch (spNif->m_nClass)
                     {
                     case 0:
                         strLine.Format("[%04d]\teRP_NotCache\t%s", nIndex, (const char*)strPath);
@@ -2199,7 +2185,6 @@ void CNifLoadingService::DumpNifs()
 }
 MS2_REPLACE_METHOD(0x141555600, CNifLoadingService, DumpNifs, 1728, 0xB80905BD);
 
-// MS2-FUNCTIONAL: bytes differ from the exe (operand order / temporaries / SEH state layout); behaviour equivalent
 // @0x141554f60
 void CNifLoadingService::DumpTextures()
 {
@@ -2210,7 +2195,8 @@ void CNifLoadingService::DumpTextures()
     m_kTexCount.nNPC = 0;
     m_kTexCount.nDependTime = 0;
     FILE* pFile = fopen("LoadedTextures.txt", "w");
-    if (pFile != 0)
+    if (pFile == 0)
+        return;
     {
         CString strLine;
         unsigned nIndex = 0;
@@ -2224,42 +2210,42 @@ void CNifLoadingService::DumpTextures()
             {
                 POSITION posCur = pos;
                 m_mapTex.GetNext(pos);
-                ATL::CRBMap<Unk_NifTexKey, CCachedTexturePtr>::CPair* pPair = m_mapTex.GetAt(posCur);
-                const CString& strPath = m_mapTex.GetKeyAt(posCur).m_strPath;
-                switch (pPair->m_value->m_nClass)
+                CCachedTexturePtr& spTex = m_mapTex.GetValueAt(posCur);
+                const Unk_NifTexKey& kKey = m_mapTex.GetKeyAt(posCur);
+                switch (spTex->m_nClass)
                 {
                 case 0:
-                    strLine.Format("[%04d]\teRP_NotCache\t%s", nIndex, (const char*)strPath);
+                    strLine.Format("[%04d]\teRP_NotCache\t%s", nIndex, (const char*)kKey.m_strPath);
                     fwrite((const char*)strLine, strLine.GetLength(), 1, pFile);
                     fwrite("\n", 1, 1, pFile);
                     ++m_kTexCount.nNotCache;
                     break;
                 case 1:
-                    strLine.Format("[%04d]\teRP_ForceKeep\t%s", nIndex, (const char*)strPath);
+                    strLine.Format("[%04d]\teRP_ForceKeep\t%s", nIndex, (const char*)kKey.m_strPath);
                     fwrite((const char*)strLine, strLine.GetLength(), 1, pFile);
                     fwrite("\n", 1, 1, pFile);
                     ++m_kTexCount.nForceKeep;
                     break;
                 case 2:
-                    strLine.Format("[%04d]\teRP_MySkill\t%s", nIndex, (const char*)strPath);
+                    strLine.Format("[%04d]\teRP_MySkill\t%s", nIndex, (const char*)kKey.m_strPath);
                     fwrite((const char*)strLine, strLine.GetLength(), 1, pFile);
                     fwrite("\n", 1, 1, pFile);
                     ++m_kTexCount.nMySkill;
                     break;
                 case 3:
-                    strLine.Format("[%04d]\teRP_OtherSkill\t%s", nIndex, (const char*)strPath);
+                    strLine.Format("[%04d]\teRP_OtherSkill\t%s", nIndex, (const char*)kKey.m_strPath);
                     fwrite((const char*)strLine, strLine.GetLength(), 1, pFile);
                     fwrite("\n", 1, 1, pFile);
                     ++m_kTexCount.nOtherSkill;
                     break;
                 case 4:
-                    strLine.Format("[%04d]\teRP_NPC\t%s", nIndex, (const char*)strPath);
+                    strLine.Format("[%04d]\teRP_NPC\t%s", nIndex, (const char*)kKey.m_strPath);
                     fwrite((const char*)strLine, strLine.GetLength(), 1, pFile);
                     fwrite("\n", 1, 1, pFile);
                     ++m_kTexCount.nNPC;
                     break;
                 case 5:
-                    strLine.Format("[%04d]\teRP_DependTime\t%s", nIndex, (const char*)strPath);
+                    strLine.Format("[%04d]\teRP_DependTime\t%s", nIndex, (const char*)kKey.m_strPath);
                     fwrite((const char*)strLine, strLine.GetLength(), 1, pFile);
                     fwrite("\n", 1, 1, pFile);
                     ++m_kTexCount.nDependTime;
@@ -2458,23 +2444,28 @@ CCachedNifPtr CNifLoadingService::CreateCachedNif(CString strPath, int nClass, b
             spEntry->m_aClones.Add(spExtra);
     }
     delete pStream;
+    // The guard lives only as long as its if statement, so the cache update must sit in the else (as in the exe);
+    // after a bare `if (guard) return;` the loader threads' SetAt raced Sweep's RemoveAt and looped m_mapNif.
     if (Unk_LockGuard kGuard = DAT_143ae1f28)
         return spEntry;
-    CCachedNifPtr spOld = 0;
-    if (!bReloaded && m_mapNif.Lookup(strPath, spOld))
+    else
     {
-        if (nClass < spOld->m_nClass)
-            spOld->m_nClass = nClass;
-        return spOld;
+        CCachedNifPtr spOld = 0;
+        if (!bReloaded && m_mapNif.Lookup(strPath, spOld))
+        {
+            if (nClass < spOld->m_nClass)
+                spOld->m_nClass = nClass;
+            return spOld;
+        }
+        if (DAT_1439ed00c == 1)
+            m_mapNif.SetAt(strPath, spEntry);
+        if (bReloaded)
+        {
+            m_mapMyPool[strPath].vfunc_1(0);
+            m_mapOtherPool[strPath].vfunc_1(0);
+        }
+        return spEntry;
     }
-    if (DAT_1439ed00c == 1)
-        m_mapNif.SetAt(strPath, spEntry);
-    if (bReloaded)
-    {
-        m_mapMyPool[strPath].vfunc_1(0);
-        m_mapOtherPool[strPath].vfunc_1(0);
-    }
-    return spEntry;
 }
 MS2_REPLACE_METHOD(0x141552920, CNifLoadingService, CreateCachedNif, 1622, 0xCE338DBB);
 
@@ -2487,15 +2478,15 @@ NiAVObjectPtr CNifLoadingService::Load(CString strPath, bool bFlag, int nClass, 
     FUN_14028e7c0(strPath);
     bool bReloaded = false;
     CCachedNifPtr spCached = FindCachedNif(CString(strPath), nClass, &bReloaded);
-    if (spCached != 0 && (nMyRefs != 0 || nOtherRefs != 0))
+    if (spCached != 0 && (nMyRefs | nOtherRefs) != 0)
     {
         if (Unk_LockGuard kGuard = DAT_143ae1f28)
         {
         }
         else
         {
-            int nRefs = nMyRefs == 0 ? nOtherRefs : nMyRefs;
-            TCircleList<NiAVObjectPtr>& rRing = nMyRefs == 0 ? m_mapOtherPool[strPath] : m_mapMyPool[strPath];
+            int nRefs = nMyRefs != 0 ? nMyRefs : nOtherRefs;
+            TCircleList<NiAVObjectPtr>& rRing = nMyRefs != 0 ? m_mapMyPool[strPath] : m_mapOtherPool[strPath];
             if (rRing.GetCapacity() != nRefs)
                 rRing.vfunc_1(nRefs);
             if (rRing.GetCount() == nRefs)
@@ -2525,7 +2516,7 @@ NiAVObjectPtr CNifLoadingService::Load(CString strPath, bool bFlag, int nClass, 
     if (Unk_LockGuard kGuard = DAT_143ae1f28)
     {
     }
-    else if (spCached != 0 && FUN_1409849b0(&spCached->m_spData) != 0)
+    else if ((spCached ? true : false) && (FUN_1409849b0(&spCached->m_spData) ? true : false))
     {
         return CloneCached(CString(strPath), spCached);
     }
@@ -2560,34 +2551,37 @@ efd::SmartPointer<NiTexture> CNifLoadingService::GetTexture(CString strPath, int
     FUN_14028e7c0(strPath);
     if (Unk_LockGuard kGuard = DAT_143ae1f58)
         return 0;
-    int nNewClass = nClass;
-    NiTexturePtr spTexture = 0;
-    CCachedTexturePtr spCached = 0;
-    Unk_NifTexKey kKey(CString(strPath), FUN_14155d6d0());
-    if (DAT_1439ed00c != 0 && m_mapTex.Lookup(kKey, spCached))
+    else
     {
-        if (!FUN_1401d1320(&spCached->m_kFile))
+        int nNewClass = nClass;
+        NiTexturePtr spTexture = 0;
+        CCachedTexturePtr spCached = 0;
+        Unk_NifTexKey kKey(CString(strPath), FUN_14155d6d0());
+        if (DAT_1439ed00c != 0 && m_mapTex.Lookup(kKey, spCached))
         {
-            spCached->m_dLastUse = FUN_14086d260()->FUN_141473280();
+            if (!FUN_1401d1320(&spCached->m_kFile))
+            {
+                spCached->m_dLastUse = FUN_14086d260()->FUN_141473280();
+                if (nClass < spCached->m_nClass)
+                    spCached->m_nClass = nClass;
+                return spCached->m_spData;
+            }
             if (nClass < spCached->m_nClass)
-                spCached->m_nClass = nClass;
-            return spCached->m_spData;
+                nNewClass = spCached->m_nClass;
+            spCached = 0;
         }
-        if (nClass < spCached->m_nClass)
-            nNewClass = spCached->m_nClass;
-        spCached = 0;
+        NiFixedString kName(strPath);
+        spTexture = NiSourceTexture::Create(kName, DAT_1439fc800, false, false, true);
+        if (FUN_140a5ac80(&spTexture) == 0)
+            return 0;
+        spCached = EE_NEW CCachedTexture;
+        spCached->m_kFile.FUN_1401d1160(CString(strPath));
+        spCached->m_dLastUse = FUN_14086d260()->FUN_141473280();
+        spCached->m_spData = FUN_140a5ac80(&spTexture);
+        spCached->m_nClass = nNewClass;
+        m_mapTex.SetAt(kKey, spCached);
+        return spCached->m_spData;
     }
-    NiFixedString kName(strPath);
-    spTexture = NiSourceTexture::Create(kName, DAT_1439fc800, false, false, true);
-    if (FUN_140a5ac80(&spTexture) == 0)
-        return 0;
-    spCached = EE_NEW CCachedTexture;
-    spCached->m_kFile.FUN_1401d1160(CString(strPath));
-    spCached->m_dLastUse = FUN_14086d260()->FUN_141473280();
-    spCached->m_spData = FUN_140a5ac80(&spTexture);
-    spCached->m_nClass = nNewClass;
-    m_mapTex.SetAt(kKey, spCached);
-    return spCached->m_spData;
 }
 MS2_REPLACE_METHOD(0x141552F90, CNifLoadingService, GetTexture, 1336, 0x4D96BCD7);
 
@@ -2600,34 +2594,37 @@ efd::SmartPointer<NiTexture> CNifLoadingService::GetTextureFrom(CString strKey, 
     FUN_14028e7c0(strKey);
     if (Unk_LockGuard kGuard = DAT_143ae1f58)
         return 0;
-    int nNewClass = nClass;
-    NiTexturePtr spTexture = 0;
-    CCachedTexturePtr spCached = 0;
-    Unk_NifTexKey kKey(CString(strKey), FUN_14155d6d0());
-    if (DAT_1439ed00c != 0 && m_mapTex.Lookup(kKey, spCached))
+    else
     {
-        if (!FUN_1401d1320(&spCached->m_kFile))
+        int nNewClass = nClass;
+        NiTexturePtr spTexture = 0;
+        CCachedTexturePtr spCached = 0;
+        Unk_NifTexKey kKey(CString(strKey), FUN_14155d6d0());
+        if (DAT_1439ed00c != 0 && m_mapTex.Lookup(kKey, spCached))
         {
-            spCached->m_dLastUse = FUN_14086d260()->FUN_141473280();
+            if (!FUN_1401d1320(&spCached->m_kFile))
+            {
+                spCached->m_dLastUse = FUN_14086d260()->FUN_141473280();
+                if (nClass < spCached->m_nClass)
+                    spCached->m_nClass = nClass;
+                return spCached->m_spData;
+            }
             if (nClass < spCached->m_nClass)
-                spCached->m_nClass = nClass;
-            return spCached->m_spData;
+                nNewClass = spCached->m_nClass;
+            spCached = 0;
         }
-        if (nClass < spCached->m_nClass)
-            nNewClass = spCached->m_nClass;
-        spCached = 0;
+        NiFixedString kName(strFile);
+        spTexture = NiSourceTexture::Create(kName, DAT_1439fc800, false, false, true);
+        if (FUN_140a5ac80(&spTexture) == 0)
+            return 0;
+        spCached = EE_NEW CCachedTexture;
+        spCached->m_kFile.FUN_1401d1160(CString(strFile));
+        spCached->m_dLastUse = FUN_14086d260()->FUN_141473280();
+        spCached->m_spData = FUN_140a5ac80(&spTexture);
+        spCached->m_nClass = nNewClass;
+        m_mapTex.SetAt(kKey, spCached);
+        return spCached->m_spData;
     }
-    NiFixedString kName(strFile);
-    spTexture = NiSourceTexture::Create(kName, DAT_1439fc800, false, false, true);
-    if (FUN_140a5ac80(&spTexture) == 0)
-        return 0;
-    spCached = EE_NEW CCachedTexture;
-    spCached->m_kFile.FUN_1401d1160(CString(strFile));
-    spCached->m_dLastUse = FUN_14086d260()->FUN_141473280();
-    spCached->m_spData = FUN_140a5ac80(&spTexture);
-    spCached->m_nClass = nNewClass;
-    m_mapTex.SetAt(kKey, spCached);
-    return spCached->m_spData;
 }
 MS2_REPLACE_METHOD(0x141553910, CNifLoadingService, GetTextureFrom, 1423, 0xC458370B);
 
@@ -2640,22 +2637,25 @@ efd::SmartPointer<NiSourceTexture> CNifLoadingService::CreateTexture(CString str
     FUN_14028e7c0(strPath);
     if (Unk_LockGuard kGuard = DAT_143ae1f58)
         return 0;
-    CCachedTexturePtr spCached = 0;
-    Unk_NifTexKey kKey(CString(strPath), FUN_14155d6d0());
-    if (DAT_1439ed00c != 0 && m_mapTex.Lookup(kKey, spCached))
+    else
     {
+        CCachedTexturePtr spCached = 0;
+        Unk_NifTexKey kKey(CString(strPath), FUN_14155d6d0());
+        if (DAT_1439ed00c != 0 && m_mapTex.Lookup(kKey, spCached))
+        {
+            spCached->m_dLastUse = FUN_14086d260()->FUN_141473280();
+            return static_cast<NiSourceTexture*>(static_cast<NiTexture*>(spCached->m_spData));
+        }
+        efd::SmartPointer<NiSourceTexture> spTexture = NiSourceTexture::Create(FUN_140a5ac70(&spPixels), DAT_1439fc800, true);
+        if (spTexture == 0)
+            return 0;
+        spCached = EE_NEW CCachedTexture;
         spCached->m_dLastUse = FUN_14086d260()->FUN_141473280();
+        spCached->m_spData = spTexture;
+        spCached->m_nClass = nClass;
+        m_mapTex.SetAt(kKey, spCached);
         return static_cast<NiSourceTexture*>(static_cast<NiTexture*>(spCached->m_spData));
     }
-    efd::SmartPointer<NiSourceTexture> spTexture = NiSourceTexture::Create(FUN_140a5ac70(&spPixels), DAT_1439fc800, true);
-    if (spTexture == 0)
-        return 0;
-    spCached = EE_NEW CCachedTexture;
-    spCached->m_dLastUse = FUN_14086d260()->FUN_141473280();
-    spCached->m_spData = spTexture;
-    spCached->m_nClass = nClass;
-    m_mapTex.SetAt(kKey, spCached);
-    return static_cast<NiSourceTexture*>(static_cast<NiTexture*>(spCached->m_spData));
 }
 MS2_REPLACE_METHOD(0x1415534D0, CNifLoadingService, CreateTexture, 1077, 0xF4F460AB);
 
@@ -2668,14 +2668,17 @@ efd::SmartPointer<NiTexture> CNifLoadingService::FindTexture(CString strPath, co
     FUN_14028e7c0(strPath);
     if (Unk_LockGuard kGuard = DAT_143ae1f58)
         return 0;
-    CCachedTexturePtr spCached = 0;
-    NiTexture::FormatPrefs kPrefs = FUN_14155d6d0();
-    if (pPrefs != 0)
-        kPrefs = *pPrefs;
-    Unk_NifTexKey kKey(CString(strPath), kPrefs);
-    if (DAT_1439ed00c != 0 && m_mapTex.Lookup(kKey, spCached))
-        return spCached->m_spData;
-    return 0;
+    else
+    {
+        CCachedTexturePtr spCached = 0;
+        NiTexture::FormatPrefs kPrefs = FUN_14155d6d0();
+        if (pPrefs != 0)
+            kPrefs = *pPrefs;
+        Unk_NifTexKey kKey(CString(strPath), kPrefs);
+        if (DAT_1439ed00c != 0 && m_mapTex.Lookup(kKey, spCached))
+            return spCached->m_spData;
+        return 0;
+    }
 }
 MS2_REPLACE_METHOD(0x141553EB0, CNifLoadingService, FindTexture, 557, 0x6EDD4274);
 
@@ -2688,61 +2691,48 @@ void CNifLoadingService::AddTexture(CString strPath, NiSourceTexture* pTexture)
     FUN_14028e7c0(strPath);
     if (Unk_LockGuard kGuard = DAT_143ae1f58)
         return;
-    CCachedTexturePtr spCached = 0;
-    if (DAT_1439ed00c != 0)
+    else
     {
-        Unk_NifTexKey kKey(CString(strPath), pTexture->GetFormatPreferences());
-        if (!m_mapTex.Lookup(kKey, spCached))
+        CCachedTexturePtr spCached = 0;
+        if (DAT_1439ed00c != 0)
         {
-            spCached = EE_NEW CCachedTexture;
-            spCached->m_kFile.FUN_1401d1160(CString(strPath));
-            spCached->m_dLastUse = FUN_14086d260()->FUN_141473280();
-            spCached->m_spData = pTexture;
-            spCached->m_nClass = 5;
-            m_mapTex.SetAt(kKey, spCached);
-        }
-        else
-        {
-            spCached->m_spData = pTexture;
-            spCached->m_dLastUse = FUN_14086d260()->FUN_141473280();
+            Unk_NifTexKey kKey(CString(strPath), pTexture->GetFormatPreferences());
+            if (!m_mapTex.Lookup(kKey, spCached))
+            {
+                spCached = EE_NEW CCachedTexture;
+                spCached->m_kFile.FUN_1401d1160(CString(strPath));
+                spCached->m_dLastUse = FUN_14086d260()->FUN_141473280();
+                spCached->m_spData = pTexture;
+                spCached->m_nClass = 5;
+                m_mapTex.SetAt(kKey, spCached);
+            }
+            else
+            {
+                spCached->m_spData = pTexture;
+                spCached->m_dLastUse = FUN_14086d260()->FUN_141473280();
+            }
         }
     }
 }
 MS2_REPLACE_METHOD(0x1415540F0, CNifLoadingService, AddTexture, 741, 0x08563473);
 
-// Out-of-line NiString wrappers of the exe (the NiMain copies at 0x141d5b..).
-void FUN_141d5be30(NiString* pDst, const NiString* pSrc);
-void FUN_141d5bfe0(NiString* pStr);
-
-// MS2-FUNCTIONAL: temporaries: the exe reloads the source through a register hop
+// NiString holders' copy ctors (two identical COMDATs): the member copy runs on the source's offset-0 member.
+struct Unk_NifStrCell2 { NiString m_s; Unk_NifStrCell2(const Unk_NifStrCell2& o); };
+// MS2-PIN: ??0Unk_NifStrCell@@QEAA@AEBU0@@Z 0x14154ef70
 // @0x14154ef70
-NiString* FUN_14154ef70(NiString* pDst, const NiString* pSrc)
-{
-    FUN_141d5be30(pDst, pSrc);
-    return pDst;
-}
+Unk_NifStrCell::Unk_NifStrCell(const Unk_NifStrCell& o) : m_s(o.m_s) {}
 
-// MS2-FUNCTIONAL: temporaries: the exe reloads the source through a register hop
+// MS2-PIN: ??0Unk_NifStrCell2@@QEAA@AEBU0@@Z 0x14154efa0
 // @0x14154efa0
-NiString* FUN_14154efa0(NiString* pDst, const NiString* pSrc)
-{
-    FUN_141d5be30(pDst, pSrc);
-    return pDst;
-}
+Unk_NifStrCell2::Unk_NifStrCell2(const Unk_NifStrCell2& o) : m_s(o.m_s) {}
 
-// MS2-FUNCTIONAL: placement-new form not found; exe is a plain 37-byte call to the NiString ctor with 0x100
+// MS2-PIN: ??0Unk_NifStrCell@@QEAA@XZ 0x14154efd0
 // @0x14154efd0
-NiString* FUN_14154efd0(NiString* pStr)
-{
-    return new (pStr) NiString();
-}
+Unk_NifStrCell::Unk_NifStrCell() : m_s((size_t)0x100) {}
 
-// MS2-FUNCTIONAL: the exe reloads this through a register hop and calls the destructor directly
+// MS2-PIN: ??1Unk_NifStrCell@@QEAA@XZ 0x14154f250
 // @0x14154f250
-void FUN_14154f250(NiString* pStr)
-{
-    pStr->~NiString();
-}
+Unk_NifStrCell::~Unk_NifStrCell() {}
 
 // @0x14154fda0
 void FUN_14154fda0(void* pObj)
@@ -2754,11 +2744,12 @@ void FUN_14154fda0(void* pObj)
 template CCachedNifPtr& ATL::CRBTree<CString, CCachedNifPtr, ATL::CElementTraits<CString>, ATL::CElementTraits<CCachedNifPtr> >::GetValueAt(POSITION);
 template CCachedTexturePtr& ATL::CRBTree<Unk_NifTexKey, CCachedTexturePtr, ATL::CElementTraits<Unk_NifTexKey>, ATL::CElementTraits<CCachedTexturePtr> >::GetValueAt(POSITION);
 
-// MS2-FUNCTIONAL: an out-of-line NiTexture::SetRendererData (the exe stores the raw pointer at +0x40)
+// NiTexture::SetRendererData inlined: the raw store at +0x40.
 // MS2-PIN: ?FUN_141562500@@YAXPEAVNiSourceTexture@@PEAVRendererData@NiTexture@@@Z 0x141562500
+struct Unk_NifTexRdView { char m_pad[0x40]; NiTexture::RendererData* m_pRendererData; };
 void FUN_141562500(NiSourceTexture* pTexture, NiTexture::RendererData* pData)
 {
-    pTexture->SetRendererData(pData);
+    ((Unk_NifTexRdView*)pTexture)->m_pRendererData = pData;
 }
 
 // MS2-PIN: ??__EDAT_143ae1f28@@YAXXZ 0x1400fa4e0 ; generated initializer of the nif cache lock

@@ -1811,7 +1811,6 @@ void UIMeratMarketDialog::RefreshAvatarOwner(UIAvatarBase* pAvatar, MS2Ptr<CItem
         pCube->FUN_1418bde80()->FUN_141085530(spOwner);
 }
 
-// MS2-FUNCTIONAL: the slot-row call's argument temporaries are laid out / ordered differently (27 bytes short)
 // @0x1412efee0
 void UIMeratMarketDialog::AddPreviewSlot(MS2Ptr<CItem> spItem, MS2Ptr<CMeratMarketProduct> spProduct, int nEvent, int nIndex,
                                          int nSlotKind, MS2Ptr<CItemData> spData)
@@ -1828,16 +1827,20 @@ void UIMeratMarketDialog::AddPreviewSlot(MS2Ptr<CItem> spItem, MS2Ptr<CMeratMark
         if (spContainer.get() != 0) {
             MS2Ptr<UIAvatarBase> spPreview = GetPreviewPtr(nIndex);
             MS2Ptr<Customize> spCustomize(0);
-            MS2Ptr<UIAvatarPC> spAvatar(dynamic_cast<UIAvatarPC*>((UIAvatarBase*)spPreview));
-            if (spAvatar.get() != 0)
-                spCustomize = spAvatar->GetCustomize();
-            MS2Ptr<ASEquipIcon> spIcon = spContainer->FUN_140e2a090(nEvent, spItem, spSrc, reinterpret_cast<MS2Ptr<Unk_EquipOutfit>&>(spCustomize));
-            if (spIcon.get() != 0) {
-                spIcon->FUN_1409b9240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIMeratMarketDialog::OnEquipIconTooltip), (long long)spIcon.get());
-                if (FUN_141b48710(MS2Ptr<CItemData>(FUN_140527840(spItem))) || ((CItemData*)spData != 0 && FUN_141b48710(spData))) {
-                    MS2Ptr<ASMovieClip> spClip = spIcon->FUN_1409b9380();
-                    if ((ASMovieClip*)spClip != 0)
-                        spClip->FUN_1422c2a70(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIMeratMarketDialog::OnClickPreviewSlot), spIcon.get());
+            {
+                MS2Ptr<UIAvatarPC> spAvatar(dynamic_cast<UIAvatarPC*>((UIAvatarBase*)spPreview));
+                if (spAvatar.get() != 0)
+                    spCustomize = spAvatar->GetCustomize();
+            }
+            {
+                MS2Ptr<ASEquipIcon> spIcon = spContainer->FUN_140e2a090(nEvent, spItem, spSrc, reinterpret_cast<MS2Ptr<Unk_EquipOutfit>&>(spCustomize));
+                if (spIcon.get() != 0) {
+                    spIcon->FUN_1409b9240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIMeratMarketDialog::OnEquipIconTooltip), (long long)spIcon.get());
+                    if (FUN_141b48710(MS2Ptr<CItemData>(FUN_140527840(spItem))) || ((spData.get() ? true : false) && FUN_141b48710(spData))) {
+                        MS2Ptr<ASMovieClip> spClip = spIcon->FUN_1409b9380();
+                        if ((ASMovieClip*)spClip != 0)
+                            spClip->FUN_1422c2a70(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIMeratMarketDialog::OnClickPreviewSlot), spIcon.get());
+                    }
                 }
             }
             ChangeModel(nIndex, nSlotKind, spProduct);
@@ -1908,73 +1911,71 @@ void UIMeratMarketDialog::OpenProduct(MS2Ptr<CMeratMarketProduct> spProduct)
 // @0x1412f1180
 void UIMeratMarketDialog::PreviewBundle(MS2Ptr<CMeratMarketProduct> spProduct)
 {
-    if (!(spProduct == 0)) {
-        if (spProduct->IsPremium() != 0) {
-            CMeratMarketPremiumProduct* pPremium = &spProduct->m_premium;
-            if (pPremium->m_nType != 3)
-                return;
-            ATL::CAtlArray<MS2Ptr<CItemData> > arrFirst;
-            ATL::CAtlArray<MS2Ptr<CItemData> > arrSecond;
-            SplitPackageItems(*pPremium, arrFirst, arrSecond);
-            if (arrFirst.IsEmpty() && arrSecond.IsEmpty())
-                return;
-            MS2Ptr<CItemData> spPick(0);
-            UIAvatarBase* pAvatar = 0;
-            if (!arrFirst.IsEmpty()) {
-                ATL::CAtlArray<MS2Ptr<CItemData> > arrEquip;
-                ATL::CAtlArray<MS2Ptr<CItemData> > arrOther;
-                SplitEquipItems(MS2Ptr<CItemData>(0), arrFirst, arrEquip, arrOther);
-                if (arrEquip.IsEmpty() && arrOther.IsEmpty())
-                    return;
-                MS2Ptr<UIAvatarPC>* pspAvatar = !arrEquip.IsEmpty() ? &m_spAvatarPC : &m_spMyAvatarPC;
-                pAvatar = pspAvatar->get();
-                UIAvatarPC* pPC = dynamic_cast<UIAvatarPC*>(pAvatar);
-                if (pPC == 0)
-                    return;
-                ShowEquipIcons(pAvatar, m_29c, 1);
-                ATL::CAtlArray<MS2Ptr<CItemData> >* pItems = (pPC == m_spAvatarPC.get()) ? &arrEquip : &arrOther;
-                Unk_AvPackageKey key;
-                FUN_1418bf850(spProduct, &key);
-                if (!pPC->FUN_1418bb3f0(&key, PreviewColorCode(), pItems))
-                    return;
-                spPick = pItems->GetAt(0);
-                if (m_spAvatar.get() != 0) {
-                    if (m_spAvatar->GetKind() == 1)
-                        ApplyPreviewChanges(1);
-                }
-                if (!arrSecond.IsEmpty() && pPC == m_spAvatarPC.get()) {
-                    MS2Ptr<CItemData> spOther = PickItem(arrSecond, 1);
-                    if (spOther.operator CItemData*() != 0) {
-                        spPick = spOther;
-                        pAvatar = CreateItemAvatar(spOther);
-                    }
-                }
-            }
-            else {
-                MS2Ptr<CItemData> spOther = PickItem(arrSecond, 0);
-                if (spOther.operator CItemData*() != 0) {
-                    if (m_spAvatar.get() != 0) {
-                        if (m_spAvatar->GetKind() == 1)
-                            ApplyPreviewChanges(1);
-                    }
-                    spPick = spOther;
-                    UIAvatarBase* pPreview = GetAvatarForItem(spOther);
-                    int nSlotKind = SlotKindOfPreview(pPreview, spOther);
-                    ShowEquipIcons(pPreview, nSlotKind, 1);
-                    pAvatar = CreateItemAvatar(spOther);
-                }
-            }
-            if (pAvatar != 0 && !(spPick == 0)) {
-                MS2Ptr<CItem> spItem(new CItem());
-                spItem->FUN_14052b130(0, spProduct->m_premium.m_nGrade, 0);
-                int nIndex = FindPreview(pAvatar);
-                int nSlotKind = SlotKindOf(nIndex, spPick);
-                AddPreviewSlot(spItem, spProduct, 0x7a, nIndex, nSlotKind, MS2Ptr<CItemData>(0));
-                ShowAvatarItem(pAvatar, nSlotKind, spPick, 1);
-                SetPreviewItem(spItem, spPick, nIndex, nSlotKind, spProduct);
+    if (spProduct == 0 || spProduct->IsPremium() == 0)
+        return;
+    CMeratMarketPremiumProduct* pPremium = &spProduct->m_premium;
+    if (pPremium->m_nType != 3)
+        return;
+    ATL::CAtlArray<MS2Ptr<CItemData> > arrFirst;
+    ATL::CAtlArray<MS2Ptr<CItemData> > arrSecond;
+    SplitPackageItems(*pPremium, arrFirst, arrSecond);
+    if (arrFirst.IsEmpty() && arrSecond.IsEmpty())
+        return;
+    MS2Ptr<CItemData> spPick(0);
+    UIAvatarBase* pAvatar = 0;
+    if (!arrFirst.IsEmpty()) {
+        ATL::CAtlArray<MS2Ptr<CItemData> > arrEquip;
+        ATL::CAtlArray<MS2Ptr<CItemData> > arrOther;
+        SplitEquipItems(MS2Ptr<CItemData>(0), arrFirst, arrEquip, arrOther);
+        if (arrEquip.IsEmpty() && arrOther.IsEmpty())
+            return;
+        MS2Ptr<UIAvatarPC>* pspAvatar = !arrEquip.IsEmpty() ? &m_spAvatarPC : &m_spMyAvatarPC;
+        pAvatar = pspAvatar->get();
+        UIAvatarPC* pPC = dynamic_cast<UIAvatarPC*>(pAvatar);
+        if (pPC == 0)
+            return;
+        ShowEquipIcons(pAvatar, m_29c, 1);
+        ATL::CAtlArray<MS2Ptr<CItemData> >* pItems = (pPC == m_spAvatarPC.get()) ? &arrEquip : &arrOther;
+        Unk_AvPackageKey key;
+        FUN_1418bf850(spProduct, &key);
+        if (!pPC->FUN_1418bb3f0(&key, PreviewColorCode(), pItems))
+            return;
+        spPick = (*pItems)[0];
+        if (m_spAvatar.get() != 0) {
+            if (m_spAvatar->GetKind() == 1)
+                ApplyPreviewChanges(1);
+        }
+        if (!arrSecond.IsEmpty() && pPC == m_spAvatarPC.get()) {
+            MS2Ptr<CItemData> spOther = PickItem(arrSecond, 1);
+            if (spOther.operator CItemData*() != 0) {
+                spPick = spOther;
+                pAvatar = CreateItemAvatar(spOther);
             }
         }
     }
+    else {
+        MS2Ptr<CItemData> spOther = PickItem(arrSecond, 0);
+        if (spOther.operator CItemData*() != 0) {
+            if (m_spAvatar.get() != 0) {
+                if (m_spAvatar->GetKind() == 1)
+                    ApplyPreviewChanges(1);
+            }
+            spPick = spOther;
+            UIAvatarBase* pPreview = GetAvatarForItem(spOther);
+            int nSlotKind = SlotKindOfPreview(pPreview, spOther);
+            ShowEquipIcons(pPreview, nSlotKind, 1);
+            pAvatar = CreateItemAvatar(spOther);
+        }
+    }
+    if (pAvatar == 0 || spPick == 0)
+        return;
+    MS2Ptr<CItem> spItem(new CItem());
+    spItem->FUN_14052b130(0, spProduct->m_premium.m_nGrade, 0);
+    int nIndex = FindPreview(pAvatar);
+    int nSlotKind = SlotKindOf(nIndex, spPick);
+    AddPreviewSlot(spItem, spProduct, 0x7a, nIndex, nSlotKind, MS2Ptr<CItemData>(0));
+    ShowAvatarItem(pAvatar, nSlotKind, spPick, 1);
+    SetPreviewItem(spItem, spPick, nIndex, nSlotKind, spProduct);
 }
 
 // @0x1412f1cd0
@@ -2083,17 +2084,7 @@ void UIMeratMarketDialog::PreviewBoxProduct(MS2Ptr<CMeratMarketProduct> spProduc
     SplitEquipItems(spData, arrFirst, arrEquip, arrOther);
     MS2Ptr<CItemData> spPick(spData);
     UIAvatarBase* pAvatar = 0;
-    if (arrEquip.IsEmpty() && arrOther.IsEmpty()) {
-        MS2Ptr<CItemData> spOther = PickItem(arrSecond, 0);
-        if (spOther.operator CItemData*() != 0) {
-            spPick = spOther;
-            UIAvatarBase* pPreview = GetAvatarForItem(spOther);
-            int nSlotKind = SlotKindOfPreview(pPreview, spOther);
-            ShowEquipIcons(pPreview, nSlotKind, 0);
-            pAvatar = CreateItemAvatar(spOther);
-        }
-    }
-    else {
+    if (!arrEquip.IsEmpty() || !arrOther.IsEmpty()) {
         if (WorldService::GetInstance()->FUN_141bd0cc0() == 0)
             return;
         MS2Ptr<UIAvatarPC>* pspAvatar = !arrEquip.IsEmpty() ? &m_spAvatarPC : &m_spMyAvatarPC;
@@ -2108,6 +2099,7 @@ void UIMeratMarketDialog::PreviewBoxProduct(MS2Ptr<CMeratMarketProduct> spProduc
         int nColor = PreviewColorCode();
         if (!pPC->FUN_1418bb2a0(spData, nColor, pItems))
             return;
+        {
         MS2Ptr<UIEquipIconContainer> spIcons = GetEquipIcon(nSlotKind);
         if (spIcons.get() != 0) {
             ATL::CAtlMap<int, MS2Ptr<ASEquipIcon> >* pIcons = spIcons->GetIconMap();
@@ -2122,13 +2114,24 @@ void UIMeratMarketDialog::PreviewBoxProduct(MS2Ptr<CMeratMarketProduct> spProduc
                 }
             }
         }
-        spPick = pItems->GetAt(0);
+        }
+        spPick = (*pItems)[0];
         if (!arrSecond.IsEmpty() && pPC == m_spAvatarPC.get()) {
             MS2Ptr<CItemData> spOther = PickItem(arrSecond, 1);
             if (spOther.operator CItemData*() != 0) {
                 spPick = spOther;
                 CreateItemAvatar(spOther);
             }
+        }
+    }
+    else {
+        MS2Ptr<CItemData> spOther = PickItem(arrSecond, 0);
+        if (spOther.operator CItemData*() != 0) {
+            spPick = spOther;
+            UIAvatarBase* pPreview = GetAvatarForItem(spOther);
+            int nSlotKind = SlotKindOfPreview(pPreview, spOther);
+            ShowEquipIcons(pPreview, nSlotKind, 0);
+            pAvatar = CreateItemAvatar(spOther);
         }
     }
     if (pAvatar != 0 && !(spPick == 0)) {
@@ -2309,12 +2312,10 @@ Unk_MpRideePtr::Unk_MpRideePtr(int)
 }
 
 // @0x141314120
-// MS2-FUNCTIONAL: takes one reference to the ridee object through the recovered MS2Ptr reference path.
 Unk_MpRideePtr::Unk_MpRideePtr(UIAvatarRidee* p)
 {
     m_p = p;
-    if (m_p != 0)
-        CPtred::AddRefPtred(m_p);
+    AddRef();
 }
 
 // @0x1413146e0
@@ -3094,7 +3095,6 @@ void UIMeratMarketDialog::BuildPage(int nFirst, int nLast)
     spPage->FUN_140bd2cb0("buildPage", rows);
 }
 
-// MS2-FUNCTIONAL: exe frame is 8 bytes larger (one more pointer local) around the seller shop lookup; no source form found
 // @0x1412fa950
 void UIMeratMarketDialog::ShowSellerShop(__int64 nSellerId, int bForce)
 {
@@ -3103,23 +3103,24 @@ void UIMeratMarketDialog::ShowSellerShop(__int64 nSellerId, int bForce)
     MS2Ptr<Unk_MmSellerShop> spShop = FUN_140939a00()->FUN_140d56cc0(nSellerId);
     if (spShop == 0)
         return;
-    Unk_MmSellerShop* pShop = spShop.operator->();
-    if (pShop->m_products.IsEmpty() && bForce == 0)
+    Unk_MmProductArray& products = spShop->m_products;
+    if (products.IsEmpty() && bForce == 0)
     {
         FUN_140939a00()->FUN_140d54ce0(nSellerId);
+        return;
     }
-    else
+    ASArray rows(2);
+    int nCount = 0;
+    Unk_MmViewScope scope(m_spWeaponType);
+    nCount = FillProducts(rows, products, &scope);
+    MS2Ptr<AScript> spPage = GetPage(5);
+    if (spPage.get() != 0)
     {
-        ASArray rows(2);
-        Unk_MmViewScope scope(m_spWeaponType);
-        int nCount = FillProducts(rows, pShop->m_products, &scope);
-        MS2Ptr<AScript> spPage = GetPage(5);
-        if (spPage.get() != 0)
-            spPage->FUN_1413128f0("buildSellerItemList", FUN_140719530(nSellerId), Scaleform::GFx::Value(rows.FUN_1422bb870()), nCount, 1, L"");
+        CStringA strId = FUN_140719530(nSellerId);
+        spPage->FUN_1413128f0("buildSellerItemList", strId, Scaleform::GFx::Value(rows.FUN_1422bb870()), nCount, 1, L"");
     }
 }
 
-// MS2-FUNCTIONAL: exe takes the checker pointer through a temp MS2Ptr reference (0x10 larger frame); no source form found
 // @0x1412fac20
 void UIMeratMarketDialog::ShowSeller(__int64 nSellerId, const CStringW& strName, int bForce)
 {
@@ -3132,8 +3133,7 @@ void UIMeratMarketDialog::ShowSeller(__int64 nSellerId, const CStringW& strName,
     else
     {
         CStringW strFiltered;
-        CBanTextChecker* pChecker = FUN_14025e7d0()->GetChecker();
-        if (pChecker != 0)
+        if (CBanTextChecker* pChecker = FUN_14025e7d0()->GetChecker())
         {
             CStringW strMessage;
             if (pChecker->FUN_1402261e0(strName, strMessage) != 0)
@@ -3153,37 +3153,34 @@ void UIMeratMarketDialog::ShowSeller(__int64 nSellerId, const CStringW& strName,
         if (spShop == 0)
             return;
         Unk_MmProductArray& products = spShop.operator->()->m_products;
-        if (!products.IsEmpty() || bForce != 0)
-        {
-            ASArray rows(2);
-            Unk_MmProductArray matches;
-            size_t nCount = products.GetCount();
-            for (int i = 0; i < nCount; i++)
-            {
-                MS2Ptr<CMeratMarketProduct> spProduct = products[i];
-                if (spProduct.get() != 0)
-                {
-                    const wchar_t* szName = strName;
-                    if (spProduct->m_ugc.m_look.m_str28.Find(szName, 0) != -1)
-                        matches.Add(spProduct);
-                }
-            }
-            Unk_MmViewScope scope(m_spWeaponType);
-            int nFound = FillProducts(rows, matches, &scope);
-            MS2Ptr<AScript> spPage = GetPage(5);
-            if (spPage.get() != 0)
-            {
-                spPage->FUN_141312a70("buildSellerItemList", FUN_140719530(nSellerId), Scaleform::GFx::Value(rows.FUN_1422bb870()), nFound, 1, CStringW(strName));
-                if (nFound == 0)
-                {
-                    CStringW strEmpty = FUN_14052bd00(0xa10, strName);
-                    spPage->Invoke("updateNoticeText", CStringW(strEmpty));
-                }
-            }
-        }
-        else
+        if (products.IsEmpty() && bForce == 0)
         {
             FUN_140939a00()->FUN_140d54ce0(nSellerId);
+            return;
+        }
+        ASArray rows(2);
+        Unk_MmProductArray matches;
+        size_t nCount = products.GetCount();
+        for (size_t i = 0; i < nCount; i++)
+        {
+            MS2Ptr<CMeratMarketProduct> spProduct = products[i];
+            if (spProduct.get() != 0)
+            {
+                if (spProduct->m_ugc.m_look.m_str28.Find(strName, 0) != -1)
+                    matches.Add(spProduct);
+            }
+        }
+        Unk_MmViewScope scope(m_spWeaponType);
+        int nFound = FillProducts(rows, matches, &scope);
+        MS2Ptr<AScript> spPage = GetPage(5);
+        if (spPage.get() != 0)
+        {
+            spPage->FUN_141312a70("buildSellerItemList", FUN_140719530(nSellerId), Scaleform::GFx::Value(rows.FUN_1422bb870()), nFound, 1, CStringW(strName));
+            if (nFound == 0)
+            {
+                CStringW strEmpty = FUN_14052bd00(0xa10, strName);
+                spPage->Invoke("updateNoticeText", CStringW(strEmpty));
+            }
         }
     }
 }
@@ -3320,31 +3317,30 @@ void UIMeratMarketDialog::BuildSearchProvider(ASDataProvider& provider)
         AddSearchItem(provider, L"$s_meratmarket_dropdown_search_designers", 3);
 }
 
-// MS2-FUNCTIONAL: temp/frame layout differs from exe (0x10 frame, local order)
 // @0x1412fcee0
 void UIMeratMarketDialog::BuildJobList(ASArray& list, int nSelectedJob, int& nSelectedIndex)
 {
     ATL::CAtlArray<int> jobs;
     FUN_140222be0(jobs);
+    int nMyJob = 200;
     PC* pPC = static_cast<PC*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pPC != 0)
-        FUN_141654700(pPC);
+        nMyJob = FUN_141654700(pPC);
     nSelectedIndex = 0;
     AddJobItem(list, L"$s_blackmarket_dropdown_joball", 200);
     size_t nCount = jobs.GetCount();
-    int nIndex = list.FUN_1422bc5d0();
-    for (int i = 0; i < (int)nCount; i++)
+    size_t nIndex = list.FUN_1422bc5d0();
+    for (size_t i = 0; i < nCount; i++)
     {
         int nJob = jobs[i];
-        if (nJob != 0 && nJob != 1)
-        {
-            CStringW strText = FUN_1401a9d70()->FUN_141811980(6, FUN_1401d7a50()->FUN_140644bb0(nJob));
-            CStringW* pName = &strText;
-            AddJobItem(list, *pName, nJob);
-            if (nJob == nSelectedJob)
-                nSelectedIndex = nIndex;
-            nIndex++;
-        }
+        if (nJob == 0 || nJob == 1)
+            continue;
+        CStringW strText = FUN_1401a9d70()->FUN_141811980(6, FUN_1401d7a50()->FUN_140644bb0(nJob));
+        CStringW* pName = &strText;
+        AddJobItem(list, *pName, nJob);
+        if (nJob == nSelectedJob)
+            nSelectedIndex = (int)nIndex;
+        nIndex++;
     }
 }
 
@@ -3580,60 +3576,65 @@ int UIMeratMarketDialog::OnCommandLimited(const char* szName, const Scaleform::G
     return 0;
 }
 
-// MS2-FUNCTIONAL: stack-slot/frame layout of the logger string temporaries differs
 // @0x1412fdf30
 void UIMeratMarketDialog::OnChangeTab(ASData& data)
 {
-    if (!(m_30 == 0))
+    if (m_30 == 0)
+        return;
+    int nTab = data.FUN_1422b8a10();
+    int nPrevTab = m_250;
+    m_250 = nTab;
+    ShowUgcTerms(nPrevTab, nTab);
+    bool bEmpty = false;
+    if (GetTabCount(nTab) == 0)
     {
-        int nTab = data.FUN_1422b8a10();
-        int nPrevTab = m_250;
-        m_250 = nTab;
-        ShowUgcTerms(nPrevTab, nTab);
-        int nCount = GetTabCount(nTab);
-        if (nCount == 0)
-            LoadTab(nTab);
-        if (nPrevTab == 7 && !HasEventTab())
+        bEmpty = true;
+        LoadTab(nTab);
+    }
+    if (nPrevTab == 7)
+    {
+        bool bHas = HasEventTab();
+        if (!bHas)
         {
             m_30->Invoke("setVisibleLimitedTab", false);
             m_2f2 = false;
         }
-        if (nTab == 0)
+    }
+    if (nTab == 0)
+    {
+        SelectCategory(ShopKindOf(nTab), 10);
+    }
+    else if (nTab == 7 && !bEmpty)
+    {
+        FUN_140939a00()->FUN_140d543c0(2);
+    }
+    if (nPrevTab == 4 && nTab != nPrevTab)
+    {
+        FUN_140939a00()->FUN_140d566f0(0);
+        RefreshMyShop();
+    }
+    if (FUN_140d8ee90() != 0)
+    {
+        switch (nTab)
         {
-            SelectCategory(ShopKindOf(0), 10);
-        }
-        else if (nTab == 7 && nCount != 0)
-        {
-            FUN_140939a00()->FUN_140d543c0(2);
-        }
-        if (nPrevTab == 4 && nTab != 4)
-        {
-            FUN_140939a00()->FUN_140d566f0(0);
-            RefreshMyShop();
-        }
-        if (FUN_140d8ee90() != 0)
-        {
-            switch (nTab)
-            {
-            case 0:
-                FUN_140a1f970(FUN_140d8ee90(), "dialog_open", "merat_home");
-                break;
-            case 1:
-                FUN_140a1f970(FUN_140d8ee90(), "dialog_open", "merat_premium");
-                break;
-            case 3:
-                FUN_140a1f970(FUN_140d8ee90(), "dialog_open", "merat_designers");
-                break;
-            case 4:
-                FUN_140a1f970(FUN_140d8ee90(), "dialog_open", "merat_myshop");
-                break;
-            case 5:
-                FUN_140a1f970(FUN_140d8ee90(), "dialog_open", "merat_bookmark");
-                break;
-            case 6:
-                FUN_140a1f970(FUN_140d8ee90(), "dialog_open", "merat_basket");
-                break;
-            }
+        case 0:
+            FUN_140a1f970(FUN_140d8ee90(), "dialog_open", "merat_home");
+            break;
+        case 1:
+            FUN_140a1f970(FUN_140d8ee90(), "dialog_open", "merat_premium");
+            break;
+        case 3:
+            FUN_140a1f970(FUN_140d8ee90(), "dialog_open", "merat_designers");
+            break;
+        case 4:
+            FUN_140a1f970(FUN_140d8ee90(), "dialog_open", "merat_myshop");
+            break;
+        case 5:
+            FUN_140a1f970(FUN_140d8ee90(), "dialog_open", "merat_bookmark");
+            break;
+        case 6:
+            FUN_140a1f970(FUN_140d8ee90(), "dialog_open", "merat_basket");
+            break;
         }
     }
 }
@@ -3975,7 +3976,6 @@ void UIMeratMarketDialog::OnClickBuy(const CStringA& strMovie, ASData& data)
     ShowProduct(spProduct);
 }
 
-// MS2-FUNCTIONAL: frame 0x20 larger (string temporaries of the two notices / EH temporaries differ)
 // @0x1413000d0
 void UIMeratMarketDialog::OnClickRandomSalePick(const CStringA& strName, ASData& data)
 {
@@ -3984,31 +3984,27 @@ void UIMeratMarketDialog::OnClickRandomSalePick(const CStringA& strName, ASData&
     MS2Ptr<ASMeratMarketProductBase> spOut = out.FUN_140ec28b0();
     if (spOut == 0)
         return;
+    Unk_MeratProductKey key;
+    spOut->FUN_1409bc6a0(reinterpret_cast<Unk_MeratOid*>(&key));   // Unk_MeratOid is the same {premium id, ugc id} pair
+    __int64 nSearchId = CurrentSearchId();
+    MS2Ptr<CMeratMarketProduct> spProduct = FindProduct(key, nSearchId, IsCurrentShopTab());
+    if (spProduct == 0)
+        return;
+    if (spProduct->m_premium.m_nType != 8 && spProduct->m_premium.m_nType != 7)
     {
-        Unk_MeratProductKey key;
-        spOut->FUN_1409bc6a0(reinterpret_cast<Unk_MeratOid*>(&key));   // Unk_MeratOid is the same {premium id, ugc id} pair
-        MS2Ptr<CMeratMarketProduct> spProduct = FindProduct(key, CurrentSearchId(), IsCurrentShopTab());
-        if (!(spProduct == 0))
-        {
-            if (spProduct->m_premium.m_nType != 8 && spProduct->m_premium.m_nType != 7)
-            {
-                FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_meratmarket_error_random_create_fail")), 1, 1);
-                return;
-            }
-            if (!spProduct->m_premium.FUN_1406a0090())
-            {
-                FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_meratmarket_error_random_already_exist")), 1, 1);
-            }
-            else
-            {
-                COutPacket pkt(static_cast<int>(SendOp::MeretMarket), 0);
-                pkt.WriteUInt8(0x72);
-                pkt.WriteInt32(spProduct->m_premium.m_nId);
-                pkt.WriteUInt8(spProduct->m_premium.m_nType);
-                FUN_140710590(pkt);
-            }
-        }
+        FUN_1412751f0(GetStringCommonByKey(L"s_meratmarket_error_random_create_fail"), 1, 1);
+        return;
     }
+    if (!spProduct->m_premium.FUN_1406a0090())
+    {
+        FUN_1412751f0(GetStringCommonByKey(L"s_meratmarket_error_random_already_exist"), 1, 1);
+        return;
+    }
+    COutPacket pkt(static_cast<int>(SendOp::MeretMarket), 0);
+    pkt.WriteUInt8(0x72);
+    pkt.WriteInt32(spProduct->m_premium.m_nId);
+    pkt.WriteUInt8(spProduct->m_premium.m_nType);
+    FUN_140710590(pkt);
 }
 
 // MS2-FUNCTIONAL: the first-icon product test (&& with a temporary) is 0x15 bytes shorter than the exe's
@@ -4172,7 +4168,6 @@ void UIMeratMarketDialog::OnClickSearchAll(ASData& data)
     m_30->Invoke("changeTabToSearch", tab.FUN_1422bb870());
 }
 
-// MS2-FUNCTIONAL: frame 0x20 bigger than the exe (temp slot layout not found)
 // @0x1413019e0
 void UIMeratMarketDialog::OnClickBasket(ASData& data)
 {
@@ -4187,17 +4182,14 @@ void UIMeratMarketDialog::OnClickBasket(ASData& data)
     __int64 nSeller = 0;
     if (m_250 == 5)
         nSeller = CurrentSearchId();
-    bool bShop = IsCurrentShopTab();
-    MS2Ptr<CMeratMarketProduct> spProduct = FindProduct(key, nSeller, bShop);
+    MS2Ptr<CMeratMarketProduct> spProduct = FindProduct(key, nSeller, IsCurrentShopTab());
     if (spProduct == 0)
         return;
     if (spProduct->IsUgc() != 0) {
         CUgcMarketProduct* pUgc = &spProduct->m_ugc;
-        if (pUgc->FUN_140896310() != 0) {
-            if (FUN_14025e7b0()->m_flags.FUN_1402c4c90(0x56) != 0) {
-                FUN_141275260(0x2f7, 1, 1);
-                return;
-            }
+        if (pUgc->FUN_140896310() != 0 && FUN_14025e7b0()->m_flags.FUN_1402c4c90(0x56) != 0) {
+            FUN_141275260(0x2f7, 1, 1);
+            return;
         }
         Unk_McOwner owner;
         owner.FUN_1409aff60();
@@ -4214,45 +4206,37 @@ void UIMeratMarketDialog::OnClickBasket(ASData& data)
         FUN_140d73bc0(0xa16, 0, 0, CStringW(L""));
         return;
     }
-    if (FUN_140166410()->FUN_14036e510() == false) {
-        if (spProduct->IsUgc() != 0) {
-            if (spProduct->m_ugc.FUN_140896310() != 0) {
-                CStringW strKey(L"s_meratmarket_error_add_basket_by_music_score");
-                FUN_140d73aa0(GetStringCommonByKey(strKey), 0, 0, CStringW(L""));
-                return;
-            }
-        }
+    if (FUN_140166410()->FUN_14036e510() == false && spProduct->IsUgc() != 0 && spProduct->m_ugc.FUN_140896310() != 0) {
+        FUN_140d73aa0(GetStringCommonByKey(L"s_meratmarket_error_add_basket_by_music_score"), 0, 0, CStringW(L""));
+        return;
     }
-    if (FUN_140939a00()->m_basket.FUN_140d66b20() < 0x10) {
-        if (spProduct->IsUgc() == 0) {
-            if (spProduct->m_premium.HasSubProducts() != 0) {
-                UIMarketBillDialog* pDialog = FUN_140b09580(0x4f17);
-                if (pDialog == 0)
-                    return;
-                MS2Ptr<TMeratMarketBillDataParam> spParam = CreateBillParam("OnClickBasket", 4, 2);
-                if (spParam == 0)
-                    return;
-                ATL::CAtlArray<MS2Ptr<ASBillData> >& bills = spParam->m_bills;
-                {
-                    MS2Ptr<ASMeratMarketBuyBillData> spBill(new ASMeratMarketBuyBillData());
-                    spBill->FUN_1409ab940(vSlot);
-                    FUN_1409b03d0(spBill.operator->(), nSeller);
-                    int nCurrency = FUN_14069c3e0(spProduct->GetPayCurrency());
-                    FUN_1409ac360(spBill.operator->(), spProduct, 0, nCurrency);
-                    MS2Ptr<ASBillData> spRow(spBill);
-                    bills.Add(spRow);
-                }
-                MS2Ptr<TMarketBillDataParam> spBase = spParam;
-                pDialog->FUN_140ea7770(spBase);
-                FUN_1403ed2b0()->OpenDialog((eUIClassID)0x4f17);
-                return;
-            }
-        }
-        FUN_140939a00()->FUN_140d58260(spProduct, nSeller);
-    } else {
+    if (FUN_140939a00()->m_basket.FUN_140d66b20() >= 0x10) {
         int nMax = 0x10;
         FUN_1412751f0(FUN_1408116a0(0xa21, nMax), 1, 1);
+        return;
     }
+    if (spProduct->IsUgc() != 0 || spProduct->m_premium.HasSubProducts() == 0) {
+        FUN_140939a00()->FUN_140d58260(spProduct, nSeller);
+        return;
+    }
+    UIMarketBillDialog* pDialog = FUN_140b09580(0x4f17);
+    if (pDialog == 0)
+        return;
+    MS2Ptr<TMeratMarketBillDataParam> spParam = CreateBillParam("OnClickBasket", 4, 2);
+    if (spParam == 0)
+        return;
+    ATL::CAtlArray<MS2Ptr<ASBillData> >& bills = spParam->m_bills;
+    {
+        MS2Ptr<ASMeratMarketBuyBillData> spBill(new ASMeratMarketBuyBillData());
+        spBill->FUN_1409ab940(vSlot);
+        FUN_1409b03d0(spBill.operator->(), nSeller);
+        FUN_1409ac360(spBill.operator->(), spProduct, 0, FUN_14069c3e0(spProduct->GetPayCurrency()));
+        MS2Ptr<ASBillData> spRow(spBill);
+        bills.Add(spRow);
+    }
+    MS2Ptr<TMarketBillDataParam> spBase = spParam;
+    pDialog->FUN_140ea7770(spBase);
+    FUN_1403ed2b0()->OpenDialog((eUIClassID)0x4f17);
 }
 
 // @0x141302490
@@ -5446,7 +5430,6 @@ void UIMeratMarketDialog::SetPreviewControls(ASObj& data, int nKind, MS2Ptr<CMer
     data.FUN_1407cbbe0("showMusicControl", bMusic);
 }
 
-// MS2-FUNCTIONAL: MsToSeconds argument goes through an extra stack temp in the exe
 // @0x141309600
 void UIMeratMarketDialog::SetMusicInfo(ASObj& data, MS2Ptr<CMeratMarketProduct> spProduct)
 {
@@ -5462,17 +5445,20 @@ void UIMeratMarketDialog::SetMusicInfo(ASObj& data, MS2Ptr<CMeratMarketProduct> 
         ASObj info(2);
         info.FUN_1407cbb20("title", pMusic->m_str30);
         info.FUN_1407cbb20("writer", pMusic->m_str28);
-        int nSeconds = MsToSeconds(pMusic->m_n20);
-        CStringW strTime = FUN_141b708a0(nSeconds, true);
-        CStringW strCategory = CInstrumentDataTable::GetCategoryNameById(pMusic->m_n24);
-        info.FUN_1407cbb20("info", FUN_1408f71a0(L"s_meratmarket_text_music_info", strCategory, strTime));
-        info.FUN_1407cbbe0("infoVisible", true);
-        info.FUN_1409c0e60("time", L"00:00");
-        if (m_spSlider.get() != 0)
         {
-            if (nSeconds < 1)
-                nSeconds = 1;
-            m_spSlider->FUN_1422ce6a0((float)nSeconds);
+            int nLength = pMusic->m_n20;
+            int nSeconds = MsToSeconds(nLength);
+            CStringW strTime = FUN_141b708a0(nSeconds, true);
+            CStringW strCategory = CInstrumentDataTable::GetCategoryNameById(pMusic->m_n24);
+            CStringW strInfo = FUN_1408f71a0(L"s_meratmarket_text_music_info", strCategory, strTime);
+            info.FUN_1407cbb20("info", strInfo);
+            info.FUN_1407cbbe0("infoVisible", true);
+            info.FUN_1409c0e60("time", L"00:00");
+            if (m_spSlider.get() != 0)
+            {
+                int nMax = nSeconds < 1 ? 1 : nSeconds;
+                m_spSlider->FUN_1422ce6a0((float)nMax);
+            }
         }
         data.FUN_1409adbe0("musicInfo", info.FUN_1422bb870());
     }
@@ -5480,29 +5466,27 @@ void UIMeratMarketDialog::SetMusicInfo(ASObj& data, MS2Ptr<CMeratMarketProduct> 
     {
         if (!FUN_140166410()->FUN_14036d570(0xac))
             return;
-        MS2Ptr<CItemData> spItemData = FUN_14053f870(spProduct->GetItemId());
-        if (spItemData == 0)
+        int nItemId = spProduct->GetItemId();
+        MS2Ptr<CItemData> spItemData = FUN_14053f870(nItemId);
+        if (spItemData == 0 || !spItemData->FUN_14053cd50())
             return;
-        if (spItemData->FUN_14053cd50())
+        int nCategoryId = spItemData->FUN_14053de80();
+        CInstrumentDataTable::CategoryPtr spCategory = FUN_14052d1d0()->GetInstrumentCategory(nCategoryId);
+        if (spCategory == 0)
+            return;
+        ASObj info(2);
+        info.FUN_1409c0e60("title", L"");
+        info.FUN_1409c0e60("writer", L"");
+        info.FUN_1409c0e60("info", L"");
+        info.FUN_1407cbbe0("infoVisible", false);
+        int nSeconds = MsToSeconds(m_62c);
+        info.FUN_1409c0e60("time", L"00:00");
+        if (m_spSlider.get() != 0)
         {
-            CInstrumentDataTable::CategoryPtr spCategory = FUN_14052d1d0()->GetInstrumentCategory(spItemData->FUN_14053de80());
-            if (spCategory == 0)
-                return;
-            ASObj info(2);
-            info.FUN_1409c0e60("title", L"");
-            info.FUN_1409c0e60("writer", L"");
-            info.FUN_1409c0e60("info", L"");
-            info.FUN_1407cbbe0("infoVisible", false);
-            int nSeconds = MsToSeconds(m_62c);
-            info.FUN_1409c0e60("time", L"00:00");
-            if (m_spSlider.get() != 0)
-            {
-                if (nSeconds < 1)
-                    nSeconds = 1;
-                m_spSlider->FUN_1422ce6a0((float)nSeconds);
-            }
-            data.FUN_1409adbe0("musicInfo", info.FUN_1422bb870());
+            int nMax = nSeconds < 1 ? 1 : nSeconds;
+            m_spSlider->FUN_1422ce6a0((float)nMax);
         }
+        data.FUN_1409adbe0("musicInfo", info.FUN_1422bb870());
     }
 }
 
@@ -5994,7 +5978,6 @@ void UIMeratMarketDialog::OnBlindTarget(NotifyObject* pNotify)
     ShowProduct(spProduct);
 }
 
-// MS2-FUNCTIONAL: the exe frame is 0x10 smaller (temporaries of the Invoke call differ), early-return shape
 // @0x14130bba0
 void UIMeratMarketDialog::OnUgcDownloadComplete(NotifyObject* pNotify)
 {
@@ -6003,21 +5986,21 @@ void UIMeratMarketDialog::OnUgcDownloadComplete(NotifyObject* pNotify)
     NotifyUgcDownloadComplete* pDownload = dynamic_cast<NotifyUgcDownloadComplete*>(pNotify);
     if (pDownload == 0)
         return;
-    if (pDownload->m_nType != 9)
-        return;
-    if (m_spProduct == 0)
-        return;
-    if (m_spProduct->m_ugc.FUN_140896350() == 0)
-        return;
-    if (m_spProduct->m_ugc.m_blueprint.m_n18 != pDownload->m_uid)
-        return;
-    MS2Ptr<ASMovieClip> spCharView = m_30->FUN_1409b4560(CStringA("m_charView"));
-    if (spCharView == 0)
-        return;
-    ASObj data(2);
-    data.FUN_1409c0dc0("type", "blueprint");
-    data.FUN_1407cba60("imagePath", pDownload->m_strPath);
-    spCharView->Invoke("updateData", data.FUN_1422bb870());
+    if (pDownload->m_nType == 9)
+    {
+        if (m_spProduct == 0 || m_spProduct->m_ugc.FUN_140896350() == 0)
+            return;
+        if (m_spProduct->m_ugc.m_blueprint.m_n18 == pDownload->m_uid)
+        {
+            MS2Ptr<ASMovieClip> spCharView = m_30->FUN_1409b4560("m_charView");
+            if (spCharView == 0)
+                return;
+            ASObj data(2);
+            data.FUN_1409c0dc0("type", "blueprint");
+            data.FUN_1407cba60("imagePath", pDownload->m_strPath);
+            spCharView->Invoke("updateData", data.FUN_1422bb870());
+        }
+    }
 }
 
 // @0x14130be10
@@ -6103,7 +6086,6 @@ void UIMeratMarketDialog::UpdateNotice(const CStringW& strNotice)
     m_30->Invoke("updateNotice", strNotice);
 }
 
-// MS2-FUNCTIONAL: page-building layout differs from exe (temp ordering/size)
 // @0x14130c670
 void UIMeratMarketDialog::BuildItemList(int nKind)
 {
@@ -6115,70 +6097,77 @@ void UIMeratMarketDialog::BuildItemList(int nKind)
     if (nKind == 1 || nKind == 2)
     {
         ATL::CAtlArray<MS2Ptr<CMeratMarketProduct> >& list = FUN_140939a00()->m_premium;
-        int nLast = ((int)list.GetCount() - 1 < 0x12) ? (int)list.GetCount() - 1 : 0x11;
+        int nPage = 1;
+        int nFrom = 0;
+        int nTo = (nFrom + 0x11 < (int)list.GetCount() - 1) ? nFrom + 0x11 : (int)list.GetCount() - 1;
+        bool bEnd = false;
+        bool bPrev = false;
+        bool bFirst = nPage == 1;
         ASArray items(2);
         Unk_MmViewScope scope(m_spWeaponType);
-        int nResult = FillPage(0, nLast, items, list, &scope);
+        int nResult = FillPage(nFrom, nTo, items, list, &scope);
+        int nEndPage = (int)(list.GetCount() / 0x12);
         ASObj info(2);
-        info.FUN_1407cbbe0("isPrevList", false);
-        info.FUN_1407cb9c0("curPage", 1);
+        info.FUN_1407cbbe0("isPrevList", bPrev);
+        info.FUN_1407cb9c0("curPage", nPage);
         info.FUN_1407cbbe0("isSearchItemLink", false);
-        info.FUN_1407cbbe0("isEndPage", false);
-        info.FUN_1407cb9c0("endPage", (int)(list.GetCount() / 0x12));
-        spPage->FUN_1413125d0("buildItemList", items, nResult, true, info.FUN_1422bb870());
-        return;
-    }
-    ASObj home(2);
-    if (nKind == 0 && FUN_140166410()->FUN_14036d570(0x108))
-    {
-        ASArray items(2);
-        Unk_MmViewScope scope(m_spWeaponType);
-        ATL::CAtlArray<MS2Ptr<CMeratMarketProduct> >& list = FUN_140939a00()->m_premium;
-        if (!list.IsEmpty())
-        {
-            int nHomeKind = 2;
-            FillBannerProducts(nHomeKind, items, list, &scope);
-        }
-        home.FUN_1409adbe0("arr", items.FUN_1422bb870());
+        info.FUN_1407cbbe0("isEndPage", bEnd);
+        info.FUN_1407cb9c0("endPage", nEndPage);
+        spPage->FUN_1413125d0("buildItemList", items, nResult, bFirst, info.FUN_1422bb870());
     }
     else
     {
-        ASArray itemsA(2);
+        ASObj home(2);
+        if (nKind == 0 && FUN_140166410()->FUN_14036d570(0x108))
         {
-            Unk_MmViewScope scope(m_spWeaponType);
-            ATL::CAtlArray<MS2Ptr<CMeratMarketProduct> >& list = FUN_140939a00()->m_premium;
-            if (!list.IsEmpty())
+            ASArray items(2);
             {
-                int nLast = (int)list.GetCount() - 1;
-                if (nLast < 0)
-                    nLast = 0;
-                FillPage(0, nLast, itemsA, list, &scope);
+                Unk_MmViewScope scope(m_spWeaponType);
+                ATL::CAtlArray<MS2Ptr<CMeratMarketProduct> >& list = FUN_140939a00()->m_premium;
+                if (!list.IsEmpty())
+                {
+                    int nHomeKind = 2;
+                    FillBannerProducts(nHomeKind, items, list, &scope);
+                }
             }
+            home.FUN_1409adbe0("arr", items.FUN_1422bb870());
         }
-        home.FUN_1409adbe0("arr", itemsA.FUN_1422bb870());
-        ASArray itemsB(2);
+        else
         {
-            Unk_MmViewScope scope(m_spWeaponType);
-            ATL::CAtlArray<MS2Ptr<CMeratMarketProduct> >& list = FUN_140939a00()->m_second;
-            if (!list.IsEmpty())
+            ASArray itemsA(2);
             {
-                int nLast = (int)list.GetCount() - 1;
-                if (nLast < 0)
-                    nLast = 0;
-                FillPage(0, nLast, itemsB, list, &scope);
+                Unk_MmViewScope scope(m_spWeaponType);
+                ATL::CAtlArray<MS2Ptr<CMeratMarketProduct> >& list = FUN_140939a00()->m_premium;
+                if (!list.IsEmpty())
+                {
+                    int nLast = (int)(list.GetCount() - 1);
+                    FillPage(0, nLast < 0 ? 0 : nLast, itemsA, list, &scope);
+                }
             }
+            home.FUN_1409adbe0("arr", itemsA.FUN_1422bb870());
+            ASArray itemsB(2);
+            {
+                Unk_MmViewScope scope(m_spWeaponType);
+                ATL::CAtlArray<MS2Ptr<CMeratMarketProduct> >& list = FUN_140939a00()->m_second;
+                if (!list.IsEmpty())
+                {
+                    int nLast = (int)(list.GetCount() - 1);
+                    FillPage(0, nLast < 0 ? 0 : nLast, itemsB, list, &scope);
+                }
+            }
+            home.FUN_1409adbe0("arr1", itemsB.FUN_1422bb870());
         }
-        home.FUN_1409adbe0("arr1", itemsB.FUN_1422bb870());
+        spPage->Invoke("buildHomeItemList", home.FUN_1422bb870());
     }
-    spPage->Invoke("buildHomeItemList", home.FUN_1422bb870());
 }
 
-// MS2-FUNCTIONAL: branch shape not byte-exact
 // @0x14130ce70
 void UIMeratMarketDialog::RefreshLimitedTab(bool bSkip)
 {
-    if (!(m_30 == 0) && FUN_1422dc430() != 0)
-    {
+    if (m_30 == 0)
+        return;
+    if (FUN_1422dc430() == 0)
+        return;
         if (!bSkip)
         {
             if (GetTabCount(7) == 0)
@@ -6188,13 +6177,17 @@ void UIMeratMarketDialog::RefreshLimitedTab(bool bSkip)
                     m_2f2 = true;
                     ASArray tab(2);
                     AddEventTab(tab);
-                    if (!FUN_140166410()->FUN_14036d570(0x108))
-                        m_30->Invoke("appendTab", tab.FUN_1422bb870());
-                    else
+                    if (FUN_140166410()->FUN_14036d570(0x108))
                         m_30->FUN_141313220("appendLimitedTab", tab.FUN_1422bb870(), 3);
+                    else
+                        m_30->Invoke("appendTab", tab.FUN_1422bb870());
                 }
-                if (!m_2f3 && DefaultTab() == 7)
-                    m_30->FUN_1409ba030("changeTab", 7);
+                if (!m_2f3)
+                {
+                    int nTab = DefaultTab();
+                    if (nTab == 7)
+                        m_30->FUN_1409ba030("changeTab", nTab);
+                }
             }
             else if (!m_2f2)
             {
@@ -6203,7 +6196,6 @@ void UIMeratMarketDialog::RefreshLimitedTab(bool bSkip)
             }
         }
         FUN_14130db60();
-    }
 }
 
 // @0x14130d150
@@ -6221,44 +6213,39 @@ void UIMeratMarketDialog::SetCollectState(int nId, __int64 nCount)
     }
 }
 
-// MS2-FUNCTIONAL: stack slot of strNotice/spPage 8 bytes off
 // @0x14130d390
 void UIMeratMarketDialog::ShowSearchPage(int nPage, int nFrom, int nTo, int nCount, bool bEnd)
 {
     if (m_30 == 0)
         return;
-    PC* pPlayer = static_cast<PC*>(WorldService::GetInstance()->FUN_141bd0cc0());
-    if (pPlayer == 0 || m_250 == 7)
+    if (WorldService::GetInstance()->FUN_141bd0cc0() == 0)
         return;
-    bool bShow = false;
+    if (m_250 == 7)
+        return;
+    int bShow = 0;
     bool bPrevList = false;
     CStringW strNotice;
-    if (!m_query.IsActive())
+    if (m_query.IsActive())
     {
-        if (m_spSearch.get() != 0)
+        bShow = 1;
+        if (nFrom == 0 && nFrom >= nTo)
         {
-            if (m_spSearch->m_18 == m_dirty.GetSearchType())
-            {
-                bShow = true;
-                bPrevList = m_spSearch->m_44 != 0;
-                if (!m_spSearch->m_str.IsEmpty())
-                    strNotice = FUN_14052bd00(0xa10, m_spSearch->m_str);
-            }
+            if (m_query.m_nCategory != 0)
+                strNotice = GetStringCommon(0xa12);
+            else if (!m_query.m_strText.IsEmpty())
+                strNotice = FUN_14052bd00(0xa11, m_query.m_strText);
         }
     }
     else
     {
-        bShow = true;
-        if (nFrom == 0 && nTo < 1)
+        if (m_spSearch.get() ? true : false)
         {
-            if (m_query.m_nCategory == 0)
+            if (m_spSearch->m_18 == m_dirty.GetSearchType())
             {
-                if (!m_query.m_strText.IsEmpty())
-                    strNotice = FUN_14052bd00(0xa11, m_query.m_strText);
-            }
-            else
-            {
-                strNotice = GetStringCommon(0xa12);
+                bShow = 1;
+                bPrevList = m_spSearch->m_44 ? true : false;
+                if (!m_spSearch->m_str.IsEmpty())
+                    strNotice = FUN_14052bd00(0xa10, m_spSearch->m_str);
             }
         }
     }
@@ -6268,15 +6255,14 @@ void UIMeratMarketDialog::ShowSearchPage(int nPage, int nFrom, int nTo, int nCou
         if (spPage == 0)
             return;
         bool bFirstPage = nPage == 1;
-        if (bFirstPage && m_250 == 8 && m_spSearch.get() != 0)
+        if (bFirstPage && m_250 == 8 && (m_spSearch.get() ? true : false))
         {
             int nLimit = 0x10e;
             if (m_spSearch->m_48 == 0)
                 nLimit = 0xb4;
-            if (nLimit <= nCount)
+            if (nCount >= nLimit)
             {
-                CStringW strKey(L"s_meratmarket_notice_too_many_search_result");
-                MS2Ptr<CMsgBoxData> spBox = FUN_140d74390(GetStringCommonByKey(strKey), 0, FUN_140b240b0());
+                FUN_140d74390(GetStringCommonByKey(L"s_meratmarket_notice_too_many_search_result"), 0, FUN_140b240b0());
             }
         }
         ASArray items(2);
@@ -6591,7 +6577,6 @@ void UIMeratMarketDialog::OnSellerVisible(bool bVisible)
         RefreshSellerInfo();
 }
 
-// MS2-FUNCTIONAL: std::set insert temporaries and iterator slots differ
 // @0x14130f490
 void UIMeratMarketDialog::ApplyPremiumSale()
 {
@@ -6604,28 +6589,29 @@ void UIMeratMarketDialog::ApplyPremiumSale()
     if (ids.IsEmpty())
         return;
     std::set<int> tabs;
-    size_t nCount = ids.GetCount();
-    for (size_t i = 0; i < nCount; i++)
+    unsigned nCount = ids.GetCount();
+    for (unsigned i = 0; i < nCount; i++)
     {
         int nId = ids[i];
         MS2Ptr<PreminmMarketSaleEventContext> spEvent = FUN_1403ed2a0()->FUN_1407ce4b0(nId);
-        if (spEvent != 0)
-        {
-            if (spEvent->m_30 == 100000)
-                tabs.insert(1);
-            else if (spEvent->m_30 == 100001)
-                tabs.insert(2);
-        }
-        else
+        if (spEvent == 0)
         {
             tabs.insert(2);
             tabs.insert(1);
+            continue;
         }
+        if (spEvent->m_30 == 100000)
+            tabs.insert(1);
+        else if (spEvent->m_30 == 100001)
+            tabs.insert(2);
     }
     if (!tabs.empty())
     {
         for (std::set<int>::const_iterator it = tabs.begin(); it != tabs.end(); ++it)
-            RebuildShopTab(*it);
+        {
+            int nTab = *it;
+            RebuildShopTab(nTab);
+        }
     }
 }
 
@@ -6710,86 +6696,72 @@ void UIMeratMarketDialog::RequestPending(int nFlag, bool bSet)
     m_query.Clear();
 }
 
-// MS2-FUNCTIONAL: the inlined clamp locals (extra int temps) are laid out differently
 // @0x14130fc10
 bool UIMeratMarketDialog::FillSearchData(MS2Ptr<CMeratMarketSchCond> spCond, AScript& data, bool bForce)
 {
-    if (!(spCond == 0))
+    if (spCond == 0)
+    return false;
+    int nGender = 2;
+    int nJob = 200;
+    if (data.FUN_1422ba9a0() == false)
     {
-        int nGender = 2;
-        int nJob = 200;
-        if (data.FUN_1422ba9a0() == false)
+        Scaleform::GFx::Value vGender = data.FUN_1422baa20("gender");
+        if (!FUN_1409b0350(&vGender))
         {
-            Scaleform::GFx::Value vGender = data.FUN_1422baa20("gender");
-            if (!FUN_1409b0350(&vGender))
-            {
-                if (!FUN_1409b0390(&vGender))
-                    nGender = FUN_1409c1750(vGender);
-            }
-            Scaleform::GFx::Value vSort = data.FUN_1422baa20("sort");
-            int nSortKey = 0;
-            if (!FUN_1409b0350(&vSort))
-            {
-                if (!FUN_1409b0390(&vSort))
-                {
-                    ASObj sortObj(vSort, 2);
-                    nSortKey = FUN_1409c1750(sortObj.FUN_1422baa20(s_strJobCode));
-                }
-            }
-            Scaleform::GFx::Value vSortJob = data.FUN_1422baa20("sortJob");
-            if (!FUN_1409b0350(&vSortJob))
-            {
-                if (!FUN_1409b0390(&vSortJob))
-                {
-                    ASObj jobObj(vSortJob, 2);
-                    nJob = FUN_1409c1750(jobObj.FUN_1422baa20(s_strSortValue));
-                }
-            }
-            int nPage = FUN_1409c1750(data.FUN_1422baa20("page"));
-            CStringW strId;
-            data.FUN_1422baad0("id", strId);
-            CStringW strIdCopy(strId);
-            spCond->m_24 = nSortKey;
-            spCond->m_30 = nPage;
+            if (!FUN_1409b0390(&vGender))
+                nGender = FUN_1409c1750(vGender);
         }
-        bool bGenderFilter = false;
-        bool bJobFilter = false;
-        int nTab = m_250;
-        if (m_250 == 8 || bForce)
+        Scaleform::GFx::Value vSort = data.FUN_1422baa20("sort");
+        int nSortKey = 0;
+        if (!FUN_1409b0350(&vSort))
         {
-            bGenderFilter = true;
-            bJobFilter = true;
+            if (!FUN_1409b0390(&vSort))
+            {
+                ASObj sortObj(vSort, 2);
+                nSortKey = FUN_1409c1750(sortObj.FUN_1422baa20(s_strJobCode));
+            }
         }
-        else
+        Scaleform::GFx::Value vSortJob = data.FUN_1422baa20("sortJob");
+        if (!FUN_1409b0350(&vSortJob))
         {
-            int nListId = CurrentListId(nTab);
-            FUN_140ec1da0(nListId, m_254, &bGenderFilter, &bJobFilter);
+            if (!FUN_1409b0390(&vSortJob))
+            {
+                ASObj jobObj(vSortJob, 2);
+                nJob = FUN_1409c1750(jobObj.FUN_1422baa20(s_strSortValue));
+            }
         }
-        spCond->m_18 = m_254;
-        int nGenderValue;
-        if (!bGenderFilter)
-            nGenderValue = 2;
-        else
-            nGenderValue = nGender;
-        int nJobValue;
-        if (!bJobFilter)
-            nJobValue = 200;
-        else
-            nJobValue = nJob;
-        int nGenderCode = FUN_140222b30(nGenderValue, 0);
-        spCond->m_1c = nGenderCode;
-        int nJobCode = FUN_1402227e0(nJobValue, 0);
-        spCond->m_20 = nJobCode;
-        spCond->m_44 = 0;
-        int nCurrency = CurrencyOf(m_250);
-        spCond->m_38 = nCurrency;
-        spCond->m_40 = 0x12;
-        return true;
+        int nPage = FUN_1409c1750(data.FUN_1422baa20("page"));
+        CStringW strId;
+        data.FUN_1422baad0("id", strId);
+        CStringW strIdCopy(strId);
+        spCond->m_24 = nSortKey;
+        spCond->m_30 = nPage;
+    }
+    bool bGenderFilter = false;
+    bool bJobFilter = false;
+    int nTab = m_250;
+    if (m_250 == 8 || bForce)
+    {
+        bGenderFilter = true;
+        bJobFilter = true;
     }
     else
     {
-        return false;
+        int nListId = CurrentListId(nTab);
+        FUN_140ec1da0(nListId, m_254, &bGenderFilter, &bJobFilter);
     }
+    spCond->m_18 = m_254;
+    int nGenderValue = bGenderFilter ? nGender : 2;
+    int nJobValue = bJobFilter ? nJob : 200;
+    int nGenderCode = FUN_140222b30(nGenderValue, 0);
+    spCond->m_1c = nGenderCode;
+    int nJobCode = FUN_1402227e0(nJobValue, 0);
+    spCond->m_20 = nJobCode;
+    spCond->m_44 = 0;
+    int nCurrency = CurrencyOf(m_250);
+    spCond->m_38 = nCurrency;
+    spCond->m_40 = 0x12;
+    return true;
 }
 
 // @0x1413107f0
@@ -6867,27 +6839,22 @@ void UIMeratMarketDialog::ApplySearchAll(MS2Ptr<CMeratMarketSchCond> spCond, ASO
     RequestPending(1, true);
 }
 
-// MS2-FUNCTIONAL: the child-bind return temporaries (3 pointer copies) differ
 // @0x141310970
 void UIMeratMarketDialog::ClearSearchInput()
 {
     if (m_30 == 0)
         return;
-    MS2Ptr<ASTextInput> spInput(m_30->FUN_140bbe880<ASTextInput>("m_inputSearchAll"));
-    if (spInput.get() != 0)
+    if (MS2Ptr<ASTextInput> spInput = m_30->FUN_140bbe880<ASTextInput>("m_inputSearchAll"))
     {
         CStringA strEmpty("");
         spInput->FUN_1422e0a60(strEmpty);
     }
 }
 
-// MS2-FUNCTIONAL: stack slot layout differs
 // @0x141310a60
 void UIMeratMarketDialog::ApplyPreviewChanges(bool bApply)
 {
-    if (m_30 == 0)
-        return;
-    if (m_spAvatar == 0)
+    if (m_30 == 0 || m_spAvatar == 0)
         return;
     MS2Ptr<UIAvatarPC> spPC(dynamic_cast<UIAvatarPC*>((UIAvatarBase*)m_spAvatar));
     if (spPC.get() != 0)
@@ -6895,22 +6862,15 @@ void UIMeratMarketDialog::ApplyPreviewChanges(bool bApply)
         if (!bApply)
         {
             AvatarPC* pAvatarObj = spPC->FUN_1418bd1d0();
-            if (pAvatarObj == 0 || !pAvatarObj->FUN_1409f4f20())
-                bApply = false;
-            else
-                bApply = true;
+            bApply = pAvatarObj != 0 && pAvatarObj->FUN_1409f4f20();
         }
         bool bChanged = false;
-        if (m_spItemData.get() != 0 && (m_spItemData->FUN_14053cd50() || m_spItemData->FUN_14053cd10()))
+        if (m_spItemData && (m_spItemData->FUN_14053cd50() || m_spItemData->FUN_14053cd10()))
         {
             bChanged = true;
             if (m_spItemData->FUN_14053cd10())
             {
-                int nPose;
-                if (!m_620)
-                    nPose = 0;
-                else
-                    nPose = 3;
+                int nPose = m_620 ? 3 : 0;
                 spPC->FUN_1418bcd80(nPose);
             }
         }
@@ -6963,7 +6923,6 @@ int UIMeratMarketDialog::PreviewColorCode()
     return nCode;
 }
 
-// MS2-FUNCTIONAL: the float argument is routed through xmm0 in the exe (slider setter shape)
 // @0x141310e50
 void UIMeratMarketDialog::SetModelTime(int nSeconds)
 {
@@ -6981,8 +6940,7 @@ void UIMeratMarketDialog::SetModelTime(int nSeconds)
             int nTotal = nFirst * 60 + nSecond;
             if (m_spSlider->FUN_1422ce840() != (float)nTotal)
             {
-                float fTotal = (float)nTotal;
-                m_spSlider->FUN_1422ce800(fTotal);
+                m_spSlider->FUN_1422ce800((float)nTotal);
             }
         }
     }

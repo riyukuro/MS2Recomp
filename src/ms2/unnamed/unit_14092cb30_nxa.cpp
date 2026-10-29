@@ -16,20 +16,20 @@
 #include <new>
 #include <stdarg.h>
 
-// This TU's own copies of the UCRT stdio inlines (the exe keeps them apart from textlogfile's).
+// This TU's own copies of the UCRT wide stdio inlines (the exe keeps them apart from textlogfile's).
 // @0x14092f210
-static int ms2_vfprintf_l_nxa(FILE* pStream, const char* pszFormat, _locale_t hLocale, va_list args)
+static int ms2_vfwprintf_l_nxa(FILE* pStream, const wchar_t* pszFormat, _locale_t hLocale, va_list args)
 {
-    return __stdio_common_vfprintf(_CRT_INTERNAL_LOCAL_PRINTF_OPTIONS, pStream, pszFormat, hLocale, args);
+    return __stdio_common_vfwprintf(_CRT_INTERNAL_LOCAL_PRINTF_OPTIONS, pStream, pszFormat, hLocale, args);
 }
 
 // @0x14092f260
-static int ms2_fprintf_nxa(FILE* pStream, const char* pszFormat, ...)
+static int ms2_fwprintf_nxa(FILE* pStream, const wchar_t* pszFormat, ...)
 {
     int nResult;
     va_list args;
     va_start(args, pszFormat);
-    nResult = ms2_vfprintf_l_nxa(pStream, pszFormat, NULL, args);
+    nResult = ms2_vfwprintf_l_nxa(pStream, pszFormat, NULL, args);
     va_end(args);
     return nResult;
 }
@@ -109,7 +109,7 @@ static void FUN_14092f0d0(Unk_NxPool* pPool)
 }
 
 // @0x14092e4b0
-static void FUN_14092e4b0(Unk_NxPool* pPool) { FUN_14092f0d0(pPool); }
+static void FUN_14092e4b0(Unk_NxPool* pPool) noexcept { FUN_14092f0d0(pPool); }
 
 // The pool's scalar deleting dtor.
 // @0x14092e630
@@ -122,14 +122,19 @@ static Unk_NxPool* FUN_14092e630(Unk_NxPool* pPool, unsigned nFlags)
 }
 
 // Returns a block to the free list of its size class (the 16-byte header before it: +0 the link, +8 the class).
-// MS2-FUNCTIONAL: the exe grows the bucket array to max(0x40, class+1 rounded up to 8) through the allocator.
+struct Unk_NxBlockHeader
+{
+    void* m_pNext;
+    size_t m_nClass;
+};
+
 // @0x14092ee40
 static void FUN_14092ee40(Unk_NxPool* pPool, void* p)
 {
     if (p == NULL)
         return;
-    void** pHeader = (void**)((unsigned char*)p - 0x10);
-    size_t nClass = (size_t)pHeader[1];
+    Unk_NxBlockHeader* pHeader = (Unk_NxBlockHeader*)((unsigned char*)p - 0x10);
+    size_t nClass = pHeader->m_nClass;
     if (pPool->m_nFree <= nClass) {
         size_t nCount = nClass + 1;
         nCount = nCount < 0x40 ? 0x40 : (nCount + 7) / 8 * 8;
@@ -146,7 +151,7 @@ static void FUN_14092ee40(Unk_NxPool* pPool, void* p)
         pPool->m_ppFree = ppNew;
         pPool->m_nFree = (unsigned)nCount;
     }
-    pHeader[0] = pPool->m_ppFree[nClass];
+    pHeader->m_pNext = pPool->m_ppFree[nClass];
     pPool->m_ppFree[nClass] = pHeader;
 }
 
@@ -180,7 +185,8 @@ struct Unk_NxArrayBlock
 static void FUN_14092f1a0(void* pArray, Unk_NxArrayBlock* pBlock)
 {
     Unk_NxRaw* pElem = pBlock->m_akElem;
-    for (int i = (int)pBlock->m_nCount - 1; i >= 0; --i) {
+    int i = (int)pBlock->m_nCount;
+    while (--i >= 0) {
         FUN_14092e6b0(pElem, 0);
         ++pElem;
     }
@@ -219,7 +225,7 @@ static void FUN_14092f020(Unk_NxArray* pArray)
 }
 
 // @0x14092e440
-static void FUN_14092e440(Unk_NxArray* pArray)
+static void FUN_14092e440(Unk_NxArray* pArray) noexcept
 {
     FUN_14092f020(pArray);
     if (pArray->m_bOwnPool) {
@@ -275,7 +281,7 @@ static void FUN_14092ea50(Unk_NxObject* pObject)
 }
 
 // @0x14092e4e0
-static void FUN_14092e4e0(Unk_NxObject* pObject)
+static void FUN_14092e4e0(Unk_NxObject* pObject) noexcept
 {
     FUN_14092ea50(pObject);
     FUN_14092ee40(pObject->m_pPool, pObject->m_ppBuckets);
@@ -317,20 +323,32 @@ static void FUN_14092e950(Unk_NxRaw* pValue)
 // @0x14092eb30
 static void FUN_14092eb30(Unk_NxRaw* pValue)
 {
-    int nKind = pValue->m_nKind;
-    if (nKind == 0) {
+    switch (pValue->m_nKind) {
+    case 0:
         FUN_14092ec50(pValue);
         return;
-    }
-    if (nKind == 5 || nKind == 6) {
-        if ((pValue->m_nFlags & 0xf0) == 0x20)
+    case 5:
+    case 6:
+        switch (pValue->m_nFlags & 0xf0) {
+        case 0x20:
             FUN_14092e950(pValue);
-    } else if (nKind == 7) {
-        if ((pValue->m_nFlags & 0xf) == 2)
+            break;
+        }
+        break;
+    case 7:
+        switch (pValue->m_nFlags & 0xf) {
+        case 2:
             FUN_14092e5f0((Unk_NxArray*)pValue->m_abPayload, 0);
-    } else if (nKind == 8) {
-        if ((pValue->m_nFlags & 0xf) == 2)
+            break;
+        }
+        break;
+    case 8:
+        switch (pValue->m_nFlags & 0xf) {
+        case 2:
             FUN_14092e670((Unk_NxObject*)pValue->m_abPayload, 0);
+            break;
+        }
+        break;
     }
     pValue->m_nFlags = 0;
     pValue->m_nKind = 0;
@@ -340,9 +358,8 @@ static void FUN_14092eb30(Unk_NxRaw* pValue)
 }
 
 // The value dtor (Unk_NxNumber's dtor 0x140c772f0 calls it).
-// MS2-FUNCTIONAL: the exe is /Od; same calls and results.
 // @0x14092e580
-void FUN_14092e580(void* p) { FUN_14092eb30((Unk_NxRaw*)p); }
+void FUN_14092e580(void* p) noexcept { FUN_14092eb30((Unk_NxRaw*)p); }
 
 // @0x14092e6b0
 static Unk_NxRaw* FUN_14092e6b0(Unk_NxRaw* pValue, unsigned nFlags)
@@ -354,14 +371,12 @@ static Unk_NxRaw* FUN_14092e6b0(Unk_NxRaw* pValue, unsigned nFlags)
 }
 
 // Sets the kind, resetting the value first when it changes.
-// MS2-FUNCTIONAL: the exe is /Od; same calls and results.
 // @0x14092ea10
 void FUN_14092ea10(void* p, int nKind)
 {
-    Unk_NxRaw* pValue = (Unk_NxRaw*)p;
-    if (pValue->m_nKind != nKind) {
-        FUN_14092eb30(pValue);
-        pValue->m_nKind = (unsigned short)nKind;
+    if (((Unk_NxRaw*)p)->m_nKind != nKind) {
+        FUN_14092eb30((Unk_NxRaw*)p);
+        ((Unk_NxRaw*)p)->m_nKind = (unsigned short)nKind;
     }
 }
 
@@ -371,7 +386,7 @@ static void* FUN_14092e7e0(Unk_NxRaw* pValue, size_t nSize)
 {
     void* p = FUN_14092ecb0(NULL)->Alloc(nSize);
     if (p != NULL) {
-        *(void**)pValue->m_abPayload = p;
+        new (pValue->m_abPayload) void*(p);
         pValue->m_nSize = (unsigned)nSize;
     }
     return p;
@@ -382,7 +397,8 @@ static void* FUN_14092e7e0(Unk_NxRaw* pValue, size_t nSize)
 static void FUN_14092e860(Unk_NxRaw* pValue, const char* psz, size_t nSize)
 {
     void* pDst;
-    if ((pValue->m_nFlags & 0xf0) == 0x20) {
+    switch (pValue->m_nFlags & 0xf0) {
+    case 0x20:
         if (nSize <= pValue->m_nSize) {
             pDst = *(void**)pValue->m_abPayload;
         } else {
@@ -391,14 +407,18 @@ static void FUN_14092e860(Unk_NxRaw* pValue, const char* psz, size_t nSize)
             if (pDst == NULL)
                 return;
         }
-    } else if (nSize <= 0x28) {
-        pDst = pValue->m_abPayload;
-        pValue->m_nFlags = 0x13;
-    } else {
-        pDst = FUN_14092e7e0(pValue, nSize);
-        if (pDst == NULL)
-            return;
-        pValue->m_nFlags = 0x23;
+        break;
+    default:
+        if (nSize <= 0x28) {
+            pDst = pValue->m_abPayload;
+            pValue->m_nFlags = 0x13;
+        } else {
+            pDst = FUN_14092e7e0(pValue, nSize);
+            if (pDst == NULL)
+                return;
+            pValue->m_nFlags = 0x23;
+        }
+        break;
     }
     memcpy(pDst, psz, nSize);
 }
@@ -407,36 +427,36 @@ static void FUN_14092e860(Unk_NxRaw* pValue, const char* psz, size_t nSize)
 // @0x14092e990
 static void FUN_14092e990(Unk_NxRaw* pValue, const char* psz, int nMode)
 {
-    if ((pValue->m_nFlags & 0xf0) == 0x20)
+    switch (pValue->m_nFlags & 0xf0) {
+    case 0x20:
         FUN_14092e950(pValue);
+        break;
+    }
     pValue->m_nFlags = (unsigned short)(nMode | 3);
     new (pValue->m_abPayload) const char*(psz);
 }
 
-// MS2-FUNCTIONAL: the exe is /Od; same calls and results.
 // @0x14092e710
 void Unk_NxString::Set(const char* psz, int nMode)
 {
-    Unk_NxRaw* pValue = (Unk_NxRaw*)this;
     if (psz == NULL) {
-        FUN_14092eb30(pValue);
+        FUN_14092eb30((Unk_NxRaw*)this);
         return;
     }
-    FUN_14092ea10(pValue, 5);
+    FUN_14092ea10((Unk_NxRaw*)this, 5);
     switch (nMode & 0xf) {
     case 1:
-        FUN_14092e990(pValue, psz, 0x40);
+        FUN_14092e990((Unk_NxRaw*)this, psz, 0x40);
         break;
     case 2:
-        FUN_14092e990(pValue, psz, 0x30);
+        FUN_14092e990((Unk_NxRaw*)this, psz, 0x30);
         break;
     default:
-        FUN_14092e860(pValue, psz, strlen(psz) + 1);
+        FUN_14092e860((Unk_NxRaw*)this, psz, strlen(psz) + 1);
         break;
     }
 }
 
-// MS2-FUNCTIONAL: the exe is /Od; same calls and results.
 // @0x14092e560
 Unk_NxString::~Unk_NxString() { FUN_14092e580(this); }
 
@@ -452,10 +472,9 @@ static Unk_NxString* FUN_14092e3c0(Unk_NxString* pString, const char* psz, int n
 }
 
 // @0x14092e380
-static Unk_NxString* FUN_14092e380(Unk_NxString* pString, const char* psz, int nMode)
+Unk_NxString::Unk_NxString(const char* psz, int nMode)
 {
-    FUN_14092e3c0(pString, psz, nMode);
-    return pString;
+    FUN_14092e3c0(this, psz, nMode);
 }
 
 // @0x14092ed50
@@ -466,23 +485,43 @@ static const char* FUN_14092ed60() { return "NXA_20200917"; }
 
 // ---- the DLL exports (0x143ab26f8..0x143ab2810) ----
 
-enum
-{
-    NXA_presetWorkingDirectory, NXA_presetNxLogVersion, NXA_presetBaseClassVersion, NXA_presetConfigServerAddress,
-    NXA_presetLogServerAddress, NXA_presetBackupFileLimit, NXA_presetSystemInfoLogOff,
-    NXA_initializeClientModuleEx, NXA_finalizeModule,
-    NXA_updateUser, NXA_setUserExtraInfo,
-    NXA_enqueueStageLog, NXA_enqueueErrorLog, NXA_enqueueLogOnlyOnce,
-    NXA_enqueueNxLog, NXA_enqueueLog,
-    NXA_enqueueJsonLog, NXA_enqueueDevLog, NXA_enqueueSystemInfoLog, NXA_assignInfoUser,
-    NXA_getCommonFieldA, NXA_getCommonFieldW, NXA_getAccountNoA, NXA_getAccountNoW, NXA_getSessionIdA,
-    NXA_getSessionIdW, NXA_getMachineIdA, NXA_getMachineIdW, NXA_getLastError,
-    NXA_setDevLogLevel,
-    NXA_setActiveInputLog, NXA_inputProc, NXA_setInputLogLevel, NXA_enqueueInputAction, NXA_registerKeymapInfo,
-    NXA_getPoolAllocator,
-    NXA_COUNT
-};
-static FARPROC s_apfnNxa[NXA_COUNT];
+// The DLL's exports, one global each (0x143ab26f8..0x143ab2810).
+static FARPROC s_pfn_presetWorkingDirectory;
+static FARPROC s_pfn_presetNxLogVersion;
+static FARPROC s_pfn_presetBaseClassVersion;
+static FARPROC s_pfn_presetConfigServerAddress;
+static FARPROC s_pfn_presetLogServerAddress;
+static FARPROC s_pfn_presetBackupFileLimit;
+static FARPROC s_pfn_presetSystemInfoLogOff;
+static FARPROC s_pfn_initializeClientModuleEx;
+static FARPROC s_pfn_finalizeModule;
+static FARPROC s_pfn_updateUser;
+static FARPROC s_pfn_setUserExtraInfo;
+static FARPROC s_pfn_enqueueStageLog;
+static FARPROC s_pfn_enqueueErrorLog;
+static FARPROC s_pfn_enqueueLogOnlyOnce;
+static FARPROC s_pfn_enqueueNxLog;
+static FARPROC s_pfn_enqueueLog;
+static FARPROC s_pfn_enqueueJsonLog;
+static FARPROC s_pfn_enqueueDevLog;
+static FARPROC s_pfn_enqueueSystemInfoLog;
+static FARPROC s_pfn_assignInfoUser;
+static FARPROC s_pfn_getCommonFieldA;
+static FARPROC s_pfn_getCommonFieldW;
+static FARPROC s_pfn_getAccountNoA;
+static FARPROC s_pfn_getAccountNoW;
+static FARPROC s_pfn_getSessionIdA;
+static FARPROC s_pfn_getSessionIdW;
+static FARPROC s_pfn_getMachineIdA;
+static FARPROC s_pfn_getMachineIdW;
+static FARPROC s_pfn_getLastError;
+static FARPROC s_pfn_setDevLogLevel;
+static FARPROC s_pfn_setActiveInputLog;
+static FARPROC s_pfn_inputProc;
+static FARPROC s_pfn_setInputLogLevel;
+static FARPROC s_pfn_enqueueInputAction;
+static FARPROC s_pfn_registerKeymapInfo;
+static FARPROC s_pfn_getPoolAllocator;
 
 typedef bool (*PFN_NxaPresetString)(const Unk_NxString*);
 typedef void (*PFN_NxaPresetBaseClassVersion)(const Unk_NxString*, const Unk_NxString*);
@@ -490,72 +529,6 @@ typedef bool (*PFN_NxaInitializeClientModuleEx)(const Unk_NxEvent*, const Unk_Nx
 typedef void (*PFN_NxaFinalizeModule)(bool);
 typedef bool (*PFN_NxaEnqueueLog)(int, const Unk_NxString*);
 
-// The export groups FUN_14092d8f0 resolves, each with the message it prints when one is missing.
-struct Unk_NxaGroup
-{
-    int nFirst;
-    int nCount;
-    const char* pszError;
-};
-static const char* const s_apszNxaNames[NXA_COUNT] = {
-    "presetWorkingDirectory", "presetNxLogVersion", "presetBaseClassVersion", "presetConfigServerAddress",
-    "presetLogServerAddress", "presetBackupFileLimit", "presetSystemInfoLogOff",
-    "initializeClientModuleEx", "finalizeModule",
-    "updateUser", "setUserExtraInfo",
-    "enqueueStageLog", "enqueueErrorLog", "enqueueLogOnlyOnce",
-    "enqueueNxLog", "enqueueLog",
-    "enqueueJsonLog", "enqueueDevLog", "enqueueSystemInfoLog", "assignInfoUser",
-    "getCommonFieldA", "getCommonFieldW", "getAccountNoA", "getAccountNoW", "getSessionIdA",
-    "getSessionIdW", "getMachineIdA", "getMachineIdW", "getLastError",
-    "setDevLogLevel",
-    "setActiveInputLog", "inputProc", "setInputLogLevel", "enqueueInputAction", "registerKeymapInfo",
-    "getPoolAllocator",
-};
-static const Unk_NxaGroup s_akNxaGroups[] = {
-    { NXA_presetWorkingDirectory, 7,
-      "DLL \xc6\xc4\xc0\xcf\xbf\xa1\xbc\xad presetWorkingDirectory(), presetNxLogVersion(), presetBaseClassVersion(), "
-      "presetConfigServerAddress(), presetLogServerAddress(), presetBackupFileLimit(), presetSystemInfoLogOff() "
-      "\xc7\xd4\xbc\xf6\xb8\xa6 \xc3\xa3\xc0\xbb \xbc\xf6\xb0\xa1 \xbe\xf8\xbd\xc0\xb4\xcf\xb4\xd9." },
-    { NXA_initializeClientModuleEx, 2,
-      "DLL \xc6\xc4\xc0\xcf\xbf\xa1\xbc\xad initializeClientModuleEx(), finalizeModule() "
-      "\xc7\xd4\xbc\xf6\xb8\xa6 \xc3\xa3\xc0\xbb \xbc\xf6\xb0\xa1 \xbe\xf8\xbd\xc0\xb4\xcf\xb4\xd9." },
-    { NXA_updateUser, 2,
-      "DLL \xc6\xc4\xc0\xcf\xbf\xa1\xbc\xad updateUser(), setUserExtraInfo() "
-      "\xc7\xd4\xbc\xf6\xb8\xa6 \xc3\xa3\xc0\xbb \xbc\xf6\xb0\xa1 \xbe\xf8\xbd\xc0\xb4\xcf\xb4\xd9." },
-    { NXA_enqueueStageLog, 3,
-      "DLL \xc6\xc4\xc0\xcf\xbf\xa1\xbc\xad enqueueStageLog(), enqueueErrorLog(), enqueueLogOnlyOnce() "
-      "\xc7\xd4\xbc\xf6\xb8\xa6 \xc3\xa3\xc0\xbb \xbc\xf6\xb0\xa1 \xbe\xf8\xbd\xc0\xb4\xcf\xb4\xd9." },
-    { NXA_enqueueNxLog, 2,
-      "DLL \xc6\xc4\xc0\xcf\xbf\xa1\xbc\xad enqueueNxLog(), enqueueLog() "
-      "\xc7\xd4\xbc\xf6\xb8\xa6 \xc3\xa3\xc0\xbb \xbc\xf6\xb0\xa1 \xbe\xf8\xbd\xc0\xb4\xcf\xb4\xd9." },
-    { NXA_enqueueJsonLog, 4,
-      "DLL \xc6\xc4\xc0\xcf\xbf\xa1\xbc\xad enqueueJsonLog(), enqueueDevLog(), enqueueSystemInfoLog(), assignInfoUser() "
-      "\xc7\xd4\xbc\xf6\xb8\xa6 \xc3\xa3\xc0\xbb \xbc\xf6\xb0\xa1 \xbe\xf8\xbd\xc0\xb4\xcf\xb4\xd9." },
-    { NXA_getCommonFieldA, 9,
-      "DLL \xc6\xc4\xc0\xcf\xbf\xa1\xbc\xad getCommonFieldA(), getCommonFieldW(), getAccountNoA(), getAccountNoW(), "
-      "getSessionIdA(), getSessionIdW(), getMachineIdA(), getMachineIdW(), getLastError() "
-      "\xc7\xd4\xbc\xf6\xb8\xa6 \xc3\xa3\xc0\xbb \xbc\xf6\xb0\xa1 \xbe\xf8\xbd\xc0\xb4\xcf\xb4\xd9." },
-    { NXA_setDevLogLevel, 1,
-      "DLL \xc6\xc4\xc0\xcf\xbf\xa1\xbc\xad setDevLogLevel() "
-      "\xc7\xd4\xbc\xf6\xb8\xa6 \xc3\xa3\xc0\xbb \xbc\xf6\xb0\xa1 \xbe\xf8\xbd\xc0\xb4\xcf\xb4\xd9." },
-    { NXA_setActiveInputLog, 5,
-      "DLL \xc6\xc4\xc0\xcf\xbf\xa1\xbc\xad setActiveInputLog(), userInputProc(), setInputLogLevel(), "
-      "enqueueInputAction(), registerKeymapInfo() "
-      "\xc7\xd4\xbc\xf6\xb8\xa6 \xc3\xa3\xc0\xbb \xbc\xf6\xb0\xa1 \xbe\xf8\xbd\xc0\xb4\xcf\xb4\xd9." },
-    { NXA_getPoolAllocator, 1,
-      "DLL \xc6\xc4\xc0\xcf\xbf\xa1\xbc\xad getPoolAllocator() "
-      "\xc7\xd4\xbc\xf6\xb8\xa6 \xc3\xa3\xc0\xbb \xbc\xf6\xb0\xa1 \xbe\xf8\xbd\xc0\xb4\xcf\xb4\xd9." },
-};
-
-// Prints a red error line to the console.
-static void NxaPrintError(const char* pszFormat, DWORD dwError)
-{
-    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 0xc);
-    ms2_fprintf_nxa(stdout, pszFormat, dwError);
-    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 7);
-}
-
-// MS2-FUNCTIONAL: the exe is /Od; same calls and results.
 // @0x14092edf0
 bool FUN_14092edf0(HMODULE* ppModule) { return *ppModule != NULL; }
 
@@ -564,84 +537,226 @@ bool FUN_14092edf0(HMODULE* ppModule) { return *ppModule != NULL; }
 static void FUN_14092e190(HMODULE* ppModule)
 {
     *ppModule = NULL;
-    for (int i = 0; i < NXA_COUNT; ++i)
-        s_apfnNxa[i] = NULL;
+    s_pfn_presetWorkingDirectory = NULL;
+    s_pfn_presetNxLogVersion = NULL;
+    s_pfn_presetBaseClassVersion = NULL;
+    s_pfn_presetConfigServerAddress = NULL;
+    s_pfn_presetLogServerAddress = NULL;
+    s_pfn_presetBackupFileLimit = NULL;
+    s_pfn_presetSystemInfoLogOff = NULL;
+    s_pfn_initializeClientModuleEx = NULL;
+    s_pfn_finalizeModule = NULL;
+    s_pfn_updateUser = NULL;
+    s_pfn_setUserExtraInfo = NULL;
+    s_pfn_enqueueStageLog = NULL;
+    s_pfn_enqueueErrorLog = NULL;
+    s_pfn_enqueueLogOnlyOnce = NULL;
+    s_pfn_enqueueNxLog = NULL;
+    s_pfn_enqueueLog = NULL;
+    s_pfn_enqueueJsonLog = NULL;
+    s_pfn_enqueueDevLog = NULL;
+    s_pfn_enqueueSystemInfoLog = NULL;
+    s_pfn_assignInfoUser = NULL;
+    s_pfn_getCommonFieldA = NULL;
+    s_pfn_getCommonFieldW = NULL;
+    s_pfn_getAccountNoA = NULL;
+    s_pfn_getAccountNoW = NULL;
+    s_pfn_getSessionIdA = NULL;
+    s_pfn_getSessionIdW = NULL;
+    s_pfn_getMachineIdA = NULL;
+    s_pfn_getMachineIdW = NULL;
+    s_pfn_getLastError = NULL;
+    s_pfn_setDevLogLevel = NULL;
+    s_pfn_setActiveInputLog = NULL;
+    s_pfn_inputProc = NULL;
+    s_pfn_setInputLogLevel = NULL;
+    s_pfn_enqueueInputAction = NULL;
+    s_pfn_registerKeymapInfo = NULL;
+    s_pfn_getPoolAllocator = NULL;
 }
 
 // Resolves the DLL's exports group by group; on a missing one prints the group's message and forgets them all.
-// MS2-FUNCTIONAL: the exe unrolls every GetProcAddress and check; here the groups are a table.
 // @0x14092d8f0
 bool FUN_14092d8f0(HMODULE* ppModule)
 {
-    for (size_t g = 0; g < sizeof(s_akNxaGroups) / sizeof(s_akNxaGroups[0]); ++g) {
-        const Unk_NxaGroup& kGroup = s_akNxaGroups[g];
-        bool bAll = true;
-        for (int i = kGroup.nFirst; i < kGroup.nFirst + kGroup.nCount; ++i)
-            s_apfnNxa[i] = GetProcAddress(*ppModule, s_apszNxaNames[i]);
-        for (int i = kGroup.nFirst; i < kGroup.nFirst + kGroup.nCount; ++i)
-            if (s_apfnNxa[i] == NULL)
-                bAll = false;
-        if (!bAll) {
+    do
+    {
+        s_pfn_presetWorkingDirectory = GetProcAddress(*ppModule, "presetWorkingDirectory");
+        s_pfn_presetNxLogVersion = GetProcAddress(*ppModule, "presetNxLogVersion");
+        s_pfn_presetBaseClassVersion = GetProcAddress(*ppModule, "presetBaseClassVersion");
+        s_pfn_presetConfigServerAddress = GetProcAddress(*ppModule, "presetConfigServerAddress");
+        s_pfn_presetLogServerAddress = GetProcAddress(*ppModule, "presetLogServerAddress");
+        s_pfn_presetBackupFileLimit = GetProcAddress(*ppModule, "presetBackupFileLimit");
+        s_pfn_presetSystemInfoLogOff = GetProcAddress(*ppModule, "presetSystemInfoLogOff");
+        if (s_pfn_presetWorkingDirectory == NULL || s_pfn_presetNxLogVersion == NULL || s_pfn_presetBaseClassVersion == NULL || s_pfn_presetConfigServerAddress == NULL || s_pfn_presetLogServerAddress == NULL || s_pfn_presetBackupFileLimit == NULL || s_pfn_presetSystemInfoLogOff == NULL)
+        {
             SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 0xc);
-            ms2_fprintf_nxa(stdout, kGroup.pszError);
+            fprintf(stdout, "DLL \xc6\xc4\xc0\xcf\xbf\xa1\xbc\xad presetWorkingDirectory(), presetNxLogVersion(), presetBaseClassVersion(), "
+                "presetConfigServerAddress(), presetLogServerAddress(), presetBackupFileLimit(), presetSystemInfoLogOff() "
+                "\xc7\xd4\xbc\xf6\xb8\xa6 \xc3\xa3\xc0\xbb \xbc\xf6\xb0\xa1 \xbe\xf8\xbd\xc0\xb4\xcf\xb4\xd9.");
             SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 7);
-            FUN_14092e190(ppModule);
-            return false;
+            break;
         }
-    }
-    return true;
+        s_pfn_initializeClientModuleEx = GetProcAddress(*ppModule, "initializeClientModuleEx");
+        s_pfn_finalizeModule = GetProcAddress(*ppModule, "finalizeModule");
+        if (s_pfn_initializeClientModuleEx == NULL || s_pfn_finalizeModule == NULL)
+        {
+            SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 0xc);
+            fprintf(stdout, "DLL \xc6\xc4\xc0\xcf\xbf\xa1\xbc\xad initializeClientModuleEx(), finalizeModule() "
+                "\xc7\xd4\xbc\xf6\xb8\xa6 \xc3\xa3\xc0\xbb \xbc\xf6\xb0\xa1 \xbe\xf8\xbd\xc0\xb4\xcf\xb4\xd9.");
+            SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 7);
+            break;
+        }
+        s_pfn_updateUser = GetProcAddress(*ppModule, "updateUser");
+        s_pfn_setUserExtraInfo = GetProcAddress(*ppModule, "setUserExtraInfo");
+        if (s_pfn_updateUser == NULL || s_pfn_setUserExtraInfo == NULL)
+        {
+            SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 0xc);
+            fprintf(stdout, "DLL \xc6\xc4\xc0\xcf\xbf\xa1\xbc\xad updateUser(), setUserExtraInfo() "
+                "\xc7\xd4\xbc\xf6\xb8\xa6 \xc3\xa3\xc0\xbb \xbc\xf6\xb0\xa1 \xbe\xf8\xbd\xc0\xb4\xcf\xb4\xd9.");
+            SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 7);
+            break;
+        }
+        s_pfn_enqueueStageLog = GetProcAddress(*ppModule, "enqueueStageLog");
+        s_pfn_enqueueErrorLog = GetProcAddress(*ppModule, "enqueueErrorLog");
+        s_pfn_enqueueLogOnlyOnce = GetProcAddress(*ppModule, "enqueueLogOnlyOnce");
+        if (s_pfn_enqueueStageLog == NULL || s_pfn_enqueueErrorLog == NULL || s_pfn_enqueueLogOnlyOnce == NULL)
+        {
+            SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 0xc);
+            fprintf(stdout, "DLL \xc6\xc4\xc0\xcf\xbf\xa1\xbc\xad enqueueStageLog(), enqueueErrorLog(), enqueueLogOnlyOnce() "
+                "\xc7\xd4\xbc\xf6\xb8\xa6 \xc3\xa3\xc0\xbb \xbc\xf6\xb0\xa1 \xbe\xf8\xbd\xc0\xb4\xcf\xb4\xd9.");
+            SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 7);
+            break;
+        }
+        s_pfn_enqueueNxLog = GetProcAddress(*ppModule, "enqueueNxLog");
+        s_pfn_enqueueLog = GetProcAddress(*ppModule, "enqueueLog");
+        if (s_pfn_enqueueNxLog == NULL || s_pfn_enqueueLog == NULL)
+        {
+            SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 0xc);
+            fprintf(stdout, "DLL \xc6\xc4\xc0\xcf\xbf\xa1\xbc\xad enqueueNxLog(), enqueueLog() "
+                "\xc7\xd4\xbc\xf6\xb8\xa6 \xc3\xa3\xc0\xbb \xbc\xf6\xb0\xa1 \xbe\xf8\xbd\xc0\xb4\xcf\xb4\xd9.");
+            SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 7);
+            break;
+        }
+        s_pfn_enqueueJsonLog = GetProcAddress(*ppModule, "enqueueJsonLog");
+        s_pfn_enqueueDevLog = GetProcAddress(*ppModule, "enqueueDevLog");
+        s_pfn_enqueueSystemInfoLog = GetProcAddress(*ppModule, "enqueueSystemInfoLog");
+        s_pfn_assignInfoUser = GetProcAddress(*ppModule, "assignInfoUser");
+        if (s_pfn_enqueueJsonLog == NULL || s_pfn_enqueueDevLog == NULL || s_pfn_enqueueSystemInfoLog == NULL || s_pfn_assignInfoUser == NULL)
+        {
+            SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 0xc);
+            fprintf(stdout, "DLL \xc6\xc4\xc0\xcf\xbf\xa1\xbc\xad enqueueJsonLog(), enqueueDevLog(), enqueueSystemInfoLog(), assignInfoUser() "
+                "\xc7\xd4\xbc\xf6\xb8\xa6 \xc3\xa3\xc0\xbb \xbc\xf6\xb0\xa1 \xbe\xf8\xbd\xc0\xb4\xcf\xb4\xd9.");
+            SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 7);
+            break;
+        }
+        s_pfn_getCommonFieldA = GetProcAddress(*ppModule, "getCommonFieldA");
+        s_pfn_getCommonFieldW = GetProcAddress(*ppModule, "getCommonFieldW");
+        s_pfn_getAccountNoA = GetProcAddress(*ppModule, "getAccountNoA");
+        s_pfn_getAccountNoW = GetProcAddress(*ppModule, "getAccountNoW");
+        s_pfn_getSessionIdA = GetProcAddress(*ppModule, "getSessionIdA");
+        s_pfn_getSessionIdW = GetProcAddress(*ppModule, "getSessionIdW");
+        s_pfn_getMachineIdA = GetProcAddress(*ppModule, "getMachineIdA");
+        s_pfn_getMachineIdW = GetProcAddress(*ppModule, "getMachineIdW");
+        s_pfn_getLastError = GetProcAddress(*ppModule, "getLastError");
+        if (s_pfn_getCommonFieldA == NULL || s_pfn_getCommonFieldW == NULL || s_pfn_getAccountNoA == NULL || s_pfn_getAccountNoW == NULL || s_pfn_getSessionIdA == NULL || s_pfn_getSessionIdW == NULL || s_pfn_getMachineIdA == NULL || s_pfn_getMachineIdW == NULL || s_pfn_getLastError == NULL)
+        {
+            SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 0xc);
+            fprintf(stdout, "DLL \xc6\xc4\xc0\xcf\xbf\xa1\xbc\xad getCommonFieldA(), getCommonFieldW(), getAccountNoA(), getAccountNoW(), "
+                "getSessionIdA(), getSessionIdW(), getMachineIdA(), getMachineIdW(), getLastError() "
+                "\xc7\xd4\xbc\xf6\xb8\xa6 \xc3\xa3\xc0\xbb \xbc\xf6\xb0\xa1 \xbe\xf8\xbd\xc0\xb4\xcf\xb4\xd9.");
+            SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 7);
+            break;
+        }
+        s_pfn_setDevLogLevel = GetProcAddress(*ppModule, "setDevLogLevel");
+        if (s_pfn_setDevLogLevel == NULL)
+        {
+            SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 0xc);
+            fprintf(stdout, "DLL \xc6\xc4\xc0\xcf\xbf\xa1\xbc\xad setDevLogLevel() "
+                "\xc7\xd4\xbc\xf6\xb8\xa6 \xc3\xa3\xc0\xbb \xbc\xf6\xb0\xa1 \xbe\xf8\xbd\xc0\xb4\xcf\xb4\xd9.");
+            SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 7);
+            break;
+        }
+        s_pfn_setActiveInputLog = GetProcAddress(*ppModule, "setActiveInputLog");
+        s_pfn_inputProc = GetProcAddress(*ppModule, "inputProc");
+        s_pfn_setInputLogLevel = GetProcAddress(*ppModule, "setInputLogLevel");
+        s_pfn_enqueueInputAction = GetProcAddress(*ppModule, "enqueueInputAction");
+        s_pfn_registerKeymapInfo = GetProcAddress(*ppModule, "registerKeymapInfo");
+        if (s_pfn_setActiveInputLog == NULL || s_pfn_inputProc == NULL || s_pfn_setInputLogLevel == NULL || s_pfn_enqueueInputAction == NULL || s_pfn_registerKeymapInfo == NULL)
+        {
+            SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 0xc);
+            fprintf(stdout, "DLL \xc6\xc4\xc0\xcf\xbf\xa1\xbc\xad setActiveInputLog(), userInputProc(), setInputLogLevel(), "
+                "enqueueInputAction(), registerKeymapInfo() "
+                "\xc7\xd4\xbc\xf6\xb8\xa6 \xc3\xa3\xc0\xbb \xbc\xf6\xb0\xa1 \xbe\xf8\xbd\xc0\xb4\xcf\xb4\xd9.");
+            SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 7);
+            break;
+        }
+        s_pfn_getPoolAllocator = GetProcAddress(*ppModule, "getPoolAllocator");
+        if (s_pfn_getPoolAllocator == NULL)
+        {
+            SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 0xc);
+            fprintf(stdout, "DLL \xc6\xc4\xc0\xcf\xbf\xa1\xbc\xad getPoolAllocator() "
+                "\xc7\xd4\xbc\xf6\xb8\xa6 \xc3\xa3\xc0\xbb \xbc\xf6\xb0\xa1 \xbe\xf8\xbd\xc0\xb4\xcf\xb4\xd9.");
+            SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 7);
+            break;
+        }
+        return true;
+    } while (0);
+    FUN_14092e190(ppModule);
+    return false;
 }
 
-// MS2-FUNCTIONAL: the exe is /Od; same calls and results.
 // @0x14092cbf0
 void Unk_NexonAnalytics::FUN_14092cbf0()
 {
-    HMODULE* ppModule = (HMODULE*)&m_p;
-    if (!FUN_14092edf0(ppModule))
+    if (!FUN_14092edf0((HMODULE*)this))
         return;
-    ((PFN_NxaFinalizeModule)s_apfnNxa[NXA_finalizeModule])(true);
-    if (!FreeLibrary(*ppModule)) {
-        NxaPrintError("DLL \xc6\xc4\xc0\xcf\xc0\xbb \xbe\xf0\xb7\xce\xb5\xe5\xc7\xcf\xc1\xf6 "
-                      "\xb8\xf8\xc7\xdf\xbd\xc0\xb4\xcf\xb4\xd9. - error-code=%lu", GetLastError());
-        if (!UnmapViewOfFile(*ppModule))
-            NxaPrintError("Couldn't unmap the file! - error-code=%lu", GetLastError());
+    ((PFN_NxaFinalizeModule)s_pfn_finalizeModule)(true);
+    if (!FreeLibrary(*(HMODULE*)this))
+    {
+        SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 0xc);
+        fprintf(stdout, "DLL \xc6\xc4\xc0\xcf\xc0\xbb \xbe\xf0\xb7\xce\xb5\xe5\xc7\xcf\xc1\xf6 "
+                "\xb8\xf8\xc7\xdf\xbd\xc0\xb4\xcf\xb4\xd9. - error-code=%lu", GetLastError());
+        SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 7);
+        if (!UnmapViewOfFile(*(HMODULE*)this))
+        {
+            SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 0xc);
+            fprintf(stdout, "Couldn't unmap the file! - error-code=%lu", GetLastError());
+            SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 7);
+        }
     }
-    FUN_14092e190(ppModule);
+    FUN_14092e190((HMODULE*)this);
 }
 
-// MS2-FUNCTIONAL: the exe is /Od; same calls and results.
 // @0x14092ce80
 bool Unk_NexonAnalytics::FUN_14092ce80(const Unk_NxString* pVersion, const Unk_NxString* pHost)
 {
-    if (!FUN_14092edf0((HMODULE*)&m_p))
+    if (!FUN_14092edf0((HMODULE*)this))
         return false;
-    return ((PFN_NxaPresetString)s_apfnNxa[NXA_presetNxLogVersion])(pVersion)
-        && ((PFN_NxaPresetString)s_apfnNxa[NXA_presetLogServerAddress])(pHost);
+    return ((PFN_NxaPresetString)s_pfn_presetNxLogVersion)(pVersion)
+        && ((PFN_NxaPresetString)s_pfn_presetLogServerAddress)(pHost);
 }
 
-// MS2-FUNCTIONAL: the exe is /Od; same calls and results.
 // @0x14092cf80
 bool Unk_NexonAnalytics::FUN_14092cf80(const Unk_NxEvent* pEvent, const Unk_NxString* pHost,
                                        const Unk_NxNumber* pService)
 {
-    if (!FUN_14092edf0((HMODULE*)&m_p))
+    if (!FUN_14092edf0((HMODULE*)this))
         return false;
     {
-        Unk_NxString kClass;
-        Unk_NxString kBase;
-        FUN_14092e380(&kClass, FUN_14092ed50(), 3);
-        FUN_14092e380(&kBase, FUN_14092ed60(), 3);
-        ((PFN_NxaPresetBaseClassVersion)s_apfnNxa[NXA_presetBaseClassVersion])(&kBase, &kClass);
+        Unk_NxString kClass(FUN_14092ed50(), 3);
+        Unk_NxString kBase(FUN_14092ed60(), 3);
+        ((PFN_NxaPresetBaseClassVersion)s_pfn_presetBaseClassVersion)(&kBase, &kClass);
     }
-    return ((PFN_NxaInitializeClientModuleEx)s_apfnNxa[NXA_initializeClientModuleEx])(pEvent, pHost, pService);
+    return ((PFN_NxaInitializeClientModuleEx)s_pfn_initializeClientModuleEx)(pEvent, pHost, pService);
 }
 
-// MS2-FUNCTIONAL: the exe is /Od; same calls and results.
 // @0x14092d070
 void Unk_NexonAnalytics::FUN_14092d070(bool bFlush)
 {
-    if (FUN_14092edf0((HMODULE*)&m_p))
-        ((PFN_NxaFinalizeModule)s_apfnNxa[NXA_finalizeModule])(bFlush);
+    if (!FUN_14092edf0((HMODULE*)this))
+        return;
+    ((PFN_NxaFinalizeModule)s_pfn_finalizeModule)(bFlush);
 }
 
 // @0x14092d150
@@ -649,7 +764,7 @@ static bool FUN_14092d150(HMODULE* ppModule, int nCode, const Unk_NxString* pLog
 {
     if (!FUN_14092edf0(ppModule))
         return false;
-    return ((PFN_NxaEnqueueLog)s_apfnNxa[NXA_enqueueStageLog])(nCode, pLog);
+    return ((PFN_NxaEnqueueLog)s_pfn_enqueueStageLog)(nCode, pLog);
 }
 
 // @0x14092d1a0
@@ -657,31 +772,26 @@ static bool FUN_14092d1a0(HMODULE* ppModule, int nCode, const Unk_NxString* pLog
 {
     if (!FUN_14092edf0(ppModule))
         return false;
-    return ((PFN_NxaEnqueueLog)s_apfnNxa[NXA_enqueueErrorLog])(nCode, pLog);
+    return ((PFN_NxaEnqueueLog)s_pfn_enqueueErrorLog)(nCode, pLog);
 }
 
-// MS2-FUNCTIONAL: the exe returns the enqueue result; the shared header declares the method void.
 // @0x14092d1f0
-void Unk_NexonAnalytics::FUN_14092d1f0(int nCode, const CStringA& strLog)
+bool Unk_NexonAnalytics::FUN_14092d1f0(int nCode, const CStringA& strLog)
 {
-    Unk_NxString kLog;
-    FUN_14092e380(&kLog, (const char*)strLog, 3);
-    FUN_14092d150((HMODULE*)&m_p, nCode, &kLog);
+    Unk_NxString kLog((const char*)strLog, 3);
+    return FUN_14092d150((HMODULE*)this, nCode, &kLog);
 }
 
-// MS2-FUNCTIONAL: the exe returns the enqueue result; the shared header declares the method void.
 // @0x14092d280
-void Unk_NexonAnalytics::FUN_14092d280(int nCode, const CStringA& strLog)
+bool Unk_NexonAnalytics::FUN_14092d280(int nCode, const CStringA& strLog)
 {
-    Unk_NxString kLog;
-    FUN_14092e380(&kLog, (const char*)strLog, 3);
-    FUN_14092d1a0((HMODULE*)&m_p, nCode, &kLog);
+    Unk_NxString kLog((const char*)strLog, 3);
+    return FUN_14092d1a0((HMODULE*)this, nCode, &kLog);
 }
 
 // ---- the other export wrappers (the game calls none of them) ----
 
 // Loads the DLL and resolves its exports.
-// MS2-FUNCTIONAL: like the exe, the failure line passes a wide format to fprintf (it prints "D").
 // @0x14092cb30
 bool FUN_14092cb30(HMODULE* ppModule, LPCWSTR pszPath)
 {
@@ -691,7 +801,7 @@ bool FUN_14092cb30(HMODULE* ppModule, LPCWSTR pszPath)
     if (*ppModule == NULL) {
         DWORD dwError = GetLastError();
         SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 0xc);
-        ms2_fprintf_nxa(stdout, (const char*)L"DLL \xd30c\xc77c\xc744 \xb85c\xb4dc\xd558\xc9c0 \xbabb\xd588\xc2b5\xb2c8\xb2e4. "
+        ms2_fwprintf_nxa(stdout, L"DLL \xd30c\xc77c\xc744 \xb85c\xb4dc\xd558\xc9c0 \xbabb\xd588\xc2b5\xb2c8\xb2e4. "
                 L"- module-path=\"%ls\", error-code=%lu", pszPath, dwError);
         SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 7);
         return false;
@@ -699,13 +809,14 @@ bool FUN_14092cb30(HMODULE* ppModule, LPCWSTR pszPath)
     return FUN_14092d8f0(ppModule);
 }
 
-#define NXA_CALL(type, slot) ((type)s_apfnNxa[slot])
+#define NXA_CALL(type, slot) ((type)s_pfn_##slot)
 
 // @0x14092cd10
 void FUN_14092cd10(HMODULE* ppModule, const Unk_NxString* pDir)
 {
-    if (FUN_14092edf0(ppModule))
-        NXA_CALL(void (*)(const Unk_NxString*), NXA_presetWorkingDirectory)(pDir);
+    if (!FUN_14092edf0(ppModule))
+        return;
+    NXA_CALL(void (*)(const Unk_NxString*), presetWorkingDirectory)(pDir);
 }
 
 // @0x14092cd50
@@ -713,7 +824,7 @@ bool FUN_14092cd50(HMODULE* ppModule, const Unk_NxString* pVersion)
 {
     if (!FUN_14092edf0(ppModule))
         return false;
-    return NXA_CALL(PFN_NxaPresetString, NXA_presetNxLogVersion)(pVersion);
+    return NXA_CALL(PFN_NxaPresetString, presetNxLogVersion)(pVersion);
 }
 
 // @0x14092cd90
@@ -721,7 +832,7 @@ bool FUN_14092cd90(HMODULE* ppModule, const Unk_NxString* pHost)
 {
     if (!FUN_14092edf0(ppModule))
         return false;
-    return NXA_CALL(PFN_NxaPresetString, NXA_presetConfigServerAddress)(pHost);
+    return NXA_CALL(PFN_NxaPresetString, presetConfigServerAddress)(pHost);
 }
 
 // @0x14092cdd0
@@ -729,29 +840,30 @@ bool FUN_14092cdd0(HMODULE* ppModule, const Unk_NxString* pHost)
 {
     if (!FUN_14092edf0(ppModule))
         return false;
-    return NXA_CALL(PFN_NxaPresetString, NXA_presetLogServerAddress)(pHost);
+    return NXA_CALL(PFN_NxaPresetString, presetLogServerAddress)(pHost);
 }
 
 // @0x14092ce10
 void FUN_14092ce10(HMODULE* ppModule, const Unk_NxNumber* pLimit)
 {
-    if (FUN_14092edf0(ppModule))
-        NXA_CALL(void (*)(const Unk_NxNumber*), NXA_presetBackupFileLimit)(pLimit);
+    if (!FUN_14092edf0(ppModule))
+        return;
+    NXA_CALL(void (*)(const Unk_NxNumber*), presetBackupFileLimit)(pLimit);
 }
 
 // @0x14092ce50
 void FUN_14092ce50(HMODULE* ppModule)
 {
-    if (FUN_14092edf0(ppModule))
-        NXA_CALL(void (*)(), NXA_presetSystemInfoLogOff)();
+    if (!FUN_14092edf0(ppModule))
+        return;
+    NXA_CALL(void (*)(), presetSystemInfoLogOff)();
 }
 
 // FUN_14092cf80 with an empty host.
 // @0x14092cef0
 bool FUN_14092cef0(Unk_NexonAnalytics* pAnalytics, const Unk_NxEvent* pEvent, const Unk_NxNumber* pService)
 {
-    Unk_NxString kHost;
-    FUN_14092e380(&kHost, NULL, 3);
+    Unk_NxString kHost(NULL, 3);
     return pAnalytics->FUN_14092cf80(pEvent, &kHost, pService);
 }
 
@@ -760,7 +872,7 @@ bool FUN_14092d0b0(HMODULE* ppModule, const void* p1, const void* p2)
 {
     if (!FUN_14092edf0(ppModule))
         return false;
-    return NXA_CALL(bool (*)(const void*, const void*), NXA_updateUser)(p1, p2);
+    return NXA_CALL(bool (*)(const void*, const void*), updateUser)(p1, p2);
 }
 
 // @0x14092d100
@@ -768,7 +880,7 @@ bool FUN_14092d100(HMODULE* ppModule, const void* p1, const void* p2, const void
 {
     if (!FUN_14092edf0(ppModule))
         return false;
-    return NXA_CALL(bool (*)(const void*, const void*, const void*), NXA_setUserExtraInfo)(p1, p2, p3);
+    return NXA_CALL(bool (*)(const void*, const void*, const void*), setUserExtraInfo)(p1, p2, p3);
 }
 
 // @0x14092d310
@@ -776,7 +888,7 @@ bool FUN_14092d310(HMODULE* ppModule, const void* p1, const void* p2)
 {
     if (!FUN_14092edf0(ppModule))
         return false;
-    return NXA_CALL(bool (*)(const void*, const void*), NXA_enqueueLogOnlyOnce)(p1, p2);
+    return NXA_CALL(bool (*)(const void*, const void*), enqueueLogOnlyOnce)(p1, p2);
 }
 
 // @0x14092d360
@@ -784,7 +896,7 @@ bool FUN_14092d360(HMODULE* ppModule, const void* p)
 {
     if (!FUN_14092edf0(ppModule))
         return false;
-    return NXA_CALL(bool (*)(const void*), NXA_enqueueNxLog)(p);
+    return NXA_CALL(bool (*)(const void*), enqueueNxLog)(p);
 }
 
 // @0x14092d3a0
@@ -792,7 +904,7 @@ bool FUN_14092d3a0(HMODULE* ppModule, const void* p1, const void* p2)
 {
     if (!FUN_14092edf0(ppModule))
         return false;
-    return NXA_CALL(bool (*)(const void*, const void*), NXA_enqueueLog)(p1, p2);
+    return NXA_CALL(bool (*)(const void*, const void*), enqueueLog)(p1, p2);
 }
 
 // @0x14092d3f0
@@ -800,7 +912,7 @@ bool FUN_14092d3f0(HMODULE* ppModule, const void* p)
 {
     if (!FUN_14092edf0(ppModule))
         return false;
-    return NXA_CALL(bool (*)(const void*), NXA_enqueueJsonLog)(p);
+    return NXA_CALL(bool (*)(const void*), enqueueJsonLog)(p);
 }
 
 // @0x14092d430
@@ -808,7 +920,7 @@ bool FUN_14092d430(HMODULE* ppModule, int nLevel, const void* p)
 {
     if (!FUN_14092edf0(ppModule))
         return false;
-    return NXA_CALL(bool (*)(int, const void*), NXA_enqueueDevLog)(nLevel, p);
+    return NXA_CALL(bool (*)(int, const void*), enqueueDevLog)(nLevel, p);
 }
 
 // @0x14092d480
@@ -816,7 +928,7 @@ bool FUN_14092d480(HMODULE* ppModule, const void* p)
 {
     if (!FUN_14092edf0(ppModule))
         return false;
-    return NXA_CALL(bool (*)(const void*), NXA_enqueueSystemInfoLog)(p);
+    return NXA_CALL(bool (*)(const void*), enqueueSystemInfoLog)(p);
 }
 
 // @0x14092d4c0
@@ -824,7 +936,7 @@ bool FUN_14092d4c0(HMODULE* ppModule, const void* p1, const void* p2)
 {
     if (!FUN_14092edf0(ppModule))
         return false;
-    return NXA_CALL(bool (*)(const void*, const void*), NXA_assignInfoUser)(p1, p2);
+    return NXA_CALL(bool (*)(const void*, const void*), assignInfoUser)(p1, p2);
 }
 
 // @0x14092d510
@@ -832,7 +944,7 @@ const char* FUN_14092d510(HMODULE* ppModule, const char* pszField)
 {
     if (!FUN_14092edf0(ppModule))
         return NULL;
-    return NXA_CALL(const char* (*)(const char*), NXA_getCommonFieldA)(pszField);
+    return NXA_CALL(const char* (*)(const char*), getCommonFieldA)(pszField);
 }
 
 // @0x14092d550
@@ -840,7 +952,7 @@ const wchar_t* FUN_14092d550(HMODULE* ppModule, const wchar_t* pszField)
 {
     if (!FUN_14092edf0(ppModule))
         return NULL;
-    return NXA_CALL(const wchar_t* (*)(const wchar_t*), NXA_getCommonFieldW)(pszField);
+    return NXA_CALL(const wchar_t* (*)(const wchar_t*), getCommonFieldW)(pszField);
 }
 
 // @0x14092d590
@@ -848,7 +960,7 @@ const char* FUN_14092d590(HMODULE* ppModule)
 {
     if (!FUN_14092edf0(ppModule))
         return NULL;
-    return NXA_CALL(const char* (*)(), NXA_getAccountNoA)();
+    return NXA_CALL(const char* (*)(), getAccountNoA)();
 }
 
 // @0x14092d5c0
@@ -856,7 +968,7 @@ const wchar_t* FUN_14092d5c0(HMODULE* ppModule)
 {
     if (!FUN_14092edf0(ppModule))
         return NULL;
-    return NXA_CALL(const wchar_t* (*)(), NXA_getAccountNoW)();
+    return NXA_CALL(const wchar_t* (*)(), getAccountNoW)();
 }
 
 // @0x14092d5f0
@@ -864,7 +976,7 @@ const char* FUN_14092d5f0(HMODULE* ppModule)
 {
     if (!FUN_14092edf0(ppModule))
         return NULL;
-    return NXA_CALL(const char* (*)(), NXA_getSessionIdA)();
+    return NXA_CALL(const char* (*)(), getSessionIdA)();
 }
 
 // @0x14092d620
@@ -872,7 +984,7 @@ const wchar_t* FUN_14092d620(HMODULE* ppModule)
 {
     if (!FUN_14092edf0(ppModule))
         return NULL;
-    return NXA_CALL(const wchar_t* (*)(), NXA_getSessionIdW)();
+    return NXA_CALL(const wchar_t* (*)(), getSessionIdW)();
 }
 
 // @0x14092d650
@@ -880,7 +992,7 @@ const char* FUN_14092d650(HMODULE* ppModule)
 {
     if (!FUN_14092edf0(ppModule))
         return NULL;
-    return NXA_CALL(const char* (*)(), NXA_getMachineIdA)();
+    return NXA_CALL(const char* (*)(), getMachineIdA)();
 }
 
 // @0x14092d680
@@ -888,7 +1000,7 @@ const wchar_t* FUN_14092d680(HMODULE* ppModule)
 {
     if (!FUN_14092edf0(ppModule))
         return NULL;
-    return NXA_CALL(const wchar_t* (*)(), NXA_getMachineIdW)();
+    return NXA_CALL(const wchar_t* (*)(), getMachineIdW)();
 }
 
 // 1001 when the DLL is not loaded, 0 when it has no getLastError.
@@ -898,8 +1010,8 @@ int FUN_14092d6b0(HMODULE* ppModule)
     if (!FUN_14092edf0(ppModule))
         return 0x3e9;
     int nError;
-    if (s_apfnNxa[NXA_getLastError] != NULL)
-        nError = NXA_CALL(int (*)(), NXA_getLastError)();
+    if (s_pfn_getLastError != NULL)
+        nError = NXA_CALL(int (*)(), getLastError)();
     else
         nError = 0;
     return nError;
@@ -908,51 +1020,58 @@ int FUN_14092d6b0(HMODULE* ppModule)
 // @0x14092d700
 void FUN_14092d700(HMODULE* ppModule, int nLevel)
 {
-    if (FUN_14092edf0(ppModule))
-        NXA_CALL(void (*)(int), NXA_setDevLogLevel)(nLevel);
+    if (!FUN_14092edf0(ppModule))
+        return;
+    NXA_CALL(void (*)(int), setDevLogLevel)(nLevel);
 }
 
 // @0x14092d740
 void FUN_14092d740(HMODULE* ppModule, bool bActive)
 {
-    if (FUN_14092edf0(ppModule))
-        NXA_CALL(void (*)(bool), NXA_setActiveInputLog)(bActive);
+    if (!FUN_14092edf0(ppModule))
+        return;
+    NXA_CALL(void (*)(bool), setActiveInputLog)(bActive);
 }
 
 // @0x14092d780
 void FUN_14092d780(HMODULE* ppModule, HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
-    if (FUN_14092edf0(ppModule))
-        NXA_CALL(void (*)(HWND, UINT, WPARAM, LPARAM), NXA_inputProc)(hWnd, uMsg, wParam, lParam);
+    if (!FUN_14092edf0(ppModule))
+        return;
+    NXA_CALL(void (*)(HWND, UINT, WPARAM, LPARAM), inputProc)(hWnd, uMsg, wParam, lParam);
 }
 
 // @0x14092d7d0
 void FUN_14092d7d0(HMODULE* ppModule, unsigned short nLevel)
 {
-    if (FUN_14092edf0(ppModule))
-        NXA_CALL(void (*)(unsigned short), NXA_setInputLogLevel)(nLevel);
+    if (!FUN_14092edf0(ppModule))
+        return;
+    NXA_CALL(void (*)(unsigned short), setInputLogLevel)(nLevel);
 }
 
 // @0x14092d810
 void FUN_14092d810(HMODULE* ppModule, const void* p1, const void* p2)
 {
-    if (FUN_14092edf0(ppModule))
-        NXA_CALL(void (*)(const void*, const void*), NXA_enqueueInputAction)(p1, p2);
+    if (!FUN_14092edf0(ppModule))
+        return;
+    NXA_CALL(void (*)(const void*, const void*), enqueueInputAction)(p1, p2);
 }
 
 // @0x14092d860
 void FUN_14092d860(HMODULE* ppModule, const void* p1, int n1, int n2, const void* p2)
 {
-    if (FUN_14092edf0(ppModule))
-        NXA_CALL(void (*)(const void*, int, int, const void*), NXA_registerKeymapInfo)(p1, n1, n2, p2);
+    if (!FUN_14092edf0(ppModule))
+        return;
+    NXA_CALL(void (*)(const void*, int, int, const void*), registerKeymapInfo)(p1, n1, n2, p2);
 }
 
 // Makes the DLL's pool allocator the current one.
 // @0x14092d8b0
 void FUN_14092d8b0(HMODULE* ppModule)
 {
-    if (FUN_14092edf0(ppModule))
-        FUN_14092ecb0(NXA_CALL(nxa::MemoryAllocator* (*)(), NXA_getPoolAllocator)());
+    if (!FUN_14092edf0(ppModule))
+        return;
+    FUN_14092ecb0(NXA_CALL(nxa::MemoryAllocator* (*)(), getPoolAllocator)());
 }
 
 // An empty function of one int (ICF-shared with the crash reporter's caller).

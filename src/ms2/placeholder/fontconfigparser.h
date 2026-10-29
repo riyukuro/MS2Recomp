@@ -12,9 +12,11 @@
 
 #include <stdlib.h>
 
-#include "Kernel/SF_Hash.h"
-#include "Kernel/SF_WString.h"
-#include "GFx/GFx_Loader.h"
+#include "ms2/scaleform/include/kernel/sf_hash.h"
+#include "ms2/scaleform/kernel/sf_wstring.h"
+#include "ms2/scaleform/include/gfx/gfx_translator.h"
+#include "ms2/scaleform/include/gfx/gfx_fontmap.h"
+#include "ms2/scaleform/include/gfx/gfx_loaderimpl.h"   // Loader
 
 // Reads a font config file (wide text) line by line (0x30 bytes, the frame of NiGFxLocalizeManager::FUN_1422eb570).
 class ConfigParser

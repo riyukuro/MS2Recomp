@@ -116,7 +116,7 @@ public:
     void Tick();                                        // 0x140791ac0 refreshes every category once a minute
     void Callback1();                                   // 0x140791c10
     void Callback2();                                   // 0x140791c20
-    bool Load();                                        // 0x140791c30
+    int Load();                                         // 0x140791c30
     MS2Ptr<CSeasonData> GetCurrent(SeasonRankType type);   // 0x140791e40
     int GetCurrentID(SeasonRankType type);              // 0x140791f50
     MS2Ptr<CSeasonData> Find(SeasonRankType type, int nSeason);   // 0x140791fd0
@@ -127,7 +127,7 @@ public:
     CStringW GetContentsName(MS2Ptr<CSeasonData> spData, int nContents);   // 0x1407925e0
     int ReadData(SeasonRankType type, CStringA strPath);   // 0x1407927d0
     void Refresh(SeasonRankType type, int nMode);       // 0x140792b90
-    bool ReadNames();                                   // 0x1407931f0
+    int ReadNames();                                    // 0x1407931f0
     MS2Ptr<CSeasonDataCurrent> GetCurrentRecord(SeasonRankType type);   // 0x140793690
     POSITION GetRecentPosition(SeasonRankType type);    // 0x140793750
     void Log(CStringA strText);                         // 0x1407938a0

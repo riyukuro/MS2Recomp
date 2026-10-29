@@ -38,12 +38,11 @@ void RideOnAction::vfunc_1(COutputStream* pStream)
 }
 MS2_REPLACE_METHOD(0x14077DDB0, RideOnAction, vfunc_1, 117, 0xC83D806E);
 // @0x14077de30
-// MS2-FUNCTIONAL: the exe tests the slot-1 result with `test al,al` (no movzx/movsx) before the byte-bool ternary; no stream return type reproduces it
 void RideOnAction::vfunc_2(CInputStream* pStream)
 {
     m_n1c = pStream->ReadInt32();
     m_n20 = pStream->ReadInt32();
-    m_b28 = pStream->ReadUInt8() ? true : false;
+    m_b28 = (bool)pStream->ReadUInt8();
 }
 MS2_REPLACE_METHOD(0x14077DE30, RideOnAction, vfunc_2, 112, 0xBBE81F7C);
 // @0x14077deb0

@@ -7,6 +7,7 @@
 #include "ms2/placeholder/uidialog.h"
 #include "ms2/placeholder/ascript.h"
 #include "ms2/placeholder/delegate.h"
+#include "ms2/commonfiles/vipgoods.h"
 class PC; class NotifyObject; class CInPacket; class Unk_RNItemRef; class Unk_RNAchieve;
 
 // HUD queue of "reward" toasts (exp, meso, items, titles, skills, fishing, ...). Each Push*/Show* builds an AS object
@@ -14,7 +15,7 @@ class PC; class NotifyObject; class CInPacket; class Unk_RNItemRef; class Unk_RN
 class UIRewardNotify : public UIHeadUpDisplay {
 public:
     UIRewardNotify();                                                                   // 0x141abe1d0
-    virtual ~UIRewardNotify();                                                          // 0 0x141ac3930
+    // ~UIRewardNotify is implicit                                                    // 0 0x141ac3930
     virtual CString GetTypeName();                                                          // 1 0x141abe240
     virtual void vfunc_2();                                                             // 2 0x141abe290
     virtual void vfunc_3();                                                             // 3 0x141abe2d0
@@ -122,8 +123,8 @@ public:
 private:
     MS2_LAYOUT_FRIEND;
     int m_178;
-    ATL::CAtlArray<int> m_itemIds;                  // +0x180
-    ATL::CAtlArray<unsigned> m_rarities;            // +0x1a0
+    ATL::CAtlArray<unsigned> m_itemIds;             // +0x180 (ctor 0x140181d30)
+    ATL::CAtlArray<Unk_VipItemRank> m_rarities;     // +0x1a0 (ctor 0x1408f75e0, the VIP rank array instance)
     ATL::CAtlArray<int> m_counts;                   // +0x1c0
     unsigned m_1e0;
     ATL::CAtlArray<CString> m_binds;                // +0x1e8 bind ids of the slot icons

@@ -14,9 +14,6 @@
 // 8-byte iterator of the exe's list/map/vector instantiations.
 struct Unk_It { void* p; };
 MS2_CHECK_SIZE(Unk_It, 8);
-// 24-byte iterator result buffer.
-struct Unk_It24 { void* a; void* b; void* c; };
-MS2_CHECK_SIZE(Unk_It24, 24);
 
 class CIngredientInfo;
 class CIngredientContainer;
@@ -55,7 +52,7 @@ public:
     Unk_IngRef* FUN_140289dc0();
     Unk_It* FUN_14028aa90(Unk_It*);        // end
     Unk_It* FUN_14028a260(Unk_It*);        // begin
-    void FUN_14027c290(Unk_It24*, Unk_It, Unk_It, Unk_It);   // insert(range)
+    void FUN_14027c290(Unk_It*, Unk_It, Unk_It, Unk_It);   // insert(range), returns the iterator
     void* m_begin; void* m_end; void* m_cap;
 };
 MS2_CHECK_SIZE(Unk_IngVec, 24);
@@ -64,7 +61,7 @@ class CIngredientInfo : public CPtred {
 public:
     CIngredientInfo();                     // 0x14027d830
     CIngredientInfo(int a, int b, int c);  // 0x14027d7d0
-    virtual ~CIngredientInfo();            // 0x14027e620
+    // ~CIngredientInfo (0x14027e620) is implicit.
     void FUN_14026b1e0(COutputStream&);
     void FUN_14026b250(CInPacket&);
     bool FUN_14026b2f0(CIngredientInfo*);
@@ -155,7 +152,7 @@ public:
     ~Unk_ItemVec() noexcept;                        // 0x14027e420
     size_t FUN_14028b470();                // size
     void FUN_14028b2a0(const ItemEntity&);       // push_back
-    Unk_It* FUN_14028b360(Unk_It*);        // last element iterator
+    Unk_It* FUN_14028b360(Unk_It*) noexcept;   // rbegin
     Unk_It* FUN_14028aa30(Unk_It*);        // end
     Unk_It* FUN_14028a200(Unk_It*);        // begin
     void FUN_14028a590();                  // clear
@@ -236,7 +233,7 @@ MS2_CHECK_SIZE(Unk_IntArr, 32);
 class NpcShopItemLife : public CPtred {
 public:
     NpcShopItemLife();                     // 0x14026e9b0
-    virtual ~NpcShopItemLife();            // 0x14027e8e0
+    // ~NpcShopItemLife (0x14027e8e0) is implicit: the exe dtor stores no vptr.
     bool FUN_14026ea20(NpcShopItemLife* other);
     Unk_ShopLifeRef FUN_14026eab0();
     bool FUN_14026ebc0(void* xml);
@@ -257,7 +254,7 @@ MS2_CHECK_OFFSET(NpcShopItemLife, m_time, 0x20);
 class ItemDropItemLife : public CPtred {
 public:
     ItemDropItemLife();                    // 0x14026f220
-    virtual ~ItemDropItemLife();           // 0x14027e8c0
+    // ~ItemDropItemLife (0x14027e8c0) is implicit: the exe dtor stores no vptr.
     bool FUN_14026f290(void* xml);
     __int64 FUN_14026f520();
     bool FUN_14026f5d0();
@@ -269,7 +266,7 @@ MS2_CHECK_SIZE(ItemDropItemLife, 0x30);
 class CUserChangeableItemHistory : public CPtred {
 public:
     CUserChangeableItemHistory();          // 0x14026f650
-    virtual ~CUserChangeableItemHistory(); // 0x14027e7a0
+    // ~CUserChangeableItemHistory (0x14027e7a0) is implicit: the exe dtor stores no vptr.
     virtual void vfunc_1();
     virtual void vfunc_2(COutputStream* out);
     virtual void vfunc_3(CInPacket* in);
@@ -307,12 +304,12 @@ public:
     Unk_HistList();                        // 0x14027d5e0
     ~Unk_HistList();                       // 0x14027e3a0
     void FUN_14028a4b0() noexcept;                // clear
-    Unk_It* FUN_14028a1a0(Unk_It*);        // begin
+    Unk_It* FUN_14028a1a0(Unk_It*) noexcept;   // begin
     Unk_It* FUN_14028a9d0(Unk_It*);        // end
     Unk_It* FUN_14028aca0(Unk_It*, Unk_It);// erase
     Unk_HistRef* FUN_14028aef0();          // front (returns pointer to element)
     void FUN_14028b260(Unk_HistRef&);      // push_back
-    void FUN_140289d20(Unk_It*);           // begin
+    Unk_It* FUN_140289d20(Unk_It*);        // _Unchecked_begin
     void FUN_140289d80(Unk_It*);           // end
     __int64 FUN_14028b410();               // size
     void* m_head; size_t m_size;
@@ -347,7 +344,7 @@ public:
 class ChangeableProductInfo : public CPtred {
 public:
     ChangeableProductInfo();               // 0x140270170
-    virtual ~ChangeableProductInfo();      // 0x14027e7e0
+    // ~ChangeableProductInfo (0x14027e7e0) is implicit: the exe dtor stores no vptr.
     void FUN_140270230(Unk_ProdRef other);
     bool FUN_140270330(const CMsTime& now);
     bool FUN_1402703a0(const CMsTime& now);
@@ -362,7 +359,7 @@ MS2_CHECK_SIZE(ChangeableProductInfo, 0x60);
 class HomeBlockInfo : public CPtred {
 public:
     HomeBlockInfo();                       // 0x1402704b0
-    virtual ~HomeBlockInfo();              // 0x14027e820
+    // ~HomeBlockInfo (0x14027e820) is implicit: the exe dtor stores no vptr.
     void FUN_140270530();
     void FUN_1402705d0(COutputStream& out);
     void FUN_1402706f0(CInPacket& in);

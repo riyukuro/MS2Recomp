@@ -99,13 +99,11 @@ void BlindManager::CreateLists()
 }
 
 // @0x140a250a0
-// MS2-FUNCTIONAL: the exe keeps the path temporaries in a different order around the std::string argument (frame 0x10 smaller)
 void BlindManager::Load()
 {
     ClearLists();
     CreateLists();
-    CString strFile("BlindList.xml");
-    CString strPath = FUN_140cc2a00(FUN_141275640(), strFile);
+    CString strPath = FUN_140cc2a00(FUN_141275640(), "BlindList.xml");
     if (GetFileSystem()->FUN_1403987d0(std::string((const char*)strPath)) == 0)
         return;
     TiXmlDocument document;
@@ -117,11 +115,11 @@ void BlindManager::Load()
         int nType = FUN_140197350(pNode, "type", 0);
         CStringW strTarget = FUN_1401bf530(pNode, "target", CStringW(L""));
         __int64 nExpire = FUN_140354150(pNode, "time", 0);
-        if (nType < 0 || nType > 5)
+        if (nType < 0 || nType >= 6)
             continue;
         __time64_t nNow;
         _time64(&nNow);
-        if (nExpire < nNow)
+        if (nNow > nExpire)
             continue;
         BlindList* pList = m_lists[nType];
         if (pList == 0)
@@ -134,17 +132,13 @@ void BlindManager::Load()
 }
 
 // @0x140a25400
-// MS2-FUNCTIONAL: the comment node temporaries are laid out differently (frame 0x10 larger in the exe)
 void BlindManager::Save()
 {
     TiXmlDocument document;
     Unk_TiXmlDeclaration declaration("1.0", "utf-8", "");
     FUN_14086e000(&document, &declaration);
-    {
-        Unk_TiXmlComment comment(FUN_1409a2360(" \xc6\xc4\xbd\xcc\xc7\xd8\xbc\xad \xbb\xe7\xbf\xeb\xc7\xcf\xb4\xc2 "
-            "\xb5\xa5\xc0\xcc\xc5\xcd\xc0\xcc\xb4\xcf \xc1\xf7\xc1\xa2 \xbc\xf6\xc1\xa4\xc7\xcf\xc1\xf6 \xb8\xb6\xbc\xbc\xbf\xe4 ", 0));
-        FUN_14086e000(&document, &comment);
-    }
+    FUN_14086e000(&document, &static_cast<const Unk_TiXmlComment&>(Unk_TiXmlComment(FUN_1409a2360(" \xc6\xc4\xbd\xcc\xc7\xd8\xbc\xad \xbb\xe7\xbf\xeb\xc7\xcf\xb4\xc2 "
+            "\xb5\xa5\xc0\xcc\xc5\xcd\xc0\xcc\xb4\xcf \xc1\xf7\xc1\xa2 \xbc\xf6\xc1\xa4\xc7\xcf\xc1\xf6 \xb8\xb6\xbc\xbc\xbf\xe4 ", 0))));
     Unk_TiXmlElement root("ms2");
     for (int nType = 0; nType < 6; nType++)
     {
@@ -159,8 +153,7 @@ void BlindManager::Save()
         }
     }
     FUN_14086e000(&document, &root);
-    CString strFile("BlindList.xml");
-    CString strPath = FUN_140cc2a00(FUN_141275640(), strFile);
+    CString strPath = FUN_140cc2a00(FUN_141275640(), "BlindList.xml");
     FUN_1408710c0(&document, FUN_14016a5c0(strPath, 0));
 }
 
@@ -183,7 +176,6 @@ bool BlindManager::Block(int nType, CStringW strKey)
 }
 
 // @0x140a25840
-// MS2-FUNCTIONAL: the exe splits the key destruction over the return paths (2 more ip2state entries)
 bool BlindManager::IsBlocked(int nType, CStringW strKey)
 {
     if (nType > 6 || nType < 0)
@@ -193,7 +185,7 @@ bool BlindManager::IsBlocked(int nType, CStringW strKey)
     if (it == pList->end())
         return false;
     BlindEntry& entry = it->second;
-    if (FUN_140869440() < entry.m_expire)
+    if (entry.m_expire > FUN_140869440())
         return true;
     return false;
 }

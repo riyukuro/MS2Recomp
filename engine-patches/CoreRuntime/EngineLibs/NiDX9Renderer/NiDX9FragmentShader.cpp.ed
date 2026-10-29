@@ -1,0 +1,33 @@
+658c
+                if (!pkGenerator) break;   // MS2: game 0x1427e2d60 skips the stage instead of asserting
+.
+654c
+                if (!pkLight) break;   // MS2: game 0x1427e2d60 skips the stage instead of asserting
+.
+587c
+                if (!pkShadowMap) break;   // MS2: game 0x1427e2d60 skips the stage instead of asserting
+.
+581c
+                if (!pkGenerator) break;   // MS2: game 0x1427e2d60 skips the stage instead of asserting
+.
+577c
+                if (!pkLight) break;   // MS2: game 0x1427e2d60 skips the stage instead of asserting
+.
+560c
+                if (!pkShadowMap) break;   // MS2: game 0x1427e2d60 skips the stage instead of asserting
+.
+554c
+                if (!pkGenerator) break;   // MS2: game 0x1427e2d60 skips the stage instead of asserting
+.
+550c
+                if (!pkLight) break;   // MS2: game 0x1427e2d60 skips the stage instead of asserting
+.
+533c
+                if (!pkShadowMap) break;   // MS2: game 0x1427e2d60 skips the stage instead of asserting
+.
+527c
+                if (!pkGenerator) break;   // MS2: game 0x1427e2d60 skips the stage instead of asserting
+.
+523c
+                if (!pkLight) break;   // MS2: game 0x1427e2d60 skips the stage instead of asserting
+.

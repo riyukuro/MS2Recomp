@@ -5,6 +5,7 @@
 #include "ms2/placeholder/nmstream.h"
 #include "ms2/placeholder/nmobjects.h"
 #include "ms2/placeholder/nmfunc.h"
+#include "ms2/placeholder/nmencoder.h"
 #include "ms2/ms2recover.h"
 
 extern void FUN_14156bcb0(void*, void*, void*);
@@ -13,7 +14,7 @@ extern void FUN_14156be10(void*, void*, void*);
 extern void FUN_14156bf10(void*);
 extern void FUN_14156ac20(void*, unsigned int);
 extern unsigned int FUN_1415f9990(void*);
-extern int FUN_1415fb6d0(void*);
+extern int FUN_1415fb6d0(CNMSerializableDecoder*);
 extern int FUN_1415fb700(void*);
 extern int FUN_1415fb750(void*);
 
@@ -25,20 +26,19 @@ CNMEvent::CNMEvent(int eventId, unsigned char format, int n1c, int n24)
 
 // MS2-FUNCTIONAL 0x1415b1ed0: frames event encoding.
 // @0x1415b1ed0
-unsigned int CNMEvent::EncodeFramed(CNMStream* stream)
+unsigned int CNMEvent::EncodeFramed(CNMStream* pStream)
 {
-    unsigned char storage[0x18];
-    FUN_14156bcb0(storage, stream, this);
-    auto result = Encode(reinterpret_cast<CNMEncoder*>(storage), stream);
-    FUN_14156bd50(storage);
-    return result;
+    CNMSerializableEncoder encoder(pStream, this);
+    return CNMEvent::Encode(reinterpret_cast<CNMEncoder*>(&encoder), pStream);
 }
 
 // MS2-FUNCTIONAL 0x1415b1f30: dispatches event encoding by format.
 // @0x1415b1f30
-unsigned int CNMEvent::EncodeDispatch(CNMEncoder* encoder, CNMStream* stream)
+unsigned int CNMEvent::EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream)
 {
-    return m_bFormat == 1 ? Encode(encoder, stream) : EncodeFramed(stream);
+    if (m_bFormat == 1)
+        return CNMEvent::Encode(pEncoder, pStream);
+    return CNMEvent::EncodeFramed(pStream);
 }
 
 // MS2-FUNCTIONAL 0x1415b1f90: writes the base event terminator.
@@ -51,22 +51,21 @@ unsigned int CNMEvent::Encode(CNMEncoder* encoder, CNMStream*)
 
 // MS2-FUNCTIONAL 0x1415b1fc0: decodes a framed event.
 // @0x1415b1fc0
-unsigned int CNMEvent::DecodeFramed(CNMStream* stream)
+unsigned int CNMEvent::DecodeFramed(CNMStream* pStream)
 {
-    unsigned char storage[0x38];
-    FUN_14156be10(storage, stream, this);
-    unsigned int result = 0;
-    if (FUN_1415fb750(storage))
-        result = Decode(reinterpret_cast<CNMSerializableDecoder*>(storage), stream);
-    FUN_14156bf10(storage);
-    return result;
+    CNMSerializableDecoder decoder(pStream, this);
+    if (FUN_1415fb750(&decoder) == 0)
+        return 0;
+    return CNMEvent::Decode(&decoder, pStream);
 }
 
 // MS2-FUNCTIONAL 0x1415b2050: dispatches event decoding by format.
 // @0x1415b2050
-unsigned int CNMEvent::DecodeDispatch(CNMSerializableDecoder* decoder, CNMStream* stream)
+unsigned int CNMEvent::DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream)
 {
-    return FUN_1415fb6d0(decoder) == 2 ? DecodeFramed(stream) : Decode(decoder, stream);
+    if (FUN_1415fb6d0(pDecoder) == 2)
+        return CNMEvent::DecodeFramed(pStream);
+    return CNMEvent::Decode(pDecoder, pStream);
 }
 
 // MS2-FUNCTIONAL 0x1415b20b0: consumes the base event payload.
@@ -86,20 +85,19 @@ CNMMessengerReplyEvent::CNMMessengerReplyEvent(int reply) : CNMEvent(0x1001, 1, 
 
 // MS2-FUNCTIONAL 0x1415b21a0: frames messenger reply encoding.
 // @0x1415b21a0
-unsigned int CNMMessengerReplyEvent::EncodeFramed(CNMStream* stream)
+unsigned int CNMMessengerReplyEvent::EncodeFramed(CNMStream* pStream)
 {
-    unsigned char storage[0x18];
-    FUN_14156bcb0(storage, stream, this);
-    auto result = Encode(reinterpret_cast<CNMEncoder*>(storage), stream);
-    FUN_14156bd50(storage);
-    return result;
+    CNMSerializableEncoder encoder(pStream, this);
+    return CNMMessengerReplyEvent::Encode(reinterpret_cast<CNMEncoder*>(&encoder), pStream);
 }
 
 // MS2-FUNCTIONAL 0x1415b2200: dispatches messenger reply encoding by format.
 // @0x1415b2200
-unsigned int CNMMessengerReplyEvent::EncodeDispatch(CNMEncoder* encoder, CNMStream* stream)
+unsigned int CNMMessengerReplyEvent::EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream)
 {
-    return m_bFormat == 1 ? Encode(encoder, stream) : EncodeFramed(stream);
+    if (m_bFormat == 1)
+        return CNMMessengerReplyEvent::Encode(pEncoder, pStream);
+    return CNMMessengerReplyEvent::EncodeFramed(pStream);
 }
 
 // MS2-FUNCTIONAL 0x1415b2260: serializes the base event and reply code.
@@ -115,22 +113,21 @@ unsigned int CNMMessengerReplyEvent::Encode(CNMEncoder* encoder, CNMStream* stre
 
 // MS2-FUNCTIONAL 0x1415b22c0: decodes a framed messenger reply event.
 // @0x1415b22c0
-unsigned int CNMMessengerReplyEvent::DecodeFramed(CNMStream* stream)
+unsigned int CNMMessengerReplyEvent::DecodeFramed(CNMStream* pStream)
 {
-    unsigned char storage[0x38];
-    FUN_14156be10(storage, stream, this);
-    unsigned int result = 0;
-    if (FUN_1415fb750(storage))
-        result = Decode(reinterpret_cast<CNMSerializableDecoder*>(storage), stream);
-    FUN_14156bf10(storage);
-    return result;
+    CNMSerializableDecoder decoder(pStream, this);
+    if (FUN_1415fb750(&decoder) == 0)
+        return 0;
+    return CNMMessengerReplyEvent::Decode(&decoder, pStream);
 }
 
 // MS2-FUNCTIONAL 0x1415b2350: dispatches messenger reply decoding by format.
 // @0x1415b2350
-unsigned int CNMMessengerReplyEvent::DecodeDispatch(CNMSerializableDecoder* decoder, CNMStream* stream)
+unsigned int CNMMessengerReplyEvent::DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream)
 {
-    return FUN_1415fb6d0(decoder) == 2 ? DecodeFramed(stream) : Decode(decoder, stream);
+    if (FUN_1415fb6d0(pDecoder) == 2)
+        return CNMMessengerReplyEvent::DecodeFramed(pStream);
+    return CNMMessengerReplyEvent::Decode(pDecoder, pStream);
 }
 
 // MS2-FUNCTIONAL 0x1415b23b0: restores the reply code after the base event.

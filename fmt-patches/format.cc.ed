@@ -1,0 +1,79 @@
+799a
+      typedef typename BasicWriter<Char>::CharPtr CharPtr;
+      CharPtr out = CharPtr();
+      if (spec.width_ > 1) {
+        Char fill = ' ';
+        out = writer.grow_buffer(spec.width_);
+        if (spec.align_ != ALIGN_LEFT) {
+          std::fill_n(out, spec.width_ - 1, fill);
+          out += spec.width_ - 1;
+        } else {
+          std::fill_n(out + 1, spec.width_ - 1, fill);
+        }
+      } else {
+        out = writer.grow_buffer(1);
+      }
+      *out = static_cast<Char>(arg.int_value);
+      break;
+    }
+    case Arg::CHAR_INT: {  // MS2
+      if (spec.type_ != 'c')
+        writer.write_int(arg.uint_value, spec);
+.
+541a
+  // MS2: CHAR_INT formats as a number unless the type is 'c'.
+  void visit_char_int(int value) {
+    if (spec_.type_ != 'c') {
+      spec_.flags_ |= CHAR_FLAG;
+      writer_.write_int(value, spec_);
+      return;
+    }
+    if (spec_.align_ == ALIGN_NUMERIC || spec_.flags_ != 0)
+      throw FormatError("invalid format specifier for char");
+    typedef typename fmt::BasicWriter<Char>::CharPtr CharPtr;
+    CharPtr out = CharPtr();
+    if (spec_.width_ > 1) {
+      Char fill = static_cast<Char>(spec_.fill());
+      out = writer_.grow_buffer(spec_.width_);
+      if (spec_.align_ == fmt::ALIGN_RIGHT) {
+        std::fill_n(out, spec_.width_ - 1, fill);
+        out += spec_.width_ - 1;
+      } else if (spec_.align_ == fmt::ALIGN_CENTER) {
+        out = writer_.fill_padding(out, spec_.width_, 1, fill);
+      } else {
+        std::fill_n(out + 1, spec_.width_ - 1, fill);
+      }
+    } else {
+      out = writer_.grow_buffer(1);
+    }
+    *out = static_cast<Char>(value);
+  }
+
+.
+355@35s "" ", DAT_143aad168"
+355@14s "" "_c_l"
+355@6s "" "_"
+354@37s "" "DAT_143aad168, "
+354@14s "" "_c_l"
+354@6s "" "_"
+351@39s "" "DAT_143aad168, "
+351@16s "" "_c_l"
+351@8s "" "_"
+350@39s "" "DAT_143aad168, "
+350@16s "" "_c_l"
+350@8s "" "_"
+349c
+    return precision < 0 ?  // MS2: _swprintf_c_l with the game's numeric locale
+.
+70@66s "" "  // MS2"
+70@60s "" "DAT_143aad168, "
+70@26s "" "_l"
+70@15s "" "_"
+61a
+#ifdef _MSC_VER
+// MS2: floating-point output goes through the game's numeric locale (_create_locale(LC_NUMERIC, "korean"),
+// commonfiles/localepath.cpp; exe 0x143aad168) with the _l CRT variants.
+extern _locale_t DAT_143aad168;
+#endif
+
+.

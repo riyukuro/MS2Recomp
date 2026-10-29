@@ -10,16 +10,17 @@
 class NxActor;
 class Unk_VibParams;
 
-// 8-byte counted reference to the vibration parameters (a zone row); copy ctor 0x1409f71b0, dtor 0x140975740,
-// operator-> 0x140975bd0 (members declared in the .cpp).
+// Counted reference to the vibration parameters (a zone row), an MS2Ptr: 16 bytes, m_p at +8 (the copy ctor 0x1409f71b0 and
+// the dtor 0x140975740 write 16); operator-> 0x140975bd0 (members declared in the .cpp).
 struct Unk_VibParamRef
 {
     Unk_VibParamRef(const Unk_VibParamRef& o);              // 0x1409f71b0
     ~Unk_VibParamRef();                                     // 0x140975740
     Unk_VibParams* FUN_140975bd0() const;                   // operator->
+    void* m_00;
     void* m_p;
 };
-MS2_CHECK_SIZE(Unk_VibParamRef, 8);
+MS2_CHECK_SIZE(Unk_VibParamRef, 16);
 
 class CEntityVibrator : public CPtred
 {
@@ -62,7 +63,7 @@ public:
     int m_88;
     unsigned m_8c;
     unsigned m_90;
-    int m_94;
+    unsigned m_94;
     Vector3 m_98;                       // box size
     float m_a4;                                 // scale
     bool m_a8;

@@ -1,5 +1,5 @@
 // cashshopref.h - PLACEHOLDER for the handle the cash-shop web dialogs take of the UICashShopDialog while they close
-// (0x18 bytes, the intrusively counted pointee at +8). Defined in cashchargedialog.cpp (0x140b05020-0x140b05570). NOT an original header.
+// (0x10 bytes, the intrusively counted pointee at +8). Defined in cashchargedialog.cpp (0x140b05020-0x140b05570). NOT an original header.
 #pragma once
 
 #include "ms2/ms2layout.h"
@@ -21,8 +21,7 @@ private:
     static void FUN_140b054e0(UICashShopDialog* pDialog);
     void* m_unk0;
     UICashShopDialog* m_pDialog;
-    void* m_unk10;
 };
-MS2_CHECK_SIZE(Unk_CashShopRef, 0x18);
+MS2_CHECK_SIZE(Unk_CashShopRef, 0x10);
 
 UICashShopDialog* FUN_140b04f80(int nId);                           // the open UICashShopDialog with the UI id

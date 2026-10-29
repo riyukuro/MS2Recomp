@@ -69,14 +69,13 @@ template <class T> inline void Unk_SmLog(CLogString* log, int level, int categor
 void LoadSystemMailContent();
 #ifndef MS2_HOOK_DLL
 // @0x140851750
-// MS2-FUNCTIONAL: temp slots of the nested path-building calls sit in a different order than the exe (frame 0x10 larger).
 void LoadSystemMailContent()
 {
     TiXmlDocument doc;
     CString strPath = FUN_14071ae20(FUN_14038f6d0(FUN_140298360("systemMailContent", FUN_140651390()), ".xml"));
     if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
     {
-        strPath = FUN_14071ae20(CString("systemMailContent.xml"));
+        strPath = FUN_14071ae20("systemMailContent.xml");
         if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
             return;
     }

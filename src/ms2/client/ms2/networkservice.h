@@ -74,7 +74,7 @@ public:
     virtual void vfunc_60(int);
     virtual void vfunc_61();
     virtual void vfunc_62();
-    virtual void vfunc_63(int,int,int);
+    virtual void vfunc_63(bool,int,int);
     virtual void vfunc_64(int nValue);   // 0x200: usercommandcli's 'hide' command calls it with the parsed int (sb2)
     virtual void vfunc_65();
     virtual void vfunc_66();
@@ -119,7 +119,7 @@ public:
     int FUN_1415383a0(CString,int,int,int,int);
     void FUN_141538480(int);
     int FUN_1415384e0(); void FUN_141538510(); void FUN_141538540();
-    bool FUN_141538600(class CItem*);
+    BOOL FUN_141538600(class CItem*);
     void FUN_141538cb0(); bool FUN_141538d50();
     bool FUN_1415395a0(int,const class CMsgBoxData&);
     void FUN_141538570(); void FUN_1415385a0(); int FUN_1415385d0();

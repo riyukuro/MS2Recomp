@@ -43,8 +43,8 @@
 // Crypto++ was built with its assert() diagnostics disabled.
 #define NDEBUG
 #include <assert.h>
-#include "../../../third_party/src/cryptopp562/sha.h"
-#include "../../../third_party/src/cryptopp562/hex.h"
+#include "cryptopp562/sha.h"
+#include "cryptopp562/hex.h"
 #undef NDEBUG
 #include <assert.h>
 #include "ms2/ms2recover.h"

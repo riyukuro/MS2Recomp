@@ -228,7 +228,6 @@ void CItemRemakeScrollTable::SetInit(bool b)
 
 // The options of nGroup whose value is the top of their range.
 // @0x140615ca0
-// MS2-FUNCTIONAL: stack slot order of the iterator/temporaries differs
 void FUN_140615ca0(MS2Ptr<CItem> item, int nGroup, ATL::CAtlArray<MS2Ptr<CItemRemakeOptionUtil::TStatInfo> >& out)
 {
     MS2Ptr<CItemOption> spOption(item->FUN_1405278a0()->m_spOption);
@@ -237,49 +236,43 @@ void FUN_140615ca0(MS2Ptr<CItem> item, int nGroup, ATL::CAtlArray<MS2Ptr<CItemRe
         Unk_EnchantMap& stats = spOption->FUN_1405cb8a0(nGroup);
         if (!stats.IsEmpty())
         {
-            POSITION pos = stats.GetStartPosition();
-            while (pos != 0)
+            for (POSITION pos = stats.GetStartPosition(); pos != 0; stats.GetNext(pos))
             {
                 int nStat = stats.GetKeyAt(pos);
                 Unk_EnchantPtr<BaseOption> spBase(stats.GetValueAt(pos));
-                if (!(spBase == 0))
+                if (spBase == 0)
+                    continue;
+                std::pair<int, int> range =
+                    FUN_140166430()->FUN_1405f64e0(item->FUN_1405276c0(), item->FUN_140526bd0(), nStat);
+                if (range.second == spBase->GetValue())
                 {
-                    std::pair<int, int> range =
-                        FUN_140166430()->FUN_1405f64e0(item->FUN_1405276c0(), item->FUN_140526bd0(), nStat);
-                    if (range.second == spBase->GetValue())
-                    {
-                        MS2Ptr<CItemRemakeOptionUtil::TStatInfo> spInfo(new CItemRemakeOptionUtil::TStatInfo);
-                        spInfo->m_nKind = 0;
-                        spInfo->m_nValue = spBase->GetValue();
-                        spInfo->m_nId = nStat;
-                        out.Add(spInfo);
-                    }
+                    MS2Ptr<CItemRemakeOptionUtil::TStatInfo> spInfo(new CItemRemakeOptionUtil::TStatInfo);
+                    spInfo->m_nKind = 0;
+                    spInfo->m_nValue = spBase->GetValue();
+                    spInfo->m_nId = nStat;
+                    out.Add(spInfo);
                 }
-                stats.GetNext(pos);
             }
         }
         Unk_SocketSpecialMap& specials = spOption->FUN_1405cb8d0(nGroup);
         if (!specials.IsEmpty())
         {
-            POSITION pos = specials.GetStartPosition();
-            while (pos != 0)
+            for (POSITION pos = specials.GetStartPosition(); pos != 0; specials.GetNext(pos))
             {
                 int nSpecial = specials.GetKeyAt(pos);
                 Unk_EnchantPtr<BaseOption> spBase(specials.GetValueAt(pos));
-                if (!(spBase == 0))
+                if (spBase == 0)
+                    continue;
+                std::pair<int, int> range =
+                    FUN_140166430()->FUN_1405f6650(item->FUN_1405276c0(), item->FUN_140526bd0(), nSpecial);
+                if (range.second == spBase->GetValue())
                 {
-                    std::pair<int, int> range =
-                        FUN_140166430()->FUN_1405f6650(item->FUN_1405276c0(), item->FUN_140526bd0(), nSpecial);
-                    if (range.second == spBase->GetValue())
-                    {
-                        MS2Ptr<CItemRemakeOptionUtil::TStatInfo> spInfo(new CItemRemakeOptionUtil::TStatInfo);
-                        spInfo->m_nKind = 1;
-                        spInfo->m_nValue = spBase->GetValue();
-                        spInfo->m_nId = nSpecial;
-                        out.Add(spInfo);
-                    }
+                    MS2Ptr<CItemRemakeOptionUtil::TStatInfo> spInfo(new CItemRemakeOptionUtil::TStatInfo);
+                    spInfo->m_nKind = 1;
+                    spInfo->m_nValue = spBase->GetValue();
+                    spInfo->m_nId = nSpecial;
+                    out.Add(spInfo);
                 }
-                specials.GetNext(pos);
             }
         }
     }
@@ -288,7 +281,6 @@ void FUN_140615ca0(MS2Ptr<CItem> item, int nGroup, ATL::CAtlArray<MS2Ptr<CItemRe
 // Whether a remake scroll can be used on an item: 0 = yes, else the error (1 no item / not a pet, 2 no data, 3 the
 // options do not allow it, 4 slot, 5 rank, 6 level, 7 remake disabled, 8 item, 10 no scroll, 11 no option value).
 // @0x140616170
-// MS2-FUNCTIONAL: local slot layout and the error-code return temporaries differ
 int FUN_140616170(MS2Ptr<CItem> item, MS2Ptr<CItemRemakeScrollData> spScroll)
 {
     if (item == 0)
@@ -308,60 +300,61 @@ int FUN_140616170(MS2Ptr<CItem> item, MS2Ptr<CItemRemakeScrollData> spScroll)
         if (Unk_ArrayFind<unsigned>(spScroll->m_arrItemTypes, spData->FUN_14053c510()) == -1)
             return 8;
     }
-    else if (spScroll->m_nPetKind == 0)
+    else if (spScroll->m_nPetKind != 0)
+    {
+        if (!spData->FUN_14053cc40())
+            return 1;
+    }
+    else
     {
         if (Unk_ArrayFind<unsigned>(spScroll->m_arrSlots, spData->FUN_14053c620()) == -1)
             return 4;
     }
-    else if (!spData->FUN_14053cc40())
-        return 1;
     if (Unk_ArrayFind<unsigned>(spScroll->m_arrRanks, item->FUN_140526bd0()) == -1)
         return 5;
     int nLevel = spData->limit.levelLimit;
-    if (nLevel < spScroll->m_nLevelMin || spScroll->m_nLevelMax < nLevel)
+    if (nLevel < spScroll->m_nLevelMin || nLevel > spScroll->m_nLevelMax)
         return 6;
     if (spScroll->m_nOptionValue == 0)
         return 0xb;
-    bool bExclusive = spData->FUN_14053d600();
-    MS2Ptr<ItemOptionRandom> spRandom = FUN_140166430()->FUN_1405f6010(spData->FUN_14053eff0(item->FUN_140526bd0()));
-    Unk_SocketSpecialMap& specials = spOption->FUN_1405cb8d0(2);
-    Unk_EnchantMap& stats = spOption->FUN_1405cb8a0(2);
-    if (specials.IsEmpty() && stats.IsEmpty())
-        return 3;
-    unsigned nExclusive = 0;
-    POSITION pos = stats.GetStartPosition();
-    while (pos != 0)
+    int bExclusive = spData->FUN_14053d600();
     {
-        int nStat = stats.GetKeyAt(pos);
-        if (!spRandom->FUN_1405d74d0(nStat))
+        MS2Ptr<ItemOptionRandom> spRandom = FUN_140166430()->FUN_1405f6010(spData->FUN_14053eff0(item->FUN_140526bd0()));
+        Unk_SocketSpecialMap& specials = spOption->FUN_1405cb8d0(2);
+        Unk_EnchantMap& stats = spOption->FUN_1405cb8a0(2);
+        if (specials.IsEmpty() && stats.IsEmpty())
             return 3;
-        if (bExclusive)
+        unsigned nExclusive = 0;
+        for (POSITION pos = stats.GetStartPosition(); pos != 0; stats.GetNext(pos))
         {
-            CString strName(FUN_14082efb0(nStat));
-            bool bFound = FUN_140166430()->FUN_1405f6e40(strName).get() != 0;
-            if (bFound)
-                nExclusive++;
+            int nStat = stats.GetKeyAt(pos);
+            if (!spRandom->FUN_1405d74d0(nStat))
+                return 3;
+            if (bExclusive)
+            {
+                CString strName(FUN_14082efb0(nStat));
+                bool bFound = FUN_140166430()->FUN_1405f6e40(strName).get() != 0;
+                if (bFound)
+                    nExclusive++;
+            }
         }
-        stats.GetNext(pos);
-    }
-    pos = specials.GetStartPosition();
-    while (pos != 0)
-    {
-        int nSpecial = specials.GetKeyAt(pos);
-        if (!spRandom->FUN_1405d7550(nSpecial))
+        for (POSITION pos = specials.GetStartPosition(); pos != 0; specials.GetNext(pos))
+        {
+            int nSpecial = specials.GetKeyAt(pos);
+            if (!spRandom->FUN_1405d7550(nSpecial))
+                return 3;
+            if (bExclusive)
+            {
+                CString strName(FUN_14081d380(nSpecial));
+                bool bFound = FUN_140166430()->FUN_1405f6e40(strName).get() != 0;
+                if (bFound)
+                    nExclusive++;
+            }
+        }
+        if (nExclusive > 1)
             return 3;
-        if (bExclusive)
-        {
-            CString strName(FUN_14081d380(nSpecial));
-            bool bFound = FUN_140166430()->FUN_1405f6e40(strName).get() != 0;
-            if (bFound)
-                nExclusive++;
-        }
-        specials.GetNext(pos);
     }
-    if (nExclusive < 2)
-        return 0;
-    return 3;
+    return 0;
 }
 
 // The remake sale of an item: 0 none, 1 the game rule's, 2 a bigger one (nRate).
@@ -711,7 +704,6 @@ CStringW FUN_140617e50(const CStringW& strKey, Unk_RemakeStat& stat, unsigned* p
 
 // The option text of an item: one row per option (best values marked; with bFinal the stat range too).
 // @0x140617ef0
-// MS2-FUNCTIONAL: temporary/local slot layout of the long text builder differs
 CStringW FUN_140617ef0(Unk_RemakeStat& stat, unsigned* pCount)
 {
     if (stat.m_item == 0)
@@ -723,110 +715,108 @@ CStringW FUN_140617ef0(Unk_RemakeStat& stat, unsigned* pCount)
     int nGroup = stat.m_nMode;
     Unk_EnchantMap& stats = spOption->FUN_1405cb8a0(nGroup);
     Unk_SocketSpecialMap& specials = spOption->FUN_1405cb8d0(nGroup);
-    CStringW strBest = GetStringCommon(0x48d);
-    CStringW strRowBest = GetStringCommonByKey(CStringW(L"s_tooltip_itemoption_stat_row_best"));
-    CStringW strRow = GetStringCommonByKey(CStringW(L"s_tooltip_itemoption_stat_row"));
-    CStringW strRange = stat.m_bFinal ? GetStringCommonByKey(CStringW(L"s_itemremake_option_with_range")) : CStringW(L"");
-    CStringW strRangeR = stat.m_bFinal ? GetStringCommonByKey(CStringW(L"s_itemremake_option_with_range_r")) : CStringW(L"");
+    const CStringW& strBest = GetStringCommon(0x48d);
+    const CStringW& strRowBest = GetStringCommonByKey(L"s_tooltip_itemoption_stat_row_best");
+    const CStringW& strRow = GetStringCommonByKey(L"s_tooltip_itemoption_stat_row");
+    bool bFinal = stat.m_bFinal;
+    const CStringW& strRange = bFinal ? GetStringCommonByKey(L"s_itemremake_option_with_range") : CStringW(L"");
+    const CStringW& strRangeR = bFinal ? GetStringCommonByKey(L"s_itemremake_option_with_range_r") : CStringW(L"");
+    bool bBest = false;
     Unk_OptionTextMap names(10);
-    if (item->FUN_140525640() == 0 || nGroup != 2)
+    if (item->FUN_140525640() != 0 && nGroup == 2)
+        spOption->FUN_1405cb900(nGroup, names);
+    else
     {
         int nRow = 0;
-        POSITION pos = stats.GetStartPosition();
-        while (pos != 0)
+        for (POSITION pos = stats.GetStartPosition(); pos != 0; stats.GetNext(pos))
         {
             int nStat = stats.GetKeyAt(pos);
-            names.SetAt(nRow, FUN_14082efb0(nStat));
-            nRow++;
-            stats.GetNext(pos);
+            names.SetAt(nRow++, FUN_14082efb0(nStat));
         }
-        pos = specials.GetStartPosition();
-        while (pos != 0)
+        for (POSITION pos = specials.GetStartPosition(); pos != 0; specials.GetNext(pos))
         {
             int nSpecial = specials.GetKeyAt(pos);
-            names.SetAt(nRow, FUN_14081d380(nSpecial));
-            nRow++;
-            specials.GetNext(pos);
+            names.SetAt(nRow++, FUN_14081d380(nSpecial));
         }
     }
-    else
-        spOption->FUN_1405cb900(nGroup, names);
-    size_t nNames = names.GetCount();
+    int nNames = names.GetCount();
     (void)nNames;
     unsigned nCount = 0;
     CStringW strText;
-    POSITION pos = names.GetHeadPosition();
-    while (pos != 0)
+    for (POSITION pos = names.GetHeadPosition(); pos != 0; names.GetNext(pos))
     {
         int nStat = FUN_14082ee80(names.GetValueAt(pos));
-        if (nStat == -1)
-        {
-            int nSpecial = FUN_14081d260(names.GetValueAt(pos));
-            Unk_SocketSpecialMap::CPair* pPair;
-            if (nSpecial != 0 && (pPair = specials.Lookup((Unk_SocketSpecialStat)nSpecial)) != 0)
-            {
-                Unk_EnchantPtr<BaseOption> spBase(pPair->m_value);
-                if (!(spBase == 0))
-                {
-                    CStringW strName = FUN_140631830(nSpecial, spBase->GetValue(), item->FUN_140527840());
-                    std::pair<int, int> range =
-                        FUN_140166430()->FUN_1405f6650(item->FUN_1405276c0(), item->FUN_140526bd0(), nSpecial);
-                    bool bBest = range.second == spBase->GetValue();
-                    if (bBest)
-                        strName = FUN_1401e8510(strBest, strName);
-                    CStringW strValue;
-                    if (strRange.IsEmpty())
-                        strValue = strName;
-                    else if (!FUN_14081dcd0(nSpecial))
-                        strValue = StringFormat(strRange, strName, range.first, range.second);
-                    else
-                    {
-                        float fMin = (float)range.first / 10.0f;
-                        float fMax = (float)range.second / 10.0f;
-                        strValue = StringFormat(strRangeR, strName, fMin, fMax);
-                    }
-                    if (bBest || FUN_140166430()->FUN_1405f6a90(item, nSpecial, nGroup, spBase->GetValue()))
-                        strText.Append(FUN_1401e8510(strRowBest, strValue));
-                    else
-                        strText.Append(FUN_1401e8510(strRow, strValue));
-                    nCount++;
-                }
-            }
-        }
-        else
+        if (nStat != -1)
         {
             Unk_EnchantMap::CPair* pPair = stats.Lookup(nStat);
-            if (pPair != 0)
+            if (pPair == 0)
+                continue;
+            Unk_EnchantPtr<BaseOption> spBase(pPair->m_value);
+            if (!spBase)
+                continue;
+            CStringW strName = FUN_140631600(nStat, spBase.get());
+            std::pair<int, int> range =
+                FUN_140166430()->FUN_1405f64e0(item->FUN_1405276c0(), item->FUN_140526bd0(), nStat);
+            bBest = range.second == spBase->GetValue();
+            if (bBest)
+                strName = FUN_1401e8510(strBest, strName);
+            CStringW strValue;
+            if (!strRange.IsEmpty())
             {
-                Unk_EnchantPtr<BaseOption> spBase(pPair->m_value);
-                if (!(spBase == 0))
+                if (FUN_14082f250(nStat))
                 {
-                    CStringW strName = FUN_140631600(nStat, spBase.get());
-                    std::pair<int, int> range =
-                        FUN_140166430()->FUN_1405f64e0(item->FUN_1405276c0(), item->FUN_140526bd0(), nStat);
-                    bool bBest = range.second == spBase->GetValue();
-                    if (bBest)
-                        strName = FUN_1401e8510(strBest, strName);
-                    CStringW strValue;
-                    if (strRange.IsEmpty())
-                        strValue = strName;
-                    else if (!FUN_14082f250(nStat))
-                        strValue = StringFormat(strRange, strName, range.first, range.second);
-                    else
-                    {
-                        float fMin = (float)range.first / 10.0f;
-                        float fMax = (float)range.second / 10.0f;
-                        strValue = StringFormat(strRangeR, strName, fMin, fMax);
-                    }
-                    if (bBest || FUN_140166430()->FUN_1405f67e0(item, nStat, nGroup, spBase->GetValue()))
-                        strText.Append(FUN_1401e8510(strRowBest, strValue));
-                    else
-                        strText.Append(FUN_1401e8510(strRow, strValue));
-                    nCount++;
+                    float fMin = (float)range.first / 10.0;
+                    float fMax = (float)range.second / 10.0;
+                    strValue = StringFormat(strRangeR, strName, fMin, fMax);
                 }
+                else
+                    strValue = StringFormat(strRange, strName, range.first, range.second);
             }
+            else
+                strValue = strName;
+            if (bBest == true || FUN_140166430()->FUN_1405f67e0(item, nStat, nGroup, spBase->GetValue()))
+                strText.Append(FUN_1401e8510(strRowBest, strValue));
+            else
+                strText.Append(FUN_1401e8510(strRow, strValue));
+            nCount++;
+            continue;
         }
-        names.GetNext(pos);
+        Unk_SocketSpecialStat nSpecial = (Unk_SocketSpecialStat)FUN_14081d260(names.GetValueAt(pos));
+        if (nSpecial != 0)
+        {
+            Unk_SocketSpecialMap::CPair* pPair = specials.Lookup(nSpecial);
+            if (pPair == 0)
+                continue;
+            Unk_EnchantPtr<BaseOption> spBase(pPair->m_value);
+            if (!spBase)
+                continue;
+            CStringW strName = FUN_140631830(nSpecial, spBase->GetValue(), item->FUN_140527840());
+            std::pair<int, int> range =
+                FUN_140166430()->FUN_1405f6650(item->FUN_1405276c0(), item->FUN_140526bd0(), nSpecial);
+            bBest = range.second == spBase->GetValue();
+            if (bBest)
+                strName = FUN_1401e8510(strBest, strName);
+            CStringW strValue;
+            if (!strRange.IsEmpty())
+            {
+                if (FUN_14081dcd0(nSpecial))
+                {
+                    float fMin = (float)range.first / 10.0;
+                    float fMax = (float)range.second / 10.0;
+                    strValue = StringFormat(strRangeR, strName, fMin, fMax);
+                }
+                else
+                    strValue = StringFormat(strRange, strName, range.first, range.second);
+            }
+            else
+                strValue = strName;
+            if (bBest == true || FUN_140166430()->FUN_1405f6a90(item, nSpecial, nGroup, spBase->GetValue()))
+                strText.Append(FUN_1401e8510(strRowBest, strValue));
+            else
+                strText.Append(FUN_1401e8510(strRow, strValue));
+            nCount++;
+            continue;
+        }
     }
     if (pCount != 0)
         *pCount = nCount;
@@ -866,7 +856,6 @@ unsigned FUN_1406191e0(unsigned nMode, MS2Ptr<CItem> item)
 
 // The nOption-th option of the stat as a lock record: nIndex 0 = stat, 1 = special; nValue its id.
 // @0x140619290
-// MS2-FUNCTIONAL: local slot layout (the name map and string temporaries) differs
 bool Unk_RemakeStat::FUN_140619290(int nOption, int& nIndex, int& nValue)
 {
     if (m_item == 0)
@@ -881,34 +870,27 @@ bool Unk_RemakeStat::FUN_140619290(int nOption, int& nIndex, int& nValue)
     Unk_EnchantMap& stats = spOption->FUN_1405cb8a0(nGroup);
     Unk_SocketSpecialMap& specials = spOption->FUN_1405cb8d0(nGroup);
     Unk_OptionTextMap names(10);
-    if (item->FUN_140525640() == 0 || nGroup != 2)
+    if (item->FUN_140525640() != 0 && nGroup == 2)
+        spOption->FUN_1405cb900(nGroup, names);
+    else
     {
         int nRow = 0;
-        POSITION pos = stats.GetStartPosition();
-        while (pos != 0)
+        for (POSITION pos = stats.GetStartPosition(); pos != 0; stats.GetNext(pos))
         {
             int nStat = stats.GetKeyAt(pos);
-            names.SetAt(nRow, FUN_14082efb0(nStat));
-            nRow++;
-            stats.GetNext(pos);
+            names.SetAt(nRow++, FUN_14082efb0(nStat));
         }
-        pos = specials.GetStartPosition();
-        while (pos != 0)
+        for (POSITION pos = specials.GetStartPosition(); pos != 0; specials.GetNext(pos))
         {
             int nSpecial = specials.GetKeyAt(pos);
-            names.SetAt(nRow, FUN_14081d380(nSpecial));
-            nRow++;
-            specials.GetNext(pos);
+            names.SetAt(nRow++, FUN_14081d380(nSpecial));
         }
     }
-    else
-        spOption->FUN_1405cb900(nGroup, names);
     if (names.IsEmpty())
         return false;
     CString strName;
     int i = 0;
-    POSITION pos = names.GetHeadPosition();
-    while (pos != 0)
+    for (POSITION pos = names.GetHeadPosition(); pos != 0; names.GetNext(pos))
     {
         if (i == nOption)
         {
@@ -916,23 +898,24 @@ bool Unk_RemakeStat::FUN_140619290(int nOption, int& nIndex, int& nValue)
             break;
         }
         i++;
-        names.GetNext(pos);
     }
     if (strName.IsEmpty())
         return false;
     int nStat = FUN_14082ee80(strName);
-    if (nStat == -1)
+    if (nStat != -1)
     {
-        int nSpecial = FUN_14081d260(strName);
-        if (nSpecial == 0)
-            return false;
+        nIndex = 0;
+        nValue = nStat;
+        return true;
+    }
+    int nSpecial = FUN_14081d260(strName);
+    if (nSpecial != 0)
+    {
         nIndex = 1;
         nValue = nSpecial;
         return true;
     }
-    nIndex = 0;
-    nValue = nStat;
-    return true;
+    return false;
 }
 
 // The lock item's name (coloured by its rank; nLevel 0: the item's default rank).

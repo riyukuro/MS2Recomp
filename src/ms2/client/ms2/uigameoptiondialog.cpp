@@ -216,15 +216,12 @@ int UIGameOptionDialog::vfunc_13()
 // @0x141942bf0
 void UIGameOptionDialog::vfunc_15()
 {
-    if (vfunc_55() == 0)
+    if (vfunc_55() != 0)
+        return;
+    for (POSITION pos = m_mapPages.GetStartPosition(); pos != 0; m_mapPages.GetNext(pos))
     {
-        POSITION pos = m_mapPages.GetStartPosition();
-        while (pos != 0)
-        {
-            MS2Ptr<CBaseOption> sp = m_mapPages.GetValueAt(pos);
-            sp->vfunc_13();
-            m_mapPages.GetNext(pos);
-        }
+        MS2Ptr<CBaseOption> sp = m_mapPages.GetValueAt(pos);
+        sp->vfunc_13();
     }
 }
 
@@ -385,37 +382,37 @@ void UIGameOptionDialog::FUN_141943480()
 void UIGameOptionDialog::FUN_1419436e0(int nTab)
 {
     m_nTab = nTab;
-    if (vfunc_55() == 0)
-    {
-        MS2Ptr<CBaseOption> sp = FUN_141944460(m_nTab);
-        if (sp.get() != 0)
-            sp->vfunc_3(1);
-    }
+    if (vfunc_55() != 0)
+        return;
+    MS2Ptr<CBaseOption> sp = FUN_141944460(m_nTab);
+    if (sp.get() != 0)
+        sp->vfunc_3(1);
 }
 
 // @0x141943790
 void UIGameOptionDialog::OnCloseTab(int nTab)
 {
-    if (vfunc_55() == 0)
-    {
-        MS2Ptr<CBaseOption> sp = FUN_141944460(nTab);
-        if (sp.get() != 0)
-            sp->vfunc_4(1);
-    }
+    if (vfunc_55() != 0)
+        return;
+    MS2Ptr<CBaseOption> sp = FUN_141944460(nTab);
+    if (sp.get() != 0)
+        sp->vfunc_4(1);
 }
 
 // @0x141943820
 void UIGameOptionDialog::FUN_141943820(int n)
 {
-    if (MS2Ptr<Unk_GoButton> spApply = FUN_140bb4b10(CString("m_apply")))
+    MS2Ptr<Unk_GoButton> spApply = FUN_140bb4b10("m_apply");
+    if (spApply)
         spApply->FUN_1422c1fe0(n);
 }
 
 // @0x1419438b0
 void UIGameOptionDialog::FUN_1419438b0()
 {
-    if (vfunc_55() == 0)
-        FUN_1419436e0(m_nTab);
+    if (vfunc_55() != 0)
+        return;
+    FUN_1419436e0(m_nTab);
 }
 
 // @0x141943900
@@ -428,12 +425,11 @@ void UIGameOptionDialog::FUN_141943900(bool b)
 // @0x141943940
 void UIGameOptionDialog::FUN_141943940()
 {
-    if (FUN_140ba28d0(&m_30, 0) == 0)
-    {
-        MS2Ptr<CBaseOption> sp(nullptr);
-        if (m_mapPages.Lookup(0xf, sp))
-            FUN_1409ee290(&m_30)->Invoke("enableAgreementTabButtonRedCircle", m_bF1d0);
-    }
+    if (FUN_140ba28d0(&m_30, 0))
+        return;
+    MS2Ptr<CBaseOption> sp(nullptr);
+    if (m_mapPages.Lookup(0xf, sp))
+        FUN_1409ee290(&m_30)->Invoke("enableAgreementTabButtonRedCircle", m_bF1d0);
 }
 
 // @0x141943a00
@@ -445,17 +441,19 @@ void UIGameOptionDialog::FUN_141943a00()
 // @0x141943a30
 void UIGameOptionDialog::FUN_141943a30()
 {
-    IMessageListener* pListener = this;
-    MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x18, CStringW(L""), pListener, CStringW(L""));
+    MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x18, CStringW(L""), this, CStringW(L""));
     if (spBox.get() != 0)
     {
         Scaleform::GFx::Value vTab = FUN_1409ee290(&m_30)->Invoke("getCurrentTabName");
         Scaleform::GFx::Value vCategory = FUN_1409ee290(&m_30)->Invoke("getCurrentCategoryName");
         CStringW strTab = FUN_141277dd0(&vTab);
         CStringW strCategory = FUN_141277dd0(&vCategory);
-        if (8 < m_nTab && m_nTab < 0xe)
-            strCategory = GetStringCommonByKey(CStringW(L"s_gameoption_init_shoutcut"));
-        spBox->FUN_141a01690(GetStringCommon(0x848), FUN_140632a60(0x849, strTab, strCategory), GetStringCommon(0x476));
+        if (m_nTab >= 9 && m_nTab <= 0xd)
+            strCategory = GetStringCommonByKey(L"s_gameoption_init_shoutcut");
+        CStringW strOk = GetStringCommon(0x848);
+        CStringW strMsg = FUN_140632a60(0x849, strTab, strCategory);
+        CStringW strCancel = GetStringCommon(0x476);
+        spBox->FUN_141a01690(strOk, strMsg, strCancel);
         spBox->SetTitle(GetStringCommon(0x847));
         FUN_140d73c60(spBox);
     }
@@ -464,12 +462,10 @@ void UIGameOptionDialog::FUN_141943a30()
 // @0x141943d80
 void UIGameOptionDialog::FUN_141943d80()
 {
-    POSITION pos = m_mapPages.GetStartPosition();
-    while (pos != 0)
+    for (POSITION pos = m_mapPages.GetStartPosition(); pos != 0; m_mapPages.GetNext(pos))
     {
         MS2Ptr<CBaseOption> sp = m_mapPages.GetValueAt(pos);
         sp->vfunc_9();
-        m_mapPages.GetNext(pos);
     }
 }
 
@@ -533,14 +529,18 @@ void UIGameOptionDialog::OnCloseDialog()
 // @0x141944250
 int UIGameOptionDialog::FUN_141944250()
 {
-    if (!m_bSimple)
+    if (m_bSimple)
+        return 1;
+    for (size_t i = 0; i < FUN_1409331f0()->FUN_14142cbb0(); ++i)
     {
-        for (size_t i = 0; i < FUN_1409331f0()->FUN_14142cbb0(); ++i)
-        {
-            if (FUN_1409331f0()->FUN_14142cbe0((unsigned)i) != 0x7a137 && FUN_1409331f0()->FUN_14142cbe0((unsigned)i) != 0x7a138
-                && FUN_1409331f0()->FUN_14142cbe0((unsigned)i) != 0x7a139 && FUN_1409331f0()->FUN_14142cb40((unsigned)i, 0) == 0)
-                return 0;
-        }
+        if (FUN_1409331f0()->FUN_14142cbe0((unsigned)i) == 0x7a137)
+            continue;
+        if (FUN_1409331f0()->FUN_14142cbe0((unsigned)i) == 0x7a138)
+            continue;
+        if (FUN_1409331f0()->FUN_14142cbe0((unsigned)i) == 0x7a139)
+            continue;
+        if (FUN_1409331f0()->FUN_14142cb40((unsigned)i, 0) == 0)
+            return 0;
     }
     return 1;
 }

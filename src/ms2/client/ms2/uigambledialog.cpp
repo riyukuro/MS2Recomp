@@ -30,8 +30,8 @@ public:
 class Unk_GbItems
 {
 public:
-    unsigned FUN_140720ca0() const;                              // GetCount
-    MS2Ptr<CItem>& FUN_140a69ee0(unsigned i);                    // checked GetAt
+    size_t FUN_140720ca0() const;                                // GetCount
+    MS2Ptr<CItem>& FUN_140a69ee0(size_t i);                      // checked GetAt
 private:
     void* m_data; size_t m_count; size_t m_max; size_t m_grow;
 };
@@ -95,19 +95,25 @@ void UIGambleDialog::vfunc_67()
 }
 
 // @0x1419353c0
-// MS2-FUNCTIONAL: the exe frame is 0x10 larger (extra temporaries) with no source form found
 void UIGambleDialog::vfunc_43()
 {
     ASDialog* pDlg = dynamic_cast<ASDialog*>((AScript*)m_30);
-    Unk_GbRewardUI* pUI;
-    int n;
-    if (pDlg != 0 && (pUI = FUN_140a7b2b0(0x4e40)) != 0 && (n = pUI->FUN_141b1d3d0()) != -1) {
-        pDlg->vfunc_2(1, 0, n - pDlg->FUN_1422c13b0());
-        return;
-    }
-    pDlg = dynamic_cast<ASDialog*>((AScript*)m_30);
     if (pDlg != 0)
-        pDlg->vfunc_2(1, 0, 0);
+    {
+        Unk_GbRewardUI* pUI = FUN_140a7b2b0(0x4e40);
+        if (pUI != 0)
+        {
+            int n = pUI->FUN_141b1d3d0();
+            if (n != -1)
+            {
+                pDlg->vfunc_2(1, 0, n - pDlg->FUN_1422c13b0());
+                return;
+            }
+        }
+    }
+    ASDialog* pDlg2 = dynamic_cast<ASDialog*>((AScript*)m_30);
+    if (pDlg2 != 0)
+        pDlg2->vfunc_2(1, 0, 0);
 }
 
 // @0x1419354d0
@@ -151,37 +157,37 @@ int UIGambleDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* 
 }
 
 // @0x141935710
-// MS2-FUNCTIONAL: behaviour-equivalent; temporaries of the by-value bind arguments are not byte-identical
 int UIGambleDialog::FUN_141935710()
 {
     ASDialog* pDlg = dynamic_cast<ASDialog*>((AScript*)m_30);
-    if (pDlg == 0)
-        return 0;
-    Unk_GbReward* pReward = FUN_140967100()->FUN_141082d60();
-    if (pReward->m_items.FUN_140720ca0() == 0)
-        return 0;
-    pDlg->FUN_1407cb9c0("m_resultItemCount", pReward->m_items.FUN_140720ca0());
-    for (unsigned i = 0; i < pReward->m_items.FUN_140720ca0(); i++) {
-        MS2Ptr<CItem> spItem = pReward->m_items.FUN_140a69ee0(i);
-        if (spItem.IsNull())
-            continue;
-        CString strBind;
-        strBind.Format("%s_%d", (const char*)GetTypeName(), i + 1);
-        unsigned nCount = spItem->FUN_140526c50();
-        CStringW strName = FUN_1402758a0(L"{0} X {1}", spItem->FUN_140527b10(), nCount);
-        FUN_141415450(strBind, spItem, i, 0x415, 0);
-        int nFlag = 1;
-        int nPayType = FUN_1403bafd0(spItem->FUN_1405276c0());
-        if (nPayType != 0x11) {
-            strName = FUN_1418fec00(nPayType, nCount, 0);
-            if (!strName.IsEmpty())
-                nFlag = 0;
+    if (pDlg != 0) {
+        Unk_GbReward* pReward = FUN_140967100()->FUN_141082d60();
+        if (pReward->m_items.FUN_140720ca0() <= 0)
+            return 0;
+        pDlg->FUN_1407cb9c0("m_resultItemCount", pReward->m_items.FUN_140720ca0());
+        for (unsigned i = 0; i < pReward->m_items.FUN_140720ca0(); i++) {
+            MS2Ptr<CItem> spItem = pReward->m_items.FUN_140a69ee0(i);
+            if (spItem.IsNull())
+                continue;
+            CString strBind;
+            strBind.Format("%s_%d", (const char*)GetTypeName(), i + 1);
+            unsigned nCount = spItem->FUN_140526c50();
+            CStringW strName = FUN_1402758a0(L"{0} X {1}", spItem->FUN_140527b10(), nCount);
+            FUN_141415450(strBind, spItem, i, 0x415, 0);
+            int nFlag = 1;
+            int nPayType = FUN_1403bafd0(spItem->FUN_1405276c0());
+            if (nPayType != 0x11) {
+                strName = FUN_1418fec00(nPayType, (unsigned)spItem->FUN_140526c50(), 0);
+                if (!strName.IsEmpty())
+                    nFlag = 0;
+            }
+            pDlg->FUN_141935bc0("bind", strBind, i + 1, strName, spItem->FUN_140528590(), nFlag);
+            m_binds.Add(strBind);
         }
-        pDlg->FUN_141935bc0("bind", strBind, i + 1, strName, spItem->FUN_140528590(), nFlag);
-        m_binds.Add(strBind);
+        pReward->FUN_141b1dbd0();
+        return 1;
     }
-    pReward->FUN_141b1dbd0();
-    return 1;
+    return 0;
 }
 
 // @0x141935bc0

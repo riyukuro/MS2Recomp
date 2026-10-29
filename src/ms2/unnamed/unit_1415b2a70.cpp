@@ -7,6 +7,7 @@
 #include "ms2/placeholder/nmstream.h"
 #include "ms2/placeholder/nmobjects.h"
 #include "ms2/placeholder/nmfunc.h"
+#include "ms2/placeholder/nmencoder.h"
 #include "ms2/ms2recover.h"
 
 extern void FUN_14156bcb0(void*, void*, void*);
@@ -17,7 +18,7 @@ extern void FUN_14156ac20(void*, unsigned int);
 extern void FUN_14156ae30(void*, const void*);
 extern unsigned int FUN_1415f9990(void*);
 extern void FUN_1415fbe70(void*, unsigned int, const char*);
-extern int FUN_1415fb6d0(void*);
+extern int FUN_1415fb6d0(CNMSerializableDecoder*);
 extern int FUN_1415fb700(void*);
 extern int FUN_1415fb750(void*);
 
@@ -36,20 +37,19 @@ CNMSpecialEvent::CNMSpecialEvent(int type, const char* text)
 
 // MS2-FUNCTIONAL 0x1415b2b80: frames event encoding.
 // @0x1415b2b80
-unsigned int CNMSpecialEvent::EncodeFramed(CNMStream* stream)
+unsigned int CNMSpecialEvent::EncodeFramed(CNMStream* pStream)
 {
-    unsigned char storage[0x18];
-    FUN_14156bcb0(storage, stream, this);
-    auto result = Encode(reinterpret_cast<CNMEncoder*>(storage), stream);
-    FUN_14156bd50(storage);
-    return result;
+    CNMSerializableEncoder encoder(pStream, this);
+    return CNMSpecialEvent::Encode(reinterpret_cast<CNMEncoder*>(&encoder), pStream);
 }
 
 // MS2-FUNCTIONAL 0x1415b2be0: dispatches encoding by the event format.
 // @0x1415b2be0
-unsigned int CNMSpecialEvent::EncodeDispatch(CNMEncoder* encoder, CNMStream* stream)
+unsigned int CNMSpecialEvent::EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream)
 {
-    return m_bFormat == 1 ? Encode(encoder, stream) : EncodeFramed(stream);
+    if (m_bFormat == 1)
+        return CNMSpecialEvent::Encode(pEncoder, pStream);
+    return CNMSpecialEvent::EncodeFramed(pStream);
 }
 
 // MS2-FUNCTIONAL 0x1415b2c40: serializes the event type and optional text.
@@ -67,22 +67,21 @@ unsigned int CNMSpecialEvent::Encode(CNMEncoder* encoder, CNMStream* stream)
 
 // MS2-FUNCTIONAL 0x1415b2cb0: decodes a framed special event.
 // @0x1415b2cb0
-unsigned int CNMSpecialEvent::DecodeFramed(CNMStream* stream)
+unsigned int CNMSpecialEvent::DecodeFramed(CNMStream* pStream)
 {
-    unsigned char storage[0x38];
-    FUN_14156be10(storage, stream, this);
-    unsigned int result = 0;
-    if (FUN_1415fb750(storage))
-        result = Decode(reinterpret_cast<CNMSerializableDecoder*>(storage), stream);
-    FUN_14156bf10(storage);
-    return result;
+    CNMSerializableDecoder decoder(pStream, this);
+    if (FUN_1415fb750(&decoder) == 0)
+        return 0;
+    return CNMSpecialEvent::Decode(&decoder, pStream);
 }
 
 // MS2-FUNCTIONAL 0x1415b2d40: dispatches decoding by the event format.
 // @0x1415b2d40
-unsigned int CNMSpecialEvent::DecodeDispatch(CNMSerializableDecoder* decoder, CNMStream* stream)
+unsigned int CNMSpecialEvent::DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream)
 {
-    return FUN_1415fb6d0(decoder) == 2 ? DecodeFramed(stream) : Decode(decoder, stream);
+    if (FUN_1415fb6d0(pDecoder) == 2)
+        return CNMSpecialEvent::DecodeFramed(pStream);
+    return CNMSpecialEvent::Decode(pDecoder, pStream);
 }
 
 // MS2-FUNCTIONAL 0x1415b2da0: restores the base event type and optional text.

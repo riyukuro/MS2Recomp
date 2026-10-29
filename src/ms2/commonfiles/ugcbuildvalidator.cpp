@@ -17,6 +17,9 @@
 // MS2-PIN: ?find@?$_Tree@V?$_Tmap_traits@HV?$MS2Ptr@VCube@@@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHV?$MS2Ptr@VCube@@@@@std@@@3@$0A@@std@@@std@@QEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$MS2Ptr@VCube@@@@@std@@@std@@@std@@@2@AEBH@Z 0x140885ca0 ; unique
 // MS2-PINS-END tplpin
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\commonfiles\\ugcbuildvalidator.cpp"
+// The exe's memcpy_s is a plain call (no /Oi expansion); the pragma must precede the inline copy.
+#include <vcruntime_string.h>
+#pragma function(memcpy)
 #include "ms2/placeholder/ms2stdafx.h"
 #include <map>
 #include <atlcoll.h>
@@ -166,18 +169,12 @@ Unk_CubeEntry* FUN_140885360(void* pIter)
 }
 
 // @0x140885e00
-// MS2-FUNCTIONAL: inlined CRT memcpy_s copy
 errno_t FUN_140885e00(void* const d, size_t const dsz, void const* const s, size_t const ssz)
 {
     if (ssz == 0) { return 0; }
     { int e = !!(d != NULL); if (!e) { errno = EINVAL; _invalid_parameter_noinfo(); return EINVAL; } }
-    if (s == NULL || dsz < ssz)
-    {
-        memset(d, 0, dsz);
-        { int e = !!(s != NULL); if (!e) { errno = EINVAL; _invalid_parameter_noinfo(); return EINVAL; } }
-        { int e = !!(dsz >= ssz); if (!e) { errno = ERANGE; _invalid_parameter_noinfo(); return ERANGE; } }
-        return EINVAL;
-    }
+    { int e = !!(s != NULL); if (!e) { errno = EINVAL; _invalid_parameter_noinfo(); return EINVAL; } }
+    { int e = !!(dsz >= ssz); if (!e) { errno = ERANGE; _invalid_parameter_noinfo(); return ERANGE; } }
     memcpy(d, s, ssz);
     return 0;
 }
@@ -647,7 +644,6 @@ int CUGCBuildValidatorCli::vfunc_8(unsigned* pErr)
 MS2_REPLACE_METHOD(0x140881ef0, CUGCBuildValidatorCli, vfunc_8, 101, 0xD01F204A);
 
 // @0x140881f60
-// MS2-FUNCTIONAL: exe frame/early global check differs; branch layout not reproduced
 int CUGCBuildValidatorCli::vfunc_9(unsigned* pErr)
 {
     *pErr = 0x2d;
@@ -658,21 +654,23 @@ int CUGCBuildValidatorCli::vfunc_9(unsigned* pErr)
         return 0;
     if (DAT_143ae0fb4 != 0)
         return 1;
-    int nA, nB;
     if (FUN_14053f9c0(m_pItem->itemId) != 0)
     {
+        int nA, nB;
         if (m_pCubeService->FUN_1410d27c0(FUN_141656ad0(pPC), 0, &nA, &nB) == 0)
             return 0;
     }
     if (FUN_1408b5820(m_pItem->itemId) != 0)
     {
         *pErr = 0x4b;
+        int nA, nB;
         if (m_pCubeService->FUN_1410d27c0(FUN_141656ad0(pPC), 2, &nA, &nB) == 0)
             return 0;
     }
     if (FUN_1408b5f70(m_pItem->itemId) != 0)
     {
         *pErr = 99;
+        int nA, nB;
         if (m_pCubeService->FUN_1410d27c0(FUN_141656ad0(pPC), 4, &nA, &nB) == 0)
             return 0;
     }
@@ -683,7 +681,7 @@ int CUGCBuildValidatorCli::vfunc_9(unsigned* pErr)
             *pErr = 0x5d;
             return 0;
         }
-        if (FUN_1408b5770(m_pItem->itemId) != 0)
+        else if (FUN_1408b5770(m_pItem->itemId) != 0)
         {
             *pErr = 0x65;
             return 0;
@@ -696,31 +694,28 @@ int CUGCBuildValidatorCli::vfunc_9(unsigned* pErr)
             *pErr = 0x5c;
             return 0;
         }
-        if (FUN_1408b5480(m_pItem->itemId) == 0)
+        else if (FUN_1408b5480(m_pItem->itemId) == 0)
         {
             *pErr = 0x5c;
             return 0;
         }
-        if (FUN_1408b6120(m_pItem->itemId) != 0)
+        else if (FUN_1408b6120(m_pItem->itemId) != 0)
         {
             *pErr = 0x6c;
             return 0;
         }
-        if (FUN_1408b61c0(m_pItem->itemId) != 0)
+        else if (FUN_1408b61c0(m_pItem->itemId) != 0)
         {
             *pErr = 0x6b;
             return 0;
         }
-        if (m_pItem->FUN_1408b3860() != 0)
+        else if (m_pItem->FUN_1408b3860() != 0 && m_pCubeService->FUN_1410c3600(3))
         {
-            if (m_pCubeService->FUN_1410c3600(3) && m_pItem->look.get() != 0)
+            CUgcItemLook* pLook = m_pItem->look.get();
+            if (pLook != 0 && pLook->m_n34 != FUN_141656ad0(pPC))
             {
-                __int64 nLookOwner = m_pItem->look->m_n34;
-                if (nLookOwner != FUN_141656ad0(pPC))
-                {
-                    *pErr = 0x6f;
-                    return 0;
-                }
+                *pErr = 0x6f;
+                return 0;
             }
         }
     }
@@ -729,7 +724,6 @@ int CUGCBuildValidatorCli::vfunc_9(unsigned* pErr)
 MS2_REPLACE_METHOD(0x140881f60, CUGCBuildValidatorCli, vfunc_9, 963, 0x92D73043);
 
 // @0x140882340
-// MS2-FUNCTIONAL: the exe shares one 'return 1' block for the owner match and the tail; not reproduced
 int CUGCBuildValidatorCli::vfunc_10(unsigned* pErr)
 {
     *pErr = 8;
@@ -745,18 +739,19 @@ int CUGCBuildValidatorCli::vfunc_10(unsigned* pErr)
     if (FUN_1408a07b0(nMapId, DAT_1439f4a7c, DAT_143ab2820))
         return 1;
     __int64 nOwner = m_pCubeService->FUN_1410c8030(spCube->field50, spCube->field54);
-    if (nOwner == FUN_141656ad0(pPC))
-        return 1;
-    if (m_pCubeService->FUN_1410d55d0(nMapId, spCube->field50) && FUN_140930d20(nOwner))
-        return 1;
-    if (FUN_140930c90(nOwner) == 0)
+    if (nOwner != FUN_141656ad0(pPC))
+    {
+        if (m_pCubeService->FUN_1410d55d0(nMapId, spCube->field50) && FUN_140930d20(nOwner))
+            return 1;
+        if (FUN_140930c90(nOwner))
+            return 1;
         return 0;
+    }
     return 1;
 }
 MS2_REPLACE_METHOD(0x140882340, CUGCBuildValidatorCli, vfunc_10, 582, 0x7BB7B380);
 
 // @0x140882590
-// MS2-FUNCTIONAL: the exe shares one 'return 1' block for the owner match and the tail; not reproduced
 int CUGCBuildValidatorCli::vfunc_11(unsigned* pErr)
 {
     *pErr = 8;
@@ -772,12 +767,14 @@ int CUGCBuildValidatorCli::vfunc_11(unsigned* pErr)
     if (FUN_1408a07b0(nMapId, DAT_1439f4a7c, DAT_143ab2820))
         return 1;
     __int64 nOwner = m_pCubeService->FUN_1410c8030(spCube->field50, spCube->field54);
-    if (nOwner == FUN_141656ad0(pPC))
-        return 1;
-    if (m_pCubeService->FUN_1410d55d0(nMapId, spCube->field50) && FUN_140930d20(nOwner))
-        return 1;
-    if (FUN_140930c90(nOwner) == 0)
+    if (nOwner != FUN_141656ad0(pPC))
+    {
+        if (m_pCubeService->FUN_1410d55d0(nMapId, spCube->field50) && FUN_140930d20(nOwner))
+            return 1;
+        if (FUN_140930c90(nOwner))
+            return 1;
         return 0;
+    }
     return 1;
 }
 MS2_REPLACE_METHOD(0x140882590, CUGCBuildValidatorCli, vfunc_11, 627, 0x62E95A64);
@@ -801,15 +798,13 @@ int CUGCBuildValidatorCli::vfunc_12(unsigned* pErr)
 MS2_REPLACE_METHOD(0x140882810, CUGCBuildValidatorCli, vfunc_12, 482, 0xB355055B);
 
 // @0x140882a00
-// MS2-FUNCTIONAL: exe keeps an extra stack slot; local layout not reproduced
 int CUGCBuildValidatorCli::vfunc_13(unsigned* pErr)
 {
     *pErr = 0x1d;
     MS2Ptr<Cube> spCube(m_pCubeService->FUN_1410b8a60(m_point));
     if (!spCube != 0)
         return 0;
-    int nCategory = FUN_1408a0190(FUN_14053c5e0(m_itemData.operator->()));
-    if (nCategory != spCube->field44)
+    if (FUN_1408a0190(FUN_14053c5e0(m_itemData.operator->())) != spCube->field44)
         return 0;
     if (spCube->field64 != 0 || m_itemData->install.unchangeable != 0)
     {
@@ -841,7 +836,7 @@ int CUGCBuildValidatorCli::vfunc_13(unsigned* pErr)
             std::map<int, MS2Ptr<Cube> >* pColumn = m_pCubeService->FUN_1410b7fe0(FUN_1408a03c0((Unk_CubePoint&)spCube->position));
             for (std::map<int, MS2Ptr<Cube> >::iterator it = pColumn->begin(); it != pColumn->end(); ++it)
             {
-                MS2Ptr<Cube> spOther = (*it).second;
+                MS2Ptr<Cube> spOther = it->second;
                 if ((spOther->field60 & FUN_1408a0190(FUN_14053c5e0(m_itemData.operator->()))) == 0)
                 {
                     *pErr = 0x1e;
@@ -853,21 +848,23 @@ int CUGCBuildValidatorCli::vfunc_13(unsigned* pErr)
     if (spCube->field48 != 0)
     {
         MS2Ptr<CItemData> spData = FUN_14053f870(FUN_1408b4f20(spCube.operator->()));
-        if (spData.get() != 0 && spData->install.attachable != 0)
+        if ((spData.get() ? true : false) && spData->install.attachable != 0)
         {
             *pErr = 0x1d;
             return 0;
         }
     }
-    Unk_CubePoint above = m_point;
-    above.z = above.z + 1;
-    MS2Ptr<Cube> spAbove(m_pCubeService->FUN_1410b8a60(above));
-    if (spAbove.get() != 0)
     {
-        if ((FUN_140548cb0(&m_itemData->install) & spAbove->field44) == 0)
+        Unk_CubePoint above = m_point;
+        above.z = above.z + 1;
+        MS2Ptr<Cube> spAbove(m_pCubeService->FUN_1410b8a60(above));
+        if (spAbove.get() != 0)
         {
-            *pErr = 0x1f;
-            return 0;
+            if ((FUN_140548cb0(&m_itemData->install) & spAbove->field44) == 0)
+            {
+                *pErr = 0x1f;
+                return 0;
+            }
         }
     }
     return 1;
@@ -875,34 +872,32 @@ int CUGCBuildValidatorCli::vfunc_13(unsigned* pErr)
 MS2_REPLACE_METHOD(0x140882a00, CUGCBuildValidatorCli, vfunc_13, 1727, 0x3788507E);
 
 // @0x1408830d0
-// MS2-FUNCTIONAL: exe keeps an extra stack slot; local layout not reproduced
 int CUGCBuildValidatorCli::vfunc_14(unsigned* pErr)
 {
     *pErr = 0x1d;
     MS2Ptr<CFieldDataCli> spField = FUN_1403ed2d0()->FUN_141bd30a0();
-    if (!spField == 0)
+    if (!spField)
         return 0;
     MS2Ptr<Cube> spCube(m_pCubeService->FUN_1410b8a60(m_point));
-    if (!spCube == 0)
+    if (!spCube)
         return 0;
-    int nCategory = FUN_1408a0190(FUN_14053c5e0(m_itemData.operator->()));
-    if (nCategory != spCube->field44)
+    if (FUN_1408a0190(FUN_14053c5e0(m_itemData.operator->())) != spCube->field44)
         return 0;
-    if (spCube->field64 == 0 && m_itemData->install.unchangeable == 0)
+    if (spCube->field64 != 0 || m_itemData->install.unchangeable != 0)
     {
-        if (spCube->field48 != 0)
-        {
-            MS2Ptr<CItemData> spData = FUN_14053f870(FUN_1408b4f20(spCube.operator->()));
-            if (spData.get() != 0 && spData->install.attachable == 0)
-            {
-                *pErr = 0x1d;
-                return 0;
-            }
-        }
-        return 1;
+        *pErr = 0x3a;
+        return 0;
     }
-    *pErr = 0x3a;
-    return 0;
+    if (spCube->field48 != 0)
+    {
+        MS2Ptr<CItemData> spData = FUN_14053f870(FUN_1408b4f20(spCube.operator->()));
+        if ((spData.get() ? true : false) && spData->install.attachable == 0)
+        {
+            *pErr = 0x1d;
+            return 0;
+        }
+    }
+    return 1;
 }
 MS2_REPLACE_METHOD(0x1408830d0, CUGCBuildValidatorCli, vfunc_14, 655, 0x9B822037);
 
@@ -965,7 +960,6 @@ int CUGCBuildValidatorCli::vfunc_18(unsigned* pErr)
 MS2_REPLACE_METHOD(0x1408836a0, CUGCBuildValidatorCli, vfunc_18, 154, 0x87F2E982);
 
 // @0x140883740
-// MS2-FUNCTIONAL: branch layout of the guard chain not reproduced
 int CUGCBuildValidatorCli::vfunc_19(unsigned* pErr)
 {
     *pErr = 0x29;
@@ -979,7 +973,7 @@ int CUGCBuildValidatorCli::vfunc_19(unsigned* pErr)
         std::map<int, MS2Ptr<Cube> >* pColumn = m_pCubeService->FUN_1410b7fe0(FUN_1408a03c0(m_point));
         for (std::map<int, MS2Ptr<Cube> >::iterator it = pColumn->begin(); it != pColumn->end(); ++it)
         {
-            Cube* pOther = (*it).second.get();
+            Cube* pOther = it->second.get();
             if (pOther != 0)
                 return 0;
         }
@@ -1078,120 +1072,112 @@ int CUGCBuildValidatorCli::vfunc_23(unsigned* pErr)
 MS2_REPLACE_METHOD(0x140883dd0, CUGCBuildValidatorCli, vfunc_23, 380, 0xC9320BDB);
 
 // @0x140883f60
-// MS2-FUNCTIONAL: local/branch layout not reproduced
 int CUGCBuildValidatorCli::vfunc_24(unsigned* pErr)
 {
     *pErr = 0x34;
     MS2Ptr<Cube> spCube(m_pCubeService->FUN_1410b8a60(m_point));
-    if (!spCube == 0)
-    {
-        if (FUN_1407072e0(spCube->fieldB4) == 0)
-            return 1;
-        MyPC* pMyPC = FUN_140884db0(FUN_1403ed2d0()->FUN_141bd1530(spCube->field18));
-        if (pMyPC == 0)
-            return 0;
-        ATL::CAtlList<MS2Ptr<Unk_BackUpItem> > items(10);
-        FUN_1411e1b80(FUN_1416561a0(pMyPC), &items);
-        POSITION pos = items.GetHeadPosition();
-        while (pos != 0)
-        {
-            MS2Ptr<Unk_BackUpItem> spItem = items.GetAt(pos);
-            if (spItem->FUN_1411dc7a0().get() != 0)
-                return 0;
-            items.GetNext(pos);
-        }
+    if (!spCube)
+        return 0;
+    if (FUN_1407072e0(spCube->fieldB4) == 0)
         return 1;
+    MyPC* pMyPC = FUN_140884db0(FUN_1403ed2d0()->FUN_141bd1530(spCube->field18));
+    if (pMyPC == 0)
+        return 0;
+    ATL::CAtlList<MS2Ptr<Unk_BackUpItem> > items(10);
+    FUN_1411e1b80(FUN_1416561a0(pMyPC), &items);
+    for (POSITION pos = items.GetHeadPosition(); pos != 0; items.GetNext(pos))
+    {
+        MS2Ptr<Unk_BackUpItem> spItem = items.GetAt(pos);
+        Unk_ItemSub* pSub = spItem->FUN_1411dc7a0().get();
+        if (pSub != 0)
+            return 0;
     }
-    return 0;
+    return 1;
 }
 MS2_REPLACE_METHOD(0x140883f60, CUGCBuildValidatorCli, vfunc_24, 620, 0x6A0BF06D);
 
 // @0x1408841e0
-// MS2-FUNCTIONAL: local/branch layout not reproduced
 int CUGCBuildValidatorCli::vfunc_25(unsigned* pErr)
 {
     if (FUN_1407075a0(m_itemData->install.objCode) == 0)
         return 1;
     *pErr = 0x40;
     MS2Ptr<CFieldDataCli> spField = FUN_1403ed2d0()->FUN_141bd30a0();
-    if (!spField == 0)
-    {
-        if (spField->FUN_140375130() == 0)
-            return 0;
-        if (m_pItem == 0)
-            return 0;
-        PCBase* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
-        if (pPC == 0)
-            return 0;
-        if (FUN_141530290(pPC) == 0)
-            return 0;
-        if (DAT_143ae0fb4 != 0)
-            return 1;
-        if (FUN_1408b5620(m_pItem->itemId) != 0)
-        {
-            int nA, nB;
-            if (m_pCubeService->FUN_1410d27c0(FUN_141656ad0(pPC), 1, &nA, &nB) == 0)
-                return 0;
-            if (m_pCubeService->FUN_1410d2da0(m_pCube->field50, m_point) == 0)
-            {
-                *pErr = 0x41;
-                return 0;
-            }
-        }
-        if (FUN_1410a8a90(FUN_141530290(pPC)) == 2)
-        {
-            if (m_pCubeService->FUN_1410d2da0(m_pCube->field50, m_point) == 0)
-            {
-                *pErr = 0x41;
-                return 0;
-            }
-        }
-        if (CFieldData::FUN_140374410(FUN_1403ed2d0()->FUN_141bd3060()) == 0)
-            return 0;
+    if (!spField)
+        return 0;
+    if (spField->FUN_140375130() == 0)
+        return 0;
+    if (m_pItem == 0)
+        return 0;
+    PCBase* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
+    if (pPC == 0)
+        return 0;
+    if (FUN_141530290(pPC) == 0)
+        return 0;
+    if (DAT_143ae0fb4 != 0)
         return 1;
+    if (FUN_1408b5620(m_pItem->itemId) != 0)
+    {
+        int nA, nB;
+        if (m_pCubeService->FUN_1410d27c0(FUN_141656ad0(pPC), 1, &nA, &nB) == 0)
+            return 0;
+        if (m_pCubeService->FUN_1410d2da0(m_pCube->field50, m_point) == 0)
+        {
+            *pErr = 0x41;
+            return 0;
+        }
     }
-    return 0;
+    if (FUN_1410a8a90(FUN_141530290(pPC)) == 2)
+    {
+        if (m_pCubeService->FUN_1410d2da0(m_pCube->field50, m_point) == 0)
+        {
+            *pErr = 0x41;
+            return 0;
+        }
+    }
+    int nMapId = FUN_1403ed2d0()->FUN_141bd3060();
+    if (CFieldData::FUN_140374410(nMapId) == 0)
+        return 0;
+    return 1;
 }
 MS2_REPLACE_METHOD(0x1408841e0, CUGCBuildValidatorCli, vfunc_25, 903, 0x2AA1D42C);
 
 // @0x140884570
-// MS2-FUNCTIONAL: local/branch layout not reproduced
 int CUGCBuildValidatorCli::vfunc_26(unsigned* pErr)
 {
     if (FUN_1407075a0(m_itemData->install.objCode) == 0)
         return 1;
     *pErr = 0x40;
     MS2Ptr<CFieldDataCli> spField = FUN_1403ed2d0()->FUN_141bd30a0();
-    if (!spField == 0)
-    {
-        if (spField->FUN_140375130() == 0)
-            return 0;
-        if (m_pItem == 0)
-            return 0;
-        Cube* pCube = m_pCubeService->FUN_1410b8a60(m_pCubeService->FUN_1410bab50(m_point, m_nDirection));
-        if (pCube == 0)
-            return 0;
-        PCBase* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
-        if (pPC == 0)
-            return 0;
-        if (DAT_143ae0fb4 != 0)
-            return 1;
-        if (FUN_1408b5620(m_pItem->itemId) != 0)
-        {
-            int nA, nB;
-            if (m_pCubeService->FUN_1410d27c0(FUN_141656ad0(pPC), 1, &nA, &nB) == 0)
-                return 0;
-        }
-        if (m_pCubeService->FUN_1410d2da0(pCube->field50, m_point) == 0)
-        {
-            *pErr = 0x41;
-            return 0;
-        }
-        if (CFieldData::FUN_140374410(FUN_1403ed2d0()->FUN_141bd3060()) == 0)
-            return 0;
+    if (!spField)
+        return 0;
+    if (spField->FUN_140375130() == 0)
+        return 0;
+    if (m_pItem == 0)
+        return 0;
+    Cube* pCube = m_pCubeService->FUN_1410b8a60(m_pCubeService->FUN_1410bab50(m_point, m_nDirection));
+    if (pCube == 0)
+        return 0;
+    PCBase* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
+    if (pPC == 0)
+        return 0;
+    if (DAT_143ae0fb4 != 0)
         return 1;
+    if (FUN_1408b5620(m_pItem->itemId) != 0)
+    {
+        int nA, nB;
+        if (m_pCubeService->FUN_1410d27c0(FUN_141656ad0(pPC), 1, &nA, &nB) == 0)
+            return 0;
     }
-    return 0;
+    if (m_pCubeService->FUN_1410d2da0(pCube->field50, m_point) == 0)
+    {
+        *pErr = 0x41;
+        return 0;
+    }
+    int nMapId = FUN_1403ed2d0()->FUN_141bd3060();
+    if (CFieldData::FUN_140374410(nMapId) == 0)
+        return 0;
+    return 1;
 }
 MS2_REPLACE_METHOD(0x140884570, CUGCBuildValidatorCli, vfunc_26, 860, 0x04B90095);
 

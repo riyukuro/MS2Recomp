@@ -37,7 +37,7 @@
 class Unk_EqEquipSet
 {
 public:
-    char FUN_1411ea770();
+    bool FUN_1411ea770();
 };
 class Unk_EqPlayer
 {
@@ -148,12 +148,10 @@ int EquipSlot::vfunc_17()
     return vfunc_10();
 }
 
-// MS2-FUNCTIONAL: the exe puts the equip-swap branch last and keeps different frame temps (frame 0x138 vs 0x148)
 // @0x14120c320
 int EquipSlot::vfunc_18(void* p)
 {
-    DragSlot* pDrag = static_cast<DragSlot*>(p);
-    void* pItemSlot = FUN_140a50b50(pDrag);
+    void* pItemSlot = FUN_140a50b50(static_cast<DragSlot*>(p));
     if (pItemSlot != 0)
     {
         MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(FUN_141405a10(pItemSlot));
@@ -165,7 +163,7 @@ int EquipSlot::vfunc_18(void* p)
     }
     else
     {
-        EquipSlot* pFrom = FUN_14120d560(pDrag);
+        EquipSlot* pFrom = FUN_14120d560(static_cast<DragSlot*>(p));
         if (pFrom != 0)
         {
             MS2Ptr<CItem> spFrom = pFrom->vfunc_25();
@@ -182,7 +180,7 @@ int EquipSlot::vfunc_18(void* p)
             }
         }
     }
-    return pDrag->vfunc_10();
+    return static_cast<DragSlot*>(p)->vfunc_10();
 }
 
 // @0x14120c5e0
@@ -207,7 +205,6 @@ int EquipSlot::vfunc_21()
     return 1;
 }
 
-// MS2-FUNCTIONAL: success/failure return temps sit in different frame slots
 // @0x14120c8c0 (ITooltip::vfunc_0)
 int EquipSlot::vfunc_0(void* p)
 {
@@ -221,16 +218,17 @@ int EquipSlot::vfunc_0(void* p)
     if (m_spPC->FUN_140dba1c0() != 0)
         nFlags = 0x200;
     ASTooltip tip(pPlayer, nFlags, 2);
-    if (tip.FUN_1409e0d40(spItem.get()) == 0)
-        return 0;
-    tip.FUN_1409c69b0(vfunc_22());
-    if (IsEnabled() == true)
-        tip.FUN_1409db7b0(spItem);
-    *static_cast<Scaleform::GFx::Value*>(p) = tip.FUN_1422bb870();
-    return 1;
+    if (tip.FUN_1409e0d40(spItem.get()) != 0)
+    {
+        tip.FUN_1409c69b0(vfunc_22());
+        if (IsEnabled() == true)
+            tip.FUN_1409db7b0(spItem);
+        *static_cast<Scaleform::GFx::Value*>(p) = tip.FUN_1422bb870();
+        return 1;
+    }
+    return 0;
 }
 
-// MS2-FUNCTIONAL: the exe tests the ASSlot fill with a trailing else block; frame temps differ
 // @0x14120cae0
 int EquipSlot::vfunc_8(void* p)
 {
@@ -247,29 +245,31 @@ int EquipSlot::vfunc_8(void* p)
     if (bPc != 0)
         nFlags |= 4;
     ASSlot slot(2);
-    if (slot.FUN_1409c41f0(spItem.get(), pPlayer, m_nSlot, nFlags) == 0)
-        return 0;
-    if (m_nSlot == 4)
+    if (slot.FUN_1409c41f0(spItem.get(), pPlayer, m_nSlot, nFlags) != 0)
     {
-        if (((CItem*)spItem)->FUN_140527840()->FUN_14053d460() != false)
+        if (m_nSlot == 4)
         {
-            slot.FUN_1409c2090(1);
-            goto LAB_gray_done;
+            if (((CItem*)spItem)->FUN_140527840()->FUN_14053d460() != false)
+            {
+                slot.FUN_1409c2090(1);
+                goto LAB_gray_done;
+            }
         }
-    }
-    if (m_nSlot == 9)
-    {
-        if (((CItem*)spItem)->FUN_140527840()->FUN_14053d2b0() != false)
-            slot.FUN_1409c2090(1);
-    }
+        if (m_nSlot == 9)
+        {
+            if (((CItem*)spItem)->FUN_140527840()->FUN_14053d2b0() != false)
+                slot.FUN_1409c2090(1);
+        }
 LAB_gray_done:
-    if (bPc != 0 && m_nKind == 2)
-    {
-        if (pPlayer->FUN_1416561a0()->FUN_1411ea770() == '\0')
-            slot.FUN_1409c2710(1);
+        if (bPc != 0 && m_nKind == 2)
+        {
+            if (pPlayer->FUN_1416561a0()->FUN_1411ea770() == false)
+                slot.FUN_1409c2710(1);
+        }
+        *static_cast<Scaleform::GFx::Value*>(p) = slot.FUN_1422bb870();
+        return 1;
     }
-    *static_cast<Scaleform::GFx::Value*>(p) = slot.FUN_1422bb870();
-    return 1;
+    return 0;
 }
 
 // @0x14120cd40
@@ -291,36 +291,33 @@ MS2Ptr<CItem> EquipSlot::vfunc_25()
     return FUN_14120ce90(m_nKind);
 }
 
-// MS2-FUNCTIONAL: return/copy temps of the MS2Ptr<CItem> shape differ
 // @0x14120ce90
 MS2Ptr<CItem> EquipSlot::FUN_14120ce90(int nKind)
 {
     if (m_spPC == 0)
         return MS2Ptr<CItem>(0);
     MS2Ptr<CItem> spItem = m_spPC->FUN_140dba8b0(nKind, (Unk_InventoryEquipSlot)m_nSlot);
-    if (spItem.get() == 0)
+    if (spItem.get() != 0)
+        return spItem;
+    if (m_nSlot == 4)
     {
-        if (m_nSlot == 4)
+        spItem = m_spPC->FUN_140dba8b0(nKind, (Unk_InventoryEquipSlot)5);
+        if (spItem.get() != 0 ? true : false)
         {
-            spItem = m_spPC->FUN_140dba8b0(nKind, (Unk_InventoryEquipSlot)5);
-            if (spItem.get() != 0)
-            {
-                if (((CItem*)spItem)->FUN_140527840()->FUN_14053d460() != false)
-                    return spItem;
-            }
+            if (((CItem*)spItem)->FUN_140527840()->FUN_14053d460() != false)
+                return spItem;
         }
-        else if (m_nSlot == 9)
-        {
-            spItem = m_spPC->FUN_140dba8b0(nKind, (Unk_InventoryEquipSlot)8);
-            if (spItem.get() != 0)
-            {
-                if (((CItem*)spItem)->FUN_140527840()->FUN_14053d2b0() != false)
-                    return spItem;
-            }
-        }
-        return MS2Ptr<CItem>(0);
     }
-    return spItem;
+    else if (m_nSlot == 9)
+    {
+        spItem = m_spPC->FUN_140dba8b0(nKind, (Unk_InventoryEquipSlot)8);
+        if (spItem.get() != 0 ? true : false)
+        {
+            if (((CItem*)spItem)->FUN_140527840()->FUN_14053d2b0() != false)
+                return spItem;
+        }
+    }
+    return MS2Ptr<CItem>(0);
 }
 
 // @0x14120d190
@@ -358,19 +355,16 @@ int EquipSlot::FUN_14120d250(CItem* pItem)
     return 1;
 }
 
-// MS2-FUNCTIONAL: CStringW notice temps: exe frame is 0x10 smaller (maxState 2)
 // @0x14120d2e0
 int EquipSlot::FUN_14120d2e0(CItem* pItem)
 {
     if (FUN_14120d1f0() == 0)
         return 0;
-    bool bFlag = false;
-    if (m_nKind == 1 || m_nKind == 2)
-        bFlag = true;
+    bool bFlag = (m_nKind == 1 || m_nKind == 2) ? 1 : 0;
     if (bFlag && pItem->FUN_1405258b0() == 0)
     {
         if (m_nKind == 2)
-            FUN_140d73aa0(GetStringCommonByKey(CStringW(L"s_item_err_Invalid_slot_codi")), 0, 0, CStringW(L""));
+            FUN_140d73aa0(GetStringCommonByKey(L"s_item_err_Invalid_slot_codi"), 0, 0, CStringW(L""));
         else
             FUN_140d73bc0(0xd3, 0, 0, CStringW(L""));
         return 0;

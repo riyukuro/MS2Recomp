@@ -5,9 +5,10 @@
 #include "ms2/placeholder/delegate.h"
 #include <atlcoll.h>
 class Unk_UpperEvt;
+class CProxyGameObject;template<class T> class MS2Ptr;
 class UIEntityEventListener {
 public:UIEntityEventListener();virtual ~UIEntityEventListener();
- virtual void vfunc_1(void*);virtual void vfunc_o70_2(const Unk_UpperEvt&);virtual void vfunc_3(void*);virtual void vfunc_4(void*);virtual void vfunc_5(void*,int); // 3..5 get a by-value MS2Ptr<CProxyGameObject> (the callee destroys it)
+ virtual void vfunc_1(void*);virtual void vfunc_o70_2(const Unk_UpperEvt&);virtual void vfunc_3(MS2Ptr<CProxyGameObject>);virtual void vfunc_4(MS2Ptr<CProxyGameObject>);virtual void vfunc_5(MS2Ptr<CProxyGameObject>,int); // 3..5 get the actor by value (the callee destroys it)
 };
 MS2_CHECK_SIZE(UIEntityEventListener,8);
 class Unk_UpperActor;class Unk_UpperEvt;class Unk_UpperHpText;class Unk_UpperClip;class Unk_UpperText;class Unk_UpperBuff;

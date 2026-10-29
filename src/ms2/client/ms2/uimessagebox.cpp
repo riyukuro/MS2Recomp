@@ -159,7 +159,7 @@ MS2_CHECK_SIZE(Unk_MessageBoxMsg, 0x50);
 class Unk_MessageBoxKeys
 {
 public:
-    bool FUN_14116d890(unsigned char bEnter);
+    bool FUN_14116d890(bool bEnter);
     bool FUN_14116d840();
     bool FUN_14116d9c0(int nKey, int a, int b);
     bool FUN_14116dd30(int nPad, int a, int b);
@@ -264,7 +264,7 @@ Unk_MessageBoxFeature* FUN_140166410();
 class Unk_MessageBoxShutdown { public: int FUN_1402c4c90(int nId); };
 class Unk_MessageBoxContents { public: void* m_0; Unk_MessageBoxShutdown m_shutdown; };
 Unk_MessageBoxContents* FUN_14025e7b0();
-class Unk_MessageBoxFilter : public CPtred { public: bool FUN_140225720(const CStringW& str, CStringW& strOut); };
+class Unk_MessageBoxFilter : public CPtred { public: int FUN_140225720(const CStringW& str, CStringW& strOut); };
 class Unk_MessageBoxFilters { public: MS2Ptr<Unk_MessageBoxFilter> FUN_140229a50(); };
 Unk_MessageBoxFilters* FUN_14025e7d0();
 class Unk_MessageBoxNameDialog : public UIDialog { public: void FUN_1418f2030(__int64 nUid, const CStringW& strName); void FUN_1418f20d0(); };
@@ -274,7 +274,7 @@ Unk_MessageBoxTradeDialog* FUN_14140e820(int nId);
 void FUN_141404930(__int64 nUid);
 void FUN_141425fc0(__int64 nUid, unsigned int nCount, CItem* pItem);  // sell
 void FUN_1409e4950(MS2Ptr<CItem> spItem, CStringW& strOut, bool& bOut);
-void FUN_140961010(int nId, int nA, int nB, CStringW strArg);
+void FUN_140961010(int nId, int nA, int nB, const CStringW& strArg);
 class Unk_MessageBoxSlots { public: CStringW FUN_141813300(int nSlot); };
 Unk_MessageBoxSlots* FUN_1401a9d70();
 int FUN_141276a30(const CStringW& strName, CStringW& strError);  // validate a character name
@@ -287,7 +287,8 @@ unsigned short FUN_14053dc40(Unk_ItemEquipData* pData);
 void FUN_140d1bd60(MS2Ptr<CItem> spItem, int n);
 void FUN_141271960(MS2Ptr<CItem> spItem, int nSlot, int n);
 bool FUN_140930b10();
-void* FUN_140966da0(ATL::CAtlArray<void*>& arr);
+class Unk_MessageBoxPortal;
+size_t FUN_140966da0(ATL::CAtlArray<MS2Ptr<Unk_MessageBoxPortal> >& arr);   // CAtlArray::GetCount
 
 class Unk_MessageBoxGameOption { public: char m_pad_00[0x10]; __time64_t m_nFuncItemAsk; __time64_t m_nCurrencyAsk; };
 class Unk_MessageBoxGameOptions { public: void FUN_141243540(); Unk_MessageBoxGameOption* FUN_140c9b8b0(); };
@@ -336,13 +337,14 @@ public:
 Unk_MessageBoxEffects* FUN_1403ed280();
 
 // The skill a bound item casts (avatarpc.cpp / inventory.cpp layout).
+// The points are efd::Point3, not float arrays: an array would give FUN_1419fdbe0 a GS cookie the exe does not have.
 struct Unk_InventorySkillRequest {
     Unk_InventorySkillRequest(int, unsigned short);
     int skill;
     unsigned short level;
     unsigned __int64 tick;
     unsigned serial, unknown14;
-    float origin[3], direction[3];
+    efd::Point3 origin, direction;
     unsigned unknown30, unknown34;
     bool remap, suppressDispatch, itemUse;
     __int64 item;
@@ -399,7 +401,7 @@ class Unk_MessageBoxWorld
 public:
     MS2Ptr<Unk_MessageBoxPortal> FUN_141bc2800(int nId);
     void FUN_141bc2980(std::vector<int>& ids);
-    void FUN_141bc2c90(const NiPoint3& pos, ATL::CAtlArray<void*>& out);
+    void FUN_141bc2c90(NiPoint3 pos, ATL::CAtlArray<MS2Ptr<Unk_MessageBoxPortal> >& out);   // AddRefs each portal it appends
     Unk_MessageBoxPC* FUN_141bd0cc0();                          // the local player
     Unk_MessageBoxActor* FUN_141bd1420(CStringW strName);
     Unk_MessageBoxActor* FUN_141bd1530(__int64 nId);
@@ -496,7 +498,6 @@ void UIMessageBox::OnLoadComplete()
 MS2_REPLACE_METHOD(0x1419F7540, UIMessageBox, OnLoadComplete, 24, 0x9B1A4878);
 
 // @0x1419f7560
-// MS2-FUNCTIONAL: branch/early-return layout differs from the exe
 int UIMessageBox::vfunc_13()
 {
     if (FUN_1419f8270())
@@ -504,18 +505,19 @@ int UIMessageBox::vfunc_13()
     if (m_data.IsNull() || m_30.IsNull())
         FUN_1419f8170(0);
     CString method = "";
-    bool enter = m_data->FUN_141a030b0();
-    if (FUN_14025e7c0()->FUN_14116d890(static_cast<unsigned char>(enter)))
+    if (FUN_14025e7c0()->FUN_14116d890(m_data->FUN_141a030b0()))
     {
-        if (!m_data->FUN_141a03090())
+        if (m_data->FUN_141a03090())
+            method = "onEnterKey";
+        else
             return 1;
-        method = "onEnterKey";
     }
     else if (FUN_14025e7c0()->FUN_14116d840())
     {
-        if (!m_data->FUN_141a03100())
+        if (m_data->FUN_141a03100())
+            method = "onEscapeKey";
+        else
             return 1;
-        method = "onEscapeKey";
     }
     else if (FUN_14025e7c0()->FUN_14116d9c0(0x79, 0, 0))
         method = "onUpKey";
@@ -545,7 +547,6 @@ int UIMessageBox::vfunc_13()
 MS2_REPLACE_METHOD(0x1419F7560, UIMessageBox, vfunc_13, 1043, 0xA6912204);
 
 // @0x1419f7980
-// MS2-FUNCTIONAL: branch/early-return layout differs from the exe
 int UIMessageBox::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs)
 {
     if (UISwfEntity::vfunc_28(szMethod, pArgs, nArgs))
@@ -589,15 +590,13 @@ int UIMessageBox::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pA
         if (m_data == 0)
             return 0;
         m_data->FUN_141a03390(this);
-        IMessageListener* pListener = m_data->FUN_141a02cc0();
-        if (pListener)
+        if (IMessageListener* pListener = m_data->FUN_141a02cc0())
         {
             Unk_MessageBoxMsg msg(2002);
             msg.FUN_1422b8310(m_data->GetExtra());
             pListener->OnMessage(this, reinterpret_cast<UIMsg*>(&msg));
             return 1;
         }
-        pListener = 0;
     }
     else if (!_stricmp("onHyperLinkClick", name))
     {
@@ -710,20 +709,17 @@ MS2Ptr<CMsgBoxData> UIMessageBox::FUN_1419f8470()
 MS2_REPLACE_METHOD(0x1419F8470, UIMessageBox, FUN_1419f8470, 67, 0xE0100933);
 
 // @0x1419f84c0
-// MS2-FUNCTIONAL: branch/early-return layout differs from the exe
 int UIMessageBox::FUN_1419f84c0(MS2Ptr<CMsgBoxData> spData)
 {
-    if (!spData.IsNull() && !m_data.IsNull())
-    {
-        CStringW strCur = m_data.get() ? m_data->GetExtra() : CStringW(L"");
-        CStringW strNew = spData.get() ? spData->GetExtra() : CStringW(L"");
-        if (!strNew.IsEmpty() && !strCur.IsEmpty() && strCur.Compare(strNew) == 0)
-            return 1;
-        if (!spData->FUN_141a02da0().IsNull() && !m_data->FUN_141a02da0().IsNull() &&
-            spData->FUN_141a02da0() == m_data->FUN_141a02da0())
-            return 1;
+    if (spData.IsNull() || m_data.IsNull())
         return 0;
-    }
+    CStringW strCur = m_data.get() ? m_data->GetExtra() : CStringW(L"");
+    CStringW strNew = spData.get() ? spData->GetExtra() : CStringW(L"");
+    if (!strNew.IsEmpty() && !strCur.IsEmpty() && strCur.Compare(strNew) == 0)
+        return 1;
+    if (!spData->FUN_141a02da0().IsNull() && !m_data->FUN_141a02da0().IsNull() &&
+        spData->FUN_141a02da0() == m_data->FUN_141a02da0())
+        return 1;
     return 0;
 }
 MS2_REPLACE_METHOD(0x1419F84C0, UIMessageBox, FUN_1419f84c0, 1043, 0x42470F2E);
@@ -737,7 +733,6 @@ MS2_REPLACE_METHOD(0x1419F88E0, UIMessageBox, FUN_1419f88e0, 48, 0x9F3089AC);
 
 // Sell an item: asks first when the item is rare or the price is over the confirm limit.
 // @0x1419f8920
-// MS2-FUNCTIONAL: branch/early-return layout differs from the exe
 void FUN_1419f8920(MS2Ptr<CItem> spItem, unsigned int nCount)
 {
     if (!spItem)
@@ -745,20 +740,13 @@ void FUN_1419f8920(MS2Ptr<CItem> spItem, unsigned int nCount)
     int bAsk = 0;
     if (spItem.get())
     {
-        if (spItem->FUN_140526bd0() < 4)
-        {
-            if (spItem->FUN_1405258b0() != 0 ||
-                spItem->FUN_140527670() * (int)nCount >= *FUN_1401d7c10(&FUN_1401d3200()->m_sellConfirmPrice))
-                bAsk = 1;
-        }
-        else
+        if (spItem->FUN_140526bd0() > 3)
+            bAsk = 1;
+        else if (spItem->FUN_1405258b0() != 0 ||
+                 spItem->FUN_140527670() * (int)nCount >= *FUN_1401d7c10(&FUN_1401d3200()->m_sellConfirmPrice))
             bAsk = 1;
     }
-    if (bAsk == 0)
-    {
-        FUN_141425fc0(spItem->FUN_140526a50(), nCount, spItem.get());
-    }
-    else
+    if (bAsk != 0)
     {
         CStringW strTag;
         strTag.Format(L"%s,%d", (const wchar_t*)s_143af3d70, nCount);
@@ -769,10 +757,10 @@ void FUN_1419f8920(MS2Ptr<CItem> spItem, unsigned int nCount)
         FUN_1409e4950(spItem, strExtra, bExtra);
         if (bExtra == true && strExtra.GetLength() > 0)
         {
-            strMsg += strExtra;
-            strMsg += L"\n";
+            strMsg.Append(strExtra);
+            strMsg.Append(L"\n");
         }
-        strMsg += strAsk;
+        strMsg.Append(strAsk);
         MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x11, strMsg, 0, strTag);
         if (spBox.get())
         {
@@ -783,6 +771,10 @@ void FUN_1419f8920(MS2Ptr<CItem> spItem, unsigned int nCount)
             spBox->FUN_141a01700(0x47e, 0x476, 0);
             FUN_140d73c60(spBox);
         }
+    }
+    else
+    {
+        FUN_141425fc0(spItem->FUN_140526a50(), nCount, spItem.get());
     }
 }
 
@@ -806,7 +798,6 @@ void UIMessageBox::FUN_1419f8e10(MS2Ptr<CMsgBoxData> spData)
 MS2_REPLACE_METHOD(0x1419F8E10, UIMessageBox, FUN_1419f8e10, 163, 0xBFB98928);
 
 // @0x1419f8ec0
-// MS2-FUNCTIONAL: stack frame / temporary slot layout differs from the exe
 void UIMessageBox::FUN_1419f8ec0(MS2Ptr<CMsgBoxData> spData)
 {
     m_count = 1;
@@ -815,7 +806,7 @@ void UIMessageBox::FUN_1419f8ec0(MS2Ptr<CMsgBoxData> spData)
     FUN_14140ea40()->vfunc_1(0x4e48);
     m_data = spData;
     FUN_1419f8e10(spData);
-    if (m_data.get())
+    if (static_cast<bool>(m_data.get()))
     {
         if (m_data->GetExtra() == s_143af3ba8)
         {
@@ -859,10 +850,9 @@ void UIMessageBox::FUN_1419f9110()
 MS2_REPLACE_METHOD(0x1419F9110, UIMessageBox, FUN_1419f9110, 299, 0x70757C1F);
 
 // @0x1419f9250
-// MS2-FUNCTIONAL: stack frame / temporary slot layout differs from the exe
 void UIMessageBox::FUN_1419f9250(int nResult)
 {
-    if (m_30.get() && m_data.get())
+    if (static_cast<bool>(m_30.get()) && static_cast<bool>(m_data.get()))
     {
         m_data->FUN_141a03470();
         Scaleform::GFx::Value ret = m_30->Invoke("closeCurrent", (long)m_data->FUN_141a02ca0(), nResult);
@@ -879,7 +869,6 @@ MS2_REPLACE_METHOD(0x1419F9250, UIMessageBox, FUN_1419f9250, 434, 0xCED33908);
 
 // OnClick: the callback boxes call their delegate, the others go to the listener and the tag handlers.
 // @0x1419f9410
-// MS2-FUNCTIONAL: branch/early-return layout differs from the exe
 void UIMessageBox::FUN_1419f9410(int nButton, int nBoxId, CStringW strTag, Scaleform::GFx::Value& extra)
 {
     if (m_data == 0 || m_data->FUN_141a02ca0() != nBoxId)
@@ -887,16 +876,16 @@ void UIMessageBox::FUN_1419f9410(int nButton, int nBoxId, CStringW strTag, Scale
         FUN_14151f200();
         return;
     }
-    bool bClose = m_closing == 1;
+    bool bClose = m_closing == 1 ? true : false;
     MS2Ptr<CMsgBoxData> spData = m_data;
     if (spData->FUN_141a01480())
     {
         if (spData->FUN_141a014d0(nButton, &extra))
         {
-            if (!(spData == m_data.get()))
-                FUN_14151f720(spData);
-            else
+            if (spData == m_data.get())
                 FUN_14151f200();
+            else
+                FUN_14151f720(spData);
         }
     }
     else
@@ -931,16 +920,15 @@ void UIMessageBox::FUN_1419f9410(int nButton, int nBoxId, CStringW strTag, Scale
 MS2_REPLACE_METHOD(0x1419F9410, UIMessageBox, FUN_1419f9410, 903, 0x9CF56E02);
 
 // @0x1419f97a0
-// MS2-FUNCTIONAL: branch/early-return layout differs from the exe
 int UIMessageBox::FUN_1419f97a0(int nButton, int nBoxId, CStringW strTag, Scaleform::GFx::Value& extra)
 {
     if (m_data == 0)
         return 1;
     if (strTag.IsEmpty())
     {
-        if (!FUN_1419f8270())
-            return 1;
-        return 0;
+        if (FUN_1419f8270())
+            return 0;
+        return 1;
     }
     MS2Ptr<CMsgBoxData> spData = m_data;
     if (FUN_1419f9ba0(nButton, nBoxId, strTag, extra))
@@ -954,8 +942,7 @@ int UIMessageBox::FUN_1419f97a0(int nButton, int nBoxId, CStringW strTag, Scalef
         groups.AddTail(s_143af3c00);
         groups.AddTail(s_143af3c08);
         groups.AddTail(s_143af3c10);
-        POSITION pos = groups.GetHeadPosition();
-        while (pos)
+        for (POSITION pos = groups.GetHeadPosition(); pos; groups.GetNext(pos))
         {
             CStringW strGroup = groups.GetAt(pos);
             if (strTag.Find(strGroup) != -1)
@@ -966,22 +953,20 @@ int UIMessageBox::FUN_1419f97a0(int nButton, int nBoxId, CStringW strTag, Scalef
                 msg.FUN_1422b83f0(extra);
                 pListener->OnMessage(this, reinterpret_cast<UIMsg*>(&msg));
             }
-            groups.GetNext(pos);
         }
     }
-    if (spData->GetType())
-        return 0;
-    return 1;
+    if (!spData->GetType())
+        return 1;
+    return 0;
 }
 MS2_REPLACE_METHOD(0x1419F97A0, UIMessageBox, FUN_1419f97a0, 1009, 0x3894B590);
 
 // @0x1419f9ba0
-// MS2-FUNCTIONAL: branch/early-return layout differs from the exe
 int UIMessageBox::FUN_1419f9ba0(int nButton, int nBoxId, CStringW strTag, Scaleform::GFx::Value& extra)
 {
     if (strTag == s_143af3ba8 && FUN_1419fb480(nButton))
         return 1;
-    else if (strTag == s_143af3c18)
+    if (strTag == s_143af3c18)
     {
         if (FUN_1419fb500(nButton))
             return 1;
@@ -1111,7 +1096,11 @@ int UIMessageBox::FUN_1419f9ba0(int nButton, int nBoxId, CStringW strTag, Scalef
         if (FUN_1419fd6e0(nButton))
             return 1;
     }
-    else if (strTag == s_143af3cf0 || strTag == s_143af3cf8)
+    else if (strTag == s_143af3cf0)
+    {
+        // The exe does nothing for studyBindPet.
+    }
+    else if (strTag == s_143af3cf8)
     {
         if (FUN_1419fd830(nButton))
             return 1;
@@ -1166,7 +1155,6 @@ int UIMessageBox::FUN_1419f9ba0(int nButton, int nBoxId, CStringW strTag, Scalef
 MS2_REPLACE_METHOD(0x1419F9BA0, UIMessageBox, FUN_1419f9ba0, 3430, 0x6E7FC896);
 
 // @0x1419fa910
-// MS2-FUNCTIONAL: stack frame / temporary slot layout differs from the exe
 int UIMessageBox::FUN_1419fa910(int nButton, int nBoxId, CStringW strTag, Scaleform::GFx::Value& extra)
 {
     ATL::CAtlArray<CStringW> tokens;
@@ -1174,42 +1162,50 @@ int UIMessageBox::FUN_1419fa910(int nButton, int nBoxId, CStringW strTag, Scalef
         return 0;
     if (tokens[0] == s_143af3d48)
     {
-        if (FUN_1419fe240(nButton, _wtoi(tokens[1])))
+        int nValue = _wtoi(tokens[1]);
+        if (FUN_1419fe240(nButton, nValue))
             return 1;
     }
     else if (tokens[0] == s_143af3d50)
     {
-        if (FUN_1419fe310(nButton, _wtoi(tokens[1])))
+        int nValue = _wtoi(tokens[1]);
+        if (FUN_1419fe310(nButton, nValue))
             return 1;
     }
     else if (tokens[0] == s_143af3d58)
     {
-        if (FUN_1419fe590(nButton, _wtoi(tokens[1])))
+        int nValue = _wtoi(tokens[1]);
+        if (FUN_1419fe590(nButton, nValue))
             return 1;
     }
     else if (tokens[0] == s_143af3d60)
     {
-        if (FUN_1419fe690(nButton, _wtoi(tokens[1])))
+        int nValue = _wtoi(tokens[1]);
+        if (FUN_1419fe690(nButton, nValue))
             return 1;
     }
     else if (tokens[0] == s_143af3cc0)
     {
-        if (FUN_1419fe790(nButton, _wtoi(tokens[1])))
+        int nValue = _wtoi(tokens[1]);
+        if (FUN_1419fe790(nButton, nValue))
             return 1;
     }
     else if (tokens[0] == s_143af3cc8)
     {
-        if (FUN_1419fe830(nButton, _wtoi(tokens[1])))
+        int nValue = _wtoi(tokens[1]);
+        if (FUN_1419fe830(nButton, nValue))
             return 1;
     }
     else if (tokens[0] == s_143af3d68)
     {
-        if (FUN_1419fe900(nButton, _wtoi(tokens[1])))
+        int nValue = _wtoi(tokens[1]);
+        if (FUN_1419fe900(nButton, nValue))
             return 1;
     }
     else if (tokens[0] == s_143af3d70)
     {
-        if (FUN_1419fea00(nButton, _wtoi(tokens[1])))
+        int nValue = _wtoi(tokens[1]);
+        if (FUN_1419fea00(nButton, nValue))
             return 1;
     }
     else if (tokens[0] == s_143af3d78)
@@ -1308,22 +1304,23 @@ int UIMessageBox::FUN_1419fb480(int nButton)
 MS2_REPLACE_METHOD(0x1419FB480, UIMessageBox, FUN_1419fb480, 112, 0x6AFEFB11);
 
 // @0x1419fb500
-// MS2-FUNCTIONAL: stack frame / temporary slot layout differs from the exe
 int UIMessageBox::FUN_1419fb500(int nButton)
 {
     if (nButton == 0)
     {
         if (FUN_1408e57f0()->FUN_1422b9dc0() == 0x6200009)
         {
-            if (DAT_143ab2858 == 0)
-            {
-                FUN_140d73aa0(FUN_14052bd00(0x20f, GetStringCommon(0xd28)), 0, 0, L"");
-            }
-            else
+            if (DAT_143ab2858 != 0)
             {
                 UILoginDialog* pDialog = Unk_MessageBoxDialog<UILoginDialog>(0x4e22);
                 if (pDialog)
                     pDialog->FUN_1419e2310(0);
+            }
+            else
+            {
+                CStringW strCommon = GetStringCommon(0xd28);
+                CStringW strText = FUN_14052bd00(0x20f, strCommon);
+                FUN_140d73aa0(strText, 0, 0, L"");
             }
             return 0;
         }
@@ -1332,30 +1329,25 @@ int UIMessageBox::FUN_1419fb500(int nButton)
 }
 
 // @0x1419fb630
-// MS2-FUNCTIONAL: branch/early-return layout differs from the exe
 int UIMessageBox::FUN_1419fb630(int nButton)
 {
     if (nButton == 0)
     {
         FUN_1403ed2b0()->FUN_141adc750(0x4e69);
     }
-    else
+    else if (nButton == 2)
     {
-        if (nButton == 2)
-        {
-            Unk_MessageBoxGuideDialog* pDialog = FUN_140ff7030(0x4e87);
-            if (pDialog)
-                pDialog->FUN_1418dfb30(*FUN_1402056b0(&FUN_1401d3200()->m_guideId), 0x22, m_layer);
-            return 0;
-        }
-        if (nButton == 3)
-        {
-            CString strUrl;
-            const char* szPage = *FUN_140298f80(&FUN_1401d3200()->m_guideUrl);
-            FUN_140cc18a0()->FUN_141b794e0(strUrl, szPage);
-            FUN_1418fe1c0(strUrl);
-            return 0;
-        }
+        Unk_MessageBoxGuideDialog* pDialog = FUN_140ff7030(0x4e87);
+        if (pDialog)
+            pDialog->FUN_1418dfb30(*FUN_1402056b0(&FUN_1401d3200()->m_guideId), 0x22, m_layer);
+        return 0;
+    }
+    else if (nButton == 3)
+    {
+        CString strUrl;
+        FUN_140cc18a0()->FUN_141b794e0(strUrl, *FUN_140298f80(&FUN_1401d3200()->m_guideUrl));
+        FUN_1418fe1c0(strUrl);
+        return 0;
     }
     Unk_MessageBoxGuideDialog* pDialog = FUN_140ff7030(0x4e87);
     if (pDialog && !pDialog->vfunc_55() && pDialog->FUN_1418dfc40() == *FUN_1402056b0(&FUN_1401d3200()->m_guideId))
@@ -1397,19 +1389,15 @@ int UIMessageBox::FUN_1419fb8e0(int nButton)
 MS2_REPLACE_METHOD(0x1419FB8E0, UIMessageBox, FUN_1419fb8e0, 63, 0x97A78D53);
 
 // @0x1419fb930
-// MS2-FUNCTIONAL: stack frame / temporary slot layout differs from the exe
 int UIMessageBox::FUN_1419fb930(int nButton)
 {
     int nResult = nButton == 0 ? 1 : 9;
     if (nResult == 9)
     {
-        if (m_closing == 0)
-        {
-            if (m_data.get() && m_data->GetTimer().m_nButton != 0)
-                nResult = 12;
-        }
-        else
+        if (m_closing != 0)
             nResult = 21;
+        else if (static_cast<bool>(m_data.get()) && m_data->GetTimer().m_nButton != 0)
+            nResult = 12;
     }
     FUN_1409670d0()->FUN_14162b950(nResult);
     return 1;
@@ -1433,13 +1421,14 @@ int UIMessageBox::FUN_1419fba50(int nButton)
     if (m_data == 0)
         return 1;
     Unk_MessageBoxPC* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
-    if (pPlayer && nButton == 0)
+    if (!pPlayer)
+        return 1;
+    if (nButton == 0)
     {
         MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(m_data->FUN_141a02c00());
         if (spItem.get())
         {
-            __int64 nUid = spItem->FUN_140526a50();
-            FUN_140714f90()->FUN_1415389b0(nUid);
+            FUN_140714f90()->FUN_1415389b0(spItem->FUN_140526a50());
             Unk_MessageBoxXform xf;
             FUN_140a332d0(&xf);
             xf.m_fScale = 1.0f;
@@ -1619,32 +1608,35 @@ int UIMessageBox::FUN_1419fc810(int nButton)
         __int64 nUid = m_data->FUN_141a02c00();
         int bAsk = 0;
         m_data->FUN_140be25f0(0, bAsk);
-        if (bAsk == 0)
+        if (bAsk != 0)
         {
-            MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(nUid);
-            if (spItem.get())
-                DAT_143ab2a90.FUN_140a63880(spItem.get(), CStringW(L""));
-        }
-        else
-        {
-            MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(nUid);
-            if (spItem.get())
             {
-                CStringW strName;
-                __int64 nAmount = 0;
-                m_data->FUN_140b76a70(1, strName);
-                m_data->FUN_140e01c50(2, nAmount);
-                CStringW strMsg = FUN_14052bd00(0x2a7, strName);
-                MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x1a, strMsg, 0, s_143af3da0);
-                if (spBox.get())
+                MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(nUid);
+                if (spItem.get())
                 {
-                    spBox->FUN_141a01600(spItem->FUN_140526a50());
-                    spBox->FUN_141a01ee0(spItem, spItem->FUN_140527b10(), 1, 0, -1, -1, 1);
-                    spBox->FUN_141a01800(2);
-                    spBox->FUN_141a024e0(GetStringCommon(0x29e), 0);
-                    FUN_140d73c60(spBox);
+                    CStringW strName;
+                    __int64 nAmount = 0;
+                    m_data->FUN_140b76a70(1, strName);
+                    m_data->FUN_140e01c50(2, nAmount);
+                    CStringW strMsg = FUN_14052bd00(0x2a7, strName);
+                    MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x1a, strMsg, 0, s_143af3da0);
+                    if (spBox.get())
+                    {
+                        spBox->FUN_141a01600(spItem->FUN_140526a50());
+                        spBox->FUN_141a01ee0(spItem, spItem->FUN_140527b10(), 1, 0, -1, -1, 1);
+                        spBox->FUN_141a01800(2);
+                        spBox->FUN_141a024e0(GetStringCommon(0x29e), 0);
+                        FUN_140d73c60(spBox);
+                    }
                 }
             }
+            return 1;
+        }
+        MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(nUid);
+        if (spItem.get())
+        {
+            CStringW strEmpty(L"");
+            DAT_143ab2a90.FUN_140a63880(spItem.get(), strEmpty);
         }
     }
     return 1;
@@ -1704,7 +1696,6 @@ int UIMessageBox::FUN_1419fcde0(int nButton)
 MS2_REPLACE_METHOD(0x1419FCDE0, UIMessageBox, FUN_1419fcde0, 43, 0x51639961);
 
 // @0x1419fce20
-// MS2-FUNCTIONAL: stack frame / temporary slot layout differs from the exe
 int UIMessageBox::FUN_1419fce20(int nButton)
 {
     if (m_data == 0)
@@ -1712,7 +1703,7 @@ int UIMessageBox::FUN_1419fce20(int nButton)
     if (nButton == 0)
     {
         __int64 nUid = m_data->FUN_141a02f10(0, 0);
-        CStringW strName = m_data->FUN_141a02fd0(1, CStringW());
+        const CStringW& strName = m_data->FUN_141a02fd0(1, CStringW());
         MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(nUid);
         if (spItem.get())
             DAT_143ab2a90.FUN_140a63880(spItem.get(), strName);
@@ -1917,7 +1908,6 @@ int UIMessageBox::FUN_1419fda70(int nButton)
 }
 
 // @0x1419fdbe0
-// MS2-FUNCTIONAL: stack frame / temporary slot layout differs from the exe
 int UIMessageBox::FUN_1419fdbe0(int nButton)
 {
     if (m_data == 0)
@@ -1925,31 +1915,27 @@ int UIMessageBox::FUN_1419fdbe0(int nButton)
     Unk_MessageBoxPC* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pPlayer == 0)
         return 0;
-    if (nButton != 0)
-        return 1;
-    __int64 nUid = m_data->FUN_141a02c00();
-    MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(nUid);
-    if (!(spItem == 0))
+    if (nButton == 0)
     {
+        __int64 nUid = m_data->FUN_141a02c00();
+        MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(nUid);
+        if (spItem == 0)
+            return 0;
         int nSkill = 0;
         m_data->FUN_140961900(0, nSkill);
         MS2Ptr<Unk_InventorySkillLevel> spLevel = FUN_1401958b0()->FUN_1407ee2f0(nSkill, 1);
-        if (!(spLevel == 0))
-        {
-            Unk_InventorySkillRequest request(nSkill, 1);
-            request.remap = FUN_140804450(spLevel.operator->());
-            request.item = spItem->FUN_140526a50();
-            MS2Ptr<CSkillRecord> spRecord = pPlayer->FUN_141523bc0()->FUN_141765570(request);
-            if (!(spRecord == 0))
-            {
-                spRecord->m_bItemSkill = true;
-                return pPlayer->vfunc_102(spRecord);
-            }
+        if (spLevel == 0)
             return 0;
-        }
-        return 0;
+        Unk_InventorySkillRequest request(nSkill, 1);
+        request.remap = FUN_140804450(spLevel.operator->());
+        request.item = spItem->FUN_140526a50();
+        MS2Ptr<CSkillRecord> spRecord = pPlayer->FUN_141523bc0()->FUN_141765570(request);
+        if (spRecord == 0)
+            return 0;
+        spRecord->m_bItemSkill = true;
+        return pPlayer->vfunc_102(spRecord);
     }
-    return 0;
+    return 1;
 }
 MS2_REPLACE_METHOD(0x1419FDBE0, UIMessageBox, FUN_1419fdbe0, 662, 0x412AD453);
 
@@ -1971,7 +1957,6 @@ int UIMessageBox::FUN_1419fde80(int nButton)
 MS2_REPLACE_METHOD(0x1419FDE80, UIMessageBox, FUN_1419fde80, 244, 0x4AC492C7);
 
 // @0x1419fdf80
-// MS2-FUNCTIONAL: branch/early-return layout differs from the exe
 int UIMessageBox::FUN_1419fdf80(int nButton)
 {
     if (m_data == 0)
@@ -1983,7 +1968,9 @@ int UIMessageBox::FUN_1419fdf80(int nButton)
         MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(nUid);
         if (spItem == 0)
             return 0;
-        nResult = DAT_143ab2a90.FUN_140a62270(spItem.get(), m_data->FUN_141a02e90(0, 0), m_data->FUN_141a02e90(1, 0), 1);
+        int nArg0 = m_data->FUN_141a02e90(0, 0);
+        int nArg1 = m_data->FUN_141a02e90(1, 0);
+        nResult = DAT_143ab2a90.FUN_140a62270(spItem.get(), nArg0, nArg1, 1);
     }
     if (FUN_140166410()->FUN_14036d570(0xe8) && nResult == 0 && DAT_143ab2a90.FUN_140a66f20() == nUid)
         DAT_143ab2a90.FUN_140a66f40(0);
@@ -2029,7 +2016,6 @@ int UIMessageBox::FUN_1419fe240(int nButton, int nCount)
 MS2_REPLACE_METHOD(0x1419FE240, UIMessageBox, FUN_1419fe240, 198, 0x8FFC0149);
 
 // @0x1419fe310
-// MS2-FUNCTIONAL: stack frame / temporary slot layout differs from the exe
 int UIMessageBox::FUN_1419fe310(int nButton, int nCount)
 {
     if (m_data == 0)
@@ -2037,22 +2023,23 @@ int UIMessageBox::FUN_1419fe310(int nButton, int nCount)
     if (nButton == 0)
     {
         __int64 nUid = m_data->FUN_141a02c00();
-        if (FUN_141a00250(nUid, nCount))
+        if (!FUN_141a00250(nUid, nCount))
+            return 1;
+        MS2Ptr<CItem> spItem = DAT_143ab2d80.FUN_140de1490(nUid);
+        if (!spItem)
+            return 1;
+        int nSlot = DAT_143ab2a90.FUN_140a617f0(spItem);
+        int nResult = DAT_143ab2a90.FUN_140a612b0(nSlot, spItem, nCount);
+        if (nResult == -1)
         {
-            MS2Ptr<CItem> spItem = DAT_143ab2d80.FUN_140de1490(nUid);
-            if (!!spItem == false)
+            FUN_140961010(0x44, 1, 1, FUN_1401a9d70()->FUN_141813300(nSlot));
             {
-                int nSlot = DAT_143ab2a90.FUN_140a617f0(spItem);
-                int nResult = DAT_143ab2a90.FUN_140a612b0(nSlot, spItem, nCount);
-                if (nResult == -1)
-                {
-                    FUN_140961010(0x44, 1, 1, FUN_1401a9d70()->FUN_141813300(nSlot));
-                    FUN_141276180(s_warning, CString(""));
-                }
-                else
-                    DAT_143ab2d80.FUN_140de31f0(nUid, nResult, nCount, MS2Ptr<CItemData>(0));
+                CString strEmpty("");
+                FUN_141276180(s_warning, strEmpty);
             }
+            return 1;
         }
+        DAT_143ab2d80.FUN_140de31f0(nUid, nResult, nCount, MS2Ptr<CItemData>(0));
     }
     return 1;
 }
@@ -2109,7 +2096,6 @@ int UIMessageBox::FUN_1419fe790(int nButton, int nCount)
 MS2_REPLACE_METHOD(0x1419FE790, UIMessageBox, FUN_1419fe790, 150, 0x0DABE3E9);
 
 // @0x1419fe830
-// MS2-FUNCTIONAL: branch/early-return layout differs from the exe
 int UIMessageBox::FUN_1419fe830(int nButton, int nCount)
 {
     if (m_data == 0)
@@ -2117,11 +2103,11 @@ int UIMessageBox::FUN_1419fe830(int nButton, int nCount)
     if (nButton == 0)
     {
         __int64 nUid = m_data->FUN_141a02c00();
-        if (FUN_141a002b0(nUid, nCount))
-        {
-            FUN_14151f200();
-            FUN_1419f8920(DAT_143ab2a90.FUN_140a5d680(nUid), nCount);
-        }
+        if (!FUN_141a002b0(nUid, nCount))
+            return 1;
+        FUN_14151f200();
+        FUN_1419f8920(DAT_143ab2a90.FUN_140a5d680(nUid), nCount);
+        return 1;
     }
     return 1;
 }
@@ -2172,7 +2158,6 @@ int UIMessageBox::FUN_1419fea00(int nButton, int nCount)
 MS2_REPLACE_METHOD(0x1419FEA00, UIMessageBox, FUN_1419fea00, 218, 0x20D8B1E2);
 
 // @0x1419feae0
-// MS2-FUNCTIONAL: stack frame / temporary slot layout differs from the exe
 int UIMessageBox::FUN_1419feae0(int nButton, const CStringW& strName)
 {
     if (m_data == 0)
@@ -2195,9 +2180,10 @@ int UIMessageBox::FUN_1419feae0(int nButton, const CStringW& strName)
                 pBox->FUN_1419f82b0(strError);
             return 0;
         }
+        __int64 nUid = spData->FUN_141a02c00();
         COutPacket packet(static_cast<int>(SendOp::CheckCharName), 0);
         packet.COutPacket::WriteUnicodeString(strName);
-        packet.Encode8(spData->FUN_141a02c00());
+        packet.Encode8(nUid);
         FUN_140710590(packet);
     }
     return 1;
@@ -2205,7 +2191,6 @@ int UIMessageBox::FUN_1419feae0(int nButton, const CStringW& strName)
 MS2_REPLACE_METHOD(0x1419FEAE0, UIMessageBox, FUN_1419feae0, 471, 0x6BA83DA0);
 
 // @0x1419fecc0
-// MS2-FUNCTIONAL: stack frame / temporary slot layout differs from the exe
 int UIMessageBox::FUN_1419fecc0(int nButton, const CStringW& strName)
 {
     if (m_data == 0)
@@ -2230,7 +2215,10 @@ int UIMessageBox::FUN_1419fecc0(int nButton, const CStringW& strName)
         }
         Unk_MessageBoxNameDialog* pDialog = FUN_140b72de0(0x4ef1);
         if (pDialog)
-            pDialog->FUN_1418f2030(spData->FUN_141a02ed0(0, 0), strName);
+        {
+            __int64 nUid = spData->FUN_141a02ed0(0, 0);
+            pDialog->FUN_1418f2030(nUid, strName);
+        }
     }
     else
     {
@@ -2243,7 +2231,6 @@ int UIMessageBox::FUN_1419fecc0(int nButton, const CStringW& strName)
 MS2_REPLACE_METHOD(0x1419FECC0, UIMessageBox, FUN_1419fecc0, 490, 0x65602E3E);
 
 // @0x1419feeb0
-// MS2-FUNCTIONAL: stack frame / temporary slot layout differs from the exe
 int UIMessageBox::FUN_1419feeb0(int nButton, const CStringW& strName)
 {
     if (m_data == 0)
@@ -2258,8 +2245,7 @@ int UIMessageBox::FUN_1419feeb0(int nButton, const CStringW& strName)
                 pBox->FUN_1419f82b0(GetStringCommon(0xd));
             return 0;
         }
-        Unk_MessageBoxFilter* pFilter = FUN_14025e7d0()->FUN_140229a50().get();
-        if (pFilter)
+        if (Unk_MessageBoxFilter* pFilter = FUN_14025e7d0()->FUN_140229a50().get())
         {
             CStringW strMsg;
             if (pFilter->FUN_140225720(strName, strMsg))
@@ -2268,7 +2254,8 @@ int UIMessageBox::FUN_1419feeb0(int nButton, const CStringW& strName)
                 return 0;
             }
         }
-        CItem* pItem = DAT_143ab2a90.FUN_140a5d680(spData->FUN_141a02c00()).get();
+        __int64 nUid = spData->FUN_141a02c00();
+        CItem* pItem = DAT_143ab2a90.FUN_140a5d680(nUid).get();
         if (!pItem)
             return 0;
         DAT_143ab2a90.FUN_140a63880(pItem, strName);
@@ -2278,7 +2265,6 @@ int UIMessageBox::FUN_1419feeb0(int nButton, const CStringW& strName)
 MS2_REPLACE_METHOD(0x1419FEEB0, UIMessageBox, FUN_1419feeb0, 630, 0x2C053356);
 
 // @0x1419ff130
-// MS2-FUNCTIONAL: stack frame / temporary slot layout differs from the exe
 int UIMessageBox::FUN_1419ff130(int nButton, const CStringW& strName)
 {
     if (m_data == 0)
@@ -2291,33 +2277,33 @@ int UIMessageBox::FUN_1419ff130(int nButton, const CStringW& strName)
             return 0;
         }
         MS2Ptr<CMsgBoxData> spData = m_data;
-        CItem* pItem = DAT_143ab2a90.FUN_140a5d680(spData->FUN_141a02c00()).get();
+        __int64 nUid = spData->FUN_141a02c00();
+        CItem* pItem = DAT_143ab2a90.FUN_140a5d680(nUid);
         if (!pItem)
             return 0;
         Unk_MessageBoxPC* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
         if (!pPlayer)
             return 0;
-        ATL::CAtlArray<void*> portals;
-        NiPoint3 pos = pPlayer->vfunc_18();
-        FUN_1403ed2d0()->FUN_141bc2c90(pos, portals);
-        if (FUN_140966da0(portals))
+        ATL::CAtlArray<MS2Ptr<Unk_MessageBoxPortal> > portals;
+        FUN_1403ed2d0()->FUN_141bc2c90(pPlayer->vfunc_18(), portals);
+        if (FUN_140966da0(portals) > 0)
         {
-            FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_msg_item_open_massive_error_another_portal")), 1, 1);
+            FUN_1412751f0(GetStringCommonByKey(L"s_msg_item_open_massive_error_another_portal"), 1, 1);
             return 0;
         }
         if (FUN_140930b10())
         {
-            FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_msg_item_open_massive_cant_open")), 1, 1);
+            FUN_1412751f0(GetStringCommonByKey(L"s_msg_item_open_massive_cant_open"), 1, 1);
             return 0;
         }
         if (FUN_14166c930(pPlayer) != 1)
         {
-            FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_msg_item_open_massive_invalid_state")), 1, 1);
+            FUN_1412751f0(GetStringCommonByKey(L"s_msg_item_open_massive_invalid_state"), 1, 1);
             return 0;
         }
         if (FUN_1408e57f0()->FUN_1422b9e00() != 0x620001d)
         {
-            FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_msg_item_open_massive_invalid_state")), 1, 1);
+            FUN_1412751f0(GetStringCommonByKey(L"s_msg_item_open_massive_invalid_state"), 1, 1);
             return 0;
         }
         int nOpen = 0;
@@ -2326,15 +2312,14 @@ int UIMessageBox::FUN_1419ff130(int nButton, const CStringW& strName)
         for (size_t i = 0; i < ids.size(); i++)
         {
             MS2Ptr<Unk_MessageBoxPortal> spPortal = FUN_1403ed2d0()->FUN_141bc2800(ids[i]);
-            if (!(spPortal == 0))
-            {
-                if (spPortal->m_strName.GetLength() > 0)
-                    nOpen++;
-            }
+            if (spPortal == 0)
+                continue;
+            if (spPortal->m_strName.GetLength() > 0)
+                nOpen++;
         }
-        if (nOpen > 9)
+        if (nOpen >= 10)
         {
-            FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_msg_item_open_massive_error_too_many_portal")), 1, 1);
+            FUN_1412751f0(GetStringCommonByKey(L"s_msg_item_open_massive_error_too_many_portal"), 1, 1);
             return 0;
         }
         DAT_143ab2a90.FUN_140a63880(pItem, strName);
@@ -2360,7 +2345,6 @@ int UIMessageBox::FUN_1419ff7d0(int nButton)
 MS2_REPLACE_METHOD(0x1419FF7D0, UIMessageBox, FUN_1419ff7d0, 142, 0xBBEC0EC1);
 
 // @0x1419ff870
-// MS2-FUNCTIONAL: stack frame / temporary slot layout differs from the exe
 int UIMessageBox::FUN_1419ff870(int nButton)
 {
     if (m_data == 0)
@@ -2368,32 +2352,30 @@ int UIMessageBox::FUN_1419ff870(int nButton)
     unsigned int nEmotion = m_data->FUN_141a02e90(0, 0);
     __int64 nId = m_data->FUN_141a02f10(1, 0);
     CStringW strName = m_data->FUN_141a02fd0(2, CStringW());
-    if (nButton == 0)
-    {
-        Unk_MessageBoxPC* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
-        if (FUN_1416764d0(pPlayer) == 0)
-            FUN_140b845a0(nId, nEmotion);
-        else
-        {
-            MS2Ptr<RideOffActionCoupleEmotion> spAction(new RideOffActionCoupleEmotion(0));
-            spAction->m_n28 = nEmotion;
-            spAction->m_n30 = nId;
-            pPlayer->FUN_14152c280(spAction.get());
-        }
-    }
-    else
+    int bAccept = nButton == 0;
+    if (!bAccept)
     {
         COutPacket packet(static_cast<int>(SendOp::BuddyEmote), 0);
         packet.Encode1(4);
         packet.Encode4(nEmotion);
         packet.Encode8(nId);
         FUN_140710590(packet);
+        return 1;
     }
+    Unk_MessageBoxPC* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    if (FUN_1416764d0(pPlayer))
+    {
+        MS2Ptr<RideOffActionCoupleEmotion> spAction(new RideOffActionCoupleEmotion(0));
+        spAction->m_n28 = nEmotion;
+        spAction->m_n30 = nId;
+        pPlayer->FUN_14152c280(spAction.get());
+        return 1;
+    }
+    FUN_140b845a0(nId, nEmotion);
     return 1;
 }
 
 // @0x1419ffb20
-// MS2-FUNCTIONAL: branch/early-return layout differs from the exe
 int UIMessageBox::FUN_1419ffb20(int nButton)
 {
     if (m_data == 0)
@@ -2415,35 +2397,34 @@ int UIMessageBox::FUN_1419ffb20(int nButton)
         FUN_140710590(packet);
         return 1;
     }
-    else
-    {
-        COutPacket packet(static_cast<int>(SendOp::Microgame), 0);
-        packet.Encode2(2);
-        packet.Encode8(pTarget->FUN_141656a80());
-        FUN_140710590(packet);
-        pPlayer->vfunc_59(0x3c, new StateMicroGameRpsData(FUN_14123c580(pTarget)), 0x99, 0);
-        return 1;
-    }
+    COutPacket packet(static_cast<int>(SendOp::Microgame), 0);
+    packet.Encode2(2);
+    packet.Encode8(pTarget->FUN_141656a80());
+    FUN_140710590(packet);
+    pPlayer->vfunc_59(0x3c, new StateMicroGameRpsData(FUN_14123c580(pTarget)), 0x99, 0);
+    return 1;
 }
 
 // @0x1419ffe20
-// MS2-FUNCTIONAL: stack frame / temporary slot layout differs from the exe
 int UIMessageBox::FUN_1419ffe20(int nButton)
 {
     if (m_data == 0)
         return 1;
     if (nButton == 0)
     {
-        MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(m_data->FUN_141a02c00());
+        __int64 nUid = m_data->FUN_141a02c00();
+        MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(nUid);
         if (spItem.get())
-            DAT_143ab2a90.FUN_140a63880(spItem.get(), CStringW(L""));
+        {
+            CStringW strEmpty(L"");
+            DAT_143ab2a90.FUN_140a63880(spItem.get(), strEmpty);
+        }
     }
     return 1;
 }
 MS2_REPLACE_METHOD(0x1419FFE20, UIMessageBox, FUN_1419ffe20, 223, 0x879EDE35);
 
 // @0x1419fff10
-// MS2-FUNCTIONAL: stack frame / temporary slot layout differs from the exe
 int UIMessageBox::FUN_1419fff10(int nButton)
 {
     if (m_data == 0)
@@ -2458,23 +2439,21 @@ int UIMessageBox::FUN_1419fff10(int nButton)
         (void)((!!(0)) || (_wassert(L"0", _CRT_WIDE(MS2_THIS_FILE), 0x8e2), 0));
         return 1;
     }
-    if (nButton == 0)
-    {
-        COutPacket packet(static_cast<int>(SendOp::Microgame), 0);
-        packet.Encode2(0xf);
-        packet.Encode4(nRound);
-        packet.Encode8(pTarget->FUN_141656a80());
-        FUN_140710590(packet);
-        pPlayer->vfunc_59(0x45, new StateMicroGameCoupleDanceData(FUN_14123c580(pTarget)), 0xa9, 0);
-    }
-    else
+    if (nButton != 0)
     {
         COutPacket packet(static_cast<int>(SendOp::Microgame), 0);
         packet.Encode2(0x11);
         packet.Encode4(nRound);
         packet.Encode8(pTarget->FUN_141656a80());
         FUN_140710590(packet);
+        return 1;
     }
+    COutPacket packet(static_cast<int>(SendOp::Microgame), 0);
+    packet.Encode2(0xf);
+    packet.Encode4(nRound);
+    packet.Encode8(pTarget->FUN_141656a80());
+    FUN_140710590(packet);
+    pPlayer->vfunc_59(0x45, new StateMicroGameCoupleDanceData(FUN_14123c580(pTarget)), 0xa9, 0);
     return 1;
 }
 
@@ -2514,13 +2493,14 @@ static int FUN_141a002b0(__int64 nUid, int nCount)
     return FUN_141a00180(DAT_143ab2a90.FUN_140a5d680(nUid), nCount);
 }
 
+int Parse_1402180a0(const CStringW& value);                     // the block type of a name (commonenum.cpp)
+
 // @0x141a00450
-// MS2-FUNCTIONAL: branch/early-return layout differs from the exe
 inline bool CMsgBoxData::FUN_141a00450(unsigned int nIndex, int& nOut) const
 {
     if (nIndex >= m_args.GetCount())
         return false;
-    nOut = _wtoi(m_args.GetAt(nIndex));
+    nOut = Parse_1402180a0(m_args.GetAt(nIndex));
     return true;
 }
 

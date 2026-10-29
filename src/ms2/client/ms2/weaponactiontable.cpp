@@ -72,13 +72,11 @@ void CWeaponActionTable::ClearAll()
 }
 
 // @0x141b74720
-// MS2-FUNCTIONAL: exe passes the path through rcx -> r8 (+3 bytes, same as banktable/pricetable loaders); otherwise identical
 int CWeaponActionTable::Load()
 {
     CString strPath = FUN_14071a5b0("Table", "weaponAction.xml");
     TiXmlDocument doc;
-    const char* pszPath = strPath;
-    if (FUN_140166420()->FUN_1403974b0(&doc, pszPath, 0, true, false) == 0)
+    if (FUN_140166420()->FUN_1403974b0(&doc, (const char*)strPath, 0, true, false) == 0)
         return 0;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
@@ -92,8 +90,7 @@ int CWeaponActionTable::Load()
         FUN_14086f500(pNode, "rh", &action->m_nRightHand);
         FUN_14086f500(pNode, "lh", &action->m_nLeftHand);
         FUN_14086f500(pNode, "normalAttack", &action->m_nNormalAttack);
-        const char* pszPrefix = FUN_14086f4b0(pNode, "actionprefix");
-        action->m_strPrefix = pszPrefix;
+        action->m_strPrefix = FUN_14086f4b0(pNode, "actionprefix");
         s_actions.Add(action);
     }
     for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("allowWeapon"); pNode != 0; pNode = pNode->FUN_140168650("allowWeapon"))

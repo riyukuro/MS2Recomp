@@ -1,4 +1,12 @@
-23a
+152a
+        if (p == 0)  // MS2: v2525
+            throw std::bad_alloc();
+.
+126a
+        if (p == 0)  // MS2: v2525
+            throw std::bad_alloc();
+.
+24a
 #endif
 .
 21a
@@ -6,4 +14,7 @@
 #include <exception> // for std::bad_alloc
 #include <new>
 #else
+.
+17a
+#include <new>  // MS2: v2525
 .

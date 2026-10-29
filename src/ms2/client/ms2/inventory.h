@@ -20,9 +20,10 @@ public:
     void FUN_140a5ca60(int category);
     void FUN_140a5cb80(int category, int extra);
     bool FUN_140a5cdc0(unsigned category);
-    bool FUN_140a5ce30(CStringW& names);
+    int FUN_140a5ce30(CStringW& names);
     int FUN_140a5cf30(int category);
     int FUN_140a5d050(int category);
+    unsigned __int64 FUN_140a5d0f0();
     int FUN_140a5d120(CItem* item);
     void FUN_140a5d390(__int64 id);
     void FUN_140a5d530(CItem* item);
@@ -34,8 +35,8 @@ public:
     ItemPtr FUN_140a5e2e0(int itemId);
     ItemPtr FUN_140a5e5c0(int itemId, int rarity);
     int FUN_140a5e8d0(int itemId, ATL::CAtlList<ItemPtr>& result, int order);
-    bool FUN_140a5ece0(int itemId, int count);
-    bool FUN_140a5ed40(int itemId, int rarity, int count);
+    int FUN_140a5ece0(int itemId, int count);
+    int FUN_140a5ed40(int itemId, int rarity, int count);
     int FUN_140a5f060(__int64 id);
     int FUN_140a5f180(int itemId, int rarity);
     int FUN_140a5f410(ItemPtr reference);
@@ -68,7 +69,7 @@ public:
     int FUN_140a61db0(__int64 id, const CStringW& argument);
     int FUN_140a621c0(__int64 id, int slot, int mode);
     int FUN_140a62920(__int64 id);
-    void SendRequestItemInventory(unsigned char category);
+    void SendRequestItemInventory(int category);
     unsigned FUN_140a62d30(int skill);
     unsigned FUN_140a63000(int itemId);
     unsigned FUN_140a63360(int skill);
@@ -78,6 +79,7 @@ public:
     int FUN_140a63950(CItem* item, int slot, int mode);
     int FUN_140a655b0(CItem* item);
     int FUN_140a65860(MS2Ptr<CItemData> data, int rarity);
+    int FUN_140a65b70();
     int SendEmotion(CItem* item);
     int FUN_140a65e30(CItem* item);
     int FUN_140a661e0(CItem* item);
@@ -91,7 +93,7 @@ public:
     void FUN_140a66fa0(int enabled);
     int FUN_140a67000();
     int FUN_140a67020(ItemPtr item);
-    bool FUN_140a67390(__int64 id);
+    int FUN_140a67390(__int64 id);
     void FUN_140a673e0(ItemPtr item);
     void FUN_140a674c0(ItemPtr item);
     void FUN_140a675c0();

@@ -30,13 +30,14 @@
 // The property cache of the client's entities: a map keyed by property id (+0xd0) that is only kept when the flag at +0xc8 is set.
 CUIService* FUN_1403ed2b0();                                                    // the UI service
 unsigned FUN_1408a1ff0();                                                       // class id of int
-struct Unk_PropIt { void* p; };
-struct Unk_PropRec { unsigned __int64 a, b, c; };
+// Private members keep these non-POD, so /GS does not treat the out-param locals as buffers (the exe has no cookie).
+class Unk_PropIt { void* p; };
+class Unk_PropRec { unsigned __int64 a, b, c; };
 void* FUN_1409481f0(void* tbl, Unk_PropIt* out);                                      // end()
 void* FUN_140948250(void* tbl, Unk_PropIt* out, unsigned* pId);                       // find(id)
-char FUN_140947540(void* a, void* b);                                           // iterator ==
-void* FUN_140947580(void* tbl, unsigned* pId);                                  // operator[](id)
-void* FUN_140947490(Unk_PropRec* out, unsigned id, void* p, unsigned nType);          // property record (0x18)
+bool FUN_140947540(void* a, void* b);                                           // iterator ==
+Unk_PropRec* FUN_140947580(void* tbl, unsigned* pId);                                // operator[](id)
+Unk_PropRec* FUN_140947490(Unk_PropRec* out, unsigned id, void* p, unsigned nType);          // property record (0x18)
 void* FUN_140876480(void* out, int nCategory);                                  // memory category helper, returns the category
 void* FUN_14208a860(unsigned __int64 nSize, unsigned nCategory);                // category allocation
 
@@ -63,25 +64,16 @@ struct Unk_CMISDemolishUI;
 class Unk_CMISHouseMark;
 
 // @0x1410dbc10
-// MS2-FUNCTIONAL: the exe frame has no /GS cookie or unwind handler (our locals whose address is passed get one); behaviour identical.
 void FUN_1410dbc10(egf::Entity* e, unsigned id, const int* pVal)
 {
-    Unk_EntityPropertyAccess* pEnt = (Unk_EntityPropertyAccess*)e;
-    if (*((char*)e + 0xc8) == 0)
-        return;
-    void* pTbl = (char*)e + 0xd0;
-    Unk_PropIt itEnd, itFind;
-    void* pEnd = FUN_1409481f0(pTbl, &itEnd);
-    void* pFind = FUN_140948250(pTbl, &itFind, &id);
-    if (FUN_140947540(pFind, pEnd) != 0) {
-        int nValue;
-        pEnt->GetPropertyValueUnsafe(id, &nValue, FUN_1408a1ff0());
-        int* pCopy = (int*)operator new(4);
-        if (pCopy != 0)
-            *pCopy = nValue;
-        Unk_PropRec rec;
-        void* r = FUN_140947490(&rec, id, pCopy, FUN_1408a1ff0());
-        memcpy(FUN_140947580(pTbl, &id), r, 0x18);
+    if (*((unsigned char*)e + 0xc8)) {
+        Unk_PropIt itEnd, itFind;
+        if (FUN_140947540(FUN_140948250((char*)e + 0xd0, &itFind, &id), FUN_1409481f0((char*)e + 0xd0, &itEnd))) {
+            int nValue;
+            ((Unk_EntityPropertyAccess*)e)->GetPropertyValueUnsafe(id, &nValue, FUN_1408a1ff0());
+            Unk_PropRec rec;
+            *FUN_140947580((char*)e + 0xd0, &id) = *FUN_140947490(&rec, id, new int(nValue), FUN_1408a1ff0());
+        }
     }
 }
 

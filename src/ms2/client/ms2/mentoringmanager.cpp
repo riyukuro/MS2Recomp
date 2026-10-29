@@ -296,7 +296,6 @@ CStringW CMentoringManager::FUN_140b718b0()
 }
 
 // @0x140b719e0
-// MS2-FUNCTIONAL: jump-table data and relocs differ only
 void CMentoringManager::OnPacket(CInPacket& packet)
 {
     int nProtocol = packet.ReadUInt8();
@@ -310,6 +309,9 @@ void CMentoringManager::OnPacket(CInPacket& packet)
         break;
     case 3:
         OnMenteeList(packet);
+        break;
+    case 15:
+        OnPairMode(packet);
         break;
     case 4:
         OnMenteeRegistered(packet);
@@ -335,17 +337,14 @@ void CMentoringManager::OnPacket(CInPacket& packet)
     case 11:
         OnSetCounts(packet);
         break;
-    case 12:
-        OnSetIds(packet);
-        break;
     case 14:
         OnMentorRequest(packet);
         break;
-    case 15:
-        OnPairMode(packet);
-        break;
     case 16:
         OnError(packet);
+        break;
+    case 12:
+        OnSetIds(packet);
         break;
     }
 }
@@ -427,7 +426,6 @@ void CMentoringManager::OnInviteMentee(CInPacket& packet)
 }
 
 // @0x140b720f0
-// MS2-FUNCTIONAL: loop-continue branch shape (exe duplicates the continue edge)
 void CMentoringManager::OnMentorApproved(CInPacket& packet)
 {
     FUN_140b736c0(packet, -1);
@@ -437,14 +435,13 @@ void CMentoringManager::OnMentorApproved(CInPacket& packet)
     for (unsigned i = 0; i < m_mentors.GetCount(); i = i + 1)
     {
         MentorPtr spMentor(m_mentors.GetAt(i));
-        if (!(spMentor == 0))
+        if (spMentor == 0)
+            continue;
+        if (spMentor->a == data.id)
         {
-            if (spMentor->a == data.id)
-            {
-                strName = spMentor->name;
-                m_mentees.Add(spMentor);
-                break;
-            }
+            strName = spMentor->name;
+            m_mentees.Add(spMentor);
+            break;
         }
     }
     m_mentors.RemoveAll();
@@ -454,7 +451,6 @@ void CMentoringManager::OnMentorApproved(CInPacket& packet)
 }
 
 // @0x140b722f0
-// MS2-FUNCTIONAL: loop-continue branch shape as OnMentorApproved
 void CMentoringManager::OnMentorDeclined(CInPacket& packet)
 {
     FUN_140b736c0(packet, -1);
@@ -463,20 +459,20 @@ void CMentoringManager::OnMentorDeclined(CInPacket& packet)
     for (unsigned i = 0; i < m_mentors.GetCount(); i = i + 1)
     {
         MentorPtr spMentor(m_mentors.GetAt(i));
-        if (!(spMentor == 0))
+        if (spMentor == 0)
+            continue;
+        if (spMentor->a == data.id)
         {
-            if (spMentor->a == data.id)
-            {
-                m_mentors.RemoveAt(i, 1);
-                if (spMentor->name.GetLength() > 0)
-                    FUN_1412751b0(FUN_1405c2690(CStringW(L"s_mentoring_invite_decline_mentor"), spMentor->name), 0x10);
-                break;
-            }
+            m_mentors.RemoveAt(i, 1);
+            if (spMentor->name.GetLength() > 0)
+                FUN_1412751b0(FUN_1405c2690(CStringW(L"s_mentoring_invite_decline_mentor"), spMentor->name), 0x10);
+            break;
         }
     }
     Unk_MentorPtr<UIInviteMentoringDialog> spDialog(FUN_140b6f4c0(0x4f4c));
-    if (!(spDialog == 0))
-        spDialog->FUN_140c2f070(m_mentors);
+    if (spDialog == 0)
+        return;
+    spDialog->FUN_140c2f070(m_mentors);
 }
 
 // @0x140b72540
@@ -545,7 +541,6 @@ void CMentoringManager::OnSetIds(CInPacket& packet)
 }
 
 // @0x140b728b0
-// MS2-FUNCTIONAL: branch layout/EH state map differs
 void CMentoringManager::OnError(CInPacket& packet)
 {
     FUN_140b736c0(packet, -1);
@@ -555,12 +550,6 @@ void CMentoringManager::OnError(CInPacket& packet)
     {
     case 1:
         FUN_1412751f0(GetStringCommonByKey(L"s_mentoring_error_is_not_return_user"), 1, 1);
-        break;
-    case 2:
-        FUN_1412751f0(GetStringCommonByKey(L"s_mentoring_error_target_not_exists"), 1, 1);
-        break;
-    case 3:
-        FUN_1412751f0(GetStringCommonByKey(L"s_mentoring_error_invalid_target"), 1, 1);
         break;
     case 4:
         FUN_1412751f0(GetStringCommonByKey(L"s_mentoring_error_mentor_has_max_count_waiting"), 1, 1);
@@ -577,6 +566,12 @@ void CMentoringManager::OnError(CInPacket& packet)
     case 8:
         FUN_1412751f0(GetStringCommonByKey(L"s_mentoring_error_already_requested_to_mentee"), 1, 1);
         break;
+    case 2:
+        FUN_1412751f0(GetStringCommonByKey(L"s_mentoring_error_target_not_exists"), 1, 1);
+        break;
+    case 3:
+        FUN_1412751f0(GetStringCommonByKey(L"s_mentoring_error_invalid_target"), 1, 1);
+        break;
     case 9:
         FUN_1412751f0(GetStringCommonByKey(L"s_mentoring_error_full_earn_coin"), 1, 1);
         break;
@@ -584,7 +579,6 @@ void CMentoringManager::OnError(CInPacket& packet)
 }
 
 // @0x140b73bc0
-// MS2-FUNCTIONAL: the exe's tail merges the false returns differently (2 bytes)
 bool FUN_140b73bc0(MyPC* pMyPC)
 {
     if (pMyPC == 0)
@@ -595,11 +589,13 @@ bool FUN_140b73bc0(MyPC* pMyPC)
         return false;
     if (((Unk_MMPlayer*)pMyPC)->FUN_141675ed0() == 1)
         return false;
-    int nValue = ((Unk_MMPlayer*)pMyPC)->FUN_14166c930();
-    if (nValue <= 0)
-        return false;
-    if (nValue <= 2 || nValue == 4)
+    switch (((Unk_MMPlayer*)pMyPC)->FUN_14166c930())
+    {
+    case 1:
+    case 2:
+    case 4:
         return true;
+    }
     return false;
 }
 // Atexit thunks of this unit's statics (gap1 yd sweep).

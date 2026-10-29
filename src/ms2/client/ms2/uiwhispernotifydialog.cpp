@@ -100,6 +100,7 @@ class Unk_WhisperSenderPtr
 {
 public:
     Unk_WhisperSenderPtr();                                     // user-provided: hidden return pointer ABI
+    ~Unk_WhisperSenderPtr() { FUN_14035e5b0(); }
     bool FUN_14035e9b0();                                       // is empty
     Unk_WhisperSender* FUN_14035eb90();                         // operator->
     void FUN_14035e5b0();                                       // release
@@ -121,7 +122,7 @@ CStringW FUN_1401aa6a0(int nId);                                // the character
 CStringW FUN_14052bd00(int nStringId, const CStringW& strArg);  // string table text with one argument
 CStringW FUN_140292b10(int nStringId, const int& nHour, const int& nMinute, const CStringW& strName);   // string table text with three arguments
 CStringW FUN_140719a80(unsigned __int64 nUid);                  // the item guid text
-CStringW FUN_1416e5900(int nItemId, int nBold);                 // the item name text
+CStringW FUN_1416e5900(int nItemId, bool bBold);                // the item name text
 void FUN_1412751b0(const CStringW& strText, int nKind);         // shows the text as a notice
 int FUN_140869420();                                            // the server time in seconds
 CString FUN_140513200(const char* szFormat, const int& nArg);
@@ -324,7 +325,7 @@ void UIWhisperNotifyDialog::FUN_141b52210(MS2Ptr<CItem> spItem, const CStringW& 
 }
 
 // @0x141b52570
-// MS2-FUNCTIONAL: frame 0x10 smaller in the exe (one more EH state, 24 ip2state entries); temporaries not matched
+// MS2-FUNCTIONAL: instructions match; the exe keeps the CTime at rsp+0x110 (ours 0x60), 3 bytes longer
 void UIWhisperNotifyDialog::FUN_141b52570(const Unk_WhisperInfo* pInfo, int nMode, int nItemId)
 {
     if (FUN_1422dc2d0() == 0)
@@ -343,7 +344,10 @@ void UIWhisperNotifyDialog::FUN_141b52570(const Unk_WhisperInfo* pInfo, int nMod
     {
         MS2Ptr<CItemData> spData = (&FUN_140764020()->m_source)->vfunc_3(nItemId);
         if (spData.get() != 0)
-            strExtra += FUN_14052bd00(0x5ed, FUN_1416e5900(nItemId, 1));
+        {
+            CStringW strName = FUN_1416e5900(nItemId, true);
+            strExtra += FUN_14052bd00(0x5ed, strName);
+        }
     }
     if (nMode == 1)
         strText += strExtra;
@@ -358,7 +362,6 @@ void UIWhisperNotifyDialog::FUN_141b52570(const Unk_WhisperInfo* pInfo, int nMod
         strLog += strExtra;
     FUN_1403b4750()->FUN_1416fb340(strLog);
     FUN_1412751b0(strLog, 0x14);
-    sender.FUN_14035e5b0();
 }
 
 // @0x141b529f0

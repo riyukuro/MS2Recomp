@@ -33,20 +33,24 @@
 // File name assumed (the old index called the unit petinfobasic.cpp).
 // MS2-PIN: ?vfunc_1@PetInfoBase@@UEAAXXZ 0x140cbeff0 ; hand: empty slot bodies are byte-identical
 // MS2-PIN: ?vfunc_2@PetInfoBase@@UEAAXXZ 0x140cbf020 ; hand
+// MS2-PIN: ??$?0VASUIComponent@@@?$MS2Ptr@VASMovieClip@@@@QEAA@$$QEAV?$MS2Ptr@VASUIComponent@@@@@Z 0x140cbdde0 ; hand: converting move (MS2_PTR_MOVE_CONVERT)
 // MS2-PIN: ?vfunc_3@PetInfoBase@@UEAAXXZ 0x140cbecb0 ; hand
 // MS2-PIN: ?vfunc_4@PetInfoBase@@UEAAXXZ 0x140cbeca0 ; hand
 // MS2-PIN: ??_7EquipSlot@TabContentsPetInfo@@6BBindData@NotifyContext@@@ 0x142e19920 ; hand: primary vftable
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\tabcontentspetinfo.cpp"    // assumed
 
+#define MS2_PTR_MOVE_CONVERT
 #include "ms2/placeholder/ms2stdafx.h"
 #include <afxdialogex.h>
 #include "tabcontentspetinfo.h"
 #include "uimessageboxdata.h"
 #include "uimessagebox.h"
 #include "uiavatarbase.h"
+#include "uirenderview.h"
 #include "uidialog.h"
 #include "ms2/commonfiles/gamerule.h"
 #include "ms2/placeholder/asdata.h"
+#include "ms2/placeholder/ccpetinfopacket.h"
 #include "ms2/placeholder/asdisplayobject.h"
 #include "ms2/placeholder/asobj.h"
 #include "ms2/placeholder/asslot.h"
@@ -107,7 +111,7 @@ public:
 #define PB_V(n) virtual void vfunc_##n();
     PB_V(16) PB_V(17) PB_V(18) PB_V(19) PB_V(20) PB_V(21) PB_V(22) PB_V(23)
 #undef PB_V
-    virtual void vfunc_24(int nShow);                                   // 24 (+0xc0) refresh
+    virtual void vfunc_24(bool bShow);                                  // 24 (+0xc0) refresh
     void FUN_1407cba60(const char* szName, CString str);                // set the bag id
 private:
     unsigned char m_pad_80[8];
@@ -121,7 +125,7 @@ public:
 #define SL_V(n) virtual void vfunc_##n();
     SL_V(16) SL_V(17) SL_V(18) SL_V(19) SL_V(20) SL_V(21) SL_V(22) SL_V(23)
 #undef SL_V
-    virtual void vfunc_24(int nShow);                                   // 24 (+0xc0) refresh
+    virtual void vfunc_24(bool bShow);                                  // 24 (+0xc0) refresh
     void FUN_1422dd1d0();                                               // clear the rows
     void FUN_1422dd230(ASObj& row);                                     // add a row
 private:
@@ -244,7 +248,7 @@ struct Unk_PiPetData
     unsigned char m_pad_00[0x18];
     CStringW m_strName;                                                 // +0x18
     unsigned char m_pad_20[0x14];
-    int m_nState;                                                       // +0x34 0 = the pet is out
+    unsigned int m_nState;                                              // +0x34 0 = the pet is out
 };
 MS2_CHECK_OFFSET(Unk_PiPetData, m_nState, 0x34);
 class Unk_PiBag { public: __int64 FUN_140c874f0(); int FUN_140c875e0(); };
@@ -286,8 +290,6 @@ CString FUN_14038f6d0(const CString& a, const char* b);                 // a + b
 CStringTable* GetStringTable();
 bool FUN_140164830(const CStringW& a, const CStringW& b);
 CGameRule* FUN_1401c0d90();
-CStringW FUN_1401fedc0();                                               // the empty name
-void FUN_1401fee50(const CStringW& str, COutPacket& packet);
 void FUN_140710590(COutPacket& packet);                                 // send
 UIMessageBox* FUN_14151f890();
 void FUN_14151f200();
@@ -318,7 +320,9 @@ __int64 FUN_141405a10(void* pItemSlot);                                 // its i
 // Camera of the pet preview (see uiitempetboxdialog.cpp).
 struct Unk_PetBoxVector
 {
+    Unk_PetBoxVector();
     float x, y, z;
+    Unk_PetBoxVector& operator+=(const Unk_PetBoxVector&);            // 0x140a4e560
 };
 struct Unk_PetBoxCameraData
 {
@@ -347,6 +351,22 @@ public:
     virtual void vfunc_13(const Unk_PetBoxCameraData&);
 };
 float FUN_141b48480(int a, int b);
+// UIAvatarBase's slot 28 as the exe calls it, with the fourth argument uiavatarbase.h does not declare.
+class Unk_PetPreviewAvatar
+{
+public:
+#define NV(n) virtual void vfunc_##n();
+    NV(0) NV(1) NV(2) NV(3) NV(4) NV(5) NV(6) NV(7) NV(8) NV(9) NV(10) NV(11) NV(12) NV(13) NV(14) NV(15) NV(16) NV(17) NV(18) NV(19)
+    NV(20) NV(21) NV(22) NV(23) NV(24) NV(25) NV(26) NV(27)
+#undef NV
+    virtual void vfunc_28(void* p1, TPtr<Unk_UISwfEntity_25> spTarget, void* pArg, void* pArg2);
+};
+
+// @0x140cbe890
+template <> inline bool TPtr<Unk_UISwfEntity_25>::operator==(Unk_UISwfEntity_25* p) const
+{
+    return m_p == p;
+}
 
 // The Value setters the Invoke helpers use.
 void FUN_1422bcea0(Scaleform::GFx::Value* pValue, const wchar_t* psz);
@@ -355,14 +375,6 @@ typedef MS2Ptr<CItem> ItemPtr;
 
 // ---- glue ----
 
-// @0x140cbdde0 (MS2Ptr<ASMovieClip>(MS2Ptr<ASUIComponent>&&): takes the pointer over)
-inline MS2Ptr<ASMovieClip> FUN_140cbdde0(MS2Ptr<ASUIComponent>&& o)
-{
-    MS2Ptr<ASMovieClip> r(0);
-    reinterpret_cast<void**>(&r)[1] = reinterpret_cast<void**>(&o)[1];
-    reinterpret_cast<void**>(&o)[1] = 0;
-    return r;
-}
 
 // @0x140cbe3a0
 inline Scaleform::GFx::Value Unk_PiComp::FUN_140cbe3a0(const char* szMethod, const wchar_t* a1)
@@ -539,8 +551,6 @@ void PetInfoBasic::vfunc_2()
 MS2_REPLACE_METHOD(0x140cb8850, PetInfoBasic, vfunc_2, 31, 0x2450BC85);
 
 // @0x140cb8880
-// MS2-FUNCTIONAL: not byte-exact yet (local slot order / branch layout differ)
-// MS2-FUNCTIONAL: exe call-result temporaries / frame-slot order differ (source form not found)
 void PetInfoBasic::vfunc_3()
 {
     MS2Ptr<CItem> pet = FUN_140cbd900(m_nPet);
@@ -549,34 +559,27 @@ void PetInfoBasic::vfunc_3()
     MS2Ptr<Unk_PetRow> row = FUN_140cbda70(m_nPet);
     if (row == 0)
         return;
-    MS2Ptr<ASUIComponent> basic = m_ui->FUN_140accfb0<ASUIComponent>(CString("m_basic"));
+    MS2Ptr<ASUIComponent> basic = m_ui->FUN_140accfb0<ASUIComponent>("m_basic");
     if (basic == 0)
         return;
     unsigned short nPetClass = pet->FUN_140528c20();
     int nRank = pet->FUN_140526bd0();
-    MS2Ptr<ASTextField> name = basic->FUN_1409b4620(CString("m_name"));
-    if (name.get() != 0)
+    if (MS2Ptr<ASTextField> name = basic->FUN_1409b4620("m_name"))
     {
         name->FUN_1422c4cd0(pet->FUN_140527b10());
         static_cast<Unk_PiText*>(name.operator->())->FUN_1422c5910(1);
     }
-    name = 0;
-    MS2Ptr<Unk_PetButton> change = basic->FUN_140acce30<Unk_PetButton>(CString("m_changeName"));
-    if (change.get() != 0)
+    if (MS2Ptr<Unk_PetButton> change = basic->FUN_140acce30<Unk_PetButton>("m_changeName"))
     {
-        change->FUN_1422cdfb0(GetStringCommonByKey(CStringW(L"s_pet_change_name")));
+        change->FUN_1422cdfb0(GetStringCommonByKey(L"s_pet_change_name"));
         change->FUN_1422c1fe0(FUN_140cba220());
     }
-    change = 0;
-    MS2Ptr<ASUIComponent> bar = basic->FUN_140accfb0<ASUIComponent>(CString("m_expBar"));
-    if (bar.get() != 0)
+    if (MS2Ptr<ASUIComponent> bar = basic->FUN_140accfb0<ASUIComponent>("m_expBar"))
     {
-        unsigned nClass = nPetClass;
-        if (nClass < *FUN_1401d7c10(&FUN_1401d3200()->m_petClass))
+        if (nPetClass < *FUN_1401d7c10(&FUN_1401d3200()->m_petClass))
         {
             __int64 nExp = pet->FUN_140528b90();
-            unsigned short nItemClass = pet->FUN_1405282d0();
-            __int64 nMax = FUN_1404a1bb0()->FUN_140353930(nPetClass, nRank, nItemClass);
+            __int64 nMax = FUN_1404a1bb0()->FUN_140353930(nPetClass, nRank, pet->FUN_1405282d0());
             if (row->m_nFlag == 1)
             {
                 CStringW strExp;
@@ -585,7 +588,7 @@ void PetInfoBasic::vfunc_3()
             }
             else
             {
-                bar->Invoke("setText", GetStringCommonByKey(CStringW(L"s_word_not_enchant")));
+                bar->Invoke("setText", GetStringCommonByKey(L"s_word_not_enchant"));
             }
             bar->Invoke("setPercent", nExp, nMax);
         }
@@ -594,11 +597,8 @@ void PetInfoBasic::vfunc_3()
             bar->Invoke("setMax");
         }
     }
-    bar = 0;
-    MS2Ptr<ASMovieClip> bg = basic->FUN_1409b4560(CString("m_slotBg"));
-    if (bg.get() != 0)
+    if (MS2Ptr<ASMovieClip> bg = basic->FUN_1409b4560("m_slotBg"))
         bg->vfunc_3(FUN_140cba1f0());
-    bg = 0;
     ASObj obj(2);
     if (row->m_nFlag == 1)
         obj.FUN_1407cbb20(s_itemLevel, FUN_1409e8820(CStringW(L"s_word_petlevel"), nPetClass));
@@ -610,36 +610,27 @@ void PetInfoBasic::vfunc_3()
 }
 
 // @0x140cb9240
-// MS2-FUNCTIONAL: not byte-exact yet (local slot order / branch layout differ)
-// MS2-FUNCTIONAL: exe call-result temporaries / frame-slot order differ (source form not found)
 void PetInfoBasic::vfunc_4()
 {
-    MS2Ptr<ASUIComponent> basic = m_ui->FUN_140accfb0<ASUIComponent>(CString("m_basic"));
+    MS2Ptr<ASUIComponent> basic = m_ui->FUN_140accfb0<ASUIComponent>("m_basic");
     if (basic == 0)
         return;
-    MS2Ptr<ASTextField> name = basic->FUN_1409b4620(CString("m_name"));
-    if (name.get() != 0)
-        name->FUN_1422c4cd0(CStringW(L""));
-    name = 0;
-    MS2Ptr<Unk_PetButton> change = basic->FUN_140acce30<Unk_PetButton>(CString("m_changeName"));
-    if (change.get() != 0)
+    if (MS2Ptr<ASTextField> name = basic->FUN_1409b4620("m_name"))
+        name->FUN_1422c4cd0(L"");
+    if (MS2Ptr<Unk_PetButton> change = basic->FUN_140acce30<Unk_PetButton>("m_changeName"))
     {
-        change->FUN_1422cdfb0(GetStringCommonByKey(CStringW(L"s_pet_change_name")));
+        change->FUN_1422cdfb0(GetStringCommonByKey(L"s_pet_change_name"));
         change->FUN_1422c1fe0(0);
     }
-    change = 0;
-    MS2Ptr<ASUIComponent> bar = basic->FUN_140accfb0<ASUIComponent>(CString("m_expBar"));
-    if (bar.get() != 0)
+    if (MS2Ptr<ASUIComponent> bar = basic->FUN_140accfb0<ASUIComponent>("m_expBar"))
     {
-        PI(bar)->FUN_140cbe3a0("setText", L"");
+        PI(bar)->FUN_140cbe3a0("setText", L" ");
         bar->FUN_1409ba0d0("setPercent", 0, 0);
     }
-    bar = 0;
-    MS2Ptr<ASMovieClip> bg = basic->FUN_1409b4560(CString("m_slotBg"));
-    if (bg.get() != 0)
+    if (MS2Ptr<ASMovieClip> bg = basic->FUN_1409b4560("m_slotBg"))
         bg->vfunc_3(1);
-    bg = 0;
-    FUN_140cbcb90(m_strBag, 1, m_nPet);
+    const int nBagType = 1;
+    FUN_140cbcb90(m_strBag, nBagType, m_nPet);
     PI(basic)->FUN_1407cba60("bagId", m_strBag);
     ASObj obj(2);
     obj.FUN_1409c0dc0(s_itemLevel, "");
@@ -649,17 +640,22 @@ void PetInfoBasic::vfunc_4()
 }
 
 // @0x140cb9790
-// MS2-FUNCTIONAL: not byte-exact yet (local slot order / branch layout differ)
 void PetInfoBasic::vfunc_5(int nTab)
 {
-    MS2Ptr<ASUIComponent> basic = m_ui->FUN_140accfb0<ASUIComponent>(CString("m_basic"));
+    MS2Ptr<ASUIComponent> basic = m_ui->FUN_140accfb0<ASUIComponent>("m_basic");
     if (basic == 0)
+        return;
+    switch (nTab)
     {
-        if (-1 < nTab && (nTab < 3 || nTab == 6 || nTab == 9 || nTab == 0xd))
-        {
-            vfunc_4();
-            vfunc_3();
-        }
+    case 0:
+    case 1:
+    case 2:
+    case 6:
+    case 9:
+    case 0xd:
+        vfunc_4();
+        vfunc_3();
+        break;
     }
 }
 MS2_REPLACE_METHOD(0x140cb9790, PetInfoBasic, vfunc_5, 212, 0xFCDD3E5A);
@@ -678,31 +674,27 @@ int PetInfoBasic::vfunc_6(const char* szEvent, const Scaleform::GFx::Value* pArg
 MS2_REPLACE_METHOD(0x140cb9870, PetInfoBasic, vfunc_6, 138, 0x1274197A);
 
 // @0x140cb9900
-// MS2-FUNCTIONAL: not byte-exact yet (local slot order / branch layout differ)
 void PetInfoBasic::OnChangeName()
 {
     UIItemAutoUseOptionDialog* pAuto = FUN_140cbe1c0(0x4ef4);
-    if (pAuto == 0 || pAuto->vfunc_55() != 0)
+    if (pAuto != 0 && pAuto->vfunc_55() == 0)
+        return;
+    int nLimit = *FUN_1402056b0(&FUN_1401d3200()->m_nameLimit);
+    int nHalf = nLimit / 2;
+    CStringW strText = FUN_140811740(0xc0a, nHalf, nLimit);
+    if (MS2Ptr<CMsgBoxData> box = FUN_140d73d20(10, strText, 0, L""))
     {
-        int nLimit = *FUN_1402056b0(&FUN_1401d3200()->m_nameLimit);
-        int nHalf = nLimit / 2;
-        CStringW strText = FUN_140811740(0xc0a, nHalf, nLimit);
-        MS2Ptr<CMsgBoxData> box = FUN_140d73d20(10, CStringW(strText), 0, CStringW(L""));
-        if (box.get() != 0)
-        {
-            unsigned nMax = *FUN_1402056b0(&FUN_1401d3200()->m_nameLimit);
-            box->FUN_141a01d30(2, CStringW(L""), nMax, 0, 0);
-            box->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &PetInfoBasic::FUN_140cb9ba0));
-            FUN_140d73c60(box);
-        }
-        FUN_140d86260()->vfunc_43(2, 0, 1000);
+        unsigned nMax = *FUN_1402056b0(&FUN_1401d3200()->m_nameLimit);
+        CStringW strEmpty(L"");
+        box->FUN_141a01d30(2, strEmpty, nMax, 0, 0);
+        box->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &PetInfoBasic::FUN_140cb9ba0));
+        FUN_140d73c60(box);
     }
+    FUN_140d86260()->vfunc_43(2, 0, 1000);
 }
 MS2_REPLACE_METHOD(0x140cb9900, PetInfoBasic, OnChangeName, 651, 0x675FFFB5);
 
 // @0x140cb9ba0
-// MS2-FUNCTIONAL: not byte-exact yet (local slot order / branch layout differ)
-// MS2-FUNCTIONAL: exe call-result temporaries / frame-slot order differ (source form not found)
 bool PetInfoBasic::FUN_140cb9ba0(int nResult, const CMsgBoxData& box)
 {
     Unk_PetPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
@@ -711,8 +703,8 @@ bool PetInfoBasic::FUN_140cb9ba0(int nResult, const CMsgBoxData& box)
     if (nResult == 0)
     {
         CStringW strErr;
-        CStringW strName(box.FUN_141a02d50().Trim(L','));
-        if (strName.IsEmpty() || strName.GetLength() > 31)
+        CStringW strName = box.FUN_141a02d50().Trim(L',');
+        if (strName.IsEmpty() || strName.GetLength() >= 32)
             return false;
         Unk_TextFilterPtr filter = FUN_14025e7d0()->FUN_140229a50();
         if (filter.FUN_14025cea0() != 0)
@@ -722,27 +714,26 @@ bool PetInfoBasic::FUN_140cb9ba0(int nResult, const CMsgBoxData& box)
                 Unk_PiPetData* pData = FUN_140cbdba0(m_nPet);
                 if (pData == 0)
                     return false;
-                if (FUN_140164830(pData->m_strName, strName) == false)
+                if (FUN_140164830(pData->m_strName, strName))
+                {
+                    FUN_14151f200();
+                    CStringW strText(L"");
+                    if (pData->m_nState > 0)
+                        strText = FUN_14052bd00(0xc19, strName);
+                    else
+                        strText = FUN_14028dee0(0xc1a, FUN_1401c0d90()->FUN_140477330(), strName);
+                    if (MS2Ptr<CMsgBoxData> confirm = FUN_140d73d20(1, strText, 0, L""))
+                    {
+                        confirm->FUN_140b76940(strName);
+                        confirm->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &PetInfoBasic::SendRequestPet));
+                        FUN_140d73c60(confirm);
+                    }
+                }
+                else
                 {
                     UIMessageBox* pBox = FUN_14151f890();
                     if (pBox != 0)
                         pBox->FUN_1419f82b0(GetStringCommon(0xc1b));
-                }
-                else
-                {
-                    FUN_14151f200();
-                    CStringW strText;
-                    if (pData->m_nState == 0)
-                        strText = FUN_14028dee0(0xc1a, FUN_1401c0d90()->FUN_140477330(), strName);
-                    else
-                        strText = FUN_14052bd00(0xc19, strName);
-                    MS2Ptr<CMsgBoxData> confirm = FUN_140d73d20(1, CStringW(strText), 0, CStringW(L""));
-                    if (confirm.get() != 0)
-                    {
-                        confirm->FUN_140b76940(CStringW(strName));
-                        confirm->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &PetInfoBasic::SendRequestPet));
-                        FUN_140d73c60(confirm);
-                    }
                 }
             }
             else
@@ -758,16 +749,15 @@ bool PetInfoBasic::FUN_140cb9ba0(int nResult, const CMsgBoxData& box)
 }
 
 // @0x140cba0f0
-// MS2-FUNCTIONAL: not byte-exact yet (local slot order / branch layout differ)
 bool PetInfoBasic::SendRequestPet(int nResult, const CMsgBoxData& box)
 {
     if (nResult == 0)
     {
-        CStringW strName = FUN_1401fedc0();
-        strName = box.FUN_141a02fd0(0, CStringW());
+        Unk_PetIdentity identity;
+        identity.name = box.FUN_141a02fd0(0, CStringW());
         COutPacket packet(static_cast<int>(SendOp::RequestPet), 0);
         packet.WriteUInt8(4);
-        FUN_1401fee50(strName, packet);
+        identity.FUN_1401fee50(packet);
         FUN_140710590(packet);
     }
     return true;
@@ -808,98 +798,103 @@ void PetInfoInventory::vfunc_2()
 MS2_REPLACE_METHOD(0x140cba2b0, PetInfoInventory, vfunc_2, 31, 0xE2D21EC3);
 
 // @0x140cba2e0
-// MS2-FUNCTIONAL: not byte-exact yet (local slot order / branch layout differ)
-// MS2-FUNCTIONAL: exe call-result temporaries / frame-slot order differ (source form not found)
 void PetInfoInventory::vfunc_3()
 {
-    MS2Ptr<ASUIComponent> inv = m_ui->FUN_140accfb0<ASUIComponent>(CString("m_inventory"));
+    MS2Ptr<ASUIComponent> inv = m_ui->FUN_140accfb0<ASUIComponent>("m_inventory");
     if (inv == 0)
         return;
     int nSlotUse = (int)FUN_140cbdc40(m_nPet);
     int nSlotMax = (int)FUN_140cbdc80(m_nPet);
-    if (m_nPet == 0)
+    if (m_nPet != 0)
     {
-        inv->vfunc_3(0);
-        MS2Ptr<ASMovieClip> notInv = FUN_140cbdde0(m_ui->FUN_140accfb0<ASUIComponent>(CString("m_notInventory")));
-        if (notInv.get() != 0)
+        if (FUN_140cbd9d0(m_nPet) != 0 && nSlotMax > 0)
         {
-            MS2Ptr<ASTextField> text = notInv->FUN_1409b4620(CString("textField"));
-            if (text.get() != 0)
-            {
-                if (nSlotMax < 1)
-                    text->FUN_1422c4cd0(GetStringCommonByKey(CStringW(L"s_pet_otherpet_not_inventory")));
-                else
-                    text->FUN_1422c4cd0(FUN_14062b4f0(CStringW(L"s_pet_otherpet_inventory"), nSlotMax));
-            }
-            notInv->vfunc_3(1);
+            inv->vfunc_3(1);
+            MS2Ptr<ASMovieClip> notInv = m_ui->FUN_140accfb0<ASUIComponent>("m_notInventory");
+            if (notInv.get() != 0)
+                notInv->vfunc_3(0);
         }
-    }
-    else if (FUN_140cbd9d0(m_nPet) == 0 || nSlotMax < 1)
-    {
-        inv->vfunc_3(0);
-        MS2Ptr<ASMovieClip> notInv = FUN_140cbdde0(m_ui->FUN_140accfb0<ASUIComponent>(CString("m_notInventory")));
-        if (notInv.get() != 0)
+        else
         {
-            MS2Ptr<ASTextField> text = notInv->FUN_1409b4620(CString("textField"));
-            if (text.get() != 0)
-                text->FUN_1422c4cd0(GetStringCommonByKey(CStringW(L"s_pet_not_inventory")));
-            notInv->vfunc_3(1);
+            inv->vfunc_3(0);
+            MS2Ptr<ASMovieClip> notInv = m_ui->FUN_140accfb0<ASUIComponent>("m_notInventory");
+            if (notInv.get() != 0)
+            {
+                MS2Ptr<ASTextField> text = notInv->FUN_1409b4620("textField");
+                if (text.get() != 0)
+                    text->FUN_1422c4cd0(GetStringCommonByKey(L"s_pet_not_inventory"));
+                notInv->vfunc_3(1);
+            }
         }
     }
     else
     {
-        inv->vfunc_3(1);
-        MS2Ptr<ASMovieClip> notInv = FUN_140cbdde0(m_ui->FUN_140accfb0<ASUIComponent>(CString("m_notInventory")));
+        inv->vfunc_3(0);
+        MS2Ptr<ASMovieClip> notInv = m_ui->FUN_140accfb0<ASUIComponent>("m_notInventory");
         if (notInv.get() != 0)
-            notInv->vfunc_3(0);
+        {
+            MS2Ptr<ASTextField> text = notInv->FUN_1409b4620("textField");
+            if (text.get() != 0)
+            {
+                if (nSlotMax > 0)
+                    text->FUN_1422c4cd0(FUN_14062b4f0(L"s_pet_otherpet_inventory", nSlotMax));
+                else
+                    text->FUN_1422c4cd0(GetStringCommonByKey(L"s_pet_otherpet_not_inventory"));
+            }
+            notInv->vfunc_3(1);
+        }
     }
-    MS2Ptr<ASTextField> count = inv->FUN_1409b4620(CString("m_slotUseCount"));
-    if (count.get() != 0)
-        count->FUN_1422c4cd0(FUN_140811740(0xc11, nSlotUse, nSlotMax));
+    if (MS2Ptr<ASTextField> count = inv->FUN_1409b4620("m_slotUseCount"))
+    {
+        CStringW strText = FUN_140811740(0xc11, nSlotUse, nSlotMax);
+        count->FUN_1422c4cd0(strText);
+    }
 }
 
 // @0x140cbaa00
 // MS2-FUNCTIONAL: not byte-exact yet (local slot order / branch layout differ)
 void PetInfoInventory::vfunc_4()
 {
-    MS2Ptr<ASUIComponent> inv = m_ui->FUN_140accfb0<ASUIComponent>(CString("m_inventory"));
+    MS2Ptr<ASUIComponent> inv = m_ui->FUN_140accfb0<ASUIComponent>("m_inventory");
     if (inv == 0)
         return;
     int nSlots = FUN_140cbdc80(m_nPet);
-    MS2Ptr<Unk_PetItemBag> bag = inv->FUN_140accef0<Unk_PetItemBag>(CString("m_itemBag"));
-    if (bag.get() != 0)
+    if (MS2Ptr<Unk_PetItemBag> bag = inv->FUN_140accef0<Unk_PetItemBag>("m_itemBag"))
     {
         FUN_140dbc370(m_strBag, nSlots);
         bag->FUN_1407cba60("bagId", m_strBag);
-        bag->vfunc_24(1);
+        bag->vfunc_24(true);
     }
 }
 MS2_REPLACE_METHOD(0x140cbaa00, PetInfoInventory, vfunc_4, 433, 0xAE08D0A8);
 
 // @0x140cbabc0
-// MS2-FUNCTIONAL: not byte-exact yet (local slot order / branch layout differ)
-// MS2-FUNCTIONAL: exe call-result temporaries / frame-slot order differ (source form not found)
 void PetInfoInventory::vfunc_5(int nTab)
 {
-    MS2Ptr<ASUIComponent> inv = m_ui->FUN_140accfb0<ASUIComponent>(CString("m_inventory"));
+    MS2Ptr<ASUIComponent> inv = m_ui->FUN_140accfb0<ASUIComponent>("m_inventory");
     if (inv == 0)
+        return;
+    switch (nTab)
     {
-        if (-1 < nTab)
+    case 0:
+    case 1:
+    case 2:
+        vfunc_4();
+        vfunc_3();
+        break;
+    case 3:
+    case 4:
+    case 5:
+    {
+        int nSlotUse = (int)FUN_140cbdc40(m_nPet);
+        int nSlotMax = (int)FUN_140cbdc80(m_nPet);
+        if (MS2Ptr<ASTextField> count = inv->FUN_1409b4620("m_slotUseCount"))
         {
-            if (nTab < 3)
-            {
-                vfunc_4();
-                vfunc_3();
-            }
-            else if (2 < nTab && nTab < 6)
-            {
-                int nSlotUse = (int)FUN_140cbdc40(m_nPet);
-                int nSlotMax = (int)FUN_140cbdc80(m_nPet);
-                MS2Ptr<ASTextField> count = inv->FUN_1409b4620(CString("m_slotUseCount"));
-                if (count.get() != 0)
-                    count->FUN_1422c4cd0(FUN_140811740(0xc11, nSlotUse, nSlotMax));
-            }
+            CStringW strText = FUN_140811740(0xc11, nSlotUse, nSlotMax);
+            count->FUN_1422c4cd0(strText);
         }
+        break;
+    }
     }
 }
 
@@ -915,16 +910,15 @@ PetInfoSkill::PetInfoSkill(int nPet)
 // MS2-FUNCTIONAL: not byte-exact yet (local slot order / branch layout differ)
 void PetInfoSkill::vfunc_3()
 {
-    MS2Ptr<ASUIComponent> skill = m_ui->FUN_140accfb0<ASUIComponent>(CString("m_skill"));
+    MS2Ptr<ASUIComponent> skill = m_ui->FUN_140accfb0<ASUIComponent>("m_skill");
     if (skill == 0)
         return;
     skill->vfunc_3(FUN_140cbd9d0(m_nPet));
-    MS2Ptr<Unk_StatList> list = PI(skill)->FUN_140bc7280(CString("m_scrollingList"));
-    if (list.get() != 0)
+    if (MS2Ptr<Unk_StatList> list = PI(skill)->FUN_140bc7280("m_scrollingList"))
     {
         list->FUN_1422dd1d0();
         FUN_140cbb060(list);
-        list->vfunc_24(1);
+        list->vfunc_24(true);
     }
 }
 MS2_REPLACE_METHOD(0x140cbade0, PetInfoSkill, vfunc_3, 428, 0x4BEDBB40);
@@ -961,8 +955,6 @@ int PetInfoSkill::vfunc_6(const char* szEvent, const Scaleform::GFx::Value* pArg
 MS2_REPLACE_METHOD(0x140cbafe0, PetInfoSkill, vfunc_6, 107, 0x987A440E);
 
 // @0x140cbb060
-// MS2-FUNCTIONAL: not byte-exact yet (local slot order / branch layout differ)
-// MS2-FUNCTIONAL: exe call-result temporaries / frame-slot order differ (source form not found)
 void PetInfoSkill::FUN_140cbb060(MS2Ptr<Unk_StatList> list)
 {
     MS2Ptr<Unk_PetRow> row = FUN_140cbda70(m_nPet);
@@ -1000,23 +992,20 @@ void PetInfoSkill::FUN_140cbb060(MS2Ptr<Unk_StatList> list)
         obj.FUN_1407cba60(s_iconPath, FUN_14038f6d0(strDir, "pet_Buff_ItemGet.png"));
         list->FUN_1422dd230(obj);
     }
-    void* pos = row->m_skills.FUN_14063f420();
-    while (pos != 0)
+    for (void* pos = row->m_skills.FUN_14063f420(); pos != 0; row->m_skills.FUN_14063f3d0(pos))
     {
         unsigned short nLevel = *row->m_skills.FUN_14063f490(pos);
         unsigned nSkillId = *row->m_skills.FUN_14063f360(pos);
         MS2Ptr<Unk_PiSkillRec> rec = FUN_1401958b0()->FUN_140aafef0(nSkillId, nLevel);
         if (rec == 0)
-        {
-            CStringW strName = FUN_14052bd00(0xc18, GetStringTable()->FUN_141812290(nSkillId, nLevel, CString("name")));
-            CStringW strTip = GetStringTable()->FUN_141812290(nSkillId, nLevel, CString("tooltipDescription"));
-            ASObj obj(2);
-            obj.FUN_1407cbb20("buffName", CStringW(strName));
-            obj.FUN_1407cbb20("buffTooltip", CStringW(strTip));
-            obj.FUN_1407cba60(s_iconPath, CString(rec->m_strIcon));
-            list->FUN_1422dd230(obj);
-        }
-        row->m_skills.FUN_14063f3d0(pos);
+            continue;
+        CStringW strName = FUN_14052bd00(0xc18, GetStringTable()->FUN_141812290(nSkillId, nLevel, "name"));
+        CStringW strTip = GetStringTable()->FUN_141812290(nSkillId, nLevel, "tooltipDescription");
+        ASObj obj(2);
+        obj.FUN_1407cbb20("buffName", CStringW(strName));
+        obj.FUN_1407cbb20("buffTooltip", CStringW(strTip));
+        obj.FUN_1407cba60(s_iconPath, CString(rec->m_strIcon));
+        list->FUN_1422dd230(obj);
     }
 }
 
@@ -1055,7 +1044,7 @@ PetInfoStat::PetInfoStat(int nPet)
 // MS2-FUNCTIONAL: exe call-result temporaries / frame-slot order differ (source form not found)
 void PetInfoStat::vfunc_3()
 {
-    MS2Ptr<ASUIComponent> stat = m_ui->FUN_140accfb0<ASUIComponent>(CString("m_stat"));
+    MS2Ptr<ASUIComponent> stat = m_ui->FUN_140accfb0<ASUIComponent>("m_stat");
     if (stat == 0)
         return;
     stat->vfunc_3(FUN_140cbd9d0(m_nPet));
@@ -1065,9 +1054,9 @@ void PetInfoStat::vfunc_3()
     CStringW strText = FUN_1409e34e0(MS2Ptr<CItem>(pet));
     ASObj obj(2);
     if (strText.IsEmpty())
-        obj.FUN_1407cbb20("itemGuideDescription", GetStringCommonByKey(CStringW(L"s_word_not_option")));
+        obj.FUN_1407cbb20("itemGuideDescription", GetStringCommonByKey(L"s_word_not_option"));
     else
-        obj.FUN_1407cbb20("itemDescription", CStringW(strText));
+        obj.FUN_1407cbb20("itemDescription", strText);
     PI(stat)->FUN_1422bb7e0(obj);
 }
 
@@ -1106,7 +1095,7 @@ MS2_REPLACE_METHOD(0x140cbbb30, PetInfoPreview, vfunc_2, 43, 0x23189DED);
 // MS2-FUNCTIONAL: exe call-result temporaries / frame-slot order differ (source form not found)
 void PetInfoPreview::vfunc_3()
 {
-    MS2Ptr<ASUIComponent> preview = m_ui->FUN_140accfb0<ASUIComponent>(CString("m_preview"));
+    MS2Ptr<ASUIComponent> preview = m_ui->FUN_140accfb0<ASUIComponent>("m_preview");
     if (preview == 0)
         return;
     MS2Ptr<CItem> pet = FUN_140cbd900(m_nPet);
@@ -1115,15 +1104,14 @@ void PetInfoPreview::vfunc_3()
     MS2Ptr<CItemData> data(pet->FUN_140527840());
     if (data == 0)
         return;
-    if (m_avatar.get() == 0)
+    if (m_avatar.get() != 0)
     {
-        UIAvatarPet* pAvatar = new UIAvatarPet(data.get());
-        m_avatar.AssignRaw(pAvatar);
-        m_avatar->vfunc_1(static_cast<IUIAvatarEventListener*>(this));
+        m_avatar->FUN_1418bebd0(data.get());
     }
     else
     {
-        m_avatar->FUN_1418bebd0(data.get());
+        m_avatar.AssignRaw(new UIAvatarPet(data.get()));
+        m_avatar->vfunc_1(static_cast<IUIAvatarEventListener*>(this));
     }
     PI(preview)->FUN_140caf230("setGrade", pet->FUN_140526bd0());
 }
@@ -1132,13 +1120,12 @@ void PetInfoPreview::vfunc_3()
 // MS2-FUNCTIONAL: not byte-exact yet (local slot order / branch layout differ)
 void PetInfoPreview::vfunc_4()
 {
-    MS2Ptr<ASUIComponent> preview = m_ui->FUN_140accfb0<ASUIComponent>(CString("m_preview"));
+    MS2Ptr<ASUIComponent> preview = m_ui->FUN_140accfb0<ASUIComponent>("m_preview");
     if (preview == 0)
-    {
-        preview->Invoke("setGrade", -1);
-        FUN_140cbc3b0();
-        m_avatar = 0;
-    }
+        return;
+    preview->Invoke("setGrade", -1);
+    FUN_140cbc3b0();
+    m_avatar = 0;
 }
 MS2_REPLACE_METHOD(0x140cbbe20, PetInfoPreview, vfunc_4, 206, 0xAB204F86);
 
@@ -1172,29 +1159,26 @@ int PetInfoPreview::vfunc_6(const char* szEvent, const Scaleform::GFx::Value* pA
 MS2_REPLACE_METHOD(0x140cbbf70, PetInfoPreview, vfunc_6, 141, 0x2E16512C);
 
 // @0x140cbc010
-// MS2-FUNCTIONAL: not byte-exact yet (local slot order / branch layout differ)
-// MS2-FUNCTIONAL: camera data frame layout differs
 void PetInfoPreview::vfunc_7(void* a1, TPtr<Unk_UISwfEntity_25> a2, void* a3, void* a4)
 {
-    if (a2.get() == 0 && a3 != 0)
-    {
-        if (!(m_avatar == 0))
-        {
-            Unk_PetBoxActor* actor = reinterpret_cast<Unk_PetBoxActor*>(m_avatar->vfunc_24());
-            if (actor != 0)
-            {
-                m_avatar->vfunc_28(a1, a2, a3);
-                Unk_PetBoxCameraData data;
-                data.FUN_141b48670();
-                data.n28 = 5;
-                data.f20 = 100.0f;
-                data.f1c = 500.0f;
-                data.eye = actor->vfunc_18();
-                reinterpret_cast<Unk_PetBoxCamera*>(m_avatar->m_spView.operator->())->vfunc_13(data);
-                m_avatar->vfunc_19(FUN_141b48480(0xb, 0), 0);
-            }
-        }
-    }
+    if (a2 == 0 || a3 == 0)
+        return;
+    if (m_avatar == 0)
+        return;
+    Unk_PetBoxActor* actor = reinterpret_cast<Unk_PetBoxActor*>(m_avatar->vfunc_24());
+    if (actor == 0)
+        return;
+    reinterpret_cast<Unk_PetPreviewAvatar*>(m_avatar.operator->())->vfunc_28(a1, a2, a3, a4);
+    Unk_PetBoxCameraData data;
+    data.FUN_141b48670();
+    data.n28 = 5;
+    data.f20 = 100.0f;
+    data.f1c = 500.0f;
+    data.target += actor->vfunc_18();
+    data.eye += data.target;
+    reinterpret_cast<Unk_PetBoxCamera*>(m_avatar->GetView().operator->())->vfunc_13(data);
+    float fZoom = FUN_141b48480(0xb, 0);
+    m_avatar->vfunc_19(fZoom, 0);
 }
 
 // @0x140cbc2b0
@@ -1272,24 +1256,22 @@ int TabContentsPetInfo::EquipSlot::vfunc_14()
 }
 
 // @0x140cbc6c0
-// MS2-FUNCTIONAL: not byte-exact yet (local slot order / branch layout differ)
 int TabContentsPetInfo::EquipSlot::vfunc_18(void* p)
 {
-    DragSlot* pDrag = static_cast<DragSlot*>(p);
     if (m_nPet == 0)
-        return pDrag->vfunc_10();
-    void* pItemSlot = FUN_140a50b50(pDrag);
+        return static_cast<DragSlot*>(p)->vfunc_10();
+    void* pItemSlot = FUN_140a50b50(static_cast<DragSlot*>(p));
     if (pItemSlot != 0)
     {
         Unk_PetPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
         if (pPlayer == 0)
-            return pDrag->vfunc_10();
+            return static_cast<DragSlot*>(p)->vfunc_10();
         MS2Ptr<CItem> pet = FUN_140cbd900(m_nPet);
-        if (!(pet == 0))
-            return pDrag->vfunc_10();
+        if (pet == 0)
+            return static_cast<DragSlot*>(p)->vfunc_10();
         pPlayer->FUN_14152b2d0(FUN_141405a10(pItemSlot));
     }
-    return pDrag->vfunc_10();
+    return static_cast<DragSlot*>(p)->vfunc_10();
 }
 
 // @0x140cbc7d0 (ITooltip::vfunc_0)
@@ -1302,16 +1284,17 @@ int TabContentsPetInfo::EquipSlot::vfunc_0(void* p)
     if (pet == 0)
         return 0;
     ASTooltip tip(pPlayer, 0x100, 2);
-    if (tip.FUN_1409e0d40(pet.get()) == 0)
-        return 0;
-    if (m_nPet != 0)
-        tip.FUN_1409c69b0(vfunc_22());
-    *static_cast<Scaleform::GFx::Value*>(p) = tip.FUN_1422bb870();
-    return 1;
+    if (tip.FUN_1409e0d40(pet.get()) != 0)
+    {
+        if (m_nPet != 0)
+            tip.FUN_1409c69b0(vfunc_22());
+        *static_cast<Scaleform::GFx::Value*>(p) = tip.FUN_1422bb870();
+        return 1;
+    }
+    return 0;
 }
 
 // @0x140cbc960
-// MS2-FUNCTIONAL: not byte-exact yet (local slot order / branch layout differ)
 int TabContentsPetInfo::EquipSlot::vfunc_8(void* p)
 {
     Unk_PetPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
@@ -1321,12 +1304,14 @@ int TabContentsPetInfo::EquipSlot::vfunc_8(void* p)
     if (pet == 0)
         return 0;
     ASSlot slot(2);
-    if (slot.FUN_1409c3860(pet.get(), pPlayer, 0x49) == 0)
-        return 0;
-    if (m_nPet != 0)
-        slot.FUN_1409c3750(true);
-    *static_cast<Scaleform::GFx::Value*>(p) = slot.FUN_1422bb870();
-    return 1;
+    if (slot.FUN_1409c3860(pet.get(), pPlayer, 0x49) != 0)
+    {
+        if (m_nPet != 0)
+            slot.FUN_1409c3750(true);
+        *static_cast<Scaleform::GFx::Value*>(p) = slot.FUN_1422bb870();
+        return 1;
+    }
+    return 0;
 }
 
 // @0x140cbcab0
@@ -1378,13 +1363,13 @@ DragSlot* TabContentsPetInfo::EquipSlotBag::vfunc_16(int nIndex)
 // @0x140cbcea0
 // MS2-FUNCTIONAL: not byte-exact yet (local slot order / branch layout differ)
 TabContentsPetInfo::TabContentsPetInfo(int nPet)
-    : m_nPet(nPet), m_parts(10), m_ui(0)
+    : PetSystemTabContents(), m_nPet(nPet), m_parts(10), m_ui(0)
 {
-    m_parts.AddTail(MS2Ptr<PetInfoBase>(new PetInfoStat(nPet)));
-    m_parts.AddTail(MS2Ptr<PetInfoBase>(new PetInfoSkill(nPet)));
-    m_parts.AddTail(MS2Ptr<PetInfoBase>(new PetInfoBasic(nPet)));
-    m_parts.AddTail(MS2Ptr<PetInfoBase>(new PetInfoInventory(nPet)));
-    m_parts.AddTail(MS2Ptr<PetInfoBase>(new PetInfoPreview(nPet)));
+    m_parts.AddTail(new PetInfoStat(nPet));
+    m_parts.AddTail(new PetInfoSkill(nPet));
+    m_parts.AddTail(new PetInfoBasic(nPet));
+    m_parts.AddTail(new PetInfoInventory(nPet));
+    m_parts.AddTail(new PetInfoPreview(nPet));
 }
 
 // @0x140cbd1e0
@@ -1415,75 +1400,62 @@ void TabContentsPetInfo::vfunc_4()
 MS2_REPLACE_METHOD(0x140cbd2c0, TabContentsPetInfo, vfunc_4, 191, 0x7C10A29A);
 
 // @0x140cbd390
-// MS2-FUNCTIONAL: not byte-exact yet (local slot order / branch layout differ)
 void TabContentsPetInfo::vfunc_2(int nTab)
 {
     if (m_ui == 0)
+        return;
+    FUN_140cbd870();
+    for (POSITION pos = m_parts.GetHeadPosition(); pos != 0; m_parts.GetNext(pos))
     {
-        FUN_140cbd870();
-        POSITION pos = m_parts.GetHeadPosition();
-        while (pos != 0)
-        {
-            MS2Ptr<PetInfoBase> p = m_parts.GetAt(pos);
-            if (!(p == 0))
-                p->vfunc_5(nTab);
-            m_parts.GetNext(pos);
-        }
+        MS2Ptr<PetInfoBase> p = m_parts.GetAt(pos);
+        if (p == 0)
+            continue;
+        p->vfunc_5(nTab);
     }
 }
 MS2_REPLACE_METHOD(0x140cbd390, TabContentsPetInfo, vfunc_2, 240, 0x0D977286);
 
 // @0x140cbd490
-// MS2-FUNCTIONAL: not byte-exact yet (local slot order / branch layout differ)
 void TabContentsPetInfo::vfunc_3(MS2Ptr<ASUIComponent> ui)
 {
     m_ui = ui;
     FUN_140cbd870();
-    POSITION pos = m_parts.GetHeadPosition();
-    while (pos != 0)
+    for (POSITION pos = m_parts.GetHeadPosition(); pos != 0; m_parts.GetNext(pos))
     {
         MS2Ptr<PetInfoBase> p = m_parts.GetAt(pos);
-        if (!(p == 0))
-        {
-            FUN_140cbf150(p.operator->(), ui);
-            p->vfunc_4();
-            p->vfunc_3();
-        }
-        m_parts.GetNext(pos);
+        if (p == 0)
+            continue;
+        FUN_140cbf150(p.operator->(), ui);
+        p->vfunc_4();
+        p->vfunc_3();
     }
 }
 MS2_REPLACE_METHOD(0x140cbd490, TabContentsPetInfo, vfunc_3, 367, 0x133CF189);
 
 // @0x140cbd610
-// MS2-FUNCTIONAL: not byte-exact yet (local slot order / branch layout differ)
 int TabContentsPetInfo::vfunc_6(const char* szEvent, const Scaleform::GFx::Value* pArgs, unsigned nArgs)
 {
-    POSITION pos = m_parts.GetHeadPosition();
-    while (pos != 0)
+    for (POSITION pos = m_parts.GetHeadPosition(); pos != 0; m_parts.GetNext(pos))
     {
         MS2Ptr<PetInfoBase> p = m_parts.GetAt(pos);
-        if (!(p == 0))
-        {
-            if (p->vfunc_6(szEvent, pArgs, nArgs) != 0)
-                return 1;
-        }
-        m_parts.GetNext(pos);
+        if (p == 0)
+            continue;
+        if (p->vfunc_6(szEvent, pArgs, nArgs) != 0)
+            return 1;
     }
     return 0;
 }
 MS2_REPLACE_METHOD(0x140cbd610, TabContentsPetInfo, vfunc_6, 254, 0x7C9509A4);
 
 // @0x140cbd720
-// MS2-FUNCTIONAL: not byte-exact yet (local slot order / branch layout differ)
 void TabContentsPetInfo::vfunc_7(void* a1, TPtr<Unk_UISwfEntity_25> a2, void* a3, void* a4)
 {
-    POSITION pos = m_parts.GetHeadPosition();
-    while (pos != 0)
+    for (POSITION pos = m_parts.GetHeadPosition(); pos != 0; m_parts.GetNext(pos))
     {
         MS2Ptr<PetInfoBase> p = m_parts.GetAt(pos);
-        if (!(p == 0))
-            p->vfunc_7(a1, a2, a3, a4);
-        m_parts.GetNext(pos);
+        if (p == 0)
+            continue;
+        p->vfunc_7(a1, a2, a3, a4);
     }
 }
 MS2_REPLACE_METHOD(0x140cbd720, TabContentsPetInfo, vfunc_7, 299, 0x5E0FE79E);
@@ -1520,29 +1492,15 @@ void FUN_140cbf150(PetInfoBase* p, MS2Ptr<ASUIComponent> ui)
     p->m_ui = ui;
 }
 
-// @0x140cbe890
-bool FUN_140cbe890(__int64* p, __int64 n)
-{
-    return *p == n;
-}
-
 // @0x140cbf030
 void PetInfoBase::vfunc_7(void* a1, TPtr<Unk_UISwfEntity_25> a2, void* a3, void* a4)
 {
 }
 MS2_REPLACE_METHOD(0x140cbf030, PetInfoBase, vfunc_7, 39, 0x545687CB);
 
-// @0x140cbe780
-// MS2-FUNCTIONAL: not byte-exact yet (local slot order / branch layout differ)
-PetInfoBasic::~PetInfoBasic() {}
-// @0x140cbe7b0
-PetInfoInventory::~PetInfoInventory() {}
-// @0x140cbe7e0
-PetInfoPreview::~PetInfoPreview() {}
-// @0x140cbe810
-PetInfoSkill::~PetInfoSkill() {}
-// @0x140cbe830
-PetInfoStat::~PetInfoStat() {}
+// The PetInfo* dtors (0x140cbe780 Basic, 0x140cbe7b0 Inventory, 0x140cbe7e0 Preview, 0x140cbe810 Skill,
+// 0x140cbe830 Stat) and ~TabContentsPetInfo (0x140cbe850) are implicit: an explicit empty body keeps a dead
+// vptr store the exe does not have.
 
 // @0x140cbe650
 inline PetInfoBase::PetInfoBase(int nPet)
@@ -1555,10 +1513,5 @@ inline PetInfoBase::~PetInfoBase()
 {
 }
 
-// @0x140cbe850
-// MS2-FUNCTIONAL: not byte-exact yet (local slot order / branch layout differ)
-inline TabContentsPetInfo::~TabContentsPetInfo()
-{
-}
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142ca3dc0-0x142ca3ef0 .text$yd

@@ -322,7 +322,6 @@ template <class T> T* Unk_ImGetDialog(int nId)
 }
 
 // @0x140d061b0
-// MS2-FUNCTIONAL: 3.8 KB packet dispatch, not byte-matched
 void CInstrumentManager::OnPacket(CInPacket& packet)
 {
     unsigned char nType = packet.ReadUInt8();
@@ -344,13 +343,12 @@ void CInstrumentManager::OnPacket(CInPacket& packet)
         if (pMe != 0 && pMe->FUN_14123c580() == nOwner)
             nKey = 0;
         int nSlot = GetSlot(nKey, voice);
-        if (nSlot != 0x10)
-        {
-            CMidiMessage msg;
-            msg.ProgramChange(nSlot, nProgram);
-            m_midi.SendMessage(nSlot, msg.m_msg);
-            UpdateVolume(false);
-        }
+        if (nSlot == 0x10)
+            return;
+        CMidiMessage msg;
+        msg.ProgramChange(nSlot, nProgram);
+        m_midi.SendMessage(nSlot, msg.m_msg);
+        UpdateVolume(false);
     }
     else if (nType == 1)
     {
@@ -361,12 +359,12 @@ void CInstrumentManager::OnPacket(CInPacket& packet)
         Unk_ImActor* pMe = FUN_1403ed2d0()->FUN_141bd0cc0();
         if (pMe != 0 && pMe->FUN_14123c580() == nOwner)
             nKey = 0;
-        if (IsBlocked(nOwner) != true)
-        {
-            int nSlot = FindSlot(nKey);
-            if (nSlot != 0x10)
-                m_midi.SendMessage(nSlot, nMsg);
-        }
+        if (IsBlocked(nOwner) == true)
+            return;
+        int nSlot = FindSlot(nKey);
+        if (nSlot == 0x10)
+            return;
+        m_midi.SendMessage(nSlot, nMsg);
     }
     else if (nType == 3)
     {
@@ -389,25 +387,24 @@ void CInstrumentManager::OnPacket(CInPacket& packet)
         if (pMe != 0 && pMe->FUN_14123c580() == nOwner)
             nKey = 0;
         int nSlot = GetSlot(nKey, voice);
-        if (nSlot != 0x10)
+        if (nSlot == 0x10)
+            return;
+        if (m_baseTime == 0x7fffffff)
+            m_baseTime = FUN_140869420() - FUN_141472bc0();
+        int nStartTime = nStart + 300 + m_baseTime;
+        int nEnd = 0;
+        if (nKind == 0)
         {
-            if (m_baseTime == 0x7fffffff)
-                m_baseTime = FUN_140869420() - FUN_141472bc0();
-            nStart = nStart + 300 + m_baseTime;
-            int nEnd = 0;
-            if (nKind == 0)
-            {
-                CString strName = packet.ReadUnicodeStringA();
-                nEnd = PlayScoreFile(strName, nStart, nProgram, nPercussion, nSlot, nKey, nOwner);
-            }
-            else if (nKind == 1)
-            {
-                CString strText = packet.ReadString();
-                nEnd = PlayScoreText(strText, nStart, nProgram, nPercussion, nSlot, nKey, nOwner);
-            }
-            PlayEvents();
-            OnPerformStart(nOwner, nStart, nEnd, bRemote);
+            CString strName = packet.ReadUnicodeStringA();
+            nEnd = PlayScoreFile(strName, nStartTime, nProgram, nPercussion, nSlot, nKey, nOwner);
         }
+        else if (nKind == 1)
+        {
+            CString strText = packet.ReadString();
+            nEnd = PlayScoreText(strText, nStartTime, nProgram, nPercussion, nSlot, nKey, nOwner);
+        }
+        PlayEvents();
+        OnPerformStart(nOwner, nStartTime, nEnd, bRemote);
     }
     else if (nType == 6)
     {
@@ -426,13 +423,12 @@ void CInstrumentManager::OnPacket(CInPacket& packet)
         if (pMe != 0 && pMe->FUN_14123c580() == nOwner)
             nKey = 0;
         int nSlot = FindSlot(nKey);
-        if (nSlot != 0x10)
-        {
-            ResetChannel(nSlot, nKey);
-            RemoveSlot(nKey);
-            if (nType == 4)
-                OnPerformEnd(nOwner);
-        }
+        if (nSlot == 0x10)
+            return;
+        ResetChannel(nSlot, nKey);
+        RemoveSlot(nKey);
+        if (nType == 4)
+            OnPerformEnd(nOwner);
     }
     else if (nType == 8)
     {
@@ -477,23 +473,21 @@ void CInstrumentManager::OnPacket(CInPacket& packet)
         // the ensemble effect over a performer
         int nId = packet.ReadInt32();
         Unk_ImActor* pActor = FUN_1403ed2d0()->FUN_141bd1290(nId);
-        if (pActor != 0)
-        {
-            Unk_ImActor* pMe = FUN_1403ed2d0()->FUN_141bd0cc0();
-            if (pMe != 0)
-            {
-                Unk_EffectTarget kTarget;
-                kTarget.m_strName = FUN_1401d31f0()->m_strEnsembleEffect;
-                kTarget.m_nKind = pActor == pMe ? 1 : 3;
-                kTarget.FUN_140a53190(pActor->FUN_14123c580());
-                FUN_1403ed280()->FUN_1411a4a00(kTarget);
-            }
-        }
+        if (pActor == 0)
+            return;
+        Unk_ImActor* pMe = FUN_1403ed2d0()->FUN_141bd0cc0();
+        if (pMe == 0)
+            return;
+        Unk_EffectTarget kTarget;
+        kTarget.m_strName = FUN_1401d31f0()->m_strEnsembleEffect;
+        kTarget.m_nKind = pActor == pMe ? 1 : 3;
+        kTarget.FUN_140a53190(pActor->FUN_14123c580());
+        FUN_1403ed280()->FUN_1411a4a00(kTarget);
     }
     else if (nType == 17)
     {
         // the compose result
-        unsigned char nResult = packet.ReadUInt8();
+        int nResult = packet.ReadUInt8();
         UIWriteMusicDialog* pWrite = Unk_ImGetDialog<UIWriteMusicDialog>(0x4eed);
         if (pWrite != 0)
             pWrite->FUN_140ff0090(nResult);
@@ -590,7 +584,6 @@ bool CInstrumentManager::IsRemote() { return m_remote; }
 int CInstrumentManager::GetRefs() { return m_refs; }
 
 // @0x140d073b0
-// MS2-FUNCTIONAL: not byte-matched
 void CInstrumentManager::NoteOn(int nNote)
 {
     if (!m_ensemble)
@@ -600,13 +593,13 @@ void CInstrumentManager::NoteOn(int nNote)
         return;
     if (!spItem->FUN_140528980())
     {
-        FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_play_instrument_invalid_instrument")), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(L"s_play_instrument_invalid_instrument"), 1, 1);
         return;
     }
     if (FUN_1403ed2d0()->FUN_141bdb660(3) != 0)
     {
         FUN_1412751f0(FUN_1409eec40(0x62), 1, 1);
-        FUN_141276180(s_strNotThisPlace, CString(""));
+        FUN_141276180(s_strNotThisPlace, "");
         return;
     }
     Unk_ImActor* pMe = FUN_1403ed2d0()->FUN_141bd0cc0();
@@ -663,28 +656,39 @@ void CInstrumentManager::NoteOff(int nNote)
 }
 
 // @0x140d07960
-// MS2-FUNCTIONAL: not byte-matched
 bool CInstrumentManager::PlayScore(__int64 nScoreUid)
 {
     MS2Ptr<CItem> spScore = DAT_143ab2a90.FUN_140a5d680(nScoreUid);
-    if (spScore == 0 || !spScore->FUN_140528980())
+    if (spScore == 0)
     {
-        FUN_140d73aa0(GetStringCommonByKey(CStringW(L"s_play_instrument_invalid_music_score")), 0, 0, CStringW(L""));
+        FUN_140d73aa0(GetStringCommonByKey(L"s_play_instrument_invalid_music_score"), 0, 0, CStringW(L""));
+        return false;
+    }
+    if (!spScore->FUN_140528980())
+    {
+        FUN_140d73aa0(GetStringCommonByKey(L"s_play_instrument_invalid_music_score"), 0, 0, CStringW(L""));
         return false;
     }
     MS2Ptr<CItem> spInstrument = DAT_143ab2a90.FUN_140a5d680(m_instrumentUid);
-    if (spInstrument == 0 || !spInstrument->FUN_140528980())
+    if (spInstrument == 0)
     {
-        FUN_140d73aa0(GetStringCommonByKey(CStringW(L"s_play_instrument_invalid_instrument")), 0, 0, CStringW(L""));
+        FUN_140d73aa0(GetStringCommonByKey(L"s_play_instrument_invalid_instrument"), 0, 0, CStringW(L""));
+        return false;
+    }
+    if (!spInstrument->FUN_140528980())
+    {
+        FUN_140d73aa0(GetStringCommonByKey(L"s_play_instrument_invalid_instrument"), 0, 0, CStringW(L""));
         return false;
     }
     Unk_ItemEquipData* pData = spScore->FUN_140527840();
-    if (pData == 0 || !pData->FUN_14053cd10())
+    if (pData == 0)
+        return false;
+    if (!pData->FUN_14053cd10())
         return false;
     if (FUN_1403ed2d0()->FUN_141bdb660(3) != 0)
     {
         FUN_1412751f0(FUN_1409eec40(0x62), 1, 1);
-        FUN_141276180(s_strNotThisPlace, CString(""));
+        FUN_141276180(s_strNotThisPlace, "");
         return false;
     }
     m_scoreUid = nScoreUid;
@@ -697,7 +701,6 @@ bool CInstrumentManager::PlayScore(__int64 nScoreUid)
 }
 
 // @0x140d07f00
-// MS2-FUNCTIONAL: not byte-matched
 bool CInstrumentManager::PlayEnsemble(__int64 nScoreUid)
 {
     Unk_ImActor* pMe = FUN_1403ed2d0()->FUN_141bd0cc0();
@@ -705,28 +708,40 @@ bool CInstrumentManager::PlayEnsemble(__int64 nScoreUid)
         return false;
     if (!pMe->FUN_141527280())
     {
-        FUN_140d73aa0(GetStringCommonByKey(CStringW(L"s_play_instrument_ui_need_party_for_ensemble")), 0, 0, CStringW(L""));
+        FUN_140d73aa0(GetStringCommonByKey(L"s_play_instrument_ui_need_party_for_ensemble"), 0, 0, CStringW(L""));
         return false;
     }
     MS2Ptr<CItem> spInstrument = DAT_143ab2a90.FUN_140a5d680(m_instrumentUid);
-    if (spInstrument == 0 || !spInstrument->FUN_140528980())
+    if (spInstrument == 0)
     {
-        FUN_140d73aa0(GetStringCommonByKey(CStringW(L"s_play_instrument_invalid_instrument")), 0, 0, CStringW(L""));
+        FUN_140d73aa0(GetStringCommonByKey(L"s_play_instrument_invalid_instrument"), 0, 0, CStringW(L""));
+        return false;
+    }
+    if (!spInstrument->FUN_140528980())
+    {
+        FUN_140d73aa0(GetStringCommonByKey(L"s_play_instrument_invalid_instrument"), 0, 0, CStringW(L""));
         return false;
     }
     MS2Ptr<CItem> spScore = DAT_143ab2a90.FUN_140a5d680(nScoreUid);
-    if (spScore == 0 || !spScore->FUN_140528980())
+    if (spScore == 0)
     {
-        FUN_140d73aa0(GetStringCommonByKey(CStringW(L"s_play_instrument_invalid_music_score")), 0, 0, CStringW(L""));
+        FUN_140d73aa0(GetStringCommonByKey(L"s_play_instrument_invalid_music_score"), 0, 0, CStringW(L""));
+        return false;
+    }
+    if (!spScore->FUN_140528980())
+    {
+        FUN_140d73aa0(GetStringCommonByKey(L"s_play_instrument_invalid_music_score"), 0, 0, CStringW(L""));
         return false;
     }
     Unk_ItemEquipData* pData = spScore->FUN_140527840();
-    if (pData == 0 || !pData->FUN_14053cd10())
+    if (pData == 0)
+        return false;
+    if (!pData->FUN_14053cd10())
         return false;
     if (FUN_1403ed2d0()->FUN_141bdb660(3) != 0)
     {
         FUN_1412751f0(FUN_1409eec40(0x62), 1, 1);
-        FUN_141276180(s_strNotThisPlace, CString(""));
+        FUN_141276180(s_strNotThisPlace, "");
         return false;
     }
     m_scoreUid = nScoreUid;
@@ -759,7 +774,6 @@ void CInstrumentManager::StopPerform()
 }
 
 // @0x140d08660
-// MS2-FUNCTIONAL: not byte-matched
 unsigned CInstrumentManager::ParseLine(int nChannel, int nProgram, int nPercussion, Unk_MidiTrack* pTrack,
                                        Unk_ImScoreEvents* pEvents, unsigned nTime, unsigned nNow, const CString& strMml,
                                        bool bFirst)
@@ -780,65 +794,62 @@ unsigned CInstrumentManager::ParseLine(int nChannel, int nProgram, int nPercussi
         if (bFirst && tokens[i]->m_nType == 5)
         {
             // a motion event: (kind, value)
-            const int& nValue = tokens[i]->m_nValue;
-            std::pair<int, int> event(tokens[i]->m_nPitch, nValue);
+            std::pair<int, int> event(tokens[i]->m_nPitch, static_cast<const int&>(tokens[i]->m_nValue));
             unsigned nWhen = (unsigned)dCursor;
-            if (tokens[i]->m_nPitch == 0 && !bNoteSeen && (double)nNow < dCursor)
+            if (tokens[i]->m_nPitch == 0 && !bNoteSeen && dCursor > (double)nNow)
                 nWhen = nNow;
             pEvents->insert(std::make_pair(nWhen, event));
+            continue;
         }
-        else if (tokens[i]->m_nType == 2)
+        if (tokens[i]->m_nType == 2)
         {
             // a control change (only the sustain pedal unless debugging)
-            if (tokens[i]->m_nPitch != 0x40 && !FUN_14116d720(FUN_14025e7c0()))
-                continue;
-            if (tokens[i]->m_nPitch != 0x40 || nProgram < 0x40 || nProgram > 0x4f)
+            if (tokens[i]->m_nPitch == 0x40 || FUN_14116d720(FUN_14025e7c0()))
             {
+                if (tokens[i]->m_nPitch == 0x40 && nProgram >= 0x40 && nProgram <= 0x4f)
+                    continue;
                 CMidiMessage msg;
                 MMLToken* pToken = tokens[i].operator->();
                 msg.ControlChange(nChannel, tokens[i]->m_nPitch, pToken->m_nValue);
                 pTrack->insert(std::make_pair((unsigned)dCursor, msg.m_msg));
             }
+            continue;
         }
-        else if (tokens[i]->m_nType == 4)
+        if (tokens[i]->m_nType == 4)
         {
             CMidiMessage msg;
             MMLToken* pToken = tokens[i].operator->();
             msg.PitchBend(nChannel, tokens[i]->m_nPitch, pToken->m_nValue);
             pTrack->insert(std::make_pair((unsigned)dCursor, msg.m_msg));
+            continue;
         }
-        else
+        bNoteSeen = true;
+        if (dCursor < (double)nNow)
         {
-            bNoteSeen = true;
-            if ((double)nNow <= dCursor)
+            dCursor = dCursor + tokens[i]->m_dTime;
+            continue;
+        }
+        if (tokens[i]->m_nType == 1)
+        {
+            dCursor = dCursor + tokens[i]->m_dTime;
+        }
+        else if (tokens[i]->m_nType == 0)
+        {
+            if (tokens[i]->m_dTime > 1.0)
             {
-                if (tokens[i]->m_nType == 1)
-                {
-                    dCursor = dCursor + tokens[i]->m_dTime;
-                }
-                else if (tokens[i]->m_nType == 0)
-                {
-                    if (tokens[i]->m_dTime > 1.0)
-                    {
-                        int nNote = tokens[i]->m_nPitch;
-                        if (nPercussion != 0)
-                            nNote = nPercussion;
-                        CMidiMessage on;
-                        on.NoteOn(nChannel, nNote, tokens[i]->m_nValue);
-                        pTrack->insert(std::make_pair((unsigned)dCursor, on.m_msg));
-                        dCursor = dCursor + tokens[i]->m_dTime;
-                        if (nPercussion == 0)
-                        {
-                            CMidiMessage off;
-                            off.NoteOff(nChannel, nNote, 0);
-                            pTrack->insert(std::make_pair((unsigned)dCursor - 1, off.m_msg));
-                        }
-                    }
-                }
-            }
-            else
-            {
+                int nNote = tokens[i]->m_nPitch;
+                if (nPercussion != 0)
+                    nNote = nPercussion;
+                CMidiMessage on;
+                on.NoteOn(nChannel, nNote, tokens[i]->m_nValue);
+                pTrack->insert(std::make_pair((unsigned)dCursor, on.m_msg));
                 dCursor = dCursor + tokens[i]->m_dTime;
+                if (nPercussion == 0)
+                {
+                    CMidiMessage off;
+                    off.NoteOff(nChannel, nNote, 0);
+                    pTrack->insert(std::make_pair((unsigned)dCursor - 1, off.m_msg));
+                }
             }
         }
     }
@@ -846,13 +857,12 @@ unsigned CInstrumentManager::ParseLine(int nChannel, int nProgram, int nPercussi
 }
 
 // @0x140d08d10
-// MS2-FUNCTIONAL: not byte-matched
 int CInstrumentManager::PlayScoreFile(const CString& strName, int nTime, int nProgram, int nPercussion, int nChannel,
                                       int nKey, unsigned nOwner)
 {
     if (m_programOverride.HasValue())
         nProgram = m_programOverride.Value();
-    CString strPath = FUN_14071a5b0(CString("MusicScore"), strName);
+    CString strPath = FUN_14071a5b0("MusicScore", strName);
     TiXmlDocument doc;
     if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return 0;
@@ -862,7 +872,7 @@ int CInstrumentManager::PlayScoreFile(const CString& strName, int nTime, int nPr
         FUN_140166440()->FUN_14015eb90(1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return 0;
     }
-    int nLast = nTime;
+    unsigned nLast = nTime;
     Unk_MidiTrack track;
     if (m_events.find(nOwner) != m_events.end())
         m_events.erase(nOwner);
@@ -878,15 +888,16 @@ int CInstrumentManager::PlayScoreFile(const CString& strName, int nTime, int nPr
         strChord.Remove(' ');
         strChord.Remove('\n');
         strChord.Remove('\t');
-        int nEnd = ParseLine(nChannel, nProgram, nPercussion, &track, pEvents, nTime, nNow, strChord, bFirst);
+        unsigned nEnd = ParseLine(nChannel, nProgram, nPercussion, &track, pEvents, nTime, nNow, strChord, bFirst);
         nLast = (std::max)(nLast, nEnd);
         bFirst = false;
     }
-    int nElapsed = nLast - nTime;
-    int nMin = nElapsed / 1000 / 60;
-    int nSec = nElapsed / 1000 % 60;
+    unsigned long nElapsed = nLast - nTime;
+    int nSec = nElapsed / 1000;
+    int nMin = nSec / 60;
+    nSec = nSec % 60;
     if (FUN_14116d720(FUN_14025e7c0()))
-        FUN_1412751b0(StringFormat(L"[디버그용] 악보 시간 {0}분 {1}초 ({2} msec)", nMin, nSec, (unsigned long)nElapsed), 0x11);
+        FUN_1412751b0(StringFormat(L"[디버그용] 악보 시간 {0}분 {1}초 ({2} msec)", nMin, nSec, nElapsed), 0x11);
     if (nPercussion == 0)
     {
         m_midi.SetChannelTrack(nChannel, track);
@@ -903,7 +914,6 @@ int CInstrumentManager::PlayScoreFile(const CString& strName, int nTime, int nPr
 }
 
 // @0x140d092c0
-// MS2-FUNCTIONAL: not byte-matched
 int CInstrumentManager::PlayScoreText(const CString& strText, int nTime, int nProgram, int nPercussion, int nChannel,
                                       int nKey, unsigned nOwner)
 {
@@ -911,7 +921,7 @@ int CInstrumentManager::PlayScoreText(const CString& strText, int nTime, int nPr
         nProgram = m_programOverride.Value();
     std::vector<CString> lines;
     FUN_1402c8940(strText, lines, ":");
-    int nLast = nTime;
+    unsigned nLast = nTime;
     Unk_MidiTrack track;
     if (m_events.find(nOwner) != m_events.end())
         m_events.erase(nOwner);
@@ -921,15 +931,18 @@ int CInstrumentManager::PlayScoreText(const CString& strText, int nTime, int nPr
     unsigned nNow = FUN_140869420();
     for (unsigned __int64 i = 0; i < lines.size(); i++)
     {
-        int nEnd = ParseLine(nChannel, nProgram, nPercussion, &track, pEvents, nTime, nNow, lines[i], i == 0);
+        const CString& strLine = lines[i];
+        bool bFirst = i == 0;
+        unsigned nEnd = ParseLine(nChannel, nProgram, nPercussion, &track, pEvents, nTime, nNow, strLine, bFirst);
         nLast = (std::max)(nLast, nEnd);
     }
     if (FUN_14116d720(FUN_14025e7c0()))
     {
-        int nElapsed = nLast - nTime;
-        int nMin = nElapsed / 1000 / 60;
-        int nSec = nElapsed / 1000 % 60;
-        FUN_1412751b0(StringFormat(L"[디버그용] 악보 시간 {0}분 {1}초 ({2} msec)", nMin, nSec, (unsigned long)nElapsed), 0x11);
+        unsigned long nElapsed = nLast - nTime;
+        int nSec = nElapsed / 1000;
+        int nMin = nSec / 60;
+        nSec = nSec % 60;
+        FUN_1412751b0(StringFormat(L"[디버그용] 악보 시간 {0}분 {1}초 ({2} msec)", nMin, nSec, nElapsed), 0x11);
     }
     if (nPercussion == 0)
     {
@@ -1003,7 +1016,6 @@ void CInstrumentManager::OnPerformEnd(int nOwner)
 }
 
 // @0x140d099c0
-// MS2-FUNCTIONAL: not byte-matched
 bool CInstrumentManager::PreviewScore(const CString& strText, int nCategory, int nOffset, int* pnDuration)
 {
     MS2Ptr<CInstrumentCategoryData> spCategory = TSingleton<CInstrumentDataTable>::GetInstance()->GetCategory(nCategory);
@@ -1240,7 +1252,6 @@ void CInstrumentManager::Unmute()
 }
 
 // @0x140d0a5b0
-// MS2-FUNCTIONAL: not byte-matched
 void CInstrumentManager::UpdateVolume(bool bForce)
 {
     if (!m_midi.IsOpen())
@@ -1250,59 +1261,59 @@ void CInstrumentManager::UpdateVolume(bool bForce)
         return;
     for (int i = 0; i < 0x10; i++)
     {
-        if (!m_slots[i].m_used || i == 9)
+        if (!m_slots[i].m_used)
+            continue;
+        if (i == 9)
             continue;
         int nVolume = FUN_141260310(TSingleton<CGameOption>::GetInstance()->FUN_140d13c70());
-        if (m_muted)
+        do
         {
-            nVolume = 0;
-        }
-        else if (IsBlocked(m_slots[i].m_owner) == true)
-        {
-            nVolume = 0;
-        }
-        else if (FUN_1403ed2d0()->FUN_141bcb150() != true)
-        {
-            Vector3* pPos = &m_slots[i].m_position;
-            float fDistance = pMe->vfunc_18().FUN_140965c40(*pPos).FUN_140967ac0();
-            Client::Constants* pConst = Client::Constants::GetInstance();
-            if (*pConst->MusicListenInRadius.Get() <= fDistance)
+            if (m_muted)
             {
-                if (fDistance <= *Client::Constants::GetInstance()->MusicListenOutRadius.Get())
-                {
-                    float fOut = *Client::Constants::GetInstance()->MusicListenOutRadius.Get();
-                    float fIn = *Client::Constants::GetInstance()->MusicListenInRadius.Get();
-                    float fRange = fOut - fIn;
-                    float fRatio = (fRange - (fDistance - *Client::Constants::GetInstance()->MusicListenInRadius.Get())) / fRange;
-                    nVolume = (int)((float)nVolume * fRatio);
-                }
-                else
-                {
-                    nVolume = 0;
-                }
+                nVolume = 0;
+                break;
             }
-        }
-        if (bForce || m_slots[i].m_volume != nVolume)
-        {
-            m_slots[i].m_volume = nVolume;
-            CMidiMessage msg;
-            msg.FUN_140d75600(i, ScaleVolume(nVolume, m_slots[i].m_program));
-            m_midi.SendMessage(i, msg.m_msg);
-        }
+            if (IsBlocked(m_slots[i].m_owner) == true)
+            {
+                nVolume = 0;
+                break;
+            }
+            if (FUN_1403ed2d0()->FUN_141bcb150() == true)
+                break;
+            float fDistance = pMe->vfunc_18().FUN_140965c40(m_slots[i].m_position).FUN_140967ac0();
+            if (fDistance < *Client::Constants::GetInstance()->MusicListenInRadius.Get())
+                continue;
+            if (fDistance > *Client::Constants::GetInstance()->MusicListenOutRadius.Get())
+            {
+                nVolume = 0;
+                continue;
+            }
+            float fRange = *Client::Constants::GetInstance()->MusicListenOutRadius.Get() - *Client::Constants::GetInstance()->MusicListenInRadius.Get();
+            float fRatio = (fRange - (fDistance - *Client::Constants::GetInstance()->MusicListenInRadius.Get())) / fRange;
+            nVolume = (int)((float)nVolume * fRatio);
+        } while (false);
+        if (!bForce && m_slots[i].m_volume == nVolume)
+            continue;
+        m_slots[i].m_volume = nVolume;
+        int nChannel = i;
+        CMidiMessage msg;
+        msg.FUN_140d75600(nChannel, ScaleVolume(nVolume, m_slots[i].m_program));
+        m_midi.SendMessage(nChannel, msg.m_msg);
     }
-    if (m_remoteVoices.size() != 0)
+    if (m_remoteVoices.size() > 0)
     {
         int nVolume = FUN_141260310(TSingleton<CGameOption>::GetInstance()->FUN_140d13c70());
         if (m_muted)
             nVolume = 0;
-        if (bForce == true || m_slots[9].m_volume != nVolume)
+        int nChannel = 9;
+        if (bForce == true || m_slots[nChannel].m_volume != nVolume)
         {
-            m_slots[9].m_volume = nVolume;
+            m_slots[nChannel].m_volume = nVolume;
             CMidiMessage msg;
             msg.FUN_140d75600(9, nVolume);
             m_midi.SendMessage(9, msg.m_msg);
         }
-        for (std::map<unsigned, RemoteVoice>::iterator it = m_remoteVoices.begin(); it != m_remoteVoices.end(); ++it)
+        for (std::map<unsigned, RemoteVoice>::iterator it = m_remoteVoices.begin(), itEnd = m_remoteVoices.end(); it != itEnd; ++it)
         {
             RemoteVoice* pVoice = &it->second;
             bool bActive = true;
@@ -1316,8 +1327,7 @@ void CInstrumentManager::UpdateVolume(bool bForce)
             if (!FUN_1403ed2d0()->FUN_141bcb150())
             {
                 float fDistance = pMe->vfunc_18().FUN_140965c40(pVoice->m_position).FUN_140967ac0();
-                float* pfIn = Client::Constants::GetInstance()->MusicListenInRadius.Get();
-                float fLimit = (*pfIn + *Client::Constants::GetInstance()->MusicListenOutRadius.Get()) / 2.0f;
+                float fLimit = (*Client::Constants::GetInstance()->MusicListenInRadius.Get() + *Client::Constants::GetInstance()->MusicListenOutRadius.Get()) / 2.0f;
                 if (fDistance > fLimit)
                     bActive = false;
             }

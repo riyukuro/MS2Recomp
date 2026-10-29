@@ -165,7 +165,7 @@ public:
     CharPtr FUN_1418f0730(int nIndex);                      // 0x1418f0730 the character at the index
     static bool OrderCharacters(CharPtr spA, CharPtr spB);   // 0x1418f4ca0 sort predicate
     void FUN_1418ed6b0(CInPacket& packet);                  // 0x1418ed6b0 the burning level-up reward was taken
-    static void FUN_1418ed860();                            // 0x1418ed860
+    void FUN_1418ed860();                                   // 0x1418ed860
     void FUN_1418ed4e0(unsigned __int64 nId, CString str);  // 0x1418ed4e0 hand the text of a character to the ugc manager
     void FUN_1418ed5a0(unsigned __int64 nId, CString str);  // 0x1418ed5a0 set the text of a character
     bool FUN_1418ed650();                                   // 0x1418ed650 the burning level-up event is running
@@ -187,7 +187,7 @@ public:
     void SortCharacters();                                  // 0x1418ef290
     void SelectCharacter(unsigned __int64 nId);             // 0x1418ef520
     void RefreshSelection();                                // 0x1418ef560
-    static void FUN_1418ef630();                            // 0x1418ef630 quit the game
+    void FUN_1418ef630();                                   // 0x1418ef630 quit the game
     void FUN_1418ef690(CString strUrl);                     // 0x1418ef690 open the page in the browser dialog
     void FUN_1418ef890(unsigned __int64 nId);               // 0x1418ef890 attach the burning level-up icon
 

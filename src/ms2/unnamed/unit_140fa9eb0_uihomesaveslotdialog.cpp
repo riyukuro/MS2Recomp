@@ -124,8 +124,8 @@ inline Scaleform::GFx::Value AScript::Invoke(const char* szMethod, int a1, CStri
     ASArgList args;
     args.FUN_1409b2800(3);
     FUN_1422bccb0(args.FUN_1409b1f70(0), a1);
-    FUN_1422bcea0(args.FUN_1409b1f70(1), a2.GetString());
-    FUN_1422bcea0(args.FUN_1409b1f70(2), a3.GetString());
+    FUN_1422bcea0(args.FUN_1409b1f70(1), a2);
+    FUN_1422bcea0(args.FUN_1409b1f70(2), a3);
     return FUN_1422bb8f0(szMethod, args);
 }
 
@@ -177,13 +177,13 @@ int UIHomeSaveSlotDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
         if (data.FUN_1422b9620(pArgs, nArgs) != 0)
         {
             efd::SmartPointer<Unk_Service6100017> spService(FUN_1401cd040(&DAT_143b059e8));
-            if (!(spService == 0))
+            if (spService)
             {
                 int nSlot = data.FUN_1422b8a10();
-                if (spService->FUN_1410c3600(3) == 0)
-                    FUN_140fab520(nSlot);
-                else
+                if (spService->FUN_1410c3600(3))
                     FUN_140fabae0(nSlot);
+                else
+                    FUN_140fab520(nSlot);
             }
         }
     }
@@ -193,13 +193,13 @@ int UIHomeSaveSlotDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
         if (data.FUN_1422b9620(pArgs, nArgs) != 0)
         {
             efd::SmartPointer<Unk_Service6100017> spService(FUN_1401cd040(&DAT_143b059e8));
-            if (!(spService == 0))
+            if (spService)
             {
                 int nSlot = data.FUN_1422b8a10();
-                if (spService->FUN_1410c3600(3) == 0)
-                    FUN_140fab8c0(nSlot);
-                else
+                if (spService->FUN_1410c3600(3))
                     FUN_140fabe80(nSlot);
+                else
+                    FUN_140fab8c0(nSlot);
             }
         }
     }
@@ -277,71 +277,65 @@ MS2_REPLACE_METHOD(0x140FAA750, UIHomeSaveSlotDialog, FUN_140faa750, 121, 0xDD11
 // @0x140faa7d0
 bool UIHomeSaveSlotDialog::FUN_140faa7d0(int nResult, const CMsgBoxData& data)
 {
-    if (nResult == 0)
+    if (nResult != 0)
+        return true;
+    efd::SmartPointer<Unk_Service6100017> spService(FUN_1401cd040(&DAT_143b059e8));
+    if (spService == 0)
+        return true;
+    int nSlot = data.FUN_141a02e50(0, 0);
+    CStringW strName = data.FUN_141a02d50();
+    strName.Trim(L",");
+    ATL::CAtlArray<MS2Ptr<Unk_HomeSlot> >* pSlots = spService->FUN_1410d4660();
+    for (size_t i = 0; i < pSlots->GetCount(); ++i)
     {
-        efd::SmartPointer<Unk_Service6100017> spService(FUN_1401cd040(&DAT_143b059e8));
-        if (!(spService == 0))
+        MS2Ptr<Unk_HomeSlot> spSlot = (*pSlots)[i];
+        if (spSlot->m_nId == nSlot && spSlot->m_nTime != 0)
         {
-            int nSlot = data.FUN_141a02e50(0, 0);
-            CStringW strName = data.FUN_141a02d50();
-            strName.Trim(L",");
-            ATL::CAtlArray<MS2Ptr<Unk_HomeSlot> >* pSlots = spService->FUN_1410d4660();
-            for (size_t i = 0; i < pSlots->GetCount(); ++i)
+            if (MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, GetStringCommonByKey(L"s_home_save_btn_overwrite"), 0, CStringW(L"")))
             {
-                MS2Ptr<Unk_HomeSlot> spSlot = (*pSlots)[i];
-                if (spSlot->m_nId == nSlot && spSlot->m_nTime != 0)
-                {
-                    MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, GetStringCommonByKey(CStringW(L"s_home_save_btn_overwrite")), 0, CStringW(L""));
-                    if (spBox.get() != 0)
-                    {
-                        spBox->FUN_140533ff0(nSlot);
-                        spBox->FUN_140b76940(CStringW(strName));
-                        spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIHomeSaveSlotDialog::SendRequestCubeMode46));
-                        FUN_140d73c60(spBox);
-                        return true;
-                    }
-                }
+                spBox->FUN_140533ff0(nSlot);
+                spBox->FUN_140b76940(CStringW(strName));
+                spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIHomeSaveSlotDialog::SendRequestCubeMode46));
+                FUN_140d73c60(spBox);
+                return true;
             }
-            COutPacket pkt(static_cast<int>(SendOp::RequestCube), 0);
-            pkt.WriteUInt8(0x2e);
-            pkt.WriteInt32(nSlot);
-            pkt.WriteUnicodeString(strName);
-            FUN_140710590(pkt);
         }
     }
+    COutPacket pkt(static_cast<int>(SendOp::RequestCube), 0);
+    pkt.WriteUInt8(0x2e);
+    pkt.WriteInt32(nSlot);
+    pkt.WriteUnicodeString(strName);
+    FUN_140710590(pkt);
     return true;
 }
 
 // @0x140faac30
 bool UIHomeSaveSlotDialog::FUN_140faac30(int nResult, const CMsgBoxData& data)
 {
-    if (nResult == 0)
+    if (nResult != 0)
+        return true;
+    efd::SmartPointer<Unk_Service6100017> spService(FUN_1401cd040(&DAT_143b059e8));
+    if (spService == 0)
+        return true;
+    int nSlot = data.FUN_141a02e50(0, 0);
+    bool bBlocked = spService->FUN_1410c3600(1);
+    if (!bBlocked && DAT_143ab2914 >= 50)
     {
-        efd::SmartPointer<Unk_Service6100017> spService(FUN_1401cd040(&DAT_143b059e8));
-        if (!(spService == 0))
+        if (spService->FUN_1410d2f10() != 0)
         {
-            int nSlot = data.FUN_141a02e50(0, 0);
-            bool bBlocked = spService->FUN_1410c3600(1);
-            if (!bBlocked && DAT_143ab2914 >= 50)
-            {
-                if (spService->FUN_1410d2f10() != 0)
-                {
-                    int nMap = spService->FUN_1410c3100();
-                    bBlocked = FUN_1408a06a0(spService->FUN_1410c3140(), nMap);
-                }
-            }
-            if (!bBlocked)
-            {
-                SendRequestCubeMode35(nSlot);
-            }
-            else
-            {
-                COutPacket pkt(static_cast<int>(SendOp::RequestCube), 0);
-                pkt.WriteUInt8(0x2f);
-                pkt.WriteInt32(nSlot);
-                FUN_140710590(pkt);
-            }
+            bBlocked = FUN_1408a06a0(spService->FUN_1410c3140(), spService->FUN_1410c3100());
         }
+    }
+    if (bBlocked)
+    {
+        COutPacket pkt(static_cast<int>(SendOp::RequestCube), 0);
+        pkt.WriteUInt8(0x2f);
+        pkt.WriteInt32(nSlot);
+        FUN_140710590(pkt);
+    }
+    else
+    {
+        SendRequestCubeMode35(nSlot);
     }
     return true;
 }
@@ -350,16 +344,15 @@ MS2_REPLACE_METHOD(0x140FAAC30, UIHomeSaveSlotDialog, FUN_140faac30, 377, 0x4F72
 // @0x140faadb0
 bool UIHomeSaveSlotDialog::SendRequestCubeMode46(int nResult, const CMsgBoxData& data)
 {
-    if (nResult == 0)
-    {
-        int nSlot = data.FUN_141a02e50(0, 0);
-        CStringW strName = data.FUN_141a02fd0(1, CStringW());
-        COutPacket pkt(static_cast<int>(SendOp::RequestCube), 0);
-        pkt.WriteUInt8(0x2e);
-        pkt.WriteInt32(nSlot);
-        pkt.WriteUnicodeString(strName);
-        FUN_140710590(pkt);
-    }
+    if (nResult != 0)
+        return true;
+    int nSlot = data.FUN_141a02e50(0, 0);
+    CStringW strName = data.FUN_141a02fd0(1, CStringW());
+    COutPacket pkt(static_cast<int>(SendOp::RequestCube), 0);
+    pkt.WriteUInt8(0x2e);
+    pkt.WriteInt32(nSlot);
+    pkt.WriteUnicodeString(strName);
+    FUN_140710590(pkt);
     return true;
 }
 MS2_REPLACE_METHOD(0x140FAADB0, UIHomeSaveSlotDialog, SendRequestCubeMode46, 235, 0x407FDCD3);
@@ -367,58 +360,53 @@ MS2_REPLACE_METHOD(0x140FAADB0, UIHomeSaveSlotDialog, SendRequestCubeMode46, 235
 // @0x140faaeb0
 bool UIHomeSaveSlotDialog::FUN_140faaeb0(int nResult, const CMsgBoxData& data)
 {
-    if (nResult == 0)
+    if (nResult != 0)
+        return true;
+    efd::SmartPointer<Unk_Service6100017> spService(FUN_1401cd040(&DAT_143b059e8));
+    if (spService == 0)
+        return true;
+    int nSlot = data.FUN_141a02e50(0, 0);
+    CStringW strName = data.FUN_141a02d50();
+    strName.Trim(L",");
+    ATL::CAtlArray<MS2Ptr<Unk_BlueprintSlot> >* pSlots = spService->FUN_1410d4920();
+    for (size_t i = 0; i < pSlots->GetCount(); ++i)
     {
-        efd::SmartPointer<Unk_Service6100017> spService(FUN_1401cd040(&DAT_143b059e8));
-        if (!(spService == 0))
+        MS2Ptr<Unk_BlueprintSlot> spSlot = (*pSlots)[i];
+        if (spSlot->m_nId == nSlot && spSlot->m_nTime != 0)
         {
-            int nSlot = data.FUN_141a02e50(0, 0);
-            CStringW strName = data.FUN_141a02d50();
-            strName.Trim(L",");
-            ATL::CAtlArray<MS2Ptr<Unk_BlueprintSlot> >* pSlots = spService->FUN_1410d4920();
-            for (size_t i = 0; i < pSlots->GetCount(); ++i)
+            if (MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, GetStringCommonByKey(L"s_home_save_btn_overwrite"), 0, CStringW(L"")))
             {
-                MS2Ptr<Unk_BlueprintSlot> spSlot = (*pSlots)[i];
-                if (spSlot->m_nId == nSlot && spSlot->m_nTime != 0)
-                {
-                    MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, GetStringCommonByKey(CStringW(L"s_home_save_btn_overwrite")), 0, CStringW(L""));
-                    if (spBox.get() != 0)
-                    {
-                        spBox->FUN_140533ff0(nSlot);
-                        spBox->FUN_140b76940(CStringW(strName));
-                        spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIHomeSaveSlotDialog::SendRequestCubeMode64));
-                        FUN_140d73c60(spBox);
-                        return true;
-                    }
-                }
+                spBox->FUN_140533ff0(nSlot);
+                spBox->FUN_140b76940(CStringW(strName));
+                spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIHomeSaveSlotDialog::SendRequestCubeMode64));
+                FUN_140d73c60(spBox);
+                return true;
             }
-            COutPacket pkt(static_cast<int>(SendOp::RequestCube), 0);
-            pkt.WriteUInt8(0x40);
-            pkt.WriteInt32(nSlot);
-            pkt.WriteUnicodeString(strName);
-            FUN_140710590(pkt);
         }
     }
+    COutPacket pkt(static_cast<int>(SendOp::RequestCube), 0);
+    pkt.WriteUInt8(0x40);
+    pkt.WriteInt32(nSlot);
+    pkt.WriteUnicodeString(strName);
+    FUN_140710590(pkt);
     return true;
 }
 
 // @0x140fab310
 bool UIHomeSaveSlotDialog::SendRequestCubeMode65(int nResult, const CMsgBoxData& data)
 {
-    if (nResult == 0)
+    if (nResult != 0)
+        return true;
+    efd::SmartPointer<Unk_Service6100017> spService(FUN_1401cd040(&DAT_143b059e8));
+    if (spService == 0)
+        return true;
+    int nSlot = data.FUN_141a02e50(0, 0);
+    if (spService->FUN_1410c3600(3))
     {
-        efd::SmartPointer<Unk_Service6100017> spService(FUN_1401cd040(&DAT_143b059e8));
-        if (!(spService == 0))
-        {
-            int nSlot = data.FUN_141a02e50(0, 0);
-            if (spService->FUN_1410c3600(3))
-            {
-                COutPacket pkt(static_cast<int>(SendOp::RequestCube), 0);
-                pkt.WriteUInt8(0x41);
-                pkt.WriteInt32(nSlot);
-                FUN_140710590(pkt);
-            }
-        }
+        COutPacket pkt(static_cast<int>(SendOp::RequestCube), 0);
+        pkt.WriteUInt8(0x41);
+        pkt.WriteInt32(nSlot);
+        FUN_140710590(pkt);
     }
     return true;
 }
@@ -427,16 +415,15 @@ MS2_REPLACE_METHOD(0x140FAB310, UIHomeSaveSlotDialog, SendRequestCubeMode65, 263
 // @0x140fab420
 bool UIHomeSaveSlotDialog::SendRequestCubeMode64(int nResult, const CMsgBoxData& data)
 {
-    if (nResult == 0)
-    {
-        int nSlot = data.FUN_141a02e50(0, 0);
-        CStringW strName = data.FUN_141a02fd0(1, CStringW());
-        COutPacket pkt(static_cast<int>(SendOp::RequestCube), 0);
-        pkt.WriteUInt8(0x40);
-        pkt.WriteInt32(nSlot);
-        pkt.WriteUnicodeString(strName);
-        FUN_140710590(pkt);
-    }
+    if (nResult != 0)
+        return true;
+    int nSlot = data.FUN_141a02e50(0, 0);
+    CStringW strName = data.FUN_141a02fd0(1, CStringW());
+    COutPacket pkt(static_cast<int>(SendOp::RequestCube), 0);
+    pkt.WriteUInt8(0x40);
+    pkt.WriteInt32(nSlot);
+    pkt.WriteUnicodeString(strName);
+    FUN_140710590(pkt);
     return true;
 }
 MS2_REPLACE_METHOD(0x140FAB420, UIHomeSaveSlotDialog, SendRequestCubeMode64, 235, 0x70C5E0AF);
@@ -444,70 +431,66 @@ MS2_REPLACE_METHOD(0x140FAB420, UIHomeSaveSlotDialog, SendRequestCubeMode64, 235
 // @0x140fab520
 void UIHomeSaveSlotDialog::FUN_140fab520(int nSlot)
 {
-    if (nSlot >= 0 && nSlot < 6)
+    if (nSlot < 0 || nSlot > 5)
+        return;
+    CStringW strMsg = FUN_14062b4f0(CStringW(L"s_home_save_messagebox"), &nSlot);
+    CStringW strTitle = GetStringCommonByKey(L"s_home_save_title_empty");
+    MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(5, CStringW(strMsg), 0, CStringW(L""));
+    if (spBox.get() != 0)
     {
-        CStringW strMsg = FUN_14062b4f0(CStringW(L"s_home_save_messagebox"), &nSlot);
-        CStringW strTitle = GetStringCommonByKey(CStringW(L"s_home_save_title_empty"));
-        MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(5, CStringW(strMsg), 0, CStringW(L""));
-        if (spBox.get() != 0)
-        {
-            spBox->FUN_140533ff0(nSlot);
-            spBox->FUN_141a01690(GetStringCommonByKey(CStringW(L"s_home_save_btn_text")), GetStringCommonByKey(CStringW(L"s_word_cancel")), CStringW(L""));
-            spBox->FUN_141a01d30(0, strTitle, 0x14, 1, 1);
-            spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIHomeSaveSlotDialog::FUN_140faa7d0));
-            FUN_140d73c60(spBox);
-        }
+        spBox->FUN_140533ff0(nSlot);
+        spBox->FUN_141a01690(GetStringCommonByKey(L"s_home_save_btn_text"), GetStringCommonByKey(L"s_word_cancel"), L"");
+        spBox->FUN_141a01d30(0, strTitle, 0x14, 1, 1);
+        spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIHomeSaveSlotDialog::FUN_140faa7d0));
+        FUN_140d73c60(spBox);
     }
 }
 
 // @0x140fab8c0
 void UIHomeSaveSlotDialog::FUN_140fab8c0(int nSlot)
 {
-    if (nSlot >= 0 && nSlot < 6)
+    if (nSlot < 0 || nSlot > 5)
+        return;
+    CStringW strMsg = FUN_14062b4f0(CStringW(L"s_home_load_messagebox"), &nSlot);
+    MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, CStringW(strMsg), 0, CStringW(L""));
+    if (spBox.get() != 0)
     {
-        CStringW strMsg = FUN_14062b4f0(CStringW(L"s_home_load_messagebox"), &nSlot);
-        MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, CStringW(strMsg), 0, CStringW(L""));
-        if (spBox.get() != 0)
-        {
-            spBox->FUN_140533ff0(nSlot);
-            spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIHomeSaveSlotDialog::FUN_140faac30));
-            FUN_140d73c60(spBox);
-        }
+        spBox->FUN_140533ff0(nSlot);
+        spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIHomeSaveSlotDialog::FUN_140faac30));
+        FUN_140d73c60(spBox);
     }
 }
 
 // @0x140fabae0
 void UIHomeSaveSlotDialog::FUN_140fabae0(int nSlot)
 {
-    if (nSlot >= 0 && nSlot < 6)
+    if (nSlot < 0 || nSlot > 5)
+        return;
+    CStringW strMsg = FUN_14062b4f0(CStringW(L"s_home_save_messagebox"), &nSlot);
+    CStringW strTitle = GetStringCommonByKey(L"s_home_save_title_empty");
+    MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(5, CStringW(strMsg), 0, CStringW(L""));
+    if (spBox.get() != 0)
     {
-        CStringW strMsg = FUN_14062b4f0(CStringW(L"s_home_save_messagebox"), &nSlot);
-        CStringW strTitle = GetStringCommonByKey(CStringW(L"s_home_save_title_empty"));
-        MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(5, CStringW(strMsg), 0, CStringW(L""));
-        if (spBox.get() != 0)
-        {
-            spBox->FUN_140533ff0(nSlot);
-            spBox->FUN_141a01690(GetStringCommonByKey(CStringW(L"s_home_save_btn_text")), GetStringCommonByKey(CStringW(L"s_word_cancel")), CStringW(L""));
-            spBox->FUN_141a01d30(0, strTitle, 0x14, 1, 1);
-            spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIHomeSaveSlotDialog::FUN_140faaeb0));
-            FUN_140d73c60(spBox);
-        }
+        spBox->FUN_140533ff0(nSlot);
+        spBox->FUN_141a01690(GetStringCommonByKey(L"s_home_save_btn_text"), GetStringCommonByKey(L"s_word_cancel"), L"");
+        spBox->FUN_141a01d30(0, strTitle, 0x14, 1, 1);
+        spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIHomeSaveSlotDialog::FUN_140faaeb0));
+        FUN_140d73c60(spBox);
     }
 }
 
 // @0x140fabe80
 void UIHomeSaveSlotDialog::FUN_140fabe80(int nSlot)
 {
-    if (nSlot >= 0 && nSlot < 6)
+    if (nSlot < 0 || nSlot > 5)
+        return;
+    CStringW strMsg = FUN_14062b4f0(CStringW(L"s_home_blueprint_load_messagebox"), &nSlot);
+    MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, CStringW(strMsg), 0, CStringW(L""));
+    if (spBox.get() != 0)
     {
-        CStringW strMsg = FUN_14062b4f0(CStringW(L"s_home_blueprint_load_messagebox"), &nSlot);
-        MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, CStringW(strMsg), 0, CStringW(L""));
-        if (spBox.get() != 0)
-        {
-            spBox->FUN_140533ff0(nSlot);
-            spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIHomeSaveSlotDialog::SendRequestCubeMode65));
-            FUN_140d73c60(spBox);
-        }
+        spBox->FUN_140533ff0(nSlot);
+        spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIHomeSaveSlotDialog::SendRequestCubeMode65));
+        FUN_140d73c60(spBox);
     }
 }
 

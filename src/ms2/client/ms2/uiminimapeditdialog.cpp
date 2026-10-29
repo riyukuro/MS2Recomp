@@ -9,7 +9,9 @@
 #include "uiminimapeditdialog.h"
 #include <time.h>
 #include <d3dx9.h>
+#include <NiColor.h>
 #include <NiRect.h>
+#include <efd/Helpers.h>
 #include <NiRenderTargetGroup.h>
 #include <egf/Entity.h>
 #include "ms2/client/ms2/camera.h"
@@ -70,11 +72,11 @@ void FUN_140874f20(Unk_140165cf0* pElem, const char* pszName, Unk_Rect4* pOut); 
 void FUN_140874280(Unk_140165cf0* pElem, const char* pszNode, const char* pszAttr, CString* pOut);         // read a string attribute
 void FUN_140874d90(Unk_140165cf0* pElem, const char* pszNode, const char* pszAttr, Unk_GVec3* pOut);       // read a vector attribute
 void FUN_140874210(Unk_140165cf0* pElem, const char* pszNode, const char* pszAttr, float* pOut);           // read a float attribute
-void FUN_140875180(Unk_140165cf0* pElem, const char* pszName, const Unk_Frustum* pIn, int bCreate);        // write a frustum node
-void FUN_1408752d0(Unk_140165cf0* pElem, const char* pszName, const Unk_Rect4* pIn, int bCreate);          // write a rectangle node
-void FUN_140874520(Unk_140165cf0* pElem, const char* pszNode, const char* pszAttr, const CString* pIn, int bCreate);   // write a string attribute
-void FUN_140875110(Unk_140165cf0* pElem, const char* pszNode, const char* pszAttr, const Unk_GVec3* pIn, int bCreate);   // write a vector attribute
-void FUN_1408744b0(Unk_140165cf0* pElem, const char* pszNode, const char* pszAttr, float fValue, int bCreate);   // write a float attribute
+void FUN_140875180(Unk_140165cf0* pElem, const char* pszName, const Unk_Frustum* pIn, bool bCreate);        // write a frustum node
+void FUN_1408752d0(Unk_140165cf0* pElem, const char* pszName, const Unk_Rect4* pIn, bool bCreate);          // write a rectangle node
+void FUN_140874520(Unk_140165cf0* pElem, const char* pszNode, const char* pszAttr, const CString* pIn, bool bCreate);   // write a string attribute
+void FUN_140875110(Unk_140165cf0* pElem, const char* pszNode, const char* pszAttr, const Unk_GVec3* pIn, bool bCreate);   // write a vector attribute
+void FUN_1408744b0(Unk_140165cf0* pElem, const char* pszNode, const char* pszAttr, float fValue, bool bCreate);   // write a float attribute
 CString FUN_14016a5c0(const char* pszPath, int nFlags);             // path conversion
 CString FUN_1409a2360(const char* psz, int n);                      // text conversion
 CString FUN_140536a50(const char* pszFormat, const CString& strArg);   // StringFormat with one text argument
@@ -111,12 +113,8 @@ public:
 };
 Unk_MeUIMgr* FUN_1403ed2b0();
 
-struct Unk_MeColor { float r, g, b, a; };                           // the clear colour (16 bytes)
-class Unk_MeApp { public: void FUN_141489ff0(Unk_MeColor kColor); };
+class Unk_MeApp { public: void FUN_141489ff0(NiColorA kColor); };   // the app's clear colour
 Unk_MeApp* FUN_140aae430();
-Unk_MeColor FUN_14097f1d0(float r, float g, float b, float a);
-Unk_MeColor FUN_140987930(const Unk_MeColor* pSrc);
-extern Unk_MeColor DAT_143a09680;
 
 ApplyEffect* FUN_1409a8b00();                                       // the ApplyEffect singleton
 
@@ -129,7 +127,7 @@ void FUN_140b6bd30(CameraMgr* pCamera);                             // apply the
 void FUN_1418df360(CameraMgr* pCamera, Vector3 ptPos);      // set the camera position
 
 // entity iteration, properties and the instancing service
-struct Unk_MeEntIter { void* m_a; void* m_b; };
+struct Unk_MeEntIter { void* m_a; };                                // the iteration position (8 bytes in the exe frame)
 class Unk_MeEntMgr;
 Unk_MeEntMgr* FUN_1409670f0();
 void FUN_1411ce4c0(Unk_MeEntMgr* pMgr, Unk_MeEntIter* pIter);
@@ -185,15 +183,15 @@ __time64_t FUN_141a51ee0(__time64_t* pTime)
 // @0x141a551a0
 void FUN_141a551a0(CameraMgr* pCamera, bool b)
 {
-    if (pCamera->FUN_140af2520())
-        pCamera->FUN_140af2520()->vfunc_5(b);
+    if (pCamera->m_spMode.get())
+        pCamera->m_spMode->vfunc_5(b);
 }
 
 // @0x141a55200
 void FUN_141a55200(CameraMgr* pCamera, Vector3 pt)
 {
-    if (pCamera->FUN_140af2520())
-        pCamera->FUN_140af2520()->vfunc_4(pt);
+    if (pCamera->m_spMode.get())
+        pCamera->m_spMode->vfunc_4(pt);
 }
 
 // ---- UIMinimapEditDialog ----
@@ -204,11 +202,6 @@ UIMinimapEditDialog::UIMinimapEditDialog()
 {
     m_40 = 1;
     m_spMinimap.AssignRaw(new CMinimap());
-}
-
-// @0x141a54c20
-UIMinimapEditDialog::~UIMinimapEditDialog()
-{
 }
 
 // @0x141a52020
@@ -224,7 +217,7 @@ int UIMinimapEditDialog::vfunc_65()
         return 0;
     if (CameraMgr::GetInstance()->FUN_140a18070() == 0)
         return 0;
-    FUN_140aae430()->FUN_141489ff0(FUN_14097f1d0(0, 0, 0, 0));
+    FUN_140aae430()->FUN_141489ff0(NiColorA(0, 0, 0, 0));
     FUN_141a540f0(1);
     FUN_1409a8b00()->SetSoftParticlesOption(true, 0);
     FUN_1409a8b00()->ApplyFieldFogRange(false);
@@ -240,7 +233,7 @@ int UIMinimapEditDialog::vfunc_65()
 void UIMinimapEditDialog::vfunc_67()
 {
     UIDialog::vfunc_67();
-    FUN_140aae430()->FUN_141489ff0(FUN_140987930(&DAT_143a09680));
+    FUN_140aae430()->FUN_141489ff0(efd::ColorA::BLACK);
     FUN_141a540f0(0);
     FUN_1409a8b00()->ApplySoftParticleOption();
     FUN_1409a8b00()->ApplyFieldFog();
@@ -355,7 +348,8 @@ int UIMinimapEditDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
     {
         if (data.FUN_1422b9620(pArgs, nArgs) != 0 && CameraMgr::GetInstance()->FUN_140a18070() != 0)
         {
-            CameraMgr::GetInstance()->FUN_140ad4ff0(data.FUN_1422b8c10());
+            float fFov = data.FUN_1422b8c10();
+            CameraMgr::GetInstance()->FUN_140ad4ff0(fFov);
             FUN_140b6bd30(CameraMgr::GetInstance());
         }
     }
@@ -374,14 +368,18 @@ int UIMinimapEditDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
     {
         if (data.FUN_1422b9620(pArgs, nArgs) != 0 && CameraMgr::GetInstance()->FUN_140a18070() != 0)
         {
-            CameraMgr::GetInstance()->FUN_140af98d0(data.FUN_1422b8c10());
+            float fAngle = data.FUN_1422b8c10();
+            CameraMgr::GetInstance()->FUN_140af98d0(fAngle);
             FUN_140b6bd30(CameraMgr::GetInstance());
         }
     }
     else if (_stricmp("OnRotation", szMethod) == 0)
     {
         if (data.FUN_1422b9620(pArgs, nArgs) != 0 && CameraMgr::GetInstance()->FUN_140a18070() != 0)
-            FUN_1403ed2d0()->FUN_141bd3cf0(data.FUN_1422b8a90());
+        {
+            bool bRotation = data.FUN_1422b8a90();
+            FUN_1403ed2d0()->FUN_141bd3cf0(bRotation);
+        }
     }
     else if (_stricmp("OnScreenShot", szMethod) == 0)
     {
@@ -391,51 +389,50 @@ int UIMinimapEditDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
 }
 
 // @0x141a53100
-// MS2-FUNCTIONAL: temporaries/frame layout differ from the exe
 void UIMinimapEditDialog::FUN_141a53100()
 {
     MS2Ptr<Unk_MeMapInfo> spMap = FUN_1403ed2d0()->FUN_141bd30a0();
-    if (spMap.IsNull())
+    if (spMap == 0)
         return;
     TiXmlDocument doc;
-    if (!doc.FUN_140870fc0((const char*)FUN_14016a5c0((const char*)GetXBlockPath(CString(spMap->m_strXBlock)), 0), 0))
-        return;
-    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
-    if (pRoot == NULL)
-        return;
-    Unk_140165cf0* pMinimap = pRoot->FUN_140165cf0("minimap");
-    if (pMinimap == NULL)
+    if (doc.FUN_140870fc0((const char*)FUN_14016a5c0((const char*)GetXBlockPath(CString(spMap->m_strXBlock)), 0), 0))
     {
-        m_strImageName = "";
-        return;
+        Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+        if (pRoot == NULL)
+            return;
+        if (pRoot->FUN_140165cf0("minimap"))
+        {
+            FUN_140874e00(pRoot->FUN_140165cf0("minimap"), "frustum", &m_spMinimap->m_frustum);
+            FUN_140874f20(pRoot->FUN_140165cf0("minimap"), "screen", &m_spMinimap->m_rcScreen);
+            FUN_140874f20(pRoot->FUN_140165cf0("minimap"), "image", &m_spMinimap->m_rcImage);
+            FUN_140874280(pRoot->FUN_140165cf0("minimap"), "image", "name", &m_spMinimap->m_strImageName);
+            m_strImageName = m_spMinimap->m_strImageName;
+            FUN_140874280(pRoot->FUN_140165cf0("minimap"), "image", "icon", &m_strImageIcon);
+            FUN_140874d90(pRoot->FUN_140165cf0("minimap"), "camera", "position", &m_spMinimap->m_vecCamPos);
+            FUN_140874d90(pRoot->FUN_140165cf0("minimap"), "camera", "rotation", &m_spMinimap->m_vecCamRot);
+            FUN_140874210(pRoot->FUN_140165cf0("minimap"), "edit", "zoomfactor", &m_spMinimap->m_fZoomFactor);
+            m_spMinimap->m_rcImage.r = m_spMinimap->m_rcImage.l + 1024.0f;
+            m_spMinimap->m_rcImage.b = m_spMinimap->m_rcImage.t + 1024.0f;
+            FUN_1418df360(CameraMgr::GetInstance(), Vector3(reinterpret_cast<const Vector3&>(m_spMinimap->m_vecCamPos)));
+            FUN_141a55200(CameraMgr::GetInstance(), Vector3(reinterpret_cast<const Vector3&>(m_spMinimap->m_vecCamRot)));
+            CameraMgr::GetInstance()->FUN_140af0170(m_spMinimap->m_fZoomFactor < 1.0f ? 1.0f : m_spMinimap->m_fZoomFactor, false);
+            FUN_140b6bd30(CameraMgr::GetInstance());
+        }
+        else
+        {
+            m_strImageName = "";
+        }
     }
-    FUN_140874e00(pRoot->FUN_140165cf0("minimap"), "frustum", &m_spMinimap->m_frustum);
-    FUN_140874f20(pRoot->FUN_140165cf0("minimap"), "screen", &m_spMinimap->m_rcScreen);
-    FUN_140874f20(pRoot->FUN_140165cf0("minimap"), "image", &m_spMinimap->m_rcImage);
-    FUN_140874280(pRoot->FUN_140165cf0("minimap"), "image", "name", &m_spMinimap->m_strImageName);
-    m_strImageName = m_spMinimap->m_strImageName;
-    FUN_140874280(pRoot->FUN_140165cf0("minimap"), "image", "icon", &m_strImageIcon);
-    FUN_140874d90(pRoot->FUN_140165cf0("minimap"), "camera", "position", &m_spMinimap->m_vecCamPos);
-    FUN_140874d90(pRoot->FUN_140165cf0("minimap"), "camera", "rotation", &m_spMinimap->m_vecCamRot);
-    FUN_140874210(pRoot->FUN_140165cf0("minimap"), "edit", "zoomfactor", &m_spMinimap->m_fZoomFactor);
-    m_spMinimap->m_rcImage.r = m_spMinimap->m_rcImage.l + 1024.0f;
-    m_spMinimap->m_rcImage.b = m_spMinimap->m_rcImage.t + 1024.0f;
-    FUN_1418df360(CameraMgr::GetInstance(), Vector3(m_spMinimap->m_vecCamPos.x, m_spMinimap->m_vecCamPos.y, m_spMinimap->m_vecCamPos.z));
-    FUN_141a55200(CameraMgr::GetInstance(), Vector3(m_spMinimap->m_vecCamRot.x, m_spMinimap->m_vecCamRot.y, m_spMinimap->m_vecCamRot.z));
-    float fZoom = m_spMinimap->m_fZoomFactor >= 1.0f ? m_spMinimap->m_fZoomFactor : 1.0f;
-    CameraMgr::GetInstance()->FUN_140af0170(fZoom, false);
-    FUN_140b6bd30(CameraMgr::GetInstance());
 }
 
 // @0x141a53750
-// MS2-FUNCTIONAL: temporaries/frame layout differ from the exe
+// MS2-FUNCTIONAL: TiXml decl/comment/element are built with manual ctor calls, so the EH states and the new-expression differ from the exe
 void UIMinimapEditDialog::FUN_141a53750()
 {
     MS2Ptr<Unk_MeMapInfo> spMap = FUN_1403ed2d0()->FUN_141bd30a0();
-    if (spMap.IsNull())
+    if (spMap == 0)
         return;
-    MS2Ptr<ASMovieClip> spArea = FUN_140ba7930("m_rectarea");
-    if (spArea.get())
+    if (MS2Ptr<ASMovieClip> spArea = FUN_140ba7930("m_rectarea"))
     {
         Unk_MeSurface* pSurface = FUN_140af7da0(FUN_1413f9890());
         if (pSurface != NULL)
@@ -443,10 +440,8 @@ void UIMinimapEditDialog::FUN_141a53750()
             void* pCamera = FUN_14200aae0(FUN_1413f9910(), pSurface);
             if (pCamera != NULL && CameraMgr::GetInstance()->FUN_140a18070() != 0)
             {
-                Vector3 ptPos = CameraMgr::GetInstance()->FUN_140a17e10();
-                m_spMinimap->m_vecCamPos = Unk_GVec3(ptPos.x, ptPos.y, ptPos.z);
-                Vector3 ptRot = CameraMgr::GetInstance()->FUN_140af8290();
-                m_spMinimap->m_vecCamRot = Unk_GVec3(ptRot.x, ptRot.y, ptRot.z);
+                m_spMinimap->m_vecCamPos = Unk_GVec3(reinterpret_cast<const Unk_GVec3&>(static_cast<const Vector3&>(CameraMgr::GetInstance()->FUN_140a17e10())));
+                m_spMinimap->m_vecCamRot = Unk_GVec3(reinterpret_cast<const Unk_GVec3&>(static_cast<const Vector3&>(CameraMgr::GetInstance()->FUN_140af8290())));
                 m_spMinimap->m_frustum = *FUN_142008b80(pCamera)->FUN_1409a8de0();
                 m_spMinimap->m_fZoomFactor = CameraMgr::GetInstance()->FUN_140af0140();
                 m_spMinimap->m_strImageName = m_strImageName;
@@ -458,7 +453,6 @@ void UIMinimapEditDialog::FUN_141a53750()
             }
         }
     }
-    spArea = 0;
     if (spMap->m_strXBlock.IsEmpty())
         return;
     TiXmlDocument doc;
@@ -504,19 +498,10 @@ void UIMinimapEditDialog::FUN_141a53750()
 }
 
 // @0x141a540f0
-// MS2-FUNCTIONAL: temporaries/frame layout differ from the exe
 void UIMinimapEditDialog::FUN_141a540f0(int bShow)
 {
     efd::SmartPointer<HardwareInstancingService> spInstancing(FUN_14098c5b0(&DAT_143b059e8));
-    if (bShow == 0)
-    {
-        if (spInstancing != NULL)
-        {
-            for (POSITION pos = m_instanced.GetHeadPosition(); pos != NULL; m_instanced.GetNext(pos))
-                spInstancing->FUN_1413d6fc0(m_instanced.GetAt(pos));
-        }
-    }
-    else
+    if (bShow != 0)
     {
         m_hidden.RemoveAll();
         m_instanced.RemoveAll();
@@ -525,85 +510,98 @@ void UIMinimapEditDialog::FUN_141a540f0(int bShow)
         for (POSITION pos = objects.GetHeadPosition(); pos != NULL; objects.GetNext(pos))
         {
             efd::SmartPointer<GameObject> spObject = objects.GetAt(pos);
-            if (spObject != NULL && spObject->FUN_14123c660() == 0)
-                m_hidden.AddTail(spObject->FUN_14123c460());
+            if (spObject)
+            {
+                if (spObject->FUN_14123c660() == 0)
+                    m_hidden.AddTail(spObject->FUN_14123c460());
+            }
         }
         egf::Entity* pEntity = NULL;
         Unk_MeEntIter iter;
         FUN_1411ce4c0(FUN_1409670f0(), &iter);
         while (FUN_1411ce510(FUN_1409670f0(), &iter, &pEntity))
         {
-            bool bInstanced = false;
             bool bVisible = false;
-            if (spInstancing != NULL)
+            bool bInstanced = false;
+            if (spInstancing)
                 FUN_1408a20a0(pEntity, 0x23f9860e, &bInstanced);
-            if (bInstanced || (FUN_1408a20a0(pEntity, 0xa0b6b179, &bVisible), bVisible))
+            if (!bInstanced)
             {
-                bool bFlag = false;
-                if (FUN_1408a20a0(pEntity, 0x4cc1298e, &bFlag) == 0 && bFlag)
-                {
-                    if (bInstanced)
-                    {
-                        m_instanced.AddTail(pEntity);
-                        spInstancing->FUN_1413d6f40(pEntity);
-                    }
-                    bool bHide = false;
-                    FUN_14098c6e0(pEntity, 0xa0b6b179, &bHide);
-                    m_hidden.AddTail(*FUN_1408b76f0(pEntity));
-                }
+                FUN_1408a20a0(pEntity, 0xa0b6b179, &bVisible);
+                if (!bVisible)
+                    continue;
             }
+            bool bFlag = false;
+            if (FUN_1408a20a0(pEntity, 0x4cc1298e, &bFlag) == 0 && bFlag)
+            {
+                if (bInstanced)
+                {
+                    m_instanced.AddTail(pEntity);
+                    spInstancing->FUN_1413d6f40(pEntity);
+                }
+                bool bHide = false;
+                FUN_14098c6e0(pEntity, 0xa0b6b179, &bHide);
+                m_hidden.AddTail(*FUN_1408b76f0(pEntity));
+            }
+        }
+    }
+    else
+    {
+        if (spInstancing)
+        {
+            for (POSITION pos = m_instanced.GetHeadPosition(); pos != NULL; m_instanced.GetNext(pos))
+                spInstancing->FUN_1413d6fc0(m_instanced.GetAt(pos));
         }
     }
     for (POSITION pos = m_hidden.GetHeadPosition(); pos != NULL; m_hidden.GetNext(pos))
     {
-        egf::EntityID id = m_hidden.GetAt(pos);
-        GameObject* pObject = FUN_1403ed2d0()->FUN_141bd0fa0(id);
+        GameObject* pObject = FUN_1403ed2d0()->FUN_141bd0fa0(m_hidden.GetAt(pos));
         if (pObject != NULL)
             pObject->vfunc_23(bShow);
         egf::Entity* pEntity = FUN_1411cf440(FUN_1409670f0(), m_hidden.GetAt(pos));
         if (pEntity != NULL)
         {
-            bool bVisible = (bShow == 0);
+            bool bVisible = bShow == 0 ? true : false;
             FUN_14098c6e0(pEntity, 0xa0b6b179, &bVisible);
         }
     }
-    if (bShow == 0)
-        FUN_1403ed2b0()->FUN_141ad9650();
-    else
+    if (bShow != 0)
         FUN_1403ed2b0()->FUN_141ad9b30();
+    else
+        FUN_1403ed2b0()->FUN_141ad9650();
 }
 
 // @0x141a545a0
-// MS2-FUNCTIONAL: temporaries/frame layout differ from the exe
 void UIMinimapEditDialog::OnScreenShot()
 {
-    MS2Ptr<ASMovieClip> spArea = FUN_140ba7930("m_rectarea");
-    if (spArea.get() == NULL)
-        return;
-    NiRect<unsigned int> kRect(0, 0, 0, 0);
-    kRect.m_left = (int)(__int64)spArea->FUN_1422c10a0();
-    kRect.m_right = kRect.m_left + spArea->FUN_1422c1340();
-    kRect.m_top = (int)(__int64)spArea->FUN_1422c1110();
-    kRect.m_bottom = kRect.m_top + spArea->FUN_1422c13b0();
-    CStringW strDirectory;
-    if (EnsureScreenshotDirectory(&strDirectory) < 0)
+    if (MS2Ptr<ASMovieClip> spArea = FUN_140ba7930("m_rectarea"))
     {
-        FUN_140d73aa0(CStringW(FUN_1401e8510(L"Could not create directory. path={0}", strDirectory)), 0, 0, CStringW(L""));
-        return;
-    }
-    __time64_t tNow = FUN_141a51ee0(0);
-    const struct tm* pTm = FUN_141a51ec0(&tNow);
-    CStringW strName;
-    strName.Format(L"\\%d%02d%02d_%02d%02d%02d.png", pTm->tm_year + 1900, pTm->tm_mon + 1, pTm->tm_mday, pTm->tm_hour, pTm->tm_min, pTm->tm_sec);
-    CStringW strPath = FUN_1401d0080(strDirectory, strName);
-    void* pRegistry = FUN_14127bf80(&DAT_143b059e8);
-    if (pRegistry != NULL)
-    {
-        NiRenderTargetGroup* pGroup = FUN_14127cca0(FUN_140af7da0(pRegistry));
-        if (pGroup != NULL)
+        NiRect<unsigned int> kRect(0, 0, 0, 0);
+        kRect.m_left = (int)(__int64)spArea->FUN_1422c10a0();
+        kRect.m_right = kRect.m_left + spArea->FUN_1422c1340();
+        kRect.m_top = (int)(__int64)spArea->FUN_1422c1110();
+        kRect.m_bottom = kRect.m_top + spArea->FUN_1422c13b0();
+        CStringW strDirectory;
+        if (EnsureScreenshotDirectory(&strDirectory) < 0)
         {
-            CStringA strPathA = FUN_14016a600((const wchar_t*)strPath, 0);
-            SaveRenderTargetToFileA(&strPathA, D3DXIFF_PNG, pGroup, kRect);
+            CStringW strMessage = FUN_1401e8510(L"Could not create directory. path={0}", strDirectory);
+            FUN_140d73aa0(strMessage, 0, 0, CStringW(L""));
+            return;
+        }
+        __time64_t tNow = FUN_141a51ee0(0);
+        const struct tm* pTm = FUN_141a51ec0(&tNow);
+        CStringW strName;
+        strName.Format(L"\\%d%02d%02d_%02d%02d%02d.png", pTm->tm_year + 1900, pTm->tm_mon + 1, pTm->tm_mday, pTm->tm_hour, pTm->tm_min, pTm->tm_sec);
+        CStringW strPath = FUN_1401d0080(strDirectory, strName);
+        void* pRegistry = FUN_14127bf80(&DAT_143b059e8);
+        if (pRegistry != NULL)
+        {
+            NiRenderTargetGroup* pGroup = FUN_14127cca0(FUN_140af7da0(pRegistry));
+            if (pGroup != NULL)
+            {
+                CStringA strPathA = FUN_14016a600((const wchar_t*)strPath, 0);
+                SaveRenderTargetToFileA(&strPathA, D3DXIFF_PNG, pGroup, kRect);
+            }
         }
     }
 }
@@ -611,7 +609,8 @@ void UIMinimapEditDialog::OnScreenShot()
 // @0x141a54940
 CString UIMinimapEditDialog::GetXBlockPath(CString strXBlock)
 {
-    return FUN_140536a50("./data/xml/MapXblock/{0}.xml", strXBlock);
+    CString strPath = FUN_140536a50("./data/xml/MapXblock/{0}.xml", strXBlock);
+    return strPath;
 }
 
 // @0x141a549c0

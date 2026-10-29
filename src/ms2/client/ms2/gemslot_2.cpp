@@ -65,13 +65,13 @@ class Unk_WsPtred298 : public CPtred
 {
 public:
     char m_pad[0x152 - 0x18];
-    char m_bFlag152;
+    bool m_bFlag152;
 };
 struct Unk_GsWorld { MS2Ptr<Unk_WsPtred298> FUN_141bd30a0(); }; // the world's field record
 bool FUN_140222e10(int nGemType);                       // the gem type is valid
 unsigned __int64 FUN_140222f50();                            // the count of the gem types
 void FUN_140d73bc0(int, int, void*, CStringW);
-CStringW FUN_1405c2690(CStringW, CStringW);
+CStringW FUN_1405c2690(CStringW, const CStringW&);
 MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW text, int nUnk, CStringW tag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
 void FUN_140710590(COutPacket&);
@@ -102,7 +102,6 @@ PCGemEquip::~PCGemEquip()
 }
 
 // @0x14126fea0
-// MS2-FUNCTIONAL: same behaviour; MS2Ptr temporaries/block layout differ from the exe
 void PCGemEquip::FUN_14126fea0(CInputStream& stream, int nOwner)
 {
     int nCount = stream.ReadUInt8();
@@ -110,16 +109,12 @@ void PCGemEquip::FUN_14126fea0(CInputStream& stream, int nOwner)
     for (int i = 0; i < nCount; i++)
     {
         MS2Ptr<CItem> spItem = kWire.FUN_1401fce40(stream);
-        if (!(spItem == 0))
-        {
-            if (spItem->FUN_140527900() != 0)
-            {
-                spItem->FUN_140526b30(nOwner);
-                int nGemType = spItem->FUN_140527900()->vfunc_1();
-                FUN_141270030(nGemType, spItem);
-                FUN_141271780(nGemType, spItem);
-            }
-        }
+        if (spItem == 0 || spItem->FUN_140527900() == 0)
+            continue;
+        spItem->FUN_140526b30(nOwner);
+        int nGemType = spItem->FUN_140527900()->vfunc_1();
+        FUN_141270030(nGemType, spItem);
+        FUN_141271780(nGemType, spItem);
     }
 }
 
@@ -203,21 +198,17 @@ CGemTransparency* PCGemEquip::FUN_141270460()
 }
 
 // @0x1412704d0
-// MS2-FUNCTIONAL: same behaviour; MS2Ptr temporaries/block layout differ from the exe
 void PCGemEquip::FUN_1412704d0()
 {
     unsigned char nCount = (unsigned char)m_items.GetCount();
     for (unsigned char i = 0; i < nCount; i++)
     {
         MS2Ptr<CItem> spItem = FUN_141271630(i);
-        if (!(spItem == 0))
-        {
-            if (spItem->FUN_140527900() != 0)
-            {
-                if (m_pOwner->FUN_141662eb0(spItem.get()) != 0)
-                    spItem->FUN_140527900()->vfunc_5(m_pOwner, spItem);
-            }
-        }
+        if (spItem == 0 || spItem->FUN_140527900() == 0)
+            continue;
+        if (m_pOwner->FUN_141662eb0(spItem) == 0)
+            continue;
+        spItem->FUN_140527900()->vfunc_5(m_pOwner, spItem);
     }
 }
 
@@ -247,29 +238,23 @@ int PCGemEquip::FUN_1412706f0(int nSlot)
 }
 
 // @0x141270740
-// MS2-FUNCTIONAL: same behaviour; MS2Ptr temporaries/block layout differ from the exe
 MS2Ptr<CGemBase> PCGemEquip::FUN_141270740(int nGemType)
 {
     if (m_items.IsEmpty())
         return MS2Ptr<CGemBase>(0);
-    CItem* pItem = FUN_141270140(nGemType).get();
+    CItem* pItem = FUN_141270140(nGemType);
     if (pItem == 0)
         return MS2Ptr<CGemBase>(0);
     if (m_pOwner->FUN_141662eb0(pItem) == 0)
         return MS2Ptr<CGemBase>(0);
     CItemGem* pGem = pItem->FUN_140527900();
-    bool bNone = true;
-    if (pGem != 0)
-    {
-        MS2Ptr<CGemBase> spGem = pGem->GetGem();
-        bNone = (spGem == 0);
-    }
+    bool bNone = pGem == 0 || pGem->GetGem() == 0;
     if (bNone)
         return MS2Ptr<CGemBase>(0);
     MS2Ptr<CGemBase> spResult = pGem->GetGem();
-    if (spResult->vfunc_1() == nGemType)
-        return spResult;
-    return MS2Ptr<CGemBase>(0);
+    if (spResult->vfunc_1() != nGemType)
+        return MS2Ptr<CGemBase>(0);
+    return spResult;
 }
 
 // @0x1412709d0
@@ -282,16 +267,16 @@ MS2Ptr<CItem> PCGemEquip::FUN_1412709d0(MS2Ptr<CItem> spItem)
 }
 
 // @0x141270ab0
-// MS2-FUNCTIONAL: same behaviour; MS2Ptr temporaries/block layout differ from the exe
 MS2Ptr<CItem> PCGemEquip::FUN_141270ab0(int nGemType)
 {
     int nIndex = FUN_141271290(nGemType);
-    MS2Ptr<CItem> spItem = FUN_141271500(nIndex);
-    if (spItem.get() == 0)
-        return MS2Ptr<CItem>(0);
-    FUN_141271870(nGemType, spItem);
-    FUN_1412716d0(nIndex, MS2Ptr<CItem>(0));
-    return spItem;
+    if (MS2Ptr<CItem> spItem = FUN_141271500(nIndex))
+    {
+        FUN_141271870(nGemType, spItem);
+        FUN_1412716d0(nIndex, MS2Ptr<CItem>(0));
+        return spItem;
+    }
+    return MS2Ptr<CItem>(0);
 }
 
 // @0x141270bf0
@@ -305,87 +290,80 @@ bool PCGemEquip::FUN_141270bf0(MS2Ptr<CItem> spItem)
 }
 
 // @0x141270cd0
-// MS2-FUNCTIONAL: same behaviour; MS2Ptr temporaries/block layout differ from the exe
 bool PCGemEquip::FUN_141270cd0(int nGemType, MS2Ptr<CItem> spItem)
 {
     int nIndex = FUN_141271290(nGemType);
     FUN_1412716d0(nIndex, spItem);
-    CItem* pItem = FUN_1412712e0(nIndex).get();
-    if (pItem != 0)
+    CItem* pItem = FUN_1412712e0(nIndex);
+    if (pItem)
+    {
         FUN_141271780(nGemType, spItem);
-    return pItem != 0;
+        return true;
+    }
+    return false;
 }
 
 // @0x141270e00
-// MS2-FUNCTIONAL: same behaviour; MS2Ptr temporaries/block layout differ from the exe
 void PCGemEquip::FUN_141270e00(PCGemEquip& other)
 {
-    unsigned nCount = other.FUN_1412700b0();
+    size_t nCount = other.FUN_1412700b0();
     for (size_t i = 0; i < nCount; i++)
     {
         MS2Ptr<CItem> spItem = other.FUN_141271630((int)i);
-        if (!spItem.IsNull())
-        {
-            MS2Ptr<CItem> spCopy = spItem->FUN_140524250();
-            if (spCopy.get() != 0)
-                FUN_1412716d0((int)i, spCopy);
-        }
+        if (spItem.IsNull())
+            continue;
+        MS2Ptr<CItem> spCopy = spItem->FUN_140524250();
+        if (spCopy)
+            FUN_1412716d0((int)i, spCopy);
     }
 }
 
 // @0x141270f10
-// MS2-FUNCTIONAL: same behaviour; MS2Ptr temporaries/block layout differ from the exe
 void PCGemEquip::FUN_141270f10(ATL::CAtlArray<MS2Ptr<CItem> >& items, int nOwner)
 {
-    if (!items.IsEmpty())
+    if (items.IsEmpty())
+        return;
+    size_t nCount = items.GetCount();
+    for (size_t i = 0; i < nCount; i++)
     {
-        size_t nCount = items.GetCount();
-        for (size_t i = 0; i < nCount; i++)
+        MS2Ptr<CItem> spItem = items[i];
+        if (spItem)
         {
-            MS2Ptr<CItem> spItem = items[i];
-            if (spItem.get() != 0)
+            MS2Ptr<CItemGem> spGem(spItem->FUN_140527900());
+            if (spGem)
             {
-                MS2Ptr<CItemGem> spGem(spItem->FUN_140527900());
-                if (spGem.get() != 0)
-                {
-                    spItem->FUN_140526b30(nOwner);
-                    FUN_141270030(spGem->vfunc_1(), spItem);
-                }
+                spItem->FUN_140526b30(nOwner);
+                FUN_141270030(spGem->vfunc_1(), spItem);
             }
         }
     }
 }
 
 // @0x141271090
-// MS2-FUNCTIONAL: same behaviour; MS2Ptr temporaries/block layout differ from the exe
 bool PCGemEquip::FUN_141271090(MS2Ptr<CItem> spItem, const CString& strEffect)
 {
-    if (m_mapEffect.Lookup(spItem->FUN_140526a50()) == 0)
-    {
-        NoticeMessage kQuery;
-        kQuery.m_strName = strEffect;
-        kQuery.m_nObject = 0;
-        kQuery.SetActor(m_pOwner->FUN_14123c580());
-        int nHandle = FUN_1403ed280()->FUN_1411a49c0(kQuery);
-        if (nHandle == 0)
-            return false;
-        m_mapEffect[spItem->FUN_140526a50()] = nHandle;
-        return true;
-    }
-    return false;
+    if (m_mapEffect.Lookup(spItem->FUN_140526a50()) != 0)
+        return false;
+    NoticeMessage kQuery;
+    kQuery.m_strName = strEffect;
+    kQuery.m_nObject = 0;
+    kQuery.SetActor(m_pOwner->FUN_14123c580());
+    int nHandle = FUN_1403ed280()->FUN_1411a49c0(kQuery);
+    if (nHandle == 0)
+        return false;
+    m_mapEffect[spItem->FUN_140526a50()] = nHandle;
+    return true;
 }
 
 // @0x1412711e0
-// MS2-FUNCTIONAL: same behaviour; MS2Ptr temporaries/block layout differ from the exe
 void PCGemEquip::FUN_1412711e0(MS2Ptr<CItem> spItem)
 {
     int nHandle = 0;
-    if (m_mapEffect.Lookup(spItem->FUN_140526a50(), nHandle))
-    {
-        if (nHandle != 0)
-            FUN_1403ed280()->FUN_1411a6060(nHandle);
-        m_mapEffect.RemoveKey(spItem->FUN_140526a50());
-    }
+    if (!m_mapEffect.Lookup(spItem->FUN_140526a50(), nHandle))
+        return;
+    if (nHandle != 0)
+        FUN_1403ed280()->FUN_1411a6060(nHandle);
+    m_mapEffect.RemoveKey(spItem->FUN_140526a50());
 }
 
 // @0x141271290
@@ -402,16 +380,15 @@ int PCGemEquip::FUN_141271290(int nGemType)
 }
 
 // @0x1412712e0
-// MS2-FUNCTIONAL: same behaviour; MS2Ptr temporaries/block layout differ from the exe
 MS2Ptr<CItem> PCGemEquip::FUN_1412712e0(int nIndex)
 {
     MS2Ptr<CItem> spItem = FUN_141271630(nIndex);
     if (spItem == 0 || spItem->FUN_140527900() == 0)
         return MS2Ptr<CItem>(0);
-    if (m_pOwner->FUN_141662eb0(spItem.get()) == 0)
+    if (m_pOwner->FUN_141662eb0(spItem) == 0)
         return MS2Ptr<CItem>(0);
-    char bFlag = reinterpret_cast<Unk_GsWorld*>(FUN_1403ed2d0())->FUN_141bd30a0()->m_bFlag152;
-    if (bFlag == 0)
+    bool bOff = reinterpret_cast<Unk_GsWorld*>(FUN_1403ed2d0())->FUN_141bd30a0()->m_bFlag152 == false;
+    if (bOff)
         return MS2Ptr<CItem>(0);
     spItem->FUN_140527900()->vfunc_6(m_pOwner, spItem);
     return spItem;
@@ -474,78 +451,74 @@ void PCGemEquip::FUN_141271870(int nGemType, MS2Ptr<CItem> spItem)
 }
 
 // @0x141271960
-// MS2-FUNCTIONAL: same behaviour; MS2Ptr temporaries/block layout differ from the exe
 bool FUN_141271960(MS2Ptr<CItem> spItem, int nSlot, int nFlag)
 {
-    if (!(spItem == 0))
+    if (spItem == 0)
+        return false;
+    Unk_GmActor* pActor = FUN_1403ed2d0()->FUN_141bd0cc0();
+    if (pActor == 0)
+        return false;
+    if (pActor->FUN_14166ce30() != 0)
     {
-        Unk_GmActor* pActor = FUN_1403ed2d0()->FUN_141bd0cc0();
-        if (pActor == 0)
-            return false;
-        if (pActor->FUN_14166ce30() == 0)
-        {
-            if (nFlag == 0)
-            {
-                if (FUN_140527930(spItem.operator->())->FUN_140635100() != 0
-                    && FUN_140527930(spItem.operator->())->FUN_140635120() == 0)
-                {
-                    CStringW strMsg = FUN_1405c2690(L"s_msg_transfer_bind_when_equip", pActor->vfunc_77());
-                    MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(17, strMsg, 0, s_useBindGemEquipItem);
-                    if (spBox.get() != 0)
-                    {
-                        spBox->FUN_140533ff0(nSlot);
-                        spBox->FUN_141a01600(spItem->FUN_140526a50());
-                        spBox->FUN_141a01ee0(spItem, spItem->FUN_140527b10(), 1, 0, -1, -1, 1);
-                        spBox->FUN_141a01700(1143, 1144, 0);
-                        FUN_140d73c60(spBox);
-                        return true;
-                    }
-                }
-            }
-            Unk_GemEquipReq kReq;
-            kReq.m_nItemUid = spItem->FUN_140526a50();
-            kReq.m_nSlot = (unsigned char)nSlot;
-            COutPacket kPacket(static_cast<int>(SendOp::BadgeEquip), 0);
-            kPacket.WriteUInt8(0);
-            FUN_1401fd190((unsigned char*)&kReq, kPacket);
-            FUN_140710590(kPacket);
-            MS2Ptr<CItemData> spData(spItem->FUN_140527840());
-            if (spData.get() != 0)
-                FUN_1403ed280()->FUN_1411a5110("ms2sound/sound/item", spData->FUN_14053eca0(), "", 0, 0, 1.0f, 0);
-            return true;
-        }
         FUN_140d73bc0(0x42, 0, 0, L"");
         return false;
     }
-    return false;
+    if (nFlag == 0
+        && FUN_140527930(spItem.operator->())->FUN_140635100() != 0
+        && FUN_140527930(spItem.operator->())->FUN_140635120() == 0)
+    {
+        CStringW strMsg = FUN_1405c2690(L"s_msg_transfer_bind_when_equip", pActor->vfunc_77());
+        MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(17, strMsg, 0, s_useBindGemEquipItem);
+        if (spBox)
+        {
+            spBox->FUN_140533ff0(nSlot);
+            spBox->FUN_141a01600(spItem->FUN_140526a50());
+            spBox->FUN_141a01ee0(spItem, spItem->FUN_140527b10(), 1, 0, -1, -1, 1);
+            spBox->FUN_141a01700(1143, 1144, 0);
+            FUN_140d73c60(spBox);
+            return true;
+        }
+    }
+    Unk_GemEquipReq kReq;
+    kReq.m_nItemUid = spItem->FUN_140526a50();
+    kReq.m_nSlot = (unsigned char)nSlot;
+    COutPacket kPacket(static_cast<int>(SendOp::BadgeEquip), 0);
+    kPacket.WriteUInt8(0);
+    FUN_1401fd190((unsigned char*)&kReq, kPacket);
+    FUN_140710590(kPacket);
+    {
+        MS2Ptr<CItemData> spData(spItem->FUN_140527840());
+        if (spData.get() != 0)
+            FUN_1403ed280()->FUN_1411a5110("ms2sound/sound/item", spData->FUN_14053eca0(), "", 0, 0, 1.0f, 0);
+    }
+    return true;
 }
 
 // @0x141271f90
-// MS2-FUNCTIONAL: same behaviour; MS2Ptr temporaries/block layout differ from the exe
 bool FUN_141271f90(MS2Ptr<CItem> spItem)
 {
-    if (!(spItem == 0))
+    if (spItem == 0)
+        return false;
+    Unk_GmActor* pActor = FUN_1403ed2d0()->FUN_141bd0cc0();
+    if (pActor == 0)
+        return false;
+    if (pActor->FUN_14166ce30() != 0)
     {
-        Unk_GmActor* pActor = FUN_1403ed2d0()->FUN_141bd0cc0();
-        if (pActor == 0)
-            return false;
-        if (pActor->FUN_14166ce30() == 0)
-        {
-            Unk_GemUnequipReq kReq;
-            kReq.m_nSlot = (unsigned char)spItem->FUN_140526b50();
-            COutPacket kPacket(static_cast<int>(SendOp::BadgeEquip), 0);
-            kPacket.WriteUInt8(1);
-            FUN_1401fd250((unsigned char*)&kReq, kPacket);
-            FUN_140710590(kPacket);
-            MS2Ptr<CItemData> spData(spItem->FUN_140527840());
-            if (spData.get() != 0)
-                FUN_1403ed280()->FUN_1411a5110("ms2sound/sound/item", spData->FUN_14053eca0(), "", 0, 0, 1.0f, 0);
-            return true;
-        }
         FUN_140d73bc0(0x42, 0, 0, L"");
         return false;
     }
-    return false;
+    Unk_GemUnequipReq kReq;
+    kReq.m_nSlot = (unsigned char)spItem->FUN_140526b50();
+    COutPacket kPacket(static_cast<int>(SendOp::BadgeEquip), 0);
+    kPacket.WriteUInt8(1);
+    FUN_1401fd250((unsigned char*)&kReq, kPacket);
+    FUN_140710590(kPacket);
+    {
+        MS2Ptr<CItemData> spData(spItem->FUN_140527840());
+        if (spData.get() != 0)
+            FUN_1403ed280()->FUN_1411a5110("ms2sound/sound/item", spData->FUN_14053eca0(), "", 0, 0, 1.0f, 0);
+    }
+    return true;
 }
 
 // @0x141272280
@@ -569,13 +542,17 @@ Unk_GemEquipReq::Unk_GemEquipReq()
 // The UCRT's `static __inline memcpy_s` of this TU (unreferenced copy, kept alive by the pointer below).
 #pragma function(memcpy, memset)
 // @0x1412723c0
-// MS2-FUNCTIONAL: same behaviour; MS2Ptr temporaries/block layout differ from the exe
 static __inline errno_t ms2_gem_memcpy_s(void* const d, size_t const dsz, void const* const s, size_t const ssz)
 {
     if (ssz == 0) { return 0; }
     { int e = !!(d != NULL); if (!e) { errno = EINVAL; _invalid_parameter_noinfo(); return EINVAL; } }
-    { int e = !!(s != NULL); if (!e) { errno = EINVAL; _invalid_parameter_noinfo(); return EINVAL; } }
-    { int e = !!(dsz >= ssz); if (!e) { errno = ERANGE; _invalid_parameter_noinfo(); return ERANGE; } }
+    if (s == NULL || dsz < ssz)
+    {
+        memset(d, 0, dsz);
+        { int e = !!(s != NULL); if (!e) { errno = EINVAL; _invalid_parameter_noinfo(); return EINVAL; } }
+        { int e = !!(dsz >= ssz); if (!e) { errno = ERANGE; _invalid_parameter_noinfo(); return ERANGE; } }
+        return EINVAL;
+    }
     memcpy(d, s, ssz);
     return 0;
 }

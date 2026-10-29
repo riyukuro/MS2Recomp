@@ -644,6 +644,8 @@ STRICT_SYMBOLS = False  # tools/progress.py pairing trials: only the unit's own 
                         # other copy stays a hint against look-alike candidates)
 OWN_COPY_TRIAL = False  # tools/progress.py own-copy pass: a strict trial accepts a same-code copy of a table binding
                         # (the table names another unit's byte-identical COMDAT copy; only for otherwise unpaired names)
+LITERALS = False   # --literals: a function whose string literals or pool constants differ from the exe's is a DIFF (off by default:
+                   # progress.py counts ignore literal text; tools/litcheck.py reports those functions)
 CUR_EXE = None     # the Exe of the current match_one call (note_symbol needs it for same_code)
 _SAME_MEMO = {}
 _MD2 = capstone.Cs(capstone.CS_ARCH_X86, capstone.CS_MODE_64)
@@ -907,7 +909,12 @@ def obj_literal(obj, lsi, addend=0):
     """bytes of the obj's string literal symbol lsi (??_C@ COMDAT or a $SG static) from addend on, through the
     terminator (a wide literal ??_C@_1: its double-NUL)"""
     name, value, secnum = obj.syms[lsi][0], obj.syms[lsi][1], obj.syms[lsi][2]
-    nxt = [v for (n, v, sn, t, c) in obj.syms.values() if sn == secnum and v > value]
+    starts = obj.__dict__.get("_secstarts")
+    if starts is None:
+        starts = obj._secstarts = {}
+        for (n, v, sn, t, c) in obj.syms.values():
+            starts.setdefault(sn, set()).add(v)
+    nxt = [v for v in starts.get(secnum, ()) if v > value]
     sec = obj.sec(secnum)
     b = sec["data"][value:min(nxt) if nxt else sec["size"]][addend:]
     if name.startswith("??_C@_1"):
@@ -915,6 +922,52 @@ def obj_literal(obj, lsi, addend=0):
         return b[:k + 2]
     k = b.find(b"\0")
     return b[:k + 1] if k >= 0 else b
+
+
+POOL_CONSTS = ("__real@", "__xmm@", "__mask@", "__ymm@")
+
+
+def literal_benign(name, sname, lit, xb):
+    """Why a literal_mismatches hit is a known-harmless difference, or "" if it is not (cri9 litcheck run, 285 hits:
+    every hit outside these three classes was a real exe difference)."""
+    if name.startswith("??__E"):
+        return "pinned-initializer"      # pinned to a shifted exe initializer; its static's readers see the exe's text
+    if sname.startswith(("??_C@_0", "$SG")) and lit[1:3] == b":\\" and xb[1:3] == b":\\":
+        return "build-path"              # __FILE__ in an assert / efd message handler
+    if sname.startswith(POOL_CONSTS) and len(lit) in (4, 8) and len(xb) == len(lit):
+        a, b = (int.from_bytes(x, "little", signed=True) for x in (lit, xb))
+        if abs(a - b) <= 4:
+            return "ulp"                 # the same constant spelled with a different last digit
+    return ""
+
+
+def literal_mismatches(obj, sym, va, exe):
+    """[(off, symbol, obj bytes, exe bytes)] for every RIP-relative reference of function sym to one of the obj's
+    string literals (??_C@ narrow and wide, $SG statics) or float/SSE pool constants (__real@/__xmm@/__mask@/__ymm@)
+    whose bytes differ at the exe target. match_one masks these reloc fields and only checks targets against
+    LOCAL_KNOWN/SYMBOLS, and these names are never harvested (NO_HARVEST_PREFIXES), so a reference to a different
+    literal or constant still matches (tools/litcheck.py)."""
+    si = obj.find(sym)
+    data, fields, unw = obj.function(si)
+    xbytes = exe.read(va, len(data))
+    out = []
+    for off, ln, sname, ty, inner, tsi in fields:
+        if not (REL_REL32 <= ty <= REL_REL32 + 5 and off + 4 <= len(xbytes)):
+            continue
+        if not sname.startswith(("??_C@", "$SG") + POOL_CONSTS) or not obj.defined(tsi):
+            continue
+        add = struct.unpack_from("<i", data, off)[0]
+        tgt = va + off + 4 + (ty - REL_REL32) + struct.unpack_from("<i", xbytes, off)[0]   # sym + addend in the exe
+        if sname.startswith(POOL_CONSTS):
+            # __real@3d88850a: the constant's bytes are its COMDAT section (4/8/16/32 bytes), read from the addend on
+            sec = obj.sec(obj.syms[tsi][2])
+            lit = sec["data"][obj.syms[tsi][1] + add:]
+        else:
+            lit = obj_literal(obj, tsi, add)
+        xb = exe.read(tgt, len(lit))
+        if xb != lit:
+            out.append((off, sname, bytes(lit), xb))
+    return out
 
 
 def match_data(obj, si, va, exe, verbose, quiet=False, limit=None, strings=False):
@@ -1052,6 +1105,11 @@ def match_one(obj_or_cod, sym, va, exe, verbose, check_unwind, quiet=False):
             note_symbol(name, va, rep)
     if obj is not None and check_unwind:
         compare_unwind(obj, unw, exe, va, value, secnum, rep, verbose)
+    if obj is not None and LITERALS:
+        for off, sname, lit, xb in literal_mismatches(obj, name, va, exe):
+            if literal_benign(name, sname, lit, xb):
+                continue
+            rep.bad(f"[+0x{off:x}] {sname}: {lit[:32]!r} != exe {xb[:32]!r}")
     status = "MATCH" if rep.ok else "DIFF"
     print(f"{status:5} {title}  ({n} bytes, {sum(omask)} masked in {len(fields)} reloc fields)")
     for l in rep.lines:
@@ -1112,7 +1170,11 @@ def main():
                     help="symbol map to check references against (default progress/symbols.tsv; '' = none)")
     ap.add_argument("--harvest", nargs="?", const=SYMBOLS_TSV, default=None,
                     help="merge symbol->VA pairs of matched functions/vtables into this TSV (default progress/symbols.tsv)")
+    ap.add_argument("--literals", action="store_true",
+                    help="also compare every string literal (narrow and wide) and __real@/__xmm@ pool constant the function references")
     a = ap.parse_args()
+    global LITERALS
+    LITERALS = a.literals
     load_symbols(a.symbols)
     src = Obj(a.file) if not a.file.lower().endswith(".cod") else a.file
     if a.list:

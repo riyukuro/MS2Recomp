@@ -109,7 +109,6 @@ class StateJumpNpc : public State
 {
 public:
     StateJumpNpc(PCBase* pOwner);                           // 0x1417d05a0
-    virtual ~StateJumpNpc();                                // 0x1417d08a0 (??_G 0x1417d09e0)
     virtual int vfunc_1();                                  // 1  0x1417d0aa0: 6
     virtual void vfunc_4(StateData* pData);                 // 4  0x1417d0620
 
@@ -122,7 +121,6 @@ class StatePuppetNpc : public State
 {
 public:
     StatePuppetNpc(PCBase* pOwner);                         // 0x1417d06e0
-    virtual ~StatePuppetNpc();                              // 0x1417d08c0 (??_G 0x1417d0a20)
     virtual int vfunc_1();                                  // 1  0x1417d0ab0: 0x23
     virtual void EndOfSequence(NiActorManager* pkManager, unsigned int eSequenceID,
         NiControllerSequence* pkSeq, float fEventTime);     // 13 0x1417d0720 (back to the idle state)

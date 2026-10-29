@@ -165,7 +165,6 @@ void UIItemEventOpenBoxDialog::FUN_140e48020(NotifyObject*)
 }
 MS2_REPLACE_METHOD(0x140E48020, UIItemEventOpenBoxDialog, FUN_140e48020, 29, 0x39B85687);
 
-// MS2-FUNCTIONAL: behaviour-equivalent; local slot order (field id / date ints) differs; the exe loads the Get() argument through an extra register hop
 // @0x140e48050
 void UIItemEventOpenBoxDialog::FUN_140e48050()
 {
@@ -183,19 +182,18 @@ void UIItemEventOpenBoxDialog::FUN_140e48050()
     int nToday = nYm + now.GetDay();
     int nZero = 0;
     int nLast = g_attendTable.FUN_1409617d0(0x578, spCtx->m_3c, nZero);
-    if (nLast < nToday)
-    {
-        if (FUN_141924630() != 0)
-            vfunc_67();
-        m_180 = FUN_140a87680()->FUN_140be95b0()->FUN_14087ede0(spCtx->m_title);
-        m_188 = FUN_140a87680()->FUN_140be95b0()->FUN_14087ede0(spCtx->m_desc);
-        m_190 = (const wchar_t*)spCtx->m_bannerPath;
-        m_178 = spCtx->m_boxItemID;
-        FUN_1403b4750()->FUN_1416fb300(m_180);
-        FUN_1403b4750()->FUN_1416fb300(m_188);
-        CString strBound = FUN_140e48770(m_178);
-        FUN_141924680();
-    }
+    if (nLast >= nToday)
+        return;
+    if (FUN_141924630() != 0)
+        vfunc_67();
+    m_180 = FUN_140a87680()->FUN_140be95b0()->FUN_14087ede0(spCtx->m_title);
+    m_188 = FUN_140a87680()->FUN_140be95b0()->FUN_14087ede0(spCtx->m_desc);
+    m_190 = (const wchar_t*)spCtx->m_bannerPath;
+    m_178 = spCtx->m_boxItemID;
+    FUN_1403b4750()->FUN_1416fb300(m_180);
+    FUN_1403b4750()->FUN_1416fb300(m_188);
+    CString strBound = FUN_140e48770(m_178);
+    FUN_141924680();
 }
 MS2_REPLACE_METHOD(0x140E48050, UIItemEventOpenBoxDialog, FUN_140e48050, 858, 0xDD4BA7E7);
 
@@ -215,14 +213,12 @@ void UIItemEventOpenBoxDialog::FUN_140e483b0()
 }
 MS2_REPLACE_METHOD(0x140E483B0, UIItemEventOpenBoxDialog, FUN_140e483b0, 584, 0x6535BEA4);
 
-// MS2-FUNCTIONAL: behaviour-equivalent; the exe loads the Get() argument through an extra register hop (mov ecx / mov r8d,ecx) with no source form found
 // @0x140e48600
 void UIItemEventOpenBoxDialog::SendEventReward(const Scaleform::GFx::FunctionHandler::Params&)
 {
     if (m_30 == 0)
         return;
-    int nFieldId = FUN_1403ed2d0()->FUN_141bd3060();
-    MS2Ptr<ItemBoxEventContext> spCtx = reinterpret_cast<CGameEventValueItemBox*>(FUN_140302b00()->ItemBox())->Get((unsigned)nFieldId);
+    MS2Ptr<ItemBoxEventContext> spCtx = reinterpret_cast<CGameEventValueItemBox*>(FUN_140302b00()->ItemBox())->Get((unsigned)FUN_1403ed2d0()->FUN_141bd3060());
     if (spCtx == 0)
     {
         {
@@ -246,8 +242,7 @@ CString UIItemEventOpenBoxDialog::FUN_140e48770(unsigned nItemId)
     CString strKey;
     strKey.Format("%s_%d", (const char*)GetTypeName(), nItemId);
     MS2Ptr<CItem> spItem(new CItem);
-    int nRank = FUN_14053feb0(nItemId);
-    if (spItem->FUN_140523c40(nItemId, nRank, 0) == 0)
+    if (spItem->FUN_140523c40(nItemId, FUN_14053feb0(nItemId), 0) == 0)
         return "";
     FUN_141415450(strKey, MS2Ptr<CItem>(spItem), 0, 0, 0);
     m_1e8 = strKey;

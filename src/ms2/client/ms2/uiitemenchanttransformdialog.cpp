@@ -37,7 +37,7 @@ class CMsgBoxData : public CPtred
 public:
     int FUN_141a02e50(int a, int b) const;
     void FUN_141a01600(__int64 n);
-    void FUN_141a01ee0(MS2Ptr<CItem> item, const CStringW& name, int a, int b, int c, int d, bool e);
+    void FUN_141a01ee0(MS2Ptr<CItem> item, const CStringW& name, int a, int b, int c, int d, int e);
     void FUN_141a01700(int a, int b, int c);
     void FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)> cb);
     void FUN_140533ff0(int n);
@@ -51,7 +51,7 @@ class Unk_TfButton : public AScript
 {
 public:
     void FUN_1422cdfb0(const CStringW& strLabel);       // set the label
-    void FUN_1422c1fe0(bool bEnable);                   // enable / disable
+    void FUN_1422c1fe0(int bEnable);                    // enable / disable
 };
 
 // The item bag control of the movie.
@@ -148,7 +148,7 @@ CStringW FUN_1405c2690(CStringW strKey, const CStringW& strArg);
 CStringW FUN_1409404f0(__int64 n);                                  // number text
 CString FUN_140540050(const char* szFormat, const CString& strArg);
 void FUN_140c16160(ASObj& obj, const char* szName, ASArray arr);
-void FUN_1409e4950(MS2Ptr<CItem> item, CStringW& strOption, char* pHighSa);   // the item's option text
+void FUN_1409e4950(MS2Ptr<CItem> item, CStringW& strOption, bool* pHighSa);   // the item's option text
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -182,7 +182,6 @@ int UIItemEnchantTransformDialog::vfunc_65()
     return 1;
 }
 
-// MS2-FUNCTIONAL: stack frame 0x10 larger in the exe (extra pointer temps), no source form found
 // @0x140c3d020
 void UIItemEnchantTransformDialog::vfunc_43()
 {
@@ -198,9 +197,9 @@ void UIItemEnchantTransformDialog::vfunc_43()
             }
         }
     }
-    dialog = dynamic_cast<ASDialog*>((AScript*)m_30);
-    if (dialog != 0)
-        dialog->vfunc_2(1, 0, 0);
+    ASDialog* dialog2 = dynamic_cast<ASDialog*>((AScript*)m_30);
+    if (dialog2 != 0)
+        dialog2->vfunc_2(1, 0, 0);
 }
 
 // @0x140c3d150
@@ -261,7 +260,6 @@ void UIItemEnchantTransformDialog::vfunc_79(void* pPacket)
         FUN_140c3ead0();
 }
 
-// MS2-FUNCTIONAL: one pointer temp fewer in the exe frame around the child-binding references
 // @0x140c3d420
 void UIItemEnchantTransformDialog::FUN_140c3d420()
 {
@@ -269,14 +267,13 @@ void UIItemEnchantTransformDialog::FUN_140c3d420()
     MS2Ptr<Unk_TfBoard> board = FUN_140c02990("m_board");
     if (board == 0)
         return;
-    const MS2Ptr<Unk_TfButton>& submit = ((Unk_TfBoard*)board)->FUN_140acce30<Unk_TfButton>("m_submit");
-    if (submit.get() != 0) {
-        submit->FUN_1422cdfb0(GetStringCommonByKey(CStringW(L"s_item_enchant_transform_submit")));
+    if (MS2Ptr<Unk_TfButton> submit = ((Unk_TfBoard*)board)->FUN_140acce30<Unk_TfButton>("m_submit")) {
+        submit->FUN_1422cdfb0(GetStringCommonByKey(L"s_item_enchant_transform_submit"));
         submit->FUN_1422c1fe0(false);
     }
 }
 
-// MS2-FUNCTIONAL: exe frame 0x20 larger (extra temps around the MS2Ptr item copies), loop shape differs
+// MS2-FUNCTIONAL: the GetCount call and the bound-array argument take different registers in the exe (rcx / rdx-r8), no source form found
 // @0x140c3d5a0
 void UIItemEnchantTransformDialog::FUN_140c3d5a0()
 {
@@ -293,13 +290,12 @@ void UIItemEnchantTransformDialog::FUN_140c3d5a0()
     }
     FUN_14141f970(m_strTargetBag);
     Unk_TfGetItemFn pfnGetItem = FUN_141420330;
-    void* pItems = &m_targets;
+    ATL::CAtlArray<MS2Ptr<CItem> >* pItems = &m_targets;
     FUN_14141f770(m_strTargetBag, (int)m_targets.GetCount(), pItems, pfnGetItem, 0x415, 8);
     MS2Ptr<Unk_TfBoard> board = FUN_140c02990("m_targetItems");
     if (board == 0)
         return;
-    const MS2Ptr<Unk_TfBag>& bag = ((Unk_TfBoard*)board)->FUN_140accef0<Unk_TfBag>("m_itemBag");
-    if (bag.get() != 0) {
+    if (MS2Ptr<Unk_TfBag> bag = ((Unk_TfBoard*)board)->FUN_140accef0<Unk_TfBag>("m_itemBag")) {
         bag->FUN_1422dcca0(-1);
         bag->FUN_1422dd1d0();
         bag->FUN_1407cba60("bagId", m_strTargetBag);
@@ -308,7 +304,6 @@ void UIItemEnchantTransformDialog::FUN_140c3d5a0()
     ((Unk_TfBoard*)board)->vfunc_24(true);
 }
 
-// MS2-FUNCTIONAL: MS2Ptr temp / copy order and frame size differ
 // @0x140c3d960
 void UIItemEnchantTransformDialog::FUN_140c3d960(int nIndex)
 {
@@ -320,25 +315,25 @@ void UIItemEnchantTransformDialog::FUN_140c3d960(int nIndex)
     if (FUN_140592110(item) == 0)
         return;
     CStringW strOption;
-    char bHighSa = 0;
+    bool bHighSa = false;
     FUN_1409e4950(item, strOption, &bHighSa);
-    if (item->FUN_140526bd0() < 5 || bHighSa != 1) {
-        FUN_140c3de50(nIndex);
-    } else {
-        CStringW strAsk = GetStringCommonByKey(CStringW(L"s_item_enchant_transform_ask_high_sa_option_item"));
+    if (item->FUN_140526bd0() >= 5 && bHighSa == 1) {
+        CStringW strAsk = GetStringCommonByKey(L"s_item_enchant_transform_ask_high_sa_option_item");
         CStringW strMsg;
-        strMsg += strOption;
-        strMsg += L"\n";
-        strMsg += strAsk;
+        strMsg.Append(strOption);
+        strMsg.Append(L"\n");
+        strMsg.Append(strAsk);
         MS2Ptr<CMsgBoxData> box = FUN_140d73d20(0x11, CStringW(strMsg), 0, CStringW(L""));
         if (box.get() != 0) {
             box->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIItemEnchantTransformDialog::FUN_140c3eda0));
             box->FUN_141a01600(item->FUN_140526a50());
-            box->FUN_141a01ee0(item, item->FUN_140527b10(), 1, 0, -1, -1, true);
+            box->FUN_141a01ee0(item, item->FUN_140527b10(), 1, 0, -1, -1, 1);
             box->FUN_141a01700(0x475, 0x476, 0);
             box->FUN_140533ff0(nIndex);
             FUN_140d73c60(box);
         }
+    } else {
+        FUN_140c3de50(nIndex);
     }
 }
 
@@ -366,7 +361,8 @@ void UIItemEnchantTransformDialog::FUN_140c3de50(int nIndex)
     ASObj obj(2);
     obj.FUN_1407cbb20(s_strItemName, m_selected->FUN_140528160());
     obj.FUN_1407cba60("binding", m_strSelectBag);
-    obj.FUN_1407cbb20("transformFee", FUN_1405c2690(CStringW(L"s_item_enchant_transform_fee"), FUN_1409404f0(row->m_nFee)));
+    CStringW strFee = FUN_1405c2690(L"s_item_enchant_transform_fee", FUN_1409404f0(row->m_nFee));
+    obj.FUN_1407cbb20("transformFee", strFee);
     m_outputs.RemoveAll();
     for (unsigned i = 0; i < m_outputNames.GetCount(); ++i)
         FUN_141415600(m_outputNames[i]);
@@ -381,7 +377,7 @@ void UIItemEnchantTransformDialog::FUN_140c3de50(int nIndex)
             out->FUN_14052b340(nCount);
             m_outputs.Add(out);
         }
-        CString strName = StringFormat("{0}.{1}", m_strOutputBag, i);
+        CString strName = Unk_SocketFormat("{0}.{1}", m_strOutputBag, i);
         FUN_141415600(strName);
         FUN_141415450(strName, out, 0, 0x415, 0x800);
         m_outputNames.Add(strName);
@@ -391,19 +387,19 @@ void UIItemEnchantTransformDialog::FUN_140c3de50(int nIndex)
         outputs.FUN_1422bbf00(entry);
     }
     FUN_140c16160(obj, "outputItems", ASArray(outputs));
-    const MS2Ptr<Unk_TfButton>& submit = ((Unk_TfBoard*)board)->FUN_140acce30<Unk_TfButton>("m_submit");
-    if (submit.get() != 0)
+    if (MS2Ptr<Unk_TfButton> submit = ((Unk_TfBoard*)board)->FUN_140acce30<Unk_TfButton>("m_submit"))
         submit->FUN_1422c1fe0(true);
     ((Unk_TfBoard*)board)->Invoke("selectItem", obj.FUN_1422bb870());
 }
 
-// MS2-FUNCTIONAL: MS2Ptr temp / copy order and frame size differ
 // @0x140c3e820
 void UIItemEnchantTransformDialog::OnSubmitTransform()
 {
     if (FUN_14025e7b0()->m_8.FUN_1402c4c90(0x54) != 0)
         FUN_141275260(0x2f7, 1, 1);
-    if (m_state != 1 || !(m_selected == 0))
+    if (m_state != 1)
+        return;
+    if (m_selected == 0)
         return;
     MS2Ptr<Unk_TransformRow> row = FUN_1405934c0()->FUN_1405924d0(m_selected);
     if (row == 0)
@@ -418,12 +414,10 @@ void UIItemEnchantTransformDialog::OnSubmitTransform()
     MS2Ptr<Unk_TfBoard> board = FUN_140c02990("m_board");
     if (board == 0)
         return;
-    const MS2Ptr<Unk_TfButton>& submit = ((Unk_TfBoard*)board)->FUN_140acce30<Unk_TfButton>("m_submit");
-    if (submit.get() != 0)
+    if (MS2Ptr<Unk_TfButton> submit = ((Unk_TfBoard*)board)->FUN_140acce30<Unk_TfButton>("m_submit"))
         submit->FUN_1422c1fe0(false);
 }
 
-// MS2-FUNCTIONAL: one pointer temp fewer in the exe frame around the child-binding references
 // @0x140c3ead0
 void UIItemEnchantTransformDialog::FUN_140c3ead0()
 {
@@ -432,9 +426,8 @@ void UIItemEnchantTransformDialog::FUN_140c3ead0()
     MS2Ptr<Unk_TfBoard> board = FUN_140c02990("m_board");
     if (board == 0)
         return;
-    const MS2Ptr<Unk_TfButton>& submit = ((Unk_TfBoard*)board)->FUN_140acce30<Unk_TfButton>("m_submit");
-    if (submit.get() != 0) {
-        submit->FUN_1422cdfb0(GetStringCommonByKey(CStringW(L"s_item_enchant_transform_retry")));
+    if (MS2Ptr<Unk_TfButton> submit = ((Unk_TfBoard*)board)->FUN_140acce30<Unk_TfButton>("m_submit")) {
+        submit->FUN_1422cdfb0(GetStringCommonByKey(L"s_item_enchant_transform_retry"));
         submit->FUN_1422c1fe0(true);
     }
     FUN_140c3d5a0();

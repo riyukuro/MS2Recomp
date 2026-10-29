@@ -194,7 +194,7 @@ class CNametagSymbolData : public CPtred
 {
 public:
     CNametagSymbolData();                   // 0x1406c6ed0
-    virtual ~CNametagSymbolData();          // 0x1406c70f0
+    // virtual ~CNametagSymbolData();       // 0x1406c70f0 (implicit: the exe dtor stores no vptr)
 
     unsigned short m_nId;                   // +0x18 "id"
     NametagConditionType m_eCondition;      // +0x1c "conditionType"
@@ -223,14 +223,14 @@ public:
     int Load();                             // 0x1406c54d0 parses the xml (0 when the file is missing)
     CNametagSymbolDataPtr GetData(unsigned short nId);                  // 0x1406c58c0
     CNametagSymbolDataPtr FindByTitle(int nTitleId);                    // 0x1406c5950 the title symbol of a title id
-    bool Exists(unsigned short nId);                                    // 0x1406c5a70
-    bool IsType(unsigned short nId, int nType);                         // 0x1406c5b00
+    int Exists(unsigned short nId);                                     // 0x1406c5a70
+    int IsType(unsigned short nId, int nType);                          // 0x1406c5b00
     unsigned short FindIdByType(int nType);                             // 0x1406c5bb0 the first symbol of a condition type
-    bool IsShown(unsigned short nId);                                   // 0x1406c5c80 hideSymbol set and the condition holds not
+    int IsShown(unsigned short nId);                                    // 0x1406c5c80 hideSymbol set and the condition holds not
     unsigned int CheckCondition(unsigned short nId);                    // 0x1406c5d60 the own player fulfils the condition
     CStringW GetIconRanked(unsigned short nId, Unk_NametagActor* pActor);   // 0x1406c61a0
     CStringW GetIcon(unsigned short nId, Unk_NametagActor* pActor);     // 0x1406c6360
-    CStringW GetIcon(unsigned short nId);                               // 0x1406c66d0 the plain icon name
+    CStringW GetIconName(unsigned short nId, void* pUnused);            // 0x1406c66d0 the plain icon name
 
     static void CheckInit();                // 0x1406c7330
     static void SetInit(bool b);            // 0x1406c82c0

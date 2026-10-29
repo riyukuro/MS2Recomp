@@ -222,7 +222,7 @@ struct DungeonRankRequire
     void Load(Unk_140165cf0* pElem);                // 0x14031ea30
     short GetMaxScore();                            // 0x14031eb90
     int GetRank(short nScore);                      // 0x14031ebb0
-    int GetCount();                                 // 0x14031ec40
+    size_t GetCount();                              // 0x14031ec40
     short GetScore(unsigned __int64 nIndex);        // 0x14031ec70
 
     short m_maxScore;                               // +0

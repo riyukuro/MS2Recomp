@@ -193,9 +193,7 @@ extern Unk_RankTable* DAT_143ab0e50;
 // @0x140dc1390; the destructor 0x140dc1500 only runs ~CPtred
 RankDuelStatisticalData::RankDuelStatisticalData() : m_key(0), m_value1c(0), m_value20(0), m_flag24(false) {}
 
-// @0x140dc1500
-// MS2-FUNCTIONAL: not byte-exact yet (register allocation / block order differ)
-RankDuelStatisticalData::~RankDuelStatisticalData() {}
+// @0x140dc1500: the destructor is implicit (it only runs ~CPtred)
 
 // @0x140dbddc0
 CPvpRankDuelComponent::CPvpRankDuelComponent()
@@ -213,7 +211,6 @@ void CPvpRankDuelComponent::SetState(int nState)
 }
 
 // @0x140dbde70
-// MS2-FUNCTIONAL: not byte-exact yet (register allocation / block order differ)
 void CPvpRankDuelComponent::OnMessage(int nMessage, CInPacket& packet)
 {
     if (nMessage == 0xe)
@@ -241,7 +238,7 @@ void CPvpRankDuelComponent::OnMessage(int nMessage, CInPacket& packet)
             if (pDialog)
             {
                 pDialog->FUN_140f94390();
-                CStringW strText(GetStringCommonByKey(CStringW(L"s_rank_duel_matching_complete")));
+                CStringW strText(GetStringCommonByKey(L"s_rank_duel_matching_complete"));
                 MS2Ptr<CMsgBoxData> box = FUN_140d73d20(0, strText, pDialog, DAT_143ac4878);
                 if (box.get())
                 {
@@ -250,7 +247,7 @@ void CPvpRankDuelComponent::OnMessage(int nMessage, CInPacket& packet)
                     box->FUN_141a02480(1);
                     box->FUN_141a024a0(0);
                     box->FUN_141a024c0();
-                    box->FUN_141a01690(GetStringCommonByKey(CStringW(L"s_rank_duel_immediately_join")), CStringW(L""), CStringW(L""));
+                    box->FUN_141a01690(GetStringCommonByKey(L"s_rank_duel_immediately_join"), L"", L"");
                     FUN_140d73c60(box);
                 }
             }
@@ -262,7 +259,7 @@ void CPvpRankDuelComponent::OnMessage(int nMessage, CInPacket& packet)
             UIRankPvPDialog* pDialog = Unk_RankDialog<UIRankPvPDialog>(0x4f04);
             if (pDialog)
                 pDialog->FUN_140f94390();
-            FUN_140d73aa0(GetStringCommonByKey(CStringW(L"s_rank_duel_matching_fail")), 0, 0, CStringW(L""));
+            FUN_140d73aa0(GetStringCommonByKey(L"s_rank_duel_matching_fail"), 0, 0, L"");
             RANK_SFX(DAT_143ac4888);
         }
     }
@@ -303,7 +300,7 @@ void CPvpRankDuelComponent::OnMessage(int nMessage, CInPacket& packet)
             return;
         if (FUN_140c9b8b0(FUN_1409a8b10())->m_observer)
         {
-            CStringW strText(GetStringCommonByKey(CStringW(L"s_rank_duel_matching_complete_to_observe")));
+            CStringW strText(GetStringCommonByKey(L"s_rank_duel_matching_complete_to_observe"));
             UIRankPvPDialog* pDialog = Unk_RankDialog<UIRankPvPDialog>(0x4f04);
             if (pDialog == 0)
                 return;
@@ -453,10 +450,10 @@ Unk_RankTable* FUN_140dc19b0()
 }
 
 // @0x140dbf260
-// MS2-FUNCTIONAL: not byte-exact yet (register allocation / block order differ)
 int CPvpRankDuelComponent::CurrentRating()
 {
-    return FUN_140769000(FUN_140dc19b0(), m_value20)->m_rating;
+    Unk_RankEntry* pEntry = FUN_140769000(FUN_140dc19b0(), m_value20);
+    return pEntry->m_rating;
 }
 
 // @0x140dbf2a0

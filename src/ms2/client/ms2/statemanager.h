@@ -136,7 +136,7 @@ public:
     void FUN_1417dbfc0(NiActorManager* pkManager, unsigned int eSequenceID, NiControllerSequence* pkSeq,
         float fEventTime);                                          // slot 13
     void FUN_1417dc020(int n);                                      // slot 31
-    bool FUN_1417dc070(int nState);                                 // the state allows a position correction
+    int FUN_1417dc070(int nState);                                  // the state allows a position correction
     void FUN_1417dc110();                                           // flush the request queue
     MS2Ptr<Unk_StateArg22> FUN_1417dc230(float* pDelta);            // next due request
     void FUN_1417dc4c0(Unk_StateArg22* pReq);                       // apply a request's non-state parts
@@ -229,7 +229,6 @@ class StateNone : public State
 {
 public:
     StateNone(PCBase* pOwner);                                      // 0x1417df8b0
-    virtual ~StateNone();                                           // 0x1417dfaf0
     virtual int vfunc_1();                                          // 1  0x1417dfb50
     virtual void vfunc_4(StateData* pData);                         // 4  0x1417df900
     virtual void vfunc_5(int n);                                    // 5  0x1417df9b0
@@ -309,7 +308,7 @@ public:
     egf::Entity* m_pRope;                                           // +0x40 rope entity
     efd::Point3 m_pos48;                                            // +0x48 start position
     efd::Point3 m_pos54;                                            // +0x54 rope top
-    int m_n60;
+    float m_f60;                                                    // +0x60 (the ctor stores 0.0f via movss)
     Timer m_timer68;                                                // +0x68 grab delay
     Timer m_timerA0;                                                // +0xa0 climb
     Timer m_timerD8;                                                // +0xd8 horizontal input

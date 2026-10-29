@@ -42,13 +42,13 @@ CString FUN_1405a7e80(int n);                            // number -> text
 int FUN_140718170(const CString& str);                   // text -> number
 unsigned FUN_140869420();                                // millisecond clock
 int FUN_14028d260(float f);                              // seconds -> ms
-char FUN_1401c0090(const CString& a, const CString& b);  // strings are equal
+bool FUN_1401c0090(const CString& a, const CString& b);  // strings are equal
 void* FUN_14165f100(PCBase* p);
 void FUN_14165f170(PCBase* p);
 void FUN_140710590(COutPacket& packet);
 CStringW GetStringCommon(int nId);                         // string table text by id
 CStringW FUN_14052bd00(int nId, const CStringW& strArg);   // formatted system text
-void FUN_1412751f0(CStringW strText, int a, int b);      // system notice
+void FUN_1412751f0(const CStringW& strText, int a, int b);      // system notice
 
 // The strings singleton (FUN_1401d31f0): the station / effect names per call type.
 struct Unk_CcStrings
@@ -78,7 +78,7 @@ public:
 UICastingBar* FUN_140ac2270(int nId);
 
 // The actor's move-key state (PCBase::FUN_14166d240).
-class Unk_CcBuffMgr { public: Vector3 FUN_141683290(); };
+class Unk_CcBuffMgr { public: efd::Point3 FUN_141683290(); };
 Unk_CcBuffMgr* FUN_14166d240(PCBase* p);
 bool FUN_1416749c0(PCBase* p);
 
@@ -155,11 +155,7 @@ void StateCashCallData::vfunc_2(Unk_StateDataArg* p)
 }
 MS2_REPLACE_METHOD(0x141022B20, StateCashCallData, vfunc_2, 59, 0xC35DD492);
 
-// @0x141023f00
-// MS2-FUNCTIONAL: behaviour-equivalent; branch / temporary layout differs from the exe (permuter candidate)
-StateCashCallData::~StateCashCallData()
-{
-}
+// @0x141023f00 ~StateCashCallData is implicit (the exe stores no vftable).
 
 // ---- StateCashCall ----
 
@@ -176,7 +172,6 @@ StateCashCall::~StateCashCall()
 }
 
 // @0x141022c50
-// MS2-FUNCTIONAL: behaviour-equivalent; branch / temporary layout differs from the exe (permuter candidate)
 void StateCashCall::vfunc_4(StateData* pData)
 {
     State::vfunc_4(pData);
@@ -188,10 +183,7 @@ void StateCashCall::vfunc_4(StateData* pData)
     else
     {
         m_n10 = 0x6b;
-        {
-            efd::utf8string kName = GetEffectName();
-            m_pOwner->FUN_14166dd20(kName, 1.0f, false, false);
-        }
+        m_pOwner->FUN_14166dd20(GetEffectName(), 1.0f, false, false);
         unsigned nNow = FUN_140869420();
         int nDuration = GetDuration();
         m_nStart = nNow;
@@ -226,7 +218,6 @@ void StateCashCall::vfunc_7(int n)
 MS2_REPLACE_METHOD(0x141022EE0, StateCashCall, vfunc_7, 121, 0x7C5C2825);
 
 // @0x141022f60
-// MS2-FUNCTIONAL: behaviour-equivalent; branch / temporary layout differs from the exe (permuter candidate)
 void StateCashCall::vfunc_5(int n)
 {
     if (FUN_1417b8560() != 0)
@@ -237,10 +228,7 @@ void StateCashCall::vfunc_5(int n)
             {
                 MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(m_spCash->m_nItemUid);
                 if (spItem.get() != 0)
-                {
-                    CStringW strName = FUN_14052bd00(0xa0, spItem->FUN_140527b10());
-                    FUN_1412751f0(strName, 1, 1);
-                }
+                    FUN_1412751f0(FUN_14052bd00(0xa0, spItem->FUN_140527b10()), 1, 1);
             }
         }
         UICastingBar* pBar = FUN_140ac2270(0x4e72);
@@ -255,7 +243,8 @@ void StateCashCall::vfunc_5(int n)
 MS2_REPLACE_METHOD(0x141022F60, StateCashCall, vfunc_5, 412, 0x78998610);
 
 // @0x141023110
-// MS2-FUNCTIONAL: behaviour-equivalent; branch / temporary layout differs from the exe (permuter candidate)
+// MS2-FUNCTIONAL: the exe probably passes the zero point by value (PCBase::vfunc_68 taking an efd::Point3), so its copy sits in a
+// 16-aligned slot (0x40, not 0x38); pcbase.h declares the parameter void*
 void StateCashCall::vfunc_3(double fTime)
 {
     State::vfunc_3(fTime);
@@ -264,20 +253,25 @@ void StateCashCall::vfunc_3(double fTime)
     m_nElapsed += FUN_14028d260((float)fTime);
     if (m_nElapsed >= m_nEnd)
     {
-        if (m_n10 == 0x6b)
+        switch (m_n10) {
+        case 0x6b:
             OnCastEnd(fTime);
-        else if (m_n10 == 0x6c)
+            break;
+        case 0x6c:
             OnArrived(fTime);
-        else if (m_n10 == 0x6d)
+            break;
+        case 0x6d:
             OnLeave(fTime);
-        else
+            break;
+        default:
             vfunc_7(1);
+            break;
+        }
     }
 }
 MS2_REPLACE_METHOD(0x141023110, StateCashCall, vfunc_3, 277, 0xCDE0070E);
 
 // @0x141023230
-// MS2-FUNCTIONAL: behaviour-equivalent; branch / temporary layout differs from the exe (permuter candidate)
 void StateCashCall::vfunc_8(double fTime)
 {
     if (m_n10 != 0x6b)
@@ -286,9 +280,8 @@ void StateCashCall::vfunc_8(double fTime)
     MyPC* pRider = FUN_1417b84b0();
     if (pRider == 0)
         return;
-    Vector3 kPos = FUN_14166d240(pRider)->FUN_141683290();
-    Vector3 kArg = kPos;
-    pRider->vfunc_22(*reinterpret_cast<const efd::Point3*>(&kArg));
+    Unk_CcBuffMgr* pMgr = FUN_14166d240(pRider);
+    pRider->vfunc_22(pMgr->FUN_141683290());
     if (FUN_1416749c0(m_pOwner) != 0)
         pRider->vfunc_59(2, 0, 0, 0);
     else
@@ -305,18 +298,15 @@ void StateCashCall::vfunc_6()
 MS2_REPLACE_METHOD(0x141023330, StateCashCall, vfunc_6, 61, 0x06E3DF1C);
 
 // @0x141023380
-// MS2-FUNCTIONAL: behaviour-equivalent; branch / temporary layout differs from the exe (permuter candidate)
 int StateCashCall::GetCallType()
 {
     if (m_spCash.get() != 0)
         return m_spCash->m_nCallType;
-    else
-        return 0;
+    return 0;
 }
 MS2_REPLACE_METHOD(0x141023380, StateCashCall, GetCallType, 60, 0xB49FCAB5);
 
 // @0x1410233d0
-// MS2-FUNCTIONAL: behaviour-equivalent; branch / temporary layout differs from the exe (permuter candidate)
 void StateCashCall::OnCastEnd(double fTime)
 {
     if (FUN_1417b8560() != 0)
@@ -326,97 +316,95 @@ void StateCashCall::OnCastEnd(double fTime)
             pBar->FUN_1418e1390();
     }
     CString strEffect = GetStationName();
-    if (strEffect.IsEmpty())
-    {
-        SetPhase(0x6d, 100);
-    }
-    else
+    if (!strEffect.IsEmpty())
     {
         SpawnEffect(strEffect);
         int nWait = 0xc80;
-        if (FUN_1401c0090(strEffect, FUN_1401d31f0()->m_str3a0) != 0)
+        if (FUN_1401c0090(strEffect, FUN_1401d31f0()->m_str3a0))
             nWait = 1000;
         SetPhase(0x6c, nWait);
+    }
+    else
+    {
+        SetPhase(0x6d, 100);
     }
     m_pOwner->FUN_14166dda0(0);
 }
 MS2_REPLACE_METHOD(0x1410233D0, StateCashCall, OnCastEnd, 243, 0x173C3302);
 
 // @0x1410234d0
-// MS2-FUNCTIONAL: behaviour-equivalent; branch / temporary layout differs from the exe (permuter candidate)
 void StateCashCall::OnArrived(double fTime)
 {
     int nWait = 100;
-    int nType = GetCallType();
-    if (0 < nType && nType <= 3)
-    {
-        PCBase* pPC = FUN_1417b8370();
-        if (pPC != 0)
-            pPC->vfunc_23(1);
-        nWait = 1000;
+    switch (GetCallType()) {
+    case 1:
+    case 2:
+    case 3:
+        {
+            PCBase* pPC = FUN_1417b8370();
+            if (pPC != 0)
+                pPC->vfunc_23(1);
+            nWait = 1000;
+        }
+        break;
     }
     SetPhase(0x6d, nWait);
 }
 MS2_REPLACE_METHOD(0x1410234D0, StateCashCall, OnArrived, 133, 0xCF0259D6);
 
 // @0x141023560
-// MS2-FUNCTIONAL: behaviour-equivalent; branch / temporary layout differs from the exe (permuter candidate)
 void StateCashCall::OnLeave(double fTime)
 {
     int nWait = 100;
     SendRequest();
-    int nType = GetCallType();
-    if (0 < nType)
-    {
-        if (nType < 5)
-        {
-            nWait = 3000;
-        }
-        else if (nType == 5)
-        {
-            nWait = FUN_14028d260(*FUN_140298f40(&static_cast<Client::Constants*>(FUN_1401d3200())->CashCallMedicLeaveDelay));
-            if (FUN_1417b8560() != 0)
-            {
-                CStringW strNotice = GetStringCommon(0x98);
-                FUN_1412751f0(strNotice, 1, 1);
-            }
-        }
+    switch (GetCallType()) {
+    case 1:
+    case 2:
+    case 3:
+    case 4:
+        nWait = 3000;
+        break;
+    case 5:
+        nWait = FUN_14028d260(*FUN_140298f40(&static_cast<Client::Constants*>(FUN_1401d3200())->CashCallMedicLeaveDelay));
+        if (FUN_1417b8560() != 0)
+            FUN_1412751f0(GetStringCommon(0x98), 1, 1);
+        break;
     }
     SetPhase(0x6e, nWait);
 }
 MS2_REPLACE_METHOD(0x141023560, StateCashCall, OnLeave, 227, 0x9331AA79);
 
 // @0x141023650
-// MS2-FUNCTIONAL: behaviour-equivalent; branch / temporary layout differs from the exe (permuter candidate)
 void StateCashCall::SendRequest()
 {
-    if (FUN_1417b8560() != 0 && !m_spCash.IsNull())
+    if (FUN_1417b8560() == 0)
+        return;
+    if (m_spCash.IsNull())
+        return;
+    if (m_spCash->m_nItemUid == 0)
     {
-        if (m_spCash->m_nItemUid == 0)
+        if (m_spCash->m_nCallType == 2 || m_spCash->m_nCallType == 1)
         {
-            if (m_spCash->m_nCallType == 2 || m_spCash->m_nCallType == 1)
-            {
-                COutPacket kPacket(static_cast<int>(SendOp::RequestTaxi), 0);
-                kPacket.WriteUInt8(3);
-                kPacket.WriteInt32(m_spCash->m_nPrice);
-                FUN_140710590(kPacket);
-            }
-            else if (m_spCash->m_nCallType == 3)
-            {
-                COutPacket kPacket(static_cast<int>(SendOp::RequestTaxi), 0);
-                kPacket.WriteUInt8(4);
-                kPacket.WriteInt32(m_spCash->m_nPrice);
-                FUN_140710590(kPacket);
-            }
+            COutPacket kPacket(static_cast<int>(SendOp::RequestTaxi), 0);
+            kPacket.WriteUInt8(3);
+            kPacket.WriteInt32(m_spCash->m_nPrice);
+            FUN_140710590(kPacket);
         }
-        else
+        else if (m_spCash->m_nCallType == 3)
         {
-            MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(m_spCash->m_nItemUid);
-            if (spItem.get() != 0)
-                DAT_143ab2a90.FUN_140a63880(spItem.get(), StringFormat(L"{0}", m_spCash->m_nPrice));
+            COutPacket kPacket(static_cast<int>(SendOp::RequestTaxi), 0);
+            kPacket.WriteUInt8(4);
+            kPacket.WriteInt32(m_spCash->m_nPrice);
+            FUN_140710590(kPacket);
         }
-        m_bSent = 1;
     }
+    else
+    {
+        MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(m_spCash->m_nItemUid);
+        if (spItem.get() != 0)
+            DAT_143ab2a90.FUN_140a63880(spItem.get(), StringFormat(L"{0}", m_spCash->m_nPrice));
+    }
+    m_bSent = 1;
 }
 MS2_REPLACE_METHOD(0x141023650, StateCashCall, SendRequest, 568, 0x7AACEB9C);
 
@@ -460,37 +448,35 @@ void StateCashCall::SpawnEffect(const CString& strEffect)
 MS2_REPLACE_METHOD(0x1410238D0, StateCashCall, SpawnEffect, 623, 0x4B23E957);
 
 // @0x141023b50
-// MS2-FUNCTIONAL: behaviour-equivalent; branch / temporary layout differs from the exe (permuter candidate)
 efd::utf8string StateCashCall::GetEffectName()
 {
-    int nType = GetCallType();
-    if (nType == 4)
+    switch (GetCallType()) {
+    case 4:
         return efd::utf8string("BlackMarketHelicopter_A");
-    else if (nType == 5)
+    case 5:
         return efd::utf8string("EmergencyHelicopter_A");
-    else if (nType == 6)
+    case 6:
         return efd::utf8string("Object_React_A");
-    else
-        return efd::utf8string("AirTaxi_A");
+    }
+    return efd::utf8string("AirTaxi_A");
 }
 MS2_REPLACE_METHOD(0x141023B50, StateCashCall, GetEffectName, 202, 0x0E80E190);
 
 // @0x141023c20
-// MS2-FUNCTIONAL: behaviour-equivalent; branch / temporary layout differs from the exe (permuter candidate)
 int StateCashCall::GetDuration()
 {
     int nDuration = reinterpret_cast<Unk_CcConstValue*>(&static_cast<Client::Constants*>(FUN_1401d3200())->TaxiCallDuration)->FUN_140ad5c50();
-    int nType = GetCallType();
-    if (nType == 1)
-    {
+    switch (GetCallType()) {
+    case 2:
+    case 3:
+        nDuration = reinterpret_cast<Unk_CcConstValue*>(&static_cast<Client::Constants*>(FUN_1401d3200())->AirTaxiCashCallDuration)->FUN_140ad5c50();
+        break;
+    case 1:
         nDuration = reinterpret_cast<Unk_CcConstValue*>(&static_cast<Client::Constants*>(FUN_1401d3200())->AirTaxiMesoCallDuration)->FUN_140ad5c50();
-    }
-    else if (1 < nType)
-    {
-        if (nType < 4)
-            nDuration = reinterpret_cast<Unk_CcConstValue*>(&static_cast<Client::Constants*>(FUN_1401d3200())->AirTaxiCashCallDuration)->FUN_140ad5c50();
-        else if (nType == 6)
-            nDuration = reinterpret_cast<Unk_CcConstValue*>(&static_cast<Client::Constants*>(FUN_1401d3200())->BankCallDuration)->FUN_140ad5c50();
+        break;
+    case 6:
+        nDuration = reinterpret_cast<Unk_CcConstValue*>(&static_cast<Client::Constants*>(FUN_1401d3200())->BankCallDuration)->FUN_140ad5c50();
+        break;
     }
     if (FUN_1417b84b0() == 0)
         nDuration = nDuration - 200;
@@ -499,33 +485,29 @@ int StateCashCall::GetDuration()
 MS2_REPLACE_METHOD(0x141023C20, StateCashCall, GetDuration, 186, 0xDC4F1236);
 
 // @0x141023ce0
-// MS2-FUNCTIONAL: behaviour-equivalent; branch / temporary layout differs from the exe (permuter candidate)
 CStringW StateCashCall::GetCastText()
 {
-    int nType = GetCallType();
-    if (nType == 6)
+    if (GetCallType() == 6)
         return GetStringCommon(0x65a);
     return GetStringCommon(0x64c);
 }
 MS2_REPLACE_METHOD(0x141023CE0, StateCashCall, GetCastText, 106, 0x45FDE91C);
 
 // @0x141023d50
-// MS2-FUNCTIONAL: behaviour-equivalent; branch / temporary layout differs from the exe (permuter candidate)
 CString StateCashCall::GetStationName()
 {
-    int nType = GetCallType();
-    if (nType == 1)
+    switch (GetCallType()) {
+    case 2:
+    case 3:
+        return FUN_1401d31f0()->m_str3a0;
+    case 1:
         return FUN_1401d31f0()->m_str3a8;
-    if (1 < nType)
-    {
-        if (nType < 4)
-            return FUN_1401d31f0()->m_str3a0;
-        if (nType == 4)
-            return FUN_1401d31f0()->m_str3b8;
-        if (nType == 5)
-            return FUN_1401d31f0()->m_str3b0;
+    case 4:
+        return FUN_1401d31f0()->m_str3b8;
+    case 5:
+        return FUN_1401d31f0()->m_str3b0;
     }
-    return CString("");
+    return "";
 }
 MS2_REPLACE_METHOD(0x141023D50, StateCashCall, GetStationName, 298, 0x0867ED29);
 

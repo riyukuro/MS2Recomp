@@ -518,7 +518,8 @@ int UIDungeonRewardDialog::vfunc_o178_1(void* avatar) { if(!avatar)return 0;FUN_
 MS2_REPLACE_METHOD_VIA(0x140E227E0, UIDungeonRewardDialog, IUIAvatarEventListener, vfunc_o178_1, 55, 0x208A69DD);
 
 // @0x140e24060
-// MS2-FUNCTIONAL: ~29 bytes larger than exe; stack-slot/CString-temp ordering of the gauge section differs
+// MS2-FUNCTIONAL: the code is identical but the frame is 0x10 larger; the exe packs the two score shorts at
+// 0x28/0x2a with the rank at 0x2c, ours leaves a gap after the first short.
 void UIDungeonRewardDialog::FUN_140e24060() {
  if(m_1a0==0)return;
  Unk_RewardMissionPtr mission=FUN_140931510()->FUN_140d9f4e0();
@@ -528,6 +529,7 @@ void UIDungeonRewardDialog::FUN_140e24060() {
  int cur=mission->FUN_140c9ceb0();
  int max=mission->FUN_140c9cf50();
  int rank=mission->FUN_140c9cff0();
+ {
  CString rankName=FUN_14031c9d0(rank);
  Unk_RewardPtr<Unk_RewardClip> gauge=m_1a0->FUN_1409b4560("m_rankGauge");
  if(gauge) {
@@ -535,14 +537,13 @@ void UIDungeonRewardDialog::FUN_140e24060() {
   float ratio=(float)cur/(float)max;
   if(ratio<0.0f)ratio=0.0f;
   if(1.0f<ratio)ratio=1.0f;
-  int width=(int)(ratio*294.0f);
+  int width=(int)(294.0f*ratio);
   Unk_RewardPtr<Unk_RewardClip> mask=gauge->FUN_1409b4560("m_mask");
   if(mask) mask->FUN_1422c0e20(width);
   Unk_RewardPtr<Unk_RewardClip> eff=gauge->FUN_1409b4560("m_eff");
   if(eff) {
    float base=(float)width;
-   float x=(base+mask->FUN_1422c10a0())-10.0f;
-   eff->FUN_1422c0420(x);
+   eff->FUN_1422c0420((base+mask->FUN_1422c10a0())-10.0f);
   }
  }
  Unk_RewardPtr<Unk_RewardClip> movie=m_1a0->FUN_1409b4560("m_rankMovie");
@@ -552,14 +553,14 @@ void UIDungeonRewardDialog::FUN_140e24060() {
  rankEffect->vfunc_15(rankName);
  Unk_RewardPtr<Unk_RewardClip> s1=movie->FUN_1409b4560("m_RankSEffect1");
  Unk_RewardPtr<Unk_RewardClip> s2=movie->FUN_1409b4560("m_RankSEffect2");
- if(s1&&s2) {
-  bool show=3<rank;
+ if(s1.get()&&s2.get()) {
+  bool show=rank>=4;
   s1->vfunc_4(show);
   s2->vfunc_4(show);
  }
  Unk_RewardPtr<Unk_RewardClip> sa=movie->FUN_1409b4560("m_rankSAEffect");
  if(sa) {
-  bool show=2<rank;
+  bool show=rank>=3;
   sa->vfunc_4(show);
  }
  Unk_RewardPtr<Unk_RewardClip> rec=movie->FUN_1409b4560("m_effNewRecord");
@@ -569,21 +570,21 @@ void UIDungeonRewardDialog::FUN_140e24060() {
  }
  Unk_RewardPtr<Unk_RewardText> total=m_1a0->FUN_1409b4620("m_missionScoreTotal");
  if(total) total->FUN_1422c4cd0(StringFormat(L"{0}/{1}",cur,max));
+ }
  FUN_140e25dc0(entries.FUN_140c9f760());
  for(size_t i=0;i<m_labels.FUN_140bd0940();i++) {
   Unk_RewardPtr<Unk_RewardClip> label=m_labels.FUN_140bcc370(i);
   if(label==0)continue;
-  if(i<entries.FUN_140c9f760()) {
-   Unk_RewardPtr<Unk_RewardText> name=label->FUN_1409b4620("m_missionName");
-   Unk_RewardPtr<Unk_RewardText> score=label->FUN_1409b4620("m_missionScore");
-   if(name==0||score==0)continue;
-   Unk_RewardEntryPtr entry=entries.FUN_140c9eb50(i);
-   if(entry==0)continue;
-   name->FUN_1422c4cd0(entry->FUN_140b1e060());
-   short a=entry->FUN_140b1e030();   // signed: the exe formats with StringFormat<short,short> (0x140b1f230)
-   short b=entry->FUN_140b1e010();
-   score->FUN_1422c4cd0(StringFormat(L"{0}/{1}",b,a));
-  } else label->vfunc_4(false);
+  if(i>=entries.FUN_140c9f760()) {label->vfunc_4(false);continue;}
+  Unk_RewardPtr<Unk_RewardText> name=label->FUN_1409b4620("m_missionName");
+  Unk_RewardPtr<Unk_RewardText> score=label->FUN_1409b4620("m_missionScore");
+  if(name==0||score==0)continue;
+  Unk_RewardEntryPtr entry=entries.FUN_140c9eb50(i);
+  if(entry==0)continue;
+  name->FUN_1422c4cd0(entry->FUN_140b1e060());
+  short a=entry->FUN_140b1e030();   // signed: the exe formats with StringFormat<short,short> (0x140b1f230)
+  short b=entry->FUN_140b1e010();
+  score->FUN_1422c4cd0(StringFormat(L"{0}/{1}",b,a));
  }
 }
 MS2_REPLACE_METHOD(0x140E24060, UIDungeonRewardDialog, FUN_140e24060, 3047, 0x98D9CB8A);

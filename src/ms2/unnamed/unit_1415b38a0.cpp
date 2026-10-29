@@ -7,6 +7,7 @@
 #include "ms2/placeholder/nmstream.h"
 #include "ms2/placeholder/nmobjects.h"
 #include "ms2/placeholder/nmfunc.h"
+#include "ms2/placeholder/nmencoder.h"
 #include "ms2/ms2recover.h"
 
 extern void FUN_14156bcb0(void*, void*, void*);
@@ -16,7 +17,7 @@ extern void FUN_14156bf10(void*);
 extern void FUN_1415f1be0(void*, const void*);
 extern void FUN_1415f1930(void*, const void*);
 extern unsigned int FUN_1415f9990(void*);
-extern int FUN_1415fb6d0(void*);
+extern int FUN_1415fb6d0(CNMSerializableDecoder*);
 extern int FUN_1415fb750(void*);
 
 // MS2-FUNCTIONAL 0x1415b38a0: constructs the event and its note payload.
@@ -42,20 +43,19 @@ CNMNoteInstantMsgEvent::CNMNoteInstantMsgEvent(CNMNoteInfo note)
 
 // MS2-FUNCTIONAL 0x1415b3a70: frames event encoding.
 // @0x1415b3a70
-unsigned int CNMNoteInstantMsgEvent::EncodeFramed(CNMStream* stream)
+unsigned int CNMNoteInstantMsgEvent::EncodeFramed(CNMStream* pStream)
 {
-    unsigned char storage[0x18];
-    FUN_14156bcb0(storage, stream, this);
-    auto result = Encode(reinterpret_cast<CNMEncoder*>(storage), stream);
-    FUN_14156bd50(storage);
-    return result;
+    CNMSerializableEncoder encoder(pStream, this);
+    return CNMNoteInstantMsgEvent::Encode(reinterpret_cast<CNMEncoder*>(&encoder), pStream);
 }
 
 // MS2-FUNCTIONAL 0x1415b3ad0: dispatches encoding by event format.
 // @0x1415b3ad0
-unsigned int CNMNoteInstantMsgEvent::EncodeDispatch(CNMEncoder* encoder, CNMStream* stream)
+unsigned int CNMNoteInstantMsgEvent::EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream)
 {
-    return m_bFormat == 1 ? Encode(encoder, stream) : EncodeFramed(stream);
+    if (m_bFormat == 1)
+        return CNMNoteInstantMsgEvent::Encode(pEncoder, pStream);
+    return CNMNoteInstantMsgEvent::EncodeFramed(pStream);
 }
 
 // MS2-FUNCTIONAL 0x1415b3b30: serializes the nested note payload.
@@ -70,22 +70,21 @@ unsigned int CNMNoteInstantMsgEvent::Encode(CNMEncoder* encoder, CNMStream* stre
 
 // MS2-FUNCTIONAL 0x1415b3ba0: decodes a framed event.
 // @0x1415b3ba0
-unsigned int CNMNoteInstantMsgEvent::DecodeFramed(CNMStream* stream)
+unsigned int CNMNoteInstantMsgEvent::DecodeFramed(CNMStream* pStream)
 {
-    unsigned char storage[0x38];
-    FUN_14156be10(storage, stream, this);
-    unsigned int result = 0;
-    if (FUN_1415fb750(storage))
-        result = Decode(reinterpret_cast<CNMSerializableDecoder*>(storage), stream);
-    FUN_14156bf10(storage);
-    return result;
+    CNMSerializableDecoder decoder(pStream, this);
+    if (FUN_1415fb750(&decoder) == 0)
+        return 0;
+    return CNMNoteInstantMsgEvent::Decode(&decoder, pStream);
 }
 
 // MS2-FUNCTIONAL 0x1415b3c30: dispatches decoding by event format.
 // @0x1415b3c30
-unsigned int CNMNoteInstantMsgEvent::DecodeDispatch(CNMSerializableDecoder* decoder, CNMStream* stream)
+unsigned int CNMNoteInstantMsgEvent::DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream)
 {
-    return FUN_1415fb6d0(decoder) == 2 ? DecodeFramed(stream) : Decode(decoder, stream);
+    if (FUN_1415fb6d0(pDecoder) == 2)
+        return CNMNoteInstantMsgEvent::DecodeFramed(pStream);
+    return CNMNoteInstantMsgEvent::Decode(pDecoder, pStream);
 }
 
 // MS2-FUNCTIONAL 0x1415b3c90: restores the nested note payload.

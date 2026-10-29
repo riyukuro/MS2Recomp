@@ -23,8 +23,7 @@ public:
     void vfunc_8(double fTime);                                                         // 0x1417c84b0
 
     void FUN_1417c8560();                                                               // 0x1417c8560 band = (surface z - 200) / 150
-    Vector3* FUN_1417c85d0(Vector3* pOut, const Vector3& kIn,
-        double fTime);                                                                  // 0x1417c85d0 damp + clamp the step
+    Vector3 FUN_1417c85d0(Vector3 kMove, double fTime);                                 // 0x1417c85d0 damp + clamp the z step
 
     int m_nBand;                        // +0x40 surface band the actor is in
     bool m_bBandChanged;                // +0x44 the band changed since the last check

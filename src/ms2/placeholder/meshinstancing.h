@@ -85,7 +85,7 @@ public:
     unsigned FUN_14147cf40();
     int FUN_14147cf90(const Unk_MeshInstancingConfig&);
     int FUN_14147cfd0(const Unk_MeshInstancingConfig&);
-    bool FUN_14147d010(egf::Entity*);
+    int FUN_14147d010(egf::Entity*);
     void FUN_14147d0c0(bool);
     void FUN_14147d180(bool);
     NiNode* FUN_14147d200(egf::Entity*);
@@ -101,7 +101,7 @@ public:
     bool FUN_1413ec890() const;                 // flag28
     void FUN_1413ed2f0();                       // dirty = true
     void FUN_1413ed300(int nCount);             // config.activeCount = nCount
-    void* FUN_14147d2f0(void* out, void* a, void* b);
+    efd::utf8string FUN_14147d2f0();            // the source entity's model name
     efd::SmartPointer<egf::Entity> source;
     egf::EntityID id10, id18;
     unsigned capacity;

@@ -73,7 +73,7 @@ Unk_JcRewardUI* FUN_140a7b2b0(int nId);
 AScript* FUN_1409ee290(MS2Ptr<AScript>* p);
 AScript* FUN_1409ee240(MS2Ptr<AScript>* p);
 struct Unk_JcInvoke4 { Scaleform::GFx::Value FUN_14190b490(const char* szMethod, unsigned nW, unsigned nH, float fScale); };
-void FUN_1422bce00(Scaleform::GFx::Value* pValue, int n);
+void FUN_1422bce00(Scaleform::GFx::Value* pValue, unsigned __int64 n);   // GallerySet: 64-bit value
 void FUN_1422bce40(Scaleform::GFx::Value* pValue, const AScript& obj);
 struct Unk_JcInvoke1 { Scaleform::GFx::Value FUN_1409ba030(const char* szMethod, int n); };
 struct Unk_JcInvoke2 { Scaleform::GFx::Value FUN_1409ba0d0(const char* szMethod, int a1, int a2); };
@@ -92,17 +92,16 @@ Unk_JcWorld* FUN_1403ed2d0();
 static bool s_bValid;                                           // 0x143af3588 the tables were read
 
 // the exe's is a member of the dialog's script (this, hidden return slot in rdx); a free function put the slot in rcx
-struct Unk_JcInvokeSkill { Scaleform::GFx::Value FUN_1419dc5e0(const char* szMethod, int n, ASObj& obj); };
+struct Unk_JcInvokeSkill { Scaleform::GFx::Value FUN_1419dc5e0(const char* szMethod, unsigned __int64 n, ASObj& obj); };
 
 // @0x1419dc5e0
-Scaleform::GFx::Value Unk_JcInvokeSkill::FUN_1419dc5e0(const char* szMethod, int n, ASObj& obj)
+Scaleform::GFx::Value Unk_JcInvokeSkill::FUN_1419dc5e0(const char* szMethod, unsigned __int64 n, ASObj& obj)
 {
-    AScript* pDlg = reinterpret_cast<AScript*>(this);
     ASArgList args;
     args.FUN_1409b2800(2);
     FUN_1422bce00(args.FUN_1409b1f70(0), n);
     FUN_1422bce40(args.FUN_1409b1f70(1), obj);
-    return pDlg->FUN_1422bb8f0(szMethod, args);
+    return reinterpret_cast<AScript*>(this)->FUN_1422bb8f0(szMethod, args);
 }
 
 #ifndef MS2_HOOK_DLL
@@ -163,11 +162,11 @@ void UIJobChangeDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
 {
     FUN_1419dcf80();
     CString strArg = pArgs->FUN_1422b8d30();
-    unsigned nIndex = atoi(CString(strArg.GetAt(7), 1));
+    size_t nIndex = atoi(CString(strArg.GetAt(7), 1));
     MS2Ptr<JobPreview> spPreview(0);
     if (m_previews.Lookup(m_nJob, spPreview))
     {
-        if (spPreview->m_skills.GetCount() <= nIndex)
+        if (nIndex >= spPreview->m_skills.GetCount())
             return;
         ASTooltip tip(FUN_1403ed2d0()->FUN_141bd0cc0(), 0x10, 2);
         if (FUN_1409e1b80(&tip, spPreview->m_skills[nIndex], 0) != 0)
@@ -198,7 +197,8 @@ void UIJobChangeDialog::vfunc_43()
     int n;
     if (pDlg != 0 && (pUI = FUN_140a7b2b0(0x4e40)) != 0 && (n = pUI->FUN_141b1d3d0()) != -1)
     {
-        pDlg->vfunc_2(1, 0, (int)((double)(n - pDlg->FUN_1422c13b0()) * 0.5));
+        n = (int)((double)(n - pDlg->FUN_1422c13b0()) * 0.5);
+        pDlg->vfunc_2(1, 0, n);
         return;
     }
     if (FUN_1409ee240(&m_30) != 0)
@@ -218,8 +218,8 @@ void UIJobChangeDialog::FUN_1419db600()
 void UIJobChangeDialog::LoadJobPreview()
 {
     TiXmlDocument doc;
-    CString path = FUN_14071a5b0(CString("Table"), CString("jobPreview.xml"));
-    if (FUN_140166420()->FUN_1403974b0(&doc, path, 0, true, false) == 0)
+    bool bFailed = FUN_140166420()->FUN_1403974b0(&doc, FUN_14071a5b0("Table", "jobPreview.xml"), 0, true, false) == 0;
+    if (bFailed)
         return;
     Unk_140165cf0* root = ((Unk_140165cf0*)&doc)->FUN_140165cf0("ms2");
     if (root == 0)
@@ -251,8 +251,8 @@ void UIJobChangeDialog::LoadJobPreview()
 void UIJobChangeDialog::LoadJobDescription()
 {
     TiXmlDocument doc;
-    CStringA path = FUN_14071ae20(CStringA("korJobDescription.xml"));
-    if (FUN_140166420()->FUN_1403974b0(&doc, path, 0, true, false) == 0)
+    bool bFailed = FUN_140166420()->FUN_1403974b0(&doc, FUN_14071ae20("korJobDescription.xml"), 0, true, false) == 0;
+    if (bFailed)
         return;
     Unk_140165cf0* root = ((Unk_140165cf0*)&doc)->FUN_140165cf0("ms2");
     if (root == 0)
@@ -278,30 +278,30 @@ void UIJobChangeDialog::FUN_1419dbe30(int nJob)
 {
     FUN_1419dcf80();
     ASDialog* pDlg = dynamic_cast<ASDialog*>((AScript*)m_30);
-    if (pDlg == 0)
-        return;
-    MS2Ptr<JobPreview> spPreview(0);
-    if (m_previews.Lookup(nJob, spPreview))
+    if (pDlg != 0)
     {
-        if (spPreview->m_skills.GetCount() != spPreview->m_levels.GetCount())
-            return;
-        for (size_t i = 0; i < spPreview->m_skills.GetCount(); i++)
+        MS2Ptr<JobPreview> spPreview(0);
+        if (m_previews.Lookup(nJob, spPreview))
         {
-            int nSkill = spPreview->m_skills[i];
-            unsigned short nLevel = spPreview->m_levels[i];
-            Unk_JcSkillRef ref = FUN_1401958b0()->FUN_1407ee1d0(nSkill);
-            if (!ref.FUN_1407f6e90())
+            if (spPreview->m_skills.GetCount() != spPreview->m_levels.GetCount())
+                return;
+            for (size_t i = 0; i < spPreview->m_skills.GetCount(); i++)
             {
+                int nSkill = spPreview->m_skills[i];
+                unsigned short nLevel = spPreview->m_levels[i];
+                Unk_JcSkillRef ref = FUN_1401958b0()->FUN_1407ee1d0(nSkill);
+                if (ref.FUN_1407f6e90())
+                    continue;
                 CStringW strLevel;
                 strLevel = FUN_1409e88d0(0x582, nLevel);
                 ASObj obj(2);
                 obj.FUN_1407cbb20("skillName", FUN_1401a9d70()->FUN_141811980(4, nSkill));
                 obj.FUN_1407cbb20("skillLevel", strLevel);
                 obj.FUN_1407cba60("imgPath", ref.FUN_14063ed50()->m_strIcon);
-                reinterpret_cast<Unk_JcInvokeSkill*>(pDlg)->FUN_1419dc5e0("setSkill", (int)i, obj);
+                reinterpret_cast<Unk_JcInvokeSkill*>(pDlg)->FUN_1419dc5e0("setSkill", i, obj);
             }
+            reinterpret_cast<Unk_JcInvoke1*>(pDlg)->FUN_1409ba030("setDifficulty", spPreview->m_nDifficulty);
         }
-        reinterpret_cast<Unk_JcInvoke1*>(pDlg)->FUN_1409ba030("setDifficulty", spPreview->m_nDifficulty);
     }
 }
 
@@ -310,20 +310,19 @@ void UIJobChangeDialog::FUN_1419dc1e0(int nJob)
 {
     FUN_1419dcf80();
     ASDialog* pDlg = dynamic_cast<ASDialog*>((AScript*)m_30);
-    if (pDlg == 0)
-        return;
-    MS2Ptr<JobDescription> spDesc(0);
-    if (m_descs.Lookup(nJob, spDesc))
+    if (pDlg != 0)
     {
-        MS2Ptr<ASTextField> spDescText = FUN_140bb4cf0("m_jobDesc");
-        if (spDescText.get())
-            spDescText->FUN_1422c4cd0(spDesc->m_strSpecific);
-        MS2Ptr<ASTextField> spHistoryText = FUN_140bb4cf0("m_jobHistory");
-        if (spHistoryText.get())
-            spHistoryText->FUN_1422c4cd0(spDesc->m_strHistory);
-        reinterpret_cast<Unk_JcInvokeS*>(pDlg)->FUN_140e78470("setJobName", spDesc->m_strSub, spDesc->m_strMain);
-        reinterpret_cast<Unk_JcInvoke1*>(pDlg)->FUN_1409ba030("setJob", nJob);
-        reinterpret_cast<Unk_JcInvoke2*>(pDlg)->FUN_1409ba0d0("setVideo", 1, nJob);
+        MS2Ptr<JobDescription> spDesc(0);
+        if (m_descs.Lookup(nJob, spDesc))
+        {
+            if (MS2Ptr<ASTextField> spDescText = FUN_140bb4cf0("m_jobDesc"))
+                spDescText->FUN_1422c4cd0(spDesc->m_strSpecific);
+            if (MS2Ptr<ASTextField> spHistoryText = FUN_140bb4cf0("m_jobHistory"))
+                spHistoryText->FUN_1422c4cd0(spDesc->m_strHistory);
+            reinterpret_cast<Unk_JcInvokeS*>(pDlg)->FUN_140e78470("setJobName", spDesc->m_strMain, spDesc->m_strSub);
+            reinterpret_cast<Unk_JcInvoke1*>(pDlg)->FUN_1409ba030("setJob", nJob);
+            reinterpret_cast<Unk_JcInvoke2*>(pDlg)->FUN_1409ba0d0("setVideo", 1, nJob);
+        }
     }
 }
 
@@ -342,13 +341,13 @@ void UIJobChangeDialog::FUN_1419dc510(int nJob)
 }
 
 // @0x1419dc530
-bool UIJobChangeDialog::FUN_1419dc530()
+int UIJobChangeDialog::FUN_1419dc530()
 {
     FUN_1419dcf80();
     MS2Ptr<JobPreview> spPreview(0);
-    if (!m_previews.Lookup(m_nJob, spPreview))
-        return false;
-    return spPreview->m_nDifficulty > 4;
+    if (m_previews.Lookup(m_nJob, spPreview))
+        return spPreview->m_nDifficulty >= 5 ? 1 : 0;
+    return 0;
 }
 
 // @0x1419db000 siblings: the nested classes

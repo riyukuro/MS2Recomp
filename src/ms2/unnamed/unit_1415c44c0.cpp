@@ -102,12 +102,29 @@ void FUN_1415cb0b0(const void* pSrc, void* pDest)
 }
 // MS2-PIN: ?FUN_1415cb0b0@@YAXPEBXPEAX@Z 0x1415cb0b0
 
-// MS2-FUNCTIONAL: forwards the recovered reverse room-info conversion to its existing typed implementation.
+// MS2-FUNCTIONAL: copies the extended room record's scalar fields and three strings into a client channel record.
 // @0x1415cb200
-extern void* FUN_141578330(const void* pSrc, void* pDest);
+extern void* FUN_1415ef1f0(void* dst, void* value);
+extern void* FUN_1415ef250(void* dst, void* value);
+extern unsigned long long FUN_1415fb290(unsigned long long value);
 void FUN_1415cb200(void* pSrc, void* pDest, ...)
 {
-    FUN_141578330(pSrc, pDest);
+#define S(o, T) (*reinterpret_cast<T*>(static_cast<char*>(pSrc) + (o)))
+#define D(o, T) (*reinterpret_cast<T*>(static_cast<char*>(pDest) + (o)))
+    D(0x18, unsigned int) = S(0x10, unsigned int);
+    D(0x20, unsigned int) = static_cast<unsigned int>(S(0x18, unsigned long long) >> 32);
+    D(0x48, unsigned int) = S(0x18, unsigned int);
+    D(0x1c, unsigned int) = S(0x24, unsigned int);
+    FUN_1415ef1f0(static_cast<char*>(pDest) + 0x50, static_cast<char*>(pSrc) + 0x28);
+    FUN_1415ef250(static_cast<char*>(pDest) + 0x28, static_cast<char*>(pSrc) + 0x68);
+    D(0x38, unsigned int) = S(0x46c, unsigned int);
+    D(0x3c, unsigned int) = S(0x470, unsigned int);
+    FUN_1415ef1f0(static_cast<char*>(pDest) + 0x30, static_cast<char*>(pSrc) + 0x474);
+    D(0x40, unsigned int) = static_cast<unsigned int>(FUN_1415fb290(S(0x4b8, unsigned long long)));
+    D(0x58, unsigned int) = S(0x4d8, unsigned int);
+    D(0x5c, unsigned int) = S(0x4dc, unsigned int);
+#undef S
+#undef D
 }
 // MS2-PIN: ?FUN_1415cb200@@YAXPEAX0ZZ 0x1415cb200
 
@@ -120,9 +137,33 @@ int CNMManager::CallNMFunc(CNMFunc*)
 }
 // MS2-PIN: ?CallNMFunc@CNMManager@@QEAAHPEAVCNMFunc@@@Z 0x1415cb440
 
-// MS2-FUNCTIONAL: preserves the recovered event-handler entry point and ABI; message dispatch remains in its concrete callback slots.
+// MS2-FUNCTIONAL: dispatches the NM event code and marks the event handled (msg+0x14 = 1) for every code the exe
+// recognises. The exe calls one virtual slot per code first; every slot of CNMEventHandler (0x1415cc350-0x1415cc850)
+// and CPlatformEventHandler's only override (slot 2, 0x14160d520) is an empty ret, and nxman.h declares this class with
+// only 3 slots, so only the slot-2 call (event 0x1017) is kept.
 // @0x1415cba80
-void CNMEventHandler::vfunc_0(void*) { }
+extern unsigned int FUN_1415fa0a0(const void*);
+extern void FUN_1415fb7e0(void*, unsigned int);
+void CNMEventHandler::vfunc_0(void* pMsg)
+{
+    switch (FUN_1415fa0a0(pMsg))
+    {
+    case 0x1017:
+        vfunc_2(pMsg);
+        break;
+    case 0x1001: case 0x1002: case 0x1003: case 0x1004: case 0x1005: case 0x1006: case 0x1007: case 0x1008:
+    case 0x1009: case 0x100a: case 0x100b: case 0x100c: case 0x1010: case 0x1011: case 0x1012: case 0x1013:
+    case 0x1014: case 0x1016: case 0x1018:
+    case 0x9003: case 0x9004: case 0x9006: case 0x9007: case 0x9008: case 0x9009:
+    case 0xa001: case 0xa002: case 0xa003: case 0xa004: case 0xa005: case 0xa006: case 0xa007: case 0xa008:
+    case 0xa101: case 0xa201: case 0xa301: case 0xa401: case 0xa402:
+    case 0xb001: case 0xd001:
+        break;
+    default:
+        return;
+    }
+    FUN_1415fb7e0(pMsg, 1);
+}
 // MS2-PIN: ?vfunc_0@CNMEventHandler@@UEAAXPEAX@Z 0x1415cba80
 
 // @0x1415cc350
@@ -1592,7 +1633,7 @@ void FUN_1415caa40(void* map, void* item)
 }
 
 extern void FUN_1415e89b0(void*, const void*);
-extern int FUN_1415f3a00(void*);
+extern unsigned char FUN_1415f3a00(void*);
 extern void FUN_141609160(void*);
 extern void FUN_14156a080(void*);
 // MS2-FUNCTIONAL: initializes a temporary BSTR from the object's text and clears its trailing list when nonempty.

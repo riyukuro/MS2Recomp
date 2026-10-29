@@ -943,7 +943,7 @@ void UIMicroGameCoupleDance::FUN_140e64270() {
     MS2Ptr<Unk_CoupleDanceEvent> event = FUN_140302b00()->FUN_1403ed140()->FUN_140428700();
     if (event == NULL) return;
     std::vector<int> dances(event->m_dances.size());
-    for (size_t i = 0; i < event->m_dances.size(); ++i) dances.push_back((int)i);
+    for (size_t i = 0; i < event->m_dances.size(); ++i) dances.push_back(static_cast<const int&>((int)i));
     std::random_shuffle(dances.begin(), dances.end());
     bool found = false;
     for (size_t i = 0; i < m_dances.size(); ++i) {

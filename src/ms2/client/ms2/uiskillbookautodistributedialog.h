@@ -86,7 +86,7 @@ public:
     virtual int vfunc_71();                                     // 71 0x140ec7420
     virtual int vfunc_73();                                     // 73 0x140ec5460
     virtual void vfunc_79(void* pPacket);                       // 79 0x140ec7890 the skill book packet (a CInPacket)
-    virtual bool vfunc_84();                                    // 84 0x140ec5250 (new) not closed
+    virtual int vfunc_84();                                     // 84 0x140ec5250 (new) not closed
     // UIStatusEventListener (+0x178)
     virtual int vfunc_oa0_1();                                  //  1 0x140ec5290
     virtual void vfunc_oa0_7(int a1, CStringW s);               //  7 0x140ec7750
@@ -127,7 +127,7 @@ public:
     void UpdateSubJobLevel();                                   // 0x140ecc850
     void RefreshAll();                                          // 0x140ecc8b0
     void RefreshTree();                                         // 0x140eccbb0
-    bool HasPendingChanges();                                  // 0x140ecce40
+    int HasPendingChanges();                                   // 0x140ecce40
     void LoadAutoDistribute();                                  // 0x140eccf50
     int CanApply();                                             // 0x140ecd4b0
     int CheckApply(bool bNotify);                               // 0x140ecd6d0

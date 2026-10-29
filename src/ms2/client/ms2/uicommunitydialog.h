@@ -53,9 +53,9 @@ public:
     virtual void vfunc_buddy_13(__int64 nId);                   // 13 0x1418d5cf0
     virtual void vfunc_buddy_14();                              // 14 0x1418d5e50
     // UIEntityEventListener (+0x188)
-    virtual void vfunc_3(void* pActor);                         // 3 0x1418d5e90 an actor entered
-    virtual void vfunc_4(void* pActor);                         // 4 0x1418d6060 an actor left
-    virtual void vfunc_5(void* pActor, int n);                  // 5 0x1418d61d0 an actor changed
+    virtual void vfunc_3(MS2Ptr<CProxyGameObject> spActor);     // 3 0x1418d5e90 an actor entered
+    virtual void vfunc_4(MS2Ptr<CProxyGameObject> spActor);     // 4 0x1418d6060 an actor left
+    virtual void vfunc_5(MS2Ptr<CProxyGameObject> spActor, int n);     // 5 0x1418d61d0 an actor changed
 
     bool FUN_1418d6390(int nButton, const CMsgBoxData& data);   // 0x1418d6390 the home-visit box answer
     void FUN_1418d6430(int nTab);                               // build the buddy list of a tab
@@ -119,7 +119,7 @@ private:
     MS2_LAYOUT_FRIEND;
     int m_180;                                                  // +0x180 mode (1 add buddy, 2 add ban, 3 ..., 4 edit memo, 5 home block name)
     CStringW m_188;                                             // +0x188 the entered name
-    __int64 m_190;                                              // +0x190 the buddy id
+    unsigned __int64 m_190;                                     // +0x190 the buddy id
     __int64 m_198;                                              // +0x198
     CStringW m_1a0;                                             // +0x1a0 the entered memo
 };

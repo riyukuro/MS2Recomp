@@ -167,7 +167,6 @@ void UIWeddingBillboardDialog::OnLoadComplete()
 }
 
 // @0x140fc2f70
-// MS2-FUNCTIONAL: same dispatch behavior; compare/frame layout differs from the exe
 int UIWeddingBillboardDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs)
 {
     if (UIDialog::vfunc_28(szMethod, pArgs, nArgs) != 0)
@@ -239,7 +238,6 @@ void UIWeddingBillboardDialog::FUN_140fc3300(CInPacket& packet)
 }
 
 // @0x140fc3500
-// MS2-FUNCTIONAL: same ordering logic; temp destruction/bool slot layout differs from the exe
 bool FUN_140fc3500(const UIWeddingBillboardDialog::Entry& a, const UIWeddingBillboardDialog::Entry& b)
 {
     if (a.second.m_nTime == b.second.m_nTime)
@@ -248,14 +246,12 @@ bool FUN_140fc3500(const UIWeddingBillboardDialog::Entry& a, const UIWeddingBill
         MS2Ptr<WeddingPackage> spPackageB = WeddingTable::GetInstance()->FUN_140908b80(b.second.m_nPackageId);
         MS2Ptr<WeddingHallData> spHallA = spPackageA->FUN_140907110(a.second.m_nHallId);
         MS2Ptr<WeddingHallData> spHallB = spPackageB->FUN_140907110(b.second.m_nHallId);
-        bool bGreater = spHallA->m_nMerat > spHallB->m_nMerat;
-        return bGreater;
+        return spHallA->m_nMerat > spHallB->m_nMerat;
     }
     return a.second.m_nTime < b.second.m_nTime;
 }
 
 // @0x140fc3680
-// MS2-FUNCTIONAL: same page refresh behavior; stack slot layout differs from the exe
 void UIWeddingBillboardDialog::FUN_140fc3680()
 {
     int nEnd;
@@ -263,7 +259,7 @@ void UIWeddingBillboardDialog::FUN_140fc3680()
     nEnd = nFirst + 12;
     if (nEnd < 0)
         nEnd = 0;
-    if ((int)m_tickets.size() < nEnd)
+    if (nEnd > (int)m_tickets.size())
         nEnd = (int)m_tickets.size();
     if (MS2Ptr<Unk_140acd6e0> spNext = FUN_140bb4b10("m_nextPage"))
         spNext->FUN_1422c1fe0(nEnd == (int)m_tickets.size());
@@ -273,37 +269,34 @@ void UIWeddingBillboardDialog::FUN_140fc3680()
         spPage->FUN_1422c4cd0(FUN_1401ceea0(L"{0}", m_nPage));
     bool bEmpty = true;
     PC* pPlayer = static_cast<PC*>(WorldService::GetInstance()->FUN_141bd0cc0());
-    if (pPlayer != 0)
+    if (pPlayer == 0)
+        return;
+    CStringW strMyName = pPlayer->vfunc_77();
+    if (MS2Ptr<Unk_WbList> spList = FUN_140c02900("m_list"))
     {
-        CStringW strMyName = pPlayer->vfunc_77();
-        if (MS2Ptr<Unk_WbList> spList = FUN_140c02900("m_list"))
+        spList->FUN_1422dd1d0();
+        for (int i = nFirst; i < nEnd; ++i)
         {
-            spList->FUN_1422dd1d0();
-            for (; nFirst < nEnd; ++nFirst)
-            {
-                unsigned __int64 nSN = m_tickets[nFirst].first;
-                const Entry& entry = m_tickets[nFirst];
-                if (entry.second.m_bPublic != 0 || !FUN_140164830(entry.second.m_strBride, strMyName) ||
-                    !FUN_140164830(entry.second.m_strGroom, strMyName))
-                {
-                    bool bNight = FUN_140900f30(entry.second.m_nTime);
-                    unsigned int nHallText = WeddingTable::GetInstance()->FUN_140908d50(entry.second.m_nPackageId,
-                                                                                         entry.second.m_nHallId, bNight);
-                    ASObj row(2);
-                    row.FUN_1407cbb20("weddingSN", FUN_141b71910(nSN));
-                    row.FUN_1407cbb20("date", FUN_140b8e850(CMsTime(entry.second.m_nTime)));
-                    row.FUN_1407cbb20("groomName", entry.second.m_strGroom);
-                    row.FUN_1407cbb20("brideName", entry.second.m_strBride);
-                    row.FUN_1407cbb20("weddingHall", GetStringTable()->FUN_141811980(3, nHallText));
-                    spList->FUN_1422dd230(row);
-                    bEmpty = false;
-                }
-            }
-            spList->vfunc_24(true);
+            unsigned __int64 nSN = m_tickets[i].first;
+            const WeddingHallTicket& ticket = m_tickets[i].second;
+            if (ticket.m_bPublic == 0 && FUN_140164830(ticket.m_strBride, strMyName) &&
+                FUN_140164830(ticket.m_strGroom, strMyName))
+                continue;
+            unsigned int nHallText = WeddingTable::GetInstance()->FUN_140908d50(ticket.m_nPackageId, ticket.m_nHallId,
+                                                                                FUN_140900f30(ticket.m_nTime));
+            ASObj row(2);
+            row.FUN_1407cbb20("weddingSN", FUN_141b71910(nSN));
+            row.FUN_1407cbb20("date", FUN_140b8e850(CMsTime(ticket.m_nTime)));
+            row.FUN_1407cbb20("groomName", ticket.m_strGroom);
+            row.FUN_1407cbb20("brideName", ticket.m_strBride);
+            row.FUN_1407cbb20("weddingHall", GetStringTable()->FUN_141811980(3, nHallText));
+            spList->FUN_1422dd230(row);
+            bEmpty = false;
         }
-        if (MS2Ptr<ASTextField> spNotice = FUN_140bb4cf0("m_notice"))
-            spNotice->vfunc_4(bEmpty);
+        spList->vfunc_24(true);
     }
+    if (MS2Ptr<ASTextField> spNotice = FUN_140bb4cf0("m_notice"))
+        spNotice->vfunc_4(bEmpty);
 }
 
 MS2_EMIT_CRT_MEMMOVE_S();

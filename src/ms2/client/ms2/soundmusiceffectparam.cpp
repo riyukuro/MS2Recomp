@@ -200,13 +200,6 @@ const NiRTTI* CSoundMusicEffect::GetRTTI() const
     return &ms_RTTI;
 }
 
-// @0x141790680
-// MS2-FUNCTIONAL: the exe dtor omits the vftable store before calling ~CEffectParam (it is just the CString at +0x60
-// then the base dtor); cl 19.16 always emits the store, so 28 bytes differ (same shape as fishcube.cpp).
-CSoundMusicEffectParam::~CSoundMusicEffectParam()
-{
-}
-
 // ---- this unit's log wrapper copy and the unreferenced CRT copy ----
 
 // The UCRT's `static __inline memcpy_s` of this TU (unreferenced copy, kept alive by the pointer below).

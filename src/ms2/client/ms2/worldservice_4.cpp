@@ -2,6 +2,10 @@
 // MS2-UNIT: ?\worldservice.cpp#4
 // MS2-RANGE: 0x141bf2b70-0x141bf7060 .text$mn
 // MS2-PINS-BEGIN tplpin
+// MS2-PIN: ??0CNode@?$CAtlMap@HV?$MS2Ptr@VCRegionSkillObject@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCRegionSkillObject@@@@@3@@ATL@@QEAA@HI@Z 0x141bf3720 ; byte-identical copies elsewhere
+// MS2-PIN: ??0CNode@?$CAtlMap@HV?$TPtrValue@V?$CAtlList@V?$SmartPointer@VEntity@egf@@@efd@@V?$CElementTraits@V?$SmartPointer@VEntity@egf@@@efd@@@ATL@@@ATL@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$TPtrValue@V?$CAtlList@V?$SmartPointer@VEntity@egf@@@efd@@V?$CElementTraits@V?$SmartPointer@VEntity@egf@@@efd@@@ATL@@@ATL@@@@@3@@ATL@@QEAA@HI@Z 0x141bf3760 ; byte-identical copies elsewhere
+// MS2-PIN: ??0CPair@?$CAtlMap@HV?$MS2Ptr@VCRegionSkillObject@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCRegionSkillObject@@@@@3@@ATL@@IEAA@H@Z 0x141bf3f30 ; byte-identical copies elsewhere
+// MS2-PIN: ??0CPair@?$CAtlMap@HV?$TPtrValue@V?$CAtlList@V?$SmartPointer@VEntity@egf@@@efd@@V?$CElementTraits@V?$SmartPointer@VEntity@egf@@@efd@@@ATL@@@ATL@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$TPtrValue@V?$CAtlList@V?$SmartPointer@VEntity@egf@@@efd@@V?$CElementTraits@V?$SmartPointer@VEntity@egf@@@efd@@@ATL@@@ATL@@@@@3@@ATL@@IEAA@H@Z 0x141bf3f70 ; byte-identical copies elsewhere
 // MS2-PIN: ??0CNode@?$CAtlList@VUnk_WsPropRef@@V?$CElementTraits@VUnk_WsPropRef@@@ATL@@@ATL@@QEAA@AEBVUnk_WsPropRef@@@Z 0x141bf3610 ; prop
 // MS2-PIN: ??0CNode@?$CAtlList@V?$SmartPointer@VGameObject@@@efd@@V?$CElementTraits@V?$SmartPointer@VGameObject@@@efd@@@ATL@@@ATL@@QEAA@AEBV?$SmartPointer@VGameObject@@@efd@@@Z 0x141bf3640 ; prop
 // MS2-PIN: ??0CNode@?$CAtlList@V?$TPtr@VPC@@@@V?$CElementTraits@V?$TPtr@VPC@@@@@ATL@@@ATL@@QEAA@AEBV?$TPtr@VPC@@@@@Z 0x141bf3670 ; prop
@@ -460,19 +464,21 @@ void Unk_WsInst4(WorldService* w, Unk_WsTextEntry& text, Unk_WsLogEntry& log, Un
     w->TSingleton<WorldService>::~TSingleton();
 }
 struct Unk_WsF_TagLeave;
-// MS2-FUNCTIONAL: the packet payload's only nontrivial member is its leading CString; destroy that member.
+// The packet payload's only nontrivial member is its leading CString; destroy that member.
 // @0x141bf5ff0
 void FUN_141bf5ff0(Unk_WsF_TagLeave* p)
 {
-    reinterpret_cast<CString*>(p)->~CString();
+    struct Holder { CString m_str; };
+    reinterpret_cast<Holder*>(p)->m_str.CString::~CString();
 }
 
 struct Unk_WsF_TagEnter;
-// MS2-FUNCTIONAL: the packet payload's only nontrivial member is its leading CString; destroy that member.
+// The packet payload's only nontrivial member is its leading CString; destroy that member.
 // @0x141bf6010
 void FUN_141bf6010(Unk_WsF_TagEnter* p)
 {
-    reinterpret_cast<CString*>(p)->~CString();
+    struct Holder { CString m_str; };
+    reinterpret_cast<Holder*>(p)->m_str.CString::~CString();
 }
 
 // MS2-FUNCTIONAL: the derived manager adds no state; this constructor establishes its vtable after the base builds

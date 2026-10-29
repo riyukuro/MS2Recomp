@@ -44,8 +44,8 @@
 // MS2-PIN: ?Successor@?$CRBTree@HV?$TPtrValue@V?$CAtlArray@UUnk_RankDataPtr@@V?$CElementTraits@UUnk_RankDataPtr@@@ATL@@@ATL@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$TPtrValue@V?$CAtlArray@UUnk_RankDataPtr@@V?$CElementTraits@UUnk_RankDataPtr@@@ATL@@@ATL@@@@@3@@ATL@@IEBAPEAVCNode@12@PEAV312@@Z 0x140efe260 ; unique
 // MS2-PIN: ?_Get_first@?$_Compressed_pair@U?$less@H@std@@V?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBHURankPage@UIArcadeMainDialog@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHURankPage@UIArcadeMainDialog@@@std@@@std@@@2@$00@2@$00@std@@QEAAAEAU?$less@H@2@XZ 0x140eff100 ; unique
 // MS2-PIN: ?_Get_first@?$_Compressed_pair@U?$less@H@std@@V?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBHURankPage@UIArcadeMainDialog@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHURankPage@UIArcadeMainDialog@@@std@@@std@@@2@$00@2@$00@std@@QEBAAEBU?$less@H@2@XZ 0x140eff110 ; unique
-// MS2-PIN: ?GetTypeName@?$DelegateImpl@U?$pair@PEAVUIArcadeMainDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x140effbc0 ; unique
-// MS2-PIN: ?GetTypeName@?$DelegateImpl@U?$pair@PEAVUIArcadeMainDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x140effc20 ; unique
+// MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUIArcadeMainDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x140effbc0 ; unique
+// MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUIArcadeMainDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x140effc20 ; unique
 // MS2-PIN: ?vfunc_2@?$DelegateImpl@U?$pair@PEAVUIArcadeMainDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@UEAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z 0x140efffb0 ; unique
 // MS2-PIN: ?Invoke@?$DelegateImpl@U?$pair@PEAVUIArcadeMainDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEAA_NHAEBVCMsgBoxData@@@Z 0x140efffe0 ; unique
 // MS2-PIN: ??$Call@VUIArcadeMainDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@?$DelegateImpl@U?$pair@PEAVUIArcadeMainDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@@?$Delegate@$$A6AXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@@CAXAEAU?$pair@PEAVUIArcadeMainDialog@@P81@EAAXAEBUParams@FunctionHandler@GFx@Scaleform@@@Z@std@@AEBUParams@FunctionHandler@GFx@Scaleform@@@Z 0x140f00020 ; unique
@@ -65,6 +65,7 @@
 
 #include "ms2/placeholder/ms2stdafx.h"
 
+#define MS2_TPTRVALUE_MOVE      // lvalue copies add a reference, moves steal it (the exe pair move ctor 0x140efc6d0 -> 0x140efc350)
 #include "uiarcademaindialog.h"
 
 #include <efd/SmartPointer.h>
@@ -79,6 +80,7 @@
 #include "ms2/placeholder/asdata.h"
 #include "ms2/placeholder/asdisplayobject.h"
 #include "ms2/placeholder/cinpacket.h"
+#include "ms2/placeholder/cwinhttpclient.h"
 #include "ms2/placeholder/cmypckeyinputcontroller.h"
 #include "ms2/placeholder/coutpacket.h"
 #include "ms2/placeholder/delegate.h"
@@ -160,6 +162,13 @@ Unk_ArcSettings* FUN_140166410();
 class Unk_ArcConfig { public: int FUN_1402c4c90(int nFlag); };
 struct Unk_ArcConfigRoot { char m_pad_00[8]; Unk_ArcConfig m_config; };
 Unk_ArcConfigRoot* FUN_14025e7b0();
+// Unk_RankDataPtr seen through its own row getter (the exe's COMDAT at 0x140efcde0; returns the boxed row).
+struct Unk_ArcRankDataView
+{
+    Unk_RankData* FUN_140efcde0() const { return m_p; }
+    void* m_00;
+    Unk_RankData* m_p;
+};
 unsigned FUN_140869420();                                                   // the client clock (ms)
 class Unk_ArcRegionSvc { public: int FUN_140791f50(int nWhat); };
 Unk_ArcRegionSvc* FUN_1404f4540();
@@ -191,13 +200,6 @@ public:
 private:
     void* m_p[2];
 };
-
-// The http request object (0x210 bytes, ctor 0x1409208e0, dtor 0x140920b30).
-void FUN_1409208e0(void* pRequest, const std::wstring& strUrl);
-void FUN_140920b30(void* pRequest);
-bool FUN_140920cf0(void* pRequest, const void* pVerb, int n);           // send
-int FUN_140922f20(void* pRequest);                                      // the error (0 = ok)
-void FUN_140922860(void* pRequest, std::wstring* pOut);                 // the answer text
 
 void FUN_141b794e0(void* pService, CString* pstrOut, const char* szUrl);   // resolve "api:/..."
 
@@ -319,29 +321,28 @@ int UIArcadeMainDialog::vfunc_48()
 // @0x140ef65f0
 void UIArcadeMainDialog::vfunc_72()
 {
-    if (m_pWorker != 0)
+    if (m_pWorker == 0)
+        return;
+    if (FUN_140166410()->FUN_14036d570(0x3f) == true)
     {
-        if (FUN_140166410()->FUN_14036d570(0x3f) == true)
+        FUN_140ef67f0();
+    }
+    else
+    {
+        CStringW strResponse;
+        if (Unk_LockGuard guard = m_resultLock)
         {
-            FUN_140ef67f0();
         }
         else
         {
-            CStringW strResponse;
-            if (Unk_LockGuard guard = m_resultLock)
-            {
-            }
-            else
-            {
-                if (m_strResponse.GetLength() < 1)
-                    return;
-                strResponse = m_strResponse;
-                m_strResponse = L"";
-            }
-            FUN_140ef80f0(strResponse);
-            m_pWorker = 0;
-            FUN_140ef6dd0();
+            if (m_strResponse.GetLength() < 1)
+                return;
+            strResponse = m_strResponse;
+            m_strResponse = L"";
         }
+        FUN_140ef80f0(strResponse);
+        m_pWorker = 0;
+        FUN_140ef6dd0();
     }
 }
 
@@ -400,7 +401,8 @@ void UIArcadeMainDialog::FUN_140ef6960(const Scaleform::GFx::FunctionHandler::Pa
 // @0x140ef6a60
 void UIArcadeMainDialog::FUN_140ef6a60(const Scaleform::GFx::FunctionHandler::Params& params)
 {
-    if (m_nSelected >= 0 && m_nSelected < (int)m_games.size())
+    if (m_nSelected < 0 || m_nSelected >= (int)m_games.size())
+        return;
     {
         MS2SvrPtr<CArcadeMainData> spGame = m_games[m_nSelected];
         if (spGame == (CArcadeMainData*)0)
@@ -408,10 +410,12 @@ void UIArcadeMainDialog::FUN_140ef6a60(const Scaleform::GFx::FunctionHandler::Pa
         MyPC* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
         if (pPlayer == 0)
             return;
-        if (FUN_1418fe060() == 0)
+        bool bMovable = FUN_1418fe060();
+        if (!bMovable)
         {
             CStringW strMsg;
-            strMsg = GetStringCommonByKey(L"s_beauty_goto_map_return_warn");
+            if (!bMovable)
+                strMsg = GetStringCommonByKey(L"s_beauty_goto_map_return_warn");
             MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, strMsg, 0, L"");
             if (spBox.get() != 0)
             {
@@ -430,51 +434,51 @@ void UIArcadeMainDialog::FUN_140ef6a60(const Scaleform::GFx::FunctionHandler::Pa
 // @0x140ef6dd0
 void UIArcadeMainDialog::FUN_140ef6dd0()
 {
-    if (m_nSelected >= 0 && m_nSelected < (int)m_games.size())
+    if (m_nSelected < 0 || m_nSelected >= (int)m_games.size())
+        return;
+    MS2SvrPtr<CArcadeMainData> spGame = m_games[m_nSelected];
+    if (spGame == (CArcadeMainData*)0)
+        return;
+    if (spGame->m_nId <= 0)
+        return;
+    if (spGame->m_nId >= 6)
+        return;
+    std::vector<Unk_ArcadeRecord> scratch;
+    scratch.reserve(10);
     {
-        MS2SvrPtr<CArcadeMainData> spGame = m_games[m_nSelected];
-        if (spGame == (CArcadeMainData*)0)
-            return;
-        if (spGame->m_nId < 1)
-            return;
-        if (spGame->m_nId < 6)
+        std::vector<Unk_ArcadeRecord> records;
+        FUN_140e37aa0()->GetRecords(spGame->m_nId, records);
+        if (!records.empty())
         {
-            std::vector<Unk_ArcadeRecord> scratch;
-            scratch.reserve(10);
+            int nNpcScore = records.rbegin()->first;
+            int nId = spGame->m_nId;
+            int nTenth = m_ranks[nId].m_rows[9].first;
+            if (nNpcScore > nTenth)
             {
-                std::vector<Unk_ArcadeRecord> records;
-                FUN_140e37aa0()->GetRecords(spGame->m_nId, records);
-                if (!records.empty())
+                records.reserve(records.size() + 10);
+                for (int i = 0; i < 10; i++)
                 {
-                    int nNpcScore = records.rbegin()->first;
-                    int nId = spGame->m_nId;
-                    int nTenth = m_ranks[nId].m_rows[9].first;
-                    if (nTenth < nNpcScore)
-                    {
-                        records.reserve(records.size() + 10);
-                        for (int i = 0; i < 10; i++)
-                        {
-                            int nId1 = spGame->m_nId;
-                            int& rScore = m_ranks[nId1].m_rows[i].first;
-                            int nId2 = spGame->m_nId;
-                            CStringW& rName = m_ranks[nId2].m_rows[i].second;
-                            if (rScore > 0)
-                                records.push_back(std::make_pair(rScore, rName));
-                        }
-                        std::sort(records.begin(), records.end(), std::greater<Unk_ArcadeRecord>());
-                        for (int j = 0; j < (int)records.size() && j < 10; j++)
-                        {
-                            int nId3 = spGame->m_nId;
-                            m_ranks[nId3].m_rows[j].first = records[j].first;
-                            int nId4 = spGame->m_nId;
-                            m_ranks[nId4].m_rows[j].second = records[j].second;
-                        }
-                    }
+                    int nId1 = spGame->m_nId;
+                    int& rScore = m_ranks[nId1].m_rows[i].first;
+                    int nId2 = spGame->m_nId;
+                    CStringW& rName = m_ranks[nId2].m_rows[i].second;
+                    if (rScore > 0)
+                        records.push_back(std::make_pair(rScore, rName));
+                }
+                std::sort(records.begin(), records.end(), std::greater<Unk_ArcadeRecord>());
+                for (size_t j = 0; j < records.size(); j++)
+                {
+                    if (j >= 10)
+                        break;
+                    int nId3 = spGame->m_nId;
+                    m_ranks[nId3].m_rows[j].first = records[j].first;
+                    int nId4 = spGame->m_nId;
+                    m_ranks[nId4].m_rows[j].second = records[j].second;
                 }
             }
-            FUN_140ef7230();
         }
     }
+    FUN_140ef7230();
 }
 
 // @0x140ef7230
@@ -517,7 +521,7 @@ void UIArcadeMainDialog::FUN_140ef7230()
                 int nId3 = spGame->m_nId;
                 FUN_140cfee80((*spMine).FUN_1422bb890(), "m_score", FUN_140763e10(m_scores[nId3]));
             }
-            m_30.operator->()->Invoke("setImage", spGame->m_strArcadeBanner, m_bannerPath);
+            m_30.operator->()->Invoke("setImage", m_bannerPath, spGame->m_strArcadeBanner);
         }
     }
 }
@@ -525,8 +529,10 @@ void UIArcadeMainDialog::FUN_140ef7230()
 // @0x140ef7ab0
 bool UIArcadeMainDialog::FUN_140ef7ab0(int nResult, const CMsgBoxData& box)
 {
-    if (nResult == 0)
-        FUN_140ef7b00(box.FUN_141a02e50(0, 0));
+    if (nResult != 0)
+        return true;
+    int nArcadeId = box.FUN_141a02e50(0, 0);
+    FUN_140ef7b00(nArcadeId);
     return true;
 }
 
@@ -590,20 +596,22 @@ void UIArcadeMainDialog::FUN_140ef7e70()
 // @0x140ef7ea0
 void UIArcadeMainDialog::FUN_140ef7ea0()
 {
-    if (m_nRequestTick + 600000U <= FUN_140869420() && m_strUrl.GetLength() > 0)
+    unsigned nNow = FUN_140869420();
+    if (nNow < m_nRequestTick + 600000U)
+        return;
+    if (m_strUrl.GetLength() < 1)
+        return;
+    m_nRequestTick = FUN_140869420();
+    if (FUN_14025e7b0()->m_config.FUN_1402c4c90(0x32) == 0)
     {
-        m_nRequestTick = FUN_140869420();
-        if (FUN_14025e7b0()->m_config.FUN_1402c4c90(0x32) == 0)
+        if (FUN_140166410()->FUN_14036d570(0x3f) == true)
         {
-            if (FUN_140166410()->FUN_14036d570(0x3f) == true)
-            {
-                m_pWorker = AfxBeginThread(OnRequestRankingFromInGameRanking, this, 0, 0, 0, 0);
-                return;
-            }
+            m_pWorker = AfxBeginThread(OnRequestRankingFromInGameRanking, this, 0, 0, 0, 0);
+            return;
         }
-        if (FUN_140166410()->FUN_14036e4c0() != 0)
-            m_pWorker = AfxBeginThread(OnRequestRanking, this, 0, 0, 0, 0);
     }
+    if (FUN_140166410()->FUN_14036e4c0() != 0)
+        m_pWorker = AfxBeginThread(OnRequestRanking, this, 0, 0, 0, 0);
 }
 
 // @0x140ef7fc0
@@ -625,29 +633,28 @@ void UIArcadeMainDialog::FUN_140ef80f0(CStringW strXml)
 {
     Unk_TiXmlElement root("ms2");
     CStringA strUtf8 = FUN_140390ea0(strXml, 0);
-    if (FUN_1408782b0(&root, strUtf8, 0, 1) == 0)
+    void* pDoc = FUN_1408782b0(&root, strUtf8, 0, 1);
+    if (pDoc == 0)
         return;
     FUN_140ef7e70();
     for (void* pArcade = FUN_140165cf0(&root, "arcade"); pArcade != 0; pArcade = FUN_140168650(pArcade, "arcade"))
     {
         int nId = 0;
         FUN_1408731e0(pArcade, "id", &nId);
-        if (nId < 6 && nId > 0)
+        if (nId >= 6 || nId <= 0)
+            continue;
+        for (void* pInfo = FUN_140165cf0(pArcade, "info"); pInfo != 0; pInfo = FUN_140168650(pInfo, "info"))
         {
-            for (void* pInfo = FUN_140165cf0(pArcade, "info"); pInfo != 0; pInfo = FUN_140168650(pInfo, "info"))
-            {
-                CStringW strName((const wchar_t*)0);
-                int nScore = 0;
-                int nRank = 0;
-                FUN_140873420(pInfo, "name", &strName);
-                FUN_1408731e0(pInfo, "score", &nScore);
-                FUN_1408731e0(pInfo, "rank", &nRank);
-                if (nRank > 0)
-                {
-                    m_ranks[nId].m_rows[nRank - 1].first = nScore;
-                    m_ranks[nId].m_rows[nRank - 1].second = strName;
-                }
-            }
+            CStringW strName((const wchar_t*)0);
+            int nScore = 0;
+            int nRank = 0;
+            FUN_140873420(pInfo, "name", &strName);
+            FUN_1408731e0(pInfo, "score", &nScore);
+            FUN_1408731e0(pInfo, "rank", &nRank);
+            if (nRank <= 0 || 0)    // the exe keeps a constant-false operand here (xor eax,eax; test eax,eax)
+                continue;
+            m_ranks[nId].m_rows[nRank - 1].first = nScore;
+            m_ranks[nId].m_rows[nRank - 1].second = strName;
         }
     }
 }
@@ -662,12 +669,12 @@ void UIArcadeMainDialog::FUN_140ef8380(RankingResults results)
     {
         int nId = results[i].first;
         RankingList list = results[i].second;
-        if (list.operator->() != 0)
+        if (list.get() != 0)
         {
             for (size_t j = 0; j < list->GetCount(); j++)
             {
                 Unk_RankDataPtr rank = (*list.operator->())[j];
-                if (rank.m_p != 0)
+                if (reinterpret_cast<Unk_ArcRankDataView*>(&rank)->FUN_140efcde0() != 0)
                 {
                     CStringW strName = rank.FUN_140b2e1e0()->m_cname;
                     int nScore = (int)rank.FUN_140b2e1e0()->m_nPoint;
@@ -681,7 +688,6 @@ void UIArcadeMainDialog::FUN_140ef8380(RankingResults results)
 }
 
 // @0x140ef85b0
-// MS2-FUNCTIONAL: the http request object is opaque (0x210 bytes)
 unsigned UIArcadeMainDialog::OnRequestRanking(void* pArg)
 {
     FUN_141b6de20();
@@ -690,20 +696,15 @@ unsigned UIArcadeMainDialog::OnRequestRanking(void* pArg)
     if (pDialog == 0)
         return 0;
     CStringW strUrl = FUN_14016a730(pDialog->m_strUrl, 0);
-    char kRequest[0x210];
-    FUN_1409208e0(kRequest, std::wstring((const wchar_t*)strUrl));
-    std::wstring strVerb(L"GET");
-    if (FUN_140920cf0(kRequest, &strVerb, 0))
+    CWinHttpClient kRequest((const wchar_t*)strUrl);
+    if (kRequest.FUN_140920cf0(L"GET", false))
     {
-        if (FUN_140922f20(kRequest) == 0)
+        if (kRequest.FUN_140922f20() == 0)
         {
-            std::wstring strBody;
-            FUN_140922860(kRequest, &strBody);
-            CStringW strResponse = Unk_ArcWide(strBody.c_str(), 0);
+            CStringW strResponse = Unk_ArcWide(kRequest.GetResponseContent().c_str(), 0);
             pDialog->FUN_140ef7fc0(strResponse);
         }
     }
-    FUN_140920b30(kRequest);
     return 0;
 }
 
@@ -737,13 +738,12 @@ unsigned UIArcadeMainDialog::OnRequestRankingFromInGameRanking(void* pArg)
         Sleep(1000);
         for (int i = 1; i < 6; i++)
         {
-            if (completed.Lookup(i) == 0)
-            {
-                RankingList rows(Unk_GrNewTag(0));
-                CGameRankingCli::FUN_140b2e980()->FUN_140b2b440(keys[i], 1, *rows.operator->(), CStringW(L""), 0);
-                if (rows->GetCount() != 0)
-                    completed.SetAt(i, rows);
-            }
+            if (completed.Lookup(i) != 0)
+                continue;
+            RankingList rows(Unk_GrNewTag(0));
+            CGameRankingCli::FUN_140b2e980()->FUN_140b2b440(keys[i], 1, *rows.get(), CStringW(L""), 0);
+            if (rows->GetCount() != 0)
+                completed.SetAt(i, rows);
         }
         if (completed.GetCount() == 5)
             break;

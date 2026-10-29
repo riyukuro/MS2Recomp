@@ -37,7 +37,7 @@ public:
     void FUN_140c86bb0(unsigned __int64 nUid);              // remove by uid
     ItemPtr FUN_140c86c90(int nSlot);                       // the item of a slot
     ItemPtr FUN_140c86d90(int nItemId);                     // a usable item of an item id
-    void FUN_140c86f20(int nItemId, ATL::CAtlList<ItemPtr>& result, int nMode);   // stacks of an item id, sorted by count
+    size_t FUN_140c86f20(int nItemId, ATL::CAtlList<ItemPtr>& result, int nMode);   // stacks of an item id, sorted by count
     ItemPtr FUN_140c87250(unsigned __int64 nUid);           // by uid
     ItemPtr FUN_140c87300(int nItemId, int bAnyUsability);  // by item data id
     int FUN_140c874f0();                                    // occupied slots

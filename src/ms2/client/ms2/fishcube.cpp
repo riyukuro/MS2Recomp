@@ -81,11 +81,7 @@ void CFishCube::FUN_1403b0bf0(CByteBuffer* pStream)
 }
 MS2_REPLACE_METHOD(0x1403b0bf0, CFishCube, FUN_1403b0bf0, 187, 0xD9717130);
 
-// @0x1403b0cb0
-// MS2-FUNCTIONAL: exe dtor omits the vftable store before calling ~CPtred; cl always emits it
-CFishCube::~CFishCube()
-{
-}
+// @0x1403b0cb0 ~CFishCube is implicit (declared nowhere), so cl emits it without a vftable store
 
 // @0x1403b0d10 (the UCRT header-inline memmove_s from corecrt_memcpy_s.h, emitted here as an ordinary function)
 #define MS2_VALIDATE_RETURN_ERRCODE(expr, errorcode)                                                           \

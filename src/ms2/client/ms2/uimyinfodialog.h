@@ -89,7 +89,7 @@ public:
     virtual void vfunc_dl_4(void* p);                           //  4 0x141a5a4e0 the drag ends
 
     // UIEntityEventListener (+0x200)
-    virtual void vfunc_el5(void* p, int n);                     //  5 0x141a5a1e0
+    virtual void vfunc_el5(MS2Ptr<CProxyGameObject> spActor, int n);   //  5 0x141a5a1e0
 
     MS2Ptr<ASMovieClip> FUN_140ba7930(const CString& strName);  // 0x140ba7930 movie clip child lookup
     MS2Ptr<ASButton> FUN_140bb4b10(const CString& strName);     // 0x140bb4b10 button child lookup

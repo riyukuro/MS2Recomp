@@ -74,7 +74,7 @@ public:
     void FUN_141689ec0(egf::Entity* pEntity, unsigned short nGroup, const NxGroupsMask* pMask, int bRefresh);
     NxScene* FUN_14168a1c0();
     float FUN_14168a210();
-    bool FUN_14168a230(Vector3 ptFrom, Vector3& ptHit, Vector3 ptDir, float fLen, int nMask);
+    int FUN_14168a230(Vector3 ptFrom, Vector3& ptHit, Vector3 ptDir, float fLen, int nMask);
     int FUN_14168a310(const Vector3& ptFrom, Vector3& ptHit, Unk_RayCastInfo* pInfo, float fLen,
                       Vector3* pNormal, int nMask);
     int FUN_14168a450(Vector3 ptFrom, float* pDist, float fLen);

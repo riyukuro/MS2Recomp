@@ -9,11 +9,14 @@
 #include <atlstr.h>
 #include "ms2/placeholder/cptred.h"
 
-struct Unk_Vec3 { float x, y, z; };
+// efd::Point3 in the exe; the declared (never called here) default ctor keeps a Unk_MouseRay local out of /GS.
+struct Unk_Vec3 { Unk_Vec3(); float x, y, z; };
 
 // The ray the cursor casts plus the result slots the picker fills in (proven offsets only).
 struct Unk_MouseRay
 {
+    Unk_MouseRay();             // 0x140a78f00 (defined on the Unk_MouseRayInit view in mouseinteract.cpp)
+
     Unk_Vec3 vOrigin;           // +0x00 ray start
     Unk_Vec3 vEnd;              // +0x0c ray end
     Unk_Vec3 vPick;             // +0x18 position of the picked object
@@ -39,7 +42,7 @@ class PCBase;
 class CMouseInteractNpc : public CMouseInteract
 {
 public:
-    virtual ~CMouseInteractNpc();
+    virtual ~CMouseInteractNpc() = default;
     virtual int vfunc_1(Unk_MouseRay* pRay);           // 0x140a79090
     virtual int vfunc_2(Unk_MouseRay* pRay);           // 0x140a79340
     virtual int vfunc_3();                             // 0x140a79400
@@ -53,26 +56,26 @@ public:
 class CMouseInteractPortal : public CMouseInteract
 {
 public:
-    virtual ~CMouseInteractPortal();
+    virtual ~CMouseInteractPortal() = default;
     virtual int vfunc_1(Unk_MouseRay* pRay);           // 0x140a79a00
     virtual int vfunc_2(Unk_MouseRay* pRay);           // 0x140a79c00
     virtual int vfunc_3();                             // 0x140a79cd0
     virtual void vfunc_5();                             // 0x140a79d90
     virtual int vfunc_6();
-    struct Unk_PortalHit* FindTarget(struct Unk_PortalHit* pOut, const Unk_Vec3* pOrigin, const Unk_Vec3* pEnd);   // 0x140a79db0
+    struct Unk_PortalHit FindTarget(const Unk_Vec3* pOrigin, const Unk_Vec3* pEnd);   // 0x140a79db0
     int m_nPortalId;                                    // +0x18
 };
 
 class CMouseInteractObject : public CMouseInteract
 {
 public:
-    virtual ~CMouseInteractObject();
+    virtual ~CMouseInteractObject() = default;
     virtual int vfunc_1(Unk_MouseRay* pRay);           // 0x140a7a0c0
     virtual int vfunc_2(Unk_MouseRay* pRay);           // 0x140a7a250
     virtual int vfunc_3();                             // 0x140a7a3d0
     virtual void vfunc_5();                             // 0x140a7a4a0
     virtual int vfunc_6();
-    struct Unk_ObjectHit* FindTarget(struct Unk_ObjectHit* pOut, const Unk_Vec3* pOrigin, const Unk_Vec3* pEnd);   // 0x140a7a4e0
+    struct Unk_ObjectHit FindTarget(const Unk_Vec3* pOrigin, const Unk_Vec3* pEnd);   // 0x140a7a4e0
     int m_nAction;                                      // +0x18
     CStringA m_strObjectId;                             // +0x20
 };
@@ -113,7 +116,7 @@ public:
 class CMouseInteractTalkCancel : public CMouseInteract
 {
 public:
-    virtual ~CMouseInteractTalkCancel();
+    virtual ~CMouseInteractTalkCancel() = default;
     virtual int vfunc_1(Unk_MouseRay* pRay);           // 0x140a7abd0
     virtual int vfunc_2(Unk_MouseRay* pRay);           // 0x140a7ac80
     virtual int vfunc_3();                             // 0x140a7ad30
@@ -124,11 +127,11 @@ public:
 class CMouseInteractWeaponObject : public CMouseInteract
 {
 public:
-    virtual ~CMouseInteractWeaponObject();
+    virtual ~CMouseInteractWeaponObject() = default;
     virtual int vfunc_1(Unk_MouseRay* pRay);           // 0x140a7ad80
     virtual int vfunc_2(Unk_MouseRay* pRay);           // 0x140a7ae80
     virtual int vfunc_3();                             // 0x140a7af50
     virtual int vfunc_6();
-    struct Unk_WeaponHit* FindTarget(struct Unk_WeaponHit* pOut, const Unk_Vec3* pOrigin, const Unk_Vec3* pEnd);   // 0x140a7b040
+    struct Unk_WeaponHit FindTarget(const Unk_Vec3* pOrigin, const Unk_Vec3* pEnd);   // 0x140a7b040
     unsigned long long m_qwObjectId;                    // +0x18
 };

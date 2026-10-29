@@ -9,7 +9,7 @@
 class ICastingEventListener
 {
 public:
-    ICastingEventListener();                // 0x140ac2e60
+    ICastingEventListener() throw();        // 0x140ac2e60 (inline in the real header: the users see it cannot throw)
     virtual void OnCastingFinished() {}    // 0 0x140ac3240
     virtual void OnCastingCancelled() {}   // 1 0x140ac3250
 };

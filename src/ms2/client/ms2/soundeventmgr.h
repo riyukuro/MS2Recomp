@@ -31,7 +31,7 @@ public:
     CSoundEvent(FMOD::Event* pEvent, CString strName);          // 0x14177a590
     virtual ~CSoundEvent();                                     // 0x14177a800
 
-    bool FUN_14177a8d0();                                       // start
+    int FUN_14177a8d0();                                        // start
     void FUN_14177a920(int bFadeOut);                           // stop (0 = request stop, else reset)
     void FUN_14177a990(const Vector3& vPos);            // 3D position (+ attenuation shape)
     void FUN_14177aac0(const Vector3& vPos, const Vector3& vVel);   // 3D position + velocity
@@ -39,7 +39,7 @@ public:
     // @0x1411b1ba0
     CTwoCircleCollision* FUN_1411b1ba0() { return m_pRange; }
     void FUN_14177abc0(FMOD_EVENT_CALLBACK pfnCallback, void* pUserData);
-    bool FUN_14177ac00();                                       // getMute succeeded
+    int FUN_14177ac00();                                        // getMute succeeded
     void FUN_14177ac50(unsigned bMute);
     int FUN_14177ac80();                                        // started or stopped
     CString GetName();                                    // the event name
@@ -74,7 +74,6 @@ class CSoundEventEffectParam : public CEffectParam
 {
 public:
     CSoundEventEffectParam();                                   // 0x141775810
-    virtual ~CSoundEventEffectParam();                          // 0x1417782b0
     virtual void vfunc_1(Unk_140165cf0* pNode);                 // 1 0x141775af0
     virtual bool vfunc_2();                                     // 2 0x141775cb0 validate the event / group names
     virtual CEffectPtr vfunc_6();                               // 6 0x141775fc0 new CSoundEventEffect
@@ -183,7 +182,7 @@ public:
 struct MusicData
 {
     MusicData() : m_nId(0), m_nPriority(0x100) {}   // 0x141787180
-    int m_nId;
+    unsigned m_nId;
     unsigned m_nPriority;
 };
 struct ParamVaule
@@ -230,10 +229,10 @@ public:
     void FUN_14177bbc0();                                       // advance the volume fades
     void FUN_14177bda0();                                       // sound device lost
     void FUN_14177bf20();                                       // sound device restored
-    int FUN_14177c100(int nMusicId, float fParam, unsigned nPriority, int bForce);   // play a music cue
-    int FUN_14177c420(int nParamId, float fValue, unsigned nPriority, int bForce);   // set a music parameter
-    int FUN_14177c710(int nParamId, float* pfValue);            // get a music parameter
-    bool FUN_14177c7e0(bool bPaused);                           // pause the music
+    int FUN_14177c100(unsigned nMusicId, float fParam, unsigned nPriority, int bForce);   // play a music cue
+    int FUN_14177c420(unsigned nParamId, float fValue, unsigned nPriority, int bForce);   // set a music parameter
+    int FUN_14177c710(unsigned nParamId, float* pfValue);       // get a music parameter
+    int FUN_14177c7e0(bool bPaused);                            // pause the music
     void FUN_14177c850();                                       // reset the music system
     void FUN_14177c8a0();                                       // reset the music state
     void FUN_14177c980(unsigned bMute);                         // mute the music
@@ -253,7 +252,7 @@ public:
     float FUN_14177db60(int nCategory);
     void FUN_14177dbe0(int nCategory, unsigned bMute);          // mute a category
     void FUN_14177dc80(unsigned bMute);                         // mute everything
-    bool FUN_14177dd50(int nCategory);
+    int FUN_14177dd50(int nCategory);
     int FUN_14177ddd0(void* pUnused, int nUnused1, int nUnused2);   // 1
     void FUN_14177ddf0(int nCategory, int nMs);                 // start a fade in
     void FUN_14177dea0(int nCategory, int nMs);                 // start a fade out

@@ -6,12 +6,14 @@
 #define MS2_THIS_FILE ""
 #include "ms2/placeholder/ms2stdafx.h"
 #include "ms2/placeholder/nmobjects.h"
+#include "ms2/placeholder/nmstream.h"
+#include "ms2/placeholder/nmencoder.h"
 #include "ms2/ms2recover.h"
 
 extern int FUN_1415fb700(const void*);
 extern int FUN_1415fb720(const void*);
 extern int FUN_1415fb750(void*);
-extern int FUN_1415fb6d0(void*);
+extern int FUN_1415fb6d0(CNMSerializableDecoder*);
 extern void FUN_1415f9990(void*);
 extern void FUN_14156ae30(void*, const void*);
 extern void FUN_14156ab90(void*, unsigned short);
@@ -50,100 +52,73 @@ CNMJoinToChatRoomFunc::CNMJoinToChatRoomFunc(unsigned int n44, unsigned int n48,
     m_878 = 0;
 }
 
-// MS2-FUNCTIONAL: request framed encoding and cleanup match; the local encoder frame layout differs.
 // @0x14159acf0
 unsigned int CNMJoinToChatRoomFunc::EncodeFramed(CNMStream* pStream)
 {
-    alignas(8) unsigned char encoder[0x18];
-    FUN_14156bcb0(encoder, pStream, this);
-    const unsigned int result = Encode(reinterpret_cast<CNMEncoder*>(encoder), pStream);
-    FUN_14156bd50(encoder);
-    return result;
+    CNMSerializableEncoder encoder(pStream, this);
+    return CNMJoinToChatRoomFunc::Encode(reinterpret_cast<CNMEncoder*>(&encoder), pStream);
 }
 
-// MS2-FUNCTIONAL: recovered format branch; direct calls replace virtual dispatch.
 // @0x14159ad50
 unsigned int CNMJoinToChatRoomFunc::EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream)
 {
     if (m_bFormat == 1)
-        Encode(pEncoder, pStream);
-    else
-        EncodeFramed(pStream);
-    return 0;
+        return CNMJoinToChatRoomFunc::Encode(pEncoder, pStream);
+    return CNMJoinToChatRoomFunc::EncodeFramed(pStream);
 }
 
-// MS2-FUNCTIONAL: request and reply payload branches recovered; direct calls replace indirect dispatch.
 // @0x14159adb0
 unsigned int CNMJoinToChatRoomFunc::Encode(CNMEncoder* pEncoder, CNMStream* pStream)
 {
     CNMFunc::EncodeDispatch(pEncoder, pStream);
-    if (FUN_1415fb700(this) == 0)
-    {
-        if (FUN_1415fb720(this) != 0)
-        {
-            FUN_14156ac20(pEncoder, m_874);
-            FUN_14156ac20(pEncoder, m_878);
-        }
-    }
-    else
+    if (FUN_1415fb700(this) != 0)
     {
         m_room.EncodeFramed(pStream);
         m_self.EncodeFramed(pStream);
         FUN_14156ae30(pEncoder, m_850);
         FUN_14156ab90(pEncoder, m_870);
     }
+    else if (FUN_1415fb720(this) != 0)
+    {
+        FUN_14156ac20(pEncoder, m_874);
+        FUN_14156ac20(pEncoder, m_878);
+    }
     FUN_1415f9990(pEncoder);
     return 1;
 }
 
-// MS2-FUNCTIONAL: decoder wrapper lifetime and validity branch match; local decoder frame layout differs.
 // @0x14159aec0
 unsigned int CNMJoinToChatRoomFunc::DecodeFramed(CNMStream* pStream)
 {
-    alignas(8) unsigned char decoder[0x38];
-    FUN_14156bcb0(decoder, pStream, this);
-    unsigned int result = 0;
-    if (FUN_1415fb750(decoder) != 0)
-        result = Decode(reinterpret_cast<CNMSerializableDecoder*>(decoder), pStream);
-    FUN_14156bd50(decoder);
-    return result;
+    CNMSerializableDecoder decoder(pStream, this);
+    if (FUN_1415fb750(&decoder) == 0)
+        return 0;
+    return CNMJoinToChatRoomFunc::Decode(&decoder, pStream);
 }
 
-// MS2-FUNCTIONAL: recovered decoder format branch; direct calls replace virtual dispatch.
 // @0x14159af50
 unsigned int CNMJoinToChatRoomFunc::DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream)
 {
     if (FUN_1415fb6d0(pDecoder) == 2)
-        DecodeFramed(pStream);
-    else
-        Decode(pDecoder, pStream);
-    return 0;
+        return CNMJoinToChatRoomFunc::DecodeFramed(pStream);
+    return CNMJoinToChatRoomFunc::Decode(pDecoder, pStream);
 }
 
-// MS2-FUNCTIONAL: request and reply payload branches recovered; direct calls replace indirect dispatch.
 // @0x14159afb0
 unsigned int CNMJoinToChatRoomFunc::Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream)
 {
     CNMFunc::DecodeDispatch(pDecoder, pStream);
-    if (FUN_1415fb700(this) == 0)
-    {
-        if (FUN_1415fb720(this) != 0)
-        {
-            using ReadU32 = unsigned int(__fastcall*)(void*);
-            void** vftable = *reinterpret_cast<void***>(pDecoder);
-            m_874 = ReadU32(vftable[3])(pDecoder);
-            m_878 = ReadU32(vftable[3])(pDecoder);
-        }
-    }
-    else
+    if (FUN_1415fb700(this) != 0)
     {
         m_room.DecodeFramed(pStream);
         m_self.DecodeFramed(pStream);
-        using ReadBytes = void(__fastcall*)(void*, void*, unsigned int);
-        using ReadU16 = unsigned short(__fastcall*)(void*);
-        void** vftable = *reinterpret_cast<void***>(pDecoder);
-        reinterpret_cast<ReadBytes>(vftable[9])(pDecoder, m_850, 0x20);
-        m_870 = reinterpret_cast<ReadU16>(vftable[2])(pDecoder);
+        pDecoder->ReadStringBufAlias(reinterpret_cast<char*>(m_850), 0x20);
+        m_870 = pDecoder->ReadU16();
+    }
+    else if (FUN_1415fb720(this) != 0)
+    {
+        m_874 = pDecoder->ReadU32();
+        m_878 = pDecoder->ReadU32();
     }
     return FUN_1415fb750(pDecoder);
 }

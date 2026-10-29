@@ -28,10 +28,7 @@
 #include "ms2/placeholder/ms2stdafx.h"
 #include "ms2/ms2recover.h"
 #include <winsock2.h>
-#include "GFxConfig.h"
-#include "Render/Render_Matrix2x4.h"
-#include "Render/Render_Matrix3x4.h"
-#include "Render/Render_Matrix4x4.h"
+#include "ms2/placeholder/sfrendermatrix.h"
 
 namespace Scaleform { namespace Render {
 template Matrix2x4<float> Matrix2x4<float>::Identity;       // 0x140105110

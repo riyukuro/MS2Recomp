@@ -169,11 +169,12 @@ void FUN_1407a5500(Unk_1407a5330& v, CInputStream& in)
     v.m_00 = in.ReadInt64();
     v.m_08 = in.ReadInt64();
     v.m_10 = in.ReadUnicodeString();
-    if (in.ReadUInt8() == 0) {
-        v.m_18 = in.ReadUnicodeString();
-    } else {
+    bool bCommon = in.ReadUInt8() != 0;
+    if (bCommon) {
         v.m_48 = in.ReadInt32();
         v.m_18 = GetStringCommon(v.m_48);
+    } else {
+        v.m_18 = in.ReadUnicodeString();
     }
     v.m_20 = in.ReadInt32();
     v.m_34 = in.ReadUInt8();
@@ -358,21 +359,23 @@ void FUN_1407a63b0(Unk_1407a5a80& v, CInPacket& in)
     v.m_04 = in.ReadInt32();
 }
 
-// @0x1407a6420
-void FUN_1407a6420(const ATL::CAtlArray<unsigned __int64>& ids, COutputStream& out)
+// The id list the two functions below serialize: a wrapper with the CAtlArray at offset 0 (like Unk_ClIdSet).
+struct Unk_1407a6420
 {
-    int count = (int)ids.GetCount();
+    ATL::CAtlArray<unsigned __int64> m_ids;
+};
+// @0x1407a6420
+void FUN_1407a6420(Unk_1407a6420& v, COutputStream& out)
+{
+    int count = (int)v.m_ids.GetCount();
     out.WriteInt32(count);
-    for (int i = 0; i < count; i = i + 1) out.WriteInt64(ids[i]);
+    for (int i = 0; i < count; i = i + 1) out.WriteInt64(v.m_ids[i]);
 }
 // @0x1407a64b0
-void FUN_1407a64b0(ATL::CAtlArray<unsigned __int64>& ids, CInPacket& in)
+void FUN_1407a64b0(Unk_1407a6420& v, CInPacket& in)
 {
     int count = in.ReadInt32();
-    for (int i = 0; i < count; i = i + 1) {
-        unsigned __int64 id = in.ReadInt64();
-        ids.Add(id);
-    }
+    for (int i = 0; i < count; i = i + 1) v.m_ids.Add(in.ReadInt64());
 }
 // @0x1407a6540
 void FUN_1407a6540(Unk_1407a5b50& v, COutputStream& out) { out.WriteInt32(v.m_00); }
@@ -575,7 +578,7 @@ void FUN_1407a70f0(Unk_1407a7040& v, CInputStream& in)
 {
     FUN_1407a6fe0(v.m_28, in);
     int count = 0;
-    FUN_14070f480(in, v.m_00);
+    FUN_14070f480(in, static_cast<Unk_1407a71a0&>(v).m_00);
     FUN_14070f440(in, (long&)count);
     for (int i = 0; i < count; i = i + 1) {
         unsigned __int64 id = 0;
@@ -728,8 +731,7 @@ COutSendNoticePacket::COutSendNoticePacket(unsigned char kind, int flags, CStrin
 {
     Encode1(kind);
     Encode2(flags);
-    const StringIdInterfaceBase& body = StringIdInterfaceBase(FUN_14016a730((const char*)text, 0));
-    FUN_1407a9940(*this, const_cast<StringIdInterfaceBase&>(body));
+    FUN_1407a9940(*this, const_cast<StringIdInterfaceBase&>((const StringIdInterfaceBase&)StringIdInterfaceBase(FUN_14016a730((const char*)text, 0))));
     if ((flags & 0x10) != 0) Encode2(extra);
 }
 // @0x1407a7b80
@@ -738,8 +740,7 @@ COutSendNoticePacket::COutSendNoticePacket(unsigned char kind, int flags, unsign
 {
     Encode1(kind);
     Encode2(flags);
-    const StringIdInterfaceBase& body = StringIdInterfaceBase(1, stringId);
-    FUN_1407a9940(*this, const_cast<StringIdInterfaceBase&>(body));
+    FUN_1407a9940(*this, const_cast<StringIdInterfaceBase&>((const StringIdInterfaceBase&)StringIdInterfaceBase(1, stringId)));
     if ((flags & 0x10) != 0) Encode2(extra);
 }
 // @0x1407a7c80
@@ -776,8 +777,7 @@ Unk_1407a7eb0::Unk_1407a7eb0(CInPacket& in)
     m_00 = in.ReadInt64();
     m_08 = in.ReadUnicodeString();
     m_10 = in.ReadUInt8();
-    StringIdInterface body(in);
-    m_18 = body.FUN_141024e60();
+    m_18 = StringIdInterface(in).FUN_141024e60();
 }
 
 struct Unk_1407a8050 { int m_00, m_04; __int64 m_08; int m_10; int m_14; int m_18; };
@@ -839,8 +839,6 @@ void FUN_1407a8340(Unk_1407a82f0& v, CInputStream& in)
 // ---- ItemCloset ----------------------------------------------------------------------------------------------------
 // @0x1407aaf00
 ItemCloset::SlotInfo::SlotInfo() : m_itemId(0), m_20(0), m_24(0), m_28(0) {}
-// @0x1407ab010
-ItemCloset::SlotInfo::~SlotInfo() {}
 // @0x1407a8390
 void ItemCloset::SlotInfo::FUN_1407a8390(COutputStream& out) const
 {
@@ -865,7 +863,10 @@ void ItemCloset::TabInfo::FUN_1407a84e0(COutputStream& out) const
     out.WriteInt32(m_20);
     out.WriteUnicodeString(m_name);
     out.WriteInt32((int)m_slots.GetCount());
-    for (unsigned i = 0; i < m_slots.GetCount(); i = i + 1) m_slots[i]->FUN_1407a8390(out);
+    for (unsigned i = 0; i < m_slots.GetCount(); i = i + 1) {
+        SlotInfo* pSlot = m_slots[i];
+        pSlot->FUN_1407a8390(out);
+    }
 }
 // @0x1407a8600
 void ItemCloset::TabInfo::FUN_1407a8600(CInPacket& in)
@@ -877,8 +878,7 @@ void ItemCloset::TabInfo::FUN_1407a8600(CInPacket& in)
     unsigned count = in.ReadInt32();
     m_slots.SetCount(count, -1);
     for (unsigned i = 0; i < count; i = i + 1) {
-        SlotInfo* slot = new SlotInfo();
-        m_slots[i].AssignRaw(slot)->FUN_1407a8410(in);
+        m_slots[i].AssignRaw(new SlotInfo())->FUN_1407a8410(in);
     }
 }
 
@@ -896,25 +896,27 @@ struct Unk_1407a8820 {
 void FUN_1407a8820(Unk_1407a8820& v, COutputStream& out)
 {
     out.WriteUInt8((unsigned char)v.m_00);
-    if (v.m_00 == 0) {
+    switch (v.m_00) {
+    case 1:
+        out.WriteInt64(v.m_08);
+        out.WriteInt64(v.m_30);
+        break;
+    case 2:
+        out.WriteInt32(v.m_3c);
+        out.WriteInt32(v.m_38);
+        break;
+    case 0:
         out.WriteInt64(v.m_08);
         out.WriteInt32(v.m_10);
         out.WriteInt64(v.m_18);
         out.WriteInt32((unsigned int)v.m_20.size());
         for (std::set<unsigned int>::iterator it = v.m_20.begin(); it != v.m_20.end(); ++it) out.WriteInt32(*it);
-    }
-    else if (v.m_00 == 1) {
-        out.WriteInt64(v.m_08);
-        out.WriteInt64(v.m_30);
-    }
-    else if (v.m_00 == 2) {
-        out.WriteInt32(v.m_3c);
-        out.WriteInt32(v.m_38);
-    }
-    else if (v.m_00 == 4) {
+        break;
+    case 4:
         out.WriteUInt8((unsigned char)v.m_40);
         out.WriteInt32((unsigned int)v.m_20.size());
         for (std::set<unsigned int>::iterator it = v.m_20.begin(); it != v.m_20.end(); ++it) out.WriteInt32(*it);
+        break;
     }
 }
 // @0x1407a8b20
@@ -955,10 +957,8 @@ void FUN_1407a8b20(Unk_1407a8820& v, CInputStream& in)
 
 // ---- adventure level mission -----------------------------------------------------------------------------------------
 // @0x1407a8d50
-CSAdventureLevelMission::CSAdventureLevelMission()
+CSAdventureLevelMission::CSAdventureLevelMission() : m_kind(8), m_0c(0)
 {
-    m_kind = 8;
-    m_0c = 0;
 }
 // @0x1407a8db0
 CSAdventureLevelMission::~CSAdventureLevelMission()
@@ -969,7 +969,8 @@ CSAdventureLevelMission::~CSAdventureLevelMission()
 void CSAdventureLevelMission::FUN_1407a8e00(COutputStream& out) const
 {
     out.WriteUInt8((unsigned char)m_kind);
-    if (m_kind == 6) {
+    switch (m_kind) {
+    case 6:
         out.WriteUInt8((unsigned char)m_0c);
         out.WriteInt32((unsigned int)m_missions.size());
         for (std::map<unsigned int, CAdventureLevelMissionData*>::const_iterator it = m_missions.begin(); it != m_missions.end(); ++it) {
@@ -977,59 +978,66 @@ void CSAdventureLevelMission::FUN_1407a8e00(COutputStream& out) const
             out.WriteInt64(it->second->m_progress);
             out.WriteUInt8(it->second->m_complete);
         }
-    }
-    else if (m_kind == 7) {
+        break;
+    case 7:
         out.WriteInt32((unsigned int)m_missions.size());
         for (std::map<unsigned int, CAdventureLevelMissionData*>::const_iterator it = m_missions.begin(); it != m_missions.end(); ++it) {
             out.WriteInt64(it->first);
             out.WriteInt64(it->second->m_progress);
             out.WriteUInt8(it->second->m_complete);
         }
+        break;
     }
 }
 // @0x1407a90e0
 void CSAdventureLevelMission::FUN_1407a90e0(CInputStream& in)
 {
     m_kind = in.ReadUInt8();
-    if (m_kind == 6) {
+    switch (m_kind) {
+    case 6:
         m_0c = in.ReadUInt8();
         FUN_1407a95b0();
-        unsigned __int64 count = (unsigned int)in.ReadInt32();
-        for (unsigned __int64 i = 0; i < count; i++) {
-            CAdventureLevelMissionData* data = new CAdventureLevelMissionData();
-            unsigned int id = (unsigned int)in.ReadInt64();
-            data->m_progress = (unsigned int)in.ReadInt64();
-            data->m_complete = in.ReadUInt8() != 0;
-            m_missions.insert(std::make_pair(id, data));
+        {
+            unsigned __int64 count = (unsigned int)in.ReadInt32();
+            for (unsigned __int64 i = 0; i < count; i++) {
+                CAdventureLevelMissionData* data = new CAdventureLevelMissionData();
+                unsigned int id = (unsigned int)in.ReadInt64();
+                data->m_progress = (unsigned int)in.ReadInt64();
+                data->m_complete = in.ReadUInt8() != 0;
+                m_missions.insert(std::make_pair(id, data));
+            }
         }
-    }
-    else if (m_kind == 7) {
+        break;
+    case 7:
         FUN_1407a95b0();
-        unsigned __int64 count = (unsigned int)in.ReadInt32();
-        for (unsigned __int64 i = 0; i < count; i++) {
-            CAdventureLevelMissionData* data = new CAdventureLevelMissionData();
-            unsigned int id = (unsigned int)in.ReadInt64();
-            data->m_progress = (unsigned int)in.ReadInt64();
-            data->m_complete = in.ReadUInt8() != 0;
-            m_missions.insert(std::make_pair(id, data));
+        {
+            unsigned __int64 count = (unsigned int)in.ReadInt32();
+            for (unsigned __int64 i = 0; i < count; i++) {
+                CAdventureLevelMissionData* data = new CAdventureLevelMissionData();
+                unsigned int id = (unsigned int)in.ReadInt64();
+                data->m_progress = (unsigned int)in.ReadInt64();
+                data->m_complete = in.ReadUInt8() != 0;
+                m_missions.insert(std::make_pair(id, data));
+            }
         }
+        break;
     }
 }
 // @0x1407a9420
 void CSAdventureLevelMission::FUN_1407a9420(unsigned id, const CAdventureLevelMissionData& src)
 {
     std::map<unsigned int, CAdventureLevelMissionData*>::iterator it = m_missions.find(id);
-    if (it != m_missions.end()) {
-        it->second->m_progress = src.m_progress;
-        it->second->m_complete = src.m_complete;
-        it->second->m_20 = src.m_20;
-    }
-    else {
+    if (it == m_missions.end()) {
         CAdventureLevelMissionData* data = new CAdventureLevelMissionData();
         data->m_progress = src.m_progress;
         data->m_complete = src.m_complete;
         data->m_20 = src.m_20;
         m_missions.insert(std::make_pair(id, data));
+    }
+    else {
+        it->second->m_progress = src.m_progress;
+        it->second->m_complete = src.m_complete;
+        it->second->m_20 = src.m_20;
     }
 }
 // @0x1407a95b0

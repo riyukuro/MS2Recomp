@@ -214,7 +214,7 @@ public:
     int FUN_1410c3000();
     int FUN_1410c3650();
     int FUN_1410b9b20(int nItemId);
-    int FUN_1410b9c20(int nItemId, int nRank);
+    int FUN_1410b9c20(int nItemId, __int64 nRank);
     __int64 FUN_1410b9d80(__int64 nUid);
     int FUN_1410d2f10();
     bool FUN_1410c35c0();
@@ -304,39 +304,39 @@ int FUN_1418fcee0()
 {
     __int64 nOwner = FUN_1409670e0()->FUN_1410c3180();
     CStringW strOwner = FUN_1409670e0()->FUN_1410c31d0();
-    if (nOwner == 0 || nOwner == DAT_143ab2820)
-        return 0;
-    MS2Ptr<CUserReportData> spReport(new CUserReportData(4));
-    spReport->FUN_140ec3c70(2);
-    spReport->FUN_141904b10(nOwner);
-    spReport->FUN_140ec3e00(strOwner);
-    spReport->FUN_141904a90(0);
-    spReport->FUN_141904af0(0);
-    spReport->FUN_140ec3c90(nOwner);
-    spReport->FUN_140ec3d40(strOwner);
-    FUN_140d86260()->vfunc_48(spReport);
-    return 1;
+    if (nOwner != 0 && nOwner != DAT_143ab2820)
+    {
+        MS2Ptr<CUserReportData> spReport(new CUserReportData(4));
+        spReport->FUN_140ec3c70(2);
+        spReport->FUN_141904b10(nOwner);
+        spReport->FUN_140ec3e00(strOwner);
+        spReport->FUN_141904a90(0);
+        spReport->FUN_141904af0(0);
+        spReport->FUN_140ec3c90(nOwner);
+        spReport->FUN_140ec3d40(strOwner);
+        FUN_140d86260()->vfunc_48(spReport);
+        return 1;
+    }
+    return 0;
 }
 MS2_REPLACE(0x1418fcee0, FUN_1418fcee0, 575, 0x37AB585C);
 
 // @0x1418fd130
 int FUN_1418fd130()
 {
-    if (FUN_140930190() == 0)
-    {
-        if (FUN_140374410(FUN_1403ed2d0()->FUN_141bd3060()))
-        {
-            __int64 nOwner = FUN_1409670e0()->FUN_1410c3180();
-            if (nOwner != 0 && nOwner != DAT_143ab2820)
-            {
-                FUN_140d73aa0(FUN_1409eec40(0xb14), 1, 0, DAT_143af1c18);
-                return 1;
-            }
-        }
-    }
-    else
+    if (FUN_140930190() != 0)
     {
         FUN_140d73aa0(FUN_1409eec40(0x6df), 0, 0, CStringW(L""));
+        return 0;
+    }
+    if (FUN_140374410(FUN_1403ed2d0()->FUN_141bd3060()))
+    {
+        __int64 nOwner = FUN_1409670e0()->FUN_1410c3180();
+        if (nOwner != 0 && nOwner != DAT_143ab2820)
+        {
+            FUN_140d73aa0(FUN_1409eec40(0xb14), 1, 0, DAT_143af1c18);
+            return 1;
+        }
     }
     return 0;
 }
@@ -386,16 +386,15 @@ int FUN_1418fd330(__int64 nOwner)
         FUN_141275260(0x87a, 1, 0);
         return 0;
     }
-    int nValue;
+    int nValue = 0;
     Unk_UcGridRef grid(FUN_1401cd040(&DAT_143b059e8));
-    if (grid.FUN_140885310() != 0 && grid.FUN_1401cd1a0()->FUN_1410d2f10() != 0 && !grid.FUN_1401cd1a0()->FUN_1410c35c0())
+    if ((grid.FUN_140885310() ? true : false) && grid.FUN_1401cd1a0()->FUN_1410d2f10() != 0 && !grid.FUN_1401cd1a0()->FUN_1410c35c0())
     {
         nValue = 1;
     }
     else
     {
-        MS2Ptr<Unk_WsPtred298> spMap = FUN_1403ed2d0()->FUN_141bd30a0();
-        nValue = reinterpret_cast<Unk_UcMapData*>(spMap.get())->m_nField5c;
+        nValue = reinterpret_cast<Unk_UcMapData*>(FUN_1403ed2d0()->FUN_141bd30a0().get())->m_nField5c;
     }
     if (nValue == 0)
     {
@@ -478,12 +477,13 @@ int FUN_1418fd670(__int64 nCharId)
 MS2_REPLACE(0x1418fd670, FUN_1418fd670, 70, 0x3B4566E8);
 
 // @0x1418fd6c0
-bool FUN_1418fd6c0(__int64 nId)
+int FUN_1418fd6c0(__int64 nId)
 {
     MyPC* pPC = static_cast<MyPC*>(FUN_1403ed2d0()->FUN_141bd0cc0());
-    if (pPC != 0)
-        FUN_141529c80(pPC, 0, 0, 0, nId, CStringW(L""));
-    return pPC != 0;
+    if (pPC == 0)
+        return 0;
+    FUN_141529c80(pPC, 0, 0, 0, nId, CStringW(L""));
+    return 1;
 }
 MS2_REPLACE(0x1418fd6c0, FUN_1418fd6c0, 120, 0xBFBC3BD2);
 
@@ -698,24 +698,26 @@ void FUN_1418fdfd0(__int64 nKey)
 MS2_REPLACE(0x1418fdfd0, FUN_1418fdfd0, 126, 0x943A0D11);
 
 // @0x1418fe060
-int FUN_1418fe060()
+bool FUN_1418fe060()
 {
     MyPC* pPC = static_cast<MyPC*>(FUN_1403ed2d0()->FUN_141bd0cc0());
     if (pPC == 0)
-        return 0;
+        return false;
     int nMapId = FUN_1403ed2d0()->FUN_141bd3060();
     if (DAT_1439f4a7c == 0)
     {
         if (FUN_140374410(nMapId) && FUN_141527e00(pPC) == 0)
         {
             if (FUN_1409670e0()->FUN_1410c3180() == FUN_141656ad0(pPC))
-                return 1;
+                return true;
         }
         if (DAT_143ab0248 == 2 && nMapId == 0x1e8673)
-            return 1;
-        return 0;
+            return true;
+        return false;
     }
-    return FUN_140930b10() ? 0 : 1;
+    if (FUN_140930b10())
+        return false;
+    return true;
 }
 MS2_REPLACE(0x1418fe060, FUN_1418fe060, 185, 0x0004E9AD);
 
@@ -796,11 +798,11 @@ CStringW FUN_1418fe5d0(int nKind)
 {
     if (nKind == 0)
         return GetStringCommon(0x98a);
-    if (nKind == 1)
+    else if (nKind == 1)
         return GetStringCommon(0x98b);
-    if (nKind == 2)
+    else if (nKind == 2)
         return GetStringCommon(0x98c);
-    if (nKind == 3)
+    else if (nKind == 3)
         return GetStringCommon(0x98d);
     return CStringW(L"");
 }
@@ -817,16 +819,31 @@ MS2_REPLACE(0x1418fe590, FUN_1418fe590, 55, 0xA41E59B9);
 // Display name of a currency (1 meso, 3 merat, 9 red merat, 0xf star point).
 CStringW FUN_1418fe6c0(int nCurrency, int nKind)
 {
-    if (nCurrency == 0)
-        return GetStringCommonByKey(CStringW(L"s_common_cashname"));
-    if (nCurrency == 1)
-        return GetStringCommonByKey(CStringW(L"s_common_mesoname"));
-    if (nCurrency == 3)
+    switch (nCurrency)
+    {
+    case 3:
         return FUN_1418fe5d0(nKind);
-    if (nCurrency == 9)
-        return GetStringCommonByKey(CStringW(L"s_common_meratname_red"));
-    if (nCurrency == 0xf)
-        return GetStringCommonByKey(CStringW(L"s_common_starpointname"));
+    case 1:
+    {
+        CStringW strKey(L"s_common_mesoname");
+        return GetStringCommonByKey(strKey);
+    }
+    case 9:
+    {
+        CStringW strKey(L"s_common_meratname_red");
+        return GetStringCommonByKey(strKey);
+    }
+    case 0:
+    {
+        CStringW strKey(L"s_common_cashname");
+        return GetStringCommonByKey(strKey);
+    }
+    case 0xf:
+    {
+        CStringW strKey(L"s_common_starpointname");
+        return GetStringCommonByKey(strKey);
+    }
+    }
     return CStringW(L"");
 }
 MS2_REPLACE(0x1418fe6c0, FUN_1418fe6c0, 423, 0xF021F7E6);
@@ -871,27 +888,28 @@ CStringW FUN_1418fe870(int nCurrency, int* pnVSpace, unsigned nItemId)
         strIcon = L"export_common_icon_habi";
         *pnVSpace = -6;
         break;
+        break;      // the exe has a second, unreachable jmp here
     case 9:
-        if (!FUN_140166410()->FUN_14036d650())
-        {
-            strIcon = L"export_common_icon_merat";
-            *pnVSpace = -4;
-        }
-        else
+        if (FUN_140166410()->FUN_14036d650())
         {
             strIcon = L"export_common_icon_redmerat";
             *pnVSpace = -4;
         }
-        break;
-    case 10:
-        if (!FUN_140166410()->FUN_14036d6d0())
+        else
         {
             strIcon = L"export_common_icon_merat";
             *pnVSpace = -4;
         }
-        else
+        break;
+    case 10:
+        if (FUN_140166410()->FUN_14036d6d0())
         {
             strIcon = L"export_common_icon_rbmerat";
+            *pnVSpace = -4;
+        }
+        else
+        {
+            strIcon = L"export_common_icon_merat";
             *pnVSpace = -4;
         }
         break;
@@ -956,9 +974,10 @@ MS2_REPLACE(0x1418fec00, FUN_1418fec00, 131, 0x88CCFCE4);
 // @0x1418fee40
 CStringW FUN_1418fee40(int nCurrency, __int64 nAmount, const CString& strArg, bool bAlt)
 {
+    int nKind = nCurrency;
     if (nCurrency == 2)
         return FormatStringId(0x989, FUN_1409404f0(nAmount), strArg);
-    return FUN_1418fec00(nCurrency, nAmount, bAlt);
+    return FUN_1418fec00(nKind, nAmount, bAlt);
 }
 MS2_REPLACE(0x1418fee40, FUN_1418fee40, 188, 0x140A38A2);
 
@@ -972,10 +991,13 @@ MS2_REPLACE(0x1418fef10, FUN_1418fef10, 122, 0x4DA4F573);
 // @0x1418fef90
 CStringW FUN_1418fef90(int nCurrency, __int64 nAmount)
 {
-    if (nCurrency == 3)
+    switch (nCurrency)
+    {
+    case 3:
         return FUN_1405c2690(CStringW(L"s_common_merat_large"), FUN_1409404f0(nAmount));
-    if (nCurrency == 9)
+    case 9:
         return FUN_1405c2690(CStringW(L"s_common_redmerat_large"), FUN_1409404f0(nAmount));
+    }
     return CStringW(L"");
 }
 MS2_REPLACE(0x1418fef90, FUN_1418fef90, 371, 0xCF5E5E8C);
@@ -986,20 +1008,22 @@ bool FUN_1418ff1f0(int nCurrency, __int64 nAmount, int nItemId)
 {
     switch (nCurrency)
     {
+        break;  // the exe has an unreachable jmp past the switch here and after case 7
     case 1:
-        return nAmount <= DAT_143ab2898;
+        return DAT_143ab2898 >= nAmount;
     case 2:
-        return DAT_143ab2a90.FUN_140a5ece0(nItemId, (int)nAmount);
+        return DAT_143ab2a90.FUN_140a5ece0(nItemId, (int)nAmount) == 1;
     case 3:
         return FUN_140d86260()->vfunc_40(nAmount);
     case 4:
-        return nAmount <= DAT_143ab28b0;
+        return DAT_143ab28b0 >= nAmount;
     case 5:
-        return nAmount <= DAT_143ab28b8;
+        return DAT_143ab28b8 >= nAmount;
     case 6:
-        return nAmount <= DAT_143ab28c0;
+        return DAT_143ab28c0 >= nAmount;
     case 7:
-        return nAmount <= DAT_143ab28c8;
+        return DAT_143ab28c8 >= nAmount;
+        break;
     case 9:
         return FUN_140d86260()->vfunc_41(nAmount);
     case 10:
@@ -1011,18 +1035,18 @@ bool FUN_1418ff1f0(int nCurrency, __int64 nAmount, int nItemId)
         int nFund = FUN_1403ed290()->m_info.FUN_1404d1df0();
         if (nFund < 0)
             nFund = 0;
-        return nAmount <= nFund;
+        return nFund >= nAmount;
     }
     case 0xc:
-        return nAmount <= DAT_143ab28d0;
+        return DAT_143ab28d0 >= nAmount;
     case 0xd:
-        return nAmount <= DAT_143ab28d8;
+        return DAT_143ab28d8 >= nAmount;
     case 0xe:
-        return nAmount <= DAT_143ab28e0;
+        return DAT_143ab28e0 >= nAmount;
     case 0xf:
-        return nAmount <= DAT_143ab28e8;
+        return DAT_143ab28e8 >= nAmount;
     case 0x10:
-        return nAmount <= DAT_143ab28f0;
+        return DAT_143ab28f0 >= nAmount;
     }
     return false;
 }
@@ -1033,6 +1057,7 @@ __int64 FUN_1418ff5a0(int nCurrency, __int64 nAmount, int nItemId)
 {
     switch (nCurrency)
     {
+        break;  // the exe has an unreachable jmp past the switch here and after case 7
     case 1:
         return DAT_143ab2898;
     case 2:
@@ -1047,15 +1072,14 @@ __int64 FUN_1418ff5a0(int nCurrency, __int64 nAmount, int nItemId)
         return DAT_143ab28c0;
     case 7:
         return DAT_143ab28c8;
-    default:
-        return 0;
+        break;
     case 9:
         return FUN_140930ae0();
     case 10:
     {
         __int64 nRed = FUN_140930ae0();
         if (nRed < nAmount)
-            nRed = FUN_140930240();
+            return FUN_140930240();
         return nRed;
     }
     case 0xb:
@@ -1071,6 +1095,7 @@ __int64 FUN_1418ff5a0(int nCurrency, __int64 nAmount, int nItemId)
     case 0x10:
         return DAT_143ab28f0;
     }
+    return 0;
 }
 MS2_REPLACE(0x1418ff5a0, FUN_1418ff5a0, 277, 0x8D703C29);
 
@@ -1080,12 +1105,13 @@ void FUN_1418ff710(int nCurrency, __int64 nAmount, int nItemId, int nOpt)
 {
     switch (nCurrency)
     {
+        break;  // the exe has an unreachable jmp past the switch here and after case 7
     case 1:
         FUN_141275260(0x34, 1, 1);
         break;
     case 2:
     {
-        CStringW strText = FUN_1409e97f0(0x38, (unsigned)nItemId);
+        CStringW strText = FUN_1409e97f0(0x38, reinterpret_cast<const unsigned&>(nItemId));
         FUN_1403b4750()->FUN_1416fb300(strText);
         FUN_1412751f0(strText, 1, 1);
         break;
@@ -1109,23 +1135,42 @@ void FUN_1418ff710(int nCurrency, __int64 nAmount, int nItemId, int nOpt)
     case 7:
         FUN_141275260(0x3c, 1, 1);
         break;
+        break;
     case 9:
-        FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_err_lack_redmerat")), 1, 1);
+    {
+        CStringW strKey(L"s_err_lack_redmerat");
+        FUN_1412751f0(GetStringCommonByKey(strKey), 1, 1);
+    }
         break;
     case 0xb:
-        FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_guild_err_not_enough_guild_fund")), 1, 1);
+    {
+        CStringW strKey(L"s_guild_err_not_enough_guild_fund");
+        FUN_1412751f0(GetStringCommonByKey(strKey), 1, 1);
+    }
         break;
     case 0xc:
-        FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_err_lack_reverse_coin")), 1, 1);
+    {
+        CStringW strKey(L"s_err_lack_reverse_coin");
+        FUN_1412751f0(GetStringCommonByKey(strKey), 1, 1);
+    }
         break;
     case 0xd:
-        FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_err_lack_mentor_token")), 1, 1);
+    {
+        CStringW strKey(L"s_err_lack_mentor_token");
+        FUN_1412751f0(GetStringCommonByKey(strKey), 1, 1);
+    }
         break;
     case 0xe:
-        FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_err_lack_mentee_token")), 1, 1);
+    {
+        CStringW strKey(L"s_err_lack_mentee_token");
+        FUN_1412751f0(GetStringCommonByKey(strKey), 1, 1);
+    }
         break;
     case 0xf:
-        FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_err_lack_star_point")), 1, 1);
+    {
+        CStringW strKey(L"s_err_lack_star_point");
+        FUN_1412751f0(GetStringCommonByKey(strKey), 1, 1);
+    }
         break;
     case 0x10:
         FUN_141275260(0x41, 1, 1);
@@ -1173,13 +1218,13 @@ class Unk_UcItemPtr
 {
 public:
     ~Unk_UcItemPtr();                                               // 0x1401b50d0
-    char FUN_1401b5240(int n);
+    bool FUN_1401b5240(int n);
     Unk_UcItemData* FUN_1401b52a0();
     void* m_pad_00; void* m_p;
 };
 MS2_CHECK_OFFSET(Unk_UcItemData, m_strType, 0x290);
 MS2_CHECK_OFFSET(Unk_UcItemData, m_args, 0x2b0);
-struct Unk_UcSalable { void* m[25]; };                              // 200-byte working record
+struct Unk_UcSalable { void* m[22]; void* m_strB0; void* m2[2]; };    // 200-byte working record; +0xb0 is a CString (built by the ctor 0x1408ad110)
 void FUN_1408ad110(Unk_UcSalable* p);
 int FUN_1408a0d30(int n, Unk_UcSalable* p, int nField);
 void FUN_14050de70(Unk_UcSalable* p);
@@ -1188,39 +1233,38 @@ CString FUN_14016a600(const wchar_t* psz, int n);
 bool FUN_1401647e0(const CString& a, const CString& b) noexcept;
 
 // @0x1418ffba0
-bool FUN_1418ffba0(Unk_UcItemPtr item)
+// MS2-FUNCTIONAL: the exe keeps sal as an RAII object (ctor 0x1408ad110, dtor 0x14050de70 after the result is set); ours calls them by hand
+int FUN_1418ffba0(Unk_UcItemPtr item)
 {
     if (item.FUN_1401b5240(0) != 0)
-        return false;
+        return 0;
     MyPC* pPC = static_cast<MyPC*>(FUN_1403ed2d0()->FUN_141bd0cc0());
     if (pPC == 0)
-        return false;
+        return 0;
     if (FUN_14034eee0(item.FUN_1401b52a0()->m_strType, L"UGCMapPackage"))
-        return false;
+        return 0;
     Unk_UcPCInfo* pInfo = FUN_141523c50(pPC);
     if (pInfo == 0)
-        return false;
+        return 0;
     Unk_UcSalable sal;
     FUN_1408ad110(&sal);
     if (FUN_1408a0d30(1, &sal, pInfo->m_nField1c) != 0)
     {
         CString strPackage = FUN_14016a600((const wchar_t*)item.FUN_1401b52a0()->m_args.FUN_1408d21c0(0, L""), 0);
         UGCMapPackageDataPtr spPackage = FUN_1408b9b90(strPackage);
-        // MS2-FUNCTIONAL: the exe compares against a never-initialised CString local (stack garbage)
-        CString strSize;
-        if ((CUGCMapPackageData*)spPackage != 0 && FUN_1401647e0(spPackage->m_strIndoorSizeType, strSize))
+        if ((CUGCMapPackageData*)spPackage != 0 && FUN_1401647e0(spPackage->m_strIndoorSizeType, reinterpret_cast<const CString&>(sal.m_strB0)))
         {
             FUN_14050de70(&sal);
-            return true;
+            return 1;
         }
     }
     if (pInfo->m_nField1c == 0 && FUN_141527e00(pPC) == 0)
     {
         FUN_14050de70(&sal);
-        return true;
+        return 1;
     }
     FUN_14050de70(&sal);
-    return false;
+    return 0;
 }
 
 // @0x1418ffe80
@@ -1316,8 +1360,6 @@ bool FUN_141900510(int nCurrency, __int64* pnAmount, __int64* pnCap)
         *pnAmount = DAT_143ab28c8;
         *pnCap = *FUN_1401d3200()->m_5440.FUN_1402056b0();
         return true;
-    default:
-        return false;
     case 0xc:
         *pnAmount = DAT_143ab28d0;
         *pnCap = *FUN_1401d3200()->m_5498.FUN_1402056b0();
@@ -1339,6 +1381,7 @@ bool FUN_141900510(int nCurrency, __int64* pnAmount, __int64* pnCap)
         *pnCap = 0;
         return true;
     }
+    return false;
 }
 MS2_REPLACE(0x141900510, FUN_141900510, 511, 0x9B022F71);
 
@@ -1354,55 +1397,53 @@ CStringW FUN_141900120(int nCurrency, bool bIcon, bool bNewline)
     CStringW strFormat;
     if (bNewline)
         strFormat.Append(L"\n");
-    if (!bIcon)
+    if (bIcon)
     {
+        CStringW strIcon = FUN_1418fe870(nCurrency, &nVSpace, 0);
         if (nCap == 0)
         {
-            strFormat += L"{0}";
-            return FUN_1401e8510(strFormat, FUN_1409404f0(nAmount));
+            strFormat += L"<img src='{0}' vspace='{1}'/> {2}";
+            return FUN_140763a90(strFormat, strIcon, nVSpace, FUN_1409404f0(nAmount));
         }
-        strFormat += L"{0} / {1}";
-        return FUN_140656190(strFormat, FUN_1409404f0(nAmount), FUN_1409404f0(nCap));
+        strFormat += L"<img src='{0}' vspace='{1}'/> {2} / {3}";
+        return StringFormat(strFormat, strIcon, nVSpace, FUN_1409404f0(nAmount), FUN_1409404f0(nCap));
     }
-    CStringW strIcon = FUN_1418fe870(nCurrency, &nVSpace, 0);
     if (nCap == 0)
     {
-        strFormat += L"<img src='{0}' vspace='{1}'/> {2}";
-        return FUN_140763a90(strFormat, strIcon, nVSpace, FUN_1409404f0(nAmount));
+        strFormat += L"{0}";
+        return FUN_1401e8510(strFormat, FUN_1409404f0(nAmount));
     }
-    strFormat += L"<img src='{0}' vspace='{1}'/> {2} / {3}";
-    return StringFormat(strFormat, strIcon, nVSpace, FUN_1409404f0(nAmount), FUN_1409404f0(nCap));
+    strFormat += L"{0} / {1}";
+    return FUN_140656190(strFormat, FUN_1409404f0(nAmount), FUN_1409404f0(nCap));
 }
 MS2_REPLACE(0x141900120, FUN_141900120, 1002, 0xC3DC0860);
 
 // @0x141900a90
 bool FUN_141900a90(UIDialog* pDlg)
 {
-    int aLayer[3];
-    aLayer[0] = 0x19;
-    aLayer[1] = 4;
+    int nLayer = 0x19;
+    int nAlign = 4;
     if (FUN_1422b9e00(FUN_1408e57f0()) == 0x620001f)
     {
-        aLayer[0] = 0xc;
+        nLayer = 0xc;
     }
-    else if (FUN_141a55620() == 0)
+    else if (FUN_141a55620() != 0)
     {
-        aLayer[0] = 0x19;
+        nLayer = 0x22;
+        nAlign = 0;
     }
     else
     {
-        aLayer[0] = 0x22;
-        aLayer[1] = 0;
+        nLayer = 0x19;
     }
-    if (pDlg->FUN_141924630() != 0 && pDlg->FUN_1422db750() == aLayer[0])
+    if (pDlg->FUN_141924630() != 0 && pDlg->FUN_1422db750() == nLayer)
     {
         pDlg->FUN_1419235d0();
         return true;
     }
-    aLayer[2] = pDlg->vfunc_48();
-    FUN_1403ed2b0()->FUN_141adc690(aLayer[2]);
-    pDlg->FUN_141904ad0(&aLayer[0]);
-    pDlg->FUN_141904ab0(&aLayer[1]);
+    FUN_1403ed2b0()->FUN_141adc690(pDlg->vfunc_48());
+    pDlg->FUN_141904ad0(&nLayer);
+    pDlg->FUN_141904ab0(&nAlign);
     return true;
 }
 MS2_REPLACE(0x141900a90, FUN_141900a90, 213, 0xCCB33585);
@@ -1410,36 +1451,40 @@ MS2_REPLACE(0x141900a90, FUN_141900a90, 213, 0xCCB33585);
 // @0x141900b70
 CString FUN_141900b70()
 {
-    int nPad = FUN_140a58540()->FUN_140d8c660();
-    if (nPad == 1)
+    switch (FUN_140a58540()->FUN_140d8c660())
+    {
+    case 1:
         return CString("xbox");
-    if (nPad == 2)
+    case 2:
         return CString("dualshock");
-    if (nPad == 3)
+    case 3:
         return CString("steam");
-    if (FUN_140953f30()->FUN_140ad21b0() == 0)
-        return CString("keyboard");
-    return CString("mouse");
+    }
+    if (FUN_140953f30()->FUN_140ad21b0() != 0)
+        return CString("mouse");
+    return CString("keyboard");
 }
 MS2_REPLACE(0x141900b70, FUN_141900b70, 260, 0x4B8422E3);
 
 // @0x141900c80
-int FUN_141900c80(int nKind)
+bool FUN_141900c80(int nKind, const CMsgBoxData& box)
 {
     if (nKind == 2)
     {
         UIDialog* pDlg = FUN_140ff7030(0x4e87);
         if (pDlg != 0)
-            FUN_1418dfb30(pDlg, *FUN_1401d3200()->m_d358.FUN_1402056b0(), 0x22, 0);
-        return 0;
+        {
+            int nWanted = *FUN_1401d3200()->m_d358.FUN_1402056b0();
+            FUN_1418dfb30(pDlg, nWanted, 0x22, 0);
+        }
+        return false;
     }
-    if (nKind == 3)
+    else if (nKind == 3)
     {
         CString strUrl;
-        const char* szPath = FUN_1401d3200()->m_d2f8.FUN_140298f80();
-        FUN_141b794e0(FUN_140cc18a0(), strUrl, szPath);
+        FUN_141b794e0(FUN_140cc18a0(), strUrl, FUN_1401d3200()->m_d2f8.FUN_140298f80());
         FUN_1418fe1c0(strUrl);
-        return 0;
+        return false;
     }
     UIDialog* pDlg = FUN_140ff7030(0x4e87);
     if (pDlg != 0)
@@ -1451,7 +1496,7 @@ int FUN_141900c80(int nKind)
                 FUN_1403ed2b0()->FUN_141adc5d0(0x4e87);
         }
     }
-    return 1;
+    return true;
 }
 MS2_REPLACE(0x141900c80, FUN_141900c80, 330, 0xAC9C69F9);
 
@@ -1533,7 +1578,9 @@ bool FUN_141900750(ASObj* pObj)
         return false;
     if (DAT_143ab0248 != 2)
     {
-        int nChannel = FUN_14092f640() < 2 ? 1 : FUN_14092f640();
+        int nChannel = FUN_14092f640() > 1 ? FUN_14092f640() : 1;
+        bool bShowChannel = false;
+        bShowChannel = true;
         CStringW strName;
         CStringW strIcon;
         Unk_UcServerRef ref = FUN_1414a5790()->FUN_141751bf0(FUN_141ad1010(pServerDlg));
@@ -1542,7 +1589,8 @@ bool FUN_141900750(ASObj* pObj)
             strName = ref.FUN_141752210()->m_strName;
             strIcon = ref.FUN_141752210()->m_strIcon;
         }
-        strName.Append(FUN_1401ceea0(L" <font size='15'>| CH.{0}</font>", nChannel));
+        if (bShowChannel)
+            strName.Append(FUN_1401ceea0(L" <font size='15'>| CH.{0}</font>", nChannel));
         pObj->FUN_1407cbb20("name", strName);
         pObj->FUN_1407cbb20("iconPath", strIcon);
     }
@@ -1594,19 +1642,21 @@ int UICommon::CMyPCKeyInputController::FUN_141900ed0(int nRelease, int* pCount, 
 // @0x141901170
 int UICommon::CMyPCKeyInputController::FUN_141901170(int nRelease, int nLayer, std::set<int>* pSet)
 {
-    if (nRelease == 0)
+    if (nRelease != 0)
+    {
+        if (!pSet->empty() && pSet->find(nLayer) != pSet->end())
+        {
+            pSet->erase(nLayer);
+            return 1;
+        }
+    }
+    else
     {
         if (pSet->empty() || pSet->find(nLayer) == pSet->end())
         {
             pSet->insert(nLayer);
             return 1;
         }
-        return 0;
-    }
-    if (!pSet->empty() && pSet->find(nLayer) != pSet->end())
-    {
-        pSet->erase(nLayer);
-        return 1;
     }
     return 0;
 }
@@ -1632,26 +1682,25 @@ void UICommon::CMyPCKeyInputController::FUN_141900ff0(int nRelease, int nLayer)
 // @0x141901070
 void UICommon::CMyPCKeyInputController::FUN_141901070(int nRelease, int nLayer)
 {
-    if (FUN_141901170(nRelease, nLayer, &m_move) != 0)
+    if (FUN_141901170(nRelease, nLayer, &m_move) == 0)
+        return;
+    PCBase* pPC = static_cast<PCBase*>(FUN_1403ed2d0()->FUN_141bd0cc0());
+    int nBlock = FUN_141900ed0(nRelease, &m_nMove, 1);
+    if (pPC != 0)
     {
-        PCBase* pPC = static_cast<PCBase*>(FUN_1403ed2d0()->FUN_141bd0cc0());
-        int nBlock = FUN_141900ed0(nRelease, &m_nMove, 1);
-        if (pPC != 0)
+        if (nBlock != 0)
+            FUN_14166cd70(pPC, 0x20);
+        else
+            FUN_14166cce0(pPC, 0x20);
+        if (FUN_1410af7a0(pPC) != 0)
         {
-            if (nBlock == 0)
-                FUN_14166cce0(pPC, 0x20);
-            else
-                FUN_14166cd70(pPC, 0x20);
-            if (FUN_1410af7a0(pPC) != 0)
+            PCBase* pMount = FUN_1416625b0(pPC);
+            if (pMount != 0)
             {
-                PCBase* pMount = FUN_1416625b0(pPC);
-                if (pMount != 0)
-                {
-                    if (nBlock == 0)
-                        FUN_14166cce0(pMount, 0x20);
-                    else
-                        FUN_14166cd70(pMount, 0x20);
-                }
+                if (nBlock != 0)
+                    FUN_14166cd70(pMount, 0x20);
+                else
+                    FUN_14166cce0(pMount, 0x20);
             }
         }
     }
@@ -1767,11 +1816,11 @@ void UICommon::CAlignmentInfo::FUN_141901760(MS2Ptr<AScript> spScript)
     ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)spScript);
     if (pDialog != 0)
     {
-        int nW = pDialog->FUN_1422c1500();
-        int nH = pDialog->FUN_1422c1530();
-        int nParentW = pDialog->FUN_1422c1340();
-        int nParentH = pDialog->FUN_1422c13b0();
-        FUN_141901880(spScript, (float)nParentW, (float)nParentH, (float)nW, (float)nH);
+        float fW = (float)pDialog->FUN_1422c1500();
+        float fH = (float)pDialog->FUN_1422c1530();
+        float fParentW = (float)pDialog->FUN_1422c1340();
+        float fParentH = (float)pDialog->FUN_1422c13b0();
+        FUN_141901880(spScript, fParentW, fParentH, fW, fH);
     }
 }
 MS2_REPLACE_METHOD(0x141901760, UICommon::CAlignmentInfo, FUN_141901760, 271, 0xD570AA8B);
@@ -1867,7 +1916,7 @@ class Unk_CubeFallbackInventory
 public:
     MS2Ptr<CItem> FUN_1408fbf90(__int64 nUid);
     int FUN_1408fc1b0(int nItemId);
-    int FUN_1408fc2f0(int nItemId, int nRank);
+    int FUN_1408fc2f0(int nItemId, unsigned __int64 nUgcUid);   // warehouseitem.h
 };
 extern Unk_CubeFallbackInventory DAT_143ab2e20;
 class Unk_CubeStock
@@ -1875,58 +1924,70 @@ class Unk_CubeStock
 public:
     MS2Ptr<Unk_UcStockEntry> FUN_140dfc8f0(__int64 nUid);
     int FUN_140dfcb00(int nItemId);
-    int FUN_140dfcbf0(int nItemId, int nRank);
+    int FUN_140dfcbf0(int nItemId, __int64 nRank);
 };
 extern Unk_CubeStock DAT_143ab2e50;
 
 // @0x141901d20
-int FUN_141901d20(int nItemId, __int64 nUid, int nRank)
+int FUN_141901d20(int nItemId, __int64 nUid, __int64 nRank)   // nRank is 64-bit in the exe (r8, not r8d)
 {
     Unk_UcItemPtr item = FUN_14053f870(nItemId);
     if (item.FUN_1401b5240(0) != 0)
         return 0;
-    if (item.FUN_1401b52a0()->FUN_14053cde0() == 0)
+    if (item.FUN_1401b52a0()->FUN_14053cde0())
     {
-        if (item.FUN_1401b52a0()->FUN_14053d6f0() == 0)
-            return DAT_143ab2e20.FUN_1408fc1b0(nItemId) + DAT_143ab2e50.FUN_140dfcb00(nItemId);
-        return DAT_143ab2e20.FUN_1408fc2f0(nItemId, nRank) + DAT_143ab2e50.FUN_140dfcbf0(nItemId, nRank);
+        MS2Ptr<CItem> spItem = DAT_143ab2e20.FUN_1408fbf90(nUid);
+        if (spItem.get() != 0)
+            return FUN_140526c50(spItem.operator->());
+        MS2Ptr<Unk_UcStockEntry> spStock = DAT_143ab2e50.FUN_140dfc8f0(nUid);
+        if (spStock.get() != 0)
+            return FUN_140dfc350(spStock.operator->());
     }
-    MS2Ptr<CItem> spItem = DAT_143ab2e20.FUN_1408fbf90(nUid);
-    if (spItem.get() != 0)
-        return FUN_140526c50(spItem.operator->());
-    MS2Ptr<Unk_UcStockEntry> spStock = DAT_143ab2e50.FUN_140dfc8f0(nUid);
-    if (spStock.get() == 0)
-        return 0;
-    return FUN_140dfc350(spStock.operator->());
+    else if (item.FUN_1401b52a0()->FUN_14053d6f0())
+    {
+        int nCount = DAT_143ab2e20.FUN_1408fc2f0(nItemId, nRank);
+        nCount += DAT_143ab2e50.FUN_140dfcbf0(nItemId, nRank);
+        return nCount;
+    }
+    else
+    {
+        int nCount = DAT_143ab2e20.FUN_1408fc1b0(nItemId);
+        nCount += DAT_143ab2e50.FUN_140dfcb00(nItemId);
+        return nCount;
+    }
+    return 0;
 }
 MS2_REPLACE(0x141901d20, FUN_141901d20, 573, 0xA2CDF026);
 
 // @0x141901f70
-int FUN_141901f70(int nItemId, __int64 nUid, int nRank)
+int FUN_141901f70(int nItemId, __int64 nUid, __int64 nRank)
 {
     Unk_UcItemPtr item = FUN_14053f870(nItemId);
     if (item.FUN_1401b5240(0) != 0)
         return 0;
     int nMode = FUN_1409670e0()->FUN_1410c3650();
-    if (item.FUN_1401b52a0()->FUN_14053cde0() == 0)
+    if (item.FUN_1401b52a0()->FUN_14053cde0())
     {
-        if (item.FUN_1401b52a0()->FUN_14053d6f0() == 0)
-        {
-            int nCount = DAT_143ab2e50.FUN_140dfcb00(nItemId);
-            if (nMode == 1 || nMode == 3)
-                nCount += FUN_1409670e0()->FUN_1410b9b20(nItemId);
-            return nCount;
-        }
+        MS2Ptr<Unk_UcStockEntry> spStock = DAT_143ab2e50.FUN_140dfc8f0(nUid);
+        if (spStock.get() != 0)
+            return FUN_140dfc350(spStock.operator->());
+        if (nMode == 1 || nMode == 3)
+            return FUN_1409670e0()->FUN_1410b9d80(nUid);
+    }
+    else if (item.FUN_1401b52a0()->FUN_14053d6f0())
+    {
         int nCount = DAT_143ab2e50.FUN_140dfcbf0(nItemId, nRank);
         if (nMode == 1 || nMode == 3)
             nCount += FUN_1409670e0()->FUN_1410b9c20(nItemId, nRank);
         return nCount;
     }
-    MS2Ptr<Unk_UcStockEntry> spStock = DAT_143ab2e50.FUN_140dfc8f0(nUid);
-    if (spStock.get() != 0)
-        return FUN_140dfc350(spStock.operator->());
-    if (nMode == 1 || nMode == 3)
-        return FUN_1409670e0()->FUN_1410b9d80(nUid);
+    else
+    {
+        int nCount = DAT_143ab2e50.FUN_140dfcb00(nItemId);
+        if (nMode == 1 || nMode == 3)
+            nCount += FUN_1409670e0()->FUN_1410b9b20(nItemId);
+        return nCount;
+    }
     return 0;
 }
 MS2_REPLACE(0x141901f70, FUN_141901f70, 568, 0xE13515C1);
@@ -2021,6 +2082,7 @@ class Unk_UcItemExtra : public CPtred
 public:
     void* m_pad_18; void* m_pad_20;
     MS2Ptr<CItemEnchantInfo> m_spEnchant;                           // +0x28
+    CItemEnchantInfo* FUN_140630d60();                              // m_spEnchant.get()
 };
 MS2_CHECK_OFFSET(Unk_UcItemExtra, m_spEnchant, 0x28);
 Unk_UcItemExtra* FUN_1405278a0(CItem* pItem);
@@ -2044,15 +2106,15 @@ Delegate<bool(int, const CMsgBoxData&)> FUN_140b76b10(bool (*pfn)(int, const CMs
 
 // @0x141902660
 // Ask whether to refund the enchant experience of the item.
-bool FUN_141902660(MS2Ptr<CItem> spItem)
+int FUN_141902660(MS2Ptr<CItem> spItem)
 {
     Unk_UcItemExtra* pExtra = FUN_1405278a0(spItem.operator->());
     if (pExtra != 0)
     {
-        CItemEnchantInfo* pEnchant = pExtra->m_spEnchant.get();
+        CItemEnchantInfo* pEnchant = pExtra->FUN_140630d60();
         if (pEnchant != 0 && pEnchant->FUN_14058cd60() != 0)
         {
-            Unk_UcMsgBoxPtr spBox = FUN_140d73d20(1, GetStringCommonByKey(CStringW(L"s_itemenchant_enchant_exp_refund")), 0, CStringW(L""));
+            Unk_UcMsgBoxPtr spBox = FUN_140d73d20(1, GetStringCommonByKey(L"s_itemenchant_enchant_exp_refund"), 0, CStringW(L""));
             if (spBox.get() != 0)
             {
                 spBox->Append<__int64>(spItem->FUN_140526a50());
@@ -2060,10 +2122,10 @@ bool FUN_141902660(MS2Ptr<CItem> spItem)
                 spBox->FUN_141a027c0(FUN_140b76b10(SendRequestItemEnchant));
                 FUN_140d73c60(spBox);
             }
-            return true;
+            return 1;
         }
     }
-    return false;
+    return 0;
 }
 
 // @0x141902970
@@ -2105,61 +2167,54 @@ MS2_REPLACE(0x141902a50, FUN_141902a50, 97, 0x8262FEB4);
 int FUN_141902ac0(__int64 nId, int nType)
 {
     MyPC* pPC = static_cast<MyPC*>(FUN_1403ed2d0()->FUN_141bd0cc0());
-    if (pPC != 0)
+    if (pPC == 0)
+        return 0;
+    int nX = FUN_1409670e0()->FUN_1410c3140();
+    int nY = FUN_1409670e0()->FUN_1410c3100();
+    int nZ = FUN_1409670e0()->FUN_1410c3000();
+    if (nType == 7)
     {
-        int nX = FUN_1409670e0()->FUN_1410c3140();
-        int nY = FUN_1409670e0()->FUN_1410c3100();
-        int nZ = FUN_1409670e0()->FUN_1410c3000();
-        if (nType == 7)
+        CBuddyManager::Ptr spBuddy = FUN_14097a780()->FUN_140ae4880(nId);
+        if (spBuddy.get() != 0)
         {
-            CBuddyManager::Ptr spBuddy = FUN_14097a780()->FUN_140ae4880(nId);
-            if (spBuddy.get() != 0)
-            {
-                if (nX != spBuddy->FUN_1401cc3e0())
-                    return 0;
-                if (nY == spBuddy->FUN_1401cc3a0())
-                {
-                    if (nZ == spBuddy->FUN_1401cc3c0())
-                        return 1;
-                    return 0;
-                }
+            if (nX != spBuddy->FUN_1401cc3e0())
                 return 0;
-            }
-        }
-        else if (nType == 3)
-        {
-            Unk_UcGuildRef guild = FUN_1403ed290()->FUN_1413b6200(nId);
-            if (guild.FUN_1404f0ab0() != 0)
-            {
-                if (nX != guild.FUN_1404f0b80()->m_nPlotX)
-                    return 0;
-                if (nY == guild.FUN_1404f0b80()->m_nPlotY)
-                {
-                    if (nZ == guild.FUN_1404f0b80()->m_nPlotZ)
-                        return 1;
-                    return 0;
-                }
+            if (nY != spBuddy->FUN_1401cc3a0())
                 return 0;
-            }
+            if (nZ != spBuddy->FUN_1401cc3c0())
+                return 0;
+            return 1;
         }
-        else
+    }
+    else if (nType == 3)
+    {
+        Unk_UcGuildRef guild = FUN_1403ed290()->FUN_1413b6200(nId);
+        if (guild.FUN_1404f0ab0() != 0)
         {
-            void* pMap = FUN_1403ed2d0()->FUN_141bc9fb0();
-            for (void* pos = FUN_140ac5e20(pMap); pos != 0; FUN_140ac5dd0(pMap, &pos))
+            if (nX != guild.FUN_1404f0b80()->m_nPlotX)
+                return 0;
+            if (nY != guild.FUN_1404f0b80()->m_nPlotY)
+                return 0;
+            if (nZ != guild.FUN_1404f0b80()->m_nPlotZ)
+                return 0;
+            return 1;
+        }
+    }
+    else
+    {
+        void* pMap = FUN_1403ed2d0()->FUN_141bc9fb0();
+        for (void* pos = FUN_140ac5e20(pMap); pos != 0; FUN_140ac5dd0(pMap, &pos))
+        {
+            MS2Ptr<CProxyGameObject> spProxy(*static_cast<const MS2Ptr<CProxyGameObject>*>(FUN_140ac5ed0(pMap, pos)));
+            if (spProxy.get() != 0 && reinterpret_cast<__int64>(spProxy->FUN_1416c22f0()) == nId)
             {
-                Unk_UcProxyRef spProxy(FUN_140ac5ed0(pMap, pos));
-                if (!spProxy.IsNull() && reinterpret_cast<__int64>(spProxy->FUN_1416c22f0()) == nId)
-                {
-                    if (nX != spProxy->m_b4)
-                        return 0;
-                    if (nY == spProxy->m_b8)
-                    {
-                        if (nZ == spProxy->m_bc)
-                            return 1;
-                        return 0;
-                    }
+                if (nX != spProxy->m_b4)
                     return 0;
-                }
+                if (nY != spProxy->m_b8)
+                    return 0;
+                if (nZ != spProxy->m_bc)
+                    return 0;
+                return 1;
             }
         }
     }

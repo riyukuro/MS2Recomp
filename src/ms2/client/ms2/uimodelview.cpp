@@ -48,9 +48,19 @@ class Unk_UmvEffectMgr;
 Unk_UmvEffectMgr* FUN_1409a8b20();
 void FUN_1416aac60(Unk_UmvEffectMgr* pMgr, NiNode* pNode);
 extern efd::Point3 DAT_143b01a60;                               // zero
+float FUN_140bf4fd0(float f);                                   // the float ceil overload (out of line in the exe)
+NiPoint3& FUN_14097faa0(NiPoint3* pDst, NiPoint3&& kSrc);       // NiPoint3 move assignment (out of line in the exe)
+// The exe's NiPoint3 copies and assignments are out-of-line calls; this view of a NiPoint3 member declares them.
+struct Unk_MvPoint3
+{
+    float x, y, z;
+    Unk_MvPoint3(const efd::Point3& pt);                        // 0x14027dcf0
+    Unk_MvPoint3& operator=(Unk_MvPoint3&& pt);                 // 0x14097faa0
+};
+NiPoint3& FUN_14097fad0(NiPoint3* pDst, const NiPoint3& kSrc);  // NiPoint3 copy assignment (out of line in the exe)
 extern efd::Point3 DAT_143a08cf8;                                // (0, 0, 1)
 void FUN_140e68a40(CLogString* pLog, int nLevel, int nCategory, const wchar_t* szFormat, const float* pA, const float* pB, const float* pC);
-void FUN_140e69060(float* pQuat, float fX, float fY, float fZ);
+void FUN_140e69060(NiQuaternion* pQuat, float fX, float fY, float fZ);
 void FUN_140e69330(float fAngle, float* pSin, float* pCos);
 float FUN_1409f25a0(float fAngle);                              // sin
 float FUN_1409f2310(float fAngle);                              // cos
@@ -123,7 +133,7 @@ void UIModelView::vfunc_7(float fX, float fY, float fZ)
     FUN_1418bf270(&kAngle.z);
     m_kRotation = kAngle;
     NiQuaternion kQuat;
-    FUN_140e69060((float*)&kQuat, (kAngle.x * 3.1415927f) / 180.0f, (kAngle.y * 3.1415927f) / 180.0f, (kAngle.z * 3.1415927f) / 180.0f);
+    FUN_140e69060(&kQuat, (kAngle.x * 3.1415927f) / 180.0f, (kAngle.y * 3.1415927f) / 180.0f, (kAngle.z * 3.1415927f) / 180.0f);
     kQuat.ToRotation(kRotate);
     NiPoint3 kPos(kRotate * (m_kBackupTranslate - m_kBackupCenter) + m_kBackupCenter);
     NiPoint3 kUp(kRotate * m_kBackupUp);
@@ -134,7 +144,9 @@ void UIModelView::vfunc_7(float fX, float fY, float fZ)
 }
 
 // @0x140e66fa0
-// MS2-FUNCTIONAL: the exe evaluates GetTranslate before the clamp
+// MS2-FUNCTIONAL: in the exe only the new position (a local NiPoint3 without a ctor) is computed inside the if;
+// SetTranslate(kNew) and Update run after it unconditionally (0x140e67131), so when the camera is already past the
+// limit the exe moves it to an uninitialised stack point. Here the camera is left in place instead.
 void UIModelView::vfunc_8(float fDist)
 {
     if (m_nZoomState != 0)
@@ -149,7 +161,9 @@ void UIModelView::vfunc_8(float fDist)
 }
 
 // @0x140e67140
-// MS2-FUNCTIONAL: the exe evaluates GetTranslate before the clamp
+// MS2-FUNCTIONAL: in the exe only the new position (a local NiPoint3 without a ctor) is computed inside the if;
+// SetTranslate(kNew) and Update run after it unconditionally (0x140e67131), so when the camera is already past the
+// limit the exe moves it to an uninitialised stack point. Here the camera is left in place instead.
 void UIModelView::vfunc_9(float fDist)
 {
     if (m_nZoomState != 0)
@@ -175,14 +189,13 @@ void UIModelView::vfunc_10(int nObjectId)
 }
 
 // @0x140e67350
-// MS2-FUNCTIONAL: operator[] / AttachEffect call order differs from the exe
 void UIModelView::vfunc_12(const ATL::CAtlArray<NiNode*>& arrNodes, NiNodePtr spRoot)
 {
     if (!m_spClick)
         return;
     m_spClick->vfunc_14();
     FUN_141568a10(m_spEffectRoot);
-    if (arrNodes.GetCount() == 0)
+    if (arrNodes.GetCount() < 1)
         return;
     if (spRoot)
         m_spEffectRoot->AttachChild(spRoot, false);
@@ -192,7 +205,8 @@ void UIModelView::vfunc_12(const ATL::CAtlArray<NiNode*>& arrNodes, NiNodePtr sp
     m_spEffectRoot->AttachEffect(m_spAmbientLight);
     m_spEffectRoot->UpdateEffects();
     m_spClick->vfunc_12(m_spEffectRoot);
-    for (unsigned int i = 0; i < arrNodes.GetCount(); ++i)
+    unsigned int nCount = (unsigned int)arrNodes.GetCount();
+    for (unsigned int i = 0; i < nCount; ++i)
     {
         NiNode* pNode = arrNodes[i];
         if (pNode != 0)
@@ -211,27 +225,27 @@ void UIModelView::vfunc_12(const ATL::CAtlArray<NiNode*>& arrNodes, NiNodePtr sp
 }
 
 // @0x140e67710
-// MS2-FUNCTIONAL: temporaries and NiPoint3 copy order differ from the exe
 int UIModelView::vfunc_13(const Unk_ModelViewCamera& kCamera)
 {
     if (!m_spCamera)
         vfunc_15();
     m_kCamera = kCamera;
-    m_spCamera->SetTranslate(m_kCamera.m_kPosition);
+    const NiPoint3& kTarget = m_kCamera.m_kTarget;
+    const NiPoint3& kPos = m_kCamera.m_kPosition;
+    m_spCamera->SetTranslate(kPos);
     m_spCamera->Update((float)FUN_141473280(FUN_14086d260()), true);
-    m_spCamera->LookAtWorldPoint(m_kCamera.m_kTarget, NiPoint3(DAT_143a08cf8));
+    m_spCamera->LookAtWorldPoint(kTarget, DAT_143a08cf8);
     m_spCamera->Update((float)FUN_141473280(FUN_14086d260()), true);
-    float fMax = (m_kCamera.m_kTarget - m_kCamera.m_kPosition).Length();
-    float fMin = fMax;
-    if (fMax < m_kCamera.m_fMinDistance)
-        fMin = m_kCamera.m_fMinDistance;
-    if (m_kCamera.m_fMaxDistance < fMax)
-        fMax = m_kCamera.m_fMaxDistance;
+    float fDist = (kTarget - kPos).Length();
+    float fMin = m_kCamera.m_fMinDistance;
+    float fMax = m_kCamera.m_fMaxDistance;
+    fMin = fMin > fDist ? fMin : fDist;
+    fMax = fMax < fDist ? fMax : fDist;
     NiPoint3 kDir = -m_spCamera->GetWorldDirection();
     m_nZoomState = 0;
-    m_kZoomStart = NiPoint3(DAT_143b01a60);
-    m_kNearPosition = NiPoint3(m_kCamera.m_kTarget + kDir * fMin);
-    m_kFarPosition = NiPoint3(m_kCamera.m_kTarget + kDir * fMax);
+    reinterpret_cast<Unk_MvPoint3&>(m_kZoomStart) = DAT_143b01a60;
+    reinterpret_cast<Unk_MvPoint3&>(m_kNearPosition) = kTarget + kDir * fMin;
+    reinterpret_cast<Unk_MvPoint3&>(m_kFarPosition) = kTarget + kDir * fMax;
     m_kCamera.m_fMinDistance = fMin;
     m_kCamera.m_fMaxDistance = fMax;
     m_kCamera.m_nSteps = m_kCamera.m_nSteps < 1 ? 1 : m_kCamera.m_nSteps;
@@ -239,29 +253,29 @@ int UIModelView::vfunc_13(const Unk_ModelViewCamera& kCamera)
     int nDone = m_kCamera.m_nStepsDone < m_kCamera.m_nSteps ? m_kCamera.m_nStepsDone : m_kCamera.m_nSteps;
     if (nDone > 0)
     {
-        NiPoint3 kPos = m_kCamera.m_kPosition;
-        kPos += kDir * (m_kCamera.m_fStep * (float)nDone);
-        m_spCamera->SetTranslate(kPos);
+        NiPoint3 kNewPos = kPos;
+        float fOffset = m_kCamera.m_fStep * (float)nDone;
+        kNewPos += kDir * fOffset;
+        m_spCamera->SetTranslate(kNewPos);
         m_spCamera->Update((float)FUN_141473280(FUN_14086d260()), true);
     }
     return 1;
 }
 
 // @0x140e67c20
-// MS2-FUNCTIONAL: null test shape of the camera differs from the exe
 void UIModelView::vfunc_17(const NiPoint3& kPivot)
 {
-    if (!(m_spCamera == 0))
-    {
-        m_kRotation = NiPoint3(DAT_143b01a60);
-        m_kBackupTranslate = NiPoint3(m_spCamera->GetTranslate());
-        m_kBackupCenter = kPivot;
-        m_kBackupUp = NiPoint3(m_spCamera->GetWorldUpVector());
-        FUN_140e68a40(CLogString::GetInstance(), 0xc, 0x13, L"UIModelView::m_backupTranslate: {0}, {1}, {2}",
-                      &m_kBackupTranslate.x, &m_kBackupTranslate.y, &m_kBackupTranslate.z);
-        FUN_140e68a40(CLogString::GetInstance(), 0xc, 0x13, L"UIModelView::m_backupCenter: {0}, {1}, {2}",
-                      &m_kBackupCenter.x, &m_kBackupCenter.y, &m_kBackupCenter.z);
-    }
+    if (m_spCamera == 0)
+        return;
+    reinterpret_cast<Unk_MvPoint3&>(m_kRotation) = DAT_143b01a60;
+    const NiPoint3& kTranslate = m_spCamera->GetTranslate();
+    reinterpret_cast<Unk_MvPoint3&>(m_kBackupTranslate) = kTranslate;
+    FUN_14097fad0(&m_kBackupCenter, kPivot);
+    FUN_14097faa0(&m_kBackupUp, m_spCamera->GetWorldUpVector());
+    FUN_140e68a40(CLogString::GetInstance(), 0xc, 0x13, L"UIModelView::m_backupTranslate: {0}, {1}, {2}",
+                  &m_kBackupTranslate.x, &m_kBackupTranslate.y, &m_kBackupTranslate.z);
+    FUN_140e68a40(CLogString::GetInstance(), 0xc, 0x13, L"UIModelView::m_backupCenter: {0}, {1}, {2}",
+                  &m_kBackupCenter.x, &m_kBackupCenter.y, &m_kBackupCenter.z);
 }
 
 // @0x140e67e30
@@ -273,7 +287,6 @@ UIModelView::UIModelView(unsigned int uiWidth, unsigned int uiHeight, GameObject
 }
 
 // @0x140e67f80
-// MS2-FUNCTIONAL: light setter temporaries differ from the exe
 int UIModelView::vfunc_14()
 {
     m_spDirLight = EE_NEW NiDirectionalLight();
@@ -290,7 +303,7 @@ int UIModelView::vfunc_14()
     kRotX.MakeXRotation((fAngleX * 3.1415927f) / 180.0f);
     kRotY.MakeYRotation((fAngleY * 3.1415927f) / 180.0f);
     kRotZ.MakeZRotation((fAngleZ * 3.1415927f) / 180.0f);
-    m_spDirLight->SetRotate(NiMatrix3(kRotX * kRotY * kRotZ));
+    m_spDirLight->SetRotate(kRotX * kRotY * kRotZ);
     m_spDirLight->Update((float)FUN_141473280(FUN_14086d260()), true);
     m_spAmbientLight = EE_NEW NiAmbientLight();
     m_spAmbientLight->SetDimmer(m_fLightDimmer);
@@ -301,7 +314,6 @@ int UIModelView::vfunc_14()
 }
 
 // @0x140e68420
-// MS2-FUNCTIONAL: frustum temporary differs from the exe
 int UIModelView::vfunc_15()
 {
     float fMax = (float)(m_uiWidth > m_uiHeight ? m_uiWidth : m_uiHeight);
@@ -313,96 +325,87 @@ int UIModelView::vfunc_15()
 }
 
 // @0x140e685d0
-// MS2-FUNCTIONAL: NiPoint3 temporaries differ from the exe
 void UIModelView::FUN_140e685d0()
 {
-    if (m_nObjectId == 0)
-        return;
-    GameObject* pObject = FUN_1403ed2d0()->FUN_141bd1180(m_nObjectId);
-    if (pObject == 0 || m_nZoomState == 0)
-        return;
-    NiPoint3 kTarget = m_kCamera.m_kTarget;
-    NiPoint3 kPos = m_spCamera->GetTranslate();
-    float fDist = (kTarget - kPos).Length();
-    float fDelta = (float)FUN_141473260(FUN_14086d260());
-    NiPoint3 kDir = -m_spCamera->GetWorldDirection();
-    if (m_nZoomState == 1)
+    if ((unsigned int)m_nObjectId > 0)
     {
-        if (fDist <= m_kCamera.m_fMaxDistance)
+        GameObject* pObject = FUN_1403ed2d0()->FUN_141bd1180(m_nObjectId);
+        if (pObject != 0)
         {
-            kPos = m_kFarPosition;
-            m_nZoomState = 0;
-        }
-        else
-        {
-            float fStep = fDist;
-            if (m_kCamera.m_fSpeed <= fDist)
-                fStep = m_kCamera.m_fSpeed;
-            float fMove = -ceilf(fStep * fDelta);
-            kPos += kDir * fMove;
-            fDist = (kTarget - kPos).Length();
-            if (fDist <= m_kCamera.m_fMaxDistance)
+            if (m_nZoomState != 0)
             {
-                kPos = m_kFarPosition;
-                m_nZoomState = 0;
+                NiPoint3 kTarget = m_kCamera.m_kTarget;
+                NiPoint3 kPos = m_spCamera->GetTranslate();
+                float fDist = (kTarget - kPos).Length();
+                float fDelta = (float)FUN_141473260(FUN_14086d260());
+                NiPoint3 kDir = -m_spCamera->GetWorldDirection();
+                if (m_nZoomState == 1)
+                {
+                    if (fDist > m_kCamera.m_fMaxDistance)
+                    {
+                        float fMove = -FUN_140bf4fd0((fDist < m_kCamera.m_fSpeed ? fDist : m_kCamera.m_fSpeed) * fDelta);
+                        kPos += kDir * fMove;
+                        fDist = (kTarget - kPos).Length();
+                        if (fDist <= m_kCamera.m_fMaxDistance)
+                        {
+                            FUN_14097fad0(&kPos, m_kFarPosition);
+                            m_nZoomState = 0;
+                        }
+                    }
+                    else
+                    {
+                        FUN_14097fad0(&kPos, m_kFarPosition);
+                        m_nZoomState = 0;
+                    }
+                }
+                else if (m_nZoomState == 2)
+                {
+                    if (fDist < m_kCamera.m_fMinDistance)
+                    {
+                        float fMove = FUN_140bf4fd0((fDist < m_kCamera.m_fSpeed ? fDist : m_kCamera.m_fSpeed) * fDelta);
+                        kPos += kDir * fMove;
+                        fDist = (kTarget - kPos).Length();
+                        if (fDist >= m_kCamera.m_fMinDistance)
+                        {
+                            FUN_14097fad0(&kPos, m_kNearPosition);
+                            m_nZoomState = 0;
+                        }
+                    }
+                    else
+                    {
+                        FUN_14097fad0(&kPos, m_kNearPosition);
+                        m_nZoomState = 0;
+                    }
+                }
+                if (m_nZoomState != 0 && (m_kZoomStart - kPos).Length() >= m_kCamera.m_fStep)
+                    m_nZoomState = 0;
+                m_spCamera->SetTranslate(kPos);
+                m_spCamera->Update((float)FUN_141473280(FUN_14086d260()), true);
             }
         }
     }
-    else if (m_nZoomState == 2)
-    {
-        if (m_kCamera.m_fMinDistance <= fDist)
-        {
-            kPos = m_kNearPosition;
-            m_nZoomState = 0;
-        }
-        else
-        {
-            float fStep = fDist;
-            if (m_kCamera.m_fSpeed <= fDist)
-                fStep = m_kCamera.m_fSpeed;
-            float fMove = ceilf(fStep * fDelta);
-            kPos += kDir * fMove;
-            fDist = (kTarget - kPos).Length();
-            if (m_kCamera.m_fMinDistance <= fDist)
-            {
-                kPos = m_kNearPosition;
-                m_nZoomState = 0;
-            }
-        }
-    }
-    if (m_nZoomState != 0)
-    {
-        if (m_kCamera.m_fStep <= (m_kZoomStart - kPos).Length())
-            m_nZoomState = 0;
-    }
-    m_spCamera->SetTranslate(kPos);
-    m_spCamera->Update((float)FUN_141473280(FUN_14086d260()), true);
 }
 
 // @0x140e68a40
-// MS2-FUNCTIONAL: fmt argument temporaries differ from the exe
 void FUN_140e68a40(CLogString* pLog, int nLevel, int nCategory, const wchar_t* szFormat, const float* pA, const float* pB, const float* pC)
 {
-    double dA = *pA;
-    double dB = *pB;
-    double dC = *pC;
-    const fmt::internal::ArgArray<3>::Type args = {fmt::internal::MakeValue<fmt::BasicFormatter<wchar_t> >(dA),
-                                                   fmt::internal::MakeValue<fmt::BasicFormatter<wchar_t> >(dB),
-                                                   fmt::internal::MakeValue<fmt::BasicFormatter<wchar_t> >(dC)};
-    pLog->FUN_1406530d0(nLevel, nCategory, szFormat, fmt::ArgList(fmt::internal::make_type(dA, dB, dC), args));
+    const fmt::internal::ArgArray<3>::Type args = {fmt::internal::MakeValue<fmt::BasicFormatter<wchar_t> >(*pA),
+                                                   fmt::internal::MakeValue<fmt::BasicFormatter<wchar_t> >(*pB),
+                                                   fmt::internal::MakeValue<fmt::BasicFormatter<wchar_t> >(*pC)};
+    pLog->FUN_1406530d0(nLevel, nCategory, szFormat, fmt::ArgList(fmt::internal::make_type(*pA, *pB, *pC), args));
 }
 
 // @0x140e69060
-void FUN_140e69060(float* pQuat, float fX, float fY, float fZ)
+void FUN_140e69060(NiQuaternion* pQuat, float fX, float fY, float fZ)
 {
     float fSinX, fCosX, fSinY, fCosY, fSinZ, fCosZ;
     FUN_140e69330(fX * 0.5f, &fSinX, &fCosX);
     FUN_140e69330(fY * 0.5f, &fSinY, &fCosY);
     FUN_140e69330(fZ * 0.5f, &fSinZ, &fCosZ);
-    pQuat[0] = fCosZ * fCosY * fCosX + fSinZ * fSinY * fSinX;
-    pQuat[1] = fCosZ * fCosY * fSinX - fSinZ * fSinY * fCosX;
-    pQuat[2] = fCosZ * fSinY * fCosX + fSinZ * fCosY * fSinX;
-    pQuat[3] = -fCosZ * fSinY * fSinX + fSinZ * fCosY * fCosX;
+    pQuat->m_fW = fCosZ * fCosY * fCosX + fSinZ * fSinY * fSinX;
+    pQuat->m_fX = fCosZ * fCosY * fSinX - fSinZ * fSinY * fCosX;
+    pQuat->m_fY = fCosZ * fSinY * fCosX + fSinZ * fCosY * fSinX;
+    pQuat->m_fZ = -fCosZ * fSinY * fSinX + fSinZ * fCosY * fCosX;
 }
 
 // @0x140e69330

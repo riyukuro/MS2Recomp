@@ -95,11 +95,11 @@ int UIPetSystemDialog::vfunc_65()
 {
     if (UIDialog::vfunc_65() == 0)
         return 0;
-    m_198.SetAt(0, MS2Ptr<TabInfo>(new TabInfo(0xccd, FUN_140e74b50(vfunc_84()), "petInfo")));
-    m_198.SetAt(1, MS2Ptr<TabInfo>(new TabInfo(0xcce, FUN_140e74be0(vfunc_84()), "petCompose")));
-    m_198.SetAt(2, MS2Ptr<TabInfo>(new TabInfo(0xccf, FUN_140e74ee0(vfunc_84()), "petEvolution")));
-    m_198.SetAt(3, MS2Ptr<TabInfo>(new TabInfo(0xcd1, FUN_140e74df0(vfunc_84()), "petRemakeOption")));
-    m_198.SetAt(4, MS2Ptr<TabInfo>(new TabInfo(0xcd0, FUN_140e74d00(vfunc_84()), "petCollect")));
+    m_198.SetAt(0, new TabInfo(0xccd, FUN_140e74b50(vfunc_84()), "petInfo"));
+    m_198.SetAt(1, new TabInfo(0xcce, FUN_140e74be0(vfunc_84()), "petCompose"));
+    m_198.SetAt(2, new TabInfo(0xccf, FUN_140e74ee0(vfunc_84()), "petEvolution"));
+    m_198.SetAt(3, new TabInfo(0xcd1, FUN_140e74df0(vfunc_84()), "petRemakeOption"));
+    m_198.SetAt(4, new TabInfo(0xcd0, FUN_140e74d00(vfunc_84()), "petCollect"));
     FUN_1419cae20(FUN_140a6a840(), static_cast<UIItemEventListener*>(this));
     return 0;
 }
@@ -130,8 +130,7 @@ void UIPetSystemDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
     int nSel = FUN_140e74790();
-    MS2Ptr<ASButtonBar> spBar = GetChild<ASButtonBar>("m_buttonBar");
-    if (spBar)
+    if (MS2Ptr<ASButtonBar> spBar = GetChild<ASButtonBar>("m_buttonBar"))
     {
         for (POSITION pos = m_198.GetStartPosition(); pos != NULL; m_198.GetNext(pos))
         {
@@ -179,7 +178,7 @@ int UIPetSystemDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
         OnRemoveTab();
         return 1;
     }
-    if (_stricmp("OnChangeTab", szMethod) == 0 && data.FUN_1422b9620(pArgs, nArgs) != 0)
+    else if (_stricmp("OnChangeTab", szMethod) == 0 && data.FUN_1422b9620(pArgs, nArgs) != 0)
     {
         CString strName = data.FUN_1422b8d30();
         Scaleform::GFx::Value root = data.FUN_1422b9260();
@@ -222,8 +221,7 @@ void UIPetSystemDialog::vfunc_3(void* pItem, bool b)
 // MS2-FUNCTIONAL: the GetChild / CStringW temporaries keep different stack slots than the exe
 void UIPetSystemDialog::FUN_140e74550(int nGroup)
 {
-    MS2Ptr<ASButtonBar> spBar = GetChild<ASButtonBar>("m_buttonBar");
-    if (spBar)
+    if (MS2Ptr<ASButtonBar> spBar = GetChild<ASButtonBar>("m_buttonBar"))
     {
         m_180 = nGroup;
         int nTab = FUN_140e74790();
@@ -268,23 +266,24 @@ MS2Ptr<CItem> UIPetSystemDialog::vfunc_85()
 // MS2-FUNCTIONAL: the loop temporaries keep different stack slots than the exe
 int UIPetSystemDialog::FUN_140e74790()
 {
-    if (m_180 != 0)
+    if (m_180 == 0)
+        return 0;
+    int nIndex = 0;
+    for (POSITION pos = m_198.GetStartPosition(); pos != NULL; m_198.GetNext(pos))
     {
-        int nIndex = 0;
-        for (POSITION pos = m_198.GetStartPosition(); pos != NULL; m_198.GetNext(pos))
+        MS2Ptr<TabInfo> spTab = m_198.GetValueAt(pos);
+        if (spTab == 0)
+            continue;
+        if (spTab->m_28 == 0)
+            continue;
+        const CString& strName = spTab->m_20;
+        if (strName == "petCollect")
         {
-            MS2Ptr<TabInfo> spTab = m_198.GetValueAt(pos);
-            if (spTab == 0)
-                continue;
-            if (spTab->m_28 == 0)
-                continue;
-            if (spTab->m_20 == "petCollect")
-            {
-                static_cast<TabContentsPetCollect*>(spTab->m_28.get())->FUN_140cad8a0(m_180);
-                return nIndex;
-            }
-            ++nIndex;
+            TabContentsPetCollect* pCollect = static_cast<TabContentsPetCollect*>(spTab->m_28.get());
+            pCollect->FUN_140cad8a0(m_180);
+            return nIndex;
         }
+        ++nIndex;
     }
     return 0;
 }
@@ -331,12 +330,10 @@ static MS2Ptr<PetSystemTabContents> FUN_140e74be0(int nPages)
 {
     if (nPages == 0)
         return MS2Ptr<PetSystemTabContents>(0);
-    if (FUN_14025e7b0()->m_8.FUN_1402c4c90(0x37) == 0)
-    {
-        if (FUN_140166410()->FUN_14036d570(0x8d))
-            return MS2Ptr<PetSystemTabContents>(new TabContentsPetCompose());   // ctor 0x140cb3db0 (tabcontentspetcompose.cpp)
+    if (FUN_14025e7b0()->m_8.FUN_1402c4c90(0x37) != 0)
         return MS2Ptr<PetSystemTabContents>(0);
-    }
+    if (FUN_140166410()->FUN_14036d570(0x8d))
+        return MS2Ptr<PetSystemTabContents>(new TabContentsPetCompose());   // ctor 0x140cb3db0 (tabcontentspetcompose.cpp)
     return MS2Ptr<PetSystemTabContents>(0);
 }
 

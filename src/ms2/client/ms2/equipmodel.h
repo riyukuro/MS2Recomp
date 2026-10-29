@@ -36,6 +36,8 @@
 // Key of CEquipModel::m_effects (passed by const& through CElementTraits, so not a primitive int; 4 bytes).
 enum Unk_EquipEffectSlot { };
 class Unk_EquipModelOwner;     // MS2Ptr<T> at +0x28 (copy ctor 0x140884f30, dtor 0x1405a85f0, get 0x1405a8ed0)
+class CItem;
+namespace efd { class utf8string; }
 
 // 0x118 bytes. vftable 0x142ec0ef8 (33 slots), ??_G 0x1412058b0.
 class CEquipModel : public CPtred
@@ -81,6 +83,13 @@ public:
     NiPoint3 GetPos6c();                               // 0x1412000d0 return m_pos6c
     NiPoint3 FUN_141200130();                               // 0x141200130 return m_pos60
     CString FUN_1412028f0();                                // 0x1412028f0 return m_str38
+    CString FUN_141203830();                               // 0x141203830 status text (owner's template summary)
+    MS2Ptr<CItem> FUN_141200940();                          // 0x141200940 the owner's item (null without an owner)
+    MS2Ptr<Unk_EquipModelOwner> FUN_141200a40();            // 0x141200a40 return m_spOwner
+    CString FUN_1412029d0();                                // 0x1412029d0 the part name (left/right swapped for the off hand)
+    NiAVObjectPtr FUN_141201920(CString kName);             // 0x141201920 the attached scene object named kName (or containing it)
+    NiNodePtr FUN_141201bd0(const CString& kName);          // 0x141201bd0 FUN_141201920 as a NiNode
+    efd::utf8string FUN_141201780();                        // 0x141201780 the model's entity model name
 
 public:
     MS2_LAYOUT_FRIEND;

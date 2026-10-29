@@ -14,6 +14,8 @@
 #include <new>
 #include <atlcoll.h>
 
+#include "ms2/placeholder/cguidecondition.h"
+
 
 struct Unk_GcElem16 { void* m_p0; void* m_p1; };
 
@@ -47,27 +49,27 @@ void Unk_GcClear1(char* p)
 }
 
 // @0x1413b5870
-bool Unk_GcIsZero0(unsigned char* p)
+bool Unk_GcVec3IsNull(const Unk_GcOptVec3* pOpt)
 {
-    return *p == 0;
+    return pOpt->m_bSet == false;
 }
 
 // @0x1413b58a0
-bool Unk_GcIsZero1(unsigned char* p)
+bool Unk_GcIntIsNull(const Unk_GcOptInt* pOpt)
 {
-    return *p == 0;
+    return pOpt->m_bSet == false;
 }
 
 // @0x1413b58d0
-char Unk_GcGet0(char* p)
+bool Unk_GcVec3HasValue(const Unk_GcOptVec3* pOpt)
 {
-    return *p;
+    return pOpt->m_bSet;
 }
 
 // @0x1413b58e0
-char Unk_GcGet1(char* p)
+bool Unk_GcBoolHasValue(const Unk_GcOptBool* pOpt)
 {
-    return *p;
+    return pOpt->m_bSet;
 }
 
 // The pointer array's destructor loop (0x1413b55b0) is a COMDAT of the array.
@@ -76,7 +78,7 @@ void Unk_GcAnchorPtrArray(ATL::CAtlArray<void*>& arr)
     arr.RemoveAll();
 }
 
-char FUN_140311670(void* p);
+bool FUN_140311670(void* p);
 
 // @0x1413b57d0
 bool Unk_GcNoPoint(char* p)

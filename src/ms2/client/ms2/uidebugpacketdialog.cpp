@@ -65,7 +65,7 @@ MS2Ptr<ASMovieClip> FUN_1409b40c0(int nMovieId, const Scaleform::GFx::Value& rVa
 CStringA FUN_1402bb1c0(const char* pszFormat, const int& n);
 CStringW FUN_1401ceea0(const wchar_t* pszFormat, const int& n);
 unsigned FUN_140869420();                                       // the server time
-int FUN_140768010(int nRange, int nBase);                       // a random number
+unsigned int FUN_140768010(int nRange, int nBase);                       // a random number
 void FUN_140710590(COutPacket& packet);                         // send
 unsigned char FUN_1406c3b20(const CStringW& str);               // text to number
 short FUN_140729360(const CStringW& str);
@@ -88,10 +88,7 @@ UIDebugPacketDialog::UIDebugPacketDialog()
     m_bCloseFromPacket = true;
 }
 
-// @0x141291cd0
-UIDebugPacketDialog::~UIDebugPacketDialog()
-{
-}
+// @0x141291cd0 ~UIDebugPacketDialog (implicit: the exe copy stores no vptr)
 
 // @0x14128fb80
 CString UIDebugPacketDialog::GetTypeName()
@@ -100,7 +97,6 @@ CString UIDebugPacketDialog::GetTypeName()
 }
 
 // @0x14128fbd0
-// MS2-FUNCTIONAL: control flow follows the exe; the string temporaries and the combo row objects are named differently.
 void UIDebugPacketDialog::OnLoadInit()
 {
     UIObject::OnLoadInit();
@@ -112,15 +108,38 @@ void UIDebugPacketDialog::OnLoadInit()
     for (int i = 0; i < 5; i++)
     {
         int nNumber = i + 1;
-        MS2Ptr<ASMovieClip> spParam = FUN_140ba7930(FUN_1402bb1c0("m_param{0}", nNumber));
-        Unk_DpParam* pParam = reinterpret_cast<Unk_DpParam*>(spParam.operator->());
-        m_type[i] = pParam->FUN_140bbe700("m_type");
-        m_value[i] = pParam->FUN_140bbe880("m_value");
-        static const char* const aszTypes[] = {"None", "1 Byte", "2 Byte", "4 Byte", "8 Byte", "String"};
-        for (int j = 0; j < 6; j++)
+        CStringA strParam = FUN_1402bb1c0("m_param{0}", nNumber);
+        MS2Ptr<ASMovieClip> spParam = FUN_140ba7930(strParam);
+        m_type[i] = reinterpret_cast<Unk_DpParam*>(spParam.operator->())->FUN_140bbe700("m_type");
+        m_value[i] = reinterpret_cast<Unk_DpParam*>(spParam.operator->())->FUN_140bbe880("m_value");
         {
             ASObj row(2);
-            row.FUN_1409c0dc0((const char*)s_strLabel, aszTypes[j]);
+            row.FUN_1409c0dc0((const char*)s_strLabel, "None");
+            m_type[i]->FUN_1422dfc70(row);
+        }
+        {
+            ASObj row(2);
+            row.FUN_1409c0dc0((const char*)s_strLabel, "1 Byte");
+            m_type[i]->FUN_1422dfc70(row);
+        }
+        {
+            ASObj row(2);
+            row.FUN_1409c0dc0((const char*)s_strLabel, "2 Byte");
+            m_type[i]->FUN_1422dfc70(row);
+        }
+        {
+            ASObj row(2);
+            row.FUN_1409c0dc0((const char*)s_strLabel, "4 Byte");
+            m_type[i]->FUN_1422dfc70(row);
+        }
+        {
+            ASObj row(2);
+            row.FUN_1409c0dc0((const char*)s_strLabel, "8 Byte");
+            m_type[i]->FUN_1422dfc70(row);
+        }
+        {
+            ASObj row(2);
+            row.FUN_1409c0dc0((const char*)s_strLabel, "String");
             m_type[i]->FUN_1422dfc70(row);
         }
         m_type[i]->FUN_1422df690(0);
@@ -175,13 +194,12 @@ void UIDebugPacketDialog::OnLoadComplete()
 }
 
 // @0x141290e20
-// MS2-FUNCTIONAL: control flow follows the exe; the loop locals sit in different stack slots.
 void UIDebugPacketDialog::vfunc_72()
 {
     unsigned int uNow = FUN_140869420();
     if (m_nRemain != 0)
     {
-        while (m_nRemain > 0 && m_nNext < uNow)
+        while (m_nRemain > 0 && uNow > m_nNext)
         {
             COutPacket packet(m_nId, 0);
             packet.FUN_14020aa30(m_packet, 2);
@@ -192,10 +210,14 @@ void UIDebugPacketDialog::vfunc_72()
     }
     if (m_nRandomRemain != 0)
     {
-        while (m_nRandomRemain > 0 && m_nRandomNext < uNow)
+        while (m_nRandomRemain > 0 && uNow > m_nRandomNext)
         {
             int nId = m_range.FUN_141291f20();
-            if ((Unk_DpCheck*)m_ignoreAdminPacket == 0 || (nId != 0x50 && nId != 0x24 && nId != 0x15))
+            if (((Unk_DpCheck*)m_ignoreAdminPacket ? true : false) && (nId == 0x50 || nId == 0x24 || nId == 0x15))
+            {
+                // admin packets are skipped
+            }
+            else
             {
                 COutPacket packet(nId, 0);
                 int nWritten = 0;
@@ -204,26 +226,25 @@ void UIDebugPacketDialog::vfunc_72()
                     int nKind = FUN_140768010(4, 1);
                     if (nKind == 1)
                     {
-                        unsigned char n = FUN_140768010(0x100, 0);
-                        packet.WriteUInt8(n);
+                        packet.WriteUInt8(FUN_140768010(0x100, 0));
                         nWritten += 1;
                     }
                     else if (nKind == 2)
                     {
-                        short n = FUN_140768010(0xffff, 0);
-                        packet.WriteInt16(n);
+                        packet.WriteInt16(FUN_140768010(0xffff, 0));
                         nWritten += 2;
                     }
                     else if (nKind == 3)
                     {
-                        int n = FUN_140768010(0x7fffffff, 0);
-                        packet.WriteInt32(n);
+                        packet.WriteInt32(FUN_140768010(0x7fffffff, 0));
                         nWritten += 4;
                     }
                     else if (nKind == 4)
                     {
-                        FUN_140768010(0x7fffffff, 0);
-                        int n = FUN_140768010(0x7fffffff, 0);
+                        __int64 n = 0;
+                        n = FUN_140768010(0x7fffffff, 0);
+                        n >>= 32;   // the exe shifts right, so the high half is always 0
+                        n += FUN_140768010(0x7fffffff, 0);
                         packet.WriteInt64(n);
                         nWritten += 8;
                     }
@@ -261,10 +282,10 @@ void UIDebugPacketDialog::OnPacketCount(const Scaleform::GFx::FunctionHandler::P
     chat.target = L"";
     chat.FUN_1401fa700(packet);
     FUN_140710590(packet);
-    if (!m_bPacketCounter)
-        m_bPacketCounter = true;
-    else
+    if (m_bPacketCounter)
         m_bPacketCounter = false;
+    else
+        m_bPacketCounter = true;
 }
 
 // @0x141291340
@@ -279,10 +300,10 @@ void UIDebugPacketDialog::OnCloseFromPacket(const Scaleform::GFx::FunctionHandle
     chat.target = L"";
     chat.FUN_1401fa700(packet);
     FUN_140710590(packet);
-    if (!m_bCloseFromPacket)
-        m_bCloseFromPacket = true;
-    else
+    if (m_bCloseFromPacket)
         m_bCloseFromPacket = false;
+    else
+        m_bCloseFromPacket = true;
 }
 
 // @0x141291440
@@ -292,12 +313,11 @@ void UIDebugPacketDialog::OnDoubleClick(const Scaleform::GFx::FunctionHandler::P
 }
 
 // @0x141291470
-// MS2-FUNCTIONAL: control flow follows the exe; the parsed values pass through extra locals.
-int UIDebugPacketDialog::FUN_141291470()
+bool UIDebugPacketDialog::FUN_141291470()
 {
     m_nId = FUN_1401d9a00(m_id->FUN_1422e0b00());
     if (m_nId == 0)
-        return 0;
+        return false;
     m_nRemain = FUN_1401d9a00(m_loopCount->FUN_1422e0b00());
     m_nDelay = FUN_1401d9a00(m_loopDelay->FUN_1422e0b00());
     if (m_nRemain < 1)
@@ -312,7 +332,7 @@ int UIDebugPacketDialog::FUN_141291470()
             break;
         if (nType == 0)
             break;
-        if (nType == 1)
+        else if (nType == 1)
             m_packet.WriteUInt8(FUN_1406c3b20(strValue));
         else if (nType == 2)
             m_packet.WriteInt16(FUN_140729360(strValue));
@@ -323,7 +343,7 @@ int UIDebugPacketDialog::FUN_141291470()
         else if (nType == 5)
             m_packet.WriteUnicodeString(strValue);
     }
-    return 1;
+    return true;
 }
 
 // @0x141291850
@@ -342,7 +362,7 @@ bool UIDebugPacketDialog::FUN_141291850()
 // @0x141291f20
 int Unk_DpRange::FUN_141291f20()
 {
-    if (m_nMin < m_nMax)
+    if (m_nMax > m_nMin)
         return rand() % (m_nMax - m_nMin + 1) + m_nMin;
     return m_nMin;
 }

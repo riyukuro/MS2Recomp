@@ -8,37 +8,37 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include <atlcoll.h>
-#include <efd/Matrix3.h>
+#include <efd/utf8string.h>
+#include "ms2/placeholder/effectquery.h"
 
 // ---- unrecovered helpers (declared with their exe signatures) ----
 
-// The effect / sound manager and its 0x78-byte play request.
-struct Unk_LtFxReq
-{
-    CString m_strName;                                              // +0x00
-    int m_nType;                                                    // +0x08
-    int m_nPad0c;                                                   // +0x0c
-    void* m_pad_10;                                                 // +0x10
-    void* m_pXform;                                                 // +0x18 the transform the effect follows
-    void* m_unk[11];                                                // +0x20 (constructed by FUN_140a52ef0)
-};
+// The effect manager and its play request (NoticeMessage, effectquery.h).
 class Unk_LtFxMgr
 {
 public:
-    int FUN_1411a49c0(Unk_LtFxReq* pRequest);                       // play, returns the handle
+    int FUN_1411a49c0(NoticeMessage* pRequest);                     // play, returns the handle
     void FUN_1411a6060(int nHandle);                                // stop
 };
 Unk_LtFxMgr* FUN_1403ed280();
-void FUN_140a52ef0(Unk_LtFxReq* p);                                 // construct
-void FUN_1405a89e0(Unk_LtFxReq* p);                                 // destroy
 
-// The target's transform: rotation, translation, scale.
+// The target's transform (NiTransform: rotation, translation, scale). The ctor 0x140a332d0 is out of line, and the
+// position converts through NiPoint3(const efd::Point3&) (0x14027dcf0) and is move-assigned (0x14097faa0).
+struct Unk_LtPoint3 { float x, y, z; Unk_LtPoint3& operator=(const Unk_LtPoint3&); };
+struct Unk_LtMatrix3
+{
+    void FUN_142083d40(float fX, float fY, float fZ);               // efd::Matrix3::FromEulerAnglesXYZ (radians)
+    float m_f[9];
+};
 struct Unk_LtXform
 {
-    efd::Matrix3 m_rot;                                             // +0x00
-    Vector3 m_pos;                                          // +0x24
+    Unk_LtMatrix3 m_rot;                                            // +0x00
+    Unk_LtPoint3 m_pos;                                             // +0x24
     float m_fScale;                                                 // +0x30
 };
+void FUN_140a332d0(Unk_LtXform* p);
+void FUN_14027dcf0(Unk_LtPoint3* p, const Vector3& pt);
+void FUN_14097faa0(Unk_LtPoint3* p, Unk_LtPoint3* pSrc);
 
 // Entity properties read by hash.
 class Unk_Entity
@@ -46,15 +46,8 @@ class Unk_Entity
 public:
     int FUN_1409618c0(unsigned nHash, Vector3* pValue);     // point property
     int FUN_1408a2020(unsigned nHash, int* pValue);                 // int property
-    int FUN_1408a2060(unsigned nHash, struct Unk_LtName* pValue);   // string property
+    int FUN_1408a2060(unsigned nHash, efd::utf8string* pValue);     // string property
 };
-struct Unk_LtName
-{
-    char m_buf[32];
-};
-void FUN_1408a8700(Unk_LtName* p);                                  // construct
-void FUN_1408a8900(Unk_LtName* p);                                  // destroy
-const char* FUN_1408ac310(Unk_LtName* p);                           // c_str
 
 // The quest manager: its condition interface sits at +0x10, a quest's own interface at +0x18.
 struct Unk_LtIdSet
@@ -166,7 +159,6 @@ int CLiftableTarget::vfunc_1(Unk_EntRef ent)
 }
 
 // @0x1414483e0
-// MS2-FUNCTIONAL: written from the decompile; the quest chain's temporaries/EH states are not matched
 void CLiftableTarget::FUN_1414483e0()
 {
     Unk_LtActor* pActor = FUN_141bd0cc0(FUN_1403ed2d0());
@@ -181,57 +173,46 @@ void CLiftableTarget::FUN_1414483e0()
     FUN_1416cb260(FUN_140764020(), &ids, 1, 0xb, 0xffffffff);
     for (unsigned __int64 i = 0; i < ids.GetCount(); i++)
     {
-        Unk_LtQuestMgrIf* pIf = &FUN_140764020()->m_if;
-        MS2Ptr<Unk_LtQuest> spQuest = pIf->vfunc_3(ids[i]);
+        MS2Ptr<Unk_LtQuest> spQuest = (&FUN_140764020()->m_if)->vfunc_3(ids[i]);
         if (spQuest.IsNull())
             continue;
-        Unk_LtQuestIf* pQuestIf = &spQuest->m_if;
-        if (pQuestIf->vfunc_1() != 0)
+        if ((&spQuest->m_if)->vfunc_1() != 0)
             continue;
-        MS2Ptr<Unk_LtQuestData> spData = pQuestIf->vfunc_0();
+        MS2Ptr<Unk_LtQuestData> spData = (&spQuest->m_if)->vfunc_0();
         for (unsigned __int64 j = 0; j < spData->m_conds.FUN_14075ae80(); j++)
         {
-            MS2Ptr<Unk_LtCond>& spCond = spData->m_conds.FUN_140759290(j);
-            if (spCond->m_nType == 0x9c)
-            {
-                if (spCond->m_setA.FUN_14029e720() == 1)
-                {
-                    if (spCond->m_setA.FUN_14029e600((__int64)m_nId) != 0)
-                    {
-                        unsigned nMap = pActor->FUN_141530290()->FUN_1410ad610();
-                        if (spCond->m_setB.FUN_14029e600((unsigned __int64)nMap) != 0)
-                        {
-                            FUN_141448750();
-                            return;
-                        }
-                    }
-                }
-            }
+            if (spData->m_conds.FUN_140759290(j)->m_nType != 0x9c)
+                continue;
+            if (spData->m_conds.FUN_140759290(j)->m_setA.FUN_14029e720() != 1)
+                continue;
+            if (spData->m_conds.FUN_140759290(j)->m_setA.FUN_14029e600((__int64)m_nId) == 0)
+                continue;
+            if (spData->m_conds.FUN_140759290(j)->m_setB.FUN_14029e600((unsigned __int64)pActor->FUN_141530290()->FUN_1410ad610()) == 0)
+                continue;
+            FUN_141448750();
+            return;
         }
     }
     FUN_141448920();
 }
 
 // @0x141448750
-// MS2-FUNCTIONAL: the exe copies the sum through efd::Point3's copy ctor / operator= (0x14027dcf0 / 0x14097faa0)
 void CLiftableTarget::FUN_141448750()
 {
     if (m_nFx != 0)
         return;
-    {
-        Unk_LtXform xform;
-        xform.m_pos = m_vPos.FUN_14097fd50(Vector3(0.0f, 0.0f, 1.0f));
-        xform.m_rot.FromEulerAnglesXYZ(m_vRot.x * 3.1415927f / 180.0f, m_vRot.y * 3.1415927f / 180.0f, m_vRot.z * 3.1415927f / 180.0f);
-        xform.m_fScale = 1.0f;
-        alignas(8) char reqBuf[sizeof(Unk_LtFxReq)];   // FUN_140a52ef0 / FUN_1405a89e0 construct and destroy it: no implicit dtor
-        Unk_LtFxReq& req = *reinterpret_cast<Unk_LtFxReq*>(reqBuf);
-        FUN_140a52ef0(&req);
-        req.m_strName = vfunc_2();
-        req.m_nType = 0;
-        req.m_pXform = &xform;
-        m_nFx = FUN_1403ed280()->FUN_1411a49c0(&req);
-        FUN_1405a89e0(&req);
-    }
+    Unk_LtXform xform;
+    FUN_140a332d0(&xform);
+    Unk_LtPoint3 kPos;
+    FUN_14027dcf0(&kPos, m_vPos.FUN_14097fd50(Vector3(0.0f, 0.0f, 1.0f)));
+    FUN_14097faa0(&xform.m_pos, &kPos);
+    xform.m_rot.FUN_142083d40(m_vRot.x * 3.1415927f / 180.0f, m_vRot.y * 3.1415927f / 180.0f, m_vRot.z * 3.1415927f / 180.0f);
+    xform.m_fScale = 1.0f;
+    NoticeMessage req;
+    req.m_strName = vfunc_2();
+    req.m_nObject = 0;
+    req.m_p18 = &xform;
+    m_nFx = FUN_1403ed280()->FUN_1411a49c0(&req);
 }
 
 // @0x141448920
@@ -250,20 +231,14 @@ CString CLiftableTargetBox::vfunc_2()
 }
 
 // @0x1414489c0
-// MS2-FUNCTIONAL: the exe has a second EH state around the name object (nop after the destroy call)
 int CLiftableTargetGuide::vfunc_1(Unk_EntRef ent)
 {
     if (CLiftableTarget::vfunc_1(ent) == 0)
         return 0;
-    Unk_LtName name;
-    FUN_1408a8700(&name);
+    efd::utf8string name;
     if (m_ent.FUN_1408a9280()->FUN_1408a2060(0x86adffcf, &name) != 0)
-    {
-        FUN_1408a8900(&name);
         return 0;
-    }
-    m_strGuide = FUN_1408ac310(&name);
-    FUN_1408a8900(&name);
+    m_strGuide = name.c_str();
     return 1;
 }
 
@@ -274,7 +249,7 @@ CString CLiftableTargetGuide::vfunc_2()
 }
 
 // ---- hooks ----
-// (vfunc_1 takes Unk_EntRef by value and FUN_1414483e0 / FUN_141448750 are functional over unrecovered quest/effect types: not hooked)
+// (vfunc_1 takes Unk_EntRef by value and FUN_1414483e0 / FUN_141448750 go through unrecovered quest/effect views: not hooked)
 MS2_REPLACE_METHOD(0x141448920, CLiftableTarget, FUN_141448920, 60, 0x767CACA6);
 MS2_REPLACE_METHOD(0x141448970, CLiftableTargetBox, vfunc_2, 68, 0x6C0F74DD);
 MS2_REPLACE_METHOD(0x141448B00, CLiftableTargetGuide, vfunc_2, 66, 0x7D865BC0);

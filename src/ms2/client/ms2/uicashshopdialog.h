@@ -79,7 +79,7 @@ public:
         ~CategoryFilter();                                          // 0x14103be90
         void FUN_141033200();                                       // 0x141033200 clear both maps
         void FUN_141033240(int nCategory);                          // 0x141033240 show one category, hide the listed inventory ids
-        bool FUN_141033300(int nCategory, int nId);                 // 0x141033300 is the product shown?
+        int FUN_141033300(int nCategory, int nId);                  // 0x141033300 is the product shown?
 
         ATL::CAtlMap<int, int> m_mapInclude;                        // +0x00
         ATL::CAtlMap<int, int> m_mapExclude;                        // +0x48
@@ -105,7 +105,7 @@ public:
     virtual int OnMessage(UISwfEntity* pSender, UIMsg* pMsg);       // IMessageListener 0 0x141033e40
 
     int GetCategory();                                            // 0x141034da0 the category page
-    bool FUN_141034dc0(int nId);                                    // 0x141034dc0 is the product shown?
+    int FUN_141034dc0(int nId);                                     // 0x141034dc0 is the product shown?
     void FUN_141034e00(int nCash);                                  // 0x141034e00 the cash balance
     void FUN_141034ef0(int n, CInPacket& rPacket);                  // 0x141034ef0 the buy result: drops the bought basket rows
     void FUN_141035050();                                           // 0x141035050 products dirty
@@ -113,11 +113,11 @@ public:
     void FUN_1410350d0(MS2Ptr<CashBannerInfo> spBanner);            // 0x1410350d0 a banner was clicked
     void FUN_141035260(ATL::CAtlArray<MS2Ptr<Unk_CashBannerRecord> >& rRecords);   // 0x141035260 build the banner map
     void FUN_1410355e0(CString strSide, CString strPath);           // 0x1410355e0 a banner image arrived
-    bool FUN_1410356a0();                                           // 0x1410356a0 buy ids are waiting
+    int FUN_1410356a0();                                            // 0x1410356a0 buy ids are waiting
     void FUN_1410356f0();                                           // 0x1410356f0 open the cash unlock web dialog
     void FUN_141035920(int n);                                      // 0x141035920
     void SetUnlockState(int nState);                                 // 0x141035970 unlock state
-    bool FUN_141035990(const CString& strName, ATL::CAtlArray<int>& rIds, bool bBasket);   // 0x141035990 open the bill dialog for the products
+    bool FUN_141035990(const CString& strName, ATL::CAtlArray<unsigned>& rIds, bool bBasket);   // 0x141035990 open the bill dialog for the products
     void FUN_141035e40();                                           // 0x141035e40 page buttons
     void FUN_1410360c0();                                           // 0x1410360c0 fill the sale list
     void FUN_141036ca0();                                           // 0x141036ca0 fill the basket list
@@ -127,7 +127,7 @@ public:
     CString FUN_141037b70();                                        // 0x141037b70 the browser path
     bool FUN_141037cd0(int nItemId, int* pnReason, int* pnTab);     // 0x141037cd0 can the item be received?
     int FUN_141037ea0(const PaymentMap& mapPay);                    // 0x141037ea0 the cash part of the payment
-    MS2Ptr<TMarketBillDataParam> FUN_141037f40(const CString& strName, bool bGift);   // 0x141037f40 the bill parameter
+    MS2Ptr<TCashShopBillDataParam> FUN_141037f40(const CString& strName, bool bGift);   // 0x141037f40 the bill parameter
     bool FUN_1410382a0(MS2Ptr<TMarketBillDataParam> spParam, const PaymentMap& mapPay);   // 0x1410382a0 buy callback
     bool FUN_141038aa0(MS2Ptr<TMarketBillDataParam> spParam, const PaymentMap& mapPay, const CStringW& strName, const CStringW& strText);   // 0x141038aa0 gift callback
     bool FUN_141039540(Scaleform::GFx::Value* pRetVal, ASData& rData, MS2Ptr<TMarketBillDataParam> spParam);   // 0x141039540 tooltip callback
@@ -154,7 +154,7 @@ private:
     CString m_str188;                                               // +0x188
     CategoryFilter m_filter;                                        // +0x190
     ATL::CAtlList<int> m_basket;                                    // +0x220 the product ids in the basket
-    ATL::CAtlArray<int> m_waiting;                                  // +0x250 product ids still to buy one after another
+    ATL::CAtlArray<unsigned> m_waiting;                                  // +0x250 product ids still to buy one after another
     BannerMap m_banners;                                            // +0x270 "left" / "right"
     bool m_b2b8;                                                    // +0x2b8
     CObject* m_p2c0;                                                // +0x2c0

@@ -45,7 +45,7 @@ public:
     void FUN_1419addc0(NotifyObject* pNotify);                  // "NotifyChangeActiveMyCodiTab"
     void FUN_1419ae170();                                       // fill "buildItems" with the dyeable equipment
     void FUN_1419ae790();                                       // play the dye pose of the previewed item
-    bool FUN_1419ae940();                                       // leave the page (restore the camera)
+    int FUN_1419ae940();                                        // leave the page (restore the camera)
     void FUN_1419ae9f0();                                       // close (asks first when the basket is not saved)
     void FUN_1419aeb50();                                       // refresh the save button and the fee
     void FUN_1419aebc0(const __int64* pUid, int nIndex);        // select an item
@@ -58,7 +58,7 @@ public:
     void FUN_1419af290();                                       // "forceClearSelected"
     void FUN_1419af2f0(unsigned nPrice);                        // "setFee"
     void FUN_1419af750();                                       // the dye done effect
-    bool FUN_1419af840();                                       // the dye was applied
+    int FUN_1419af840();                                        // the dye was applied
     void FUN_1419af8d0();                                       // the dye failed
     int FUN_1419af980();                                        // ask and pay (coupons first)
     void FUN_1419afcd0(const Scaleform::GFx::FunctionHandler::Params& params);    // item slot tooltip
@@ -72,7 +72,7 @@ public:
     MS2Ptr<CItem> FUN_1419b1440(int nItemId);                   // move the previewed item into the basket
     MS2Ptr<CItem> FUN_1419b1590(int nItemId);                   // take an item out of the basket
     __int64 FUN_1419b1710();                                    // the basket price
-    bool FUN_1419b1760(int* pCoupons);                          // the player can pay; coupons used
+    int FUN_1419b1760(int* pCoupons);                           // the player can pay; coupons used
     bool FUN_1419b1900(int bCoupon);                            // a coupon is owned
     int FUN_1419b1970(int bCoupon);                             // coupons owned
     CStringW FUN_1419b19c0();                                   // the coupon name

@@ -5,6 +5,8 @@
 #pragma once
 #include "ms2/client/ms2/uihudentity.h"
 
+struct Unk_NtPos { float x; float y; };                 // the clip position FUN_141a5e5d0 fills
+
 class UINameTag : public UIHudEntity
 {
 public:
@@ -27,12 +29,12 @@ public:
         void FUN_141a5e4c0(int nFontSize);              // font size (0 = keep)
         void FUN_141a5e500(int nColor);                 // font colour
         void FUN_141a5e540(CString strNode);            // anchor node name of the actor
-        int FUN_141a5e5d0(float* pPos);                 // clip position, centred on the text (0 = no clip)
+        int FUN_141a5e5d0(Unk_NtPos* pPos);             // clip position, centred on the text (0 = no clip)
         int FUN_141a5e690();                            // clip visible
         void FUN_141a5f040(const CString& strSkin);            // skin name; mark dirty
         void FUN_141a5f080();                           // setData with the debug dump (mode 2)
         void FUN_141a5ff60();                           // setData with name, guild, symbol (mode 1)
-        bool FUN_141a60920();                           // is the tag shown for this actor (config flags)
+        int FUN_141a60920();                            // is the tag shown for this actor (config flags)
         void FUN_141a60b90(int nVisibleSymbol, int nVisibleName);
 
         int m_60;                            // +0x60 font size (18)

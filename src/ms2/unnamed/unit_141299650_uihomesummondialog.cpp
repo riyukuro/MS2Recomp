@@ -119,16 +119,13 @@ int UIHomeSummonDialog::vfunc_13()
         vfunc_67();
         return 1;
     }
-    else
+    else if (FUN_14025e7c0()->FUN_14116d9c0(0x1c, 0, 0) != 0)
     {
-        if (FUN_14025e7c0()->FUN_14116d9c0(0x1c, 0, 0) != 0)
-        {
-            CStringW strText = m_190->FUN_1422e0b00();
-            if (!strText.IsEmpty())
-                Summon();
-        }
-        return 0;
+        CStringW strText = m_190->FUN_1422e0b00();
+        if (!strText.IsEmpty())
+            Summon();
     }
+    return 0;
 }
 MS2_REPLACE_METHOD(0x141299AF0, UIHomeSummonDialog, vfunc_13, 175, 0x2693CBDA);
 
@@ -140,7 +137,6 @@ void UIHomeSummonDialog::OnConfirmClick(const Scaleform::GFx::FunctionHandler::P
 MS2_REPLACE_METHOD(0x141299BB0, UIHomeSummonDialog, OnConfirmClick, 29, 0x39B85687);
 
 // @0x141299be0
-// MS2-FUNCTIONAL: the exe passes the typed text to the packet by value (extra CStringW copy)
 void UIHomeSummonDialog::Summon()
 {
     if (FUN_140ba28d0(&m_30, 0) != 0)
@@ -154,16 +150,14 @@ void UIHomeSummonDialog::Summon()
     {
         m_190->FUN_1422e0ab0(L"");
         m_190->FUN_1422e1500(0, 0);
+        return;
     }
-    else
-    {
-        COutPacket packet(static_cast<int>(SendOp::RequestCube), 0);
-        packet.WriteUInt8(0x1e);
-        packet.WriteUnicodeString(FUN_14016a730(m_178, 0));
-        packet.WriteUnicodeString(strText);
-        FUN_140710590(packet);
-        vfunc_67();
-    }
+    COutPacket packet(static_cast<int>(SendOp::RequestCube), 0);
+    packet.WriteUInt8(0x1e);
+    packet.WriteUnicodeString(FUN_14016a730(m_178, 0));
+    packet.WriteUnicodeString(strText);
+    FUN_140710590(packet);
+    vfunc_67();
 }
 MS2_REPLACE_METHOD(0x141299BE0, UIHomeSummonDialog, Summon, 488, 0x37D4682F);
 

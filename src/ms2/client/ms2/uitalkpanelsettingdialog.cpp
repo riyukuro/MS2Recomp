@@ -36,7 +36,7 @@ public:
     virtual void vfunc_13(); virtual void vfunc_14(); virtual void vfunc_15(); virtual void vfunc_16();
     virtual void vfunc_17(); virtual void vfunc_18(); virtual void vfunc_19(); virtual void vfunc_20();
     virtual void vfunc_21(); virtual void vfunc_22(); virtual void vfunc_23();
-    virtual void vfunc_24(int n);
+    virtual void vfunc_24(bool b);
 };
 // "m_tab": the tab name input.
 class Unk_TpsInput : public Unk_TpsControl
@@ -94,7 +94,7 @@ public:
     virtual void vfunc_4();                                                 // refresh the tabs
     MessengerData::TalkTab* FUN_141a0e050();                                // the current tab
     void FUN_141a0e350(const CStringW& strName);                            // make a tab current
-    void FUN_141a0e9f0(CStringW strOldName, CStringW strNewName);           // rename a tab
+    void FUN_141a0e9f0(const CStringW& strOldName, const CStringW& strNewName);           // rename a tab
     void FUN_141a0e990();                                                   // save the tabs
 };
 class Unk_TpsChat
@@ -126,7 +126,7 @@ public:
     Unk_TpsRequest(const void* pSource);                                     // 0x1401baaa0
     ~Unk_TpsRequest();                                                       // 0x1401baaf0
     void FUN_1401bac80(CString strName, CStringW strValue, int n);
-    void FUN_1401badc0(int bEnabled);
+    void FUN_1401badc0(bool bEnabled);
     unsigned char FUN_1401bab90(CString strName, void* pOut);
 private:
     void* m_pad[5];
@@ -217,27 +217,25 @@ void UITalkPanelSettingDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
     m_spRoot = GetChild<ASUIComponent>("m_settingMenu");
-    if (!(m_spRoot == 0))
+    if (m_spRoot == 0)
+        return;
+    m_bApplied = 0;
+    if (FUN_141482e80()->m_p40 != 0)
     {
-        m_bApplied = 0;
-        if (FUN_141482e80()->m_p40 != 0)
+        MessengerData::TalkTab* pTab = FUN_141482e80()->m_p40->FUN_141a0e050();
+        if (pTab != 0)
         {
-            MessengerData::TalkTab* pTab = FUN_141482e80()->m_p40->FUN_141a0e050();
-            if (pTab != 0)
+            if (MS2Ptr<Unk_TpsInput> spTab = static_cast<Unk_TpsRoot*>(m_spRoot.operator->())->FUN_140bbe880<Unk_TpsInput>("m_tab"))
             {
-                MS2Ptr<Unk_TpsInput> spTab = static_cast<Unk_TpsRoot*>(m_spRoot.operator->())->FUN_140bbe880<Unk_TpsInput>("m_tab");
-                if (static_cast<Unk_TpsInput*>(spTab) != 0)
-                {
-                    spTab->FUN_1422e0ab0(pTab->m_strName);
-                    spTab->FUN_1422e1500(0, pTab->m_strName.GetLength());
-                    spTab->vfunc_24(1);
-                }
-                FUN_141b24ee0(&pTab->m_panel);
+                spTab->FUN_1422e0ab0(pTab->m_strName);
+                spTab->FUN_1422e1500(0, pTab->m_strName.GetLength());
+                spTab->vfunc_24(true);
             }
+            FUN_141b24ee0(&pTab->m_panel);
         }
-        if (FUN_141482e80()->m_p48 != 0)
-            FUN_141482e80()->m_p48->FUN_141a25210(0);
     }
+    if (FUN_141482e80()->m_p48 != 0)
+        FUN_141482e80()->m_p48->FUN_141a25210(0);
 }
 
 // @0x141b22970
@@ -245,28 +243,28 @@ int UITalkPanelSettingDialog::vfunc_13()
 {
     if (UIDialog::vfunc_13() != 0)
         return 1;
-    if (!FUN_14025e7c0()->FUN_14116d9c0(0x1c, 0, 0))
-        return 0;
-    MS2Ptr<Unk_TpsInput> spTab = static_cast<Unk_TpsRoot*>(m_spRoot.operator->())->FUN_140bbe880<Unk_TpsInput>("m_tab");
-    if (static_cast<Unk_TpsInput*>(spTab) != 0)
+    if (FUN_14025e7c0()->FUN_14116d9c0(0x1c, 0, 0))
     {
-        if (spTab->FUN_1422c76c0() != 0)
+        if (MS2Ptr<Unk_TpsInput> spTab = static_cast<Unk_TpsRoot*>(m_spRoot.operator->())->FUN_140bbe880<Unk_TpsInput>("m_tab"))
         {
-            Unk_TpsRequest request(0x4e62);
-            request.FUN_1401bac80("OnKeyHandler", FUN_141b23550(), 0);
-            request.FUN_1401badc0(1);
-            if (GetClientPlatform()->vfunc_37(&request) == 1)
+            if (spTab->FUN_1422c76c0() != 0)
             {
-                if (FUN_141b236c0(FUN_141b23550()) == 1)
+                Unk_TpsRequest request(0x4e62);
+                request.FUN_1401bac80("OnKeyHandler", FUN_141b23550(), 0);
+                request.FUN_1401badc0(true);
+                if (GetClientPlatform()->vfunc_37(&request) == 1)
                 {
-                    MS2Ptr<Unk_TpsButton> spApply = FUN_140bb4b10("m_apply");
-                    if (static_cast<Unk_TpsButton*>(spApply) != 0)
-                        spApply->FUN_1422c7730(1);
+                    if (FUN_141b236c0(FUN_141b23550()) == 1)
+                    {
+                        if (MS2Ptr<Unk_TpsButton> spApply = FUN_140bb4b10("m_apply"))
+                            spApply->FUN_1422c7730(1);
+                    }
                 }
             }
         }
+        return 1;
     }
-    return 1;
+    return 0;
 }
 
 // @0x141b22c60
@@ -278,7 +276,7 @@ int UITalkPanelSettingDialog::vfunc_28(const char* szMethod, const Scaleform::GF
     {
         Unk_TpsRequest request(0x4e62);
         request.FUN_1401bac80("OnOk", FUN_141b23550(), 0);
-        request.FUN_1401badc0(1);
+        request.FUN_1401badc0(true);
         if (GetClientPlatform()->vfunc_37(&request) == 1)
         {
             if (FUN_141b236c0(FUN_141b23550()) == 1)
@@ -286,16 +284,16 @@ int UITalkPanelSettingDialog::vfunc_28(const char* szMethod, const Scaleform::GF
         }
         return 1;
     }
-    if (_stricmp("eventInitialize", szMethod) == 0)
+    else if (_stricmp("eventInitialize", szMethod) == 0)
     {
         EventInitialize();
         return 1;
     }
-    if (_stricmp("eventApply", szMethod) == 0)
+    else if (_stricmp("eventApply", szMethod) == 0)
     {
         Unk_TpsRequest request(0x4e62);
         request.FUN_1401bac80("eventApply", FUN_141b23550(), 0);
-        request.FUN_1401badc0(1);
+        request.FUN_1401badc0(true);
         if (GetClientPlatform()->vfunc_37(&request) == 1)
         {
             FUN_141b236c0(FUN_141b23550());
@@ -303,7 +301,7 @@ int UITalkPanelSettingDialog::vfunc_28(const char* szMethod, const Scaleform::GF
         }
         return 1;
     }
-    if (_stricmp("OnCloseDialog", szMethod) == 0)
+    else if (_stricmp("OnCloseDialog", szMethod) == 0)
     {
         if (m_bApplied == 0 && FUN_141482e80()->m_n38 == 2 && FUN_141482e80()->m_p40 != 0)
         {
@@ -327,29 +325,28 @@ void UITalkPanelSettingDialog::vfunc_80(void* pRequest)
     Unk_TpsReqValue value;
     if (request.FUN_1401bab90("OnKeyHandler", &value) == 1 && value.m_code == 0)
     {
-        if (FUN_141b236c0(value.m_strText) == 1)
+        // The key handler applies the text typed in the tab, not the request's text.
+        if (FUN_141b236c0(FUN_141b23550()) == 1)
         {
-            MS2Ptr<Unk_TpsButton> spApply = FUN_140bb4b10("m_apply");
-            if (static_cast<Unk_TpsButton*>(spApply) != 0)
+            if (MS2Ptr<Unk_TpsButton> spApply = FUN_140bb4b10("m_apply"))
                 spApply->FUN_1422c7730(1);
         }
+        return;
     }
-    else if (request.FUN_1401bab90("OnOk", &value) == 1 && value.m_code == 0)
+    if (request.FUN_1401bab90("OnOk", &value) == 1 && value.m_code == 0)
     {
         if (FUN_141b236c0(value.m_strText) == 1)
             vfunc_67();
+        return;
     }
-    else if (request.FUN_1401bab90("eventApply", &value) == 1 && value.m_code == 0)
+    if (request.FUN_1401bab90("eventApply", &value) == 1 && value.m_code == 0)
     {
         FUN_141b236c0(value.m_strText);
+        return;
     }
-    else
-    {
-        MS2Ptr<Unk_TpsInput> spTab = static_cast<Unk_TpsRoot*>(m_spRoot.operator->())->FUN_140bbe880<Unk_TpsInput>("m_tab");
-        if (static_cast<Unk_TpsInput*>(spTab) != 0)
-            spTab->FUN_1422e0a60("");
-        FUN_140d73aa0(FUN_1409eec40(0x8b7), 0, 0, CStringW(L""));
-    }
+    if (MS2Ptr<Unk_TpsInput> spTab = static_cast<Unk_TpsRoot*>(m_spRoot.operator->())->FUN_140bbe880<Unk_TpsInput>("m_tab"))
+        spTab->FUN_1422e0a60("");
+    FUN_140d73aa0(FUN_1409eec40(0x8b7), 0, 0, CStringW(L""));
 }
 
 // @0x141b23550
@@ -383,38 +380,45 @@ int UITalkPanelSettingDialog::FUN_141b236c0(const CStringW& strName)
         FUN_140d73bc0(0x85, 0, 0, CStringW(L""));
         return 0;
     }
-    CStringW strMessage;
-    CBanTextChecker* pChecker = FUN_14025e7d0()->GetChecker();
-    if (pChecker != 0 && pChecker->FUN_140225f70(strName, strMessage) != 0)
+    else
     {
-        FUN_140d73aa0(CStringW(strMessage), 0, 0, CStringW(L""));
-        return 0;
+        CStringW strMessage;
+        if (CBanTextChecker* pChecker = FUN_14025e7d0()->GetChecker())
+        {
+            if (pChecker->FUN_140225f70(strName, strMessage) != 0)
+            {
+                FUN_140d73aa0(CStringW(strMessage), 0, 0, CStringW(L""));
+                return 0;
+            }
+        }
+        if (FUN_141b23a40(strName) != 0)
+        {
+            CStringW strOldName(pTab->m_strName);
+            CStringW strNewName(strName);
+            FUN_141b23ab0(&pTab->m_panel);
+            FUN_141482e80()->m_p40->FUN_141a0e9f0(strOldName, strNewName);
+            FUN_141482e80()->m_p40->FUN_141a0e990();
+            if (pTab->m_panel.FUN_141482150() != 0)
+            {
+                FUN_141482e80()->m_p48->FUN_141a25130(pTab->m_panel.FUN_1414821b0()->m_nFontSize);
+                FUN_141482e80()->m_p48->FUN_141a25160(pTab->m_panel.FUN_1414821b0()->m_nBackgroundAlpha);
+            }
+            return 1;
+        }
+        else
+        {
+            FUN_140d73bc0(0x86, 0, 0, CStringW(L""));
+            return 0;
+        }
     }
-    if (FUN_141b23a40(strName) == 0)
-    {
-        FUN_140d73bc0(0x86, 0, 0, CStringW(L""));
-        return 0;
-    }
-    CStringW strOldName(pTab->m_strName);
-    CStringW strNewName(strName);
-    FUN_141b23ab0(&pTab->m_panel);
-    FUN_141482e80()->m_p40->FUN_141a0e9f0(strOldName, strNewName);
-    FUN_141482e80()->m_p40->FUN_141a0e990();
-    if (pTab->m_panel.FUN_141482150() != 0)
-    {
-        FUN_141482e80()->m_p48->FUN_141a25130(pTab->m_panel.FUN_1414821b0()->m_nFontSize);
-        FUN_141482e80()->m_p48->FUN_141a25160(pTab->m_panel.FUN_1414821b0()->m_nBackgroundAlpha);
-    }
-    return 1;
-}   // MS2-FUNCTIONAL: not byte-matched (temp destruction order)
+}
 
 // @0x141b23a40
 int UITalkPanelSettingDialog::FUN_141b23a40(const CStringW& strName)
 {
     if (FUN_141482e80()->m_p40 != 0 && FUN_141482e80()->m_p48 != 0)
     {
-        MessengerData::TalkTab* pTab = FUN_141482e80()->m_p40->FUN_141a0e050();
-        return FUN_141482e80()->m_p48->FUN_141a25410(pTab, strName);
+        return FUN_141482e80()->m_p48->FUN_141a25410(FUN_141482e80()->m_p40->FUN_141a0e050(), strName);
     }
     return 1;
 }
@@ -422,34 +426,22 @@ int UITalkPanelSettingDialog::FUN_141b23a40(const CStringW& strName)
 // @0x141b23ab0
 void UITalkPanelSettingDialog::FUN_141b23ab0(MessengerData::PanelSetting* pSetting)
 {
+    if (MS2Ptr<Unk_TpsCheck> sp = static_cast<Unk_TpsRoot*>(m_spRoot.operator->())->FUN_140c11f50<Unk_TpsCheck>("m_entire"))
+        DAT_1439f7cbc = sp->FUN_1422ce0e0();
+    if (MS2Ptr<Unk_TpsSlider> sp = static_cast<Unk_TpsRoot*>(m_spRoot.operator->())->FUN_140fafed0<Unk_TpsSlider>("m_sliderTransparent"))
     {
-        MS2Ptr<Unk_TpsCheck> sp = static_cast<Unk_TpsRoot*>(m_spRoot.operator->())->FUN_140c11f50<Unk_TpsCheck>("m_entire");
-        if (static_cast<Unk_TpsCheck*>(sp) != 0)
-            DAT_1439f7cbc = sp->FUN_1422ce0e0();
+        pSetting->m_screen.m_nBackgroundAlpha = (int)(__int64)sp->FUN_1422ce630();
+        DAT_143adda48.m_nBackgroundAlpha = (int)(__int64)sp->FUN_1422ce630();
     }
+    if (MS2Ptr<Unk_TpsSlider> sp = static_cast<Unk_TpsRoot*>(m_spRoot.operator->())->FUN_140fafed0<Unk_TpsSlider>("m_sliderFontsize"))
     {
-        MS2Ptr<Unk_TpsSlider> sp = static_cast<Unk_TpsRoot*>(m_spRoot.operator->())->FUN_140fafed0<Unk_TpsSlider>("m_sliderTransparent");
-        if (static_cast<Unk_TpsSlider*>(sp) != 0)
-        {
-            pSetting->m_screen.m_nBackgroundAlpha = (int)(__int64)sp->FUN_1422ce630();
-            DAT_143adda48.m_nBackgroundAlpha = (int)(__int64)sp->FUN_1422ce630();
-        }
+        pSetting->m_screen.m_nFontSize = (int)(__int64)sp->FUN_1422ce630();
+        DAT_143adda48.m_nFontSize = (int)(__int64)sp->FUN_1422ce630();
     }
+    if (MS2Ptr<Unk_TpsRadio> sp = static_cast<Unk_TpsRoot*>(m_spRoot.operator->())->FUN_140e28bc0<Unk_TpsRadio>("m_damageShow"))
     {
-        MS2Ptr<Unk_TpsSlider> sp = static_cast<Unk_TpsRoot*>(m_spRoot.operator->())->FUN_140fafed0<Unk_TpsSlider>("m_sliderFontsize");
-        if (static_cast<Unk_TpsSlider*>(sp) != 0)
-        {
-            pSetting->m_screen.m_nFontSize = (int)(__int64)sp->FUN_1422ce630();
-            DAT_143adda48.m_nFontSize = (int)(__int64)sp->FUN_1422ce630();
-        }
-    }
-    {
-        MS2Ptr<Unk_TpsRadio> sp = static_cast<Unk_TpsRoot*>(m_spRoot.operator->())->FUN_140e28bc0<Unk_TpsRadio>("m_damageShow");
-        if (static_cast<Unk_TpsRadio*>(sp) != 0)
-        {
-            pSetting->m_screen.m_nShowDamage = sp->FUN_1422ce0e0();
-            DAT_143adda48.m_nShowDamage = sp->FUN_1422ce0e0();
-        }
+        pSetting->m_screen.m_nShowDamage = sp->FUN_1422ce0e0();
+        DAT_143adda48.m_nShowDamage = sp->FUN_1422ce0e0();
     }
     FUN_140d00960((*m_spRoot).FUN_1422bb890(), "m_subjectAll", &pSetting->m_subject.m_nAll);
     FUN_140d00960((*m_spRoot).FUN_1422bb890(), "m_super", &pSetting->m_subject.m_nSuper);
@@ -484,32 +476,20 @@ void UITalkPanelSettingDialog::FUN_141b23ab0(MessengerData::PanelSetting* pSetti
     FUN_140d00960((*m_spRoot).FUN_1422bb890(), "m_systemAll", &pSetting->m_system.m_nAll);
     FUN_140d00960((*m_spRoot).FUN_1422bb890(), "m_event", &pSetting->m_system.m_nEvent);
     FUN_140d00960((*m_spRoot).FUN_1422bb890(), "m_notice", &pSetting->m_system.m_nNotice);
-}   // MS2-FUNCTIONAL: not byte-matched (temp string locals)
+}
 
 // @0x141b24ee0
 void UITalkPanelSettingDialog::FUN_141b24ee0(MessengerData::PanelSetting* pSetting)
 {
     FUN_140d00860((*m_spRoot).FUN_1422bb890(), "m_entire", DAT_1439f7cbc);
-    {
-        MS2Ptr<Unk_TpsSlider> sp = static_cast<Unk_TpsRoot*>(m_spRoot.operator->())->FUN_140fafed0<Unk_TpsSlider>("m_sliderTransparent");
-        if (static_cast<Unk_TpsSlider*>(sp) != 0)
-            sp->FUN_1422ce5f0((float)(unsigned int)pSetting->FUN_1414821b0()->m_nBackgroundAlpha);
-    }
-    {
-        MS2Ptr<Unk_TpsSlider> sp = static_cast<Unk_TpsRoot*>(m_spRoot.operator->())->FUN_140fafed0<Unk_TpsSlider>("m_sliderFontsize");
-        if (static_cast<Unk_TpsSlider*>(sp) != 0)
-            sp->FUN_1422ce5f0((float)(unsigned int)pSetting->FUN_1414821b0()->m_nFontSize);
-    }
-    {
-        MS2Ptr<Unk_TpsRadio> sp = static_cast<Unk_TpsRoot*>(m_spRoot.operator->())->FUN_140e28bc0<Unk_TpsRadio>("m_damageShow");
-        if (static_cast<Unk_TpsRadio*>(sp) != 0)
-            sp->FUN_1422ce090(pSetting->FUN_1414821b0()->m_nShowDamage);
-    }
-    {
-        MS2Ptr<Unk_TpsRadio> sp = static_cast<Unk_TpsRoot*>(m_spRoot.operator->())->FUN_140e28bc0<Unk_TpsRadio>("m_damageHide");
-        if (static_cast<Unk_TpsRadio*>(sp) != 0)
-            sp->FUN_1422ce090(pSetting->FUN_1414821b0()->m_nShowDamage == 0);
-    }
+    if (MS2Ptr<Unk_TpsSlider> sp = static_cast<Unk_TpsRoot*>(m_spRoot.operator->())->FUN_140fafed0<Unk_TpsSlider>("m_sliderTransparent"))
+        sp->FUN_1422ce5f0((float)(unsigned int)pSetting->FUN_1414821b0()->m_nBackgroundAlpha);
+    if (MS2Ptr<Unk_TpsSlider> sp = static_cast<Unk_TpsRoot*>(m_spRoot.operator->())->FUN_140fafed0<Unk_TpsSlider>("m_sliderFontsize"))
+        sp->FUN_1422ce5f0((float)(unsigned int)pSetting->FUN_1414821b0()->m_nFontSize);
+    if (MS2Ptr<Unk_TpsRadio> sp = static_cast<Unk_TpsRoot*>(m_spRoot.operator->())->FUN_140e28bc0<Unk_TpsRadio>("m_damageShow"))
+        sp->FUN_1422ce090(pSetting->FUN_1414821b0()->m_nShowDamage);
+    if (MS2Ptr<Unk_TpsRadio> sp = static_cast<Unk_TpsRoot*>(m_spRoot.operator->())->FUN_140e28bc0<Unk_TpsRadio>("m_damageHide"))
+        sp->FUN_1422ce090(pSetting->FUN_1414821b0()->m_nShowDamage == 0);
     FUN_140d00860((*m_spRoot).FUN_1422bb890(), "m_subjectAll", pSetting->FUN_141482200()->m_nAll);
     FUN_140d00860((*m_spRoot).FUN_1422bb890(), "m_social", pSetting->FUN_141482200()->m_nSocial);
     FUN_140d00860((*m_spRoot).FUN_1422bb890(), "m_party", pSetting->FUN_141482200()->m_nParty);
@@ -547,13 +527,10 @@ void UITalkPanelSettingDialog::FUN_141b24ee0(MessengerData::PanelSetting* pSetti
     FUN_140d00860((*m_spRoot).FUN_1422bb890(), "m_systemAll", pSetting->FUN_141482190()->m_nAll);
     FUN_140d00860((*m_spRoot).FUN_1422bb890(), "m_event", pSetting->FUN_141482190()->m_nEvent);
     FUN_140d00860((*m_spRoot).FUN_1422bb890(), "m_notice", pSetting->FUN_141482190()->m_nNotice);
-    {
-        MS2Ptr<Unk_TpsButton> sp = FUN_140bb4b10("m_apply");
-        if (static_cast<Unk_TpsButton*>(sp) != 0)
-            sp->FUN_1422c1fe0(0);
-    }
+    if (MS2Ptr<Unk_TpsButton> sp = FUN_140bb4b10("m_apply"))
+        sp->FUN_1422c1fe0(0);
     if (m_spRoot.get() != 0)
         m_spRoot->Invoke("alignCheckBox");
-}   // MS2-FUNCTIONAL: not byte-matched (temp string locals)
+}
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142cc2d30-0x142cc2d80 .text$yd

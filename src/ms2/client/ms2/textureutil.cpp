@@ -67,10 +67,6 @@ std::string FUN_14083fa60(const char* pcData, unsigned int uiLength);   // encod
 void* FUN_1403ed2b0();                                      // display settings
 float FUN_141adbe70(void* pkSettings);                      // UI scale
 void FUN_141d38fa0();
-void* FUN_14208a860(unsigned __int64 ullSize, unsigned int uiCategory);   // tracked allocation
-void* FUN_140876480(void* pkOut, int nCategory);            // memory category helper, returns unsigned int*
-NiDevImageConverter* FUN_141d34210(void* pkMemory);         // NiDevImageConverter constructor
-NiImageReader* FUN_140d9aba0(void* pkMemory);               // MS2PNGReader constructor
 
 // A thread-local storage slot (the TLS index lives in the object).
 class Unk_TlsSlot
@@ -119,6 +115,10 @@ struct Unk_TexColor : public Unk_Pixel32 {
     Unk_TexColor(unsigned char r, unsigned char g, unsigned char b, unsigned char a) : Unk_Pixel32(r, g, b, a) {}
 };
 MS2_CHECK_SIZE(Unk_TexColor, 4);
+// One A8R8G8B8 pixel as SamplePixelData reads it (byte order r, g, b, a).
+struct Unk_PixelRGBA {
+    unsigned char r, g, b, a;
+};
 
 // @0x14184c790
 // @0x14184c7b0
@@ -251,7 +251,6 @@ NiSourceTexture* CopyTexturePixels(NiTexture* pkTexture, bool bMipmap, bool bSta
 // Blits a source texture's pixels into a destination pixel buffer at the given rectangle origin, scaling the RGB channels by
 // fAlpha when it is not fully opaque.
 // @0x14184d0a0
-// MS2-FUNCTIONAL: the exe keeps the texture's vtable pointer in extra locals around the width/height virtual calls (+0x10 frame).
 void BlitTexturePixels(NiSourceTexture* pkSource, NiPixelData* pkDest, const NiRect<unsigned int>& kRect, float fAlpha)
 {
     if (pkSource == NULL || pkDest == NULL)
@@ -279,13 +278,12 @@ void BlitTexturePixels(NiSourceTexture* pkSource, NiPixelData* pkDest, const NiR
     unsigned char* pucDestBase = pkDest->GetPixels(0, 0);
     unsigned char* pucSrcBase = spSrcPixels->GetPixels(0, 0);
 
-    if ((int)(fAlpha * 255.0f) == 0xff)
+    if ((unsigned int)(fAlpha * 255.0f) == 0xff)
     {
         for (unsigned int uiRow = 0; uiRow < pkSource->GetHeight(); uiRow++)
         {
-            unsigned long long ullBytes = (unsigned int)(pkSource->GetWidth() * uiStride);
             FUN_140a34190(pucDestBase + (kRect.m_left + (uiRow + kRect.m_top) * iDestWidth) * uiStride,
-                pucSrcBase + (unsigned int)(uiRow * (pkSource->GetWidth() * uiStride)), ullBytes);
+                pucSrcBase + (unsigned int)(uiRow * (pkSource->GetWidth() * uiStride)), pkSource->GetWidth() * uiStride);
         }
     }
     else
@@ -343,7 +341,6 @@ void FillPixelRect(const unsigned char* pucPixel, NiPixelData* pkDest, const NiR
 
 // Returns a new pixel buffer holding every uiStep-th pixel of the source (a point-sampled downscale).
 // @0x14184d610
-// MS2-FUNCTIONAL: local slot order / hoisted divisions differ from the exe
 NiPixelData* DownsamplePixels(NiPixelData* pkSource, unsigned int uiStep)
 {
     if (pkSource == NULL)
@@ -360,9 +357,9 @@ NiPixelData* DownsamplePixels(NiPixelData* pkSource, unsigned int uiStep)
 
     unsigned char* pucSrc = pkSource->GetPixels(0, 0);
     unsigned char* pucDst = pkResult->GetPixels(0, 0);
-    for (unsigned int uiRow = 0; uiRow < uiHeight / uiStep; uiRow++)
+    for (unsigned int uiRow = 0; uiRow < uiDestHeight; uiRow++)
     {
-        for (unsigned int uiCol = 0; uiCol < uiWidth / uiStep; uiCol++)
+        for (unsigned int uiCol = 0; uiCol < uiDestWidth; uiCol++)
         {
             FUN_140a34190(pucDst, pucSrc, uiStride);
             pucDst += uiStride;
@@ -413,7 +410,6 @@ void CopyPixelRect(NiPixelData* pkSource, const NiRect<unsigned int>& kSrcRect, 
 // Samples an RGBA32 pixel buffer at a normalised UV coordinate (wrapped into [0,1]), either nearest or bilinear filtered.
 // Returns false when the buffer is missing or not RGBA32.
 // @0x14184dad0
-// MS2-FUNCTIONAL: local slot layout / statement order of the bilinear block differs from the exe
 int SamplePixelData(NiPixelData* pkPixels, NiPoint2 kUV, Unk_TexColor* pkOut, bool bBilinear)
 {
     if (pkPixels == NULL)
@@ -442,37 +438,37 @@ int SamplePixelData(NiPixelData* pkPixels, NiPoint2 kUV, Unk_TexColor* pkOut, bo
 
         if (bBilinear)
         {
-            int iX = (kPos.x >= 0.0f) ? (int)kPos.x : -1;
-            int iY = (kPos.y >= 0.0f) ? (int)kPos.y : -1;
-            kPos.x = kPos.x - (float)iX;
-            kPos.y = kPos.y - (float)iY;
+            int iX = (kPos.x < 0.0f) ? -1 : (int)kPos.x;
+            int iY = (kPos.y < 0.0f) ? -1 : (int)kPos.y;
+            float fFracX = kPos.x - (float)iX;
+            float fFracY = kPos.y - (float)iY;
 
             int iX0 = (iX < 0) ? 0 : iX;
             int iX1 = (iX + 1 == iWidth) ? iX : iX + 1;
             int iY0 = (iY < 0) ? 0 : iY;
             int iY1 = (iY + 1 == iHeight) ? iY : iY + 1;
 
-            unsigned char* pucP00 = pucPixels + (iX0 + iY0 * iWidth) * iStride;
-            unsigned char* pucP10 = pucPixels + (iX1 + iY0 * iWidth) * iStride;
-            unsigned char* pucP01 = pucPixels + (iX0 + iY1 * iWidth) * iStride;
-            unsigned char* pucP11 = pucPixels + (iX1 + iY1 * iWidth) * iStride;
+            Unk_PixelRGBA* pkP00 = (Unk_PixelRGBA*)(pucPixels + (iX0 + iY0 * iWidth) * iStride);
+            Unk_PixelRGBA* pkP10 = (Unk_PixelRGBA*)(pucPixels + (iX1 + iY0 * iWidth) * iStride);
+            Unk_PixelRGBA* pkP01 = (Unk_PixelRGBA*)(pucPixels + (iX0 + iY1 * iWidth) * iStride);
+            Unk_PixelRGBA* pkP11 = (Unk_PixelRGBA*)(pucPixels + (iX1 + iY1 * iWidth) * iStride);
 
-            float fR = pucP00[0] * kPos.x * kPos.y + pucP10[0] * kPos.x * (1.0f - kPos.y)
-                + pucP01[0] * (1.0f - kPos.x) * kPos.y + pucP11[0] * (1.0f - kPos.x) * (1.0f - kPos.y);
-            float fG = pucP00[1] * kPos.x * kPos.y + pucP10[1] * kPos.x * (1.0f - kPos.y)
-                + pucP01[1] * (1.0f - kPos.x) * kPos.y + pucP11[1] * (1.0f - kPos.x) * (1.0f - kPos.y);
-            float fB = pucP00[2] * kPos.x * kPos.y + pucP10[2] * kPos.x * (1.0f - kPos.y)
-                + pucP01[2] * (1.0f - kPos.x) * kPos.y + pucP11[2] * (1.0f - kPos.x) * (1.0f - kPos.y);
-            float fA = pucP00[3] * kPos.x * kPos.y + pucP10[3] * kPos.x * (1.0f - kPos.y)
-                + pucP01[3] * (1.0f - kPos.x) * kPos.y + pucP11[3] * (1.0f - kPos.x) * (1.0f - kPos.y);
-            *pkOut = Unk_TexColor((int)fR, (int)fG, (int)fB, (int)fA);
+            float fR = pkP00->r * fFracX * fFracY + pkP10->r * fFracX * (1.0f - fFracY)
+                + pkP01->r * (1.0f - fFracX) * fFracY + pkP11->r * (1.0f - fFracX) * (1.0f - fFracY);
+            float fG = pkP00->g * fFracX * fFracY + pkP10->g * fFracX * (1.0f - fFracY)
+                + pkP01->g * (1.0f - fFracX) * fFracY + pkP11->g * (1.0f - fFracX) * (1.0f - fFracY);
+            float fB = pkP00->b * fFracX * fFracY + pkP10->b * fFracX * (1.0f - fFracY)
+                + pkP01->b * (1.0f - fFracX) * fFracY + pkP11->b * (1.0f - fFracX) * (1.0f - fFracY);
+            float fA = pkP00->a * fFracX * fFracY + pkP10->a * fFracX * (1.0f - fFracY)
+                + pkP01->a * (1.0f - fFracX) * fFracY + pkP11->a * (1.0f - fFracX) * (1.0f - fFracY);
+            *pkOut = Unk_TexColor((unsigned char)fR, (unsigned char)fG, (unsigned char)fB, (unsigned char)fA);
         }
         else
         {
             int iX = (int)kPos.x;
             int iY = (int)kPos.y;
-            unsigned char* pucPixel = pucPixels + (iX + iY * iWidth) * iStride;
-            *pkOut = Unk_TexColor(pucPixel[0], pucPixel[1], pucPixel[2], pucPixel[3]);
+            Unk_PixelRGBA* pkPixel = (Unk_PixelRGBA*)(pucPixels + (iX + iY * iWidth) * iStride);
+            *pkOut = Unk_TexColor(pkPixel->r, pkPixel->g, pkPixel->b, pkPixel->a);
         }
     }
     return 1;
@@ -628,7 +624,6 @@ void SavePixelDataToFileW(ATL::CSimpleStringT<wchar_t, 1>* pkPath, D3DXIMAGE_FIL
 // Saves a rectangle of a D3D surface to an image file, optionally scaled (through a system-memory DXT5 texture, with
 // mipmaps for DDS output).
 // @0x14184ea00
-// MS2-FUNCTIONAL: stack slot order of the texture/level pointers (and a mov edx/r8d hop) differs from the exe
 int SaveSurfaceToFileW(ATL::CSimpleStringT<wchar_t, 1>* pkPath, D3DXIMAGE_FILEFORMAT eFormat, IDirect3DSurface9* pkSurface,
     NiRect<unsigned int> kRect, int bLogErrors, float fScale)
 {
@@ -658,10 +653,10 @@ int SaveSurfaceToFileW(ATL::CSimpleStringT<wchar_t, 1>* pkPath, D3DXIMAGE_FILEFO
             iLevels = CountMipLevels(iWidth, iHeight);
         }
         LPDIRECT3DDEVICE9 pkDevice = pkRenderer->GetD3DDevice();
-        int iCreateHeight = (int)(long long)(kRect.GetHeight() * fScale);
-        IDirect3DTexture9* pkTexture;
         IDirect3DSurface9* pkLevel;
-        int hr = pkDevice->CreateTexture((int)(long long)(kRect.GetWidth() * fScale), iCreateHeight, iLevels, 0, D3DFMT_DXT5,
+        IDirect3DTexture9* pkTexture;
+        int hr = pkDevice->CreateTexture((unsigned int)(kRect.GetWidth() * fScale), (unsigned int)(kRect.GetHeight() * fScale),
+            iLevels, 0, D3DFMT_DXT5,
             D3DPOOL_SYSTEMMEM, &pkTexture, NULL);
         if (hr >= 0)
         {
@@ -677,7 +672,7 @@ int SaveSurfaceToFileW(ATL::CSimpleStringT<wchar_t, 1>* pkPath, D3DXIMAGE_FILEFO
             }
             if (iLevels == 1)
             {
-                hr = D3DXSaveSurfaceToFileW((const wchar_t*)(*pkPath), eFormat, pkLevel, NULL, &kSrcRect);
+                hr = D3DXSaveSurfaceToFileW((const wchar_t*)(*pkPath), eFormat, pkSurface, NULL, &kSrcRect);
                 if (hr >= 0)
                 {
                     pkLevel->Release();
@@ -792,7 +787,6 @@ void SavePixelDataToFileA(ATL::CSimpleStringT<char, 1>* pkPath, D3DXIMAGE_FILEFO
 // Saves a rectangle of a D3D surface to an image file, optionally scaled (through a system-memory DXT5 texture, with
 // mipmaps for DDS output).
 // @0x14184f380
-// MS2-FUNCTIONAL: stack slot order of the texture/level pointers (and a mov edx/r8d hop) differs from the exe
 int SaveSurfaceToFileA(ATL::CSimpleStringT<char, 1>* pkPath, D3DXIMAGE_FILEFORMAT eFormat, IDirect3DSurface9* pkSurface,
     NiRect<unsigned int> kRect, int bLogErrors, float fScale)
 {
@@ -822,10 +816,10 @@ int SaveSurfaceToFileA(ATL::CSimpleStringT<char, 1>* pkPath, D3DXIMAGE_FILEFORMA
             iLevels = CountMipLevels(iWidth, iHeight);
         }
         LPDIRECT3DDEVICE9 pkDevice = pkRenderer->GetD3DDevice();
-        int iCreateHeight = (int)(long long)(kRect.GetHeight() * fScale);
-        IDirect3DTexture9* pkTexture;
         IDirect3DSurface9* pkLevel;
-        int hr = pkDevice->CreateTexture((int)(long long)(kRect.GetWidth() * fScale), iCreateHeight, iLevels, 0, D3DFMT_DXT5,
+        IDirect3DTexture9* pkTexture;
+        int hr = pkDevice->CreateTexture((unsigned int)(kRect.GetWidth() * fScale), (unsigned int)(kRect.GetHeight() * fScale),
+            iLevels, 0, D3DFMT_DXT5,
             D3DPOOL_SYSTEMMEM, &pkTexture, NULL);
         if (hr >= 0)
         {
@@ -841,7 +835,7 @@ int SaveSurfaceToFileA(ATL::CSimpleStringT<char, 1>* pkPath, D3DXIMAGE_FILEFORMA
             }
             if (iLevels == 1)
             {
-                hr = D3DXSaveSurfaceToFileA((const char*)(*pkPath), eFormat, pkLevel, NULL, &kSrcRect);
+                hr = D3DXSaveSurfaceToFileA((const char*)(*pkPath), eFormat, pkSurface, NULL, &kSrcRect);
                 if (hr >= 0)
                 {
                     pkLevel->Release();
@@ -1028,7 +1022,6 @@ int EnsureScreenshotDirectory(CStringW* pkDirectory)
 // Takes a JPEG screenshot of the selected buffer's client area into the screenshot directory; returns the file path
 // (empty on failure).
 // @0x141850100
-// MS2-FUNCTIONAL: stack slot order of the locals (0x10 smaller frame in the exe) differs; no source form found
 CStringW TakeScreenshotJpg(int bNotify, int nTarget)
 {
     unsigned int uiDirError = 0;
@@ -1070,8 +1063,8 @@ CStringW TakeScreenshotJpg(int bNotify, int nTarget)
         CStringW kMessage;
         kMessage.Format(L"Error D3DERR_INVALIDCALL", uiDirError);
         MS2_SCREENSHOT_NOTIFY(bNotify, kMessage)
-        return CStringW(L"");
     }
+    return CStringW(L"");
 }
 
 // Takes a PNG screenshot of the scene's render-target group into the screenshot directory.
@@ -1255,38 +1248,46 @@ int IsDirectory(CStringW kPath)
 
 // Returns the calling thread's image converter, creating it (with the MS2 PNG reader added) on first use.
 #ifndef MS2_HOOK_DLL
+// efd::MemHint (4 bytes, passed by value to the tagged operator new).
+// MS2-PIN: ??0Unk_TuMemHint@@QEAA@H@Z 0x140876480
+struct Unk_TuMemHint
+{
+    Unk_TuMemHint(int category);                    // 0x140876480
+    int m_hint;
+};
+// NiDevImageConverter (0x858 bytes) and MS2PNGReader (0xe0 bytes), allocated from the efd tagged heap.
+// MS2-PIN: ??2Unk_TuConverterNew@@SAPEAX_KUUnk_TuMemHint@@@Z 0x14208a860
+// MS2-PIN: ??3Unk_TuConverterNew@@SAXPEAXUUnk_TuMemHint@@@Z 0x14097f700
+// MS2-PIN: ??0Unk_TuConverterNew@@QEAA@XZ 0x141d34210
+// MS2-PIN: ??2Unk_TuReaderNew@@SAPEAX_KUUnk_TuMemHint@@@Z 0x14208a860
+// MS2-PIN: ??3Unk_TuReaderNew@@SAXPEAXUUnk_TuMemHint@@@Z 0x14097f700
+// MS2-PIN: ??0Unk_TuReaderNew@@QEAA@XZ 0x140d9aba0
+class Unk_TuConverterNew
+{
+public:
+    static void* operator new(size_t cb, Unk_TuMemHint hint);     // 0x14208a860
+    static void operator delete(void* p, Unk_TuMemHint hint);     // 0x14097f700
+    Unk_TuConverterNew();                                         // 0x141d34210
+private:
+    char m_pad[0x858];
+};
+class Unk_TuReaderNew
+{
+public:
+    static void* operator new(size_t cb, Unk_TuMemHint hint);     // 0x14208a860
+    static void operator delete(void* p, Unk_TuMemHint hint);     // 0x14097f700
+    Unk_TuReaderNew();                                            // 0x140d9aba0
+private:
+    char m_pad[0xe0];
+};
 // @0x141851720
-// MS2-FUNCTIONAL: the exe has an EH frame (state -2, 0x88 frame) from an unrecovered temporary of the allocation expression
 NiImageConverter* FUN_141851720()
 {
     if (s_kConverterSlot.Get() == NULL)
     {
         FUN_141d38fa0();
-        int iCategoryTemp;
-        unsigned int* puiCategory = (unsigned int*)FUN_140876480(&iCategoryTemp, 0);
-        void* pkMemory = FUN_14208a860(0x858, *puiCategory);
-        NiDevImageConverter* pkConverter;
-        if (pkMemory == NULL)
-        {
-            pkConverter = NULL;
-        }
-        else
-        {
-            pkConverter = FUN_141d34210(pkMemory);
-        }
-        NiDevImageConverter* pkTarget = pkConverter;
-        unsigned int* puiCategory2 = (unsigned int*)FUN_140876480(&iCategoryTemp, 0);
-        void* pkReaderMemory = FUN_14208a860(0xe0, *puiCategory2);
-        NiImageReader* pkReader;
-        if (pkReaderMemory == NULL)
-        {
-            pkReader = NULL;
-        }
-        else
-        {
-            pkReader = FUN_140d9aba0(pkReaderMemory);
-        }
-        pkTarget->AddReader(pkReader);
+        NiDevImageConverter* pkConverter = reinterpret_cast<NiDevImageConverter*>(new (Unk_TuMemHint(0)) Unk_TuConverterNew);
+        pkConverter->AddReader(reinterpret_cast<NiImageReader*>(new (Unk_TuMemHint(0)) Unk_TuReaderNew));
         FUN_141851840(pkConverter);
     }
     return (NiImageConverter*)s_kConverterSlot.Get();

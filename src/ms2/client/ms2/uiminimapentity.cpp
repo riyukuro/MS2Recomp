@@ -24,8 +24,11 @@
 // MS2-PIN: ?FUN_141a51030@UIMinimapEntityProxyPortal@@QEAAX_N@Z 0x141a51030 ; unique
 // MS2-PIN: ?FUN_141a51050@UIMinimapEntityProxyPortal@@QEAAXH@Z 0x141a51050 ; unique
 // MS2-PINS-END tplpin
+// MS2-PIN: ??__Es_strEliteBoss@@YAXXZ 0x140118000 ; gb19 "elite_boss" into 0x143af41c8; exe text order is NoIcon, EliteBoss, EmptyIcon ("empty" @0x140118030), so auto-order lands EmptyIcon right
+// MS2-PIN: ??__Fs_strEliteBoss@@YAXXZ 0x142cc03d0 ; gb19 dtor of 0x143af41c8
 #define NOMINMAX
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uiminimapentity.cpp"    // assumed
+#define MS2_TPTRVALUE_ASSIGN_VIA_TEMP   // FUN_141a454d0: `spHomes = Unk_GrNewTag(0)` converts into a temporary and assigns it
 #include "ms2/placeholder/ms2stdafx.h"
 #include "uiminimapentity.h"
 #include <egf/Entity.h>
@@ -901,7 +904,7 @@ void UIMinimapEntityProxyPortal::FUN_141a33e30(MS2Ptr<CPortal> spPortal, CString
         unsigned int nId = npcs.GetAt(pos);
         if (FUN_140700390()->FUN_1406fba40(nId, nField)) {
             MS2Ptr<CNpcData> spNpc = FUN_1406cd330(nId);
-            if (static_cast<CNpcData*>(spNpc) != 0 && FUN_141a32640(spNpc.get()))
+            if (spNpc.get() != 0 && FUN_141a32640(static_cast<CNpcData*>(spNpc)))
                 visible.AddTail(nId);
         }
     }
@@ -912,9 +915,10 @@ void UIMinimapEntityProxyPortal::FUN_141a33e30(MS2Ptr<CPortal> spPortal, CString
         strLabel = guide.m_text;
     } else {
         MS2Ptr<NpcDataCli> spNpc = FUN_1406d6e90()->FUN_140a7cab0(nSelected);
-        if (static_cast<NpcDataCli*>(spNpc) != 0) {
+        if (spNpc.get() != 0) {
+            bool bMultiRow = false;
             CStringW strAlign = visible.GetCount() > 1 ? s_strLeft : s_strCenter;
-            strLabel = FUN_141a319f0(spNpc.get(), strAlign, false);
+            strLabel = FUN_141a319f0(static_cast<NpcDataCli*>(spNpc), strAlign, bMultiRow);
         }
     }
     if (!quests.IsEmpty()) {
@@ -941,7 +945,7 @@ void UIMinimapEntityProxyPortal::FUN_141a33e30(MS2Ptr<CPortal> spPortal, CString
                 MS2Ptr<NpcDataCli> spNpc = FUN_1406d6e90()->FUN_140a7cab0(nId);
                 if (spNpc == 0)
                     continue;
-                strLabel.Append(FUN_141a319f0(spNpc.get(), s_strLeft, false));
+                strLabel.Append(FUN_141a319f0(static_cast<NpcDataCli*>(spNpc), s_strLeft, false));
             }
         }
     }
@@ -1408,7 +1412,6 @@ void UIMinimapDialog::vfunc_18()
 }
 MS2_REPLACE_METHOD(0x141a37010, UIMinimapDialog, vfunc_18, 91, 0x42C557CB);
 
-// MS2-FUNCTIONAL: the result byte is switched as an int (exe jumps straight to the end for 0); 2 attempts
 // @0x141a37080
 void UIMinimapDialog::vfunc_79(void* p)
 {
@@ -1419,13 +1422,9 @@ void UIMinimapDialog::vfunc_79(void* p)
     case 0x10:
         if (m_30.IsNull())
             return;
-        switch (static_cast<CInPacket*>(p)->ReadUInt8()) {
-        case 0:
-            break;
-        default:
+        int nResult = static_cast<CInPacket*>(p)->ReadUInt8();
+        if (nResult != 0)
             FUN_141a44ed0();
-            break;
-        }
         break;
     }
 }
@@ -1748,29 +1747,23 @@ void UIMinimapDialog::Notify()
 }
 MS2_REPLACE_METHOD_VIA(0x141a38b60, UIMinimapDialog, UIServerEventListener, Notify, 33, 0x1C92923F);
 
-// MS2-FUNCTIONAL: the exe takes the actor as a by-value MS2Ptr (EH frame); the shared slot is declared void*
 // @0x141a38b90
-void UIMinimapDialog::vfunc_3(void* pActor)
+void UIMinimapDialog::vfunc_3(ProxyPtr spActor)
 {
     if (m_30 == 0) {
-        FUN_1406c70a0(pActor);
         return;
     }
-    FUN_141a3d080(*static_cast<const ProxyPtr*>(pActor));
-    FUN_1406c70a0(pActor);
+    FUN_141a3d080(spActor);
 }
 MS2_REPLACE_METHOD_VIA(0x141a38b90, UIMinimapDialog, UIEntityEventListener, vfunc_3, 133, 0xC8D16EBF);
 
-// MS2-FUNCTIONAL: the exe takes the actor as a by-value MS2Ptr (EH frame); the shared slot is declared void*
 // @0x141a38c20
-void UIMinimapDialog::vfunc_4(void* pActor)
+void UIMinimapDialog::vfunc_4(ProxyPtr spActor)
 {
     if (m_30 == 0) {
-        FUN_1406c70a0(pActor);
         return;
     }
-    FUN_141a3f600(*static_cast<const ProxyPtr*>(pActor));
-    FUN_1406c70a0(pActor);
+    FUN_141a3f600(spActor);
 }
 MS2_REPLACE_METHOD_VIA(0x141a38c20, UIMinimapDialog, UIEntityEventListener, vfunc_4, 133, 0xF5478FEC);
 
@@ -2254,7 +2247,7 @@ bool UIMinimapDialog::FUN_141a3bda0(ASObj& data, ProxyPtr spProxy)
     CStringW strText = FUN_1408f71a0(L"s_tooltip_todayword", spProxy->FUN_1416c23b0(), spProxy->FUN_1416c2570());
     ASObj tooltip(2);
     tooltip.FUN_1409c0dc0("className", "export_common_tooltip_tooltipText");
-    tooltip.FUN_1407cbb20("text", strText);
+    tooltip.FUN_1407cbb20("id", strText);
     tooltip.FUN_1409c0dc0("align", "bottomLeft");
     tooltip.FUN_1407cb9c0("onDelay", 300);
     tooltip.FUN_1407cb9c0("offDelay", 60000);
@@ -2498,7 +2491,7 @@ void UIMinimapDialog::FUN_141a454d0(const int& nField, const unsigned __int64& n
     HomeListPtr spHomes(0);
     if (m_homes.Lookup(nField, spHomes)) {
         if (spHomes == 0)
-            spHomes = HomeListPtr(Unk_GrNewTag(0));
+            spHomes = Unk_GrNewTag(0);
         spHomes->AddTail(nHome);
         m_homes.SetAt(nField, spHomes);
     }
@@ -2583,15 +2576,14 @@ bool UIMinimapDialog::FUN_141a45ce0()
 }
 MS2_REPLACE_METHOD(0x141a45ce0, UIMinimapDialog, FUN_141a45ce0, 102, 0x620E2CE5);
 
-void FUN_140763210(int nId, int nKind, CStringW& strText, CStringW& strExtra, int n);   // the quest guide text
+void FUN_140763210(int nId, int nKind, CStringW& strText, CStringW& strExtra);   // the quest guide text
 
 // @0x141a45ed0
-// MS2-FUNCTIONAL: the exe frame is 0x10 smaller (the trailing 0 argument is stored straight to the outgoing slot).
 CStringW UIMinimapDialog::FUN_141a45ed0(const int& nId, int nKind)
 {
     CStringW strText;
     CStringW strExtra;
-    FUN_140763210(nId, nKind, strText, strExtra, 0);
+    FUN_140763210(nId, nKind, strText, strExtra);
     return strText;
 }
 MS2_REPLACE_METHOD(0x141a45ed0, UIMinimapDialog, FUN_141a45ed0, 151, 0xFEC1B993);
@@ -3026,14 +3018,13 @@ void UIMinimapDialog::FUN_141a3fe10(ProxyPtr spProxy, EntityPtr spEntity, int n)
 }
 
 // @0x141a400d0
-// MS2-FUNCTIONAL: the exe frame is 0x10 larger (one more temporary).
 void UIMinimapDialog::FUN_141a400d0(ProxyPtr spProxy, EntityPtr spEntity, int n)
 {
     if (spProxy == 0 || spEntity == 0)
         return;
     if (n == 4)
         return;
-    if (spEntity->m_visible && static_cast<ASMovieClip*>(spEntity->m_clip) != 0) {
+    if (spEntity->m_visible && (static_cast<ASMovieClip*>(spEntity->m_clip) ? true : false)) {
         if (!FUN_141a44730(spProxy->FUN_1416c2270(), spEntity->m_clip)) {
             spEntity->m_visible = false;
             spEntity->m_clip->vfunc_4(spEntity->m_visible);
@@ -3073,7 +3064,7 @@ void UIMinimapDialog::FUN_141a402b0(EntityPtr spEntity)
     }
     if (m_clip238 == 0)
         m_clip238 = spClip->FUN_1409b4560(CString("m_arrow"));
-    if (static_cast<ASMovieClip*>(m_clip238) != 0) {
+    if (static_cast<ASMovieClip*>(m_clip238) ? true : false) {
         m_clip238->vfunc_4(bAlive);
         if (bAlive)
             m_clip238->FUN_1422bfef0(FUN_141a45920(pPC));
@@ -3705,13 +3696,12 @@ void UIMinimapDialog::FUN_141a3f600(ProxyPtr spProxy)
 }
 
 // @0x141a3f730
-// MS2-FUNCTIONAL: the exe frame is 0x10 larger (one more argument temporary).
 void UIMinimapDialog::FUN_141a3f730(MS2Ptr<ASMovieClip> spClip, ProxyPtr spProxy)
 {
     if (m_30 == 0 || spClip == 0)
         return;
     CString strChar;
-    if (static_cast<CProxyGameObject*>(spProxy) != 0 && spProxy->FUN_1416c22f0() != 0)
+    if ((static_cast<CProxyGameObject*>(spProxy) != 0 ? true : false) && spProxy->FUN_1416c22f0() != 0)
         strChar = FUN_140719530(spProxy->FUN_1416c22f0());
     static_cast<Unk_MmScript*>(m_30.operator->())->FUN_141a46b60("removeEntity", spClip->FUN_1422bb870(), strChar);
 }

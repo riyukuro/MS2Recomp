@@ -31,8 +31,12 @@ float FUN_1411e0f50(void* pSkill, float fSpeed);                    // speed aft
 bool FUN_14028d470(float a, float b);                               // nearly equal
 int FUN_14028d260(float f);                                         // float -> fixed
 Vector3 FUN_14123cc80(Vector3 kDir);                // facing direction -> move direction
-Vector3* FUN_14123c360(PCBase* p, Vector3* pOut);   // input move direction (member: this=rcx, hidden return=rdx)
-Vector3* FUN_141674b60(PCBase* p, Vector3* pOut, Vector3* pDir);   // move direction on the ground (by-value dir = pointer to a copy)
+// The actor's move-direction queries (members of the actor).
+struct Unk_MoveActor
+{
+    Vector3 FUN_14123c360();                        // input move direction
+    Vector3 FUN_141674b60(Vector3 kDir);            // move direction on the ground
+};
 int FUN_1416725c0(PCBase* p, Vector3 kDir, float fSpeed, float fMax, float fZero);  // move is blocked
 float FUN_141b71550(Vector3 kStart, Vector3 kCtrl, Vector3 kEnd);   // bezier length
 Vector3 FUN_141b71390(Vector3 kStart, Vector3 kCtrl, Vector3 kEnd, float t);   // bezier point
@@ -49,12 +53,6 @@ extern Vector3 DAT_143a08cf8;       // up axis
 int FUN_141489940(PCBase* p)
 {
     return p->m_unk_c00;
-}
-
-// Views a NiPoint3 returned by PCBase::vfunc_18 as the unit's point type (same 12 byte layout).
-static const Vector3& AsPoint(const NiPoint3& kPt)
-{
-    return reinterpret_cast<const Vector3&>(kPt);
 }
 
 // ---- static initializers (.text$di) ----
@@ -105,7 +103,6 @@ int CMotionController::vfunc_4()
 
 // Speed and move direction for this tick: the direction is the motion's base direction tilted by the skill's angle.
 // @0x141488080
-// MS2-FUNCTIONAL: float/matrix temporaries and the goto-merged tail of the exe are laid out differently.
 bool CMotionController::vfunc_5(double fTime)
 {
     m_fSpeed = FUN_141759b60(m_pData, fTime);
@@ -143,8 +140,7 @@ bool CMotionController::vfunc_5(double fTime)
         }
         else
         {
-            Vector3 kFacing = m_pData->m_kDir;
-            kBase = FUN_14123cc80(kFacing);
+            kBase = FUN_14123cc80(m_pData->m_kDir);
         }
         Unk_EfdMatrix3 mxTilt;
         mxTilt.FUN_142084c10((fTiltAngle * 3.1415927f) / 180.0f);
@@ -178,14 +174,13 @@ CArcMotionController::CArcMotionController()
 // Arms the arc: the destination is a fixed distance along the tilted base direction, the bezier control point sits on
 // the line start-destination.
 // @0x141488520
-// MS2-FUNCTIONAL: float/matrix temporaries and the goto-merged tail of the exe are laid out differently.
 int CArcMotionController::vfunc_2(Unk_MotionData* pData, PCBase* pTarget)
 {
     CMotionController::vfunc_2(pData, pTarget);
     m_dElapsed = 0;
     m_dDuration = m_pData->m_fDuration;
     m_dDuration = 0.4f;
-    m_kStartPos = AsPoint(pTarget->vfunc_18());
+    m_kStartPos = reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(pTarget->vfunc_18()));
     Vector3 kRot;
     Vector3 kBase;
     PCBase* pPc = FUN_140974230(pTarget);
@@ -200,8 +195,7 @@ int CArcMotionController::vfunc_2(Unk_MotionData* pData, PCBase* pTarget)
     }
     else
     {
-        Vector3 kFacing = m_pData->m_kDir;
-        kBase = FUN_14123cc80(kFacing);
+        kBase = FUN_14123cc80(m_pData->m_kDir);
     }
     float fSpeed = 0;
     float fAngle = 0;
@@ -227,14 +221,12 @@ int CArcMotionController::vfunc_2(Unk_MotionData* pData, PCBase* pTarget)
     m_kDir = kRot;
     if (!FUN_14028d470(m_pData->m_fSpeedScale, 0))
         fSpeed = m_pData->m_fSpeedScale;
-    Vector3 kStep = m_kDir.FUN_14097fc90(fSpeed);
-    m_kEndPos = AsPoint(pTarget->vfunc_18()).FUN_14097fd50(kStep);
+    m_kEndPos = reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(pTarget->vfunc_18())).FUN_14097fd50(m_kDir.FUN_14097fc90(fSpeed));
     m_fCtrlHeight = fCtrlHeight;
     m_fCtrlWeight = fCtrlWeight;
-    Vector3 kEndPart = m_kEndPos.FUN_14097fc90(1.0f - m_fCtrlWeight);
-    m_kCtrlPos = m_kStartPos.FUN_14097fc90(m_fCtrlWeight).FUN_14097fd50(kEndPart);
+    m_kCtrlPos = m_kStartPos.FUN_14097fc90(m_fCtrlWeight).FUN_14097fd50(m_kEndPos.FUN_14097fc90(1.0f - m_fCtrlWeight));
     m_kCtrlPos.z = m_kCtrlPos.z + m_fCtrlHeight;
-    m_kMove = AsPoint(pTarget->vfunc_18());
+    m_kMove = reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(pTarget->vfunc_18()));
     m_fSpeedLimit = FUN_141b71550(m_kStartPos, m_kCtrlPos, m_kEndPos);
     return 1;
 }
@@ -293,7 +285,6 @@ int CLinearMotionController::vfunc_4()
 
 // Moves along the fixed direction unless the actor is blocked or the step is refused.
 // @0x141488e80
-// MS2-FUNCTIONAL: the blocked-flag temporaries and by-value point copy are laid out differently.
 bool CLinearMotionController::vfunc_5(double fTime)
 {
     CMotionController::vfunc_5(fTime);
@@ -301,15 +292,10 @@ bool CLinearMotionController::vfunc_5(double fTime)
     int nProbe = 100;
     if (0.0f < m_pData->m_fDistance)
     {
-        nProbe = FUN_14028d260(m_pData->m_fDistance);
-        nProbe = nProbe + 100;
+        nProbe = nProbe + FUN_14028d260(m_pData->m_fDistance);
     }
-    int bBlocked;
-    if (m_pTarget->vfunc_99(nProbe) == 0 && FUN_141240780(FUN_14166d220(m_pTarget)) == 0
-        && FUN_141240db0(FUN_14166d220(m_pTarget)) == 0)
-        bBlocked = 0;
-    else
-        bBlocked = 1;
+    int bBlocked = (m_pTarget->vfunc_99(nProbe) != 0 || FUN_141240780(FUN_14166d220(m_pTarget)) != 0
+        || FUN_141240db0(FUN_14166d220(m_pTarget)) != 0) ? 1 : 0;
     if (bBlocked)
         return false;
     if (FUN_14028d470(m_fSpeed, 0))
@@ -381,19 +367,14 @@ int CMoveMotionController::vfunc_4()
 
 // Moves the actor along its input direction unless it is blocked or the step is refused.
 // @0x141489250
-// MS2-FUNCTIONAL: the blocked-flag temporaries and by-value point copies are laid out differently.
 bool CMoveMotionController::vfunc_5(double fTime)
 {
     if (m_pTarget == 0)
         return false;
     CMotionController::vfunc_5(fTime);
     m_kMove = DAT_143b01a60;
-    int bBlocked;
-    if (m_pTarget->vfunc_99(0) == 0 && FUN_141240780(FUN_14166d220(m_pTarget)) == 0
-        && FUN_141240db0(FUN_14166d220(m_pTarget)) == 0)
-        bBlocked = 0;
-    else
-        bBlocked = 1;
+    bool bBlocked = (m_pTarget->vfunc_99(0) != 0 || FUN_141240780(FUN_14166d220(m_pTarget)) != 0
+        || FUN_141240db0(FUN_14166d220(m_pTarget)) != 0) ? true : false;
     if (bBlocked)
         return false;
     if (FUN_14028d470(m_fSpeed, 0))
@@ -401,8 +382,7 @@ bool CMoveMotionController::vfunc_5(double fTime)
         m_kMove = DAT_143b01a60;
         return false;
     }
-    Vector3 kInput, kGround;
-    m_kDir = *FUN_141674b60(m_pTarget, &kGround, FUN_14123c360(m_pTarget, &kInput));
+    m_kDir = reinterpret_cast<Unk_MoveActor*>(m_pTarget)->FUN_141674b60(reinterpret_cast<Unk_MoveActor*>(m_pTarget)->FUN_14123c360());
     if (m_kDir.FUN_140552690(DAT_143b01a60))
     {
         m_kMove = DAT_143b01a60;
@@ -430,7 +410,7 @@ MS2_CHECK_SIZE(Unk_LogArg, 0x10);
 Unk_LogArg FUN_14027c920(float fValue);                             // formats one float
 u64* FUN_140163e80(u64* pSlot);                                     // empty argument slot
 u64* FUN_140274c80(u64* pSlot, const float* pValue);                // slot bound to a value
-u64 FUN_14016d660(u64 a, u64 b, u64 c, u64 d);                      // joins four slots
+u64 FUN_14016d660(u64 a, u64 b, u64 c, u64 d, u64 e, u64 f, u64 g, u64 h, u64 i, u64 j, u64 k, u64 l, u64 m, u64 n, u64 o); // joins all fifteen argument-type slots
 u64 FUN_140163e50(void* pOut, u64 kJoined, Unk_LogArg* pFirst);
 void FUN_1406530d0(void* pLog, int nLevel, int nCategory, const wchar_t* pszFormat, u64 kArgs);
 
@@ -471,15 +451,10 @@ void FUN_1414894f0(void* pLog, int nLevel, int nCategory, const wchar_t* pszForm
     u64 q8 = *pInit8;
     u64 q9 = *pInit9;
     u64 q10 = *pInit10;
-    u64 kJoined = FUN_14016d660(*pBoundA, *pBoundB, *pBoundC, *pBoundD);
+    u64 kJoined = FUN_14016d660(*pBoundA, *pBoundB, *pBoundC, *pBoundD, q10, q9, q8, q7, q6, q5, q4, q3, q2, q1, q0);
     char aOut[24];
     u64 kArgs = FUN_140163e50(aOut, kJoined, &kArg0);
     FUN_1406530d0(pLog, nLevel, nCategory, pszFormat, kArgs);
-}
-
-// @0x1414898a0
-CArcMotionController::~CArcMotionController()
-{
 }
 
 // @0x141489960

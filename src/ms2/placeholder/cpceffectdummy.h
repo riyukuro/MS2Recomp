@@ -19,11 +19,11 @@ public:
 
     bool Load();                                            // 0x1416841f0 Table/pcEffectDummy.xml
     bool LoadFile(const char* pszPath);                     // 0x141684290
-    bool Find(const CString& strName, CEffectDummy& kOut);  // 0x141684460 first row of that name, any gender
+    int Find(const char* pszName, CEffectDummy& kOut);      // 0x141684460 first row of that name, any gender
     size_t GetCount(int nGender);                           // 0x141684580
-    bool Get(int nGender, unsigned nIndex, CEffectDummy& kOut);   // 0x1416845c0
+    int Get(int nGender, unsigned nIndex, CEffectDummy& kOut);    // 0x1416845c0
     void SetRows(int nGender, const std::vector<CEffectDummy>& rows);   // 0x141684660
-    bool Save(const char* pszPath);                         // 0x1416846a0
+    int Save(const char* pszPath);                          // 0x1416846a0
 
 private:
     MS2_LAYOUT_FRIEND;

@@ -28,12 +28,12 @@
 // MS2-PIN: ??$_Lbound@W4Occurrence@CGuideManager@@@?$_Tree@V?$_Tmap_traits@W4Occurrence@CGuideManager@@VGuideOccurContainer@@U?$less@W4Occurrence@CGuideManager@@@std@@V?$allocator@U?$pair@$$CBW4Occurrence@CGuideManager@@VGuideOccurContainer@@@std@@@5@$0A@@std@@@std@@IEBAPEAU?$_Tree_node@U?$pair@$$CBW4Occurrence@CGuideManager@@VGuideOccurContainer@@@std@@PEAX@1@AEBW4Occurrence@CGuideManager@@@Z 0x141394aa0 ; order
 // MS2-PIN: ??$_Lbound@W4Occurrence@CGuideManager@@@?$_Tree@V?$_Tset_traits@W4Occurrence@CGuideManager@@U?$less@W4Occurrence@CGuideManager@@@std@@V?$allocator@W4Occurrence@CGuideManager@@@4@$0A@@std@@@std@@IEBAPEAU?$_Tree_node@W4Occurrence@CGuideManager@@PEAX@1@AEBW4Occurrence@CGuideManager@@@Z 0x141394b40 ; order
 // MS2-PIN: ??$addressof@$$CBV?$_List_val@U?$_List_simple_types@V?$MS2Ptr@VCGuideEntity@@@@@std@@@std@@@std@@YAPEBV?$_List_val@U?$_List_simple_types@V?$MS2Ptr@VCGuideEntity@@@@@std@@@0@AEBV10@@Z 0x141395430 ; probe
-// MS2-PIN: ??$addressof@$$CBV?$_Tree_val@U?$_Tree_simple_types@J@std@@@std@@@std@@YAPEBV?$_Tree_val@U?$_Tree_simple_types@J@std@@@0@AEBV10@@Z 0x141395440 ; probe
+// MS2-PIN: ??$addressof@$$CBV?$_Tree_val@U?$_Tree_simple_types@I@std@@@std@@@std@@YAPEBV?$_Tree_val@U?$_Tree_simple_types@I@std@@@0@AEBV10@@Z 0x141395440 ; probe
 // MS2-PIN: ??$addressof@H@std@@YAPEAHAEAH@Z 0x141395450 ; probe
-// MS2-PIN: ??$addressof@J@std@@YAPEAJAEAJ@Z 0x141395460 ; probe
+// MS2-PIN: ??$addressof@I@std@@YAPEAIAEAI@Z 0x141395460 ; probe
 // MS2-PIN: ??$addressof@PEAU?$_Tree_node@HPEAX@std@@@std@@YAPEAPEAU?$_Tree_node@HPEAX@0@AEAPEAU10@@Z 0x141395470 ; probe
 // MS2-PIN: ??$addressof@PEAU?$_Tree_node@U?$pair@$$CBHV?$vector@V?$MS2Ptr@VCGuideEntity@@@@V?$allocator@V?$MS2Ptr@VCGuideEntity@@@@@std@@@std@@@std@@PEAX@std@@@std@@YAPEAPEAU?$_Tree_node@U?$pair@$$CBHV?$vector@V?$MS2Ptr@VCGuideEntity@@@@V?$allocator@V?$MS2Ptr@VCGuideEntity@@@@@std@@@std@@@std@@PEAX@0@AEAPEAU10@@Z 0x141395480 ; probe
-// MS2-PIN: ??$addressof@V?$_Tree_val@U?$_Tree_simple_types@J@std@@@std@@@std@@YAPEAV?$_Tree_val@U?$_Tree_simple_types@J@std@@@0@AEAV10@@Z 0x141395530 ; order
+// MS2-PIN: ??$addressof@V?$_Tree_val@U?$_Tree_simple_types@I@std@@@std@@@std@@YAPEAV?$_Tree_val@U?$_Tree_simple_types@I@std@@@0@AEAV10@@Z 0x141395530 ; order
 // MS2-PIN: ??$construct@PEAU?$_List_node@V?$MS2Ptr@VCGuideEntity@@@@PEAX@std@@AEAPEAU12@@?$_Default_allocator_traits@V?$allocator@U?$_List_node@V?$MS2Ptr@VCGuideEntity@@@@PEAX@std@@@std@@@std@@SAXAEAV?$allocator@U?$_List_node@V?$MS2Ptr@VCGuideEntity@@@@PEAX@std@@@1@QEAPEAU?$_List_node@V?$MS2Ptr@VCGuideEntity@@@@PEAX@1@AEAPEAU31@@Z 0x1413955a0 ; prop
 // MS2-PIN: ??$construct@PEAU?$_Tree_node@JPEAX@std@@AEAPEAU12@@?$_Default_allocator_traits@V?$allocator@U?$_Tree_node@JPEAX@std@@@std@@@std@@SAXAEAV?$allocator@U?$_Tree_node@JPEAX@std@@@1@QEAPEAU?$_Tree_node@JPEAX@1@AEAPEAU31@@Z 0x1413955f0 ; prop
 // MS2-PIN: ??$construct@PEAU?$_Tree_node@U?$pair@$$CBHV?$vector@V?$MS2Ptr@VCGuideEntity@@@@V?$allocator@V?$MS2Ptr@VCGuideEntity@@@@@std@@@std@@@std@@PEAX@std@@AEAPEAU12@@?$_Default_allocator_traits@V?$allocator@U?$_Tree_node@U?$pair@$$CBHV?$vector@V?$MS2Ptr@VCGuideEntity@@@@V?$allocator@V?$MS2Ptr@VCGuideEntity@@@@@std@@@std@@@std@@PEAX@std@@@std@@@std@@SAXAEAV?$allocator@U?$_Tree_node@U?$pair@$$CBHV?$vector@V?$MS2Ptr@VCGuideEntity@@@@V?$allocator@V?$MS2Ptr@VCGuideEntity@@@@@std@@@std@@@std@@PEAX@std@@@1@QEAPEAU?$_Tree_node@U?$pair@$$CBHV?$vector@V?$MS2Ptr@VCGuideEntity@@@@V?$allocator@V?$MS2Ptr@VCGuideEntity@@@@@std@@@std@@@std@@PEAX@1@AEAPEAU31@@Z 0x141395640 ; prop
@@ -103,6 +103,7 @@
 
 class Unk_GmItemEvents;
 Unk_GmItemEvents* FUN_140a6a840();                                  // the item event dispatcher
+CStringW FUN_14016a730(const char* pszAnsi, int nCodePage);        // ANSI -> wide conversion
 void FUN_1419cae20(Unk_GmItemEvents* pEvents, UIItemEventListener* pListener);
 void FUN_1419caeb0(Unk_GmItemEvents* pEvents, UIItemEventListener* pListener);
 class Unk_GmUgcEvents;
@@ -253,6 +254,7 @@ void CGuideManager::Load()
 }
 
 // @0x14138b4d0
+// MS2-FUNCTIONAL: not byte-matched: calls and branches match the exe; the exe frame is 0x60 larger (temporaries in other slots).
 void CGuideManager::LoadFile(const CStringA& strPath)
 {
     TiXmlDocument doc;
@@ -264,10 +266,11 @@ void CGuideManager::LoadFile(const CStringA& strPath)
         FUN_140166440()->FUN_14015eb90(1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
         return;
     }
-    MS2Ptr<CCacheData> spCache(new CCacheData);
-    spCache->FUN_1401d1160(CStringA(strPath));
-    m_caches.Add(spCache);
-    spCache.Reset();
+    {
+        MS2Ptr<CCacheData> spCache(new CCacheData);
+        spCache->FUN_1401d1160(CStringA(strPath));
+        m_caches.Add(spCache);
+    }
 
     std::vector<Unk_140165cf0*> events;
     FUN_14028faa0(pRoot, "event", "id", &events);
@@ -279,19 +282,25 @@ void CGuideManager::LoadFile(const CStringA& strPath)
         MS2Ptr<CGuideEntity> spEntity(new CGuideEntity);
         if (!spEntity->Load(pElem))
             continue;
-        if (m_entities.Lookup(spEntity->m_nId) != 0)
-            throw std::exception("Guide Entity is Duplicated");
-        m_entities.SetAt(spEntity->m_nId, spEntity);
+        try
+        {
+            if (m_entities.Lookup(spEntity->m_nId) != 0)
+                throw std::exception("Guide Entity is Duplicated");
+            m_entities.SetAt(spEntity->m_nId, spEntity);
+        }
+        catch (std::exception e)
+        {
+            m_names.Add(StringFormat(L"Guide Error: [ID:{0}] {1}", spEntity->m_nId, FUN_14016a730(e.what(), 0)));
+        }
     }
     for (Unk_140165cf0* pImport = pRoot->FUN_140165cf0("import"); pImport != 0; pImport = pImport->FUN_140168650("import"))
     {
-        if (FUN_14028f710(pImport))
-        {
-            CStringA strName;
-            FUN_1408733e0(pImport, "name", strName);
-            CStringA strDir("Table");
-            LoadFile(FUN_14071a5b0(strDir, strName));
-        }
+        if (!FUN_14028f710(pImport))
+            continue;
+        CStringA strName;
+        FUN_1408733e0(pImport, "name", strName);
+        CStringA strDir("Table");
+        LoadFile(FUN_14071a5b0(strDir, strName));
     }
 }
 
@@ -307,12 +316,10 @@ MS2Ptr<CGuideEntity> CGuideManager::FindEntity(int nId)
 // @0x14138ba40
 void CGuideManager::ClearEntities()
 {
-    POSITION pos = m_entities.GetHeadPosition();
-    while (pos != 0)
+    for (POSITION pos = m_entities.GetHeadPosition(); pos != 0; m_entities.GetNext(pos))
     {
         MS2Ptr<CGuideEntity> spEntity = m_entities.GetValueAt(pos);
         spEntity->Clear(true);
-        m_entities.GetNext(pos);
     }
     QueueAllEntities();
 }
@@ -333,7 +340,9 @@ void CGuideManager::Tick()
 void CGuideManager::UpdateEntities()
 {
     Unk_GmPane* pPane = FUN_14136f3e0(0x4e53);
-    if (pPane == 0 || pPane->FUN_1422dc2d0() == 0)
+    if (pPane == 0)
+        return;
+    if (pPane->FUN_1422dc2d0() == 0)
         return;
     if (FUN_14138fd50(0x4e7e)->FUN_1419102c0() != 0)
         return;
@@ -367,7 +376,7 @@ void CGuideManager::UpdateEntities()
     {
         if (ProcessEntity(*it, nMode) == true)
         {
-            m_setQueued.erase(reinterpret_cast<const long&>((*it)->m_nId));
+            m_setQueued.erase(reinterpret_cast<const unsigned int&>((*it)->m_nId));
             it = m_listQueued.erase(it);
         }
         else
@@ -420,12 +429,12 @@ bool CGuideManager::CheckTrigger(TriggerType eType, Unk_GcOptInt oValue, Unk_GcO
 }
 
 // @0x14138c210
-bool CGuideManager::CheckTriggerRange(TriggerType eType, Unk_GameEventIntRange range)
+bool CGuideManager::CheckTriggerRange(TriggerType eType, const Unk_GameEventIntRange& range)
 {
     MS2Ptr<GuideTriggerEventGroup> spGroup;
     if (!m_triggers.Lookup(eType, spGroup))
         return false;
-    if (!spGroup->HasValueInRange(&range))
+    if (!spGroup->HasValueInRange(const_cast<Unk_GameEventIntRange*>(&range)))
         return false;
     return true;
 }
@@ -441,17 +450,17 @@ bool CGuideManager::ProcessEntity(MS2Ptr<CGuideEntity> spEntity, int nMode)
         if (IsCleared(spEntity->m_nId))
             return true;
         bool bOpen = false;
-        if (spEntity->CheckStart(&bOpen, 0) == 0)
-        {
-            if (bOpen)
-                return true;
-        }
-        else
+        if (spEntity->CheckStart(&bOpen, 0) != 0)
         {
             spEntity->StartActions();
             spEntity->SetState(1);
             if (m_nDebug != 0)
                 FUN_1412751b0(StringFormat(L"[Guide] {0}:{1} Open", spEntity->m_nId, spEntity->m_strDesc), 0x14);
+        }
+        else
+        {
+            if (bOpen)
+                return true;
         }
     }
     if (spEntity->m_nState == 1)
@@ -461,25 +470,24 @@ bool CGuideManager::ProcessEntity(MS2Ptr<CGuideEntity> spEntity, int nMode)
     }
     if (spEntity->m_nState == 2)
     {
-        if (spEntity->CheckClose(0) == 0)
-        {
-            if (spEntity->CheckCancel(0) == 0)
-            {
-                if (nStart == 0)
-                    spEntity->Clear(true);
-            }
-            else
-            {
-                spEntity->Clear(true);
-            }
-        }
-        else
+        if (spEntity->CheckClose(0) != 0)
         {
             spEntity->StopActions();
             if (m_nDebug != 0)
                 FUN_1412751b0(StringFormat(L"[Guide] {0}:{1} Close", spEntity->m_nId, spEntity->m_strDesc), 0x14);
             FinishEntity(spEntity);
             spEntity->SetState(0);
+        }
+        else
+        {
+            if (spEntity->CheckCancel(0) != 0)
+            {
+                spEntity->Clear(true);
+            }
+            else if (nStart == 0)
+            {
+                spEntity->Clear(true);
+            }
         }
     }
     return false;
@@ -504,8 +512,7 @@ void CGuideManager::FinishEntity(MS2Ptr<CGuideEntity> spEntity)
     unsigned nStep = 0;
     if (m_map60.Lookup(spEntity->GetSaveId(), nStep) && nStep > spEntity->GetSaveStep())
         return;
-    unsigned nNewStep = spEntity->GetSaveStep();
-    m_map60.SetAt(spEntity->GetSaveId(), nNewStep);
+    m_map60.SetAt(spEntity->GetSaveId(), spEntity->GetSaveStep());
     m_n24 = 1;
 }
 
@@ -513,7 +520,7 @@ void CGuideManager::FinishEntity(MS2Ptr<CGuideEntity> spEntity)
 void CGuideManager::ResetEntity(MS2Ptr<CGuideEntity> spEntity)
 {
     unsigned nStep = spEntity->GetSaveStep();
-    if (nStep != 0)
+    if (nStep > 0)
         nStep = nStep - 1;
     m_map90.SetAt(spEntity->m_nId, 0);
     m_map60.SetAt(spEntity->GetSaveId(), nStep);
@@ -529,21 +536,13 @@ int CGuideManager::IsRestricted(int nType)
 // @0x14138c930
 int CGuideManager::IsSkillRestricted(int nSkillId)
 {
-    int nResult;
-    if (IsRestricted(0x15) == 0)
-    {
-        if (IsRestricted(0x14) == 0)
-            nResult = 0;
-        else if (nSkillId < 0x30d41 || nSkillId > 0x30d48)
-            nResult = 0;
-        else
-            nResult = 1;
-    }
-    else
-    {
-        nResult = 1;
-    }
-    return nResult;
+    const int nMin = 0x30d41;
+    const int nMax = 0x30d48;
+    if (IsRestricted(0x15) != 0)
+        return 1;
+    if (IsRestricted(0x14) != 0)
+        return nSkillId >= nMin && nSkillId <= nMax;
+    return 0;
 }
 
 // @0x14138c9c0
@@ -636,31 +635,29 @@ void CGuideManager::TestEntity(int nMode, int nId)
     {
         nOk = spEntity->CheckCancel(&nFailed);
     }
-    if (nOk == 0)
-    {
-        if (nMode == 0)
-        {
-            CStringW strText;
-            spEntity->GetFailedText(strText, bOpen, nFailed);
-            FUN_1412751b0(StringFormat(L"[Guide] OpenCondition Test Fail Step({0})", strText), 0x14);
-        }
-        else if (nMode == 1)
-        {
-            CStringW strText;
-            spEntity->GetCloseText(strText, nFailed);
-            FUN_1412751b0(StringFormat(L"[Guide] CloseCondition Test Fail Step({0})", strText), 0x14);
-        }
-        else if (nMode == 2)
-        {
-            CStringW strText;
-            spEntity->GetCancelText(strText, nFailed);
-            FUN_1412751b0(StringFormat(L"[Guide] CancelCondition Test Fail Step({0})", strText), 0x14);
-        }
-    }
-    else
+    if (nOk != 0)
     {
         CStringW strMessage(L"[Guide] Condition Test Ok!");
         FUN_1412751b0(strMessage, 0x14);
+        return;
+    }
+    if (nMode == 0)
+    {
+        CStringW strText;
+        spEntity->GetFailedText(strText, bOpen, nFailed);
+        FUN_1412751b0(StringFormat(L"[Guide] OpenCondition Test Fail Step({0})", strText), 0x14);
+    }
+    else if (nMode == 1)
+    {
+        CStringW strText;
+        spEntity->GetCloseText(strText, nFailed);
+        FUN_1412751b0(StringFormat(L"[Guide] CloseCondition Test Fail Step({0})", strText), 0x14);
+    }
+    else if (nMode == 2)
+    {
+        CStringW strText;
+        spEntity->GetCancelText(strText, nFailed);
+        FUN_1412751b0(StringFormat(L"[Guide] CancelCondition Test Fail Step({0})", strText), 0x14);
     }
 }
 
@@ -668,14 +665,14 @@ void CGuideManager::TestEntity(int nMode, int nId)
 void CGuideManager::TestCondition(CStringA strName)
 {
     Unk_GcCondRef ref = FUN_1413a5420(CStringA(strName));
-    if (ref.FUN_141387b90() == 0)
+    if (ref.FUN_141387b90() != 0)
     {
-        CStringW strMessage(L"[Guide] Not Found Condition Name");
-        FUN_1412751b0(strMessage, 0x14);
+        ref.FUN_141387bb0()->vfunc_5();
     }
     else
     {
-        ref.FUN_141387bb0()->vfunc_5();
+        CStringW strMessage(L"[Guide] Not Found Condition Name");
+        FUN_1412751b0(strMessage, 0x14);
     }
 }
 
@@ -684,15 +681,24 @@ void CGuideManager::ShowEntityState(int nId)
 {
     if (nId == 0)
     {
-        CStringW strMessage(L"[Guide] -- ShowOpenGuide Start ---");
-        FUN_1412751b0(strMessage, 0x14);
-        POSITION pos = m_entities.GetHeadPosition();
-        while (pos != 0)
+        {
+            CStringW strMessage(L"[Guide] -- ShowOpenGuide Start ---");
+            FUN_1412751b0(strMessage, 0x14);
+        }
+        for (POSITION pos = m_entities.GetHeadPosition(); pos != 0; m_entities.GetNext(pos))
         {
             MS2Ptr<CGuideEntity> spEntity = m_entities.GetValueAt(pos);
-            if (spEntity->m_nState > 0 && spEntity->m_nState < 3)
-                ShowEntityState(spEntity->m_nId);
-            m_entities.GetNext(pos);
+            int nState = spEntity->m_nState;
+            if (nState > 0)
+            {
+                if (nState > 2)
+                {
+                }
+                else
+                {
+                    ShowEntityState(spEntity->m_nId);
+                }
+            }
         }
     }
     else
@@ -702,19 +708,17 @@ void CGuideManager::ShowEntityState(int nId)
         {
             CStringW strMessage(L"[Guide] Not Found Guide!!");
             FUN_1412751b0(strMessage, 0x14);
+            return;
         }
-        else
-        {
-            CStringW strState(L"Unknown");
-            if (spEntity->m_nState == 0)
-                strState = L"Init";
-            else if (spEntity->m_nState == 1)
-                strState = L"Opening";
-            else if (spEntity->m_nState == 2)
-                strState = L"Open";
-            CStringW strCleared(IsCleared(spEntity->m_nId) ? L"O" : L"X");
-            FUN_1412751b0(StringFormat(L"[Guide] {0}:{1} State({2}) isClear({3})", (unsigned)nId, spEntity->m_strDesc, strState, strCleared), 0x14);
-        }
+        CStringW strState(L"Unknown");
+        if (spEntity->m_nState == 0)
+            strState = L"Init";
+        else if (spEntity->m_nState == 1)
+            strState = L"Opening";
+        else if (spEntity->m_nState == 2)
+            strState = L"Open";
+        CStringW strCleared(IsCleared(spEntity->m_nId) ? L"O" : L"X");
+        FUN_1412751b0(StringFormat(L"[Guide] {0}:{1} State({2}) isClear({3})", *reinterpret_cast<unsigned*>(&nId), spEntity->m_strDesc, strState, strCleared), 0x14);
     }
 }
 
@@ -722,7 +726,7 @@ void CGuideManager::ShowEntityState(int nId)
 void CGuideManager::ToggleDebug()
 {
     m_nDebug = (m_nDebug == 0);
-    const wchar_t* pszState = (m_nDebug == 0) ? L"Off" : L"On";
+    const wchar_t* pszState = (m_nDebug != 0) ? L"On" : L"Off";
     FUN_1412751b0(StringFormat(L"[Guide] Debug Message {0}!", pszState), 0x14);
 }
 
@@ -802,24 +806,20 @@ int CGuideManager::InternOccurrence(const CStringA& strName)
 // @0x14138d980
 void CGuideManager::PrepareEntities()
 {
-    POSITION pos = m_entities.GetHeadPosition();
-    while (pos != 0)
+    for (POSITION pos = m_entities.GetHeadPosition(); pos != 0; m_entities.GetNext(pos))
     {
         MS2Ptr<CGuideEntity> spEntity = m_entities.GetValueAt(pos);
         spEntity->UpdateConditions();
-        m_entities.GetNext(pos);
     }
 }
 
 // @0x14138da20
 void CGuideManager::NotifyEntitiesLoaded()
 {
-    POSITION pos = m_entities.GetHeadPosition();
-    while (pos != 0)
+    for (POSITION pos = m_entities.GetHeadPosition(); pos != 0; m_entities.GetNext(pos))
     {
         MS2Ptr<CGuideEntity> spEntity = m_entities.GetValueAt(pos);
         FUN_1413a3710(spEntity.operator->());
-        m_entities.GetNext(pos);
     }
 }
 
@@ -832,29 +832,28 @@ void CGuideManager::QueueAllEntities()
     {
         MS2Ptr<CGuideEntity> spEntity = m_entities.GetValueAt(pos);
         m_listQueued.push_back(spEntity);
-        m_setQueued.insert(reinterpret_cast<const long&>(spEntity->m_nId));
+        m_setQueued.insert(reinterpret_cast<const unsigned int&>(spEntity->m_nId));
     }
 }
 
 // @0x14138dbb0
 void CGuideManager::RefreshEntities()
 {
-    POSITION pos = m_entities.GetHeadPosition();
-    while (pos != 0)
+    for (POSITION pos = m_entities.GetHeadPosition(); pos != 0; m_entities.GetNext(pos))
     {
         MS2Ptr<CGuideEntity> spEntity = m_entities.GetValueAt(pos);
         spEntity->MoveStartedConditions();
-        m_entities.GetNext(pos);
     }
 }
 
 // @0x14138dc50
+// MS2-FUNCTIONAL: not byte-matched: calls and branches match the exe; the exe frame is 0x10 larger, and its m_all push_back COMDAT
+// (0x1413a27e0) is a separate copy of ours (0x1413a27b0).
 void CGuideManager::BuildOccurIndex()
 {
     m_byOccur.clear();
     m_setIndexed.clear();
-    POSITION pos = m_entities.GetHeadPosition();
-    while (pos != 0)
+    for (POSITION pos = m_entities.GetHeadPosition(); pos != 0; m_entities.GetNext(pos))
     {
         MS2Ptr<CGuideEntity> spEntity = m_entities.GetValueAt(pos);
         std::map<Occurrence, int> occurs;
@@ -863,29 +862,28 @@ void CGuideManager::BuildOccurIndex()
         {
             Occurrence eKey = it->first;
             int nSub = it->second;
-            if (eKey != 0)
+            if (eKey == 0)
+                continue;
+            std::map<Occurrence, GuideOccurContainer>::iterator itOccur = m_byOccur.find(eKey);
+            if (itOccur == m_byOccur.end())
             {
-                if (m_byOccur.find(eKey) == m_byOccur.end())
+                GuideOccurContainer container;
+                m_byOccur.insert(std::make_pair(eKey, container));
+            }
+            if (nSub != 0)
+            {
+                if (m_byOccur[eKey].m_byValue.find(nSub) == m_byOccur[eKey].m_byValue.end())
                 {
-                    GuideOccurContainer container;
-                    m_byOccur.insert(std::make_pair(eKey, container));
+                    GmEntVec vec;
+                    m_byOccur[eKey].m_byValue.insert(std::make_pair(nSub, vec));
                 }
-                if (nSub == 0)
-                {
-                    m_byOccur[eKey].m_all.push_back(spEntity);
-                }
-                else
-                {
-                    if (m_byOccur[eKey].m_byValue.find(nSub) == m_byOccur[eKey].m_byValue.end())
-                    {
-                        GmEntVec vec;
-                        m_byOccur[eKey].m_byValue.insert(std::make_pair(nSub, vec));
-                    }
-                    m_byOccur[eKey].m_byValue[nSub].push_back(spEntity);
-                }
+                m_byOccur[eKey].m_byValue[nSub].push_back(spEntity);
+            }
+            else
+            {
+                m_byOccur[eKey].m_all.push_back(spEntity);
             }
         }
-        m_entities.GetNext(pos);
     }
     for (std::map<Occurrence, GuideOccurContainer>::iterator it = m_byOccur.begin(); it != m_byOccur.end(); ++it)
     {
@@ -915,7 +913,7 @@ void CGuideManager::QueueSubkeyEntities()
                     GmEntVec& vec = itGroup->second;
                     for (GmEntVec::iterator itEnt = vec.begin(); itEnt != vec.end(); ++itEnt)
                     {
-                        long nId = (*itEnt)->m_nId;
+                        unsigned int nId = (*itEnt)->m_nId;
                         if (m_setQueued.find(nId) == m_setQueued.end())
                         {
                             bool bOpen = false;
@@ -940,25 +938,24 @@ void CGuideManager::QueueWholeSubkeyEntities()
     for (std::set<Occurrence>::iterator it = m_setPlain.begin(); it != m_setPlain.end(); ++it)
     {
         Occurrence eKey = *it;
-        std::map<Occurrence, GuideOccurContainer>::iterator itOcc = m_byOccur.find(eKey);
-        if (itOcc != m_byOccur.end())
+        std::map<Occurrence, GuideOccurContainer>::const_iterator itOcc = m_byOccur.find(eKey);
+        if (itOcc == m_byOccur.end())
+            continue;
+        const GuideOccurContainer& kOccur = itOcc->second;
+        const GmSubMap& groups = kOccur.m_byValue;
+        for (GmSubMap::const_iterator itGroup = groups.begin(); itGroup != groups.end(); ++itGroup)
         {
-            GmSubMap& groups = itOcc->second.m_byValue;
-            for (GmSubMap::iterator itGroup = groups.begin(); itGroup != groups.end(); ++itGroup)
+            const GmEntVec& vec = itGroup->second;
+            for (GmEntVec::const_iterator itEnt = vec.begin(); itEnt != vec.end(); ++itEnt)
             {
-                GmEntVec& vec = itGroup->second;
-                for (GmEntVec::iterator itEnt = vec.begin(); itEnt != vec.end(); ++itEnt)
+                unsigned int nId = (*itEnt)->m_nId;
+                if (m_setQueued.find(nId) != m_setQueued.end())
+                    continue;
+                bool bOpen = false;
+                if ((*itEnt)->CheckStart(&bOpen, 0) == 1 || !bOpen)
                 {
-                    long nId = (*itEnt)->m_nId;
-                    if (m_setQueued.find(nId) == m_setQueued.end())
-                    {
-                        bool bOpen = false;
-                        if ((*itEnt)->CheckStart(&bOpen, 0) == 1 || !bOpen)
-                        {
-                            m_setQueued.insert(nId);
-                            m_listQueued.push_back(*itEnt);
-                        }
-                    }
+                    m_setQueued.insert(nId);
+                    m_listQueued.push_back(*itEnt);
                 }
             }
         }
@@ -973,22 +970,21 @@ void CGuideManager::QueueBaseEntities()
     for (std::set<Occurrence>::iterator it = m_setPending.begin(); it != m_setPending.end(); ++it)
     {
         Occurrence eKey = *it;
-        std::map<Occurrence, GuideOccurContainer>::iterator itOcc = m_byOccur.find(eKey);
-        if (itOcc != m_byOccur.end())
+        std::map<Occurrence, GuideOccurContainer>::const_iterator itOcc = m_byOccur.find(eKey);
+        if (itOcc == m_byOccur.end())
+            continue;
+        const GuideOccurContainer& kOccur = itOcc->second;
+        const GmEntVec& vec = kOccur.m_all;
+        for (GmEntVec::const_iterator itEnt = vec.begin(); itEnt != vec.end(); ++itEnt)
         {
-            GmEntVec& vec = itOcc->second.m_all;
-            for (GmEntVec::iterator itEnt = vec.begin(); itEnt != vec.end(); ++itEnt)
+            unsigned int nId = (*itEnt)->m_nId;
+            if (m_setQueued.find(nId) != m_setQueued.end())
+                continue;
+            bool bOpen = false;
+            if ((*itEnt)->CheckStart(&bOpen, 0) == 1 || !bOpen)
             {
-                long nId = (*itEnt)->m_nId;
-                if (m_setQueued.find(nId) == m_setQueued.end())
-                {
-                    bool bOpen = false;
-                    if ((*itEnt)->CheckStart(&bOpen, 0) == 1 || !bOpen)
-                    {
-                        m_setQueued.insert(nId);
-                        m_listQueued.push_back(*itEnt);
-                    }
-                }
+                m_setQueued.insert(nId);
+                m_listQueued.push_back(*itEnt);
             }
         }
     }
@@ -1055,13 +1051,15 @@ void CGuideManager::vfunc_ugc_6()
 // @0x14138eb90
 void CGuideManager::OnLearnEmotion(NotifyObject* pNotify)
 {
-    AddTrigger(static_cast<TriggerType>(0x14), *reinterpret_cast<int*>(reinterpret_cast<char*>(pNotify) + 0x18), 0);
+    char* pEvent = reinterpret_cast<char*>(pNotify);
+    AddTrigger(static_cast<TriggerType>(0x14), *reinterpret_cast<int*>(pEvent + 0x18), 0);
 }
 
 // @0x14138ebd0
 void CGuideManager::OnUseSkill(NotifyObject* pNotify)
 {
-    AddTrigger(static_cast<TriggerType>(0x18), *reinterpret_cast<int*>(reinterpret_cast<char*>(pNotify) + 0x18), 0);
+    char* pEvent = reinterpret_cast<char*>(pNotify);
+    AddTrigger(static_cast<TriggerType>(0x18), *reinterpret_cast<int*>(pEvent + 0x18), 0);
 }
 
 // @0x14138ec10
@@ -1118,7 +1116,8 @@ GuideOccurContainer::GuideOccurContainer(const GuideOccurContainer& other)
 
 // @0x141397b20
 GuideOccurContainer::GuideOccurContainer(GuideOccurContainer&& other)
-    : CPtred(other), m_byValue(std::move(other.m_byValue)), m_all(std::move(other.m_all))
+    : CPtred(other), m_byValue(static_cast<decltype(other.m_byValue)&&>(other.m_byValue)),
+      m_all(static_cast<decltype(other.m_all)&&>(other.m_all))
 {
 }
 
@@ -1131,28 +1130,25 @@ GuideTriggerEventGroup::GuideTriggerEventGroup()
 unsigned char* FUN_141396750(Unk_Bitset8* pBits, unsigned char nValue)
 {
     pBits->Fill(false);
-    unsigned char nRest = nValue;
-    for (unsigned nBit = 0; nRest != 0 && nBit < 8; ++nBit)
+    for (unsigned nBit = 0; nValue != 0 && nBit < 8; nValue >>= 1, ++nBit)
     {
-        if ((nRest & 1) != 0)
+        if ((nValue & 1) != 0)
             pBits->Set(nBit, true);
-        nRest = nRest >> 1;
     }
     return pBits->m_bits;
 }
 
-struct Unk_GeRange { int min; int max; };
 class Unk_GeMgr
 {
 public:
-    char FUN_14138c210(int trigger, Unk_GeRange range);
+    char FUN_14138c210(int trigger, const Unk_GeRange& range);
 };
 class Unk_PCBuffTable;
 
 // MS2-FUNCTIONAL: legacy range-check entry adapts the recovered two-int range and manager method.
-char Unk_GeMgr::FUN_14138c210(int trigger, Unk_GeRange range)
+char Unk_GeMgr::FUN_14138c210(int trigger, const Unk_GeRange& range)
 {
-    Unk_GameEventIntRange converted(range.min, range.max);
+    Unk_GameEventIntRange converted(range.m_nMin, range.m_nMax);
     return static_cast<char>(reinterpret_cast<CGuideManager*>(this)->CheckTriggerRange(
         static_cast<CGuideManager::TriggerType>(trigger), converted));
 }
@@ -1176,13 +1172,13 @@ void FUN_14138d460(void* self)
 { reinterpret_cast<CGuideManager*>(self)->ToggleDebug(); }
 
 // Full-executable aliases for existing CGuideManager methods.
-// MS2-PIN: ?CheckTriggerRange@CGuideManager@@QEAA_NW4TriggerType@1@UUnk_GameEventIntRange@@@Z 0x14138c210
+// MS2-PIN: ?CheckTriggerRange@CGuideManager@@QEAA_NW4TriggerType@1@AEBUUnk_GameEventIntRange@@@Z 0x14138c210
 // MS2-PIN: ?IsSkillRestricted@CGuideManager@@QEAAHH@Z 0x14138c930
 // MS2-PIN: ?TestEntity@CGuideManager@@QEAAXHH@Z 0x14138cce0
 // MS2-PIN: ?TestCondition@CGuideManager@@QEAAXV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@Z 0x14138d090
 // MS2-PIN: ?ShowEntityState@CGuideManager@@QEAAXH@Z 0x14138d160
 // MS2-PIN: ?ToggleDebug@CGuideManager@@QEAAXXZ 0x14138d460
-// MS2-PIN: ?FUN_14138c210@Unk_GeMgr@@QEAADHUUnk_GeRange@@@Z 0x14138c210
+// MS2-PIN: ?FUN_14138c210@Unk_GeMgr@@QEAADHAEBUUnk_GeRange@@@Z 0x14138c210
 // MS2-PIN: ?FUN_14138c930@@YAHPEAXH@Z 0x14138c930
 // MS2-PIN: ?FUN_14138c930@Unk_PCBuffTable@@YAHH@Z 0x14138c930
 // MS2-PIN: ?FUN_14138cce0@@YAXPEAXHH@Z 0x14138cce0

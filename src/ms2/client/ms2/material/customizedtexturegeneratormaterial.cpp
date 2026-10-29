@@ -127,6 +127,16 @@ bool CustomizedTextureGeneratorMaterial::GenerateVertexShadeTree(Context& kConte
 }
 MS2_REPLACE_METHOD(0x14276C860, CustomizedTextureGeneratorMaterial, GenerateVertexShadeTree, 463, 0x5229F208);
 
+//--------------------------------------------------------------------------------------------------
+// @0x14276ca40
+bool CustomizedTextureGeneratorMaterial::HandleApplyFog(Context& kContext, NiStandardPixelProgramDescriptor* pkPixDesc,
+    NiMaterialResource* pkUnfoggedColor, NiMaterialResource*& pkFogOutput)
+{
+    pkFogOutput = pkUnfoggedColor;
+    return true;
+}
+MS2_REPLACE_METHOD(0x14276CA40, CustomizedTextureGeneratorMaterial, HandleApplyFog, 11, 0xB71BF337);
+
 // NiImplementRTTI(CustomizedTextureGeneratorMaterial, MS2StandardMaterial): the initializer sits in the shared
 // .text$di run. The hook DLL binds the exe's copy (symbols-manual row), so only the byte-match build defines it.
 // MS2-RANGE: 0x14014d410-0x14014d430 .text$di

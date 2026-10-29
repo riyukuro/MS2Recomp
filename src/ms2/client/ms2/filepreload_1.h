@@ -75,7 +75,7 @@ public:
     int stopped;
     int preloadIds;
     bool asynchronous;
-    int initialized;
+    volatile int initialized;
     int dataReady;
     int phase;
     CLockCriticalSection stateLock;

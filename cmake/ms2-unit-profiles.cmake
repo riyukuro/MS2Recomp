@@ -9,7 +9,7 @@
 #               (/EHs-c- cancels the directory's /EHsc), /fp:precise, SF_BUILD_SHIPPING + NDEBUG,
 #               GFX_USE_VIDEO (the exe links GFx video: Video state 0x1e, the CRI decoder).
 #   gamebryo    MS2 code built inside the game's Gamebryo-flagged projects (the MS2 material classes and node library at
-#               0x14274d700-0x142778550, gb14): the engine's release switches (engine/units-gb.json flags 0) /O2 /GR-;
+#               0x14274d700-0x142778550, gb14): the engine's release switches (data/engine/units-gb.json flags 0) /O2 /GR-;
 #               /EHsc /fp:fast /GS /Gy are the game's already.
 
 set(MS2_PROFILE_scaleform_OPTIONS

@@ -172,6 +172,7 @@ void* FUN_141264060(int); void FUN_141357400(void*,float); void FUN_141357430(vo
 extern int DAT_143ab5b00;
 extern void* DAT_143ad8960;
 extern void* DAT_143ad8968;
+extern int g_physXItem;   // 0x143ad8968 (DAT_143ad8968 is mapped to 0x143acce38)
 void FUN_141bd3c00(void*,bool);
 void FUN_14166ef10(void*,const CString&,int,int,bool);
 void* FUN_141371b30(); void FUN_141021140(void*);
@@ -372,7 +373,7 @@ inline void FUN_1413747d0(unsigned char* p) { *p=0; }
 inline void FUN_141374920(unsigned char* p,const int& v) { *(int*)(p+4)=v; *p=1; }
 int FUN_141bd3fe0(void*,int);
 void* FUN_141bd1320(void*,int); void FUN_141094e40(void*,bool);
-void FUN_141bd3ec0(void*,int,bool);
+void FUN_141bd3ec0(void*,int,char);
 void FUN_141bdaae0(void*);
 void* FUN_140e01890(int); void FUN_1419f6bc0(void*,CStringW,int,int,int);
 void* FUN_140e0d900();
@@ -780,7 +781,7 @@ int CUserCommandCli::FUN_141365270(Unk_CommandArgs& args) {
 // @0x141365350
 int CUserCommandCli::FUN_141365350(Unk_CommandArgs& args) {
     int id=args.FUN_1408d1f60(0,0);
-    bool enabled=args.FUN_1408d20b0(1,0)!=0;
+    bool enabled=args.FUN_1408d20b0(1,0) ? true : false;
     void* player=FUN_1403ed2d0();
     if(!player) return 0;
     void* actor=FUN_141bd0cc0(player);
@@ -1250,16 +1251,16 @@ int CUserCommandCli::FUN_1413688f0(Unk_CommandArgs& args) {
 int CUserCommandCli::FUN_141368990(Unk_CommandArgs& args) {
     bool enabled=args.FUN_1408d2140(0,true);
     FUN_1409a4b00(FUN_1409a8b00(),enabled);
-    if(enabled==false) { CStringW text=FUN_1402a61e0(L"Disable Fog"); FUN_1412751b0(text,20); }
-    else { CStringW text=FUN_1402a61e0(L"Enable Fog"); FUN_1412751b0(text,20); }
+    if(enabled!=false) FUN_1412751b0(FUN_1402a61e0(L"Enable Fog"),20);
+    else FUN_1412751b0(FUN_1402a61e0(L"Disable Fog"),20);
     return 1;
 }
 // @0x141368a60
 int CUserCommandCli::FUN_141368a60(Unk_CommandArgs& args) {
     bool enabled=args.FUN_1408d2140(0,true);
     FUN_1411b98e0(FUN_14119f490(),enabled==false);
-    if(enabled==false) { CStringW text=FUN_1402a61e0(L"Disable effect limit"); FUN_1412751b0(text,20); }
-    else { CStringW text=FUN_1402a61e0(L"Enable effect limit"); FUN_1412751b0(text,20); }
+    if(enabled!=false) FUN_1412751b0(FUN_1402a61e0(L"Enable effect limit"),20);
+    else FUN_1412751b0(FUN_1402a61e0(L"Disable effect limit"),20);
     return 1;
 }
 // @0x141368b50
@@ -1269,7 +1270,7 @@ int CUserCommandCli::FUN_141368b50(Unk_CommandArgs& args) {
     DAT_143ae0fc0=enabled;
     CStringW message;
     const wchar_t* state;
-    if(enabled==0) state=L"Off"; else state=L"On";
+    if(enabled!=0) state=L"On"; else state=L"Off";
     message.Format(L"showcodename : %s",state);
     FUN_1412751b0(message,20);
     return 1;
@@ -1277,14 +1278,13 @@ int CUserCommandCli::FUN_141368b50(Unk_CommandArgs& args) {
 // @0x141368c20
 int CUserCommandCli::FUN_141368c20(Unk_CommandArgs&) {
     void* dialog=FUN_141264060(0x4ebe);
-    if(dialog!=0) {
-        bool shown=FUN_1413579d0(dialog);
-        CStringW message;
-        const wchar_t* state;
-        if(shown==false) state=L"Off"; else state=L"On";
-        message.Format(L"ShowUpperVersionText : %s",state);
-        FUN_1412751b0(message,20);
-    }
+    if(dialog==0) return 1;
+    bool shown=FUN_1413579d0(dialog);
+    CStringW message;
+    const wchar_t* state;
+    if(shown!=false) state=L"On"; else state=L"Off";
+    message.Format(L"ShowUpperVersionText : %s",state);
+    FUN_1412751b0(message,20);
     return 1;
 }
 // @0x141368ce0
@@ -1364,22 +1364,20 @@ int CUserCommandCli::FUN_1413693d0(Unk_CommandArgs& args) {
 // @0x1413694b0
 int CUserCommandCli::FUN_1413694b0(Unk_CommandArgs& args) {
     int npcId=args.FUN_1408d1fd0(0,0);
-    bool mode=args.FUN_1408d2140(1,true);
-    FUN_141bd3ec0(FUN_1403ed2d0(),npcId,mode);
+    FUN_141bd3ec0(FUN_1403ed2d0(),npcId,args.FUN_1408d2140(1,true));
     bool shown=args.FUN_1408d2140(1,true);
     FUN_1412751b0(StringFormat(L"OnNpcDebugModeByID Set:{0}",shown),20);
     return 1;
 }
 // @0x141369570
 int CUserCommandCli::FUN_141369570(Unk_CommandArgs&) {
-    int& flag=reinterpret_cast<int&>(DAT_143ad8968);
-    DAT_1439f7064=flag;
+    DAT_1439f7064=g_physXItem;
     CStringW message;
     const wchar_t* state;
-    if(flag==0) state=L"Off"; else state=L"On";
+    if(g_physXItem!=0) state=L"On"; else state=L"Off";
     message.Format(L"PhysXItem %s!",state);
     FUN_1412751f0(message,1,1);
-    flag=flag^1;
+    g_physXItem=g_physXItem^1;
     return 1;
 }
 // @0x141369620
@@ -1398,32 +1396,27 @@ int CUserCommandCli::FUN_141369650(Unk_CommandArgs& args) {
 // @0x141369760
 int CUserCommandCli::FUN_141369760(Unk_CommandArgs& args) {
     CStringW command=args.FUN_1408d21c0(0,L"");
-    if(!FUN_1403b3c40(command,L"create")) {
-        if(!FUN_1403b3c40(command,L"invite")) {
-            if(!FUN_1403b3c40(command,L"leave")) {
-                if(!FUN_1403b3c40(command,L"master")) {
-                    if(!FUN_1403b3c40(command,L"buff")) return 0;
-                    __int64 clubId=args.FUN_1408d2040(1,0);
-                    int second=args.FUN_1408d1f60(2,0);
-                    int third=args.FUN_1408d1f60(3,0);
-                    FUN_140b163c0(FUN_140e0d900(),clubId,second,third);
-                } else {
-                    __int64 clubId=args.FUN_1408d2040(1,0);
-                    CStringW name=args.FUN_1408d21c0(2,L"");
-                    FUN_140b162f0(FUN_140e0d900(),clubId,CStringW(name));
-                }
-            } else {
-                __int64 clubId=args.FUN_1408d2040(1,0);
-                FUN_140b16270(FUN_140e0d900(),clubId);
-            }
-        } else {
-            __int64 clubId=args.FUN_1408d2040(1,0);
-            CStringW name=args.FUN_1408d21c0(2,L"");
-            FUN_140b160c0(FUN_140e0d900(),clubId,CStringW(name));
-        }
-    } else {
+    if(FUN_1403b3c40(command,L"create")) {
         CStringW name=args.FUN_1408d21c0(1,L"");
         FUN_140b15c10(FUN_140e0d900(),CStringW(name));
+    } else if(FUN_1403b3c40(command,L"invite")) {
+        __int64 clubId=args.FUN_1408d2040(1,0);
+        CStringW name=args.FUN_1408d21c0(2,L"");
+        FUN_140b160c0(FUN_140e0d900(),clubId,CStringW(name));
+    } else if(FUN_1403b3c40(command,L"leave")) {
+        __int64 clubId=args.FUN_1408d2040(1,0);
+        FUN_140b16270(FUN_140e0d900(),clubId);
+    } else if(FUN_1403b3c40(command,L"master")) {
+        __int64 clubId=args.FUN_1408d2040(1,0);
+        CStringW name=args.FUN_1408d21c0(2,L"");
+        FUN_140b162f0(FUN_140e0d900(),clubId,CStringW(name));
+    } else if(FUN_1403b3c40(command,L"buff")) {
+        __int64 clubId=args.FUN_1408d2040(1,0);
+        int second=args.FUN_1408d1f60(2,0);
+        int third=args.FUN_1408d1f60(3,0);
+        FUN_140b163c0(FUN_140e0d900(),clubId,second,third);
+    } else {
+        return 0;
     }
     return 1;
 }
@@ -1440,10 +1433,10 @@ int CUserCommandCli::FUN_141369bd0(Unk_CommandArgs&) {
         void* list;
         if (pass == 0) list = (char*)FUN_140764020() + 0x1c0;
         else list = (char*)FUN_140764020() + 0x208;
-        ATL::CAtlArray<void*> names;
-        ATL::CAtlArray<void*> counts;
-        ATL::CAtlArray<void*> alliances;
-        ATL::CAtlArray<void*> quests;
+        ATL::CAtlArray<CString> names;
+        ATL::CAtlArray<int> counts;
+        ATL::CAtlArray<int> alliances;
+        ATL::CAtlArray<CString> quests;
         FUN_1402c31c0(&quests,10,-1);
         FUN_1401b6710(&counts,10,-1);
         FUN_1402c31c0(&names,5,-1);
@@ -1632,7 +1625,10 @@ int CUserCommandCli::FUN_14136ac60(Unk_CommandArgs& args) {
 // @0x14136b290
 int CUserCommandCli::FUN_14136b290(Unk_CommandArgs& args) {
     if (args.FUN_1408d2380() != 2) {
-        FUN_1412751b0(CStringW(L"/SetEpicChapterStatus [ChapterID] [Status]"),20);
+        {
+            CStringW usage(L"/SetEpicChapterStatus [ChapterID] [Status]");
+            FUN_1412751b0(usage,20);
+        }
         return 0;
     }
     CStringW a0 = args.FUN_1408d21c0(0,L"");
@@ -1640,23 +1636,26 @@ int CUserCommandCli::FUN_14136b290(Unk_CommandArgs& args) {
     CStringW a1 = args.FUN_1408d21c0(1,L"");
     int status = _wtoi(a1);
     if (status < 0 || 4 < status) {
-        FUN_1412751b0(CStringW(L"/SetEpicQuestStatus [QuestID] [Status]"),20);
+        {
+            CStringW usage(L"/SetEpicQuestStatus [QuestID] [Status]");
+            FUN_1412751b0(usage,20);
+        }
         return 0;
     }
     ATL::CAtlArray<void*> ids;
     FUN_14074cfd0(FUN_1407476c0(),chapter,&ids);
     if (FUN_140187930(&ids)) {
-        FUN_1412751b0(FUN_1402a61e0(L"SetEpicChapterStatus, There is no chapterQuest to set."),20);
+        CStringW msg = FUN_1402a61e0(L"SetEpicChapterStatus, There is no chapterQuest to set.");
+        FUN_1412751b0(msg,20);
         return 0;
     }
     Unk_g2_Vec24 quests;
     quests.reserve(FUN_140186270(&ids));
     for (unsigned __int64 i = 0; i < FUN_140186270(&ids); i++) {
-        quests.insert(quests.end(), *(int*)FUN_140184510(&ids,i));
+        quests.insert(quests.end(), *(DWORD*)FUN_140184510(&ids,i));
     }
     CStringW path(L"[S]");
-    for (Unk_g2_Vec24::iterator p = quests.begin(); p != quests.end(); ++p) {
-        int q = *p;
+    for (unsigned q : quests) {
         path += StringFormat(L"-> {0}",q);
     }
     path += L"-> [E]";
@@ -1707,8 +1706,8 @@ void FUN_14136b910(void*,Unk_g2_Vec24* src,int status) {
 int CUserCommandCli::FUN_14136ba00(Unk_CommandArgs& args) {
     bool on = args.FUN_1408d2140(0,false);
     *((char*)FUN_14025e7d0() + 0xf0) = on;
-    if (!on) FUN_1412751b0(CStringW(L"Now You can see text to Text(Original)"),20);
-    else FUN_1412751b0(CStringW(L"Now You can see text to keyText(Converted)"),20);
+    if (on) FUN_1412751b0(L"Now You can see text to keyText(Converted)",20);
+    else FUN_1412751b0(L"Now You can see text to Text(Original)",20);
     return 1;
 }
 // @0x14136bac0
@@ -1875,16 +1874,16 @@ int CUserCommandCli::FUN_14136c6f0(Unk_CommandArgs& args) {
 }
 // @0x14136c7f0
 int CUserCommandCli::FUN_14136c7f0(Unk_CommandArgs& args) {
-    CStringW text=args.FUN_1408d21c0(0,L"");
-    FUN_1413b71c0(FUN_1403ed290(),text);
+    FUN_1413b71c0(FUN_1403ed290(),args.FUN_1408d21c0(0,L""));
     return 1;
 }
+// the guild dialog found by FUN_14136f480 is handed on as its base subobject at +0x18
+struct Unk_UccGuildDlgHead { char m_00[0x18]; };
+struct Unk_UccGuildDlgListener { void* m_00; };
+struct Unk_UccGuildDlg : Unk_UccGuildDlgHead, Unk_UccGuildDlgListener {};
 // @0x14136c880
 int CUserCommandCli::FUN_14136c880(Unk_CommandArgs&) {
-    char* dialog=(char*)FUN_14136f480(0x4e4f);
-    void* target;
-    if(dialog==0) target=0; else target=dialog+0x18;
-    FUN_140d73aa0(FUN_1409eec40(0x3e0),1,target,CStringW(L"leaveGuild"));
+    FUN_140d73aa0(FUN_1409eec40(0x3e0),1,static_cast<Unk_UccGuildDlgListener*>(static_cast<Unk_UccGuildDlg*>(FUN_14136f480(0x4e4f))),L"leaveGuild");
 
 
     return 1;
@@ -1911,11 +1910,10 @@ int CUserCommandCli::FUN_14136ca90(Unk_CommandArgs&) {
 }
 // @0x14136cb60
 int CUserCommandCli::FUN_14136cb60(Unk_CommandArgs&) {
-    if(!FUN_14162ab60(FUN_1409670d0())) {
-        CStringW message=FUN_140298ea0(CStringW(L"s_party_err_can_use_only_chief"));
-        FUN_1412751f0(message,1,1);
-    } else {
+    if(FUN_14162ab60(FUN_1409670d0())) {
         FUN_14162bdb0(FUN_1409670d0());
+    } else {
+        FUN_1412751f0(FUN_140298ea0(CStringW(L"s_party_err_can_use_only_chief")),1,1);
     }
     return 1;
 }
@@ -1953,15 +1951,15 @@ int CUserCommandCli::FUN_14136ccf0(Unk_CommandArgs&) {
 }
 // @0x14136d0a0
 int CUserCommandCli::FUN_14136d0a0(Unk_CommandArgs& args) {
-    if(args.FUN_1408d2380()==0) {
-        COutPacket packet(static_cast<int>(SendOp::SuperWorldChat),0);
-        packet.WriteUInt8(1);
-        FUN_140710590(packet);
-    } else {
+    if(args.FUN_1408d2380()>0) {
         int value=args.FUN_1408d1fd0(0,0);
         COutPacket packet(static_cast<int>(SendOp::SuperWorldChat),0);
         packet.WriteUInt8(0);
         packet.WriteInt32(value);
+        FUN_140710590(packet);
+    } else {
+        COutPacket packet(static_cast<int>(SendOp::SuperWorldChat),0);
+        packet.WriteUInt8(1);
         FUN_140710590(packet);
     }
     return 1;
@@ -1969,9 +1967,8 @@ int CUserCommandCli::FUN_14136d0a0(Unk_CommandArgs& args) {
 // @0x14136d170
 int CUserCommandCli::FUN_14136d170(Unk_CommandArgs&) {
     if(FUN_14092f660()) return 1;
-    int channel=FUN_14092f640();
-    channel=channel-1;
-    if(channel<1) {
+    int channel=FUN_14092f640()-1;
+    if(channel<=0) {
         if(FUN_1417e2610(FUN_140aa6d30())!=0x620000c) return 0;
         void* info=FUN_14136f520(0x4ef0);
         if(info==0) return 0;
@@ -1983,13 +1980,12 @@ int CUserCommandCli::FUN_14136d170(Unk_CommandArgs&) {
 // @0x14136d230
 int CUserCommandCli::FUN_14136d230(Unk_CommandArgs&) {
     if(FUN_14092f660()) return 1;
-    int channel=FUN_14092f640();
-    channel=channel+1;
-    if(channel<1) return 0;
+    int channel=FUN_14092f640()+1;
+    if(channel<=0) return 0;
     if(FUN_1417e2610(FUN_140aa6d30())!=0x620000c) return 0;
     void* info=FUN_14136f520(0x4ef0);
     if(info==0) return 0;
-    if(FUN_141ad0f80(info)<channel) channel=1;
+    if(channel>FUN_141ad0f80(info)) channel=1;
     CUserCommandCli::SendCommand(StringFormat(L"MoveChannel {0}",channel));
     return 1;
 }

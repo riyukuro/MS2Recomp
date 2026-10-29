@@ -169,8 +169,8 @@ size_t Unk_Anchor_20(std::vector<Unk_VecElem<20, 32> >& v, const Unk_VecElem<20,
 struct Unk_NpcBeam
 {
     Unk_NpcBeam();                                                                  // 0x14160bd70
-    void Set(const efd::Point3& a, const efd::Point3& b, const char* pszLabel);     // 0x14160bde0
-    void Set(const efd::Point3& a, const efd::Point3& b, float fWidth, float fScale, const char* pszLabel);     // 0x14160beb0
+    void Set(const efd::Point3& a, const efd::Point3& b, const CStringA& strLabel);     // 0x14160bde0
+    void Set(const efd::Point3& a, const efd::Point3& b, float fWidth, float fScale, const CStringA& strLabel);     // 0x14160beb0
 
     bool m_bActive;             // +0x00
     efd::Point3 m_a;            // +0x04
@@ -191,8 +191,7 @@ Unk_NpcBeam::Unk_NpcBeam()
 }
 
 // @0x14160bde0
-// MS2-FUNCTIONAL: behaviour-equivalent (temp slots differ)
-void Unk_NpcBeam::Set(const efd::Point3& a, const efd::Point3& b, const char* pszLabel)
+void Unk_NpcBeam::Set(const efd::Point3& a, const efd::Point3& b, const CStringA& strLabel)
 {
     m_f1c = 0.0f;
     m_bActive = true;
@@ -201,12 +200,11 @@ void Unk_NpcBeam::Set(const efd::Point3& a, const efd::Point3& b, const char* ps
     float fUnused = 212.132f;
     m_fLength = 150.0f / 212.132f * (a - b).Length();
     m_fWidth = 0.45f;
-    m_strLabel = pszLabel;
+    m_strLabel = strLabel;
 }
 
 // @0x14160beb0
-// MS2-FUNCTIONAL: behaviour-equivalent (temp slots differ)
-void Unk_NpcBeam::Set(const efd::Point3& a, const efd::Point3& b, float fWidth, float fScale, const char* pszLabel)
+void Unk_NpcBeam::Set(const efd::Point3& a, const efd::Point3& b, float fWidth, float fScale, const CStringA& strLabel)
 {
     m_f1c = 0.0f;
     m_bActive = true;
@@ -215,7 +213,7 @@ void Unk_NpcBeam::Set(const efd::Point3& a, const efd::Point3& b, float fWidth, 
     float fUnused = 212.132f;
     m_fLength = 150.0f / 212.132f * (a - b).Length() * fScale;
     m_fWidth = fWidth;
-    m_strLabel = pszLabel;
+    m_strLabel = strLabel;
 }
 
 // The 32-byte forwarder at 0x14160a970 is the max_size of a container whose allocator element is 48 bytes (a list node).

@@ -166,28 +166,31 @@ struct Unk_PayloadPoint {
     float values[3];
 };
 MS2_CHECK_SIZE(Unk_PayloadPoint,12);
-// MS2-FUNCTIONAL: equivalent template/guard behavior; /Od temporaries or assertion code differ.
 struct Unk_PointWriter {
     template<class T>void WritePoint(const T& point){
-        reinterpret_cast<COutputStream*>(this)->WriteFloat(point.values[0]);
-        reinterpret_cast<COutputStream*>(this)->WriteFloat(point.values[1]);
-        reinterpret_cast<COutputStream*>(this)->WriteFloat(point.values[2]);
+        reinterpret_cast<COutputStream*>(this)->WriteFloat(*(point.values+0));
+        reinterpret_cast<COutputStream*>(this)->WriteFloat(*(point.values+1));
+        reinterpret_cast<COutputStream*>(this)->WriteFloat(*(point.values+2));
     }
 };
-// MS2-FUNCTIONAL: equivalent template/guard behavior; /Od temporaries or assertion code differ.
 struct Unk_PayloadReader {
     template<class T>T ReadPoint(){
         T point;
-        point.values[0]=reinterpret_cast<CInputStream*>(reinterpret_cast<unsigned char*>(this)+8)->ReadFloat();
-        point.values[1]=reinterpret_cast<CInputStream*>(reinterpret_cast<unsigned char*>(this)+8)->ReadFloat();
-        point.values[2]=reinterpret_cast<CInputStream*>(reinterpret_cast<unsigned char*>(this)+8)->ReadFloat();
+        *(point.values+0)=reinterpret_cast<CInputStream*>(reinterpret_cast<unsigned char*>(this)+8)->ReadFloat();
+        *(point.values+1)=reinterpret_cast<CInputStream*>(reinterpret_cast<unsigned char*>(this)+8)->ReadFloat();
+        *(point.values+2)=reinterpret_cast<CInputStream*>(reinterpret_cast<unsigned char*>(this)+8)->ReadFloat();
         return point;
     }
+    // MS2-FUNCTIONAL: code is byte-identical; the exe's Replace calls use separate copies of the L"<"/L">" literals.
     template<class C>CStringW ReadMarkup(C constraint,int& valid){
         CStringW original=reinterpret_cast<CInputStream*>(reinterpret_cast<unsigned char*>(this)+8)->ReadUnicodeString();
         CStringW stripped(original);
-        int begin,end;
-        while((begin=stripped.Find(L"<",0))!=-1 && (end=stripped.Find(L">",begin+1))!=-1)stripped.Delete(begin,end-begin+1);
+        int begin=0;
+        while((begin=stripped.Find(L"<",0))!=-1) {
+            int end=stripped.Find(L">",begin+1);
+            if(end==-1)break;
+            stripped.Delete(begin,end-begin+1);
+        }
         stripped.Replace(L"&lt;",L"<");stripped.Replace(L"&gt;",L">");
         if(!constraint.Check(stripped))valid=0;
         return original;
@@ -302,15 +305,14 @@ void FUN_1401f9eb0(unsigned char* payload, void* inputPacket)
     *reinterpret_cast<unsigned int*>(payload + 8)=Unk_Read16(inputPacket,Unk_Minimum<unsigned char>(1));
 }
 
-// MS2-FUNCTIONAL: equivalent field operations; /Od temporary placement differs.
 // @0x1401f9f20
 void FUN_1401f9f20(unsigned char* payload, COutputStream& stream)
 {
     stream.WriteUInt8(*reinterpret_cast<unsigned char*>(payload + 0x18));
     stream.WriteInt16(*reinterpret_cast<short*>(payload + 0x1c));
     stream.WriteUnicodeString(reinterpret_cast<CStringW*>(payload + 0x20)->Trim());
-    stream.WriteInt32(*reinterpret_cast<int*>(payload + 0x28));
-    stream.WriteInt32(*reinterpret_cast<int*>(payload + 0x2c));
+    stream.WriteInt32(reinterpret_cast<int*>(payload + 0x28)[0]);
+    stream.WriteInt32(reinterpret_cast<int*>(payload + 0x28)[1]);
     stream.WriteInt16(static_cast<short>(reinterpret_cast<CByteBuffer*>(payload + 0x30)->GetLength()));
     stream.WriteBytes(reinterpret_cast<CByteBuffer*>(payload + 0x30)->FUN_140204eb0(),reinterpret_cast<CByteBuffer*>(payload + 0x30)->GetLength());
     stream.WriteInt32(*reinterpret_cast<int*>(payload + 0x70));
@@ -318,7 +320,6 @@ void FUN_1401f9f20(unsigned char* payload, COutputStream& stream)
 MS2_REPLACE(0x1401F9F20, FUN_1401f9f20, 345, 0x728AE70E);
 
 
-// MS2-FUNCTIONAL: recovered wire operations; expression temporaries may differ.
 // Not hooked: constructs DLL-local RTTI (directly or through validation).
 // @0x1401fa080
 void FUN_1401fa080(unsigned char* payload, void* inputPacket)
@@ -327,8 +328,8 @@ void FUN_1401fa080(unsigned char* payload, void* inputPacket)
     *reinterpret_cast<unsigned int*>(payload + 0x1c)=Unk_Read16(inputPacket,Unk_1402c4220());
     *reinterpret_cast<CStringW*>(payload + 0x20)=reinterpret_cast<Unk_PayloadReader*>(inputPacket)->ReadWide(Unk_WideRange(1,12));
     reinterpret_cast<CStringW*>(payload+0x20)->Trim();
-    *reinterpret_cast<int*>(payload + 0x28)=reinterpret_cast<CInputStream*>(static_cast<unsigned char*>(inputPacket)+8)->ReadInt32();
-    *reinterpret_cast<int*>(payload + 0x2c)=reinterpret_cast<CInputStream*>(static_cast<unsigned char*>(inputPacket)+8)->ReadInt32();
+    reinterpret_cast<int*>(payload + 0x28)[0]=reinterpret_cast<CInputStream*>(static_cast<unsigned char*>(inputPacket)+8)->ReadInt32();
+    reinterpret_cast<int*>(payload + 0x28)[1]=reinterpret_cast<CInputStream*>(static_cast<unsigned char*>(inputPacket)+8)->ReadInt32();
     unsigned int count=static_cast<unsigned short>(reinterpret_cast<CInputStream*>(static_cast<unsigned char*>(inputPacket)+8)->ReadInt16());
     reinterpret_cast<CByteBuffer*>(payload+0x30)->FUN_140204670(count);
     reinterpret_cast<CInputStream*>(static_cast<unsigned char*>(inputPacket)+8)->ReadBytes(reinterpret_cast<CByteBuffer*>(payload+0x30)->FUN_140204eb0(),count);
@@ -447,7 +448,7 @@ void FUN_1401fa700(unsigned char* payload, COutputStream& stream)
 MS2_REPLACE(0x1401FA700, FUN_1401fa700, 144, 0x8BFAAA30);
 
 
-// MS2-FUNCTIONAL: recovered wire operations; expression temporaries may differ.
+struct Unk_MarkupValid {int valid;};
 // Not hooked: constructs DLL-local RTTI (directly or through validation).
 // @0x1401fa7a0
 void FUN_1401fa7a0(unsigned char* payload, void* inputPacket)
@@ -455,7 +456,7 @@ void FUN_1401fa7a0(unsigned char* payload, void* inputPacket)
     *reinterpret_cast<unsigned int*>(payload + 4)=Unk_Read32(inputPacket,Unk_140203550<unsigned int>(0,26));
     int limit=reinterpret_cast<Unk_PayloadConstant<int>*>(static_cast<unsigned char*>(FUN_1401d3200())+0x8898)->Get();
     if(*reinterpret_cast<int*>(payload + 4)==7)limit=512;
-    *reinterpret_cast<CStringW*>(payload + 8)=reinterpret_cast<Unk_PayloadReader*>(inputPacket)->ReadMarkup(Unk_WideMaximum(limit),*reinterpret_cast<int*>(payload + 0));
+    *reinterpret_cast<CStringW*>(payload + 8)=reinterpret_cast<Unk_PayloadReader*>(inputPacket)->ReadMarkup(Unk_WideMaximum(limit),reinterpret_cast<Unk_MarkupValid*>(payload)->valid);
     *reinterpret_cast<CStringW*>(payload + 16)=reinterpret_cast<Unk_PayloadReader*>(inputPacket)->ReadWide(Unk_WideMaximum(24));
     *reinterpret_cast<__int64*>(payload + 24)=reinterpret_cast<CInputStream*>(static_cast<unsigned char*>(inputPacket)+8)->ReadInt64();
 }
@@ -491,49 +492,44 @@ void FUN_1401faa70(unsigned char* payload, void* inputPacket)
     *reinterpret_cast<CStringW*>(payload + 24)=reinterpret_cast<CInputStream*>(static_cast<unsigned char*>(inputPacket)+8)->ReadUnicodeString();
 }
 
-// MS2-FUNCTIONAL: recovered packet operations; compiler temporaries may differ.
 // @0x1401fac20
 void CCCreateItemPacket::vfunc_0(COutputStream& stream)
 {
     stream.WriteInt32(a);stream.WriteInt32(b);stream.WriteUInt8(static_cast<unsigned char>(c));
     stream.WriteInt32(d);stream.WriteInt32(e);stream.WriteInt32(f);
-    if(g<0){stream.WriteUInt8(0);stream.WriteUInt8(0);}
-    else{stream.WriteUInt8(1);stream.WriteUInt8(static_cast<unsigned char>(g));}
+    bool present=g>=0;
+    if(present){stream.WriteUInt8(1);stream.WriteUInt8(static_cast<unsigned char>(g));}
+    else{stream.WriteUInt8(0);stream.WriteUInt8(0);}
     stream.WriteInt32(h);stream.WriteInt32(i);stream.WriteInt32(j);
     for(unsigned int index=0;index<5;++index) {
         stream.WriteUInt8(static_cast<unsigned char>(optionsA[index].GetCount()));
-        POSITION pos=optionsA[index].GetStartPosition();
-        while(pos){
+        for(POSITION pos=optionsA[index].GetStartPosition();pos;optionsA[index].GetNext(pos)){
             Unk_PacketOptionA key=optionsA[index].GetKeyAt(pos);
             Unk_PayloadPtr<BaseOption> option=optionsA[index].GetValueAt(pos);
             stream.WriteInt32(key);
             option->FUN_140266d20(reinterpret_cast<Unk_EnchantWrite&>(stream));
-            optionsA[index].GetNext(pos);
         }
         stream.WriteUInt8(static_cast<unsigned char>(optionsB[index].GetCount()));
-        POSITION second=optionsB[index].GetStartPosition();
-        while(second){
+        for(POSITION second=optionsB[index].GetStartPosition();second;optionsB[index].GetNext(second)){
             Unk_PacketOptionB key=optionsB[index].GetKeyAt(second);
             Unk_PayloadPtr<BaseOption> option=optionsB[index].GetValueAt(second);
             stream.WriteInt32(key);
             option->FUN_140266d20(reinterpret_cast<Unk_EnchantWrite&>(stream));
-            optionsB[index].GetNext(second);
         }
     }
 }
 MS2_REPLACE_METHOD(0x1401FAC20, CCCreateItemPacket, vfunc_0, 1145, 0xE8B97735);
 
-// MS2-FUNCTIONAL: recovered packet operations; compiler temporaries may differ.
 // @0x1401fb0a0
 void CCCreateItemPacket::vfunc_1(void* packet)
 {
     a=reinterpret_cast<CInputStream*>(static_cast<unsigned char*>(packet)+8)->ReadInt32();b=reinterpret_cast<CInputStream*>(static_cast<unsigned char*>(packet)+8)->ReadInt32();c=reinterpret_cast<CInputStream*>(static_cast<unsigned char*>(packet)+8)->ReadUInt8();
     d=reinterpret_cast<CInputStream*>(static_cast<unsigned char*>(packet)+8)->ReadInt32();e=reinterpret_cast<CInputStream*>(static_cast<unsigned char*>(packet)+8)->ReadInt32();f=reinterpret_cast<CInputStream*>(static_cast<unsigned char*>(packet)+8)->ReadInt32();
-    unsigned char present=reinterpret_cast<CInputStream*>(static_cast<unsigned char*>(packet)+8)->ReadUInt8();
+    bool present=reinterpret_cast<CInputStream*>(static_cast<unsigned char*>(packet)+8)->ReadUInt8()==1?true:false;
     g=reinterpret_cast<CInputStream*>(static_cast<unsigned char*>(packet)+8)->ReadUInt8();h=reinterpret_cast<CInputStream*>(static_cast<unsigned char*>(packet)+8)->ReadInt32();i=reinterpret_cast<CInputStream*>(static_cast<unsigned char*>(packet)+8)->ReadInt32();j=reinterpret_cast<CInputStream*>(static_cast<unsigned char*>(packet)+8)->ReadInt32();
-    if(present!=1)g=-1;
+    if(!present)g=-1;
     for(unsigned int index=0;index<5;++index) {
-        unsigned char count=reinterpret_cast<CInputStream*>(static_cast<unsigned char*>(packet)+8)->ReadUInt8();
+        unsigned int count=reinterpret_cast<CInputStream*>(static_cast<unsigned char*>(packet)+8)->ReadUInt8();
         for(unsigned int n=0;n<count;++n){
             Unk_PacketOptionA key=static_cast<Unk_PacketOptionA>(reinterpret_cast<CInputStream*>(static_cast<unsigned char*>(packet)+8)->ReadInt32());
             Unk_PayloadPtr<BaseOption> option=new BaseOption;
@@ -805,13 +801,12 @@ void FUN_1401fc2a0(unsigned char* payload, COutputStream& stream)
 }
 MS2_REPLACE(0x1401FC2A0, FUN_1401fc2a0, 138, 0xA4E31CE0);
 
-// MS2-FUNCTIONAL: recovered wire operations; expression temporaries may differ.
 // Not hooked: constructs DLL-local RTTI (directly or through validation).
 // @0x1401fc330
 void FUN_1401fc330(unsigned char* payload, void* inputPacket)
 {
     reinterpret_cast<Unk_WidePayload*>(payload)->text=reinterpret_cast<Unk_PayloadReader*>(inputPacket)->ReadWide(Unk_WideMaximum(24));
-    reinterpret_cast<CStringW*>(payload)->Trim();
+    reinterpret_cast<Unk_WidePayload*>(payload)->text.Trim();
     *reinterpret_cast<CStringW*>(payload + 8)=reinterpret_cast<Unk_PayloadReader*>(inputPacket)->ReadWide(Unk_WideMaximum(100));
     *reinterpret_cast<CStringW*>(payload + 16)=reinterpret_cast<Unk_PayloadReader*>(inputPacket)->ReadWide(Unk_WideMaximum(2000));
 }
@@ -984,21 +979,18 @@ Unk_PayloadPtr<CItem> Unk_PayloadItemWire::FUN_1401fce40(CInputStream& stream)
 }
 MS2_REPLACE_METHOD(0x1401FCE40, Unk_PayloadItemWire, FUN_1401fce40, 68, 0xA85E3908);
 
-// MS2-FUNCTIONAL: recovered item serialization and ownership; compiler temporaries may differ.
 // @0x1401fce90
 void Unk_PayloadItemWire::FUN_1401fce90(COutputStream& stream,Unk_PayloadPtr<CItem> item)
 {
-    if(!(item==static_cast<CItem*>(0))){
-        stream.WriteUInt8(item->FUN_140526b50());
-        stream.WriteInt32(item->FUN_1405276c0());
-        stream.WriteInt64(item->FUN_140526a50());
-        stream.WriteInt32(item->FUN_140526bd0());
-        item->FUN_140524ad0(stream);
-    }
+    if(item==static_cast<CItem*>(0))return;
+    stream.WriteUInt8(item->FUN_140526b50());
+    stream.WriteInt32(item->FUN_1405276c0());
+    stream.WriteInt64(item->FUN_140526a50());
+    stream.WriteInt32(item->FUN_140526bd0());
+    item->FUN_140524ad0(stream);
 }
 MS2_REPLACE_METHOD(0x1401FCE90, Unk_PayloadItemWire, FUN_1401fce90, 287, 0x518F52E0);
 
-// MS2-FUNCTIONAL: recovered item serialization and ownership; compiler temporaries may differ.
 // @0x1401fcfc0
 Unk_PayloadPtr<CItem> Unk_PayloadItemWire::FUN_1401fcfc0(CInputStream& stream)
 {
@@ -1007,7 +999,8 @@ Unk_PayloadPtr<CItem> Unk_PayloadItemWire::FUN_1401fcfc0(CInputStream& stream)
     __int64 id=stream.ReadInt64();
     int value=stream.ReadInt32();
     Unk_PayloadPtr<CItem> item=new CItem;
-    if(!item->FUN_140523c40(type,value,0))return Unk_PayloadPtr<CItem>(0);
+    int ok=item->FUN_140523c40(type,value,0);
+    if(!ok)return Unk_PayloadPtr<CItem>(0);
     item->FUN_140524eb0(stream);
     item->FUN_140526b70(state);
     item->FUN_140526a70(id);
@@ -1244,13 +1237,12 @@ void CMeratMarketPacket::UgcAddProductBase::vfunc_1(COutputStream& stream)
 }
 MS2_REPLACE_METHOD(0x1401FE3D0, CMeratMarketPacket::UgcAddProductBase, vfunc_1, 198, 0xCFAAA1DA);
 
-// MS2-FUNCTIONAL: recovered packet operations; compiler temporaries may differ.
 // Not hooked: constructs DLL-local RTTI (directly or through validation).
 #ifndef MS2_HOOK_DLL
 // @0x1401fe4a0
 void CMeratMarketPacket::UgcAddProductBase::vfunc_2(void* packet)
 {
-    id=reinterpret_cast<CInputStream*>(static_cast<unsigned char*>(packet)+8)->ReadInt64();enabled=reinterpret_cast<CInputStream*>(static_cast<unsigned char*>(packet)+8)->ReadUInt8()==1;
+    id=reinterpret_cast<CInputStream*>(static_cast<unsigned char*>(packet)+8)->ReadInt64();enabled=reinterpret_cast<CInputStream*>(static_cast<unsigned char*>(packet)+8)->ReadUInt8()==1?true:false;
     name=reinterpret_cast<Unk_PayloadReader*>(packet)->ReadWide(Unk_NarrowLimit(500));
     description=reinterpret_cast<Unk_PayloadReader*>(packet)->ReadWide(Unk_NarrowLimit(200));
     price=reinterpret_cast<CInputStream*>(static_cast<unsigned char*>(packet)+8)->ReadInt64();
@@ -1534,28 +1526,24 @@ Unk_PetOptions::Unk_PetOptions():map(17,0.75f,0.25f,2.25f,10)
 
 }
 
-// MS2-FUNCTIONAL: recovered member operations; compiler temporaries may differ.
 // @0x1401ff3f0
 void Unk_PetOptions::FUN_1401ff3f0(COutputStream& stream)
 {
     stream.WriteUInt8(static_cast<unsigned char>(map.GetCount()));
-    POSITION pos=map.GetStartPosition();
-    while(pos) {
+    for(POSITION pos=map.GetStartPosition();pos;map.GetNext(pos)) {
         const Unk_PetOption& option=map.GetValueAt(pos);
         stream.WriteInt32(option.type);
         stream.WriteFloat(option.value);
         stream.WriteInt32(option.enabled);
-        map.GetNext(pos);
     }
 }
 MS2_REPLACE_METHOD(0x1401FF3F0, Unk_PetOptions, FUN_1401ff3f0, 205, 0x2FC926D7);
 
-// MS2-FUNCTIONAL: recovered member operations; compiler temporaries may differ.
 // @0x1401ff4d0
 void Unk_PetOptions::FUN_1401ff4d0(void* packet)
 {
     map.RemoveAll();
-    unsigned char count=reinterpret_cast<CInputStream*>(static_cast<unsigned char*>(packet)+8)->ReadUInt8();
+    unsigned int count=reinterpret_cast<CInputStream*>(static_cast<unsigned char*>(packet)+8)->ReadUInt8();
     for(unsigned int index=0;index<count;++index) {
         Unk_PetOption option;
         option.type=reinterpret_cast<CInputStream*>(static_cast<unsigned char*>(packet)+8)->ReadInt32();
@@ -1724,11 +1712,10 @@ void CCItemColoringPacket::ChangeColorItem::FUN_1402000a0(COutputStream& stream)
 }
 MS2_REPLACE_METHOD(0x1402000A0, CCItemColoringPacket::ChangeColorItem, FUN_1402000a0, 257, 0x40602DCA);
 
-// MS2-FUNCTIONAL: recovered packet operations; compiler temporaries may differ.
 // @0x1402001b0
 void CCItemColoringPacket::ChangeColorItem::FUN_1402001b0(void* packet)
 {
-    flag18=reinterpret_cast<CInputStream*>(static_cast<unsigned char*>(packet)+8)->ReadUInt8()==1;flag19=reinterpret_cast<CInputStream*>(static_cast<unsigned char*>(packet)+8)->ReadUInt8()==1;flag1a=reinterpret_cast<CInputStream*>(static_cast<unsigned char*>(packet)+8)->ReadUInt8()==1;
+    flag18=reinterpret_cast<CInputStream*>(static_cast<unsigned char*>(packet)+8)->ReadUInt8()==1?true:false;flag19=reinterpret_cast<CInputStream*>(static_cast<unsigned char*>(packet)+8)->ReadUInt8()==1?true:false;flag1a=reinterpret_cast<CInputStream*>(static_cast<unsigned char*>(packet)+8)->ReadUInt8()==1?true:false;
     value1c=reinterpret_cast<CInputStream*>(static_cast<unsigned char*>(packet)+8)->ReadInt32();value20=reinterpret_cast<CInputStream*>(static_cast<unsigned char*>(packet)+8)->ReadInt64();value28=reinterpret_cast<CInputStream*>(static_cast<unsigned char*>(packet)+8)->ReadInt64();type=reinterpret_cast<CInputStream*>(static_cast<unsigned char*>(packet)+8)->ReadInt32();
     Unk_PayloadPtr<Unk_ItemFactory> factory=FUN_14053f870(type);
     if(factory.get()!=0){
@@ -1747,11 +1734,10 @@ void CCItemColoringPacket::ChangeColorItem::FUN_140200480(COutputStream& stream)
 }
 MS2_REPLACE_METHOD(0x140200480, CCItemColoringPacket::ChangeColorItem, FUN_140200480, 257, 0x12460D4A);
 
-// MS2-FUNCTIONAL: recovered packet operations; compiler temporaries may differ.
 // @0x140200590
 void CCItemColoringPacket::ChangeColorItem::FUN_140200590(CInputStream& stream)
 {
-    flag18=(&stream)->ReadUInt8()==1;flag19=(&stream)->ReadUInt8()==1;flag1a=(&stream)->ReadUInt8()==1;
+    flag18=(&stream)->ReadUInt8()==1?true:false;flag19=(&stream)->ReadUInt8()==1?true:false;flag1a=(&stream)->ReadUInt8()==1?true:false;
     value1c=(&stream)->ReadInt32();value20=(&stream)->ReadInt64();value28=(&stream)->ReadInt64();type=(&stream)->ReadInt32();
     Unk_PayloadPtr<Unk_ItemFactory> factory=FUN_14053f870(type);
     if(factory.get()!=0){
@@ -1761,7 +1747,6 @@ void CCItemColoringPacket::ChangeColorItem::FUN_140200590(CInputStream& stream)
 }
 MS2_REPLACE_METHOD(0x140200590, CCItemColoringPacket::ChangeColorItem, FUN_140200590, 536, 0x26AAB6C2);
 
-// MS2-FUNCTIONAL: recovered packet operations; compiler temporaries may differ.
 // @0x1402007b0
 void CCItemColoringPacket::ChangeColorItem::FUN_1402007b0(const ChangeColorItem& other)
 {
@@ -1769,12 +1754,11 @@ void CCItemColoringPacket::ChangeColorItem::FUN_1402007b0(const ChangeColorItem&
     value1c=other.value1c;value20=other.value20;value28=other.value28;type=other.type;
     Unk_PayloadPtr<Unk_ItemFactory> factory=FUN_14053f870(type);
     if(factory.get()!=0){
-        if((extra=factory->FUN_14053e6c0()).get()!=0)extra->vfunc_3(other.extra.get());
+        if((extra=factory->FUN_14053e6c0()).get())extra->vfunc_3(other.extra.get());
     }
 }
 MS2_REPLACE_METHOD(0x1402007B0, CCItemColoringPacket::ChangeColorItem, FUN_1402007b0, 409, 0xF37BFA3C);
 
-// MS2-FUNCTIONAL: recovered packet operations; compiler temporaries may differ.
 // @0x140200950
 void Unk_ColorItems::FUN_140200950(COutputStream& stream)
 {
@@ -1782,20 +1766,20 @@ void Unk_ColorItems::FUN_140200950(COutputStream& stream)
     stream.WriteUInt8(static_cast<unsigned char>(count));
     for(size_t index=0;index<count;++index){
         Unk_PayloadPtr<CCItemColoringPacket::ChangeColorItem> item=items[index];
-        if(item.get()==0)stream.WriteUInt8(0);
-        else{stream.WriteUInt8(1);item->FUN_1402000a0(stream);}
+        if(item.get()){stream.WriteUInt8(1);item->FUN_1402000a0(stream);}
+        else stream.WriteUInt8(0);
     }
 }
 MS2_REPLACE_METHOD(0x140200950, Unk_ColorItems, FUN_140200950, 239, 0xEB372E91);
 
-// MS2-FUNCTIONAL: recovered packet operations; compiler temporaries may differ.
 // Not hooked: constructs DLL-local RTTI (directly or through validation).
 // @0x140200a50
 void Unk_ColorItems::FUN_140200a50(void* packet)
 {
-    unsigned char count=reinterpret_cast<CInputStream*>(static_cast<unsigned char*>(packet)+8)->ReadUInt8();
+    size_t count=reinterpret_cast<CInputStream*>(static_cast<unsigned char*>(packet)+8)->ReadUInt8();
     for(size_t index=0;index<count;++index){
-        if(reinterpret_cast<CInputStream*>(static_cast<unsigned char*>(packet)+8)->ReadUInt8()==1){
+        unsigned char flag=reinterpret_cast<CInputStream*>(static_cast<unsigned char*>(packet)+8)->ReadUInt8();
+        if(flag==1){
             Unk_PayloadPtr<CCItemColoringPacket::ChangeColorItem> item=new CCItemColoringPacket::ChangeColorItem;
             item->FUN_1402001b0(packet);
             FUN_140200bc0(item);
@@ -2159,34 +2143,20 @@ inline Unk_PetIdentity::~Unk_PetIdentity()
 
 }
 
-// MS2-FUNCTIONAL: recovered packet operations; compiler temporaries may differ.
-// @0x140203ac0
-inline CCItemColoringPacket::ChangeColorItem::~ChangeColorItem()
-{
-
-}
-
-// MS2-FUNCTIONAL: recovered member operations; compiler temporaries may differ.
-// @0x140203b10
-inline CCPetInfoPacket::Info::~Info()
-{
-
-}
-
 // @0x140203b50
 inline Unk_PetOptions::~Unk_PetOptions()
 {
 
 }
 
-// MS2-FUNCTIONAL: equivalent buffer growth; /Od local placement differs.
 // @0x140204670
 inline void CByteBuffer::FUN_140204670(int count) {
-    unsigned required=m_uOffset+count;
-    if(m_aByteBuff.GetCount()<required) {
+    unsigned neededBufferSize=m_uOffset+count;
+    (void)((!!(neededBufferSize <= UINT_MAX)) || (_wassert(L"neededBufferSize <= UINT_MAX",L"e:\\build\\kr\\22_04\\ms2code\\commonfiles\\stream.h",707),0));
+    if((size_t)neededBufferSize>m_aByteBuff.GetCount()) {
         size_t capacity=m_aByteBuff.GetCount();
-        do {capacity<<=1;} while(capacity<required);
-        m_aByteBuff.SetCount(capacity);
+        do {capacity<<=1;} while(neededBufferSize>capacity);
+        m_aByteBuff.SetCount(capacity,-1);
     }
     m_uLength+=count;
 }

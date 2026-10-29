@@ -74,7 +74,7 @@ public:
     void FUN_140aed720(Unk_LsCamArg& arg);
     void FUN_140aed750(int a, int b);
 };
-class Unk_LsWindow { public: int FUN_141b712e0(); };
+class Unk_LsWindow { public: static int FUN_141b712e0(); };
 class Unk_LsHud1 { public: void FUN_140ae5190(); };
 class Unk_LsHud2 { public: void FUN_140a2f700(); };
 class Unk_LsHud3 { public: void FUN_140a47940(); };
@@ -258,7 +258,6 @@ void UISceneLobby::vfunc_49(int n)
 }
 MS2_REPLACE_METHOD(0x141ACDC20, UISceneLobby, vfunc_49, 63, 0x0F698270);
 
-// MS2-FUNCTIONAL: the exe keeps the region test in a bool temp (frame 0x38 vs 0x48); no source form found
 // @0x141acdc70
 int UISceneLobby::vfunc_13()
 {
@@ -274,12 +273,14 @@ int UISceneLobby::vfunc_13()
             if (FUN_14025e7c0()->FUN_14116d9c0(0x16, 1, 0)) {
                 if (FUN_14025e7c0()->FUN_14116d950(0x38, 1, 0)) {
                     if (FUN_140aadf80() != 0) {
-                        int n = FUN_140aadf80()->FUN_141b712e0();
-                        FUN_141b91b20(n == 1);
+                        FUN_141b91b20(FUN_140aadf80()->FUN_141b712e0() == 1);
                     }
                     return 1;
                 }
-                if (DAT_143ab0248 != 2 || DAT_143ab2914 >= 0x34) FUN_1403ed2b0()->FUN_141adbb40();
+                bool bOpen = true;
+                if (DAT_143ab0248 == 2)
+                    bOpen = DAT_143ab2914 >= 0x34;
+                if (bOpen) FUN_1403ed2b0()->FUN_141adbb40();
                 return 1;
             }
         }

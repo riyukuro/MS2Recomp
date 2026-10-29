@@ -26,7 +26,7 @@ Outputs (committed):
   progress/summary.txt   per unit and overall: functions and bytes matched
 Cache: build/progress/ (objs, /showIncludes deps, per-unit results keyed by obj mtime).
 
-Engine stage (tools/gbprogress.py): the Gamebryo TUs of engine/units-gb.json are compiled into <cache>/gb/ (same
+Engine stage (tools/gbprogress.py): the Gamebryo TUs of data/engine/units-gb.json are compiled into <cache>/gb/ (same
 incremental rules) and paired by symbol name / unique masked bytes; every engine-band function they byte-match (or pair)
 becomes a status.tsv row with unit gb:<Lib>/<TU> (state matched | functional, plus stub gap-fills), summarised at the
 end of summary.txt. Engine functions never enter the hook DLL. Runs with every full pass; `--engine` forces it when
@@ -65,7 +65,6 @@ import gbprogress  # noqa: E402
 import importthunks  # noqa: E402  (imports stage: linker import thunks)
 import datacheck  # noqa: E402  (data units: globals of ranges outside .text)
 import ms2flags  # noqa: E402  (`// MS2-FLAGS: <profile>` per-unit flags, cmake/ms2-unit-profiles.cmake)
-import sf_sdk_guard  # noqa: E402  (MS2-FLAGS: scaleform units must not include SDK headers)
 import mergekey  # noqa: E402
 
 SRC = os.path.join(ROOT, "src")
@@ -117,35 +116,26 @@ def engine_flags():
         for n in ("XInput.h", "xinput.h"):
             if not os.path.lexists(os.path.join(pref, n)):
                 ms2paths.link_or_copy(os.path.join(dx, "XInput.h"), os.path.join(pref, n))
-    return (["/I" + pref] + ["/I" + os.path.join(eng, d) for d in listing("MS2_ENGINE_INCLUDE_DIRS")] + ["/I" + over]
-            + ["/D" + d for d in listing("MS2_ENGINE_DEFINITIONS")])
+
+    def inc(d):
+        """an include dir of the cmake list (relative to engine/gamebryo); its ../../third_party and ../../src dirs follow
+        MS2_THIRD_PARTY and the checkout when the engine is elsewhere (the in-tree spelling stays, so do the cache keys)"""
+        p = os.path.join(eng, d)
+        for pre, base in (("../../third_party/", ms2paths.THIRD_PARTY), ("../../src/", SRC)):
+            if d.startswith(pre) and os.path.normpath(p) != os.path.normpath(os.path.join(base, d[len(pre):])):
+                return os.path.join(base, d[len(pre):])
+        return p
+    return (["/I" + pref] + ["/I" + inc(d) for d in listing("MS2_ENGINE_INCLUDE_DIRS")] + ["/I" + over]
+            + ["/D" + d for d in listing("MS2_ENGINE_DEFINITIONS")]), ["/I" + inc(d) for d in listing("MS2_THIRD_PARTY_INCLUDE_DIRS")]
 
 
-GAME_FLAGS += engine_flags()
-
-
-def scaleform_flags():
-    """Scaleform SDK includes/defines (cmake/ms2-scaleform-sdk.cmake: same default path, same lists). Off when the SDK dir is
-    absent or MS2_SCALEFORM_SDK is set empty in the environment; then gfxvalue.h uses its placeholders."""
-    sdk = os.environ.get("MS2_SCALEFORM_SDK", ms2paths.SCALEFORM_SDK)
-    if not sdk or not os.path.isdir(sdk):
-        return []
-    txt = open(os.path.join(ROOT, "cmake", "ms2-scaleform-sdk.cmake")).read()
-
-    def listing(name):
-        return re.findall(r'"([^"]+)"', re.search(r"set\(" + name + r"\n(.*?)\n\)", txt, re.S).group(1))
-    # Scaleform 4.1.18 compatibility headers (GFx_Player.h, GFx_Loader.h, GFxConfig.h) generated from the SDK by
-    # tools/sf418_headers.py, searched before the SDK; cmake runs the same script. /DMS2_SF418=<id of the generated
-    # text> makes FLAGS_KEY (and cmake's flags) change with them, since SDK headers are not in the deps lists.
-    sf418 = os.path.join(ROOT, "build", "ms2-sf418")
-    import sf418_headers
-    sf418_id = sf418_headers.generate(sdk, sf418)
-    return (["/I" + sf418] + ["/I" + os.path.join(sdk, d) for d in listing("MS2_SCALEFORM_INCLUDE_DIRS")]
-            + ["/D" + d for d in listing("MS2_SCALEFORM_DEFINITIONS")] + ["/DMS2_SF418=" + sf418_id])
-
-
-GAME_FLAGS += scaleform_flags()
+_engine_flags, THIRD_PARTY_INCS = engine_flags()
+GAME_FLAGS += _engine_flags
 FLAGS_KEY = " ".join(GAME_FLAGS) + " v3"
+# MS2_THIRD_PARTY_INCLUDE_DIRS go last and stay out of FLAGS_KEY: searched after every other dir, they cannot change how an
+# include that already resolves is found, and their roots (MS2_THIRD_PARTY) are in the key through the PhysX dirs; the units
+# that use them see the change through their deps
+GAME_FLAGS += THIRD_PARTY_INCS
 import ms2pch  # noqa: E402  (opt-in MS2_PCH=1)
 if ms2pch.enabled():
     FLAGS_KEY += " pch1"
@@ -350,24 +340,15 @@ def compile_unit(u):
     cmd = ms2paths.cl_cmdline([CL] + flags + pch + ["/showIncludes", "/Fo" + u.obj, u.path])
     t0 = time.time()
     r = subprocess.run(cmd, capture_output=True, text=True, env=env, encoding="latin1")
-    deps, msgs, included = [], [], []
+    deps, msgs = [], []
     for line in (r.stdout + r.stderr).splitlines():
         if line.startswith("Note: including file:"):
             f = unixpath(line.split(":", 2)[2])
-            included.append(f)
             if ms2paths.under(f, SRC) or ms2paths.under(f, ms2paths.ENGINE_DIR):
                 deps.append(f)
         elif line.strip() and line.strip() != os.path.basename(u.path) and "_WIN32_WINNT not defined" not in line:
             msgs.append(line)
     ok = r.returncode == 0 and os.path.exists(u.obj)
-    if ok and u.profile == "scaleform":
-        # the recovered Scaleform builds without the SDK (tools/sf_sdk_guard.py, docs/RECOVERY.md section 2)
-        bad = ["%s: opens SDK header %s" % (u.rel, f) for f in sf_sdk_guard.sdk_includes(included)]
-        for f in [u.path] + [d for d in deps if ms2paths.under(d, sf_sdk_guard.SF_SRC)]:
-            bad += ["%s:%d: SDK include %s" % (os.path.relpath(f, ROOT), n, name) for n, name in sf_sdk_guard.scan_file(f)]
-        if bad:
-            msgs += ["sf_sdk_guard: " + b for b in sorted(set(bad))]
-            ok = False
     if ok and pch:
         deps.append(os.path.join(SRC, ms2pch.HDR))
     if ok:
@@ -1478,16 +1459,17 @@ def main():
             t[k] += v
         t["bm"] += bmt
         t["bf"] += bft
-    # engine stage: Gamebryo TUs of engine/units-gb.json (tools/gbprogress.py; own cache, no MS2-UNIT/queue rows, no
+    # engine stage: Gamebryo TUs of data/engine/units-gb.json (tools/gbprogress.py; own cache, no MS2-UNIT/queue rows, no
     # symbols harvested). Its rows only cover VAs outside the game units; game rows and totals are unaffected.
     eng_rows = []
+    eng_failed = set()
     if not os.path.exists(gbprogress.gbtree.UNITS_JSON) and not a.filters and not a.no_engine:
-        # merge 12 ran from a snapshot older than engine/units-gb.json and silently wrote a game-only status.tsv
+        # merge 12 ran from a snapshot older than data/engine/units-gb.json and silently wrote a game-only status.tsv
         sys.exit(f"progress.py: {gbprogress.gbtree.UNITS_JSON} missing: refusing to write a status.tsv without engine rows "
                  "(snapshot older than the engine stage? pass --no-engine to skip deliberately)")
     if os.path.exists(gbprogress.gbtree.UNITS_JSON):
         if (a.engine or not a.filters) and not a.no_engine:
-            eng_res, _ = gbprogress.run(CACHE, max(1, a.j), log=lambda m: print(m, flush=True))
+            eng_res, eng_failed = gbprogress.run(CACHE, max(1, a.j), log=lambda m: print(m, flush=True))
         else:
             eng_res = gbprogress.load_results(CACHE)
         eng_rows = gbprogress.credit(eng_res, {r[0] for r in rows})
@@ -1508,6 +1490,17 @@ def main():
         fo.write("#va\tname\tunit\tstate\tsize\n")
         for va, nm, un, st, sz in rows:
             fo.write(f"{va:x}\t{nm}\t{un}\t{st}\t{sz}\n")
+    # units without an obj after this run (compile failed, or the obj is missing): the full exe links without them, so
+    # what they define becomes trap stubs (tools/fullexe/compilecheck.py fails the fullexe build on these). Agent/report
+    # caches only: progress/ holds committed tables.
+    if os.path.realpath(OUT) != os.path.realpath(os.path.join(ROOT, "progress")):
+        with open(os.path.join(OUT, "compile-failed.tsv"), "w") as fo:
+            fo.write("#kind\tunit\n")
+            for u in units:
+                if (cache.get(u.rel) or {}).get("failed"):
+                    fo.write(f"game\t{u.rel}\n")
+            for n in sorted(eng_failed):
+                fo.write(f"engine\t{n}\n")
 
     # data units (tools/datacheck.py): one row per global (aliases included), separate from the function rows
     with open(os.path.join(OUT, "data-status.tsv"), "w") as fo:

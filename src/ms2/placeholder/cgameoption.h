@@ -39,7 +39,9 @@ MS2_CHECK_SIZE(Unk_GoConnect, 0x58);
 struct Unk_GoAutoLoot { int m_n[5]; };                              // 0x14 bytes (ctor 0x141260ea0)
 // +0x10 / +0x18: the server times of the item box "do not ask again" check boxes (open confirm / currency overflow);
 // the reset 0x141261780 stores qwords there (unit_140d1ae30 reads and writes them).
-struct Unk_GoEtc { int m_n00; int m_n04; __int64 m_n08; __int64 m_n10Time; __int64 m_n18Time; int m_n20[6]; };   // 0x38 bytes (ctor 0x141261750)
+struct Unk_GoEtc { int m_n00; int m_n04; __int64 m_n08; __int64 m_n10Time; __int64 m_n18Time;
+                   int m_n20; int m_n24; int m_n28; int m_n2c; int m_n30; int m_n34; };   // 0x38 bytes (ctor 0x141261750)
+// +0x24 / +0x28: the smart push auto fishing / auto instrument package, +0x2c: the auto fishing price state.
 struct Unk_GoChroma { union { int m_n; bool m_bDisable; }; };     // 4 bytes (ctor 0x141261670); "chroma" "disable" (byte read by ChromaManagerDummy::Initialize)
 
 class CGameOption : public TSingleton<CGameOption>
@@ -48,9 +50,9 @@ public:
     CGameOption();                                          // 0x141241810
     virtual ~CGameOption();                                 // 0x141241aa0 (deleting dtor 0x141245a10)
     CString GetOptionFilePath(int nKind, bool bDefault);        // XML path: kind 0 GameOption, 1 AccountOption, 2 CharacterOption
-    void LoadGameOption();                                   // load GameOption.xml into the tab blocks
-    void LoadAccountOption();                                  // load AccountOption.xml
-    void LoadCharacterOption();                                  // load CharacterOption.xml
+    int LoadGameOption();                                    // load GameOption.xml into the tab blocks
+    int LoadAccountOption();                                   // load AccountOption.xml
+    int LoadCharacterOption();                                   // load CharacterOption.xml
     int FUN_141242f60();                                    // load the language block
     void FUN_1412432d0();                                   // save GameOption.xml / AccountOption.xml
     void FUN_141243450();                                   // reset the document roots of game and account options

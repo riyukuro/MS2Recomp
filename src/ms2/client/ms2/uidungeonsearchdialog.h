@@ -30,7 +30,6 @@ class UIDungeonSearchPage : public CPtred
 {
 public:
     explicit UIDungeonSearchPage(int nPage);                                    // 0x140e186e0
-    virtual ~UIDungeonSearchPage();                                             // 0x140e1ee20
     bool Init(MS2Ptr<ASMovieClip> root);                                        // 0x140e18790
     void FUN_140e18f30();                                                       // releases the bound clips
     void FUN_140e18f90();                                                       // title and progress icon

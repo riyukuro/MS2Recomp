@@ -36,7 +36,7 @@ public:
     {
     public:
         RecommendContnets();                // 0x140f8a590
-        virtual ~RecommendContnets();       // 0x140f8a790 (??_G 0x140f8a940)
+        // implicit virtual dtor 0x140f8a790 (??_G 0x140f8a940)
 
         int m_id;                           // +0x18 "id"
         int m_code;                         // +0x1c "code"

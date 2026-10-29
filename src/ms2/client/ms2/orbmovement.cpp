@@ -10,6 +10,8 @@
 #include <NiQuaternion.h>
 #include "ms2/ms2recover.h"
 
+float FUN_14059d930(float f);                                   // fabsf
+
 // @0x1416252b0
 INodeMovement::INodeMovement() : CPtred()
 {
@@ -79,7 +81,6 @@ NiTransform COrbMovement::vfunc_2(double dTime, const NiTransform& kTarget)
 }
 
 // @0x1416256f0
-// MS2-FUNCTIONAL: byte-identical except the neg-quaternion temp sits at [rsp+0x4c] in the exe, [rsp+0x50] here (temp slot order)
 void INodeMovement::FUN_1416256f0(float fT, const NiTransform& kFrom, const NiTransform& kTo, NiTransform& kOut)
 {
     if (fT <= 0.0f)
@@ -93,8 +94,7 @@ void INodeMovement::FUN_1416256f0(float fT, const NiTransform& kFrom, const NiTr
     else
     {
         kOut.m_fScale = kFrom.m_fScale + fT * (kTo.m_fScale - kFrom.m_fScale);
-        NiPoint3 kPos = kFrom.m_Translate + fT * (kTo.m_Translate - kFrom.m_Translate);
-        kOut.m_Translate = kPos;
+        kOut.m_Translate = kFrom.m_Translate + fT * (kTo.m_Translate - kFrom.m_Translate);
         NiQuaternion kQ0;
         kQ0.FromRotation(kFrom.m_Rotate);
         NiQuaternion kQ1;
@@ -129,7 +129,6 @@ INodeMovement* CBirdMovement::vfunc_1() const
 }
 
 // @0x141625a40
-// MS2-FUNCTIONAL: same calls/branches as the exe; local frame order differs (0x1f8 vs 0x1e8 frame, named locals sit at other slots)
 NiTransform CBirdMovement::vfunc_2(double dTime, const NiTransform& kTarget)
 {
     if (m_bInitialized != 0)
@@ -140,32 +139,47 @@ NiTransform CBirdMovement::vfunc_2(double dTime, const NiTransform& kTarget)
         efd::Point3 kUp = -(kTarget.m_Translate - m_kTransform.m_Translate);
         kUp.z = kUp.z * 0.3f;
         kUp.Unitize();
-        if (NiAbs(kUp.x) < 0.001f)
+        if (FUN_14059d930(kUp.x) < 0.001f)
             kUp.x = 0.0f;
-        if (NiAbs(kUp.y) < 0.001f)
+        if (FUN_14059d930(kUp.y) < 0.001f)
             kUp.y = 0.0f;
-        if (NiAbs(kUp.z) < 0.001f)
+        if (FUN_14059d930(kUp.z) < 0.001f)
             kUp.z = 0.0f;
-        if (0.999f < NiAbs(kUp.x))
-            kUp.x = (kUp.x <= 0.0f) ? -1.0f : 1.0f;
-        if (0.999f < NiAbs(kUp.y))
-            kUp.y = (kUp.y <= 0.0f) ? -1.0f : 1.0f;
-        if (0.999f < NiAbs(kUp.z))
-            kUp.z = (kUp.z <= 0.0f) ? -1.0f : 1.0f;
+        if (0.999f < FUN_14059d930(kUp.x))
+        {
+            if (kUp.x > 0.0f)
+                kUp.x = 1.0f;
+            else
+                kUp.x = -1.0f;
+        }
+        if (0.999f < FUN_14059d930(kUp.y))
+        {
+            if (kUp.y > 0.0f)
+                kUp.y = 1.0f;
+            else
+                kUp.y = -1.0f;
+        }
+        if (0.999f < FUN_14059d930(kUp.z))
+        {
+            if (kUp.z > 0.0f)
+                kUp.z = 1.0f;
+            else
+                kUp.z = -1.0f;
+        }
         float fDist = kDir.Unitize();
         float fOver;
-        if (fDist - m_fMaxLength <= 0.0f)
-            fOver = 0.0f;
-        else
+        if (fDist - m_fMaxLength > 0.0f)
             fOver = fDist - m_fMaxLength;
+        else
+            fOver = 0.0f;
         float fExcess = fOver;
-        float fRatio = fOver / m_fMaxLength;
+        float fRatio = fExcess / m_fMaxLength;
         float fSpeed = m_fVelocity + m_fVelocity * fRatio * m_fRate;
         float fTime = fDist / fSpeed;
         if ((double)fTime <= dTime)
         {
             m_kTransform.m_Translate = kTarget.m_Translate;
-            FUN_1416260f0(fTurn, m_kTransform.m_Rotate, kTarget.m_Rotate, m_kTransform.m_Rotate);
+            FUN_1416260f0(fTurn, m_kTransform, kTarget, m_kTransform);
             return m_kTransform;
         }
         if (kUp == efd::Point3::ZERO)
@@ -180,27 +194,26 @@ NiTransform CBirdMovement::vfunc_2(double dTime, const NiTransform& kTarget)
         if (kUp == efd::Point3::UNIT_Z)
         {
             kTarget.m_Rotate.GetCol(0, kSide);
-            kTilt.MakeXRotation(fSlope * 1.5707964f);
+            kTilt.MakeXRotation(1.5707964f * fSlope);
         }
         else if (kUp == -efd::Point3::UNIT_Z)
         {
             kTarget.m_Rotate.GetCol(0, kSide);
-            kTilt.MakeXRotation(-fSlope * 1.5707964f);
+            kTilt.MakeXRotation(1.5707964f * -fSlope);
         }
         else
         {
-            kSide = kUp.Cross(efd::Point3::UNIT_Z);
+            kSide = kUp.UnitCross(efd::Point3::UNIT_Z);
         }
-        efd::Point3 kFront = kSide.Cross(kUp);
+        efd::Point3 kFront = kSide.UnitCross(kUp);
         efd::Matrix3 kBasis;
         kBasis.SetCol(0, kSide);
         kBasis.SetCol(1, kUp);
         kBasis.SetCol(2, kFront);
         NiTransform kGoal;
-        kGoal.m_Rotate = NiMatrix3(kBasis * kTilt);
-        FUN_1416260f0(fTurn, m_kTransform.m_Rotate, kGoal.m_Rotate, m_kTransform.m_Rotate);
-        float fDt = (float)dTime;
-        m_kTransform.m_Translate = NiPoint3(m_kTransform.m_Translate + kDir * fSpeed * fDt);
+        kGoal.m_Rotate = kBasis * kTilt;
+        FUN_1416260f0(fTurn, m_kTransform, kGoal, m_kTransform);
+        m_kTransform.m_Translate = m_kTransform.m_Translate + kDir * fSpeed * (float)dTime;
     }
     else
     {
@@ -211,7 +224,7 @@ NiTransform CBirdMovement::vfunc_2(double dTime, const NiTransform& kTarget)
 }
 
 // @0x1416260f0
-void INodeMovement::FUN_1416260f0(float fT, const NiMatrix3& kFrom, const NiMatrix3& kTo, NiMatrix3& kOut)
+void INodeMovement::FUN_1416260f0(float fT, const NiTransform& kFrom, const NiTransform& kTo, NiTransform& kOut)
 {
     if (fT <= 0.0f)
     {
@@ -224,13 +237,13 @@ void INodeMovement::FUN_1416260f0(float fT, const NiMatrix3& kFrom, const NiMatr
     else
     {
         NiQuaternion kQ0;
-        kQ0.FromRotation(kFrom);
+        kQ0.FromRotation(kFrom.m_Rotate);
         NiQuaternion kQ1;
-        kQ1.FromRotation(kTo);
+        kQ1.FromRotation(kTo.m_Rotate);
         if (efd::Quaternion::Dot(kQ0, kQ1) < 0.0f)
             kQ1 = -kQ1;
         NiQuaternion kQ = efd::Quaternion::Slerp(fT, kQ0, kQ1);
-        kQ.ToRotation(kOut);
+        kQ.ToRotation(kOut.m_Rotate);
     }
 }
 

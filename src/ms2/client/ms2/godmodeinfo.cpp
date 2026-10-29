@@ -66,21 +66,20 @@ void CGodModeInfo::FUN_141374d10(int n)
     SendRequestCube();
 }
 
+// The exe's FUN_14191aae0 takes the point by value (UIDebugTooltip's shared header binds it as const&), so the call
+// goes through a view whose FUN_14191aae0 takes a Vector3; the call site then copies the operator+ result into the
+// outgoing argument slot.
+struct Unk_GmTooltipView
+{
+    void FUN_14191aae0(Vector3 kPos);
+};
+
 // Moves the tooltip 150 units above `kPos`.
 // @0x141374d40
 void CGodModeInfo::FUN_141374d40(Vector3 kPos)
 {
     if (m_spTooltip.get() != 0)
-    {
-        Vector3 ptMoved = kPos.FUN_14097fd50(Vector3(0.0f, 0.0f, 150.0f));
-        // MS2-FUNCTIONAL: the exe's FUN_14191aae0 takes the point by value, so its call site copies the operator+
-        // result into the outgoing argument slot (rep movsb into [rsp+0x20], the sret living at [rsp+0x3c]); the
-        // committed header binds that callee as const&, so the copy is an explicit local instead and MSVC sizes the
-        // slots the other way round (sret [rsp+0x20], copy [rsp+0x30]). Instruction-by-instruction identical
-        // otherwise; 49 bytes differ in which 12-byte slot is which.
-        alignas(16) Vector3 ptAnchor = ptMoved;
-        m_spTooltip->FUN_14191aae0(ptAnchor);
-    }
+        reinterpret_cast<Unk_GmTooltipView*>(m_spTooltip.operator->())->FUN_14191aae0(kPos.FUN_14097fd50(Vector3(0.0f, 0.0f, 150.0f)));
 }
 
 // '-' steps the index down, 'x' steps it up; a change is clamped and pushed.

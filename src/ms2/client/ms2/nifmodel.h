@@ -7,7 +7,7 @@ class CNifModel : public CEquipModel
 {
 public:
     CNifModel(MS2Ptr<Unk_EquipModelOwner> spOwner, void* p18, void* p20);   // 0x141565560
-    virtual ~CNifModel();                                                    // 0x141566d10, ??_G 0x141566d40
+    // virtual ~CNifModel();  implicit (no vftable store in the exe): 0x141566d10, ??_G 0x141566d40
 
     EE_DECLARE_CLASS1(CNifModel, 0x06200049, CEquipModel);   // slots 1-3 (0x141566d80/0x141566e40/0x141566e90), ms_ClassInfo 0x143ae2440
 public:

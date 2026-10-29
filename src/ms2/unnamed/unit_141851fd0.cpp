@@ -9,7 +9,7 @@
 // ---- exe callees (types unrecovered; same helpers nifanimationcontroller.cpp uses) ----
 void* FUN_14098dc80(void* pObj);                    // first controller of the object
 void* FUN_14098de40(void* pCtrl);                   // next controller
-char FUN_14098df90(const void* pRtti, void* pObj);  // IsKindOf
+bool FUN_14098df90(const void* pRtti, void* pObj);  // IsKindOf
 void* FUN_14127cc40(void* pObj);                    // property list
 void* FUN_14098ddb0(void* pList);                   // list begin position
 void* FUN_14098de00(void* pList, void** ppPos);     // slot at position, advances it
@@ -18,15 +18,15 @@ unsigned int FUN_14098daf0(void* pObj);             // child count
 void* FUN_14098db40(void* pObj, unsigned int i);    // child at
 void* FUN_1413fc1d0(void* pObj);                    // child array
 void* FUN_1413fc1f0(void* pArr);                    // array begin position
-char FUN_141546cb0(void* pList);
-char FUN_141546c80(void* pArr);
+bool FUN_141546cb0(void* pList);
+bool FUN_141546c80(void* pArr);
 void* FUN_141546aa0(void* pArr, void** ppPos);      // element at position, advances it
 float FUN_140af7f50(void* pCtrl);                   // controller end time
 void FUN_14098e870(void* pCtrl, int nValue);
 void FUN_14098e9e0(void* pCtrl, float fValue);   // exe takes the value in xmm1
 void FUN_1416f18b0(void* pCtrl, unsigned int uValue);
 void* FUN_14086d260();
-float FUN_141473280(void* pHandle);
+double FUN_141473280(void* pHandle);
 extern char DAT_143af8940;                          // NiRTTI: controller kind
 extern char DAT_143afa458;                          // NiRTTI: NiAVObject
 extern char DAT_143afa4d8;                          // NiRTTI: NiNode
@@ -56,7 +56,7 @@ struct Unk_CtrlIface
     virtual void vfunc_19();
     virtual void vfunc_20();
     virtual void vfunc_21();
-    virtual char vfunc_22();  // MS2: slot 22 (0xb0) is the controller usable
+    virtual bool vfunc_22();  // MS2: slot 22 (0xb0) is the controller usable
 };
 
 // Small value holders (the exe builds them in 24-byte locals; names invented).
@@ -109,44 +109,42 @@ void FUN_141852050(void* pRoot, unsigned int uValue)
 // @0x141852080
 void FUN_141852080(void* pRoot, Unk_CtrlValue* pArg)
 {
-    if (pRoot != 0)
+    if (pRoot == 0)
+        return;
+    void* pCtrl = FUN_14098dc80(pRoot);
+    while (pCtrl != 0)
     {
-        for (void* pCtrl = FUN_14098dc80(pRoot); pCtrl != 0; pCtrl = FUN_14098de40(pCtrl))
+        if (FUN_14098df90(&DAT_143af8940, pCtrl))
+            FUN_141852970(pArg, pCtrl);
+        pCtrl = FUN_14098de40(pCtrl);
+    }
+    if (FUN_14098df90(&DAT_143afa458, pRoot))
+    {
+        void* pObj = pRoot;
+        void* pList = FUN_14127cc40(pObj);
+        void* pPos = FUN_14098ddb0(pList);
+        while (pList != 0 && !FUN_141546cb0(pList) && pPos != 0)
         {
-            char cIsCtrl = FUN_14098df90(&DAT_143af8940, pCtrl);
-            if (cIsCtrl != '\0')
-                FUN_141852970(pArg, pCtrl);
+            void* pProp = FUN_140993f00(FUN_14098de00(pList, &pPos));
+            if (pProp != 0)
+                FUN_141852690(pProp, pArg);
         }
-        char cIsNode = FUN_14098df90(&DAT_143afa458, pRoot);
-        if (cIsNode != '\0')
+    }
+    if (FUN_14098df90(&DAT_143afa4d8, pRoot))
+    {
+        void* pNode = pRoot;
+        for (unsigned int i = 0; i < FUN_14098daf0(pNode); ++i)
         {
-            void* pList = FUN_14127cc40(pRoot);
-            void* pPos = FUN_14098ddb0(pList);
-            while (pList != 0 && FUN_141546cb0(pList) == '\0' && pPos != 0)
-            {
-                void* pSlot = FUN_14098de00(pList, &pPos);
-                void* pProp = FUN_140993f00(pSlot);
-                if (pProp != 0)
-                    FUN_141852690(pProp, pArg);
-            }
+            void* pChild = FUN_14098db40(pNode, i);
+            FUN_141852690(pChild, pArg);
         }
-        char cIsGroup = FUN_14098df90(&DAT_143afa4d8, pRoot);
-        if (cIsGroup != '\0')
+        void* pArr = FUN_1413fc1d0(pNode);
+        void* pIter = FUN_1413fc1f0(pArr);
+        while (pArr != 0 && !FUN_141546c80(pArr) && pIter != 0)
         {
-            for (unsigned int i = 0; i < FUN_14098daf0(pRoot); ++i)
-            {
-                void* pChild = FUN_14098db40(pRoot, i);
+            void* pChild = *(void**)FUN_141546aa0(pArr, &pIter);
+            if (pChild != 0)
                 FUN_141852690(pChild, pArg);
-            }
-            void* pArr = FUN_1413fc1d0(pRoot);
-            void* pIter = FUN_1413fc1f0(pArr);
-            while (pArr != 0 && FUN_141546c80(pArr) == '\0' && pIter != 0)
-            {
-                void** ppChild = (void**)FUN_141546aa0(pArr, &pIter);
-                void* pChild = *ppChild;
-                if (pChild != 0)
-                    FUN_141852690(pChild, pArg);
-            }
         }
     }
 }
@@ -154,42 +152,41 @@ void FUN_141852080(void* pRoot, Unk_CtrlValue* pArg)
 // @0x141852290
 void FUN_141852290(void* pRoot, Unk_CtrlMax* pArg)
 {
-    if (pRoot != 0)
+    if (pRoot == 0)
+        return;
+    void* pCtrl = FUN_14098dc80(pRoot);
+    while (pCtrl != 0)
     {
-        for (void* pCtrl = FUN_14098dc80(pRoot); pCtrl != 0; pCtrl = FUN_14098de40(pCtrl))
+        FUN_1418528f0(pArg, pCtrl);
+        pCtrl = FUN_14098de40(pCtrl);
+    }
+    if (FUN_14098df90(&DAT_143afa458, pRoot))
+    {
+        void* pObj = pRoot;
+        void* pList = FUN_14127cc40(pObj);
+        void* pPos = FUN_14098ddb0(pList);
+        while (pList != 0 && !FUN_141546cb0(pList) && pPos != 0)
         {
-            FUN_1418528f0(pArg, pCtrl);
+            void* pProp = FUN_140993f00(FUN_14098de00(pList, &pPos));
+            if (pProp != 0)
+                FUN_141852290(pProp, pArg);
         }
-        char cIsNode = FUN_14098df90(&DAT_143afa458, pRoot);
-        if (cIsNode != '\0')
+    }
+    if (FUN_14098df90(&DAT_143afa4d8, pRoot))
+    {
+        void* pNode = pRoot;
+        for (unsigned int i = 0; i < FUN_14098daf0(pNode); ++i)
         {
-            void* pList = FUN_14127cc40(pRoot);
-            void* pPos = FUN_14098ddb0(pList);
-            while (pList != 0 && FUN_141546cb0(pList) == '\0' && pPos != 0)
-            {
-                void* pSlot = FUN_14098de00(pList, &pPos);
-                void* pProp = FUN_140993f00(pSlot);
-                if (pProp != 0)
-                    FUN_141852290(pProp, pArg);
-            }
+            void* pChild = FUN_14098db40(pNode, i);
+            FUN_141852290(pChild, pArg);
         }
-        char cIsGroup = FUN_14098df90(&DAT_143afa4d8, pRoot);
-        if (cIsGroup != '\0')
+        void* pArr = FUN_1413fc1d0(pNode);
+        void* pIter = FUN_1413fc1f0(pArr);
+        while (pArr != 0 && !FUN_141546c80(pArr) && pIter != 0)
         {
-            for (unsigned int i = 0; i < FUN_14098daf0(pRoot); ++i)
-            {
-                void* pChild = FUN_14098db40(pRoot, i);
+            void* pChild = *(void**)FUN_141546aa0(pArr, &pIter);
+            if (pChild != 0)
                 FUN_141852290(pChild, pArg);
-            }
-            void* pArr = FUN_1413fc1d0(pRoot);
-            void* pIter = FUN_1413fc1f0(pArr);
-            while (pArr != 0 && FUN_141546c80(pArr) == '\0' && pIter != 0)
-            {
-                void** ppChild = (void**)FUN_141546aa0(pArr, &pIter);
-                void* pChild = *ppChild;
-                if (pChild != 0)
-                    FUN_141852290(pChild, pArg);
-            }
         }
     }
 }
@@ -197,42 +194,41 @@ void FUN_141852290(void* pRoot, Unk_CtrlMax* pArg)
 // @0x141852490
 void FUN_141852490(void* pRoot, Unk_CtrlValueB* pArg)
 {
-    if (pRoot != 0)
+    if (pRoot == 0)
+        return;
+    void* pCtrl = FUN_14098dc80(pRoot);
+    while (pCtrl != 0)
     {
-        for (void* pCtrl = FUN_14098dc80(pRoot); pCtrl != 0; pCtrl = FUN_14098de40(pCtrl))
+        FUN_141852930(pArg, pCtrl);
+        pCtrl = FUN_14098de40(pCtrl);
+    }
+    if (FUN_14098df90(&DAT_143afa458, pRoot))
+    {
+        void* pObj = pRoot;
+        void* pList = FUN_14127cc40(pObj);
+        void* pPos = FUN_14098ddb0(pList);
+        while (pList != 0 && !FUN_141546cb0(pList) && pPos != 0)
         {
-            FUN_141852930(pArg, pCtrl);
+            void* pProp = FUN_140993f00(FUN_14098de00(pList, &pPos));
+            if (pProp != 0)
+                FUN_141852490(pProp, pArg);
         }
-        char cIsNode = FUN_14098df90(&DAT_143afa458, pRoot);
-        if (cIsNode != '\0')
+    }
+    if (FUN_14098df90(&DAT_143afa4d8, pRoot))
+    {
+        void* pNode = pRoot;
+        for (unsigned int i = 0; i < FUN_14098daf0(pNode); ++i)
         {
-            void* pList = FUN_14127cc40(pRoot);
-            void* pPos = FUN_14098ddb0(pList);
-            while (pList != 0 && FUN_141546cb0(pList) == '\0' && pPos != 0)
-            {
-                void* pSlot = FUN_14098de00(pList, &pPos);
-                void* pProp = FUN_140993f00(pSlot);
-                if (pProp != 0)
-                    FUN_141852490(pProp, pArg);
-            }
+            void* pChild = FUN_14098db40(pNode, i);
+            FUN_141852490(pChild, pArg);
         }
-        char cIsGroup = FUN_14098df90(&DAT_143afa4d8, pRoot);
-        if (cIsGroup != '\0')
+        void* pArr = FUN_1413fc1d0(pNode);
+        void* pIter = FUN_1413fc1f0(pArr);
+        while (pArr != 0 && !FUN_141546c80(pArr) && pIter != 0)
         {
-            for (unsigned int i = 0; i < FUN_14098daf0(pRoot); ++i)
-            {
-                void* pChild = FUN_14098db40(pRoot, i);
+            void* pChild = *(void**)FUN_141546aa0(pArr, &pIter);
+            if (pChild != 0)
                 FUN_141852490(pChild, pArg);
-            }
-            void* pArr = FUN_1413fc1d0(pRoot);
-            void* pIter = FUN_1413fc1f0(pArr);
-            while (pArr != 0 && FUN_141546c80(pArr) == '\0' && pIter != 0)
-            {
-                void** ppChild = (void**)FUN_141546aa0(pArr, &pIter);
-                void* pChild = *ppChild;
-                if (pChild != 0)
-                    FUN_141852490(pChild, pArg);
-            }
         }
     }
 }
@@ -240,42 +236,41 @@ void FUN_141852490(void* pRoot, Unk_CtrlValueB* pArg)
 // @0x141852690
 void FUN_141852690(void* pRoot, Unk_CtrlValue* pArg)
 {
-    if (pRoot != 0)
+    if (pRoot == 0)
+        return;
+    void* pCtrl = FUN_14098dc80(pRoot);
+    while (pCtrl != 0)
     {
-        for (void* pCtrl = FUN_14098dc80(pRoot); pCtrl != 0; pCtrl = FUN_14098de40(pCtrl))
+        FUN_141852970(pArg, pCtrl);
+        pCtrl = FUN_14098de40(pCtrl);
+    }
+    if (FUN_14098df90(&DAT_143afa458, pRoot))
+    {
+        void* pObj = pRoot;
+        void* pList = FUN_14127cc40(pObj);
+        void* pPos = FUN_14098ddb0(pList);
+        while (pList != 0 && !FUN_141546cb0(pList) && pPos != 0)
         {
-            FUN_141852970(pArg, pCtrl);
+            void* pProp = FUN_140993f00(FUN_14098de00(pList, &pPos));
+            if (pProp != 0)
+                FUN_141852690(pProp, pArg);
         }
-        char cIsNode = FUN_14098df90(&DAT_143afa458, pRoot);
-        if (cIsNode != '\0')
+    }
+    if (FUN_14098df90(&DAT_143afa4d8, pRoot))
+    {
+        void* pNode = pRoot;
+        for (unsigned int i = 0; i < FUN_14098daf0(pNode); ++i)
         {
-            void* pList = FUN_14127cc40(pRoot);
-            void* pPos = FUN_14098ddb0(pList);
-            while (pList != 0 && FUN_141546cb0(pList) == '\0' && pPos != 0)
-            {
-                void* pSlot = FUN_14098de00(pList, &pPos);
-                void* pProp = FUN_140993f00(pSlot);
-                if (pProp != 0)
-                    FUN_141852690(pProp, pArg);
-            }
+            void* pChild = FUN_14098db40(pNode, i);
+            FUN_141852690(pChild, pArg);
         }
-        char cIsGroup = FUN_14098df90(&DAT_143afa4d8, pRoot);
-        if (cIsGroup != '\0')
+        void* pArr = FUN_1413fc1d0(pNode);
+        void* pIter = FUN_1413fc1f0(pArr);
+        while (pArr != 0 && !FUN_141546c80(pArr) && pIter != 0)
         {
-            for (unsigned int i = 0; i < FUN_14098daf0(pRoot); ++i)
-            {
-                void* pChild = FUN_14098db40(pRoot, i);
+            void* pChild = *(void**)FUN_141546aa0(pArr, &pIter);
+            if (pChild != 0)
                 FUN_141852690(pChild, pArg);
-            }
-            void* pArr = FUN_1413fc1d0(pRoot);
-            void* pIter = FUN_1413fc1f0(pArr);
-            while (pArr != 0 && FUN_141546c80(pArr) == '\0' && pIter != 0)
-            {
-                void** ppChild = (void**)FUN_141546aa0(pArr, &pIter);
-                void* pChild = *ppChild;
-                if (pChild != 0)
-                    FUN_141852690(pChild, pArg);
-            }
         }
     }
 }
@@ -301,19 +296,14 @@ Unk_CtrlValue::Unk_CtrlValue(float fValue)
 // @0x1418528f0
 void FUN_1418528f0(Unk_CtrlMax* pMax, void* pCtrl)
 {
-    float fEnd = FUN_140af7f50(pCtrl);
-    if (pMax->m_fValue < fEnd)
-    {
-        fEnd = FUN_140af7f50(pCtrl);
-        pMax->m_fValue = fEnd;
-    }
+    if (FUN_140af7f50(pCtrl) > pMax->m_fValue)
+        pMax->m_fValue = FUN_140af7f50(pCtrl);
 }
 
 // @0x141852930
 void FUN_141852930(Unk_CtrlValueB* pArg, void* pCtrl)
 {
-    char cUsable = ((Unk_CtrlIface*)pCtrl)->vfunc_22();
-    if (cUsable != '\0')
+    if (((Unk_CtrlIface*)pCtrl)->vfunc_22())
         FUN_1416f18b0(pCtrl, pArg->m_uValue);
 }
 
@@ -321,8 +311,6 @@ void FUN_141852930(Unk_CtrlValueB* pArg, void* pCtrl)
 void FUN_141852970(Unk_CtrlValue* pArg, void* pCtrl)
 {
     FUN_14098e870(pCtrl, 1);
-    void* pHandle = FUN_14086d260();
-    float fScale = FUN_141473280(pHandle);
-    ((Unk_CtrlIface*)pCtrl)->vfunc_18(fScale);
+    ((Unk_CtrlIface*)pCtrl)->vfunc_18((float)FUN_141473280(FUN_14086d260()));
     FUN_14098e9e0(pCtrl, pArg->m_fValue);
 }

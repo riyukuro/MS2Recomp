@@ -47,7 +47,7 @@ public:
 #define TM_V(n) virtual void vfunc_##n();
     TM_V(16) TM_V(17) TM_V(18) TM_V(19) TM_V(20) TM_V(21) TM_V(22) TM_V(23)
 #undef TM_V
-    virtual void vfunc_24(int bRefresh);                                    // 24 (+0xc0) refresh
+    virtual void vfunc_24(bool bRefresh);                                   // 24 (+0xc0) refresh
     void FUN_1407cba60(const char* szName, CString str);                    // set the bag id
     void FUN_1422dcca0(int nIndex);                                         // select an entry (-1: none)
     int FUN_1422dccd0();                                                    // the selected entry
@@ -125,7 +125,6 @@ CString UIItemTreasureMapDialog::GetTypeName()
 
 // Placed beside the maid dialog's reference point when that is open, else at the origin.
 // @0x140c55260
-// MS2-FUNCTIONAL: frame slot order / MS2Ptr temporaries differ from the exe
 void UIItemTreasureMapDialog::vfunc_43()
 {
     ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30);
@@ -133,20 +132,19 @@ void UIItemTreasureMapDialog::vfunc_43()
     if (pDialog != 0 && (pRef = FUN_140a7b2b0(0x4e40)) != 0)
     {
         int nX = pRef->FUN_141b1d3d0();
-        int nY = pRef->FUN_141b1d460();
-        if (nX != -1 && nY - 0x50 != -1)
+        int nY = pRef->FUN_141b1d460() - 0x50;
+        if (nX != -1 && nY != -1)
         {
-            pDialog->vfunc_2(5, nY - 0x50, (nX - pDialog->FUN_1422c13b0()) + 0x46);
+            pDialog->vfunc_2(5, nY, (nX - pDialog->FUN_1422c13b0()) + 0x46);
             return;
         }
     }
-    pDialog = dynamic_cast<ASDialog*>((AScript*)m_30);
-    if (pDialog != 0)
-        pDialog->vfunc_2(1, 0, 0);
+    ASDialog* pDefault = dynamic_cast<ASDialog*>((AScript*)m_30);
+    if (pDefault != 0)
+        pDefault->vfunc_2(1, 0, 0);
 }
 
 // @0x140c553a0
-// MS2-FUNCTIONAL: frame slot order / MS2Ptr temporaries differ from the exe
 void UIItemTreasureMapDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
@@ -162,9 +160,9 @@ void UIItemTreasureMapDialog::OnLoadComplete()
         m_submit = m_board->FUN_140acce30<Unk_140acd6e0>("m_submit");
         if (m_submit.get() != 0)
             m_submit->FUN_1422c2a70(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemTreasureMapDialog::FUN_140c55d20), 0);
-        CStringW strDesc = GetStringCommonByKey(CStringW(L"s_item_treasure_map_appraise_desc"));
+        CStringW strDesc = GetStringCommonByKey(L"s_item_treasure_map_appraise_desc");
         if (m_bFree != 0)
-            strDesc = GetStringCommonByKey(CStringW(L"s_item_treasure_map_free_appraise_desc"));
+            strDesc = GetStringCommonByKey(L"s_item_treasure_map_free_appraise_desc");
         FUN_140cff1b0((*m_board).FUN_1422bb890(), "m_desc", CStringW(strDesc));
     }
 }
@@ -191,14 +189,15 @@ int UIItemTreasureMapDialog::vfunc_13()
 
 // The server's packets (0xf5): sub 2 = the cost of the picked map, sub 3 = the appraised item / the end of the appraise.
 // @0x140c55960
-// MS2-FUNCTIONAL: frame slot order / MS2Ptr temporaries differ from the exe
 void UIItemTreasureMapDialog::vfunc_79(void* p)
 {
 #define TM_PKT static_cast<CInPacket*>(p)
     UIDialog::vfunc_79(p);
-    if (TM_PKT->FUN_14070fe80() == 0xf5 && FUN_140ba28d0(&m_30, 0) == 0)
+    if (TM_PKT->FUN_14070fe80() == 0xf5)
     {
-        unsigned char nSub = TM_PKT->ReadUInt8();
+        if (FUN_140ba28d0(&m_30, 0) != 0)
+            return;
+        int nSub = TM_PKT->ReadUInt8();
         if (nSub == 2)
         {
             __int64 nUid = TM_PKT->ReadInt64();
@@ -207,16 +206,17 @@ void UIItemTreasureMapDialog::vfunc_79(void* p)
         }
         else if (nSub == 3)
         {
-            if (TM_PKT->ReadBool() == false)
-            {
-                m_nState = 2;
-                FUN_140c56670();
-            }
-            else
+            bool bOk = TM_PKT->ReadBool();
+            if (bOk)
             {
                 int nItemId = TM_PKT->ReadInt32();
                 int nRank = TM_PKT->ReadInt32();
                 FUN_140c57300(nItemId, nRank);
+            }
+            else
+            {
+                m_nState = 2;
+                FUN_140c56670();
             }
         }
     }
@@ -235,80 +235,72 @@ void UIItemTreasureMapDialog::FUN_140c55b50(const CString& strParam)
 
 // The item bag was clicked: select the map.
 // @0x140c55ba0
-// MS2-FUNCTIONAL: frame slot order / MS2Ptr temporaries differ from the exe
 void UIItemTreasureMapDialog::SendTreasureMapMode2(const Scaleform::GFx::FunctionHandler::Params& params)
 {
-    if (!(m_itemBag == 0) && m_nState == 0)
-    {
-        int nIndex = m_itemBag->FUN_1422dccd0();
-        int nCount = (int)m_items.GetCount();
-        if ((unsigned __int64)(__int64)nIndex < (unsigned __int64)(__int64)nCount)
-        {
-            MS2Ptr<CItem> spItem = m_items.GetAt(nIndex);
-            if (!(spItem == 0))
-            {
-                __int64 nUid = spItem->FUN_140526a50();
-                COutPacket pkt(static_cast<int>(SendOp::TreasureMap), 0);
-                pkt.WriteUInt8(2);
-                pkt.WriteInt64(nUid);
-                pkt.WriteBool(m_bFree);
-                FUN_140710590(pkt);
-            }
-        }
-    }
+    if (m_itemBag == 0)
+        return;
+    if (m_nState != 0)
+        return;
+    size_t nIndex = m_itemBag->FUN_1422dccd0();
+    if (nIndex < 0 || nIndex >= (int)m_items.GetCount())
+        return;
+    MS2Ptr<CItem> spItem = m_items.GetAt(nIndex);
+    if (spItem == 0)
+        return;
+    __int64 nUid = spItem->FUN_140526a50();
+    COutPacket pkt(static_cast<int>(SendOp::TreasureMap), 0);
+    pkt.WriteUInt8(2);
+    pkt.WriteInt64(nUid);
+    pkt.WriteBool(m_bFree);
+    FUN_140710590(pkt);
 }
 
 // The m_submit button.
 // @0x140c55d20
-// MS2-FUNCTIONAL: frame slot order / MS2Ptr temporaries differ from the exe
 void UIItemTreasureMapDialog::FUN_140c55d20(const Scaleform::GFx::FunctionHandler::Params& params)
 {
-    if (m_nState != 1)
+    if (m_nState == 1)
+        return;
+    if (m_nState == 0)
+        FUN_140c563d0();
+    else if (m_nState == 2)
     {
-        if (m_nState == 0)
-            FUN_140c563d0();
-        else if (m_nState == 2)
+        FUN_140c56670();
+        if (m_nTargetUid > 0)
         {
-            FUN_140c56670();
-            if (m_nTargetUid != 0)
+            MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(m_nTargetUid);
+            if (spItem.get() != 0)
             {
-                MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(m_nTargetUid);
-                if (spItem.get() != 0)
+                if ((unsigned int)spItem->vfunc_4() > 0)
                 {
-                    if (spItem->vfunc_4() != 0)
-                    {
-                        COutPacket pkt(static_cast<int>(SendOp::TreasureMap), 0);
-                        pkt.WriteUInt8(2);
-                        pkt.WriteInt64(m_nTargetUid);
-                        pkt.WriteBool(m_bFree);
-                        FUN_140710590(pkt);
-                    }
+                    COutPacket pkt(static_cast<int>(SendOp::TreasureMap), 0);
+                    pkt.WriteUInt8(2);
+                    pkt.WriteInt64(m_nTargetUid);
+                    pkt.WriteBool(m_bFree);
+                    FUN_140710590(pkt);
                 }
-                m_nTargetUid = 0;
             }
+            m_nTargetUid = 0;
         }
     }
 }
 
 // The select page: no map picked, the submit button asks for an appraise.
 // @0x140c55ea0
-// MS2-FUNCTIONAL: frame slot order / MS2Ptr temporaries differ from the exe
 void UIItemTreasureMapDialog::FUN_140c55ea0()
 {
-    if (!(m_board == 0))
-    {
-        m_nCost = 0;
-        FUN_140c560f0();
-        FUN_140cff4e0((*m_board).FUN_1422bb890(), "m_submit", GetStringCommonByKey(CStringW(L"s_item_treasure_map_button_appraise")));
-        FUN_140cff950((*m_board).FUN_1422bb890(), "m_submit", 0);
-        FUN_140cff840((*m_board).FUN_1422bb890(), "m_desc1", 0);
-        FUN_140cff840((*m_board).FUN_1422bb890(), "m_desc2", 0);
-    }
+    if (m_board == 0)
+        return;
+    m_nCost = 0;
+    FUN_140c560f0();
+    FUN_140cff4e0((*m_board).FUN_1422bb890(), "m_submit", GetStringCommonByKey(L"s_item_treasure_map_button_appraise"));
+    FUN_140cff950((*m_board).FUN_1422bb890(), "m_submit", 0);
+    FUN_140cff840((*m_board).FUN_1422bb890(), "m_desc1", 0);
+    FUN_140cff840((*m_board).FUN_1422bb890(), "m_desc2", 0);
 }
 
 // Collects the treasure maps of the inventory and hands them to the item bag.
 // @0x140c560f0
-// MS2-FUNCTIONAL: frame slot order / MS2Ptr temporaries differ from the exe
 void UIItemTreasureMapDialog::FUN_140c560f0()
 {
     m_items.RemoveAll();
@@ -317,11 +309,11 @@ void UIItemTreasureMapDialog::FUN_140c560f0()
     for (unsigned i = 0; i < uids.GetCount(); i++)
     {
         MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(uids[i]);
-        if (!(spItem == 0))
-        {
-            if (FUN_140c57a70(MS2Ptr<CItem>(spItem)) != 0)
-                m_items.Add(spItem);
-        }
+        if (spItem == 0)
+            continue;
+        if (!FUN_140c57a70(MS2Ptr<CItem>(spItem)))
+            continue;
+        m_items.Add(spItem);
     }
     FUN_14141f970(m_strBag);
     MS2Ptr<CItem> (*pfnGetItem)(const ATL::CAtlArray<MS2Ptr<CItem> >&, int) = FUN_141420330;
@@ -331,159 +323,152 @@ void UIItemTreasureMapDialog::FUN_140c560f0()
         m_itemBag->FUN_1422dcca0(-1);
         m_itemBag->FUN_1422dd1d0();
         m_itemBag->FUN_1407cba60("bagId", m_strBag);
-        m_itemBag->vfunc_24(1);
+        m_itemBag->vfunc_24(true);
     }
 }
 
 // Start the appraise of the picked map.
 // @0x140c563d0
-// MS2-FUNCTIONAL: frame slot order / MS2Ptr temporaries differ from the exe
 void UIItemTreasureMapDialog::FUN_140c563d0()
 {
-    if (m_nState == 0 && !(m_spTarget == 0) && !(m_board == 0))
+    if (m_nState != 0)
+        return;
+    if (m_spTarget == 0)
+        return;
+    if (m_board == 0)
+        return;
+    if (DAT_143ab2898 < m_nCost)
+        FUN_141275260(0x34, 1, 1);
+    else
     {
-        if (DAT_143ab2898 < m_nCost)
-            FUN_141275260(0x34, 1, 1);
-        else
-        {
-            CStringW strArg;
-            if (m_bFree != 0)
-                strArg = L"free";
-            if (DAT_143ab2a90.FUN_140a63880(m_spTarget.get(), strArg) != 0)
-            {
-                m_nState = 1;
-                m_nTargetUid = m_spTarget->FUN_140526a50();
-                m_spTarget = 0;
-                FUN_140cff840((*m_board).FUN_1422bb890(), "m_desc1", 0);
-                FUN_140cff840((*m_board).FUN_1422bb890(), "m_desc2", 0);
-                FUN_140cff950((*m_board).FUN_1422bb890(), "m_submit", 0);
-            }
-        }
+        CStringW strArg;
+        if (m_bFree != 0)
+            strArg = L"free";
+        if (DAT_143ab2a90.FUN_140a63880(m_spTarget.get(), strArg) == 0)
+            return;
+        m_nState = 1;
+        m_nTargetUid = m_spTarget->FUN_140526a50();
+        m_spTarget = 0;
+        FUN_140cff840((*m_board).FUN_1422bb890(), "m_desc1", 0);
+        FUN_140cff840((*m_board).FUN_1422bb890(), "m_desc2", 0);
+        FUN_140cff950((*m_board).FUN_1422bb890(), "m_submit", 0);
     }
 }
 
 // Back to the select page.
 // @0x140c56670
-// MS2-FUNCTIONAL: frame slot order / MS2Ptr temporaries differ from the exe
 void UIItemTreasureMapDialog::FUN_140c56670()
 {
-    if (m_nState == 2 && !(m_board == 0))
+    if (m_nState != 2)
+        return;
+    if (m_board == 0)
+        return;
+    m_nState = 0;
+    m_spTarget = 0;
+    FUN_141415600(m_strBind);
+    MS2Ptr<ASUIComponent> spSlot = m_board->FUN_140accfb0<ASUIComponent>("m_slot");
+    if (spSlot.get() != 0)
     {
-        m_nState = 0;
-        m_spTarget = 0;
-        FUN_141415600(m_strBind);
-        MS2Ptr<ASUIComponent> spSlot = m_board->FUN_140accfb0<ASUIComponent>("m_slot");
-        if (spSlot.get() != 0)
-        {
-            ASObj obj(2);
-            obj.FUN_1407cba60("binding", m_strBind);
-            spSlot->Invoke("setData", obj.FUN_1422bb870());
-            FUN_140cff840((*spSlot).FUN_1422bb890(), "eff1", 1);
-            FUN_140cff840((*spSlot).FUN_1422bb890(), "eff2", 1);
-        }
-        m_board->vfunc_13("wait");
-        FUN_140cff840((*m_board).FUN_1422bb890(), "m_desc1", 0);
-        FUN_140cff840((*m_board).FUN_1422bb890(), "m_desc2", 0);
-        FUN_140c55ea0();
+        ASObj obj(2);
+        obj.FUN_1407cba60("binding", m_strBind);
+        spSlot->Invoke("setData", obj.FUN_1422bb870());
+        FUN_140cff840((*spSlot).FUN_1422bb890(), "eff1", 1);
+        FUN_140cff840((*spSlot).FUN_1422bb890(), "eff2", 1);
     }
+    m_board->vfunc_13("wait");
+    FUN_140cff840((*m_board).FUN_1422bb890(), "m_desc1", 0);
+    FUN_140cff840((*m_board).FUN_1422bb890(), "m_desc2", 0);
+    FUN_140c55ea0();
 }
 
 // The server's cost of the picked map: show the map and the cost.
 // @0x140c56a50
-// MS2-FUNCTIONAL: frame slot order / MS2Ptr temporaries differ from the exe
 void UIItemTreasureMapDialog::FUN_140c56a50(__int64 nUid, __int64 nCost)
 {
-    if (m_nState == 0 && !(m_board == 0))
+    if (m_nState != 0)
+        return;
+    if (m_board == 0)
+        return;
+    m_nCost = nCost;
+    MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(nUid);
+    if (spItem == 0)
+        return;
+    if (FUN_140c57a70(MS2Ptr<CItem>(spItem)) == 0)
+        return;
+    m_spTarget = spItem;
+    FUN_141415600(m_strBind);
+    FUN_141415450(m_strBind, MS2Ptr<CItem>(m_spTarget), 0, 0x415, 8);
+    MS2Ptr<ASUIComponent> spSlot = m_board->FUN_140accfb0<ASUIComponent>("m_slot");
+    if (spSlot.get() != 0)
     {
-        m_nCost = nCost;
-        MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(nUid);
-        if (!(spItem == 0))
-        {
-            if (FUN_140c57a70(MS2Ptr<CItem>(spItem)) != 0)
-            {
-                m_spTarget = spItem;
-                FUN_141415600(m_strBind);
-                FUN_141415450(m_strBind, MS2Ptr<CItem>(m_spTarget), 0, 0x415, 8);
-                MS2Ptr<ASUIComponent> spSlot = m_board->FUN_140accfb0<ASUIComponent>("m_slot");
-                if (spSlot.get() != 0)
-                {
-                    ASObj obj(2);
-                    obj.FUN_1407cbb20((const char*)s_strItemName, m_spTarget->FUN_140528160());
-                    obj.FUN_1407cba60("binding", m_strBind);
-                    spSlot->Invoke("setData", obj.FUN_1422bb870());
-                    FUN_140cff840((*spSlot).FUN_1422bb890(), "eff1", 1);
-                    FUN_140cff840((*spSlot).FUN_1422bb890(), "eff2", 1);
-                }
-                CStringW strCost = FUN_1405c2690(CStringW(L"s_item_treasure_map_appraise_cost"), FUN_1409404f0(m_nCost));
-                if (nCost < 0)
-                {
-                    strCost = GetStringCommonByKey(CStringW(L"s_item_treasure_map_cant_appraise"));
-                    FUN_140cff950((*m_board).FUN_1422bb890(), "m_submit", 0);
-                }
-                else
-                    FUN_140cff950((*m_board).FUN_1422bb890(), "m_submit", 1);
-                FUN_140cff840((*m_board).FUN_1422bb890(), "m_desc1", 1);
-                FUN_140cff1b0((*m_board).FUN_1422bb890(), "m_desc1", m_spTarget->FUN_140528160());
-                FUN_140cff840((*m_board).FUN_1422bb890(), "m_desc2", 1);
-                FUN_140cff1b0((*m_board).FUN_1422bb890(), "m_desc2", CStringW(strCost));
-                FUN_141276180(s_sndChoice, CString(""));
-            }
-        }
+        ASObj obj(2);
+        obj.FUN_1407cbb20((const char*)s_strItemName, m_spTarget->FUN_140528160());
+        obj.FUN_1407cba60("binding", m_strBind);
+        spSlot->Invoke("setData", obj.FUN_1422bb870());
+        FUN_140cff840((*spSlot).FUN_1422bb890(), "eff1", 1);
+        FUN_140cff840((*spSlot).FUN_1422bb890(), "eff2", 1);
     }
+    CStringW strCost = FUN_1405c2690(CStringW(L"s_item_treasure_map_appraise_cost"), FUN_1409404f0(m_nCost));
+    if (nCost < 0)
+    {
+        strCost = GetStringCommonByKey(L"s_item_treasure_map_cant_appraise");
+        FUN_140cff950((*m_board).FUN_1422bb890(), "m_submit", 0);
+    }
+    else
+        FUN_140cff950((*m_board).FUN_1422bb890(), "m_submit", 1);
+    FUN_140cff840((*m_board).FUN_1422bb890(), "m_desc1", 1);
+    FUN_140cff1b0((*m_board).FUN_1422bb890(), "m_desc1", m_spTarget->FUN_140528160());
+    FUN_140cff840((*m_board).FUN_1422bb890(), "m_desc2", 1);
+    FUN_140cff1b0((*m_board).FUN_1422bb890(), "m_desc2", CStringW(strCost));
+    FUN_141276180(s_sndChoice, "");
 }
 
 // The appraised item: show it and the back button.
 // @0x140c57300
-// MS2-FUNCTIONAL: frame slot order / MS2Ptr temporaries differ from the exe
 void UIItemTreasureMapDialog::FUN_140c57300(int nItemId, int nRank)
 {
-    if (!(m_board == 0))
+    if (m_board == 0)
+        return;
+    MS2Ptr<CItem> spItem(new CItem());
+    if (spItem->FUN_14052b130(nItemId, nRank, 0) != 0)
     {
-        MS2Ptr<CItem> spItem(new CItem());
-        if (spItem->FUN_14052b130(nItemId, nRank, 0) != 0)
+        FUN_141415600(m_strBind);
+        FUN_141415450(m_strBind, MS2Ptr<CItem>(spItem), 0, 0x415, 0x800);
+        MS2Ptr<ASUIComponent> spSlot = m_board->FUN_140accfb0<ASUIComponent>("m_slot");
+        if (spSlot.get() != 0)
         {
-            FUN_141415600(m_strBind);
-            FUN_141415450(m_strBind, MS2Ptr<CItem>(spItem), 0, 0x415, 0x800);
-            MS2Ptr<ASUIComponent> spSlot = m_board->FUN_140accfb0<ASUIComponent>("m_slot");
-            if (spSlot.get() != 0)
-            {
-                ASObj obj(2);
-                obj.FUN_1407cbb20((const char*)s_strItemName, spItem->FUN_140528160());
-                obj.FUN_1407cba60("binding", m_strBind);
-                spSlot->Invoke("setData", obj.FUN_1422bb870());
-                FUN_140cff840((*spSlot).FUN_1422bb890(), "eff1", 0);
-                FUN_140cff840((*spSlot).FUN_1422bb890(), "eff2", 0);
-            }
+            ASObj obj(2);
+            obj.FUN_1407cbb20((const char*)s_strItemName, spItem->FUN_140528160());
+            obj.FUN_1407cba60("binding", m_strBind);
+            spSlot->Invoke("setData", obj.FUN_1422bb870());
+            FUN_140cff840((*spSlot).FUN_1422bb890(), "eff1", 0);
+            FUN_140cff840((*spSlot).FUN_1422bb890(), "eff2", 0);
         }
-        m_board->vfunc_13("appraise");
-        MS2Ptr<ASMovieClip> spEff = m_board->FUN_1409b4560("m_eff1");
-        if (spEff.get() != 0)
-            spEff->vfunc_12(1);
-        FUN_140cff840((*m_board).FUN_1422bb890(), "m_desc1", 1);
-        FUN_140cff1b0((*m_board).FUN_1422bb890(), "m_desc1", spItem->FUN_140528160());
-        FUN_140cff950((*m_board).FUN_1422bb890(), "m_submit", 1);
-        FUN_140cff4e0((*m_board).FUN_1422bb890(), "m_submit", GetStringCommonByKey(CStringW(L"s_item_treasure_map_button_back")));
-        FUN_141276180(s_sndStamp, CString(""));
-        FUN_140c560f0();
-        m_nState = 2;
     }
+    m_board->vfunc_13("appraise");
+    MS2Ptr<ASMovieClip> spEff = m_board->FUN_1409b4560("m_eff1");
+    if (spEff.get() != 0)
+        spEff->vfunc_12(1);
+    FUN_140cff840((*m_board).FUN_1422bb890(), "m_desc1", 1);
+    FUN_140cff1b0((*m_board).FUN_1422bb890(), "m_desc1", spItem->FUN_140528160());
+    FUN_140cff950((*m_board).FUN_1422bb890(), "m_submit", 1);
+    FUN_140cff4e0((*m_board).FUN_1422bb890(), "m_submit", GetStringCommonByKey(L"s_item_treasure_map_button_back"));
+    FUN_141276180(s_sndStamp, "");
+    FUN_140c560f0();
+    m_nState = 2;
 }
 
 // Is the item a treasure map?
 // @0x140c57a70
-// MS2-FUNCTIONAL: frame slot order / MS2Ptr temporaries differ from the exe
 bool UIItemTreasureMapDialog::FUN_140c57a70(MS2Ptr<CItem> spItem)
 {
-    if (!(spItem == 0))
-    {
-        if (spItem->FUN_140527840() == 0)
-            return false;
-        CItemData* pData = reinterpret_cast<CItemData*>(spItem->FUN_140527840());
-        if (pData->function.name != L"TreasureMap")
-            return false;
-        return true;
-    }
-    return false;
+    if (spItem == 0)
+        return false;
+    if (spItem->FUN_140527840() == 0)
+        return false;
+    if (reinterpret_cast<CItemData*>(spItem->FUN_140527840())->function.name != L"TreasureMap")
+        return false;
+    return true;
 }
 
 // @0x140c57b50

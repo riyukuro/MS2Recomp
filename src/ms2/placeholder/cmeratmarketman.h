@@ -135,7 +135,7 @@ public:
     void FUN_140d583d0(unsigned int nIndex);
     void FUN_140d584c0(unsigned int nIndex);
     void FUN_140d58650(int nBuyType);
-    void FUN_140d58810(bool bSuccess, int nResult, int nIndex);
+    void FUN_140d58810(int bSuccess, int nResult, int nIndex);
     void FUN_140d5f330(CMeratMarketPacket::BuyPacket& buy, int nError);
     void FUN_140d589f0(int bCancel);
     void FUN_140d595b0();
@@ -154,14 +154,14 @@ public:
     void FUN_140d5a200(const int& nUIClassID);
     Unk_MeratProductArray& GetBlueprintList() { return m_150; }     // 0x140bc09d0 (inline COMDAT; uiblueprintmarketdialog.cpp)
     void FUN_140d5a290();
-    bool FUN_140d5a2e0();
+    int FUN_140d5a2e0();
     CStringW FUN_140d5a330(int nError, MS2Ptr<CPendingBuyBase> spBuy);
     int FUN_140d5b170();
     bool FUN_140d5b1f0(MS2Ptr<CMeratMarketProduct> spProduct, bool bShowError);
     bool FUN_140d5b280(CMeratMarketPremiumProduct* pProduct, bool bShowError);
     bool FUN_140d5b370(MS2Ptr<CMeratMarketProduct> spProduct);
     bool FUN_140d5b4c0(MS2Ptr<CMeratMarketProduct> spProduct, bool bStrict);
-    bool FUN_140d5b6b0();
+    int FUN_140d5b6b0();
     bool FUN_140d5b710();
     bool FUN_140d5b880(unsigned int nCategory, int nTab);
     bool FUN_140d5ba70();                                   // push the ad products to the ad dialog (0x4f34)

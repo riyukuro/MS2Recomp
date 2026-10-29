@@ -398,8 +398,8 @@ int NoticeCubeInfo::GetN20() const
 
 // ---- Cube ----------------------------------------------------------------------------------------------------------
 
-// MS2-FUNCTIONAL: cube.h types position as a trivial Unk_Int3 and offset/pointBc as NiPoint3 (the exe calls an Unk_Int3 default ctor
-// 0x1408850a0 and the out-of-line point ctor 0x1402bd040); same stores in the same order.
+// MS2-FUNCTIONAL: cube.h types position as a trivial Unk_Int3 (the exe calls the zeroing Unk_CubePoint ctor 0x1408850a0); typing
+// it Unk_CubePoint makes the by-value position args in cubemapinformationservice_3 / uitriggereditordialog / actionkeyobject slice.
 // @0x1408b4a00
 Cube::Cube() : entity(0)
 {
@@ -426,7 +426,7 @@ Cube::Cube() : entity(0)
     fieldB0 = 0;
     fieldB4 = 0;
     fieldB8 = 0.0f;
-    pointBc = NiPoint3(0.0f, 0.0f, 0.0f);
+    pointBc = reinterpret_cast<const NiPoint3&>(static_cast<const Vector3&>(Vector3(0.0f, 0.0f, 0.0f)));
     fieldC8 = 0;
     fieldCc = 0;
     fieldD0 = true;
@@ -851,8 +851,6 @@ int FUN_1408b61c0(unsigned nItemId)
 MS2_REPLACE(0x1408B61C0, FUN_1408b61c0, 57, 0xE59C84D7);
 
 // The bank slot count of the item's bank.
-// MS2-FUNCTIONAL: CItemData::FUN_14053dce0 returns int and GetBankData takes unsigned here (the exe passes the id without the
-// int->unsigned register copy); same calls.
 // @0x1408b6200
 int FUN_1408b6200(int nItemId)
 {
@@ -861,7 +859,8 @@ int FUN_1408b6200(int nItemId)
     MS2Ptr<CItemData> spItem = FUN_14053f870(nItemId);
     if (!spItem)
         return 0;
-    MS2Ptr<CBankData> spBank = FUN_1401b59c0()->GetBankData(spItem->FUN_14053dce0());
+    unsigned nBankId = spItem->FUN_14053dce0();
+    MS2Ptr<CBankData> spBank = FUN_1401b59c0()->GetBankData(nBankId);
     if (spBank == 0)
         return 0;
     return spBank->m_nSlotCount;

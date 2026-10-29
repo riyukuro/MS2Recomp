@@ -13,7 +13,8 @@
 #ifndef MS2_HOOK_DLL
 
 extern unsigned char DAT_142db4cf0[];
-extern unsigned char DAT_1430c3b26[];
+extern unsigned char DAT_1430cd5b8[];
+extern unsigned char DAT_1430d1570[];
 
 #pragma pack(push, 1)
 struct Sd_143a0acf8 {
@@ -324,7 +325,7 @@ alignas(8) Sd_143a0acf8 DAT_143a0acf8 = {
     "ReloadManager",
     (const unsigned char*)&DAT_143a0acf8 + 0xcd8,
     {0},
-    &DAT_1430c3b26[0x9a92],
+    DAT_1430cd5b8,
     {
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x33, 0x10, 0x00, 0x00, 0x13, 0x00, 0x00, 0x07,
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
@@ -953,7 +954,7 @@ alignas(8) Sd_143a0acf8 DAT_143a0acf8 = {
     "AssetConfigService",
     (const unsigned char*)&DAT_143a0acf8 + 0x39b8,
     {0},
-    &DAT_1430c3b26[0xda4a],
+    DAT_1430d1570,
     {
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x38, 0x10, 0x00, 0x00, 0x12, 0x00, 0x00, 0x07,
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
@@ -962,6 +963,7 @@ alignas(8) Sd_143a0acf8 DAT_143a0acf8 = {
 
 #pragma comment(linker, "/alternatename:?DAT_143a0acf8@@3VAssetID@efd@@A=?DAT_143a0acf8@@3USd_143a0acf8@@A")
 #pragma comment(linker, "/alternatename:?DAT_142db4cf0@@3PAEA=??_7AssetID@efd@@6B@")
-#pragma comment(linker, "/alternatename:?DAT_1430c3b26@@3PAEA=?kLVL2@ILogger@efd@@2EB")
+#pragma comment(linker, "/alternatename:?DAT_1430cd5b8@@3PAEA=??_7?$MessageWrapperSubclassHandler@VReloadManager@efd@@VAssetLocatorResponse@2@V32@$0BADD@@efd@@6B@")
+#pragma comment(linker, "/alternatename:?DAT_1430d1570@@3PAEA=??_7?$MessageWrapperSubclassHandler@VAssetConfigService@efd@@VAssetConfigurationMessage@2@V32@$0BADI@@efd@@6B@")
 
 #endif // MS2_HOOK_DLL

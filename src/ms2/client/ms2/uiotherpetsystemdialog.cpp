@@ -107,13 +107,11 @@ MS2Ptr<CItem> UIOtherPetSystemDialog::vfunc_85()
 }
 
 // @0x140e6d6b0
-// MS2-FUNCTIONAL: the GetChild / CStringW temporaries keep different stack slots than the exe
 void UIOtherPetSystemDialog::FUN_140e6d6b0()
 {
     if (Unk_OpOwner* pOwner = FUN_1403ed2d0()->FUN_141bd1290(m_1e0))
     {
-        MS2Ptr<ASLabel> spTitle = GetChild<ASLabel>("m_title");
-        if (spTitle)
+        if (MS2Ptr<ASLabel> spTitle = GetChild<ASLabel>("m_title"))
             spTitle->FUN_1422e4a50(FUN_1405c2690(CStringW(L"s_pet_owner"), pOwner->vfunc_77()));
     }
 }

@@ -9,6 +9,8 @@
 // MS2-PIN: ??4?$MS2Ptr@VFunctionCubeData@@@@QEAAAEAV0@H@Z 0x14122dd10 ; unique
 // MS2-PIN: ??4?$MS2Ptr@VUIUGCCubeNoticePopup@@@@QEAAAEAV0@H@Z 0x14122de50 ; unique
 // MS2-PIN: ??4Unk_FcSkillText@@QEAAAEAU0@AEBU0@@Z 0x14122df20 ; unique
+// MS2-PIN: ??4Unk_FcNotice@@QEAAAEAU0@AEBU0@@Z 0x14122def0 ; unique
+// MS2-PIN: ??1FunctionCubeData@@UEAA@XZ 0x14122dbb0 ; unique
 // MS2-PIN: ??8?$MS2Ptr@VUIUGCCubeNoticePopup@@@@QEBA_NPEAVUIUGCCubeNoticePopup@@@Z 0x14122dfc0 ; unique
 // MS2-PIN: ??A?$CAtlArray@V?$CAtlArray@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$CElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@@ATL@@V?$CElementTraits@V?$CAtlArray@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$CElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@@ATL@@@2@@ATL@@QEAAAEAV?$CAtlArray@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$CElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@@1@_K@Z 0x14122e040 ; unique
 // MS2-PIN: ??_ECBreedingCubeObject@@WBI@EAAPEAXI@Z 0x14122e100 ; unique
@@ -38,11 +40,11 @@
 // MS2-PIN: ?Release@?$MS2Ptr@VUIBootyPopup@@@@AEAAXXZ 0x14122ec00 ; unique
 // MS2-PIN: ?Release@?$MS2Ptr@VUIUGCCubeNoticePopup@@@@AEAAXXZ 0x14122ec40 ; unique
 // MS2-PIN: ?ReleaseImpl@?$MS2Ptr@VStateHomemadeData@@@@AEAAXPEAX@Z 0x14122ecd0 ; prop
-// MS2-PIN: ??$?0V?$tuple@AEBH@std@@V?$tuple@$$V@1@$0A@$$Z$S@?$pair@$$CBHV?$list@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@@std@@QEAA@AEAV?$tuple@AEBH@1@AEAV?$tuple@$$V@1@U?$integer_sequence@_K$0A@@1@U?$integer_sequence@_K$S@1@@Z 0x141232b00 ; unique
-// MS2-PIN: ??$_Buynode@AEBUpiecewise_construct_t@std@@V?$tuple@AEBH@2@V?$tuple@$$V@2@@?$_Tree_comp_alloc@V?$_Tmap_traits@HV?$list@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$list@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@@std@@@2@$0A@@std@@@std@@QEAAPEAU?$_Tree_node@U?$pair@$$CBHV?$list@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@@std@@PEAX@1@AEBUpiecewise_construct_t@1@$$QEAV?$tuple@AEBH@1@$$QEAV?$tuple@$$V@1@@Z 0x141232bc0 ; unique
-// MS2-PIN: ??$_Kfn@$$CBHV?$list@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@@?$_Tmap_traits@HV?$list@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$list@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@@std@@@2@$0A@@std@@SAAEBHAEBU?$pair@$$CBHV?$list@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@@1@@Z 0x1412340d0 ; unique
-// MS2-PIN: ??$construct@U?$pair@$$CBHV?$list@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@@std@@AEBUpiecewise_construct_t@2@V?$tuple@AEBH@2@V?$tuple@$$V@2@@?$_Default_allocator_traits@V?$allocator@U?$_Tree_node@U?$pair@$$CBHV?$list@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@@std@@PEAX@std@@@std@@@std@@SAXAEAV?$allocator@U?$_Tree_node@U?$pair@$$CBHV?$list@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@@std@@PEAX@std@@@1@QEAU?$pair@$$CBHV?$list@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@@1@AEBUpiecewise_construct_t@1@$$QEAV?$tuple@AEBH@1@$$QEAV?$tuple@$$V@1@@Z 0x141234350 ; unique
-// MS2-PIN: ??$emplace_hint@AEBUpiecewise_construct_t@std@@V?$tuple@AEBH@2@V?$tuple@$$V@2@@?$_Tree@V?$_Tmap_traits@HV?$list@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$list@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@@std@@@2@$0A@@std@@@std@@QEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$list@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@@std@@@std@@@std@@@1@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$list@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@@std@@@std@@@std@@@1@AEBUpiecewise_construct_t@1@$$QEAV?$tuple@AEBH@1@$$QEAV?$tuple@$$V@1@@Z 0x141234430 ; unique
+// MS2-PIN: ??$?0V?$tuple@AEBH@std@@V?$tuple@$$V@1@$0A@$$Z$S@?$pair@$$CBHV?$set@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@U?$less@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@4@@std@@@std@@QEAA@AEAV?$tuple@AEBH@1@AEAV?$tuple@$$V@1@U?$integer_sequence@_K$0A@@1@U?$integer_sequence@_K$S@1@@Z 0x141232b00 ; unique
+// MS2-PIN: ??$_Buynode@AEBUpiecewise_construct_t@std@@V?$tuple@AEBH@2@V?$tuple@$$V@2@@?$_Tree_comp_alloc@V?$_Tmap_traits@HV?$set@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@U?$less@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@4@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$set@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@U?$less@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@4@@std@@@std@@@2@$0A@@std@@@std@@QEAAPEAU?$_Tree_node@U?$pair@$$CBHV?$set@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@U?$less@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@4@@std@@@std@@PEAX@1@AEBUpiecewise_construct_t@1@$$QEAV?$tuple@AEBH@1@$$QEAV?$tuple@$$V@1@@Z 0x141232bc0 ; unique
+// MS2-PIN: ??$_Kfn@$$CBHV?$set@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@U?$less@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@4@@std@@@?$_Tmap_traits@HV?$set@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@U?$less@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@4@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$set@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@U?$less@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@4@@std@@@std@@@2@$0A@@std@@SAAEBHAEBU?$pair@$$CBHV?$set@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@U?$less@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@4@@std@@@1@@Z 0x1412340d0 ; unique
+// MS2-PIN: ??$construct@U?$pair@$$CBHV?$set@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@U?$less@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@4@@std@@@std@@AEBUpiecewise_construct_t@2@V?$tuple@AEBH@2@V?$tuple@$$V@2@@?$_Default_allocator_traits@V?$allocator@U?$_Tree_node@U?$pair@$$CBHV?$set@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@U?$less@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@4@@std@@@std@@PEAX@std@@@std@@@std@@SAXAEAV?$allocator@U?$_Tree_node@U?$pair@$$CBHV?$set@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@U?$less@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@4@@std@@@std@@PEAX@std@@@1@QEAU?$pair@$$CBHV?$set@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@U?$less@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@4@@std@@@1@AEBUpiecewise_construct_t@1@$$QEAV?$tuple@AEBH@1@$$QEAV?$tuple@$$V@1@@Z 0x141234350 ; unique
+// MS2-PIN: ??$emplace_hint@AEBUpiecewise_construct_t@std@@V?$tuple@AEBH@2@V?$tuple@$$V@2@@?$_Tree@V?$_Tmap_traits@HV?$set@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@U?$less@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@4@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$set@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@U?$less@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@4@@std@@@std@@@2@$0A@@std@@@std@@QEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$set@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@U?$less@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@4@@std@@@std@@@std@@@std@@@1@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$set@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@U?$less@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@4@@std@@@std@@@std@@@std@@@1@AEBUpiecewise_construct_t@1@$$QEAV?$tuple@AEBH@1@$$QEAV?$tuple@$$V@1@@Z 0x141234430 ; unique
 // MS2-PIN: ??0?$MS2Ptr@VCFunctionCubeObject@@@@QEAA@H@Z 0x141234840 ; unique
 // MS2-PIN: ??0?$MS2Ptr@VCFunctionCubeObject@@@@QEAA@AEBV0@@Z 0x1412348c0 ; prop
 // MS2-PIN: ??0?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBII@std@@@std@@@std@@@std@@QEAA@XZ 0x141234a20 ; prop
@@ -62,13 +64,13 @@
 // MS2-PIN: ??0?$MS2Ptr@VCFunctionCubeObject@@@@QEAA@$$QEAV0@@Z 0x141234860
 // MS2-PIN: ??_7CFunctionCubeService@@6BISystemService@efd@@@ 0x142ec58b0
 // MS2-PIN: ?TypeCast@CFunctionCubeService@@UEBA_NIPEAPEAX@Z 0x141238a60
-// MS2-PIN: ?_Freenode0@?$_Tree_comp_alloc@V?$_Tmap_traits@HV?$list@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$list@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@@std@@@2@$0A@@std@@@std@@QEAAXPEAU?$_Tree_node@U?$pair@$$CBHV?$list@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@@std@@PEAX@2@@Z 0x141239460
-// MS2-PIN: ?_Compare@?$_Tree@V?$_Tmap_traits@HV?$list@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$list@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@@std@@@2@$0A@@std@@@std@@IEBA_NAEBH0@Z 0x141238d20
-// MS2-PIN: ??E?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$list@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@@std@@@std@@@std@@@std@@QEAA?AV01@H@Z 0x141235340
-// MS2-PIN: ?_Get_first@?$_Compressed_pair@U?$less@H@std@@V?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBHV?$list@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$list@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@@std@@@std@@@2@$00@2@$00@std@@QEBAAEBU?$less@H@2@XZ 0x141239500
-// MS2-PIN: ?_Getcomp@?$_Tree_comp_alloc@V?$_Tmap_traits@HV?$list@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$list@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@@std@@@2@$0A@@std@@@std@@QEBAAEBU?$less@H@2@XZ 0x1412395f0
-// MS2-PIN: ??E?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$list@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@@std@@@std@@@std@@@std@@QEAA?AV01@H@Z 0x1412352d0
-// MS2-PIN: ?find@?$_Tree@V?$_Tmap_traits@HV?$list@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$list@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@@std@@@2@$0A@@std@@@std@@QEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$list@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@@std@@@std@@@std@@@2@AEBH@Z 0x141239d60
+// MS2-PIN: ?_Freenode0@?$_Tree_comp_alloc@V?$_Tmap_traits@HV?$set@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@U?$less@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@4@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$set@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@U?$less@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@4@@std@@@std@@@2@$0A@@std@@@std@@QEAAXPEAU?$_Tree_node@U?$pair@$$CBHV?$set@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@U?$less@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@4@@std@@@std@@PEAX@2@@Z 0x141239460
+// MS2-PIN: ?_Compare@?$_Tree@V?$_Tmap_traits@HV?$set@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@U?$less@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@4@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$set@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@U?$less@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@4@@std@@@std@@@2@$0A@@std@@@std@@IEBA_NAEBH0@Z 0x141238d20
+// MS2-PIN: ??E?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$set@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@U?$less@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@4@@std@@@std@@@std@@@std@@@std@@QEAA?AV01@H@Z 0x141235340
+// MS2-PIN: ?_Get_first@?$_Compressed_pair@U?$less@H@std@@V?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBHV?$set@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@U?$less@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@4@@std@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$set@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@U?$less@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@4@@std@@@std@@@std@@@2@$00@2@$00@std@@QEBAAEBU?$less@H@2@XZ 0x141239500
+// MS2-PIN: ?_Getcomp@?$_Tree_comp_alloc@V?$_Tmap_traits@HV?$set@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@U?$less@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@4@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$set@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@U?$less@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@4@@std@@@std@@@2@$0A@@std@@@std@@QEBAAEBU?$less@H@2@XZ 0x1412395f0
+// MS2-PIN: ??E?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$set@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@U?$less@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@4@@std@@@std@@@std@@@std@@@std@@QEAA?AV01@H@Z 0x1412352d0
+// MS2-PIN: ?find@?$_Tree@V?$_Tmap_traits@HV?$set@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@U?$less@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@4@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$set@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@U?$less@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@4@@std@@@std@@@2@$0A@@std@@@std@@QEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$set@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@U?$less@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@4@@std@@@std@@@std@@@std@@@2@AEBH@Z 0x141239d60
 // MS2-PIN: ?TypeCast@CFunctionCubeService@@UEBA_NIPEAPEBX@Z 0x141238ab0
 // MS2-PIN: ??_7CFunctionCubeService@@6B?$TSingleton@VCFunctionCubeService@@@@@ 0x142ec5938
 // MS2-PIN: ??B?$MS2Ptr@VUnk_FcArea@@@@QEBAPEAVUnk_FcArea@@XZ 0x141235230
@@ -90,9 +92,9 @@
 // MS2-PIN: ?AssignRaw@?$MS2Ptr@VUIBootyPopup@@@@QEAAAEAV1@PEAVUIBootyPopup@@@Z 0x14122dde0
 // MS2-PIN: ?AssignRaw@?$MS2Ptr@VUIUGCCubeNoticePopup@@@@QEAAAEAV1@PEAVUIUGCCubeNoticePopup@@@Z 0x14122de80
 // MS2-PIN: ??0?$MS2Ptr@VCNurturingCubeObject@@@@QEAA@PEAVCNurturingCubeObject@@@Z 0x141234890
-// MS2-PIN: ?_Get_second@?$_Compressed_pair@U?$less@H@std@@V?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBHV?$list@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$list@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@@std@@@std@@@2@$00@2@$00@std@@QEBAAEBV?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBHV?$list@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$list@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@@std@@@std@@@2@$00@2@XZ 0x141239540 ; prop
-// MS2-PIN: ?_Getal@?$_Tree_comp_alloc@V?$_Tmap_traits@HV?$list@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$list@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@@std@@@2@$0A@@std@@@std@@QEBAAEBV?$allocator@U?$_Tree_node@U?$pair@$$CBHV?$list@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@@std@@PEAX@std@@@2@XZ 0x1412395a0 ; unique
-// MS2-PIN: ?pointer_to@?$pointer_traits@PEAU?$pair@$$CBHV?$list@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@@std@@@std@@SAPEAU?$pair@$$CBHV?$list@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@@2@AEAU32@@Z 0x141239f20 ; unique
+// MS2-PIN: ?_Get_second@?$_Compressed_pair@U?$less@H@std@@V?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBHV?$set@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@U?$less@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@4@@std@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$set@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@U?$less@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@4@@std@@@std@@@std@@@2@$00@2@$00@std@@QEBAAEBV?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBHV?$set@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@U?$less@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@4@@std@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$set@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@U?$less@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@4@@std@@@std@@@std@@@2@$00@2@XZ 0x141239540 ; prop
+// MS2-PIN: ?_Getal@?$_Tree_comp_alloc@V?$_Tmap_traits@HV?$set@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@U?$less@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@4@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$set@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@U?$less@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@4@@std@@@std@@@2@$0A@@std@@@std@@QEBAAEBV?$allocator@U?$_Tree_node@U?$pair@$$CBHV?$set@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@U?$less@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@4@@std@@@std@@PEAX@std@@@2@XZ 0x1412395a0 ; unique
+// MS2-PIN: ?pointer_to@?$pointer_traits@PEAU?$pair@$$CBHV?$set@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@U?$less@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@4@@std@@@std@@@std@@SAPEAU?$pair@$$CBHV?$set@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@U?$less@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@4@@std@@@2@AEAU32@@Z 0x141239f20 ; unique
 // MS2-PINS-END tplpin
 // MS2-PIN: ??$Unk_FcDialog@VUIHomePasswordDialog@@@@YAPEAVUIHomePasswordDialog@@H@Z 0x14122d2f0
 // MS2-PIN: ??$Unk_FcDialog@VUIHomeSummonDialog@@@@YAPEAVUIHomeSummonDialog@@H@Z 0x14122d390
@@ -104,7 +106,7 @@
 // MS2-PIN: ?Reference@?$MS2Ptr@VUIBootyPopup@@@@CAXPEAVUIBootyPopup@@@Z 0x14122ea80
 // MS2-PIN: ?AddRefImpl@?$MS2Ptr@VUIBootyPopup@@@@AEBAXPEAX@Z 0x14122eb20
 // MS2-PIN: ?Release@?$MS2Ptr@VCFunctionCubeObject@@@@AEAAXXZ 0x14122ebc0
-// MS2-PIN: ??$?0AEAV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$list@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@@std@@@std@@@std@@@std@@_N$0A@@?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$list@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@@std@@@std@@@std@@@std@@_N@std@@QEAA@AEAV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$list@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@@std@@@std@@@std@@@1@$$QEA_N@Z 0x1412329c0
+// MS2-PIN: ??$?0AEAV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$set@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@U?$less@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@4@@std@@@std@@@std@@@std@@@std@@_N$0A@@?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$set@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@U?$less@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@4@@std@@@std@@@std@@@std@@@std@@_N@std@@QEAA@AEAV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$set@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@U?$less@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@4@@std@@@std@@@std@@@std@@@1@$$QEA_N@Z 0x1412329c0
 // MS2-PIN: ??0CPair@?$CRBTree@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$MS2Ptr@VCFunctionCubeObject@@@@V?$CElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@V?$CElementTraits@V?$MS2Ptr@VCFunctionCubeObject@@@@@2@@ATL@@IEAA@AEBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@2@AEBV?$MS2Ptr@VCFunctionCubeObject@@@@@Z 0x141234bf0
 // MS2-PIN: ??1CPair@?$CRBTree@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$MS2Ptr@VCFunctionCubeObject@@@@V?$CElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@V?$CElementTraits@V?$MS2Ptr@VCFunctionCubeObject@@@@@2@@ATL@@IEAA@XZ 0x141234fa0
 // MS2-PIN: ?GetKeyAt@?$CRBTree@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$MS2Ptr@VCFunctionCubeObject@@@@V?$CElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@V?$CElementTraits@V?$MS2Ptr@VCFunctionCubeObject@@@@@2@@ATL@@QEBAAEBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@2@PEAU__POSITION@@@Z 0x141235df0
@@ -114,14 +116,14 @@
 // MS2-PIN: ?Add@?$CAtlArray@V?$MS2Ptr@VCFunctionCubeObject@@@@V?$CElementTraits@V?$MS2Ptr@VCFunctionCubeObject@@@@@ATL@@@ATL@@QEAA_KAEBV?$MS2Ptr@VCFunctionCubeObject@@@@@Z 0x141235780
 // MS2-PIN: ?RelocateElements@?$CElementTraitsBase@V?$MS2Ptr@VCNurturingCubeObject@@@@@ATL@@SAXPEAV?$MS2Ptr@VCNurturingCubeObject@@@@0_K@Z 0x1412380a0
 // MS2-PIN: ?Successor@?$CRBTree@V?$MS2Ptr@VUnk_FcTag@@@@V?$MS2Ptr@VUnk_FcArea@@@@V?$CElementTraits@V?$MS2Ptr@VUnk_FcTag@@@@@ATL@@V?$CElementTraits@V?$MS2Ptr@VUnk_FcArea@@@@@4@@ATL@@IEBAPEAVCNode@12@PEAV312@@Z 0x141238830
-// MS2-PIN: ?_Get_first@?$_Compressed_pair@U?$less@H@std@@V?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBHV?$list@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$list@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@@std@@@std@@@2@$00@2@$00@std@@QEAAAEAU?$less@H@2@XZ 0x1412394f0
-// MS2-PIN: ?_Getcomp@?$_Tree_comp_alloc@V?$_Tmap_traits@HV?$list@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$list@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@@std@@@2@$0A@@std@@@std@@QEAAAEAU?$less@H@2@XZ 0x1412395d0
+// MS2-PIN: ?_Get_first@?$_Compressed_pair@U?$less@H@std@@V?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBHV?$set@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@U?$less@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@4@@std@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$set@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@U?$less@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@4@@std@@@std@@@std@@@2@$00@2@$00@std@@QEAAAEAU?$less@H@2@XZ 0x1412394f0
+// MS2-PIN: ?_Getcomp@?$_Tree_comp_alloc@V?$_Tmap_traits@HV?$set@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@U?$less@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@4@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$set@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@U?$less@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@4@@std@@@std@@@2@$0A@@std@@@std@@QEAAAEAU?$less@H@2@XZ 0x1412395d0
 // MS2-PIN: ??4?$MS2Ptr@VUIBootyPopup@@@@QEAAAEAV0@H@Z 0x14122ddb0
-// MS2-PIN: ??$?0$$V@?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBHV?$list@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$list@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@@std@@@std@@@2@$00@std@@QEAA@U_Zero_then_variadic_args_t@1@@Z 0x141232990
-// MS2-PIN: ??$?0AEBU?$less@H@std@@U_Zero_then_variadic_args_t@1@@?$_Compressed_pair@U?$less@H@std@@V?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBHV?$list@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$list@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@@std@@@std@@@2@$00@2@$00@std@@QEAA@U_One_then_variadic_args_t@1@AEBU?$less@H@1@$$QEAU_Zero_then_variadic_args_t@1@@Z 0x141232a10
-// MS2-PIN: ??$_Insert_hint@AEAU?$pair@$$CBHV?$list@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@@std@@PEAU?$_Tree_node@U?$pair@$$CBHV?$list@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@@std@@PEAX@2@@?$_Tree@V?$_Tmap_traits@HV?$list@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$list@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@@std@@@2@$0A@@std@@@std@@IEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$list@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@@std@@@std@@@std@@@1@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$list@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@@std@@@std@@@std@@@1@AEAU?$pair@$$CBHV?$list@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@@1@PEAU?$_Tree_node@U?$pair@$$CBHV?$list@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@@std@@PEAX@1@@Z 0x141233080
-// MS2-PIN: ??$_Insert_nohint@AEAU?$pair@$$CBHV?$list@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@@std@@PEAU?$_Tree_node@U?$pair@$$CBHV?$list@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@@std@@PEAX@2@@?$_Tree@V?$_Tmap_traits@HV?$list@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$list@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@@std@@@2@$0A@@std@@@std@@IEAA?AU?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$list@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@@std@@@std@@@std@@@std@@_N@1@_NAEAU?$pair@$$CBHV?$list@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@@1@PEAU?$_Tree_node@U?$pair@$$CBHV?$list@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@@std@@PEAX@1@@Z 0x141233cc0
-// MS2-PIN: ??$_Try_emplace@AEBH$$V@?$map@HV?$list@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$list@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@@std@@@2@@std@@QEAA?AU?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$list@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@@std@@@std@@@std@@@std@@_N@1@AEBH@Z 0x141234180
+// MS2-PIN: ??$?0$$V@?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBHV?$set@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@U?$less@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@4@@std@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$set@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@U?$less@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@4@@std@@@std@@@std@@@2@$00@std@@QEAA@U_Zero_then_variadic_args_t@1@@Z 0x141232990
+// MS2-PIN: ??$?0AEBU?$less@H@std@@U_Zero_then_variadic_args_t@1@@?$_Compressed_pair@U?$less@H@std@@V?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBHV?$set@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@U?$less@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@4@@std@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$set@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@U?$less@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@4@@std@@@std@@@std@@@2@$00@2@$00@std@@QEAA@U_One_then_variadic_args_t@1@AEBU?$less@H@1@$$QEAU_Zero_then_variadic_args_t@1@@Z 0x141232a10
+// MS2-PIN: ??$_Insert_hint@AEAU?$pair@$$CBHV?$set@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@U?$less@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@4@@std@@@std@@PEAU?$_Tree_node@U?$pair@$$CBHV?$set@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@U?$less@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@4@@std@@@std@@PEAX@2@@?$_Tree@V?$_Tmap_traits@HV?$set@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@U?$less@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@4@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$set@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@U?$less@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@4@@std@@@std@@@2@$0A@@std@@@std@@IEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$set@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@U?$less@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@4@@std@@@std@@@std@@@std@@@1@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$set@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@U?$less@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@4@@std@@@std@@@std@@@std@@@1@AEAU?$pair@$$CBHV?$set@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@U?$less@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@4@@std@@@1@PEAU?$_Tree_node@U?$pair@$$CBHV?$set@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@U?$less@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@4@@std@@@std@@PEAX@1@@Z 0x141233080
+// MS2-PIN: ??$_Insert_nohint@AEAU?$pair@$$CBHV?$set@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@U?$less@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@4@@std@@@std@@PEAU?$_Tree_node@U?$pair@$$CBHV?$set@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@U?$less@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@4@@std@@@std@@PEAX@2@@?$_Tree@V?$_Tmap_traits@HV?$set@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@U?$less@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@4@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$set@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@U?$less@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@4@@std@@@std@@@2@$0A@@std@@@std@@IEAA?AU?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$set@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@U?$less@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@4@@std@@@std@@@std@@@std@@@std@@_N@1@_NAEAU?$pair@$$CBHV?$set@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@U?$less@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@4@@std@@@1@PEAU?$_Tree_node@U?$pair@$$CBHV?$set@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@U?$less@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@4@@std@@@std@@PEAX@1@@Z 0x141233cc0
+// MS2-PIN: ??$_Try_emplace@AEBH$$V@?$map@HV?$set@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@U?$less@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@4@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$set@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@U?$less@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@4@@std@@@std@@@2@@std@@QEAA?AU?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$set@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@U?$less@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@4@@std@@@std@@@std@@@std@@@std@@_N@1@AEBH@Z 0x141234180
 // MS2-PIN: ??B?$MS2Ptr@VRideOffActionHomemade@@@@QEBAPEAVRideOffActionHomemade@@XZ 0x14122e080
 // MS2-PIN: ??B?$MS2Ptr@VRideOffActionNurturing@@@@QEBAPEAVRideOffActionNurturing@@XZ 0x14122e090
 // MS2-PIN: ??B?$MS2Ptr@VUIBootyPopup@@@@QEBAPEAVUIBootyPopup@@XZ 0x14122e0a0
@@ -130,8 +132,9 @@
 // MS2-PIN: ??C?$MS2Ptr@VRideOffActionNurturing@@@@QEBAPEAVRideOffActionNurturing@@XZ 0x14122e0d0
 // MS2-PIN: ??C?$MS2Ptr@VUIBootyPopup@@@@QEBAPEAVUIBootyPopup@@XZ 0x14122e0e0
 // MS2-PIN: ??C?$MS2Ptr@VUIUGCCubeNoticePopup@@@@QEBAPEAVUIUGCCubeNoticePopup@@XZ 0x14122e0f0
-// MS2-PIN: ??0?$allocator@U?$_Tree_node@U?$pair@$$CBHV?$list@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@@std@@@std@@PEAX@std@@@std@@QEAA@XZ 0x141234b10
+// MS2-PIN: ??0?$allocator@U?$_Tree_node@U?$pair@$$CBHV?$set@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@U?$less@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@V?$allocator@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@4@@std@@@std@@PEAX@std@@@std@@QEAA@XZ 0x141234b10
 // MS2-PIN: ?IsEmpty@?$CRBTree@V?$MS2Ptr@VUnk_FcTag@@@@V?$MS2Ptr@VUnk_FcArea@@@@V?$CElementTraits@V?$MS2Ptr@VUnk_FcTag@@@@@ATL@@V?$CElementTraits@V?$MS2Ptr@VUnk_FcArea@@@@@4@@ATL@@QEBA_NXZ 0x141236a30
+// MS2-PIN: ??0Unk_FcVec3@@QEAA@AEBVPoint3@efd@@@Z 0x14027dcf0
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\functioncubeobject.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
 #include "functioncubeobject.h"
@@ -146,6 +149,7 @@
 #include <egf/EntityIDFactory.h>
 #include "ms2/commonfiles/rideonaction.h"
 #include "ms2/client/ms2/statedata.h"
+#include "ms2/client/ms2/stateusefurnituredata.h"
 #include "ms2/placeholder/unk_1402a9d70.h"
 #include "ms2/placeholder/cmypckeyinputcontroller.h"
 #include "ms2/placeholder/cequipitem.h"
@@ -174,7 +178,7 @@ class Unk_FcItemRow : public CPtred
 {
 public:
     int FUN_1408b4f20();                                            // item id
-    int FUN_1408b4f50();                                            // category
+    __int64 FUN_1408b4f50();                                        // the item uid
     __int64 m_18;                                                   // +0x18 (the store id FUN_141228100 resets)
     char m_pad_20[0xe0];
     MS2Ptr<Unk_FcItemText> m_spText;                                // +0x100
@@ -211,11 +215,21 @@ class Unk_FcFxMgr
 public:
     int FUN_1411a49c0(Unk_FcSoundReq* pRequest);                    // play, returns the handle
     void FUN_1411a6060(int nHandle);                                // stop
-    void FUN_1411a5580(int nId, int nOwner, int bFlag, const Vector3& vPos, float fRange);
+    int FUN_1411a5580(int nId, int nOwner, int bFlag, Vector3 vPos, float fRange);      // the exe copies vPos to a temp (rep movsb)
 };
 Unk_FcFxMgr* FUN_1403ed280();
 void FUN_140a52ef0(Unk_FcSoundReq* p);                              // construct
 void FUN_1405a89e0(Unk_FcSoundReq* p);                              // destroy
+// The same request as a scoped local: ctor 0x140a52ef0, dtor 0x1405a89e0 (the 0x68 block as pointers: no /GS buffer).
+struct Unk_FcSoundReqL
+{
+    Unk_FcSoundReqL();
+    ~Unk_FcSoundReqL();
+    CString m_strName;                                              // +0x00
+    int m_nType;                                                    // +0x08
+    int m_nPad0c;                                                   // +0x0c
+    struct { void *p0, *p1, *p2, *p3, *p4, *p5, *p6, *p7, *p8, *p9, *pa, *pb, *pc; } m_unk;   // +0x10
+};
 void FUN_1409fabf0(void* pSub, void* pAnchor);                      // construct the 0x68 block from an anchor
 void* FUN_14098d8d0(void* pCell, NiAVObject* pRoot);
 extern char DAT_143afa4d8;
@@ -267,6 +281,7 @@ class Unk_FcAnimSvc
 {
 public:
     efd::Category GetCatAnim();                                  // 0x141235eb0 the animation channel
+    struct Unk_FcAnimStr FUN_140b7cc50(const egf::EntityID& kId);   // current animation
     char m_pad[0x120];
     efd::Category m_catAnim;                                        // +0x120
 };
@@ -275,20 +290,21 @@ Unk_FcAnimSvc* FUN_141b6f910();
 void FUN_1409989e0(Unk_FcAnimName*, const char*);
 void FUN_1409a1fc0(Unk_FcAnimSvc*, const egf::EntityID&, Unk_FcAnimName*, float, bool bForce);
 void FUN_1408a8900(Unk_FcAnimName*);
+// The same string as a scoped local: utf8string(const char*) 0x1409989e0, ~utf8string 0x1408a8900.
+struct Unk_FcAnimStr : Unk_FcAnimName { Unk_FcAnimStr(const char* psz); ~Unk_FcAnimStr(); };
 
 bool FUN_1402a5b40(const CString& a, const char* b);                // CString != C string
-unsigned char FUN_1401647e0(const CString& a, const CString& b);             // CString == CString
 
-// The use-request the cube sends (CString id + count); constructed / destroyed by exe helpers.
-struct Unk_FcCubeUseInfo
+// The use-request the cube sends (CString id + count), as statenurturing declares it.
+struct Unk_FcUseInfo
 {
+    Unk_FcUseInfo();                                                // 0x140ac2e80
+    ~Unk_FcUseInfo();                                               // 0x140ac3050
     CString m_strId;                                                // +0x00
     int m_nCount;                                                   // +0x08
     int m_nPad0c;
 };
-void FUN_140ac2e80(Unk_FcCubeUseInfo* p);                               // construct
-void FUN_140ac3050(Unk_FcCubeUseInfo* p);                               // destroy
-void FUN_1401fc610(Unk_FcCubeUseInfo* pInfo, COutPacket* pPacket);      // serialize
+void FUN_1401fc610(Unk_FcUseInfo* pInfo, COutPacket* pPacket);          // serialize
 void FUN_140710590(COutPacket& packet);                             // send
 
 struct Unk_FcCellInt { char m_pad[0x58]; };
@@ -349,10 +365,10 @@ template <class T> T* Unk_FcDialog(int nId)
 // The UI message sent to the swf entity registered for an event id (UIMsg: 0x50 bytes; dtor 0x140c30570).
 struct Unk_FcUIMsg
 {
+    Unk_FcUIMsg();                                                  // 0x1422e4490
     ~Unk_FcUIMsg();                                                 // 0x140c30570
-    char m_pad[0x50];
+    void* m_apPad[10];                                              // 0x50 bytes (no char buffer: the exe frame has no GS cookie)
 };
-void FUN_1422e4490(Unk_FcUIMsg* p);                                 // construct
 void FUN_1422b82b0(Unk_FcUIMsg* p, const char* psz);                // append an argument
 void* FUN_1408e57f0();
 UISwfEntity* FUN_1422b9e20(void* pMgr, int nEvent);                 // the entity registered for the event
@@ -508,14 +524,6 @@ unsigned char CFunctionCubeObject::FUN_141236b10()
     return m_b21;
 }
 
-// @0x14122def0
-// MS2-FUNCTIONAL: the exe keeps the string assignment in an out-of-line CStringT::operator= wrapper
-CStringW& FUN_14122def0(CStringW& strDst, const CStringW& strSrc)
-{
-    strDst = strSrc;
-    return strDst;
-}
-
 // @0x141225610
 // MS2-FUNCTIONAL: row copy and box setup written with typed stand-ins; frame layout and the temporaries differ
 int CFunctionCubeObject::vfunc_2(Unk_Entity* pEntity, const Unk_FcRow* pRow, int nArg, __int64 nArg2, CubeItemInfo* pItem)
@@ -545,7 +553,7 @@ int CFunctionCubeObject::vfunc_2(Unk_Entity* pEntity, const Unk_FcRow* pRow, int
     m_spData->m_nF4 = pRow->m_nF4;
     m_spData->m_nF8 = pRow->m_nF8;
     m_spData->m_skill = pRow->m_skill;
-    FUN_14122def0(m_spData->m_strNotice, pRow->m_strNotice);
+    m_spData->m_notice = pRow->m_notice;
     m_spItem->FUN_1408b3700(pItem);
     if (pRow->m_nKind == 3 && pRow->m_nSub == 1)
         m_spData->m_bBuff = 1;
@@ -599,22 +607,17 @@ int CFunctionCubeObject::vfunc_2(Unk_Entity* pEntity, const Unk_FcRow* pRow, int
 }
 
 // @0x141226340
-// MS2-FUNCTIONAL: string pieces glued with FUN_ operators; frame layout differs
 CStringW CFunctionCubeObject::vfunc_6()
 {
     Unk_FcItemSvcPtr spSvc(FUN_1401cd040(&DAT_143b059e8));
-    if (!spSvc.FUN_140ef4cb0(0))
-    {
-        Unk_FcItemRow* pRow = spSvc.FUN_1401cd1a0()->FUN_1410b8b00(FUN_14112e110());
-        if (pRow == 0)
-            return CStringW(L"");
-        if (FUN_140966fc0() != 3 && FUN_140966fc0() != 9)
-            return CStringW(L"");
-        int nItemId = pRow->FUN_1408b4f20();
-        CStringW strName = FUN_1401a9d70()->FUN_141811980(1, nItemId);
-        return FUN_1401d0080(FUN_14061ad70(GetStringCommon(0x63e), L" - "), strName);
-    }
-    return CStringW(L"");
+    if (spSvc.FUN_140ef4cb0(0))
+        return L"";
+    Unk_FcItemRow* pRow = spSvc.FUN_1401cd1a0()->FUN_1410b8b00(FUN_14112e110());
+    if (pRow == 0)
+        return L"";
+    if (FUN_140966fc0() == 3 || FUN_140966fc0() == 9)
+        return FUN_1401d0080(FUN_14061ad70(GetStringCommon(0x63e), L" - "), FUN_1401a9d70()->FUN_141811980(1, pRow->FUN_1408b4f20()));
+    return L"";
 }
 
 // @0x141226580
@@ -624,14 +627,11 @@ CStringW CFunctionCubeObject::vfunc_7()
 }
 
 // @0x1412265d0
-// MS2-FUNCTIONAL: packet written with the typed COutPacket; frame layout differs
 void CFunctionCubeObject::vfunc_8(CString str)
 {
     if (FUN_140966fc0() == 3 || FUN_140966fc0() == 9)
     {
-        alignas(8) char kInfoBuf[sizeof(Unk_FcCubeUseInfo)];   // FUN_140ac2e80 / FUN_140ac3050 construct and destroy it: no implicit dtor
-        Unk_FcCubeUseInfo& kInfo = *reinterpret_cast<Unk_FcCubeUseInfo*>(kInfoBuf);
-        FUN_140ac2e80(&kInfo);
+        Unk_FcUseInfo kInfo;
         kInfo.m_strId = m_strId;
         kInfo.m_nCount = 1;
         COutPacket kPacket(static_cast<int>(SendOp::FunctionCube), 0);
@@ -639,19 +639,18 @@ void CFunctionCubeObject::vfunc_8(CString str)
         kPacket.WriteInt32(1);
         FUN_1401fc610(&kInfo, &kPacket);
         FUN_140710590(kPacket);
-        FUN_140ac3050(&kInfo);
     }
 }
 
 // @0x1412266c0
-// MS2-FUNCTIONAL: branch/temporary layout differs from the exe (equivalent behaviour)
-bool CFunctionCubeObject::vfunc_9(CString str)
+BOOL CFunctionCubeObject::vfunc_9(CString str)
 {
-    return FUN_1401647e0(m_strId, str) != 0;
+    if (m_strId != str)
+        return TRUE;
+    return FALSE;
 }
 
 // @0x141226730
-// MS2-FUNCTIONAL: random pick over the state's sound list; frame layout differs
 void CFunctionCubeObject::vfunc_10(int nState, bool bFlag)
 {
     if (nState < 0 || nState >= 6)
@@ -669,10 +668,8 @@ void CFunctionCubeObject::vfunc_10(int nState, bool bFlag)
     else if (m_spData->m_nCubeId != 0)
     {
         int nPick = rand() % arrAnims.GetCount();
-        Unk_FcAnimName kName;
-        FUN_1409989e0(&kName, arrAnims[nPick]);
+        Unk_FcAnimStr kName(arrAnims[nPick]);
         FUN_1409a1fc0(FUN_141b6f910(), *FUN_1408b76f0(m_ent.FUN_1408a9280()), &kName, 1.0f, true);
-        FUN_1408a8900(&kName);
     }
     vfunc_11(nState);
 }
@@ -686,14 +683,11 @@ void CFunctionCubeObject::vfunc_11(int nState)
     CString strSound = m_spData->m_sounds[nState];
     if (!strSound.IsEmpty())
     {
-        alignas(8) char kReqBuf[sizeof(Unk_FcSoundReq)];   // FUN_140a52ef0 / FUN_1405a89e0 construct and destroy it: no implicit dtor
-        Unk_FcSoundReq& kReq = *reinterpret_cast<Unk_FcSoundReq*>(kReqBuf);
-        FUN_140a52ef0(&kReq);
+        Unk_FcSoundReqL kReq;
         kReq.m_strName = strSound;
         kReq.m_nType = 0;
-        FUN_1409fabf0(kReq.m_unk, FUN_14098d8d0(&DAT_143afa4d8, FUN_141b6efc0(m_ent.FUN_1408a9090())));
-        m_nSoundHandle = FUN_1403ed280()->FUN_1411a49c0(&kReq);
-        FUN_1405a89e0(&kReq);
+        FUN_1409fabf0(&kReq.m_unk, FUN_14098d8d0(&DAT_143afa4d8, FUN_141b6efc0(m_ent.FUN_1408a9090())));
+        m_nSoundHandle = FUN_1403ed280()->FUN_1411a49c0(reinterpret_cast<Unk_FcSoundReq*>(&kReq));
     }
 }
 
@@ -811,8 +805,15 @@ int CFunctionCubeObject::vfunc_15()
     return 0;
 }
 
+// The pos / rot properties are efd::Point3 locals; each goes to the box through NiPoint3(const efd::Point3&).
+struct Unk_FcVec3 { float x, y, z; Unk_FcVec3(const efd::Point3& pt); };   // NiPoint3 implicitly built from a point (0x14027dcf0)
+struct Unk_FcBoxView                                                // CBoxCollision vtable view: vfunc_3 takes its points by implicit conversion
+{
+    virtual void vfunc_0(); virtual void vfunc_1(); virtual void vfunc_2();
+    virtual void vfunc_3(Unk_FcVec3 ptPos, Unk_FcVec3 ptDir, float fScale);   // 0x140ada620 place by angles
+};
+
 // @0x141226f90
-// MS2-FUNCTIONAL: pose refresh through unit-local stand-ins; frame layout differs
 MS2Ptr<CBoxCollision> CFunctionCubeObject::FUN_141226f90()
 {
     Vector3 vPos;
@@ -820,12 +821,12 @@ MS2Ptr<CBoxCollision> CFunctionCubeObject::FUN_141226f90()
     FUN_1409618c0(m_ent.FUN_1408a9280(), 0xfd95ca52, &vPos);
     FUN_1409618c0(m_ent.FUN_1408a9280(), 0x68c7c29d, &vRot);
     if (m_spBox.get() != 0)
-        m_spBox->vfunc_3(vPos, vRot, 1.0f);
+        reinterpret_cast<Unk_FcBoxView*>(m_spBox.operator->())->vfunc_3(reinterpret_cast<const efd::Point3&>(vPos),
+            reinterpret_cast<const efd::Point3&>(vRot), 1.0f);
     return m_spBox;
 }
 
 // @0x141227100
-// MS2-FUNCTIONAL: the position copy and the float temporary differ
 void CFunctionCubeObject::FUN_141227100(int nSound)
 {
     Vector3 vPos;
@@ -874,7 +875,6 @@ void CFunctionCubeObject::FUN_141227360()
 }
 
 // @0x1412273b0
-// MS2-FUNCTIONAL: item text lookup written with unit-local MS2Ptr stand-ins; frame layout differs
 void CFunctionCubeObject::FUN_1412273b0()
 {
     if (FUN_140966fc0() != 0xc)
@@ -895,11 +895,12 @@ void CFunctionCubeObject::FUN_1412273b0()
         Vector3 vPos;
         FUN_1409618c0(m_ent.FUN_1408a9280(), 0xfd95ca52, &vPos);
         m_spNotice.AssignRaw(new UIUGCCubeNoticePopup);
-        FUN_140fb4c50(m_spNotice.operator->(), Vector3(vPos.x, vPos.y, vPos.z + 150.0f));
-        FUN_140fb4cc0(m_spNotice.operator->(), m_spData->m_strNotice, spText->FUN_1408b49c0());
+        Vector3 vAt(vPos.x, vPos.y, vPos.z + 150.0f);
+        FUN_140fb4c50(m_spNotice.operator->(), vAt);
+        FUN_140fb4cc0(m_spNotice.operator->(), m_spData->m_notice.m_strType, spText->FUN_1408b49c0());
         FUN_140fb4bb0(m_spNotice.operator->());
     }
-    FUN_140fb4cc0(m_spNotice.operator->(), m_spData->m_strNotice, spText->FUN_1408b49c0());
+    FUN_140fb4cc0(m_spNotice.operator->(), m_spData->m_notice.m_strType, spText->FUN_1408b49c0());
     FUN_140fb5080(m_spNotice.operator->(), 1);
 }
 
@@ -1036,10 +1037,9 @@ void CFunctionCubeObject::FUN_141227cd0()
 }
 
 // @0x141227dd0
-// MS2-FUNCTIONAL: branch/temporary layout differs from the exe (equivalent behaviour)
 void CFunctionCubeObject::FUN_141227dd0(int nSkip)
 {
-    bool bShow = (m_nState == 1 || m_nState == 4) ? true : false;
+    bool bShow = m_nState == 1 || m_nState == 4;
     if (nSkip != 0)
         bShow = false;
     if (m_spData->m_nE8 != 0)
@@ -1075,7 +1075,6 @@ void CFunctionCubeObject::FUN_141228060()
 }
 
 // @0x141228100
-// MS2-FUNCTIONAL: branch/temporary layout differs from the exe (equivalent behaviour)
 void CFunctionCubeObject::FUN_141228100()
 {
     Unk_FcItemSvcPtr spSvc(FUN_1401cd040(&DAT_143b059e8));
@@ -1092,17 +1091,15 @@ void CFunctionCubeObject::FUN_141228100()
 }
 
 // @0x141228200
-// MS2-FUNCTIONAL: branch/temporary layout differs from the exe (equivalent behaviour)
 void CFunctionCubeObject::FUN_141228200()
 {
     UISwfEntity* pEntry = FUN_1422b9e20(FUN_1408e57f0(), 0x620001f);
     if (pEntry != 0)
     {
         Unk_FcUIMsg kMsg;
-        FUN_1422e4490(&kMsg);
         FUN_1422b82b0(&kMsg, "setCubeID");
         FUN_1422b82b0(&kMsg, (const char*)m_strId);
-        static_cast<IMessageListener*>(pEntry)->OnMessage(0, reinterpret_cast<UIMsg*>(&kMsg));
+        pEntry->OnMessage(0, reinterpret_cast<UIMsg*>(&kMsg));
     }
     FUN_1422b9fd0(FUN_1408e57f0(), 0x620001f);
 }
@@ -1140,10 +1137,6 @@ int FUN_14166c930(Unk_FcActor* p);                                  // current s
 __int64 FUN_141656ad0(Unk_FcActor* p);                              // account id
 unsigned FUN_141662750(Unk_FcActor* p, int nMastery);               // mastery level
 void FUN_14152c280(Unk_FcActor* p, RideOffAction* pAction);         // queue a ride-off action
-static void Unk_FcActorSetState(Unk_FcActor* p, int nState, void* pData, int nArg)
-{
-    p->vfunc_59(nState, static_cast<StateData*>(pData), nArg, 0);
-}
 void* FUN_1409670e0();                                              // the housing manager
 unsigned char FUN_1410c35c0(void* pHousing);                        // design mode
 __int64 FUN_1410c3180(void* pHousing);                              // owner account id
@@ -1173,7 +1166,19 @@ struct Unk_FcHmInfo
     int m_nFC;                                                      // +0xfc
     int m_nItemId;                                                  // +0x100
 };
-void* FUN_1409670c0();
+// The mastery table's row pointer (an MS2Ptr returned by value).
+struct Unk_FcMasteryPtr
+{
+    ~Unk_FcMasteryPtr();                                            // 0x14066d5b0
+    Unk_FcMasteryRow* FUN_140b6dda0();                              // the row (NULL when unknown)
+    Unk_FcMasteryRow* FUN_14066d9a0();                              // operator->
+    void* m_ap[2];
+};
+struct Unk_FcMasteryTable
+{
+    Unk_FcMasteryPtr FUN_14066aa00(int nItemId);                    // the row of an item
+};
+Unk_FcMasteryTable* FUN_1409670c0();
 void FUN_14066aa00(void* pSvc, Unk_FcSp16* pOut, int nItemId);
 Unk_FcMasteryRow* FUN_140b6dda0(Unk_FcSp16* p);                     // != NULL
 Unk_FcMasteryRow* FUN_14066d9a0(Unk_FcSp16* p);
@@ -1190,7 +1195,7 @@ void FUN_140ca62a0(Unk_FcSp24* p);
 extern __int64 DAT_143ab2898;                                       // the player's meso
 __int64 FUN_140869440();                                            // now
 int FUN_14086bd90(int nId);                                         // growth seconds of a table id
-CStringW FUN_14086aec0(__int64 nSpan, int, int, int, int);          // format a time span
+CStringW FUN_14086aec0(ATL::CTimeSpan span, bool bA, bool bB, bool bDays, bool bHours);   // format a time span
 CStringW FUN_14052bd00(int nStringId, const CStringW& strArg);
 CStringW FUN_14086d060(int nStringId, const __int64* pnValue);
 CStringW GetStringCommonByKey(const CStringW& strKey);                     // string table lookup by key
@@ -1238,14 +1243,11 @@ void CHomemadeCubeObject::vfunc_4()
     {
         if (FUN_141229120() != 0)
         {
-            alignas(8) char kReqBuf[sizeof(Unk_FcSoundReq)];   // FUN_140a52ef0 / FUN_1405a89e0 construct and destroy it: no implicit dtor
-            Unk_FcSoundReq& kReq = *reinterpret_cast<Unk_FcSoundReq*>(kReqBuf);
-            FUN_140a52ef0(&kReq);
+            Unk_FcSoundReqL kReq;
             kReq.m_strName = strSound;
             kReq.m_nType = 0;
-            FUN_1409fabf0(kReq.m_unk, FUN_14098d8d0(&DAT_143afa4d8, FUN_141b6efc0(m_ent.FUN_1408a9090())));
-            m_nSoundHandle2 = FUN_1403ed280()->FUN_1411a49c0(&kReq);
-            FUN_1405a89e0(&kReq);
+            FUN_1409fabf0(&kReq.m_unk, FUN_14098d8d0(&DAT_143afa4d8, FUN_141b6efc0(m_ent.FUN_1408a9090())));
+            m_nSoundHandle2 = FUN_1403ed280()->FUN_1411a49c0(reinterpret_cast<Unk_FcSoundReq*>(&kReq));
         }
     }
 }
@@ -1303,25 +1305,17 @@ void CHomemadeCubeObject::vfunc_8(CString str)
         return;
     if (FUN_141229000(1) == 0)
         return;
-    Unk_FcSp24 kInfoRef;
-    int nItemId = FUN_1409658d0(FUN_140ca6580(this, &kInfoRef))->m_nItemId;
-    FUN_140ca62a0(&kInfoRef);
+    int nItemId = FUN_140ca6580()->m_n100;
     if (m_nState == 0)
     {
-        Unk_FcSp16 kItem;
-        FUN_14066aa00(FUN_1409670c0(), &kItem, nItemId);
-        if (FUN_140b6dda0(&kItem) != 0)
+        Unk_FcMasteryPtr kItem = FUN_1409670c0()->FUN_14066aa00(nItemId);
+        if (kItem.FUN_140b6dda0() != 0)
         {
-            if (DAT_143ab2898 < FUN_14066d9a0(&kItem)->m_nPrice)
+            if (DAT_143ab2898 < kItem.FUN_14066d9a0()->m_nPrice)
             {
-                FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_mastery_error_lack_meso")), 1, 1);
+                FUN_1412751f0(GetStringCommonByKey(L"s_mastery_error_lack_meso"), 1, 1);
             }
-            else if (FUN_1416764d0(pActor) == 0)
-            {
-                MS2Ptr<StateHomemadeData> spData(new StateHomemadeData(vfunc_16(), str, nItemId));
-                Unk_FcActorSetState(pActor, 0x37, spData.get(), 0x8e);
-            }
-            else
+            else if (FUN_1416764d0(pActor) != 0)
             {
                 MS2Ptr<RideOffActionHomemade> spAct(new RideOffActionHomemade(0));
                 spAct->m_s28 = str;
@@ -1330,20 +1324,16 @@ void CHomemadeCubeObject::vfunc_8(CString str)
                 spAct->m_n38 = 0x8e;
                 FUN_14152c280(pActor, spAct);
             }
+            else
+            {
+                MS2Ptr<StateHomemadeData> spData(new StateHomemadeData(vfunc_16(), str, nItemId));
+                pActor->vfunc_59(0x37, spData.get(), 0x8e, 0);
+            }
         }
-        FUN_14066d5b0(&kItem);
     }
     else if (m_nState == 2)
     {
-        if (FUN_1416764d0(pActor) == 0)
-        {
-            if (FUN_14166c930(pActor) != 0x37)
-            {
-                MS2Ptr<StateHomemadeData> spData(new StateHomemadeData(vfunc_16(), str, nItemId));
-                Unk_FcActorSetState(pActor, 0x37, spData.get(), 0x8f);
-            }
-        }
-        else
+        if (FUN_1416764d0(pActor) != 0)
         {
             MS2Ptr<RideOffActionHomemade> spAct(new RideOffActionHomemade(0));
             spAct->m_s28 = str;
@@ -1351,6 +1341,11 @@ void CHomemadeCubeObject::vfunc_8(CString str)
             spAct->m_n34 = vfunc_16();
             spAct->m_n38 = 0x8f;
             FUN_14152c280(pActor, spAct);
+        }
+        else if (FUN_14166c930(pActor) != 0x37)
+        {
+            MS2Ptr<StateHomemadeData> spData(new StateHomemadeData(vfunc_16(), str, nItemId));
+            pActor->vfunc_59(0x37, spData.get(), 0x8f, 0);
         }
     }
 }
@@ -1370,14 +1365,11 @@ void CHomemadeCubeObject::vfunc_11(int nState)
     {
         if (FUN_141229120() != 0)
         {
-            alignas(8) char kReqBuf[sizeof(Unk_FcSoundReq)];   // FUN_140a52ef0 / FUN_1405a89e0 construct and destroy it: no implicit dtor
-            Unk_FcSoundReq& kReq = *reinterpret_cast<Unk_FcSoundReq*>(kReqBuf);
-            FUN_140a52ef0(&kReq);
+            Unk_FcSoundReqL kReq;
             kReq.m_strName = strSound;
             kReq.m_nType = 0;
-            FUN_1409fabf0(kReq.m_unk, FUN_14098d8d0(&DAT_143afa4d8, FUN_141b6efc0(m_ent.FUN_1408a9090())));
-            m_nSoundHandle2 = FUN_1403ed280()->FUN_1411a49c0(&kReq);
-            FUN_1405a89e0(&kReq);
+            FUN_1409fabf0(&kReq.m_unk, FUN_14098d8d0(&DAT_143afa4d8, FUN_141b6efc0(m_ent.FUN_1408a9090())));
+            m_nSoundHandle2 = FUN_1403ed280()->FUN_1411a49c0(reinterpret_cast<Unk_FcSoundReq*>(&kReq));
         }
     }
 }
@@ -1464,13 +1456,12 @@ Unk_FcEntMgr* FUN_1409670f0();
 void FUN_1411cf570(Unk_FcEntMgr* pMgr, Unk_Entity* pEntity);        // remove
 void FUN_1411cf2d0(Unk_FcEntMgr* pMgr, Unk_Entity* pEntity, int nFlag);
 Unk_EntRef* FUN_1411cec80(Unk_FcEntMgr* pMgr, Unk_EntRef* pOut, Unk_FcAnimName* pClass, egf::EntityID kId, bool bMaster);   // EntityWorldManager::FUN_1411cec80
-Unk_FcAnimName* FUN_140b7cc50(Unk_FcAnimSvc* pSvc, Unk_FcAnimName* pOut, egf::EntityID kId);  // current animation
 unsigned char FUN_140de8e30(Unk_FcAnimName* pName, const char* psz);                         // names are equal
 
 // @0x14122e000
-unsigned char FUN_14122e000(Unk_FcAnimName* pName, const char* psz)
+bool FUN_14122e000(const Unk_FcAnimName& kName, const char* psz)
 {
-    return FUN_140de8e30(pName, psz) == 0 ? 1 : 0;
+    return FUN_140de8e30(const_cast<Unk_FcAnimName*>(&kName), psz) == 0 ? 1 : 0;
 }
 struct Unk_FcAnimRow
 {
@@ -1582,18 +1573,16 @@ int CBreedingCubeObject::vfunc_2(Unk_Entity* pEntity, const Unk_FcRow* pRow, int
 // MS2-FUNCTIONAL: entity id copy and the animation name temporaries differ
 void CBreedingCubeObject::vfunc_3()
 {
-    if (!m_entPet.FUN_1408b70b0(0) && !m_strAnim.IsEmpty())
+    if (m_entPet.FUN_1408b70b0(0))
+        return;
+    if (m_strAnim.IsEmpty())
+        return;
+    egf::EntityID kId = *FUN_1408b76f0(m_entPet.FUN_1408a9280());
+    bool bDiff = FUN_14122e000(FUN_141b6f910()->FUN_140b7cc50(kId), m_strAnim);
+    if (bDiff)
     {
-        egf::EntityID kId = *FUN_1408b76f0(m_entPet.FUN_1408a9280());
-        Unk_FcAnimName kCur;
-        if (FUN_14122e000(FUN_140b7cc50(FUN_141b6f910(), &kCur, kId), m_strAnim))
-        {
-            Unk_FcAnimName kName;
-            FUN_1409989e0(&kName, m_strAnim);
-            FUN_1409a1fc0(FUN_141b6f910(), kId, &kName, 1.0f, true);
-            FUN_1408a8900(&kName);
-        }
-        FUN_1408a8900(&kCur);
+        Unk_FcAnimStr kName(m_strAnim);
+        FUN_1409a1fc0(FUN_141b6f910(), kId, &kName, 1.0f, true);
     }
 }
 
@@ -1609,75 +1598,49 @@ void CBreedingCubeObject::vfunc_5(float fArg)
     }
 }
 
-// Breeding and Farming build the same tooltip: the strings differ by two ids.
-static CStringW Unk_FcGatherTip(CHomemadeCubeObject* pThis, int nPriceStr, int nTimeStr)
+// @0x141229c10
+CStringW CBreedingCubeObject::vfunc_6()
 {
     Unk_FcActor* pActor = FUN_141bd0cc0(FUN_1403ed2d0());
     if (pActor == 0)
         return CStringW(L"");
-    void* pItemSvc = FUN_1401cd040(&DAT_143b059e8);
-    if (pItemSvc == 0)
-        return CStringW(L"");
-    Unk_FcItemSvcPtr kSvc((Unk_FcItemSvc*)pItemSvc);
+    Unk_FcItemSvcPtr kSvc((Unk_FcItemSvc*)FUN_1401cd040(&DAT_143b059e8));
     if (kSvc.FUN_140ef4cb0(0))
         return CStringW(L"");
-    Unk_FcItemRow* pRow = kSvc.FUN_1401cd1a0()->FUN_1410b8b00(pThis->FUN_14112e110());
+    Unk_FcItemRow* pRow = kSvc.FUN_1401cd1a0()->FUN_1410b8b00(FUN_14112e110());
     if (pRow == 0)
         return CStringW(L"");
     if (FUN_14166c930(pActor) == 0x37)
         return CStringW(L"");
-    if (pThis->vfunc_17() == 0)
-        return GetStringCommonByKey(CStringW(L"s_gathering_object_lack_mastery"));
+    if (vfunc_17() == 0)
+        return GetStringCommonByKey(L"s_gathering_object_lack_mastery");
     if (FUN_1410c35c0(FUN_1409670e0()) != 0)
-        return GetStringCommonByKey(CStringW(L"s_mastery_error_notuse_designmode"));
-    if (pThis->m_nState == 0)
+        return GetStringCommonByKey(L"s_mastery_error_notuse_designmode");
+    if (m_nState == 0)
     {
-        Unk_FcSp24 kInfoRef;
-        int nItemId = FUN_1409658d0(FUN_140ca6580(pThis, &kInfoRef))->m_nItemId;
-        FUN_140ca62a0(&kInfoRef);
-        Unk_FcSp16 kItem;
-        FUN_14066aa00(FUN_1409670c0(), &kItem, nItemId);
-        if (FUN_140b6dda0(&kItem) != 0)
+        int nItemId = FUN_140ca6580()->m_n100;
+        Unk_FcMasteryPtr kItem = FUN_1409670c0()->FUN_14066aa00(nItemId);
+        if (kItem.FUN_140b6dda0() != 0)
         {
-            CStringW strPrice = FUN_14086d060(nPriceStr, &FUN_14066d9a0(&kItem)->m_nPrice);
-            CStringW strName = FUN_1401a9d70()->FUN_141811980(1, pRow->FUN_1408b4f20());
             CStringW strLine;
-            strLine.Format(L"%s %s", (const wchar_t*)strName, (const wchar_t*)strPrice);
-            CStringW strRet = FUN_14052bd00(0x634, strLine);
-            FUN_14066d5b0(&kItem);
-            return strRet;
+            strLine.Format(L"%s %s", (const wchar_t*)FUN_1401a9d70()->FUN_141811980(1, pRow->FUN_1408b4f20()),
+                           (const wchar_t*)FUN_14086d060(0x63f, &kItem.FUN_14066d9a0()->m_nPrice));
+            return FUN_14052bd00(0x634, strLine);
         }
-        FUN_14066d5b0(&kItem);
     }
-    else if (pThis->m_nState == 2)
+    else if (m_nState == 2)
     {
         return FUN_14052bd00(0x634, GetStringCommon(0x641));
     }
-    else if (pThis->m_nState == 1)
+    else if (m_nState == 1)
     {
-        Unk_FcHmInfo* pInfo = (Unk_FcHmInfo*)pThis->m_spData.operator->();
-        __int64 nEnd = pThis->FUN_141228fe0() + FUN_14086bd90(pThis->m_spData->m_n110);
-        ATL::CTimeSpan kSpan(nEnd - FUN_140869440());
-        (void)pInfo;
-        if (kSpan.GetTotalSeconds() > 59)
-        {
-            CStringW strSpan = FUN_14086aec0(kSpan.GetTimeSpan(), 0, 0, 1, 0);
-            return FUN_14052bd00(nTimeStr, FUN_14052bd00(0x643, strSpan));
-        }
-        if (kSpan.GetTotalSeconds() > 0)
-        {
-            CStringW strSpan = FUN_14086aec0(kSpan.GetTimeSpan(), 0, 0, 0, 1);
-            return FUN_14052bd00(nTimeStr, FUN_14052bd00(0x643, strSpan));
-        }
+        ATL::CTimeSpan kSpan(m_nB0 + FUN_14086bd90(m_spData->m_n110) - FUN_140869440());
+        if (kSpan.GetTotalSeconds() >= 60)
+            return FUN_14052bd00(0x644, FUN_14052bd00(0x643, FUN_14086aec0(kSpan, false, false, true, false)));
+        else if (kSpan.GetTotalSeconds() > 0)
+            return FUN_14052bd00(0x644, FUN_14052bd00(0x643, FUN_14086aec0(kSpan, false, false, false, true)));
     }
     return CStringW(L"");
-}
-
-// @0x141229c10
-// MS2-FUNCTIONAL: shared tooltip builder instead of the exe's inline copy; frame layout differs
-CStringW CBreedingCubeObject::vfunc_6()
-{
-    return Unk_FcGatherTip(this, 0x63f, 0x644);
 }
 
 // @0x14122a350
@@ -1687,7 +1650,6 @@ int CBreedingCubeObject::vfunc_16()
 }
 
 // @0x14122a370
-// MS2-FUNCTIONAL: random pick over the state's animation list; frame layout differs
 void CBreedingCubeObject::vfunc_10(int nState, bool bFlag)
 {
     if (nState < 0 || nState >= 6)
@@ -1696,7 +1658,7 @@ void CBreedingCubeObject::vfunc_10(int nState, bool bFlag)
     arrAnims.Copy(m_spData->m_anims[nState]);
     if (bFlag)
     {
-        if (arrAnims.IsEmpty() == false)
+        if (arrAnims.IsEmpty())
         {
             vfunc_12(FUN_14122edc0(nState), false);
             return;
@@ -1719,13 +1681,12 @@ void CBreedingCubeObject::vfunc_10(int nState, bool bFlag)
             unsigned char b = 1;
             FUN_14098c6e0(m_entPet.FUN_1408a9280(), 0xa0b6b179, &b);
         }
-        if (arrAnims.GetCount() != 0)
+        if (arrAnims.GetCount() > 0)
         {
-            m_strAnim = arrAnims[(unsigned)rand() % arrAnims.GetCount()];
-            Unk_FcAnimName kName;
-            FUN_1409989e0(&kName, m_strAnim);
+            int nPick = rand() % arrAnims.GetCount();
+            m_strAnim = arrAnims[nPick];
+            Unk_FcAnimStr kName(m_strAnim);
             FUN_1409a1fc0(FUN_141b6f910(), *FUN_1408b76f0(m_entPet.FUN_1408a9280()), &kName, 1.0f, true);
-            FUN_1408a8900(&kName);
         }
     }
     vfunc_11(nState);
@@ -1758,7 +1719,6 @@ CFarmingCubeObject::~CFarmingCubeObject()
 }
 
 // @0x14122a770
-// MS2-FUNCTIONAL: item level lookup through unit-local smart pointer stand-ins; frame layout differs
 int CFarmingCubeObject::vfunc_2(Unk_Entity* pEntity, const Unk_FcRow* pRow, int nCubeId, __int64 nArg,
     CubeItemInfo* pItem)
 {
@@ -1769,19 +1729,55 @@ int CFarmingCubeObject::vfunc_2(Unk_Entity* pEntity, const Unk_FcRow* pRow, int 
     m_spData->m_n100 = pRow->m_n170;
     m_spData->m_str108 = pRow->m_str178;
     m_spData->m_n110 = pRow->m_n108;
-    Unk_FcSp16 kItem;
-    FUN_14066aa00(FUN_1409670c0(), &kItem, pRow->m_n170);
-    if (FUN_140b6dda0(&kItem) != 0)
-        m_spData->m_n104 = FUN_14066d9a0(&kItem)->m_nLevel;
-    FUN_14066d5b0(&kItem);
+    Unk_FcMasteryPtr kItem = FUN_1409670c0()->FUN_14066aa00(pRow->m_n170);
+    if (kItem.FUN_140b6dda0() != 0)
+        m_spData->m_n104 = kItem.FUN_14066d9a0()->m_nLevel;
     return 1;
 }
 
 // @0x14122a900
-// MS2-FUNCTIONAL: shared tooltip builder instead of the exe's inline copy; frame layout differs
 CStringW CFarmingCubeObject::vfunc_6()
 {
-    return Unk_FcGatherTip(this, 0x640, 0x645);
+    Unk_FcActor* pActor = FUN_141bd0cc0(FUN_1403ed2d0());
+    if (pActor == 0)
+        return CStringW(L"");
+    Unk_FcItemSvcPtr kSvc((Unk_FcItemSvc*)FUN_1401cd040(&DAT_143b059e8));
+    if (kSvc.FUN_140ef4cb0(0))
+        return CStringW(L"");
+    Unk_FcItemRow* pRow = kSvc.FUN_1401cd1a0()->FUN_1410b8b00(FUN_14112e110());
+    if (pRow == 0)
+        return CStringW(L"");
+    if (FUN_14166c930(pActor) == 0x37)
+        return CStringW(L"");
+    if (vfunc_17() == 0)
+        return GetStringCommonByKey(L"s_gathering_object_lack_mastery");
+    if (FUN_1410c35c0(FUN_1409670e0()) != 0)
+        return GetStringCommonByKey(L"s_mastery_error_notuse_designmode");
+    if (m_nState == 0)
+    {
+        int nItemId = FUN_140ca6580()->m_n100;
+        Unk_FcMasteryPtr kItem = FUN_1409670c0()->FUN_14066aa00(nItemId);
+        if (kItem.FUN_140b6dda0() != 0)
+        {
+            CStringW strLine;
+            strLine.Format(L"%s %s", (const wchar_t*)FUN_1401a9d70()->FUN_141811980(1, pRow->FUN_1408b4f20()),
+                           (const wchar_t*)FUN_14086d060(0x640, &kItem.FUN_14066d9a0()->m_nPrice));
+            return FUN_14052bd00(0x634, strLine);
+        }
+    }
+    else if (m_nState == 2)
+    {
+        return FUN_14052bd00(0x634, GetStringCommon(0x641));
+    }
+    else if (m_nState == 1)
+    {
+        ATL::CTimeSpan kSpan(m_nB0 + FUN_14086bd90(m_spData->m_n110) - FUN_140869440());
+        if (kSpan.GetTotalSeconds() >= 60)
+            return FUN_14052bd00(0x645, FUN_14052bd00(0x643, FUN_14086aec0(kSpan, false, false, true, false)));
+        else if (kSpan.GetTotalSeconds() > 0)
+            return FUN_14052bd00(0x645, FUN_14052bd00(0x643, FUN_14086aec0(kSpan, false, false, false, true)));
+    }
+    return CStringW(L"");
 }
 
 // @0x14122b040
@@ -1815,7 +1811,7 @@ int FUN_14152ebd0(Unk_FcActor* p);
 void FUN_14152eb80(Unk_FcActor* p);
 unsigned FUN_14152eb20(Unk_FcActor* p);                             // times fed today
 unsigned FUN_14152eb50(Unk_FcActor* p);                             // times played today
-int FUN_14152ed10(Unk_FcActor* p, int nCategory);
+int FUN_14152ed10(Unk_FcActor* p, __int64 nItemUid);
 int FUN_140a5f780(void* pCell, int nId, int nArg);
 CStringW FUN_1401aa6a0(int nId);                                    // item / pet name
 CStringW FUN_1405c2690(CStringW strKey, const CStringW& strArg);
@@ -1948,31 +1944,26 @@ void CNurturingCubeObject::vfunc_3()
 }
 
 // @0x14122b9f0
-// MS2-FUNCTIONAL: efd::Point3 copy instead of the exe's byte loop
 void CNurturingCubeObject::vfunc_5(float fZ)
 {
     if (((CubeSpawnObject*)m_spPet) != 0)
     {
         NiPoint3 kDir = m_spPet->vfunc_20();
         kDir.z = fZ;
-        m_spPet->vfunc_21(kDir);
+        m_spPet->vfunc_21(static_cast<efd::Point3&>(kDir));
     }
 }
 
 // @0x14122bab0
-// MS2-FUNCTIONAL: string pieces glued with FUN_ operators; frame layout differs
 CStringW CNurturingCubeObject::vfunc_6()
 {
     Unk_FcItemSvcPtr spSvc(FUN_1401cd040(&DAT_143b059e8));
-    if (!spSvc.FUN_140ef4cb0(0))
-    {
-        Unk_FcItemRow* pRow = spSvc.FUN_1401cd1a0()->FUN_1410b8b00(FUN_14112e110());
-        if (pRow == 0)
-            return CStringW(L"");
-        int nItemId = pRow->FUN_1408b4f20();
-        return FUN_1401a9d70()->FUN_141811980(1, nItemId);
-    }
-    return CStringW(L"");
+    if (spSvc.FUN_140ef4cb0(0))
+        return CStringW(L"");
+    Unk_FcItemRow* pRow = spSvc.FUN_1401cd1a0()->FUN_1410b8b00(FUN_14112e110());
+    if (pRow == 0)
+        return CStringW(L"");
+    return FUN_1401a9d70()->FUN_141811980(1, pRow->FUN_1408b4f20());
 }
 
 // @0x14122bbe0
@@ -1990,25 +1981,20 @@ void CNurturingCubeObject::vfunc_8(CString str)
         return;
     if (FUN_14122bda0() != 0)
     {
-        if (FUN_1416764d0(pActor) == 0)
-        {
-            if (FUN_14166c930(pActor) != 0x40)
-            {
-                int nAction = FUN_14122d200();
-                Unk_FcActorSetState(pActor, 0x40, 0, nAction);
-            }
-        }
-        else
+        if (FUN_1416764d0(pActor) != 0)
         {
             MS2Ptr<RideOffActionNurturing> spAct(new RideOffActionNurturing(0));
             spAct->m_s28 = str;
             FUN_14152c280(pActor, spAct);
         }
+        else if (FUN_14166c930(pActor) != 0x40)
+        {
+            pActor->vfunc_59(0x40, 0, FUN_14122d200(), 0);
+        }
     }
 }
 
 // @0x14122bda0
-// MS2-FUNCTIONAL: nested early-outs restructured; frame layout differs
 int CNurturingCubeObject::FUN_14122bda0()
 {
     Unk_FcActor* pActor = FUN_141bd0cc0(FUN_1403ed2d0());
@@ -2029,14 +2015,15 @@ int CNurturingCubeObject::FUN_14122bda0()
         m_bNotice = 0;
         return 1;
     }
-    if (FUN_1410c3180(FUN_1409670e0()) == FUN_141656ad0(pActor))
+    else if (FUN_1410c3180(FUN_1409670e0()) == FUN_141656ad0(pActor))
     {
-        if (m_nE8 <= m_nE0 && m_nLevel < m_nMaxLevel)
+        if (m_nE0 >= m_nE8 && m_nLevel < m_nMaxLevel)
         {
             FUN_14122d2a0(FUN_1405c2690(CStringW(L"s_error_nurturing_invalid_eat"), FUN_1401aa6a0(FUN_14122c410())));
             return 0;
         }
-        if (FUN_140a5f780(&DAT_143ab2a90, 0x79, 0) == 0)
+        int nOk = FUN_140a5f780(&DAT_143ab2a90, 0x79, 0);
+        if (nOk == 0)
         {
             FUN_14122c7b0(1);
             return 0;
@@ -2047,8 +2034,7 @@ int CNurturingCubeObject::FUN_14122bda0()
             m_bNotice = 0;
             return 1;
         }
-        unsigned nDone = FUN_14152eb20(pActor);
-        if (nDone < *FUN_1401d7c10(&FUN_1401d3200()->m_eat))
+        if (FUN_14152eb20(pActor) < *FUN_1401d7c10(&FUN_1401d3200()->m_eat))
         {
             m_bNotice = 0;
             return 1;
@@ -2062,8 +2048,7 @@ int CNurturingCubeObject::FUN_14122bda0()
             FUN_14122c7b0(4);
             return 0;
         }
-        unsigned nPlay = FUN_14152eb50(pActor);
-        if (nPlay < *FUN_1401d7c10(&FUN_1401d3200()->m_play))
+        if (FUN_14152eb50(pActor) < *FUN_1401d7c10(&FUN_1401d3200()->m_play))
         {
             m_bNotice = 0;
             return 1;
@@ -2134,17 +2119,26 @@ void CNurturingCubeObject::FUN_14122c460(int nMode)
 }
 
 // @0x14122c7b0
-// MS2-FUNCTIONAL: notice strings built through FUN_ helpers; frame layout differs
 void CNurturingCubeObject::FUN_14122c7b0(int nError)
 {
-    if (nError == 1)
-        FUN_14122d2a0(GetStringCommonByKey(CStringW(L"s_error_nurturing_invalid_item")));
-    else if (nError == 2)
+    switch (nError)
+    {
+    case 1:
+    {
+        CStringW strKey(L"s_error_nurturing_invalid_item");
+        FUN_14122d2a0(GetStringCommonByKey(strKey));
+    }
+        break;
+    case 2:
         FUN_14122d2a0(FUN_1405c2690(CStringW(L"s_error_nurturing_eat_maxcount"), FUN_1401aa6a0(FUN_14122c410())));
-    else if (nError == 3)
+        break;
+    case 3:
         FUN_14122d2a0(FUN_1405c2690(CStringW(L"s_error_nurturing_play_maxcount"), FUN_1401aa6a0(FUN_14122c410())));
-    else if (nError == 4)
+        break;
+    case 4:
         FUN_14122d2a0(FUN_1405c2690(CStringW(L"s_error_nurturing_invalid_play"), FUN_1401aa6a0(FUN_14122c410())));
+        break;
+    }
 }
 
 // @0x14122cab0
@@ -2190,34 +2184,30 @@ __int64 CNurturingCubeObject::GetTime()
 }
 
 // @0x14122cbc0
-// MS2-FUNCTIONAL: pet spawn through new / world calls; frame layout differs
 void CNurturingCubeObject::FUN_14122cbc0(unsigned short nLevel, Unk_EntRef ent)
 {
-    if (!ent.FUN_1408b70b0(0))
+    if (ent.FUN_1408b70b0(0))
+        return;
+    m_entPet = ent;
+    if (m_obj.m_map.GetCount() < 3)
+        return;
+    unsigned __int64 nGaugeA = 300;
+    unsigned __int64 nGaugeB = 500;
+    m_obj.m_map.Lookup((unsigned short)1, nGaugeA);
+    m_obj.m_map.Lookup((unsigned short)2, nGaugeB);
+    int nNpc = 0;
+    if (m_obj.m_mapNpc.FUN_1405b9580(nLevel, &nNpc))
     {
-        m_entPet = ent;
-        if (m_obj.m_map.GetCount() >= 3)
-        {
-            unsigned __int64 nGaugeA = 300;
-            unsigned __int64 nGaugeB = 500;
-            m_obj.m_map.Lookup((unsigned short)1, nGaugeA);
-            m_obj.m_map.Lookup((unsigned short)2, nGaugeB);
-            int nNpc = 0;
-            if (m_obj.m_mapNpc.FUN_1405b9580(nLevel, &nNpc))
-            {
-                m_spPet = new (efd::MemHint(efd::MemHint::NONE)) CubeSpawnObject;
-                int nId = DAT_1439f706c;
-                DAT_1439f706c = DAT_1439f706c + 1;
-                m_spPet->FUN_14123c5a0(nId);
-                if (m_spPet->vfunc_124(nNpc, ent, (int)nGaugeA, (int)nGaugeB, m_obj.m_strOwner) != 0)
-                    FUN_141bbb1e0(FUN_1403ed2d0(), ((CubeSpawnObject*)m_spPet), 0, 1);
-            }
-        }
+        m_spPet = new (efd::MemHint(efd::MemHint::NONE)) CubeSpawnObject;
+        int nId = DAT_1439f706c;
+        DAT_1439f706c = DAT_1439f706c + 1;
+        m_spPet->FUN_14123c5a0(nId);
+        if (m_spPet->vfunc_124(nNpc, ent, (int)nGaugeA, (int)nGaugeB, m_obj.m_strOwner) != 0)
+            FUN_141bbb1e0(FUN_1403ed2d0(), ((CubeSpawnObject*)m_spPet), 0, 1);
     }
 }
 
 // @0x14122ce80
-// MS2-FUNCTIONAL: pet respawn through new / world calls; frame layout differs
 void CNurturingCubeObject::FUN_14122ce80(unsigned short nLevel)
 {
     if (m_spPet == 0)
@@ -2236,9 +2226,7 @@ void CNurturingCubeObject::FUN_14122ce80(unsigned short nLevel)
         {
             if (((CubeSpawnObject*)m_spPet) != 0)
             {
-                CubeSpawnObject* pOld = ((CubeSpawnObject*)m_spPet);
-                void* pWorld = FUN_1403ed2d0();
-                FUN_141bbb7f0(pWorld, pOld, 0);
+                FUN_141bbb7f0(FUN_1403ed2d0(), ((CubeSpawnObject*)m_spPet), 0);
                 m_spPet = 0;
             }
             m_spPet = new (efd::MemHint(efd::MemHint::NONE)) CubeSpawnObject;
@@ -2296,7 +2284,6 @@ void CNurturingCubeObject::FUN_14122d2a0(const CStringW& str)
 // ---- the data row ----
 
 // @0x14122d840
-// MS2-FUNCTIONAL: branch/temporary layout differs from the exe (equivalent behaviour)
 FunctionCubeData::FunctionCubeData()
     : m_nCubeId(0), m_bBuff(0), m_bLike(0), m_nKind(0), m_nSubKind(0),
       m_nE8(0), m_nEC(0), m_nF0(0), m_nF4(0), m_nF8(0), m_nFC(0), m_n100(0), m_n104(0),
@@ -2304,26 +2291,16 @@ FunctionCubeData::FunctionCubeData()
 {
 }
 
-// @0x14122dbb0
-// MS2-FUNCTIONAL: branch/temporary layout differs from the exe (equivalent behaviour)
-FunctionCubeData::~FunctionCubeData()
-{
-}
-
 // @0x141225470
-// MS2-FUNCTIONAL: allocation through plain operator new; frame layout differs
 CFunctionCubeObject* FUN_141225470(int nKind)
 {
-    CFunctionCubeObject* pObj;
     if (nKind == 7)
-        pObj = new CBreedingCubeObject;
-    else if (nKind == 8)
-        pObj = new CFarmingCubeObject;
-    else if (nKind == 0xd)
-        pObj = new CNurturingCubeObject;
-    else
-        pObj = new CFunctionCubeObject;
-    return pObj;
+        return new CBreedingCubeObject;
+    if (nKind == 8)
+        return new CFarmingCubeObject;
+    if (nKind == 0xd)
+        return new CNurturingCubeObject;
+    return new CFunctionCubeObject;
 }
 
 // ---- CFunctionCubeService ----
@@ -2351,11 +2328,10 @@ void FUN_1411ab6e0(efd::IDependencyRegistrar* pRegistrar, unsigned n);
 // Entity, state and UI helpers used by the packet dispatcher.
 __int64 FUN_141656a80(Unk_FcActor* p);                              // entity id of the actor
 void FUN_1414737d0(Unk_Entity* pEntity);                            // remove the cube entity
-void* FUN_141282aa0(void* pThis, CString str);                      // StateUseFurnitureData::StateUseFurnitureData(CString)
 void FUN_1418fe220(const CString& str);                             // show a skill message
 bool FUN_14036d570(void* pLog, int nId);
 void* FUN_140166410();
-class Unk_FcNoticeUI { public: void FUN_14135ec00(const CString& str, int n); };
+class Unk_FcNoticeUI { public: void FUN_14135ec00(const CString& str, bool bOnce); };
 Unk_FcNoticeUI* FUN_140c43790(int nId);
 void FUN_14152ee60(Unk_FcActor* pActor, CInPacket* pPacket);
 struct Unk_FcCountMap { char m_pad[0x48]; };
@@ -2374,7 +2350,7 @@ struct Unk_FcEquipData { char m_pad_00[0x10c]; int m_n10c; };
 Unk_FcEquipData* FUN_140527840(CItem* pItem);                       // the item's data record
 class Unk_FcEquipSet { public: MS2Ptr<CEquipItem> FUN_1411e1860(int nSlot, int nA, int nB); };
 Unk_FcEquipSet* FUN_1416561a0(Unk_FcActor* pActor);
-char FUN_1409ff0d0(Unk_FcArea* pArea, CBoxCollision* pBox);         // does the box touch the area
+int FUN_1409ff0d0(Unk_FcArea* pArea, CBoxCollision* pBox);         // does the box touch the area
 void FUN_1417591b0(Unk_FcTag* pTag);                                // the tag's owner reacts
 
 // ---- the service ----
@@ -2438,20 +2414,17 @@ efd::Category Unk_FcAnimSvc::GetCatAnim()
     return m_catAnim;
 }
 
-// MS2-FUNCTIONAL: the exe holds the services in CComPtr wrappers; raw pointers are used here
 // @0x1412306b0
 efd::AsyncResult CFunctionCubeService::OnInit()
 {
-    efd::MessageService* pMessages = FUN_1411d1530(m_pServiceManager);
+    efd::MessageServicePtr pMessages = FUN_1411d1530(m_pServiceManager);
     ATL::CComPtr<Unk_FcNetSvc> pNet(FUN_140ae1200(m_pServiceManager));
     m_catGlobal = pMessages->GetGloballyUniqueCategory();
     pMessages->Subscribe(this, efd::kCAT_LocalMessage, 0, false);
     pMessages->Subscribe(this, m_catGlobal, 0, false);
-    efd::Category catNet = pNet->FUN_142156c20();
-    pMessages->Subscribe(this, catNet, 0, false);
+    pMessages->Subscribe(this, pNet->FUN_142156c20(), 0, false);
     pMessages->Subscribe(this, s_catAnimationChannel, 0, false);
-    efd::Category catAnim = FUN_141b6f910()->GetCatAnim();
-    pMessages->Subscribe(this, catAnim, 0, false);
+    pMessages->Subscribe(this, FUN_141b6f910()->GetCatAnim(), 0, false);
     return efd::AsyncResult_Complete;
 }
 
@@ -2464,19 +2437,16 @@ efd::AsyncResult CFunctionCubeService::OnTick()
     return efd::AsyncResult_Pending;
 }
 
-// MS2-FUNCTIONAL: the exe holds the services in CComPtr wrappers; raw pointers are used here
 // @0x1412309e0
 efd::AsyncResult CFunctionCubeService::OnShutdown()
 {
-    efd::MessageService* pMessages = FUN_1411d1530(m_pServiceManager);
+    efd::MessageServicePtr pMessages = FUN_1411d1530(m_pServiceManager);
     ATL::CComPtr<Unk_FcNetSvc> pNet(FUN_140ae1200(m_pServiceManager));
     pMessages->Unsubscribe(this, efd::kCAT_LocalMessage, 0);
     pMessages->Unsubscribe(this, m_catGlobal, 0);
-    efd::Category catNet = pNet->FUN_142156c20();
-    pMessages->Unsubscribe(this, catNet, 0);
+    pMessages->Unsubscribe(this, pNet->FUN_142156c20(), 0);
     pMessages->Unsubscribe(this, s_catAnimationChannel, 0);
-    efd::Category catAnim = FUN_141b6f910()->GetCatAnim();
-    pMessages->Unsubscribe(this, catAnim, 0);
+    pMessages->Unsubscribe(this, FUN_141b6f910()->GetCatAnim(), 0);
     FUN_141231be0();
     return efd::AsyncResult_Complete;
 }
@@ -2485,21 +2455,19 @@ efd::AsyncResult CFunctionCubeService::OnShutdown()
 // @0x14122f110
 void CFunctionCubeService::FUN_14122f110(const egf::EntityChangeMessage* pMsg, efd::Category)
 {
-    if (m_mapCubes.IsEmpty())
-        return;
-    Unk_Entity* pEntity = reinterpret_cast<Unk_Entity*>(pMsg->GetEntity());
-    if (pEntity == 0)
-        return;
-    POSITION pos = m_mapCubes.GetHeadPosition();
-    while (pos)
+    if (!m_mapCubes.IsEmpty())
     {
-        Unk_EntRef kEnt = m_mapCubes.GetValueAt(pos)->GetEnt();
-        if (kEnt.FUN_1408b70b0(pEntity))
+        Unk_Entity* pEntity = reinterpret_cast<Unk_Entity*>(pMsg->GetEntity());
+        if (pEntity == 0)
+            return;
+        for (POSITION pos = m_mapCubes.GetHeadPosition(); pos; m_mapCubes.GetNext(pos))
         {
-            m_mapCubes.RemoveAt(pos);
-            break;
+            if (m_mapCubes.GetValueAt(pos)->GetEnt().FUN_1408b70b0(pEntity))
+            {
+                m_mapCubes.RemoveAt(pos);
+                break;
+            }
         }
-        m_mapCubes.GetNext(pos);
     }
 }
 
@@ -2548,70 +2516,66 @@ void CFunctionCubeService::FUN_14122f270(CInPacket* pPacket)
             break;
         __int64 nOwner = pPacket->ReadInt64();
         CString strId = pPacket->ReadUnicodeStringA();
-        bool bFlag = pPacket->ReadUInt8() != 0;
+        int bFlag = pPacket->ReadUInt8() != 0;
         bool bMine = FUN_141656a80(pActor) == nOwner;
-        MS2Ptr<CFunctionCubeObject> spCube(0);
+        MS2Ptr<CFunctionCubeObject> spCube;
         if (m_mapCubes.Lookup(strId, spCube))
         {
             if (spCube->FUN_140966fc0() == 3)
             {
-                if (spCube->FUN_1409674f0() == 0)
+                if (spCube->FUN_1409674f0() != 0)
                 {
-                    if (spCube->FUN_1412271f0() == 0)
+                    if (bFlag && bMine)
+                        spCube->FUN_1412278b0();
+                }
+                else if (spCube->FUN_1412271f0() != 0)
+                {
+                    if (bMine)
                     {
-                        if (spCube->FUN_141227270() != 0)
+                        if (bFlag)
                         {
-                            Unk_FcSkillText kText = spCube->FUN_1412272b0();
-                            CString strA(kText.m_strA);
-                            CString strB(kText.m_strB);
-                            int nValue = kText.m_nValue;
-                            if (nValue == 0)
-                            {
-                                FUN_1418fe220(strA);
-                            }
-                            else if (nValue == 1)
-                            {
-                                if (!FUN_14036d570(FUN_140166410(), 0x3b))
-                                    break;
-                                Unk_FcNoticeUI* pUi = FUN_140c43790(0x4e6a);
-                                if (pUi == 0)
-                                    break;
-                                pUi->FUN_14135ec00(strA, 1);
-                            }
-                            else if (nValue == 2)
-                            {
-                                if (!FUN_14036d570(FUN_140166410(), 0x5c))
-                                    break;
-                                Unk_FcNoticeUI* pUi = FUN_140c43790(0x4e6a);
-                                if (pUi == 0)
-                                    break;
-                                pUi->FUN_14135ec00(strA, 1);
-                            }
+                            StateData* pData = new StateUseFurnitureData(strId);
+                            pActor->vfunc_59(0x29, pData, 0, 0);
                         }
-                    }
-                    else if (bMine)
-                    {
-                        if (!bFlag)
+                        else if (FUN_14166c930(pActor) == 0x29)
                         {
-                            if (FUN_14166c930(pActor) == 0x29)
-                                Unk_FcActorSetState(pActor, 1, 0, 0);
-                        }
-                        else
-                        {
-                            void* pMem = ::operator new(0x20);
-                            void* pData = pMem == 0 ? 0 : FUN_141282aa0(pMem, strId);
-                            Unk_FcActorSetState(pActor, 0x29, pData, 0);
+                            pActor->vfunc_59(1, 0, 0, 0);
                         }
                     }
                 }
-                else if (bFlag && bMine)
+                else if (spCube->FUN_141227270() != 0)
                 {
-                    spCube->FUN_1412278b0();
+                    Unk_FcSkillText kText = spCube->FUN_1412272b0();
+                    CString strA(kText.m_strA);
+                    CString strB(kText.m_strB);
+                    int nValue = kText.m_nValue;
+                    if (nValue == 0)
+                    {
+                        FUN_1418fe220(strA);
+                    }
+                    else if (nValue == 1)
+                    {
+                        if (!FUN_14036d570(FUN_140166410(), 0x3b))
+                            break;
+                        Unk_FcNoticeUI* pUi = FUN_140c43790(0x4e6a);
+                        if (pUi == 0)
+                            break;
+                        pUi->FUN_14135ec00(strA, true);
+                    }
+                    else if (nValue == 2)
+                    {
+                        if (!FUN_14036d570(FUN_140166410(), 0x5c))
+                            break;
+                        Unk_FcNoticeUI* pUi = FUN_140c43790(0x4e6a);
+                        if (pUi == 0)
+                            break;
+                        pUi->FUN_14135ec00(strA, true);
+                    }
                 }
             }
         }
-        break;
     }
+        break;
     case 9:
     {
         Unk_FcActor* pActor = FUN_141bd0cc0(FUN_1403ed2d0());
@@ -2623,7 +2587,7 @@ void CFunctionCubeService::FUN_14122f270(CInPacket* pPacket)
         int nCount = pPacket->ReadInt32();
         if (FUN_141656a80(pActor) != nOwner)
             break;
-        MS2Ptr<CFunctionCubeObject> spCube(0);
+        MS2Ptr<CFunctionCubeObject> spCube;
         if (m_mapCubes.Lookup(strId, spCube))
         {
             CHomemadeCubeObject* pHome = dynamic_cast<CHomemadeCubeObject*>(spCube.get());
@@ -2635,26 +2599,24 @@ void CFunctionCubeService::FUN_14122f270(CInPacket* pPacket)
                 {
                     pHome->FUN_141228fb0(nArg);
                     MS2Ptr<StateHomemadeData> spData(new StateHomemadeData(pHome->vfunc_16(), CString(), 0));
-                    Unk_FcActorSetState(pActor, 0x37, spData.get(), 0x90);
+                    pActor->vfunc_59(0x37, spData.get(), 0x90, 0);
                     int nItemId = FUN_1409658d0(&kInfo)->m_nItemId;
                     int nOld = 0;
                     FUN_140450290(&DAT_143ab3150, nItemId, &nOld);
                     FUN_140458df0(&DAT_143ab3150, nItemId, nOld + nCount);
-                    Unk_FcSp16 kItem;
-                    FUN_14066aa00(FUN_1409670c0(), &kItem, nItemId);
-                    if (FUN_140b6dda0(&kItem) != 0)
+                    Unk_FcMasteryPtr kItem = FUN_1409670c0()->FUN_14066aa00(nItemId);
+                    if (kItem.FUN_140b6dda0() != 0)
                     {
                         void* pDlg = FUN_140faf160(0x4f1e);
                         if (pDlg != 0)
-                            FUN_140eb5260(pDlg, FUN_14066d9a0(&kItem)->m_n1c);
+                            FUN_140eb5260(pDlg, kItem.FUN_14066d9a0()->m_n1c);
                     }
-                    FUN_14066d5b0(&kItem);
                 }
                 FUN_140ca62a0(&kInfo);
             }
         }
-        break;
     }
+        break;
     case 10:
     {
         Unk_FcActor* pActor = FUN_141bd0cc0(FUN_1403ed2d0());
@@ -2665,7 +2627,7 @@ void CFunctionCubeService::FUN_14122f270(CInPacket* pPacket)
         __int64 nArg = pPacket->ReadInt64();
         if (FUN_141656a80(pActor) != nOwner)
             break;
-        MS2Ptr<CFunctionCubeObject> spCube(0);
+        MS2Ptr<CFunctionCubeObject> spCube;
         if (m_mapCubes.Lookup(strId, spCube))
         {
             CHomemadeCubeObject* pHome = dynamic_cast<CHomemadeCubeObject*>(spCube.get());
@@ -2673,11 +2635,11 @@ void CFunctionCubeService::FUN_14122f270(CInPacket* pPacket)
             {
                 pHome->FUN_141228fb0(nArg);
                 MS2Ptr<StateHomemadeData> spData(new StateHomemadeData(pHome->vfunc_16(), CString(), 0));
-                Unk_FcActorSetState(pActor, 0x37, spData.get(), 0x91);
+                pActor->vfunc_59(0x37, spData.get(), 0x91, 0);
             }
         }
-        break;
     }
+        break;
     case 0xb:
     case 0xc:
     case 0xe:
@@ -2689,7 +2651,7 @@ void CFunctionCubeService::FUN_14122f270(CInPacket* pPacket)
         CString strId = pPacket->ReadUnicodeStringA();
         if (FUN_141656a80(pActor) != nOwner)
             break;
-        MS2Ptr<CFunctionCubeObject> spCube(0);
+        MS2Ptr<CFunctionCubeObject> spCube;
         if (m_mapCubes.Lookup(strId, spCube))
         {
             CNurturingCubeObject* pNurture = dynamic_cast<CNurturingCubeObject*>(spCube.get());
@@ -2702,8 +2664,8 @@ void CFunctionCubeService::FUN_14122f270(CInPacket* pPacket)
                     pNurture->FUN_14122c460(1);
             }
         }
-        break;
     }
+        break;
     case 0xd:
     {
         Unk_FcActor* pActor = FUN_141bd0cc0(FUN_1403ed2d0());
@@ -2714,36 +2676,34 @@ void CFunctionCubeService::FUN_14122f270(CInPacket* pPacket)
         int nError = pPacket->ReadInt32();
         if (FUN_141656a80(pActor) != nOwner)
             break;
-        MS2Ptr<CFunctionCubeObject> spCube(0);
+        MS2Ptr<CFunctionCubeObject> spCube;
         if (m_mapCubes.Lookup(strId, spCube))
         {
             CNurturingCubeObject* pNurture = dynamic_cast<CNurturingCubeObject*>(spCube.get());
             if (pNurture != 0)
                 pNurture->FUN_14122c7b0(nError);
         }
-        break;
     }
+        break;
     }
 }
 
 // One cube record: update the object (it is in the pending table while it only has the table row) and switch its state.
-// MS2-FUNCTIONAL: the lookup temporaries differ from the exe
 // @0x141230310
 void CFunctionCubeService::FUN_141230310(CInPacket* pPacket)
 {
     CString strId = pPacket->ReadUnicodeStringA();
-    bool bPending = false;
-    MS2Ptr<CFunctionCubeObject> spCube(0);
-    if (!m_mapCubes.Lookup(strId, spCube))
-    {
-        if (m_mapPending.Lookup(strId, spCube))
-            bPending = true;
-    }
+    int bPending = 0;
+    MS2Ptr<CFunctionCubeObject> spCube;
+    if (m_mapCubes.Lookup(strId, spCube))
+        bPending = 0;
+    else if (m_mapPending.Lookup(strId, spCube))
+        bPending = 1;
     if (spCube.get() != 0)
     {
         spCube->vfunc_1(reinterpret_cast<Unk_FcMsg*>(pPacket));
-        int nState = spCube->m_nState;
-        bool bFlag = pPacket->ReadUInt8() != 0;
+        int nState = reinterpret_cast<Unk_FcStateMsg*>(spCube.operator->())->FUN_14112e290();
+        int bFlag = pPacket->ReadUInt8() != 0;
         if (bFlag)
             nState = FUN_141239e40(nState);
         if (bPending)
@@ -2762,18 +2722,14 @@ void CFunctionCubeService::FUN_1412304e0(unsigned nA, unsigned nB, int nKind)
     m_mapPending.SetAt(strKey, spCube);
 }
 
-// MS2-FUNCTIONAL: the lookup temporaries differ from the exe
 // @0x141230580
 void CFunctionCubeService::FUN_141230580(CString strId, MS2Ptr<CFunctionCubeObject> spObject)
 {
-    MS2Ptr<CFunctionCubeObject> spOld(0);
+    MS2Ptr<CFunctionCubeObject> spOld;
     if (m_mapPending.Lookup(strId, spOld))
     {
         if (spOld->FUN_141236b10())
-        {
-            MS2Ptr<Unk_FcStateMsg> spMsg(reinterpret_cast<Unk_FcStateMsg*>(spOld.get()));
-            spObject->vfunc_14(spMsg);
-        }
+            spObject->vfunc_14(reinterpret_cast<MS2Ptr<Unk_FcStateMsg>&>(spOld));
         m_mapPending.RemoveKey(strId);
     }
 }
@@ -2802,11 +2758,10 @@ void CFunctionCubeService::FUN_141230c90(MS2Ptr<CFunctionCubeObject> spObject)
 }
 
 // A cube was removed: destroy its entity, drop it, and refresh or close the editor dialog.
-// MS2-FUNCTIONAL: the temporaries differ from the exe
 // @0x141230df0
 void CFunctionCubeService::FUN_141230df0(CString strId)
 {
-    MS2Ptr<CFunctionCubeObject> spCube(0);
+    MS2Ptr<CFunctionCubeObject> spCube;
     if (m_mapCubes.Lookup(strId, spCube))
     {
         spCube->FUN_141227dd0(1);
@@ -2818,10 +2773,10 @@ void CFunctionCubeService::FUN_141230df0(CString strId)
         UITriggerEditorDialog* pDlg = Unk_FcDialog<UITriggerEditorDialog>(0x4e6b);
         if (pDlg != 0)
         {
-            if (!FUN_1401c0090(pDlg->GetCubeId(), strId))
-                pDlg->FUN_141b2b930();
-            else
+            if (pDlg->GetCubeId() == strId)
                 FUN_1403ed2b0()->FUN_141adc5d0(0x4e6b);
+            else
+                pDlg->FUN_141b2b930();
         }
     }
 }
@@ -2833,62 +2788,56 @@ MS2Ptr<CFunctionCubeObject> CFunctionCubeService::FUN_141230f60(Vector3 pt, floa
 {
     float fBest = 3.4028234e+38f;
     MS2Ptr<CFunctionCubeObject> spBest(0);
-    POSITION pos = m_mapCubes.GetHeadPosition();
-    while (pos)
+    for (POSITION pos = m_mapCubes.GetHeadPosition(); pos; m_mapCubes.GetNext(pos))
     {
         MS2Ptr<CFunctionCubeObject> spCube = m_mapCubes.GetValueAt(pos);
         CString strKey = m_mapCubes.GetKeyAt(pos);
-        if (spCube->FUN_140e5cc00() != 1 || spCube->FUN_140e5cbf0() == nOwner)
+        if (spCube->FUN_140e5cc00() == 1 && spCube->FUN_140e5cbf0() != nOwner)
+            continue;
+        if (spCube->vfunc_15() != 0)
         {
-            if (spCube->vfunc_15() != 0)
-            {
-                Unk_EntRef kEnt = spCube->GetEnt();
-                Vector3 vPos;
-                FUN_1409618c0(kEnt.FUN_1408a9280(), 0xfd95ca52, &vPos);
-                float fDist = pt.FUN_140965c40(vPos).FUN_140967ac0();
-                if (fDist <= fRange && fDist <= fBest)
-                {
-                    spBest = spCube;
-                    fBest = fDist;
-                }
-            }
+            Unk_EntRef kEnt = spCube->GetEnt();
+            Vector3 vPos;
+            FUN_1409618c0(kEnt.FUN_1408a9280(), 0xfd95ca52, &vPos);
+            float fDist = pt.FUN_140965c40(vPos).FUN_140967ac0();
+            if (fDist > fRange)
+                continue;
+            if (fDist > fBest)
+                continue;
+            spBest = spCube;
+            fBest = fDist;
         }
-        m_mapCubes.GetNext(pos);
     }
     return spBest;
 }
 
 // The same with a kind filter.
-// MS2-FUNCTIONAL: the map walk and the temporaries differ from the exe
 // @0x141231200
 MS2Ptr<CFunctionCubeObject> CFunctionCubeService::FUN_141231200(Vector3 pt, float fRange, __int64 nOwner, int nKind)
 {
     float fBest = 3.4028234e+38f;
     MS2Ptr<CFunctionCubeObject> spBest(0);
-    POSITION pos = m_mapCubes.GetHeadPosition();
-    while (pos)
+    for (POSITION pos = m_mapCubes.GetHeadPosition(); pos; m_mapCubes.GetNext(pos))
     {
         MS2Ptr<CFunctionCubeObject> spCube = m_mapCubes.GetValueAt(pos);
         CString strKey = m_mapCubes.GetKeyAt(pos);
-        if (spCube->FUN_140966fc0() == nKind)
+        if (spCube->FUN_140966fc0() != nKind)
+            continue;
+        if (spCube->FUN_140e5cc00() == 1 && spCube->FUN_140e5cbf0() != nOwner)
+            continue;
+        if (spCube->vfunc_15() != 0)
         {
-            if (spCube->FUN_140e5cc00() != 1 || spCube->FUN_140e5cbf0() == nOwner)
-            {
-                if (spCube->vfunc_15() != 0)
-                {
-                    Unk_EntRef kEnt = spCube->GetEnt();
-                    Vector3 vPos;
-                    FUN_1409618c0(kEnt.FUN_1408a9280(), 0xfd95ca52, &vPos);
-                    float fDist = pt.FUN_140965c40(vPos).FUN_140967ac0();
-                    if (fDist <= fRange && fDist <= fBest)
-                    {
-                        spBest = spCube;
-                        fBest = fDist;
-                    }
-                }
-            }
+            Unk_EntRef kEnt = spCube->GetEnt();
+            Vector3 vPos;
+            FUN_1409618c0(kEnt.FUN_1408a9280(), 0xfd95ca52, &vPos);
+            float fDist = pt.FUN_140965c40(vPos).FUN_140967ac0();
+            if (fDist > fRange)
+                continue;
+            if (fDist > fBest)
+                continue;
+            spBest = spCube;
+            fBest = fDist;
         }
-        m_mapCubes.GetNext(pos);
     }
     return spBest;
 }
@@ -2898,20 +2847,19 @@ MS2Ptr<CFunctionCubeObject> CFunctionCubeService::FUN_141231200(Vector3 pt, floa
 // @0x1412314e0
 void CFunctionCubeService::FUN_1412314e0(Vector3 pt, ATL::CAtlArray<MS2Ptr<CFunctionCubeObject> >& aOut)
 {
-    POSITION pos = m_mapCubes.GetHeadPosition();
-    while (pos)
+    for (POSITION pos = m_mapCubes.GetHeadPosition(); pos; m_mapCubes.GetNext(pos))
     {
         MS2Ptr<CFunctionCubeObject> spCube = m_mapCubes.GetValueAt(pos);
         CString strKey = m_mapCubes.GetKeyAt(pos);
-        if (spCube->FUN_140966fc0() == 0xc)
-        {
-            Unk_EntRef kEnt = spCube->GetEnt();
-            Vector3 vPos;
-            FUN_1409618c0(kEnt.FUN_1408a9280(), 0xfd95ca52, &vPos);
-            if (pt.FUN_140965c40(vPos).FUN_140967ac0() <= 600.0f)
-                aOut.Add(spCube);
-        }
-        m_mapCubes.GetNext(pos);
+        if (spCube->FUN_140966fc0() != 0xc)
+            continue;
+        Unk_EntRef kEnt = spCube->GetEnt();
+        Vector3 vPos;
+        FUN_1409618c0(kEnt.FUN_1408a9280(), 0xfd95ca52, &vPos);
+        float fDist = pt.FUN_140965c40(vPos).FUN_140967ac0();
+        if (fDist > 600.0f)
+            continue;
+        aOut.Add(spCube);
     }
 }
 
@@ -2926,7 +2874,6 @@ void CFunctionCubeService::FUN_1412316a0(MS2Ptr<Unk_FcArea> spArea, MS2Ptr<Unk_F
 
 // Per tick: check the worn item, then send a use request for every cube whose box touches a registered tag area.
 // @0x141231730
-// MS2-FUNCTIONAL: owner-id compare and MS2Ptr<Unk_FcArea> temporaries differ in frame layout (1220 vs 1190 bytes)
 void CFunctionCubeService::FUN_141231730()
 {
     Unk_FcActor* pActor = FUN_141bd0cc0(FUN_1403ed2d0());
@@ -2943,7 +2890,7 @@ void CFunctionCubeService::FUN_141231730()
     {
         CString strKey = m_mapCubes.GetKeyAt(pos);
         CFunctionCubeObject* pCube = m_mapCubes.GetValueAt(pos).get();
-        if (pCube->FUN_14122e710() == 0)
+        if (pCube->FUN_141236a60() == 0)
             continue;
         if (pCube->FUN_140e5cc00() == 1)
         {
@@ -2958,8 +2905,7 @@ void CFunctionCubeService::FUN_141231730()
         {
             spTag = m_mapTags.GetKeyAt(posTag);
             MS2Ptr<Unk_FcArea> spCur(m_mapTags.GetValueAt(posTag));
-            int nHit = FUN_1409ff0d0(spCur, spBox.get());
-            if (nHit != 0)
+            if (FUN_1409ff0d0(spCur, spBox.get()) != 0)
             {
                 spArea = spCur;
                 bFound = 1;
@@ -2978,9 +2924,7 @@ void CFunctionCubeService::FUN_141231730()
                     nAreaValue = nEquipField;
             }
             pCube->FUN_141227100(nSound);
-            alignas(8) char kInfoBuf[sizeof(Unk_FcCubeUseInfo)];   // FUN_140ac2e80 / FUN_140ac3050 construct and destroy it: no implicit dtor
-            Unk_FcCubeUseInfo& kInfo = *reinterpret_cast<Unk_FcCubeUseInfo*>(kInfoBuf);
-            FUN_140ac2e80(&kInfo);
+            Unk_FcUseInfo kInfo;
             kInfo.m_strId = strKey;
             kInfo.m_nCount = 2;
             COutPacket kPacket(static_cast<int>(SendOp::FunctionCube), 0);
@@ -2988,22 +2932,18 @@ void CFunctionCubeService::FUN_141231730()
             kPacket.WriteInt32(1);
             FUN_1401fc610(&kInfo, &kPacket);
             FUN_140710590(kPacket);
-            FUN_140ac3050(&kInfo);
         }
     }
     m_mapTags.RemoveAll();
 }
 
 // Every cube loses its entity, the tables are cleared.
-// MS2-FUNCTIONAL: the map walk differs from the exe
 // @0x141231be0
 void CFunctionCubeService::FUN_141231be0()
 {
-    POSITION pos = m_mapCubes.GetHeadPosition();
-    while (pos)
+    for (POSITION pos = m_mapCubes.GetHeadPosition(); pos; m_mapCubes.GetNext(pos))
     {
         FUN_1414737d0(m_mapCubes.GetValueAt(pos)->GetEnt().FUN_1408a9090());
-        m_mapCubes.GetNext(pos);
     }
     m_mapPending.RemoveAll();
     m_mapTags.RemoveAll();
@@ -3011,25 +2951,28 @@ void CFunctionCubeService::FUN_141231be0()
     m_mapStrings.clear();
 }
 
-// Add (bAppend) or remove an object id to the list of a cube item.
-// MS2-FUNCTIONAL: the map and list calls are the plain STL ones
+// Add (bAppend) or remove an object id to the set of a cube item.
 // @0x141231ce0
 void CFunctionCubeService::FUN_141231ce0(int nKey, CString str, int bAppend)
 {
     if (bAppend == 0)
     {
         if (m_mapStrings.find(nKey) != m_mapStrings.end())
-            m_mapStrings[nKey].remove(str);
+        {
+            std::set<CString>& rSet = m_mapStrings[nKey];
+            rSet.erase(str);
+        }
     }
-    else if (m_mapStrings.find(nKey) == m_mapStrings.end())
+    else if (m_mapStrings.find(nKey) != m_mapStrings.end())
     {
-        std::list<CString> kList;
-        kList.push_back(str);
-        m_mapStrings[nKey] = kList;
+        std::set<CString>& rSet = m_mapStrings[nKey];
+        rSet.insert(str);
     }
     else
     {
-        m_mapStrings[nKey].push_back(str);
+        std::set<CString> kSet;
+        kSet.insert(str);
+        m_mapStrings[nKey] = kSet;
     }
 }
 
@@ -3037,12 +2980,12 @@ void CFunctionCubeService::FUN_141231ce0(int nKey, CString str, int bAppend)
 // @0x141231eb0
 int CFunctionCubeService::FUN_141231eb0(int nKey, int* pnItem)
 {
-    for (std::map<int, std::list<CString> >::iterator it = m_mapStrings.begin(); it != m_mapStrings.end(); it++)
+    for (std::map<int, std::set<CString> >::iterator it = m_mapStrings.begin(); it != m_mapStrings.end(); it++)
     {
         if (it->first != nKey)
             continue;
-        std::list<CString>& rList = it->second;
-        for (std::list<CString>::iterator li = rList.begin(); li != rList.end(); ++li)
+        std::set<CString>& rSet = it->second;
+        for (std::set<CString>::iterator li = rSet.begin(); li != rSet.end(); ++li)
         {
             MS2Ptr<CFunctionCubeObject> spCube = FUN_141230c00(CString(*li));
             if (spCube.get() == 0)
@@ -3090,105 +3033,80 @@ void CFunctionCubeService::FUN_141232260()
     }
 }
 
-// MS2-FUNCTIONAL: the map walk differs from the exe
 // @0x141232330
 void CFunctionCubeService::FUN_141232330(int nItem, float fValue)
 {
-    POSITION pos = m_mapCubes.GetHeadPosition();
-    while (pos)
+    for (POSITION pos = m_mapCubes.GetHeadPosition(); pos; m_mapCubes.GetNext(pos))
     {
         MS2Ptr<CFunctionCubeObject> spCube = m_mapCubes.GetValueAt(pos);
-        if (!(spCube == 0))
+        if (spCube == 0)
+            continue;
+        if (spCube->FUN_14112e110() == nItem)
         {
-            if (spCube->FUN_14112e110() == nItem)
-            {
-                spCube->vfunc_5(fValue);
-                return;
-            }
+            spCube->vfunc_5(fValue);
+            return;
         }
-        m_mapCubes.GetNext(pos);
     }
 }
 
 // How many gathering cubes of an item the owner has.
-// MS2-FUNCTIONAL: the map walk and the info temporaries differ from the exe
 // @0x141232430
 int CFunctionCubeService::FUN_141232430(int nItem, __int64 nOwner)
 {
     int nCount = 0;
-    POSITION pos = m_mapCubes.GetHeadPosition();
-    while (pos)
+    for (POSITION pos = m_mapCubes.GetHeadPosition(); pos; m_mapCubes.GetNext(pos))
     {
         MS2Ptr<CFunctionCubeObject> spCube = m_mapCubes.GetValueAt(pos);
-        if (!(spCube == 0))
-        {
-            if (spCube->FUN_140e5cc00() != 1 || spCube->FUN_140e5cbf0() == nOwner)
-            {
-                if (spCube->FUN_140966fc0() == 7 || spCube->FUN_140966fc0() == 8)
-                {
-                    Unk_FcSp24 kInfo;
-                    FUN_140ca6580(static_cast<CHomemadeCubeObject*>(spCube.get()), &kInfo);
-                    unsigned char bEmpty = FUN_140ca6410(&kInfo);
-                    FUN_140ca62a0(&kInfo);
-                    if (bEmpty == 0)
-                    {
-                        Unk_FcSp24 kInfo2;
-                        FUN_140ca6580(static_cast<CHomemadeCubeObject*>(spCube.get()), &kInfo2);
-                        bool bOther = FUN_1409658d0(&kInfo2)->m_nItemId != nItem;
-                        FUN_140ca62a0(&kInfo2);
-                        if (!bOther)
-                            nCount++;
-                    }
-                }
-            }
-        }
-        m_mapCubes.GetNext(pos);
+        if (spCube == 0)
+            continue;
+        if (spCube->FUN_140e5cc00() == 1 && spCube->FUN_140e5cbf0() != nOwner)
+            continue;
+        if (spCube->FUN_140966fc0() != 7 && spCube->FUN_140966fc0() != 8)
+            continue;
+        if (!static_cast<CHomemadeCubeObject*>(spCube.operator->())->FUN_140ca6580())
+            continue;
+        if (static_cast<CHomemadeCubeObject*>(spCube.operator->())->FUN_140ca6580()->m_n100 != nItem)
+            continue;
+        nCount++;
     }
     return nCount;
 }
 
-// MS2-FUNCTIONAL: the map walk differs from the exe
 // @0x141232660
 void CFunctionCubeService::FUN_141232660(ATL::CAtlArray<MS2Ptr<CHomemadeCubeObject> >& aOut, __int64 nOwner)
 {
-    POSITION pos = m_mapCubes.GetHeadPosition();
-    while (pos)
+    for (POSITION pos = m_mapCubes.GetHeadPosition(); pos; m_mapCubes.GetNext(pos))
     {
         MS2Ptr<CFunctionCubeObject> spCube = m_mapCubes.GetValueAt(pos);
-        if (!(spCube == 0))
-        {
-            if (spCube->FUN_140e5cc00() != 1 || spCube->FUN_140e5cbf0() == nOwner)
-            {
-                if (spCube->FUN_140966fc0() == 7 || spCube->FUN_140966fc0() == 8)
-                {
-                    MS2Ptr<CHomemadeCubeObject> spHome(dynamic_cast<CHomemadeCubeObject*>(spCube.get()));
-                    if ((!spHome) == 0)
-                        aOut.Add(spHome);
-                }
-            }
-        }
-        m_mapCubes.GetNext(pos);
+        if (spCube == 0)
+            continue;
+        if (spCube->FUN_140e5cc00() == 1 && spCube->FUN_140e5cbf0() != nOwner)
+            continue;
+        if (spCube->FUN_140966fc0() != 7 && spCube->FUN_140966fc0() != 8)
+            continue;
+        MS2Ptr<CHomemadeCubeObject> spHome(dynamic_cast<CHomemadeCubeObject*>(spCube.get()));
+        if (!spHome)
+            continue;
+        aOut.Add(spHome);
     }
 }
 
-// MS2-FUNCTIONAL: the map walk differs from the exe
 // @0x141232810
 void CFunctionCubeService::FUN_141232810(ATL::CAtlArray<MS2Ptr<CNurturingCubeObject> >& aOut)
 {
-    POSITION pos = m_mapCubes.GetHeadPosition();
-    while (pos)
+    for (POSITION pos = m_mapCubes.GetHeadPosition(); pos; m_mapCubes.GetNext(pos))
     {
         MS2Ptr<CFunctionCubeObject> spCube = m_mapCubes.GetValueAt(pos);
-        if (!(spCube == 0))
-        {
-            if (spCube->FUN_140e5cc00() != 1 && spCube->FUN_140966fc0() == 0xd)
-            {
-                MS2Ptr<CNurturingCubeObject> spNurture(dynamic_cast<CNurturingCubeObject*>(spCube.get()));
-                if ((!spNurture) == 0)
-                    aOut.Add(spNurture);
-            }
-        }
-        m_mapCubes.GetNext(pos);
+        if (spCube == 0)
+            continue;
+        if (spCube->FUN_140e5cc00() == 1)
+            continue;
+        if (spCube->FUN_140966fc0() != 0xd)
+            continue;
+        MS2Ptr<CNurturingCubeObject> spNurture(dynamic_cast<CNurturingCubeObject*>(spCube.get()));
+        if (!spNurture)
+            continue;
+        aOut.Add(spNurture);
     }
 }
 

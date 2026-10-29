@@ -325,7 +325,7 @@ ItemOptionValueRef::ItemOptionValueRef(unsigned nSpecial) : ItemOptionValue(nSpe
 }
 
 // @0x1405ce670
-// MS2-FUNCTIONAL: stack frame 0x10 smaller (one exe temp not reproduced)
+// MS2-FUNCTIONAL: in the 0x1c sums the exe spills FUN_1405d0dd0's result to an extra int temp before the add (frame 0x10 larger); not reproduced
 int ItemOptionValueRef::FUN_1405ce670(unsigned nItemId, int nRank)
 {
     MS2Ptr<CItemData> spItem = FUN_14053f870(nItemId);
@@ -346,6 +346,8 @@ int ItemOptionValueRef::FUN_1405ce670(unsigned nItemId, int nRank)
         return FUN_1405d0030(nStat, nJob, spItem->FUN_14053f080(), spItem->limit.recommendJobs.size() > 1);
     case 3:
         return FUN_1405d01e0(nStat, nJob, spItem->FUN_14053f080());
+    case 0x11:
+        return FUN_1405d0340(nStat, nRank);
     case 4:
         if (m_nLuaIndex == 1)
             return FUN_1405cf6e0(nStat, nLevel, nRank, spItem->FUN_14053f080());
@@ -354,21 +356,12 @@ int ItemOptionValueRef::FUN_1405ce670(unsigned nItemId, int nRank)
         else if (m_nLuaIndex == 4)
             return FUN_1405cf6e0(nStat, nLevel, nRank, spItem->FUN_14053f080()) + FUN_1405cfb10(nStat, nLevel);
         break;
-    case 0x11:
-        return FUN_1405d0340(nStat, nRank);
-    case 0x14:
-        if (m_nLuaIndex == 1)
-            return FUN_1405d04a0(nStat, nJob, nLevel, nRank, spItem->FUN_14053f080());
-        else if (m_nLuaIndex == 3)
-            return FUN_1405d0780(nStat, nJob, nLevel, nRank, spItem->FUN_14053f080());
-        else if (m_nLuaIndex == 4)
-            return FUN_1405d04a0(nStat, nJob, nLevel, nRank, spItem->FUN_14053f080())
-                + FUN_1405d0780(nStat, nJob, nLevel, nRank, spItem->FUN_14053f080());
-        break;
     case 0x15:
         return FUN_1405cfd10(nLevel);
     case 0x17:
         return FUN_1405cf650(nStat, nLevel);
+    case 0x19:
+        return FUN_1405cf260(nStat, nLevel, nRank);
     case 0x18:
         if (m_nLuaIndex == 1)
             return FUN_1405cf510(nLevel, nRank);
@@ -377,8 +370,6 @@ int ItemOptionValueRef::FUN_1405ce670(unsigned nItemId, int nRank)
         else if (m_nLuaIndex == 4)
             return FUN_1405cf510(nLevel, nRank) + FUN_1405cf650(nStat, nLevel);
         break;
-    case 0x19:
-        return FUN_1405cf260(nStat, nLevel, nRank);
     case 0x1a:
         if (m_nLuaIndex == 1)
             return FUN_1405cf350(nStat, nLevel, nRank);
@@ -386,6 +377,15 @@ int ItemOptionValueRef::FUN_1405ce670(unsigned nItemId, int nRank)
             return FUN_1405cf430(nStat, nLevel, nRank);
         else if (m_nLuaIndex == 4)
             return FUN_1405cf350(nStat, nLevel, nRank) + FUN_1405cf430(nStat, nLevel, nRank);
+        break;
+    case 0x14:
+        if (m_nLuaIndex == 1)
+            return FUN_1405d04a0(nStat, nJob, nLevel, nRank, spItem->FUN_14053f080());
+        else if (m_nLuaIndex == 3)
+            return FUN_1405d0780(nStat, nJob, nLevel, nRank, spItem->FUN_14053f080());
+        else if (m_nLuaIndex == 4)
+            return FUN_1405d04a0(nStat, nJob, nLevel, nRank, spItem->FUN_14053f080())
+                + FUN_1405d0780(nStat, nJob, nLevel, nRank, spItem->FUN_14053f080());
         break;
     case 0x1b:
         return FUN_1405d0c10(m_nLuaIndex, nStat, nLevel, nRank, spItem->FUN_14053f080(), true);
@@ -872,7 +872,6 @@ int ItemOptionValueRef::FUN_1405d0340(int nStat, int nRank)
 }
 
 // @0x1405d04a0
-// MS2-FUNCTIONAL: exe frame 0x10 larger (temporaries of the rounded terms)
 int ItemOptionValueRef::FUN_1405d04a0(int nStat, int nJob, int nLevel, int nRank, int nOptionLevel)
 {
     double dBase = 9.0;
@@ -888,14 +887,14 @@ int ItemOptionValueRef::FUN_1405d04a0(int nStat, int nJob, int nLevel, int nRank
     {
         double dRankScale = FUN_1405d1c40(nRank, nOptionLevel);
         double dBaseScale = FUN_1405d1c40(4, nOptionLevel);
-        nExtra = (int)round(round(dBase * FUN_1405d1d70(nStat) * FUN_1405d1e70(nJob) * FUN_1405d1aa0(nRank)) * dRankScale
-            + round(dBase * FUN_1405d1d70(nStat) * FUN_1405d1e70(nJob) * FUN_1405d1aa0(4)) * dBaseScale * (nRank - 4));
+        double dRankValue = round(dBase * FUN_1405d1d70(nStat) * FUN_1405d1e70(nJob) * FUN_1405d1aa0(nRank)) * dRankScale;
+        double dBaseValue = round(dBase * FUN_1405d1d70(nStat) * FUN_1405d1e70(nJob) * FUN_1405d1aa0(4)) * dBaseScale;
+        nExtra = (int)round(dRankValue + dBaseValue * (nRank - 4));
     }
     return (int)(round(dBase * FUN_1405d1d70(nStat) * FUN_1405d1e70(nJob) * FUN_1405d1aa0(nRank)) + nExtra);
 }
 
 // @0x1405d0780
-// MS2-FUNCTIONAL: exe temporaries of the rounded terms differ
 int ItemOptionValueRef::FUN_1405d0780(int nStat, int nJob, int nLevel, int nRank, int nOptionLevel)
 {
     double dBase = 9.0;
@@ -913,26 +912,36 @@ int ItemOptionValueRef::FUN_1405d0780(int nStat, int nJob, int nLevel, int nRank
         double dBaseScale = FUN_1405d1c40(4, nOptionLevel);
         double dRankValue = 0.0;
         double dBaseValue = 0.0;
-        if (nStat == 0xc || (nStat > 17 && nStat < 21))
+        switch (nStat)
         {
+        case 0xc:
+        case 18:
+        case 19:
+        case 20:
             dRankValue = round(dBase * FUN_1405d1d70(nStat) * FUN_1405d2020(nRank)) * dRankScale;
             dBaseValue = round(dBase * FUN_1405d1d70(nStat) * FUN_1405d2020(4)) * dBaseScale;
-        }
-        else
-        {
+            break;
+        default:
             dRankValue = round(dBase * FUN_1405d1d70(nStat) * FUN_1405d1e70(nJob) * FUN_1405d1b70(nRank)) * dRankScale;
             dBaseValue = round(dBase * FUN_1405d1d70(nStat) * FUN_1405d1e70(nJob) * FUN_1405d1b70(4)) * dBaseScale;
+            break;
         }
         nExtra = (int)round(dRankValue + dBaseValue * (nRank - 4));
     }
-    if (nStat == 0xc || (nStat > 17 && nStat < 21))
+    switch (nStat)
+    {
+    case 0xc:
+    case 18:
+    case 19:
+    case 20:
         return (int)(round(dBase * FUN_1405d1d70(nStat) * FUN_1405d2020(nRank)) + nExtra);
-    int nMin = 4;
-    return (std::max)((int)(round(dBase * FUN_1405d1d70(nStat) * FUN_1405d1e70(nJob) * FUN_1405d1b70(nRank)) + nExtra), nMin);
+    default:
+        int nMin = 4;
+        return (std::max)((int)(round(dBase * FUN_1405d1d70(nStat) * FUN_1405d1e70(nJob) * FUN_1405d1b70(nRank)) + nExtra), nMin);
+    }
 }
 
 // @0x1405d0c10
-// MS2-FUNCTIONAL: exe temporaries of the scaled terms differ
 int ItemOptionValueRef::FUN_1405d0c10(unsigned nLuaIndex, int nStat, int nLevel, int nRank, int nOptionLevel, bool bNegate)
 {
     double dBase = 5.0;
@@ -943,14 +952,14 @@ int ItemOptionValueRef::FUN_1405d0c10(unsigned nLuaIndex, int nStat, int nLevel,
         else
             dBase += i / 30.0 * 20.0 - 0.8;
     }
-    double dValue = FUN_1405d23b0(dBase * FUN_1405d20f0(nStat));
+    dBase = FUN_1405d23b0(dBase * FUN_1405d20f0(nStat));
     double dScale = FUN_1405d2250(nStat) * nLuaIndex;
     if (bNegate)
         dScale *= -1.0;
     int nExtra = FUN_1405d0f90(nLuaIndex, nStat, nLevel, nRank, nOptionLevel);
-    if (nOptionLevel > 59)
-        nExtra = (int)round(nExtra * (dScale + 1.0));
-    return (int)(round(dValue * FUN_1405d1aa0(nRank) * (dScale + 1.0)) + nExtra);
+    if (nOptionLevel >= 60)
+        nExtra = (int)round(nExtra * (1.0 + dScale));
+    return (int)(round(dBase * FUN_1405d1aa0(nRank) * (1.0 + dScale)) + nExtra);
 }
 
 // @0x1405d0dd0
@@ -976,7 +985,6 @@ int ItemOptionValueRef::FUN_1405d0dd0(unsigned nLuaIndex, int nStat, int nLevel,
 }
 
 // @0x1405d0f90
-// MS2-FUNCTIONAL: exe temporaries of the rounded terms differ
 int ItemOptionValueRef::FUN_1405d0f90(unsigned nLuaIndex, int nStat, int nLevel, int nRank, int nOptionLevel)
 {
     double dRankScale = 0.0;
@@ -984,32 +992,32 @@ int ItemOptionValueRef::FUN_1405d0f90(unsigned nLuaIndex, int nStat, int nLevel,
     if (nOptionLevel < 60)
     {
         dBaseScale = 0.9828;
-        if (nRank == 4)
-            dRankScale = 0.9828;
-        else if (nRank == 5)
-            dRankScale = 2.0589;
-        else if (nRank == 6)
-            dRankScale = 2.0589;
+        switch (nRank)
+        {
+        case 4: dRankScale = 0.9828; break;
+        case 5: dRankScale = 2.0589; break;
+        case 6: dRankScale = 2.0589; break;
+        }
     }
     else if (nOptionLevel < 70)
     {
         dBaseScale = 1.531;
-        if (nRank == 4)
-            dRankScale = 1.531;
-        else if (nRank == 5)
-            dRankScale = 1.8285;
-        else if (nRank == 6)
-            dRankScale = 2.118;
+        switch (nRank)
+        {
+        case 4: dRankScale = 1.531; break;
+        case 5: dRankScale = 1.8285; break;
+        case 6: dRankScale = 2.118; break;
+        }
     }
     else if (nOptionLevel < 80)
     {
         dBaseScale = 2.4979;
-        if (nRank == 4)
-            dRankScale = 2.4979;
-        else if (nRank == 5)
-            dRankScale = 2.5491;
-        else if (nRank == 6)
-            dRankScale = 2.6866;
+        switch (nRank)
+        {
+        case 4: dRankScale = 2.4979; break;
+        case 5: dRankScale = 2.5491; break;
+        case 6: dRankScale = 2.6866; break;
+        }
     }
     double dBase = 5.0;
     for (int i = 2; i <= nLevel; i++)
@@ -1019,20 +1027,54 @@ int ItemOptionValueRef::FUN_1405d0f90(unsigned nLuaIndex, int nStat, int nLevel,
         else
             dBase += i / 30.0 * 20.0 - 0.8;
     }
-    double dValue = FUN_1405d23b0(dBase * FUN_1405d20f0(nStat));
-    double dRankLow = round(dValue * FUN_1405d1aa0(nRank) * (1.0 - FUN_1405d2250(nStat) * nLuaIndex));
-    double dRankHigh = round(dValue * FUN_1405d1aa0(nRank) * (FUN_1405d2250(nStat) * nLuaIndex + 1.0));
-    double dBaseLow = round(dValue * FUN_1405d1aa0(4) * (1.0 - FUN_1405d2250(nStat) * nLuaIndex));
-    double dBaseHigh = round(dValue * FUN_1405d1aa0(4) * (FUN_1405d2250(nStat) * nLuaIndex + 1.0));
-    if (nOptionLevel < 50 || nRank < 4)
-        return 0;
-    return (int)round((dRankLow + dRankHigh) / 2.0 * dRankScale + (dBaseLow + dBaseHigh) / 2.0 * dBaseScale * (nRank - 4));
+    dBase = FUN_1405d23b0(dBase * FUN_1405d20f0(nStat));
+    double dRankLow = round(dBase * FUN_1405d1aa0(nRank) * (1.0 - FUN_1405d2250(nStat) * nLuaIndex));
+    double dRankHigh = round(dBase * FUN_1405d1aa0(nRank) * (1.0 + FUN_1405d2250(nStat) * nLuaIndex));
+    double dRankAvg = (dRankLow + dRankHigh) / 2.0 * dRankScale;
+    double dBaseLow = round(dBase * FUN_1405d1aa0(4) * (1.0 - FUN_1405d2250(nStat) * nLuaIndex));
+    double dBaseHigh = round(dBase * FUN_1405d1aa0(4) * (1.0 + FUN_1405d2250(nStat) * nLuaIndex));
+    double dBaseAvg = (dBaseLow + dBaseHigh) / 2.0 * dBaseScale;
+    if (nOptionLevel >= 50 && nRank >= 4)
+        return (int)round(dRankAvg + dBaseAvg * (nRank - 4));
+    return 0;
 }
 
 // @0x1405d1440
-// MS2-FUNCTIONAL: exe temporaries of the scaled terms differ
 int ItemOptionValueRef::FUN_1405d1440(unsigned nLuaIndex, int nStat, int nLevel, int nRank, int nOptionLevel)
 {
+    // The exe fills these per option level and rank but never reads them (dead in the shipped formula too).
+    double dRankScale = 0.0;
+    double dBaseScale = 0.0;
+    if (nOptionLevel < 60)
+    {
+        dBaseScale = 0.9828;
+        switch (nRank)
+        {
+        case 4: dRankScale = 0.9828; break;
+        case 5: dRankScale = 2.0589; break;
+        case 6: dRankScale = 2.0589; break;
+        }
+    }
+    else if (nOptionLevel < 70)
+    {
+        dBaseScale = 1.531;
+        switch (nRank)
+        {
+        case 4: dRankScale = 1.531; break;
+        case 5: dRankScale = 1.8285; break;
+        case 6: dRankScale = 2.118; break;
+        }
+    }
+    else if (nOptionLevel < 80)
+    {
+        dBaseScale = 2.4979;
+        switch (nRank)
+        {
+        case 4: dRankScale = 2.4979; break;
+        case 5: dRankScale = 2.5491; break;
+        case 6: dRankScale = 2.6866; break;
+        }
+    }
     double dBase = 5.0;
     for (int i = 2; i <= nLevel; i++)
     {
@@ -1045,13 +1087,11 @@ int ItemOptionValueRef::FUN_1405d1440(unsigned nLuaIndex, int nStat, int nLevel,
         dBase = FUN_1405d23b0(dBase * FUN_1405d20f0(0x34));
     else
         dBase = FUN_1405d23b0(dBase * FUN_1405d20f0(nStat));
-    double dRank = FUN_1405d1b70(nRank);
-    double dRankStat = FUN_1405d2250(nStat);
-    double dBaseRank = FUN_1405d1b70(4);
-    double dBaseStat = FUN_1405d2250(nStat);
-    if (nOptionLevel < 50 || nRank < 4)
-        return 0;
-    return (int)round(dBase * dRank * (dRankStat + 1.0) + dBase * dBaseRank * (dBaseStat + 1.0) * (nRank - 4));
+    double dRankValue = dBase * FUN_1405d1b70(nRank) * (1.0 + FUN_1405d2250(nStat));
+    double dBaseValue = dBase * FUN_1405d1b70(4) * (1.0 + FUN_1405d2250(nStat));
+    if (nOptionLevel >= 50 && nRank >= 4)
+        return (int)round(dRankValue + dBaseValue * (nRank - 4));
+    return 0;
 }
 
 // @0x1405d17c0
@@ -1180,7 +1220,6 @@ double ItemOptionValueRef::FUN_1405d1c40(int nRank, int nOptionLevel)
 }
 
 // @0x1405d1d70
-// MS2-FUNCTIONAL: jump-table entry order of the 0x16/0x29 bodies differs
 double ItemOptionValueRef::FUN_1405d1d70(int nStat)
 {
     switch (nStat)
@@ -1200,10 +1239,10 @@ double ItemOptionValueRef::FUN_1405d1d70(int nStat)
     case 0x10:
     case 0x11:
         return 0.06;
-    case 0x16:
-        return 0.62;
     case 0x29:
         return 0.15;
+    case 0x16:
+        return 0.62;
     }
     MS2_ASSERT_AT(0x451, 0);
     return 0.0;
@@ -2090,7 +2129,10 @@ void ItemOptionRandom::FUN_1405d68f0(unsigned nItemId, int nRank, unsigned& nPic
     for (size_t i = 1; i <= nPick; i++)
     {
         for (size_t j = 0; j < nCount; j++)
-            vProb[j] += FUN_1405d9660(vWeights, i, j);
+        {
+            double dProb = FUN_1405d9660(vWeights, i, j);
+            vProb[j] += dProb;
+        }
     }
     size_t nLine = 0;
     for (; nLine < vLines.size(); nLine++)

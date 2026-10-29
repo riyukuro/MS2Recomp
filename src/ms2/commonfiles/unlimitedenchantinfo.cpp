@@ -108,7 +108,7 @@ void UnlimitedEnchantInfo::FUN_1408bbef0(CInputStream& in)
         OptionKey key = static_cast<OptionKey>(static_cast<unsigned short>(in.ReadInt16()));
         Unk_EnchantPtr<BaseOption> spOption(new BaseOption);
         spOption->FUN_140266d60(reinterpret_cast<Unk_EnchantRead&>(in));
-        m_options.insert(std::pair<OptionKey, Unk_EnchantPtr<BaseOption> >(key, spOption));
+        m_options.insert(std::make_pair(key, spOption));
     }
     m_secondary.clear();
     unsigned nCount2 = in.ReadInt32();
@@ -117,7 +117,7 @@ void UnlimitedEnchantInfo::FUN_1408bbef0(CInputStream& in)
         Unk_SocketSpecialStat key = static_cast<Unk_SocketSpecialStat>(static_cast<unsigned short>(in.ReadInt16()));
         Unk_EnchantPtr<BaseOption> spOption(new BaseOption);
         spOption->FUN_140266d60(reinterpret_cast<Unk_EnchantRead&>(in));
-        m_secondary.insert(std::pair<Unk_SocketSpecialStat, Unk_EnchantPtr<BaseOption> >(key, spOption));
+        m_secondary.insert(std::make_pair(key, spOption));
     }
 }
 

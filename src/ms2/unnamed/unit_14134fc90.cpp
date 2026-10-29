@@ -213,7 +213,6 @@ void UIHouseDemolishDialog::Hide()
 MS2_REPLACE_METHOD(0x141350440, UIHouseDemolishDialog, Hide, 62, 0xE025C16A);
 
 // @0x141350490
-// MS2-FUNCTIONAL: the owner id reaches the housing call through an extra rcx->rdx copy in the exe (3 bytes)
 void UIHouseDemolishDialog::Refresh(const unsigned* pnFlags)
 {
     if (FUN_140ba28d0(&m_30, 0) != 0 || m_bShown == 0)
@@ -232,8 +231,7 @@ void UIHouseDemolishDialog::Refresh(const unsigned* pnFlags)
                 {
                     int nCount = 0;
                     int nLimit = 0;
-                    __int64 nOwner = FUN_141656ad0(pPC);
-                    FUN_1409670e0()->FUN_1410d27c0(nOwner, 0, &nCount, &nLimit);
+                    FUN_1409670e0()->FUN_1410d27c0(FUN_141656ad0(pPC), 0, &nCount, &nLimit);
                     MS2Ptr<ASTextField> spText = FUN_140bb4cf0("m_textField");
                     if (spText.get() != 0)
                     {

@@ -142,12 +142,10 @@ bool FUN_140b73cc0(void* pThis, CInPacket& packet)
 
 // Rock-paper-scissors: banner (0), request received (1), answer: accepted (2) / declined (3), cancel (4), the request
 // box is stale (5), failed (6), reward list (10), card played (0xb), request sent (0xc).
-// MS2-FUNCTIONAL: written from the call sequence.
 // @0x140b73d60
 bool FUN_140b73d60(void* pThis, int nType, CInPacket& packet)
 {
-    WorldService* pWorld = FUN_1403ed2d0();
-    MyPC* pMyPC = static_cast<MyPC*>(pWorld->FUN_141bd0cc0());
+    MyPC* pMyPC = static_cast<MyPC*>(FUN_1403ed2d0()->FUN_141bd0cc0());
     if (pMyPC == 0)
     {
         MS2_ASSERT_AT(0x58, 0);
@@ -157,191 +155,193 @@ bool FUN_140b73d60(void* pThis, int nType, CInPacket& packet)
     {
     case 0:
         {
-            StateBannerData* pData = new StateBannerData(1);
-            pMyPC->vfunc_59(0x3b, pData, 0x97, 0);
+            pMyPC->vfunc_59(0x3b, new StateBannerData(1), 0x97, 0);
         }
         break;
     case 1:
         {
             __int64 nTargetId = packet.ReadInt64();
             PCBase* pTarget = (PCBase*)FUN_1403ed2d0()->FUN_141bd1530(nTargetId);
-            if (pTarget != 0)
+            if (pTarget == 0)
+                break;
+            if (pMyPC->FUN_14166c930() != 0x3b)
             {
-                if (pMyPC->FUN_14166c930() == 0x3b)
-                {
-                    StateBanner* pBanner = (StateBanner*)pMyPC->FUN_14166ccb0();
-                    if (pBanner == 0)
-                    {
-                        MS2_ASSERT_AT(0x78, 0);
-                    }
-                    else if (pBanner->FUN_140b7f3b0() == 1)
-                    {
-                        if (FUN_140b768a0(s_strRpsRequest) == 1)
-                        {
-                            COutPacket kPacket(static_cast<int>(SendOp::Microgame), 0);
-                            kPacket.Encode2(6);
-                            kPacket.Encode8(nTargetId);
-                            kPacket.Encode1(0);
-                            FUN_140710590(kPacket);
-                        }
-                        else if (FUN_140ae51b0(FUN_14097a780(), nTargetId) != 0)
-                        {
-                            COutPacket kPacket(static_cast<int>(SendOp::Microgame), 0);
-                            kPacket.Encode2(6);
-                            kPacket.Encode8(nTargetId);
-                            kPacket.Encode1(0);
-                            FUN_140710590(kPacket);
-                            FUN_141275260(0xd09, 1, 1);
-                        }
-                        else if (FUN_1416595d0(pMyPC) == 1)
-                        {
-                            COutPacket kPacket(static_cast<int>(SendOp::Microgame), 0);
-                            kPacket.Encode2(6);
-                            kPacket.Encode8(nTargetId);
-                            kPacket.Encode1(0);
-                            FUN_140710590(kPacket);
-                        }
-                        else if (FUN_1422b9e00(FUN_1408e57f0()) == 0x620001f)
-                        {
-                            COutPacket kPacket(static_cast<int>(SendOp::Microgame), 0);
-                            kPacket.Encode2(6);
-                            kPacket.Encode8(nTargetId);
-                            kPacket.Encode1(0);
-                            FUN_140710590(kPacket);
-                        }
-                        else
-                        {
-                            COutPacket kPacket(static_cast<int>(SendOp::Microgame), 0);
-                            kPacket.Encode2(0xc);
-                            kPacket.Encode8(nTargetId);
-                            FUN_140710590(kPacket);
-                            CStringW strName = pTarget->vfunc_77();
-                            MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, FUN_14052bd00(0xd0e, strName), 0, CStringW(s_strRpsRequest));
-                            if (spBox == 0)
-                            {
-                                MS2_ASSERT_AT(0xba, 0);
-                            }
-                            else
-                            {
-                                spBox->FUN_140b76940(CStringW(strName));
-                                spBox->FUN_141a01ca0(FUN_1401d3200()->m_boxSeconds.FUN_14025a620(), 1, GetStringCommon(0x2b8));
-                                spBox->FUN_141a02460(1);
-                                spBox->FUN_141a024a0(0);
-                                FUN_140d73c60(spBox);
-                            }
-                        }
-                    }
-                    else
-                    {
-                        COutPacket kPacket(static_cast<int>(SendOp::Microgame), 0);
-                        kPacket.Encode2(6);
-                        kPacket.Encode8(nTargetId);
-                        kPacket.Encode1(0);
-                        FUN_140710590(kPacket);
-                    }
-                }
-                else
-                {
-                    COutPacket kPacket(static_cast<int>(SendOp::Microgame), 0);
-                    kPacket.Encode2(6);
-                    kPacket.Encode8(nTargetId);
-                    kPacket.Encode1(0);
-                    FUN_140710590(kPacket);
-                }
+                COutPacket kPacket(static_cast<int>(SendOp::Microgame), 0);
+                kPacket.Encode2(6);
+                kPacket.Encode8(nTargetId);
+                kPacket.Encode1(0);
+                FUN_140710590(kPacket);
+                break;
             }
+            StateBanner* pBanner = (StateBanner*)pMyPC->FUN_14166ccb0();
+            if (pBanner == 0)
+            {
+                MS2_ASSERT_AT(0x78, 0);
+                break;
+            }
+            if (pBanner->FUN_140b7f3b0() != 1)
+            {
+                COutPacket kPacket(static_cast<int>(SendOp::Microgame), 0);
+                kPacket.Encode2(6);
+                kPacket.Encode8(nTargetId);
+                kPacket.Encode1(0);
+                FUN_140710590(kPacket);
+                break;
+            }
+            if (FUN_140b768a0(s_strRpsRequest) == 1)
+            {
+                COutPacket kPacket(static_cast<int>(SendOp::Microgame), 0);
+                kPacket.Encode2(6);
+                kPacket.Encode8(nTargetId);
+                kPacket.Encode1(0);
+                FUN_140710590(kPacket);
+                break;
+            }
+            if (FUN_140ae51b0(FUN_14097a780(), nTargetId) != 0)
+            {
+                COutPacket kPacket(static_cast<int>(SendOp::Microgame), 0);
+                kPacket.Encode2(6);
+                kPacket.Encode8(nTargetId);
+                kPacket.Encode1(0);
+                FUN_140710590(kPacket);
+                FUN_141275260(0xd09, 1, 1);
+                break;
+            }
+            if (FUN_1416595d0(pMyPC) == 1)
+            {
+                COutPacket kPacket(static_cast<int>(SendOp::Microgame), 0);
+                kPacket.Encode2(6);
+                kPacket.Encode8(nTargetId);
+                kPacket.Encode1(0);
+                FUN_140710590(kPacket);
+                break;
+            }
+            if (FUN_1422b9e00(FUN_1408e57f0()) == 0x620001f)
+            {
+                COutPacket kPacket(static_cast<int>(SendOp::Microgame), 0);
+                kPacket.Encode2(6);
+                kPacket.Encode8(nTargetId);
+                kPacket.Encode1(0);
+                FUN_140710590(kPacket);
+                break;
+            }
+            COutPacket kPacket(static_cast<int>(SendOp::Microgame), 0);
+            kPacket.Encode2(0xc);
+            kPacket.Encode8(nTargetId);
+            FUN_140710590(kPacket);
+            const CStringW& strName = pTarget->vfunc_77();
+            MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, FUN_14052bd00(0xd0e, strName), 0, s_strRpsRequest);
+            if (spBox == 0)
+            {
+                MS2_ASSERT_AT(0xba, 0);
+                break;
+            }
+            spBox->FUN_140b76940(CStringW(strName));
+            spBox->FUN_141a01ca0(FUN_1401d3200()->m_boxSeconds.FUN_14025a620(), 1, GetStringCommon(0x2b8));
+            spBox->FUN_141a02460(1);
+            spBox->FUN_141a024a0(0);
+            FUN_140d73c60(spBox);
+        }
+        break;
+    case 0xc:
+        {
+            __int64 nTargetId = packet.ReadInt64();
+            PCBase* pTarget = (PCBase*)FUN_1403ed2d0()->FUN_141bd1530(nTargetId);
+            if (pTarget == 0)
+                break;
+            pMyPC->vfunc_59(0x3c, new StateMicroGameRpsData(pTarget->FUN_14123c580()), 0x99, 0);
+            CStringW strText = FUN_1409eec40(0xd0d);
+            MS2Ptr<CMsgBoxData> spBox = FUN_140d73f20(CStringW(strText), 0);
+            if (spBox == 0)
+            {
+                MS2_ASSERT_AT(0xd5, 0);
+                break;
+            }
+            spBox->SetExtra(s_strRpsWaiting);
+            spBox->FUN_141a01ca0(FUN_1401d3200()->m_boxSeconds.FUN_14025a620(), 1, GetStringCommon(0x2b8));
+            spBox->FUN_141a027c0(FUN_140b76b10(FUN_140bac700));
+            spBox->FUN_141a024a0(0);
+            spBox->FUN_141a01700(0x476, 0, 0);
+            FUN_140d73c60(spBox);
         }
         break;
     case 2:
         {
             __int64 nTargetId = packet.ReadInt64();
             PCBase* pTarget = (PCBase*)FUN_1403ed2d0()->FUN_141bd1530(nTargetId);
-            if (pTarget != 0)
+            if (pTarget == 0)
+                break;
+            if (FUN_140b768a0(s_strRpsWaiting) == 1)
+                FUN_14151f200();
+            if (pMyPC->FUN_14166c930() != 0x3c)
+                break;
+            StateMicroGameRps* pState = (StateMicroGameRps*)pMyPC->FUN_14166ccb0();
+            if (pState == 0)
             {
-                if (FUN_140b768a0(s_strRpsWaiting) == 1)
-                    FUN_14151f200();
-                if (pMyPC->FUN_14166c930() == 0x3c)
-                {
-                    StateMicroGameRps* pState = (StateMicroGameRps*)pMyPC->FUN_14166ccb0();
-                    if (pState == 0)
-                    {
-                        MS2_ASSERT_AT(0xf3, 0);
-                    }
-                    else if (pMyPC->FUN_14166cc80() == 0x99)
-                    {
-                        int nPartner = pState->FUN_140b872c0();
-                        if (nPartner == pTarget->FUN_14123c580())
-                            FUN_141275260(0xd10, 1, 1);
-                    }
-                }
+                MS2_ASSERT_AT(0xf3, 0);
+                break;
             }
+            if (pMyPC->FUN_14166cc80() != 0x99)
+                break;
+            if (pState->FUN_140b872c0() != pTarget->FUN_14123c580())
+                break;
+            FUN_141275260(0xd10, 1, 1);
         }
         break;
     case 3:
         {
             __int64 nTargetId = packet.ReadInt64();
             PCBase* pTarget = (PCBase*)FUN_1403ed2d0()->FUN_141bd1530(nTargetId);
-            if (pTarget != 0)
+            if (pTarget == 0)
+                break;
+            if (FUN_140b768a0(s_strRpsWaiting) == 1)
+                FUN_14151f200();
+            if (pMyPC->FUN_14166c930() != 0x3c)
+                break;
+            StateMicroGameRps* pState = (StateMicroGameRps*)pMyPC->FUN_14166ccb0();
+            if (pState == 0)
             {
-                if (FUN_140b768a0(s_strRpsWaiting) == 1)
-                    FUN_14151f200();
-                if (pMyPC->FUN_14166c930() == 0x3c)
-                {
-                    StateMicroGameRps* pState = (StateMicroGameRps*)pMyPC->FUN_14166ccb0();
-                    if (pState == 0)
-                    {
-                        MS2_ASSERT_AT(0x111, 0);
-                    }
-                    else
-                    {
-                        int nPartner = pState->FUN_140b872c0();
-                        if (nPartner == pTarget->FUN_14123c580())
-                        {
-                            pMyPC->vfunc_59(1, 0, 0, 0);
-                            CStringW strText = FUN_14052bd00(0xd0f, pTarget->vfunc_77());
-                            FUN_1412751f0(strText, 1, 1);
-                        }
-                    }
-                }
+                MS2_ASSERT_AT(0x111, 0);
+                break;
             }
+            if (pState->FUN_140b872c0() != pTarget->FUN_14123c580())
+                break;
+            pMyPC->vfunc_59(1, 0, 0, 0);
+            CStringW strText = FUN_14052bd00(0xd0f, pTarget->vfunc_77());
+            FUN_1412751f0(strText, 1, 1);
         }
         break;
     case 4:
-        if (pMyPC->FUN_14166c930() == 0x3c)
         {
+            if (pMyPC->FUN_14166c930() != 0x3c)
+                break;
             StateMicroGameRps* pState = (StateMicroGameRps*)pMyPC->FUN_14166ccb0();
             if (pState == 0)
             {
                 MS2_ASSERT_AT(0x128, 0);
+                break;
             }
-            else
-            {
-                pState->FUN_140b876a0();
-            }
+            pState->FUN_140b876a0();
         }
         break;
     case 5:
         {
             __int64 nTargetId = packet.ReadInt64();
             PCBase* pTarget = (PCBase*)FUN_1403ed2d0()->FUN_141bd1530(nTargetId);
-            if (pTarget != 0)
-            {
-                MS2Ptr<CMsgBoxData> spBox = FUN_14151f820();
-                if (!(spBox == 0))
-                {
-                    if (!FUN_140164830(spBox->GetExtra(), s_strRpsRequest))
-                    {
-                        CStringW strRequester;
-                        if (spBox->FUN_140b76a70(0, strRequester))
-                        {
-                            if (!FUN_140164830(strRequester, pTarget->vfunc_77()))
-                            {
-                                FUN_14151f200();
-                                FUN_141275260(0xd04, 1, 1);
-                            }
-                        }
-                    }
-                }
-            }
+            if (pTarget == 0)
+                break;
+            MS2Ptr<CMsgBoxData> spBox = FUN_14151f820();
+            if (spBox == 0)
+                break;
+            if (FUN_140164830(spBox->GetExtra(), s_strRpsRequest))
+                break;
+            CStringW strRequester;
+            if (!spBox->FUN_140b76a70(0, strRequester))
+                break;
+            if (strRequester != pTarget->vfunc_77())
+                break;
+            FUN_14151f200();
+            FUN_141275260(0xd04, 1, 1);
         }
         break;
     case 6:
@@ -354,36 +354,17 @@ bool FUN_140b73d60(void* pThis, int nType, CInPacket& packet)
                 FUN_14151f200();
             if (FUN_140b768a0(s_strRpsRequest) == 1)
                 FUN_14151f200();
-            if (pMyPC->FUN_14166c930() == 0x3c)
-            {
-                StateMicroGameRps* pState = (StateMicroGameRps*)pMyPC->FUN_14166ccb0();
-                if (pState != 0)
-                {
-                    PCBase* pPartner = pState->FUN_140b879d0();
-                    if (pPartner != 0)
-                    {
-                        if (pPartner->FUN_141656a80() == nActorId)
-                            pMyPC->vfunc_59(1, 0, 0, 0);
-                    }
-                }
-            }
-        }
-        break;
-    default:
-        return false;
-    case 10:
-        {
-            UIRewardNotify* pNotify = FUN_140938cd0(0x4e5d);
-            if (pNotify != 0)
-            {
-                int nCount = packet.ReadInt32();
-                for (int i = 0; i < nCount; i = i + 1)
-                {
-                    int nItemId = packet.ReadInt32();
-                    unsigned int nGrade = (unsigned short)packet.ReadInt16();
-                    pNotify->FUN_141abf6e0(nItemId, nGrade);
-                }
-            }
+            if (pMyPC->FUN_14166c930() != 0x3c)
+                break;
+            StateMicroGameRps* pState = (StateMicroGameRps*)pMyPC->FUN_14166ccb0();
+            if (pState == 0)
+                break;
+            PCBase* pPartner = pState->FUN_140b879d0();
+            if (pPartner == 0)
+                break;
+            if (pPartner->FUN_141656a80() != nActorId)
+                break;
+            pMyPC->vfunc_59(1, 0, 0, 0);
         }
         break;
     case 0xb:
@@ -391,58 +372,43 @@ bool FUN_140b73d60(void* pThis, int nType, CInPacket& packet)
             unsigned int nMode = packet.ReadUInt8();
             unsigned int nCard = packet.ReadUInt8();
             unsigned int nPick = packet.ReadUInt8();
-            if (pMyPC->FUN_14166c930() == 0x3c)
+            if (pMyPC->FUN_14166c930() != 0x3c)
+                break;
+            StateMicroGameRps* pState = (StateMicroGameRps*)pMyPC->FUN_14166ccb0();
+            if (pState == 0)
             {
-                StateMicroGameRps* pState = (StateMicroGameRps*)pMyPC->FUN_14166ccb0();
-                if (pState == 0)
-                {
-                    MS2_ASSERT_AT(0x174, 0);
-                }
-                else
-                {
-                    pState->FUN_140b87310(nMode, nCard, nPick);
-                }
+                MS2_ASSERT_AT(0x174, 0);
+                break;
             }
+            pState->FUN_140b87310(nMode, nCard, nPick);
         }
         break;
-    case 0xc:
+    case 10:
         {
-            __int64 nTargetId = packet.ReadInt64();
-            PCBase* pTarget = (PCBase*)FUN_1403ed2d0()->FUN_141bd1530(nTargetId);
-            if (pTarget != 0)
+            UIRewardNotify* pNotify = FUN_140938cd0(0x4e5d);
+            if (pNotify == 0)
+                break;
+            int nCount = packet.ReadInt32();
+            for (int i = 0; i < nCount; i = i + 1)
             {
-                StateMicroGameRpsData* pData = new StateMicroGameRpsData(pTarget->FUN_14123c580());
-                pMyPC->vfunc_59(0x3c, pData, 0x99, 0);
-                CStringW strText = FUN_1409eec40(0xd0d);
-                MS2Ptr<CMsgBoxData> spBox = FUN_140d73f20(CStringW(strText), 0);
-                if (spBox == 0)
-                {
-                    MS2_ASSERT_AT(0xd5, 0);
-                }
-                else
-                {
-                    spBox->SetExtra(s_strRpsWaiting);
-                    spBox->FUN_141a01ca0(FUN_1401d3200()->m_boxSeconds.FUN_14025a620(), 1, GetStringCommon(0x2b8));
-                    spBox->FUN_141a027c0(FUN_140b76b10(FUN_140bac700));
-                    spBox->FUN_141a024a0(0);
-                    spBox->FUN_141a01700(0x476, 0, 0);
-                    FUN_140d73c60(spBox);
-                }
+                int nItemId = packet.ReadInt32();
+                unsigned int nGrade = (unsigned short)packet.ReadInt16();
+                pNotify->FUN_141abf6e0(nItemId, nGrade);
             }
         }
         break;
+    default:
+        return false;
     }
     return true;
 }
 
 // Couple dance: banner (0xd), request received (0xe), accepted (0xf), request sent (0x10), declined (0x11), start
 // (0x12), request cancelled (0x13), failed (0x14), answer (0x16).
-// MS2-FUNCTIONAL: written from the call sequence.
 // @0x140b751b0
 bool FUN_140b751b0(void* pThis, int nType, CInPacket& packet)
 {
-    WorldService* pWorld = FUN_1403ed2d0();
-    MyPC* pMyPC = static_cast<MyPC*>(pWorld->FUN_141bd0cc0());
+    MyPC* pMyPC = static_cast<MyPC*>(FUN_1403ed2d0()->FUN_141bd0cc0());
     if (pMyPC == 0)
     {
         MS2_ASSERT_AT(0x197, 0);
@@ -452,107 +418,120 @@ bool FUN_140b751b0(void* pThis, int nType, CInPacket& packet)
     switch (nType)
     {
     case 0xd:
-        {
-            StateBannerData* pData = new StateBannerData(2);
-            pMyPC->vfunc_59(0x3b, pData, 0x97, 0);
-        }
+        pMyPC->vfunc_59(0x3b, new StateBannerData(2), 0x97, 0);
         break;
     case 0xe:
         {
             __int64 nTargetId = packet.ReadInt64();
             PCBase* pTarget = (PCBase*)FUN_1403ed2d0()->FUN_141bd1530(nTargetId);
-            if (pTarget != 0)
+            if (pTarget == 0)
+                break;
+            if (pMyPC->FUN_14166c930() != 0x3b)
             {
-                if (pMyPC->FUN_14166c930() == 0x3b)
-                {
-                    StateBanner* pBanner = dynamic_cast<StateBanner*>(pMyPC->FUN_14166ccb0());
-                    if (pBanner == 0)
-                    {
-                        MS2_ASSERT_AT(0x1ba, 0);
-                    }
-                    else if (pBanner->FUN_140b7f3b0() == 2)
-                    {
-                        if (FUN_140b768a0(s_strCoupleDanceRequest) == 1)
-                        {
-                            COutPacket kPacket(static_cast<int>(SendOp::Microgame), 0);
-                            kPacket.Encode2(0x14);
-                            kPacket.Encode4(nValue);
-                            kPacket.Encode8(nTargetId);
-                            kPacket.Encode1(0);
-                            FUN_140710590(kPacket);
-                        }
-                        else if (FUN_140ae51b0(FUN_14097a780(), nTargetId) != 0)
-                        {
-                            COutPacket kPacket(static_cast<int>(SendOp::Microgame), 0);
-                            kPacket.Encode2(0x14);
-                            kPacket.Encode4(nValue);
-                            kPacket.Encode8(nTargetId);
-                            kPacket.Encode1(0);
-                            FUN_140710590(kPacket);
-                            FUN_1412752d0(CStringW(L"s_microgame_couple_dance_response_failed_blocked_user"), 1);
-                        }
-                        else if (FUN_1416595d0(pMyPC) == 1)
-                        {
-                            COutPacket kPacket(static_cast<int>(SendOp::Microgame), 0);
-                            kPacket.Encode2(0x14);
-                            kPacket.Encode4(nValue);
-                            kPacket.Encode8(nTargetId);
-                            kPacket.Encode1(0);
-                            FUN_140710590(kPacket);
-                        }
-                        else if (FUN_1422b9e00(FUN_1408e57f0()) == 0x620001f)
-                        {
-                            COutPacket kPacket(static_cast<int>(SendOp::Microgame), 0);
-                            kPacket.Encode2(0x14);
-                            kPacket.Encode4(nValue);
-                            kPacket.Encode8(nTargetId);
-                            kPacket.Encode1(0);
-                            FUN_140710590(kPacket);
-                        }
-                        else
-                        {
-                            COutPacket kPacket(static_cast<int>(SendOp::Microgame), 0);
-                            kPacket.Encode2(0x10);
-                            kPacket.Encode4(nValue);
-                            kPacket.Encode8(nTargetId);
-                            CStringW strName = pTarget->vfunc_77();
-                            CStringW strText = FUN_1405c2690(CStringW(L"s_microgame_couple_dance_request_recv"), strName);
-                            MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, strText, 0, CStringW(s_strCoupleDanceRequest));
-                            if (spBox == 0)
-                            {
-                                MS2_ASSERT_AT(0x202, 0);
-                            }
-                            else
-                            {
-                                spBox->FUN_140534050(nValue);
-                                spBox->FUN_1405340b0(nTargetId);
-                                spBox->FUN_141a01ca0(FUN_1401d3200()->m_boxSeconds.FUN_14025a620(), 1, GetStringCommon(0x2b8));
-                                spBox->FUN_141a02460(1);
-                                spBox->FUN_141a024a0(0);
-                                FUN_140d73c60(spBox);
-                            }
-                        }
-                    }
-                    else
-                    {
-                        COutPacket kPacket(static_cast<int>(SendOp::Microgame), 0);
-                        kPacket.Encode2(0x14);
-                        kPacket.Encode4(nValue);
-                        kPacket.Encode8(nTargetId);
-                        kPacket.Encode1(0);
-                        FUN_140710590(kPacket);
-                    }
-                }
-                else
-                {
-                    COutPacket kPacket(static_cast<int>(SendOp::Microgame), 0);
-                    kPacket.Encode2(0x14);
-                    kPacket.Encode4(nValue);
-                    kPacket.Encode8(nTargetId);
-                    kPacket.Encode1(0);
-                    FUN_140710590(kPacket);
-                }
+                COutPacket kPacket(static_cast<int>(SendOp::Microgame), 0);
+                kPacket.Encode2(0x14);
+                kPacket.Encode4(nValue);
+                kPacket.Encode8(nTargetId);
+                kPacket.Encode1(0);
+                FUN_140710590(kPacket);
+                break;
             }
+            StateBanner* pBanner = dynamic_cast<StateBanner*>(pMyPC->FUN_14166ccb0());
+            if (pBanner == 0)
+            {
+                MS2_ASSERT_AT(0x1ba, 0);
+                break;
+            }
+            if (pBanner->FUN_140b7f3b0() != 2)
+            {
+                COutPacket kPacket(static_cast<int>(SendOp::Microgame), 0);
+                kPacket.Encode2(0x14);
+                kPacket.Encode4(nValue);
+                kPacket.Encode8(nTargetId);
+                kPacket.Encode1(0);
+                FUN_140710590(kPacket);
+                break;
+            }
+            if (FUN_140b768a0(s_strCoupleDanceRequest) == 1)
+            {
+                COutPacket kPacket(static_cast<int>(SendOp::Microgame), 0);
+                kPacket.Encode2(0x14);
+                kPacket.Encode4(nValue);
+                kPacket.Encode8(nTargetId);
+                kPacket.Encode1(0);
+                FUN_140710590(kPacket);
+                break;
+            }
+            if (FUN_140ae51b0(FUN_14097a780(), nTargetId) != 0)
+            {
+                COutPacket kPacket(static_cast<int>(SendOp::Microgame), 0);
+                kPacket.Encode2(0x14);
+                kPacket.Encode4(nValue);
+                kPacket.Encode8(nTargetId);
+                kPacket.Encode1(0);
+                FUN_140710590(kPacket);
+                FUN_1412752d0(L"s_microgame_couple_dance_response_failed_blocked_user", 1);
+                break;
+            }
+            if (FUN_1416595d0(pMyPC) == 1)
+            {
+                COutPacket kPacket(static_cast<int>(SendOp::Microgame), 0);
+                kPacket.Encode2(0x14);
+                kPacket.Encode4(nValue);
+                kPacket.Encode8(nTargetId);
+                kPacket.Encode1(0);
+                FUN_140710590(kPacket);
+                break;
+            }
+            if (FUN_1422b9e00(FUN_1408e57f0()) == 0x620001f)
+            {
+                COutPacket kPacket(static_cast<int>(SendOp::Microgame), 0);
+                kPacket.Encode2(0x14);
+                kPacket.Encode4(nValue);
+                kPacket.Encode8(nTargetId);
+                kPacket.Encode1(0);
+                FUN_140710590(kPacket);
+                break;
+            }
+            COutPacket kPacket(static_cast<int>(SendOp::Microgame), 0);
+            kPacket.Encode2(0x10);
+            kPacket.Encode4(nValue);
+            kPacket.Encode8(nTargetId);
+            FUN_140710590(kPacket);
+            const CStringW& strName = pTarget->vfunc_77();
+            MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, FUN_1405c2690(L"s_microgame_couple_dance_request_recv", strName), 0, s_strCoupleDanceRequest);
+            if (spBox == 0)
+            {
+                MS2_ASSERT_AT(0x202, 0);
+                break;
+            }
+            spBox->FUN_140534050(nValue);
+            spBox->FUN_1405340b0(nTargetId);
+            spBox->FUN_141a01ca0(FUN_1401d3200()->m_boxSeconds.FUN_14025a620(), 1, GetStringCommon(0x2b8));
+            spBox->FUN_141a02460(1);
+            spBox->FUN_141a024a0(0);
+            FUN_140d73c60(spBox);
+        }
+        break;
+    case 0x10:
+        {
+            __int64 nTargetId = packet.ReadInt64();
+            PCBase* pTarget = (PCBase*)FUN_1403ed2d0()->FUN_141bd1530(nTargetId);
+            if (pTarget == 0)
+                break;
+            pMyPC->vfunc_59(0x45, new StateMicroGameCoupleDanceData(pTarget->FUN_14123c580()), 0xa9, 0);
+            MS2Ptr<CMsgBoxData> spBox = FUN_140d73f20(FUN_140298ea0(L"s_microgame_couple_dance_waiting"), 0);
+            if (spBox == 0)
+            {
+                MS2_ASSERT_AT(0x21c, 0);
+                break;
+            }
+            spBox->SetExtra(s_strCoupleDanceWaiting);
+            spBox->FUN_141a01ca0(FUN_1401d3200()->m_boxSeconds.FUN_14025a620(), 1, GetStringCommon(0x2b8));
+            spBox->FUN_141a027c0(FUN_140b76b10(FUN_140bacda0));
+            spBox->FUN_141a024a0(0);
+            spBox->FUN_141a01700(0x476, 0, 0);
+            FUN_140d73c60(spBox);
         }
         break;
     case 0xf:
@@ -561,80 +540,71 @@ bool FUN_140b751b0(void* pThis, int nType, CInPacket& packet)
             if (FUN_140b768a0(s_strRpsWaiting) == 1)
                 FUN_14151f200();
             PCBase* pTarget = (PCBase*)FUN_1403ed2d0()->FUN_141bd1530(nTargetId);
-            if (pTarget != 0 && pMyPC->FUN_14166c930() == 0x45)
+            if (pTarget == 0)
+                break;
+            if (pMyPC->FUN_14166c930() != 0x45)
+                break;
+            StateMicroGameCoupleDance* pState = dynamic_cast<StateMicroGameCoupleDance*>(pMyPC->FUN_14166ccb0());
+            if (pState == 0)
             {
-                StateMicroGameCoupleDance* pState = dynamic_cast<StateMicroGameCoupleDance*>(pMyPC->FUN_14166ccb0());
-                if (pState == 0)
-                {
-                    MS2_ASSERT_AT(0x23a, 0);
-                }
-                else if (pMyPC->FUN_14166cc80() == 0xa9)
-                {
-                    int nPartner = pState->FUN_140b894c0();
-                    if (nPartner == pTarget->FUN_14123c580())
-                        FUN_1412752d0(CStringW(L"s_microgame_couple_dance_response_accept"), 1);
-                }
+                MS2_ASSERT_AT(0x23a, 0);
+                break;
             }
-        }
-        break;
-    case 0x10:
-        {
-            __int64 nTargetId = packet.ReadInt64();
-            PCBase* pTarget = (PCBase*)FUN_1403ed2d0()->FUN_141bd1530(nTargetId);
-            if (pTarget != 0)
-            {
-                StateMicroGameCoupleDanceData* pData = new StateMicroGameCoupleDanceData(pTarget->FUN_14123c580());
-                pMyPC->vfunc_59(0x45, pData, 0xa9, 0);
-                CStringW strText = FUN_140298ea0(CStringW(L"s_microgame_couple_dance_waiting"));
-                MS2Ptr<CMsgBoxData> spBox = FUN_140d73f20(strText, 0);
-                if (spBox == 0)
-                {
-                    MS2_ASSERT_AT(0x21c, 0);
-                }
-                else
-                {
-                    spBox->SetExtra(s_strCoupleDanceWaiting);
-                    spBox->FUN_141a01ca0(FUN_1401d3200()->m_boxSeconds.FUN_14025a620(), 1, GetStringCommon(0x2b8));
-                    spBox->FUN_141a027c0(FUN_140b76b10(FUN_140bacda0));
-                    spBox->FUN_141a024a0(0);
-                    spBox->FUN_141a01700(0x476, 0, 0);
-                    FUN_140d73c60(spBox);
-                }
-            }
+            if (pMyPC->FUN_14166cc80() != 0xa9)
+                break;
+            if (pState->FUN_140b894c0() != pTarget->FUN_14123c580())
+                break;
+            FUN_1412752d0(L"s_microgame_couple_dance_response_accept", 1);
         }
         break;
     case 0x11:
         {
             __int64 nTargetId = packet.ReadInt64();
             PCBase* pTarget = (PCBase*)FUN_1403ed2d0()->FUN_141bd1530(nTargetId);
-            if (pTarget != 0)
+            if (pTarget == 0)
+                break;
+            if (FUN_140b768a0(s_strCoupleDanceWaiting) == 1)
+                FUN_14151f200();
+            if (pMyPC->FUN_14166c930() != 0x45)
+                break;
+            StateMicroGameCoupleDance* pState = dynamic_cast<StateMicroGameCoupleDance*>(pMyPC->FUN_14166ccb0());
+            if (pState == 0)
             {
-                if (FUN_140b768a0(s_strCoupleDanceWaiting) == 1)
-                    FUN_14151f200();
-                if (pMyPC->FUN_14166c930() == 0x45)
-                {
-                    StateMicroGameCoupleDance* pState = dynamic_cast<StateMicroGameCoupleDance*>(pMyPC->FUN_14166ccb0());
-                    if (pState == 0)
-                    {
-                        MS2_ASSERT_AT(600, 0);
-                    }
-                    else
-                    {
-                        int nPartner = pState->FUN_140b894c0();
-                        if (nPartner == pTarget->FUN_14123c580())
-                        {
-                            pMyPC->vfunc_59(1, 0, 0, 0);
-                            CStringW strText = FUN_1405c2690(CStringW(L"s_microgame_couple_dance_response_decline"), pTarget->vfunc_77());
-                            FUN_1412751f0(strText, 1, 1);
-                        }
-                    }
-                }
+                MS2_ASSERT_AT(600, 0);
+                break;
             }
+            if (pState->FUN_140b894c0() != pTarget->FUN_14123c580())
+                break;
+            pMyPC->vfunc_59(1, 0, 0, 0);
+            FUN_1412751f0(FUN_1405c2690(L"s_microgame_couple_dance_response_decline", pTarget->vfunc_77()), 1, 1);
+        }
+        break;
+    case 0x13:
+        {
+            __int64 nTargetId = packet.ReadInt64();
+            MS2Ptr<CMsgBoxData> spBox = FUN_14151f820();
+            if (spBox == 0)
+                break;
+            if (FUN_140164830(spBox->GetExtra(), s_strCoupleDanceRequest))
+                break;
+            int nFirst = 0;
+            if (!spBox->FUN_140961900(0, nFirst))
+                break;
+            if (nValue != nFirst)
+                break;
+            __int64 nRequester;
+            if (!spBox->FUN_140b19130(1, nRequester))
+                break;
+            if (nRequester != nTargetId)
+                break;
+            FUN_14151f200();
+            FUN_1412752d0(L"s_microgame_couple_dance_request_cancel", 1);
         }
         break;
     case 0x12:
-        if (pMyPC->FUN_14166c930() == 0x45)
         {
+            if (pMyPC->FUN_14166c930() != 0x45)
+                break;
             UICoupleDanceEventDialog* pPane = (UICoupleDanceEventDialog*)FUN_140b769d0(0x4f71);
             if (pPane != 0 && pPane->FUN_141924630() != 0)
                 pPane->vfunc_67();
@@ -642,55 +612,40 @@ bool FUN_140b751b0(void* pThis, int nType, CInPacket& packet)
             if (pState == 0)
             {
                 MS2_ASSERT_AT(0x29c, 0);
+                break;
             }
-            else
+            MS2Ptr<Unk_McEvent> spEvent = FUN_140302b00()->FUN_1403ed140()->FUN_140428700();
+            if (spEvent == 0)
             {
-                MS2Ptr<Unk_McEvent> spEvent = FUN_140302b00()->FUN_1403ed140()->FUN_140428700();
-                if (!(spEvent == 0))
-                {
-                    if (FUN_140b768a0(s_strCoupleDanceWaiting) == 1)
-                        FUN_14151f200();
-                    std::vector<int> aStages;
-                    for (int i = 0; i < spEvent->m_nStages; i = i + 1)
-                    {
-                        unsigned int nStage = (unsigned short)packet.ReadInt16();
-                        aStages.push_back(nStage);
-                    }
-                    pState->FUN_140b89510(aStages);
-                }
-                else
-                {
-                    MS2_ASSERT_AT(0x2a2, 0);
-                }
+                MS2_ASSERT_AT(0x2a2, 0);
+                break;
             }
+            if (FUN_140b768a0(s_strCoupleDanceWaiting) == 1)
+                FUN_14151f200();
+            std::vector<int> aStages;
+            for (int i = 0; i < spEvent->m_nStages; i = i + 1)
+            {
+                int nStage = (unsigned short)packet.ReadInt16();
+                aStages.push_back(nStage);
+            }
+            pState->FUN_140b89510(aStages);
         }
         break;
-    case 0x13:
+    case 0x16:
         {
-            __int64 nTargetId = packet.ReadInt64();
-            MS2Ptr<CMsgBoxData> spBox = FUN_14151f820();
-            if (!(spBox == 0))
+            unsigned int nTime = packet.ReadUInt8();
+            bool bFlag = packet.ReadUInt8() != 0;
+            unsigned int nA = (unsigned short)packet.ReadInt16();
+            unsigned int nB = (unsigned short)packet.ReadInt16();
+            if (pMyPC->FUN_14166c930() != 0x45)
+                break;
+            StateMicroGameCoupleDance* pState = dynamic_cast<StateMicroGameCoupleDance*>(pMyPC->FUN_14166ccb0());
+            if (pState == 0)
             {
-                if (!FUN_140164830(spBox->GetExtra(), s_strCoupleDanceRequest))
-                {
-                    int nFirst = 0;
-                    if (spBox->FUN_140961900(0, nFirst))
-                    {
-                        if (nValue == nFirst)
-                        {
-                            __int64 nRequester;
-                            if (spBox->FUN_140b19130(1, nRequester))
-                            {
-                                if (nRequester == nTargetId)
-                                {
-                                    FUN_14151f200();
-                                    FUN_1412752d0(CStringW(L"s_microgame_couple_dance_request_cancel"), 1);
-                                }
-                            }
-                        }
-                    }
-                }
+                MS2_ASSERT_AT(0x2c0, 0);
+                break;
             }
+            pState->FUN_140b89880(nTime, bFlag, nA, nB);
         }
         break;
     case 0x14:
@@ -703,44 +658,21 @@ bool FUN_140b751b0(void* pThis, int nType, CInPacket& packet)
                 FUN_14151f200();
             if (FUN_140b768a0(s_strCoupleDanceRequest) == 1)
                 FUN_14151f200();
-            if (pMyPC->FUN_14166c930() == 0x45)
-            {
-                StateMicroGameCoupleDance* pState = dynamic_cast<StateMicroGameCoupleDance*>(pMyPC->FUN_14166ccb0());
-                if (pState != 0)
-                {
-                    PCBase* pPartner = pState->FUN_140b89dd0();
-                    if (pPartner != 0)
-                    {
-                        if (pPartner->FUN_141656a80() == nActorId)
-                            pMyPC->vfunc_59(1, 0, 0, 0);
-                    }
-                }
-            }
+            if (pMyPC->FUN_14166c930() != 0x45)
+                break;
+            StateMicroGameCoupleDance* pState = dynamic_cast<StateMicroGameCoupleDance*>(pMyPC->FUN_14166ccb0());
+            if (pState == 0)
+                break;
+            PCBase* pPartner = pState->FUN_140b89dd0();
+            if (pPartner == 0)
+                break;
+            if (pPartner->FUN_141656a80() != nActorId)
+                break;
+            pMyPC->vfunc_59(1, 0, 0, 0);
         }
         break;
     default:
         return false;
-    case 0x16:
-        {
-            unsigned int nTime = packet.ReadUInt8();
-            char cFlag = packet.ReadUInt8();
-            unsigned int bFlag = cFlag != 0;
-            unsigned int nA = (unsigned short)packet.ReadInt16();
-            unsigned int nB = (unsigned short)packet.ReadInt16();
-            if (pMyPC->FUN_14166c930() == 0x45)
-            {
-                StateMicroGameCoupleDance* pState = dynamic_cast<StateMicroGameCoupleDance*>(pMyPC->FUN_14166ccb0());
-                if (pState == 0)
-                {
-                    MS2_ASSERT_AT(0x2c0, 0);
-                }
-                else
-                {
-                    pState->FUN_140b89880(nTime, cFlag != 0, nA, nB);
-                }
-            }
-        }
-        break;
     }
     return true;
 }
@@ -752,8 +684,9 @@ static bool FUN_140b768a0(const CStringW& strTag)
     MS2Ptr<CMsgBoxData> spBox = FUN_14151f820();
     if (spBox == 0)
         return false;
-    bool bSame = !FUN_140164830(spBox->GetExtra(), strTag);
-    return bSame;
+    if (FUN_140164830(spBox->GetExtra(), strTag))
+        return false;
+    return true;
 }
 
 // Appends a string argument.

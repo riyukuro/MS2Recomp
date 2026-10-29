@@ -84,12 +84,10 @@ void CubeHolderManager::FUN_1410b5280(MS2Ptr<CubeItemInfo> info) {
         for(unsigned i=0;i<cubes.GetCount();++i) {
             CubePtr cube=cubes[i];
             if(cube==0) continue;
-            if(cube->FUN_140def5a0()==info->itemId) {
-                if(cube->FUN_140def5f0()==info->instanceId) {
-                    selected=cube;
-                    break;
-                }
-            }
+            if(cube->FUN_140def5a0()!=info->itemId) continue;
+            if(cube->FUN_140def5f0()!=info->instanceId) continue;
+            selected=cube;
+            break;
         }
     }
 }

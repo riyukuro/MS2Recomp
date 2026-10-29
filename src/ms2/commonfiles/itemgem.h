@@ -47,8 +47,8 @@ public:
     {
     public:
         TModelAttr();                                               // 0x1405af3f0
-        virtual ~TModelAttr();                                      //  0 0x1405af6b0 (??_G 0x1405af9c0)
-        void FUN_1405ac3b0(Unk_140165cf0* pElem, const CString& strPrefix);   // 0x1405ac3b0 reads "<prefix>kfm" ...
+        // ~TModelAttr is implicit: 0x1405af6b0, ??_G 0x1405af9c0 (no vptr store in the exe)
+        bool FUN_1405ac3b0(Unk_140165cf0* pElem, const CString& strPrefix);   // 0x1405ac3b0 reads "<prefix>kfm" ...
         void FUN_1405ac670();                                       // 0x1405ac670 preloads the effects
         CString m_strKfm;                                           // +0x18
         CString m_strRegenEffect;                                   // +0x20
@@ -58,7 +58,7 @@ public:
     };
 
     CGemTombStoneData();                                            // 0x1405af300
-    virtual ~CGemTombStoneData();                                   //  0 0x1405af630 (??_G 0x1405af900)
+    // ~CGemTombStoneData is implicit: 0x1405af630, ??_G 0x1405af900 (no vptr store in the exe)
     virtual bool vfunc_1(Unk_140165cf0* pElem);                     //  1 0x1405ac760
 
     efd::Point3 m_ptRotation;                                       // +0x20 "rotation"
@@ -74,7 +74,7 @@ class CGemSwimData : public CGemDataBase
 {
 public:
     CGemSwimData();                                                 // 0x1405af280
-    virtual ~CGemSwimData();                                        //  0 0x1405af5d0 (??_G 0x1405af8c0)
+    // ~CGemSwimData is implicit: 0x1405af5d0, ??_G 0x1405af8c0 (no vptr store in the exe)
     virtual bool vfunc_1(Unk_140165cf0* pElem);                     //  1 0x1405ac860
     CString FUN_1405ac8f0();                                        // 0x1405ac8f0 "SwimIdle_<kf>"
     CString FUN_1405ac940();                                        // 0x1405ac940 "SwimRun_<kf>"
@@ -93,7 +93,7 @@ class CGemCharEffectData : public CGemDataBase
 {
 public:
     CGemCharEffectData();                                           // 0x1405aca90
-    virtual ~CGemCharEffectData();                                  //  0 0x1405af4f0 (??_G 0x1405af800)
+    // ~CGemCharEffectData is implicit: 0x1405af4f0, ??_G 0x1405af800 (no vptr store in the exe)
     virtual bool vfunc_1(Unk_140165cf0* pElem);                     //  1 0x1405acb20
     CString FUN_1405acbd0(int nPartnerGem);                         // 0x1405acbd0 the effect name of the partner gem
     CString FUN_1405acc80(int nOwnerGem, int nPartnerGem);          // 0x1405acc80 the couple effect name
@@ -111,7 +111,7 @@ class CGemEffectData : public CGemDataBase
 {
 public:
     CGemEffectData();                                               // 0x1405af240
-    virtual ~CGemEffectData();                                      //  0 0x1405af5a0 (??_G 0x1405af880)
+    // ~CGemEffectData is implicit: 0x1405af5a0, ??_G 0x1405af880 (no vptr store in the exe)
     virtual bool vfunc_1(Unk_140165cf0* pElem);                     //  1 0x1405acd40
     CString m_strEffect;                                            // +0x20 the equip effect name
 };

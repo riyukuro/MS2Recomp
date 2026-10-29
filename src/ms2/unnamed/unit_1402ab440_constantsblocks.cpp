@@ -530,84 +530,76 @@ bool Constants::Lookup(const CString& key, float* out)
     }
     return false;
 }
+// The by-value forms of the clientconstants.h string parsers (the exe assigns their returned temporaries).
+CString FUN_1407185b0(const CString& s);
+CStringW FUN_140718650(const CString& s);
+MS2Colors FUN_1407186f0(const CString& s);
+efd::Point3 FUN_140db9570(const CString& s);
+
 // @0x1402bb760
-// MS2-FUNCTIONAL: exe copies the parsed value through a pointer temporary; same behaviour
 bool Constants::Lookup(const CString& key, Unk_ConstColor* out)
 {
     CString s;
     if (values.Lookup(key, s))
     {
         unsigned c;
-        out->argb = *FUN_140718770(&c, s);
+        *out = *(Unk_ConstColor*)FUN_140718770(&c, s);
         return true;
     }
     return false;
 }
 // @0x1402bb800
-// MS2-FUNCTIONAL: exe copies the parsed value through a pointer temporary; same behaviour
 bool Constants::Lookup(const CString& key, MS2Colors* out)
 {
     CString s;
     if (values.Lookup(key, s))
     {
-        MS2Colors c;
-        *out = *FUN_1407186f0(&c, s);
+        *out = FUN_1407186f0(s);
         return true;
     }
     return false;
 }
 // @0x1402bb8c0
-// MS2-FUNCTIONAL: exe copies the parsed value through a pointer temporary; same behaviour
 bool Constants::Lookup(const CString& key, MS2Tick* out)
 {
     CString s;
     if (values.Lookup(key, s))
     {
         unsigned t;
-        out->value = *FUN_140718830(&t, s);
+        *out = *(MS2Tick*)FUN_140718830(&t, s);
         return true;
     }
     return false;
 }
 // @0x1402bb960
-// MS2-FUNCTIONAL: exe copies the parsed string through a pointer temporary; same behaviour
 bool Constants::Lookup(const CString& key, CString* out)
 {
     CString s;
     if (values.Lookup(key, s))
     {
-        unsigned __int64 buf;
-        CString* r = FUN_1407185b0((CString*)&buf, s);
-        CString* q = r;
-        *out = *q;
+        *out = FUN_1407185b0(s);
         return true;
     }
     return false;
 }
 // @0x1402bba20
-// MS2-FUNCTIONAL: exe copies the parsed string through a pointer temporary; same behaviour
 bool Constants::Lookup(const CString& key, CStringW* out)
 {
     CString s;
     if (values.Lookup(key, s))
     {
-        unsigned __int64 buf;
-        CStringW* r = FUN_140718650((CStringW*)&buf, s);
-        CStringW* q = r;
-        *out = *q;
+        *out = FUN_140718650(s);
         return true;
     }
     return false;
 }
 // @0x1402bbb30
-// MS2-FUNCTIONAL: exe copies the Point3 result inline; the operator= call here is equivalent
 bool Constants::Lookup(const CString& key, efd::Point3* out)
 {
     CString s;
     if (values.Lookup(key, s))
     {
-        efd::Point3 p;
-        *out = *FUN_140db9570(&p, s);
+        *out = FUN_140db9570(s);
         return true;
     }
     return false;
@@ -711,9 +703,13 @@ TSingleton<Client::Constants>::TSingleton() { s_instance = static_cast<Client::C
 TSingleton<Client::Constants>::~TSingleton() { s_instance = 0; }
 // @0x1402b77c0
 Client::Constants::Constants() {}
-// @0x1402bd680
-// MS2-FUNCTIONAL: exe is 44 bytes longer and does not store the vptrs at the start of the dtor
-Client::Constants::~Constants() {}
+
+// getexp.cpp statics the GetExp* defaults are read from (CExpEffectInfo::InitConstants writes them back)
+extern float DAT_1439f733c;                 // minimum travel distance (250)
+extern float DAT_1439f7340;                 // travel distance scale (2)
+extern float DAT_1439f7344;                 // arrival radius scale (15)
+extern float DAT_1439f7348;                 // elapsed decay (1.02)
+extern CString s_strEffDummy;               // @0x143ad60b8, "Eff_Dummy" (getexp.cpp)
 
 // @0x1402ab440
 // MS2-FUNCTIONAL: long generated body; prologue/default-argument temporaries differ from the exe, values are identical
@@ -745,9 +741,9 @@ void Common::Constants::vfunc_0()
     OffsetPcProfileTag.Define("OffsetPcProfileTag", 0.0f);
     fOffsetOnTombstoneNameTag.Define("fOffsetOnTombstoneNameTag", -16.0f);
     ChatBalloonDuration.Define("ChatBalloonDuration", 5000);
-    MonologueInterval.Define("MonologueInterval", MS2Tick(0));
-    MonologueRandom.Define("MonologueRandom", MS2Tick(0));
-    MonologueShowTime.Define("MonologueShowTime", MS2Tick(0));
+    MonologueInterval.Define("MonologueInterval", MS2Tick());
+    MonologueRandom.Define("MonologueRandom", MS2Tick());
+    MonologueShowTime.Define("MonologueShowTime", MS2Tick());
     BoreWaitingTick.Define("BoreWaitingTick", 20000);
     SkipFrameGameObject.Define("SkipFrameGameObject", 60.0f);
     SkipFrameDistanceGameObject.Define("SkipFrameDistanceGameObject", 1500.0f);
@@ -817,13 +813,13 @@ void Common::Constants::vfunc_0()
     DefaultDropItemAlpha.Define("DefaultDropItemAlpha", 0.5f);
     DropItemPickFailTime.Define("DropItemPickFailTime", 0.3f);
     DropItemPickFailHeight.Define("DropItemPickFailHeight", 50.0f);
-    GetExpMinVelocity.Define("GetExpMinVelocity", 250.0f);
-    GetExpVelocityPer1Length.Define("GetExpVelocityPer1Length", 2.0f);
-    GetExpTimeAcceleration.Define("GetExpTimeAcceleration", 1.02f);
-    GetExpCollisionRadius.Define("GetExpCollisionRadius", 15.0f);
+    GetExpMinVelocity.Define("GetExpMinVelocity", DAT_1439f733c);
+    GetExpVelocityPer1Length.Define("GetExpVelocityPer1Length", DAT_1439f7340);
+    GetExpTimeAcceleration.Define("GetExpTimeAcceleration", DAT_1439f7348);
+    GetExpCollisionRadius.Define("GetExpCollisionRadius", DAT_1439f7344);
     GetExpControlValue0.Define("GetExpControlValue0", efd::Point3());
     GetExpControlValue1.Define("GetExpControlValue1", efd::Point3());
-    GetExpTargetPCDummyName.Define("GetExpTargetPCDummyName", CString());
+    GetExpTargetPCDummyName.Define("GetExpTargetPCDummyName", s_strEffDummy);
     NPCRandomDeadPushRate.Define("NPCRandomDeadPushRate", 0.1f);
     CameraVelocityInPortalMove.Define("CameraVelocityInPortalMove", 600.0f);
     EmoticonVisibleDistance.Define("EmoticonVisibleDistance", 1000.0f);
@@ -925,11 +921,11 @@ void Common::Constants::vfunc_0()
     UGCShopSellMinPrice.Define("UGCShopSellMinPrice", 10);
     UGCShopSellMaxPrice.Define("UGCShopSellMaxPrice", 50000);
     // clamp: min price >= 0, max price >= min price
-    int minPrice = *UGCShopSellMinPrice.Get();
-    int minClamped = minPrice < 0 ? 0 : *UGCShopSellMinPrice.Get();
+    int minPrice = UGCShopSellMinPrice.Read();
+    int minClamped = minPrice < 0 ? 0 : UGCShopSellMinPrice.Read();
     UGCShopSellMinPrice.Set(minClamped);
-    int minNow = *UGCShopSellMinPrice.Get();
-    int maxClamped = *UGCShopSellMaxPrice.Get() < minNow ? *UGCShopSellMinPrice.Get() : *UGCShopSellMaxPrice.Get();
+    int minNow = UGCShopSellMinPrice.Read();
+    int maxClamped = UGCShopSellMaxPrice.Read() < minNow ? UGCShopSellMinPrice.Read() : UGCShopSellMaxPrice.Read();
     UGCShopSellMaxPrice.Set(maxClamped);
     UGCShopAdHour.Define("UGCShopAdHour", 72);
     UGCShopAdFeeMerat.Define("UGCShopAdFeeMerat", 100);
@@ -937,11 +933,11 @@ void Common::Constants::vfunc_0()
     UGCShopSellingRestrictAmount.Define("UGCShopSellingRestrictAmount", 100000);
     BlackMarketSellMinPrice.Define("BlackMarketSellMinPrice", 10);
     BlackMarketSellMaxPrice.Define("BlackMarketSellMaxPrice", 9900000000LL);
-    __int64 sellMin = *BlackMarketSellMinPrice.Get();
-    __int64 sellMinClamped = sellMin < 0 ? 0 : *BlackMarketSellMinPrice.Get();
+    __int64 sellMin = BlackMarketSellMinPrice.Read();
+    __int64 sellMinClamped = sellMin < 0 ? 0 : BlackMarketSellMinPrice.Read();
     BlackMarketSellMinPrice.Set(sellMinClamped);
-    __int64 sellMinNow = *BlackMarketSellMinPrice.Get();
-    __int64 sellMaxClamped = *BlackMarketSellMaxPrice.Get() < sellMinNow ? *BlackMarketSellMinPrice.Get() : *BlackMarketSellMaxPrice.Get();
+    __int64 sellMinNow = BlackMarketSellMinPrice.Read();
+    __int64 sellMaxClamped = BlackMarketSellMaxPrice.Read() < sellMinNow ? BlackMarketSellMinPrice.Read() : BlackMarketSellMaxPrice.Read();
     BlackMarketSellMaxPrice.Set(sellMaxClamped);
     FallMoveSpeed.Define("FallMoveSpeed", 1.0f);
     GuildCreatePrice.Define("GuildCreatePrice", 1000);
@@ -1239,7 +1235,7 @@ void Common::Constants::vfunc_0()
     AdventureProtectedRequireQuest.Define("AdventureProtectedRequireQuest", 50001605u);
     AdventureProtectedCharCreateTime.Define("AdventureProtectedCharCreateTime", 72);
     DeleteAccountPendingDay.Define("DeleteAccountPendingDay", 60u);
-    unsigned pendingDay = *DeleteAccountPendingDay.Get() < 7 ? 7 : *DeleteAccountPendingDay.Get();
+    unsigned pendingDay = DeleteAccountPendingDay.Read() < 7 ? 7 : DeleteAccountPendingDay.Read();
     DeleteAccountPendingDay.Set(pendingDay);
     PvpOnePunchRewardItem.Define("PvpOnePunchRewardItem", 0);
     for (int i = 0; i < 10; i++)
@@ -1252,25 +1248,30 @@ void Common::Constants::vfunc_0()
 
 }
 
-// @0x1402bab30
-// MS2-FUNCTIONAL: exe reads each Value<float> through the out-of-line Read getter; the inline getter here differs in register use
 extern float g_ClientConstantsFloats[7];   // 0x1439ed010
+// The exe stores each float through a direct [rip+X], not an indexed array.
+struct Unk_ClientConstantsFloats
+{
+    float m_fNPCColorScale;
+    float m_fNPCDuration;
+    float m_fPCColorScale;
+    float m_fPCDuration;
+    float m_fGetEXPColorScale;
+    float m_fGetEXPDuration;
+    float m_fAccumulationRatio;
+};
+#define g_kClientConstantsFloats (*(Unk_ClientConstantsFloats*)g_ClientConstantsFloats)
+
+// @0x1402bab30
 void FUN_1402bab30()
 {
-    Client::Constants* c = static_cast<Client::Constants*>(FUN_1401d3200());
-    g_ClientConstantsFloats[0] = c->NPCColorScale.Read();
-    c = static_cast<Client::Constants*>(FUN_1401d3200());
-    g_ClientConstantsFloats[1] = c->NPCDuration.Read();
-    c = static_cast<Client::Constants*>(FUN_1401d3200());
-    g_ClientConstantsFloats[2] = c->PCColorScale.Read();
-    c = static_cast<Client::Constants*>(FUN_1401d3200());
-    g_ClientConstantsFloats[3] = c->PCDuration.Read();
-    c = static_cast<Client::Constants*>(FUN_1401d3200());
-    g_ClientConstantsFloats[4] = c->GetEXPColorScale.Read();
-    c = static_cast<Client::Constants*>(FUN_1401d3200());
-    g_ClientConstantsFloats[5] = c->GetEXPDuration.Read();
-    c = static_cast<Client::Constants*>(FUN_1401d3200());
-    g_ClientConstantsFloats[6] = c->AccumulationRatio.Read();
+    g_kClientConstantsFloats.m_fNPCColorScale = static_cast<Client::Constants*>(FUN_1401d3200())->NPCColorScale.Read();
+    g_kClientConstantsFloats.m_fNPCDuration = static_cast<Client::Constants*>(FUN_1401d3200())->NPCDuration.Read();
+    g_kClientConstantsFloats.m_fPCColorScale = static_cast<Client::Constants*>(FUN_1401d3200())->PCColorScale.Read();
+    g_kClientConstantsFloats.m_fPCDuration = static_cast<Client::Constants*>(FUN_1401d3200())->PCDuration.Read();
+    g_kClientConstantsFloats.m_fGetEXPColorScale = static_cast<Client::Constants*>(FUN_1401d3200())->GetEXPColorScale.Read();
+    g_kClientConstantsFloats.m_fGetEXPDuration = static_cast<Client::Constants*>(FUN_1401d3200())->GetEXPDuration.Read();
+    g_kClientConstantsFloats.m_fAccumulationRatio = static_cast<Client::Constants*>(FUN_1401d3200())->AccumulationRatio.Read();
 }
 
 // @0x1402bbae0
@@ -1321,7 +1322,7 @@ struct Unk_ConstFile
 };
 
 // @0x1402b2010
-// MS2-FUNCTIONAL: the exe builds the file-name temporaries and entries in place with early destruction; no source form found
+// MS2-FUNCTIONAL: the exe copies the path-helper result and files[i] through an extra temporary (reads required via the copy); no source form found
 bool Common::Constants::LoadFiles()
 {
     values.RemoveAll();
@@ -1363,12 +1364,14 @@ bool Common::Constants::LoadFiles()
             }
             continue;
         }
-        CCacheData* cacheData = new CCacheData();
-        Unk_ConstCacheRef ref(cacheData);
-        if (ref.get() != 0)
         {
-            ref.get()->FUN_1401d1160(CString(entry.path));
-            cacheRefs.Add(ref);
+            CCacheData* cacheData = new CCacheData();
+            Unk_ConstCacheRef ref(cacheData);
+            if (ref.get() != 0)
+            {
+                ref.get()->FUN_1401d1160(CString(entry.path));
+                cacheRefs.Add(ref);
+            }
         }
         Unk_ConstXmlNode* root = reinterpret_cast<Unk_ConstXmlNode*>(&doc)->FUN_140165cf0("ms2");
         if (root == 0)
@@ -1418,54 +1421,54 @@ void Common::Constants::Reload()
 }
 
 // @0x1402b8590
-// MS2-FUNCTIONAL: long generated body; default-argument temporaries differ from the exe, values are identical
+// MS2-FUNCTIONAL: op-identical to the exe; only the stack-slot layout of the temporaries differs (frame 0x4a8 vs 0x488)
 void Client::Constants::vfunc_0()
 {
     Common::Constants::vfunc_0();
-    NameTagColorFriendly.Define("NameTagColorFriendly", Unk_ConstColor(0x0));
-    NameTagColorMob.Define("NameTagColorMob", Unk_ConstColor(0x0));
-    NameTagColorLeader.Define("NameTagColorLeader", Unk_ConstColor(0x0));
-    NameTagColorNamed.Define("NameTagColorNamed", Unk_ConstColor(0x0));
-    NameTagColorBoss.Define("NameTagColorBoss", Unk_ConstColor(0x0));
-    NameTagColorMyPC.Define("NameTagColorMyPC", Unk_ConstColor(0x0));
-    NameTagColorPC.Define("NameTagColorPC", Unk_ConstColor(0x0));
-    NameTagColorPCHostile.Define("NameTagColorPCHostile", Unk_ConstColor(0x0));
-    NameTagColorParty.Define("NameTagColorParty", Unk_ConstColor(0x0));
-    NameTagColorDead.Define("NameTagColorDead", Unk_ConstColor(0x0));
-    meso.Define("meso", Unk_ConstColor(0x0));
-    merat.Define("merat", Unk_ConstColor(0x0));
-    meratCancel.Define("meratCancel", Unk_ConstColor(0x0));
+    NameTagColorFriendly.Define("NameTagColorFriendly", Unk_ConstColor());
+    NameTagColorMob.Define("NameTagColorMob", Unk_ConstColor());
+    NameTagColorLeader.Define("NameTagColorLeader", Unk_ConstColor());
+    NameTagColorNamed.Define("NameTagColorNamed", Unk_ConstColor());
+    NameTagColorBoss.Define("NameTagColorBoss", Unk_ConstColor());
+    NameTagColorMyPC.Define("NameTagColorMyPC", Unk_ConstColor());
+    NameTagColorPC.Define("NameTagColorPC", Unk_ConstColor());
+    NameTagColorPCHostile.Define("NameTagColorPCHostile", Unk_ConstColor());
+    NameTagColorParty.Define("NameTagColorParty", Unk_ConstColor());
+    NameTagColorDead.Define("NameTagColorDead", Unk_ConstColor());
+    meso.Define("meso", Unk_ConstColor());
+    merat.Define("merat", Unk_ConstColor());
+    meratCancel.Define("meratCancel", Unk_ConstColor());
     job.Define("job", MS2Colors());
-    exp.Define("exp", Unk_ConstColor(0x0));
+    exp.Define("exp", Unk_ConstColor());
     categoryColor.Define("categoryColor", MS2Colors());
     ATL::CAtlArray<Unk_ConstColor> outlineColors;
     outlineColor.Define("outlineColor", &outlineColors);
     outlineBoost.Define("outlineBoost", 0.0f);
-    chatUserNormal.Define("chatUserNormal", Unk_ConstColor(0xffffff));
-    chatUserNotice.Define("chatUserNotice", Unk_ConstColor(0xffffff));
-    chatUserWhisper.Define("chatUserWhisper", Unk_ConstColor(0xffffff));
-    chatUserMapNotice.Define("chatUserMapNotice", Unk_ConstColor(0xffffff));
-    chatUserParty.Define("chatUserParty", Unk_ConstColor(0xffffff));
-    chatUserGuild.Define("chatUserGuild", Unk_ConstColor(0xffffff));
-    chatUserClub.Define("chatUserClub", Unk_ConstColor(0xffffff));
-    chatUserSuper.Define("chatUserSuper", Unk_ConstColor(0xffffff));
-    chatUserWorld.Define("chatUserWorld", Unk_ConstColor(0xffffff));
-    chatUserChannel.Define("chatUserChannel", Unk_ConstColor(0xffffff));
-    chatTextNormal.Define("chatTextNormal", Unk_ConstColor(0xffffff));
-    chatTextNotice.Define("chatTextNotice", Unk_ConstColor(0xffffff));
-    chatTextMapNotice.Define("chatTextMapNotice", Unk_ConstColor(0xffffff));
-    chatTextWhisperTo.Define("chatTextWhisperTo", Unk_ConstColor(0xffffff));
-    chatTextWhisperFail.Define("chatTextWhisperFail", Unk_ConstColor(0xffffff));
-    chatTextWhisperFrom.Define("chatTextWhisperFrom", Unk_ConstColor(0xffffff));
-    chatTextParty.Define("chatTextParty", Unk_ConstColor(0xffffff));
-    chatTextGuild.Define("chatTextGuild", Unk_ConstColor(0xffffff));
-    chatTextClub.Define("chatTextClub", Unk_ConstColor(0xffffff));
-    chatTextSuper.Define("chatTextSuper", Unk_ConstColor(0xffffff));
-    chatTextWorld.Define("chatTextWorld", Unk_ConstColor(0xffffff));
-    chatTextChannel.Define("chatTextChannel", Unk_ConstColor(0xffffff));
-    chatTextSystemMessage.Define("chatTextSystemMessage", Unk_ConstColor(0xffffff));
-    chatTextMinorSystemMessage.Define("chatTextMinorSystemMessage", Unk_ConstColor(0xffffff));
-    chatTextGMColor.Define("chatTextGMColor", Unk_ConstColor(0xffffff));
+    chatUserNormal.Define("chatUserNormal", 0xffffff);
+    chatUserNotice.Define("chatUserNotice", 0xffffff);
+    chatUserWhisper.Define("chatUserWhisper", 0xffffff);
+    chatUserMapNotice.Define("chatUserMapNotice", 0xffffff);
+    chatUserParty.Define("chatUserParty", 0xffffff);
+    chatUserGuild.Define("chatUserGuild", 0xffffff);
+    chatUserClub.Define("chatUserClub", 0xffffff);
+    chatUserSuper.Define("chatUserSuper", 0xffffff);
+    chatUserWorld.Define("chatUserWorld", 0xffffff);
+    chatUserChannel.Define("chatUserChannel", 0xffffff);
+    chatTextNormal.Define("chatTextNormal", 0xffffff);
+    chatTextNotice.Define("chatTextNotice", 0xffffff);
+    chatTextMapNotice.Define("chatTextMapNotice", 0xffffff);
+    chatTextWhisperTo.Define("chatTextWhisperTo", 0xffffff);
+    chatTextWhisperFail.Define("chatTextWhisperFail", 0xffffff);
+    chatTextWhisperFrom.Define("chatTextWhisperFrom", 0xffffff);
+    chatTextParty.Define("chatTextParty", 0xffffff);
+    chatTextGuild.Define("chatTextGuild", 0xffffff);
+    chatTextClub.Define("chatTextClub", 0xffffff);
+    chatTextSuper.Define("chatTextSuper", 0xffffff);
+    chatTextWorld.Define("chatTextWorld", 0xffffff);
+    chatTextChannel.Define("chatTextChannel", 0xffffff);
+    chatTextSystemMessage.Define("chatTextSystemMessage", 0xffffff);
+    chatTextMinorSystemMessage.Define("chatTextMinorSystemMessage", 0xffffff);
+    chatTextGMColor.Define("chatTextGMColor", 0xffffff);
     EnableSkillJumpDown.Define("EnableSkillJumpDown", 0);
     SkillGlobalCooldown.Define("SkillGlobalCooldown", 0.5f);
     SkillGlobalCooldown_CheckSameSkill.Define("SkillGlobalCooldown_CheckSameSkill", 0);
@@ -1582,8 +1585,8 @@ void Client::Constants::vfunc_0()
     RegionServerUrl_bpo.Define("RegionServerUrl_bpo", "");
     GetOr("TooltipLabelMaxWidth", &TooltipLabelMaxWidth, 0);
     GamePadStickMoveValue.Define("GamePadStickMoveValue", 50);
-    GetOr("RpgModeMoviePath", &RpgModeMoviePath, CStringW(L""));
-    GetOr("RoyaleModeMoviePath", &RoyaleModeMoviePath, CStringW(L""));
+    GetOr(CString("RpgModeMoviePath"), &RpgModeMoviePath, CStringW(L""));
+    GetOr(CString("RoyaleModeMoviePath"), &RoyaleModeMoviePath, CStringW(L""));
     HighlightMenuUsingLevel.Define("HighlightMenuUsingLevel", 1u);
     MouseInteractLimitDistance.Define("MouseInteractLimitDistance", 2000u);
     GetOr("PartyVoteReadyTagExpireSeconds", &PartyVoteReadyTagExpireSeconds, 10);
@@ -1591,7 +1594,7 @@ void Client::Constants::vfunc_0()
     AutoInstallEquipmentMinLevel.Define("AutoInstallEquipmentMinLevel", 5u);
     AutoInstallEquipmentMaxLevel.Define("AutoInstallEquipmentMaxLevel", 99u);
     Lookup("PartySearchRegisterComboValues", &PartySearchRegisterComboValues);
-    WorldMapShadowUsingContinent.Define("WorldMapShadowUsingContinent", 0);
+    WorldMapShadowUsingContinent.Define("WorldMapShadowUsingContinent", 105);
     Lookup("DungeonRewardFailEmotions", &DungeonRewardFailEmotions);
     DiscordAppID.Define("DiscordAppID", "555204064091045904");
     ItemGachaBoxProbabilityUrl.Define("ItemGachaBoxProbabilityUrl", "");

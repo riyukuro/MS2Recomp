@@ -214,11 +214,9 @@ void CHomeCameraMode::vfunc_7()
 MS2_REPLACE_METHOD(0x140B651D0, CHomeCameraMode, vfunc_7, 222, 0x3F1915D8);
 
 // @0x140b652c0
-// MS2-FUNCTIONAL: the exe moves pTarget through rcx first
 void CHomeCameraMode::vfunc_10()
 {
-    Unk_CameraTargetEntity* pTarget = Unk_CameraManager::FUN_1409478c0()->FUN_140a38d60();
-    Unk_CameraManager::FUN_1409478c0()->FUN_140aeaf40(pTarget, 1);
+    Unk_CameraManager::FUN_1409478c0()->FUN_140aeaf40(Unk_CameraManager::FUN_1409478c0()->FUN_140a38d60(), 1);
 }
 MS2_REPLACE_METHOD(0x140B652C0, CHomeCameraMode, vfunc_10, 59, 0x3AEC2CB0);
 
@@ -503,7 +501,6 @@ float CHomeCameraMode::FUN_140b66b10(float fMin, float fCur, float fMax, float f
 MS2_REPLACE_METHOD(0x140B66B10, CHomeCameraMode, FUN_140b66b10, 168, 0x89B97448);
 
 // @0x140b66bc0
-// MS2-FUNCTIONAL: fDist/fBlend stack slot order differs
 void CHomeCameraMode::vfunc_37(double fTime)
 {
     float fDist;
@@ -521,56 +518,50 @@ void CHomeCameraMode::vfunc_37(double fTime)
             else
             {
                 m_b8 = (float)((double)m_b8 + fTime);
-                if (m_b8 < 3.0f)
-                {
-                    fBlend = FUN_141b6fdb0(m_b8 / 3.0f, 3);
-                }
-                else
+                if (!(m_b8 < 3.0f))
                 {
                     fBlend = 1.0f;
                     m_b0 = 0;
                 }
+                else
+                {
+                    fBlend = FUN_141b6fdb0(m_b8 / 3.0f, 3);
+                }
             }
         }
-        else if (!FUN_14028d470(fDist, 0.0f) && fDist <= 10.0f)
+        else if (!FUN_14028d470(fDist, 0.0f) && !(fDist > 10.0f))
         {
             m_b0 = 1;
             m_b8 = 0.0f;
             fBlend = 0.0f;
         }
-        if (!FUN_14028d470(fDist, 0.0f))
+        if (FUN_14028d470(fDist, 0.0f))
         {
-            float fStep = FUN_14059d930(m_f4) * (float)fTime;
-            if (m_f8 != m_fc)
-            {
-                float fDelta = FUN_14059d930(m_fc - m_f8);
-                if (fStep <= fDelta)
-                {
-                    if (m_fc <= m_f8)
-                        m_fc = m_fc + fStep;
-                    else
-                        m_fc = m_fc - fStep;
-                }
-                else
-                {
-                    m_fc = m_f8;
-                }
-            }
-            fBlend = (float)fTime * fDist * m_fc + fBlend;
-            if (fBlend <= 1.0f)
-            {
-                m_dc.m_pos = m_dc.m_pos.FUN_14097fd50(FUN_1409ab5c0(fBlend, m_c4.m_pos.FUN_140965c40(m_dc.m_pos)));
-                if (m_dc.m_rot.FUN_140552700(m_c4.m_rot))
-                    m_dc.m_rot = CCameraMode::FUN_140afdec0(fBlend, m_dc.m_rot, m_c4.m_rot);
-            }
-            else
-            {
-                m_dc = m_c4;
-            }
+            m_dc = m_c4;
         }
         else
         {
-            m_dc = m_c4;
+            float fStep = FUN_14059d930(m_f4) * (float)fTime;
+            if (m_fc != m_f8)
+            {
+                if (FUN_14059d930(m_fc - m_f8) < fStep)
+                    m_fc = m_f8;
+                else if (!(m_fc <= m_f8))
+                    m_fc = m_fc - fStep;
+                else
+                    m_fc = m_fc + fStep;
+            }
+            float fT = (float)fTime * fDist * m_fc + fBlend;
+            if (fT > 1.0f)
+            {
+                m_dc = m_c4;
+            }
+            else
+            {
+                m_dc.m_pos = m_dc.m_pos.FUN_14097fd50(FUN_1409ab5c0(fT, m_c4.m_pos.FUN_140965c40(m_dc.m_pos)));
+                if (m_dc.m_rot.FUN_140552700(m_c4.m_rot))
+                    m_dc.m_rot = CCameraMode::FUN_140afdec0(fT, m_dc.m_rot, m_c4.m_rot);
+            }
         }
         m_bc = vfunc_38(m_dc.m_pos, m_dc.m_rot);
         if (m_bc)

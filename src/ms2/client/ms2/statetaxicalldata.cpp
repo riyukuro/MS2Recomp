@@ -82,6 +82,17 @@ CStringW GetStringCommon(int nId);                         // string table text 
 class Unk_TcBuffMgr { public: Vector3 FUN_141683290(); };
 Unk_TcBuffMgr* FUN_14166d240(PCBase* p);
 bool FUN_1416749c0(PCBase* p);
+// vtable-slot view: slot 22 takes the point by value (the exe copies 12 bytes into an arg slot)
+class Unk_TcSlots
+{
+public:
+#define MS2_TC_SLOTS(a, b, c, d, e) virtual void vfunc_##a(); virtual void vfunc_##b(); virtual void vfunc_##c(); \
+    virtual void vfunc_##d(); virtual void vfunc_##e();
+    MS2_TC_SLOTS(0, 1, 2, 3, 4) MS2_TC_SLOTS(5, 6, 7, 8, 9) MS2_TC_SLOTS(10, 11, 12, 13, 14) MS2_TC_SLOTS(15, 16, 17, 18, 19)
+#undef MS2_TC_SLOTS
+    virtual void vfunc_20(); virtual void vfunc_21();
+    virtual void vfunc_22(Vector3 kPos);                                    // 22
+};
 
 // The effect request.
 struct Unk_TcRot { float m_af[9]; };
@@ -149,11 +160,7 @@ void StateTaxiCallData::vfunc_2(Unk_StateDataArg* p)
     m_nTaxiId = FUN_1407181d0(p->m_str70);
 }
 
-// MS2-FUNCTIONAL: the exe's dtor does not store the vftable before the base dtor call
-// @0x1417fe0f0
-StateTaxiCallData::~StateTaxiCallData()
-{
-}
+// @0x1417fe0f0 ~StateTaxiCallData is implicit (no vftable store before the base dtor)
 
 // ---- StateTaxiCall ----
 
@@ -307,24 +314,20 @@ void StateTaxiCall::vfunc_3(double fTime)
 }
 
 // @0x1417fd9e0
-// MS2-FUNCTIONAL: the exe copies the state point with a rep movsb and keeps rsi / rdi; cl lays the temps out differently
 void StateTaxiCall::vfunc_8(double fTime)
 {
-    if (m_n10 == 0x65)
-    {
-        State::vfunc_8(fTime);
-        MyPC* pRider = FUN_1417b84b0();
-        if (pRider != 0)
-        {
-            Vector3 kPos = FUN_14166d240(pRider)->FUN_141683290();
-            Vector3 kArg = kPos;
-            pRider->vfunc_22(*reinterpret_cast<const efd::Point3*>(&kArg));
-            if (FUN_1416749c0(m_pOwner) != 0)
-                pRider->vfunc_59(2, 0, 0, 0);
-            else
-                FUN_1417b9460();
-        }
-    }
+    if (m_n10 != 0x65)
+        return;
+    State::vfunc_8(fTime);
+    MyPC* pRider = FUN_1417b84b0();
+    if (pRider == 0)
+        return;
+    Unk_TcBuffMgr* pBuff = FUN_14166d240(pRider);
+    reinterpret_cast<Unk_TcSlots*>(pRider)->vfunc_22(pBuff->FUN_141683290());
+    if (FUN_1416749c0(m_pOwner))
+        pRider->vfunc_59(2, 0, 0, 0);
+    else
+        FUN_1417b9460();
 }
 
 // @0x1417fdae0

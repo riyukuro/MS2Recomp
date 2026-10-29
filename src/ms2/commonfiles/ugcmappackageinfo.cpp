@@ -158,14 +158,12 @@ void FUN_1408b9c90()
 #endif
 
 // @0x1408b9cb0
-// MS2-FUNCTIONAL: path arg of FUN_1403974b0 is routed through rcx in the exe (mov rcx,[..]; mov r8,rcx), plus a 2-byte drift later
 UGCMapPackageDataPtr LoadExportedUGCMap(const CString& strName)
 {
     CString strPath;
     strPath.Format("./Data/Xml/ExportedUGCMap/%s.xml", (const char*)strName);
     TiXmlDocument doc;
-    const char* pszPath = strPath;
-    if (FUN_140166420()->FUN_1403974b0(&doc, pszPath, 0, true, false) == 0)
+    if (FUN_140166420()->FUN_1403974b0(&doc, (const char*)strPath, 0, true, false) == 0)
         return UGCMapPackageDataPtr(0);
     UGCMapPackageDataPtr data(new CUGCMapPackageData);
     FUN_1401d1160(data.get(), strPath);
@@ -185,7 +183,10 @@ UGCMapPackageDataPtr LoadExportedUGCMap(const CString& strName)
     }
     {
         Unk_LockGuard guard(s_lock);
-        if (static_cast<int>(guard) == 0)
+        if (static_cast<int>(guard) != 0)
+        {
+        }
+        else
             s_cache.SetAt(strName, data);
     }
     return data;

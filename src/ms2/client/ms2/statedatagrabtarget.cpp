@@ -119,7 +119,6 @@ void StateGrabTarget::vfunc_5(int n)
     m_pOwner->vfunc_21(m_kDir);
 }
 
-// MS2-FUNCTIONAL: 26 bytes longer than the exe (branch layout around the nested guards / EH state boundaries)
 // @0x141024680
 void StateGrabTarget::vfunc_3(double fTime)
 {
@@ -128,33 +127,25 @@ void StateGrabTarget::vfunc_3(double fTime)
         return;
     StateDataGrabTarget* pData = m_spGrab.get();
     PCBase* pGrabber = FUN_1403ed2d0()->FUN_141bd1200(pData->m_nTarget);
-    if (pGrabber != 0)
+    if (pGrabber == 0 || pGrabber->FUN_14166ce30() != 0 || FUN_1409709b0(pGrabber->FUN_1416749a0()) != 0)
     {
-        int nDead = pGrabber->FUN_14166ce30();
-        if (nDead == 0)
-        {
-            int nBlocked = FUN_1409709b0(pGrabber->FUN_1416749a0());
-            if (nBlocked == 0)
-            {
-                efd::SmartPointer<NiAVObject> spNode(0);
-                spNode = pGrabber->FUN_1416758a0(m_spGrab.get()->m_strNode);
-                if (spNode)
-                {
-                    efd::Point3 kAngles;
-                    if (spNode->GetWorldRotate().ToEulerAnglesXYZ(kAngles.x, kAngles.y, kAngles.z))
-                    {
-                        FUN_140ad0c10(&kAngles, -57.2957764f);
-                        m_pOwner->vfunc_21(kAngles);
-                    }
-                    efd::Point3 kPos = spNode->GetWorldTranslate();
-                    m_pOwner->vfunc_19(kPos);
-                    m_pOwner->FUN_14166dda0(0x28);
-                }
-                return;
-            }
-        }
+        m_pOwner->vfunc_59(5, 0, 0, 0);
+        return;
     }
-    m_pOwner->vfunc_59(5, 0, 0, 0);
+    efd::SmartPointer<NiAVObject> spNode(0);
+    spNode = pGrabber->FUN_1416758a0(m_spGrab.get()->m_strNode);
+    if (spNode)
+    {
+        efd::Point3 kAngles;
+        if (spNode->GetWorldRotate().ToEulerAnglesXYZ(kAngles.x, kAngles.y, kAngles.z))
+        {
+            FUN_140ad0c10(&kAngles, -57.2957764f);
+            m_pOwner->vfunc_21(kAngles);
+        }
+        efd::Point3 kPos = spNode->GetWorldTranslate();
+        m_pOwner->vfunc_19(kPos);
+        m_pOwner->FUN_14166dda0(0x28);
+    }
 }
 
 // @0x141024940

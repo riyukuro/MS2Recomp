@@ -23,7 +23,7 @@ class CMesoMarketProductCli : public CMesoMarketProduct
 {
 public:
     CMesoMarketProductCli();                                // 0x140d6d8c0
-    virtual ~CMesoMarketProductCli();                       // 0x140d70a70 (??_G 0x140d70ca0)
+    // implicit virtual dtor 0x140d70a70 (??_G 0x140d70ca0): the exe stores no vftable in it
 
     bool FUN_140d6d900();                                   // the sale is over
     void FUN_140d6d940(ASObj& row);                         // the row of an own listing

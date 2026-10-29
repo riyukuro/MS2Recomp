@@ -199,8 +199,8 @@ struct Unk_WmOwner
 {
     void FUN_1409aff60();
     __int64 m_nAccount;
-    __int64 m_n8;
-    __int64 m_n10;
+    unsigned m_n8;
+    void* m_p10;                                            // a pointer-size id (a pointer member keeps /GS off, as in the exe)
     __int64 m_n18;
 };
 extern __int64 DAT_143ab2820;
@@ -395,64 +395,62 @@ CString UIWriteMusicDialog::GetTypeName()
 }
 
 // @0x140fedde0
-// MS2-FUNCTIONAL: behaviour-equivalent; /Od codegen differs (obj 2439 bytes, exe 2330): temporaries, stack slots and branch layout
 void UIWriteMusicDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    if (!m_spItem == false)
+    if (!m_spItem)
     {
-        if (m_30.get())
-        {
-            int nMax = FUN_140ff40b0();
-            ASObj obj(2);
-            obj.FUN_1407cb9c0("maxLength", nMax);
-            std::vector<std::pair<int, CStringW> > list;
-            ATL::CAtlMap<int, CInstrumentDataTable::CategoryPtr>& categories = FUN_14052d1d0()->GetCategories();
-            POSITION pos = categories.GetStartPosition();
-            while (pos != 0)
-            {
-                CInstrumentDataTable::CategoryPtr spCategory = categories.GetValueAt(pos);
-                if (!spCategory == false)
-                    list.push_back(std::make_pair(spCategory->m_nId, spCategory->GetName()));
-                categories.GetNext(pos);
-            }
-            std::sort(list.begin(), list.end());
-            ASDataProvider provider(2);
-            MS2_FOR_EACH(auto entry, list)
-            {
-                ASObj row(2);
-                row.FUN_1407cb9c0("id", entry.first);
-                row.FUN_1407cbb20("label", CStringW(entry.second));
-                provider.FUN_1422bc050(Scaleform::GFx::Value(row.FUN_1422bb870()));
-            }
-            obj.FUN_1409adbe0("dpRecommandInstrument", Scaleform::GFx::Value(provider.FUN_1422bb870()));
-            obj.FUN_1407cb9c0("selectedIndexRecommandInstrument", 0);
-            bool bReadOnly = m_nMode == 2;
-            obj.FUN_1407cbbe0("readOnly", bReadOnly);
-            if (bReadOnly)
-                obj.FUN_1407cbb20("title", m_spItem->FUN_1405296c0());
-            m_30->Invoke("initData", Scaleform::GFx::Value(obj.FUN_1422bb870()));
-            m_spTabs = m_30->FUN_140be23c0<ASButtonBar>(CString("m_tabMusic"));
-            if (!m_strText.IsEmpty())
-                FUN_140ff41a0();
-            CString strUrl(*TSingleton<Client::Constants>::GetInstance()->WriteMusicDetailWebPage.Get());
-            if (strUrl.IsEmpty())
-                m_30->Invoke("hideWebPageButton");
-            m_spPlayLine = GetChild<ASMovieClip>(CString("m_playLine"));
-            MS2Ptr<ASDropdownMenu> spRollType = FUN_140c28560(CString("m_rollType"));
-            if (spRollType)
-            {
-                spRollType->FUN_1422dfce0(GetStringCommonByKey(CStringW(L"s_writemusic_playline_show_per_time")));
-                spRollType->FUN_1422dfce0(GetStringCommonByKey(CStringW(L"s_writemusic_playline_show_per_bar")));
-                spRollType->FUN_1422df690(0);
-            }
-            FUN_140cff840(FUN_1422dbb40(), CString("m_drumInfoText"), 0);
-            FUN_140ff1b10(0);
-        }
-        FUN_140c8dac0()->FUN_140d09cf0(1);
-    }
-    else
         vfunc_67();
+        return;
+    }
+    if (m_30.get())
+    {
+        int nMax = FUN_140ff40b0();
+        ASObj obj(2);
+        obj.FUN_1407cb9c0("maxLength", nMax);
+        std::vector<std::pair<int, CStringW> > list;
+        ATL::CAtlMap<int, CInstrumentDataTable::CategoryPtr>& categories = FUN_14052d1d0()->GetCategories();
+        for (POSITION pos = categories.GetStartPosition(); pos != 0; categories.GetNext(pos))
+        {
+            CInstrumentDataTable::CategoryPtr spCategory = categories.GetValueAt(pos);
+            if (!spCategory)
+                continue;
+            list.push_back(std::make_pair(spCategory->m_nId, spCategory->GetName()));
+        }
+        std::sort(list.begin(), list.end());
+        ASDataProvider provider(2);
+        MS2_FOR_EACH(auto entry, list)
+        {
+            ASObj row(2);
+            row.FUN_1407cb9c0("id", entry.first);
+            row.FUN_1407cbb20("label", CStringW(entry.second));
+            provider.FUN_1422bc050(Scaleform::GFx::Value(row.FUN_1422bb870()));
+        }
+        obj.FUN_1409adbe0("dpRecommandInstrument", Scaleform::GFx::Value(provider.FUN_1422bb870()));
+        obj.FUN_1407cb9c0("selectedIndexRecommandInstrument", 0);
+        bool bReadOnly = m_nMode == 2;
+        obj.FUN_1407cbbe0("readOnly", bReadOnly);
+        if (bReadOnly)
+            obj.FUN_1407cbb20("title", m_spItem->FUN_1405296c0());
+        m_30->Invoke("initData", Scaleform::GFx::Value(obj.FUN_1422bb870()));
+        m_spTabs = m_30->FUN_140be23c0<ASButtonBar>("m_tabMusic");
+        if (!m_strText.IsEmpty())
+            FUN_140ff41a0();
+        CString strUrl(*TSingleton<Client::Constants>::GetInstance()->WriteMusicDetailWebPage.Get());
+        if (strUrl.IsEmpty())
+            m_30->Invoke("hideWebPageButton");
+        m_spPlayLine = GetChild<ASMovieClip>("m_playLine");
+        MS2Ptr<ASDropdownMenu> spRollType = FUN_140c28560("m_rollType");
+        if (spRollType)
+        {
+            spRollType->FUN_1422dfce0(GetStringCommonByKey(L"s_writemusic_playline_show_per_time"));
+            spRollType->FUN_1422dfce0(GetStringCommonByKey(L"s_writemusic_playline_show_per_bar"));
+            spRollType->FUN_1422df690(0);
+        }
+        FUN_140cff840(FUN_1422dbb40(), "m_drumInfoText", 0);
+        FUN_140ff1b10(0);
+    }
+    FUN_140c8dac0()->FUN_140d09cf0(1);
 }
 
 // @0x140fee700
@@ -496,7 +494,6 @@ void UIWriteMusicDialog::vfunc_67()
 }
 
 // @0x140fee900
-// MS2-FUNCTIONAL: behaviour-equivalent; /Od codegen differs (obj 2485 bytes, exe 2536): temporaries, stack slots and branch layout
 int UIWriteMusicDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs)
 {
     if (UIDialog::vfunc_28(szMethod, pArgs, nArgs) != 0)
@@ -508,66 +505,68 @@ int UIWriteMusicDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
             FUN_140ff03b0(&data);
         return 1;
     }
-    if (_stricmp("onClickHelpStoryBook", szMethod) == 0)
+    else if (_stricmp("onClickHelpStoryBook", szMethod) == 0)
     {
         UICartoonDialog* pCartoon = FUN_140ff7030(0x4e87);
         if (pCartoon != 0)
-            pCartoon->FUN_1418dfb30(*TSingleton<Client::Constants>::GetInstance()->WriteMusicStoryBookID.Get(), 0x22, m_e0);
+        {
+            int nBookId = *TSingleton<Client::Constants>::GetInstance()->WriteMusicStoryBookID.Get();
+            pCartoon->FUN_1418dfb30(nBookId, 0x22, m_e0);
+        }
         return 1;
     }
-    if (_stricmp("onClickHelpWebPage", szMethod) == 0)
+    else if (_stricmp("onClickHelpWebPage", szMethod) == 0)
     {
         CString strUrl;
-        const char* szUrl = *TSingleton<Client::Constants>::GetInstance()->WriteMusicDetailWebPage.Get();
-        FUN_140cc18a0()->FUN_141b794e0(&strUrl, szUrl);
+        FUN_140cc18a0()->FUN_141b794e0(&strUrl, *TSingleton<Client::Constants>::GetInstance()->WriteMusicDetailWebPage.Get());
         FUN_1418fe1c0(strUrl);
         return 1;
     }
-    if (_stricmp("onClickPlayGoFirstAndPause", szMethod) == 0)
+    else if (_stricmp("onClickPlayGoFirstAndPause", szMethod) == 0)
     {
         OnClickPlayGoFirstAndPause();
         return 1;
     }
-    if (_stricmp("onClickPlayStart", szMethod) == 0)
+    else if (_stricmp("onClickPlayStart", szMethod) == 0)
     {
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs))
             FUN_140ff12d0(&data);
         return 1;
     }
-    if (_stricmp("onClickPlayStop", szMethod) == 0)
+    else if (_stricmp("onClickPlayStop", szMethod) == 0)
     {
         FUN_140ff1a20();
         return 1;
     }
-    if (_stricmp("onClickPlayPause", szMethod) == 0)
+    else if (_stricmp("onClickPlayPause", szMethod) == 0)
     {
         FUN_140ff1aa0();
         return 1;
     }
-    if (_stricmp("onClickWriteKeyboard", szMethod) == 0)
+    else if (_stricmp("onClickWriteKeyboard", szMethod) == 0)
     {
         FUN_140d73cd0();
         return 1;
     }
-    if (_stricmp("onClickTabMusicAddMaxCount", szMethod) == 0)
+    else if (_stricmp("onClickTabMusicAddMaxCount", szMethod) == 0)
     {
-        FUN_140d73aa0(GetStringCommonByKey(CStringW(L"s_writemusic_error_add_tab_maxcount")), 0, 0, CStringW(L""));
+        FUN_140d73aa0(GetStringCommonByKey(L"s_writemusic_error_add_tab_maxcount"), 0, 0, L"");
         return 1;
     }
-    if (_stricmp("OnAskRemoveTabMusic", szMethod) == 0)
+    else if (_stricmp("OnAskRemoveTabMusic", szMethod) == 0)
     {
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs))
         {
             m_nRemoveTab = data.FUN_1422b8a10();
             if (m_nRemoveTab >= 0)
-                FUN_140d73aa0(GetStringCommonByKey(CStringW(L"s_writemusic_msg_ask_remove_tab")), 1, static_cast<IMessageListener*>(this),
-                              CStringW(L"askRemoveTabMusic"));
+                FUN_140d73aa0(GetStringCommonByKey(L"s_writemusic_msg_ask_remove_tab"), 1, static_cast<IMessageListener*>(this),
+                              L"askRemoveTabMusic");
         }
         return 1;
     }
-    if (_stricmp("onClickCopyMusicNote", szMethod) == 0)
+    else if (_stricmp("onClickCopyMusicNote", szMethod) == 0)
     {
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs))
@@ -578,57 +577,56 @@ int UIWriteMusicDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
         }
         return 1;
     }
-    if (_stricmp("onClickSaveFile", szMethod) == 0)
+    else if (_stricmp("onClickSaveFile", szMethod) == 0)
     {
         OnClickSaveFile();
         return 1;
     }
-    if (_stricmp("onClickLoadFile", szMethod) == 0)
+    else if (_stricmp("onClickLoadFile", szMethod) == 0)
     {
         OnClickLoadFile();
         return 1;
     }
-    if (_stricmp("onChangeInstrument", szMethod) == 0)
+    else if (_stricmp("onChangeInstrument", szMethod) == 0)
     {
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs))
         {
-            CInstrumentDataTable::CategoryPtr spCategory = FUN_14052d1d0()->GetCategory(data.FUN_1422b8a10());
+            int nCategory = data.FUN_1422b8a10();
+            CInstrumentDataTable::CategoryPtr spCategory = FUN_14052d1d0()->GetCategory(nCategory);
             if (spCategory == 0)
                 return 1;
             if (spCategory->IsPercussion())
-                FUN_140cff840(FUN_1422dbb40(), CString("m_drumInfoText"), 1);
+                FUN_140cff840(FUN_1422dbb40(), "m_drumInfoText", 1);
             else
-                FUN_140cff840(FUN_1422dbb40(), CString("m_drumInfoText"), 0);
+                FUN_140cff840(FUN_1422dbb40(), "m_drumInfoText", 0);
         }
         return 1;
     }
-    if (_stricmp("onChangeValuePlayBar", szMethod) == 0)
+    else if (_stricmp("onChangeValuePlayBar", szMethod) == 0)
     {
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs))
             FUN_140ff21a0(&data);
         return 1;
     }
-    if (_stricmp("onThumbBeginDragPlayBar", szMethod) == 0)
+    else if (_stricmp("onThumbBeginDragPlayBar", szMethod) == 0)
         FUN_140ff1aa0();
-    else
+    else if (_stricmp("onClickPlayLinePage", szMethod) == 0)
     {
-        if (_stricmp("onClickPlayLinePage", szMethod) == 0)
+        ASData data;
+        if (data.FUN_1422b9620(pArgs, nArgs))
         {
-            ASData data;
-            if (data.FUN_1422b9620(pArgs, nArgs))
-            {
-                m_nPage += data.FUN_1422b8a10();
-                FUN_140ff1b10(m_nPage);
-            }
-            return 1;
-        }
-        if (_stricmp("RefreshPianoRoll", szMethod) == 0)
-        {
+            int nDelta = data.FUN_1422b8a10();
+            m_nPage = m_nPage + nDelta;
             FUN_140ff1b10(m_nPage);
-            return 1;
         }
+        return 1;
+    }
+    else if (_stricmp("RefreshPianoRoll", szMethod) == 0)
+    {
+        FUN_140ff1b10(m_nPage);
+        return 1;
     }
     return 0;
 }
@@ -675,31 +673,32 @@ int UIWriteMusicDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
 }
 
 // @0x140fef5d0
-// MS2-FUNCTIONAL: behaviour-equivalent; /Od codegen differs (obj 243 bytes, exe 224): temporaries, stack slots and branch layout
 int UIWriteMusicDialog::vfunc_71()
 {
-    if (!FUN_140ff33c0())
-        return 0;
-    FUN_140d73aa0(GetStringCommonByKey(CStringW(L"s_writemusic_msg_ask_close")), 1, static_cast<IMessageListener*>(this), CStringW(L"askClose"));
-    return 1;
+    if (FUN_140ff33c0())
+    {
+        FUN_140d73aa0(GetStringCommonByKey(L"s_writemusic_msg_ask_close"), 1, static_cast<IMessageListener*>(this), CStringW(L"askClose"));
+        return 1;
+    }
+    return 0;
 }
 
 // @0x140fef6c0
-// MS2-FUNCTIONAL: behaviour-equivalent; /Od codegen differs (obj 143 bytes, exe 147): temporaries, stack slots and branch layout
 void UIWriteMusicDialog::vfunc_72()
 {
-    if (!FUN_140a467d0(&m_30) && m_bPlaying)
+    if (FUN_140a467d0(&m_30))
+        return;
+    if (!m_bPlaying)
+        return;
+    unsigned nNow = FUN_140869420();
+    if (nNow < m_nEndTick)
     {
-        unsigned nNow = FUN_140869420();
-        if (nNow < m_nEndTick)
-        {
-            int nTime = nNow - m_nStartTick;
-            FUN_140ff3610(nTime);
-            FUN_140ff3d10(nTime);
-        }
-        else
-            FUN_140ff1a20();
+        int nTime = nNow - m_nStartTick;
+        FUN_140ff3610(nTime);
+        FUN_140ff3d10(nTime);
     }
+    else
+        FUN_140ff1a20();
 }
 
 // @0x140fef760
@@ -709,95 +708,85 @@ MS2Ptr<CItem> UIWriteMusicDialog::GetItem()
 }
 
 // @0x140fef7b0
-// MS2-FUNCTIONAL: behaviour-equivalent; /Od codegen differs (obj 329 bytes, exe 304): temporaries, stack slots and branch layout
 bool UIWriteMusicDialog::FUN_140fef7b0(MS2Ptr<CItem> spItem)
 {
-    if (!spItem == false)
+    if (!spItem)
+        return false;
+    if (m_nMode == 2)
     {
-        if (m_nMode == 2)
-        {
-            FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_writemusic_error_cant_write_when_viewscore")), 1, 1);
-            return false;
-        }
-        m_nMode = 1;
-        SetItem(spItem);
-        return true;
+        FUN_1412751f0(GetStringCommonByKey(L"s_writemusic_error_cant_write_when_viewscore"), 1, 1);
+        return false;
     }
-    return false;
+    m_nMode = 1;
+    SetItem(spItem);
+    return true;
 }
 
 // @0x140fef8f0
-// MS2-FUNCTIONAL: behaviour-equivalent; /Od codegen differs (obj 1175 bytes, exe 1027): temporaries, stack slots and branch layout
 bool UIWriteMusicDialog::FUN_140fef8f0(MS2Ptr<CItem> spItem)
 {
-    if (!spItem == false)
+    if (!spItem)
+        return false;
+    if (m_nMode == 1)
     {
-        if (m_nMode == 1)
-        {
-            FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_writemusic_error_cant_viewscore_when_write")), 1, 1);
-            return false;
-        }
-        if (!spItem->FUN_140525790())
-            return false;
-        CItemCustomMusicScore* pScore = spItem->FUN_140527990();
-        if (pScore == 0)
-            return false;
-        if (pScore->m_note.m_n08 == 0)
-        {
-            FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_writemusic_error_cant_know_writer")), 1, 1);
-            return false;
-        }
-        if (pScore->m_n38 != 0)
-        {
-            FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_writemusic_error_cant_edit")), 1, 1);
-            return false;
-        }
-        Unk_WmOwner owner;
-        owner.FUN_1409aff60();
-        owner.m_nAccount = DAT_143ab2820;
-        owner.m_n8 = DAT_143ab2830;
-        owner.m_n10 = DAT_143ab2838;
-        owner.m_n18 = DAT_143ab2834;
-        if (!FUN_14026d4d0(&owner, pScore->m_note.m_n00, pScore->m_note.m_n08))
-        {
-            FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_writemusic_error_not_write_myself")), 1, 1);
-            return false;
-        }
-        m_nMode = 2;
-        SetItem(spItem);
-        FUN_140ff2500(spItem->FUN_140526a50());
-        return true;
+        FUN_1412751f0(GetStringCommonByKey(L"s_writemusic_error_cant_viewscore_when_write"), 1, 1);
+        return false;
     }
-    return false;
+    if (!spItem->FUN_140525790())
+        return false;
+    CItemCustomMusicScore* pScore = spItem->FUN_140527990();
+    if (pScore == 0)
+        return false;
+    if (pScore->m_note.m_n08 == 0)
+    {
+        FUN_1412751f0(GetStringCommonByKey(L"s_writemusic_error_cant_know_writer"), 1, 1);
+        return false;
+    }
+    if (pScore->m_n38 != 0)
+    {
+        FUN_1412751f0(GetStringCommonByKey(L"s_writemusic_error_cant_edit"), 1, 1);
+        return false;
+    }
+    Unk_WmOwner owner;
+    owner.FUN_1409aff60();
+    owner.m_nAccount = DAT_143ab2820;
+    owner.m_n8 = DAT_143ab2830;
+    owner.m_p10 = (void*)DAT_143ab2838;
+    owner.m_n18 = DAT_143ab2834;
+    if (!FUN_14026d4d0(&owner, pScore->m_note.m_n00, pScore->m_note.m_n08))
+    {
+        FUN_1412751f0(GetStringCommonByKey(L"s_writemusic_error_not_write_myself"), 1, 1);
+        return false;
+    }
+    m_nMode = 2;
+    SetItem(spItem);
+    FUN_140ff2500(spItem->FUN_140526a50());
+    return true;
 }
 
 // @0x140fefd00
-// MS2-FUNCTIONAL: behaviour-equivalent; /Od codegen differs (obj 862 bytes, exe 903): temporaries, stack slots and branch layout
 void UIWriteMusicDialog::FUN_140fefd00(MS2Ptr<CItem> spItem)
 {
-    if (vfunc_55() == 0)
+    if (vfunc_55() != 0)
+        return;
+    if (spItem == 0)
+        return;
+    FUN_1412761e0(m_30, 1);
+    if (m_spItem == spItem.get())
     {
-        if (!(spItem == 0))
+        if (MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x11, GetStringCommonByKey(L"s_writemusic_complete_make"),
+                                                      static_cast<IMessageListener*>(this), CStringW(L"completeMakeScore")))
         {
-            FUN_1412761e0(m_30, 1);
-            if (m_spItem == spItem.get())
+            MS2Ptr<CItem> spInvItem = DAT_143ab2a90.FUN_140a5d680(m_spItem->FUN_140526a50());
+            if (spInvItem.get())
             {
-                MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x11, GetStringCommonByKey(CStringW(L"s_writemusic_complete_make")),
-                                                          static_cast<IMessageListener*>(this), CStringW(L"completeMakeScore"));
-                if (spBox.get())
-                {
-                    MS2Ptr<CItem> spInvItem = DAT_143ab2a90.FUN_140a5d680(m_spItem->FUN_140526a50());
-                    if (spInvItem.get())
-                    {
-                        CStringW strName = spInvItem->FUN_140527b10();
-                        spBox->FUN_141a01ee0(m_spItem, strName, 1, 0, -1, -1, 1);
-                        FUN_140d73c60(spBox);
-                    }
-                }
+                CStringW strName = spInvItem->FUN_140527b10();
+                spBox->FUN_141a01ee0(m_spItem, strName, 1, 0, -1, -1, 1);
+                FUN_140d73c60(spBox);
             }
-            m_texts.erase(spItem->FUN_140526a50());
         }
     }
+    m_texts.erase(spItem->FUN_140526a50());
 }
 
 // @0x140ff0090
@@ -823,134 +812,133 @@ void UIWriteMusicDialog::FUN_140ff0090(int nResult)
 }
 
 // @0x140ff0260
-// MS2-FUNCTIONAL: behaviour-equivalent; /Od codegen differs (obj 316 bytes, exe 318): temporaries, stack slots and branch layout
 void UIWriteMusicDialog::FUN_140ff0260(unsigned __int64 nItemUid, const CString& strMml)
 {
-    if (m_texts.find(nItemUid) == m_texts.end())
+    std::map<unsigned __int64, CString>::const_iterator it = m_texts.find(nItemUid);
+    if (it == m_texts.end())
         m_texts.insert(std::make_pair(nItemUid, strMml));
     m_nMode = 2;
     m_strText = strMml;
-    if (vfunc_55() == 0)
-        FUN_140ff41a0();
-    else
+    if (vfunc_55() != 0)
         FUN_1403ed2b0()->FUN_141adc530(0x4eed);
+    else
+        FUN_140ff41a0();
 }
 
 // The tab list of the AS score (an array of {content}).
 inline MS2Ptr<ASDataProvider> FUN_140ff6b60(int nMovieId, Scaleform::GFx::Value& v);
 
 // @0x140ff03b0
-// MS2-FUNCTIONAL: behaviour-equivalent; /Od codegen differs (obj 3971 bytes, exe 3808): temporaries, stack slots and branch layout
 void UIWriteMusicDialog::FUN_140ff03b0(ASData* pArgs)
 {
-    if (!m_spItem == false)
+    if (!m_spItem)
     {
-        CStringW strTitle = pArgs->FUN_1422b8f40();
-        strTitle.Trim();
-        if (strTitle.IsEmpty())
+        FUN_140d73aa0(GetStringCommonByKey(L"s_writemusic_error_make"), 0, 0, L"");
+        return;
+    }
+    CStringW strTitle = pArgs->FUN_1422b8f40();
+    strTitle.Trim();
+    if (strTitle.IsEmpty())
+    {
+        FUN_140d73aa0(GetStringCommonByKey(L"s_writemusic_error_make_empty_title"), 0, 0, L"");
+        return;
+    }
+    if (CBanTextChecker* pChecker = FUN_14025e7d0()->GetChecker())
+    {
+        CStringW strMessage;
+        if (pChecker->FUN_140225a70(strTitle, strMessage) != 0)
         {
-            FUN_140d73aa0(GetStringCommonByKey(CStringW(L"s_writemusic_error_make_empty_title")), 0, 0, CStringW(L""));
+            FUN_140d73aa0(strMessage, 0, 0, L"");
             return;
         }
-        CBanTextChecker* pChecker = FUN_14025e7d0()->GetChecker();
-        if (pChecker != 0)
-        {
-            CStringW strMessage;
-            if (pChecker->FUN_140225a70(strTitle, strMessage) != 0)
-            {
-                FUN_140d73aa0(strMessage, 0, 0, CStringW(L""));
-                return;
-            }
-        }
-        int nCategory = pArgs->FUN_1422b8a10();
-        CInstrumentDataTable::CategoryPtr spCategory = FUN_14052d1d0()->GetCategory(nCategory);
-        if (!(spCategory == 0))
-        {
-            Scaleform::GFx::Value tabs = pArgs->FUN_1422b9260();
-            MS2Ptr<ASDataProvider> spTabs = FUN_140ff6b60(m_28, tabs);
-            CString strMml;
-            if (!spTabs == false && spTabs->FUN_1422bc5d0() != 0)
-            {
-                unsigned nCount = spTabs->FUN_1422bc5d0();
-                int nTabs = 0;
-                Unk_WmTrack track;
-                Unk_WmEvents events;
-                unsigned nNow = FUN_140869420();
-                unsigned nEnd = nNow;
-                for (unsigned i = 0; i < nCount; i++)
-                {
-                    Scaleform::GFx::Value tab;
-                    if (tabs.GetElement(i, &tab))
-                    {
-                        Scaleform::GFx::Value content;
-                        tab.GetMember("content", &content);
-                        CString strTab(content.GetString());
-                        if (!strTab.IsEmpty())
-                        {
-                            strTab.Remove(':');
-                            strTab.Remove(' ');
-                            strTab.Remove('\n');
-                            strTab.Remove('\t');
-                            strTab.Remove('\r');
-                            if (strMml.IsEmpty())
-                                strMml = strTab;
-                            else
-                                strMml += Unk_WmConcat(":", strTab);
-                            track.clear();
-                            bool bFirst = i == 0;
-                            unsigned nTabEnd = FUN_140c8dac0()->FUN_140d08660(0, spCategory->m_nGMId, spCategory->m_nPercussionId, &track,
-                                                                             &events, nNow, nNow, strTab, bFirst);
-                            nEnd = (std::max)(nEnd, nTabEnd);
-                            nTabs++;
-                        }
-                    }
-                }
-                strMml.Remove(' ');
-                strMml.Remove('\n');
-                strMml.Remove('\t');
-                strMml.Remove('\r');
-                unsigned nLength = nEnd - nNow;
-                if (strMml.GetLength() < 1)
-                {
-                    FUN_140d73aa0(GetStringCommonByKey(CStringW(L"s_writemusic_error_make_empty_score")), 0, 0, CStringW(L""));
-                    return;
-                }
-                int nMax = 0;
-                // FUN_140527840 returns the item's CItemData (citem.h declares it as the incomplete Unk_ItemEquipData).
-                MS2Ptr<CItemData> spData(reinterpret_cast<CItemData*>(static_cast<CItem*>(m_spItem)->FUN_140527840()));
-                if (spData)
-                {
-                    int nId = spData->FUN_14053c510();
-                    MS2Ptr<ItemMusicScore> spScore = FUN_140281980()->GetMusicScore(nId);
-                    if (spScore)
-                        nMax = spScore->noteLengthMax;
-                }
-                if (nMax + nTabs < strMml.GetLength())
-                {
-                    FUN_140d73aa0(GetStringCommonByKey(CStringW(L"s_writemusic_error_make_maxlength")), 0, 0, CStringW(L""));
-                    return;
-                }
-                if (nLength < 2000)
-                {
-                    FUN_140d73aa0(GetStringCommonByKey(CStringW(L"s_writemusic_error_make_zero_time")), 0, 0, CStringW(L""));
-                    return;
-                }
-                m_score.m_nItemUid = static_cast<CItem*>(m_spItem)->FUN_140526a50();
-                m_score.m_nLength = nLength;
-                m_score.m_nInstrument = nCategory;
-                m_score.m_strTitle = strTitle;
-                m_score.m_strMml = strMml;
-                CStringW strKey(L"s_writemusic_msg_terms");
-                FUN_140d746e0(static_cast<IMessageListener*>(this), 0, GetStringCommonByKey(strKey), GetStringCommon(0x9cf));
-                return;
-            }
-            FUN_140d73aa0(GetStringCommonByKey(CStringW(L"s_writemusic_error_make")), 0, 0, CStringW(L""));
-        }
-        else
-            FUN_140d73aa0(GetStringCommonByKey(CStringW(L"s_writemusic_error_make_invalid_instrument_type")), 0, 0, CStringW(L""));
     }
-    else
-        FUN_140d73aa0(GetStringCommonByKey(CStringW(L"s_writemusic_error_make")), 0, 0, CStringW(L""));
+    int nCategory = pArgs->FUN_1422b8a10();
+    CInstrumentDataTable::CategoryPtr spCategory = FUN_14052d1d0()->GetCategory(nCategory);
+    if (spCategory == 0)
+    {
+        FUN_140d73aa0(GetStringCommonByKey(L"s_writemusic_error_make_invalid_instrument_type"), 0, 0, L"");
+        return;
+    }
+    Scaleform::GFx::Value tabs = pArgs->FUN_1422b9260();
+    MS2Ptr<ASDataProvider> spTabs = FUN_140ff6b60(m_28, tabs);
+    CString strMml;
+    if (!spTabs || spTabs->FUN_1422bc5d0() == 0)
+    {
+        FUN_140d73aa0(GetStringCommonByKey(L"s_writemusic_error_make"), 0, 0, L"");
+        return;
+    }
+    unsigned nCount = spTabs->FUN_1422bc5d0();
+    int nTabs = 0;
+    Unk_WmTrack track;
+    Unk_WmEvents events;
+    unsigned nNow = FUN_140869420();
+    unsigned nEnd = nNow;
+    for (unsigned i = 0; i < nCount; i++)
+    {
+        Scaleform::GFx::Value tab;
+        if (tabs.GetElement(i, &tab))
+        {
+            Scaleform::GFx::Value content;
+            tab.GetMember("content", &content);
+            CString strTab(content.GetString());
+            if (!strTab.IsEmpty())
+            {
+                strTab.Remove(':');
+                strTab.Remove(' ');
+                strTab.Remove('\n');
+                strTab.Remove('\t');
+                strTab.Remove('\r');
+                if (strMml.IsEmpty())
+                    strMml = strTab;
+                else
+                    strMml += Unk_WmConcat(":", strTab);
+                track.clear();
+                bool bFirst = i == 0;
+                unsigned nTabEnd = FUN_140c8dac0()->FUN_140d08660(0, spCategory->m_nGMId, spCategory->m_nPercussionId, &track,
+                                                                 &events, nNow, nNow, strTab, bFirst);
+                nEnd = (std::max)(nEnd, nTabEnd);
+                nTabs++;
+            }
+        }
+    }
+    strMml.Remove(' ');
+    strMml.Remove('\n');
+    strMml.Remove('\t');
+    strMml.Remove('\r');
+    unsigned nLength = nEnd - nNow;
+    if (strMml.GetLength() < 1)
+    {
+        FUN_140d73aa0(GetStringCommonByKey(L"s_writemusic_error_make_empty_score"), 0, 0, L"");
+        return;
+    }
+    int nMax = 0;
+    {
+        // FUN_140527840 returns the item's CItemData (citem.h declares it as the incomplete Unk_ItemEquipData).
+        MS2Ptr<CItemData> spData(reinterpret_cast<CItemData*>(static_cast<CItem*>(m_spItem)->FUN_140527840()));
+        if (spData)
+        {
+            MS2Ptr<ItemMusicScore> spScore = FUN_140281980()->GetMusicScore(spData->FUN_14053c510());
+            if (spScore)
+                nMax = spScore->noteLengthMax;
+        }
+    }
+    if (strMml.GetLength() > nMax + nTabs)
+    {
+        FUN_140d73aa0(GetStringCommonByKey(L"s_writemusic_error_make_maxlength"), 0, 0, L"");
+        return;
+    }
+    if (nLength < 2000)
+    {
+        FUN_140d73aa0(GetStringCommonByKey(L"s_writemusic_error_make_zero_time"), 0, 0, L"");
+        return;
+    }
+    m_score.m_nItemUid = static_cast<CItem*>(m_spItem)->FUN_140526a50();
+    m_score.m_nLength = nLength;
+    m_score.m_nInstrument = nCategory;
+    m_score.m_strTitle = strTitle;
+    m_score.m_strMml = strMml;
+    CStringW strKey(L"s_writemusic_msg_terms");
+    FUN_140d746e0(static_cast<IMessageListener*>(this), 0, GetStringCommonByKey(strKey), GetStringCommon(0x9cf));
 }
 
 // @0x140ff12a0
@@ -961,73 +949,72 @@ void UIWriteMusicDialog::OnClickPlayGoFirstAndPause()
 }
 
 // @0x140ff12d0
-// MS2-FUNCTIONAL: behaviour-equivalent; /Od codegen differs (obj 1944 bytes, exe 1854): temporaries, stack slots and branch layout
 void UIWriteMusicDialog::FUN_140ff12d0(ASData* pArgs)
 {
     int nCategory = pArgs->FUN_1422b8a10();
-    if (!(FUN_14052d1d0()->GetCategory(nCategory) == 0))
+    bool bInvalid = FUN_14052d1d0()->GetCategory(nCategory) == 0;
+    if (bInvalid)
     {
-        Scaleform::GFx::Value tabs = pArgs->FUN_1422b9260();
-        MS2Ptr<ASDataProvider> spTabs = FUN_140ff6b60(m_28, tabs);
-        if (!spTabs == false && spTabs->FUN_1422bc5d0() != 0)
-        {
-            unsigned nCount = spTabs->FUN_1422bc5d0();
-            CString strMml;
-            for (unsigned i = 0; i < nCount; i++)
-            {
-                Scaleform::GFx::Value tab;
-                if (tabs.GetElement(i, &tab))
-                {
-                    Scaleform::GFx::Value content;
-                    tab.GetMember("content", &content);
-                    CString strTab(content.GetString());
-                    if (!strTab.IsEmpty())
-                    {
-                        strTab.Remove(':');
-                        if (strMml.IsEmpty())
-                            strMml = strTab;
-                        else
-                            strMml += Unk_WmConcat(":", strTab);
-                    }
-                }
-            }
-            strMml.Remove(' ');
-            strMml.Remove('\n');
-            strMml.Remove('\t');
-            strMml.Remove('\r');
-            m_strPlayMml = strMml;
-            if (m_strPlayMml.IsEmpty())
-            {
-                FUN_140d73aa0(GetStringCommonByKey(CStringW(L"s_writemusic_error_play_empty_score")), 0, 0, CStringW(L""));
-                return;
-            }
-            int nOffset = (int)DoubleSecondsToMs(pArgs->FUN_1422b8ca0());
-            int nLength = 0;
-            if (!FUN_140c8dac0()->FUN_140d099c0(m_strPlayMml, nCategory, nOffset, &nLength))
-                FUN_140d73aa0(GetStringCommonByKey(CStringW(L"s_writemusic_error_play_zero_time")), 0, 0, CStringW(L""));
-            else
-            {
-                FUN_140ff35c0(nOffset, nLength);
-                m_bPlaying = 1;
-                if (m_30.get())
-                {
-                    FUN_140ff38f0(nLength);
-                    FUN_140ff3610(nOffset);
-                    int nSeconds = MsToSeconds(nLength);
-                    if (nSeconds < 1)
-                        nSeconds = 1;
-                    int nTime = nSeconds;
-                    m_30->Invoke("startPlayMusic", nTime);
-                }
-            }
-            FUN_140ff1b10(m_nPage);
-            FUN_140ff57e0();
-            return;
-        }
+        FUN_140d73aa0(GetStringCommonByKey(L"s_writemusic_error_play_invalid_instrument_type"), 0, 0, CStringW(L""));
+        return;
+    }
+    Scaleform::GFx::Value tabs = pArgs->FUN_1422b9260();
+    MS2Ptr<ASDataProvider> spTabs = FUN_140ff6b60(m_28, tabs);
+    if (!spTabs || spTabs->FUN_1422bc5d0() == 0)
+    {
         FUN_140d73aa0(CStringW(L"s_writemusic_error_play"), 0, 0, CStringW(L""));
+        return;
+    }
+    unsigned nCount = spTabs->FUN_1422bc5d0();
+    CString strMml;
+    for (unsigned i = 0; i < nCount; i++)
+    {
+        Scaleform::GFx::Value tab;
+        if (tabs.GetElement(i, &tab))
+        {
+            Scaleform::GFx::Value content;
+            tab.GetMember("content", &content);
+            CString strTab(content.GetString());
+            if (!strTab.IsEmpty())
+            {
+                strTab.Remove(':');
+                if (strMml.IsEmpty())
+                    strMml = strTab;
+                else
+                    strMml += Unk_WmConcat(":", strTab);
+            }
+        }
+    }
+    strMml.Remove(' ');
+    strMml.Remove('\n');
+    strMml.Remove('\t');
+    strMml.Remove('\r');
+    m_strPlayMml = strMml;
+    if (m_strPlayMml.IsEmpty())
+    {
+        FUN_140d73aa0(GetStringCommonByKey(L"s_writemusic_error_play_empty_score"), 0, 0, CStringW(L""));
+        return;
+    }
+    int nOffset = (int)DoubleSecondsToMs(pArgs->FUN_1422b8ca0());
+    int nLength = 0;
+    bool bOk = FUN_140c8dac0()->FUN_140d099c0(m_strPlayMml, nCategory, nOffset, &nLength);
+    if (bOk)
+    {
+        FUN_140ff35c0(nOffset, nLength);
+        m_bPlaying = 1;
+        if (m_30.get())
+        {
+            FUN_140ff38f0(nLength);
+            FUN_140ff3610(nOffset);
+            int nSeconds = MsToSeconds(nLength);
+            nSeconds = nSeconds < 1 ? 1 : nSeconds;
+            m_30->Invoke("startPlayMusic", nSeconds);
+        }
     }
     else
-        FUN_140d73aa0(GetStringCommonByKey(CStringW(L"s_writemusic_error_play_invalid_instrument_type")), 0, 0, CStringW(L""));
+        FUN_140d73aa0(GetStringCommonByKey(L"s_writemusic_error_play_zero_time"), 0, 0, CStringW(L""));
+    FUN_140ff1b10(m_nPage);
+    FUN_140ff57e0();
 }
 
 // @0x140ff1a20
@@ -1050,52 +1037,49 @@ void UIWriteMusicDialog::FUN_140ff1aa0()
 }
 
 // @0x140ff1b10
-// MS2-FUNCTIONAL: behaviour-equivalent; /Od codegen differs (obj 748 bytes, exe 801): temporaries, stack slots and branch layout
 void UIWriteMusicDialog::FUN_140ff1b10(int nPage)
 {
-    if (!(m_spTabs == 0))
+    if (m_spTabs == 0)
+        return;
+    MS2Ptr<ASDataProvider> spTabs = m_spTabs->FUN_1422e2e00();
+    if (!spTabs || spTabs->FUN_1422bc5d0() == 0)
+        return;
+    unsigned nCount = spTabs->FUN_1422bc5d0();
+    std::map<int, CString> tabs;
+    Scaleform::GFx::Value& array = spTabs->FUN_1422bb870();
+    for (unsigned i = 0; i < nCount; i++)
     {
-        MS2Ptr<ASDataProvider> spTabs = m_spTabs->FUN_1422e2e00();
-        if (!spTabs == false && spTabs->FUN_1422bc5d0() != 0)
+        Scaleform::GFx::Value tab;
+        if (array.GetElement(i, &tab))
         {
-            unsigned nCount = spTabs->FUN_1422bc5d0();
-            std::map<int, CString> tabs;
-            Scaleform::GFx::Value& array = spTabs->FUN_1422bb870();
-            for (unsigned i = 0; i < nCount; i++)
-            {
-                Scaleform::GFx::Value tab;
-                if (array.GetElement(i, &tab))
-                {
-                    Scaleform::GFx::Value content;
-                    tab.GetMember("content", &content);
-                    CString strTab(content.GetString());
-                    strTab.Remove(':');
-                    strTab.Remove(' ');
-                    strTab.Remove('\n');
-                    strTab.Remove('\t');
-                    strTab.Remove('\r');
-                    if (!strTab.IsEmpty())
-                        tabs[i] = strTab;
-                }
-            }
-            FUN_140ff4610(tabs);
-            m_nPage = nPage;
-            if (!m_pages.empty())
-            {
-                if (m_nPage < 0)
-                    m_nPage = 0;
-                if (m_nPage > (int)m_pages.size() - 1)
-                    m_nPage = m_pages.size() - 1;
-            }
-            else
-                m_nPage = 0;
-            FUN_140ff4a80();
+            Scaleform::GFx::Value content;
+            tab.GetMember("content", &content);
+            CString strTab(content.GetString());
+            strTab.Remove(':');
+            strTab.Remove(' ');
+            strTab.Remove('\n');
+            strTab.Remove('\t');
+            strTab.Remove('\r');
+            if (strTab.IsEmpty())
+                continue;
+            tabs[i] = strTab;
         }
     }
+    FUN_140ff4610(tabs);
+    m_nPage = nPage;
+    if (m_pages.empty())
+        m_nPage = 0;
+    else
+    {
+        if (m_nPage < 0)
+            m_nPage = 0;
+        if (m_nPage > (int)(m_pages.size() - 1))
+            m_nPage = m_pages.size() - 1;
+    }
+    FUN_140ff4a80();
 }
 
 // @0x140ff1e40
-// MS2-FUNCTIONAL: behaviour-equivalent; /Od codegen differs (obj 594 bytes, exe 529): temporaries, stack slots and branch layout
 void UIWriteMusicDialog::OnClickSaveFile()
 {
     if (FUN_140a467d0(&m_30))
@@ -1103,144 +1087,139 @@ void UIWriteMusicDialog::OnClickSaveFile()
     if (!PathIsDirectoryW(L"./Custom/Music"))
         CreateDirectoryW(L"./Custom/Music", 0);
     if (FUN_140ff34b0() == 0)
-        FUN_140d73aa0(GetStringCommonByKey(CStringW(L"s_writemusic_error_savefile_empty_score")), 0, 0, CStringW(L""));
-    else
     {
-        CStringW strPath = FUN_141b6e6f0(FUN_1418fe4e0(CStringW(L"./Custom/Music")), L"ms2mml Files (*.ms2mml)", CStringW(L""));
-        if (!strPath.IsEmpty())
-        {
-            CStringW strExt(L".ms2mml");
-            if (strPath.Find(strExt, 0) < 0)
-                strPath += strExt;
-            FUN_140ff2cf0(strPath);
-        }
+        FUN_140d73aa0(GetStringCommonByKey(L"s_writemusic_error_savefile_empty_score"), 0, 0, CStringW(L""));
+        return;
     }
+    CStringW strPath = FUN_141b6e6f0(FUN_1418fe4e0(L"./Custom/Music"), L"ms2mml Files (*.ms2mml)", L"");
+    if (strPath.IsEmpty())
+        return;
+    CStringW strExt(L".ms2mml");
+    if (strPath.Find(strExt, 0) < 0)
+        strPath += strExt;
+    FUN_140ff2cf0(strPath);
 }
 
 // @0x140ff2060
-// MS2-FUNCTIONAL: behaviour-equivalent; /Od codegen differs (obj 327 bytes, exe 311): temporaries, stack slots and branch layout
 void UIWriteMusicDialog::OnClickLoadFile()
 {
     if (FUN_140a467d0(&m_30))
         return;
-    if (!FUN_140ff33c0())
+    if (FUN_140ff33c0())
+    {
+        CStringW strText = GetStringCommonByKey(L"s_writemusic_error_loadfile_ask_during_edit");
+        FUN_140d73aa0(strText, 1, static_cast<IMessageListener*>(this), CStringW(L"askLoadFile"));
+    }
+    else
     {
         FUN_140ff2600();
         FUN_140ff1b10(0);
     }
-    else
-    {
-        CStringW strText = GetStringCommonByKey(CStringW(L"s_writemusic_error_loadfile_ask_during_edit"));
-        FUN_140d73aa0(strText, 1, static_cast<IMessageListener*>(this), CStringW(L"askLoadFile"));
-    }
 }
 
 // @0x140ff21a0
-// MS2-FUNCTIONAL: behaviour-equivalent; /Od codegen differs (obj 578 bytes, exe 522): temporaries, stack slots and branch layout
 void UIWriteMusicDialog::FUN_140ff21a0(ASData* pArgs)
 {
     if (FUN_140a467d0(&m_30))
         return;
     int nCategory = pArgs->FUN_1422b8a10();
-    if (!(FUN_14052d1d0()->GetCategory(nCategory) == 0))
+    bool bInvalid = FUN_14052d1d0()->GetCategory(nCategory) == 0;
+    if (bInvalid)
     {
-        int nOffset = (int)DoubleSecondsToMs(pArgs->FUN_1422b8ca0());
-        FUN_140ff3610(nOffset);
-        if (m_bPlaying)
+        FUN_140d73aa0(GetStringCommonByKey(L"s_writemusic_error_play_invalid_instrument_type"), 0, 0, CStringW(L""));
+        return;
+    }
+    int nOffset = (int)DoubleSecondsToMs(pArgs->FUN_1422b8ca0());
+    FUN_140ff3610(nOffset);
+    if (m_bPlaying)
+    {
+        int nLength = 0;
+        bool bOk = FUN_140c8dac0()->FUN_140d099c0(m_strPlayMml, nCategory, nOffset, &nLength);
+        if (bOk)
         {
-            int nLength = 0;
-            if (FUN_140c8dac0()->FUN_140d099c0(m_strPlayMml, nCategory, nOffset, &nLength))
-            {
-                FUN_140ff35c0(nOffset, nLength);
-                m_bPlaying = 1;
-                FUN_140ff3350(false);
-                FUN_140ff3610(nOffset);
-            }
+            FUN_140ff35c0(nOffset, nLength);
+            m_bPlaying = 1;
+            FUN_140ff3350(false);
+            FUN_140ff3610(nOffset);
         }
     }
-    else
-        FUN_140d73aa0(GetStringCommonByKey(CStringW(L"s_writemusic_error_play_invalid_instrument_type")), 0, 0, CStringW(L""));
 }
 
 // @0x140ff23b0
-// MS2-FUNCTIONAL: behaviour-equivalent; /Od codegen differs (obj 306 bytes, exe 325): temporaries, stack slots and branch layout
 void UIWriteMusicDialog::FUN_140ff23b0(const Scaleform::GFx::FunctionHandler::Params& params)
 {
-    if (params.ArgCount != 0)
+    if (params.ArgCount == 0)
+        return;
+    ASObj arg(static_cast<const Scaleform::GFx::Value&>(params.pArgs[0]), 2);
+    double dTime = arg.FUN_1422bb870().GetNumber();
+    if (m_spPlayBar)
     {
-        ASObj arg(static_cast<const Scaleform::GFx::Value&>(*params.pArgs), 2);
-        double dTime = arg.FUN_1422bb870().GetNumber();
-        if (m_spPlayBar)
-        {
-            int nMinutes, nSeconds, nCentis;
-            FUN_141b706a0((int)DoubleSecondsToMs(dTime), &nMinutes, &nSeconds, &nCentis);
-            CStringW strText = StringFormat(m_strTimerFormat, nMinutes, nSeconds);
-            Scaleform::GFx::Value v;
-            v.SetStringW(strText);
-            *params.pRetVal = v;
-        }
+        int nMs = (int)DoubleSecondsToMs(dTime);
+        int nMinutes, nSeconds, nCentis;
+        FUN_141b706a0(nMs, &nMinutes, &nSeconds, &nCentis);
+        CStringW strText = StringFormat(m_strTimerFormat, nMinutes, nSeconds);
+        Scaleform::GFx::Value v;
+        v.SetStringW(strText);
+        *params.pRetVal = v;
     }
 }
 
 // @0x140ff2500
-// MS2-FUNCTIONAL: behaviour-equivalent; /Od codegen differs (obj 206 bytes, exe 240): temporaries, stack slots and branch layout
 void UIWriteMusicDialog::FUN_140ff2500(unsigned __int64 nItemUid)
 {
     MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5d680(nItemUid);
-    if (!(spItem == 0))
+    if (spItem == 0)
+        return;
+    std::map<unsigned __int64, CString>::const_iterator it = m_texts.find(nItemUid);
+    if (it == m_texts.end())
     {
-        std::map<unsigned __int64, CString>::iterator it = m_texts.find(nItemUid);
-        if (!(it == m_texts.end()))
-            FUN_140ff0260(nItemUid, it->second);
-        else
-            FUN_140c8dac0()->FUN_140d09c80(nItemUid);
+        FUN_140c8dac0()->FUN_140d09c80(nItemUid);
+        return;
     }
+    FUN_140ff0260(nItemUid, it->second);
 }
 
 // @0x140ff2600
-// MS2-FUNCTIONAL: behaviour-equivalent; /Od codegen differs (obj 268 bytes, exe 244): temporaries, stack slots and branch layout
 void UIWriteMusicDialog::FUN_140ff2600()
 {
     if (!PathIsDirectoryW(L"./Custom/Music"))
         CreateDirectoryW(L"./Custom/Music", 0);
-    CStringW strPath = FUN_141b6e360(FUN_1418fe4e0(CStringW(L"./Custom/Music")), L"ms2mml Files (*.ms2mml)", CStringW(L""));
-    if (!strPath.IsEmpty())
-        FUN_140ff2700(strPath);
+    CStringW strPath = FUN_141b6e360(FUN_1418fe4e0(L"./Custom/Music"), L"ms2mml Files (*.ms2mml)", L"");
+    if (strPath.IsEmpty())
+        return;
+    FUN_140ff2700(strPath);
 }
 
 // @0x140ff2700
-// MS2-FUNCTIONAL: behaviour-equivalent; /Od codegen differs (obj 1578 bytes, exe 1508): temporaries, stack slots and branch layout
 void UIWriteMusicDialog::FUN_140ff2700(const CStringW& strPath)
 {
-    if (FUN_140a467d0(&m_30))
-        return;
-    if (!m_spItem)
+    if (FUN_140a467d0(&m_30) || !m_spItem)
         return;
     if (strPath.IsEmpty())
         return;
     TiXmlDocument doc;
-    if (!doc.FUN_140870fc0(FUN_14016a600(strPath, 0), 0))
-    {
-        CStringW strText = FUN_14028dfa0(CStringW(L"s_writemusic_error_loadfile_wrong_xml"), FUN_14016a730(FUN_141001a80(&doc), 0));
-        FUN_140d73aa0(strText, 0, 0, CStringW(L""));
-    }
-    else
+    bool bLoaded = doc.FUN_140870fc0(FUN_14016a600(strPath, 0), 0);
+    if (bLoaded)
     {
         Unk_140165cf0* pRoot = FUN_140165cf0(&doc, "ms2");
         if (pRoot == 0)
             return;
         int nMax = FUN_140ff40b0();
         int nTotal = 0;
-        const int nMaxChords = 10;
+        int nMaxChords = 10;
+        int nChords = 0;
         CString strMelody;
         Unk_140165cf0* pMelody = pRoot->FUN_140165cf0("melody");
-        if (pMelody == 0)
+        if (pMelody != 0)
         {
-            FUN_140d73aa0(GetStringCommonByKey(CStringW(L"s_writemusic_error_loadfile_not_exist_melody_tag")), 0, 0, CStringW(L""));
+            FUN_140ff3230(pMelody, nMax, strMelody, &nTotal);
+            nChords++;
+        }
+        else
+        {
+            FUN_140d73aa0(GetStringCommonByKey(L"s_writemusic_error_loadfile_not_exist_melody_tag"), 0, 0, CStringW(L""));
             return;
         }
-        FUN_140ff3230(pMelody, nMax, strMelody, &nTotal);
-        int nChords = 1;
         ASArray chords(2);
         if (nTotal < nMax)
         {
@@ -1256,72 +1235,77 @@ void UIWriteMusicDialog::FUN_140ff2700(const CStringW& strPath)
                 }
             }
         }
-        if (nMax < nTotal)
+        if (nTotal > nMax)
         {
-            CStringW strText = FUN_14028dfa0(CStringW(L"s_writemusic_error_loadfile_maxlength"), nTotal, nMax);
+            CStringW strText = FUN_14028dfa0(L"s_writemusic_error_loadfile_maxlength", nTotal, nMax);
             FUN_140d73aa0(strText, 0, 0, CStringW(L""));
         }
-        FUN_140ff43a0(strMelody, chords, CStringW(L" "), -1);
+        CStringW strSep(L" ");
+        FUN_140ff43a0(strMelody, chords, strSep, -1);
+    }
+    else
+    {
+        CStringW strText = FUN_14028dfa0(L"s_writemusic_error_loadfile_wrong_xml", FUN_14016a730(FUN_141001a80(&doc), 0));
+        FUN_140d73aa0(strText, 0, 0, CStringW(L""));
     }
 }
 
 // @0x140ff2cf0
-// MS2-FUNCTIONAL: behaviour-equivalent; /Od codegen differs (obj 1311 bytes, exe 1332): temporaries, stack slots and branch layout
 void UIWriteMusicDialog::FUN_140ff2cf0(const CStringW& strPath)
 {
-    if (!FUN_140a467d0(&m_30) && !strPath.IsEmpty())
+    if (FUN_140a467d0(&m_30))
+        return;
+    if (strPath.IsEmpty())
+        return;
+    MS2Ptr<ASButtonBar> spTabBar = m_spTabs;
+    if (!spTabBar)
+        return;
+    MS2Ptr<ASDataProvider> spTabs = spTabBar->FUN_1422e2e00();
+    if (!spTabs || spTabs->FUN_1422bc5d0() <= 0)
     {
-        MS2Ptr<ASButtonBar> spTabBar = m_spTabs;
-        if (!spTabBar == false)
-        {
-            MS2Ptr<ASDataProvider> spTabs = spTabBar->FUN_1422e2e00();
-            if (!spTabs == false && spTabs->FUN_1422bc5d0() != 0)
-            {
-                TiXmlDocument doc;
-                TiXmlDeclaration decl("1.0", "utf-8", "");
-                FUN_14086e000(&doc, &decl);
-                CString strFile = FUN_14016a600(strPath, 0);
-                TiXmlElement root("ms2");
-                unsigned nCount = spTabs->FUN_1422bc5d0();
-                CString strUnused;
-                Scaleform::GFx::Value& array = spTabs->FUN_1422bb870();
-                for (unsigned i = 0; i < nCount; i++)
-                {
-                    Scaleform::GFx::Value tab;
-                    if (array.GetElement(i, &tab))
-                    {
-                        Scaleform::GFx::Value content;
-                        tab.GetMember("content", &content);
-                        CString strTab(content.GetString());
-                        if (!strTab.IsEmpty())
-                        {
-                            CString strTag(i != 0 ? "chord" : "melody");
-                            TiXmlElement element(strTag);
-                            strTab.Replace("\r", "\n");
-                            CString strText("\n");
-                            strText.Append(strTab);
-                            strText.Append("\n");
-                            TiXmlText text(strText);
-                            text.FUN_14087a320(1);
-                            if (i != 0)
-                                FUN_14086f920(&element, "index", i);
-                            FUN_14086e000(&element, &text);
-                            FUN_14086e000(&root, &element);
-                        }
-                    }
-                }
-                FUN_14086e000(&doc, &root);
-                FUN_1408710c0(&doc, strFile);
-                FUN_140ff3450(false);
-                return;
-            }
-            FUN_140d73aa0(GetStringCommonByKey(CStringW(L"s_writemusic_error_savefile")), 0, 0, CStringW(L""));
-        }
+        FUN_140d73aa0(GetStringCommonByKey(L"s_writemusic_error_savefile"), 0, 0, CStringW(L""));
+        return;
     }
+        TiXmlDocument doc;
+        TiXmlDeclaration decl("1.0", "utf-8", "");
+        FUN_14086e000(&doc, &decl);
+        CString strFile = FUN_14016a600(strPath, 0);
+        TiXmlElement root("ms2");
+        unsigned nCount = spTabs->FUN_1422bc5d0();
+        CString strUnused;
+        Scaleform::GFx::Value& array = spTabs->FUN_1422bb870();
+        for (unsigned i = 0; i < nCount; i++)
+        {
+            Scaleform::GFx::Value tab;
+            if (array.GetElement(i, &tab))
+            {
+                Scaleform::GFx::Value content;
+                tab.GetMember("content", &content);
+                CString strTab(content.GetString());
+                if (!strTab.IsEmpty())
+                {
+                    bool bMelody = i == 0;
+                CString strTag(bMelody ? "melody" : "chord");
+                    TiXmlElement element(strTag);
+                    strTab.Replace("\r", "\n");
+                    CString strText("\n");
+                    strText.Append(strTab);
+                    strText.Append("\n");
+                    TiXmlText text(strText);
+                    text.FUN_14087a320(1);
+                    if (!bMelody)
+                        FUN_14086f920(&element, "index", i);
+                    FUN_14086e000(&element, &text);
+                    FUN_14086e000(&root, &element);
+                }
+            }
+        }
+        FUN_14086e000(&doc, &root);
+        FUN_1408710c0(&doc, strFile);
+        FUN_140ff3450(false);
 }
 
 // @0x140ff3230
-// MS2-FUNCTIONAL: behaviour-equivalent; /Od codegen differs (obj 269 bytes, exe 275): temporaries, stack slots and branch layout
 bool UIWriteMusicDialog::FUN_140ff3230(Unk_140165cf0* pElem, int nMax, CString& strOut, int* pnTotal)
 {
     strOut.Empty();
@@ -1340,7 +1324,10 @@ bool UIWriteMusicDialog::FUN_140ff3230(Unk_140165cf0* pElem, int nMax, CString& 
     *pnTotal = strOut.GetLength() + *pnTotal;
     int nOver = *pnTotal - nMax;
     if (nOver > 0)
-        strOut.Delete(strOut.GetLength() - nOver, nOver);
+    {
+        int nStart = strOut.GetLength() - nOver;
+        strOut.Delete(nStart, nOver);
+    }
     return true;
 }
 
@@ -1399,15 +1386,13 @@ void UIWriteMusicDialog::FUN_140ff35c0(int nOffset, int nLength)
 }
 
 // @0x140ff3610
-// MS2-FUNCTIONAL: behaviour-equivalent; /Od codegen differs (obj 758 bytes, exe 718): temporaries, stack slots and branch layout
 void UIWriteMusicDialog::FUN_140ff3610(int nTime)
 {
     if (m_spTimer.IsNull())
     {
-        MS2Ptr<ASMovieClip> spPlaying = m_30->FUN_1409b4560(CString("m_playingMusic"));
-        if (spPlaying)
-            m_spTimer = spPlaying->FUN_1409b4620(CString("m_timer"));
-        m_strTimerFormat = GetStringCommonByKey(CStringW(L"s_writemusic_text_playtimer_cur"));
+        if (MS2Ptr<ASMovieClip> spPlaying = m_30->FUN_1409b4560("m_playingMusic"))
+            m_spTimer = spPlaying->FUN_1409b4620("m_timer");
+        m_strTimerFormat = GetStringCommonByKey(L"s_writemusic_text_playtimer_cur");
     }
     if (m_spTimer)
     {
@@ -1419,24 +1404,19 @@ void UIWriteMusicDialog::FUN_140ff3610(int nTime)
         {
             int nPos = nMinutes * 60 + nSeconds;
             if (m_spPlayBar->FUN_1422ce840() != (float)nPos)
-            {
-                float fPos = (float)nPos;
-                m_spPlayBar->FUN_1422ce800(fPos);
-            }
+                m_spPlayBar->FUN_1422ce800((float)nPos);
         }
     }
 }
 
 // @0x140ff38f0
-// MS2-FUNCTIONAL: behaviour-equivalent; /Od codegen differs (obj 1086 bytes, exe 1043): temporaries, stack slots and branch layout
 void UIWriteMusicDialog::FUN_140ff38f0(int nLength)
 {
     if (m_spTotalTimer.IsNull())
     {
-        MS2Ptr<ASMovieClip> spPlaying = m_30->FUN_1409b4560(CString("m_playingMusic"));
-        if (spPlaying)
-            m_spTotalTimer = spPlaying->FUN_1409b4620(CString("m_totalTimer"));
-        if (m_spPlayBar = static_cast<Unk_WmScript*>(m_30.operator->())->FUN_140fafed0<Unk_WmSlider>(CString("m_playBar")))
+        if (MS2Ptr<ASMovieClip> spPlaying = m_30->FUN_1409b4560("m_playingMusic"))
+            m_spTotalTimer = spPlaying->FUN_1409b4620("m_totalTimer");
+        if (m_spPlayBar = static_cast<Unk_WmScript*>(m_30.operator->())->FUN_140fafed0<Unk_WmSlider>("m_playBar"))
         {
             ASFunction tooltip(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIWriteMusicDialog::FUN_140ff23b0), 0,
                                FUN_1422db730());
@@ -1455,75 +1435,73 @@ void UIWriteMusicDialog::FUN_140ff38f0(int nLength)
 }
 
 // @0x140ff3d10
-// MS2-FUNCTIONAL: behaviour-equivalent; /Od codegen differs (obj 303 bytes, exe 314): temporaries, stack slots and branch layout
 void UIWriteMusicDialog::FUN_140ff3d10(unsigned nTime)
 {
-    if (!(m_spPlayLine == 0) && FUN_140ff4550())
+    if (m_spPlayLine == 0)
+        return;
+    if (!FUN_140ff4550())
+        return;
+    unsigned nPage = nTime / 12000;
+    if (m_nPage != nPage)
     {
-        if ((unsigned)m_nPage != nTime / 12000)
-        {
-            m_nPage = nTime / 12000;
-            FUN_140ff4a80();
-        }
-        MS2Ptr<ASMovieClip> spLine = m_spPlayLine->FUN_1409b4560(CString("m_playingLine"));
-        if (spLine)
-            spLine->FUN_1422c0320(nTime % 12000 / 10 + 0x14);
+        m_nPage = nPage;
+        FUN_140ff4a80();
     }
+    int nPos = nTime % 12000;
+    nPos /= 10;
+    nPos += 35;
+    nPos -= 15;
+    MS2Ptr<ASMovieClip> spLine = m_spPlayLine->FUN_1409b4560("m_playingLine");
+    if (spLine)
+        spLine->FUN_1422c0320(nPos);
 }
 
 // @0x140ff3e50
-// MS2-FUNCTIONAL: behaviour-equivalent; /Od codegen differs (obj 597 bytes, exe 592): temporaries, stack slots and branch layout
 bool UIWriteMusicDialog::FUN_140ff3e50(MS2Ptr<ASDataProvider> spTabs, CString& strOut)
 {
     strOut.Empty();
-    if (!spTabs == false && spTabs->FUN_1422bc5d0() != 0)
+    if (!spTabs || spTabs->FUN_1422bc5d0() == 0)
+        return false;
+    unsigned nCount = spTabs->FUN_1422bc5d0();
+    CString strMml;
+    Scaleform::GFx::Value& array = spTabs->FUN_1422bb870();
+    for (unsigned i = 0; i < nCount; i++)
     {
-        unsigned nCount = spTabs->FUN_1422bc5d0();
-        CString strMml;
-        Scaleform::GFx::Value& array = spTabs->FUN_1422bb870();
-        for (unsigned i = 0; i < nCount; i++)
+        Scaleform::GFx::Value tab;
+        if (array.GetElement(i, &tab))
         {
-            Scaleform::GFx::Value tab;
-            if (array.GetElement(i, &tab))
+            Scaleform::GFx::Value content;
+            tab.GetMember("content", &content);
+            CString strTab(content.GetString());
+            if (!strTab.IsEmpty())
             {
-                Scaleform::GFx::Value content;
-                tab.GetMember("content", &content);
-                CString strTab(content.GetString());
-                if (!strTab.IsEmpty())
-                {
-                    strTab.Remove(':');
-                    if (strMml.IsEmpty())
-                        strMml = strTab;
-                    else
-                        strMml += Unk_WmConcat(":", strTab);
-                }
+                strTab.Remove(':');
+                if (strMml.IsEmpty())
+                    strMml = strTab;
+                else
+                    strMml += Unk_WmConcat(":", strTab);
             }
         }
-        strMml.Remove(' ');
-        strMml.Remove('\n');
-        strMml.Remove('\t');
-        strMml.Remove('\r');
-        return true;
     }
-    return false;
+    strMml.Remove(' ');
+    strMml.Remove('\n');
+    strMml.Remove('\t');
+    strMml.Remove('\r');
+    return true;
 }
 
 // @0x140ff40b0
-// MS2-FUNCTIONAL: behaviour-equivalent; /Od codegen differs (obj 224 bytes, exe 219): temporaries, stack slots and branch layout
 int UIWriteMusicDialog::FUN_140ff40b0()
 {
-    if (!m_spItem == false && static_cast<CItem*>(m_spItem)->FUN_140527840() != 0)
-    {
-        MS2Ptr<ItemMusicScore> spScore = FUN_140281980()->GetMusicScore(static_cast<CItem*>(m_spItem)->FUN_1405276c0());
-        if (spScore == 0)
-            return 0;
-        return spScore->noteLengthMax;
-    }
-    return 0;
+    if (!m_spItem || static_cast<CItem*>(m_spItem)->FUN_140527840() == 0)
+        return 0;
+    MS2Ptr<ItemMusicScore> spScore = FUN_140281980()->GetMusicScore(static_cast<CItem*>(m_spItem)->FUN_1405276c0());
+    if (spScore == 0)
+        return 0;
+    return spScore->noteLengthMax;
 }
 
 // @0x140ff41a0
-// MS2-FUNCTIONAL: behaviour-equivalent; /Od codegen differs (obj 487 bytes, exe 497): temporaries, stack slots and branch layout
 void UIWriteMusicDialog::FUN_140ff41a0()
 {
     CStringW strTitle;
@@ -1533,15 +1511,16 @@ void UIWriteMusicDialog::FUN_140ff41a0()
         strTitle = static_cast<CItem*>(m_spItem)->FUN_1405296c0();
         nInstrument = static_cast<CItem*>(m_spItem)->FUN_140527990()->m_n1c;
     }
+    CString& strText = m_strText;
     ATL::CAtlArray<CString> parts;
-    FUN_14015f0b0(m_strText, parts, ":");
+    FUN_14015f0b0(strText, parts, ":");
     CString strMelody;
     size_t nCount = parts.GetCount();
     ASArray chords(2);
     for (size_t i = 0; i < nCount; i++)
     {
         if (i == 0)
-            strMelody = parts[0];
+            strMelody = parts[i];
         else
             chords.FUN_1422bbf70(parts[i]);
     }
@@ -1565,25 +1544,31 @@ void UIWriteMusicDialog::SetItem(MS2Ptr<CItem> spItem)
 }
 
 // @0x140ff4550
-// MS2-FUNCTIONAL: behaviour-equivalent; /Od codegen differs (obj 191 bytes, exe 177): temporaries, stack slots and branch layout
 bool UIWriteMusicDialog::FUN_140ff4550()
 {
-    MS2Ptr<ASDropdownMenu> spRollType = FUN_140c28560(CString("m_rollType"));
-    if (!spRollType)
-        return false;
-    if (spRollType->FUN_1422df6c0() == 0)
-        return true;
+    MS2Ptr<ASDropdownMenu> spRollType = FUN_140c28560("m_rollType");
+    if (spRollType)
+    {
+        if (spRollType->FUN_1422df6c0() == 0)
+            return true;
+        else
+            return false;
+    }
     return false;
 }
 
 // @0x140ff4610
-// MS2-FUNCTIONAL: behaviour-equivalent; /Od codegen differs (obj 1070 bytes, exe 1116): temporaries, stack slots and branch layout
 void UIWriteMusicDialog::FUN_140ff4610(std::map<int, CString>& tabs)
 {
     m_pages.clear();
-    bool bPerTime = FUN_140ff4550();
-    for (auto tab : tabs)
+    bool bFixed = true;
+    if (FUN_140ff4550() == true)
+        bFixed = false;
+    std::map<int, CString>& range = tabs;
+    std::map<int, CString>::iterator itEnd = range.end();
+    for (std::map<int, CString>::iterator it = range.begin(); it != itEnd; ++it)
     {
+        std::pair<const int, CString> tab = *it;
         int nTab = tab.first;
         CString strTab(tab.second);
         if (strTab.IsEmpty())
@@ -1591,25 +1576,35 @@ void UIWriteMusicDialog::FUN_140ff4610(std::map<int, CString>& tabs)
         double dTime = 0.0;
         MMLParser parser;
         parser.SetText(strTab);
-        parser.SetFixedTempo(bPerTime != true);
+        parser.SetFixedTempo(bFixed);
         parser.Parse();
         std::vector<MS2Ptr<MMLToken> >& tokens = parser.m_tokens;
         for (size_t i = 0; i < tokens.size(); i++)
         {
             if (tokens[i]->m_nType == 1)
                 dTime += tokens[i]->m_dTime;
-            else if (tokens[i]->m_nType == 0 && tokens[i]->m_dTime > 1.0)
+            else if (tokens[i]->m_nType == 0)
             {
+                if (tokens[i]->m_dTime <= 1.0)
+                    continue;
                 unsigned nStart = (unsigned)dTime;
-                int nEnd = (int)(tokens[i]->m_dTime + dTime);
+                unsigned nEnd = (unsigned)(tokens[i]->m_dTime + dTime);
                 int nFirst = nStart / 12000;
-                int nLast = (nEnd - 1U) / 12000;
-                if (nFirst == nLast)
-                    m_pages[nFirst][nTab].insert(std::make_pair(nStart, tokens[i]));
-                else
+                int nLast = (nEnd - 1) / 12000;
+                if (nFirst != nLast)
                 {
                     for (int nPage = nFirst; nPage <= nLast; nPage++)
-                        m_pages[nPage][nTab].insert(std::make_pair(nStart, tokens[i]));
+                    {
+                        TabNotes& page = m_pages[nPage];
+                        NoteMap& notes = page[nTab];
+                        notes.insert(std::make_pair(nStart, tokens[i]));
+                    }
+                }
+                else
+                {
+                    TabNotes& page = m_pages[nFirst];
+                    NoteMap& notes = page[nTab];
+                    notes.insert(std::make_pair(nStart, tokens[i]));
                 }
                 dTime += tokens[i]->m_dTime;
             }
@@ -1618,93 +1613,98 @@ void UIWriteMusicDialog::FUN_140ff4610(std::map<int, CString>& tabs)
 }
 
 // @0x140ff4a80
-// MS2-FUNCTIONAL: behaviour-equivalent; /Od codegen differs (obj 3342 bytes, exe 3404): temporaries, stack slots and branch layout
+// MS2-FUNCTIONAL: behaviour-equivalent; /Od codegen differs: one temp hop after m_pages[m_nPage] and the colors[] stack slot
 void UIWriteMusicDialog::FUN_140ff4a80()
 {
-    if (!(m_spPlayLine == 0))
+    if (m_spPlayLine == 0)
+        return;
+    const int nLeft = 0x23;
+    const int nWidth = 0x4b0;
+    const int nBottom = 0x197;
+    MS2_FOR_EACH(auto spNote, m_notes)
+        m_spPlayLine->FUN_1422c6b70(Scaleform::GFx::Value(spNote->FUN_1422bb890()));
+    m_notes.clear();
+    if (m_pages.find(m_nPage) != m_pages.end())
     {
-        const int nLeft = 0x23;
-        const int nWidth = 0x4b0;
-        const int nBottom = 0x197;
-        MS2_FOR_EACH(auto spNote, m_notes)
-            m_spPlayLine->FUN_1422c6b70(Scaleform::GFx::Value(spNote->FUN_1422bb890()));
-        m_notes.clear();
-        if (m_pages.find(m_nPage) != m_pages.end())
+        int colors[10] = {0xffd200, 0xff7521, 0xdf0008, 0x8dc63f, 0x139224, 0x13b5f2, 0x2960ff, 0xd85aa5, 0x822eff, 0xffffff};
+        TabNotes& range = m_pages[m_nPage];
+        TabNotes::const_iterator itEnd = range.end();
+        for (TabNotes::const_iterator it = range.begin(); it != itEnd; ++it)
         {
-            int colors[10] = {0xffd200, 0xff7521, 0xdf0008, 0x8dc63f, 0x139224, 0x13b5f2, 0x2960ff, 0xd85aa5, 0x822eff, 0xffffff};
-            for (std::pair<int, NoteMap> tab : m_pages[m_nPage])
+            std::pair<int, NoteMap> tab = *it;
+            int nTab = tab.first;
+            if (nTab >= 10)
+                continue;
+            NoteMap& notes = tab.second;
+            NoteMap::const_iterator itNoteEnd = notes.end();
+            for (NoteMap::const_iterator itNote = notes.begin(); itNote != itNoteEnd; ++itNote)
             {
-                int nTab = tab.first;
-                if (nTab >= 10)
+                std::pair<unsigned, MS2Ptr<MMLToken> > note = *itNote;
+                if (note.second->m_nPitch < 0x18 || note.second->m_nPitch >= 0x78)
                     continue;
-                for (std::pair<unsigned, MS2Ptr<MMLToken> > note : tab.second)
+                int x = nLeft;
+                int w = (int)(note.second->m_dTime / 10.0);
+                unsigned nPageStart = m_nPage * 12000;
+                if (note.first < nPageStart)
                 {
-                    if (note.second->m_nPitch < 0x18 || note.second->m_nPitch > 0x77)
-                        continue;
-                    int x = nLeft;
-                    int w = (int)(note.second->m_dTime / 10.0);
-                    unsigned nPageStart = m_nPage * 12000;
-                    if (note.first < nPageStart)
-                    {
-                        x = nLeft;
-                        w = (int)(((double)note.first + note.second->m_dTime - nPageStart) / 10.0);
-                    }
-                    else
-                    {
-                        x = note.first % 12000 / 10 + nLeft;
-                        w = (int)(note.second->m_dTime / 10.0);
-                    }
-                    int y = nBottom - (note.second->m_nPitch * 4 - 0x60);
-                    if (x < nLeft)
-                        x = nLeft;
-                    if (x + w > nLeft + nWidth)
-                        w = nLeft + nWidth - x;
-                    CString strName("write_music_note");
-                    MS2Ptr<ASUIComponent> spNote(new ASUIComponent(strName, 2));
-                    if (spNote == 0)
-                        break;
-                    m_spPlayLine->FUN_1422c6900(Scaleform::GFx::Value(spNote->FUN_1422bb890()));
-                    spNote->FUN_1422bffe0(x, y);
-                    spNote->Invoke("setActualSize", w - 1, 3);
-                    spNote->Invoke("setColor", colors[nTab]);
-                    spNote->FUN_1422c7b40(FUN_140ff5be0(note.second->m_nPitch, nTab, colors[nTab]));
-                    m_notes.push_back(spNote);
+                    x = nLeft;
+                    w = (int)(((double)note.first + note.second->m_dTime - nPageStart) / 10.0);
                 }
+                else
+                {
+                    x = note.first % 12000 / 10 + nLeft;
+                    w = (int)(note.second->m_dTime / 10.0);
+                }
+                int y = nBottom - (note.second->m_nPitch * 4 - 0x60);
+                if (x < nLeft)
+                    x = nLeft;
+                if (x + w > nLeft + nWidth)
+                    w = nLeft + nWidth - x;
+                CString strName("write_music_note");
+                MS2Ptr<ASUIComponent> spNote(new ASUIComponent(strName, 2));
+                if (spNote == 0)
+                    break;
+                m_spPlayLine->FUN_1422c6900(Scaleform::GFx::Value(spNote->FUN_1422bb890()));
+                spNote->FUN_1422bffe0(x, y);
+                spNote->FUN_1409ba0d0("setActualSize", w - 1, 3);
+                spNote->Invoke("setColor", colors[nTab]);
+                spNote->FUN_1422c7b40(FUN_140ff5be0(note.second->m_nPitch, nTab, colors[nTab]));
+                m_notes.push_back(spNote);
             }
         }
-        int nPageNo = m_nPage + 1;
-        FUN_140cfee80((*m_spPlayLine).FUN_1422bb890(), CString("m_pageText"), StringFormat(L"{0}", nPageNo));
-        FUN_140cff950((*m_spPlayLine).FUN_1422bb890(), CString("m_prevPage"), m_nPage > 0);
-        FUN_140cff950((*m_spPlayLine).FUN_1422bb890(), CString("m_nextPage"), m_nPage < (int)m_pages.size() - 1);
-        const int nSteps = 6;
-        for (int i = 1; i < nSteps + 1; i++)
+    }
+    FUN_140cfee80((*m_spPlayLine).FUN_1422bb890(), CString("m_pageText"), StringFormat(L"{0}", m_nPage + 1));
+    FUN_140cff950((*m_spPlayLine).FUN_1422bb890(), CString("m_prevPage"), m_nPage > 0);
+    FUN_140cff950((*m_spPlayLine).FUN_1422bb890(), CString("m_nextPage"), m_nPage < (int)(m_pages.size() - 1));
+    const int nSteps = 6;
+    for (int i = 1; i <= nSteps; i++)
+    {
+        CString strName = StringFormat("m_lineStep{0}", i);
+        int nStep = i + m_nPage * nSteps;
+        if (FUN_140ff4550() == true)
         {
-            CString strName = StringFormat("m_lineStep{0}", i);
-            int nStep = i + m_nPage * nSteps;
-            if (FUN_140ff4550() == true)
-            {
-                int nTime = nStep * 2 - 2;
-                int nSeconds = nTime % 60;
-                int nMinutes = nTime / 60;
-                CStringW strText = StringFormat(L"{0:02}:{1:02}", nMinutes, nSeconds);
-                FUN_140cfee80((*m_spPlayLine).FUN_1422bb890(), CString(strName), CStringW(strText));
-            }
-            else
-            {
-                CStringW strText = StringFormat(L"{0}", nStep);
-                FUN_140cfee80((*m_spPlayLine).FUN_1422bb890(), CString(strName), CStringW(strText));
-            }
+            int nTime = nStep * 2 - 2;
+            int nSeconds = nTime % 60;
+            int nMinutes = nTime / 60;
+            CStringW strText = StringFormat(L"{0:02}:{1:02}", nMinutes, nSeconds);
+            FUN_140cfee80((*m_spPlayLine).FUN_1422bb890(), CString(strName), CStringW(strText));
+        }
+        else
+        {
+            CStringW strText = StringFormat(L"{0}", nStep);
+            FUN_140cfee80((*m_spPlayLine).FUN_1422bb890(), CString(strName), CStringW(strText));
         }
     }
 }
 
 // @0x140ff57e0
-// MS2-FUNCTIONAL: behaviour-equivalent; /Od codegen differs (obj 430 bytes, exe 431): temporaries, stack slots and branch layout
 void UIWriteMusicDialog::FUN_140ff57e0()
 {
     FUN_140cff950(FUN_1422dbb40(), CString("m_rollType"), 0);
     FUN_140cff950(FUN_1422dbb40(), CString("m_autoRefreshCheck"), 0);
-    if (!(m_spPlayLine == 0) && FUN_140ff4550() == true)
+    if (m_spPlayLine == 0)
+        return;
+    if (FUN_140ff4550() == true)
     {
         FUN_140cff840((*m_spPlayLine).FUN_1422bb890(), CString("m_prevPage"), 0);
         FUN_140cff840((*m_spPlayLine).FUN_1422bb890(), CString("m_nextPage"), 0);
@@ -1712,19 +1712,17 @@ void UIWriteMusicDialog::FUN_140ff57e0()
 }
 
 // @0x140ff59a0
-// MS2-FUNCTIONAL: behaviour-equivalent; /Od codegen differs (obj 581 bytes, exe 556): temporaries, stack slots and branch layout
 void UIWriteMusicDialog::FUN_140ff59a0()
 {
     FUN_140cff950(FUN_1422dbb40(), CString("m_rollType"), 1);
     FUN_140cff950(FUN_1422dbb40(), CString("m_autoRefreshCheck"), 1);
-    if (!(m_spPlayLine == 0))
-    {
-        MS2Ptr<ASMovieClip> spLine = m_spPlayLine->FUN_1409b4560(CString("m_playingLine"));
-        if (spLine)
-            spLine->FUN_1422c0320(0x23);
-        FUN_140cff840((*m_spPlayLine).FUN_1422bb890(), CString("m_prevPage"), 1);
-        FUN_140cff840((*m_spPlayLine).FUN_1422bb890(), CString("m_nextPage"), 1);
-    }
+    if (m_spPlayLine == 0)
+        return;
+    MS2Ptr<ASMovieClip> spLine = m_spPlayLine->FUN_1409b4560("m_playingLine");
+    if (spLine)
+        spLine->FUN_1422c0320(0x23);
+    FUN_140cff840((*m_spPlayLine).FUN_1422bb890(), CString("m_prevPage"), 1);
+    FUN_140cff840((*m_spPlayLine).FUN_1422bb890(), CString("m_nextPage"), 1);
 }
 
 // @0x140ff5be0

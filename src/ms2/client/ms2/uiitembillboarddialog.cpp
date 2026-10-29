@@ -79,7 +79,7 @@ void FUN_1412751b0(const CStringW& str, int n);                 // shows a banne
 void FUN_140cfee80(const Scaleform::GFx::Value& root, CString strName, CStringW strText);   // set a text clip's text
 CString FUN_14016a600(const wchar_t* psz, int nCodePage);
 CString FUN_141028be0(__int64 nId, const CString& strName, int nFlag, CString strExtra);   // profile image path
-bool FUN_1418fd6c0(__int64 nHomeId);                            // opens a home
+int FUN_1418fd6c0(__int64 nHomeId);                            // opens a home
 void FUN_140710590(COutPacket& pkt);                            // sends the packet
 extern int DAT_143ab2914;
 extern unsigned short DAT_143ab2964;
@@ -130,7 +130,8 @@ WC_WRAP(6)
 
 // The text filter.
 class Unk_TextFilter;
-class Unk_TextFilterPtr { public: Unk_TextFilter* FUN_14025cea0() const; ~Unk_TextFilterPtr(); };
+// An MS2Ptr (16 bytes, m_p at +8): FUN_140229a50 returns it through a hidden pointer, the dtor 0x14025c670 writes 16.
+class Unk_TextFilterPtr { public: Unk_TextFilter* FUN_14025cea0() const; ~Unk_TextFilterPtr(); void* m_00; void* m_p; };
 class Unk_TextFilterMgr { public: Unk_TextFilterPtr FUN_140229a50(); };
 Unk_TextFilterMgr* FUN_14025e7d0();
 int FUN_140226440(Unk_TextFilter* p, const CStringW& str, CStringW& strErr);
@@ -171,35 +172,35 @@ public:
     Unk_RxCellInfo* FUN_1410b8ab0(Vector3 pt);          // cell info at a point
     Unk_RxCellInfo* FUN_1410b8a60(Unk_Int3 cell);               // cell info of a cell
 };
-class Unk_RxGridRef
+// efd::SmartPointer<>: the ctor AddRefs (vfunc 1), the dtor Releases (vfunc 2).
+class Unk_GmGridRef
 {
 public:
-    Unk_RxGridRef(Unk_RxGrid* p) : m_p(p) {}
-    ~Unk_RxGridRef();                                           // 0x1401cd150
+    Unk_GmGridRef(void* p);                                     // 0x1401cd0b0
+    ~Unk_GmGridRef();                                           // 0x1401cd150
     Unk_RxGrid* FUN_1401cd1a0();                                // the grid
-    Unk_RxGrid* m_p;
+    void* m_p;
 };
 Unk_RxGrid* FUN_1401cd040(Unk_EntityAppFramework* p);
-void FUN_1401cd150(Unk_RxGridRef* p);
-// ~Unk_RxGridRef (0x140b7c800) is defined by reactor.cpp (MS2-RANGE owner).
 class Unk_RxMapInfo : public CPtred
 {
 public:
     char m_pad_18[0xc4 - 0x18];
     int m_nKind;                                                // +0xc4
 };
-Unk_Int3 FUN_1408a14c0(Vector3 pt);                     // cell of a point
+Unk_Int3 FUN_1408a14c0(NiPoint3 pt);                    // cell of a point
 int FUN_1408a03c0(Unk_Int3 cell);                               // cell id
 Unk_Int3 FUN_1408a0400(int nCellId);
 Vector3 FUN_1408a15b0(Unk_Int3 cell, Vector3& ptCenter);   // fills the cell center
 struct Unk_IbActorPos { Vector3 FUN_1409673c0(); }; // actor position copy
 class Unk_RxNpcData : public CPtred { public: int FUN_1406ccfc0(); };
 class Unk_RxNpc : public CPtred { public: MS2Ptr<Unk_RxNpcData> FUN_141093270(); };
-static const int DAT_142e03614 = -2060086266;   // rdata constants copied from 0x142e03614 ...
-static const int DAT_142e03694 = -939926171;
-static const int DAT_142e0346c = 19716277;
-static const int DAT_142e035dc = 52914141;
-static const int DAT_142e0372c = -743420155;
+// The five actor ids near which a bill board can't be installed (.rdata, defined in data_rdata_game; passed by address).
+extern const unsigned int DAT_142e03614;
+extern const unsigned int DAT_142e03694;
+extern const unsigned int DAT_142e0346c;
+extern const unsigned int DAT_142e035dc;
+extern const unsigned int DAT_142e0372c;
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -227,7 +228,6 @@ CString UIItemBillBoardDialog::GetTypeName()
 MS2_REPLACE_METHOD(0x140C30BD0, UIItemBillBoardDialog, GetTypeName, 61, 0x126200A1);
 
 // @0x140c30c20
-// MS2-FUNCTIONAL: the text/format argument temporaries of the customer view are ordered by the compiler.
 void UIItemBillBoardDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
@@ -247,39 +247,44 @@ void UIItemBillBoardDialog::OnLoadComplete()
     if (m_bInstall == 1) {
         m_advertiserMovie->vfunc_4(1);
         m_customerMovie->vfunc_4(0);
-        FUN_140cfee80((*m_30).FUN_1422bb890(), "m_title", GetStringCommonByKey(CStringW(L"s_special_item_billboard_title_advertiser")));
-        if (m_advertiserMovie->FUN_140bbe640("m_installButton", m_installButton).get() != 0)
+        FUN_140cfee80((*m_30).FUN_1422bb890(), "m_title", GetStringCommonByKey(L"s_special_item_billboard_title_advertiser"));
+        Unk_BbButton* pInstallButton = m_advertiserMovie->FUN_140bbe640("m_installButton", m_installButton).get();
+        if (pInstallButton != 0)
             m_installButton->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemBillBoardDialog::FUN_140c33840), 0);
     } else {
         m_advertiserMovie->vfunc_4(0);
         m_customerMovie->vfunc_4(1);
-        FUN_140cfee80((*m_30).FUN_1422bb890(), "m_title", GetStringCommonByKey(CStringW(L"s_special_item_billboard_title_customer")));
-        if (m_customerMovie->FUN_140bbe640("m_homeButton", m_homeButton).get() != 0)
+        FUN_140cfee80((*m_30).FUN_1422bb890(), "m_title", GetStringCommonByKey(L"s_special_item_billboard_title_customer"));
+        Unk_BbButton* pHomeButton = m_customerMovie->FUN_140bbe640("m_homeButton", m_homeButton).get();
+        if (pHomeButton != 0)
             m_homeButton->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemBillBoardDialog::FUN_140c33fa0), 0);
-        if (m_customerMovie->FUN_140bbe640("m_removeButton", m_removeButton).get() != 0) {
+        Unk_BbButton* pRemoveButton = m_customerMovie->FUN_140bbe640("m_removeButton", m_removeButton).get();
+        if (pRemoveButton != 0) {
             m_removeButton->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemBillBoardDialog::SendItemBillboard), 0);
-            if (DAT_143ab2914 < 0x32)
-                m_removeButton->vfunc_4(0);
-            else
+            if (DAT_143ab2914 >= 0x32)
                 m_removeButton->vfunc_4(1);
+            else
+                m_removeButton->vfunc_4(0);
         }
-        if (m_info.enabled == 0) {
-            if (m_homeButton.get() != 0)
-                m_homeButton->FUN_1422c1fe0(0);
-            MS2Ptr<ASMovieClip> icon(0);
-            if (m_customerMovie->FUN_140bc71c0("m_homeIcon", icon).get() != 0)
-                icon->vfunc_15(CString("disable"));
-        } else {
+        if (m_info.enabled != 0) {
             if (m_homeButton.get() != 0)
                 m_homeButton->FUN_1422c1fe0(1);
             MS2Ptr<ASMovieClip> icon(0);
-            if (m_customerMovie->FUN_140bc71c0("m_homeIcon", icon).get() != 0)
-                icon->vfunc_15(CString("enable"));
+            ASMovieClip* pIcon = m_customerMovie->FUN_140bc71c0("m_homeIcon", icon).get();
+            if (pIcon != 0)
+                icon->vfunc_15("enable");
+        } else {
+            if (m_homeButton.get() != 0)
+                m_homeButton->FUN_1422c1fe0(0);
+            MS2Ptr<ASMovieClip> icon(0);
+            ASMovieClip* pIcon = m_customerMovie->FUN_140bc71c0("m_homeIcon", icon).get();
+            if (pIcon != 0)
+                icon->vfunc_15("disable");
         }
         __int64 nDiff = m_info.end - m_info.start;
         CMsTime createTime(m_info.start);
         CStringW strCharInfo = FormatStringId(2, m_info.type, FUN_1401a9d70()->FUN_141811980(6, FUN_140644bb0(FUN_1401d7a50(), m_info.value)));
-        __int64 nHours = nDiff / 0xe10;
+        __int64 nHours = nDiff / 60 / 60;
         int nMin = createTime.GetMinute();
         int nHour = createTime.GetHour();
         int nDay = createTime.GetDay();
@@ -380,14 +385,13 @@ void UIItemBillBoardDialog::FUN_140c32360(__int64 nItemUid)
 MS2_REPLACE_METHOD(0x140C32360, UIItemBillBoardDialog, FUN_140c32360, 131, 0x2C15A77E);
 
 // @0x140c323f0
-// MS2-FUNCTIONAL: opaque field-grid, actor and world helpers (stand-in classes); the statement order follows the exe.
+// MS2-FUNCTIONAL: the frame is 0x10 larger and most stack slots shift (local layout not found)
 bool UIItemBillBoardDialog::FUN_140c323f0()
 {
-    WorldService* pWorld = FUN_1403ed2d0();
-    PCBase* pPc = static_cast<PCBase*>(pWorld->FUN_141bd0cc0());
+    PCBase* pPc = static_cast<PCBase*>(FUN_1403ed2d0()->FUN_141bd0cc0());
     if (pPc == 0)
         return false;
-    if (pWorld->FUN_141bd30a0() == (Unk_WsPtred298*)0)
+    if (FUN_1403ed2d0()->FUN_141bd30a0() == (Unk_WsPtred298*)0)
         return false;
     int nError = FUN_1409313b0();
     if (nError != 0) {
@@ -396,55 +400,45 @@ bool UIItemBillBoardDialog::FUN_140c323f0()
         } else if (nError == 2) {
             FUN_1412751f0(FUN_140938ae0(CStringW(L"s_common_block_for_spamer_not_enough_adventure_level"), DAT_143ab2970), 1, 1);
         } else {
-            CStringW strKey(L"s_common_block_for_spamer_level_and_adventure_level");
-            FUN_1412751f0(GetStringCommonByKey(strKey), 1, 1);
+            FUN_1412751f0(GetStringCommonByKey(L"s_common_block_for_spamer_level_and_adventure_level"), 1, 1);
         }
         return false;
     }
-    bool bBlocked = true;
-    if (!FUN_140930b10() && FUN_140930b70()) {
-        MS2Ptr<Unk_WsPtred298> spInfo = FUN_1403ed2d0()->FUN_141bd30a0();
-        if (reinterpret_cast<Unk_RxMapInfo*>(spInfo.get())->m_nKind != 1)
-            bBlocked = false;
-    }
-    if (bBlocked) {
-        CStringW strKey(L"s_msg_item_install_bill_board_cant_install");
-        FUN_1412751f0(GetStringCommonByKey(strKey), 1, 1);
+    if (FUN_140930b10() || !FUN_140930b70()
+        || reinterpret_cast<Unk_RxMapInfo*>(FUN_1403ed2d0()->FUN_141bd30a0().get())->m_nKind == 1) {
+        FUN_1412751f0(GetStringCommonByKey(L"s_msg_item_install_bill_board_cant_install"), 1, 1);
         return false;
     }
     if (FUN_14166c930(pPc) != 1) {
-        CStringW strKey(L"s_msg_item_install_bill_board_invalid_state");
-        FUN_1412751f0(GetStringCommonByKey(strKey), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(L"s_msg_item_install_bill_board_invalid_state"), 1, 1);
         return false;
     }
     if (FUN_1422b9e00(FUN_1408e57f0()) != 0x620001d) {
-        CStringW strKey(L"s_msg_item_install_bill_board_invalid_state");
-        FUN_1412751f0(GetStringCommonByKey(strKey), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(L"s_msg_item_install_bill_board_invalid_state"), 1, 1);
         return false;
     }
     if (FUN_1407d1d00(FUN_1403f31f0(FUN_140302b00())) != 0) {
-        CStringW strKey(L"s_banner_billboard_shutdown");
-        FUN_1412751f0(GetStringCommonByKey(strKey), 1, 1);
+        FUN_1412751f0(GetStringCommonByKey(L"s_banner_billboard_shutdown"), 1, 1);
         return false;
     }
 
+    float fRange = 230.0f;                                      // set but never read in the exe
     ATL::CAtlArray<MS2Ptr<Unk_WsPtred298> > arrNear;
     FUN_1403ed2d0()->FUN_141bc5f10(&arrNear);
     NiPoint3 posPc = ((GameObject*)pPc)->vfunc_18();
-    Vector3 ptPc(posPc.x, posPc.y, posPc.z);
-    Unk_Int3 cellOfPc = FUN_1408a14c0(ptPc);
-    int nCellId = FUN_1408a03c0(cellOfPc);
+    int nCellId = FUN_1408a03c0(FUN_1408a14c0(posPc));
     Unk_Int3 cell = FUN_1408a0400(nCellId);
     Vector3 ptCenter;
     FUN_1408a15b0(cell, ptCenter);
 
     for (size_t i = 0; i < arrNear.GetCount(); ++i) {
         MS2Ptr<Unk_WsPtred298> spObj = arrNear[i];
-        if (!(spObj == (Unk_WsPtred298*)0)) {
-            Vector3 pt = reinterpret_cast<Unk_IbActorPos*>(spObj.get())->FUN_1409673c0();
-            if (pt.FUN_140965c40(ptCenter).FUN_140967ac0() < 230.0f) {
-                CStringW strKey(L"s_msg_item_install_bill_board_cant_install");
-                FUN_1412751f0(GetStringCommonByKey(strKey), 1, 1);
+        if (spObj == (Unk_WsPtred298*)0)
+            continue;
+        {
+            float fDist = reinterpret_cast<Unk_IbActorPos*>(spObj.get())->FUN_1409673c0().FUN_140965c40(ptCenter).FUN_140967ac0();
+            if (fDist < 230.0f) {
+                FUN_1412751f0(GetStringCommonByKey(L"s_msg_item_install_bill_board_cant_install"), 1, 1);
                 return false;
             }
         }
@@ -452,49 +446,44 @@ bool UIItemBillBoardDialog::FUN_140c323f0()
 
     ATL::CAtlArray<MS2Ptr<Unk_WsPtred298> > arrField;
     FUN_1403ed2d0()->FUN_141bc2c90(ptCenter, &arrField);
-    if (!arrField.IsEmpty()) {
-        CStringW strKey(L"s_msg_item_install_bill_board_cant_install");
-        FUN_1412751f0(GetStringCommonByKey(strKey), 1, 1);
+    if (arrField.GetCount() > 0) {
+        FUN_1412751f0(GetStringCommonByKey(L"s_msg_item_install_bill_board_cant_install"), 1, 1);
         return false;
     }
 
     ATL::CRBMap<unsigned, Unk_WsV148>* pActors = FUN_1403ed2d0()->FUN_141bd36d0();
     for (POSITION pos = pActors->GetHeadPosition(); pos != 0; pActors->GetNext(pos)) {
         MS2Ptr<Unk_RxNpc> spActor(*reinterpret_cast<MS2Ptr<Unk_RxNpc>*>(&pActors->GetValueAt(pos)));
-        if (!spActor.IsNull()) {
-            if (FUN_14166c930((PCBase*)spActor.get()) == 2)
-                continue;
-            bool bNotNpcKind = spActor->FUN_141093270()->FUN_1406ccfc0() != 2;
-            if (!bNotNpcKind) {
-                if (FUN_1416769d0((PCBase*)spActor.get()) == 0) {
-                    Vector3 pt;
-                    NiPoint3 posActor = ((GameObject*)spActor.get())->vfunc_18();
-                    Unk_Int3 cellOfActor = FUN_1408a14c0(Vector3(posActor.x, posActor.y, posActor.z));
-                    int nActorCell = FUN_1408a03c0(cellOfActor);
-                    FUN_1408a15b0(FUN_1408a0400(nActorCell), pt);
-                    if (pt.FUN_140965c40(ptCenter).FUN_140967ac0() < 230.0f) {
-                        CStringW strKey(L"s_msg_item_install_bill_board_cant_install");
-                        FUN_1412751f0(GetStringCommonByKey(strKey), 1, 1);
-                        return false;
-                    }
-                }
-            }
+        if (spActor == (Unk_RxNpc*)0)
+            continue;
+        if (FUN_14166c930((PCBase*)spActor.get()) == 2)
+            continue;
+        bool bNotNpcKind = spActor->FUN_141093270()->FUN_1406ccfc0() != 2;
+        if (bNotNpcKind)
+            continue;
+        if (FUN_1416769d0((PCBase*)spActor.get()) != 0)
+            continue;
+        Vector3 pt;
+        int nActorCell = FUN_1408a03c0(FUN_1408a14c0(((GameObject*)spActor.get())->vfunc_18()));
+        FUN_1408a15b0(FUN_1408a0400(nActorCell), pt);
+        float fDist = pt.FUN_140965c40(ptCenter).FUN_140967ac0();
+        if (fDist < 230.0f) {
+            FUN_1412751f0(GetStringCommonByKey(L"s_msg_item_install_bill_board_cant_install"), 1, 1);
+            return false;
         }
     }
 
     {
-        Unk_RxGridRef grid(FUN_1401cd040(&DAT_143b059e8));
+        Unk_GmGridRef grid(FUN_1401cd040(&DAT_143b059e8));
         Vector3 ptLow = ptCenter;
         ptLow.z = ptLow.z - 150.0f;
         Unk_RxCellInfo* pInfo = grid.FUN_1401cd1a0()->FUN_1410b8ab0(ptLow);
         if (pInfo == 0) {
-            CStringW strKey(L"s_msg_item_install_bill_board_cant_install");
-            FUN_1412751f0(GetStringCommonByKey(strKey), 1, 1);
+            FUN_1412751f0(GetStringCommonByKey(L"s_msg_item_install_bill_board_cant_install"), 1, 1);
             return false;
         }
         if (pInfo->m_nState != 1) {
-            CStringW strKey(L"s_msg_item_install_bill_board_cant_install");
-            FUN_1412751f0(GetStringCommonByKey(strKey), 1, 1);
+            FUN_1412751f0(GetStringCommonByKey(L"s_msg_item_install_bill_board_cant_install"), 1, 1);
             return false;
         }
         std::vector<Unk_Int3> cells;
@@ -510,25 +499,28 @@ bool UIItemBillBoardDialog::FUN_140c323f0()
         cells.push_back(Unk_Int3(cell.x + 1, cell.y + 1, cell.z - 1));
         for (size_t i = 0; i < cells.size(); ++i) {
             Unk_RxCellInfo* pCell = grid.FUN_1401cd1a0()->FUN_1410b8a60(cells[i]);
-            if (pCell != 0 && pCell->m_nCount != 0) {
-                CStringW strKey(L"s_msg_item_install_bill_board_cant_install");
-                FUN_1412751f0(GetStringCommonByKey(strKey), 1, 1);
+            if (pCell == 0)
+                continue;
+            if (pCell->m_nCount != 0) {
+                FUN_1412751f0(GetStringCommonByKey(L"s_msg_item_install_bill_board_cant_install"), 1, 1);
                 return false;
             }
         }
     }
 
-    ATL::CAtlArray<int> arrIds;
-    arrIds.Add(DAT_142e03614);
-    arrIds.Add(DAT_142e03694);
-    arrIds.Add(DAT_142e0346c);
-    arrIds.Add(DAT_142e035dc);
-    arrIds.Add(DAT_142e0372c);
-    for (size_t i = 0; i < arrIds.GetCount(); ++i) {
-        if (FUN_1403ed2d0()->FUN_141bcfd30(arrIds[i], ptCenter, 230.0f, 0, 0) != 0) {
-            CStringW strKey(L"s_msg_item_install_bill_board_cant_install");
-            FUN_1412751f0(GetStringCommonByKey(strKey), 1, 1);
-            return false;
+    {
+        std::vector<unsigned int> arrIds;
+        arrIds.push_back(DAT_142e03614);
+        arrIds.push_back(DAT_142e03694);
+        arrIds.push_back(DAT_142e0346c);
+        arrIds.push_back(DAT_142e035dc);
+        arrIds.push_back(DAT_142e0372c);
+        for (size_t i = 0; i < arrIds.size(); ++i) {
+            egf::Entity* pEntity = FUN_1403ed2d0()->FUN_141bcfd30(arrIds[i], Vector3(ptCenter), 230.0f, 0, 0);
+            if (pEntity != 0) {
+                FUN_1412751f0(GetStringCommonByKey(L"s_msg_item_install_bill_board_cant_install"), 1, 1);
+                return false;
+            }
         }
     }
     return true;
@@ -547,7 +539,6 @@ void UIItemBillBoardDialog::FUN_140c337c0()
 MS2_REPLACE_METHOD(0x140C337C0, UIItemBillBoardDialog, FUN_140c337c0, 119, 0xFF1547D0);
 
 // @0x140c33840
-// MS2-FUNCTIONAL: the exe nests the body under the validity checks with its own local layout; same behaviour.
 void UIItemBillBoardDialog::FUN_140c33840(const Scaleform::GFx::FunctionHandler::Params& params)
 {
     if (m_advertiserMovie == 0)
@@ -570,23 +561,23 @@ void UIItemBillBoardDialog::FUN_140c33840(const Scaleform::GFx::FunctionHandler:
         FUN_1412751f0(FUN_1408116a0(0x8b3, n), 1, 1);
         return;
     }
-    if (strTitle.GetLength() < 0x10 && strDesc.GetLength() < 0x65) {
-        Unk_TextFilterPtr filter = FUN_14025e7d0()->FUN_140229a50();
-        Unk_TextFilter* pFilter = filter.FUN_14025cea0();
-        if (pFilter != 0) {
-            CStringW strError;
-            if (FUN_140226440(pFilter, strTitle, strError) != 0 || FUN_140226590(pFilter, strDesc, strError) != 0) {
-                FUN_1412751f0(strError, 1, 1);
-                return;
-            }
+    if (strTitle.GetLength() > 0xf)
+        return;
+    if (strDesc.GetLength() > 0x64)
+        return;
+    if (Unk_TextFilter* pFilter = FUN_14025e7d0()->FUN_140229a50().FUN_14025cea0()) {
+        CStringW strError;
+        if (FUN_140226440(pFilter, strTitle, strError) != 0 || FUN_140226590(pFilter, strDesc, strError) != 0) {
+            FUN_1412751f0(strError, 1, 1);
+            return;
         }
-        CStringW strMsg = GetStringCommonByKey(CStringW(L"s_special_item_billboard_install_info"));
-        MS2Ptr<CMsgBoxData> spBox = FUN_140d73f20(strMsg, 1);
-        spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIItemBillBoardDialog::FUN_140c34050));
-        FUN_1405340b0(spBox.operator->(), m_nItemUid);
-        spBox->FUN_140b76940(CStringW(strInfo));
-        FUN_140d73c60(spBox);
     }
+    CStringW strMsg = GetStringCommonByKey(L"s_special_item_billboard_install_info");
+    MS2Ptr<CMsgBoxData> spBox = FUN_140d73f20(strMsg, 1);
+    spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIItemBillBoardDialog::FUN_140c34050));
+    FUN_1405340b0(spBox.operator->(), m_nItemUid);
+    spBox->FUN_140b76940(CStringW(strInfo));
+    FUN_140d73c60(spBox);
 }
 MS2_REPLACE_METHOD(0x140C33840, UIItemBillBoardDialog, FUN_140c33840, 1871, 0x5603826A);
 

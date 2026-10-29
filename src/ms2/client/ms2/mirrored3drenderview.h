@@ -10,7 +10,7 @@ class CMirrored3DRenderView : public Ni3DRenderView {
 
 public:
     CMirrored3DRenderView(NiCamera* pkCamera, NiCullingProcess* pkCullingProcess, bool bAlwaysUseCameraViewport);
-    virtual ~CMirrored3DRenderView();
+    // ~CMirrored3DRenderView is implicit (0x1414872a0): the exe dtor stores no vftable.
     virtual void SetCameraData(const NiRect<float>& kViewport);
 
     void SetMirrorPoints(const NiPoint3& kPoint, const NiPoint3& kNormal);

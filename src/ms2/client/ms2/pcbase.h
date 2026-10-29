@@ -205,7 +205,7 @@ public:
     virtual void vfunc_75(__int64 nCur, __int64 nMax);      // 75 (shield bar current/max)  0x14166fc70
     virtual void vfunc_76(CStringW str);                    // 76  0x14166fcf0 (by value: the callee destroys it)
     virtual CStringW vfunc_77();                            // 77  0x14166fd50
-    virtual int vfunc_78();                                 // 78  0x14166fda0
+    virtual unsigned short vfunc_78();                      // 78  0x14166fda0
     virtual void vfunc_79();                                // 79  0x14166fdb0
     virtual MS2Ptr<Unk_PCBaseComp_a58> vfunc_80();          // 80  0x14166fde0 (base: null; Ridee/PC override)
     virtual MS2Ptr<Unk_PCBaseComp_a68> vfunc_81();          // 81  0x14166fe20
@@ -388,12 +388,12 @@ public:
     Unk_PCBaseBody* FUN_14166d220();                        // 0x14166d220 the physics body
     void* FUN_14166d240();                                  // 0x14166d240 &m_unk_6d8
     void FUN_14166d260();                                   // 0x14166d260 move the body to the actor
-    void FUN_14166d2d0(const efd::Point3& kTarget, int bTurn);   // 0x14166d2d0 face a point
+    void FUN_14166d2d0(efd::Point3 kTarget, int bTurn);          // 0x14166d2d0 face a point (by value: the callers copy)
     void FUN_14166d430(efd::Point3 kDir, int bTurn, int bResetTilt);   // 0x14166d430 face a direction
     void FUN_14166d630(float fTime);                        // 0x14166d630 turn toward m_f934
     void FUN_14166d8b0(float fAngle);                       // 0x14166d8b0 target yaw
     void FUN_14166d8e0(efd::Point3 kTilt);                  // 0x14166d8e0
-    void FUN_14166d970(efd::Point3 kRot);                   // 0x14166d970
+    void FUN_14166d970(const efd::Point3& kRot);            // 0x14166d970
     void FUN_14166d9d0(const NiPoint3& kPos);               // 0x14166d9d0
     void FUN_14166da10(float fSpeed);                       // 0x14166da10 turn speed
     float FUN_14166da60();                                  // 0x14166da60

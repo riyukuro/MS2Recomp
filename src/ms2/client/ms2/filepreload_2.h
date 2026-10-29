@@ -2,6 +2,7 @@
 #include <afx.h>
 #include <atlcoll.h>
 #include <list>
+#include <set>
 #include "ms2/commonfiles/os.h"
 #include "ms2/placeholder/cthread.h"
 #include "ms2/placeholder/tfunctor_search.h"
@@ -24,14 +25,14 @@ public:
     virtual unsigned vfunc_1(void*,Unk_140659080&);
     void FUN_141218730(ProgressCallback);
     void FUN_1412187a0(CompletionCallback);
-    bool FUN_141218810(const EntryList&,const std::list<CString>&,int,bool);
+    bool FUN_141218810(const EntryList&,const std::set<CString>&,int,bool);
     void FUN_141218900();
     void FUN_141218920();
     void FUN_141218990(CString directory);
     void FUN_141219020(CString directory);
     void FUN_1412195a0(ATL::CAtlArray<CString>&);
     EntryList queries;
-    std::list<CString> directories;
+    std::set<CString> directories;
     bool cancelled,running,removeFound;
     int mode;
     ProgressCallback progress;

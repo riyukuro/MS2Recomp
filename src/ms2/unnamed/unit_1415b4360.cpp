@@ -7,6 +7,7 @@
 #include "ms2/placeholder/nmstream.h"
 #include "ms2/placeholder/nmobjects.h"
 #include "ms2/placeholder/nmfunc.h"
+#include "ms2/placeholder/nmencoder.h"
 #include "ms2/ms2recover.h"
 
 extern void FUN_14156bcb0(void*, void*, void*);
@@ -18,46 +19,60 @@ extern void FUN_14156ac20(void*, unsigned int);
 extern void FUN_14156ae30(void*, const void*);
 extern unsigned int FUN_1415f9990(void*);
 extern void FUN_1415fbe70(void*, unsigned int, const char*);
-extern int FUN_1415fb6d0(void*);
+extern int FUN_1415fb6d0(CNMSerializableDecoder*);
 extern int FUN_1415fb750(void*);
 
 // MS2-FUNCTIONAL 0x1415b4360: initializes the default invite-virtual-user event values.
 // @0x1415b4360
 CNMInviteVirtualUserEvent::CNMInviteVirtualUserEvent()
-    : CNMEvent(0x100b, 1, 0, 0), m_28(0), m_30(0), m_34(2), m_38(0), m_3c(0), m_40(0),
-      m_44(0), m_48{}, m_88{}, m_c8{}, m_1c8(0) {}
+    : CNMEvent(0x100b, 1, 0, 0)
+{
+    m_28 = 0;
+    m_30 = 0;
+    m_34 = 2;
+    m_38 = 0;
+    m_3c = 0;
+    m_40 = 0;
+    m_44 = 0;
+    m_48[0] = 0;
+    m_88[0] = 0;
+    m_c8[0] = 0;
+    m_1c8 = 0;
+}
 
 // MS2-FUNCTIONAL 0x1415b4450: initializes invite metadata and copies optional user strings.
 // @0x1415b4450
 CNMInviteVirtualUserEvent::CNMInviteVirtualUserEvent(long long n28, int n30, int n34, long long n38,
                                                        long long n40, const char* text48,
                                                        const char* text88)
-    : CNMEvent(0x100b, 1, 0, 0), m_28(n28), m_30(n30), m_34(n34), m_38(static_cast<int>(n38)),
-      m_3c(static_cast<int>(static_cast<unsigned long long>(n38) >> 32)), m_40(static_cast<int>(n40)),
-      m_44(static_cast<int>(static_cast<unsigned long long>(n40) >> 32)), m_48{}, m_88{}, m_c8{}, m_1c8(0)
+    : CNMEvent(0x100b, 1, 0, 0)
 {
-    if (text48)
-        FUN_1415fbe70(m_48, sizeof(m_48), text48);
-    if (text88)
-        FUN_1415fbe70(m_88, sizeof(m_88), text88);
+    m_28 = n28;
+    m_30 = n30;
+    m_34 = n34;
+    *reinterpret_cast<long long*>(&m_38) = n38;  // m_38/m_3c as one 64-bit value
+    *reinterpret_cast<long long*>(&m_40) = n40;  // m_40/m_44
+    if (text48) FUN_1415fbe70(m_48, sizeof(m_48), text48); else m_48[0] = 0;
+    if (text88) FUN_1415fbe70(m_88, sizeof(m_88), text88); else m_88[0] = 0;
+    m_c8[0] = 0;
+    m_1c8 = 0;
 }
 
 // MS2-FUNCTIONAL 0x1415b45a0: frames event encoding.
 // @0x1415b45a0
-unsigned int CNMInviteVirtualUserEvent::EncodeFramed(CNMStream* stream)
+unsigned int CNMInviteVirtualUserEvent::EncodeFramed(CNMStream* pStream)
 {
-    unsigned char storage[0x18];
-    FUN_14156bcb0(storage, stream, this);
-    auto result = Encode(reinterpret_cast<CNMEncoder*>(storage), stream);
-    FUN_14156bd50(storage);
-    return result;
+    CNMSerializableEncoder encoder(pStream, this);
+    return CNMInviteVirtualUserEvent::Encode(reinterpret_cast<CNMEncoder*>(&encoder), pStream);
 }
 
 // MS2-FUNCTIONAL 0x1415b4600: dispatches encoding by event format.
 // @0x1415b4600
-unsigned int CNMInviteVirtualUserEvent::EncodeDispatch(CNMEncoder* encoder, CNMStream* stream)
+unsigned int CNMInviteVirtualUserEvent::EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream)
 {
-    return m_bFormat == 1 ? Encode(encoder, stream) : EncodeFramed(stream);
+    if (m_bFormat == 1)
+        return CNMInviteVirtualUserEvent::Encode(pEncoder, pStream);
+    return CNMInviteVirtualUserEvent::EncodeFramed(pStream);
 }
 
 // MS2-FUNCTIONAL 0x1415b4660: serializes invite identifiers, flags, and user strings.
@@ -81,22 +96,21 @@ unsigned int CNMInviteVirtualUserEvent::Encode(CNMEncoder* encoder, CNMStream* s
 
 // MS2-FUNCTIONAL 0x1415b4770: decodes a framed event.
 // @0x1415b4770
-unsigned int CNMInviteVirtualUserEvent::DecodeFramed(CNMStream* stream)
+unsigned int CNMInviteVirtualUserEvent::DecodeFramed(CNMStream* pStream)
 {
-    unsigned char storage[0x38];
-    FUN_14156be10(storage, stream, this);
-    unsigned int result = 0;
-    if (FUN_1415fb750(storage))
-        result = Decode(reinterpret_cast<CNMSerializableDecoder*>(storage), stream);
-    FUN_14156bf10(storage);
-    return result;
+    CNMSerializableDecoder decoder(pStream, this);
+    if (FUN_1415fb750(&decoder) == 0)
+        return 0;
+    return CNMInviteVirtualUserEvent::Decode(&decoder, pStream);
 }
 
 // MS2-FUNCTIONAL 0x1415b4800: dispatches decoding by event format.
 // @0x1415b4800
-unsigned int CNMInviteVirtualUserEvent::DecodeDispatch(CNMSerializableDecoder* decoder, CNMStream* stream)
+unsigned int CNMInviteVirtualUserEvent::DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream)
 {
-    return FUN_1415fb6d0(decoder) == 2 ? DecodeFramed(stream) : Decode(decoder, stream);
+    if (FUN_1415fb6d0(pDecoder) == 2)
+        return CNMInviteVirtualUserEvent::DecodeFramed(pStream);
+    return CNMInviteVirtualUserEvent::Decode(pDecoder, pStream);
 }
 
 // MS2-FUNCTIONAL 0x1415b4860: restores invite identifiers, flags, and user strings.
@@ -104,20 +118,16 @@ unsigned int CNMInviteVirtualUserEvent::DecodeDispatch(CNMSerializableDecoder* d
 unsigned int CNMInviteVirtualUserEvent::Decode(CNMSerializableDecoder* decoder, CNMStream* stream)
 {
     CNMEvent::DecodeDispatch(decoder, stream);
-    void** vtable = *reinterpret_cast<void***>(decoder);
-    using Read64 = unsigned long long(__fastcall*)(void*);
-    using Read32 = unsigned int(__fastcall*)(void*);
-    using ReadString = void(__fastcall*)(void*, void*, unsigned int);
-    m_28 = static_cast<long long>(reinterpret_cast<Read64>(vtable[4])(decoder));
-    m_30 = static_cast<int>(reinterpret_cast<Read32>(vtable[3])(decoder));
-    m_34 = static_cast<int>(reinterpret_cast<Read32>(vtable[3])(decoder));
-    m_38 = static_cast<int>(reinterpret_cast<Read32>(vtable[3])(decoder));
-    m_3c = static_cast<int>(reinterpret_cast<Read32>(vtable[3])(decoder));
-    m_40 = static_cast<int>(reinterpret_cast<Read32>(vtable[3])(decoder));
-    m_44 = static_cast<int>(reinterpret_cast<Read32>(vtable[3])(decoder));
-    reinterpret_cast<ReadString>(vtable[9])(decoder, m_48, sizeof(m_48));
-    reinterpret_cast<ReadString>(vtable[9])(decoder, m_88, sizeof(m_88));
-    reinterpret_cast<ReadString>(vtable[9])(decoder, m_c8, 0x100);
+    m_28 = decoder->ReadU64();
+    m_30 = decoder->ReadU32();
+    m_34 = decoder->ReadU32();
+    m_38 = decoder->ReadU32();
+    m_3c = decoder->ReadU32();
+    m_40 = decoder->ReadU32();
+    m_44 = decoder->ReadU32();
+    decoder->ReadStringBufAlias(m_48, sizeof(m_48));
+    decoder->ReadStringBufAlias(m_88, sizeof(m_88));
+    decoder->ReadStringBufAlias(m_c8, 0x100);
     return FUN_1415fb750(decoder);
 }
 

@@ -240,13 +240,13 @@ void CGameOptionInputDefault::vfunc_7()
 MS2_REPLACE_METHOD(0x141251510, CGameOptionInputDefault, vfunc_7, 32, 0x73BAC012);
 
 // Polls the key capture while a slot is being edited (reads the unit static s_nHeldKey: not hooked).
-// MS2-FUNCTIONAL: branch layout of the held-key capture differs from the exe (14 bytes short); calls and semantics are equivalent
 // @0x141251540
 int CGameOptionInputDefault::vfunc_8()
 {
     if (m_spEdit == 0)
         return 0;
-    if (FUN_140a02e60(0x4ef3) == 0)
+    UIGameOptionDialog* pDialog = FUN_140a02e60(0x4ef3);
+    if (pDialog == 0)
         return 0;
     if (m_bConfirm != 0)
         return 0;

@@ -5,11 +5,13 @@
 #define MS2_THIS_FILE ""
 #include "ms2/placeholder/ms2stdafx.h"
 #include "ms2/placeholder/nmobjects.h"
+#include "ms2/placeholder/nmstream.h"
+#include "ms2/placeholder/nmencoder.h"
 #include "ms2/ms2recover.h"
 
 extern int FUN_1415fb700(const void*);
 extern int FUN_1415fb750(void*);
-extern int FUN_1415fb6d0(void*);
+extern int FUN_1415fb6d0(CNMSerializableDecoder*);
 extern void FUN_14156ac20(void*, unsigned int);
 extern void FUN_1415f9990(void*);
 extern void* FUN_14156bcb0(void*, void*, void*);
@@ -33,11 +35,8 @@ CNMFindUserFunc::CNMFindUserFunc(const CNMFindUserRequestInfo& info) : CNMFunc(0
 // @0x1415961e0
 unsigned int CNMFindUserFunc::EncodeFramed(CNMStream* pStream)
 {
-    alignas(8) unsigned char encoder[0x18];
-    FUN_14156bcb0(encoder, pStream, this);
-    const auto result = Encode(reinterpret_cast<CNMEncoder*>(encoder), pStream);
-    FUN_14156bd50(encoder);
-    return result;
+    CNMSerializableEncoder encoder(pStream, this);
+    return CNMFindUserFunc::Encode(reinterpret_cast<CNMEncoder*>(&encoder), pStream);
 }
 
 // MS2-FUNCTIONAL: format branch and selected encoder slot match; direct calls replace indirect dispatch.
@@ -45,10 +44,8 @@ unsigned int CNMFindUserFunc::EncodeFramed(CNMStream* pStream)
 unsigned int CNMFindUserFunc::EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream)
 {
     if (m_bFormat == 1)
-        Encode(pEncoder, pStream);
-    else
-        EncodeFramed(pStream);
-    return 0;
+        return CNMFindUserFunc::Encode(pEncoder, pStream);
+    return CNMFindUserFunc::EncodeFramed(pStream);
 }
 
 // MS2-FUNCTIONAL: base fields, direction branch, payload serialization and finish marker are recovered.
@@ -68,13 +65,10 @@ unsigned int CNMFindUserFunc::Encode(CNMEncoder* pEncoder, CNMStream* pStream)
 // @0x141596330
 unsigned int CNMFindUserFunc::DecodeFramed(CNMStream* pStream)
 {
-    alignas(8) unsigned char decoder[0x38];
-    FUN_14156bcb0(decoder, pStream, this);
-    unsigned int result = 0;
-    if (FUN_1415fb750(decoder))
-        result = Decode(reinterpret_cast<CNMSerializableDecoder*>(decoder), pStream);
-    FUN_14156bd50(decoder);
-    return result;
+    CNMSerializableDecoder decoder(pStream, this);
+    if (FUN_1415fb750(&decoder) == 0)
+        return 0;
+    return CNMFindUserFunc::Decode(&decoder, pStream);
 }
 
 // MS2-FUNCTIONAL: same format selection and decode slot; direct calls replace indirect dispatch.
@@ -82,10 +76,8 @@ unsigned int CNMFindUserFunc::DecodeFramed(CNMStream* pStream)
 unsigned int CNMFindUserFunc::DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream)
 {
     if (FUN_1415fb6d0(pDecoder) == 2)
-        DecodeFramed(pStream);
-    else
-        Decode(pDecoder, pStream);
-    return 0;
+        return CNMFindUserFunc::DecodeFramed(pStream);
+    return CNMFindUserFunc::Decode(pDecoder, pStream);
 }
 
 // MS2-FUNCTIONAL: reply scalar read, request payload decode and decoder status are recovered.

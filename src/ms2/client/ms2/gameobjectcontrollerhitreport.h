@@ -7,7 +7,7 @@
 #include <NxPhysics.h>
 // The NxCharacter include directory is not on the game include path (cmake/ms2-engine-flags.cmake): reach the real
 // 2.8.4 header relatively. Ask the coordinator to add SDKs/NxCharacter/include to the engine include list.
-#include "../../../../third_party/physx284/PFiles/NVIDIA Corporation/NVIDIA PhysX SDK/v2.8.4_win/SDKs/NxCharacter/include/NxController.h"
+#include "NxCharacter/include/NxController.h"
 
 #include "ms2/ms2layout.h"
 #include "cubespawnobject.h"        // Unk_EntRef (8-byte entity handle)

@@ -119,16 +119,14 @@ MS2_CHECK_OFFSET(Unk_RideeData, m_parts, 0x280);
 
 // The actor state controller of a Ridee (+0xd60): queues the state records sent to the server. 0x50 bytes,
 // vftable 0x142f5b728 (one slot). The record list and the current record belong to StateLocalController (its ctor
-// 0x1417b73c0 builds them, its inline dtor's exe copy 0x1410a6dc0 is in cubecraft.cpp), as do the methods below
-// (state.cpp); cubecraft_1.h declares StateLocalController without them.
+// 0x1417b73c0 builds them, its implicit dtor's exe copy 0x1410a6dc0 is in cubecraft.cpp), as do the methods below
+// (state.cpp).
 class StateRideeController : public StateLocalController
 {
 public:
     StateRideeController();                                 // 0x141708950
-    ~StateRideeController() { FUN_1410a6dc0(); }           // 0x1417089c0 (functional: the exe copy does not reset the vfptr)
+    // ~StateRideeController() is implicit: 0x1417089c0 only calls the base dtor 0x1410a6dc0
     virtual void vfunc_0() override;                        // 0 0x1417b7b70 (state.cpp): send the current record
-
-    void FUN_1410a6dc0();                                   // StateLocalController's member destruction
 
     void FUN_1417b7430(PCBase* pOwner);                     // init with the owner
     void FUN_1417b7450();                                   // drop the records
@@ -136,8 +134,6 @@ public:
     MS2Ptr<Unk_StateArg22> FUN_1417b7620();                 // copy of the current record
     void FUN_1417b7670(Unk_StateArg22* pRec);               // set the current record
     void FUN_1417b76b0(float fTime);                        // advance with the game time
-
-    char m_pad_08[0x48];                                    // StateLocalController: records +0x08, current +0x38
 };
 MS2_CHECK_SIZE(StateRideeController, 0x50);
 

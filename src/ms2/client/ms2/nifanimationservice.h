@@ -55,40 +55,39 @@ public:
     }
 
     // Widens [m_fStartTime, m_fEndTime] by the key times of the time controllers of pkObject and, recursively, of
-    // its affected nodes (dynamic effects), children and effects (0x141546810).
+    // its properties, children and effects (0x141546810).
     // @0x141546810
-    // MS2-FUNCTIONAL: frame size and effect-list call order differ from exe
     void CollectKeyTimes(NiObjectNET* pkObject)
     {
         if (pkObject == 0)
             return;
-        for (NiTimeController* pkCtrl = pkObject->GetControllers(); pkCtrl != 0; pkCtrl = pkCtrl->GetNext())
+        NiTimeController* pkCtrl = pkObject->GetControllers();
+        while (pkCtrl != 0)
         {
             if (pkCtrl->GetBeginKeyTime() < m_fStartTime)
                 m_fStartTime = pkCtrl->GetBeginKeyTime();
             if (m_fEndTime < pkCtrl->GetEndKeyTime())
                 m_fEndTime = pkCtrl->GetEndKeyTime();
+            pkCtrl = pkCtrl->GetNext();
         }
-        if (NiIsKindOf(NiDynamicEffect, pkObject))
+        if (NiIsKindOf(NiAVObject, pkObject))
         {
-            // the exe's Gamebryo keeps the affected nodes in a NiTPointerList<NiNodePtr> (GetHeadPos 0x14098ddb0, IsEmpty
-            // 0x141546cb0, GetNext 0x14098de00, NiPointer -> T* 0x140993f00); this SDK's header declares a pointer map
-            const NiTPointerList<NiNodePtr>* pkList =
-                reinterpret_cast<const NiTPointerList<NiNodePtr>*>(&((NiDynamicEffect*)pkObject)->GetAffectedNodeList());
+            NiAVObject* pkAVObject = (NiAVObject*)pkObject;
+            NiPropertyList* pkList = &pkAVObject->GetPropertyList();
             NiTListIterator kPos = pkList->GetHeadPos();
             while (pkList != 0 && !pkList->IsEmpty() && kPos != 0)
             {
-                NiNode* pkNode = pkList->GetNext(kPos);
+                NiProperty* pkProperty = pkList->GetNext(kPos);
                 if (pkList != 0)
-                    CollectKeyTimes(pkNode);
+                    CollectKeyTimes(pkProperty);
             }
         }
         if (NiIsKindOf(NiNode, pkObject))
         {
             NiNode* pkNode = (NiNode*)pkObject;
-            for (unsigned int i = 0; i < pkNode->GetArrayCount(); i++)
+            for (size_t i = 0; i < pkNode->GetArrayCount(); i++)
             {
-                NiAVObject* pkChild = pkNode->GetAt(i);
+                NiAVObject* pkChild = pkNode->GetAt((unsigned int)i);
                 CollectKeyTimes(pkChild);
             }
             const NiDynamicEffectList* pkEffects = &pkNode->GetEffectList();
@@ -128,7 +127,7 @@ public:
     virtual efd::AsyncResult OnShutdown();          // 0x141545ca0
 
     // Start (nMode 1: restart the controllers of pkNif in place) or register the NIF under nKey (0x1415455a0).
-    bool FUN_1415455a0(unsigned __int64 nKey, NiNode* pkNif, int nMode);
+    int FUN_1415455a0(unsigned __int64 nKey, NiNode* pkNif, int nMode);
 
     NiPointer<Ni3DRenderView> m_spView;             // +0x28
     ATL::CRBMap<unsigned __int64, NifAnimationInfo*> m_mapInfo;     // +0x30

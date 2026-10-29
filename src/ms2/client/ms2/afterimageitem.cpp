@@ -108,8 +108,8 @@ class Unk_GameClock { public: double FUN_141473280(); float FUN_141473210(); };
 Unk_GameClock* FUN_14086d260();
 int FUN_140a53390(Unk_EffectTarget* pTarget);                       // the target's owner id
 bool FUN_14119f3c0(CEffect* pEffect);                               // the effect has been started
-float FUN_140966f00(NiPoint3 kA, NiPoint3 kB);                      // distance
-class Unk_Camera { public: void FUN_140af05d0(const NiPoint3& kWorld, efd::Point2* pkScreen); };   // world -> screen
+float FUN_140966f00(efd::Point3 kA, efd::Point3 kB);                    // distance
+class Unk_Camera { public: void FUN_140af05d0(const efd::Point3& kWorld, efd::Point2* pkScreen); };   // world -> screen
 Unk_Camera* FUN_1409478c0();
 
 // The effect manager (singleton 0x1403ed280): the scene root.
@@ -228,7 +228,6 @@ void Unk_AfterImageRef::FUN_140981730(void*)
 
 // ---- AfterImageItem ----
 // @0x14097c1f0
-// MS2-FUNCTIONAL: temp/frame layout and smart-pointer temp hops differ from the exe; behaviour equivalent
 AfterImageItem::AfterImageItem()
     : m_spTexture((NiDynamicTexture*)0), m_spNode((NiBillboardNode*)0), m_spMesh((NiMeshScreenElements*)0),
       m_kOffset(efd::Point3::ZERO), m_fSize(0.0f)
@@ -302,17 +301,13 @@ NiDynamicTexturePtr AfterImageItem::GetTexture() const
 }
 
 // @0x14097c930
-// MS2-FUNCTIONAL: temp/frame layout and smart-pointer temp hops differ from the exe; behaviour equivalent
 NiMeshScreenElementsPtr AfterImageItem::CreateQuad(NiTexturePtr spTexture, float fSize, NiTexturePtr spMask,
                                                    const NiColorA& kColor, bool bLighten)
 {
     NiMeshScreenElementsPtr spMesh(new (efd::MemHint(efd::MemHint::NONE))
                                        NiMeshScreenElements(false, true, 1, 1, 1, 4, 1, 2, 1, 0x15, false));
     spMesh->Insert(4, 0, 0);
-    float fHeight = -fSize;
-    float fTop = fSize / 2.0f;
-    float fLeft = -fSize / 2.0f;
-    spMesh->SetRectangle(0, fLeft, fTop, fSize, fHeight);
+    spMesh->SetRectangle(0, -fSize / 2.0f, fSize / 2.0f, fSize, -fSize);
     spMesh->UpdateBound();
     spMesh->SetTextures(0, 0, 0.0f, 0.0f, 1.0f, 1.0f);
     spMesh->SetColors(0, kColor);
@@ -335,15 +330,15 @@ NiMeshScreenElementsPtr AfterImageItem::CreateQuad(NiTexturePtr spTexture, float
 
     NiAlphaProperty* pAlpha = new (efd::MemHint(efd::MemHint::NONE)) NiAlphaProperty;
     pAlpha->SetAlphaBlending(true);
-    if (!bLighten)
+    if (bLighten)
     {
         pAlpha->SetSrcBlendMode((NiAlphaProperty::AlphaFunction)6);
-        pAlpha->SetDestBlendMode((NiAlphaProperty::AlphaFunction)7);
+        pAlpha->SetDestBlendMode((NiAlphaProperty::AlphaFunction)0);
     }
     else
     {
         pAlpha->SetSrcBlendMode((NiAlphaProperty::AlphaFunction)6);
-        pAlpha->SetDestBlendMode((NiAlphaProperty::AlphaFunction)0);
+        pAlpha->SetDestBlendMode((NiAlphaProperty::AlphaFunction)7);
     }
 
     NiVertexColorProperty* pVertexColor = new (efd::MemHint(efd::MemHint::NONE)) NiVertexColorProperty;
@@ -412,14 +407,13 @@ bool CAfterImageEffect::IsTimeUp() const
 }
 
 // @0x14097d960
-// MS2-FUNCTIONAL: temp/frame layout and smart-pointer temp hops differ from the exe; behaviour equivalent
 bool CAfterImageEffect::ShouldCapture()
 {
     if (m_kParam == 0)
         return false;
     if (IsTimeUp())
         return false;
-    if (m_nLastCapture + m_kParam->GetTimeInterval() < FUN_140869420())
+    if (FUN_140869420() > m_nLastCapture + m_kParam->GetTimeInterval())
         return true;
     if (FUN_1403ed2d0() == 0)
         return false;
@@ -427,13 +421,11 @@ bool CAfterImageEffect::ShouldCapture()
     if (pActor == 0)
         return false;
     NiPoint3 kActor(pActor->vfunc_18());
-    NiPoint3 kLast = m_kPos;
-    NiPoint3 kRaised = kActor + efd::Point3(0.0f, 0.0f, 75.0f);
-    return m_kParam->GetMoveInterval() < FUN_140966f00(kRaised, kLast);
+    efd::Point3 kLast = m_kPos;
+    return FUN_140966f00(kActor + NiPoint3(0.0f, 0.0f, 75.0f), kLast) > m_kParam->GetMoveInterval();
 }
 
 // @0x14097db30
-// MS2-FUNCTIONAL: temp/frame layout and smart-pointer temp hops differ from the exe; behaviour equivalent
 void CAfterImageEffect::StartCapture()
 {
     if (FUN_1403ed2d0() == 0)
@@ -443,10 +435,10 @@ void CAfterImageEffect::StartCapture()
         return;
     m_nLastCapture = FUN_140869420();
     m_bPending = true;
-    m_kPos = NiPoint3(pActor->vfunc_18() + efd::Point3(0.0f, 0.0f, 75.0f));
+    m_kPos = pActor->vfunc_18() + NiPoint3(0.0f, 0.0f, 75.0f);
     m_fRadius = 200.0f;
     NiBound kBound;
-    kBound.SetCenterAndRadius(m_kPos, m_fRadius);
+    kBound.SetCenterAndRadius(m_kPos, 200.0f);
     static const efd::Point3 s_akCorner[8] = {
         efd::Point3(-1.0f, -1.0f, -1.0f), efd::Point3(1.0f, -1.0f, -1.0f), efd::Point3(-1.0f, 1.0f, -1.0f),
         efd::Point3(1.0f, 1.0f, -1.0f),   efd::Point3(-1.0f, -1.0f, 1.0f), efd::Point3(1.0f, -1.0f, 1.0f),
@@ -454,36 +446,36 @@ void CAfterImageEffect::StartCapture()
     Unk_Rect4 kRect(FLT_MAX, FLT_MIN, FLT_MAX, FLT_MIN);
     for (int i = 0; i < 8; ++i)
     {
-        NiPoint3 kCorner = kBound.GetCenter() + (s_akCorner[i] * kBound.GetRadius()) * 0.5f;
+        efd::Point3 kCorner = kBound.GetCenter() + (s_akCorner[i] * kBound.GetRadius()) * 0.5f;
         efd::Point2 kScreen;
         FUN_1409478c0()->FUN_140af05d0(kCorner, &kScreen);
         if (kRect.b < kScreen.y)
             kRect.b = kScreen.y;
-        if (kScreen.y < kRect.t)
+        if (kRect.t > kScreen.y)
             kRect.t = kScreen.y;
         if (kRect.r < kScreen.x)
             kRect.r = kScreen.x;
-        if (kScreen.x < kRect.l)
+        if (kRect.l > kScreen.x)
             kRect.l = kScreen.x;
     }
     m_rcScreen = kRect;
 }
 
 // @0x14097d4f0
-// MS2-FUNCTIONAL: temp/frame layout and smart-pointer temp hops differ from the exe; behaviour equivalent
+// MS2-FUNCTIONAL: the exe has a /GS cookie (RECT local) and a different temp layout for the surface chain and the Init arguments; behaviour equivalent
 void CAfterImageEffect::Capture(RenderedTextureClickPtr spClick)
 {
     m_bPending = false;
-    CAfterImageEffectManager* pMgr = TSingleton<CAfterImageEffectManager>::GetInstance();
-    if (pMgr == 0)
+    if (TSingleton<CAfterImageEffectManager>::GetInstance() == 0)
         return;
-    NiDynamicTexturePtr spTexture = pMgr->GetTexture();
+    NiDynamicTexturePtr spTexture = TSingleton<CAfterImageEffectManager>::GetInstance()->GetTexture();
     if (spTexture == 0)
         return;
     Ni2DBuffer* pBuffer = spClick->GetRenderTargetGroup()->GetBuffer(0);
     IDirect3DSurface9* pSrc = ((NiDX92DBufferData*)pBuffer->GetRendererData())->GetSurface();
     IDirect3DSurface9* pDst = 0;
-    IDirect3DTexture9* pD3DTexture = (IDirect3DTexture9*)((NiDX9TextureData*)spTexture->GetRendererData())->GetD3DTexture();
+    IDirect3DTexture9* pD3DTexture = 0;
+    pD3DTexture = (IDirect3DTexture9*)((NiDX9TextureData*)spTexture->GetRendererData())->GetD3DTexture();
     pD3DTexture->GetSurfaceLevel(0, &pDst);
     if (pSrc != 0 && pDst != 0)
     {
@@ -528,7 +520,6 @@ void CAfterImageEffect::vfunc_7()
 }
 
 // @0x14097d1e0
-// MS2-FUNCTIONAL: temp/frame layout and smart-pointer temp hops differ from the exe; behaviour equivalent
 bool CAfterImageEffect::vfunc_9()
 {
     bool bRunning = CEffect::vfunc_9();
@@ -548,9 +539,7 @@ bool CAfterImageEffect::vfunc_9()
     }
     if (TSingleton<CAfterImageEffectManager>::GetInstance() != 0 && bRunning)
         TSingleton<CAfterImageEffectManager>::GetInstance()->Process(CEffectPtr(this));
-    if (!bRunning && m_vecItems.empty())
-        return false;
-    return true;
+    return bRunning || !m_vecItems.empty();
 }
 
 // ---- CAfterImageEffectManager ----
@@ -575,13 +564,9 @@ CAfterImageEffectManager* TSingleton<CAfterImageEffectManager>::GetInstance()
 }
 
 // @0x140980250
-// MS2-FUNCTIONAL: temp/frame layout and smart-pointer temp hops differ from the exe; behaviour equivalent
 CAfterImageEffectManager* TSingleton<CAfterImageEffectManager>::CreateInstance()
 {
-    if (s_instance != 0)
-        return GetInstance();
-    CAfterImageEffectManager* pManager = new CAfterImageEffectManager;
-    return pManager;
+    return s_instance != 0 ? GetInstance() : new CAfterImageEffectManager;
 }
 
 // @0x1409802d0
@@ -629,11 +614,10 @@ static bool FUN_140981c80(NiRenderClick*, void*)
 }
 
 // @0x140981e30
-// MS2-FUNCTIONAL: temp/frame layout and smart-pointer temp hops differ from the exe; behaviour equivalent
 void CAfterImageEffectManager::CreateClick()
 {
     m_spClick = new (efd::MemHint(efd::MemHint::NONE)) RenderedTextureRenderClick;
-    m_spClick->SetName(NiFixedString("AfterImageClick"));
+    m_spClick->SetName("AfterImageClick");
     m_spClick->vfunc_8(DAT_143af62d4, DAT_143af62d8);
     m_spClick->vfunc_9();
     m_spClick->SetPreProcessingCallbackFunc(FUN_140981c40, this);
@@ -679,28 +663,31 @@ void CAfterImageEffectManager::RenderNext()
 }
 
 // @0x1409821b0
-// MS2-FUNCTIONAL: temp/frame layout and smart-pointer temp hops differ from the exe; behaviour equivalent
 bool CAfterImageEffectManager::SelectNext()
 {
     CEffectPtr spFound((CEffect*)0);
-    for (std::set<CEffectPtr>::iterator it = m_setEffects.begin(); it != m_setEffects.end(); ++it)
+    std::set<CEffectPtr>& effects = m_setEffects;
+    std::set<CEffectPtr>::iterator itEnd = effects.end();
+    for (std::set<CEffectPtr>::iterator it = effects.begin(); it != itEnd; ++it)
     {
         CEffectPtr spCandidate = *it;
-        if (static_cast<CAfterImageEffect*>((CEffect*)spCandidate)->ShouldCapture())
-        {
-            spFound = spCandidate;
-            if (spFound->GetKind() == 1)
-                break;
-        }
+        if (!static_cast<CAfterImageEffect*>((CEffect*)spCandidate)->ShouldCapture())
+            continue;
+        spFound = spCandidate;
+        if (spFound->GetKind() == 1)
+            break;
     }
     m_spCurrent = spFound;
     if (m_spCurrent != 0)
+    {
         m_spClick->vfunc_12((NiAVObject*)static_cast<CAfterImageEffect*>((CEffect*)m_spCurrent)->GetTarget());
-    return m_spCurrent != 0;
+        return true;
+    }
+    return false;
 }
 
 // @0x140982460
-// MS2-FUNCTIONAL: temp/frame layout and smart-pointer temp hops differ from the exe; behaviour equivalent
+// MS2-FUNCTIONAL: the exe reads the 0x100 texture size from an rdata global (0x142db1d84) that has no symbol mapping; behaviour equivalent
 NiDynamicTexturePtr CAfterImageEffectManager::GetTexture()
 {
     if (m_setTextures.empty())

@@ -85,7 +85,7 @@ namespace UIMDEditDialogCommon
     {
     public:
         CShop();                                            // 0x1412e15b0
-        virtual ~CShop();                                   // 0x1412e1730
+        // implicit virtual ~CShop                          // 0x1412e1730
 
         ATL::CAtlArray<MS2Ptr<CMeratMarketPremiumProduct> > m_products;     // +0x18
         ATL::CAtlMap<int, MS2Ptr<CMeratMarketPremiumProduct> > m_productMap;   // +0x38 by product id
@@ -109,7 +109,8 @@ public:
     virtual void vfunc_67();
     virtual void vfunc_79(void* p);
 
-    void FUN_1412dea90(CStringW strSearch);                 // fill the item list (the shop's items that match the search)
+    void FUN_1412df370();                                   // run MS2Util.exe (this unused)
+    void FUN_1412dea90(const CStringW& strSearch);         // fill the item list (the shop's items that match the search)
     template <class T> MS2Ptr<T> FUN_140f880c0(const CString& strName);     // bind a child control
 
 private:

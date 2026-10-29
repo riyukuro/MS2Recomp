@@ -51,9 +51,9 @@ CLoadingDialog::CLoadingDialog()
 CLoadingDialog::~CLoadingDialog()
 {
     Close();
-    if (!m_imgBack.IsNull() == false)
+    if (!m_imgBack.IsNull())
         m_imgBack.Destroy();
-    if (!m_imgMask.IsNull() == false)
+    if (!m_imgMask.IsNull())
         m_imgMask.Destroy();
     m_bDestroyed = true;
     UnregisterClassA(m_strClass, m_hInst);
@@ -84,7 +84,7 @@ void CLoadingDialog::Close()
 
 struct Unk_CreateParams
 {
-    char pad[0x30];
+    void* pad[6];                                               // not a char buffer: the exe has no /GS cookie here
     CLoadingDialog* pThis;
 };
 
@@ -96,7 +96,8 @@ HWND CLoadingDialog::CreateWnd(DWORD dwExStyle, LPCSTR pszClass, LPCSTR pszTitle
         return 0;
     Unk_CreateParams params = {};
     params.pThis = this;
-    return CreateWindowExA(dwExStyle, pszClass, pszTitle, dwStyle, x, y, cx, cy, hParent, hMenu, hInst, &params);
+    HWND hWnd = CreateWindowExA(dwExStyle, pszClass, pszTitle, dwStyle, x, y, cx, cy, hParent, hMenu, hInst, &params);
+    return hWnd;
 }
 
 // @0x140d4a770
@@ -138,28 +139,27 @@ LRESULT CLoadingDialog::OnMessage(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lP
     if (m_bLoading)
         return 0;
     if (m_bClosing)
-        return 0;
-    if (uMsg == WM_DESTROY)
     {
-        PostQuitMessage(0);
+        return 0;
     }
     else
     {
-        if (uMsg == WM_PAINT)
+        switch (uMsg)
         {
-            OnEraseBkgnd(hWnd);
-            return 0;
-        }
-        if (uMsg == WM_ERASEBKGND)
-        {
-            OnPaint(hWnd);
-            return 0;
-        }
-        if (uMsg == WM_LBUTTONDOWN)
-        {
+            break;
+        case WM_LBUTTONDOWN:
             if (m_bInteractive)
                 DefWindowProcA(hWnd, WM_NCLBUTTONDOWN, HTCAPTION, lParam);
             return 0;
+        case WM_PAINT:
+            OnEraseBkgnd(hWnd);
+            return 0;
+        case WM_ERASEBKGND:
+            OnPaint(hWnd);
+            return 0;
+        case WM_DESTROY:
+            PostQuitMessage(0);
+            break;
         }
     }
     return DefWindowProcA(hWnd, uMsg, wParam, lParam);
@@ -189,26 +189,24 @@ void CLoadingDialog::Paint(HDC hdc)
         DrawImage(hdc, &m_imgBack);
 }
 
+float FUN_14028aed0(float f);                                   // round
+
 // @0x140d4aae0
 void CLoadingDialog::CenterRect(RECT* prc, int cx, int cy)
 {
     int nScreenX = GetSystemMetrics(SM_CXSCREEN);
     int nScreenY = GetSystemMetrics(SM_CYSCREEN);
     int nW = cx;
-    if (nScreenX < cx)
-        nW = nScreenX;
     int nH = cy;
-    if (nScreenY < cy)
+    if (nScreenX < nW)
+        nW = nScreenX;
+    if (nScreenY < nH)
         nH = nScreenY;
-    int nLeft = prc->left;
-    int nRight = prc->right;
-    int nTop = prc->top;
-    int nBottom = prc->bottom;
-    float fX = (float)(nScreenX - (nRight - nLeft)) * 0.5f;
-    prc->left = (int)(0.0f <= fX ? fX : 0.0f);
+    int nWidth = prc->right - prc->left;
+    int nHeight = prc->bottom - prc->top;
+    prc->left = (int)__max(0.0f, FUN_14028aed0((float)(nScreenX - nWidth) * 0.5f));
     prc->right = prc->left + nW;
-    float fY = (float)(nScreenY - (nBottom - nTop)) * 0.5f;
-    prc->top = (int)(0.0f <= fY ? fY : 0.0f);
+    prc->top = (int)__max(0.0f, FUN_14028aed0((float)(nScreenY - nHeight) * 0.5f));
     prc->bottom = prc->top + nH;
 }
 
@@ -216,17 +214,23 @@ void CLoadingDialog::CenterRect(RECT* prc, int cx, int cy)
 bool CLoadingDialog::LoadImages()
 {
     CString strBack("./data/resource/image/loadingwindow/loading.bmp");
+    const CString& strBackPath = strBack;
     CImage img;
-    if (strBack.IsEmpty() || !LoadImage(strBack, &img))
+    if (strBackPath.IsEmpty() || !LoadImage(strBackPath, &img))
         return false;
     if (img.GetBPP() == 24)
     {
         CString strMask("./data/resource/image/loadingwindow/loading_mask.bmp");
-        if (!strMask.IsEmpty() && LoadImage(strMask, &m_imgMask) && ApplyMask(&m_imgMask, &img, &m_imgBack))
-            return true;
+        const CString& strMaskPath = strMask;
+        if (!strMaskPath.IsEmpty())
+        {
+            bool bMask = LoadImage(strMaskPath, &m_imgMask);
+            if (bMask == true && ApplyMask(&m_imgMask, &img, &m_imgBack) == true)
+                return true;
+        }
     }
     HBITMAP hBitmap = img.Detach();
-    m_imgBack.Attach(hBitmap);
+    m_imgBack.Attach(hBitmap, CImage::DIBOR_DEFAULT);
     return true;
 }
 
@@ -236,7 +240,9 @@ void CLoadingDialog::ThreadMain()
     m_bLoading = true;
     bool bLoaded = LoadImages();
     m_bLoading = false;
-    if (!bLoaded || m_imgBack.IsNull())
+    if (!bLoaded)
+        return;
+    if (m_imgBack.IsNull())
         return;
     int nWidth = m_imgBack.GetWidth();
     int nHeight = m_imgBack.GetHeight();
@@ -248,19 +254,21 @@ void CLoadingDialog::ThreadMain()
     CenterRect(&rc, nWidth, nHeight);
     AdjustWindowRect(&rc, WS_POPUP, FALSE);
     const char* pszClass = m_strClass;
-    DWORD dwExStyle = 8;
+    DWORD dwExStyle = WS_EX_TOPMOST;
     if (!m_bInteractive)
-        dwExStyle = 0x28;
+        dwExStyle |= WS_EX_TRANSPARENT;
     if (m_imgBack.GetBPP() >= 32)
         dwExStyle |= WS_EX_LAYERED;
-    m_hWnd = CreateWnd(dwExStyle, pszClass, pszClass, WS_POPUP, 0, 0, 0, 0, 0, 0, m_hInst);
+    m_hWnd = CreateWnd(dwExStyle, pszClass, pszClass, WS_POPUP, rc.left, rc.top, nWidth, nHeight, 0, 0, m_hInst);
     if (m_hWnd == 0)
         return;
-    SetWindowPos(m_hWnd, 0, rc.left, rc.top, nWidth, nHeight, SWP_NOZORDER | SWP_NOACTIVATE);
+    UINT uFlags = SWP_NOMOVE | SWP_NOZORDER;
+    SetWindowPos(m_hWnd, 0, rc.left, rc.top, nWidth, nHeight, uFlags);
     if (!m_bInteractive)
         EnableWindow(m_hWnd, FALSE);
-    if ((dwExStyle & WS_EX_LAYERED) != 0 && !m_imgBack.IsNull())
+    if ((dwExStyle & WS_EX_LAYERED) > 0 && !m_imgBack.IsNull())
     {
+        HDC hdcDst = 0;
         POINT ptSrc = {0, 0};
         SIZE sz = {nWidth, nHeight};
         HDC hdcSrc = m_imgBack.GetDC();
@@ -269,7 +277,7 @@ void CLoadingDialog::ThreadMain()
         bf.BlendFlags = 0;
         bf.SourceConstantAlpha = 0xff;
         bf.AlphaFormat = 1;
-        UpdateLayeredWindow(m_hWnd, 0, 0, &sz, hdcSrc, &ptSrc, 0xffffff, &bf, ULW_ALPHA);
+        UpdateLayeredWindow(m_hWnd, hdcDst, 0, &sz, hdcSrc, &ptSrc, 0xffffff, &bf, ULW_ALPHA);
         m_imgBack.ReleaseDC();
     }
     ShowWindow(m_hWnd, SW_SHOW);
@@ -278,50 +286,52 @@ void CLoadingDialog::ThreadMain()
     msg.message = 0;
     if (m_hEvent == 0)
         m_hEvent = CreateEventA(0, FALSE, FALSE, 0);
-    do
+    while (msg.message != WM_QUIT && !m_bClosing)
     {
-        while (true)
+        int bMsg = PeekMessageW(&msg, 0, 0, 0, PM_REMOVE) != 0;
+        if (bMsg != 0)
         {
-            if (msg.message == WM_QUIT)
-                return;
-            if (m_bClosing)
-                return;
-            int bMsg = PeekMessageW(&msg, 0, 0, 0, PM_REMOVE) != 0;
-            if (bMsg == 0)
-                break;
             if (AfxPreTranslateMessage(&msg) == 0)
             {
                 TranslateMessage(&msg);
                 DispatchMessageA(&msg);
             }
         }
-    } while (WaitForSingleObject(m_hEvent, 0) != 0);
+        else
+        {
+            if (WaitForSingleObject(m_hEvent, 0) == 0)
+                break;
+        }
+    }
 }
 
 // @0x140d4b2f0
 bool CLoadingDialog::LoadImage(const CString& strPath, CImage* pImage)
 {
     MS2MemFile file((const char*)strPath);
-    if (!file)
+    if (!file.IsGood())
         return false;
     unsigned int nSize = file.GetFileSize();
     HGLOBAL hMem = GlobalAlloc(GMEM_MOVEABLE, nSize);
-    void* pData = GlobalLock(hMem);
+    void* pData = 0;
+    pData = GlobalLock(hMem);
     file.FUN_141627270(pData, nSize);
     file.GetFileSize();
     GlobalUnlock(hMem);
+    IStream* pStream = SHCreateMemStream((const BYTE*)pData, nSize);
     CComPtr<IStream> spStream;
-    spStream.Attach(SHCreateMemStream((const BYTE*)pData, nSize));
+    spStream.Attach(pStream);
     pImage->Load(spStream);
     if (pImage->GetBPP() >= 32)
     {
+        BYTE* p = 0;
         int nWidth = pImage->GetWidth();
         int nHeight = pImage->GetHeight();
         for (int y = 0; y < nHeight; y++)
         {
             for (int x = 0; x < nWidth; x++)
             {
-                BYTE* p = (BYTE*)pImage->GetPixelAddress(x, y);
+                p = (BYTE*)pImage->GetPixelAddress(x, y);
                 BYTE a = p[3];
                 if (a != 0xff)
                 {
@@ -351,27 +361,30 @@ bool CLoadingDialog::ApplyMask(CImage* pMask, CImage* pSrc, CImage* pDest)
         return false;
     if (!pDest->Create(pSrc->GetWidth(), pSrc->GetHeight(), 32, 0))
         return false;
+    BYTE* pD = 0;
+    BYTE* pS = 0;
+    BYTE* pM = 0;
     int nWidth = pSrc->GetWidth();
     int nHeight = pSrc->GetHeight();
     for (int y = 0; y < nHeight; y++)
     {
         for (int x = 0; x < nWidth; x++)
         {
-            BYTE* pD = (BYTE*)pDest->GetPixelAddress(x, y);
-            BYTE* pS = (BYTE*)pSrc->GetPixelAddress(x, y);
-            char* pM = (char*)pMask->GetPixelAddress(x, y);
-            BYTE a = (BYTE)(-*pM - 1);
-            if (a == 0)
-            {
-                pD[0] = 0;
-                pD[1] = 0;
-                pD[2] = 0;
-            }
-            else
+            pD = (BYTE*)pDest->GetPixelAddress(x, y);
+            pS = (BYTE*)pSrc->GetPixelAddress(x, y);
+            pM = (BYTE*)pMask->GetPixelAddress(x, y);
+            BYTE a = 0xff - pM[0];
+            if (a != 0)
             {
                 pD[0] = (BYTE)((pS[0] * a + 0x80) >> 8);
                 pD[1] = (BYTE)((pS[1] * a + 0x80) >> 8);
                 pD[2] = (BYTE)((pS[2] * a + 0x80) >> 8);
+            }
+            else
+            {
+                pD[0] = 0;
+                pD[1] = 0;
+                pD[2] = 0;
             }
             pD[3] = a;
         }
@@ -382,27 +395,29 @@ bool CLoadingDialog::ApplyMask(CImage* pMask, CImage* pSrc, CImage* pDest)
 // @0x140d4b8c0
 unsigned __stdcall CLoadingDialog::ThreadProc(void* p)
 {
-    ((CLoadingDialog*)p)->ThreadMain();
+    CLoadingDialog* pThis = (CLoadingDialog*)p;
+    pThis->ThreadMain();
     return 0;
 }
 
 // @0x140d4b8f0
 LRESULT CALLBACK CLoadingDialog::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
-    LONG_PTR p;
+    CLoadingDialog* pThis = 0;
     if (uMsg == WM_NCCREATE)
     {
-        p = (LONG_PTR)((Unk_CreateParams*)((CREATESTRUCTA*)lParam)->lpCreateParams)->pThis;
-        SetWindowLongPtrA(hWnd, GWLP_USERDATA, p);
+        Unk_CreateParams* pParams = (Unk_CreateParams*)((CREATESTRUCTA*)lParam)->lpCreateParams;
+        pThis = pParams->pThis;
+        SetWindowLongPtrA(hWnd, GWLP_USERDATA, (LONG_PTR)pThis);
     }
     else
     {
-        p = GetWindowLongPtrA(hWnd, GWLP_USERDATA);
+        pThis = (CLoadingDialog*)GetWindowLongPtrA(hWnd, GWLP_USERDATA);
     }
-    CLoadingDialog* pThis = (CLoadingDialog*)p;
-    if (pThis == 0 || pThis->m_bDestroyed)
+    if (pThis != 0 && !pThis->m_bDestroyed)
+        return pThis->OnMessage(hWnd, uMsg, wParam, lParam);
+    else
         return DefWindowProcA(hWnd, uMsg, wParam, lParam);
-    return pThis->OnMessage(hWnd, uMsg, wParam, lParam);
 }
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142ca4fd0-0x142ca5060 .text$yd

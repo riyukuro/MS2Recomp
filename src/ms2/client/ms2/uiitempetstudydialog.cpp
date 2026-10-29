@@ -132,7 +132,6 @@ CString UIItemPetStudyDialog::GetTypeName()
 }
 
 // @0x140e54e40
-// MS2-FUNCTIONAL: written from the decompile; temporaries / frame slots not tuned
 void UIItemPetStudyDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
@@ -145,24 +144,21 @@ void UIItemPetStudyDialog::OnLoadComplete()
         FUN_140d42b70(pSlot, PsDropFn(this, &UIItemPetStudyDialog::FUN_140e55f90));
     }
     m_spBox = DAT_143ab2a90.FUN_140a5d680(m_nOwner);
-    if (!(m_spBox == 0))
-    {
-        if (m_spBox->FUN_140527840() != 0)
-        {
-            FUN_1412761e0(m_30, 1);
-            ASObj obj(2);
-            obj.FUN_1407cba60("bindID", CString(m_strSlot));
-            obj.FUN_1407cbb20("itemName", m_spBox->FUN_140527b10());
-            CStringW strOption;
-            ATL::CAtlArray<void*> unused;
-            obj.FUN_1407cbb20("optionText", CStringW(strOption));
-            m_30->Invoke("setData", obj);
-        }
-    }
+    if (m_spBox == 0)
+        return;
+    if (m_spBox->FUN_140527840() == 0)
+        return;
+    FUN_1412761e0(m_30, 1);
+    ASObj obj(2);
+    obj.FUN_1407cba60("bindID", CString(m_strSlot));
+    obj.FUN_1407cbb20("itemName", m_spBox->FUN_140527b10());
+    CStringW strOption;
+    ATL::CAtlArray<CStringW> unused;
+    obj.FUN_1407cbb20("optionText", CStringW(strOption));
+    m_30->Invoke("setData", obj);
 }
 
 // @0x140e55340
-// MS2-FUNCTIONAL: written from the decompile; temporaries / frame slots not tuned
 int UIItemPetStudyDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs)
 {
     if (UIDialog::vfunc_28(szMethod, pArgs, nArgs) != 0)
@@ -252,7 +248,6 @@ ItemScrollSlot* UIItemPetStudyDialog::FUN_140e559c0(CString strName)
 }
 
 // @0x140e55a40
-// MS2-FUNCTIONAL: written from the decompile; temporaries / frame slots not tuned
 int UIItemPetStudyDialog::FUN_140e55a40(MS2Ptr<CItem> spPet, int bMessage)
 {
     if (!FUN_140166410()->FUN_14036d570(0x94))
@@ -262,33 +257,35 @@ int UIItemPetStudyDialog::FUN_140e55a40(MS2Ptr<CItem> spPet, int bMessage)
     if (spPet->FUN_140525640() == 0)
     {
         if (bMessage != 0)
-            FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_pet_study_dialog_invalid_item")), 1, 0);
+            FUN_1412751f0(GetStringCommonByKey(L"s_pet_study_dialog_invalid_item"), 1, 0);
         return 0;
     }
     MS2Ptr<Unk_PetRow> spRow = FUN_14052d210()->FUN_1407290f0(reinterpret_cast<CItemData*>(spPet->FUN_140527840())->FUN_14053dc60());
-    if (!(spRow == 0))
+    if (spRow == 0)
     {
-        if (spRow->m_n18 == 1)
-        {
-            if (spPet->FUN_1405279c0()->GetMaxSlot() == 0)
-            {
-                if (bMessage != 0)
-                    FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_pet_study_dialog_invalid_item")), 1, 0);
-                return 0;
-            }
-            if (spPet->FUN_1405279c0()->FUN_140620f40(m_spBox->FUN_1405276c0()) == 0)
-                return 1;
-            if (bMessage != 0)
-                FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_pet_study_dialog_already_option")), 1, 0);
-            return 0;
-        }
         if (bMessage != 0)
-            FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_pet_study_dialog_invalid_item")), 1, 0);
+            FUN_1412751f0(GetStringCommonByKey(L"s_pet_study_dialog_invalid_item"), 1, 0);
         return 0;
     }
-    if (bMessage != 0)
-        FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_pet_study_dialog_invalid_item")), 1, 0);
-    return 0;
+    if (spRow->m_n18 != 1)
+    {
+        if (bMessage != 0)
+            FUN_1412751f0(GetStringCommonByKey(L"s_pet_study_dialog_invalid_item"), 1, 0);
+        return 0;
+    }
+    if (spPet->FUN_1405279c0()->GetMaxSlot() == 0)
+    {
+        if (bMessage != 0)
+            FUN_1412751f0(GetStringCommonByKey(L"s_pet_study_dialog_invalid_item"), 1, 0);
+        return 0;
+    }
+    if (spPet->FUN_1405279c0()->FUN_140620f40(m_spBox->FUN_1405276c0()) != 0)
+    {
+        if (bMessage != 0)
+            FUN_1412751f0(GetStringCommonByKey(L"s_pet_study_dialog_already_option"), 1, 0);
+        return 0;
+    }
+    return 1;
 }
 
 // @0x140e55f10
@@ -302,26 +299,33 @@ void UIItemPetStudyDialog::FUN_140e55f10(ItemScrollSlot& slot)
 }
 
 // @0x140e55f90
-// MS2-FUNCTIONAL: written from the decompile; temporaries / frame slots not tuned
 void UIItemPetStudyDialog::FUN_140e55f90(ItemScrollSlot& slot, DragSlot* pDrag)
 {
-    MS2DragSlot* pSrc;
-    if (m_30 == 0 || m_bDone != 0 || m_nOwner == 0 || (pSrc = FUN_140a50b50(pDrag)) == 0)
+    if (m_30 == 0)
         return;
-    MS2Ptr<CItem> spPet = DAT_143ab2a90.FUN_140a5d680(FUN_141405a10(pSrc));
-    if (FUN_140e55a40(spPet, 1) == 0)
+    if (m_bDone != 0)
         return;
-    MS2Ptr<CItem> spBox = DAT_143ab2a90.FUN_140a5d680(m_nOwner);
-    if (!(spBox == 0) && spBox->FUN_140527840() != 0)
+    if (m_nOwner == 0)
+        return;
+    MS2DragSlot* pSrc = FUN_140a50b50(pDrag);
+    if (pSrc != 0)
     {
-        FUN_140d428a0(&slot, spPet);
-        slot.vfunc_10();
-        m_spPet = spPet;
-        CStringW strName = spPet->FUN_140528160();
-        ASObj obj(2);
-        obj.FUN_1407cbb20("petName", CStringW(strName));
-        obj.FUN_1407cbb20("petGUID", FUN_141b71910(spPet->FUN_140526a50()));
-        m_30->Invoke("selectPet", obj.FUN_1422bb870());
+        MS2Ptr<CItem> spPet = DAT_143ab2a90.FUN_140a5d680(FUN_141405a10(pSrc));
+        if (FUN_140e55a40(spPet, 1) == 0)
+            return;
+        MS2Ptr<CItem> spBox = DAT_143ab2a90.FUN_140a5d680(m_nOwner);
+        if (spBox == 0 || spBox->FUN_140527840() == 0)
+            return;
+        {
+            FUN_140d428a0(&slot, spPet);
+            slot.vfunc_10();
+            m_spPet = spPet;
+            CStringW strName = spPet->FUN_140528160();
+            ASObj obj(2);
+            obj.FUN_1407cbb20("petName", CStringW(strName));
+            obj.FUN_1407cbb20("petGUID", FUN_141b71910(spPet->FUN_140526a50()));
+            m_30->Invoke("selectPet", obj.FUN_1422bb870());
+        }
     }
 }
 

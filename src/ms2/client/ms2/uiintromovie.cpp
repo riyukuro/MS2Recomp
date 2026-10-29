@@ -59,14 +59,16 @@ UIIntroMovie::~UIIntroMovie()
 {
 }
 
-// MS2-FUNCTIONAL: the exe returns the base call's int result unchanged (frame 0x28 vs 0x38), no source form found
 // @0x141995190
 int UIIntroMovie::vfunc_52(const CString& strPath, float fVolume)
 {
     FUN_140b632f0()->FUN_1422d4780(this, 2);
-    int n = UIVideoContents::vfunc_52(strPath, fVolume);
-    if (n == 0) FUN_140aadf80()->FUN_141b91ba0();
-    return n != 0;
+    if (!UIVideoContents::vfunc_52(strPath, fVolume))
+    {
+        FUN_140aadf80()->FUN_141b91ba0();
+        return 0;
+    }
+    return 1;
 }
 MS2_REPLACE_METHOD(0x141995190, UIIntroMovie, vfunc_52, 96, 0x50BBA5E3);
 
@@ -127,7 +129,6 @@ int UIIntroMovie::vfunc_13()
 }
 MS2_REPLACE_METHOD(0x141995450, UIIntroMovie, vfunc_13, 77, 0x51321992);
 
-// MS2-FUNCTIONAL: extra else-hop jumps and the url argument load order differ; no source form found
 // @0x1419954b0
 void UIIntroMovie::vfunc_15()
 {
@@ -146,8 +147,7 @@ void UIIntroMovie::vfunc_15()
                             spInfo = m_78.GetHead();
                             if (spInfo.get() != 0) {
                                 spPlayer->FUN_1422e9650();
-                                const CString& rUrl = spInfo->m_strUrl;
-                                spPlayer->FUN_1422e95b0(rUrl);
+                                spPlayer->FUN_1422e95b0(spInfo->m_strUrl);
                             }
                         }
                     }
@@ -227,7 +227,6 @@ void UIIntroMovie::LoadIntroMovie()
 }
 MS2_REPLACE_METHOD(0x141995880, UIIntroMovie, LoadIntroMovie, 1091, 0xB4EC1BD2);
 
-// MS2-FUNCTIONAL: extra else-hop jumps differ; no source form found
 // @0x141995cd0
 void UIIntroMovie::FUN_141995cd0()
 {
@@ -237,11 +236,12 @@ void UIIntroMovie::FUN_141995cd0()
         } else {
             MS2Ptr<MovieInfo> spInfo = m_78.GetHead();
             if (spInfo.get() != 0) {
-                if (spInfo->m_seekTimes.GetCount() != 0) {
+                while (spInfo->m_seekTimes.GetCount() != 0) {
                     float fTime = spPlayer->FUN_1422e9540();
                     float fSeek = spInfo->m_seekTimes.GetHead();
                     if (fSeek >= fTime) spPlayer->FUN_1422e9690(fSeek);
                     else spInfo->m_seekTimes.RemoveHeadNoReturn();
+                    break;
                 }
             }
         }
@@ -264,8 +264,7 @@ int FUN_141995eb0()
 }
 MS2_REPLACE(0x141995EB0, FUN_141995eb0, 46, 0xD3368098);
 
-// MS2-FUNCTIONAL: the exe ctor has an EH state (its ATL members are not nothrow there); ours omits it
-UIIntroMovie::MovieInfo::MovieInfo() : m_fEndTime(0)
+UIIntroMovie::MovieInfo::MovieInfo() : m_strUrl(""), m_fEndTime(0)
 {
 }
 

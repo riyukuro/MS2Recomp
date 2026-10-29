@@ -6,6 +6,7 @@
 #include "ms2/placeholder/nmstream.h"
 #include "ms2/placeholder/nmobjects.h"
 #include "ms2/placeholder/nmfunc.h"
+#include "ms2/placeholder/nmencoder.h"
 #include "ms2/ms2recover.h"
 
 extern void FUN_14156bcb0(void*, void*, void*);
@@ -19,6 +20,7 @@ extern void FUN_1415f9990(void*);
 extern int FUN_1415fb700(void*);
 extern int FUN_1415fb750(void*);
 extern int FUN_1415fb6d0(void*);
+extern int FUN_1415fb6d0(CNMSerializableDecoder*);
 
 // MS2-FUNCTIONAL 0x14158deb0: initializes an empty launcher request with the default result flag.
 CNMExecuteLauncherFunc::CNMExecuteLauncherFunc()
@@ -32,27 +34,18 @@ CNMExecuteLauncherFunc::CNMExecuteLauncherFunc(int gameCode, int n2, const char*
 }
 
 // MS2-FUNCTIONAL 0x14158e010: frames a serialized launcher request.
-unsigned int CNMExecuteLauncherFunc::EncodeFramed(CNMStream* stream)
+unsigned int CNMExecuteLauncherFunc::EncodeFramed(CNMStream* pStream)
 {
-    unsigned char storage[0x18];
-    FUN_14156bcb0(storage, stream, this);
-    void** vtable = *reinterpret_cast<void***>(this);
-    using Method = unsigned int(__fastcall*)(CNMExecuteLauncherFunc*, CNMEncoder*, CNMStream*);
-    const auto result = reinterpret_cast<Method>(vtable[2])(this, reinterpret_cast<CNMEncoder*>(storage), stream);
-    FUN_14156bd50(storage);
-    return result;
+    CNMSerializableEncoder encoder(pStream, this);
+    return CNMExecuteLauncherFunc::Encode(reinterpret_cast<CNMEncoder*>(&encoder), pStream);
 }
 
 // MS2-FUNCTIONAL 0x14158e070: dispatches serialization according to the framing mode.
-unsigned int CNMExecuteLauncherFunc::EncodeDispatch(CNMEncoder* encoder, CNMStream* stream)
+unsigned int CNMExecuteLauncherFunc::EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream)
 {
-    void** vtable = *reinterpret_cast<void***>(this);
-    if (m_bFormat == 1) {
-        using Method = unsigned int(__fastcall*)(CNMExecuteLauncherFunc*, CNMEncoder*, CNMStream*);
-        return reinterpret_cast<Method>(vtable[2])(this, encoder, stream);
-    }
-    using Method = unsigned int(__fastcall*)(CNMExecuteLauncherFunc*, CNMStream*);
-    return reinterpret_cast<Method>(vtable[3])(this, stream);
+    if (m_bFormat == 1)
+        return CNMExecuteLauncherFunc::Encode(pEncoder, pStream);
+    return CNMExecuteLauncherFunc::EncodeFramed(pStream);
 }
 
 // MS2-FUNCTIONAL 0x14158e0d0: encodes launch identifiers, argument, and options in replies.
@@ -71,30 +64,20 @@ unsigned int CNMExecuteLauncherFunc::Encode(CNMEncoder* encoder, CNMStream* stre
 }
 
 // MS2-FUNCTIONAL 0x14158e190: decodes a framed launcher response.
-unsigned int CNMExecuteLauncherFunc::DecodeFramed(CNMStream* stream)
+unsigned int CNMExecuteLauncherFunc::DecodeFramed(CNMStream* pStream)
 {
-    unsigned char storage[0x38];
-    FUN_14156be10(storage, stream, this);
-    unsigned int result = 0;
-    if (FUN_1415fb750(storage)) {
-        void** vtable = *reinterpret_cast<void***>(this);
-        using Method = unsigned int(__fastcall*)(CNMExecuteLauncherFunc*, CNMSerializableDecoder*, CNMStream*);
-        result = reinterpret_cast<Method>(vtable[5])(this, reinterpret_cast<CNMSerializableDecoder*>(storage), stream);
-    }
-    FUN_14156bf10(storage);
-    return result;
+    CNMSerializableDecoder decoder(pStream, this);
+    if (FUN_1415fb750(&decoder) == 0)
+        return 0;
+    return CNMExecuteLauncherFunc::Decode(&decoder, pStream);
 }
 
 // MS2-FUNCTIONAL 0x14158e220: dispatches decoding by response format.
-unsigned int CNMExecuteLauncherFunc::DecodeDispatch(CNMSerializableDecoder* decoder, CNMStream* stream)
+unsigned int CNMExecuteLauncherFunc::DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream)
 {
-    void** vtable = *reinterpret_cast<void***>(this);
-    if (FUN_1415fb6d0(decoder) == 2) {
-        using Method = unsigned int(__fastcall*)(CNMExecuteLauncherFunc*, CNMStream*);
-        return reinterpret_cast<Method>(vtable[6])(this, stream);
-    }
-    using Method = unsigned int(__fastcall*)(CNMExecuteLauncherFunc*, CNMSerializableDecoder*, CNMStream*);
-    return reinterpret_cast<Method>(vtable[5])(this, decoder, stream);
+    if (FUN_1415fb6d0(pDecoder) == 2)
+        return CNMExecuteLauncherFunc::DecodeFramed(pStream);
+    return CNMExecuteLauncherFunc::Decode(pDecoder, pStream);
 }
 
 // MS2-FUNCTIONAL 0x14158e280: restores launch identifiers, argument, and options from the reply.

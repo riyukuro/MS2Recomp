@@ -36,6 +36,7 @@ static CString s_mentorSortNames3[] = {"None", "Buy", "Like", "PriceLow", "Price
 #include "ms2/placeholder/astooltip.h"
 #include "ms2/placeholder/coutpacket.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
+#include "ms2/placeholder/asuicomponent.h"
 #include "ms2/placeholder/gfxexception.h"
 #include "ms2/client/ms2/uimessageboxdata.h"
 #include "ms2/client/ms2/uigalleryeventdialog.h"
@@ -102,7 +103,7 @@ class Unk_MentorScript : public AScript
 {
 public:
     MS2Ptr<ASMovieClip> FUN_1409b4560(const CString& strName);          // bind a movie clip child
-    MS2Ptr<ASMovieClip> FUN_140accfb0(const CString& strName);          // bind a movie clip child (list clip)
+    MS2Ptr<ASUIComponent> FUN_140accfb0(const CString& strName);          // bind a movie clip child (list clip)
 };
 void FUN_140bf2260(Scaleform::GFx::Value& v);                            // clear an AS object
 CString FUN_141028be0(unsigned __int64 nSerial, const CString& strPath, int n, CString strExtra);   // profile image url
@@ -230,43 +231,37 @@ void UIMentoringPage::FUN_140c71ce0()
 }
 
 // @0x140c71ee0
-// MS2-FUNCTIONAL: m_searchMovie lookup temp order / frame layout differs from exe
 void UIMentoringPage::FUN_140c71ee0(CString strName, MS2Ptr<Unk_MentorEntry> pEntry, int bVisible)
 {
-    Unk_MentorScript* pScript = reinterpret_cast<Unk_MentorScript*>(m_script.operator->());
-    MS2Ptr<ASMovieClip> pClip = pScript->FUN_140accfb0(strName);
-    if (pClip.get())
     {
-        ASObj obj(2);
-        if (pEntry.get() != 0)
+        MS2Ptr<ASUIComponent> pClip = reinterpret_cast<Unk_MentorScript*>(m_script.operator->())->FUN_140accfb0(strName);
+        if (pClip.get())
         {
-            obj.FUN_1407cba60("iconPath", FUN_141028be0(pEntry->m_30, FUN_14016a600(pEntry->m_48, 0), 1, ""));
-            obj.FUN_1407cbbe0("isOnline", pEntry->m_58);
-            obj.FUN_1407cbb20("name", pEntry->m_38);
-            obj.FUN_1407cbb20("extra", FUN_14052b9d0(L"s_mentoring_user_info", pEntry->m_40, FUN_1401a9d70()->FUN_141811980(6, pEntry->m_54)));
-            obj.FUN_1407cbb20("charName", pEntry->m_38);
-            obj.FUN_1407cba60("charSN", FUN_140719530(pEntry->m_30));
+            ASObj obj(2);
+            if (pEntry.get() != 0)
+            {
+                obj.FUN_1407cba60("iconPath", FUN_141028be0(pEntry->m_30, FUN_14016a600(pEntry->m_48, 0), 1, ""));
+                obj.FUN_1407cbbe0("isOnline", pEntry->m_58);
+                obj.FUN_1407cbb20("name", pEntry->m_38);
+                obj.FUN_1407cbb20("extra", FUN_14052b9d0(L"s_mentoring_user_info", pEntry->m_40, FUN_1401a9d70()->FUN_141811980(6, pEntry->m_54)));
+                obj.FUN_1407cbb20("charName", pEntry->m_38);
+                obj.FUN_1407cba60("charSN", FUN_140719530(pEntry->m_30));
+            }
+            else
+            {
+                FUN_140bf2260(obj.FUN_1422bb870());
+            }
+            pClip->Invoke("setData", obj);
+            pClip->vfunc_3(bVisible);
         }
-        else
-        {
-            FUN_140bf2260(obj.FUN_1422bb870());
-        }
-        pClip->Invoke("setData", obj);
-        pClip->vfunc_3(bVisible);
     }
-    MS2Ptr<ASMovieClip> pSearchMovie = pScript->FUN_1409b4560("m_searchMovie");
-    if (pSearchMovie.get())
+    if (MS2Ptr<ASMovieClip> pSearchMovie = reinterpret_cast<Unk_MentorScript*>(m_script.operator->())->FUN_1409b4560("m_searchMovie"))
     {
-        int nHidden = FUN_140c70240()->FUN_140b71720();
-        pSearchMovie->vfunc_4(nHidden == 0);
+        pSearchMovie->vfunc_4(FUN_140c70240()->FUN_140b71720() == 0);
         FUN_140cfee80((*pSearchMovie).FUN_1422bb890(), "m_desc", GetStringCommonByKey(L"s_mentoring_tab_mentor_search_desc"));
     }
-    MS2Ptr<ASMovieClip> pSearch = pScript->FUN_1409b4560("m_search");
-    if (pSearch.get())
-    {
-        int nHidden = FUN_140c70240()->FUN_140b71720();
-        pSearch->vfunc_4(nHidden < 3);
-    }
+    if (MS2Ptr<ASMovieClip> pSearch = reinterpret_cast<Unk_MentorScript*>(m_script.operator->())->FUN_1409b4560("m_search"))
+        pSearch->vfunc_4(FUN_140c70240()->FUN_140b71720() < 3);
 }
 
 // ============================================================================
@@ -308,7 +303,6 @@ CReservedWordTable* FUN_1403b4750();
 MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW strText, int nUnk, CStringW strTag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> spBox);
 void FUN_140710590(COutPacket& pkt);
-void FUN_141a024a0(CMsgBoxData* pBox, bool b);
 // The register role byte (ctor 0x140c731c0 always stores 8).
 class Unk_MentorRole
 {
@@ -341,7 +335,6 @@ void UIMentoringMentorRegisterPage::vfunc_2()
 }
 
 // @0x140c72a80
-// MS2-FUNCTIONAL: temp spill layout differs from exe
 int UIMentoringMentorRegisterPage::vfunc_5(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned nArgs)
 {
     if (UIMentoringPage::vfunc_5(szMethod, pArgs, nArgs)) return 1;
@@ -364,7 +357,7 @@ int UIMentoringMentorRegisterPage::vfunc_5(const char* szMethod, const Scaleform
             MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, CStringW(strMsg), 0, CStringW(L""));
             if (spBox.get() != 0)
             {
-                FUN_141a024a0(spBox.get(), false);
+                spBox->FUN_141a024a0(0);
                 spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIMentoringMentorRegisterPage::SendMentor));
                 FUN_140d73c60(spBox);
             }
@@ -502,7 +495,7 @@ public:
     Scaleform::GFx::Value FUN_1409ba0d0(const char* szMethod, int a1, int a2);
 };
 unsigned char FUN_1409b0350(Scaleform::GFx::Value* pValue);
-MS2Ptr<AScript> FUN_140acca70(int nMovieId, const Scaleform::GFx::Value& v);
+MS2Ptr<ASUIComponent> FUN_140acca70(int nMovieId, const Scaleform::GFx::Value& v);
 bool FUN_140184310(const CString& strText, const char* szCompare);
 bool FUN_140841300(const CStringW& strText, const char* szCompare);
 int FUN_140718170(const CString& str);
@@ -694,13 +687,13 @@ int UIMentoringMissionPage::vfunc_10(int nDay)
 }
 
 // @0x140c74170
-// MS2-FUNCTIONAL: temp spill layout differs from exe
 void UIMentoringMissionPage::FUN_140c74170(ASObj& obj, Unk_MentorInstance* pInst)
 {
     if (pInst == 0) return;
     Unk_MentorQuestPtr spQuest = (&pInst->m_progress)->vfunc_0();
     if (spQuest.IsNull()) return;
-    if (FUN_1403ed2d0()->FUN_141bd0cc0() == 0) return;
+    Unk_MentorActorV* pUser = FUN_1403ed2d0()->FUN_141bd0cc0();
+    if (pUser == 0) return;
     CString strIcon = (&pInst->m_progress)->vfunc_0()->m_strIcon;
     CStringW strDesc = FUN_1416e5350(FUN_140bfc580(pInst), 0);
     strDesc.Replace(L"#5c2b00", L"#000000");
@@ -713,11 +706,9 @@ void UIMentoringMissionPage::FUN_140c74170(ASObj& obj, Unk_MentorInstance* pInst
 }
 
 // @0x140c74450
-// MS2-FUNCTIONAL: literal CString temp is built after operator-> in ours, before it in exe
 void UIMentoringMissionPage::FUN_140c74450(int nDay)
 {
-    MS2Ptr<Unk_MentorList> spList = reinterpret_cast<Unk_MentorMissionScript*>(m_script.operator->())->FUN_140bc7280("m_missionList");
-    if (spList.get() != 0)
+    if (MS2Ptr<Unk_MentorList> spList = reinterpret_cast<Unk_MentorMissionScript*>(m_script.operator->())->FUN_140bc7280("m_missionList"))
     {
         spList->FUN_1422dd1d0();
         Unk_MentorIdArray ids;
@@ -725,24 +716,21 @@ void UIMentoringMissionPage::FUN_140c74450(int nDay)
         for (size_t i = 0; i < ids.FUN_140186270(); i++)
         {
             Unk_MentorInstPtr spInst = (&FUN_140764020()->state)->vfunc_3(*ids.FUN_140184510(i));
-            if (!spInst.IsNull())
-            {
-                ASObj obj(2);
-                FUN_140c74170(obj, spInst.get());
-                spList->FUN_1422dd230(obj);
-            }
+            if (spInst.IsNull()) continue;
+            ASObj obj(2);
+            FUN_140c74170(obj, spInst.get());
+            spList->FUN_1422dd230(obj);
         }
         spList->vfunc_24(true);
     }
 }
 
 // @0x140c74660
-// MS2-FUNCTIONAL: literal CString temp is built after operator-> in ours, before it in exe
 int UIMentoringMissionPage::FUN_140c74660()
 {
-    MS2Ptr<Unk_MentorTab> spTab = reinterpret_cast<Unk_MentorMissionScript*>(m_script.operator->())->FUN_140be23c0("m_tab");
-    if (spTab.get() == 0) return 0;
-    return spTab->FUN_1422e3210() + 1;
+    if (MS2Ptr<Unk_MentorTab> spTab = reinterpret_cast<Unk_MentorMissionScript*>(m_script.operator->())->FUN_140be23c0("m_tab"))
+        return spTab->FUN_1422e3210() + 1;
+    return 0;
 }
 
 // @0x140c74720
@@ -759,7 +747,6 @@ __int64 UIMentoringMissionPage::FUN_140c74720()
 }
 
 // @0x140c74850
-// MS2-FUNCTIONAL: loop branch shape differs from exe
 void UIMentoringMissionPage::FUN_140c74850(Unk_MentorIdArray& ids, int nDay)
 {
     Unk_MentorIdArray all;
@@ -767,22 +754,18 @@ void UIMentoringMissionPage::FUN_140c74850(Unk_MentorIdArray& ids, int nDay)
     for (size_t i = 0; i < all.FUN_140186270(); i++)
     {
         Unk_MentorQuestPtr spQuest = FUN_14074bc40(*all.FUN_140184510(i));
-        if (!spQuest.IsNull())
-        {
-            if (nDay != -1 && spQuest->m_nDay != nDay) continue;
-            ids.FUN_1401855a0(FUN_14074b030(spQuest.operator->()));
-        }
+        if (spQuest.IsNull()) continue;
+        if (nDay != -1 && spQuest->m_nDay != nDay) continue;
+        ids.FUN_1401855a0(FUN_14074b030(spQuest.operator->()));
     }
 }
 
 // @0x140c74970
-// MS2-FUNCTIONAL: register choice for m_script operator-> differs
 void UIMentoringMissionPage::FUN_140c74970()
 {
     for (int i = 0; i < 7; i++)
     {
-        int nCount = vfunc_10(i + 1);
-        reinterpret_cast<Unk_MentorMissionScript*>(m_script.operator->())->FUN_1409ba0d0("setCount", i, nCount);
+        reinterpret_cast<Unk_MentorMissionScript*>(m_script.operator->())->FUN_1409ba0d0("setCount", i, vfunc_10(i + 1));
     }
 }
 
@@ -796,7 +779,6 @@ UIMentoringPage::UIMentoringPage(UIMentoringDialog* p) : m_script(0), m_owner(p)
 UIMentoringPage::~UIMentoringPage() {}
 
 // @0x140c74b00
-// MS2-FUNCTIONAL: temp/branch layout differs from exe
 int UIMentoringPage::vfunc_1()
 {
     if (m_owner->FUN_1422dba00().IsNull()) return 0;

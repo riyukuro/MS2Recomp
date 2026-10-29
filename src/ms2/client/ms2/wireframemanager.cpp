@@ -26,16 +26,25 @@ CQuestManager* FUN_140764020();                                         // the q
 // The dungeon room table: a record handle (released through FUN_14031c0f0) and the room's open period.
 void FUN_14031c0f0(struct Unk_WfRoomRef* pRoom);
 struct Unk_WfRoomRef { void* m_0; void* m_8; ~Unk_WfRoomRef() { FUN_14031c0f0(this); } };
-struct Unk_WfPeriod { char m_pad[0x106]; char m_period[16]; };
-struct Unk_WfSpan { __int64 m_nStart; __int64 m_nEnd; };
+struct Unk_WfSpan
+{
+    __int64 m_nStart;
+    __int64 m_nEnd;
+    Unk_WfSpan();                                                       // declared only (keeps the temporary out of /GS)
+    bool FUN_140837280();                                               // the time is inside the period
+};
+struct Unk_WfPeriodVal
+{
+    char m_data[16];
+    Unk_WfSpan FUN_1402e4e80(int nTime);                                // the period relative to the time
+};
+struct Unk_WfPeriod { char m_pad[0x106]; Unk_WfPeriodVal m_period; };
 class Unk_WfRoomTable { public: Unk_WfRoomRef FUN_1403206b0(int nRoomId); };
 Unk_WfRoomTable* FUN_14031c2a0();
-bool FUN_14031c160(Unk_WfRoomRef* pRoom);                               // the handle is valid
+void* FUN_14031c160(Unk_WfRoomRef* pRoom);                               // the handle is valid
 Unk_WfPeriod* FUN_1403347d0(Unk_WfRoomRef* pRoom);                      // the room record
 bool FUN_140b91330(void* pPeriod);                                      // the period is unlimited
-Unk_WfSpan* FUN_1402e4e80(void* pPeriod, Unk_WfSpan* pOut, __int64 nTime);   // the period relative to the time
-bool FUN_140837280(Unk_WfSpan* pSpan);                                  // the time is inside the period
-__int64 FUN_1408694c0();                                                // the current time
+int FUN_1408694c0();                                                // the current time
 
 // An entry that can be gated by a dungeon room and a quest (the tail of this unit's range).
 struct Unk_WfGate
@@ -85,17 +94,18 @@ void CWireframeManager::FUN_141b940c0(egf::Entity* pEntity)
     }
 }
 
-// MS2-FUNCTIONAL: the entity handle temporary / CAtlList call shape differs
 // @0x141b941f0
 void CWireframeManager::FUN_141b941f0(egf::Entity* pEntity)
 {
-    Unk_EntRef ref(reinterpret_cast<Unk_Entity*>(pEntity));
-    POSITION pos = m_entities.Find(ref, 0);
+    POSITION pos;
+    {
+        Unk_EntRef ref(reinterpret_cast<Unk_Entity*>(pEntity));
+        pos = m_entities.Find(ref, 0);
+    }
     if (pos != 0)
         m_entities.RemoveAt(pos);
 }
 
-// MS2-FUNCTIONAL: the entity handle copy and the list walk differ in temporaries
 // @0x141b94260
 void CWireframeManager::FUN_141b94260(bool bWireframe)
 {
@@ -106,8 +116,7 @@ void CWireframeManager::FUN_141b94260(bool bWireframe)
         Unk_EntRef ref = m_entities.GetNext(pos);
         if (ref != 0)
         {
-            egf::Entity* pEntity = reinterpret_cast<egf::Entity*>(ref.FUN_1408a9090());
-            NiAVObject* pObject = FUN_1413f98b0()->GetSceneGraphFromEntity(pEntity);
+            NiAVObject* pObject = FUN_1413f98b0()->GetSceneGraphFromEntity(reinterpret_cast<egf::Entity*>(ref.FUN_1408a9090()));
             if (pObject)
             {
                 NiWireframeProperty* pWire = NiDynamicCast(NiWireframeProperty, pObject->GetProperty(NiProperty::WIREFRAME));
@@ -133,21 +142,18 @@ const void* CWireframeManager::vfunc_2()
 // @0x141b94a70
 MS2_EMIT_CRT_MEMMOVE_S_COPY(1);
 
-// MS2-FUNCTIONAL: the room handle / period temporaries are laid out by guesswork (callee types unrecovered)
 // @0x141b94b90
 int Unk_WfGate::FUN_141b94b90()
 {
     if (m_nRoomId != 0)
     {
         Unk_WfRoomRef room = FUN_14031c2a0()->FUN_1403206b0(m_nRoomId);
-        if (FUN_14031c160(&room))
+        if (FUN_14031c160(&room) ? true : false)
         {
-            Unk_WfPeriod* pRoom = FUN_1403347d0(&room);
-            if (!FUN_140b91330(pRoom->m_period))
+            if (!FUN_140b91330(&FUN_1403347d0(&room)->m_period))
             {
-                Unk_WfSpan span;
-                __int64 nNow = FUN_1408694c0();
-                if (!FUN_140837280(FUN_1402e4e80(pRoom->m_period, &span, nNow)))
+                int nNow = FUN_1408694c0();
+                if (!FUN_1403347d0(&room)->m_period.FUN_1402e4e80(nNow).FUN_140837280())
                     return 0;
             }
         }

@@ -251,7 +251,7 @@ public:
     virtual int vfunc_48() { return 0x4e39; }                   // 48 0x141a88d40 (inline)
     virtual int OnMessage(UISwfEntity* pSender, UIMsg* pMsg);   // IMessageListener 0 0x141a7dd30
     virtual void vfunc_o70_2(const void* pId);                  // UIEntityEventListener 2 0x141a7dc20 (an efd::UniversalID)
-    virtual void vfunc_4(void* pProxy);                         // UIEntityEventListener 4 0x141a7df60 (a by-value MS2Ptr<CProxyGameObject>)
+    virtual void vfunc_4(MS2Ptr<CProxyGameObject> spProxy);     // UIEntityEventListener 4 0x141a7df60
     virtual void vfunc_ugc_1(void* pId, CString strImage);      // UIUGCEventListener 1 0x141a7e1a0
     // ---- non-virtual members (sorted by address) ----
     bool FUN_141a7e020(int nButton, const CMsgBoxData& data);   // report confirm

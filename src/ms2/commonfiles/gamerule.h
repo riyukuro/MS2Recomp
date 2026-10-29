@@ -225,7 +225,7 @@ public:
     void FUN_140478640(int a);
     MS2Ptr<UgcMapCommendationGMEvent> FUN_1404786b0(int a);
     void FUN_140478770(int value, int key, int sub);
-    void FUN_1404788a0(int key, int sub);
+    void FUN_1404788a0(int value, int key, int sub);
     void FUN_140478960(int key, ATL::CRBMap<int, int>& out);
     void FUN_140478a40(int value);                          // GameEventDeleteUrlCache
     int FUN_140478a60();
@@ -519,7 +519,7 @@ private:
     std::map<std::pair<int, int>, MS2Ptr<QuestAdditionalRewardContext> > m_d00;
     bool m_d10;
     CLockCriticalSection m_d18;
-    std::multimap<unsigned, MS2Ptr<Unk_ItemTagRewardContext> > m_d48;
+    std::map<unsigned, MS2Ptr<Unk_ItemTagRewardContext> > m_d48;
     CLockCriticalSection m_d58;
     Unk_GameRuleRateMap<unsigned long> m_d88;
     CLockCriticalSection m_da8;

@@ -98,7 +98,7 @@ public:
     virtual void vfunc_12(); virtual void vfunc_13(); virtual void vfunc_14(); virtual void vfunc_15();
     virtual void vfunc_16(); virtual void vfunc_17(); virtual void vfunc_18(); virtual void vfunc_19();
     virtual void vfunc_20(); virtual void vfunc_21(); virtual void vfunc_22(); virtual void vfunc_23();
-    virtual void vfunc_24(int n);
+    virtual void vfunc_24(bool b);
     void FUN_1422dfc70(ASObj& obj);                                 // add an item
     void FUN_1422df690(int n);                                      // select
     void FUN_1422c1fe0(unsigned int nEnabled);
@@ -262,16 +262,15 @@ void UIHomeInfoDialog::OnLoadComplete()
     UIDialog::OnLoadComplete();
     if (FUN_1412c72d0())
     {
-        MS2Ptr<Unk_HiCombo> spChannel = FUN_140c28560(CString("m_channel"));
-        if (spChannel.get() != 0)
+        if (MS2Ptr<Unk_HiCombo> spChannel = FUN_140c28560("m_channel"))
         {
             CStringW strLabel;
             unsigned int nChannel = FUN_14092f640();
-            strLabel.Format(L"%s %d", (LPCWSTR)GetStringCommon(0x579), (unsigned __int64)nChannel);
+            strLabel.Format(L"%s %d", (LPCWSTR)GetStringCommon(0x579), nChannel);
             ASObj obj(2);
             obj.FUN_1407cbb20("label", strLabel);
             spChannel->FUN_1422dfc70(obj);
-            spChannel->vfunc_24(1);
+            spChannel->vfunc_24(true);
             spChannel->FUN_1422df690(0);
             spChannel->FUN_1422c1fe0(0);
         }
@@ -287,7 +286,6 @@ void UIHomeInfoDialog::vfunc_43()
 }
 
 // @0x1412c5030
-// MS2-FUNCTIONAL: behaviour-equivalent; codegen (temporaries / branch layout) not byte-identical to the exe
 int UIHomeInfoDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs)
 {
     UIDialog::vfunc_28(szMethod, pArgs, nArgs);
@@ -296,50 +294,53 @@ int UIHomeInfoDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
         OnTogglePanel();
         return 1;
     }
-    if (_stricmp("OnNoticeModify", szMethod) == 0)
+    else if (_stricmp("OnNoticeModify", szMethod) == 0)
     {
         OnNoticeModify();
         return 1;
     }
-    if (_stricmp("OnVisitorsBook", szMethod) == 0)
+    else if (_stricmp("OnVisitorsBook", szMethod) == 0)
     {
         FUN_1403ed2b0()->FUN_141adc750(0x4ed9);
         return 1;
     }
-    if (_stricmp("OnHomeLeave", szMethod) == 0)
+    else if (_stricmp("OnHomeLeave", szMethod) == 0)
     {
         FUN_1412c7600();
         return 1;
     }
-    if (_stricmp("OnRecommend", szMethod) == 0)
+    else if (_stricmp("OnRecommend", szMethod) == 0)
         return FUN_1418fd130();
-    if (_stricmp("OnReport", szMethod) == 0)
+    else if (_stricmp("OnReport", szMethod) == 0)
         return FUN_1418fcee0();
-    if (_stricmp("OnConstruct", szMethod) == 0)
+    else if (_stricmp("OnConstruct", szMethod) == 0)
     {
         OnConstruct();
         return 1;
     }
-    if (_stricmp("OnBank", szMethod) == 0)
+    else if (_stricmp("OnBank", szMethod) == 0)
     {
         OnBank();
         return 1;
     }
-    if (_stricmp("OnDoctor", szMethod) == 0)
+    else if (_stricmp("OnDoctor", szMethod) == 0)
     {
         OnDoctor();
         return 1;
     }
-    if (_stricmp("OnBalance", szMethod) == 0)
+    else if (_stricmp("OnBalance", szMethod) == 0)
     {
         OnBalance();
         return 1;
     }
-    if (_stricmp("OnRemoveUser", szMethod) == 0)
+    else if (_stricmp("OnRemoveUser", szMethod) == 0)
     {
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs))
-            SendRequestCubeMode58(data.FUN_1422b8f40());
+        {
+            CStringW strName = data.FUN_1422b8f40();
+            SendRequestCubeMode58(strName);
+        }
         return 1;
     }
     return 0;
@@ -349,14 +350,12 @@ int UIHomeInfoDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
 // MS2-FUNCTIONAL: behaviour-equivalent; codegen (temporaries / branch layout) not byte-identical to the exe
 void UIHomeInfoDialog::FUN_1412c5330(unsigned int nRemainMs)
 {
-    MS2Ptr<ASUIComponent> spPanel = GetChild<ASUIComponent>(CString("m_homeInfoPanel"));
-    if (spPanel.get() != 0)
+    if (MS2Ptr<ASUIComponent> spPanel = GetChild<ASUIComponent>("m_homeInfoPanel"))
     {
-        MS2Ptr<Unk_HiButton> spBank = spPanel->FUN_140acce30<Unk_HiButton>(CString("m_bank"));
-        if (spBank.get() != 0)
+        if (MS2Ptr<Unk_HiButton> spBank = spPanel->FUN_140acce30<Unk_HiButton>("m_bank"))
         {
-            unsigned int nTotal = *FUN_1401d7c10(&FUN_1401d3200()->m_bank);
-            spBank->FUN_140e5bf20((LPCSTR)s_strOnCooldownStart, (float)nRemainMs * 0.001f, (float)nTotal * 0.001f);
+            float fRemain = (float)nRemainMs * 0.001f;
+            spBank->FUN_140e5bf20((LPCSTR)s_strOnCooldownStart, fRemain, (float)*FUN_1401d7c10(&FUN_1401d3200()->m_bank) * 0.001f);
         }
     }
 }
@@ -365,14 +364,12 @@ void UIHomeInfoDialog::FUN_1412c5330(unsigned int nRemainMs)
 // MS2-FUNCTIONAL: behaviour-equivalent; codegen (temporaries / branch layout) not byte-identical to the exe
 void UIHomeInfoDialog::FUN_1412c54e0(unsigned int nRemainMs)
 {
-    MS2Ptr<ASUIComponent> spPanel = GetChild<ASUIComponent>(CString("m_homeInfoPanel"));
-    if (spPanel.get() != 0)
+    if (MS2Ptr<ASUIComponent> spPanel = GetChild<ASUIComponent>("m_homeInfoPanel"))
     {
-        MS2Ptr<Unk_HiButton> spDoctor = spPanel->FUN_140acce30<Unk_HiButton>(CString("m_doctor"));
-        if (spDoctor.get() != 0)
+        if (MS2Ptr<Unk_HiButton> spDoctor = spPanel->FUN_140acce30<Unk_HiButton>("m_doctor"))
         {
-            unsigned int nTotal = *FUN_1401d7c10(&FUN_1401d3200()->m_doctor);
-            spDoctor->FUN_140e5bf20((LPCSTR)s_strOnCooldownStart, (float)nRemainMs * 0.001f, (float)nTotal * 0.001f);
+            float fRemain = (float)nRemainMs * 0.001f;
+            spDoctor->FUN_140e5bf20((LPCSTR)s_strOnCooldownStart, fRemain, (float)*FUN_1401d7c10(&FUN_1401d3200()->m_doctor) * 0.001f);
         }
     }
 }
@@ -389,32 +386,24 @@ void UIHomeInfoDialog::FUN_1412c5690()
     Unk_HiMapPtr spMap = FUN_1403ed2d0()->FUN_141bd30a0();
     if (spMap.FUN_140965240(0) != 0)
         return;
+    if (MS2Ptr<ASUIComponent> spPanel = GetChild<ASUIComponent>("m_homeInfoPanel"))
     {
-        MS2Ptr<ASUIComponent> spPanel = GetChild<ASUIComponent>(CString("m_homeInfoPanel"));
-        if (spPanel.get() != 0)
+        if (MS2Ptr<Unk_HiButton> spBank = spPanel->FUN_140acce30<Unk_HiButton>("m_bank"))
         {
-            MS2Ptr<Unk_HiButton> spBank = spPanel->FUN_140acce30<Unk_HiButton>(CString("m_bank"));
-            if (spBank.get() != 0)
-            {
-                spBank->Invoke("setTimeString", GetStringCommon(0x5ce), GetStringCommon(0x5cc), GetStringCommon(0x5ca), GetStringCommon(0x5cb));
-                int nRemain = FUN_1412c81d0();
-                if (nRemain != 0)
-                    FUN_1412c5330(nRemain);
-            }
+            spBank->Invoke("setTimeString", GetStringCommon(0x5ce), GetStringCommon(0x5cc), GetStringCommon(0x5ca), GetStringCommon(0x5cb));
+            unsigned int nRemain = FUN_1412c81d0();
+            if (nRemain > 0)
+                FUN_1412c5330(nRemain);
         }
     }
+    if (MS2Ptr<ASUIComponent> spPanel = GetChild<ASUIComponent>("m_homeInfoPanel"))
     {
-        MS2Ptr<ASUIComponent> spPanel = GetChild<ASUIComponent>(CString("m_homeInfoPanel"));
-        if (spPanel.get() != 0)
+        if (MS2Ptr<Unk_HiButton> spDoctor = spPanel->FUN_140acce30<Unk_HiButton>("m_doctor"))
         {
-            MS2Ptr<Unk_HiButton> spDoctor = spPanel->FUN_140acce30<Unk_HiButton>(CString("m_doctor"));
-            if (spDoctor.get() != 0)
-            {
-                spDoctor->Invoke("setTimeString", GetStringCommon(0x5ce), GetStringCommon(0x5cc), GetStringCommon(0x5ca), GetStringCommon(0x5cb));
-                int nRemain = FUN_1412c8280();
-                if (nRemain != 0)
-                    FUN_1412c54e0(nRemain);
-            }
+            spDoctor->Invoke("setTimeString", GetStringCommon(0x5ce), GetStringCommon(0x5cc), GetStringCommon(0x5ca), GetStringCommon(0x5cb));
+            unsigned int nRemain = FUN_1412c8280();
+            if (nRemain > 0)
+                FUN_1412c54e0(nRemain);
         }
     }
 }
@@ -423,15 +412,12 @@ void UIHomeInfoDialog::FUN_1412c5690()
 // MS2-FUNCTIONAL: behaviour-equivalent; codegen (temporaries / branch layout) not byte-identical to the exe
 void UIHomeInfoDialog::FUN_1412c5c30()
 {
-    if (vfunc_55() == 0)
+    if (vfunc_55())
+        return;
+    if (MS2Ptr<ASUIComponent> spPanel = GetChild<ASUIComponent>("m_homeInfoPanel"))
     {
-        MS2Ptr<ASUIComponent> spPanel = GetChild<ASUIComponent>(CString("m_homeInfoPanel"));
-        if (spPanel.get() != 0)
-        {
-            MS2Ptr<ASTextField> spText = spPanel->FUN_1409b4620(CString("m_notice"));
-            if (spText.get() != 0)
-                spText->FUN_1422c4cd0(FUN_1412c7090());
-        }
+        if (MS2Ptr<ASTextField> spText = spPanel->FUN_1409b4620("m_notice"))
+            spText->FUN_1422c4cd0(FUN_1412c7090());
     }
 }
 
@@ -439,18 +425,12 @@ void UIHomeInfoDialog::FUN_1412c5c30()
 // MS2-FUNCTIONAL: behaviour-equivalent; codegen (temporaries / branch layout) not byte-identical to the exe
 void UIHomeInfoDialog::FUN_1412c5da0()
 {
-    if (vfunc_55() == 0)
+    if (vfunc_55())
+        return;
+    if (MS2Ptr<ASUIComponent> spPanel = GetChild<ASUIComponent>("m_homeInfoPanel"))
     {
-        MS2Ptr<ASUIComponent> spPanel = GetChild<ASUIComponent>(CString("m_homeInfoPanel"));
-        if (spPanel.get() != 0)
-        {
-            MS2Ptr<Unk_HiButton> spButton = spPanel->FUN_140acce30<Unk_HiButton>(CString("m_recommend"));
-            if (spButton.get() != 0)
-            {
-                int nVoted = FUN_140930190();
-                spButton->FUN_1422c1fe0(nVoted == 0);
-            }
-        }
+        if (MS2Ptr<Unk_HiButton> spButton = spPanel->FUN_140acce30<Unk_HiButton>("m_recommend"))
+            spButton->FUN_1422c1fe0(FUN_140930190() ? 0 : 1);
     }
 }
 
@@ -458,15 +438,12 @@ void UIHomeInfoDialog::FUN_1412c5da0()
 // MS2-FUNCTIONAL: behaviour-equivalent; codegen (temporaries / branch layout) not byte-identical to the exe
 void UIHomeInfoDialog::FUN_1412c5f00()
 {
-    if (vfunc_55() == 0)
+    if (vfunc_55())
+        return;
+    if (MS2Ptr<ASUIComponent> spPanel = GetChild<ASUIComponent>("m_homeInfoPanel"))
     {
-        MS2Ptr<ASUIComponent> spPanel = GetChild<ASUIComponent>(CString("m_homeInfoPanel"));
-        if (spPanel.get() != 0)
-        {
-            MS2Ptr<ASTextField> spText = spPanel->FUN_1409b4620(CString("m_address"));
-            if (spText.get() != 0)
-                spText->FUN_1422c4cd0(FUN_1412c7140());
-        }
+        if (MS2Ptr<ASTextField> spText = spPanel->FUN_1409b4620("m_address"))
+            spText->FUN_1422c4cd0(FUN_1412c7140());
     }
 }
 
@@ -474,19 +451,16 @@ void UIHomeInfoDialog::FUN_1412c5f00()
 // MS2-FUNCTIONAL: behaviour-equivalent; codegen (temporaries / branch layout) not byte-identical to the exe
 void UIHomeInfoDialog::FUN_1412c6070()
 {
-    if (vfunc_55() == 0)
+    if (vfunc_55())
+        return;
+    FUN_1412c5da0();
+    if (MS2Ptr<ASUIComponent> spPanel = GetChild<ASUIComponent>("m_homeInfoPanel"))
     {
-        FUN_1412c5da0();
-        MS2Ptr<ASUIComponent> spPanel = GetChild<ASUIComponent>(CString("m_homeInfoPanel"));
-        if (spPanel.get() != 0)
+        if (MS2Ptr<ASTextField> spText = spPanel->FUN_1409b4620("m_constructScore"))
         {
-            MS2Ptr<ASTextField> spText = spPanel->FUN_1409b4620(CString("m_constructScore"));
-            if (spText.get() != 0)
-            {
-                int nMax = FUN_1409670e0()->FUN_1410c3430();
-                int nCur = FUN_1409670e0()->FUN_1410c33f0();
-                spText->FUN_1422c4cd0(FUN_140811740(0x25, nCur, nMax));
-            }
+            int nMax = FUN_1409670e0()->FUN_1410c3430();
+            int nCur = FUN_1409670e0()->FUN_1410c33f0();
+            spText->FUN_1422c4cd0(FUN_140811740(0x25, nCur, nMax));
         }
     }
 }
@@ -495,33 +469,27 @@ void UIHomeInfoDialog::FUN_1412c6070()
 // MS2-FUNCTIONAL: behaviour-equivalent; codegen (temporaries / branch layout) not byte-identical to the exe
 void UIHomeInfoDialog::FUN_1412c6220()
 {
-    if (vfunc_55() == 0)
+    if (vfunc_55())
+        return;
+    efd::SmartPointer<Unk_HiSvc> spService(FUN_1401cd040(&DAT_143b059e8));
+    if (spService == 0)
+        return;
+    if (MS2Ptr<ASUIComponent> spPanel = GetChild<ASUIComponent>("m_homeInfoPanel"))
     {
-        efd::SmartPointer<Unk_HiSvc> spService(FUN_1401cd040(&DAT_143b059e8));
-        if (spService != 0)
+        if (MS2Ptr<Unk_HiConv> spConv = spPanel->FUN_140accfb0<Unk_HiConv>("m_homeConvenientPanel"))
         {
-            MS2Ptr<ASUIComponent> spPanel = GetChild<ASUIComponent>(CString("m_homeInfoPanel"));
-            if (spPanel.get() != 0)
+            bool bMerat = FUN_14036d710(FUN_140166410(), 0x61);
+            spConv->Invoke("setMeratIcon", bMerat);
+            if (MS2Ptr<Unk_HiButton> spBalance = spConv->FUN_140acce30<Unk_HiButton>("m_balance"))
             {
-                MS2Ptr<Unk_HiConv> spConv = spPanel->FUN_140accfb0<Unk_HiConv>(CString("m_homeConvenientPanel"));
-                if (spConv.get() != 0)
-                {
-                    spConv->Invoke("setMeratIcon", FUN_14036d710(FUN_140166410(), 0x61));
-                    MS2Ptr<Unk_HiButton> spBalance = spConv->FUN_140acce30<Unk_HiButton>(CString("m_balance"));
-                    if (spBalance.get() != 0)
-                    {
-                        int nOwner = FUN_1418fd280();
-                        spBalance->FUN_1422c1fe0(nOwner != 0);
-                        spBalance->vfunc_4(nOwner != 0);
-                    }
-                    MS2Ptr<ASTextField> spMeso = spConv->FUN_1409b4620(CString("m_balanceMeso"));
-                    if (spMeso.get() != 0)
-                        spMeso->FUN_1422c4f00(FUN_1409404f0(spService->FUN_1410d5730()));
-                    MS2Ptr<ASTextField> spMerat = spConv->FUN_1409b4620(CString("m_balanceMerat"));
-                    if (spMerat.get() != 0)
-                        spMerat->FUN_1422c4f00(FUN_1409404f0(spService->FUN_1410d5780()));
-                }
+                bool bOwner = FUN_1418fd280() ? true : false;
+                spBalance->FUN_1422c1fe0(bOwner);
+                spBalance->vfunc_4(bOwner);
             }
+            if (MS2Ptr<ASTextField> spMeso = spConv->FUN_1409b4620("m_balanceMeso"))
+                spMeso->FUN_1422c4f00(FUN_1409404f0(spService->FUN_1410d5730()));
+            if (MS2Ptr<ASTextField> spMerat = spConv->FUN_1409b4620("m_balanceMerat"))
+                spMerat->FUN_1422c4f00(FUN_1409404f0(spService->FUN_1410d5780()));
         }
     }
 }
@@ -530,45 +498,41 @@ void UIHomeInfoDialog::FUN_1412c6220()
 // MS2-FUNCTIONAL: behaviour-equivalent; codegen (temporaries / branch layout) not byte-identical to the exe
 void UIHomeInfoDialog::FUN_1412c66c0()
 {
-    if (vfunc_55() == 0)
+    if (vfunc_55())
+        return;
+    efd::SmartPointer<Unk_HiSvc> spService(FUN_1401cd040(&DAT_143b059e8));
+    if (spService == 0)
+        return;
+    if (MS2Ptr<ASUIComponent> spPanel = GetChild<ASUIComponent>("m_homeInfoPanel"))
     {
-        efd::SmartPointer<Unk_HiSvc> spService(FUN_1401cd040(&DAT_143b059e8));
-        if (spService != 0)
+        if (MS2Ptr<Unk_HiConv> spConv = spPanel->FUN_140accfb0<Unk_HiConv>("m_homeConvenientPanel"))
         {
-            MS2Ptr<ASUIComponent> spPanel = GetChild<ASUIComponent>(CString("m_homeInfoPanel"));
-            if (spPanel.get() != 0)
+            std::set<__int64> ids;
+            spService->FUN_1410d5930(ids);
+            if (MS2Ptr<Unk_HiList> spList = spConv->FUN_140bc7280("m_scrollingList"))
             {
-                MS2Ptr<Unk_HiConv> spConv = spPanel->FUN_140accfb0<Unk_HiConv>(CString("m_homeConvenientPanel"));
-                if (spConv.get() != 0)
+                spList->FUN_1422dd1d0();
+                if (ids.empty())
                 {
-                    std::set<__int64> ids;
-                    spService->FUN_1410d5930(ids);
-                    MS2Ptr<Unk_HiList> spList = spConv->FUN_140bc7280(CString("m_scrollingList"));
-                    if (spList.get() != 0)
+                    spConv->vfunc_4(FUN_140930c50());
+                    spList->vfunc_24(true);
+                }
+                else
+                {
+                    spConv->vfunc_3(1);
+                    for (std::set<__int64>::iterator it = ids.begin(); it != ids.end(); ++it)
                     {
-                        spList->FUN_1422dd1d0();
-                        if (!ids.empty())
+                        __int64 nCharId = *it;
+                        PCBase* pPlayer = FUN_141bd1640(FUN_1403ed2d0(), nCharId);
+                        if (pPlayer != 0)
                         {
-                            spConv->vfunc_3(1);
-                            for (std::set<__int64>::iterator it = ids.begin(); it != ids.end(); ++it)
-                            {
-                                PCBase* pPlayer = FUN_141bd1640(FUN_1403ed2d0(), *it);
-                                if (pPlayer != 0)
-                                {
-                                    ASObj obj(2);
-                                    obj.FUN_1407cbb20((LPCSTR)s_strCharName, pPlayer->vfunc_77());
-                                    obj.FUN_1407cbbe0("myHome", FUN_1418fd280() != 0);
-                                    spList->FUN_1422dd230(obj);
-                                }
-                            }
-                            spList->vfunc_24(true);
-                        }
-                        else
-                        {
-                            spConv->vfunc_4(FUN_140930c50());
-                            spList->vfunc_24(true);
+                            ASObj obj(2);
+                            obj.FUN_1407cbb20((LPCSTR)s_strCharName, pPlayer->vfunc_77());
+                            obj.FUN_1407cbbe0("myHome", FUN_1418fd280() != 0);
+                            spList->FUN_1422dd230(obj);
                         }
                     }
+                    spList->vfunc_24(true);
                 }
             }
         }
@@ -579,26 +543,23 @@ void UIHomeInfoDialog::FUN_1412c66c0()
 // MS2-FUNCTIONAL: behaviour-equivalent; codegen (temporaries / branch layout) not byte-identical to the exe
 void UIHomeInfoDialog::FUN_1412c6b50()
 {
-    if (vfunc_55() == 0 && FUN_141902580(false))
+    if (vfunc_55())
+        return;
+    if (!FUN_141902580(false))
+        return;
+    if (!FUN_1409670e0()->FUN_1410c3600(2))
+        return;
+    if (MS2Ptr<ASUIComponent> spPanel = GetChild<ASUIComponent>("m_homeInfoPanel"))
     {
-        if (FUN_1409670e0()->FUN_1410c3600(2))
+        if (MS2Ptr<ASTextField> spArea = spPanel->FUN_1409b4620("m_extensionArea"))
         {
-            MS2Ptr<ASUIComponent> spPanel = GetChild<ASUIComponent>(CString("m_homeInfoPanel"));
-            if (spPanel.get() != 0)
-            {
-                MS2Ptr<ASTextField> spArea = spPanel->FUN_1409b4620(CString("m_extensionArea"));
-                if (spArea.get() != 0)
-                {
-                    int nArea = FUN_1409670e0()->FUN_1410c3470();
-                    spArea->FUN_1422c4cd0(FUN_14062b4f0(CStringW(L"s_home_info_title_area"), nArea));
-                }
-                MS2Ptr<ASTextField> spHeight = spPanel->FUN_1409b4620(CString("m_extensionHeight"));
-                if (spHeight.get() != 0)
-                {
-                    int nHeight = FUN_1409670e0()->FUN_1410c34b0();
-                    spHeight->FUN_1422c4cd0(FUN_14062b4f0(CStringW(L"s_home_info_title_height"), nHeight));
-                }
-            }
+            int nArea = FUN_1409670e0()->FUN_1410c3470();
+            spArea->FUN_1422c4cd0(FUN_14062b4f0(L"s_home_info_title_area", nArea));
+        }
+        if (MS2Ptr<ASTextField> spHeight = spPanel->FUN_1409b4620("m_extensionHeight"))
+        {
+            int nHeight = FUN_1409670e0()->FUN_1410c34b0();
+            spHeight->FUN_1422c4cd0(FUN_14062b4f0(L"s_home_info_title_height", nHeight));
         }
     }
 }
@@ -607,23 +568,20 @@ void UIHomeInfoDialog::FUN_1412c6b50()
 // MS2-FUNCTIONAL: behaviour-equivalent; codegen (temporaries / branch layout) not byte-identical to the exe
 void UIHomeInfoDialog::FUN_1412c6e70(const CStringW& strItemName, const CStringW& strCreator)
 {
-    if (vfunc_55() == 0 && FUN_141902580(false))
+    if (vfunc_55())
+        return;
+    if (!FUN_141902580(false))
+        return;
+    if (!FUN_1409670e0()->FUN_1410c3600(2))
+        return;
+    if (MS2Ptr<ASUIComponent> spPanel = GetChild<ASUIComponent>("m_homeInfoPanel"))
     {
-        if (FUN_1409670e0()->FUN_1410c3600(2))
-        {
-            MS2Ptr<ASUIComponent> spPanel = GetChild<ASUIComponent>(CString("m_homeInfoPanel"));
-            if (spPanel.get() != 0)
-            {
-                MS2Ptr<ASTextField> spName = spPanel->FUN_1409b4620(CString("m_itemName"));
-                if (spName.get() != 0)
-                    spName->FUN_1422c4cd0(strItemName);
-                MS2Ptr<ASTextField> spCreator = spPanel->FUN_1409b4620(CString("m_creator"));
-                if (spCreator.get() != 0)
-                    spCreator->FUN_1422c4cd0(strCreator);
-            }
-            FUN_1412c6b50();
-        }
+        if (MS2Ptr<ASTextField> spName = spPanel->FUN_1409b4620("m_itemName"))
+            spName->FUN_1422c4cd0(strItemName);
+        if (MS2Ptr<ASTextField> spCreator = spPanel->FUN_1409b4620("m_creator"))
+            spCreator->FUN_1422c4cd0(strCreator);
     }
+    FUN_1412c6b50();
 }
 
 // @0x1412c7090
@@ -643,55 +601,55 @@ CStringW UIHomeInfoDialog::FUN_1412c7140()
     Unk_HiPc* pPc = FUN_141bd0cc0(FUN_1403ed2d0());
     if (pPc == 0)
         return strAddress;
-    if (FUN_141527ed0(pPc) == 0)
-        return strAddress;
-    int nA = FUN_1409670e0()->FUN_1410c3140();
-    int nB = FUN_1409670e0()->FUN_1410c3100();
-    int nC = FUN_1409670e0()->FUN_1410c3000();
-    return FUN_1409796e0(nA, nB, nC, FUN_1409670e0()->FUN_1410c31d0());
+    if (FUN_141527ed0(pPc))
+    {
+        int nA = FUN_1409670e0()->FUN_1410c3140();
+        int nB = FUN_1409670e0()->FUN_1410c3100();
+        int nC = FUN_1409670e0()->FUN_1410c3000();
+        CStringW strName = FUN_1409670e0()->FUN_1410c31d0();
+        return FUN_1409796e0(nA, nB, nC, strName);
+    }
+    return strAddress;
 }
 
 // @0x1412c72d0
-// MS2-FUNCTIONAL: behaviour-equivalent; codegen (temporaries / branch layout) not byte-identical to the exe
 int UIHomeInfoDialog::FUN_1412c72d0()
 {
     Unk_HiPc* pPc = FUN_141bd0cc0(FUN_1403ed2d0());
     if (pPc == 0)
         return 0;
-    if (FUN_1418fd2f0() == 0)
+    if (FUN_1418fd2f0() != 0)
     {
-        vfunc_8(0);
-        return 0;
-    }
-    int nCraft = pPc->FUN_1416595d0();
-    int nMode = FUN_1409670e0()->FUN_1410c3650();
-    ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30);
-    if (pDialog)
-        pDialog->Invoke("setMyHome", FUN_1418fd280(), nCraft, nMode);
-    if (nCraft == 0)
-    {
-        FUN_1412c5c30();
-        FUN_1412c5da0();
-        FUN_1412c5f00();
-        FUN_1412c6070();
-        bool bBook = FUN_14036d570(FUN_140166410(), 0x3e);
-        MS2Ptr<Unk_HiPanelB> spPanel = FUN_140ede180(CString("m_homeInfoPanel"));
-        if (spPanel.get() != 0)
+        int nCraft = pPc->FUN_1416595d0();
+        int nMode = FUN_1409670e0()->FUN_1410c3650();
+        ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30);
+        if (pDialog)
+            pDialog->Invoke("setMyHome", FUN_1418fd280(), nCraft, nMode);
+        if (nCraft == 0)
         {
-            MS2Ptr<Unk_HiButton> spBook = spPanel->FUN_140acce30<Unk_HiButton>(CString("m_visitorsBook"));
-            if (spBook.get() != 0)
+            FUN_1412c5c30();
+            FUN_1412c5da0();
+            FUN_1412c5f00();
+            FUN_1412c6070();
+            int bBook = FUN_14036d570(FUN_140166410(), 0x3e);
+            if (MS2Ptr<Unk_HiPanelB> spPanel = FUN_140ede180("m_homeInfoPanel"))
             {
-                spBook->FUN_1422c1fe0(bBook);
-                spBook->vfunc_3(bBook);
+                if (MS2Ptr<Unk_HiButton> spBook = spPanel->FUN_140acce30<Unk_HiButton>("m_visitorsBook"))
+                {
+                    spBook->FUN_1422c1fe0(bBook);
+                    spBook->vfunc_3(bBook);
+                }
             }
         }
+        FUN_1412c6220();
+        FUN_1412c66c0();
+        FUN_1412c6e70(L"", L"");
+        if (FUN_1418fd280() != 0)
+            FUN_1412c5690();
+        return 1;
     }
-    FUN_1412c6220();
-    FUN_1412c66c0();
-    FUN_1412c6e70(CStringW(L""), CStringW(L""));
-    if (FUN_1418fd280() != 0)
-        FUN_1412c5690();
-    return 1;
+    vfunc_8(0);
+    return 0;
 }
 
 // @0x1412c7600
@@ -771,7 +729,7 @@ void UIHomeInfoDialog::SendRequestCubeMode58(CStringW strName)
 {
     COutPacket packet(static_cast<int>(SendOp::RequestCube), 0);
     packet.WriteUInt8(0x3a);
-    packet.WriteUnicodeStringA(FUN_14016a600(strName.GetString(), 0));
+    packet.WriteUnicodeStringA(FUN_14016a600((const wchar_t*)strName, 0));
     FUN_140710590(packet);
 }
 
@@ -787,26 +745,31 @@ bool UIHomeInfoDialog::FUN_1412c7aa0(int nResult, const CMsgBoxData& data)
 }
 
 // @0x1412c7af0
-// MS2-FUNCTIONAL: behaviour-equivalent; codegen (temporaries / branch layout) not byte-identical to the exe
-bool UIHomeInfoDialog::FUN_1412c7af0(int nSlot)
+bool UIHomeInfoDialog::FUN_1412c7af0(int nSlot, const CMsgBoxData& data)
 {
     UIHomeSaveSlotDialog* pDialog = FUN_140c2b5c0(0x4f27);
-    if (nSlot == 0)
+    switch (nSlot)
     {
-        if (FUN_1409670e0()->FUN_1410ce310() == 0)
-            pDialog->FUN_140faa6d0();
-        else
+    case 0:
+    {
+        unsigned int nCount = FUN_1409670e0()->FUN_1410ce310();
+        if (nCount > 0)
         {
-            MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, GetStringCommon(0xbb1), static_cast<IMessageListener*>(this), CStringW(L"OnHousingSave"));
+            CStringW strMsg = GetStringCommon(0xbb1);
+            MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, strMsg, static_cast<IMessageListener*>(this), CStringW(L"OnHousingSave"));
             if (spBox == 0)
                 return false;
             spBox->FUN_141a024a0(0);
             FUN_140d73c60(spBox);
         }
+        else
+            pDialog->FUN_140faa6d0();
+        break;
     }
-    else if (nSlot == 1)
+    case 1:
         pDialog->FUN_140faa750();
-    else if (nSlot == 2)
+        break;
+    case 2:
     {
         MS2Ptr<CMsgBoxData> spBox = FUN_140d73e40(0x1f, 0x6e2, 0, CStringW(L""));
         if (spBox.get() != 0)
@@ -818,6 +781,7 @@ bool UIHomeInfoDialog::FUN_1412c7af0(int nSlot)
             spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIHomeInfoDialog::SendRequestCubeMode31));
             FUN_140d73c60(spBox);
         }
+    }
     }
     return true;
 }
@@ -942,10 +906,10 @@ inline Scaleform::GFx::Value Unk_HiScript::Invoke(const char* szMethod, CStringW
 {
     ASArgList args;
     args.FUN_1409b2800(4);
-    FUN_1422bcea0(args.FUN_1409b1f70(0), a1.GetString());
-    FUN_1422bcea0(args.FUN_1409b1f70(1), a2.GetString());
-    FUN_1422bcea0(args.FUN_1409b1f70(2), a3.GetString());
-    FUN_1422bcea0(args.FUN_1409b1f70(3), a4.GetString());
+    FUN_1422bcea0(args.FUN_1409b1f70(0), (const wchar_t*)a1);
+    FUN_1422bcea0(args.FUN_1409b1f70(1), (const wchar_t*)a2);
+    FUN_1422bcea0(args.FUN_1409b1f70(2), (const wchar_t*)a3);
+    FUN_1422bcea0(args.FUN_1409b1f70(3), (const wchar_t*)a4);
     return FUN_1422bb8f0(szMethod, args);
 }
 

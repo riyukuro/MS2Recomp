@@ -8,10 +8,12 @@
 #include "ms2/placeholder/nmfunc.h"
 #include "ms2/placeholder/nmobjects.h"
 #include "ms2/placeholder/nmstream.h"
+#include "ms2/placeholder/nmencoder.h"
 #include "ms2/ms2recover.h"
 
 extern int FUN_1415fb750(void*);
-extern int FUN_1415fb6d0(void*);
+extern int FUN_1415fb6d0(const void*);
+extern int FUN_1415fb6d0(CNMSerializableDecoder*);
 extern void FUN_1415f9990(void*);
 extern void FUN_14156ac20(void*, unsigned int);
 extern void FUN_14156ab00(void*, unsigned char);
@@ -32,11 +34,8 @@ CNMGameInfo::CNMGameInfo()
 // @0x141579990
 unsigned int CNMGameInfo::EncodeFramed(CNMStream* pStream)
 {
-    alignas(8) unsigned char encoder[0x18];
-    FUN_14156bcb0(encoder, pStream, this);
-    const unsigned int result = Encode(reinterpret_cast<CNMEncoder*>(encoder), pStream);
-    FUN_14156bd50(encoder);
-    return result;
+    CNMSerializableEncoder encoder(pStream, this);
+    return CNMGameInfo::Encode(reinterpret_cast<CNMEncoder*>(&encoder), pStream);
 }
 
 // MS2-FUNCTIONAL: selects raw or framed encoding from the object format byte.
@@ -44,10 +43,8 @@ unsigned int CNMGameInfo::EncodeFramed(CNMStream* pStream)
 unsigned int CNMGameInfo::EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream)
 {
     if (m_bFormat == 1)
-        Encode(pEncoder, pStream);
-    else
-        EncodeFramed(pStream);
-    return 0;
+        return CNMGameInfo::Encode(pEncoder, pStream);
+    return CNMGameInfo::EncodeFramed(pStream);
 }
 
 // MS2-FUNCTIONAL: writes the game record fields in recovered wire order.
@@ -75,13 +72,10 @@ unsigned int CNMGameInfo::Encode(CNMEncoder* pEncoder, CNMStream*)
 // @0x141579ba0
 unsigned int CNMGameInfo::DecodeFramed(CNMStream* pStream)
 {
-    alignas(8) unsigned char decoder[0x38];
-    FUN_14156be10(decoder, pStream, this);
-    unsigned int result = 0;
-    if (FUN_1415fb750(decoder) != 0)
-        result = Decode(reinterpret_cast<CNMSerializableDecoder*>(decoder), pStream);
-    FUN_14156bd50(decoder);
-    return result;
+    CNMSerializableDecoder decoder(pStream, this);
+    if (FUN_1415fb750(&decoder) == 0)
+        return 0;
+    return CNMGameInfo::Decode(&decoder, pStream);
 }
 
 // MS2-FUNCTIONAL: selects framed decoding for version two records.
@@ -89,10 +83,8 @@ unsigned int CNMGameInfo::DecodeFramed(CNMStream* pStream)
 unsigned int CNMGameInfo::DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream)
 {
     if (FUN_1415fb6d0(pDecoder) == 2)
-        DecodeFramed(pStream);
-    else
-        Decode(pDecoder, pStream);
-    return 0;
+        return CNMGameInfo::DecodeFramed(pStream);
+    return CNMGameInfo::Decode(pDecoder, pStream);
 }
 
 // MS2-FUNCTIONAL: restores game record fields in serialized order.
@@ -112,8 +104,7 @@ unsigned int CNMGameInfo::Decode(CNMSerializableDecoder* pDecoder, CNMStream*)
     pDecoder->ReadStringBufAlias(reinterpret_cast<char*>(m_ca0), sizeof m_ca0);
     pDecoder->ReadStringBufAlias(reinterpret_cast<char*>(m_10a0), sizeof m_10a0);
     m_14a0 = pDecoder->ReadU32();
-    FUN_1415fb750(pDecoder);
-    return 1;
+    return FUN_1415fb750(pDecoder);
 }
 
 // MS2-FUNCTIONAL: initializes the game list serialization header and vector.
@@ -126,11 +117,8 @@ CNMGameListData::CNMGameListData() : CNMSerializable(0x6764, 1, 1), m_games()
 // @0x141579f00
 unsigned int CNMGameListData::EncodeFramed(CNMStream* pStream)
 {
-    alignas(8) unsigned char encoder[0x18];
-    FUN_14156bcb0(encoder, pStream, this);
-    const unsigned int result = Encode(reinterpret_cast<CNMEncoder*>(encoder), pStream);
-    FUN_14156bd50(encoder);
-    return result;
+    CNMSerializableEncoder encoder(pStream, this);
+    return CNMGameListData::Encode(reinterpret_cast<CNMEncoder*>(&encoder), pStream);
 }
 
 // MS2-FUNCTIONAL: selects raw or framed game list encoding.
@@ -138,10 +126,8 @@ unsigned int CNMGameListData::EncodeFramed(CNMStream* pStream)
 unsigned int CNMGameListData::EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream)
 {
     if (m_bFormat == 1)
-        Encode(pEncoder, pStream);
-    else
-        EncodeFramed(pStream);
-    return 0;
+        return CNMGameListData::Encode(pEncoder, pStream);
+    return CNMGameListData::EncodeFramed(pStream);
 }
 
 // MS2-FUNCTIONAL: serializes the vector count and each framed game record.
@@ -159,13 +145,10 @@ unsigned int CNMGameListData::Encode(CNMEncoder* pEncoder, CNMStream* pStream)
 // @0x14157a080
 unsigned int CNMGameListData::DecodeFramed(CNMStream* pStream)
 {
-    alignas(8) unsigned char decoder[0x38];
-    FUN_14156be10(decoder, pStream, this);
-    unsigned int result = 0;
-    if (FUN_1415fb750(decoder) != 0)
-        result = Decode(reinterpret_cast<CNMSerializableDecoder*>(decoder), pStream);
-    FUN_14156bd50(decoder);
-    return result;
+    CNMSerializableDecoder decoder(pStream, this);
+    if (FUN_1415fb750(&decoder) == 0)
+        return 0;
+    return CNMGameListData::Decode(&decoder, pStream);
 }
 
 // MS2-FUNCTIONAL: selects framed game list decoding for version two records.
@@ -173,23 +156,20 @@ unsigned int CNMGameListData::DecodeFramed(CNMStream* pStream)
 unsigned int CNMGameListData::DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream)
 {
     if (FUN_1415fb6d0(pDecoder) == 2)
-        DecodeFramed(pStream);
-    else
-        Decode(pDecoder, pStream);
-    return 0;
+        return CNMGameListData::DecodeFramed(pStream);
+    return CNMGameListData::Decode(pDecoder, pStream);
 }
 
 // MS2-FUNCTIONAL: replaces the list from its count and framed game records.
 // @0x14157a170
 unsigned int CNMGameListData::Decode(CNMSerializableDecoder* pDecoder, CNMStream* pStream)
 {
+    CNMGameInfo game;
     const unsigned int count = pDecoder->ReadCount();
     m_games.clear();
     for (unsigned int i = 0; i < count; ++i) {
-        CNMGameInfo game;
-        game.DecodeFramed(pStream);
+        game.CNMGameInfo::DecodeFramed(pStream);
         m_games.push_back(game);
     }
-    FUN_1415fb750(pDecoder);
-    return 1;
+    return FUN_1415fb750(pDecoder);
 }

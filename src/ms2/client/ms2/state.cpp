@@ -198,7 +198,7 @@ class Unk_StClock
 public:
     int FUN_141473610();
     float FUN_141473230();
-    float FUN_141473280();
+    double FUN_141473280();
 };
 Unk_StClock* FUN_14086d260();
 class Unk_StPlayback { public: bool FUN_1406af100(); };     // replay / spectator mode
@@ -233,7 +233,7 @@ struct Unk_ExpTarget
     CString m_strName;                                  // +0x00
     int m_nOwnerId;                                     // +0x08
     int m_pad_0c;
-    __int64 m_pad_10[12];
+    void* m_pad_10[12];                                 // pointer-typed: an integer array would draw a /GS cookie the exe lacks
 };
 MS2_CHECK_SIZE(Unk_ExpTarget, 0x70);
 class Unk_StEffects
@@ -290,7 +290,7 @@ class CPhysXHelper
 {
 public:
     bool CastRay(Unk_RayCastInfo* pInfo, const NxGroupsMask* pMask);
-    int FUN_14168a450(efd::Point3 kPos, float* pfDist, float fMaxDist);     // ground below kPos
+    int FUN_14168a450(const efd::Point3& kPos, float* pfDist, float fMaxDist);     // ground below kPos
 };
 CPhysXHelper* FUN_1409f7ca0();
 class Unk_StPhysObj
@@ -360,6 +360,34 @@ public:
     CString FUN_14166dc50();                            // current animation name
     efd::Point3 FUN_141674b60(efd::Point3 kInput);      // input -> world direction
 };
+// A NiPoint3 (often the temporary returned by vfunc_18) viewed as the efd::Point3 the callee takes: cl binds the
+// temporary straight to the parameter, as in the exe. clang-cl refuses an rvalue reinterpret_cast, so it goes through a
+// helper there.
+#ifdef __clang__
+template <class T> static const efd::Point3& Unk_StPoint(const T& k) { return reinterpret_cast<const efd::Point3&>(k); }
+#define MS2_ST_POINT(expr) Unk_StPoint(expr)
+#else
+#define MS2_ST_POINT(expr) reinterpret_cast<const efd::Point3&>(expr)
+#endif
+
+// The owner seen through its vftable where pcbase.h's shared slot list declares a different parameter form: slot 22
+// takes the velocity and slot 68 the move by value (the caller copies the point into an argument temp).
+class Unk_StOwnerSlots
+{
+public:
+#define MS2_ST_SLOTS(a, b, c, d, e) virtual void vfunc_##a(); virtual void vfunc_##b(); virtual void vfunc_##c(); \
+    virtual void vfunc_##d(); virtual void vfunc_##e();
+    MS2_ST_SLOTS(0, 1, 2, 3, 4) MS2_ST_SLOTS(5, 6, 7, 8, 9) MS2_ST_SLOTS(10, 11, 12, 13, 14) MS2_ST_SLOTS(15, 16, 17, 18, 19)
+    virtual void vfunc_20(); virtual void vfunc_21();
+    virtual void vfunc_22(efd::Point3 kVel);                                // 22 0x14123c3a0
+    virtual void vfunc_23(); virtual void vfunc_24();
+    MS2_ST_SLOTS(25, 26, 27, 28, 29) MS2_ST_SLOTS(30, 31, 32, 33, 34) MS2_ST_SLOTS(35, 36, 37, 38, 39)
+    MS2_ST_SLOTS(40, 41, 42, 43, 44) MS2_ST_SLOTS(45, 46, 47, 48, 49) MS2_ST_SLOTS(50, 51, 52, 53, 54)
+    MS2_ST_SLOTS(55, 56, 57, 58, 59) MS2_ST_SLOTS(60, 61, 62, 63, 64)
+    virtual void vfunc_65(); virtual void vfunc_66(); virtual void vfunc_67();
+#undef MS2_ST_SLOTS
+    virtual bool vfunc_68(efd::Point3 kMove, double fTime, int b, unsigned c, int d);   // 68 0x14166e100
+};
 struct Unk_StSpeedCfg { float m_f0; float m_f4; float m_f8; };
 Unk_StSpeedCfg* FUN_141671920(PCBase* pOwner);
 void FUN_141670d80(PCBase* pOwner, float f);
@@ -418,13 +446,9 @@ template <> MS2Ptr<Unk_StateArg29>::~MS2Ptr();                                  
 // ---- StateLocalController / StatePcGuideObjectController / StateRideeController ----
 
 // @0x1417b73c0
-// MS2-FUNCTIONAL: the base owns the records / current / owner in the exe; they are declared on the PcGuide subclass
 StateLocalController::StateLocalController()
+    : m_records(10), m_pOwner(0)
 {
-    StatePcGuideObjectController* pView = static_cast<StatePcGuideObjectController*>(this);
-    new (&pView->m_records) ATL::CAtlList<MS2Ptr<Unk_GuideRecord> >(10);
-    new (&pView->m_spCurrent) MS2Ptr<Unk_GuideRecord>();
-    pView->m_pOwner = 0;
 }
 
 // @0x1417b7430
@@ -1116,7 +1140,6 @@ void StateClimb::vfunc_3(double fTime)
 MS2_REPLACE_METHOD(0x1417bc390, StateClimb, vfunc_3, 203, 0x491A3090);
 
 // @0x1417bc470
-// MS2-FUNCTIONAL: slot 22 takes the velocity by value in the exe (the shared slot list declares a const reference)
 void StateClimb::vfunc_8(double fTime)
 {
     StateMoveSkill::vfunc_8(fTime);
@@ -1125,14 +1148,14 @@ void StateClimb::vfunc_8(double fTime)
     if (m_timerHit.FUN_140868c00())
         kVel = pBuff->FUN_141683290();
     efd::Point3 kFacing = m_pOwner->FUN_14123cc20();
-    if ((kFacing.y == -1.0f || kFacing.x == -1.0f) && kVel.z < 0.0f)
-        kVel.z = 0.0f;
-    m_pOwner->vfunc_22(kVel);
+    if ((kFacing.y == -1.0f || kFacing.x == -1.0f) && kVel.y < 0.0f)
+        kVel.y = 0.0f;
+    reinterpret_cast<Unk_StOwnerSlots*>(m_pOwner)->vfunc_22(kVel);
     if (pBuff->FUN_141683100(0x493e1)) {
-        m_pOwner->vfunc_22(pBuff->FUN_141683290());
+        reinterpret_cast<Unk_StOwnerSlots*>(m_pOwner)->vfunc_22(pBuff->FUN_141683290());
         if (m_pOwner->FUN_1416749c0() && !pBuff->FUN_141682fe0(0x30d43) && !pBuff->FUN_141682fe0(0x30d44)
             && pBuff->FUN_141682fe0(0x30d41))
-            m_pOwner->vfunc_22(efd::Point3::ZERO);
+            reinterpret_cast<Unk_StOwnerSlots*>(m_pOwner)->vfunc_22(efd::Point3::ZERO);
         m_pOwner->vfunc_59(6, 0, 0x25, 0);
     }
 }
@@ -1181,15 +1204,13 @@ void StateClimb::vfunc_9(double fTime)
 MS2_REPLACE_METHOD(0x1417bc6e0, StateClimb, vfunc_9, 377, 0xF83D6876);
 
 // @0x1417bc8a0
-// MS2-FUNCTIONAL: slot 68 takes the move by value in the exe (declared as a pointer in the shared slot list)
 void StateClimb::TextKeyEvent(NiActorManager* pkManager, unsigned int eSequenceID, const NiFixedString& kTextKey,
     const NiTextKeyMatch* pkMatchObject, NiControllerSequence* pkSeq, float fEventTime)
 {
     if (FUN_14166de90(m_pOwner, 0x18, eSequenceID) && kTextKey == "upLanding") {
         efd::Point3 kFacing = m_pOwner->FUN_14123cc20();
         float fNow = FUN_14086d260()->FUN_141473230();
-        efd::Point3 kMove = kFacing * 0.02f;
-        m_pOwner->vfunc_68(&kMove, fNow, 0, 0, 1);
+        reinterpret_cast<Unk_StOwnerSlots*>(m_pOwner)->vfunc_68(kFacing * 0.02f, fNow, 0, 0, 1);
     }
 }
 MS2_REPLACE_METHOD(0x1417bc8a0, StateClimb, TextKeyEvent, 265, 0x6FB5E754);
@@ -1265,7 +1286,6 @@ int StateClimb::FUN_1417bcf20()
 MS2_REPLACE_METHOD(0x1417bcf20, StateClimb, FUN_1417bcf20, 256, 0xD1B40E82);
 
 // @0x1417bd030
-// MS2-FUNCTIONAL: /Od stack-slot / branch layout differs; logic follows the decompile
 int StateClimb::FUN_1417bd030(int bLeft)
 {
     Unk_GmGridRef kSvc(FUN_1401cd040(&DAT_143b059e8));
@@ -1273,7 +1293,7 @@ int StateClimb::FUN_1417bd030(int bLeft)
         return 0;
     efd::Point3 kRight;
     efd::Point3 kSide;
-    FUN_140a01250(m_pOwner->vfunc_20(), &kRight, &kSide);
+    FUN_140a01250(MS2_ST_POINT(m_pOwner->vfunc_20()), &kRight, &kSide);
     efd::Point3 kDir = bLeft ? -kSide : kSide;
     Unk_RayCastInfo kInfo;
     kInfo.m_origin = m_pOwner->vfunc_18() + kDir * 150.0f * 0.2f + efd::Point3(0.0f, 0.0f, 54.000004f);
@@ -1306,7 +1326,6 @@ int StateClimb::FUN_1417bd310(efd::Point3 kPos)
 MS2_REPLACE_METHOD(0x1417bd310, StateClimb, FUN_1417bd310, 259, 0x8EE1AB12);
 
 // @0x1417bd420
-// MS2-FUNCTIONAL: /Od stack-slot / branch layout differs; logic follows the decompile
 int StateClimb::FUN_1417bd420(void* pWall)
 {
     Unk_GmGridRef kSvc(FUN_1401cd040(&DAT_143b059e8));
@@ -1329,7 +1348,7 @@ int StateClimb::FUN_1417bd420(void* pWall)
                     kEdge.x = m_pOwner->vfunc_18().x;
                 else
                     kEdge.y = m_pOwner->vfunc_18().y;
-                if (FUN_140966ea0(kEdge, m_pOwner->vfunc_18()) < 100.0f)
+                if (FUN_140966ea0(kEdge, MS2_ST_POINT(m_pOwner->vfunc_18())) < 100.0f)
                     return 0;
             }
         }
@@ -1340,7 +1359,6 @@ int StateClimb::FUN_1417bd420(void* pWall)
 MS2_REPLACE_METHOD(0x1417bd420, StateClimb, FUN_1417bd420, 660, 0x0D6F8F5D);
 
 // @0x1417bd6c0
-// MS2-FUNCTIONAL: /Od stack-slot / branch layout differs; logic follows the decompile
 int StateClimb::FUN_1417bd6c0()
 {
     Unk_RayCastInfo kDown;
@@ -1349,8 +1367,7 @@ int StateClimb::FUN_1417bd6c0()
     kDown.m_maxDist = 50.0f;
     kDown.m_groups = FUN_1417bc010();
     if (FUN_1409f7ca0()->CastRay(&kDown, 0) && kDown.m_hitEntity != 0) {
-        egf::EntityID kSelf = FUN_14166d220(m_pOwner)->FUN_141240f20()->GetEntityID();
-        if (kDown.m_hitEntity->GetEntityID() != kSelf) {
+        if (kDown.m_hitEntity->GetEntityID() != FUN_14166d220(m_pOwner)->FUN_141240f20()->GetEntityID()) {
             MS2Ptr<Unk_RideeFieldObj> spObj = FUN_1403ed2d0()->FUN_141bc4f10(kDown.m_hitEntity);
             if (spObj.get()) {
                 efd::Point3 kNormal = spObj->FUN_140ae0150();
@@ -1365,8 +1382,7 @@ int StateClimb::FUN_1417bd6c0()
     kUp.m_maxDist = 50.0f;
     kUp.m_groups = FUN_1417bc010();
     if (FUN_1409f7ca0()->CastRay(&kUp, 0) && kUp.m_hitEntity != 0) {
-        egf::EntityID kSelf = FUN_14166d220(m_pOwner)->FUN_141240f20()->GetEntityID();
-        if (kUp.m_hitEntity->GetEntityID() != kSelf) {
+        if (kUp.m_hitEntity->GetEntityID() != FUN_14166d220(m_pOwner)->FUN_141240f20()->GetEntityID()) {
             MS2Ptr<Unk_RideeFieldObj> spObj = FUN_1403ed2d0()->FUN_141bc4f10(kUp.m_hitEntity);
             if (spObj.get()) {
                 efd::Point3 kNormal = spObj->FUN_140ae0150();
@@ -1380,15 +1396,21 @@ int StateClimb::FUN_1417bd6c0()
 MS2_REPLACE_METHOD(0x1417bd6c0, StateClimb, FUN_1417bd6c0, 913, 0x2F74AC1A);
 
 // @0x1417bda60
-// MS2-FUNCTIONAL: /Od stack-slot / branch layout differs; logic follows the decompile
-bool StateClimb::FUN_1417bda60()
+int StateClimb::FUN_1417bda60()
 {
     switch (m_n10) {
-    case 0x56:
-    case 0x5f:
-    case 0x60:
-    case 0x61:
-        return true;
+    case 0x5a:
+    case 0x5b:
+    case 0x5c: {
+        NiPoint3 kPos = m_pOwner->vfunc_18();
+        float fMax = 5.0f;
+        float fDist = 0.0f;
+        if (FUN_1409f7ca0()->FUN_14168a450(MS2_ST_POINT(kPos), &fDist, 5.0f) && !(fDist > 5.0f)) {
+            m_n10 = 0x62;
+            return 1;
+        }
+        break;
+    }
     case 0x57:
     case 0x58:
     case 0x59:
@@ -1399,37 +1421,29 @@ bool StateClimb::FUN_1417bda60()
             kInfo.m_groups = 1;
             kInfo.m_origin = m_pOwner->vfunc_18() + efd::Point3(0.0f, 0.0f, 99.0f);
             if (FUN_1409f7ca0()->CastRay(&kInfo, 0))
-                return true;
+                return 1;
             kInfo.m_origin = m_pOwner->vfunc_18() + efd::Point3(5.0f, 0.0f, 99.0f);
             if (FUN_1409f7ca0()->CastRay(&kInfo, 0))
-                return true;
+                return 1;
             kInfo.m_origin = m_pOwner->vfunc_18() + efd::Point3(-5.0f, 0.0f, 99.0f);
             if (FUN_1409f7ca0()->CastRay(&kInfo, 0))
-                return true;
+                return 1;
             m_n10 = 0x5f;
-            return true;
+            return 1;
         }
         break;
-    case 0x5a:
-    case 0x5b:
-    case 0x5c: {
-        NiPoint3 kPos = m_pOwner->vfunc_18();
-        float afDist[2];
-        afDist[1] = 5.0f;
-        afDist[0] = 0.0f;
-        if (FUN_1409f7ca0()->FUN_14168a450(kPos, afDist, 5.0f) && afDist[0] <= 5.0f) {
-            m_n10 = 0x62;
-            return true;
-        }
-        break;
+    case 0x56:
+    case 0x5f:
+    case 0x60:
+    case 0x61:
+        return 1;
     }
-    }
-    int bAttached = FUN_1417bd310(m_pOwner->vfunc_18());
-    if (bAttached == 0) {
+    if (FUN_1417bd310(MS2_ST_POINT(m_pOwner->vfunc_18())) == 0) {
         FUN_14166d220(m_pOwner)->FUN_141240730();
         m_pOwner->vfunc_59(5, 0, 0, 0);
+        return 0;
     }
-    return bAttached != 0;
+    return 1;
 }
 MS2_REPLACE_METHOD(0x1417bda60, StateClimb, FUN_1417bda60, 1095, 0x7609E356);
 
@@ -1446,7 +1460,7 @@ int StateClimb::FUN_1417bdee0()
         return 1;
     {
         efd::Point3 kFacing = m_pOwner->FUN_14123cc20();
-        NiPoint3 kInput = m_pOwner->FUN_14123c360();
+        efd::Point3 kInput = m_pOwner->FUN_14123c360();
         if (kFacing.y == -1.0f || kFacing.x == -1.0f)
             kInput.x = -kInput.x;
         if (kInput == efd::Point3::ZERO)
@@ -1475,142 +1489,144 @@ int StateClimb::FUN_1417bdee0()
 MS2_REPLACE_METHOD(0x1417bdee0, StateClimb, FUN_1417bdee0, 560, 0x7F40A0EE);
 
 // @0x1417be120
-// MS2-FUNCTIONAL: slot 68 takes the move by value in the exe (declared as a pointer in the shared slot list)
 int StateClimb::FUN_1417be120(double fTime)
 {
-    if (FUN_1417be990(fTime) == 0) {
-        switch (m_n10) {
-        case 0x56:
-            if (m_timerHang.FUN_140868c00()) {
-                if (FUN_1417bcf20() == 0) {
-                    m_pOwner->vfunc_59(1, 0, 0, 0);
-                    m_timerHang.FUN_1408687f0();
-                } else {
-                    m_timerHang.FUN_140868750(100);
-                }
+    if (FUN_1417be990(fTime))
+        return 1;
+    switch (m_n10) {
+    case 0x57:
+        FUN_1417be590(fTime);
+        break;
+    case 0x5a:
+        FUN_1417be680(fTime);
+        break;
+    case 0x5d:
+        FUN_1417be760(fTime);
+        break;
+    case 0x5e:
+        FUN_1417be880(fTime);
+        break;
+    case 0x58:
+        FUN_1417be590(fTime);
+        FUN_1417be760(fTime);
+        break;
+    case 0x59:
+        FUN_1417be590(fTime);
+        FUN_1417be880(fTime);
+        break;
+    case 0x5b:
+        FUN_1417be680(fTime);
+        FUN_1417be760(fTime);
+        break;
+    case 0x5c:
+        FUN_1417be680(fTime);
+        FUN_1417be880(fTime);
+        break;
+    case 0x5f: {
+        float fExtra = 20.0f;
+        efd::Point3 kUp = efd::Point3::UNIT_Z * FUN_14028d3a0(150.0f + fExtra);
+        efd::Point3 kForward = m_pOwner->FUN_14123cc20() * FUN_14028d3a0(105.0f);
+        reinterpret_cast<Unk_StOwnerSlots*>(m_pOwner)->vfunc_68((kUp + kForward) * (float)fTime, fTime, 0, 0, 1);
+        break;
+    }
+    case 0x61: {
+        float fExtra = 20.0f;
+        efd::Point3 kDown = -efd::Point3::UNIT_Z;
+        reinterpret_cast<Unk_StOwnerSlots*>(m_pOwner)->vfunc_68(kDown * FUN_14028d3a0(150.0f + fExtra) * (float)fTime, fTime, 0, 0, 1);
+        break;
+    }
+    case 0x56:
+        if (m_timerHang.FUN_140868c00()) {
+            if (FUN_1417bcf20() == 0) {
+                m_pOwner->vfunc_59(1, 0, 0, 0);
+                m_timerHang.FUN_1408687f0();
+            } else {
+                m_timerHang.FUN_140868750(100);
             }
-            break;
-        case 0x57:
-            FUN_1417be590(fTime);
-            break;
-        case 0x58:
-            FUN_1417be590(fTime);
-            FUN_1417be760(fTime);
-            break;
-        case 0x59:
-            FUN_1417be590(fTime);
-            FUN_1417be880(fTime);
-            break;
-        case 0x5a:
-            FUN_1417be680(fTime);
-            break;
-        case 0x5b:
-            FUN_1417be680(fTime);
-            FUN_1417be760(fTime);
-            break;
-        case 0x5c:
-            FUN_1417be680(fTime);
-            FUN_1417be880(fTime);
-            break;
-        case 0x5d:
-            FUN_1417be760(fTime);
-            break;
-        case 0x5e:
-            FUN_1417be880(fTime);
-            break;
-        case 0x5f: {
-            efd::Point3 kUp = efd::Point3::UNIT_Z * FUN_14028d3a0(170.0f);
-            float fForward = FUN_14028d3a0(105.0f);
-            efd::Point3 kForward = m_pOwner->FUN_14123cc20() * fForward;
-            efd::Point3 kMove = (kUp + kForward) * (float)fTime;
-            m_pOwner->vfunc_68(&kMove, fTime, 0, 0, 1);
-            break;
         }
-        case 0x61: {
-            efd::Point3 kDown = -efd::Point3::UNIT_Z;
-            efd::Point3 kMove = kDown * FUN_14028d3a0(170.0f) * (float)fTime;
-            m_pOwner->vfunc_68(&kMove, fTime, 0, 0, 1);
-            break;
-        }
-        }
+        break;
     }
     return 1;
 }
 MS2_REPLACE_METHOD(0x1417be120, StateClimb, FUN_1417be120, 1068, 0xD2400617);
 
 // @0x1417be590
-// MS2-FUNCTIONAL: slot 68 takes the move by value in the exe (declared as a pointer in the shared slot list)
 int StateClimb::FUN_1417be590(double fTime)
 {
     if (FUN_1417bcf20()) {
-        efd::Point3 kMove = efd::Point3::UNIT_Z * m_fSpeedV * (float)fTime;
-        m_pOwner->vfunc_68(&kMove, fTime, 0, 0, 1);
+        efd::Point3 kUp = efd::Point3::UNIT_Z;
+        reinterpret_cast<Unk_StOwnerSlots*>(m_pOwner)->vfunc_68(kUp * m_fSpeedV * (float)fTime, fTime, 0, 0, 1);
     }
     return 1;
 }
 MS2_REPLACE_METHOD(0x1417be590, StateClimb, FUN_1417be590, 233, 0x59FE2165);
 
 // @0x1417be680
-// MS2-FUNCTIONAL: slot 68 takes the move by value in the exe (declared as a pointer in the shared slot list)
 int StateClimb::FUN_1417be680(double fTime)
 {
     efd::Point3 kDown = -efd::Point3::UNIT_Z;
-    efd::Point3 kMove = kDown * m_fSpeedV * (float)fTime;
-    m_pOwner->vfunc_68(&kMove, fTime, 0, 0, 1);
+    reinterpret_cast<Unk_StOwnerSlots*>(m_pOwner)->vfunc_68(kDown * m_fSpeedV * (float)fTime, fTime, 0, 0, 1);
     return 1;
 }
 MS2_REPLACE_METHOD(0x1417be680, StateClimb, FUN_1417be680, 204, 0x1D4AF32B);
 
 // @0x1417be760
-// MS2-FUNCTIONAL: slot 68 takes the move by value in the exe (declared as a pointer in the shared slot list)
 int StateClimb::FUN_1417be760(double fTime)
 {
-    if (FUN_1417bd030(1) == 0)
-        return 0;
-    efd::Point3 kFacing = m_pOwner->FUN_14123cc20();
-    efd::Point3 kLeft = -kFacing.UnitCross(efd::Point3::UNIT_Z);
-    efd::Point3 kMove = kLeft * m_fSpeedH * (float)fTime;
-    m_pOwner->vfunc_68(&kMove, fTime, 0, 0, 1);
-    return 1;
+    if (FUN_1417bd030(1)) {
+        efd::Point3 kFacing = m_pOwner->FUN_14123cc20();
+        efd::Point3 kLeft = -kFacing.UnitCross(efd::Point3::UNIT_Z);
+        reinterpret_cast<Unk_StOwnerSlots*>(m_pOwner)->vfunc_68(kLeft * m_fSpeedH * (float)fTime, fTime, 0, 0, 1);
+        return 1;
+    }
+    return 0;
 }
 MS2_REPLACE_METHOD(0x1417be760, StateClimb, FUN_1417be760, 277, 0x525039FC);
 
 // @0x1417be880
-// MS2-FUNCTIONAL: slot 68 takes the move by value in the exe (declared as a pointer in the shared slot list)
 int StateClimb::FUN_1417be880(double fTime)
 {
-    if (FUN_1417bd030(0) == 0)
-        return 0;
-    efd::Point3 kFacing = m_pOwner->FUN_14123cc20();
-    efd::Point3 kRight = kFacing.UnitCross(efd::Point3::UNIT_Z);
-    efd::Point3 kMove = kRight * m_fSpeedH * (float)fTime;
-    m_pOwner->vfunc_68(&kMove, fTime, 0, 0, 1);
-    return 1;
+    if (FUN_1417bd030(0)) {
+        efd::Point3 kFacing = m_pOwner->FUN_14123cc20();
+        efd::Point3 kRight = kFacing.UnitCross(efd::Point3::UNIT_Z);
+        reinterpret_cast<Unk_StOwnerSlots*>(m_pOwner)->vfunc_68(kRight * m_fSpeedH * (float)fTime, fTime, 0, 0, 1);
+        return 1;
+    }
+    return 0;
 }
 MS2_REPLACE_METHOD(0x1417be880, StateClimb, FUN_1417be880, 258, 0x8A0801F8);
 
 // @0x1417be990
-// MS2-FUNCTIONAL: slot 68 takes the move by value in the exe (declared as a pointer in the shared slot list)
 int StateClimb::FUN_1417be990(double fTime)
 {
     if (FUN_140953f30()->FUN_140ad21f0() == 0)
         return 0;
-    if (m_n10 < 0x57 || 0x5e < m_n10)
+    switch (m_n10) {
+    case 0x57:
+    case 0x58:
+    case 0x59:
+    case 0x5a:
+    case 0x5b:
+    case 0x5c:
+    case 0x5d:
+    case 0x5e:
+        break;
+    default:
         return 0;
-    NiPoint3 kInput = m_pOwner->FUN_14123c360();
+    }
+    efd::Point3 kInput = m_pOwner->FUN_14123c360();
     efd::Point3 kFacing = m_pOwner->FUN_14123cc20();
     efd::Point3 kSide = -kFacing.UnitCross(efd::Point3::UNIT_Z);
     efd::Point3 kUp = efd::Point3::UNIT_Z;
     kUp *= kInput.y * (float)fTime * m_fSpeedV;
     kSide *= kInput.x * (float)fTime * m_fSpeedH;
     efd::Point3 kMove = kSide + kUp;
-    m_pOwner->vfunc_68(&kMove, fTime, 0, 0, 1);
+    reinterpret_cast<Unk_StOwnerSlots*>(m_pOwner)->vfunc_68(kMove, fTime, 0, 0, 1);
     return 1;
 }
 MS2_REPLACE_METHOD(0x1417be990, StateClimb, FUN_1417be990, 423, 0xEB583BE6);
 
 // @0x1417beb40
-// MS2-FUNCTIONAL: /Od stack-slot / branch layout differs; logic follows the decompile
 void StateClimb::FUN_1417beb40()
 {
     const float fMargin = 2.0f;
@@ -1621,18 +1637,15 @@ void StateClimb::FUN_1417beb40()
     kInfo.m_maxDist = 77.0f;
     kInfo.m_groups = FUN_1417bc010();
     efd::Point3 kTarget = kInfo.m_origin + kInfo.m_dir * 52.0f;
-    float afDist[1];
-    afDist[0] = 0.0f;
-    if (FUN_1409f7ca0()->FUN_14168a450(kTarget, afDist, 150.0f))
-        afDist[0] = afDist[0] - fMargin;
+    float fDist = 0.0f;
+    if (FUN_1409f7ca0()->FUN_14168a450(kTarget, &fDist, 150.0f))
+        fDist = fDist - fMargin;
     kTarget.x = kPos.x;
     kTarget.y = kPos.y;
-    kTarget.z = kTarget.z - afDist[0];
+    kTarget.z = kTarget.z - fDist;
     if (FUN_1417b84b0()) {
         static float s_fShake = FUN_1401d3200()->m_climbOverShake.FUN_1402bac70();
-        float fDecay = s_fShake / 3.0f;
-        float fFreq = s_fShake / 60.0f;
-        FUN_1409478c0()->FUN_140aeb880(s_fShake, fFreq, fDecay);
+        FUN_1409478c0()->FUN_140aeb880(s_fShake, s_fShake / 60.0f, s_fShake / 3.0f);
     }
     m_pOwner->vfunc_19(kTarget);
     m_pOwner->vfunc_59(1, 0, 0, 0);
@@ -1703,77 +1716,76 @@ void StateCrawl::vfunc_5(int n)
 MS2_REPLACE_METHOD(0x1417bf020, StateCrawl, vfunc_5, 87, 0xF66CD8AD);
 
 // @0x1417bf080
-// MS2-FUNCTIONAL: slot 68 takes the move by value in the exe (declared as a pointer in the shared slot list)
 void StateCrawl::vfunc_3(double fTime)
 {
     State::vfunc_3(fTime);
-    if (m_pOwner->vfunc_63()) {
-        efd::Point3 kMove = efd::Point3::ZERO;
-        if (m_n10 == 0x1c) {
-            efd::Point3 kDir = static_cast<Unk_StPC*>(m_pOwner)->FUN_141674b60(m_pOwner->FUN_14123c360());
-            float fSpeed = m_bCrawling ? m_pOwner->vfunc_95() : 0.0001f;
-            kMove = kDir * fSpeed * (float)fTime;
-            FUN_14166d220(m_pOwner)->FUN_141240700(kDir * fSpeed);
-        }
-        m_pOwner->vfunc_68(&kMove, fTime, 0, 0, 0);
+    if (m_pOwner->vfunc_63() == 0)
+        return;
+    efd::Point3 kMove = efd::Point3::ZERO;
+    if (m_n10 == 0x1c) {
+        efd::Point3 kDir = static_cast<Unk_StPC*>(m_pOwner)->FUN_141674b60(
+            MS2_ST_POINT(m_pOwner->FUN_14123c360()));
+        float fSpeed = m_bCrawling ? m_pOwner->vfunc_95() : 0.0001f;
+        kMove = kDir * fSpeed * (float)fTime;
+        FUN_14166d220(m_pOwner)->FUN_141240700(kDir * fSpeed);
     }
+    reinterpret_cast<Unk_StOwnerSlots*>(m_pOwner)->vfunc_68(kMove, fTime, 0, 0, 0);
 }
 MS2_REPLACE_METHOD(0x1417bf080, StateCrawl, vfunc_3, 534, 0x8A8E5046);
 
 // @0x1417bf2a0
-// MS2-FUNCTIONAL: slot 22 takes the velocity by value in the exe (the shared slot list declares a const reference)
 void StateCrawl::vfunc_8(double fTime)
 {
     State::vfunc_8(fTime);
-    if (FUN_1417b84b0()) {
-        Unk_StBuff* pBuff = FUN_14166d240(m_pOwner);
-        m_pOwner->vfunc_22(pBuff->FUN_141683900());
-        if (!pBuff->FUN_141682fe0(0x493e5))
-            m_pOwner->vfunc_59(1, 0, 0, 0);
-        else if (m_pOwner->FUN_1416749c0())
-            m_n10 = 0x1c;
-        else if (m_n10 == 0x1c)
-            m_n10 = 0x1b;
-    }
+    MyPC* pMyPC = FUN_1417b84b0();
+    if (pMyPC == 0)
+        return;
+    Unk_StBuff* pBuff = FUN_14166d240(m_pOwner);
+    efd::Point3 kVel = pBuff->FUN_141683900();
+    reinterpret_cast<Unk_StOwnerSlots*>(m_pOwner)->vfunc_22(kVel);
+    if (!pBuff->FUN_141682fe0(0x493e5))
+        m_pOwner->vfunc_59(1, 0, 0, 0);
+    else if (m_pOwner->FUN_1416749c0())
+        m_n10 = 0x1c;
+    else if (m_n10 == 0x1c)
+        m_n10 = 0x1b;
 }
 MS2_REPLACE_METHOD(0x1417bf2a0, StateCrawl, vfunc_8, 321, 0x977C4340);
 
 // @0x1417bf3f0
-// MS2-FUNCTIONAL: /Od stack-slot / branch layout differs; logic follows the decompile
 void StateCrawl::vfunc_9(double fTime)
 {
     State::vfunc_9(fTime);
     int bFalling = FUN_141675ed0(m_pOwner);
     static int s_nFallDelay = FUN_14028d260(FUN_14096b1c0(3.0f / FUN_14059d930(FUN_141240c40(true))));
-    if (bFalling == 0) {
-        if (m_pOwner->vfunc_99(s_nFallDelay) == 0) {
-            switch (m_n10) {
-            case 0x1b:
-                if (!FUN_14166de90(m_pOwner, 0x20, FUN_141b6f910()->FUN_140b7f6a0(m_pOwner->FUN_14123c460())))
-                    FUN_14166dda0(m_pOwner, 0x20);
-                break;
-            case 0x1c: {
-                CString strAnim("Prostrate_Crawl_A");
-                PCBase* pPC = FUN_140974230(m_pOwner);
-                if (pPC != 0 && FUN_141658e60(pPC) == 1)
-                    strAnim = "Prostrate_Crawl_B";
-                bool bChanged = strAnim != static_cast<Unk_StPC*>(m_pOwner)->FUN_14166dc50();
-                if (bChanged) {
-                    if (strAnim == "Prostrate_Crawl_A")
-                        m_pOwner->FUN_141671960(0.807f);
-                    else
-                        m_pOwner->FUN_141671960(0.84f);
-                    efd::utf8string strName((const char*)strAnim);
-                    m_pOwner->FUN_14166dd20(strName, FUN_1416713c0(m_pOwner), false, false);
-                }
-                break;
-            }
-            }
-        } else {
-            m_pOwner->vfunc_59(5, 0, 0, 0);
-        }
-    } else {
+    if (bFalling) {
         m_pOwner->vfunc_59(0x1b, 0, 0, 0);
+    } else if (m_pOwner->vfunc_99(s_nFallDelay)) {
+        m_pOwner->vfunc_59(5, 0, 0, 0);
+    } else {
+        switch (m_n10) {
+        case 0x1b: {
+            unsigned nSeq = FUN_141b6f910()->FUN_140b7f6a0(m_pOwner->FUN_14123c460());
+            if (!FUN_14166de90(m_pOwner, 0x20, nSeq))
+                FUN_14166dda0(m_pOwner, 0x20);
+            break;
+        }
+        case 0x1c: {
+            CString strAnim("Prostrate_Crawl_A");
+            PCBase* pPC = FUN_140974230(m_pOwner);
+            if (pPC != 0 && FUN_141658e60(pPC) == 1)
+                strAnim = "Prostrate_Crawl_B";
+            bool bChanged = strAnim != static_cast<Unk_StPC*>(m_pOwner)->FUN_14166dc50();
+            if (bChanged) {
+                if (strAnim == "Prostrate_Crawl_A")
+                    m_pOwner->FUN_141671960(0.807f);
+                else
+                    m_pOwner->FUN_141671960(0.84f);
+                efd::utf8string strName((const char*)strAnim);
+                m_pOwner->FUN_14166dd20(strName, FUN_1416713c0(m_pOwner), false, false);
+            }
+        } break;
+        }
     }
 }
 
@@ -1826,7 +1838,6 @@ StateDash::~StateDash()
 }
 
 // @0x1417bf9f0
-// MS2-FUNCTIONAL: /Od stack-slot / branch layout differs; logic follows the decompile
 void StateDash::vfunc_4(StateData* pData)
 {
     State::vfunc_4(pData);
@@ -1854,66 +1865,65 @@ void StateDash::vfunc_5(int n)
 MS2_REPLACE_METHOD(0x1417bfb70, StateDash, vfunc_5, 75, 0x2CDCDE57);
 
 // @0x1417bfbd0
-// MS2-FUNCTIONAL: slot 68 takes the move by value in the exe (declared as a pointer in the shared slot list)
 void StateDash::vfunc_3(double fTime)
 {
     State::vfunc_3(fTime);
     switch (m_n10) {
-    case 0x1e: {
-        if (FUN_141671a30(m_pOwner))
-            m_n10 = 0x1f;
-        efd::Point3 kMove = m_dir * m_pOwner->vfunc_95() * (float)fTime;
-        m_pOwner->vfunc_68(&kMove, fTime, 0, 0, 0);
-        return;
-    }
-    case 0x1f: {
-        if (!m_timerStop.FUN_140868b80()) {
-            efd::Point3 kMove = m_dir * m_pOwner->vfunc_95() * (float)fTime;
-            m_pOwner->vfunc_68(&kMove, fTime, 0, 0, 0);
-            return;
-        }
-        if (m_timerStop.FUN_140868c00())
-            return;
-        m_pOwner->FUN_141671960((1.0f - m_timerStop.FUN_140868940()) * 20.0f);
-        efd::Point3 kMove = m_dir * m_pOwner->vfunc_95() * (float)fTime;
-        m_pOwner->vfunc_68(&kMove, fTime, 0, 0, 0);
-        return;
-    }
     case 0x1d:
-    case 0x20:
-        break;
-    default:
-        return;
-    }
-    efd::Point3 kMove = m_dir * m_pOwner->vfunc_95() * (float)fTime;
-    m_pOwner->vfunc_68(&kMove, fTime, 0, 0, 0);
-    float fStep = FUN_140966ea0(m_posLast, m_pOwner->vfunc_18());
-    m_fDist += fStep;
-    m_posLast = m_pOwner->vfunc_18();
-    if (2.0f <= fStep) {
-        if (FUN_141671a30(m_pOwner))
+    case 0x20: {
+        efd::Point3 kMove = m_dir * m_pOwner->vfunc_95() * (float)fTime;
+        reinterpret_cast<Unk_StOwnerSlots*>(m_pOwner)->vfunc_68(kMove, fTime, 0, 0, 0);
+        float fStep = FUN_140966ea0(m_posLast, MS2_ST_POINT(m_pOwner->vfunc_18()));
+        m_fDist += fStep;
+        m_posLast = m_pOwner->vfunc_18();
+        if (fStep < 2.0f) {
+            m_pOwner->vfunc_59(1, 0, 0, 0);
+        } else if (FUN_141671a30(m_pOwner)) {
             m_n10 = 0x1f;
-        else if (600.0f <= m_fDist)
+        } else if (600.0f <= m_fDist) {
             m_n10 = 0x1e;
-    } else {
-        m_pOwner->vfunc_59(1, 0, 0, 0);
+        }
+        break;
+    }
+    case 0x1e:
+        if (FUN_141671a30(m_pOwner)) {
+            m_n10 = 0x1f;
+        } else {
+            efd::Point3 kMove = m_dir * m_pOwner->vfunc_95() * (float)fTime;
+            reinterpret_cast<Unk_StOwnerSlots*>(m_pOwner)->vfunc_68(kMove, fTime, 0, 0, 0);
+        }
+        break;
+    case 0x1f:
+        if (m_timerStop.FUN_140868b80() == 0) {
+            efd::Point3 kMove = m_dir * m_pOwner->vfunc_95() * (float)fTime;
+            reinterpret_cast<Unk_StOwnerSlots*>(m_pOwner)->vfunc_68(kMove, fTime, 0, 0, 0);
+        } else if (m_timerStop.FUN_140868c00() == 0) {
+            m_pOwner->FUN_141671960(20.0f * (1.0f - m_timerStop.FUN_140868940()));
+            efd::Point3 kMove = m_dir * m_pOwner->vfunc_95() * (float)fTime;
+            reinterpret_cast<Unk_StOwnerSlots*>(m_pOwner)->vfunc_68(kMove, fTime, 0, 0, 0);
+        }
+        break;
     }
 }
 MS2_REPLACE_METHOD(0x1417bfbd0, StateDash, vfunc_3, 1436, 0xB4537625);
 
 // @0x1417c0180
-// MS2-FUNCTIONAL: /Od stack-slot / branch layout differs; logic follows the decompile
 void StateDash::vfunc_9(double fTime)
 {
     State::vfunc_9(fTime);
     unsigned nSeq = FUN_141b6f910()->FUN_140b7f6a0(m_pOwner->FUN_14123c460());
-    if (m_n10 == 0x1d) {
+    switch (m_n10) {
+    case 0x1f:
+        if (!FUN_14166de90(m_pOwner, 7, nSeq)) {
+            FUN_14166dda0(m_pOwner, 7);
+            m_pOwner->vfunc_93(true);
+            FUN_141475cf0()->FUN_141377420(m_pOwner, CString("land"));
+        }
+        break;
+    case 0x1d:
         if (!FUN_14166de90(m_pOwner, 6, nSeq))
             FUN_14166dda0(m_pOwner, 6);
-    } else if (m_n10 == 0x1f && !FUN_14166de90(m_pOwner, 7, nSeq)) {
-        FUN_14166dda0(m_pOwner, 7);
-        m_pOwner->vfunc_93(true);
-        FUN_141475cf0()->FUN_141377420(m_pOwner, CString("land"));
+        break;
     }
 }
 MS2_REPLACE_METHOD(0x1417c0180, StateDash, vfunc_9, 331, 0xC86FDBE5);
@@ -1927,15 +1937,14 @@ void StateDash::vfunc_8(double fTime)
 MS2_REPLACE_METHOD(0x1417c02e0, StateDash, vfunc_8, 46, 0x24D4758A);
 
 // @0x1417c0320
-// MS2-FUNCTIONAL: /Od stack-slot / branch layout differs; logic follows the decompile
 void StateDash::AnimActivated(NiActorManager* pkManager, unsigned int eSequenceID, NiControllerSequence* pkSeq,
     float fEventTime)
 {
     if (FUN_14166de90(m_pOwner, 7, eSequenceID)) {
-        float fStop = pkManager->GetNextEventTime(NiActorManager::TEXT_KEY_EVENT, eSequenceID, NiFixedString("stop"));
+        float fStop = pkManager->GetNextEventTime(NiActorManager::TEXT_KEY_EVENT, eSequenceID, "stop");
         if (fStop != NiActorManager::INVALID_TIME) {
-            float fNow = FUN_14086d260()->FUN_141473280();
-            m_timerStop.FUN_140868750((int)((fStop - fNow) * 1000.0f));
+            fStop -= (float)FUN_14086d260()->FUN_141473280();
+            m_timerStop.FUN_140868750((int)(fStop * 1000.0f));
         }
     }
 }
@@ -1951,20 +1960,19 @@ void StateDash::EndOfSequence(NiActorManager* pkManager, unsigned int eSequenceI
 MS2_REPLACE_METHOD(0x1417c0400, StateDash, EndOfSequence, 106, 0x0E50E152);
 
 // @0x1417c0470
-// MS2-FUNCTIONAL: /Od stack-slot / branch layout differs; logic follows the decompile
 void StateDash::vfunc_6()
 {
     State::vfunc_6();
-    if (m_n10 == 0x1d) {
-        m_n10 = 0x20;
-        if (!FUN_14166de90(m_pOwner, 0x35, FUN_141b6f910()->FUN_140b7f6a0(m_pOwner->FUN_14123c460())))
-            FUN_14166dda0(m_pOwner, 0x35);
-    }
+    if (m_n10 != 0x1d)
+        return;
+    m_n10 = 0x20;
+    unsigned nSeq = FUN_141b6f910()->FUN_140b7f6a0(m_pOwner->FUN_14123c460());
+    if (!FUN_14166de90(m_pOwner, 0x35, nSeq))
+        FUN_14166dda0(m_pOwner, 0x35);
 }
 MS2_REPLACE_METHOD(0x1417c0470, StateDash, vfunc_6, 148, 0xB6201BF7);
 
 // @0x1417c0510
-// MS2-FUNCTIONAL: slot 22 takes the velocity by value in the exe (the shared slot list declares a const reference)
 int StateDash::FUN_1417c0510()
 {
     PCBase* pPC;
@@ -1972,12 +1980,11 @@ int StateDash::FUN_1417c0510()
         efd::SmartPointer<egf::Entity> spEntity(FUN_141659af0(pPC, 0));
         if (FUN_1408a9090(&spEntity)) {
             if (FUN_1408a9bd0(spEntity)->ContainsModel(0xbadf0a13)) {
-                m_pOwner->vfunc_22(efd::Point3::ZERO);
+                reinterpret_cast<Unk_StOwnerSlots*>(m_pOwner)->vfunc_22(efd::Point3::ZERO);
                 m_pOwner->vfunc_59(8, 0, 0, 0);
                 return 1;
-            }
-            if (FUN_1408a9bd0(spEntity)->ContainsModel(0xc13e30c8)) {
-                m_pOwner->vfunc_22(efd::Point3::ZERO);
+            } else if (FUN_1408a9bd0(spEntity)->ContainsModel(0xc13e30c8)) {
+                reinterpret_cast<Unk_StOwnerSlots*>(m_pOwner)->vfunc_22(efd::Point3::ZERO);
                 m_pOwner->vfunc_59(9, 0, 0, 0);
                 return 1;
             }
@@ -2089,7 +2096,6 @@ StateInteractNpcData::StateInteractNpcData()
 }
 
 // @0x1417c0f50
-// MS2-FUNCTIONAL: /Od stack-slot / branch layout differs; logic follows the decompile
 StateHitData::StateHitData()
 {
     m_f18 = 1.0f;

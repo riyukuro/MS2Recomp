@@ -76,13 +76,12 @@ void CFieldMaidManager::OnPacket(CInPacket* pPacket)
 }
 
 // @0x14127e400
-// MS2-FUNCTIONAL: exe tests the Lookup result with jne to the copy-return branch and calls a shared MS2Ptr<CMaid> get; branch order not reproduced
 MS2Ptr<CMaid> CFieldMaidManager::GetMaid(unsigned __int64 nId)
 {
     MS2Ptr<CMaid> spMaid;
-    if (m_mapMaid.Lookup(nId, spMaid))
-        return spMaid;
-    return MS2Ptr<CMaid>(0);
+    if (!m_mapMaid.Lookup(nId, spMaid))
+        return MS2Ptr<CMaid>(0);
+    return spMaid;
 }
 
 // @0x14127e4b0
@@ -187,13 +186,12 @@ void CUserMaidManager::OnPacket(CInPacket* pPacket)
 }
 
 // @0x14127ec10
-// MS2-FUNCTIONAL: exe tests the Lookup result with jne to the copy-return branch and calls a shared MS2Ptr<CMaid> get; branch order not reproduced
 MS2Ptr<CMaid> CUserMaidManager::GetMaid(unsigned __int64 nId)
 {
     MS2Ptr<CMaid> spMaid;
-    if (m_mapMaid.Lookup(nId, spMaid))
-        return spMaid;
-    return MS2Ptr<CMaid>(0);
+    if (!m_mapMaid.Lookup(nId, spMaid))
+        return MS2Ptr<CMaid>(0);
+    return spMaid;
 }
 
 // @0x14127ecc0

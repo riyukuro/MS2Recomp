@@ -82,7 +82,7 @@ public:
     void FUN_14199bc00();                                       // the tabs' "new item" marks
     void FUN_14199be00(int nTab);                               // clear the "new" flags of a tab
     void FUN_14199bed0(const __int64& nMesos);                  // the meso amount of the box
-    static int FUN_14199bfc0();                                 // a trade is running (and the player is alive)
+    int FUN_14199bfc0();                                        // a trade is running (and the player is alive)
     void FUN_14199c0d0();                                       // refresh the "m_expand" text
     void SendRequestItemInventory(int nTab, bool bStack);                  // send the sort request
     void FUN_14199c2b0(CStringW strText);                       // scroll to the item matching the text
@@ -93,7 +93,7 @@ public:
     void FUN_14199d1c0();                                       // the tab list
     int FUN_14199d840(int nTab);                                   // the stackable items of the tab
     int FUN_14199d920(int nTab);                                // the button of a tab
-    bool FUN_14199d980();                                       // the tab can be expanded
+    int FUN_14199d980();                                        // the tab can be expanded
     CStringW FUN_14199d9c0();                                   // the item break button tooltip
     CStringW FUN_14199ddd0();                                   // the slot expand tooltip
     CStringW FUN_14199deb0(int bBank);                          // the open bank tooltip

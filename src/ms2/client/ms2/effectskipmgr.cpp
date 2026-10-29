@@ -50,7 +50,7 @@ const char* FUN_14086f4b0(Unk_140165cf0*, const char*);
 int FUN_1408733e0(Unk_140165cf0*, const char*, CString&);
 CString FUN_140188f50(const char* psz, int n);
 Unk_140165cf0* FUN_1403f0510(Unk_140165cf0*);                   // next sibling with the same name
-int FUN_140bf4fd0(float);                                       // float -> int (round up)
+float FUN_140bf4fd0(float);                                     // ceilf: result in xmm0
 
 // The 12 byte zero point.
 extern Unk_SkipPoint DAT_143b01a60;
@@ -120,6 +120,7 @@ EffectSkipMgr::EffectSkipMgr() : m_nMaxCount(0), m_nBaseFrame(0), m_bSuspended(f
 {
 }
 
+// MS2-FUNCTIONAL: code and branches match; the two bool locals sit in a larger frame (0x78 vs 0x68).
 // @0x1411b86e0
 int EffectSkipMgr::IsOutOfView(Unk_SkipCheck* pCheck) const
 {
@@ -140,24 +141,22 @@ int EffectSkipMgr::IsOutOfView(Unk_SkipCheck* pCheck) const
     float fView = pCheck->m_fViewDistance;
     if (FUN_14028d470(fView, -1.0f))
         fView = *FUN_140552770(const_cast<std::vector<float>*>(&m_rows[pCheck->m_nRow].m_dist), pCheck->m_nCaster);
-    return !FUN_14028d470(fView, 0) && fView <= fDist;
+    bool bZero = FUN_14028d470(fView, 0);
+    bool bNear = fDist < fView;
+    return !(bZero | bNear);
 }
 
+// MS2-FUNCTIONAL: the exe takes the effect data MS2Ptr by value (EH state -2 store); ours releases it explicitly.
 // @0x1411b8870
-bool EffectSkipMgr::ShouldSkipByView(Unk_SkipEffectList* pList, int nCaster, Unk_SkipEffect* pEffect)
+int EffectSkipMgr::ShouldSkipByView(Unk_SkipEffectList* pList, int nCaster, Unk_SkipEffect* pEffect)
 {
     Unk_SkipCheck check;
     check.m_nCaster = nCaster;
     check.m_pos = pEffect->m_pos;
     check.m_n14 = 0;
-    __int64 pos = FUN_140a904b0(FUN_14119f540(FUN_140a901f0(pList)));
-    for (;;)
+    for (__int64 pos = FUN_140a904b0(FUN_14119f540(FUN_140a901f0(pList))); pos != 0;
+         FUN_140a904c0(FUN_14119f540(FUN_140a901f0(pList)), &pos))
     {
-        if (pos == 0)
-        {
-            FUN_140a90120(pList);
-            return false;
-        }
         Unk_SkipEffect* pItem = FUN_140a901e0(FUN_140a90440(FUN_14119f540(FUN_140a901f0(pList)), pos));
         check.m_nRow = pItem->m_nKind;
         if (!pItem->m_bIgnore)
@@ -167,12 +166,15 @@ bool EffectSkipMgr::ShouldSkipByView(Unk_SkipEffectList* pList, int nCaster, Unk
                 check.m_fViewDistance = pItem->m_fViewDistance;
             if (IsOutOfView(&check))
             {
+                int nSkip = 1;
                 FUN_140a90120(pList);
-                return true;
+                return nSkip;
             }
         }
-        FUN_140a904c0(FUN_14119f540(FUN_140a901f0(pList)), &pos);
     }
+    int nKeep = 0;
+    FUN_140a90120(pList);
+    return nKeep;
 }
 
 // @0x1411b89e0
@@ -180,9 +182,8 @@ bool EffectSkipMgr::LoadOption()
 {
     int nOption = *FUN_1409a8ac0(FUN_1409a8b10());
     TiXmlDocument doc;
-    CString strPath = FUN_14071a5b0(CString("Table"), CString("effectOption.xml"));
-    const char* pszPath = strPath;
-    if (FUN_140166420()->FUN_1403974b0(&doc, pszPath, 0, true, false) == 0)
+    CString strPath = FUN_14071a5b0("Table", "effectOption.xml");
+    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return false;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
@@ -212,9 +213,8 @@ bool EffectSkipMgr::LoadOption()
 bool EffectSkipMgr::LoadLimitCount()
 {
     TiXmlDocument doc;
-    CString strPath = FUN_14071a5b0(CString("Table"), CString("effectLimitCount.xml"));
-    const char* pszPath = strPath;
-    if (FUN_140166420()->FUN_1403974b0(&doc, pszPath, 0, true, false) == 0)
+    CString strPath = FUN_14071a5b0("Table", "effectLimitCount.xml");
+    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return false;
     m_cache.FUN_1401d1160(strPath);
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
@@ -360,33 +360,31 @@ void EffectSkipMgr::SetSuspended(bool b)
 // @0x1411b9900
 void EffectSkipMgr::LoadBenchmark()
 {
-    if (0 < m_nBaseFrame)
+    if (m_nBaseFrame <= 0)
+        return;
+    TiXmlDocument doc;
+    CString strPath = FUN_14071a5b0("Table", "effect_benchmark.xml");
+    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+        return;
+    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+    if (pRoot == 0)
     {
-        TiXmlDocument doc;
-        CString strPath = FUN_14071a5b0(CString("Table"), CString("effect_benchmark.xml"));
-        const char* pszPath = strPath;
-        if (FUN_140166420()->FUN_1403974b0(&doc, pszPath, 0, true, false) == 0)
-            return;
-        Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
-        if (pRoot == 0)
-        {
-            FUN_14015eb90(FUN_140166440(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
-            return;
-        }
-        CString strName;
-        for (Unk_140165cf0* pE = pRoot->FUN_140165cf0("e"); pE != 0; pE = pE->FUN_140168650("e"))
-        {
-            int nTime[2];
-            FUN_1408733e0(pE, "p", strName);
-            FUN_1408731e0(pE, "t", nTime[0]);
-            strName.MakeLower();
-            nTime[1] = (int)FUN_140bf4fd0(50000.0f / (float)(nTime[0] * m_nBaseFrame));
-            CountMap::iterator it = m_mapLimit.find((const char*)strName);
-            if (it == m_mapLimit.end())
-                m_mapLimit.insert(CountMap::value_type((const char*)strName, nTime[1]));
-            else
-                it->second = nTime[1];
-        }
+        FUN_14015eb90(FUN_140166440(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
+        return;
+    }
+    CString strName;
+    for (Unk_140165cf0* pE = pRoot->FUN_140165cf0("e"); pE != 0; pE = pE->FUN_140168650("e"))
+    {
+        int nTime;
+        FUN_1408733e0(pE, "p", strName);
+        FUN_1408731e0(pE, "t", nTime);
+        strName.MakeLower();
+        int nCount = (int)FUN_140bf4fd0(50000.0f / (float)(nTime * m_nBaseFrame));
+        CountMap::iterator it = m_mapLimit.find((const char*)strName);
+        if (it == m_mapLimit.end())
+            m_mapLimit.insert(CountMap::value_type((const char*)strName, nCount));
+        else
+            it->second = nCount;
     }
 }
 

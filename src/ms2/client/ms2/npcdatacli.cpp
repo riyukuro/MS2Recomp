@@ -51,6 +51,7 @@ public:
 };
 Unk_NpcFileSystem* FUN_140166420();
 CStringA FUN_14071a5b0(const CStringA& strDir, const CStringA& strFile);
+CStringA FUN_140513200(const char* szFormat, const int& n);       // StringFormat<int>: the identical-code copy Load calls
 
 // The default effect dummy table (FUN_140789c40()): CommonEffectDummy, its row count and row getter.
 class Unk_NpcEffectDummies
@@ -148,7 +149,6 @@ bool NpcDataCli::Different(const NpcDataCli* pOther)
 }
 
 // @0x140a7c420
-// MS2-FUNCTIONAL: unwind ip2state/frame offset differs by 4-8 bytes in the XML loop; semantics identical
 bool NpcDataCli::LoadXml(Unk_140165cf0* pElem)
 {
     if (!CNpcData::LoadXml(pElem))
@@ -169,37 +169,39 @@ bool NpcDataCli::LoadXml(Unk_140165cf0* pElem)
     FUN_1408730a0(pElem, "attackDamage", m_bAttackDamage);
     FUN_1408730a0(pElem, "nametag", m_bNametag);
     FUN_1408731e0(pElem, "gender", m_nGender);
-    CEffectDummy dummy;
-    size_t nCount = FUN_140789c40()->FUN_140a40200();
-    m_effectDummies.reserve(nCount);
-    for (size_t i = 0; i < nCount; i++)
     {
-        if (FUN_140789c40()->FUN_140a40230((unsigned)i, dummy))
-            m_effectDummies.push_back(dummy);
-    }
-    Unk_140165cf0* pDummies = pElem->FUN_140165cf0("effectdummy");
-    if (pDummies != 0)
-    {
-        for (Unk_140165cf0* pNode = pDummies->FUN_140165cf0("dummy"); pNode != 0; pNode = pNode->NextSiblingElement())
+        CEffectDummy dummy;
+        size_t nCount = FUN_140789c40()->FUN_140a40200();
+        m_effectDummies.reserve(nCount);
+        for (size_t i = 0; i < nCount; i++)
         {
-            bool bFound = false;
-            CStringA strName;
-            FUN_1408733e0(pNode, "name", strName);
-            for (size_t i = 0; i < m_effectDummies.size(); i++)
+            if (FUN_140789c40()->FUN_140a40230((unsigned)i, dummy))
+                m_effectDummies.push_back(dummy);
+        }
+        Unk_140165cf0* pDummies = pElem->FUN_140165cf0("effectdummy");
+        if (pDummies != 0)
+        {
+            for (Unk_140165cf0* pNode = pDummies->FUN_140165cf0("dummy"); pNode != 0; pNode = pNode->NextSiblingElement())
             {
-                CEffectDummy* pDummy = &m_effectDummies[i];
-                if (pDummy->GetName() == strName)
+                bool bFound = false;
+                CStringA strName;
+                FUN_1408733e0(pNode, "name", strName);
+                for (size_t i = 0; i < m_effectDummies.size(); i++)
                 {
-                    pDummy->Parse(pNode);
-                    bFound = true;
-                    break;
+                    CEffectDummy* pDummy = &m_effectDummies[i];
+                    if (pDummy->GetName() == strName)
+                    {
+                        pDummy->Parse(pNode);
+                        bFound = true;
+                        break;
+                    }
                 }
-            }
-            if (!bFound)
-            {
-                CEffectDummy added;
-                added.Parse(pNode);
-                m_effectDummies.push_back(added);
+                if (!bFound)
+                {
+                    CEffectDummy added;
+                    added.Parse(pNode);
+                    m_effectDummies.push_back(added);
+                }
             }
         }
     }
@@ -231,33 +233,22 @@ int NpcDataCli::GetUnknown12()
 }
 
 // @0x140a7c970
-// MS2-FUNCTIONAL: exe resolves the constant accessor through COMDAT templates; unit-local stand-ins give a longer sequence
 unsigned NpcDataCli::GetClassConstant()
 {
-    Unk_NpcConstants* pConst;
     if (m_nFriendly != 0)
+        return NpcConstantValue(&FUN_1401d3200_1()->m_friendly);
+    switch (GetClass())
     {
-        pConst = FUN_1401d3200_1();
-        return NpcConstantValue(&pConst->m_friendly);
+    case 1:
+        return NpcConstantValue(&FUN_1401d3200_1()->m_class1);
+    case 3:
+    case 7:
+        return NpcConstantValue(&FUN_1401d3200_1()->m_class3or7);
+    case 4:
+    case 6:
+        return NpcConstantValue(&FUN_1401d3200_1()->m_class4or6);
     }
-    int nClass = GetClass();
-    if (nClass == 1)
-    {
-        pConst = FUN_1401d3200_1();
-        return NpcConstantValue(&pConst->m_class1);
-    }
-    if (nClass != 3)
-    {
-        if (nClass == 4 || nClass == 6)
-        {
-            pConst = FUN_1401d3200_1();
-            return NpcConstantValue(&pConst->m_class4or6);
-        }
-        if (nClass != 7)
-            return 0;
-    }
-    pConst = FUN_1401d3200_1();
-    return NpcConstantValue(&pConst->m_class3or7);
+    return 0;
 }
 
 // ---- NpcDataTableCli ----------------------------------------------------------------------------------------------
@@ -294,26 +285,19 @@ void NpcDataTableCli::LoadAll()
 }
 
 // @0x140a7cc70
-// MS2-FUNCTIONAL: exe builds Unk_BmPtr copies through FUN_1406d47e0 with 5 unwind entries; same iteration semantics
 void NpcDataTableCli::IndexAllRegions()
 {
     Unk_CriticalSectionLock guard(m_lock, 1);
-    if (m_mapTag[0].GetCount() == 0)
-    {
-        POSITION pos = m_mapSpawn.GetStartPosition();
-        while (pos != 0)
-        {
-            IndexRegionSpawn(m_mapSpawn.GetValueAt(pos));
-            m_mapSpawn.GetNext(pos);
-        }
-    }
+    if (m_mapTag[0].GetCount() > 0)
+        return;
+    for (POSITION pos = m_mapSpawn.GetStartPosition(); pos != 0; m_mapSpawn.GetNext(pos))
+        IndexRegionSpawn(m_mapSpawn.GetValueAt(pos));
 }
 
 // @0x140a7cd70
-// MS2-FUNCTIONAL: range-for copy shape and unwind helper offsets differ by 8 bytes; same semantics
 void NpcDataTableCli::Load(int nFile)
 {
-    CStringA strPath = FUN_14071a5b0("NpcData", StringFormat("{0:03d}.xml", nFile));
+    CStringA strPath = FUN_14071a5b0("NpcData", FUN_140513200("{0:03d}.xml", nFile));
     TiXmlDocument doc;
     if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
     {
@@ -336,7 +320,7 @@ void NpcDataTableCli::Load(int nFile)
         list.push_back(pData);
     }
     Unk_CriticalSectionLock guard(m_lock, 1);
-    m_mapLoaded[nFile] = true;
+    m_mapLoaded[reinterpret_cast<const unsigned long&>(nFile)] = true;
     for (MS2Ptr<NpcDataCli> pData : list)
         m_mapNpc[pData->GetId()] = pData;
 }
@@ -357,7 +341,7 @@ void NpcDataTableCli::Collect(std::map<unsigned, MS2Ptr<NpcDataCli> >& mapOut)
     for (std::pair<const unsigned, MS2Ptr<NpcDataCli> > entry : m_mapNpc)
     {
         if (entry.second.get() != 0)
-            mapOut.insert(entry);
+            mapOut.insert(static_cast<const std::pair<const unsigned, MS2Ptr<NpcDataCli> >&>(entry));
     }
 }
 

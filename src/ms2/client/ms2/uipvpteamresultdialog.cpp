@@ -42,7 +42,7 @@ public:
     int m_14;                                                   // kill
     int m_18;                                                   // death
     int m_1c;                                                   // job
-    char m_20;                                                  // offline
+    bool m_20;                                                  // offline
 };
 
 // The team of the local player (id 0xc9 / 0xca).
@@ -198,7 +198,6 @@ void UIPvPTeamResultDialog::FUN_141345310()
 }
 
 // @0x1413454b0
-// MS2-FUNCTIONAL: the exe destroys the row object on two paths (ASObj dtor twice) and copies the Value through a temp; cl shares the cleanup (5 bytes shorter)
 void UIPvPTeamResultDialog::FUN_1413454b0()
 {
     if (m_30.IsNull())
@@ -207,35 +206,34 @@ void UIPvPTeamResultDialog::FUN_1413454b0()
     for (int i = 0; i < 2; i++)
     {
         Unk_PtVec* pList = FUN_140f97ef0()->FUN_1413465d0(teams[i]);
-        if (pList == 0)
-            continue;
-        for (size_t j = 0; j < pList->FUN_1410201c0(); j++)
+        if (pList != 0)
         {
-            Unk_PtMember* pMember = *FUN_141346670(pList, j);
-            if (pMember == 0)
-                continue;
-            ASObj obj(2);
-            if (!FUN_141345c60(obj, (int)j, pMember))
-                continue;
-            static_cast<Unk_PtScript*>(m_30.operator->())->FUN_140c4bd20("AddOrUpdateTeamMember", teams[i] == 0xc9, obj.FUN_1422bb870());
+            for (size_t j = 0; j < pList->FUN_1410201c0(); j++)
+            {
+                Unk_PtMember* pMember = *FUN_141346670(pList, j);
+                if (pMember == 0)
+                    continue;
+                ASObj obj(2);
+                if (!FUN_141345c60(obj, (int)j, pMember))
+                    continue;
+                static_cast<Unk_PtScript*>(m_30.operator->())->FUN_140c4bd20("AddOrUpdateTeamMember", teams[i] == 0xc9, obj.FUN_1422bb870());
+            }
         }
     }
 }
 
 // @0x1413456a0
-// MS2-FUNCTIONAL: local layout / Invoke temp placement differs
 void UIPvPTeamResultDialog::FUN_1413456a0()
 {
     if (m_30.IsNull())
         return;
-    int nScoreB = 0;
     int nScoreA = 0;
+    int nScoreB = 0;
     FUN_140f97ef0()->FUN_141346600(&nScoreA, &nScoreB);
     static_cast<Unk_PtScript*>(m_30.operator->())->FUN_1409ba0d0("UpdateScore", nScoreA, nScoreB);
 }
 
 // @0x141345740
-// MS2-FUNCTIONAL: branch shape of the team code mapping differs
 void UIPvPTeamResultDialog::FUN_141345740(int nTeam, int nCount)
 {
     m_nCount = nCount;
@@ -246,20 +244,20 @@ void UIPvPTeamResultDialog::FUN_141345740(int nTeam, int nCount)
         m_nWinTeam = 2;
     else
         m_nWinTeam = 0;
-    if (!m_30.IsNull())
-        FUN_1413457f0();
+    if (m_30.IsNull())
+        return;
+    FUN_1413457f0();
 }
 
 #ifndef MS2_HOOK_DLL
 // @0x1413457f0
-// MS2-FUNCTIONAL: string temp order of the reward text differs
 void UIPvPTeamResultDialog::FUN_1413457f0()
 {
     if (m_nCount < 0)
     {
         static_cast<Unk_PtScript*>(m_30.operator->())->FUN_141346320("showLastResult", false, "", "", "", 0);
     }
-    else
+    else if (m_nCount >= 0)
     {
         unsigned int nItemId = *FUN_1402056b0(&FUN_1401d3200()->m_rewardItem);
         CString strBind = FUN_141345eb0(nItemId, m_nCount);
@@ -285,14 +283,13 @@ void UIPvPTeamResultDialog::FUN_1413457f0()
 #endif
 
 // @0x141345c60
-// MS2-FUNCTIONAL: member field read order differs
-int UIPvPTeamResultDialog::FUN_141345c60(ASObj& obj, int nIndex, Unk_PtMember* pMember)
+bool UIPvPTeamResultDialog::FUN_141345c60(ASObj& obj, int nIndex, Unk_PtMember* pMember)
 {
     if (pMember == 0)
-        return 0;
+        return false;
     Unk_PtPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pPlayer == 0)
-        return 0;
+        return false;
     obj.FUN_1407cb9c0("index", nIndex);
     obj.FUN_1407cbb20("charName", pMember->m_8);
     obj.FUN_1407cb9c0("kill", pMember->m_14);
@@ -301,7 +298,7 @@ int UIPvPTeamResultDialog::FUN_141345c60(ASObj& obj, int nIndex, Unk_PtMember* p
     obj.FUN_1407cbbe0("isOffline", pMember->m_20 == 0);
     obj.FUN_1407cbbe0("isMe", FUN_141656a80(pPlayer) == pMember->m_0);
     obj.FUN_1407cb9c0("job", pMember->m_1c);
-    return 1;
+    return true;
 }
 
 // @0x141345de0
@@ -324,13 +321,11 @@ void UIPvPTeamResultDialog::FUN_141345e40()
 }
 
 // @0x141345eb0
-// MS2-FUNCTIONAL: iterator / temp placement of the set lookup differs
 CString UIPvPTeamResultDialog::FUN_141345eb0(unsigned int nItemId, int nAmount)
 {
     CString strBind;
-    strBind.Format("%s_%d", (LPCSTR)GetTypeName(), (unsigned __int64)nItemId);
-    std::set<CString>::iterator itEnd = m_slots.end();
-    if (m_slots.find(strBind) == itEnd)
+    strBind.Format("%s_%d", (LPCSTR)GetTypeName(), nItemId);
+    if (m_slots.find(strBind) == m_slots.end())
     {
         MS2Ptr<CItem> spItem(new CItem);
         if (!spItem->FUN_140523c40(nItemId, 1, 0))
@@ -343,16 +338,10 @@ CString UIPvPTeamResultDialog::FUN_141345eb0(unsigned int nItemId, int nAmount)
 }
 
 // @0x141346140
-// MS2-FUNCTIONAL: iterator temp placement differs
 void UIPvPTeamResultDialog::FUN_141346140()
 {
-    std::set<CString>::iterator it = m_slots.begin();
-    std::set<CString>::iterator itEnd = m_slots.end();
-    while (it != itEnd)
-    {
+    for (std::set<CString>::iterator it = m_slots.begin(), itEnd = m_slots.end(); it != itEnd; ++it)
         FUN_141415600(*it);
-        ++it;
-    }
     m_slots.clear();
 }
 

@@ -211,8 +211,8 @@ static Unk_ALSkillTable* GetEffectMgr()
 }
 
 // @0x1401958c0
-// MS2-FUNCTIONAL: the exe body is 11 bytes (extra frame setup); this empty body compiles to a bare ret
-void FUN_1401958c0()
+// An empty body with two pointer arguments: the exe only spills rcx and rdx.
+void FUN_1401958c0(void*, void*)
 {
 }
 

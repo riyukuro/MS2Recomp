@@ -26,7 +26,6 @@ CRect* FUN_140517a60(CRect* pRect);                     // 0x140517a60 CRect::CR
 LPRECT FUN_14098a2a0(CRect* pRect);                     // 0x14098a2a0 CRect::operator LPRECT
 void FUN_140988d60(CStringW& strSrc, std::vector<CStringW>& arrOut, const wchar_t* pszSep);   // 0x140988d60 (aidebugdialog)
 
-// MS2-FUNCTIONAL: OnTimer (+ inlined GetCheck/Resize call sites) differ in callee order; permuter lane
 IMPLEMENT_DYNAMIC(TriggerDebugDialog, CDialog)
 
 // @0x140b9b490
@@ -105,8 +104,10 @@ void TriggerDebugDialog::OnTimer(UINT_PTR nIDEvent)
                 m_vecLines.clear();
             }
         }
-        for (size_t i = 0; i < vecLines.size() && m_btnFollow.GetCheck() == 1; i++)
+        for (size_t i = 0; i < vecLines.size(); i++)
         {
+            if (m_btnFollow.GetCheck() != 1)
+                break;
             std::pair<int, __int64>* pEntry = &vecLines[i];
             int nLine = pEntry->first;
             CTime time(pEntry->second);
@@ -116,7 +117,7 @@ void TriggerDebugDialog::OnTimer(UINT_PTR nIDEvent)
             CStringW strTime = StringFormat(L"{0:02}:{1:02}:{2:02}", nHour, nMinute, nSecond);
             CStringW strLog;
             int nItem = m_listTrace.GetItemCount();
-            if (nLine < 1)
+            if (nLine <= 0)
             {
                 strLog = L"Undefined Line";
             }
@@ -186,19 +187,25 @@ void TriggerDebugDialog::DoDataExchange(CDataExchange* pDX)
 // @0x140b9bf70
 void TriggerDebugDialog::Resize()
 {
+    int nLeft = 0x14;
+    int nRight = 0xa;
+    int nTop = 0x32;
+    int nBottom = 0xa;
+    int nSpacing = 0xa;
     CRect rcClient;
     GetClientRect(rcClient);
-    int nWidth = rcClient.Width() - 0x1e;
-    int nXmlHeight = (int)((float)(rcClient.Height() - 0x46) * 0.7f);
-    m_editXml.SetWindowPos(0, 0x14, 0x32, nWidth, nXmlHeight, SWP_NOZORDER | SWP_SHOWWINDOW);
-    m_listTrace.SetWindowPos(0, 0x14, nXmlHeight + 0x3c, nWidth, (int)((float)(rcClient.Height() - 0x46) * 0.3f), SWP_NOZORDER | SWP_SHOWWINDOW);
-    int nColumn;
-    if ((int)((float)nWidth * 0.1f) < 100)
-        nColumn = (int)((float)nWidth * 0.1f);
-    else
-        nColumn = 100;
+    int nX = nLeft;
+    int nY = nTop;
+    int nWidth = rcClient.Width() - nLeft - nRight;
+    int nXmlHeight = (int)((float)(rcClient.Height() - nTop - nSpacing - nBottom) * 0.7f);
+    int nListHeight = (int)((float)(rcClient.Height() - nTop - nSpacing - nBottom) * 0.3f);
+    int nListY = nY + nXmlHeight + nSpacing;
+    m_editXml.SetWindowPos(0, nX, nY, nWidth, nXmlHeight, SWP_NOZORDER | SWP_SHOWWINDOW);
+    m_listTrace.SetWindowPos(0, nX, nListY, nWidth, nListHeight, SWP_NOZORDER | SWP_SHOWWINDOW);
+    int nColumn = (int)((float)nWidth * 0.1f) < 100 ? (int)((float)nWidth * 0.1f) : 100;
+    int nColumn2 = (nWidth - nColumn) - 5;
     m_listTrace.SetColumnWidth(0, nColumn);
-    m_listTrace.SetColumnWidth(1, (nWidth - nColumn) - 5);
+    m_listTrace.SetColumnWidth(1, nColumn2);
 }
 
 // @0x140b9c190

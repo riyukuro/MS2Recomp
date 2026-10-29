@@ -115,28 +115,27 @@ int UIFamePointBoardDialog::vfunc_28(const char* szMethod, const Scaleform::GFx:
     return 0;
 }
 
-// MS2-FUNCTIONAL: the alliance id array temporary and the loop counter are laid out differently
 // @0x140c156d0
 int UIFamePointBoardDialog::FUN_140c156d0()
 {
-    CFameTable* pTable = FUN_140764010();
-    ATL::CAtlArray<Unk_FameAlliance>& ids = pTable->GetAllianceIds();
+    int nResult = 0;
+    ATL::CAtlArray<Unk_FameAlliance>& ids = FUN_140764010()->GetAllianceIds();
     for (size_t i = 0; i < ids.GetCount(); i++)
     {
-        Unk_FameAlliance nAlliance = ids[i];
-        int nQuestId = FUN_140764010()->GetSeasonRequireQuest(nAlliance);
+        int nQuestId = FUN_140764010()->GetSeasonRequireQuest(ids[i]);
         if (FUN_140764020()->FUN_140745590(nQuestId) != 0)
-            return 1;
+        {
+            nResult = 1;
+            break;
+        }
     }
-    return 0;
+    return nResult;
 }
 
-// MS2-FUNCTIONAL: the alliance id array temporary and the loop counter are laid out differently; ASObj row temporaries
 // @0x140c15780
 void UIFamePointBoardDialog::FUN_140c15780()
 {
-    MS2Ptr<Unk_FpTab> spTab = FUN_140c02870("m_tab");
-    if (spTab.get() != 0)
+    if (MS2Ptr<Unk_FpTab> spTab = FUN_140c02870("m_tab"))
     {
         spTab->FUN_1422e3400();
         ATL::CAtlArray<Unk_FameAlliance>& ids = FUN_140764010()->GetAllianceIds();
@@ -144,22 +143,20 @@ void UIFamePointBoardDialog::FUN_140c15780()
         {
             Unk_FameAlliance nAlliance = ids[i];
             int nQuestId = FUN_140764010()->GetSeasonRequireQuest(nAlliance);
-            if (FUN_140764020()->FUN_140745590(nQuestId) != 0)
-            {
-                ASObj row(2);
-                row.FUN_1407cbb20("label", FUN_140762de0(nAlliance));
-                row.FUN_1407cba60("alliance", FUN_140762e90(nAlliance));
-                row.FUN_1407cbb20("grade", FUN_140762ee0(nAlliance, FUN_140931210(nAlliance)));
-                row.FUN_1407cb9c0("allianceCode", nAlliance);
-                spTab->FUN_1422e3460(row);
-            }
+            if (FUN_140764020()->FUN_140745590(nQuestId) == 0)
+                continue;
+            ASObj row(2);
+            row.FUN_1407cbb20("label", FUN_140762de0(nAlliance));
+            row.FUN_1407cba60("alliance", FUN_140762e90(nAlliance));
+            row.FUN_1407cbb20("grade", FUN_140762ee0(nAlliance, FUN_140931210(nAlliance)));
+            row.FUN_1407cb9c0("allianceCode", nAlliance);
+            spTab->FUN_1422e3460(row);
         }
         spTab->FUN_1422e31e0(0);
         spTab->vfunc_24(true);
     }
 }
 
-// MS2-FUNCTIONAL: CStringW/ASObj temporaries of the log rows are laid out differently (frame size)
 // @0x140c15a10
 void UIFamePointBoardDialog::FUN_140c15a10(int nAlliance)
 {
@@ -176,45 +173,39 @@ void UIFamePointBoardDialog::FUN_140c15a10(int nAlliance)
     data.FUN_1407cbb20("famePoint", strPoint);
     CMsTime timeNow(FUN_140869440());
     ASArray logs(2);
-    POSITION pos = DAT_143ab31e8.GetHeadPosition();
-    while (pos != 0)
+    for (POSITION pos = DAT_143ab31e8.GetHeadPosition(); pos != 0; DAT_143ab31e8.GetNext(pos))
     {
         int nLogId = DAT_143ab31e8.GetValueAt(pos);
         __int64 nLogTime = DAT_143ab31e8.GetKeyAt(pos);
-        if (FUN_140764010()->IsLogOfAlliance(nLogId, (Unk_FameAlliance)nAlliance))
+        if (FUN_140764010()->IsLogOfAlliance(nLogId, (Unk_FameAlliance)nAlliance) == 0)
+            continue;
+        CStringW strMsg = FUN_1401a9d70()->FUN_141811980(0x43, nLogId);
+        FUN_1403b4750()->FUN_1416fb300(strMsg);
+        CStringW strDate;
+        CMsTime timeLog(nLogTime);
+        ATL::CTimeSpan span = timeNow - timeLog;
+        if (span.GetTotalHours() > 0x18)
         {
-            CStringW strMsg = FUN_1401a9d70()->FUN_141811980(0x43, nLogId);
-            FUN_1403b4750()->FUN_1416fb300(strMsg);
-            CStringW strDate;
-            CMsTime timeLog(nLogTime);
-            ATL::CTimeSpan span = timeNow - timeLog;
-            if (span.GetTotalHours() < 0x19)
-            {
-                if (span.GetTotalMinutes() < 0x3d)
-                {
-                    __int64 nMinutes = span.GetTotalMinutes();
-                    strDate = FUN_14028dfa0(CStringW(L"s_fame_point_board_time1"), nMinutes);
-                }
-                else
-                {
-                    int nMinute = timeLog.GetMinute();
-                    int nHour = timeLog.GetHour();
-                    strDate = FUN_14028dfa0(CStringW(L"s_fame_point_board_time2"), nHour, nMinute);
-                }
-            }
-            else
-            {
-                int nDay = timeLog.GetDay();
-                int nMonth = timeLog.GetMonth();
-                int nYear = timeLog.GetYear();
-                strDate = FUN_14028dfa0(CStringW(L"s_fame_point_board_time3"), nYear, nMonth, nDay);
-            }
-            ASObj line(2);
-            line.FUN_1407cbb20("msg", strMsg);
-            line.FUN_1407cbb20("date", strDate);
-            logs.FUN_1422bbf00(line);
+            int nDay = timeLog.GetDay();
+            int nMonth = timeLog.GetMonth();
+            int nYear = timeLog.GetYear();
+            strDate = FUN_14028dfa0(CStringW(L"s_fame_point_board_time3"), nYear, nMonth, nDay);
         }
-        DAT_143ab31e8.GetNext(pos);
+        else if (span.GetTotalMinutes() > 0x3c)
+        {
+            int nMinute = timeLog.GetMinute();
+            int nHour = timeLog.GetHour();
+            strDate = FUN_14028dfa0(CStringW(L"s_fame_point_board_time2"), nHour, nMinute);
+        }
+        else
+        {
+            __int64 nMinutes = span.GetTotalMinutes();
+            strDate = FUN_14028dfa0(CStringW(L"s_fame_point_board_time1"), nMinutes);
+        }
+        ASObj line(2);
+        line.FUN_1407cbb20("msg", strMsg);
+        line.FUN_1407cbb20("date", strDate);
+        logs.FUN_1422bbf00(line);
     }
     data.FUN_140c16160("log", logs);
     static_cast<Unk_FpScript*>(m_30.operator->())->FUN_140ba4cc0("setData", data);

@@ -21,6 +21,7 @@
 #include "ms2/placeholder/asobj.h"
 #include "ms2/placeholder/delegate.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
+#include "ms2/placeholder/uipopupmenu.h"
 // clubcli.cpp owns the (non-inline) CClubCli specializations at 0x140b1cda0 / 0x140b1cfa0; call them instead of instantiating.
 class CClubCli;
 template<> void MS2Ptr<CClubCli>::AddRef() const;
@@ -59,6 +60,9 @@ public:
     void FUN_140b1a550(POSITION& pos);                                  // next
     int FUN_140b1a4a0();                                                // count
 };
+// The map is boxed behind its CPtred (clubcli.h's Unk_SocketPtr<Unk_ClubCliMap>, the value at +0x18), so the plain
+// MS2Ptr release would DecRef the map itself. Call clubcli's boxed release (0x140b19b20) instead.
+template<> MS2Ptr<Unk_ClubMap>::~MS2Ptr();
 class Unk_ClubManager
 {
 public:
@@ -141,17 +145,8 @@ public:
     bool FUN_1422bc050(Scaleform::GFx::Value v);                        // push
 };
 
-// The popup menu parameters (0x88 bytes; ctor 0x140c302f0, dtor 0x140c304c0 called as members).
-class Unk_ClubPopup
-{
-public:
-    void FUN_140c302f0(float x, float y, int nKind, int nMenuId, int a5, CString strKey, void* p);
-    void FUN_140c304c0();
-    char m_pad[0x88];
-};
-MS2_CHECK_SIZE(Unk_ClubPopup, 0x88);
-class Unk_ClubPopupDialog { public: void FUN_141a80210(const Unk_ClubPopup& params, CClubMember* pMember); };
-Unk_ClubPopupDialog* FUN_140c30140(int nType);
+// The popup menu (UIPopUpMenu); the club member menu entry point.
+class Unk_ClubPopupDialog { public: void FUN_141a80210(const Unk_PopupMenuInfo& info, CClubMember* pMember); };
 
 
 // The skill-attribute record behind a club buff icon (CPtred + 0xa8 bytes, then the icon path at +0xc0).
@@ -181,7 +176,7 @@ CStringW FUN_1409e8970(CStringW strFormat, const int& a1, const int& a2);
 CStringW FUN_14086cfc0(int nId, const int& n);
 CStringW FUN_14086d060(int nId, const __int64& n);
 CStringW FUN_140a228f0(int nId, const int& n, const CStringW& str);
-CString FUN_141028be0(__int64 nId, CString strPicture, int n, CString strKey);   // profile image path
+CString FUN_141028be0(__int64 nId, const CString& strPicture, int n, CString strKey);   // profile image path
 __time64_t FUN_140869440();                                             // current time
 
 // ---- statics ----
@@ -256,7 +251,6 @@ void UIClubDialog::OnLoadComplete()
 MS2_REPLACE_METHOD(0x140E0ABE0, UIClubDialog, OnLoadComplete, 102, 0x247ED296);
 
 // @0x140e0ac50
-// MS2-FUNCTIONAL: frame layout / temp slot order of the 6-way string dispatch differs from the exe
 int UIClubDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs)
 {
     UIDialog::vfunc_28(szMethod, pArgs, nArgs);
@@ -268,29 +262,28 @@ int UIClubDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pA
             FUN_140e0c570(m_nClubId);
         }
         return 1;
-    }
-    if (_stricmp("onAddMember", szMethod) == 0) {
-        MS2Ptr<CMsgBoxData> box = FUN_140d73e40(10, 0x361, 0, CStringW(L""));
-        if (box.get() != 0) {
-            box->FUN_141a01d30(2, CStringW(L""), 0x18, 0, 0);
-            box->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIClubDialog::FUN_140e0bcd0));
-            FUN_140d73c60(box);
+    } else if (_stricmp("onAddMember", szMethod) == 0) {
+        {
+            MS2Ptr<CMsgBoxData> box = FUN_140d73e40(10, 0x361, 0, CStringW(L""));
+            if (box.get() != 0) {
+                box->FUN_141a01d30(2, L"", 0x18, 0, 0);
+                box->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIClubDialog::FUN_140e0bcd0));
+                FUN_140d73c60(box);
+            }
         }
         return 1;
-    }
-    if (_stricmp("onWithdrawal", szMethod) == 0) {
+    } else if (_stricmp("onWithdrawal", szMethod) == 0) {
+        {
         MS2Ptr<CClubCli> club = FUN_140e0d900()->FUN_140b14d80(m_nClubId);
         if (club.get() != 0) {
-            MS2Ptr<CMsgBoxData> box = FUN_140d73d20(1, FUN_1401e8510(GetStringCommon(0x363), club->FUN_14020f1a0()), 0, CStringW(L""));
-            if (box.get() != 0) {
+            if (MS2Ptr<CMsgBoxData> box = FUN_140d73d20(1, FUN_1401e8510(GetStringCommon(0x363), club->FUN_14020f1a0()), 0, CStringW(L""))) {
                 box->FUN_141a01800(2);
                 box->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIClubDialog::FUN_140e0bdb0));
                 FUN_140d73c60(box);
             }
         }
-        return 0;
-    }
-    if (_stricmp("onSettingBuff", szMethod) == 0) {
+        }
+    } else if (_stricmp("onSettingBuff", szMethod) == 0) {
         MS2Ptr<CClubCli> club = FUN_140e0d900()->FUN_140b14d80(m_nClubId);
         if (club == 0)
             return 1;
@@ -302,50 +295,43 @@ int UIClubDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pA
             box->SetExtra(s_strClubBuff);
             box->FUN_141a01800(2);
             box->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIClubDialog::FUN_140e0be00));
-            if (club->FUN_14020f640() == 0) {
-                box->FUN_141a02880(nBuffId, nLevel, FUN_1401a9d70()->FUN_141812290(nBuffId, nLevel, CString("name")));
+            if (club->FUN_14020f640() != 0) {
+                box->FUN_141a02880(club->FUN_14020f640(), club->FUN_14020f6b0(),
+                                   FUN_1401a9d70()->FUN_141812290(club->FUN_14020f640(), club->FUN_14020f6b0(), CString("name")));
             } else {
-                FUN_1401a9d70()->FUN_141812290(club->FUN_14020f640(), club->FUN_14020f6b0() & 0xffff, CString("name"));
-                box->FUN_141a02880(club->FUN_14020f640(), club->FUN_14020f6b0() & 0xffff,
-                                   FUN_1401a9d70()->FUN_141812290(club->FUN_14020f640(), club->FUN_14020f6b0() & 0xffff, CString("name")));
+                box->FUN_141a02880(nBuffId, nLevel, FUN_1401a9d70()->FUN_141812290(nBuffId, nLevel, CString("name")));
             }
             FUN_140d73c60(box);
         }
-        return 0;
-    }
-    if (_stricmp("onNameChange", szMethod) == 0) {
+    } else if (_stricmp("onNameChange", szMethod) == 0) {
         int nCost = *FUN_1402056b0(&FUN_1401d3200()->m_nameChange);
-        int nHalf = nCost / 2;
-        MS2Ptr<CMsgBoxData> box = FUN_140d73d20(10, FUN_1409e8970(CStringW(L"s_party_change_name"), nHalf, nCost), 0, CStringW(L""));
+        MS2Ptr<CMsgBoxData> box = FUN_140d73d20(10, FUN_1409e8970(CStringW(L"s_party_change_name"), nCost / 2, nCost), 0, CStringW(L""));
         if (box.get() != 0) {
-            box->FUN_141a01d30(2, CStringW(L""), nCost, 0, 0);
+            box->FUN_141a01d30(2, L"", nCost, 0, 0);
             box->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIClubDialog::FUN_140e0bef0));
             FUN_140d73c60(box);
         }
-        return 0;
-    }
-    if (_stricmp("OnClubMemberPopupMenu", szMethod) == 0) {
+    } else if (_stricmp("OnClubMemberPopupMenu", szMethod) == 0) {
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs) != 0) {
             float x = data.FUN_1422b8c10();
             float y = data.FUN_1422b8c10();
             CStringW strName = data.FUN_1422b8f40();
-            MS2Ptr<CClubCli> club = FUN_140e0d900()->FUN_140b14d80(m_nClubId);
-            if (club.get() != 0) {
-                MS2Ptr<CClubMember> member = club->FUN_140210560(strName);
-                if (member.get() != 0) {
-                    Unk_ClubPopupDialog* pPopup = FUN_140c30140(0x4e39);
-                    if (pPopup != 0) {
-                        Unk_ClubPopup params;
-                        params.FUN_140c302f0(x, y, 3, 0x63de, 1, CString(""), 0);
-                        pPopup->FUN_141a80210(params, member);
-                        params.FUN_140c304c0();
+            {
+                MS2Ptr<CClubCli> club = FUN_140e0d900()->FUN_140b14d80(m_nClubId);
+                if (club.get() != 0) {
+                    MS2Ptr<CClubMember> member = club->FUN_140210560(strName);
+                    if (member.get() != 0) {
+                        Unk_ClubPopupDialog* pPopup = (Unk_ClubPopupDialog*)FUN_140c30140(0x4e39);
+                        if (pPopup != 0) {
+                            Unk_PopupMenuInfo info(x, y, 3, 0x63de, 1, CString(""), 0);
+                            pPopup->FUN_141a80210(info, member);
+                        }
                     }
                 }
             }
             return 1;
         }
-        return 0;
     }
     return 0;
 }
@@ -418,40 +404,33 @@ bool UIClubDialog::FUN_140e0bef0(int nResult, const CMsgBoxData& data)
 MS2_REPLACE_METHOD(0x140E0BEF0, UIClubDialog, FUN_140e0bef0, 217, 0x8D1F2157);
 
 // @0x140e0bfd0
-// MS2-FUNCTIONAL: the exe spills the MS2Ptr return into an extra local; CString temp and frame slots differ
 void UIClubDialog::FUN_140e0bfd0()
 {
     MS2Ptr<Unk_ClubMap> spMap = FUN_140e0d900()->FUN_140b14e40();
     if (spMap != 0) {
         {
-            MS2Ptr<Unk_ClubList> spList = FUN_140c02900(CString("m_category"));
-            if (spList.get() != 0) {
+            if (MS2Ptr<Unk_ClubList> spList = FUN_140c02900("m_category")) {
                 spList->FUN_1422dcca0(-1);
                 spList->FUN_1422dd1d0();
                 Unk_ClubArray rows(2);
                 CStringW strMyName = FUN_1403ed2d0()->FUN_141bd0d30();
-                POSITION pos = spMap->FUN_140b1a4c0();
-                while (pos != 0) {
+                for (POSITION pos = spMap->FUN_140b1a4c0(); pos != 0; spMap->FUN_140b1a550(pos)) {
                     __int64 nClubSN = spMap->FUN_140b1a4f0(pos);
                     MS2Ptr<CClubCli> spClub = spMap->FUN_140b1a590(pos);
-                    if (!(spClub == 0)) {
-                        ASObj row(2);
-                        row.FUN_1407cba60("clubSN", FUN_140719530(nClubSN));
-                        row.FUN_1407cb9c0("master", spClub->FUN_140211080(CStringW(strMyName)));
-                        row.FUN_1407cbb20("label", spClub->FUN_14020f1a0());
-                        int nMax = 10;
-                        int nCount = spClub->FUN_140210df0();
-                        row.FUN_1407cbb20("memberCount", FUN_14083dc40(GetStringCommon(0x367), nCount, nMax));
-                        unsigned nLevel = spClub->FUN_14020f6b0();
-                        FUN_140e0d180(row, spClub->FUN_14020f640(), nLevel & 0xffff);
-                        FUN_140e0d230(row, spClub->FUN_14020f460());
-                        rows.FUN_1422bc050(Scaleform::GFx::Value(row.FUN_1422bb870()));
-                    }
-                    spMap->FUN_140b1a550(pos);
+                    if (spClub == 0)
+                        continue;
+                    ASObj row(2);
+                    row.FUN_1407cba60("clubSN", FUN_140719530(nClubSN));
+                    row.FUN_1407cb9c0("master", spClub->FUN_140211080(CStringW(strMyName)));
+                    row.FUN_1407cbb20("label", spClub->FUN_14020f1a0());
+                    row.FUN_1407cbb20("memberCount", FUN_14083dc40(GetStringCommon(0x367), spClub->FUN_140210df0(), 10));
+                    FUN_140e0d180(row, spClub->FUN_14020f640(), spClub->FUN_14020f6b0());
+                    FUN_140e0d230(row, spClub->FUN_14020f460());
+                    rows.FUN_1422bc050(Scaleform::GFx::Value(row.FUN_1422bb870()));
                 }
                 spList->vfunc_25(rows.FUN_1422bb870());
                 spList->vfunc_24(true);
-                if (spMap->FUN_140b1a4a0() <= m_nCategory)
+                if (m_nCategory >= spMap->FUN_140b1a4a0())
                     m_nCategory = 0;
                 spList->FUN_1422dcca0(m_nCategory);
             }
@@ -462,16 +441,14 @@ void UIClubDialog::FUN_140e0bfd0()
 }
 
 // @0x140e0c570
-// MS2-FUNCTIONAL: the exe spills the MS2Ptr return into an extra local; CString temp and frame slots differ
 void UIClubDialog::FUN_140e0c570(__int64 nClubId)
 {
     MS2Ptr<CClubCli> spClub = FUN_140e0d900()->FUN_140b14d80(nClubId);
     if (spClub.get() != 0) {
-        MS2Ptr<Unk_ClubClip> spClip = FUN_140ba7930(CString("m_clubData"));
+        MS2Ptr<Unk_ClubClip> spClip = FUN_140ba7930("m_clubData");
         if (spClip == 0)
             return;
-        MS2Ptr<Unk_ClubList> spList = spClip->FUN_140bc7280(CString("m_items"));
-        if (spList.get() != 0) {
+        if (MS2Ptr<Unk_ClubList> spList = spClip->FUN_140bc7280("m_items")) {
             spList->FUN_1422dd1d0();
             Unk_ClubArray rows(2);
             MS2Ptr<CClubMember> spLeader = spClub->FUN_140210f70();
@@ -484,12 +461,12 @@ void UIClubDialog::FUN_140e0c570(__int64 nClubId)
             ATL::CAtlArray<MS2Ptr<CClubMember> > members;
             spClub->FUN_1402109d0(members);
             for (size_t i = 0; i < members.GetCount(); ++i) {
-                if (spClub->FUN_140211080(members[i]->m_info.FUN_14020e5d0()) == 0) {
-                    ASObj row(2);
-                    row.FUN_1407cbbe0("master", false);
-                    FUN_140e0ca20(row, members[i]);
-                    rows.FUN_1422bc050(Scaleform::GFx::Value(row.FUN_1422bb870()));
-                }
+                if (spClub->FUN_140211080(members[i]->m_info.FUN_14020e5d0()) != 0)
+                    continue;
+                ASObj row(2);
+                row.FUN_1407cbbe0("master", false);
+                FUN_140e0ca20(row, members[i]);
+                rows.FUN_1422bc050(Scaleform::GFx::Value(row.FUN_1422bb870()));
             }
             spList->vfunc_25(rows.FUN_1422bb870());
             spList->vfunc_24(true);
@@ -498,7 +475,6 @@ void UIClubDialog::FUN_140e0c570(__int64 nClubId)
 }
 
 // @0x140e0ca20
-// MS2-FUNCTIONAL: CTimeSpan span helpers are out-of-line calls in the exe; temp slots differ
 void UIClubDialog::FUN_140e0ca20(ASObj& row, MS2Ptr<CClubMember> spMember)
 {
     row.FUN_1407cbb20("name", spMember->m_info.FUN_14020e5d0());
@@ -509,19 +485,16 @@ void UIClubDialog::FUN_140e0ca20(ASObj& row, MS2Ptr<CClubMember> spMember)
     CStringW strLocation;
     CStringW strTime;
     if (spMember->m_f0 != 0) {
-        ATL::CTimeSpan span = FUN_140869440() - spMember->m_d8;
-        if (span.GetDays() < 1) {
-            if (span.GetHours() < 1) {
-                if (span.GetMinutes() < 1)
-                    strTime = GetStringCommon(0x35c);
-                else
-                    strTime = FUN_14086cfc0(0x35b, span.GetMinutes());
-            } else {
-                strTime = FUN_14086cfc0(0x35a, span.GetHours());
-            }
-        } else {
+        __time64_t nElapsed = FUN_140869440() - spMember->m_d8;
+        ATL::CTimeSpan span(nElapsed);
+        if (span.GetDays() > 0)
             strTime = FUN_14086d060(0x359, span.GetDays());
-        }
+        else if (span.GetHours() > 0)
+            strTime = FUN_14086cfc0(0x35a, span.GetHours());
+        else if (span.GetMinutes() > 0)
+            strTime = FUN_14086cfc0(0x35b, span.GetMinutes());
+        else
+            strTime = GetStringCommon(0x35c);
         strLocation = FUN_1401e8510(GetStringCommon(0x35e), strTime);
     } else {
         if (spMember->m_info.m_channel == 0) {

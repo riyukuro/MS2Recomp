@@ -17,22 +17,22 @@
 // MS2-PIN: ??_7CNametagSymbolTable@@6B?$CValidData@VCNametagSymbolTable@@@@@ 0x142d79ff0
 // Full-executable aliases for the existing CNametagSymbolTable helpers.
 // MS2-PIN: ?Load@CNametagSymbolTable@@QEAAHXZ 0x1406c54d0
-// MS2-PIN: ?Exists@CNametagSymbolTable@@QEAA_NG@Z 0x1406c5a70
-// MS2-PIN: ?IsType@CNametagSymbolTable@@QEAA_NGH@Z 0x1406c5b00
-// MS2-PIN: ?IsShown@CNametagSymbolTable@@QEAA_NG@Z 0x1406c5c80
+// MS2-PIN: ?Exists@CNametagSymbolTable@@QEAAHG@Z 0x1406c5a70
+// MS2-PIN: ?IsType@CNametagSymbolTable@@QEAAHGH@Z 0x1406c5b00
+// MS2-PIN: ?IsShown@CNametagSymbolTable@@QEAAHG@Z 0x1406c5c80
 // MS2-PIN: ?CheckCondition@CNametagSymbolTable@@QEAAIG@Z 0x1406c5d60
 // MS2-PIN: ?GetIconRanked@CNametagSymbolTable@@QEAA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@GPEAVUnk_NametagActor@@@Z 0x1406c61a0
 // MS2-PIN: ?GetIcon@CNametagSymbolTable@@QEAA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@GPEAVUnk_NametagActor@@@Z 0x1406c6360
 // MS2-PIN: ?FUN_1406c54d0@@YAXPEAVCNametagSymbolTable@@@Z 0x1406c54d0
 // MS2-PIN: ?FUN_1406c5a70@Unk_NtMgr@@QEAAHF@Z 0x1406c5a70
-// MS2-PIN: ?FUN_1406c5b00@Unk_NtItemMgr@@QEAAH_JH@Z 0x1406c5b00
+// MS2-PIN: ?FUN_1406c5b00@Unk_NtItemMgr@@QEAAHGH@Z 0x1406c5b00
 // MS2-PIN: ?FUN_1406c5c80@Unk_NtMgr@@QEAAHF@Z 0x1406c5c80
 // MS2-PIN: ?FUN_1406c5d60@Unk_MiNtMgr@@QEAAHF@Z 0x1406c5d60
 // MS2-PIN: ?FUN_1406c5d60@Unk_MyPCChannelTable@@QEAAHG@Z 0x1406c5d60
 // MS2-PIN: ?FUN_1406c5d60@Unk_NtMgr@@QEAAHF@Z 0x1406c5d60
 // MS2-PIN: ?FUN_1406c61a0@Unk_NtMgr@@QEAA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@FPEAUUnk_NtPlayer@@@Z 0x1406c61a0
 // MS2-PIN: ?FUN_1406c61a0@Unk_MiNtMgr@@QEAA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@FPEAVMyPC@@@Z 0x1406c61a0
-// MS2-PIN: ?FUN_1406c6360@Unk_NtItemMgr@@QEAA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@_JPEAVPC@@H@Z 0x1406c6360
+// MS2-PIN: ?FUN_1406c6360@Unk_NtItemMgr@@QEAA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@GPEAVPC@@H@Z 0x1406c6360
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\commonfiles\\nametagsymboltable.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
 #include "nametagsymboltable.h"
@@ -65,8 +65,10 @@ extern Unk_NametagTitles DAT_143ab3268;
 class Unk_NametagScore { public: int FUN_140267c10(); };    // the trophy points
 class Unk_NametagTrophy { public: Unk_NametagScore* FUN_140938ad0(); };
 extern Unk_NametagTrophy* DAT_143ab0668;
-struct Unk_NametagFlags { char m_pad[0x30]; char m_bEnabled; };
+struct Unk_NametagFlags { char m_pad[0x30]; unsigned char m_bEnabled; };
 extern Unk_NametagFlags* DAT_143ab0468;
+Unk_NametagTrophy* FUN_1406c7600();
+Unk_NametagFlags* FUN_1406c7610();
 
 // The character record of a character id (the trophy points sit at +0xd0).
 class Unk_NametagChar : public CPtred
@@ -103,7 +105,7 @@ CNametagSymbolTable::~CNametagSymbolTable()
 // @0x1406c54d0
 int CNametagSymbolTable::Load()
 {
-    CString strPath = FUN_14071a5b0(CString("Table"), CString("nametagSymbol.xml"));
+    CString strPath = FUN_14071a5b0("Table", "nametagSymbol.xml");
     TiXmlDocument doc;
     if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
         return 0;
@@ -118,20 +120,19 @@ int CNametagSymbolTable::Load()
     for (size_t i = 0; i < nodes.size(); ++i)
     {
         Unk_140165cf0* pNode = nodes[i];
-        if (pNode != 0)
-        {
-            CNametagSymbolDataPtr spData(new CNametagSymbolData);
-            FUN_1408731a0(pNode, "id", spData->m_nId);
-            FUN_140873420(pNode, "icon", spData->m_strIcon);
-            XmlEnumName<NametagConditionType, FUN_1406c67a0>(pNode, "conditionType", spData->m_eCondition);
-            FUN_140873220(pNode, "code", spData->m_nCode);
-            FUN_1408731e0(pNode, "hideSymbol", spData->m_nHideSymbol);
-            FUN_140873220(pNode, "buffID", spData->m_nBuffId);
-            FUN_1408731a0(pNode, "buffLv", spData->m_nBuffLv);
-            FUN_1408731e0(pNode, "pushSymbol", spData->m_nPushSymbol);
-            m_map.SetAt(spData->m_nId, spData);
-            m_arrIds.Add(spData->m_nId);
-        }
+        if (pNode == 0)
+            continue;
+        CNametagSymbolDataPtr spData(new CNametagSymbolData);
+        FUN_1408731a0(pNode, "id", spData->m_nId);
+        FUN_140873420(pNode, "icon", spData->m_strIcon);
+        XmlEnumName<NametagConditionType, FUN_1406c67a0>(pNode, "conditionType", spData->m_eCondition);
+        FUN_140873220(pNode, "code", spData->m_nCode);
+        FUN_1408731e0(pNode, "hideSymbol", spData->m_nHideSymbol);
+        FUN_140873220(pNode, "buffID", spData->m_nBuffId);
+        FUN_1408731a0(pNode, "buffLv", spData->m_nBuffLv);
+        FUN_1408731e0(pNode, "pushSymbol", spData->m_nPushSymbol);
+        m_map.SetAt(spData->m_nId, spData);
+        m_arrIds.Add(spData->m_nId);
     }
     SetInit(true);
     return 1;
@@ -150,22 +151,20 @@ CNametagSymbolDataPtr CNametagSymbolTable::GetData(unsigned short nId)
 CNametagSymbolDataPtr CNametagSymbolTable::FindByTitle(int nTitleId)
 {
     CheckInit();
-    POSITION pos = m_map.GetHeadPosition();
-    while (pos != 0)
+    for (POSITION pos = m_map.GetHeadPosition(); pos != 0; m_map.GetNext(pos))
     {
         CNametagSymbolDataPtr spData = m_map.GetValueAt(pos);
-        if (spData->m_eCondition == NAMETAG_CONDITION_TITLE)
-        {
-            if ((int)spData->m_nCode == nTitleId)
-                return spData;
-        }
-        m_map.GetNext(pos);
+        if (spData->m_eCondition != NAMETAG_CONDITION_TITLE)
+            continue;
+        if ((int)spData->m_nCode != nTitleId)
+            continue;
+        return spData;
     }
     return CNametagSymbolDataPtr(0);
 }
 
 // @0x1406c5a70
-bool CNametagSymbolTable::Exists(unsigned short nId)
+int CNametagSymbolTable::Exists(unsigned short nId)
 {
     CheckInit();
     CNametagSymbolDataPtr spData(0);
@@ -174,32 +173,30 @@ bool CNametagSymbolTable::Exists(unsigned short nId)
 }
 
 // @0x1406c5b00
-bool CNametagSymbolTable::IsType(unsigned short nId, int nType)
+int CNametagSymbolTable::IsType(unsigned short nId, int nType)
 {
     CheckInit();
     CNametagSymbolDataPtr spData(0);
-    if (!m_map.Lookup(nId, spData))
-        return false;
-    return spData->m_eCondition == nType;
+    if (m_map.Lookup(nId, spData))
+        return spData->m_eCondition == nType;
+    return 0;
 }
 
 // @0x1406c5bb0
 unsigned short CNametagSymbolTable::FindIdByType(int nType)
 {
     CheckInit();
-    POSITION pos = m_map.GetHeadPosition();
-    while (pos != 0)
+    for (POSITION pos = m_map.GetHeadPosition(); pos != 0; m_map.GetNext(pos))
     {
         CNametagSymbolDataPtr spData = m_map.GetValueAt(pos);
         if (spData->m_eCondition == nType)
             return spData->m_nId;
-        m_map.GetNext(pos);
     }
     return 0;
 }
 
 // @0x1406c5c80
-bool CNametagSymbolTable::IsShown(unsigned short nId)
+int CNametagSymbolTable::IsShown(unsigned short nId)
 {
     CheckInit();
     CNametagSymbolDataPtr spData(0);
@@ -218,62 +215,45 @@ unsigned int CNametagSymbolTable::CheckCondition(unsigned short nId)
     if (pActor == 0)
         return 0;
     CNametagSymbolDataPtr spData(0);
-    if (!m_map.Lookup(nId, spData))
-        return 0;
-    unsigned int nResult;
-    switch (spData->m_eCondition)
+    if (m_map.Lookup(nId, spData))
     {
-    case NAMETAG_CONDITION_LEVEL:
-        nResult = pActor->vfunc_78() > 0x31;
-        break;
-    case NAMETAG_CONDITION_ENCHANT:
-    {
-        char a[8];
-        char b[4];
-        nResult = pActor->FUN_141661e40(a, b);
-        break;
+        switch (spData->m_eCondition)
+        {
+        case NAMETAG_CONDITION_LEVEL:
+            return pActor->vfunc_78() >= 50;
+        case NAMETAG_CONDITION_TROPHY_POINT:
+            return FUN_1406c7600()->FUN_140938ad0()->FUN_140267c10() >= 1000;
+        case NAMETAG_CONDITION_TITLE:
+            return DAT_143ab3268.FUN_140408410(&spData->m_nCode) != -1;
+        case NAMETAG_CONDITION_ENCHANT:
+        {
+            int nA;
+            int nB;
+            return pActor->FUN_141661e40(&nA, &nB);
+        }
+        case NAMETAG_CONDITION_VIP:
+            return pActor->FUN_141662de0();
+        case NAMETAG_CONDITION_TENCENTVIP:
+            return pActor->FUN_141663080() != 0;
+        case NAMETAG_CONDITION_TGP:
+            return pActor->FUN_1416630c0();
+        case NAMETAG_CONDITION_GM:
+            return pActor->GetGmGrade() >= 50;
+        case NAMETAG_CONDITION_RETURN_USER:
+            if (!FUN_1406c7610()->m_bEnabled)
+                return 0;
+            return pActor->FUN_14165ffe0() == 2;
+        case NAMETAG_CONDITION_BIRTHDAY:
+            return pActor->FUN_141660030();
+        case NAMETAG_CONDITION_ADVENTURE_LEVEL:
+            return pActor->vfunc_141() >= 100;
+        case NAMETAG_CONDITION_BURNING:
+            return pActor->FUN_1415275b0(nId);
+        case NAMETAG_CONDITION_SURVIVAL_LEVEL:
+            return pActor->FUN_141663b50() >= 5;
+        }
     }
-    case NAMETAG_CONDITION_TITLE:
-        nResult = DAT_143ab3268.FUN_140408410(&spData->m_nCode) != -1;
-        break;
-    case NAMETAG_CONDITION_TROPHY_POINT:
-        nResult = DAT_143ab0668->FUN_140938ad0()->FUN_140267c10() > 999;
-        break;
-    case NAMETAG_CONDITION_VIP:
-        nResult = pActor->FUN_141662de0();
-        break;
-    case NAMETAG_CONDITION_TENCENTVIP:
-        nResult = pActor->FUN_141663080() != 0;
-        break;
-    case NAMETAG_CONDITION_TGP:
-        nResult = pActor->FUN_1416630c0();
-        break;
-    case NAMETAG_CONDITION_GM:
-        nResult = pActor->GetGmGrade() > 0x31;
-        break;
-    case NAMETAG_CONDITION_RETURN_USER:
-        if (!DAT_143ab0468->m_bEnabled)
-            nResult = 0;
-        else
-            nResult = pActor->FUN_14165ffe0() == 2;
-        break;
-    case NAMETAG_CONDITION_BIRTHDAY:
-        nResult = pActor->FUN_141660030();
-        break;
-    case NAMETAG_CONDITION_ADVENTURE_LEVEL:
-        nResult = pActor->vfunc_141() > 99;
-        break;
-    case NAMETAG_CONDITION_BURNING:
-        nResult = pActor->FUN_1415275b0(nId);
-        break;
-    case NAMETAG_CONDITION_SURVIVAL_LEVEL:
-        nResult = pActor->FUN_141663b50() > 4;
-        break;
-    default:
-        nResult = 0;
-        break;
-    }
-    return nResult;
+    return 0;
 }
 
 // @0x1406c61a0
@@ -284,11 +264,15 @@ CStringW CNametagSymbolTable::GetIconRanked(unsigned short nId, Unk_NametagActor
     if (!m_map.Lookup(nId, spData))
         return CStringW(L"");
     CStringW strIcon(spData->m_strIcon);
-    if (spData->m_eCondition == NAMETAG_CONDITION_ADVENTURE_LEVEL)
+    switch (spData->m_eCondition)
+    {
+    case NAMETAG_CONDITION_ADVENTURE_LEVEL:
         return FUN_1406c6990(strIcon, (unsigned short)pActor->vfunc_141());
-    if (spData->m_eCondition == NAMETAG_CONDITION_SURVIVAL_LEVEL)
+    case NAMETAG_CONDITION_SURVIVAL_LEVEL:
         return FUN_1406c6ab0(strIcon, pActor->FUN_141663b50());
-    return strIcon;
+    default:
+        return strIcon;
+    }
 }
 
 // @0x1406c6360
@@ -298,22 +282,12 @@ CStringW CNametagSymbolTable::GetIcon(unsigned short nId, Unk_NametagActor* pAct
     CNametagSymbolDataPtr spData(0);
     if (!m_map.Lookup(nId, spData))
         return CStringW(L"");
-    int nType = spData->m_eCondition;
-    if (nType == NAMETAG_CONDITION_LEVEL)
+    switch (spData->m_eCondition)
     {
-        unsigned short nLevel = pActor->vfunc_78();
-        for (unsigned __int64 nBase = 0x32; nBase < 0x5b; nBase += 10)
-        {
-            if (nBase <= nLevel && (unsigned __int64)nLevel < nBase + 10)
-                return StringFormat(L"level{0}", nBase);
-        }
-        return CStringW(L"");
-    }
-    if (nType == NAMETAG_CONDITION_TROPHY_POINT)
+    case NAMETAG_CONDITION_TROPHY_POINT:
     {
         CStringW strIcon(spData->m_strIcon);
-        int nCharId = FUN_14123c580(pActor);
-        MS2Ptr<Unk_NametagChar> spChar = reinterpret_cast<Unk_NtPlayer*>(FUN_1403ed2d0())->FUN_141bc9be0(nCharId);
+        MS2Ptr<Unk_NametagChar> spChar = reinterpret_cast<Unk_NtPlayer*>(FUN_1403ed2d0())->FUN_141bc9be0(FUN_14123c580(pActor));
         if (spChar.get() != 0)
         {
             if (spChar->m_score.FUN_140267c10() < 2000)
@@ -325,22 +299,34 @@ CStringW CNametagSymbolTable::GetIcon(unsigned short nId, Unk_NametagActor* pAct
         }
         return strIcon;
     }
-    if (nType == NAMETAG_CONDITION_TENCENTVIP)
+    case NAMETAG_CONDITION_LEVEL:
+    {
+        unsigned short nLevel = pActor->vfunc_78();
+        for (unsigned __int64 nBase = 0x32; nBase <= 0x5a; nBase += 10)
+        {
+            if (nLevel >= nBase && nLevel < nBase + 10)
+                return StringFormat(L"level{0}", nBase);
+        }
+        return CStringW(L"");
+    }
+    case NAMETAG_CONDITION_TENCENTVIP:
     {
         int nGrade = pActor->FUN_141663080();
         return StringFormat(L"{0}{1}", spData->m_strIcon, nGrade);
     }
-    return GetIconRanked(nId, pActor);
+    default:
+        return GetIconRanked(nId, pActor);
+    }
 }
 
 // @0x1406c66d0
-CStringW CNametagSymbolTable::GetIcon(unsigned short nId)
+CStringW CNametagSymbolTable::GetIconName(unsigned short nId, void* pUnused)
 {
     CheckInit();
     CNametagSymbolDataPtr spData(0);
-    if (!m_map.Lookup(nId, spData))
-        return CStringW(L"");
-    return CStringW(spData->m_strIcon);
+    if (m_map.Lookup(nId, spData))
+        return CStringW(spData->m_strIcon);
+    return CStringW(L"");
 }
 
 // @0x1406c67a0
@@ -350,29 +336,29 @@ static NametagConditionType FUN_1406c67a0(const CStringA& str)
         return NAMETAG_CONDITION_NONE;
     if (str.CompareNoCase("level") == 0)
         return NAMETAG_CONDITION_LEVEL;
-    if (str.CompareNoCase("enchant") == 0)
+    else if (str.CompareNoCase("enchant") == 0)
         return NAMETAG_CONDITION_ENCHANT;
-    if (str.CompareNoCase("title") == 0)
+    else if (str.CompareNoCase("title") == 0)
         return NAMETAG_CONDITION_TITLE;
-    if (str.CompareNoCase("trophy_point") == 0)
+    else if (str.CompareNoCase("trophy_point") == 0)
         return NAMETAG_CONDITION_TROPHY_POINT;
-    if (str.CompareNoCase("vip") == 0)
+    else if (str.CompareNoCase("vip") == 0)
         return NAMETAG_CONDITION_VIP;
-    if (str.CompareNoCase("tencentvip") == 0)
+    else if (str.CompareNoCase("tencentvip") == 0)
         return NAMETAG_CONDITION_TENCENTVIP;
-    if (str.CompareNoCase("tgp") == 0)
+    else if (str.CompareNoCase("tgp") == 0)
         return NAMETAG_CONDITION_TGP;
-    if (str.CompareNoCase("gm") == 0)
+    else if (str.CompareNoCase("gm") == 0)
         return NAMETAG_CONDITION_GM;
-    if (str.CompareNoCase("return_user") == 0)
+    else if (str.CompareNoCase("return_user") == 0)
         return NAMETAG_CONDITION_RETURN_USER;
-    if (str.CompareNoCase("birthday") == 0)
+    else if (str.CompareNoCase("birthday") == 0)
         return NAMETAG_CONDITION_BIRTHDAY;
-    if (str.CompareNoCase("adventure_level") == 0)
+    else if (str.CompareNoCase("adventure_level") == 0)
         return NAMETAG_CONDITION_ADVENTURE_LEVEL;
-    if (str.CompareNoCase("burning") == 0)
+    else if (str.CompareNoCase("burning") == 0)
         return NAMETAG_CONDITION_BURNING;
-    if (str.CompareNoCase("survivallevel") == 0)
+    else if (str.CompareNoCase("survivallevel") == 0)
         return NAMETAG_CONDITION_SURVIVAL_LEVEL;
     return NAMETAG_CONDITION_NONE;
 }
@@ -381,42 +367,28 @@ static NametagConditionType FUN_1406c67a0(const CStringA& str)
 // @0x1406c6990
 static CStringW FUN_1406c6990(const CStringW& strIcon, unsigned short nValue)
 {
-    int nUnused = 0;
     unsigned short arrStep[5] = { 1000, 700, 500, 300, 100 };
-    unsigned int i = 0;
-    for (;;)
+    for (int i = 0; i < _countof(arrStep); ++i)
     {
-        if (i > 4)
-        {
-            int nLast = 100;
-            return StringFormat(L"{0}_{1}", strIcon, nLast);
-        }
-        if (arrStep[(int)i] <= nValue)
-            break;
-        ++i;
+        if (nValue >= arrStep[i])
+            return StringFormat(L"{0}_{1}", strIcon, arrStep[i]);
     }
-    return StringFormat(L"{0}_{1}", strIcon, arrStep[(int)i]);
+    int nLast = 100;
+    return StringFormat(L"{0}_{1}", strIcon, nLast);
 }
 
 // The survival level icon.
 // @0x1406c6ab0
 static CStringW FUN_1406c6ab0(const CStringW& strIcon, unsigned short nValue)
 {
-    int nUnused = 0;
     unsigned short arrStep[7] = { 0x3c, 0x37, 0x2d, 0x23, 0x19, 0xf, 5 };
-    unsigned int i = 0;
-    for (;;)
+    for (int i = 0; i < _countof(arrStep); ++i)
     {
-        if (i > 6)
-        {
-            int nLast = 5;
-            return StringFormat(L"{0}_{1}", strIcon, nLast);
-        }
-        if (arrStep[(int)i] <= nValue)
-            break;
-        ++i;
+        if (nValue >= arrStep[i])
+            return StringFormat(L"{0}_{1}", strIcon, arrStep[i]);
     }
-    return StringFormat(L"{0}_{1}", strIcon, arrStep[(int)i]);
+    int nLast = 5;
+    return StringFormat(L"{0}_{1}", strIcon, nLast);
 }
 
 // @0x1406c6ed0
@@ -425,10 +397,6 @@ CNametagSymbolData::CNametagSymbolData()
 {
 }
 
-// @0x1406c70f0
-CNametagSymbolData::~CNametagSymbolData()
-{
-}
 
 // @0x1406c7330
 void CNametagSymbolTable::CheckInit()
@@ -518,23 +486,21 @@ class PC;
 class Unk_NtItemMgr
 {
 public:
-    int FUN_1406c5b00(__int64 nId, int nKind);
-    CStringW FUN_1406c6360(__int64 nId, PC* pPc, int n);
+    int FUN_1406c5b00(unsigned short nId, int nKind);
+    CStringW FUN_1406c6360(unsigned short nId, PC* pPc, int n);
 };
 
 // MS2-FUNCTIONAL: the recovered call sites pass the nametag id and PC pointer to these legacy manager spellings;
-// the table stores 16-bit ids and GetIcon consumes the common actor interface, so adapt those ABI types here.
-// @0x1406c5b00
-int Unk_NtItemMgr::FUN_1406c5b00(__int64 nId, int nKind)
+// the ids are 16-bit as in the exe (it homes them as words); GetIcon consumes the common actor interface.
+int Unk_NtItemMgr::FUN_1406c5b00(unsigned short nId, int nKind)
 {
-    return reinterpret_cast<CNametagSymbolTable*>(this)->IsType(static_cast<unsigned short>(nId), nKind);
+    return reinterpret_cast<CNametagSymbolTable*>(this)->IsType(nId, nKind);
 }
 
 // MS2-FUNCTIONAL: the final legacy integer is unused by the observed callers and the recovered GetIcon implementation.
-// @0x1406c6360
-CStringW Unk_NtItemMgr::FUN_1406c6360(__int64 nId, PC* pPc, int n)
+CStringW Unk_NtItemMgr::FUN_1406c6360(unsigned short nId, PC* pPc, int n)
 {
     (void)n;
-    return reinterpret_cast<CNametagSymbolTable*>(this)->GetIcon(static_cast<unsigned short>(nId),
+    return reinterpret_cast<CNametagSymbolTable*>(this)->GetIcon(nId,
         reinterpret_cast<Unk_NametagActor*>(pPc));
 }

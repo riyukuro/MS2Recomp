@@ -195,7 +195,7 @@ void Unk_PvpTimer::FUN_141017950(int nMessage, CInPacket& packet)
         CStringW strName = packet.ReadUnicodeString();
         CStringW strText = FUN_14052bd00(nStringId, strName);
         FUN_1412751f0(strText, 4, 1);
-        FUN_141276180(s_killSlayer, CString(""));
+        FUN_141276180(s_killSlayer, "");
     }
     else if (nMessage == 0x6a)
     {
@@ -249,7 +249,6 @@ Unk_PvpTimerItem* Unk_PvpTimer::FUN_141017fb0(int nRank)
     return m_items[nIndex];
 }
 
-// MS2-FUNCTIONAL: behaviour-equivalent (one more 8-byte local in the exe frame)
 // @0x141018010
 void Unk_PvpTimer::FUN_141018010()
 {
@@ -263,18 +262,28 @@ void Unk_PvpTimer::FUN_141018010()
     m_ranks.RemoveAll();
     for (size_t i = 0; i < m_items.size(); ++i)
     {
-        if (m_items[i] != 0)
-            m_ranks.SetAt(m_items[i]->m_nCharId, (int)i + 1);
+        Unk_PvpTimerItem* pItem = m_items[i];
+        if (pItem == 0)
+            continue;
+        int nRank = (int)(i + 1);
+        m_ranks.SetAt(pItem->m_nCharId, nRank);
     }
 }
 
-// MS2-FUNCTIONAL: behaviour-equivalent (temp slots differ)
 // @0x141018260
 void Unk_PvpTimer::FUN_141018260(unsigned __int64 nCharId, int nScore, int nKill, int nDeath, unsigned n1c)
 {
     Unk_PvpTimerItem* pItem = 0;
     int nIndex = 0;
-    if (!m_ranks.Lookup(nCharId, nIndex))
+    if (m_ranks.Lookup(nCharId, nIndex))
+    {
+        pItem = m_items[nIndex - 1];
+        pItem->m_nScore = nScore;
+        pItem->m_nKill = nKill;
+        pItem->m_nDeath = nDeath;
+        pItem->m_n1c = n1c;
+    }
+    else
     {
         CStringW strName(L"Unknown");
         PCBase* pPlayer = FUN_1403ed2d0()->FUN_141bd1530(nCharId);
@@ -283,31 +292,28 @@ void Unk_PvpTimer::FUN_141018260(unsigned __int64 nCharId, int nScore, int nKill
         pItem = new Unk_PvpTimerItem(nCharId, strName, nScore, nKill, nDeath, n1c);
         m_items.push_back(pItem);
     }
-    else
-    {
-        pItem = m_items[nIndex - 1];
-        pItem->m_nScore = nScore;
-        pItem->m_nKill = nKill;
-        pItem->m_nDeath = nDeath;
-        pItem->m_n1c = n1c;
-    }
     for (size_t i = 0; i < m_items.size(); ++i)
     {
-        if (FUN_1403ed2d0()->FUN_141bd1530(m_items[i]->m_nCharId) == 0)
-            m_items[i]->m_bOnline = false;
-        else
+        PCBase* pPlayer = FUN_1403ed2d0()->FUN_141bd1530(m_items[i]->m_nCharId);
+        if (pPlayer != 0)
             m_items[i]->m_bOnline = true;
+        else
+            m_items[i]->m_bOnline = false;
     }
     FUN_141018010();
 }
 
-// MS2-FUNCTIONAL: behaviour-equivalent (temp slots differ)
 // @0x141018540
 void Unk_PvpTimer::FUN_141018540(unsigned __int64 nCharId, unsigned __int64 nDamage)
 {
     Unk_PvpTimerItem* pItem = 0;
     int nIndex = 0;
-    if (!m_ranks.Lookup(nCharId, nIndex))
+    if (m_ranks.Lookup(nCharId, nIndex))
+    {
+        pItem = m_items[nIndex - 1];
+        pItem->m_nDamage = nDamage;
+    }
+    else
     {
         CStringW strName(L"Unknown");
         PCBase* pPlayer = FUN_1403ed2d0()->FUN_141bd1530(nCharId);
@@ -316,11 +322,6 @@ void Unk_PvpTimer::FUN_141018540(unsigned __int64 nCharId, unsigned __int64 nDam
         pItem = new Unk_PvpTimerItem(nCharId, strName, 0, 0, 0, 0);
         pItem->m_nDamage = nDamage;
         m_items.push_back(pItem);
-    }
-    else
-    {
-        pItem = m_items[nIndex - 1];
-        pItem->m_nDamage = nDamage;
     }
     FUN_141018010();
 }

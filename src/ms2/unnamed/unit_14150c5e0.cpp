@@ -39,7 +39,7 @@ public:
     virtual void vfunc_15();
     virtual void vfunc_16();
     virtual void vfunc_17();
-    virtual NiPoint3* GetPosition(NiPoint3* pOut);
+    virtual NiPoint3 GetPosition();
 };
 // The post-processing service (singleton FUN_1409a8b20); FUN_1416a3a90 reads one of its flags.
 struct Unk_ShService;
@@ -70,8 +70,7 @@ NiPoint3* FUN_140947900(NiRenderObject* pObject);           // world position
 void* FUN_140994490(NiRenderObject* pObject);
 NiPoint3* FUN_140980350(void* pNode);
 float FUN_14059d930(float f);                               // fabsf
-NiPoint3 FUN_14027dcf0(NiPoint3 kPos);
-float FUN_141403f20(NiPoint3 kA, NiPoint3 kB);
+float FUN_141403f20(NiPoint3 kA, NiPoint3 kB);       // horizontal distance
 NiMaterial* FUN_140a17cd0(NiRenderObject* pObject);         // the object's active material
 void* FUN_1409a8120(void* pSmartPointer);                   // the raw pointer held by a smart pointer
 void* FUN_140d89420(NiRenderObject* pObject);
@@ -84,7 +83,6 @@ NiObject* FUN_14098d8d0(const NiRTTI* pRTTI, NiObject* pObject);
 typedef NiTPointerMap<NiRenderObject*, const NiMaterial*> Unk_ShSavedMap;
 
 // @0x14150c5e0
-// MS2-FUNCTIONAL: behaviour-equivalent; local layout of the exe's NiTPointerMap / NiPoint3 temporaries differs
 void MS2ShimmerSortProcessor::PreRenderProcessList(const NiVisibleArray* pkInput, NiVisibleArray& kOutput, void* pvExtraData)
 {
     int nShimmer = 0;
@@ -93,47 +91,44 @@ void MS2ShimmerSortProcessor::PreRenderProcessList(const NiVisibleArray* pkInput
     Unk_ShSavedMap kSaved(37);
     NiVisibleArray kList;
     Unk_ShActor* pActor = FUN_141bd0cc0(FUN_1403ed2d0());
-    NiPoint3 kPlayerPos = DAT_143b01a60;
+    efd::Point3 kPlayerPos = DAT_143b01a60;
     if (pActor != 0)
-    {
-        NiPoint3 kTemp;
-        FUN_140194470(&kPlayerPos, pActor->GetPosition(&kTemp));
-    }
+        FUN_140194470(static_cast<NiPoint3*>(&kPlayerPos), const_cast<NiPoint3*>(&static_cast<const NiPoint3&>(pActor->GetPosition())));
     for (unsigned int ui = 0; ui < FUN_140d89680(pkInput); ui++)
     {
         NiRenderObject* pkObject = FUN_1414d1830(pkInput, ui);
-        if (NiDynamicCast(NiPSMeshParticleSystem, pkObject) == 0 && FUN_141568c20(pkObject) && !FUN_141568c90(pkObject))
+        if (NiDynamicCast(NiPSMeshParticleSystem, pkObject) != 0)
+            continue;
+        if (!FUN_141568c20(pkObject))
+            continue;
+        if (FUN_141568c90(pkObject))
+            continue;
+        if (DAT_143ae0dd0 == 1 && pActor != 0)
         {
-            if (DAT_143ae0dd0 == 1 && pActor != 0)
+            int bParticle = FUN_14098d8d0(&DAT_143afbfb8, pkObject) ? 1 : 0;
+            int bNear = 0;
+            const NiPoint3& kPos = bParticle ? *FUN_140980350(FUN_140994490(pkObject)) : *FUN_140947900(pkObject);
+            float fDz = FUN_14059d930(kPlayerPos.z - kPos.z);
+            if (fDz < *FUN_140298f40((char*)FUN_1401d3200() + 0xce28) * DAT_1439f8010)
             {
-                bool bParticle = FUN_14098d8d0(&DAT_143afbfb8, pkObject) != 0;
-                int bNear = 0;
-                NiPoint3* pPos;
-                if (!bParticle)
-                    pPos = FUN_140947900(pkObject);
-                else
-                    pPos = FUN_140980350(FUN_140994490(pkObject));
-                float fDz = FUN_14059d930(kPlayerPos.z - pPos->z);
-                if (fDz < *FUN_140298f40((char*)FUN_1401d3200() + 0xce28) * DAT_1439f8010)
-                {
-                    NiPoint3 kPos = *pPos;
-                    NiPoint3 kRel = FUN_14027dcf0(kPlayerPos);
-                    float fDist = FUN_141403f20(kRel, kPos);
-                    if (fDist < *FUN_140298f40((char*)FUN_1401d3200() + 0xcdd0) * DAT_1439f8010)
-                        bNear = 1;
-                }
-                if (bNear == 0)
-                    continue;
+                float fDist = FUN_141403f20(kPlayerPos, kPos);
+                if (fDist < *FUN_140298f40((char*)FUN_1401d3200() + 0xcdd0) * DAT_1439f8010)
+                    bNear = 1;
             }
-            kSaved.SetAt(pkObject, FUN_140a17cd0(pkObject));
-            pkObject->ApplyAndSetActiveMaterial((NiMaterial*)FUN_1409a8120(&m_spSkinnedMaterial), 0xffffffff);
-            FUN_141047900(FUN_140d89420(pkObject));
-            pkObject->SetMaterialNeedsUpdate(true);
-            FUN_140d9d620(&kList, pkObject);
-            nShimmer++;
+            if (bNear == 0)
+                continue;
         }
+        const NiMaterial* pkMat = FUN_140a17cd0(pkObject);
+        kSaved.SetAt(pkObject, pkMat);
+        pkObject->ApplyAndSetActiveMaterial((NiMaterial*)FUN_1409a8120(&m_spSkinnedMaterial), 0xffffffff);
+        FUN_141047900(FUN_140d89420(pkObject));
+        pkObject->SetMaterialNeedsUpdate(true);
+        FUN_140d9d620(&kList, pkObject);
+        nShimmer++;
     }
-    if (FUN_1416a3a90(FUN_1409a8b20(), 0xc) != 0)
+    Unk_ShService* pService = FUN_1409a8b20();
+    long long nEnabled = FUN_1416a3a90(pService, 0xc);
+    if (nEnabled != 0)
     {
         if (nShimmer == 0)
         {
@@ -151,21 +146,29 @@ void MS2ShimmerSortProcessor::PreRenderProcessList(const NiVisibleArray* pkInput
                 for (unsigned int ui = 0; ui < FUN_140d89680(pkInput); ui++)
                 {
                     NiRenderObject* pkObject = FUN_1414d1830(pkInput, ui);
-                    if (NiDynamicCast(NiPSMeshParticleSystem, pkObject) == 0)
+                    if (NiDynamicCast(NiPSMeshParticleSystem, pkObject) != 0)
                     {
-                        if (FUN_141567260(pkObject))
-                            FUN_14150cc30(this, pkObject);
-                        else if (!FUN_141568c20(pkObject) && !FUN_141568c90(pkObject) && pkObject->GetProperty(8) != 0)
-                        {
-                            kSaved.SetAt(pkObject, FUN_140a17cd0(pkObject));
-                            pkObject->ApplyAndSetActiveMaterial((NiMaterial*)FUN_1409a8120(&m_spMaterial), 0xffffffff);
-                            FUN_141047900(FUN_140d89420(pkObject));
-                            pkObject->SetMaterialNeedsUpdate(true);
-                            FUN_140d9d620(&kList, pkObject);
-                        }
-                    }
-                    else
                         FUN_14150cc30(this, pkObject);
+                        continue;
+                    }
+                    if (FUN_141567260(pkObject))
+                    {
+                        FUN_14150cc30(this, pkObject);
+                        continue;
+                    }
+                    if (FUN_141568c20(pkObject))
+                        continue;
+                    if (FUN_141568c90(pkObject))
+                        continue;
+                    if (pkObject->GetProperty(8) != 0)
+                    {
+                        const NiMaterial* pkMat = FUN_140a17cd0(pkObject);
+                        kSaved.SetAt(pkObject, pkMat);
+                        pkObject->ApplyAndSetActiveMaterial((NiMaterial*)FUN_1409a8120(&m_spMaterial), 0xffffffff);
+                        FUN_141047900(FUN_140d89420(pkObject));
+                        pkObject->SetMaterialNeedsUpdate(true);
+                        FUN_140d9d620(&kList, pkObject);
+                    }
                 }
             }
         }
@@ -180,7 +183,6 @@ void MS2ShimmerSortProcessor::PreRenderProcessList(const NiVisibleArray* pkInput
         pkKey->SetActiveMaterial(pkMat);
     }
     kSaved.RemoveAll();
-    kList.RemoveAll();
 }
 
 // @0x14150cc30

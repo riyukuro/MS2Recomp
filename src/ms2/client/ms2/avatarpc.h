@@ -28,6 +28,7 @@ class Unk_RideeInfo;
 class Unk_RideeInfoPtr
 {
 public:
+    Unk_RideeInfoPtr(const Unk_RideeInfoPtr& o);           // never emitted: makes by-value returns build in place
     ~Unk_RideeInfoPtr() { FUN_140788ea0(); }
     void FUN_140788ea0();                                   // 0x140788ea0 release
     bool FUN_140789380(int nNull) const;                    // 0x140789380 null test

@@ -7,11 +7,12 @@
 // class is declared in src/ms2/placeholder/gfximageloader.h. The TU starts at the Protocol ctor 0x1422ece40: Protocol's
 // ctor / Parse / Token (0x1422ece40-0x1422ed8c0) sit in the queue range of ?\gfxvideo.cpp but belong here.
 #include "ms2/placeholder/ms2stdafx.h"
-
 #include <stdlib.h>
 
 #include "ms2/placeholder/gfximageloader.h"
-#include "Kernel/SF_SysFile.h"
+#include "ms2/scaleform/include/kernel/sf_file.h"
+#include "ms2/scaleform/include/render/render_imagefile.h"
+#include "ms2/scaleform/include/gfx/gfx_imagefilehandlerregistry.h"
 #include "ms2/placeholder/tptr.h"
 #include "ms2/placeholder/uiswfentitymanager.h"
 #include "ms2/gfxui/uiswfentity.h"
@@ -224,8 +225,10 @@ Image* GFxImageLoader::LoadProtocolImage(const ImageCreateInfo& info, const Stri
 }
 MS2_REPLACE_METHOD(0x1422ED950, GFxImageLoader, LoadProtocolImage, 1057, 0x42FE56D9);
 
+// ImageCreator::pTextureManager (+0x18) is private; the exe reads the Ptr itself.
+#define MS2_IMAGECREATOR_TEXMGR (*reinterpret_cast<Ptr<TextureManager>*>(reinterpret_cast<char*>(this) + 0x18))
+
 // @0x1422edd80
-// MS2-FUNCTIONAL: Scaleform's ImageCreator::pTextureManager is private; read through GetTextureManager()
 Image* GFxImageLoader::FUN_1422edd80(const ImageCreateInfo& info, const String& url)
 {
     Scaleform::GFx::ImageFileHandlerRegistry* pRegistry = info.GetImageFileHandlerRegistry();
@@ -236,9 +239,9 @@ Image* GFxImageLoader::FUN_1422edd80(const ImageCreateInfo& info, const String& 
     Scaleform::FileStat kStat;
     if (!url.HasExtension())
     {
-        if (GetTextureManager() != NULL)
+        if (MS2_IMAGECREATOR_TEXMGR)
         {
-            unsigned nFormats = GetTextureManager()->GetTextureFormatSupport();
+            unsigned nFormats = MS2_IMAGECREATOR_TEXMGR->GetTextureFormatSupport();
             if (nFormats & Scaleform::Render::ImageFormats_DXT)
             {
                 strPath = url + ".dds";
@@ -292,7 +295,7 @@ found:
     {
         kArgs.pHeap = info.pHeap;
         kArgs.Use = info.Use;
-        kArgs.pManager = GetTextureManager();
+        kArgs.pManager = MS2_IMAGECREATOR_TEXMGR;
         if (info.RUse == Scaleform::GFx::Resource::Use_FontTexture)
             kArgs.Format = Scaleform::Render::Image_A8;
         Ptr<ImageSource> pSource = *pReader->ReadImageSource(pFile, kArgs);

@@ -16,7 +16,7 @@ class Unk_UISwfEntity_25;                                       // pointee of th
 class PetSystemTabContents : public CPtred
 {
 public:
-    PetSystemTabContents();                                     // 0x140acd650 (inline)
+    // implicit PetSystemTabContents();                         // 0x140acd650 (inline; value-initialised by the derived ctors)
     virtual ~PetSystemTabContents();                            //  0 0x140c8ef00 (??_G 0x140acdb50)
     virtual void vfunc_1();                                     //  1 0x140c8ef30 (empty)
     virtual void vfunc_2(int nTab);                             //  2 0x140c8ef40 (empty)

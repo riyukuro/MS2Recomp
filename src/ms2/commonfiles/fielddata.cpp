@@ -299,7 +299,7 @@ void FUN_14028fd90(Unk_140165cf0*,const char*,const char*,const char*,std::vecto
 CString FUN_14015f710(Unk_140165cf0*,const char*,CString);
 CStringW FUN_1401bf530(Unk_140165cf0*,const char*,CStringW);
 CString FUN_14071a5b0(const CString&,const CString&);
-char FUN_1401c0090(const CString&,const CString&);
+bool FUN_1401c0090(const CString&,const CString&);
 void FUN_14025a680(const CStringW&,ATL::CAtlArray<CStringW>&,const wchar_t*);
 int FUN_140873220(Unk_140165cf0*,const char*,unsigned&);
 int FUN_1408731e0(Unk_140165cf0*,const char*,int&);
@@ -355,7 +355,6 @@ CStarting::CStarting() : id(0), enabled(true), position(0, 0, 0), rotation(0, 0,
 CNpcSpawnData::CNpcSpawnData() : id(0), count(0), probability(0) {}
 
 // The spawn table and cache are mutable DLL-local state: these routines are not hooked.
-// MS2-FUNCTIONAL: typed allocation and move-return temporaries differ; intrusive ownership and lock scope are preserved.
 // @0x1403728d0
 TPtr<CFieldSpawnTag> FUN_1403728d0(int mapCode,int spawnId)
 {
@@ -375,9 +374,8 @@ TPtr<CFieldSpawnTag> FUN_1403728d0(int mapCode,int spawnId)
             entries->SetAt(spawnId,tag);
         }
     }
-    return std::move(tag);
+    return tag;
 }
-// MS2-FUNCTIONAL: typed array records and early-return cleanup differ; lookup and append order are preserved.
 // @0x140372ab0
 void FUN_140372ab0(int mapCode,int spawnId,ATL::CAtlArray<Unk_FieldSpawnPair>& out)
 {
@@ -386,7 +384,13 @@ void FUN_140372ab0(int mapCode,int spawnId,ATL::CAtlArray<Unk_FieldSpawnPair>& o
     if (Unk_LockGuard guard=s_spawnLock) {} else {
         if (!s_spawnTags.Lookup(mapCode,entries)) return;
         if (entries->IsEmpty()) return;
-        if (spawnId<1) {
+        if (spawnId>0) {
+            if (entries->Lookup(spawnId)==NULL) return;
+            Unk_FieldSpawnPair pair;
+            pair.mapCode=mapCode;
+            pair.spawnPointId=spawnId;
+            out.Add(pair);
+        } else {
             for (POSITION pos=entries->GetHeadPosition();pos;entries->GetNext(pos)) {
                 int id=entries->GetKeyAt(pos);
                 Unk_FieldSpawnPair pair;
@@ -394,16 +398,9 @@ void FUN_140372ab0(int mapCode,int spawnId,ATL::CAtlArray<Unk_FieldSpawnPair>& o
                 pair.spawnPointId=id;
                 out.Add(pair);
             }
-        } else {
-            if (entries->Lookup(spawnId)==NULL) return;
-            Unk_FieldSpawnPair pair;
-            pair.mapCode=mapCode;
-            pair.spawnPointId=spawnId;
-            out.Add(pair);
         }
     }
 }
-// MS2-FUNCTIONAL: typed CString and record temporaries differ; both search branches retain token and lock semantics.
 // @0x140372c80
 void FUN_140372c80(int mapCode,CStringW tagName,ATL::CAtlArray<Unk_FieldSpawnPair>& out)
 {
@@ -416,22 +413,21 @@ void FUN_140372c80(int mapCode,CStringW tagName,ATL::CAtlArray<Unk_FieldSpawnPai
             for (POSITION outer=s_spawnTags.GetHeadPosition();outer;s_spawnTags.GetNext(outer)) {
                 int mapId=s_spawnTags.GetKeyAt(outer);
                 entries=s_spawnTags.GetValueAt(outer);
-                if (!entries->IsEmpty()) {
-                    for (POSITION pos=entries->GetHeadPosition();pos;entries->GetNext(pos)) {
-                        int spawnId=entries->GetKeyAt(pos);
-                        TPtr<CFieldSpawnTag> tag=entries->GetValueAt(pos);
-                        ATL::CAtlArray<CStringW> names;
-                        FUN_14025a680(tag->tag,names,L",");
-                        for (unsigned i=0;i<names.GetCount();++i) {
-                            CStringW name=names[i];
-                            name.Trim();
-                            if (name.CompareNoCase(tagName)==0) {
-                                Unk_FieldSpawnPair pair;
-                                pair.mapCode=mapId;
-                                pair.spawnPointId=spawnId;
-                                out.Add(pair);
-                                break;
-                            }
+                if (entries->IsEmpty()) continue;
+                for (POSITION pos=entries->GetHeadPosition();pos;entries->GetNext(pos)) {
+                    int spawnId=entries->GetKeyAt(pos);
+                    TPtr<CFieldSpawnTag> tag=entries->GetValueAt(pos);
+                    ATL::CAtlArray<CStringW> names;
+                    FUN_14025a680(tag->tag,names,L",");
+                    for (unsigned i=0;i<names.GetCount();++i) {
+                        CStringW name=names[i];
+                        name.Trim();
+                        if (name.CompareNoCase(tagName)==0) {
+                            Unk_FieldSpawnPair pair;
+                            pair.mapCode=mapId;
+                            pair.spawnPointId=spawnId;
+                            out.Add(pair);
+                            break;
                         }
                     }
                 }
@@ -613,7 +609,6 @@ MS2Ptr<CFieldData> CFieldData::FUN_140374140(int id)
     return nullptr;
 }
 #endif
-// MS2-FUNCTIONAL: typed return and string-comparison temporaries differ; search order and ownership are preserved.
 // @0x140374270
 MS2Ptr<CFieldData> CFieldData::FUN_140374270(CString xblock)
 {
@@ -621,7 +616,7 @@ MS2Ptr<CFieldData> CFieldData::FUN_140374270(CString xblock)
     if (Unk_LockGuard guard=s_fieldLock) {} else {
         for (POSITION pos=s_fields.GetStartPosition();pos;s_fields.GetNext(pos)) {
             MS2Ptr<CFieldData> field=s_fields.GetValueAt(pos);
-            if (FUN_1401c0090(field->m_strXBlock,xblock)) return std::move(field);
+            if (FUN_1401c0090(field->m_strXBlock,xblock)) return field;
         }
     }
     return MS2Ptr<CFieldData>(nullptr);
@@ -644,7 +639,6 @@ bool CFieldData::FUN_1403744a0(int id)
     return field->m_nMapType == 9;
 }
 
-// MS2-FUNCTIONAL: typed locals and defined masked shifts differ; attribute order, defaults, error paths and NaN clamp are preserved.
 // @0x140374530
 bool CFieldData::vfunc_1(Unk_140165cf0* node)
 {
@@ -664,7 +658,7 @@ bool CFieldData::vfunc_1(Unk_140165cf0* node)
         FUN_1408731e0(property,"capacity",m_nCapacity);
         FUN_1408731e0(property,"channelGroupID",m_nChannelGroupId);
         FUN_1408731e0(property,"enterAdminLevel",m_nEnterAdminLevel);
-        if (m_nChannelGroupId<0 || m_nChannelGroupId>7) {
+        if (m_nChannelGroupId<0 || m_nChannelGroupId>=8) {
             FUN_1402804e0(FUN_140166440(),0,0,14,L"Field Load - invalid channelGroupID");
             return false;
         }
@@ -704,8 +698,7 @@ bool CFieldData::vfunc_1(Unk_140165cf0* node)
         ATL::CAtlArray<int> disabled;
         FUN_140178670(property,"skillUseDisable",disabled);
         for (unsigned i=0;i<disabled.GetCount();++i) {
-            int bit=1;
-            m_nSkillUseDisableMask |= static_cast<unsigned>(bit) << (disabled[i]&31);
+            m_nSkillUseDisableMask |= 1 << disabled[i];
         }
         FUN_140178770(property,"enteranceBuffIDs",m_enteranceBuffIds);
         FUN_1403759c0(property,"enteranceBuffLevels",m_enteranceBuffLevels);
@@ -715,7 +708,7 @@ bool CFieldData::vfunc_1(Unk_140165cf0* node)
         }
         FUN_140873220(property,"setItemRestrainID",m_nSetItemRestrainId);
         if (!FUN_14028d470(m_fCubeSkillIntervalTime,0.0f))
-            m_fCubeSkillIntervalTime=m_fCubeSkillIntervalTime<=0.1f?0.1f:m_fCubeSkillIntervalTime;
+            m_fCubeSkillIntervalTime=0.1f<m_fCubeSkillIntervalTime?m_fCubeSkillIntervalTime:0.1f;
         FUN_1408736d0(property,"bigDataCharacterSkillUseLog",m_bBigDataCharacterSkillUseLog);
     }
     Unk_140165cf0* drop=node->FUN_140165cf0("drop");
@@ -742,7 +735,7 @@ bool CFieldData::vfunc_1(Unk_140165cf0* node)
     if (indoor) {
         int type=0;
         FUN_1408731e0(indoor,"type",type);
-        m_nIndoorMask=1u<<(type&31);
+        m_nIndoorMask=1<<type;
     }
     return true;
 }
@@ -811,13 +804,14 @@ MS2_REPLACE_METHOD(0x140375490, CFieldData, FUN_140375490, 47, 0x4217D80E);
 // @0x1403754d0
 int CFieldData::GetPkMode() { return m_nPkMode; }
 MS2_REPLACE_METHOD(0x1403754d0, CFieldData, GetPkMode, 17, 0xBA29CEEF);
-// MS2-FUNCTIONAL: smart-pointer conversion and return temporary differ; ownership and shadow-continent lookup are preserved.
 // @0x1403754f0
 int CFieldData::FUN_1403754f0()
 {
-    CContinentRegionTable::InfoPtr info = CContinentRegionTable::GetInstance()->GetContinent(m_nContinentCode);
-    if (info.get() == NULL) return 0;
-    return info->m_nShadowContinent;
+    {
+        CContinentRegionTable::InfoPtr info = CContinentRegionTable::GetInstance()->GetContinent(m_nContinentCode);
+        if (info.get() != NULL) return info->m_nShadowContinent;
+    }
+    return 0;
 }
 MS2_REPLACE_METHOD(0x1403754f0, CFieldData, FUN_1403754f0, 111, 0x770B1580);
 // @0x140375570

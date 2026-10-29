@@ -51,11 +51,14 @@ CStringW FUN_140656190(const wchar_t* pszFormat, const CStringW& arg0, const CSt
 class Unk_AddressStrings { public: CStringW FUN_141811980(int nTable, int nId, int nFlag); };
 Unk_AddressStrings* FUN_1401a9d70();
 
-// A row of the lookup table that FUN_1408a0d30 fills (200 bytes, destroyed by FUN_14050de70).
-struct Unk_AddressRow { char m_data[200]; };
-void FUN_1408ad110(Unk_AddressRow*);
+// A row of the lookup table that FUN_1408a0d30 fills (0xc0 bytes).
+struct Unk_AddressRow
+{
+    Unk_AddressRow();     // 0x1408ad110
+    ~Unk_AddressRow();    // 0x14050de70
+    void* m_data[24];     // 0xc0, like cubemapinformationservice_3's Unk_CMISSalable
+};
 int FUN_1408a0d30(int nType, Unk_AddressRow* pRow, int nId);
-void FUN_14050de70(Unk_AddressRow*);
 
 class Unk_1401cd100 { public: Unk_1401cd100(void*); private: void* m_p; };
 Unk_SocketNew FUN_1401b7b90(Unk_SocketNew* pOut, int n);                  // new-tag construct
@@ -143,9 +146,13 @@ int CAddressTable::LoadTable()
         data->m_strBlockName = FUN_1401bf530(pNode, "blockNameKor", CStringW(L""));
         data->m_strBlockModifier = FUN_1401bf530(pNode, "blockModifierKor", CStringW(L""));
         Unk_AddressBlockMapPtr blocks;
-        if (!s_addresses.Lookup(data->m_nMapCode, blocks))
+        if (s_addresses.Lookup(data->m_nMapCode, blocks))
+            blocks->SetAt(data->m_nBlockCode, data);
+        else
+        {
             blocks = Unk_AddressBlockMapPtr(Unk_SocketNew(0));
-        blocks->SetAt(data->m_nBlockCode, data);
+            blocks->SetAt(data->m_nBlockCode, data);
+        }
         s_addresses.SetAt(data->m_nMapCode, blocks);
     }
     SetInit(true);
@@ -191,15 +198,9 @@ CStringW CAddressTable::GetText(int nId)
 CStringW CAddressTable::GetTextChecked(int nId, int nType, int nUnused)
 {
     Unk_AddressRow row;
-    FUN_1408ad110(&row);
     if (FUN_1408a0d30(nType, &row, nId) == 0)
-    {
-        CStringW strEmpty(L"");
-        FUN_14050de70(&row);
-        return strEmpty;
-    }
+        return CStringW(L"");
     CStringW strText = GetText(nId);
-    FUN_14050de70(&row);
     return strText;
 }
 

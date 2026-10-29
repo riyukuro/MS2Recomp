@@ -201,7 +201,6 @@ void UIHudEntity::Entity::vfunc_5()
 }
 
 // @0x140f490b0
-// MS2-FUNCTIONAL: the cl output differs from the exe only in the layout of the nested ridden-actor tests (+9 bytes)
 int UIHudEntity::Entity::vfunc_8(int n)
 {
     if (m_50 != 0)
@@ -225,6 +224,8 @@ int UIHudEntity::Entity::vfunc_8(int n)
             if (pRidden->FUN_14123c660())
                 return 1;
         }
+        else
+            return 1;
     }
     if (pActor->FUN_141674bc0() && n == 0)
         return 1;
@@ -238,32 +239,33 @@ float UIHudEntity::Entity::vfunc_9()
 }
 
 // @0x140f491e0
-// MS2-FUNCTIONAL: the exe converts the vfunc_18 result through an out-of-line NiPoint3(const Point3&) COMDAT; the cl output returns it directly
 NiPoint3 UIHudEntity::Entity::vfunc_10()
 {
     Unk_HudActor* pActor = (Unk_HudActor*)FUN_140f49330();
-    if (pActor == 0)
-        return NiPoint3::ZERO;
-    int bChanged = 0;
-    if (pActor->FUN_14123c660() != 0)
+    if (pActor != 0)
     {
-        Unk_HudActor* pRidden = pActor->FUN_1416764a0();
-        if (pRidden != 0)
+        int bChanged = 0;
+        if (pActor->FUN_14123c660() != 0)
         {
-            bChanged = 1;
-            pActor = pRidden;
+            Unk_HudActor* pRidden = pActor->FUN_1416764a0();
+            if (pRidden != 0)
+            {
+                pActor = pRidden;
+                bChanged = 1;
+            }
         }
+        if (m_30 != pActor)
+            bChanged = 1;
+        if (m_20 == 0 || bChanged)
+        {
+            m_20 = pActor->FUN_141675150(m_28);
+            m_30 = pActor;
+        }
+        if (m_20 != 0)
+            return *FUN_140947900(m_20);
+        return NiPoint3(static_cast<const efd::Point3&>(pActor->vfunc_18()));
     }
-    if (m_30 != pActor)
-        bChanged = 1;
-    if (m_20 == 0 || bChanged)
-    {
-        m_20 = pActor->FUN_141675150(m_28);
-        m_30 = pActor;
-    }
-    if (m_20 == 0)
-        return pActor->vfunc_18();
-    return *FUN_140947900(m_20);
+    return NiPoint3::ZERO;
 }
 
 // @0x140f49330

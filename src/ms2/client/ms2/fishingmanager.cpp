@@ -8,6 +8,7 @@
 // MS2-PIN: ??C?$MS2Ptr@VCFishCube@@@@QEBAPEAVCFishCube@@XZ 0x140cd8c10 ; unique
 // MS2-PIN: ??$Unk_FmGetDialog@VUIFishingBookDialog@@@@YAPEAVUIFishingBookDialog@@W4eUIClassID@@@Z 0x140cdecd0 ; prop
 // MS2-PIN: ??$Unk_FmGetDialog@VUIFishingFloatDialog@@@@YAPEAVUIFishingFloatDialog@@W4eUIClassID@@@Z 0x140cded70 ; unique
+// MS2-PIN: ??$Unk_FmGetDialog@VUISystemShopDialog@@@@YAPEAVUISystemShopDialog@@W4eUIClassID@@@Z 0x140cdee10 ; unique
 // MS2-PIN: ??0?$DelegateImpl@U?$pair@PEAVCFishingManager@@P81@EAAXPEAVNotifyObject@@@Z@std@@@?$Delegate@$$A6AXPEAVNotifyObject@@@Z@@QEAA@AEBV01@@Z 0x140cdf140 ; unique
 // MS2-PIN: ??0?$MS2Ptr@VCFish@@@@QEAA@AEBV0@@Z 0x140cdf210 ; prop
 // MS2-PIN: ??0?$MS2Ptr@VCFish@@@@QEAA@PEAVCFish@@@Z 0x140cdf270 ; prop
@@ -60,6 +61,7 @@
 #include "ms2/client/ms2/uicastingbar.h"
 #include "ms2/client/ms2/uiservice.h"
 #include "ms2/client/ms2/uidialog.h"
+#include "ms2/client/ms2/uisystemshopdialog.h"
 #include "ms2/client/ms2/inventory.h"
 #include "ms2/commonfiles/featuremanager.h"
 #include "ms2/client/ms2/effectparam.h"
@@ -178,7 +180,7 @@ void FUN_140a332d0(NiTransform* pXform);                    // NiTransform()
 void FUN_140a53190(Unk_EffectTarget* pTarget, int nObjectId);
 
 // Sounds.
-int FUN_141276180(const CString& strSound, CString strArg);
+int FUN_141276180(const CString& strSound, const CString& strArg);
 
 // UI.
 class Unk_FmCastingBar : public UICastingBar
@@ -190,8 +192,7 @@ public:
 };
 Unk_FmCastingBar* FUN_140ac2270(int nId);
 class UIFishingBookDialog : public UIDialog { public: void FUN_140f419e0(); };
-class UIFishingFloatDialog : public UIDialog { public: void FUN_140f443d0(MS2Ptr<CFishCube> cube); unsigned char FUN_140f44490(); };
-class UIAutoFishingDialog : public UIDialog { public: void FUN_140fa5ba0(int nMode); void FUN_140fa5bc0(); };
+class UIFishingFloatDialog : public UIDialog { public: void FUN_140f443d0(MS2Ptr<CFishCube> cube); int FUN_140f44490(); };
 class Unk_FmFishGuide;
 Unk_FmFishGuide* FUN_140938cd0(int nId);
 void FUN_141abf6e0(Unk_FmFishGuide* p, int nFishId, unsigned nCount);
@@ -263,7 +264,7 @@ class Unk_FishLineBody
 public:
     Unk_FishLineBody();
     ~Unk_FishLineBody();                                    // 0x140cd7e40
-    void FUN_140cd7eb0(int nKind, const efd::Point3& kPos); // start
+    void FUN_140cd7eb0(int nKind, efd::Point3 kPos);        // start
     void FUN_140cd8080();                                   // stop
     void FUN_140cd80d0();                                   // update
     int FUN_140cd85b0();                                    // the line is out
@@ -317,10 +318,9 @@ Unk_FishLineBody::~Unk_FishLineBody()
 }
 
 // @0x140cd7eb0
-// MS2-FUNCTIONAL: register allocation / temporary layout differs from the exe
-void Unk_FishLineBody::FUN_140cd7eb0(int nKind, const efd::Point3& kPos)
+void Unk_FishLineBody::FUN_140cd7eb0(int nKind, efd::Point3 kPos)
 {
-    CString strModel = (nKind == 0) ? FUN_1401d31f0()->m_strLineGuide0 : FUN_1401d31f0()->m_strLineGuide1;
+    CString strModel = nKind ? FUN_1401d31f0()->m_strLineGuide1 : FUN_1401d31f0()->m_strLineGuide0;
     CNifCubeGuide* pGuide = new CNifCubeGuide();
     if (pGuide->FUN_1410afc10(CString(strModel)) == 0)
         return;
@@ -329,7 +329,7 @@ void Unk_FishLineBody::FUN_140cd7eb0(int nKind, const efd::Point3& kPos)
         return;
     FUN_140cd8a90();
     pGuide->vfunc_10(pRoot, 0);
-    NiPoint3 kAt(kPos.x, kPos.y, kPos.z);
+    NiPoint3 kAt = reinterpret_cast<NiPoint3&>(kPos);
     pGuide->vfunc_2(kAt);
     m_pGuide = pGuide;
     m_nKind = nKind;
@@ -385,7 +385,7 @@ void Unk_FishLineBody::FUN_140cd80d0()
             NiPoint3 kFrom = m_pGuide->vfunc_3();
             m_kTarget = efd::Point3(kFrom.x, kFrom.y, kFrom.z);
             m_kLanding = kCell;
-            FUN_141276180(s_strCursorSound, CString(""));
+            FUN_141276180(s_strCursorSound, "");
             m_waitTimer.FUN_140868750(1000);
         }
     }
@@ -432,14 +432,12 @@ efd::Point3 Unk_FishLineBody::FUN_140cd8630()
 {
     if (m_pGuide == 0)
         return DAT_143b01a60;
-    NiPoint3 kGuide = m_pGuide->vfunc_3();
-    efd::Point3 kPos = efd::Point3(kGuide.x, kGuide.y, kGuide.z) - efd::Point3(0.0f, 0.0f, 75.0f);
-    FUN_140cd8b20(efd::Point3(kPos));
+    efd::Point3 kPos = m_pGuide->vfunc_3() - efd::Point3(0.0f, 0.0f, 75.0f);
+    FUN_140cd8b20(kPos);
     return kPos;
 }
 
 // @0x140cd8740
-// MS2-FUNCTIONAL: register allocation / temporary layout differs from the exe
 void Unk_FishLineBody::FUN_140cd8740(efd::Point3 kPos)
 {
     if (m_nEffect != 0)
@@ -451,15 +449,15 @@ void Unk_FishLineBody::FUN_140cd8740(efd::Point3 kPos)
     NiTransform kXform;
     FUN_1420849a0(&kXform.m_Rotate);
     kXform.m_fScale = 1.0f;
-    kXform.m_Translate = NiPoint3(kBelow.x, kBelow.y, kBelow.z);
-    int nCell = FUN_1408a13d0(kBelow);
-    MS2Ptr<CFishCube> cube = TSingleton<CFishingManager>::GetInstance()->FUN_140cdbb10(nCell);
-    if (cube.get() == 0)
-        return;
-    CFishCube* pCube = cube.operator->();
-    CFishDataPtr fish = TSingleton<CFishingTable>::GetInstance()->GetFish(pCube->m_a);
-    if (!fish.IsNull())
+    NiPoint3 kTranslate(kBelow);
+    kXform.m_Translate = static_cast<NiPoint3&&>(kTranslate);
+    MS2Ptr<CFishCube> cube = TSingleton<CFishingManager>::GetInstance()->FUN_140cdbb10(FUN_1408a13d0(kBelow));
+    if (cube.get() != 0)
     {
+        CFishCube* pCube = cube.operator->();
+        CFishDataPtr fish = TSingleton<CFishingTable>::GetInstance()->GetFish(pCube->m_a);
+        if (fish.IsNull())
+            return;
         CFishCube* pCube2 = cube.operator->();
         int nClass = (int)fish->FUN_1403b1520(pCube2->m_b);
         if (nClass != 4)
@@ -517,17 +515,16 @@ MS2_EMIT_CRT_MEMMOVE_S_COPY(1);
 // MS2-FUNCTIONAL: register allocation / temporary layout differs from the exe
 void Unk_FishRecord::FUN_140cd8e70(unsigned nFishId, int bSuccess)
 {
-    if (m_bOff == 0)
+    if (m_bOff != 0)
+        return;
+    m_nTry++;
+    if (bSuccess != 0)
     {
-        m_nTry++;
-        if (bSuccess != 0)
-        {
-            m_nSuccess++;
-            int nCount = 0;
-            m_counts.Lookup(nFishId, nCount);
-            nCount++;
-            m_counts.SetAt(nFishId, nCount);
-        }
+        m_nSuccess++;
+        int nCount = 0;
+        m_counts.Lookup(nFishId, nCount);
+        nCount++;
+        m_counts.SetAt(nFishId, nCount);
     }
 }
 
@@ -548,7 +545,7 @@ public:
     Unk_FmFile();                                           // 0x1402970b0
     ~Unk_FmFile();                                          // 0x1402978f0
     int FUN_1402989b0(const char* szName, unsigned nAccess, unsigned nShare, unsigned nCreate, unsigned nAttr,
-        int a, int b);
+        void* pSecurity, void* hTemplate);   // CAtlFile::Create: LPSECURITY_ATTRIBUTES, HANDLE
     int FUN_140299dc0(const char* pData, int nLength, int a);
     void FUN_1402988c0();
     void* m_p0;
@@ -572,14 +569,12 @@ CString Unk_FishRecord::FUN_140cd8f60()
     strText += FUN_140390ea0(FUN_1401ceea0(L"TryCount : {0}\r\n", m_nTry), 0);
     strText += FUN_140390ea0(FUN_1401ceea0(L"SuccessCount : {0}\r\n", m_nSuccess), 0);
     strText += FUN_140390ea0(L"\r\nidCount\r\n", 0);
-    POSITION pos = m_counts.GetStartPosition();
-    while (pos != 0)
+    for (POSITION pos = m_counts.GetStartPosition(); pos != 0; m_counts.GetNext(pos))
     {
         const unsigned& nId = m_counts.GetKeyAt(pos);
         CStringW strName = FUN_1401a9d70()->FUN_141811980(0x1d, nId);
         const int& nCount = m_counts.GetValueAt(pos);
         strText += FUN_140390ea0(StringFormat(L"{0} {1}[{2}]\r\n", m_counts.GetKeyAt(pos), nCount, strName), 0);
-        m_counts.GetNext(pos);
     }
     int nLength = strText.GetLength();
     file.FUN_140299dc0(strText, nLength, 0);
@@ -809,7 +804,7 @@ void CFishingManager::OnCastingFinished()
     UIFishingFloatDialog* pFloat = Unk_FmGetDialog<UIFishingFloatDialog>((eUIClassID)0x4ee7);
     if (pFloat != 0)
     {
-        unsigned char nResult = pFloat->FUN_140f44490();
+        int nResult = pFloat->FUN_140f44490();
         COutPacket pkt(static_cast<int>(SendOp::Fishing), 0);
         pkt.Encode1(8);
         pkt.Encode1(nResult);
@@ -823,8 +818,9 @@ void CFishingManager::OnCastingFinished()
 // MS2-FUNCTIONAL: register allocation / temporary layout differs from the exe
 void CFishingManager::FUN_140cdac20()
 {
-    if (FUN_140954150() != 0)
-        FUN_140cdd030();
+    if (FUN_140954150() == 0)
+        return;
+    FUN_140cdd030();
 }
 
 // @0x140cdac50
@@ -919,10 +915,10 @@ void CFishingManager::SendFishingMode1()
 
 // @0x140cdb110
 // MS2-FUNCTIONAL: register allocation / temporary layout differs from the exe
-int CFishingManager::FUN_140cdb110(const efd::Point3& kPos)
+int CFishingManager::FUN_140cdb110(efd::Point3 kPos)
 {
     MS2Ptr<CFishCube> cube = FUN_140cdbb10(FUN_1408a13d0(kPos));
-    if (cube == 0)
+    if (cube.IsNull())
         return 0;
     if (cube->m_a == 0)
         return 0;
@@ -940,7 +936,6 @@ void CFishingManager::SendFishingMode9()
 MS2_REPLACE_METHOD(0x140CDB1E0, CFishingManager, SendFishingMode9, 97, 0x3BC9DD37);
 
 // @0x140cdb250
-// MS2-FUNCTIONAL: return value temporaries
 int CFishingManager::FUN_140cdb250()
 {
     MS2Ptr<CFishCube> cube = FUN_140cdbb10(FUN_140cdc950());
@@ -962,7 +957,8 @@ int CFishingManager::FUN_140cdb250()
         return 0;
     if (pGuide->FUN_14166cc80() != 0x7a)
         return 0;
-    return FUN_140ce02b0(pGuide)->FUN_140cd85b0();
+    Unk_FishLineBody* pBody = FUN_140ce02b0(pGuide);
+    return pBody->FUN_140cd85b0();
 }
 
 // ---- more unit-local placeholders (the per-frame / spot code) ----
@@ -1087,12 +1083,8 @@ MS2_REPLACE_METHOD(0x140CDBA00, CFishingManager, FUN_140cdba00, 123, 0x7632EFC3)
 // MS2-FUNCTIONAL: register allocation / temporary layout differs from the exe
 void CFishingManager::FUN_140cdba90(ATL::CAtlArray<MS2Ptr<CFish> >& out)
 {
-    POSITION pos = m_fishes.GetStartPosition();
-    while (pos != 0)
-    {
+    for (POSITION pos = m_fishes.GetStartPosition(); pos != 0; m_fishes.GetNext(pos))
         out.Add(m_fishes.GetValueAt(pos));
-        m_fishes.GetNext(pos);
-    }
 }
 
 // @0x140cdbb10
@@ -1118,18 +1110,18 @@ int CFishingManager::FUN_140cdbbd0(MS2Ptr<CItem> rod)
     Unk_FmPC* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pPC == 0)
         return 0;
-    if (!rod->FUN_140528980())
+    if (!((CItem*)rod)->FUN_140528980())
         return 0;
-    if (rod->FUN_140525ca0() != 0 && pPC->FUN_141658f30() == 0)
+    if (((CItem*)rod)->FUN_140525ca0() != 0 && pPC->FUN_141658f30() == 0)
         return 0;
-    if (rod->FUN_140525db0() != 0 && pPC->FUN_141662de0() == 0)
+    if (((CItem*)rod)->FUN_140525db0() != 0 && pPC->FUN_141662de0() == 0)
         return 0;
-    if (rod->FUN_140525e00() != 0 && !pPC->vfunc_146())
+    if (((CItem*)rod)->FUN_140525e00() != 0 && !pPC->vfunc_146())
         return 0;
 
-    if (!rod->FUN_140526810(pPC->vfunc_78()))
+    if (!((CItem*)rod)->FUN_140526810(pPC->vfunc_78()))
         return 0;
-    if (!rod->FUN_140526790(pPC->FUN_141654700()))
+    if (!((CItem*)rod)->FUN_140526790(pPC->FUN_141654700()))
         return 0;
     return 1;
 }
@@ -1145,7 +1137,7 @@ MS2_REPLACE_METHOD(0x140CDBDD0, CFishingManager, GetAutoCount, 17, 0xC417BCBA);
 void CFishingManager::FUN_140cdbdf0(int nCount)
 {
     m_nAutoCount = nCount;
-    UIAutoFishingDialog* pDialog = Unk_FmGetDialog<UIAutoFishingDialog>((eUIClassID)0x4f07);
+    UISystemShopDialog* pDialog = Unk_FmGetDialog<UISystemShopDialog>((eUIClassID)0x4f07);
     if (pDialog != 0)
         pDialog->FUN_140fa5bc0();
 }
@@ -1166,16 +1158,14 @@ int CFishingManager::GetBaitId()
 MS2_REPLACE_METHOD(0x140CDBE60, CFishingManager, GetBaitId, 17, 0x5EB41246);
 
 // @0x140cdbe80
-// MS2-FUNCTIONAL: register allocation / temporary layout differs from the exe
 int CFishingManager::FUN_140cdbe80()
 {
     if (m_nBaitId == 0)
         return 0;
     MS2Ptr<CItemData> data = FUN_14053f870(m_nBaitId);
-    if (data.IsNull())
+    if (!data)
         return 0;
-    unsigned short nLevel = data->FUN_14053dc40();
-    Unk_FmAdditionalPtr add = FUN_1401958b0()->FUN_1407ee2f0(data->FUN_14053dc20(), nLevel);
+    Unk_FmAdditionalPtr add = FUN_1401958b0()->FUN_1407ee2f0(data->FUN_14053dc20(), data->FUN_14053dc40());
     if (add.FUN_1409c4ad0())
         return 0;
     if (add.FUN_1407ebbf0()->m_levels.FUN_1407e59e0() == 0)
@@ -1184,29 +1174,30 @@ int CFishingManager::FUN_140cdbe80()
 }
 
 // @0x140cdc000
-// MS2-FUNCTIONAL: temporaries
 CStringW CFishingManager::FUN_140cdc000(unsigned nSpotId)
 {
     CFishingSpotDataPtr spot = TSingleton<CFishingTable>::GetInstance()->GetSpot(nSpotId);
-    if (spot.get() == 0)
-        return CStringW(L"");
-    CStringW strHabitat;
-    for (size_t i = 0; i < spot->m_arrLiquid.GetCount(); i++)
+    if (spot.get() != 0)
     {
-        int& nHabitat = spot->m_arrLiquid[i];
-        strHabitat += TSingleton<CFishingTable>::GetInstance()->FUN_1403b20b0(nHabitat);
-        strHabitat += L", ";
+        CStringW strHabitat;
+        for (size_t i = 0; i < spot->m_arrLiquid.GetCount(); i++)
+        {
+            int& nHabitat = spot->m_arrLiquid[i];
+            strHabitat += TSingleton<CFishingTable>::GetInstance()->FUN_1403b20b0(nHabitat);
+            strHabitat += L", ";
+        }
+        strHabitat.TrimRight(L", ");
+        CFishingSpotData* pSpot = spot.operator->();
+        int nLevel = FUN_1409670c0()->FUN_14066af60(1, pSpot->m_nMinMastery);
+        CStringW strLevel = TSingleton<CFishingTable>::GetInstance()->FUN_1403b2240(nLevel);
+        unsigned nMastery = 0;
+        Unk_FmPC* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
+        if (pPC != 0)
+            nMastery = pPC->FUN_141662750(1);
+        int nId = (nMastery < spot->m_nMinMastery) ? 0x719 : 0x718;
+        return FUN_140632a60(nId, strHabitat, strLevel);
     }
-    strHabitat.TrimRight(L", ");
-    CFishingSpotData* pSpot = spot.operator->();
-    int nLevel = FUN_1409670c0()->FUN_14066af60(1, pSpot->m_nMinMastery);
-    CStringW strLevel = TSingleton<CFishingTable>::GetInstance()->FUN_1403b2240(nLevel);
-    unsigned nMastery = 0;
-    Unk_FmPC* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
-    if (pPC != 0)
-        nMastery = pPC->FUN_141662750(1);
-    int nId = (nMastery < spot->m_nMinMastery) ? 0x719 : 0x718;
-    return FUN_140632a60(nId, strHabitat, strLevel);
+    return CStringW(L"");
 }
 
 // @0x140cdc280
@@ -1238,7 +1229,7 @@ int CFishingManager::FUN_140cdc380(unsigned nFishId)
 }
 
 // @0x140cdc520
-// MS2-FUNCTIONAL: temporaries
+// MS2-FUNCTIONAL: the exe adds Point3(0,0,10) straight to vfunc_18's efd::Point3 result; MyPC::vfunc_18 (shared pcbase.h) returns NiPoint3
 int CFishingManager::FUN_140cdc520()
 {
     Unk_FmPC* pPC = FUN_1403ed2d0()->FUN_141bd0cc0();
@@ -1248,20 +1239,23 @@ int CFishingManager::FUN_140cdc520()
     NiPoint3 kPos = pPC->vfunc_18();
     efd::Point3 kFrom = efd::Point3(kPos.x, kPos.y, kPos.z) + efd::Point3(0.0f, 0.0f, 10.0f);
     efd::Point3 kTo = DAT_143b01a60;
-    if (FUN_1409f7ca0()->FUN_14168a310(kFrom, kTo, &kHit, 0.0f, 0, 0) == 0 || kHit.m_hitEntity == 0)
-        return 0;
-    efd::utf8string kName("None");
-    FUN_1408a2060(kHit.m_hitEntity, 0x15014205, &kName);
-    if (FUN_1408a01e0(CStringA(kName.c_str())) == 0x40)
-        return 0;
-    if (FUN_1408a9bd0(kHit.m_hitEntity)->ContainsModel(0xd3b04f05))
-        return 0;
-    if (FUN_1408a9bd0(kHit.m_hitEntity)->ContainsModel(0x32767dd))
-        return 0;
-    if (FUN_1408a9bd0(kHit.m_hitEntity)->ContainsModel(0x72f49865))
-        return 0;
-    if (FUN_1403ed2d0()->FUN_141bcafa0(kHit.m_hitEntity) == 0)
+    if (FUN_1409f7ca0()->FUN_14168a310(kFrom, kTo, &kHit, 0.0f, 0, 0) && kHit.m_hitEntity)
+    {
+        efd::utf8string kName("None");
+        FUN_1408a2060(kHit.m_hitEntity, 0x15014205, &kName);
+        int nType = FUN_1408a01e0(CStringA(kName.c_str()));
+        if (nType == 0x40)
+            return 0;
+        if (FUN_1408a9bd0(kHit.m_hitEntity)->ContainsModel(0xd3b04f05))
+            return 0;
+        if (FUN_1408a9bd0(kHit.m_hitEntity)->ContainsModel(0x32767dd))
+            return 0;
+        if (FUN_1408a9bd0(kHit.m_hitEntity)->ContainsModel(0x72f49865))
+            return 0;
+        if (FUN_1403ed2d0()->FUN_141bcafa0(kHit.m_hitEntity))
+            return 0;
         return 1;
+    }
     return 0;
 }
 
@@ -1312,7 +1306,8 @@ unsigned CFishingManager::FUN_140cdc950()
     CFishingGuideObject* pGuide = efd::DynamicCast<CFishingGuideObject>(pPC->FUN_141662440(1));
     if (pGuide == 0)
         return 0;
-    return FUN_140ce02b0(pGuide)->FUN_140cd85e0();
+    Unk_FishLineBody* pBody = FUN_140ce02b0(pGuide);
+    return pBody->FUN_140cd85e0();
 }
 
 // @0x140cdc9d0
@@ -1327,13 +1322,12 @@ void CFishingManager::FUN_140cdc9d0(int nState, int nGuideState)
     if (pGuide != 0 && pGuide->FUN_14166cc80() != nGuideState)
     {
         pGuide->FUN_14166cc40(nGuideState);
-        pGuide->vfunc_22(efd::Point3(DAT_143b01a60));
+        pGuide->vfunc_22(DAT_143b01a60);
     }
 }
 MS2_REPLACE_METHOD(0x140CDC9D0, CFishingManager, FUN_140cdc9d0, 195, 0x179ED967);
 
 // @0x140cdcaa0
-// MS2-FUNCTIONAL: temporaries
 void CFishingManager::FUN_140cdcaa0(MS2Ptr<CFishCube> cube)
 {
     if (cube.IsNull())
@@ -1342,9 +1336,8 @@ void CFishingManager::FUN_140cdcaa0(MS2Ptr<CFishCube> cube)
     NiTransform kXform;
     FUN_1420849a0(&kXform.m_Rotate);
     kXform.m_fScale = 1.0f;
-    efd::Point3 kUp(0.0f, 0.0f, 149.0f);
-    efd::Point3 kPos = FUN_1408a15b0(FUN_1408a0400(cube->m_id), kOffset) + kUp;
-    kXform.m_Translate = NiPoint3(kPos.x, kPos.y, kPos.z);
+    NiPoint3 kTranslate(FUN_1408a15b0(FUN_1408a0400(cube->m_id), kOffset) + efd::Point3(0.0f, 0.0f, 149.0f));
+    kXform.m_Translate = static_cast<NiPoint3&&>(kTranslate);
     Unk_EffectTarget kTarget;
     kTarget.m_strName = FUN_1401d31f0()->m_strCubeMarkEffect;
     kTarget.m_nKind = 0;
@@ -1353,20 +1346,20 @@ void CFishingManager::FUN_140cdcaa0(MS2Ptr<CFishCube> cube)
 }
 
 // @0x140cdcc70
-// MS2-FUNCTIONAL: temporaries
 void CFishingManager::FUN_140cdcc70()
 {
     int nCell = FUN_140cdc950();
     efd::Point3 kOffset;
-    efd::Point3 kPos = FUN_1408a15b0(FUN_1408a0400(nCell), kOffset);
-    kOffset = kPos;
+    kOffset = FUN_1408a15b0(FUN_1408a0400(nCell), kOffset);
     kOffset.z = kOffset.z + 150.0f;
     NiTransform kXform;
     kXform.m_fScale = 1.0f;
     FUN_1420849a0(&kXform.m_Rotate);
-    kXform.m_Translate = NiPoint3(kOffset.x, kOffset.y, kOffset.z);
+    NiPoint3 kTranslate(kOffset);
+    kXform.m_Translate = static_cast<NiPoint3&&>(kTranslate);
     Unk_EffectTarget kTarget;
     kTarget.m_strName = FUN_1401d31f0()->m_strSplashEffect;
+    kTarget.m_pXform = &kXform;
     kTarget.m_nKind = 0;
     FUN_1403ed280()->FUN_1411a4a00(kTarget);
 }
@@ -1381,7 +1374,6 @@ void CFishingManager::FUN_140cdcde0()
 MS2_REPLACE_METHOD(0x140CDCDE0, CFishingManager, FUN_140cdcde0, 128, 0xBC1CDED3);
 
 // @0x140cdce70
-// MS2-FUNCTIONAL: the fishing action
 void CFishingManager::FUN_140cdce70(MS2Ptr<CItem> rod)
 {
     if (rod.IsNull())
@@ -1393,13 +1385,13 @@ void CFishingManager::FUN_140cdce70(MS2Ptr<CItem> rod)
     m_nBiteEnd = 0;
     m_bGreat = 0;
     m_uidRod = rod->FUN_140526a50();
-    FUN_141276180(s_strThrowSound, CString(""));
-    UIAutoFishingDialog* pDialog = Unk_FmGetDialog<UIAutoFishingDialog>((eUIClassID)0x4f07);
+    FUN_141276180(s_strThrowSound, "");
+    UISystemShopDialog* pDialog = Unk_FmGetDialog<UISystemShopDialog>((eUIClassID)0x4f07);
     if (pDialog != 0)
     {
         if (pDialog->FUN_141924630() != 0)
             return;
-        pDialog->FUN_140fa5ba0(4);
+        pDialog->SetMode(4);
         pDialog->FUN_141924680();
     }
 }
@@ -1429,7 +1421,6 @@ void CFishingManager::FUN_140cdd030()
 MS2_REPLACE_METHOD(0x140CDD030, CFishingManager, FUN_140cdd030, 439, 0x93841DF5);
 
 // @0x140cdd1f0
-// MS2-FUNCTIONAL: temporaries
 void CFishingManager::FUN_140cdd1f0()
 {
     FUN_140cdc9d0(0x76, 0x7b);
@@ -1461,11 +1452,10 @@ void CFishingManager::FUN_140cdd1f0()
         FUN_140a53190(&kTarget, FUN_14123c580(pPC));
         m_nReelSound = FUN_1403ed280()->FUN_1411a49c0(kTarget);
     }
-    FUN_141276180(s_strStartSound, CString(""));
+    FUN_141276180(s_strStartSound, "");
 }
 
 // @0x140cdd540
-// MS2-FUNCTIONAL: register allocation / temporary layout differs from the exe
 void CFishingManager::FUN_140cdd540(unsigned nFishId, unsigned nSize, int bSuccess)
 {
     m_resultTimer.FUN_140868750(2000);
@@ -1473,14 +1463,7 @@ void CFishingManager::FUN_140cdd540(unsigned nFishId, unsigned nSize, int bSucce
     m_bGreat = 0;
     FUN_140cdc9d0(0x79, 0x7c);
     FUN_1403ed2b0()->FUN_141adc5d0((eUIClassID)0x4ee7);
-    if (bSuccess == 0)
-    {
-        Unk_FmFishGuide* pGuide = FUN_140938cd0(0x4e5d);
-        if (pGuide != 0)
-            FUN_141ac11b0(pGuide, nFishId, nSize);
-        FUN_141276180(s_strFailSound, CString(""));
-    }
-    else
+    if (bSuccess != 0)
     {
         FUN_1409331e0()->FUN_14138bf00(0x16, nFishId, 0);
         Unk_FmFishGuide* pGuide = FUN_140938cd0(0x4e5d);
@@ -1489,11 +1472,25 @@ void CFishingManager::FUN_140cdd540(unsigned nFishId, unsigned nSize, int bSucce
         CFishDataPtr data = TSingleton<CFishingTable>::GetInstance()->GetFish(nFishId);
         if (data.get() != 0)
         {
-            if (data->FUN_1403b14d0(nSize) == 0)
-                FUN_141276180(s_strSuccessSound, CString(""));
+            if (data->FUN_1403b14d0(nSize) != 0)
+            {
+                CString strEmpty("");
+                FUN_141276180(s_strGreatSuccessSound, strEmpty);
+            }
             else
-                FUN_141276180(s_strGreatSuccessSound, CString(""));
+            {
+                CString strEmpty("");
+                FUN_141276180(s_strSuccessSound, strEmpty);
+            }
         }
+    }
+    else
+    {
+        Unk_FmFishGuide* pGuide = FUN_140938cd0(0x4e5d);
+        if (pGuide != 0)
+            FUN_141ac11b0(pGuide, nFishId, nSize);
+        CString strEmpty("");
+        FUN_141276180(s_strFailSound, strEmpty);
     }
     UIFishingBookDialog* pBook = Unk_FmGetDialog<UIFishingBookDialog>((eUIClassID)0x4ee6);
     if (pBook != 0 && pBook->FUN_141924630() != 0)
@@ -1510,7 +1507,7 @@ int CFishingManager::FUN_140cdd7b0()
     if (pPC == 0)
         return 0;
     NiPoint3 kPos = pPC->vfunc_18();
-    efd::Point3 kAt = efd::Point3(kPos.x, kPos.y, kPos.z) + efd::Point3(0.0f, 0.0f, 75.0f);
+    efd::Point3 kAt = efd::Point3(kPos.x, kPos.y, kPos.z) - efd::Point3(0.0f, 0.0f, 75.0f);
     NiPoint3 kRot = pPC->vfunc_20();
     efd::Point3 kAhead;
     kAhead.x = (kAt.x <= 0.0f) ? -75.0f : 75.0f;

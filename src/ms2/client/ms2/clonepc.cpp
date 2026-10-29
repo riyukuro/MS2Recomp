@@ -101,11 +101,17 @@ class Unk_CloneItemRec
 {
 public:
     bool FUN_14053e670();                                           // 0x14053e670
+    // The matching id and level arrays the record grants.
+    struct IdSet
+    {
+        ATL::CAtlArray<unsigned int> m_kIds;                        // +0x00
+        ATL::CAtlArray<unsigned short> m_kSubIds;                   // +0x20
+    };
     char m_pad_00[0x248];
-    ATL::CAtlArray<unsigned int> m_kIds;                            // +0x248
-    ATL::CAtlArray<unsigned short> m_kSubIds;                       // +0x268
+    IdSet m_kIdSet;                                                 // +0x248
 };
-MS2_CHECK_OFFSET(Unk_CloneItemRec, m_kSubIds, 0x268);
+MS2_CHECK_OFFSET(Unk_CloneItemRec, m_kIdSet, 0x248);
+MS2_CHECK_OFFSET(Unk_CloneItemRec::IdSet, m_kSubIds, 0x20);
 
 // A model part of a worn item (CPtred-derived); slot 20 tells whether it has a model.
 class Unk_ClonePart : public CPtred
@@ -149,7 +155,6 @@ void* FUN_14165f460(PC* pPC);
 void FUN_141270e00(void* pDst, void* pSrc);
 void FUN_141270610(void* pObj);
 void FUN_140a35900(Unk_PCD88* pObj);
-char FUN_1401647e0(const CString& strA, const CString& strB);
 void FUN_140526b30(CItem* pItem, int nOwner);
 void FUN_141ab6e80(NiAVObject* pObj);
 NiActorManager* FUN_1414400d0(Unk_ClonePart* pPart);
@@ -495,7 +500,6 @@ void ClonePC::FUN_141087790()
 // MS2_REPLACE_METHOD(0x141087790, ClonePC, FUN_141087790, 176, 0x3A6C589C);
 
 // Keeps the clone's look in step with its source PC.
-// MS2-FUNCTIONAL: behaviour-equivalent; the exe spills the PCBase::FUN_14166f740 CString return once where the compiler spills it twice
 // @0x141087850
 void ClonePC::FUN_141087850()
 {
@@ -505,7 +509,7 @@ void ClonePC::FUN_141087850()
         return;
     if (m_unk_12fc == 1)
     {
-        if (FUN_1401647e0(m_pSourcePC->FUN_14166f740(), m_str9e0))
+        if (m_pSourcePC->FUN_14166f740() != m_str9e0)
             FUN_14166ef10(m_pSourcePC->FUN_14166f740(), true, 0, 0);
     }
     else if (m_unk_12fc == 2)
@@ -569,21 +573,20 @@ bool ClonePC::vfunc_55(float a, float b)
 MS2_REPLACE_METHOD(0x141087cd0, ClonePC, vfunc_55, 66, 0x15400A3C);
 
 // Rebuilds the clone's buff records and its item id map from the entity manager's PC.
-// MS2-FUNCTIONAL: behaviour-equivalent; the exe copies the vector begin()/end() iterators through temporaries (frame 0x30 larger)
 // @0x141087d20
 void ClonePC::vfunc_151()
 {
     if (!FUN_141088620())
         return;
     ::FUN_1416749a0(this)->FUN_140970490();
-    std::vector<MS2Ptr<AdditionalCli> >::iterator itEnd = m_kClis.end();
-    std::vector<MS2Ptr<AdditionalCli> >::iterator it = m_kClis.begin();
-    while (it != itEnd)
+    std::vector<MS2Ptr<AdditionalCli> >& rClis = m_kClis;
+    std::vector<MS2Ptr<AdditionalCli> >::const_iterator itEnd = rClis.end();
+    for (std::vector<MS2Ptr<AdditionalCli> >::const_iterator it = rClis.begin(); it != itEnd; ++it)
     {
         MS2Ptr<AdditionalCli> spCli(*it);
-        if (!(spCli == 0))
-            ::FUN_1416749a0(this)->FUN_14096f070(MS2Ptr<AdditionalCli>(spCli));
-        ++it;
+        if (spCli == 0)
+            continue;
+        ::FUN_1416749a0(this)->FUN_14096f070(MS2Ptr<AdditionalCli>(spCli));
     }
     if (m_nSourceId == 0)
         return;
@@ -595,56 +598,51 @@ void ClonePC::vfunc_151()
     if (kEquips.IsEmpty())
         return;
     std::map<std::pair<unsigned int, unsigned short>, Unk_CloneItemRec*> kHave;
-    POSITION pos = kEquips.GetHeadPosition();
-    while (pos)
+    for (POSITION pos = kEquips.GetHeadPosition(); pos; kEquips.GetNext(pos))
     {
         MS2Ptr<CEquipItem> spEquip(kEquips.GetAt(pos));
-        if (!FUN_1409edd90(spEquip, 0))
+        if (FUN_1409edd90(spEquip, 0))
+            continue;
+        Unk_CloneItemRec* pRec = spEquip.get()->FUN_1411dc7f0();
+        if (pRec == 0)
+            continue;
+        if (!pRec->FUN_14053e670())
+            continue;
+        Unk_CloneItemRec::IdSet& rSet = pRec->m_kIdSet;
+        if (rSet.m_kIds.GetCount() == rSet.m_kSubIds.GetCount())
         {
-            Unk_CloneItemRec* pRec = spEquip.get()->FUN_1411dc7f0();
-            if (pRec != 0 && pRec->FUN_14053e670())
+            size_t nCount = rSet.m_kIds.GetCount();
+            for (size_t i = 0; i < nCount; i++)
             {
-                if (pRec->m_kIds.GetCount() == pRec->m_kSubIds.GetCount())
-                {
-                    for (size_t i = 0; i < pRec->m_kIds.GetCount(); i++)
-                    {
-                        unsigned int nId = pRec->m_kIds[i];
-                        unsigned short nSub = pRec->m_kSubIds[i];
-                        if (FUN_140970020(::FUN_1416749a0(this), nId, nSub, 0, 1) == 0)
-                            kHave[std::make_pair(nId, nSub)] = pRec;
-                    }
-                }
+                unsigned int nId = rSet.m_kIds[i];
+                unsigned short nSub = rSet.m_kSubIds[i];
+                if (FUN_140970020(::FUN_1416749a0(this), nId, nSub, 0, 1) != 0)
+                    continue;
+                kHave[std::pair<unsigned int, unsigned short>(nId, nSub)] = pRec;
             }
         }
-        kEquips.GetNext(pos);
     }
-    if (!kHave.empty())
+    if (kHave.empty())
+        return;
+    ATL::CAtlList<MS2Ptr<AdditionalCli> > kClis(10);
+    ::FUN_1416749a0(pSource)->FUN_1409725f0(&kClis);
+    if (kClis.IsEmpty())
+        return;
+    for (POSITION posCli = kClis.GetHeadPosition(); posCli; kClis.GetNext(posCli))
     {
-        ATL::CAtlList<MS2Ptr<AdditionalCli> > kClis(10);
-        ::FUN_1416749a0(pSource)->FUN_1409725f0(&kClis);
-        if (!kClis.IsEmpty())
-        {
-            POSITION posCli = kClis.GetHeadPosition();
-            while (posCli)
-            {
-                MS2Ptr<AdditionalCli> spSrc(kClis.GetAt(posCli));
-                if (!(spSrc == 0))
-                {
-                    if (spSrc.get()->FUN_14096d6b0())
-                    {
-                        unsigned int nId = spSrc.get()->FUN_14096d2a0();
-                        unsigned short nSub = spSrc.get()->GetLevel();
-                        if (!(kHave.find(std::make_pair(nId, nSub)) == kHave.end()))
-                        {
-                            MS2Ptr<AdditionalCli> spNew(new AdditionalCli());
-                            if (spNew.get()->FUN_14096bc20(m_unk_70, MS2Ptr<AdditionalCli>(spSrc)))
-                                ::FUN_1416749a0(this)->FUN_14096f070(MS2Ptr<AdditionalCli>(spNew));
-                        }
-                    }
-                }
-                kClis.GetNext(posCli);
-            }
-        }
+        MS2Ptr<AdditionalCli> spSrc(kClis.GetAt(posCli));
+        if (spSrc == 0)
+            continue;
+        if (!spSrc.get()->FUN_14096d6b0())
+            continue;
+        unsigned int nId = spSrc.get()->FUN_14096d2a0();
+        unsigned short nSub = spSrc.get()->GetLevel();
+        if (kHave.find(std::pair<unsigned int, unsigned short>(nId, nSub)) == kHave.end())
+            continue;
+        MS2Ptr<AdditionalCli> spNew(new AdditionalCli());
+        if (!spNew.get()->FUN_14096bc20(m_unk_70, MS2Ptr<AdditionalCli>(spSrc)))
+            continue;
+        ::FUN_1416749a0(this)->FUN_14096f070(MS2Ptr<AdditionalCli>(spNew));
     }
 }
 

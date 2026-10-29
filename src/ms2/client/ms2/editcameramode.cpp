@@ -90,7 +90,6 @@ CEditCameraMode::~CEditCameraMode()
 {
 }
 
-// MS2-FUNCTIONAL: exe frame is 0x10 smaller (temp slot sharing of the point temporaries not reproduced)
 // @0x1411988e0
 void CEditCameraMode::vfunc_8(double fTime)
 {
@@ -108,8 +107,7 @@ void CEditCameraMode::vfunc_8(double fTime)
         {
             Vector3 ptInput = ptMove;
             float fRate = 15.0f;
-            float fDelta = (float)fTime;
-            float fStep = FUN_140a17940(fDelta, 0.0f, 1.0f / fRate);
+            float fStep = FUN_140a17940((float)fTime, 0.0f, 1.0f / fRate);
             float fAbsZ = FUN_140a38cd0(ptInput.z);
             float fMaxYZ = FUN_140a0fda0(FUN_140a38cd0(ptInput.y), fAbsZ);
             float fMax = FUN_140a0fda0(FUN_140a38cd0(ptInput.x), fMaxYZ);
@@ -119,9 +117,9 @@ void CEditCameraMode::vfunc_8(double fTime)
             if (fRotX != 0.0f || fRotY != 0.0f)
             {
                 if (1.0f < FUN_140a38cd0(fRotX))
-                    fRotX = (0.0f <= fRotX) ? 1.0f : -1.0f;
+                    fRotX = (fRotX < 0.0f) ? -1.0f : 1.0f;
                 if (1.0f < FUN_140a38cd0(fRotY))
-                    fRotY = (0.0f <= fRotY) ? 1.0f : -1.0f;
+                    fRotY = (fRotY < 0.0f) ? -1.0f : 1.0f;
                 Vector3 ptRot = FUN_140af8260();
                 ptRot.y = ptRot.y - fRotX;
                 ptRot.z = ptRot.z - fRotY;
@@ -145,10 +143,7 @@ void CEditCameraMode::vfunc_8(double fTime)
         FUN_140a01190(&kRot, 2, &ptForward);
         ptForward.FUN_140968990();
         Vector3 ptPos = FUN_1409f2540();
-        float fDelta = (float)fTime;
-        const Vector3& ptSideF = ptForward.FUN_14097fc90(m_78.y);
-        const Vector3& ptSideU = ptUp.FUN_14097fc90(m_78.z);
-        ptPos = ptPos.FUN_14097fd50(ptRight.FUN_14097fc90(m_78.x).FUN_14097fd50(ptSideU).FUN_14097fd50(ptSideF).FUN_14097fc90(1000.0f).FUN_14097fc90(fDelta));
+        ptPos = ptPos.FUN_14097fd50(ptRight.FUN_14097fc90(m_78.x).FUN_14097fd50(ptUp.FUN_14097fc90(m_78.z)).FUN_14097fd50(ptForward.FUN_14097fc90(m_78.y)).FUN_14097fc90(1000.0f).FUN_14097fc90((float)fTime));
         vfunc_3(ptPos);
     }
 }

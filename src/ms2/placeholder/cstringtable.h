@@ -76,8 +76,8 @@ public:
     CStringTable();                                         // 0x141810bf0
     virtual ~CStringTable();
 
-    bool Load();                                   // reads string.xml and the description files
-    bool FUN_141811960();                                   // reload
+    BOOL Load();                                   // reads string.xml and the description files
+    BOOL FUN_141811960();                                   // reload
     CStringW FUN_141811980(int nTable, int nId);            // the string of a table row
     CStringW GetItemDescription(int nItemId, CString strTag);    // an item description
     CStringW GetSkillDescription(int nSkillId, unsigned short nLevel, CString strTag);    // a skill description

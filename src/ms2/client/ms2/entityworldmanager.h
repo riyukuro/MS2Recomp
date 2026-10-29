@@ -93,7 +93,7 @@ public:
     void FUN_1411cf2d0(egf::Entity*, efd::ParameterList*);
     egf::EntityPtr FUN_1411cf3d0(const egf::EntityID&);
     egf::Entity* FUN_1411cf440(const egf::EntityID&);
-    void FUN_1411cf540(const egf::EntityID&);
+    void FUN_1411cf540(egf::EntityID id);                    // by value
     void FUN_1411cf570(egf::Entity*);
     void FUN_1411cf5a0(const egf::EntityID&, egf::Entity*);
     bool FUN_1411cf630(int, const egf::BlockIdentification&);

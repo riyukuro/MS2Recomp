@@ -99,6 +99,11 @@ struct Unk_UgcExtra
     char m_pad[0x18];
     int m_nType;                                                    // +0x18
 };
+struct Unk_UgcPosePt
+{
+    float x, y, z;
+};
+
 struct Unk_UgcProxy : public CItemExtraData
 {
     void FUN_140599d10(const Unk_UgcColorList& kColors, int nIndex);
@@ -112,7 +117,15 @@ struct Unk_UgcProxy : public CItemExtraData
         struct { float m_f58, m_f5c, m_f60; };                      // the same values read without an index
     };
     char m_pad64[0x74 - 0x64];
-    NiPoint3 m_aPose[4];                                            // +0x74 pose point per part index, euler at index + 1
+    union
+    {
+        Unk_UgcPosePt m_aPose[4];                                   // +0x74 pose point per part index
+        struct
+        {
+            Unk_UgcPosePt m_kPose74;
+            Unk_UgcPosePt m_aEuler[3];                              // +0x80 euler per part index (the point after it)
+        };
+    };
 };
 
 // The facts of a model part: +0x118 renames part-name suffixes, +0x48 the pose slot.
@@ -295,13 +308,12 @@ Unk_UgcWorld* FUN_1403ed2d0();
 // ---- item-name builders ----
 
 // @0x141421ab0
-// MS2-FUNCTIONAL: logic recovered from the decomp; /Od codegen (local layout / temporaries) still differs from the exe
 // name of a part model: the first attach-part name with a style suffix swapped in.
 CString FUN_141421ab0(MS2Ptr<CEquipItem> spItem, const CString& strSuffix)
 {
     if (spItem == 0)
         return "";
-    if (!(strSuffix.GetLength() < 2))
+    if (strSuffix.GetLength() > 1)
         return "";
     CAtlArray<MS2Ptr<Unk_PickTarget> > aParts;
     spItem->FUN_1411dcc80(aParts);
@@ -312,17 +324,16 @@ CString FUN_141421ab0(MS2Ptr<CEquipItem> spItem, const CString& strSuffix)
     if (aNames.IsEmpty())
         return "";
     CString& strFirst = aNames[0];
-    int nFlag = 0;
-    FUN_141421740(strFirst, &nFlag);
+    int nIndex = 0;
+    FUN_141421740(strFirst, &nIndex);
     CString strMapped(strSuffix);
-    Unk_UgcPartInfo* pInfo = (Unk_UgcPartInfo*)aParts[0]->FUN_141200ab0();
-    std::map<CString, CString>::iterator it = pInfo->m_names.find(strSuffix);
-    if (it != pInfo->m_names.end())
+    std::map<CString, CString>::iterator it = ((Unk_UgcPartInfo*)aParts[0]->FUN_141200ab0())->m_names.find(strSuffix);
+    if (it != ((Unk_UgcPartInfo*)aParts[0]->FUN_141200ab0())->m_names.end())
         strMapped = it->second;
     CString strOut;
-    strOut = strFirst.Left(1);
+    strOut = strFirst.Left(nIndex);
     strOut = FUN_1401d2b10(strOut, strMapped);
-    strOut = FUN_1401d2b10(strOut, strFirst.Right(strFirst.GetLength() - 1));
+    strOut = FUN_1401d2b10(strOut, strFirst.Right(strFirst.GetLength() - nIndex - 1));
     return strOut;
 }
 
@@ -468,8 +479,11 @@ void FUN_141422a00(Unk_PickTarget* pPart, Vector3 kPos, const NiMatrix3& kRot, f
     FUN_141422b30(pPart, pPart->FUN_141201c90(), kPos, kEuler, fScale);
 }
 
+void FUN_140981070(NiAVObject* pObj, const NiPoint3& kPoint);     // NiAVObject::SetTranslate
+void FUN_140ddcca0(NiAVObject* pObj, const NiMatrix3& kRot);       // NiAVObject::SetRotate
+void FUN_1410b2450(NiAVObject* pObj, float fScale);                // NiAVObject::SetScale
+
 // @0x141422b30 - applies a pose to every node of the part's node set
-// MS2-FUNCTIONAL: logic recovered from the decomp; /Od codegen (local layout / temporaries) still differs from the exe
 void FUN_141422b30(Unk_PickTarget* pPart, std::set<NiAVObjectPtr>& kNodes, const Vector3& kPos, const Vector3& kEuler,
                    float fScale)
 {
@@ -481,8 +495,8 @@ void FUN_141422b30(Unk_PickTarget* pPart, std::set<NiAVObjectPtr>& kNodes, const
     Unk_UgcPartInfo* pInfo = (Unk_UgcPartInfo*)pPart->FUN_141200ab0();
     if (pInfo == 0)
         return;
-    Vector3 kShift = kPos;
-    NiMatrix3 kRot;
+    efd::Point3 kShift = (const efd::Point3&)kPos;
+    efd::Matrix3 kRot;
     kRot.FromEulerAnglesXYZ((kEuler.x * 3.1415927f) / 180.0f, (kEuler.y * 3.1415927f) / 180.0f,
                             (kEuler.z * 3.1415927f) / 180.0f);
     if (spItem->FUN_1411dc7f0()->FUN_14053c620() == 0xd)
@@ -491,21 +505,23 @@ void FUN_141422b30(Unk_PickTarget* pPart, std::set<NiAVObjectPtr>& kNodes, const
         if (pProxy != 0)
         {
             NiMatrix3 kBase;
-            kBase.FromEulerAnglesXYZ((pProxy->m_aPose[pInfo->m_nSlot + 1].x * 3.1415927f) / 180.0f,
-                                     (pProxy->m_aPose[pInfo->m_nSlot + 1].y * 3.1415927f) / 180.0f,
-                                     (pProxy->m_aPose[pInfo->m_nSlot + 1].z * 3.1415927f) / 180.0f);
+            kBase.FromEulerAnglesXYZ((pProxy->m_aEuler[pInfo->m_nSlot].x * 3.1415927f) / 180.0f,
+                                     (pProxy->m_aEuler[pInfo->m_nSlot].y * 3.1415927f) / 180.0f,
+                                     (pProxy->m_aEuler[pInfo->m_nSlot].z * 3.1415927f) / 180.0f);
             kRot = kRot * kBase;
-            kShift.x += pProxy->m_aPose[pInfo->m_nSlot].x;
-            kShift.y += pProxy->m_aPose[pInfo->m_nSlot].y;
-            kShift.z += pProxy->m_aPose[pInfo->m_nSlot].z;
+            kShift = kShift + (const efd::Point3&)pProxy->m_aPose[pInfo->m_nSlot];
         }
     }
-    for (std::set<NiAVObjectPtr>::iterator it = kNodes.begin(); it != kNodes.end(); ++it)
+    std::set<NiAVObjectPtr>& kRange = kNodes;
+    std::set<NiAVObjectPtr>::iterator itEnd = kRange.end();
+    for (std::set<NiAVObjectPtr>::iterator it = kRange.begin(); it != itEnd; ++it)
     {
         NiAVObjectPtr spNode = *it;
-        spNode->SetTranslate(kShift.x, kShift.y, kShift.z);
-        spNode->SetRotate(kRot);
-        spNode->SetScale(fScale);
+        NiPoint3 kTranslate(kShift);
+        FUN_140981070(spNode.operator->(), kTranslate);
+        NiMatrix3 kRotate(kRot);
+        FUN_140ddcca0(spNode.operator->(), kRotate);
+        FUN_1410b2450(spNode.operator->(), fScale);
     }
 }
 
@@ -1192,11 +1208,7 @@ CItemUgcMesh::CItemUgcMesh()
 {
 }
 
-// @0x141427620
-// MS2-FUNCTIONAL: logic recovered from the decomp; /Od codegen (local layout / temporaries) still differs from the exe
-CItemUgcMesh::~CItemUgcMesh()
-{
-}
+// CItemUgcMesh::~CItemUgcMesh @0x141427620 is implicit (no vftable store in the exe); see itemugcmesh.h.
 
 // @0x141426140
 void CItemUgcMeshContainer::FUN_141426140()
@@ -1366,7 +1378,7 @@ void** FUN_140553e80(void* pSet);
 void FUN_1405408b0(void* pOut, void* pNode, void* pTree);
 void* FUN_141427160(void* pSet, void* pKey);
 void* FUN_141428500(void* pSet, void* pOut, void* pKey);
-void* FUN_141428280(void* pSet, void* pOut);
+void* FUN_141428280(void* pSet, void* pOut) noexcept;
 void FUN_141428070(void* pPtr);
 bool FUN_1405411b0(void* pIterA, void* pIterB);
 void* FUN_1405541f0(void* pSet, void* pNode);
@@ -1488,7 +1500,7 @@ bool FUN_141428240(void* pSet)                  // MS2-FUNCTIONAL: raw emptiness
 }
 
 // @0x141428280
-void* FUN_141428280(void* pSet, void* pOut)     // MS2-FUNCTIONAL: raw end iterator
+void* FUN_141428280(void* pSet, void* pOut) noexcept     // raw end iterator (std::set::end, noexcept)
 {
     void** pHead = FUN_140553e80(pSet);
     FUN_1405408b0(pOut, *pHead, FUN_141427210(pHead));

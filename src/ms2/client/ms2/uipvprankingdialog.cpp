@@ -132,13 +132,12 @@ void UIPvPRankingDialog::vfunc_79(void* pData)
         FUN_140a467d0(&m_30);
 }
 
-// MS2-FUNCTIONAL: cl reserves 0x10 more frame than the exe (two extra 8-byte slots)
 // @0x1413430f0
 bool UIPvPRankingDialog::FUN_1413430f0(ASObj* pObj, int nRank, Unk_PvPRankEntry* pEntry)
 {
-    if (pEntry == 0) {
+    if (pEntry == 0)
         return false;
-    } else {
+    {
         PCBase* pPC = FUN_1403ed2d0()->FUN_141bd1530(pEntry->m_nCharId);
         pObj->FUN_1407cb9c0("rank", nRank);
         CStringW strRank(L"-");
@@ -149,8 +148,8 @@ bool UIPvPRankingDialog::FUN_1413430f0(ASObj* pObj, int nRank, Unk_PvPRankEntry*
         pObj->FUN_1407cb9c0("score", pEntry->m_nScore);
         if (pPC != 0)
             pObj->FUN_140bd0d90("job", FUN_141654730(pPC));
-        return true;
     }
+    return true;
 }
 
 // @0x1413432b0

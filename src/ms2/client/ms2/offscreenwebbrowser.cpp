@@ -799,7 +799,6 @@ void COffscreenWebBrowser::vfunc_14(CefRefPtr<CefBrowser> browser, void* pUnk)
 {
 }
 
-// MS2-FUNCTIONAL: CefString/CefRefPtr temporaries get different frame slots (3.4 KB, the same calls in the same order)
 // @0x1416146f0
 bool COffscreenWebBrowser::OnProcessMessageReceived(CefRefPtr<CefBrowser> browser, CefProcessId source_process,
     CefRefPtr<CefProcessMessage> message)
@@ -843,12 +842,12 @@ bool COffscreenWebBrowser::OnProcessMessageReceived(CefRefPtr<CefBrowser> browse
         }
     } else if (message->GetName() == g_szCefMessageOpenWeb) {
         std::string strUrl = message->GetArgumentList()->GetString(0).ToString();
-        FUN_1418fe1c0(CStringA(strUrl.c_str()));
+        FUN_1418fe1c0(strUrl.c_str());
     } else if (message->GetName() == g_szCefMessageOpenMaview) {
         std::string strUrl = message->GetArgumentList()->GetString(0).ToString();
         UIWebBrowser* pBrowser = FUN_140c43790(0x4e6a);
         if (pBrowser != NULL) {
-            pBrowser->FUN_14135ec00(CStringA(strUrl.c_str()), true);
+            pBrowser->FUN_14135ec00(strUrl.c_str(), true);
         }
     } else if (message->GetName() == g_szCefMessageMoveHome) {
         __int64 nOwner = message->GetArgumentList()->GetInt(0);

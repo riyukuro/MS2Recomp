@@ -78,12 +78,14 @@ enum eUIClassID
 // Opaque exe containers owned by this unit (CAtlMap-shaped, 0x48 bytes; their bodies are unit glue).
 struct Unk_UisMap
 {
+    ~Unk_UisMap();                              // 0x1401642a0 (defined in uiservice.cpp)
     char m_pad[0x48];
 };
 MS2_CHECK_SIZE(Unk_UisMap, 0x48);
 
 struct Unk_UisPtr8
 {
+    ~Unk_UisPtr8();                             // 0x1416aecf0 (defined in uiservice.cpp)
     char m_pad[8];
 };
 typedef ATL::CAtlList<eUIClassID> Unk_UisList;                // class ids still to open / close, handed out three per tick
@@ -92,6 +94,7 @@ MS2_CHECK_SIZE(Unk_UisList, 0x30);
 // Scaleform log sink member (class of an unrecovered unit).
 struct Unk_UisLogger
 {
+    ~Unk_UisLogger();                           // GFxLogger dtor 0x140a5bb50 (defined in uiservice.cpp)
     char m_pad[0x10];
 };
 
@@ -128,7 +131,7 @@ public:
     void FUN_141add210();                           // 0x141add210 "not enough merat" confirm box
     void FUN_141add390();                           // 0x141add390 "not enough meso market token" confirm box
     void FUN_141add520(CStringW strText, CStringW strArg);   // 0x141add520 market confirm box with one argument
-    void FUN_141aec8f0(char bOn, NiAVObject* pRoot);   // 0x141aec8f0 debug visualization click on / off
+    void FUN_141aec8f0(bool bOn, NiAVObject* pRoot);   // 0x141aec8f0 debug visualization click on / off
     void FUN_141aebed0();                           // 0x141aebed0 register the camera dialog and the callbacks
     static int FUN_141aed0a0(MS2Ptr<UIDialog> spDlg);   // 0x141aed0a0 log one dialog
     void FUN_141aecd70();                           // 0x141aecd70 close-request every dialog that is open
@@ -159,7 +162,7 @@ public:
     void FUN_141aece70();                           // 0x141aece70 reset the input handlers
     void FUN_141adf250();                           // 0x141adf250 create the click render steps
     void FUN_141adf580();                           // 0x141adf580 create every dialog
-    static void FUN_141ade300(CString strName, void* pUnused, void* pArg1, void* pArg2);   // 0x141ade300
+    static void FUN_141ade300(CString strText);     // 0x141ade300 movie log callback: logs strText
     static bool FUN_141ade1f0(bool bFlag, void* p); // 0x141ade1f0
     static bool FUN_141ade2d0(void* pContext);                  // 0x141ade2d0
     static void FUN_141ade400();                    // 0x141ade400

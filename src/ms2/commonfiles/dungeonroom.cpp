@@ -73,6 +73,7 @@
 // MS2-PIN: ?_Kfn@?$_Tree@V?$_Tmap_traits@IV?$MS2Ptr@VDungeonRoundGroup@@@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIV?$MS2Ptr@VDungeonRoundGroup@@@@@std@@@3@$0A@@std@@@std@@IEBAAEBIAEBU?$pair@$$CBIV?$MS2Ptr@VDungeonRoundGroup@@@@@2@@Z 0x14033d950 ; unique
 // MS2-PIN: ?_Orphan_all@?$_Vector_alloc@U?$_Vec_base_types@FV?$allocator@F@std@@@std@@@std@@QEAAXXZ 0x14033ea20 ; prop
 // MS2-PIN: ?_Reallocate_exactly@?$vector@IV?$allocator@I@std@@@std@@AEAAX_K@Z 0x14033eaf0 ; unique
+// MS2-PIN: ?_Tidy@?$vector@FV?$allocator@F@std@@@std@@AEAAXXZ 0x14033fce0 ; gb19 calls capacity<short> 0x1403410c0 (sar 1); not vector<unsigned>::_Tidy
 // MS2-PIN: ?_Umove_if_noexcept1@?$vector@FV?$allocator@F@std@@@std@@AEAAXPEAF00U?$integral_constant@_N$00@2@@Z 0x140340450 ; prop
 // MS2-PIN: ?_Umove_if_noexcept1@?$vector@UDungeonRankRewardItem@@V?$allocator@UDungeonRankRewardItem@@@std@@@std@@AEAAXPEAUDungeonRankRewardItem@@00U?$integral_constant@_N$00@2@@Z 0x140340490 ; unique
 // MS2-PIN: ?begin@?$_Tree@V?$_Tset_traits@_JU?$less@_J@std@@V?$allocator@_J@2@$0A@@std@@@std@@QEAA?AV?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@_J@std@@@std@@@2@XZ 0x140340ff0 ; unique
@@ -860,9 +861,9 @@ int DungeonRankRequire::GetRank(short nScore)
 MS2_REPLACE_METHOD(0x14031EBB0, DungeonRankRequire, GetRank, 133, 0x75BE13E9);
 
 // @0x14031ec40
-int DungeonRankRequire::GetCount()
+size_t DungeonRankRequire::GetCount()
 {
-    return (int)m_scores.size();
+    return m_scores.size();
 }
 MS2_REPLACE_METHOD(0x14031EC40, DungeonRankRequire, GetCount, 31, 0xE38FCB57);
 
@@ -1463,7 +1464,7 @@ DungeonRoomPtr DungeonRoomTable::GetRoom1007()
 // @0x140321b00
 MS2Ptr<DungeonRankRewardBase> DungeonRoomTable::GetRankReward(int nRewardId)
 {
-    std::map<unsigned, MS2Ptr<DungeonRankRewardBase> >::iterator it = m_rankRewards.find(nRewardId);
+    std::map<unsigned, MS2Ptr<DungeonRankRewardBase> >::iterator it = m_rankRewards.find(reinterpret_cast<const unsigned&>(nRewardId));
     if (it != m_rankRewards.end())
         return it->second;
     return 0;
@@ -1560,7 +1561,7 @@ DungeonRewardCoupon* DungeonRoomTable::GetCoupon(int nCouponId)
 {
     if (nCouponId == 0)
         return 0;
-    std::map<unsigned, MS2Ptr<DungeonRewardCoupon> >::const_iterator it = m_coupons.find(nCouponId);
+    std::map<unsigned, MS2Ptr<DungeonRewardCoupon> >::const_iterator it = m_coupons.find(reinterpret_cast<const unsigned&>(nCouponId));
     if (it == m_coupons.end())
         return 0;
     return it->second.get();
@@ -1570,7 +1571,7 @@ MS2_REPLACE_METHOD(0x140322260, DungeonRoomTable, GetCoupon, 132, 0x8F7D3E8C);
 // @0x1403222f0
 DungeonRoundGroup* DungeonRoomTable::GetRoundGroup(int nGroupId)
 {
-    std::map<unsigned, MS2Ptr<DungeonRoundGroup> >::const_iterator it = m_roundGroups.find(nGroupId);
+    std::map<unsigned, MS2Ptr<DungeonRoundGroup> >::const_iterator it = m_roundGroups.find(reinterpret_cast<const unsigned&>(nGroupId));
     if (it == m_roundGroups.end())
         return 0;
     return it->second.get();

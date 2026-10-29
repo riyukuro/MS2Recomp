@@ -44,7 +44,7 @@ private:
     int m_nCoupon;                                                  // +0x78 coupon kind 1..3
     CStringW m_strName;                                             // +0x80
     MS2Ptr<Unk_RcProduct> m_spProduct;                              // +0x88
-    char m_bButtonShown;                                            // +0x98
+    bool m_bButtonShown;                                            // +0x98
     char m_pad_99[7];
 };
 MS2_CHECK_SIZE(UIRandomCoupon, 0xa0);

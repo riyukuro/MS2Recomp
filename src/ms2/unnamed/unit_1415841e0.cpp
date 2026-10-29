@@ -6,6 +6,7 @@
 #include "ms2/placeholder/nmstream.h"
 #include "ms2/placeholder/nmobjects.h"
 #include "ms2/placeholder/nmfunc.h"
+#include "ms2/placeholder/nmencoder.h"
 #include "ms2/ms2recover.h"
 
 extern void FUN_14156bcb0(void*, void*, void*);
@@ -16,7 +17,7 @@ extern void FUN_14156ac20(void*, unsigned int);
 extern void FUN_1415f9990(void*);
 extern int FUN_1415fb700(void*);
 extern int FUN_1415fb750(void*);
-extern int FUN_1415fb6d0(void*);
+extern int FUN_1415fb6d0(CNMSerializableDecoder*);
 
 // MS2-FUNCTIONAL 0x1415841e0: initializes five stat values to zero.
 // @0x1415841e0
@@ -31,18 +32,17 @@ CNMSetStatInfoFunc::CNMSetStatInfoFunc(int a, int b, int c, int d, int e)
 // @0x141584300
 unsigned int CNMSetStatInfoFunc::EncodeFramed(CNMStream* pStream)
 {
-    unsigned char storage[0x18]; FUN_14156bcb0(storage, pStream, this);
-    void** vtable = *reinterpret_cast<void***>(this); using Method = unsigned int(__fastcall*)(CNMSetStatInfoFunc*, CNMEncoder*, CNMStream*);
-    auto result = reinterpret_cast<Method>(vtable[2])(this, reinterpret_cast<CNMEncoder*>(storage), pStream); FUN_14156bd50(storage); return result;
+    CNMSerializableEncoder encoder(pStream, this);
+    return CNMSetStatInfoFunc::Encode(reinterpret_cast<CNMEncoder*>(&encoder), pStream);
 }
 
 // MS2-FUNCTIONAL 0x141584360: selects raw or framed encoding by the format flag.
 // @0x141584360
 unsigned int CNMSetStatInfoFunc::EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream)
 {
-    void** vtable = *reinterpret_cast<void***>(this);
-    if (m_bFormat == 1) { using Method = unsigned int(__fastcall*)(CNMSetStatInfoFunc*, CNMEncoder*, CNMStream*); return reinterpret_cast<Method>(vtable[2])(this, pEncoder, pStream); }
-    using Framed = unsigned int(__fastcall*)(CNMSetStatInfoFunc*, CNMStream*); return reinterpret_cast<Framed>(vtable[3])(this, pStream);
+    if (m_bFormat == 1)
+        return CNMSetStatInfoFunc::Encode(pEncoder, pStream);
+    return CNMSetStatInfoFunc::EncodeFramed(pStream);
 }
 
 // MS2-FUNCTIONAL 0x1415843c0: serializes the five stat values.
@@ -58,18 +58,19 @@ unsigned int CNMSetStatInfoFunc::Encode(CNMEncoder* pEncoder, CNMStream* pStream
 // @0x141584470
 unsigned int CNMSetStatInfoFunc::DecodeFramed(CNMStream* pStream)
 {
-    unsigned char storage[0x38]; FUN_14156be10(storage, pStream, this); unsigned int result = 0;
-    if (FUN_1415fb750(storage)) { void** vtable = *reinterpret_cast<void***>(this); using Method = unsigned int(__fastcall*)(CNMSetStatInfoFunc*, CNMSerializableDecoder*, CNMStream*); result = reinterpret_cast<Method>(vtable[5])(this, reinterpret_cast<CNMSerializableDecoder*>(storage), pStream); }
-    FUN_14156bf10(storage); return result;
+    CNMSerializableDecoder decoder(pStream, this);
+    if (FUN_1415fb750(&decoder) == 0)
+        return 0;
+    return CNMSetStatInfoFunc::Decode(&decoder, pStream);
 }
 
 // MS2-FUNCTIONAL 0x141584500: selects framed decoding for wire format 2.
 // @0x141584500
 unsigned int CNMSetStatInfoFunc::DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream)
 {
-    void** vtable = *reinterpret_cast<void***>(this);
-    if (FUN_1415fb6d0(pDecoder) == 2) { using Framed = unsigned int(__fastcall*)(CNMSetStatInfoFunc*, CNMStream*); return reinterpret_cast<Framed>(vtable[6])(this, pStream); }
-    using Method = unsigned int(__fastcall*)(CNMSetStatInfoFunc*, CNMSerializableDecoder*, CNMStream*); return reinterpret_cast<Method>(vtable[5])(this, pDecoder, pStream);
+    if (FUN_1415fb6d0(pDecoder) == 2)
+        return CNMSetStatInfoFunc::DecodeFramed(pStream);
+    return CNMSetStatInfoFunc::Decode(pDecoder, pStream);
 }
 
 // MS2-FUNCTIONAL 0x141584560: restores all five stat values.

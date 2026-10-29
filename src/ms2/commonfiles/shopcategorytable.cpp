@@ -7,6 +7,7 @@
 // MS2-PINS-BEGIN tplpin
 // MS2-PIN: ?GetNode@?$CAtlMap@HV?$TPtrValue@V?$CAtlList@V?$MS2Ptr@UTabInfo@CShopCategoryTable@@@@V?$CElementTraits@V?$MS2Ptr@UTabInfo@CShopCategoryTable@@@@@ATL@@@ATL@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$TPtrValue@V?$CAtlList@V?$MS2Ptr@UTabInfo@CShopCategoryTable@@@@V?$CElementTraits@V?$MS2Ptr@UTabInfo@CShopCategoryTable@@@@@ATL@@@ATL@@@@@3@@ATL@@AEBAPEAVCNode@12@HAEAI0AEAPEAV312@@Z 0x1407ccbd0 ; unique
 // MS2-PINS-END tplpin
+// MS2-PIN: ?GetModuleInstance@CAtlBaseModule@ATL@@QEAAPEAUHINSTANCE__@@XZ 0x1407cc3e0 ; hand: identical look-alike group, the in-range copy LoadCategories calls
 // MS2-PIN: ??_7CShopCategoryTable@@6B?$TSingleton@VCShopCategoryTable@@@@@ 0x142d8e750
 // MS2-PIN: ??_7CShopCategoryTable@@6B?$CValidData@VCShopCategoryTable@@@@@ 0x142d8e760
 // MS2-PIN: ??_7?$TPtredDummy@V?$CAtlList@V?$MS2Ptr@UTabInfo@CShopCategoryTable@@@@V?$CElementTraits@V?$MS2Ptr@UTabInfo@CShopCategoryTable@@@@@ATL@@@ATL@@@@6B@ 0x142d8e780
@@ -42,6 +43,9 @@ bool FUN_14028f710(Unk_140165cf0* pElem);                                // the 
 Unk_140165cf0* FUN_14028f8d0(Unk_140165cf0* pElem);                      // the next sibling root
 bool FUN_140184310(const CString& str, const char* psz);                 // string equals
 bool FUN_1406a5040(int nTabId);                                          // the tab opens on its best page
+
+// View for the identical-code TPtrValue::get copy LoadCategories passes to LoadTabs.
+struct Unk_ScTabListView { CShopCategoryTable::TabList* FUN_1407cc3e0() const; };
 
 // The AS object a tab is written into: AScript, which holds the GFx value at +0x20.
 struct Unk_AsOut : public CPtred
@@ -179,15 +183,14 @@ void CShopCategoryTable::SortTabInfo::Write(Unk_AsOut* pOut)
 // ---- CShopCategoryTable
 
 // @0x1407ca7a0
-// MS2-FUNCTIONAL: stack frame / temporary slot layout differs (operator-> results and by-value temps); no source form found
 CShopCategoryTable::CShopCategoryTable()
     : m_tabs(17, 0.75f, 0.25f, 2.25f, 10)
 {
     MS2Ptr<CCacheData> spShop(new CCacheData);
-    spShop->FUN_1401d1160(FUN_14071a5b0(CString("Table"), CString("shopCategory.xml")));
+    spShop->FUN_1401d1160(FUN_14071a5b0("Table", "shopCategory.xml"));
     m_caches.Add(spShop);
     MS2Ptr<CCacheData> spMerat(new CCacheData);
-    spMerat->FUN_1401d1160(FUN_14071a5b0(CString("Table"), CString("meratMarketCategory.xml")));
+    spMerat->FUN_1401d1160(FUN_14071a5b0("Table", "meratMarketCategory.xml"));
     m_caches.Add(spMerat);
     Load();
 }
@@ -199,7 +202,6 @@ CShopCategoryTable::~CShopCategoryTable()
 }
 
 // @0x1407cab80
-// MS2-FUNCTIONAL: stack frame / temporary slot layout differs (operator-> results and by-value temps); no source form found
 void CShopCategoryTable::Load()
 {
     for (size_t i = 0; i < m_caches.GetCount(); i++)
@@ -208,8 +210,7 @@ void CShopCategoryTable::Load()
         if (spCache == 0)
             continue;
         TiXmlDocument doc;
-        const char* pszPath = *spCache->FUN_1401d1140();
-        if (FUN_140166420()->FUN_1403974b0(&doc, pszPath, 0, true, false) != 0)
+        if (FUN_140166420()->FUN_1403974b0(&doc, *spCache->FUN_1401d1140(), 0, true, false) != 0)
         {
             Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
             if (pRoot == 0)
@@ -224,7 +225,6 @@ void CShopCategoryTable::Load()
 }
 
 // @0x1407cad10
-// MS2-FUNCTIONAL: stack frame / temporary slot layout differs (operator-> results and by-value temps); no source form found
 void CShopCategoryTable::LoadCategories(Unk_140165cf0* pRoot)
 {
     if (pRoot == 0)
@@ -243,7 +243,7 @@ void CShopCategoryTable::LoadCategories(Unk_140165cf0* pRoot)
         TabListPtr spList(Unk_GrNewTag(0));
         if (spList.get() != 0)
         {
-            LoadTabs(nTabType, pCategory, m_tabs, spList.get(), TabPtr(0));
+            LoadTabs(nTabType, pCategory, m_tabs, reinterpret_cast<Unk_ScTabListView*>(&spList)->FUN_1407cc3e0(), TabPtr(0));
             m_tabs.SetAt(nId, spList);
         }
     }
@@ -261,7 +261,6 @@ CShopCategoryTable::TabPtr CShopCategoryTable::NewTab(int nTabType)
 }
 
 // @0x1407cb000
-// MS2-FUNCTIONAL: stack frame / temporary slot layout differs (operator-> results and by-value temps); no source form found
 void CShopCategoryTable::LoadTabs(int nTabType, Unk_140165cf0* pParent, TabMap& rMap, TabList* pList, TabPtr spParent)
 {
     for (Unk_140165cf0* pElem = pParent->FUN_140165cf0("tab"); pElem != 0; pElem = pElem->FUN_140168650("tab"))
@@ -277,10 +276,9 @@ void CShopCategoryTable::LoadTabs(int nTabType, Unk_140165cf0* pParent, TabMap& 
                 continue;
             spTab->Load(pElem, spParent);
             LoadTabs(nTabType, pElem, rMap, &spTab->m_subTabs, spTab);
-            if (spParent.get() != 0 && !spTab->m_strCategory.IsEmpty())
+            if ((spParent.get() ? true : false) && !spTab->m_strCategory.IsEmpty())
             {
-                const char* pszSep = spParent->m_strCategory.IsEmpty() ? "" : ",";
-                CString strAdd(pszSep);
+                CString strAdd(spParent->m_strCategory.IsEmpty() ? "" : ",");
                 strAdd += spTab->m_strCategory;
                 spParent->m_strCategory.Append(strAdd);
             }

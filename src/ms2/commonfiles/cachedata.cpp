@@ -485,15 +485,16 @@ int CThread::FUN_1401d3510(DWORD dwTimeout)
 }
 
 // @0x1401d3720
-// MS2-FUNCTIONAL: exe frame has 16 extra bytes of locals (unidentified); behaviour identical
+// The exe catches CException* (MakeLower throws CMemoryException*); the named catch object is the frame's extra slot.
 inline bool FUN_1401d3720(CString& str)
 {
     try
     {
         str.MakeLower();
     }
-    catch (...)
+    catch (CException* e)
     {
+        (void)e;
         return false;
     }
     return true;

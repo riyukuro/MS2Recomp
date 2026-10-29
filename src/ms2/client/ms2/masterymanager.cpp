@@ -12,6 +12,7 @@
 #include "ms2/placeholder/wcformat.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/placeholder/ascript.h"
+#include "ms2/commonfiles/itemgift.h"
 #include <atlcoll.h>
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
@@ -77,6 +78,8 @@ public:
 };
 
 // The mastery table (singleton).
+typedef ATL::CAtlArray<MS2Ptr<ItemEntity> > Unk_MmItemArray;   // reward lists hold item pointers (CMasteryTable::Rewards)
+
 class Unk_MmTable
 {
 public:
@@ -84,7 +87,7 @@ public:
     int FUN_14066b050(int nType);                           // number of levels of the type
     unsigned int FUN_14066b310(int nType, int nLevel);      // exp needed
     int FUN_14066b500(int nType, int nLevel);               // step id
-    void FUN_14066b100(int nStep, int nJob, ATL::CAtlArray<void*>& rOut);   // rewards of the step
+    void FUN_14066b100(int nStep, int nJob, Unk_MmItemArray& rOut);         // rewards of the step
 };
 Unk_MmTable* FUN_1409670c0();
 
@@ -109,7 +112,6 @@ public:
 };
 Unk_MmQuestMgr* FUN_140764020();
 
-void* FUN_140665850(ATL::CAtlArray<void*>& rArr);           // the data pointer of the reward list
 CStringW GetStringCommonByKey(const CStringW& str);
 void FUN_1412751f0(const CStringW& str, int nA, int nB);
 
@@ -132,7 +134,6 @@ int CMasteryManager::FUN_140b6d0e0()
     return nTotal;
 }
 
-// MS2-FUNCTIONAL: frame / loop-continue layout differs from the exe (same calls and branches)
 // @0x140b6d140
 int CMasteryManager::FUN_140b6d140(int nType)
 {
@@ -146,15 +147,17 @@ int CMasteryManager::FUN_140b6d140(int nType)
     {
         unsigned int nNeed = FUN_1409670c0()->FUN_14066b310(nType, nLevel);
         if (nExp < nNeed)
-            return nCount;
+            break;
         int nStep = FUN_1409670c0()->FUN_14066b500(nType, nLevel);
-        if (DAT_143ab31a0.FUN_140167ca0(nStep) == 0 && FUN_140b6d250(nType, nLevel) != 0)
-            nCount++;
+        if (DAT_143ab31a0.FUN_140167ca0(nStep) != 0)
+            continue;
+        if (FUN_140b6d250(nType, nLevel) == 0)
+            continue;
+        nCount++;
     }
     return nCount;
 }
 
-// MS2-FUNCTIONAL: frame slots of the step / job locals differ from the exe
 // @0x140b6d250
 int CMasteryManager::FUN_140b6d250(int nType, int nLevel)
 {
@@ -162,11 +165,9 @@ int CMasteryManager::FUN_140b6d250(int nType, int nLevel)
     if (pPlayer == 0)
         return 0;
     int nStep = FUN_1409670c0()->FUN_14066b500(nType, nLevel);
-    ATL::CAtlArray<void*> rewards;
-    int nJob = pPlayer->FUN_141654700();
-    FUN_1409670c0()->FUN_14066b100(nStep, nJob, rewards);
-    int bHas = FUN_140665850(rewards) != 0 ? 1 : 0;
-    return bHas;
+    Unk_MmItemArray rewards;
+    FUN_1409670c0()->FUN_14066b100(nStep, pPlayer->FUN_141654700(), rewards);
+    return rewards.GetCount() != 0 ? 1 : 0;
 }
 
 // @0x140b6d330
@@ -185,7 +186,6 @@ int CMasteryManager::FUN_140b6d330(int nStep)
     return 0;
 }
 
-// MS2-FUNCTIONAL: per-return temporaries / cost loop frame differ from the exe
 // @0x140b6d470
 Unk_MasteryResult CMasteryManager::FUN_140b6d470(int nStep)
 {
@@ -198,8 +198,7 @@ Unk_MasteryResult CMasteryManager::FUN_140b6d470(int nStep)
         int nType = spRow->m_nType;
         if (spRow->m_nNeedExp != 0)
         {
-            unsigned int nExp = pPlayer->FUN_141662750(nType);
-            if (nExp < spRow->m_nNeedExp)
+            if (pPlayer->FUN_141662750(nType) < spRow->m_nNeedExp)
                 return (Unk_MasteryResult)1;
         }
         if (FUN_140b6d330(nStep) == 0)
@@ -209,16 +208,14 @@ Unk_MasteryResult CMasteryManager::FUN_140b6d470(int nStep)
         for (size_t i = 0; i < spRow->m_costs.FUN_14026bee0(); i++)
         {
             MS2Ptr<Unk_MmCost> spCost = spRow->m_costs.FUN_14026bdc0(i);
-            if (spCost->m_nKind == 0)
+            if (spCost->m_nKind != 0)
             {
-                int nHave = DAT_143ab2a90.FUN_140a5f180(spCost->FUN_14026b500(), 0);
-                if (nHave < spCost->m_nCount)
+                if (DAT_143ab2a90.FUN_140a5f780(spCost->m_nKind, 0) < spCost->m_nCount)
                     return (Unk_MasteryResult)4;
             }
             else
             {
-                int nHave = DAT_143ab2a90.FUN_140a5f780(spCost->m_nKind, 0);
-                if (nHave < spCost->m_nCount)
+                if (DAT_143ab2a90.FUN_140a5f180(spCost->FUN_14026b500(), 0) < spCost->m_nCount)
                     return (Unk_MasteryResult)4;
             }
         }
@@ -226,7 +223,6 @@ Unk_MasteryResult CMasteryManager::FUN_140b6d470(int nStep)
     return (Unk_MasteryResult)0;
 }
 
-// MS2-FUNCTIONAL: the exe shares the CStringW temporaries between the cases (frame 0x138 smaller)
 // @0x140b6d710
 void CMasteryManager::FUN_140b6d710(Unk_MasteryResult eResult)
 {
@@ -234,25 +230,25 @@ void CMasteryManager::FUN_140b6d710(Unk_MasteryResult eResult)
     switch (eResult)
     {
     case 1:
-        strText = GetStringCommonByKey(CStringW(L"s_mastery_error_lack_mastery"));
+        strText = GetStringCommonByKey(L"s_mastery_error_lack_mastery");
         break;
     case 2:
-        strText = GetStringCommonByKey(CStringW(L"s_mastery_error_lack_meso"));
+        strText = GetStringCommonByKey(L"s_mastery_error_lack_meso");
         break;
     case 3:
-        strText = GetStringCommonByKey(CStringW(L"s_mastery_error_lack_quest"));
+        strText = GetStringCommonByKey(L"s_mastery_error_lack_quest");
         break;
     case 4:
-        strText = GetStringCommonByKey(CStringW(L"s_mastery_error_lack_item"));
-        break;
-    case 5:
-        strText = Unk_MmFormat(CStringW(L"s_mastery_error_unknown"), eResult);
-        break;
-    case 7:
-        strText = Unk_MmFormat(CStringW(L"s_mastery_error_invalid_level"), eResult);
+        strText = GetStringCommonByKey(L"s_mastery_error_lack_item");
         break;
     case 0xc:
-        strText = GetStringCommonByKey(CStringW(L"s_anti_addiction_cannot_receive"));
+        strText = GetStringCommonByKey(L"s_anti_addiction_cannot_receive");
+        break;
+    case 7:
+        strText = Unk_MmFormat(L"s_mastery_error_invalid_level", eResult);
+        break;
+    case 5:
+        strText = Unk_MmFormat(L"s_mastery_error_unknown", eResult);
         break;
     }
     FUN_1412751f0(strText, 1, 1);

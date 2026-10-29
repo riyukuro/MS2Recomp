@@ -290,7 +290,6 @@ int CCinematicContent::vfunc_1()
 MS2_REPLACE_METHOD(0x14078E3A0, CCinematicContent, vfunc_1, 8, 0x7F371472);
 
 // @0x14078e3b0
-// MS2-FUNCTIONAL: exe keeps ~60 more bytes of EH temporaries around the talk lookup/split; behaviour the same
 void CCinematicContent::vfunc_3(int nId)
 {
     if (m_distractors.get() != 0) {
@@ -299,25 +298,21 @@ void CCinematicContent::vfunc_3(int nId)
             CStringA strCond(m_distractors->m_choices.GetAt(i).m_goto);
             ATL::CAtlArray<int> ids;
             FUN_140177de0(strCond, ids, ",");
-            if (FUN_140186260(ids) != 0) {
-                bool bAll = true;
-                for (size_t j = 0; j < FUN_140186260(ids); j++) {
-                    Unk_ScriptTalk* pTalk = FUN_140856820(nId, *FUN_1401844d0(ids, j)).get();
-                    if (pTalk != 0) {
-                        bAll = false;
-                        break;
-                    }
-                }
-                if (bAll) {
-                    Unk_ScriptChoice* pChoice = &m_distractors->m_choices.GetAt(i);
-                    removed.Add(pChoice);
+            if (FUN_140186260(ids) == 0)
+                continue;
+            BOOL bAll = TRUE;
+            for (size_t j = 0; j < FUN_140186260(ids); j++) {
+                if (FUN_140856820(nId, *FUN_1401844d0(ids, j)).get() != 0) {
+                    bAll = FALSE;
+                    break;
                 }
             }
+            if (bAll)
+                removed.Add(&m_distractors->m_choices.GetAt(i));
         }
         for (size_t k = 0; k < removed.GetCount(); k++) {
             for (size_t i = 0; i < m_distractors->m_choices.GetCount(); i++) {
-                Unk_ScriptChoice** ppRemoved = &removed.GetAt(k);
-                if (*ppRemoved == &m_distractors->m_choices.GetAt(i)) {
+                if (removed.GetAt(k) == &m_distractors->m_choices.GetAt(i)) {
                     m_distractors->m_choices.RemoveAt(i, 1);
                     break;
                 }
@@ -328,7 +323,6 @@ void CCinematicContent::vfunc_3(int nId)
 MS2_REPLACE_METHOD(0x14078E3B0, CCinematicContent, vfunc_3, 818, 0x3248A9FB);
 
 // @0x14078e6f0
-// MS2-FUNCTIONAL: exe keeps ~60 more bytes of EH temporaries around the talk lookup/split; behaviour the same
 void CCinematicContent::vfunc_4(int nId)
 {
     if (m_distractors.get() != 0) {
@@ -337,25 +331,21 @@ void CCinematicContent::vfunc_4(int nId)
             CStringA strCond(m_distractors->m_choices.GetAt(i).m_goto);
             ATL::CAtlArray<int> ids;
             FUN_140177de0(strCond, ids, ",");
-            if (FUN_140186260(ids) != 0) {
-                bool bAll = true;
-                for (size_t j = 0; j < FUN_140186260(ids); j++) {
-                    Unk_ScriptTalk* pTalk = FUN_1408564b0(nId, *FUN_1401844d0(ids, j)).get();
-                    if (pTalk != 0) {
-                        bAll = false;
-                        break;
-                    }
-                }
-                if (bAll) {
-                    Unk_ScriptChoice* pChoice = &m_distractors->m_choices.GetAt(i);
-                    removed.Add(pChoice);
+            if (FUN_140186260(ids) == 0)
+                continue;
+            BOOL bAll = TRUE;
+            for (size_t j = 0; j < FUN_140186260(ids); j++) {
+                if (FUN_1408564b0(nId, *FUN_1401844d0(ids, j)).get() != 0) {
+                    bAll = FALSE;
+                    break;
                 }
             }
+            if (bAll)
+                removed.Add(&m_distractors->m_choices.GetAt(i));
         }
         for (size_t k = 0; k < removed.GetCount(); k++) {
             for (size_t i = 0; i < m_distractors->m_choices.GetCount(); i++) {
-                Unk_ScriptChoice** ppRemoved = &removed.GetAt(k);
-                if (*ppRemoved == &m_distractors->m_choices.GetAt(i)) {
+                if (removed.GetAt(k) == &m_distractors->m_choices.GetAt(i)) {
                     m_distractors->m_choices.RemoveAt(i, 1);
                     break;
                 }

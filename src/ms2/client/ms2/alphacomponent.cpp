@@ -10,7 +10,6 @@
 // MS2-PIN: ??$_Construct1@U?$pair@QEAVNiAlphaProperty@@UUnk_BlendState@@@std@@AEBUpiecewise_construct_t@2@V?$tuple@AEBQEAVNiAlphaProperty@@@2@V?$tuple@$$V@2@@?$_Normal_allocator_traits@V?$CustomAllocator@U?$_Tree_node@U?$pair@QEAVNiAlphaProperty@@UUnk_BlendState@@@std@@PEAX@std@@@efd@@@std@@SAXU?$integral_constant@_N$00@1@AEAV?$CustomAllocator@U?$_Tree_node@U?$pair@QEAVNiAlphaProperty@@UUnk_BlendState@@@std@@PEAX@std@@@efd@@PEAU?$pair@QEAVNiAlphaProperty@@UUnk_BlendState@@@1@AEBUpiecewise_construct_t@1@$$QEAV?$tuple@AEBQEAVNiAlphaProperty@@@1@$$QEAV?$tuple@$$V@1@@Z 0x14098fc00 ; near 1.00
 // MS2-PIN: ?construct@?$CustomAllocator@PEAVNiRenderObject@@@efd@@QEAAXPEAPEAVNiRenderObject@@AEBQEAV3@@Z 0x1409961a0 ; near 1.00
 // MS2-PIN: ?construct@?$CustomAllocator@VAlphaObject@@@efd@@QEAAXPEAVAlphaObject@@AEBV3@@Z 0x1409961e0 ; near 0.84
-// MS2-FUNCTIONAL: _Construct1/construct COMDATs differ from exe (null-check, placement-new variant)
 // MS2-PIN: ?MS2HasAnyFlag@NiAVObject@@QEBA_NG@Z 0x14098dba0
 // MS2-PIN: ?IsLessAlpha@AlphaShellComposite@@SA_NAEBVAlphaObject@@0@Z 0x14098f650
 #define NOMINMAX
@@ -227,7 +226,6 @@ void AlphaShellComposite::AddObject(NiAVObject* pObject)
 }
 MS2_REPLACE_METHOD(0x14098EFD0, AlphaShellComposite, AddObject, 66, 0x1DA41B7D);
 
-// MS2-FUNCTIONAL: exe nests the A/B flag tests differently (cl branch layout not reproducible)
 // @0x14098f020
 void AlphaShellComposite::Update(const NiPoint3* pDir)
 {
@@ -238,46 +236,40 @@ void AlphaShellComposite::Update(const NiPoint3* pDir)
     {
         NiRenderObject* pShell = *it;
         fAlpha = fAlpha + FUN_140994320(pShell, pDir);
-        if (DAT_143ae2b34 == 0)
-        {
-            bHasA = bHasA || pShell->GetExtraData(DAT_143ae51d0) != 0;
-            bHasB = bHasB || pShell->GetExtraData(DAT_143ae5190) != 0;
-        }
-        else
+        if (DAT_143ae2b34 != 0)
         {
             bHasA = bHasA || FUN_1415690c0(pShell) != 0;
             bHasB = bHasB || FUN_141568f60(pShell) != 0;
         }
+        else
+        {
+            bHasA = bHasA || pShell->GetExtraData(DAT_143ae51d0) != 0;
+            bHasB = bHasB || pShell->GetExtraData(DAT_143ae5190) != 0;
+        }
     }
     for (efd::vector<AlphaObject>::iterator it = m_aObjects.begin(); it != m_aObjects.end(); ++it)
     {
-        float fDepth = FUN_140994320(it->GetObject(), pDir);
-        it->SetAlpha(fDepth);
-        if (DAT_143ae2b34 == 0)
-        {
-            bHasA = bHasA || it->GetObject()->GetExtraData(DAT_143ae51d0) != 0;
-            bHasB = bHasB || it->GetObject()->GetExtraData(DAT_143ae5190) != 0;
-        }
-        else
+        it->SetAlpha(FUN_140994320(it->GetObject(), pDir));
+        if (DAT_143ae2b34 != 0)
         {
             bHasA = bHasA || FUN_1415690c0(it->GetObject()) != 0;
             bHasB = bHasB || FUN_141568f60(it->GetObject()) != 0;
         }
+        else
+        {
+            bHasA = bHasA || it->GetObject()->GetExtraData(DAT_143ae51d0) != 0;
+            bHasB = bHasB || it->GetObject()->GetExtraData(DAT_143ae5190) != 0;
+        }
     }
     std::sort(m_aObjects.begin(), m_aObjects.end(), IsLessAlpha);
-    if (m_aShells.size() == 0 && m_aObjects.size() != 0)
+    if (m_aShells.size() == 0 && m_aObjects.size() > 0)
         fAlpha = m_aObjects[0].GetAlpha();
     else
         fAlpha = fAlpha / (float)m_aShells.size();
-    if (!bHasA)
-    {
-        if (bHasB)
-            fAlpha = fAlpha - FUN_141b71c50();
-    }
-    else
-    {
+    if (bHasA)
         fAlpha = fAlpha + FUN_141b71c50();
-    }
+    else if (bHasB)
+        fAlpha = fAlpha - FUN_141b71c50();
     SetAlpha(fAlpha);
 }
 

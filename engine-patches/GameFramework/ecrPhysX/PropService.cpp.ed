@@ -56,6 +56,26 @@ eol lf
 
 
 .
+501a
+    // MS2 (0x1420627b0): a prop already queued for removal in its new scene is only re-flagged;
+    // removing it (and deleting it) or queueing it again would leave a stale entry in that queue.
+    PropList& pPendingRemoval = GetSceneData(pPropData->m_newSceneName, true)->m_pPropsPendingRemoval;
+    if (pPendingRemoval.find(pPropData) != pPendingRemoval.end())
+    {
+        pPropData->m_sceneGraphState = PROP_REMOVE_SCENE_GRAPH;
+        return;
+    }
+#line 502 // MS2 __LINE__ (linefix)
+.
+449a
+    // MS2 (0x142062560): entities with the MS2 bool property 0x38141815 set (the cube flag
+    // MS2PropService reads) get no PhysX prop from the scene graph.
+    efd::Bool bMs2Cube = false;
+    pEntity->GetPropertyValue(0x38141815, bMs2Cube);
+    if (bMs2Cube)
+        return;
+
+.
 434a
 #line 435 // MS2 __LINE__ (linefix)
 .

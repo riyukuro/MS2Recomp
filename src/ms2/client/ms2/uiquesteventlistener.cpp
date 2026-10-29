@@ -146,13 +146,16 @@ namespace QuestNavigation {
 struct TraceResult {
     TraceResult();                                                          // 0x140c90420
     ~TraceResult();                                                         // 0x140c90580
-    char m_pad_00[0x18];
+    void* m_pad_00[3];
     int m_questId;                                                          // +0x18
-    char m_pad_1c[0x18];
+    int m_n1c;
+    void* m_pad_20[2];
+    int m_n30;
     float m_fRotation;                                                      // +0x34
     CStringW m_strDistance;                                                 // +0x38
+    void* m_pad_40[2];                                                      // +0x40 MS2Ptr<TraceContext> (the ctor builds it)
 };
-MS2_CHECK_SIZE(TraceResult, 0x40);
+MS2_CHECK_SIZE(TraceResult, 0x50);
 }
 class Unk_QgNavi {
 public:
@@ -238,7 +241,7 @@ CStringW FUN_1416e55b0(int nQuestId);
 CStringW FUN_1416e7fb0(int nChapter);
 CString FUN_140762e90(int nAlliance);
 char FUN_1407640c0(CQuestData* pData);
-char FUN_14074b090(CQuestData* pData);
+bool FUN_14074b090(CQuestData* pData);
 int FUN_14074b050(CQuestData* pData);
 int FUN_14074b790(int nQuestId);
 MS2Ptr<CQuestData> FUN_14074bc40(int nQuestId);
@@ -489,7 +492,6 @@ void UIQuestGuideDialog::vfunc_43()
 MS2_REPLACE_METHOD(0x141aa9f10, UIQuestGuideDialog, vfunc_43, 72, 0x2D9B0606);
 
 // @0x141aa9f60
-// MS2-FUNCTIONAL: cl /Od stack-slot and temporary allocation differ
 void UIQuestGuideDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
@@ -523,7 +525,6 @@ void UIQuestGuideDialog::vfunc_26()
 MS2_REPLACE_METHOD(0x141aaa380, UIQuestGuideDialog, vfunc_26, 189, 0x676C2762);
 
 // @0x141aaa450
-// MS2-FUNCTIONAL: cl /Od stack-slot and temporary allocation differ (frame 0x10 larger in the exe)
 void UIQuestGuideDialog::vfunc_15()
 {
     if (FUN_1422b9e00(FUN_1408e57f0()) != 0x620001d)
@@ -548,8 +549,10 @@ void UIQuestGuideDialog::vfunc_15()
         m_bRebuild = 0;
         FUN_141aaba00();
     }
-    if (m_navigation.get() && m_navigationTick.FUN_140268870(0xf0))
-        m_navigation->FUN_1422bb3c0();
+    if (m_navigation.get() ? true : false) {
+        if (m_navigationTick.FUN_140268870(0xf0))
+            m_navigation->FUN_1422bb3c0();
+    }
 }
 MS2_REPLACE_METHOD(0x141aaa450, UIQuestGuideDialog, vfunc_15, 523, 0xF3015AD5);
 
@@ -665,41 +668,37 @@ int UIQuestGuideDialog::vfunc_52()
 MS2_REPLACE_METHOD(0x141aaafa0, UIQuestGuideDialog, vfunc_52, 11, 0x30025ED0);
 
 // @0x141aaafc0
-// MS2-FUNCTIONAL: the exe calls SnowmanPtr get/-> out of line (0x140e97350/0x140e97360); the shared SnowmanPtr is inline
 int UIQuestGuideDialog::vfunc_53(void* pCfg)
 {
-    if (!UIDialog::vfunc_53(pCfg))
-        return 0;
-    ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30);
-    if (m_alignment.get() && pDialog) {
-        int y = pDialog->FUN_1422c1530();
-        int x = pDialog->FUN_1422c1500();
-        int h = pDialog->FUN_1422c13b0();
-        int w = pDialog->FUN_1422c1340();
-        m_alignment->FUN_141901880(m_30, (float)w, (float)h, (float)x, (float)y);
-        m_alignment->FUN_1419015e0(pCfg);
+    if (UIDialog::vfunc_53(pCfg)) {
+        ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30);
+        if ((m_alignment.get() ? true : false) && pDialog) {
+            float x = (float)pDialog->FUN_1422c1500();
+            float y = (float)pDialog->FUN_1422c1530();
+            m_alignment->FUN_141901880(m_30, (float)pDialog->FUN_1422c1340(), (float)pDialog->FUN_1422c13b0(), x, y);
+            m_alignment->FUN_1419015e0(pCfg);
+        }
+        return 1;
     }
-    return 1;
+    return 0;
 }
 MS2_REPLACE_METHOD(0x141aaafc0, UIQuestGuideDialog, vfunc_53, 439, 0xBC2384AF);
 
 // @0x141aab180
-// MS2-FUNCTIONAL: the exe calls SnowmanPtr get/-> out of line (0x140e97350/0x140e97360); the shared SnowmanPtr is inline
 int UIQuestGuideDialog::vfunc_54(void* pCfg)
 {
-    if (!UIDialog::vfunc_54(pCfg))
-        return 0;
-    ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30);
-    if (m_alignment.get() && pDialog) {
-        if (!m_alignment->FUN_141901660(pCfg)) {
-            int y = pDialog->FUN_1422c1530();
-            int x = pDialog->FUN_1422c1500();
-            int h = pDialog->FUN_1422c13b0();
-            int w = pDialog->FUN_1422c1340();
-            m_alignment->FUN_141901880(m_30, (float)w, (float)h, (float)x, (float)y);
+    if (UIDialog::vfunc_54(pCfg)) {
+        ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30);
+        if ((m_alignment.get() ? true : false) && pDialog) {
+            if (!m_alignment->FUN_141901660(pCfg)) {
+                float x = (float)pDialog->FUN_1422c1500();
+                float y = (float)pDialog->FUN_1422c1530();
+                m_alignment->FUN_141901880(m_30, (float)pDialog->FUN_1422c1340(), (float)pDialog->FUN_1422c13b0(), x, y);
+            }
         }
+        return 1;
     }
-    return 1;
+    return 0;
 }
 MS2_REPLACE_METHOD(0x141aab180, UIQuestGuideDialog, vfunc_54, 450, 0xB9B45FE4);
 
@@ -787,12 +786,9 @@ MS2_REPLACE_METHOD_VIA(0x141aab610, UIQuestGuideDialog, UIQuestEventListener, vf
 // @0x141aab700
 void UIQuestGuideDialog::FUN_141aab700(CInPacket& packet)
 {
-    // MS2-FUNCTIONAL: the exe widens the byte to an int switch temporary; cl folds the cast here
-    switch ((int)packet.ReadUInt8()) {
-    case 1:
+    int nType = packet.ReadUInt8();
+    if (nType == 1)
         FUN_141aadbc0();
-        break;
-    }
 }
 MS2_REPLACE_METHOD(0x141aab700, UIQuestGuideDialog, FUN_141aab700, 77, 0x0446095D);
 
@@ -885,26 +881,25 @@ void UIQuestGuideDialog::FUN_141aabcb0()
 MS2_REPLACE_METHOD(0x141aabcb0, UIQuestGuideDialog, FUN_141aabcb0, 406, 0x27D2F9B2);
 
 // @0x141aabe50
-// MS2-FUNCTIONAL: cl /Od stack-slot and temporary allocation differ
 void UIQuestGuideDialog::FUN_141aabe50(CQuest* pQuest)
 {
     ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30);
-    if (!pDialog)
-        return;
-    ASObj obj(2);
-    obj.FUN_1409c0d20("id", pQuest->FUN_140bfc580());
-    obj.FUN_1407cb9c0("satisfied", pQuest->IsComplete());
-    obj.FUN_1407cb9c0("progress", 1);
-    obj.FUN_1407cba60("icon", FUN_141aad550(pQuest));
-    obj.FUN_1407cbb20("title", FUN_1416e5210(pQuest->FUN_140bfc580(), CStringW(L"s_quest_name_with_level")));
-    int nAlliance = pQuest->GetData()->m_4c;
-    if (nAlliance)
-        obj.FUN_1407cba60("alliance", FUN_140762e90(nAlliance));
-    FUN_141aaca80(obj, pQuest);
-    FUN_141aac3e0(obj, pQuest);
-    FUN_141aac6a0(obj, pQuest);
-    FUN_141aac9b0(obj, pQuest);
-    pDialog->Invoke("updateEntity", obj);
+    if (pDialog) {
+        ASObj obj(2);
+        obj.FUN_1409c0d20("id", pQuest->FUN_140bfc580());
+        obj.FUN_1407cb9c0("satisfied", pQuest->IsComplete());
+        obj.FUN_1407cb9c0("progress", 1);
+        obj.FUN_1407cba60("icon", FUN_141aad550(pQuest));
+        obj.FUN_1407cbb20("title", FUN_1416e5210(pQuest->FUN_140bfc580(), CStringW(L"s_quest_name_with_level")));
+        int nAlliance = pQuest->GetData()->m_4c;
+        if (nAlliance)
+            obj.FUN_1407cba60("alliance", FUN_140762e90(nAlliance));
+        FUN_141aaca80(obj, pQuest);
+        FUN_141aac3e0(obj, pQuest);
+        FUN_141aac6a0(obj, pQuest);
+        FUN_141aac9b0(obj, pQuest);
+        pDialog->Invoke("updateEntity", obj);
+    }
 }
 MS2_REPLACE_METHOD(0x141aabe50, UIQuestGuideDialog, FUN_141aabe50, 817, 0xC4BB9192);
 
@@ -963,29 +958,28 @@ void UIQuestGuideDialog::FUN_141aac3e0(ASObj& obj, CQuest* pQuest)
 MS2_REPLACE_METHOD(0x141aac3e0, UIQuestGuideDialog, FUN_141aac3e0, 694, 0xF5A0FD2E);
 
 // @0x141aac6a0
-// MS2-FUNCTIONAL: cl /Od stack-slot and temporary allocation differ (CMsTime getters)
 void UIQuestGuideDialog::FUN_141aac6a0(ASObj& obj, CQuest* pQuest)
 {
-    if (!pQuest)
+    if (pQuest == NULL)
         return;
-    if (!FUN_14074b090(pQuest->GetData().operator->()))
-        return;
-    CStringW strPeriod;
-    int bExpired = pQuest->FUN_1407447c0();
-    if (!bExpired) {
-        CMsTime end(pQuest->FUN_1407448a0());
-        int nYear = end.GetYear();
-        int nMonth = end.GetMonth();
-        int nDay = end.GetDay();
-        int nHour = end.GetHour();
-        int nMinute = end.GetMinute();
-        strPeriod = FUN_1409e8ca0(CStringW(L"s_quest_end_time"), nYear, nMonth, nDay, nHour, nMinute);
+    if (FUN_14074b090(pQuest->GetData().operator->())) {
+        CStringW strPeriod;
+        int bExpired = pQuest->FUN_1407447c0();
+        if (bExpired) {
+            strPeriod = GetStringCommonByKey(L"s_quest_end_time_expired");
+        }
+        else {
+            CMsTime end(pQuest->FUN_1407448a0());
+            int nYear = end.GetYear();
+            int nMonth = end.GetMonth();
+            int nDay = end.GetDay();
+            int nHour = end.GetHour();
+            int nMinute = end.GetMinute();
+            strPeriod = FUN_1409e8ca0(L"s_quest_end_time", nYear, nMonth, nDay, nHour, nMinute);
+        }
+        obj.FUN_1407cbb20("period", strPeriod);
+        obj.FUN_1407cb9c0("expired", bExpired);
     }
-    else {
-        strPeriod = GetStringCommonByKey(CStringW(L"s_quest_end_time_expired"));
-    }
-    obj.FUN_1407cbb20("period", strPeriod);
-    obj.FUN_1407cb9c0("expired", bExpired);
 }
 MS2_REPLACE_METHOD(0x141aac6a0, UIQuestGuideDialog, FUN_141aac6a0, 768, 0x9644C89D);
 
@@ -1004,19 +998,17 @@ void UIQuestGuideDialog::FUN_141aac9b0(ASObj& obj, CQuest* pQuest)
 MS2_REPLACE_METHOD(0x141aac9b0, UIQuestGuideDialog, FUN_141aac9b0, 195, 0x42F7E3E5);
 
 // @0x141aaca80
-// MS2-FUNCTIONAL: cl /Od stack-slot and temporary allocation differ
 void UIQuestGuideDialog::FUN_141aaca80(ASObj& obj, CQuest* pQuest)
 {
-    if (!pQuest)
+    if (pQuest == NULL)
         return;
     int nMapId = FUN_1403ed2d0()->FUN_141bd3060();
     ASArray buttons(2);
-    CQuestCommon* pCommon = pQuest;
-    if (pCommon->FUN_1407441f0(nMapId))
+    if (pQuest->FUN_1407441f0(nMapId))
         buttons.FUN_1422bbf70("gotoNpc");
-    if (pCommon->FUN_1407443e0(nMapId))
+    if (pQuest->FUN_1407443e0(nMapId))
         buttons.FUN_1422bbf70("gotoDungeon");
-    if (pCommon->FUN_140744670(nMapId))
+    if (pQuest->FUN_140744670(nMapId))
         buttons.FUN_1422bbf70("gotoReEntry");
     if (pQuest->FUN_140d738d0() || pQuest->FUN_140d738c0())
         buttons.FUN_1422bbf70("gotoDispatch");
@@ -1027,8 +1019,7 @@ void UIQuestGuideDialog::FUN_141aaca80(ASObj& obj, CQuest* pQuest)
         Unk_BattleRoomPtr spRoom = FUN_14031c2a0()->FUN_1403206b0(spData->m_30c.m_roomId);
         if (spRoom.FUN_140e36ca0())
             return;
-        int nDungeonId = FUN_1402178b0(spRoom->m_1c);
-        buttons.FUN_1422bbf70(FUN_14162ac00(FUN_1409670d0(), nDungeonId) ? "partyFindCancel" : "partyFind");
+        buttons.FUN_1422bbf70(FUN_14162ac00(FUN_1409670d0(), FUN_1402178b0(spRoom->m_1c)) ? "partyFindCancel" : "partyFind");
     }
     obj.FUN_1409eb1d0("gotoButton", buttons);
 }
@@ -1074,7 +1065,6 @@ void UIQuestGuideDialog::FUN_141aacf20()
 MS2_REPLACE_METHOD(0x141aacf20, UIQuestGuideDialog, FUN_141aacf20, 21, 0x0860DB21);
 
 // @0x141aacf40
-// MS2-FUNCTIONAL: cl /Od stack-slot and temporary allocation differ (switch temporaries)
 CStringW UIQuestGuideDialog::FUN_141aacf40(int nQuestId)
 {
     MS2Ptr<CQuestData> spData = FUN_14074bc40(nQuestId);
@@ -1086,12 +1076,13 @@ CStringW UIQuestGuideDialog::FUN_141aacf40(int nQuestId)
         case 0: strKind = GetStringCommon(0x5dd); break;
         case 1: strKind = GetStringCommon(0x5de); break;
         case 2: strKind = GetStringCommon(0x5df); break;
-        case 6: strKind = GetStringCommonByKey(CStringW(L"s_quest_guild_quest")); break;
-        case 8: strKind = GetStringCommonByKey(CStringW(L"s_quest_field_quest")); break;
-        case 9: strKind = GetStringCommonByKey(CStringW(L"s_quest_alliance_quest")); break;
+        case 6: strKind = GetStringCommonByKey(L"s_quest_guild_quest"); break;
+        case 8: strKind = GetStringCommonByKey(L"s_quest_field_quest"); break;
+        case 9: strKind = GetStringCommonByKey(L"s_quest_alliance_quest");
         }
     }
-    return FUN_140656190(L"[{0}] {1}", strKind, FUN_1416e7fb0(spData->m_28));
+    CStringW strTitle = FUN_1416e7fb0(spData->m_28);
+    return FUN_140656190(L"[{0}] {1}", strKind, strTitle);
 }
 MS2_REPLACE_METHOD(0x141aacf40, UIQuestGuideDialog, FUN_141aacf40, 909, 0x310FE535);
 
@@ -1138,12 +1129,11 @@ CString UIQuestGuideDialog::FUN_141aad4d0(int nChapter, int nQuestId)
 MS2_REPLACE_METHOD(0x141aad4d0, UIQuestGuideDialog, FUN_141aad4d0, 121, 0xE571E032);
 
 // @0x141aad550
-// MS2-FUNCTIONAL: the exe constructs the four CString temporaries in a different order/slots
 CString UIQuestGuideDialog::FUN_141aad550(CQuest* pQuest)
 {
-    if (!pQuest->IsComplete())
-        return "progress";
-    return FUN_141082090(pQuest->FUN_140bfc580(), CString("epic"), CString("satisfied"), CString("repeat"), CString("event"));
+    if (pQuest->IsComplete())
+        return FUN_141082090(pQuest->FUN_140bfc580(), "epic", "satisfied", "repeat", "event");
+    return "progress";
 }
 MS2_REPLACE_METHOD(0x141aad550, UIQuestGuideDialog, FUN_141aad550, 331, 0x02400718);
 
@@ -1207,7 +1197,6 @@ void UIQuestGuideDialog::FUN_141aadd10(int* pnWidth, int* pnHeight)
 MS2_REPLACE_METHOD(0x141aadd10, UIQuestGuideDialog, FUN_141aadd10, 148, 0xF2281377);
 
 // @0x141aaddb0
-// MS2-FUNCTIONAL: cl /Od stack-slot and temporary allocation differ (loop index slots)
 bool UIQuestGuideDialog::FUN_141aaddb0(ASObj& obj)
 {
     if (!m_30)
@@ -1228,12 +1217,8 @@ bool UIQuestGuideDialog::FUN_141aaddb0(ASObj& obj)
         for (size_t j = 0; j < spData->m_conditions.GetCount(); ++j) {
             MS2Ptr<CConditionCommonData> spCond(spData->m_conditions[j]);
             int bSatisfied = 0;
-            if (spQuest.get()) {
-                if (spQuest->IsRewarded() || spQuest->GetProgress((int)j) >= spCond->m_nGoal)
-                    bSatisfied = 1;
-                else
-                    bSatisfied = 0;
-            }
+            if (spQuest.get())
+                bSatisfied = (spQuest->IsRewarded() || spQuest->GetProgress((int)j) >= spCond->m_nGoal) ? 1 : 0;
             ASObj entry(2);
             entry.FUN_1407cbb20("text", FUN_1416e57d0(nQuestId, (int)j));
             entry.FUN_1407cb9c0("satisfied", bSatisfied);
@@ -1308,7 +1293,6 @@ void UIQuestGuideDialog::FUN_141aae5a0()
 MS2_REPLACE_METHOD(0x141aae5a0, UIQuestGuideDialog, FUN_141aae5a0, 293, 0xF16BBB76);
 
 // @0x141aae6d0
-// MS2-FUNCTIONAL: cl /Od stack-slot and temporary allocation differ (loop index slots)
 int UIQuestGuideDialog::FUN_141aae6d0()
 {
     if (!FUN_14036d570(FUN_140166410(), 0xd0))
@@ -1328,9 +1312,11 @@ int UIQuestGuideDialog::FUN_141aae6d0()
     __int64 nLimit = FUN_140869440() + 0x14;
     for (size_t i = 0; i < quests.GetCount(); ++i) {
         __int64 nTime = FUN_141aa4980(quests[i].operator->());
-        if (nTime <= nLimit && nBestTime < nTime) {
-            nBest = quests[i]->FUN_140bfc580();
+        if (nTime > nLimit)
+            continue;
+        if (nTime > nBestTime) {
             nBestTime = nTime;
+            nBest = quests[i]->FUN_140bfc580();
         }
     }
     return FUN_1416d2600(FUN_140764020(), nBest, 1);
@@ -1401,15 +1387,17 @@ CStringW UIQuestGuideDialog::FUN_141aaedd0(int nQuestId)
 MS2_REPLACE_METHOD(0x141aaedd0, UIQuestGuideDialog, FUN_141aaedd0, 883, 0xB5583F38);
 
 // @0x141aaf150
-// MS2-FUNCTIONAL: cl /Od stack-slot and temporary allocation differ (TraceResult / ASObj temporaries)
 void UIQuestGuideDialog::FUN_141aaf150(const Scaleform::GFx::FunctionHandler::Params& params)
 {
-    if (m_30 == NULL || !params.ArgCount)
+    if (m_30 == NULL)
+        return;
+    if (params.ArgCount < 1)
         return;
     ASData data;
     if (!data.FUN_1422b9620(params.pArgs, params.ArgCount))
         return;
-    if (!FUN_141bd0cc0(FUN_1403ed2d0()))
+    PCBase* pActor = FUN_141bd0cc0(FUN_1403ed2d0());
+    if (pActor == NULL)
         return;
     Unk_McMapPtr spMap = FUN_1403ed2d0()->FUN_141bd30a0();
     if (spMap.FUN_1408851f0())
@@ -1417,15 +1405,15 @@ void UIQuestGuideDialog::FUN_141aaf150(const Scaleform::GFx::FunctionHandler::Pa
     QuestNavigation::TraceResult result;
     result.m_questId = data.FUN_1422b8b10();
     ASObj obj(2);
-    if (FUN_140e7c990()->FUN_140c9a4c0(result) == 1) {
-        obj.FUN_1407cb9c0("tracing", 0);
-        obj.FUN_1409c4a30("rotation", 0);
-        obj.FUN_1407cbb20("distance", GetStringCommonByKey(CStringW(L"s_quest_navigation_none")));
-    }
-    else {
+    if (FUN_140e7c990()->FUN_140c9a4c0(result) != 1) {
         obj.FUN_1407cb9c0("tracing", 1);
         obj.FUN_1409c4a30("rotation", result.m_fRotation + spMap.FUN_140885340()->m_fRotation);
         obj.FUN_1407cbb20("distance", result.m_strDistance);
+    }
+    else {
+        obj.FUN_1407cb9c0("tracing", 0);
+        obj.FUN_1409c4a30("rotation", 0);
+        obj.FUN_1407cbb20("distance", GetStringCommonByKey(L"s_quest_navigation_none"));
     }
     *params.pRetVal = obj.FUN_1422bb870();
 }

@@ -16,6 +16,9 @@ bool (*g_pfnMS2SceneGraphCacheFilter)(const SceneGraphCacheResponse*) = NULL;  /
 685c
 #line 698  // MS2: 3 more MS2 lines above
 .
+488c
+    EE_UNUSED_ARG(tags); if (!pEntity) return;   // MS2: game 0x14227e550 ignores a null entity
+.
 398c
 #line 408  // MS2: 9 more lines of MS2 source above this point in the exe build (EE_LOG __LINE__s)
 .
@@ -30,7 +33,4 @@ EE_MS2_INSERT_NOHINT(egmAnimation::MS2AnimationServiceAccess::Tree, egmAnimation
 .
 22c
 namespace egmAnimation { struct MS2AnimationServiceAccess { typedef AnimationService::AssetMap::_Mybase Tree; }; } /* MS2: see utf8string.inl */
-.
-13c
-#define MS2_NIACTORMANAGER_PENDING_LOOKUP  // MS2: this TU sees the game's NiActorManager::GetSequenceData (NiActorManager.inl)
 .

@@ -50,7 +50,7 @@ void* FUN_1422b0230(void* p);
 void* FUN_140aadf80();
 void* FUN_14209c720(void* p);
 void FUN_1422ec700(void* p, void* q);
-void FUN_14177dbe0(void* pMgr, int nChannel, unsigned char bVolume);
+void FUN_14177dbe0(void* pMgr, int nChannel, unsigned int bVolume);
 void FUN_14177dc80(void* pMgr, int nValue);
 void FUN_14177af40(void* pMgr, FMOD::EventSystem* pEvents, FMOD::System* pSystem);
 void FUN_14177bf20(void* pMgr);
@@ -69,9 +69,9 @@ float FUN_141473230(void* pTime);   // frame delta (s), cvtsd2ss xmm0
 double FUN_141473260(void* pTime);
 void* FUN_140994450();
 void* FUN_14098d8d0(const char* pClass, void* p);
-void FUN_1411d7c70(void* pObj, bool (*pfn)(char, void*), CSoundService* pOwner);
+void FUN_1411d7c70(void* pObj, bool (*pfn)(bool, void*), CSoundService* pOwner);
 void FUN_1411d7c10(void* pObj, bool (*pfn)(void*), CSoundService* pOwner);
-void FUN_1414fe370(void* pObj, bool (*pfn)(char, void*));
+void FUN_1414fe370(void* pObj, bool (*pfn)(bool, void*));
 void FUN_1414fe240(void* pObj, bool (*pfn)(void*));
 class WorldService;
 WorldService* FUN_1403ed2d0();
@@ -123,7 +123,7 @@ struct Unk_EventLoadInfo
     unsigned m_uSize;
     unsigned m_uPad;
     char* m_pKey;
-    unsigned m_u10;
+    float m_f10;
     unsigned m_u14;
     unsigned m_u18;
     unsigned m_u1c;
@@ -155,7 +155,7 @@ Unk_EventLoadInfo::Unk_EventLoadInfo()
 {
     m_uSize = 0;
     m_pKey = 0;
-    m_u10 = 0;
+    m_f10 = 0.0f;
     m_u14 = 0;
     m_u18 = 0;
     m_u1c = 0;
@@ -183,33 +183,35 @@ FMOD_RESULT FUN_1417b4af0(FMOD::EventSystem** ppSystem)
 // @0x1417b0e10
 const char* FUN_1417b0e10(FMOD_RESULT nResult)
 {
-    const char* pszText;
     switch ((int)nResult)
     {
 #include "soundservice_errors.inc"
     }
-    return pszText;
 }
 
 // false (and a log line) when the FMOD call failed
 // @0x1417b1430
-bool FUN_1417b1430(FMOD_RESULT nResult)
+int FUN_1417b1430(FMOD_RESULT nResult)
 {
-    if (nResult == FMOD_OK)
-        return true;
-    if (GetLogString() != 0)
+    if (nResult != FMOD_OK)
     {
-        const char* pszText = FUN_1417b0e10(nResult);
-        Unk_SndLog2(GetLogString(), 1, 0x12f, L"FMOD error! ({0}) {1}", nResult, pszText);
+        if (GetLogString() != 0)
+        {
+            const char* pszText = FUN_1417b0e10(nResult);
+            Unk_SndLog2(GetLogString(), 1, 0x12f, L"FMOD error! ({0}) {1}", nResult, pszText);
+        }
+        return 0;
     }
-    return false;
+    return 1;
 }
 
 // FMOD_SYSTEM_CALLBACK_DEVICELISTCHANGED: remember that the device list changed
 // @0x1417b14a0
 FMOD_RESULT F_CALLBACK FUN_1417b14a0(FMOD_SYSTEM* pSystem, FMOD_SYSTEM_CALLBACKTYPE nType, void* pData1, void* pData2)
 {
-    if (nType == FMOD_SYSTEM_CALLBACKTYPE_DEVICELISTCHANGED)
+    switch (nType)
+    {
+    case FMOD_SYSTEM_CALLBACKTYPE_DEVICELISTCHANGED:
     {
         int nDrivers = 0;
         FMOD_System_GetNumDrivers(pSystem, &nDrivers);
@@ -217,6 +219,8 @@ FMOD_RESULT F_CALLBACK FUN_1417b14a0(FMOD_SYSTEM* pSystem, FMOD_SYSTEM_CALLBACKT
             FUN_1417b4a40(1);
         if (GetLogString() != 0)
             FUN_1401859c0(GetLogString(), 0xc, 0x12f, L"FMOD_SYSTEM_CALLBACKTYPE_DEVICELISTCHANGED");
+        break;
+    }
     }
     return FMOD_OK;
 }
@@ -261,11 +265,8 @@ const char* FUN_1417b7270(const char* pszText, const char* pszFind)
 #ifndef MS2_HOOK_DLL
 // @0x1417ae520
 CSoundService::CSoundService()
+    : m_pSystem(0), m_pEventSystem(0), m_bLoaded(false), m_fVolume(1.0f)
 {
-    m_pSystem = 0;
-    m_pEventSystem = 0;
-    m_bLoaded = false;
-    m_fVolume = 1.0f;
     m_vecBanks.clear();
     m_mapTags.clear();
     m_pNetStream = 0;
@@ -333,9 +334,13 @@ void FUN_1417ae7c0(FMOD_RESULT nResult)
 // @0x1417ae840
 void CSoundService::FUN_1417ae840(int nFlag)
 {
-    if (nFlag == 0)
+    if (nFlag != 0)
     {
-        unsigned char bVolume = *(unsigned char*)FUN_140d13c70(FUN_1409a8b10());
+        FUN_14177dc80(FUN_140d13c40(), 1);
+    }
+    else
+    {
+        unsigned int bVolume = *(unsigned char*)FUN_140d13c70(FUN_1409a8b10());
         FUN_14177dbe0(FUN_140d13c40(), 0, bVolume);
         FUN_14177dbe0(FUN_140d13c40(), 9, bVolume);
         FUN_14177dbe0(FUN_140d13c40(), 1, bVolume);
@@ -348,65 +353,61 @@ void CSoundService::FUN_1417ae840(int nFlag)
         FUN_14177dbe0(FUN_140d13c40(), 6, bVolume);
         FUN_14177dbe0(FUN_140d13c40(), 10, bVolume);
     }
-    else
-    {
-        FUN_14177dc80(FUN_140d13c40(), 1);
-    }
 }
 
 // @0x1417ae990
-bool CSoundService::FUN_1417ae990()
+int CSoundService::FUN_1417ae990()
 {
     if (FUN_14025e7a0() != 0)
     {
         if (FUN_1422b0230(FUN_14025e7a0()) != 0)
         {
-            void* pValue = FUN_14209c720(FUN_140aadf80());
-            FUN_1422ec700(FUN_1422b0230(FUN_14025e7a0()), pValue);
+            FUN_1422ec700(FUN_1422b0230(FUN_14025e7a0()), FUN_14209c720(FUN_140aadf80()));
         }
     }
     if (GetSystem() != 0)
         GetSystem()->setCallback(FUN_1417b14a0);
-    int nOk = FUN_1417aea70();
-    if (nOk != 0)
+    if (FUN_1417aea70() != 0)
     {
-        FMOD::System* pSystem = GetSystem();
-        FMOD::EventSystem* pEvents = GetEventSystem();
-        FUN_14177af40(FUN_140d13c40(), pEvents, pSystem);
+        FUN_14177af40(FUN_140d13c40(), GetEventSystem(), GetSystem());
+        return 1;
     }
-    return nOk != 0;
+    return 0;
 }
 
 // @0x1417aea70
 int CSoundService::FUN_1417aea70()
 {
-    if (FUN_1417aec60() == 0)
-        return 0;
-    const char* pszLanguage = "Korea";
-    switch (FUN_1406516c0())
+    if (FUN_1417aec60() != 0)
     {
-    case 1:
-        pszLanguage = "jp";
-        break;
-    case 2:
-        pszLanguage = "en";
-        break;
-    case 3:
-        pszLanguage = "cn";
-        break;
-    default:
-        pszLanguage = "Korea";
-        break;
+        const char* pszLanguage = "Korea";
+        switch (FUN_1406516c0())
+        {
+        case 1:
+            pszLanguage = "jp";
+            break;
+        case 2:
+            pszLanguage = "en";
+            break;
+        case 3:
+            pszLanguage = "cn";
+            break;
+        default:
+            pszLanguage = "Korea";
+            break;
+        }
+        return FUN_1417aee20(FUN_1401d31f0()->m_strTarget, pszLanguage);
     }
-    return FUN_1417aee20(FUN_1401d31f0()->m_strTarget, pszLanguage);
+    return 0;
 }
 
 // @0x1417aeb40
 int CSoundService::FUN_1417aeb40()
 {
-    if (FUN_1417b4af0(&m_pEventSystem) != FMOD_OK)
+    FMOD_RESULT nResult = FUN_1417b4af0(&m_pEventSystem);
+    if (nResult != FMOD_OK)
         return 0;
-    FMOD_RESULT nResult = m_pEventSystem->getSystemObject(&m_pSystem);
+    nResult = m_pEventSystem->getSystemObject(&m_pSystem);
     if (nResult != FMOD_OK)
     {
         m_pEventSystem->release();
@@ -437,30 +438,40 @@ int CSoundService::FUN_1417aeb40()
 // @0x1417aec60
 int CSoundService::FUN_1417aec60()
 {
-    FMOD_SPEAKERMODE nSpeakerMode = FMOD_SPEAKERMODE_RAW;
-    unsigned uCaps = 0;
+    FMOD_RESULT nResult = FMOD_OK;
+    FMOD_SPEAKERMODE nSpeakerMode;
+    unsigned uCaps;
     char szDriver[0x100];
     memset(&nSpeakerMode, 0, 4);
     memset(&uCaps, 0, 4);
     if (m_pSystem != 0)
     {
-        FMOD_RESULT nResult = m_pSystem->getDriverCaps(0, &uCaps, 0, &nSpeakerMode);
+        nResult = m_pSystem->getDriverCaps(0, &uCaps, 0, &nSpeakerMode);
         if (nResult == FMOD_OK)
         {
-            if (m_pSystem->setSpeakerMode(nSpeakerMode) != FMOD_OK)
+            nResult = m_pSystem->setSpeakerMode(nSpeakerMode);
+            if (nResult != FMOD_OK)
                 return 0;
         }
         else
         {
-            if (m_pSystem->setSpeakerMode(FMOD_SPEAKERMODE_STEREO) != FMOD_OK)
+            nResult = m_pSystem->setSpeakerMode(FMOD_SPEAKERMODE_STEREO);
+            if (nResult != FMOD_OK)
                 return 0;
         }
-        if ((uCaps & FMOD_CAPS_HARDWARE_EMULATED) != 0 && m_pSystem->setDSPBufferSize(0x400, 10) != FMOD_OK)
-            return 0;
+        if ((uCaps & FMOD_CAPS_HARDWARE_EMULATED) != 0)
+        {
+            nResult = m_pSystem->setDSPBufferSize(0x400, 10);
+            if (nResult != FMOD_OK)
+                return 0;
+        }
         nResult = m_pSystem->getDriverInfo(0, szDriver, 0x100, 0);
-        if (nResult == FMOD_OK && FUN_1417b7270(szDriver, "SigmaTel") != 0 &&
-            m_pSystem->setSoftwareFormat(48000, FMOD_SOUND_FORMAT_PCMFLOAT, 0, 0, FMOD_DSP_RESAMPLER_LINEAR) != FMOD_OK)
-            return 0;
+        if (nResult == FMOD_OK && FUN_1417b7270(szDriver, "SigmaTel") != 0)
+        {
+            nResult = m_pSystem->setSoftwareFormat(48000, FMOD_SOUND_FORMAT_PCMFLOAT, 0, 0, FMOD_DSP_RESAMPLER_LINEAR);
+            if (nResult != FMOD_OK)
+                return 0;
+        }
     }
     return 1;
 }
@@ -468,66 +479,64 @@ int CSoundService::FUN_1417aec60()
 // @0x1417aee20
 int CSoundService::FUN_1417aee20(CStringA strMediaPath, const char* szLanguage)
 {
-    if (!m_bLoaded && m_pSystem != 0 && m_pEventSystem != 0)
-    {
-        FMOD_RESULT nResult = m_pSystem->set3DSettings(1.0f, 1.0f, 1.0f);
-        if (nResult != FMOD_OK)
-            return 0;
-        nResult = m_pEventSystem->init(100, 0, 0, 0);
-        if (nResult != FMOD_OK)
-        {
-            if (nResult == FMOD_ERR_OUTPUT_CREATEBUFFER)
-            {
-                nResult = m_pSystem->setSpeakerMode(FMOD_SPEAKERMODE_STEREO);
-                if (nResult != FMOD_OK)
-                    return 0;
-                nResult = m_pEventSystem->init(100, 0, 0, 0);
-                if (nResult != FMOD_OK)
-                    return 0;
-            }
-            else
-            {
-                m_pSystem->setOutput(FMOD_OUTPUTTYPE_NOSOUND);
-                nResult = m_pEventSystem->init(100, 2, 0, 0);
-                if (nResult != FMOD_OK)
-                    return 0;
-            }
-        }
-        const char* pszPath = strMediaPath;
-        nResult = m_pEventSystem->setMediaPath(pszPath);
-        if (nResult == FMOD_OK)
-        {
-            nResult = m_pEventSystem->setLanguage(szLanguage);
-            if (nResult == FMOD_OK)
-            {
-                Unk_EventLoadInfo kInfo;
-                memset(&kInfo, 0, 0x20);
-                kInfo.m_uSize = 0x20;
-                kInfo.m_pKey = 0;
-                nResult = m_pEventSystem->load("MS2Sound.fev", (FMOD_EVENT_LOADINFO*)&kInfo, 0);
-                if (nResult == FMOD_OK)
-                {
-                    m_bLoaded = true;
-                    FUN_1417aff20(strMediaPath);
-                    if (DAT_1439f86ac != 0)
-                    {
-                        nResult = m_pSystem->setStreamBufferSize(0x80000, FMOD_TIMEUNIT_RAWBYTES);
-                        if (FUN_1417b1430(nResult) == 0)
-                            DAT_1439f86ac = 0;
-                    }
-                    return 1;
-                }
-                const char* pszError = FUN_1417b0e10(nResult);
-                FUN_141b6fc50(CStringA(pszError), CStringA("FMOD Error"), 0);
-                return 0;
-            }
-            const char* pszError = FUN_1417b0e10(nResult);
-            FUN_141b6fc50(CStringA(pszError), CStringA("FMOD Error"), 0);
-            return 0;
-        }
-        const char* pszError = FUN_1417b0e10(nResult);
-        FUN_141b6fc50(CStringA(pszError), CStringA("FMOD Error"), 0);
+    if (m_bLoaded || m_pSystem == 0 || m_pEventSystem == 0)
+        return 1;
+    float fDistanceFactor = 1.0f;
+    FMOD_RESULT nResult = m_pSystem->set3DSettings(1.0f, fDistanceFactor, 1.0f);
+    if (nResult != FMOD_OK)
         return 0;
+    nResult = m_pEventSystem->init(100, 0, 0, 0);
+    if (nResult != FMOD_OK)
+    {
+        if (nResult == FMOD_ERR_OUTPUT_CREATEBUFFER)
+        {
+            nResult = m_pSystem->setSpeakerMode(FMOD_SPEAKERMODE_STEREO);
+            if (nResult != FMOD_OK)
+                return 0;
+            nResult = m_pEventSystem->init(100, 0, 0, 0);
+            if (nResult != FMOD_OK)
+                return 0;
+        }
+        else if (FMOD_ERR_OUTPUT_INIT)     // sic: the exe tests the constant (always true), not nResult
+        {
+            m_pSystem->setOutput(FMOD_OUTPUTTYPE_NOSOUND);
+            nResult = m_pEventSystem->init(100, 2, 0, 0);
+            if (nResult != FMOD_OK)
+                return 0;
+        }
+    }
+    nResult = m_pEventSystem->setMediaPath(strMediaPath);
+    if (nResult != FMOD_OK)
+    {
+        const char* pszError = FUN_1417b0e10(nResult);
+        FUN_141b6fc50(pszError, "FMOD Error", 0);
+        return 0;
+    }
+    nResult = m_pEventSystem->setLanguage(szLanguage);
+    if (nResult != FMOD_OK)
+    {
+        const char* pszError = FUN_1417b0e10(nResult);
+        FUN_141b6fc50(pszError, "FMOD Error", 0);
+        return 0;
+    }
+    Unk_EventLoadInfo kInfo;
+    memset(&kInfo, 0, 0x20);
+    kInfo.m_uSize = 0x20;
+    kInfo.m_pKey = 0;
+    nResult = m_pEventSystem->load("MS2Sound.fev", (FMOD_EVENT_LOADINFO*)&kInfo, 0);
+    if (nResult != FMOD_OK)
+    {
+        const char* pszError = FUN_1417b0e10(nResult);
+        FUN_141b6fc50(pszError, "FMOD Error", 0);
+        return 0;
+    }
+    m_bLoaded = true;
+    FUN_1417aff20(strMediaPath);
+    if (DAT_1439f86ac != 0)
+    {
+        nResult = m_pSystem->setStreamBufferSize(0x80000, FMOD_TIMEUNIT_RAWBYTES);
+        if (FUN_1417b1430(nResult) == 0)
+            DAT_1439f86ac = 0;
     }
     return 1;
 }
@@ -551,8 +560,12 @@ void CSoundService::FUN_1417af340()
         m_pEventSystem->unload();
     for (size_t i = 0; i < m_vecBanks.size(); i++)
     {
-        if (m_vecBanks[i] != 0)
-            m_vecBanks[i]->release();
+        FMOD::Sound* pBank = m_vecBanks[i];
+        if (pBank != 0)
+        {
+            pBank->release();
+            pBank = 0;
+        }
     }
     m_vecBanks.clear();
     if (m_pEventSystem != 0)
@@ -577,8 +590,7 @@ void CSoundService::FUN_1417af4f0(CStringA strUrl)
     {
         if (!strUrl.IsEmpty())
         {
-            const char* pszUrl = strUrl;
-            FMOD_RESULT nResult = m_pSystem->createSound(pszUrl, 0x100a8, 0, &m_pNetSound);
+            FMOD_RESULT nResult = m_pSystem->createSound(strUrl, 0x100a8, 0, &m_pNetSound);
             if (FUN_1417b1430(nResult) != 0)
                 m_pNetStream = new CNetStreamSound;
         }
@@ -617,12 +629,13 @@ void FUN_1417af6e0()
         FUN_140c9cb10()->FUN_1417af340();
 }
 
-bool FUN_1417af740(char bFlag, void* pData);
+bool FUN_1417af740(bool bFlag, void* pData);
 #ifndef MS2_HOOK_DLL
 // @0x1417af740
-bool FUN_1417af740(char bFlag, void* pData)
+bool FUN_1417af740(bool bFlag, void* pData)
 {
-    if (pData != 0 && bFlag == 0)
+    void* pService = pData;
+    if (pService != 0 && !bFlag)
         s_nDeviceFlag = 0;
     return true;
 }
@@ -677,7 +690,7 @@ void CSoundService::FUN_1417afad0(CStringW strMessage)
 }
 
 // @0x1417afb20
-void FUN_1417afb20()
+void FUN_1417afb20(void* pParam)
 {
     FUN_1417af6e0();
     FUN_1417b4a40(1);
@@ -852,25 +865,22 @@ void CSoundService::FUN_1417b0560(const CStringA& strName, FMOD::Sound** ppSound
     if (nSub == -1)
     {
         *ppSound = 0;
+        return;
     }
-    else if (nBank < m_vecBanks.size())
-    {
-        FMOD::Sound* pBank = m_vecBanks[nBank];
-        if (pBank == 0)
-        {
-            *ppSound = 0;
-        }
-        else
-        {
-            FMOD_RESULT nResult = pBank->getSubSound(nSub, ppSound);
-            if (FUN_1417b1430(nResult) == 0)
-                *ppSound = 0;
-        }
-    }
-    else
+    if (m_vecBanks.size() <= nBank)
     {
         *ppSound = 0;
+        return;
     }
+    FMOD::Sound* pBank = m_vecBanks[nBank];
+    if (pBank == 0)
+    {
+        *ppSound = 0;
+        return;
+    }
+    FMOD_RESULT nResult = pBank->getSubSound(nSub, ppSound);
+    if (FUN_1417b1430(nResult) == 0)
+        *ppSound = 0;
 }
 
 // @0x1417b0650
@@ -1080,23 +1090,25 @@ void CNetStreamSound::FUN_1417b4f40(float fVolume)
 // @0x1417b5000
 void CNetStreamSound::FUN_1417b5000(CSoundService* pService)
 {
+    FMOD_RESULT nResult;
     if (m_pChannel != 0)
     {
-        FMOD_RESULT nResult = m_pChannel->stop();
+        nResult = m_pChannel->stop();
         FUN_1417b1430(nResult);
     }
     if (1 < m_nState)
     {
-        while (true)
+        do
         {
             FMOD::Sound* pSound = pService->GetNetSound();
             FMOD_OPENSTATE nState;
-            FMOD_RESULT nResult = pSound->getOpenState(&nState, 0, 0, 0);
-            int nOk = FUN_1417b1430(nResult);
-            if (nOk == 0 || nState == FMOD_OPENSTATE_READY)
+            nResult = pSound->getOpenState(&nState, 0, 0, 0);
+            if (FUN_1417b1430(nResult) == 0)
+                break;
+            if (nState == FMOD_OPENSTATE_READY)
                 break;
             Sleep(10);
-        }
+        } while (true);
     }
     m_nState = 1;
 }

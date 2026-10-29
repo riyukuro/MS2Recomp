@@ -68,8 +68,7 @@ UIRecallScrollNotifyDialog::UIRecallScrollNotifyDialog()
     }
 }
 
-// @0x14129cdc0
-UIRecallScrollNotifyDialog::~UIRecallScrollNotifyDialog() {}
+// @0x14129cdc0 implicit ~UIRecallScrollNotifyDialog
 
 // @0x14129cca0
 // MS2-FUNCTIONAL: pointer assignment glue, emitted by the compiler's own MS2Ptr operator=

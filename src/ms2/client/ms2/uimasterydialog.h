@@ -67,7 +67,7 @@ public:
     virtual void OnCastingCancelled();                                                              // o178 1 0x140eafa10
 
     // ---- non-virtual members, sorted by address ----
-    void SetMainTab(int nMainTab);  // 0x140eafdb0
+    void SetMainTab(int nMainTab, int);  // 0x140eafdb0
     void FUN_140eafde0();  // 0x140eafde0
     void FUN_140eb0540();  // 0x140eb0540
     void FUN_140eb05b0(int nType, bool bKeep);  // 0x140eb05b0
@@ -104,8 +104,8 @@ public:
     int FUN_140eb6d40(int nKind, int nId);  // 0x140eb6d40
     CStringW FUN_140eb71a0(MS2Ptr<Unk_MRec> spRec);  // 0x140eb71a0
     int FUN_140eb79b0(int nType, unsigned int nNeedMastery, ItemEntity* pEntry);  // 0x140eb79b0
-    unsigned __int64 FUN_140eb7b40(int nType, int nNeedMastery, unsigned int nCount);  // 0x140eb7b40
-    unsigned __int64 FUN_140eb7bb0(int nType);  // 0x140eb7bb0
+    unsigned int FUN_140eb7b40(int nType, int nNeedMastery, unsigned int nCount);  // 0x140eb7b40
+    unsigned int FUN_140eb7bb0(int nType);  // 0x140eb7bb0
     void FUN_140eb7c00(int nType);  // 0x140eb7c00
     CStringW FUN_140eb7c50(int nType);  // 0x140eb7c50
     CStringW FUN_140eb7d40();  // 0x140eb7d40

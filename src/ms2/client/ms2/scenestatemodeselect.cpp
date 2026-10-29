@@ -7,6 +7,7 @@
 #include "scenestatemodeselect.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include <NiColor.h>
 #include "ms2/placeholder/cinpacket.h"
 #include <efd/Helpers.h>
 
@@ -17,11 +18,7 @@ void FUN_141bbae40(void*, IWorldServiceCallback*);
 void FUN_141bbae80(void*, IWorldServiceCallback*);
 void FUN_141bbbe40(void*, int, int, int);
 void FUN_141adc5d0(void*, int);
-class Unk_143a09680 { public: void* m_a; void* m_b; };
-class Unk_1409879 : public Unk_143a09680 { };
-Unk_1409879 FUN_140987930(const void*);
-extern char DAT_143a09680[];
-void FUN_141489ff0(void*, Unk_143a09680);
+void FUN_141489ff0(void*, NiColorA);                    // the app's clear colour
 extern void* DAT_143ab8f48;
 void* FUN_140aae430();
 void* FUN_1409478c0();
@@ -50,13 +47,12 @@ CSceneStateModeSelect::~CSceneStateModeSelect()
 }
 
 // @0x140aae090
-// MS2-FUNCTIONAL: the exe keeps the 24-byte FUN_140987930 result slot pointer in a stack temp before the call (same as CSceneStateLogin::OnEnter)
 void CSceneStateModeSelect::OnEnter(int nPrevState)
 {
     CSceneStateBase::OnEnter(nPrevState);
     FUN_140930150(1);
     FUN_141bbae40(FUN_1403ed2d0(), this);
-    FUN_141489ff0(FUN_140aae430(), static_cast<const Unk_143a09680&>(FUN_140987930(DAT_143a09680)));
+    FUN_141489ff0(FUN_140aae430(), efd::ColorA::BLACK);
     FUN_141bbbe40(FUN_1403ed2d0(), 0x3e9, 1, 0);
 }
 

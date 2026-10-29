@@ -2,8 +2,6 @@
 // flat-model-by-id map.
 // MS2-UNIT: ?\ms2flatmodelmanager.cpp
 // MS2-RANGE: 0x140d86560-0x140d878b0 .text$mn
-// MS2-FUNCTIONAL: std::_Tree iterator helpers for the id->model map are opaque pointer-level free functions bound by
-// FUN_ name (the engine's own instantiations of the same map type live elsewhere); the removal list is a real CAtlList.
 #include "ms2/placeholder/ms2stdafx.h"
 #include "ms2flatmodelmanager.h"
 #include <atlcoll.h>
@@ -11,17 +9,14 @@
 #include <egf/Scheduler.h>
 #include <egf/ISchedulerScripting.h>
 #include <efd/AssetFactoryManager.h>
+#include <efd/AssetLocatorService.h>
 #include <efd/utf8string.h>
 
 typedef unsigned long long u64;
 
 // ---- out-of-unit callees ----
 void* FUN_14214a770(void* sched, int behaviorType);
-void* FUN_14208a860(u64 size, unsigned hint);
-unsigned* FUN_140876480(void* out, int v);
-void* FUN_140998330(void* sm);
-void FUN_1409989e0(void* utf8, const char* s);
-void FUN_1408a8900(void* utf8);
+efd::AssetLocatorService* FUN_140998330(void* sm);   // GetSystemServiceAs<AssetLocatorService>
 void FUN_14016ad80(void* dst, void* src);
 void* FUN_1401cd130(void* a, void* b);
 void FUN_140d852c0(void* lock);   void FUN_140d86210(void* lock);
@@ -31,7 +26,7 @@ void FUN_14015b310(void* p, u64 sz);
 // ---- in-unit helper prototypes ----
 void* FUN_140d86bb0(void* sm);   void* FUN_140d86bf0(void* sm);   void* FUN_140d86b10(void* p);
 void* FUN_140d87890(void* tree);
-void* FUN_140d877a0(void* tree, void* out);   void* FUN_140d87810(void* tree, void* out);
+void* FUN_140d877a0(void* tree, void* out) noexcept;   void* FUN_140d87810(void* tree, void* out) noexcept;
 bool FUN_140d86e40(void* a, void* b);   bool FUN_140d86e00(long long* a, long long* b);
 void* FUN_140d86ea0(void* it);   void* FUN_140d86e80(void* p);   unsigned FUN_140d86e90(unsigned* p);
 void* FUN_140d86f20(void* it);   void* FUN_140d86f00(void* it);   long long* FUN_140d86f40(long long* it);
@@ -68,40 +63,29 @@ efd::AsyncResult MS2FlatModelManager::OnInit()
             egf::IScriptFactory* scriptFactory = 0;
             if (sched) {
                 egf::ISchedulerScripting* rt = sched->GetScriptingRuntime(6u);
-                if (rt) {
-                    efd::Category cat = rt->GetAssetLoadCategory();
-                    scriptFactory = (egf::IScriptFactory*)FUN_140d86b10(afm->GetAssetFactory(cat));
-                }
+                if (rt)
+                    scriptFactory = (egf::IScriptFactory*)FUN_140d86b10(afm->GetAssetFactory(rt->GetAssetLoadCategory()));
             }
-            char hintBuf[8];
-            unsigned hint = *FUN_140876480(hintBuf, 0);
-            void* mem = FUN_14208a860(0x70, hint);
-            m_pFlatModelFactory = mem
-                ? new (mem) egf::FlatModelFactory((efd::AssetFactoryManager*)FUN_140d86bb0(m_pServiceManager), this, scriptFactory)
-                : 0;
-            efd::Category cb = m_callback;
-            afm->RegisterAssetFactory(cb, (efd::IAssetFactory*)m_pFlatModelFactory);
+            m_pFlatModelFactory = EE_NEW egf::FlatModelFactory(
+                (efd::AssetFactoryManager*)FUN_140d86bb0(m_pServiceManager), this, scriptFactory);
+            afm->RegisterAssetFactory(m_callback, (efd::IAssetFactory*)m_pFlatModelFactory);
         }
     }
-    void** locator = (void**)FUN_140998330(m_pServiceManager);
-    if (!locator) {
-        m_asset_lookup_complete = true;
-    } else {
+    efd::AssetLocatorService* locator = FUN_140998330(m_pServiceManager);
+    if (locator) {
         if (!m_asset_lookup_in_progress) {
             if (sched)
                 sched->PauseScheduler(true);
-            char urn[32];
-            FUN_1409989e0(urn, "urn:emergent-flat-model");
-            efd::Category cb = m_callback;
-            char ok = ((char(*)(void*, void*, efd::Category, int))((void**)*locator)[0x88 / 8])(locator, urn, cb, 1);
-            FUN_1408a8900(urn);
-            if (!ok)
-                m_asset_lookup_complete = true;
-            else
+            bool ok = locator->AssetLocate("urn:emergent-flat-model", m_callback, efd::IAssetLocatorService::ALS_LOCAL_ONLY);
+            if (ok)
                 m_asset_lookup_in_progress = true;
+            else
+                m_asset_lookup_complete = true;
         }
         if (!m_asset_lookup_complete)
             return efd::AsyncResult_Pending;
+    } else {
+        m_asset_lookup_complete = true;
     }
     return efd::AsyncResult_Complete;
 }
@@ -285,21 +269,18 @@ void* FUN_140d87770(void* p)
 }
 
 // @0x140d877a0  begin()
-void* FUN_140d877a0(void* tree, void* out)
+void* FUN_140d877a0(void* tree, void* out) noexcept
 {
     void* h = FUN_140d876c0(tree);
-    void* r = FUN_140d86c40(h);
-    u64* hp = (u64*)FUN_140d87760((u64*)h);
-    FUN_140d86cf0(out, (void*)*hp, r);
+    FUN_140d86cf0(out, (void*)*(u64*)FUN_140d87760((u64*)h), FUN_140d86c40(h));
     return out;
 }
 
 // @0x140d87810  end()
-void* FUN_140d87810(void* tree, void* out)
+void* FUN_140d87810(void* tree, void* out) noexcept
 {
     u64* hp = (u64*)FUN_140d876c0(tree);
-    void* r = FUN_140d86c40(hp);
-    FUN_140d86cf0(out, (void*)*hp, r);
+    FUN_140d86cf0(out, (void*)*hp, FUN_140d86c40(hp));
     return out;
 }
 

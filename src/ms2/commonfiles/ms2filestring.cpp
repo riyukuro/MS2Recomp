@@ -203,35 +203,34 @@ int CPackFile::Open(std::string path, const char* directory) {
     if (file != INVALID_HANDLE_VALUE) {
         CPackStreamVerBase* stream = NULL;
         CPackFileHeaderVerBase* header = NULL;
-        DWORD read = 0;
+        DWORD read;
         ReadFile(file, &m_magic, 4, &read, NULL);
-        if (read != 4) {
+        if (read != sizeof(m_magic)) {
             CloseHandle(file);
             return 0;
         }
         switch (m_magic) {
         case MS2_PACK_MAGIC_V1:
             stream = new PackFileStream<CPackStreamVer1>();
-            header = new PackFileHeader<CPackFileHeaderVer1>();
+            header = new PackFileHeader<CPackFileHeaderVer1>;
             break;
         case MS2_PACK_MAGIC_V2:
             stream = new PackFileStream<CPackStreamVer2>();
-            header = new PackFileHeader<CPackFileHeaderVer2>();
+            header = new PackFileHeader<CPackFileHeaderVer2>;
             break;
         case MS2_PACK_MAGIC_V3:
             stream = new PackFileStream<CPackStreamVer3>();
-            header = new PackFileHeader<CPackFileHeaderVer3>();
+            header = new PackFileHeader<CPackFileHeaderVer3>;
             break;
         case MS2_PACK_MAGIC_V4:
             stream = new PackFileStream<CPackStreamVer3>();
-            header = new PackFileHeader<CPackFileHeaderVer3>();
+            header = new PackFileHeader<CPackFileHeaderVer3>;
             break;
         default:
             CloseHandle(file);
             return 0;
         }
-        DWORD headerSize = stream->GetHeaderSize();
-        ReadFile(file, stream->GetHeaderData(), headerSize, &read, NULL);
+        ReadFile(file, stream->GetHeaderData(), stream->GetHeaderSize(), &read, NULL);
         if (read != stream->GetHeaderSize()) {
             CloseHandle(file);
             delete stream;
@@ -296,9 +295,7 @@ int CPackFile::Open(std::string path, const char* directory) {
         m_remaining = header->GetCompressedSize();
         inflateInit(&m_stream);
         memset(table, 0, bufferSize);
-        written = 0;
         if (!Inflate(file, header, (unsigned char**)&table, (size_t)(bufferSize * 1.5f), &written)) {
-            delete[] table;
             delete stream;
             delete header;
             CloseHandle(file);
@@ -338,7 +335,6 @@ int CPackFile::Open(std::string path, const char* directory) {
     return m_index.Open(m_magic, m_path, m_handles, directory);
 }
 
-// MS2-FUNCTIONAL: same lookup order (mode, locale, plain) and locked inflate; local slot order differs.
 // @0x1406b0e20
 int CPackFile::Read(std::string path, unsigned char** data, unsigned __int64* size, bool stringFile) {
     CPackFileHeaderVerBase* header = NULL;
@@ -352,44 +348,51 @@ int CPackFile::Read(std::string path, unsigned char** data, unsigned __int64* si
         if (id == 0)
             id = m_index.GetIndex(path);
     }
-    if (id == 0)
-        return 0;
-    HANDLE file = m_handles[id];
-    header = GetHeader(id);
-    if (!header)
-        return 0;
-    if (header->GetSize() == 0)
-        return 0;
-    if (Unk_LockGuard guard = m_lock) {
+    if (id != 0) {
+        HANDLE file = m_handles[id];
+        header = GetHeader(id);
+        if (header) {
+            if (header->GetSize() == 0)
+                return 0;
+            Unk_LockGuard guard(m_lock);
+            if (guard) {
+            } else {
+                inflateInit(&m_stream);
+                unsigned int allocSize;
+                float capacity;
+                if (header->GetEncodeFlags().m_flags[0])
+                    capacity = (float)header->GetSize() * 1.5f;
+                else
+                    capacity = (float)header->GetSize();
+                allocSize = capacity;
+                allocSize += 2;
+                *data = (unsigned char*)EE_ALLOC(unsigned char, allocSize);
+                (*data)[header->GetSize()] = 0;
+                (*data)[header->GetSize() + 1] = 0;
+                LARGE_INTEGER offset;
+                offset.LowPart = (DWORD)header->GetOffset();
+                offset.HighPart = (LONG)(header->GetOffset() >> 32);
+                if (!SetFilePointerEx(file, offset, NULL, FILE_BEGIN)) {
+                    EE_FREE(*data);
+                    *data = NULL;
+                    return 0;
+                }
+                m_remaining = header->GetCompressedSize();
+                *size = header->GetSize();
+                unsigned __int64 written = 0;
+                if (!Inflate(file, header, data, allocSize, &written)) {
+                    inflateEnd(&m_stream);
+                    EE_FREE(*data);
+                    *data = NULL;
+                    return 0;
+                }
+                inflateEnd(&m_stream);
+            }
+        } else {
+            return 0;
+        }
     } else {
-        inflateInit(&m_stream);
-        float capacity;
-        if (header->GetEncodeFlags().m_flags[0] == 0)
-            capacity = (float)header->GetSize();
-        else
-            capacity = (float)header->GetSize() * 1.5f;
-        unsigned int allocSize = (int)capacity + 2;
-        *data = (unsigned char*)EE_ALLOC(unsigned char, allocSize);
-        (*data)[header->GetSize()] = 0;
-        (*data)[header->GetSize() + 1] = 0;
-        LARGE_INTEGER offset;
-        offset.LowPart = (DWORD)header->GetOffset();
-        offset.HighPart = (LONG)(header->GetOffset() >> 32);
-        if (!SetFilePointerEx(file, offset, NULL, FILE_BEGIN)) {
-            EE_FREE(*data);
-            *data = NULL;
-            return 0;
-        }
-        m_remaining = header->GetCompressedSize();
-        *size = header->GetSize();
-        unsigned __int64 written = 0;
-        if (!Inflate(file, header, data, allocSize, &written)) {
-            inflateEnd(&m_stream);
-            EE_FREE(*data);
-            *data = NULL;
-            return 0;
-        }
-        inflateEnd(&m_stream);
+        return 0;
     }
     return 1;
 }
@@ -398,11 +401,11 @@ int CPackFile::Read(std::string path, unsigned char** data, unsigned __int64* si
 void CPackFile::Close() {
 }
 
-// MS2-FUNCTIONAL: same index lookup; the by-value string temp sits in a different frame slot.
 // @0x1406b1460
-bool CPackFile::Exists(std::string path) {
-    int index = m_index.GetIndex(path);
-    return index != 0;
+int CPackFile::Exists(std::string path) {
+    if (m_index.GetIndex(path) == 0)
+        return 0;
+    return 1;
 }
 
 // @0x1406b14f0
@@ -429,19 +432,18 @@ int CPackFile::Contains(std::string text) {
     return 0;
 }
 
-// MS2-FUNCTIONAL: same "/textures" filter and path joins; temp string slots differ.
 // @0x1406b1830
 void CPackFile::GetTexturePaths(std::list<std::string>& paths) {
-    if (m_path.find("/textures", 0) == std::string::npos) {
+    if (m_path.find("/textures", 0) != std::string::npos) {
+        CMS2FileString::FileMap& files = m_index.GetFiles();
+        for (CMS2FileString::FileMap::iterator it = files.begin(); it != files.end(); ++it)
+            paths.push_back(GetPath() + "/" + it->first);
+    } else {
         CMS2FileString::FileMap& files = m_index.GetFiles();
         for (CMS2FileString::FileMap::iterator it = files.begin(); it != files.end(); ++it) {
             if (it->first.find("textures/", 0) != std::string::npos)
                 paths.push_back(GetPath() + "/" + it->first);
         }
-    } else {
-        CMS2FileString::FileMap& files = m_index.GetFiles();
-        for (CMS2FileString::FileMap::iterator it = files.begin(); it != files.end(); ++it)
-            paths.push_back(GetPath() + "/" + it->first);
     }
 }
 
@@ -455,13 +457,12 @@ void CPackFile::SetDecodeShort(CPackDecodeFunctor decode) {
     m_decodeShort = decode;
 }
 
-// MS2-FUNCTIONAL: same index lookup and header fetch; frame size differs.
 // @0x1406b1b70
 CPackFileHeaderVerBase* CPackFile::GetHeader(std::string path) {
     int index = m_index.GetIndex(path);
-    if (index == 0)
-        return NULL;
-    return GetHeader(index);
+    if (index != 0)
+        return GetHeader(index);
+    return NULL;
 }
 
 // @0x1406b1c20
@@ -567,47 +568,33 @@ CPackFileHeaderVerBase* CPackFile::GetHeader(unsigned int index) {
     return NULL;
 }
 
-// MS2-FUNCTIONAL: same mode-folder path build; return/temp string slots differ.
 // @0x1406b22e0
 std::string CPackFile::GetModePath(std::string path) {
-    if (g_nLocaleMode == 2) {
-        std::string result;
-        size_t pos = path.find_last_of('/');
-        if (pos == std::string::npos) {
-            result = g_strDefaultFolder;
-            std::string locale(g_strLocaleFolder);
-            std::transform(locale.begin(), locale.end(), locale.begin(), tolower);
-            result.append(locale);
-            result += path;
-        } else {
-            result = path.substr(0, pos + 1) + g_strDefaultFolder;
-            std::string locale(g_strLocaleFolder);
-            std::transform(locale.begin(), locale.end(), locale.begin(), tolower);
-            result.append(locale);
-            result += path.substr(pos + 1, path.size());
-        }
-        return result;
+    if (g_nLocaleMode != 2)
+        return "";
+    std::string result;
+    size_t pos = path.find_last_of('/');
+    if (pos != std::string::npos) {
+        result = path.substr(0, pos + 1) + g_strDefaultFolder;
+        std::string locale(g_strLocaleFolder);
+        std::transform(locale.begin(), locale.end(), locale.begin(), tolower);
+        result.append(locale);
+        result += path.substr(pos + 1, path.size());
+    } else {
+        result = g_strDefaultFolder;
+        std::string locale(g_strLocaleFolder);
+        std::transform(locale.begin(), locale.end(), locale.begin(), tolower);
+        result.append(locale);
+        result += path;
     }
-    return std::string("");
+    return result;
 }
 
-// MS2-FUNCTIONAL: same locale-then-default path build; temp string slots differ.
 // @0x1406b2660
 std::string CPackFile::GetLocalePath(std::string path, bool stringFile) {
     std::string result;
     size_t pos = path.find_last_of('/');
-    if (pos == std::string::npos) {
-        bool fallback = true;
-        if (stringFile) {
-            result = g_strLocaleFolder;
-            result += path;
-            fallback = m_index.GetIndex(result) == 0;
-        }
-        if (fallback) {
-            result = g_strDefaultFolder;
-            result += path;
-        }
-    } else {
+    if (pos != std::string::npos) {
         bool fallback = true;
         if (stringFile) {
             result = path.substr(0, pos + 1) + g_strLocaleFolder;
@@ -617,6 +604,17 @@ std::string CPackFile::GetLocalePath(std::string path, bool stringFile) {
         if (fallback) {
             result = path.substr(0, pos + 1) + g_strDefaultFolder;
             result += path.substr(pos + 1, path.size());
+        }
+    } else {
+        bool fallback = true;
+        if (stringFile) {
+            result = g_strLocaleFolder;
+            result += path;
+            fallback = m_index.GetIndex(result) == 0;
+        }
+        if (fallback) {
+            result = g_strDefaultFolder;
+            result += path;
         }
     }
     return result;
@@ -638,15 +636,13 @@ int CMS2FileString::GetIndex(std::string name) {
     return index;
 }
 
-// MS2-FUNCTIONAL: same index, _splitpath archive encoding and both inserts; temp slots differ.
 // @0x1406bc650
 int CMS2FileString::Add(std::string path) {
     int index = 0;
-    index = (int)m_files.size();
-    index++;
+    index = (int)m_files.size() + 1;
     SFileStringInfo info;
     info.m_index = index;
-    char dir[256];
+    char dir[MAX_PATH];
     char name[256];
     _splitpath(path.c_str(), NULL, dir, name, NULL);
     if (dir[0]) {
@@ -662,12 +658,10 @@ int CMS2FileString::Add(std::string path) {
     return index;
 }
 
-// MS2-FUNCTIONAL: same index, archive encoding and both inserts; temp slots differ.
 // @0x1406bc880
 int CMS2FileString::Add(std::string path, std::string archive) {
     int index = 0;
-    index = (int)m_files.size();
-    index++;
+    index = (int)m_files.size() + 1;
     SFileStringInfo info;
     info.m_index = index;
     char* encoded = Encode(archive);
@@ -686,22 +680,24 @@ std::string CMS2FileString::GetName(unsigned int index) {
     return it->second;
 }
 
-// MS2-FUNCTIONAL: same CRLF split and Parse per line; loop temps are laid out differently.
 // @0x1406bcb00
 int CMS2FileString::Load(char* data, unsigned int size) {
+    unsigned int i;
+    unsigned int offset = 0;
+    char* line = data + offset;
+    char* end = NULL;
+    size_t sepLength = 2;
     m_files.clear();
-    char* line = data;
     do {
-        char* end = strstr(line, "\r\n");
-        for (unsigned int i = 0; i < 2; i++)
+        end = strstr(line, "\r\n");
+        for (i = 0; i < sepLength; i++)
             end[i] = 0;
         Parse(line);
-        line = end + 2;
+        line = end + sepLength;
     } while (line < data + size);
     return 1;
 }
 
-// MS2-FUNCTIONAL: same "index,[archive,]name\r\n" lines written; temp slots differ.
 // @0x1406bcbe0
 int CMS2FileString::Save(HANDLE file) {
     std::string line;
@@ -717,14 +713,12 @@ int CMS2FileString::Save(HANDLE file) {
         }
         line += it->first;
         line += "\r\n";
-        size_t bytes = line.size() * charSize;
         DWORD writtenBytes;
-        WriteFile(file, line.c_str(), (DWORD)bytes, &writtenBytes, NULL);
+        WriteFile(file, line.c_str(), line.size() * charSize, &writtenBytes, NULL);
     }
     return 1;
 }
 
-// MS2-FUNCTIONAL: same comma count, strtok fields, lowercase name and both inserts; temp slots differ.
 // @0x1406bcdb0
 void CMS2FileString::Parse(char* line) {
     SFileStringInfo info;
@@ -738,9 +732,10 @@ void CMS2FileString::Parse(char* line) {
     if (commas == 1) {
         char* token = strtok(line, ",");
         info.m_index = atoi(token);
-        if (token) {
+        while (token) {
             token = strtok(NULL, ",");
             name = token;
+            break;
         }
     } else if (commas == 2) {
         char* token = strtok(line, ",");
@@ -764,14 +759,14 @@ void CMS2FileString::Parse(char* line) {
     m_names.insert(std::make_pair(info.m_index, name));
 }
 
-// MS2-FUNCTIONAL: same find and copy-out; the found flag is kept in a different form.
 // @0x1406bd110
 bool CMS2FileString::Find(std::string name, SFileStringInfo& info) {
     FileMap::iterator it = m_files.find(name);
-    bool found = it != m_files.end();
-    if (found)
+    if (it != m_files.end()) {
         info = it->second;
-    return found;
+        return true;
+    }
+    return false;
 }
 
 // @0x1406bd1c0
@@ -781,54 +776,52 @@ void CMS2FileString::GetArchiveNames(std::set<std::string>& names) {
         names.insert(it->second.m_archive);
 }
 
-// MS2-FUNCTIONAL: same archive-name iteration, .m2d opens, error box and handle mapping; temp slots differ.
 // @0x1406bd250
 int CMS2FileString::Open(unsigned int magic, std::string path, std::map<unsigned int, HANDLE>& handles,
                          const char* directory) {
-    if (magic < MS2_PACK_MAGIC_V1 || magic > MS2_PACK_MAGIC_V2) {
-        std::set<std::string> names;
-        GetArchiveNames(names);
-        if (!names.empty()) {
-            std::string file(path);
-            if (directory) {
-                file.clear();
-                file.append(directory);
-                file.append("/");
-                file.append(path);
-            }
-            for (std::set<std::string>::iterator it = names.begin(); it != names.end(); ++it) {
-                if (!it->empty())
-                    file = path + "_" + *it;
-                file += ".m2d";
-                HANDLE handle =
-                    CreateFileA(file.c_str(), GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, 0, NULL);
-                if (handle == INVALID_HANDLE_VALUE) {
-                    LPSTR message;
-                    FormatMessageA(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM |
-                                       FORMAT_MESSAGE_IGNORE_INSERTS,
-                                   NULL, GetLastError(), MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), (LPSTR)&message,
-                                   0, NULL);
-                    MessageBoxA(NULL, message, "Error", MB_ICONINFORMATION | MB_TOPMOST);
-                    LocalFree(message);
-                    return 0;
-                }
-                m_archives.insert(std::make_pair(*it, handle));
-            }
-            for (FileMap::iterator it = m_files.begin(); it != m_files.end(); ++it) {
-                for (std::map<std::string, HANDLE>::iterator archive = m_archives.begin();
-                     archive != m_archives.end(); ++archive) {
-                    if (it->second.m_archive == archive->first) {
-                        handles.insert(std::make_pair(it->second.m_index, archive->second));
-                        break;
-                    }
-                }
-            }
-            return 1;
-        }
+    switch (magic) {
+    case MS2_PACK_MAGIC_V1:
+    case MS2_PACK_MAGIC_V2:
+        return OpenSingle(magic, path, handles, directory);
+    }
+    std::set<std::string> names;
+    GetArchiveNames(names);
+    if (names.empty()) {
         MessageBoxA(NULL, "FileString", "Error", MB_ICONINFORMATION | MB_TOPMOST);
         return 0;
     }
-    return OpenSingle(magic, path, handles, directory);
+    std::string file(path);
+    if (directory) {
+        file.clear();
+        file.append(directory);
+        file.append("/");
+        file.append(path);
+    }
+    for (std::set<std::string>::iterator it = names.begin(); it != names.end(); ++it) {
+        if (!it->empty())
+            file = path + "_" + *it;
+        file += ".m2d";
+        HANDLE handle = CreateFileA(file.c_str(), GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, 0, NULL);
+        if (handle == INVALID_HANDLE_VALUE) {
+            LPSTR message;
+            FormatMessageA(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
+                           NULL, GetLastError(), MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), (LPSTR)&message, 0, NULL);
+            MessageBoxA(NULL, message, "Error", MB_ICONINFORMATION | MB_TOPMOST);
+            LocalFree(message);
+            return 0;
+        }
+        m_archives.insert(std::make_pair(*it, handle));
+    }
+    for (FileMap::iterator it = m_files.begin(); it != m_files.end(); ++it) {
+        for (std::map<std::string, HANDLE>::iterator archive = m_archives.begin(); archive != m_archives.end();
+             ++archive) {
+            if (it->second.m_archive == archive->first) {
+                handles.insert(std::make_pair(it->second.m_index, archive->second));
+                break;
+            }
+        }
+    }
+    return 1;
 }
 
 // @0x1406bd810
@@ -857,47 +850,45 @@ int CMS2FileString::OpenSingle(unsigned int magic, std::string path, std::map<un
     return 1;
 }
 
-// MS2-FUNCTIONAL: same as Open with write/CREATE_ALWAYS; temp slots differ.
 // @0x1406bdb00
 int CMS2FileString::Create(unsigned int magic, std::string path, std::map<unsigned int, HANDLE>& handles) {
-    if (magic < MS2_PACK_MAGIC_V1 || magic > MS2_PACK_MAGIC_V2) {
-        std::set<std::string> names;
-        GetArchiveNames(names);
-        if (!names.empty()) {
-            std::string file(path);
-            for (std::set<std::string>::iterator it = names.begin(); it != names.end(); ++it) {
-                if (!it->empty())
-                    file = path + "_" + *it;
-                file += ".m2d";
-                HANDLE handle =
-                    CreateFileA(file.c_str(), GENERIC_WRITE, FILE_SHARE_READ, NULL, CREATE_ALWAYS, 0, NULL);
-                if (handle == INVALID_HANDLE_VALUE) {
-                    LPSTR message;
-                    FormatMessageA(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM |
-                                       FORMAT_MESSAGE_IGNORE_INSERTS,
-                                   NULL, GetLastError(), MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), (LPSTR)&message,
-                                   0, NULL);
-                    MessageBoxA(NULL, message, "Error", MB_ICONINFORMATION | MB_TOPMOST);
-                    LocalFree(message);
-                    return 0;
-                }
-                m_archives.insert(std::make_pair(*it, handle));
-            }
-            for (FileMap::iterator it = m_files.begin(); it != m_files.end(); ++it) {
-                for (std::map<std::string, HANDLE>::iterator archive = m_archives.begin();
-                     archive != m_archives.end(); ++archive) {
-                    if (it->second.m_archive == archive->first) {
-                        handles.insert(std::make_pair(it->second.m_index, archive->second));
-                        break;
-                    }
-                }
-            }
-            return 1;
-        }
+    switch (magic) {
+    case MS2_PACK_MAGIC_V1:
+    case MS2_PACK_MAGIC_V2:
+        return CreateSingle(magic, path, handles);
+    }
+    std::set<std::string> names;
+    GetArchiveNames(names);
+    if (names.empty()) {
         MessageBoxA(NULL, "FileString", "Error", MB_ICONINFORMATION | MB_TOPMOST);
         return 0;
     }
-    return CreateSingle(magic, path, handles);
+    std::string file(path);
+    for (std::set<std::string>::iterator it = names.begin(); it != names.end(); ++it) {
+        if (!it->empty())
+            file = path + "_" + *it;
+        file += ".m2d";
+        HANDLE handle = CreateFileA(file.c_str(), GENERIC_WRITE, FILE_SHARE_READ, NULL, CREATE_ALWAYS, 0, NULL);
+        if (handle == INVALID_HANDLE_VALUE) {
+            LPSTR message;
+            FormatMessageA(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
+                           NULL, GetLastError(), MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), (LPSTR)&message, 0, NULL);
+            MessageBoxA(NULL, message, "Error", MB_ICONINFORMATION | MB_TOPMOST);
+            LocalFree(message);
+            return 0;
+        }
+        m_archives.insert(std::make_pair(*it, handle));
+    }
+    for (FileMap::iterator it = m_files.begin(); it != m_files.end(); ++it) {
+        for (std::map<std::string, HANDLE>::iterator archive = m_archives.begin(); archive != m_archives.end();
+             ++archive) {
+            if (it->second.m_archive == archive->first) {
+                handles.insert(std::make_pair(it->second.m_index, archive->second));
+                break;
+            }
+        }
+    }
+    return 1;
 }
 
 // @0x1406be060
@@ -918,35 +909,38 @@ int CMS2FileString::CreateSingle(unsigned int magic, std::string path, std::map<
     return 1;
 }
 
-// MS2-FUNCTIONAL: same letter-code encoding; strlen/temp layout differs.
 // @0x1406be2e0
 char* CMS2FileString::Encode(std::string name) {
-    if (name.empty())
-        return NULL;
-    const char* text = name.c_str();
-    size_t length = strlen(text);
-    size_t size = length + 1 + CountLetters(text, length);
-    char* out = new char[size];
-    memset(out, 0, size);
-    int j = 0;
-    for (size_t i = 0; i < length; i++) {
-        int code = GetLetterCode(text[i]);
-        if (code == 0) {
-            if (text[i] == '/')
-                out[j] = '_';
-            else
-                out[j] = text[i];
-            j++;
-        } else {
-            sprintf_s(out + j, size - j, "%02d", code);
-            j += 2;
+    if (!name.empty()) {
+        const char* text = name.c_str();
+        size_t length = strlen(text);
+        size_t letters = CountLetters(text, length);
+        size_t size = length + letters + 1;
+        char* out = new char[size];
+        memset(out, 0, size);
+        int j = 0;
+        for (size_t i = 0; i < length; i++) {
+            int code = GetLetterCode(text[i]);
+            if (code != 0) {
+                char* dest = out + j;
+                sprintf_s(dest, size - j, "%02d", code);
+                j += 2;
+            } else {
+                if (text[i] == '/')
+                    out[j] = '_';
+                else
+                    out[j] = text[i];
+                j++;
+            }
         }
+        out[size - 1] = 0;
+        return out;
     }
-    out[size - 1] = 0;
-    return out;
+    return NULL;
 }
 
-// MS2-FUNCTIONAL: same WideCharToMultiByte conversion; temp slots differ.
+#pragma function(wcslen)
+// MS2-FUNCTIONAL: same conversion; the exe calls wcslen through the CRT import, this build calls it directly.
 // @0x1406be510
 char* CMS2FileString::ToMultiByte(const wchar_t* text) {
     size_t size = wcslen(text) * 2 + 2;
@@ -955,10 +949,10 @@ char* CMS2FileString::ToMultiByte(const wchar_t* text) {
     return out;
 }
 
-// MS2-FUNCTIONAL: same mbstowcs conversion and buffer size; temp slots differ.
 // @0x1406be590
 wchar_t* CMS2FileString::ToWide(const char* text) {
-    size_t length = strlen(text) + 1;
+    size_t length = 0;
+    length = strlen(text) + 1;
     wchar_t* out = new wchar_t[length * 2];
     mbstowcs(out, text, length);
     return out;

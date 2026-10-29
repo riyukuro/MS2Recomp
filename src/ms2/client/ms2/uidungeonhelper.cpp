@@ -51,6 +51,7 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/placeholder/delegate.h"
 #include "ms2/placeholder/coutpacket.h"
+#include "ms2/placeholder/cinpacket.h"
 #include "ms2/placeholder/gfxexception.h"
 #include "ms2/placeholder/astooltip.h"
 #include "ms2/placeholder/citem.h"
@@ -169,7 +170,8 @@ public:
     short m_nLevelLimit;                                // +0x104
 };
 class Unk_DhEventData { unsigned char m_pad_00[0x20]; public: int m_nRewardCount; };
-class Unk_DhEvent { public: ~Unk_DhEvent(); void* FUN_1403e8a50() const; Unk_DhEventData* FUN_1403e8bf0() const; };
+// An MS2Ptr (16 bytes, m_p at +8): FUN_14047a5b0 returns it through a hidden pointer, the dtor 0x1403e5240 writes 16.
+class Unk_DhEvent { public: ~Unk_DhEvent(); void* FUN_1403e8a50() const; Unk_DhEventData* FUN_1403e8bf0() const; void* m_00; void* m_p; };
 class Unk_DhEventMgr { public: Unk_DhEvent FUN_14047a5b0(int nEventId); };
 Unk_DhEventMgr* FUN_1401c0d90();
 class Unk_DhStrings { public: CStringW FUN_141811980(int nCategory, int nId); };
@@ -179,24 +181,9 @@ CStringW FUN_1409e8820(CStringW strKey, const short& n);
 CStringW FUN_1409e9890(CStringW strKey, const int& a, const int& b);
 CStringW FUN_1406e7810(const wchar_t* szFormat, const unsigned& a, const unsigned& b);
 CStringW FUN_140656190(const wchar_t* szFormat, const CStringW& a, const CStringW& b);
-CStringW FUN_14052bd00(int nStringId, CStringW strArg);
+CStringW FUN_14052bd00(int nStringId, const CStringW& strArg);
 CStringW FUN_1409eec40(int nStringId);
 CStringW FUN_140b8f230(int n);
-class Unk_DhStream {
-public:
-    virtual void vfunc_0();
-    virtual unsigned char vfunc_1();
-    virtual void vfunc_2();
-    virtual int vfunc_3();
-    virtual void vfunc_4();
-    virtual void vfunc_5();
-    virtual void vfunc_6();
-    virtual void vfunc_7();
-    virtual void vfunc_8(CStringW& out);
-};
-// The stream sub-object is opaque (void*) so cl cannot devirtualize the reads (no exe symbol for them).
-class CInPacket { public: void* p0; void* stream; };
-MS2_CHECK_OFFSET(CInPacket, stream, 8);
 
 // @0x140e12730
 ASWeeklyRewardItemSlot::ASWeeklyRewardItemSlot(const Scaleform::GFx::Value& v, int nMovieId)
@@ -216,37 +203,35 @@ MS2_REPLACE_METHOD(0x140E12780, ASWeeklyRewardItemSlot, FUN_140e12780, 68, 0x980
 // @0x140e127d0
 void ASWeeklyRewardItemSlot::vfunc_25(Scaleform::GFx::Value** ppOut)
 {
-    // MS2-FUNCTIONAL: tooltip locals and temporaries are ordered differently
     if (m_itemId == 0)
         return;
     MS2Ptr<CItem> item(new CItem());
-    if (!item->FUN_14052b130(m_itemId, m_rarity, 0))
-        return;
-    ASTooltip tooltip(FUN_141bd0cc0(FUN_1403ed2d0()), 32, 2);
-    if (!tooltip.FUN_1409e0d40(item.get()))
-        return;
-    if (m_nMeso > 0 || m_nExp > 0) {
-        CStringW text = FUN_140298ea0(CStringW(L"s_dungeonSearch_united_reward_tooltip"));
-        if (m_nMeso > 0)
-            text += FUN_1401e8510(L"\n{0}", FUN_1405c2690(CStringW(L"s_dungeonSearch_united_reward_tooltip_meso"), FUN_1409404f0(m_nMeso)));
-        if (m_nExp > 0)
-            text += FUN_1401e8510(L"\n{0}", FUN_1405c2690(CStringW(L"s_dungeonSearch_united_reward_tooltip_exp"), FUN_1409404f0(m_nExp)));
-        tooltip.FUN_1409c65f0(CStringW(text));
+    if (item->FUN_14052b130(m_itemId, m_rarity, 0)) {
+        ASTooltip tooltip(FUN_141bd0cc0(FUN_1403ed2d0()), 32, 2);
+        if (tooltip.FUN_1409e0d40(item.get())) {
+            if (m_nMeso > 0 || m_nExp > 0) {
+                CStringW text = FUN_140298ea0(CStringW(L"s_dungeonSearch_united_reward_tooltip"));
+                if (m_nMeso > 0)
+                    text += FUN_1401e8510(L"\n{0}", FUN_1405c2690(CStringW(L"s_dungeonSearch_united_reward_tooltip_meso"), FUN_1409404f0(m_nMeso)));
+                if (m_nExp > 0)
+                    text += FUN_1401e8510(L"\n{0}", FUN_1405c2690(CStringW(L"s_dungeonSearch_united_reward_tooltip_exp"), FUN_1409404f0(m_nExp)));
+                tooltip.FUN_1409d8ce0(text);   // the reward lines go in the "itemDamage" field
+            }
+            FUN_1409b4bc0(*ppOut, tooltip.FUN_1422bb870());
+        }
     }
-    FUN_1409b4bc0(*ppOut, tooltip.FUN_1422bb870());
 }
 MS2_REPLACE_METHOD(0x140E127D0, ASWeeklyRewardItemSlot, vfunc_25, 1045, 0xC063A51E);
 
 // @0x140e12bf0
-// MS2-FUNCTIONAL: unit-local session/record pointer types order the temporaries differently
 void ASWeeklyRewardItemSlot::FUN_140e12bf0()
 {
     if (!FUN_14036d570(FUN_140166410(), 0xb9))
         return;
     if (!FUN_140931510()->FUN_140d9f2c0()->FUN_140b22530())
         return;
-    m_nMeso = static_cast<__int64>(static_cast<float>(m_nMeso) * FUN_140931510()->FUN_140d9f2c0()->FUN_140b22640());
-    m_nExp = static_cast<__int64>(static_cast<float>(m_nExp) * FUN_140931510()->FUN_140d9f2c0()->FUN_140b22620());
+    m_nMeso *= FUN_140931510()->FUN_140d9f2c0()->FUN_140b22640();
+    m_nExp *= FUN_140931510()->FUN_140d9f2c0()->FUN_140b22620();
 }
 MS2_REPLACE_METHOD(0x140E12BF0, ASWeeklyRewardItemSlot, FUN_140e12bf0, 384, 0x31FE659B);
 
@@ -353,13 +338,13 @@ void UIDungeonSearchUnitedReward::FUN_140e13c00()
 MS2_REPLACE_METHOD(0x140E13C00, UIDungeonSearchUnitedReward, FUN_140e13c00, 1762, 0x193155DB);
 
 // @0x140e142f0
-// MS2-FUNCTIONAL: the callback delegate is built before the text sizing calls in the exe
 void UIDungeonSearchUnitedReward::FUN_140e142f0()
 {
     if (!FUN_14036d570(FUN_140166410(), 0xb9))
         return;
-    FUN_1422c0840(m_daily.get(), -22);
-    FUN_1422c0840(m_weekly.get(), -22);
+    const int nOffset = -22;
+    FUN_1422c0840(m_daily.get(), nOffset);
+    FUN_1422c0840(m_weekly.get(), nOffset);
     m_resetButton->vfunc_4(true);
     m_resetButton->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIDungeonSearchUnitedReward::FUN_140e14400), 0);
 }
@@ -386,22 +371,21 @@ bool UIDungeonSearchUnitedReward::SendRoomDungeon(int nResult, const CMsgBoxData
 MS2_REPLACE_METHOD(0x140E144B0, UIDungeonSearchUnitedReward, SendRoomDungeon, 93, 0x5CD20D2C);
 
 // @0x140e14520
-// MS2-FUNCTIONAL: switch lowering differs (jump table layout) and call temporaries are ordered differently
 bool FUN_140e14520(int nKind)
 {
-    switch (nKind - 3) {
-    case 0: return FUN_14036d570(FUN_140166410(), 0x80);
-    case 1: return FUN_14036d570(FUN_140166410(), 0x76);
-    case 2: return FUN_14036d570(FUN_140166410(), 0xcb);
-    case 3: return FUN_14036d570(FUN_140166410(), 0x79);
-    case 4: return FUN_14036d570(FUN_140166410(), 5);
-    case 5: return FUN_14036d570(FUN_140166410(), 0xaa);
-    case 6: return FUN_14036d570(FUN_140166410(), 0x4c);
-    case 7: return FUN_14036d570(FUN_140166410(), 0x4b);
-    case 8: return FUN_14036d570(FUN_140166410(), 0x55);
-    case 9: return FUN_14036d570(FUN_140166410(), 0xab);
-    case 10: return FUN_14036d570(FUN_140166410(), 0xf0);
-    case 11: return FUN_14036d570(FUN_140166410(), 0x103);
+    switch (nKind) {
+    case 3: return FUN_14036d570(FUN_140166410(), 0x80);
+    case 4: return FUN_14036d570(FUN_140166410(), 0x76);
+    case 5: return FUN_14036d570(FUN_140166410(), 0xcb);
+    case 6: return FUN_14036d570(FUN_140166410(), 0x79);
+    case 7: return FUN_14036d570(FUN_140166410(), 5);
+    case 8: return FUN_14036d570(FUN_140166410(), 0xaa);
+    case 12: return FUN_14036d570(FUN_140166410(), 0xab);
+    case 9: return FUN_14036d570(FUN_140166410(), 0x4c);
+    case 10: return FUN_14036d570(FUN_140166410(), 0x4b);
+    case 11: return FUN_14036d570(FUN_140166410(), 0x55);
+    case 13: return FUN_14036d570(FUN_140166410(), 0xf0);
+    case 14: return FUN_14036d570(FUN_140166410(), 0x103);
     default: return true;
     }
 }
@@ -417,15 +401,12 @@ bool FUN_140e146a0()
 }
 
 // @0x140e146f0
-// MS2-FUNCTIONAL: locals and string temporaries are ordered differently
 void FUN_140e146f0(CInPacket& packet)
 {
-    Unk_DhStream* stream = reinterpret_cast<Unk_DhStream*>(&packet.stream);
-    unsigned char error = stream->vfunc_1();
-    int nParam = stream->vfunc_3();
-    CStringW strName;
-    stream->vfunc_8(strName);
-    switch (error) {
+    int nError = packet.ReadUInt8();
+    int nParam = packet.ReadInt32();
+    CStringW strName = packet.ReadUnicodeString();
+    switch (nError) {
     case 1:
         FUN_140d73ff0(CStringW(L"s_dungeonMatch_error_notFoundDungeon"));
         break;
@@ -465,21 +446,19 @@ CStringW FUN_140e14b70(MS2Ptr<Unk_DungeonRoomData> pRoom)
 }
 
 // @0x140e14bd0
-// MS2-FUNCTIONAL: string temporaries are ordered differently
 CStringW FUN_140e14bd0(MS2Ptr<Unk_DungeonRoomData> pRoom, bool bShowLimit)
 {
     if (pRoom == NULL)
         return CStringW(L"");
     CStringW strName = FUN_1401a9d70()->FUN_141811980(0x14, pRoom->FUN_14031ddd0());
     if (bShowLimit) {
-        if (pRoom->m_nLevelLimit != 0)
+        if ((unsigned short)pRoom->m_nLevelLimit > 0)
             strName += FUN_1409e8820(CStringW(L"s_dungeonRoom_list_limit_Level"), pRoom->m_nLevelLimit);
     }
     return strName;
 }
 
 // @0x140e14d70
-// MS2-FUNCTIONAL: string and pointer temporaries are ordered differently
 CStringW FUN_140e14d70(int nMissionId)
 {
     MS2Ptr<Unk_DhMission> mission = FUN_140931510()->FUN_140d9f2c0()->FUN_140b22160(nMissionId);
@@ -489,15 +468,16 @@ CStringW FUN_140e14d70(int nMissionId)
     unsigned nMax = mission->FUN_140b20780();
     CStringW strCount = FUN_1406e7810(L"{0} / {1}", nCur, nMax);
     Unk_DhEvent event = FUN_1401c0d90()->FUN_14047a5b0(nMissionId);
-    if (event.FUN_1403e8a50() == 0)
-        return strCount;
-    int nBonus = mission->FUN_140b207f0();
-    return FUN_140656190(L"{0} {1}", strCount,
-                         FUN_1409e9890(CStringW(L"s_dungeonRoom_event_reward_count"), nBonus, event.FUN_1403e8bf0()->m_nRewardCount));
+    if (event.FUN_1403e8a50())
+    {
+        int nBonus = mission->FUN_140b207f0();
+        CStringW strBonus = FUN_1409e9890(L"s_dungeonRoom_event_reward_count", nBonus, event.FUN_1403e8bf0()->m_nRewardCount);
+        return FUN_140656190(L"{0} {1}", strCount, strBonus);
+    }
+    return strCount;
 }
 
 // @0x140e14fd0
-// MS2-FUNCTIONAL: string and pointer temporaries are ordered differently
 CStringW FUN_140e14fd0(int nMissionId)
 {
     MS2Ptr<Unk_DhMission> mission = FUN_140931510()->FUN_140d9f2c0()->FUN_140b22160(nMissionId);
@@ -505,21 +485,26 @@ CStringW FUN_140e14fd0(int nMissionId)
         return CStringW(L"");
     unsigned nCur = mission->FUN_14031b9d0(FUN_140869440());
     unsigned nMax = mission->FUN_14031ba10();
-    return FUN_1406e7810(L"{0} / {1}", nCur, nMax);
+    CStringW strText = FUN_1406e7810(L"{0} / {1}", nCur, nMax);
+    return strText;
 }
 
 // @0x140e15130
-// MS2-FUNCTIONAL: string and pointer temporaries are ordered differently
 CStringW FUN_140e15130(int nRoomId)
 {
     MS2Ptr<Unk_DungeonRoomData> pRoom = FUN_14031c2a0()->FUN_1403206b0(nRoomId);
     if (pRoom == NULL)
         return CStringW(L"");
-    int nType = pRoom->FUN_14031dfa0();
-    if (nType == 1)
-        return FUN_14052bd00(0x9b2, FUN_140b8f230(pRoom->FUN_14031dfd0()));
-    if (nType == 2)
+    switch (pRoom->FUN_14031dfa0())
+    {
+    case 2:
         return FUN_1409eec40(0x9b1);
+    case 1:
+    {
+        CStringW strDay = FUN_140b8f230(pRoom->FUN_14031dfd0());
+        return FUN_14052bd00(0x9b2, strDay);
+    }
+    }
     return CStringW(L"");
 }
 
@@ -539,26 +524,13 @@ template <class T> inline MS2Ptr<T> Unk_ASCreate(int nMovieId, const Scaleform::
 template MS2Ptr<ASWeeklyRewardItemSlot> Unk_ASCreate<ASWeeklyRewardItemSlot>(int, const Scaleform::GFx::Value&);
 
 // @0x140e159f0
-// MS2-FUNCTIONAL: the Value temporary is destroyed at a different point than in the exe
 template <class T> MS2Ptr<T> AScript::FUN_140e159f0(const CString& strName)
 {
     Scaleform::GFx::Value v = FUN_1422baa20(strName);
-    if (!v.IsObject())
-        return MS2Ptr<T>(0);
-    return Unk_ASCreate<T>(m_nMovieId, v);
+    if (v.IsObject())
+        return Unk_ASCreate<T>(m_nMovieId, v);
+    return MS2Ptr<T>(0);
 }
 template MS2Ptr<ASWeeklyRewardItemSlot> AScript::FUN_140e159f0<ASWeeklyRewardItemSlot>(const CString&);
-
-// @0x140e16980
-// MS2-FUNCTIONAL: the exe destructor stores no vftable
-ASWeeklyRewardItemSlot::~ASWeeklyRewardItemSlot()
-{
-}
-
-// @0x140e169a0
-// MS2-FUNCTIONAL: the exe destructor stores no vftable and destroys the members in a different order
-UIDungeonSearchUnitedReward::~UIDungeonSearchUnitedReward()
-{
-}
 
 MS2_EMIT_CRT_MEMMOVE_S();

@@ -56,13 +56,13 @@ public:
                                                         // 28 0x141a6a870
     virtual int vfunc_48() { return 0x4e46; }           // 48 0x141a6d640 UI type id
     virtual void vfunc_1(void* pEvt);                   // UIEntityEventListener 1 0x141a6b030
-    virtual void vfunc_3(void* pActor);                 // UIEntityEventListener 3 0x141a6b1a0
+    virtual void vfunc_3(MS2Ptr<CProxyGameObject> spActor);   // UIEntityEventListener 3 0x141a6b1a0
 
     void ReadNpcFromFile();                               // read the npc ids of the xml files
     CStringW FUN_141a6b6a0(int nType, int bFriendly);   // npc kind name
     void FUN_141a6b800();                               // log + preload every npc
     void FUN_141a6b8f0();                               // build m_entries
-    void FUN_141a6be40(const CStringW& strFilter);      // refill "m_npcList"
+    void FUN_141a6be40(CStringW& strFilter);        // refill "m_npcList"
     MS2Ptr<Unk_NpcList> FUN_140c02900(const CString& strName);     // bind a list child of the movie
 
 private:

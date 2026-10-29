@@ -102,7 +102,6 @@ void CToolCameraMode::vfunc_6(int n)
 }
 MS2_REPLACE_METHOD(0x141852d20, CToolCameraMode, vfunc_6, 370, 0x51A5235E);
 
-// MS2-FUNCTIONAL: the exe binds the up-vector temporary through the ctor's returned this (frame 0x10 smaller)
 // @0x141852ea0
 void CToolCameraMode::vfunc_24(Unk_CameraTargetEntity* p, int n)
 {
@@ -140,15 +139,13 @@ void CToolCameraMode::vfunc_24(Unk_CameraTargetEntity* p, int n)
     fHeight = (FUN_140980350(kBound).z - ptPos.z < 0.0f) ? 0.0f : FUN_140980350(kBound).z - ptPos.z;
     if (n != 0)
     {
-        const Vector3& ptUp = Vector3(0.0f, 0.0f, fHeight);
-        ptPos = ptPos.FUN_14097fd50(ptAxis.FUN_14097fc90(-fDist)).FUN_14097fd50(ptUp);
+        ptPos = ptPos.FUN_14097fd50(ptAxis.FUN_14097fc90(-fDist)).FUN_14097fd50(Vector3(0.0f, 0.0f, fHeight));
         vfunc_3(ptPos);
     }
     m_88 = 0;
 }
 MS2_REPLACE_METHOD(0x141852ea0, CToolCameraMode, vfunc_24, 1078, 0xF25AE606);
 
-// MS2-FUNCTIONAL: the exe binds the right-hand operand temporary through the ctor/operator return value (frame 0x10 smaller)
 // @0x1418532e0
 void CToolCameraMode::vfunc_8(double fTime)
 {
@@ -192,9 +189,7 @@ void CToolCameraMode::vfunc_8(double fTime)
         FUN_140a01190(&kRot, 2, &ptForward);
         ptForward.FUN_140968990();
         Vector3 ptPos = FUN_1409f2540();
-        float fDelta = (float)fTime;
-        const Vector3& ptSide = ptForward.FUN_14097fc90(m_78.y);
-        ptPos = ptPos.FUN_14097fd50(ptRight.FUN_14097fc90(m_78.x).FUN_14097fd50(ptSide).FUN_14097fc90(1000.0f).FUN_14097fc90(fDelta));
+        ptPos = ptPos.FUN_14097fd50(ptRight.FUN_14097fc90(m_78.x).FUN_14097fd50(ptForward.FUN_14097fc90(m_78.y)).FUN_14097fc90(1000.0f).FUN_14097fc90((float)fTime));
         vfunc_3(ptPos);
     }
 }

@@ -19,6 +19,10 @@
 #include "interactobject.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/placeholder/notifyobject.h"
+#include "notifychangebuff.h"
+#include "ms2/placeholder/citem.h"
+#include "ms2/commonfiles/masterytable.h"
+#include "ms2/placeholder/effectquery.h"
 #include "ms2/placeholder/delegate.h"
 #include "ms2/placeholder/uidialog.h"
 #include "ms2/placeholder/coutpacket.h"
@@ -28,8 +32,10 @@
 #include <efd/Point3.h>
 #include <egf/Entity.h>
 #include <egf/FlatModel.h>
+#include <NiTexture.h>
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/placeholder/cwinhttpclient.h"
 
 // MS2-FUNCTIONAL: unit-wide; the bodies lean on many unrecovered services (world, effect, ranking, url and quest managers) that are
 // declared as FUN_<va> externs with approximated signatures, and on out-of-line COMDATs of other objs, so only the trivial
@@ -44,9 +50,9 @@ extern CString s_strUseTelescope;
 
 // ---- exe callees (unit-local stand-ins) ----
 // @0x141404030
-static bool FUN_141404030(std::vector<Unk_InteractReqItem>& aItems)
+static bool FUN_141404030(CInteractObjectData::ConditionEffectList& reqItem)
 {
-    if (aItems.empty())
+    if (reqItem.m_aItem.empty())
         return false;
     return true;
 }
@@ -58,7 +64,7 @@ public:
     virtual void vf08() = 0; virtual void vf09() = 0; virtual void vf10() = 0; virtual void vf11() = 0;
     virtual void vf12() = 0; virtual void vf13() = 0; virtual void vf14() = 0; virtual void vf15() = 0;
     virtual void vf16() = 0; virtual void vf17() = 0;
-    virtual Vector3* GetPosition(Vector3* pOut) = 0;        // 18
+    virtual Vector3 GetPosition() = 0;                      // 18
     virtual void vf19() = 0;
     virtual void vf20() = 0;
     virtual void vf21() = 0;
@@ -113,8 +119,8 @@ public:
     unsigned FUN_141662750(int nItemId);                    // level of the item
     Unk_IoInvView* FUN_1416749a0();                         // equip / inventory view
     int FUN_14123c580();
-    Unk_EntRef* FUN_141529900();
-    Vector3* FUN_1416767d0(Vector3* pOut);  // position
+    Unk_Entity* FUN_141529900();
+    Vector3 FUN_1416767d0();                // position
 };
 struct Unk_IoCutData
 {
@@ -133,6 +139,7 @@ struct Unk_IoCutData
 };
 struct Unk_IoCutRef
 {
+    ~Unk_IoCutRef() { FUN_1408850f0(); }
     void* m_pad_00;
     Unk_IoCutData* m_p;
     Unk_IoCutData* FUN_1409657a0() const;
@@ -160,7 +167,7 @@ class Unk_IoRankPtr
 public:
     Unk_IoRankPtr() : m_pad(0), m_p(0) {}
     Unk_IoRankPtr(const Unk_IoRankPtr& o) : m_pad(0), m_p(0) { *this = o; }
-    ~Unk_IoRankPtr() {}
+    ~Unk_IoRankPtr();                                           // 0x140b2da40
     Unk_IoRankPtr& operator=(const Unk_IoRankPtr& o);           // 0x141403ae0
     bool operator==(Unk_IoRanking* p) const;                    // 0x141403b50
     void FUN_140b312e0();                                       // add a reference
@@ -186,41 +193,19 @@ class Unk_IoWorld
 public:
     Unk_IoPlayer* FUN_141bd0cc0();
     unsigned FUN_141bd3060();
-    void FUN_141bd30a0(Unk_IoCutRef* pOut);
+    Unk_IoCutRef FUN_141bd30a0();
     void FUN_141bc8e00();
     void FUN_141bdb030(CString strKey, CStringW strUrl);
     void FUN_141bdb0f0(CString strKey, Unk_IoRankPtr spRank);
 };
 Unk_IoWorld* FUN_1403ed2d0();
-struct Unk_IoFxRequest
-{
-    CString m_strName;
-    int m_nOwnerId;
-    int m_pad_0c;
-    void* m_pSlot10;
-    struct Unk_IoXform* m_pXform;
-    char m_pad_20[0x58];
-};
-MS2_CHECK_SIZE(Unk_IoFxRequest, 0x78);
 class Unk_IoFxMgr
 {
 public:
-    int FUN_1411a49c0(Unk_IoFxRequest* pRequest);
+    int FUN_1411a49c0(NoticeMessage* pRequest);
     void FUN_1411a6060(int nHandle);
 };
 Unk_IoFxMgr* FUN_1403ed280();
-void FUN_140a52ef0(Unk_IoFxRequest* p);
-void FUN_1405a89e0(Unk_IoFxRequest* p);
-void FUN_140a53190(Unk_IoFxRequest* p, int n);
-struct Unk_IoXform
-{
-    Unk_EfdMatrix3 m_rotate;
-    float m_afTranslate[3];
-    float m_fScale;
-};
-MS2_CHECK_SIZE(Unk_IoXform, 0x34);
-void* FUN_140a332d0(Unk_IoXform* p);
-void FUN_14097faa0(float* pDst, const Unk_NiPoint3* pSrc);
 class Unk_IoQuestEval
 {
 public:
@@ -244,7 +229,7 @@ class Unk_IoSession
 {
 public:
     unsigned char FUN_14036d570(int n);
-    char FUN_14036e4c0();
+    bool FUN_14036e4c0();
 };
 class Unk_IoMapRules { public: unsigned char FUN_1407d05e0(unsigned nMapId, int nBanType); };
 class Unk_IoGameCtx { public: Unk_IoMapRules* FUN_1403f3230(); };
@@ -264,16 +249,7 @@ Unk_IoHintSvc* FUN_1401a9d70();
 CPhysXHelper* FUN_1409f7ca0();
 
 // item inventory
-class Unk_IoItem { public: int FUN_140526bd0(); unsigned FUN_140526c50(); };
-class Unk_IoItemRef
-{
-public:
-    Unk_IoItem* FUN_1401c0180() const;
-    char FUN_140534e50() const;
-    void FUN_1401bfde0();
-    void* m_p[2];
-};
-class Unk_IoInventory { public: void FUN_140a5e5c0(Unk_IoItemRef* pOut, int nItemId, int nRarity); };
+class Unk_IoInventory { public: MS2Ptr<CItem> FUN_140a5e5c0(int nItemId, int nRarity); };
 extern Unk_IoInventory DAT_143ab2a90;
 int FUN_14053feb0(int nItemId);
 
@@ -286,7 +262,12 @@ int FUN_1409618c0(Unk_Entity* e, unsigned nHash, Vector3* pOut);
 int FUN_1408a2020(Unk_Entity* e, unsigned nHash, int* pOut);
 int FUN_1408a20a0(Unk_Entity* e, unsigned nHash, bool* pOut);
 int FUN_140961880(Unk_Entity* e, unsigned nHash, float* pOut);   // float property
-int FUN_140b27ec0(Unk_Entity* e, unsigned nHash, Vector3* pOut);
+struct Unk_IoColour   // efd::Color-like rgb (no ctor; non-POD so it is not a /GS buffer)
+{
+    Unk_IoColour& operator=(const Unk_IoColour&);
+    float x, y, z;
+};
+int FUN_140b27ec0(Unk_Entity* e, unsigned nHash, Unk_IoColour* pOut);
 int FUN_1408a2060(Unk_Entity* e, unsigned nHash, efd::utf8string* pOut);
 int FUN_140998250(Unk_Entity* e, unsigned nHash, efd::AssetID* pOut);
 void FUN_14098c6e0(Unk_Entity* e, unsigned nHash, unsigned char* pValue);
@@ -304,18 +285,40 @@ const char* FUN_14099ad40(efd::AssetID* p);
 void FUN_1409989e0(efd::utf8string* p, const char* psz);
 void FUN_140de0cb0(efd::AssetID* pDst, efd::utf8string* pStr);
 void FUN_1408a8900(efd::utf8string* p);
-class Unk_IoSoundMgr { public: void FUN_1409a1fc0(egf::EntityID id, efd::utf8string* pName, float fVol); };
+class Unk_IoSoundMgr { public: bool FUN_1409a1fc0(const egf::EntityID& id, const efd::utf8string& strName, float fVol, bool bLoop); };
 Unk_IoSoundMgr* FUN_141b6f910();
 
 // physics prop object of a mesh interact object
-class Unk_PhysPropObj;
-Unk_PhysPropObj* FUN_14225f250(void* pMem, Unk_EntRef* pOwner);
-void* FUN_14208a860(unsigned __int64 nSize, int nHint);          // MemObject operator new (the prop object is freed through MemObject::operator delete)
-void* FUN_140876480(void* pOut, int nCat);                      // efd::MemHint(NONE)
+// efd::MemHint, passed by value to the MemObject operator new
+struct Unk_IoMemHint
+{
+    Unk_IoMemHint(int nCat);                                    // 0x140876480
+    int m_nBits;
+};
+// egfPhysX::EntityActorData (a MemObject); the owner is a by-value SmartPointer<Entity> that the ctor releases
+class Unk_PhysPropObj
+{
+public:
+    Unk_PhysPropObj(Unk_EntRef owner);                          // 0x14225f250
+    static void* operator new(size_t cb, Unk_IoMemHint hint);   // 0x14208a860 efd::MemObject::operator new
+    static void operator delete(void* p, Unk_IoMemHint hint);   // 0x14097f700 efd::MemObject::operator delete
+    void* m_pad[0x98 / 8];
+};
+// A model name as a real efd::utf8string temporary (ctor 0x1409989e0, dtor 0x1408a8900).
+class Unk_IoModelName
+{
+public:
+    Unk_IoModelName(const char* psz);
+    ~Unk_IoModelName();
+    alignas(8) char m_pad[0x20];    // a char buffer: a /GS buffer, as the exe's utf8string temporaries are
+};
+struct Unk_IoFlatModel
+{
+    bool FUN_14211e1f0(const Unk_IoModelName& name) const;   // egf::FlatModel::ContainsModel(const efd::utf8string&)
+};
+
 
 // notices
-class Unk_IoNotifyBind : public NotifyObject {};
-Unk_IoNotifyBind* FUN_140db4a00(void* pMem, CInteractObject* pObject);
 class Unk_IoNotices
 {
 public:
@@ -338,7 +341,7 @@ public:
 };
 Unk_IoPostFx* FUN_1409a8b00();
 Unk_IoPostFx* FUN_1409a8b10();
-char* FUN_140a58500(Unk_IoPostFx* p);
+unsigned char* FUN_140a58500(Unk_IoPostFx* p);
 class Unk_IoCamLock { public: void FUN_141863460(float fFade); };
 Unk_IoCamLock* FUN_140ad4b90();
 void* FUN_1408e57f0();
@@ -352,19 +355,14 @@ struct Unk_IoGuideTable { CStringW FUN_14142d760(int nId, int n); };   // member
 Unk_IoGuideTable* FUN_1409331f0();
 class Unk_IoUiMgr { public: void FUN_141adc530(int n); int FUN_141adc940(int n); void FUN_141adc5d0(int n); };
 Unk_IoUiMgr* FUN_1403ed2b0();
-class Unk_IoUiCreator { public: void* FUN_1422d41b0(void* pRef, const CString& strName); };
+class Unk_IoUiCreator { public: MS2Ptr<UISwfEntity> FUN_1422d41b0(const CString& strName); };
 Unk_IoUiCreator* FUN_140b632f0();
-void* FUN_140b634c0(void* p);
-void FUN_140b62af0(void* pRef);
+UISwfEntity* FUN_140b634c0(const MS2Ptr<UISwfEntity>& sp);
 unsigned FUN_140869420();
 
 // gathering and tables
 void FUN_140e59bb0(void* p, CInteractObject* pObject);
 void* FUN_14122d430(int nId);
-class Unk_IoGatherRow { public: int m_pad_00[7]; unsigned m_nLevel; int m_pad_20; unsigned m_nMinLevel; };
-class Unk_IoGatherIt { public: void FUN_14066d5b0(); char FUN_14066d900(); Unk_IoGatherRow* FUN_14066d9a0(); char m_buf[16]; };
-class Unk_IoGatherMgr { public: void FUN_14066aa00(Unk_IoGatherIt* pOut, int nId); int FUN_14066bc40(int nId); };
-Unk_IoGatherMgr* FUN_1409670c0();
 class Unk_IoGatherChk { public: int FUN_140b6d330(int nId); int FUN_140b6d470(int nId); };
 Unk_IoGatherChk* FUN_140e5ca20();
 class Unk_IoGatherCount { public: void FUN_140450290(int nId, int* pOut); void FUN_140458df0(int nId, int nValue); };
@@ -377,21 +375,21 @@ __int64 FUN_140c322b0(Unk_IoBoardSvc* p);
 class Unk_IoStream
 {
 public:
-    virtual void vf0() = 0; virtual void vf1() = 0;
-    virtual short ReadShort() = 0;      // 2
-    virtual int ReadInt() = 0;          // 3
+    virtual void vf0(); virtual void vf1();
+    virtual unsigned short ReadShort(); // 2
+    virtual int ReadInt();              // 3
 };
 struct Unk_InteractMsg
 {
     void* m_pad_00;
-    void* m_pStreamVptr;
-    Unk_IoStream* Stream() { return reinterpret_cast<Unk_IoStream*>(&m_pStreamVptr); }
+    Unk_IoStream m_stream;          // +0x08
 };
 
 // state interact data sent to the world
 class Unk_IoStateData : public CPtred
 {
 public:
+    Unk_IoStateData();              // 0x1417d0be0 (StateInteractData ctor)
     int m_nId;                      // +0x18
     int m_pad_1c;
     CString m_strName;              // +0x20
@@ -400,12 +398,15 @@ public:
     int m_pad_34;
 };
 MS2_CHECK_SIZE(Unk_IoStateData, 0x38);
-Unk_IoStateData* FUN_1417d0be0(void* pMem);                 // StateInteractData ctor
-struct Unk_IoStateSp { void* m_pad; Unk_IoStateData* m_p; };
-void FUN_140964220(Unk_IoStateSp* p, Unk_IoStateData* pData);
+struct Unk_IoStateSp
+{
+    Unk_IoStateSp(Unk_IoStateData* pData);  // 0x140964220
+    ~Unk_IoStateSp();                       // 0x140964bc0
+    void* m_pad;
+    Unk_IoStateData* m_p;
+};
 Unk_IoStateData* FUN_1409659d0(Unk_IoStateSp* p);
 void* FUN_140965870(Unk_IoStateSp* p);
-void FUN_140964bc0(Unk_IoStateSp* p);
 
 // ================================================================================================================
 // CInteractObject
@@ -456,9 +457,7 @@ int CInteractObject::vfunc_1(Unk_Entity* pEntity, int nState)
     if (m_strName.GetLength() == 0)
         return 0;
     vfunc_3(nState);
-    void* pMem = operator new(0x20);
-    Unk_IoNotifyBind* pNotify = pMem ? FUN_140db4a00(pMem, this) : 0;
-    FUN_140939a10()->FUN_140da4fe0(MS2Ptr<NotifyObject>(pNotify));
+    FUN_140939a10()->FUN_140da4fe0(MS2Ptr<NotifyObject>(new NotifyAddInteract(this)));
     return 1;
 }
 
@@ -547,24 +546,17 @@ void CInteractObject::FUN_1413fda50()
     CString strAsset = vfunc_13();
     if (strAsset.GetLength() != 0)
     {
-        Unk_IoXform xf;
-        FUN_140a332d0(&xf);
-        Vector3 ptUp(0.0f, 0.0f, 1.0f);
-        Vector3 ptPos = m_vPos.FUN_14097fd50(ptUp);
-        Unk_NiPoint3 niPos(ptPos);
-        FUN_14097faa0(xf.m_afTranslate, &niPos);
-        xf.m_rotate.FUN_142083d40((m_vRot.x * 3.1415927f) / 180.0f, (m_vRot.y * 3.1415927f) / 180.0f,
-                                  (m_vRot.z * 3.1415927f) / 180.0f);
+        NiTransform xf;
+        xf.m_Translate = reinterpret_cast<const efd::Point3&>(m_vPos) + efd::Point3(0.0f, 0.0f, 1.0f);
+        xf.m_Rotate.FromEulerAnglesXYZ((m_vRot.x * 3.1415927f) / 180.0f, (m_vRot.y * 3.1415927f) / 180.0f,
+                                       (m_vRot.z * 3.1415927f) / 180.0f);
         xf.m_fScale = 1.0f;
-        alignas(8) char requestBuf[sizeof(Unk_IoFxRequest)];   // FUN_140a52ef0 / FUN_1405a89e0 construct and destroy it: no implicit dtor
-        Unk_IoFxRequest& request = *reinterpret_cast<Unk_IoFxRequest*>(requestBuf);
-        FUN_140a52ef0(&request);
+        NoticeMessage request;
         request.m_strName = strAsset;
-        request.m_nOwnerId = 0;
-        request.m_pXform = &xf;
+        request.m_nObject = 0;
+        request.m_p18 = &xf;
         m_nEffect = FUN_1403ed280()->FUN_1411a49c0(&request);
         m_nShownState = m_nState;
-        FUN_1405a89e0(&request);
     }
 }
 
@@ -609,36 +601,23 @@ int CInteractObject::FUN_1413fdd80()
     return 1;
 }
 
-// MS2-FUNCTIONAL: the cost item is a raw Unk_IoItemRef released by hand (FUN_1401bfde0 before each return); the exe holds a real MS2Ptr<CItem> local (EH frame, the returns run its dtor), 38 bytes longer
 // @0x1413fde40
 int CInteractObject::FUN_1413fde40()
 {
-    if (m_spRow == 0)
+    if (!m_spRow)
         return 0;
     if (m_spRow->m_item.m_nCode != 0)
     {
         int nRarity = m_spRow->m_item.m_nRank;
         if (nRarity == 0)
             nRarity = FUN_14053feb0(m_spRow->m_item.m_nCode);
-        Unk_IoItemRef item;
-        DAT_143ab2a90.FUN_140a5e5c0(&item, m_spRow->m_item.m_nCode, nRarity);
-        if (item.FUN_140534e50() != 0)
-        {
-            item.FUN_1401bfde0();
+        MS2Ptr<CItem> spItem = DAT_143ab2a90.FUN_140a5e5c0(m_spRow->m_item.m_nCode, nRarity);
+        if (!spItem)
             return 0;
-        }
-        unsigned nLevel = item.FUN_1401c0180()->FUN_140526c50();
-        if (nLevel < m_spRow->m_item.m_nConsume)
-        {
-            item.FUN_1401bfde0();
+        if ((unsigned)((CItem*)spItem)->FUN_140526c50() < m_spRow->m_item.m_nConsume)
             return 0;
-        }
-        if (item.FUN_1401c0180()->FUN_140526bd0() != nRarity)
-        {
-            item.FUN_1401bfde0();
+        if (((CItem*)spItem)->FUN_140526bd0() != nRarity)
             return 0;
-        }
-        item.FUN_1401bfde0();
     }
     return 1;
 }
@@ -690,13 +669,13 @@ int CInteractObject::FUN_1413fe220()
         return 0;
     if (m_spRow == 0)
         return 0;
-    if (!FUN_141404030(m_spRow->m_aReqItem.m_aItem))
+    if (!FUN_141404030(m_spRow->m_aReqItem))
         return 1;
     std::vector<Unk_InteractReqItem>& aReq = m_spRow->m_aReqItem.m_aItem;
     std::vector<Unk_InteractReqItem>::const_iterator itEnd = aReq.end();
     for (std::vector<Unk_InteractReqItem>::const_iterator it = aReq.begin(); it != itEnd; ++it)
     {
-        Unk_InteractReqItem req = *it;
+        Unk_InteractReqItem req = Unk_InteractReqItem(*it);
         if (pPlayer->FUN_1416749a0()->FUN_140970020(req.first, req.second, 0, 1) == 1)
             return 1;
     }
@@ -754,32 +733,24 @@ void CInteractObject::vfunc_11()
     }
 }
 
-// MS2-FUNCTIONAL: the effect transform is built through named Vector3 / Unk_NiPoint3 locals and an explicit transform init (3 calls more than the exe, which passes the summed point temp straight to the translate setter)
 // @0x1413fe5d0
 void CInteractObject::vfunc_12()
 {
     if (m_spRow->m_effect.m_strSuccess.GetLength() != 0)
     {
-        Unk_IoXform xf;
-        FUN_140a332d0(&xf);
-        Vector3 ptUp(0.0f, 0.0f, 1.0f);
-        Vector3 ptPos = m_vPos.FUN_14097fd50(ptUp);
-        Unk_NiPoint3 niPos(ptPos);
-        FUN_14097faa0(xf.m_afTranslate, &niPos);
-        xf.m_rotate.FUN_142083d40((m_vRot.x * 3.1415927f) / 180.0f, (m_vRot.y * 3.1415927f) / 180.0f,
-                                  (m_vRot.z * 3.1415927f) / 180.0f);
+        NiTransform xf;
+        xf.m_Translate = reinterpret_cast<const efd::Point3&>(m_vPos) + efd::Point3(0.0f, 0.0f, 1.0f);
+        xf.m_Rotate.FromEulerAnglesXYZ((m_vRot.x * 3.1415927f) / 180.0f, (m_vRot.y * 3.1415927f) / 180.0f,
+                                       (m_vRot.z * 3.1415927f) / 180.0f);
         xf.m_fScale = 1.0f;
-        alignas(8) char requestBuf[sizeof(Unk_IoFxRequest)];   // FUN_140a52ef0 / FUN_1405a89e0 construct and destroy it: no implicit dtor
-        Unk_IoFxRequest& request = *reinterpret_cast<Unk_IoFxRequest*>(requestBuf);
-        FUN_140a52ef0(&request);
+        NoticeMessage request;
         request.m_strName = m_spRow->m_effect.m_strSuccess;
-        request.m_nOwnerId = 1;
-        request.m_pXform = &xf;
+        request.m_nObject = 1;
+        request.m_p18 = &xf;
         Unk_IoPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
         if (pPlayer != 0)
-            FUN_140a53190(&request, pPlayer->FUN_14123c580());
+            request.SetActor(pPlayer->FUN_14123c580());
         m_nParticle = FUN_1403ed280()->FUN_1411a49c0(&request);
-        FUN_1405a89e0(&request);
     }
 }
 
@@ -870,35 +841,8 @@ CInteractMeshObject::~CInteractMeshObject()
 // @0x1413febf0
 int CInteractMeshObject::vfunc_1(Unk_Entity* pEntity, int nState)
 {
-    int hintBuf[2];
-    void* pMem = FUN_14208a860(0x98, *(int*)FUN_140876480(hintBuf, 0));
-    // the owner is a by-value SmartPointer<Entity>: the callee releases this temp, so the caller never destroys it
-    alignas(8) char ownerBuf[sizeof(Unk_EntRef)];
-    Unk_PhysPropObj* pProp = pMem ? FUN_14225f250(pMem, new (ownerBuf) Unk_EntRef(pEntity)) : 0;
-    m_spProp.FUN_140ae17e0(pProp);
-    alignas(8) char strMeshBuf[sizeof(efd::utf8string)];   // FUN_1409989e0 / FUN_1408a8900 construct and destroy it: no implicit dtor
-    efd::utf8string& strMesh = *reinterpret_cast<efd::utf8string*>(strMeshBuf);
-    FUN_1409989e0(&strMesh, "MS2InteractMesh");
-    bool bMesh = FUN_1408a9bd0(pEntity)->ContainsModel(strMesh);
-    FUN_1408a8900(&strMesh);
-    if (!bMesh)
-    {
-        alignas(8) char strActorBuf[sizeof(efd::utf8string)];   // FUN_1409989e0 / FUN_1408a8900 construct and destroy it: no implicit dtor
-        efd::utf8string& strActor = *reinterpret_cast<efd::utf8string*>(strActorBuf);
-        FUN_1409989e0(&strActor, "MS2InteractActor");
-        bool bActor = FUN_1408a9bd0(pEntity)->ContainsModel(strActor);
-        FUN_1408a8900(&strActor);
-        if (!bActor)
-            return 0;
-        efd::utf8string strA;
-        efd::utf8string strB;
-        FUN_1408a2060(pEntity, 0x3ff293c8, &strA);
-        FUN_1408a2060(pEntity, 0x63c7b14a, &strB);
-        m_strAssetA = FUN_1408ac310(&strA);
-        m_strAssetB = FUN_1408ac310(&strB);
-        m_nAssetType = 2;
-    }
-    else
+    m_spProp.FUN_140ae17e0(new (Unk_IoMemHint(0)) Unk_PhysPropObj(pEntity));
+    if (((Unk_IoFlatModel*)FUN_1408a9bd0(pEntity))->FUN_14211e1f0("MS2InteractMesh"))
     {
         efd::AssetID idA;
         efd::AssetID idB;
@@ -908,6 +852,18 @@ int CInteractMeshObject::vfunc_1(Unk_Entity* pEntity, int nState)
         m_strAssetB = FUN_14099ad40(&idB);
         m_nAssetType = 1;
     }
+    else if (((Unk_IoFlatModel*)FUN_1408a9bd0(pEntity))->FUN_14211e1f0("MS2InteractActor"))
+    {
+        efd::utf8string strA;
+        efd::utf8string strB;
+        FUN_1408a2060(pEntity, 0x3ff293c8, &strA);
+        FUN_1408a2060(pEntity, 0x63c7b14a, &strB);
+        m_strAssetA = FUN_1408ac310(&strA);
+        m_strAssetB = FUN_1408ac310(&strB);
+        m_nAssetType = 2;
+    }
+    else
+        return 0;
     return CInteractObject::vfunc_1(pEntity, nState);
 }
 
@@ -915,42 +871,41 @@ int CInteractMeshObject::vfunc_1(Unk_Entity* pEntity, int nState)
 void CInteractMeshObject::vfunc_3(int nState)
 {
     CInteractObject::vfunc_3(nState);
-    if (!(m_spRow == 0) && !m_ent.FUN_1408b70b0(0))
+    if (m_spRow == 0)
+        return;
+    if (m_ent.FUN_1408b70b0(0))
+        return;
+    if (m_nState == 0)
     {
-        if (m_nState == 0)
-        {
-            FUN_1413fe910();
-            FUN_1413fe9a0(5000);
-        }
-        else if (m_nState == 1)
-        {
-            FUN_1413fe910();
-            FUN_1413fe9a0(5000);
-        }
-        else
-        {
-            FUN_1413fe9a0(0);
-        }
-        if (m_nState == 2)
-        {
-            unsigned char bFlag = 0;
-            FUN_14098c6e0(m_ent.FUN_1408a9280(), 0xa0b6b179, &bFlag);
-        }
-        else
-        {
-            unsigned char bFlag = 1;
-            FUN_14098c6e0(m_ent.FUN_1408a9280(), 0xa0b6b179, &bFlag);
-            unsigned bFirst = m_nState == 0;
-            CString* pAsset = bFirst == 0 ? &m_strAssetB : &m_strAssetA;
-            FUN_1413ff690(*pAsset);
-            int nCollision;
-            if (bFirst == 0)
-                nCollision = m_spRow->m_mesh.m_nReactableCollision;
-            else
-                nCollision = m_spRow->m_mesh.m_nNormalCollision;
-            FUN_1413ff800(nCollision);
-        }
+        FUN_1413fe910();
+        FUN_1413fe9a0(5000);
     }
+    else if (m_nState == 1)
+    {
+        FUN_1413fe910();
+        FUN_1413fe9a0(5000);
+    }
+    else
+    {
+        FUN_1413fe9a0(0);
+    }
+    if (m_nState == 2)
+    {
+        unsigned char bFlag = 0;
+        FUN_14098c6e0(m_ent.FUN_1408a9280(), 0xa0b6b179, &bFlag);
+        return;
+    }
+    unsigned char bFlag = 1;
+    FUN_14098c6e0(m_ent.FUN_1408a9280(), 0xa0b6b179, &bFlag);
+    unsigned bFirst = m_nState == 0;
+    CString* pAsset = bFirst != 0 ? &m_strAssetA : &m_strAssetB;
+    FUN_1413ff690(*pAsset);
+    int nCollision;
+    if (bFirst != 0)
+        nCollision = m_spRow->m_mesh.m_nNormalCollision;
+    else
+        nCollision = m_spRow->m_mesh.m_nReactableCollision;
+    FUN_1413ff800(nCollision);
 }
 
 // @0x1413ff0f0
@@ -973,8 +928,9 @@ void CInteractMeshObject::vfunc_9()
     FUN_1413ff8a0();
 }
 
+void FUN_140ae1df0(const Vector3& src, NxVec3& dst);   // copy a Vector3 into an NxVec3
+
 // @0x1413ff170
-// MS2-FUNCTIONAL: PhysX descriptor setup written with the SDK's own members
 void CInteractMeshObject::MakeNxBoxController()
 {
     if (m_pActor != 0)
@@ -982,21 +938,23 @@ void CInteractMeshObject::MakeNxBoxController()
     NxScene* pScene = FUN_1409f7ca0()->FUN_14168a1c0();
     if (pScene == 0)
         return;
-    Vector3 ptPos;
-    ptPos = m_vPos;
+    NxVec3 ptPos;
+    FUN_140ae1df0(m_vPos, ptPos);
     NxBoxShapeDesc box;
     box.dimensions.set(m_spRow->m_mesh.m_shapeDimension.x, m_spRow->m_mesh.m_shapeDimension.y, m_spRow->m_mesh.m_shapeDimension.z);
-    box.dimensions *= 0.01f;
-    box.dimensions *= 0.5f;
+    box.dimensions = box.dimensions * 0.01f * 0.5f;
     box.groupsMask.bits0 = 0xffffffff;
     box.shapeFlags &= 0xffedffff;
     NxActorDesc actorDesc;
+    actorDesc.body = NULL;
     actorDesc.shapes.pushBack(&box);
-    NxVec3 vPose(ptPos.x * 0.01f, ptPos.y * 0.01f, ptPos.z * 0.01f);
-    vPose.z += box.dimensions.z;
-    actorDesc.globalPose.t = vPose;
+    Vector3 vPos = m_vPos;
+    actorDesc.globalPose.t = NxVec3(vPos.x, vPos.y, vPos.z);
+    actorDesc.globalPose.t = actorDesc.globalPose.t * 0.01f;
+    actorDesc.globalPose.t.z += box.dimensions.z;
     actorDesc.globalPose.M.rotZ((m_vRot.z * 3.1415927f) / 180.0f);
-    NxVec3 vSet(m_vPos.x * 0.01f, m_vPos.y * 0.01f, m_vPos.z * 0.01f);
+    NxVec3 vSet(m_vPos.x, m_vPos.y, m_vPos.z);
+    vSet = vSet * 0.01f;
     vSet.z += m_spRow->m_mesh.m_shapeDimension.z * 0.01f * 0.5f;
     FUN_1409f7ca0()->FUN_14168a540(0);
     m_pActor = pScene->createActor(actorDesc);
@@ -1006,7 +964,10 @@ void CInteractMeshObject::MakeNxBoxController()
         NxU32 nShapes = m_pActor->getNbShapes();
         NxShape* const* ppShapes = m_pActor->getShapes();
         for (NxU32 i = 0; i < nShapes; ++i)
-            ppShapes[i]->setGroup(0);   // exe: NxShape slot 2 [rax+0x10] with edx=0, not setFlag
+        {
+            NxShape* pShape = ppShapes[i];
+            pShape->setGroup(0);   // exe: NxShape slot 2 [rax+0x10] with edx=0, not setFlag
+        }
         m_pActor->userData = m_spProp.FUN_140ae1920();
         m_pActor->setGlobalPosition(vSet);
     }
@@ -1036,21 +997,13 @@ void CInteractMeshObject::FUN_1413ff690(const CString& strAsset)
     if (m_nAssetType == 1)
     {
         efd::AssetID id;
-        alignas(8) char strBuf[sizeof(efd::utf8string)];   // FUN_1409989e0 / FUN_1408a8900 construct and destroy it: no implicit dtor
-        efd::utf8string& str = *reinterpret_cast<efd::utf8string*>(strBuf);
-        FUN_1409989e0(&str, strAsset);
-        FUN_140de0cb0(&id, &str);
-        FUN_1408a8900(&str);
+        id.SetURN((const char*)strAsset);
         FUN_140de8bd0(m_ent.FUN_1408a9280(), 0x770e5fc6, &id);
     }
     else if (m_nAssetType == 2)
     {
-        alignas(8) char strBuf[sizeof(efd::utf8string)];   // FUN_1409989e0 / FUN_1408a8900 construct and destroy it: no implicit dtor
-        efd::utf8string& str = *reinterpret_cast<efd::utf8string*>(strBuf);
-        FUN_1409989e0(&str, strAsset);
-        egf::EntityID idEnt = *FUN_1408b76f0(m_ent.FUN_1408a9280());
-        FUN_141b6f910()->FUN_1409a1fc0(idEnt, &str, 1.0f);
-        FUN_1408a8900(&str);
+        efd::utf8string str(strAsset);
+        FUN_141b6f910()->FUN_1409a1fc0(*FUN_1408b76f0(m_ent.FUN_1408a9280()), str, 1.0f, false);
     }
 }
 
@@ -1100,46 +1053,47 @@ void CInteractTelescopeObject::vfunc_2(Unk_InteractMsg* pMsg)
     Unk_IoPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pPlayer == 0)
         return;
-    m_ent.FUN_1408b6ec0(pPlayer->FUN_141529900()->FUN_1408a9090());
-    if (m_ent.FUN_1408a9090() == 0)
-        return;
-    m_bActive = 1;
-    FUN_141276180(s_strUseTelescope, CString(""));
-    FUN_1422b9fd0(FUN_1408e57f0(), 0x6200041);
-    CStringW strDesc;
-    Unk_IoHelp* pHelp = FUN_14136f290(0x4e52);
-    if (pHelp != 0)
+    m_ent.FUN_1408b6ec0(pPlayer->FUN_141529900());
+    if (m_ent.FUN_1408a9090() != 0)
     {
-        CStringW strTitle = GetStringCommon(0x666);
-        if (*FUN_140a58500(FUN_1409a8b10()) != 0)
-            strTitle = FUN_1409331f0()->FUN_14142d760(0x49409, 2);
-        pHelp->FUN_141907f80(9, strDesc);
-        pHelp->FUN_141907d60(3, strTitle, GetStringCommon(0x667));
-        FUN_140939a10()->FUN_140da4e40(CStringW(L"NotifyCutSceneCinematicSkip"),
-                                       Delegate<void(NotifyObject*)>(this, &CInteractTelescopeObject::OnCutSceneSkip));
+        m_bActive = 1;
+        FUN_141276180(s_strUseTelescope, "");
+        FUN_1422b9fd0(FUN_1408e57f0(), 0x6200041);
+        CStringW strDesc;
+        Unk_IoHelp* pHelp = FUN_14136f290(0x4e52);
+        if (pHelp != 0)
+        {
+            CStringW strTitle = GetStringCommon(0x666);
+            if (*FUN_140a58500(FUN_1409a8b10()) != 0)
+                strTitle = FUN_1409331f0()->FUN_14142d760(0x49409, 2);
+            pHelp->FUN_141907f80(9, strDesc);
+            pHelp->FUN_141907d60(3, strTitle, GetStringCommon(0x667));
+            FUN_140939a10()->FUN_140da4e40(CStringW(L"NotifyCutSceneCinematicSkip"),
+                                           Delegate<void(NotifyObject*)>(this, &CInteractTelescopeObject::OnCutSceneSkip));
+        }
+        Unk_IoColour colA;
+        Unk_IoColour colB;
+        FUN_1406c4340(&colA.x, 0.0f, 0.0f, 0.0f);
+        FUN_1406c4340(&colB.x, 0.0f, 0.0f, 0.0f);
+        bool bFilter;
+        bool bColor;
+        float nFilterA, nFilterB, nColA, nColB, nColC;
+        FUN_1408a20a0(m_ent.FUN_1408a9280(), 0x4c87bc48, &bFilter);
+        FUN_140b27ec0(m_ent.FUN_1408a9280(), 0x22a89b35, &colA);
+        FUN_140961880(m_ent.FUN_1408a9280(), 0x65832be6, &nFilterA);
+        FUN_140961880(m_ent.FUN_1408a9280(), 0xf8696656, &nFilterB);
+        unsigned nFilterColor = ((int)(colA.x * 255.0f) & 0xffU) << 16 | 0xff000000 | ((int)(colA.y * 255.0f) & 0xffU) << 8 |
+                                ((int)(colA.z * 255.0f) & 0xffU);
+        FUN_1408a20a0(m_ent.FUN_1408a9280(), 0x554eb57d, &bColor);
+        FUN_140b27ec0(m_ent.FUN_1408a9280(), 0x85eb5e6b, &colB);
+        FUN_140961880(m_ent.FUN_1408a9280(), 0x2c1b71fe, &nColA);
+        FUN_140961880(m_ent.FUN_1408a9280(), 0xc55896f7, &nColB);
+        FUN_140961880(m_ent.FUN_1408a9280(), 0xc9603b18, &nColC);
+        unsigned nColor = ((int)(colB.x * 255.0f) & 0xffU) << 16 | 0xff000000 | ((int)(colB.y * 255.0f) & 0xffU) << 8 |
+                          ((int)(colB.z * 255.0f) & 0xffU);
+        FUN_1409a8b00()->FUN_1409a4450(bFilter, nFilterA, nFilterB, nFilterColor);
+        FUN_1409a8b00()->FUN_1409a46a0(bColor, &nColor, nColA, nColB, nColC);
     }
-    Vector3 colA;
-    Vector3 colB;
-    FUN_1406c4340(&colA.x, 0.0f, 0.0f, 0.0f);
-    FUN_1406c4340(&colB.x, 0.0f, 0.0f, 0.0f);
-    bool bFilter = false;
-    bool bColor = false;
-    float nFilterA, nFilterB, nColA, nColB, nColC;
-    FUN_1408a20a0(m_ent.FUN_1408a9280(), 0x4c87bc48, &bFilter);
-    FUN_140b27ec0(m_ent.FUN_1408a9280(), 0x22a89b35, &colA);
-    FUN_140961880(m_ent.FUN_1408a9280(), 0x65832be6, &nFilterA);
-    FUN_140961880(m_ent.FUN_1408a9280(), 0xf8696656, &nFilterB);
-    unsigned nFilterColor = ((int)(colA.x * 255.0f) & 0xffU) << 16 | 0xff000000 | ((int)(colA.y * 255.0f) & 0xffU) << 8 |
-                            ((int)(colA.z * 255.0f) & 0xffU);
-    FUN_1408a20a0(m_ent.FUN_1408a9280(), 0x554eb57d, &bColor);
-    FUN_140b27ec0(m_ent.FUN_1408a9280(), 0x85eb5e6b, &colB);
-    FUN_140961880(m_ent.FUN_1408a9280(), 0x2c1b71fe, &nColA);
-    FUN_140961880(m_ent.FUN_1408a9280(), 0xc55896f7, &nColB);
-    FUN_140961880(m_ent.FUN_1408a9280(), 0xc9603b18, &nColC);
-    unsigned nColor = ((int)(colB.x * 255.0f) & 0xffU) << 16 | 0xff000000 | ((int)(colB.y * 255.0f) & 0xffU) << 8 |
-                      ((int)(colB.z * 255.0f) & 0xffU);
-    FUN_1409a8b00()->FUN_1409a4450(bFilter, nFilterA, nFilterB, nFilterColor);
-    FUN_1409a8b00()->FUN_1409a46a0(bColor, &nColor, nColA, nColB, nColC);
 }
 
 // @0x1413fff60
@@ -1147,18 +1101,17 @@ void CInteractTelescopeObject::OnCutSceneSkip(NotifyObject*)
 {
     FUN_140ad4b90()->FUN_141863460(0.0f);
     FUN_1422b9fd0(FUN_1408e57f0(), 0x620001d);
-    Unk_IoCutRef ref;
-    FUN_1403ed2d0()->FUN_141bd30a0(&ref);
+    Unk_IoCutRef ref = FUN_1403ed2d0()->FUN_141bd30a0();
     if (ref.FUN_1409657a0() != 0)
     {
-        Unk_IoCutData* pData = ref.FUN_140885340();
-        FUN_1409a8b00()->FUN_1409a4450(pData->m_b1fd, pData->m_n204, pData->m_n208, pData->m_n200);
-        FUN_1409a8b00()->FUN_1409a46a0(pData->m_b20c, &pData->m_n210, pData->m_n214, pData->m_n218, pData->m_n21c);
+        FUN_1409a8b00()->FUN_1409a4450(ref.FUN_140885340()->m_b1fd, ref.FUN_140885340()->m_n204, ref.FUN_140885340()->m_n208,
+                                       ref.FUN_140885340()->m_n200);
+        FUN_1409a8b00()->FUN_1409a46a0(ref.FUN_140885340()->m_b20c, &ref.FUN_140885340()->m_n210, ref.FUN_140885340()->m_n214,
+                                       ref.FUN_140885340()->m_n218, ref.FUN_140885340()->m_n21c);
     }
     FUN_140939a10()->FUN_140da4eb0(CStringW(L"NotifyCutSceneCinematicSkip"),
                                    Delegate<void(NotifyObject*)>(this, &CInteractTelescopeObject::OnCutSceneSkip));
     m_bActive = 0;
-    ref.FUN_1408850f0();
 }
 
 // ================================================================================================================
@@ -1180,11 +1133,7 @@ CInteractUIObject::~CInteractUIObject()
 void CInteractUIObject::vfunc_2(Unk_InteractMsg* pMsg)
 {
     CInteractObject::vfunc_2(pMsg);
-    char ref[16];
-    UISwfEntity* pEntity = reinterpret_cast<UISwfEntity*>(
-        FUN_140b634c0(FUN_140b632f0()->FUN_1422d41b0(ref, m_spRow->m_ui.m_strSwf)));
-    UIDialog* pDialog = dynamic_cast<UIDialog*>(pEntity);
-    FUN_140b62af0(ref);
+    UIDialog* pDialog = dynamic_cast<UIDialog*>(FUN_140b634c0(FUN_140b632f0()->FUN_1422d41b0(m_spRow->m_ui.m_strSwf)));
     if (pDialog != 0)
     {
         if (m_spRow->m_ui.m_strValue.GetLength() != 0)
@@ -1200,28 +1149,20 @@ void CInteractUIObject::vfunc_11()
     CInteractObject::vfunc_11();
     if (m_nDialogId == 0)
         return;
-    if (FUN_1403ed2b0()->FUN_141adc940(m_nDialogId) == 0)
-    {
-        Unk_IoPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
-        if (pPlayer == 0)
-        {
-            FUN_1403ed2b0()->FUN_141adc5d0(m_nDialogId);
-        }
-        else
-        {
-            float fRange = GetRow()->m_validate.m_fInteractionDistance;
-            Vector3 ptSelf = GetPos();
-            Vector3 ptPlayer;
-            pPlayer->FUN_1416767d0(&ptPlayer);
-            float fDist = ptPlayer.FUN_140965c40(ptSelf).FUN_140967ac0();
-            if (fRange < fDist)
-                FUN_1403ed2b0()->FUN_141adc5d0(m_nDialogId);
-        }
-    }
-    else
+    if (FUN_1403ed2b0()->FUN_141adc940(m_nDialogId) != 0)
     {
         m_nDialogId = 0;
+        return;
     }
+    Unk_IoPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
+    if (pPlayer == 0)
+    {
+        FUN_1403ed2b0()->FUN_141adc5d0(m_nDialogId);
+        return;
+    }
+    float fRange = GetRow()->m_validate.m_fInteractionDistance;
+    if (pPlayer->FUN_1416767d0().FUN_140965c40(GetPos()).FUN_140967ac0() > fRange)
+        FUN_1403ed2b0()->FUN_141adc5d0(m_nDialogId);
 }
 
 // ================================================================================================================
@@ -1253,15 +1194,9 @@ int CInteractDisplayImage::vfunc_1(Unk_Entity* pEntity, int nState)
 {
     if (CInteractObject::vfunc_1(pEntity, nState) == 0)
         return 0;
-    if (FUN_14025e7b0()->m_cfg.FUN_1402c4c90(0x32) == 0)
-    {
-        if (FUN_140166410()->FUN_14036d570(0x3f) == 1)
-        {
-            m_pThread = AfxBeginThread(GetURLFromGameRanking, this, 0, 0, 0, 0);
-            return 1;
-        }
-    }
-    if (FUN_140166410()->FUN_14036e4c0() != 0)
+    if (FUN_14025e7b0()->m_cfg.FUN_1402c4c90(0x32) == 0 && FUN_140166410()->FUN_14036d570(0x3f) == 1)
+        m_pThread = AfxBeginThread(GetURLFromGameRanking, this, 0, 0, 0, 0);
+    else if (FUN_140166410()->FUN_14036e4c0())
     {
         m_strUrl = "";
         FUN_141b794e0(FUN_140cc18a0(), m_strUrl, (const char*)m_spRow->m_displayUrl.m_strIndirectUrl);
@@ -1276,19 +1211,27 @@ struct Unk_IoThreadScope { char m_buf[0x40]; };
 void FUN_141b6de20();
 void FUN_141b721f0(Unk_IoThreadScope* p, CString strName);
 void FUN_141b722b0(Unk_IoThreadScope* p);
-struct Unk_IoUrl { char m_buf[0x80]; };
-void FUN_1409208e0(Unk_IoUrl* p, std::wstring strUrl);
-int FUN_140920cf0(Unk_IoUrl* p, std::wstring strVerb, int n);
-int FUN_140922f20(Unk_IoUrl* p);
-void FUN_140922860(Unk_IoUrl* p, std::string* pBody);
-void FUN_140920b30(Unk_IoUrl* p);
-const char* FUN_14018ef70(std::string* p);
-CStringW FUN_140efe330(const char* psz, unsigned n);
+CStringW Unk_ArcWide(const wchar_t* sz, int n);              // 0x140efe330
+// The scoped log line of util.cpp ("<tag> begin" / "<tag> end").
+class Unk_UtilLogScope
+{
+public:
+    Unk_UtilLogScope(CStringA kTag);                            // 0x141b721f0
+    ~Unk_UtilLogScope();                                        // 0x141b722b0
+private:
+    DWORD m_dwThread;
+    CStringA m_kTag;
+};
 
 // ---- ranking / xml / image stand-ins used by the display image ----
-struct Unk_IoXmlElem { char m_buf[0x90]; };
-Unk_IoXmlElem* FUN_14086f2f0(Unk_IoXmlElem* p, const char* pszName);       // TiXmlElement(const char*)
-void FUN_14086f450(Unk_IoXmlElem* p);                                       // ~TiXmlElement
+class TiXmlElement
+{
+public:
+    TiXmlElement(const char* pszName);                                      // 0x14086f2f0
+    ~TiXmlElement();                                                        // 0x14086f450
+    void* m_buf[0x90 / 8];
+};
+typedef TiXmlElement Unk_IoXmlElem;
 const char* FUN_1408782b0(Unk_IoXmlElem* p, const char* pszXml, void* pData, int nEncoding);   // Parse
 CString FUN_14015f710(Unk_IoXmlElem* p, const char* pszName, CString strDefault);
 CStringW FUN_1401bf530(Unk_IoXmlElem* p, const char* pszName, CStringW strDefault);
@@ -1308,26 +1251,21 @@ CString FUN_14016a600(const wchar_t* psz, unsigned nCodePage);
 CString FUN_141029590(unsigned __int64 nId, const CString& strKey, const CString& strName, CString strExtra);
 CString FUN_141028be0(unsigned __int64 nId, const CString& strPortrait, int nFlag, CString strExtra);
 CString FUN_1410299f0(unsigned __int64 nA, const CString& strB, int nId, const CString& strName, unsigned char bFlag);
-class Unk_IoPosterSvc { public: void FUN_1404d2220(CStringW* pOut, int nId); };
+class Unk_IoPosterSvc { public: CStringW FUN_1404d2220(int nId); };
 unsigned __int64 FUN_1404ccbd0(Unk_IoPosterSvc* p);
 struct Unk_IoPosterHolder { char m_pad_00[8]; Unk_IoPosterSvc m_svc; };
 Unk_IoPosterHolder* FUN_1403ed290();
 
-struct Unk_IoTexPtr { void* m_p; };
-void FUN_14097ed60(Unk_IoTexPtr* p, void* pRaw);            // ctor from a raw pointer (AddRef when set)
-void FUN_14097f4a0(Unk_IoTexPtr* p);
-void* FUN_14097fbf0(Unk_IoTexPtr* p);
-void FUN_14186bd30(Unk_IoTexPtr* pOut, const CStringW& strPath, int nFlag, int nZero);
-unsigned char FUN_1410b21a0(Unk_IoTexPtr* p, int nZero);
+NiTexturePtr FUN_14186bd30(const CStringW& strPath, int nSize, bool bPng);   // LoadUgcTexture
 class Unk_IoTexMgr
 {
 public:
-    void FUN_141888770(Unk_EntRef ent, void* pTex);
-    void FUN_1418897a0(Unk_IoTexPtr* pOut);
+    void FUN_141888770(Unk_EntRef ent, NiTexture* pTex);
+    NiTexturePtr FUN_1418897a0();
     void FUN_141880230(CString strName, int nPosterId);
 };
 Unk_IoTexMgr* FUN_14052d220();
-class Unk_IoPosterChk { public: char FUN_140a25840(int n, CStringW str); };
+class Unk_IoPosterChk { public: bool FUN_140a25840(int n, CStringW str); };
 Unk_IoPosterChk* FUN_1409c1730();
 
 // ranking
@@ -1357,38 +1295,28 @@ void CInteractDisplayImage::FUN_141400800(const CStringW& strName)
     CString strKey = FUN_140390ea0(strName, 0);
     if (spRow->m_displayUrl.m_nType == 1 || m_spRow->m_displayUrl.m_nType == 3)
     {
-        Unk_IoXmlElem elem;
-        FUN_14086f2f0(&elem, "guild");
-        if (FUN_1408782b0(&elem, strKey, 0, 1) == 0)
-        {
-            FUN_14086f450(&elem);
+        Unk_IoXmlElem elem("guild");
+        const char* pEnd = FUN_1408782b0(&elem, strKey, 0, 1);
+        if (pEnd == 0)
             return;
-        }
         CString strMark = FUN_14015f710(&elem, "mark", CString(""));
         unsigned __int64 nSn = FUN_1414038e0(&elem, "sn", 0);
         m_strGuildName = FUN_1401bf530(&elem, "name", CStringW(L""));
         m_nGuildRank = FUN_140197350(&elem, "rank", 0);
         m_nGuildTrophy = FUN_140197350(&elem, "trophy", 0);
         m_nGuildScore = FUN_140197350(&elem, "score", 0);
-        if (strMark.GetLength() < 1 || nSn == 0)
-        {
-            FUN_14086f450(&elem);
+        if (strMark.GetLength() < 1 || nSn < 1)
             return;
-        }
         CString strPath = FUN_141029590(nSn, strMark, GetName(), CString(""));
         if (strPath.GetLength() > 0)
             FUN_1414017b0(strPath);
-        FUN_14086f450(&elem);
     }
     else if (spRow->m_displayUrl.m_nType == 2)
     {
-        Unk_IoXmlElem elem;
-        FUN_14086f2f0(&elem, "character");
-        if (FUN_1408782b0(&elem, strKey, 0, 1) == 0)
-        {
-            FUN_14086f450(&elem);
+        Unk_IoXmlElem elem("character");
+        const char* pEnd = FUN_1408782b0(&elem, strKey, 0, 1);
+        if (pEnd == 0)
             return;
-        }
         CString strPortrait = FUN_14015f710(&elem, "portrait", CString(""));
         unsigned __int64 nSn = FUN_1414038e0(&elem, "sn", 0);
         m_strCharName = FUN_1401bf530(&elem, "name", CStringW(L""));
@@ -1397,17 +1325,13 @@ void CInteractDisplayImage::FUN_141400800(const CStringW& strName)
         CString strPath = FUN_141028be0(nSn, strPortrait, 1, GetName());
         if (strPath.GetLength() > 0)
             FUN_1414017b0(strPath);
-        FUN_14086f450(&elem);
     }
     else if (spRow->m_displayUrl.m_nType == 4)
     {
-        Unk_IoXmlElem elem;
-        FUN_14086f2f0(&elem, "character");
-        if (FUN_1408782b0(&elem, strKey, 0, 1) == 0)
-        {
-            FUN_14086f450(&elem);
+        Unk_IoXmlElem elem("character");
+        const char* pEnd = FUN_1408782b0(&elem, strKey, 0, 1);
+        if (pEnd == 0)
             return;
-        }
         CString strPortrait = FUN_14015f710(&elem, "portrait", CString(""));
         unsigned __int64 nSn = FUN_1414038e0(&elem, "sn", 0);
         m_strCharName = FUN_1401bf530(&elem, "name", CStringW(L""));
@@ -1416,17 +1340,13 @@ void CInteractDisplayImage::FUN_141400800(const CStringW& strName)
         CString strPath = FUN_141028be0(nSn, strPortrait, 1, GetName());
         if (strPath.GetLength() > 0)
             FUN_1414017b0(strPath);
-        FUN_14086f450(&elem);
     }
     else if (spRow->m_displayUrl.m_nType == 5)
     {
-        Unk_IoXmlElem elem;
-        FUN_14086f2f0(&elem, "character");
-        if (FUN_1408782b0(&elem, strKey, 0, 1) == 0)
-        {
-            FUN_14086f450(&elem);
+        Unk_IoXmlElem elem("character");
+        const char* pEnd = FUN_1408782b0(&elem, strKey, 0, 1);
+        if (pEnd == 0)
             return;
-        }
         CString strPortrait = FUN_14015f710(&elem, "portrait", CString(""));
         unsigned __int64 nSn = FUN_1414038e0(&elem, "sn", 0);
         m_strCharName = FUN_1401bf530(&elem, "name", CStringW(L""));
@@ -1435,7 +1355,6 @@ void CInteractDisplayImage::FUN_141400800(const CStringW& strName)
         CString strPath = FUN_141028be0(nSn, strPortrait, 1, GetName());
         if (strPath.GetLength() > 0)
             FUN_1414017b0(strPath);
-        FUN_14086f450(&elem);
     }
 }
 
@@ -1444,15 +1363,9 @@ void CInteractDisplayImage::FUN_141401380(Unk_IoRankPtr spRank)
 {
     MS2Ptr<CInteractObjectData> spRow = GetRow();
     if (spRow == 0)
-    {
-        spRank.FUN_140b2da40();
         return;
-    }
     if (spRank == 0)
-    {
-        spRank.FUN_140b2da40();
         return;
-    }
     CString strKey = FUN_14016a600(spRank.FUN_140b2e1e0()->m_str78, 0);
     unsigned __int64 nGuildSn = spRank.FUN_140b2e1e0()->m_u20;
     unsigned __int64 nCharSn = spRank.FUN_140b2e1e0()->m_u30;
@@ -1466,18 +1379,20 @@ void CInteractDisplayImage::FUN_141401380(Unk_IoRankPtr spRank)
     m_nCharBuildPoint = spRank.FUN_140b2e1e0()->m_nScore;
     m_nCharScore = spRank.FUN_140b2e1e0()->m_nScore;
     CString strPath("");
-    int nType = m_spRow->m_displayUrl.m_nType;
-    if (nType == 1 || nType == 3)
+    switch (spRow->m_displayUrl.m_nType)
     {
+    case 1:
+    case 3:
         strPath = FUN_141029590(nGuildSn, strKey, GetName(), CString(""));
-    }
-    else if (nType == 2 || (nType >= 4 && nType <= 5))
-    {
+        break;
+    case 2:
+    case 4:
+    case 5:
         strPath = FUN_141028be0(nCharSn, strKey, 1, GetName());
+        break;
     }
     if (strPath.GetLength() > 0)
         FUN_1414017b0(strPath);
-    spRank.FUN_140b2da40();
 }
 
 // @0x1414017b0
@@ -1486,57 +1401,37 @@ void CInteractDisplayImage::FUN_1414017b0(const CString& strFile)
     CStringW strPath = FUN_14016a730(strFile, 0);
     if (m_ent.FUN_1408a9090() == 0)
         return;
-    Unk_IoTexPtr texA;
-    FUN_14097ed60(&texA, 0);
+    NiTexturePtr spTexA(0);
     if (_waccess(strPath, 0) == 0)
     {
-        Unk_IoTexPtr texB;
-        FUN_14186bd30(&texB, strPath, 0x100, 0);
-        if (FUN_1410b21a0(&texB, 0) != 0)
-        {
-            FUN_14097f4a0(&texB);
-            FUN_14097f4a0(&texA);
+        NiTexturePtr spTex = FUN_14186bd30(strPath, 0x100, false);
+        if (spTex == 0)
             return;
-        }
-        FUN_14052d220()->FUN_141888770(m_ent, FUN_14097fbf0(&texB));
-        FUN_14097f4a0(&texB);
+        FUN_14052d220()->FUN_141888770(m_ent, spTex);
     }
-    FUN_14097f4a0(&texA);
 }
 
 // @0x141401920
 UINT CInteractDisplayImage::GetURLFromIndirectURL(LPVOID pParam)
 {
-    CInteractDisplayImage* pThis = static_cast<CInteractDisplayImage*>(pParam);
     FUN_141b6de20();
-    Unk_IoThreadScope scope;
-    FUN_141b721f0(&scope, CString("CInteractDisplayImage::GetURLFromIndirectURL"));
-    UINT nRet = 0;
-    if (pThis != 0)
+    Unk_UtilLogScope scope(CString("CInteractDisplayImage::GetURLFromIndirectURL"));
+    CInteractDisplayImage* pThis = static_cast<CInteractDisplayImage*>(pParam);
+    if (pThis == 0)
+        return 0;
+    CString strName = pThis->GetName();
+    std::wstring strUrl(CStringW(FUN_14016a730(pThis->m_strUrl, 0)));
+    CWinHttpClient client(strUrl);
+    if (client.FUN_140920cf0(L"GET", false))
     {
-        CString strName = pThis->GetName();
-        std::wstring strUrl(CStringW(FUN_14016a730(pThis->m_strUrl, 0)));
-        Unk_IoUrl url;
-        FUN_1409208e0(&url, strUrl);
-        if (FUN_140920cf0(&url, std::wstring(L"GET"), 0) != 0)
-        {
-            if (FUN_140922f20(&url) != 0)
-            {
-                nRet = 0;
-                FUN_140920b30(&url);
-                FUN_141b722b0(&scope);
-                return nRet;
-            }
-            std::string strBody;
-            FUN_140922860(&url, &strBody);
-            CStringW strResult = FUN_140efe330(FUN_14018ef70(&strBody), 0);
-            if (FUN_1403ed2d0() != 0)
-                FUN_1403ed2d0()->FUN_141bdb030(CString(strName), CStringW(strResult));
-        }
-        FUN_140920b30(&url);
+        if (client.FUN_140922f20() != 0)
+            return 0;
+        std::wstring strBody = client.GetResponseContent();
+        CStringW strResult = Unk_ArcWide(strBody.c_str(), 0);
+        if (FUN_1403ed2d0() != 0)
+            FUN_1403ed2d0()->FUN_141bdb030(CString(strName), CStringW(strResult));
     }
-    FUN_141b722b0(&scope);
-    return nRet;
+    return 0;
 }
 
 // @0x141401c20
@@ -1588,7 +1483,6 @@ UINT CInteractDisplayImage::GetURLFromGameRanking(LPVOID pParam)
             Unk_IoRankPtr spTemp;
             FUN_140b2e980()->FUN_140b2b1e0(&spTemp, &key, chRank - '0', 0);
             spRank = spTemp;
-            spTemp.FUN_140b2da40();
             ++nTry;
         } while (spRank.FUN_140efcde0() == 0);
         FUN_140b436f0(&param);
@@ -1598,7 +1492,6 @@ UINT CInteractDisplayImage::GetURLFromGameRanking(LPVOID pParam)
         Unk_IoRankPtr spCopy(spRank);
         FUN_1403ed2d0()->FUN_141bdb0f0(CString(strName), spCopy);
     }
-    spRank.FUN_140b2da40();
     FUN_140b35780(&key);
     FUN_141b722b0(&scope);
     return 0;
@@ -1675,28 +1568,23 @@ int CInteractGatheringObject::vfunc_1(Unk_Entity* pEntity, int nState)
 void CInteractGatheringObject::vfunc_2(Unk_InteractMsg* pMsg)
 {
     CInteractMeshObject::vfunc_2(pMsg);
-    short sType = pMsg->Stream()->ReadShort();
-    int nCount = pMsg->Stream()->ReadInt();
+    int sType = (&pMsg->m_stream)->ReadShort();
+    int nCount = (&pMsg->m_stream)->ReadInt();
     vfunc_3(0);
-    int nNow = FUN_140869420();
-    m_nRespawnTick = nNow + m_spRow->m_nResetTime;
+    m_nRespawnTick = FUN_140869420() + m_spRow->m_nResetTime;
     Unk_IoPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pPlayer != 0)
     {
-        void* pMem = operator new(0x38);
-        Unk_IoStateData* pData = 0;
-        if (pMem != 0)
-            pData = FUN_1417d0be0(pMem);
-        Unk_IoStateSp spData;
-        FUN_140964220(&spData, pData);
+        Unk_IoStateSp spData(new Unk_IoStateData);
         FUN_1409659d0(&spData)->m_nId = GetRowId();
         FUN_1409659d0(&spData)->m_strName = GetName();
         FUN_1409659d0(&spData)->m_nFlag = 1;
-        int nMsg = 0x8c;
+        int nMsg;
         if (sType == 0)
             nMsg = 0x8b;
+        else
+            nMsg = 0x8c;
         pPlayer->SendState(0x19, FUN_140965870(&spData), nMsg, 0);
-        FUN_140964bc0(&spData);
     }
     int nGatherId = m_spRow->m_gathering.m_nReceipeId;
     if (nGatherId != 0 && sType == 0)
@@ -1726,7 +1614,7 @@ void CInteractGatheringObject::vfunc_6(Unk_InteractCursor* pOut)
 {
     CInteractObject::vfunc_6(pOut);
     pOut->m_nCursor = FUN_1403ef660(FUN_140302b00())->FUN_1404240e0(pOut->m_nCursor);
-    pOut->m_strHint = GetStringCommonByKey(CStringW(L"s_action_gathering"));
+    pOut->m_strHint = GetStringCommonByKey(L"s_action_gathering");
     pOut->m_strHint += FUN_1403ef660(FUN_140302b00())->FUN_140424150();
 }
 
@@ -1748,28 +1636,15 @@ int CInteractGatheringObject::vfunc_7()
     Unk_IoPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pPlayer == 0)
         return 0;
-    int nGatherId = m_spRow->m_gathering.m_nReceipeId;
-    if (nGatherId != 0)
+    if (m_spRow->m_gathering.m_nReceipeId != 0)
     {
-        Unk_IoGatherIt it;
-        FUN_1409670c0()->FUN_14066aa00(&it, m_spRow->m_gathering.m_nReceipeId);
-        if (it.FUN_14066d900() != 0)
-        {
-            it.FUN_14066d5b0();
+        CMasteryTable::ReceipePtr spReceipe = CMasteryTable::GetInstance()->Find(m_spRow->m_gathering.m_nReceipeId);
+        if (!spReceipe)
             return 0;
-        }
-        unsigned nLevel = pPlayer->FUN_141662750(it.FUN_14066d9a0()->m_nLevel);
-        if (nLevel < it.FUN_14066d9a0()->m_nMinLevel)
-        {
-            it.FUN_14066d5b0();
+        if (pPlayer->FUN_141662750(spReceipe->m_nType) < spReceipe->m_nRequireMastery)
             return 0;
-        }
         if (FUN_140e5ca20()->FUN_140b6d330(m_spRow->m_gathering.m_nReceipeId) == 0)
-        {
-            it.FUN_14066d5b0();
             return 0;
-        }
-        it.FUN_14066d5b0();
     }
     return 1;
 }
@@ -1779,12 +1654,11 @@ int CInteractGatheringObject::vfunc_16()
 {
     if (FUN_141402c90() == 0)
         return 0;
-    if (FUN_1409670c0()->FUN_14066bc40(m_spRow->m_gathering.m_nReceipeId) == 3)
+    if (CMasteryTable::GetInstance()->LimitState(m_spRow->m_gathering.m_nReceipeId) == 3)
         return 0;
     return 1;
 }
 
-// MS2-FUNCTIONAL: the gathering iterator Unk_IoGatherIt is a buffer placeholder released by hand (GS cookie frame); the exe has a real iterator object with a dtor (EH frame) and returns through a stored result
 // @0x141402b40
 int CInteractGatheringObject::FUN_141402b40()
 {
@@ -1792,19 +1666,11 @@ int CInteractGatheringObject::FUN_141402b40()
         return 0;
     if (m_spRow->m_gathering.m_nReceipeId != 0)
     {
-        Unk_IoGatherIt it;
-        FUN_1409670c0()->FUN_14066aa00(&it, m_spRow->m_gathering.m_nReceipeId);
-        if (it.FUN_14066d900() != 0)
-        {
-            it.FUN_14066d5b0();
+        CMasteryTable::ReceipePtr spReceipe = CMasteryTable::GetInstance()->Find(m_spRow->m_gathering.m_nReceipeId);
+        if (!spReceipe)
             return 0;
-        }
         if (FUN_140e5ca20()->FUN_140b6d330(m_spRow->m_gathering.m_nReceipeId) == 0)
-        {
-            it.FUN_14066d5b0();
             return 0;
-        }
-        it.FUN_14066d5b0();
     }
     return 1;
 }
@@ -1864,7 +1730,6 @@ int CInteractGuildPosterObject::FUN_141402e60()
     return m_spRow->m_guild.m_nHousePosterId;
 }
 
-// MS2-FUNCTIONAL: string temporaries differ: the exe builds the CStringW copy for FUN_140a25840 after the URL and keeps the texture handle as a by-value object (one CStringA dtor fewer, EH states shifted); the raw texture handle here is released by hand
 // @0x141402eb0
 void CInteractGuildPosterObject::FUN_141402eb0(unsigned char bShow)
 {
@@ -1872,17 +1737,13 @@ void CInteractGuildPosterObject::FUN_141402eb0(unsigned char bShow)
         return;
     int nPoster = FUN_141402e60();
     unsigned __int64 nSvc = FUN_1404ccbd0(&FUN_1403ed290()->m_svc);
-    CStringW strRaw;
-    FUN_1403ed290()->m_svc.FUN_1404d2220(&strRaw, nPoster);
-    CString strUrl = FUN_1410299f0(nSvc, FUN_14016a600(strRaw, 0), nPoster, GetName(), bShow);
-    CStringW strFile = FUN_14016a730(strUrl, 0);
+    CStringW strRaw = FUN_1403ed290()->m_svc.FUN_1404d2220(nPoster);
+    CStringW strFile = FUN_14016a730(FUN_1410299f0(nSvc, FUN_14016a600(strRaw, 0), nPoster, GetName(), bShow), 0);
     if (FUN_1409c1730()->FUN_140a25840(5, CStringW(strRaw)) == 1)
     {
-        Unk_IoTexPtr tex;
-        FUN_14052d220()->FUN_1418897a0(&tex);
-        if (FUN_14097fbf0(&tex) != 0)
-            FUN_14052d220()->FUN_141888770(m_ent, FUN_14097fbf0(&tex));
-        FUN_14097f4a0(&tex);
+        NiTexturePtr spTex = FUN_14052d220()->FUN_1418897a0();
+        if (spTex)
+            FUN_14052d220()->FUN_141888770(m_ent, spTex);
     }
     else
     {
@@ -1897,22 +1758,14 @@ void CInteractGuildPosterObject::FUN_141403180(CStringW strFile)
         return;
     if (strFile.GetLength() < 1)
         return;
-    Unk_IoTexPtr texA;
-    FUN_14097ed60(&texA, 0);
+    NiTexturePtr spTexA(0);
     if (_waccess(strFile, 0) == 0)
     {
-        Unk_IoTexPtr texB;
-        FUN_14186bd30(&texB, strFile, 0x100, 0);
-        if (FUN_1410b21a0(&texB, 0) != 0)
-        {
-            FUN_14097f4a0(&texB);
-            FUN_14097f4a0(&texA);
+        NiTexturePtr spTex = FUN_14186bd30(strFile, 0x100, false);
+        if (spTex == 0)
             return;
-        }
-        FUN_14052d220()->FUN_141888770(m_ent, FUN_14097fbf0(&texB));
-        FUN_14097f4a0(&texB);
+        FUN_14052d220()->FUN_141888770(m_ent, spTex);
     }
-    FUN_14097f4a0(&texA);
 }
 
 // ================================================================================================================
@@ -1998,12 +1851,19 @@ void CInteractWatchTowerObject::vfunc_3(int nState)
     }
 }
 
-// @0x141403f20
-float FUN_141403f20(Vector3* pA, Vector3* pB)
+// NiPoint3 taken by value: efd::Point3 results convert through the out-of-line NiPoint3(const efd::Point3&) and are copied into the argument.
+struct Unk_IoNiPoint3 : public Vector3
 {
-    pA->z = 0.0f;
-    pB->z = 0.0f;
-    return pA->FUN_140965c40(*pB).FUN_140967ac0();
+    Unk_IoNiPoint3(const Vector3& pt);                      // 0x14027dcf0
+};
+MS2_CHECK_SIZE(Unk_IoNiPoint3, 12);
+
+// @0x141403f20
+float FUN_141403f20(Unk_IoNiPoint3 a, Unk_IoNiPoint3 b)
+{
+    a.z = 0.0f;
+    b.z = 0.0f;
+    return a.FUN_140965c40(b).FUN_140967ac0();
 }
 
 // @0x1414035d0
@@ -2014,32 +1874,25 @@ void CInteractWatchTowerObject::vfunc_11()
     Unk_IoPlayer* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pPlayer != 0)
     {
-        Vector3 ptSelf = GetPos();
-        Vector3 ptPlayer;
-        pPlayer->GetPosition(&ptPlayer);
-        float fDist = FUN_141403f20(&ptPlayer, &ptSelf);
+        float fDist = FUN_141403f20(pPlayer->GetPosition(), GetPos());
         if (fDist < 2000.0f)
             bNear = 1;
     }
-    if (m_bNear != bNear)
+    if (m_bNear == bNear)
+        return;
+    m_bNear = bNear;
+    if (m_bNear != 0)
     {
-        m_bNear = bNear;
-        if (m_bNear == 0)
-        {
-            FUN_1413fe9a0(0);
-            FUN_1413fdc50();
-        }
-        else
-        {
-            FUN_1413fe910();
-            FUN_1413fda50();
-            const CString* pAsset;
-            if (m_nState == 0)
-                pAsset = &m_strAssetA;
-            else
-                pAsset = &m_strAssetB;
-            FUN_1413ff690(*pAsset);
-        }
+        FUN_1413fe910();
+        FUN_1413fda50();
+        int bFirst = m_nState == 0;
+        const CString* pAsset = bFirst != 0 ? &m_strAssetA : &m_strAssetB;
+        FUN_1413ff690(*pAsset);
+    }
+    else
+    {
+        FUN_1413fe9a0(0);
+        FUN_1413fdc50();
     }
 }
 

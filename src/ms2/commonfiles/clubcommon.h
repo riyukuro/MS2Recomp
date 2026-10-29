@@ -134,7 +134,7 @@ public:
     void FUN_14020f5b0(int nBuffId, int nBuffLevel);   // set m_50/m_54 then vfunc_2(1)
     void FUN_14020f230(const CStringW& strName);           // set the club name
     void FUN_14020f3f0(__int64 n);                  // set m_90
-    void FUN_14020f720(__int64 nAccountId, __int64 nCharacterId, CStringW strName);   // set the leader, then vfunc_2(1)
+    void FUN_14020f720(__int64 nAccountId, __int64 nCharacterId, CStringW strName, int nUnused);   // set the leader, then vfunc_2(1); callers pass 1 as nUnused, which it never reads
     void FUN_1402107a0(const CStringW& strOldName, const CStringW& strNewName);   // rename a member
     CStringW FUN_14020f8c0();                       // leader name
     void FUN_14020fd80(CInPacket& packet);          // read the club
@@ -275,7 +275,7 @@ public:
     {
     public:
         ClubBuffData();
-        virtual ~ClubBuffData();
+        // ~ClubBuffData (0x140212480) is implicit: the exe dtor stores no vptr.
         void FUN_140211280(Unk_140165cf0* pElem);     // id, additionalEffectId, additionalEffectLevel
         int m_id;                                       // +0x18 "id"
         int m_1c;                                       // +0x1c

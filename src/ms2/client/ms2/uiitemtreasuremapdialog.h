@@ -59,7 +59,7 @@ private:
     bool m_bFree;                                                    // +0x198 the free appraise
     ATL::CAtlArray<MS2Ptr<CItem> > m_items;                          // +0x1a0 the treasure maps of the inventory
     MS2Ptr<CItem> m_spTarget;                                        // +0x1c0 the picked map
-    __int64 m_nTargetUid;                                            // +0x1d0 the map that is being appraised
+    unsigned __int64 m_nTargetUid;                                   // +0x1d0 the map that is being appraised
     MS2Ptr<ASMovieClip> m_board;                                     // +0x1d8 "m_board"
     MS2Ptr<Unk_140acd6e0> m_submit;                                  // +0x1e8 "m_submit"
     MS2Ptr<Unk_TmBag> m_itemBag;                                     // +0x1f8 "m_itemBag"

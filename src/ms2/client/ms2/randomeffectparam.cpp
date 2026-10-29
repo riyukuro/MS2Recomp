@@ -6,8 +6,8 @@
 // MS2-PIN: ??1CRandomEffectParam@@UEAA@XZ 0x1416f4ef0
 // MS2-PIN: ??1Unk_WeightedPicker@@QEAA@XZ 0x1416f4eb0
 // MS2-PIN: ?GetRTTI@CRandomEffect@@UEBAPEBVNiRTTI@@XZ 0x1416f5240
-// MS2-PIN: ??$make_pair@AEAHAEBI@std@@YA?AU?$pair@HI@0@AEAHAEBI@Z 0x1416f4d80
-// MS2-PIN: ??$?0AEAHAEBI$0A@@?$pair@HI@std@@QEAA@AEAHAEBI@Z 0x1416f4d20
+// MS2-PIN: ??$make_pair@AEAHAEBK@std@@YA?AU?$pair@HK@0@AEAHAEBK@Z 0x1416f4d80
+// MS2-PIN: ??$?0AEAHAEBK$0A@@?$pair@HK@std@@QEAA@AEAHAEBK@Z 0x1416f4d20
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\randomeffectparam.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
 #include "randomeffectparam.h"

@@ -86,7 +86,7 @@ class Unk_PvpTimerBlock
 {
 public:
     Unk_PvpTimerBlock() : m_timer(0x11, 0.75f, 0.25f, 2.25f, 10) {}     // 0x1412813f0
-    ~Unk_PvpTimerBlock() noexcept;                                      // 0x141281610
+    ~Unk_PvpTimerBlock();                                               // 0x141281610
 
     MS2_LAYOUT_FRIEND;
     Unk_PvpTimer m_timer;                                               // +0x00
@@ -140,7 +140,7 @@ class CPVPManager : public TSingleton<CPVPManager>
 {
 public:
     CPVPManager();                                                      // 0x141280b40
-    virtual ~CPVPManager();                                             // 0x141280be0
+    virtual ~CPVPManager() noexcept;                                    // 0x141280be0
 
     void Clear();                                                       // 0x141280c60
     void ForwardToEntries(void* pArgument);                             // 0x141280ca0

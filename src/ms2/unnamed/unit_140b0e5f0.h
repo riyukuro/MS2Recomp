@@ -35,7 +35,7 @@ public:
     CoupleEffectSystem(PCBase* pOwner, __int64 nPartnerId, int nCoupleType, int bLinked, CStringW strName, int nGemId);  // 0x140b0e5f0
     virtual ~CoupleEffectSystem();                          // 0x140b0e730 (??_G 0x140b0f440)
 
-    void FUN_140b0e7a0();                                   // per-tick update
+    void FUN_140b0e7a0(float);                                 // per-tick update
     void FUN_140b0ead0(__int64 nValue);                     // report a result to the server
     void FUN_140b0eba0(int nObjectId);
     int GetCoupleType() const;                              // couple type

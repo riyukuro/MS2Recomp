@@ -364,6 +364,7 @@ inline CString FUN_14016a600(const wchar_t* psz, int nCodePage)
     catch (
         ...)
     {
+        (void)((!!(0)) || (_wassert(L"FALSE", L"e:\\build\\kr\\22_04\\ms2code\\commonfiles\\stringutil.h", 185), 0));
     }
     return CString("");
 }
@@ -379,6 +380,7 @@ inline CStringW FUN_14016a730(const char* psz, int nCodePage)
     catch (
         ...)
     {
+        (void)((!!(0)) || (_wassert(L"FALSE", L"e:\\build\\kr\\22_04\\ms2code\\commonfiles\\stringutil.h", 169), 0));
     }
     return CStringW(L"");
 }
@@ -540,13 +542,14 @@ inline void Unk_ParseExtra(CString str, Unk_ExtraMap* pMap)
     for (size_t i = 0; i < parts.GetCount(); i++)
     {
         CString& part = parts[i];
-        int nColon;
-        if (!part.IsEmpty() && (nColon = part.Find(":", 0)) > 0 && nColon < part.GetLength())
-        {
-            CString strKey = FUN_1407185b0(part.Left(nColon).Trim());
-            CString strValue = FUN_1407185b0(part.Mid(nColon + 1).Trim());
-            pMap->SetAt(strKey, strValue);
-        }
+        if (part.IsEmpty())
+            continue;
+        int nColon = part.Find(":", 0);
+        if (nColon <= 0 || part.GetLength() <= nColon)
+            continue;
+        CString strKey = FUN_1407185b0(part.Left(nColon).Trim());
+        CString strValue = FUN_1407185b0(part.Mid(nColon + 1).Trim());
+        pMap->SetAt(strKey, strValue);
     }
 }
 // @0x14015f480
@@ -790,8 +793,7 @@ bool CAchieveData::operator!=(const CAchieveData& o) const
         MS2Ptr<CAchieveGradeData> pOther(0);
         if (!o.m_mapGrade.Lookup(nKey, pOther))
             return true;
-        CAchieveGradeData* pRhs = pOther.get();
-        if (*m_mapGrade.GetValueAt(pos).get() != *pRhs)
+        if (*m_mapGrade.GetValueAt(pos).get() != *pOther.get())
             return true;
     }
     return false;
@@ -814,11 +816,14 @@ CString CAchieveData::GetName()
 }
 
 // @0x14015bd60
-bool CAchieveData::IsAvailable()
+int CAchieveData::IsAvailable()
 {
     if (!FUN_140166410()->FUN_14036d4b0(m_strFeature))
-        return false;
-    return !(m_strLocale.GetLength() != 0 && m_strLocale != FUN_140166410()->FUN_14036d8e0());
+        return 0;
+    bool bOther = m_strLocale.GetLength() != 0 && m_strLocale != FUN_140166410()->FUN_14036d8e0();
+    if (bOther)
+        return 0;
+    return 1;
 }
 
 // @0x14015be50
@@ -831,7 +836,7 @@ int CAchieveData::GetSurvivalFlag(int nId)
 }
 
 // @0x14015bed0
-bool CAchieveData::HasRewardSkill(unsigned nId, int nGrade)
+int CAchieveData::HasRewardSkill(unsigned nId, int nGrade)
 {
     Unk_RewardKey key = std::make_pair(nId, nGrade);
     if (Unk_LockGuard guard = g_cacheLock)
@@ -840,13 +845,13 @@ bool CAchieveData::HasRewardSkill(unsigned nId, int nGrade)
     else
     {
         if (s_mapSkill.find(key) != s_mapSkill.end())
-            return true;
+            return 1;
     }
-    return false;
+    return 0;
 }
 
 // @0x14015bf90
-bool CAchieveData::HasRewardStat(unsigned nId, int nGrade)
+int CAchieveData::HasRewardStat(unsigned nId, int nGrade)
 {
     Unk_RewardKey key = std::make_pair(nId, nGrade);
     if (Unk_LockGuard guard = g_cacheLock)
@@ -855,9 +860,9 @@ bool CAchieveData::HasRewardStat(unsigned nId, int nGrade)
     else
     {
         if (s_mapStat.find(key) != s_mapStat.end())
-            return true;
+            return 1;
     }
-    return false;
+    return 0;
 }
 
 // @0x14015c050
@@ -871,7 +876,7 @@ void CAchieveData::LoadAll()
         s_mapData.RemoveAll();
         DAT_143aab428.RemoveAll();
         ATL::CAtlArray<CString> files;
-        FUN_140399100(CString("*.xml"), FUN_14071a5b0(CString("Achieve"), CString("")), files, CString(""), false);
+        FUN_140399100("*.xml", FUN_14071a5b0("Achieve", ""), files, CString(""), false);
         for (size_t i = 0; i < files.GetCount(); i++)
         {
             CString strFile = files[i];
@@ -882,12 +887,10 @@ void CAchieveData::LoadAll()
 }
 
 // @0x14015c270
-// MS2-FUNCTIONAL: loader; exe EH-state layout of the many temporaries is not reproduced
 void CAchieveData::Load(CString strPath)
 {
     TiXmlDocument doc;
-    const char* pszPath = strPath;
-    if (GetFileSystem()->FUN_1403974b0(&doc, pszPath, 0, true, false) == 0)
+    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
     {
         Unk_AchieveLog(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return;
@@ -927,7 +930,7 @@ void CAchieveData::Load(CString strPath)
         {
             MS2Ptr<CAchieveGradeData> pGrade(new CAchieveGradeData);
             FUN_1408731e0(pGradeNode, "value", pGrade->m_nGrade);
-            if (pData->m_nMaxGrade < pGrade->m_nGrade)
+            if (pGrade->m_nGrade > pData->m_nMaxGrade)
                 pData->m_nMaxGrade = pGrade->m_nGrade;
             if (pGrade->m_nGrade < pData->m_nFirstGrade)
                 pData->m_nFirstGrade = pGrade->m_nGrade;
@@ -986,12 +989,10 @@ void CAchieveData::Load(CString strPath)
 }
 
 // @0x14015cff0
-// MS2-FUNCTIONAL: loader variant that returns the last loaded record; exe EH-state layout not reproduced
 void CAchieveData::LoadClient(CString strPath, MS2Ptr<CAchieveData>& rOut)
 {
     TiXmlDocument doc;
-    const char* pszPath = strPath;
-    if (GetFileSystem()->FUN_1403974b0(&doc, pszPath, 0, true, false) == 0)
+    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
     {
         Unk_AchieveLog(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return;
@@ -1031,7 +1032,7 @@ void CAchieveData::LoadClient(CString strPath, MS2Ptr<CAchieveData>& rOut)
         {
             MS2Ptr<CAchieveGradeData> pGrade(new CAchieveGradeData);
             FUN_1408731e0(pGradeNode, "value", pGrade->m_nGrade);
-            if (pData->m_nMaxGrade < pGrade->m_nGrade)
+            if (pGrade->m_nGrade > pData->m_nMaxGrade)
                 pData->m_nMaxGrade = pGrade->m_nGrade;
             if (pGrade->m_nGrade < pData->m_nFirstGrade)
                 pData->m_nFirstGrade = pGrade->m_nGrade;
@@ -1103,11 +1104,10 @@ void CAchieveData::GetAll(ATL::CAtlArray<MS2Ptr<CAchieveData> >& rOut)
     }
     else
     {
-        for (POSITION pos = s_mapData.GetStartPosition(); pos;)
+        for (POSITION pos = s_mapData.GetStartPosition(); pos != 0; s_mapData.GetNext(pos))
         {
             MS2Ptr<CAchieveData> pData = s_mapData.GetValueAt(pos);
             rOut.Add(pData);
-            s_mapData.GetNext(pos);
         }
     }
 }
@@ -1139,8 +1139,7 @@ int CAchieveData::ParseRequireType(CStringA& str)
         return 1;
     else if (str.CompareNoCase("eventID") == 0)
         return 2;
-    else
-        return 0;
+    return 0;
 }
 
 // @0x14015dd20
@@ -1172,15 +1171,18 @@ int CAchieveData::ParseRewardType(CStringA& str)
         return 12;
     else if (str.CompareNoCase("etc") == 0)
         return 13;
-    else
-        return 0;
+    return 0;
 }
 
 // @0x14015df00
 int CAchieveData::ParseRewardType(CStringW& str)
 {
+#ifdef __clang__
     CStringA tmp = FUN_14016a600(str, 0);
     return ParseRewardType(tmp);
+#else
+    return ParseRewardType(FUN_14016a600(str, 0));
+#endif
 }
 
 // @0x14015df70

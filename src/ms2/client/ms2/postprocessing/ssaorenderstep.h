@@ -5,7 +5,7 @@
 
 class SSAORenderStep : public ReloadablePostProcess {
 public:
-    SSAORenderStep(unsigned __int64 a, NiFixedString* name, unsigned int b);   // 0x1416ba7f0
+    SSAORenderStep(unsigned __int64 a, const NiFixedString& name, unsigned int b);   // 0x1416ba7f0
     virtual ~SSAORenderStep();                                  // 0x1416ba920
     virtual const NiRTTI* GetRTTI() const;                      // 0x1416bacf0
     virtual bool vfunc_15(unsigned int a, void* b);             // 0x1416ba980

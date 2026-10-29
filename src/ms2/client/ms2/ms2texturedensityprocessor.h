@@ -17,11 +17,11 @@ struct Unk_TexSizeKey
     bool operator<(const Unk_TexSizeKey& rhs) const;        // 0x14150d710
 };
 
-// A saved texture slot (smart pointer + clamp mode) per distinct texturing property.
+// A saved texture slot (smart pointer + filter mode) per distinct texturing property.
 struct Unk_TexSlot
 {
     Unk_PPSmartC m_spTexture;
-    unsigned m_nClampMode;
+    unsigned m_nFilterMode;
     Unk_TexSlot();                                          // 0x1415116d0
     Unk_TexSlot(const Unk_TexSlot& rhs);                    // 0x141511690
     Unk_TexSlot(Unk_TexSlot&& rhs);                         // 0x141511650 (same body)
@@ -37,7 +37,7 @@ public:
 
 public:
     MS2TextureDensityProcessor();                           // 0x14150cd00
-    virtual ~MS2TextureDensityProcessor();                  // 0x1415118c0, ??_G 0x141511ff0
+    // implicit virtual dtor 0x1415118c0, ??_G 0x141511ff0
     virtual void PreRenderProcessList(const NiVisibleArray* pkInput, NiVisibleArray& kOutput, void* pvExtraData);   // 0x14150cdb0
 
     void SetMode(int nMode);                          // 0 = base map, 1 = normal map, 2 = parallax map

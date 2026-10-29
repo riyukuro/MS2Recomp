@@ -56,7 +56,7 @@ MS2_CHECK_SIZE(Unk_Parabola, 0x38);
 
 float FUN_14147af60(float fAngle);
 float FUN_14147aed0(const Unk_Pt2* pA, const Unk_Pt2* pB);
-Vector3 FUN_14147af10(Vector3 kVec);
+Vector3 FUN_14147af10(Unk_NiPoint3 kVec);
 
 // @0x14147a2a0
 void Unk_Parabola::FUN_14147a2a0(const Vector3& ptStart, const Vector3& ptEnd, float fAngle, float fGravity)
@@ -84,41 +84,38 @@ void Unk_Parabola::FUN_14147a2a0(const Vector3& ptStart, const Vector3& ptEnd, f
 }
 
 // @0x14147a500
-// MS2-FUNCTIONAL: call-temp spill layout of the Point3 chain differs
 // Casts from the start towards the end (horizontal distance), moving the start along or stopping at the hit; with bProbe
 // it then drops a ray along -up and writes the hit point lifted by 5 units.
-int FUN_14147a500(Vector3* pOut, const Vector3* pStart, const Vector3* pEnd, char bProbe, float fProbeLen, const NxGroupsMask* pMask)
+bool FUN_14147a500(Vector3* pOut, Vector3 kStart, Vector3 kEnd, bool bProbe, float fProbeLen, const NxGroupsMask* pMask)
 {
     Unk_RayCastInfo kInfo;
-    kInfo.m_origin = *pStart;
-    Unk_NiPoint3 kDelta(pEnd->FUN_140965c40(*pStart));
-    kInfo.m_dir = FUN_14147af10(reinterpret_cast<const Vector3&>(kDelta));
+    kInfo.m_origin = kStart;
+    kInfo.m_dir = FUN_14147af10(kEnd.FUN_140965c40(kStart));
     kInfo.m_groups = 0x389;
-    float fDist = FUN_141403f20(*pStart, *pEnd);
-    if (!FUN_1409f7ca0()->CastRay(&kInfo, pMask))
+    float fDist = FUN_141403f20(kStart, kEnd);
+    if (FUN_1409f7ca0()->CastRay(&kInfo, pMask))
     {
-        kInfo.m_origin = pStart->FUN_14097fd50(kInfo.m_dir.FUN_14097fc90(fDist));
-    }
-    else
-    {
-        Vector3 kFrom = *pStart;
-        float fHit = FUN_140966ea0(kFrom, kInfo.m_hitPoint);
-        if (fDist <= fHit)
+        float fHit = FUN_140966ea0(Vector3(kStart), kInfo.m_hitPoint);
+        if (fHit < fDist)
         {
-            kInfo.m_origin = pStart->FUN_14097fd50(kInfo.m_dir.FUN_14097fc90(fDist));
-        }
-        else
-        {
-            if (bProbe == 0)
+            if (!bProbe)
             {
                 Unk_NiPoint3 kPoint(kInfo.m_hitPoint);
                 FUN_14097faa0(pOut, &kPoint);
-                return 1;
+                return true;
             }
             kInfo.m_origin = kInfo.m_hitPoint.FUN_140965c40(kInfo.m_dir.FUN_14097fc90(30.0f));
         }
+        else
+        {
+            kInfo.m_origin = kStart.FUN_14097fd50(kInfo.m_dir.FUN_14097fc90(fDist));
+        }
     }
-    if (bProbe != 0)
+    else
+    {
+        kInfo.m_origin = kStart.FUN_14097fd50(kInfo.m_dir.FUN_14097fc90(fDist));
+    }
+    if (bProbe)
     {
         kInfo.m_dir = DAT_143a08cf8.FUN_1409f7960();
         kInfo.m_maxDist = fProbeLen;
@@ -127,10 +124,10 @@ int FUN_14147a500(Vector3* pOut, const Vector3* pStart, const Vector3* pEnd, cha
             Unk_NiPoint3 kPoint(kInfo.m_hitPoint);
             kPoint.z = kPoint.z + 5.0f;
             FUN_14097fad0(pOut, &kPoint);
-            return 1;
+            return true;
         }
     }
-    return 0;
+    return false;
 }
 
 // @0x14147a850
@@ -236,11 +233,11 @@ float FUN_14147aed0(const Unk_Pt2* pA, const Unk_Pt2* pB)
 
 // @0x14147af10
 // The vector with z cleared, normalised.
-Vector3 FUN_14147af10(Vector3 kVec)
+Vector3 FUN_14147af10(Unk_NiPoint3 kVec)
 {
     kVec.z = 0.0f;
-    kVec.FUN_140968990();
-    return kVec;
+    reinterpret_cast<Vector3&>(kVec).FUN_140968990();
+    return reinterpret_cast<Vector3&>(kVec);
 }
 
 // @0x14147af60

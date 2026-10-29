@@ -370,24 +370,22 @@ unsigned int FUN_1401bd340(int n)
 }
 
 // @0x1401bd3a0
-// MS2-FUNCTIONAL: string temporaries placed differently
 unsigned int FUN_1401bd3a0()
 {
     FUN_1401c06d0();
     CBlackMarketTable::TabListPtr tabs = FUN_1401c0d80()->GetTabs();
-    if (tabs.get() != 0)
+    if ((tabs.get() ? true : false) && !tabs->IsEmpty())
     {
-        if (!tabs->IsEmpty())
-        {
-            FUN_1401bf440(*tabs, &s_mapTabByCategory);
-            return 1;
-        }
+        FUN_1401bf440(*tabs, &s_mapTabByCategory);
+        return 1;
     }
-    return 0;
+    else
+    {
+        return 0;
+    }
 }
 
 // @0x1401bd470
-// MS2-FUNCTIONAL: loop temporaries and cleanup paths laid out differently
 unsigned int LoadItemNames()
 {
     ATL::CAtlArray<CString> languages;
@@ -397,8 +395,7 @@ unsigned int LoadItemNames()
     for (size_t i = 0; i < languages.GetCount(); i++)
     {
         CString strLanguage(languages[i]);
-        CString strCopy(strLanguage);
-        Unk_BmLanguage nLanguage = FUN_140651920(strCopy);
+        Unk_BmLanguage nLanguage = FUN_140651920(strLanguage);
         CString strPath;
         strPath.Format("%s%s/%s/%s", "./Data/Xml/", "String", (const char*)strLanguage, "itemName.xml");
         Unk_BmNameMapPtr names(0);
@@ -412,13 +409,13 @@ unsigned int LoadItemNames()
             return 0;
         for (Unk_140165cf0* pItem = pRoot->FUN_140165cf0("key"); pItem != 0; pItem = pItem->FUN_140168650("key"))
         {
-            if (FUN_14028f710(pItem))
-            {
-                unsigned int nId = 0;
-                FUN_140873220(pItem, "id", nId);
-                CStringW strName = FUN_1401bf530(pItem, "name", CStringW(L""));
-                names.operator->()->SetAt(nId, strName);
-            }
+            if (!FUN_14028f710(pItem))
+                continue;
+            int nId;
+            FUN_1408731e0(pItem, "id", nId);
+            CStringW strName = FUN_1401bf530(pItem, "name", CStringW(L""));
+            unsigned int nKey = nId;
+            names.operator->()->SetAt(nKey, strName);
         }
     }
     return 1;
@@ -553,27 +550,25 @@ void CBlackMarketProduct::Write(COutputStream* pStream)
 MS2_REPLACE_METHOD(0x1401BDD80, CBlackMarketProduct, Write, 467, 0x4E40E47D);
 
 // @0x1401bdf60
-// MS2-FUNCTIONAL: stream temporaries placed differently
 void CBlackMarketProduct::Read(CInPacket* pPacket)
 {
-    CInputStream& stream = *pPacket;
-    m_qw18 = stream.ReadInt64();
-    m_qw20 = stream.ReadInt64();
-    m_qw28 = stream.ReadInt64();
-    m_nExpire = stream.ReadInt64();
-    m_nCount = stream.ReadInt32();
-    m_nBought = stream.ReadInt32();
-    m_nUnitPrice = stream.ReadInt64();
-    m_nStateB = (unsigned char)stream.ReadUInt8();
-    __int64 nUid = stream.ReadInt64();
-    int nId = stream.ReadInt32();
-    unsigned char nRank = stream.ReadUInt8();
-    m_qw68 = stream.ReadInt64();
+    m_qw18 = pPacket->ReadInt64();
+    m_qw20 = pPacket->ReadInt64();
+    m_qw28 = pPacket->ReadInt64();
+    m_nExpire = pPacket->ReadInt64();
+    m_nCount = pPacket->ReadInt32();
+    m_nBought = pPacket->ReadInt32();
+    m_nUnitPrice = pPacket->ReadInt64();
+    m_nStateB = (unsigned char)pPacket->ReadUInt8();
+    __int64 nUid = pPacket->ReadInt64();
+    int nId = pPacket->ReadInt32();
+    int nRank = pPacket->ReadUInt8();
+    m_qw68 = pPacket->ReadInt64();
     m_item.AssignRaw(new CItem);
     if (m_item->FUN_140523c40(nId, nRank, 0))
     {
         m_item->FUN_140526a70(nUid);
-        m_item->FUN_140524eb0(stream);
+        m_item->FUN_140524eb0(*pPacket);
     }
 }
 
@@ -594,7 +589,7 @@ long long CBlackMarketProduct::PriceFor(int nCount)
 MS2_REPLACE_METHOD(0x1401BE310, CBlackMarketProduct, PriceFor, 25, 0x905B5C13);
 
 // @0x1401be330
-unsigned long long CBlackMarketProduct::GetState(bool bLike)
+int CBlackMarketProduct::GetState(bool bLike)
 {
     if (bLike)
     {
@@ -630,19 +625,13 @@ void CBlackMarketProduct::SetQw78(unsigned long long qw)
 MS2_REPLACE_METHOD(0x1401BE3D0, CBlackMarketProduct, SetQw78, 25, 0x6C790EDB);
 
 // @0x1401be3f0
-// MS2-FUNCTIONAL: division operands and frame size differ
 unsigned int CBlackMarketProduct::RollCount()
 {
     unsigned int nResult = 1;
     long long nRoll = FUN_1418ff5a0(1, 0, 0);
     long long nUnit = PriceFor(1);
-    if (0 < nUnit)
-    {
-        if (nRoll / nUnit < (long long)GetRemain())
-            nResult = (unsigned int)(nRoll / nUnit);
-        else
-            nResult = GetRemain();
-    }
+    if (nUnit > 0)
+        nResult = (unsigned int)(nRoll / nUnit < GetRemain() ? nRoll / nUnit : GetRemain());
     return nResult;
 }
 
@@ -961,13 +950,11 @@ void FUN_1401bf350(Unk_BmTabIndex* pIndex, CBlackMarketTable::TabPtr tab)
 }
 
 // @0x1401bf440
-// MS2-FUNCTIONAL: list/iterator temporaries placed differently
 void FUN_1401bf440(CBlackMarketTable::TabList& rList, Unk_BmTabIndex* pIndex)
 {
-    CBlackMarketTable::TabList* pList = &rList;
-    for (POSITION pos = pList->GetHeadPosition(); pos != 0; pList->GetNext(pos))
+    for (POSITION pos = rList.GetHeadPosition(); pos != 0; rList.GetNext(pos))
     {
-        CBlackMarketTable::TabPtr tab = pList->GetAt(pos);
+        CBlackMarketTable::TabPtr tab = rList.GetAt(pos);
         if (tab.get() != 0)
         {
             if (!tab->m_children.IsEmpty())
@@ -990,23 +977,19 @@ CStringW FUN_1401bf530(Unk_140165cf0* pElem, const char* pszName, CStringW strDe
 }
 
 // @0x1401bfbd0
-// MS2-FUNCTIONAL: member construction goes through a cast array view, call/EH layout differs
 Unk_GuildArray::Unk_GuildArray()
 {
-    new (reinterpret_cast<ATL::CAtlArray<unsigned char>*>(this)) ATL::CAtlArray<unsigned char>();
 }
 
 // @0x1401bff10
-// MS2-FUNCTIONAL: member destruction goes through a cast array view, call/EH layout differs
 Unk_GuildArray::~Unk_GuildArray()
 {
-    reinterpret_cast<ATL::CAtlArray<unsigned char>*>(this)->~CAtlArray();
 }
 
 // @0x1401c0580
 void Unk_GuildArray::FUN_1401c0580()
 {
-    reinterpret_cast<ATL::CAtlArray<unsigned char>*>(this)->RemoveAll();
+    RemoveAll();
 }
 
 // @0x1401c04d0
@@ -1051,12 +1034,12 @@ Unk_BmPriceMgr* FUN_1401c0db0()
 }
 
 // @0x1401c3aa0
-// MS2-FUNCTIONAL: member init order and float constants differ in the ctor
 CBlackMarketTable::CBlackMarketTable()
     : m_tabs(0), m_tabById(17, 0.75f, 0.25f, 2.25f, 10), m_options(17, 0.75f, 0.25f, 2.25f, 10),
       m_statTables(17, 0.75f, 0.25f, 2.25f, 10)
 {
-    FUN_1401d1160(FUN_14071a5b0(CString("Table"), CString("blackMarketTable.xml")));
+    CString strPath = FUN_14071a5b0("Table", "blackMarketTable.xml");
+    FUN_1401d1160(strPath);
     Load();
 }
 
@@ -1067,7 +1050,6 @@ CBlackMarketTable::~CBlackMarketTable()
 }
 
 // @0x1401c3da0
-// MS2-FUNCTIONAL: loop temporaries and cleanup paths laid out differently
 void CBlackMarketTable::Load()
 {
     Clear();
@@ -1102,7 +1084,8 @@ void CBlackMarketTable::Load()
                             CStringW strText;
                             FUN_140873710(pStat, "percent", &stat->m_nPercent);
                             FUN_140873a50(pStat, "default", &stat->m_fDefault);
-                            int nStat = FUN_14082ee80(strName);
+                            int nStat = 0;
+                            nStat = FUN_14082ee80(strName);
                             if (nStat == -1)
                             {
                                 nStat = FUN_14081d260(strName);
@@ -1174,88 +1157,70 @@ CBlackMarketTable::StatArrayPtr CBlackMarketTable::GetStatTable(unsigned int nId
 }
 
 // @0x1401c45b0
-// MS2-FUNCTIONAL: smart pointer temporaries placed differently
 CBlackMarketTable::TabPtr CBlackMarketTable::GetTab(unsigned int nId)
 {
     CheckInit();
-    if (!m_tabById.IsEmpty())
-    {
-        TabPtr tab(0);
-        m_tabById.Lookup(nId, tab);
-        return tab;
-    }
-    return TabPtr(0);
+    if (m_tabById.IsEmpty())
+        return TabPtr(0);
+    TabPtr tab(0);
+    m_tabById.Lookup(nId, tab);
+    return tab;
 }
 
 // @0x1401c4670
-// MS2-FUNCTIONAL: loop temporaries and cleanup paths laid out differently
 void CBlackMarketTable::ReadTabs(Unk_140165cf0* pElem, TabList* pOut, TabMap* pById, CStringA* pCategories)
 {
     for (Unk_140165cf0* pTab = pElem->FUN_140165cf0("tab"); pTab != 0; pTab = pTab->FUN_140168650("tab"))
     {
         int nName = 0;
         FUN_1408731e0(pTab, "name", nName);
-        CStringW strName = FUN_1401a9d70()->FUN_141811980(13, nName);
-        if (nName < 1)
-            continue;
-        TabPtr tab(new TabInfo);
-        if (tab.get() == 0)
-            continue;
-        tab->m_strName = strName;
-        CStringW strFeature = FUN_1401bf530(pTab, "feature", CStringW(L""));
-        if (!FUN_140166410()->FUN_14036d4b0(strFeature))
-            continue;
-        tab->m_strCategory = FUN_14015f710(pTab, "category", CString(""));
-        FUN_1408731e0(pTab, "priority", tab->m_nPriority);
-        FUN_1408731e0(pTab, "id", tab->m_nId);
-        FUN_1408731e0(pTab, "option_id", tab->m_nOptionId);
-        FUN_1408736d0(pTab, "auto_complete_name", tab->m_bAutoCompleteName);
-        FUN_1408736d0(pTab, "showIncludeLowTab", tab->m_bShowIncludeLowTab);
-        pById->SetAt(tab->m_nId, tab);
-        ReadTabs(pTab, &tab->m_children, pById, &tab->m_strCategory);
-        if (pCategories != 0)
+        CStringW strName;
+        strName = FUN_1401a9d70()->FUN_141811980(13, nName);
+        if (nName > 0)
         {
-            if (!tab->m_strCategory.IsEmpty())
+            TabPtr tab(new TabInfo);
+            if (tab.get())
             {
-                CStringA strJoin(pCategories->IsEmpty() ? "" : ",");
-                strJoin += tab->m_strCategory;
-                pCategories->Append(strJoin);
+                tab->m_strName = strName;
+                CStringW strFeature = FUN_1401bf530(pTab, "feature", CStringW(L""));
+                if (!FUN_140166410()->FUN_14036d4b0(strFeature))
+                    continue;
+                tab->m_strCategory = FUN_14015f710(pTab, "category", CString(""));
+                FUN_1408731e0(pTab, "priority", tab->m_nPriority);
+                FUN_1408731e0(pTab, "id", tab->m_nId);
+                FUN_1408731e0(pTab, "option_id", tab->m_nOptionId);
+                FUN_1408736d0(pTab, "auto_complete_name", tab->m_bAutoCompleteName);
+                FUN_1408736d0(pTab, "showIncludeLowTab", tab->m_bShowIncludeLowTab);
+                pById->SetAt(tab->m_nId, tab);
+                ReadTabs(pTab, &tab->m_children, pById, &tab->m_strCategory);
+                if (pCategories != 0 && !tab->m_strCategory.IsEmpty())
+                {
+                    CStringA strJoin(pCategories->IsEmpty() ? "" : ",");
+                    strJoin += tab->m_strCategory;
+                    pCategories->Append(strJoin);
+                }
+                pOut->AddTail(tab);
             }
         }
-        pOut->AddTail(tab);
     }
 }
 
 // @0x1401c5540
-// MS2-FUNCTIONAL: frame size and EH state setup differ
 CBlackMarketTable::StatInfo::StatInfo()
-    : m_nId(-1), m_strName(L""), m_nPercent(0), m_fDefault(0)
-{
-}
-
-// @0x1401c5980
-// MS2-FUNCTIONAL: member destruction order/EH differs
-CBlackMarketTable::StatInfo::~StatInfo()
+    : m_nId(-1), m_nPercent(0), m_fDefault(0)
 {
 }
 
 // @0x1401c55b0
-// MS2-FUNCTIONAL: frame size and EH state setup differ
 CBlackMarketTable::TabInfo::TabInfo()
-    : m_strName(L""), m_nPriority(0), m_nId(-1), m_nOptionId(-1), m_bAutoCompleteName(false),
+    : m_nPriority(0), m_nId(-1), m_nOptionId(-1), m_bAutoCompleteName(false),
       m_bShowIncludeLowTab(false), m_children(10)
 {
 }
 
-// @0x1401c59b0
-// MS2-FUNCTIONAL: member destruction order/EH differs
-CBlackMarketTable::TabInfo::~TabInfo()
-{
-}
-
 // The UCRT's `static __inline memcpy_s` of this TU (unreferenced copy, kept alive by the pointer below).
+#pragma function(memcpy)
 // @0x1401c3980
-// MS2-FUNCTIONAL: unreferenced CRT memcpy_s copy: source spelling differs
 static __inline errno_t ms2_bm_memcpy_s(void* const d, size_t const dsz, void const* const s, size_t const ssz)
 {
     if (ssz == 0) { return 0; }

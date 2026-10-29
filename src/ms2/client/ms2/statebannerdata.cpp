@@ -143,22 +143,22 @@ void StateBanner::vfunc_8(double fTime)
 {
 }
 
-// MS2-FUNCTIONAL: egf::EntityID's default ctor is emitted here, but the exe leaves the out-param unconstructed (frame 0x10 smaller)
 // @0x140b7f250
 void StateBanner::vfunc_9(double fTime)
 {
     State::vfunc_9(fTime);
-    egf::EntityID kId;
-    FUN_140b7f320(FUN_140b7f6a0(FUN_141b6f910(), m_pOwner->FUN_14123c460(kId)));
+    efd::UInt64 qwId;                   // the exe never constructs the entity-id out-param
+    int nState = FUN_140b7f6a0(FUN_141b6f910(), m_pOwner->FUN_14123c460(reinterpret_cast<egf::EntityID&>(qwId)));
+    FUN_140b7f320(nState);
 }
 
-// MS2-FUNCTIONAL: as vfunc_4 (vfunc_59's 5th arg)
 // @0x140b7f2c0
 void StateBanner::vfunc_6()
 {
     MyPC* pPlayer = FUN_1417b84b0();
-    if (pPlayer != 0)
-        pPlayer->vfunc_59(1, 0, 0, 0);
+    if (pPlayer == 0)
+        return;
+    pPlayer->vfunc_59(1, 0, 0, 0);
 }
 
 // @0x140b7f320

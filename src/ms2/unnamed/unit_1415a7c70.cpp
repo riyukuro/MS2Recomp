@@ -8,6 +8,7 @@
 #include "ms2/placeholder/nmstream.h"
 #include "ms2/placeholder/nmobjects.h"
 #include "ms2/placeholder/nmfunc.h"
+#include "ms2/placeholder/nmencoder.h"
 #include "ms2/ms2recover.h"
 
 extern void FUN_14156bcb0(void*, void*, void*);
@@ -21,50 +22,49 @@ extern void FUN_1415f9990(void*);
 extern int FUN_1415fb700(void*);
 extern int FUN_1415fb720(void*);
 extern int FUN_1415fb750(void*);
-extern int FUN_1415fb6d0(void*);
+extern int FUN_1415fb6d0(CNMSerializableDecoder*);
 extern void FUN_1415fbe70(void*, unsigned int, const char*);
 
 // MS2-FUNCTIONAL 0x1415a7c70: initializes a character-login request.
 // @0x1415a7c70
 CNMCharacterLoginFunc::CNMCharacterLoginFunc()
-    : CNMFunc(0xf000, 1, 0, 0), m_30{}, m_70(0), m_74(0), m_78(1), m_7c(0)
+    : CNMFunc(0xf000, 1, 0, 0)
 {
+    m_30[0] = 0;
+    m_70 = 0;
+    m_74 = 0;
+    m_78 = 1;
 }
 
 // MS2-FUNCTIONAL 0x1415a7cf0: copies the character name and request values.
 // @0x1415a7cf0
 CNMCharacterLoginFunc::CNMCharacterLoginFunc(const char* sz30, int n74, int n78)
-    : CNMFunc(0xf000, 1, 0, 0), m_30{}, m_70(0), m_74(n74), m_78(n78), m_7c(0)
+    : CNMFunc(0xf000, 1, 0, 0)
 {
     if (sz30)
         FUN_1415fbe70(m_30, sizeof(m_30), sz30);
+    else
+        m_30[0] = 0;
+    m_70 = 0;
+    m_74 = n74;
+    m_78 = n78;
 }
 
 // MS2-FUNCTIONAL 0x1415a7db0: wraps login encoding in a stream frame.
 // @0x1415a7db0
 unsigned int CNMCharacterLoginFunc::EncodeFramed(CNMStream* pStream)
 {
-    unsigned char storage[0x18];
-    FUN_14156bcb0(storage, pStream, this);
-    void** vtable = *reinterpret_cast<void***>(this);
-    using Method = unsigned int(__fastcall*)(CNMCharacterLoginFunc*, CNMEncoder*, CNMStream*);
-    const auto result = reinterpret_cast<Method>(vtable[2])(
-        this, reinterpret_cast<CNMEncoder*>(storage), pStream);
-    FUN_14156bd50(storage);
-    return result;
+    CNMSerializableEncoder encoder(pStream, this);
+    return CNMCharacterLoginFunc::Encode(reinterpret_cast<CNMEncoder*>(&encoder), pStream);
 }
 
 // MS2-FUNCTIONAL 0x1415a7e10: chooses direct or framed request encoding.
 // @0x1415a7e10
 unsigned int CNMCharacterLoginFunc::EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream)
 {
-    void** vtable = *reinterpret_cast<void***>(this);
-    if (m_bFormat == 1) {
-        using Method = unsigned int(__fastcall*)(CNMCharacterLoginFunc*, CNMEncoder*, CNMStream*);
-        return reinterpret_cast<Method>(vtable[2])(this, pEncoder, pStream);
-    }
-    using Framed = unsigned int(__fastcall*)(CNMCharacterLoginFunc*, CNMStream*);
-    return reinterpret_cast<Framed>(vtable[3])(this, pStream);
+    if (m_bFormat == 1)
+        return CNMCharacterLoginFunc::Encode(pEncoder, pStream);
+    return CNMCharacterLoginFunc::EncodeFramed(pStream);
 }
 
 // MS2-FUNCTIONAL 0x1415a7e70: serializes the character name and three request values.
@@ -86,30 +86,19 @@ unsigned int CNMCharacterLoginFunc::Encode(CNMEncoder* pEncoder, CNMStream* pStr
 // @0x1415a7f10
 unsigned int CNMCharacterLoginFunc::DecodeFramed(CNMStream* pStream)
 {
-    unsigned char storage[0x38];
-    FUN_14156be10(storage, pStream, this);
-    unsigned int result = 0;
-    if (FUN_1415fb750(storage)) {
-        void** vtable = *reinterpret_cast<void***>(this);
-        using Method = unsigned int(__fastcall*)(CNMCharacterLoginFunc*, CNMSerializableDecoder*, CNMStream*);
-        result = reinterpret_cast<Method>(vtable[5])(
-            this, reinterpret_cast<CNMSerializableDecoder*>(storage), pStream);
-    }
-    FUN_14156bf10(storage);
-    return result;
+    CNMSerializableDecoder decoder(pStream, this);
+    if (FUN_1415fb750(&decoder) == 0)
+        return 0;
+    return CNMCharacterLoginFunc::Decode(&decoder, pStream);
 }
 
 // MS2-FUNCTIONAL 0x1415a7fa0: chooses direct or framed response decoding.
 // @0x1415a7fa0
 unsigned int CNMCharacterLoginFunc::DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream)
 {
-    void** vtable = *reinterpret_cast<void***>(this);
-    if (FUN_1415fb6d0(pDecoder) == 2) {
-        using Framed = unsigned int(__fastcall*)(CNMCharacterLoginFunc*, CNMStream*);
-        return reinterpret_cast<Framed>(vtable[6])(this, pStream);
-    }
-    using Method = unsigned int(__fastcall*)(CNMCharacterLoginFunc*, CNMSerializableDecoder*, CNMStream*);
-    return reinterpret_cast<Method>(vtable[5])(this, pDecoder, pStream);
+    if (FUN_1415fb6d0(pDecoder) == 2)
+        return CNMCharacterLoginFunc::DecodeFramed(pStream);
+    return CNMCharacterLoginFunc::Decode(pDecoder, pStream);
 }
 
 // MS2-FUNCTIONAL 0x1415a8000: restores the character name and request values.
@@ -118,13 +107,10 @@ unsigned int CNMCharacterLoginFunc::Decode(CNMSerializableDecoder* pDecoder, CNM
 {
     CNMFunc::DecodeDispatch(pDecoder, pStream);
     if (FUN_1415fb700(this)) {
-        void** vtable = *reinterpret_cast<void***>(pDecoder);
-        using Bytes = void(__fastcall*)(void*, void*, unsigned int);
-        using U32 = unsigned int(__fastcall*)(void*);
-        reinterpret_cast<Bytes>(vtable[9])(pDecoder, m_30, sizeof(m_30));
-        m_70 = static_cast<int>(reinterpret_cast<U32>(vtable[3])(pDecoder));
-        m_74 = static_cast<int>(reinterpret_cast<U32>(vtable[3])(pDecoder));
-        m_78 = static_cast<int>(reinterpret_cast<U32>(vtable[3])(pDecoder));
+        pDecoder->ReadStringBufAlias(m_30, sizeof(m_30));
+        m_70 = static_cast<int>(pDecoder->ReadU32());
+        m_74 = static_cast<int>(pDecoder->ReadU32());
+        m_78 = static_cast<int>(pDecoder->ReadU32());
     }
     return static_cast<unsigned int>(FUN_1415fb750(pDecoder));
 }
@@ -141,44 +127,43 @@ unsigned int CNMCharacterLoginFunc::Decode(CNMSerializableDecoder* pDecoder, CNM
 // MS2-FUNCTIONAL 0x1415a80c0: initializes a character-login request.
 // @0x1415a80c0
 CNMCharacterLogoutFunc::CNMCharacterLogoutFunc()
-    : CNMFunc(0xf001, 1, 0, 0), m_30{}, m_70(0), m_74(0), m_78(1), m_7c(0)
+    : CNMFunc(0xf001, 1, 0, 0)
 {
+    m_30[0] = 0;
+    m_70 = 0;
+    m_74 = 0;
+    m_78 = 1;
 }
 
 // MS2-FUNCTIONAL 0x1415a8140: copies the character name and request values.
 // @0x1415a8140
 CNMCharacterLogoutFunc::CNMCharacterLogoutFunc(const char* sz30, int n74, int n78)
-    : CNMFunc(0xf001, 1, 0, 0), m_30{}, m_70(0), m_74(n74), m_78(n78), m_7c(0)
+    : CNMFunc(0xf001, 1, 0, 0)
 {
     if (sz30)
         FUN_1415fbe70(m_30, sizeof(m_30), sz30);
+    else
+        m_30[0] = 0;
+    m_70 = 0;
+    m_74 = n74;
+    m_78 = n78;
 }
 
 // MS2-FUNCTIONAL 0x1415a8200: wraps login encoding in a stream frame.
 // @0x1415a8200
 unsigned int CNMCharacterLogoutFunc::EncodeFramed(CNMStream* pStream)
 {
-    unsigned char storage[0x18];
-    FUN_14156bcb0(storage, pStream, this);
-    void** vtable = *reinterpret_cast<void***>(this);
-    using Method = unsigned int(__fastcall*)(CNMCharacterLogoutFunc*, CNMEncoder*, CNMStream*);
-    const auto result = reinterpret_cast<Method>(vtable[2])(
-        this, reinterpret_cast<CNMEncoder*>(storage), pStream);
-    FUN_14156bd50(storage);
-    return result;
+    CNMSerializableEncoder encoder(pStream, this);
+    return CNMCharacterLogoutFunc::Encode(reinterpret_cast<CNMEncoder*>(&encoder), pStream);
 }
 
 // MS2-FUNCTIONAL 0x1415a8260: chooses direct or framed request encoding.
 // @0x1415a8260
 unsigned int CNMCharacterLogoutFunc::EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream)
 {
-    void** vtable = *reinterpret_cast<void***>(this);
-    if (m_bFormat == 1) {
-        using Method = unsigned int(__fastcall*)(CNMCharacterLogoutFunc*, CNMEncoder*, CNMStream*);
-        return reinterpret_cast<Method>(vtable[2])(this, pEncoder, pStream);
-    }
-    using Framed = unsigned int(__fastcall*)(CNMCharacterLogoutFunc*, CNMStream*);
-    return reinterpret_cast<Framed>(vtable[3])(this, pStream);
+    if (m_bFormat == 1)
+        return CNMCharacterLogoutFunc::Encode(pEncoder, pStream);
+    return CNMCharacterLogoutFunc::EncodeFramed(pStream);
 }
 
 // MS2-FUNCTIONAL 0x1415a82c0: serializes the character name and three request values.
@@ -200,30 +185,19 @@ unsigned int CNMCharacterLogoutFunc::Encode(CNMEncoder* pEncoder, CNMStream* pSt
 // @0x1415a8360
 unsigned int CNMCharacterLogoutFunc::DecodeFramed(CNMStream* pStream)
 {
-    unsigned char storage[0x38];
-    FUN_14156be10(storage, pStream, this);
-    unsigned int result = 0;
-    if (FUN_1415fb750(storage)) {
-        void** vtable = *reinterpret_cast<void***>(this);
-        using Method = unsigned int(__fastcall*)(CNMCharacterLogoutFunc*, CNMSerializableDecoder*, CNMStream*);
-        result = reinterpret_cast<Method>(vtable[5])(
-            this, reinterpret_cast<CNMSerializableDecoder*>(storage), pStream);
-    }
-    FUN_14156bf10(storage);
-    return result;
+    CNMSerializableDecoder decoder(pStream, this);
+    if (FUN_1415fb750(&decoder) == 0)
+        return 0;
+    return CNMCharacterLogoutFunc::Decode(&decoder, pStream);
 }
 
 // MS2-FUNCTIONAL 0x1415a83f0: chooses direct or framed response decoding.
 // @0x1415a83f0
 unsigned int CNMCharacterLogoutFunc::DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream)
 {
-    void** vtable = *reinterpret_cast<void***>(this);
-    if (FUN_1415fb6d0(pDecoder) == 2) {
-        using Framed = unsigned int(__fastcall*)(CNMCharacterLogoutFunc*, CNMStream*);
-        return reinterpret_cast<Framed>(vtable[6])(this, pStream);
-    }
-    using Method = unsigned int(__fastcall*)(CNMCharacterLogoutFunc*, CNMSerializableDecoder*, CNMStream*);
-    return reinterpret_cast<Method>(vtable[5])(this, pDecoder, pStream);
+    if (FUN_1415fb6d0(pDecoder) == 2)
+        return CNMCharacterLogoutFunc::DecodeFramed(pStream);
+    return CNMCharacterLogoutFunc::Decode(pDecoder, pStream);
 }
 
 // MS2-FUNCTIONAL 0x1415a8450: restores the character name and request values.
@@ -232,13 +206,10 @@ unsigned int CNMCharacterLogoutFunc::Decode(CNMSerializableDecoder* pDecoder, CN
 {
     CNMFunc::DecodeDispatch(pDecoder, pStream);
     if (FUN_1415fb700(this)) {
-        void** vtable = *reinterpret_cast<void***>(pDecoder);
-        using Bytes = void(__fastcall*)(void*, void*, unsigned int);
-        using U32 = unsigned int(__fastcall*)(void*);
-        reinterpret_cast<Bytes>(vtable[9])(pDecoder, m_30, sizeof(m_30));
-        m_70 = static_cast<int>(reinterpret_cast<U32>(vtable[3])(pDecoder));
-        m_74 = static_cast<int>(reinterpret_cast<U32>(vtable[3])(pDecoder));
-        m_78 = static_cast<int>(reinterpret_cast<U32>(vtable[3])(pDecoder));
+        pDecoder->ReadStringBufAlias(m_30, sizeof(m_30));
+        m_70 = static_cast<int>(pDecoder->ReadU32());
+        m_74 = static_cast<int>(pDecoder->ReadU32());
+        m_78 = static_cast<int>(pDecoder->ReadU32());
     }
     return static_cast<unsigned int>(FUN_1415fb750(pDecoder));
 }
@@ -255,37 +226,41 @@ unsigned int CNMCharacterLogoutFunc::Decode(CNMSerializableDecoder* pDecoder, CN
 // MS2-FUNCTIONAL 0x1415a9230: initializes a 64-bit character-login request.
 // @0x1415a9230
 CNMCharacterLogin64Func::CNMCharacterLogin64Func()
-    : CNMFunc(0xf004, 1, 0, 0), m_30{}, m_70(0), m_78(1), m_7c(0)
+    : CNMFunc(0xf004, 1, 0, 0)
 {
+    m_30[0] = 0;
+    m_70 = 0;
+    m_78 = 1;
 }
 
 // MS2-FUNCTIONAL 0x1415a92b0: copies the character name and 64-bit request value.
 // @0x1415a92b0
 CNMCharacterLogin64Func::CNMCharacterLogin64Func(const char* sz30, long long n70, int n78)
-    : CNMFunc(0xf004, 1, 0, 0), m_30{}, m_70(n70), m_78(n78), m_7c(0)
+    : CNMFunc(0xf004, 1, 0, 0)
 {
     if (sz30)
         FUN_1415fbe70(m_30, sizeof(m_30), sz30);
+    else
+        m_30[0] = 0;
+    m_70 = n70;
+    m_78 = n78;
 }
 
 // MS2-FUNCTIONAL 0x1415a9360: frames the 64-bit login request.
 // @0x1415a9360
 unsigned int CNMCharacterLogin64Func::EncodeFramed(CNMStream* pStream)
 {
-    unsigned char storage[0x18]; FUN_14156bcb0(storage, pStream, this);
-    void** v = *reinterpret_cast<void***>(this);
-    using F = unsigned int(__fastcall*)(CNMCharacterLogin64Func*, CNMEncoder*, CNMStream*);
-    auto r = reinterpret_cast<F>(v[2])(this, reinterpret_cast<CNMEncoder*>(storage), pStream);
-    FUN_14156bd50(storage); return r;
+    CNMSerializableEncoder encoder(pStream, this);
+    return CNMCharacterLogin64Func::Encode(reinterpret_cast<CNMEncoder*>(&encoder), pStream);
 }
 
 // MS2-FUNCTIONAL 0x1415a93c0: selects direct or framed login encoding.
 // @0x1415a93c0
-unsigned int CNMCharacterLogin64Func::EncodeDispatch(CNMEncoder* e, CNMStream* s)
+unsigned int CNMCharacterLogin64Func::EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream)
 {
-    void** v = *reinterpret_cast<void***>(this);
-    if (m_bFormat == 1) { using F = unsigned int(__fastcall*)(CNMCharacterLogin64Func*, CNMEncoder*, CNMStream*); return reinterpret_cast<F>(v[2])(this,e,s); }
-    using G = unsigned int(__fastcall*)(CNMCharacterLogin64Func*, CNMStream*); return reinterpret_cast<G>(v[3])(this,s);
+    if (m_bFormat == 1)
+        return CNMCharacterLogin64Func::Encode(pEncoder, pStream);
+    return CNMCharacterLogin64Func::EncodeFramed(pStream);
 }
 
 // MS2-FUNCTIONAL 0x1415a9420: serializes the name and 64-bit login value.
@@ -299,26 +274,28 @@ unsigned int CNMCharacterLogin64Func::Encode(CNMEncoder* e, CNMStream* s)
 
 // MS2-FUNCTIONAL 0x1415a94b0: decodes a framed 64-bit login response.
 // @0x1415a94b0
-unsigned int CNMCharacterLogin64Func::DecodeFramed(CNMStream* s)
+unsigned int CNMCharacterLogin64Func::DecodeFramed(CNMStream* pStream)
 {
-    unsigned char storage[0x38]; FUN_14156be10(storage,s,this); unsigned int r=0;
-    if (FUN_1415fb750(storage)) { void** v=*reinterpret_cast<void***>(this); using F=unsigned int(__fastcall*)(CNMCharacterLogin64Func*,CNMSerializableDecoder*,CNMStream*); r=reinterpret_cast<F>(v[5])(this,reinterpret_cast<CNMSerializableDecoder*>(storage),s); }
-    FUN_14156bf10(storage); return r;
+    CNMSerializableDecoder decoder(pStream, this);
+    if (FUN_1415fb750(&decoder) == 0)
+        return 0;
+    return CNMCharacterLogin64Func::Decode(&decoder, pStream);
 }
 
 // MS2-FUNCTIONAL 0x1415a9540: selects direct or framed response decoding.
 // @0x1415a9540
-unsigned int CNMCharacterLogin64Func::DecodeDispatch(CNMSerializableDecoder* d, CNMStream* s)
+unsigned int CNMCharacterLogin64Func::DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream)
 {
-    void** v=*reinterpret_cast<void***>(this); if (FUN_1415fb6d0(d)==2) { using F=unsigned int(__fastcall*)(CNMCharacterLogin64Func*,CNMStream*); return reinterpret_cast<F>(v[6])(this,s); }
-    using G=unsigned int(__fastcall*)(CNMCharacterLogin64Func*,CNMSerializableDecoder*,CNMStream*); return reinterpret_cast<G>(v[5])(this,d,s);
+    if (FUN_1415fb6d0(pDecoder) == 2)
+        return CNMCharacterLogin64Func::DecodeFramed(pStream);
+    return CNMCharacterLogin64Func::Decode(pDecoder, pStream);
 }
 
 // MS2-FUNCTIONAL 0x1415a95a0: restores the name and 64-bit login value.
 // @0x1415a95a0
 unsigned int CNMCharacterLogin64Func::Decode(CNMSerializableDecoder* d, CNMStream* s)
 {
-    CNMFunc::DecodeDispatch(d,s); if (FUN_1415fb700(this)) { void** v=*reinterpret_cast<void***>(d); using B=void(__fastcall*)(void*,void*,unsigned int); using Q=unsigned __int64(__fastcall*)(void*); using U=unsigned int(__fastcall*)(void*); reinterpret_cast<B>(v[9])(d,m_30,sizeof(m_30)); m_70=static_cast<long long>(reinterpret_cast<Q>(v[4])(d)); m_78=static_cast<int>(reinterpret_cast<U>(v[3])(d)); }
+    CNMFunc::DecodeDispatch(d,s); if (FUN_1415fb700(this)) {d->ReadStringBufAlias(m_30,sizeof(m_30)); m_70=static_cast<long long>(d->ReadU64()); m_78=static_cast<int>(d->ReadU32()); }
     return static_cast<unsigned int>(FUN_1415fb750(d));
 }
 
@@ -334,37 +311,41 @@ unsigned int CNMCharacterLogin64Func::Decode(CNMSerializableDecoder* d, CNMStrea
 // MS2-FUNCTIONAL 0x1415a9650: initializes a 64-bit character-login request.
 // @0x1415a9650
 CNMCharacterLogout64Func::CNMCharacterLogout64Func()
-    : CNMFunc(0xf005, 1, 0, 0), m_30{}, m_70(0), m_78(1), m_7c(0)
+    : CNMFunc(0xf005, 1, 0, 0)
 {
+    m_30[0] = 0;
+    m_70 = 0;
+    m_78 = 1;
 }
 
 // MS2-FUNCTIONAL 0x1415a96d0: copies the character name and 64-bit request value.
 // @0x1415a96d0
 CNMCharacterLogout64Func::CNMCharacterLogout64Func(const char* sz30, long long n70, int n78)
-    : CNMFunc(0xf005, 1, 0, 0), m_30{}, m_70(n70), m_78(n78), m_7c(0)
+    : CNMFunc(0xf005, 1, 0, 0)
 {
     if (sz30)
         FUN_1415fbe70(m_30, sizeof(m_30), sz30);
+    else
+        m_30[0] = 0;
+    m_70 = n70;
+    m_78 = n78;
 }
 
 // MS2-FUNCTIONAL 0x1415a9780: frames the 64-bit login request.
 // @0x1415a9780
 unsigned int CNMCharacterLogout64Func::EncodeFramed(CNMStream* pStream)
 {
-    unsigned char storage[0x18]; FUN_14156bcb0(storage, pStream, this);
-    void** v = *reinterpret_cast<void***>(this);
-    using F = unsigned int(__fastcall*)(CNMCharacterLogout64Func*, CNMEncoder*, CNMStream*);
-    auto r = reinterpret_cast<F>(v[2])(this, reinterpret_cast<CNMEncoder*>(storage), pStream);
-    FUN_14156bd50(storage); return r;
+    CNMSerializableEncoder encoder(pStream, this);
+    return CNMCharacterLogout64Func::Encode(reinterpret_cast<CNMEncoder*>(&encoder), pStream);
 }
 
 // MS2-FUNCTIONAL 0x1415a97e0: selects direct or framed login encoding.
 // @0x1415a97e0
-unsigned int CNMCharacterLogout64Func::EncodeDispatch(CNMEncoder* e, CNMStream* s)
+unsigned int CNMCharacterLogout64Func::EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream)
 {
-    void** v = *reinterpret_cast<void***>(this);
-    if (m_bFormat == 1) { using F = unsigned int(__fastcall*)(CNMCharacterLogout64Func*, CNMEncoder*, CNMStream*); return reinterpret_cast<F>(v[2])(this,e,s); }
-    using G = unsigned int(__fastcall*)(CNMCharacterLogout64Func*, CNMStream*); return reinterpret_cast<G>(v[3])(this,s);
+    if (m_bFormat == 1)
+        return CNMCharacterLogout64Func::Encode(pEncoder, pStream);
+    return CNMCharacterLogout64Func::EncodeFramed(pStream);
 }
 
 // MS2-FUNCTIONAL 0x1415a9840: serializes the name and 64-bit login value.
@@ -378,26 +359,28 @@ unsigned int CNMCharacterLogout64Func::Encode(CNMEncoder* e, CNMStream* s)
 
 // MS2-FUNCTIONAL 0x1415a98d0: decodes a framed 64-bit login response.
 // @0x1415a98d0
-unsigned int CNMCharacterLogout64Func::DecodeFramed(CNMStream* s)
+unsigned int CNMCharacterLogout64Func::DecodeFramed(CNMStream* pStream)
 {
-    unsigned char storage[0x38]; FUN_14156be10(storage,s,this); unsigned int r=0;
-    if (FUN_1415fb750(storage)) { void** v=*reinterpret_cast<void***>(this); using F=unsigned int(__fastcall*)(CNMCharacterLogout64Func*,CNMSerializableDecoder*,CNMStream*); r=reinterpret_cast<F>(v[5])(this,reinterpret_cast<CNMSerializableDecoder*>(storage),s); }
-    FUN_14156bf10(storage); return r;
+    CNMSerializableDecoder decoder(pStream, this);
+    if (FUN_1415fb750(&decoder) == 0)
+        return 0;
+    return CNMCharacterLogout64Func::Decode(&decoder, pStream);
 }
 
 // MS2-FUNCTIONAL 0x1415a9960: selects direct or framed response decoding.
 // @0x1415a9960
-unsigned int CNMCharacterLogout64Func::DecodeDispatch(CNMSerializableDecoder* d, CNMStream* s)
+unsigned int CNMCharacterLogout64Func::DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream)
 {
-    void** v=*reinterpret_cast<void***>(this); if (FUN_1415fb6d0(d)==2) { using F=unsigned int(__fastcall*)(CNMCharacterLogout64Func*,CNMStream*); return reinterpret_cast<F>(v[6])(this,s); }
-    using G=unsigned int(__fastcall*)(CNMCharacterLogout64Func*,CNMSerializableDecoder*,CNMStream*); return reinterpret_cast<G>(v[5])(this,d,s);
+    if (FUN_1415fb6d0(pDecoder) == 2)
+        return CNMCharacterLogout64Func::DecodeFramed(pStream);
+    return CNMCharacterLogout64Func::Decode(pDecoder, pStream);
 }
 
 // MS2-FUNCTIONAL 0x1415a99c0: restores the name and 64-bit login value.
 // @0x1415a99c0
 unsigned int CNMCharacterLogout64Func::Decode(CNMSerializableDecoder* d, CNMStream* s)
 {
-    CNMFunc::DecodeDispatch(d,s); if (FUN_1415fb700(this)) { void** v=*reinterpret_cast<void***>(d); using B=void(__fastcall*)(void*,void*,unsigned int); using Q=unsigned __int64(__fastcall*)(void*); using U=unsigned int(__fastcall*)(void*); reinterpret_cast<B>(v[9])(d,m_30,sizeof(m_30)); m_70=static_cast<long long>(reinterpret_cast<Q>(v[4])(d)); m_78=static_cast<int>(reinterpret_cast<U>(v[3])(d)); }
+    CNMFunc::DecodeDispatch(d,s); if (FUN_1415fb700(this)) {d->ReadStringBufAlias(m_30,sizeof(m_30)); m_70=static_cast<long long>(d->ReadU64()); m_78=static_cast<int>(d->ReadU32()); }
     return static_cast<unsigned int>(FUN_1415fb750(d));
 }
 
@@ -414,37 +397,41 @@ unsigned int CNMCharacterLogout64Func::Decode(CNMSerializableDecoder* d, CNMStre
 // MS2-FUNCTIONAL 0x1415a9a70: initializes a 64-bit character-login request.
 // @0x1415a9a70
 CNMCharacterRemove64Func::CNMCharacterRemove64Func()
-    : CNMFunc(0xf006, 1, 0, 0), m_30{}, m_70(0), m_78(1), m_7c(0)
+    : CNMFunc(0xf006, 1, 0, 0)
 {
+    m_30[0] = 0;
+    m_70 = 0;
+    m_78 = 1;
 }
 
 // MS2-FUNCTIONAL 0x1415a9af0: copies the character name and 64-bit request value.
 // @0x1415a9af0
 CNMCharacterRemove64Func::CNMCharacterRemove64Func(const char* sz30, long long n70, int n78)
-    : CNMFunc(0xf006, 1, 0, 0), m_30{}, m_70(n70), m_78(n78), m_7c(0)
+    : CNMFunc(0xf006, 1, 0, 0)
 {
     if (sz30)
         FUN_1415fbe70(m_30, sizeof(m_30), sz30);
+    else
+        m_30[0] = 0;
+    m_70 = n70;
+    m_78 = n78;
 }
 
 // MS2-FUNCTIONAL 0x1415a9ba0: frames the 64-bit login request.
 // @0x1415a9ba0
 unsigned int CNMCharacterRemove64Func::EncodeFramed(CNMStream* pStream)
 {
-    unsigned char storage[0x18]; FUN_14156bcb0(storage, pStream, this);
-    void** v = *reinterpret_cast<void***>(this);
-    using F = unsigned int(__fastcall*)(CNMCharacterRemove64Func*, CNMEncoder*, CNMStream*);
-    auto r = reinterpret_cast<F>(v[2])(this, reinterpret_cast<CNMEncoder*>(storage), pStream);
-    FUN_14156bd50(storage); return r;
+    CNMSerializableEncoder encoder(pStream, this);
+    return CNMCharacterRemove64Func::Encode(reinterpret_cast<CNMEncoder*>(&encoder), pStream);
 }
 
 // MS2-FUNCTIONAL 0x1415a9c00: selects direct or framed login encoding.
 // @0x1415a9c00
-unsigned int CNMCharacterRemove64Func::EncodeDispatch(CNMEncoder* e, CNMStream* s)
+unsigned int CNMCharacterRemove64Func::EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream)
 {
-    void** v = *reinterpret_cast<void***>(this);
-    if (m_bFormat == 1) { using F = unsigned int(__fastcall*)(CNMCharacterRemove64Func*, CNMEncoder*, CNMStream*); return reinterpret_cast<F>(v[2])(this,e,s); }
-    using G = unsigned int(__fastcall*)(CNMCharacterRemove64Func*, CNMStream*); return reinterpret_cast<G>(v[3])(this,s);
+    if (m_bFormat == 1)
+        return CNMCharacterRemove64Func::Encode(pEncoder, pStream);
+    return CNMCharacterRemove64Func::EncodeFramed(pStream);
 }
 
 // MS2-FUNCTIONAL 0x1415a9c60: serializes the name and 64-bit login value.
@@ -458,26 +445,28 @@ unsigned int CNMCharacterRemove64Func::Encode(CNMEncoder* e, CNMStream* s)
 
 // MS2-FUNCTIONAL 0x1415a9cf0: decodes a framed 64-bit login response.
 // @0x1415a9cf0
-unsigned int CNMCharacterRemove64Func::DecodeFramed(CNMStream* s)
+unsigned int CNMCharacterRemove64Func::DecodeFramed(CNMStream* pStream)
 {
-    unsigned char storage[0x38]; FUN_14156be10(storage,s,this); unsigned int r=0;
-    if (FUN_1415fb750(storage)) { void** v=*reinterpret_cast<void***>(this); using F=unsigned int(__fastcall*)(CNMCharacterRemove64Func*,CNMSerializableDecoder*,CNMStream*); r=reinterpret_cast<F>(v[5])(this,reinterpret_cast<CNMSerializableDecoder*>(storage),s); }
-    FUN_14156bf10(storage); return r;
+    CNMSerializableDecoder decoder(pStream, this);
+    if (FUN_1415fb750(&decoder) == 0)
+        return 0;
+    return CNMCharacterRemove64Func::Decode(&decoder, pStream);
 }
 
 // MS2-FUNCTIONAL 0x1415a9d80: selects direct or framed response decoding.
 // @0x1415a9d80
-unsigned int CNMCharacterRemove64Func::DecodeDispatch(CNMSerializableDecoder* d, CNMStream* s)
+unsigned int CNMCharacterRemove64Func::DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream)
 {
-    void** v=*reinterpret_cast<void***>(this); if (FUN_1415fb6d0(d)==2) { using F=unsigned int(__fastcall*)(CNMCharacterRemove64Func*,CNMStream*); return reinterpret_cast<F>(v[6])(this,s); }
-    using G=unsigned int(__fastcall*)(CNMCharacterRemove64Func*,CNMSerializableDecoder*,CNMStream*); return reinterpret_cast<G>(v[5])(this,d,s);
+    if (FUN_1415fb6d0(pDecoder) == 2)
+        return CNMCharacterRemove64Func::DecodeFramed(pStream);
+    return CNMCharacterRemove64Func::Decode(pDecoder, pStream);
 }
 
 // MS2-FUNCTIONAL 0x1415a9de0: restores the name and 64-bit login value.
 // @0x1415a9de0
 unsigned int CNMCharacterRemove64Func::Decode(CNMSerializableDecoder* d, CNMStream* s)
 {
-    CNMFunc::DecodeDispatch(d,s); if (FUN_1415fb700(this)) { void** v=*reinterpret_cast<void***>(d); using B=void(__fastcall*)(void*,void*,unsigned int); using Q=unsigned __int64(__fastcall*)(void*); using U=unsigned int(__fastcall*)(void*); reinterpret_cast<B>(v[9])(d,m_30,sizeof(m_30)); m_70=static_cast<long long>(reinterpret_cast<Q>(v[4])(d)); m_78=static_cast<int>(reinterpret_cast<U>(v[3])(d)); }
+    CNMFunc::DecodeDispatch(d,s); if (FUN_1415fb700(this)) {d->ReadStringBufAlias(m_30,sizeof(m_30)); m_70=static_cast<long long>(d->ReadU64()); m_78=static_cast<int>(d->ReadU32()); }
     return static_cast<unsigned int>(FUN_1415fb750(d));
 }
 
@@ -494,37 +483,41 @@ unsigned int CNMCharacterRemove64Func::Decode(CNMSerializableDecoder* d, CNMStre
 // MS2-FUNCTIONAL 0x1415a9e90: initializes a 64-bit character-login request.
 // @0x1415a9e90
 CNMCharacterChangeName64Func::CNMCharacterChangeName64Func()
-    : CNMFunc(0xf007, 1, 0, 0), m_30{}, m_70(0), m_78(1), m_7c(0)
+    : CNMFunc(0xf007, 1, 0, 0)
 {
+    m_30[0] = 0;
+    m_70 = 0;
+    m_78 = 1;
 }
 
 // MS2-FUNCTIONAL 0x1415a9f10: copies the character name and 64-bit request value.
 // @0x1415a9f10
 CNMCharacterChangeName64Func::CNMCharacterChangeName64Func(const char* sz30, long long n70, int n78)
-    : CNMFunc(0xf007, 1, 0, 0), m_30{}, m_70(n70), m_78(n78), m_7c(0)
+    : CNMFunc(0xf007, 1, 0, 0)
 {
     if (sz30)
         FUN_1415fbe70(m_30, sizeof(m_30), sz30);
+    else
+        m_30[0] = 0;
+    m_70 = n70;
+    m_78 = n78;
 }
 
 // MS2-FUNCTIONAL 0x1415a9fc0: frames the 64-bit login request.
 // @0x1415a9fc0
 unsigned int CNMCharacterChangeName64Func::EncodeFramed(CNMStream* pStream)
 {
-    unsigned char storage[0x18]; FUN_14156bcb0(storage, pStream, this);
-    void** v = *reinterpret_cast<void***>(this);
-    using F = unsigned int(__fastcall*)(CNMCharacterChangeName64Func*, CNMEncoder*, CNMStream*);
-    auto r = reinterpret_cast<F>(v[2])(this, reinterpret_cast<CNMEncoder*>(storage), pStream);
-    FUN_14156bd50(storage); return r;
+    CNMSerializableEncoder encoder(pStream, this);
+    return CNMCharacterChangeName64Func::Encode(reinterpret_cast<CNMEncoder*>(&encoder), pStream);
 }
 
 // MS2-FUNCTIONAL 0x1415aa020: selects direct or framed login encoding.
 // @0x1415aa020
-unsigned int CNMCharacterChangeName64Func::EncodeDispatch(CNMEncoder* e, CNMStream* s)
+unsigned int CNMCharacterChangeName64Func::EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream)
 {
-    void** v = *reinterpret_cast<void***>(this);
-    if (m_bFormat == 1) { using F = unsigned int(__fastcall*)(CNMCharacterChangeName64Func*, CNMEncoder*, CNMStream*); return reinterpret_cast<F>(v[2])(this,e,s); }
-    using G = unsigned int(__fastcall*)(CNMCharacterChangeName64Func*, CNMStream*); return reinterpret_cast<G>(v[3])(this,s);
+    if (m_bFormat == 1)
+        return CNMCharacterChangeName64Func::Encode(pEncoder, pStream);
+    return CNMCharacterChangeName64Func::EncodeFramed(pStream);
 }
 
 // MS2-FUNCTIONAL 0x1415aa080: serializes the name and 64-bit login value.
@@ -538,26 +531,28 @@ unsigned int CNMCharacterChangeName64Func::Encode(CNMEncoder* e, CNMStream* s)
 
 // MS2-FUNCTIONAL 0x1415aa110: decodes a framed 64-bit login response.
 // @0x1415aa110
-unsigned int CNMCharacterChangeName64Func::DecodeFramed(CNMStream* s)
+unsigned int CNMCharacterChangeName64Func::DecodeFramed(CNMStream* pStream)
 {
-    unsigned char storage[0x38]; FUN_14156be10(storage,s,this); unsigned int r=0;
-    if (FUN_1415fb750(storage)) { void** v=*reinterpret_cast<void***>(this); using F=unsigned int(__fastcall*)(CNMCharacterChangeName64Func*,CNMSerializableDecoder*,CNMStream*); r=reinterpret_cast<F>(v[5])(this,reinterpret_cast<CNMSerializableDecoder*>(storage),s); }
-    FUN_14156bf10(storage); return r;
+    CNMSerializableDecoder decoder(pStream, this);
+    if (FUN_1415fb750(&decoder) == 0)
+        return 0;
+    return CNMCharacterChangeName64Func::Decode(&decoder, pStream);
 }
 
 // MS2-FUNCTIONAL 0x1415aa1a0: selects direct or framed response decoding.
 // @0x1415aa1a0
-unsigned int CNMCharacterChangeName64Func::DecodeDispatch(CNMSerializableDecoder* d, CNMStream* s)
+unsigned int CNMCharacterChangeName64Func::DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream)
 {
-    void** v=*reinterpret_cast<void***>(this); if (FUN_1415fb6d0(d)==2) { using F=unsigned int(__fastcall*)(CNMCharacterChangeName64Func*,CNMStream*); return reinterpret_cast<F>(v[6])(this,s); }
-    using G=unsigned int(__fastcall*)(CNMCharacterChangeName64Func*,CNMSerializableDecoder*,CNMStream*); return reinterpret_cast<G>(v[5])(this,d,s);
+    if (FUN_1415fb6d0(pDecoder) == 2)
+        return CNMCharacterChangeName64Func::DecodeFramed(pStream);
+    return CNMCharacterChangeName64Func::Decode(pDecoder, pStream);
 }
 
 // MS2-FUNCTIONAL 0x1415aa200: restores the name and 64-bit login value.
 // @0x1415aa200
 unsigned int CNMCharacterChangeName64Func::Decode(CNMSerializableDecoder* d, CNMStream* s)
 {
-    CNMFunc::DecodeDispatch(d,s); if (FUN_1415fb700(this)) { void** v=*reinterpret_cast<void***>(d); using B=void(__fastcall*)(void*,void*,unsigned int); using Q=unsigned __int64(__fastcall*)(void*); using U=unsigned int(__fastcall*)(void*); reinterpret_cast<B>(v[9])(d,m_30,sizeof(m_30)); m_70=static_cast<long long>(reinterpret_cast<Q>(v[4])(d)); m_78=static_cast<int>(reinterpret_cast<U>(v[3])(d)); }
+    CNMFunc::DecodeDispatch(d,s); if (FUN_1415fb700(this)) {d->ReadStringBufAlias(m_30,sizeof(m_30)); m_70=static_cast<long long>(d->ReadU64()); m_78=static_cast<int>(d->ReadU32()); }
     return static_cast<unsigned int>(FUN_1415fb750(d));
 }
 
@@ -573,61 +568,137 @@ unsigned int CNMCharacterChangeName64Func::Decode(CNMSerializableDecoder* d, CNM
 
 // MS2-FUNCTIONAL 0x1415a8d90: initializes a character synchronization request.
 // @0x1415a8d90
-CNMCharacterSyncFunc::CNMCharacterSyncFunc() : CNMFunc(0xf008,1,0,0), m_30{}, m_70(0), m_74(0), m_78(1), m_7c(0) {}
+CNMCharacterSyncFunc::CNMCharacterSyncFunc()
+    : CNMFunc(0xf008,1,0,0)
+{
+    m_30[0] = 0;
+    m_70 = 0;
+    m_74 = 0;
+    m_78 = 1;
+    m_7c = 0;
+}
 // MS2-FUNCTIONAL 0x1415a8e20: initializes synchronization values and name.
 // @0x1415a8e20
-CNMCharacterSyncFunc::CNMCharacterSyncFunc(const char* n, int a, int b, int c) : CNMFunc(0xf008,1,0,0), m_30{}, m_70(0), m_74(a), m_78(b), m_7c(c) { if(n) FUN_1415fbe70(m_30,sizeof(m_30),n); }
+CNMCharacterSyncFunc::CNMCharacterSyncFunc(const char* n, int a, int b, int c)
+    : CNMFunc(0xf008,1,0,0)
+{
+    if (n)
+        FUN_1415fbe70(m_30, sizeof(m_30), n);
+    else
+        m_30[0] = 0;
+    m_70 = 0;
+    m_74 = a;
+    m_78 = b;
+    m_7c = c;
+}
 // MS2-FUNCTIONAL 0x1415a8ef0: frames the request encoder.
 // @0x1415a8ef0
-unsigned int CNMCharacterSyncFunc::EncodeFramed(CNMStream* s) { unsigned char b[0x18]; FUN_14156bcb0(b,s,this); void** v=*reinterpret_cast<void***>(this); using F=unsigned int(__fastcall*)(CNMCharacterSyncFunc*,CNMEncoder*,CNMStream*); auto r=reinterpret_cast<F>(v[2])(this,reinterpret_cast<CNMEncoder*>(b),s); FUN_14156bd50(b); return r; }
+unsigned int CNMCharacterSyncFunc::EncodeFramed(CNMStream* pStream)
+{
+    CNMSerializableEncoder encoder(pStream, this);
+    return CNMCharacterSyncFunc::Encode(reinterpret_cast<CNMEncoder*>(&encoder), pStream);
+}
 
 // MS2-FUNCTIONAL 0x1415a8f50: selects direct or framed request encoding.
 // @0x1415a8f50
-unsigned int CNMCharacterSyncFunc::EncodeDispatch(CNMEncoder* e,CNMStream* s) { void** v=*reinterpret_cast<void***>(this); if(m_bFormat==1) { using F=unsigned int(__fastcall*)(CNMCharacterSyncFunc*,CNMEncoder*,CNMStream*); return reinterpret_cast<F>(v[2])(this,e,s); } using G=unsigned int(__fastcall*)(CNMCharacterSyncFunc*,CNMStream*); return reinterpret_cast<G>(v[3])(this,s); }
+unsigned int CNMCharacterSyncFunc::EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream)
+{
+    if (m_bFormat == 1)
+        return CNMCharacterSyncFunc::Encode(pEncoder, pStream);
+    return CNMCharacterSyncFunc::EncodeFramed(pStream);
+}
 
 // MS2-FUNCTIONAL 0x1415a9060: decodes a framed response.
 // @0x1415a9060
-unsigned int CNMCharacterSyncFunc::DecodeFramed(CNMStream* s) { unsigned char b[0x38]; FUN_14156be10(b,s,this); unsigned int r=0; if(FUN_1415fb750(b)) { void** v=*reinterpret_cast<void***>(this); using F=unsigned int(__fastcall*)(CNMCharacterSyncFunc*,CNMSerializableDecoder*,CNMStream*); r=reinterpret_cast<F>(v[5])(this,reinterpret_cast<CNMSerializableDecoder*>(b),s); } FUN_14156bf10(b); return r; }
+unsigned int CNMCharacterSyncFunc::DecodeFramed(CNMStream* pStream)
+{
+    CNMSerializableDecoder decoder(pStream, this);
+    if (FUN_1415fb750(&decoder) == 0)
+        return 0;
+    return CNMCharacterSyncFunc::Decode(&decoder, pStream);
+}
 
 // MS2-FUNCTIONAL 0x1415a90f0: selects direct or framed response decoding.
 // @0x1415a90f0
-unsigned int CNMCharacterSyncFunc::DecodeDispatch(CNMSerializableDecoder* d,CNMStream* s) { void** v=*reinterpret_cast<void***>(this); if(FUN_1415fb6d0(d)==2) { using F=unsigned int(__fastcall*)(CNMCharacterSyncFunc*,CNMStream*); return reinterpret_cast<F>(v[6])(this,s); } using G=unsigned int(__fastcall*)(CNMCharacterSyncFunc*,CNMSerializableDecoder*,CNMStream*); return reinterpret_cast<G>(v[5])(this,d,s); }
+unsigned int CNMCharacterSyncFunc::DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream)
+{
+    if (FUN_1415fb6d0(pDecoder) == 2)
+        return CNMCharacterSyncFunc::DecodeFramed(pStream);
+    return CNMCharacterSyncFunc::Decode(pDecoder, pStream);
+}
 
 // MS2-FUNCTIONAL 0x1415a8fb0: serializes the name and three synchronization values.
 // @0x1415a8fb0
 unsigned int CNMCharacterSyncFunc::Encode(CNMEncoder* e,CNMStream* s) { CNMFunc::EncodeDispatch(e,s); if(FUN_1415fb700(this)) { FUN_14156ae30(e,m_30); FUN_14156ac20(e,m_70); FUN_14156ac20(e,m_74); FUN_14156ac20(e,m_78); FUN_14156ac20(e,m_7c); } FUN_1415f9990(e); return 1; }
 // MS2-FUNCTIONAL 0x1415a9150: restores the name and synchronization values.
 // @0x1415a9150
-unsigned int CNMCharacterSyncFunc::Decode(CNMSerializableDecoder* d,CNMStream* s) { CNMFunc::DecodeDispatch(d,s); if(FUN_1415fb700(this)) { void** v=*reinterpret_cast<void***>(d); using B=void(__fastcall*)(void*,void*,unsigned int); using U=unsigned int(__fastcall*)(void*); reinterpret_cast<B>(v[9])(d,m_30,sizeof(m_30)); m_70=reinterpret_cast<U>(v[3])(d); m_74=reinterpret_cast<U>(v[3])(d); m_78=reinterpret_cast<U>(v[3])(d); m_7c=reinterpret_cast<U>(v[3])(d); } return FUN_1415fb750(d); }
+unsigned int CNMCharacterSyncFunc::Decode(CNMSerializableDecoder* d,CNMStream* s) { CNMFunc::DecodeDispatch(d,s); if(FUN_1415fb700(this)) {d->ReadStringBufAlias(m_30,sizeof(m_30)); m_70=d->ReadU32(); m_74=d->ReadU32(); m_78=d->ReadU32(); m_7c=d->ReadU32(); } return FUN_1415fb750(d); }
 
 // MS2-FUNCTIONAL 0x1415aa2b0: initializes a 64-bit character synchronization request.
 // @0x1415aa2b0
-CNMCharacterSync64Func::CNMCharacterSync64Func() : CNMFunc(0xf009,1,0,0), m_30{}, m_70(0), m_78(1), m_7c(0) {}
+CNMCharacterSync64Func::CNMCharacterSync64Func()
+    : CNMFunc(0xf009,1,0,0)
+{
+    m_30[0] = 0;
+    m_70 = 0;
+    m_78 = 1;
+    m_7c = 0;
+}
 // MS2-FUNCTIONAL 0x1415aa330: initializes the 64-bit synchronization values and name.
 // @0x1415aa330
-CNMCharacterSync64Func::CNMCharacterSync64Func(const char* n, long long a, int b, int c) : CNMFunc(0xf009,1,0,0), m_30{}, m_70(a), m_78(b), m_7c(c) { if(n) FUN_1415fbe70(m_30,sizeof(m_30),n); }
+CNMCharacterSync64Func::CNMCharacterSync64Func(const char* n, long long a, int b, int c)
+    : CNMFunc(0xf009,1,0,0)
+{
+    if (n)
+        FUN_1415fbe70(m_30, sizeof(m_30), n);
+    else
+        m_30[0] = 0;
+    m_70 = a;
+    m_78 = b;
+    m_7c = c;
+}
 // MS2-FUNCTIONAL 0x1415aa3f0: frames the request encoder.
 // @0x1415aa3f0
-unsigned int CNMCharacterSync64Func::EncodeFramed(CNMStream* s) { unsigned char b[0x18]; FUN_14156bcb0(b,s,this); void** v=*reinterpret_cast<void***>(this); using F=unsigned int(__fastcall*)(CNMCharacterSync64Func*,CNMEncoder*,CNMStream*); auto r=reinterpret_cast<F>(v[2])(this,reinterpret_cast<CNMEncoder*>(b),s); FUN_14156bd50(b); return r; }
+unsigned int CNMCharacterSync64Func::EncodeFramed(CNMStream* pStream)
+{
+    CNMSerializableEncoder encoder(pStream, this);
+    return CNMCharacterSync64Func::Encode(reinterpret_cast<CNMEncoder*>(&encoder), pStream);
+}
 
 // MS2-FUNCTIONAL 0x1415aa450: selects direct or framed request encoding.
 // @0x1415aa450
-unsigned int CNMCharacterSync64Func::EncodeDispatch(CNMEncoder* e,CNMStream* s) { void** v=*reinterpret_cast<void***>(this); if(m_bFormat==1) { using F=unsigned int(__fastcall*)(CNMCharacterSync64Func*,CNMEncoder*,CNMStream*); return reinterpret_cast<F>(v[2])(this,e,s); } using G=unsigned int(__fastcall*)(CNMCharacterSync64Func*,CNMStream*); return reinterpret_cast<G>(v[3])(this,s); }
+unsigned int CNMCharacterSync64Func::EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream)
+{
+    if (m_bFormat == 1)
+        return CNMCharacterSync64Func::Encode(pEncoder, pStream);
+    return CNMCharacterSync64Func::EncodeFramed(pStream);
+}
 
 // MS2-FUNCTIONAL 0x1415aa550: decodes a framed response.
 // @0x1415aa550
-unsigned int CNMCharacterSync64Func::DecodeFramed(CNMStream* s) { unsigned char b[0x38]; FUN_14156be10(b,s,this); unsigned int r=0; if(FUN_1415fb750(b)) { void** v=*reinterpret_cast<void***>(this); using F=unsigned int(__fastcall*)(CNMCharacterSync64Func*,CNMSerializableDecoder*,CNMStream*); r=reinterpret_cast<F>(v[5])(this,reinterpret_cast<CNMSerializableDecoder*>(b),s); } FUN_14156bf10(b); return r; }
+unsigned int CNMCharacterSync64Func::DecodeFramed(CNMStream* pStream)
+{
+    CNMSerializableDecoder decoder(pStream, this);
+    if (FUN_1415fb750(&decoder) == 0)
+        return 0;
+    return CNMCharacterSync64Func::Decode(&decoder, pStream);
+}
 
 // MS2-FUNCTIONAL 0x1415aa5e0: selects direct or framed response decoding.
 // @0x1415aa5e0
-unsigned int CNMCharacterSync64Func::DecodeDispatch(CNMSerializableDecoder* d,CNMStream* s) { void** v=*reinterpret_cast<void***>(this); if(FUN_1415fb6d0(d)==2) { using F=unsigned int(__fastcall*)(CNMCharacterSync64Func*,CNMStream*); return reinterpret_cast<F>(v[6])(this,s); } using G=unsigned int(__fastcall*)(CNMCharacterSync64Func*,CNMSerializableDecoder*,CNMStream*); return reinterpret_cast<G>(v[5])(this,d,s); }
+unsigned int CNMCharacterSync64Func::DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream)
+{
+    if (FUN_1415fb6d0(pDecoder) == 2)
+        return CNMCharacterSync64Func::DecodeFramed(pStream);
+    return CNMCharacterSync64Func::Decode(pDecoder, pStream);
+}
 
 // MS2-FUNCTIONAL 0x1415aa4b0: serializes the name, 64-bit ID and synchronization values.
 // @0x1415aa4b0
 unsigned int CNMCharacterSync64Func::Encode(CNMEncoder* e,CNMStream* s) { CNMFunc::EncodeDispatch(e,s); if(FUN_1415fb700(this)) { FUN_14156ae30(e,m_30); FUN_14156acb0(e,static_cast<unsigned __int64>(m_70)); FUN_14156ac20(e,m_78); FUN_14156ac20(e,m_7c); } FUN_1415f9990(e); return 1; }
 // MS2-FUNCTIONAL 0x1415aa640: restores the name, 64-bit ID and synchronization values.
 // @0x1415aa640
-unsigned int CNMCharacterSync64Func::Decode(CNMSerializableDecoder* d,CNMStream* s) { CNMFunc::DecodeDispatch(d,s); if(FUN_1415fb700(this)) { void** v=*reinterpret_cast<void***>(d); using B=void(__fastcall*)(void*,void*,unsigned int); using Q=unsigned __int64(__fastcall*)(void*); using U=unsigned int(__fastcall*)(void*); reinterpret_cast<B>(v[9])(d,m_30,sizeof(m_30)); m_70=static_cast<long long>(reinterpret_cast<Q>(v[4])(d)); m_78=reinterpret_cast<U>(v[3])(d); m_7c=reinterpret_cast<U>(v[3])(d); } return FUN_1415fb750(d); }
+unsigned int CNMCharacterSync64Func::Decode(CNMSerializableDecoder* d,CNMStream* s) { CNMFunc::DecodeDispatch(d,s); if(FUN_1415fb700(this)) {d->ReadStringBufAlias(m_30,sizeof(m_30)); m_70=static_cast<long long>(d->ReadU64()); m_78=d->ReadU32(); m_7c=d->ReadU32(); } return FUN_1415fb750(d); }
 
 // MS2-FUNCTIONAL 0x1415aa700: initializes an empty chat-channel close request.
 // @0x1415aa700
@@ -637,19 +708,39 @@ CNMCHCloseFunc::CNMCHCloseFunc() : CNMFunc(0xd001,1,0,0) {}
 CNMCHCloseFunc::CNMCHCloseFunc(int n30) : CNMFunc(0xd001,1,n30,0) {}
 // MS2-FUNCTIONAL 0x1415aa7a0: frames the request encoder.
 // @0x1415aa7a0
-unsigned int CNMCHCloseFunc::EncodeFramed(CNMStream* s) { unsigned char b[0x18]; FUN_14156bcb0(b,s,this); void** v=*reinterpret_cast<void***>(this); using F=unsigned int(__fastcall*)(CNMCHCloseFunc*,CNMEncoder*,CNMStream*); auto r=reinterpret_cast<F>(v[2])(this,reinterpret_cast<CNMEncoder*>(b),s); FUN_14156bd50(b); return r; }
+unsigned int CNMCHCloseFunc::EncodeFramed(CNMStream* pStream)
+{
+    CNMSerializableEncoder encoder(pStream, this);
+    return CNMCHCloseFunc::Encode(reinterpret_cast<CNMEncoder*>(&encoder), pStream);
+}
 
 // MS2-FUNCTIONAL 0x1415aa800: selects direct or framed request encoding.
 // @0x1415aa800
-unsigned int CNMCHCloseFunc::EncodeDispatch(CNMEncoder* e,CNMStream* s) { void** v=*reinterpret_cast<void***>(this); if(m_bFormat==1) { using F=unsigned int(__fastcall*)(CNMCHCloseFunc*,CNMEncoder*,CNMStream*); return reinterpret_cast<F>(v[2])(this,e,s); } using G=unsigned int(__fastcall*)(CNMCHCloseFunc*,CNMStream*); return reinterpret_cast<G>(v[3])(this,s); }
+unsigned int CNMCHCloseFunc::EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream)
+{
+    if (m_bFormat == 1)
+        return CNMCHCloseFunc::Encode(pEncoder, pStream);
+    return CNMCHCloseFunc::EncodeFramed(pStream);
+}
 
 // MS2-FUNCTIONAL 0x1415aa8b0: decodes a framed response.
 // @0x1415aa8b0
-unsigned int CNMCHCloseFunc::DecodeFramed(CNMStream* s) { unsigned char b[0x38]; FUN_14156be10(b,s,this); unsigned int r=0; if(FUN_1415fb750(b)) { void** v=*reinterpret_cast<void***>(this); using F=unsigned int(__fastcall*)(CNMCHCloseFunc*,CNMSerializableDecoder*,CNMStream*); r=reinterpret_cast<F>(v[5])(this,reinterpret_cast<CNMSerializableDecoder*>(b),s); } FUN_14156bf10(b); return r; }
+unsigned int CNMCHCloseFunc::DecodeFramed(CNMStream* pStream)
+{
+    CNMSerializableDecoder decoder(pStream, this);
+    if (FUN_1415fb750(&decoder) == 0)
+        return 0;
+    return CNMCHCloseFunc::Decode(&decoder, pStream);
+}
 
 // MS2-FUNCTIONAL 0x1415aa940: selects direct or framed response decoding.
 // @0x1415aa940
-unsigned int CNMCHCloseFunc::DecodeDispatch(CNMSerializableDecoder* d,CNMStream* s) { void** v=*reinterpret_cast<void***>(this); if(FUN_1415fb6d0(d)==2) { using F=unsigned int(__fastcall*)(CNMCHCloseFunc*,CNMStream*); return reinterpret_cast<F>(v[6])(this,s); } using G=unsigned int(__fastcall*)(CNMCHCloseFunc*,CNMSerializableDecoder*,CNMStream*); return reinterpret_cast<G>(v[5])(this,d,s); }
+unsigned int CNMCHCloseFunc::DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream)
+{
+    if (FUN_1415fb6d0(pDecoder) == 2)
+        return CNMCHCloseFunc::DecodeFramed(pStream);
+    return CNMCHCloseFunc::Decode(pDecoder, pStream);
+}
 
 // MS2-FUNCTIONAL 0x1415aa860: finalizes the empty close request payload.
 // @0x1415aa860
@@ -666,19 +757,39 @@ CNMCHGetChannelInfoFunc::CNMCHGetChannelInfoFunc() : CNMFunc(0xd002,1,0,0), m_30
 CNMCHGetChannelInfoFunc::CNMCHGetChannelInfoFunc(int n18) : CNMFunc(0xd002,1,n18,0), m_30() {}
 // MS2-FUNCTIONAL 0x1415aaac0: frames the request encoder.
 // @0x1415aaac0
-unsigned int CNMCHGetChannelInfoFunc::EncodeFramed(CNMStream* s) { unsigned char b[0x18]; FUN_14156bcb0(b,s,this); void** v=*reinterpret_cast<void***>(this); using F=unsigned int(__fastcall*)(CNMCHGetChannelInfoFunc*,CNMEncoder*,CNMStream*); auto r=reinterpret_cast<F>(v[2])(this,reinterpret_cast<CNMEncoder*>(b),s); FUN_14156bd50(b); return r; }
+unsigned int CNMCHGetChannelInfoFunc::EncodeFramed(CNMStream* pStream)
+{
+    CNMSerializableEncoder encoder(pStream, this);
+    return CNMCHGetChannelInfoFunc::Encode(reinterpret_cast<CNMEncoder*>(&encoder), pStream);
+}
 
 // MS2-FUNCTIONAL 0x1415aab20: selects direct or framed request encoding.
 // @0x1415aab20
-unsigned int CNMCHGetChannelInfoFunc::EncodeDispatch(CNMEncoder* e,CNMStream* s) { void** v=*reinterpret_cast<void***>(this); if(m_bFormat==1) { using F=unsigned int(__fastcall*)(CNMCHGetChannelInfoFunc*,CNMEncoder*,CNMStream*); return reinterpret_cast<F>(v[2])(this,e,s); } using G=unsigned int(__fastcall*)(CNMCHGetChannelInfoFunc*,CNMStream*); return reinterpret_cast<G>(v[3])(this,s); }
+unsigned int CNMCHGetChannelInfoFunc::EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream)
+{
+    if (m_bFormat == 1)
+        return CNMCHGetChannelInfoFunc::Encode(pEncoder, pStream);
+    return CNMCHGetChannelInfoFunc::EncodeFramed(pStream);
+}
 
 // MS2-FUNCTIONAL 0x1415aac00: decodes a framed response.
 // @0x1415aac00
-unsigned int CNMCHGetChannelInfoFunc::DecodeFramed(CNMStream* s) { unsigned char b[0x38]; FUN_14156be10(b,s,this); unsigned int r=0; if(FUN_1415fb750(b)) { void** v=*reinterpret_cast<void***>(this); using F=unsigned int(__fastcall*)(CNMCHGetChannelInfoFunc*,CNMSerializableDecoder*,CNMStream*); r=reinterpret_cast<F>(v[5])(this,reinterpret_cast<CNMSerializableDecoder*>(b),s); } FUN_14156bf10(b); return r; }
+unsigned int CNMCHGetChannelInfoFunc::DecodeFramed(CNMStream* pStream)
+{
+    CNMSerializableDecoder decoder(pStream, this);
+    if (FUN_1415fb750(&decoder) == 0)
+        return 0;
+    return CNMCHGetChannelInfoFunc::Decode(&decoder, pStream);
+}
 
 // MS2-FUNCTIONAL 0x1415aac90: selects direct or framed response decoding.
 // @0x1415aac90
-unsigned int CNMCHGetChannelInfoFunc::DecodeDispatch(CNMSerializableDecoder* d,CNMStream* s) { void** v=*reinterpret_cast<void***>(this); if(FUN_1415fb6d0(d)==2) { using F=unsigned int(__fastcall*)(CNMCHGetChannelInfoFunc*,CNMStream*); return reinterpret_cast<F>(v[6])(this,s); } using G=unsigned int(__fastcall*)(CNMCHGetChannelInfoFunc*,CNMSerializableDecoder*,CNMStream*); return reinterpret_cast<G>(v[5])(this,d,s); }
+unsigned int CNMCHGetChannelInfoFunc::DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream)
+{
+    if (FUN_1415fb6d0(pDecoder) == 2)
+        return CNMCHGetChannelInfoFunc::DecodeFramed(pStream);
+    return CNMCHGetChannelInfoFunc::Decode(pDecoder, pStream);
+}
 
 // MS2-FUNCTIONAL 0x1415aab80: writes a channel record for reply messages.
 // @0x1415aab80
@@ -695,19 +806,39 @@ CNMCHChangeChannelInfoFunc::CNMCHChangeChannelInfoFunc() : CNMFunc(0xd003,1,0,0)
 CNMCHChangeChannelInfoFunc::CNMCHChangeChannelInfoFunc(int n18,const CNMClientChannelInfo& r) : CNMFunc(0xd003,1,n18,0), m_30(r) {}
 // MS2-FUNCTIONAL 0x1415aae60: frames the request encoder.
 // @0x1415aae60
-unsigned int CNMCHChangeChannelInfoFunc::EncodeFramed(CNMStream* s) { unsigned char b[0x18]; FUN_14156bcb0(b,s,this); void** v=*reinterpret_cast<void***>(this); using F=unsigned int(__fastcall*)(CNMCHChangeChannelInfoFunc*,CNMEncoder*,CNMStream*); auto r=reinterpret_cast<F>(v[2])(this,reinterpret_cast<CNMEncoder*>(b),s); FUN_14156bd50(b); return r; }
+unsigned int CNMCHChangeChannelInfoFunc::EncodeFramed(CNMStream* pStream)
+{
+    CNMSerializableEncoder encoder(pStream, this);
+    return CNMCHChangeChannelInfoFunc::Encode(reinterpret_cast<CNMEncoder*>(&encoder), pStream);
+}
 
 // MS2-FUNCTIONAL 0x1415aaec0: selects direct or framed request encoding.
 // @0x1415aaec0
-unsigned int CNMCHChangeChannelInfoFunc::EncodeDispatch(CNMEncoder* e,CNMStream* s) { void** v=*reinterpret_cast<void***>(this); if(m_bFormat==1) { using F=unsigned int(__fastcall*)(CNMCHChangeChannelInfoFunc*,CNMEncoder*,CNMStream*); return reinterpret_cast<F>(v[2])(this,e,s); } using G=unsigned int(__fastcall*)(CNMCHChangeChannelInfoFunc*,CNMStream*); return reinterpret_cast<G>(v[3])(this,s); }
+unsigned int CNMCHChangeChannelInfoFunc::EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream)
+{
+    if (m_bFormat == 1)
+        return CNMCHChangeChannelInfoFunc::Encode(pEncoder, pStream);
+    return CNMCHChangeChannelInfoFunc::EncodeFramed(pStream);
+}
 
 // MS2-FUNCTIONAL 0x1415aafa0: decodes a framed response.
 // @0x1415aafa0
-unsigned int CNMCHChangeChannelInfoFunc::DecodeFramed(CNMStream* s) { unsigned char b[0x38]; FUN_14156be10(b,s,this); unsigned int r=0; if(FUN_1415fb750(b)) { void** v=*reinterpret_cast<void***>(this); using F=unsigned int(__fastcall*)(CNMCHChangeChannelInfoFunc*,CNMSerializableDecoder*,CNMStream*); r=reinterpret_cast<F>(v[5])(this,reinterpret_cast<CNMSerializableDecoder*>(b),s); } FUN_14156bf10(b); return r; }
+unsigned int CNMCHChangeChannelInfoFunc::DecodeFramed(CNMStream* pStream)
+{
+    CNMSerializableDecoder decoder(pStream, this);
+    if (FUN_1415fb750(&decoder) == 0)
+        return 0;
+    return CNMCHChangeChannelInfoFunc::Decode(&decoder, pStream);
+}
 
 // MS2-FUNCTIONAL 0x1415ab030: selects direct or framed response decoding.
 // @0x1415ab030
-unsigned int CNMCHChangeChannelInfoFunc::DecodeDispatch(CNMSerializableDecoder* d,CNMStream* s) { void** v=*reinterpret_cast<void***>(this); if(FUN_1415fb6d0(d)==2) { using F=unsigned int(__fastcall*)(CNMCHChangeChannelInfoFunc*,CNMStream*); return reinterpret_cast<F>(v[6])(this,s); } using G=unsigned int(__fastcall*)(CNMCHChangeChannelInfoFunc*,CNMSerializableDecoder*,CNMStream*); return reinterpret_cast<G>(v[5])(this,d,s); }
+unsigned int CNMCHChangeChannelInfoFunc::DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream)
+{
+    if (FUN_1415fb6d0(pDecoder) == 2)
+        return CNMCHChangeChannelInfoFunc::DecodeFramed(pStream);
+    return CNMCHChangeChannelInfoFunc::Decode(pDecoder, pStream);
+}
 
 // MS2-FUNCTIONAL 0x1415aaf20: serializes the updated channel record.
 // @0x1415aaf20
@@ -727,19 +858,39 @@ CNMCHChangeMyInfoFunc::CNMCHChangeMyInfoFunc(int n18) : CNMFunc(0xd005,1,n18,0),
 CNMCHChangeMyInfoFunc::CNMCHChangeMyInfoFunc(int n18,const CNMChannelMemberInfo& r) : CNMFunc(0xd005,1,n18,0), m_30(r) {}
 // MS2-FUNCTIONAL 0x1415ab6b0: frames the request encoder.
 // @0x1415ab6b0
-unsigned int CNMCHChangeMyInfoFunc::EncodeFramed(CNMStream* s) { unsigned char b[0x18]; FUN_14156bcb0(b,s,this); void** v=*reinterpret_cast<void***>(this); using F=unsigned int(__fastcall*)(CNMCHChangeMyInfoFunc*,CNMEncoder*,CNMStream*); auto r=reinterpret_cast<F>(v[2])(this,reinterpret_cast<CNMEncoder*>(b),s); FUN_14156bd50(b); return r; }
+unsigned int CNMCHChangeMyInfoFunc::EncodeFramed(CNMStream* pStream)
+{
+    CNMSerializableEncoder encoder(pStream, this);
+    return CNMCHChangeMyInfoFunc::Encode(reinterpret_cast<CNMEncoder*>(&encoder), pStream);
+}
 
 // MS2-FUNCTIONAL 0x1415ab710: selects direct or framed request encoding.
 // @0x1415ab710
-unsigned int CNMCHChangeMyInfoFunc::EncodeDispatch(CNMEncoder* e,CNMStream* s) { void** v=*reinterpret_cast<void***>(this); if(m_bFormat==1) { using F=unsigned int(__fastcall*)(CNMCHChangeMyInfoFunc*,CNMEncoder*,CNMStream*); return reinterpret_cast<F>(v[2])(this,e,s); } using G=unsigned int(__fastcall*)(CNMCHChangeMyInfoFunc*,CNMStream*); return reinterpret_cast<G>(v[3])(this,s); }
+unsigned int CNMCHChangeMyInfoFunc::EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream)
+{
+    if (m_bFormat == 1)
+        return CNMCHChangeMyInfoFunc::Encode(pEncoder, pStream);
+    return CNMCHChangeMyInfoFunc::EncodeFramed(pStream);
+}
 
 // MS2-FUNCTIONAL 0x1415ab7f0: decodes a framed response.
 // @0x1415ab7f0
-unsigned int CNMCHChangeMyInfoFunc::DecodeFramed(CNMStream* s) { unsigned char b[0x38]; FUN_14156be10(b,s,this); unsigned int r=0; if(FUN_1415fb750(b)) { void** v=*reinterpret_cast<void***>(this); using F=unsigned int(__fastcall*)(CNMCHChangeMyInfoFunc*,CNMSerializableDecoder*,CNMStream*); r=reinterpret_cast<F>(v[5])(this,reinterpret_cast<CNMSerializableDecoder*>(b),s); } FUN_14156bf10(b); return r; }
+unsigned int CNMCHChangeMyInfoFunc::DecodeFramed(CNMStream* pStream)
+{
+    CNMSerializableDecoder decoder(pStream, this);
+    if (FUN_1415fb750(&decoder) == 0)
+        return 0;
+    return CNMCHChangeMyInfoFunc::Decode(&decoder, pStream);
+}
 
 // MS2-FUNCTIONAL 0x1415ab880: selects direct or framed response decoding.
 // @0x1415ab880
-unsigned int CNMCHChangeMyInfoFunc::DecodeDispatch(CNMSerializableDecoder* d,CNMStream* s) { void** v=*reinterpret_cast<void***>(this); if(FUN_1415fb6d0(d)==2) { using F=unsigned int(__fastcall*)(CNMCHChangeMyInfoFunc*,CNMStream*); return reinterpret_cast<F>(v[6])(this,s); } using G=unsigned int(__fastcall*)(CNMCHChangeMyInfoFunc*,CNMSerializableDecoder*,CNMStream*); return reinterpret_cast<G>(v[5])(this,d,s); }
+unsigned int CNMCHChangeMyInfoFunc::DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream)
+{
+    if (FUN_1415fb6d0(pDecoder) == 2)
+        return CNMCHChangeMyInfoFunc::DecodeFramed(pStream);
+    return CNMCHChangeMyInfoFunc::Decode(pDecoder, pStream);
+}
 
 // MS2-FUNCTIONAL 0x1415ab770: writes the member record for update requests.
 // @0x1415ab770
@@ -772,26 +923,46 @@ CNMCHInviteUserFunc::CNMCHInviteUserFunc(int n18,const char* a,const char* b) : 
 }
 // MS2-FUNCTIONAL 0x1415aba70: frames the request encoder.
 // @0x1415aba70
-unsigned int CNMCHInviteUserFunc::EncodeFramed(CNMStream* s) { unsigned char b[0x18]; FUN_14156bcb0(b,s,this); void** v=*reinterpret_cast<void***>(this); using F=unsigned int(__fastcall*)(CNMCHInviteUserFunc*,CNMEncoder*,CNMStream*); auto r=reinterpret_cast<F>(v[2])(this,reinterpret_cast<CNMEncoder*>(b),s); FUN_14156bd50(b); return r; }
+unsigned int CNMCHInviteUserFunc::EncodeFramed(CNMStream* pStream)
+{
+    CNMSerializableEncoder encoder(pStream, this);
+    return CNMCHInviteUserFunc::Encode(reinterpret_cast<CNMEncoder*>(&encoder), pStream);
+}
 
 // MS2-FUNCTIONAL 0x1415abad0: selects direct or framed request encoding.
 // @0x1415abad0
-unsigned int CNMCHInviteUserFunc::EncodeDispatch(CNMEncoder* e,CNMStream* s) { void** v=*reinterpret_cast<void***>(this); if(m_bFormat==1) { using F=unsigned int(__fastcall*)(CNMCHInviteUserFunc*,CNMEncoder*,CNMStream*); return reinterpret_cast<F>(v[2])(this,e,s); } using G=unsigned int(__fastcall*)(CNMCHInviteUserFunc*,CNMStream*); return reinterpret_cast<G>(v[3])(this,s); }
+unsigned int CNMCHInviteUserFunc::EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream)
+{
+    if (m_bFormat == 1)
+        return CNMCHInviteUserFunc::Encode(pEncoder, pStream);
+    return CNMCHInviteUserFunc::EncodeFramed(pStream);
+}
 
 // MS2-FUNCTIONAL 0x1415abbc0: decodes a framed response.
 // @0x1415abbc0
-unsigned int CNMCHInviteUserFunc::DecodeFramed(CNMStream* s) { unsigned char b[0x38]; FUN_14156be10(b,s,this); unsigned int r=0; if(FUN_1415fb750(b)) { void** v=*reinterpret_cast<void***>(this); using F=unsigned int(__fastcall*)(CNMCHInviteUserFunc*,CNMSerializableDecoder*,CNMStream*); r=reinterpret_cast<F>(v[5])(this,reinterpret_cast<CNMSerializableDecoder*>(b),s); } FUN_14156bf10(b); return r; }
+unsigned int CNMCHInviteUserFunc::DecodeFramed(CNMStream* pStream)
+{
+    CNMSerializableDecoder decoder(pStream, this);
+    if (FUN_1415fb750(&decoder) == 0)
+        return 0;
+    return CNMCHInviteUserFunc::Decode(&decoder, pStream);
+}
 
 // MS2-FUNCTIONAL 0x1415abc50: selects direct or framed response decoding.
 // @0x1415abc50
-unsigned int CNMCHInviteUserFunc::DecodeDispatch(CNMSerializableDecoder* d,CNMStream* s) { void** v=*reinterpret_cast<void***>(this); if(FUN_1415fb6d0(d)==2) { using F=unsigned int(__fastcall*)(CNMCHInviteUserFunc*,CNMStream*); return reinterpret_cast<F>(v[6])(this,s); } using G=unsigned int(__fastcall*)(CNMCHInviteUserFunc*,CNMSerializableDecoder*,CNMStream*); return reinterpret_cast<G>(v[5])(this,d,s); }
+unsigned int CNMCHInviteUserFunc::DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream)
+{
+    if (FUN_1415fb6d0(pDecoder) == 2)
+        return CNMCHInviteUserFunc::DecodeFramed(pStream);
+    return CNMCHInviteUserFunc::Decode(pDecoder, pStream);
+}
 
 // MS2-FUNCTIONAL 0x1415abb30: serializes both invite strings.
 // @0x1415abb30
 unsigned int CNMCHInviteUserFunc::Encode(CNMEncoder* e,CNMStream* s) { CNMFunc::EncodeDispatch(e,s); if(FUN_1415fb700(this)) { FUN_14156ae30(e,FUN_1415f39e0(&m_30)); FUN_14156ae30(e,FUN_1415f39f0(&m_38)); } FUN_1415f9990(e); return 1; }
 // MS2-FUNCTIONAL 0x1415abcb0: restores both invite strings.
 // @0x1415abcb0
-unsigned int CNMCHInviteUserFunc::Decode(CNMSerializableDecoder* d,CNMStream* s) { CNMFunc::DecodeDispatch(d,s); if(FUN_1415fb700(this)) { void** v=*reinterpret_cast<void***>(d); using B=void(__fastcall*)(void*,void*,unsigned int); reinterpret_cast<B>(v[9])(d,FUN_1415f9fe0(&m_30),FUN_1415fa080(&m_30)); reinterpret_cast<B>(v[9])(d,FUN_1415fa000(&m_38),FUN_1415fa090(&m_38)); } return FUN_1415fb750(d); }
+unsigned int CNMCHInviteUserFunc::Decode(CNMSerializableDecoder* d,CNMStream* s) { CNMFunc::DecodeDispatch(d,s); if(FUN_1415fb700(this)) {d->ReadStringBufAlias(static_cast<char*>(FUN_1415f9fe0(&m_30)),FUN_1415fa080(&m_30)); d->ReadStringBufAlias(static_cast<char*>(FUN_1415fa000(&m_38)),FUN_1415fa090(&m_38)); } return FUN_1415fb750(d); }
 
 // MS2-FUNCTIONAL 0x1415ac0d0: initializes a channel-message request.
 // @0x1415ac0d0
@@ -804,19 +975,39 @@ CNMCHSendChannelMessageFunc::CNMCHSendChannelMessageFunc(int n18) : CNMFunc(0xd0
 CNMCHSendChannelMessageFunc::CNMCHSendChannelMessageFunc(int n18,const CNMChannelMessage& rMessage) : CNMFunc(0xd008,1,n18,0), m_30(rMessage) {}
 // MS2-FUNCTIONAL 0x1415ac230: frames the request encoder.
 // @0x1415ac230
-unsigned int CNMCHSendChannelMessageFunc::EncodeFramed(CNMStream* s) { unsigned char b[0x18]; FUN_14156bcb0(b,s,this); void** v=*reinterpret_cast<void***>(this); using F=unsigned int(__fastcall*)(CNMCHSendChannelMessageFunc*,CNMEncoder*,CNMStream*); auto r=reinterpret_cast<F>(v[2])(this,reinterpret_cast<CNMEncoder*>(b),s); FUN_14156bd50(b); return r; }
+unsigned int CNMCHSendChannelMessageFunc::EncodeFramed(CNMStream* pStream)
+{
+    CNMSerializableEncoder encoder(pStream, this);
+    return CNMCHSendChannelMessageFunc::Encode(reinterpret_cast<CNMEncoder*>(&encoder), pStream);
+}
 
 // MS2-FUNCTIONAL 0x1415ac290: selects direct or framed request encoding.
 // @0x1415ac290
-unsigned int CNMCHSendChannelMessageFunc::EncodeDispatch(CNMEncoder* e,CNMStream* s) { void** v=*reinterpret_cast<void***>(this); if(m_bFormat==1) { using F=unsigned int(__fastcall*)(CNMCHSendChannelMessageFunc*,CNMEncoder*,CNMStream*); return reinterpret_cast<F>(v[2])(this,e,s); } using G=unsigned int(__fastcall*)(CNMCHSendChannelMessageFunc*,CNMStream*); return reinterpret_cast<G>(v[3])(this,s); }
+unsigned int CNMCHSendChannelMessageFunc::EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream)
+{
+    if (m_bFormat == 1)
+        return CNMCHSendChannelMessageFunc::Encode(pEncoder, pStream);
+    return CNMCHSendChannelMessageFunc::EncodeFramed(pStream);
+}
 
 // MS2-FUNCTIONAL 0x1415ac370: decodes a framed response.
 // @0x1415ac370
-unsigned int CNMCHSendChannelMessageFunc::DecodeFramed(CNMStream* s) { unsigned char b[0x38]; FUN_14156be10(b,s,this); unsigned int r=0; if(FUN_1415fb750(b)) { void** v=*reinterpret_cast<void***>(this); using F=unsigned int(__fastcall*)(CNMCHSendChannelMessageFunc*,CNMSerializableDecoder*,CNMStream*); r=reinterpret_cast<F>(v[5])(this,reinterpret_cast<CNMSerializableDecoder*>(b),s); } FUN_14156bf10(b); return r; }
+unsigned int CNMCHSendChannelMessageFunc::DecodeFramed(CNMStream* pStream)
+{
+    CNMSerializableDecoder decoder(pStream, this);
+    if (FUN_1415fb750(&decoder) == 0)
+        return 0;
+    return CNMCHSendChannelMessageFunc::Decode(&decoder, pStream);
+}
 
 // MS2-FUNCTIONAL 0x1415ac400: selects direct or framed response decoding.
 // @0x1415ac400
-unsigned int CNMCHSendChannelMessageFunc::DecodeDispatch(CNMSerializableDecoder* d,CNMStream* s) { void** v=*reinterpret_cast<void***>(this); if(FUN_1415fb6d0(d)==2) { using F=unsigned int(__fastcall*)(CNMCHSendChannelMessageFunc*,CNMStream*); return reinterpret_cast<F>(v[6])(this,s); } using G=unsigned int(__fastcall*)(CNMCHSendChannelMessageFunc*,CNMSerializableDecoder*,CNMStream*); return reinterpret_cast<G>(v[5])(this,d,s); }
+unsigned int CNMCHSendChannelMessageFunc::DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream)
+{
+    if (FUN_1415fb6d0(pDecoder) == 2)
+        return CNMCHSendChannelMessageFunc::DecodeFramed(pStream);
+    return CNMCHSendChannelMessageFunc::Decode(pDecoder, pStream);
+}
 
 // MS2-FUNCTIONAL 0x1415ac2f0: serializes the nested channel message.
 // @0x1415ac2f0
@@ -827,51 +1018,112 @@ unsigned int CNMCHSendChannelMessageFunc::Decode(CNMSerializableDecoder* d,CNMSt
 
 // MS2-FUNCTIONAL 0x1415ac4e0: initializes the game-log endpoint strings.
 // @0x1415ac4e0
-CNMGameLogInitializeFunc::CNMGameLogInitializeFunc() : CNMFunc(0xf010,1,0,0), m_30{}, m_50{}, m_150{} {}
+CNMGameLogInitializeFunc::CNMGameLogInitializeFunc()
+    : CNMFunc(0xf010,1,0,0)
+{
+    m_30[0] = 0;
+    m_50[0] = 0;
+    m_150[0] = 0;
+}
 // MS2-FUNCTIONAL 0x1415ac570: copies the three game-log endpoint strings.
 // @0x1415ac570
-CNMGameLogInitializeFunc::CNMGameLogInitializeFunc(const char* a,const char* b,const char* c) : CNMFunc(0xf010,1,0,0), m_30{}, m_50{}, m_150{} { if(a) FUN_1415fbe70(m_30,sizeof(m_30),a); if(b) FUN_1415fbe70(m_50,sizeof(m_50),b); if(c) FUN_1415fbe70(m_150,sizeof(m_150),c); }
+CNMGameLogInitializeFunc::CNMGameLogInitializeFunc(const char* a,const char* b,const char* c)
+    : CNMFunc(0xf010,1,0,0)
+{
+    if (a)
+        FUN_1415fbe70(m_30, sizeof(m_30), a);
+    else
+        m_30[0] = 0;
+    if (b)
+        FUN_1415fbe70(m_50, sizeof(m_50), b);
+    else
+        m_50[0] = 0;
+    if (c)
+        FUN_1415fbe70(m_150, sizeof(m_150), c);
+    else
+        m_150[0] = 0;
+}
 // MS2-FUNCTIONAL 0x1415ac680: frames the request encoder.
 // @0x1415ac680
-unsigned int CNMGameLogInitializeFunc::EncodeFramed(CNMStream* s) { unsigned char b[0x18]; FUN_14156bcb0(b,s,this); void** v=*reinterpret_cast<void***>(this); using F=unsigned int(__fastcall*)(CNMGameLogInitializeFunc*,CNMEncoder*,CNMStream*); auto r=reinterpret_cast<F>(v[2])(this,reinterpret_cast<CNMEncoder*>(b),s); FUN_14156bd50(b); return r; }
+unsigned int CNMGameLogInitializeFunc::EncodeFramed(CNMStream* pStream)
+{
+    CNMSerializableEncoder encoder(pStream, this);
+    return CNMGameLogInitializeFunc::Encode(reinterpret_cast<CNMEncoder*>(&encoder), pStream);
+}
 
 // MS2-FUNCTIONAL 0x1415ac6e0: selects direct or framed request encoding.
 // @0x1415ac6e0
-unsigned int CNMGameLogInitializeFunc::EncodeDispatch(CNMEncoder* e,CNMStream* s) { void** v=*reinterpret_cast<void***>(this); if(m_bFormat==1) { using F=unsigned int(__fastcall*)(CNMGameLogInitializeFunc*,CNMEncoder*,CNMStream*); return reinterpret_cast<F>(v[2])(this,e,s); } using G=unsigned int(__fastcall*)(CNMGameLogInitializeFunc*,CNMStream*); return reinterpret_cast<G>(v[3])(this,s); }
+unsigned int CNMGameLogInitializeFunc::EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream)
+{
+    if (m_bFormat == 1)
+        return CNMGameLogInitializeFunc::Encode(pEncoder, pStream);
+    return CNMGameLogInitializeFunc::EncodeFramed(pStream);
+}
 
 // MS2-FUNCTIONAL 0x1415ac7e0: decodes a framed response.
 // @0x1415ac7e0
-unsigned int CNMGameLogInitializeFunc::DecodeFramed(CNMStream* s) { unsigned char b[0x38]; FUN_14156be10(b,s,this); unsigned int r=0; if(FUN_1415fb750(b)) { void** v=*reinterpret_cast<void***>(this); using F=unsigned int(__fastcall*)(CNMGameLogInitializeFunc*,CNMSerializableDecoder*,CNMStream*); r=reinterpret_cast<F>(v[5])(this,reinterpret_cast<CNMSerializableDecoder*>(b),s); } FUN_14156bf10(b); return r; }
+unsigned int CNMGameLogInitializeFunc::DecodeFramed(CNMStream* pStream)
+{
+    CNMSerializableDecoder decoder(pStream, this);
+    if (FUN_1415fb750(&decoder) == 0)
+        return 0;
+    return CNMGameLogInitializeFunc::Decode(&decoder, pStream);
+}
 
 // MS2-FUNCTIONAL 0x1415ac870: selects direct or framed response decoding.
 // @0x1415ac870
-unsigned int CNMGameLogInitializeFunc::DecodeDispatch(CNMSerializableDecoder* d,CNMStream* s) { void** v=*reinterpret_cast<void***>(this); if(FUN_1415fb6d0(d)==2) { using F=unsigned int(__fastcall*)(CNMGameLogInitializeFunc*,CNMStream*); return reinterpret_cast<F>(v[6])(this,s); } using G=unsigned int(__fastcall*)(CNMGameLogInitializeFunc*,CNMSerializableDecoder*,CNMStream*); return reinterpret_cast<G>(v[5])(this,d,s); }
+unsigned int CNMGameLogInitializeFunc::DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream)
+{
+    if (FUN_1415fb6d0(pDecoder) == 2)
+        return CNMGameLogInitializeFunc::DecodeFramed(pStream);
+    return CNMGameLogInitializeFunc::Decode(pDecoder, pStream);
+}
 
 // MS2-FUNCTIONAL 0x1415ac740: serializes the three game-log strings.
 // @0x1415ac740
 unsigned int CNMGameLogInitializeFunc::Encode(CNMEncoder* e,CNMStream* s) { CNMFunc::EncodeDispatch(e,s); if(FUN_1415fb700(this)) { FUN_14156ae30(e,m_30); FUN_14156ae30(e,m_50); FUN_14156ae30(e,m_150); } FUN_1415f9990(e); return 1; }
 // MS2-FUNCTIONAL 0x1415ac8d0: restores the three game-log strings.
 // @0x1415ac8d0
-unsigned int CNMGameLogInitializeFunc::Decode(CNMSerializableDecoder* d,CNMStream* s) { CNMFunc::DecodeDispatch(d,s); if(FUN_1415fb700(this)) { void** v=*reinterpret_cast<void***>(d); using B=void(__fastcall*)(void*,void*,unsigned int); reinterpret_cast<B>(v[9])(d,m_30,sizeof(m_30)); reinterpret_cast<B>(v[9])(d,m_50,sizeof(m_50)); reinterpret_cast<B>(v[9])(d,m_150,sizeof(m_150)); } return FUN_1415fb750(d); }
+unsigned int CNMGameLogInitializeFunc::Decode(CNMSerializableDecoder* d,CNMStream* s) { CNMFunc::DecodeDispatch(d,s); if(FUN_1415fb700(this)) {d->ReadStringBufAlias(m_30,sizeof(m_30)); d->ReadStringBufAlias(m_50,sizeof(m_50)); d->ReadStringBufAlias(m_150,sizeof(m_150)); } return FUN_1415fb750(d); }
 
 // MS2-FUNCTIONAL 0x1415ac9b0: initializes the empty game-log finalize request.
 // @0x1415ac9b0
 CNMGameLogFinalizeFunc::CNMGameLogFinalizeFunc() : CNMFunc(0xf011,1,0,0) {}
 // MS2-FUNCTIONAL 0x1415aca00: frames the request encoder.
 // @0x1415aca00
-unsigned int CNMGameLogFinalizeFunc::EncodeFramed(CNMStream* s) { unsigned char b[0x18]; FUN_14156bcb0(b,s,this); void** v=*reinterpret_cast<void***>(this); using F=unsigned int(__fastcall*)(CNMGameLogFinalizeFunc*,CNMEncoder*,CNMStream*); auto r=reinterpret_cast<F>(v[2])(this,reinterpret_cast<CNMEncoder*>(b),s); FUN_14156bd50(b); return r; }
+unsigned int CNMGameLogFinalizeFunc::EncodeFramed(CNMStream* pStream)
+{
+    CNMSerializableEncoder encoder(pStream, this);
+    return CNMGameLogFinalizeFunc::Encode(reinterpret_cast<CNMEncoder*>(&encoder), pStream);
+}
 
 // MS2-FUNCTIONAL 0x1415aca60: selects direct or framed request encoding.
 // @0x1415aca60
-unsigned int CNMGameLogFinalizeFunc::EncodeDispatch(CNMEncoder* e,CNMStream* s) { void** v=*reinterpret_cast<void***>(this); if(m_bFormat==1) { using F=unsigned int(__fastcall*)(CNMGameLogFinalizeFunc*,CNMEncoder*,CNMStream*); return reinterpret_cast<F>(v[2])(this,e,s); } using G=unsigned int(__fastcall*)(CNMGameLogFinalizeFunc*,CNMStream*); return reinterpret_cast<G>(v[3])(this,s); }
+unsigned int CNMGameLogFinalizeFunc::EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream)
+{
+    if (m_bFormat == 1)
+        return CNMGameLogFinalizeFunc::Encode(pEncoder, pStream);
+    return CNMGameLogFinalizeFunc::EncodeFramed(pStream);
+}
 
 // MS2-FUNCTIONAL 0x1415acb10: decodes a framed response.
 // @0x1415acb10
-unsigned int CNMGameLogFinalizeFunc::DecodeFramed(CNMStream* s) { unsigned char b[0x38]; FUN_14156be10(b,s,this); unsigned int r=0; if(FUN_1415fb750(b)) { void** v=*reinterpret_cast<void***>(this); using F=unsigned int(__fastcall*)(CNMGameLogFinalizeFunc*,CNMSerializableDecoder*,CNMStream*); r=reinterpret_cast<F>(v[5])(this,reinterpret_cast<CNMSerializableDecoder*>(b),s); } FUN_14156bf10(b); return r; }
+unsigned int CNMGameLogFinalizeFunc::DecodeFramed(CNMStream* pStream)
+{
+    CNMSerializableDecoder decoder(pStream, this);
+    if (FUN_1415fb750(&decoder) == 0)
+        return 0;
+    return CNMGameLogFinalizeFunc::Decode(&decoder, pStream);
+}
 
 // MS2-FUNCTIONAL 0x1415acba0: selects direct or framed response decoding.
 // @0x1415acba0
-unsigned int CNMGameLogFinalizeFunc::DecodeDispatch(CNMSerializableDecoder* d,CNMStream* s) { void** v=*reinterpret_cast<void***>(this); if(FUN_1415fb6d0(d)==2) { using F=unsigned int(__fastcall*)(CNMGameLogFinalizeFunc*,CNMStream*); return reinterpret_cast<F>(v[6])(this,s); } using G=unsigned int(__fastcall*)(CNMGameLogFinalizeFunc*,CNMSerializableDecoder*,CNMStream*); return reinterpret_cast<G>(v[5])(this,d,s); }
+unsigned int CNMGameLogFinalizeFunc::DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream)
+{
+    if (FUN_1415fb6d0(pDecoder) == 2)
+        return CNMGameLogFinalizeFunc::DecodeFramed(pStream);
+    return CNMGameLogFinalizeFunc::Decode(pDecoder, pStream);
+}
 
 // MS2-FUNCTIONAL 0x1415acac0: finalizes the empty game-log request payload.
 // @0x1415acac0
@@ -882,61 +1134,133 @@ unsigned int CNMGameLogFinalizeFunc::Decode(CNMSerializableDecoder* d,CNMStream*
 
 // MS2-FUNCTIONAL 0x1415a8510: initializes a character-remove request.
 // @0x1415a8510
-CNMCharacterRemoveFunc::CNMCharacterRemoveFunc() : CNMFunc(0xf002,1,0,0), m_30{}, m_38{}, m_78(1), m_7c(0) {}
+CNMCharacterRemoveFunc::CNMCharacterRemoveFunc()
+    : CNMFunc(0xf002,1,0,0)
+{
+    m_30.nLow = 0;
+    m_30.nHigh = 0;
+    m_38[0] = 0;
+    m_78 = 1;
+}
 // MS2-FUNCTIONAL 0x1415a8590: initializes the user key, name and remove option.
 // @0x1415a8590
-CNMCharacterRemoveFunc::CNMCharacterRemoveFunc(NMKey64 key,const char* name,int option) : CNMFunc(0xf002,1,0,0), m_30(key), m_38{}, m_78(option), m_7c(0) { if(name) FUN_1415fbe70(m_38,sizeof(m_38),name); }
+CNMCharacterRemoveFunc::CNMCharacterRemoveFunc(NMKey64 key,const char* name,int option)
+    : CNMFunc(0xf002,1,0,0)
+{
+    m_30 = key;
+    if (name)
+        FUN_1415fbe70(m_38, sizeof(m_38), name);
+    else
+        m_38[0] = 0;
+    m_78 = option;
+}
 // MS2-FUNCTIONAL 0x1415a8640: frames the request encoder.
 // @0x1415a8640
-unsigned int CNMCharacterRemoveFunc::EncodeFramed(CNMStream* s) { unsigned char b[0x18]; FUN_14156bcb0(b,s,this); void** v=*reinterpret_cast<void***>(this); using F=unsigned int(__fastcall*)(CNMCharacterRemoveFunc*,CNMEncoder*,CNMStream*); auto r=reinterpret_cast<F>(v[2])(this,reinterpret_cast<CNMEncoder*>(b),s); FUN_14156bd50(b); return r; }
+unsigned int CNMCharacterRemoveFunc::EncodeFramed(CNMStream* pStream)
+{
+    CNMSerializableEncoder encoder(pStream, this);
+    return CNMCharacterRemoveFunc::Encode(reinterpret_cast<CNMEncoder*>(&encoder), pStream);
+}
 
 // MS2-FUNCTIONAL 0x1415a86a0: selects direct or framed request encoding.
 // @0x1415a86a0
-unsigned int CNMCharacterRemoveFunc::EncodeDispatch(CNMEncoder* e,CNMStream* s) { void** v=*reinterpret_cast<void***>(this); if(m_bFormat==1) { using F=unsigned int(__fastcall*)(CNMCharacterRemoveFunc*,CNMEncoder*,CNMStream*); return reinterpret_cast<F>(v[2])(this,e,s); } using G=unsigned int(__fastcall*)(CNMCharacterRemoveFunc*,CNMStream*); return reinterpret_cast<G>(v[3])(this,s); }
+unsigned int CNMCharacterRemoveFunc::EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream)
+{
+    if (m_bFormat == 1)
+        return CNMCharacterRemoveFunc::Encode(pEncoder, pStream);
+    return CNMCharacterRemoveFunc::EncodeFramed(pStream);
+}
 
 // MS2-FUNCTIONAL 0x1415a87a0: decodes a framed response.
 // @0x1415a87a0
-unsigned int CNMCharacterRemoveFunc::DecodeFramed(CNMStream* s) { unsigned char b[0x38]; FUN_14156be10(b,s,this); unsigned int r=0; if(FUN_1415fb750(b)) { void** v=*reinterpret_cast<void***>(this); using F=unsigned int(__fastcall*)(CNMCharacterRemoveFunc*,CNMSerializableDecoder*,CNMStream*); r=reinterpret_cast<F>(v[5])(this,reinterpret_cast<CNMSerializableDecoder*>(b),s); } FUN_14156bf10(b); return r; }
+unsigned int CNMCharacterRemoveFunc::DecodeFramed(CNMStream* pStream)
+{
+    CNMSerializableDecoder decoder(pStream, this);
+    if (FUN_1415fb750(&decoder) == 0)
+        return 0;
+    return CNMCharacterRemoveFunc::Decode(&decoder, pStream);
+}
 
 // MS2-FUNCTIONAL 0x1415a8830: selects direct or framed response decoding.
 // @0x1415a8830
-unsigned int CNMCharacterRemoveFunc::DecodeDispatch(CNMSerializableDecoder* d,CNMStream* s) { void** v=*reinterpret_cast<void***>(this); if(FUN_1415fb6d0(d)==2) { using F=unsigned int(__fastcall*)(CNMCharacterRemoveFunc*,CNMStream*); return reinterpret_cast<F>(v[6])(this,s); } using G=unsigned int(__fastcall*)(CNMCharacterRemoveFunc*,CNMSerializableDecoder*,CNMStream*); return reinterpret_cast<G>(v[5])(this,d,s); }
+unsigned int CNMCharacterRemoveFunc::DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream)
+{
+    if (FUN_1415fb6d0(pDecoder) == 2)
+        return CNMCharacterRemoveFunc::DecodeFramed(pStream);
+    return CNMCharacterRemoveFunc::Decode(pDecoder, pStream);
+}
 
 // MS2-FUNCTIONAL 0x1415a8700: serializes the key, character name and option.
 // @0x1415a8700
 unsigned int CNMCharacterRemoveFunc::Encode(CNMEncoder* e,CNMStream* s) { CNMFunc::EncodeDispatch(e,s); if(FUN_1415fb700(this)) { FUN_14156ac20(e,m_30.nLow); FUN_14156ac20(e,m_30.nHigh); FUN_14156ae30(e,m_38); FUN_14156ac20(e,m_78); } FUN_1415f9990(e); return 1; }
 // MS2-FUNCTIONAL 0x1415a8890: restores the key, name and option.
 // @0x1415a8890
-unsigned int CNMCharacterRemoveFunc::Decode(CNMSerializableDecoder* d,CNMStream* s) { CNMFunc::DecodeDispatch(d,s); if(FUN_1415fb700(this)) { void** v=*reinterpret_cast<void***>(d); using U=unsigned int(__fastcall*)(void*); using B=void(__fastcall*)(void*,void*,unsigned int); m_30.nLow=reinterpret_cast<U>(v[3])(d); m_30.nHigh=reinterpret_cast<U>(v[3])(d); reinterpret_cast<B>(v[9])(d,m_38,sizeof(m_38)); m_78=reinterpret_cast<U>(v[3])(d); } return FUN_1415fb750(d); }
+unsigned int CNMCharacterRemoveFunc::Decode(CNMSerializableDecoder* d,CNMStream* s) { CNMFunc::DecodeDispatch(d,s); if(FUN_1415fb700(this)) {m_30.nLow=d->ReadU32(); m_30.nHigh=d->ReadU32(); d->ReadStringBufAlias(m_38,sizeof(m_38)); m_78=d->ReadU32(); } return FUN_1415fb750(d); }
 
 // MS2-FUNCTIONAL 0x1415a8950: initializes a character-name update request.
 // @0x1415a8950
-CNMCharacterChangeNameFunc::CNMCharacterChangeNameFunc() : CNMFunc(0xf003,1,0,0), m_30{}, m_38{}, m_78(1), m_7c(0) {}
+CNMCharacterChangeNameFunc::CNMCharacterChangeNameFunc()
+    : CNMFunc(0xf003,1,0,0)
+{
+    m_30.nLow = 0;
+    m_30.nHigh = 0;
+    m_38[0] = 0;
+    m_78 = 1;
+}
 // MS2-FUNCTIONAL 0x1415a89d0: initializes the user key, name and update option.
 // @0x1415a89d0
-CNMCharacterChangeNameFunc::CNMCharacterChangeNameFunc(NMKey64 key,const char* name,int option) : CNMFunc(0xf003,1,0,0), m_30(key), m_38{}, m_78(option), m_7c(0) { if(name) FUN_1415fbe70(m_38,sizeof(m_38),name); }
+CNMCharacterChangeNameFunc::CNMCharacterChangeNameFunc(NMKey64 key,const char* name,int option)
+    : CNMFunc(0xf003,1,0,0)
+{
+    m_30 = key;
+    if (name)
+        FUN_1415fbe70(m_38, sizeof(m_38), name);
+    else
+        m_38[0] = 0;
+    m_78 = option;
+}
 // MS2-FUNCTIONAL 0x1415a8a80: frames the request encoder.
 // @0x1415a8a80
-unsigned int CNMCharacterChangeNameFunc::EncodeFramed(CNMStream* s) { unsigned char b[0x18]; FUN_14156bcb0(b,s,this); void** v=*reinterpret_cast<void***>(this); using F=unsigned int(__fastcall*)(CNMCharacterChangeNameFunc*,CNMEncoder*,CNMStream*); auto r=reinterpret_cast<F>(v[2])(this,reinterpret_cast<CNMEncoder*>(b),s); FUN_14156bd50(b); return r; }
+unsigned int CNMCharacterChangeNameFunc::EncodeFramed(CNMStream* pStream)
+{
+    CNMSerializableEncoder encoder(pStream, this);
+    return CNMCharacterChangeNameFunc::Encode(reinterpret_cast<CNMEncoder*>(&encoder), pStream);
+}
 
 // MS2-FUNCTIONAL 0x1415a8ae0: selects direct or framed request encoding.
 // @0x1415a8ae0
-unsigned int CNMCharacterChangeNameFunc::EncodeDispatch(CNMEncoder* e,CNMStream* s) { void** v=*reinterpret_cast<void***>(this); if(m_bFormat==1) { using F=unsigned int(__fastcall*)(CNMCharacterChangeNameFunc*,CNMEncoder*,CNMStream*); return reinterpret_cast<F>(v[2])(this,e,s); } using G=unsigned int(__fastcall*)(CNMCharacterChangeNameFunc*,CNMStream*); return reinterpret_cast<G>(v[3])(this,s); }
+unsigned int CNMCharacterChangeNameFunc::EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream)
+{
+    if (m_bFormat == 1)
+        return CNMCharacterChangeNameFunc::Encode(pEncoder, pStream);
+    return CNMCharacterChangeNameFunc::EncodeFramed(pStream);
+}
 
 // MS2-FUNCTIONAL 0x1415a8be0: decodes a framed response.
 // @0x1415a8be0
-unsigned int CNMCharacterChangeNameFunc::DecodeFramed(CNMStream* s) { unsigned char b[0x38]; FUN_14156be10(b,s,this); unsigned int r=0; if(FUN_1415fb750(b)) { void** v=*reinterpret_cast<void***>(this); using F=unsigned int(__fastcall*)(CNMCharacterChangeNameFunc*,CNMSerializableDecoder*,CNMStream*); r=reinterpret_cast<F>(v[5])(this,reinterpret_cast<CNMSerializableDecoder*>(b),s); } FUN_14156bf10(b); return r; }
+unsigned int CNMCharacterChangeNameFunc::DecodeFramed(CNMStream* pStream)
+{
+    CNMSerializableDecoder decoder(pStream, this);
+    if (FUN_1415fb750(&decoder) == 0)
+        return 0;
+    return CNMCharacterChangeNameFunc::Decode(&decoder, pStream);
+}
 
 // MS2-FUNCTIONAL 0x1415a8c70: selects direct or framed response decoding.
 // @0x1415a8c70
-unsigned int CNMCharacterChangeNameFunc::DecodeDispatch(CNMSerializableDecoder* d,CNMStream* s) { void** v=*reinterpret_cast<void***>(this); if(FUN_1415fb6d0(d)==2) { using F=unsigned int(__fastcall*)(CNMCharacterChangeNameFunc*,CNMStream*); return reinterpret_cast<F>(v[6])(this,s); } using G=unsigned int(__fastcall*)(CNMCharacterChangeNameFunc*,CNMSerializableDecoder*,CNMStream*); return reinterpret_cast<G>(v[5])(this,d,s); }
+unsigned int CNMCharacterChangeNameFunc::DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream)
+{
+    if (FUN_1415fb6d0(pDecoder) == 2)
+        return CNMCharacterChangeNameFunc::DecodeFramed(pStream);
+    return CNMCharacterChangeNameFunc::Decode(pDecoder, pStream);
+}
 
 // MS2-FUNCTIONAL 0x1415a8b40: serializes the key, new character name and option.
 // @0x1415a8b40
 unsigned int CNMCharacterChangeNameFunc::Encode(CNMEncoder* e,CNMStream* s) { CNMFunc::EncodeDispatch(e,s); if(FUN_1415fb700(this)) { FUN_14156ac20(e,m_30.nLow); FUN_14156ac20(e,m_30.nHigh); FUN_14156ae30(e,m_38); FUN_14156ac20(e,m_78); } FUN_1415f9990(e); return 1; }
 // MS2-FUNCTIONAL 0x1415a8cd0: restores the user key, name and option.
 // @0x1415a8cd0
-unsigned int CNMCharacterChangeNameFunc::Decode(CNMSerializableDecoder* d,CNMStream* s) { CNMFunc::DecodeDispatch(d,s); if(FUN_1415fb700(this)) { void** v=*reinterpret_cast<void***>(d); using U=unsigned int(__fastcall*)(void*); using B=void(__fastcall*)(void*,void*,unsigned int); m_30.nLow=reinterpret_cast<U>(v[3])(d); m_30.nHigh=reinterpret_cast<U>(v[3])(d); reinterpret_cast<B>(v[9])(d,m_38,sizeof(m_38)); m_78=reinterpret_cast<U>(v[3])(d); } return FUN_1415fb750(d); }
+unsigned int CNMCharacterChangeNameFunc::Decode(CNMSerializableDecoder* d,CNMStream* s) { CNMFunc::DecodeDispatch(d,s); if(FUN_1415fb700(this)) {m_30.nLow=d->ReadU32(); m_30.nHigh=d->ReadU32(); d->ReadStringBufAlias(m_38,sizeof(m_38)); m_78=d->ReadU32(); } return FUN_1415fb750(d); }
 
 // MS2-FUNCTIONAL 0x1415abd90: initializes an empty channel ban request.
 // @0x1415abd90
@@ -946,110 +1270,220 @@ CNMCHBanUserFunc::CNMCHBanUserFunc() : CNMFunc(0xd007,1,0,0), m_30(0), m_34(0) {
 CNMCHBanUserFunc::CNMCHBanUserFunc(int n18,int n30) : CNMFunc(0xd007,1,n18,0), m_30(n30), m_34(0) {}
 // MS2-FUNCTIONAL 0x1415abe40: frames the request encoder.
 // @0x1415abe40
-unsigned int CNMCHBanUserFunc::EncodeFramed(CNMStream* s) { unsigned char b[0x18]; FUN_14156bcb0(b,s,this); void** v=*reinterpret_cast<void***>(this); using F=unsigned int(__fastcall*)(CNMCHBanUserFunc*,CNMEncoder*,CNMStream*); auto r=reinterpret_cast<F>(v[2])(this,reinterpret_cast<CNMEncoder*>(b),s); FUN_14156bd50(b); return r; }
+unsigned int CNMCHBanUserFunc::EncodeFramed(CNMStream* pStream)
+{
+    CNMSerializableEncoder encoder(pStream, this);
+    return CNMCHBanUserFunc::Encode(reinterpret_cast<CNMEncoder*>(&encoder), pStream);
+}
 
 // MS2-FUNCTIONAL 0x1415abea0: selects direct or framed request encoding.
 // @0x1415abea0
-unsigned int CNMCHBanUserFunc::EncodeDispatch(CNMEncoder* e,CNMStream* s) { void** v=*reinterpret_cast<void***>(this); if(m_bFormat==1) { using F=unsigned int(__fastcall*)(CNMCHBanUserFunc*,CNMEncoder*,CNMStream*); return reinterpret_cast<F>(v[2])(this,e,s); } using G=unsigned int(__fastcall*)(CNMCHBanUserFunc*,CNMStream*); return reinterpret_cast<G>(v[3])(this,s); }
+unsigned int CNMCHBanUserFunc::EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream)
+{
+    if (m_bFormat == 1)
+        return CNMCHBanUserFunc::Encode(pEncoder, pStream);
+    return CNMCHBanUserFunc::EncodeFramed(pStream);
+}
 
 // MS2-FUNCTIONAL 0x1415abf70: decodes a framed response.
 // @0x1415abf70
-unsigned int CNMCHBanUserFunc::DecodeFramed(CNMStream* s) { unsigned char b[0x38]; FUN_14156be10(b,s,this); unsigned int r=0; if(FUN_1415fb750(b)) { void** v=*reinterpret_cast<void***>(this); using F=unsigned int(__fastcall*)(CNMCHBanUserFunc*,CNMSerializableDecoder*,CNMStream*); r=reinterpret_cast<F>(v[5])(this,reinterpret_cast<CNMSerializableDecoder*>(b),s); } FUN_14156bf10(b); return r; }
+unsigned int CNMCHBanUserFunc::DecodeFramed(CNMStream* pStream)
+{
+    CNMSerializableDecoder decoder(pStream, this);
+    if (FUN_1415fb750(&decoder) == 0)
+        return 0;
+    return CNMCHBanUserFunc::Decode(&decoder, pStream);
+}
 
 // MS2-FUNCTIONAL 0x1415ac000: selects direct or framed response decoding.
 // @0x1415ac000
-unsigned int CNMCHBanUserFunc::DecodeDispatch(CNMSerializableDecoder* d,CNMStream* s) { void** v=*reinterpret_cast<void***>(this); if(FUN_1415fb6d0(d)==2) { using F=unsigned int(__fastcall*)(CNMCHBanUserFunc*,CNMStream*); return reinterpret_cast<F>(v[6])(this,s); } using G=unsigned int(__fastcall*)(CNMCHBanUserFunc*,CNMSerializableDecoder*,CNMStream*); return reinterpret_cast<G>(v[5])(this,d,s); }
+unsigned int CNMCHBanUserFunc::DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream)
+{
+    if (FUN_1415fb6d0(pDecoder) == 2)
+        return CNMCHBanUserFunc::DecodeFramed(pStream);
+    return CNMCHBanUserFunc::Decode(pDecoder, pStream);
+}
 
 // MS2-FUNCTIONAL 0x1415abf00: serializes the ban request value.
 // @0x1415abf00
 unsigned int CNMCHBanUserFunc::Encode(CNMEncoder* e,CNMStream* s) { CNMFunc::EncodeDispatch(e,s); if(FUN_1415fb700(this)) FUN_14156ac20(e,static_cast<unsigned int>(m_30)); FUN_1415f9990(e); return 1; }
 // MS2-FUNCTIONAL 0x1415ac060: restores the ban request value.
 // @0x1415ac060
-unsigned int CNMCHBanUserFunc::Decode(CNMSerializableDecoder* d,CNMStream* s) { CNMFunc::DecodeDispatch(d,s); if(FUN_1415fb700(this)) { void** v=*reinterpret_cast<void***>(d); using U=unsigned int(__fastcall*)(void*); m_30=static_cast<int>(reinterpret_cast<U>(v[3])(d)); } return FUN_1415fb750(d); }
+unsigned int CNMCHBanUserFunc::Decode(CNMSerializableDecoder* d,CNMStream* s) { CNMFunc::DecodeDispatch(d,s); if(FUN_1415fb700(this)) {m_30=static_cast<int>(d->ReadU32()); } return FUN_1415fb750(d); }
 
 // MS2-FUNCTIONAL 0x1415acc50: initializes a stage-log record.
 // @0x1415acc50
-CNMGameLogWriteStageLogFunc::CNMGameLogWriteStageLogFunc() : CNMFunc(0xf012,1,0,0), m_30(0), m_34{} {}
+CNMGameLogWriteStageLogFunc::CNMGameLogWriteStageLogFunc()
+    : CNMFunc(0xf012,1,0,0)
+{
+    m_30 = 0;
+    m_34[0] = 0;
+}
 // MS2-FUNCTIONAL 0x1415accc0: initializes a stage-log record and copies its text.
 // @0x1415accc0
-CNMGameLogWriteStageLogFunc::CNMGameLogWriteStageLogFunc(int n30,const char* text) : CNMFunc(0xf012,1,0,0), m_30(n30), m_34{} { if(text) FUN_1415fbe70(m_34,sizeof(m_34),text); }
+CNMGameLogWriteStageLogFunc::CNMGameLogWriteStageLogFunc(int n30,const char* text)
+    : CNMFunc(0xf012,1,0,0)
+{
+    m_30 = n30;
+    if (text)
+        FUN_1415fbe70(m_34, 0x100, text);   // the exe passes 0x100, not sizeof(m_34) (0x104)
+    else
+        m_34[0] = 0;
+}
 // MS2-FUNCTIONAL 0x1415acd60: frames the request encoder.
 // @0x1415acd60
-unsigned int CNMGameLogWriteStageLogFunc::EncodeFramed(CNMStream* s) { unsigned char b[0x18]; FUN_14156bcb0(b,s,this); void** v=*reinterpret_cast<void***>(this); using F=unsigned int(__fastcall*)(CNMGameLogWriteStageLogFunc*,CNMEncoder*,CNMStream*); auto r=reinterpret_cast<F>(v[2])(this,reinterpret_cast<CNMEncoder*>(b),s); FUN_14156bd50(b); return r; }
+unsigned int CNMGameLogWriteStageLogFunc::EncodeFramed(CNMStream* pStream)
+{
+    CNMSerializableEncoder encoder(pStream, this);
+    return CNMGameLogWriteStageLogFunc::Encode(reinterpret_cast<CNMEncoder*>(&encoder), pStream);
+}
 
 // MS2-FUNCTIONAL 0x1415acdc0: selects direct or framed request encoding.
 // @0x1415acdc0
-unsigned int CNMGameLogWriteStageLogFunc::EncodeDispatch(CNMEncoder* e,CNMStream* s) { void** v=*reinterpret_cast<void***>(this); if(m_bFormat==1) { using F=unsigned int(__fastcall*)(CNMGameLogWriteStageLogFunc*,CNMEncoder*,CNMStream*); return reinterpret_cast<F>(v[2])(this,e,s); } using G=unsigned int(__fastcall*)(CNMGameLogWriteStageLogFunc*,CNMStream*); return reinterpret_cast<G>(v[3])(this,s); }
+unsigned int CNMGameLogWriteStageLogFunc::EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream)
+{
+    if (m_bFormat == 1)
+        return CNMGameLogWriteStageLogFunc::Encode(pEncoder, pStream);
+    return CNMGameLogWriteStageLogFunc::EncodeFramed(pStream);
+}
 
 // MS2-FUNCTIONAL 0x1415acea0: decodes a framed response.
 // @0x1415acea0
-unsigned int CNMGameLogWriteStageLogFunc::DecodeFramed(CNMStream* s) { unsigned char b[0x38]; FUN_14156be10(b,s,this); unsigned int r=0; if(FUN_1415fb750(b)) { void** v=*reinterpret_cast<void***>(this); using F=unsigned int(__fastcall*)(CNMGameLogWriteStageLogFunc*,CNMSerializableDecoder*,CNMStream*); r=reinterpret_cast<F>(v[5])(this,reinterpret_cast<CNMSerializableDecoder*>(b),s); } FUN_14156bf10(b); return r; }
+unsigned int CNMGameLogWriteStageLogFunc::DecodeFramed(CNMStream* pStream)
+{
+    CNMSerializableDecoder decoder(pStream, this);
+    if (FUN_1415fb750(&decoder) == 0)
+        return 0;
+    return CNMGameLogWriteStageLogFunc::Decode(&decoder, pStream);
+}
 
 // MS2-FUNCTIONAL 0x1415acf30: selects direct or framed response decoding.
 // @0x1415acf30
-unsigned int CNMGameLogWriteStageLogFunc::DecodeDispatch(CNMSerializableDecoder* d,CNMStream* s) { void** v=*reinterpret_cast<void***>(this); if(FUN_1415fb6d0(d)==2) { using F=unsigned int(__fastcall*)(CNMGameLogWriteStageLogFunc*,CNMStream*); return reinterpret_cast<F>(v[6])(this,s); } using G=unsigned int(__fastcall*)(CNMGameLogWriteStageLogFunc*,CNMSerializableDecoder*,CNMStream*); return reinterpret_cast<G>(v[5])(this,d,s); }
+unsigned int CNMGameLogWriteStageLogFunc::DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream)
+{
+    if (FUN_1415fb6d0(pDecoder) == 2)
+        return CNMGameLogWriteStageLogFunc::DecodeFramed(pStream);
+    return CNMGameLogWriteStageLogFunc::Decode(pDecoder, pStream);
+}
 
 // MS2-FUNCTIONAL 0x1415ace20: serializes the stage-log code and text.
 // @0x1415ace20
 unsigned int CNMGameLogWriteStageLogFunc::Encode(CNMEncoder* e,CNMStream* s) { CNMFunc::EncodeDispatch(e,s); if(FUN_1415fb700(this)) { FUN_14156ac20(e,m_30); FUN_14156ae30(e,m_34); } FUN_1415f9990(e); return 1; }
 // MS2-FUNCTIONAL 0x1415acf90: restores the stage-log code and text.
 // @0x1415acf90
-unsigned int CNMGameLogWriteStageLogFunc::Decode(CNMSerializableDecoder* d,CNMStream* s) { CNMFunc::DecodeDispatch(d,s); if(FUN_1415fb700(this)) { void** v=*reinterpret_cast<void***>(d); using U=unsigned int(__fastcall*)(void*); using B=void(__fastcall*)(void*,void*,unsigned int); m_30=reinterpret_cast<U>(v[3])(d); reinterpret_cast<B>(v[9])(d,m_34,sizeof(m_34)); } return FUN_1415fb750(d); }
+unsigned int CNMGameLogWriteStageLogFunc::Decode(CNMSerializableDecoder* d,CNMStream* s) { CNMFunc::DecodeDispatch(d,s); if(FUN_1415fb700(this)) {m_30=d->ReadU32(); d->ReadStringBufAlias(m_34,0x100); } return FUN_1415fb750(d); }
 
 // MS2-FUNCTIONAL 0x1415ad020: initializes an error-log record.
 // @0x1415ad020
-CNMGameLogWriteErrorLogFunc::CNMGameLogWriteErrorLogFunc() : CNMFunc(0xf013,1,0,0), m_30(0), m_34{} {}
+CNMGameLogWriteErrorLogFunc::CNMGameLogWriteErrorLogFunc()
+    : CNMFunc(0xf013,1,0,0)
+{
+    m_30 = 0;
+    m_34[0] = 0;
+}
 // MS2-FUNCTIONAL 0x1415ad090: initializes an error-log record and copies its text.
 // @0x1415ad090
-CNMGameLogWriteErrorLogFunc::CNMGameLogWriteErrorLogFunc(int n30,const char* text) : CNMFunc(0xf013,1,0,0), m_30(n30), m_34{} { if(text) FUN_1415fbe70(m_34,sizeof(m_34),text); }
+CNMGameLogWriteErrorLogFunc::CNMGameLogWriteErrorLogFunc(int n30,const char* text)
+    : CNMFunc(0xf013,1,0,0)
+{
+    m_30 = n30;
+    if (text)
+        FUN_1415fbe70(m_34, 0x100, text);   // the exe passes 0x100, not sizeof(m_34) (0x104)
+    else
+        m_34[0] = 0;
+}
 // MS2-FUNCTIONAL 0x1415ad130: frames the request encoder.
 // @0x1415ad130
-unsigned int CNMGameLogWriteErrorLogFunc::EncodeFramed(CNMStream* s) { unsigned char b[0x18]; FUN_14156bcb0(b,s,this); void** v=*reinterpret_cast<void***>(this); using F=unsigned int(__fastcall*)(CNMGameLogWriteErrorLogFunc*,CNMEncoder*,CNMStream*); auto r=reinterpret_cast<F>(v[2])(this,reinterpret_cast<CNMEncoder*>(b),s); FUN_14156bd50(b); return r; }
+unsigned int CNMGameLogWriteErrorLogFunc::EncodeFramed(CNMStream* pStream)
+{
+    CNMSerializableEncoder encoder(pStream, this);
+    return CNMGameLogWriteErrorLogFunc::Encode(reinterpret_cast<CNMEncoder*>(&encoder), pStream);
+}
 
 // MS2-FUNCTIONAL 0x1415ad190: selects direct or framed request encoding.
 // @0x1415ad190
-unsigned int CNMGameLogWriteErrorLogFunc::EncodeDispatch(CNMEncoder* e,CNMStream* s) { void** v=*reinterpret_cast<void***>(this); if(m_bFormat==1) { using F=unsigned int(__fastcall*)(CNMGameLogWriteErrorLogFunc*,CNMEncoder*,CNMStream*); return reinterpret_cast<F>(v[2])(this,e,s); } using G=unsigned int(__fastcall*)(CNMGameLogWriteErrorLogFunc*,CNMStream*); return reinterpret_cast<G>(v[3])(this,s); }
+unsigned int CNMGameLogWriteErrorLogFunc::EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream)
+{
+    if (m_bFormat == 1)
+        return CNMGameLogWriteErrorLogFunc::Encode(pEncoder, pStream);
+    return CNMGameLogWriteErrorLogFunc::EncodeFramed(pStream);
+}
 
 // MS2-FUNCTIONAL 0x1415ad270: decodes a framed response.
 // @0x1415ad270
-unsigned int CNMGameLogWriteErrorLogFunc::DecodeFramed(CNMStream* s) { unsigned char b[0x38]; FUN_14156be10(b,s,this); unsigned int r=0; if(FUN_1415fb750(b)) { void** v=*reinterpret_cast<void***>(this); using F=unsigned int(__fastcall*)(CNMGameLogWriteErrorLogFunc*,CNMSerializableDecoder*,CNMStream*); r=reinterpret_cast<F>(v[5])(this,reinterpret_cast<CNMSerializableDecoder*>(b),s); } FUN_14156bf10(b); return r; }
+unsigned int CNMGameLogWriteErrorLogFunc::DecodeFramed(CNMStream* pStream)
+{
+    CNMSerializableDecoder decoder(pStream, this);
+    if (FUN_1415fb750(&decoder) == 0)
+        return 0;
+    return CNMGameLogWriteErrorLogFunc::Decode(&decoder, pStream);
+}
 
 // MS2-FUNCTIONAL 0x1415ad300: selects direct or framed response decoding.
 // @0x1415ad300
-unsigned int CNMGameLogWriteErrorLogFunc::DecodeDispatch(CNMSerializableDecoder* d,CNMStream* s) { void** v=*reinterpret_cast<void***>(this); if(FUN_1415fb6d0(d)==2) { using F=unsigned int(__fastcall*)(CNMGameLogWriteErrorLogFunc*,CNMStream*); return reinterpret_cast<F>(v[6])(this,s); } using G=unsigned int(__fastcall*)(CNMGameLogWriteErrorLogFunc*,CNMSerializableDecoder*,CNMStream*); return reinterpret_cast<G>(v[5])(this,d,s); }
+unsigned int CNMGameLogWriteErrorLogFunc::DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream)
+{
+    if (FUN_1415fb6d0(pDecoder) == 2)
+        return CNMGameLogWriteErrorLogFunc::DecodeFramed(pStream);
+    return CNMGameLogWriteErrorLogFunc::Decode(pDecoder, pStream);
+}
 
 // MS2-FUNCTIONAL 0x1415ad1f0: serializes the error-log code and text.
 // @0x1415ad1f0
 unsigned int CNMGameLogWriteErrorLogFunc::Encode(CNMEncoder* e,CNMStream* s) { CNMFunc::EncodeDispatch(e,s); if(FUN_1415fb700(this)) { FUN_14156ac20(e,m_30); FUN_14156ae30(e,m_34); } FUN_1415f9990(e); return 1; }
 // MS2-FUNCTIONAL 0x1415ad360: restores the error-log code and text.
 // @0x1415ad360
-unsigned int CNMGameLogWriteErrorLogFunc::Decode(CNMSerializableDecoder* d,CNMStream* s) { CNMFunc::DecodeDispatch(d,s); if(FUN_1415fb700(this)) { void** v=*reinterpret_cast<void***>(d); using U=unsigned int(__fastcall*)(void*); using B=void(__fastcall*)(void*,void*,unsigned int); m_30=reinterpret_cast<U>(v[3])(d); reinterpret_cast<B>(v[9])(d,m_34,sizeof(m_34)); } return FUN_1415fb750(d); }
+unsigned int CNMGameLogWriteErrorLogFunc::Decode(CNMSerializableDecoder* d,CNMStream* s) { CNMFunc::DecodeDispatch(d,s); if(FUN_1415fb700(this)) {m_30=d->ReadU32(); d->ReadStringBufAlias(m_34,0x100); } return FUN_1415fb750(d); }
 
 // MS2-FUNCTIONAL 0x1415ad3f0: initializes the game-log session identifier result.
 // @0x1415ad3f0
-CNMGameLogGetSessionIDFunc::CNMGameLogGetSessionIDFunc() : CNMFunc(0xf014,1,0,0), m_30{} {}
+CNMGameLogGetSessionIDFunc::CNMGameLogGetSessionIDFunc()
+    : CNMFunc(0xf014,1,0,0)
+{
+    m_30[0] = 0;
+}
 // MS2-FUNCTIONAL 0x1415ad450: frames the request encoder.
 // @0x1415ad450
-unsigned int CNMGameLogGetSessionIDFunc::EncodeFramed(CNMStream* s) { unsigned char b[0x18]; FUN_14156bcb0(b,s,this); void** v=*reinterpret_cast<void***>(this); using F=unsigned int(__fastcall*)(CNMGameLogGetSessionIDFunc*,CNMEncoder*,CNMStream*); auto r=reinterpret_cast<F>(v[2])(this,reinterpret_cast<CNMEncoder*>(b),s); FUN_14156bd50(b); return r; }
+unsigned int CNMGameLogGetSessionIDFunc::EncodeFramed(CNMStream* pStream)
+{
+    CNMSerializableEncoder encoder(pStream, this);
+    return CNMGameLogGetSessionIDFunc::Encode(reinterpret_cast<CNMEncoder*>(&encoder), pStream);
+}
 
 // MS2-FUNCTIONAL 0x1415ad4b0: selects direct or framed request encoding.
 // @0x1415ad4b0
-unsigned int CNMGameLogGetSessionIDFunc::EncodeDispatch(CNMEncoder* e,CNMStream* s) { void** v=*reinterpret_cast<void***>(this); if(m_bFormat==1) { using F=unsigned int(__fastcall*)(CNMGameLogGetSessionIDFunc*,CNMEncoder*,CNMStream*); return reinterpret_cast<F>(v[2])(this,e,s); } using G=unsigned int(__fastcall*)(CNMGameLogGetSessionIDFunc*,CNMStream*); return reinterpret_cast<G>(v[3])(this,s); }
+unsigned int CNMGameLogGetSessionIDFunc::EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream)
+{
+    if (m_bFormat == 1)
+        return CNMGameLogGetSessionIDFunc::Encode(pEncoder, pStream);
+    return CNMGameLogGetSessionIDFunc::EncodeFramed(pStream);
+}
 
 // MS2-FUNCTIONAL 0x1415ad580: decodes a framed response.
 // @0x1415ad580
-unsigned int CNMGameLogGetSessionIDFunc::DecodeFramed(CNMStream* s) { unsigned char b[0x38]; FUN_14156be10(b,s,this); unsigned int r=0; if(FUN_1415fb750(b)) { void** v=*reinterpret_cast<void***>(this); using F=unsigned int(__fastcall*)(CNMGameLogGetSessionIDFunc*,CNMSerializableDecoder*,CNMStream*); r=reinterpret_cast<F>(v[5])(this,reinterpret_cast<CNMSerializableDecoder*>(b),s); } FUN_14156bf10(b); return r; }
+unsigned int CNMGameLogGetSessionIDFunc::DecodeFramed(CNMStream* pStream)
+{
+    CNMSerializableDecoder decoder(pStream, this);
+    if (FUN_1415fb750(&decoder) == 0)
+        return 0;
+    return CNMGameLogGetSessionIDFunc::Decode(&decoder, pStream);
+}
 
 // MS2-FUNCTIONAL 0x1415ad610: selects direct or framed response decoding.
 // @0x1415ad610
-unsigned int CNMGameLogGetSessionIDFunc::DecodeDispatch(CNMSerializableDecoder* d,CNMStream* s) { void** v=*reinterpret_cast<void***>(this); if(FUN_1415fb6d0(d)==2) { using F=unsigned int(__fastcall*)(CNMGameLogGetSessionIDFunc*,CNMStream*); return reinterpret_cast<F>(v[6])(this,s); } using G=unsigned int(__fastcall*)(CNMGameLogGetSessionIDFunc*,CNMSerializableDecoder*,CNMStream*); return reinterpret_cast<G>(v[5])(this,d,s); }
+unsigned int CNMGameLogGetSessionIDFunc::DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream)
+{
+    if (FUN_1415fb6d0(pDecoder) == 2)
+        return CNMGameLogGetSessionIDFunc::DecodeFramed(pStream);
+    return CNMGameLogGetSessionIDFunc::Decode(pDecoder, pStream);
+}
 
 // MS2-FUNCTIONAL 0x1415ad510: serializes the session identifier reply string.
 // @0x1415ad510
 unsigned int CNMGameLogGetSessionIDFunc::Encode(CNMEncoder* e,CNMStream* s) { CNMFunc::EncodeDispatch(e,s); if(FUN_1415fb720(this)) FUN_14156ae30(e,m_30); FUN_1415f9990(e); return 1; }
 // MS2-FUNCTIONAL 0x1415ad670: restores the session identifier reply string.
 // @0x1415ad670
-unsigned int CNMGameLogGetSessionIDFunc::Decode(CNMSerializableDecoder* d,CNMStream* s) { CNMFunc::DecodeDispatch(d,s); if(FUN_1415fb720(this)) { void** v=*reinterpret_cast<void***>(d); using B=void(__fastcall*)(void*,void*,unsigned int); reinterpret_cast<B>(v[9])(d,m_30,sizeof(m_30)); } return FUN_1415fb750(d); }
+unsigned int CNMGameLogGetSessionIDFunc::Decode(CNMSerializableDecoder* d,CNMStream* s) { CNMFunc::DecodeDispatch(d,s); if(FUN_1415fb720(this)) {d->ReadStringBufAlias(m_30,sizeof(m_30)); } return FUN_1415fb750(d); }
 
 // MS2-FUNCTIONAL 0x1415ab110: initializes an empty member-info result list.
 // @0x1415ab110
@@ -1059,26 +1493,46 @@ CNMCHGetMemberInfoListFunc::CNMCHGetMemberInfoListFunc() : CNMFunc(0xd004,1,0,0)
 CNMCHGetMemberInfoListFunc::CNMCHGetMemberInfoListFunc(int n18) : CNMFunc(0xd004,1,n18,0), m_30() {}
 // MS2-FUNCTIONAL 0x1415ab1d0: frames the request encoder.
 // @0x1415ab1d0
-unsigned int CNMCHGetMemberInfoListFunc::EncodeFramed(CNMStream* s) { unsigned char b[0x18]; FUN_14156bcb0(b,s,this); void** v=*reinterpret_cast<void***>(this); using F=unsigned int(__fastcall*)(CNMCHGetMemberInfoListFunc*,CNMEncoder*,CNMStream*); auto r=reinterpret_cast<F>(v[2])(this,reinterpret_cast<CNMEncoder*>(b),s); FUN_14156bd50(b); return r; }
+unsigned int CNMCHGetMemberInfoListFunc::EncodeFramed(CNMStream* pStream)
+{
+    CNMSerializableEncoder encoder(pStream, this);
+    return CNMCHGetMemberInfoListFunc::Encode(reinterpret_cast<CNMEncoder*>(&encoder), pStream);
+}
 
 // MS2-FUNCTIONAL 0x1415ab230: selects direct or framed request encoding.
 // @0x1415ab230
-unsigned int CNMCHGetMemberInfoListFunc::EncodeDispatch(CNMEncoder* e,CNMStream* s) { void** v=*reinterpret_cast<void***>(this); if(m_bFormat==1) { using F=unsigned int(__fastcall*)(CNMCHGetMemberInfoListFunc*,CNMEncoder*,CNMStream*); return reinterpret_cast<F>(v[2])(this,e,s); } using G=unsigned int(__fastcall*)(CNMCHGetMemberInfoListFunc*,CNMStream*); return reinterpret_cast<G>(v[3])(this,s); }
+unsigned int CNMCHGetMemberInfoListFunc::EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream)
+{
+    if (m_bFormat == 1)
+        return CNMCHGetMemberInfoListFunc::Encode(pEncoder, pStream);
+    return CNMCHGetMemberInfoListFunc::EncodeFramed(pStream);
+}
 
 // MS2-FUNCTIONAL 0x1415ab380: decodes a framed response.
 // @0x1415ab380
-unsigned int CNMCHGetMemberInfoListFunc::DecodeFramed(CNMStream* s) { unsigned char b[0x38]; FUN_14156be10(b,s,this); unsigned int r=0; if(FUN_1415fb750(b)) { void** v=*reinterpret_cast<void***>(this); using F=unsigned int(__fastcall*)(CNMCHGetMemberInfoListFunc*,CNMSerializableDecoder*,CNMStream*); r=reinterpret_cast<F>(v[5])(this,reinterpret_cast<CNMSerializableDecoder*>(b),s); } FUN_14156bf10(b); return r; }
+unsigned int CNMCHGetMemberInfoListFunc::DecodeFramed(CNMStream* pStream)
+{
+    CNMSerializableDecoder decoder(pStream, this);
+    if (FUN_1415fb750(&decoder) == 0)
+        return 0;
+    return CNMCHGetMemberInfoListFunc::Decode(&decoder, pStream);
+}
 
 // MS2-FUNCTIONAL 0x1415ab410: selects direct or framed response decoding.
 // @0x1415ab410
-unsigned int CNMCHGetMemberInfoListFunc::DecodeDispatch(CNMSerializableDecoder* d,CNMStream* s) { void** v=*reinterpret_cast<void***>(this); if(FUN_1415fb6d0(d)==2) { using F=unsigned int(__fastcall*)(CNMCHGetMemberInfoListFunc*,CNMStream*); return reinterpret_cast<F>(v[6])(this,s); } using G=unsigned int(__fastcall*)(CNMCHGetMemberInfoListFunc*,CNMSerializableDecoder*,CNMStream*); return reinterpret_cast<G>(v[5])(this,d,s); }
+unsigned int CNMCHGetMemberInfoListFunc::DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream)
+{
+    if (FUN_1415fb6d0(pDecoder) == 2)
+        return CNMCHGetMemberInfoListFunc::DecodeFramed(pStream);
+    return CNMCHGetMemberInfoListFunc::Decode(pDecoder, pStream);
+}
 
 // MS2-FUNCTIONAL 0x1415ab290: writes the member count and each member record.
 // @0x1415ab290
 unsigned int CNMCHGetMemberInfoListFunc::Encode(CNMEncoder* e,CNMStream* s) { CNMFunc::EncodeDispatch(e,s); if(FUN_1415fb720(this)) { FUN_14156ac20(e,static_cast<unsigned int>(m_30.size())); for(auto& member:m_30) member.EncodeFramed(s); } FUN_1415f9990(e); return 1; }
 // MS2-FUNCTIONAL 0x1415ab470: reads the member count and repopulates the result list.
 // @0x1415ab470
-unsigned int CNMCHGetMemberInfoListFunc::Decode(CNMSerializableDecoder* d,CNMStream* s) { CNMFunc::DecodeDispatch(d,s); if(FUN_1415fb720(this)) { void** v=*reinterpret_cast<void***>(d); using U=unsigned int(__fastcall*)(void*); const unsigned int count=reinterpret_cast<U>(v[3])(d); m_30.clear(); for(unsigned int i=0;i<count;++i) { m_30.emplace_back(); m_30.back().DecodeFramed(s); } } return FUN_1415fb750(d); }
+unsigned int CNMCHGetMemberInfoListFunc::Decode(CNMSerializableDecoder* d,CNMStream* s) { CNMFunc::DecodeDispatch(d,s); if(FUN_1415fb720(this)) { CNMChannelMemberInfo info; unsigned int count=d->ReadU32(); m_30.clear(); for(unsigned int i=0;i<count;i++) { info.CNMChannelMemberInfo::DecodeFramed(s); m_30.push_back(info); } } return FUN_1415fb750(d); }
 
 
 // MS2-PIN: ??0CNMCharacterRemoveFunc@@QEAA@XZ 0x1415a8510

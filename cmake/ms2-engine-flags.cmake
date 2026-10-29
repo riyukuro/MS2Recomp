@@ -106,6 +106,13 @@ set(MS2_ENGINE_INCLUDE_DIRS
     "../../third_party/physx284/PFiles/NVIDIA Corporation/NVIDIA PhysX SDK/v2.8.4_win/SDKs/Cooking/include"
     "../../third_party/physx284/PFiles/NVIDIA Corporation/NVIDIA PhysX SDK/v2.8.4_win/SDKs/PhysXLoader/include"
 )
+# Roots the game sources name the other SDKs and library sources from (relative to engine/gamebryo like the list above):
+# <cryptopp562/...>, <pathengine-sigmaco/...>, <zlib-1.2.3/...> under the library sources, <fmod44464/...> and <razer/...>
+# under the third_party/ layout (MS2_THIRD_PARTY). Searched after every other dir, so they only resolve those includes.
+set(MS2_THIRD_PARTY_INCLUDE_DIRS
+    "../../third_party/src"
+    "../../third_party"
+)
 
 # Fall back to the PhysX 2.8.3 SDK headers: -DMS2_PHYSX_VERSION=283 (default 284, what the exe was compiled against).
 # The MS2_PHYSX=283 environment variable sets the default (tools/progress.py honours the same variable).
@@ -165,6 +172,10 @@ function(ms2_engine_flags target)
     target_include_directories(${target} BEFORE PRIVATE "${MS2_ENGINE_OVERLAY_PREFERRED}")
     target_include_directories(${target} PRIVATE ${_dirs})
     target_include_directories(${target} AFTER PRIVATE "${MS2_ENGINE_OVERLAY}")
+    foreach(d ${MS2_THIRD_PARTY_INCLUDE_DIRS})
+        get_filename_component(_d "${MS2_ENGINE_ROOT}/${d}" ABSOLUTE)
+        target_include_directories(${target} AFTER PRIVATE "${_d}")
+    endforeach()
     target_compile_definitions(${target} PRIVATE ${MS2_ENGINE_DEFINITIONS})
     # Hook DLL only (not progress.py): it runs inside the exe, which already ran the engine's header-inline static
     # initialisers (SDM objects, key-loader registration); a second run would double-register. See the // MS2: guards.

@@ -124,6 +124,7 @@ void FUN_1409c4a30(AScript* pRoot, const char* szName, float f);
 extern char DAT_143b059e8;              // the game framework (service lookup cell)
 efd::ServiceManager* FUN_1413f9850();
 void* FUN_1401cd190(void* p);
+struct Unk_DvCell { char m_00; };                                       // the cell FUN_1412938c0 reads
 ecrPhysX::PropService* FUN_14120a240(efd::ServiceManager* pServices);
 HardwareInstancingService* FUN_14098c5b0(char*);
 unsigned FUN_1413d7eb0(HardwareInstancingService*);
@@ -175,10 +176,9 @@ CString UIDevelopDialog::GetTypeName()
 
 // ---- PropService access (engine inline functions emitted here) ----
 // @0x1412938c0
-// MS2-FUNCTIONAL: 3 bytes shorter than exe (cast/pointer-arg form unresolved)
-ecrPhysX::PropService* FUN_1412938c0(char* pCell)
+ecrPhysX::PropService* FUN_1412938c0(Unk_DvCell* pCell)
 {
-    return FUN_14120a240(reinterpret_cast<efd::ServiceManager*>(FUN_1401cd190(pCell)));
+    return FUN_14120a240(reinterpret_cast<efd::ServiceManager*>(FUN_1401cd190(&pCell->m_00)));
 }
 
 // @0x141293bf0
@@ -210,7 +210,7 @@ void UIDevelopDialog::OnLoadComplete()
     UIDialog::OnLoadComplete();
     ASObj obj(2);
     bool bPhysXDebug = false;
-    ecrPhysX::PropService* pProps = FUN_1412938c0(&DAT_143b059e8);
+    ecrPhysX::PropService* pProps = FUN_1412938c0(reinterpret_cast<Unk_DvCell*>(&DAT_143b059e8));
     if (pProps != 0)
     {
         efd::utf8string kName("PhysXDefaultSceneName");
@@ -403,7 +403,7 @@ void UIDevelopDialog::FUN_141292f50(ASData& data)
 // @0x141293010
 void UIDevelopDialog::FUN_141293010(bool bOn)
 {
-    ecrPhysX::PropService* pProps = FUN_1412938c0(&DAT_143b059e8);
+    ecrPhysX::PropService* pProps = FUN_1412938c0(reinterpret_cast<Unk_DvCell*>(&DAT_143b059e8));
     if (pProps != 0)
     {
         efd::utf8string kName("PhysXDefaultSceneName");
@@ -481,7 +481,6 @@ void UIDevelopDialog::FUN_141293390(float fScale)
 }
 
 // @0x1412933f0
-// MS2-FUNCTIONAL: temp/reference-slot layout of the chained CString/utf8string temporaries differs (26 bytes)
 void UIDevelopDialog::FUN_1412933f0(int nIndex)
 {
     efd::SmartPointer<HardwareInstancingService> spInstancing(FUN_14098c5b0(&DAT_143b059e8));
@@ -494,7 +493,8 @@ void UIDevelopDialog::FUN_1412933f0(int nIndex)
             if (pInstancing != 0)
                 nCount = pInstancing->FUN_14147cf40();
             FUN_141292ca0("m_modelName", FUN_14016a730(FUN_1408ac310(reinterpret_cast<Unk_DevInstView*>(pInstancing)->FUN_14147d2f0()), 0));
-            FUN_141292ca0("m_modelCount", FUN_1401ceea0(L"{0}", nCount));
+            CStringW strCount = FUN_1401ceea0(L"{0}", nCount);
+            FUN_141292ca0("m_modelCount", strCount);
         }
         else
         {

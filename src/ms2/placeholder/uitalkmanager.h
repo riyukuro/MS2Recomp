@@ -49,8 +49,8 @@ MS2_CHECK_SIZE(Unk_TalkIdState, 0x28);
 class Unk_TalkItemList : public ATL::CAtlArray<void*>
 {
 public:
-    unsigned FUN_140720ca0();                                   // GetCount
-    MS2Ptr<CItem>& FUN_140a69ee0(unsigned nIndex);              // GetAt
+    unsigned __int64 FUN_140720ca0();                           // GetCount
+    MS2Ptr<CItem>& FUN_140a69ee0(unsigned __int64 nIndex);      // GetAt
     void FUN_140720b80(const MS2Ptr<CItem>& spItem);            // Add
     void FUN_1408f3a80();                                       // RemoveAll
 };
@@ -64,7 +64,7 @@ public:
     {
     public:
         CTalkRewardData();                                          // 0x141b1db40
-        virtual ~CTalkRewardData();                                 // 0x141b221d0 (??_G 0x141b22350)
+        // ~CTalkRewardData() is implicit                         // 0x141b221d0 (??_G 0x141b22350)
         void FUN_141b1dbd0();                                       // clear
 
         Unk_TalkItemList m_items;                                   // +0x18
@@ -102,7 +102,7 @@ public:
     void FUN_141b20210();                                   // reset the talk
     int FUN_141b204d0();                                    // show the first page
     void FUN_141b20700();                                   // look the script up again
-    void FUN_141b20790(int nNpcId);                         // swap to another npc
+    void FUN_141b20790(int nNpcId, int nFriendly);          // swap to another npc
     int FUN_141b20ac0();                                    // always 0
     void FUN_141b20af0();                                   // end the talk when the npc is gone
     int FUN_141b20bb0();                                    // show the current page
@@ -111,7 +111,7 @@ public:
     CStringW FUN_141b20ed0();                               // the name of the current page
     MS2Ptr<CTalkScript> GetScript();                    // the script handle
     MS2Ptr<CCinematicContent> FUN_141b21030();              // the current page
-    void FUN_141b21190(unsigned char nFlags, int nParam, int nPage);   // set the state words
+    void FUN_141b21190(int nFlags, int nParam, int nPage);   // set the state words
     int FUN_141b211d0();                                    // the talk cooldown elapsed
     int GetTalking();                                    // IsTalking
     int FUN_141b21240(int nNpcId);                          // IsTalkingWith

@@ -222,81 +222,61 @@ int CBankTable::FindBankId(int nItemId)
 }
 
 // @0x1401b4460
-// MS2-FUNCTIONAL: exe builds the two literal CString temps and the path before the TiXmlDocument with a different EH state layout (precedent continentregiontable); not reproduced
 int CBankTable::LoadItemDefine()
 {
-    CString strPath = FUN_14071a5b0(CString("Table"), CString("itemDefine.xml"));
+    CString strPath = FUN_14071a5b0("Table", "itemDefine.xml");
     TiXmlDocument doc;
-    const char* pszPath = strPath;
-    if (FUN_140166420()->FUN_1403974b0(&doc, pszPath, 0, true, false) == 0)
+    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+        return 0;
+    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+    if (pRoot == 0)
     {
+        FUN_14015eb90(FUN_140166440(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return 0;
     }
-    else
+    for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("key"); pNode != 0; pNode = pNode->FUN_140168650("key"))
     {
-        Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
-        if (pRoot == 0)
-        {
-            FUN_14015eb90(FUN_140166440(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
-            return 0;
-        }
-        else
-        {
-            for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("key"); pNode != 0; pNode = pNode->FUN_140168650("key"))
-            {
-                DefinePtr def(new CBankItemDefine);
-                FUN_1408731e0(pNode, "id", def->m_nId);
-                ReadSlotAttr(pNode, "slot", &def->m_nSlot);
-                FUN_1408731e0(pNode, "type", def->m_nType);
-                FUN_1408731e0(pNode, "subType", def->m_nSubType);
-                Unk_1401b4ec0 guard(m_lock, 1);
-                m_defines.AddTail(def);
-                if (m_nMaxId < def->m_nId)
-                    m_nMaxId = def->m_nId;
-            }
-            return 1;
-        }
+        DefinePtr def(new CBankItemDefine);
+        FUN_1408731e0(pNode, "id", def->m_nId);
+        ReadSlotAttr(pNode, "slot", &def->m_nSlot);
+        FUN_1408731e0(pNode, "type", def->m_nType);
+        FUN_1408731e0(pNode, "subType", def->m_nSubType);
+        Unk_1401b4ec0 guard(m_lock, 1);
+        m_defines.AddTail(def);
+        if (def->m_nId > m_nMaxId)
+            m_nMaxId = def->m_nId;
     }
+    return 1;
 }
 
 MS2_REPLACE_METHOD(0x1401B4460, CBankTable, LoadItemDefine, 820, 0xC3037A24);
 
 // @0x1401b47a0
-// MS2-FUNCTIONAL: exe builds the two literal CString temps and the path before the TiXmlDocument with a different EH state layout (precedent continentregiontable); not reproduced
 int CBankTable::LoadBankType()
 {
-    CString strPath = FUN_14071a5b0(CString("Table"), CString("bankType.xml"));
+    CString strPath = FUN_14071a5b0("Table", "bankType.xml");
     TiXmlDocument doc;
-    const char* pszPath = strPath;
-    if (FUN_140166420()->FUN_1403974b0(&doc, pszPath, 0, true, false) == 0)
+    if (FUN_140166420()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+        return 0;
+    Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
+    if (pRoot == 0)
     {
+        FUN_14015eb90(FUN_140166440(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return 0;
     }
-    else
+    CString strStore;
+    for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("bankType"); pNode != 0; pNode = pNode->FUN_140168650("bankType"))
     {
-        Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
-        if (pRoot == 0)
-        {
-            FUN_14015eb90(FUN_140166440(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
-            return 0;
-        }
-        else
-        {
-            CString strStore;
-            for (Unk_140165cf0* pNode = pRoot->FUN_140165cf0("bankType"); pNode != 0; pNode = pNode->FUN_140168650("bankType"))
-            {
-                DataPtr data(new CBankData);
-                FUN_140873220(pNode, "id", reinterpret_cast<unsigned&>(data->m_nId));
-                FUN_1408731e0(pNode, "useCash", data->m_nUseCash);
-                FUN_1408731e0(pNode, "slotCount", data->m_nSlotCount);
-                strStore = FUN_14015f710(pNode, "storeItemType", CString(""));
-                data->SetSlots(CString(strStore));
-                Unk_1401b4ec0 guard(m_lock, 1);
-                m_banks.SetAt(data->m_nId, data);
-            }
-            return 1;
-        }
+        DataPtr data(new CBankData);
+        FUN_140873220(pNode, "id", reinterpret_cast<unsigned&>(data->m_nId));
+        FUN_1408731e0(pNode, "useCash", data->m_nUseCash);
+        FUN_1408731e0(pNode, "slotCount", data->m_nSlotCount);
+        strStore = FUN_14015f710(pNode, "storeItemType", CString(""));
+        data->SetSlots(CString(strStore));
+        Unk_1401b4ec0 guard(m_lock, 1);
+        m_banks.SetAt(data->m_nId, data);
     }
+    return 1;
 }
 
 MS2_REPLACE_METHOD(0x1401B47A0, CBankTable, LoadBankType, 996, 0x0C2D6239);

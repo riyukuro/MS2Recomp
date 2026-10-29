@@ -24,11 +24,14 @@
     bool SetDisplayMode(unsigned int uiWidth, unsigned int uiHeight);
     void RestoreDisplayMode();
     void SetDeviceLostHeld(bool bHeld);
-
+    void PurgePrePackData();   // MS2: the dtor's pre-pack cleanup out of line (0x1427d4ae0); also run by ecr::RenderService::~RenderService
 .
 635c
     static void ReleaseVertexDecl(NiD3DVertexDeclaration pkVertDecl); static void MS2DeferVertexDecl(NiD3DVertexDeclaration pkVertDecl) { ms_kDeferredReleaseLock.Lock(); ms_akDeferredReleaseList[D3DRT_VERTEXDECL].AddTail(pkVertDecl); ms_kDeferredReleaseLock.Unlock(); }  // MS2: unconditional deferral (exe 0x1427e4240)
 .
 464a
     const char* GetDriverName() const;  // MS2: v2525 (studio 0x1427cf790, name inferred)
+.
+423c
+    inline NiDX9RenderState* GetRenderState() const; void MS2AddDrawStats(unsigned int uiVertices, unsigned int uiPrimitives) { m_uiMS2Unknown_1074 += uiVertices; m_uiMS2Unknown_1078 += uiPrimitives; }   // MS2: the game's per-frame draw counters (added in NiD3DShader::Do_RenderMeshes 0x1427e01c0, cleared in Do_BeginFrame 0x1427ccd50)
 .

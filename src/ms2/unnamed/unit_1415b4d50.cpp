@@ -5,6 +5,7 @@
 #include "ms2/placeholder/nmstream.h"
 #include "ms2/placeholder/nmobjects.h"
 #include "ms2/placeholder/nmfunc.h"
+#include "ms2/placeholder/nmencoder.h"
 #include "ms2/ms2recover.h"
 
 extern CNMSerializable* FUN_1415f14b0(CNMSerializable*, long long);
@@ -14,7 +15,7 @@ extern void FUN_14156bd50(void*);
 extern void FUN_14156be10(void*, void*, void*);
 extern void FUN_14156bf10(void*);
 extern unsigned int FUN_1415f9990(void*);
-extern int FUN_1415fb6d0(void*);
+extern int FUN_1415fb6d0(CNMSerializableDecoder*);
 extern unsigned int FUN_1415fb750(void*);
 
 // MS2-FUNCTIONAL 0x1415b4d50: initializes the event and its embedded online-info record.
@@ -44,18 +45,17 @@ CNMGuildOnlineInfoEvent::CNMGuildOnlineInfoEvent(const CNMGuildOnlineInfoEx& rIn
 // @0x1415b4ec0
 unsigned int CNMGuildOnlineInfoEvent::EncodeFramed(CNMStream* pStream)
 {
-    unsigned char storage[0x18];
-    FUN_14156bcb0(storage, pStream, this);
-    const unsigned int result = Encode(reinterpret_cast<CNMEncoder*>(storage), pStream);
-    FUN_14156bd50(storage);
-    return result;
+    CNMSerializableEncoder encoder(pStream, this);
+    return CNMGuildOnlineInfoEvent::Encode(reinterpret_cast<CNMEncoder*>(&encoder), pStream);
 }
 
 // MS2-FUNCTIONAL 0x1415b4f20: selects direct or framed event encoding from the format byte.
 // @0x1415b4f20
 unsigned int CNMGuildOnlineInfoEvent::EncodeDispatch(CNMEncoder* pEncoder, CNMStream* pStream)
 {
-    return m_bFormat == 1 ? Encode(pEncoder, pStream) : EncodeFramed(pStream);
+    if (m_bFormat == 1)
+        return CNMGuildOnlineInfoEvent::Encode(pEncoder, pStream);
+    return CNMGuildOnlineInfoEvent::EncodeFramed(pStream);
 }
 
 // MS2-FUNCTIONAL 0x1415b4f80: serializes the base event and nested guild-info record.
@@ -72,20 +72,19 @@ unsigned int CNMGuildOnlineInfoEvent::Encode(CNMEncoder* pEncoder, CNMStream* pS
 // @0x1415b4ff0
 unsigned int CNMGuildOnlineInfoEvent::DecodeFramed(CNMStream* pStream)
 {
-    unsigned char storage[0x38];
-    FUN_14156be10(storage, pStream, this);
-    unsigned int result = 0;
-    if (FUN_1415fb750(storage))
-        result = Decode(reinterpret_cast<CNMSerializableDecoder*>(storage), pStream);
-    FUN_14156bf10(storage);
-    return result;
+    CNMSerializableDecoder decoder(pStream, this);
+    if (FUN_1415fb750(&decoder) == 0)
+        return 0;
+    return CNMGuildOnlineInfoEvent::Decode(&decoder, pStream);
 }
 
 // MS2-FUNCTIONAL 0x1415b5080: chooses framed decode for the framed event format.
 // @0x1415b5080
 unsigned int CNMGuildOnlineInfoEvent::DecodeDispatch(CNMSerializableDecoder* pDecoder, CNMStream* pStream)
 {
-    return FUN_1415fb6d0(pDecoder) == 2 ? DecodeFramed(pStream) : Decode(pDecoder, pStream);
+    if (FUN_1415fb6d0(pDecoder) == 2)
+        return CNMGuildOnlineInfoEvent::DecodeFramed(pStream);
+    return CNMGuildOnlineInfoEvent::Decode(pDecoder, pStream);
 }
 
 // MS2-FUNCTIONAL 0x1415b50e0: decodes the base event and its embedded guild-info record.

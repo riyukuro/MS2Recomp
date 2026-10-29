@@ -109,6 +109,12 @@ const Vector3& FUN_140e69200(NiAVObject* pNode);                // local transla
 Unk_NiMatrix3* FUN_1410b23c0(NiAVObject* pNode);                        // local rotation
 void FUN_140981070(NiAVObject* pNode, const Unk_NiPoint3& kPos);        // SetTranslate
 void FUN_140ddcca0(NiAVObject* pNode, const Unk_NiMatrix3* pRot);       // SetRotate
+// NiAVObject::m_kLocal.m_Translate (+0x74) as an NiPoint3 with its assignment operator.
+struct Unk_UabNodeTranslate
+{
+    Unk_UabNodeTranslate& FUN_14097faa0(const Unk_NiPoint3& kSrc);  // NiPoint3::operator=
+    float x, y, z;
+};
 void FUN_1410a7800(NiAVObject* pNode, float fX, float fY, float fZ);    // SetTranslate(x, y, z)
 Unk_NiPoint3 FUN_14027dcf0(const Vector3& kPt);                 // NiPoint3(const efd::Point3&)
 void FUN_1420849a0(Unk_NiMatrix3* pMat);                                // MakeIdentity
@@ -147,7 +153,7 @@ UIAvatarBase::UIAvatarBase()
     : m_nKind(0), m_bLoaded(0), m_nObjectId(0), m_spView(0),
       m_kAngle(DAT_143b01a60), m_kAngleBase(DAT_143b01a60), m_kPos(DAT_143b01a60), m_kPosBase(DAT_143b01a60),
       m_kPivotBase(DAT_143b01a60), m_kPivot(DAT_143b01a60),
-      m_nMode(0), m_fMoveStep(0.7f), m_fRotStep(0.2f), m_fZoomStep(30.0f), m_nState(0), m_nLocked(0),
+      m_nMode(0), m_fMoveStep(0.35f), m_fRotStep(0.2f), m_fZoomStep(30.0f), m_nState(0), m_nLocked(0),
       m_bWheelCamera(false), m_pListener(0)
 {
 }
@@ -230,48 +236,41 @@ void UIAvatarBase::vfunc_10(int dx, int dy, int dz, int bUpdate)
     if (IsLoaded() == 0)
         return;
     GameObject* pObj = vfunc_23();
-    if (pObj == 0)
-        return;
-    NiAVObject* pNode = FUN_141b6efc0(pObj->FUN_14123c410());
-    if (pNode == 0)
-        return;
-    float fY = (float)dx * m_fRotStep;
-    float fX = (float)dy * m_fRotStep;
-    float fZ = -((float)dz * m_fRotStep);
-    Vector3 kDelta(fX, fY, fZ);
-    Vector3 kNewPos = kDelta.FUN_14097fd50(m_kPosBase);
-    float fLimit = m_kPivot.z;
-    Vector3 kTarget = kDelta.FUN_14097fd50(m_kPivotBase);
-    if (fLimit < m_kPos.FUN_140965c40(kTarget).FUN_140967ac0())
+    if (pObj)
     {
-        float fClamp;
-        if (fLimit < FUN_14059d930(m_kPos.x - kTarget.x))
+        NiAVObject* pNode = FUN_141b6efc0(pObj->FUN_14123c410());
+        if (!pNode)
+            return;
+        float fY = (float)dx * m_fRotStep;
+        float fX = (float)dy * m_fRotStep;
+        float fZ = -((float)dz * m_fRotStep);
+        Vector3 kDelta(fX, fY, fZ);
+        Vector3 kNewPos = kDelta.FUN_14097fd50(m_kPosBase);
+        float fLimit = m_kPivot.z;
+        Vector3 kTarget = kDelta.FUN_14097fd50(m_kPivotBase);
+        if (m_kPos.FUN_140965c40(kTarget).FUN_140967ac0() > fLimit)
         {
-            fClamp = fLimit;
-            if (0.0f < m_kPos.x - kTarget.x)
-                fClamp = -fLimit;
-            kTarget.x = m_kPos.x + fClamp;
+            if (FUN_14059d930(m_kPos.x - kTarget.x) > fLimit)
+            {
+                float fClamp = m_kPos.x - kTarget.x > 0.0f ? -fLimit : fLimit;
+                kTarget.x = m_kPos.x + fClamp;
+            }
+            if (FUN_14059d930(m_kPos.y - kTarget.y) > fLimit)
+            {
+                float fClamp = m_kPos.y - kTarget.y > 0.0f ? -fLimit : fLimit;
+                kTarget.y = m_kPos.y + fClamp;
+            }
+            if (FUN_14059d930(m_kPos.z - kTarget.z) > fLimit)
+            {
+                float fClamp = m_kPos.z - kTarget.z > 0.0f ? -fLimit : fLimit;
+                kTarget.z = m_kPos.z + fClamp;
+            }
+            kNewPos = kTarget.FUN_14097fd50(m_kPivot).FUN_140965c40(FUN_1410b23c0(pNode)->FUN_140a00720(m_kPivot));
         }
-        if (fLimit < FUN_14059d930(m_kPos.y - kTarget.y))
-        {
-            fClamp = fLimit;
-            if (0.0f < m_kPos.y - kTarget.y)
-                fClamp = -fLimit;
-            kTarget.y = m_kPos.y + fClamp;
-        }
-        if (fLimit < FUN_14059d930(m_kPos.z - kTarget.z))
-        {
-            fClamp = fLimit;
-            if (0.0f < m_kPos.z - kTarget.z)
-                fClamp = -fLimit;
-            kTarget.z = m_kPos.z + fClamp;
-        }
-        Vector3 kRotated = FUN_1410b23c0(pNode)->FUN_140a00720(m_kPivot);
-        kNewPos = kTarget.FUN_14097fd50(m_kPivot).FUN_140965c40(kRotated);
+        FUN_140981070(pNode, kNewPos);
+        if (bUpdate)
+            pNode->Update((float)FUN_141473280(FUN_14086d260()), true);
     }
-    FUN_140981070(pNode, FUN_14027dcf0(kNewPos));
-    if (bUpdate)
-        pNode->Update((float)FUN_141473280(FUN_14086d260()), true);
 }
 
 // @0x1418b8300
@@ -316,10 +315,12 @@ void UIAvatarBase::vfunc_14(int dx, int dy, int dz, int bUpdate)
         NiAVObject* pNode = FUN_141b6efc0(pObj->FUN_14123c410());
         if (pNode == 0)
             return;
+        float fX = -((float)dx * m_fMoveStep);
+        float fY = -((float)dy * m_fMoveStep);
         float fZ = -((float)dz * m_fMoveStep);
         if (90.0f < m_kAngle.y && m_kAngle.y < 270.0f)
             fZ = -fZ;
-        Vector3 kDelta(-((float)dx * m_fMoveStep), -((float)dy * m_fMoveStep), fZ);
+        Vector3 kDelta(fX, fY, fZ);
         Vector3 kRot = kDelta.FUN_14097fd50(m_kAngle);
         vfunc_12(kDelta, kRot);
         vfunc_13(kRot.x, kRot.y, kRot.z, &m_kPivot, &m_kPivotBase, bUpdate);
@@ -329,33 +330,29 @@ void UIAvatarBase::vfunc_14(int dx, int dy, int dz, int bUpdate)
 // @0x1418b8750
 void UIAvatarBase::vfunc_13(float rx, float ry, float rz, const Vector3* pPivot, const Vector3* pPos, int bUpdate)
 {
-    float fRx = rx;
-    float fRy = ry;
-    float fRz = rz;
     if (IsLoaded() == 0)
         return;
     GameObject* pObj = vfunc_23();
     if (pObj)
     {
         NiAVObject* pNode = FUN_141b6efc0(pObj->FUN_14123c410());
-        if (pNode)
-        {
-            FUN_1418bf270(&fRx);
-            FUN_1418bf270(&fRy);
-            FUN_1418bf270(&fRz);
-            FUN_1418ba200(&m_kAngleBase, fRx, fRy, fRz);
-            if (FUN_140166440())
-                FUN_140e68a40(FUN_140166440(), 0xb, 0x135, L"avatarDegree: {0}, {1}, {2}", &m_kAngleBase.x, &m_kAngleBase.y, &m_kAngleBase.z);
-            Unk_NiMatrix3 kRot;
-            FUN_1420849a0(&kRot);
-            float fRadX = (fRx * 3.1415927f) / 180.0f;
-            float fRadY = (fRy * 3.1415927f) / 180.0f;
-            float fRadZ = (fRz * 3.1415927f) / 180.0f;
-            kRot.FUN_142083d40(fRadX, fRadY, fRadZ);
-            FUN_1418c1dd0(pNode, &kRot, FUN_14027dcf0(*pPivot), FUN_14027dcf0(*pPos));
-            if (bUpdate)
-                pNode->Update((float)FUN_141473280(FUN_14086d260()), true);
-        }
+        if (!pNode)
+            return;
+        FUN_1418bf270(&rx);
+        FUN_1418bf270(&ry);
+        FUN_1418bf270(&rz);
+        FUN_1418ba200(&m_kAngleBase, rx, ry, rz);
+        if (FUN_140166440())
+            FUN_140e68a40(FUN_140166440(), 0xb, 0x135, L"avatarDegree: {0}, {1}, {2}", &m_kAngleBase.x, &m_kAngleBase.y, &m_kAngleBase.z);
+        Unk_NiMatrix3 kRot;
+        FUN_1420849a0(&kRot);
+        float fRadX = (rx * 3.1415927f) / 180.0f;
+        float fRadY = (ry * 3.1415927f) / 180.0f;
+        float fRadZ = (rz * 3.1415927f) / 180.0f;
+        kRot.FUN_142083d40(fRadX, fRadY, fRadZ);
+        FUN_1418c1dd0(pNode, &kRot, *pPivot, *pPos);
+        if (bUpdate)
+            pNode->Update((float)FUN_141473280(FUN_14086d260()), true);
     }
 }
 
@@ -368,12 +365,11 @@ void UIAvatarBase::vfunc_15(float rx, float ry, float rz, int bUpdate)
     if (pObj)
     {
         NiAVObject* pNode = FUN_141b6efc0(pObj->FUN_14123c410());
-        if (pNode)
-        {
-            const Vector3& kPos = FUN_140e69200(pNode);
-            vfunc_13(rx, ry, rz, &m_kPivot, &kPos, bUpdate);
-            FUN_1418ba250(&m_kAngle, &m_kAngleBase);
-        }
+        if (!pNode)
+            return;
+        const Vector3& kPos = FUN_140e69200(pNode);
+        vfunc_13(rx, ry, rz, &m_kPivot, &kPos, bUpdate);
+        FUN_1418ba250(&m_kAngle, &m_kAngleBase);
     }
 }
 
@@ -385,7 +381,8 @@ void UIAvatarBase::vfunc_16(int n, int bUpdate)
     GameObject* pObj = vfunc_23();
     if (pObj != 0)
     {
-        Vector3 kAngle = Vector3(0.0f, (float)n * m_fMoveStep, 0.0f).FUN_14097fd50(m_kAngle);
+        float fStep = (float)n * m_fMoveStep;
+        Vector3 kAngle = Vector3(0.0f, fStep, 0.0f).FUN_14097fd50(m_kAngle);
         FUN_1418bf270(&kAngle.y);
         vfunc_20(kAngle.x, kAngle.y, kAngle.z, bUpdate);
         FUN_1418ba250(&m_kAngleBase, &kAngle);
@@ -397,7 +394,8 @@ void UIAvatarBase::vfunc_17(float f, int bUpdate)
 {
     if (IsLoaded() == 0)
         return;
-    if (vfunc_23())
+    GameObject* pObj = vfunc_23();
+    if (pObj != 0)
     {
         Vector3 kAngle(0.0f, f, 0.0f);
         FUN_1418bf270(&kAngle.y);
@@ -412,9 +410,11 @@ void UIAvatarBase::vfunc_18(int n, int bUpdate)
 {
     if (IsLoaded() == 0)
         return;
-    if (vfunc_23())
+    GameObject* pObj = vfunc_23();
+    if (pObj != 0)
     {
-        Vector3 kAngle = Vector3(0.0f, 0.0f, (float)n * m_fMoveStep).FUN_14097fd50(m_kAngle);
+        float fStep = (float)n * m_fMoveStep;
+        Vector3 kAngle = Vector3(0.0f, 0.0f, fStep).FUN_14097fd50(m_kAngle);
         FUN_1418bf270(&kAngle.z);
         vfunc_20(kAngle.x, kAngle.y, kAngle.z, bUpdate);
         FUN_1418ba250(&m_kAngleBase, &kAngle);
@@ -426,7 +426,8 @@ void UIAvatarBase::vfunc_19(float f, int bUpdate)
 {
     if (IsLoaded() == 0)
         return;
-    if (vfunc_23())
+    GameObject* pObj = vfunc_23();
+    if (pObj != 0)
     {
         Vector3 kAngle(0.0f, 0.0f, f);
         FUN_1418bf270(&kAngle.z);
@@ -444,34 +445,20 @@ void UIAvatarBase::vfunc_20(float x, float y, float z, int bUpdate)
     Vector3 kAngle(x, y, z);
     vfunc_12(DAT_143b01a60, kAngle);
     GameObject* pObj = vfunc_23();
-    if (pObj)
-    {
-        NiAVObject* pNode = FUN_141b6efc0(pObj->FUN_14123c410());
-        if (pNode)
-        {
-            Unk_NiMatrix3 kRot;
-            FUN_1420849a0(&kRot);
-            float fRadX;
-            if (x <= 0.0f)
-                fRadX = 0.0f;
-            else
-                fRadX = (x * 3.1415927f) / 180.0f;
-            float fRadY;
-            if (y <= 0.0f)
-                fRadY = 0.0f;
-            else
-                fRadY = (y * 3.1415927f) / 180.0f;
-            float fRadZ;
-            if (z <= 0.0f)
-                fRadZ = 0.0f;
-            else
-                fRadZ = (z * 3.1415927f) / 180.0f;
-            kRot.FUN_142083d40(fRadX, fRadY, fRadZ);
-            FUN_140ddcca0(pNode, &kRot);
-            if (bUpdate)
-                pNode->Update((float)FUN_141473280(FUN_14086d260()), true);
-        }
-    }
+    if (!pObj)
+        return;
+    NiAVObject* pNode = FUN_141b6efc0(pObj->FUN_14123c410());
+    if (!pNode)
+        return;
+    Unk_NiMatrix3 kRot;
+    FUN_1420849a0(&kRot);
+    float fRadX = x > 0.0f ? (x * 3.1415927f) / 180.0f : 0.0f;
+    float fRadY = y > 0.0f ? (y * 3.1415927f) / 180.0f : 0.0f;
+    float fRadZ = z > 0.0f ? (z * 3.1415927f) / 180.0f : 0.0f;
+    kRot.FUN_142083d40(fRadX, fRadY, fRadZ);
+    FUN_140ddcca0(pNode, &kRot);
+    if (bUpdate)
+        pNode->Update((float)FUN_141473280(FUN_14086d260()), true);
 }
 
 // @0x1418b9140
@@ -565,46 +552,41 @@ int UIAvatarBase::vfunc_27(const char* szEvent, const Scaleform::GFx::Value* pAr
             return 1;
         }
     }
-    else
+    else if (_stricmp("OnAvatarMouseWheel", szEvent) == 0)
     {
-        if (_stricmp("OnAvatarMouseWheel", szEvent) == 0)
+        ASData kData;
+        if (kData.FUN_1422b9620(pArgs, nArgs))
         {
-            ASData kData;
-            if (kData.FUN_1422b9620(pArgs, nArgs))
-            {
-                if (kData.FUN_1422b8a10() < 1)
-                    vfunc_6();
-                else
-                    vfunc_5();
-            }
-            return 1;
+            int nWheel = kData.FUN_1422b8a10();
+            if (nWheel > 0)
+                vfunc_5();
+            else
+                vfunc_6();
         }
-        if (_stricmp("OnAvatarMouseMove", szEvent) == 0)
+        return 1;
+    }
+    else if (_stricmp("OnAvatarMouseMove", szEvent) == 0)
+    {
+        ASData kData;
+        if (kData.FUN_1422b9620(pArgs, nArgs))
         {
-            ASData kData;
-            if (kData.FUN_1422b9620(pArgs, nArgs))
+            int nDx = kData.FUN_1422b8a10();
+            int nDy = kData.FUN_1422b8a10();
+            int nButton = kData.FUN_1422b8a10();
+            int nMode = GetMode();
+            if (FUN_1418ba1a0(nButton) != nMode)
+                return 1;
+            if (abs(nDx) > 2 || abs(nDy) > 2)
             {
-                int nDx = kData.FUN_1422b8a10();
-                int nDy = kData.FUN_1422b8a10();
-                int nButton = kData.FUN_1422b8a10();
-                int nMode = GetMode();
-                if (FUN_1418ba1a0(nButton) != nMode)
-                    return 1;
-                if (abs(nDx) > 2 || abs(nDy) > 2)
-                {
-                    if (m_nLocked == 0 || nMode != 2)
-                    {
-                        if (nMode == 1)
-                            vfunc_14(0, nDy, nDx, 1);
-                        else if (nMode == 3)
-                            vfunc_11(0, nDy, nDx, 0);
-                    }
-                    else
-                        vfunc_10(nDx, 0, nDy, 0);
-                }
+                if (m_nLocked != 0 && nMode == 2)
+                    vfunc_10(nDx, 0, nDy, 0);
+                else if (nMode == 1)
+                    vfunc_14(0, nDy, nDx, 1);
+                else if (nMode == 3)
+                    vfunc_11(0, nDy, nDx, 0);
             }
-            return 1;
         }
+        return 1;
     }
     return 0;
 }
@@ -730,22 +712,21 @@ void UIAvatarBase::FUN_1418b9c10()
     if (pObj)
     {
         NiAVObject* pNode = FUN_141b6efc0(pObj->FUN_14123c410());
-        if (pNode)
+        if (!pNode)
+            return;
+        Unk_NiMatrix3* pRot = FUN_1410b23c0(pNode);
+        FUN_1418ba250(&m_kAngle, &m_kAngleBase);
+        const Vector3& kPos = FUN_140e69200(pNode);
+        m_kPosBase = kPos;
+        if (m_kAngleBase.FUN_140552700(DAT_143b01a60))
+            FUN_1418ba4a0(pRot, &kPos, &m_kPivotBase);
+        else
+            m_kPivotBase = m_kPosBase;
+        if (m_spView)
         {
-            Unk_NiMatrix3* pRot = FUN_1410b23c0(pNode);
-            FUN_1418ba250(&m_kAngle, &m_kAngleBase);
-            const Vector3& kPos = FUN_140e69200(pNode);
-            m_kPosBase = kPos;
-            if (m_kAngleBase.FUN_140552700(DAT_143b01a60))
-                FUN_1418ba4a0(pRot, &kPos, &m_kPivotBase);
-            else
-                m_kPivotBase = m_kPosBase;
-            if (m_spView)
-            {
-                UIModelView* pModelView = dynamic_cast<UIModelView*>((UIRenderView*)m_spView);
-                if (pModelView)
-                    pModelView->vfunc_17(FUN_14027dcf0(kPos.FUN_14097fd50(m_kPivot)));
-            }
+            UIModelView* pModelView = dynamic_cast<UIModelView*>((UIRenderView*)m_spView);
+            if (pModelView)
+                pModelView->vfunc_17(kPos.FUN_14097fd50(m_kPivot));
         }
     }
 }
@@ -767,31 +748,30 @@ void UIAvatarBase::FUN_1418b9e40()
     if (pObj)
     {
         NiAVObject* pNode = FUN_141b6efc0(pObj->FUN_14123c410());
-        if (pNode)
-        {
-            m_kPos = FUN_140e69200(pNode);
-            m_kPosBase = m_kPos;
-            m_kPivotBase = m_kPos;
-            float fBody = 0.0f;
-            NiFixedString kName("Eff_Body");
-            NiAVObject* pBody = pNode->GetObjectByName(kName);
-            if (pBody)
-                fBody = FUN_140947900(pBody)->FUN_140965c40(m_kPos).FUN_140967ac0();
-            float fHeight = FUN_140980350(FUN_140994490(pNode))->z - m_kPos.z;
-            float fExtra = fHeight - fBody;
-            if (0.0f < fBody && 25.0f < fExtra)
-                fHeight = fBody + 25.0f;
-            m_kPivot = Vector3(0.0f, 0.0f, fHeight);
-            NiPoint3 kRaw = pObj->vfunc_20();
-            Vector3 kAngle(kRaw.x, kRaw.y, kRaw.z);
-            FUN_1410b23c0(pNode)->FUN_142085840(kAngle.x, kAngle.y, kAngle.z);
-            kAngle.x = (kAngle.x * 180.0f) / 3.1415927f;
-            kAngle.y = (kAngle.y * 180.0f) / 3.1415927f;
-            kAngle.z = (kAngle.z * 180.0f) / 3.1415927f;
-            FUN_1418bf1e0(&kAngle);
-            m_kAngle = kAngle;
-            m_kAngleBase = kAngle;
-        }
+        if (!pNode)
+            return;
+        m_kPos = FUN_140e69200(pNode);
+        m_kPosBase = m_kPos;
+        m_kPivotBase = m_kPos;
+        float fBody = 0.0f;
+        NiAVObject* pBody = pNode->GetObjectByName("Eff_Body");
+        if (pBody)
+            fBody = FUN_140947900(pBody)->FUN_140965c40(m_kPos).FUN_140967ac0();
+        void* pBound = FUN_140994490(pNode);
+        float fHeight = FUN_140980350(pBound)->z - m_kPos.z;
+        float fExtra = fHeight - fBody;
+        if (fBody > 0.0f && fExtra > 25.0f)
+            fHeight = fBody + 25.0f;
+        m_kPivot = Vector3(0.0f, 0.0f, fHeight);
+        NiPoint3 kAngle = pObj->vfunc_20();
+        Unk_NiMatrix3* pRot = FUN_1410b23c0(pNode);
+        pRot->FUN_142085840(kAngle.x, kAngle.y, kAngle.z);
+        kAngle.x = (kAngle.x * 180.0f) / 3.1415927f;
+        kAngle.y = (kAngle.y * 180.0f) / 3.1415927f;
+        kAngle.z = (kAngle.z * 180.0f) / 3.1415927f;
+        FUN_1418bf1e0(reinterpret_cast<Vector3*>(&kAngle));
+        m_kAngle = reinterpret_cast<const Vector3&>(kAngle);
+        m_kAngleBase = reinterpret_cast<const Vector3&>(kAngle);
     }
 }
 
@@ -848,7 +828,8 @@ void UIAvatarBase::FUN_1418ba280(int bUpdate)
 {
     if (IsLoaded() == 0)
         return;
-    if (vfunc_23())
+    GameObject* pObj = vfunc_23();
+    if (pObj != 0)
     {
         vfunc_9(m_kPos.x, m_kPos.y, m_kPos.z, bUpdate);
         m_kPosBase = m_kPos;
@@ -894,10 +875,7 @@ void UIAvatarBase::FUN_1418ba410(Vector3* pOut)
 void UIAvatarBase::FUN_1418ba4a0(Unk_NiMatrix3* pRot, const Vector3* pPos, Vector3* pOut)
 {
     if (m_kAngleBase.FUN_140552700(DAT_143b01a60))
-    {
-        Vector3 kRotated = pRot->FUN_140a00720(m_kPivot);
-        *pOut = pPos->FUN_140965c40(m_kPivot).FUN_14097fd50(kRotated);
-    }
+        *pOut = pPos->FUN_140965c40(m_kPivot).FUN_14097fd50(pRot->FUN_140a00720(m_kPivot));
     else
         *pOut = *pPos;
 }
@@ -965,7 +943,7 @@ bool FUN_1405729c0(const ATL::CAtlArray<MS2Ptr<CItemData> >* pArray);      // ar
 MS2Ptr<CItemData> FUN_1403bb3b0(const MS2Ptr<CItemData>& sp);
 
 // The ingredient table row of a skin colour (FUN_140281980 / avatarpc.cpp).
-struct Unk_UabPresetRow { char m_pad_00[0x3c]; unsigned m_nColorA; int m_n40; unsigned m_nColorB; };
+struct Unk_UabPresetRow { char m_pad_00[0x3c]; unsigned m_anColor[3]; };
 class Unk_UabPresetPtr
 {
 public:
@@ -1108,11 +1086,14 @@ int UIAvatarPC::vfunc_27(const char* szEvent, const Scaleform::GFx::Value* pArgs
         }
         return 1;
     }
-    if (_stricmp("OnAvatarClickPose", szEvent) == 0)
+    else if (_stricmp("OnAvatarClickPose", szEvent) == 0)
     {
         ASData kData;
         if (kData.FUN_1422b9620(pArgs, nArgs))
-            FUN_1418bd860(kData.FUN_1422b8a10());
+        {
+            int nPose = kData.FUN_1422b8a10();
+            FUN_1418bd860(nPose);
+        }
         return 1;
     }
     return 0;
@@ -1178,24 +1159,16 @@ MS2_REPLACE_METHOD(0x1418BB0C0, UIAvatarPC, FUN_1418bb0c0, 37, 0xF0568DFA);
 // @0x1418bb0f0
 bool UIAvatarPC::FUN_1418bb0f0(CItem* pItem, int nEffect)
 {
-    if (m_spCustomize == 0)
+    if (m_spCustomize == 0 || pItem == 0)
         return false;
-    if (pItem)
-    {
-        MS2Ptr<CItemData> spData(FUN_140527840(pItem));
-        if (!(spData == 0))
-        {
-            if (FUN_14053c5c0(spData.operator->()) == 0x19)
-            {
-                ATL::CAtlArray<MS2Ptr<CItemData> > kItems;
-                ATL::CAtlArray<MS2Ptr<CItemData> > kOthers;
-                if (FUN_1418bf430(MS2Ptr<CItemData>(spData), &kItems, &kOthers))
-                    return FUN_1418bb2a0(MS2Ptr<CItemData>(spData), nEffect, &kItems);
-                return false;
-            }
-        }
-    }
-    return false;
+    MS2Ptr<CItemData> spData(FUN_140527840(pItem));
+    if (spData == 0 || FUN_14053c5c0(spData.operator->()) != 0x19)
+        return false;
+    ATL::CAtlArray<MS2Ptr<CItemData> > kItems;
+    ATL::CAtlArray<MS2Ptr<CItemData> > kOthers;
+    if (!FUN_1418bf430(MS2Ptr<CItemData>(spData), &kItems, &kOthers))
+        return false;
+    return FUN_1418bb2a0(MS2Ptr<CItemData>(spData), nEffect, &kItems);
 }
 
 // The exe's map::insert(pair&&) hands the pair straight to _Insert_nohint (this STL routes it through emplace), so the
@@ -1228,9 +1201,7 @@ bool UIAvatarPC::FUN_1418bb2a0(MS2Ptr<CItemData> spData, int nEffect, ATL::CAtlA
 // @0x1418bb3f0
 bool UIAvatarPC::FUN_1418bb3f0(Unk_AvPackageKey* pKey, int nEffect, ATL::CAtlArray<MS2Ptr<CItemData> >* pItems)
 {
-    if (m_spCustomize == 0)
-        return false;
-    if (FUN_1405729c0(pItems))
+    if (m_spCustomize == 0 || FUN_1405729c0(pItems))
         return false;
     MS2Ptr<CAvatarPackageEquip> spOld = FUN_1418bd200(pKey);
     if (spOld.get())
@@ -1245,21 +1216,19 @@ bool UIAvatarPC::FUN_1418bb3f0(Unk_AvPackageKey* pKey, int nEffect, ATL::CAtlArr
     for (size_t i = 0; i < nCount; i++)
     {
         MS2Ptr<CItemData> spItemData((*pItems)[i]);
-        if (!(spItemData == 0))
-        {
-            MS2Ptr<CItem> spItem(new CItem());
-            if (!(spItem == 0))
-            {
-                spItem->FUN_140523c40(spItemData->FUN_14053c510(), 1, 0);
-                int nCustomizeId = FUN_141420f10(spItemData.get(), FUN_1418bd1d0());
-                FUN_140526c10(spItem.operator->(), nCustomizeId);
-                spItem->FUN_140526a70(FUN_14028d0e0());
-                FUN_140526b30(spItem.operator->(), vfunc_25());
-                if (FUN_1418bd350(&kItemKey, nCustomizeId))
-                    kKeys.Add(kItemKey);
-                kNewItems.Add(spItem);
-            }
-        }
+        if (spItemData == 0)
+            continue;
+        MS2Ptr<CItem> spItem(new CItem());
+        if (spItem == 0)
+            continue;
+        spItem->FUN_140523c40(spItemData->FUN_14053c510(), 1, 0);
+        int nCustomizeId = FUN_141420f10(spItemData.get(), FUN_1418bd1d0());
+        FUN_140526c10(spItem.operator->(), nCustomizeId);
+        spItem->FUN_140526a70(FUN_14028d0e0());
+        FUN_140526b30(spItem.operator->(), vfunc_25());
+        if (FUN_1418bd350(&kItemKey, nCustomizeId))
+            kKeys.Add(kItemKey);
+        kNewItems.Add(spItem);
     }
     if (!kKeys.IsEmpty())
     {
@@ -1269,36 +1238,29 @@ bool UIAvatarPC::FUN_1418bb3f0(Unk_AvPackageKey* pKey, int nEffect, ATL::CAtlArr
     for (size_t i = 0; i < kNewItems.GetCount(); i++)
     {
         MS2Ptr<CItem> spItem(kNewItems[i]);
-        if (!(spItem == 0))
+        if (spItem == 0 || FUN_140527840(spItem.operator->()) == 0)
+            continue;
+        FUN_1418bafa0(spItem.get(), nEffect);
+        MS2Ptr<CItemData> spData(FUN_140527840(spItem.operator->()));
+        if (FUN_14053d2b0(spData.operator->()))
         {
-            if (FUN_140527840(spItem.operator->()))
-            {
-                FUN_1418bafa0(spItem.get(), nEffect);
-                MS2Ptr<CItemData> spData(FUN_140527840(spItem.operator->()));
-                if (!FUN_14053d2b0(spData.operator->()))
-                {
-                    if (!FUN_14053d460(spData.operator->()))
-                        spNew->FUN_1418bf9b0(FUN_140526c30(spItem.operator->()), MS2Ptr<CItem>(spItem));
-                    else
-                    {
-                        spNew->FUN_1418bf9b0((Unk_InventoryEquipSlot)4, MS2Ptr<CItem>(spItem));
-                        spNew->FUN_1418bf9b0((Unk_InventoryEquipSlot)5, MS2Ptr<CItem>(spItem));
-                    }
-                }
-                else
-                {
-                    spNew->FUN_1418bf9b0((Unk_InventoryEquipSlot)8, MS2Ptr<CItem>(spItem));
-                    spNew->FUN_1418bf9b0((Unk_InventoryEquipSlot)9, MS2Ptr<CItem>(spItem));
-                }
-            }
+            spNew->FUN_1418bf9b0((Unk_InventoryEquipSlot)8, MS2Ptr<CItem>(spItem));
+            spNew->FUN_1418bf9b0((Unk_InventoryEquipSlot)9, MS2Ptr<CItem>(spItem));
         }
+        else if (FUN_14053d460(spData.operator->()))
+        {
+            spNew->FUN_1418bf9b0((Unk_InventoryEquipSlot)4, MS2Ptr<CItem>(spItem));
+            spNew->FUN_1418bf9b0((Unk_InventoryEquipSlot)5, MS2Ptr<CItem>(spItem));
+        }
+        else
+            spNew->FUN_1418bf9b0(FUN_140526c30(spItem.operator->()), MS2Ptr<CItem>(spItem));
     }
     static_cast<Unk_AvPackageMapView&>(m_mapPackages).FUN_1418c0f00(Unk_AvPackagePair(*pKey, spNew));
     return !spNew->FUN_1418bfcc0();
 }
 
 void* FUN_1416561a0(AvatarPC* pAvatar);                                 // the state record of an avatar
-void FUN_1411ea620(void* pRecord, CMsTime kNow, CMsTime kZero);         // refreshes the state record
+void FUN_1411ea620(void* pRecord, const CMsTime& kStart, const CMsTime& kEnd);  // CEquipment::FUN_1411ea620: sets the codi tab period
 __int64 FUN_140869440();                                                // the server time
 
 // @0x1418bbc20
@@ -1331,15 +1293,14 @@ void UIAvatarPC::FUN_1418bbd30(int nSlot)
     if (m_spCustomize == 0)
         return;
     Unk_UabPlayer* pPlayer = FUN_14099eef0(vfunc_24());
-    if (pPlayer)
-    {
-        MS2Ptr<Unk_UabEquip> spEquip = pPlayer->FUN_141655cf0(nSlot);
-        if (spEquip.get())
-            FUN_1418bbc70(spEquip->FUN_1411dc870());
-        MS2Ptr<Unk_UabEquip> spEquip2 = pPlayer->FUN_141655c90(nSlot);
-        if (spEquip2.get())
-            FUN_1418bbc70(spEquip2->FUN_1411dc870());
-    }
+    if (!pPlayer)
+        return;
+    MS2Ptr<Unk_UabEquip> spEquip = pPlayer->FUN_141655cf0(nSlot);
+    if (spEquip.get())
+        FUN_1418bbc70(spEquip->FUN_1411dc870());
+    MS2Ptr<Unk_UabEquip> spEquip2 = pPlayer->FUN_141655c90(nSlot);
+    if (spEquip2.get())
+        FUN_1418bbc70(spEquip2->FUN_1411dc870());
 }
 
 // @0x1418bbe40
@@ -1354,34 +1315,28 @@ MS2_REPLACE_METHOD(0x1418BBE40, UIAvatarPC, FUN_1418bbe40, 84, 0xF86CA209);
 // @0x1418bbea0
 bool UIAvatarPC::FUN_1418bbea0(Unk_AvPackageKey* pKey)
 {
-    if (m_spCustomize == 0)
-        return false;
-    if (m_mapPackages.empty())
+    if (m_spCustomize == 0 || m_mapPackages.empty())
         return false;
     MS2Ptr<CAvatarPackageEquip> spPackage(0);
     if (m_mapPackages.find(*pKey) == m_mapPackages.end())
         return false;
-    if (spPackage.get())
-    {
-        if (spPackage->FUN_1418bfa00(this))
-            m_mapPackages.erase(*pKey);
-    }
+    if ((spPackage.get() ? true : false) && spPackage->FUN_1418bfa00(this))
+        m_mapPackages.erase(*pKey);
     return true;
 }
 
 // @0x1418bbfe0
 bool UIAvatarPC::FUN_1418bbfe0()
 {
-    if (m_spCustomize == 0)
-        return false;
-    if (m_mapPackages.empty())
+    if (m_spCustomize == 0 || m_mapPackages.empty())
         return false;
     for (std::map<Unk_AvPackageKey, MS2Ptr<CAvatarPackageEquip> >::iterator it = m_mapPackages.begin();
          it != m_mapPackages.end(); ++it)
     {
         MS2Ptr<CAvatarPackageEquip> spPackage(it->second);
-        if (!(spPackage == 0))
-            spPackage->FUN_1418bfa00(this);
+        if (spPackage == 0)
+            continue;
+        spPackage->FUN_1418bfa00(this);
     }
     m_mapPackages.clear();
     return true;
@@ -1434,54 +1389,49 @@ void UIAvatarPC::vfunc_4(__int64 nItemUid)
 // @0x1418bc380
 void UIAvatarPC::FUN_1418bc380(CItem* pItem)
 {
-    if (pItem)
+    if (pItem == 0)
+        return;
+    Unk_UabPlayer* pPlayer = FUN_14099eef0(vfunc_24());
+    if (pPlayer == 0)
+        return;
+    if (m_spCustomize.get())
     {
-        Unk_UabPlayer* pPlayer = FUN_14099eef0(vfunc_24());
-        if (pPlayer && m_spCustomize.get())
-        {
-            m_spCustomize->FUN_140cd1ed0(pItem);
-            int nRange = FUN_14053eba0(FUN_140527840(pItem))->FUN_14054b2f0(0)->FUN_1405451a0();
-            int nCustomizeId = FUN_141420a30(nRange, pItem, pPlayer);
-            MS2Ptr<CItemData> spData(FUN_140527840(pItem));
-            if (spData.get())
-                m_spCustomize->FUN_140cd23e0(MS2Ptr<CItem>(pItem), nCustomizeId);
-        }
+        m_spCustomize->FUN_140cd1ed0(pItem);
+        int nCustomizeId = FUN_141420a30(FUN_14053eba0(FUN_140527840(pItem))->FUN_14054b2f0(0)->FUN_1405451a0(), pItem, pPlayer);
+        MS2Ptr<CItemData> spData(FUN_140527840(pItem));
+        if (spData.get())
+            m_spCustomize->FUN_140cd23e0(MS2Ptr<CItem>(pItem), nCustomizeId);
     }
 }
 
 // @0x1418bc500
 void UIAvatarPC::FUN_1418bc500(Unk_AvPackageKey* pKey)
 {
-    if (m_spCustomize == 0)
-        return;
-    if (m_mapPackages.empty())
+    if (m_spCustomize == 0 || m_mapPackages.empty())
         return;
     std::map<Unk_AvPackageKey, MS2Ptr<CAvatarPackageEquip> >::iterator it = m_mapPackages.find(*pKey);
     if (it != m_mapPackages.end())
     {
         MS2Ptr<CAvatarPackageEquip> spPackage(it->second);
-        if (spPackage.get())
-        {
-            if (spPackage->FUN_1418bfb00(this))
-                m_mapPackages.erase(*pKey);
-        }
+        if ((spPackage.get() ? true : false) && spPackage->FUN_1418bfb00(this))
+            m_mapPackages.erase(*pKey);
     }
 }
 
 // @0x1418bc630
 void UIAvatarPC::FUN_1418bc630()
 {
-    if (!m_mapPackages.empty())
+    if (m_mapPackages.empty())
+        return;
+    for (std::map<Unk_AvPackageKey, MS2Ptr<CAvatarPackageEquip> >::iterator it = m_mapPackages.begin();
+         it != m_mapPackages.end(); ++it)
     {
-        for (std::map<Unk_AvPackageKey, MS2Ptr<CAvatarPackageEquip> >::iterator it = m_mapPackages.begin();
-             it != m_mapPackages.end(); ++it)
-        {
-            MS2Ptr<CAvatarPackageEquip> spPackage(it->second);
-            if (!(spPackage == 0))
-                spPackage->FUN_1418bfb00(this);
-        }
-        m_mapPackages.clear();
+        MS2Ptr<CAvatarPackageEquip> spPackage(it->second);
+        if (spPackage == 0)
+            continue;
+        spPackage->FUN_1418bfb00(this);
     }
+    m_mapPackages.clear();
 }
 
 // @0x1418bc740
@@ -1529,22 +1479,21 @@ void UIAvatarPC::FUN_1418bc860(int nParam)
 MS2_REPLACE_METHOD(0x1418BC860, UIAvatarPC, FUN_1418bc860, 87, 0x23A51193);
 
 // @0x1418bc8c0
-void UIAvatarPC::FUN_1418bc8c0(int nSkin)
+void UIAvatarPC::FUN_1418bc8c0(int nSkin, int /*nUnused*/)
 {
-    if (nSkin != 0)
+    if (nSkin == 0)
+        return;
+    Unk_CharEquip kColor0;
+    Unk_CharEquip kColor1;
     {
-        Unk_CharEquip kColor0;
-        Unk_CharEquip kColor1;
+        Unk_UabPresetPtr kRow = FUN_140281980()->FUN_1405587f0(nSkin, 0);
+        if (kRow.FUN_14059cf00())
         {
-            Unk_UabPresetPtr kRow = FUN_140281980()->FUN_1405587f0(nSkin, 0);
-            if (kRow.FUN_14059cf00())
-            {
-                kColor0 = FUN_141b6dea0(kRow.FUN_14056d570()->m_nColorA);
-                kColor1 = FUN_141b6dea0(kRow.FUN_14056d570()->m_nColorB);
-            }
+            kColor0 = FUN_141b6dea0(kRow.FUN_14056d570()->m_anColor[0]);
+            kColor1 = FUN_141b6dea0(kRow.FUN_14056d570()->m_anColor[2]);
         }
-        FUN_1418bca10(kColor0, kColor1);
     }
+    FUN_1418bca10(kColor0, kColor1);
 }
 
 // @0x1418bca10
@@ -1559,30 +1508,38 @@ void UIAvatarPC::FUN_1418bca10(Unk_CharEquip kColor0, Unk_CharEquip kColor1)
 void UIAvatarPC::FUN_1418bca60(int nState, int nParam)
 {
     AvatarPC* pAvatar = FUN_1418bd1d0();
-    if (pAvatar)
+    if (!pAvatar)
+        return;
+    if (pAvatar->FUN_14166c930() != nState)
+        pAvatar->vfunc_59(nState, 0, 0, 0);
+    if (nState == 1)
     {
-        if (pAvatar->FUN_14166c930() != nState)
-            pAvatar->vfunc_59(nState, 0, 0, 0);
-        if (nState == 1)
+        FUN_14166cc40(pAvatar, nParam);
+        if (nParam == 10)
         {
-            FUN_14166cc40(pAvatar, nParam);
-            if (nParam == 10)
-                pAvatar->FUN_14166dd20(efd::utf8string("Idle_A"), 1.0f, false, false);
-            else if (nParam == 0xb)
-                pAvatar->FUN_14166dd20(efd::utf8string("Idle_B"), 1.0f, false, false);
+            efd::utf8string kIdle("Idle_A");
+            pAvatar->FUN_14166dd20(kIdle, 1.0f, false, false);
         }
-        else if (nState == 0xe)
+        else if (nParam == 0xb)
         {
-            FUN_14166ce70(pAvatar, 1);
-            FUN_141653f00(pAvatar);
-            efd::utf8string kName((const char*)FUN_1409a2360((const char*)pAvatar->vfunc_60(), 0));
-            if (!FUN_14096ad40(kName))
-            {
-                kName.erase(kName.length() - 1, 1);
-                pAvatar->FUN_14166dd20(kName, 1.0f, false, false);
-            }
-            else
-                pAvatar->FUN_14166dd20(efd::utf8string("Sword"), 1.0f, false, false);
+            efd::utf8string kIdle("Idle_B");
+            pAvatar->FUN_14166dd20(kIdle, 1.0f, false, false);
+        }
+    }
+    else if (nState == 0xe)
+    {
+        FUN_14166ce70(pAvatar, 1);
+        FUN_141653f00(pAvatar);
+        efd::utf8string kName((const char*)FUN_1409a2360((const char*)pAvatar->vfunc_60(), 0));
+        if (FUN_14096ad40(kName))
+        {
+            efd::utf8string kSword("Sword");
+            pAvatar->FUN_14166dd20(kSword, 1.0f, false, false);
+        }
+        else
+        {
+            kName.erase(kName.length() - 1, 1);
+            pAvatar->FUN_14166dd20(kName, 1.0f, false, false);
         }
     }
 }
@@ -1592,46 +1549,52 @@ bool UIAvatarPC::FUN_1418bcd20(int nPose)
 {
     if (nPose < 0)
         return false;
-    if (FUN_1418bd1d0() == 0)
-        return false;
-    return FUN_1418bcd80(nPose);
+    AvatarPC* pAvatar = FUN_1418bd1d0();
+    if (pAvatar)
+    {
+        int nIndex = nPose;
+        return FUN_1418bcd80(nIndex);
+    }
+    return false;
 }
 
 // @0x1418bcd80
 bool UIAvatarPC::FUN_1418bcd80(int nPose)
 {
-    if (FUN_1418bd1d0() == 0)
-        return false;
-    int nState = 1;
-    int nParam = 10;
-    if (nPose == 0)
+    AvatarPC* pAvatar = FUN_1418bd1d0();
+    if (pAvatar)
     {
-        nState = 1;
-        nParam = 10;
+        int nState = 1;
+        int nParam = 10;
+        switch (nPose)
+        {
+        case 0:
+            nState = 1;
+            nParam = 10;
+            break;
+        case 1:
+            nState = 1;
+            nParam = 0xb;
+            break;
+        case 2:
+            nState = 0xe;
+            nParam = 0x55;
+            break;
+        case 3:
+            nState = 1;
+            nParam = 0x16;
+            break;
+        }
+        if (IsLoaded())
+            FUN_1418bc790(nState, nParam);
+        else
+        {
+            m_nAction = nState;
+            m_nActionParam = nParam;
+        }
+        return true;
     }
-    else if (nPose == 1)
-    {
-        nState = 1;
-        nParam = 0xb;
-    }
-    else if (nPose == 2)
-    {
-        nState = 0xe;
-        nParam = 0x55;
-    }
-    else if (nPose == 3)
-    {
-        nState = 1;
-        nParam = 0x16;
-    }
-    if (IsLoaded() == 0)
-    {
-        m_nAction = nState;
-        m_nActionParam = nParam;
-    }
-    else
-        FUN_1418bc790(nState, nParam);
-    return true;
+    return false;
 }
 
 // @0x1418bce80
@@ -2205,10 +2168,9 @@ AvatarPet* UIAvatarPet::FUN_1418bee00()
 
 // ---- the skin colour list ------------------------------------------------------------------------------------------
 
-// One row of the skin colour table (+0x38 colour, +0x3c / +0x44 the two tints).
-struct Unk_UabColorRow { char m_pad_00[0x38]; unsigned long m_nColor; unsigned long m_nColor0; int m_n40; unsigned long m_nColor1; };
-MS2_CHECK_OFFSET(Unk_UabColorRow, m_nColor0, 0x3c);
-MS2_CHECK_OFFSET(Unk_UabColorRow, m_nColor1, 0x44);
+// One row of the skin colour table (+0x38 colour, +0x3c / +0x44 the two tints, read as m_anColor[0] / [2]).
+struct Unk_UabColorRow { char m_pad_00[0x38]; unsigned long m_nColor; unsigned long m_anColor[3]; };
+MS2_CHECK_OFFSET(Unk_UabColorRow, m_anColor, 0x3c);
 class Unk_UabColorElem
 {
 public:
@@ -2248,16 +2210,15 @@ void FUN_1418bee30(ASObj* pObj, int nSkinTable)
         for (size_t i = 0; i < nCount; i++)
         {
             Unk_UabColorElem kElem(kSet.FUN_14056d540()->FUN_140570dd0(i));
-            if (!kElem.FUN_1418c14b0())
-            {
-                ASObj kObj(2);
-                kObj.FUN_1409c4990("color0", kElem.FUN_14056d570()->m_nColor0);
-                kObj.FUN_1409c4990("color1", kElem.FUN_14056d570()->m_nColor1);
-                unsigned long nColor = kElem.FUN_14056d570()->m_nColor;
-                kObj.FUN_1409c4990("realColor", nColor);
-                kObj.FUN_1409c4990("visibleColor", nColor);
-                kColors.FUN_1422bc050(Scaleform::GFx::Value(kObj.FUN_1422bb870()));
-            }
+            if (kElem.FUN_1418c14b0())
+                continue;
+            ASObj kObj(2);
+            kObj.FUN_1409c4990("color0", kElem.FUN_14056d570()->m_anColor[0]);
+            kObj.FUN_1409c4990("color1", kElem.FUN_14056d570()->m_anColor[2]);
+            unsigned long nColor = kElem.FUN_14056d570()->m_nColor;
+            kObj.FUN_1409c4990("realColor", nColor);
+            kObj.FUN_1409c4990("visibleColor", nColor);
+            kColors.FUN_1422bc050(Scaleform::GFx::Value(kObj.FUN_1422bb870()));
         }
     }
     PCBase* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
@@ -2266,10 +2227,10 @@ void FUN_1418bee30(ASObj* pObj, int nSkinTable)
         ASObj kObj(2);
         unsigned long nColor0 = FUN_141b6df90(FUN_141659220(pPlayer, 0));
         kObj.FUN_1409c4990("color0", nColor0);
-        unsigned long nColor1 = FUN_141b6df90(FUN_141659220(pPlayer, 1));
-        kObj.FUN_1409c4990("color1", nColor1);
-        kObj.FUN_1409c4990("realColor", nColor0);
-        kObj.FUN_1409c4990("visibleColor", nColor0);
+        kObj.FUN_1409c4990("color1", FUN_141b6df90(FUN_141659220(pPlayer, 1)));
+        unsigned long nColor = nColor0;
+        kObj.FUN_1409c4990("realColor", nColor);
+        kObj.FUN_1409c4990("visibleColor", nColor);
         kColors.FUN_1422bc050(Scaleform::GFx::Value(kObj.FUN_1422bb870()));
     }
     pObj->FUN_1409adbe0("skinColors", Scaleform::GFx::Value(kColors.FUN_1422bb870()));
@@ -2531,20 +2492,17 @@ std::pair<std::map<Unk_AvPackageKey, MS2Ptr<CAvatarPackageEquip> >::iterator, bo
 }
 
 // @0x1418c1410
-CAvatarPackageEquip::~CAvatarPackageEquip()
-{
-}
+// (implicit: the compiler-generated dtor, see the header)
 
 // @0x1418c1dd0
-// MS2-FUNCTIONAL: sets the rotation and the translation through the SetRotate / SetTranslate wrappers (the exe writes the node's local transform inline)
+// Writes the node's local transform inline: m_kLocal.m_Rotate (+0x50) = *pRot, m_kLocal.m_Translate (+0x74) =
+// kPos + kPivot - *pRot * kPivot.
 void FUN_1418c1dd0(NiAVObject* pNode, Unk_NiMatrix3* pRot, const Unk_NiPoint3& kPivot, const Unk_NiPoint3& kPos)
 {
-    Vector3 kPivotPt(kPivot.x, kPivot.y, kPivot.z);
-    Vector3 kPosPt(kPos.x, kPos.y, kPos.z);
-    FUN_140ddcca0(pNode, pRot);
-    Vector3 kRotated = pRot->FUN_140a00720(kPivotPt);
-    Vector3 kShift = kPosPt.FUN_14097fd50(kPivotPt);
-    FUN_140981070(pNode, FUN_14027dcf0(kShift.FUN_140965c40(kRotated)));
+    *reinterpret_cast<Unk_NiMatrix3*>(reinterpret_cast<char*>(pNode) + 0x50) = *pRot;
+    reinterpret_cast<Unk_UabNodeTranslate*>(reinterpret_cast<char*>(pNode) + 0x74)->FUN_14097faa0(
+        reinterpret_cast<const Vector3&>(kPos).FUN_14097fd50(reinterpret_cast<const Vector3&>(kPivot))
+            .FUN_140965c40(pRot->FUN_140a00720(reinterpret_cast<const Vector3&>(kPivot))));
 }
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142cbc950-0x142cbca30 .text$yd

@@ -85,7 +85,7 @@ typedef void* (__cdecl* Unk_NvQueryInterface)(unsigned int nId);
 typedef int (__cdecl* Unk_NvInit)();
 typedef int (__cdecl* Unk_NvGetName)(int nHandle, void* pOut);
 typedef int (__cdecl* Unk_NvEnumGpu)(int nIndex, int* pHandle);
-typedef int (__cdecl* Unk_NvEnumDisplays)(int nHandle, void* pBuf, int* pCount, void* pA, int nB);
+typedef int (__cdecl* Unk_NvEnumDisplays)(int nHandle, int* pBuf, int* pCount);
 typedef int (__cdecl* Unk_NvQuery)(int nHandle, void* pInfo);
 
 // NVIDIA (nvapi.dll) GPU helper: the nvapi entry points are fetched by id through nvapi_QueryInterface.

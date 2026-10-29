@@ -79,7 +79,7 @@ static CString s_strChartSortNames[] = {"None", "Buy", "PriceLow", "PriceHigh", 
 
 // ---- unit-local placeholders (unrecovered singletons / helpers) ----
 using ATL::CAtlArray;
-typedef ATL::CAtlArray<ItemEntity> Unk_MItemArray;
+typedef ATL::CAtlArray<MS2Ptr<ItemEntity> > Unk_MItemArray;   // reward lists hold item pointers (CMasteryTable::Rewards)
 
 // The feature flags (global via FUN_140166410).
 class Unk_MFeatures
@@ -120,7 +120,7 @@ class Unk_MCastingBar
 {
 public:
     void FUN_1418e1390();                                   // cancel
-    void FUN_1418e12f0(ICastingEventListener* listener, CStringW strText, int nTime, int a, int b, CStringW strIcon);
+    void FUN_1418e12f0(ICastingEventListener* listener, const CStringW& strText, int nTime, bool a, bool b, const CStringW& strIcon);
 };
 Unk_MCastingBar* FUN_140ac2270(int nId);
 
@@ -218,7 +218,7 @@ extern Unk_MInv DAT_143ab2a90;
 
 class Unk_MDebug { };
 Unk_MDebug* FUN_14025e7c0();
-unsigned char FUN_14116d720(Unk_MDebug*);
+bool FUN_14116d720(Unk_MDebug*);
 
 // MyPC accessors.
 unsigned int FUN_141662750(MyPC* pPc, int nType);           // mastery value of a category
@@ -244,7 +244,7 @@ public:
     virtual void vfunc_12(); virtual void vfunc_13(); virtual void vfunc_14(); virtual void vfunc_15();
     virtual void vfunc_16(); virtual void vfunc_17(); virtual void vfunc_18(); virtual void vfunc_19();
     virtual void vfunc_20(); virtual void vfunc_21(); virtual void vfunc_22(); virtual void vfunc_23();
-    virtual void vfunc_24(int n);
+    virtual void vfunc_24(bool b);
     void FUN_1409c0dc0(const char* szName, const char* szValue);     // the ASObj setters, applied to the control
     void FUN_1407cb9c0(const char* szName, int n);
     MS2Ptr<Unk_MGroup> FUN_140eb9cf0(const CString& strName);        // child lookups (in-unit COMDATs)
@@ -308,8 +308,8 @@ public:
 bool FUN_140841300(const CStringW& str, const char* sz);   // equal to a char literal
 
 
-typedef ATL::CAtlArray<ItemEntity> Unk_MItemArray;
-void FUN_141a015d0(CMsgBoxData* pBox, CStringW strTitle);     // sets the title
+typedef ATL::CAtlArray<MS2Ptr<ItemEntity> > Unk_MItemArray;   // reward lists hold item pointers (CMasteryTable::Rewards)
+void FUN_141a015d0(CMsgBoxData* pBox, const CStringW& strTitle);     // sets the title
 // message box helpers
 MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW text, void* pUnk, CStringW tag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
@@ -319,15 +319,17 @@ void FUN_141275260(int nStringId, int nA, int nB);
 int FUN_1407181a0(const CStringW& str);
 class Unk_MHome { public: int FUN_1410d2f10(); bool FUN_1410d5640(); };
 Unk_MHome* FUN_1409670e0();
-CStringW FUN_1405c2690(CStringW strKey, CStringW strArg);
+CStringW FUN_1405c2690(CStringW strKey, const CStringW& strArg);
 class Unk_MHomeSvc { public: int FUN_140936640(int a, int b); };
 Unk_MHomeSvc* FUN_1406c7600();
 int FUN_140eb8cd0(MS2Ptr<Unk_MFurn> spFurn);
 int FUN_140eb8eb0(MS2Ptr<Unk_MFurn> spFurn);
 bool FUN_1409b4d40(const Scaleform::GFx::Value& v);                 // the value is an object
+bool FUN_140ebb1e0(const Scaleform::GFx::Value* v);                // Value::IsInt
 int FUN_1407cccd0(const Scaleform::GFx::Value* v);                  // the value type
 unsigned __int64 FUN_1401d49f0(const void* p);                      // fmt make_type
-unsigned __int64 FUN_140889fd0(const void* p);                      // the map key hash
+unsigned int FUN_140889fd0(const void* p);                          // the map key hash
+bool FUN_140ba28d0(const MS2Ptr<AScript>* p, int n);                // MS2Ptr<AScript>::operator==(AScript*)
 void FUN_14034ed60(void* p);                                        // MS2Ptr<Unk_MScrollRec> dtor
 void FUN_14066d5b0(void* p);
 void FUN_14056c300(void* p);
@@ -339,8 +341,8 @@ MS2_CHECK_OFFSET(Unk_MHouseLevel, m_n1c, 0x1c);   // exe 0x140eb2c88: [rcx + 0x1
 class Unk_MHousing
 {
 public:
-    void FUN_140663010(unsigned short nLevel, int nJob, Unk_MItemArray& out);
-    int FUN_1406631b0(unsigned short nLevel);
+    void FUN_140663010(unsigned int nLevel, int nJob, Unk_MItemArray& out);
+    int FUN_1406631b0(unsigned int nLevel);
     MS2Ptr<Unk_MHouseLevel> FUN_1406635c0(unsigned short nLevel);
     unsigned int GetMaxLevel();                           // COMDAT: the highest level
     char m_pad[8]; unsigned int m_nMaxLevel;
@@ -367,14 +369,14 @@ public:
     char m_pad20[0x1c];
     int m_n3c; int m_n40; int m_n44; int m_n48;
     unsigned short m_w4c;
-    char m_pad4e;
-    char m_bOwned;
+    bool m_bHasPrice;   // +0x4e (ItemHousing::hasPrice)
 };
 typedef ATL::CAtlArray<MS2Ptr<Unk_MFurn> > Unk_MFurnArray;
 class Unk_MFurnTable { public: void FUN_140557920(int nId, Unk_MFurnArray& out); };
 static inline Unk_MFurnTable* MFurnTable() { return reinterpret_cast<Unk_MFurnTable*>(FUN_140281980()); }
-class Unk_MFurnState { public: bool FUN_140534e50(); };
-class Unk_MFurnInv { public: Unk_MFurnState FUN_1408fbe90(unsigned int nId); };
+// The warehouse item table (warehouseitem.h CWarehouseItemTable::FUN_1408fbe90): the first stored item with this id, as a
+// 16-byte MS2Ptr (hidden return; the exe tests it with MS2Ptr::operator! 0x140534e50 and releases the temp).
+class Unk_MFurnInv { public: MS2Ptr<CItem> FUN_1408fbe90(int nItemId); };
 extern Unk_MFurnInv DAT_143ab2e20;
 
 
@@ -426,7 +428,7 @@ class Unk_MMap { public: void FUN_140361ab0(unsigned int nId, int* pOut); };
 extern Unk_MMap DAT_143ab31a0;
 extern __int64 DAT_143ab2898;
 extern unsigned short DAT_143ab291c;
-extern int DAT_143ab2930;
+extern __int64 DAT_143ab2930;
 
 // a page array (ctor 0x1422deec0)
 class Unk_MPageArray : public ASArray
@@ -504,7 +506,10 @@ UIMasteryDialog::UIMasteryDialog()
     m_nPendingList = 0;
     m_304 = 0;
     FUN_140939a10()->FUN_140da4e40(CStringW(L"NotifyDamagedMyPC"), Delegate<void(NotifyObject*)>(this, &UIMasteryDialog::FUN_140eb5320));
-    m_2f8 = FUN_140166410()->FUN_14036d570(0xd1) ? 10 : 6;
+    if (FUN_140166410()->FUN_14036d570(0xd1))
+        m_2f8 = 10;
+    else
+        m_2f8 = 6;
     memset(&m_310, 0, 0x30);
 }
 
@@ -545,18 +550,16 @@ void UIMasteryDialog::vfunc_67()
         Scaleform::GFx::Value last = m_30->FUN_1422baa20("m_lastSelectedIndex");
         if (last.IsArray()) {
             Scaleform::GFx::Value item[4];
-            for (unsigned int i = 0; i < 4; i++) {
+            for (size_t i = 0; i < 4; i++) {
                 last.GetElement(i, &item[i]);
-                if (!item[i].IsNumber())
-                    m_lastSelected[i] = 0;
-                else
+                if (FUN_140ebb1e0(&item[i]))
                     m_lastSelected[i] = FUN_1409c1750(item[i]);
+                else
+                    m_lastSelected[i] = 0;
             }
         }
-        MS2Ptr<Unk_MGroup> spTab = FUN_140eb9db0(CString("m_mainTab"));
-        if (spTab.get()) {
-            Scaleform::GFx::Value sel = spTab->FUN_1422baa20("selectedIndex");
-            m_nMainTab = FUN_1409c1750(sel);
+        if (MS2Ptr<Unk_MGroup> spTab = FUN_140eb9db0("m_mainTab")) {
+            m_nMainTab = FUN_1409c1750(spTab->FUN_1422baa20("selectedIndex"));
         }
     }
     FUN_140a6a840()->FUN_1419caeb0(this);
@@ -569,18 +572,14 @@ void UIMasteryDialog::OnLoadComplete()
     UIDialog::OnLoadComplete();
     FUN_1419260d0(CString("m_webGuideButton"), 0);
     ASArray last(2);
-    for (unsigned int i = 0; i < 4; i++)
+    for (size_t i = 0; i < 4; i++)
         reinterpret_cast<Unk_MArray&>(last).FUN_1422bbc60(m_lastSelected[i]);
     reinterpret_cast<ASObj*>(m_30.operator->())->FUN_1409eb1d0("m_lastSelectedIndex", last);
-    MS2Ptr<Unk_MLevelCtrl> spScrollCtrl = FUN_140c02990(CString("m_magicScrollControl"));
-    if (spScrollCtrl.get())
+    if (MS2Ptr<Unk_MLevelCtrl> spScrollCtrl = FUN_140c02990("m_magicScrollControl"))
         spScrollCtrl->Invoke("setSelectedSlotIndex", FUN_140eb6870() - 1);
-    MS2Ptr<Unk_MGroup> spMainTab = FUN_140eb9db0(CString("m_mainTab"));
-    if (spMainTab.get())
+    if (MS2Ptr<Unk_MGroup> spMainTab = FUN_140eb9db0("m_mainTab"))
         spMainTab->Invoke("setSelectedButtonByIndex", m_nMainTab);
-    m_30->FUN_140bbe640(CString("m_magicScroll"), m_magicScroll);
-    if (m_magicScroll == 0)
-        throw new GfxExceptionSwfLoad(StringFormat("GfxError:{0} {1}({2}) function:{3}", "SwfLoadError", MS2_THIS_FILE, MS2_LINE(272), __FUNCTION__));
+    do { m_30->FUN_140bbe640("m_magicScroll", m_magicScroll); if (m_magicScroll == 0) throw new GfxExceptionSwfLoad(StringFormat("GfxError:{0} {1}({2}) function:{3}", "SwfLoadError", MS2_THIS_FILE, MS2_LINE(272), __FUNCTION__)); } while (0);
     if (!FUN_140166410()->FUN_14036d570(0x5a))
         m_magicScroll->vfunc_3(0);
     FUN_140eb7e30();
@@ -608,8 +607,7 @@ void UIMasteryDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
             ItemEntity* pEntry = FUN_1409670c0()->FUN_14066b640(nId);
             if (pEntry) {
                 MS2Ptr<CItem> spItem(new CItem);
-                int nRank = pEntry->vfunc_o18_1();
-                if (spItem->FUN_140523c40(pEntry->m_itemId, nRank, 0)) {
+                if (spItem->FUN_140523c40(pEntry->m_itemId, pEntry->vfunc_o18_1(), 0)) {
                     ASTooltip tip(FUN_1403ed2d0()->FUN_141bd0cc0(), 0x800, 2);
                     if (tip.FUN_1409e0d40(spItem.get())) {
                         tip.FUN_1409c6dc0(7);
@@ -631,32 +629,32 @@ int UIMasteryDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value*
         if (data.FUN_1422b9620(pArgs, nArgs))
             FUN_140eafde0();
         return 1;
-    }
-    if (!_stricmp(szMethod, "onSelectMastery")) {
+    } else if (!_stricmp(szMethod, "onSelectMastery")) {
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs))
             FUN_140eb53a0();
         return 1;
-    }
-    if (!_stricmp(szMethod, "onSelectList")) {
+    } else if (!_stricmp(szMethod, "onSelectList")) {
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs)) {
             int nIndex = data.FUN_1422b8a10();
             FUN_140eb5450(nIndex);
         }
         return 1;
-    }
-    if (!_stricmp(szMethod, "onReceiveItem")) {
+    } else if (!_stricmp(szMethod, "onReceiveItem")) {
         ASData data;
-        int nTab;
-        if (data.FUN_1422b9620(pArgs, nArgs) && (nTab = FUN_140eb5040(), -1 < nTab)) {
-            if (nTab < 2) {
+        if (data.FUN_1422b9620(pArgs, nArgs)) {
+            switch (FUN_140eb5040()) {
+            case 0:
+            case 1: {
                 int nId = data.FUN_1422b8b10();
                 COutPacket pkt(static_cast<int>(SendOp::Mastery), 0);
                 pkt.Encode1(1);
                 pkt.Encode4(nId);
                 FUN_140710590(pkt);
-            } else if (nTab == 2) {
+                break;
+            }
+            case 2:
                 if (FUN_140eb86b0() == 8) {
                     int nId = data.FUN_1422b8a10();
                     COutPacket pkt(static_cast<int>(SendOp::RequestCube), 0);
@@ -670,54 +668,58 @@ int UIMasteryDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value*
                     pkt.Encode4(nId);
                     FUN_140710590(pkt);
                 }
+                break;
             }
         }
         return 1;
-    }
-    if (!_stricmp(szMethod, "onCraftOk")) {
+    } else if (!_stricmp(szMethod, "onCraftOk")) {
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs)) {
             int nId = data.FUN_1422b8a10();
-            int nTab = FUN_140eb5040();
-            if (nTab == 1)
+            switch (FUN_140eb5040()) {
+            case 1:
                 FUN_140eb55e0(nId);
-            else if (nTab == 2)
+                break;
+            case 2:
                 FUN_140eb5e30(nId);
-            else if (nTab == 3)
+                break;
+            case 3:
                 FUN_140eb5e60(nId);
+                break;
+            }
         }
         return 1;
-    }
-    if (!_stricmp(szMethod, "onDebug")) {
+    } else if (!_stricmp(szMethod, "onDebug")) {
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs)) {
             CStringW strCommand;
             CStringW strFormat(L"/ManufacturingMastery {0} {1}");
-            int nTab = FUN_140eb5040();
-            if (nTab == 1) {
+            switch (FUN_140eb5040()) {
+            case 1: {
                 int nId = data.FUN_1422b8a10();
                 strCommand = StringFormat((const wchar_t*)strFormat, nId, "");
-            } else if (nTab == 3) {
+                break;
+            }
+            case 3: {
                 int nId = data.FUN_1422b8a10();
                 strCommand = StringFormat((const wchar_t*)strFormat, nId, "magicscroll");
+                break;
+            }
             }
             Unk_MChat* pChat = FUN_140a3ab70(0x4e61);
             if (pChat)
                 pChat->FUN_141a25770(CStringW(strCommand), 0);
         }
-        return 0;
-    }
-    if (!_stricmp(szMethod, "onChangeFilter")) {
+    } else if (!_stricmp(szMethod, "onChangeFilter")) {
         FUN_140eb3460();
-        return 0;
-    }
-    if (!_stricmp(szMethod, "onScrollPosition")) {
+    } else if (!_stricmp(szMethod, "onScrollPosition")) {
         if (m_304 != 0)
             return 1;
         ASData data;
         if (data.FUN_1422b9620(pArgs, nArgs)) {
             int nSlot = FUN_140eb86b0();
-            m_scroll[nSlot] = data.FUN_1422b8a10();
+            int nPos = data.FUN_1422b8a10();
+            m_scroll[nSlot] = nPos;
         }
         return 1;
     }
@@ -768,30 +770,29 @@ void UIMasteryDialog::vfunc_72()
         }
         Unk_MCastingBar* pBar = FUN_140ac2270(0x4e72);
         if (pBar) {
-            const wchar_t* szKey = m_craft.FUN_140eaddf0() ? L"s_mastery_manufacture_progress" : L"s_mastery_magicscroll_progress";
-            pBar->FUN_1418e12f0(this, FUN_1409e8970(CStringW(szKey), m_craft.m_nDone, m_craft.m_nTotal), nTime, 0, 1, CStringW(L""));
+            CStringW strKey = m_craft.FUN_140eaddf0() ? L"s_mastery_manufacture_progress" : L"s_mastery_magicscroll_progress";
+            CStringW strText = FUN_1409e8970(strKey, m_craft.m_nDone, m_craft.m_nTotal);
+            pBar->FUN_1418e12f0(this, strText, nTime, false, true, L"");
         }
         m_craft.m_nPending = 0;
     }
-    if (m_nPendingSub == 0) {
-        if (m_nPendingList != 0) {
-            if (FUN_140eb8a90() == m_nPendingList) {
-                FUN_140eb0da0(m_nPendingList, true);
-                FUN_140eb1770(m_nSelected, true);
-            }
-            m_nPendingList = 0;
-        }
-    } else {
+    if (m_nPendingSub != 0) {
         FUN_140eb05b0(m_nPendingSub, true);
         if (FUN_140eb8a90() == m_nPendingList)
             FUN_140eb1770(m_nSelected, true);
         m_nPendingSub = 0;
         m_nPendingList = 0;
+    } else if (m_nPendingList != 0) {
+        if (FUN_140eb8a90() == m_nPendingList) {
+            FUN_140eb0da0(m_nPendingList, true);
+            FUN_140eb1770(m_nSelected, true);
+        }
+        m_nPendingList = 0;
     }
 }
 
 // @0x140eafdb0
-void UIMasteryDialog::SetMainTab(int nMainTab)
+void UIMasteryDialog::SetMainTab(int nMainTab, int)
 {
     m_nMainTab = nMainTab;
 }
@@ -801,42 +802,45 @@ void UIMasteryDialog::FUN_140eafde0()
 {
     if (!FUN_141924630())
         return;
-    MS2Ptr<Unk_MSubTab> spSub = FUN_140c02870(CString("m_subTab"));
-    if (!spSub.get())
-        return;
-    spSub->FUN_1422e3400();
-    int nTab = FUN_140eb5040();
-    if (nTab == 0) {
-        spSub->FUN_1422e34d0(FUN_140eb7c50(3));
-        spSub->FUN_1422e34d0(FUN_140eb7c50(5));
-        if (FUN_140166410()->FUN_14036d570(0x59)) {
-            spSub->FUN_1422e34d0(FUN_140eb7c50(4));
-            spSub->FUN_1422e34d0(FUN_140eb7c50(6));
-        }
-    } else if (nTab == 1) {
-        spSub->FUN_1422e34d0(FUN_140eb7c50(7));
-        spSub->FUN_1422e34d0(FUN_140eb7c50(8));
-        if (FUN_140166410()->FUN_14036d570(0x59)) {
-            spSub->FUN_1422e34d0(FUN_140eb7c50(9));
-            spSub->FUN_1422e34d0(FUN_140eb7c50(10));
-        }
-    } else if (nTab == 2) {
-        spSub->FUN_1422e34d0(FUN_140eb7d40());
-        if (FUN_140166410()->FUN_14036d570(0x8d))
-            spSub->FUN_1422e34d0(FUN_140eb7c50(0xb));
-    } else if (nTab == 3) {
-        if (FUN_140166410()->FUN_14036d570(0x5a)) {
+    if (MS2Ptr<Unk_MSubTab> spSub = FUN_140c02870("m_subTab")) {
+        spSub->FUN_1422e3400();
+        switch (FUN_140eb5040()) {
+        case 0:
+            spSub->FUN_1422e34d0(FUN_140eb7c50(3));
+            spSub->FUN_1422e34d0(FUN_140eb7c50(5));
+            if (FUN_140166410()->FUN_14036d570(0x59)) {
+                spSub->FUN_1422e34d0(FUN_140eb7c50(4));
+                spSub->FUN_1422e34d0(FUN_140eb7c50(6));
+            }
+            break;
+        case 1:
+            spSub->FUN_1422e34d0(FUN_140eb7c50(7));
+            spSub->FUN_1422e34d0(FUN_140eb7c50(8));
+            if (FUN_140166410()->FUN_14036d570(0x59)) {
+                spSub->FUN_1422e34d0(FUN_140eb7c50(9));
+                spSub->FUN_1422e34d0(FUN_140eb7c50(10));
+            }
+            break;
+        case 2:
+            spSub->FUN_1422e34d0(FUN_140eb7d40());
+            if (FUN_140166410()->FUN_14036d570(0x8d))
+                spSub->FUN_1422e34d0(FUN_140eb7c50(0xb));
+            break;
+        case 3:
+            if (!FUN_140166410()->FUN_14036d570(0x5a))
+                break;
             if (FUN_140166410()->FUN_14036d570(0x7c))
-                spSub->FUN_1422e34d0(GetStringCommonByKey(CStringW(L"s_mastery_magicscroll_enchant_scroll_tab")));
+                spSub->FUN_1422e34d0(GetStringCommonByKey(L"s_mastery_magicscroll_enchant_scroll_tab"));
             if (FUN_140166410()->FUN_14036d570(0x7d))
-                spSub->FUN_1422e34d0(GetStringCommonByKey(CStringW(L"s_mastery_magicscroll_restore_scroll_tab")));
+                spSub->FUN_1422e34d0(GetStringCommonByKey(L"s_mastery_magicscroll_restore_scroll_tab"));
             if (FUN_140166410()->FUN_14036d570(0x7e))
-                spSub->FUN_1422e34d0(GetStringCommonByKey(CStringW(L"s_mastery_magicscroll_fracto_scroll_tab")));
+                spSub->FUN_1422e34d0(GetStringCommonByKey(L"s_mastery_magicscroll_fracto_scroll_tab"));
             if (FUN_140166410()->FUN_14036d570(0x7f))
-                spSub->FUN_1422e34d0(GetStringCommonByKey(CStringW(L"s_mastery_magicscroll_protected_scroll_tab")));
+                spSub->FUN_1422e34d0(GetStringCommonByKey(L"s_mastery_magicscroll_protected_scroll_tab"));
+            break;
         }
+        spSub->vfunc_24(true);
     }
-    spSub->vfunc_24(1);
 }
 
 // @0x140eb0540
@@ -857,7 +861,6 @@ void UIMasteryDialog::FUN_140eb05b0(int nType, bool bKeep)
 }
 
 // @0x140eb0610
-// MS2-FUNCTIONAL: control flow follows the exe; temporaries differ.
 void UIMasteryDialog::FUN_140eb0610(int nType, bool bKeep)
 {
     MyPC* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
@@ -865,36 +868,38 @@ void UIMasteryDialog::FUN_140eb0610(int nType, bool bKeep)
         return;
     int nOld = FUN_140eb8630(nType);
     int nNow = (int)FUN_141662750(pPc, nType);
-    MS2Ptr<Unk_MLevelCtrl> spLevel = FUN_140c02990(CString("m_levelControl"));
-    if (!spLevel.get())
-        return;
-    int nGrade = FUN_1409670c0()->FUN_14066af60(nType, nNow);
-    int nMaxGrade = FUN_1409670c0()->FUN_14066b050(nType);
-    int nBase = FUN_1409670c0()->FUN_14066b310(nType, nGrade);
-    int nNext = FUN_1409670c0()->FUN_14066b310(nType, nGrade + 1);
-    bool bGradeChanged = false;
-    if (nNow != nOld) {
-        FUN_140eb8670(nType, nNow);
-        bGradeChanged = nGrade != FUN_1409670c0()->FUN_14066af60(nType, nOld);
-    }
-    if (!bKeep || nNow != nOld) {
-        CStringW strGrade = FUN_140656190(L"{0} {1}", FUN_1409670c0()->FUN_14066bdd0(nType), FUN_1409670c0()->FUN_14066c690(nType, nGrade));
-        spLevel->FUN_140eb9f50("setPcGrade", nNow - nBase, nNext - nBase, CStringW(strGrade), nGrade == nMaxGrade);
-        MS2Ptr<Unk_MGuide> spGuide = spLevel->FUN_140accfb0<Unk_MGuide>(CString("m_guideBar"));
-        if (spGuide.get())
-            spGuide->Invoke("setPC", (unsigned int)nNow);
-    }
-    if (!bKeep || bGradeChanged) {
-        FUN_140d43990(&m_mastery);
-        spLevel->Invoke("removeGradeAll");
-        int nCount = FUN_1409670c0()->FUN_14066b050(nType);
-        ASArray arr(2);
-        for (int i = 1; i <= nCount; i++) {
-            ASObj obj(2);
-            FUN_140eb6920(nType, i, obj);
-            reinterpret_cast<Unk_MArray&>(arr).FUN_1422bbf00(obj);
+    if (MS2Ptr<Unk_MLevelCtrl> spLevel = FUN_140c02990("m_levelControl")) {
+        int nGrade = FUN_1409670c0()->FUN_14066af60(nType, nNow);
+        int bMax = nGrade == FUN_1409670c0()->FUN_14066b050(nType);
+        int nBase = FUN_1409670c0()->FUN_14066b310(nType, nGrade);
+        int nNext = FUN_1409670c0()->FUN_14066b310(nType, nGrade + 1);
+        int nCur = nNow - nBase;
+        int nMax = nNext - nBase;
+        bool bChanged = nNow != nOld;
+        bool bGradeChanged = false;
+        if (bChanged) {
+            FUN_140eb8670(nType, nNow);
+            int nOldGrade = FUN_1409670c0()->FUN_14066af60(nType, nOld);
+            bGradeChanged = nGrade != nOldGrade;
         }
-        spLevel->FUN_140eba060("setGrade", arr, nNow);
+        if (!bKeep || bChanged) {
+            CStringW strGrade = FUN_140656190(L"{0} {1}", FUN_1409670c0()->FUN_14066bdd0(nType), FUN_1409670c0()->FUN_14066c690(nType, nGrade));
+            spLevel->FUN_140eb9f50("setPcGrade", nCur, nMax, strGrade, bMax);
+            if (MS2Ptr<Unk_MGuide> spGuide = spLevel->FUN_140accfb0<Unk_MGuide>("m_guideBar"))
+                spGuide->Invoke("setPC", (unsigned int)nNow);
+        }
+        if (!bKeep || bGradeChanged) {
+            FUN_140d43990(&m_mastery);
+            spLevel->Invoke("removeGradeAll");
+            int nCount = FUN_1409670c0()->FUN_14066b050(nType);
+            ASArray arr(2);
+            for (int i = 1; i <= nCount; i++) {
+                ASObj obj(2);
+                FUN_140eb6920(nType, i, obj);
+                reinterpret_cast<Unk_MArray&>(arr).FUN_1422bbf00(obj);
+            }
+            spLevel->FUN_140eba060("setGrade", arr, nNow);
+        }
     }
 }
 
@@ -904,10 +909,8 @@ void UIMasteryDialog::FUN_140eb0bf0(int nType, int nIndex)
     MyPC* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (!pPc)
         return;
-    MS2Ptr<Unk_MLevelCtrl> spLevel = FUN_140c02990(CString("m_levelControl"));
-    if (spLevel.get()) {
-        MS2Ptr<Unk_MGuide> spGuide = spLevel->FUN_140accfb0<Unk_MGuide>(CString("m_guideBar"));
-        if (spGuide.get()) {
+    if (MS2Ptr<Unk_MLevelCtrl> spLevel = FUN_140c02990("m_levelControl")) {
+        if (MS2Ptr<Unk_MGuide> spGuide = spLevel->FUN_140accfb0<Unk_MGuide>("m_guideBar")) {
             ASObj obj(2);
             FUN_140eb6920(nType, nIndex, obj);
             spGuide->Invoke("addLevelGuide", obj);
@@ -916,42 +919,14 @@ void UIMasteryDialog::FUN_140eb0bf0(int nType, int nIndex)
 }
 
 // @0x140eb0da0
-// MS2-FUNCTIONAL: control flow follows the exe; temporaries differ.
 void UIMasteryDialog::FUN_140eb0da0(int nType, bool bKeep)
 {
     MyPC* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (!pPc)
         return;
     unsigned int nMastery = FUN_141662750(pPc, nType);
-    if (!bKeep) {
-        FUN_140eb0540();
-        MS2Ptr<Unk_MList> spList = FUN_140c02900(CString("m_objectList"));
-        if (spList.get()) {
-            spList->FUN_1422dd1d0();
-            spList->FUN_1409c0dc0("itemRendererName", "UIMasteryDialog_renderer_mastery");
-            spList->FUN_1407cb9c0("rowHeight", 0x4c);
-            Unk_MRecArray recs;
-            FUN_1409670c0()->FUN_14066aa90(nType, recs);
-            for (size_t i = 0; i < recs.GetCount(); i++) {
-                MS2Ptr<Unk_MRec> spRec(recs[i]);
-                if (FUN_140e5ca20()->FUN_140b6d330(recs[i]->m_nId) == 0)
-                    continue;
-                ASObj row(2);
-                row.FUN_1407cb9c0("id", spRec->m_nId);
-                row.FUN_1407cbb20("name", FUN_1401a9d70()->FUN_141811980(0x2f, spRec->m_nId));
-                row.FUN_1407cbb20("state", FUN_140eb71a0(MS2Ptr<Unk_MRec>(spRec)));
-                bool bActive = nMastery >= (unsigned int)spRec->m_nNeedMastery && FUN_140eb8550(MS2Ptr<Unk_MRec>(spRec)) != 0;
-                row.FUN_1407cbbe0("active", bActive);
-                row.FUN_1407cba60("icon", spRec->FUN_140669980());
-                if (nType == 0xb && spRec->m_rewards.GetCount() != 0)
-                    row.FUN_1409adc90("grade", spRec->m_rewards[0].vfunc_o18_1());
-                spList->FUN_1422dd230(row);
-            }
-            FUN_140eb8b20();
-        }
-    } else {
-        MS2Ptr<Unk_MList> spList = FUN_140c02900(CString("m_objectList"));
-        if (spList.get()) {
+    if (bKeep) {
+        if (MS2Ptr<Unk_MList> spList = FUN_140c02900("m_objectList")) {
             Unk_MRecArray recs;
             FUN_1409670c0()->FUN_14066aa90(nType, recs);
             int nCount = (int)recs.GetCount();
@@ -967,103 +942,124 @@ void UIMasteryDialog::FUN_140eb0da0(int nType, bool bKeep)
                     row.FUN_1407cb9c0("id", spRec->m_nId);
                     row.FUN_1407cbb20("name", FUN_1401a9d70()->FUN_141811980(0x2f, spRec->m_nId));
                     row.FUN_1407cbb20("state", FUN_140eb71a0(MS2Ptr<Unk_MRec>(spRec)));
-                    bool bActive = nMastery >= (unsigned int)spRec->m_nNeedMastery && FUN_140eb8550(MS2Ptr<Unk_MRec>(spRec)) != 0;
-                    row.FUN_1407cbbe0("active", bActive);
+                    row.FUN_1407cbbe0("active", (nMastery >= (unsigned int)spRec->m_nNeedMastery && FUN_140eb8550(MS2Ptr<Unk_MRec>(spRec)) != 0) ? true : false);
                     row.FUN_1407cba60("icon", spRec->FUN_140669980());
-                    if (nType == 0xb && spRec->m_rewards.GetCount() != 0)
+                    if (nType == 0xb && spRec->m_rewards.GetCount() > 0)
                         row.FUN_1409adc90("grade", spRec->m_rewards[0].vfunc_o18_1());
-                    if (nRow < nFirst || nFirst + 5 < nRow) {
-                        spList->FUN_1422e1970(nRow, row);
-                    } else {
+                    if (nRow >= nFirst && nRow <= nFirst + 5) {
                         spList->FUN_1422e1970(nRow, row);
                         spList->FUN_1422e1a00(nRow, row);
+                    } else {
+                        spList->FUN_1422e1970(nRow, row);
                     }
                     nRow++;
                 }
             }
             spList->vfunc_23();
         }
+    } else {
+        FUN_140eb0540();
+        if (MS2Ptr<Unk_MList> spList = FUN_140c02900("m_objectList")) {
+            spList->FUN_1422dd1d0();
+            spList->FUN_1409c0dc0("itemRendererName", "UIMasteryDialog_renderer_mastery");
+            spList->FUN_1407cb9c0("rowHeight", 0x4c);
+            Unk_MRecArray recs;
+            FUN_1409670c0()->FUN_14066aa90(nType, recs);
+            for (size_t i = 0; i < recs.GetCount(); i++) {
+                MS2Ptr<Unk_MRec> spRec(recs[i]);
+                if (FUN_140e5ca20()->FUN_140b6d330(recs[i]->m_nId) == 0)
+                    continue;
+                ASObj row(2);
+                row.FUN_1407cb9c0("id", spRec->m_nId);
+                row.FUN_1407cbb20("name", FUN_1401a9d70()->FUN_141811980(0x2f, spRec->m_nId));
+                row.FUN_1407cbb20("state", FUN_140eb71a0(MS2Ptr<Unk_MRec>(spRec)));
+                row.FUN_1407cbbe0("active", (nMastery >= (unsigned int)spRec->m_nNeedMastery && FUN_140eb8550(MS2Ptr<Unk_MRec>(spRec)) != 0) ? true : false);
+                row.FUN_1407cba60("icon", spRec->FUN_140669980());
+                if (nType == 0xb && spRec->m_rewards.GetCount() > 0)
+                    row.FUN_1409adc90("grade", spRec->m_rewards[0].vfunc_o18_1());
+                spList->FUN_1422dd230(row);
+            }
+            FUN_140eb8b20();
+        }
     }
 }
 
 // @0x140eb1770
-// MS2-FUNCTIONAL: control flow follows the exe; temporaries differ.
 void UIMasteryDialog::FUN_140eb1770(int nId, bool bKeep)
 {
-    if (m_30.IsNull())
+    if (FUN_140ba28d0(&m_30, 0))
         return;
-    if (!FUN_1403ed2d0()->FUN_141bd0cc0())
+    MyPC* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
+    if (!pPc)
         return;
-    if (!bKeep) {
-        FUN_140eb0540();
-        if (!m_30.get())
-            return;
-        MS2Ptr<Unk_MRec> spRec = FUN_1409670c0()->FUN_14066aa00(nId);
-        if (spRec.IsNull())
-            return;
-        ASObj page(2);
-        unsigned int nMastery = FUN_140eb7bb0(spRec->m_nType);
-        int bCanCraft = (nMastery >= (unsigned int)spRec->m_nNeedMastery && !m_craft.HasTotal()) ? 1 : 0;
-        for (size_t i = 0; i < spRec->m_rewards.GetCount(); i++) {
-            ItemEntity& rew = spRec->m_rewards[i];
-            int nRank = FUN_140eb79b0(spRec->m_nType, spRec->m_nNeedMastery, &rew);
-            page.FUN_1407cba60(FUN_140c43630("binding{0}", i), m_reward.FUN_140d43310(rew.m_itemId, rew.vfunc_o18_1(), nRank));
+    if (bKeep) {
+        if (m_30.get()) {
+            MS2Ptr<Unk_MRec> spRec = FUN_1409670c0()->FUN_14066aa00(nId);
+            if (spRec.IsNull())
+                return;
+            ASObj page(2);
+            for (size_t i = 0; i < spRec->m_ingredients.FUN_14026bee0(); i++) {
+                Unk_IngRef ref = spRec->m_ingredients.FUN_14026bdc0(i);
+                int nNeed = FUN_140eb7b40(spRec->m_nType, spRec->m_nNeedMastery, ref->m_c);
+                int nHave = 0;
+                if (ref->m_b != 0)
+                    nHave = DAT_143ab2a90.FUN_140a5f780(ref->m_b, 0);
+                else
+                    nHave = DAT_143ab2a90.FUN_140a5f180(ref->FUN_14026b500(), 0);
+                CStringW strCnt = FUN_1419021b0(nHave, nNeed);
+                ASObj req(2);
+                req.FUN_1407cbb20("itemCnt", CStringW(strCnt));
+                page.FUN_1409eb270(FUN_140c43630("require{0}", i), req);
+            }
+            m_30->Invoke("refreshPage", page);
         }
-        int bEnough = 1;
-        for (size_t i = 0; i < spRec->m_ingredients.FUN_14026bee0(); i++) {
-            Unk_IngRef ref = spRec->m_ingredients.FUN_14026bdc0(i);
-            int nNeed = FUN_140eb7b40(spRec->m_nType, spRec->m_nNeedMastery, ref->m_c);
-            int nHave;
-            if (ref->m_b == 0)
-                nHave = DAT_143ab2a90.FUN_140a5f180(ref->FUN_14026b500(), 0);
-            else
-                nHave = DAT_143ab2a90.FUN_140a5f780(ref->m_b, 0);
-            if (nHave < nNeed)
-                bEnough = 0;
-            int nItem = ref->FUN_14026b500();
-            int nItemRank = FUN_14053feb0(nItem);
-            int nCount = ref->m_c;
-            CStringW strCnt = FUN_1419021b0(nHave, nNeed);
-            ASObj req(2);
-            req.FUN_1407cba60("binding", m_require.FUN_140d43310(nItem, nItemRank, nCount));
-            req.FUN_1407cbb20("itemCnt", CStringW(strCnt));
-            page.FUN_1409eb270(FUN_140c43630("require{0}", i), req);
-        }
-        int bState = FUN_140eb8550(MS2Ptr<Unk_MRec>(spRec));
-        page.FUN_1407cb9c0("id", nId);
-        page.FUN_1407cbb20("name", FUN_1401a9d70()->FUN_141811980(0x2f, nId));
-        int nShown = FUN_140eb8120(MS2Ptr<Unk_MRec>(spRec));
-        page.FUN_1407cbb20("mastery", FUN_140938ae0(CStringW(L"s_mastery_reward_mastery"), nShown));
-        page.FUN_1407cbb20("desc", FUN_1401a9d70()->FUN_141811980(0x30, nId));
-        page.FUN_1407cbb20("place", CStringW(spRec->m_strPlace));
-        page.FUN_1407cba60("icon", spRec->FUN_140669980());
-        page.FUN_1409c1180("meso", spRec->m_nMeso);
-        page.FUN_1407cbbe0("enabled", bCanCraft && bEnough && bState);
-        page.FUN_1407cbbe0("debug", FUN_14116d720(FUN_14025e7c0()));
-        if (spRec->m_nType == 0xb && spRec->m_rewards.GetCount() != 0)
-            page.FUN_1409adc90("grade", spRec->m_rewards[0].vfunc_o18_1());
-        m_30->Invoke("setPage", page);
     } else {
-        if (!m_30.get())
-            return;
-        MS2Ptr<Unk_MRec> spRec = FUN_1409670c0()->FUN_14066aa00(nId);
-        if (spRec.IsNull())
-            return;
-        ASObj page(2);
-        for (size_t i = 0; i < spRec->m_ingredients.FUN_14026bee0(); i++) {
-            Unk_IngRef ref = spRec->m_ingredients.FUN_14026bdc0(i);
-            int nNeed = FUN_140eb7b40(spRec->m_nType, spRec->m_nNeedMastery, ref->m_c);
-            int nHave;
-            if (ref->m_b == 0)
-                nHave = DAT_143ab2a90.FUN_140a5f180(ref->FUN_14026b500(), 0);
-            else
-                nHave = DAT_143ab2a90.FUN_140a5f780(ref->m_b, 0);
-            CStringW strCnt = FUN_1419021b0(nHave, nNeed);
-            ASObj req(2);
-            req.FUN_1407cbb20("itemCnt", CStringW(strCnt));
-            page.FUN_1409eb270(FUN_140c43630("require{0}", i), req);
+        FUN_140eb0540();
+        if (m_30.get()) {
+            MS2Ptr<Unk_MRec> spRec = FUN_1409670c0()->FUN_14066aa00(nId);
+            if (spRec.IsNull())
+                return;
+            ASObj page(2);
+            int bCanCraft = (FUN_140eb7bb0(spRec->m_nType) >= spRec->m_nNeedMastery && !m_craft.HasTotal()) ? 1 : 0;
+            for (size_t i = 0; i < spRec->m_rewards.GetCount(); i++) {
+                ItemEntity& rew = spRec->m_rewards[i];
+                int nRank = FUN_140eb79b0(spRec->m_nType, spRec->m_nNeedMastery, &rew);
+                page.FUN_1407cba60(FUN_140c43630("binding{0}", i), m_reward.FUN_140d43310(rew.m_itemId, rew.vfunc_o18_1(), nRank));
+            }
+            int bEnough = 1;
+            for (size_t i = 0; i < spRec->m_ingredients.FUN_14026bee0(); i++) {
+                Unk_IngRef ref = spRec->m_ingredients.FUN_14026bdc0(i);
+                int nNeed = FUN_140eb7b40(spRec->m_nType, spRec->m_nNeedMastery, ref->m_c);
+                int nHave = 0;
+                if (ref->m_b != 0)
+                    nHave = DAT_143ab2a90.FUN_140a5f780(ref->m_b, 0);
+                else
+                    nHave = DAT_143ab2a90.FUN_140a5f180(ref->FUN_14026b500(), 0);
+                if (nHave < nNeed)
+                    bEnough = 0;
+                int nItem = ref->FUN_14026b500();
+                int nItemRank = FUN_14053feb0(nItem);
+                int nCount = ref->m_c;
+                CStringW strCnt = FUN_1419021b0(nHave, nNeed);
+                ASObj req(2);
+                req.FUN_1407cba60("binding", m_require.FUN_140d43310(nItem, nItemRank, nCount));
+                req.FUN_1407cbb20("itemCnt", CStringW(strCnt));
+                page.FUN_1409eb270(FUN_140c43630("require{0}", i), req);
+            }
+            int bState = FUN_140eb8550(MS2Ptr<Unk_MRec>(spRec));
+            page.FUN_1407cb9c0("id", nId);
+            page.FUN_1407cbb20("name", FUN_1401a9d70()->FUN_141811980(0x2f, nId));
+            page.FUN_1407cbb20("mastery", FUN_140938ae0(CStringW(L"s_mastery_reward_mastery"), FUN_140eb8120(MS2Ptr<Unk_MRec>(spRec))));
+            page.FUN_1407cbb20("desc", FUN_1401a9d70()->FUN_141811980(0x30, nId));
+            page.FUN_1407cbb20("place", CStringW(spRec->m_strPlace));
+            page.FUN_1407cba60("icon", spRec->FUN_140669980());
+            page.FUN_1409c1180("meso", spRec->m_nMeso);
+            page.FUN_1407cbbe0("enabled", bCanCraft && bEnough && bState);
+            page.FUN_1407cbbe0("debug", FUN_14116d720(FUN_14025e7c0()));
+            if (spRec->m_nType == 0xb && spRec->m_rewards.GetCount() > 0)
+                page.FUN_1409adc90("grade", spRec->m_rewards[0].vfunc_o18_1());
+            m_30->Invoke("setPage", page);
         }
-        m_30->Invoke("refreshPage", page);
     }
 }
 
@@ -1077,201 +1073,187 @@ void UIMasteryDialog::FUN_140eb2460()
 }
 
 // @0x140eb24a0
-// MS2-FUNCTIONAL: control flow follows the exe; temporaries differ.
 void UIMasteryDialog::FUN_140eb24a0()
 {
     MyPC* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (!pPc)
         return;
-    MS2Ptr<Unk_MLevelCtrl> spLevel = FUN_140c02990(CString("m_levelControl"));
-    if (!spLevel.get())
-        return;
-    FUN_140d43990(&m_mastery);
-    spLevel->Invoke("removeGradeAll");
-    unsigned short nCur = DAT_143ab291c;
-    unsigned short nMax = FUN_140933200()->GetMaxLevel();
-    int nSum = 0;
-    unsigned int nSumCur = 0;
-    ASArray rows(2);
-    for (int nLevel = 1; nLevel <= (int)nMax; nLevel++) {
-        Unk_MItemArray items;
-        FUN_140933200()->FUN_140663010(nLevel, FUN_141654700(pPc), items);
-        if (nLevel != 1 && items.GetCount() == 0)
-            continue;
-        int nAdd = FUN_140933200()->FUN_1406631b0(nLevel);
-        nSum += nAdd;
-        if (nLevel <= (int)nCur)
-            nSumCur += nAdd;
-        ASObj row(2);
-        row.FUN_1407cb9c0("id", nLevel);
-        row.FUN_1409c0d20("level", nSum);
-        row.FUN_1407cbb20("levelStr", FUN_14062b4f0(CStringW(L"s_mastery_housing_grade"), &nLevel));
-        bool bInactive = DAT_143ab32b8.FUN_1402bacf0(&nLevel) != -1;
-        CString strState;
-        if (!bInactive)
-            strState = (nCur < nLevel) ? "lock" : "active";
-        else
-            strState = "inactive";
-        row.FUN_1407cba60("state", CString(strState));
-        if (items.GetCount() != 0) {
-            ItemEntity& item0 = items[0];
-            row.FUN_1407cba60("binding", m_mastery.FUN_140d43310(item0.m_itemId, item0.vfunc_o18_1(), item0.m_count));
+    if (MS2Ptr<Unk_MLevelCtrl> spLevel = FUN_140c02990("m_levelControl")) {
+        FUN_140d43990(&m_mastery);
+        spLevel->Invoke("removeGradeAll");
+        unsigned short nCur = DAT_143ab291c;
+        unsigned short nMax = FUN_140933200()->GetMaxLevel();
+        int nSum = 0;
+        unsigned int nSumCur = 0;
+        ASArray rows(2);
+        for (int nLevel = 1; nLevel <= (int)nMax; nLevel++) {
+            Unk_MItemArray items;
+            FUN_140933200()->FUN_140663010(nLevel, FUN_141654700(pPc), items);
+            if (nLevel != 1 && items.GetCount() == 0)
+                continue;
+            int nAdd = FUN_140933200()->FUN_1406631b0(nLevel);
+            nSum += nAdd;
+            if (nLevel <= (int)nCur)
+                nSumCur += nAdd;
+            ASObj row(2);
+            row.FUN_1407cb9c0("id", nLevel);
+            row.FUN_1409c0d20("level", nSum);
+            row.FUN_1407cbb20("levelStr", FUN_14062b4f0(CStringW(L"s_mastery_housing_grade"), &nLevel));
+            int bInactive = DAT_143ab32b8.FUN_1402bacf0(&nLevel) != -1;
+            CString strState;
+            if (bInactive)
+                strState = "inactive";
+            else
+                strState = (nCur >= nLevel) ? "active" : "lock";
+            row.FUN_1407cba60("state", CString(strState));
+            if (items.GetCount() > 0) {
+                MS2Ptr<ItemEntity> spItem0(items[0]);
+                row.FUN_1407cba60("binding", m_mastery.FUN_140d43310(spItem0->m_itemId, spItem0->vfunc_o18_1(), spItem0->m_count));
+            }
+            reinterpret_cast<Unk_MArray&>(rows).FUN_1422bbf00(row);
         }
-        reinterpret_cast<Unk_MArray&>(rows).FUN_1422bbf00(row);
-    }
-    spLevel->FUN_140eba120("setGrade", rows, nSumCur + DAT_143ab2930, 0);
-    CStringW strGrade = FUN_140656190(L"{0} {1}", FUN_140298ea0(CStringW(L"s_mastery_housing")), FUN_1409e8820(CStringW(L"s_mastery_housing_grade"), DAT_143ab291c));
-    if (DAT_143ab291c == FUN_140933200()->GetMaxLevel()) {
-        spLevel->FUN_140eb9e40("setPcGrade", 1, 1, CStringW(strGrade), 1);
-    } else {
-        MS2Ptr<Unk_MHouseLevel> spNext = FUN_140933200()->FUN_1406635c0((unsigned short)(DAT_143ab291c + 1));
-        if (spNext.get())
-            spLevel->FUN_140eba380("setPcGrade", DAT_143ab2930, spNext->m_n1c, CStringW(strGrade), 0);
+        spLevel->FUN_140eba120("setGrade", rows, nSumCur + DAT_143ab2930, 0);
+        CStringW strGrade = FUN_140656190(L"{0} {1}", FUN_140298ea0(CStringW(L"s_mastery_housing")), FUN_1409e8820(CStringW(L"s_mastery_housing_grade"), DAT_143ab291c));
+        if (DAT_143ab291c == FUN_140933200()->GetMaxLevel()) {
+            spLevel->FUN_140eb9e40("setPcGrade", 1, 1, CStringW(strGrade), 1);
+        } else {
+            MS2Ptr<Unk_MHouseLevel> spNext = FUN_140933200()->FUN_1406635c0((unsigned short)(DAT_143ab291c + 1));
+            if (spNext)
+                spLevel->FUN_140eba380("setPcGrade", DAT_143ab2930, spNext->m_n1c, CStringW(strGrade), 0);
+        }
     }
 }
 
 // @0x140eb2d10
 void UIMasteryDialog::FUN_140eb2d10()
 {
-    if (!FUN_1403ed2d0()->FUN_141bd0cc0() || m_30.IsNull())
+    MyPC* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
+    if (!pPc)
+        return;
+    if (m_30.IsNull())
         return;
     FUN_140eb0540();
     unsigned short nCur = DAT_143ab291c;
-    MS2Ptr<Unk_MList> spList = FUN_140c02900(CString("m_objectList"));
-    if (!spList.get())
-        return;
-    spList->FUN_1422dd1d0();
-    spList->FUN_1409c0dc0("itemRendererName", "UIMasteryDialog_renderer_housing");
-    spList->FUN_1407cb9c0("rowHeight", 0x39);
-    if (FUN_140166410()->FUN_14036d570(0xdb)) {
-        Unk_MHouseMap& map = FUN_1409eed80()->FUN_140886640();
-        POSITION pos = map.GetStartPosition();
-        while (pos) {
-            unsigned int nKey = map.GetAt(pos)->m_key;
-            MS2Ptr<Unk_MHouseRec> spRec(map.GetAt(pos)->m_value);
-            ASObj row(2);
-            reinterpret_cast<Unk_MObjSetter&>(row).FUN_140eba4a0("id", nKey);
-            row.FUN_1409c48f0("level", spRec->m_nLevel);
-            row.FUN_1407cbb20("name", FUN_1401a9d70()->FUN_141811980(0x32, nKey));
-            row.FUN_1407cbbe0("active", (int)spRec->m_nLevel <= (int)nCur);
-            spList->FUN_1422dd230(row);
-            map.GetNext(pos);
+    if (MS2Ptr<Unk_MList> spList = FUN_140c02900("m_objectList")) {
+        spList->FUN_1422dd1d0();
+        spList->FUN_1409c0dc0("itemRendererName", "UIMasteryDialog_renderer_housing");
+        spList->FUN_1407cb9c0("rowHeight", 0x39);
+        if (FUN_140166410()->FUN_14036d570(0xdb)) {
+            Unk_MHouseMap& map = FUN_1409eed80()->FUN_140886640();
+            for (POSITION pos = map.GetStartPosition(); pos; map.GetNext(pos)) {
+                unsigned int nKey = map.GetKeyAt(pos);
+                MS2Ptr<Unk_MHouseRec> spRec(map.GetValueAt(pos));
+                ASObj row(2);
+                reinterpret_cast<Unk_MObjSetter&>(row).FUN_140eba4a0("id", nKey);
+                row.FUN_1409c48f0("level", spRec->m_nLevel);
+                row.FUN_1407cbb20("name", FUN_1401a9d70()->FUN_141811980(0x32, nKey));
+                row.FUN_1407cbbe0("active", nCur >= spRec->m_nLevel);
+                spList->FUN_1422dd230(row);
+            }
         }
+        FUN_140eb8b20();
     }
-    FUN_140eb8b20();
 }
 
 // @0x140eb3010
-// MS2-FUNCTIONAL: control flow follows the exe; temporaries differ.
 void UIMasteryDialog::FUN_140eb3010(int nId)
 {
     if (m_30.IsNull())
         return;
     FUN_140eb0540();
-    if (!FUN_1403ed2d0()->FUN_141bd0cc0())
+    MyPC* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
+    if (!pPc)
         return;
     MS2Ptr<Unk_MHouseRec> spHouse = FUN_1409eed80()->FUN_1408865b0(nId);
     if (spHouse.IsNull())
         return;
-    if (!m_30.get())
-        return;
-    Unk_MFurnArray furn;
-    MFurnTable()->FUN_140557920(nId, furn);
-    qsort(furn.GetData(), furn.GetCount(), 0x10, &UIMasteryDialog::FUN_140eb8f40);
-    ASDataProvider page(2);
-    for (size_t i = 0; i < furn.GetCount(); i++) {
-        MS2Ptr<Unk_MFurn> spFurn(furn[i]);
-        MS2Ptr<Unk_MItemDef> spDef = FUN_14053f870(spFurn->FUN_1405494e0());
-        if (spDef == 0)
-            continue;
-        if (!spFurn->m_bOwned && DAT_143ab2e20.FUN_1408fbe90(spFurn->FUN_1405494e0()).FUN_140534e50())
-            continue;
-        ASObj row(2);
-        row.FUN_1409c0d20("id", spFurn->FUN_1405494e0());
-        row.FUN_1407cba60("icon", spDef->FUN_14053fdd0());
-        row.FUN_1407cbbe0("lock", FUN_140eb8cd0(MS2Ptr<Unk_MFurn>(spFurn)) == 0);
-        reinterpret_cast<Unk_MPageArray&>(page).FUN_1422bbf00(row);
+    if (m_30.get()) {
+        Unk_MFurnArray furn;
+        MFurnTable()->FUN_140557920(nId, furn);
+        qsort(furn.GetData(), furn.GetCount(), 0x10, &UIMasteryDialog::FUN_140eb8f40);
+        ASDataProvider page(2);
+        for (size_t i = 0; i < furn.GetCount(); i++) {
+            MS2Ptr<Unk_MFurn> spFurn(furn[i]);
+            MS2Ptr<Unk_MItemDef> spDef = FUN_14053f870(spFurn->FUN_1405494e0());
+            if (spDef == 0)
+                continue;
+            if (!spFurn->m_bHasPrice && !DAT_143ab2e20.FUN_1408fbe90(spFurn->FUN_1405494e0()))
+                continue;
+            ASObj row(2);
+            row.FUN_1409c0d20("id", spFurn->FUN_1405494e0());
+            row.FUN_1407cba60("icon", spDef->FUN_14053fdd0());
+            row.FUN_1407cbbe0("lock", FUN_140eb8cd0(MS2Ptr<Unk_MFurn>(spFurn)) == 0);
+            reinterpret_cast<Unk_MPageArray&>(page).FUN_1422bbf00(row);
+        }
+        MPage(m_30)->FUN_140bbeaa0("setPage", page);
     }
-    MPage(m_30)->FUN_140bbeaa0("setPage", page);
 }
 
 // @0x140eb3460
-// MS2-FUNCTIONAL: control flow follows the exe; temporaries differ.
 void UIMasteryDialog::FUN_140eb3460()
 {
     if (!FUN_140166410()->FUN_14036d570(0x5a))
         return;
     int nTab = FUN_140eb8ac0();
-    MS2Ptr<Unk_MLevelCtrl> spCtrl = FUN_140c02990(CString("m_magicScrollControl"));
-    if (spCtrl.get()) {
+    if (MS2Ptr<Unk_MLevelCtrl> spCtrl = FUN_140c02990("m_magicScrollControl")) {
         if (FUN_140166410()->FUN_14036d570(0xd1))
             spCtrl->Invoke("setExpansion");
         int nG0 = FUN_14034f780()->FUN_14034e5e0(nTab, 4);
         int nG1 = FUN_14034f780()->FUN_14034e5e0(nTab, 5);
         int nG2 = FUN_14034f780()->FUN_14034e5e0(nTab, 6);
-        MS2Ptr<Unk_MGroup> spGroup = spCtrl->FUN_140eb9cf0(CString("m_gradeGroup"));
-        if (spGroup.get()) {
+        if (MS2Ptr<Unk_MGroup> spGroup = spCtrl->FUN_140eb9cf0("m_gradeGroup")) {
             int nSel = FUN_1409c1750(spGroup->FUN_1422baa20("selectedIndex"));
             if (nG1 == 0 && nSel == 1)
                 spGroup->Invoke("setSelectedButtonByIndex", 0);
             if (nG2 == 0 && nSel == 2)
                 spGroup->Invoke("setSelectedButtonByIndex", 0);
         }
-        MS2Ptr<Unk_MToggle> spT0 = spCtrl->FUN_140e28bc0(CString("m_grade00"));
-        if (spT0.get())
+        if (MS2Ptr<Unk_MToggle> spT0 = spCtrl->FUN_140e28bc0("m_grade00"))
             spT0->vfunc_3(nG0);
-        MS2Ptr<Unk_MToggle> spT1 = spCtrl->FUN_140e28bc0(CString("m_grade01"));
-        if (spT1.get())
+        if (MS2Ptr<Unk_MToggle> spT1 = spCtrl->FUN_140e28bc0("m_grade01"))
             spT1->vfunc_3(nG1);
-        MS2Ptr<Unk_MToggle> spT2 = spCtrl->FUN_140e28bc0(CString("m_grade02"));
-        if (spT2.get())
+        if (MS2Ptr<Unk_MToggle> spT2 = spCtrl->FUN_140e28bc0("m_grade02"))
             spT2->vfunc_3(nG2);
     }
-    MS2Ptr<Unk_MList> spList = FUN_140c02900(CString("m_objectList"));
-    if (!spList.get())
-        return;
-    spList->FUN_1422dd1d0();
-    spList->FUN_1409c0dc0("itemRendererName", "UIMasteryDialog_renderer_mastery");
-    spList->FUN_1407cb9c0("rowHeight", 0x4c);
-    int nSub = FUN_140eb8410();
-    int nSlot = FUN_140eb82e0();
-    Unk_MScrollArray recs;
-    FUN_14034f780()->FUN_14034e460(nTab, nSlot, nSub, recs);
-    qsort(recs.GetData(), recs.GetCount(), 0x10, &UIMasteryDialog::FUN_140eb9160);
-    if (recs.GetCount() == 0) {
-        MS2Ptr<CMsgBoxData> spBox = FUN_140d74390(GetStringCommonByKey(CStringW(L"s_mastery_magicscroll_no_recipe")), 0, Delegate<bool(int, const CMsgBoxData&)>(this, &UIMasteryDialog::FUN_140eb4e30));
-        return;
+    if (MS2Ptr<Unk_MList> spList = FUN_140c02900("m_objectList")) {
+        spList->FUN_1422dd1d0();
+        spList->FUN_1409c0dc0("itemRendererName", "UIMasteryDialog_renderer_mastery");
+        spList->FUN_1407cb9c0("rowHeight", 0x4c);
+        int nSub = FUN_140eb8410();
+        int nSlot = FUN_140eb82e0();
+        Unk_MScrollArray recs;
+        FUN_14034f780()->FUN_14034e460(nTab, nSlot, nSub, recs);
+        qsort(recs.GetData(), recs.GetCount(), 0x10, &UIMasteryDialog::FUN_140eb9160);
+        if (recs.GetCount() == 0) {
+            FUN_140d74390(GetStringCommonByKey(L"s_mastery_magicscroll_no_recipe"), 0, Delegate<bool(int, const CMsgBoxData&)>(this, &UIMasteryDialog::FUN_140eb4e30));
+            return;
+        }
+        for (size_t i = 0; i < recs.GetCount(); i++) {
+            MS2Ptr<Unk_MScrollRec> spRec(recs[i]);
+            if (spRec->m_nSlot != nSlot)
+                continue;
+            CStringW strName = FUN_14183e9c0(FUN_1401a9d70()->FUN_141811980(0x35, spRec->m_nId), spRec->m_result.vfunc_o18_1());
+            CStringW strState = FUN_14062b4f0(CStringW(L"s_mastery_magicscroll_list_state"), &spRec->m_nState);
+            ASObj row(2);
+            row.FUN_1407cb9c0("id", spRec->m_nId);
+            row.FUN_1407cbb20("name", CStringW(strName));
+            row.FUN_1407cbb20("state", CStringW(strState));
+            row.FUN_1407cb9c0("active", 1);
+            row.FUN_1407cba60("icon", spRec->FUN_14034dbe0());
+            row.FUN_1409adc90("grade", spRec->m_result.vfunc_o18_1());
+            spList->FUN_1422dd230(row);
+        }
+        if (MS2Ptr<Unk_MLevelCtrl> spCtrl2 = FUN_140c02990("m_magicScrollControl")) {
+            if (MS2Ptr<Unk_MGroup> spGrade = spCtrl2->FUN_140eb9cf0("m_gradeGroup"))
+                m_30c = FUN_1409c1750(spGrade->FUN_1422baa20("selectedIndex"));
+            if (MS2Ptr<Unk_MGroup> spSlot = spCtrl2->FUN_140eb9cf0("m_slotGroup"))
+                m_308 = FUN_1409c1750(spSlot->FUN_1422baa20("selectedIndex"));
+        }
+        FUN_140eb8b20();
     }
-    for (size_t i = 0; i < recs.GetCount(); i++) {
-        MS2Ptr<Unk_MScrollRec> spRec(recs[i]);
-        if (spRec->m_nSlot != nSlot)
-            continue;
-        int nRank = spRec->m_result.vfunc_o18_1();
-        CStringW strName = FUN_14183e9c0(FUN_1401a9d70()->FUN_141811980(0x35, spRec->m_nId), nRank);
-        CStringW strState = FUN_14062b4f0(CStringW(L"s_mastery_magicscroll_list_state"), &spRec->m_nState);
-        ASObj row(2);
-        row.FUN_1407cb9c0("id", spRec->m_nId);
-        row.FUN_1407cbb20("name", CStringW(strName));
-        row.FUN_1407cbb20("state", CStringW(strState));
-        row.FUN_1407cb9c0("active", 1);
-        row.FUN_1407cba60("icon", spRec->FUN_14034dbe0());
-        row.FUN_1409adc90("grade", spRec->m_result.vfunc_o18_1());
-        spList->FUN_1422dd230(row);
-    }
-    MS2Ptr<Unk_MLevelCtrl> spCtrl2 = FUN_140c02990(CString("m_magicScrollControl"));
-    if (spCtrl2.get()) {
-        MS2Ptr<Unk_MGroup> spGrade = spCtrl2->FUN_140eb9cf0(CString("m_gradeGroup"));
-        if (spGrade.get())
-            m_30c = FUN_1409c1750(spGrade->FUN_1422baa20("selectedIndex"));
-        MS2Ptr<Unk_MGroup> spSlot = spCtrl2->FUN_140eb9cf0(CString("m_slotGroup"));
-        if (spSlot.get())
-            m_308 = FUN_1409c1750(spSlot->FUN_1422baa20("selectedIndex"));
-    }
-    FUN_140eb8b20();
 }
 
 // @0x140eb4210
-// MS2-FUNCTIONAL: control flow follows the exe; temporaries differ.
 void UIMasteryDialog::FUN_140eb4210(int nId)
 {
     if (m_30.IsNull())
@@ -1279,24 +1261,25 @@ void UIMasteryDialog::FUN_140eb4210(int nId)
     if (!FUN_140166410()->FUN_14036d570(0x5a))
         return;
     FUN_140eb0540();
-    if (!FUN_1403ed2d0()->FUN_141bd0cc0())
+    MyPC* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
+    if (pPc == 0)
         return;
     MS2Ptr<Unk_MScrollRec> spRec = FUN_14034f780()->FUN_14034e3e0(nId);
     if (spRec.IsNull())
         return;
     ASObj page(2);
-    page.FUN_1407cba60("binding0", m_require.FUN_140d43310(spRec->m_result.m_itemId, spRec->m_result.vfunc_o18_1(), spRec->m_result.m_count));
+    ItemEntity& res = spRec->m_result;
+    page.FUN_1407cba60("binding0", m_reward.FUN_140d43310(res.m_itemId, res.vfunc_o18_1(), res.m_count));
     for (size_t i = 0; i < spRec->m_rewards.GetCount(); i++) {
         ItemEntity& rew = spRec->m_rewards[i];
-        size_t nNext = i + 1;
-        page.FUN_1407cba60(FUN_140c43630("binding{0}", nNext), m_reward.FUN_140d43310(rew.m_itemId, rew.vfunc_o18_1(), rew.m_count));
+        page.FUN_1407cba60(FUN_140c43630("binding{0}", i + 1), m_reward.FUN_140d43310(rew.m_itemId, rew.vfunc_o18_1(), rew.m_count));
     }
     int bEnough = 1;
     for (size_t i = 0; i < spRec->m_ingredients.FUN_14026bee0(); i++) {
         Unk_IngRef ref = spRec->m_ingredients.FUN_14026bdc0(i);
         if (ref == 0)
             continue;
-        unsigned int nHave;
+        unsigned int nHave = 0;
         if (ref->m_b == 0)
             nHave = DAT_143ab2a90.FUN_140a5f180(ref->m_a, 0);
         else
@@ -1307,7 +1290,7 @@ void UIMasteryDialog::FUN_140eb4210(int nId)
         CStringW strCnt = FUN_1419021b0(nHave, nNeed);
         int nRank = FUN_14053feb0(ref->m_a);
         ASObj req(2);
-        req.FUN_1407cba60("binding", m_mastery.FUN_140d43310(ref->m_a, nRank, ref->m_c));
+        req.FUN_1407cba60("binding", m_require.FUN_140d43310(ref->m_a, nRank, ref->m_c));
         req.FUN_1407cbb20("itemCnt", CStringW(strCnt));
         page.FUN_1409eb270(FUN_140c43630("require{0}", i), req);
     }
@@ -1315,8 +1298,7 @@ void UIMasteryDialog::FUN_140eb4210(int nId)
     int nSlot = FUN_140eb82e0();
     if (nSlot == 1 || nSlot == 3 || nSlot == 2)
         bWarn = (nSlot == FUN_140eb6870());
-    int nRank = spRec->m_result.vfunc_o18_1();
-    CStringW strName = FUN_14183e9c0(FUN_1401a9d70()->FUN_141811980(0x35, nId), nRank);
+    CStringW strName = FUN_14183e9c0(FUN_1401a9d70()->FUN_141811980(0x35, nId), spRec->m_result.vfunc_o18_1());
     CStringW strState = FUN_14062b4f0(CStringW(L"s_mastery_magicscroll_list_state"), &spRec->m_nState);
     page.FUN_1407cb9c0("id", nId);
     page.FUN_1407cbb20("name", CStringW(strName));
@@ -1392,53 +1374,52 @@ bool UIMasteryDialog::FUN_140eb4d40(int nResult, const CMsgBoxData& box)
 // @0x140eb4e30
 bool UIMasteryDialog::FUN_140eb4e30(int nResult, const CMsgBoxData&)
 {
-    if (nResult == 0) {
-        MS2Ptr<Unk_MLevelCtrl> spCtrl = FUN_140c02990(CString("m_magicScrollControl"));
-        if (spCtrl.get()) {
-            spCtrl->Invoke("setSelectedSlotIndex", m_308);
-            spCtrl->Invoke("setSelectedGradeIndex", m_30c);
-        }
-        FUN_140eb3460();
+    if (nResult != 0)
+        return true;
+    if (MS2Ptr<Unk_MLevelCtrl> spCtrl = FUN_140c02990("m_magicScrollControl")) {
+        spCtrl->Invoke("setSelectedSlotIndex", m_308);
+        spCtrl->Invoke("setSelectedGradeIndex", m_30c);
     }
+    FUN_140eb3460();
     return true;
 }
 
 // @0x140eb4f60
 void UIMasteryDialog::vfunc_2(void* pArg)
 {
-    UIDialog* pDlg = this;
-    if (pDlg->vfunc_55() == 0)
+    if (vfunc_55()) {
+    } else {
         FUN_140eb6660(pArg);
+    }
 }
 
 // @0x140eb4fd0
 void UIMasteryDialog::vfunc_4(void* pArg, int)
 {
-    UIDialog* pDlg = this;
-    if (pDlg->vfunc_55() == 0)
+    if (vfunc_55()) {
+    } else {
         FUN_140eb6660(pArg);
+    }
 }
 
 // @0x140eb5040
 int UIMasteryDialog::FUN_140eb5040()
 {
-    if (m_30.IsNull())
+    if (FUN_140ba28d0(&m_30, 0))
         return -1;
-    MS2Ptr<Unk_MGroup> spTab = FUN_140eb9db0(CString("m_mainTab"));
-    if (spTab.IsNull())
-        return -1;
-    return FUN_1409c1750(spTab->FUN_1422baa20("selectedIndex"));
+    if (MS2Ptr<Unk_MGroup> spTab = FUN_140eb9db0("m_mainTab"))
+        return FUN_1409c1750(spTab->FUN_1422baa20("selectedIndex"));
+    return -1;
 }
 
 // @0x140eb5150
 int UIMasteryDialog::FUN_140eb5150()
 {
-    if (m_30.IsNull())
+    if (FUN_140ba28d0(&m_30, 0))
         return -1;
-    MS2Ptr<Unk_MSubTab> spTab = FUN_140c02870(CString("m_subTab"));
-    if (spTab.get() == 0)
-        return -1;
-    return FUN_1409c1750(spTab->FUN_1422baa20("selectedIndex"));
+    if (MS2Ptr<Unk_MSubTab> spTab = FUN_140c02870("m_subTab"))
+        return FUN_1409c1750(spTab->FUN_1422baa20("selectedIndex"));
+    return -1;
 }
 
 // @0x140eb5260
@@ -1500,28 +1481,31 @@ void UIMasteryDialog::FUN_140eb53a0()
 // @0x140eb5450
 void UIMasteryDialog::FUN_140eb5450(int nIndex)
 {
-    int nTab = FUN_140eb5040();
-    if (-1 < nTab) {
-        if (nTab < 2) {
+    switch (FUN_140eb5040()) {
+    case 0:
+    case 1:
+        FUN_140eb1770(nIndex, false);
+        break;
+    case 2:
+        switch (FUN_140eb86b0()) {
+        case 8:
+            FUN_140eb3010(nIndex);
+            break;
+        case 9:
             FUN_140eb1770(nIndex, false);
-        } else if (nTab == 2) {
-            int nSlot = FUN_140eb86b0();
-            if (nSlot == 8)
-                FUN_140eb3010(nIndex);
-            else if (nSlot == 9)
-                FUN_140eb1770(nIndex, false);
-        } else if (nTab == 3) {
-            FUN_140eb4210(nIndex);
+            break;
         }
+        break;
+    case 3:
+        FUN_140eb4210(nIndex);
+        break;
     }
     m_nSelected = nIndex;
-    MS2Ptr<Unk_MList> spList = FUN_140c02900(CString("m_objectList"));
-    if (spList.get())
+    if (MS2Ptr<Unk_MList> spList = FUN_140c02900("m_objectList"))
         m_268[FUN_140eb86b0()] = spList->FUN_1422dccd0();
 }
 
 // @0x140eb55e0
-// MS2-FUNCTIONAL: control flow follows the exe; temporaries differ.
 void UIMasteryDialog::FUN_140eb55e0(int nId)
 {
     MS2Ptr<Unk_MRec> spRec = FUN_1409670c0()->FUN_14066aa00(nId);
@@ -1532,32 +1516,30 @@ void UIMasteryDialog::FUN_140eb55e0(int nId)
         FUN_140e5ca20()->FUN_140b6d710(nPoints);
         return;
     }
-    if (spRec->m_rewards.GetCount() == 0)
-        return;
-    ItemEntity& rew = spRec->m_rewards[0];
-    MS2Ptr<CItem> spItem(new CItem);
-    if (!spItem->FUN_140523c40(rew.m_itemId, rew.vfunc_o18_1(), 0))
-        return;
-    ATL::CAtlArray<ItemEntity> ingredients;
-    for (size_t i = 0; i < spRec->m_ingredients.FUN_14026bee0(); i++) {
-        Unk_IngRef ref = spRec->m_ingredients.FUN_14026bdc0(i);
-        ItemEntity ent;
-        ent.m_itemId = ref->FUN_14026b500();
-        ent.SetRank(FUN_14053feb0(ent.m_itemId));
-        ent.m_count = FUN_140eb7b40(spRec->m_nType, spRec->m_nNeedMastery, ref->m_c);
-        ingredients.Add(ent);
-    }
-    MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x23, GetStringCommonByKey(CStringW(L"s_craft_messagebox_desc")), static_cast<IMessageListener*>(this), CStringW(L""));
-    if (spBox.get()) {
-        spBox->FUN_140533ff0(spRec->m_nId);
-        FUN_141a015d0(spBox.get(), GetStringCommonByKey(CStringW(L"s_craft_messagebox_title")));
-        spBox->FUN_141a01690(GetStringCommonByKey(CStringW(L"s_word_cancel")), GetStringCommonByKey(CStringW(L"s_word_craft")), CStringW(L""));
-        int nHave = FUN_140eb6d40(0, spRec->m_nId);
-        spBox->FUN_141a01ee0(MS2Ptr<CItem>(spItem), spItem->FUN_140527b10(), 1, 1, nHave, spRec->m_nMeso, 1);
-        spBox->FUN_141a024a0(0);
-        FUN_141a02a30(spBox.get(), ingredients);
-        spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIMasteryDialog::FUN_140eb4c70));
-        FUN_140d73c60(spBox);
+    if (spRec->m_rewards.GetCount() > 0) {
+        ItemEntity& rew = spRec->m_rewards[0];
+        MS2Ptr<CItem> spItem(new CItem);
+        if (!spItem->FUN_140523c40(rew.m_itemId, rew.vfunc_o18_1(), 0))
+            return;
+        ATL::CAtlArray<ItemEntity> ingredients;
+        for (size_t i = 0; i < spRec->m_ingredients.FUN_14026bee0(); i++) {
+            Unk_IngRef ref = spRec->m_ingredients.FUN_14026bdc0(i);
+            ItemEntity ent;
+            ent.m_itemId = ref->FUN_14026b500();
+            ent.SetRank(FUN_14053feb0(ent.m_itemId));
+            ent.m_count = FUN_140eb7b40(spRec->m_nType, spRec->m_nNeedMastery, ref->m_c);
+            ingredients.Add(ent);
+        }
+        if (MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x23, GetStringCommonByKey(L"s_craft_messagebox_desc"), static_cast<IMessageListener*>(this), CStringW(L""))) {
+            spBox->FUN_140533ff0(spRec->m_nId);
+            FUN_141a015d0(spBox.get(), GetStringCommonByKey(L"s_craft_messagebox_title"));
+            spBox->FUN_141a01690(GetStringCommonByKey(L"s_word_cancel"), GetStringCommonByKey(L"s_word_craft"), L"");
+            spBox->FUN_141a01ee0(MS2Ptr<CItem>(spItem), spItem->FUN_140527b10(), 1, 1, FUN_140eb6d40(0, spRec->m_nId), spRec->m_nMeso, 1);
+            spBox->FUN_141a024a0(0);
+            FUN_141a02a30(spBox.get(), ingredients);
+            spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIMasteryDialog::FUN_140eb4c70));
+            FUN_140d73c60(spBox);
+        }
     }
 }
 
@@ -1568,7 +1550,6 @@ void UIMasteryDialog::FUN_140eb5e30(int nId)
 }
 
 // @0x140eb5e60
-// MS2-FUNCTIONAL: control flow follows the exe; temporaries differ.
 void UIMasteryDialog::FUN_140eb5e60(int nId)
 {
     MS2Ptr<Unk_MScrollRec> spRec = FUN_14034f780()->FUN_14034e3e0(nId);
@@ -1578,63 +1559,63 @@ void UIMasteryDialog::FUN_140eb5e60(int nId)
         FUN_141275260(0x34, 1, 1);
         return;
     }
-    if (spRec->m_result.m_itemId == 0 && spRec->m_rewards.GetCount() == 0)
-        return;
-    MS2Ptr<CItem> spItem(new CItem);
-    if (!spItem->FUN_140523c40(spRec->m_result.m_itemId, spRec->m_result.vfunc_o18_1(), 0))
-        return;
-    ATL::CAtlArray<ItemEntity> ingredients;
-    for (size_t i = 0; i < spRec->m_ingredients.FUN_14026bee0(); i++) {
-        Unk_IngRef ref = spRec->m_ingredients.FUN_14026bdc0(i);
-        if (ref == 0)
-            continue;
-        ItemEntity ent;
-        ent.m_itemId = ref->m_a;
-        ent.m_count = ref->m_c;
-        ent.SetRank(FUN_14053feb0(ref->m_a));
-        ingredients.Add(ent);
-    }
-    MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x23, GetStringCommonByKey(CStringW(L"s_magicscroll_craft_messagebox_desc")), static_cast<IMessageListener*>(this), CStringW(L""));
-    if (spBox.get()) {
-        spBox->FUN_140533ff0(spRec->m_nId);
-        FUN_141a015d0(spBox.get(), GetStringCommonByKey(CStringW(L"s_magicscroll_craft_messagebox_title")));
-        spBox->FUN_141a01690(GetStringCommonByKey(CStringW(L"s_word_cancel")), GetStringCommonByKey(CStringW(L"s_magicscroll_word_craft")), CStringW(L""));
-        int nHave = FUN_140eb6d40(1, spRec->m_nId);
-        spBox->FUN_141a01ee0(MS2Ptr<CItem>(spItem), spItem->FUN_140527b10(), 1, 1, nHave, (int)spRec->m_nMeso, 1);
-        spBox->FUN_141a024a0(0);
-        FUN_141a02a30(spBox.get(), ingredients);
-        spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIMasteryDialog::FUN_140eb4d40));
-        FUN_140d73c60(spBox);
+    if (spRec->m_result.m_itemId != 0 || spRec->m_rewards.GetCount() > 0) {
+        ItemEntity& rew = spRec->m_result;
+        MS2Ptr<CItem> spItem(new CItem);
+        if (!spItem->FUN_140523c40(rew.m_itemId, rew.vfunc_o18_1(), 0))
+            return;
+        ATL::CAtlArray<ItemEntity> ingredients;
+        for (size_t i = 0; i < spRec->m_ingredients.FUN_14026bee0(); i++) {
+            Unk_IngRef ref = spRec->m_ingredients.FUN_14026bdc0(i);
+            if (ref == 0)
+                continue;
+            ItemEntity ent;
+            ent.m_itemId = ref->m_a;
+            ent.m_count = ref->m_c;
+            ent.SetRank(FUN_14053feb0(ref->m_a));
+            ingredients.Add(ent);
+        }
+        if (MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x23, GetStringCommonByKey(L"s_magicscroll_craft_messagebox_desc"), static_cast<IMessageListener*>(this), CStringW(L""))) {
+            spBox->FUN_140533ff0(spRec->m_nId);
+            FUN_141a015d0(spBox.get(), GetStringCommonByKey(L"s_magicscroll_craft_messagebox_title"));
+            spBox->FUN_141a01690(GetStringCommonByKey(L"s_word_cancel"), GetStringCommonByKey(L"s_magicscroll_word_craft"), L"");
+            spBox->FUN_141a01ee0(MS2Ptr<CItem>(spItem), spItem->FUN_140527b10(), 1, 1, FUN_140eb6d40(1, spRec->m_nId), (int)spRec->m_nMeso, 1);
+            spBox->FUN_141a024a0(0);
+            FUN_141a02a30(spBox.get(), ingredients);
+            spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIMasteryDialog::FUN_140eb4d40));
+            FUN_140d73c60(spBox);
+        }
     }
 }
 
 // @0x140eb6660
 void UIMasteryDialog::FUN_140eb6660(void* pArg)
 {
-    CItem* pItem = static_cast<CItem*>(pArg);
-    if (!pItem)
+    if (!pArg)
         return;
-    int nItemId = pItem->FUN_1405276c0();
+    int nItemId = static_cast<CItem*>(pArg)->FUN_1405276c0();
     int nTab = FUN_140eb5040();
     if (nTab == 1) {
         int nType = FUN_140eb8a90();
         if (FUN_1409670c0()->FUN_14066b910(nType, nItemId) != 0)
             FUN_140eb52c0(nType);
     } else if (nTab == 3) {
-        if (FUN_140166410()->FUN_14036d570(0x5a)) {
+        if (!FUN_140166410()->FUN_14036d570(0x5a))
+            return;
+        {
             MS2Ptr<Unk_MScrollRec> spRec = FUN_14034f780()->FUN_14034e3e0(m_nSelected);
             if (spRec.get()) {
-                bool bFound = false;
+                int bFound = 0;
                 for (size_t i = 0; i < spRec->m_ingredients.FUN_14026bee0(); i++) {
                     Unk_IngRef ref = spRec->m_ingredients.FUN_14026bdc0(i);
                     if (ref == 0)
                         continue;
-                    if (ref->m_b != 0 && pItem->FUN_1405277e0(ref->m_b)) {
-                        bFound = true;
+                    if (ref->m_b != 0 && static_cast<CItem*>(pArg)->FUN_1405277e0(ref->m_b)) {
+                        bFound = 1;
                         break;
                     }
                     if (ref->m_a == nItemId) {
-                        bFound = true;
+                        bFound = 1;
                         break;
                     }
                 }
@@ -1658,7 +1639,6 @@ int UIMasteryDialog::FUN_140eb6870()
 }
 
 // @0x140eb6920
-// MS2-FUNCTIONAL: control flow follows the exe; temporaries differ.
 void UIMasteryDialog::FUN_140eb6920(int nType, int nIndex, ASObj& obj)
 {
     MyPC* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
@@ -1672,16 +1652,16 @@ void UIMasteryDialog::FUN_140eb6920(int nType, int nIndex, ASObj& obj)
     int nFlag = 0;
     DAT_143ab31a0.FUN_140361ab0(nId, &nFlag);
     CString strState;
-    if (nFlag == 0 && FUN_140e5ca20()->FUN_140b6d250(nType, nIndex) != 0)
-        strState = (FUN_141662750(pPc, nType) < nNeed) ? "lock" : "active";
-    else
+    if (nFlag != 0 || FUN_140e5ca20()->FUN_140b6d250(nType, nIndex) == 0)
         strState = "inactive";
+    else
+        strState = (FUN_141662750(pPc, nType) >= nNeed) ? "active" : "lock";
     obj.FUN_1407cba60("state", CString(strState));
     Unk_MItemArray items;
     FUN_1409670c0()->FUN_14066b100(nId, FUN_141654700(pPc), items);
-    if (items.GetCount() != 0) {
-        ItemEntity& item0 = items[0];
-        obj.FUN_1407cba60("binding", m_mastery.FUN_140d43310(item0.m_itemId, item0.vfunc_o18_1(), item0.m_count));
+    if (items.GetCount() > 0) {
+        MS2Ptr<ItemEntity> spItem0(items[0]);
+        obj.FUN_1407cba60("binding", m_mastery.FUN_140d43310(spItem0->m_itemId, spItem0->vfunc_o18_1(), spItem0->m_count));
     }
 }
 
@@ -1700,7 +1680,6 @@ void UIMasteryDialog::FUN_140eb6c80()
 }
 
 // @0x140eb6d40
-// MS2-FUNCTIONAL: control flow follows the exe; temporaries differ.
 int UIMasteryDialog::FUN_140eb6d40(int nKind, int nId)
 {
     int nMax = 1000;
@@ -1717,14 +1696,13 @@ int UIMasteryDialog::FUN_140eb6d40(int nKind, int nId)
             Unk_IngRef ref = spRec->m_ingredients.FUN_14026bdc0(i);
             int nHave = 0;
             int nNeed = FUN_140eb7b40(spRec->m_nType, spRec->m_nNeedMastery, ref->m_c);
-            if (ref->m_b == 0)
-                nHave = DAT_143ab2a90.FUN_140a5f180(ref->FUN_14026b500(), 0);
-            else
+            if (ref->m_b != 0)
                 nHave = DAT_143ab2a90.FUN_140a5f780(ref->m_b, 0);
+            else
+                nHave = DAT_143ab2a90.FUN_140a5f180(ref->FUN_14026b500(), 0);
             int nCan = nHave / nNeed;
             nMax = (std::min)(nCan, nMax);
         }
-        return nMax;
     } else if (nKind == 1) {
         MS2Ptr<Unk_MScrollRec> spRec = FUN_14034f780()->FUN_14034e3e0(nId);
         if (spRec.IsNull())
@@ -1737,96 +1715,99 @@ int UIMasteryDialog::FUN_140eb6d40(int nKind, int nId)
         for (size_t i = 0; i < spRec->m_ingredients.FUN_14026bee0(); i++) {
             Unk_IngRef ref = spRec->m_ingredients.FUN_14026bdc0(i);
             int nHave = 0;
-            if (ref->m_b == 0)
-                nHave = DAT_143ab2a90.FUN_140a5f180(ref->m_a, FUN_14053feb0(ref->m_a));
-            else
+            if (ref->m_b != 0) {
                 nHave = DAT_143ab2a90.FUN_140a5f7b0(ref->m_b, 0);
+            } else {
+                int nRank = FUN_14053feb0(ref->m_a);
+                nHave = DAT_143ab2a90.FUN_140a5f180(ref->m_a, nRank);
+            }
             int nNeed = ref->m_c;
             int nCan = nHave / nNeed;
             nMax = (std::min)(nCan, nMax);
         }
-        return nMax;
+    } else {
+        MS2_ASSERT_AT(0x433, 0);
+        return 0;
     }
-    MS2_ASSERT_AT(0x433, 0);
-    return 0;
+    return nMax;
 }
 
 // @0x140eb71a0
-// MS2-FUNCTIONAL: control flow follows the exe; temporaries differ.
 CStringW UIMasteryDialog::FUN_140eb71a0(MS2Ptr<Unk_MRec> spRec)
 {
     CStringW strErr;
     if (FUN_140eb8550(MS2Ptr<Unk_MRec>(spRec)) == 0)
-        strErr = FUN_1409e8820(CStringW(L"s_mastery_need_level"), spRec->m_nNeedMastery);
-    unsigned int nMastery = FUN_140eb7bb0(spRec->m_nType);
-    if (nMastery < (unsigned int)spRec->m_nNeedMastery) {
+        strErr = FUN_1409e8820(CStringW(L"s_mastery_need_level"), spRec->m_nNeedLevel);
+    if (FUN_140eb7bb0(spRec->m_nType) < spRec->m_nNeedMastery) {
         int nGrade = FUN_1409670c0()->FUN_14066af60(spRec->m_nType, spRec->m_nNeedMastery);
-        CStringW strNeed = FUN_1405c2690(CStringW(L"s_mastery_need_mastery"), FUN_1409670c0()->FUN_14066c690(spRec->m_nType, nGrade));
-        if (strErr.GetLength() == 0)
-            return strNeed;
-        return FUN_140656190(L"{0}, {1}", strErr, strNeed);
+        CStringW strGrade = FUN_1409670c0()->FUN_14066c690(spRec->m_nType, nGrade);
+        CStringW strNeed = FUN_1405c2690(L"s_mastery_need_mastery", strGrade);
+        if (strErr.GetLength() != 0)
+            return FUN_140656190(L"{0}, {1}", strErr, strNeed);
+        return strNeed;
     }
-    if (strErr.GetLength() >= 1)
+    if (strErr.GetLength() > 0)
         return strErr;
-    if (FUN_1409670c0()->FUN_14066bb00(MS2Ptr<Unk_MRec>(spRec)) == 0) {
-        int nCount = FUN_140eb6d40(0, spRec->m_nId);
-        if (nCount == 1000)
-            return FUN_14062b4f0(CStringW(L"s_mastery_manufacture_count_max"), &nCount);
-        return FUN_14062b4f0(CStringW(L"s_mastery_manufacture_count"), &nCount);
-    }
-    CStringW strHome;
-    if (FUN_1409670e0()->FUN_1410d2f10() == 0)
+    if (FUN_1409670c0()->FUN_14066bb00(MS2Ptr<Unk_MRec>(spRec))) {
+        CStringW strHome;
+        if (FUN_1409670e0()->FUN_1410d2f10()) {
+            switch (spRec->m_nType) {
+            case 5:
+            case 6:
+                strHome = FUN_1409670e0()->FUN_1410d5640() ? GetStringCommonByKey(L"s_mastery_myhome") : GetStringCommonByKey(L"s_mastery_otherhome");
+            }
+            return FUN_140656190(L"{0} {1}", strHome, FUN_1409670c0()->FUN_14066c110(spRec->m_nType, spRec->m_nId, 1));
+        }
         return FUN_1409670c0()->FUN_14066c110(spRec->m_nType, spRec->m_nId, 1);
-    int nType = spRec->m_nType;
-    if (4 < nType && nType < 7) {
-        if (!FUN_1409670e0()->FUN_1410d5640())
-            strHome = GetStringCommonByKey(CStringW(L"s_mastery_otherhome"));
-        else
-            strHome = GetStringCommonByKey(CStringW(L"s_mastery_myhome"));
     }
-    return FUN_140656190(L"{0} {1}", strHome, FUN_1409670c0()->FUN_14066c110(spRec->m_nType, spRec->m_nId, 1));
+    int nCount = FUN_140eb6d40(0, spRec->m_nId);
+    if (nCount == 1000)
+        return FUN_14062b4f0(CStringW(L"s_mastery_manufacture_count_max"), &nCount);
+    return FUN_14062b4f0(CStringW(L"s_mastery_manufacture_count"), &nCount);
 }
 
 // @0x140eb79b0
-// MS2-FUNCTIONAL: control flow follows the exe; temporaries differ.
 int UIMasteryDialog::FUN_140eb79b0(int nType, unsigned int nNeedMastery, ItemEntity* pEntry)
 {
-    int nCount;
-    if (FUN_1409670c0()->FUN_14066ba00(nType) == 0) {
+    int nCount = 0;
+    if (FUN_1409670c0()->FUN_14066ba00(nType))
+        nCount = FUN_1401c0db0()->FUN_140677c60(pEntry->m_count, nNeedMastery, FUN_140eb7bb0(nType));
+    else
         nCount = pEntry->m_count;
-    } else {
-        unsigned int nMastery = FUN_140eb7bb0(nType);
-        nCount = FUN_1401c0db0()->FUN_140677c60(pEntry->m_count, nNeedMastery, nMastery);
-    }
     MyPC* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
-    if (pPc) {
-        float fStat = 0;
-        if (nType == 3)
-            fStat = FUN_1416561a0(pPc)->FUN_1411e1110(0x43);
-        else if (nType == 4)
-            fStat = FUN_1416561a0(pPc)->FUN_1411e1110(0x47);
-        else if (nType == 5)
-            fStat = FUN_1416561a0(pPc)->FUN_1411e1110(0x44);
-        else if (nType == 6)
-            fStat = FUN_1416561a0(pPc)->FUN_1411e1110(0x48);
-        float fOne = 1.0f;
-        nCount = FUN_1406198a0(nCount, *(std::max)(&fStat, &fOne) + 1.0f);
+    if (pPc == 0)
+        return nCount;
+    float fStat = 0;
+    switch (nType) {
+    case 3:
+        fStat = FUN_1416561a0(pPc)->FUN_1411e1110(0x43);
+        break;
+    case 5:
+        fStat = FUN_1416561a0(pPc)->FUN_1411e1110(0x44);
+        break;
+    case 4:
+        fStat = FUN_1416561a0(pPc)->FUN_1411e1110(0x47);
+        break;
+    case 6:
+        fStat = FUN_1416561a0(pPc)->FUN_1411e1110(0x48);
+        break;
     }
+    float fOne = 1.0f;
+    nCount = FUN_1406198a0(nCount, 1.0f + (std::min)(fStat, fOne));
     return nCount;
 }
 
 // @0x140eb7b40
-unsigned __int64 UIMasteryDialog::FUN_140eb7b40(int nType, int nNeedMastery, unsigned int nCount)
+unsigned int UIMasteryDialog::FUN_140eb7b40(int nType, int nNeedMastery, unsigned int nCount)
 {
     if (FUN_1409670c0()->FUN_14066bb80(nType)) {
-        unsigned int nMastery = FUN_140eb7bb0(nType);
-        return FUN_1401c0db0()->FUN_140677e20(nCount, nNeedMastery, nMastery);
+        return FUN_1401c0db0()->FUN_140677e20(nCount, nNeedMastery, FUN_140eb7bb0(nType));
     }
     return nCount;
 }
 
 // @0x140eb7bb0
-unsigned __int64 UIMasteryDialog::FUN_140eb7bb0(int nType)
+unsigned int UIMasteryDialog::FUN_140eb7bb0(int nType)
 {
     MyPC* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (!pPc)
@@ -1837,8 +1818,7 @@ unsigned __int64 UIMasteryDialog::FUN_140eb7bb0(int nType)
 // @0x140eb7c00
 void UIMasteryDialog::FUN_140eb7c00(int nType)
 {
-    unsigned int nMastery = FUN_140eb7bb0(nType);
-    FUN_1409670c0()->FUN_14066af60(nType, nMastery);
+    FUN_1409670c0()->FUN_14066af60(nType, FUN_140eb7bb0(nType));
 }
 
 // @0x140eb7c50
@@ -1866,20 +1846,20 @@ void UIMasteryDialog::FUN_140eb7e30()
 {
     if (m_30.IsNull())
         return;
-    int nCount = FUN_140e5ca20()->FUN_140b6d140(3);
+    int nCount = 0;
+    nCount += FUN_140e5ca20()->FUN_140b6d140(3);
     nCount += FUN_140e5ca20()->FUN_140b6d140(5);
     if (FUN_140166410()->FUN_14036d570(0x59)) {
-        int a = FUN_140e5ca20()->FUN_140b6d140(4);
-        int b = FUN_140e5ca20()->FUN_140b6d140(6);
-        nCount = nCount + a + b;
+        nCount += FUN_140e5ca20()->FUN_140b6d140(4);
+        nCount += FUN_140e5ca20()->FUN_140b6d140(6);
     }
     MPage(m_30)->FUN_140eba2c0("setMainTabReward", 0, 0 < nCount);
-    nCount = FUN_140e5ca20()->FUN_140b6d140(7);
+    nCount = 0;
+    nCount += FUN_140e5ca20()->FUN_140b6d140(7);
     nCount += FUN_140e5ca20()->FUN_140b6d140(8);
     if (FUN_140166410()->FUN_14036d570(0x59)) {
-        int a = FUN_140e5ca20()->FUN_140b6d140(9);
-        int b = FUN_140e5ca20()->FUN_140b6d140(10);
-        nCount = nCount + a + b;
+        nCount += FUN_140e5ca20()->FUN_140b6d140(9);
+        nCount += FUN_140e5ca20()->FUN_140b6d140(10);
     }
     MPage(m_30)->FUN_140eba2c0("setMainTabReward", 1, 0 < nCount);
     nCount = FUN_140930e10();
@@ -1897,41 +1877,44 @@ int UIMasteryDialog::FUN_140eb8120(MS2Ptr<Unk_MRec> spRec)
     MyPC* pPc = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (!pPc)
         return 0;
-    unsigned int nMastery = FUN_141662750(pPc, spRec->m_nType);
-    int nValue = FUN_1409670c0()->FUN_14066ab90(spRec->m_nId, nMastery);
+    int nValue = FUN_1409670c0()->FUN_14066ab90(spRec->m_nId, FUN_141662750(pPc, spRec->m_nType));
     float fBonus = 0.0f;
-    int nType = spRec->m_nType;
-    if (nType == 7)
+    switch (spRec->m_nType) {
+    case 7:
         fBonus = FUN_1416561a0(pPc)->FUN_1411e1110(0x45);
-    else if (nType == 8)
+        break;
+    case 8:
         fBonus = FUN_1416561a0(pPc)->FUN_1411e1110(0x46);
-    else if (nType == 9)
+        break;
+    case 9:
         fBonus = FUN_1416561a0(pPc)->FUN_1411e1110(0x49);
-    else if (nType == 10)
+        break;
+    case 10:
         fBonus = FUN_1416561a0(pPc)->FUN_1411e1110(0x4a);
-    return FUN_1404820b0(nValue, fBonus + 1.0f);
+        break;
+    }
+    nValue = FUN_1404820b0(nValue, 1.0f + fBonus);
+    return nValue;
 }
 
 // @0x140eb82e0
 int UIMasteryDialog::FUN_140eb82e0()
 {
-    MS2Ptr<Unk_MLevelCtrl> spCtrl = FUN_140c02990(CString("m_magicScrollControl"));
-    if (spCtrl.get() == 0)
-        return 1;
-    int nSlot = FUN_1409c1750(spCtrl->Invoke("getSelectedSlotIndex"));
-    nSlot = nSlot + 1;
-    if (nSlot < 0)
-        nSlot = 0;
-    if (m_2f8 < nSlot)
-        nSlot = m_2f8;
-    return nSlot;
+    if (MS2Ptr<Unk_MLevelCtrl> spCtrl = FUN_140c02990("m_magicScrollControl")) {
+        int nSlot = FUN_1409c1750(spCtrl->Invoke("getSelectedSlotIndex")) + 1;
+        if (nSlot < 0)
+            nSlot = 0;
+        if (nSlot > m_2f8)
+            nSlot = m_2f8;
+        return nSlot;
+    }
+    return 1;
 }
 
 // @0x140eb8410
 int UIMasteryDialog::FUN_140eb8410()
 {
-    MS2Ptr<Unk_MLevelCtrl> spCtrl = FUN_140c02990(CString("m_magicScrollControl"));
-    if (spCtrl.get()) {
+    if (MS2Ptr<Unk_MLevelCtrl> spCtrl = FUN_140c02990("m_magicScrollControl")) {
         int nGrade = FUN_1409c1750(spCtrl->Invoke("getSelectedGradeIndex"));
         if (nGrade == 0)
             return 4;
@@ -2071,16 +2054,15 @@ int UIMasteryDialog::FUN_140eb8ac0()
 // @0x140eb8b20
 void UIMasteryDialog::FUN_140eb8b20()
 {
-    MS2Ptr<Unk_MList> spList = FUN_140c02900(CString("m_objectList"));
-    if (spList.get()) {
+    if (MS2Ptr<Unk_MList> spList = FUN_140c02900("m_objectList")) {
         m_304 = 1;
         int nSlot = FUN_140eb86b0();
         spList->FUN_1422dcca0(-1);
-        spList->vfunc_24(1);
+        spList->vfunc_24(true);
         spList->FUN_1422dcca0(m_268[nSlot]);
-        spList->vfunc_24(1);
+        spList->vfunc_24(true);
         spList->FUN_1422e17f0(m_scroll[nSlot]);
-        spList->vfunc_24(1);
+        spList->vfunc_24(true);
         m_304 = 0;
     }
 }
@@ -2088,16 +2070,14 @@ void UIMasteryDialog::FUN_140eb8b20()
 // @0x140eb8cd0
 int FUN_140eb8cd0(MS2Ptr<Unk_MFurn> spFurn)
 {
-    unsigned short nCur = DAT_143ab291c;
     if (spFurn->m_n40 == 3)
         return 1;
-    if (nCur < spFurn->m_w4c)
+    if (DAT_143ab291c < spFurn->m_w4c)
         return 0;
     MS2Ptr<Unk_MHouseRec> spHouse = FUN_1409eed80()->FUN_1408865b0(spFurn->m_n3c);
-    nCur = DAT_143ab291c;
     if (spHouse.IsNull())
         return 0;
-    if (nCur < spHouse->m_nLevel)
+    if (DAT_143ab291c < spHouse->m_nLevel)
         return 0;
     if (spFurn->m_n44 == 0)
         return 1;
@@ -2172,15 +2152,15 @@ MS2Ptr<Unk_MGroup> FUN_140eb9620(int nMovieId, const Scaleform::GFx::Value& v)
 MS2Ptr<Unk_MGroup> Unk_MCtl::FUN_140eb9cf0(const CString& strName)
 {
     Scaleform::GFx::Value v = FUN_1422baa20(strName);
-    if (!FUN_1409b4d40(v))
-        return MS2Ptr<Unk_MGroup>(0);
-    return FUN_140eb9620(m_nMovieId, v);
+    if (FUN_1409b4d40(v))
+        return FUN_140eb9620(m_nMovieId, v);
+    return MS2Ptr<Unk_MGroup>(0);
 }
 
 // @0x140eb9db0
 MS2Ptr<Unk_MGroup> UIMasteryDialog::FUN_140eb9db0(const CString& strName)
 {
-    if (m_30.IsNull())
+    if (FUN_140ba28d0(&m_30, 0))
         return MS2Ptr<Unk_MGroup>(0);
     return reinterpret_cast<Unk_MCtl*>(m_30.get())->FUN_140eb9cf0(strName);
 }
@@ -2327,19 +2307,19 @@ void* FUN_140ebacd0(void* p, unsigned int nFlags)
 // @0x140ebae70
 Unk_MMapNode* FUN_140ebae70(Unk_MMapRaw* pMap, Unk_MMapNode* pNode)
 {
+    if (pNode == 0)
+        return 0;
     Unk_MMapNode* pNext;
-    if (pNode == 0) {
+    if (pNode->m_pNext != 0) {
+        pNext = pNode->m_pNext;
+    } else {
         pNext = 0;
-    } else if (pNode->m_pNext == 0) {
-        pNext = 0;
-        unsigned __int64 nHash = FUN_140889fd0(pNode);
-        unsigned int nBin = (unsigned int)((nHash & 0xffffffff) % (unsigned __int64)pMap->m_nBins);
-        while (nBin = nBin + 1, pNext == 0 && nBin < pMap->m_nBins) {
+        unsigned int nBin = FUN_140889fd0(pNode) % pMap->m_nBins + 1;
+        while (pNext == 0 && nBin < pMap->m_nBins) {
             if (pMap->m_ppBins[nBin] != 0)
                 pNext = pMap->m_ppBins[nBin];
+            nBin++;
         }
-    } else {
-        pNext = pNode->m_pNext;
     }
     return pNext;
 }

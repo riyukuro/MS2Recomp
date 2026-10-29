@@ -88,7 +88,6 @@ int MailItemSlot::vfunc_18(void* pv)
 }
 
 // @0x1414725d0 (ITooltip::vfunc_0)
-// MS2-FUNCTIONAL: ASTooltip::FUN_1409e25e0 returns bool in astooltip.h but int in the exe (no movzx before the test)
 int MailItemSlot::vfunc_0(void* p)
 {
     if (m_spItem == 0)

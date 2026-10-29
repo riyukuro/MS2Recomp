@@ -211,26 +211,27 @@ bool SoftParticlesMaterial::HandleFinalVertexOutputs(Context& kContext, NiStanda
     NiMaterialResource* pkWorldPos, NiMaterialResource* pkWorldNormal, NiMaterialResource* pkWorldReflect,
     NiMaterialResource* pkViewPos, NiMaterialResource* pkProjectedPos)
 {
-    bool bResult = NiStandardMaterial::HandleFinalVertexOutputs(kContext, pkVertDesc, pkWorldPos, pkWorldNormal,
-        pkWorldReflect, pkViewPos, pkProjectedPos);
-    if (bResult)
+    if (!NiStandardMaterial::HandleFinalVertexOutputs(kContext, pkVertDesc, pkWorldPos, pkWorldNormal,
+        pkWorldReflect, pkViewPos, pkProjectedPos))
     {
-        NiMaterialNode* pkNode = GetAttachableNodeFromLibrary("GetScreenPosition");
-        kContext.m_spConfigurator->AddNode(pkNode);
-
-        kContext.m_spConfigurator->AddBinding(pkProjectedPos,
-            pkNode->GetInputResourceByVariableName("ProjPosition"));
-        NiMaterialResource* pkTexSize = AddOutputPredefined(kContext.m_spUniforms,
-            NiShaderConstantMap::SCM_DEF_TEXSIZESHADER);
-        kContext.m_spConfigurator->AddBinding(pkTexSize, pkNode->GetInputResourceByVariableName("TextureSize"));
-        kContext.m_spConfigurator->AddBinding(pkViewPos, pkNode->GetInputResourceByVariableName("ViewPosition"));
-
-        NiMaterialResource* pkOutput = kContext.m_spOutputs->AddInputResource("float3", "TexCoord", "World",
-            "ScreenPosPassThrough");
-        kContext.m_spConfigurator->AddBinding(pkNode->GetOutputResourceByVariableName("ScreenPosition"),
-            pkOutput);
+        return false;
     }
-    return bResult;
+
+    NiMaterialNode* pkNode = GetAttachableNodeFromLibrary("GetScreenPosition");
+    kContext.m_spConfigurator->AddNode(pkNode);
+
+    kContext.m_spConfigurator->AddBinding(pkProjectedPos,
+        pkNode->GetInputResourceByVariableName("ProjPosition"));
+    NiMaterialResource* pkTexSize = AddOutputPredefined(kContext.m_spUniforms,
+        NiShaderConstantMap::SCM_DEF_TEXSIZESHADER);
+    kContext.m_spConfigurator->AddBinding(pkTexSize, pkNode->GetInputResourceByVariableName("TextureSize"));
+    kContext.m_spConfigurator->AddBinding(pkViewPos, pkNode->GetInputResourceByVariableName("ViewPosition"));
+
+    NiMaterialResource* pkOutput = kContext.m_spOutputs->AddInputResource("float3", "TexCoord", "World",
+        "ScreenPosPassThrough");
+    kContext.m_spConfigurator->AddBinding(pkNode->GetOutputResourceByVariableName("ScreenPosition"),
+        pkOutput);
+    return true;
 }
 MS2_REPLACE_METHOD(0x1427563B0, SoftParticlesMaterial, HandleFinalVertexOutputs, 616, 0x70767C8B);
 
@@ -270,8 +271,8 @@ bool SoftParticlesMaterial::HandlePreLightTextureApplication(Context& kContext, 
         AddOutputAttribute(kContext.m_spUniforms, "SoftDepth", NiShaderAttributeDesc::ATTRIB_TYPE_FLOAT),
         pkNode->GetInputResourceByVariableName("ParticleDepth"));
 
-    return MultiplyVector(kContext, pkOpacityAccum, pkNode->GetOutputResourceByVariableName("Opacity"),
-        pkOpacityAccum);
+    NiMaterialResource* pkOpacity = pkNode->GetOutputResourceByVariableName("Opacity");
+    return MultiplyVector(kContext, pkOpacityAccum, pkOpacity, pkOpacityAccum);
 }
 MS2_REPLACE_METHOD(0x142756620, SoftParticlesMaterial, HandlePreLightTextureApplication, 941, 0x31BD09AB);
 

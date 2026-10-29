@@ -74,13 +74,11 @@ protected:
 };
 MS2_CHECK_SIZE(MS2RenderListProcessor, 0xe8);
 
-// Render-list processor of the UI render views (ctor 0x141ab8300 / dtor 0x141ab83a0 in ?\uirenderview.cpp).
+// Render-list processor of the UI render views (implicit ctor 0x141ab8300 / dtor 0x141ab83a0 in ?\uirenderview.cpp).
 class MS2RenderViewRenderListProcessor : public MS2RenderListProcessor
 {
     // no RTTI of its own: vftable slot 2 is MS2RenderListProcessor::GetRTTI (0x1414e6700)
 public:
-    MS2RenderViewRenderListProcessor();                     // 0x141ab8300
-    virtual ~MS2RenderViewRenderListProcessor();            // 0x141ab83a0
     virtual void PreRenderProcessList(const NiVisibleArray* pkInput, NiVisibleArray& kOutput, void* pvExtraData);   // 0x1414ddce0
 };
 MS2_CHECK_SIZE(MS2RenderViewRenderListProcessor, 0xe8);

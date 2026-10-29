@@ -8,6 +8,7 @@
 #include "ms2/ms2layout.h"
 #include "ms2/ms2format.h"
 #include "ms2/ms2recover.h"
+#include "ms2/placeholder/mstime.h"
 #include "hook/ms2hook.h"
 
 // ---- unrecovered neighbours -------------------------------------------------------------------------------------
@@ -29,8 +30,8 @@ void* FUN_1406c47d0(void* out, int y, int m, int d, int h, int mi, int s);   // 
 void* FUN_140182ea0(void* s);   void FUN_140183b60(void* s);   void FUN_140178270(const CString* in, void* tmp, const char* sep);
 void* FUN_140182ed0(void* s);   void FUN_140183b90(void* s);   void FUN_1401783d0(const CString* in, void* tmp, const char* sep);
 void FUN_1402929a0(const CStringW* in, void* tmp, const wchar_t* sep);   // wide (commonutil.cpp)
-void* FUN_14016a600(void* out, const wchar_t* s, int);
-void* FUN_14016a730(void* out, const char* s, int);
+CStringA FUN_14016a600(const wchar_t* s, int nCodePage);
+CStringW FUN_14016a730(const char* s, int nCodePage);
 void* FUN_14050dba0(void* dst, void* alloc);
 void* FUN_14018c480(void* str);
 void* FUN_14018cff0(void* v); void* FUN_14018d190(void* v); void* FUN_14018ce70(void* v);
@@ -52,8 +53,8 @@ unsigned __int64 FUN_14071a340(void* arr, int v);
 int FUN_140719c00(const CString* s);
 void FUN_140719c30(const CString* s, void* arr, const char* sep);
 void FUN_140719c60(const CString* s, void* arr, const char* sep);
-void* FUN_140718920(void* out, const CString* s);
-void* FUN_140718cd0(void* out, const CString* s);
+CMsTime FUN_140718920(const CString& s);
+ATL::CTimeSpan FUN_140718cd0(const CString& s);
 void* FUN_14071a240(void* dst, void* src);
 
 // @0x1407186f0
@@ -97,49 +98,56 @@ void* FUN_140718890(void* ret, const CStringW& s) {
 // @0x1407188f0
 void* FUN_1407188f0(void* ret, const CString* s) { FUN_14071a2c0(ret); return ret; }
 // @0x140718920
-void* FUN_140718920(void* ret, const CString* s) { FUN_1406c4730(ret); return ret; }
+CMsTime FUN_140718920(const CString& s) { return CMsTime(); }
 
 // Parses "Y-M-D-h-m-s"; falls back to the default (zero) value if any field is out of range.
 // @0x140718950
-void* FUN_140718950(void* ret, const CString* s) {
-    Unk_Bytes parts[0x20];
-    FUN_140163230(parts);
-    FUN_14015f050(s, parts, "-");
+CMsTime FUN_140718950(const CString& s) {
+    CAtlArray<CString> parts;
+    FUN_14015f050(&s, &parts, "-");
     int six = 6;
-    int vals[6] = {0, 0, 0, 0, 0, 0};
-    int cnt = (int)FUN_1401662c0(parts);
+    int vals[6] = {0};
+    int cnt = (int)FUN_1401662c0(&parts);
     int n = *FUN_1402fbd20(&six, &cnt);
     for (int i = 0; i < n; ++i)
-        vals[i] = atoi(*FUN_140164930(parts, i));
-    if (vals[0] < 1900 || vals[1] < 1 || vals[1] > 12 || vals[2] < 1 || vals[2] > 31 || vals[3] < 0 || vals[3] > 23 ||
-        vals[4] < 0 || vals[4] > 59 || vals[5] < 0 || vals[5] > 59)
-        FUN_140718920(ret, s);
-    else
-        FUN_1406c47d0(ret, vals[0], vals[1], vals[2], vals[3], vals[4], vals[5]);
-    FUN_1401641d0(parts);
-    return ret;
+        vals[i] = atoi(*FUN_140164930(&parts, i));
+    if (vals[0] < 1900)
+        return FUN_140718920(s);
+    if (vals[1] < 1 || vals[1] > 12)
+        return FUN_140718920(s);
+    if (vals[2] < 1 || vals[2] > 31)
+        return FUN_140718920(s);
+    if (vals[3] < 0 || vals[3] > 23)
+        return FUN_140718920(s);
+    if (vals[4] < 0 || vals[4] > 59)
+        return FUN_140718920(s);
+    if (vals[5] < 0 || vals[5] > 59)
+        return FUN_140718920(s);
+    return CMsTime(vals[0], vals[1], vals[2], vals[3], vals[4], vals[5]);
 }
 // @0x140718cd0
-void* FUN_140718cd0(void* ret, const CString* s) { FUN_14071a2e0(ret); return ret; }
+ATL::CTimeSpan FUN_140718cd0(const CString& s) { return ATL::CTimeSpan(); }
 
 // Parses "D-h-m-s" into a CTimeSpan.
 // @0x140718d00
-ATL::CTimeSpan* FUN_140718d00(ATL::CTimeSpan* ret, const CString* s) {
-    Unk_Bytes parts[0x20];
-    FUN_140163230(parts);
-    FUN_14015f050(s, parts, "-");
+ATL::CTimeSpan FUN_140718d00(const CString& s) {
+    CAtlArray<CString> parts;
+    FUN_14015f050(&s, &parts, "-");
     int six = 6;
-    int vals[6] = {0, 0, 0, 0, 0, 0};
-    int cnt = (int)FUN_1401662c0(parts);
+    int vals[6] = {};
+    int cnt = (int)FUN_1401662c0(&parts);
     int n = *FUN_1402fbd20(&six, &cnt);
     for (int i = 0; i < n; ++i)
-        vals[i] = atoi(*FUN_140164930(parts, i));
-    if (vals[2] < 0 || vals[2] > 31 || vals[3] < 0 || vals[3] > 23 || vals[4] < 0 || vals[4] > 59 || vals[5] < 0 || vals[5] > 59)
-        FUN_140718cd0(ret, s);
-    else
-        new (ret) ATL::CTimeSpan(vals[2], vals[3], vals[4], vals[5]);
-    FUN_1401641d0(parts);
-    return ret;
+        vals[i] = atoi(*FUN_140164930(&parts, i));
+    if (vals[2] < 0 || vals[2] > 31)
+        return FUN_140718cd0(s);
+    if (vals[3] < 0 || vals[3] > 23)
+        return FUN_140718cd0(s);
+    if (vals[4] < 0 || vals[4] > 59)
+        return FUN_140718cd0(s);
+    if (vals[5] < 0 || vals[5] > 59)
+        return FUN_140718cd0(s);
+    return ATL::CTimeSpan(vals[2], vals[3], vals[4], vals[5]);
 }
 
 // @0x140718f90
@@ -186,7 +194,7 @@ CString FUN_140719390(double v) { CString s; s.Format("%lf", v); return s; }
 // @0x140719410
 CString FUN_140719410(const CString& v) { return v; }
 // @0x140719460
-void* FUN_140719460(void* ret, const CStringW& s) { FUN_14016a600(ret, (const wchar_t*)s, 0); return ret; }
+CStringA FUN_140719460(const CStringW& s) { return FUN_14016a600(s, 0); }
 // @0x1407194b0
 CString FUN_1407194b0(__int64 v) { CString s; s.Format("%I64d", v); return s; }
 // @0x140719530
@@ -206,7 +214,7 @@ CStringW FUN_1407197a0(float v) { CStringW s; s.Format(L"%f", (double)v); return
 // @0x140719830
 CStringW FUN_140719830(double v) { CStringW s; s.Format(L"%lf", v); return s; }
 // @0x1407198b0
-void* FUN_1407198b0(void* ret, const CStringA& s) { FUN_14016a730(ret, (const char*)s, 0); return ret; }
+CStringW FUN_1407198b0(const CStringA& s) { return FUN_14016a730(s, 0); }
 // @0x140719900
 CStringW FUN_140719900(CStringW v) { return v; }
 // @0x140719960
@@ -224,7 +232,7 @@ CStringW FUN_140719b00(unsigned short v) { return StringFormat(L"{0}", v); }
 // @0x140719b50
 CStringW FUN_140719b50(short v) { return StringFormat(L"{0}", v); }
 // @0x140719ba0
-CStringW FUN_140719ba0(const float* v) { return StringFormat(L"{0},{1},{2}", v[0], v[1], v[2]); }
+CStringW FUN_140719ba0(const float* v) { return StringFormat(L"{0},{1},{2}", *v, *(v + 1), *(v + 2)); }
 
 // ---- text -> vector parsing -------------------------------------------------------------------------------------------
 // @0x140719c00

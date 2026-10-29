@@ -39,7 +39,7 @@ public:
     CStringW FUN_1416fc250(CStringW str);                   // the part after ':' of a marker
     void FUN_1416fc320(CStringW& str, WordMap& map);        // expands the "$word:arg$" markers of str by map
     void FUN_1416fc540(CStringW& str, TextMap& map);        // expands the "[tag ... ]" colour tags of str by map
-    void FUN_1416fc6f0();
+    void FUN_1416fc6f0(CStringW& str);
     void FUN_1416fc710(CStringW& str, int nCount);          // picks "singular:.." or "plural:.." of the first marker by nCount
 
 private:

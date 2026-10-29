@@ -126,7 +126,7 @@ public:
     Cube* FUN_1410b8e60(egf::Entity* pEntity);
     Cube* FUN_1410b8f30(Vector3 ptFrom, Vector3* pHit, float fRange);
     Vector3 FUN_1410b9150(Vector3 ptIn);
-    bool FUN_1410b9330(void* pArg, Vector3 pt, float fStep, Vector3* pOutPos, Vector3* pOutRot, int* pnResult, void** ppHit);
+    int FUN_1410b9330(void* pArg, Vector3 pt, float fStep, Vector3* pOutPos, Vector3* pOutRot, int* pnResult, void** ppHit);
     int FUN_1410d1320(void* pArg, Vector3 pt, float fStep, Vector3* pOut);
     int FUN_1410d1820(void* pArg, int nDir, Vector3 pt, Vector3 ptCur, void** ppFound);
     Cube* FUN_1410b9850(int nItemId);
@@ -191,12 +191,12 @@ public:
     bool FUN_1410d58c0(unsigned __int64 key);
     void FUN_1410d5930(Unk_CMISTree<286>* pOut);
     void* FUN_1410c5420(Unk_CMISEntityRef key);
-    int FUN_1410cb420(const Unk_CMISEntityRef* pRef);
+    int FUN_1410cb420(Unk_CMISEntityRef ref);
     int FUN_1410d2730(const Unk_Int3* pPt);
     int FUN_1410d4340(Unk_CubePoint* pOut);
     void FUN_1410c4d80(const Vector3& pt, float fDist);
     bool FUN_1410c2840(Vector3 pt, float fDist);
-    bool FUN_1410d2340(const Unk_CMISPt2* a, const Unk_CMISPt2* b, float fLimX, float fLimY);
+    int FUN_1410d2340(const Unk_CMISPt2* a, const Unk_CMISPt2* b, float fLimX, float fLimY);
     void FUN_1410caa60(const CString* pKey, int v);
     void FUN_1410c51d0(int nA, int nB, CStringW strName);
     __int64 FUN_1410c8030(int nA, int nB);
@@ -230,7 +230,7 @@ public:
     void FUN_1410c6820(int nIdx);
     void GenerateAreaPhysX(int n);                  // 0x1410c6100
     int FUN_1410c6b90(unsigned nMask, int* pOutGroup, int nMode, Unk_CMISEntityRef* pOutEnt);
-    bool FUN_1410d27c0(__int64 nOwner, int nMode, int* pCount, int* pLimit);
+    int FUN_1410d27c0(__int64 nOwner, int nMode, int* pCount, int* pLimit);
     void FUN_1410cbb40(struct Unk_CMISXformVec* pOut, int nMode, int nGroup, Vector3 ptPlayer, Unk_Int3 cell, bool bRot, int nMs);
     Vector3 FUN_1410c54a0(Unk_EntRef spEnt);
     void FUN_1410ce560();
@@ -242,7 +242,7 @@ public:
     void FUN_1410c3fc0(PCBase* pActor, float* pOutLo, float* pOutHi);
     int FUN_1410d2da0(int nKey, Unk_Int3 pt);
     int FUN_1410d23f0(int nGroup, int nBlock);
-    bool FUN_1410d2130(Cube* pCube, int nDir, float fSize, float* pOutXY, Vector3* pOutPt);
+    int FUN_1410d2130(Cube* pCube, int nDir, float fSize, float* pOutXY, Vector3* pOutPt);
     int FUN_1410d2590(Unk_Int3 pt, int nGroup, int nBlock);
     void FUN_1410d4450(__int64 nId, int nIdx, CStringA strName, __int64 nValue);
     void FUN_1410d4710(__int64 nId, int nIdx, CStringA strName, __int64 nValue);
@@ -250,7 +250,7 @@ public:
     unsigned __int64 FUN_1410d50c0();
     void FUN_1410d5190(unsigned __int64* pCubes, unsigned __int64* pOthers);
     void SendRequestCubeMode31();
-    bool FUN_1410c8470(int nA, int nB, int* pState, __int64* pValue);
+    int FUN_1410c8470(int nA, int nB, int* pState, __int64* pValue);
     bool FUN_1410c80d0(int nGroup);
     int FUN_1410c8580(int nGroup);
     Unk_CubeOwnerMap* FUN_1410c78b0(int nGroup);
@@ -296,7 +296,7 @@ public:
     void FUN_1410c9db0();
     void FUN_1410cb4c0(struct Unk_CMISBlock rec);
     void FUN_1410c8a90();
-    bool FUN_1410d2fb0(__int64 nOwnerId, int nCategory, int* pnCount);
+    int FUN_1410d2fb0(__int64 nOwnerId, int nCategory, int* pnCount);
     unsigned __int64 FUN_1410d4940();
     int FUN_1410c7110(int* pCell);
     bool FUN_1410c7500(CString* pOut);

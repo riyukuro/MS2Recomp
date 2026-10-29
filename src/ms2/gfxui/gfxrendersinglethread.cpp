@@ -9,14 +9,11 @@
 // GFxManager::FUN_1422f58f0.
 #include "ms2/placeholder/ms2stdafx.h"
 #include <string.h>
-
 #include <NiDX9Renderer.h>
 #include <NiDX92DBufferData.h>
 #include <NiRenderFrame.h>
 #include <ecr/RenderService.h>
 #include <ecr/RenderSurface.h>
-
-#include "Render/D3D9/D3D9_HAL.h"
 
 #include "gfxrendersinglethread.h"
 #include "ms2/placeholder/gfxmanager.h"

@@ -32,7 +32,7 @@ class UGCKeyMode : public CPtred
 {
 public:
     UGCKeyMode();                                           // 0x140ef1bc0
-    virtual ~UGCKeyMode();                                  //  0 0x140ef4c20 (??_G 0x140ef4d90)
+    // ~UGCKeyMode() is implicit                         //  0 0x140ef4c20 (??_G 0x140ef4d90; no vptr reset)
     virtual void vfunc_1();                                 //  1 0x140ef1c00 (leave the mode: FUN_141adbdc0(ui, 1))
     virtual void vfunc_2(void*, float, float) {}                               //  2 0x140ef4e30
     virtual void vfunc_3(void*, float, float) {}                               //  3 0x140ef4e10
@@ -47,7 +47,7 @@ class UGCKeyMode1 : public UGCKeyMode
 {
 public:
     UGCKeyMode1();                                          // 0x140ef1c30
-    virtual ~UGCKeyMode1();                                 //  0 0x140ef4be0 (??_G 0x140ef4d10)
+    // ~UGCKeyMode1() is implicit                         //  0 0x140ef4be0 (??_G 0x140ef4d10; no vptr reset)
     virtual void vfunc_1();                                 //  1 0x140ef1c70 ray cast: preview the picked cube
     virtual void vfunc_5(void*, float, float);              //  5 0x140ef21c0 place / remove
     virtual void vfunc_7(void*, float, float, float f);     //  7 0x140ef22d0 wheel: next / previous cube
@@ -58,19 +58,19 @@ class UGCKeyMode2 : public UGCKeyMode
 {
 public:
     UGCKeyMode2();                                          // 0x140ef2330
-    virtual ~UGCKeyMode2();                                 //  0 0x140ef4c00 (??_G 0x140ef4d50)
+    // ~UGCKeyMode2() is implicit                         //  0 0x140ef4c00 (??_G 0x140ef4d50; no vptr reset)
     virtual void vfunc_1();                                 //  1 0x140ef2370
     virtual void vfunc_5(void*, float, float);              //  5 0x140ef2810
 };
 MS2_CHECK_SIZE(UGCKeyMode2, 0x18);
 
 // The editor's input forwarder: owns the current key mode and passes the mouse events through (slot 0 = the per-frame
-// update). No virtual destructor (0x140ef04e0 is the plain destructor).
+// update). No virtual destructor (0x140ef04e0 is the implicit plain destructor).
 class UGCKeyController
 {
 public:
     UGCKeyController();                                     // 0x140ef2920 (starts in UGCKeyMode1)
-    ~UGCKeyController();                                    // 0x140ef04e0
+    // ~UGCKeyController() is implicit                     // 0x140ef04e0 (~MS2Ptr<UGCKeyMode> m_mode only)
     virtual void vfunc_0();                                 //  0 0x140ef29c0 mode->vfunc_1()
     virtual void vfunc_1(void* p, float x, float y);        //  1 0x140ef2ba0
     virtual void vfunc_2(void* p, float x, float y);        //  2 0x140ef2c30

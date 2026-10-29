@@ -40,7 +40,7 @@ struct Unk_PnContentPtr
 class Unk_PnContentArray
 {
 public:
-    int FUN_14078fae0() const;                                  // GetCount
+    size_t FUN_14078fae0() const;                               // GetCount
     const Unk_PnContentPtr& FUN_14078f350(__int64 i) const;     // GetAt
 };
 class Unk_PnTalkScript
@@ -263,13 +263,12 @@ void UIPopupNpcTalkDialog::FUN_140e770a0(NotifyObject*)
 // @0x140e771b0
 void UIPopupNpcTalkDialog::FUN_140e771b0(NotifyObject*) { FUN_140e77300(); }
 
-// MS2-FUNCTIONAL: the exe stores the first step value before the quest call (a constant-store sequence no source form reproduced).
 // @0x140e771e0
 void UIPopupNpcTalkDialog::FUN_140e771e0(int nQuest)
 {
     if (!FUN_140166410()->FUN_14036d570(0x95))
         return;
-    int nStep = 100;
+    int nStep = 0;
     if (FUN_140764020()->FUN_1407456d0(nQuest) != 0)
         nStep = 300;
     else
@@ -288,7 +287,6 @@ void UIPopupNpcTalkDialog::FUN_140e771e0(int nQuest)
 // @0x140e77300
 void UIPopupNpcTalkDialog::FUN_140e77300() { m_198.RemoveAll(); }
 
-// MS2-FUNCTIONAL: behaviour-equivalent; the exe's MS2Ptr/script temporaries use a larger frame (0x268 vs 0x218) and the child lookups are spelled differently.
 // @0x140e77330
 int UIPopupNpcTalkDialog::FUN_140e77330()
 {
@@ -297,50 +295,47 @@ int UIPopupNpcTalkDialog::FUN_140e77330()
         return 0;
     if (m_188.IsNull())
         return 0;
-    if (m_180 >= m_188.FUN_14085a610()->m_contents.FUN_14078fae0())
+    if (m_180 >= (int)m_188.FUN_14085a610()->m_contents.FUN_14078fae0())
         return 2;
     int nDone = FUN_140764020()->FUN_1407456d0(m_184);
     CCinematicContent* pCin = dynamic_cast<CCinematicContent*>((CScriptContent*)m_188.FUN_14085a610()->m_contents.FUN_14078f350(m_180).FUN_140e78000());
     if (pCin != 0)
         static_cast<Unk_PnRoot*>(FUN_1409ee290(&m_30))->FUN_1409b46e0("setPortrait", pCin->m_speakerIllust);
     CStringW strNpc;
-    if (nDone == 0)
-        strNpc = FUN_1401aa6a0(spQuest->m_2e8);
-    else
+    if (nDone != 0)
         strNpc = FUN_1401aa6a0(spQuest->m_2ec);
+    else
+        strNpc = FUN_1401aa6a0(spQuest->m_2e8);
     static_cast<Unk_PnRoot*>(FUN_1409ee290(&m_30))->FUN_140acd130("setNpc", strNpc);
-    MS2Ptr<ASTextField> spScript = FUN_140bb4cf0("m_script");
-    if (spScript.get() != 0)
+    if (MS2Ptr<ASTextField> spScript = FUN_140bb4cf0("m_script"))
     {
         CStringW strText = m_188.FUN_14085a610()->m_contents.FUN_14078f350(m_180).FUN_14078f3d0()->m_strText;
         FUN_1403b4750()->FUN_1416fb300(strText);
         spScript->FUN_1422c4f00(strText);
     }
-    bool bLast = m_180 == m_188.FUN_14085a610()->m_contents.FUN_14078fae0() - 1;
-    MS2Ptr<Unk_PnButton> spEnd = FUN_140bb4b10("m_end");
-    if (spEnd.get() != 0)
+    BOOL bLast = m_180 == (int)(m_188.FUN_14085a610()->m_contents.FUN_14078fae0() - 1);
+    if (MS2Ptr<Unk_PnButton> spEnd = FUN_140bb4b10("m_end"))
     {
-        if (bLast)
-            spEnd->vfunc_3(0);
-        else
+        if (!bLast)
         {
-            CStringW strEnd = FUN_1405c2690(CStringW(L"s_field_quest_talk_end"), FUN_1409331f0()->FUN_14142d220(1));
+            CStringW strEnd = FUN_1405c2690(L"s_field_quest_talk_end", FUN_1409331f0()->FUN_14142d220(1));
             spEnd->FUN_1422cdfb0(strEnd);
             spEnd->vfunc_3(1);
         }
+        else
+            spEnd->vfunc_3(0);
     }
-    MS2Ptr<Unk_PnButton> spNext = FUN_140bb4b10("m_next");
-    if (spNext.get() != 0)
+    if (MS2Ptr<Unk_PnButton> spNext = FUN_140bb4b10("m_next"))
     {
         CStringW strKey(L"s_field_quest_talk_next");
         if (bLast)
         {
-            if (FUN_140764020()->FUN_1407456d0(m_184) == 0)
-                strKey = L"s_field_quest_talk_ok";
-            else
+            if (FUN_140764020()->FUN_1407456d0(m_184) != 0)
                 strKey = L"s_field_quest_talk_complete";
+            else
+                strKey = L"s_field_quest_talk_ok";
         }
-        CStringW strNext = FUN_1405c2690(CStringW(strKey), FUN_1409331f0()->FUN_14142d760(0x493e2, 0));
+        CStringW strNext = FUN_1405c2690(strKey, FUN_1409331f0()->FUN_14142d760(0x493e2, 0));
         spNext->FUN_1422cdfb0(strNext);
     }
     return 1;

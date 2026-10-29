@@ -530,9 +530,6 @@ void UIGuideEvent::FUN_14195ab40(unsigned int guideId, unsigned int stringId, in
 // ---- UIGuideEventArrow ----
 // @0x14195dd10
 UIGuideEventArrow::UIGuideEventArrow() : m_pos(), m_direction(0), m_align(0), m_textId(0), m_useCount(1) {}
-// @0x1419609a0
-// MS2-FUNCTIONAL: temp/frame layout and callee typing differ (opaque exe helpers)
-UIGuideEventArrow::~UIGuideEventArrow() {}
 // @0x14195dd90
 void UIGuideEventArrow::vfunc_1(MS2Ptr<AScript> movie)
 {
@@ -548,30 +545,29 @@ void UIGuideEventArrow::vfunc_1(MS2Ptr<AScript> movie)
     movie->Invoke("updateArrow", info);
 }
 // @0x14195dee0
-// MS2-FUNCTIONAL: temp/frame layout and callee typing differ (opaque exe helpers)
 int UIGuideEventArrow::vfunc_2(void* out)
 {
-    Vector3* pos = (Vector3*)out;
     if (FUN_141274f80() != 0)
         return 0;
-    *pos = DAT_143b01a60;
-    if (!FUN_1409478c0()->FUN_140af0700(m_pos, *pos))
-        return 0;
-    FUN_140ad0c10(pos, FUN_141adbe70(FUN_1403ed2b0()));
-    pos->y += FUN_1412762d0(m_pos);
-    return 1;
+    *(Vector3*)out = DAT_143b01a60;
+    if (FUN_1409478c0()->FUN_140af0700(m_pos, *(Vector3*)out))
+    {
+        FUN_140ad0c10((Vector3*)out, FUN_141adbe70(FUN_1403ed2b0()));
+        ((Vector3*)out)->y += FUN_1412762d0(m_pos);
+        return 1;
+    }
+    return 0;
 }
 // @0x14195dfa0
 void UIGuideEventArrow::FUN_14195dfa0() { m_useCount++; }
 // @0x14195dfc0
-// MS2-FUNCTIONAL: temp/frame layout and callee typing differ (opaque exe helpers)
-int UIGuideEventArrow::FUN_14195dfc0()
+void UIGuideEventArrow::FUN_14195dfc0()
 {
     if (m_useCount == 0) {
         MS2_ASSERT_AT(0x27, 0);
-        return 0;
+        return;
     }
-    return --m_useCount;
+    m_useCount--;
 }
 // @0x14195e020
 int UIGuideEventArrow::GetUseCount() { return m_useCount; }
@@ -579,9 +575,6 @@ int UIGuideEventArrow::GetUseCount() { return m_useCount; }
 // ---- UIGuideEventArrowDialog ----
 // @0x14195e040
 UIGuideEventArrowDialog::UIGuideEventArrowDialog() : m_38(0), m_48(-1), m_kind(0), m_param(0) {}
-// @0x1419609c0
-// MS2-FUNCTIONAL: temp/frame layout and callee typing differ (opaque exe helpers)
-UIGuideEventArrowDialog::~UIGuideEventArrowDialog() {}
 
 // @0x14195e0e0
 int UIGuideEventArrowDialog::vfunc_2(void* out)

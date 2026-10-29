@@ -57,7 +57,7 @@ public:
     CEnchantTransformDataPtr FUN_140592430(int nItemId, EnchantTransformRank eRank, int nLimitLevel, int nEnchantLevel, int nSlot);
     CEnchantTransformDataPtr FUN_1405924d0(MS2Ptr<CItem> spItem);   // the row of an item
     unsigned int FUN_140592620(unsigned int nItemId);       // the lowest input enchant level of an item id
-    static CString FUN_140592090(int nItemId, EnchantTransformRank eRank, int nLimitLevel, int nEnchantLevel, int nSlot);   // row key
+    static CString FUN_140592090(unsigned int nItemId, EnchantTransformRank eRank, unsigned int nLimitLevel, unsigned int nEnchantLevel, unsigned int nSlot);   // row key
     static void CheckInit();                                // 0x1405931f0
     static void SetInit(bool b);                            // 0x1405940e0
     static bool s_bInit;                                    // DAT_143aafb58
@@ -66,7 +66,7 @@ private:
     MS2_LAYOUT_FRIEND;
     CLockCriticalSection m_lock;                            // +0x10
     MS2Ptr<CCacheData> m_spCache;                           // +0x40
-    ATL::CAtlMap<CString, CEnchantTransformDataPtr, ATL::CStringElementTraits<CString> > m_map;   // +0x50 key -> row
+    ATL::CAtlMap<CString, CEnchantTransformDataPtr, ATL::CStringElementTraitsI<CString> > m_map;  // +0x50 key -> row (case-insensitive)
     ATL::CAtlMap<unsigned int, unsigned int> m_mapLimit;    // +0x98 item id -> lowest input enchant level
 };
 MS2_CHECK_SIZE(CItemEnchantTransformTable, 0xe0);

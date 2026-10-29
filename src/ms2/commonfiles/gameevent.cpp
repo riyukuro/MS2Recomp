@@ -472,7 +472,7 @@ template <> inline Unk_DayTime XmlConvert<Unk_DayTime>(const CString& str)
     return Unk_DayTime();
 }
 
-// An "a,b" attribute into a range (any other token count fails with TIXML_WRONG_TYPE, 2).
+// An "a-b" attribute into a range (any other token count fails with TIXML_WRONG_TYPE, 2).
 template <class T> int XmlValueRange(Unk_140165cf0* pElem, const char* pszName, T& range)
 {
     CString str;
@@ -480,7 +480,7 @@ template <class T> int XmlValueRange(Unk_140165cf0* pElem, const char* pszName, 
     if (nRet == 0)
     {
         ATL::CAtlArray<typename T::ValueType> values;
-        XmlSplit(str, values, ",");
+        XmlSplit(str, values, "-");
         if (values.GetCount() != 2)
             return 2;
         range.Init(values[0], values[1]);

@@ -1,0 +1,12 @@
+62c
+    void* pvMem = EE_EXTERNAL_ALIGNED_REALLOC(pvMemory, stSizeInBytes, stAlignment);
+    if (pvMem == NULL)  // MS2: the exe throws on failure (0x141807ad0)
+        throw std::bad_alloc();
+    return pvMem;
+.
+30c
+    void* pvMem = EE_EXTERNAL_ALIGNED_MALLOC(stSizeInBytes, stAlignment);
+    if (pvMem == NULL)  // MS2: the exe throws on failure (0x141806d10)
+        throw std::bad_alloc();
+    return pvMem;
+.

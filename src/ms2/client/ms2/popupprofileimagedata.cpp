@@ -196,17 +196,16 @@ int CPopupProfileImageData::FUN_141697200(int nNow)
 MS2_REPLACE_METHOD(0x141697200, CPopupProfileImageData, FUN_141697200, 80, 0x8577550E);
 
 // @0x141697260
-// MS2-FUNCTIONAL: frame-slot order of the locals/temps differs from the exe (permuter lane)
 int CPopupProfileImageData::FUN_141697260(int nNow)
 {
-    int nTime = m_nTime;
-    int nDelay = FUN_1409670d0()->FUN_14162ae20(m_nId);
-    if (nDelay == 1)
+    unsigned int nElapsed = nNow - m_nTime;
+    unsigned int nDelay = 0;
+    if (FUN_1409670d0()->FUN_14162ae20(m_nId) == 1)
         nDelay = FUN_141697bc0(&FUN_1401d3200()->m_expireB);
     else
         nDelay = FUN_141697bc0(&FUN_1401d3200()->m_expireA);
-    int nBase = FUN_141697bc0(&FUN_1401d3200()->m_expire);
-    if ((unsigned int)(nDelay + nBase) <= (unsigned int)(nNow - nTime))
+    nDelay += FUN_141697bc0(&FUN_1401d3200()->m_expire);
+    if (nElapsed >= nDelay)
         return 1;
     return 0;
 }
@@ -226,7 +225,6 @@ CPopupProfileImageMan::~CPopupProfileImageMan()
 }
 
 // @0x141697430
-// MS2-FUNCTIONAL: frame-slot order of the MS2Ptr/handle temps differs from the exe
 void CPopupProfileImageMan::FUN_141697430()
 {
     int nNow = FUN_140869420();
@@ -243,29 +241,28 @@ void CPopupProfileImageMan::FUN_141697430()
             if (spData == 0)
             {
                 expired.AddTail(nId);
+                continue;
             }
-            else if (spData->FUN_141697200(nNow) == 1)
+            if (spData->FUN_141697200(nNow) == 1)
             {
                 Unk_PpEntity* pEntity = FUN_1403ed2d0()->FUN_141bd1530(nId);
-                bool bFound = pEntity != 0 && pEntity->vfunc_86().FUN_1416676a0() != 0;
+                bool bFound = pEntity != 0 && (pEntity->vfunc_86().FUN_1416676a0() ? true : false);
                 if (bFound)
                     pEntity->vfunc_86().FUN_141667730()->vfunc_3();
                 expired.AddTail(nId);
             }
         }
-        POSITION posExpired = expired.GetHeadPosition();
-        while (posExpired != 0)
+        for (POSITION posExpired = expired.GetHeadPosition(); posExpired != 0; expired.GetNext(posExpired))
         {
             unsigned __int64 nId = expired.GetAt(posExpired);
             m_shown.RemoveKey(nId);
-            expired.GetNext(posExpired);
         }
+        expired.RemoveAll();
     }
 }
 MS2_REPLACE_METHOD(0x141697430, CPopupProfileImageMan, FUN_141697430, 800, 0x76498148);
 
 // @0x141697760
-// MS2-FUNCTIONAL: frame-slot order of the MS2Ptr/guard temps differs from the exe
 int CPopupProfileImageMan::FUN_141697760(unsigned __int64 nId)
 {
     if (Unk_LockGuard guard = m_lock)
@@ -274,8 +271,7 @@ int CPopupProfileImageMan::FUN_141697760(unsigned __int64 nId)
     else
     {
         int nNow = FUN_140869420();
-        size_t nCount = m_shown.GetCount();
-        if (*FUN_1402056b0(&FUN_1401d3200()->m_maxCount) <= (int)nCount)
+        if ((int)m_shown.GetCount() >= *FUN_1402056b0(&FUN_1401d3200()->m_maxCount))
             return 0;
         DataPtr spData(0);
         if (m_shown.Lookup(nId, spData))
@@ -288,9 +284,14 @@ int CPopupProfileImageMan::FUN_141697760(unsigned __int64 nId)
         if (m_pending.Lookup(nId, spData) == 0)
             bNew = 1;
         if (spData == 0)
+        {
+            spData.AssignRaw(new CPopupProfileImageData);
+            spData->FUN_141697180(nId);
+        }
+        else
+        {
             return 0;
-        spData.AssignRaw(new CPopupProfileImageData);
-        spData->FUN_141697180(nId);
+        }
         if (bNew != 0)
             m_pending.SetAt(nId, spData);
         spData->SetTime(nNow);
@@ -301,7 +302,6 @@ int CPopupProfileImageMan::FUN_141697760(unsigned __int64 nId)
 MS2_REPLACE_METHOD(0x141697760, CPopupProfileImageMan, FUN_141697760, 627, 0x2C413CDA);
 
 // @0x1416979e0
-// MS2-FUNCTIONAL: frame-slot order of the MS2Ptr/handle temps differs from the exe
 void CPopupProfileImageMan::FUN_1416979e0(unsigned __int64 nId)
 {
     if (Unk_LockGuard guard = m_lock)
@@ -313,7 +313,7 @@ void CPopupProfileImageMan::FUN_1416979e0(unsigned __int64 nId)
         if (m_shown.Lookup(nId, spData))
             m_shown.RemoveKey(nId);
         Unk_PpEntity* pEntity = FUN_1403ed2d0()->FUN_141bd1530(nId);
-        bool bFound = pEntity != 0 && pEntity->vfunc_86().FUN_1416676a0() != 0;
+        bool bFound = pEntity != 0 && (pEntity->vfunc_86().FUN_1416676a0() ? true : false);
         if (bFound)
             pEntity->vfunc_86().FUN_141667730()->vfunc_3();
     }

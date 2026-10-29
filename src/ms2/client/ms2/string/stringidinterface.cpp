@@ -45,7 +45,7 @@ public:
     // @0x141025530
     ~Unk_StringArgFormatter() {}
     void FUN_140840530(CStringW strArg);                                // appends one argument
-    CStringW FUN_1408405d0();                                           // the formatted text
+    operator CStringW();                                                // the formatted text (@0x1408405d0)
 private:
     CStringW m_strFormat;                                               // +0x00
     int m_nCount;                                                       // +0x08
@@ -100,7 +100,6 @@ StringIdInterface::StringIdInterface(CInPacket& packet)
 }
 
 // @0x141024e60
-// MS2-FUNCTIONAL: exe frame is 0x10 larger (an unused 8-byte slot below the format string), no source form found
 CStringW StringIdInterface::FUN_141024e60()
 {
     if (formatted)
@@ -122,17 +121,21 @@ CStringW StringIdInterface::FUN_141024e60()
         Unk_StringArgFormatter formatter(strFormat);
         for (size_t i = 0; i < FUN_14015a000(arguments); i++)
             formatter.FUN_140840530(FUN_14025e580(arguments, i));
-        CStringW strBuilt = formatter.FUN_1408405d0();
-        CStringW strResult = strBuilt;
+        CStringW strResult = formatter;
         FUN_1403b4750()->FUN_1416fb300(strResult);
         return strResult;
     }
-    if (kind == 0)
-        return CStringW(text);
-    else if (kind == 5)
-        return GetStringCommonByKey(text);
     else
-        return CStringW(L"");
+    {
+        switch (kind)
+        {
+        case 0:
+            return CStringW(text);
+        case 5:
+            return GetStringCommonByKey(text);
+        }
+    }
+    return CStringW(L"");
 }
 
 // @0x141025250

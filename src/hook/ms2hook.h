@@ -103,12 +103,37 @@ template <class F> inline void* MemberToVoid(F f) {
     std::memcpy(&p, &f, sizeof p);
     return p;
 }
+// How a method thunk takes and forwards one by-value argument. A class the callee destroys (non-trivial copy or dtor)
+// must reach the method without a copy: copying through the copy ctor and destroying the thunk's own parameter
+// released handles twice whose implicit copy adds no reference (Unk_WsR3f0Val, Unk_GaugeRef). The thunk takes the
+// object's bytes instead (same Win64 slot: a register for 1/2/4/8 bytes, else a pointer to the caller's object) and
+// moves them bitwise into the method's parameter through a prvalue (C++17 elision), so only the method destroys it,
+// as the exe's caller expects. Returning a non-trivial class always uses a hidden pointer (rcx for a free function),
+// so BitMove(dst, src) has the ABI of T(RawArg<T>*).
+template <class T> struct alignas(T) RawArg { unsigned char b[sizeof(T)]; };
+template <class T, bool = std::is_class<T>::value &&
+                          !(std::is_trivially_copy_constructible<T>::value && std::is_trivially_destructible<T>::value)>
+struct ArgPass {
+    using Type = T;
+    static T&& Get(T& a) { return static_cast<T&&>(a); }
+};
+template <class T> struct ArgPass<T, true> {
+    using Type = RawArg<T>;
+    static void* BitMove(void* dst, const void* src) { return std::memcpy(dst, src, sizeof(T)); }
+    static T Get(RawArg<T>& a) { return reinterpret_cast<T (*)(RawArg<T>*)>(&BitMove)(&a); }
+};
 template <class Thunk, class Sig> struct MemberThunk;
 template <class Thunk, class C, class R, class... A> struct MemberThunk<Thunk, R (C::*)(A...)> {
-    static void* Get() { R (Thunk::*p)(A...) = &Thunk::template Call<R, A...>; return MemberToVoid(p); }
+    static void* Get() {
+        R (Thunk::*p)(typename ArgPass<A>::Type...) = &Thunk::template Call<R, A...>;
+        return MemberToVoid(p);
+    }
 };
 template <class Thunk, class C, class R, class... A> struct MemberThunk<Thunk, R (C::*)(A...) const> {
-    static void* Get() { R (Thunk::*p)(A...) const = &Thunk::template CallC<R, A...>; return MemberToVoid(p); }
+    static void* Get() {
+        R (Thunk::*p)(typename ArgPass<A>::Type...) const = &Thunk::template CallC<R, A...>;
+        return MemberToVoid(p);
+    }
 };
 }  // namespace detail
 }  // namespace hook
@@ -151,12 +176,13 @@ template <uintptr_t VA, class T> struct Global {
        symbols and the linker folded them (a hook ran another unit's method: client crash). */              \
     namespace {                                                                                             \
     struct MS2_CAT(ms2_thunk_, __LINE__) : Base {                                                           \
-        template <class R, class... A> R Call(A... a) {                                                     \
-            return static_cast<Class*>(static_cast<Base*>(this))->Class::Method(std::forward<A>(a)...);     \
+        template <class R, class... A> R Call(typename ::ms2::hook::detail::ArgPass<A>::Type... a) {         \
+            return static_cast<Class*>(static_cast<Base*>(this))->Class::Method(                            \
+                ::ms2::hook::detail::ArgPass<A>::Get(a)...);                                                \
         }                                                                                                   \
-        template <class R, class... A> R CallC(A... a) const {                                              \
+        template <class R, class... A> R CallC(typename ::ms2::hook::detail::ArgPass<A>::Type... a) const { \
             return static_cast<const Class*>(static_cast<const Base*>(this))->Class::Method(                \
-                std::forward<A>(a)...);                                                                     \
+                ::ms2::hook::detail::ArgPass<A>::Get(a)...);                                                \
         }                                                                                                   \
     };                                                                                                      \
     }                                                                                                       \

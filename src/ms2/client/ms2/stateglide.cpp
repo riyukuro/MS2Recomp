@@ -34,6 +34,27 @@ void FUN_141240700(Unk_PCBaseBody* pBody, efd::Point3 kVel);               // 0x
 class Unk_PCBaseBodyDummy;
 class Unk_GlideHit { public: void FUN_140cfaf30(); };
 Unk_GlideHit* FUN_141240f20(Unk_PCBaseBody* pBody);
+
+// The owner's vtable up to slot 68, which takes the move by value (the exe passes a pointer to a copy).
+class Unk_GlOwnerSlots
+{
+public:
+#define MS2_GL_SLOTS(a, b, c, d, e) virtual void vfunc_##a(); virtual void vfunc_##b(); virtual void vfunc_##c(); \
+    virtual void vfunc_##d(); virtual void vfunc_##e();
+    MS2_GL_SLOTS(0, 1, 2, 3, 4) MS2_GL_SLOTS(5, 6, 7, 8, 9) MS2_GL_SLOTS(10, 11, 12, 13, 14)
+    virtual void vfunc_15(); virtual void vfunc_16(); virtual void vfunc_17();
+    virtual efd::Point3 vfunc_18();                                                 // 18 returns the position by value
+    virtual void vfunc_19();
+    virtual void vfunc_20(); virtual void vfunc_21();
+    virtual void vfunc_22(efd::Point3 kDir);                                        // 22 takes the direction by value
+    virtual void vfunc_23(); virtual void vfunc_24();
+    MS2_GL_SLOTS(25, 26, 27, 28, 29) MS2_GL_SLOTS(30, 31, 32, 33, 34)
+    MS2_GL_SLOTS(35, 36, 37, 38, 39) MS2_GL_SLOTS(40, 41, 42, 43, 44) MS2_GL_SLOTS(45, 46, 47, 48, 49)
+    MS2_GL_SLOTS(50, 51, 52, 53, 54) MS2_GL_SLOTS(55, 56, 57, 58, 59) MS2_GL_SLOTS(60, 61, 62, 63, 64)
+    virtual void vfunc_65(); virtual void vfunc_66(); virtual void vfunc_67();
+#undef MS2_GL_SLOTS
+    virtual bool vfunc_68(efd::Point3 kMove, double fTime, int b, unsigned c, int d);   // 68 0x14166e100
+};
 bool FUN_14028d470(float a, float b);                      // approximately equal
 CStringW GetStringCommonByKey(const CStringW& strKey);             // string table text
 void FUN_1412751f0(const CStringW& str, int a, int b);     // 0x1412751f0 chat notice
@@ -53,8 +74,13 @@ class Unk_GlideBuffs { public: int FUN_140970a00(); };
 class Unk_GlideBuff { public: efd::Point3 FUN_141683900(); };
 
 // The actor's player character (+ the buff based speed bonus).
-class Unk_GlideActor { public: int FUN_141662930(int nKey); };
+class Unk_GlideActor { public: float FUN_141662930(int nKey); };
 Unk_GlideActor* FUN_140974230(PCBase* p);
+
+// The cube grid: the cell of a cube key and the centre point of a cell.
+struct Unk_GlCell { Unk_GlCell(); int x, y, z; };
+Unk_GlCell FUN_1408a0400(int nKey);
+efd::Point3 FUN_1408a15b0(Unk_GlCell kCell, efd::Point3& kCentre);     // fills kCentre with the cell centre
 
 // The PhysX helper (0x1409f7ca0): ground below a point.
 class CPhysXHelper;
@@ -62,25 +88,13 @@ CPhysXHelper* FUN_1409f7ca0();
 class Unk_GlidePhys
 {
 public:
-    int FUN_14168a450(efd::Point3 kPos, float* pfDist, float fMaxDist);     // ground below kPos
+    int FUN_14168a450(const efd::Point3& kPos, float* pfDist, float fMaxDist);     // ground below kPos
     bool FUN_14168a770(const efd::Point3* pPoint);
 };
 
-// The efd::utf8string the exe builds out of line (ctor 0x1409989e0, dtor 0x1408a8900; 0x20 bytes).
-void FUN_1409989e0(void* pOut, const char* psz);
-void FUN_1408a8900(void* pStr);
-struct Unk_GlideString
-{
-    Unk_GlideString(const char* psz) { FUN_1409989e0(m_buf, psz); }
-    ~Unk_GlideString() { FUN_1408a8900(m_buf); }
-    operator const efd::utf8string&() const { return *(const efd::utf8string*)m_buf; }
-    char m_buf[0x20];
-};
-
 // @0x1417c8900
-StateGlide::StateGlide(PCBase* pOwner) : StateMoveSkill(pOwner)
+StateGlide::StateGlide(PCBase* pOwner) : StateMoveSkill(pOwner), m_nEffect(0)
 {
-    m_nEffect = 0;
     m_fTime = 0;
     m_fStartZ = 0;
     m_bHeightErr = false;
@@ -103,35 +117,32 @@ StateGlide::~StateGlide()
 }
 
 // @0x1417c8a60
-// MS2-FUNCTIONAL: call-site temporaries and EH frame differ from the exe
 void StateGlide::vfunc_4(StateData* pData)
 {
     StateMoveSkill::vfunc_4(pData);
-    if (m_spRow.IsNull())
+    if (m_spRow == 0)
     {
         m_pOwner->vfunc_59(1, 0, 0, 0);
         return;
     }
     m_fTime = 0;
-    m_fStartZ = m_pOwner->vfunc_18().z;
+    efd::Point3 kCentre(0.0f, 0.0f, 0.0f);
+    FUN_1408a15b0(FUN_1408a0400(m_pOwner->FUN_1416782e0()), kCentre);
+    m_fStartZ = kCentre.z;
     m_bHeightErr = false;
     m_bTooHigh = false;
-    bool bFromGlide;
-    {
-        MS2Ptr<CStateManager> spMgr = m_pOwner->GetStateMgr();
-        bFromGlide = spMgr->GetPrev() == 0x1e;
-    }
+    bool bFromGlide = static_cast<CStateManager*>(m_pOwner->GetStateMgr())->GetPrev() == 0x1e;
     if (bFromGlide)
     {
         m_bTooHigh = FUN_1417ca000() == 0;
         if (m_bTooHigh && m_pOwner->vfunc_108() != 0)
-            FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_err_skill_maximum_Height")), 1, 1);
+            FUN_1412751f0(GetStringCommonByKey(L"s_err_skill_maximum_Height"), 1, 1);
     }
     ((Unk_GlideBody*)m_pOwner->FUN_14166d220())->FUN_141240730();
     MyPC* pPC = FUN_1417b84b0();
     if (pPC != 0)
     {
-        efd::Point3 kPos = pPC->vfunc_18();
+        efd::Point3 kPos = reinterpret_cast<Unk_GlOwnerSlots*>(pPC)->vfunc_18();
         if (((Unk_GlidePhys*)FUN_1409f7ca0())->FUN_14168a770(&kPos))
         {
             pPC->vfunc_59(1, 0, 0, 0);
@@ -143,48 +154,48 @@ void StateGlide::vfunc_4(StateData* pData)
     m_nAnim = 99;
     Unk_EffectQuery query;
     query.m_strName = m_spRow->m_strEffectB;
+    query.m_nObject = 0;
     query.SetActor(m_pOwner->FUN_14123c580());
+    query.m_bFlag31 = true;
     m_nEffect = FUN_1411a49c0(FUN_1403ed280(), &query);
     m_pOwner->vfunc_47(false);
     m_pOwner->FUN_141670330((float)m_spRow->m_nSpeedMul);
     m_pOwner->FUN_141670360((float)m_spRow->m_nSpeedMul);
-    Unk_GlideString strAnim(m_spRow->m_strAnimB);
+    efd::utf8string strAnim(m_spRow->m_strAnimB);
     m_pOwner->FUN_14166dd20(strAnim, m_pOwner->FUN_1416713c0(), false, false);
 }
 
 // @0x1417c8f60
-// MS2-FUNCTIONAL: call-site temporaries differ from the exe
 void StateGlide::vfunc_3(double fTime)
 {
     State::vfunc_3(fTime);
     if (m_pOwner->FUN_14166d220() != 0)
         FUN_141240f20(m_pOwner->FUN_14166d220())->FUN_140cfaf30();
-    if (m_spRow.IsNull())
+    if (m_spRow == 0)
         return;
     FUN_1417c9880((float)fTime);
-    bool bLand = false;
+    int bLand = 0;
     if (m_spRow->m_bCheckGround)
     {
-        if (m_pOwner->FUN_141671a30() == 0)
+        if (m_pOwner->FUN_141671a30() != 0)
         {
-            efd::Point3 kPos = m_pOwner->vfunc_18();
-            float fDist = 0.0f;
-            if (((Unk_GlidePhys*)FUN_1409f7ca0())->FUN_14168a450(kPos, &fDist, 200.0f) != 0 && fDist < 100.0f)
-                bLand = true;
+            bLand = 1;
         }
         else
         {
-            bLand = true;
+            efd::Point3 kPos = reinterpret_cast<Unk_GlOwnerSlots*>(m_pOwner)->vfunc_18();
+            float fDist = 0.0f;
+            if (((Unk_GlidePhys*)FUN_1409f7ca0())->FUN_14168a450(kPos, &fDist, 200.0f) != 0 && fDist < 100.0f)
+                bLand = 1;
         }
     }
     if (m_pOwner->GetClassID() == 0x6200044)
-        bLand = false;
+        bLand = 0;
     if (((Unk_GlideBuffs*)m_pOwner->FUN_1416749a0())->FUN_140970a00() != 0 || bLand)
         m_pOwner->vfunc_59(1, 0, 0, 0);
 }
 
 // @0x1417c9110
-// MS2-FUNCTIONAL: point temporaries differ from the exe
 void StateGlide::vfunc_5(int n)
 {
     StateMoveSkill::vfunc_5(n);
@@ -202,7 +213,7 @@ void StateGlide::vfunc_5(int n)
     m_spRow.AssignRaw(0);
     MyPC* pPC = FUN_1417b84b0();
     if (pPC != 0)
-        pPC->FUN_141676060(efd::Point3::ZERO);
+        pPC->FUN_141676060(reinterpret_cast<const NiPoint3&>(efd::Point3::ZERO));
     m_pOwner->FUN_14166f8f0(0, 1);
 }
 
@@ -213,12 +224,12 @@ void StateGlide::vfunc_7(int n)
 }
 
 // @0x1417c92a0
-// MS2-FUNCTIONAL: point temporaries differ from the exe
 void StateGlide::vfunc_8(double fTime)
 {
     StateMoveSkill::vfunc_8(fTime);
-    efd::Point3 kDir = ((Unk_GlideBuff*)m_pOwner->FUN_14166d240())->FUN_141683900();
-    m_pOwner->vfunc_22(kDir);
+    Unk_GlideBuff* pBuff = (Unk_GlideBuff*)m_pOwner->FUN_14166d240();
+    efd::Point3 kDir = pBuff->FUN_141683900();
+    reinterpret_cast<Unk_GlOwnerSlots*>(m_pOwner)->vfunc_22(kDir);
     if (m_pOwner->FUN_1416749c0())
         m_n10 = 100;
     else
@@ -226,44 +237,48 @@ void StateGlide::vfunc_8(double fTime)
 }
 
 // @0x1417c9360
-// MS2-FUNCTIONAL: string temporaries and EH frame differ from the exe
 void StateGlide::vfunc_9(double fTime)
 {
-    if (m_nAnim == m_n10)
-        return;
-    if (m_nAnim == 99)
+    if (m_nAnim != m_n10)
     {
-        if (m_nEffect != 0)
+        if (m_nAnim == 99)
         {
-            FUN_1411a6060(FUN_1403ed280(), m_nEffect);
-            Unk_EffectQuery query;
-            query.m_strName = m_spRow->m_strEffectA;
-            query.SetActor(m_pOwner->FUN_14123c580());
-            m_nEffect = FUN_1411a49c0(FUN_1403ed280(), &query);
+            if (m_nEffect != 0)
+            {
+                FUN_1411a6060(FUN_1403ed280(), m_nEffect);
+                Unk_EffectQuery query;
+                query.m_strName = m_spRow->m_strEffectA;
+                query.m_nObject = 0;
+                query.SetActor(m_pOwner->FUN_14123c580());
+                query.m_bFlag31 = true;
+                m_nEffect = FUN_1411a49c0(FUN_1403ed280(), &query);
+            }
+            efd::utf8string strAnim(m_spRow->m_strAnimA);
+            m_pOwner->FUN_14166dd20(strAnim, m_pOwner->FUN_1416713c0(), false, false);
         }
-        Unk_GlideString strAnim(m_spRow->m_strAnimA);
-        m_pOwner->FUN_14166dd20(strAnim, m_pOwner->FUN_1416713c0(), false, false);
-    }
-    else
-    {
-        if (m_nEffect != 0)
+        else
         {
-            FUN_1411a6060(FUN_1403ed280(), m_nEffect);
-            Unk_EffectQuery query;
-            query.m_strName = m_spRow->m_strEffectB;
-            query.SetActor(m_pOwner->FUN_14123c580());
-            m_nEffect = FUN_1411a49c0(FUN_1403ed280(), &query);
+            if (m_nEffect != 0)
+            {
+                FUN_1411a6060(FUN_1403ed280(), m_nEffect);
+                Unk_EffectQuery query;
+                query.m_strName = m_spRow->m_strEffectB;
+                query.m_nObject = 0;
+                query.SetActor(m_pOwner->FUN_14123c580());
+                query.m_bFlag31 = true;
+                m_nEffect = FUN_1411a49c0(FUN_1403ed280(), &query);
+            }
+            efd::utf8string strAnim(m_spRow->m_strAnimB);
+            m_pOwner->FUN_14166dd20(strAnim, m_pOwner->FUN_1416713c0(), false, false);
         }
-        Unk_GlideString strAnim(m_spRow->m_strAnimB);
-        m_pOwner->FUN_14166dd20(strAnim, m_pOwner->FUN_1416713c0(), false, false);
+        m_nAnim = m_n10;
     }
-    m_nAnim = m_n10;
 }
 
 // @0x1417c9660
 bool StateGlide::vfunc_28(MS2Ptr<Unk_StateArg22> p)
 {
-    if (m_spRow.IsNull())
+    if (m_spRow == 0)
         return true;
     return m_spRow->m_nSkill != p->m_n68;
 }
@@ -277,7 +292,7 @@ int StateGlide::vfunc_22(MS2Ptr<Unk_StateArg22> p)
 // @0x1417c9740
 int StateGlide::FUN_1417c9740()
 {
-    if (m_spRow.IsNull())
+    if (m_spRow == 0)
         return 0;
     return m_spRow->FUN_140802ab0();
 }
@@ -291,20 +306,22 @@ bool StateGlide::vfunc_38(StateData* pData)
     if (pGlide == 0)
         return false;
     m_spRow = FUN_1401958b0()->FUN_1407ee470(pGlide->m_n20);
-    return m_spRow.IsNull() == false;
+    if (m_spRow == 0)
+        return false;
+    return true;
 }
 
 // @0x1417c9880
-// MS2-FUNCTIONAL: point temporaries differ from the exe
 void StateGlide::FUN_1417c9880(float fTime)
 {
     m_fTime += fTime;
-    efd::Point3 kForward = FUN_1417c9ee0();
-    efd::Point3 kMove = (FUN_1417c9c00() + kForward) * fTime;
+    efd::Point3 kMove = (FUN_1417c9c00() + FUN_1417c9ee0()) * fTime;
     m_pOwner->FUN_141671960(FUN_1417c9b70());
     FUN_141240700(m_pOwner->FUN_14166d220(), FUN_1417c9ee0());
-    m_pOwner->vfunc_68(&kMove, fTime, 0, 0x10, 1);
+    reinterpret_cast<Unk_GlOwnerSlots*>(m_pOwner)->vfunc_68(kMove, fTime, 0, 0x10, 1);
 }
+
+extern "C" float (__cdecl* __imp_cosf)(float);   // cosf through the CRT import table (the exe calls it indirectly)
 
 // @0x1417c99f0
 float StateGlide::FUN_1417c99f0()
@@ -313,7 +330,7 @@ float StateGlide::FUN_1417c99f0()
         return 0.0f;
     if (FUN_14028d470(m_spRow->m_f38, 0))
         return 0.0f;
-    return m_spRow->m_f34 * cosf((m_fTime * 3.1415927f * 2.0f) / m_spRow->m_f38);
+    return m_spRow->m_f34 * __imp_cosf((m_fTime * 3.1415927f * 2.0f) / m_spRow->m_f38);
 }
 
 // @0x1417c9ad0
@@ -323,8 +340,7 @@ float StateGlide::FUN_1417c9ad0()
     Unk_GlideActor* pActor = FUN_140974230(m_pOwner);
     if (pActor != 0)
     {
-        fBonus = (float)pActor->FUN_141662930(0x73);
-        fBonus = fBonus + 0.0f;
+        fBonus += pActor->FUN_141662930(0x73);
     }
     return m_spRow->m_f30 + m_spRow->m_f30 * fBonus;
 }
@@ -342,7 +358,6 @@ efd::Point3 StateGlide::FUN_1417c9ba0()
 }
 
 // @0x1417c9c00
-// MS2-FUNCTIONAL: float temporaries and the error-notice call layout differ from the exe
 efd::Point3 StateGlide::FUN_1417c9c00()
 {
     if (m_bTooHigh)
@@ -350,63 +365,41 @@ efd::Point3 StateGlide::FUN_1417c9c00()
     float fSway = FUN_1417c99f0();
     float fFall = m_spRow->m_f2c * m_fTime;
     if (!FUN_14028d470(m_spRow->m_f3c, 0))
-    {
-        float fLimit = fFall;
-        if (m_spRow->m_f3c <= fFall && fFall != m_spRow->m_f3c)
-            fLimit = m_spRow->m_f3c;
-        fFall = fLimit;
-    }
-    float fBase = FUN_1417c9ad0();
+        fFall = fFall > m_spRow->m_f3c ? m_spRow->m_f3c : fFall;
+    float fTotal = FUN_1417c9ad0() + fFall;
     if (!m_bHeightErr)
     {
         m_bHeightErr = FUN_1417ca000() == 0;
         if (m_bHeightErr == true && m_pOwner->vfunc_108() != 0)
-            FUN_1412751f0(GetStringCommonByKey(CStringW(L"s_err_skill_maximum_Height")), 1, 1);
+            FUN_1412751f0(GetStringCommonByKey(L"s_err_skill_maximum_Height"), 1, 1);
     }
+    float fZ = m_bHeightErr ? fSway : (fTotal += fSway);
     if (!m_bHeightErr)
-        fSway = fBase + fFall + fSway;
-    float fZ = fSway;
-    if (!m_bHeightErr)
-        fZ = fSway - m_spRow->m_f1c;
+        fZ -= m_spRow->m_f1c;
     return efd::Point3::UNIT_Z * fZ;
 }
 
 // @0x1417c9ee0
-// MS2-FUNCTIONAL: float temporaries differ from the exe
 efd::Point3 StateGlide::FUN_1417c9ee0()
 {
     float fForward = m_spRow->m_f24 * m_fTime;
     if (!FUN_14028d470(m_spRow->m_f40, 0))
-    {
-        float fLimit = fForward;
-        if (m_spRow->m_f40 <= fForward && fForward != m_spRow->m_f40)
-            fLimit = m_spRow->m_f40;
-        fForward = fLimit;
-    }
-    float fSpeed = FUN_1417c9b70();
-    fSpeed = fSpeed + fForward;
+        fForward = fForward > m_spRow->m_f40 ? m_spRow->m_f40 : fForward;
+    float fSpeed = FUN_1417c9b70() + fForward;
     if (20.0f < fSpeed)
         fSpeed = 20.0f;
     return FUN_1417c9ba0() * fSpeed;
 }
 
 // @0x1417ca000
-// MS2-FUNCTIONAL: point temporaries differ from the exe
 int StateGlide::FUN_1417ca000()
 {
-    efd::Point3 kPos = m_pOwner->vfunc_18();
-    efd::Point3 kMax = FUN_1403ed2d0()->FUN_141bd3820();
-    if (kPos.z <= kMax.z - 300.0f)
-    {
-        if (0.0f < m_spRow->m_f20)
-        {
-            float fFell = m_pOwner->vfunc_18().z - m_fStartZ;
-            if (m_spRow->m_f20 <= fFell && fFell != m_spRow->m_f20)
-                return 0;
-        }
-        return 1;
-    }
-    return 0;
+    const efd::Point3& kPos = static_cast<const efd::Point3&>(m_pOwner->vfunc_18());
+    if (FUN_1403ed2d0()->FUN_141bd3820().z - 300.0f < kPos.z)
+        return 0;
+    if (0.0f < m_spRow->m_f20 && m_spRow->m_f20 < m_pOwner->vfunc_18().z - m_fStartZ)
+        return 0;
+    return 1;
 }
 
 // @0x1417ca1e0

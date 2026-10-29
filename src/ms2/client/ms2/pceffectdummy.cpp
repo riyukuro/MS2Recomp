@@ -21,12 +21,14 @@ Unk_140166420* FUN_140166420();
 CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
 void* FUN_140166440();
 void FUN_1403a1280(void*, int, int, const wchar_t*, const char* const*);
-bool FUN_140184310(const CString& str, const CString& psz);               // str == psz
+bool FUN_140184310(const CString& str, const char* psz);                  // str == psz
 
-// The game's TinyXML writers, in free-function form (`this` first): element / declaration constructors, InsertEndChild,
+// The game's TinyXML element / declaration (constructed through new, which null-checks the allocation as the exe does);
+// its writers in free-function form (`this` first): InsertEndChild,
 // SetAttribute for string, int, bool, Point3-like and float values, SaveFile.
-void* FUN_14086f2f0(void* pThis, const char* pszName);                    // TiXmlElement::TiXmlElement
-void* FUN_1408704d0(void* pThis, const char* pszVersion, const char* pszEncoding, const char* pszStandalone);   // TiXmlDeclaration
+class TiXmlElement { public: TiXmlElement(const char* pszName); private: void* m_pad[0x90 / sizeof(void*)]; };   // ctor 0x14086f2f0
+class TiXmlDeclaration { public: TiXmlDeclaration(const char* pszVersion, const char* pszEncoding, const char* pszStandalone);
+    private: void* m_pad[0x68 / sizeof(void*)]; };                                                                // ctor 0x1408704d0
 void* FUN_14086e090(void* pParent, void* pChild);                         // InsertEndChild
 void FUN_140874050(void* pElem, const char* pszName, const CString& strValue);
 void FUN_140873ca0(void* pElem, const char* pszName, int nValue);
@@ -80,20 +82,20 @@ bool CPCEffectDummy::LoadFile(const char* pszPath)
 }
 
 // @0x141684460
-bool CPCEffectDummy::Find(const CString& strName, CEffectDummy& kOut)
+int CPCEffectDummy::Find(const char* pszName, CEffectDummy& kOut)
 {
     for (std::map<int, std::vector<CEffectDummy> >::iterator it = m_dummies.begin(); it != m_dummies.end(); ++it)
     {
         for (std::vector<CEffectDummy>::iterator itRow = it->second.begin(); itRow != it->second.end(); ++itRow)
         {
-            if (FUN_140184310(itRow->GetName(), strName))
+            if (FUN_140184310(itRow->GetName(), pszName))
             {
                 kOut = *itRow;
-                return true;
+                return 1;
             }
         }
     }
-    return false;
+    return 0;
 }
 
 // @0x141684580
@@ -103,7 +105,7 @@ size_t CPCEffectDummy::GetCount(int nGender)
 }
 
 // @0x1416845c0
-bool CPCEffectDummy::Get(int nGender, unsigned nIndex, CEffectDummy& kOut)
+int CPCEffectDummy::Get(int nGender, unsigned nIndex, CEffectDummy& kOut)
 {
     size_t nCount = m_dummies[nGender].size();
     if (nIndex < nCount)
@@ -119,26 +121,27 @@ void CPCEffectDummy::SetRows(int nGender, const std::vector<CEffectDummy>& rows)
 
 // Writes the table back out as xml.
 // @0x1416846a0
-bool CPCEffectDummy::Save(const char* pszPath)
+int CPCEffectDummy::Save(const char* pszPath)
 {
     TiXmlDocument doc;
-    void* pDecl = FUN_1408704d0(::operator new(0x68), "1.0", "utf-8", "");
-    void* pRoot = FUN_14086f2f0(::operator new(0x90), "ms2");
+    void* pDecl = new TiXmlDeclaration("1.0", "utf-8", "");
+    void* pRoot = new TiXmlElement("ms2");
     FUN_14086e090(&doc, pDecl);
     FUN_14086e090(&doc, pRoot);
-    void* pGroup = FUN_14086f2f0(::operator new(0x90), "effectdummy");
+    void* pGroup = new TiXmlElement("effectdummy");
     FUN_14086e090(pRoot, pGroup);
+    void* pDummy = 0;
     for (std::map<int, std::vector<CEffectDummy> >::iterator it = m_dummies.begin(); it != m_dummies.end(); ++it)
     {
         for (std::vector<CEffectDummy>::iterator itRow = it->second.begin(); itRow != it->second.end(); ++itRow)
         {
-            void* pDummy = FUN_14086f2f0(::operator new(0x90), "dummy");
+            pDummy = new TiXmlElement("dummy");
             FUN_14086e090(pGroup, pDummy);
             FUN_140874050(pDummy, "name", itRow->GetName());
             FUN_140873ca0(pDummy, "gender", it->first);
-            void* pAttach = FUN_14086f2f0(::operator new(0x90), "attachInfo");
+            void* pAttach = new TiXmlElement("attachInfo");
             FUN_14086e090(pDummy, pAttach);
-            void* pTransform = FUN_14086f2f0(::operator new(0x90), "transform");
+            void* pTransform = new TiXmlElement("transform");
             FUN_14086e090(pDummy, pTransform);
             FUN_140874050(pAttach, "parentNode", itRow->GetParentNode());
             FUN_140873bc0(pAttach, "applyWorldTransform", itRow->m_bApplyWorldTransform);

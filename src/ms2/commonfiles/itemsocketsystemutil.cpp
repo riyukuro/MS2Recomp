@@ -575,13 +575,12 @@ void FUN_1406284f0(unsigned short nRate, int nCount, int* pItemId, int* pPrice)
 MS2_REPLACE(0x1406284F0, FUN_1406284f0, 209, 0x5C53BEEB);
 
 // @0x1406285d0
-// MS2-FUNCTIONAL: not byte-identical yet (temp/branch layout differs from the exe)
 // The names of the slot kinds in a mask, ", "-separated.
 CStringW FUN_1406285d0(unsigned nMask)
 {
     if (nMask < 0xf)
     {
-        CStringW strSep(L", ");
+        const CStringW& strSep = CStringW(L", ");
         CStringW strOut;
         if ((nMask & 1) != 0)
             strOut = FUN_141277410(1);
@@ -754,7 +753,6 @@ void FUN_140628d30(Unk_SockUidList& v, CInPacket& in)
 MS2_REPLACE(0x140628D30, FUN_140628d30, 232, 0x60A61AD2);
 
 // @0x140628e20
-// MS2-FUNCTIONAL: not byte-identical yet (temp/branch layout differs from the exe)
 // The uid list of an item list (0 for an empty slot).
 void FUN_140628e20(Unk_SockUidList& v, const __int64& nUid, const std::vector<MS2Ptr<CItem> >& aItems)
 {
@@ -767,16 +765,10 @@ void FUN_140628e20(Unk_SockUidList& v, const __int64& nUid, const std::vector<MS
         for (unsigned __int64 i = 0; i < nCount; ++i)
         {
             MS2Ptr<CItem> spItem = aItems.at(i);
-            if (spItem.get() == 0)
-            {
-                __int64 nZero = 0;
-                v.m_aUids.push_back(nZero);
-            }
+            if (spItem.get() != 0)
+                v.m_aUids.push_back(spItem->FUN_140526a50());
             else
-            {
-                __int64 nItemUid = spItem->FUN_140526a50();
-                v.m_aUids.push_back(nItemUid);
-            }
+                v.m_aUids.push_back(0);
         }
     }
 }
@@ -1262,27 +1254,34 @@ CStringW FUN_140631830(int nStat, int nValue, CItemData* pData);
 
 // The first option text of an option record: the first random option, else the first extra one.
 // @0x14062b020
-// MS2-FUNCTIONAL: not byte-identical yet (temp/frame layout differs from the exe)
 CStringW FUN_14062b020(MS2Ptr<CItemOption> spOption)
 {
     if (spOption == (CItemOption*)0)
         return CStringW(L"");
     CStringW str;
     Unk_EnchantMap& mapRandom = spOption->FUN_1405cb8a0(0);
-    for (POSITION pos = mapRandom.GetStartPosition(); pos; mapRandom.GetNext(pos))
+    if (!mapRandom.IsEmpty())
     {
-        int nType = mapRandom.GetKeyAt(pos);
-        Unk_EnchantPtr<BaseOption> spBase = mapRandom.GetValueAt(pos);
-        if (!(spBase == (BaseOption*)0))
+        for (POSITION pos = mapRandom.GetStartPosition(); pos; mapRandom.GetNext(pos))
+        {
+            int nType = mapRandom.GetKeyAt(pos);
+            Unk_EnchantPtr<BaseOption> spBase = mapRandom.GetValueAt(pos);
+            if (spBase == (BaseOption*)0)
+                continue;
             return FUN_140631600(nType, spBase.get());
+        }
     }
     Unk_SocketSpecialMap& mapExtra = spOption->FUN_1405cb8d0(0);
-    for (POSITION pos = mapExtra.GetStartPosition(); pos; mapExtra.GetNext(pos))
+    if (!mapExtra.IsEmpty())
     {
-        int nType = mapExtra.GetKeyAt(pos);
-        Unk_EnchantPtr<BaseOption> spBase = mapExtra.GetValueAt(pos);
-        if (!(spBase == (BaseOption*)0))
+        for (POSITION pos = mapExtra.GetStartPosition(); pos; mapExtra.GetNext(pos))
+        {
+            int nType = mapExtra.GetKeyAt(pos);
+            Unk_EnchantPtr<BaseOption> spBase = mapExtra.GetValueAt(pos);
+            if (spBase == (BaseOption*)0)
+                continue;
             return FUN_140631830(nType, spBase->GetValue(), 0);
+        }
     }
     return str;
 }
@@ -1310,26 +1309,25 @@ CStringW FUN_14062aeb0(int nItemId, int nRank)
 MS2_REPLACE(0x14062AEB0, FUN_14062aeb0, 351, 0x74D6C1BF);
 
 // @0x14062ae60
-// MS2-FUNCTIONAL: not byte-identical yet (temp/frame layout differs from the exe)
 CStringW FUN_14062ae60(int nItemId)
 {
-    return FUN_14062aeb0(nItemId, FUN_14053feb0(nItemId));
+    int nGrade = FUN_14053feb0(nItemId);
+    return FUN_14062aeb0(nItemId, nGrade);
 }
 MS2_REPLACE(0x14062AE60, FUN_14062ae60, 74, 0x2E79F9D4);
 
 // The tooltip row text of a socket: locked or unlocked gemstone row.
 // @0x14062b310
-// MS2-FUNCTIONAL: not byte-identical yet (temp/frame layout differs from the exe)
 CStringW FUN_14062b310(MS2Ptr<TSocketGemStoneInfo> spSocket)
 {
     CStringW str;
-    if (spSocket.get() != 0 && spSocket->FUN_14061fbb0())
+    if ((spSocket.get() ? true : false) && spSocket->FUN_14061fbb0())
     {
         MS2Ptr<TSocketGemStoneLock> spSlot = spSocket->GetLock();
-        if (spSlot.get() == 0 || spSlot->FUN_140623e20() != 1)
-            str = GetStringCommonByKey(CStringW(L"s_tooltip_itemoption_socket_row_unlock_gemstone"));
+        if ((spSlot.get() ? true : false) && spSlot->FUN_140623e20() == 1)
+            str = GetStringCommonByKey(L"s_tooltip_itemoption_socket_row_lock_gemstone");
         else
-            str = GetStringCommonByKey(CStringW(L"s_tooltip_itemoption_socket_row_lock_gemstone"));
+            str = GetStringCommonByKey(L"s_tooltip_itemoption_socket_row_unlock_gemstone");
     }
     return str;
 }
@@ -1441,8 +1439,8 @@ int CItemSocketTable::Load()
         }
         else if (nOpenType == 0)
         {
-            unsigned nCount = 0;
-            FUN_140873220(pNode, "fixOpenCount", nCount);
+            int nCount = 0;
+            FUN_1408731e0(pNode, "fixOpenCount", nCount);
             spData->m_range.m_nMin = nCount;
             spData->m_range.m_nMax = nCount;
         }
@@ -1497,7 +1495,6 @@ unsigned CItemSocketTable::FUN_14062d4b0(int nSocketId, int nGrade, MS2Ptr<CItem
 MS2_REPLACE_METHOD(0x14062D4B0, CItemSocketTable, FUN_14062d4b0, 557, 0x9F3A57AF);
 
 // @0x14062d6f0
-// MS2-FUNCTIONAL: exe frame is 0x10 larger (extra 16-byte temp slot); no source form found
 unsigned CItemSocketTable::FUN_14062d6f0(int nSocketId, int nGrade, MS2Ptr<CItemData> spData)
 {
     unsigned nCount = 0;
@@ -1510,7 +1507,8 @@ unsigned CItemSocketTable::FUN_14062d6f0(int nSocketId, int nGrade, MS2Ptr<CItem
     MS2Ptr<CItemSocketData> spRow = Find(nSocketId, nGrade);
     if (spRow == 0)
         return 0;
-    if (spRow->m_nOpenType == 0)
+    int nOpenType = spRow->m_nOpenType;
+    if (nOpenType == 0)
         nCount = spRow->m_range.m_nMin;
     return nCount;
 }
@@ -1886,12 +1884,6 @@ void CItemCustomMusicScore::FUN_1406328c0()
 }
 MS2_REPLACE_METHOD(0x1406328C0, CItemCustomMusicScore, FUN_1406328c0, 204, 0x4570B3DE);
 
-// @0x140633280
-// MS2-FUNCTIONAL: not byte-identical yet (temp/frame layout differs from the exe)
-CItemStatus::~CItemStatus()
-{
-}
-
 // @0x14062fbc0
 MS2Ptr<CItemStatus> CItemStatus::FUN_14062fbc0()
 {
@@ -1941,7 +1933,6 @@ int CItemStatus::FUN_14062ff70(unsigned nType)
 MS2_REPLACE_METHOD(0x14062FF70, CItemStatus, FUN_14062ff70, 47, 0x04A83391);
 
 // @0x14062ffb0
-// MS2-FUNCTIONAL: not byte-identical yet (temp/frame layout differs from the exe)
 int CItemStatus::FUN_14062ffb0(unsigned nType, int nWhich, int nSub)
 {
     int nResult = 0;
@@ -1949,13 +1940,13 @@ int CItemStatus::FUN_14062ffb0(unsigned nType, int nWhich, int nSub)
     {
         if (nSub == 5)
         {
-            nResult = m_spOption->FUN_1405cb3a0(nType);
+            nResult += m_spOption->FUN_1405cb3a0(nType);
         }
         else
         {
             Unk_EnchantPtr<BaseOption> spBase = m_spOption->FUN_1405cb760(nSub, nType);
             if (spBase.get() != 0)
-                nResult = spBase->GetValue();
+                nResult += spBase->GetValue();
         }
     }
     if (nWhich == 3 || nWhich == 1)
@@ -1963,15 +1954,15 @@ int CItemStatus::FUN_14062ffb0(unsigned nType, int nWhich, int nSub)
         Unk_EnchantPtr<BaseOption> spBase = m_spEnchant->FUN_14058cde0(nType);
         if (spBase.get() != 0)
         {
-            if (!FUN_140630dc0(nType))
-            {
-                nResult += spBase->GetValue();
-            }
-            else
+            if (FUN_140630dc0(nType))
             {
                 __int64 nBase = FUN_14062ffb0(nType, 0, 0);
                 __int64 nScaled = FUN_140632990(nBase, spBase->FUN_140266e10());
-                nResult += (int)nScaled;
+                nResult += nScaled;
+            }
+            else
+            {
+                nResult += spBase->GetValue();
             }
         }
     }
@@ -1980,15 +1971,15 @@ int CItemStatus::FUN_14062ffb0(unsigned nType, int nWhich, int nSub)
         Unk_EnchantPtr<BaseOption> spBase = m_spUnlimited->FUN_1408bc210(nType);
         if (spBase.get() != 0)
         {
-            if (!FUN_140630dc0(nType))
-            {
-                nResult += spBase->GetValue();
-            }
-            else
+            if (FUN_140630dc0(nType))
             {
                 __int64 nBase = FUN_14062ffb0(nType, 0, 0);
                 __int64 nScaled = FUN_140632990(nBase, spBase->FUN_140266e10());
-                nResult += (int)nScaled;
+                nResult += nScaled;
+            }
+            else
+            {
+                nResult += spBase->GetValue();
             }
         }
     }
@@ -2024,21 +2015,18 @@ int CItemStatus::FUN_140630290(unsigned nType, int nWhich, int nSub)
 MS2_REPLACE_METHOD(0x140630290, CItemStatus, FUN_140630290, 325, 0x45267C83);
 
 // @0x1406303e0
-// MS2-FUNCTIONAL: not byte-identical yet (temp/frame layout differs from the exe)
 float CItemStatus::FUN_1406303e0(unsigned nType)
 {
     Unk_EnchantPtr<BaseOption> spBase = m_spEnchant->FUN_14058cde0(nType);
-    if (spBase == 0)
-    {
-        if (FUN_140630dc0(nType))
-            return spBase->FUN_140266e10();
-    }
-    return 0;
+    if (spBase == (BaseOption*)0)
+        return 0;
+    if (!FUN_140630dc0(nType))
+        return 0;
+    return spBase->FUN_140266e10();
 }
 MS2_REPLACE_METHOD(0x1406303E0, CItemStatus, FUN_1406303e0, 197, 0xE7166FB6);
 
 // @0x1406304b0
-// MS2-FUNCTIONAL: not byte-identical yet (temp/frame layout differs from the exe)
 int CItemStatus::FUN_1406304b0(int nSub, int nWhich, unsigned nType)
 {
     if (nSub != 5)
@@ -2106,11 +2094,11 @@ MS2_REPLACE_METHOD(0x140630840, CItemStatus, FUN_140630840, 88, 0x4E3181F8);
 
 // @0x1406308a0
 // MS2-FUNCTIONAL: not byte-identical yet (temp/frame layout differs from the exe)
-bool CItemStatus::FUN_1406308a0(MS2Ptr<CItemStatus> spOther)
+int CItemStatus::FUN_1406308a0(MS2Ptr<CItemStatus> spOther)
 {
     if (spOther == (CItemStatus*)0)
-        return false;
-    bool bChanged = false;
+        return 0;
+    int bChanged = 0;
     for (unsigned i = 0; i < 0x23; ++i)
     {
         Unk_EnchantPtr<BaseOption> spSource = spOther->m_spOption->FUN_1405cb760(4, i);
@@ -2121,7 +2109,7 @@ bool CItemStatus::FUN_1406308a0(MS2Ptr<CItemStatus> spOther)
             m_spOption->FUN_1405cb200(4, i, spCopy);
             if (m_spOption->FUN_1405cb380() == 0)
                 m_spOption->FUN_1405cb360(spOther->m_spOption->FUN_1405cb380());
-            bChanged = true;
+            bChanged = 1;
         }
     }
     for (unsigned i = 0; i < 0xcf; ++i)
@@ -2134,7 +2122,7 @@ bool CItemStatus::FUN_1406308a0(MS2Ptr<CItemStatus> spOther)
             m_spOption->FUN_1405cb2a0(4, i, spCopy);
             if (m_spOption->FUN_1405cb380() == 0)
                 m_spOption->FUN_1405cb360(spOther->m_spOption->FUN_1405cb380());
-            bChanged = true;
+            bChanged = 1;
         }
     }
     return bChanged;
@@ -2300,7 +2288,6 @@ CStringW FUN_1406319f0(int nBuffId, unsigned short nLevel)
 MS2_REPLACE(0x1406319F0, FUN_1406319f0, 240, 0xFB0E0A77);
 
 // @0x140631af0
-// MS2-FUNCTIONAL: not byte-identical yet (temp/frame layout differs from the exe)
 CStringW FUN_140631af0(int nStat, Unk_EnchantPtr<BaseOption> spBase, CItemStatus* pStatus)
 {
     CStringW strResult;
@@ -2308,7 +2295,7 @@ CStringW FUN_140631af0(int nStat, Unk_EnchantPtr<BaseOption> spBase, CItemStatus
     {
         __int64 nBase = pStatus->FUN_14062ffb0(nStat, 0, 0);
         float fBase = (float)nBase;
-        unsigned __int64 nExtra = (unsigned __int64)(fBase * spBase->FUN_140266e10());
+        __int64 nExtra = (__int64)(fBase * spBase->FUN_140266e10());
         CStringW strUnused;
         if (nExtra == 0)
             strResult = FormatStringId(0x48c, FUN_14082f000(nStat));
@@ -2336,7 +2323,7 @@ MS2_REPLACE(0x1406334D0, FUN_1406334d0, 264, 0x8473584E);
 // @0x140632990
 __int64 FUN_140632990(__int64 nValue, float fRate)
 {
-    return (__int64)((double)nValue * (double)fRate + 0.5);
+    return (__int64)((double)nValue * (double)fRate + 0.000001);
 }
 MS2_REPLACE(0x140632990, FUN_140632990, 42, 0xC9ADCF11);
 
@@ -2687,7 +2674,6 @@ void CItemTransfer::SetItem(CItem* pItem)
 MS2_REPLACE_METHOD(0x140634970, CItemTransfer, SetItem, 25, 0xAB8BF0FB);
 
 // @0x140634990
-// MS2-FUNCTIONAL: MS2Ptr temp and extra local layout differ from the exe
 void CItemTransfer::FUN_140634990(CItem* pItem)
 {
     m_pItem = pItem;
@@ -2702,8 +2688,7 @@ void CItemTransfer::FUN_140634990(CItem* pItem)
                 m_b3E = 1;
             m_b3A = pData->FUN_14053db80() ? true : false;
             m_nCount = pData->FUN_14053d800() ? 1 : 0;
-            int nId = pItem->FUN_140526bd0();
-            m_b41 = FUN_14052d200()->FUN_14062d980(MS2Ptr<CItemData>(reinterpret_cast<CItemData*>(pItem->FUN_140527840())), nId);
+            m_b41 = FUN_14052d200()->FUN_14062d980(reinterpret_cast<CItemData*>(pItem->FUN_140527840()), pItem->FUN_140526bd0());
             m_b42 = m_b41;
             FUN_140635a60();
         }
@@ -2712,7 +2697,6 @@ void CItemTransfer::FUN_140634990(CItem* pItem)
 MS2_REPLACE_METHOD(0x140634990, CItemTransfer, FUN_140634990, 401, 0x66C6DDFC);
 
 // @0x140634b30
-// MS2-FUNCTIONAL: clone temp layout differs from the exe
 MS2Ptr<CItemTransfer> CItemTransfer::FUN_140634b30()
 {
     MS2Ptr<CItemTransfer> spNew(new CItemTransfer);
@@ -2721,7 +2705,7 @@ MS2Ptr<CItemTransfer> CItemTransfer::FUN_140634b30()
     {
         MS2Ptr<CItemBinding> spBinding(new CItemBinding);
         *spBinding = *m_spBinding;
-        (*spNew).m_spBinding = spBinding;
+        spNew->m_spBinding = spBinding;
     }
     return spNew;
 }
@@ -2760,16 +2744,16 @@ void CItemTransfer::vfunc_1(COutputStream& out)
 MS2_REPLACE_METHOD(0x140634D00, CItemTransfer, vfunc_1, 288, 0xD1BB41E7);
 
 // @0x140634e30
-// MS2-FUNCTIONAL: CInputStream::ReadUInt8 is declared unsigned char (stream.h); the exe tests the byte without widening
 void CItemTransfer::vfunc_2(CInputStream& in)
 {
     m_nRule = in.ReadInt32();
     m_b38 = in.ReadBool();
     m_nCount = in.ReadInt32();
     m_nMax = in.ReadInt32();
-    m_b3F = in.ReadUInt8() != 0;
-    m_b42 = in.ReadUInt8() != 0;
-    if (in.ReadBool())
+    m_b3F = (bool)in.ReadUInt8();
+    m_b42 = (bool)in.ReadUInt8();
+    bool bBinding = in.ReadBool();
+    if (bBinding)
     {
         m_spBinding.AssignRaw(new CItemBinding);
         m_spBinding->FUN_140634700(in);

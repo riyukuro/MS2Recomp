@@ -32,7 +32,7 @@ public:
     int SendRequest9(unsigned __int64 nId, int* pnResult); // 0x140d51190
     int SendRequest10(unsigned __int64 nId, int* pnResult);    // 0x140d51280
     int Lookup(unsigned __int64 nId, MS2Ptr<CManufacture>& spOut);     // 0x140d51370
-    bool HasManufacture();                                  // 0x140d513c0
+    int HasManufacture();                                   // 0x140d513c0
     CStringW GetMaidText(int nType, Unk_MfNpc* pNpc);       // 0x140d51400: speech text of the maid npc (plays its sound)
     static UIManufactureDialog* GetManufactureDialog(int nUiId);    // 0x140d51900
     static class UIManufactureStatus* GetManufactureStatus(int nUiId);  // 0x140d519a0

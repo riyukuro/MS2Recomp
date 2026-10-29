@@ -63,7 +63,12 @@ void* FUN_14086e090(void* pParent, Unk_TiXmlElement* pChild);       // LinkEndCh
 Unk_TiXmlElement* FUN_140165cf0(TiXmlDocument* pDoc, const char* pszName);  // FirstChildElement
 void FUN_140873e30(Unk_TiXmlElement* pElem, const char* pszName, float fValue);   // SetFloatAttribute
 void FUN_140873ca0(Unk_TiXmlElement* pElem, const char* pszName, int nValue);     // SetAttribute
-void FUN_140874ad0(Unk_TiXmlElement* pElem, const char* pszName, Vector3 pt);   // SetPointAttribute
+// The exe writes NiPoint3 attributes: each efd::Point3 converts through the out-of-line NiPoint3(const efd::Point3&).
+struct Unk_FcNiPoint3 : public Vector3
+{
+    Unk_FcNiPoint3(const Vector3& pt);                      // 0x14027dcf0
+};
+void FUN_140874ad0(Unk_TiXmlElement* pElem, const char* pszName, const Unk_FcNiPoint3& pt);   // SetPointAttribute
 void FUN_140870f90(TiXmlDocument* pDoc);                            // SaveFile
 
 void FUN_140a01190(const Unk_EfdMatrix3* pMatrix, unsigned int uiCol, Vector3* pOut);  // GetCol
@@ -85,7 +90,6 @@ CFreeCameraMode::~CFreeCameraMode()
 {
 }
 
-// MS2-FUNCTIONAL: exe frame is 0x10 smaller (temp slot sharing of the point temporaries not reproduced)
 // @0x1412222c0
 void CFreeCameraMode::vfunc_8(double fTime)
 {
@@ -96,7 +100,33 @@ void CFreeCameraMode::vfunc_8(double fTime)
         ptPos.z = ptPos.z - ptMove.z * 2.0f;
         vfunc_3(ptPos);
     }
-    else if (!FUN_14025e7c0()->FUN_14116daa0(1, true, 0))
+    else if (FUN_14025e7c0()->FUN_14116daa0(1, true, 0))
+    {
+        if (ptMove.FUN_140552700(g_143b01a60))
+        {
+            Vector3 ptInput = ptMove;
+            float fRate = 15.0f;
+            float fStep = FUN_140a17940((float)fTime, 0.0f, 1.0f / fRate);
+            float fAbsZ = FUN_140a38cd0(ptInput.z);
+            float fMaxYZ = FUN_140a0fda0(FUN_140a38cd0(ptInput.y), fAbsZ);
+            float fMax = FUN_140a0fda0(FUN_140a38cd0(ptInput.x), fMaxYZ);
+            float fScale = fStep * fMax;
+            float fRotX = ptInput.y * fScale;
+            float fRotY = ptInput.z * fScale;
+            if (fRotX != 0.0f || fRotY != 0.0f)
+            {
+                if (1.0f < FUN_140a38cd0(fRotX))
+                    fRotX = (fRotX < 0.0f) ? -1.0f : 1.0f;
+                if (1.0f < FUN_140a38cd0(fRotY))
+                    fRotY = (fRotY < 0.0f) ? -1.0f : 1.0f;
+                Vector3 ptRot = FUN_140af8260();
+                ptRot.y = ptRot.y - fRotX;
+                ptRot.z = ptRot.z - fRotY;
+                vfunc_4(ptRot);
+            }
+        }
+    }
+    else
     {
         if (FUN_14025e7c0()->FUN_14116da30(0x22, true, 0))
         {
@@ -109,8 +139,7 @@ void CFreeCameraMode::vfunc_8(double fTime)
                     TiXmlDocument doc;
                     if (!doc.FUN_140870fc0("./data/xml/camera/customize.xml", 0))
                     {
-                        Unk_TiXmlElement* pRoot = new Unk_TiXmlElement("ms2");
-                        FUN_14086e090(&doc, pRoot);
+                        FUN_14086e090(&doc, new Unk_TiXmlElement("ms2"));
                     }
                     Unk_TiXmlElement* pMs2 = FUN_140165cf0(&doc, "ms2");
                     if (pMs2 != 0)
@@ -131,33 +160,6 @@ void CFreeCameraMode::vfunc_8(double fTime)
             }
         }
     }
-    else
-    {
-        if (ptMove.FUN_140552700(g_143b01a60))
-        {
-            Vector3 ptInput = ptMove;
-            float fRate = 15.0f;
-            float fDelta = (float)fTime;
-            float fStep = FUN_140a17940(fDelta, 0.0f, 1.0f / fRate);
-            float fAbsZ = FUN_140a38cd0(ptInput.z);
-            float fMaxYZ = FUN_140a0fda0(FUN_140a38cd0(ptInput.y), fAbsZ);
-            float fMax = FUN_140a0fda0(FUN_140a38cd0(ptInput.x), fMaxYZ);
-            float fScale = fStep * fMax;
-            float fRotX = ptInput.y * fScale;
-            float fRotY = ptInput.z * fScale;
-            if (fRotX != 0.0f || fRotY != 0.0f)
-            {
-                if (1.0f < FUN_140a38cd0(fRotX))
-                    fRotX = (0.0f <= fRotX) ? 1.0f : -1.0f;
-                if (1.0f < FUN_140a38cd0(fRotY))
-                    fRotY = (0.0f <= fRotY) ? 1.0f : -1.0f;
-                Vector3 ptRot = FUN_140af8260();
-                ptRot.y = ptRot.y - fRotX;
-                ptRot.z = ptRot.z - fRotY;
-                vfunc_4(ptRot);
-            }
-        }
-    }
     if (m_78.FUN_140552700(g_143b01a60))
     {
         Vector3 ptRot = FUN_140af8260();
@@ -171,9 +173,8 @@ void CFreeCameraMode::vfunc_8(double fTime)
         FUN_140a01190(&kRot, 2, &ptForward);
         ptForward.FUN_140968990();
         Vector3 ptPos = FUN_1409f2540();
-        float fDelta = (float)fTime;
-        const Vector3& ptSide = ptForward.FUN_14097fc90(m_78.y);
-        ptPos = ptPos.FUN_14097fd50(ptRight.FUN_14097fc90(m_78.x).FUN_14097fd50(ptSide).FUN_14097fc90(1000.0f).FUN_14097fc90(fDelta));
+        ptPos = ptPos.FUN_14097fd50(ptRight.FUN_14097fc90(m_78.x).FUN_14097fd50(ptForward.FUN_14097fc90(m_78.y))
+                                    .FUN_14097fc90(1000.0f).FUN_14097fc90((float)fTime));
         vfunc_3(ptPos);
     }
 }

@@ -9,6 +9,7 @@
 #include <new>
 #include <egf/Entity.h>
 #include <efd/utf8string.h>
+#include <efd/SmartPointer.h>
 
 #include "statewalk.h"
 
@@ -23,8 +24,6 @@
 
 // ---- unit-local views of the exe objects and unrecovered callees --------------------------------------------------------
 
-void FUN_1409989e0(void* pOut, const char* psz);           // 0x1409989e0 efd::utf8string(const char*)
-void FUN_1408a8900(void* pStr);                            // 0x1408a8900 ~efd::utf8string
 const char* FUN_1408ac310(const efd::utf8string& str);     // 0x1408ac310 the string's c string
 Ridee* FUN_141468360(PCBase* p);                           // 0x141468360 the ridee the actor sits on
 int FUN_1416764d0(MyPC* p);                                // 0x1416764d0 is riding
@@ -71,13 +70,22 @@ public:
     bool FUN_141683200(int nKey);
 };
 
-// The efd::utf8string the exe builds out of line (ctor 0x1409989e0, dtor 0x1408a8900; 0x20 bytes).
-struct Unk_WkString
+// The owner's vtable up to slot 68, which takes the move by value (the exe passes a pointer to a copy).
+class Unk_WkOwnerSlots
 {
-    Unk_WkString(const char* psz) { FUN_1409989e0(m_buf, psz); }
-    ~Unk_WkString() { FUN_1408a8900(m_buf); }
-    operator const efd::utf8string&() const { return *(const efd::utf8string*)m_buf; }
-    char m_buf[0x20];
+public:
+#define MS2_WK_SLOTS(a, b, c, d, e) virtual void vfunc_##a(); virtual void vfunc_##b(); virtual void vfunc_##c(); \
+    virtual void vfunc_##d(); virtual void vfunc_##e();
+    MS2_WK_SLOTS(0, 1, 2, 3, 4) MS2_WK_SLOTS(5, 6, 7, 8, 9) MS2_WK_SLOTS(10, 11, 12, 13, 14) MS2_WK_SLOTS(15, 16, 17, 18, 19)
+    virtual void vfunc_20(); virtual void vfunc_21();
+    virtual void vfunc_22(efd::Point3 kDir);                                        // 22 takes the direction by value
+    virtual void vfunc_23(); virtual void vfunc_24();
+    MS2_WK_SLOTS(25, 26, 27, 28, 29) MS2_WK_SLOTS(30, 31, 32, 33, 34)
+    MS2_WK_SLOTS(35, 36, 37, 38, 39) MS2_WK_SLOTS(40, 41, 42, 43, 44) MS2_WK_SLOTS(45, 46, 47, 48, 49)
+    MS2_WK_SLOTS(50, 51, 52, 53, 54) MS2_WK_SLOTS(55, 56, 57, 58, 59) MS2_WK_SLOTS(60, 61, 62, 63, 64)
+    virtual void vfunc_65(); virtual void vfunc_66(); virtual void vfunc_67();
+#undef MS2_WK_SLOTS
+    virtual bool vfunc_68(efd::Point3 kMove, double fTime, int b, unsigned c, int d);   // 68 0x14166e100
 };
 
 class Unk_PCBaseBody;
@@ -103,48 +111,51 @@ StateWalk::~StateWalk()
 }
 
 // @0x1417ff800
-// MS2-FUNCTIONAL: the exe holds the ridee in a CComPtr (temp + EH frame); a raw pointer is used here
 void StateWalk::vfunc_4(StateData* pData)
 {
     m_fSpeed1 = m_pOwner->vfunc_96();
     m_fSpeed2 = m_pOwner->vfunc_97();
     if (FUN_1406aeee0()->FUN_1406af100())
     {
-        efd::Point3 kDir = m_pOwner->FUN_141674b60(m_pOwner->FUN_14123c360());
+        m_pOwner->FUN_141674b60(m_pOwner->FUN_14123c360());
     }
-    if (m_pOwner->FUN_141675ed0() == 0)
+    if (m_pOwner->FUN_141675ed0() != 0)
     {
-        float* pSpeed = m_pOwner->FUN_141671920();
+        m_pOwner->vfunc_59(0x1b, 0, 0, 0);
+    }
+    else
+    {
+        Unk_Vec4* pSpeed = (Unk_Vec4*)m_pOwner->FUN_141671920();
         if (m_pOwner->FUN_141676b70() != 0)
             m_n10 = 0x17;
         if (m_n10 == 0x19)
         {
-            m_pOwner->FUN_141671960(pSpeed[1]);
+            m_pOwner->FUN_141671960(pSpeed->m_y);
         }
         else if (m_n10 == 0x18)
         {
             if (m_pOwner->GetClassID() == 0x6200045)
             {
-                Ridee* pRidee = FUN_141468360(m_pOwner);
-                if (pRidee != 0)
-                    m_pOwner->FUN_141671960(pRidee->FUN_1417071d0());
+                efd::SmartPointer<Ridee> spRidee(FUN_141468360(m_pOwner));
+                if (spRidee)
+                    m_pOwner->FUN_141671960(spRidee->FUN_1417071d0());
             }
             else
             {
-                m_pOwner->FUN_141671960(pSpeed[2]);
+                m_pOwner->FUN_141671960(pSpeed->m_z);
             }
         }
         else if (m_n10 == 0x17)
         {
             if (m_pOwner->GetClassID() == 0x6200045)
             {
-                Ridee* pRidee = FUN_141468360(m_pOwner);
-                if (pRidee != 0)
-                    m_pOwner->FUN_141671960(pRidee->FUN_1417070a0());
+                efd::SmartPointer<Ridee> spRidee(FUN_141468360(m_pOwner));
+                if (spRidee)
+                    m_pOwner->FUN_141671960(spRidee->FUN_1417070a0());
             }
             else
             {
-                m_pOwner->FUN_141671960(pSpeed[2]);
+                m_pOwner->FUN_141671960(pSpeed->m_z);
             }
         }
         else if (m_n10 == 0x1a)
@@ -153,57 +164,52 @@ void StateWalk::vfunc_4(StateData* pData)
         }
         State::vfunc_4(pData);
     }
-    else
-    {
-        m_pOwner->vfunc_59(0x1b, 0, 0, 0);
-    }
 }
 
 // @0x1417ffb40
-// MS2-FUNCTIONAL: inlined array temporaries differ from the exe
 void StateWalk::vfunc_5(int n)
 {
     State::vfunc_5(n);
     m_n10 = 0x18;
-    m_pOwner->FUN_141671960(m_pOwner->FUN_141671920()[2]);
+    Unk_Vec4* pSpeed = (Unk_Vec4*)m_pOwner->FUN_141671920();
+    m_pOwner->FUN_141671960(pSpeed->m_z);
 }
 
 // @0x1417ffba0
-// MS2-FUNCTIONAL: the exe holds the ridee in a CComPtr and lays out the point temporaries differently
 void StateWalk::vfunc_3(double fTime)
 {
     State::vfunc_3(fTime);
     if (m_pOwner->vfunc_63() == 0)
         return;
-    float* pSpeed = m_pOwner->FUN_141671920();
+    Unk_Vec4* pSpeed = (Unk_Vec4*)m_pOwner->FUN_141671920();
     if (m_n10 == 0x19)
     {
-        m_pOwner->FUN_141671960(pSpeed[1]);
+        m_pOwner->FUN_141671960(pSpeed->m_y);
     }
     else if (m_n10 == 0x18)
     {
         if (m_pOwner->GetClassID() == 0x6200045)
         {
-            Ridee* pRidee = FUN_141468360(m_pOwner);
-            if (pRidee != 0)
-                m_pOwner->FUN_141671960(pRidee->FUN_1417071d0());
+            efd::SmartPointer<Ridee> spRidee(FUN_141468360(m_pOwner));
+            if (spRidee)
+                m_pOwner->FUN_141671960(spRidee->FUN_1417071d0());
         }
         else
         {
-            m_pOwner->FUN_141671960(pSpeed[2]);
+            m_pOwner->FUN_141671960(pSpeed->m_z);
         }
     }
     else if (m_n10 == 0x17)
     {
         if (m_pOwner->GetClassID() == 0x6200045)
         {
-            Ridee* pRidee = FUN_141468360(m_pOwner);
-            if (pRidee != 0)
-                m_pOwner->FUN_141671960(pRidee->FUN_1417070a0());
+            efd::SmartPointer<Ridee> spRidee(FUN_141468360(m_pOwner));
+            if (spRidee)
+                m_pOwner->FUN_141671960(spRidee->FUN_1417070a0());
         }
         else
         {
-            m_pOwner->FUN_141671960(pSpeed[2]);
+            m_pOwner->FUN_141671960(pSpeed->m_z);
         }
     }
     else if (m_n10 == 0x1a)
@@ -214,11 +220,10 @@ void StateWalk::vfunc_3(double fTime)
     efd::Point3 kVel = kDir * m_pOwner->vfunc_95();
     efd::Point3 kMove = kVel * (float)fTime;
     FUN_141240700(m_pOwner->FUN_14166d220(), kVel);
-    m_pOwner->vfunc_68(&kMove, fTime, 0, 0, 0);
+    reinterpret_cast<Unk_WkOwnerSlots*>(m_pOwner)->vfunc_68(kMove, fTime, 0, 0, 0);
 }
 
 // @0x1417fff20
-// MS2-FUNCTIONAL: call-site temporaries and branch layout differ from the exe
 void StateWalk::vfunc_8(double fTime)
 {
     State::vfunc_8(fTime);
@@ -230,45 +235,37 @@ void StateWalk::vfunc_8(double fTime)
     }
     Unk_WkBuff* pBuff = (Unk_WkBuff*)m_pOwner->FUN_14166d240();
     efd::Point3 kDir = pBuff->FUN_141683900();
-    m_pOwner->vfunc_22(kDir);
-    if (m_pOwner->FUN_141676b70() == 0)
+    reinterpret_cast<Unk_WkOwnerSlots*>(m_pOwner)->vfunc_22(kDir);
+    if (m_pOwner->FUN_141676b70() != 0)
     {
-        if (m_n4c == 0)
+        m_n10 = 0x17;
+    }
+    else if (m_n4c != 0)
+    {
+        m_n10 = 0x1a;
+    }
+    else if (FUN_140166410()->FUN_14036d570(0xd6))
+    {
+        int nY = abs(FUN_140a58540()->FUN_140d8c450());
+        int nX = abs(FUN_140a58540()->FUN_140d8c4d0());
+        int nStick = *FUN_1404eb7e0(&nX, &nY);
+        if (nStick > 0)
         {
-            if (!FUN_140166410()->FUN_14036d570(0xd6))
-            {
-                m_n10 = 0x18;
-            }
+            int nOld = m_n10;
+            if (nStick <= FUN_140a58500(FUN_1409a8b10())->m_n0c)
+                m_n10 = 0x19;
             else
-            {
-                int nY = FUN_140a58540()->FUN_140d8c450();
-                nY = nY < 0 ? -nY : nY;
-                int nX = FUN_140a58540()->FUN_140d8c4d0();
-                nX = nX < 0 ? -nX : nX;
-                int nStick = *FUN_1404eb7e0(&nX, &nY);
-                if (nStick < 1)
-                {
-                    m_n10 = 0x18;
-                }
-                else
-                {
-                    int nOld = m_n10;
-                    if (FUN_140a58500(FUN_1409a8b10())->m_n0c < nStick)
-                        m_n10 = 0x18;
-                    else
-                        m_n10 = 0x19;
-                    m_n50 = nOld != m_n10;
-                }
-            }
+                m_n10 = 0x18;
+            m_n50 = nOld != m_n10 ? 1 : 0;
         }
         else
         {
-            m_n10 = 0x1a;
+            m_n10 = 0x18;
         }
     }
     else
     {
-        m_n10 = 0x17;
+        m_n10 = 0x18;
     }
     if (pPC != 0 && pBuff->FUN_141683100(0x30d41))
     {
@@ -310,35 +307,31 @@ void StateWalk::vfunc_8(double fTime)
     {
         if (FUN_141659b80(pPC, 1, 0xbadf0a13, 90.0f) != 0)
         {
-            if (FUN_1416764d0(pPC) == 0)
-            {
-                pPC->FUN_1415248d0(1, 0xbadf0a13);
-            }
-            else
+            if (FUN_1416764d0(pPC) != 0)
             {
                 MS2Ptr<RideOffActionTakeLR> spAction(new RideOffActionTakeLR(1));
                 spAction->m_n2c = 0xbadf0a13;
                 if (pPC->SendRequestRideMode1(spAction) != 0)
                     pPC->vfunc_59(1, 0, 0, 0);
             }
+            else
+            {
+                pPC->FUN_1415248d0(1, 0xbadf0a13);
+            }
         }
         return;
     }
-    if (pPC == 0 || !pBuff->FUN_141682fe0(0x30d42))
+    if ((pPC != 0 && pBuff->FUN_141682fe0(0x30d42)) || FUN_140953f30()->FUN_140ad2260() != 0)
     {
-        if (FUN_140953f30()->FUN_140ad2260() == 0)
-        {
-            if (m_pOwner->FUN_1416749c0())
-                return;
-            m_pOwner->vfunc_59(1, 0, 0, 0);
-            return;
-        }
+        pPC->FUN_1415248d0(2, 0xbadf0a13);
     }
-    pPC->FUN_1415248d0(2, 0xbadf0a13);
+    else if (!m_pOwner->FUN_1416749c0())
+    {
+        m_pOwner->vfunc_59(1, 0, 0, 0);
+    }
 }
 
 // @0x141800580
-// MS2-FUNCTIONAL: string wrapper, CComPtr temp and EH frame differ from the exe
 void StateWalk::vfunc_9(double fTime)
 {
     State::vfunc_9(fTime);
@@ -349,12 +342,13 @@ void StateWalk::vfunc_9(double fTime)
         m_pOwner->vfunc_59(0x1b, 0, 0, 0);
         return;
     }
-    if (m_pOwner->vfunc_99(s_nDelay) != 0)
+    if (bFalling == 0 && m_pOwner->vfunc_99(s_nDelay) != 0)
     {
         m_pOwner->vfunc_59(5, 0, 0, 0);
         return;
     }
     int nKey = 0x1c;
+    bool bForce = false;
     if (m_n10 == 0x19)
         m_n48 = 0;
     if (m_n48 == 0)
@@ -372,28 +366,22 @@ void StateWalk::vfunc_9(double fTime)
     }
     if (m_n10 == 0x17)
         nKey = 0x1f;
-    bool bChanged;
-    if (m_pOwner->vfunc_96() == m_fSpeed1 && m_pOwner->vfunc_97() == m_fSpeed2 && m_n50 == 0)
-        bChanged = false;
-    else
-        bChanged = true;
-    egf::EntityID kId;
-    unsigned nSeq = FUN_141b6f910()->FUN_140b7f6a0(m_pOwner->FUN_14123c460(kId));
+    bool bChanged = !(m_pOwner->vfunc_96() == m_fSpeed1 && m_pOwner->vfunc_97() == m_fSpeed2 && m_n50 == 0);
+    unsigned nSeq = FUN_141b6f910()->FUN_140b7f6a0(m_pOwner->FUN_14123c460());
     if (!m_pOwner->FUN_14166de90(nKey, nSeq) || bChanged)
     {
-        float aSpeed[4];
-        memcpy(aSpeed, m_pOwner->FUN_141671920(), sizeof(aSpeed));
+        Unk_Vec4 kSpeed = *(Unk_Vec4*)m_pOwner->FUN_141671920();
         if (m_pOwner->GetClassID() == 0x6200045)
         {
-            Ridee* pRidee = FUN_141468360(m_pOwner);
-            if (pRidee != 0)
-                aSpeed[2] = pRidee->FUN_1417071d0();
+            efd::SmartPointer<Ridee> spRidee(FUN_141468360(m_pOwner));
+            if (spRidee)
+                kSpeed.m_z = spRidee->FUN_1417071d0();
         }
-        vfunc_10(m_pOwner->vfunc_95(), aSpeed[2], aSpeed[1], 1.0f, 0);
+        vfunc_10(m_pOwner->vfunc_95(), kSpeed.m_z, kSpeed.m_y, 1.0f, 0);
         m_fSpeed1 = m_pOwner->vfunc_96();
         m_fSpeed2 = m_pOwner->vfunc_97();
-        Unk_WkString strAnim(m_pOwner->vfunc_123(nKey));
-        m_pOwner->FUN_14166dd20(strAnim, m_pOwner->FUN_1416713c0(), bChanged, false);
+        efd::utf8string strAnim(m_pOwner->vfunc_123(nKey));
+        m_pOwner->FUN_14166dd20(strAnim, m_pOwner->FUN_1416713c0(), bChanged, bForce);
     }
 }
 
@@ -409,11 +397,9 @@ int StateWalk::vfunc_15()
 }
 
 // @0x141800ac0
-// MS2-FUNCTIONAL: frame/local layout differs from the exe
 void StateWalk::vfunc_10(float a, float b, float c, float d, int e)
 {
-    float fSpeed = m_pOwner->vfunc_115(a, b, c, d, e, &m_n48);
-    m_pOwner->FUN_141670d80(fSpeed);
+    m_pOwner->FUN_141670d80(m_pOwner->vfunc_115(a, b, c, d, e, &m_n48));
 }
 
 // @0x141800b60
@@ -475,34 +461,28 @@ void StateWalkNPC::vfunc_4(StateData* pData)
 }
 
 // @0x141800cb0
-// MS2-FUNCTIONAL: string temporaries and the EH frame differ from the exe
+// MS2-FUNCTIONAL: the exe passes the name string inline (two-slot pointer copy, no EH
+// state nop) yet destroys it at scope end; no source form found for that
 void StateWalkNPC::vfunc_9(double fTime)
 {
     State::vfunc_9(fTime);
-    bool bChanged;
-    if (m_pOwner->vfunc_96() == m_fSpeed1 && m_pOwner->vfunc_97() == m_fSpeed2)
-        bChanged = false;
-    else
-        bChanged = true;
+    bool bChanged = !(m_pOwner->vfunc_96() == m_fSpeed1 && m_pOwner->vfunc_97() == m_fSpeed2);
     if (bChanged)
     {
         PCBase* pMount = FUN_1417b8480();
         pMount->vfunc_95();
         m_fSpeed1 = m_pOwner->vfunc_96();
         m_fSpeed2 = m_pOwner->vfunc_97();
-        egf::EntityID kId;
-        efd::utf8string strName = FUN_141b6f910()->FUN_141206030(m_pOwner->FUN_14123c460(kId));
-        Unk_WkString strAnim(FUN_1408ac310(strName));
+        const efd::utf8string& strName = FUN_141b6f910()->FUN_141206030(m_pOwner->FUN_14123c460());
+        efd::utf8string strAnim(FUN_1408ac310(strName));
         m_pOwner->FUN_14166dd20(strAnim, m_pOwner->FUN_1416713c0(), bChanged, false);
     }
 }
 
 // @0x141800ed0
-// MS2-FUNCTIONAL: frame/local layout differs from the exe
 void StateWalkNPC::vfunc_10(float a, float b, float c, float d, int e)
 {
-    float fSpeed = m_pOwner->vfunc_115(a, b, c, d, e, &m_n48);
-    m_pOwner->FUN_141670d80(fSpeed);
+    m_pOwner->FUN_141670d80(m_pOwner->vfunc_115(a, b, c, d, e, &m_n48));
 }
 
 // @0x141801000

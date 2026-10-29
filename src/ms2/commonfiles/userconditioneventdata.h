@@ -59,7 +59,7 @@ public:
 
     static Ptr GetEvent(int nId);               // 0x1408d3090 the row by id (reloads when the file changed)
     static void GetAllEvents(ATL::CAtlArray<Ptr>& out);     // 0x1408d2fc0 every row, after a reload check
-    static bool Load();                         // 0x1408d2640 reads the xml into the map
+    static void Load();                         // 0x1408d2640 reads the xml into the map
     static void CheckInit();                    // 0x1408d3a70
     static void SetInit(bool b);                // 0x1408d4d30
 

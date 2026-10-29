@@ -7,8 +7,9 @@
 
 #include "ms2/ms2layout.h"
 #include "ms2/placeholder/casyncimageloader.h"
-#include "GFxConfig.h"
-#include "Render/Render_Types2D.h"
+#include "ms2/scaleform/include/kernel/sf_types.h"                 // before render_types2d.h: the kernel tree's copies
+#include "ms2/scaleform/include/kernel/sf_alg.h"                   // share these include guards
+#include "ms2/scaleform/include/render/render_types2d.h"
 
 class Ni2DBuffer;
 class Unk_GFxUIRenderer2D;                                          // ms2/placeholder/gfxrenderer2d.h
