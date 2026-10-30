@@ -81,13 +81,12 @@ MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 void* FUN_1401b59c0();
 Unk_SSGDlg4e47* FUN_140de48d0(int nId);
 extern char DAT_143ab2a90;
-extern char DAT_143ab2d80;
 extern __int64 DAT_143ab2828;
 extern int DAT_143ab2864;
 extern __int64 DAT_143ab28f8;
 // /Ob0: the exe reads these globals inline, so they are macros
 #define Unk_Inventory() (reinterpret_cast<Unk_Inventory*>(&DAT_143ab2a90))
-#define Unk_StoreInstance() (reinterpret_cast<CStore*>(&DAT_143ab2d80))
+#define Unk_StoreInstance() (&DAT_143ab2d80)
 
 // ---- CStore -----------------------------------------------------------------------------------------------------
 // @0x140de11a0
@@ -982,35 +981,5 @@ TriggerActionCli* FUN_140de4cb0()
 }
 
 // Full-executable aliases for CStore's slot and storage checks.
-class Unk_IsStoreView
-{
-public:
-    int FUN_140de21a0(MS2Ptr<CItem> item, int count);
-    int FUN_140de2490(int type);
-};
-class Unk_SsStoreView
-{
-public:
-    int FUN_140de21a0(MS2Ptr<CItem> item, int count);
-    int FUN_140de2490(int type);
-};
-
-// MS2-FUNCTIONAL: legacy inventory view forwards to the recovered CStore slot check.
-int Unk_IsStoreView::FUN_140de21a0(MS2Ptr<CItem> item, int count)
-{ return reinterpret_cast<CStore*>(this)->AvailableSlot(item, count); }
-// MS2-FUNCTIONAL: legacy social-store view forwards to the same recovered slot check.
-int Unk_SsStoreView::FUN_140de21a0(MS2Ptr<CItem> item, int count)
-{ return reinterpret_cast<CStore*>(this)->AvailableSlot(item, count); }
-// MS2-FUNCTIONAL: legacy inventory view forwards to the recovered item type policy.
-int Unk_IsStoreView::FUN_140de2490(int type)
-{ return reinterpret_cast<CStore*>(this)->Allowed(type); }
-// MS2-FUNCTIONAL: legacy social-store view forwards to the same item type policy.
-int Unk_SsStoreView::FUN_140de2490(int type)
-{ return reinterpret_cast<CStore*>(this)->Allowed(type); }
-
 // MS2-PIN: ?AvailableSlot@CStore@@QEAAHV?$MS2Ptr@VCItem@@@@H@Z 0x140de21a0
 // MS2-PIN: ?Allowed@CStore@@QEAAHH@Z 0x140de2490
-// MS2-PIN: ?FUN_140de21a0@Unk_IsStoreView@@QEAAHV?$MS2Ptr@VCItem@@@@H@Z 0x140de21a0
-// MS2-PIN: ?FUN_140de21a0@Unk_SsStoreView@@QEAAHV?$MS2Ptr@VCItem@@@@H@Z 0x140de21a0
-// MS2-PIN: ?FUN_140de2490@Unk_IsStoreView@@QEAAHH@Z 0x140de2490
-// MS2-PIN: ?FUN_140de2490@Unk_SsStoreView@@QEAAHH@Z 0x140de2490

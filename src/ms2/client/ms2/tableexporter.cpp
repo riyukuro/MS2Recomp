@@ -203,6 +203,32 @@ struct Unk_XmlNodeBuf { char m_raw[0x90]; };
 
 typedef ATL::CAtlArray<void*, ATL::CElementTraits<void*> > Unk_PtrArray;
 
+// The exe's CAtlArray<TPtr<CNpcSpawnData>> (A) and CAtlArray<MS2Ptr<DungeonRoom>> (B): 16-byte counted elements. The
+// ctors fold onto this TU's CAtlArray<void*> / CAtlArray<CString> ctor copies (0x14182e480 / 0x14182e4c0).
+struct Unk_RefArrayA
+{
+    Unk_RefArrayA() { ::new (static_cast<void*>(this)) Unk_PtrArray; }
+    ~Unk_RefArrayA();
+    Unk_Ref* m_pData;
+    size_t m_nSize;
+    size_t m_nMaxSize;
+    size_t m_nGrowBy;
+};
+
+struct Unk_RefArrayB
+{
+    Unk_RefArrayB() { ::new (static_cast<void*>(this)) ATL::CAtlArray<CString>; }
+    ~Unk_RefArrayB();
+    Unk_Ref* m_pData;
+    size_t m_nSize;
+    size_t m_nMaxSize;
+    size_t m_nGrowBy;
+};
+
+Unk_Ref* FUN_14182fc10(Unk_RefArrayA* pArray, size_t nIndex);
+Unk_Ref* FUN_14182fc50(Unk_RefArrayB* pArray, size_t nIndex);
+size_t FUN_1418311c0(Unk_RefArrayA* pArray);
+
 void FUN_1411682d0(Unk_ExportLog*);                                     // flush / show the log
 struct Unk_BlockList { char m_raw[0x18]; };
 void FUN_1406feea0(Unk_BlockList*);                                     // ctor
@@ -210,6 +236,7 @@ void FUN_1406ff2b0(Unk_BlockList*);                                     // dtor
 void FUN_140373d50();
 void FUN_140374090(Unk_BlockList*);                                     // collect the fieldData blocks
 unsigned int FUN_14037bf40(Unk_BlockList*);                             // number of blocks
+struct Unk_BlockListLocal : Unk_BlockList { ~Unk_BlockListLocal() { FUN_1406ff2b0(this); } };
 
 int FUN_140873220(Unk_140165cf0* pElem, const char* pszName, unsigned int& rValue);
 int FUN_1408731e0(Unk_140165cf0* pElem, const char* pszName, int& rValue);
@@ -235,7 +262,7 @@ void FUN_140a2b550(Unk_ModelMgr* pMgr, Unk_140165cf0* pEntity, const CString& st
 void FUN_140a2b270(Unk_ModelMgr* pMgr, Unk_140165cf0* pEntity, const CString& strModel, const char* pszProp, int* pOut);
 void FUN_140a2b9d0(Unk_ModelMgr* pMgr, Unk_140165cf0* pEntity, const CString& strModel, const char* pszProp, bool* pOut);
 void FUN_140a2bc30(Unk_ModelMgr* pMgr, Unk_140165cf0* pEntity, const CString& strModel, const char* pszProp, CString* pOut);
-void FUN_140a2aab0(Unk_ModelMgr* pMgr, Unk_140165cf0* pEntity, CString strModel, const char* pszProp, Unk_PtrArray* pOut);
+void FUN_140a2aab0(Unk_ModelMgr* pMgr, Unk_140165cf0* pEntity, CString strModel, const char* pszProp, Unk_RefArrayA* pOut);
 void FUN_140a2afd0(Unk_ModelMgr* pMgr, Unk_140165cf0* pEntity, const CString& strModel, const char* pszProp, D3DXVECTOR3* pOut);
 void FUN_140a2c120(Unk_Ref* pRef, void* pRaw);
 Unk_NpcData* FUN_140a2c430(Unk_Ref* pRef);
@@ -243,7 +270,7 @@ void FUN_140a2c340(Unk_Ref* pRef);
 
 // Region spawn tables.
 void* FUN_14031c2a0();
-void FUN_140320b40(void* pTable, unsigned int nId, Unk_PtrArray* pOut);
+void FUN_140320b40(void* pTable, unsigned int nId, Unk_RefArrayB* pOut);
 void FUN_140331af0(Unk_Ref* pRef, void* pRaw);
 Unk_SpawnRegion* FUN_1403347d0(Unk_Ref* pRef);
 void FUN_14031c0f0(Unk_Ref* pRef);
@@ -288,6 +315,9 @@ void FUN_1408704d0(Unk_XmlNodeBuf* pDecl, const char* pszVersion, const char* ps
 void FUN_14081ad20(Unk_XmlNodeBuf* pDecl);
 void FUN_1408700b0(Unk_XmlNodeBuf* pComment, const char* pszText);
 void FUN_1408724d0(Unk_XmlNodeBuf* pComment);
+// The declaration and the root element live to the end of the export (the exe destroys both on every exit).
+struct Unk_XmlDeclLocal : Unk_XmlNodeBuf { ~Unk_XmlDeclLocal() { FUN_14081ad20(this); } };
+struct Unk_XmlElemLocal : Unk_XmlNodeBuf { ~Unk_XmlElemLocal() { FUN_14086f450(this); } };
 void FUN_14086e000(void* pParent, const void* pChild);                  // InsertEndChild
 void FUN_140873ce0(void* pElem, const char* pszName, unsigned int nValue);
 void FUN_140873ca0(void* pElem, const char* pszName, int nValue);
@@ -684,7 +714,7 @@ bool FUN_1418226b0(bool bLog)
     if (bLog)
         FUN_1411683e0(FUN_141168200(), "Read Model Complete");
 
-    Unk_BlockList blocks;
+    Unk_BlockListLocal blocks;
     FUN_1406feea0(&blocks);
     FUN_140373d50();
     FUN_140374090(&blocks);
@@ -741,14 +771,14 @@ bool FUN_1418226b0(bool bLog)
                 for (Unk_140165cf0* pEntity = FUN_140165cf0(pEntitySet, "entity"); pEntity != NULL; pEntity = FUN_140168650(pEntity, "entity")) {
                     CString strModel = FUN_140188f50(FUN_14086f4b0(pEntity, "modelName"), 0);
                     if (FUN_140a2a920(&mgr, strModel, CString("SpawnPointNPC")) != 0) {
-                        Unk_PtrArray npcs;
+                        Unk_RefArrayA npcs;
                         FUN_140a2aab0(&mgr, pEntity, CString(strModel), "NpcList", &npcs);
                         _NpcInfo npc;
                         npc.m_nFieldId = nFieldId;
                         FUN_140a2afd0(&mgr, pEntity, strModel, "Position", &npc.m_pos);
-                        for (size_t i = 0; i < npcs.GetCount(); i++) {
+                        for (size_t i = 0; i < FUN_1418311c0(&npcs); i++) {
                             Unk_Ref ref;
-                            FUN_140a2c120(&ref, npcs[i]);
+                            FUN_140a2c120(&ref, FUN_14182fc10(&npcs, i));
                             FUN_1418270c0(FUN_140a2c430(&ref)->m_nId, npc, g_mapNpc);
                             FUN_140a2c340(&ref);
                         }
@@ -767,11 +797,11 @@ bool FUN_1418226b0(bool bLog)
                         if (portal.m_nType == 0) {
                             FUN_141826f80(nFieldId, portal, mapPortals);
                         } else if (portal.m_nType == 8) {
-                            Unk_PtrArray regions;
+                            Unk_RefArrayB regions;
                             FUN_140320b40(FUN_14031c2a0(), portal.m_nId, &regions);
-                            for (size_t i = 0; i < regions.GetCount(); i++) {
+                            for (size_t i = 0; i < regions.m_nSize; i++) {
                                 Unk_Ref ref;
-                                FUN_140331af0(&ref, regions[i]);
+                                FUN_140331af0(&ref, FUN_14182fc50(&regions, i));
                                 for (size_t j = 0; j < FUN_1403347d0(&ref)->m_arrPoints.GetCount(); j++) {
                                     PortalInfo copy = portal;
                                     copy.m_nTargetField = FUN_1403347d0(&ref)->m_arrPoints[j];
@@ -933,7 +963,7 @@ bool FUN_1418226b0(bool bLog)
     if (bLog)
         FUN_1411683e0(FUN_141168200(), "Write FieldMetaTable");
     TiXmlDocument docOut;
-    Unk_XmlNodeBuf decl;
+    Unk_XmlDeclLocal decl;
     FUN_1408704d0(&decl, "1.0", "utf-8", "");
     FUN_14086e000(&docOut, &decl);
     {
@@ -942,7 +972,7 @@ bool FUN_1418226b0(bool bLog)
         FUN_14086e000(&docOut, &comment);
         FUN_1408724d0(&comment);
     }
-    Unk_XmlNodeBuf elemRoot;
+    Unk_XmlElemLocal elemRoot;
     FUN_14086f2f0(&elemRoot, "ms2");
 
     for (Unk_NpcMap::iterator it = g_mapNpc.begin(); it != g_mapNpc.end(); ++it) {
@@ -1102,24 +1132,6 @@ bool FUN_1418226b0(bool bLog)
 
 // ---- glue of the model-reference arrays and the field map nodes ----------------------------------------
 void FUN_140335fe0(Unk_Ref* pRef, unsigned int nFlags);
-
-struct Unk_RefArrayA
-{
-    ~Unk_RefArrayA();
-    Unk_Ref* m_pData;
-    size_t m_nSize;
-    size_t m_nMaxSize;
-    size_t m_nGrowBy;
-};
-
-struct Unk_RefArrayB
-{
-    ~Unk_RefArrayB();
-    Unk_Ref* m_pData;
-    size_t m_nSize;
-    size_t m_nMaxSize;
-    size_t m_nGrowBy;
-};
 
 void FUN_141830cb0(Unk_Ref* pData, size_t nCount) throw();
 void FUN_141830d10(Unk_Ref* pData, size_t nCount) throw();

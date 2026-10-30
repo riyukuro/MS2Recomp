@@ -1364,7 +1364,7 @@ wstring MD5(const wstring &text)
                     for (unsigned int i = 0; i < 16; i++)
                     {
                         memset(temp, 0, 6);
-                        swprintf(temp, 3, L"%02x", result[i]);
+                        swprintf_s(temp, 3, L"%02x", result[i]);
                         encrypted += temp;
                     }
                 }

@@ -238,10 +238,6 @@ pin already attributed	client/ms2/stateeffectmgr.cpp: MS2-PIN ??$forward@PEAVGam
 pin already attributed	client/ms2/stateeffectmgr.cpp: MS2-PIN ??$forward@PEBD@std@@YA$$QEAPEBDAEAPEBD@Z 0x140ca1df0: already attributed (tag), ignored
 pin already attributed	client/ms2/store.cpp: MS2-PIN ?Allowed@CStore@@QEAAHH@Z 0x140de2490: already attributed (tag), ignored
 pin already attributed	client/ms2/store.cpp: MS2-PIN ?AvailableSlot@CStore@@QEAAHV?$MS2Ptr@VCItem@@@@H@Z 0x140de21a0: already attributed (tag), ignored
-pin already attributed	client/ms2/store.cpp: MS2-PIN ?FUN_140de21a0@Unk_IsStoreView@@QEAAHV?$MS2Ptr@VCItem@@@@H@Z 0x140de21a0: already attributed (tag), ignored
-pin already attributed	client/ms2/store.cpp: MS2-PIN ?FUN_140de21a0@Unk_SsStoreView@@QEAAHV?$MS2Ptr@VCItem@@@@H@Z 0x140de21a0: already attributed (tag), ignored
-pin already attributed	client/ms2/store.cpp: MS2-PIN ?FUN_140de2490@Unk_IsStoreView@@QEAAHH@Z 0x140de2490: already attributed (tag), ignored
-pin already attributed	client/ms2/store.cpp: MS2-PIN ?FUN_140de2490@Unk_SsStoreView@@QEAAHH@Z 0x140de2490: already attributed (tag), ignored
 pin already attributed	client/ms2/taileffectobject.cpp: MS2-PIN ?FUN_140ad02c0@@YAHHH@Z 0x140ad02c0: already attributed (tag), ignored
 pin already attributed	client/ms2/taileffectobject.cpp: MS2-PIN ?FUN_140ad02f0@@YAHHH@Z 0x140ad02f0: already attributed (tag), ignored
 pin already attributed	client/ms2/taileffectobject.cpp: MS2-PIN ?FUN_140ad0d60@@YAHHHH@Z 0x140ad0d60: already attributed (tag), ignored

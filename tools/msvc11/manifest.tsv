@@ -1,0 +1,17 @@
+# VC11 toolchain for `// MS2-TOOLSET: vc11` units (tools/msvc11/check.py --record; cl 17.00.61030 x64 from
+# VS2012.4.iso, VC/include from its vc_librarycore86, Windows SDK 8.0 um + shared from VS2012_WDX_ENU.iso).
+# Columns: kind, path under third_party/msvc11, value. tree rows: '<file count> <sha256 of the sorted
+# lowercase-path+hash list>'.
+file	bin/1033/clui.dll	90cae31aba9326c4460ce51b53063964ff8ebc073df2f1092a9d7ace9ee3f1c9
+file	bin/c1.dll	9f52f46652eacaac465663e4430780188eb7b1fbac520c3f98ea7496e20578c4
+file	bin/c1xx.dll	3e7583e8f17d51dfca47a57596e20995bc6cdd8636989ca4ea3c686a1f9f3221
+file	bin/c2.dll	0108f8b0d13bcf2b61295faca9d4bf6c1b87ec288c7862438263a9491cb1e1fa
+file	bin/cl.exe	a9de754da92f18c998037d90352587ce67d8a8200ef646b29cfffa4c1b6994bc
+file	bin/msobj110.dll	aa66636574a238b9bf99869c0d43fb4e370de4fc75424ce3f33d940e2822381d
+file	bin/mspdb110.dll	25b3afab7472c9394d620b005881329df85b5cff87f5d58c9bdef81ab47a0ec0
+file	bin/mspdbcore.dll	e834b4998f96b8a1effd6a47f45762bbb89f2ab612c4fa931c1530e5e89e57d6
+file	bin/mspdbsrv.exe	c6048a0a348aed71647f268dc570613034bac3742d09a18bd036822f228eaa21
+tree	include/sdk/shared	213 0b9d59f2773c2c86ce60133a736a414781304d3240ada1ca236c90b0c1e87f73
+tree	include/sdk/um	1866 eecaa72881c6a92e4ca95276b929cda4061ba35bbfcebf746df0bed3ea9ce4e3
+tree	include/vc	347 755acded056730e3bf440981abb8605f9907ff55205ec830b7607e1091e300f1
+version	cl	17.00.61030

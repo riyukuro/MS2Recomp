@@ -12,15 +12,20 @@
 140028360	14002a0e0	sfr_cri_01	none	65	text	vc9 10-29: split by toolset, Scaleform video player over the CRI easy player (VS2012)
 14002a0e0	14002e548	sfr_cri_02	none	107	text	vc9 10-29: split by toolset, Scaleform Video player, decoders and readers (VS2012)
 14002e548	140039ea8	sfr_cri_02c	none	193	text	vc9 10-29: split by toolset, CRI Movie internals: criMvPly, decoder and reader glue (VS2008)
-140039ea8	140046a1c	sfr_cri_03	none	300	text	sfr0 10-20: Scaleform 4.1.18 recovery, CRI
+140039ea8	14003b6e0	sfr_cri_03a	none	40	text	vc9 10-30: split at the exe obj boundary, CRI base /Os objs: criCs, criAtomic, criUtf, criUsfCmn (VS2008)
+14003b6e0	140044e84	sfr_cri_03	none	186	text	vc9 10-30: split at the exe obj boundaries, CRI /Od criMvPly/criVmpv/criVdec objs (VS2008)
+140044e84	140046a1c	sfr_cri_03b	none	74	text	vc9 10-30: split at the exe obj boundary, CRI /Os objs: criUsfDmx, criSjUni, criSjRbf, criSj (VS2008)
 140046a1c	140046e04	unit_140046a1c_criutfsortindex	none	4	text	descriptive: criutfsortindex
 140046e04	140047430	unit_140046e04_criutfparser	none	7	text	descriptive: criutfparser
 140047430	140047b30	unit_140047430_crim2vdecoder	none	14	text	descriptive: crim2vdecoder
 140047b30	14004c1d0	sfr_cri_04	none	17	text	sfr28 10-23: CRI MvCore/Sofdec link-order gap (unowned by sfr_cri_01..03)
 14004c1d0	14004da40	unit_14004c1d0_videocolorspace	none	12	text	descriptive: videocolorspace
-14004da40	140054170	sfr_cri_05	none	182	text	sfr28 10-23: CRI MvCore/Sofdec link-order gap (unowned by sfr_cri_01..03)
+14004da40	14004e5a0	sfr_cri_05	none	25	text	vc9 10-30: split at the exe obj boundary, CRI MvCore player (VS2008)
+14004e5a0	140054170	sfr_cri_05b	none	157	text	vc9 10-30: split at the exe obj boundary, CRI SJMEM/SJRBF stream joints onward, incl. the /Od criAdec code (VS2008)
 140054170	140066180	sfr_cri_06	none	164	text	sfr28 10-23: CRI MvCore/Sofdec link-order gap (unowned by sfr_cri_01..03)
-140066180	1400b21a0	sfr_cri_07	none	218	text	sfr28 10-23: CRI MvCore/Sofdec link-order gap (unowned by sfr_cri_01..03)
+140066180	1400b0940	sfr_cri_07	none	212	text	sfr28 10-23: CRI MvCore/Sofdec link-order gap (unowned by sfr_cri_01..03)
+1400b0940	1400b0a10	sfr_cri_07b	none	3	text	vc9 10-30: split at the exe obj boundary, CRI ERR error-callback layer, /Od (VS2008)
+1400b0a10	1400b21a0	sfr_cri_07	none	3	text	vc9 10-30: CRI SIMD kernels after the CRI ERR obj (VS2008)
 1400b21a0	1400b21d0	unit_1400b21a0_criticalsectioninitializer	none	1	di	descriptive: criticalsectioninitializer
 1400b21d0	1400b2330	?\achievecondition.cpp	low	6	di	
 1400b2330	1400b4220	?\additionalactionadditional.cpp	low	2	di	

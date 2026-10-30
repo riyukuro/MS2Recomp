@@ -50,7 +50,7 @@ void* FUN_1413a4f30(void* pMap);                                        // the n
 void* FUN_141395500(void* pNode);
 Unk_GeActRef FUN_141382b90(Unk_140165cf0* pElem);                       // builds the action of an <action> element
 // The condition / action lists hold 16-byte handles (the shared placeholder declares them as pointer arrays).
-#define GE_REFS(list) reinterpret_cast<ATL::CAtlArray<Unk_GcCondRefRaw>&>((list).m_arr)
+#define GE_REFS(list) reinterpret_cast<ATL::CAtlArray<Unk_GcCondRef>&>((list).m_arr)
 
 // The guide manager: the trigger events that were raised.
 class Unk_GeMgr
@@ -203,12 +203,12 @@ Unk_GcCondRef::Unk_GcCondRef()
 }
 
 // @0x1413a4770
-Unk_GcCondRef* FUN_1413a4770(Unk_GcCondRef* pDst, Unk_GcCondRef* pSrc)
+Unk_GcCondRef& Unk_GcCondRef::operator=(const Unk_GcCondRef& rhs)
 {
-    pSrc->FUN_141388ed0();
-    FUN_141389060(pDst);
-    pDst->m_p = pSrc->m_p;
-    return pDst;
+    const_cast<Unk_GcCondRef&>(rhs).FUN_141388ed0();
+    FUN_141389060(this);
+    m_p = rhs.m_p;
+    return *this;
 }
 
 // @0x1413a47b0
@@ -233,34 +233,6 @@ void* FUN_1413a4810(void* pIter)
 void* FUN_1413a4830(void* pIter)
 {
     return FUN_141398a90(pIter);
-}
-
-// @0x1413a4a30
-void FUN_1413a4a30(Unk_GcCondRef* pRefs, unsigned __int64 nCount)
-{
-    // CAtlArray CallConstructors: destroys what was built and rethrows if a constructor throws
-    unsigned __int64 i = 0;
-    try
-    {
-        for (i = 0; i < nCount; ++i)
-            new (pRefs + i) Unk_GcCondRef;
-    }
-    catch (...)
-    {
-        while (i > 0)
-        {
-            --i;
-            pRefs[i].~Unk_GcCondRef();
-        }
-        throw;
-    }
-}
-
-// @0x1413a4ab0
-void FUN_1413a4ab0(Unk_GcCondRef* pDst, Unk_GcCondRef* pSrc, unsigned __int64 nCount)
-{
-    for (unsigned __int64 i = 0; i < nCount; ++i)
-        FUN_1413a4770(pDst + i, pSrc + i);
 }
 
 // @0x1413a4b50

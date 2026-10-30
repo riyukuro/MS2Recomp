@@ -148,11 +148,12 @@ void FUN_140d73c60(MS2Ptr<Unk_ReportMessageBox>);
 
 // Notification payload: the 16-byte target identifier is real data, not padding.
 struct Unk_ReportTarget { __int64 low; __int64 high; };
-class NotifyObject : public CPtred { public: NotifyObject(); virtual ~NotifyObject(); };
+class NotifyObject : public CPtred { public: NotifyObject(); virtual ~NotifyObject(); virtual CStringW GetTypeName(); };
 class NotifyBlindTarget : public NotifyObject {
 public:
     NotifyBlindTarget(const int& kind, const Unk_ReportTarget& target) : m_kind(kind), m_target(target) {}
     virtual ~NotifyBlindTarget() = default;
+    virtual CStringW GetTypeName();     // 0x140db54c0 (notifychangebuff.cpp); slot 1, NotifySystem::Post dispatches on it
 private:
     int m_kind;
     Unk_ReportTarget m_target;

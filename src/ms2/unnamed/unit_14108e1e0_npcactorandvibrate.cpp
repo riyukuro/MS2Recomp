@@ -352,10 +352,7 @@ class Unk_FactoryApp;
 Unk_FactoryApp* FUN_1403ed2b0();
 const CStringA& FUN_141adc5d0(Unk_FactoryApp* pApp, int nUiId); // close a ui
 const CStringA& FUN_141adc530(Unk_FactoryApp* pApp, int nUiId); // open a ui
-int FUN_140de2860(void* pStore);
-void FUN_140de2b50(void* pStore);
-class Unk_SSGMisc2d80 { public: void FUN_140de2a00(); };
-extern Unk_SSGMisc2d80 DAT_143ab2d80;
+#include "ms2/client/ms2/store.h"     // DAT_143ab2d80, the store table (CStore)
 extern int DAT_143abdc30;                                           // the npc id of the last 0x4f50 dialog
 class Unk_EmoCfgFloat { public: float* FUN_140967520(const float* pDefault); };
 
@@ -1424,11 +1421,11 @@ int CNpc::FUN_141094200()
         FUN_141adc5d0(FUN_1403ed2b0(), 0x4e4a);
         FUN_141adc5d0(FUN_1403ed2b0(), 0x4e49);
     } else if (nUiId == 0x4e47) {
-        if (FUN_140de2860(&DAT_143ab2d80) == 0) {
-            FUN_140de2b50(&DAT_143ab2d80);
+        if (DAT_143ab2d80.Ready() == 0) {
+            DAT_143ab2d80.RequestLoad();
             return nUiId;
         }
-        DAT_143ab2d80.FUN_140de2a00();
+        DAT_143ab2d80.Reset();
     } else if (nUiId == 0x4f50) {
         DAT_143abdc30 = FUN_141092fa0();
     }

@@ -21,6 +21,8 @@ struct QuestMask : public CPtred
 {
 public:
     QuestMask();                                        // 0x140266860
+    QuestMask(const QuestMask& rOther);                 // 0x1402668b0 (copies the ranges; the flag resets to 1)
+    QuestMask& operator=(const QuestMask& rOther);      // 0x140266930 (copies the ranges only)
     int FUN_140266970() const;                          // every range is satisfied (and there is one)
 
     int m_nEnable;                                      // +0x18 the "enableInMask" flag

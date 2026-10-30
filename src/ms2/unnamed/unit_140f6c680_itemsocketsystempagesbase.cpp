@@ -274,6 +274,8 @@ bool FUN_141a02e10(const CMsgBoxData*, int, unsigned);
 void FUN_140710590(COutPacket&);
 // The socket-system packets (layouts as commonfiles\itemsocketsystemutil.cpp).
 struct Unk_SSGGemEquip {
+    Unk_SSGGemEquip() : m_nItemUid(0), m_nSlot(0), m_spGem(0) {}   // 0x140c4de50 (as unit_140c47c80 defines it)
+    ~Unk_SSGGemEquip() {}                                           // 0x140c4e0b0
     __int64 m_nItemUid;
     int m_nSlot;
     MS2Ptr<TSocketGemStoneInfo> m_spGem;

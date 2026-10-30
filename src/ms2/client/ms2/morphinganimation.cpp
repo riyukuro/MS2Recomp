@@ -12,6 +12,8 @@
 #include <NiFixedString.h>
 #include <NiTimeController.h>
 #include <NiInterpController.h>
+#include <NiInterpolator.h>
+#include <NiMorphWeightsController.h>
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 
@@ -130,7 +132,7 @@ void CMorphingAnimation::FUN_141487c50(float fWeight)
     if (pNode != NULL) {
         NiTimeController* pTimeCtrl = pNode->GetControllers();
         while (pTimeCtrl != NULL) {
-            pCtrl = (NiInterpController*)FUN_14098d8d0(&NiInterpController::ms_RTTI, pTimeCtrl);
+            pCtrl = (NiInterpController*)FUN_14098d8d0(&NiMorphWeightsController::ms_RTTI, pTimeCtrl);
             if (pCtrl != NULL) {
                 nCount = pCtrl->GetInterpolatorCount();
                 break;

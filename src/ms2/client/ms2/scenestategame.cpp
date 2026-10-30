@@ -381,8 +381,7 @@ void FUN_141524a80(MyPC* pPC, int n);
 Unk_SSGSubActor* FUN_141662440(MyPC* pPC, int nSlot);
 
 // OnPacket direct dispatch targets
-class Unk_SSGMisc2d80 { public: void FUN_140de3480(CInPacket& packet); void FUN_140de2a00(); };
-extern Unk_SSGMisc2d80 DAT_143ab2d80;
+#include "ms2/client/ms2/store.h"     // DAT_143ab2d80, the store table (CStore)
 class Unk_SSGArcade { public: void FUN_140b8c260(CInPacket& packet); };
 Unk_SSGArcade* FUN_140ee0d10();
 void FUN_140ceab50(void* pMgr, CInPacket& packet);
@@ -1563,7 +1562,7 @@ void CSceneStateGame::OnPacket(CInPacket& packet)
         OnItemInventory(packet);
         break;
     case static_cast<int>(RecvOp::StorageInventory):
-        DAT_143ab2d80.FUN_140de3480(packet);
+        DAT_143ab2d80.Dispatch(&packet);
         break;
     case static_cast<int>(RecvOp::FurnishingStorage):
         FUN_141715bd0(packet);
@@ -2871,15 +2870,7 @@ void CSceneStateGame::FUN_1417132b0(CInPacket& packet)
 MS2_REPLACE_METHOD(0x1417132B0, CSceneStateGame, FUN_1417132b0, 3305, 0xFCDC2CD4);
 
 // The housing cube inventory (items keyed by uid).
-class Unk_CubeFallbackInventory
-{
-public:
-    void FUN_1408fbac0();                                   // clear
-    void FUN_1408fbaf0(CItem* pItem);                       // add
-    void FUN_1408fbc00(__int64 nItemUid);                   // remove
-    MS2Ptr<CItem> FUN_1408fbf90(__int64 nItemUid);
-};
-extern Unk_CubeFallbackInventory DAT_143ab2e20;
+#include "ms2/client/ms2/warehouseitem.h"     // DAT_143ab2e20, the warehouse item table
 
 // @0x141715bd0
 // 0x23: the housing cube inventory.
@@ -2887,7 +2878,7 @@ void CSceneStateGame::FUN_141715bd0(CInPacket& packet)
 {
     int nMode = packet.ReadUInt8();
     if (nMode == 1)
-        DAT_143ab2e20.FUN_1408fbac0();
+        DAT_143ab2e20.RemoveAll();
     else if (nMode == 2)
     {
         int nUnused = packet.ReadInt32();
@@ -2905,7 +2896,7 @@ void CSceneStateGame::FUN_141715bd0(CInPacket& packet)
             spItem->FUN_140526a70(nItemUid);
             spItem->FUN_140526b70(nAmount);
             spItem->FUN_140524eb0(packet);
-            DAT_143ab2e20.FUN_1408fbaf0(spItem.get());
+            DAT_143ab2e20.Add(spItem.get());
             FUN_140a6a840()->vfunc_13(spItem.get());
         }
     }
@@ -2915,7 +2906,7 @@ void CSceneStateGame::FUN_141715bd0(CInPacket& packet)
         MS2Ptr<CItem> spItem = DAT_143ab2e20.FUN_1408fbf90(nItemUid);
         if (!spItem)
             return;
-        DAT_143ab2e20.FUN_1408fbc00(nItemUid);
+        DAT_143ab2e20.Remove(nItemUid);
         FUN_140a6a840()->vfunc_14(spItem.get());
     }
     else if (nMode == 5)
@@ -6727,7 +6718,7 @@ void CSceneStateGame::FUN_141738290(CInPacket& packet)
     if (pMyPC == 0)
         return;
     pMyPC->FUN_141662850(nValue);
-    DAT_143ab2d80.FUN_140de2a00();
+    DAT_143ab2d80.Reset();
     FUN_1403ed2b0()->FUN_141adc530(0x4e47);
     Unk_SSGDlg4e47* pDlg = FUN_140de48d0(0x4e47);
     if (pDlg != 0)

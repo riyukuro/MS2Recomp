@@ -11,6 +11,7 @@
 #include "ms2/placeholder/ms2stdafx.h"
 
 #include "uihighlightgamemenu.h"
+#include "uiitemsocketsystemdialog.h"
 
 #include <errno.h>
 #include <stdlib.h>
@@ -1126,7 +1127,7 @@ P FUN_140c24650()
     MS2Ptr<UIObject> spUi = ((Unk_UiManager*)pUi)->FUN_141adcea0(FUN_140c25190());
     if (spUi.IsNull())
         return 0;
-    return dynamic_cast<UIDialog*>(spUi.operator->());
+    return dynamic_cast<UIItemSocketSystemDialog*>(spUi.operator->());
 }
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142ca2700-0x142ca27e0 .text$yd

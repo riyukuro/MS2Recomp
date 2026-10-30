@@ -6,6 +6,7 @@
 #include <atlcoll.h>
 #include <NiAVObject.h>
 #include <efd/StdContainers.h>
+#include "ms2/client/ms2/niavobjectnodealloc.h"
 #include "ms2/client/ms2/effectparam.h"
 #include "ms2/placeholder/postprocesseffect.h"   // Unk_PPSmartC (texture handle)
 

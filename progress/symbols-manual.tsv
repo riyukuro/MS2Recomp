@@ -292,7 +292,7 @@
 ??4Unk_PPSmartC@@QEAAAEAV0@AEBV0@@Z	140a5ab40	func
 ??0ShaderMap@NiTexturingProperty@@QEAA@PEAXIIII@Z	140c8f5d0	func
 ?SetShaderMap@NiTexturingProperty@@QEAAXIPEAVShaderMap@1@@Z	141d20b10	func
-?DAT_143afbbc0@@3DA	143afbbc0	data
+?ms_RTTI@NiScreenFillingRenderViewImpl@@2VNiRTTI@@B	143afbbc0	data
 ?FUN_1414736e0@Unk_SMApp@@QEAA?AV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@XZ	1414736e0	func
 ?FUN_141552f90@Unk_SMMgr@@QEAA?AVUnk_PPSmartC@@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@H@Z	141552f90	func
 ??1Unk_CommandUIRef@@QEAA@XZ	1403e5630	func
@@ -692,7 +692,8 @@
 ??0NiPixelData@@QEAA@IIAEBVNiPixelFormat@@II@Z	141d31950	func
 ??RNiPixelData@@QEAAPEAEIIII@Z	141d31d50	func
 ?Create@NiSourceTexture@@SAPEAV1@PEAVNiPixelData@@AEAVFormatPrefs@NiTexture@@_N@Z	141d33320	func
-?RGBA32@NiPixelFormat@@2V1@B	1439fc080	data
+?ARGB8888@NiPixelFormat@@2V1@B	1439fc080	data
+?RGBA32@NiPixelFormat@@2V1@B	1439fb040	data
 ??1?$MS2Ptr@VCQuestData@@@@QEAA@XZ	14064d3e0	func
 ??C?$MS2Ptr@VCQuestData@@@@QEBAPEAVCQuestData@@XZ	14064d520	func
 ??0?$CAtlList@V?$MS2Ptr@VUnk_BackUpItem@@@@V?$CElementTraits@V?$MS2Ptr@VUnk_BackUpItem@@@@@ATL@@@ATL@@QEAA@I@Z	140884ed0	func
@@ -851,7 +852,7 @@ __imp_NxReleaseControllerManager	142ccec90	data
 ?DAT_143b01a60@@3UVector3@@B	143b01a60	data
 ??0Unk_ArcAngle@@QEAA@XZ	14097f3a0	func
 ??0AScript@@QEAA@AEBVValue@GFx@Scaleform@@H@Z	1422ba780	func
-?ms_RTTI@NiInterpController@@2VNiRTTI@@B	143af8a20	data
+?ms_RTTI@NiInterpController@@2VNiRTTI@@B	143af8910	data
 ?Unk_RenderObjectRTTI@@3VNiRTTI@@B	143afa7d0	data
 ??0CTimeBasedAnimation@@QEAA@PEAVUnk_MorphOwner@@@Z	1418519c0	func
 ??1CTimeBasedAnimation@@UEAA@XZ	141851a10	func
@@ -1950,7 +1951,7 @@ D3DXFloat16To32Array	14230396f	func
 ?DAT_142f1106c@@3PADA	142f1106c	data
 ?DAT_143adc208@@3PADA	143adc208	data
 ?DAT_143ab2a90@@3UUnk_UgcInventory@@A	143ab2a90	data
-?DAT_143af8a20@@3VNiRTTI@@A	143af8a20	data
+?ms_RTTI@NiMorphWeightsController@@2VNiRTTI@@B	143af8a20	data
 ?ms_RTTI@NiSourceTexture@@2VNiRTTI@@B	143afa930	data
 ??1?$MS2Ptr@UUnk_GemPetRow@@@@QEAA@XZ	14052c420	func
 ??C?$MS2Ptr@UUnk_GemPetRow@@@@QEBAPEAUUnk_GemPetRow@@XZ	14052ceb0	func
@@ -2455,7 +2456,7 @@ __imp_CrashReporter_SetStrInfoW	142cce1b8	data
 ??0Unk_PCBaseFlags@@QEAA@XZ	140d75040	func
 ??0Unk_CMISSvcPtr@@QEAA@PEAVHardwareInstancingService@@@Z	14098c7d0	func
 ??1Unk_CMISSvcPtr@@QEAA@XZ	14098cc60	func
-??0Unk_CMISNotifyBuilding@@QEAA@PEBH@Z	141123250	func
+??0NotifyChangeUIBuildingCount@@QEAA@PEBH@Z	141123250	func
 ??0Cube@@QEAA@XZ	1408b4a00	func
 ??0Unk_CMISBlock@@QEAA@AEBU0@@Z	14111e680	func
 ??1Unk_CMISBlock@@QEAA@XZ	141123760	func
@@ -4628,6 +4629,7 @@ MS2_SF_VideoCharacterDef_vftable	14318b778	data
 ?DAT_143b278d8@@3JA	143b278d8	data
 ?DAT_143b278e0@@3PEAXEA	143b278e0	data
 ?DAT_143b278f0@@3PAEA	143b278f0	data
+?DAT_143b27940@@3PEBDEB	143b27940	data
 ?GetLoadTimeImageCreator@LoadStates@GFx@Scaleform@@QEBAPEAVImageCreator@23@I@Z	142639350	func
 ?acos@Math@fl@Classes@AS3@GFx@Scaleform@@QEAAXAEANN@Z	142427540	func
 ?asin@Math@fl@Classes@AS3@GFx@Scaleform@@QEAAXAEANN@Z	142427a60	func
@@ -8431,7 +8433,6 @@ DAT_143b27c60	143b27c60	data
 DAT_143b27c6c	143b27c6c	data
 DAT_143b27c70	143b27c70	data
 DAT_1431b97a0	1431b97a0	data
-DAT_1431b97a8	1431b97a8	data
 DAT_1431b9820	1431b9820	data
 ?GetImage@GlyphCache@Render@Scaleform@@QEAAPEAVImage@23@I@Z	1426c6380	func
 ?Format@RasterGlyphVertex@Render@Scaleform@@2UVertexFormat@23@A	143a2fe50	data
@@ -10437,10 +10438,10 @@ criHeap_Destroy	140028074	func
 ?ReadFile@VideoReader@Video@GFx@Scaleform@@QEAAXPEAE_J@Z	14002d5e0	func
 ??0VideoReader@Video@GFx@Scaleform@@QEAA@PEAVVideoReaderConfig@123@@Z	14002d970	func
 ?criFixedAllocator_Allocate@@YAPEAXPEAUCriFixedAllocator@@KK@Z	14002e6c0	func
-?criMvPly_SetMetaDataWorkAllocator@@YAXPEAX000@Z	1400301d0	func
+?criMvPly_SetMetaDataWorkAllocator@@YAXPEAX000J@Z	1400301d0	func
 ?criMvPly_AllocateWorkBuffer@@YAKPEAX00@Z	140030230	func
 ?criMvPly_AllocateWorkBufferWithWork@@YAKPEAX0J0@Z	140030e50	func
-?criMvPly_CalcSubAudioWorkSize@@YAJPEAX00K@Z	140030ed0	func
+?criMvPly_CalcSubAudioWorkSize@@YAJPEAX0@Z	140030ed0	func
 ?criMvPly_DetachSubAudio@@YAXPEAX@Z	140030fd0	func
 ?criMvPly_SetAudioTrack@@YAXPEAXK@Z	140031040	func
 ?criMvPly_GetStatus@@YAJPEAX@Z	1400310b0	func
@@ -10527,11 +10528,6 @@ criHeap_Destroy	140028074	func
 ?HasMember@Sfr34_ValueObjIfc@AS3@GFx@Scaleform@@UEBA_NPEAXPEBD_N@Z	142510e70	func
 ?Invoke@Sfr34_ValueObjIfc@AS3@GFx@Scaleform@@UEAA_NPEAXPEAVValue@34@PEBDPEBV534@_K_N@Z	142512870	func
 ?InvokeClosure@Sfr34_ValueObjIfc@AS3@GFx@Scaleform@@UEAA_NPEAX_KPEAVValue@34@PEBV534@1@Z	142513920	func
-?Sfr27TracerIsBooleanType@TR@AS3@GFx@Scaleform@@YA_N_KPEBVValue@234@@Z	142514000	func
-?Sfr27TracerIsNumberType@TR@AS3@GFx@Scaleform@@YA_N_KPEBVValue@234@@Z	142514470	func
-?Sfr27TracerIsIntType@TR@AS3@GFx@Scaleform@@YA_N_KPEBVValue@234@@Z	142514c30	func
-?Sfr27TracerIsStringType@TR@AS3@GFx@Scaleform@@YA_N_KPEBVValue@234@@Z	142514e10	func
-?Sfr27TracerIsUIntType@TR@AS3@GFx@Scaleform@@YA_N_KPEBVValue@234@@Z	1425150c0	func
 ?PopBack@Sfr34_ValueObjIfc@AS3@GFx@Scaleform@@UEAA_NPEAXPEAVValue@34@@Z	14251cbe0	func
 ?Sfr27StatePopOp@TR@AS3@GFx@Scaleform@@YAXPEAX_K@Z	14251ccc0	func
 ?Sfr27StatePopOpValue@TR@AS3@GFx@Scaleform@@YAPEAVValue@234@PEAXPEAV5234@@Z	14251cd30	func
@@ -10885,7 +10881,7 @@ DAT_143b05550	143b05550	data
 ?DAT_143a4a0d8@@3USd_143a4a0d8@@A	143a4a0d8	data
 ?DAT_143a4a5a0@@3USd_143a4a5a0@@A	143a4a5a0	data
 ?DAT_143a4a5c0@@3USd_143a4a5c0@@A	143a4a5c0	data
-?DAT_143a4a5e8@@3USd_143a4a5e8@@A	143a4a5e8	data
+?DAT_143a4a5e8@@3_KA	143a4a5e8	data
 ?g_pcTransformSkinnedPosition60@@3PEBDEA	143a4a630	data
 ?DAT_143a51160@@3USd_143a51160@@A	143a51160	data
 ?DAT_143a512e0@@3USd_143a512e0@@A	143a512e0	data
@@ -11581,6 +11577,7 @@ DAT_143b05550	143b05550	data
 ?DAT_143afbfb8@@3PAEA	143afbfb8	data
 ?DAT_143afbfc8@@3PAEA	143afbfc8	data
 ?DAT_143afe6f8@@3PAEA	143afe6f8	data
+?DAT_143afe6f8@@3P6A?AV?$SmartPointer@VNiCullingProcess@@@efd@@PEAVNiVisibleArray@@PEAVNiSPWorkflowManager@@@ZEA	143afe6f8	data
 ?DAT_143b023c0@@3PAEA	143b023c0	data
 ?DAT_143b023c8@@3PAEA	143b023c8	data
 ?DAT_143b03490@@3PAEA	143b03490	data
@@ -11615,6 +11612,7 @@ DAT_143b05550	143b05550	data
 ?DAT_143ba9d18@@3PAEA	143ba9d18	data
 ?DAT_143ba9d20@@3PAEA	143ba9d20	data
 ?DAT_143ba9d28@@3PAEA	143ba9d28	data
+?DAT_143ba9d30@@3PAEA	143ba9d30	data
 ?DAT_143ba9d70@@3PAEA	143ba9d70	data
 ?DAT_143ba9dd0@@3PAEA	143ba9dd0	data
 ?DAT_143baa1d0@@3PAEA	143baa1d0	data
@@ -11848,8 +11846,7 @@ DAT_143b05550	143b05550	data
 ?DAT_1431b93c0@@3USd_1431b93c0@@A	1431b93c0	data
 ?DAT_1431b9410@@3USd_1431b9410@@A	1431b9410	data
 ?DAT_1431b9430@@3USd_1431b9430@@A	1431b9430	data
-?DAT_1431b97a0@@3PAEA	1431b97a0	data
-?DAT_1431b97a8@@3USd_1431b97a8@@A	1431b97a8	data
+?DAT_1431b97a0@@3PAUCriErrorText@@A	1431b97a0	data
 ?DAT_1431b9820@@3PAEA	1431b9820	data
 ?DAT_1431b9b10@@3USd_1431b9b10@@A	1431b9b10	data
 ?DAT_1431b9ca0@@3PAEA	1431b9ca0	data
@@ -17306,3 +17303,4 @@ FUN_142747b30	142747b30	func
 ?criMvPly_GetDataSizeSubAudio@@YAKPEAX0@Z	140036100	func
 ??0Unk_CharEquip@@QEAA@AEBVColor@efd@@@Z	140a0a3a0	func
 ??0Unk_MessageBoxPos@@QEAA@AEBVNiPoint3@@@Z	14027dcf0	func
+??1NotifyChangeUIBuildingCount@@UEAA@XZ	141125fa0	func

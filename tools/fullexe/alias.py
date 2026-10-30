@@ -31,10 +31,17 @@ for fn in [f"{d}/progress/{t}" for d in TABLES for t in SYMBOL_TABLES]:
             try: sym2va.setdefault(p[0], int(p[1], 16))
             except ValueError: pass
 PH = re.compile(r"(?:FUN|LAB|DAT|PTR)_(14[0-9a-f]{7})")
+SCOPE = re.compile(r"\?(?:\d|[A-P]+@)\?\?$")
+def name_va(s):
+    """the FUN_/DAT_ VA a name is named for: the first such identifier that is not only the enclosing function scope of
+    a local (`?1??FUN_<va>@@...@`: a function-local static, or a local struct in a template argument). The Any(Buf*)
+    ctor ??$?0UBuf@?1??FUN_140051d90@@YAIPEA_J@Z@@Any@@... is not 0x140051d90: aliasing the function's other manglings
+    to it made the CRI demux threads run a trivial ctor and crash (fb4890a24)"""
+    m = next((m for m in PH.finditer(s) if not SCOPE.search(s, 0, m.start())), None)
+    return int(m.group(1), 16) if m else None
 def va_of(s):
     if s in sym2va: return sym2va[s]
-    m = PH.search(s)
-    return int(m.group(1), 16) if m else None
+    return name_va(s)
 # every paired VA of a symbol: a COMDAT (std/ATL template) the gates pin to several exe copies is the definition of each.
 # A functional body (ok false) counts too when the source itself names the VA (how "tag" = `// @0x`, "pin" = MS2-PIN):
 # without a symbols row its name has no other VA, so callers of the exe VA would stay trap stubs. Exact pairs come first.
@@ -196,7 +203,7 @@ def fold_va(va):
 for l in open(tagged("unresolved.txt"), encoding="latin1"):
     s = l.rstrip("\n").split("\t")[0]
     va = va_of(s)
-    if va is not None and va not in va2def and (m := PH.search(s)) and int(m.group(1), 16) == va:
+    if va is not None and va not in va2def and name_va(s) == va:
         fv = fold_va(va)
         if fv is not None:
             va, folded = fv, folded + 1

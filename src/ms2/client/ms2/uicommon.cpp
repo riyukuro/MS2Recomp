@@ -1911,14 +1911,7 @@ class Unk_UcStockEntry : public CPtred { public: int m_nCount; };
 int FUN_140dfc350(Unk_UcStockEntry* p);
 int FUN_140526c50(CItem* p);
 Unk_UcItemPtr FUN_14053f870(int nItemId);
-class Unk_CubeFallbackInventory
-{
-public:
-    MS2Ptr<CItem> FUN_1408fbf90(__int64 nUid);
-    int FUN_1408fc1b0(int nItemId);
-    int FUN_1408fc2f0(int nItemId, unsigned __int64 nUgcUid);   // warehouseitem.h
-};
-extern Unk_CubeFallbackInventory DAT_143ab2e20;
+#include "ms2/client/ms2/warehouseitem.h"     // DAT_143ab2e20, the warehouse item table
 class Unk_CubeStock
 {
 public:

@@ -89,6 +89,9 @@
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\commonfiles\\commonstruct.cpp"
 #include "ms2/commonfiles/commonstruct_tail.inl"
 
+// AccountBlockInfo's real layout (CPtred + a CStringW reason at +0x30), as unit_140268010 defines it: this unit emits
+// ??1AccountBlockInfo for the deleting dtor below, and the Unk_BlockRecord view's dtor would not free the string.
+#define MS2_ACCOUNTBLOCKINFO_OWN_LAYOUT
 #include "ms2/client/ms2/blockmanager.h"
 #include "ms2/placeholder/billboardinfo.h"
 #include "ms2/placeholder/cclienthardwareinfo.h"

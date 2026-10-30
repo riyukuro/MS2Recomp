@@ -178,7 +178,7 @@ public:
     void FUN_141a14760();
     bool FUN_141a148b0(const CStringW& strText);                            // 0x141a148b0 an emotion command
     void FUN_141a14bb0(const CStringW& strTarget);                          // 0x141a14bb0 whispers anyone but oneself
-    bool FUN_141a14c40(CStringW& strText, CStringW strPart);                // 0x141a14c40 cuts a part out
+    int FUN_141a14c40(CStringW& strText, CStringW strPart);                 // 0x141a14c40 cuts a part out
     bool FUN_141a14ce0(CStringW strText, int nMax);                         // 0x141a14ce0 fits without the markup
     void FUN_141a14dc0();                                                   // 0x141a14dc0 rebuilds the subject list
     void FUN_141a15890();                                                   // 0x141a15890 the super world chat effect

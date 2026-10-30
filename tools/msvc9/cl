@@ -1,0 +1,26 @@
+#!/bin/bash
+# cl 15.00.30729.207 (VS2008 SP1 x64, from the WDK 7.1 build tools) for the units that declare `// MS2-TOOLSET: vc9`
+# (tools/progress.py, the cmake hook build, tools/fullexe). tools/fetch-vc9.sh installs it into third_party/msvc9:
+#   bin/          cl.exe c1xx.dll c2.dll ... msvcr90.dll + Microsoft.VC90.CRT.manifest, 1033/*ui.dll
+#   include/crt   WDK inc/crt          include/api   WDK inc/api
+# Headers: tools/msvc9/include (our own stand-ins for what the WDK CRT lacks: <cstdint>, <cstring> ..., intrin.h,
+# std::align), then the WDK crt and api dirs. No VC9 STL.
+# Arguments and output go through msvc-wine's wine-msvc.sh (third_party/msvc): /abs paths -> z:/abs, /showIncludes unixified.
+R=$(cd "$(dirname "$0")/../.." && pwd)
+TP=${MS2_THIRD_PARTY:-$R/third_party}
+V=$TP/msvc9
+if [ ! -x "$V/bin/cl.exe" ] && [ ! -f "$V/bin/cl.exe" ]; then
+    echo "tools/msvc9/cl: $V/bin/cl.exe missing (run tools/fetch-vc9.sh <GRMWDK_EN_7600_1.ISO>)" >&2
+    exit 2
+fi
+winp() { local p="z:$1"; echo "${p//\//\\}"; }
+# own prefix: the 14.16 prefix's wineserver must not be shared (and VC90 CRT side-by-side loads from bin/ anyway)
+export WINEPREFIX="${MS2_VC9_WINEPREFIX:-$V/prefix}" WINEDEBUG="${WINEDEBUG:--all}" DISPLAY= WAYLAND_DISPLAY=
+export INCLUDE="$(winp "$R/tools/msvc9/include");$(winp "$V/include/crt");$(winp "$V/include/api")" LIB= LIBPATH=
+unixify_path='/^Note: including file: /{ s/z:([\\/])/\1/i; s,\\,/,g; }'
+unixify_note='/^[zZ]:.*\([[:digit:]]+\) ?: (note|error C[[:digit:]]{4}|warning C[[:digit:]]{4}|fatal error C[[:digit:]]{4}): /{ s/z:([\\/])/\1/ig; s,\\,/,g; }'
+export WINE_MSVC_STDOUT_SED="$unixify_path;$unixify_note"
+export WINE_MSVC_STDERR_SED="$unixify_path;/MESA|pci id|dri2/d"
+exec > >(python3 -I "$R/tools/msvc/fixincludes.py")
+[ $# -gt 0 ] && set -- /nologo "$@"    # no arguments: the banner (tools/msvc9/check.py)
+exec "$TP/msvc/bin/x64/wine-msvc.sh" "$V/bin/cl.exe" "$@"

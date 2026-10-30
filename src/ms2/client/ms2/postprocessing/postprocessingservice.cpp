@@ -102,6 +102,7 @@
 #include <NiMaterialLibrary.h>
 #include <NiViewRenderClick.h>
 #include <NiScreenFillingRenderView.h>
+#include <NiScreenFillingRenderViewImpl.h>
 #include <NiTexturingProperty.h>
 #include <NiRenderObject.h>
 #include <NiSingleShaderMaterial.h>
@@ -1184,7 +1185,7 @@ bool MotionBlurRenderStep::vfunc_15(unsigned int a, void* b)
         vfunc_16();
         return false;
     }
-    NiScreenFillingRenderView* pkView = NiDynamicCast(NiScreenFillingRenderView, pkClick->GetRenderViews().GetHead());
+    NiScreenFillingRenderView* pkView = NiDynamicCast(NiScreenFillingRenderViewImpl, pkClick->GetRenderViews().GetHead());
     ms_pkTexProp = static_cast<NiTexturingProperty*>(pkView->GetScreenFillingQuad().GetProperty(NiProperty::TEXTURING));
     return true;
 }
@@ -3026,7 +3027,7 @@ efd::SmartPointer<NiViewRenderClick> setupRenderClick(NiDefaultClickRenderStep* 
 {
     {
         efd::SmartPointer<NiScreenFillingRenderView> spView =
-            NiDynamicCast(NiScreenFillingRenderView, NiScreenFillingRenderView::Create());
+            NiDynamicCast(NiScreenFillingRenderViewImpl, NiScreenFillingRenderView::Create());
         if (spView)
         {
             efd::SmartPointer<NiViewRenderClick> spClick = NiNew NiViewRenderClick;

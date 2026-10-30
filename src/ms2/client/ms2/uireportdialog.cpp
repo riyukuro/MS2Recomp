@@ -47,11 +47,12 @@ void FUN_140710590(COutPacket& packet);                         // send
 
 // The notification posted for a freshly blocked design item (the class is built in uitencentuserreportdialog.cpp).
 struct Unk_ReportTarget { __int64 low; __int64 high; };
-class NotifyObject : public CPtred { public: NotifyObject(); virtual ~NotifyObject(); };
+class NotifyObject : public CPtred { public: NotifyObject(); virtual ~NotifyObject(); virtual CStringW GetTypeName(); };
 class NotifyBlindTarget : public NotifyObject
 {
 public:
     NotifyBlindTarget(const int& kind, const Unk_ReportTarget& target);     // 0x140ede4e0
+    virtual CStringW GetTypeName();                                         // 0x140db54c0 (notifychangebuff.cpp)
 private:
     int m_kind;
     Unk_ReportTarget m_target;

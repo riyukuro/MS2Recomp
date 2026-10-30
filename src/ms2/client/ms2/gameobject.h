@@ -34,6 +34,7 @@
 #include <NiActorManager.h>
 #include <efd/SmartPointer.h>
 #include <atlcoll.h>
+#include "ms2/client/ms2/niavobjectnodealloc.h"   // CRT-heap allocator of the vfunc_44 NiAVObject* lists
 #include <map>
 
 #include "ms2/ms2layout.h"

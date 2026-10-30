@@ -10,6 +10,9 @@
 #include <atlcoll.h>
 #include "ms2/ms2recover.h"
 #include "ms2/placeholder/unk_1402a9d70.h"
+#include "ms2/client/ms2/trademanagerex.h"
+#include "ms2/client/ms2/warehouseitem.h"
+#include "ms2/client/ms2/store.h"
 
 // Unrecovered container/record classes: only their constructor/destructor are known (called through FUN_<va>). `size`
 // is the object's extent in the exe (the gap to the next static): the ctors write that far, so a smaller m_pad lets a
@@ -38,35 +41,12 @@ Unk_Be790Map::~Unk_Be790Map() { FUN_14027deb0(this); }
 UNK_STATIC1(Unk_Be790B, FUN_140932870, FUN_140932b40, 0x10)
 UNK_STATIC1(Unk_Be790C, FUN_14063e410, FUN_14063e780, 0x10)
 UNK_STATIC1(Unk_Be790D, FUN_140333290, FUN_140333cb0, 0x10)
-UNK_STATIC1(Unk_Be790E, FUN_140de0f70, FUN_140de0ff0, 0xa0)
 UNK_STATIC1(Unk_Be790F, FUN_140182e30, FUN_140183b40, 0x10)
 UNK_STATIC1(Unk_Be790H, FUN_140dfc480, FUN_140dfc4b0, 0x30)
-UNK_STATIC1(Unk_Be790J, FUN_1408fba50, FUN_1408fba80, 0x30)
 
-// 0x14185b130 / 0x14185b170 are this class's own ctor/dtor (it is trademanagerex.h's Unk_TradeItemTable, whose
-// ctor/dtor trademanagerex_1 pins there), so the bodies are written out here: forwarding to FUN_14185b130
-// would make the full-exe ctor call itself. A block-size-10 container at +8 (FUN_140a698a0) and a CAtlArray<void*> at
-// +0x38, the same pair as unit_140de0f70's object.
-void FUN_140a698a0(void*, int, void*, void*, unsigned __int64);
-void FUN_140a69d20(void*);
-struct Unk_Be790G
-{
-    Unk_Be790G()
-    {
-        FUN_140a698a0(m_storage, 10, nullptr, nullptr, 0);
-        new (&m_items) ATL::CAtlArray<void*>;
-    }
-    ~Unk_Be790G()
-    {
-        m_items.~CAtlArray<void*>();
-        FUN_140a69d20(m_storage);
-    }
-    char m_head[8];
-    char m_storage[0x30];
-    union { ATL::CAtlArray<void*> m_items; };
-    char m_tail[0x60 - 0x38 - sizeof(ATL::CAtlArray<void*>)];
-};
-
+// 0x143ab2e80 is trademanagerex.h's Unk_TradeItemTable (0x58): the exe's dynamic init / atexit call its own ctor/dtor
+// (0x14185b130 / 0x14185b170, pinned in trademanagerex_1). The dtor runs ~CAtlArray<MS2Ptr<CItem>> (0x1408f2340), so the
+// slot array releases its items at exit.
 struct Unk_Be790TreeA
 {
     Unk_Be790TreeA(int nBlock);
@@ -133,9 +113,9 @@ ATL::CAtlArray<Unk_PtrC*> DAT_143ab30b8;
 extern ATL::CAtlArray<Unk_PtrC*> DAT_143ab30b8;
 #endif
 #ifndef MS2_HOOK_DLL   // s_obj2d80: the exe's object at 0x143ab2d80, which other units reach as DAT_143ab2d80 (the hook DLL binds it)
-Unk_Be790E DAT_143ab2d80;
+CStore DAT_143ab2d80;
 #else
-extern Unk_Be790E DAT_143ab2d80;
+extern CStore DAT_143ab2d80;
 #endif
 #ifndef MS2_HOOK_DLL   // s_str2a48: the exe's object at 0x143ab2a48, which other units reach as DAT_143ab2a48 (the hook DLL binds it)
 CStringA DAT_143ab2a48;
@@ -158,9 +138,9 @@ ATL::CAtlArray<Unk_PtrB*> DAT_143ab3268;
 extern ATL::CAtlArray<Unk_PtrB*> DAT_143ab3268;
 #endif
 #ifndef MS2_HOOK_DLL   // s_obj2e80: the exe's object at 0x143ab2e80, which other units reach as DAT_143ab2e80 (the hook DLL binds it)
-Unk_Be790G DAT_143ab2e80;
+Unk_TradeItemTable DAT_143ab2e80;
 #else
-extern Unk_Be790G DAT_143ab2e80;
+extern Unk_TradeItemTable DAT_143ab2e80;
 #endif
 static Unk_Be790H s_obj2e50;
 #ifndef MS2_HOOK_DLL   // s_tree3288: the exe's object at 0x143ab3288, which other units reach as DAT_143ab3288 (the hook DLL binds it)
@@ -179,9 +159,9 @@ ATL::CAtlArray<Unk_PtrB*> DAT_143ab3078;
 extern ATL::CAtlArray<Unk_PtrB*> DAT_143ab3078;
 #endif
 #ifndef MS2_HOOK_DLL   // s_obj2e20: the exe's object at 0x143ab2e20, which other units reach as DAT_143ab2e20 (the hook DLL binds it)
-Unk_Be790J DAT_143ab2e20;
+CWarehouseItemTable DAT_143ab2e20;
 #else
-extern Unk_Be790J DAT_143ab2e20;
+extern CWarehouseItemTable DAT_143ab2e20;
 #endif
 static CStringA s_sortNames[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
 static CStringA s_strSkill = "skill";

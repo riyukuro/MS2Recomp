@@ -48,10 +48,12 @@ public:
     virtual ~TiXmlNode();                                                // 0x14086dd00
     virtual void Print(FILE*, int) const = 0;
     virtual const char* Parse(const char*, class TiXmlParsingData*, enum TiXmlEncoding) = 0;
+    // Each const overload is declared before its non-const one, as in tinyxml.h: MSVC lays overloads out in reverse
+    // declaration order, so this keeps the slots of the vftable the linker may keep identical to the real one.
     // @0x14081b360
-    virtual TiXmlDocument* ToDocument() { return 0; }
-    // @0x14081b350
     virtual const TiXmlDocument* ToDocument() const { return 0; }
+    // @0x14081b350
+    virtual TiXmlDocument* ToDocument() { return 0; }
     //
     //
     //
@@ -59,18 +61,18 @@ public:
     //
     //
     //
-    virtual Unk_TiXmlElement* ToElement() { return 0; }
     virtual const Unk_TiXmlElement* ToElement() const { return 0; }
-    virtual void* ToComment() { return 0; }
+    virtual Unk_TiXmlElement* ToElement() { return 0; }
     virtual const void* ToComment() const { return 0; }
-    virtual void* ToUnknown() { return 0; }
+    virtual void* ToComment() { return 0; }
     virtual const void* ToUnknown() const { return 0; }
-    virtual void* ToText() { return 0; }
+    virtual void* ToUnknown() { return 0; }
     virtual const void* ToText() const { return 0; }
-    virtual class TiXmlDeclaration* ToDeclaration() { return 0; }
+    virtual void* ToText() { return 0; }
     virtual const class TiXmlDeclaration* ToDeclaration() const { return 0; }
+    virtual class TiXmlDeclaration* ToDeclaration() { return 0; }
     virtual TiXmlNode* Clone() const = 0;
-    virtual bool Accept(void*) const = 0;
+    virtual bool Accept(class TiXmlVisitor*) const = 0;
 private:
     void* m_base[9];
 };
@@ -84,9 +86,9 @@ public:
     virtual void Print(FILE* f, int nDepth) const { Print(f, nDepth, 0); }
     virtual const char* Parse(const char*, class TiXmlParsingData*, enum TiXmlEncoding);   // tinyxmlparser.cpp: declaration only, an inline body here would be the vftable the linker keeps for every TiXmlDeclaration
     // @0x14081b340
-    virtual TiXmlDeclaration* ToDeclaration() { return this; }
-    // @0x14081b330
     virtual const TiXmlDeclaration* ToDeclaration() const { return this; }
+    // @0x14081b330
+    virtual TiXmlDeclaration* ToDeclaration() { return this; }
     //
     //
     //
@@ -95,8 +97,8 @@ public:
     //
     //
     virtual TiXmlNode* Clone() const;   // commonfiles/tinyxml.cpp
-    virtual bool Accept(void*) const { return false; }
-    virtual void Print(FILE*, int, void*) const {}
+    virtual bool Accept(class TiXmlVisitor*) const;             // 0x140870920, commonfiles/tinyxml.cpp
+    virtual void Print(FILE*, int, class TiXmlString*) const;   // 0x140870700, commonfiles/tinyxml.cpp
 private:
     Unk_TiXmlString m_version, m_encoding, m_standalone;
 };

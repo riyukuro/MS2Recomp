@@ -22,6 +22,8 @@
 #include <NiFixedString.h>
 #include <NiTimeController.h>
 #include <NiInterpController.h>
+#include <NiInterpolator.h>
+#include <NiMorphWeightsController.h>
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
@@ -330,7 +332,7 @@ void CItemMorphController::ResetMeshHighlight()
                 NiTimeController* pTime = pFound->GetControllers();
                 while (pTime != 0)
                 {
-                    NiObject* pCtrl = FUN_14098d8d0(&NiInterpController::ms_RTTI, pTime);
+                    NiObject* pCtrl = FUN_14098d8d0(&NiMorphWeightsController::ms_RTTI, pTime);
                     if (pCtrl != 0)
                     {
                         NiObject* pRender = FUN_14098d8d0(&Unk_RenderObjectRTTI, pFound);
@@ -423,7 +425,7 @@ NiInterpController* CItemMorphController::FindMorphController(int bTrack)
                     NiTimeController* pTime = pFound->GetControllers();
                     while (pTime != 0)
                     {
-                        NiObject* pCtrl = FUN_14098d8d0(&NiInterpController::ms_RTTI, pTime);
+                        NiObject* pCtrl = FUN_14098d8d0(&NiMorphWeightsController::ms_RTTI, pTime);
                         if (pCtrl != 0)
                             return (NiInterpController*)pCtrl;
                         pTime = pTime->GetNext();
@@ -451,7 +453,7 @@ NiInterpController* CItemMorphController::FindMorphController(int bTrack)
                     NiTimeController* pTime = pFound->GetControllers();
                     while (pTime != 0)
                     {
-                        NiObject* pCtrl = FUN_14098d8d0(&NiInterpController::ms_RTTI, pTime);
+                        NiObject* pCtrl = FUN_14098d8d0(&NiMorphWeightsController::ms_RTTI, pTime);
                         if (pCtrl != 0)
                             return (NiInterpController*)pCtrl;
                         pTime = pTime->GetNext();
@@ -474,7 +476,7 @@ NiInterpController* CItemMorphController::SelectMorphController(int nIndex)
             NiTimeController* pTime = spNode->GetControllers();
             while (pTime != 0)
             {
-                NiInterpController* pCtrl = (NiInterpController*)FUN_14098d8d0(&NiInterpController::ms_RTTI, pTime);
+                NiInterpController* pCtrl = (NiInterpController*)FUN_14098d8d0(&NiMorphWeightsController::ms_RTTI, pTime);
                 if (pCtrl != 0)
                     return pCtrl;
                 pTime = pTime->GetNext();

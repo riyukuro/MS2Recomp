@@ -1,6 +1,6 @@
 // Recovered from MapleStory2.exe KMS2_DEV x64 (2022-04-13). The small CPtred data classes in front of the common structs:
-// QuestMask (a flag plus an int array), ItemCustom's ctor and XML read / write, BaseOption (one int value with its
-// stream IO) and InvokeEffectOption, plus a (key, pointer, ref) record. File name invented (no __FILE__ string).
+// QuestMask (a flag plus its 16-byte quest ranges), ItemCustom's ctor and XML read / write, BaseOption (one int value
+// with its stream IO) and InvokeEffectOption, plus a (key, pointer, ref) record. File name invented (no __FILE__ string).
 // MS2-UNIT: unit_140266860
 // MS2-RANGE: 0x140266860-0x140267090 .text$mn
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\unknown_140266860.cpp"
@@ -8,28 +8,11 @@
 #include <atlcoll.h>
 #include <efd/Point3.h>
 #include "ms2/placeholder/cptred.h"
+#include "ms2/commonfiles/questmasktable.h"
 #include "ms2/placeholder/itemcustom.h"
 #include "ms2/commonfiles/stream.h"
 
 // ---- unit-local views of classes whose shared placeholders carry no vftable (layouts identical, same sizes) ----
-
-// One entry of the mask array (an int; its own type so the array instantiations are not shared with CAtlArray<int>).
-enum Unk_MaskEntry { Unk_MaskEntry_Unset = 0 };
-
-// RTTI QuestMask, 0x40 bytes: a flag (1 by default) and an int array (all entries must be set).
-class QuestMask : public CPtred
-{
-public:
-    QuestMask();                                        // 0x140266860
-    QuestMask(const QuestMask& rOther);                 // 0x1402668b0
-    QuestMask& operator=(const QuestMask& rOther);      // 0x140266930
-    int FUN_140266970() const;                          // every entry set (and not empty)
-
-    int m_nFlag;                                        // +0x18
-    int m_pad_1c;
-    ATL::CAtlArray<Unk_MaskEntry> m_aMask;                        // +0x20
-};
-MS2_CHECK_SIZE(QuestMask, 0x40);
 
 // The stream views BaseOption / InvokeEffectOption use (virtual slots 0..4; the same shapes as itemenchantinfo.h).
 class Unk_EnchantWrite {
@@ -117,36 +100,36 @@ float FUN_14028aed0(float f);                           // round
 
 // @0x140266860
 QuestMask::QuestMask()
-    : m_nFlag(1)
+    : m_nEnable(1)
 {
 }
 
 // @0x1402668b0
-// MS2-FUNCTIONAL: CAtlArray<int>::Copy is the exe free function FUN_140280a70 owned by commonstruct_2; the callee symbol cannot pair
+// MS2-FUNCTIONAL: CAtlArray<Unk_Z16i>::Copy is the exe free function FUN_140280a70 owned by commonstruct_2; the callee symbol cannot pair
 QuestMask::QuestMask(const QuestMask& rOther)
-    : m_nFlag(1)
+    : m_nEnable(1)
 {
-    m_aMask.Copy(rOther.m_aMask);
+    m_aRanges.Copy(rOther.m_aRanges);
 }
 
 // @0x140266930
-// MS2-FUNCTIONAL: CAtlArray<int>::Copy is the exe free function FUN_140280a70 owned by commonstruct_2; the callee symbol cannot pair
+// MS2-FUNCTIONAL: CAtlArray<Unk_Z16i>::Copy is the exe free function FUN_140280a70 owned by commonstruct_2; the callee symbol cannot pair
 QuestMask& QuestMask::operator=(const QuestMask& rOther)
 {
-    m_aMask.Copy(rOther.m_aMask);
+    m_aRanges.Copy(rOther.m_aRanges);
     return *this;
 }
 
 // @0x140266970
-// MS2-FUNCTIONAL: CAtlArray<int> operator[] / GetCount are the exe free functions FUN_14027f040 / FUN_1402815b0 owned by commonstruct_2
+// MS2-FUNCTIONAL: CAtlArray<Unk_Z16i> operator[] / GetCount are the exe free functions FUN_14027f040 / FUN_1402815b0 owned by commonstruct_2
 int QuestMask::FUN_140266970() const
 {
-    for (size_t i = 0; i < m_aMask.GetCount(); i++)
+    for (size_t i = 0; i < m_aRanges.GetCount(); i++)
     {
-        if (m_aMask[i] == 0)
+        if (m_aRanges[i].a == 0)
             return 0;
     }
-    return m_aMask.GetCount() > 0;
+    return m_aRanges.GetCount() > 0;
 }
 
 // @0x140266a10

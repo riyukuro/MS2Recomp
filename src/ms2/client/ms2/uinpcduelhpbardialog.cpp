@@ -8,6 +8,7 @@
 #include "uinpcduelhpbardialog.h"
 #include "ms2/placeholder/asdisplayobject.h"
 #include "ms2/placeholder/asgameentity.h"
+#include "ms2/placeholder/aswindow.h"
 #include "ms2/placeholder/asdata.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
@@ -293,7 +294,7 @@ void UINpcDuelHPBarDialog::FUN_140e6c7a0()
         nMinutes = nLeft / 60;
         nSeconds = nLeft % 60;
     }
-    ASDisplayObject* pRoot = dynamic_cast<ASDisplayObject*>((AScript*)m_30);
+    ASDialog* pRoot = dynamic_cast<ASDialog*>((AScript*)m_30);
     if (pRoot != 0) {
         CString strTime;
         strTime.Format("%02d%02d", nMinutes, nSeconds);

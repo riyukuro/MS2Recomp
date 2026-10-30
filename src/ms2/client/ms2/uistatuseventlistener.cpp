@@ -88,26 +88,7 @@ Unk_StItemHub* FUN_140a6a840();
 
 // The store model (global 0x143ab2d80): meso balances, slot counts, the item names.
 class Unk_StItemNames;
-class Unk_StModel
-{
-public:
-    void* FUN_140de27c0();                                                  // the pending request
-    int FUN_140de2860();                                                    // initialised
-    void FUN_140de2b50();                                                   // request the data
-    void FUN_140de2d60();                                                   // reset
-    int FUN_140de1c00();                                                    // the used slots
-    int FUN_140de1c30();                                                    // the slot count
-    __int64 FUN_140de2a80();                                                // mesos in the store
-    __int64 FUN_140de2ab0();                                                // mesos in the bag
-    int FUN_140de29b0();                                                    // the next expansion step
-    __int64 FUN_140de2ae0();                                                // the expansion price
-    int FUN_140de2970();                                                    // the slots are at the maximum
-    void FUN_140de2bd0();                                                   // sort
-    void FUN_140de2c40(int bDeposit, __int64 nAmount);                      // send the deposit / withdraw
-    void FUN_140de2ce0();                                                   // send the expand request
-    void FUN_140de1fd0(class Unk_StItemArray* pOut);                        // the item entries
-};
-extern Unk_StModel DAT_143ab2d80;
+#include "ms2/client/ms2/store.h"     // DAT_143ab2d80, the store table (CStore)
 
 // The inventory dialog (UI id 0x4e2d) the store window is placed next to.
 class UIInventoryDialog : public UIDialog { };
@@ -651,7 +632,7 @@ void UIStoreDialog::vfunc_67()
     FUN_140a6a840()->FUN_1419caeb0(static_cast<UIItemEventListener*>(this));
     FUN_14180b230(&m_188);
     FUN_141b1feb0(FUN_140967100());
-    DAT_143ab2d80.FUN_140de2d60();
+    DAT_143ab2d80.RequestSort();
     UIDialog::vfunc_67();
     m_80 = 1;
     m_198 = 0;
@@ -707,8 +688,8 @@ void UIStoreDialog::OnLoadInit()
     FUN_140aa6d40()->FUN_141b0cd00(static_cast<UIStatusEventListener*>(this));
     FUN_140a6a840()->FUN_1419cae20(static_cast<UIItemEventListener*>(this));
     vfunc_47(0);
-    if (DAT_143ab2d80.FUN_140de2860() == 0)
-        DAT_143ab2d80.FUN_140de2b50();
+    if (DAT_143ab2d80.Ready() == 0)
+        DAT_143ab2d80.RequestLoad();
 }
 MS2_REPLACE_METHOD(0x141B0F430, UIStoreDialog, OnLoadInit, 179, 0xEF53147D);
 
@@ -794,7 +775,7 @@ int UIStoreDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
             MS2Ptr<CMsgBoxData> box = FUN_140d73e40(7, 0x2a9, static_cast<IMessageListener*>(this), CStringW(L"deposit"));
             if (box.get() != 0)
             {
-                __int64 nMoney = DAT_143ab2d80.FUN_140de2a80();
+                __int64 nMoney = DAT_143ab2d80.Value4558();
                 int nMax = FUN_1412772f0(nMoney, 1);
                 box->FUN_141a01d30(1, L"", nMax, 0, 0);
                 FUN_140d73c60(box);
@@ -813,7 +794,7 @@ int UIStoreDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
             MS2Ptr<CMsgBoxData> box = FUN_140d73e40(7, 0x2aa, static_cast<IMessageListener*>(this), CStringW(L"withdraw"));
             if (box.get() != 0)
             {
-                int nMax = FUN_1412772f0(DAT_143ab2d80.FUN_140de2ab0(), 1);
+                int nMax = FUN_1412772f0(DAT_143ab2d80.Value45b0(), 1);
                 box->FUN_141a01d30(1, L"", nMax, 0, 0);
                 FUN_140d73c60(box);
             }
@@ -828,12 +809,12 @@ int UIStoreDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
     {
         if (FUN_141b114f0() != 0)
         {
-            CStringW strQuestion = FUN_14028dee0(0x2a8, (__int64)DAT_143ab2d80.FUN_140de2ae0(), 6);
+            CStringW strQuestion = FUN_14028dee0(0x2a8, (__int64)DAT_143ab2d80.Value4500(), 6);
             MS2Ptr<CMsgBoxData> box = FUN_140d74390(CStringW(strQuestion), 1, Delegate<bool(int, const CMsgBoxData&)>(this, &UIStoreDialog::FUN_141b11c90));
         }
         else
         {
-            int nStep = DAT_143ab2d80.FUN_140de29b0();
+            int nStep = DAT_143ab2d80.CurrentCapacity();
             CStringW strMsg = FUN_1409e97f0(0x2b0, &nStep);
             FUN_140d73aa0(strMsg, 0, 0, L"");
         }
@@ -841,7 +822,7 @@ int UIStoreDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
     }
     else if (_stricmp("onClickSort", szMethod) == 0)
     {
-        DAT_143ab2d80.FUN_140de2bd0();
+        DAT_143ab2d80.RequestClose();
         return 1;
     }
     else if (_stricmp("OnItemSearch", szMethod) == 0)
@@ -1122,7 +1103,7 @@ MS2_REPLACE_METHOD(0x141B10ED0, UIStoreDialog, FUN_141b10ed0, 490, 0xB3629071);
 void UIStoreDialog::FUN_141b110e0()
 {
     FUN_14180b230(&m_188);
-    FUN_14180b170(&m_188, 0, DAT_143ab2d80.FUN_140de1c30());
+    FUN_14180b170(&m_188, 0, DAT_143ab2d80.Capacity());
     if (m_30.get() != 0)
         m_30->Invoke("updateBag");
     m_198 &= ~4;
@@ -1137,7 +1118,7 @@ int UIStoreDialog::FUN_141b11190(const __int64& nAmount)
         FUN_141275260(0x2b6, 1, 1);
         return 0;
     }
-    __int64 nStore = DAT_143ab2d80.FUN_140de2a80();
+    __int64 nStore = DAT_143ab2d80.Value4558();
     if (nAmount <= 0 || nAmount > nStore)
     {
         __int64 nMax = FUN_1402e49a0(&nStore, &DAT_143ab2898);
@@ -1158,7 +1139,7 @@ int UIStoreDialog::FUN_141b11190(const __int64& nAmount)
         FUN_140961010(0x2b3, 1, 1, FUN_140763e10(2000000000));
         return 0;
     }
-    DAT_143ab2d80.FUN_140de2c40(1, nAmount);
+    DAT_143ab2d80.RequestAction(1, nAmount);
     return 1;
 }
 MS2_REPLACE_METHOD(0x141B11190, UIStoreDialog, FUN_141b11190, 438, 0xAEFB6E3B);
@@ -1171,7 +1152,7 @@ int UIStoreDialog::FUN_141b11350(const __int64& nAmount)
         FUN_141275260(0x2b5, 1, 1);
         return 0;
     }
-    __int64 nStore = DAT_143ab2d80.FUN_140de2ab0();
+    __int64 nStore = DAT_143ab2d80.Value45b0();
     if (nAmount <= 0 || nAmount > nStore)
     {
         __int64 nMax = FUN_1402e49a0(&nStore, &DAT_143ab28f8);
@@ -1186,7 +1167,7 @@ int UIStoreDialog::FUN_141b11350(const __int64& nAmount)
         }
         return 0;
     }
-    DAT_143ab2d80.FUN_140de2c40(0, nAmount);
+    DAT_143ab2d80.RequestAction(0, nAmount);
     return 1;
 }
 MS2_REPLACE_METHOD(0x141B11350, UIStoreDialog, FUN_141b11350, 311, 0x41BAD15F);
@@ -1194,7 +1175,7 @@ MS2_REPLACE_METHOD(0x141B11350, UIStoreDialog, FUN_141b11350, 311, 0x41BAD15F);
 // @0x141b11490
 int UIStoreDialog::FUN_141b11490()
 {
-    if (DAT_143ab2d80.FUN_140de27c0() != 0)
+    if (DAT_143ab2d80.Id() != 0)
         return 0;
     PCBase* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
     if (pPlayer != 0 && pPlayer->FUN_14166ce30() == 0)
@@ -1206,7 +1187,7 @@ MS2_REPLACE_METHOD(0x141B11490, UIStoreDialog, FUN_141b11490, 84, 0x951EC76A);
 // @0x141b114f0
 int UIStoreDialog::FUN_141b114f0()
 {
-    if (DAT_143ab2d80.FUN_140de2970() != 0)
+    if (DAT_143ab2d80.WithinCapacity() != 0)
         return 0;
     return 1;
 }
@@ -1216,8 +1197,8 @@ MS2_REPLACE_METHOD(0x141B114F0, UIStoreDialog, FUN_141b114f0, 39, 0x9C32443A);
 void UIStoreDialog::FUN_141b11520()
 {
     Unk_DictPlatform* pPlatform = FUN_140d86260();
-    if (pPlatform->vfunc_40(DAT_143ab2d80.FUN_140de2ae0()) == 1)
-        DAT_143ab2d80.FUN_140de2ce0();
+    if (pPlatform->vfunc_40(DAT_143ab2d80.Value4500()) == 1)
+        DAT_143ab2d80.RequestExtend();
     else
         FUN_141add1f0(FUN_1403ed2b0());
 }
@@ -1226,8 +1207,8 @@ MS2_REPLACE_METHOD(0x141B11520, UIStoreDialog, FUN_141b11520, 103, 0x3BDCFA30);
 // @0x141b11590
 void UIStoreDialog::FUN_141b11590()
 {
-    unsigned nSlots = DAT_143ab2d80.FUN_140de1c00();
-    unsigned nUsed = DAT_143ab2d80.FUN_140de1c30();
+    unsigned nSlots = DAT_143ab2d80.Count();
+    unsigned nUsed = DAT_143ab2d80.Capacity();
     if (MS2Ptr<Unk_StExpandClip> spText = FUN_140e6d820("m_expand"))
     {
         spText->FUN_1422e4a50(FUN_1406e7810(L"{0}/{1}", nSlots, nUsed));
@@ -1274,7 +1255,7 @@ MS2_REPLACE_METHOD(0x141B116D0, UIStoreDialog, FUN_141b116d0, 823, 0x91F98195);
 void UIStoreDialog::FUN_141b11a10(CStringW strText, Unk_StCandSet* pOut)
 {
     Unk_StItemArray aEntries;
-    DAT_143ab2d80.FUN_140de1fd0(&aEntries);
+    DAT_143ab2d80.Append(*reinterpret_cast<ATL::CAtlArray<MS2Ptr<CItem> >*>(&aEntries));
     for (unsigned i = 0; i < FUN_140720ca0_count(&aEntries); ++i)
     {
         Unk_StItemEntry entry = FUN_140c3c720(&aEntries, i);

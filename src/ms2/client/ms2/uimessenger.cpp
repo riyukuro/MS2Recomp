@@ -2054,15 +2054,14 @@ void UIMessenger::FUN_141a14bb0(const CStringW& strTarget)
     FUN_141a17900(strTarget);
 }
 
-// MS2-FUNCTIONAL: codegen differs from the exe (functional-first)
 // @0x141a14c40
-bool UIMessenger::FUN_141a14c40(CStringW& strText, CStringW strPart)
+int UIMessenger::FUN_141a14c40(CStringW& strText, CStringW strPart)
 {
     int nFound = strText.Find(strPart, 0);
     if (nFound == -1)
-        return false;
+        return 0;
     strText.Delete(nFound, strPart.GetLength());
-    return true;
+    return 1;
 }
 
 // @0x141a14ce0

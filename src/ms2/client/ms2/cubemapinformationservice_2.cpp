@@ -24,10 +24,7 @@
 #endif
 
 extern Unk_Inventory DAT_143ab2a90;
-class Unk_CubeFallbackInventory {
-public: MS2Ptr<CItem> FUN_1408fbf90(__int64);
-};
-extern Unk_CubeFallbackInventory DAT_143ab2e20;
+#include "ms2/client/ms2/warehouseitem.h"     // DAT_143ab2e20, the warehouse item table
 class PCBase;
 class Unk_CubeCraftCore;
 void* FUN_1403ed2d0();

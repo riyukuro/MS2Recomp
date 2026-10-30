@@ -5562,11 +5562,6 @@ struct Sd_143a4a5c0 {
     const void* p0;
     unsigned char b8[0x20];
 };
-struct Sd_143a4a5e8 {
-    unsigned char b0[0x28];
-    const void* p28;
-    unsigned char b30[0x18];
-};
 struct Sd_143a51180 {
     const void* p0;
     const void* p8;
@@ -25062,21 +25057,11 @@ alignas(16) Sd_143a4a5c0 DAT_143a4a5c0 = {
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xcd, 0x5d, 0x20, 0xd2, 0x66, 0xd4, 0xff, 0xff,
     },
 };
-// 0x143a4a5e8
-alignas(8) Sd_143a4a5e8 DAT_143a4a5e8 = {
-    {
-        0x32, 0xa2, 0xdf, 0x2d, 0x99, 0x2b, 0x00, 0x00, 0x00, 0x00, 0x00, 0x80, 0x00, 0x00, 0x00, 0x00,
-        0x01, 0x00, 0x00, 0x00, 0x02, 0x00, 0x00, 0x00, 0x2f, 0x20, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-        0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-    (const void*)&FUN_14274c310,
-    {
-        0x0a, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x04, 0x00, 0x02, 0x80, 0x00, 0x00, 0x00, 0x00,
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    },
-};
+// 0x143a4a5e8 is the exe's __security_cookie (the CRT's default value). Only the cookie is ours: 0x143a4a5f8.. is
+// the CRT's __isa_available and the rest of its .data, which the fullexe gets from our own CRT.
+unsigned __int64 DAT_143a4a5e8 = 0x00002b992ddfa232ull;         // 0x143a4a5e8
 const char* g_pcTransformSkinnedPosition60 = "TransformSkinnedPosition60"; // 0x143a4a630
-char DAT_143a4b228 = 1;                                         // 0x143a4b228
+// 0x143a4b228 is NiDX9ShadowWriteShader::ms_bRenderBackfaces (alias-manual.tsv): DAT_143a4b228 binds to it, not to a copy here
 // 0x143a51180
 alignas(16) Sd_143a51180 DAT_143a51180 = {
     "trace",
@@ -47568,7 +47553,7 @@ alignas(8) Sd_143a8da88 DAT_143a8da88 = {
 #pragma comment(linker, "/alternatename:PTR_FUN_143a4a0d8=?DAT_143a4a0d8@@3USd_143a4a0d8@@A")
 #pragma comment(linker, "/alternatename:PTR_FUN_143a4a5a0=?DAT_143a4a5a0@@3USd_143a4a5a0@@A")
 #pragma comment(linker, "/alternatename:PTR_FUN_143a4a5c0=?DAT_143a4a5c0@@3USd_143a4a5c0@@A")
-#pragma comment(linker, "/alternatename:DAT_143a4a5e8=?DAT_143a4a5e8@@3USd_143a4a5e8@@A")
+#pragma comment(linker, "/alternatename:DAT_143a4a5e8=?DAT_143a4a5e8@@3_KA")
 #pragma comment(linker, "/alternatename:?MemberTable@AvmCharacter@AS2@GFx@Scaleform@@2QBUMemberTableType@1234@B=?DAT_143a512e0@@3USd_143a512e0@@A")
 #pragma comment(linker, "/alternatename:?Object_NotsetVal@AS2@GFx@Scaleform@@3VValue@123@B=?DAT_143a51b50@@3PAEA")
 #pragma comment(linker, "/alternatename:?Point_DefaultParams@AS2@GFx@Scaleform@@3QBVValue@123@B=?DAT_143a51b70@@3PAEA")

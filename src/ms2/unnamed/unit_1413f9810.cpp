@@ -52,7 +52,8 @@ private:
     void* m_p;
 };
 
-// Depth-first walker over a scene graph (0x38 bytes; unrecovered class, see nifanimationservice.cpp).
+// Depth-first walker over a scene graph (0x30 bytes: the base ctor 0x14098c730 fills up to +0x2c; unrecovered class,
+// see nifanimationservice.cpp).
 class Unk_SceneWalker
 {
 public:
@@ -60,9 +61,9 @@ public:
     ~Unk_SceneWalker();                             // 0x14098cf00
     NiAVObject* Next(bool bDescend);                // 0x14098e0d0
 private:
-    void* m_pad_00; void* m_pad_08; void* m_pad_10; void* m_pad_18; void* m_pad_20;
+    void* m_pad_00; void* m_pad_08; void* m_pad_10; void* m_pad_18; void* m_pad_20; void* m_pad_28;
 };
-MS2_CHECK_SIZE(Unk_SceneWalker, 0x28);
+MS2_CHECK_SIZE(Unk_SceneWalker, 0x30);
 
 // effect object configured by FUN_1413f9ba0 (only the members used here)
 struct Unk_NHXform { float m_f[10]; };

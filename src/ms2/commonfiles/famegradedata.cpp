@@ -584,7 +584,7 @@ int CFameTable::LoadPickMethod()
     Unk_140165cf0* pEnv = FUN_14028f8d0(pRoot);
     if (pEnv == 0)
     {
-        FUN_14015eb90(FUN_140166440(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<environment> {0}]", strPath);
+        FUN_14015eb90(FUN_140166440(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return 0;
     }
     for (Unk_140165cf0* pNode = pEnv->FUN_140165cf0("method"); pNode != 0; pNode = pNode->FUN_140168650("method"))

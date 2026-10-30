@@ -1043,7 +1043,7 @@ struct Unk_MdLayoutItem
     bool m_category;                                        // +0x09
     bool m_editable;                                        // +0x0a
 };
-static int s_nHomeMode;                                     // 0 merat home, 3 designers home
+static int s_nHomeMode = 5;                                 // 0x1439f735c: 0 merat home, 3 designers home (5 until set)
 
 void FUN_1412e1d20(int nMode);
 #ifndef MS2_HOOK_DLL

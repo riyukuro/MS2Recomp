@@ -7,9 +7,10 @@
 // MS2-GUESS-LOOKALIKES
 // MS2-UNIT: unit_141121cf0
 // MS2-RANGE: 0x141121cf0-0x141123340 .text$mn
-// MS2-PIN: ??_7Unk_CMISNotifyBuilding@@6B@ 0x142eb3a28 ; hand: anchor vftable
+// MS2-PIN: ??_7NotifyChangeUIBuildingCount@@6B@ 0x142eb3a28 ; hand: anchor vftable
 // MS2-PIN: ??_7Unk_CMISAnchorMH@@6B@ 0x142eb3730 ; hand: anchor vftable
 // MS2-PIN: ??_7Unk_CMISAnchorSvc@@6B@ 0x142eb3698 ; hand: anchor vftable
+// MS2-PIN: ??0?$Unk_CMISTree@$0BAAN@@@QEAA@XZ 0x141122a70 ; hand: wrapper of the 4109 family (calls the old map ctor 0x141122a90 name)
 // MS2-PINS-BEGIN tplpin
 // MS2-PIN: ??0?$_Vector_alloc@U?$_Vec_base_types@V?$SmartPointer@VEntity@egf@@@efd@@V?$allocator@V?$SmartPointer@VEntity@egf@@@efd@@@std@@@std@@@std@@QEAA@XZ 0x141121db0 ; unique
 // MS2-PIN: ??0?$allocator@V?$SmartPointer@VEntity@egf@@@efd@@@std@@QEAA@XZ 0x141122040 ; prop
@@ -93,38 +94,68 @@ struct Unk_McAlloc
     void deallocate(T* p, size_t) { ::operator delete(p); }
 };
 template <int N> using Unk_McC = std::map<unsigned, Unk_MC<N>, std::less<unsigned>, Unk_McAlloc<std::pair<const unsigned, Unk_MC<N> > > >;
+// The exe's member dtors are the real efd::map/set dtors, which free each node to the efd FixedSizeAllocator at the real node
+// size. The Unk_CMISTree<N> ctors so build an efd map of that node size (Unk_McPad fills the value); the operator-new
+// Unk_McC head nodes were freed to the wrong heap (Win10 page-heap AV in ~CubeMapInformationService, work/p5i/vm.md).
+template <int N> struct Unk_McPad { __int64 v[N]; };
 template <int N> using Unk_McS = std::map<unsigned, Unk_MC<N> >;
 
 template <unsigned __int64 N> struct Unk_CMISTree;
-template <> struct Unk_CMISTree<4097> : Unk_McC<1> { Unk_CMISTree() {} };     // unnamed family, wrapper 0x141122050 -> map ctor 0x141122070
-template <> struct Unk_CMISTree<285> : Unk_McC<2> { Unk_CMISTree() {} };     // 0x1411220a0 -> map ctor 0x1411220c0
-template <> struct Unk_CMISTree<275> : Unk_McC<3> { Unk_CMISTree() {} };     // 0x1411220f0 -> map ctor 0x141122110
-template <> struct Unk_CMISTree<278> : Unk_McC<4> { Unk_CMISTree() {} };     // 0x141122170 -> map ctor 0x141122190
-template <> struct Unk_CMISTree<264> : Unk_McC<5> { Unk_CMISTree() {} };     // 0x1411221c0 -> map ctor 0x1411221e0
-template <> struct Unk_CMISTree<266> : Unk_McC<6> { Unk_CMISTree() {} };     // 0x141122210 -> map ctor 0x141122230
-template <> struct Unk_CMISTree<279> : Unk_McC<7> { Unk_CMISTree() {} };     // 0x141122290 -> map ctor 0x1411222b0
-template <> struct Unk_CMISTree<260> : Unk_McC<8> { Unk_CMISTree() {} };     // 0x1411222e0 -> map ctor 0x141122300
-template <> struct Unk_CMISTree<261> : Unk_McC<9> { Unk_CMISTree() {} };     // 0x1411223c0 -> map ctor 0x1411223e0
-template <> struct Unk_CMISTree<262> : Unk_McC<10> { Unk_CMISTree() {} };     // 0x141122410 -> map ctor 0x141122430
-template <> struct Unk_CMISTree<287> : Unk_McC<11> { Unk_CMISTree() {} };     // 0x1411228d0 -> map ctor 0x1411228f0
+template <> struct Unk_CMISTree<4097> : efd::map<int, int> { Unk_CMISTree() {} };     // 0x141122050: node 0x28 from the efd heap, as the exe's efd dtor frees it
+template Unk_McC<1>::map();     // 0x141122070: keeps the stand-in map ctor that this row pairs with
+template <> struct Unk_CMISTree<285> : efd::map<int, int> { Unk_CMISTree() {} };     // 0x1411220a0: node 0x28 from the efd heap, as the exe's efd dtor frees it
+template Unk_McC<2>::map();     // 0x1411220c0: keeps the stand-in map ctor that this row pairs with
+template <> struct Unk_CMISTree<275> : efd::map<__int64, Unk_McPad<10> > { Unk_CMISTree() {} };     // 0x1411220f0: node 0x78 from the efd heap, as the exe's efd dtor frees it
+template Unk_McC<3>::map();     // 0x141122110: keeps the stand-in map ctor that this row pairs with
+template <> struct Unk_CMISTree<278> : efd::map<__int64, Unk_McPad<7> > { Unk_CMISTree() {} };     // 0x141122170: node 0x60 from the efd heap, as the exe's efd dtor frees it
+template Unk_McC<4>::map();     // 0x141122190: keeps the stand-in map ctor that this row pairs with
+template <> struct Unk_CMISTree<264> : efd::map<__int64, Unk_McPad<1> > { Unk_CMISTree() {} };     // 0x1411221c0: node 0x30 from the efd heap, as the exe's efd dtor frees it
+template Unk_McC<5>::map();     // 0x1411221e0: keeps the stand-in map ctor that this row pairs with
+template <> struct Unk_CMISTree<266> : efd::map<__int64, Unk_McPad<2> > { Unk_CMISTree() {} };     // 0x141122210: node 0x38 from the efd heap, as the exe's efd dtor frees it
+template Unk_McC<6>::map();     // 0x141122230: keeps the stand-in map ctor that this row pairs with
+template <> struct Unk_CMISTree<279> : efd::map<__int64, Unk_McPad<2> > { Unk_CMISTree() {} };     // 0x141122290: node 0x38 from the efd heap, as the exe's efd dtor frees it
+template Unk_McC<7>::map();     // 0x1411222b0: keeps the stand-in map ctor that this row pairs with
+template <> struct Unk_CMISTree<260> : efd::map<__int64, Unk_McPad<2> > { Unk_CMISTree() {} };     // 0x1411222e0: node 0x38 from the efd heap, as the exe's efd dtor frees it
+template Unk_McC<8>::map();     // 0x141122300: keeps the stand-in map ctor that this row pairs with
+template <> struct Unk_CMISTree<261> : efd::map<__int64, Unk_McPad<2> > { Unk_CMISTree() {} };     // 0x1411223c0: node 0x38 from the efd heap, as the exe's efd dtor frees it
+template Unk_McC<9>::map();     // 0x1411223e0: keeps the stand-in map ctor that this row pairs with
+template <> struct Unk_CMISTree<262> : efd::map<__int64, Unk_McPad<2> > { Unk_CMISTree() {} };     // 0x141122410: node 0x38 from the efd heap, as the exe's efd dtor frees it
+template Unk_McC<10>::map();     // 0x141122430: keeps the stand-in map ctor that this row pairs with
+template <> struct Unk_CMISTree<287> : efd::map<__int64, Unk_McPad<2> > { Unk_CMISTree() {} };     // 0x1411228d0: node 0x38 from the efd heap, as the exe's efd dtor frees it
+template Unk_McC<11>::map();     // 0x1411228f0: keeps the stand-in map ctor that this row pairs with
 template <> struct Unk_CMISTree<267> : efd::set<int> { Unk_CMISTree() {} };     // 0x1411229d0: the dtor 0x141125b70 is efd::set<int>'s, so the ctor builds that set (head node from the efd heap)
-template <> struct Unk_CMISTree<4109> : Unk_McC<13> { Unk_CMISTree() {} };     // unnamed family, wrapper 0x141122a70 -> map ctor 0x141122a90
-template <> struct Unk_CMISTree<4110> : Unk_McC<14> { Unk_CMISTree() {} };     // unnamed family, wrapper 0x141122af0 -> map ctor 0x141122b10
-template <> struct Unk_CMISTree<256> : Unk_McC<15> { Unk_CMISTree() {} };     // 0x141122b70 -> map ctor 0x141122b90
-template <> struct Unk_CMISTree<271> : Unk_McC<16> { Unk_CMISTree() {} };     // 0x141122460 -> map ctor 0x141122480
-template <> struct Unk_CMISTree<265> : Unk_McC<17> { Unk_CMISTree() {} };     // 0x1411224b0 -> map ctor 0x1411224d0
-template <> struct Unk_CMISTree<272> : Unk_McC<18> { Unk_CMISTree() {} };     // 0x141122500 -> map ctor 0x141122520
-template <> struct Unk_CMISTree<276> : Unk_McC<19> { Unk_CMISTree() {} };     // 0x141122550 -> map ctor 0x141122570
-template <> struct Unk_CMISTree<4116> : Unk_McC<20> { Unk_CMISTree() {} };     // unnamed family, wrapper 0x1411225a0 -> map ctor 0x1411225c0
-template <> struct Unk_CMISTree<263> : Unk_McC<21> { Unk_CMISTree() {} };     // 0x141122620 -> map ctor 0x141122640
-template <> struct Unk_CMISTree<270> : Unk_McC<22> { Unk_CMISTree() {} };     // 0x141122670 -> map ctor 0x141122690
-template <> struct Unk_CMISTree<257> : Unk_McC<23> { Unk_CMISTree() {} };     // 0x1411226c0 -> map ctor 0x1411226e0
-template <> struct Unk_CMISTree<258> : Unk_McC<24> { Unk_CMISTree() {} };     // 0x141122710 -> map ctor 0x141122730
-template <> struct Unk_CMISTree<259> : Unk_McC<25> { Unk_CMISTree() {} };     // 0x141122760 -> map ctor 0x141122780
+template <> struct Unk_CMISTree<4109> : efd::map<int, int> { Unk_CMISTree() {} };     // 0x141122a70: node 0x28 from the efd heap, as the exe's efd dtor frees it
+template Unk_McC<13>::map();     // 0x141122a90: keeps the stand-in map ctor that this row pairs with
+template <> struct Unk_CMISTree<4110> : efd::map<__int64, Unk_McPad<1> > { Unk_CMISTree() {} };     // 0x141122af0: node 0x30 from the efd heap, as the exe's efd dtor frees it
+template Unk_McC<14>::map();     // 0x141122b10: keeps the stand-in map ctor that this row pairs with
+template <> struct Unk_CMISTree<256> : efd::map<int, int> { Unk_CMISTree() {} };     // 0x141122b70: node 0x28 from the efd heap, as the exe's efd dtor frees it
+template Unk_McC<15>::map();     // 0x141122b90: keeps the stand-in map ctor that this row pairs with
+template <> struct Unk_CMISTree<271> : efd::map<__int64, Unk_McPad<3> > { Unk_CMISTree() {} };     // 0x141122460: node 0x40 from the efd heap, as the exe's efd dtor frees it
+template Unk_McC<16>::map();     // 0x141122480: keeps the stand-in map ctor that this row pairs with
+template <> struct Unk_CMISTree<265> : efd::map<__int64, Unk_McPad<1> > { Unk_CMISTree() {} };     // 0x1411224b0: node 0x30 from the efd heap, as the exe's efd dtor frees it
+template Unk_McC<17>::map();     // 0x1411224d0: keeps the stand-in map ctor that this row pairs with
+template <> struct Unk_CMISTree<272> : efd::map<__int64, Unk_McPad<9> > { Unk_CMISTree() {} };     // 0x141122500: node 0x70 from the efd heap, as the exe's efd dtor frees it
+template Unk_McC<18>::map();     // 0x141122520: keeps the stand-in map ctor that this row pairs with
+template <> struct Unk_CMISTree<276> : efd::map<int, int> { Unk_CMISTree() {} };     // 0x141122550: node 0x28 from the efd heap, as the exe's efd dtor frees it
+template Unk_McC<19>::map();     // 0x141122570: keeps the stand-in map ctor that this row pairs with
+template <> struct Unk_CMISTree<4116> : efd::map<int, int> { Unk_CMISTree() {} };     // 0x1411225a0: node 0x28 from the efd heap, as the exe's efd dtor frees it
+template Unk_McC<20>::map();     // 0x1411225c0: keeps the stand-in map ctor that this row pairs with
+template <> struct Unk_CMISTree<263> : efd::map<__int64, Unk_McPad<2> > { Unk_CMISTree() {} };     // 0x141122620: node 0x38 from the efd heap, as the exe's efd dtor frees it
+template Unk_McC<21>::map();     // 0x141122640: keeps the stand-in map ctor that this row pairs with
+template <> struct Unk_CMISTree<270> : efd::map<__int64, Unk_McPad<1> > { Unk_CMISTree() {} };     // 0x141122670: node 0x30 from the efd heap, as the exe's efd dtor frees it
+template Unk_McC<22>::map();     // 0x141122690: keeps the stand-in map ctor that this row pairs with
+template <> struct Unk_CMISTree<257> : efd::map<__int64, Unk_McPad<1> > { Unk_CMISTree() {} };     // 0x1411226c0: node 0x30 from the efd heap, as the exe's efd dtor frees it
+template Unk_McC<23>::map();     // 0x1411226e0: keeps the stand-in map ctor that this row pairs with
+template <> struct Unk_CMISTree<258> : efd::map<__int64, Unk_McPad<1> > { Unk_CMISTree() {} };     // 0x141122710: node 0x30 from the efd heap, as the exe's efd dtor frees it
+template Unk_McC<24>::map();     // 0x141122730: keeps the stand-in map ctor that this row pairs with
+template <> struct Unk_CMISTree<259> : efd::map<__int64, Unk_McPad<2> > { Unk_CMISTree() {} };     // 0x141122760: node 0x38 from the efd heap, as the exe's efd dtor frees it
+template Unk_McC<25>::map();     // 0x141122780: keeps the stand-in map ctor that this row pairs with
 template <> struct Unk_CMISTree<282> : efd::map<int, int> { Unk_CMISTree() {} };     // 0x1411227b0: the dtor is efd::map<Unk_CMISKindA,int>'s (same node size as <int,int>)
 template Unk_McC<26>::map();     // 0x1411227d0: the exe still instantiates the old std::map ctor here (the <282> ctor above now builds the efd::map)
-template <> struct Unk_CMISTree<281> : Unk_McC<27> { Unk_CMISTree() {} };     // 0x141122830 -> map ctor 0x141122850
-template <> struct Unk_CMISTree<280> : Unk_McC<28> { Unk_CMISTree() {} };     // 0x141122880 -> map ctor 0x1411228a0
+template <> struct Unk_CMISTree<281> : efd::map<int, int> { Unk_CMISTree() {} };     // 0x141122830: node 0x28 from the efd heap, as the exe's efd dtor frees it
+template Unk_McC<27>::map();     // 0x141122850: keeps the stand-in map ctor that this row pairs with
+template <> struct Unk_CMISTree<280> : efd::map<int, int> { Unk_CMISTree() {} };     // 0x141122880: node 0x28 from the efd heap, as the exe's efd dtor frees it
+template Unk_McC<28>::map();     // 0x1411228a0: keeps the stand-in map ctor that this row pairs with
 struct Unk_CMISAnchorS29 : Unk_McS<29> { Unk_CMISAnchorS29() {} };     // std::map ctor 0x141122140
 template <> struct Unk_CMISTree<274> : Unk_McS<30>::_Mybase { Unk_CMISTree() : Unk_McS<30>::_Mybase(std::less<unsigned>()) {} };     // 0x141122260
 template <> struct Unk_CMISTree<273> : Unk_McS<31>::_Mybase { Unk_CMISTree() : Unk_McS<31>::_Mybase(std::less<unsigned>()) {} };     // 0x141122330
@@ -225,14 +256,16 @@ class NotifyObject
 public:
     NotifyObject();                                          // 0x140939070
     virtual ~NotifyObject();
+    virtual CStringW GetTypeName();
     char m_pad[0x10];
 };
 // @0x141123250
-class Unk_CMISNotifyBuilding : public NotifyObject
+class NotifyChangeUIBuildingCount : public NotifyObject
 {
 public:
-    Unk_CMISNotifyBuilding(const int* pnBuilding) : m_nBuilding(*pnBuilding) {}
-    virtual ~Unk_CMISNotifyBuilding();
+    NotifyChangeUIBuildingCount(const int* pnBuilding) : m_nBuilding(*pnBuilding) {}
+    virtual ~NotifyChangeUIBuildingCount();
+    virtual CStringW GetTypeName();                          // 0x140db55e0 (notifychangebuff.cpp)
     int m_nBuilding;                                         // +0x18
 };
 
@@ -329,7 +362,7 @@ void Unk_CMISTreeAnchor(void* p)
     new (p) Unk_CMISCell56(*(const Unk_CMISCell56*)p);
     new (p) Unk_CMISIdPtr(*(const Unk_CMISIdPtr*)p);
     new (p) Unk_CMISByDistance(0);
-    new (p) Unk_CMISNotifyBuilding((const int*)p);
+    new (p) NotifyChangeUIBuildingCount((const int*)p);
     new (p) egf::EntityChangeMessage;
     new (p) efd::Category(efd::UniversalID::ECU_Any, 1, 2);
     new (p) Unk_CMISBucketPair(*(const Unk_CMISBucketPair*)p);

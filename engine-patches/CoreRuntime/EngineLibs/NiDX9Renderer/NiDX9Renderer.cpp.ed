@@ -31,6 +31,14 @@ void NiDX9Renderer::PurgePrePackData()
 4110c
         if (!pkTexture->GetRendererData() && !pkTexture->GetLoadDirectToRendererHint())   // MS2: game 0x1427cc5f0 skips a texture that already has renderer data
 .
+4032@41s "" " } // MS2"
+4029@7s "" " {"
+4028c
+        else // MS2
+.
+4026c
+            NiRenderer::Error("ReleaseIUnknown without a renderer [%d]", eType);  // MS2: reported through NiRenderer::Error and not queued for deferred release
+.
 4008a
 // MS2: fullscreen display mode switching (exe 0x1427cb2a0, 0x1427d5390) and the game's device-lost hold
 // (exe 0x1427d5c10)
@@ -200,11 +208,11 @@ const char* NiDX9Renderer::GetDriverName() const
 .
 813d
 806,811d
-768,801c
+775,801c
                 return false;
             }
 .
-765,766d
+765,773d
 754,763c
                 case D3DERR_INVALIDCALL:
                     SetLastErrorString("Creation failed: Could not create "

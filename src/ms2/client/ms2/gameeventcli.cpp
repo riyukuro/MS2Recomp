@@ -1540,7 +1540,7 @@ void* FUN_140ce91f0(void* p)
     CStringW* pNames = (CStringW*)p;
     for (int i = 0; i < 3; ++i)
         new (&pNames[i]) CStringW;
-    new ((char*)p + 0x18) ATL::CAtlArray<void*>;
+    new ((char*)p + 0x18) ATL::CAtlArray<CStringW>;
     return p;
 }
 
@@ -1548,7 +1548,7 @@ void* FUN_140ce91f0(void* p)
 // @0x140ce9720
 void FUN_140ce9720(void* p)
 {
-    ((ATL::CAtlArray<void*>*)((char*)p + 0x18))->~CAtlArray();
+    ((ATL::CAtlArray<CStringW>*)((char*)p + 0x18))->~CAtlArray();   // CallDestructors frees each message (0x140164210)
     CStringW* pNames = (CStringW*)p;
     for (int i = 2; i >= 0; --i)
         pNames[i].~CStringW();

@@ -359,11 +359,12 @@ class NoticeCubeInfo;
 // vptr: they are the implicit ones (= default in cubemapinformationservice_tail.h), pinned at the end of the file.
 
 // the building notification of the service (unit_141121cf0 builds it)
-class Unk_CMISNotifyBuilding : public NotifyObject
+class NotifyChangeUIBuildingCount : public NotifyObject
 {
 public:
-    Unk_CMISNotifyBuilding(const int* pnBuilding) : m_nBuilding(*pnBuilding) {}
-    virtual ~Unk_CMISNotifyBuilding() = default;             // 0x141125fa0 (no vptr store)
+    NotifyChangeUIBuildingCount(const int* pnBuilding) : m_nBuilding(*pnBuilding) {}
+    virtual ~NotifyChangeUIBuildingCount() = default;        // 0x141125fa0 (no vptr store)
+    virtual CStringW GetTypeName();                          // 0x140db55e0 (notifychangebuff.cpp)
     int m_nBuilding;                                         // +0x18
 };
 
@@ -460,7 +461,7 @@ void Unk_CMISDriveTail15(void* p)
     ((AutomaticCreateCubeInfo*)p)->AutomaticCreateCubeInfo::~AutomaticCreateCubeInfo();
     ((SaleStateData*)p)->SaleStateData::~SaleStateData();
     ((SalesInfo*)p)->SalesInfo::~SalesInfo();
-    ((Unk_CMISNotifyBuilding*)p)->Unk_CMISNotifyBuilding::~Unk_CMISNotifyBuilding();
+    ((NotifyChangeUIBuildingCount*)p)->NotifyChangeUIBuildingCount::~NotifyChangeUIBuildingCount();
     ((TSingleton<CubeMapInformationService>*)p)->TSingleton<CubeMapInformationService>::~TSingleton();
     // message handlers and messages
     typedef efd::MessageHandlerImpl<CubeMapInformationService, egf::EntityChangeMessage> HEntity;
@@ -500,7 +501,7 @@ void Unk_CMISDriveTail15(void* p)
 // MS2-PIN: ??1?$vector@VEntityID@egf@@V?$CustomAllocator@VEntityID@egf@@@efd@@@std@@QEAA@XZ 0x141125d70
 // MS2-PIN: ??1?$_Vector_alloc@U?$_Vec_base_types@VEntityID@egf@@V?$CustomAllocator@VEntityID@egf@@@efd@@@std@@@std@@QEAA@XZ 0x1411251d0
 // MS2-PIN: ??1AutomaticCreateCubeInfo@@UEAA@XZ 0x141125e20
-// MS2-PIN: ??1Unk_CMISNotifyBuilding@@UEAA@XZ 0x141125fa0
+// MS2-PIN: ??1NotifyChangeUIBuildingCount@@UEAA@XZ 0x141125fa0
 // MS2-PIN: ??1SaleStateData@@UEAA@XZ 0x141125fc0
 // MS2-PIN: ??1SalesInfo@@UEAA@XZ 0x141125fe0
 

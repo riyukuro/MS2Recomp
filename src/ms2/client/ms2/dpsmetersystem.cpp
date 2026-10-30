@@ -631,11 +631,11 @@ void CDPSMeterSystem::StopThread()
 MS2_REPLACE_METHOD(0x14117B080, CDPSMeterSystem, StopThread, 152, 0xB6845AB6);
 
 // @0x14117b120
-unsigned __stdcall CDPSMeterSystem::ThreadEntry(void* ptr)
+unsigned __stdcall CDPSMeterSystem::ThreadEntry(void* pArg)
 {
-    CDPSMeterSystem* pThis = static_cast<CDPSMeterSystem*>(ptr);
-    MS2_ASSERT_AT(0x1ac, NULL != pThis);
-    return pThis->ThreadProc();
+    CDPSMeterSystem* ptr = static_cast<CDPSMeterSystem*>(pArg);
+    MS2_ASSERT_AT(0x1ac, NULL != ptr);
+    return ptr->ThreadProc();
 }
 MS2_REPLACE(0x14117B120, CDPSMeterSystem::ThreadEntry, 70, 0x8338A783);
 

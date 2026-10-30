@@ -253,8 +253,6 @@ public:
     MS2Ptr<Unk_NoticeTarget> FUN_14041f850(Unk_Notice* pNotice);
 };
 
-class Unk_Misc2d80 { public: void FUN_140de1070(); };
-class Unk_Misc2e20 { public: void FUN_1408fbac0(); };
 class Unk_Misc2e50 { public: void FUN_140dfc4f0(); };
 class Unk_Misc32d8 { public: void FUN_140581e40(); };
 // Same layout as the unit-local state of uiadventureleveldialog.cpp (the map global 0x143ab3318 is shared).
@@ -288,8 +286,8 @@ UIMainPlayerInfo* FUN_140931900(int nUiId);
 
 extern Unk_NoticeList DAT_143ab2fc0;
 extern Unk_NoticeList DAT_143ab3010;
-extern Unk_Misc2d80 DAT_143ab2d80;
-extern Unk_Misc2e20 DAT_143ab2e20;
+#include "ms2/client/ms2/store.h"     // DAT_143ab2d80, the store table (CStore)
+#include "ms2/client/ms2/warehouseitem.h"     // DAT_143ab2e20, the warehouse item table
 extern Unk_Misc2e50 DAT_143ab2e50;
 extern Unk_Misc32d8 DAT_143ab32d8;
 extern std::map<unsigned int, Unk_ALMissionState> g_unkMissionStates;       // 0x143ab3318
@@ -307,11 +305,11 @@ void FUN_141276180(const CString& strSound, const CString& strArg);
 void FUN_14092f420()
 {
     FUN_140931510()->FUN_140d9f140();
-    DAT_143ab2d80.FUN_140de1070();
+    DAT_143ab2d80.Clear();
     g_143ab2a90.FUN_140a5c970();
     DAT_143ab2fc0.FUN_14041f6e0();
     DAT_143ab3010.FUN_14041f6e0();
-    DAT_143ab2e20.FUN_1408fbac0();
+    DAT_143ab2e20.RemoveAll();
     DAT_143ab2e50.FUN_140dfc4f0();
     DAT_143ab2857 = 0;
     DAT_143ab2938 = 0;

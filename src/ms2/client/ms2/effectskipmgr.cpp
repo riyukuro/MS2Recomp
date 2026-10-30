@@ -73,8 +73,18 @@ public:
 Unk_SkipActor* FUN_140a38d60(Unk_SkipHost*);
 bool FUN_14028d470(float a, float b);                      // float equality test
 
-// The live effect list the skip query walks.
+// The caller's world transform (NiTransform layout, 0x34 bytes: rotate 0x24, translate, scale). Only the translate is read.
 class Unk_SkipEffect
+{
+public:
+    char m_pad_00[0x24];            // NiMatrix3 m_Rotate
+    Unk_SkipPoint m_pos;            // +0x24 m_Translate
+    float m_fScale;                 // +0x30
+};
+MS2_CHECK_SIZE(Unk_SkipEffect, 0x34);
+
+// An entry of the live effect list the skip query walks.
+class Unk_SkipItem
 {
 public:
     char m_pad_00[0x18];
@@ -146,7 +156,7 @@ int EffectSkipMgr::ShouldSkipByView(CEffectDataPtr spData, int nCaster, Unk_Skip
     check.m_n14 = 0;
     for (POSITION pos = spData->FUN_14119f540().GetHeadPosition(); pos != 0; spData->FUN_14119f540().GetNext(pos))
     {
-        Unk_SkipEffect* pItem = reinterpret_cast<Unk_SkipEffect*>(spData->FUN_14119f540().GetAt(pos).get());
+        Unk_SkipItem* pItem = reinterpret_cast<Unk_SkipItem*>(spData->FUN_14119f540().GetAt(pos).get());
         check.m_nRow = pItem->m_nKind;
         if (!pItem->m_bIgnore)
         {

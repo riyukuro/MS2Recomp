@@ -18,6 +18,7 @@ static CString s_strChartSortNames[] = {"None", "Buy", "PriceLow", "PriceHigh", 
 #include <d3dx9.h>
 #include <NiDDSReader.h>
 #include <NiImageConverter.h>
+#include <NiDevImageConverter.h>
 #include <NiPixelData.h>
 #include <NiRect.h>
 #include <NiRenderTargetGroup.h>
@@ -860,7 +861,7 @@ NiTexturePtr LoadUgcTexture(const CStringW& strPath, int nSize, bool bPng)
         strConverted = converter.GetDstFile();
     }
     CStringW strFile = bConverted == TRUE ? strConverted : strPath;
-    NiImageConverter* pkConverter = NiDynamicCast(NiImageConverter, FUN_141851720());
+    NiImageConverter* pkConverter = NiDynamicCast(NiDevImageConverter, FUN_141851720());
     NiPixelDataPtr spPixelData = pkConverter->ReadImageFile((const wchar_t*)strFile, NULL);
     NiTexturePtr spTexture = NiSourceTexture::Create(spPixelData, DAT_1439fc800, true);
     if (bConverted == TRUE)
@@ -878,7 +879,7 @@ NiTexturePtr LoadCachedTexture(const CStringW& strPath)
     if (spTexture != NULL)
         return spTexture;
     efd::utf8string strFile(FUN_140390ea0(strPath, 0));
-    NiImageConverter* pkConverter = NiDynamicCast(NiImageConverter, FUN_141851720());
+    NiImageConverter* pkConverter = NiDynamicCast(NiDevImageConverter, FUN_141851720());
     NiPixelDataPtr spPixelData = pkConverter->ReadImageFile(strFile.c_str(), NULL);
     NiTexturePtr spLoaded = FUN_140a0afd0()->FUN_1415534d0(strKey, spPixelData, 5);
     return spLoaded;

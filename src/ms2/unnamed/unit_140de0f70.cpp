@@ -7,6 +7,7 @@
 #include "ms2/placeholder/citem.h"
 #include "ms2/ms2recover.h"
 #include <atlcoll.h>
+#include "ms2/client/ms2/store.h"
 
 extern void FUN_140a6c360(void*);
 extern void FUN_1408f3a80(void*);
@@ -14,60 +15,44 @@ extern void FUN_1408f3d90(void*, __int64, int);
 extern unsigned FUN_140720ca0(void*);
 extern void* FUN_140a69ee0(void*, __int64);
 extern void FUN_1401bffb0(void*, int);
-void FUN_140de1040(struct Unk_De0f70*);
-void FUN_140de1070(struct Unk_De0f70*);
 
-struct Unk_De0f70
-{
-    Unk_De0f70();
-    ~Unk_De0f70();
-
-    int m_state;
-    int m_reset1;
-    __int64 m_reset2;                                 // +0x08
-    int m_reset4;
-    int m_reset5;
-    int m_reset6;
-    CLockCriticalSection m_lock;                      // +0x20
-    ATL::CRBMap<__int64, MS2Ptr<CItem> > m_serviceStorage;  // +0x50
-    CAtlArray<MS2Ptr<CItem> > m_items;                // +0x80
-};
+// CStore (store.h), the store table's class: its ctor, dtor, Initialize and Clear sit here, before store.cpp.
 
 // @0x140de0f70
-Unk_De0f70::Unk_De0f70() : m_state(0), m_serviceStorage(10)
+CStore::CStore() : m_capacity(0), m_items(10)
 {
-    FUN_140de1040(this);
+    Initialize();
 }
 
 // @0x140de0ff0
-Unk_De0f70::~Unk_De0f70()
+CStore::~CStore()
 {
 }
 
 // @0x140de1040
-void FUN_140de1040(Unk_De0f70* self)
+void CStore::Initialize()
 {
-    self->m_state = 0x24;
-    FUN_140de1070(self);
+    m_capacity = 0x24;
+    Clear();
 }
 
 // @0x140de1070
-void FUN_140de1070(Unk_De0f70* self)
+void CStore::Clear()
 {
-    Unk_LockGuard guard(self->m_lock);
+    Unk_LockGuard guard(m_lock);
     if (guard.operator int()) {
     } else {
-        self->m_reset1 = 0;
-        self->m_reset2 = 0;
-        self->m_reset4 = 0;
-        self->m_reset5 = 0;
-        self->m_reset6 = 0;
-        FUN_140a6c360(&self->m_serviceStorage);
-        FUN_1408f3a80(&self->m_items);
-        FUN_1408f3d90(&self->m_items, self->m_state, -1);
-        int count = FUN_140720ca0(&self->m_items);
+        m_extended = 0;
+        m_id = 0;
+        m_type = 0;
+        m_ready = 0;
+        m_received = 0;
+        FUN_140a6c360(&m_items);
+        FUN_1408f3a80(&m_slots);
+        FUN_1408f3d90(&m_slots, m_capacity, -1);
+        int count = FUN_140720ca0(&m_slots);
         for (int i = 0; i < count; ++i) {
-            FUN_1401bffb0(FUN_140a69ee0(&self->m_items, i), 0);
+            FUN_1401bffb0(FUN_140a69ee0(&m_slots, i), 0);
         }
     }
 }

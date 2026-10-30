@@ -174,13 +174,7 @@ public:
     __int64 FUN_140dfc420();
 };
 
-class Unk_CubeFallbackInventory
-{
-public:
-    void FUN_1408fbc70(ATL::CAtlArray<MS2Ptr<CItem> >& out);
-    MS2Ptr<CItem> FUN_1408fbe90(int nItemId);
-};
-extern Unk_CubeFallbackInventory DAT_143ab2e20;
+#include "ms2/client/ms2/warehouseitem.h"     // DAT_143ab2e20, the warehouse item table
 
 class Unk_CubeStock
 {

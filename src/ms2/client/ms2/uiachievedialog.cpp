@@ -7,8 +7,8 @@
 // MS2-PIN: ??__EkTrophyRewardGet@@YAXXZ 0x14010fa00 ; probe
 // MS2-PIN: ??__Es_strSkill@@YAXXZ 0x14010faf0 ; probe
 // MS2-PIN: ??__Es_strStun@@YAXXZ 0x14010fb20 ; probe
-// MS2-PIN: ??$?0AEAHAEAH$0A@@?$pair@HH@std@@QEAA@AEAH0@Z 0x1418ade00 ; unique
-// MS2-PIN: ??$make_pair@AEAHAEAH@std@@YA?AU?$pair@HH@0@AEAH0@Z 0x1418af680 ; unique
+// MS2-PIN: ??$?0AEAHH$0A@@?$pair@HH@std@@QEAA@AEAH$$QEAH@Z 0x1418ade00 ; hand
+// MS2-PIN: ??$make_pair@AEAHH@std@@YA?AU?$pair@HH@0@AEAH$$QEAH@Z 0x1418af680 ; hand
 // MS2-PIN: ?_Get_first@?$_Compressed_pair@V?$allocator@UClearRecord@UIAchieveDialog@@@std@@V?$_Vector_val@U?$_Simple_types@UClearRecord@UIAchieveDialog@@@std@@@2@$00@std@@QEBAAEBV?$allocator@UClearRecord@UIAchieveDialog@@@2@XZ 0x1418b0f60 ; unique
 // MS2-PIN: ?_Get_second@?$_Compressed_pair@V?$allocator@UClearRecord@UIAchieveDialog@@@std@@V?$_Vector_val@U?$_Simple_types@UClearRecord@UIAchieveDialog@@@std@@@2@$00@std@@QEAAAEAV?$_Vector_val@U?$_Simple_types@UClearRecord@UIAchieveDialog@@@std@@@2@XZ 0x1418b0f70 ; unique
 // MS2-PIN: ?_Get_second@?$_Compressed_pair@V?$allocator@UClearRecord@UIAchieveDialog@@@std@@V?$_Vector_val@U?$_Simple_types@UClearRecord@UIAchieveDialog@@@std@@@2@$00@std@@QEBAAEBV?$_Vector_val@U?$_Simple_types@UClearRecord@UIAchieveDialog@@@std@@@2@XZ 0x1418b0f80 ; unique
@@ -741,8 +741,7 @@ void UIAchieveDialog::FUN_1418a9800()
     FUN_1406c7600()->GetList(achieves, 0, 0, 0, 0);
     std::vector<std::pair<int, int> > counts;
     for (size_t i = 0; i < roots.GetCount(); i++) {
-        int nZero = 0;
-        counts.push_back(std::make_pair(roots[i]->m_nId, nZero));
+        counts.push_back(std::make_pair(roots[i]->m_nId, 0));
     }
     for (size_t i = 0; i < achieves.GetCount(); i++) {
         MS2Ptr<CAchieve> spAchieve = achieves[i];

@@ -1199,7 +1199,7 @@ void CBanTextChecker::MaskBannedWords(CStringW& str)
     FilterBanWords(str);
     str.Replace(L'\r', L'*');
     str.Replace(L'\n', L'*');
-    str.Replace(L"&", L"*");
+    str.Replace(L"&#", L"**");
     for (POSITION pos = m_mapBanWords.GetHeadPosition(); pos != 0; m_mapBanWords.GetNext(pos))
     {
         Unk_BanWordPtr words = m_mapBanWords.GetValueAt(pos);

@@ -91,10 +91,9 @@ MS2_CHECK_OFFSET(CStore, m_lock, 0x20);
 MS2_CHECK_OFFSET(CStore, m_items, 0x50);
 MS2_CHECK_OFFSET(CStore, m_slots, 0x80);
 
-// The one CStore instance (the store table) at 0x143ab2d80. Units reference it as a char symbol (that is the mangled
-// name the symbol map has) and view it as a CStore through this macro.
-extern char DAT_143ab2d80;
-#define MS2_STORE_TABLE (*reinterpret_cast<CStore*>(&DAT_143ab2d80))
+// The one CStore instance (the store table) at 0x143ab2d80 (unit_1400be790 defines it).
+extern CStore DAT_143ab2d80;
+#define MS2_STORE_TABLE DAT_143ab2d80
 // Free functions of store.cpp taking the store table as first argument (put in / take out of the bank + play the sound).
 void FUN_140de2dc0(void*, __int64 nId, int nSlot, int nCount, MS2Ptr<CItemData> pSound);       // 0x140de2dc0
 void FUN_140de31f0(CStore* pStore, __int64 nId, int nSlot, int nCount, MS2Ptr<CItemData> pSound);   // 0x140de31f0

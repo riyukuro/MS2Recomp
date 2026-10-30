@@ -146,15 +146,6 @@ public:
 };
 Unk_IsUgcEvents* FUN_140bc09f0();
 
-// The store table as the exe binds it (only functional in store.cpp, so called by address).
-class Unk_IsStoreView
-{
-public:
-    MS2Ptr<CItem> FUN_140de1490(__int64 nId);             // CStore::Find
-    int FUN_140de21a0(MS2Ptr<CItem> spItem, int nCount);  // CStore::AvailableSlot
-    int FUN_140de2490(int nType);                         // CStore::Allowed
-};
-#define IS_STORE_VIEW (*reinterpret_cast<Unk_IsStoreView*>(&DAT_143ab2d80))
 
 // The item break manager (FUN_1409c4b20).
 class Unk_IsBreakMgr
@@ -1080,13 +1071,13 @@ int InvenSlot::vfunc_14()
         else
             bAll = false;
         int nCount = bAll ? spItem->FUN_140526c50() : 1;
-        int nSlot = IS_STORE_VIEW.FUN_140de21a0(spItem, nCount);
+        int nSlot = MS2_STORE_TABLE.AvailableSlot(spItem, nCount);
         if (nSlot == -1)
         {
             FUN_141275260(0xf2, 1, 1);
             return 0;
         }
-        if (IS_STORE_VIEW.FUN_140de2490(spItem->FUN_1405276c0()) == 0)
+        if (MS2_STORE_TABLE.Allowed(spItem->FUN_1405276c0()) == 0)
         {
             FUN_141275260(0xf1, 1, 0);
             return 0;
@@ -1320,7 +1311,7 @@ int InvenSlot::vfunc_18(void* p)
     }
     else if (StoreSlot* pStore = efd::DynamicCast<StoreSlot>(pDrag))
     {
-        MS2Ptr<CItem> spItem = IS_STORE_VIEW.FUN_140de1490(pStore->GetStoreItemId());
+        MS2Ptr<CItem> spItem = MS2_STORE_TABLE.Find(pStore->GetStoreItemId());
         if (spItem == 0)
             return pDrag->vfunc_10();
         if (pStore->vfunc_26(spItem) == 1)
@@ -2138,7 +2129,7 @@ static int FUN_14140d3e0(MS2Ptr<CItem> spItem, int bHint)
     }
     else if (nDialog == 0x4e47 || nDialog == 0x4e78)
     {
-        if (IS_STORE_VIEW.FUN_140de2490(spItem->FUN_1405276c0()) == 0)
+        if (MS2_STORE_TABLE.Allowed(spItem->FUN_1405276c0()) == 0)
             return bHint ? 0 : 3;
         return 3;
     }

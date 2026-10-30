@@ -50,9 +50,9 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 
-// ---- statics (.text$di): the category path of the swf tab, and the statics of the headers the unit includes ----
-static CStringW s_strCategoryPath = L"./Data/Resource/Image/Emoticon/Category/";
-static CStringW s_strCategoryPath2 = L"./Data/Resource/Image/Emoticon/Category/";
+// ---- statics (.text$di): the icons of the favourites and shop tabs, and the statics of the headers the unit includes ----
+static CStringW s_strCategoryPath = L"./Data/Resource/Image/Emoticon/Category/tab_bookmark.png";   // 0x143abd858 (??__E 0x1400ca6a0)
+static CStringW s_strCategoryPath2 = L"./Data/Resource/Image/Emoticon/Category/tab_shop.png";      // 0x143abd860 (??__E 0x1400ca6d0)
 static const int s_nFavouriteTab = -1;                 // the favourites tab key (passed by reference)
 #ifndef MS2_HOOK_DLL
 static CString s_strSortTypeNames3[] = {"None", "Buy", "PriceLow", "PriceHigh", "Create", "ChartOrder", "BuyTotal", "EnumEnd"};

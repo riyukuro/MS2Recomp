@@ -457,8 +457,8 @@ void UIDungeonRoomSeasonRankReward::Refresh(MS2Ptr<DungeonRoom> spRoom)
     int nLeft = nMaxRank < 5 ? 0x21 : 0x13;
     int nStep = nMaxRank < 5 ? 0x72 : 0x5f;
     int nGap = 0xe;
-    int nRewardY = (int)m_seasonRankReward[0]->FUN_1422c1110();
-    int nRankY = (int)m_seasonRank[0]->FUN_1422c1110();
+    unsigned nRewardY = (unsigned)m_seasonRankReward[0]->FUN_1422c1110();
+    unsigned nRankY = (unsigned)m_seasonRank[0]->FUN_1422c1110();
     int nCount = FUN_140931510()->GetRecord()->GetRankRewardCount(spRoom->GetSeasonRankRewardID());
     for (size_t i = 0; i < 5; i++)
     {

@@ -241,9 +241,8 @@ extern char DAT_143b059e8;                                  // service lookup ce
 void* FUN_1401cd040(char* pCell);
 
 void FUN_141682f60(void* pTracker, PCBase* pOwner);         // PCBase+0x6d8 init
-class Unk_MyPCGlobal2e20 { public: void FUN_1408fbab0(); };
 class Unk_MyPCGlobal2e50 { public: void FUN_140dfc4e0(); };
-extern Unk_MyPCGlobal2e20 DAT_143ab2e20;
+#include "ms2/client/ms2/warehouseitem.h"     // DAT_143ab2e20, the warehouse item table
 extern Unk_MyPCGlobal2e50 DAT_143ab2e50;
 
 // The message box queue (messageboxqueue.cpp).
