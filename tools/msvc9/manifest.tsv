@@ -1,0 +1,27 @@
+# VC9 toolchain for `// MS2-TOOLSET: vc9` units (tools/msvc9/check.py --record; cl 15.00.30729.207 x64 from the
+# WDK 7.1.0 ISO GRMWDK_EN_7600_1.ISO, headers WinDDK 7600.16385 inc/crt + inc/api). Columns: kind, path under
+# third_party/msvc9, value. tree rows: '<file count> <sha256 of the sorted lowercase-path+hash list>'.
+file	bin/1033/clui.dll	9d91755740a8d312500a271f511999dddabee12295f0464049291403dc1a757b
+file	bin/1033/cvtresui.dll	53352e767baf1edaeb2b9495acb8512da24d638603c644467557179f59db3afd
+file	bin/1033/linkui.dll	aacb3d6747d46e1d0ca43d54a866e5c4cd8dd32611cbeb31a317de90792145a7
+file	bin/Microsoft.VC90.CRT.manifest	041c76639c796dc5781e88cfeb3f85652c4286b9fe9624c6161e44397b548d05
+file	bin/atlprov.dll	82881ba035521420c302242fa52d835460a8ae1b69d454a06e8dfb13648e2977
+file	bin/build.exe	5cb1b7636ba6e973cc1ed9d41d5c731c079d4a6df9f0359d79540d56d80259f0
+file	bin/c1.dll	9305e11345bc549d447e0a2c13ce9fd4d9ab4e4adb1082110b1d62ef48494ab7
+file	bin/c1xx.dll	786343195c3aaf041c6da621ffcdde0ee00c3ebec6033dcf8a7b9cad8c8025b4
+file	bin/c2.dll	1e2ce0000ebca1439cab00dc397588fd4ac225f96bbdf2df16cf2c5d51613ebd
+file	bin/cl.exe	848656db0f52e5f07ad3208e84736943f6590ecd0037498e17420dc982ac78da
+file	bin/clui.dll	9d91755740a8d312500a271f511999dddabee12295f0464049291403dc1a757b
+file	bin/cvtres.exe	63ac0428f179dca2321f2e708ad9c50219c2b40f380f80a0ff934b15be45afb3
+file	bin/cvtresui.dll	53352e767baf1edaeb2b9495acb8512da24d638603c644467557179f59db3afd
+file	bin/link.exe	943a769a238008b73edb15fa18a0f5537a6abcef781eaf588afc310a909a0ef5
+file	bin/linkui.dll	aacb3d6747d46e1d0ca43d54a866e5c4cd8dd32611cbeb31a317de90792145a7
+file	bin/ml64.exe	1aafee7920983def9851eeeefa5c1783fb63b1a9631cf9f5b19c0b975ac8310c
+file	bin/msobj80.dll	bff63463e26403ebe21a06d40270f26ab1d4f2cb51fc488f1bac66c6d51741e2
+file	bin/mspdb80.dll	f50ba77865854ddd2edeab90bcc29fc470d924f5fa36d48b65ae05ce7b861544
+file	bin/msvcp90.dll	04e4dd145633be5bd7351e054f9fe8765819ec94ffc9fe919e3cf52419deb6fe
+file	bin/msvcr90.dll	02b618ceee13f2b87fe85530b03d247ecefca101972aeb6a41460c011978652d
+file	bin/wmimofck.exe	b1631212ec9e70c082acc800f013c96d7c9e58331b5b709e72075128c605fa6b
+tree	include/api	697 bf8f5d289123f15b2f935f87fde5a3bcef2970a94b1c70d512e73e190fa95fdd
+tree	include/crt	89 64324021060868dde168196ba00f686e0fee8a1e31dd2b62c8e64305180b72a6
+version	cl	15.00.30729.207

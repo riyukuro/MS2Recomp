@@ -50,3 +50,4 @@ public:
     ATL::CRBMap<unsigned __int64, MS2Ptr<CWarehouseItem> > m_items;     // +0x0
 };
 MS2_CHECK_SIZE(CWarehouseItemTable, 0x30);
+extern CWarehouseItemTable DAT_143ab2e20;           // the housing cube inventory (unit_1400be790 defines it)

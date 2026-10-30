@@ -92,7 +92,7 @@ public:
     int FUN_1413bca70(std::map<unsigned __int64, PCBase*>& out);
     int FUN_1413bcbc0(std::map<unsigned __int64, PCBase*>& out);
     void FUN_1413bcd10();
-    void FUN_1413bce40(int skillId, unsigned short skillLevel);
+    void FUN_1413bce40(unsigned int skillId, unsigned short skillLevel);
     int FUN_1413bd050(int skillId, int skillLevel);
     int FUN_1413bd1a0(int skillId, int skillLevel);
     void SendGuildMode115();
@@ -227,7 +227,7 @@ public:
     ATL::CAtlArray<MS2Ptr<CGuildJoinRequestForChar>> m_joinRequestsForChar; // +0x428
     ATL::CAtlArray<MS2Ptr<CGuildJoinRequestForGuild>> m_joinRequestsForGuild; // +0x448
     int m_468;
-    std::set<std::pair<int, unsigned short>> m_470;                    // +0x470 (skill id, level) uses awaiting the server ack
+    std::set<std::pair<unsigned int, unsigned short>> m_470;                  // +0x470 (skill id, level) uses awaiting the server ack
 };
 MS2_CHECK_OFFSET(CGuildManager, m_invite, 0x378);
 MS2_CHECK_OFFSET(CGuildManager, m_pvpHistory, 0x388);

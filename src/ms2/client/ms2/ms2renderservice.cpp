@@ -99,6 +99,7 @@ extern int DAT_143afa750;                                                    // 
 extern int DAT_143af7d58;                                                    // "keep window hidden" switch
 NiRenderer* GetNiRenderer();                                                 // the current NiRenderer
 NiDX9Renderer* FUN_140d89bc0();                                              // the DX9 renderer, or 0
+const char* FUN_1427cf790(const NiDX9Renderer* pRenderer);                   // NiDX9Renderer::GetDriverName: the adapter's driver dll ("%s" of D3DADAPTER_IDENTIFIER9::Driver)
 
 // Debug log (console) of the game.
 class Unk_RsDebugLog
@@ -664,7 +665,7 @@ bool MS2RenderService::CreateRendererSized(bool bFullscreen, int width, int heig
                 return false;
             }
             {
-                CStringA driver(pDX9Renderer->NiDX9Renderer::GetDriverInfo());
+                CStringA driver(FUN_1427cf790(pDX9Renderer));
                 FUN_1401d3700(driver);
                 if (driver == "mctu.dll") {
                     FUN_140a44830()->FUN_1401ce2b0("!!! mctu.dll !!!");

@@ -32,14 +32,14 @@ Merged totals by area (functions in the original executable; regenerated on each
 <!-- progress:start -->
 | Area | Functions | Matched | Equivalent | Done |
 |---|---:|---:|---:|---:|
-| Game · ms2 | 179,017 | 176,834 (98.8%) | 2,161 (1.2%) | 100.0% |
-| Runtime & middleware | 21,711 | 17,204 (79.2%) | 4,341 (20.0%) | 99.2% |
-| Gamebryo engine | 16,742 | 16,581 (99.0%) | 131 (0.8%) | 99.8% |
-| Game framework · egf | 12,581 | 12,454 (99.0%) | 107 (0.9%) | 99.8% |
+| Game · ms2 | 179,091 | 177,272 (99.0%) | 1,797 (1.0%) | 100.0% |
+| Runtime & middleware | 21,637 | 17,545 (81.1%) | 3,926 (18.1%) | 99.2% |
+| Gamebryo engine | 16,742 | 16,582 (99.0%) | 131 (0.8%) | 99.8% |
+| Game framework · egf | 12,581 | 12,453 (99.0%) | 108 (0.9%) | 99.8% |
 | Libraries | 6,717 | 6,314 (94.0%) | 56 (0.8%) | 94.8% |
-| Foundation | 11,233 | 11,056 (98.4%) | 144 (1.3%) | 99.7% |
-| Imports | 782 | 703 (89.9%) | 1 (0.1%) | 90.0% |
-| **Total** | **248,783** | 241,146 (96.9%) | 6,941 (2.8%) | 99.7% |
+| Foundation | 11,233 | 11,059 (98.5%) | 142 (1.3%) | 99.7% |
+| Imports | 782 | 705 (90.2%) | 1 (0.1%) | 90.3% |
+| **Total** | **248,783** | 241,930 (97.2%) | 6,161 (2.5%) | 99.7% |
 
 Not counted: 5,863 Nexon Messenger functions, which are stubbed out of the rebuild.
 <!-- progress:end -->
@@ -69,6 +69,10 @@ Not counted: 5,863 Nexon Messenger functions, which are stubbed out of the rebui
   [msvc-wine](https://github.com/mstorsjo/msvc-wine) into `third_party/msvc/`. Windows: the Visual Studio 2017 Build Tools
   (v141 toolset); component IDs and setup in [`CONTRIBUTING.md`](CONTRIBUTING.md#windows-native-no-wsl-no-wine).
   `tools/check_toolchain.py` verifies either install against our hashes
+- For byte-matching the CRI movie decoder and the GFx Video add-on, two older compilers: cl 15.00 (VS2008 SP1,
+  `tools/fetch-vc9.sh`) and cl 17.00 (VS2012 Update 4, `tools/fetch-vs2012.sh`). The exe links those libraries prebuilt
+  with them; the rest of Scaleform uses MSVC 14.16 like the game. The per-directory table is in the submodule's
+  [`README.md`](https://github.com/riyukuro/GFx418-Recomp#compilers-by-section). clang-cl builds these units without them
 - clang-cl and the LLVM tools (`llvm-nm`, `llvm-undname`), for the faster non-matching build and the gates
 - Stock Gamebryo LightSpeed 3.2.0.661 source (not included), patched with `engine-patches/` into `engine/gamebryo/`
 - DirectX SDK (June 2010) in `third_party/dxsdk/` and the NVIDIA PhysX SDK 2.8.4 in `third_party/physx284/`

@@ -2263,7 +2263,7 @@ float DAT_1439f7354 = 0.10000000149011612f;                     // 0x1439f7354
 int DAT_1439f7358 = 512;                                        // 0x1439f7358
 unsigned int DAT_1439f7cb4 = 0x10u;                             // 0x1439f7cb4
 unsigned int DAT_1439f7cb8 = 0x10u;                             // 0x1439f7cb8
-int DAT_1439f7cbc = 1;                                          // 0x1439f7cbc
+// 0x1439f7cbc is messengerdata's s_nGlobal (alias-manual.tsv): DAT_1439f7cbc binds to it, not to a copy here
 int g_nLogLevel = -1;                                           // 0x1439f7de4
 const char* g_szCefMessageImeRequest = "ime_request";           // 0x1439f7ea8
 const char* g_szCefMessageToken = "token";                      // 0x1439f7eb0
@@ -2303,11 +2303,11 @@ float DAT_1439f8254 = 500.0f;                                   // 0x1439f8254
 int DAT_1439f825c = 2147483647;                                 // 0x1439f825c
 // 0x1439f8350
 alignas(16) Sd_1439f8350 DAT_1439f8350 = {
-    "A",
+    L"ACCOUNT_ID",
 };
 // 0x1439f8358
 alignas(8) Sd_1439f8358 DAT_1439f8358 = {
-    "C",
+    L"CHAR_NAME",
     {
         0x47, 0x6c, 0x6f, 0x62, 0x61, 0x6c, 0x5c, 0x36, 0x42, 0x34, 0x44, 0x37, 0x41, 0x41, 0x43, 0x2d,
         0x46, 0x42, 0x43, 0x46, 0x2d, 0x34, 0x34, 0x39, 0x33, 0x2d, 0x41, 0x42, 0x36, 0x43, 0x2d, 0x39,
@@ -2363,14 +2363,7 @@ alignas(16) unsigned char DAT_1439f8630[0x10] = {
 };
 int DAT_1439f8640 = 16;                                         // 0x1439f8640
 int DAT_1439f86ac = 1;                                          // 0x1439f86ac
-unsigned long DAT_1439f87c0 = 0xffffffu;                        // 0x1439f87c0
-unsigned long DAT_1439f87d0 = 0xffffffu;                        // 0x1439f87d0
-unsigned long DAT_1439f87e8 = 0xffffffu;                        // 0x1439f87e8
-unsigned long DAT_1439f87ec = 0xffffffu;                        // 0x1439f87ec
-unsigned long DAT_1439f87f0 = 0xffffffu;                        // 0x1439f87f0
-unsigned long DAT_1439f87f4 = 0xffffffu;                        // 0x1439f87f4
-unsigned long DAT_1439f87f8 = 0xffffffu;                        // 0x1439f87f8
-unsigned long DAT_1439f880c = 0xa493feu;                        // 0x1439f880c
+// 0x1439f87a8-0x1439f880f are texttohtml's s_color0..25 (alias-manual.tsv): the DAT_ names bind to them, not to copies here
 int DAT_1439f8cc8 = 193;                                        // 0x1439f8cc8
 int DAT_1439f8ccc = 21;                                         // 0x1439f8ccc
 int DAT_1439f8cd0 = 21;                                         // 0x1439f8cd0
@@ -2681,7 +2674,7 @@ alignas(16) unsigned char DAT_1439fc800[0x20] = {
     0x06, 0x00, 0x00, 0x00, 0x03, 0x00, 0x00, 0x00, 0x02, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00,
     0x00, 0x02, 0x00, 0x00, 0x00, 0x05, 0x00, 0x00, 0x72, 0x00, 0x01, 0x0a, 0x03, 0x00, 0x02, 0x1e,
 };
-int DAT_1439fc854 = -1;                                         // 0x1439fc854
+// 0x1439fc854 is NiLODNode::ms_iGlobalLOD (NiLODNode.cpp): DAT_1439fc854 binds to it by VA, not to a copy here
 
 #pragma comment(linker, "/alternatename:?g_ClientConstantsFloats@@3PAMA=?DAT_1439ed010@@3PAEA")
 #pragma comment(linker, "/alternatename:?DAT_1439ed030@@3PAY0CA@EA=?DAT_1439ed030@@3PAEA")

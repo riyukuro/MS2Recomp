@@ -337,3 +337,8 @@ MS2_CHECK_OFFSET(CMsgBoxData, m_args, 0x228);
 MS2_CHECK_OFFSET(CMsgBoxData, m_movie, 0x248);
 MS2_CHECK_OFFSET(CMsgBoxData, m_strAlign, 0x268);
 MS2_CHECK_OFFSET(CMsgBoxData, m_values, 0x290);
+
+// The result callback's operator() (0x141a07c10) null-checks first. Declared here so every unit that calls the callback
+// emits this body: the generic Delegate operator() has no check, and the linker keeps one COMDAT copy arbitrarily.
+template <class R> R ThrowInvalidCall();    // <bool> 0x1405625e0 (itemdatatable.cpp)
+template <> inline bool Delegate<bool(int, const CMsgBoxData&)>::operator()(int a1, const CMsgBoxData& a2) const { if (m_pImpl == 0) ThrowInvalidCall<bool>(); return m_pImpl->Invoke(a1, a2); }

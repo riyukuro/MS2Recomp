@@ -50,7 +50,9 @@ static CString s_strStun = "stun";                                          // @
 static Unk_1402a9d70 s_unk1402a9d70(17, 0.75f, 0.25f, 2.25f, 10);           // @0x14010db40
 
 // The chat colours (the chat colour table of the UI constants, 25 entries of 0x58 bytes from +0xb528; the last is set elsewhere).
-static ULong s_color0, s_color1, s_color2, s_color3, s_color4, s_color5, s_color6, s_color7, s_color8, s_color9, s_color10, s_color11, s_color12, s_color13, s_color14, s_color15, s_color16, s_color17, s_color18, s_color19, s_color20, s_color21, s_color22, s_color23, s_color24, s_color25;
+// External, with the exe's initial values (white; 25 = the system notice colour): astooltip and uimessenger read them as
+// DAT_1439f87a8 + 4n (tools/fullexe/alias-manual.tsv).
+ULong s_color0 = 0xffffff, s_color1 = 0xffffff, s_color2 = 0xffffff, s_color3 = 0xffffff, s_color4 = 0xffffff, s_color5 = 0xffffff, s_color6 = 0xffffff, s_color7 = 0xffffff, s_color8 = 0xffffff, s_color9 = 0xffffff, s_color10 = 0xffffff, s_color11 = 0xffffff, s_color12 = 0xffffff, s_color13 = 0xffffff, s_color14 = 0xffffff, s_color15 = 0xffffff, s_color16 = 0xffffff, s_color17 = 0xffffff, s_color18 = 0xffffff, s_color19 = 0xffffff, s_color20 = 0xffffff, s_color21 = 0xffffff, s_color22 = 0xffffff, s_color23 = 0xffffff, s_color24 = 0xffffff, s_color25 = 0xa493fe;
 
 // ---- unit-local views of exe objects and unrecovered callees ----
 

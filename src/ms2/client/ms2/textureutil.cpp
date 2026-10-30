@@ -20,6 +20,7 @@
 #include <NiRect.h>
 #include <NiImageConverter.h>
 #include <NiDevImageConverter.h>
+#include <NiDevImageConverter.h>
 #include <NiRenderTargetGroup.h>
 #include <NiRenderer.h>
 #include <efd/ILogger.h>
@@ -241,7 +242,7 @@ NiSourceTexture* CopyTexturePixels(NiTexture* pkTexture, bool bMipmap, bool bSta
     pkSurfaceDest->UnlockRect();
     pkSurfaceDest->Release();
 
-    NiImageConverter* pkConverter = NiDynamicCast(NiImageConverter, FUN_141851720());
+    NiImageConverter* pkConverter = NiDynamicCast(NiDevImageConverter, FUN_141851720());
     NiPointer<NiPixelData> spConverted = pkConverter->ConvertPixelData(*spPixels, DAT_1439fb040, NULL, bMipmap);
     kPrefs.m_eMipMapped = NiTexture::FormatPrefs::YES;
     NiSourceTexture* pkResult = NiSourceTexture::Create(spConverted, kPrefs, bStatic);
@@ -270,7 +271,7 @@ void BlitTexturePixels(NiSourceTexture* pkSource, NiPixelData* pkDest, const NiR
         return;
     }
 
-    NiImageConverter* pkConverter = NiDynamicCast(NiImageConverter, FUN_141851720());
+    NiImageConverter* pkConverter = NiDynamicCast(NiDevImageConverter, FUN_141851720());
     spSrcPixels = pkConverter->ConvertPixelData(*spSrcPixels, DAT_1439fb040, NULL, false);
 
     unsigned int uiStride = pkDest->GetPixelStride();
@@ -381,7 +382,7 @@ NiPixelData* ConvertToRGBA32(NiPixelData* pkPixels, unsigned int /*uiUnused1*/, 
 
     if (pkPixels->GetPixelFormat() != DAT_1439fb040)
     {
-        NiImageConverter* pkConverter = NiDynamicCast(NiImageConverter, FUN_141851720());
+        NiImageConverter* pkConverter = NiDynamicCast(NiDevImageConverter, FUN_141851720());
         pkPixels = pkConverter->ConvertPixelData(*pkPixels, DAT_1439fb040, NULL, false);
     }
     return pkPixels;

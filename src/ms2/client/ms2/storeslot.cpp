@@ -36,14 +36,6 @@
 // ---- out-of-unit callees ----
 class Unk_ItemEquipData : public CItemData { };          // CItem::FUN_140527840's record
 
-// The store table as the exe binds it (these two methods are only functional in store.cpp, so call them by address).
-class Unk_SsStoreView
-{
-public:
-    int FUN_140de21a0(MS2Ptr<CItem> spItem, int nCount);   // CStore::AvailableSlot
-    int FUN_140de2490(int nType);                           // CStore::Allowed
-};
-#define SS_STORE_VIEW (*reinterpret_cast<Unk_SsStoreView*>(&DAT_143ab2d80))
 
 extern Unk_Inventory DAT_143ab2a90;                       // the player's inventory
 extern __int64 DAT_143ab2828;
@@ -368,7 +360,7 @@ int StoreSlot::vfunc_18(void* p)
             nSlot = nAvail;
             if (spItem->FUN_1405281e0() == 1)
             {
-                nAvail = SS_STORE_VIEW.FUN_140de21a0(spItem, spItem->FUN_140526c50());
+                nAvail = MS2_STORE_TABLE.AvailableSlot(spItem, spItem->FUN_140526c50());
                 if (nAvail == -1)
                 {
                     FUN_141275260(0xf2, 1, 1);
@@ -376,7 +368,7 @@ int StoreSlot::vfunc_18(void* p)
                 }
             }
         }
-        if (SS_STORE_VIEW.FUN_140de2490(spItem->FUN_1405276c0()) == 0)
+        if (MS2_STORE_TABLE.Allowed(spItem->FUN_1405276c0()) == 0)
         {
             FUN_141275260(0xf1, 1, 0);
             return static_cast<DragSlot*>(p)->vfunc_10();

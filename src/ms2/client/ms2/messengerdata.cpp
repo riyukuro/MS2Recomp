@@ -64,8 +64,9 @@ struct Unk_MdState
 };
 MS2_CHECK_SIZE(Unk_MdState, 0x58);
 
-// The 1439f7cbc "global" switch (all tabs share one screen look) and the shared look.
-static int s_nGlobal = 1;                                                   // 0x1439f7cbc
+// The 1439f7cbc "global" switch (all tabs share one screen look) and the shared look. External: uitalkpanelsettingdialog
+// sets it as DAT_1439f7cbc (tools/fullexe/alias-manual.tsv).
+int s_nGlobal = 1;                                                          // 0x1439f7cbc
 extern MessengerData::ScreenSetting DAT_143adda48;                          // 0x143adda48 (its ??__E 0x1400f7dd0 is in unit_1400f7d50)
 
 // A player of the world: the name and the level-ish ushort sit in vftable slots 77 / 78 (MS2: slots proven from the callers).

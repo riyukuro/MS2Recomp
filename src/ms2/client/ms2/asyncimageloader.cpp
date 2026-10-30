@@ -31,6 +31,7 @@
 #include <NiSourceTexture.h>
 #include <NiPixelData.h>
 #include <NiImageConverter.h>
+#include <NiDevImageConverter.h>
 #include <efd/utf8string.h>
 #include "ms2/placeholder/casyncimageloader.h"
 #include "ms2/commonfiles/chatemoticontable.h"
@@ -254,7 +255,7 @@ bool CAsyncImageLoader::FUN_140a59090(ParamPtr spParam)
         return true;
     }
     efd::utf8string path(FUN_1409a2360(strFile, 0));
-    NiImageConverter* pkConverter = NiDynamicCast(NiImageConverter, FUN_141851720());
+    NiImageConverter* pkConverter = NiDynamicCast(NiDevImageConverter, FUN_141851720());
     if (pkConverter == 0)
     {
         MS2_ASSERT_AT(0xcc, 0);
@@ -372,7 +373,7 @@ Unk_GfxImage* FUN_140a59830(Unk_ImgReq* pReq, void* pCtx)
     default:
         strFile = pReq->m_name;
     }
-    NiImageConverter* pkConverter = NiDynamicCast(NiImageConverter, FUN_141851720());
+    NiImageConverter* pkConverter = NiDynamicCast(NiDevImageConverter, FUN_141851720());
     if (pkConverter == 0)
     {
         MS2_ASSERT_AT(0x108, 0);

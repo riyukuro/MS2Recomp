@@ -1680,7 +1680,7 @@ unsigned __int64 FUN_141158af0(Unk_CMISStr* pStr, const char* pFind, unsigned __
 Unk_CMISStr* FUN_14115afa0(Unk_CMISStr* pStr, Unk_CMISStr* pOut, unsigned __int64 nPos, unsigned __int64 nLen);   // substr
 unsigned __int64 FUN_14208c9b0(Unk_CMISStr* pStr);                                           // length
 void FUN_1408a8900(Unk_CMISStr* pStr);                                                       // dtor
-void FUN_1408a20a0(egf::Entity* pEntity, unsigned nId, bool* pOut);                          // GetProperty(bool)
+int FUN_1408a20a0(egf::Entity* pEntity, unsigned nId, bool* pOut);                           // GetProperty(bool), 0 = found
 
 // @0x1410b77e0
 // MS2-FUNCTIONAL: branch layout of the nested if/else and the MS2Ptr temporaries differ from the exe; same calls
@@ -2469,10 +2469,11 @@ __int64 FUN_140931900(int nUiId);
 UIHomeInfoDialog* FUN_140bbea00(int nId);
 class Unk_CMISNotifyMgr { public: void FUN_140da4fe0(MS2Ptr<NotifyObject> spNotify); };
 Unk_CMISNotifyMgr* FUN_140939a10();
-class Unk_CMISNotifyBuilding : public NotifyObject                                          // NotifyChangeUIBuildingCount (0x20 bytes, ctor 0x141123250)
+class NotifyChangeUIBuildingCount : public NotifyObject                                     // 0x20 bytes, ctor 0x141123250
 {
 public:
-    Unk_CMISNotifyBuilding(const int* pCount);
+    NotifyChangeUIBuildingCount(const int* pCount);
+    virtual CStringW GetTypeName();                                                         // 0x140db55e0
     int m_nCount;
 };
 // @0x1410ce1e0
@@ -2488,7 +2489,7 @@ void CubeMapInformationService::FUN_1410ce1e0(int nNotify, const int* pCount)
         UIHomeInfoDialog* pDlg = FUN_140bbea00(0x4ed8);
         if (pDlg != 0 && pDlg->vfunc_9() != 0)
             pDlg->FUN_1412c5690();
-        FUN_140939a10()->FUN_140da4fe0(MS2Ptr<NotifyObject>(new Unk_CMISNotifyBuilding(pCount)));
+        FUN_140939a10()->FUN_140da4fe0(MS2Ptr<NotifyObject>(new NotifyChangeUIBuildingCount(pCount)));
     }
 }
 int FUN_1408b56c0(MS2Ptr<CItemData> spItem);
@@ -2723,16 +2724,16 @@ bool CubeMapInformationService::FUN_1410bd080(__int64 nOwner, Unk_Int3 pt, float
                 NiPoint3(ptCell.x, ptCell.y, ptCell.z), NiPoint3(ptRot.x, ptRot.y, ptRot.z), 1.0f, nObjProp, 0);
             if (nObjProp != 0 && spEnt.data() != 0) {
                 bool bFlag = false;
-                if (FUN_1408a20a0(spEnt.data(), 0x23f9860e, &bFlag), bFlag == 0) {
+                if (FUN_1408a20a0(spEnt.data(), 0x23f9860e, &bFlag) == 0) {
                     if (pItem->install.useInstancing == 0) {
                         bool bOff = false;
                         FUN_14098c6e0(spEnt.data(), 0x23f9860e, &bOff);
                         bool bOff2 = false;
                         FUN_14098c6e0(spEnt.data(), 0xd9f313f2, &bOff2);
+                    } else if (bFlag) {
+                        bool bOn = true;
+                        FUN_14098c6e0(spEnt.data(), 0xd9f313f2, &bOn);
                     }
-                } else {
-                    bool bOn = true;
-                    FUN_14098c6e0(spEnt.data(), 0xd9f313f2, &bOn);
                 }
             }
         } else {
@@ -3443,7 +3444,8 @@ struct Unk_CMISDollRec { char m_pad0[0x18]; int m_nId; int m_pad1c; __int64 m_nC
 class Unk_CMISDoll
 {
 public:
-    virtual void vfunc_0(); virtual void vfunc_1(); virtual void vfunc_2(); virtual void vfunc_3(); virtual void vfunc_4();
+    virtual void vfunc_0(); virtual void IncRefCount() const; virtual void DecRefCount() const;   // efd::IBase (GameObject 0x1409f2fe0 / 0x1409f2ec0)
+    virtual void vfunc_3(); virtual void vfunc_4();
     virtual void vfunc_5(); virtual void vfunc_6(); virtual void vfunc_7(); virtual void vfunc_8(); virtual void vfunc_9();
     virtual void vfunc_10(); virtual void vfunc_11(); virtual void vfunc_12(); virtual void vfunc_13(); virtual void vfunc_14();
     virtual void vfunc_15(); virtual void vfunc_16(); virtual void vfunc_17(); virtual void vfunc_18();
@@ -3476,10 +3478,10 @@ static Unk_CMISDoll* NewCMISDoll()
 }
 
 // @0x1410bc7f0
-// MS2-FUNCTIONAL: the exe's CComPtr temp and EH frame are not reproduced
+// MS2-FUNCTIONAL: the exe's temporaries and EH frame are laid out differently
 egf::EntityPtr CubeMapInformationService::FUN_1410bc7f0(Vector3 ptPos, Vector3 ptRot, unsigned nIdx, int nItemId)
 {
-    Unk_CMISDoll* pc = NewCMISDoll();
+    efd::SmartPointer<Unk_CMISDoll> pc = NewCMISDoll();      // held to the end: the exe releases it on both exits
     pc->FUN_141656a50(0);
     pc->FUN_14121c6e0(0);
     pc->FUN_14123c5a0(nItemId);
@@ -3494,11 +3496,11 @@ egf::EntityPtr CubeMapInformationService::FUN_1410bc7f0(Vector3 ptPos, Vector3 p
 }
 
 // @0x1410bc3d0
-// MS2-FUNCTIONAL: the exe's CComPtr temp and EH frame are not reproduced
+// MS2-FUNCTIONAL: the exe's temporaries and EH frame are laid out differently
 egf::EntityPtr CubeMapInformationService::FUN_1410bc3d0(Unk_CMISBlock rec)
 {
     Unk_CMISDollRec* r = (Unk_CMISDollRec*)&rec;
-    Unk_CMISDoll* pc = NewCMISDoll();
+    efd::SmartPointer<Unk_CMISDoll> pc = NewCMISDoll();      // held to the end: the exe releases it on both exits
     pc->FUN_141656a50(r->m_nChar);
     pc->FUN_14121c6e0(r->m_nChar);
     pc->FUN_14123c5a0(r->m_nId);
@@ -5553,9 +5555,10 @@ Unk_CMISColEntry* FUN_140885360(Unk_CMISIter<287>*);                            
 void FUN_1408853e0(Unk_CMISIter<287>*);                                                     // operator++
 void FUN_141156100(Unk_CMISTree<287>*, const int*);                                         // erase
 void FUN_141bbb7f0(Unk_CMISWorld*, void* pObj, int nFlag);                                  // remove an object from the world
+class Unk_CMISGameObj { public: virtual void vfunc_0(); virtual void IncRefCount() const; virtual void DecRefCount() const; };   // GameObject's efd::IBase slots
 void FUN_1410b25a0(Unk_CMISTree<277>* pTree, int x, int y, int z);                          // remove a cell
 // @0x1410c1910
-// MS2-FUNCTIONAL: exe's temporaries and unwind states are laid out differently; the magic-cube object is held raw
+// MS2-FUNCTIONAL: exe's temporaries and unwind states are laid out differently
 bool CubeMapInformationService::FUN_1410c1910(const Unk_Int3& pt, int bDefer)
 {
     int nKey = FUN_1408a03c0(pt);
@@ -5622,9 +5625,10 @@ bool CubeMapInformationService::FUN_1410c1910(const Unk_Int3& pt, int bDefer)
         if (FUN_1407072e0(spCube->fieldB4) != 0) {
             Unk_CMISIter<265> itMagicEnd, itMagic;
             if (FUN_141127640(FUN_141157ac0(&f108, &itMagic, &nKey), FUN_141151d30(&f108, &itMagicEnd))) {
-                void* pMagic = FUN_1403ed2d0()->FUN_141bd0fa0(Unk_CMISEntityRef(*FUN_141127ed0(&f108, &nKey)));
-                if (pMagic != 0)
-                    FUN_141bbb7f0(FUN_1403ed2d0(), pMagic, 0);
+                // held across the remove and the erase, as the exe's SmartPointer<GameObject> (0x140a000f0 / 0x140964870)
+                efd::SmartPointer<Unk_CMISGameObj> spMagic = (Unk_CMISGameObj*)FUN_1403ed2d0()->FUN_141bd0fa0(Unk_CMISEntityRef(*FUN_141127ed0(&f108, &nKey)));
+                if (spMagic)
+                    FUN_141bbb7f0(FUN_1403ed2d0(), spMagic, 0);
                 FUN_1411547a0(&f108, &nKey);
             }
         }

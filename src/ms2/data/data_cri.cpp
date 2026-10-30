@@ -221,6 +221,11 @@ void FUN_142746d70();
 void FUN_142746da0();
 void FUN_1427471a0();
 
+// the CRI error table entry (natural layout, outside the pack(1) block: 4 bytes of padding before text)
+struct CriErrorText {
+    int code;
+    const char* text;
+};
 #pragma pack(push, 1)
 struct Sd_1431b8db0 {
     const void* p0;
@@ -359,22 +364,6 @@ struct Sd_1431b9430 {
     const void* p10;
     const void* p18;
     const void* p20;
-};
-struct Sd_1431b97a8 {
-    const void* p0;
-    unsigned char b8[0x8];
-    const void* p10;
-    unsigned char b18[0x8];
-    const void* p20;
-    unsigned char b28[0x8];
-    const void* p30;
-    unsigned char b38[0x8];
-    const void* p40;
-    unsigned char b48[0x8];
-    const void* p50;
-    unsigned char b58[0x8];
-    const void* p60;
-    unsigned char b68[0x10];
 };
 struct Sd_1431b9b10 {
     const void* p0;
@@ -769,35 +758,16 @@ alignas(16) Sd_1431b9430 DAT_1431b9430 = {
     (const void*)&FUN_14002e370,
     (const void*)&FUN_14002d6d0,
 };
-alignas(16) unsigned char DAT_1431b97a0[0x8];                   // 0x1431b97a0
-// 0x1431b97a8
-alignas(8) Sd_1431b97a8 DAT_1431b97a8 = {
-    "<No Error>",
-    {
-        0xff, 0xff, 0xff, 0xff, 0x00, 0x00, 0x00, 0x00,
-    },
-    "Some kind of error.",
-    {
-        0xfe, 0xff, 0xff, 0xff, 0x00, 0x00, 0x00, 0x00,
-    },
-    "Invalid parameter. ",
-    {
-        0xfd, 0xff, 0xff, 0xff, 0x00, 0x00, 0x00, 0x00,
-    },
-    "Failed to allocate memory.",
-    {
-        0xfc, 0xff, 0xff, 0xff, 0x00, 0x00, 0x00, 0x00,
-    },
-    "Thread-unsafe function has been executed in parallel.",
-    {
-        0xfb, 0xff, 0xff, 0xff, 0x00, 0x00, 0x00, 0x00,
-    },
-    "Function not implemented.",
-    {
-        0xfa, 0xff, 0xff, 0xff, 0x00, 0x00, 0x00, 0x00,
-    },
-    "Initialize the library before calling this function.",
-    {0},
+// 0x1431b97a0: the CRI error table, {code, text} pairs ending with {0, NULL} (sfr_cri_02c FUN_140038e24)
+alignas(16) CriErrorText DAT_1431b97a0[8] = {
+    {0, "<No Error>"},
+    {-1, "Some kind of error."},
+    {-2, "Invalid parameter. "},
+    {-3, "Failed to allocate memory."},
+    {-4, "Thread-unsafe function has been executed in parallel."},
+    {-5, "Function not implemented."},
+    {-6, "Initialize the library before calling this function."},
+    {0, 0},
 };
 // 0x1431b9820
 alignas(16) unsigned char DAT_1431b9820[0x8] = {
@@ -1887,7 +1857,9 @@ long DAT_143b278d8;                                             // 0x143b278d8
 #pragma bss_seg(".bss$crid_143b278e0")
 void* DAT_143b278e0;                                            // 0x143b278e0
 #pragma bss_seg(".bss$crid_143b278f0")
-alignas(16) unsigned char DAT_143b278f0[0x58];                  // 0x143b278f0
+alignas(16) unsigned char DAT_143b278f0[0x50];                  // 0x143b278f0
+#pragma bss_seg(".bss$crid_143b27940")
+const char* DAT_143b27940;                                      // 0x143b27940: the criMvPly version banner (sfr_cri_02c FUN_14002e7d0)
 #pragma bss_seg(".bss$crid_143b27948")
 alignas(8) unsigned char DAT_143b27948[0x4];                    // 0x143b27948
 #pragma bss_seg(".bss$crid_143b2794c")
@@ -3048,8 +3020,7 @@ alignas(16) unsigned char DAT_143ffd550[0x8];                   // 0x143ffd550
 #pragma comment(linker, "/alternatename:DAT_1431b93c0=?DAT_1431b93c0@@3USd_1431b93c0@@A")
 #pragma comment(linker, "/alternatename:DAT_1431b9410=?DAT_1431b9410@@3USd_1431b9410@@A")
 #pragma comment(linker, "/alternatename:DAT_1431b9430=?DAT_1431b9430@@3USd_1431b9430@@A")
-#pragma comment(linker, "/alternatename:DAT_1431b97a0=?DAT_1431b97a0@@3PAEA")
-#pragma comment(linker, "/alternatename:DAT_1431b97a8=?DAT_1431b97a8@@3USd_1431b97a8@@A")
+#pragma comment(linker, "/alternatename:DAT_1431b97a0=?DAT_1431b97a0@@3PAUCriErrorText@@A")
 #pragma comment(linker, "/alternatename:DAT_1431b9820=?DAT_1431b9820@@3PAEA")
 #pragma comment(linker, "/alternatename:PTR_FUN_1431b9b10=?DAT_1431b9b10@@3USd_1431b9b10@@A")
 #pragma comment(linker, "/alternatename:DAT_1431b9ca0=?DAT_1431b9ca0@@3PAEA")
@@ -3149,6 +3120,7 @@ alignas(16) unsigned char DAT_143ffd550[0x8];                   // 0x143ffd550
 #pragma comment(linker, "/alternatename:?Initialized@Video@1GFx@Scaleform@@2IA=?DAT_143b277b4@@3IA")
 #pragma comment(linker, "/alternatename:?DAT_143b277c0@@3PADA=?DAT_143b277c0@@3PAEA")
 #pragma comment(linker, "/alternatename:?ErrorContainer@CriMv@@3W4CriError@@A=?DAT_143b278c0@@3PAEA")
+#pragma comment(linker, "/alternatename:DAT_143b27940=?DAT_143b27940@@3PEBDEB")
 #pragma comment(linker, "/alternatename:DAT_143b27948=?DAT_143b27948@@3PAEA")
 #pragma comment(linker, "/alternatename:DAT_143b2794c=?DAT_143b2794c@@3PAEA")
 #pragma comment(linker, "/alternatename:DAT_143b27950=?DAT_143b27950@@3PAEA")

@@ -1,0 +1,32 @@
+128a
+    _endthreadex(0);   // MS2: the game ends the thread here, with exit code 0
+    OutputDebugStringA("ThreadEnd!!!!\n");
+.
+120c
+    try
+    {
+        pThread->m_returnValue = pThread->GetProcedure()->Execute(pThread);
+    }
+    catch (std::bad_alloc& e)   // MS2: the game reports the allocation failure and stops
+    {
+        e.what();
+        if (DAT_143b023c8)
+            DAT_143b023c8(0);
+        else
+        {
+            MessageBoxA(NULL, "error memory depletion", "Error", MB_ICONHAND | MB_TOPMOST | MB_SETFOREGROUND);
+            TerminateProcess(GetCurrentProcess(), 2);
+        }
+    }
+.
+118a
+    if (DAT_143b023c0)   // MS2: the client's thread start-up (exe 0x1420afae0)
+        DAT_143b023c0();
+.
+21a
+// MS2: the client's per-thread start-up and out-of-memory handlers (ms2.cpp sets FUN_141b6de20 / FUN_141b6db40);
+// the game keeps them in this file's .bss, before gs_tlsCurrentThread
+extern void (*DAT_143b023c0)();
+extern int (*DAT_143b023c8)(size_t);
+
+.

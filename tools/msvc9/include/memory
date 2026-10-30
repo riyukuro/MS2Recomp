@@ -1,0 +1,11 @@
+/* VC9 stand-in: only std::align (C++11) is used by the CRI units */
+#pragma once
+#include <stddef.h>
+namespace std {
+inline void *align(size_t a, size_t n, void *&p, size_t &space)
+{
+    size_t off = (size_t)(-(ptrdiff_t)(size_t)p & (ptrdiff_t)(a - 1));
+    if (n + off > space) return 0;
+    space -= off; p = (char *)p + off; return p;
+}
+}

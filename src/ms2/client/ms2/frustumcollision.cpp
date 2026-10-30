@@ -6,6 +6,7 @@
 #include "ms2/placeholder/ms2stdafx.h"
 #include "frustumcollision.h"
 #include <math.h>
+#include <cmath>
 #include <float.h>
 #include <efd/MemoryDefines.h>
 #include <NiMesh.h>
@@ -263,7 +264,7 @@ void CFrustumCollision::vfunc_5()
 // @0x141224f30
 float FUN_141224f30(float fY, float fX)
 {
-    return atan2f(fY, fX);
+    return atan2(fY, fX);      // <cmath>'s float overload (0x140a4e660, one folded copy)
 }
 
 // @0x141224f60

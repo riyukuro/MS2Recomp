@@ -413,14 +413,7 @@ public:
 };
 Unk_MessageBoxWorld* FUN_1403ed2d0();
 extern Unk_Inventory DAT_143ab2a90;
-class Unk_MessageBoxStore
-{
-public:
-    MS2Ptr<CItem> FUN_140de1490(__int64 nUid);
-    void FUN_140de2dc0(__int64 nUid, int nSlot, int nCount, MS2Ptr<CItemData> spData);   // put in
-    void FUN_140de31f0(__int64 nUid, int nSlot, int nCount, MS2Ptr<CItemData> spData);   // take out
-};
-extern Unk_MessageBoxStore DAT_143ab2d80;
+#include "ms2/client/ms2/store.h"     // DAT_143ab2d80, the store table (CStore)
 class TabContentsPetCompose : public PetSystemTabContents { public: void FUN_140cb48a0(int bUsePoint); };
 class TabContentsPetRemakeOption : public PetSystemTabContents { public: void FUN_140b95280(int bUsePoint); };
 class Unk_MessageBoxPetDialog : public UIDialog { public: MS2Ptr<PetSystemTabContents> FUN_140e746c0(); };
@@ -1463,7 +1456,7 @@ int UIMessageBox::FUN_1419fbd40(int nButton, CStringW strTag)
     bool bOk = FUN_1407183f0(tokens[1]);
     if (bOk == true && nButton == 0)
     {
-        MS2Ptr<CItem> spItem = DAT_143ab2d80.FUN_140de1490(m_data->FUN_141a02c00());
+        MS2Ptr<CItem> spItem = DAT_143ab2d80.Find(m_data->FUN_141a02c00());
         if (spItem.get())
         {
             FUN_140714f90()->FUN_141538a20(spItem->FUN_140526a50());
@@ -2005,7 +1998,7 @@ int UIMessageBox::FUN_1419fe240(int nButton, int nCount)
         __int64 nUid = m_data->FUN_141a02c00();
         if (!FUN_141a002b0(nUid, nCount))
             return 1;
-        DAT_143ab2d80.FUN_140de2dc0(nUid, 0, nCount, MS2Ptr<CItemData>(0));
+        FUN_140de2dc0(&DAT_143ab2d80, nUid, 0, nCount, MS2Ptr<CItemData>(0));
     }
     return 1;
 }
@@ -2021,7 +2014,7 @@ int UIMessageBox::FUN_1419fe310(int nButton, int nCount)
         __int64 nUid = m_data->FUN_141a02c00();
         if (!FUN_141a00250(nUid, nCount))
             return 1;
-        MS2Ptr<CItem> spItem = DAT_143ab2d80.FUN_140de1490(nUid);
+        MS2Ptr<CItem> spItem = DAT_143ab2d80.Find(nUid);
         if (!spItem)
             return 1;
         int nSlot = DAT_143ab2a90.FUN_140a617f0(spItem);
@@ -2035,7 +2028,7 @@ int UIMessageBox::FUN_1419fe310(int nButton, int nCount)
             }
             return 1;
         }
-        DAT_143ab2d80.FUN_140de31f0(nUid, nResult, nCount, MS2Ptr<CItemData>(0));
+        FUN_140de31f0(&DAT_143ab2d80, nUid, nResult, nCount, MS2Ptr<CItemData>(0));
     }
     return 1;
 }
@@ -2052,7 +2045,7 @@ int UIMessageBox::FUN_1419fe590(int nButton, int nCount)
         __int64 nUid = m_data->FUN_141a02c00();
         if (!FUN_141a002b0(nUid, nCount))
             return 1;
-        DAT_143ab2d80.FUN_140de2dc0(nUid, nSlot, nCount, MS2Ptr<CItemData>(0));
+        FUN_140de2dc0(&DAT_143ab2d80, nUid, nSlot, nCount, MS2Ptr<CItemData>(0));
     }
     return 1;
 }
@@ -2069,7 +2062,7 @@ int UIMessageBox::FUN_1419fe690(int nButton, int nCount)
         __int64 nUid = m_data->FUN_141a02c00();
         if (!FUN_141a00250(nUid, nCount))
             return 1;
-        DAT_143ab2d80.FUN_140de31f0(nUid, nSlot, nCount, MS2Ptr<CItemData>(0));
+        FUN_140de31f0(&DAT_143ab2d80, nUid, nSlot, nCount, MS2Ptr<CItemData>(0));
     }
     return 1;
 }
@@ -2478,7 +2471,7 @@ static int FUN_141a00250(__int64 nUid, int nCount)
 {
     if (nUid == 0)
         return 1;
-    return FUN_141a00180(DAT_143ab2d80.FUN_140de1490(nUid), nCount);
+    return FUN_141a00180(DAT_143ab2d80.Find(nUid), nCount);
 }
 
 // @0x141a002b0

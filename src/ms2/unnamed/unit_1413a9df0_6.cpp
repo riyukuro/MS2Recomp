@@ -182,7 +182,6 @@ size_t FUN_140186260(ATL::CAtlArray<int>& arr);
 int* FUN_1401844d0(ATL::CAtlArray<int>& arr, size_t i);
 void FUN_1405c6380(void* pOut, int a, int b);
 int FUN_14138a170(const CStringA& str);
-extern char DAT_142f01338;                                  // the separator string
 
 // @0x1413b1d00
 int FUN_1413b1d00(Unk_140165cf0* pElem, const char* pszName, Unk_GcOptInt& oOut)
@@ -203,7 +202,7 @@ int FUN_1413b1d60(Unk_140165cf0* pElem, const char* pszName, void* pOut)
     if (nResult == 0)
     {
         ATL::CAtlArray<int> arr;
-        FUN_140177de0(str, arr, &DAT_142f01338);
+        FUN_140177de0(str, arr, "-");
         if (FUN_140186260(arr) != 2)
             return 2;
         FUN_1405c6380(pOut, *FUN_1401844d0(arr, 0), *FUN_1401844d0(arr, 1));

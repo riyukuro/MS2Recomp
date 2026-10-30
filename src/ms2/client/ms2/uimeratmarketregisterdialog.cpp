@@ -130,7 +130,6 @@ Unk_MrdFeatures* FUN_140166410();
 
 // The inventories (globals).
 extern Unk_Inventory DAT_143ab2a90;
-extern CWarehouseItemTable DAT_143ab2e20;
 class Unk_MrdStockItem : public CPtred
 {
 };

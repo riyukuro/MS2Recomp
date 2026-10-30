@@ -2311,7 +2311,7 @@ bool CEffectService::FUN_1411a91d0(int nType)
 }
 MS2_REPLACE_METHOD(0x1411a91d0, CEffectService, FUN_1411a91d0, 86, 0x70658B4B);
 
-unsigned CEffectService::s_nLastId;
+unsigned CEffectService::s_nLastId = 1;                            // the exe image holds 1 (.data 0x1439f7038)
 
 // @0x1411a9230
 unsigned CEffectService::FUN_1411a9230()

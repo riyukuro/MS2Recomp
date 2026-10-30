@@ -856,7 +856,7 @@ MS2_REPLACE_METHOD(0x140D8C4D0, MS2InputService, FUN_140d8c4d0, 116, 0x72F197D8)
 // @0x140d8c550
 bool MS2InputService::FUN_140d8c550()
 {
-    if (m_spGamePad != 0)
+    if (m_spGamePad == 0)
         return false;
     bool bChanged = true;
     if (FUN_14036d570(FUN_140166410(), 0xb5) == 1)

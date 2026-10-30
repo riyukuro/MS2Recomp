@@ -1,6 +1,6 @@
 // Recovered from MapleStory2.exe KMS2_DEV x64 (2022-04-13). UIArcadeTextEffectDialog (class name
 // "ArcadeTextEffectDialog", UI type 0x4f82, 0x180 bytes) is the arcade minigame's centre text. A game packet
-// (mode 8) carries a flag and a combo count; the dialog stores the localised "s_arcade_text_effect_consecutive"
+// (mode 8) carries a flag and a combo count; the dialog stores the localised "s_arcade_text_effect_consecutive_win"
 // text of that count in m_strText and asks the swf to show it ("showText"), or clears it. Its movie root is
 // centred on the screen (half of its width, 210 down).
 // MS2-UNIT: ?\uiarcadetexteffectdialog.cpp
@@ -67,7 +67,7 @@ void UIArcadeTextEffectDialog::FUN_140ba7fe0(int nMode, CInPacket& packet)
             if (nCount <= 0)
                 m_strText = L"";
             else
-                m_strText = FUN_14062b4f0(CStringW(L"s_arcade_text_effect_consecutive"), &nCount);
+                m_strText = FUN_14062b4f0(CStringW(L"s_arcade_text_effect_consecutive_win"), &nCount);
         }
         if (UIDialog::FUN_141924630())
             FUN_140ba8160();

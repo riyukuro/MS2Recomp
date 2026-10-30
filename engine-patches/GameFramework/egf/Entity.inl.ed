@@ -1,19 +1,19 @@
-158a
+157a
+}
 
-#if defined(MS2_ENTITY_PROPERTY_CACHE)
 //------------------------------------------------------------------------------------------------
 // MS2: saves the old value of propID once while caching is on (0x1421c8b00 for SInt8). The
 // copies come from the global operator new (MemObject types too).
 template<typename T>
 void Entity::CachePropertyValue(PropertyID propID, const T& data)
 {
-    if (m_bCaching)
+    if (MS2_ENTITY_CACHING)
     {
-        if (m_mapCache.find(propID) == m_mapCache.end())
+        if (MS2_ENTITY_CACHE.find(propID) == MS2_ENTITY_CACHE.end())
         {
             T old;
             GetPropertyValueUnsafe(propID, &old, efd::GetClassIDFromType<T>());
-            m_mapCache[propID] = PropertyCacheEntry(propID, ::new T(old), efd::GetClassIDFromType<T>());
+            MS2_ENTITY_CACHE[propID] = PropertyCacheEntry(propID, ::new T(old), efd::GetClassIDFromType<T>());
         }
     }
 }
@@ -23,14 +23,14 @@ void Entity::CachePropertyValue(PropertyID propID, const T& data)
 template<typename T>
 void Entity::CachePropertyValue(PropertyID propID, const efd::utf8string& key, const T& data)
 {
-    if (m_bCaching)
+    if (MS2_ENTITY_CACHING)
     {
-        KeyedPropertyCacheMap::iterator it = m_mapKeyedCache.find(propID);
-        if (it == m_mapKeyedCache.end())
+        KeyedPropertyCacheMap::iterator it = MS2_ENTITY_KEYED_CACHE.find(propID);
+        if (it == MS2_ENTITY_KEYED_CACHE.end())
         {
             T old;
             GetPropertyValueUnsafe(propID, key, &old, efd::GetClassIDFromType<T>());
-            m_mapKeyedCache[propID][key] =
+            MS2_ENTITY_KEYED_CACHE[propID][key] =
                 PropertyCacheEntry(propID, ::new T(old), efd::GetClassIDFromType<T>());
         }
         else
@@ -44,21 +44,13 @@ void Entity::CachePropertyValue(PropertyID propID, const efd::utf8string& key, c
             }
         }
     }
-}
-#endif
 .
 156a
-#if defined(MS2_ENTITY_PROPERTY_CACHE)
     CachePropertyValue(propID, key, data);  // MS2
-#endif
 .
 146a
-#if defined(MS2_ENTITY_PROPERTY_CACHE)
     CachePropertyValue(propID, data);   // MS2: 0x1428d03a0 (SetPropertyValue<unsigned> by name)
-#endif
 .
 132a
-#if defined(MS2_ENTITY_PROPERTY_CACHE)
     CachePropertyValue(propID, data);   // MS2
-#endif
 .

@@ -9,6 +9,7 @@
 #include <vector>
 #include <atlcoll.h>
 #include <efd/StdContainers.h>
+#include "ms2/client/ms2/niavobjectnodealloc.h"
 #include <NiMesh.h>
 #include <NiColor.h>
 #include <NiMaterial.h>

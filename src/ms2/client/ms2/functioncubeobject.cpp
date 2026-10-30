@@ -373,8 +373,7 @@ void FUN_1422b82b0(Unk_FcUIMsg* p, const char* psz);                // append an
 void* FUN_1408e57f0();
 UISwfEntity* FUN_1422b9e20(void* pMgr, int nEvent);                 // the entity registered for the event
 void FUN_1422b9fd0(void* pMgr, int nEvent);                         // unregister
-void FUN_140de2a30(void* pCell, __int64 nId, int nCubeItemId);     // CStore::ResetId(__int64, int)
-extern char DAT_143ab2d80;
+#include "ms2/client/ms2/store.h"     // DAT_143ab2d80, the store table (CStore)
 
 // Physics helper (singleton): the interaction-start call.
 class CPhysXHelper;
@@ -1081,7 +1080,7 @@ void CFunctionCubeObject::FUN_141228100()
     Unk_FcItemRow* pRow = spSvc.FUN_1401cd1a0()->FUN_1410b8b00(m_nArg);
     if (pRow == 0)
         return;
-    FUN_140de2a30(&DAT_143ab2d80, pRow->m_18, FUN_141226cd0());   // the exe passes the row's +0x18 qword, not the item id
+    DAT_143ab2d80.ResetId(pRow->m_18, FUN_141226cd0());   // the exe passes the row's +0x18 qword, not the item id
     UIObjectStoreDialog* pDlg = Unk_FcDialog<UIObjectStoreDialog>(0x4e78);
     if (pDlg != 0)
     {

@@ -28,6 +28,7 @@
 #include <NiFogProperty.h>
 #include <NiTexturingProperty.h>
 #include <NiMeshScreenElements.h>
+#include <NiScreenFillingRenderViewImpl.h>
 #include <NiViewRenderClick.h>
 #include <NiDefaultClickRenderStep.h>
 #include <NiRenderTargetGroup.h>
@@ -773,7 +774,7 @@ int GFxMovieBackground::FUN_14127b290()
 // @0x14127b3d0
 int GFxMovieBackground::CreateRenderView()
 {
-    m_spRenderView = NiDynamicCast(NiScreenFillingRenderView, NiScreenFillingRenderView::Create());
+    m_spRenderView = NiDynamicCast(NiScreenFillingRenderViewImpl, NiScreenFillingRenderView::Create());
     NiMeshScreenElements* pQuad = NiDynamicCast(NiMeshScreenElements, &m_spRenderView->GetScreenFillingQuad());
     if (pQuad == 0)
     {

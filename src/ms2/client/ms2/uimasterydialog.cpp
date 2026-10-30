@@ -376,8 +376,7 @@ class Unk_MFurnTable { public: void FUN_140557920(int nId, Unk_MFurnArray& out);
 static inline Unk_MFurnTable* MFurnTable() { return reinterpret_cast<Unk_MFurnTable*>(FUN_140281980()); }
 // The warehouse item table (warehouseitem.h CWarehouseItemTable::FUN_1408fbe90): the first stored item with this id, as a
 // 16-byte MS2Ptr (hidden return; the exe tests it with MS2Ptr::operator! 0x140534e50 and releases the temp).
-class Unk_MFurnInv { public: MS2Ptr<CItem> FUN_1408fbe90(int nItemId); };
-extern Unk_MFurnInv DAT_143ab2e20;
+#include "ms2/client/ms2/warehouseitem.h"     // DAT_143ab2e20, the warehouse item table
 
 
 class Unk_MScrollDef : public CPtred { public: int m_n18; int m_n1c; };

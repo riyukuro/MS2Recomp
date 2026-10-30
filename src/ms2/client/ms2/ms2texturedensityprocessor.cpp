@@ -155,7 +155,7 @@ NiTexture* MS2TextureDensityProcessor::FUN_14150d3a0(int nWidth, int nHeight)
     if (it != m_textures.end())
         return static_cast<NiTexture*>(it->second.Get());
 
-    NiPointer<NiPixelData> spPixels = NiNew NiPixelData(nWidth * 3, nHeight * 3, NiPixelFormat::RGBA32, 0, 1);
+    NiPointer<NiPixelData> spPixels = NiNew NiPixelData(nWidth * 3, nHeight * 3, NiPixelFormat::ARGB8888, 0, 1);
     unsigned nLevels = spPixels->GetNumMipmapLevels();
     unsigned colors[5] = { 0xff0000ff, 0xffff00ff, 0xff00ff, 0xffffff, 0xffff };
     for (unsigned mip = 0; mip < nLevels; ++mip) {

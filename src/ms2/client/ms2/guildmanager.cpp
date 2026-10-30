@@ -1499,11 +1499,11 @@ void CGuildManager::FUN_1413bcd10()
 MS2_REPLACE_METHOD(0x1413BCD10, CGuildManager, FUN_1413bcd10, 291, 0xD528D35D);
 
 // @0x1413bce40
-void CGuildManager::FUN_1413bce40(int skillId, unsigned short skillLevel)
+void CGuildManager::FUN_1413bce40(unsigned int skillId, unsigned short skillLevel)
 {
     if (!FUN_1413b6160())
         return;
-    std::pair<int, unsigned short> key(skillId, skillLevel);
+    std::pair<unsigned int, unsigned short> key(skillId, skillLevel);
     if (m_470.empty())
         return;
     if (m_470.find(key) == m_470.end())

@@ -76,10 +76,7 @@ void FUN_14180b170(CString* pBagId, int nSlot, int nSize);              // creat
 int FUN_1408b6200(int nItemType);                                       // the slot count of an item type's bank
 
 // The object store state (global 0x143ab2d80): the sort button sends packet 0x18 / 8.
-extern char DAT_143ab2d80;
-int FUN_140de2860(void* pState);
-void FUN_140de2b50(void* pState);
-void FUN_140de2bd0(void* pState);
+#include "ms2/client/ms2/store.h"     // DAT_143ab2d80, the store table (CStore)
 
 // The item amount shown ("current count" global 0x143ab28f8).
 extern __int64 DAT_143ab28f8;
@@ -201,8 +198,8 @@ void UIObjectStoreDialog::OnLoadInit()
 {
     UIObject::OnLoadInit();
     FUN_140aa6d40()->FUN_141b0cd00(static_cast<UIStatusEventListener*>(this));
-    if (FUN_140de2860(&DAT_143ab2d80) == 0)
-        FUN_140de2b50(&DAT_143ab2d80);
+    if (DAT_143ab2d80.Ready() == 0)
+        DAT_143ab2d80.RequestLoad();
     FUN_141901390(0, vfunc_48());
 }
 
@@ -243,7 +240,7 @@ int UIObjectStoreDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
     if (UIDialog::vfunc_28(szMethod, pArgs, nArgs) != 0)
         return 1;
     if (_stricmp("OnSort", szMethod) == 0) {
-        FUN_140de2bd0(&DAT_143ab2d80);
+        DAT_143ab2d80.RequestClose();
         return 1;
     }
     return 0;

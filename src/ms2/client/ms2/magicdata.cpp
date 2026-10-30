@@ -177,7 +177,7 @@ static Unk_1402a9d70 s_conditions2(17, 0.75f, 0.25f, 2.25f, 10);
 
 
 extern Unk_EfdMatrix3 DAT_143a09600;        // identity rotation
-extern Unk_EfdMatrix3 DAT_143b01a90;        // identity rotation (second copy)
+extern Unk_EfdMatrix3 DAT_143b01a90;        // efd::Matrix3::ZERO
 class Unk_MagicEffectMgr { public: void FUN_1411a6060(int nHandle); int FUN_1411a49c0(void* pReq); void FUN_1411a4a00(void* pReq); int FUN_1411a5580(int nLevel, int nEffect, int nFlag, Vector3 ptAt, float fRange); void FUN_1411a68f0(int nHandle, bool bHidden); NiNode* FUN_1411a6b10(); };    // releases a spawned effect
 Unk_MagicEffectMgr* FUN_1403ed280();
 void* FUN_1409475d0(Unk_NodePtr*);

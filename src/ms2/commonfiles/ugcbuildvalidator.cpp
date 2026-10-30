@@ -120,8 +120,7 @@ int FUN_14053f9c0(int nItemId);
 class Unk_IngItem : public CPtred { public: char unknown18[0x36]; unsigned char m_bFree; };    // +0x4e
 class Unk_IngTable { public: MS2Ptr<Unk_IngItem> FUN_1405566e0(int nItemId); };
 Unk_IngTable* FUN_140281980();
-class Unk_CubeFallbackInventory { public: int FUN_1408fc1b0(int nItemId); };
-extern Unk_CubeFallbackInventory DAT_143ab2e20;
+#include "ms2/client/ms2/warehouseitem.h"     // DAT_143ab2e20, the warehouse item table
 class Unk_CubeStock { public: int FUN_140dfcb00(int nItemId); };
 extern Unk_CubeStock DAT_143ab2e50;
 

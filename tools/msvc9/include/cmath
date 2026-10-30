@@ -1,0 +1,3 @@
+/* VC9 stand-in: the WDK CRT has no C++ wrappers */
+#pragma once
+#include <math.h>

@@ -30,7 +30,7 @@ public:
     // @0x1410b2430
     virtual void vfunc_4(const NiMatrix3&) {}
     // @0x1410b2390
-    virtual NiMatrix3 vfunc_5() { return NiMatrix3::IDENTITY; }
+    virtual NiMatrix3 vfunc_5() { return NiMatrix3::ZERO; }
     // @0x1410b2420
     virtual void vfunc_6(int) {}
     // @0x1410b2380

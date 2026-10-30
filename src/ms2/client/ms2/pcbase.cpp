@@ -75,6 +75,7 @@
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\pcbase.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
 #include "pcbase.h"
+#include <cmath>
 #include <egf/Entity.h>
 #include "ms2/client/ms2/ridee.h"
 #include "ms2/placeholder/cinpacket.h"
@@ -516,23 +517,24 @@ public:
     efd::Point3 m_kFacing;                                          // +0x84 the attack direction
     CAtlArray<int> m_arrTypes;                                      // +0x90 per hit: damage kind (2 = miss)
     CAtlArray<__int64> m_arrDamage;                                 // +0xb0 per hit: amount
+    int m_nD0;                                                      // +0xd0
+    char m_pad_d4[0xd8 - 0xd4];
 };
 MS2_CHECK_OFFSET(CDamageRecord, m_arrDamage, 0xb0);
-MS2_CHECK_SIZE(CDamageRecord, 0xd0);
+MS2_CHECK_SIZE(CDamageRecord, 0xd8);                                // new(0xd8), as skillrecord.h defines it
 // The DoT / splash damage records (scenestategame.cpp holds other views of them); only the members used here.
 class CDotDamageRecord : public CDamageRecord
 {
 public:
     virtual ~CDotDamageRecord();                                    // 0x14175b590
     int FUN_14175b130();                                            // the tick's damage kind
-    char m_pad_d0[0xe0 - 0xd0];
+    char m_pad_d8[0xe0 - 0xd8];
 };
 MS2_CHECK_SIZE(CDotDamageRecord, 0xe0);
 class CSplashDamageRecord : public CDamageRecord
 {
 public:
     virtual ~CSplashDamageRecord();                                 // 0x14175b5f0
-    char m_pad_d0[0xd8 - 0xd0];
 };
 MS2_CHECK_SIZE(CSplashDamageRecord, 0xd8);
 class Unk_PCBaseConstStr { public: CString& FUN_140298f80(); };
@@ -1611,8 +1613,8 @@ float PCBase::FUN_14166dab0()
 // @0x14166dad0
 float PCBase::FUN_14166dad0(const efd::Point3& kLook, const efd::Point3& kDir)
 {
-    float fA = atan2f(kDir.y, kDir.x) * 180.0f / 3.1415927f;
-    float fB = atan2f(kLook.x, kLook.y) * 180.0f / 3.1415927f;
+    float fA = atan2(kDir.y, kDir.x) * 180.0f / 3.1415927f;
+    float fB = atan2(kLook.x, kLook.y) * 180.0f / 3.1415927f;
     float fAngle = fA + fB;
     if (fAngle < 0.0f)
         fAngle += 360.0f;
@@ -4350,7 +4352,7 @@ bool PCBase::FUN_141674ef0(const CEffectDummy& kDummy)
         pParent = NiDynamicCast(NiNode, pRoot->GetObjectByName(kParentName));
     }
     if (pParent == 0) {
-        FUN_140166440()->FUN_14054c030(1, 0x13, L"EffectDummy의 부모를 찾을 수 없습니다.effectDummy[{0}] - [{1}]",
+        FUN_140166440()->FUN_14054c030(1, 0x13, L"EffectDummy의 부모를 찾을 수 없습니다.effectDummy[{0}] - [{1}] ",
                                        kDummy.GetName(), kDummy.GetParentNode());
         return false;
     }

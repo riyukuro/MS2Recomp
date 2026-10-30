@@ -214,7 +214,9 @@ def object_aliased_names(syms, objs):
                     nm = d[so:d.index(b"\0", so)]
                 defined.add(nm.rstrip(b"\0").decode("latin1"))
             i += 1 + naux
-    return {n for n in aliased & undefined_externals(objs) if n in syms and n not in defined}
+    # functions only: a CRT header's `/alternatename:__isa_available=__isa_available_default` names data the CRT
+    # library defines, so a strong copy of its symbols row collides with msvcrt's cpu_disp.obj (LNK2005)
+    return {n for n in aliased & undefined_externals(objs) if n in syms and syms[n][1] == "func" and n not in defined}
 
 
 KEEP_LOCAL_PREFIXES = ("??_", "__imp_", "_TI", "__ImageBase")

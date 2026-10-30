@@ -31,6 +31,7 @@
 #pragma comment(lib, "comsuppw.lib")   // _bstr_t (FUN_14188b4e0)
 #include <egf/Entity.h>
 #include <NiImageConverter.h>
+#include <NiDevImageConverter.h>
 #include <NiRect.h>
 #include <NiSourceTexture.h>
 #include <NiTexturingProperty.h>
@@ -384,12 +385,7 @@ public:
     MS2Ptr<CItem> FUN_140a5d680(__int64 itemUid);
 };
 extern Unk_UgcBagInventory DAT_143ab2a90;
-class Unk_UgcCubeInventory
-{
-public:
-    MS2Ptr<CItem> FUN_1408fbf90(__int64 itemUid);
-};
-extern Unk_UgcCubeInventory DAT_143ab2e20;
+#include "ms2/client/ms2/warehouseitem.h"     // DAT_143ab2e20, the warehouse item table
 
 // The blueprint create dialog (0x4f7b; uiitemblueprintcreatedialog.cpp).
 class Unk_UgcBlueprintDialog : public UIDialog
@@ -601,7 +597,7 @@ CUgcManager::CUgcManager()
     m_str1a8 = "";
     m_nMode = 0;
     {
-        NiPixelDataPtr spPixelData = NiDynamicCast(NiImageConverter, FUN_141851720())->ReadImageFile((const char*)FUN_1401d31f0()->m_strDefaultImage, NULL);
+        NiPixelDataPtr spPixelData = NiDynamicCast(NiDevImageConverter, FUN_141851720())->ReadImageFile((const char*)FUN_1401d31f0()->m_strDefaultImage, NULL);
         m_spDefaultTexture = NiSourceTexture::Create(spPixelData, DAT_1439fc800, true);
     }
     m_str1b0 = "";

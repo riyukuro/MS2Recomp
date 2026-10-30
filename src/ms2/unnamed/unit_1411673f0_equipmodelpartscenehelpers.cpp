@@ -11,6 +11,7 @@
 #include <NiMesh.h>
 #include <NiStringExtraData.h>
 #include <NiInterpController.h>
+#include <NiMorphWeightsController.h>
 #include <NiRenderObject.h>
 #include <efd/ServiceManager.h>
 #include <egmAnimation/AnimationService.h>
@@ -136,7 +137,7 @@ void FUN_141167840(NiAVObject* pRoot, const CString& strName, float fValue)
         return;
     NiTimeController* pController = pObject->GetControllers();
     while (pController != 0) {
-        NiInterpController* pInterp = NiDynamicCast(NiInterpController, pController);
+        NiInterpController* pInterp = NiDynamicCast(NiMorphWeightsController, pController);
         if (pInterp != 0) {
             int nCount = pInterp->GetInterpolatorCount();
             for (unsigned short us = 0; us < nCount; us++) {

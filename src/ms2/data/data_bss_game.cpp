@@ -10,6 +10,10 @@
 // Gamebryo/efd/CRT statics that were zero-blobbed here (NiRTTIs, NiViewRenderClick/NiFogProperty defaults,
 // egf::g_bapiContext, _OptionsStorage, ...) were dropped: their GB/CRT definition owns the address (symbols rows),
 // and the blob would have shadowed it (sfr36, work/sfr36/fullexe-gamedata.md).
+// 0x143d6eab8 is NiDX9Renderer::ms_pkDefaultVisibleArray (alias-manual.tsv): MS2Renderer::Do_RenderMesh read a
+// zero copy here that GB's _SDMInit never set.
+// 0x143b09498/0x143b094a0 are AnimationService.cpp's g_pfnMS2SceneGraphCacheFilter/g_pfnMS2CreateKFMCache
+// (alias-manual.tsv): the game's setters wrote zero copies here that AnimationService never read.
 // The hook DLL binds every name to the exe's own global (symbols table), so nothing here is compiled into it
 // (docs/RECOVERY.md sec. 9).
 // MS2-UNIT: data_bss_game
@@ -157,8 +161,6 @@ alignas(8) unsigned char DAT_143b023c8[0x10];                   // 0x143b023c8
 alignas(16) unsigned char DAT_143b03490[0x20b8];                // 0x143b03490
 alignas(16) unsigned char DAT_143b05980[0x8];                   // 0x143b05980
 char DAT_143b08a3c;                                             // 0x143b08a3c
-void* DAT_143b09498;                                            // 0x143b09498
-void* DAT_143b094a0;                                            // 0x143b094a0
 void* DAT_143b0d2d8;                                            // 0x143b0d2d8
 int DAT_143b0d360;                                              // 0x143b0d360
 alignas(8) unsigned char DAT_143b0d368[0x8];                    // 0x143b0d368
@@ -185,7 +187,9 @@ alignas(8) unsigned char DAT_143ba9d18[0x8];                    // 0x143ba9d18
 #pragma bss_seg(".bss$cri_143ba9d20")
 alignas(16) unsigned char DAT_143ba9d20[0x8];                   // 0x143ba9d20
 #pragma bss_seg(".bss$cri_143ba9d28")
-alignas(8) unsigned char DAT_143ba9d28[0x18];                   // 0x143ba9d28
+alignas(8) unsigned char DAT_143ba9d28[0x8];                    // 0x143ba9d28: sfr_cri_03's CriSint32 init count
+#pragma bss_seg(".bss$cri_143ba9d30")
+alignas(16) unsigned char DAT_143ba9d30[0x10];                  // 0x143ba9d30: sfr_cri_03's CRI Stream Joint version banner pointer
 #pragma bss_seg(".bss$cri_143ba9d40")
 Unk_CriUtfSortTable* DAT_143ba9d40;                             // 0x143ba9d40
 #pragma bss_seg(".bss$cri_143ba9d48")
@@ -304,8 +308,6 @@ alignas(4) unsigned char DAT_143badbdc[0x24];                   // 0x143badbdc
 alignas(16) unsigned char DAT_143badc00[0x380];                 // 0x143badc00
 #pragma bss_seg(".bss$cri_143badf80")
 alignas(16) unsigned char DAT_143badf80[0x9b160];               // 0x143badf80
-#pragma bss_seg(".bss$cri_143d6eab8")
-Unk_PtrArray* DAT_143d6eab8;                                    // 0x143d6eab8
 #pragma bss_seg(".bss$cri_143d6eb38")
 alignas(8) unsigned char DAT_143d6eb38[0x8];                    // 0x143d6eb38
 #pragma bss_seg(".bss$cri_143d6eb40")
@@ -463,6 +465,7 @@ alignas(2) unsigned char DAT_143e668c2[0x7fffe];                // 0x143e668c2
 #pragma comment(linker, "/alternatename:DAT_143ba9d18=?DAT_143ba9d18@@3PAEA")
 #pragma comment(linker, "/alternatename:DAT_143ba9d20=?DAT_143ba9d20@@3PAEA")
 #pragma comment(linker, "/alternatename:DAT_143ba9d28=?DAT_143ba9d28@@3PAEA")
+#pragma comment(linker, "/alternatename:DAT_143ba9d30=?DAT_143ba9d30@@3PAEA")
 #pragma comment(linker, "/alternatename:?DAT_143ba9d70@@3PAHA=?DAT_143ba9d70@@3PAEA")
 #pragma comment(linker, "/alternatename:?DAT_143ba9dd0@@3PAHA=?DAT_143ba9dd0@@3PAEA")
 #pragma comment(linker, "/alternatename:DAT_143ba9dd0=?DAT_143ba9dd0@@3PAEA")

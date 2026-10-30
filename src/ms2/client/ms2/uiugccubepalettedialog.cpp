@@ -457,7 +457,7 @@ public:
     int FUN_1410c35c0();
     bool FUN_1410c3600(int n);
     void* FUN_1410c8030(int a, int b);
-    int FUN_1410d55d0(int a, int b);
+    bool FUN_1410d55d0(int a, int b);
     void* FUN_1410b8790(Vector3 pt);
     void* FUN_1410b8ab0(Vector3 pt);
     void* FUN_1410b8ab0(struct Unk_CellPos pt);
@@ -511,11 +511,10 @@ Unk_CubePicker* FUN_1409478c0();
 Unk_CubeMgr* FUN_1409670e0();
 Unk_CubeMgr* FUN_1401cd040(void* pSingleton);   // returns in rax (the exe never takes a hidden return slot)
 UGCCubePalette* GetUGCCubePalette();
-struct Unk_ItemMgr { MS2Ptr<CItem> FUN_1408fbf90(unsigned __int64 uid); };
 int FUN_1408fc1b0(void* pBag, int nItemId);
 int FUN_140dfcb00(void* pBag, int nItemId);
 
-extern Unk_ItemMgr DAT_143ab2e20;
+#include "ms2/client/ms2/warehouseitem.h"     // DAT_143ab2e20, the warehouse item table
 extern char DAT_143ab2e50;
 extern Unk_CubeObjMgr DAT_143afbbb0;
 extern Unk_CubeKindMgr DAT_143d69198;
@@ -673,7 +672,7 @@ Unk_PartyDlg* FUN_140e01930(int nId);
 Unk_CubeEditDlg* FUN_140931900(int nId);
 void* FUN_141656a80(void* pWorld);
 int FUN_1408a18d0(void* p);
-int FUN_1408a07b0(int nMapId, int a, __int64 nAccountId);
+bool FUN_1408a07b0(int nMapId, int a, __int64 nAccountId);
 Vector3 FUN_1408a1430(Vector3 pt);
 int FUN_1408b54c0(int nKind);
 int FUN_1408b5570(int nKind);

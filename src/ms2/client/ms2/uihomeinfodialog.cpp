@@ -113,7 +113,7 @@ public:
 struct Unk_EntityAppFramework { efd::ServiceManagerPtr manager; };
 extern Unk_EntityAppFramework DAT_143b059e8;
 extern __int64 DAT_143ab2898;                                       // wallet: meso
-extern char DAT_143ab2d80[];
+#include "ms2/client/ms2/store.h"     // DAT_143ab2d80, the store table (CStore)
 
 class Unk_HiSvc : public efd::ISystemService
 {
@@ -224,7 +224,6 @@ CStringW FUN_1409404f0(__int64 n);
 CStringW FUN_140811740(int nId, const int& a, const int& b);
 CStringW FUN_14062b4f0(CStringW strFormat, const int& n);
 int FUN_14028cb70(const CStringW& str, CAtlArray<CStringW>& arr, const wchar_t* szDelim, int nMax);
-__int64 FUN_140de2a80(void* p);
 int FUN_1412772f0(__int64 nValue, int bGrouped);
 UIHomeSaveSlotDialog* FUN_140c2b5c0(int nUiId);
 int FUN_141527ed0(Unk_HiPc* pPc);
@@ -716,7 +715,7 @@ void UIHomeInfoDialog::OnBalance()
     MS2Ptr<CMsgBoxData> spBox = FUN_140d73e40(8, 0xbb9, 0, CStringW(L""));
     if (spBox.get() != 0)
     {
-        unsigned int nMax = FUN_1412772f0(FUN_140de2a80(DAT_143ab2d80), 1);
+        unsigned int nMax = FUN_1412772f0(DAT_143ab2d80.Value4558(), 1);
         spBox->FUN_141a01d30(1, CStringW(L""), nMax, 0, 0);
         spBox->FUN_141a027c0(Delegate<bool(int, const CMsgBoxData&)>(this, &UIHomeInfoDialog::FUN_1412c7ff0));
         FUN_140d73c60(spBox);

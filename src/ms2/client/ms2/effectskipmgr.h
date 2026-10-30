@@ -56,7 +56,7 @@ public:
     // ~EffectSkipMgr (0x1411bb110) is implicit: the exe dtor stores no vptr
 
     int IsOutOfView(Unk_SkipCheck* pCheck) const;                            // 0x1411b86e0
-    int ShouldSkipByView(MS2Ptr<CEffectData> spData, int nRow, Unk_SkipEffect* pEffect);  // 0x1411b8870 (by value)
+    int ShouldSkipByView(MS2Ptr<CEffectData> spData, int nRow, Unk_SkipEffect* pEffect);  // 0x1411b8870 (by value); pEffect = the caller's NiTransform
     bool LoadOption();                                                  // 0x1411b89e0 effectOption.xml
     bool LoadLimitCount();                                              // 0x1411b8d20 effectLimitCount.xml
     int ParseCaster(const char* pszCaster, int* pnCaster);             // 0x1411b9180

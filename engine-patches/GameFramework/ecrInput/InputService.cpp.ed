@@ -4,9 +4,9 @@
 
 .
 344,349c
-    // MS2: no early failure without an input system; after the first failed update following a good one the
-    // keyboard's key states are cleared (exe 0x14203ca40, flag at 0x143a03960)
-    static bool s_bUpdateOK = false;
+    // MS2: no early failure without an input system; on the first failed update, and on the first one after a
+    // good one, the keyboard's key states are cleared (exe 0x14203ca40, flag at 0x143a03960, which starts at 1)
+    static bool s_bUpdateOK = true;
     if (m_spInput)
     {
         // Update input
@@ -46,13 +46,13 @@
         // On Win32, assume there is a mouse and keyboard
         if (!m_spInput->OpenMouse())
         {
-            EE_LOG(efd::kGamebryoGeneral0, efd::ILogger::kERR1,
+            EE_LOG(efd::kGamebryoGeneral0, efd::ILogger::kERR0,
                 ("NiInputErr : [%x] Mouse failed to open.", m_spInput->GetLastError()));
             result = AsyncResult_Failure;
         }
         if (!m_spInput->OpenKeyboard())
         {
-            EE_LOG(efd::kGamebryoGeneral0, efd::ILogger::kERR1,
+            EE_LOG(efd::kGamebryoGeneral0, efd::ILogger::kERR0,
                 ("NiInputErr : [%x] keyboard failed to open.", m_spInput->GetLastError()));
             result = AsyncResult_Failure;
         }
@@ -67,7 +67,7 @@
 259,263c
         case NIIERR_ENUM_FAILED:
             EE_FAIL("NiInputSystem::CheckEnumerationStatus failed.");
-            EE_LOG(efd::kGamebryoGeneral0, efd::ILogger::kERR1,
+            EE_LOG(efd::kGamebryoGeneral0, efd::ILogger::kERR0,
                 ("NiInputSystem::CheckEnumerationStatus failed."));
             result = AsyncResult_Failure;
             break;
@@ -79,7 +79,7 @@
         {
         case NIIERR_ENUM_NOTRUNNING:
             EE_FAIL("NiInputSystem::EnumerateDevices failed.");
-            EE_LOG(efd::kGamebryoGeneral0, efd::ILogger::kERR1,
+            EE_LOG(efd::kGamebryoGeneral0, efd::ILogger::kERR0,
                 ("NiInputSystem::EnumerateDevices failed."));
             result = AsyncResult_Failure;
             break;
@@ -89,11 +89,14 @@
 .
 246@11s "urn" " ="
 246@10s "" "sul"
+244@57s "1" "0"
+228@57s "1" "0"
 215@11s "urn" " ="
 215@10s "" "sul"
+213@57s "1" "0"
 198c
     {
-        EE_LOG(efd::kGamebryoGeneral0, efd::ILogger::kERR1,
+        EE_LOG(efd::kGamebryoGeneral0, efd::ILogger::kERR0,
             ("MessageService refs not set in InputService!"));
         result = AsyncResult_Failure;
     }

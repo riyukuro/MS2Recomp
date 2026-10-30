@@ -27,7 +27,9 @@ MS2_EMIT_CRT_MEMMOVE_S();
 
 class ASDialog : public ASDisplayObject { public: void FUN_1422c00f0(float fX, float fY); };   // set the position
 struct Unk_IpArgs { CStringW FUN_1408d21c0(int nIndex, CStringW strDefault); };   // ItemFunctionArgs::GetString
-class Unk_IpReg { public: Unk_IpReg(void (*pfnCallback)(void*, void*)); };   // registers a callback in a global table
+// efd::ClassInfo (ctor 0x1409f2d20): the setup callback fills a count + 32 parent entries of 0x20, so the object
+// needs the real 0x408 bytes or it overwrites the statics after it (s_strStun -> AV in its atexit dtor at Quit).
+class Unk_IpReg { public: Unk_IpReg(void (*pfnCallback)(void*, void*)); private: char m_storage[0x408]; };
 void FUN_140f50a40(void*, void*);
 class Unk_IpWorld;
 class Unk_IpActor;

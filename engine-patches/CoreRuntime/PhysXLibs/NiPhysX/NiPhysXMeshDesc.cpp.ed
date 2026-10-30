@@ -1,8 +1,9 @@
-555c
-    // x64 port: m_uiMeshSize is a size_t; the NIF field is 32 bits
-    unsigned int uiMeshSize = 0;
-    NiStreamLoadBinary(kStream, uiMeshSize);
-    m_uiMeshSize = uiMeshSize;
+555a
+
+
+.
+554a
+    // MS2: m_uiMeshSize is 32-bit (v2525 NxU32), so the NIF field loads straight into it, as in the exe
 .
 524c
     // x64 port: m_uiMeshSize is a size_t; the NIF field is 32 bits

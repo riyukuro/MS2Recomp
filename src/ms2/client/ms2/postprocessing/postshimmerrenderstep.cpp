@@ -15,6 +15,7 @@
 #include <NiTexturingProperty.h>
 #include <NiViewRenderClick.h>
 #include <NiScreenFillingRenderView.h>
+#include <NiScreenFillingRenderViewImpl.h>
 #include <NiShaderFactory.h>
 #include <NiRenderObject.h>
 #include <atlcoll.h>
@@ -112,7 +113,7 @@ bool PostShimmerRenderStep::vfunc_15(unsigned int a, void* b)
         vfunc_16();
         return false;
     }
-    NiScreenFillingRenderView* pkView = NiDynamicCast(NiScreenFillingRenderView, pkClick->GetRenderViews().GetHead());
+    NiScreenFillingRenderView* pkView = NiDynamicCast(NiScreenFillingRenderViewImpl, pkClick->GetRenderViews().GetHead());
     s_pkShimmerProp = (NiTexturingProperty*)pkView->GetScreenFillingQuad().GetProperty(NiProperty::TEXTURING);
     NiTexturingProperty::ShaderMap* pkMap = new (efd::MemHint(efd::MemHint::NONE)) NiTexturingProperty::ShaderMap(
         (NiTexture*)s_shimmerTexture.Get(), 0, (NiTexturingProperty::ClampMode)0, (NiTexturingProperty::FilterMode)0, 0);

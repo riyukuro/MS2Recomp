@@ -365,7 +365,7 @@ public:
     void FUN_1402706f0(CInPacket& in);
     __int64 m_18, m_20, m_28;
     CString m_30;
-    short m_38;
+    unsigned short m_38;                   // home level (movzx in the exe readers)
     int m_3c, m_40;
     CString m_48, m_50;
 };

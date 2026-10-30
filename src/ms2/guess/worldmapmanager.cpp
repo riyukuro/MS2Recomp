@@ -395,7 +395,7 @@ int WorldMapManager::LoadWorldMapFiles()
         Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2worldmap");
         if (pRoot == 0)
         {
-            FUN_14015eb90(GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2worldmap> {0}]", strPath);
+            FUN_14015eb90(GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
             continue;
         }
         Unk_140165cf0* pGroup = FUN_14028f8d0(pRoot);

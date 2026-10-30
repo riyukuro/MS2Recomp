@@ -886,8 +886,6 @@ template <> inline Delegate<bool(int, const CMsgBoxData&)>& Delegate<bool(int, c
 }
 
 // COMDAT glue of the CMsgBoxData members at 0x141a00db0-0x141a034d0 (map of extra values, item array copy, callback): the stand-in below pairs it.
-template <class R> R ThrowInvalidCall();    // <bool> 0x1405625e0 (itemdatatable.cpp); the callback's operator() 0x141a07c10 null-checks first
-template <> inline bool Delegate<bool(int, const CMsgBoxData&)>::operator()(int a1, const CMsgBoxData& a2) const { if (m_pImpl == 0) ThrowInvalidCall<bool>(); return m_pImpl->Invoke(a1, a2); }
 void Unk_MsgBoxGlueAnchor(CMsgBoxData* pData, Delegate<bool(int, const CMsgBoxData&)>& cbDst,
                           const Delegate<bool(int, const CMsgBoxData&)>& cbSrc, ATL::CAtlArray<ItemEntity>& dst,
                           const ATL::CAtlArray<ItemEntity>& src)

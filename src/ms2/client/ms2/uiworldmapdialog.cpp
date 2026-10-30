@@ -1342,7 +1342,7 @@ void UIWorldMapDialog::FUN_141b59d40()
             {
                 unsigned int nField = pCommon->GetData()->m_fields[j];
                 MS2Ptr<CQuestData> spData = pCommon->GetData();
-                FUN_141b58670(FUN_141b602a0(nField), spQuest->FUN_140bfc580(), (short)spData->m_level, 0);
+                FUN_141b58670(FUN_141b602a0(nField), spQuest->FUN_140bfc580(), spData->m_level, 0);
             }
         }
         else
@@ -1354,7 +1354,7 @@ void UIWorldMapDialog::FUN_141b59d40()
             {
                 unsigned int nField = fields.GetAt(pos);
                 MS2Ptr<CQuestData> spData = pCommon->GetData();
-                FUN_141b58670(FUN_141b602a0(nField), spQuest->FUN_140bfc580(), (short)spData->m_level, 1);
+                FUN_141b58670(FUN_141b602a0(nField), spQuest->FUN_140bfc580(), spData->m_level, 1);
             }
         }
     }

@@ -1,0 +1,26 @@
+#!/bin/bash
+# cl 17.00.61030 (VS2012 Update 4, x86-hosted x64 target) for the units that declare `// MS2-TOOLSET: vc11`
+# (tools/progress.py, the cmake hook build, tools/fullexe). tools/fetch-vs2012.sh installs it into third_party/msvc11:
+#   bin/          cl.exe c1.dll c1xx.dll c2.dll mspdb110.dll mspdbcore.dll mspdbsrv.exe msobj110.dll, 1033/clui.dll
+#   include/vc    VS2012 VC/include       include/sdk   Windows SDK 8.0 Include/um + Include/shared
+# msvcr110/msvcp110 are wine's builtins. src/ is on the include path too: the toolset options carry no include dirs and
+# the Scaleform headers include each other from the source root.
+# Arguments and output go through msvc-wine's wine-msvc.sh (third_party/msvc): /abs paths -> z:/abs, /showIncludes unixified.
+R=$(cd "$(dirname "$0")/../.." && pwd)
+TP=${MS2_THIRD_PARTY:-$R/third_party}
+V=$TP/msvc11
+if [ ! -x "$V/bin/cl.exe" ] && [ ! -f "$V/bin/cl.exe" ]; then
+    echo "tools/msvc11/cl: $V/bin/cl.exe missing (run tools/fetch-vs2012.sh <VS2012.4.iso> <VS2012_WDX_ENU.iso>)" >&2
+    exit 2
+fi
+winp() { local p="z:$1"; echo "${p//\//\\}"; }
+# own prefix: the 14.16 prefix's wineserver must not be shared
+export WINEPREFIX="${MS2_VC11_WINEPREFIX:-$V/prefix}" WINEDEBUG="${WINEDEBUG:--all}" DISPLAY= WAYLAND_DISPLAY=
+export INCLUDE="$(winp "$V/include/vc");$(winp "$V/include/sdk/shared");$(winp "$V/include/sdk/um");$(winp "$R/src")" LIB= LIBPATH=
+unixify_path='/^Note: including file: /{ s/z:([\\/])/\1/i; s,\\,/,g; }'
+unixify_note='/^[zZ]:.*\([[:digit:]]+\) ?: (note|error C[[:digit:]]{4}|warning C[[:digit:]]{4}|fatal error C[[:digit:]]{4}): /{ s/z:([\\/])/\1/ig; s,\\,/,g; }'
+export WINE_MSVC_STDOUT_SED="$unixify_path;$unixify_note"
+export WINE_MSVC_STDERR_SED="$unixify_path;/MESA|pci id|dri2/d"
+exec > >(python3 -I "$R/tools/msvc/fixincludes.py")
+[ $# -gt 0 ] && set -- /nologo "$@"    # no arguments: the banner (tools/msvc11/check.py)
+exec "$TP/msvc/bin/x64/wine-msvc.sh" "$V/bin/cl.exe" "$@"

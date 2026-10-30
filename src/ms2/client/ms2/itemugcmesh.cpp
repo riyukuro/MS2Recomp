@@ -32,6 +32,8 @@
 #include <vector>
 #include <set>
 #include <NiNode.h>
+#include <NiInterpolator.h>
+#include <NiMorphWeightsController.h>
 #include <NiMesh.h>
 #include <NiSkinningMeshModifier.h>
 #include <NiTexturingProperty.h>
@@ -178,7 +180,6 @@ int FUN_140f02bc0();
 NiTimeController* FUN_14098dc80(NiObjectNET* pObj);                 // first controller
 NiTimeController* FUN_14098de40(NiTimeController* pCtrl);           // next controller
 NiObject* FUN_14098d8d0(const NiRTTI* pRTTI, NiObject* p);          // NiObject::DynamicCast
-extern NiRTTI DAT_143af8a20;                                        // RTTI of the UGC controller type
 extern char DAT_142f10fe4[];                                        // name tails of the model files
 extern char DAT_142f10ff0[];
 CString FUN_14038f6d0(const CString& strLeft, const char* szRight); // a + literal
@@ -983,7 +984,7 @@ int FUN_141425130(NiAVObject* pRoot)
             NiTimeController* pCtrl = FUN_14098dc80(pMesh);
             while (pCtrl != 0)
             {
-                NiObject* pUgc = FUN_14098d8d0(&DAT_143af8a20, pCtrl);
+                NiObject* pUgc = FUN_14098d8d0(&NiMorphWeightsController::ms_RTTI, pCtrl);
                 if (pUgc != 0)
                     return 1;
                 pCtrl = FUN_14098de40(pCtrl);
