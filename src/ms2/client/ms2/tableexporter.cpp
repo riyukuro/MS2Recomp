@@ -235,7 +235,7 @@ void FUN_1406feea0(Unk_BlockList*);                                     // ctor
 void FUN_1406ff2b0(Unk_BlockList*);                                     // dtor
 void FUN_140373d50();
 void FUN_140374090(Unk_BlockList*);                                     // collect the fieldData blocks
-unsigned int FUN_14037bf40(Unk_BlockList*);                             // number of blocks
+size_t FUN_14037bf40(Unk_BlockList*);                                   // number of blocks
 struct Unk_BlockListLocal : Unk_BlockList { ~Unk_BlockListLocal() { FUN_1406ff2b0(this); } };
 
 int FUN_140873220(Unk_140165cf0* pElem, const char* pszName, unsigned int& rValue);

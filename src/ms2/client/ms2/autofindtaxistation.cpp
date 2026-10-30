@@ -95,7 +95,7 @@ struct Unk_TaxiHolder
 {
     ~Unk_TaxiHolder();                                  // 0x1408850f0
     Unk_TaxiInfo* FUN_140885340();
-    void* m_pad[3];
+    void* m_pad[2];
 };
 class Unk_TaxiResTable;
 class Unk_TaxiTimer;
@@ -122,7 +122,7 @@ void FUN_140ca7230(Unk_TaxiTimer* t, unsigned delayMs, TFunctor<void, EmptyParam
 int FUN_140aed440(Unk_CameraManager* cam, Unk_CameraSetting* out);
 float FUN_140af0c70(Unk_CameraManager* cam);
 float FUN_140af0d30(Unk_CameraManager* cam);
-struct Unk_TaxiCamMove { int m_nKind; int m_04; void* m_pad[16]; };
+struct Unk_TaxiCamMove { int m_nKind; int m_04; void* m_pad[15]; };
 void FUN_140aeffd0(Unk_CameraManager* cam, Unk_TaxiCamMove* out, float t, Unk_CameraSetting* setting);
 void FUN_140aed580(Unk_CameraManager* cam, Unk_TaxiCamMove* mv, int n, float fDuration);
 void FUN_140aed750(Unk_CameraManager* cam, int a, int b);

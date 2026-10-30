@@ -33,9 +33,9 @@ extern "C" _ACRTIMP void __cdecl _wassert(wchar_t const* _Message, wchar_t const
 #include <atlbase.h>
 
 // ---- unit-local stand-ins for helpers of other units (opaque) ----
-struct Unk_Handle {                 // 24 byte handle filled by FUN_141bd0420, released by ~Unk_Handle (0x1409f20e0)
+struct Unk_Handle {                 // 16 byte handle filled by FUN_141bd0420, released by ~Unk_Handle (0x1409f20e0)
     ~Unk_Handle();
-    void* m_a; void* m_p; void* m_c;
+    void* m_a; void* m_p;
 };
 struct Unk_EntRef {                 // entity reference built from the handle's entity (0x1408a7ed0), released at 0x1408a8720
     Unk_EntRef(void* p);
@@ -44,7 +44,7 @@ struct Unk_EntRef {                 // entity reference built from the handle's 
 };
 struct Unk_Rec24 { char b[24]; };
 struct Unk_MapIt { void* p; };                   // map iterator scratch
-struct Unk_MapPair { void* a[5]; };              // 40 byte (key, value) pair scratch
+struct Unk_MapPair { void* a[4]; };              // 32 byte (key, value) pair scratch
 namespace egf {
 enum PropertyResult { PropertyResult_Unknown };
 class Entity {
@@ -181,7 +181,6 @@ void FieldPropertyWeatherCli::vfunc_4() { FUN_1411a7e80(FUN_1403ed280(), m_nWeat
 // @0x140b27900
 void FieldPropertyWeatherCli::vfunc_5() { FUN_1411a7e80(FUN_1403ed280(), 0); }
 
-// MS2-FUNCTIONAL: op-identical; our frame is 16 bytes larger (no source form found)
 // @0x140b27930
 void FieldPropertyAmbientLightCli::vfunc_4()
 {
@@ -202,7 +201,6 @@ void FieldPropertyAmbientLightCli::vfunc_4()
 // @0x140b27a80
 Unk_Vec3f* FUN_140b27a80(FieldPropertyAmbientLightCli* p, Unk_Vec3f* out) { FUN_1406c3780(&p->m_color, out); return out; }
 
-// MS2-FUNCTIONAL: op-identical; our frame is 16 bytes larger and the handle sits below the temps (no source form found)
 // @0x140b27ac0
 void FieldPropertyDirectionalLightCli::vfunc_4()
 {
@@ -241,7 +239,6 @@ bool FUN_140947540(void* a, void* b);
 void* FUN_140947490(void* it, unsigned id, void* pVal, unsigned type);
 void* FUN_140947580(void* map, unsigned* key);
 
-// MS2-FUNCTIONAL: op-identical; our frame is 16 bytes larger (no source form found).
 // Remembers the entity's original value for a property before it is overwritten (map find/insert).
 // @0x140b27d50
 void FUN_140b27d50(egf::Entity* pEntity, unsigned id, void* pNew)

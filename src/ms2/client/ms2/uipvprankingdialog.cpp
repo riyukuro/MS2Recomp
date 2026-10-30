@@ -123,13 +123,13 @@ void UIPvPRankingDialog::OnLoadComplete()
 }
 MS2_REPLACE_METHOD(0x141343060, UIPvPRankingDialog, OnLoadComplete, 34, 0xDC8B582D);
 
-// MS2-FUNCTIONAL: the exe override returns the callee's bool (movzx) from a void slot
 // @0x141343090
 void UIPvPRankingDialog::vfunc_79(void* pData)
 {
     UIDialog::vfunc_79(pData);
-    if (vfunc_55() == 0)
-        FUN_140a467d0(&m_30);
+    if (vfunc_55() == 0 && FUN_140a467d0(&m_30))
+    {
+    }
 }
 
 // @0x1413430f0

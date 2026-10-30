@@ -637,7 +637,6 @@ class TUgcGetCostInfo : public CPtred
 {
 public:
     TUgcGetCostInfo();                                      // 0x140897ed0
-    virtual ~TUgcGetCostInfo();                             // 0x1408999c0
 
     void FUN_140897f30(__int64 nBase, int nPercent);        // base, base * percent / 100, 100 - percent
     CString FUN_140897f90() const;                          // "[base->cost(left%)]"
@@ -653,7 +652,6 @@ class UGCMapDesignInfo : public CPtred
 {
 public:
     UGCMapDesignInfo();                                     // 0x140898780
-    virtual ~UGCMapDesignInfo();                            // 0x140899a10
 
     int m_nId;                                              // +0x18
     CString m_strName;                                      // +0x20
@@ -665,7 +663,6 @@ class UGCMapBlueprintInfo : public CPtred
 {
 public:
     UGCMapBlueprintInfo();                                  // 0x1408987f0
-    virtual ~UGCMapBlueprintInfo();                         // 0x1408999e0
 
     int m_nId;                                              // +0x18
     CString m_strName;                                      // +0x20

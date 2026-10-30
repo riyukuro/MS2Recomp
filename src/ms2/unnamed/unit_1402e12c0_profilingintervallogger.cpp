@@ -167,7 +167,8 @@ unsigned Unk_PerfLog::GetFirstTick()
 CString Unk_PerfLog::FUN_1402e14e0()
 {
     if (Unk_LockGuard guard = m_lock) {
-    } else {
+     __assume(0);
+ } else {
         return m_strMessage;
     }
 }

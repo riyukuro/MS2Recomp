@@ -210,12 +210,12 @@ int CItemEnchantTransformTable::FUN_140592110(MS2Ptr<CItem> spItem)
 }
 
 // @0x140592330
-// MS2-FUNCTIONAL: trailing cleanup NOP after the lock-guard else path
 CEnchantTransformDataPtr CItemEnchantTransformTable::FUN_140592330(const CString& strKey)
 {
     CheckInit();
     if (Unk_LockGuard guard = m_lock)
     {
+        __assume(0);
     }
     else
     {

@@ -852,10 +852,9 @@ int CGameRule::FUN_140477640(int bPcBang)
 MS2_REPLACE_METHOD(0x140477640, CGameRule, FUN_140477640, 163, 0xD2EDE1EA);
 
 // @0x1404776f0
-// MS2-FUNCTIONAL: trailing nop after the LockGuard dtor in the fail path (RECOVERY "Unsolved")
 int CGameRule::FUN_1404776f0(int key)
 {
-    if (Unk_LockGuard guard = m_1e8) {} else
+    if (Unk_LockGuard guard = m_1e8) { __assume(0); } else
     {
         int value = 0;
         if (m_218.Lookup(key, value))
@@ -1236,10 +1235,9 @@ unsigned CGameRule::FUN_140478cd0(MS2Ptr<CItemData> spItem)
 }
 
 // @0x140478db0
-// MS2-FUNCTIONAL: trailing nop after the LockGuard dtor in the fail path (RECOVERY "Unsolved")
 unsigned CGameRule::FUN_140478db0(int type)
 {
-    if (Unk_LockGuard guard = m_8) {} else
+    if (Unk_LockGuard guard = m_8) { __assume(0); } else
     {
         unsigned rate = m_568.Get((Unk_RemakeSaleItemType)type, 0);
         unsigned rateAll = m_568.Get(Unk_RemakeSaleItemType_All, 0);

@@ -80,12 +80,12 @@ void UIPvPKillLogDialog::OnLoadComplete()
 }
 
 // @0x141342820
-// MS2-FUNCTIONAL: the exe returns the vfunc_55 / IsNull result (the shared base declares vfunc_79 void)
 void UIPvPKillLogDialog::vfunc_79(void* p)
 {
     UIDialog::vfunc_79(p);
-    if (vfunc_55() == 0)
-        m_30.IsNull();
+    if (vfunc_55() == 0 && m_30.IsNull())
+    {
+    }
 }
 
 // @0x141342880

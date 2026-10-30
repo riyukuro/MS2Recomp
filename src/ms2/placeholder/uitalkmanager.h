@@ -45,8 +45,8 @@ public:
 };
 MS2_CHECK_SIZE(Unk_TalkIdState, 0x28);
 
-// The reward items of the talk (16-byte handles to CItem).
-class Unk_TalkItemList : public ATL::CAtlArray<void*>
+// The reward items of the talk. The dtor 0x1408f2340 is ~CAtlArray<MS2Ptr<CItem>>, which releases the items.
+class Unk_TalkItemList : public ATL::CAtlArray<MS2Ptr<CItem> >
 {
 public:
     unsigned __int64 FUN_140720ca0();                           // GetCount

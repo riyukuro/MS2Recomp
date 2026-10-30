@@ -17,7 +17,6 @@ class UGCMapPackageInfo : public CPtred
 {
 public:
     UGCMapPackageInfo();                    // 0x1408b9860
-    virtual ~UGCMapPackageInfo();           // 0x1408ba5d0
 
     void FUN_1408b98f0(void* pXmlNode);     // read one <cube> element (name invented)
 

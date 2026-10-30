@@ -133,13 +133,13 @@ void UIRealEstateSell::OnLoadComplete()
     FUN_141ab6230();
 }
 
-// MS2-FUNCTIONAL: the exe returns the IsNull result (base slot is void); extra movzx only
 // @0x141ab5f10
 void UIRealEstateSell::vfunc_79(void* p)
 {
     UIDialog::vfunc_79(p);
-    if (vfunc_55() == 0)
-        m_30.IsNull();
+    if (vfunc_55() == 0 && m_30.IsNull())
+    {
+    }
 }
 
 // @0x141ab5f70

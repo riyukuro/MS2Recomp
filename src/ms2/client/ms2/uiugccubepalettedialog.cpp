@@ -398,7 +398,7 @@ struct Unk_CubePickPtr
     void* m_p;
     Unk_CubePickPtr() : m_0(0), m_p(0) {}
     ~Unk_CubePickPtr() { FUN_140a16120(this); }
-    int FUN_140a16c00();                                    // empty
+    void* FUN_140a16c00();                                  // the pick (null test)
     Unk_CubePickBox* FUN_140a16c30();
 };
 
@@ -543,7 +543,7 @@ void* FUN_140889060(RSortTbl* p);
 void* FUN_140ef0750(RCatTbl* p);
 void FUN_14088cfc0(RCatElem* p);
 void FUN_14088d5d0(RCatElem* p);
-unsigned int FUN_140889fb0(void* pTbl);
+size_t FUN_140889fb0(void* pTbl);
 unsigned __int64 FUN_140ef0ae0(void* pTbl);
 unsigned __int64 FUN_140ef0af0(void* pTbl);
 void* FUN_140889f70(void* pTbl, unsigned int n);
@@ -557,7 +557,7 @@ RCatElem* FUN_140ef0500(RCatElem* pDst, RCatElem* pSrc);
 int FUN_140888ed0(RTypeElem* p, int n);
 bool FUN_140ef05f0(RSortElem* p, __int64 n);
 int FUN_140888f10(RCatElem* p, int n);
-int FUN_140ef0730(RCatElem* p);
+void* FUN_140ef0730(RCatElem* p);
 Unk_TypeRec* FUN_140889020(RTypeElem* p);
 Unk_SortRec* FUN_140889030(RSortElem* p);
 Unk_CatRec* FUN_140889040(RCatElem* p);
@@ -572,17 +572,17 @@ void FUN_140e52670(void* pDlg, RCheck* pRet, const CString& strName);
 void FUN_140c28560(void* pDlg, RCombo* pRet, const CString& strName);   // exe forwards r8 untouched, no callee dtor: by reference
 void FUN_140e35bd0(void* pDlg, Unk_SearchRef* pRet, const CString& strName);
 void FUN_140ba4b70(void* pDlg, RCubeList* pRet, const CString& strName);
-int FUN_140c02d70(RTypeList* p);
+void* FUN_140c02d70(RTypeList* p);
 int FUN_140bcc0c0(RTypeList* p, int n);
 Unk_CubeCtl* FUN_140bcc3f0(RTypeList* p);
-int FUN_140acd9c0(RButton* p);
+void* FUN_140acd9c0(RButton* p);
 Unk_CubeCtl* FUN_140acd9e0(RButton* p);
-int FUN_140a58460(RCheck* p);
+void* FUN_140a58460(RCheck* p);
 Unk_CubeCtl* FUN_140a58490(RCheck* p);
 int FUN_140bc03e0(RCombo* p, int n);
-int FUN_140bc04f0(RCombo* p);
+void* FUN_140bc04f0(RCombo* p);
 Unk_CubeCtl* FUN_140bc0530(RCombo* p);
-int FUN_140bc0500(Unk_SearchRef* p);
+void* FUN_140bc0500(Unk_SearchRef* p);
 Unk_CubeCtl* FUN_140bc0550(Unk_SearchRef* p);
 int FUN_140ba4ee0(RCubeList* p, int n);
 Unk_CubeCtl* FUN_140acd9f0(RCubeList* p);
@@ -611,7 +611,7 @@ int FUN_1409c1720(void* p);
 
 bool FUN_1401b5240(RItemInfo* p, int n);
 Unk_InfoRec* FUN_1401b52a0(RItemInfo* p);
-int FUN_140203c60(RItemInfo* p);
+void* FUN_140203c60(RItemInfo* p);
 RItemInfo FUN_14053f870(int nItemId);
 bool FUN_14053cde0(Unk_ItemEquipData* p);
 int FUN_14053feb0(int nItemId);

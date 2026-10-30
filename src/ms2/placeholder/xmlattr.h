@@ -83,6 +83,9 @@ inline Unk_XmlElementIterator end(Unk_140165cf0*) { return Unk_XmlElementIterato
 // Token conversion (0x140177cf0 unsigned short, 0x140177d20 int, 0x140177d50 unsigned, 0x140177d80 float).
 template <class T> T XmlConvert(const CString& str) { return (T)atoi(str); }
 template <> inline float XmlConvert<float>(const CString& str) { return (float)atof(str); }
+// 0x1404082e0: unsigned 64-bit lists (GUIDs, UGC market SNs) are parsed with _strtoui64, not atoi. It lives here
+// so every TU instantiates the same body (the linker keeps one COMDAT copy for all callers).
+template <> inline unsigned __int64 XmlConvert<unsigned __int64>(const CString& str) { return _strtoui64(str, NULL, 10); }
 
 // Splits a delimited list (0x140177e70 / 0x140177f30 / 0x140177ff0 / 0x1401780b0 for the arrays, 0x1401781a0 set,
 // 0x140178300 / 0x1401783d0 / 0x1401784a0 vectors) and the forwarding wrappers in front of them.

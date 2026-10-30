@@ -1210,8 +1210,8 @@ Unk_SkillSrc* FUN_1407ebbf0(Unk_MagicSrcPtr* pSrc);                 // handle.ge
 unsigned FUN_140803dc0(Unk_SkillSrc* pSrc);
 int FUN_141769410(Unk_MagicEntity* pEntity, const Unk_MagicSkillRow* pRow, unsigned nArg);   // the row's pick limit
 void* FUN_1416749a0(Unk_MagicEntity* pEntity);                      // the entity's +0x748 sub-object
-bool FUN_1409709d0(void* pSub);
-int FUN_140a01220(void* pArray);                                    // CAtlArray::GetCount (int)
+int FUN_1409709d0(void* pSub);
+size_t FUN_140a01220(void* pArray);                                 // CAtlArray::GetCount
 int FUN_140186270(void* pArray);                                    // CAtlArray<unsigned>::GetCount
 unsigned* FUN_140184510(void* pArray, long long nIndex);   // CAtlArray<unsigned>::GetAt
 unsigned long long FUN_1401855a0(void* pArray, unsigned nValue);    // CAtlArray<unsigned>::Add
@@ -1254,11 +1254,11 @@ void CMagic::FUN_141462900(unsigned nNow)
             spCtx->m_nSrcLevel = m_spSkill->m_nSrcLevel;
             if (FUN_1417e95a0(spCtx) == 0)
                 return;
-            int nPicked = FUN_140a01220(&spCtx->m_aHits);
+            int nPicked = (int)FUN_140a01220(&spCtx->m_aHits);
             int nLimit = FUN_141769410(pOwner, pRow, FUN_140803dc0(FUN_1407ebbf0(&m_spSkill->m_spSrc)));
             int nCount;
             if (nPicked < nLimit)
-                nCount = FUN_140a01220(&spCtx->m_aHits);
+                nCount = (int)FUN_140a01220(&spCtx->m_aHits);
             else
                 nCount = FUN_141769410(pOwner, pRow, FUN_140803dc0(FUN_1407ebbf0(&m_spSkill->m_spSrc)));
             for (int i = 0; i < nCount; ++i) {
@@ -1806,7 +1806,7 @@ void CMagic::FUN_141464d00(unsigned nNow, const Unk_MagicSkillRow* pRow)
         return;
     if (pRow->m_n120 != 0) {
         ATL::CAtlArray<efd::SmartPointer<GameObject> > aKeep;
-        for (unsigned i = 0; i < (unsigned)FUN_140a01220(&spCtx->m_aHits); ++i) {
+        for (unsigned i = 0; i < FUN_140a01220(&spCtx->m_aHits); ++i) {
             Unk_MagicEntity* pHit = FUN_140965780(FUN_140a006a0(&spCtx->m_aHits, i));
             if (FUN_14123c580(pHit) == FUN_14123c580(pOwner)) {
                 FUN_140a00a20(&aKeep, FUN_140a006a0(&spCtx->m_aHits, i));
@@ -1835,7 +1835,7 @@ void CMagic::FUN_141464d00(unsigned nNow, const Unk_MagicSkillRow* pRow)
     if (spState.FUN_140975ba0() == NULL || pRow->m_n28 == 0) {
         FUN_140a00cb0(&aHits, &spCtx->m_aHits);
     } else {
-        for (unsigned i = 0; i < (unsigned)FUN_140a01220(&spCtx->m_aHits); ++i) {
+        for (unsigned i = 0; i < FUN_140a01220(&spCtx->m_aHits); ++i) {
             unsigned nId = FUN_14123c580(FUN_140965780(FUN_140a006a0(&spCtx->m_aHits, i)));
             if (spState.FUN_140975bd0()->FUN_14175a360(pRow->m_n28, nId) == 0)
                 FUN_140a00a20(&aHits, FUN_140a006a0(&spCtx->m_aHits, i));
@@ -1847,8 +1847,8 @@ void CMagic::FUN_141464d00(unsigned nNow, const Unk_MagicSkillRow* pRow)
         FUN_1417ea310(pOwner, &aHits);
     if (!pRow->m_flag100.FUN_1407dfbb0()) {
         Unk_MagicHitHolder spFirst(0);
-        for (unsigned i = 0; i < (unsigned)FUN_140a01220(&aHits); ++i) {
-            if (FUN_14123c580(FUN_140965780(FUN_140a006a0(&aHits, i))) == m_spSkill->m_nOwnerId) {
+        for (unsigned i = 0; i < FUN_140a01220(&aHits); ++i) {
+            if (FUN_14123c580(FUN_140965780(FUN_140a006a0(&aHits, i))) == m_spSkill->m_nCasterId) {
                 spFirst.FUN_140a00530(FUN_140a006a0(&aHits, i));
                 break;
             }
@@ -1860,7 +1860,7 @@ void CMagic::FUN_141464d00(unsigned nNow, const Unk_MagicSkillRow* pRow)
             return;
     }
     int nLimit = FUN_141769410(pOwner, pRow, FUN_140803dc0(FUN_1407ebbf0(&m_spSkill->m_spSrc)));
-    int nHits = FUN_140a01220(&aHits) < nLimit ? FUN_140a01220(&aHits) : nLimit;
+    int nHits = (int)FUN_140a01220(&aHits) < nLimit ? (int)FUN_140a01220(&aHits) : nLimit;
     FUN_141464790(&aHits, nHits);
     Unk_MagicEntity* pReporter = pOwner;
     Unk_MagicRideeRef kRidee(FUN_141468360(pOwner));
@@ -1894,7 +1894,7 @@ void CMagic::FUN_141464d00(unsigned nNow, const Unk_MagicSkillRow* pRow)
 }
 
 // ---- callees of the box piercing pick (unit-local; names invented) ----
-int FUN_1401862e0(Unk_MagicUIntMap* pMap);                          // count
+size_t FUN_1401862e0(Unk_MagicUIntMap* pMap);                       // count
 void FUN_140188ca0(Unk_MagicUIntMap* pMap, unsigned nId, float fValue = 0.0f);   // insert / mark
 float FUN_141198810();                                              // random in [0, 1]
 Unk_MagicEntity* FUN_140961420(Unk_MagicHitRef* pRef);              // the hit entity (null when gone)
@@ -1915,7 +1915,7 @@ void CMagic::FUN_141465b30(unsigned nNow, const Unk_MagicSkillRow* pRow)
         if (!FUN_14028d470(m_fRemainTime, 0))
             return;
     } else if (nMode > 2 && nMode < 5) {
-        if (nMax <= FUN_1401862e0(&m_map1D8))
+        if (nMax <= (int)FUN_1401862e0(&m_map1D8))
             return;
         FUN_141466da0(nNow, pRow);
     }
@@ -1937,7 +1937,7 @@ void CMagic::FUN_141465b30(unsigned nNow, const Unk_MagicSkillRow* pRow)
     if (!pRow->m_flag100.FUN_1407dfbb0()) {
         if (pRow->m_flag100.m_nPad2 == 0) {
             Unk_MagicHitHolder spFirst(0);
-            for (unsigned i = 0; i < (unsigned)FUN_140a01220(&spCtx->m_arr30); ++i) {
+            for (unsigned i = 0; i < FUN_140a01220(&spCtx->m_arr30); ++i) {
                 if ((int)FUN_14123c580(FUN_140965780(FUN_140a006a0(&spCtx->m_arr30, i))) == m_spSkill->m_nCasterId) {
                     spFirst.FUN_140a00530(FUN_140a006a0(&spCtx->m_arr30, i));
                     break;
@@ -1951,7 +1951,7 @@ void CMagic::FUN_141465b30(unsigned nNow, const Unk_MagicSkillRow* pRow)
         }
     } else if (pRow->m_n200 != 0) {
         ATL::CAtlArray<efd::SmartPointer<GameObject> > aKeep;
-        for (unsigned i = 0; i < (unsigned)FUN_140a01220(&spCtx->m_arr30); ++i) {
+        for (unsigned i = 0; i < FUN_140a01220(&spCtx->m_arr30); ++i) {
             Unk_MagicEntity* pHit = FUN_140961420(FUN_140a006a0(&spCtx->m_arr30, i));
             if (pHit == NULL || FUN_14166c930(pHit) != pRow->m_n200)
                 FUN_140a00a20(&aKeep, FUN_140a006a0(&spCtx->m_arr30, i));
@@ -1960,11 +1960,11 @@ void CMagic::FUN_141465b30(unsigned nNow, const Unk_MagicSkillRow* pRow)
         if (!FUN_140a018d0(&aKeep))
             FUN_140a00cb0(&spCtx->m_arr30, &aKeep);
     }
-    int nRoom = nMax - FUN_1401862e0(&m_map1D8);
-    int nHits = nRoom < FUN_140a01220(&spCtx->m_arr30) ? nRoom : FUN_140a01220(&spCtx->m_arr30);
+    int nRoom = nMax - (int)FUN_1401862e0(&m_map1D8);
+    int nHits = nRoom < (int)FUN_140a01220(&spCtx->m_arr30) ? nRoom : (int)FUN_140a01220(&spCtx->m_arr30);
     if (nMode > 2 && nMode < 5 && m_data.m_nPiercingAttackMaxTargetCount != 0
-        && (unsigned long long)m_data.m_nPiercingAttackMaxTargetCount < (unsigned long long)(FUN_1401862e0(&m_map220) + nHits))
-        nHits = m_data.m_nPiercingAttackMaxTargetCount - FUN_1401862e0(&m_map220);
+        && FUN_1401862e0(&m_map220) + nHits > (unsigned long long)m_data.m_nPiercingAttackMaxTargetCount)
+        nHits = (int)((unsigned long long)m_data.m_nPiercingAttackMaxTargetCount - FUN_1401862e0(&m_map220));
     m_n528 = 0;
     for (int i = 0; i < nHits; ++i) {
         Unk_MagicEntity* pHit = FUN_1409ffcb0(FUN_140a006a0(&spCtx->m_arr30, i));
@@ -2058,7 +2058,7 @@ void CMagic::FUN_141465b30(unsigned nNow, const Unk_MagicSkillRow* pRow)
             }
         }
     } else {
-        int nLeft = nMax - FUN_1401862e0(&m_map1D8) < nMax ? nMax - FUN_1401862e0(&m_map1D8) : nMax;
+        int nLeft = nMax - (int)FUN_1401862e0(&m_map1D8) < nMax ? nMax - (int)FUN_1401862e0(&m_map1D8) : nMax;
         if (nLeft == 0) {
             m_n1CC = 1;
             if (nMode != 3 && nMode != 4 && nMax == 1) {

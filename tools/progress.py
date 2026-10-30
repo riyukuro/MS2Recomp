@@ -574,6 +574,19 @@ def vftable_va(sym, bases, vft, siblings=()):
 
 # ----------------------------------------------------------------------------------------------------------------
 
+_va_names = {}             # exe VA -> function identifiers the symbol table names there (look-alike guess, 2c)
+
+
+def _fn_ident(sym):
+    """the function's own identifier in a mangled name (Successor, GetNext, FUN_141bff030; ??0 / ??1 / ??4 for ctor,
+    dtor, operator=), without its class or template arguments"""
+    if sym.startswith("??$"):
+        return sym[3:].split("@", 1)[0]
+    if sym.startswith("??"):
+        return sym[:4] if sym[2:3] == "_" else sym[:3]
+    return sym[1:].split("@", 1)[0] if sym.startswith("?") else sym
+
+
 def quiet_match(obj, sym, va, exe, verbose):
     buf = io.StringIO()
     with contextlib.redirect_stdout(buf):
@@ -1022,6 +1035,31 @@ def process_unit(u, exe, starts, finfo, bases, vft, verbose):
             del bm.MULTICOPY[:]
             known.update(weak)
         outside = saved[0]
+        # a callee the table has no row for still must not land on a VA the table names only as another function,
+        # unless our own body of it matches that VA (an ICF fold of two names): the exe 0x141bff030 (pos =
+        # Successor(...), a GetNext) took unit_141bf99b8's CRBTree::GetPrev, whose Predecessor has no row, so nothing
+        # contradicted it. FUN_<va> names say nothing about the function and are ignored.
+        if not _va_names:
+            for k, v in outside.items():
+                _va_names.setdefault(v, set()).add(_fn_ident(k))
+        other_seen = {}
+
+        def other_fn(t, tv):
+            ids = {i for i in _va_names.get(tv, ()) if not i.startswith("FUN_")}
+            if not ids or _fn_ident(t).startswith("FUN_") or _fn_ident(t) in ids:
+                return False
+            if (t, tv) not in other_seen:
+                ok_t = False
+                if t in obj.by_name and obj.defined(obj.by_name[t]):
+                    h0, c0 = dict(bm.HARVEST), len(bm.CONFLICTS)
+                    with contextlib.redirect_stdout(io.StringIO()):
+                        ok_t = bm.match_one(obj, t, tv, exe, verbose=False, check_unwind=True, quiet=True)
+                    bm.HARVEST.clear()
+                    bm.HARVEST.update(h0)
+                    del bm.CONFLICTS[c0:]
+                    del bm.MULTICOPY[:]
+                other_seen[(t, tv)] = not ok_t
+            return other_seen[(t, tv)]
         cands_g = {}
         while True:
             cands_g = {n: [v for v in h if (n, v) in tg_g] for n, h in pool.items()}
@@ -1037,7 +1075,7 @@ def process_unit(u, exe, starts, finfo, bases, vft, verbose):
                             good = good and any(x == tv or bm.same_code(exe, x, tv) for x in cands_g.get(t, pool[t]))
                         else:
                             w = outside.get(t) or bm.HARVEST.get(t)
-                            good = good and (w is None or w == tv or bm.same_code(exe, w, tv))
+                            good = good and (w is None and not other_fn(t, tv) or w is not None and (w == tv or bm.same_code(exe, w, tv)))
                     if good:
                         keep.append(v)
                 if len(keep) != len(pool[n]) and keep != cands_g[n]:
@@ -1291,7 +1329,7 @@ def main():
         if u.rel in failed or not os.path.exists(u.obj):
             cache[u.rel] = {"key": None, "failed": True, "res": None}
             continue
-        key = [os.path.getmtime(u.obj), os.path.getsize(u.obj), u.ranges, "multicopy5" + ("g" if u.guess else "") + ("f9" if not os.environ.get("MS2_NO_ICF_FOLD") else "") + ("m" if merge_mode else "") + ("x" if os.environ.get("MS2_NO_MULTICOPY") else "") + ("c1" if CHAIN else "")]
+        key = [os.path.getmtime(u.obj), os.path.getsize(u.obj), u.ranges, "multicopy5" + ("g2" if u.guess else "") + ("f9" if not os.environ.get("MS2_NO_ICF_FOLD") else "") + ("m" if merge_mode else "") + ("x" if os.environ.get("MS2_NO_MULTICOPY") else "") + ("c1" if CHAIN else "")]
         if os.environ.get("MS2_MERGE_INCR"):      # tools/merge.sh: persistent tree, match results also keyed by their inputs
             key.append(mergekey.game_stamp())
             key.append(mergekey.rows_stamp(u.obj, manual_tsv))

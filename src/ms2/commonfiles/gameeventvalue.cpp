@@ -586,8 +586,7 @@ Unk_GameEventValue258::~Unk_GameEventValue258() {}
 #pragma warning(disable : 4715)
 int Unk_GameEventValue258::GetValue()
 {
-    // MS2-FUNCTIONAL: the exe has one extra nop after the guard dtor on the fall-off path
-    if (Unk_LockGuard guard = m_lock) {} else
+    if (Unk_LockGuard guard = m_lock) { __assume(0); } else
     {
         return m_value;
     }
@@ -1081,8 +1080,7 @@ MS2_REPLACE_METHOD(0x1404266F0, CGameEventValueBattlePetSpawn, RemoveImprove, 61
 #pragma warning(disable : 4715)
 __int64 CGameEventValueBattlePetSpawn::GetTime(unsigned fieldId)
 {
-    // MS2-FUNCTIONAL: the exe has one extra nop after the guard dtor on the fall-off path
-    if (Unk_LockGuard guard = m_lock) {} else
+    if (Unk_LockGuard guard = m_lock) { __assume(0); } else
     {
         if (m_spawns.Lookup(fieldId) == NULL) {
             __int64 endTime = 0;

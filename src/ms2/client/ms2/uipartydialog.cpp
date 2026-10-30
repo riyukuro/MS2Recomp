@@ -215,6 +215,7 @@ CStringTable* GetStringTable();                                          // TSin
 IClientPlatform* FUN_140d86260();
 class Unk_PdPopupMenu;                                                  // UIPopUpMenu (below) as seen by the lookup
 UIDialog* FUN_140c30140(int nDialogId);                                 // the open dialog of this id
+struct Unk_PdBuddyLevel { int FUN_1401cc210(); };                        // CBuddy's level getter as UIPopUpMenu reads it: the zero-extended 32-bit result
 class Unk_PdClubManager { public: int FUN_140b14cd0(); void FUN_140b15c10(CStringW strName); };
 Unk_PdClubManager* FUN_140e0d900();
 class Unk_PdNametagFlags { public: char m_00[0x30]; bool m_30; };       // m_30: show the returning-user mark
@@ -2249,7 +2250,7 @@ void UIPopUpMenu::FUN_141a7f950(const Unk_PopupMenuInfo& info, __int64 nBuddyId)
     m_d0 = pBuddy->FUN_1401cc2f0();
     Unk_PmTarget target;
     target.m_pos = efd::Point3(info.m_x, info.m_y, 0);
-    target.m_nLevel = pBuddy->FUN_1401cc210();
+    target.m_nLevel = reinterpret_cast<Unk_PdBuddyLevel*>(pBuddy)->FUN_1401cc210();
     target.m_nCharId = pBuddy->FUN_1401cc230();
     target.m_strImage = FUN_141028be0(pBuddy->FUN_1401cc230(), *pBuddy->FUN_1401cc530(), 1, CString(""));
     target.m_strName = strName;

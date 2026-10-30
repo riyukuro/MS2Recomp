@@ -1117,7 +1117,7 @@ void AdPushEntityLimitedBundle::vfunc_9()
 bool AdPushEntityLimitedBundle::vfunc_10()
 {
     if (!m_bMinimized && (m_dlg.get() ? true : false))
-        return m_dlg->FUN_IsFloating() == 1;
+        return m_dlg->FUN_141924630() == 1;
     return false;
 }
 

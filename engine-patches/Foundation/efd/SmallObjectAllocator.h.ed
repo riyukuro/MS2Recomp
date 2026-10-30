@@ -1,0 +1,5 @@
+195a
+
+    // MS2: bytes currently held by large (non-pool) allocations.
+    volatile efd::SInt32 m_iLargeAllocBytes;
+.

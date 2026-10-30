@@ -10509,8 +10509,8 @@ criHeap_Destroy	140028074	func
 ??0ReadArgs@AS3@GFx@Scaleform@@QEAA@AEAVVM@123@K@Z	1424d9530	func
 ??0ReadArgs@TR@AS3@GFx@Scaleform@@QEAA@AEAVVM@234@AEAVState@1234@K@Z	1424d9640	func
 ??1CheckResult@AS3@GFx@Scaleform@@QEAA@XZ	1424e4290	func
-?Sfr33StateConvertOpTo@AS3@GFx@Scaleform@@YAXPEAEAEAVTraits@InstanceTraits@123@W4TraceNullType@Value@123@@Z	1424f1e50	func
-?Sfr33StateConvertRegisterTo@AS3@GFx@Scaleform@@YAXPEAEKAEAVTraits@InstanceTraits@123@W4TraceNullType@Value@123@@Z	1424f1ed0	func
+?ConvertOpTo@State@TR@AS3@GFx@Scaleform@@QEAAXAEAVTraits@InstanceTraits@345@W4TraceNullType@Value@345@@Z	1424f1e50	func
+?ConvertRegisterTo@State@TR@AS3@GFx@Scaleform@@QEAAX_JAEAVTraits@InstanceTraits@345@W4TraceNullType@Value@345@@Z	1424f1ed0	func
 ?Sfr33ObjectInterfaceSetObject@AS3@GFx@Scaleform@@YA_NPEAVObjectInterface@Value@23@PEAV523@PEAVObject@123@@Z	1424f3d20	func
 ?Sfr33DeleteNamedProperty@AS3@GFx@Scaleform@@YA_NPEAXPEAVObject@123@PEBD@Z	1424f4780	func
 ?Sfr33TracerPopLast@AS3@GFx@Scaleform@@YAXPEAE@Z	1424f9180	func
@@ -15189,7 +15189,7 @@ DAT_1431921e0	1431921e0	data
 ?FUN_140019af0@@YAXXZ	140019af0	func
 ?FUN_140019af0@@YAPEBDPEBX@Z	140019af0	func
 ?FUN_140019b60@@YAXXZ	140019b60	func
-?FUN_140019b60@@YAPEAXPEAX_K@Z	140019b60	func
+?FUN_140019b60@@YAPEAXPEAXI@Z	140019b60	func
 ?FUN_140019bd0@@YAXXZ	140019bd0	func
 ?FUN_140019bd0@?A0xa472a7c9@@YAPEAPEAXPEAPEAXPEAX@Z	140019bd0	func
 ?FUN_14001a040@@YAXXZ	14001a040	func
@@ -15211,7 +15211,7 @@ DAT_1431921e0	1431921e0	data
 ?FUN_14001ae30@@YAXXZ	14001ae30	func
 ?FUN_14001ae30@@YAPEBDPEBX@Z	14001ae30	func
 ?FUN_14001aea0@@YAXXZ	14001aea0	func
-?FUN_14001aea0@@YAPEAXPEAX_K@Z	14001aea0	func
+?FUN_14001aea0@@YAPEAXPEAXI@Z	14001aea0	func
 ?FUN_14001af10@@YAXXZ	14001af10	func
 ?FUN_14001af10@?A0xa472a7c9@@YAPEAPEAXPEAPEAXPEAX@Z	14001af10	func
 ?FUN_14001afd0@@YAXXZ	14001afd0	func
@@ -17198,7 +17198,7 @@ FUN_142689aa0	142689aa0	func
 ?FUN_1423cc3d0@IME@GFx@Scaleform@@YAXPEAX@Z	1423cc3d0	func
 ?FUN_1423cdbb0@IME@GFx@Scaleform@@YAPEAXPEA_KPEAX1@Z	1423cdbb0	func
 ?FUN_1423d18b0@IME@GFx@Scaleform@@YAPEAXPEAX00@Z	1423d18b0	func
-?FUN_1423d54d0@IME@GFx@Scaleform@@YAPEA_KPEA_K@Z	1423d54d0	func
+?FUN_1423d54d0@IME@GFx@Scaleform@@YAPEA_KPEA_K_K@Z	1423d54d0	func
 ??0NodeData@TreeRoot@Render@Scaleform@@QEAA@XZ	14256a710	func
 ?SetModalClip@MovieImpl@GFx@Scaleform@@QEAAXPEAVSprite@23@I@Z	1425761a0	func
 ?GetShadowStyle@TextField@GFx@Scaleform@@QEBA?AVASString@23@XZ	1425b9100	func
@@ -17304,3 +17304,12 @@ FUN_142747b30	142747b30	func
 ??0Unk_CharEquip@@QEAA@AEBVColor@efd@@@Z	140a0a3a0	func
 ??0Unk_MessageBoxPos@@QEAA@AEBVNiPoint3@@@Z	14027dcf0	func
 ??1NotifyChangeUIBuildingCount@@UEAA@XZ	141125fa0	func
+??$add@PEBX@?$HashSetBase@PEBXV?$FixedSizeHash@PEBX@Scaleform@@V12@U?$AllocatorGH@PEBX$01@2@V?$HashsetCachedEntry@PEBXV?$FixedSizeHash@PEBX@Scaleform@@@2@@Scaleform@@AEAAXPEAXAEBQEBX_K@Z	1424d2890	func
+?Clear@?$HashSetBase@PEBXV?$FixedSizeHash@PEBX@Scaleform@@V12@U?$AllocatorGH@PEBX$01@2@V?$HashsetCachedEntry@PEBXV?$FixedSizeHash@PEBX@Scaleform@@@2@@Scaleform@@QEAAXXZ	1424ef320	func
+?AddRefImpl@?$MS2Ptr@VUnk_WsK_Rank@@@@AEBAXPEAX@Z	140b314c0	func
+??0Unk_WsProxies@@QEAA@XZ	1416c3150	func
+??1Unk_WsProxies@@QEAA@XZ	1416c3190	func
+??1Unk_WsV058@@QEAA@XZ	140ae16b0	func
+??1?$MS2Ptr@VUnk_MbChecker@@@@QEAA@XZ	14025c670	func
+?Release@?$MS2Ptr@VUnk_MbChecker@@@@AEAAXXZ	140265600	func
+?ReleaseImpl@?$MS2Ptr@VUnk_MbChecker@@@@AEAAXPEAX@Z	140265710	func

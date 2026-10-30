@@ -116,16 +116,14 @@ CDynamicBanWordManager::CDynamicBanWordManager() : current(0),next(0) {}
 // @0x140349fb0
 void CDynamicBanWordManager::FUN_140349fb0(const Ptr& value) { if(Unk_BanGuard guard=lock) {} else { current=value; } }
 MS2_REPLACE_METHOD(0x140349FB0, CDynamicBanWordManager, FUN_140349fb0, 100, 0xF3B3E865);
-// MS2-FUNCTIONAL: Equivalent locked smart-pointer return; exe has one extra cleanup NOP.
 // @0x14034a020
-CDynamicBanWordManager::Ptr CDynamicBanWordManager::FUN_14034a020() { if(Unk_BanGuard guard=lock) {} else { return current; } }
+CDynamicBanWordManager::Ptr CDynamicBanWordManager::FUN_14034a020() { if(Unk_BanGuard guard=lock) { __assume(0); } else { return current; } }
 MS2_REPLACE_METHOD(0x14034a020, CDynamicBanWordManager, FUN_14034a020, 136, 0xDD3192F5);
 // @0x14034a0b0
 void CDynamicBanWordManager::FUN_14034a0b0(const Ptr& value) { if(Unk_BanGuard guard=lock) {} else { next=value; } }
 MS2_REPLACE_METHOD(0x14034A0B0, CDynamicBanWordManager, FUN_14034a0b0, 100, 0x9E82B8B1);
-// MS2-FUNCTIONAL: Equivalent locked smart-pointer return; exe has one extra cleanup NOP.
 // @0x14034a120
-CDynamicBanWordManager::Ptr CDynamicBanWordManager::FUN_14034a120() { if(Unk_BanGuard guard=lock) {} else { return next; } }
+CDynamicBanWordManager::Ptr CDynamicBanWordManager::FUN_14034a120() { if(Unk_BanGuard guard=lock) { __assume(0); } else { return next; } }
 MS2_REPLACE_METHOD(0x14034a120, CDynamicBanWordManager, FUN_14034a120, 136, 0x81959B88);
 // @0x14034a1b0
 __int64 CDynamicBanWordManager::FUN_14034a1b0() { Ptr value=FUN_14034a020(); if(value==0) return 0; return value->FUN_140349400(); }

@@ -67,9 +67,9 @@ public:
     MS2Ptr<Unk_GemText> FUN_140bc7450(const CString& strName);
     MS2Ptr<Unk_GemClip> FUN_140d01d80(const CString& strName);
 private:
-    void* m_pad[0x88 / sizeof(void*)];
+    void* m_pad[0x80 / sizeof(void*)];
 };
-MS2_CHECK_SIZE(Unk_GemNode, 0x88);
+MS2_CHECK_SIZE(Unk_GemNode, 0x80);
 
 // ---- dynamic initializers (.text$di) ----
 
@@ -283,7 +283,6 @@ ItemInfoSlot* FUN_140cfe6c0(NotifyContext::BindData* p)
 // ---- gfxutil.h: set the text of a named child of a movie ----
 
 // @0x140cfee80
-// MS2-FUNCTIONAL: gfxutil.h template instance written against unit-local node views
 void FUN_140cfee80(const Scaleform::GFx::Value& root, CString strName, CStringW strText)
 {
     if (!FUN_1409b4d40(root))
@@ -296,7 +295,6 @@ void FUN_140cfee80(const Scaleform::GFx::Value& root, CString strName, CStringW 
 }
 
 // @0x140cfefe0
-// MS2-FUNCTIONAL: gfxutil.h template instance written against unit-local node views
 void FUN_140cfefe0(const Scaleform::GFx::Value& root, CString strClip, CString strName, CStringW strText)
 {
     if (!FUN_1409b4d40(root))
@@ -307,11 +305,10 @@ void FUN_140cfefe0(const Scaleform::GFx::Value& root, CString strClip, CString s
         return;
     MS2Ptr<Unk_GemText> spText = spClip->FUN_140d01d30(strName);
     if (spText.get() != 0)
-        static_cast<ASObj*>(static_cast<AScript*>(spText.get()))->FUN_1407cbb20("text", strText);
+        static_cast<ASObj*>(static_cast<AScript*>(spText.operator->()))->FUN_1407cbb20("text", strText);
 }
 
 // @0x140cff1b0
-// MS2-FUNCTIONAL: gfxutil.h template instance written against unit-local node views
 void FUN_140cff1b0(const Scaleform::GFx::Value& root, CString strName, CStringW strText)
 {
     if (!FUN_1409b4d40(root))

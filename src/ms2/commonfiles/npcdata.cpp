@@ -1151,7 +1151,7 @@ MS2Ptr<CRegionSpawnResult> CNpcDataTable::FindSpawnResult(CStringW strTags, int 
     pResult->m_nMaxDifficulty = nMaxDifficulty;
     pResult->m_nMinDifficulty = nMinDifficulty;
     pResult->m_strTag = strTags;
-    float fTotal = 0.0f;
+    int nTotal = 0;
     for (POSITION pos = mapHit.GetHeadPosition(); pos != 0; mapHit.GetNext(pos))
     {
         unsigned nNpcId = mapHit.GetKeyAt(pos);
@@ -1167,13 +1167,13 @@ MS2Ptr<CRegionSpawnResult> CNpcDataTable::FindSpawnResult(CStringW strTags, int 
                 pProb->m_pSpawn = pData;
                 int nDiff = nMaxDifficulty - pData->m_nDifficulty;
                 pProb->m_fWeight = (float)FUN_1401c0db0()->FUN_1406762d0(hit.m_nMain, hit.m_nSub, pData->m_nRareDegree, nDiff);
-                fTotal += pProb->m_fWeight;
+                nTotal += pProb->m_fWeight;
                 pResult->m_aProb.Add(pProb);
             }
         }
     }
     for (int i = 0; i < (int)pResult->m_aProb.GetCount(); i++)
-        pResult->m_aProb[i]->m_fRate = pResult->m_aProb[i]->m_fWeight / fTotal;
+        pResult->m_aProb[i]->m_fRate = pResult->m_aProb[i]->m_fWeight / nTotal;
     {
         Unk_CriticalSectionLock lock(m_lock, 1);
         m_aResult.Add(pResult);

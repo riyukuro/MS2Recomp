@@ -570,6 +570,37 @@ void Unk_WsInst3IndexInt(WsReal::Map1e8& m1e8, WsReal::Mapac0& mac0, WsReal::Map
     WsDriveIndex(mad0, 0);
 }
 
+// The operator[] glue of unit_141bf79d0 calls these two by VA. The try_emplace pins above name 0x141beef50 as
+// map<unsigned __int64, Unk_WsVad0> and 0x141bef090 as map<int, set>, so without a definition the fullexe aliased m_1f8's
+// insert to a 64-bit-key tree and m_ad0's to a 32-bit-key tree that builds a std::set in the new node. The exe compares
+// with less<int> 0x1401f1b70 and less<unsigned __int64> 0x14044a540.
+// MS2-FUNCTIONAL: m_1f8[cell] (FUN_141bf79d0): try_emplace(const int&)
+void* FUN_141beef50(void* pMap, void* pKeyBuf, void* pKey)
+{
+    typedef WsReal::Map1f8 Map;
+    return new (pKeyBuf) std::pair<Map::iterator, bool>(static_cast<Map*>(pMap)->try_emplace(*static_cast<const int*>(pKey)));
+}
+
+// MS2-FUNCTIONAL: m_ad0[std::move(key)] (FUN_141bf7b10): try_emplace(unsigned __int64&&), _Try_emplace 0x141bebaf0
+void* FUN_141bef090(void* pMap, void* pKeyBuf, void* pKey)
+{
+    typedef WsReal::Mapad0 Map;
+    return new (pKeyBuf) std::pair<Map::iterator, bool>(
+        static_cast<Map*>(pMap)->try_emplace(std::move(*static_cast<unsigned __int64*>(pKey))));
+}
+
+// FUN_141bbd640 (worldservice_1) does m_1f8[cell] = std::make_pair(id, grid) through FUN_141beeda0. The make_pair pin above
+// names 0x141beeda0 as make_pair<unsigned&, Unk_WsVac0&>, so the fullexe stored the low dword of the EntityID at +0 and read
+// 8 bytes from the 4-byte grid value into +8. The exe builds pair<egf::EntityID, unsigned> (pair ctor 0x141bdc620).
+// worldservice_1's Unk_WsI_IdValue has the same 16-byte layout (returned through the hidden slot).
+struct Unk_WsI_IdValue { std::pair<egf::EntityID, unsigned> m_pair; };
+// MS2-FUNCTIONAL: std::make_pair(id, grid) for m_1f8 (FUN_141bbd640)
+Unk_WsI_IdValue FUN_141beeda0(const egf::EntityID& id, unsigned& value)
+{
+    Unk_WsI_IdValue r = { std::make_pair(id, value) };
+    return r;
+}
+
 // FUN_141bd8ae0's m_990.insert(std::make_pair(id, pHider)) (insert 0x141beec90 -> emplace 0x141bedd70 -> part 2's
 // _Insert_nohint 0x141be87a0).
 void Unk_WsInst3HiderInsert(WsReal::Map990& m990, egf::EntityID& id, CEntityHider* pHider)

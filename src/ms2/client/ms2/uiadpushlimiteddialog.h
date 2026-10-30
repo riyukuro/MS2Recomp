@@ -52,7 +52,6 @@ public:
     bool FUN_140e043e0(Scaleform::GFx::Value* pRetVal, ASData& data, MS2Ptr<TMarketBillDataParam> spParam);     // 0x140e043e0 tooltip callback
     void FUN_140e04460(bool bMinimize);                             // 0x140e04460 minimize / restore the owner
     bool FUN_140e044b0();                                           // 0x140e044b0 open (unless a banner image is pending)
-    int FUN_IsFloating() { return m_bFloating; }                    // inlined by AdPushEntityLimitedBundle::vfunc_10 (name invented)
 
 private:
     MS2_LAYOUT_FRIEND;

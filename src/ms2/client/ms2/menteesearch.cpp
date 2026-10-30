@@ -195,11 +195,9 @@ void CMenteeSearchManager::SetParam(const CMenteeSearchParam* pParam)
 // @0x140b6e630
 MS2Ptr<CMenteeSearchParam> CMenteeSearchManager::GetParam()
 {
-    MS2Ptr<CMenteeSearchParam> spParam(0);
-    if (Unk_LockGuard guard = m_lock) {}
+    if (Unk_LockGuard guard = m_lock) { __assume(0); }
     else
-        spParam = m_pParam;
-    return spParam;
+        return m_pParam;
 }
 
 // @0x140b6e6c0
@@ -234,19 +232,26 @@ void CMenteeSearchManager::OnWebResult(MS2Ptr<CMenteeSearchParam> pParam, MS2Ptr
     int nError = 1;
     if (pResult->m_nResult == 0)
     {
-        MS2Ptr<MenteeSearch::ResponseMenteeList> spList(new MenteeSearch::ResponseMenteeList);
-        if (spList == 0)
-            throw Exception(0x20);
-        int nRead = spList->FUN_140b6dfb0(pResult->m_buffer);
-        if (nRead == 0)
-            throw Exception(0x21);
-        if (spList->m_nResult == 0)
+        try
         {
-            nError = 0;
-            SetResponse(spList);
+            MS2Ptr<MenteeSearch::ResponseMenteeList> spList(new MenteeSearch::ResponseMenteeList);
+            if (spList == 0)
+                throw Exception(0x20);
+            int nRead = spList->FUN_140b6dfb0(pResult->m_buffer);
+            if (nRead == 0)
+                throw Exception(0x21);
+            if (spList->m_nResult == 0)
+            {
+                nError = 0;
+                SetResponse(spList);
+            }
+            else
+                nError = spList->m_nResult;
         }
-        else
-            nError = spList->m_nResult;
+        catch (Exception& e)
+        {
+            nError = e.GetCode();
+        }
     }
     if (nError != 0)
     {

@@ -59,13 +59,13 @@ void UIMyHouseAuthDialog::OnLoadComplete()
     UIDialog::OnLoadComplete();
 }
 
-// MS2-FUNCTIONAL: the exe returns (vfunc_55() ? that value : m_30 == 0) as a bool; the shared slot 79 is declared void
 // @0x141a57c60
 void UIMyHouseAuthDialog::vfunc_79(void* p)
 {
     UIDialog::vfunc_79(p);
-    if (vfunc_55() == 0)
-        FUN_140a467d0(&m_30);
+    if (vfunc_55() == 0 && FUN_140a467d0(&m_30))
+    {
+    }
 }
 
 // @0x141a57cc0

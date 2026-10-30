@@ -174,7 +174,7 @@ public:
     void FUN_140b31640();                                       // release the reference
     void FUN_140b2da40();                                       // drop the pointer
     Unk_IoRanking* FUN_140b2e1e0() const;                       // the ranking entry
-    int FUN_140efcde0() const;                                  // holds an entry
+    void* FUN_140efcde0() const;                                // holds an entry
     void* m_pad;
     Unk_IoRanking* m_p;
 };

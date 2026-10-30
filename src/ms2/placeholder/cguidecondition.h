@@ -476,7 +476,7 @@ public:
     unsigned __int64 FUN_1413886d0();                             // count
     Unk_GcCondRef& FUN_141387b40(size_t nIdx);              // the nth
     void FUN_141388460(const Unk_GcCondRef& ref);           // append
-    CAtlArray<void*> m_arr;
+    CAtlArray<Unk_GcCondRef> m_arr;                         // dtor 0x1413875d0 releases the conditions
 };
 MS2_CHECK_SIZE(Unk_GcCondList, 0x20);
 

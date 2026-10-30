@@ -20,7 +20,6 @@ class CAlignmentInfo : public CPtred
 public:
     CAlignmentInfo();                                                       // 0x1419014c0 (centre, defaults 5)
     CAlignmentInfo(int nAlign, float x, float y);                           // 0x141901540
-    virtual ~CAlignmentInfo();                                              // 0x141904710 (??_G 0x1419049f0)
     void FUN_1419015e0(Unk_140165cf0* pNode);                                         // write offsetX / offsetY / alignType
     bool FUN_141901660(Unk_140165cf0* pNode);                                         // read them back
     void FUN_141901760(MS2Ptr<AScript> spScript);                           // remember the dialog's current placement

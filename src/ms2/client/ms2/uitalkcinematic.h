@@ -31,8 +31,9 @@ private:
     unsigned m_nTick; unsigned m_nExtra;
 };
 
-// The loaded reward image names (the exe's CAtlArray<void*> shape; the accessors are out of line).
-class Unk_TalkImageList : public ATL::CAtlArray<void*>
+// The loaded reward image names (the accessors are out of line). The dtor 0x1401641d0 is ~CAtlArray<CString>, which
+// destroys the names.
+class Unk_TalkImageList : public ATL::CAtlArray<CString>
 {
 public:
     unsigned __int64 FUN_1401662c0();                               // GetCount

@@ -2747,21 +2747,6 @@ bool CUgcGetCostTable::FUN_1408984b0(__int64 nStart, __int64 nLength, CostList& 
     return true;
 }
 
-// @0x1408999c0
-TUgcGetCostInfo::~TUgcGetCostInfo()
-{
-}
-
-// @0x1408999e0
-UGCMapBlueprintInfo::~UGCMapBlueprintInfo()
-{
-}
-
-// @0x140899a10
-UGCMapDesignInfo::~UGCMapDesignInfo()
-{
-}
-
 // @0x140896c50
 CUgcCharBookMark::CUgcCharBookMark(MS2Ptr<Unk_CharBookMarkOwner> spOwner)
     : m_map(10)

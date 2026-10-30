@@ -102,7 +102,7 @@ struct Unk_AqContentPtr
 class Unk_AqContentArray
 {
 public:
-    int FUN_14078fae0() const;                                          // GetCount
+    size_t FUN_14078fae0() const;                                       // GetCount
     const Unk_AqContentPtr& FUN_14078f350(__int64 i) const;             // GetAt
 };
 class Unk_AqTalkScript

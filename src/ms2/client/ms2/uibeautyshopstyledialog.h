@@ -89,7 +89,7 @@ public:
     Unk_BSFee& operator=(const Unk_BSFee& o);   // 0x1418cc890
     const CString& FUN_1406dc4b0();             // the fee's currency name
     int FUN_1406dc4d0();                        // currency type
-    int FUN_1406dc4f0();                        // fee
+    __int64 FUN_1406dc4f0();                    // fee
     int FUN_1406dc510();                        // fee type
 
     MS2_LAYOUT_FRIEND;

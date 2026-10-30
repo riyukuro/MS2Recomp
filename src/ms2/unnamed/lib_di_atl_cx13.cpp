@@ -21,7 +21,7 @@
 #include <cstdlib>
 #include <new>
 
-extern char FUN_140083350[];
+extern "C" IMAGE_DOS_HEADER __ImageBase;
 extern void FUN_141803560(void* self);
 extern void FUN_141803610(void* self);
 extern void FUN_142cc4300();
@@ -53,7 +53,7 @@ void InitComModule(bool useInitializeEx, void (*terminate)())
     *reinterpret_cast<std::uint64_t*>(com + 0x38) = 0;
     *reinterpret_cast<std::uint64_t*>(com + 0x40) = 0;
     *reinterpret_cast<std::uint64_t*>(com) = 0;
-    *reinterpret_cast<std::uintptr_t*>(com + 8) = reinterpret_cast<std::uintptr_t>(FUN_140083350) + 0x375;
+    *reinterpret_cast<std::uintptr_t*>(com + 8) = reinterpret_cast<std::uintptr_t>(&__ImageBase);
     *reinterpret_cast<std::uintptr_t*>(com + 0x10) = reinterpret_cast<std::uintptr_t>(&ATL::__pobjMapEntryLast);
     *reinterpret_cast<std::uintptr_t*>(com + 0x18) = reinterpret_cast<std::uintptr_t>(&ATL::__pobjMapEntryLast);
 
