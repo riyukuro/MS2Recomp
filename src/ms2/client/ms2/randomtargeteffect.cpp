@@ -184,17 +184,18 @@ void CRandomTargetEffect::Hide()
 }
 
 // @0x140aab3c0
-// MS2-FUNCTIONAL: the exe returns the first call result without a spilled temporary (original expression form unknown)
-bool CRandomTargetEffect::SetScale(float fScale)
+// The equal-scale path falls off the end, as in the exe (eax keeps the comparison result).
+#pragma warning(push)
+#pragma warning(disable: 4715)
+int CRandomTargetEffect::SetScale(float fScale)
 {
-    bool bResult = FUN_14028d470(m_fScale, fScale);
-    if (!bResult)
-    {
+    if (FUN_14028d470(m_fScale, fScale)) {
+    } else {
         m_fScale = fScale;
-        bResult = m_spNode != 0;
+        return m_spNode != 0;
     }
-    return bResult;
 }
+#pragma warning(pop)
 
 // @0x140aab420
 CRandomTargetEffectController::CRandomTargetEffectController()

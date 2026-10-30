@@ -1806,9 +1806,9 @@ unsigned short PCBase::vfunc_78()
 MS2_REPLACE_METHOD(0x14166fda0, PCBase, vfunc_78, 8, 0x7F371472);
 
 // @0x14166fdb0
-void PCBase::vfunc_79()
+unsigned short PCBase::vfunc_79()
 {
-    vfunc_78();
+    return vfunc_78();
 }
 MS2_REPLACE_METHOD(0x14166fdb0, PCBase, vfunc_79, 33, 0xAE300131);
 
@@ -2966,12 +2966,12 @@ efd::Point3 PCBase::FUN_141674a10(efd::Point3 kDir, float* pYaw)
 MS2_REPLACE_METHOD(0x141674a10, PCBase, FUN_141674a10, 323, 0xCA310BE2);
 
 // @0x141674c60
-void PCBase::vfunc_111(void* p, int a, int b, void* q)
+void PCBase::vfunc_111(void* p, int a, int b, efd::Point3 kPos)
 {
     __int64 nValue = abs(reinterpret_cast<__int64>(p));
     Unk_PCBaseDamageUI* pDamage = FUN_140b624b0(0x4e32);
     if (pDamage != 0)
-        pDamage->FUN_141911e90(this, nValue, a, b, q);
+        pDamage->FUN_141911e90(this, nValue, a, b, &kPos);
     int nOwnerId = b;
     Unk_PCBaseWorldActor* pTarget = FUN_1403ed2d0()->FUN_141bd13a0(nOwnerId);
     if (pTarget != 0)
@@ -4062,8 +4062,7 @@ void PCBase::FUN_141671c20(MS2Ptr<CDamageRecord> spRecord)
             __int64 nTotal = 0;
             for (unsigned int i = 0; i < nCount; i++) {
                 nTotal += spRecord->m_arrDamage[i];
-                efd::Point3 kPos = spRecord->m_kPos;
-                vfunc_111(reinterpret_cast<void*>(spRecord->m_arrDamage[i]), spRecord->m_arrTypes[i], spRecord->m_n2c, &kPos);
+                vfunc_111(reinterpret_cast<void*>(spRecord->m_arrDamage[i]), spRecord->m_arrTypes[i], spRecord->m_n2c, spRecord->m_kPos);
             }
             vfunc_112(reinterpret_cast<void*>(nTotal), spRecord->m_n2c);
         }
@@ -4090,8 +4089,7 @@ void PCBase::FUN_141672020(MS2Ptr<CDotDamageRecord> spRecord)
         return;
     if (FUN_1403ed2d0()->FUN_141bd7230(vfunc_18()))
         return;
-    efd::Point3 kZero = efd::Point3::ZERO;
-    vfunc_111(spRecord->FUN_14175ac30(), spRecord->FUN_14175b130(), spRecord->m_n2c, &kZero);
+    vfunc_111(spRecord->FUN_14175ac30(), spRecord->FUN_14175b130(), spRecord->m_n2c, efd::Point3::ZERO);
     vfunc_112(spRecord->FUN_14175ac30(), spRecord->m_n2c);
 }
 MS2_REPLACE_METHOD(0x141672020, PCBase, FUN_141672020, 412, 0xA04BB489);
@@ -4112,8 +4110,7 @@ void PCBase::FUN_1416721d0(MS2Ptr<CSplashDamageRecord> spRecord)
         if (nCount > 0) {
             for (unsigned int i = 0; i < nCount; i++) {
                 nTotal += spRecord->m_arrDamage[i];
-                efd::Point3 kZero = efd::Point3::ZERO;
-                vfunc_111(reinterpret_cast<void*>(spRecord->m_arrDamage[i]), spRecord->m_arrTypes[i], spRecord->m_n2c, &kZero);
+                vfunc_111(reinterpret_cast<void*>(spRecord->m_arrDamage[i]), spRecord->m_arrTypes[i], spRecord->m_n2c, efd::Point3::ZERO);
             }
             vfunc_112(reinterpret_cast<void*>(nTotal), spRecord->m_n2c);
         }

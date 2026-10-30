@@ -742,15 +742,14 @@ unsigned short CNpc::vfunc_78()
     return (unsigned short)m_nE58;
 }
 
-// MS2-FUNCTIONAL: the exe returns vfunc_78() / 0 in eax (PCBase declares the slot void).
 // @0x14108fe10
-void CNpc::vfunc_79()
+unsigned short CNpc::vfunc_79()
 {
     if (m_spNpcData == 0)
-        return;
+        return 0;
     if (m_spNpcData->HasPropertyTag(3))
-        return;
-    vfunc_78();
+        return 0;
+    return vfunc_78();
 }
 
 // The hp bar (created when the npc row shows one).
@@ -828,14 +827,12 @@ const char* CNpc::vfunc_123(int n)
     return PCBase::vfunc_123(n);
 }
 
-// MS2-FUNCTIONAL: the last argument is a 12-byte point passed by value (PCBase declares it void*).
 // @0x141090620
-void CNpc::vfunc_111(void* p, int a, int b, void* q)
+void CNpc::vfunc_111(void* p, int a, int b, efd::Point3 kPos)
 {
     if (FUN_14166ce30() != 0 && GetNpcData()->GetCorpseHitAble() != 0)
         return;
-    efd::Point3 kPos = *static_cast<efd::Point3*>(q);
-    PCBase::vfunc_111(p, a, b, &kPos);
+    PCBase::vfunc_111(p, a, b, kPos);
 }
 
 // @0x141090740

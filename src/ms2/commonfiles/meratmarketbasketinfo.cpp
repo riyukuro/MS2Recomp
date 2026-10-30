@@ -6,7 +6,6 @@
 // MS2-PIN: ?Copy@?$CAtlArray@HV?$CElementTraits@H@ATL@@@ATL@@QEAAXAEBV12@@Z 0x1406a98d0
 // MS2-PIN: ?GetNode@?$CAtlMap@HV?$MS2Ptr@VCMeratMarketPremiumProduct@@@@V?$CElementTraits@H@ATL@@V?$CElementTraits@V?$MS2Ptr@VCMeratMarketPremiumProduct@@@@@3@@ATL@@AEBAPEAVCNode@12@HAEAI0AEAPEAV312@@Z 0x1406aa630
 // MS2-PIN: ?ReleaseImpl@?$MS2Ptr@UPreminmMarketSaleEventContext@@@@AEAAXPEAX@Z 0x1406ae740
-// MS2-PIN: ??8?$MS2Ptr@UPreminmMarketSaleEventContext@@@@QEBA_NPEAUPreminmMarketSaleEventContext@@@Z 0x1406a8f50
 // MS2-RANGE: 0x1400bb3f0-0x1400bb6a0 .text$di
 // MS2-PIN: ??1?$CAtlArray@V?$MS2Ptr@UPreminmMarketSaleEventContext@@@@V?$CElementTraits@V?$MS2Ptr@UPreminmMarketSaleEventContext@@@@@ATL@@@ATL@@QEAA@XZ 0x1406a86a0 ; merge-bind
 // MS2-PIN: ??1?$MS2Ptr@VCUGCDesignData@@@@QEAA@XZ 0x1406a8930 ; merge-bind
@@ -654,7 +653,20 @@ void CDBPremiumProduct::ReadBrief(CInPacket& packet)
     m_nPoint = (unsigned)packet.ReadInt32();
 }
 
-// MS2-FUNCTIONAL: the exe's folded MS2Ptr::operator== (0x1406a8f50) returns int, so it has no movzx after each call
+// Layout view of MS2Ptr<T> (its m_p at +8 is private).
+struct Unk_SaleCtxPtrView
+{
+    void* m_0;
+    PreminmMarketSaleEventContext* m_p;
+};
+
+// The exe's int-returning `sp == p` that GetSalePrice calls; MS2Ptr::operator== itself is 0x1407cebd0 and returns bool.
+// @0x1406a8f50
+int FUN_1406a8f50(const MS2Ptr<PreminmMarketSaleEventContext>* sp, PreminmMarketSaleEventContext* p)
+{
+    return ((const Unk_SaleCtxPtrView*)sp)->m_p == p;
+}
+
 // @0x14069f980
 __int64 CDBPremiumProduct::GetSalePrice(const CDBPremiumProduct* pParent)
 {
@@ -682,9 +694,9 @@ __int64 CDBPremiumProduct::GetSalePrice(const CDBPremiumProduct* pParent)
             for (int i = 0; i < nCount; i++)
             {
                 MS2Ptr<PreminmMarketSaleEventContext>& spContext = arrAll[i];
-                if (spContext == 0)
+                if (FUN_1406a8f50(&spContext, 0))
                     continue;
-                if (spBest == 0 || spBest->m_18 < spContext->m_18)
+                if (FUN_1406a8f50(&spBest, 0) || spBest->m_18 < spContext->m_18)
                     spBest = spContext;
             }
         }
@@ -707,14 +719,14 @@ __int64 CDBPremiumProduct::GetSalePrice(const CDBPremiumProduct* pParent)
         for (int i = 0; i < nCount; i++)
         {
             MS2Ptr<PreminmMarketSaleEventContext>& spContext = arr[i];
-            if (spContext == 0)
+            if (FUN_1406a8f50(&spContext, 0))
                 continue;
             for (size_t j = 0; j < ids.size(); j++)
             {
                 unsigned nId = ids[j];
                 if (FUN_1407cde30(spContext.operator->(), nId, nCurrency))
                 {
-                    if (spBest == 0 || spBest->m_18 < spContext->m_18)
+                    if (FUN_1406a8f50(&spBest, 0) || spBest->m_18 < spContext->m_18)
                         spBest = spContext;
                 }
             }

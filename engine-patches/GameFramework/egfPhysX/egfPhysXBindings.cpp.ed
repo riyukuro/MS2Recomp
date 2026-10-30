@@ -1,0 +1,3 @@
+16c
+#define EE_MS2_SCENE_GETSCENEDATA_CALL  // MS2: see SceneService.inl (replaces a blank line: keeps __LINE__)
+.

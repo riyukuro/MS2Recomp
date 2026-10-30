@@ -383,10 +383,7 @@ StateTriggerEmotionData::StateTriggerEmotionData()
     m_bLoop = false;
 }
 
-// @0x1417c5230
-StateTriggerEmotionData::~StateTriggerEmotionData()
-{
-}
+// ~StateTriggerEmotionData (0x1417c5230) is implicit: an explicit empty body keeps a dead vptr store the exe does not have.
 
 // ---- StateTriggerEmotion ----
 

@@ -519,7 +519,7 @@ MS2Ptr<CItem> ItemSocketSystemPageBase::FUN_140f6d050(MS2Ptr<TSocketGemStoneInfo
         {
             MS2Ptr<TSocketGemStoneBind> binding(info->m_spBind);
             if (binding.get() != 0)
-                item->FUN_14052b5e0(&binding->m_nCharacterId, &binding->m_strName);
+                item->FUN_14052b5e0(binding->m_nCharacterId, binding->m_strName);
         }
         {
             MS2Ptr<TSocketGemStoneLock> lock(info->m_spLock);

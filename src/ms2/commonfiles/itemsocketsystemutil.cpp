@@ -2863,11 +2863,11 @@ bool CItemTransfer::FUN_1406351b0()
 MS2_REPLACE_METHOD(0x1406351B0, CItemTransfer, FUN_1406351b0, 45, 0x9C2A80F2);
 
 // @0x1406351f0
-unsigned char CItemTransfer::FUN_1406351f0(void* pId, void* pName)
+unsigned char CItemTransfer::FUN_1406351f0(const __int64& nCharId, const CStringW& strName)
 {
     m_spBinding.AssignRaw(new CItemBinding);
     if (m_spBinding.get() != 0)
-        return m_spBinding->FUN_1406347d0(*static_cast<const __int64*>(pId), *static_cast<const CStringW*>(pName));
+        return m_spBinding->FUN_1406347d0(nCharId, strName);
     return 0;
 }
 MS2_REPLACE_METHOD(0x1406351F0, CItemTransfer, FUN_1406351f0, 175, 0x3EF4D3CA);

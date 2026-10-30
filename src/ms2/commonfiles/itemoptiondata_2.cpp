@@ -7,7 +7,6 @@
 // MS2-PIN: ?ReleaseImpl@?$MS2Ptr@VUnk_ItemOptionPreset@@@@AEAAXPEAX@Z 0x1405f0910
 // MS2-PIN: ??1?$Unk_SocketPtr@V?$CAtlList@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$CElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@@ATL@@@@QEAA@XZ 0x1405e89b0
 // MS2-PIN: ?Release@?$Unk_SocketPtr@V?$CAtlList@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$CElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@@ATL@@@@AEAAXXZ 0x1405f0490
-// MS2-PIN: ??$?0AEAHAEAH$0A@@?$pair@HH@std@@QEAA@AEAH0@Z 0x1405dbe80
 // MS2-PIN: ??$?0AEAHAEAI$0A@@?$pair@HI@std@@QEAA@AEAHAEAI@Z 0x1405db510
 // MS2-PIN: ??$make_pair@AEAHAEAI@std@@YA?AU?$pair@HI@0@AEAHAEAI@Z 0x1405e68e0
 // MS2-PIN: ??$pow@HHX@@YANHH@Z 0x1405e6d60
@@ -2845,4 +2844,16 @@ inline bool Unk_ItemOptionPicker<T>::PickN(std::vector<T>& out, unsigned n, Unk_
 int& FUN_1405e6670(int& r)
 {
     return r;
+}
+
+int& FUN_140180c20(int& r);  // the identity forward the pair ctor below applies to its second argument
+
+// This unit's pair<int,int>(int&, int&) copy, called by ItemOptionRandom::FUN_1405d4bb0 / FUN_1405d55e0: the first int
+// through 0x1405e6670, the second through 0x140180c20 (the toolchain's instance is the shared 0x1404d9610).
+// @0x1405dbe80
+std::pair<int, int>* FUN_1405dbe80(std::pair<int, int>* pThis, int& a, int& b)
+{
+    pThis->first = FUN_1405e6670(a);
+    pThis->second = FUN_140180c20(b);
+    return pThis;
 }

@@ -206,7 +206,7 @@ public:
     virtual void vfunc_76(CStringW str);                    // 76  0x14166fcf0 (by value: the callee destroys it)
     virtual CStringW vfunc_77();                            // 77  0x14166fd50
     virtual unsigned short vfunc_78();                      // 78  0x14166fda0
-    virtual void vfunc_79();                                // 79  0x14166fdb0
+    virtual unsigned short vfunc_79();                      // 79  0x14166fdb0
     virtual MS2Ptr<Unk_PCBaseComp_a58> vfunc_80();          // 80  0x14166fde0 (base: null; Ridee/PC override)
     virtual MS2Ptr<Unk_PCBaseComp_a68> vfunc_81();          // 81  0x14166fe20
     virtual MS2Ptr<Unk_PCBaseComp_a78> vfunc_82();          // 82  0x14166fe60
@@ -241,7 +241,7 @@ public:
     virtual int vfunc_108();                                // 108 0x141674bf0
     virtual void vfunc_109(int n);                          // 109 0x141674c00
     virtual void vfunc_110();                               // 110 0x141674c50
-    virtual void vfunc_111(void* p, int a, int b, void* q); // 111 0x141674c60 (CNpc/CPet override)
+    virtual void vfunc_111(void* p, int a, int b, efd::Point3 kPos); // 111 0x141674c60 (CNpc/CPet override; by value)
     virtual void vfunc_112(void* p, int n);                 // 112 0x141674d80 (CNpc/CPet override)
     virtual void vfunc_113(void* p);                        // 113 0x141674ec0
     virtual void vfunc_114(void*) {}                        // 114 0x140a4ffb0 (inline; Ridee overrides)

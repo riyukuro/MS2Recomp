@@ -9,8 +9,9 @@ void NiInputSystem::ResetKeyboardStates()   // MS2: exe 0x141d0dc90
         m_spKeyboard->ResetKeyStates();
 .
 182c
-    if (m_bEnumerating) for (unsigned int ui = 0; ui < MAX_GAMEPADS; ui++)  // MS2: gamepads only polled while m_bEnumerating (exe 0x141d0e010)
+    if (m_bGamePadPollEnabled) for (unsigned int ui = 0; ui < MAX_GAMEPADS; ui++)  // MS2: gamepads only polled while m_bGamePadPollEnabled (exe 0x141d0e010)
 .
-44a
-    m_bStudioFlag0x2d(false),  // MS2: cleared with m_bEnumerating (exe 0x141d0be00)
+44c
+    m_bGamePadPollEnabled(false),
+    m_bEnumerating(false),  // MS2: cleared with m_bGamePadPollEnabled (exe 0x141d0be00)
 .

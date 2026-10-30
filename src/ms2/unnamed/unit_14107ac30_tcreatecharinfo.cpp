@@ -105,8 +105,7 @@ bool FUN_1409a5770(const NiFixedString& kName, const float* pf, int n);
 int FUN_140599fd0(void* pProxy, int n);
 
 // Helpers of the exe used by this unit (declared by the units that recover them).
-extern char DAT_143a09660;
-Unk_CharEquip FUN_140a0a3a0(const void* pIn);               // the default appearance
+extern const efd::Color g_143a09660;                        // the default appearance colour
 Unk_CharEquip FUN_141b6dea0(unsigned nColor);     // Unk_CharEquip from a colour value
 bool FUN_1402226b0(int nJob);
 void FUN_140584ff0(TCreateCharInfo* pInfo, ATL::CAtlArray<int>* pItems);
@@ -245,8 +244,7 @@ void TCreateCharInfo::FUN_14107afa0()
 {
     for (int i = 0; i < 2; i++)
     {
-        Unk_CharEquip kEquip = FUN_140a0a3a0(&DAT_143a09660);
-        m_equip[i] = kEquip;
+        m_equip[i] = g_143a09660;
     }
 }
 

@@ -17,6 +17,7 @@ class CIngredientContainer;
 // at 0x1421e2f90.., so the entry points are the unnamed FUN_<va> of that second copy.
 #define LUA_GLOBALSINDEX (-10002)
 #define LUA_MULTRET (-1)
+extern "C" {                                                            // C linkage: nothrow under /EHsc, as in the exe
 void FUN_142391870(lua_State*);                                         // lua_close
 void FUN_142392210(lua_State*, int, const char*);                       // lua_getfield
 int FUN_142392310(lua_State*);                                          // lua_gettop
@@ -36,6 +37,7 @@ void FUN_142393470(lua_State*);                                         // luaL_
 int FUN_142394530(lua_State*, const char*, size_t, const char*);        // luaL_loadbuffer
 int FUN_142394560(lua_State*, const char*);                             // luaL_loadfile
 lua_State* FUN_142394830();                                             // luaL_newstate
+}
 #define lua_close FUN_142391870
 #define lua_getfield FUN_142392210
 #define lua_gettop FUN_142392310
@@ -188,7 +190,7 @@ public:
     class CLuaLock : public CLockCriticalSection
     {
     public:
-        CLuaLock();                                     // 0x14067b920
+        // implicit ctor 0x14067b920 (base ctor + vftable; CLuaContext value-initializes m_lock first)
         virtual ~CLuaLock();                            // 0x140672980
         virtual void vfunc_1();                         // 0x1406729c0 Lock
         virtual void vfunc_2();                         // 0x140672a20 Unlock

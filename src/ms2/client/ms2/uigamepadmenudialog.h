@@ -43,9 +43,9 @@ public:
     void FUN_140c1b620();                               // send the first queued menu ("addMenuEntity")
     void FUN_140c1ba90(int nMenu, int nEnable);         // "setMenuEnable" / remember it
     int FUN_140c1c770() { return 1; }                   // the menu page kind
-    CString FUN_140c1bc10(int nMenu, __int64 nUnused);  // menu name
+    CString FUN_140c1bc10(int nMenu);  // menu name
     CString FUN_140c1bcd0(int nMenu);                   // menu name (the other record flavour)
-    MS2Ptr<Unk_GpButton> FUN_140c1bd90(int nMenu, __int64 nUnused);    // button of a menu
+    MS2Ptr<Unk_GpButton> FUN_140c1bd90(int nMenu);    // button of a menu
     MS2Ptr<Unk_GpButton> FUN_140c1be20(const CString& strMenu);     // "m_menus.<name>.m_button"
     int FUN_140c1bf90(int nMenu);                       // enable state (1 when unknown)
     void FUN_140c1bfe0(NotifyObject* pObj);             // "NotifyCompleteMyPC": forget the enable states

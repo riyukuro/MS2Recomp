@@ -49,7 +49,7 @@ public:
     void Invalidate();                                              // 0x1409fe440 rebuild the wire meshes on next draw
     static int TestShape(efd::Point3 kPos, efd::Point3 kRight, efd::Point3 kDir, CBaseCollision* pShape,
                           CBoxCollision* pBox, Unk_DetectHit* pHit);   // 0x1409fe460
-    static bool Intersect(CBaseCollision* pShape, CBaseCollision* pBox);   // 0x1409ff0d0
+    static int Intersect(CBaseCollision* pShape, CBaseCollision* pBox);    // 0x1409ff0d0 (BOOL: callers test eax)
 
     int m_n18;                          // +0x18
     Vector3 m_ptPos;            // +0x1c

@@ -70,8 +70,8 @@ i64 FUN_14027b250(i64 first, i64 last, i64 dest, i64 al)
 }
 
 i64 FUN_140277870(void*, i64);
-i64 FUN_1402769e0(i64*, i64, Unk_StlTag);
-i64 FUN_140276a10(i64*, i64, Unk_StlTag);
+void FUN_1402769e0(i64*, i64, Unk_StlTag);
+void FUN_140276a10(i64*, i64, Unk_StlTag);
 i64 FUN_140276a40(i64, i64, Unk_StlTag);
 i64 FUN_140276920(i64*, i64*); i64 FUN_140276960(i64*, i64*);
 i64 FUN_140276aa0(i64, i64, i64, Unk_StlTag); i64 FUN_140276d40(i64, i64, i64, Unk_StlTag);
@@ -128,9 +128,9 @@ i64 FUN_14027b580(i64 p) { return p; }
 // @0x14027b590
 i64 FUN_14027b590(i64 p) { return p; }
 // @0x14027b5a0
-i64 FUN_14027b5a0(i64* p, i64 n) { Unk_StlTag t; return FUN_1402769e0(p, n, t); }
+void FUN_14027b5a0(i64* p, i64 n) { Unk_StlTag t; FUN_1402769e0(p, n, t); }
 // @0x14027b5d0
-i64 FUN_14027b5d0(i64* p, i64 n) { Unk_StlTag t; return FUN_140276a10(p, n, t); }
+void FUN_14027b5d0(i64* p, i64 n) { Unk_StlTag t; FUN_140276a10(p, n, t); }
 // @0x14027b600
 i64 FUN_14027b600(i64 p, i64 n) { Unk_StlTag t; return FUN_140276a40(p, n, t); }
 // @0x14027b630

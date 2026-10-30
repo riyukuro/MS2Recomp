@@ -3,10 +3,17 @@
 A work-in-progress recompilation of the MapleStory2 client (KMS2 dev build, x64, April 2022).
 
 Functions recovered from the original executable are rewritten as C++ in `src/ms2/`, one file per original
-compilation unit. They are built into a proxy `dinput8.dll`. When it is placed next to the original
-`MapleStory2.exe`, it uses Microsoft Detours to redirect the original functions to the recompiled ones, so every
-recovered function runs inside the real game. Many functions are already a byte-for-byte match of the original,
-compiled with the same compiler (MSVC 14.16).
+compilation unit, and compiled with the same compiler (MSVC 14.16). Most of them are a byte-for-byte match of the
+original. Together with the patched Gamebryo engine and the statically linked libraries, they link into a complete
+replacement `MapleStory2.exe` (the "full executable", see [`BUILDING.md`](BUILDING.md)) that boots, logs in and plays
+on a server.
+
+The full executable is not finished. Its build still reads the original exe, a small amount of generated glue and a
+runtime shim cover what is not recovered yet, and the Nexon Messenger code is stubbed out.
+
+The same sources also build a proxy `dinput8.dll` that uses Microsoft Detours to redirect functions of the original
+`MapleStory2.exe` to the recompiled ones. It is the development build: the per-unit gates link it, and it runs the
+differential tests.
 
 This repository contains only the recompiled code and what is needed to build it. It does not include the game, the
 Gamebryo engine source or any other SDK. You need your own copies of those.
@@ -25,14 +32,14 @@ Merged totals by area (functions in the original executable; regenerated on each
 <!-- progress:start -->
 | Area | Functions | Matched | Equivalent | Done |
 |---|---:|---:|---:|---:|
-| Game · ms2 | 178,830 | 176,463 (98.7%) | 2,345 (1.3%) | 100.0% |
-| Runtime & middleware | 21,899 | 17,068 (77.9%) | 4,665 (21.3%) | 99.2% |
-| Gamebryo engine | 16,755 | 16,576 (98.9%) | 145 (0.9%) | 99.8% |
-| Game framework · egf | 12,567 | 12,421 (98.8%) | 122 (1.0%) | 99.8% |
-| Libraries | 6,719 | 6,318 (94.0%) | 52 (0.8%) | 94.8% |
-| Foundation | 11,231 | 11,043 (98.3%) | 153 (1.4%) | 99.7% |
-| Imports | 782 | 697 (89.1%) | 0 (0.0%) | 89.1% |
-| **Total** | **248,783** | 240,586 (96.7%) | 7,482 (3.0%) | 99.7% |
+| Game · ms2 | 179,017 | 176,834 (98.8%) | 2,161 (1.2%) | 100.0% |
+| Runtime & middleware | 21,711 | 17,204 (79.2%) | 4,341 (20.0%) | 99.2% |
+| Gamebryo engine | 16,742 | 16,581 (99.0%) | 131 (0.8%) | 99.8% |
+| Game framework · egf | 12,581 | 12,454 (99.0%) | 107 (0.9%) | 99.8% |
+| Libraries | 6,717 | 6,314 (94.0%) | 56 (0.8%) | 94.8% |
+| Foundation | 11,233 | 11,056 (98.4%) | 144 (1.3%) | 99.7% |
+| Imports | 782 | 703 (89.9%) | 1 (0.1%) | 90.0% |
+| **Total** | **248,783** | 241,146 (96.9%) | 6,941 (2.8%) | 99.7% |
 
 Not counted: 5,863 Nexon Messenger functions, which are stubbed out of the rebuild.
 <!-- progress:end -->
@@ -65,15 +72,28 @@ Not counted: 5,863 Nexon Messenger functions, which are stubbed out of the rebui
 - clang-cl and the LLVM tools (`llvm-nm`, `llvm-undname`), for the faster non-matching build and the gates
 - Stock Gamebryo LightSpeed 3.2.0.661 source (not included), patched with `engine-patches/` into `engine/gamebryo/`
 - DirectX SDK (June 2010) in `third_party/dxsdk/` and the NVIDIA PhysX SDK 2.8.4 in `third_party/physx284/`
-- The Scaleform GFx 4.1.x SDK headers (4.1.18 or 4.1.19), for now: about 1080 game units still include 188 of them
-  (listed in `cmake/sdk-manifest.txt`), and they do not compile without them
-- The unpacked KMS2_DEV x64 `MapleStory2.exe` (TimeDateStamp `0x62568c46`) to run the DLL against
+- The unpacked KMS2_DEV x64 `MapleStory2.exe` (TimeDateStamp `0x62568c46`): the full-executable build reads it, and
+  the DLL runs against it
+- For the full executable, the other SDKs and library sources listed in [`BUILDING.md`](BUILDING.md#your-sdks)
 
 ## Build
 
 `src/ms2/scaleform/` (the recovered Scaleform GFx 4.1.18 code) is a git submodule,
 [GFx418-Recomp](https://github.com/riyukuro/GFx418-Recomp). Clone with `--recurse-submodules`, or run
 `git submodule update --init` in an existing checkout (and again after a pull that moves it); CMake stops if it is missing.
+
+### Full executable
+
+[`BUILDING.md`](BUILDING.md) builds the replacement `MapleStory2.exe` from this checkout plus your own SDKs, with one
+CMake command:
+
+```sh
+cmake --preset fullexe && cmake --build build/fullexe
+```
+
+The result is `build/fullexe/out/fullexe3.exe`.
+
+### Hook DLL (development)
 
 ```sh
 # clang-cl
@@ -99,12 +119,15 @@ ninja -C build\hook-msvc
 
 The per-unit gate does these builds for you (`python tools\unit_check.py`). Both builds produce `dinput8.dll`. `-DMS2HOOK_WITH_GAME=OFF` builds the bare proxy with no hooks.
 
-## Full executable
-
-[`BUILDING.md`](BUILDING.md) builds a complete `MapleStory2.exe` replacement from this checkout plus your own SDKs, with
-one CMake command (`cmake --preset fullexe && cmake --build build/fullexe`).
-
 ## Running
+
+### Full executable
+
+In a copy of the game folder, replace `x64/MapleStory2.exe` with `fullexe3.exe` and remove any `dinput8.dll`, then
+start the game as usual (under Wine: `wine x64/MapleStory2.exe`). The runtime shim logs fatal exceptions, and any call to a
+function that is not recovered yet, to `fullexe-trap.log` beside the exe.
+
+### Hook DLL (development)
 
 Copy `dinput8.dll` next to `MapleStory2.exe` and start the game (on Windows nothing else is needed; under Wine, set the DLL override `dinput8=n,b`).
 The DLL writes `ms2hook.log` beside the exe, listing every hook as INSTALLED or REFUSED. Each hook checks a hash of

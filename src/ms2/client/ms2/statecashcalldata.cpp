@@ -243,12 +243,12 @@ void StateCashCall::vfunc_5(int n)
 MS2_REPLACE_METHOD(0x141022F60, StateCashCall, vfunc_5, 412, 0x78998610);
 
 // @0x141023110
-// MS2-FUNCTIONAL: the exe probably passes the zero point by value (PCBase::vfunc_68 taking an efd::Point3), so its copy sits in a
-// 16-aligned slot (0x40, not 0x38); pcbase.h declares the parameter void*
+// the exe probably passes the zero point by value (PCBase::vfunc_68 taking an efd::Point3), so its copy sits in a 16-aligned
+// slot (0x40, not 0x38); pcbase.h declares the parameter void*, so the local is aligned by hand
 void StateCashCall::vfunc_3(double fTime)
 {
     State::vfunc_3(fTime);
-    Vector3 kPoint = DAT_143b01a60;
+    __declspec(align(16)) Vector3 kPoint = DAT_143b01a60;
     m_pOwner->vfunc_68(&kPoint, fTime, 0, 0, 0);
     m_nElapsed += FUN_14028d260((float)fTime);
     if (m_nElapsed >= m_nEnd)

@@ -4094,11 +4094,11 @@ MS2_CHECK_OFFSET(Unk_WsA_FieldObj, m_count, 0x188);
 struct Unk_WsA_FieldRef;
 Unk_WsP16* FUN_1409640d0(Unk_WsA_FieldRef* dst, const void* src);   // copy (adds a ref)
 void FUN_140964a70(Unk_WsA_FieldRef* p);                            // release
-Unk_WsP16* FUN_140a7b450(Unk_WsP16* dst, Unk_WsA_FieldRef* src);    // move: dst.p1 = src.p1, src.p1 = 0
 struct Unk_WsA_FieldRef : public Unk_WsP16
 {
     Unk_WsA_FieldRef() { p1 = 0; }
     Unk_WsA_FieldRef(const Unk_WsA_FieldRef& o) { FUN_1409640d0(this, &o); }
+    Unk_WsA_FieldRef(Unk_WsA_FieldRef&& o) { p1 = o.p1; o.p1 = 0; }   // 0x140a7b450
     ~Unk_WsA_FieldRef() { FUN_140964a70(this); }
     Unk_WsA_FieldObj* operator->() const { return static_cast<Unk_WsA_FieldObj*>(p1); }
     bool IsNull() const { return p1 == 0; }
@@ -4120,18 +4120,17 @@ MS2_REPLACE_METHOD(0x141BC2730, WorldService, FUN_141bc2730, 193, 0x3D87AB8B);
 
 bool FUN_141c06aa0(void* map, unsigned key, Unk_WsA_FieldRef* out);     // m_350.Lookup
 // @0x141bc2800
-Unk_WsP16* WorldService::FUN_141bc2800(Unk_WsP16* out, int id)
+Unk_WsA_FieldRef WorldService::FUN_141bc2800(int id)
 {
     Unk_WsA_FieldRef ref;
     FUN_141c06aa0(&m_350, id, &ref);
-    FUN_140a7b450(out, &ref);
-    return out;
+    return ref;
 }
 MS2_REPLACE_METHOD(0x141BC2800, WorldService, FUN_141bc2800, 121, 0x9F34EC5D);
 
 class CPortal : public CPtred {};                       // m_350 value (same definition as worldservice.cpp#4)
-// WorldService::FUN_141bc2800 as the exe's callers see it (the field ref returned by value); worldservice.h keeps the
-// out-param form (same ABI) for questmanager_2.
+// WorldService::FUN_141bc2800 as the exe's callers see it (the field ref returned by value; worldservice.h now declares
+// the same signature, this pinned view predates it).
 struct Unk_WsA_FieldLookup { Unk_WsA_FieldRef FUN_141bc2800(int id); };
 void* FUN_141bffee0(void* map);                             // m_350.GetStartPosition
 void FUN_141bfedb0(void* map, void** pos);                  // m_350.GetNext

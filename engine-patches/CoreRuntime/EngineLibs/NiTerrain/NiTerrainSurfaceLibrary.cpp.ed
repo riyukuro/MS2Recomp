@@ -1,3 +1,6 @@
 156c
     if (!FindPackageByAsset(kReference.GetAssetID()) && !IsPackageLoading(kReference.GetAssetID())) RequestLoadPackage(kReference); // MS2: RegisterReference_Internal(kReference, NULL), inlined
 .
+13c
+#define EE_MS2_UTF8_CSTR_EQ_CALL  // MS2: see utf8string.inl (replaces a blank line: keeps __LINE__)
+.

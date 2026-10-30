@@ -665,7 +665,7 @@ int CBaseCollision::TestShape(efd::Point3 kPos, efd::Point3 kRight, efd::Point3 
 // TestShape without the sort metrics (0x140ded420, 0x141231730).
 // @0x1409ff0d0
 // MS2-FUNCTIONAL: 1 byte off: the exe returns the null early-out as xor eax,eax (cl emits xor al,al for every spelling tried)
-bool CBaseCollision::Intersect(CBaseCollision* pShape, CBaseCollision* pTarget)
+int CBaseCollision::Intersect(CBaseCollision* pShape, CBaseCollision* pTarget)
 {
     if (pShape == NULL || pTarget == NULL)
         return false;
@@ -890,7 +890,7 @@ inline void FUN_140a01250(efd::Point3 kRot, efd::Point3* pForward, efd::Point3* 
 }
 
 // Full-executable aliases for CBaseCollision::Intersect's free-function spellings.
-// MS2-PIN: ?Intersect@CBaseCollision@@SA_NPEAV1@0@Z 0x1409ff0d0
+// MS2-PIN: ?Intersect@CBaseCollision@@SAHPEAV1@0@Z 0x1409ff0d0
 // MS2-PIN: ?FUN_1409ff0d0@@YADPEAVUnk_FcArea@@PEAVCBoxCollision@@@Z 0x1409ff0d0
 // MS2-PIN: ?FUN_1409ff0d0@@YADPEAXPEAVCBoxCollision@@@Z 0x1409ff0d0
 // MS2-PIN: ?FUN_1409ff0d0@@YA_NPEAX0@Z 0x1409ff0d0

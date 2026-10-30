@@ -533,7 +533,6 @@ bool Constants::Lookup(const CString& key, float* out)
 // The by-value forms of the clientconstants.h string parsers (the exe assigns their returned temporaries).
 CString FUN_1407185b0(const CString& s);
 CStringW FUN_140718650(const CString& s);
-MS2Colors FUN_1407186f0(const CString& s);
 efd::Point3 FUN_140db9570(const CString& s);
 
 // @0x1402bb760
@@ -1235,7 +1234,7 @@ void Common::Constants::vfunc_0()
     AdventureProtectedRequireQuest.Define("AdventureProtectedRequireQuest", 50001605u);
     AdventureProtectedCharCreateTime.Define("AdventureProtectedCharCreateTime", 72);
     DeleteAccountPendingDay.Define("DeleteAccountPendingDay", 60u);
-    unsigned pendingDay = DeleteAccountPendingDay.Read() < 7 ? 7 : DeleteAccountPendingDay.Read();
+    unsigned pendingDay = (int)DeleteAccountPendingDay.Read() < 7 ? 7 : DeleteAccountPendingDay.Read();
     DeleteAccountPendingDay.Set(pendingDay);
     PvpOnePunchRewardItem.Define("PvpOnePunchRewardItem", 0);
     for (int i = 0; i < 10; i++)

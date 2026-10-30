@@ -16,7 +16,10 @@
 namespace Client { class Constants; }
 struct MS2Tick { unsigned value; MS2Tick(); MS2Tick(unsigned v); };
 struct Unk_ConstColor { unsigned argb; Unk_ConstColor(); Unk_ConstColor(unsigned v); };
-struct MS2Colors : ATL::CAtlArray<unsigned long> { MS2Colors(); ~MS2Colors(); MS2Colors& operator=(const MS2Colors& o); };
+struct MS2Colors : ATL::CAtlArray<unsigned long> {
+    MS2Colors(); ~MS2Colors(); MS2Colors& operator=(const MS2Colors& o);
+    MS2Colors(MS2Colors&& o) { *this = o; }         // 0x14071a300 (base ctor, then operator=)
+};
 // 16-byte intrusive reference to a CCacheData (base at +0 unrecovered; pointee at +8). The element type of Constants::cacheRefs.
 struct Unk_ConstCacheRef {
     void* m_base;                                   // +0
@@ -53,7 +56,7 @@ unsigned* FUN_140718770(unsigned* out, const CString& s);
 unsigned* FUN_140718830(unsigned* out, const CString& s);
 CString* FUN_1407185b0(CString* out, const CString& s);
 CStringW* FUN_140718650(CStringW* out, const CString& s);
-MS2Colors* FUN_1407186f0(MS2Colors* out, const CString& s);
+MS2Colors FUN_1407186f0(const CString& s);
 void FUN_140178270(const CString& s, std::vector<int>* out, const char* sep);
 void FUN_1401782a0(const CString& s, std::vector<unsigned>* out, const char* sep);
 

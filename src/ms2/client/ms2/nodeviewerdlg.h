@@ -15,6 +15,7 @@ public:
 
 // Smart pointer to the marker NiNode (ctor 0x1409f7170, dtor 0x1409f74b0).
 struct Unk_NodePtr { Unk_NodePtr(void* p); ~Unk_NodePtr(); void* m_p; };
+MS2_CHECK_SIZE(Unk_NodePtr, 8);
 
 class CNodeViewerDlg : public CDialog
 {

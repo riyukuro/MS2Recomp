@@ -18,7 +18,6 @@
 // MS2-PIN: ??$?0$$V@?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBW4Unk_RemakeSaleItemType@@K@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBW4Unk_RemakeSaleItemType@@K@std@@@std@@@2@$00@std@@QEAA@U_Zero_then_variadic_args_t@1@@Z 0x14047ff30 ; prop
 // MS2-PIN: ??$?0$$V@?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBW4Unk_RemakeSaleItemType@@V?$map@KKU?$less@K@std@@V?$allocator@U?$pair@$$CBKK@std@@@2@@std@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBW4Unk_RemakeSaleItemType@@V?$map@KKU?$less@K@std@@V?$allocator@U?$pair@$$CBKK@std@@@2@@std@@@std@@@std@@@2@$00@std@@QEAA@U_Zero_then_variadic_args_t@1@@Z 0x14047ff60 ; prop
 // MS2-PIN: ??$?0$$V@?$_Compressed_pair@V?$allocator@U?$_Tree_node@UUnk_ConstructionKey@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@UUnk_ConstructionKey@@@std@@@2@$00@std@@QEAA@U_Zero_then_variadic_args_t@1@@Z 0x14047ffc0 ; prop
-// MS2-PIN: ??$?0AEAHAEAH$0A@@?$pair@HH@std@@QEAA@AEAH0@Z 0x14047fff0 ; unique
 // MS2-PIN: ??$?0AEAHAEAV?$MS2Ptr@VEnchantRateEventContext@@@@$0A@@?$pair@HV?$MS2Ptr@VEnchantRateEventContext@@@@@std@@QEAA@AEAHAEAV?$MS2Ptr@VEnchantRateEventContext@@@@@Z 0x140480040 ; prop
 // MS2-PIN: ??$?0AEAHAEAV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@$0A@@?$pair@HV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@@std@@QEAA@AEAHAEAV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@@Z 0x1404800e0 ; unique
 // MS2-PIN: ??$?0AEAV?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBKK@std@@@std@@@std@@@std@@AEAV01@$0A@@?$pair@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBKK@std@@@std@@@std@@@std@@V12@@std@@QEAA@AEAV?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBKK@std@@@std@@@std@@@1@0@Z 0x140480330 ; prop
@@ -303,6 +302,7 @@ struct Unk_GameRuleLock {
     ~Unk_GameRuleLock();                                            // 0x1401b5120
     CLockCriticalSection* m_lock;
 };
+MS2_CHECK_SIZE(Unk_GameRuleLock, 8);
 
 // Out-of-unit callees.
 CFeatureManager* FUN_140166410();                       // the CFeatureManager singleton
@@ -1975,7 +1975,6 @@ unsigned CGameRule::FUN_14047bab0()
 MS2_REPLACE_METHOD(0x14047BAB0, CGameRule, FUN_14047bab0, 94, 0x0AD9610D);
 
 // @0x14047bb20
-// MS2-FUNCTIONAL: exe has no EH info: CMsTime::operator= (0x1406c4930) is nothrow there; mstime.h is shared
 void CGameRule::FUN_14047bb20(bool bOn, const CMsTime& time)
 {
     Unk_CriticalSectionLock lock(m_8, 1);
@@ -2963,3 +2962,15 @@ void CGameRule::FUN_14047fc60()
 MS2_REPLACE_METHOD(0x14047FC60, CGameRule, FUN_14047fc60, 247, 0x577FF757);
 // MS2-FUNCTIONAL 0x140497ca0: MS2Ptr<const OntimeEventContext>'s converting ctor from MS2Ptr<OntimeEventContext>; the exe reads the source through get() 0x1403e89f0, the shared ascript.h template reads o.m_p
 // MS2-PIN: ??$?0UOntimeEventContext@@@?$MS2Ptr@$$CBUOntimeEventContext@@@@QEAA@AEBV?$MS2Ptr@UOntimeEventContext@@@@@Z 0x140497ca0
+
+int& FUN_140496530(int& r);  // a TU-local copy of the identity forward<int&>
+
+// This unit's pair<int,int>(int&, int&) copy: the first int through forward<int&> 0x140162e40, the second through the
+// identity copy 0x140496530 (the toolchain's instance is the shared 0x1404d9610).
+// @0x14047fff0
+std::pair<int, int>* FUN_14047fff0(std::pair<int, int>* pThis, int& a, int& b)
+{
+    pThis->first = std::forward<int&>(a);
+    pThis->second = FUN_140496530(b);
+    return pThis;
+}

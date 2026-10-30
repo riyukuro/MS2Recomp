@@ -323,8 +323,13 @@ struct Unk_MessageBoxXform
 MS2_CHECK_SIZE(Unk_MessageBoxXform, 0x34);
 
 void FUN_140a332d0(Unk_MessageBoxXform* p);                     // NiTransform default ctor
-void FUN_14027dcf0(Unk_MessageBoxPt3* pDst, const NiPoint3& src);   // NiPoint3 from efd::Point3
-void FUN_14097faa0(Unk_MessageBoxPt3* pDst, const Unk_MessageBoxPt3* pSrc);   // NiPoint3::operator=
+// The NiPoint3 converted from the player's position (NiPoint3(const efd::Point3&) at 0x14027dcf0).
+struct Unk_MessageBoxPos
+{
+    Unk_MessageBoxPos(const NiPoint3& src);
+    float x, y, z;
+};
+void FUN_14097faa0(Unk_MessageBoxPt3* pDst, const Unk_MessageBoxPos& src);   // NiPoint3::operator=
 void FUN_140a33240(Unk_MessageBoxRot* pDst, const Unk_EfdMatrix3* pSrc);   // NiMatrix3 from efd::Matrix3
 extern Unk_EfdMatrix3 DAT_143a09600;                  // identity rotation
 class Unk_MessageBoxItemSound { public: CString FUN_140559750(); };
@@ -1415,7 +1420,6 @@ MS2_REPLACE_METHOD(0x1419FBA00, UIMessageBox, FUN_1419fba00, 73, 0xDD738340);
 
 
 // @0x1419fba50
-// MS2-FUNCTIONAL: NiTransform stand-ins (the exe builds the transform inline)
 int UIMessageBox::FUN_1419fba50(int nButton)
 {
     if (m_data == 0)
@@ -1432,9 +1436,7 @@ int UIMessageBox::FUN_1419fba50(int nButton)
             Unk_MessageBoxXform xf;
             FUN_140a332d0(&xf);
             xf.m_fScale = 1.0f;
-            Unk_MessageBoxPt3 pos;
-            FUN_14027dcf0(&pos, pPlayer->vfunc_18());
-            FUN_14097faa0(&xf.m_translate, &pos);
+            FUN_14097faa0(&xf.m_translate, pPlayer->vfunc_18());
             Unk_MessageBoxRot rot;
             FUN_140a33240(&rot, &DAT_143a09600);
             xf.m_rotate = rot;
@@ -1448,7 +1450,6 @@ int UIMessageBox::FUN_1419fba50(int nButton)
 MS2_REPLACE_METHOD(0x1419FBA50, UIMessageBox, FUN_1419fba50, 735, 0x7B0CE74D);
 
 // @0x1419fbd40
-// MS2-FUNCTIONAL: NiTransform stand-ins (the exe builds the transform inline)
 int UIMessageBox::FUN_1419fbd40(int nButton, CStringW strTag)
 {
     ATL::CAtlArray<CStringW> tokens;
@@ -1469,9 +1470,7 @@ int UIMessageBox::FUN_1419fbd40(int nButton, CStringW strTag)
             Unk_MessageBoxXform xf;
             FUN_140a332d0(&xf);
             xf.m_fScale = 1.0f;
-            Unk_MessageBoxPt3 pos;
-            FUN_14027dcf0(&pos, pPlayer->vfunc_18());
-            FUN_14097faa0(&xf.m_translate, &pos);
+            FUN_14097faa0(&xf.m_translate, pPlayer->vfunc_18());
             Unk_MessageBoxRot rot;
             FUN_140a33240(&rot, &DAT_143a09600);
             xf.m_rotate = rot;
@@ -1485,7 +1484,6 @@ int UIMessageBox::FUN_1419fbd40(int nButton, CStringW strTag)
 MS2_REPLACE_METHOD(0x1419FBD40, UIMessageBox, FUN_1419fbd40, 1004, 0x279431D3);
 
 // @0x1419fc140
-// MS2-FUNCTIONAL: NiTransform stand-ins (the exe builds the transform inline)
 int UIMessageBox::FUN_1419fc140(int nButton, CStringW strTag)
 {
     Unk_MessageBoxPC* pPlayer = FUN_1403ed2d0()->FUN_141bd0cc0();
@@ -1507,9 +1505,7 @@ int UIMessageBox::FUN_1419fc140(int nButton, CStringW strTag)
             Unk_MessageBoxXform xf;
             FUN_140a332d0(&xf);
             xf.m_fScale = 1.0f;
-            Unk_MessageBoxPt3 pos;
-            FUN_14027dcf0(&pos, pPlayer->vfunc_18());
-            FUN_14097faa0(&xf.m_translate, &pos);
+            FUN_14097faa0(&xf.m_translate, pPlayer->vfunc_18());
             Unk_MessageBoxRot rot;
             FUN_140a33240(&rot, &DAT_143a09600);
             xf.m_rotate = rot;

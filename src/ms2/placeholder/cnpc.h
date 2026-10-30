@@ -91,7 +91,7 @@ public:
     virtual Unk_PCBaseFxLib* vfunc_70() override;           // 0x14108fd60
     virtual CStringW vfunc_77() override;                   // 0x141090bd0
     virtual unsigned short vfunc_78() override;             // 0x14108fdc0
-    virtual void vfunc_79() override;                       // 0x14108fe10
+    virtual unsigned short vfunc_79() override;             // 0x14108fe10
     virtual MS2Ptr<Unk_PCBaseComp_a58> vfunc_80() override; // 0x14108fe90
     virtual MS2Ptr<Unk_PCBaseComp_a78> vfunc_82() override; // 0x141090030
     virtual MS2Ptr<Unk_PCBaseComp_a88> vfunc_83() override; // 0x1410903b0
@@ -99,7 +99,7 @@ public:
     virtual MS2Ptr<Unk_PCBaseComp_aa8> vfunc_85() override; // 0x1410904c0
     virtual void vfunc_90(void* p) override;                // 0x1410909a0
     virtual float vfunc_98(float f) override;               // 0x141090950
-    virtual void vfunc_111(void* p, int a, int b, void* q) override;   // 0x141090620
+    virtual void vfunc_111(void* p, int a, int b, efd::Point3 kPos) override;   // 0x141090620
     virtual void vfunc_112(void* p, int n) override;        // 0x141090740
     virtual void vfunc_113(void* p) override;               // 0x141090820
     virtual float vfunc_115(float a, float b, float c, float d, int nFlag, int* pOut) override;   // 0x141090850

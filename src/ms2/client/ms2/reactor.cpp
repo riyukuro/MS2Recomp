@@ -978,8 +978,8 @@ void FUN_140b7eb20(void* pVec, Unk_Int3* pFirst, Unk_Int3* pLast, Unk_Int3* pDes
 void FUN_140b7ec60(void* pAlloc, void* pMem, __int64 nCount) { FUN_14015fc80(pMem, nCount * 0xc); }
 
 // @0x140b7ec90
-// MS2-FUNCTIONAL: std::allocator<Unk_Int3>::max_size stand-in
-unsigned __int64 FUN_140b7ec90() { return 0x1555555555555555ull; }
+// std::allocator<Unk_Int3>::max_size stand-in
+unsigned __int64 FUN_140b7ec90(void* pAlloc) { return 0x1555555555555555ull; }
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142ca1040-0x142ca1160 .text$yd
 

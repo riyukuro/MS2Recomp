@@ -2920,7 +2920,7 @@ void CEquipment::FUN_1411e5c10()
             if (spRoot == NULL)
                 continue;
             NiTransform kWorld = spRoot->GetWorldTransform();
-            NiPoint3 kDir = kWorld * -DAT_143a08cf8;
+            NiPoint3 kDir = kWorld.m_Rotate * -DAT_143a08cf8;
             NiPoint3 kOrigin = kWorld.m_Translate - kDir * 400.0f;
             NiPick kPick(0, 8);
             if (FUN_141424d00(spHair, kOrigin, kDir, kPick, &nResult) == 0) {

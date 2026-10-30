@@ -466,6 +466,36 @@ template <class T> MS2Ptr<T> UISwfEntity::GetChild(const CString& strName)
         return MS2Ptr<T>(0);
     return m_30->FUN_140e159f0<T>(strName);
 }
+// The exe's GetChild COMDATs each bind through their wrapper class's own AScript child getter (0x140e159f0 is the
+// ASWeeklyRewardItemSlot one), so the classes used here are specialized onto the getter the exe calls.
+// exe 0x140bb4b10
+template <> MS2Ptr<ASButton> UISwfEntity::GetChild<ASButton>(const CString& strName)
+{
+    if (m_30 == 0)
+        return MS2Ptr<ASButton>(0);
+    return m_30->FUN_140acce30<ASButton>(strName);
+}
+// exe 0x140c02870
+template <> MS2Ptr<ASButtonBar> UISwfEntity::GetChild<ASButtonBar>(const CString& strName)
+{
+    if (m_30 == 0)
+        return MS2Ptr<ASButtonBar>(0);
+    return m_30->FUN_140be23c0<ASButtonBar>(strName);
+}
+// exe 0x140e35bd0
+template <> MS2Ptr<ASTextInput> UISwfEntity::GetChild<ASTextInput>(const CString& strName)
+{
+    if (m_30 == 0)
+        return MS2Ptr<ASTextInput>(0);
+    return m_30->FUN_140bbe880<ASTextInput>(strName);
+}
+// exe 0x140e6d820: the text getter 0x140c436d0.
+template <> MS2Ptr<Unk_InvExpandLabel> UISwfEntity::GetChild<Unk_InvExpandLabel>(const CString& strName)
+{
+    if (m_30 == 0)
+        return MS2Ptr<Unk_InvExpandLabel>(0);
+    return m_30->FUN_140c436d0<Unk_InvExpandLabel>(strName);
+}
 
 // ---- statics (.text$di, in init order): the headers' statics, the user list keys, the break sounds ----------------------
 #ifndef MS2_HOOK_DLL
@@ -1909,6 +1939,13 @@ public:
     void FUN_1422dd000(int nRows);                                  // the visible row count
     unsigned FUN_1422dd150();                                       // the entry count
 };
+// exe 0x140c02900: the list getter 0x140bc7280.
+template <> MS2Ptr<Unk_InvUserList> UISwfEntity::GetChild<Unk_InvUserList>(const CString& strName)
+{
+    if (m_30 == 0)
+        return MS2Ptr<Unk_InvUserList>(0);
+    return m_30->FUN_140bc7280<Unk_InvUserList>(strName);
+}
 
 // The group chat windows (UIGroupMessengerBrowser at +0x50 of the chat UI).
 class Unk_InvGroupWindow { public: int FUN_14194b9d0(__int64 nCharacterId); };   // UIGroupMessenger: is a member
@@ -2287,6 +2324,18 @@ public:
     void FUN_1422dfc70(const ASObj& item);                          // add an item
     int FUN_1422dfb90();                                            // the item count
 };
+// exe 0x140c28560: the dropdown getter AScript::FUN_140bbe700, viewed as a template for the stand-in.
+class Unk_InvScript : public AScript
+{
+public:
+    template <class T> MS2Ptr<T> FUN_140bbe700(const CString& strName);
+};
+template <> MS2Ptr<Unk_IbDropdown> UISwfEntity::GetChild<Unk_IbDropdown>(const CString& strName)
+{
+    if (m_30 == 0)
+        return MS2Ptr<Unk_IbDropdown>(0);
+    return static_cast<Unk_InvScript*>(m_30.operator->())->FUN_140bbe700<Unk_IbDropdown>(strName);
+}
 
 // @0x1419a1280
 UIItemBreakBase::UIItemBreakBase()

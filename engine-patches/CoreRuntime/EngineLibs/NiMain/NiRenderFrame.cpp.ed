@@ -1,0 +1,37 @@
+67,70d
+58,65c
+        // Close rendering frame.
+        if (m_bExecuteBeginEndDisplayFrame)
+            pkRenderer->EndFrame();
+.
+56d
+54c
+            pkRenderer->EndUsingRenderTargetGroup();
+.
+51,52c
+            // Execute the render step if it is active.
+            if (pkRenderStep->GetActive())
+            {
+                pkRenderStep->Render();
+            }
+        }
+
+        // Close render target group if one is open. This is to prevent each
+        // render step from having to close its render target group during Render.
+        // Thus, each render step does not close its render target group and only
+        // opens it if it is not already open. The last open render target group
+        // is closed here.
+        if (pkRenderer->IsRenderTargetGroupActive())
+.
+48,49c
+        // Iterate over render steps.
+        NiTListIterator kStepsIter = m_kRenderSteps.GetHeadPos();
+        while (kStepsIter)
+        {
+            NiRenderStep* pkRenderStep = m_kRenderSteps.GetNext(kStepsIter);
+            EE_ASSERT(pkRenderStep);
+.
+41,46c
+    // MS2: game 0x141de2cb7/0x141de2cc7 skip the render steps and EndFrame when BeginFrame fails
+    if (!m_bExecuteBeginEndDisplayFrame || pkRenderer->BeginFrame())
+.

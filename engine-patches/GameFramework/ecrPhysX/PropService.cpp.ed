@@ -1,4 +1,7 @@
 eol lf
+1034c
+#line 1093 // MS2 __LINE__ (linefix)
+.
 953a
 
 
@@ -14,11 +17,32 @@ eol lf
 
 
 
-
+#line 1001 // MS2 __LINE__ (linefix)
+.
+944a
+#line 988 // MS2 __LINE__ (linefix)
+.
+886a
+#line 934 // MS2 __LINE__ (linefix)
+.
+884c
+                pPropData->m_state,
+                fScale);
+.
+875a
+#line 920 // MS2 __LINE__ (linefix)
+.
+870a
+        // MS2: the props of models 0x1a4eeeea/0xc9cd2193 are added at the entity's Scale
+        // (exe 0x14205fd50).
+        efd::Float32 fScale = 1.0f;
+        if (pEntity && (pEntity->GetModel()->ContainsModel(0x1a4eeeea) ||
+            pEntity->GetModel()->ContainsModel(0xc9cd2193)))
+        {
+            pEntity->GetPropertyValue(kPropertyID_StandardModelLibrary_Scale, fScale);
+        }
 .
 758a
-
-
 
 
 
@@ -56,6 +80,15 @@ eol lf
 
 
 .
+546@60s "()" ""
+546@42s "sage->GetS" ""
+546@38s "pMe" ""
+527@63s "()" ""
+527@45s "sage->GetS" ""
+527@41s "pMe" ""
+526c
+    efd::utf8string sceneName = pMessage->GetSceneName();  // MS2: a copy (exe 0x1420621b0)
+.
 501a
     // MS2 (0x1420627b0): a prop already queued for removal in its new scene is only re-flagged;
     // removing it (and deleting it) or queueing it again would leave a stale entry in that queue.
@@ -86,9 +119,15 @@ eol lf
             if (DAT_143b05980)  // MS2: decorated as above
                 sceneName = DAT_143b05980(sceneName);
 .
-336a
+357a
+#line 363 // MS2 __LINE__ (linefix)
+.
+337a
             if (DAT_143b05980)  // MS2: the game's scene name decorator (exe 0x142061590)
                 sceneName = DAT_143b05980(sceneName);
+.
+303a
+#line 304 // MS2 __LINE__ (linefix)
 .
 28a
 extern efd::utf8string (*DAT_143b05980)(const efd::utf8string&); // MS2: the game's scene name decorator (exe 0x143b05980)

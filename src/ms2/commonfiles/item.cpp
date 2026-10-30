@@ -2218,11 +2218,11 @@ template CStringW FUN_14028dfa0<unsigned short, CStringW>(CStringW, const unsign
 extern int FUN_14052a7e0(MS2Ptr<CItem>, MS2Ptr<CItem>);
 
 // @0x14052b5e0
-unsigned char CItem::FUN_14052b5e0(void* pA, void* pB)
+unsigned char CItem::FUN_14052b5e0(const __int64& nCharId, const CStringW& strName)
 {
     if (FUN_140527930() == 0)
         return 0;
-    return FUN_140527930()->FUN_1406351f0(pA, pB);
+    return FUN_140527930()->FUN_1406351f0(nCharId, strName);
 }
 MS2_REPLACE_METHOD(0x14052B5E0, CItem, FUN_14052b5e0, 71, 0x6D360F0B);
 

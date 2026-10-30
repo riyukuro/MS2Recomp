@@ -77,9 +77,6 @@ CLua::CLuaContext::~CLuaContext()
     }
 }
 
-// @0x14067b920
-CLua::CLuaContext::CLuaLock::CLuaLock() {}
-
 // @0x140672980
 CLua::CLuaContext::CLuaLock::~CLuaLock() { m_pParent = 0; }
 

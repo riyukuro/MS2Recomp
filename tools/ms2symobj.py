@@ -172,6 +172,51 @@ def autobind_fun(syms, objs):
     return n
 
 
+ALTNAME_RE = re.compile(rb"/alternatename:([^=\s\"]+)=", re.I)
+
+
+def object_aliased_names(syms, objs):
+    """Names that need a strong definition in ms2sym.obj: undefined externals that an object aliases with its own
+    /alternatename and that no object defines. cl 17.00 (the vc11 toolset) emits `/alternatename:??$F<Functor>@C=?F@C`
+    for an undefined member function template specialization, every specialization to the one non-template name; an
+    object's alternate wins over ms2sym.obj's, so the reference failed to link (or would bind all to one function)."""
+    def coff(d):
+        if d[:4] == b"\0\0\xff\xff":                     # bigobj: nsec, symoff, nsyms, section headers, record size
+            return struct.unpack_from("<III", d, 44) + (56, 20)
+        return (struct.unpack_from("<H", d, 2) + struct.unpack_from("<II", d, 8) +
+                (20 + struct.unpack_from("<H", d, 16)[0], 18))
+
+    aliased, defined = set(), set()
+    for path in objs:
+        d = open(path, "rb").read()
+        nsec, _, _, shoff, _ = coff(d)
+        for s in range(nsec):
+            o = shoff + 40 * s
+            if d[o:o + 8] == b".drectve":
+                size, ptr = struct.unpack_from("<II", d, o + 16)
+                aliased.update(m.group(1).decode("latin1") for m in ALTNAME_RE.finditer(d[ptr:ptr + size]))
+    aliased = {n for n in aliased if n in syms}
+    if not aliased:
+        return set()
+    for path in objs:
+        d = open(path, "rb").read()
+        _, symoff, nsyms, _, recsz = coff(d)
+        stroff = symoff + nsyms * recsz
+        i = 0
+        while i < nsyms:
+            o = symoff + i * recsz
+            secnum = struct.unpack_from("<i" if recsz == 20 else "<h", d, o + 12)[0]
+            sclass, naux = d[o + recsz - 2], d[o + recsz - 1]
+            if sclass == 2 and secnum != 0:
+                nm = d[o:o + 8]
+                if nm[:4] == b"\0\0\0\0":
+                    so = stroff + struct.unpack_from("<I", nm, 4)[0]
+                    nm = d[so:d.index(b"\0", so)]
+                defined.add(nm.rstrip(b"\0").decode("latin1"))
+            i += 1 + naux
+    return {n for n in aliased & undefined_externals(objs) if n in syms and n not in defined}
+
+
 KEEP_LOCAL_PREFIXES = ("??_", "__imp_", "_TI", "__ImageBase")
 
 
@@ -342,7 +387,9 @@ def check_base_stamp(output, objs, rebind_log):
                  f"deleted the game objects, rerun the build")
 
 
-def build(syms):
+def build(syms, strong=()):
+    """`strong`: names defined as symbols of their thunk / absolute address instead of by /alternatename."""
+    strong = {n for n in strong if n in syms}
     vas = {}
     for name, (va, kind) in syms.items():
         vas.setdefault((va, kind), []).append(name)
@@ -352,7 +399,8 @@ def build(syms):
     for (va, kind), names in sorted(vas.items()):
         target = f"__ms2fn_{va:x}" if kind == "func" else f"__ms2va_{va:x}"
         for n in sorted(names):
-            directives.append(f"/alternatename:{n}={target}")
+            if n not in strong:
+                directives.append(f"/alternatename:{n}={target}")
     drectve = (" " + " ".join(directives) + " ").encode("latin1")
 
     # sections: 1 = .drectve, 2.. = one COMDAT .text$ms2 per function thunk
@@ -390,11 +438,16 @@ def build(syms):
         # section symbol + aux (length, nrelocs, nlines, checksum, number lo, selection=NODUPLICATES, -, number hi)
         sym(sname, 0, i, 0, 3, struct.pack("<IHHIHBBH", len(data), 0, 0, 0, 0, 1, 0, 0))
         sym(f"__ms2fn_{va:x}", 0, i, 0x20, 2)
+        for n in sorted(n for n in vas[(va, "func")] if n in strong):
+            sym(n, 0, i, 0x20, 2)
     for va in datas:
         rel = va - DLL_BASE
         if not 0 <= rel < 1 << 32:
             sys.exit(f"data VA 0x{va:x} out of the absolute-symbol range")
         sym(f"__ms2va_{va:x}", rel, -1, 0, 2)              # IMAGE_SYM_ABSOLUTE
+        for n in sorted(n for n in strong if syms[n][0] == va and syms[n][1] != "func"):
+            sym(n, rel, -1, 0, 2)
+            strong = strong - {n}                           # once if the VA is listed under two data kinds
 
     sec_names = {}
     for sname, _, _ in sections:
@@ -483,10 +536,15 @@ def main():
             print(f"retargeted {nib} ADDR32NB fixups on exe globals to __ImageBase")
         nauto = autobind_fun(syms, a.objs)
         print(f"auto-bound {nauto} FUN_<va> externals")
+    strong = set()
+    if a.objs:
+        strong = object_aliased_names(syms, a.objs)
+        if strong:
+            print(f"defined {len(strong)} name(s) an object aliases with its own /alternatename")
     if a.objs and a.prune:
         want = undefined_externals(a.objs)
         syms = {n: v for n, v in syms.items() if n in want}
-    data, nf, nd, ns = build(syms)
+    data, nf, nd, ns = build(syms, strong)
     os.makedirs(os.path.dirname(os.path.abspath(a.output)), exist_ok=True)
     tmp = a.output + ".tmp"
     open(tmp, "wb").write(data)

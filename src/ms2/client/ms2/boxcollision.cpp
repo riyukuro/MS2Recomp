@@ -6,7 +6,7 @@
 // MS2-UNIT: ?\boxcollision.cpp
 // MS2-RANGE: 0x140ada4c0-0x140add560 .text$mn
 // MS2-PIN: ?RemoveAllStreamRefs@NiMesh@@QEAAXXZ 0x140adc720
-// MS2-PIN: memcpy_s 0x140add440
+// MS2-PIN: memmove_s 0x140add440
 #define NOMINMAX
 #define MS2_THIS_FILE ""
 // The exe's memcpy_s is a plain call (no /Oi expansion); the pragma must precede the inline copy.
@@ -194,6 +194,6 @@ void CBoxCollision::vfunc_5()
 }
 MS2_REPLACE_METHOD(0x140ADAE20, CBoxCollision, vfunc_5, 2545, 0xD923878B);
 
-// The UCRT's `static __inline memcpy_s` of this TU (0x140add440, no caller left in the exe; kept alive by the pointer below).
-// MS2-FUNCTIONAL memcpy_s: CRT memcpy_s copy: source spelling may differ
-__declspec(selectany) extern errno_t(__cdecl* const ms2_pfnBoxCollisionMemcpyS)(void*, size_t, const void*, size_t) = &memcpy_s;
+// The UCRT's `static __inline memmove_s` of this TU (0x140add440, no caller left in the exe; kept alive by the pointer below).
+// MS2-FUNCTIONAL memmove_s: CRT memmove_s copy: source spelling may differ
+__declspec(selectany) extern errno_t(__cdecl* const ms2_pfnBoxCollisionMemmoveS)(void*, size_t, const void*, size_t) = &memmove_s;

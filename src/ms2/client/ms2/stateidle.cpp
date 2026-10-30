@@ -89,6 +89,7 @@ struct Unk_SiString
     operator const efd::utf8string&() const { return *(const efd::utf8string*)m_buf; }
     char m_buf[0x20];
 };
+MS2_CHECK_SIZE(Unk_SiString, 0x20);
 // The exe passes the string's address directly (no conversion call).
 #define SI_STR(k) (*reinterpret_cast<const efd::utf8string*>(&(k)))
 

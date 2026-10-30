@@ -22,7 +22,7 @@ public:
     void SetVisible(bool bVisible);                 // 0x140aab2e0
     void Show();                                    // 0x140aab320
     void Hide();                                    // 0x140aab370
-    bool SetScale(float fScale);                    // 0x140aab3c0
+    int SetScale(float fScale);                     // 0x140aab3c0
 
 private:
     void* m_pOwner;                                 // +0x18 the target game object

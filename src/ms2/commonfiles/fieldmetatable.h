@@ -38,7 +38,7 @@ public:
     Unk_FieldPtr(int);                                      // m_p = NULL (0x140443900)
     Unk_FieldPtr(const Unk_FieldNewTag&);                   // fresh box (0x1404438d0)
     Unk_FieldPtr(const Unk_FieldPtr& o);                    // copy + AddRef (0x1406feb00)
-    Unk_FieldPtr(Unk_FieldPtr& o);                          // steal from a non-const lvalue (0x1406fead0)
+    Unk_FieldPtr(Unk_FieldPtr&& o);                         // move: steal the pointer (0x1406fead0)
     ~Unk_FieldPtr();                                        // 0x140446410
     Unk_FieldPtr& operator=(const Unk_FieldPtr& o);
     Unk_FieldPtr& operator=(const Unk_FieldNewTag&);        // 0x1406ffb10
@@ -66,7 +66,7 @@ template <class T> Unk_FieldPtr<T>::Unk_FieldPtr() { m_p = 0; }
 template <class T> Unk_FieldPtr<T>::Unk_FieldPtr(int) { m_p = 0; }
 template <class T> Unk_FieldPtr<T>::Unk_FieldPtr(const Unk_FieldNewTag&) { m_p = 0; Make(); }
 template <class T> Unk_FieldPtr<T>::Unk_FieldPtr(const Unk_FieldPtr& o) { m_p = o.m_p; AddRef(); }
-template <class T> Unk_FieldPtr<T>::Unk_FieldPtr(Unk_FieldPtr& o) { m_p = o.m_p; o.m_p = 0; }
+template <class T> Unk_FieldPtr<T>::Unk_FieldPtr(Unk_FieldPtr&& o) { m_p = o.m_p; o.m_p = 0; }
 template <class T> Unk_FieldPtr<T>::~Unk_FieldPtr() { Release(); }
 template <class T> Unk_FieldPtr<T>& Unk_FieldPtr<T>::operator=(const Unk_FieldPtr& o)
 {
@@ -192,7 +192,7 @@ public:
     void FUN_1406fc590(int nFieldId);
     int FUN_1406fc620(int nNpcId, CMsTime& out);
     int FUN_1406fc6d0(int nNpcId, ATL::CAtlArray<CMsTime>& out);
-    bool FUN_1406fc7b0(unsigned int nField, unsigned int nId);
+    int FUN_1406fc7b0(unsigned int nField, unsigned int nId);
     int FUN_1406fc870(unsigned nFieldId);
     bool FUN_1406fc8a0(CString str, __int64* pTime);
     void LoadFieldMetaData();                                   // Load

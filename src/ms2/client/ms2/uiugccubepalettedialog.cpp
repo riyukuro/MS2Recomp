@@ -13,34 +13,34 @@
 // MS2-PIN: ?ReleaseImpl@?$MS2Ptr@VUIUGCItemEditDialog@@@@AEAAXPEAX@Z 0x140ef1a30
 // MS2-PIN: ??_EUIUGCCubePaletteDialog@@WBHI@EAAPEAXI@Z 0x140ef0770
 // MS2-PIN: ??_G?$DelegateImpl@U?$pair@PEAVUIUGCCubePaletteDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEAAPEAXI@Z 0x140ef0780
-// MS2-PIN: ??1?$CRBMap@HHV?$CElementTraits@H@ATL@@V12@@ATL@@QEAA@XZ 0x140ef0390
-// MS2-PIN: ??0CNode@?$CRBTree@HHV?$CElementTraits@H@ATL@@V12@@ATL@@QEAA@HH@Z 0x140ef0310
-// MS2-PIN: ??0CPair@?$CRBTree@HHV?$CElementTraits@H@ATL@@V12@@ATL@@IEAA@HH@Z 0x140ef0360
-// MS2-PIN: ?NewNode@?$CRBTree@HHV?$CElementTraits@H@ATL@@V12@@ATL@@AEAAPEAVCNode@12@HH@Z 0x140ef0f80
-// MS2-PIN: ?InsertImpl@?$CRBTree@HHV?$CElementTraits@H@ATL@@V12@@ATL@@AEAAPEAVCNode@12@HH@Z 0x140ef0c50
-// MS2-PIN: ?RBInsert@?$CRBTree@HHV?$CElementTraits@H@ATL@@V12@@ATL@@IEAAPEAVCNode@12@HH@Z 0x140ef12b0
-// MS2-PIN: ?Find@?$CRBTree@HHV?$CElementTraits@H@ATL@@V12@@ATL@@IEBAPEAVCNode@12@H@Z 0x140ef08d0
-// MS2-PIN: ?SetAt@?$CRBMap@HHV?$CElementTraits@H@ATL@@V12@@ATL@@QEAAPEAU__POSITION@@HH@Z 0x140ef1720
+// MS2-PIN: ??1?$CRBMap@W4Unk_UGCPaletteKey@@HV?$CElementTraits@W4Unk_UGCPaletteKey@@@ATL@@V?$CElementTraits@H@3@@ATL@@QEAA@XZ 0x140ef0390
+// MS2-PIN: ??0CNode@?$CRBTree@W4Unk_UGCPaletteKey@@HV?$CElementTraits@W4Unk_UGCPaletteKey@@@ATL@@V?$CElementTraits@H@3@@ATL@@QEAA@AEBW4Unk_UGCPaletteKey@@H@Z 0x140ef0310
+// MS2-PIN: ??0CPair@?$CRBTree@W4Unk_UGCPaletteKey@@HV?$CElementTraits@W4Unk_UGCPaletteKey@@@ATL@@V?$CElementTraits@H@3@@ATL@@IEAA@AEBW4Unk_UGCPaletteKey@@H@Z 0x140ef0360
+// MS2-PIN: ?NewNode@?$CRBTree@W4Unk_UGCPaletteKey@@HV?$CElementTraits@W4Unk_UGCPaletteKey@@@ATL@@V?$CElementTraits@H@3@@ATL@@AEAAPEAVCNode@12@AEBW4Unk_UGCPaletteKey@@H@Z 0x140ef0f80
+// MS2-PIN: ?InsertImpl@?$CRBTree@W4Unk_UGCPaletteKey@@HV?$CElementTraits@W4Unk_UGCPaletteKey@@@ATL@@V?$CElementTraits@H@3@@ATL@@AEAAPEAVCNode@12@AEBW4Unk_UGCPaletteKey@@H@Z 0x140ef0c50
+// MS2-PIN: ?RBInsert@?$CRBTree@W4Unk_UGCPaletteKey@@HV?$CElementTraits@W4Unk_UGCPaletteKey@@@ATL@@V?$CElementTraits@H@3@@ATL@@IEAAPEAVCNode@12@AEBW4Unk_UGCPaletteKey@@H@Z 0x140ef12b0
+// MS2-PIN: ?Find@?$CRBTree@W4Unk_UGCPaletteKey@@HV?$CElementTraits@W4Unk_UGCPaletteKey@@@ATL@@V?$CElementTraits@H@3@@ATL@@IEBAPEAVCNode@12@AEBW4Unk_UGCPaletteKey@@@Z 0x140ef08d0
+// MS2-PIN: ?SetAt@?$CRBMap@W4Unk_UGCPaletteKey@@HV?$CElementTraits@W4Unk_UGCPaletteKey@@@ATL@@V?$CElementTraits@H@3@@ATL@@QEAAPEAU__POSITION@@AEBW4Unk_UGCPaletteKey@@H@Z 0x140ef1720
 // MS2-PINS-BEGIN tplpin
 // MS2-PIN: ?get@?$MS2Ptr@VUGCCube@UGCCubePalette@@@@QEBAPEAVUGCCube@UGCCubePalette@@XZ 0x140ef0740 ; prop
 // MS2-PIN: ?get@?$MS2Ptr@VUIUGCItemEditDialog@@@@QEBAPEAVUIUGCItemEditDialog@@XZ 0x140ef0760 ; unique
-// MS2-PIN: ?CompareElements@?$CDefaultCompareTraits@H@ATL@@SA_NAEBH0@Z 0x140ef0840 ; unique
-// MS2-PIN: ?CompareElementsOrdered@?$CDefaultCompareTraits@H@ATL@@SAHAEBH0@Z 0x140ef0890 ; unique
-// MS2-PIN: ?FreeNode@?$CRBTree@HHV?$CElementTraits@H@ATL@@V12@@ATL@@AEAAXPEAVCNode@12@@Z 0x140ef09c0 ; unique
-// MS2-PIN: ?GetHeadPosition@?$CRBTree@HHV?$CElementTraits@H@ATL@@V12@@ATL@@QEBAPEAU__POSITION@@XZ 0x140ef0b00 ; unique
-// MS2-PIN: ?GetKeyAt@?$CRBTree@HHV?$CElementTraits@H@ATL@@V12@@ATL@@QEBAAEBHPEAU__POSITION@@@Z 0x140ef0b30 ; unique
-// MS2-PIN: ?GetNext@?$CRBTree@HHV?$CElementTraits@H@ATL@@V12@@ATL@@QEAAPEAVCPair@12@AEAPEAU__POSITION@@@Z 0x140ef0b90 ; unique
+// MS2-PIN: ?CompareElements@?$CDefaultCompareTraits@W4Unk_UGCPaletteKey@@@ATL@@SA_NAEBW4Unk_UGCPaletteKey@@0@Z 0x140ef0840 ; unique
+// MS2-PIN: ?CompareElementsOrdered@?$CDefaultCompareTraits@W4Unk_UGCPaletteKey@@@ATL@@SAHAEBW4Unk_UGCPaletteKey@@0@Z 0x140ef0890 ; unique
+// MS2-PIN: ?FreeNode@?$CRBTree@W4Unk_UGCPaletteKey@@HV?$CElementTraits@W4Unk_UGCPaletteKey@@@ATL@@V?$CElementTraits@H@3@@ATL@@AEAAXPEAVCNode@12@@Z 0x140ef09c0 ; unique
+// MS2-PIN: ?GetHeadPosition@?$CRBTree@W4Unk_UGCPaletteKey@@HV?$CElementTraits@W4Unk_UGCPaletteKey@@@ATL@@V?$CElementTraits@H@3@@ATL@@QEBAPEAU__POSITION@@XZ 0x140ef0b00 ; unique
+// MS2-PIN: ?GetKeyAt@?$CRBTree@W4Unk_UGCPaletteKey@@HV?$CElementTraits@W4Unk_UGCPaletteKey@@@ATL@@V?$CElementTraits@H@3@@ATL@@QEBAAEBW4Unk_UGCPaletteKey@@PEAU__POSITION@@@Z 0x140ef0b30 ; unique
+// MS2-PIN: ?GetNext@?$CRBTree@W4Unk_UGCPaletteKey@@HV?$CElementTraits@W4Unk_UGCPaletteKey@@@ATL@@V?$CElementTraits@H@3@@ATL@@QEAAPEAVCPair@12@AEAPEAU__POSITION@@@Z 0x140ef0b90 ; unique
 // MS2-PIN: ?vfunc_48@UIUGCCubePaletteDialog@@UEAAHXZ 0x140ef0be0 ; unique
-// MS2-PIN: ?GetValueAt@?$CRBTree@HHV?$CElementTraits@H@ATL@@V12@@ATL@@QEAAAEAHPEAU__POSITION@@@Z 0x140ef0bf0 ; unique
-// MS2-PIN: ?IsNil@?$CRBTree@HHV?$CElementTraits@H@ATL@@V12@@ATL@@AEBA_NPEAVCNode@12@@Z 0x140ef0d50 ; unique
-// MS2-PIN: ?LeftRotate@?$CRBTree@HHV?$CElementTraits@H@ATL@@V12@@ATL@@AEAAPEAVCNode@12@PEAV312@@Z 0x140ef0d90 ; unique
-// MS2-PIN: ?Maximum@?$CRBTree@HHV?$CElementTraits@H@ATL@@V12@@ATL@@IEBAPEAVCNode@12@PEAV312@@Z 0x140ef0ea0 ; unique
-// MS2-PIN: ?Minimum@?$CRBTree@HHV?$CElementTraits@H@ATL@@V12@@ATL@@IEBAPEAVCNode@12@PEAV312@@Z 0x140ef0f10 ; unique
-// MS2-PIN: ?Predecessor@?$CRBTree@HHV?$CElementTraits@H@ATL@@V12@@ATL@@IEBAPEAVCNode@12@PEAV312@@Z 0x140ef11e0 ; unique
-// MS2-PIN: ?RemovePostOrder@?$CRBTree@HHV?$CElementTraits@H@ATL@@V12@@ATL@@AEAAXPEAVCNode@12@@Z 0x140ef15b0 ; unique
-// MS2-PIN: ?RightRotate@?$CRBTree@HHV?$CElementTraits@H@ATL@@V12@@ATL@@AEAAPEAVCNode@12@PEAV312@@Z 0x140ef1610 ; unique
-// MS2-PIN: ?SetNil@?$CRBTree@HHV?$CElementTraits@H@ATL@@V12@@ATL@@AEAAXPEAPEAVCNode@12@@Z 0x140ef1780 ; unique
-// MS2-PIN: ?Successor@?$CRBTree@HHV?$CElementTraits@H@ATL@@V12@@ATL@@IEBAPEAVCNode@12@PEAV312@@Z 0x140ef17f0 ; unique
+// MS2-PIN: ?GetValueAt@?$CRBTree@W4Unk_UGCPaletteKey@@HV?$CElementTraits@W4Unk_UGCPaletteKey@@@ATL@@V?$CElementTraits@H@3@@ATL@@QEAAAEAHPEAU__POSITION@@@Z 0x140ef0bf0 ; unique
+// MS2-PIN: ?IsNil@?$CRBTree@W4Unk_UGCPaletteKey@@HV?$CElementTraits@W4Unk_UGCPaletteKey@@@ATL@@V?$CElementTraits@H@3@@ATL@@AEBA_NPEAVCNode@12@@Z 0x140ef0d50 ; unique
+// MS2-PIN: ?LeftRotate@?$CRBTree@W4Unk_UGCPaletteKey@@HV?$CElementTraits@W4Unk_UGCPaletteKey@@@ATL@@V?$CElementTraits@H@3@@ATL@@AEAAPEAVCNode@12@PEAV312@@Z 0x140ef0d90 ; unique
+// MS2-PIN: ?Maximum@?$CRBTree@W4Unk_UGCPaletteKey@@HV?$CElementTraits@W4Unk_UGCPaletteKey@@@ATL@@V?$CElementTraits@H@3@@ATL@@IEBAPEAVCNode@12@PEAV312@@Z 0x140ef0ea0 ; unique
+// MS2-PIN: ?Minimum@?$CRBTree@W4Unk_UGCPaletteKey@@HV?$CElementTraits@W4Unk_UGCPaletteKey@@@ATL@@V?$CElementTraits@H@3@@ATL@@IEBAPEAVCNode@12@PEAV312@@Z 0x140ef0f10 ; unique
+// MS2-PIN: ?Predecessor@?$CRBTree@W4Unk_UGCPaletteKey@@HV?$CElementTraits@W4Unk_UGCPaletteKey@@@ATL@@V?$CElementTraits@H@3@@ATL@@IEBAPEAVCNode@12@PEAV312@@Z 0x140ef11e0 ; unique
+// MS2-PIN: ?RemovePostOrder@?$CRBTree@W4Unk_UGCPaletteKey@@HV?$CElementTraits@W4Unk_UGCPaletteKey@@@ATL@@V?$CElementTraits@H@3@@ATL@@AEAAXPEAVCNode@12@@Z 0x140ef15b0 ; unique
+// MS2-PIN: ?RightRotate@?$CRBTree@W4Unk_UGCPaletteKey@@HV?$CElementTraits@W4Unk_UGCPaletteKey@@@ATL@@V?$CElementTraits@H@3@@ATL@@AEAAPEAVCNode@12@PEAV312@@Z 0x140ef1610 ; unique
+// MS2-PIN: ?SetNil@?$CRBTree@W4Unk_UGCPaletteKey@@HV?$CElementTraits@W4Unk_UGCPaletteKey@@@ATL@@V?$CElementTraits@H@3@@ATL@@AEAAXPEAPEAVCNode@12@@Z 0x140ef1780 ; unique
+// MS2-PIN: ?Successor@?$CRBTree@W4Unk_UGCPaletteKey@@HV?$CElementTraits@W4Unk_UGCPaletteKey@@@ATL@@V?$CElementTraits@H@3@@ATL@@IEBAPEAVCNode@12@PEAV312@@Z 0x140ef17f0 ; unique
 // MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVUIUGCCubePaletteDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x140ef1a80 ; unique
 // MS2-PIN: ?Invoke@?$DelegateImpl@U?$pair@PEAVUIUGCCubePaletteDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEAA_NHAEBVCMsgBoxData@@@Z 0x140ef1ae0 ; unique
 // MS2-PIN: ??$Call@VUIUGCCubePaletteDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@?$DelegateImpl@U?$pair@PEAVUIUGCCubePaletteDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@CA_NAEAU?$pair@PEAVUIUGCCubePaletteDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@HAEBVCMsgBoxData@@@Z 0x140ef1b20 ; unique
@@ -857,16 +857,16 @@ UIUGCCubePaletteDialog::UIUGCCubePaletteDialog()
     m_58 = 1;
     FUN_1422dc3b0(1);
     FUN_141925e70(0, 1);
-    m_map.SetAt(2, 1);
-    m_map.SetAt(3, 2);
-    m_map.SetAt(4, 3);
-    m_map.SetAt(5, 4);
-    m_map.SetAt(6, 5);
-    m_map.SetAt(7, 6);
-    m_map.SetAt(8, 7);
-    m_map.SetAt(9, 8);
-    m_map.SetAt(10, 9);
-    m_map.SetAt(11, 10);
+    m_map.SetAt(Unk_UGCPaletteKey(2), 1);
+    m_map.SetAt(Unk_UGCPaletteKey(3), 2);
+    m_map.SetAt(Unk_UGCPaletteKey(4), 3);
+    m_map.SetAt(Unk_UGCPaletteKey(5), 4);
+    m_map.SetAt(Unk_UGCPaletteKey(6), 5);
+    m_map.SetAt(Unk_UGCPaletteKey(7), 6);
+    m_map.SetAt(Unk_UGCPaletteKey(8), 7);
+    m_map.SetAt(Unk_UGCPaletteKey(9), 8);
+    m_map.SetAt(Unk_UGCPaletteKey(10), 9);
+    m_map.SetAt(Unk_UGCPaletteKey(11), 10);
 }
 
 // @0x140eea200

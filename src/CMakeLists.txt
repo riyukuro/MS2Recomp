@@ -91,10 +91,19 @@ if(MS2HOOK_WITH_GAME)
     if(MS2_SYMOBJ_PRUNE)
         set(MS2_SYMOBJ_PRUNE_ARG --prune)
     endif()
+    # objects of the units another toolset builds (`// MS2-TOOLSET:`, src/ms2/CMakeLists.txt); vc9 objs carry no default
+    # libs (/Zl) and call the VS2008 CRT's printf family, which the UCRT keeps only in legacy_stdio_definitions
+    get_property(MS2_TOOLSET_OBJECTS GLOBAL PROPERTY MS2_TOOLSET_OBJECTS)
+    if(MS2_TOOLSET_OBJECTS)
+        set_source_files_properties(${MS2_TOOLSET_OBJECTS} PROPERTIES EXTERNAL_OBJECT TRUE GENERATED TRUE)
+        target_sources(dinput8 PRIVATE ${MS2_TOOLSET_OBJECTS})
+        add_dependencies(dinput8 ms2toolset)
+        target_link_libraries(dinput8 PRIVATE legacy_stdio_definitions)
+    endif()
     set(MS2_SYMOBJ "${CMAKE_CURRENT_BINARY_DIR}/ms2sym.obj")
     add_custom_command(OUTPUT "${MS2_SYMOBJ}"
-        COMMAND "${MS2_PYTHON}" "${MS2_ROOT}/tools/ms2symobj.py" -o "${MS2_SYMOBJ}" ${MS2_SYMBOL_TABLES} --rebind --rebind-log "${CMAKE_CURRENT_BINARY_DIR}/rebound.txt" ${MS2_SYMOBJ_PRUNE_ARG} --objs $<TARGET_OBJECTS:ms2game>
-        DEPENDS "${MS2_ROOT}/tools/ms2symobj.py" ${MS2_SYMBOL_TABLES} $<TARGET_OBJECTS:ms2game>
+        COMMAND "${MS2_PYTHON}" "${MS2_ROOT}/tools/ms2symobj.py" -o "${MS2_SYMOBJ}" ${MS2_SYMBOL_TABLES} --rebind --rebind-log "${CMAKE_CURRENT_BINARY_DIR}/rebound.txt" ${MS2_SYMOBJ_PRUNE_ARG} --objs $<TARGET_OBJECTS:ms2game> ${MS2_TOOLSET_OBJECTS}
+        DEPENDS "${MS2_ROOT}/tools/ms2symobj.py" ${MS2_SYMBOL_TABLES} $<TARGET_OBJECTS:ms2game> ${MS2_TOOLSET_OBJECTS}
         COMMAND_EXPAND_LISTS
         COMMENT "Generating ms2sym.obj (exe symbol map)")
     set_source_files_properties("${MS2_SYMOBJ}" PROPERTIES EXTERNAL_OBJECT TRUE GENERATED TRUE)

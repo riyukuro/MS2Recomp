@@ -99,7 +99,7 @@ public:
     virtual int vfunc_25();                                 // 25 0x1418b9310 m_nObjectId
     virtual Unk_GoModelKey* vfunc_26(Unk_GoModelKey* pKey);                     // 26 0x1418b9330
     virtual int vfunc_27(const char* szEvent, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);   // 27 0x1418b9390
-    virtual void vfunc_28(void* p1, TPtr<Unk_UISwfEntity_25> spTarget, void* pArg);   // 28 0x1418b9730
+    virtual void vfunc_28(void* p1, TPtr<Unk_UISwfEntity_25> spTarget, void* pArg, void* pUnused);   // 28 0x1418b9730
     virtual void vfunc_29(int n);                           // 29 0x1418b9b20 m_nState = n
 
     // IAvatarObjectEventListener overrides (the secondary vftable; the bodies get this = +0x18)
@@ -248,7 +248,7 @@ public:
     virtual void vfunc_3();                                 // 3  0x1418bdce0
     virtual void vfunc_21(UIRenderView* pView);             // 21 0x1418bda50
     virtual void vfunc_22();                                // 22 0x1418bdbb0
-    virtual void vfunc_28(void* p1, TPtr<Unk_UISwfEntity_25> spTarget, void* pArg);   // 28 0x1418bdd30
+    virtual void vfunc_28(void* p1, TPtr<Unk_UISwfEntity_25> spTarget, void* pArg, void* pUnused);   // 28 0x1418bdd30
 
     void FUN_1418bdae0(void* pUnused);                                   // 0x1418bdae0
     void FUN_1418bdc00(CItemData* pData);                   // 0x1418bdc00
@@ -274,7 +274,7 @@ public:
     virtual void vfunc_3();                                 // 3  0x1418be640
     virtual void vfunc_21(UIRenderView* pView);             // 21 0x1418be2b0
     virtual void vfunc_22();                                // 22 0x1418be410
-    virtual void vfunc_28(void* p1, TPtr<Unk_UISwfEntity_25> spTarget, void* pArg);   // 28 0x1418be690
+    virtual void vfunc_28(void* p1, TPtr<Unk_UISwfEntity_25> spTarget, void* pArg, void* pUnused);   // 28 0x1418be690
     virtual int vfunc_4(GameObject* pObj);                  // o18 slot 4 0x1418be860
 
     void FUN_1418be340(void* pUnused);                                   // 0x1418be340
@@ -302,7 +302,7 @@ public:
     virtual void vfunc_3();                                 // 3  0x1418bec60
     virtual void vfunc_21(UIRenderView* pView);             // 21 0x1418bea60
     virtual void vfunc_22();                                // 22 0x1418beb80
-    virtual void vfunc_28(void* p1, TPtr<Unk_UISwfEntity_25> spTarget, void* pArg);   // 28 0x1418becb0
+    virtual void vfunc_28(void* p1, TPtr<Unk_UISwfEntity_25> spTarget, void* pArg, void* pUnused);   // 28 0x1418becb0
 
     void FUN_1418beaf0(void* pUnused);                                   // 0x1418beaf0
     void FUN_1418bebd0(CItemData* pData);                   // 0x1418bebd0

@@ -1,31 +1,52 @@
-148a
-// MS2: the game implements the wchar_t overloads natively (wide NiFilename and
-// a wide efd::File::GetFile, game 0x141d6ed20/0x141d6f590/0x141d6f800). Our
-// engine has no wide file layer, so convert the path and use the narrow code.
-bool NiImageConverter::MS2WideToNarrowPath(const wchar_t* pwcPath,
-    char* pcPath, unsigned int uiPathLen)
-{
-    if (!pwcPath || !pcPath || uiPathLen == 0)
-        return false;
-#if defined(_WIN32)
-    int iLen = ::WideCharToMultiByte(CP_THREAD_ACP, 0, pwcPath, -1, pcPath,
-        (int)uiPathLen, NULL, NULL);
-    return iLen > 0;
-#else
-    size_t stLen = wcstombs(pcPath, pwcPath, uiPathLen);
-    if (stLen == (size_t)-1 || stLen >= uiPathLen)
-        return false;
-    return true;
-#endif
+132a
+        }
+        NiPixelData* pkDest = m_kReader.ReadFile(*kIst, pkOptDest);
+
+        if (pkDest)
+        {
+            NiDelete kIst;
+            return pkDest;
+        }
+
+        NiDelete kIst;
+    }
+
+    return NULL;
 }
 
 //--------------------------------------------------------------------------------------------------
+// MS2: Nexon's wchar_t overloads (game 0x141d6ed20/0x141d6f590/0x141d6f800).
+// They split the path with NiFilenameW, narrow only the extension for the
+// reader, and open the wide path with the wide efd::File::GetFile.
 bool NiImageConverter::CanReadImageFile(const wchar_t* pwcFilename) const
 {
-    char acFilename[NI_MAX_PATH];
-    if (!MS2WideToNarrowPath(pwcFilename, acFilename, NI_MAX_PATH))
+    NiFilenameW kFileName(pwcFilename);
+    efd::string kExt;
+    try
+    {
+        kExt = ATL::CW2A(kFileName.GetExt());
+    }
+    catch (...)
+    {
         return false;
-    return CanReadImageFile(acFilename);
+    }
+    if (kExt.empty())
+        return false;
+
+    if (m_kReader.CanReadFile(kExt.c_str()))
+    {
+        efd::File* kIst = efd::File::GetFile(pwcFilename, efd::File::READ_ONLY);
+        if ((!kIst) || (!(*kIst)))
+        {
+            NiDelete kIst;
+            return false;
+        }
+
+        NiDelete kIst;
+        return true;
+    }
+
+    return false;
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -33,22 +54,66 @@ bool NiImageConverter::ReadImageFileInfo(const wchar_t* pwcFilename,
     NiPixelFormat& kFmt, bool& bMipmap, unsigned int& uiWidth,
     unsigned int& uiHeight, unsigned int& uiNumFaces)
 {
-    char acFilename[NI_MAX_PATH];
-    if (!MS2WideToNarrowPath(pwcFilename, acFilename, NI_MAX_PATH))
+    NiFilenameW kFileName(pwcFilename);
+    efd::string kExt;
+    try
+    {
+        kExt = ATL::CW2A(kFileName.GetExt());
+    }
+    catch (...)
+    {
         return false;
-    return ReadImageFileInfo(acFilename, kFmt, bMipmap, uiWidth, uiHeight,
-        uiNumFaces);
+    }
+    if (kExt.empty())
+        return false;
+
+    if (m_kReader.CanReadFile(kExt.c_str()))
+    {
+        efd::File* kIst = efd::File::GetFile(pwcFilename, efd::File::READ_ONLY);
+        if ((!kIst) || (!(*kIst)))
+        {
+            NiDelete kIst;
+            return false;
+        }
+
+        if (m_kReader.ReadHeader(*kIst, uiWidth, uiHeight, kFmt, bMipmap,
+            uiNumFaces))
+        {
+            NiDelete kIst;
+            return true;
+        }
+
+        NiDelete kIst;
+    }
+
+    return false;
 }
 
 //--------------------------------------------------------------------------------------------------
 NiPixelData* NiImageConverter::ReadImageFile(const wchar_t* pwcFilename,
     NiPixelData* pkOptDest)
 {
-    char acFilename[NI_MAX_PATH];
-    if (!MS2WideToNarrowPath(pwcFilename, acFilename, NI_MAX_PATH))
+    NiFilenameW kFileName(pwcFilename);
+    efd::string kExt;
+    try
+    {
+        kExt = ATL::CW2A(kFileName.GetExt());
+    }
+    catch (...)
+    {
         return NULL;
-    return ReadImageFile(acFilename, pkOptDest);
-}
+    }
+    if (kExt.empty())
+        return NULL;
 
-//--------------------------------------------------------------------------------------------------
+    if (m_kReader.CanReadFile(kExt.c_str()))
+    {
+        efd::File* kIst = efd::File::GetFile(pwcFilename, efd::File::READ_ONLY);
+        if ((!kIst) || (!(*kIst)))
+        {
+            NiDelete kIst;
+            return NULL;
+.
+19a
+#include <atlconv.h> // MS2: CW2A in the wchar_t overloads
 .

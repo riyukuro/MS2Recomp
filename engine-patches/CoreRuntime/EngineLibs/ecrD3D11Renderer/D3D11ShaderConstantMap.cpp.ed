@@ -1,3 +1,6 @@
+5777c
+            *pResult = vector1 * XMVectorReciprocal(vector2);
+.
 5556@8s "" "(const char*)"
 4474@12s "" "(const char*)"
 4473c

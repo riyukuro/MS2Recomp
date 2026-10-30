@@ -51,8 +51,11 @@ GB_TAIL = (0x1427b6c90, 0x1428d8dca)        # Gamebryo tail: renderer / shader l
 STUB_GAP = 48                                # longest run of uncredited functions counted as one TU's stubs
 KEY = "gb2"                                  # gb2: .deps now case-repaired (Wine lowercases dirs); bump to recompile everything
 MATCH_KEY = "alias-1"                          # bump to re-match every obj (pairing logic changed)
-if bm.CHAIN:
-    MATCH_KEY += "-chain"
+# chained tails (bytematch default since 2026-10-29, MS2_BM_CHAIN=0 turns it off) decide only exact vs functional, in
+# chain_verdict: every pairing step compares the first .pdata chunk, as before 5cb8ad519. Pairing on the chained body
+# dropped each pair whose tail differs (no name row: an untagged look-alike) -> fullexe trap stubs (merge 41: 7 gb VAs)
+CHAIN = bm.CHAIN                                 # run() and _init (Pool workers) set bm.CHAIN off
+CHAIN_KEY = "chain1"                             # bump to re-run chain_verdict
 LEAF_SMALL, LEAF_NEAR = 16, 0x10000             # assign_copies: small leaf copies only this near the obj's own functions
 STATIC_NEAR = 0x10000                           # match_obj: a COMDAT caller's static callee only this near the obj's own code
 RELOK_KEY = "relok9:"                         # assign_copies: relocation-consistency cache version
@@ -187,6 +190,7 @@ def _is_text(va):
 
 
 def _init():
+    bm.CHAIN = False            # pairing compares the first chunk (see CHAIN); a forked worker inherits the parent's
     exe = bm.Exe(bm.EXE)
     names, dnames, aliases = {}, {}, {}
     # symbols-engine-manual first (gb15): an engine function whose mangled name the game also defines (the game's own
@@ -1743,6 +1747,14 @@ def assign_dislots(res, paths, log=print):
 
 def run(cache, j=8, filters=(), log=print):
     """Compile + match every engine unit (those whose name contains one of `filters`); returns (results, failed)."""
+    saved, bm.CHAIN = bm.CHAIN, False      # pairing: first chunk only (see CHAIN)
+    try:
+        return _run(cache, j, filters, log)
+    finally:
+        bm.CHAIN = saved
+
+
+def _run(cache, j, filters, log):
     t0 = time.time()
     cache = os.path.abspath(cache)     # v2525 units compile with the tree as cwd
     tree, _ = gbtree.assemble()
@@ -1777,9 +1789,10 @@ def run(cache, j=8, filters=(), log=print):
         win = unit_window(u["unit"], windows)
         if win != (None, []):
             key.append(json.dumps(win))
-        if os.environ.get("MS2_MERGE_INCR"):      # tools/merge.sh: also keyed by the symbol tables the match read
-            import mergekey
-            key.append(mergekey.engine_stamp())
+        # also keyed by the symbol tables the match read (and the matcher/exe maps): a callee check that failed against
+        # an old symbols row must re-run once the row is fixed, in worker caches as well as tools/merge.sh's
+        import mergekey
+        key.append(mergekey.engine_stamp())
         c = res.get(u["recipe"] + ":" + u["name"])
         if not c or c.get("key") != key:
             jobs.append((u, o, key, win))
@@ -1813,11 +1826,66 @@ def run(cache, j=8, filters=(), log=print):
         json.dump(groups, open(gpath + ".tmp", "w"))
         os.replace(gpath + ".tmp", gpath)
         log(f"engine: copy pairs {sum(len(c['xpairs']) for c in res.values())} ({time.time() - t2:.0f}s)")
+    if CHAIN:
+        chain_verdict(res, {u["recipe"] + ":" + u["name"]: obj_path(cache, u) for u in gbtree.load_units(tree)}, j, log)
     os.makedirs(os.path.dirname(rpath), exist_ok=True)
     json.dump(res, open(rpath + ".tmp", "w"))
     os.replace(rpath + ".tmp", rpath)
     log(f"engine: compile {t1 - t0:.0f}s, match {time.time() - t1:.0f}s, {len(failed)} TU(s) failed")
     return res, failed
+
+
+def _ok_pairs(c):
+    return sorted({(n, va) for n, va, ok, _ in c["pairs"] + c.get("xpairs", []) + c.get("hpairs", []) + c.get("bpairs", [])
+                   if ok})
+
+
+def _chain_job(job):
+    """the exact (first chunk) pairs of one obj whose chained body differs: [[name, va]]"""
+    path, pairs = job
+    try:
+        obj = bm.Obj(path)
+    except Exception:
+        return path, []
+    exe, bad = G["exe"], []
+    for n, va in pairs:
+        si = obj.by_name.get(n)
+        rva = va - exe.base
+        if si is None:
+            continue
+        bm.CHAIN = False
+        ln1 = len(obj.function(si)[0])
+        bm.CHAIN = True
+        # neither side has a chained tail: the first-chunk verdict stands
+        if len(obj.function(si)[0]) == ln1 and not (rva in exe.rf and exe.rf[rva][0] in exe._chained):
+            bm.CHAIN = False
+            continue
+        if not _match(obj, n, va):
+            bad.append([n, va])
+        bm.CHAIN = False
+    return path, bad
+
+
+def chain_verdict(res, paths, j, log=print):
+    """res[key]["chainbad"] = [stamp, [[name, va]]]: the exact pairs whose chained .pdata tail differs from the exe's
+    (credit makes them functional). Cached per obj result: stamp = its match key + exact pairs."""
+    jobs = {}
+    for k, c in res.items():
+        pairs = _ok_pairs(c)
+        stamp = hashlib.sha1(json.dumps([CHAIN_KEY, c["key"], pairs]).encode()).hexdigest()[:16]
+        if c.get("chainbad", [None])[0] != stamp and k in paths and os.path.exists(paths[k]):
+            jobs[paths[k]] = (k, stamp, pairs)
+        elif c.get("chainbad", [None])[0] != stamp:
+            c["chainbad"] = [stamp, []]
+    if not jobs:
+        return
+    t0 = time.time()
+    with Pool(max(1, j), initializer=_init) as p:
+        for path, bad in p.imap_unordered(_chain_job, [(o, v[2]) for o, v in jobs.items()], chunksize=4):
+            k, stamp, _ = jobs[path]
+            res[k]["chainbad"] = [stamp, bad]
+    log(f"engine: chained tails {len(jobs)} obj(s), {sum(len(res[v[0]]['chainbad'][1]) for v in jobs.values())} "
+        f"exact pair(s) -> functional ({time.time() - t0:.0f}s)")
 
 
 def load_results(cache):
@@ -1853,9 +1921,11 @@ def credit(res, game_rows):
     for k, c in sorted(res.items()):
         c = dict(c, unit=canon[c["unit"].lower()])
         better = {x[0] for x in c.get("xpairs", []) + c.get("bpairs", []) if x[2]}
+        tail = {(n, va) for n, va in c.get("chainbad", [None, []])[1]}
         for sym, va, ok, how in c["pairs"] + c.get("xpairs", []) + c.get("hpairs", []) + c.get("bpairs", []):
             if not ok and sym in better:      # a non-exact table-name pair superseded by an exact copy pair
                 continue
+            ok = ok and (sym, va) not in tail   # the first chunk matches, the chained tail differs: functional
             if how == "name":
                 named.add((c["unit"], va))
             if va not in info or va in game_rows or in_game(va):

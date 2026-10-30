@@ -15,10 +15,10 @@ class CPCEffectDummy : public TSingleton<CPCEffectDummy>
 {
 public:
     CPCEffectDummy();                                       // 0x1416841a0
-    virtual ~CPCEffectDummy();                              // 0x141686ff0 (sdd 0x1416875a0)
+    // ~CPCEffectDummy() implicit: 0x141686ff0 (sdd 0x1416875a0) stores no vftable
 
-    bool Load();                                            // 0x1416841f0 Table/pcEffectDummy.xml
-    bool LoadFile(const char* pszPath);                     // 0x141684290
+    int Load();                                             // 0x1416841f0 Table/pcEffectDummy.xml
+    int LoadFile(const char* pszPath);                      // 0x141684290
     int Find(const char* pszName, CEffectDummy& kOut);      // 0x141684460 first row of that name, any gender
     size_t GetCount(int nGender);                           // 0x141684580
     int Get(int nGender, unsigned nIndex, CEffectDummy& kOut);    // 0x1416845c0

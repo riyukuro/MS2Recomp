@@ -332,9 +332,9 @@ bool CoupleEmotionAnimInfo::Load(int nAni)
     walk.FUN_14098cb80((NiAVObject*)m_spNifRoot);
     while (NiAVObject* pObject = walk.FUN_14098e0d0(1))
     {
-        for (NiTimeController* pCtrl = pObject->GetControllers(); pCtrl != 0 && (int)pCtrl->GetCycleType() == 1;
+        for (NiTimeController* pCtrl = pObject->GetControllers(); pCtrl != 0 && (int)pCtrl->GetAnimType() == 1;
              pCtrl = pCtrl->GetNext())
-            pCtrl->SetCycleType((NiTimeController::CycleType)0);
+            pCtrl->SetAnimType((NiTimeController::AnimType)0);
     }
     for (NiTimeController* pCtrl = ((NiAVObject*)FUN_1409475f0(&m_spOwnerNode))->GetControllers(); pCtrl != 0;
          pCtrl = pCtrl->GetNext())

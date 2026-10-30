@@ -1,10 +1,3 @@
-56a
-
-    // MS2: helper for the wchar_t overloads (not in the game binary). Converts
-    // with the thread ANSI code page; returns false if the path does not fit.
-    static bool MS2WideToNarrowPath(const wchar_t* pwcPath, char* pcPath,
-        unsigned int uiPathLen);
-.
 39a
     virtual NiPixelData* ReadImageFile(const wchar_t* pwcFilename,
         NiPixelData* pkOptDest);

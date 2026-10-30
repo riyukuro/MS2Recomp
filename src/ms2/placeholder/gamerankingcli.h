@@ -117,6 +117,7 @@ struct Unk_RankListHandle
 struct Unk_RankJson
 {
     Unk_RankJson(const Unk_RankListHandle& h);              // 0x140b2d460
+    Unk_RankJson(const Unk_RankJson&);                      // never called: makes the by-value arg pass by address
     ~Unk_RankJson();
     void* m_00;
     void* m_p;

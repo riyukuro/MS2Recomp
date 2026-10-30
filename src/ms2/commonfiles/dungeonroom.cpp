@@ -792,11 +792,6 @@ DungeonRewardCoupon* DungeonRoom::GetCoupon()
     return m_pCoupon;
 }
 
-#ifndef MS2_HOOK_DLL   // the exe's ItemGift::~ItemGift lives in itemgift.cpp; this unit holds its own COMDAT copy (the hook DLL links that one)
-// @0x140333f10
-ItemGift::~ItemGift() {}
-#endif
-
 // @0x14031e950
 DungeonSeasonItemGift::DungeonSeasonItemGift()
     : m_requireScore(0)

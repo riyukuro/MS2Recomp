@@ -39,6 +39,7 @@ class Unk_ShadowIter { public:                                      // elements 
     virtual void vfunc_32(char flag); };                            // +0x100 (0x141610573 call [rax+0x100])
 
 struct Unk_NodePtr { Unk_NodePtr(void* p); ~Unk_NodePtr(); void* m_p; };   // ctor 0x1409f7170, dtor 0x1409f74b0 (smart pointer to the shadow NiNode)
+MS2_CHECK_SIZE(Unk_NodePtr, 8);
 
 class CMesh {                                                       // base mesh, ctor 0x14147af80 / dtor 0x14147b330 (unrecovered)
 public:

@@ -10,6 +10,7 @@
 #include "ms2/placeholder/ms2svrptr.h"
 
 struct Unk_Int3 { int x, y, z; Unk_Int3() = default; Unk_Int3(int, int, int); };       // 12-byte integer cube point (ctor 0x1408a85a0)
+MS2_CHECK_SIZE(Unk_Int3, 0xc);
 
 // One <cube> row. RTTI UGCMapPackageInfo, 0x38 bytes; vftable 0x142da1f20 (CPtred's slot).
 class UGCMapPackageInfo : public CPtred

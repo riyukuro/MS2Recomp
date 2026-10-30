@@ -161,11 +161,15 @@ extern Unk_SingletonObj* DAT_143aac4c8;
 extern void* DAT_143aac4d0;
 extern Unk_SingletonObj* DAT_143aac4d8;
 
+// An 8-byte handle (the exe ctor 0x1401cd100 stores its argument at +0, as for Unk_Handle1401cd100).
 class Unk_143aac520
 {
 public:
     Unk_143aac520(int);                                             // 0x1401cd100
+private:
+    void* m_p;
 };
+MS2_CHECK_SIZE(Unk_143aac520, 8);
 
 typedef ATL::CRBMap<unsigned int, CStringW> Unk_BmNameMap;
 typedef Unk_BmBoxPtr<Unk_BmNameMap> Unk_BmNameMapPtr;

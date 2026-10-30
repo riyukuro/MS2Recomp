@@ -539,6 +539,7 @@ void FUN_1424e26d0();
 void FUN_1424e2a10();
 void FUN_1424e2ac0();
 void FUN_1424e2c90();
+void FUN_1424e3a00();
 void FUN_1424e2e70();
 void FUN_142928b00();
 void FUN_142928dc0();
@@ -725,8 +726,10 @@ void FUN_14251ac40();
 void FUN_14251ac60();
 void FUN_14251ac80();
 void FUN_14251ac90();
+void FUN_14251aca0();
 void FUN_14251acb0();
 void FUN_14251acc0();
+void FUN_14251acd0();
 void FUN_14251ae60();
 void FUN_14251af20();
 void FUN_14251af24();
@@ -2024,6 +2027,11 @@ struct Sd_14317eff8 {
     const void* p130;
     const void* p138;
     unsigned char b140[0x120];
+};
+struct Sd_14317f848 {
+    const void* p0;
+    const void* p8;
+    const void* p10;
 };
 struct Sd_14317f860 {
     const void* p0;
@@ -5260,6 +5268,12 @@ alignas(8) Sd_14317eff8 DAT_14317eff8 = {
         0x6e, 0x20, 0x69, 0x6e, 0x20, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x4f, 0x62, 0x6a, 0x65, 0x63,
         0x74, 0x28, 0x22, 0x25, 0x73, 0x22, 0x29, 0x3a, 0x0a, 0x09, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     },
+};
+// 0x14317f848
+Sd_14317f848 DAT_14317f848 = {
+    (const void*)&FUN_1424e3a00,
+    (const void*)&FUN_14251aca0,
+    (const void*)&FUN_14251acd0,
 };
 // 0x14317f860
 alignas(16) Sd_14317f860 DAT_14317f860 = {
@@ -9385,6 +9399,7 @@ alignas(8) Sd_1432223d8 DAT_1432223d8 = {
 #pragma comment(linker, "/alternatename:DAT_14317ef38=?DAT_14317ef38@@3USd_14317ef38@@A")
 #pragma comment(linker, "/alternatename:?DAT_14317eff8@AS3@GFx@Scaleform@@3PAPEBXA=?DAT_14317eff8@@3USd_14317eff8@@A")
 #pragma comment(linker, "/alternatename:DAT_14317eff8=?DAT_14317eff8@@3USd_14317eff8@@A")
+#pragma comment(linker, "/alternatename:?DAT_14317f848@AS3@GFx@Scaleform@@3PAPEBXA=?DAT_14317f848@@3USd_14317f848@@A")
 #pragma comment(linker, "/alternatename:?DAT_14317f860@AS3@GFx@Scaleform@@3PAPEBXA=?DAT_14317f860@@3USd_14317f860@@A")
 #pragma comment(linker, "/alternatename:?Empty@StringView@Abc@AS3@GFx@Scaleform@@2EB=?DAT_14317fe92@@3EA")
 #pragma comment(linker, "/alternatename:?DAT_14317fea0@@3QBUSfr34_OpCodeInfo@@B=?DAT_14317fea0@@3USd_14317fea0@@A")

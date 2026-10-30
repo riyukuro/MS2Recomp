@@ -1,7 +1,9 @@
 eol lf
-241c
-    bool m_bEnumerating; friend class NiInputXInputGamePad;  // MS2: the XInput pad reads it in UpdateDevice (exe 0x141d09270)
-    bool m_bStudioFlag0x2d;  // studio: +0x2d, name inferred  // MS2: v2525
+239,241c
+    // MS2: m_bEnumerating (+0x2d) is true while the system enumerates the devices (EnumerateDevices 0x141d10260,
+    // CheckEnumerationStatus 0x141d0ed90); +0x2c only gates the gamepad polling (0x141d0e010, set by 0x140d8f490).
+    bool m_bGamePadPollEnabled; friend class NiInputXInputGamePad;  // MS2: the XInput pad reads it in UpdateDevice (exe 0x141d09270)
+    bool m_bEnumerating;  // studio: +0x2d  // MS2: v2525
 .
 196a
     // MS2: clears the keyboard's key states; InputService::OnTick calls it when a device update starts failing

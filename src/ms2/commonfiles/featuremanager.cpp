@@ -980,7 +980,7 @@ int CFeatureManager::FUN_14036dc40()
 }
 
 // @0x14036dc60
-int CFeatureManager::FUN_14036dc60()
+unsigned short CFeatureManager::FUN_14036dc60()
 {
     return 0x32;
 }

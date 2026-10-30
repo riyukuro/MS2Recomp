@@ -521,29 +521,24 @@ void CPartyManager::FUN_14162a840(TPtr<PCBase> actor)
 }
 
 // Not hooked: the external actor-pointer copy constructor is not mapped.
-// MS2-FUNCTIONAL: equivalent control flow with different local scopes and temporary storage.
 // @0x14162a910
 void CPartyManager::FUN_14162a910(TPtr<PCBase> actor)
 {
     MS2Ptr<CPartyMember> member = FUN_14162afc0(FUN_141656a80(actor.operator->()));
     if (member.get() != NULL) {
-        __int64 maximum = FUN_141670a30(actor.operator->(), 4);
-        __int64 current = FUN_141670a00(actor.operator->(), 4);
-        member->FUN_141637a80(static_cast<int>(current), static_cast<int>(maximum));
+        member->FUN_141637a80(FUN_141670a00(actor.operator->(), 4), FUN_141670a30(actor.operator->(), 4));
         void* ui = FUN_140a8a680(0x4e45);
         if (ui != NULL) FUN_141a74d50(ui, member.get(), 2);
     }
 }
 
 // Not hooked: the external actor-pointer copy constructor is not mapped.
-// MS2-FUNCTIONAL: equivalent control flow with different local scopes and temporary storage.
 // @0x14162aa10
 void CPartyManager::FUN_14162aa10(TPtr<PCBase> actor)
 {
     MS2Ptr<CPartyMember> member = FUN_14162afc0(FUN_141656a80(actor.operator->()));
     if (member.get() != NULL) {
-        short level = (short)actor->vfunc_78();
-        member->FUN_141637a60(level);
+        member->FUN_141637a60((short)actor->vfunc_78());
         void* ui = FUN_140a8a680(0x4e45);
         if (ui != NULL) FUN_141a74d50(ui, member.get(), 8);
     }

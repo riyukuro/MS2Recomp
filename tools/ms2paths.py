@@ -152,14 +152,30 @@ def find_cl(env=None):
 # third_party/msvc147 = 14.14.26428 (cl 19.14.26433), third_party/msvc148 = 14.15.26726 (cl 19.15.26731).
 TOOLSETS = {"1416": "msvc", "1414": "msvc147", "1415": "msvc148"}
 DEFAULT_TOOLSET = "1416"
+# cl 15.00.30729 (VS2008 SP1) for the game units that declare `// MS2-TOOLSET: vc9` (third_party/msvc9, tools/fetch-vc9.sh);
+# run through tools/msvc9/cl, which sets its prefix and header dirs (tools/msvc9/include + the WDK 7.1 crt/api)
+VC9 = "vc9"
+# cl 17.00.61030 (VS2012 Update 4) for `// MS2-TOOLSET: vc11` (third_party/msvc11, tools/fetch-vs2012.sh); run through
+# tools/msvc11/cl (the VS2012 VC headers + the Windows SDK 8.0 headers)
+VC11 = "vc11"
+# the `// MS2-TOOLSET:` toolsets and their cl versions
+UNIT_TOOLSETS = {VC9: "15.00.30729", VC11: "17.00.61030"}
 
 
 def find_cl_toolset(toolset=None, env=None):
-    """cl for `toolset` ("1414"|"1415"|"1416"; None/"1416" = find_cl()). Native Windows: MS2_CL_<toolset> when set."""
+    """cl for `toolset` ("1414"|"1415"|"1416"|"vc9"|"vc11"; None/"1416" = find_cl()). Native Windows: MS2_CL_<toolset>
+    when set (required for vc9 and vc11)."""
     if not toolset or toolset == DEFAULT_TOOLSET:
         return find_cl(env)
+    if toolset in UNIT_TOOLSETS:
+        if is_nt():
+            if not os.environ.get("MS2_CL_" + toolset):
+                raise ValueError("toolset %s on Windows: set MS2_CL_%s to a cl %s x64 wrapper"
+                                 % (toolset, toolset, UNIT_TOOLSETS[toolset]))
+            return os.environ["MS2_CL_" + toolset]
+        return os.path.join(ROOT, "tools", "ms" + toolset, "cl")
     if toolset not in TOOLSETS:
-        raise ValueError("unknown MSVC toolset %r (known: %s)" % (toolset, ", ".join(sorted(TOOLSETS))))
+        raise ValueError("unknown MSVC toolset %r (known: %s)" % (toolset, ", ".join(sorted(TOOLSETS) + sorted(UNIT_TOOLSETS))))
     if is_nt():
         return os.environ.get("MS2_CL_" + toolset) or find_cl(env)
     return os.path.join(THIRD_PARTY, TOOLSETS[toolset], "bin", "x64", "cl")

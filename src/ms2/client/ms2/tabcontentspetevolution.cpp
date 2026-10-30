@@ -34,6 +34,9 @@
 // Status: see progress/status.tsv. Callees that are not recovered yet are declared below ("unit-local
 // placeholders") or in src/ms2/placeholder/; their names are Ghidra's (FUN_<va>) unless evident.
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\tabcontentspetevolution.cpp"
+// The exe's memcpy_s calls memset and memcpy (no /Oi expansion); the pragma must precede the inline copy.
+#include <vcruntime_string.h>
+#pragma function(memcpy, memset)
 #include "ms2/placeholder/ms2stdafx.h"
 
 #include "tabcontentspetevolution.h"
@@ -1286,8 +1289,9 @@ TabContentsPetEvolution::IdCount TabContentsPetEvolution::FUN_140acc7d0(unsigned
     return IdCount(id, nOne);
 }
 
-// @0x140acec10
-MS2_EMIT_CRT_MEMMOVE_S_COPY(1);
+// The UCRT's `static __inline memcpy_s` of this TU (0x140acec10, no caller left in the exe; kept alive by the pointer below).
+// MS2-PIN: memcpy_s 0x140acec10
+__declspec(selectany) extern errno_t(__cdecl* const ms2_pfnPetEvolutionMemcpyS)(void*, size_t, const void*, size_t) = &memcpy_s;
 
 MS2_REPLACE_METHOD(0x140AC7740, PetEvolutionBase, vfunc_1, 30, 0x7BC078D9);
 MS2_REPLACE_METHOD(0x140AC77E0, PetEvolutionPetCard, vfunc_2, 31, 0xFB341541);

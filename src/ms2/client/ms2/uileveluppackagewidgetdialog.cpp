@@ -532,7 +532,6 @@ int UIBurningEventWidgetDialog::vfunc_84()
 }
 MS2_REPLACE_METHOD(0x140C5A220, UIBurningEventWidgetDialog, vfunc_84, 490, 0x6EACB528);
 
-// MS2-FUNCTIONAL: spResult and spContext sit in each other's stack slots (0x40/0x50); the code is otherwise identical
 // @0x140c5a420
 int UIBurningEventWidgetDialog::vfunc_85(ASObj& rObj)
 {
@@ -548,7 +547,7 @@ int UIBurningEventWidgetDialog::vfunc_85(ASObj& rObj)
         if (spContext == 0)
             continue;
         if (FUN_140c0e9f0(&spContext->m_rewardItems)) {
-            spResult = *it;
+            spContext = *it;
             continue;
         }
         __int64 nDefault = 0;

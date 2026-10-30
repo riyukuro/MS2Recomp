@@ -22,7 +22,8 @@
 // MS2-PIN: ??E?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHH@std@@@std@@@std@@@std@@QEAA?AV01@H@Z 0x14027f5b0 ; hand: map<int,int> const_iterator++(int) (copies, calls 0x14027f600; caller erase 0x14028ab00)
 // MS2-PIN: ??E?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHH@std@@@std@@@std@@@std@@QEAAAEAV01@XZ 0x14027f600 ; hand: calls _Tree_unchecked_const_iterator++ 0x14027f620 (was the vector<ItemEntity> -- look-alike)
 // MS2-PIN: ??E?$_Tree_unchecked_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHH@std@@@std@@@std@@U_Iterator_base0@2@@std@@QEAAAEAV01@XZ 0x14027f620 ; unique
-// MS2-PIN: ??0?$list@V?$MS2Ptr@VCUserChangeableItemHistory@@@@V?$allocator@V?$MS2Ptr@VCUserChangeableItemHistory@@@@@std@@@std@@QEAA@XZ 0x14027f740 ; prop
+// MS2-PIN: ??F?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHH@std@@@std@@@std@@@std@@QEAAAEAV01@XZ 0x14027f720 ; hand: calls _Tree_unchecked_const_iterator-- 0x14027f760 (was the _List_buy ctor look-alike)
+// MS2-PIN: ??F?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHH@std@@@std@@@std@@@std@@QEAAAEAV01@XZ 0x14027f740 ; hand: calls _Tree_const_iterator-- 0x14027f720 (was the list ctor look-alike)
 // MS2-PIN: ??F?$_Tree_unchecked_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHH@std@@@std@@@std@@U_Iterator_base0@2@@std@@QEAAAEAV01@XZ 0x14027f760 ; unique
 // MS2-PIN: ??R?$less@H@std@@QEBA_NAEBH0@Z 0x14027f870 ; unique
 // MS2-PIN: ??_GCNode@?$CAtlList@V?$MS2Ptr@VCUserLimitHistory@@@@V?$CElementTraits@V?$MS2Ptr@VCUserLimitHistory@@@@@ATL@@@ATL@@QEAAPEAXI@Z 0x14027fcf0 ; prop
@@ -201,8 +202,6 @@ MS2_CS_SCALAR_DELETING_DTOR(WeddingHallReservationFee)
 // MS2-PIN: ??B?$MS2Ptr@VCPtred@@@@QEBAPEAVCPtred@@XZ 0x14027f310
 // MS2-PIN: ??B?$MS2Ptr@VCUserChangeableItemHistory@@@@QEBAPEAVCUserChangeableItemHistory@@XZ 0x14027f320
 // MS2-PIN: ??B?$MS2Ptr@VChangeableProductInfo@@@@QEBAPEAVChangeableProductInfo@@XZ 0x14027f340
-// MS2-PIN: ??0?$_List_buy@V?$MS2Ptr@VCUserChangeableItemHistory@@@@V?$allocator@V?$MS2Ptr@VCUserChangeableItemHistory@@@@@std@@@std@@QEAA@XZ 0x14027f720
-// MS2-PIN: ??0?$list@V?$MS2Ptr@VCUserChangeableItemHistory@@@@V?$allocator@V?$MS2Ptr@VCUserChangeableItemHistory@@@@@std@@@std@@QEAA@XZ 0x14027f740
 // MS2-PIN: ?Copy@?$CAtlArray@UUnk_Z16i@@V?$CElementTraits@UUnk_Z16i@@@ATL@@@ATL@@QEAAXAEBV12@@Z 0x140280a70
 // MS2-PIN: ?FindNextNode@?$CAtlMap@HHV?$CElementTraits@H@ATL@@V12@@ATL@@AEBAPEAVCNode@12@PEAV312@@Z 0x140280ea0
 // MS2-PIN: ?FindNextNode@?$CAtlMap@HW4Unk_LimitValue@@V?$CElementTraits@H@ATL@@V?$CElementTraits@W4Unk_LimitValue@@@3@@ATL@@AEBAPEAVCNode@12@PEAV312@@Z 0x140280f60
@@ -295,15 +294,13 @@ Unk_TVal* FUN_140287ee0(void* tree)
     return (Unk_TVal*)tree;
 }
 
-// Vector::_Udefault: default-construct each CString in the uninitialised tail and return the end cursor.
-// MS2-FUNCTIONAL: CString's default constructor does not need allocator state, so this preserves the element
-// construction and return behavior of the original vector helper.
+void FUN_140277470(__int64 first, __int64 last, __int64 al);   // _Destroy_range (trivially destructible: no-op)
+__int64 FUN_1402882f0(__int64 vec);                             // _Getal
+// vector<__int64>::_Destroy(first, last): forwards to the no-op range destroy of the trivially destructible elements.
+// MS2-FUNCTIONAL: the exe returns whatever the callee left in rax; the callers ignore it
 // @0x1402875b0
-__int64 FUN_1402875b0(__int64, __int64 first, __int64 last)
+__int64 FUN_1402875b0(__int64 vec, __int64 first, __int64 last)
 {
-    CString* current = reinterpret_cast<CString*>(first);
-    CString* finish = reinterpret_cast<CString*>(last);
-    for (; current != finish; ++current)
-        ::new (current) CString();
+    FUN_140277470(first, last, FUN_1402882f0(vec));
     return last;
 }

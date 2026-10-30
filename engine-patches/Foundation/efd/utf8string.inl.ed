@@ -111,6 +111,15 @@ TREE::_Pairii TREE::_Eqrange<efd::utf8string>(const efd::utf8string& _Keyval) \
 #define EE_MS2_EQRANGE(TREE)
 #endif
 .
+653c
+// MS2: operator==(const char*, const utf8string&) 0x141284840 (NiTerrainSurfaceLibrary::AddPackage calls it)
+#if defined(EE_MS2_UTF8_CSTR_EQ_CALL)
+#define EE_MS2_UTF8_CSTR_EQ_INLINE inline __declspec(noinline)
+#else
+#define EE_MS2_UTF8_CSTR_EQ_INLINE inline
+#endif
+EE_MS2_UTF8_CSTR_EQ_INLINE bool operator==(
+.
 637c
 EE_MS2_UTF8_EQ_INLINE bool operator==(
 .

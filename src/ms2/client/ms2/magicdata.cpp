@@ -182,9 +182,6 @@ class Unk_MagicEffectMgr { public: void FUN_1411a6060(int nHandle); int FUN_1411
 Unk_MagicEffectMgr* FUN_1403ed280();
 void* FUN_1409475d0(Unk_NodePtr*);
 void FUN_140a0b2a0(void* pNode);            // detach the node from its parent
-// @0x141468cd0
-// MS2-FUNCTIONAL: the exe's out-of-line ~Unk_SocketPtr<CMagicData> (EH state marker) is reached only through this name
-void FUN_141468cd0(Unk_SocketPtr<CMagicData>* p) { p->~Unk_SocketPtr(); }
 
 // @0x141469a90
 CSkillCollisionManager* FUN_141469a90() { return CSkillCollisionManager::s_instance; }

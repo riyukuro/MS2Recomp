@@ -33,7 +33,7 @@
 // MS2-PIN: ??0?$CAtlArray@HV?$CElementTraits@H@ATL@@@ATL@@QEAA@XZ 0x140e36060
 // MS2-PIN: ??1?$CAtlArray@UUnk_RankSeasonPtr@@V?$CElementTraits@UUnk_RankSeasonPtr@@@ATL@@@ATL@@QEAA@XZ 0x140e368f0
 // MS2-PIN: ??0?$Unk_RankPtr@VGameRankingTabData@@@@QEAA@XZ 0x140e362f0
-// MS2-PIN: ??0?$Unk_RankBoxPtr@V?$CAtlArray@V?$Unk_RankPtr@VGameRankingTabData@@@@V?$CElementTraits@V?$Unk_RankPtr@VGameRankingTabData@@@@@ATL@@@ATL@@@@QEAA@H@Z 0x140e36310
+// MS2-PIN: ??0?$Unk_RankBoxPtr@V?$CAtlArray@V?$Unk_RankPtr@VGameRankingTabData@@@@V?$CElementTraits@V?$Unk_RankPtr@VGameRankingTabData@@@@@ATL@@@ATL@@@@QEAA@H@Z 0x140e36510
 // Category null construction is pinned at the end of this unit (caller 0x140e350c0).
 // MS2-PIN: ??7?$MS2Ptr@VUnk_RankChartRec@@@@QEBA_NXZ 0x140e36c70
 // MS2-PIN: ??7?$MS2Ptr@VUnk_RankTab@@@@QEBA_NXZ 0x140e36ca0
@@ -1341,7 +1341,7 @@ void UIGameRankingDialog::FUN_140e34d50(CStringW strSearch)
     }
 }
 
-// @0x140e34eb0 // MS2-FUNCTIONAL: Unk_RankJson (shared gamerankingcli.h) lacks a declared copy ctor, so the by-value arg is rep-movsb copied instead of passed by address
+// @0x140e34eb0
 void UIGameRankingDialog::FUN_140e34eb0(Unk_RankPageReq spReply)
 {
     if (spReply.FUN_140b2e0c0(0))

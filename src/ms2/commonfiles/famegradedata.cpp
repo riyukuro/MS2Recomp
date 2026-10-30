@@ -140,7 +140,6 @@
 // MS2-PIN: ?GetCount@?$CAtlMap@W4Unk_FameAlliance@@HV?$CElementTraits@W4Unk_FameAlliance@@@ATL@@V?$CElementTraits@H@3@@ATL@@QEBA_KXZ 0x1403604b0 ; hand: identical look-alike group (CAtlMap/set family order)
 // MS2-PIN: ?deallocate@?$allocator@U?$_Tree_node@HPEAX@std@@@std@@QEAAXQEAU?$_Tree_node@HPEAX@2@_K@Z 0x1403680b0 ; hand: identical look-alike group (CAtlMap/set family order)
 // MS2-PIN: ??1CNode@?$CAtlMap@W4Unk_FameAlliance@@V?$MS2Ptr@VCFameDef@@@@V?$CElementTraits@W4Unk_FameAlliance@@@ATL@@V?$CElementTraits@V?$MS2Ptr@VCFameDef@@@@@4@@ATL@@QEAA@XZ 0x14035e720 ; hand: identical look-alike group (CAtlMap/set family order)
-// MS2-PIN: ?__empty_global_delete@@YAXPEAX@Z 0x14035d130 ; hand: identical look-alike group (CAtlMap/set family order)
 // MS2-PINS-END tplpin
 // MS2-PIN: ??_7CFameTable@@6B?$TSingleton@VCFameTable@@@@@ 0x142d2b6d0
 // MS2-PIN: ??_7CFameTable@@6B?$CValidData@VCFameTable@@@@@ 0x142d2b6e0
@@ -912,4 +911,11 @@ int Unk_EmoNpcTable::FUN_14035b0a0(int nNpcType)
 int Unk_EmoNpcTable::FUN_14035b0a0(unsigned int nId)
 {
     return ((CFameTable*)this)->IsOfficerNpc((int)nId);
+}
+
+// The empty allocator_traits destroy(alloc&, _Tree_node<int, void*>**) of this TU's set<int> node type, called three
+// times by _Freenode0 0x14035be60 (__empty_global_delete is 0x14015b300).
+// @0x14035d130
+void FUN_14035d130(void* pAl, void* pPtr)
+{
 }

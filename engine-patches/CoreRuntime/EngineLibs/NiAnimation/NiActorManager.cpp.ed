@@ -70,6 +70,9 @@ bool NiActorManager::ReloadKFFile(const NiStream& kStream)
 504c
                 if (m_spCurSequence) m_spManager->DeactivateSequence(m_spCurSequence);  // MS2: v2525
 .
+413c
+    NiTStringPointerMap<NiSequenceData*> kUnusedSeqDataMap; unsigned int uiCount = m_spManager->GetSequenceDataCount();  // MS2: exe 0x141c3ff70 builds and destroys an unused 37-bucket name map here (codegen only; same line keeps __LINE__)
+.
 60@27s "3" "1024"
 59c
     m_kCallbacks.SetSize(1024);  // MS2: v2525

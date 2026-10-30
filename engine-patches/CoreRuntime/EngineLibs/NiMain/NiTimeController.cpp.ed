@@ -1,4 +1,12 @@
-332a
+376a
+        }
+.
+362,363c
+        if (pkAVObj->IsNode())  // MS2: exe 0x141d24d11 tests the IS_NODE flag, not the NiNode RTTI
+        {
+.
+360d
+333a
     }
 .
 317c
@@ -6,3 +14,11 @@
     if (pkAVObj->IsNode())
 .
 315d
+288a
+    }
+.
+275c
+    // MS2: game 0x141d24b01 tests the IS_NODE flag (inside the NiAVObject branch) instead of NiIsKindOf(NiNode)
+    if (pkAVObj->IsNode())
+.
+273d

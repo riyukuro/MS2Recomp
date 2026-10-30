@@ -5861,18 +5861,15 @@ void CSceneStateGame::FUN_14171d820(CInPacket& packet)
         __int64 nValue = 0;
         if (FUN_1417403b0(nValue1, 5, nType, nValue))
         {
-            Vector3 kPos = DAT_143b01a60;
-            pOwner->vfunc_111((void*)nValue, nType, nTargetId, &kPos);
+            pOwner->vfunc_111((void*)nValue, nType, nTargetId, efd::Point3::ZERO);
         }
         if (FUN_1417403b0(nValue2, 6, nType, nValue))
         {
-            Vector3 kPos = DAT_143b01a60;
-            pOwner->vfunc_111((void*)nValue, nType, nTargetId, &kPos);
+            pOwner->vfunc_111((void*)nValue, nType, nTargetId, efd::Point3::ZERO);
         }
         if (FUN_1417403b0(nValue3, 7, nType, nValue))
         {
-            Vector3 kPos = DAT_143b01a60;
-            pOwner->vfunc_111((void*)nValue, nType, nTargetId, &kPos);
+            pOwner->vfunc_111((void*)nValue, nType, nTargetId, efd::Point3::ZERO);
         }
     }
 }
@@ -8093,18 +8090,15 @@ void CSceneStateGame::FUN_141731190(CInPacket& packet)
         return;
     if (nType == 4)
     {
-        Vector3 kPos = DAT_143b01a60;
-        pActor->vfunc_111(reinterpret_cast<void*>(nValue), 5, nId, &kPos);
+        pActor->vfunc_111(reinterpret_cast<void*>(nValue), 5, nId, efd::Point3::ZERO);
     }
     if (nType == 7)
     {
-        Vector3 kPos = DAT_143b01a60;
-        pActor->vfunc_111(reinterpret_cast<void*>(nValue), 6, nId, &kPos);
+        pActor->vfunc_111(reinterpret_cast<void*>(nValue), 6, nId, efd::Point3::ZERO);
     }
     if (nType == 0xa)
     {
-        Vector3 kPos = DAT_143b01a60;
-        pActor->vfunc_111(reinterpret_cast<void*>(nValue), 7, nId, &kPos);
+        pActor->vfunc_111(reinterpret_cast<void*>(nValue), 7, nId, efd::Point3::ZERO);
     }
 }
 MS2_REPLACE_METHOD(0x141731190, CSceneStateGame, FUN_141731190, 436, 0x6F315244);

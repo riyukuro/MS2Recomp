@@ -115,6 +115,9 @@ struct Unk_CubeTimer
 };
 MS2_CHECK_SIZE(Unk_CubeTimer, 0x40);
 
+// The palette map key: passed to CRBMap by const& (CElementTraitsBase), so an enum, not int (CPrimitiveElementTraits).
+enum Unk_UGCPaletteKey {};
+
 class UIUGCCubePaletteDialog : public UIDialog, public UIItemEventListener
 {
 public:
@@ -172,6 +175,6 @@ public:
     Unk_CubeTimer m_timer;                                  // +0x190
     UGCKeyController m_keys;                                // +0x1d0
     Unk_CubePaletteFilter m_filter;                         // +0x1e8 (+0x1ec cube type, +0x1f8 sub category)
-    ATL::CRBMap<int, int> m_map;                            // +0x208 UI event id (2..11) -> row (1..10)
+    ATL::CRBMap<Unk_UGCPaletteKey, int> m_map;              // +0x208 UI event id (2..11) -> row (1..10)
 };
 MS2_CHECK_SIZE(UIUGCCubePaletteDialog, 0x238);

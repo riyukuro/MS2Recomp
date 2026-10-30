@@ -88,7 +88,17 @@ bool NiDevImageConverter::CanReadImageFile(const wchar_t* pwcFilename) const
     while (pkIter)
     {
         NiImageReader* pkReader = m_kReaders.GetNext(pkIter);
-        efd::string kExt(ATL::CW2A(kFileName.GetExt()));
+        efd::string kExt;
+        try
+        {
+            kExt = ATL::CW2A(kFileName.GetExt());
+        }
+        catch (...)
+        {
+            return false;
+        }
+        if (kExt.empty())
+            return false;
 
         if (pkReader->CanReadFile(kExt.c_str()))
         {
@@ -124,7 +134,17 @@ bool NiDevImageConverter::ReadImageFileInfo(const wchar_t* pwcFilename,
     while (pkIter)
     {
         NiImageReader* pkReader = m_kReaders.GetNext(pkIter);
-        efd::string kExt(ATL::CW2A(kFileName.GetExt()));
+        efd::string kExt;
+        try
+        {
+            kExt = ATL::CW2A(kFileName.GetExt());
+        }
+        catch (...)
+        {
+            return false;
+        }
+        if (kExt.empty())
+            return false;
 
         if (pkReader->CanReadFile(kExt.c_str()))
         {
@@ -165,7 +185,17 @@ NiPixelData* NiDevImageConverter::ReadImageFile(const wchar_t* pwcFilename,
     while (pkIter)
     {
         NiImageReader* pkReader = m_kReaders.GetNext(pkIter);
-        efd::string kExt(ATL::CW2A(kFileName.GetExt()));
+        efd::string kExt;
+        try
+        {
+            kExt = ATL::CW2A(kFileName.GetExt());
+        }
+        catch (...)
+        {
+            return NULL;
+        }
+        if (kExt.empty())
+            return NULL;
 
         if (pkReader->CanReadFile(kExt.c_str()))
         {

@@ -302,7 +302,7 @@ MS2Ptr<CItem> LapenshardSlot::vfunc_25()
         if (spItem->FUN_140527930()->GetType() == 2)
         {
             __int64 nKey = pPc->FUN_141656a80();
-            spItem->FUN_14052b5e0(&nKey, &pPc->vfunc_77());
+            spItem->FUN_14052b5e0(nKey, pPc->vfunc_77());
         }
         return spItem;
     }

@@ -5,6 +5,7 @@
 #define MS2_THIS_FILE ""
 #include "ms2/placeholder/ms2stdafx.h"
 #include "ms2/placeholder/cptred.h"
+#include "ms2/placeholder/ms2svrptr.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 
@@ -54,14 +55,7 @@ MS2_CHECK_SIZE(Unk_UlgBucket, 0x10);
 bool FUN_14027eca0(Unk_UlgBucket* pRef, void* p);               // pRef->m_p == p
 __int64 FUN_14027f260(Unk_UlgBucket* pRef);                     // the raw pointer
 Unk_UlgList* FUN_14027f2d0(Unk_UlgBucket* pRef);                // the object
-// The fresh-bucket handle FUN_1401b7b90 returns (8 bytes, returned through a hidden pointer, no dtor).
-struct Unk_UlgNew
-{
-    Unk_UlgNew(const Unk_UlgNew& other);
-    void* m_p;
-};
-Unk_UlgNew FUN_1401b7b90(void* p);                              // makes a fresh bucket
-void FUN_140280740(Unk_UlgBucket* pDst, const Unk_UlgNew& src);  // assign
+void FUN_140280740(Unk_UlgBucket* pDst, const MS2SvrNewTag& tag);   // assign a fresh bucket
 
 // The map from key to bucket (CAtlMap-like, 0x30 bytes).
 struct Unk_UlgMap { __int64 m_data[6]; };
@@ -138,7 +132,6 @@ void CUserLimitGroup::FUN_1402694f0(__int64 tNow)
 }
 
 // @0x1402696c0
-// MS2-FUNCTIONAL: frame slot order only (the exe puts the FUN_1401b7b90 temporary below nKey and the unwind slot above both)
 void CUserLimitGroup::FUN_1402696c0(Unk_PplRef ref)
 {
     if (FUN_14027ed60(&ref, 0) != 0)
@@ -148,7 +141,7 @@ void CUserLimitGroup::FUN_1402696c0(Unk_PplRef ref)
     FUN_140283050(&m_map, nKey, &bucket);
     if (FUN_14027eca0(&bucket, 0) != 0)
     {
-        FUN_140280740(&bucket, FUN_1401b7b90(0));
+        FUN_140280740(&bucket, MS2SvrNewTag(0));
         FUN_140285850(&m_map, nKey, &bucket);
     }
     FUN_1402805b0(FUN_14027f2d0(&bucket), &ref);

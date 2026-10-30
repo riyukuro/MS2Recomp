@@ -207,6 +207,7 @@ public:
 };
 Unk_FishTable* FUN_1403b4740();
 struct Unk_Int3 { int x, y, z; Unk_Int3() {} };                               // an unpacked cube coordinate (returned by value)
+MS2_CHECK_SIZE(Unk_Int3, 0xc);
 Unk_Int3 FUN_1408a0400(int nPacked);
 class Unk_FishRodState { public: int FUN_1409700d0(int nKind); };
 Unk_FishRodState* FUN_1416749a0(PCBase*);

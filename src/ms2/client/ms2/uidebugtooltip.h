@@ -29,12 +29,12 @@ public:
     void FUN_14191ab10(CStringW strText);                           // m_88 = text; m_7c = 1
     void FUN_14191ab70(CStringW strAdditional);                     // m_90 = text; m_7c = 1
     void FUN_14191abd0();                                           // toggle the "additional" text
-    void SetFollowsAnchor(int bFollow) { m_68 = bFollow; }          // inline (portal.cpp writes +0x68 directly)
     void FUN_14191b140();                                           // project m_6c to the screen and move the movie
+
+    int m_68;                           // +0x68 1: follows the world anchor (portal.cpp writes it directly)
 
 private:
     MS2_LAYOUT_FRIEND;
-    int m_68;                           // +0x68 1: follows the world anchor
     Vector3 m_6c;               // +0x6c world anchor (starts as the zero point DAT_143b01a60)
     int m_78;                           // +0x78 shown
     int m_7c;                           // +0x7c texts dirty

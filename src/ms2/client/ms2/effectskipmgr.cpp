@@ -13,6 +13,7 @@
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\effectskipmgr.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
 #include "effectskipmgr.h"
+#include "effectservice.h"
 #include <string.h>
 #pragma intrinsic(strcmp)
 #include "ms2/placeholder/tixmldocument.h"
@@ -85,16 +86,6 @@ public:
     char m_pad_32[0x7a];
     float m_fViewDistance;          // +0xac
 };
-class Unk_SkipContainer;
-class Unk_SkipItem;
-class Unk_SkipEffectList { public: };
-void FUN_140a90120(Unk_SkipEffectList*);
-void* FUN_140a901f0(Unk_SkipEffectList*);
-Unk_SkipContainer* FUN_14119f540(void*);
-__int64 FUN_140a904b0(Unk_SkipContainer*);
-Unk_SkipItem* FUN_140a90440(Unk_SkipContainer*, __int64);
-Unk_SkipEffect* FUN_140a901e0(Unk_SkipItem*);
-void FUN_140a904c0(Unk_SkipContainer*, __int64*);
 float* FUN_140552770(std::vector<float>*, size_t);          // const operator[]
 void* FUN_1409a8b10();
 int* FUN_1409a8ac0(void*);
@@ -146,18 +137,16 @@ int EffectSkipMgr::IsOutOfView(Unk_SkipCheck* pCheck) const
     return !(bZero | bNear);
 }
 
-// MS2-FUNCTIONAL: the exe takes the effect data MS2Ptr by value (EH state -2 store); ours releases it explicitly.
 // @0x1411b8870
-int EffectSkipMgr::ShouldSkipByView(Unk_SkipEffectList* pList, int nCaster, Unk_SkipEffect* pEffect)
+int EffectSkipMgr::ShouldSkipByView(CEffectDataPtr spData, int nCaster, Unk_SkipEffect* pEffect)
 {
     Unk_SkipCheck check;
     check.m_nCaster = nCaster;
     check.m_pos = pEffect->m_pos;
     check.m_n14 = 0;
-    for (__int64 pos = FUN_140a904b0(FUN_14119f540(FUN_140a901f0(pList))); pos != 0;
-         FUN_140a904c0(FUN_14119f540(FUN_140a901f0(pList)), &pos))
+    for (POSITION pos = spData->FUN_14119f540().GetHeadPosition(); pos != 0; spData->FUN_14119f540().GetNext(pos))
     {
-        Unk_SkipEffect* pItem = FUN_140a901e0(FUN_140a90440(FUN_14119f540(FUN_140a901f0(pList)), pos));
+        Unk_SkipEffect* pItem = reinterpret_cast<Unk_SkipEffect*>(spData->FUN_14119f540().GetAt(pos).get());
         check.m_nRow = pItem->m_nKind;
         if (!pItem->m_bIgnore)
         {
@@ -165,16 +154,10 @@ int EffectSkipMgr::ShouldSkipByView(Unk_SkipEffectList* pList, int nCaster, Unk_
             if (pItem->m_nKind == 1)
                 check.m_fViewDistance = pItem->m_fViewDistance;
             if (IsOutOfView(&check))
-            {
-                int nSkip = 1;
-                FUN_140a90120(pList);
-                return nSkip;
-            }
+                return 1;
         }
     }
-    int nKeep = 0;
-    FUN_140a90120(pList);
-    return nKeep;
+    return 0;
 }
 
 // @0x1411b89e0

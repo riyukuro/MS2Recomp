@@ -12,10 +12,10 @@
 // MS2-PIN: ??_7?$TPtredDummy@V?$CAtlArray@V?$MS2Ptr@VCNpcShopMeratItemSvr@@@@V?$CElementTraits@V?$MS2Ptr@VCNpcShopMeratItemSvr@@@@@ATL@@@ATL@@@@6B@ 0x142d7e778
 // MS2-PIN: ??1CPair@?$CRBTree@IV?$Unk_SocketPtr@V?$CAtlArray@V?$MS2Ptr@VCItemData@@@@V?$CElementTraits@V?$MS2Ptr@VCItemData@@@@@ATL@@@ATL@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$Unk_SocketPtr@V?$CAtlArray@V?$MS2Ptr@VCItemData@@@@V?$CElementTraits@V?$MS2Ptr@VCItemData@@@@@ATL@@@ATL@@@@@3@@ATL@@IEAA@XZ 0x1406ef890 ; destroys s_coupons (atexit 0x142c9b9c0 -> CRBMap dtor 0x1406eee30 chain)
 // MS2-PINS-BEGIN tplpin
-// MS2-PIN: ??__Es_coupons@@YAXXZ 0x1400bbb40 ; prop
+// MS2-PIN: ??__Es_coupons@@YAXXZ 0x1400bbbd0 ; la1: constructs 0x143ab0958 (s_coupons), registers 0x142c9b9c0
 // MS2-PIN: ??__Es_npcShops@@YAXXZ 0x1400bbb70 ; prop
 // MS2-PIN: ??__Es_shopLimits@@YAXXZ 0x1400bbba0 ; prop
-// MS2-PIN: ??__Es_beautyShops@@YAXXZ 0x1400bbbd0 ; prop
+// MS2-PIN: ??__Es_beautyShops@@YAXXZ 0x1400bbb40 ; la1: constructs 0x143ab08d8 (s_beautyShops), registers 0x142c9b960
 // MS2-PIN: ??$?0V?$tuple@AEB_J@std@@V?$tuple@$$V@1@$0A@$$Z$S@?$pair@$$CB_JV?$MS2Ptr@VCBeautyShopItemGroup@@@@@std@@QEAA@AEAV?$tuple@AEB_J@1@AEAV?$tuple@$$V@1@U?$integer_sequence@_K$0A@@1@U?$integer_sequence@_K$S@1@@Z 0x1406e6560 ; unique
 // MS2-PIN: ??$?8V?$_Tset_traits@IU?$less@I@std@@V?$allocator@I@2@$0A@@std@@@std@@YA_NAEBV?$_Tree@V?$_Tset_traits@IU?$less@I@std@@V?$allocator@I@2@$0A@@std@@@0@0@Z 0x1406e6640 ; unique
 // MS2-PIN: ??$?9V?$_Tset_traits@IU?$less@I@std@@V?$allocator@I@2@$0A@@std@@@std@@YA_NAEBV?$_Tree@V?$_Tset_traits@IU?$less@I@std@@V?$allocator@I@2@$0A@@std@@@0@0@Z 0x1406e66f0 ; unique

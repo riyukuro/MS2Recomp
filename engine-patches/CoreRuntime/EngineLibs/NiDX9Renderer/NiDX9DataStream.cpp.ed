@@ -1,6 +1,14 @@
 837c
     if (!m_pkDX9BufferInfo || !m_pkDX9BufferInfo->GetLockCount()) // MS2: not locked (exe 0x1427fa490)
 .
+822c
+                "index buffer.[GetLockCount : %d] [%s]\n",   // MS2: game 0x1427fa437 adds the lock count and error string
+                m_pkDX9BufferInfo->GetLockCount(), NiDX9ErrorString((unsigned int)eD3dRet));
+.
+800c
+                "vertex buffer.[GetLockCount : %d] [%s]\n",   // MS2: game 0x1427fa3e1 adds the lock count and error string
+                m_pkDX9BufferInfo->GetLockCount(), NiDX9ErrorString((unsigned int)eD3dRet));
+.
 701@8s "" "!m_bDirty && "
 700c
     // data stream is static (MS2: and the upload went through)
@@ -22,7 +30,19 @@
     if (!m_pucLocalBufferCopy)
         return;
 .
+624c
+            DX9Unlock();
+        }
+.
+622a
+        {
+.
+620a
+        // MS2: the exe only unlocks when the lock succeeded.
+.
 480c
                     __FUNCTION__, NiDX9ErrorString((unsigned int)hr));   // MS2: game 0x1427f9e60 adds the error string
 .
 479@60s "" "t\\t%s\\"
+201@25s "ror" "ning"
+201@23s "E" "Wa"

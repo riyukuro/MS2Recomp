@@ -1,0 +1,6 @@
+121@49s "(kName)" ""
+121@32s "rary->Get" ""
+119a
+                    // MS2: exe 0x141d2855b gets the material before releasing the list lock
+                    NiMaterial* pkLibMaterial = pkLibrary->GetMaterial(kName);
+.

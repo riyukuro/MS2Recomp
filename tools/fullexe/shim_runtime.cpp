@@ -4,6 +4,7 @@
 //     exe VA and the caller to fullexe-trap.log next to the exe, plus a short backtrace, then terminates the process.
 //   a vectored exception logger: the first few fatal exceptions (access violation, int3, illegal instruction, stack
 //     overflow...) with their address and backtrace, to the same log. It only logs; handling is left to the program.
+//   an "UNHANDLED" line when an exception reaches the exe's top-level filter (its crash dialog), see unhandled_logger.
 //   boot milestones: ms2_fullexe_mark(name) appends a line (called from the init_seg(compiler) static and the TLS-free
 //     CRT phases the shim can see).
 // Built by shim.py with the toolchain cl (/O2 /MD); no SDK or game headers beyond <windows.h>.
@@ -173,6 +174,7 @@ static DWORD WINAPI hang_sampler(void*) {
     }
 }
 
+static void log_unwind(CONTEXT ctx, const char* tag);
 static LONG CALLBACK fatal_logger(EXCEPTION_POINTERS* ep) {
     DWORD c = ep->ExceptionRecord->ExceptionCode;
     if (c == EXCEPTION_STACK_OVERFLOW && g_ovf_event) {
@@ -226,7 +228,15 @@ static LONG CALLBACK fatal_logger(EXCEPTION_POINTERS* ep) {
     }
     // then the real return chain, unwound with the image's .pdata: the word scan is bounded, and stale slots
     // hide which frame owns the faulting one (a leaf without .pdata returns through [rsp])
-    CONTEXT ctx = *ep->ContextRecord;
+    log_unwind(*ep->ContextRecord, "EXC");
+    if (g_log != INVALID_HANDLE_VALUE) FlushFileBuffers(g_log);
+    return EXCEPTION_CONTINUE_SEARCH;
+}
+
+static void log_unwind(CONTEXT ctx, const char* tag) {
+    uintptr_t base = (uintptr_t)GetModuleHandleA(nullptr);
+    auto* nt = (IMAGE_NT_HEADERS*)(base + ((IMAGE_DOS_HEADER*)base)->e_lfanew);
+    uintptr_t end = base + nt->OptionalHeader.SizeOfImage;
     for (int f = 0; f < 40; f++) {
         DWORD64 ib = 0;
         PRUNTIME_FUNCTION fe = RtlLookupFunctionEntry(ctx.Rip, &ib, nullptr);
@@ -242,12 +252,37 @@ static LONG CALLBACK fatal_logger(EXCEPTION_POINTERS* ep) {
         }
         if (!ctx.Rip) break;
         if (ctx.Rip > base + 0x1000 && ctx.Rip < end)
-            out("EXC   unwind #%d image+0x%llx rsp=%p\n", f, (unsigned long long)(ctx.Rip - base), (void*)ctx.Rsp);
+            out("%s   unwind #%d image+0x%llx rsp=%p\n", tag, f, (unsigned long long)(ctx.Rip - base), (void*)ctx.Rsp);
         else
-            out("EXC   unwind #%d %p rsp=%p\n", f, (void*)ctx.Rip, (void*)ctx.Rsp);
+            out("%s   unwind #%d %p rsp=%p\n", tag, f, (void*)ctx.Rip, (void*)ctx.Rsp);
     }
+}
+
+// the crash dialog (2026-10-29, cri9 h3): an exception nobody handles reaches the top-level filter, the exe's crash
+// manager's FUN_140a43fa0, whose CrashReporter AfterDump callback opens g_dlgCrash.DoModal() (the empty 확인 box). The
+// dialog keeps the process alive, so the run looked like a hang. Every filter the image installs (SetUnhandledExceptionFilter
+// through its IAT) is wrapped: the wrapper logs one "UNHANDLED" line with the fatal exception and its unwound return chain,
+// then calls the exe's filter as before. smoke.sh/boot.sh end the run on that line (tools/fullexe/smoke_report.py: crash dialog).
+static decltype(&SetUnhandledExceptionFilter) r_SetUnhandledExceptionFilter;
+static LPTOP_LEVEL_EXCEPTION_FILTER g_app_filter;
+static LONG WINAPI unhandled_logger(EXCEPTION_POINTERS* ep) {
+    const EXCEPTION_RECORD* r = ep->ExceptionRecord;
+    out("UNHANDLED 0x%08lx at %p (image+0x%llx) info %llx %llx tid=%lu rsp=%p: the exe's top-level filter (crash dialog) runs next\n",
+        r->ExceptionCode, r->ExceptionAddress,
+        (unsigned long long)((uintptr_t)r->ExceptionAddress - (uintptr_t)GetModuleHandleA(nullptr)),
+        r->NumberParameters > 0 ? (unsigned long long)r->ExceptionInformation[0] : 0ull,
+        r->NumberParameters > 1 ? (unsigned long long)r->ExceptionInformation[1] : 0ull, GetCurrentThreadId(),
+        (void*)ep->ContextRecord->Rsp);
+    log_unwind(*ep->ContextRecord, "UNHANDLED");
     if (g_log != INVALID_HANDLE_VALUE) FlushFileBuffers(g_log);
-    return EXCEPTION_CONTINUE_SEARCH;
+    LPTOP_LEVEL_EXCEPTION_FILTER f = g_app_filter;
+    return f ? f(ep) : EXCEPTION_CONTINUE_SEARCH;
+}
+static LPTOP_LEVEL_EXCEPTION_FILTER WINAPI w_SetUnhandledExceptionFilter(LPTOP_LEVEL_EXCEPTION_FILTER f) {
+    LPTOP_LEVEL_EXCEPTION_FILTER prev = r_SetUnhandledExceptionFilter(f ? unhandled_logger : nullptr);
+    if (prev == unhandled_logger) prev = g_app_filter;       // the caller sees the filter it replaced, not the wrapper
+    g_app_filter = f;
+    return prev;
 }
 
 // ---- boot milestones: first calls of a few imports, by patching this image's IAT slots (we own the image) ----
@@ -336,29 +371,6 @@ static HMODULE WINAPI w_LoadLibraryW(LPCWSTR n) {
     return h;
 }
 
-// TEMPORARY (2026-10-28, coord): skip the login intro movie until the CRI playback bug is fixed (980d34950 smoke:
-// green all-zero picture, the movie never ends, so login never shows). LoadIntroMovie -> ret leaves the intro list
-// empty, so UIIntroMovie::vfunc_15's own empty-list path changes scene on the next tick. vfunc_52 must still run: its
-// FUN_1422d4780(this, 2) puts the dialog on the layer that ticks vfunc_15 (stubbing it left a black screen, bf5d6e0f7).
-// MS2_PLAY_INTRO=1 keeps the real intro (for the CRI hunt). Remove once CRI plays.
-#pragma comment(linker, "/alternatename:ms2_intro_load=?LoadIntroMovie@UIIntroMovie@@QEAAXXZ")
-extern "C" void ms2_intro_load();
-static void patch_code(void* fn, const unsigned char* code, size_t n) {
-    DWORD old;
-    if (VirtualProtect(fn, n, PAGE_EXECUTE_READWRITE, &old)) {
-        memcpy(fn, code, n);
-        VirtualProtect(fn, n, old, &old);
-        FlushInstructionCache(GetCurrentProcess(), fn, n);
-    }
-}
-static void skip_intro_movie() {
-    char v[8];
-    if (GetEnvironmentVariableA("MS2_PLAY_INTRO", v, sizeof v) && v[0] == '1') return;
-    static const unsigned char ret[] = {0xc3};
-    patch_code((void*)&ms2_intro_load, ret, sizeof ret);
-    ms2_fullexe_mark("intro movie skipped (TEMPORARY CRI workaround; MS2_PLAY_INTRO=1 plays it)");
-}
-
 template <class F> static void wrap(F& real, const char* dll, const char* name, F wrapper) {
     HMODULE m = GetModuleHandleA(dll);
     real = m ? (F)GetProcAddress(m, name) : nullptr;
@@ -383,7 +395,6 @@ static struct ShimInit {
         CloseHandle(CreateThread(nullptr, 0x10000, overflow_reporter, nullptr, 0, nullptr));
         AddVectoredExceptionHandler(0, fatal_logger);
         patch_gsfailure();
-        skip_intro_movie();
         DuplicateHandle(GetCurrentProcess(), GetCurrentThread(), GetCurrentProcess(), &g_main_thread, 0, FALSE,
                         DUPLICATE_SAME_ACCESS);
         CloseHandle(CreateThread(nullptr, 0x10000, hang_sampler, nullptr, 0, nullptr));
@@ -399,6 +410,7 @@ static struct ShimInit {
         wrap(r_GetMessageW, "user32.dll", "GetMessageW", w_GetMessageW);
         wrap(r_LoadLibraryA, "kernel32.dll", "LoadLibraryA", w_LoadLibraryA);
         wrap(r_LoadLibraryW, "kernel32.dll", "LoadLibraryW", w_LoadLibraryW);
+        wrap(r_SetUnhandledExceptionFilter, "kernel32.dll", "SetUnhandledExceptionFilter", w_SetUnhandledExceptionFilter);
     }
     ~ShimInit() { ms2_fullexe_mark("crt-exit (static destructors)"); }
 } g_shimInit;

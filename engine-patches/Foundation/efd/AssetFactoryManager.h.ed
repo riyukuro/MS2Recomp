@@ -1,6 +1,12 @@
+398c
+    void FgConstructor(const efd::UInt32 requestQueueSize);  // MS2: UInt32 in the game (32-bit arg)
+.
 376c
         EE_DECLARE_CONCRETE_ATOMIC_REFCOUNT /* studio: atomic */;  // MS2: v2525
 .
 349c
         EE_DECLARE_CONCRETE_ATOMIC_REFCOUNT /* studio: atomic */;  // MS2: v2525
+.
+81c
+        const efd::UInt32 requestQueueSize = 16,  // MS2: UInt32 in the game (32-bit arg)
 .

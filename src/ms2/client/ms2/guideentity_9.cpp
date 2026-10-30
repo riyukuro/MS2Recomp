@@ -272,7 +272,7 @@ bool FUN_1413a4b50()
 // ---- the glue in front of the base class: allocator limit, checked memmove, the condition factory ------------------------------
 
 // @0x1413a5130
-unsigned __int64 FUN_1413a5130()
+unsigned __int64 FUN_1413a5130(void* pAlloc)
 {
     return 0x666666666666666;
 }
@@ -280,8 +280,7 @@ unsigned __int64 FUN_1413a5130()
 // @0x1413a5140
 unsigned __int64 FUN_1413a5140(void* pMap)
 {
-    FUN_1413a4f30(pMap);
-    return FUN_1413a5130();
+    return FUN_1413a5130(FUN_1413a4f30(pMap));
 }
 
 // @0x1413a5160
@@ -720,7 +719,7 @@ void CGuideEntity::UpdateConditions()
 }
 
 // @0x1413a3710
-void FUN_1413a3710()
+void FUN_1413a3710(CGuideEntity* pEntity)
 {
 }
 

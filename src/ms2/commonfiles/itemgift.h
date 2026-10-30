@@ -37,7 +37,7 @@ struct ItemEntity : CPtred, ItemAble {
 };
 struct ItemGift : ItemEntity {
     ItemGift();
-    virtual ~ItemGift(); // Existing shared destructor, outside this unit's function map.
+    // implicit dtor 0x140333f10 (exe: only calls ~ItemEntity, no vftable store)
     virtual int ValidateItem(CString&);
     virtual int vfunc_o18_1();
 };

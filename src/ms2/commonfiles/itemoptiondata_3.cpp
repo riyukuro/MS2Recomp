@@ -62,7 +62,7 @@
 // MS2-PIN: ??$?0HV?$MS2Ptr@VItemOptionConstant@@@@$0A@@?$pair@$$CBIV?$MS2Ptr@VItemOptionConstant@@@@@std@@QEAA@$$QEAU?$pair@HV?$MS2Ptr@VItemOptionConstant@@@@@1@@Z 0x1405f9380
 // MS2-PIN: ??$_Insert_nohint@AEAU?$pair@$$CBW4Unk_SocketSpecialStat@@H@std@@PEAU?$_Tree_node@U?$pair@$$CBW4Unk_SocketSpecialStat@@H@std@@PEAX@2@@?$_Tree@V?$_Tmap_traits@W4Unk_SocketSpecialStat@@HU?$less@W4Unk_SocketSpecialStat@@@std@@V?$allocator@U?$pair@$$CBW4Unk_SocketSpecialStat@@H@std@@@3@$0A@@std@@@std@@IEAA?AU?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBW4Unk_SocketSpecialStat@@H@std@@@std@@@std@@@std@@_N@1@_NAEAU?$pair@$$CBW4Unk_SocketSpecialStat@@H@1@PEAU?$_Tree_node@U?$pair@$$CBW4Unk_SocketSpecialStat@@H@std@@PEAX@1@@Z 0x1405fe850
 // MS2-PIN: ??$get@$0A@$$QEAU?$pair@HH@std@@@std@@YA$$QEAU?$pair@HH@0@$$QEAV?$tuple@$$QEAU?$pair@HH@std@@@0@@Z 0x140601d30
-// MS2-PIN: ??0?$MS2Ptr@VItemOptionRandom@@@@QEAA@H@Z 0x140602a80
+// MS2-PIN: ??0?$MS2Ptr@VItemOptionRandom@@@@QEAA@$$T@Z 0x140602a80
 // MS2-PIN: ??0?$_List_iterator@V?$_List_val@U?$_List_simple_types@U?$pair@$$CBHV?$MS2Ptr@VItemOptionRandom@@@@@std@@@std@@@std@@@std@@QEAA@PEAU?$_List_node@U?$pair@$$CBHV?$MS2Ptr@VItemOptionRandom@@@@@std@@PEAX@1@PEBV?$_List_val@U?$_List_simple_types@U?$pair@$$CBHV?$MS2Ptr@VItemOptionRandom@@@@@std@@@std@@@1@@Z 0x140602cf0
 // MS2-PIN: ??1?$_List_alloc@U?$_List_base_types@U?$pair@$$CBHV?$MS2Ptr@VItemOptionRandom@@@@@std@@V?$allocator@U?$pair@$$CBHV?$MS2Ptr@VItemOptionRandom@@@@@std@@@2@@std@@@std@@QEAA@XZ 0x140604230
 // MS2-PIN: ?get@?$MS2Ptr@VItemOptionRandom@@@@QEBAPEAVItemOptionRandom@@XZ 0x1406051f0
@@ -504,7 +504,7 @@ MS2Ptr<ItemOptionRandom> CItemOptionTable::FUN_1405f6010(int nId) const
     MS2Ptr<ItemOptionRandom> spResult;
     auto it = m_randoms.find(nId);
     if (it == m_randoms.end())
-        return MS2Ptr<ItemOptionRandom>(0);
+        return MS2Ptr<ItemOptionRandom>(nullptr);   // 0x140602a80: xor edx,edx, rdx homed as a qword
     return it->second;
 }
 

@@ -1078,9 +1078,11 @@ int CPetManager::FUN_140c8b220(int nKey)
     return m_counts[reinterpret_cast<unsigned long&>(nKey)];
 }
 // @0x140c8b2b0
-bool CPetManager::FUN_140c8b2b0()
+int CPetManager::FUN_140c8b2b0()
 {
-    return GetSummonUid() != 0;
+    if ((unsigned __int64)GetSummonUid() > 0)
+        return 1;
+    return 0;
 }
 // @0x140c8b2e0
 __int64 CPetManager::GetSummonUid()

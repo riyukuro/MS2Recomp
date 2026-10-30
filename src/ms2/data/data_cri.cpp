@@ -1339,17 +1339,25 @@ alignas(16) Sd_1431bbd50 DAT_1431bbd50 = {
     (const void*)&FUN_142cccef0,
     (const void*)&FUN_142ccd080,
 };
-// 0x1431bbd60
-alignas(16) unsigned char DAT_1431bbd60[0x1d] = {
+// 0x1431bbd60..0x1431bbd80 is one table of 16 shorts, the bit masks 0xffff >> n, split into per-address pieces.
+// FUN_140067100 copies all 0x20 bytes to decoder+0x1100, so each piece gets an ordered .data$ group section named
+// by its exe address and the link keeps them contiguous in exe order (allocate also holds the zero-initialised ones).
+#pragma section(".data$crid_1431bbd60", read, write)
+__declspec(allocate(".data$crid_1431bbd60")) alignas(16) unsigned char DAT_1431bbd60[0x1d] = {
     0xff, 0xff, 0xff, 0x7f, 0xff, 0x3f, 0xff, 0x1f, 0xff, 0x0f, 0xff, 0x07, 0xff, 0x03, 0xff, 0x01,
     0xff, 0x00, 0x7f, 0x00, 0x3f, 0x00, 0x1f, 0x00, 0x0f, 0x00, 0x07, 0x00, 0x03,
 };
-alignas(1) unsigned char DAT_1431bbd7d[0x1];                    // 0x1431bbd7d
+// 0x1431bbd7d
+#pragma section(".data$crid_1431bbd7d", read, write)
+__declspec(allocate(".data$crid_1431bbd7d")) alignas(1) unsigned char DAT_1431bbd7d[0x1] = {0x00};
 // 0x1431bbd7e
-alignas(2) unsigned char DAT_1431bbd7e[0x1] = {
+#pragma section(".data$crid_1431bbd7e", read, write)
+__declspec(allocate(".data$crid_1431bbd7e")) alignas(2) unsigned char DAT_1431bbd7e[0x1] = {
     0x01,
 };
-alignas(1) unsigned char DAT_1431bbd7f[0x1];                    // 0x1431bbd7f
+// 0x1431bbd7f
+#pragma section(".data$crid_1431bbd7f", read, write)
+__declspec(allocate(".data$crid_1431bbd7f")) alignas(1) unsigned char DAT_1431bbd7f[0x1] = {0x00};
 // 0x1431bbd80
 alignas(16) unsigned char DAT_1431bbd80[0x3c] = {
     0x00, 0x01, 0x08, 0x10, 0x09, 0x02, 0x03, 0x0a, 0x11, 0x18, 0x20, 0x19, 0x12, 0x0b, 0x04, 0x05,

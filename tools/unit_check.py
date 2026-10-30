@@ -134,10 +134,15 @@ def main(argv):
         if os.path.isfile(cache):
             with open(cache) as cf:
                 ctxt = cf.read()
+        # experiment overrides of `// MS2-TOOLSET:` (cmake/ms2-unit-profiles.cmake); a cache without the entry has them empty
+        over = [(v, cenv.get(v, "").strip()) for v in ("MS2_UNIT_TOOLSET", "MS2_UNIT_SOURCE")]
+        stale = [v for v, val in over if ("\n%s:STRING=%s\n" % (v, val) not in "\n" + ctxt + "\n"
+                                         and (val or "\n%s:STRING=" % v in "\n" + ctxt))]
         if (not os.path.isfile(os.path.join(d, "build.ninja")) or "\nMS2_GAME_FILTER:STRING=%s\n" % filt not in "\n" + ctxt
-                or "\nMS2_SYMOBJ_PRUNE:BOOL=ON" not in "\n" + ctxt):
+                or "\nMS2_SYMOBJ_PRUNE:BOOL=ON" not in "\n" + ctxt or stale):
             cm = ["cmake", "-G", "Ninja", "-S", os.path.join(R, "src"), "-B", d, "-DCMAKE_TOOLCHAIN_FILE=" + toolchain,
                   "-DMS2_GAME_FILTER=" + filt, "-DMS2_SYMBOL_TSV=" + syms, "-DMS2_SYMOBJ_PRUNE=ON"]
+            cm += ["-D%s=%s" % (v, val) for v, val in over if val or v in stale]
             if NT:
                 cm.append("-DMS2_WINSDK_INCLUDE=" + ms2paths.winsdk_include(env))
             log = d + ".configure.log"

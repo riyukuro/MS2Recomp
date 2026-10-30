@@ -60,7 +60,7 @@ CMsTime::CMsTime(int nYear, int nMonth, int nDay, int nHour, int nMin, int nSec)
 }
 
 // @0x1406c4930
-CMsTime& CMsTime::operator=(const CMsTime& other)
+CMsTime& CMsTime::operator=(const CMsTime& other) throw()
 {
     Init(other.m_time, other.IsLocal());
     return *this;

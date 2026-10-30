@@ -1,0 +1,21 @@
+104,108c
+            NiTListIterator kIt = kEffectList.GetHeadPos();
+            while (kIt != NULL)
+            {
+                NiDynamicEffect* pkEffect = kEffectList.GetNext(kIt);
+                RemoveBeforeStreaming(pkEffect);
+            }
+.
+102@0s "" "    "
+99,100c
+            NiNode* pkNode = (NiNode*) pkRoot;
+            for (unsigned int ui = 0; ui < pkNode->GetArrayCount(); ui++)
+            {
+                RemoveBeforeStreaming(pkNode->GetAt(ui));
+            }
+.
+94,97c
+        // MS2: v2525 tests the IS_NODE flag inside the NiAVObject block (exe 0x141d84c90)
+        if (pkObj->IsNode())
+.
+92d

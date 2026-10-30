@@ -459,13 +459,13 @@ int CQuestManagerCommon::FUN_140745820(int questId, int flag)
             if (FUN_140747460(&subJobs, &nSubJob) == -1)
                 return 0;
         }
-        const ATL::CAtlArray<unsigned>& quests = data->m_require.m_quest;
+        ATL::CAtlArray<unsigned>& quests = data->m_require.m_quest;
         for (size_t i = 0; i < quests.GetCount(); ++i)
         {
             if (quests[i] != 0 && FUN_140745590(quests[i]) == 0)
                 return 0;
         }
-        const ATL::CAtlArray<unsigned>& selectable = data->m_require.m_selectableQuest;
+        ATL::CAtlArray<unsigned>& selectable = data->m_require.m_selectableQuest;
         if (selectable.GetCount() > 0)
         {
             int bAny = 0;
@@ -477,13 +477,13 @@ int CQuestManagerCommon::FUN_140745820(int questId, int flag)
             if (bAny == 0)
                 return 0;
         }
-        const ATL::CAtlArray<unsigned>& progress = data->m_require.m_progressQuest;
+        ATL::CAtlArray<unsigned>& progress = data->m_require.m_progressQuest;
         for (size_t i = 0; i < progress.GetCount(); ++i)
         {
             if (progress[i] != 0 && FUN_140745630(progress[i]) == 0)
                 return 0;
         }
-        const ATL::CAtlArray<unsigned>& unrequire = data->m_require.m_unrequire;
+        ATL::CAtlArray<unsigned>& unrequire = data->m_require.m_unrequire;
         for (size_t i = 0; i < unrequire.GetCount(); ++i)
         {
             if (unrequire[i] != 0)
@@ -2474,7 +2474,7 @@ void QuestDataTable::FUN_14074f160()
             }
         }
 
-        if (FUN_14074b050(spData.operator->()) == 3 && spData->m_resetType == 0)
+        if (FUN_14074b070(spData.operator->()) == 3 && spData->m_resetType == 0)
         {
             int nQuest = FUN_14074b030(spData.operator->());
             FUN_140177a80(FUN_140166440(), 1, 0x30, L"주간 퀘스트인데 초기화 날짜가 없습니다. usePeriod에 초기화 요일을 적어주세요 [quest={0}]", nQuest);

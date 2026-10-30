@@ -205,6 +205,7 @@ private:
     void* m_pad_00;
     void* m_p;
 };
+MS2_CHECK_SIZE(Unk_MsgBoxPtr, 0x10);
 class Unk_MsgCallback {                 // Delegate<bool(int, const CMsgBoxData&)> built from a plain function (8 bytes)
 public:
     Unk_MsgCallback(const Unk_MsgCallback&);    // declared (as Delegate's): the by-value argument goes by reference to a caller temp
