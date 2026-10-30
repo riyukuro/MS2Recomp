@@ -1,5 +1,6 @@
 """Content stamps for the persistent merge tree (tools/merge.sh). Opt-in: progress.py / gbprogress.py add these to their
-per-unit match cache keys only when MS2_MERGE_INCR=1, so worker (agent/report) caches keep their old keys.
+per-unit match cache keys only when MS2_MERGE_INCR=1, so worker (agent/report) caches keep their old keys. Exception:
+gbprogress.py always adds engine_stamp(), so a symbols merge also re-matches the engine stage of worker caches.
 
 The obj-mtime key of a cached match result misses everything a match reads besides the obj: the hand-written symbol table
 (merge mode), the symbol tables the engine stage resolves relocations through, the exe function/unit/RTTI maps and the

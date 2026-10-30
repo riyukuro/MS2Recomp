@@ -1,0 +1,4 @@
+234c
+        if (pkShader)   // MS2: game 0x141d2b049 skips a bucket whose material has no cached shader
+            pkShader->RenderMeshes(&m_kTempVisibleArray);
+.

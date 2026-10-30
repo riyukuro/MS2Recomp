@@ -579,7 +579,7 @@ public:
     int FUN_14121bab0(int nItemId);                         // 0x14121bab0 set up the doll from an item (false when the item has no doll)
     void* FUN_14121c6c0();                                  // 0x14121c6c0 return unknown12f0
     void FUN_14121c6e0(void* p);                            // 0x14121c6e0 unknown12f0 = p
-    bool FUN_14121c830();                                   // 0x14121c830 FUN_14121c710() == 0
+    int FUN_14121c830();                                    // 0x14121c830 FUN_14121c710() == 0
     int FUN_14121c870(CItem* pItem);                        // 0x14121c870 the result of putting the item on the doll (0 = ok)
     int FUN_14121c910(CItem* pItem);                        // 0x14121c910
     int FUN_14121c9d0(CItem* pItem);                        // 0x14121c9d0

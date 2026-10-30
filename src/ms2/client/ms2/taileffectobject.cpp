@@ -1,7 +1,7 @@
 // Recovered from MapleStory2.exe KMS2_DEV x64 (2022-04-13).
 // MS2-UNIT: ?\taileffectobject.cpp
 // MS2-RANGE: 0x140aced60-0x140ad1860 .text$mn
-// MS2-PIN: memcpy_s 0x140ad1740
+// MS2-PIN: memmove_s 0x140ad1740
 // MS2-PIN: ??0Unk_TeRequest@@QEAA@XZ 0x140a52ef0
 // MS2-PIN: ??1Unk_TeRequest@@QEAA@XZ 0x1405a89e0
 // MS2-PIN: ?GetScale@NiAVObject@@QEBAMXZ 0x140ad0db0
@@ -435,3 +435,6 @@ bool CTailEffectObject::vfunc_1()
 // MS2-PIN: ?FUN_140ad02c0@@YAHHH@Z 0x140ad02c0
 // MS2-PIN: ?FUN_140ad02f0@@YAHHH@Z 0x140ad02f0
 // MS2-PIN: ?FUN_140ad0d60@@YAHHHH@Z 0x140ad0d60
+
+// The UCRT's `static __inline memmove_s` of this TU (0x140ad1740, no caller left in the exe; kept alive by the pointer below).
+__declspec(selectany) extern errno_t(__cdecl* const ms2_pfnTailEffectMemmoveS)(void*, size_t, const void*, size_t) = &memmove_s;

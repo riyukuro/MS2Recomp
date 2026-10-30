@@ -24,7 +24,7 @@ public:
     virtual void vfunc_1(COutputStream&);               // 0x140634d00 write
     virtual void vfunc_2(CInputStream&);                // 0x140634e30 read
     unsigned char FUN_1406352b0();
-    unsigned char FUN_1406351f0(void*, void*);
+    unsigned char FUN_1406351f0(const __int64& nCharId, const CStringW& strName);   // bind to a character
     int GetCount();
     void SetCount(unsigned);
     int GetMax();
@@ -242,7 +242,7 @@ public:
   int FUN_14052a060();
   void FUN_14052b370();
   int FUN_14052b420(unsigned);
-  unsigned char FUN_14052b5e0(void*, void*);
+  unsigned char FUN_14052b5e0(const __int64& nCharId, const CStringW& strName);   // bind to a character
   CStringW FUN_140528010();
   bool FUN_140528e80(int, __int64);
   CStringW FUN_1405296c0();

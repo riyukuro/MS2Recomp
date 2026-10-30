@@ -1,3 +1,3 @@
 57c
-    NiInputGamePad::UpdateDevice(); if (m_pkInputSystem->m_bEnumerating) m_pkInputSystem->EnumerateDevices();  // MS2: re-enumerate (exe 0x141d09270)
+    NiInputGamePad::UpdateDevice(); if (m_pkInputSystem->m_bGamePadPollEnabled) m_pkInputSystem->EnumerateDevices();  // MS2: re-enumerate (exe 0x141d09270)
 .

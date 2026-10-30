@@ -755,7 +755,7 @@ COutSendNoticePacket::COutSendNoticePacket(unsigned char kind, int flags, String
 
 // ---- decoders that build their object from a CInPacket (StringIdInterface text) ----------------------------------
 struct Unk_1407a7d20 {
-    unsigned char m_00; unsigned m_04; CStringW m_08; unsigned m_10; ATL::CAtlArray<void*> m_18;
+    unsigned char m_00; unsigned m_04; CStringW m_08; unsigned m_10; ATL::CAtlArray<CStringA> m_18;
     Unk_1407a7d20(CInPacket& in);
 };
 // @0x1407a7d20
@@ -763,8 +763,7 @@ Unk_1407a7d20::Unk_1407a7d20(CInPacket& in) : m_10(0)
 {
     m_00 = in.ReadUInt8();
     m_04 = (unsigned short)in.ReadInt16();
-    StringIdInterface body(in);
-    m_08 = body.FUN_141024e60();
+    m_08 = StringIdInterface(in).FUN_141024e60();
     if ((m_04 & 0x10) != 0) m_10 = (unsigned short)in.ReadInt16();
 }
 struct Unk_1407a7eb0 {

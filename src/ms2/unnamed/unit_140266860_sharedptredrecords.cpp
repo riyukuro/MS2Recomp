@@ -108,7 +108,7 @@ MS2_CHECK_SIZE(Unk_KeyedRef, 0x20);
 // Out-of-line vector helpers and the XML attribute accessors of the game's TinyXML wrapper.
 class Unk_140165cf0;
 efd::Point3* FUN_14027dda0(efd::Point3* pOut, float x, float y, float z);
-struct Unk_XmlPoint { Unk_XmlPoint(const efd::Point3* pIn); float x, y, z; };   // 0x14027dcf0
+struct Unk_XmlPoint { Unk_XmlPoint(const efd::Point3& kIn); float x, y, z; };   // 0x14027dcf0
 int FUN_1408733e0(Unk_140165cf0* pElem, const char* pszName, CString& rOut);
 int FUN_140874670(Unk_140165cf0* pElem, const char* pszName, efd::Point3& ptOut);
 void FUN_140874050(void* pElem, const char* pszName, const CString& strValue);
@@ -171,10 +171,8 @@ void ItemCustom::FUN_140266b10(void* pElem) const
 {
     if (name.GetLength() > 0)
         FUN_140874050(pElem, "icon", name);
-    Unk_XmlPoint kPosition(&unknown18);
-    FUN_140874ad0(pElem, "position", kPosition);
-    Unk_XmlPoint kRotation(&unknown24);
-    FUN_140874ad0(pElem, "rotation", kRotation);
+    FUN_140874ad0(pElem, "position", unknown18);
+    FUN_140874ad0(pElem, "rotation", unknown24);
 }
 
 // @0x140266bc0

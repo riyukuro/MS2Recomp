@@ -1,0 +1,8 @@
+58a
+    // MS2: the game's Point4 has 16-byte aligned class allocation: new Point4 calls
+    // _aligned_malloc(size, 16) (0x14221cab0, 0x14221e180) and swig_delete_Point4 (0x14221b860)
+    // tail-calls _aligned_free.
+    static void* operator new(size_t stSize) { return EE_EXTERNAL_ALIGNED_MALLOC(stSize, 16); }
+    static void operator delete(void* pMem) { EE_EXTERNAL_ALIGNED_FREE(pMem); }
+
+.

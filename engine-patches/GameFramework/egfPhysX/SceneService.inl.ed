@@ -1,0 +1,10 @@
+21c
+// MS2: egfPhysXBindings calls GetSceneData out of line (the game's COMDAT 0x141506da0) from the SceneService wrappers
+// below, which it inlines; SceneService::RemoveScene and PhysXWhiteboxService inline it. The TU defines the switch.
+#if defined(EE_MS2_SCENE_GETSCENEDATA_CALL)
+inline __declspec(noinline)
+#else
+inline
+#endif
+egfPhysX::PhysXSceneData* egfPhysX::SceneService::GetSceneData(
+.

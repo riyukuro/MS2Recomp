@@ -62,7 +62,7 @@ void* FUN_14086f2f0(void* pElem, const char* pszName);              // TiXmlElem
 void FUN_14086f450(void* pElem);                                    // TiXmlElement::~TiXmlElement
 void* FUN_1408704d0(void* pDecl, const char* pszVersion, const char* pszEncoding, const char* pszStandalone);   // TiXmlDeclaration::TiXmlDeclaration
 void FUN_14081ad20(void* pDecl);                                    // TiXmlDeclaration::~TiXmlDeclaration
-void* FUN_1408700b0(void* pComment, const char* pszText);           // TiXmlComment::TiXmlComment
+void* FUN_140a27ec0(void* pComment, const char* pszText);           // TiXmlComment::TiXmlComment(const char*)
 void FUN_1408724d0(void* pComment);                                 // TiXmlComment::~TiXmlComment
 void* FUN_14086e000(void* pParent, void* pChild);                   // InsertEndChild
 void* FUN_14086e090(void* pParent, void* pChild);                   // LinkEndChild
@@ -463,7 +463,7 @@ void UIMinimapEditDialog::FUN_141a53750()
         FUN_14086e000(&doc, &decl);
         {
             Unk_MeXmlComment comment;
-            FUN_1408700b0(&comment, FUN_1409a2360(" \xc6\xc4\xbd\xcc\xc7\xd8\xbc\xad \xbb\xe7\xbf\xeb\xc7\xcf\xb4\xc2 \xb5\xa5\xc0\xcc\xc5\xcd\xc0\xcc\xb4\xcf \xc1\xf7\xc1\xa2 \xbc\xf6\xc1\xa4\xc7\xcf\xc1\xf6 \xb8\xb6\xbc\xbc\xbf\xe4 ", 0));
+            FUN_140a27ec0(&comment, FUN_1409a2360(" \xc6\xc4\xbd\xcc\xc7\xd8\xbc\xad \xbb\xe7\xbf\xeb\xc7\xcf\xb4\xc2 \xb5\xa5\xc0\xcc\xc5\xcd\xc0\xcc\xb4\xcf \xc1\xf7\xc1\xa2 \xbc\xf6\xc1\xa4\xc7\xcf\xc1\xf6 \xb8\xb6\xbc\xbc\xbf\xe4 ", 0));
             FUN_14086e000(&doc, &comment);
             FUN_1408724d0(&comment);
         }

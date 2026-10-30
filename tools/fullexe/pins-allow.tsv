@@ -12,7 +12,7 @@ look-alike order	unnamed/unit_14045b740_gameeventvaluecontainercomdat.cpp: MS2Pt
 look-alike order	unnamed/unit_14045b740_gameeventvaluecontainercomdat.cpp: std::_Vector_alloc: name-order family disagrees with the evidence families
 look-alike order	unnamed/unit_14045b740_gameeventvaluecontainercomdat.cpp: std::vector: name-order family disagrees with the evidence families
 look-alike order	unnamed/unit_141bf99b8.cpp: ATL::CRBTree: name-order family disagrees with the evidence families
-pin already attributed	client/ms2/basecollision.cpp: MS2-PIN ?Intersect@CBaseCollision@@SA_NPEAV1@0@Z 0x1409ff0d0: already attributed (tag), ignored
+pin already attributed	client/ms2/basecollision.cpp: MS2-PIN ?Intersect@CBaseCollision@@SAHPEAV1@0@Z 0x1409ff0d0: already attributed (tag), ignored
 pin already attributed	client/ms2/bgtransparencymgr.cpp: MS2-PIN ??D?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@UUnk_BGTRegion@@@std@@@std@@@std@@QEBAAEBUUnk_BGTRegion@@XZ 0x140a16d80: already attributed (tag), ignored
 pin already attributed	client/ms2/bgtransparencymgr.cpp: MS2-PIN ?AddObject@BGTransparencyMgr@@QEAAXPEAVGameObject@@@Z 0x140a0d130: already attributed (tag), ignored
 pin already attributed	client/ms2/bgtransparencymgr.cpp: MS2-PIN ?EraseEntity@BGTransparencyMgr@@QEAAXPEAVEntity@egf@@@Z 0x140a0d450: already attributed (tag), ignored
@@ -257,6 +257,7 @@ pin already attributed	client/ms2/uicashattenddialog.cpp: MS2-PIN ??$FUN_140bc74
 pin already attributed	client/ms2/uicashattenddialog.cpp: MS2-PIN ??$FUN_140bc7a40@VASItemSlot@@@@YA_NAEBVValue@GFx@Scaleform@@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@IAEAV?$vector@V?$MS2Ptr@VASItemSlot@@@@V?$allocator@V?$MS2Ptr@VASItemSlot@@@@@std@@@std@@I@Z 0x140bc7a40: already attributed (tag), ignored
 pin already attributed	client/ms2/uicashattenddialog.cpp: MS2-PIN ??$FUN_140e159f0@VASGaugeControl@@@AScript@@QEAA?AV?$MS2Ptr@VASGaugeControl@@@@AEBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@Z 0x140bc6da0: already attributed (tag), ignored
 pin already attributed	client/ms2/uienchantscrolldialog.cpp: MS2-PIN ??0UIEnchantScrollDialog@@QEAA@XZ 0x140f3b490: already attributed (tag), ignored
+pin already attributed	client/ms2/uigamerankingdialog.cpp: MS2-PIN ??0?$Unk_RankBoxPtr@V?$CAtlArray@V?$Unk_RankPtr@VGameRankingTabData@@@@V?$CElementTraits@V?$Unk_RankPtr@VGameRankingTabData@@@@@ATL@@@ATL@@@@QEAA@H@Z 0x140e36510: already attributed (tag), ignored
 pin already attributed	client/ms2/uigamerankingdialog.cpp: MS2-PIN ??0?$Unk_RankPtr@VGameRankingCategory@@@@QEAA@$$QEAV0@@Z 0x140e36310: already attributed (tag), ignored
 pin already attributed	client/ms2/uigamerankingdialog.cpp: MS2-PIN ??0?$Unk_RankPtr@VGameRankingCategory@@@@QEAA@H@Z 0x140e363b0: already attributed (tag), ignored
 pin already attributed	client/ms2/uimaillistdialog.cpp: MS2-PIN ?IsNull@?$Unk_MailPtr@VCMailInfo@@@@QEBA_NXZ 0x1419ea470: already attributed (tag), ignored
@@ -517,7 +518,8 @@ pin already attributed	scaleform/as3/sfr_as3_18.cpp: MS2-PIN ?Reserve@?$ArrayDat
 pin already attributed	scaleform/as3/sfr_as3_21.cpp: MS2-PIN ?Resize@?$ArrayData@PEAVClassInfo@Abc@AS3@GFx@Scaleform@@U?$AllocatorLH_POD@PEAVClassInfo@Abc@AS3@GFx@Scaleform@@$0BFC@@5@UArrayDefaultPolicy@5@@Scaleform@@QEAAX_K@Z 0x1425683a0: already attributed (tag), ignored
 pin already attributed	scaleform/as3/sfr_as3_22.cpp: MS2-PIN ?Resize@?$ArrayData@PEAVMethodInfo@Abc@AS3@GFx@Scaleform@@U?$AllocatorLH_POD@PEAVMethodInfo@Abc@AS3@GFx@Scaleform@@$0BFC@@5@UArrayDefaultPolicy@5@@Scaleform@@QEAAX_K@Z 0x1425684a0: already attributed (tag), ignored
 pin already attributed	scaleform/as3/sfr_as3_22.cpp: MS2-PIN ?Resize@?$ArrayData@PEAVScriptInfo@Abc@AS3@GFx@Scaleform@@U?$AllocatorLH_POD@PEAVScriptInfo@Abc@AS3@GFx@Scaleform@@$0BFC@@5@UArrayDefaultPolicy@5@@Scaleform@@QEAAX_K@Z 0x142568520: already attributed (tag), ignored
-pin already attributed	scaleform/cri/sfr_cri_02.cpp: MS2-PIN ?FUN_140033d70@@YAJPEAXPEBUCriMovieInputChunk@@E@Z 0x140033d70: already attributed (tag), ignored
+pin already attributed	scaleform/cri/sfr_cri_02c.cpp: MS2-PIN ?FUN_140033810@@YAXPEAX@Z 0x140033810: already attributed (tag), ignored
+pin already attributed	scaleform/cri/sfr_cri_02c.cpp: MS2-PIN ?FUN_140033d70@@YAJPEAXPEBUCriMovieInputChunk@@E@Z 0x140033d70: already attributed (tag), ignored
 pin already attributed	scaleform/gfx/sfr_gfx_02b.cpp: MS2-PIN ?SetHinting@FontProviderWin32@GFx@Scaleform@@QEAAXPEBDW4NativeHintingRange@Font@Render@3@1II@Z 0x14259dc30: already attributed (tag), ignored
 pin already attributed	scaleform/gfx/sfr_gfx_02b.cpp: MS2-PIN ?SetHintingAllFonts@FontProviderWin32@GFx@Scaleform@@QEAAXW4NativeHintingRange@Font@Render@3@0II@Z 0x14259dc40: already attributed (tag), ignored
 pin already attributed	scaleform/gfx/sfr_gfx_07h.cpp: MS2-PIN ?FUN_14261f940@GFx@Scaleform@@YAXPEA_K@Z 0x14261f940: already attributed (tag), ignored
@@ -1367,6 +1369,7 @@ pin names no function	client/ms2/questmanager_2.cpp: MS2-PIN ?FUN_1416cf750@@YAX
 pin names no function	client/ms2/questmanager_2.cpp: MS2-PIN ?FUN_1416d0c10@@YAXPEAVUnk_GmQuestHolder@@@Z: no such function in the obj
 pin names no function	client/ms2/questmanager_2.cpp: MS2-PIN ?FUN_141bc2800@Unk_QmWorld@@QEAA?AUUnk_QmFieldHandle@@H@Z: no such function in the obj
 pin names no function	client/ms2/raindroponcubeemitter.cpp: MS2-PIN ?lower_bound@?$_Hash@V?$_Umap_traits@IIV?$_Uhash_compare@IU?$hash@I@std@@U?$equal_to@I@2@@std@@V?$CustomAllocator@U?$pair@$$CBII@std@@@efd@@$0A@@std@@@std@@QEAA?AV?$_List_iterator@V?$_List_val@U?$_List_simple_types@U?$pair@$$CBII@std@@@std@@@std@@@2@AEBI@Z: no such function in the obj
+pin names no function	client/ms2/randomtargeteffect.cpp: MS2-PIN ??9Unk_NodePtr@@QEBA_NH@Z: no such function in the obj
 pin names no function	client/ms2/renderedtexturerenderclick.cpp: MS2-PIN ??0Unk_Rt3DRenderView@@QEAA@PEAX0_N@Z: no such function in the obj
 pin names no function	client/ms2/renderedtexturerenderclick.cpp: MS2-PIN ??0Unk_RtClickPtr@@QEAA@PEAX@Z: no such function in the obj
 pin names no function	client/ms2/renderedtexturerenderclick.cpp: MS2-PIN ??0Unk_RtColor@@QEAA@MMMM@Z: no such function in the obj
@@ -1941,6 +1944,7 @@ pin names no function	commonfiles/itemoptiondata_2.cpp: MS2-PIN ??R<lambda_6f4a8
 pin names no function	commonfiles/itemoptiondata_2.cpp: MS2-PIN ??R<lambda_ab439f4924c8364fde11f81291079c2c>@@QEBA_NH@Z: no such function in the obj
 pin names no function	commonfiles/masterytable.cpp: MS2-PIN ?FUN_140669980@Unk_MRec@@QEAA?AV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@XZ: no such function in the obj
 pin names no function	commonfiles/masterytable.cpp: MS2-PIN ?FUN_14066aa90@Unk_MData@@QEAAXHAEAV?$CAtlArray@V?$MS2Ptr@VUnk_MRec@@@@V?$CElementTraits@V?$MS2Ptr@VUnk_MRec@@@@@ATL@@@ATL@@@Z: no such function in the obj
+pin names no function	commonfiles/masterytable.cpp: MS2-PIN ?FUN_14066b100@Unk_MData@@QEAAXHHAEAV?$CAtlArray@UItemEntity@@V?$CElementTraits@UItemEntity@@@ATL@@@ATL@@@Z: no such function in the obj
 pin names no function	commonfiles/masterytable.cpp: MS2-PIN ?FUN_14066b100@Unk_MData@@QEAAXHHAEAV?$CAtlArray@V?$MS2Ptr@UItemEntity@@@@V?$CElementTraits@V?$MS2Ptr@UItemEntity@@@@@ATL@@@ATL@@@Z: no such function in the obj
 pin names no function	commonfiles/masterytable.cpp: MS2-PIN ?FUN_14066b100@Unk_MmTable@@QEAAXHHAEAV?$CAtlArray@PEAXV?$CElementTraits@PEAX@ATL@@@ATL@@@Z: no such function in the obj
 pin names no function	commonfiles/masterytable.cpp: MS2-PIN ?FUN_14066b910@Unk_MData@@QEAAHHH@Z: no such function in the obj

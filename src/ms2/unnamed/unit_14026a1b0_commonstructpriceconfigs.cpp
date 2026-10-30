@@ -8,6 +8,7 @@
 #include <atlcoll.h>
 #include "ms2/commonfiles/commonpricerecord.h"
 #include "ms2/commonfiles/skillconfig.h"
+#include "ms2/placeholder/cinpacket.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 
@@ -146,16 +147,16 @@ void CSkillBookTreeTabConfig::Write(COutputStream* pOut)
 }
 
 // @0x14026a860
-void CSkillBookTreeTabConfig::Read(CInputStream* pIn)
+void CSkillBookTreeTabConfig::Read(CInPacket* pPacket)
 {
-    m_nId = pIn->ReadInt64();
-    m_strName = pIn->ReadUnicodeString();
+    m_nId = pPacket->ReadInt64();
+    m_strName = pPacket->ReadUnicodeString();
     m_strName = m_strName.Left(10);
-    unsigned nCount = pIn->ReadInt32();
+    unsigned nCount = pPacket->ReadInt32();
     for (unsigned i = 0; i < nCount; i++)
     {
-        unsigned nKey = pIn->ReadInt32();
-        unsigned nValue = pIn->ReadInt32();
+        unsigned nKey = pPacket->ReadInt32();
+        unsigned nValue = pPacket->ReadInt32();
         m_slots.SetAt(nKey, nValue);
     }
 }

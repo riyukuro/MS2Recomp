@@ -15,6 +15,12 @@ copy of the objects is made.
 
 - Linux with Wine, or Windows with the VS2017 v141 toolset; the MSVC 14.16 cl/link and the Windows SDK 10.0.19041
   (`tools/toolchain-manifest.tsv` pins them, `tools/check_toolchain.py --quick` verifies them).
+- For the units that declare `// MS2-TOOLSET:`, the old compilers the exe's prebuilt libraries were built with. Each
+  goes into a gitignored `third_party/` dir and is checked against its manifest (`--check`).
+  - vc9: cl 15.00.30729 for the CRI Movie decoder (`tools/fetch-vc9.sh`, from the WDK 7.1 ISO).
+  - vc11: cl 17.00.61030 for the Scaleform Video add-on (`tools/fetch-vs2012.sh`, from Microsoft's VS2012.4.iso and
+    VS2012_WDX_ENU.iso; `--download` fetches both). It installs the VS2012 Update 4 compiler and VC headers and the
+    Windows SDK 8.0 headers.
 - CMake 3.25 or newer, Ninja, Python 3 with the packages of `tools/` (the default is `.venv/bin/python`; override with
   `-DMS2_PYTHON=...`), LLVM binutils (`llvm-nm`, `llvm-undname`).
 - The original x64 `MapleStory2.exe` (KMS2_DEV build): `-DMS2_EXE=<file>` or the `MS2_EXE` environment variable, else `Game Versions/KMS2_DEV/x64/MapleStory2.exe` in the checkout (verified by `tools/check_exe.py`).

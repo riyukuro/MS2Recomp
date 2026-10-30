@@ -764,7 +764,7 @@ int CFieldMetaTable::FUN_1406fc6d0(int nNpcId, ATL::CAtlArray<CMsTime>& out)
 }
 
 // @0x1406fc7b0
-bool CFieldMetaTable::FUN_1406fc7b0(unsigned nField, unsigned nId)
+int CFieldMetaTable::FUN_1406fc7b0(unsigned nField, unsigned nId)
 {
     Unk_FieldIdListPtr pTargets(0);
     if (m_portalTargets2.Lookup(nField, pTargets))

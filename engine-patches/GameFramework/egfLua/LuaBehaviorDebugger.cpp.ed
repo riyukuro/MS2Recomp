@@ -1,0 +1,8 @@
+994c
+            o_value.append("}");
+.
+972@35s "" ")"
+972@27s " += " ".append("
+959c
+            o_value.append("+...}");  // MS2: the exe calls append(const char*) out of line
+.

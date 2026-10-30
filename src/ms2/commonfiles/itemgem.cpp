@@ -32,7 +32,7 @@
 // MS2-PIN: ?Release@?$MS2Ptr@VCGemEffectData@@@@AEAAXXZ 0x1405ab250
 // MS2-PIN: ??0?$CAtlMap@W4Unk_GemSlot@@IV?$CElementTraits@W4Unk_GemSlot@@@ATL@@V?$CElementTraits@I@3@@ATL@@QEAA@IMMMI@Z 0x1405a7ec0
 // MS2-PIN: ??__Es_mapGemSlots@@YAXXZ 0x1400ba010
-// MS2-PIN: memcpy_s 0x1405abbe0
+// MS2-PIN: memmove_s 0x1405abbe0
 // MS2-PIN: ??1Unk_NoticeCallbackPtr@@QEAA@XZ 0x1405a8560
 // MS2-PIN: ??1NoticeMessage@@QEAA@XZ 0x1405a89e0
 // MS2-PIN: ??1?$MS2Ptr@VCEquipItem@@@@QEAA@XZ 0x1405a85f0
@@ -1142,5 +1142,5 @@ Unk_GemTable* FUN_1405a96f0()
     return (Unk_GemTable*)DAT_143aafd08;
 }
 
-// memcpy_s 0x1405abbe0 closes the obj's COMDAT tail.
-__declspec(selectany) extern errno_t(__cdecl* const ms2_itemGemMemcpyS)(void*, size_t, const void*, size_t) = &memcpy_s;
+// memmove_s 0x1405abbe0 closes the obj's COMDAT tail.
+__declspec(selectany) extern errno_t(__cdecl* const ms2_itemGemMemmoveS)(void*, size_t, const void*, size_t) = &memmove_s;

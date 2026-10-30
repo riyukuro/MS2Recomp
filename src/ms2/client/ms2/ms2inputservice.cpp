@@ -115,10 +115,10 @@ CStringW FUN_140298ea0(CStringW str);
 CStringW GetStringCommonByKey(const CStringW& str);
 
 
-// NiInputSystem::m_bEnumerating setter (exe-only inline, 0x140d8f490)
+// NiInputSystem::m_bGamePadPollEnabled setter (exe-only inline, 0x140d8f490)
 struct MS2NiInputSystemAccess : public NiInputSystem
 {
-    void FUN_140d8f490(bool b) { m_bEnumerating = b; }
+    void FUN_140d8f490(bool b) { m_bGamePadPollEnabled = b; }
 };
 
 // @0x140d8ee90

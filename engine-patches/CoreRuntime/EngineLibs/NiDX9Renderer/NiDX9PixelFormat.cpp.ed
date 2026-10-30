@@ -1,0 +1,4 @@
+24d
+21a
+    unsigned char ucBPP = kDesc.GetBitsPerPixel();
+.

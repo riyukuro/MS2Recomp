@@ -240,7 +240,7 @@ CStringW FUN_1416e57d0(int nQuestId, int nCondition);
 CStringW FUN_1416e55b0(int nQuestId);
 CStringW FUN_1416e7fb0(int nChapter);
 CString FUN_140762e90(int nAlliance);
-char FUN_1407640c0(CQuestData* pData);
+bool FUN_1407640c0(CQuestData* pData);
 bool FUN_14074b090(CQuestData* pData);
 int FUN_14074b050(CQuestData* pData);
 int FUN_14074b790(int nQuestId);
@@ -251,7 +251,7 @@ CStringW GetStringCommon(int nId);
 CStringW FUN_1409e8ca0(CStringW strKey, const int& a1, const int& a2, const int& a3, const int& a4, const int& a5);
 CStringW FUN_140938ae0(CStringW strKey, const int& a1);
 CStringW FUN_1409e9890(CStringW strKey, const int& a1, const int& a2);
-CStringW FUN_1409e8820(CStringW strKey, const short& a1);
+CStringW FUN_1409e8820(CStringW strKey, const unsigned short& a1);
 CStringW FUN_140656190(const wchar_t* szFormat, const CStringW& a1, const CStringW& a2);
 void FUN_141275260(int nId, int a2, int a3);                                // system message
 __int64 FUN_140869440();
@@ -1324,7 +1324,6 @@ int UIQuestGuideDialog::FUN_141aae6d0()
 MS2_REPLACE_METHOD(0x141aae6d0, UIQuestGuideDialog, FUN_141aae6d0, 499, 0x25DB618B);
 
 // @0x141aae8d0
-// MS2-FUNCTIONAL: cl /Od stack-slot and temporary allocation differ
 int UIQuestGuideDialog::FUN_141aae8d0(int nQuestId, ASObj& obj)
 {
     MS2Ptr<CQuestData> spData = FUN_14074bc40(nQuestId);

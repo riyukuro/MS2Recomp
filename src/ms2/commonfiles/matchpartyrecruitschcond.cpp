@@ -18,9 +18,8 @@
 #include "ms2/commonfiles/stream.h"
 #include "ms2/ms2recover.h"
 
-// The exe reads and writes the placeholder's byte-typed members as 4-byte integers (its Reset stores a dword at +0x20
-// and IsEqual compares a dword), so the same offsets are accessed as ints here. It is a macro because /Od emits even a
-// __forceinline helper as a call.
+// The exe reads the search request's byte-typed kind as a 4-byte integer (FUN_140694b70 loads a dword at +8), so the
+// same offset is accessed as an int here. It is a macro because /Od emits even a __forceinline helper as a call.
 #define KindOf(p) (*reinterpret_cast<int*>(const_cast<unsigned char*>(&(p)->kind)))
 
 // Defined further down, in exe order.
@@ -53,7 +52,7 @@ void FUN_140694450(CMatchPartyRecruitSchCond* pThis)
 {
     pThis->fieldId = 0;
     pThis->category = 0;
-    KindOf(pThis) = 0xc;
+    pThis->kind = 0xc;
     pThis->text.Empty();
     pThis->page = 0;
     pThis->pageSize = 0;
@@ -67,7 +66,7 @@ void FUN_1406944c0(CMatchPartyRecruitSchCond* pThis, const CMatchPartyRecruitSch
         return;
     pThis->fieldId = pOther->fieldId;
     pThis->category = pOther->category;
-    KindOf(pThis) = KindOf(pOther);
+    pThis->kind = pOther->kind;
     pThis->text = pOther->text;
     pThis->page = pOther->page;
     pThis->pageSize = pOther->pageSize;
@@ -82,7 +81,7 @@ int FUN_140694560(const CMatchPartyRecruitSchCond* pThis, const CMatchPartyRecru
         return 0;
     if (pOther->category != pThis->category)
         return 0;
-    if (KindOf(pOther) != KindOf(pThis))
+    if (pOther->kind != pThis->kind)
         return 0;
     if (pOther->text != pThis->text)
         return 0;
@@ -121,7 +120,7 @@ void FUN_140694770(CMatchPartyRecruitSchCond* pThis, CInputStream* in)
 {
     pThis->fieldId = in->ReadInt32();
     pThis->category = in->ReadInt32();
-    KindOf(pThis) = in->ReadUInt8();
+    pThis->kind = in->ReadUInt8();
     pThis->text = in->ReadUnicodeString();
     pThis->page = in->ReadInt32();
     pThis->pageSize = in->ReadInt32();

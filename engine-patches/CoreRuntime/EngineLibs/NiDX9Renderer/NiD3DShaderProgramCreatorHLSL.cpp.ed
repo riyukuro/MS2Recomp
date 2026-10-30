@@ -4,7 +4,7 @@
         (const DWORD*)pkCode->GetBufferPointer(),
         D3DXCONSTTABLE_LARGEADDRESSAWARE, &pkConstantTable)))
     {
-        pkCode->Release();
+        if (pkCode) pkCode->Release();  // MS2: exe 0x14280a000 shares the null-checked release of the compile-failure path
         return false;
     }
 
@@ -23,7 +23,7 @@
         (const DWORD*)pkCode->GetBufferPointer(),
         D3DXCONSTTABLE_LARGEADDRESSAWARE, &pkConstantTable)))
     {
-        pkCode->Release();
+        if (pkCode) pkCode->Release();  // MS2: exe 0x14280a2c0 shares the null-checked release of the compile-failure path
         return false;
     }
 

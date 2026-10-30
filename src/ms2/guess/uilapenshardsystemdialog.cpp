@@ -2335,7 +2335,7 @@ void FUN_140c60920(ItemArray* pOut, int bCheckUse, int bWithBound, int bWithEqui
             if (spItem->FUN_140527930()->FUN_140635190() == 2)
             {
                 __int64 nCharId = pPlayer->FUN_141656a80();
-                spItem->FUN_14052b5e0(&nCharId, &pPlayer->vfunc_77());
+                spItem->FUN_14052b5e0(nCharId, pPlayer->vfunc_77());
             }
             items.Add(spItem);
         }

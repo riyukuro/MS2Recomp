@@ -1247,7 +1247,7 @@ void UIMyInfoDialog::vfunc_25(void* p1, TPtr<Unk_UISwfEntity_25> p2, void* p3, v
         GameObject* pObj = m_spAvatar->vfunc_24();
         if (pObj == 0)
             return;
-        m_spAvatar->vfunc_28(p1, p2, p3);
+        m_spAvatar->vfunc_28(p1, p2, p3, p4);
         Unk_ModelViewCamera kCamera;
         kCamera.FUN_141b48530();
         kCamera.m_fMinDistance = 300.0f;

@@ -419,14 +419,13 @@ void UITimeRunEventDialog::FUN_140ee4570(int)
         pDlg->FUN_140ea5f80();
 }
 
-// MS2-FUNCTIONAL: behaviour-equivalent; temp/frame layout differs from the exe (not byte-exact)
 // @0x140ee45c0
-int FUN_140ee45c0()
+int UITimeRunEventDialog::FUN_140ee45c0()
 {
     MS2Ptr<TimeRunEventContext> spContext = FUN_1401c0d90()->FUN_14047d6c0();
     if (spContext.IsNull()) return 0;
     int nCount = 0;
-    bool bAll = true;
+    int bAll = 1;
     unsigned nTotal = 0;
     CMsTime now(FUN_140869440());
     for (POSITION pos = spContext->m_quests.GetStartPosition(); pos != NULL; spContext->m_quests.GetNext(pos)) {
@@ -435,12 +434,12 @@ int FUN_140ee45c0()
         if (quest.get() != 0) {
             CMsTime start(quest->GetStartTime());
             AddDays(start, spQuest->m_20 - 1);
-            if (FUN_140282020(start) <= FUN_140282020(now)) {
-                if (quest->IsComplete() != 0) nCount = nCount + 1;
-                if (quest->IsRewarded() == 0) bAll = false; else nTotal += spQuest->m_1c;
-            } else {
-                bAll = false;
+            if (FUN_140282020(now) < FUN_140282020(start)) {
+                bAll = 0;
+                continue;
             }
+            if (quest->IsComplete() != 0) nCount = nCount + 1;
+            if (quest->IsRewarded() == 0) bAll = 0; else nTotal += spQuest->m_1c;
         }
     }
     if (bAll) {
@@ -451,7 +450,9 @@ int FUN_140ee45c0()
     unsigned nTaken = g_trCounters.FUN_1409617d0(0x5dd, spContext->m_eventId, &nDefault2);
     for (POSITION pos = spContext->m_rewards.GetHeadPosition(); pos != NULL; spContext->m_rewards.GetNext(pos)) {
         unsigned nKey = spContext->m_rewards.GetKeyAt(pos);
-        if (nKey <= nTotal && nTaken < nKey) {
+        if (nTotal < nKey)
+            continue;
+        if (nKey > nTaken) {
             nCount = nCount + 1;
             break;
         }

@@ -1,3 +1,30 @@
+356c
+        else { pkCode->Release(); return false; }
+.
+350c
+        if (spProgram)  // MS2: v2525 (exe 0x142803c02) fails a NULL pixel shader
+.
+343c
+                InsertVertexShaderIntoMap(((NiD3DVertexShader*)(spProgram.data())));  // MS2: exe 0x142803b7c is the compiler tail-duplicating the shared Release below
+.
+328c
+    if (!NiStreamLoadBinary(kStream, (BYTE*)pkCode->GetBufferPointer(), uiCodeSize))  // MS2: v2525
+    {
+        pkCode->Release();
+        return false;
+    }
+.
+318,319c
+        return kStream.Seek(uiCodeSize);  // MS2: v2525 returns the seek result
+.
+314c
+    if (!NiStreamLoadBinary(kStream, uiCodeSize) || uiCodeSize == 0)  // MS2: v2525
+        return false;
+.
+298c
+    if (!LoadString(kStream, acName, 256))  // MS2: v2525 checks every read
+        return false;
+.
 203@35s "" "(const char*)"
 203@12s "" "(const char*)"
 186@35s "" "(const char*)"

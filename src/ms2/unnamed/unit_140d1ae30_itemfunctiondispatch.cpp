@@ -7,7 +7,7 @@
 // MS2-RANGE: 0x1400d1f70-0x1400d2300 .text$di
 // MS2-RANGE: 0x140d1ae30-0x140d2a7e0 .text$mn
 // MS2-RANGE: 0x142ca49f0-0x142ca4bc0 .text$yd
-// MS2-PIN: memcpy_s 0x140d2a6c0
+// MS2-PIN: memmove_s 0x140d2a6c0
 // MS2-PIN: ??$GetItemUseDialog@VUIInteriorBuildDialog@@@@YAPEAVUIInteriorBuildDialog@@H@Z 0x140d27120
 // MS2-PIN: ??$GetItemUseDialog@VUIItemBillBoardDialog@@@@YAPEAVUIItemBillBoardDialog@@H@Z 0x140d271c0
 // MS2-PIN: ??$GetItemUseDialog@VUIItemBlueprintCreateDialog@@@@YAPEAVUIItemBlueprintCreateDialog@@H@Z 0x140d27260
@@ -305,8 +305,8 @@ template <class T> T* GetItemUseDialog(int nId)
     return 0;
 }
 
-// The UCRT's `static __inline memcpy_s` of this TU (kept alive by the pointer below).
-__declspec(selectany) extern errno_t(__cdecl* const ms2_pfnMemcpyS)(void*, size_t, const void*, size_t) = &memcpy_s;
+// The UCRT's `static __inline memmove_s` of this TU (kept alive by the pointer below).
+__declspec(selectany) extern errno_t(__cdecl* const ms2_pfnMemmoveS)(void*, size_t, const void*, size_t) = &memmove_s;
 
 // ---- dynamic initializers (.text$di) ----
 

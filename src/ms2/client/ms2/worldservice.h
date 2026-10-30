@@ -128,6 +128,7 @@ template <class T> struct Unk_WsOptional
 struct Unk_WsElem { void* p; };
 struct Unk_WsP8 { void* p; };
 struct Unk_WsP16 { void* p0; void* p1; };
+struct Unk_WsA_FieldRef;                                    // the m_350 value ref (worldservice_1.cpp)
 struct Unk_WsPod8 { unsigned char raw[8]; };
 struct Unk_WsPod16 { unsigned char raw[16]; };
 struct Unk_WsPod24 { unsigned char raw[24]; };
@@ -335,7 +336,7 @@ public:
     Vector3 FUN_141bc0ff0(GameObject* obj, void* classIds, int skipId);        // unit push-away direction from nearby objects of the given class ids
     void FUN_141bc12b0();                                                              // take extra refs on the parts of every object of the active class filter
     void FUN_141bc2730();                                                              // clear the field-object registry (m_350) and destroy the entities in m_838
-    Unk_WsP16* FUN_141bc2800(Unk_WsP16* out, int id);                                  // m_350.Lookup(field object id) -> *out (null when absent)
+    Unk_WsA_FieldRef FUN_141bc2800(int id);                                            // m_350.Lookup(field object id), by value (null when absent)
     MS2Ptr<CPortal> FUN_141bc2880(int mapType);                                        // first m_350 portal with this map type (by value)
     void FUN_141bc2980(void* outIds);                                                  // append every field object id to the CAtlArray<int>
     void FUN_141bc2a70(int type, void* outRefs);                                       // collect the field objects of this type into the CAtlArray of refs

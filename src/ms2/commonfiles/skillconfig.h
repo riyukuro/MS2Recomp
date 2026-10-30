@@ -9,6 +9,8 @@
 #include "ms2/placeholder/cptred.h"
 #include "ms2/commonfiles/stream.h"
 
+class CInPacket;
+
 class CSkillCompactControlConfig : public CPtred
 {
 public:
@@ -26,7 +28,7 @@ class CSkillBookTreeTabConfig : public CPtred
 public:
     CSkillBookTreeTabConfig();                                      // 0x14026a640
     void Write(COutputStream* pOut);                                // 0x14026a6e0
-    void Read(CInputStream* pIn);                                   // 0x14026a860 (the stream is the packet's input half)
+    void Read(CInPacket* pPacket);                                  // 0x14026a860 (reads through the packet's CInputStream half)
 
     MS2_LAYOUT_FRIEND;
     __int64 m_nId;                                                  // +0x18 generated from the server time

@@ -40,6 +40,7 @@
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/uiugceventdispatcher.h"
 #include "ms2/placeholder/creservedwordtable.h"
+#include "ms2/placeholder/mstime.h"
 
 MS2_EMIT_CRT_MEMMOVE_S_COPY(1);
 
@@ -325,7 +326,6 @@ void UIWhisperNotifyDialog::FUN_141b52210(MS2Ptr<CItem> spItem, const CStringW& 
 }
 
 // @0x141b52570
-// MS2-FUNCTIONAL: instructions match; the exe keeps the CTime at rsp+0x110 (ours 0x60), 3 bytes longer
 void UIWhisperNotifyDialog::FUN_141b52570(const Unk_WhisperInfo* pInfo, int nMode, int nItemId)
 {
     if (FUN_1422dc2d0() == 0)
@@ -354,7 +354,9 @@ void UIWhisperNotifyDialog::FUN_141b52570(const Unk_WhisperInfo* pInfo, int nMod
     static_cast<Unk_WhisperScript*>(m_30.operator->())->FUN_141b52b40("addSystemWhisper", FUN_140513200("{0}", pInfo->m_nId),
                                                                       sender.FUN_14035eb90()->m_strImage, CStringW(strText));
     m_systemTimes.SetAt(pInfo->m_nId, FUN_140869420());
-    CTime time((__time64_t)pInfo->m_nTime);
+    // CMsTime, not CTime: the exe formats the hour/minute in the server time zone (ctor 0x1406c47a0,
+    // GetMinute 0x1406c4f80, GetHour 0x1406c4f10).
+    CMsTime time((__time64_t)pInfo->m_nTime);
     int nMinute = time.GetMinute();
     int nHour = time.GetHour();
     CStringW strLog = FUN_140292b10(0x5ec, nHour, nMinute, FUN_1401aa6a0(pInfo->m_nId));

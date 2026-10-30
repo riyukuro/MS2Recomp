@@ -1,0 +1,16 @@
+24c
+EE_MS2_RENDERER_LOCK_INLINE void NiRenderer::UnlockRenderer()
+.
+15c
+EE_MS2_RENDERER_LOCK_INLINE void NiRenderer::LockRenderer()
+.
+13a
+// MS2: TUs whose exe inlines LockRenderer/UnlockRenderer where our inliner declines define
+// EE_MS2_RENDERER_LOCK_FORCE (codegen only)
+#if defined(EE_MS2_RENDERER_LOCK_FORCE)
+#define EE_MS2_RENDERER_LOCK_INLINE __forceinline
+#else
+#define EE_MS2_RENDERER_LOCK_INLINE inline
+#endif
+
+.

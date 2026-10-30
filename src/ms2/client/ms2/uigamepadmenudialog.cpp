@@ -392,8 +392,7 @@ void UIGamePadMenuDialog::FUN_140c1ba90(int nMenu, int nEnable)
 }
 
 // @0x140c1bc10
-// MS2-FUNCTIONAL: the exe takes no nUnused parameter (the header declaration is shared with guideaction.cpp)
-CString UIGamePadMenuDialog::FUN_140c1bc10(int nMenu, __int64 nUnused)
+CString UIGamePadMenuDialog::FUN_140c1bc10(int nMenu)
 {
     {
         MS2Ptr<Unk_GpMenu> spMenu = FUN_140c1d2f0()->FUN_140cf7590(nMenu);
@@ -415,10 +414,9 @@ CString UIGamePadMenuDialog::FUN_140c1bcd0(int nMenu)
 }
 
 // @0x140c1bd90
-// MS2-FUNCTIONAL: the exe takes no nUnused parameter (the header declaration is shared with guideaction.cpp)
-MS2Ptr<Unk_GpButton> UIGamePadMenuDialog::FUN_140c1bd90(int nMenu, __int64 nUnused)
+MS2Ptr<Unk_GpButton> UIGamePadMenuDialog::FUN_140c1bd90(int nMenu)
 {
-    return FUN_140c1be20(FUN_140c1bc10(nMenu, nUnused));
+    return FUN_140c1be20(FUN_140c1bc10(nMenu));
 }
 
 // @0x140c1be20

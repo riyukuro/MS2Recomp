@@ -41,7 +41,7 @@
 ?Do_RenderMesh@NiDX9Renderer@@MEAAXPEAVNiMesh@@@Z	1427cd840	func
 ?Do_RenderMeshes@NiD3DShader@@MEAAXPEAVNiVisibleArray@@@Z	1427e01c0	func
 ?EnableStackTracing@StackUtils@efd@@YA_N_N@Z	1420cb2b0	func
-?FgConstructor@AssetFactoryManager@efd@@IEAAX_K@Z	1420a18c0	func
+?FgConstructor@AssetFactoryManager@efd@@IEAAXI@Z	1420a18c0	func
 ?GetAccumTransforms@NiPhysXAccumRigidBodyDest@@IEAAXMAEAVNiQuaternion@@AEAVNiPoint3@@01AEBVNiTransform@@@Z	141f243e0	func
 ?GetDynamicEffectData@NiD3DShaderConstantMap@@SA_NPEAXIW4ObjectMappings@NiShaderConstantMap@@PEAVNiDynamicEffect@@AEBVNiRenderCallContext@@@Z	1427eabf0	func
 ?GetGroupCollisionFlag@egfPhysXBindings@@YA_NPEBDGGAEA_N@Z	142263f80	func
@@ -515,3 +515,28 @@ XML_ErrorString	1423b24b0	alias	__xmlparse.c
 ?SetTargetAnimationByName@egmAnimationBindings@@YAXVEntityID@egf@@PEBD@Z	1428d5af0	alias	__egmanimationbindings.cpp
 ??__E?ms_ClassInfo@PhysXPropMessage@ecrPhysX@@2VClassInfo@efd@@B@@YAXXZ	14012c830	func
 ??__E?ms_ClassInfo@NiPhysXSceneAdded@ecrPhysX@@2VClassInfo@efd@@B@@YAXXZ	14012c840	func
+# the CRT fmodf import thunk (gb p5h 2026-10-29): engine objs call fmodf directly; symbols.tsv binds the name to the game TUs' inline header copy 0x14029d430
+fmodf	14280f08a	func
+# engine COMDAT copies the exe engine code calls (gb p5h 2026-10-29): NiTerrainSectorSelector map<uint,int>/map<uint,uint> and NiShadowManager SmartPointer<NiShadowClickGenerator>; symbols.tsv binds these names to the game TUs' copies
+??$_Insert_hint@AEAU?$pair@$$CBIH@std@@PEAU?$_Tree_node@U?$pair@$$CBIH@std@@PEAX@2@@?$_Tree@V?$_Tmap_traits@IHU?$less@I@std@@V?$CustomAllocator@U?$pair@$$CBIH@std@@@efd@@$0A@@std@@@std@@IEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIH@std@@@std@@@std@@@1@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIH@std@@@std@@@std@@@1@AEAU?$pair@$$CBIH@1@PEAU?$_Tree_node@U?$pair@$$CBIH@std@@PEAX@1@@Z	141f744b0	func
+??1?$_Tree@V?$_Tmap_traits@IHU?$less@I@std@@V?$CustomAllocator@U?$pair@$$CBIH@std@@@efd@@$0A@@std@@@std@@QEAA@XZ	141f74920	func
+?_Buyheadnode@?$_Tree_comp_alloc@V?$_Tmap_traits@IHU?$less@I@std@@V?$CustomAllocator@U?$pair@$$CBIH@std@@@efd@@$0A@@std@@@std@@QEAAPEAU?$_Tree_node@U?$pair@$$CBIH@std@@PEAX@2@XZ	141f750b0	func
+?_Buyheadnode@?$_Tree_comp_alloc@V?$_Tmap_traits@IIU?$less@I@std@@V?$CustomAllocator@U?$pair@$$CBII@std@@@efd@@$0A@@std@@@std@@QEAAPEAU?$_Tree_node@U?$pair@$$CBII@std@@PEAX@2@XZ	141130ed0	func
+??1?$SmartPointer@VNiShadowClickGenerator@@@efd@@QEAA@XZ	141d3fdc0	func
+??$_Insert_at@AEAU?$pair@$$CBIH@std@@PEAU?$_Tree_node@U?$pair@$$CBIH@std@@PEAX@2@@?$_Tree@V?$_Tmap_traits@IHU?$less@I@std@@V?$CustomAllocator@U?$pair@$$CBIH@std@@@efd@@$0A@@std@@@std@@IEAA?AV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIH@std@@@std@@@std@@@1@_NPEAU?$_Tree_node@U?$pair@$$CBIH@std@@PEAX@1@AEAU?$pair@$$CBIH@1@1@Z	141f74230	func
+??$_Insert_nohint@AEAU?$pair@$$CBIH@std@@PEAU?$_Tree_node@U?$pair@$$CBIH@std@@PEAX@2@@?$_Tree@V?$_Tmap_traits@IHU?$less@I@std@@V?$CustomAllocator@U?$pair@$$CBIH@std@@@efd@@$0A@@std@@@std@@IEAA?AU?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIH@std@@@std@@@std@@@std@@_N@1@_NAEAU?$pair@$$CBIH@1@PEAU?$_Tree_node@U?$pair@$$CBIH@std@@PEAX@1@@Z	141f746a0	func
+# efd operator==(const char*, const utf8string&) (gb p5h 2026-10-29): NiTerrainSurfaceLibrary::AddPackage calls the exe COMDAT 0x141284840 out of line (EE_MS2_UTF8_CSTR_EQ_CALL); symbols.tsv names that VA UfEqual
+??8efd@@YA_NPEBDAEBVutf8string@0@@Z	141284840	func
+# NiPick::ClearResultsArray (p5f 2026-10-29): symbols.tsv binds the name to 0x141cb1890, which is NiPick::FlushResultsArray (add rcx,0x20; jmp Results::FlushArray); the exe ClearResultsArray is 0x141cb1540 (mov dword [rcx+0x38],0; ret), the one PickService::PerformPick calls
+?ClearResultsArray@NiPick@@QEAAXXZ	141cb1540	func
+# p5f 2026-10-29: requestQueueSize is UInt32 in the game (efd/AssetFactoryManager.h): the ctor and the background
+# AssetLoaderThreadFunctor ctor (stub FUN_1420e5f50) under their UInt32 names
+??0AssetFactoryManager@efd@@QEAA@IIPEAV01@@Z	14209f570	func
+??0AssetLoaderThreadFunctor@efd@@QEAA@IPEAVAssetFactoryManager@1@@Z	1420e5f50	func
+# callee-binding sweep (p5f 2026-10-29, work/p5f/callee.tsv): engine callers of these names call the exe copy below; symbols.tsv binds the
+# name to the game TUs' /Od copy (CRT header inlines; atan2f is the jmp [__imp_atan2f] thunk). Gate of the 91 referencing objs: +10 VAs, 0 lost
+sscanf	1420d35a0	func
+atan2f	14280f28e	func
+_vswprintf_c_l	1402e1150	func
+# efd::map<uint,uint> _Erase (p5f 2026-10-29): NetService::OnShutdown and three other engine callers call 0x141136f50, the copy symbols.tsv names map<uint,int>::_Erase
+?_Erase@?$_Tree@V?$_Tmap_traits@IIU?$less@I@std@@V?$CustomAllocator@U?$pair@$$CBII@std@@@efd@@$0A@@std@@@std@@IEAAXPEAU?$_Tree_node@U?$pair@$$CBII@std@@PEAX@2@@Z	141136f50	func

@@ -29,7 +29,21 @@ SDK_LIBS = ("kernel32", "user32", "ws2_32", "shlwapi", "oleaut32", "shell32", "d
 # static data the objs need in every link: dinput8's c_dfDI* data formats; the DirectX SDK's dxguid (a superset of the
 # Windows SDK one: the D3DX IIDs, IID_ID3DXEffect ...)
 SDK_UM = os.path.join(ms2paths.THIRD_PARTY, "msvc", "Windows Kits", "10", "Lib", ms2paths.WINSDK_VERSION, "um", "x64")
+LEGACY_STDIO = os.path.join(ms2paths.THIRD_PARTY, "msvc", "VC", "Tools", "MSVC", ms2paths.TOOLSET, "lib", "x64", "legacy_stdio_definitions.lib")
 DATA_LIBS = (os.path.join(SDK_UM, "dinput8.lib"), os.path.join(ms2paths.THIRD_PARTY, "dxsdk", "DXSDK", "Lib", "x64", "dxguid.lib"))
+
+
+def toolset_objs(objs):
+    """the planned objs another toolset built (`// MS2-TOOLSET:`): tools/progress.py's .deps beside them starts with the key"""
+    out = []
+    for o in objs:
+        try:
+            with open(o[:-4] + ".deps", "rb") as f:
+                if f.read(32).startswith(b'{"flags": " toolset='):
+                    out.append(o)
+        except OSError:
+            pass
+    return out
 
 
 def held():
@@ -109,6 +123,12 @@ def main():
     rsp += ['"%s"' % wine(os.path.join(imp, f)) for f in sorted(os.listdir(imp)) if f.endswith(".lib")]
     rsp += ['"%s"' % wine(os.path.join(SDK_UM, l + ".lib")) for l in (SDK_LIBS if a.shim else ())]
     rsp += ['"%s"' % wine(l) for l in DATA_LIBS]
+    # vc9 objs call the VS2008 CRT's printf family (_vsnprintf ...), which the UCRT keeps only in legacy_stdio_definitions;
+    # a default build has no such obj and links exactly as before
+    ts = toolset_objs([r[3] if os.path.isabs(r[3]) else os.path.join(ROOT, r[3]) for r in rows])
+    if ts:
+        print("link: %d toolset obj(s) (%s): + legacy_stdio_definitions.lib" % (len(ts), ", ".join(os.path.basename(o) for o in ts)))
+        rsp.append('"%s"' % wine(LEGACY_STDIO))
     rsp += ['"%s"' % wine(o) for o in objs]
     asm = os.path.join(OUT, "asm")      # asm.py
     rsp += ['"%s"' % wine(os.path.join(asm, f)) for f in sorted(os.listdir(asm)) if f.endswith((".obj", ".lib"))] if os.path.isdir(asm) else []

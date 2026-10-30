@@ -65,6 +65,7 @@ struct Unk_ConfigFloat
     float FUN_1402bac70();
     char m_pad[0x58];
 };
+MS2_CHECK_SIZE(Unk_ConfigFloat, 0x58);
 struct Unk_ClientConfig
 {
     char m_pad_0000[0x1a80];

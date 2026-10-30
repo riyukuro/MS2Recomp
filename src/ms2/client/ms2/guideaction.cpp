@@ -84,7 +84,7 @@ MS2_CHECK_OFFSET(Unk_GaSidePopupView, m_strSound, 0x60);
 #define GA_SIDEPOPUP(sp) reinterpret_cast<Unk_GaSidePopupView*>((sp).operator->())
 
 // NiPoint3's assignment (0x14097faa0) of a point built by Unk_NiPoint3 (nipoint3.h), as the effect spawns use them.
-void FUN_14097faa0(NiPoint3* pDst, const Unk_NiPoint3* pSrc);
+void FUN_14097faa0(NiPoint3* pDst, const Unk_NiPoint3& kSrc);
 
 class Unk_GaCamera { public: int FUN_140af7e30(); };       // CameraMgr: the kind of the active camera mode (2: trigger)
 Unk_GaCamera* FUN_1409478c0();
@@ -403,8 +403,7 @@ void CGuideActionEffect::vfunc_3()
     {
         Cube& cube = m_cubes[i];
         NiTransform xf;
-        Unk_NiPoint3 niPos(cube.m_pos);
-        FUN_14097faa0(&xf.m_Translate, &niPos);
+        FUN_14097faa0(&xf.m_Translate, cube.m_pos);
         xf.m_Rotate.FromEulerAnglesXYZ((cube.m_rotate.x * 3.1415927f) / 180.0f, (cube.m_rotate.y * 3.1415927f) / 180.0f, (cube.m_rotate.z * 3.1415927f) / 180.0f);
         xf.m_fScale = cube.m_scale;
         Unk_EffectTarget kTarget;

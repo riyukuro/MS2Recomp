@@ -147,13 +147,11 @@ bool Unk_RangeProperty::FUN_140800920(const Unk_RangeProperty& o)
 }
 
 // @0x140800b50
-// MS2-FUNCTIONAL: the exe's reader is void with an early `return;` that destroys strName on its own path; the shared header
-// declares int, so the early exit here falls through the single cleanup (no value is returned, as in the exe).
-#pragma warning(disable : 4716)
-int Unk_RangeProperty::LoadElement(Unk_140165cf0* pElem, CString strName)
+void Unk_RangeProperty::LoadElement(Unk_140165cf0* pElem, CString strName)
 {
     Unk_140165cf0* pRange = pElem->FUN_140165cf0(strName);
-    if (pRange != 0)
+    if (pRange == 0)
+        return;
     {
         Load(pRange);
         FUN_1408731e0(pRange, "includeCaster", &m_n40);
@@ -173,8 +171,8 @@ int Unk_RangeProperty::LoadElement(Unk_140165cf0* pElem, CString strName)
         FUN_1408731e0(pRange, "targetStatCompareFunction", &m_n6c);
         ATL::CAtlArray<unsigned> arrRank;
         XmlTokenList(pRange, "applyTargetIgnoreNpcRanks", arrRank);
-        for (unsigned __int64 i = 0; i < arrRank.GetCount(); i++)
-            m_n70 |= 1 << (arrRank[i] & 0x1f);
+        for (unsigned i = 0; i < arrRank.GetCount(); i++)
+            m_n70 |= 1 << arrRank[i];
     }
 }
 

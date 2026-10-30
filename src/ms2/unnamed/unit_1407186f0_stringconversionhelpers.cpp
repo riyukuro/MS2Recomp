@@ -9,6 +9,7 @@
 #include "ms2/ms2format.h"
 #include "ms2/ms2recover.h"
 #include "ms2/placeholder/mstime.h"
+#include "ms2/placeholder/clientconstants.h"
 #include "hook/ms2hook.h"
 
 // ---- unrecovered neighbours -------------------------------------------------------------------------------------
@@ -16,9 +17,6 @@ typedef unsigned char Unk_Bytes;                 // opaque
 void* FUN_1402bcfa0(void* out, unsigned long v);        // Unk_Hex32::Unk_Hex32(ulong)
 void* FUN_1402bd000(void* out, int v);                  // Unk_Fixed32::Unk_Fixed32(int)
 int FUN_14028d260(float v);                             // float -> fixed
-void* FUN_1402bcfe0(void* arr);                         // Unk_IntList::Unk_IntList()
-void FUN_1402be360(void* arr);                          // Unk_IntList::~Unk_IntList()
-void FUN_1402be530(void* dst, void* src);               // Unk_IntList assign
 void FUN_14015f050(const CString* s, void* out, const char* sep);   // split into CAtlArray<CString>
 void* FUN_140163230(void* arr);                         // CAtlArray<CString>::CAtlArray
 void FUN_1401641d0(void* arr);                          // CAtlArray<CString>::~CAtlArray
@@ -48,7 +46,6 @@ void FUN_14071a3f0(void* dst, void* src, char tag);
 void FUN_14071a4d0(void* dst, void* src);
 void* FUN_14071a2c0(void* p);
 void* FUN_14071a2e0(void* p);
-void* FUN_14071a300(void* dst, void* src);
 unsigned __int64 FUN_14071a340(void* arr, int v);
 int FUN_140719c00(const CString* s);
 void FUN_140719c30(const CString* s, void* arr, const char* sep);
@@ -58,13 +55,10 @@ ATL::CTimeSpan FUN_140718cd0(const CString& s);
 void* FUN_14071a240(void* dst, void* src);
 
 // @0x1407186f0
-void* FUN_1407186f0(void* ret, const CString* s) {
-    Unk_Bytes tmp[0x28];
-    FUN_1402bcfe0(tmp);
-    FUN_140719c30(s, tmp, ",");
-    FUN_14071a300(ret, tmp);
-    FUN_1402be360(tmp);
-    return ret;
+MS2Colors FUN_1407186f0(const CString& s) {
+    MS2Colors colors;
+    FUN_140719c30(&s, &colors, ",");
+    return colors;
 }
 
 // @0x140718770
@@ -267,12 +261,7 @@ void* FUN_14071a240(void* dst, void* src) {
 void* FUN_14071a2c0(void* p) { *(__int64*)p = 0; return p; }
 // @0x14071a2e0
 void* FUN_14071a2e0(void* p) { *(__int64*)p = 0; return p; }
-// @0x14071a300
-void* FUN_14071a300(void* dst, void* src) {
-    new (dst) ATL::CAtlArray<void*>();
-    FUN_1402be530(dst, src);
-    return dst;
-}
+// @0x14071a300 MS2Colors(MS2Colors&&) (inline in clientconstants.h)
 struct Unk_IntAtlArray { int* m_pData; unsigned __int64 m_nSize; unsigned __int64 m_nMaxSize; };
 // CAtlArray<int>::Add
 // @0x14071a340

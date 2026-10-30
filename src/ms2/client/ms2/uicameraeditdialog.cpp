@@ -307,7 +307,7 @@ void UICameraEditDialog::vfunc_15()
             NiPoint3 kPos = pTarget->vfunc_18();
             kPos.z = kPos.z + 100.0f;
             float fLength = reinterpret_cast<const Vector3&>(kPos).FUN_140965c40(CameraMgr::GetInstance()->FUN_140a17e10()).FUN_140967ac0();
-            s_fArrive = (std::max)(fLength, s_fMaxArrive);
+            s_fArrive = (std::min)(fLength, s_fMaxArrive);
             m_vMoveStart = CameraMgr::GetInstance()->FUN_140a17e10();
             m_1dc = 1;
             m_vMoveTarget = reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(pTarget->vfunc_20()));

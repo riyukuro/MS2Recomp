@@ -470,7 +470,7 @@ int FittingDollPC::FUN_14121c710()
 MS2_REPLACE_METHOD(0x14121c710, FittingDollPC, FUN_14121c710, 273, 0x12C8E586);
 
 // @0x14121c830
-bool FittingDollPC::FUN_14121c830()
+int FittingDollPC::FUN_14121c830()
 {
     return FUN_14121c710() == 0;
 }

@@ -1,5 +1,3 @@
-    case 0:
-        return "No errors.";
     case 1:
         return "Tried to call lock a second time before unlock was called. ";
     case 2:
@@ -36,6 +34,26 @@
         return "DSP error.  Cannot perform this operation while the network is in the middle of running.  This will most likely happen if a connection or disconnection is attempted in a DSP callback. ";
     case 18:
         return "DSP connection error.  The unit being connected to or disconnected should only have 1 input or output. ";
+    case 92:
+        return "The specified project or bank has already been loaded. Having multiple copies of the same project loaded simultaneously is forbidden. ";
+    case 83:
+        return "An Event failed to be retrieved, most likely due to 'just fail' being specified as the max playbacks behavior. ";
+    case 91:
+        return "An event with the same GUID already exists. ";
+    case 84:
+        return "Can't execute this command on an EVENT_INFOONLY event. ";
+    case 85:
+        return "An error occured that wasn't supposed to.  See debug log for reason. ";
+    case 86:
+        return "Event failed because 'Max streams' was hit when FMOD_EVENT_INIT_FAIL_ON_MAXSTREAMS was specified. ";
+    case 87:
+        return "FSB mismatches the FEV it was compiled with, the stream/sample mode it was meant to be created with was different, or the FEV was built for a different platform. ";
+    case 88:
+        return "A category with the same name already exists. ";
+    case 90:
+        return "Tried to call a function on a complex event that's only supported by simple events. ";
+    case 89:
+        return "The requested event, event group, event category or event property could not be found. ";
     case 19:
         return "Error loading file. ";
     case 20:
@@ -90,6 +108,12 @@
         return "Can't use FMOD_OPENMEMORY_POINT on non PCM source data, or non mp3/xma/adpcm data if FMOD_CREATECOMPRESSEDSAMPLE was used. ";
     case 45:
         return "Not enough memory or resources on console sound ram. ";
+    case 95:
+        return "The music callback is required, but it has not been set. ";
+    case 94:
+        return "The requested music entity could not be found. ";
+    case 93:
+        return "Music system is not initialized probably because no music data is loaded. ";
     case 46:
         return "Tried to call a command on a 3d sound when the command was meant for 2d sound. ";
     case 47:
@@ -142,14 +166,14 @@
         return "An error occured trying to initialize the recording device. ";
     case 71:
         return "Specified instance in FMOD_REVERB_PROPERTIES couldn't be set. Most likely because it is an invalid instance number or the reverb doesnt exist. ";
+    case 75:
+        return "The error occured because the sound referenced contains subsounds when it shouldn't have, or it doesn't contain subsounds when it should have.  The operation may also not be able to be performed on a parent sound, or a parent sound was played without setting up a sentence first. ";
     case 72:
         return "This subsound is already being used by another sound, you cannot have more than one parent to a sound.  Null out the other parent's entry first. ";
     case 73:
         return "Shared subsounds cannot be replaced or moved from their parent stream, such as when the parent stream is an FSB file. ";
     case 74:
         return "The subsound's mode bits do not match with the parent sound's mode bits.  See documentation for function that it was called with. ";
-    case 75:
-        return "The error occured because the sound referenced contains subsounds when it shouldn't have, or it doesn't contain subsounds when it should have.  The operation may also not be able to be performed on a parent sound, or a parent sound was played without setting up a sentence first. ";
     case 76:
         return "The specified tag could not be found or there are no tags. ";
     case 77:
@@ -164,31 +188,7 @@
         return "An error caused by System::update occured. ";
     case 82:
         return "The version number of this file format is not supported. ";
-    case 83:
-        return "An Event failed to be retrieved, most likely due to 'just fail' being specified as the max playbacks behavior. ";
-    case 84:
-        return "Can't execute this command on an EVENT_INFOONLY event. ";
-    case 85:
-        return "An error occured that wasn't supposed to.  See debug log for reason. ";
-    case 86:
-        return "Event failed because 'Max streams' was hit when FMOD_EVENT_INIT_FAIL_ON_MAXSTREAMS was specified. ";
-    case 87:
-        return "FSB mismatches the FEV it was compiled with, the stream/sample mode it was meant to be created with was different, or the FEV was built for a different platform. ";
-    case 88:
-        return "A category with the same name already exists. ";
-    case 89:
-        return "The requested event, event group, event category or event property could not be found. ";
-    case 90:
-        return "Tried to call a function on a complex event that's only supported by simple events. ";
-    case 91:
-        return "An event with the same GUID already exists. ";
-    case 92:
-        return "The specified project or bank has already been loaded. Having multiple copies of the same project loaded simultaneously is forbidden. ";
-    case 93:
-        return "Music system is not initialized probably because no music data is loaded. ";
-    case 94:
-        return "The requested music entity could not be found. ";
-    case 95:
-        return "The music callback is required, but it has not been set. ";
+    case 0:
+        return "No errors.";
     default:
         return "Unknown error.";

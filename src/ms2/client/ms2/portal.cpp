@@ -44,6 +44,7 @@ public:
 };
 Unk_PortalQuestTable* FUN_14109a710();
 void FUN_140764310(const CString& strA, const CString& strB, QuestMask* pOut);
+const char* FUN_14099ad40(efd::AssetID* pAsset);         // the AssetID's URN text
 
 // The content switch table.
 class Unk_PortalSwitches
@@ -193,44 +194,43 @@ CPortal::~CPortal()
 }
 
 // @0x14169b650
-bool CPortal::FUN_14169b650(efd::SmartPointer<egf::Entity> spEntity)
+int CPortal::FUN_14169b650(efd::SmartPointer<egf::Entity> spEntity)
 {
     efd::utf8string strModel;
-    if (((egf::Entity*)spEntity)->GetPropertyValue(0x7d465aa2, strModel) != egf::PropertyResult_OK)
-        return false;
+    if (spEntity->GetPropertyValue(0x7d465aa2, strModel) != egf::PropertyResult_OK)
+        return 0;
     efd::utf8string strTheme;
-    if (((egf::Entity*)spEntity)->GetPropertyValue(0x985b4e4f, strTheme) != egf::PropertyResult_OK)
-        return false;
-    NiPoint3 ptSize = reinterpret_cast<const NiPoint3&>(DAT_143b01a60);
-    ((egf::Entity*)spEntity)->GetPropertyValue(0xfb190620, static_cast<efd::Point3&>(ptSize));
-    m_pos44 = reinterpret_cast<const Vector3&>(ptSize);
+    if (spEntity->GetPropertyValue(0x985b4e4f, strTheme) != egf::PropertyResult_OK)
+        return 0;
+    // no default: a missing position keeps the previous m_pos44
+    spEntity->GetPropertyValue(0xfb190620, reinterpret_cast<efd::Point3&>(m_pos44));
     CString strA(strModel.c_str());
     CString strB(strTheme.c_str());
     FUN_140764310(strA, strB, &m_questMask);
     efd::AssetID idImage;
-    ((egf::Entity*)spEntity)->GetPropertyValue(0x770e5fc6, idImage);
-    m_strImage = idImage.GetURN().c_str();
-    return true;
+    spEntity->GetPropertyValue(0x770e5fc6, idImage);
+    m_strImage = FUN_14099ad40(&idImage);
+    return 1;
 }
 
 // @0x14169b890
-bool CPortal::FUN_14169b890()
+int CPortal::FUN_14169b890()
 {
     if (m_nEndTime > 0)
     {
         egf::Entity* pEntity = FUN_1411cf440(FUN_1409670f0(), m_idEntity);
         if (pEntity == 0)
-            return false;
+            return 0;
         Vector3 ptPos = DAT_143b01a60;
         FUN_1409618c0(pEntity, 0xfd95ca52, &ptPos);
         m_tooltip.AssignRaw(new UIDebugTooltip(CString("")));
-        m_tooltip->SetFollowsAnchor(0);
+        m_tooltip->m_68 = 0;
         Vector3 ptCopy = ptPos;
         m_tooltip->FUN_14191aae0(ptCopy);
         m_tooltip->FUN_14191ab10(CStringW(L""));
         m_tooltip->FUN_14191aa10();
     }
-    return true;
+    return 1;
 }
 
 // @0x14169ba90

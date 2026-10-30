@@ -1063,7 +1063,7 @@ int UIGuildDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
             if (spMember->f158 != 0)
                 continue;
             int nLevel = spMember->data.f1c;
-            if (nLevel < (int)CFeatureManager::GetInstance()->FUN_14036dc60())
+            if (nLevel < CFeatureManager::GetInstance()->FUN_14036dc60())
                 continue;
             nCount++;
         }

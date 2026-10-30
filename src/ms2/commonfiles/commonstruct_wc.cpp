@@ -249,9 +249,9 @@ void FUN_140276960(i64 a, i64 b) { Unk_StlTag tag = {}; FUN_140276900(a, b, tag)
 // @0x1402769a0
 void FUN_1402769a0(i64 a, i64 b) { Unk_StlTag tag = {}; FUN_140276910(a, b, tag); }
 // @0x1402769e0
-i64 FUN_1402769e0(i64* p, i64 n, Unk_StlTag) { return *p + n * 8; }
+void FUN_1402769e0(i64* p, i64 n, Unk_StlTag) { *p += n * 8; }
 // @0x140276a10
-i64 FUN_140276a10(i64* p, i64 n, Unk_StlTag) { return n * 0x10 + *p; }
+void FUN_140276a10(i64* p, i64 n, Unk_StlTag) { *p += n * 0x10; }
 // @0x140276a40
 void FUN_140276a40(i64 it, i64 n, Unk_StlTag)
 {

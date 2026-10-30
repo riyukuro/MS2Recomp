@@ -5,8 +5,13 @@
 140002930	14000e470	sfr_video_01	none	300	text	sfr0 10-20: Scaleform 4.1.18 recovery, Video
 14000e470	140016b50	sfr_video_02	none	262	text	sfr0 10-20: Scaleform 4.1.18 recovery, Video
 140016b50	14001c000	sfr_video_03	none	144	text	sfr0 10-20: Scaleform 4.1.18 recovery, Video (Video_VideoPlayerImpl)
-14001c000	14002a0e0	sfr_cri_01	none	300	text	sfr0 10-20: Scaleform 4.1.18 recovery, CRI
-14002a0e0	140039ea8	sfr_cri_02	none	300	text	sfr0 10-20: Scaleform 4.1.18 recovery, CRI
+14001c000	14001d7a0	sfr_cri_01	none	46	text	vc9 10-29: split by toolset, Scaleform Video_Video (VS2012)
+14001d7a0	140025090	sfr_cri_01c	none	106	text	vc9 10-29: split by toolset, CRI CriMvEasyPlayer (VS2008)
+140025090	140026db0	sfr_cri_01	none	39	text	vc9 10-29: split by toolset, Scaleform AS3 VideoProviderNetStream (VS2012)
+140026db0	140028360	sfr_cri_01c	none	44	text	vc9 10-29: split by toolset, CRI CriMv wrappers + CRI Heap (VS2008)
+140028360	14002a0e0	sfr_cri_01	none	65	text	vc9 10-29: split by toolset, Scaleform video player over the CRI easy player (VS2012)
+14002a0e0	14002e548	sfr_cri_02	none	107	text	vc9 10-29: split by toolset, Scaleform Video player, decoders and readers (VS2012)
+14002e548	140039ea8	sfr_cri_02c	none	193	text	vc9 10-29: split by toolset, CRI Movie internals: criMvPly, decoder and reader glue (VS2008)
 140039ea8	140046a1c	sfr_cri_03	none	300	text	sfr0 10-20: Scaleform 4.1.18 recovery, CRI
 140046a1c	140046e04	unit_140046a1c_criutfsortindex	none	4	text	descriptive: criutfsortindex
 140046e04	140047430	unit_140046e04_criutfparser	none	7	text	descriptive: criutfparser

@@ -592,7 +592,7 @@ int UIAvatarBase::vfunc_27(const char* szEvent, const Scaleform::GFx::Value* pAr
 }
 
 // @0x1418b9730
-void UIAvatarBase::vfunc_28(void* p1, TPtr<Unk_UISwfEntity_25> spTarget, void* pArg)
+void UIAvatarBase::vfunc_28(void* p1, TPtr<Unk_UISwfEntity_25> spTarget, void* pArg, void* pUnused)
 {
     GameObject* pObj = vfunc_24();
     if (pObj)
@@ -1868,7 +1868,7 @@ void UIAvatarCube::vfunc_3()
 MS2_REPLACE_METHOD(0x1418BDCE0, UIAvatarCube, vfunc_3, 74, 0xAFF49725);
 
 // @0x1418bdd30
-void UIAvatarCube::vfunc_28(void* p1, TPtr<Unk_UISwfEntity_25> spTarget, void* pArg)
+void UIAvatarCube::vfunc_28(void* p1, TPtr<Unk_UISwfEntity_25> spTarget, void* pArg, void* pUnused)
 {
     GameObject* pObj = vfunc_24();
     if (pObj)
@@ -2018,7 +2018,7 @@ void UIAvatarRidee::vfunc_3()
 MS2_REPLACE_METHOD(0x1418BE640, UIAvatarRidee, vfunc_3, 74, 0x8E78E814);
 
 // @0x1418be690
-void UIAvatarRidee::vfunc_28(void* p1, TPtr<Unk_UISwfEntity_25> spTarget, void* pArg)
+void UIAvatarRidee::vfunc_28(void* p1, TPtr<Unk_UISwfEntity_25> spTarget, void* pArg, void* pUnused)
 {
     GameObject* pObj = vfunc_24();
     if (pObj)
@@ -2141,7 +2141,7 @@ void UIAvatarPet::vfunc_3()
 MS2_REPLACE_METHOD(0x1418BEC60, UIAvatarPet, vfunc_3, 74, 0xFAED7883);
 
 // @0x1418becb0
-void UIAvatarPet::vfunc_28(void* p1, TPtr<Unk_UISwfEntity_25> spTarget, void* pArg)
+void UIAvatarPet::vfunc_28(void* p1, TPtr<Unk_UISwfEntity_25> spTarget, void* pArg, void* pUnused)
 {
     GameObject* pObj = vfunc_24();
     if (pObj)

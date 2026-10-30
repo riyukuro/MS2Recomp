@@ -950,22 +950,25 @@ void CUIService::FUN_141adb2a0(int nScene)
 MS2_REPLACE_METHOD(0x141adb2a0, CUIService, FUN_141adb2a0, 523, 0x1DF58595);
 
 // @0x141aec1f0
-bool CUIService::FUN_141aec1f0(MS2Ptr<UIDialog> spDlg)
+int CUIService::FUN_141aec1f0(MS2Ptr<UIDialog> spDlg)
 {
-    if (!spDlg)
-        return false;
-    if (spDlg->vfunc_56() != 0)
-        return false;
-    if (spDlg->vfunc_55() != 0)
-        return false;
-    if (spDlg->FUN_1419244c0(1) != 0)
-        return false;
-    return spDlg->vfunc_48() != 0x4eec;
+    if (spDlg)
+    {
+        if (spDlg->vfunc_56() != 0)
+            return 0;
+        if (spDlg->vfunc_55() != 0)
+            return 0;
+        if (spDlg->FUN_1419244c0(1) != 0)
+            return 0;
+        if (spDlg->vfunc_48() == 0x4eec)
+            return 0;
+        return 1;
+    }
+    return 0;
 }
 
 // @0x141adcd40
-// MS2-FUNCTIONAL: FUN_141aec1f0 returns int in the exe (bool in uiservice.h), so its result is widened here
-bool CUIService::FUN_141adcd40()
+int CUIService::FUN_141adcd40()
 {
     POSITION pos = m_mapDlg.GetStartPosition();
     while (pos != 0) {
@@ -981,7 +984,7 @@ bool CUIService::FUN_141adcd40()
         FUN_141952780(pBrowser);
     if (UIAdPushDialog* pAd = FUN_140d61c00(eUI_4f34))
         FUN_140e411d0(pAd);
-    return true;
+    return 1;
 }
 
 // ---- player toggles ----

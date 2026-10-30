@@ -1,4 +1,7 @@
 123@98s "" "\r"
+98c
+        pkReceiverVal->Cull(*m_spCullingProcess);  // MS2: exe culls the map value (key == value for the affected-node list)
+.
 94c
         NiNode* pkReceiver = NULL;
         NiNode* pkReceiverVal = NULL;

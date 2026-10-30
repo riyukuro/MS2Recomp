@@ -31,7 +31,7 @@ Policy file (tools/engine-patches-policy.txt), one entry per line, `#` comments:
   keep <path>:<newline>       force the literal line (ours dominates) at that result line
   withhold <path>:<newline>   force token-substitution form at that result line
 """
-import argparse, difflib, hashlib, json, os, subprocess, sys, tempfile
+import argparse, difflib, fcntl, hashlib, json, os, subprocess, sys, tempfile
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -205,6 +205,19 @@ def diff_script(rel, old, new, pol, stats):
     return (b"eol lf\n" if crlf else b"") + emit(ops)
 
 
+def lock_run():
+    """Serialize concurrent runs: each one rmtree's and rewrites --out, so two at once crash or leave it half-written.
+    The flock is held until the process exits."""
+    global _lock
+    (ROOT / "build").mkdir(exist_ok=True)
+    _lock = open(ROOT / "build/engine-patches.lock", "w")
+    try:
+        fcntl.flock(_lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+    except BlockingIOError:
+        print("engine-patches: another run holds build/engine-patches.lock, waiting", file=sys.stderr)
+        fcntl.flock(_lock, fcntl.LOCK_EX)
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--out", default=str(ROOT / "engine-patches"))
@@ -214,6 +227,7 @@ def main():
                     help="take these engine files from the working tree instead of HEAD (before committing them)")
     ap.add_argument("--sdk", default=os.environ.get("MS2_GAMEBRYO_SDK", str(ROOT / "third_party/gamebryo/APPDIR/Source")))
     a = ap.parse_args()
+    lock_run()
     out = Path(a.out)
     sdk = Path(a.sdk)
     if not sdk.is_dir():   # without it every SDK file imported later would ship as full SDK text

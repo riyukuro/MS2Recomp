@@ -12,7 +12,7 @@ class StateTriggerEmotionData : public StateData
 {
 public:
     StateTriggerEmotionData();              // 0x1417c4370
-    virtual ~StateTriggerEmotionData();     // 0x1417c5230 (slot 0)
+    // ~StateTriggerEmotionData() implicit: 0x1417c5230 (slot 0) stores no vftable
 
     ATL::CAtlArray<CStringA> m_aEmotions;   // +0x18 emotion names
     int m_nMode;                            // +0x38 0 = from a list, 1 = single

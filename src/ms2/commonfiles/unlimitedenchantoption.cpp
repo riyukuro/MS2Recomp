@@ -5,7 +5,7 @@
 // MS2-RANGE: 0x1400be020-0x1400be110 .text$di
 // MS2-RANGE: 0x1408c3140-0x1408d1c50 .text$mn
 // MS2-GUESS-LOOKALIKES
-// MS2-PIN: memcpy_s 0x1408d1ab0
+// MS2-PIN: memmove_s 0x1408d1ab0
 // MS2-PIN: ??_7UnlimitedEnchantTable@@6B?$TSingleton@VUnlimitedEnchantTable@@@@@ 0x142da3040
 // MS2-PIN: ??_7UnlimitedEnchantTable@@6B?$CValidData@VUnlimitedEnchantTable@@@@@ 0x142da3050
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\commonfiles\\unlimitedenchantoption.cpp"
@@ -183,7 +183,7 @@ bool UnlimitedEnchantTable::Load()
                     spOption->SetValue((int)nValue);
                 else
                     spOption->FUN_140266e50(fRate);
-                spInfo->m_stats.insert(std::pair<UnlimitedEnchantInfo::OptionKey, Unk_EnchantPtr<BaseOption> >(nOption, spOption));
+                spInfo->m_stats.insert(std::make_pair(nOption, spOption));
             }
             Unk_SocketSpecialStat nSpecial = (Unk_SocketSpecialStat)0;
             float fSpecialRate = 0;
@@ -193,7 +193,7 @@ bool UnlimitedEnchantTable::Load()
             {
                 Unk_EnchantPtr<BaseOption> spOption(new BaseOption);
                 spOption->FUN_140266e50(fSpecialRate);
-                spInfo->m_specials.insert(std::pair<Unk_SocketSpecialStat, Unk_EnchantPtr<BaseOption> >(nSpecial, spOption));
+                spInfo->m_specials.insert(std::make_pair(nSpecial, spOption));
             }
         }
         ranges[nSlot].insert(std::make_pair(key, spInfo));
@@ -289,8 +289,8 @@ void UnlimitedEnchantTable::SetValid(bool b)
     s_bValid = b;
 }
 
-// The UCRT's `static __inline memcpy_s` of this TU (kept alive by the pointer below).
-__declspec(selectany) extern errno_t(__cdecl* const ms2_pfnMemcpyS)(void*, size_t, const void*, size_t) = &memcpy_s;
+// The UCRT's `static __inline memmove_s` of this TU (kept alive by the pointer below).
+__declspec(selectany) extern errno_t(__cdecl* const ms2_pfnMemmoveS)(void*, size_t, const void*, size_t) = &memmove_s;
 
 // @0x1408d1bd0
 ItemFunctionArgs::ItemFunctionArgs()

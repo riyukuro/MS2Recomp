@@ -212,7 +212,7 @@ class Obj:
             cache = self._fcache
         except AttributeError:
             cache = self._fcache = {}
-        hit = cache.get(symidx)
+        hit = cache.get((symidx, CHAIN))         # CHAIN may be toggled (progress.py pairs on the first chunk)
         if hit is not None:
             return hit
         name, value, secnum, _, _ = self.syms[symidx]
@@ -247,8 +247,8 @@ class Obj:
                     if value <= tval + add < end:
                         inner = tval + add - value
                 fields.append((va - value, ln, tname, ty, inner, si))
-        cache[symidx] = (data, fields, unwind)
-        return cache[symidx]
+        cache[(symidx, CHAIN)] = (data, fields, unwind)
+        return cache[(symidx, CHAIN)]
 
     def is_code(self, symidx):
         sn = self.syms[symidx][2]
@@ -624,9 +624,10 @@ HARVEST = {}          # name -> va (this run)
 CONFLICTS = []
 SYMBOL_MISMATCH = []  # (name, table va, exe va): a code-identical function disagrees with the symbol table
 FUNCLET_PAIRS = {}  # unwind-map action funclet symbol (?dtor$N@...) -> exe VA, from every compared FuncInfo
-# MS2_BM_CHAIN=1 (gb10, 2026-10-20, opt-in): a function's code is its first .pdata chunk plus the contiguous chunks
-# with chained unwind info (shrink-wrapped tails); without it only the first chunk is compared
-CHAIN = os.environ.get("MS2_BM_CHAIN") == "1"
+# a function's code is its first .pdata chunk plus the contiguous chunks with chained unwind info (/O2 shrink-wrapped
+# tails). Default since 2026-10-29 (p5i brief 23: first-chunk-only left the tails of ~5,600 matched rows unchecked);
+# MS2_BM_CHAIN=0 or --no-chain compares only the first chunk (gb10's 2026-10-20 opt-in was MS2_BM_CHAIN=1)
+CHAIN = os.environ.get("MS2_BM_CHAIN", "1") != "0"
 LAST_TARGETS = {}  # every symbol -> exe target of the last match_one call (statics included; empty on mismatch)
 LOCAL_KNOWN = {}   # name -> va pairs of the current unit (statics included), checked like SYMBOLS
 # Statically linked runtime (CRT startup/helpers, import stubs) at the end of .text: never mapped - the hook DLL
@@ -644,8 +645,8 @@ STRICT_SYMBOLS = False  # tools/progress.py pairing trials: only the unit's own 
                         # other copy stays a hint against look-alike candidates)
 OWN_COPY_TRIAL = False  # tools/progress.py own-copy pass: a strict trial accepts a same-code copy of a table binding
                         # (the table names another unit's byte-identical COMDAT copy; only for otherwise unpaired names)
-LITERALS = False   # --literals: a function whose string literals or pool constants differ from the exe's is a DIFF (off by default:
-                   # progress.py counts ignore literal text; tools/litcheck.py reports those functions)
+LITERALS = True    # a function whose string literals or pool constants differ from the exe's is a DIFF (literal_benign
+                   # exempts the known-harmless classes; --no-literals turns it off; tools/litcheck.py reports the hits)
 CUR_EXE = None     # the Exe of the current match_one call (note_symbol needs it for same_code)
 _SAME_MEMO = {}
 _MD2 = capstone.Cs(capstone.CS_ARCH_X86, capstone.CS_MODE_64)
@@ -932,8 +933,9 @@ def literal_benign(name, sname, lit, xb):
     every hit outside these three classes was a real exe difference)."""
     if name.startswith("??__E"):
         return "pinned-initializer"      # pinned to a shifted exe initializer; its static's readers see the exe's text
-    if sname.startswith(("??_C@_0", "$SG")) and lit[1:3] == b":\\" and xb[1:3] == b":\\":
-        return "build-path"              # __FILE__ in an assert / efd message handler
+    if (sname.startswith(("??_C@_0", "$SG")) and lit[:1].isalpha() and lit[1:3] in (b":\\", b":/")
+            and xb[:1].isalpha() and xb[1:3] == b":\\"):
+        return "build-path"              # __FILE__ in an assert / efd message handler (gb compiles spell it z:/...)
     if sname.startswith(POOL_CONSTS) and len(lit) in (4, 8) and len(xb) == len(lit):
         a, b = (int.from_bytes(x, "little", signed=True) for x in (lit, xb))
         if abs(a - b) <= 4:
@@ -1170,11 +1172,17 @@ def main():
                     help="symbol map to check references against (default progress/symbols.tsv; '' = none)")
     ap.add_argument("--harvest", nargs="?", const=SYMBOLS_TSV, default=None,
                     help="merge symbol->VA pairs of matched functions/vtables into this TSV (default progress/symbols.tsv)")
-    ap.add_argument("--literals", action="store_true",
-                    help="also compare every string literal (narrow and wide) and __real@/__xmm@ pool constant the function references")
+    ap.add_argument("--literals", action=argparse.BooleanOptionalAction, default=True,
+                    help="compare every string literal (narrow and wide) and __real@/__xmm@ pool constant the function references (default on)")
+    ap.add_argument("--chain", action=argparse.BooleanOptionalAction, default=None,
+                    help="compare the contiguous chained-unwind chunks after the first .pdata chunk too (default on; "
+                         "MS2_BM_CHAIN=0 also turns it off)")
     a = ap.parse_args()
     global LITERALS
     LITERALS = a.literals
+    if a.chain is not None:
+        global CHAIN
+        CHAIN = a.chain
     load_symbols(a.symbols)
     src = Obj(a.file) if not a.file.lower().endswith(".cod") else a.file
     if a.list:

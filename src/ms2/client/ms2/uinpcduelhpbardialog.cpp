@@ -2,6 +2,7 @@
 // MS2-UNIT: client\ms2\uinpcduelhpbardialog.cpp
 // MS2-RANGE: 0x140e6b7b0-0x140e6d3c0 .text$mn
 // MS2-PIN: ?vfunc_48@UINpcDuelHPBarDialog@@UEAAHXZ 0x140e6d2a0
+// MS2-PIN: ??$Unk_SocketFormat@W4Unk_NdJobCode@@@@YA?AV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@PEBDAEBW4Unk_NdJobCode@@@Z 0x140e6cf40
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uinpcduelhpbardialog.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
 #include "uinpcduelhpbardialog.h"
@@ -10,6 +11,7 @@
 #include "ms2/placeholder/asdata.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "ms2/ms2recover.h"
+#include "ms2/ms2format.h"
 #include "hook/ms2hook.h"
 
 // ---- unit-local declarations (names describe uses, not original class names) ----
@@ -91,7 +93,8 @@ Unk_NdWorld* FUN_1403ed2d0();
 Unk_NdActor* FUN_141bd0cc0(Unk_NdWorld* pWorld);                // the local player
 Unk_NdActor* FUN_141bd1320(Unk_NdWorld* pWorld, int nObjectId);
 unsigned int FUN_140869420();                                   // tick count (ms)
-int FUN_141654730(Unk_NdActor* pPc);                            // job id
+enum Unk_NdJobCode { Unk_NdJobCode_None = 0 };
+Unk_NdJobCode FUN_141654730(Unk_NdActor* pPc);                  // job id (an enum: the formatter takes it by reference)
 __int64 FUN_141656a80(Unk_NdActor* pPc);                        // account id
 bool FUN_140930110(int nBuffId);
 int FUN_14123c580(Unk_NdActor* pActor);                         // object id
@@ -112,7 +115,6 @@ unsigned char FUN_1409b0390(Scaleform::GFx::Value* pValue);
 class Unk_NdMovie { public: void FUN_14256e8e0(Scaleform::GFx::Value& out, const char* szClass, __int64 a1, int a2); };
 Unk_NdMovie* FUN_1422bb8b0(int nMovieId);
 MS2Ptr<ASEffectManager> FUN_140e6cd80(int nMovieId, CString strClass, __int64 a1, int a2);   // create the clip
-CString FUN_140e6cf40(const char* szFmt, const int& nValue);    // format with one {0} argument
 
 // AScript calls with a fixed argument list (the 3-argument one is this unit's own COMDAT copy)
 class Unk_NdScript : public AScript
@@ -124,13 +126,8 @@ public:
 void FUN_1422bcdd0(Scaleform::GFx::Value* pValue, __int64 n);
 void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);
 
-// string format helper with one {0} argument: the argument handle, the formatter table and the pack
-struct Unk_FmtArg { const void* m_value; void* m_fn; };
-struct Unk_FmtPack { __int64 m_n; const Unk_FmtArg* m_args; };
-Unk_FmtArg* FUN_140e10ac0(Unk_FmtArg* pOut, const int& nValue);     // constructs the argument handle, returns it
-__int64 FUN_140e116e0(const int& nValue);
-Unk_FmtPack* FUN_140163e50(Unk_FmtPack* pOut, __int64 n, Unk_FmtArg arg);    // constructs the pack, returns it
-CString FUN_1402bf9a0(const char* szFmt, const Unk_FmtPack& pack);
+// The job icon name goes through the one-argument instance of the 0x1402bf9a0 formatter (0x140e6cf40).
+template CString Unk_SocketFormat<Unk_NdJobCode>(const char*, const Unk_NdJobCode&);
 
 // ---- the dialog ----
 
@@ -208,8 +205,8 @@ void UINpcDuelHPBarDialog::FUN_140e6bc10()
     Unk_NdActor* pPc = FUN_141bd0cc0(FUN_1403ed2d0());
     if (pPc != 0) {
         FUN_140cfee80(FUN_1422dbc00(), "m_leftName", pPc->vfunc_77());
-        int nJob = FUN_141654730(pPc);
-        CString strJobIcon = FUN_140e6cf40("_{0}", nJob);
+        Unk_NdJobCode nJob = FUN_141654730(pPc);
+        CString strJobIcon = Unk_SocketFormat("_{0}", nJob);
         FUN_140cffca0(FUN_1422dbc00(), "m_leftJobIcon", strJobIcon);
         CString strProfile = FUN_141028be0(FUN_141656a80(pPc), pPc->FUN_1416612e0(), 1, "");
         ((Unk_NdScript*)m_30.operator->())->Invoke("setLeftProfile", strProfile);
@@ -368,15 +365,6 @@ MS2Ptr<ASEffectManager> FUN_140e6cd80(int nMovieId, CString strClass, __int64 a1
         return MS2Ptr<ASEffectManager>(0);
     MS2Ptr<ASEffectManager> pEffects(new ASEffectManager(obj, nMovieId));
     return pEffects;
-}
-
-// @0x140e6cf40
-// MS2-FUNCTIONAL: temporaries sit 8 bytes lower than the exe's stack layout
-CString FUN_140e6cf40(const char* szFmt, const int& nValue)
-{
-    Unk_FmtPack pack;
-    Unk_FmtArg arg;
-    return FUN_1402bf9a0(szFmt, *FUN_140163e50(&pack, FUN_140e116e0(nValue), *FUN_140e10ac0(&arg, nValue)));
 }
 
 // @0x140e6cfe0 (the "setHpBarRight" argument list)

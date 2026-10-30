@@ -69,7 +69,7 @@ public:
     int FUN_14036db20();                                        // the level cap of this server
     int FUN_14036dc20();
     int FUN_14036dc40();
-    int FUN_14036dc60();
+    unsigned short FUN_14036dc60();
     unsigned short FUN_14036dc80();                             // the level cap as the smaller of two limits
     int FUN_14036de00();
     CStringW FUN_14036de20(const CStringW& strA, const CStringW& strB);     // the one with the higher feature level

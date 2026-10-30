@@ -139,8 +139,8 @@ public:
     void FUN_141adafd0(int nScene);                 // 0x141adafd0 hide the world UI for a scene change
     void FUN_141adb2a0(int nScene);                 // 0x141adb2a0 show it again (argument unused)
     void FUN_141adbbb0();                           // 0x141adbbb0
-    bool FUN_141adcd40();                           // 0x141adcd40 close the dialogs that can be closed
-    bool FUN_141aec1f0(MS2Ptr<UIDialog> spDlg);     // 0x141aec1f0 dialog may be closed in bulk
+    int FUN_141adcd40();                            // 0x141adcd40 close the dialogs that can be closed
+    int FUN_141aec1f0(MS2Ptr<UIDialog> spDlg);      // 0x141aec1f0 dialog may be closed in bulk
     void FUN_141adb4c0(int bOn);                    // 0x141adb4c0 enable / disable every hot key slot
     void FUN_141adb7b0(int bOn);                    // 0x141adb7b0
     void FUN_141adbb40();                           // 0x141adbb40 step the cursor mode 0..3

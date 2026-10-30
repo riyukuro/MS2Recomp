@@ -1,3 +1,27 @@
+1200a
+                    pkAmbientColorRes = pkVertexColorRes;
+                }
+            }
+            break;
+        case ((EnumSource::AmbDiffEmissiveEnum)3):  // MS2: v2525
+            {
+                pkEmissiveColorRes = AddOutputPredefined(
+                    kContext.m_spUniforms,
+                    NiShaderConstantMap::SCM_DEF_MATERIAL_EMISSIVE);
+                if (eLightingMode == EnumSource::LIGHTING_E_A_D)
+                {
+                    pkDiffuseColorRes = AddOutputPredefined(
+                        kContext.m_spUniforms,
+                        NiShaderConstantMap::SCM_DEF_MATERIAL_DIFFUSE);
+.
+1182c
+        ((eADF == EnumSource::ADE_AMB_DIFF ||
+        eADF == ((EnumSource::AmbDiffEmissiveEnum)3)) &&  // MS2: v2525
+.
+1031c
+                ((eAmbDiffEmissive == EnumSource::ADE_AMB_DIFF ||
+                eAmbDiffEmissive == ((EnumSource::AmbDiffEmissiveEnum)3)) &&  // MS2: v2525
+.
 475a
         // MS2: a fourth source mode (3) maps to a fourth AmbDiffEmissive value, as in NiStandardMaterialDescriptor
         else if (pkVCProp->GetSourceMode() == (NiVertexColorProperty::SourceVertexMode)3)

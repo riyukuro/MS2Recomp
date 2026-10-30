@@ -1,0 +1,9 @@
+71c
+        reinterpret_cast<unsigned*>(&threadID));
+.
+68c
+        reinterpret_cast<unsigned (__stdcall*)(void*)>(ThreadProc),
+.
+65c
+    m_hThread = (HANDLE)_beginthreadex(  // MS2: the game starts threads through the CRT (0x1420c3c50 imports _beginthreadex)
+.

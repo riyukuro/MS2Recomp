@@ -78,7 +78,6 @@
 // MS2-PIN: ??1?$MS2Ptr@VASTextInput@@@@QEAA@XZ 0x141a1b8b0 ; prop
 // MS2-PIN: ??1?$_Tree@V?$_Tmap_traits@HHU?$less@H@std@@V?$allocator@U?$pair@$$CBHH@std@@@2@$0A@@std@@@std@@QEAA@XZ 0x141a1b920 ; prop
 // MS2-PIN: ??1?$_Tree_comp_alloc@V?$_Tmap_traits@HHU?$less@H@std@@V?$allocator@U?$pair@$$CBHH@std@@@2@$0A@@std@@@std@@QEAA@XZ 0x141a1b980 ; prop
-// MS2-PIN: ??1?$_List_alloc@U?$_List_base_types@V?$MS2Ptr@VChatEmoticonData@@@@V?$allocator@V?$MS2Ptr@VChatEmoticonData@@@@@std@@@std@@@std@@QEAA@XZ 0x141a1b9b0 ; prop
 // MS2-PIN: ??1?$map@HHU?$less@H@std@@V?$allocator@U?$pair@$$CBHH@std@@@2@@std@@QEAA@XZ 0x141a1ba20 ; unique
 // MS2-PIN: ??8?$MS2Ptr@UTDebugCommand@@@@QEBA_NPEAUTDebugCommand@@@Z 0x141a1bc80 ; unique
 // MS2-PIN: ??8?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHH@std@@@std@@@std@@@std@@QEBA_NAEBV01@@Z 0x141a1bd80 ; prop
@@ -3848,9 +3847,6 @@ int UIMessengerBrowser::FUN_141a26f10(const CStringW& strName, const CStringW& s
     return 0;
 }
 
-// MS2-FUNCTIONAL: codegen differs from the exe (functional-first)
-// MS2-FUNCTIONAL 0x141a1b9b0: std::list<MS2Ptr<ChatEmoticonData>> _List_alloc dtor; same two calls (_Myhead, _Freeheadnode) as the exe, bound to byte-identical helper copies at other VAs
-
 // @0x141a271b0
 int UIMessengerBrowser::FUN_141a271b0(const CStringW& strName, const CStringW& strText, int nType)
 {
@@ -4914,8 +4910,9 @@ void UIMessenger::vfunc_45(Scaleform::GFx::Value* pRetVal, const CString& strMet
     }
 }
 
-// The UCRT's `static __inline memcpy_s` of this TU (unreferenced in the exe, kept alive by the pointer below).
-// MS2-PIN: memcpy_s 0x141a20e70
-__declspec(selectany) extern errno_t(__cdecl* const ms2_pfnMsgMemcpyS)(void*, size_t, const void*, size_t) = &memcpy_s;
+// The first original TU's own copy of the UCRT `static __inline memmove_s` (unreferenced in the exe); the second TU's
+// copy is 0x141a30e10.
+// @0x141a20e70
+MS2_EMIT_CRT_MEMMOVE_S_COPY(1);
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142cbfeb0-0x142cc01c0 .text$yd

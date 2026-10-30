@@ -26,7 +26,6 @@
 // MS2-PIN: ??$?0AEAV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBII@std@@@std@@@std@@@std@@_N$0A@@?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBII@std@@@std@@@std@@@std@@_N@std@@QEAA@AEAV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBII@std@@@std@@@std@@@1@$$QEA_N@Z 0x140d0bbd0
 // MS2-PIN: ?_Kfn@?$_Tree@V?$_Tmap_traits@IIU?$less@I@std@@V?$allocator@U?$pair@$$CBII@std@@@2@$00@std@@@std@@IEBAAEBIAEBU?$pair@$$CBII@2@@Z 0x140d17c50
 // MS2-PIN: ?size@?$_Tree@V?$_Tmap_traits@IHU?$less@I@std@@V?$allocator@U?$pair@$$CBIH@std@@@2@$0A@@std@@@std@@QEBA_KXZ 0x140d1ac50
-// MS2-PIN: ??$?0AEAHAEAH$0A@@?$pair@HH@std@@QEAA@AEAH0@Z 0x140d0b250
 // MS2-PIN: ??$_Eqrange@I@?$_Tree@V?$_Tmap_traits@IURemoteVoice@CInstrumentManager@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIURemoteVoice@CInstrumentManager@@@std@@@4@$0A@@std@@@std@@IEBA?AU?$pair@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIURemoteVoice@CInstrumentManager@@@std@@@std@@@std@@@std@@V12@@1@AEBI@Z 0x140d0ca80
 // MS2-PIN: ??$_Insert_nohint@AEAU?$pair@$$CBIURemoteVoice@CInstrumentManager@@@std@@PEAU?$_Tree_node@U?$pair@$$CBIURemoteVoice@CInstrumentManager@@@std@@PEAX@2@@?$_Tree@V?$_Tmap_traits@IURemoteVoice@CInstrumentManager@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIURemoteVoice@CInstrumentManager@@@std@@@4@$0A@@std@@@std@@IEAA?AU?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIURemoteVoice@CInstrumentManager@@@std@@@std@@@std@@@std@@_N@1@_NAEAU?$pair@$$CBIURemoteVoice@CInstrumentManager@@@1@PEAU?$_Tree_node@U?$pair@$$CBIURemoteVoice@CInstrumentManager@@@std@@PEAX@1@@Z 0x140d0f2e0
 // MS2-PIN: ??$?0AEAV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIURemoteVoice@CInstrumentManager@@@std@@@std@@@std@@@std@@_N$0A@@?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIURemoteVoice@CInstrumentManager@@@std@@@std@@@std@@@std@@_N@std@@QEAA@AEAV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIURemoteVoice@CInstrumentManager@@@std@@@std@@@std@@@1@$$QEA_N@Z 0x140d0bb80
@@ -1550,3 +1549,15 @@ unsigned Unk_WmInstrumentMgr::FUN_140d08660(int channel, int program, int percus
 // MS2-PIN: ?FUN_140d07f00@Unk_PiMgr@@QEAA_N_J@Z 0x140d07f00
 // MS2-PIN: ?FUN_140d08660@Unk_WmInstrumentMgr@@QEAAIHHHPEAV?$multimap@IIU?$less@I@std@@V?$allocator@U?$pair@$$CBII@std@@@2@@std@@PEAV?$multimap@IU?$pair@HH@std@@U?$less@I@2@V?$allocator@U?$pair@$$CBIU?$pair@HH@std@@@std@@@2@@3@IIAEBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@_N@Z 0x140d08660
 // MS2-PIN: ?FUN_140d08660@Unk_MeratSound@@QEAAIHHHPEAV?$multimap@IIU?$less@I@std@@V?$allocator@U?$pair@$$CBII@std@@@2@@std@@PEAV?$multimap@IU?$pair@HH@std@@U?$less@I@2@V?$allocator@U?$pair@$$CBIU?$pair@HH@std@@@std@@@2@@3@IIAEBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@_N@Z 0x140d08660
+
+int& FUN_140d115e0(int& r);  // this unit's identity forward copy for make_pair 0x140d117c0's second argument
+
+// The pair ctor make_pair 0x140d117c0 calls: the first value through forward<unsigned int&> 0x140162e50, the second
+// through 0x140d115e0 (the toolchain's pair<int,int>(int&, int&) is the shared 0x1404d9610).
+// @0x140d0b250
+std::pair<int, int>* FUN_140d0b250(std::pair<int, int>* pThis, unsigned int& a, int& b)
+{
+    pThis->first = std::forward<unsigned int&>(a);
+    pThis->second = FUN_140d115e0(b);
+    return pThis;
+}

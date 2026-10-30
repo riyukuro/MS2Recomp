@@ -44,15 +44,15 @@ struct Unk_PickTargetView : public Unk_PickTarget {};   // layout-identical view
 
 // ---- out-of-unit callees ----
 
-// One customizable part of the equipped item model (MS2Ptr-held; ?\itemugcmesh.cpp).
-class Unk_CustomizePart : public CPtred
-{
-public:
-    float FUN_141422340(int nIndex);                            // customize value nIndex of the part
-};
 // The part's UGC mesh view (MS2Ptr-held, built from the part by the converting copy 0x1411de2a0).
 class Unk_CustomizeMesh : public CPtred
 {
+};
+// One customizable part of the equipped item model (MS2Ptr-held; ?\itemugcmesh.cpp).
+class Unk_CustomizePart : public Unk_CustomizeMesh
+{
+public:
+    float FUN_141422340(int nIndex);                            // customize value nIndex of the part
 };
 void FUN_1414225d0(MS2Ptr<Unk_CustomizeMesh> spMesh, int nIndex, float fValue);   // stores value nIndex
 
@@ -322,9 +322,6 @@ float CItemCustomizeController::GetWheelDelta()
     return 0.0f;
 }
 
-// MS2-FUNCTIONAL: the exe builds the per-call MS2Ptr<Unk_CustomizeMesh> with a converting copy constructor
-// (0x1411de2a0, MS2Ptr<U> -> MS2Ptr<T>) that the shared placeholder/ascript.h MS2Ptr does not declare; this
-// version converts through the raw pointer (same AddRef/Release effect).
 // @0x1414117a0
 void CItemCustomizeController::ApplyValues()
 {
@@ -339,7 +336,7 @@ void CItemCustomizeController::ApplyValues()
     {
         MS2Ptr<Unk_CustomizePart> spPart = m_spEquipItem->FUN_1411dc950(aParts[0]);
         for (int i = 0; i < 2; i++)
-            FUN_1414225d0(MS2Ptr<Unk_CustomizeMesh>((Unk_CustomizeMesh*)spPart.get()), i, m_afValue[i]);
+            FUN_1414225d0(spPart, i, m_afValue[i]);   // converting copy 0x1411de2a0 into the by-value arg
     }
 }
 

@@ -65,10 +65,10 @@ void ecr::SceneGraphService::RemoveFromUpdate(SceneGraphData* pData)
 2464c
 { if (!pSceneData) return;   // MS2: game 0x142005300 ignores null scene data
 .
-2189a
-// MS2: 3 lines of MS2 source not recovered here; padding keeps the EE_LOG __LINE__s below equal to the exe's
-//
-//
+2097a
+    if (!pEntityData)  // MS2: the exe returns on a null entity
+        return;
+
 .
 1740a
             pSceneGraphData->m_ms2UpdateBucketIndex = SceneGraphData::kInvalidUpdateIndex;  // MS2
@@ -107,9 +107,10 @@ void ecr::SceneGraphService::RemoveFromUpdate(SceneGraphData* pData)
 //
 //
 .
-646a
-// MS2: 1 line of MS2 source not recovered here; padding keeps the EE_LOG __LINE__s below equal to the exe's
-.
+256@16s "32" ""
+256@12s "UIn" "size_"
+233@16s "32" ""
+233@12s "UIn" "size_"
 61c
 // MS2: not registered (the exe has 4 handler objects here); MS2SceneGraphService registers MS2_HandleCacheResponse.
 // EE_HANDLER(SceneGraphService, HandleCacheResponse, SceneGraphCacheResponse);

@@ -158,7 +158,7 @@ public:
         Customize* m_pOwner;                                    // +0x48
     };
 
-    Customize(int nObjectId, IItemCustomizeEventListener* pListener, int bPreview);     // 0x140cd1570
+    Customize(int nObjectId, IItemCustomizeEventListener* pListener, bool bPreview);     // 0x140cd1570
     virtual ~Customize();                                       // 0x140cd16e0 (??_G 0x140cd53a0)
     int FUN_140cd17e0();                        // the previewed item id
     MS2Ptr<CItem> FUN_140cd1890();              // the previewed item (uiitemcoloringdialog.cpp)

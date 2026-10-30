@@ -211,10 +211,6 @@ template unsigned __int64&& std::forward<unsigned __int64>(unsigned __int64&) no
 // ---- free helpers ----
 
 // @0x140f8f3b0
-// The search condition's kind is a dword in the exe (the shared header declares a byte; cf. KindOf in
-// matchpartyrecruitschcond.cpp).
-#define SchKind(sp) (*reinterpret_cast<int*>(&(sp)->kind))
-
 void FUN_140f8f3b0(ASObj* pObj, CMatchPartyRecruit* pRecruit)
 {
     bool bAlready = FUN_140695080(pRecruit) ? false : true;
@@ -404,7 +400,7 @@ void UIPartySearchDialog::OnLoadComplete()
     CMatchPartyRecruit* pRecruit = &FUN_1409670d0()->FUN_141631ce0();
     FUN_140f8f3b0(&root, pRecruit);
     int nIndex = 0;
-    FUN_140f8ef30(&sorts, SchKind(m_180), &nIndex);
+    FUN_140f8ef30(&sorts, m_180->kind, &nIndex);
     root.FUN_1409adbe0("arrSortMemberSearch", sorts.FUN_1422bb870());
     root.FUN_1407cb9c0("selectedSortIndex", nIndex);
     FUN_140f8e3f0(1);
@@ -517,7 +513,7 @@ int UIPartySearchDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
         {
             int nSort = data.FUN_1422b8a10();
             CStringW strText = data.FUN_1422b8f40();
-            SchKind(m_180) = nSort;
+            m_180->kind = nSort;
             if (FUN_140f8e480(strText))
                 FUN_140f8e3f0(1);
         }
@@ -816,7 +812,7 @@ void UIPartySearchDialog::FUN_140f8e670()
         if (!m_180)
             return;
         m_180->page = 1;
-        SchKind(m_180) = 0xc;
+        m_180->kind = 0xc;
     }
     else
     {

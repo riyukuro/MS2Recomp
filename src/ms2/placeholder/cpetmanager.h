@@ -111,7 +111,7 @@ public:
 
     void FUN_140c8b1f0();                                   // clear the counts
     int FUN_140c8b220(int nKey);                            // count of a key
-    bool FUN_140c8b2b0();                                   // has a summoned pet item
+    int FUN_140c8b2b0();                                    // has a summoned pet item
     __int64 GetSummonUid();                                // the summoned pet item uid
     void SetSummonUid(__int64 nUid);
     int GetAuto();                                    // auto flag

@@ -9,17 +9,16 @@
 #include "ms2/ms2recover.h"
 #include "ms2/placeholder/unk_1402a9d70.h"
 
-// Nexon Messenger SDK character record (vendor class, ctor 0x141570010, dtor 0x1415ecdb0); only its construction is
-// needed here.
+// Nexon Messenger SDK character record (vendor class, 0x98 bytes as in placeholder/nmfunc.h; ctor 0x141570010, dtor
+// 0x1415ecdb0); only its construction is needed here. The hook DLL runs the exe ctor on this static, so it must be full size.
 class CNMCharacter
 {
 public:
     CNMCharacter();
     ~CNMCharacter();
-    void* m_pad_00;
-    void* m_pad_08;
-    void* m_pad_10;
+    void* m_pad[0x98 / sizeof(void*)];
 };
+MS2_CHECK_SIZE(CNMCharacter, 0x98);
 
 static CString s_strSortTypeNames1[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
 static CString s_strSkill1 = "skill";

@@ -1,0 +1,9 @@
+31c
+        Node* pNext = m_linearPool.GetAt(ui + 1); m_linearPool.GetAt(ui)->m_pNext = pNext;  // MS2: the game's lea operand order
+.
+29c
+    for (efd::UInt32 ui = 0; ui < initialSize; ++ui)  // MS2: UInt32 index, the game's strength-reduced loop
+.
+19c
+inline LockFreeQueue<T>::LockFreeQueue(efd::UInt32 initialSize)  // MS2: UInt32 in the game (32-bit +1 and test)
+.

@@ -1583,9 +1583,8 @@ void Customize::Equipment::ResetCapPosition(MS2Ptr<CItem> spItem)
 // ---- Customize ----
 
 // @0x140cd1570
-// MS2-FUNCTIONAL: written from the decompile; temp slots / branch layout differ (permuter lane)
-Customize::Customize(int nObjectId, IItemCustomizeEventListener* pListener, int bPreview)
-    : m_pListener(pListener), m_bPreview(bPreview != 0), m_nPalette(0)
+Customize::Customize(int nObjectId, IItemCustomizeEventListener* pListener, bool bPreview)
+    : m_pListener(pListener), m_bPreview(bPreview), m_nPalette(0)
 {
     m_nObjectId = nObjectId;
     m_spEquipment.AssignRaw(new Equipment(nObjectId, this));

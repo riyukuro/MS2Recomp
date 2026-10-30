@@ -283,11 +283,12 @@ MS2Ptr<CItem> FUN_140ebc070(CMeratMarketProduct* pProduct)
 }
 
 // @0x140ebc2b0
-MS2Ptr<CItem> FUN_140ebc2b0(MS2Ptr<CItemData> spData, unsigned __int64 nGrade)
+MS2Ptr<CItem> FUN_140ebc2b0(MS2Ptr<CItemData> spData, int nGrade)
 {
     if (spData == 0)
         return MS2Ptr<CItem>(0);
-    return FUN_140ebc360(spData->FUN_14053c510(), (int)nGrade);
+    int nItemId = spData->FUN_14053c510();
+    return FUN_140ebc360(nItemId, nGrade);
 }
 
 // @0x140ebc360

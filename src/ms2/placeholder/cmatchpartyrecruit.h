@@ -35,7 +35,7 @@ public:
     CMatchPartyRecruitSchCond();                                // 0x1406943b0 (calls Reset)
     virtual ~CMatchPartyRecruitSchCond();                       // 0x140694410
     int fieldId, category;
-    unsigned char kind;
+    int kind;                                                   // dword in the exe (Reset stores 0xc), sent as a byte
     CStringW text;
     int page, pageSize;
 };

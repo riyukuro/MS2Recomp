@@ -3,3 +3,6 @@
 2817@57s "efd::stlport" "EE_STL_NAMESPACE"
 2812@57s "efd::stlport" "EE_STL_NAMESPACE"
 2810@57s "efd::stlport" "EE_STL_NAMESPACE"
+27c
+template <> __forceinline NiDataStream::Region* NiTNewInterface<NiDataStream::Region>::Allocate(unsigned int uiNumElements) {return NiNew NiDataStream::Region[uiNumElements];}  // MS2: exe 0x141f6b8b0 inlines this one instantiation (codegen only; same line keeps __LINE__)
+.

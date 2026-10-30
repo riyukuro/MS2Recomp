@@ -84,7 +84,6 @@ CMasteryTable::Mastery::Mastery() : m_nGrade(0), m_nValue(0)
 }
 
 // @0x1406694a0
-// MS2-FUNCTIONAL: the temporaries of the loop bodies are laid out differently
 int CMasteryReceipe::Load(Unk_140165cf0* pNode)
 {
     FUN_1408731e0(pNode, "id", m_nId);
@@ -108,14 +107,14 @@ int CMasteryReceipe::Load(Unk_140165cf0* pNode)
             m_strHabitat += L", ";
         m_strHabitat += FUN_1403b4750()->FUN_1416fbfe0(habitats[i], CStringW(L"#909090"));
     }
-    for (size_t i = 1; i < 6; i++)
+    for (size_t i = 1; i <= 5; i++)
     {
         CString strKey = StringFormat("requireItem{0}", i);
         CStringW strValue;
         FUN_140873420(pNode, strKey, strValue);
         m_ingredients.FUN_14026b9d0(strValue);
     }
-    for (size_t i = 1; i < 6; i++)
+    for (size_t i = 1; i <= 5; i++)
     {
         CString strKey = StringFormat("rewardItem{0}", i);
         CStringW strValue;

@@ -5,8 +5,8 @@
             if (kFFDriver != GUID_NULL)
             {
                 MS2FFDriverEnum kEnum;
-                kEnum.pkGamePad = pkDI8GamePad;
                 kEnum.pkDI8 = m_pkDirectInput8;
+                kEnum.pkGamePad = pkDI8GamePad;
                 kEnum.kGUIDFFDriver = kFFDriver;
                 if (SUCCEEDED(m_pkDirectInput8->EnumDevices(DI8DEVCLASS_GAMECTRL,
                     DIEnumFFDriverCallback, &kEnum,
@@ -22,9 +22,6 @@
 986a
     pkNiDesc->SetMS2FFDriverGUID(pkDDI->guidFFDriver);   // MS2
 .
-939c
-    m_bStudioFlag0x2d = true;
-.
 935a
         MS2_INPUT_LOG("INITFAILED CreateDI8Interface3");   // MS2
 .
@@ -35,7 +32,7 @@
         MS2_INPUT_LOG("INITFAILED CreateDI8Interface1");   // MS2
 .
 908c
-    if (m_bStudioFlag0x2d)  // MS2: +0x2d, as in CheckEnumerationStatus
+    if (m_bEnumerating)  // MS2: +0x2d, as in CheckEnumerationStatus
 .
 904a
         MS2_INPUT_LOG("EnumerateDevices NIIERR_INVALIDPARAMS");   // MS2
@@ -120,11 +117,8 @@ BOOL CALLBACK NiDI8InputSystem::DIEnumFFDriverCallback(
 682c
     BOOL bMS2SystemDevice = FALSE;  // MS2: 32-bit flag set up front (exe 0x141d0fdb0). Check for XInput device
 .
-653c
-    m_bStudioFlag0x2d = false;
-.
 649c
-    if (!m_bStudioFlag0x2d)  // MS2: the exe keeps this enumeration flag at +0x2d (0x141d0ed90); +0x2c only gates the gamepad polling
+    if (!m_bEnumerating)  // MS2: the exe keeps this enumeration flag at +0x2d (0x141d0ed90); +0x2c only gates the gamepad polling
 .
 450a
         MS2_INPUT_LOG("INITFAILED CreateDI8Interface0");   // MS2

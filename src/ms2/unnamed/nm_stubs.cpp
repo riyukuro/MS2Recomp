@@ -20,7 +20,7 @@
 #ifndef MS2_HOOK_DLL
 
 // MS2-FUNCTIONAL: NM stub. The global Nexon Messenger character record unit_1400fa560 constructs at startup (exe ctor
-// 0x141570010, dtor 0x1415ecdb0, both NM). Nothing reads it; its 0x18 bytes there are less than the real record.
+// 0x141570010, dtor 0x1415ecdb0, both NM). Nothing reads it; unit_1400fa560 sizes the global 0x98, as the real record is (3c96adc97).
 class CNMCharacter
 {
 public:

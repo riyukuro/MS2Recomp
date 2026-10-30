@@ -11,11 +11,13 @@
 
 class MyPC;
 class PC;
+namespace efd { class Color; }
 
 // 12-byte appearance record (two per character: the two equip colour slots); default ctor 0x1409f72f0.
 struct Unk_CharEquip
 {
     Unk_CharEquip();                                        // 0x1409f72f0
+    Unk_CharEquip(const efd::Color& kColor);                // 0x140a0a3a0 (NiColor(const efd::Color&))
     int m_a, m_b, m_c;
 };
 MS2_CHECK_SIZE(Unk_CharEquip, 0xc);

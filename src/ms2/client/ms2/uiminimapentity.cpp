@@ -271,13 +271,16 @@ template <class T> T* Unk_MmFindDialog(int nId)
     return 0;
 }
 
-// The AS function object (0x50; ctor 0x1422c8430, dtor 0x1422c85b0).
+// The AS function object (0x48; ctor 0x1422c8430, dtor 0x1422c85b0). The exe ctor stores the handler Ptr at +0x40.
 class ASFunction : public AScript
 {
 public:
     ASFunction(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, int nUser, int nMovieId);
     ~ASFunction();
+private:
+    void* m_spHandler;                          // +0x40 Scaleform::Ptr<FunctionHandler>
 };
+MS2_CHECK_SIZE(ASFunction, 0x48);
 
 // ---- statics (.text$di order) ----
 

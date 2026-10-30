@@ -1104,24 +1104,27 @@ void UIMeratMarketDialog::vfunc_72()
         FUN_140939a00()->FUN_140d553a0();
 }
 
-// MS2-FUNCTIONAL: the exe passes a 4th argument to UIAvatarBase slot 28 (declared with 3)
 // @0x1412eb7c0
 void UIMeratMarketDialog::vfunc_25(void* p1, TPtr<Unk_UISwfEntity_25> p2, void* p3, void* p4)
 {
     if (p2 == 0 || p3 == 0)
         return;
-    UIAvatarBase* pAvatar;
+    UIAvatarBase* pAvatar = 0;
+    int bShow = 1;  // always set
     if (m_spAvatar == 0)
         pAvatar = m_spAvatarPC.get();
     else
         pAvatar = m_spAvatar.get();
-    m_spModelView = 0;
-    if (pAvatar != 0) {
-        pAvatar->vfunc_28(p1, p2, p3);
-        m_spModelView = pAvatar->GetView();
-        int nKind = SlotKindOfPreview(pAvatar, m_spItemData);
-        ShowAvatarItem(pAvatar, nKind, MS2Ptr<CItemData>(0), true);
-        m_spAvatar.AssignRaw(pAvatar);
+    if (bShow)
+    {
+        m_spModelView = 0;
+        if (pAvatar != 0) {
+            pAvatar->vfunc_28(p1, p2, p3, p4);
+            m_spModelView = pAvatar->GetView();
+            int nKind = SlotKindOfPreview(pAvatar, m_spItemData);
+            ShowAvatarItem(pAvatar, nKind, MS2Ptr<CItemData>(0), true);
+            m_spAvatar.AssignRaw(pAvatar);
+        }
     }
 }
 
@@ -2787,7 +2790,7 @@ void UIMeratMarketDialog::InitAvatars()
         m_5b0 = spMusic->FUN_140acce30<ASButton>("m_play");
         m_5c0 = spMusic->FUN_140acce30<ASButton>("m_goStart");
         m_5d0 = spMusic->FUN_1409b4620("m_time");
-        m_spSlider = spMusic->FUN_140accef0<ASSlider>("m_slider");
+        m_spSlider = spMusic->FUN_140fafed0<ASSlider>("m_slider");
         m_5f0 = spMusic->FUN_1409b4560("m_playEff");
         m_5b0->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIMeratMarketDialog::OnModelCheck), 0);
         m_5c0->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIMeratMarketDialog::OnModelRefresh), 0);

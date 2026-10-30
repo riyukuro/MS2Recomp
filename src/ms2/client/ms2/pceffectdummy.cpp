@@ -42,28 +42,25 @@ CPCEffectDummy::CPCEffectDummy()
 {
 }
 
-// @0x141686ff0
-CPCEffectDummy::~CPCEffectDummy()
-{
-}
+// ~CPCEffectDummy (0x141686ff0) is implicit: an explicit empty body keeps a dead vptr store the exe does not have.
 
 // @0x1416841f0
-bool CPCEffectDummy::Load()
+int CPCEffectDummy::Load()
 {
     return LoadFile(FUN_14071a5b0("Table", "pcEffectDummy.xml"));
 }
 
 // @0x141684290
-bool CPCEffectDummy::LoadFile(const char* pszPath)
+int CPCEffectDummy::LoadFile(const char* pszPath)
 {
     TiXmlDocument doc;
     if (FUN_140166420()->FUN_1403974b0(&doc, pszPath, 0, true, false) == 0)
-        return false;
+        return 0;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
     {
         FUN_1403a1280(FUN_140166440(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", &pszPath);
-        return false;
+        return 0;
     }
     Unk_140165cf0* pGroup = pRoot->FUN_140165cf0("effectdummy");
     if (pGroup != 0)
@@ -78,7 +75,7 @@ bool CPCEffectDummy::LoadFile(const char* pszPath)
             m_dummies[nGender].push_back(kDummy);
         }
     }
-    return true;
+    return 1;
 }
 
 // @0x141684460

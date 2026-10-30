@@ -551,7 +551,7 @@ void UIPartyDialog::OnLoadComplete()
     m_30->FUN_140bbe640("m_giveUpDungeon", m_giveUpDungeon);
     if (m_giveUpDungeon == 0)
         throw PD_SWF_ERROR(0x80);
-    m_30->FUN_140bbe640("m_dungeonName", m_dungeonName);
+    m_30->FUN_140bc71c0("m_dungeonName", m_dungeonName);
     if (m_dungeonName == 0)
         throw PD_SWF_ERROR(0x81);
     m_vote.AssignRaw(new ASPartyVotePage(GetChild<ASMovieClip>("m_partyVote")));
@@ -1819,7 +1819,7 @@ template <class T> T* Unk_PmGetDialog(int nUiId)
     {
         MS2Ptr<UIObject> spDialog = FUN_1403ed2b0()->FUN_141adcea0(nUiId);
         if (spDialog.get() != 0)
-            return dynamic_cast<T*>(spDialog.get());
+            return dynamic_cast<T*>(static_cast<UIObject*>(spDialog));
     }
     return 0;
 }

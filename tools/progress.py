@@ -60,6 +60,7 @@ from concurrent.futures import ThreadPoolExecutor
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(ROOT, "tools"))
 import bytematch as bm  # noqa: E402
+CHAIN = bm.CHAIN        # compare chained tails (bytematch default); pairing below always uses the first chunk only
 import ms2paths  # noqa: E402
 import gbprogress  # noqa: E402
 import importthunks  # noqa: E402  (imports stage: linker import thunks)
@@ -156,6 +157,11 @@ class Unit:
         self.pins = {}       # `// MS2-PIN: <mangled> 0x<va>`: obj symbol -> exe VA (must lie in a MS2-RANGE)
         self.profile = None  # `// MS2-FLAGS: <profile>`: per-unit flag profile (ms2flags; None = game flags)
         self.no_exe = None   # `// MS2-NO-EXE: 0x<va> <reason>`: rebuild-only stand-ins, no exe functions (fullexe/plan.py places it at <va>)
+        self.toolset = None  # `// MS2-TOOLSET: <toolset>`: built by another cl (ms2flags.toolsets(); None = cl 19.16, game flags)
+        # MS2_UNIT_SOURCE=<stem>=<file>: compile (and read directives and tags from) a scratch copy instead (experiments)
+        self.source = ms2flags.unit_override("MS2_UNIT_SOURCE", self.rel)
+        if self.source:
+            self.path = path = os.path.abspath(self.source)
         for line in open(path, encoding="latin1"):
             if "MS2-" not in line:                    # every directive below contains it (find_units reads ~470 files)
                 continue
@@ -172,11 +178,21 @@ class Unit:
                 self.no_exe = int(m.group(1), 16)
             if self.profile is None and re.match(r"\s*//\s*MS2-FLAGS:", line):
                 self.profile = ms2flags.profile_of(line)
+            if self.toolset is None and re.match(r"\s*//\s*MS2-TOOLSET:", line):
+                self.toolset = ms2flags.toolset_of(line)
             m = re.match(r"\s*//\s*MS2-RANGE:\s*0x([0-9a-fA-F]+)\s*-\s*0x([0-9a-fA-F]+)", line)
             if m:
                 self.ranges.append((int(m.group(1), 16), int(m.group(2), 16)))
+        ts = ms2flags.unit_override("MS2_UNIT_TOOLSET", self.rel)   # MS2_UNIT_TOOLSET=<stem>=<toolset> (experiments)
+        if ts:
+            self.toolset = None if ts in ("default", ms2paths.DEFAULT_TOOLSET) else ms2flags.check_toolset(ts)
         self.obj = os.path.join(CACHE, "obj", self.rel[:-4] + ".obj")
         self.deps = self.obj[:-4] + ".deps"
+
+    def flags_key(self):
+        """compile cache key: game flags + profile, or the other toolset's flags; a scratch source is part of it"""
+        k = ms2flags.toolset_key(self.toolset, self.profile) if self.toolset else FLAGS_KEY + ms2flags.key(self.profile)
+        return k + (" source=" + self.path if self.source else "")
 
     def in_range(self, va):
         return any(a <= va < b for a, b in self.ranges)
@@ -313,7 +329,45 @@ def unixpath(p):
                 for f in files:
                     q = os.path.join(d, f)
                     _case[q.lower()] = q
-    return _case.get(p.lower(), p)
+    if p.lower() in _case:
+        return _case[p.lower()]
+    lp = p.lower()      # CodeView paths are lowercased: the prefix tests too
+    # an obj built in another checkout (a progress cache copied from another worktree): the same file under this
+    # tree's src/ms2, else tags_of finds no file and every // @0x tag of the unit is lost
+    i = lp.rfind(os.sep + os.path.join("src", "ms2") + os.sep)
+    if i >= 0 and (SRC + lp[i + 4:]).lower() in _case:
+        return _case[(SRC + lp[i + 4:]).lower()]
+    # under ROOT, or in the tree of an MS2_UNIT_SOURCE scratch copy (<tree>/<dir>/<unit>.cpp, ../include like src/ms2;
+    # it may live in another checkout than ROOT)
+    tops = [ROOT] + [os.path.dirname(os.path.dirname(os.path.abspath(v.partition("=")[2].strip())))
+                     for v in os.environ.get("MS2_UNIT_SOURCE", "").split(",") if v.partition("=")[2].strip()]
+    if (any(lp.startswith(t.lower() + os.sep) for t in tops)
+            and not lp.startswith(ms2paths.THIRD_PARTY.lower() + os.sep)):
+        return _ci_path(p)
+    return p
+
+
+_ls = {}
+
+
+def _ci_path(p):
+    """p with each component matched case-insensitively on disk (files outside src/ and the engine: an MS2_UNIT_SOURCE
+    scratch copy, tools/msvc9/include); p unchanged when a component is missing"""
+    out = os.sep if os.path.isabs(p) else ""
+    for part in [x for x in p.split(os.sep) if x]:
+        if out not in _ls:
+            try:
+                names = sorted(os.listdir(out or "."))
+            except OSError:
+                return p
+            _ls[out] = {}
+            for n in names:
+                _ls[out].setdefault(n.lower(), n)
+        real = _ls[out].get(part.lower())
+        if real is None:
+            return p
+        out = os.path.join(out, real)
+    return out
 
 
 def needs_compile(u):
@@ -323,7 +377,7 @@ def needs_compile(u):
         meta = json.load(open(u.deps))
     except Exception:
         return True
-    if meta.get("flags") != FLAGS_KEY + ms2flags.key(u.profile):
+    if meta.get("flags") != u.flags_key():
         return True
     t = os.path.getmtime(u.obj)
     for f in [u.path] + meta.get("deps", []):
@@ -335,9 +389,12 @@ def needs_compile(u):
 def compile_unit(u):
     os.makedirs(os.path.dirname(u.obj), exist_ok=True)
     env = ms2paths.toolchain_env()
-    flags = ms2flags.apply(GAME_FLAGS, u.profile)
-    pch = ms2pch.args(GAME_FLAGS, open(u.path, encoding="latin1").read(), CL, env) if not u.profile else []
-    cmd = ms2paths.cl_cmdline([CL] + flags + pch + ["/showIncludes", "/Fo" + u.obj, u.path])
+    if u.toolset:       # another cl: its own flag set, no game flags or PCH (cmake/ms2-unit-profiles.cmake)
+        cl, flags, pch = ms2paths.find_cl_toolset(u.toolset, env), ms2flags.toolset_flags(u.toolset, u.profile), []
+    else:
+        cl, flags = CL, ms2flags.apply(GAME_FLAGS, u.profile)
+        pch = ms2pch.args(GAME_FLAGS, open(u.path, encoding="latin1").read(), CL, env) if not u.profile else []
+    cmd = ms2paths.cl_cmdline([cl] + flags + pch + ["/showIncludes", "/Fo" + u.obj, u.path])
     t0 = time.time()
     r = subprocess.run(cmd, capture_output=True, text=True, env=env, encoding="latin1")
     deps, msgs = [], []
@@ -346,13 +403,15 @@ def compile_unit(u):
             f = unixpath(line.split(":", 2)[2])
             if ms2paths.under(f, SRC) or ms2paths.under(f, ms2paths.ENGINE_DIR):
                 deps.append(f)
+            elif (u.toolset or u.source) and not ms2paths.under(f, ms2paths.THIRD_PARTY):
+                deps.append(f)      # tools/msvc9/include stand-ins, the headers of a scratch copy (wherever it lives)
         elif line.strip() and line.strip() != os.path.basename(u.path) and "_WIN32_WINNT not defined" not in line:
             msgs.append(line)
     ok = r.returncode == 0 and os.path.exists(u.obj)
     if ok and pch:
         deps.append(os.path.join(SRC, ms2pch.HDR))
     if ok:
-        json.dump({"flags": FLAGS_KEY + ms2flags.key(u.profile), "deps": sorted(set(deps))}, open(u.deps, "w"))
+        json.dump({"flags": u.flags_key(), "deps": sorted(set(deps))}, open(u.deps, "w"))
     elif os.path.exists(u.obj):
         os.remove(u.obj)
     return ok, msgs, time.time() - t0
@@ -558,7 +617,11 @@ def process_unit(u, exe, starts, finfo, bases, vft, verbose):
     obj = bm.Obj(u.obj)
     lines = cv_first_lines(obj)
     syms = [si for si in obj.func_symbols() if not obj.syms[si][0].startswith(bm.FUNCLET_PREFIXES)]
-    res = {"pairs": {}, "vft": {}, "notes": [], "harvest": {}}
+    # steps 1-2c PAIR on the first .pdata chunk (as before the chained default, 5cb8ad519); step 3 compares the chained
+    # body and decides exact vs functional. A pair whose tail differs stays a functional row (with its symbols row)
+    # instead of losing its pair: an untagged definition left unpaired becomes a fullexe trap stub (merge 41: 18 VAs).
+    bm.CHAIN = False
+    res = {"pairs": {}, "vft": {}, "notes": [], "harvest": {}, "fharvest": {}}
     known = bm.LOCAL_KNOWN
     known.clear()
     how = {}
@@ -639,7 +702,7 @@ def process_unit(u, exe, starts, finfo, bases, vft, verbose):
         while i < len(starts) and starts[i] < hi:
             va = starts[i]
             rva = va - exe.base
-            size = exe.rf[rva][0] - rva if rva in exe.rf else finfo[va][0]
+            size = exe.chain_end(rva) - rva if rva in exe.rf else finfo[va][0]   # first chunk (bm.CHAIN off), like obj.function
             cands.setdefault(size, []).append(va)
             i += 1
     hits = {}
@@ -995,6 +1058,7 @@ def process_unit(u, exe, starts, finfo, bases, vft, verbose):
                 if i < len(vas) or len(names) > len(vas):
                     guessed[n] = vas[i % len(vas)]
     # 3. match everything paired (harvests the symbol map)
+    bm.CHAIN = CHAIN
     funclets = {}
     # the symbol map is harvested from FULLY matched functions only (bytes + unwind/EH): a function that differs
     # anywhere contributes no mapping
@@ -1007,6 +1071,13 @@ def process_unit(u, exe, starts, finfo, bases, vft, verbose):
         if not ok:
             bm.HARVEST.clear()
             bm.HARVEST.update(snap)
+            # a functional definition bound by // @0x or MS2-PIN still names its own exe address (never its callees':
+            # they were not verified): kept apart from the harvest, the global stage adds it where no row disagrees.
+            # Not an anonymous-namespace name: internal linkage (no cross-unit reference) and its ?A0x<hash> depends on
+            # the checkout's path (sfr_video_03 FUN_140016c70: ?A0x50078c9b here, ?A0x6d8f88f8 in a worktree)
+            if (how[name] in ("tag", "pin") and "?A0x" not in name and bm.harvestable(name, va)
+                    and not NM_ZONE[0] <= va < NM_ZONE[1]):
+                res["fharvest"][name] = va
         res["pairs"][name] = {"va": va, "how": how[name], "ok": ok, "report": "" if ok else text}
         if ok:
             funclets.update(bm.FUNCLET_PAIRS)
@@ -1016,8 +1087,17 @@ def process_unit(u, exe, starts, finfo, bases, vft, verbose):
         if not ok:
             bm.HARVEST.clear()
             bm.HARVEST.update(snap)
-        if ok:                  # a fold that does not match is no evidence: the function stays a stub
+        if ok:
             res["pairs"][name] = {"va": va, "how": "auto-fold", "ok": ok, "report": ""}
+        elif CHAIN:             # the first chunk matched (trial above): a tail difference leaves it functional
+            bm.CHAIN = False
+            ok1, _ = quiet_match(obj, name, va, exe, False)
+            bm.HARVEST.clear()
+            bm.HARVEST.update(snap)
+            bm.CHAIN = CHAIN
+            if ok1:
+                res["pairs"][name] = {"va": va, "how": "auto-fold", "ok": False, "report": text}
+        # else: a fold that does not match is no evidence, the function stays a stub
     for name, va in sorted(guessed.items(), key=lambda kv: kv[1]):
         if name not in res["pairs"]:
             res["pairs"][name] = {"va": va, "how": "auto-guess", "ok": False,
@@ -1164,6 +1244,11 @@ def main():
         # `progress.py -v <unit>` without MS2_AGENT cut it from 73478 to 2655 rows); merges always run on all units
         sys.exit("refusing a filtered merge (it would truncate progress/symbols.tsv): "
                  "set MS2_AGENT=<name> in the same command or pass --agent/--report")
+    for var in ("MS2_UNIT_TOOLSET", "MS2_UNIT_SOURCE"):
+        if os.environ.get(var, "").strip():
+            if not (a.agent or a.report):
+                sys.exit(f"refusing a merge with {var} set (experiments only: set MS2_AGENT=<name>)")
+            print(f"WARNING: {var}={os.environ[var]} (experiment override; not what the committed source builds)", flush=True)
     if a.agent or a.report:
         CACHE = os.path.join(ROOT, "build", "progress-" + (a.agent or "report"))
         OUT = CACHE
@@ -1183,7 +1268,8 @@ def main():
     todo = [u for u in units if a.force or needs_compile(u)]
     failed = set()
     if todo:
-        print(f"compiling {len(todo)} unit(s) with cl 19.16 ...", flush=True)
+        other = sorted({u.toolset for u in todo if u.toolset})
+        print(f"compiling {len(todo)} unit(s) with cl 19.16{''.join(' + ' + t for t in other)} ...", flush=True)
         with ThreadPoolExecutor(max_workers=max(1, a.j)) as ex:
             for u, (ok, msgs, dt) in zip(todo, ex.map(compile_unit, todo)):
                 print(f"  {'ok  ' if ok else 'FAIL'} {u.rel} ({dt:.1f}s)")
@@ -1205,7 +1291,7 @@ def main():
         if u.rel in failed or not os.path.exists(u.obj):
             cache[u.rel] = {"key": None, "failed": True, "res": None}
             continue
-        key = [os.path.getmtime(u.obj), os.path.getsize(u.obj), u.ranges, "multicopy5" + ("g" if u.guess else "") + ("f9" if not os.environ.get("MS2_NO_ICF_FOLD") else "") + ("m" if merge_mode else "") + ("x" if os.environ.get("MS2_NO_MULTICOPY") else "")]
+        key = [os.path.getmtime(u.obj), os.path.getsize(u.obj), u.ranges, "multicopy5" + ("g" if u.guess else "") + ("f9" if not os.environ.get("MS2_NO_ICF_FOLD") else "") + ("m" if merge_mode else "") + ("x" if os.environ.get("MS2_NO_MULTICOPY") else "") + ("c1" if CHAIN else "")]
         if os.environ.get("MS2_MERGE_INCR"):      # tools/merge.sh: persistent tree, match results also keyed by their inputs
             key.append(mergekey.game_stamp())
             key.append(mergekey.rows_stamp(u.obj, manual_tsv))
@@ -1396,6 +1482,54 @@ def main():
         os.makedirs(OUT, exist_ok=True)
         shutil.copyfile(bm.SYMBOLS_TSV, symbols_out + ".tmp")
         os.replace(symbols_out + ".tmp", symbols_out)
+    # functional rows: the own name of a tag/pin-bound definition that only matches functionally (res["fharvest"]).
+    # Without a row a subset DLL link fails on every cross-unit reference to it (briefs 25/26: 408 hand-added rows).
+    # A name that already has a row elsewhere is a conflict (nothing added); a VA that already has a row under another
+    # name gets the second name only when that row is a FUN_/Unk_ stand-in, else the pair is deferred for review.
+    fseen = {}
+    for rel, c in sorted(cache.items()):
+        if c.get("res") and not (merge_mode and rel in stale_units):
+            for n, va in c["res"].get("fharvest", {}).items():
+                if "?A0x" in n:
+                    continue        # entries cached before step 3 skipped anonymous-namespace names
+                fseen.setdefault(n, {}).setdefault(va, []).append(rel)
+    rows = dict(bm.HARVEST)
+    if not merge_mode:
+        for line in open(symbols_out):
+            if not line.startswith("#") and line.strip():
+                q = line.rstrip("\n").split("\t")
+                rows[q[0]] = int(q[1], 16)          # write_harvest: the committed row wins
+    names_at = {}
+    for n, va in rows.items():
+        names_at.setdefault(va, []).append(n)
+    fconf, fdefer, fadd = [], [], 0
+    for n, by_va in sorted(fseen.items()):
+        vas = sorted(by_va)
+        if any(not bm.same_code(exe, vas[0], v) for v in vas[1:]):
+            fconf.append((n, None, vas, "units disagree"))
+            continue
+        if n in rows:
+            if rows[n] not in vas and not bm.same_code(exe, rows[n], vas[0]):
+                fconf.append((n, rows[n], vas, "row at another VA"))
+            continue
+        va = vas[0]
+        other = [o for o in names_at.get(va, []) if o != n]
+        if other and not all("FUN_" in o or "Unk_" in o for o in other):
+            fdefer.append((n, va, other, by_va[va]))
+            continue
+        bm.HARVEST[n] = va
+        rows[n] = va
+        names_at.setdefault(va, []).append(n)
+        fadd += 1
+    with open(os.path.join(CACHE, "fharvest-review.tsv"), "w") as fo:
+        fo.write("#kind\tsymbol\tva\texisting row(s) at the va / row va\tunits\n")
+        for n, va, other, us in fdefer:
+            fo.write(f"secondname\t{n}\t{va:x}\t{' '.join(other)}\t{','.join(us)}\n")
+        for n, row, vas, why in fconf:
+            fo.write(f"conflict\t{n}\t{' '.join(f'{v:x}' for v in vas)}\t{why}{f' {row:x}' if row is not None else ''}\t"
+                     f"{','.join(sorted({r for v in vas for r in fseen[n][v]}))}\n")
+    print(f"functional rows: {fadd} added, {len(fdefer)} second name(s) deferred, {len(fconf)} conflict(s) (info; "
+          f"{os.path.relpath(CACHE, ROOT)}/fharvest-review.tsv)")
     added = bm.write_harvest(symbols_out, exe, fresh=merge_mode)
 
     # status rows

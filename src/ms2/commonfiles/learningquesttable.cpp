@@ -69,17 +69,17 @@ CLearningQuestTable::~CLearningQuestTable()
 
 // @0x14064cc80
 // MS2-FUNCTIONAL: the exe Load returns int (dword result temps); learningquesttable.h is shared (filepreload_1, questmanager_2, uilearningquestdialog), so it stays bool
-bool CLearningQuestTable::Load()
+int CLearningQuestTable::Load()
 {
     CString strPath = FUN_14071a5b0("Table", "learningQuest.xml");
     TiXmlDocument doc;
     if (FUN_140166420()->FUN_1403974b0(&doc, (const char*)strPath, 0, true, false) == 0)
-        return false;
+        return 0;
     Unk_140165cf0* pRoot = reinterpret_cast<Unk_140165cf0*>(&doc)->FUN_140165cf0("ms2");
     if (pRoot == 0)
     {
         FUN_14015eb90(FUN_140166440(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
-        return false;
+        return 0;
     }
     Unk_ElemArray list;
     FUN_14028faa0(pRoot, "learning", "id", &list);
@@ -88,10 +88,10 @@ bool CLearningQuestTable::Load()
         Unk_140165cf0* pNode = list.FUN_140164a30(i);
         DataPtr data(new CLearningQuestData);
         if (data->Read(pNode) == 0)
-            return false;
+            return 0;
         m_map.SetAt(data->m_nId, data);
     }
-    return true;
+    return 1;
 }
 
 // @0x14064cf80

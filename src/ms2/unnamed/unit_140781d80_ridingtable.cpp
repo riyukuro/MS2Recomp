@@ -28,7 +28,7 @@
 // MS2-PIN: ?_Get_first@?$_Compressed_pair@U?$less@H@std@@V?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBHV?$Unk_SocketPtr@URider@RideeData@@@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$Unk_SocketPtr@URider@RideeData@@@@@std@@@std@@@2@$00@2@$00@std@@QEBAAEBU?$less@H@2@XZ 0x14078b860 ; unique
 // MS2-PINS-END tplpin
 // MS2-PIN: ??8?$MS2SvrPtr@VCRideeData@@@@QEBA_NPEAVCRideeData@@@Z 0x1407893c0
-// MS2-PIN: ??0?$Unk_SocketPtr@URider@RideeData@@@@QEAA@H@Z 0x1407888e0
+// MS2-PIN: ??0?$Unk_SocketPtr@URider@RideeData@@@@QEAA@$$T@Z 0x1407888e0
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\unknown_140781d80.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
 #include <afx.h>
@@ -843,7 +843,7 @@ MS2_REPLACE_METHOD(0x140784180, RideeData::Passengers, FUN_140784180, 31, 0x452D
 Unk_RiderPtr RideeData::Passengers::FUN_1407841b0(int nIndex)
 {
     if (m_seats.size() <= (size_t)nIndex)
-        return Unk_RiderPtr(0);
+        return Unk_RiderPtr(nullptr);
     return m_seats[nIndex];
 }
 MS2_REPLACE_METHOD(0x1407841b0, RideeData::Passengers, FUN_1407841b0, 140, 0x278F09D7);

@@ -1294,7 +1294,7 @@ void Ridee::FUN_1417083a0(PCBase* pRider, efd::SmartPointer<NiAVObject> spSeat, 
     NiAVObject* pRiderRoot = FUN_141b6ef70(pRider->FUN_14123c460());
     if (spSeatNode && pRiderRoot)
     {
-        NiTransform kWorld = spSeatNode->GetWorldTransform();
+        NiTransform kWorld = spSeatNode->GetLocalTransform();
         NiTransform kParent;
         kParent.MakeIdentity();
         if (spSeatNode->GetParent())

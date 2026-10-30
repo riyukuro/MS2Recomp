@@ -44,7 +44,7 @@ public:
     CLearningQuestTable();              // 0x14064cbf0
     virtual ~CLearningQuestTable();     // 0x14064cc40
 
-    bool Load();                                            // 0x14064cc80
+    int Load();                                             // 0x14064cc80
     void GetAll(ATL::CAtlArray<DataPtr>& rOut);             // 0x14064cf80 every row in id order
     DataPtr Get(int nId);                                   // 0x14064d020
 

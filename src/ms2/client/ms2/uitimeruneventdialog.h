@@ -49,11 +49,9 @@ private:
     Unk_DTTick m_tick;                                                      // +0x200 1 s refresh timer
 public:
     int FUN_140ee3290();                                    // 0x140ee3290 a reward is waiting (bound by the game menu table; ignores this)
+    int FUN_140ee45c0();                                    // 0x140ee45c0 number of claimable steps (the game menu badge; ignores this)
 };
 MS2_CHECK_SIZE(UITimeRunEventDialog, 0x208);
 MS2_CHECK_OFFSET(UITimeRunEventDialog, m_missionBinder, 0x180);
 MS2_CHECK_OFFSET(UITimeRunEventDialog, m_mapBinder, 0x1c0);
 MS2_CHECK_OFFSET(UITimeRunEventDialog, m_tick, 0x200);
-
-// Free helpers of the unit (no `this`).
-int FUN_140ee45c0();                                                        // number of claimable steps

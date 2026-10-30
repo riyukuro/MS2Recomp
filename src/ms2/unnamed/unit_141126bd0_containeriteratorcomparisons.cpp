@@ -96,6 +96,7 @@ public:
 };
 
 template class Unk_Int3<0>;
+MS2_CHECK_SIZE(Unk_Int3<0>, 0xc);
 
 // A 16-byte array element (two pointers).
 struct Unk_Elem16

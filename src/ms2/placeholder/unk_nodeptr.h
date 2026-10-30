@@ -3,6 +3,8 @@
 // exe: ctor 0x1409f7170, dtor 0x1409f74b0, IsEqual 0x1409f77a0; the accessors are free functions in the symbol table.
 #pragma once
 
+#include "ms2/ms2layout.h"
+
 void FUN_1405a93d0(void* p);            // NiRefObject::DecRefCount
 void FUN_140980460(void* p);            // NiRefObject::IncRefCount
 
@@ -31,9 +33,10 @@ struct Unk_NodePtr
         }
         return *this;
     }
-    bool operator!=(int nNull) const { return m_p != (void*)(__int64)nNull; }
+    bool operator!=(const void* p) const { return m_p != p; }   // 0x140aac3e0 compares the full pointer
     void* m_p;
 };
+MS2_CHECK_SIZE(Unk_NodePtr, 8);
 
 void* FUN_1409475d0(Unk_NodePtr* p);    // non-const get
 void* FUN_1409475f0(Unk_NodePtr* p);    // const get (same body)

@@ -87,7 +87,7 @@ int FUN_141654700(PC* pPC);                                             // the j
 void FUN_141275260(int nStringId, int nA, int nB);                      // system notice
 int FUN_1408b5f70(int nItemId);                                         // the cube has a model view
 Unk_RideePtr FUN_1407844b0(int nRideeId);                               // the ridee table row of an id
-MS2Ptr<CItem> FUN_140ebc2b0(MS2Ptr<CItemData> spData, unsigned __int64 nGrade);   // a new item of a data row
+MS2Ptr<CItem> FUN_140ebc2b0(MS2Ptr<CItemData> spData, int nGrade);   // a new item of a data row
 
 // ?\uiugcitemeditdialog.cpp helpers of the preview
 float FUN_141b48480(int nSet, int nIndex);                              // default angle

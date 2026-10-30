@@ -64,7 +64,7 @@ public:
     int FUN_140a2a180();                   // load every .flat file
     int FUN_140a2a920(const CStringA& strModel, CStringA strMixin);                // model is, or inherits, strMixin
     Unk_ValueList* FUN_140a2a9f0(CStringA strModel, const CStringA& strProp);       // cached values of a property
-    int FUN_140a2aab0(Unk_140165cf0* pElem, const CStringA& strModel, const char* pszProp, ATL::CAtlArray<TPtr<CNpcSpawnData>, ATL::CElementTraits<TPtr<CNpcSpawnData> > >* pOut);
+    int FUN_140a2aab0(Unk_140165cf0* pElem, CStringA strModel, const char* pszProp, ATL::CAtlArray<TPtr<CNpcSpawnData>, ATL::CElementTraits<TPtr<CNpcSpawnData> > >* pOut);
     int FUN_140a2afd0(Unk_140165cf0* pElem, const CStringA& strModel, const char* pszProp, Unk_CommonVec3* pOut);
     int FUN_140a2b270(Unk_140165cf0* pElem, const CStringA& strModel, const char* pszProp, int* pOut);
     int FUN_140a2b550(Unk_140165cf0* pElem, const CStringA& strModel, const char* pszProp, int* pOut);
@@ -175,7 +175,7 @@ Unk_ValueList* Unk_ModelMgr::FUN_140a2a9f0(CStringA strModel, const CStringA& st
 }
 
 // @0x140a2aab0
-int Unk_ModelMgr::FUN_140a2aab0(Unk_140165cf0* pElem, const CStringA& strModel, const char* pszProp, ATL::CAtlArray<TPtr<CNpcSpawnData>, ATL::CElementTraits<TPtr<CNpcSpawnData> > >* pOut)
+int Unk_ModelMgr::FUN_140a2aab0(Unk_140165cf0* pElem, CStringA strModel, const char* pszProp, ATL::CAtlArray<TPtr<CNpcSpawnData>, ATL::CElementTraits<TPtr<CNpcSpawnData> > >* pOut)
 {
     for (Unk_140165cf0* pProp = pElem->FUN_140165cf0("property"); pProp != 0; pProp = pProp->FUN_140168650("property")) {
         CStringA strName = FUN_140188f50(FUN_14086f4b0(pProp, "name"), 0);
@@ -187,7 +187,7 @@ int Unk_ModelMgr::FUN_140a2aab0(Unk_140165cf0* pElem, const CStringA& strModel, 
                 ATL::CAtlArray<CStringA, ATL::CElementTraits<CStringA> > arrValue;
                 CStringA strValue = FUN_140188f50(FUN_14086f4b0(pSet, "value"), 0);
                 FUN_14015f050(strValue, arrValue, ", ");
-                if (arrValue.GetCount() != 0)
+                if (arrValue.GetCount() > 0)
                     spData->count = atoi(arrValue[0]);
                 if (arrValue.GetCount() > 1)
                     spData->probability = FUN_14028d260((float)atoi(arrValue[1]));
@@ -196,16 +196,18 @@ int Unk_ModelMgr::FUN_140a2aab0(Unk_140165cf0* pElem, const CStringA& strModel, 
             return 1;
         }
     }
-    Unk_ValueList* pValues = FUN_140a2a9f0(strModel, CStringA(pszProp));
-    if (pValues == 0)
-        return 0;
-    for (size_t i = 0; i < pValues->GetCount(); i += 2) {
-        TPtr<CNpcSpawnData> spData(new CNpcSpawnData);
-        spData->id = atoi((*pValues)[i]);
-        spData->count = atoi((*pValues)[i + 1]);
-        pOut->Add(spData);
+    CStringA strProp = pszProp;
+    Unk_ValueList* pValues = FUN_140a2a9f0(strModel, strProp);
+    if (pValues != 0) {
+        for (size_t i = 0; i < pValues->GetCount(); i += 2) {
+            TPtr<CNpcSpawnData> spData(new CNpcSpawnData);
+            spData->id = atoi((*pValues)[i]);
+            spData->count = atoi((*pValues)[i + 1]);
+            pOut->Add(spData);
+        }
+        return 1;
     }
-    return 1;
+    return 0;
 }
 
 // @0x140a2afd0
