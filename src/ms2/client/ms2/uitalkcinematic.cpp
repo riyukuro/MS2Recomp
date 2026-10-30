@@ -924,7 +924,7 @@ int FUN_140855cd0(unsigned char nFlags);
 unsigned FUN_140857990(MS2Ptr<CTalkScript> spScript, int nFlags, int nNpc, int nPage);
 CCinematicContent* FUN_14085a540(MS2Ptr<CScriptContent>& sp);
 UIDialog* FUN_141386950(const CString& strDialog);                 // the dialog of a name
-class Unk_TcStrArray : public ATL::CAtlArray<void*>
+class Unk_TcStrArray : public ATL::CAtlArray<CString>   // dtor 0x1401641d0 = ~CAtlArray<CString>
 {
 public:
     CString& FUN_1401c0cc0(unsigned __int64 nIndex);

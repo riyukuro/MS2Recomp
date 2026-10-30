@@ -1,0 +1,17 @@
+313a
+        efd::SInt32 iOldSize = (efd::SInt32)stSizeCurrent;
+        efd::SInt32 iNewSize = (efd::SInt32)stSizeInBytes;
+        InterlockedExchangeAdd((volatile LONG*)&m_iLargeAllocBytes, -iOldSize);
+        InterlockedExchangeAdd((volatile LONG*)&m_iLargeAllocBytes, iNewSize);
+.
+239a
+        efd::SInt32 iSize = (efd::SInt32)stSizeInBytes;
+        InterlockedExchangeAdd((volatile LONG*)&m_iLargeAllocBytes, -iSize);
+.
+196a
+        efd::SInt32 iSize = (efd::SInt32)stSizeInBytes;
+        InterlockedExchangeAdd((volatile LONG*)&m_iLargeAllocBytes, iSize);
+.
+21a
+    , m_iLargeAllocBytes(0)
+.

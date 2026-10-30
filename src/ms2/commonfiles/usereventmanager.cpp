@@ -180,7 +180,6 @@ void CUserEventManager::Set218(MS2Ptr<Context218> spContext)
 
 #pragma warning(push)
 #pragma warning(disable : 4715)     // the exe falls off the end when the lock fails
-// MS2-FUNCTIONAL: the exe has an extra nop after the guard destructor on the failure path (falls off the end)
 // @0x1408d7700
 MS2Ptr<CUserEventManager::Context218> CUserEventManager::Get218()
 {
@@ -188,6 +187,7 @@ MS2Ptr<CUserEventManager::Context218> CUserEventManager::Get218()
         Unk_LockGuard guard(m_lock218);
         if (guard)
         {
+            __assume(0);
         }
         else
         {
@@ -209,13 +209,13 @@ void CUserEventManager::Set258(MS2Ptr<Context258> spContext)
     }
 }
 
-// MS2-FUNCTIONAL: the exe has an extra nop after the guard destructor on the failure path (falls off the end)
 // @0x1408d7820
 MS2Ptr<CUserEventManager::Context258> CUserEventManager::Get258()
 {
     Unk_LockGuard guard(m_lock258);
     if (guard)
     {
+        __assume(0);
     }
     else
     {

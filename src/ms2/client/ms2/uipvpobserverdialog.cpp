@@ -170,12 +170,12 @@ void UIPvPObserverDialog::OnLoadComplete()
 }
 
 // @0x141a91670
-// MS2-FUNCTIONAL: the exe returns the bool of FUN_140a467d0 (movzx eax,al); UIDialog's slot 79 is void
 void UIPvPObserverDialog::vfunc_79(void* pData)
 {
     UIDialog::vfunc_79(pData);
-    if (vfunc_55() == 0)
-        FUN_140a467d0(&m_30);
+    if (vfunc_55() == 0 && FUN_140a467d0(&m_30))
+    {
+    }
 }
 
 // @0x141a916d0

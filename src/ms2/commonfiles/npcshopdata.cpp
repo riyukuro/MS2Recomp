@@ -1419,6 +1419,7 @@ MS2Ptr<CNpcShopData> FUN_1406e2550(unsigned nShopId)
 {
     if (Unk_LockGuard guard = s_npcShopLock)
     {
+        __assume(0);
     }
     else
     {
@@ -2094,6 +2095,7 @@ MS2Ptr<CBeautyShopData> FUN_1406e4ef0(unsigned nShopId)
 {
     if (Unk_LockGuard guard = s_beautyShopLock)
     {
+        __assume(0);
     }
     else
     {
@@ -2242,6 +2244,7 @@ Unk_CouponItemArrayPtr FUN_1406e5af0(unsigned nShopId)
 {
     if (Unk_LockGuard guard = s_couponLock)
     {
+        __assume(0);
     }
     else
     {

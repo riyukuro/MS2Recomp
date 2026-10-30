@@ -1464,11 +1464,6 @@ TCashShopBillDataParam::TCashShopBillDataParam()
     m_b2c = true;
 }
 
-// @0x14103bec0
-TCashShopBillDataParam::~TCashShopBillDataParam()
-{
-}
-
 // @0x14103b620
 ASCashShopBillData::ASCashShopBillData()
     : ASBillData(2)

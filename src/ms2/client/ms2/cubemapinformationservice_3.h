@@ -87,6 +87,20 @@ struct Unk_CMISElem388;
 struct Unk_CMISHandle388; struct Unk_CMISHandle3a8;
 struct Unk_CMISElem3a8;
 struct Unk_CMISElem458;
+// a388 / a3a8 hold 16-byte design / blueprint handles. Their CallDestructors (0x14112dcd0 / 0x14112dc70, in tail14)
+// release each handle. Without these specializations ~CAtlArray (0x141123490 / 0x141123450) ran the pointer
+// flavour and freed the buffer without releasing the designs and blueprints.
+struct Unk_CMISHandle16;
+void FUN_14112dc70(Unk_CMISHandle16* pElements, unsigned __int64 nElements);
+void FUN_14112dcd0(Unk_CMISHandle16* pElements, unsigned __int64 nElements);
+template <> inline void ATL::CAtlArray<Unk_CMISElem388*>::CallDestructors(Unk_CMISElem388** pElements, size_t nElements) throw()
+{
+    FUN_14112dcd0(reinterpret_cast<Unk_CMISHandle16*>(pElements), nElements);
+}
+template <> inline void ATL::CAtlArray<Unk_CMISElem3a8*>::CallDestructors(Unk_CMISElem3a8** pElements, size_t nElements) throw()
+{
+    FUN_14112dc70(reinterpret_cast<Unk_CMISHandle16*>(pElements), nElements);
+}
 class CubeMapInformationService : public efd::ISystemService, public TSingleton<CubeMapInformationService>
 {
     EE_DECLARE_CLASS1(CubeMapInformationService, 0x06100017, efd::ISystemService);

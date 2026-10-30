@@ -95,9 +95,9 @@ public:
     NiAVObject* FUN_1414d4a50();                    // current object
     void FUN_14098d6d0(NiNode* pNode);              // queue the children of a node
 private:
-    void* m_pad_00; void* m_pad_08; void* m_pad_10; void* m_pad_18; void* m_pad_20; void* m_pad_28; void* m_pad_30;
+    void* m_pad_00; void* m_pad_08; void* m_pad_10; void* m_pad_18; void* m_pad_20; void* m_pad_28;
 };
-MS2_CHECK_SIZE(Unk_SceneWalker, 0x38);
+MS2_CHECK_SIZE(Unk_SceneWalker, 0x30);
 
 NiObject* FUN_14098d8d0(const NiRTTI* pkRTTI, NiObject* pkObj);     // dynamic cast by RTTI
 void* FUN_1409f7c90();                                              // the render settings singleton
@@ -295,7 +295,6 @@ Vector3 FUN_141b6e150(const Unk_UtilFloat3* pVec)
 MS2_REPLACE(0x141b6e150, FUN_141b6e150, 105, 0xB6F3C78B);
 
 // @0x141b6e1c0
-// MS2-FUNCTIONAL: return-slot spill is scheduled earlier than in the exe
 CStringA FUN_141b6e1c0(const CStringA& kInitialDir, LPCSTR pszFilter, const CStringA& kDefaultFile)
 {
     char szFile[MAX_PATH] = { 0 };
@@ -307,10 +306,10 @@ CStringA FUN_141b6e1c0(const CStringA& kInitialDir, LPCSTR pszFilter, const CStr
     ofn.hwndOwner = hWndOwner;
     ofn.lpstrFile = szFile;
     ofn.nMaxFile = MAX_PATH;
+    ofn.lpstrFilter = pszFilter;
     ofn.nFilterIndex = 0;
     ofn.lpstrFileTitle = NULL;
     ofn.nMaxFileTitle = 0;
-    ofn.lpstrFilter = pszFilter;
     ofn.lpstrInitialDir = (LPCSTR)kInitialDir;
     ofn.Flags = OFN_FILEMUSTEXIST | OFN_PATHMUSTEXIST | OFN_NOCHANGEDIR;
     CStringA kResult;
@@ -320,7 +319,6 @@ CStringA FUN_141b6e1c0(const CStringA& kInitialDir, LPCSTR pszFilter, const CStr
 }
 
 // @0x141b6e360
-// MS2-FUNCTIONAL: return-slot spill is scheduled earlier than in the exe
 CStringW FUN_141b6e360(const CStringW& kInitialDir, LPCWSTR pszFilter, const CStringW& kDefaultFile)
 {
     wchar_t szFile[MAX_PATH] = { 0 };
@@ -332,10 +330,10 @@ CStringW FUN_141b6e360(const CStringW& kInitialDir, LPCWSTR pszFilter, const CSt
     ofn.hwndOwner = hWndOwner;
     ofn.lpstrFile = szFile;
     ofn.nMaxFile = MAX_PATH;
+    ofn.lpstrFilter = pszFilter;
     ofn.nFilterIndex = 0;
     ofn.lpstrFileTitle = NULL;
     ofn.nMaxFileTitle = 0;
-    ofn.lpstrFilter = pszFilter;
     ofn.lpstrInitialDir = (LPCWSTR)kInitialDir;
     ofn.Flags = OFN_FILEMUSTEXIST | OFN_PATHMUSTEXIST | OFN_NOCHANGEDIR;
     CStringW kResult;
@@ -352,7 +350,6 @@ CStringA FUN_141b6e500(const CStringA& kInitialDir, LPCSTR pszFilter, const CStr
 MS2_REPLACE(0x141b6e500, FUN_141b6e500, 78, 0x48E5C3D5);
 
 // @0x141b6e560
-// MS2-FUNCTIONAL: return-slot spill/flags scheduling differs
 CStringA FUN_141b6e560(const CStringA& kInitialDir, LPCSTR pszFilter, const CStringA& kDefaultFile)
 {
     HWND hWndOwner = FUN_14209c720(FUN_140aadf80());
@@ -363,10 +360,10 @@ CStringA FUN_141b6e560(const CStringA& kInitialDir, LPCSTR pszFilter, const CStr
     ofn.hwndOwner = hWndOwner;
     ofn.lpstrFile = szFile;
     ofn.nMaxFile = MAX_PATH;
+    ofn.lpstrFilter = pszFilter;
     ofn.nFilterIndex = 0;
     ofn.lpstrFileTitle = NULL;
     ofn.nMaxFileTitle = 0;
-    ofn.lpstrFilter = pszFilter;
     ofn.lpstrInitialDir = (LPCSTR)kInitialDir;
     ofn.Flags = OFN_OVERWRITEPROMPT | OFN_FILEMUSTEXIST | OFN_PATHMUSTEXIST | OFN_NOCHANGEDIR;   // 0x180a, as the exe
     CStringA kResult;
@@ -376,7 +373,6 @@ CStringA FUN_141b6e560(const CStringA& kInitialDir, LPCSTR pszFilter, const CStr
 }
 
 // @0x141b6e6f0
-// MS2-FUNCTIONAL: return-slot spill/flags scheduling differs
 CStringW FUN_141b6e6f0(const CStringW& kInitialDir, LPCWSTR pszFilter, const CStringW& kDefaultFile)
 {
     HWND hWndOwner = FUN_14209c720(FUN_140aadf80());
@@ -387,10 +383,10 @@ CStringW FUN_141b6e6f0(const CStringW& kInitialDir, LPCWSTR pszFilter, const CSt
     ofn.hwndOwner = hWndOwner;
     ofn.lpstrFile = szFile;
     ofn.nMaxFile = MAX_PATH;
+    ofn.lpstrFilter = pszFilter;
     ofn.nFilterIndex = 0;
     ofn.lpstrFileTitle = NULL;
     ofn.nMaxFileTitle = 0;
-    ofn.lpstrFilter = pszFilter;
     ofn.lpstrInitialDir = (LPCWSTR)kInitialDir;
     ofn.Flags = OFN_OVERWRITEPROMPT | OFN_FILEMUSTEXIST | OFN_PATHMUSTEXIST | OFN_NOCHANGEDIR;   // 0x180a, as the exe
     CStringW kResult;
@@ -407,7 +403,6 @@ CStringA FUN_141b6e880(const CStringA& kInitialDir, LPCSTR pszFilter, const CStr
 MS2_REPLACE(0x141b6e880, FUN_141b6e880, 78, 0x33B131F5);
 
 // @0x141b6e990
-// MS2-FUNCTIONAL: temp scheduling differs
 CStringW FUN_141b6e990(const CStringW& kStartPath)
 {
     wchar_t szPath[MAX_PATH] = { 0 };
@@ -421,16 +416,18 @@ CStringW FUN_141b6e990(const CStringW& kStartPath)
     bi.lpfn = FUN_141b72310;
     bi.lParam = (LPARAM)szPath;
     LPITEMIDLIST pidl = SHBrowseForFolderW(&bi);
-    if (!SHGetPathFromIDListW(pidl, szPath))
+    if (SHGetPathFromIDListW(pidl, szPath)) {
+        return FUN_14061ad70(CStringW(szPath), L"\\");
+    } else {
         return kStartPath;
-    return FUN_14061ad70(CStringW(szPath), L"\\");
+    }
 }
 
 // @0x141b6e8e0
-// MS2-FUNCTIONAL: the converted wide temp is passed through a rax copy chain; exe passes lea of an EH-tracked temp
 CStringA FUN_141b6e8e0(const CStringA& kStartPath)
 {
-    return FUN_14016a600(FUN_141b6e990(FUN_14016a730(kStartPath, 0)), 0);
+    CStringW kWidePath = FUN_14016a730(kStartPath, 0);
+    return FUN_14016a600(FUN_141b6e990(kWidePath), 0);
 }
 
 // @0x141b6eb40
@@ -450,10 +447,10 @@ CStringW FUN_141b6ec30(const CStringW& kPath)
 MS2_REPLACE(0x141b6ec30, FUN_141b6ec30, 201, 0x1164ACCB);
 
 // @0x141b6eb80
-// MS2-FUNCTIONAL: the converted wide temp is passed through a rax copy chain; exe passes lea of an EH-tracked temp
 CStringA FUN_141b6eb80(const CStringA& kPath)
 {
-    return FUN_14016a600(FUN_141b6ec30(FUN_14016a730(kPath, 0)), 0);
+    CStringW kWidePath = FUN_14016a730(kPath, 0);
+    return FUN_14016a600(FUN_141b6ec30(kWidePath), 0);
 }
 
 // @0x141b6ed00
@@ -515,7 +512,6 @@ NiAVObject* FUN_141b6efc0(egf::Entity* pEntity)
 MS2_REPLACE(0x141b6efc0, FUN_141b6efc0, 51, 0x52369C41);
 
 // @0x141b6f000
-// MS2-FUNCTIONAL: instructions identical; our frame is 0x10 larger than the exe (0xa8 vs 0x98)
 void FUN_141b6f000(NiAVObject* pRoot, int nSlot, const Unk_Colc& kValue)
 {
     if (pRoot == NULL)
@@ -556,7 +552,6 @@ void FUN_141b6f000(NiAVObject* pRoot, int nSlot, const Unk_Colc& kValue)
 }
 
 // @0x141b6f220
-// MS2-FUNCTIONAL: instructions identical; our frame is 0x10 larger than the exe (0xa8 vs 0x98)
 void FUN_141b6f220(NiAVObject* pRoot, int nSlot, const Unk_Colc& kValue)
 {
     if (pRoot == NULL)
@@ -1187,13 +1182,12 @@ public:
     bool FUN_140d41080(int nNull);
     Unk_UtilHudDlg* FUN_140a584a0();
 private:
-    void* m_pad_00; void* m_pad_08; void* m_pad_10;
+    void* m_pad_00; void* m_pad_08;
 };
 class Unk_UtilHudMgr { public: Unk_UtilHudPtr FUN_1422b0370(int n); };
 Unk_UtilHudMgr* FUN_14025e7a0();
 
 // @0x141b71250
-// MS2-FUNCTIONAL: exe destroys the HUD handle with an explicit call and keeps no EH state slot
 void FUN_141b71250(int nValue)
 {
     if (FUN_14025e7a0() != NULL) {
@@ -1419,23 +1413,22 @@ void FUN_1414d38b0(NiRenderObject* pObj, const Unk_Colc& kColor);
 void FUN_1414d37a0(NiRenderObject* pObj, unsigned uColor);
 
 // @0x141b71d10
-// MS2-FUNCTIONAL: exe reuses one pointer slot for the tag/render/node casts; frame is 16 bytes smaller
 void FUN_141b71d10(NiAVObject* pRoot, bool bEnable, const Unk_Colc& kColor)
 {
     if (pRoot == NULL)
         return;
     Unk_SceneWalker kWalk(pRoot);
-    while (kWalk.FUN_1414d3ff0() != 0) {
+    while (kWalk.FUN_1414d3ff0() > 0) {
         NiAVObject* pCurrent = kWalk.FUN_1414d4a50();
         NiObject* pTag = FUN_14098d8d0(&DAT_143afb000, FUN_141d17b40(pCurrent, &DAT_143ae51b8));
         if (pTag != NULL && FUN_141168130(pTag)->ContainsNoCase(FUN_142087e50(&DAT_143ae50e8)))
             continue;
         NiRenderObject* pRender = (NiRenderObject*)FUN_14098d8d0(&NiRenderObject::ms_RTTI, pCurrent);
         if (pRender != NULL) {
-            if (!bEnable)
-                FUN_1414d3930(pRender);
-            else
+            if (bEnable)
                 FUN_1414d38b0(pRender, kColor);
+            else
+                FUN_1414d3930(pRender);
         }
         NiNode* pNode = (NiNode*)FUN_14098d8d0(&NiNode::ms_RTTI, pCurrent);
         if (pNode != NULL)
@@ -1444,29 +1437,27 @@ void FUN_141b71d10(NiAVObject* pRoot, bool bEnable, const Unk_Colc& kColor)
 }
 
 // @0x141b71f20
-// MS2-FUNCTIONAL: exe reuses one pointer slot for the tag/render/node casts; frame is 16 bytes smaller
 void FUN_141b71f20(NiAVObject* pRoot, bool bEnable, unsigned uColor, bool bSkipEffectRoot)
 {
     if (pRoot == NULL)
         return;
     Unk_SceneWalker kWalk(pRoot);
-    while (kWalk.FUN_1414d3ff0() != 0) {
+    while (kWalk.FUN_1414d3ff0() > 0) {
         NiAVObject* pCurrent = kWalk.FUN_1414d4a50();
         NiObject* pTag = FUN_14098d8d0(&DAT_143afb000, FUN_141d17b40(pCurrent, &DAT_143ae51b8));
         if (pTag != NULL && FUN_141168130(pTag)->ContainsNoCase(FUN_142087e50(&DAT_143ae50e8)))
             continue;
         NiRenderObject* pRender = (NiRenderObject*)FUN_14098d8d0(&NiRenderObject::ms_RTTI, pCurrent);
         if (pRender != NULL) {
-            if (!bEnable)
-                FUN_1414d3930(pRender);
-            else
+            if (bEnable)
                 FUN_1414d37a0(pRender, uColor);
+            else
+                FUN_1414d3930(pRender);
         }
         NiNode* pNode = (NiNode*)FUN_14098d8d0(&NiNode::ms_RTTI, pCurrent);
         if (pNode != NULL) {
-            if (bSkipEffectRoot && FUN_1409a8b90(pNode)->EqualsNoCase("Effect Root"))
-                continue;
-            kWalk.FUN_14098d6d0(pNode);
+            if (!bSkipEffectRoot || !FUN_1409a8b90(pNode)->EqualsNoCase("Effect Root"))
+                kWalk.FUN_14098d6d0(pNode);
         }
     }
 }

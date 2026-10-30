@@ -34,13 +34,20 @@ public:
 };
 MS2_CHECK_SIZE(Unk_GeActRef, 0x10);
 
+// An action held by Unk_GeActList: destroying it releases the action (MS2Ptr<CGuideAction> dtor 0x141387630).
+class Unk_GeActElem : public Unk_GeActRef
+{
+public:
+    ~Unk_GeActElem() { FUN_141387630(); }
+};
+
 class Unk_GeActList
 {
 public:
     unsigned __int64 FUN_1413886c0();                             // count
     Unk_GeActRef& FUN_141387b00(size_t nIdx);               // the nth
     void FUN_1413883b0(const Unk_GeActRef& ref);            // append
-    CAtlArray<void*> m_arr;
+    CAtlArray<Unk_GeActElem> m_arr;                         // dtor 0x141387590 releases the actions
 };
 MS2_CHECK_SIZE(Unk_GeActList, 0x20);
 

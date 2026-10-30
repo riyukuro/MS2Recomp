@@ -59,7 +59,7 @@ UIItemBlueprintCreateDialog* FUN_1418a6920();                   // the create di
 bool FUN_140a467d0(const MS2Ptr<AScript>* pScript);             // the movie root is not loaded
 void FUN_14151f200();
 bool FUN_1403b3c40(const CStringW& str, const wchar_t* sz);     // str == sz
-bool FUN_140d74e80(CStringW& tag);                              // a "terms" message box tag answered with yes
+int FUN_140d74e80(CStringW& tag);                               // a "terms" message box tag answered with yes
 void FUN_140d74640(void* p, int nBit, int nIdA, int nIdB);
 void FUN_140d73bc0(int nStrId, int nType, void* p, CStringW tag);
 void FUN_141275260(int nStringId, int nA, int nB);

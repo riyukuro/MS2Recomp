@@ -2317,7 +2317,7 @@ bool Unk_TransformLess::operator()(const NiTransform& kA, const NiTransform& kB)
 
 // Builds the merged mesh of one group: concatenated indices and vertices, one submesh per bone bucket (0x14104f460, the twin of 0x14104ae20 with the index and vertex merge expanded in place).
 // @0x14104f460
-// MS2-FUNCTIONAL: the exe expands the index/vertex merge helpers in place; this twin calls them
+// MS2-FUNCTIONAL: the exe expands the index merge helper in place; this twin calls it
 NiMesh* FUN_14104f460(const MeshGroups& kBuckets, MergeInfo& kInfo, NiAVObject* pRoot)
 {
     unsigned int uiBucketCount = (unsigned int)kBuckets.size();
@@ -2329,11 +2329,104 @@ NiMesh* FUN_14104f460(const MeshGroups& kBuckets, MergeInfo& kInfo, NiAVObject* 
 
     NiMesh* pMerged = NiNew NiMesh;
     NiMesh* pFirst = kBuckets[0][0];
-    NiTransform kRootTransform = pRoot->GetWorldTransform();
+    NiTransform kInverseRoot;
+    pRoot->GetWorldTransform().Invert(kInverseRoot);
     pMerged->SetPrimitiveType(pFirst->GetPrimitiveType());
     pMerged->SetSubmeshCount((unsigned int)kBuckets.size());
     FUN_14104b530(pMerged, kBuckets);
-    FUN_14104bbb0(pMerged, kInfo, kBuckets, kRootTransform);
+
+    // Unlike 0x14104ae20 no vertex is transformed or interleaved: each vertex stream of the first mesh keeps its layout, the
+    // matching stream of every other mesh is appended as is, and only the blend indices are remapped.
+    unsigned int uiStreams = pFirst->GetStreamRefCount();
+    for (unsigned int uiStream = 0; uiStream < uiStreams; uiStream++)
+    {
+        NiDataStreamRef* pFirstRef = pFirst->GetStreamRefAt(uiStream);
+        if (pFirstRef->GetUsage() != NiDataStream::USAGE_VERTEX)
+            continue;
+        NiDataStreamRef* pMergedRef = FUN_141051210(pFirstRef, iVertices);
+        unsigned char* pDst = (unsigned char*)pMergedRef->GetDataStream()->Lock(10);
+        unsigned char* pSrc = (unsigned char*)pFirstRef->GetDataStream()->Lock(5);
+        unsigned int uiWritten = 0;
+        unsigned int uiBytes = pFirst->GetVertexCount() * pFirstRef->GetStride();
+        efd::Memcpy(pDst, pMergedRef->GetStride() * iVertices, pSrc, uiBytes);
+        uiWritten += uiBytes;
+        unsigned int uiBlend = pMergedRef->FindElementDescIndex(NiCommonSemantics::BLENDINDICES(), 0);
+        if (uiBlend != (unsigned int)-1)
+        {
+            efd::map<unsigned char, unsigned char>& kMeshRemap = kInfo.m_kBoneRemap[pFirst];
+            efd::map<unsigned char, unsigned char>& kBucketRemap = kInfo.m_kBucketRemap[0];
+            unsigned char* pBlend = pDst + pMergedRef->GetElementDescAt(uiBlend).GetOffset();
+            for (unsigned int v = 0; v < pFirst->GetVertexCount(); v++)
+            {
+                for (unsigned int c = 0; c < 4; c++)
+                {
+                    unsigned char ucMerged = kMeshRemap[pBlend[c]];
+                    pBlend[c] = kBucketRemap[ucMerged];
+                }
+                pBlend += pMergedRef->GetStride();
+            }
+        }
+        pFirstRef->GetDataStream()->Unlock(5);
+        for (unsigned int uiBucket = 0; uiBucket < uiBucketCount; uiBucket++)
+        {
+            const MeshList& kList = kBuckets[uiBucket];
+            unsigned int uiMeshes = (unsigned int)kList.size();
+            for (unsigned int uiMesh = 0; uiMesh < uiMeshes; uiMesh++)
+            {
+                if (uiBucket == 0 && uiMesh == 0)
+                    continue;
+                NiDataStreamRef* pSourceRef = 0;
+                for (unsigned int i = 0; i < kList[uiMesh]->GetStreamRefCount(); i++)
+                {
+                    pSourceRef = kList[uiMesh]->GetStreamRefAt(i);
+                    if (FUN_1410513b0(pSourceRef, pFirstRef))
+                        break;
+                }
+                pSrc = (unsigned char*)pSourceRef->GetDataStream()->Lock(5);
+                uiBytes = kList[uiMesh]->GetVertexCount() * pSourceRef->GetStride();
+                efd::Memcpy(pDst + uiWritten, pMergedRef->GetStride() * iVertices - uiWritten, pSrc, uiBytes);
+                unsigned int uiOffset = uiWritten;
+                uiWritten += uiBytes;
+                uiBlend = pMergedRef->FindElementDescIndex(NiCommonSemantics::BLENDINDICES(), 0);
+                if (uiBlend != (unsigned int)-1)
+                {
+                    efd::map<unsigned char, unsigned char>& kMeshRemap = kInfo.m_kBoneRemap[kList[uiMesh]];
+                    efd::map<unsigned char, unsigned char>& kBucketRemap = kInfo.m_kBucketRemap[uiBucket];
+                    unsigned char* pBlend = pDst + uiOffset + pMergedRef->GetElementDescAt(uiBlend).GetOffset();
+                    for (unsigned int v = 0; v < kList[uiMesh]->GetVertexCount(); v++)
+                    {
+                        for (unsigned int c = 0; c < 4; c++)
+                        {
+                            unsigned char ucMerged = kMeshRemap[pBlend[c]];
+                            pBlend[c] = kBucketRemap[ucMerged];
+                        }
+                        pBlend += pMergedRef->GetStride();
+                    }
+                }
+                pSourceRef->GetDataStream()->Unlock(5);
+            }
+        }
+        pMergedRef->GetDataStream()->Unlock(10);
+        pMergedRef->SetSubmeshCount(uiBucketCount, 0);
+        int iStart = 0;
+        for (unsigned int i = 0; i < uiBucketCount; i++)
+        {
+            int iCount = 0;
+            const MeshList& kList = kBuckets[i];
+            unsigned int uiMeshes = (unsigned int)kList.size();
+            for (unsigned int j = 0; j < uiMeshes; j++)
+                iCount += kList[j]->GetVertexCount();
+            NiDataStream::Region kRegion(iStart, iCount);
+            if (i == 0)
+                pMergedRef->GetDataStream()->SetRegion(kRegion, 0);
+            else
+                pMergedRef->GetDataStream()->AddRegion(kRegion);
+            iStart += iCount;
+            pMergedRef->BindRegionToSubmesh(i, i);
+        }
+        pMerged->AddStreamRef(pMergedRef);
+        NiDelete pMergedRef;
+    }
 
     if (kInfo.m_spSkin != 0)
     {
@@ -2398,8 +2491,8 @@ NiMesh* FUN_14104f460(const MeshGroups& kBuckets, MergeInfo& kInfo, NiAVObject* 
         pMerged->AddExtraData(pFirst->GetExtraDataAt(us));
     pMerged->SetEffectState(pFirst->GetEffectState());
     pMerged->UpdateProperties();
-    pMerged->CompleteUpdateModifiers();
     pMerged->UpdateEffects();
+    pMerged->CompleteUpdateModifiers();
     pMerged->Update(0.0, true);
     return pMerged;
 }

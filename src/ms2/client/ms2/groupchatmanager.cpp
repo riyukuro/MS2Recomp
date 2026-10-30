@@ -504,10 +504,9 @@ void CGroupChatManager::FUN_14137e6f0(__int64 characterId, ATL::CAtlList<unsigne
 }
 MS2_REPLACE_METHOD(0x14137E6F0, CGroupChatManager, FUN_14137e6f0, 283, 0x5D985D4A);
 // @0x14137e820
-// MS2-FUNCTIONAL: missing trailing nop after guard dtor call
 int CGroupChatManager::FUN_14137e820() {
     Unk_LockGuard guard = m_lock;
-    if (guard) {} else { return (int)m_chats.GetCount(); }
+    if (guard) { __assume(0); } else { return (int)m_chats.GetCount(); }
 }
 MS2_REPLACE_METHOD(0x14137E820, CGroupChatManager, FUN_14137e820, 110, 0x8ACB80F7);
 // @0x14137e8a0

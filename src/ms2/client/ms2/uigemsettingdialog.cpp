@@ -18,7 +18,7 @@
 
 // ---- unit-local views of exe types ----
 
-// The check box child (value at FUN_1422ce0e0, set at FUN_1422ce090) and the handle it is returned in (24 bytes).
+// The check box child (value at FUN_1422ce0e0, set at FUN_1422ce090) and the handle it is returned in (16 bytes).
 class Unk_GsCheck { public: bool FUN_1422ce0e0(); void FUN_1422ce090(int checked); };
 class Unk_GsHandle
 {
@@ -29,7 +29,7 @@ public:
     Unk_GsCheck* FUN_140a58490();                               // operator->
 private:
     Unk_GsCheck* m_p;
-    void* m_pad[2];                                             // the exe reserves 24 bytes for the handle
+    void* m_pad;                                                // the exe reserves 16 bytes for the handle
 };
 class Unk_GsEntity : public UIDialog { public: Unk_GsHandle FUN_140e52670(const CString& strName); };
 

@@ -1910,7 +1910,7 @@ struct Unk_CMISPartyRef                                                         
     Unk_CMISParty* FUN_14050dee0();                                                         // operator->
 };
 MS2_CHECK_SIZE(Unk_CMISPartyRef, 0x10);
-struct Unk_CMISSalable { Unk_CMISSalable(); ~Unk_CMISSalable(); void* m_pad0[4]; int m_nField20; int m_pad24; void* m_pad28[15]; void* m_pField0xa0; void* m_pad1[3]; };   // 0xc0 like Unk_UGCGroup; ctor 0x1408ad110, dtor 0x14050de70
+struct Unk_CMISSalable { Unk_CMISSalable(); ~Unk_CMISSalable(); void* m_pad0[4]; int m_nField20; int m_pad24; void* m_pad28[15]; int m_nHideEmoticon; unsigned m_nTrophyId; void* m_pad1[3]; };   // 0xc0 like Unk_UGCGroup; ctor 0x1408ad110, dtor 0x14050de70
 int FUN_1408a0d30(int, Unk_CMISSalable*, int);
 // @0x1410c80d0
 bool CubeMapInformationService::FUN_1410c80d0(int nGroup)
@@ -3430,7 +3430,7 @@ void CubeMapInformationService::FUN_1410bbf20(int nGroup, const egf::EntityID& i
     FUN_141128470(&spInfo)->m_nGroup = nGroup;
     FUN_141128470(&spInfo)->m_pt = pt;
     FUN_141128470(&spInfo)->m_strOwner = strOwner;
-    FUN_141128470(&spInfo)->m_bNoSalable = salable.m_pField0xa0 == 0;
+    FUN_141128470(&spInfo)->m_bNoSalable = salable.m_nHideEmoticon == 0;
     FUN_141128470(&spInfo)->m_nValue = salable.m_nField20;
     FUN_141126140(FUN_141127c50(&f238, &nGroup), &spInfo);
     Unk_CMISHouseMark* pMark = FUN_1410dc020();
@@ -3464,8 +3464,8 @@ struct Unk_CMISWorldBind { int FUN_141bbb1e0(Unk_CMISDoll* pObj, int bFullInit, 
 void* FUN_14121b350(void* pMem);                                // FittingDollPC::FittingDollPC
 void* FUN_140876480(void* out, int cat);   void* FUN_14208a860(unsigned __int64 size, unsigned cat);
 struct Unk_CMISItemElem { char m_pad[0x18]; };
-unsigned FUN_140720ca0(void* pArr);
-void* FUN_140a69ee0(void* pArr, unsigned nIdx);
+size_t FUN_140720ca0(void* pArr);
+void* FUN_140a69ee0(void* pArr, size_t nIdx);
 Unk_CMISItemElem* FUN_1402034d0(Unk_CMISItemElem* pOut, void* pSrc);
 void FUN_1401bfde0(Unk_CMISItemElem* p);
 
@@ -3509,7 +3509,7 @@ egf::EntityPtr CubeMapInformationService::FUN_1410bc3d0(Unk_CMISBlock rec)
     if (pc->FUN_14121bab0(r->m_nSlot) == 0)
         return egf::EntityPtr(0);
     if (r->m_bItems != 0) {
-        for (unsigned i = 0; i < FUN_140720ca0(r->m_items); i++) {
+        for (size_t i = 0; i < FUN_140720ca0(r->m_items); i++) {
             Unk_CMISItemElem e;
             FUN_1402034d0(&e, FUN_140a69ee0(r->m_items, i));
             Unk_CMISItemElem tmp;                               // the by-value argument copy; the callee destroys it
@@ -4084,7 +4084,7 @@ void CubeMapInformationService::FUN_1410d0e30(egf::Entity* pEntity, MS2Ptr<Cube>
 }
 
 // ---- w138 batch 22 ----
-void FUN_1412314e0(Unk_CMISMagicCube*, Vector3 ptPos, ATL::CAtlArray<void*>* pOut);   // the objects around a point
+void FUN_1412314e0(Unk_CMISMagicCube*, Vector3 ptPos, ATL::CAtlArray<Unk_CMISSlot>* pOut);   // the objects around a point (MS2Ptr<CFunctionCubeObject>)
 int FUN_14112e290(Unk_CMISObj498*);                                                         // the object kind (1 = cube)
 bool FUN_141126b90(Unk_PayloadPtr<NoticeCubeInfo>*, int);                                   // operator==
 void* FUN_1411284a0(Unk_PayloadPtr<NoticeCubeInfo>*);                                       // operator->
@@ -4106,11 +4106,13 @@ void CubeMapInformationService::FUN_1410c8e40()
     if (pPawn == 0)
         return;
     Vector3 ptPawn = pPawn->FUN_1416767d0();
-    ATL::CAtlArray<void*> aNear;
+    // The near objects are 16-byte MS2Ptr<CFunctionCubeObject> handles: GetAt steps by 16 (0x141127a10) and the
+    // array dtor (0x141123410) releases each one.
+    ATL::CAtlArray<Unk_CMISSlot> aNear;
     FUN_1412314e0(FUN_1409670b0(), ptPawn, &aNear);
     Unk_CMISTree<284> found;
     for (unsigned __int64 i = 0; i < aNear.GetCount(); i++) {
-        Unk_CMISSlot slot(*reinterpret_cast<Unk_CMISSlot*>(&aNear.GetAt(i)));
+        Unk_CMISSlot slot(aNear.GetAt(i));
         if (FUN_14112e290(FUN_1409658e0(&slot)) == 1) {
             MS2Ptr<Cube> spCube(FUN_1410b8b00(FUN_14112e110(FUN_1409658e0(&slot))));
             if (!spCube.IsNull()) {
@@ -5868,8 +5870,12 @@ void FUN_1403416e0(Unk_CMISTree<286>*);                                         
 void FUN_14114f220(Unk_CMISTree<283>*);                                                     // clear
 void FUN_1408ac410(Unk_CubeOwners*);                                                        // clear
 void FUN_140b68e90(Unk_CMISFlags3*);                                                        // reset
-void FUN_14112f280(ATL::CAtlArray<Unk_CMISElem388*>*);                                      // RemoveAll
-void FUN_14112f260(ATL::CAtlArray<Unk_CMISElem3a8*>*);                                      // RemoveAll
+// The two arrays hold 16-byte payload handles: the exe RemoveAll runs each element's dtor (0x14112dc70 / 0x14112dcd0).
+// Declared on tail14's Unk_CMISArr16 so the fullexe links its definitions; a CAtlArray<T*> declaration aliased to the
+// pointer-array RemoveAll, which freed the buffer without releasing the designs and blueprints.
+struct Unk_CMISArr16;
+void FUN_14112f280(Unk_CMISArr16*);                                                         // RemoveAll
+void FUN_14112f260(Unk_CMISArr16*);                                                         // RemoveAll
 struct Unk_CMISActorEntry { Unk_CMISEntityRef m_key; void* m_pActor; };                     // node value of f48
 Unk_CMISIter<257>* FUN_14114e320(Unk_CMISTree<257>*, Unk_CMISIter<257>*);                   // begin
 Unk_CMISActorEntry* FUN_141128740(Unk_CMISIter<257>*);                                      // operator*
@@ -5941,8 +5947,8 @@ void CubeMapInformationService::FUN_1410d0310()
         *FUN_1411282d0(&f368, &i) = 0;
     for (int i = 0; i < 9; i++)
         *FUN_141128250(&f378, &i) = 0;
-    FUN_14112f280(&a388);
-    FUN_14112f260(&a3a8);
+    FUN_14112f280(reinterpret_cast<Unk_CMISArr16*>(&a388));
+    FUN_14112f260(reinterpret_cast<Unk_CMISArr16*>(&a3a8));
     FUN_14114fae0(&f3c8);
     FUN_14114f400(&f1e8);
     FUN_14114f5e0(&f298);

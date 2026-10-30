@@ -515,8 +515,9 @@ void UIManufactureStatus::OnLoadComplete()
 void UIManufactureStatus::vfunc_79(void* p)
 {
     UIDialog::vfunc_79(p);
-    if (vfunc_55() == 0)
-        m_30.IsNull();
+    if (vfunc_55() == 0 && m_30.IsNull())
+    {
+    }
 }
 
 // @0x1412dbd00

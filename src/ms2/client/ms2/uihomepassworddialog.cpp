@@ -117,12 +117,12 @@ void UIHomePasswordDialog::OnLoadComplete()
 }
 
 // @0x1412c9030
-// MS2-FUNCTIONAL: the exe's vfunc_79 returns the IsNull result (base slot is declared void)
 void UIHomePasswordDialog::vfunc_79(void* p)
 {
     UIDialog::vfunc_79(p);
-    if (vfunc_55() == 0)
-        m_30.IsNull();
+    if (vfunc_55() == 0 && m_30.IsNull())
+    {
+    }
 }
 
 // @0x1412c9090

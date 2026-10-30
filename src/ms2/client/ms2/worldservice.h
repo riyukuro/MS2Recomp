@@ -133,10 +133,23 @@ struct Unk_WsPod8 { unsigned char raw[8]; };
 struct Unk_WsPod16 { unsigned char raw[16]; };
 struct Unk_WsPod24 { unsigned char raw[24]; };
 struct Unk_WsPod32 { unsigned char raw[32]; };
+class CProxyObject;
+// m_890 (+0x890, 0x38 bytes): proxyobject.cpp's Unk_ProxyMgr (the proxies by entity id). Its ctor 0x1416c3150 and dtor
+// 0x1416c3190 are that unit's: the dtor runs ~CRBMap<EntityID, SmartPointer<CProxyObject>> (0x1416c3b10), which
+// releases every proxy. worldservice_tail.h's Unk_WsProxyMgr is the same layout.
+class Unk_WsProxies
+{
+public:
+    Unk_WsProxies();                                    // 0x1416c3150
+    ~Unk_WsProxies();                                   // 0x1416c3190
+
+    ATL::CRBMap<egf::EntityID, efd::SmartPointer<CProxyObject> > m_proxies;   // +0x00
+    int m_nEnabled;                                     // +0x30
+};
 // Per-member value stand-ins: every container member of the exe instantiates its own template family (distinct ctor/dtor
 // COMDATs per member, see the VAs in the member comments), so each gets its own type of the proven size. Replace one
 // with the real class when proven (same size only).
-struct Unk_WsV058 { void* p; };
+struct Unk_WsV058 { void* p; ~Unk_WsV058(); };          // the prop reference: the node dtor 0x141bf60a0 releases it (0x140ae16b0)
 struct Unk_WsV0b8 { void* p; };
 struct Unk_WsV0e8 { void* p; };
 struct Unk_WsV118 { GameObject* p; };                     // an 8-byte intrusive pointer to the world object (player/npc/monster/pet; slot 2 = Release)
@@ -151,7 +164,9 @@ struct Unk_WsV1d8                                      // proven by FUN_141bbfe3
     int m_group;                                        // +0x18 (key of m_1e8)
     int m_pad_1c;
 };
-struct Unk_WsV1f8 { unsigned char raw[16]; };
+// m_1f8 value: pair<egf::EntityID, unsigned> (WsReal::Map1f8). It must be 8-aligned: the tree nodes are 0x38 bytes with the
+// key at +0x20 (the exe's _Buyheadnode 0x141bb1990 allocates 0x38), as the real-typed try_emplace (0x141beef50) builds them.
+struct Unk_WsV1f8 { unsigned __int64 m_entityId; unsigned m_grid; };
 struct Unk_WsV208 { void* p0; void* p1; };
 struct Unk_WsV2e8 { void* p; };
 struct Unk_WsV2f8 { void* p0; void* p1; };
@@ -662,8 +677,7 @@ public:
     Vector3 m_boundsMax;                           // +0x82c (-FLT_MAX x3)
     std::set<egf::EntityID> m_838;                      // +0x838 0x140a15e30 / 0x140a16650 (shared)
     ATL::CAtlMap<unsigned, Unk_WsV848> m_848;            // +0x848 0x141bef440 / 0x141bf49e0
-    ATL::CRBMap<unsigned, Unk_WsPod8> m_890;            // +0x890 with m_8c0: one 0x38-byte CRBTree-derived class (ctor 0x1416c3150 = base(10) + [+0x30]=0, dtor 0x1416c3190, other obj) TYPE?
-    int m_8c0;                                          // +0x8c0 (part of the m_890 class)
+    Unk_WsProxies m_890;                                // +0x890 (0x38) ctor 0x1416c3150, dtor 0x1416c3190
     Unk_WsDeletable* m_8c8;                             // +0x8c8 owned, deleted in OnShutdown
     Unk_WsDeletable* m_8d0;                             // +0x8d0 owned, deleted in OnShutdown
     Vector3 m_8d8;                                 // +0x8d8 (0,0,0)

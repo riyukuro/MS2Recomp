@@ -272,9 +272,8 @@ LONG Unk_CrashDumper::Write(EXCEPTION_POINTERS* pException)
 // MS2-PIN: ?Write@Unk_CrashDumper@@QEAAJPEAU_EXCEPTION_POINTERS@@@Z 0x141808270
 // MS2-PIN: ??__Es_crashDumper@@YAXXZ 0x1401073f0
 // MS2-PIN: ??__Fs_crashDumper@@YAXXZ 0x142cb9920
-// MS2-FUNCTIONAL: efd::SmallObjectAllocator / ExternalMemAllocator below are MS2-modified in the exe (object size 0x7020,
-// a lock-add counter at +0x7018, Allocate throws bad_alloc on null); the stock Gamebryo headers are compiled, so the
-// SmallObjectAllocator ctor/??_G/Allocate/Deallocate/Reallocate and CreateDefaultGlobalMemoryAllocator are functional.
+// efd::SmallObjectAllocator is MS2-modified in the exe (object size 0x7020, a lock-add counter of large-allocation bytes
+// at +0x7018 that nothing reads); engine-patches/ carries that change (m_iLargeAllocBytes).
 // MS2-PIN: ??0?$SmallObjectAllocator@VExternalMemAllocator@efd@@@efd@@QEAA@_K@Z 0x141803420
 // MS2-PIN: ??0CComCriticalSection@ATL@@QEAA@XZ 0x141803660
 // MS2-FUNCTIONAL ??0CComCriticalSection@ATL@@QEAA@XZ: the exe's copy zeroes m_sec through a memset call; the stock ATL ctor inlines it (rep stosb), same effect

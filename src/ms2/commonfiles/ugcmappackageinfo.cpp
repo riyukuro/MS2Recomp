@@ -86,11 +86,6 @@ static Unk_Int3* FUN_1408ba3b0(Unk_Int3* out, CString& text)
     return out;
 }
 
-// @0x1408ba5d0
-UGCMapPackageInfo::~UGCMapPackageInfo()
-{
-}
-
 // @0x1408b98f0
 void UGCMapPackageInfo::FUN_1408b98f0(void* pXmlNode)
 {

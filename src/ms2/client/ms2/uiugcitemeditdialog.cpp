@@ -233,7 +233,6 @@ class CLimitCharRotate : public CPtred
 {
 public:
     CLimitCharRotate(float fMin, float fMax);
-    ~CLimitCharRotate();
     float FUN_141b49d40(float fAngle, float fDelta, float fCurrent, float fFallback);   // limits the rotation
     bool FUN_141b49f30(const std::pair<float, float>* pRange, float fAngle);            // the angle is inside the range
     std::pair<float, float> m_range;                            // +0x18 the allowed angles (normalized)
@@ -2587,11 +2586,6 @@ ItemPreviewCommon::CLimitCharRotate::CLimitCharRotate(float fMin, float fMax)
     m_bLimited = true;
     m_limit.first = m_range.second;
     m_limit.second = m_range.first;
-}
-
-// @0x141b4a010
-ItemPreviewCommon::CLimitCharRotate::~CLimitCharRotate()
-{
 }
 
 // @0x141b49d40

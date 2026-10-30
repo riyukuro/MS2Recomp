@@ -158,10 +158,12 @@ void UIHomeSaveSlotDialog::OnLoadComplete()
 MS2_REPLACE_METHOD(0x140FA9FB0, UIHomeSaveSlotDialog, OnLoadComplete, 78, 0xADF43989);
 
 // @0x140faa010
-// MS2-FUNCTIONAL: the exe returns (vfunc_55() ? that value : m_30 == 0) as a bool; the shared slot 79 is declared void
 void UIHomeSaveSlotDialog::vfunc_79(void* p)
 {
     UIDialog::vfunc_79(p);
+    if (vfunc_55() == 0 && !m_30)
+    {
+    }
 }
 
 // @0x140faa070

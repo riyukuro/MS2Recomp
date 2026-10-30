@@ -760,7 +760,7 @@ bool CNifEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTarget)
         m_fDuration = FUN_14154b470();
     }
     float fNow = (float)FUN_14086d260()->FUN_141473280();
-    static_cast<NiNode*>(FUN_1409475f0(&m_spTarget))->AttachChild(static_cast<NiAVObject*>(FUN_1409475d0(&m_spRoot)), false);
+    static_cast<NiNode*>(FUN_1409475f0(&m_spTarget))->AttachChild(static_cast<NiAVObject*>(FUN_1409475d0(&m_spRoot)), true);
     NiAVObject* pTop = static_cast<NiAVObject*>(FUN_1409475d0(&m_spTarget));
     while (pTop->GetParent() != 0)
         pTop = pTop->GetParent();
@@ -2284,6 +2284,7 @@ void CNifLoadingService::LogCounts()
 MS2_REPLACE_METHOD(0x141556610, CNifLoadingService, LogCounts, 500, 0xD41A024D);
 
 extern NiTexture::FormatPrefs DAT_1439fc800;                        // NiSourceTexture's default format preferences
+NiPointer<NiSourceTexture> FUN_141d33530(NiPixelData* pPixels, const NiTexture::FormatPrefs& kPrefs, bool bStatic);   // NiSourceTexture::Create_ThreadSafe (smart pointer: hidden return in rcx)
 
 // A copy of the default format preferences.
 // @0x14155d6d0
@@ -2646,7 +2647,7 @@ efd::SmartPointer<NiSourceTexture> CNifLoadingService::CreateTexture(CString str
             spCached->m_dLastUse = FUN_14086d260()->FUN_141473280();
             return static_cast<NiSourceTexture*>(static_cast<NiTexture*>(spCached->m_spData));
         }
-        efd::SmartPointer<NiSourceTexture> spTexture = NiSourceTexture::Create(FUN_140a5ac70(&spPixels), DAT_1439fc800, true);
+        efd::SmartPointer<NiSourceTexture> spTexture = FUN_141d33530(FUN_140a5ac70(&spPixels), DAT_1439fc800, true);
         if (spTexture == 0)
             return 0;
         spCached = EE_NEW CCachedTexture;

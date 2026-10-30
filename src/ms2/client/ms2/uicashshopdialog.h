@@ -65,7 +65,6 @@ class TCashShopBillDataParam : public TMarketBillDataParam
 {
 public:
     TCashShopBillDataParam();                                       // 0x14103ba30
-    virtual ~TCashShopBillDataParam();                              //  0 0x14103bec0 (??_G 0x14103c420)
 };
 MS2_CHECK_SIZE(TCashShopBillDataParam, 0xe0);
 

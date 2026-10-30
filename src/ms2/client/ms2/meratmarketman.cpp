@@ -1784,9 +1784,8 @@ CStringW CMeratMarketMan::FUN_140d5a330(int nError, MS2Ptr<CPendingBuyBase> spBu
 // @0x140d5b170
 int CMeratMarketMan::FUN_140d5b170()
 {
-    if (Unk_LockGuard lock = m_lock) {} else
+    if (Unk_LockGuard lock = m_lock) { __assume(0); } else
         return FUN_1406a50b0(m_products);
-    return 0;
 }
 
 // Can the product be bought (a UGC product always can)?

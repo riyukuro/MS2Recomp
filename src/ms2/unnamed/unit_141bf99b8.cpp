@@ -733,6 +733,23 @@ bool FUN_141c072e0(void* map, CString& key, MS2Ptr<Unk_WsB_Lift>& out)
 // MS2-FUNCTIONAL: the member of the map worldservice_1 passes (m_540)
 void* FUN_141bfead0(void* map) { return static_cast<ATL::CRBMap<int, Unk_WsV540>*>(map)->GetHeadPosition(); }
 
+// The three below are needed because the tplpin rows that name these VAs are lookalikes with a different node layout:
+// 0x141bfeaf0 is pinned as CRBTree<unsigned, Unk_WsV0e8> (left link at +0x18, the exe reads +0x20), 0x141bfeb30 as
+// CRBTree<unsigned, Unk_WsV708> (+0x20, the exe reads +0x18) and 0x141bfebb0 as CRBTree<int, Unk_WsV540>::GetTailPosition
+// (Maximum, the exe is Minimum at +0x18). Without a definition the fullexe took those instances, so every m_0e8 loop
+// started at the largest key and visited one entry.
+// MS2-FUNCTIONAL: the member of the map worldservice_1 passes (m_570)
+void* FUN_141bfeaf0(void* map) { return static_cast<ATL::CRBMap<int, Unk_WsV570>*>(map)->GetHeadPosition(); }
+
+// MS2-FUNCTIONAL: the member of the map worldservice_1 passes (m_0e8)
+void* FUN_141bfeb30(ATL::CRBMap<unsigned, Unk_WsV0e8>* map) { return map->GetHeadPosition(); }
+
+// MS2-FUNCTIONAL: the member of the map worldservice_1 passes (m_0e8)
+void* FUN_141bfeb30(void* map) { return FUN_141bfeb30(static_cast<ATL::CRBMap<unsigned, Unk_WsV0e8>*>(map)); }
+
+// MS2-FUNCTIONAL: the member of the map worldservice_1 passes (m_5e8)
+void* FUN_141bfebb0(void* map) { return static_cast<ATL::CRBMap<CString, Unk_WsV5e8>*>(map)->GetHeadPosition(); }
+
 // MS2-FUNCTIONAL: the member of the map worldservice_1 passes (m_6d8)
 void* FUN_141bfeb70(void* map) { return static_cast<ATL::CRBMap<unsigned __int64, Unk_WsV6d8>*>(map)->GetHeadPosition(); }
 

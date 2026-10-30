@@ -33,7 +33,8 @@ LOOKALIKE_HOW = ("auto-order", "auto-leaf", "auto-guess")
 
 
 def split_top(d):
-    """(class instance, function name, parameter count) of a demangled member function, None for anything else"""
+    """(class instance, function name, parameter count, cv/ref qualifiers) of a demangled member function, None for anything
+    else. The qualifiers (" const", " &", ...) keep end() and end() const apart: they are separate copies in the exe"""
     dep = 0
     for i, ch in enumerate(d):
         dep += (ch == "<") - (ch == ">")
@@ -53,11 +54,14 @@ def split_top(d):
     if last < cut:
         return None
     cls, fn = q[:last - cut], q[last - cut + 2:]
-    dep, n = 0, 1
-    for ch in params:
+    dep, n, quals = 0, 1, ""
+    for j, ch in enumerate(params):
+        if ch == ")" and dep == 0:
+            quals = " ".join(w for w in params[j + 1:].split() if w in ("const", "volatile", "&", "&&"))
+            break
         dep += (ch in "<(") - (ch in ">)")
         n += ch == "," and dep == 0
-    return cls, fn, n
+    return cls, fn, n, quals
 
 
 _exe = []
@@ -86,16 +90,16 @@ def lookalike_order(results):
             continue
         dm = subprocess.run(["llvm-undname"], input="\n".join(names) + "\n", capture_output=True, text=True).stdout.split("\n")
         dm = [l for l in dm if l.strip()]
-        fam = collections.defaultdict(dict)       # (class base, fn, nparams) -> {class instance: (va, how)}
+        fam = collections.defaultdict(dict)       # (class base, fn, nparams, quals) -> {class instance: (va, how)}
         for n, d in zip(names, dm[1::2] if len(dm) == 2 * len(names) else dm):
             t = split_top(d)
             if t and "<" in t[0]:
-                cls, fn, np_ = t
-                fam[(cls.split("<")[0], fn, np_)].setdefault(cls, (pairs[n]["va"], pairs[n]["how"]))
+                cls, fn, np_, quals = t
+                fam[(cls.split("<")[0], fn, np_, quals)].setdefault(cls, (pairs[n]["va"], pairs[n]["how"]))
         bybase = collections.defaultdict(list)
-        for (base, fn, np_), inst in fam.items():
+        for (base, fn, np_, quals), inst in fam.items():
             if len(inst) > 1 and len({v for v, _ in inst.values()}) == len(inst):
-                bybase[base].append((fn, np_, [c for c, _ in sorted(inst.items(), key=lambda x: x[1][0])], inst))
+                bybase[base].append((fn + (" " + quals if quals else ""), np_, [c for c, _ in sorted(inst.items(), key=lambda x: x[1][0])], inst))
         for base, fams in bybase.items():
             nm = [f for f in fams if any(h in LOOKALIKE_HOW for _, h in f[3].values())]
             ev = [f for f in fams if f not in nm]
@@ -182,6 +186,9 @@ if REFRESH:
     # depend on that run (a filtered run attributes other units differently; the full build links master's objs), and
     # dropping a row the full build still reports fails latest.sh (fea63d3b8 questmanager_2, c972fc284 sfr_cri_02). A
     # row the source no longer pins goes. An extra row only loosens the strict check; a missing one breaks the build.
+    # A refreshed unit's "look-alike order" row is never dropped here: a per-unit gate can pair the family differently
+    # from the full build, and 73c75053e dropped cubemapinformationservice_tail3's std::_Tree row that the full build
+    # still reported (latest red at cde7a3643, re-allowed in 7f2bf10f4). Only --write-allow after a full build removes one.
     srcpins = {}
     def pinned(u):
         if u not in srcpins:
@@ -197,9 +204,11 @@ if REFRESH:
         m = re.search(r"MS2-PIN ([^\s:]+)", kx[1])
         if u in units and kx not in cur and kx[0].startswith("pin ") and m and m.group(1) in pinned(u):
             held.append(kx)
+        elif u in units and kx not in cur and kx[0] == "look-alike order":
+            held.append(kx)
     if held:
-        print(f"pinreport: kept {len(held)} pin row(s) the gate did not report whose MS2-PIN is still in the source",
-              file=sys.stderr)
+        print(f"pinreport: kept {len(held)} pin/look-alike order row(s) the gate did not report (MS2-PIN still in the "
+              f"source, or a look-alike order row: only --write-allow drops those)", file=sys.stderr)
     new = sorted(set(keep + cur + held))
     if new != sorted(set(old)):
         for kx in sorted(set(new) - set(old)): print(f"  + [{kx[0]}] {kx[1][:200]}")

@@ -89,7 +89,7 @@ public:
     void* m_p;
 };
 void* FUN_1401cd040(int* p);
-class Unk_Local1408ad110                                            // 200-byte working struct
+class Unk_Local1408ad110                                            // 192-byte working struct
 {
 public:
     Unk_Local1408ad110();                                           // 0x1408ad110
@@ -97,9 +97,8 @@ public:
     void* m_00; void* m_08; void* m_10; void* m_18; void* m_20; void* m_28; void* m_30; void* m_38;
     void* m_40; void* m_48; void* m_50; void* m_58; void* m_60; void* m_68; void* m_70; void* m_78;
     void* m_80; void* m_88; void* m_90; void* m_98; void* m_a0; void* m_a8; void* m_b0; void* m_b8;
-    void* m_c0;
 };
-MS2_CHECK_SIZE(Unk_Local1408ad110, 0xc8);
+MS2_CHECK_SIZE(Unk_Local1408ad110, 0xc0);
 int FUN_1408a0d30(int a, Unk_Local1408ad110* l, unsigned b);
 CStringW FUN_1409796e0(unsigned a, int b, int c, CStringW s);
 
@@ -339,7 +338,6 @@ CStringW CProxyGameObject::FUN_1416c2570()
 MS2_REPLACE_METHOD(0x1416C2570, CProxyGameObject, FUN_1416c2570, 133, 0x325768ED);
 
 // @0x1416c2600
-// MS2-FUNCTIONAL: byte-identical except the frame is 0x10 larger (sub rsp 0x168 vs 0x158); an unused temp slot not located
 CStringW CProxyGameObject::FUN_1416c2600()
 {
     if (FUN_1416c1ff0() != 0) {

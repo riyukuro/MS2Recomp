@@ -166,8 +166,8 @@ bool FUN_140d821f0(void* p);
 void* FUN_14098db90(void* pClassInfo);   // ClassInfo::GetParent
 void FUN_140de91f0(void* pStr);
 char FUN_140de0b00(void* pChar, char c);
-int FUN_14208c9b0(void* pStr);
-void* FUN_14208ae50(void* pStr, void* pOut, int n);
+size_t FUN_14208c9b0(void* pStr);
+void* FUN_14208ae50(void* pStr, void* pOut, size_t n);
 
 // Unit-local runtime-type helpers (the exe emits them as out-of-line functions next to the model code).
 class Unk_KfmTyped
@@ -220,7 +220,7 @@ struct Unk_KfmAssetIDAccess
     {
         new (p) efd::AssetID(pszUrn, nMult, ePolicy);
         void* pUrn = (void*)&p->GetURN();
-        int nLen = FUN_14208c9b0(pUrn);
+        size_t nLen = FUN_14208c9b0(pUrn);
         if (nLen != 0) {
             char t[16];
             if (FUN_140de0b00(FUN_14208ae50(pUrn, t, nLen - 1), ':') != 0)

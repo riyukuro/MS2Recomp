@@ -1082,12 +1082,6 @@ DungeonBuffEventCtx::DungeonBuffEventCtx() : m_dungeonID(0), m_isBeginner(false)
 {
 }
 
-// The GUID list is parsed as unsigned 64-bit decimals (0x1404082e0).
-template <> inline unsigned __int64 XmlConvert<unsigned __int64>(const CString& str)
-{
-    return _strtoui64(str, NULL, 10);
-}
-
 // @0x1403ff720
 bool DungeonBuffEventCtx::Load(Unk_140165cf0* pElem)
 {

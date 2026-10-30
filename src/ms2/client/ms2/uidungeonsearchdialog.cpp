@@ -303,7 +303,7 @@ void FUN_140d73ff0(CStringW);
 
 UIDungeonSearchSelectDialog* FUN_140e1cfe0(int nUIType);
 
-// The AS accessor object the array loaders build over a Value (0x88 bytes: ctor 0x1422c6570, dtor 0x1422c65c0); one
+// The AS accessor object the array loaders build over a Value (0x80 bytes: ctor 0x1422c6570, dtor 0x1422c65c0); one
 // child getter COMDAT per wrapper class.
 class Unk_DsNode
 {
@@ -313,9 +313,9 @@ public:
     MS2Ptr<Unk_DsButton> FUN_140d01c90(const CString& strName);
     MS2Ptr<Unk_DsLabel> FUN_140d01dd0(const CString& strName);
 private:
-    void* m_pad[0x11];   // pointer array: no /GS cookie in the loaders
+    void* m_pad[0x10];   // pointer array: no /GS cookie in the loaders
 };
-MS2_CHECK_SIZE(Unk_DsNode, 0x88);
+MS2_CHECK_SIZE(Unk_DsNode, 0x80);
 bool FUN_1409b4d40(const Scaleform::GFx::Value& v);
 bool FUN_140e1cc40(const Scaleform::GFx::Value& root, CString strName, unsigned nCount, std::vector<MS2Ptr<Unk_DsButton> >& out, unsigned nStart);
 bool FUN_140e1ce10(const Scaleform::GFx::Value& root, CString strName, unsigned nCount, std::vector<MS2Ptr<Unk_DsLabel> >& out, unsigned nStart);
@@ -771,7 +771,6 @@ UIDungeonSearchSelectDialog* FUN_140e1cfe0(int nUIType)
 }
 MS2_REPLACE(0x140e1cfe0, FUN_140e1cfe0, 147, 0xC7E55275);
 
-// MS2-FUNCTIONAL: behaviour-equivalent; frame is 0x10 larger than the exe's 0xe8 (extra temporary around the Unk_DsNode)
 // @0x140e1cc40
 bool FUN_140e1cc40(const Scaleform::GFx::Value& root, CString strName, unsigned nCount, std::vector<MS2Ptr<Unk_DsButton> >& out, unsigned nStart)
 {
@@ -791,7 +790,6 @@ bool FUN_140e1cc40(const Scaleform::GFx::Value& root, CString strName, unsigned 
     return true;
 }
 
-// MS2-FUNCTIONAL: behaviour-equivalent; frame is 0x10 larger than the exe's 0xe8 (extra temporary around the Unk_DsNode)
 // @0x140e1ce10
 bool FUN_140e1ce10(const Scaleform::GFx::Value& root, CString strName, unsigned nCount, std::vector<MS2Ptr<Unk_DsLabel> >& out, unsigned nStart)
 {

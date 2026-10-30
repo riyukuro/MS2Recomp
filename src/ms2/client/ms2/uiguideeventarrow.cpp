@@ -913,7 +913,7 @@ int UIGuideEventArrowDialog::FUN_14195f870(UISwfEntity* ui, void* out)
 
 // Game menu dialog: path elements the menu table remaps are resolved by getChildObjectPos instead of child lookup.
 struct Unk_GuideMenuEntry { char m_pad_00[0x18]; int m_18; int m_pad_1c; CString m_name; };   // +0x00 CPtred header, +0x20 name (0x14195fc40)
-class Unk_GuideMenuRef { public: ~Unk_GuideMenuRef(); bool FUN_140c1cd90() const; Unk_GuideMenuEntry* FUN_140c1cda0() const; private: char m_pad[0x20]; };
+class Unk_GuideMenuRef { public: ~Unk_GuideMenuRef(); void* FUN_140c1cd90() const; Unk_GuideMenuEntry* FUN_140c1cda0() const; private: char m_pad[0x20]; };
 class Unk_GuideMenuTable { public: Unk_GuideMenuRef FUN_140cf7470(CString); int FUN_140cf71f0(int,int); int FUN_140cf72f0(int,int); Unk_GuideMenuRef FUN_140cf7690(int); };
 Unk_GuideMenuTable* FUN_140c1d2f0();
 int FUN_14193a010();
